@@ -1,0 +1,40 @@
+// 単語データ（継続 / 6000語へ）— 語族(fam)つき動詞/医学・心理の名詞/性格の形容詞、補助情報＋分野つき。語族=1エントリ。
+import { expandCompact } from './compact.js'
+
+const RAW = [
+  // 動詞（語族つき）
+  ['circulate', '動', 'pre1', '循環する・出回らせる', 'Blood circulates through the body.', '血液は体内を循環する。', 'ラテン circulus(輪)→ circle と同系。', { syn: [{ w: 'flow', m: '流れる' }, { w: 'spread', m: '広める' }], fam: [{ w: 'circulation', m: '循環' }, { w: 'circular', m: '円形の・回覧' }, { w: 'circulatory', m: '循環の' }], field: '医学' }],
+  ['migrate', '動', 'pre1', '移住する・渡る', 'Birds migrate south in winter.', '鳥は冬に南へ渡る。', 'ラテン migrare(移る)。', { syn: [{ w: 'move', m: '移る' }, { w: 'relocate', m: '移転する' }], fam: [{ w: 'migration', m: '移住・渡り' }, { w: 'migrant', m: '移住者' }, { w: 'migratory', m: '渡りの' }], field: '社会' }],
+  ['originate', '動', '1', '始まる・由来する・生み出す', 'The custom originated in China.', 'その習慣は中国で始まった。', 'ラテン oriri(生じる)→ origin と同系。', { syn: [{ w: 'arise', m: '生じる' }, { w: 'stem', m: '由来する' }], fam: [{ w: 'origin', m: '起源' }, { w: 'original', m: 'もとの・独創的な' }, { w: 'originally', m: '元来' }], field: '動作・行為' }],
+  ['alternate', '動', 'pre1', '交互に行う・代わりの(形)', 'They alternate day and night shifts.', '彼らは昼夜の勤務を交代する。', 'ラテン alter(他方)→ alter と同系。', { syn: [{ w: 'rotate', m: '交代する' }], fam: [{ w: 'alternative', m: '代替の' }, { w: 'alternation', m: '交互' }, { w: 'alternately', m: '交互に' }], field: '動作・行為' }],
+  ['stimulate', '動', 'pre1', '刺激する・促進する', 'Coffee stimulates the brain.', 'コーヒーは脳を刺激する。', 'ラテン stimulus(突き棒)。', { syn: [{ w: 'excite', m: '興奮させる' }, { w: 'encourage', m: '促す' }], ant: [{ w: 'inhibit', m: '抑制する' }], fam: [{ w: 'stimulation', m: '刺激' }, { w: 'stimulus', m: '刺激(要因)' }, { w: 'stimulant', m: '興奮剤' }], field: '医学' }],
+  ['illuminate', '動', '1', '照らす・解明する', 'Lamps illuminated the street.', '街灯が通りを照らした。', 'ラテン illuminare(照らす)→ luminous と同系。', { syn: [{ w: 'light up', m: '照らす' }, { w: 'clarify', m: '明らかにする' }], ant: [{ w: 'darken', m: '暗くする' }], fam: [{ w: 'illumination', m: '照明' }, { w: 'illuminating', m: '啓発的な' }], field: '科学' }],
+  ['designate', '動', '1', '指定する・任命する', 'They designated her as leader.', '彼らは彼女を指導者に指定した。', 'ラテン de+signum(印)→ sign と同系。', { syn: [{ w: 'appoint', m: '任命する' }, { w: 'specify', m: '指定する' }], fam: [{ w: 'designation', m: '指定・名称' }, { w: 'designated', m: '指定された' }], field: '動作・行為' }],
+  ['formulate', '動', '1', '明確に述べる・考案する', 'They formulated a new plan.', '彼らは新しい計画を立てた。', 'ラテン formula(規定)→ form と同系。', { syn: [{ w: 'devise', m: '考案する' }, { w: 'develop', m: 'まとめる' }], fam: [{ w: 'formula', m: '公式' }, { w: 'formulation', m: '定式化' }], field: '動作・行為' }],
+  ['radiate', '動', '1', '放射する・発する', 'The stove radiates heat.', 'ストーブは熱を放射する。', 'ラテン radius(光線)→ radio と同系。', { syn: [{ w: 'give off', m: '発する' }], fam: [{ w: 'radiation', m: '放射(線)' }, { w: 'radiant', m: '輝く' }, { w: 'radius', m: '半径' }], field: '科学' }],
+  ['depreciate', '動', '1', '価値が下がる・軽んじる', 'Cars depreciate quickly.', '車は価値が早く下がる。', 'ラテン de+pretium(値段)→ price と同系。', { ant: [{ w: 'appreciate', m: '価値が上がる' }], fam: [{ w: 'depreciation', m: '減価' }], field: '経済' }],
+  ['captivate', '動', '1', '魅了する・心を奪う', 'The show captivated the audience.', '公演は観客を魅了した。', 'ラテン captivus(捕らわれた)→ capture と同系。', { syn: [{ w: 'fascinate', m: '魅了する' }, { w: 'charm', m: '引きつける' }], fam: [{ w: 'captivating', m: '魅惑的な' }, { w: 'captive', m: '捕虜' }], field: '動作・行為' }],
+  ['perpetuate', '動', '1', '永続させる・存続させる', 'The myth perpetuates a stereotype.', 'その俗説は固定観念を永続させる。', 'ラテン perpetuus(連続した)→ perpetual と同系。', { syn: [{ w: 'maintain', m: '存続させる' }], ant: [{ w: 'end', m: '終わらせる' }], fam: [{ w: 'perpetual', m: '永続的な' }, { w: 'perpetually', m: '絶えず' }], field: '動作・行為' }],
+  ['substantiate', '動', '1', '実証する・裏づける', 'Evidence substantiates the claim.', '証拠がその主張を裏づける。', 'ラテン substantia(実体)→ substance と同系。', { syn: [{ w: 'prove', m: '証明する' }, { w: 'verify', m: '立証する' }], ant: [{ w: 'refute', m: '反証する' }], fam: [{ w: 'substance', m: '実質' }, { w: 'substantial', m: 'かなりの' }], field: '動作・行為' }],
+  // 医学・心理の名詞
+  ['epidemic', '名', '1', '流行病・蔓延', 'The flu epidemic spread fast.', 'インフルエンザの流行は急速に広がった。', 'ギリシャ epi(上に)+demos(民衆)。', { syn: [{ w: 'outbreak', m: '発生' }, { w: 'plague', m: '疫病' }], fam: [{ w: 'epidemic', m: '流行病' }, { w: 'pandemic', m: '世界的流行' }, { w: 'endemic', m: '風土病の' }], field: '医学' }],
+  ['antidote', '名', '1', '解毒剤・対策', 'There is no antidote for this poison.', 'この毒に解毒剤はない。', 'ギリシャ anti(反)+didonai(与える)。', { syn: [{ w: 'remedy', m: '治療法' }, { w: 'cure', m: '治療' }], field: '医学' }],
+  ['ailment', '名', '1', '(軽い)病気・不調', 'She suffers from a minor ailment.', '彼女は軽い病気を患っている。', 'ail(悩ます)+ -ment。', { syn: [{ w: 'illness', m: '病気' }, { w: 'disorder', m: '不調' }], field: '医学' }],
+  ['hygiene', '名', '1', '衛生・衛生学', 'Good hygiene prevents disease.', '良い衛生は病気を防ぐ。', 'ギリシャ hygies(健康な)。', { syn: [{ w: 'cleanliness', m: '清潔' }, { w: 'sanitation', m: '公衆衛生' }], fam: [{ w: 'hygienic', m: '衛生的な' }], field: '医学' }],
+  ['posture', '名', 'pre1', '姿勢・態度', 'Good posture is important.', '良い姿勢は大切だ。', 'ラテン ponere(置く)→ pos と同系。', { syn: [{ w: 'pose', m: '姿勢' }, { w: 'stance', m: '構え' }], field: '医学' }],
+  ['temperament', '名', '1', '気質・気性', 'He has a calm temperament.', '彼は穏やかな気質だ。', 'ラテン temperare(調合する)→ temper と同系。', { syn: [{ w: 'nature', m: '性質' }, { w: 'disposition', m: '気質' }], fam: [{ w: 'temperamental', m: '気まぐれな' }], field: '心理' }],
+  ['disposition', '名', '1', '気質・傾向・配置', 'She has a cheerful disposition.', '彼女は明るい気質だ。', 'ラテン dis+ponere(配置する)→ pos と同系。', { syn: [{ w: 'temperament', m: '気質' }, { w: 'tendency', m: '傾向' }], field: '心理' }],
+  ['impetus', '名', '1', '勢い・推進力', 'The award gave impetus to research.', 'その賞は研究に弾みをつけた。', 'ラテン impetere(襲う)→ in+petere(求める)。', { syn: [{ w: 'momentum', m: '勢い' }, { w: 'drive', m: '推進力' }, { w: 'stimulus', m: '刺激' }], field: '一般' }],
+  // 性格・態度の形容詞
+  ['resilient', '形', '1', '回復力のある・弾力のある', 'Children are remarkably resilient.', '子供は驚くほど立ち直りが早い。', 'ラテン re+salire(跳ね返る)→ result と同系。', { syn: [{ w: 'tough', m: '打たれ強い' }, { w: 'flexible', m: 'しなやかな' }], ant: [{ w: 'fragile', m: 'もろい' }], fam: [{ w: 'resilience', m: '回復力' }], field: '性質・状態' }],
+  ['tenacious', '形', '1', '粘り強い・しつこい', 'She has a tenacious spirit.', '彼女は粘り強い精神を持つ。', 'ラテン tenax(しっかり保つ)→ tain と同系。', { syn: [{ w: 'persistent', m: '根気強い' }, { w: 'determined', m: '断固とした' }], ant: [{ w: 'weak', m: '弱い' }], fam: [{ w: 'tenacity', m: '粘り強さ' }], field: '性質・状態' }],
+  ['relentless', '形', '1', '容赦ない・絶え間ない', 'They faced relentless pressure.', '彼らは絶え間ない重圧に直面した。', 're+lent(緩める)+ -less。', { syn: [{ w: 'persistent', m: 'しつこい' }, { w: 'unyielding', m: '不屈の' }], ant: [{ w: 'merciful', m: '慈悲深い' }], field: '性質・状態' }],
+  ['steadfast', '形', '1', '不動の・揺るがない', 'a steadfast friend', '揺るがぬ友', 'stead(場所)+fast(固い)。', { syn: [{ w: 'loyal', m: '忠実な' }, { w: 'firm', m: '断固とした' }], ant: [{ w: 'wavering', m: '揺れ動く' }], field: '性質・状態' }],
+  ['tentative', '形', '1', '仮の・ためらいがちな', 'We made a tentative plan.', '私たちは仮の計画を立てた。', 'ラテン tentare(試みる)→ tempt と同系。', { syn: [{ w: 'provisional', m: '暫定的な' }, { w: 'hesitant', m: 'ためらいがちな' }], ant: [{ w: 'definite', m: '確定的な' }], field: '性質・状態' }],
+  ['assertive', '形', '1', '自己主張の強い・断定的な', 'Be assertive, not aggressive.', '攻撃的でなく、自己主張的であれ。', 'assert(主張する)+ -ive。', { syn: [{ w: 'confident', m: '自信のある' }, { w: 'forceful', m: '強引な' }], ant: [{ w: 'passive', m: '受動的な' }], fam: [{ w: 'assert', m: '主張する' }, { w: 'assertion', m: '主張' }], field: '性質・状態' }],
+  ['submissive', '形', '1', '従順な・服従的な', 'a submissive attitude', '従順な態度', 'submit(服従する)+ -ive→ miss と同系。', { syn: [{ w: 'obedient', m: '従順な' }, { w: 'docile', m: '素直な' }], ant: [{ w: 'assertive', m: '自己主張の強い' }], field: '性質・状態' }],
+  ['authoritative', '形', '1', '権威ある・信頼できる・高圧的な', 'an authoritative source', '権威ある情報源', 'authority(権威)+ -ative。', { syn: [{ w: 'reliable', m: '信頼できる' }, { w: 'official', m: '公式の' }], field: '性質・状態' }],
+  ['autocratic', '形', '1', '独裁的な・専制的な', 'He has an autocratic style.', '彼は独裁的なやり方をする。', 'ギリシャ autos(自己)+kratos(支配)。', { syn: [{ w: 'dictatorial', m: '独裁的な' }, { w: 'tyrannical', m: '専制的な' }], ant: [{ w: 'democratic', m: '民主的な' }], fam: [{ w: 'autocracy', m: '独裁政治' }, { w: 'autocrat', m: '独裁者' }], field: '政治' }],
+]
+
+export const WORDS_MORE36 = RAW.map(expandCompact)

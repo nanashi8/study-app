@@ -1,0 +1,67 @@
+// 単語データ（継続 / 6000語へ）— 技術/学術動詞/学術形容詞/金融/法律、補助情報＋分野つき。語族=1エントリ。
+import { expandCompact } from './compact.js'
+
+const RAW = [
+  // 技術・コンピュータ
+  ['software', '名', '3', 'ソフトウェア', 'Install the new software.', '新しいソフトを入れて。', 'soft(柔)+ware(品)。hardware の対。', { ant: [{ w: 'hardware', m: 'ハードウェア' }], field: '技術' }],
+  ['hardware', '名', '3', 'ハードウェア・金物', 'The computer hardware failed.', 'コンピュータのハードが故障した。', 'hard(硬)+ware(品)。', { ant: [{ w: 'software', m: 'ソフトウェア' }], field: '技術' }],
+  ['algorithm', '名', '1', 'アルゴリズム・計算手順', 'The app uses a smart algorithm.', 'そのアプリは賢い計算手順を使う。', '数学者アル・フワーリズミーの名から。', { syn: [{ w: 'procedure', m: '手順' }], field: '技術' }],
+  ['database', '名', '2', 'データベース', 'They store records in a database.', '彼らは記録をデータベースに保存する。', 'data(資料)+base(基盤)。', { field: '技術' }],
+  ['download', '動', '2', 'ダウンロードする', 'Download the file here.', 'ここでファイルをダウンロードして。', 'down(下へ)+load(積む)。', { ant: [{ w: 'upload', m: 'アップロードする' }], field: '技術' }],
+  ['encrypt', '動', '1', '暗号化する', 'They encrypt all the data.', '彼らは全データを暗号化する。', 'en(〜にする)+crypt(隠す)。', { ant: [{ w: 'decrypt', m: '復号する' }], field: '技術' }],
+  ['virtual', '形', 'pre1', '仮想の・事実上の', 'They held a virtual meeting.', '彼らは仮想会議を開いた。', 'ラテン virtus(力)→ virtue と同源。', { field: '技術' }],
+  ['interface', '名', '1', 'インターフェース・接点', 'The app has a simple interface.', 'そのアプリは画面が分かりやすい。', 'inter(間)+face(面)。', { syn: [{ w: 'connection', m: '接続' }], field: '技術' }],
+  ['prototype', '名', '1', '試作品・原型', 'They built a prototype first.', '彼らはまず試作品を作った。', 'ギリシャ proto(最初)+typos(型)→ type と同系。', { syn: [{ w: 'model', m: '模型' }], field: '技術' }],
+  ['simulation', '名', '1', 'シミュレーション・模擬実験', 'They ran a flight simulation.', '彼らは飛行模擬実験を行った。', 'ラテン simulare(似せる)→ similar と同系。', { field: '技術' }],
+  ['automation', '名', '1', '自動化', 'Automation replaced many jobs.', '自動化が多くの仕事を置き換えた。', 'ギリシャ automatos(自ら動く)。', { field: '技術' }],
+  // 学術動詞
+  ['allege', '動', '1', '主張する・申し立てる', 'They alleged that he lied.', '彼らは彼がうそをついたと主張した。', 'ラテン allegare(申し立てる)。', { syn: [{ w: 'claim', m: '主張する' }], field: '法律' }],
+  ['classify', '動', 'pre1', '分類する', 'Classify the books by topic.', '本を主題で分類して。', 'ラテン classis(階級)→ class と同源。', { syn: [{ w: 'categorize', m: '分類する' }, { w: 'sort', m: '仕分ける' }], field: '動作・行為' }],
+  ['conceive', '動', '1', '思いつく・想像する・宿す', "I can't conceive of such a plan.", 'そんな計画は思いつけない。', 'ラテン com+capere(つかむ)→ cept と同源。', { syn: [{ w: 'imagine', m: '想像する' }, { w: 'devise', m: '考案する' }], field: '動作・行為' }],
+  ['correlate', '動', '1', '相関する・関連づける', 'Income correlates with education.', '収入は学歴と相関する。', 'ラテン com+relate(関係づける)。', { field: '科学' }],
+  ['differentiate', '動', '1', '区別する・差別化する', 'Can you differentiate the two?', 'その2つを区別できる？', 'differ(異なる)+ -entiate。', { syn: [{ w: 'distinguish', m: '見分ける' }], field: '動作・行為' }],
+  ['elaborate', '動', '1', '詳しく述べる・精巧な(形)', 'Please elaborate on your idea.', '考えを詳しく述べて。', 'ラテン e+laborare(働く)→ labor と同系。', { syn: [{ w: 'expand on', m: '詳述する' }], field: '動作・行為' }],
+  ['encompass', '動', '1', '包含する・取り囲む', 'The course encompasses many topics.', 'その講座は多くの話題を含む。', 'en(中に)+compass(囲い)。', { syn: [{ w: 'include', m: '含む' }, { w: 'cover', m: '及ぶ' }], field: '動作・行為' }],
+  ['facilitate', '動', '1', '促進する・容易にする', 'Tools facilitate learning.', '道具は学習を促進する。', 'ラテン facilis(容易な)→ facile と同系。', { syn: [{ w: 'assist', m: '助ける' }], ant: [{ w: 'hinder', m: '妨げる' }], field: '動作・行為' }],
+  ['implement', '動', '1', '実施する・道具(名)', 'They implemented the new rule.', '彼らは新規則を実施した。', 'ラテン implere(満たす)→ complete と同系。', { syn: [{ w: 'carry out', m: '実行する' }, { w: 'execute', m: '遂行する' }], field: '動作・行為' }],
+  ['incorporate', '動', '1', '取り入れる・法人化する', 'They incorporated his ideas.', '彼らは彼の案を取り入れた。', 'ラテン in+corpus(体)→ corps と同系。', { syn: [{ w: 'include', m: '含める' }, { w: 'integrate', m: '統合する' }], field: '動作・行為' }],
+  ['infer', '動', '1', '推論する・推測する', 'We can infer the cause.', '私たちは原因を推測できる。', 'ラテン in+ferre(運ぶ)→ fer と同源。', { syn: [{ w: 'deduce', m: '推論する' }, { w: 'conclude', m: '結論づける' }], field: '動作・行為' }],
+  ['inhibit', '動', '1', '抑制する・妨げる', 'Fear can inhibit progress.', '恐れは進歩を妨げうる。', 'ラテン in+habere(持つ)→ habit と同系。', { syn: [{ w: 'restrain', m: '抑える' }, { w: 'prevent', m: '妨げる' }], ant: [{ w: 'encourage', m: '促す' }], field: '動作・行為' }],
+  ['manifest', '動', '1', '明らかにする・明白な(形)', 'Symptoms manifest slowly.', '症状はゆっくり現れる。', 'ラテン manifestus(手でつかめる)→ manus(手)。', { syn: [{ w: 'show', m: '示す' }, { w: 'reveal', m: '明らかにする' }], field: '動作・行為' }],
+  ['optimize', '動', '1', '最適化する', 'They optimized the system.', '彼らはシステムを最適化した。', 'ラテン optimus(最良の)→ optimal。', { field: '技術' }],
+  ['reconcile', '動', '1', '和解させる・調和させる', 'They reconciled after the fight.', '彼らはけんかの後に和解した。', 'ラテン re+conciliare(集める)→ council と同系。', { syn: [{ w: 'settle', m: '解決する' }, { w: 'harmonize', m: '調和させる' }], field: '動作・行為' }],
+  ['refute', '動', '1', '論破する・反論する', 'She refuted the argument.', '彼女はその主張を論破した。', 'ラテン refutare(退ける)。', { syn: [{ w: 'disprove', m: '反証する' }, { w: 'rebut', m: '反論する' }], ant: [{ w: 'prove', m: '証明する' }], field: '動作・行為' }],
+  ['undermine', '動', '1', '弱らせる・むしばむ', 'Doubt undermined his confidence.', '疑念が彼の自信をむしばんだ。', 'under(下)+mine(坑道を掘る)→土台を崩す。', { syn: [{ w: 'weaken', m: '弱める' }], ant: [{ w: 'strengthen', m: '強める' }], field: '動作・行為' }],
+  ['validate', '動', '1', '正当性を証明する・有効にする', 'The data validates the theory.', 'そのデータは理論を裏づける。', 'ラテン validus(強い)→ valid と同源。', { syn: [{ w: 'confirm', m: '確認する' }, { w: 'verify', m: '検証する' }], ant: [{ w: 'invalidate', m: '無効にする' }], field: '動作・行為' }],
+  // 学術形容詞
+  ['analogous', '形', '1', '類似した・相似の', 'The heart is analogous to a pump.', '心臓はポンプに似ている。', 'ギリシャ analogos(比例した)。', { syn: [{ w: 'similar', m: '似た' }, { w: 'comparable', m: '比較できる' }], field: '性質・状態' }],
+  ['compatible', '形', 'pre1', '互換性のある・相性のよい', 'These parts are compatible.', 'これらの部品は互換性がある。', 'ラテン com+pati(共に感じる)→ passion と同系。', { ant: [{ w: 'incompatible', m: '相いれない' }], field: '技術' }],
+  ['conceptual', '形', '1', '概念的な', 'It is a conceptual model.', 'それは概念的な模型だ。', 'concept(概念)+ -ual→ cept と同系。', { syn: [{ w: 'abstract', m: '抽象的な' }], field: '性質・状態' }],
+  ['concise', '形', '1', '簡潔な', 'Keep your answer concise.', '回答は簡潔に。', 'ラテン con+caedere(切る)→ precise と同系。', { syn: [{ w: 'brief', m: '短い' }, { w: 'succinct', m: '簡潔な' }], ant: [{ w: 'lengthy', m: '長たらしい' }], field: '性質・状態' }],
+  ['cumulative', '形', '1', '累積的な', 'The cumulative effect is large.', '累積的な効果は大きい。', 'ラテン cumulus(積み重ね)→ accumulate と同系。', { syn: [{ w: 'collective', m: '累積の' }], field: '性質・状態' }],
+  ['finite', '形', '1', '有限の', 'Resources are finite.', '資源は有限だ。', 'ラテン finis(終わり)→ finish と同源。', { ant: [{ w: 'infinite', m: '無限の' }], field: '性質・状態' }],
+  ['hypothetical', '形', '1', '仮定の・仮説の', 'It is a hypothetical case.', 'それは仮定の事例だ。', 'hypothesis(仮説)+ -ical。', { syn: [{ w: 'theoretical', m: '理論上の' }], ant: [{ w: 'actual', m: '実際の' }], field: '性質・状態' }],
+  ['implicit', '形', '1', '暗黙の・潜在的な', 'There was implicit agreement.', '暗黙の合意があった。', 'ラテン in+plicare(折りたたむ)→ apply と同系。', { ant: [{ w: 'explicit', m: '明示的な' }], field: '性質・状態' }],
+  ['objective', '形', '1', '客観的な・目標(名)', 'Try to be objective.', '客観的であろうとして。', 'ラテン ob+jacere(投げる)→ ject と同系。', { ant: [{ w: 'subjective', m: '主観的な' }], field: '性質・状態' }],
+  ['subjective', '形', '1', '主観的な', 'Beauty is subjective.', '美は主観的だ。', 'ラテン sub+jacere(下に投げる)→ ject と同系。', { ant: [{ w: 'objective', m: '客観的な' }], field: '性質・状態' }],
+  ['preliminary', '形', '1', '予備の・準備の', 'These are preliminary results.', 'これらは暫定の結果だ。', 'ラテン prae+limen(敷居)。', { syn: [{ w: 'initial', m: '最初の' }], ant: [{ w: 'final', m: '最終の' }], field: '性質・状態' }],
+  ['theoretical', '形', '1', '理論上の', 'It is a theoretical possibility.', 'それは理論上の可能性だ。', 'theory(理論)+ -ical。', { syn: [{ w: 'abstract', m: '抽象的な' }], ant: [{ w: 'practical', m: '実際的な' }], field: '性質・状態' }],
+  ['viable', '形', '1', '実行可能な・存続できる', 'Is the plan viable?', 'その計画は実行可能か？', 'ラテン vita(命)→ vital と同系。', { syn: [{ w: 'feasible', m: '実現可能な' }, { w: 'workable', m: '実行できる' }], field: '性質・状態' }],
+  // 金融
+  ['mortgage', '名', '1', '住宅ローン・抵当', 'They took out a mortgage.', '彼らは住宅ローンを組んだ。', 'フランス mort(死)+gage(誓い)→死した誓い。', { field: '経済' }],
+  ['dividend', '名', '1', '配当金', 'The company pays a dividend.', 'その会社は配当を出す。', 'ラテン dividere(分ける)→ divide と同源。', { syn: [{ w: 'payout', m: '配当' }], field: '経済' }],
+  ['audit', '名', '1', '会計監査・監査する(動)', 'The firm faced a tax audit.', 'その会社は税務監査を受けた。', 'ラテン audire(聞く)→ audio と同源。', { field: '経済' }],
+  ['expenditure', '名', '1', '支出・経費', 'They cut public expenditure.', '彼らは公的支出を削減した。', 'ラテン ex+pendere(量って払う)→ pend と同系。', { syn: [{ w: 'spending', m: '出費' }], ant: [{ w: 'income', m: '収入' }], field: '経済' }],
+  ['subsidy', '名', '1', '補助金', 'Farmers receive a subsidy.', '農家は補助金を受け取る。', 'ラテン subsidium(援助)。', { field: '経済' }],
+  ['tariff', '名', '1', '関税・料金表', 'They raised tariffs on steel.', '彼らは鉄鋼の関税を上げた。', 'アラビア taʿrīf(通知)。', { syn: [{ w: 'duty', m: '関税' }, { w: 'tax', m: '税' }], field: '経済' }],
+  ['commodity', '名', '1', '商品・産物', 'Oil is a key commodity.', '石油は重要な商品だ。', 'ラテン commodus(便利な)→ commode と同系。', { syn: [{ w: 'goods', m: '商品' }, { w: 'product', m: '産物' }], field: '経済' }],
+  // 法律
+  ['lawsuit', '名', '1', '訴訟', 'They filed a lawsuit.', '彼らは訴訟を起こした。', 'law(法)+suit(訴え)。', { syn: [{ w: 'case', m: '訴訟' }, { w: 'suit', m: '訴訟' }], field: '法律' }],
+  ['plaintiff', '名', '1', '原告', 'The plaintiff won the case.', '原告は勝訴した。', '古フランス plaintif(嘆く)→ complain と同系。', { ant: [{ w: 'defendant', m: '被告' }], field: '法律' }],
+  ['defendant', '名', '1', '被告', 'The defendant pleaded guilty.', '被告は罪を認めた。', 'defend(弁護する)+ -ant。', { ant: [{ w: 'plaintiff', m: '原告' }], field: '法律' }],
+  ['statute', '名', '1', '法令・制定法', 'The statute was passed in 2000.', 'その法令は2000年に成立した。', 'ラテン statuere(定める)→ statue と同系。', { syn: [{ w: 'law', m: '法律' }, { w: 'act', m: '法令' }], field: '法律' }],
+  ['jurisdiction', '名', '1', '司法権・管轄', 'It is outside our jurisdiction.', 'それは私たちの管轄外だ。', 'ラテン jus(法)+dicere(言う)→ dict と同系。', { syn: [{ w: 'authority', m: '権限' }], field: '法律' }],
+  ['settlement', '名', 'pre1', '解決・和解・入植地', 'They reached a settlement.', '彼らは和解に達した。', 'settle(解決する)+ -ment。', { syn: [{ w: 'agreement', m: '合意' }, { w: 'resolution', m: '解決' }], field: '法律' }],
+]
+
+export const WORDS_MORE25 = RAW.map(expandCompact)

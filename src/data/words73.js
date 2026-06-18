@@ -1,0 +1,43 @@
+// 単語データ（探索マップ＋足場ジェネレータ #29）— フロンティア由来。意味はフロンティア値。語族=1エントリ。
+import { expandCompact } from './compact.js'
+
+const RAW = [
+  ['bungle', '動', '1', 'やり損なう・しくじる', 'bungle the operation', '作戦をしくじる', '由来不確か(16世紀)。', { syn: [{ w: 'botch', m: 'しくじる' }, { w: 'mishandle', m: '扱い損なう' }], ant: [{ w: 'succeed', m: '成功する' }], field: '一般' }],
+  ['immortal', '形', 'pre1', '不滅の・不死の', 'an immortal soul', '不滅の魂', 'im(否定)+mortal(死すべき)。', { syn: [{ w: 'eternal', m: '永遠の' }, { w: 'undying', m: '不死の' }], ant: [{ w: 'mortal', m: '死すべき' }], fam: [{ w: 'immortality', m: '不死' }], field: '宗教' }],
+  ['place', '名', 'pre1', '場所・地位・置く', 'a quiet place', '静かな場所', 'ラテン platea(広い通り)。', { syn: [{ w: 'location', m: '位置' }, { w: 'spot', m: '地点' }], fam: [{ w: 'placement', m: '配置' }], field: '一般' }],
+  ['rally', '動', 'pre1', '集める・再結集する・集会', 'rally supporters', '支持者を結集する', '古フランス ralier(再び結ぶ)。', { syn: [{ w: 'gather', m: '集める' }, { w: 'marshal', m: '結集する' }], ant: [{ w: 'disperse', m: '散らす' }], field: '社会' }],
+  ['realm', '名', 'pre1', '領域・王国', 'the realm of science', '科学の領域', '古フランス reaume(王国)→ regal と同系。', { syn: [{ w: 'domain', m: '領域' }, { w: 'kingdom', m: '王国' }], field: '一般' }],
+  ['republic', '名', 'pre1', '共和国・共和制', 'a democratic republic', '民主共和国', 'ラテン res publica(公共の事)。', { syn: [{ w: 'commonwealth', m: '連邦' }], ant: [{ w: 'monarchy', m: '君主制' }], fam: [{ w: 'republican', m: '共和制の' }], field: '政治' }],
+  ['ruler', '名', '4', '支配者・定規', 'a fair ruler', '公正な統治者', 'rule(支配する)+ -er', { fam: [{ w: 'rule', m: '支配する' }], syn: [{ w: 'monarch', m: '君主' }, { w: 'sovereign', m: '主権者' }], ant: [{ w: 'subject', m: '臣民' }], field: '政治' }],
+  ['supplementary', '形', 'pre1', '補足的な・追加の', 'supplementary materials', '補足資料', 'supplement(補う)+ -ary。', { syn: [{ w: 'additional', m: '追加の' }, { w: 'extra', m: '余分の' }], ant: [{ w: 'essential', m: '必須の' }], fam: [{ w: 'supplement', m: '補足' }], field: '一般' }],
+  ['unarmed', '形', 'pre1', '非武装の・武器を持たない', 'unarmed civilians', '丸腰の民間人', 'un(否定)+armed(武装した)。', { syn: [{ w: 'defenseless', m: '無防備な' }, { w: 'weaponless', m: '武器のない' }], ant: [{ w: 'armed', m: '武装した' }], fam: [{ w: 'arm', m: '武装させる' }], field: '軍事' }],
+  ['uncovered', '形', 'pre1', '覆いのない・暴かれた', 'uncovered evidence', '明るみに出た証拠', 'un(否定)+covered(覆われた)。', { syn: [{ w: 'exposed', m: 'むき出しの' }, { w: 'revealed', m: '明らかにされた' }], ant: [{ w: 'concealed', m: '隠された' }], fam: [{ w: 'cover', m: '覆う' }], field: '一般' }],
+  ['celebrated', '形', 'pre1', '名高い・著名な', 'a celebrated author', '著名な作家', 'celebrate(祝う・たたえる)+ -d。', { syn: [{ w: 'renowned', m: '名高い' }, { w: 'acclaimed', m: '絶賛された' }], ant: [{ w: 'obscure', m: '無名の' }], fam: [{ w: 'celebrity', m: '有名人' }], field: '一般' }],
+  ['civic', '形', 'pre1', '市民の・都市の', 'civic duty', '市民の義務', 'ラテン civicus(市民の)→ city と同系。', { syn: [{ w: 'municipal', m: '市の' }, { w: 'public', m: '公共の' }], ant: [{ w: 'private', m: '私的な' }], fam: [{ w: 'city', m: '都市' }], field: '社会' }],
+  ['criticized', '形', 'pre1', '批判された・非難された', 'a widely criticized policy', '広く批判された政策', 'criticize(批判する)+ -d。', { syn: [{ w: 'condemned', m: '非難された' }, { w: 'censured', m: '叱責された' }], ant: [{ w: 'praised', m: '称賛された' }], fam: [{ w: 'criticize', m: '批判する' }], field: '社会' }],
+  ['deride', '動', '1', 'あざ笑う・嘲る', 'They derided his efforts.', '彼らは彼の努力をあざ笑った。', 'ラテン de+ridere(笑う)→ ridicule と同系。', { syn: [{ w: 'mock', m: 'あざける' }, { w: 'ridicule', m: '嘲笑する' }], ant: [{ w: 'praise', m: '称賛する' }], fam: [{ w: 'derision', m: 'あざけり' }], field: '社会' }],
+  ['disarmament', '名', '1', '軍縮・武装解除', 'nuclear disarmament', '核軍縮', 'disarm(武装解除する)+ -ament。', { syn: [{ w: 'demilitarization', m: '非武装化' }], ant: [{ w: 'armament', m: '軍備' }], fam: [{ w: 'disarm', m: '武装解除する' }], field: '軍事' }],
+  ['doleful', '形', '1', '陰気な・悲しげな', 'a doleful expression', '悲しげな表情', 'dole(悲しみ)+ -ful。', { syn: [{ w: 'mournful', m: '哀れな' }, { w: 'sorrowful', m: '悲しい' }], ant: [{ w: 'cheerful', m: '快活な' }], field: '心理' }],
+  ['eased', '形', 'pre1', '緩和された・和らいだ', 'eased restrictions', '緩和された規制', 'ease(和らげる)+ -d。', { syn: [{ w: 'relaxed', m: '緩められた' }, { w: 'lessened', m: '軽減された' }], ant: [{ w: 'tightened', m: '強化された' }], fam: [{ w: 'ease', m: '和らげる' }], field: '一般' }],
+  ['eternity', '名', 'pre1', '永遠・無限の時間', 'wait for an eternity', '永遠に待つ', 'ラテン aeternus(永遠の)→ eternal と同系。', { syn: [{ w: 'forever', m: '永久' }, { w: 'infinity', m: '無限' }], ant: [{ w: 'moment', m: '一瞬' }], fam: [{ w: 'eternal', m: '永遠の' }], field: '宗教' }],
+  ['fallacy', '名', '1', '誤った考え・誤謬', 'a logical fallacy', '論理的誤謬', 'ラテン fallere(欺く)→ false と同系。', { syn: [{ w: 'misconception', m: '誤解' }, { w: 'delusion', m: '思い違い' }], ant: [{ w: 'truth', m: '真実' }], fam: [{ w: 'fallacious', m: '誤った' }], field: '学問' }],
+  ['fixed', '形', 'pre1', '固定された・一定の', 'a fixed price', '定価', 'fix(固定する)+ -ed。', { syn: [{ w: 'set', m: '決まった' }, { w: 'stationary', m: '静止した' }], ant: [{ w: 'variable', m: '変動する' }], fam: [{ w: 'fix', m: '固定する' }], field: '一般' }],
+  ['human', '形', 'pre1', '人間の・人間的な・人間', 'human nature', '人間の本性', 'ラテン humanus(人間の)。', { syn: [{ w: 'mortal', m: '人間の' }], ant: [{ w: 'divine', m: '神の' }], fam: [{ w: 'humanity', m: '人類' }], field: '社会' }],
+  ['insulting', '形', 'pre1', '侮辱的な・無礼な', 'an insulting remark', '侮辱的な発言', 'insult(侮辱する)+ -ing。', { syn: [{ w: 'offensive', m: '無礼な' }, { w: 'abusive', m: '口汚い' }], ant: [{ w: 'complimentary', m: '称賛の' }], fam: [{ w: 'insult', m: '侮辱する' }], field: '社会' }],
+  ['jumble', '動', '1', 'ごた混ぜにする・乱雑にする', 'jumbled papers', '乱雑な書類', '擬音語(16世紀)。', { syn: [{ w: 'muddle', m: 'ごちゃ混ぜにする' }, { w: 'scramble', m: 'かき混ぜる' }], ant: [{ w: 'arrange', m: '整理する' }], field: '一般' }],
+  ['mobility', '名', 'pre1', '可動性・移動性', 'social mobility', '社会的流動性', 'mobile(可動の)+ -ity', { fam: [{ w: 'mobile', m: '可動の' }], syn: [{ w: 'movement', m: '動き' }, { w: 'flexibility', m: '柔軟性' }], ant: [{ w: 'immobility', m: '不動' }], field: '社会' }],
+  ['movable', '形', '4', '可動の・移動できる', 'movable furniture', '移動できる家具', 'move(動く)+ -able', { fam: [{ w: 'move', m: '動く' }], syn: [{ w: 'portable', m: '携帯用の' }, { w: 'mobile', m: '可動の' }], ant: [{ w: 'fixed', m: '固定された' }], field: '一般' }],
+  ['muscular', '形', 'pre1', '筋肉の・たくましい', 'a muscular build', 'たくましい体格', 'muscle(筋肉)+ -ular。', { syn: [{ w: 'brawny', m: '筋骨たくましい' }, { w: 'sturdy', m: '頑丈な' }], ant: [{ w: 'frail', m: '虚弱な' }], fam: [{ w: 'muscle', m: '筋肉' }], field: '医学' }],
+  ['mutinous', '形', '1', '反乱の・反抗的な', 'a mutinous crew', '反乱を起こした乗組員', 'mutiny(反乱)+ -ous。', { syn: [{ w: 'rebellious', m: '反逆的な' }, { w: 'insubordinate', m: '不服従の' }], ant: [{ w: 'obedient', m: '従順な' }], fam: [{ w: 'mutiny', m: '反乱' }], field: '軍事' }],
+  ['mythical', '形', 'pre1', '神話的な・架空の', 'a mythical creature', '架空の生き物', 'myth(神話)+ -ical。', { syn: [{ w: 'legendary', m: '伝説の' }, { w: 'fabled', m: '伝説の' }], ant: [{ w: 'real', m: '実在の' }], fam: [{ w: 'myth', m: '神話' }], field: '文学' }],
+  ['narrator', '名', '1', '語り手・ナレーター', 'an unreliable narrator', '信頼できない語り手', 'narrate(語る)+ -or', { fam: [{ w: 'narrate', m: '語る' }], syn: [{ w: 'storyteller', m: '物語の語り手' }], field: '文学' }],
+  ['narrowing', '名', 'pre1', '狭まり・縮小', 'a narrowing of options', '選択肢の狭まり', 'narrow(狭める)+ -ing。', { syn: [{ w: 'constriction', m: '収縮' }, { w: 'reduction', m: '縮小' }], ant: [{ w: 'widening', m: '拡大' }], fam: [{ w: 'narrow', m: '狭める' }], field: '一般' }],
+  ['nauseous', '形', 'pre1', '吐き気のする・むかつく', 'feel nauseous', '吐き気がする', 'ラテン nausea(船酔い)。', { syn: [{ w: 'queasy', m: '吐き気がする' }, { w: 'sick', m: '気分が悪い' }], ant: [{ w: 'well', m: '元気な' }], fam: [{ w: 'nausea', m: '吐き気' }], field: '医学' }],
+  ['naval', '形', 'pre1', '海軍の・軍艦の', 'a naval base', '海軍基地', 'ラテン navis(船)→ navy と同系。', { syn: [{ w: 'maritime', m: '海事の' }, { w: 'marine', m: '海の' }], fam: [{ w: 'navy', m: '海軍' }], field: '軍事' }],
+  ['navigable', '形', '1', '航行可能な', 'a navigable river', '航行可能な川', 'navigate(航行する)+ -able。', { syn: [{ w: 'passable', m: '通行可能な' }], ant: [{ w: 'impassable', m: '通行不能の' }], fam: [{ w: 'navigate', m: '航行する' }], field: '交通' }],
+  ['navigation', '名', 'pre1', '航行・操縦・ナビ', 'satellite navigation', '衛星測位', 'navigate(航行する)+ -ation', { fam: [{ w: 'navigate', m: '航行する' }], syn: [{ w: 'piloting', m: '操縦' }, { w: 'steering', m: '舵取り' }], field: '交通' }],
+  ['navigator', '名', 'pre1', '航海士・ナビゲーター', 'a skilled navigator', '熟練の航海士', 'navigate(航行する)+ -or', { fam: [{ w: 'navigate', m: '航行する' }], syn: [{ w: 'pilot', m: '操縦士' }], field: '交通' }],
+  ['needy', '形', 'pre1', '困窮した・貧しい', 'help the needy', '困窮者を助ける', 'need(必要)+ -y。', { syn: [{ w: 'destitute', m: '極貧の' }, { w: 'impoverished', m: '貧困に陥った' }], ant: [{ w: 'affluent', m: '裕福な' }], fam: [{ w: 'need', m: '必要' }], field: '社会' }],
+]
+
+export const WORDS_MORE72 = RAW.map(expandCompact)

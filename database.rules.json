@@ -1,0 +1,14 @@
+{
+  "//": "えいごクエスト Realtime Database セキュリティルール。",
+  "//1": "Firebase コンソール → Realtime Database → ルール タブに貼り付けて公開。",
+  "//2": "生徒は自分のデータ(students/自分のUID)だけ読み書き可。他人のは不可。",
+  "//3": "先生ダッシュボード用の『全生徒read』は、その画面を作るときに追加する。",
+  "rules": {
+    "students": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        ".write": "auth != null && auth.uid === $uid"
+      }
+    }
+  }
+}
