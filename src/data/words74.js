@@ -1,0 +1,41 @@
+// 単語データ（探索マップ＋足場ジェネレータ #30）— フロンティア由来。意味はフロンティア値。語族=1エントリ。
+import { expandCompact } from './compact.js'
+
+const RAW = [
+  ['offensive', '形', 'pre1', '攻撃的な・無礼な・不快な', 'an offensive remark', '無礼な発言', 'offense(攻撃・違反)+ -ive', { fam: [{ w: 'offense', m: '攻撃' }], syn: [{ w: 'insulting', m: '侮辱的な' }, { w: 'rude', m: '失礼な' }], ant: [{ w: 'defensive', m: '防御の' }], field: '社会' }],
+  ['praised', '形', 'pre1', '称賛された・ほめられた', 'a highly praised novel', '高く評価された小説', 'praise(称賛する)+ -d。', { syn: [{ w: 'acclaimed', m: '絶賛された' }, { w: 'celebrated', m: '名高い' }], ant: [{ w: 'criticized', m: '批判された' }], fam: [{ w: 'praise', m: '称賛する' }], field: '一般' }],
+  ['set', '名', 'pre1', '一式・組・決まった', 'a chess set', 'チェス一式', '古英語 settan(据える)。', { syn: [{ w: 'collection', m: '一そろい' }, { w: 'kit', m: '道具一式' }], field: '一般' }],
+  ['well', '形', 'pre1', '健康な・元気な・井戸', 'get well soon', '早く元気になって', '古英語 wel(良く)。', { syn: [{ w: 'healthy', m: '健康な' }, { w: 'fit', m: '元気な' }], ant: [{ w: 'ill', m: '病気の' }], field: '医学' }],
+  ['widening', '名', 'pre1', '拡張・拡大', 'the widening of the gap', '格差の拡大', 'widen(広げる)+ -ing。', { syn: [{ w: 'expansion', m: '拡大' }, { w: 'broadening', m: '拡張' }], ant: [{ w: 'narrowing', m: '狭まり' }], fam: [{ w: 'widen', m: '広げる' }], field: '一般' }],
+  ['armament', '名', '1', '軍備・兵器', 'the armament race', '軍拡競争', 'ラテン armare(武装する)→ arm と同系。', { syn: [{ w: 'weaponry', m: '兵器' }, { w: 'arms', m: '武器' }], ant: [{ w: 'disarmament', m: '軍縮' }], fam: [{ w: 'arm', m: '武装させる' }], field: '軍事' }],
+  ['brawny', '形', '1', '筋骨たくましい・力強い', 'brawny arms', 'たくましい腕', 'brawn(筋肉)+ -y。', { syn: [{ w: 'muscular', m: '筋肉の' }, { w: 'burly', m: 'がっしりした' }], ant: [{ w: 'frail', m: '虚弱な' }], fam: [{ w: 'brawn', m: '筋力' }], field: '医学' }],
+  ['censured', '形', 'pre1', '叱責された・けん責された', 'a censured official', 'けん責された役人', 'censure(非難する)+ -d。', { syn: [{ w: 'reprimanded', m: '叱責された' }, { w: 'condemned', m: '非難された' }], ant: [{ w: 'praised', m: '称賛された' }], fam: [{ w: 'censure', m: '非難する' }], field: '社会' }],
+  ['commonwealth', '名', '1', '連邦・共和国・国家', 'the Commonwealth of Nations', '英連邦', 'common(共通の)+wealth(富・幸福)。', { syn: [{ w: 'federation', m: '連邦' }, { w: 'republic', m: '共和国' }], field: '政治' }],
+  ['complimentary', '形', 'pre1', '称賛の・無料の', 'complimentary tickets', '無料券', 'compliment(賛辞)+ -ary。', { syn: [{ w: 'flattering', m: '褒める' }, { w: 'free', m: '無料の' }], ant: [{ w: 'insulting', m: '侮辱的な' }], fam: [{ w: 'compliment', m: '賛辞' }], field: '社会' }],
+  ['condemned', '形', 'pre1', '非難された・有罪宣告された', 'a condemned building', '取り壊しを宣告された建物', 'condemn(非難する)+ -ed。', { syn: [{ w: 'denounced', m: '糾弾された' }, { w: 'doomed', m: '運命づけられた' }], ant: [{ w: 'praised', m: '称賛された' }], fam: [{ w: 'condemn', m: '非難する' }], field: '法律' }],
+  ['delusion', '名', 'pre1', '思い違い・妄想', 'delusions of grandeur', '誇大妄想', 'delude(欺く)+ -sion。', { syn: [{ w: 'illusion', m: '錯覚' }, { w: 'misconception', m: '誤解' }], ant: [{ w: 'reality', m: '現実' }], fam: [{ w: 'delude', m: '欺く' }], field: '心理' }],
+  ['demilitarization', '名', '1', '非武装化・軍備撤廃', 'the demilitarization of the area', '地域の非武装化', 'demilitarize(非武装化する)+ -ization', { fam: [{ w: 'demilitarize', m: '非武装化する' }], syn: [{ w: 'disarmament', m: '軍縮' }], ant: [{ w: 'militarization', m: '軍事化' }], field: '軍事' }],
+  ['destitute', '形', '1', '極貧の・困窮した', 'left destitute', '無一文にされて', 'ラテン destituere(見捨てる)。', { syn: [{ w: 'impoverished', m: '貧困に陥った' }, { w: 'penniless', m: '一文なしの' }], ant: [{ w: 'affluent', m: '裕福な' }], field: '社会' }],
+  ['fallacious', '形', '1', '誤った・当てにならない', 'a fallacious argument', '誤った議論', 'fallacy(誤謬)+ -ous。', { syn: [{ w: 'erroneous', m: '誤った' }, { w: 'misleading', m: '誤解を招く' }], ant: [{ w: 'sound', m: '妥当な' }], fam: [{ w: 'fallacy', m: '誤謬' }], field: '学問' }],
+  ['flexibility', '名', 'pre1', '柔軟性・融通', 'flexibility of schedule', '予定の融通', 'flexible(柔軟な)+ -ity。', { syn: [{ w: 'adaptability', m: '適応性' }, { w: 'elasticity', m: '弾力性' }], ant: [{ w: 'rigidity', m: '硬直性' }], fam: [{ w: 'flexible', m: '柔軟な' }], field: '一般' }],
+  ['humanity', '名', 'pre1', '人類・人間性・思いやり', 'crimes against humanity', '人道に対する罪', 'human(人間の)+ -ity', { fam: [{ w: 'human', m: '人間の' }], syn: [{ w: 'mankind', m: '人類' }, { w: 'compassion', m: '思いやり' }], ant: [{ w: 'cruelty', m: '残酷さ' }], field: '社会' }],
+  ['immobility', '名', '1', '不動・動かないこと', 'enforced immobility', '強いられた静止', 'im(否定)+mobility(可動性)。', { syn: [{ w: 'stillness', m: '静止' }, { w: 'paralysis', m: 'まひ' }], ant: [{ w: 'mobility', m: '可動性' }], fam: [{ w: 'immobile', m: '動かない' }], field: '医学' }],
+  ['impassable', '形', '1', '通行不能の・越えられない', 'an impassable road', '通行止めの道', 'im(否定)+passable(通行可能な)。', { syn: [{ w: 'blocked', m: 'ふさがった' }, { w: 'unnavigable', m: '航行不能の' }], ant: [{ w: 'passable', m: '通行可能な' }], fam: [{ w: 'pass', m: '通る' }], field: '交通' }],
+  ['impoverished', '形', '1', '貧困に陥った・困窮した', 'an impoverished family', '貧しい家族', 'impoverish(貧しくする)+ -ed。', { syn: [{ w: 'destitute', m: '極貧の' }, { w: 'poor', m: '貧しい' }], ant: [{ w: 'wealthy', m: '裕福な' }], fam: [{ w: 'impoverish', m: '貧しくする' }], field: '社会' }],
+  ['infinity', '名', 'pre1', '無限・無限大', 'stretch into infinity', '無限に広がる', 'infinite(無限の)+ -y。', { syn: [{ w: 'eternity', m: '永遠' }, { w: 'boundlessness', m: '無限' }], ant: [{ w: 'finiteness', m: '有限性' }], fam: [{ w: 'infinite', m: '無限の' }], field: '学問' }],
+  ['insubordinate', '形', '1', '不服従の・反抗的な', 'insubordinate behavior', '反抗的な態度', 'in(否定)+subordinate(従属する)。', { syn: [{ w: 'rebellious', m: '反逆的な' }, { w: 'defiant', m: '反抗的な' }], ant: [{ w: 'obedient', m: '従順な' }], fam: [{ w: 'subordinate', m: '従属する' }], field: '軍事' }],
+  ['marine', '形', 'pre1', '海の・海洋の・海兵隊員', 'marine life', '海洋生物', 'ラテン mare(海)。', { syn: [{ w: 'maritime', m: '海事の' }, { w: 'oceanic', m: '海洋の' }], ant: [{ w: 'terrestrial', m: '陸生の' }], field: '環境' }],
+  ['maritime', '形', '1', '海事の・海運の・沿海の', 'maritime trade', '海運貿易', 'ラテン maritimus(海の)→ marine と同系。', { syn: [{ w: 'marine', m: '海の' }, { w: 'naval', m: '海軍の' }], ant: [{ w: 'inland', m: '内陸の' }], field: '交通' }],
+  ['moment', '名', 'pre1', '一瞬・時点・重要性', 'a decisive moment', '決定的瞬間', 'ラテン momentum(動き・重み)。', { syn: [{ w: 'instant', m: '瞬間' }, { w: 'point', m: '時点' }], ant: [{ w: 'eternity', m: '永遠' }], fam: [{ w: 'momentary', m: '瞬間的な' }], field: '一般' }],
+  ['movement', '名', '4', '動き・運動・楽章', 'a civil rights movement', '公民権運動', 'move(動く)+ -ment', { fam: [{ w: 'move', m: '動く' }], syn: [{ w: 'motion', m: '運動' }, { w: 'campaign', m: '運動' }], ant: [{ w: 'stillness', m: '静止' }], field: '社会' }],
+  ['municipal', '形', 'pre1', '市の・地方自治体の', 'municipal services', '市のサービス', 'ラテン municipium(自治都市)。', { syn: [{ w: 'civic', m: '市民の' }, { w: 'local', m: '地方の' }], ant: [{ w: 'national', m: '国の' }], fam: [{ w: 'municipality', m: '自治体' }], field: '政治' }],
+  ['mutiny', '名', 'pre1', '反乱・暴動', 'a mutiny on the ship', '船上の反乱', 'ラテン movere(動く)→ move と同系。', { syn: [{ w: 'rebellion', m: '反乱' }, { w: 'uprising', m: '蜂起' }], ant: [{ w: 'obedience', m: '服従' }], fam: [{ w: 'mutinous', m: '反乱の' }], field: '軍事' }],
+  ['negotiate', '動', 'pre1', '交渉する・取り決める', 'negotiate a contract', '契約を交渉する', 'ラテン negotium(商売・仕事)。', { syn: [{ w: 'bargain', m: '交渉する' }, { w: 'mediate', m: '仲裁する' }], fam: [{ w: 'negotiation', m: '交渉' }], field: 'ビジネス' }],
+  ['neighboring', '形', 'pre1', '近隣の・隣接する', 'neighboring countries', '近隣諸国', 'neighbor(隣人)+ -ing。', { syn: [{ w: 'adjacent', m: '隣接した' }, { w: 'nearby', m: '近くの' }], ant: [{ w: 'distant', m: '遠い' }], fam: [{ w: 'neighbor', m: '隣人' }], field: '一般' }],
+  ['next', '形', 'pre1', '次の・隣の', 'next week', '来週', '古英語 niehst(最も近い)→ nigh と同系。', { syn: [{ w: 'following', m: '次の' }, { w: 'subsequent', m: 'その後の' }], ant: [{ w: 'previous', m: '前の' }], field: '一般' }],
+  ['nibble', '動', 'pre1', '少しずつかじる・ついばむ', 'nibble on a cracker', 'クラッカーをかじる', '低地ドイツ nibbelen(つつく)。', { syn: [{ w: 'gnaw', m: 'かじる' }, { w: 'munch', m: 'もぐもぐ食べる' }], ant: [{ w: 'gobble', m: 'がつがつ食べる' }], field: '一般' }],
+  ['nighttime', '名', 'pre1', '夜間・夜', 'during the nighttime', '夜間に', 'night(夜)+time(時)。', { syn: [{ w: 'night', m: '夜' }, { w: 'darkness', m: '暗闇' }], ant: [{ w: 'daytime', m: '昼間' }], field: '一般' }],
+  ['noise', '名', 'pre1', '騒音・雑音', 'background noise', '背景雑音', 'ラテン nausea(船酔い)→不快な音。', { syn: [{ w: 'din', m: '騒音' }, { w: 'racket', m: '騒ぎ' }], ant: [], fam: [{ w: 'noisy', m: '騒がしい' }], field: '一般' }],
+]
+
+export const WORDS_MORE73 = RAW.map(expandCompact)

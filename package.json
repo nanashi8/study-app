@@ -1,0 +1,33 @@
+{
+  "name": "eigo-quest",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "check": "node scripts/check-data.mjs",
+    "prebuild": "node scripts/check-data.mjs",
+    "build": "vite build",
+    "preview": "vite preview",
+    "vocab": "node scripts/vocab-report.mjs",
+    "map": "node scripts/vocab-map.mjs",
+    "scaffold": "node scripts/frontier-scaffold.mjs",
+    "import": "node scripts/import-words.mjs",
+    "phonetics": "node scripts/gen-phonetics.mjs"
+  },
+  "dependencies": {
+    "firebase": "^12.14.0",
+    "katex": "^0.17.0",
+    "lz-string": "^1.5.0",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "zustand": "^5.0.14"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.0",
+    "@vitejs/plugin-react": "^6.0.2",
+    "cmu-pronouncing-dictionary": "^3.0.0",
+    "tailwindcss": "^4.3.0",
+    "vite": "^8.0.16"
+  }
+}

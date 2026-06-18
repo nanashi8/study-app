@@ -1,0 +1,12 @@
+node_modules
+dist
+dist-ssr
+.DS_Store
+*.local
+.vite
+
+# 生成物（探索マップ）
+vocab-frontier.json
+
+# 足場（作業用）
+src/data/_scaffold.js

@@ -1,0 +1,43 @@
+// 単語データ #86 — 英検1級の上級語彙⑥（Q-S）。難解・低頻度の正確な語のみ。
+import { expandCompact } from './compact.js'
+
+const RAW = [
+  ['quagmire', '名', '1', '泥沼・苦境', 'a legal quagmire', '法的な泥沼', 'quag(沼)+mire(泥)。', { syn: [{ w: 'predicament', m: '窮地' }, { w: 'morass', m: 'ぬかるみ' }], ant: [{ w: 'solution', m: '解決' }], field: '一般' }],
+  ['quandary', '名', '1', '当惑・板挟み', 'in a quandary', '進退きわまって', '由来不確か(16世紀)。', { syn: [{ w: 'dilemma', m: 'ジレンマ' }, { w: 'predicament', m: '苦境' }], ant: [{ w: 'certainty', m: '確信' }], field: '心理' }],
+  ['querulous', '形', '1', '不平がましい・愚痴っぽい', 'a querulous voice', '愚痴っぽい声', 'ラテン queri(嘆く)。', { syn: [{ w: 'whining', m: '泣き言の' }, { w: 'petulant', m: '不機嫌な' }], ant: [{ w: 'contented', m: '満足した' }], field: '心理' }],
+  ['quibble', '動', '1', '揚げ足を取る・屁理屈を言う', 'quibble over details', '細部にけちをつける', 'ラテン quibus(誰に)の縮小形。', { syn: [{ w: 'cavil', m: 'あらを探す' }, { w: 'nitpick', m: '細かいことを言う' }], ant: [{ w: 'concur', m: '同意する' }], field: '一般' }],
+  ['quiescent', '形', '1', '静止した・休止状態の', 'a quiescent volcano', '活動を休んだ火山', 'ラテン quiescere(休む)。', { syn: [{ w: 'dormant', m: '休眠中の' }, { w: 'inactive', m: '不活発な' }], ant: [{ w: 'active', m: '活動的な' }], field: '科学' }],
+  ['quixotic', '形', '1', '非現実的な・夢想的な', 'a quixotic plan', '空想的な計画', '小説の主人公 Don Quixote から。', { syn: [{ w: 'idealistic', m: '理想主義的な' }, { w: 'impractical', m: '非現実的な' }], ant: [{ w: 'pragmatic', m: '実際的な' }], field: '心理' }],
+  ['rancor', '名', '1', '深い恨み・遺恨', 'lingering rancor', '消えない遺恨', 'ラテン rancere(腐る)。', { syn: [{ w: 'bitterness', m: '恨み' }, { w: 'resentment', m: '憤り' }], ant: [{ w: 'goodwill', m: '善意' }], field: '心理' }],
+  ['rapacious', '形', '1', '強欲な・略奪的な', 'a rapacious tyrant', '強欲な暴君', 'ラテン rapere(奪う)。', { syn: [{ w: 'greedy', m: '貪欲な' }, { w: 'predatory', m: '略奪的な' }], ant: [{ w: 'generous', m: '気前のよい' }], field: '心理' }],
+  ['raucous', '形', '1', '耳障りな・騒々しい', 'raucous laughter', '騒々しい笑い声', 'ラテン raucus(しわがれた)。', { syn: [{ w: 'harsh', m: '耳障りな' }, { w: 'boisterous', m: '騒がしい' }], ant: [{ w: 'mellow', m: '柔らかな' }], field: '一般' }],
+  ['rebuff', '動', '1', 'はねつける・拒絶する', 'rebuff his advances', '彼の接近をはねつける', '古イタリア rabbuffo(叱責)。', { syn: [{ w: 'reject', m: '拒絶する' }, { w: 'snub', m: '冷遇する' }], ant: [{ w: 'welcome', m: '歓迎する' }], field: '社会' }],
+  ['recalcitrant', '形', '1', '反抗的な・手に負えない', 'a recalcitrant employee', '反抗的な従業員', 'ラテン re+calcitrare(蹴る)。', { syn: [{ w: 'defiant', m: '反抗的な' }, { w: 'unruly', m: '御しがたい' }], ant: [{ w: 'compliant', m: '従順な' }], field: '心理' }],
+  ['recant', '動', '1', '(意見・信仰を)撤回する', 'recant his confession', '自白を撤回する', 'ラテン re+cantare(歌う)。', { syn: [{ w: 'retract', m: '取り消す' }, { w: 'renounce', m: '放棄する' }], ant: [{ w: 'affirm', m: '断言する' }], field: '一般' }],
+  ['recondite', '形', '1', '難解な・深奥な', 'a recondite subject', '難解な主題', 'ラテン recondere(隠す)。', { syn: [{ w: 'abstruse', m: '深遠な' }, { w: 'esoteric', m: '秘伝の' }], ant: [{ w: 'simple', m: '平易な' }], field: '一般' }],
+  ['redolent', '形', '1', '(においが)漂う・思い起こさせる', 'redolent of spices', '香辛料の香りがする', 'ラテン redolere(においを発する)。', { syn: [{ w: 'fragrant', m: '香り高い' }, { w: 'evocative', m: '想起させる' }], ant: [{ w: 'odorless', m: '無臭の' }], field: '一般' }],
+  ['refractory', '形', '1', '強情な・手に負えない・難治の', 'a refractory patient', '言うことをきかない患者', 'ラテン refragari(逆らう)。', { syn: [{ w: 'stubborn', m: '頑固な' }, { w: 'intractable', m: '扱いにくい' }], ant: [{ w: 'docile', m: '従順な' }], field: '医学' }],
+  ['relegate', '動', '1', '左遷する・格下げする', 'relegated to the bench', '控えに回される', 'ラテン re+legare(送る)。', { syn: [{ w: 'demote', m: '降格する' }, { w: 'downgrade', m: '格下げする' }], ant: [{ w: 'promote', m: '昇格させる' }], field: '社会' }],
+  ['replete', '形', '1', '満ち足りた・いっぱいの', 'replete with errors', '誤りだらけで', 'ラテン replere(満たす)。', { syn: [{ w: 'full', m: '満ちた' }, { w: 'abounding', m: 'あふれた' }], ant: [{ w: 'devoid', m: '欠いた' }], field: '一般' }],
+  ['reprehensible', '形', '1', '非難に値する・けしからぬ', 'reprehensible conduct', '非難すべき行為', 'ラテン reprehendere(とがめる)。', { syn: [{ w: 'blameworthy', m: '咎むべき' }, { w: 'culpable', m: '罪のある' }], ant: [{ w: 'praiseworthy', m: '称賛すべき' }], field: '法律' }],
+  ['reprobate', '名', '1', '無頼漢・堕落者', 'an old reprobate', '年老いた放蕩者', 'ラテン reprobare(拒絶する)。', { syn: [{ w: 'scoundrel', m: '悪党' }, { w: 'rogue', m: 'ならず者' }], ant: [{ w: 'saint', m: '聖人' }], field: '社会' }],
+  ['rescind', '動', '1', '(契約・法を)無効にする・撤回する', 'rescind the order', '命令を撤回する', 'ラテン rescindere(切り取る)。', { syn: [{ w: 'revoke', m: '取り消す' }, { w: 'annul', m: '無効にする' }], ant: [{ w: 'enact', m: '制定する' }], field: '法律' }],
+  ['restive', '形', '1', '落ち着かない・反抗的な', 'a restive crowd', '落ち着かない群衆', '古フランス restif(動こうとしない)。', { syn: [{ w: 'restless', m: '落ち着かない' }, { w: 'fidgety', m: 'そわそわした' }], ant: [{ w: 'calm', m: '平静な' }], field: '心理' }],
+  ['ribald', '形', '1', '下品な・きわどい', 'ribald jokes', '下品な冗談', '古フランス ribaud(放蕩者)。', { syn: [{ w: 'bawdy', m: 'みだらな' }, { w: 'vulgar', m: '下品な' }], ant: [{ w: 'decorous', m: '上品な' }], field: '社会' }],
+  ['rife', '形', '1', '(悪いことが)はびこる・蔓延した', 'rumors are rife', 'うわさが飛び交う', '古英語 ryfe(豊富な)。', { syn: [{ w: 'widespread', m: '蔓延した' }, { w: 'prevalent', m: '流行した' }], ant: [{ w: 'scarce', m: '乏しい' }], field: '一般' }],
+  ['salient', '形', '1', '顕著な・際立った', 'the salient features', '際立った特徴', 'ラテン salire(跳ねる)。', { syn: [{ w: 'prominent', m: '目立つ' }, { w: 'conspicuous', m: '顕著な' }], ant: [{ w: 'minor', m: 'ささいな' }], field: '一般' }],
+  ['sanctimonious', '形', '1', '聖人ぶった・独善的な', 'a sanctimonious tone', '善人ぶった口調', 'ラテン sanctus(神聖な)。', { syn: [{ w: 'selfrighteous', m: '独善的な' }, { w: 'preachy', m: '説教臭い' }], ant: [{ w: 'humble', m: '謙虚な' }], field: '宗教' }],
+  ['scurrilous', '形', '1', '口汚い・中傷的な', 'scurrilous attacks', '口汚い攻撃', 'ラテン scurra(道化者)。', { syn: [{ w: 'defamatory', m: '中傷的な' }, { w: 'abusive', m: 'ののしる' }], ant: [{ w: 'respectful', m: '礼儀正しい' }], field: '社会' }],
+  ['serendipity', '名', '1', '思いがけない幸運・掘り出し上手', 'discover by serendipity', '偶然見つける', '童話 The Three Princes of Serendip から。', { syn: [{ w: 'luck', m: '幸運' }, { w: 'chance', m: '偶然' }], ant: [{ w: 'misfortune', m: '不運' }], field: '一般' }],
+  ['servile', '形', '1', '卑屈な・奴隷的な', 'servile flattery', '卑屈なおべっか', 'ラテン servus(奴隷)。', { syn: [{ w: 'obsequious', m: 'こびる' }, { w: 'subservient', m: '従属的な' }], ant: [{ w: 'assertive', m: '自己主張する' }], field: '社会' }],
+  ['spurious', '形', '1', '偽の・もっともらしい', 'a spurious claim', '虚偽の主張', 'ラテン spurius(私生児の)。', { syn: [{ w: 'false', m: '偽の' }, { w: 'bogus', m: 'いんちきの' }], ant: [{ w: 'genuine', m: '本物の' }], field: '一般' }],
+  ['squalid', '形', '1', '不潔な・むさ苦しい', 'squalid slums', '不潔なスラム', 'ラテン squalere(汚れている)。', { syn: [{ w: 'filthy', m: '汚らしい' }, { w: 'sordid', m: 'むさ苦しい' }], ant: [{ w: 'pristine', m: '清潔な' }], field: '社会' }],
+  ['staid', '形', '1', '生真面目な・落ち着いた', 'a staid old town', '落ち着いた古い町', 'stay(とどまる)の古い過去分詞。', { syn: [{ w: 'sedate', m: '物静かな' }, { w: 'sober', m: 'まじめな' }], ant: [{ w: 'frivolous', m: '軽薄な' }], field: '心理' }],
+  ['stalwart', '形', '1', '忠実で頼もしい・たくましい', 'a stalwart supporter', '忠実な支持者', '古英語 stælwierthe(役に立つ)。', { syn: [{ w: 'loyal', m: '忠実な' }, { w: 'steadfast', m: '不動の' }], ant: [{ w: 'fickle', m: '気まぐれな' }], field: '社会' }],
+  ['stymie', '動', '1', '妨げる・行き詰まらせる', 'stymied by red tape', 'お役所仕事に阻まれて', 'ゴルフ用語(由来不確か)。', { syn: [{ w: 'thwart', m: '阻止する' }, { w: 'hinder', m: '妨げる' }], ant: [{ w: 'facilitate', m: '促進する' }], field: '一般' }],
+  ['subterfuge', '名', '1', '策略・言い逃れ', 'win by subterfuge', '策略で勝つ', 'ラテン subterfugere(ひそかに逃れる)。', { syn: [{ w: 'deception', m: '欺き' }, { w: 'ruse', m: '計略' }], ant: [{ w: 'honesty', m: '正直' }], field: '社会' }],
+  ['supercilious', '形', '1', '横柄な・人を見下した', 'a supercilious smile', '人を見下した笑み', 'ラテン supercilium(眉)。', { syn: [{ w: 'haughty', m: '傲慢な' }, { w: 'disdainful', m: '軽蔑的な' }], ant: [{ w: 'humble', m: '謙虚な' }], field: '心理' }],
+  ['synergy', '名', '1', '相乗効果', 'create synergy', '相乗効果を生む', 'ギリシャ synergos(共に働く)。', { syn: [{ w: 'cooperation', m: '協力' }, { w: 'collaboration', m: '共同' }], ant: [{ w: 'interference', m: '干渉' }], field: 'ビジネス' }],
+]
+
+export const WORDS_MORE129 = RAW.map(expandCompact)

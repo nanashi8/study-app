@@ -1,0 +1,40 @@
+// 単語データ（探索マップ＋足場ジェネレータ #50）— フロンティア由来。意味はフロンティア値。語族=1エントリ。
+import { expandCompact } from './compact.js'
+
+const RAW = [
+  ['clannish', '形', '1', '一族の・排他的な', 'a clannish community', '排他的な共同体', 'clan(一族)+ -ish。', { syn: [{ w: 'exclusive', m: '排他的な' }, { w: 'insular', m: '閉鎖的な' }], ant: [{ w: 'welcoming', m: '友好的な' }], fam: [{ w: 'clan', m: '一族' }], field: '社会' }],
+  ['comparative', '形', '1', '比較の・相対的な', 'comparative analysis', '比較分析', 'compare(比較する)+ -ative。', { syn: [{ w: 'relative', m: '相対的な' }, { w: 'corresponding', m: '対応する' }], ant: [{ w: 'absolute', m: '絶対の' }], fam: [{ w: 'compare', m: '比較する' }], field: '学問' }],
+  ['confiscate', '動', '1', '没収する・押収する', 'confiscate the goods', '物品を没収する', 'ラテン confiscare(国庫に没収する)。', { syn: [{ w: 'seize', m: '押収する' }, { w: 'impound', m: '差し押さえる' }], ant: [{ w: 'return', m: '返却する' }], fam: [{ w: 'confiscation', m: '没収' }], field: '法律' }],
+  ['conscription', '名', '1', '徴兵・召集', 'military conscription', '兵役の徴集', 'conscript(徴集する)+ -ion。', { syn: [{ w: 'draft', m: '徴兵' }, { w: 'enlistment', m: '入隊' }], ant: [{ w: 'discharge', m: '除隊' }], fam: [{ w: 'conscript', m: '徴集する' }], field: '軍事' }],
+  ['contemptuous', '形', '1', '見下した・軽蔑的な', 'a contemptuous sneer', '見下したような冷笑', 'contempt(軽蔑)+ -uous。', { syn: [{ w: 'scornful', m: '軽蔑的な' }, { w: 'disdainful', m: '見下す' }], ant: [{ w: 'respectful', m: '敬意ある' }], fam: [{ w: 'contempt', m: '軽蔑' }], field: '社会' }],
+  ['convergent', '形', '1', '収束する・一点に向かう', 'convergent paths', '一点に集まる道', 'converge(収束する)+ -ent。', { syn: [{ w: 'converging', m: '集中する' }], ant: [{ w: 'divergent', m: '相違する' }], fam: [{ w: 'converge', m: '収束する' }], field: '学問' }],
+  ['convincingly', '副', '1', '説得力をもって・納得させるように', 'argue convincingly', '説得力をもって論じる', 'convincing(説得力のある)+ -ly。', { syn: [{ w: 'persuasively', m: '説得力をもって' }, { w: 'compellingly', m: '人を引きつけて' }], ant: [{ w: 'unconvincingly', m: '説得力なく' }], fam: [{ w: 'convince', m: '納得させる' }], field: '副詞' }],
+  ['countryside', '名', 'pre1', '田園・田舎', 'the rolling countryside', 'なだらかな田園', 'country(田舎)+side(側)。', { syn: [{ w: 'rural area', m: '農村部' }, { w: 'landscape', m: '風景' }], ant: [{ w: 'city', m: '都市' }], fam: [{ w: 'country', m: '田舎' }], field: '地理' }],
+  ['crafty', '形', '1', '悪賢い・ずる賢い', 'a crafty schemer', '悪賢い策略家', 'craft(技巧)+ -y。', { syn: [{ w: 'cunning', m: 'ずる賢い' }, { w: 'sly', m: 'ずるい' }], ant: [{ w: 'naive', m: 'うぶな' }], fam: [{ w: 'craft', m: '技巧' }], field: '社会' }],
+  ['cruiser', '名', '1', '巡洋艦・パトカー', 'a navy cruiser', '海軍の巡洋艦', 'cruise(巡航する)+ -er。', { syn: [{ w: 'warship', m: '軍艦' }, { w: 'patrol car', m: 'パトカー' }], fam: [{ w: 'cruise', m: '巡航する' }], field: '軍事' }],
+  ['deactivate', '動', '1', '停止させる・無効にする', 'deactivate the account', 'アカウントを無効化する', 'de(逆)+activate(作動させる)。', { syn: [{ w: 'disable', m: '無効にする' }, { w: 'turn off', m: '切る' }], ant: [{ w: 'activate', m: '作動させる' }], fam: [{ w: 'activate', m: '作動させる' }], field: '技術' }],
+  ['decrepit', '形', '1', '老朽化した・おいぼれた', 'a decrepit building', '老朽化した建物', 'ラテン decrepitus(老衰した)。', { syn: [{ w: 'dilapidated', m: '荒廃した' }, { w: 'rickety', m: 'ぐらつく' }], ant: [{ w: 'sturdy', m: '頑丈な' }], field: '建築' }],
+  ['deprave', '動', '1', '堕落させる・悪に染める', 'deprave the youth', '若者を堕落させる', 'ラテン de+pravus(曲がった)。', { syn: [{ w: 'corrupt', m: '堕落させる' }, { w: 'debase', m: '品位を落とす' }], ant: [{ w: 'uplift', m: '高める' }], fam: [{ w: 'depravity', m: '堕落' }], field: '社会' }],
+  ['detectable', '形', '1', '感知できる・検出できる', 'barely detectable', 'かろうじて検出できる', 'detect(検出する)+ -able。', { syn: [{ w: 'discernible', m: '識別できる' }, { w: 'perceptible', m: '知覚できる' }], ant: [{ w: 'undetectable', m: '検出できない' }], fam: [{ w: 'detect', m: '検出する' }], field: '科学' }],
+  ['dexterity', '名', '1', '器用さ・巧みさ', 'manual dexterity', '手先の器用さ', 'ラテン dexter(右の・巧みな)。', { syn: [{ w: 'deftness', m: '器用さ' }, { w: 'agility', m: '機敏さ' }], ant: [{ w: 'clumsiness', m: '不器用' }], fam: [{ w: 'dexterous', m: '器用な' }], field: '一般' }],
+  ['discerning', '形', '1', '眼識のある・洞察力のある', 'a discerning critic', '眼識のある批評家', 'discern(識別する)+ -ing。', { syn: [{ w: 'perceptive', m: '洞察力のある' }, { w: 'astute', m: '抜け目のない' }], ant: [{ w: 'undiscerning', m: '見識のない' }], fam: [{ w: 'discern', m: '識別する' }], field: '心理' }],
+  ['dispatcher', '名', '1', '発送者・配車係', 'a taxi dispatcher', 'タクシーの配車係', 'dispatch(発送する)+ -er。', { syn: [{ w: 'sender', m: '送り手' }, { w: 'controller', m: '管理者' }], fam: [{ w: 'dispatch', m: '発送する' }], field: 'ビジネス' }],
+  ['dowdy', '形', '1', 'やぼったい・さえない', 'a dowdy dress', 'やぼったいドレス', '中英語 doude(みすぼらしい女)。', { syn: [{ w: 'frumpy', m: 'やぼな' }, { w: 'unfashionable', m: '流行遅れの' }], ant: [{ w: 'stylish', m: 'しゃれた' }], field: '社会' }],
+  ['easygoing', '形', '1', 'おおらかな・のんきな', 'an easygoing boss', 'おおらかな上司', 'easy(楽な)+going(性質)。', { syn: [{ w: 'relaxed', m: 'くつろいだ' }, { w: 'laid-back', m: 'のんびりした' }], ant: [{ w: 'uptight', m: '神経質な' }], field: '心理' }],
+  ['egoism', '名', '1', '利己主義・自己中心', 'pure egoism', '純然たる利己主義', 'ラテン ego(私)+ -ism。', { syn: [{ w: 'selfishness', m: '利己心' }, { w: 'self-interest', m: '私利' }], ant: [{ w: 'altruism', m: '利他主義' }], fam: [{ w: 'egoist', m: '利己主義者' }], field: '心理' }],
+  ['enrich', '動', 'pre1', '豊かにする・富ませる', 'enrich the soil', '土壌を肥沃にする', 'en(〜にする)+rich(豊かな)。', { syn: [{ w: 'enhance', m: '高める' }, { w: 'improve', m: '改善する' }], ant: [{ w: 'impoverish', m: '貧しくする' }], fam: [{ w: 'rich', m: '豊かな' }], field: '一般' }],
+  ['engrave', '動', '1', '彫る・刻みつける', 'engrave a name', '名前を刻む', 'en(中に)+grave(彫る)。', { syn: [{ w: 'inscribe', m: '刻む' }, { w: 'etch', m: 'エッチングする' }], ant: [{ w: 'erase', m: '消す' }], fam: [{ w: 'engraving', m: '彫刻' }], field: '芸術' }],
+  ['enthusiastically', '副', '1', '熱狂的に・熱心に', 'cheered enthusiastically', '熱狂的に声援した', 'enthusiastic(熱狂的な)+ -ly。', { syn: [{ w: 'eagerly', m: '熱心に' }, { w: 'fervently', m: '熱烈に' }], ant: [{ w: 'apathetically', m: '無関心に' }], fam: [{ w: 'enthusiasm', m: '熱意' }], field: '副詞' }],
+  ['epitomize', '動', '1', '典型を示す・体現する', 'epitomize elegance', '優雅さを体現する', 'ギリシャ epitome(要約)。', { syn: [{ w: 'embody', m: '具現する' }, { w: 'personify', m: '擬人化する' }], fam: [{ w: 'epitome', m: '典型' }], field: '一般' }],
+  ['eradication', '名', '1', '根絶・撲滅', 'disease eradication', '病気の撲滅', 'eradicate(根絶する)+ -ion。', { syn: [{ w: 'elimination', m: '除去' }, { w: 'extermination', m: '絶滅' }], ant: [{ w: 'spread', m: '蔓延' }], fam: [{ w: 'eradicate', m: '根絶する' }], field: '医学' }],
+  ['excruciating', '形', '1', '耐えがたい・激烈な', 'excruciating pain', '耐えがたい痛み', 'ラテン excruciare(十字架にかける)。', { syn: [{ w: 'agonizing', m: '苦しい' }, { w: 'unbearable', m: '耐えられない' }], ant: [{ w: 'soothing', m: '心地よい' }], field: '医学' }],
+  ['exterminate', '動', '1', '絶滅させる・駆除する', 'exterminate the pests', '害虫を駆除する', 'ラテン exterminare(追放する)。', { syn: [{ w: 'eradicate', m: '根絶する' }, { w: 'annihilate', m: '全滅させる' }], ant: [{ w: 'preserve', m: '保護する' }], fam: [{ w: 'extermination', m: '絶滅' }], field: '科学' }],
+  ['feebly', '副', '1', '弱々しく・力なく', 'protested feebly', '力なく抗議した', 'feeble(弱々しい)+ -ly。', { syn: [{ w: 'weakly', m: '弱く' }, { w: 'faintly', m: 'かすかに' }], ant: [{ w: 'forcefully', m: '力強く' }], fam: [{ w: 'feeble', m: '弱々しい' }], field: '副詞' }],
+  ['delineation', '名', '1', '描写・輪郭描き', 'a vivid delineation', '生き生きとした描写', 'delineate(描く)+ -ion。', { syn: [{ w: 'depiction', m: '描写' }, { w: 'portrayal', m: '描出' }], fam: [{ w: 'delineate', m: '描く' }], field: '芸術' }],
+  ['vociferous', '形', '1', '大声の・声高な', 'vociferous critics', '声高な批判者', 'ラテン vox(声)+ferre(運ぶ)。', { syn: [{ w: 'clamorous', m: '騒々しい' }, { w: 'outspoken', m: '率直な' }], ant: [{ w: 'silent', m: '無言の' }], field: '社会' }],
+  ['debase', '動', '1', '品位を落とす・低下させる', 'debase the currency', '通貨の価値を下げる', 'de(下に)+base(基礎)。', { syn: [{ w: 'degrade', m: '低下させる' }, { w: 'corrupt', m: '堕落させる' }], ant: [{ w: 'elevate', m: '高める' }], field: '経済' }],
+  ['placate', '動', '1', 'なだめる・機嫌をとる', 'placate the angry crowd', '怒った群衆をなだめる', 'ラテン placare(静める)→ please と同系。', { syn: [{ w: 'appease', m: 'なだめる' }, { w: 'pacify', m: '鎮める' }], ant: [{ w: 'provoke', m: '挑発する' }], field: '一般' }],
+  ['portly', '形', '1', 'でっぷりした・恰幅のよい', 'a portly figure', '恰幅のよい体つき', 'port(身のこなし)+ -ly。', { syn: [{ w: 'corpulent', m: '肥満の' }, { w: 'stout', m: 'がっしりした' }], ant: [{ w: 'lean', m: 'やせた' }], field: '医学' }],
+]
+
+export const WORDS_MORE93 = RAW.map(expandCompact)
