@@ -30,6 +30,8 @@ export function KotenQuizScreen() {
   const [i, setI] = useState(0)
   const [selected, setSelected] = useState(null)
   const [correctCount, setCorrectCount] = useState(0)
+  const [boxUp, setBoxUp] = useState(0) // 今回 box が上がった語数
+  const [newlyMastered, setNewlyMastered] = useState(0) // 今回はじめて習得(box4+)した語数
   const [done, setDone] = useState(false)
 
   const word = deck[i]
@@ -55,6 +57,8 @@ export function KotenQuizScreen() {
     setI(0)
     setSelected(null)
     setCorrectCount(0)
+    setBoxUp(0)
+    setNewlyMastered(0)
     setDone(false)
   }
 
@@ -67,6 +71,22 @@ export function KotenQuizScreen() {
           <p className="font-display text-2xl font-extrabold text-ink">{correctCount} / {deck.length} 正解</p>
           <p className="mt-1 text-sm font-bold text-ink/55">正答率 {pct}%</p>
         </div>
+        {/* 今回の進み具合（習得は box を4まで上げると到達） */}
+        <div className="grid w-full max-w-xs grid-cols-2 gap-3">
+          <div className="rounded-2xl bg-amber-50 p-3">
+            <div className="font-display text-2xl font-extrabold text-amber-700">+{boxUp}</div>
+            <div className="text-[11px] font-bold text-ink/55">レベルが上がった語</div>
+          </div>
+          <div className="rounded-2xl bg-emerald-50 p-3">
+            <div className="font-display text-2xl font-extrabold text-emerald-700">+{newlyMastered}</div>
+            <div className="text-[11px] font-bold text-ink/55">新たに習得した語</div>
+          </div>
+        </div>
+        {newlyMastered === 0 && boxUp > 0 && (
+          <p className="-mt-1 max-w-xs text-xs font-bold text-ink/45">
+            正解した語はレベルが上がりました。あと数回くり返すと「習得」になります。
+          </p>
+        )}
         <div className="grid w-full max-w-xs grid-cols-2 gap-3">
           <Button variant="secondary" onClick={restart}>もう一度</Button>
           <Button onClick={back}>もどる</Button>
@@ -80,9 +100,14 @@ export function KotenQuizScreen() {
   const choose = (optId) => {
     if (answered) return
     setSelected(optId)
+    // 反映前の box を読み、正解で box+1 する前後を比べて「上がった/習得した」を数える。
+    const prevBox = useStore.getState().kotenSrs[word.id]?.box ?? 0
     if (optId === word.id) {
       reviewKoten(word.id, 'correct')
       setCorrectCount((n) => n + 1)
+      const newBox = Math.min(6, prevBox + 1)
+      if (newBox > prevBox) setBoxUp((n) => n + 1)
+      if (prevBox < 4 && newBox >= 4) setNewlyMastered((n) => n + 1)
     } else {
       reviewKoten(word.id, 'wrong')
     }
