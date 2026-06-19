@@ -1,4 +1,6 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { useShallow } from 'zustand/react/shallow'
+import { QRCodeCanvas } from 'qrcode.react'
 import { useStore } from '../store/useStore.js'
 import { LEVELS } from '../data/levels.js'
 import { levelProgress, overallProgress } from '../lib/session.js'
@@ -7,6 +9,10 @@ import { ScreenHeader } from '../components/AppShell.jsx'
 import { Sheet } from '../components/Sheet.jsx'
 import { Card, Button, ProgressBar } from '../components/ui.jsx'
 import { Star, Flame, Trophy, Download, Upload, Check } from '../components/Icons.jsx'
+
+// QRコードに収まる上限の目安（バイト/英数字混在で安全側）。これを超えたら
+// QR化はあきらめてコード文字列のコピーに誘導する。
+const QR_MAX = 2800
 
 function Stat({ icon, value, label, color }) {
   return (
@@ -22,19 +28,46 @@ export function ProgressScreen() {
   const srs = useStore((s) => s.srs)
   const myList = useStore((s) => s.myList)
   const stats = useStore((s) => s.stats)
-  const settings = useStore((s) => s.settings)
+  // 進捗コードは全データを持ち運ぶため、永続スライスをまとめて購読する。
+  // useShallow で浅い比較にし、毎回新オブジェクト→再レンダーループを防ぐ。
+  const full = useStore(useShallow((s) => ({
+    srs: s.srs, kotenSrs: s.kotenSrs, myList: s.myList,
+    readingsDone: s.readingsDone, mathDone: s.mathDone, mathMastery: s.mathMastery,
+    skillStats: s.skillStats, engPos: s.engPos,
+    portalOrder: s.portalOrder, portalHidden: s.portalHidden,
+    stats: s.stats, settings: s.settings,
+  })))
   const importCode = useStore((s) => s.importCode)
 
   const prog = overallProgress(srs)
-  const code = useMemo(
-    () => encodeProgress({ srs, myList, stats, settings }),
-    [srs, myList, stats, settings],
+  const code = useMemo(() => encodeProgress(full), [full])
+  // QRはアプリURL＋コード。別端末でカメラ読み取り→アプリが開いて復元確認が出る。
+  const shareUrl = useMemo(
+    () => `${location.origin}${location.pathname}#code=${code}`,
+    [code],
   )
 
   const [copied, setCopied] = useState(false)
+  const [saved, setSaved] = useState(false)
   const [input, setInput] = useState('')
   const [error, setError] = useState('')
   const [preview, setPreview] = useState(null) // {summary} 確認シート
+  const qrWrap = useRef(null)
+  const qrFits = shareUrl.length <= QR_MAX
+
+  // QRを画像（PNG）として保存。端末の「写真／ファイル」に残せば、機種変更や
+  // 別端末でカメラ読み取り→続きから復元できる。
+  const saveQr = () => {
+    const canvas = qrWrap.current?.querySelector('canvas')
+    if (!canvas) return
+    const url = canvas.toDataURL('image/png')
+    const a = document.createElement('a')
+    a.href = url
+    a.download = 'eigo-quest-progress-qr.png'
+    a.click()
+    setSaved(true)
+    setTimeout(() => setSaved(false), 1800)
+  }
 
   const copy = async () => {
     try {
@@ -67,6 +100,23 @@ export function ProgressScreen() {
       setPreview(null)
     }
   }
+
+  // QRのURL（#code=...）で開かれたら、そのコードを読み込んで復元確認を出す。
+  // 勝手に上書きしないよう、必ずプレビュー→本人の確認を挟む。
+  useEffect(() => {
+    const m = location.hash.match(/[#&]code=(EQ1-[^&]+)/)
+    if (!m) return
+    const incoming = decodeURIComponent(m[1])
+    // 再読み込みで再発火しないよう、ハッシュは消す。
+    history.replaceState(null, '', location.pathname + location.search)
+    try {
+      const payload = decodeProgress(incoming)
+      setInput(incoming)
+      setPreview({ summary: summarizePayload(payload) })
+    } catch {
+      /* 壊れたコードは無視（通常の画面のまま） */
+    }
+  }, [])
 
   return (
     <div className="pb-6">
@@ -110,13 +160,33 @@ export function ProgressScreen() {
             <h2 className="font-display text-base font-extrabold">進捗コードを発行</h2>
           </div>
           <p className="mb-3 text-xs font-bold text-ink/50">
-            このコードを保存しておけば、別の端末や次回にそのまま続きから再開できます。
+            ログインしなくても、これを保存しておけば別の端末や次回にそのまま続きから再開できます。
           </p>
+
+          {/* QRコード：画像で保存→カメラで読み取って復元できる */}
+          {qrFits ? (
+            <div className="flex flex-col items-center gap-2 rounded-2xl bg-white p-4 ring-1 ring-brand-100">
+              <div ref={qrWrap} className="rounded-xl bg-white p-2">
+                <QRCodeCanvas value={shareUrl} size={180} level="L" includeMargin marginSize={2} />
+              </div>
+              <Button className="mt-1" variant={saved ? 'success' : 'secondary'} onClick={saveQr}>
+                {saved ? <><Check size={18} /> 保存しました</> : <><Download size={18} /> QRコードを画像で保存</>}
+              </Button>
+              <p className="text-center text-[11px] font-bold text-ink/40">
+                画像を「写真／ファイル」に保存しておけば、別端末で<br />カメラで読み取る→アプリが開いて続きから復元できます。
+              </p>
+            </div>
+          ) : (
+            <p className="rounded-2xl bg-amber-50 p-3 text-center text-xs font-bold text-amber-700 ring-1 ring-amber-100">
+              進捗が大きいためQRコードにできません。<br />下の「コードをコピー」で保存してください。
+            </p>
+          )}
+
           <textarea
             readOnly
             value={code}
             onFocus={(e) => e.target.select()}
-            className="h-24 w-full resize-none rounded-2xl bg-paper p-3 font-mono text-xs text-ink/70 ring-1 ring-brand-100"
+            className="mt-3 h-24 w-full resize-none rounded-2xl bg-paper p-3 font-mono text-xs text-ink/70 ring-1 ring-brand-100"
           />
           <Button full className="mt-2" variant={copied ? 'success' : 'primary'} onClick={copy}>
             {copied ? <><Check size={18} /> コピーしました</> : 'コードをコピー'}

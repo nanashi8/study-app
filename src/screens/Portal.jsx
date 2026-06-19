@@ -98,6 +98,7 @@ function EditTile({ content, hidden, first, last, onUp, onDown, onToggle }) {
 export function PortalScreen() {
   const navigate = useStore((s) => s.navigate)
   const user = useAuth((s) => s.user)
+  const status = useAuth((s) => s.status)
   const portalOrder = useStore((s) => s.portalOrder)
   const portalHidden = useStore((s) => s.portalHidden)
   const moveContent = useStore((s) => s.moveContent)
@@ -118,18 +119,29 @@ export function PortalScreen() {
         <div className="min-w-0">
           <h1 className="font-display text-2xl font-extrabold text-ink">まなびポータル</h1>
           <p className="mt-1 truncate text-sm font-bold text-ink/50">
-            {editing ? '並べ替え・表示の切り替えができます' : user?.email ? `${user.email}` : 'コンテンツをえらんでね'}
+            {editing ? '並べ替え・表示の切り替えができます' : user?.email ? `${user.email}` : 'ゲストで学習中（ログインなし）'}
           </p>
         </div>
-        <button
-          onClick={() => setEditing((v) => !v)}
-          className={cx(
-            'shrink-0 rounded-full px-3.5 py-1.5 text-xs font-extrabold active:scale-95 transition-transform',
-            editing ? 'bg-brand-500 text-white' : 'bg-white text-brand-600 shadow-card',
+        <div className="flex shrink-0 items-center gap-2">
+          {/* 未ログイン時だけ：ログイン導線（任意） */}
+          {!editing && status === 'out' && (
+            <button
+              onClick={() => navigate('login')}
+              className="rounded-full bg-white px-3.5 py-1.5 text-xs font-extrabold text-brand-600 shadow-card active:scale-95 transition-transform"
+            >
+              ログイン
+            </button>
           )}
-        >
-          {editing ? '完了' : '編集'}
-        </button>
+          <button
+            onClick={() => setEditing((v) => !v)}
+            className={cx(
+              'rounded-full px-3.5 py-1.5 text-xs font-extrabold active:scale-95 transition-transform',
+              editing ? 'bg-brand-500 text-white' : 'bg-white text-brand-600 shadow-card',
+            )}
+          >
+            {editing ? '完了' : '編集'}
+          </button>
+        </div>
       </div>
 
       {editing ? (

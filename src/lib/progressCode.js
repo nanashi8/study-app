@@ -7,16 +7,21 @@ const CODE_VERSION = 1
 const PREFIX = 'EQ1-' // EigoQuest v1。先頭でアプリ/バージョンを判別する。
 
 // 状態のうち「持ち運ぶ」部分だけを抜き出す。
+// importCode / pullOrInit が読む全フィールドを網羅し、QR/コードで端末を
+// 移っても古文・並び順まで丸ごと「続きから」復元できるようにする。
 export function buildPayload(state) {
   return {
     v: CODE_VERSION,
     srs: state.srs,
+    kotenSrs: state.kotenSrs,
     myList: state.myList,
     readingsDone: state.readingsDone,
     mathDone: state.mathDone,
     mathMastery: state.mathMastery,
     skillStats: state.skillStats,
     engPos: state.engPos,
+    portalOrder: state.portalOrder,
+    portalHidden: state.portalHidden,
     stats: state.stats,
     settings: state.settings,
   }
