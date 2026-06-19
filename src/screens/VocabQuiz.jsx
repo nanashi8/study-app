@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import { buildDeck } from '../lib/session.js'
 import { pickDistractors, shuffle } from '../data/vocab.js'
@@ -8,22 +8,41 @@ import { Button, ProgressBar, IconButton } from '../components/ui.jsx'
 import { Close, Check, ArrowRight } from '../components/Icons.jsx'
 import { cx } from '../components/ui.jsx'
 
+// このクイズ画面の同一性キー（出題ソース・タイトル・問題数）。
+// 退避したセッションが「今まさに戻ってきたクイズ」のものかを照合するのに使う。
+const sessionKey = (p) =>
+  `vocab|${JSON.stringify(p.source ?? { type: 'due' })}|${p.title ?? ''}|${p.size ?? ''}`
+
 export function VocabQuizScreen() {
   const params = useStore((s) => s.params)
   const navigate = useStore((s) => s.navigate)
   const back = useStore((s) => s.back)
   const review = useStore((s) => s.review)
+  const saveQuizSession = useStore((s) => s.saveQuizSession)
+  const clearQuizSession = useStore((s) => s.clearQuizSession)
 
-  const xpAtStart = useRef(useStore.getState().stats.xp)
+  // 語源を見て戻ってきたときだけ復元。退避セッションのキーが一致したら採用。
+  const [restore] = useState(() => {
+    const s = useStore.getState().quizSession
+    return s && s.key === sessionKey(params) ? s : null
+  })
+  // 取り出したら退避は消費（古いセッションが残って誤復元しないよう必ずクリア）。
+  useEffect(() => {
+    clearQuizSession()
+  }, [clearQuizSession])
+
+  const xpAtStart = useRef(restore ? restore.xpAtStart : useStore.getState().stats.xp)
   const [deck] = useState(() =>
-    buildDeck(params.source ?? { type: 'due' }, {
-      srs: useStore.getState().srs,
-      size: params.size ?? (['level', 'battle'].includes(params.source?.type) ? 10 : 20),
-    }),
+    restore
+      ? restore.deck
+      : buildDeck(params.source ?? { type: 'due' }, {
+          srs: useStore.getState().srs,
+          size: params.size ?? (['level', 'battle'].includes(params.source?.type) ? 10 : 20),
+        }),
   )
-  const [i, setI] = useState(0)
-  const [selected, setSelected] = useState(null) // option id か 'unknown'
-  const results = useRef({ correct: 0, wrong: 0, unknown: 0, wrongIds: [] })
+  const [i, setI] = useState(() => (restore ? restore.i : 0))
+  const [selected, setSelected] = useState(() => (restore ? restore.selected : null)) // option id か 'unknown'
+  const results = useRef(restore ? restore.results : { correct: 0, wrong: 0, unknown: 0, wrongIds: [] })
 
   const word = deck[i]
   // 選択肢（正解＋誤答2つ）を問題ごとに固定
@@ -169,7 +188,18 @@ export function VocabQuizScreen() {
               <span className="font-display">{word.word}</span> ＝ {word.meanings.join('・')}
             </p>
             <button
-              onClick={() => navigate('wordDetail', { id: word.id })}
+              onClick={() => {
+                // 解答済みの状態を退避してから語源詳細へ。戻ると結果画面のまま復元。
+                saveQuizSession({
+                  key: sessionKey(params),
+                  deck,
+                  i,
+                  selected,
+                  results: results.current,
+                  xpAtStart: xpAtStart.current,
+                })
+                navigate('wordDetail', { id: word.id })
+              }}
               className="mt-2 inline-flex items-center gap-1 text-sm font-extrabold text-brand-600"
             >
               語源をくわしく見る <ArrowRight size={15} />
