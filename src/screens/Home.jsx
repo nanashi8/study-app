@@ -4,7 +4,7 @@ import { enemyLevel } from '../lib/adaptive.js'
 import { ROOTS, wordsByRoot } from '../data/vocab.js'
 import { todayIndex } from '../store/useStore.js'
 import { Card, ProgressRing, Chip } from '../components/ui.jsx'
-import { Flame, Star, Book, Cards, Sparkles, Bookmark, Refresh, ArrowRight, Headphones, Keyboard, Mic, MathRoot, Lightbulb, Target } from '../components/Icons.jsx'
+import { Flame, Star, Book, Cards, Sparkles, Bookmark, Refresh, ArrowRight, Headphones, Keyboard, Mic, Lightbulb, Target, ChevronLeft } from '../components/Icons.jsx'
 
 const APP_NAME = 'えいごクエスト'
 
@@ -59,6 +59,12 @@ export function HomeScreen() {
     <div className="pb-6">
       {/* ヒーロー */}
       <div className="rounded-b-[2.5rem] bg-gradient-to-br from-brand-500 via-brand-600 to-brand-700 px-5 pb-7 pt-[calc(env(safe-area-inset-top)+1.25rem)] text-white">
+        <button
+          onClick={() => navigate('portal')}
+          className="mb-3 flex items-center gap-1 rounded-full bg-white/15 py-1 pl-1.5 pr-2.5 text-[11px] font-extrabold text-white/90 active:scale-95 transition-transform"
+        >
+          <ChevronLeft size={14} /> ポータル
+        </button>
         <div className="flex items-center justify-between">
           <div>
             <p className="text-xs font-bold text-white/70">英検5級〜1級</p>
@@ -167,10 +173,6 @@ export function HomeScreen() {
             <ModeTile
               icon={<Lightbulb size={22} />} label="文法" sub="級ごとに4択"
               color="linear-gradient(135deg,#f59e0b,#ea580c)" onClick={() => navigate('grammar')}
-            />
-            <ModeTile
-              icon={<MathRoot size={22} />} label="数学" sub="マップで理解度を確認"
-              color="linear-gradient(135deg,#7c3aed,#4f46e5)" onClick={() => navigate('mathMap')}
             />
             <ModeTile
               icon={<Headphones size={22} />} label="リスニング" sub="聞いて当てる"

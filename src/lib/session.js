@@ -28,6 +28,8 @@ function candidates(source) {
       return wordsByRoot(source.rootId)
     case 'mylist':
       return (source.ids ?? []).map(getWord).filter(Boolean)
+    case 'deck':
+      return (source.ids ?? []).map(getWord).filter(Boolean)
     case 'due':
       return ALL_WORDS
     case 'custom':

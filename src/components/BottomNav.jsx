@@ -1,11 +1,10 @@
 import { useStore } from '../store/useStore.js'
-import { Home, Book, Bookmark, Chart, Gear, MathRoot } from './Icons.jsx'
+import { Home, Book, Bookmark, Chart, Gear } from './Icons.jsx'
 import { cx } from './ui.jsx'
 
 const TABS = [
   { key: 'home', label: 'ホーム', screen: 'home', Icon: Home },
   { key: 'vocab', label: '単語', screen: 'vocabLevels', Icon: Book },
-  { key: 'math', label: '数学', screen: 'mathMap', Icon: MathRoot },
   { key: 'mylist', label: 'マイ単語', screen: 'myList', Icon: Bookmark },
   { key: 'stats', label: '記録', screen: 'progress', Icon: Chart },
   { key: 'settings', label: '設定', screen: 'settings', Icon: Gear },
@@ -15,15 +14,13 @@ const TABS = [
 const SCREEN_TO_TAB = {
   home: 'home',
   vocabLevels: 'vocab',
+  vocabDecks: 'vocab',
   vocabStudy: 'vocab',
   vocabQuiz: 'vocab',
   sessionResult: 'vocab',
   wordDetail: 'vocab',
   rootDetail: 'vocab',
   vocabSearch: 'vocab',
-  mathMap: 'math',
-  mathUnits: 'math',
-  mathSolve: 'math',
   myList: 'mylist',
   progress: 'stats',
   settings: 'settings',

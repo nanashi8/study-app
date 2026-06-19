@@ -7,7 +7,7 @@ import { SpeakButton } from '../components/SpeakButton.jsx'
 import { EtymologyBlock } from '../components/WordBits.jsx'
 import { PosBadge } from '../components/WordBits.jsx'
 import { Button, ProgressBar, IconButton } from '../components/ui.jsx'
-import { Close, Bookmark, BookmarkFilled, ArrowRight, Lightbulb } from '../components/Icons.jsx'
+import { Close, Bookmark, BookmarkFilled, ArrowRight, Lightbulb, Eye, EyeOff } from '../components/Icons.jsx'
 
 export function VocabStudyScreen() {
   const params = useStore((s) => s.params)
@@ -17,18 +17,22 @@ export function VocabStudyScreen() {
   const settings = useStore((s) => s.settings)
   const myList = useStore((s) => s.myList)
   const toggleMyList = useStore((s) => s.toggleMyList)
+  const setSetting = useStore((s) => s.setSetting)
+
+  // 暗記モード：ONなら毎カード、タップせず最初から意味・語源を開いて見せる。
+  const revealAll = settings.revealAnswers
 
   const srsAtStart = useRef(useStore.getState().srs)
   const xpAtStart = useRef(useStore.getState().stats.xp)
   const [deck] = useState(() =>
     buildDeck(params.source ?? { type: 'due' }, {
       srs: srsAtStart.current,
-      size: params.source?.type === 'level' ? 10 : 20,
+      size: params.size ?? (params.source?.type === 'level' ? 10 : 20),
     }),
   )
 
   const [i, setI] = useState(0)
-  const [flipped, setFlipped] = useState(false)
+  const [flipped, setFlipped] = useState(revealAll)
   const results = useRef({ remembered: 0, forgot: 0 })
 
   const word = deck[i]
@@ -73,7 +77,7 @@ export function VocabStudyScreen() {
     if (i + 1 >= deck.length) finish()
     else {
       setI(i + 1)
-      setFlipped(false)
+      setFlipped(revealAll)
     }
   }
 
@@ -90,6 +94,18 @@ export function VocabStudyScreen() {
         <div className="flex-1">
           <ProgressBar value={(i) / deck.length} />
         </div>
+        {/* 暗記モード：タップせず答えを開いたまま見せる切り替え */}
+        <IconButton
+          onClick={() => {
+            const next = !revealAll
+            setSetting('revealAnswers', next)
+            if (next) setFlipped(true)
+          }}
+          className={revealAll ? 'text-brand-500' : 'text-ink/35'}
+          aria-label={revealAll ? '答えを隠してタップ式にする' : '答えを開いたまま見せる'}
+        >
+          {revealAll ? <Eye size={22} /> : <EyeOff size={22} />}
+        </IconButton>
         <span className="w-12 text-right text-sm font-extrabold text-ink/50">
           {i + 1}/{deck.length}
         </span>

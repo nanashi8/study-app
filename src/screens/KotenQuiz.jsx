@@ -1,82 +1,95 @@
-import { useMemo, useRef, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useStore } from '../store/useStore.js'
-import { buildDeck } from '../lib/session.js'
-import { pickDistractors, shuffle } from '../data/vocab.js'
-import { SpeakButton } from '../components/SpeakButton.jsx'
-import { PosBadge } from '../components/WordBits.jsx'
+import { getKoten, pickKotenDistractors } from '../data/koten.js'
 import { Button, ProgressBar, IconButton } from '../components/ui.jsx'
 import { Close, Check, ArrowRight } from '../components/Icons.jsx'
 import { cx } from '../components/ui.jsx'
 
-export function VocabQuizScreen() {
-  const params = useStore((s) => s.params)
-  const navigate = useStore((s) => s.navigate)
-  const back = useStore((s) => s.back)
-  const review = useStore((s) => s.review)
+function shuffle(arr) {
+  const a = [...arr]
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[a[i], a[j]] = [a[j], a[i]]
+  }
+  return a
+}
 
-  const xpAtStart = useRef(useStore.getState().stats.xp)
-  const [deck] = useState(() =>
-    buildDeck(params.source ?? { type: 'due' }, {
-      srs: useStore.getState().srs,
-      size: params.size ?? (['level', 'battle'].includes(params.source?.type) ? 10 : 20),
-    }),
-  )
+// クイズは最大20問。渡された id 群からシャッフルして作る。
+function buildQuizDeck(ids, seed) { // eslint-disable-line no-unused-vars
+  const words = (ids ?? []).map(getKoten).filter(Boolean)
+  return shuffle(words).slice(0, 20)
+}
+
+export function KotenQuizScreen() {
+  const params = useStore((s) => s.params)
+  const back = useStore((s) => s.back)
+  const reviewKoten = useStore((s) => s.reviewKoten)
+
+  const [seed, setSeed] = useState(0)
+  const [deck, setDeck] = useState(() => buildQuizDeck(params.ids, 0))
   const [i, setI] = useState(0)
-  const [selected, setSelected] = useState(null) // option id か 'unknown'
-  const results = useRef({ correct: 0, wrong: 0, unknown: 0, wrongIds: [] })
+  const [selected, setSelected] = useState(null)
+  const [correctCount, setCorrectCount] = useState(0)
+  const [done, setDone] = useState(false)
 
   const word = deck[i]
-  // 選択肢（正解＋誤答2つ）を問題ごとに固定
   const options = useMemo(() => {
     if (!word) return []
-    return shuffle([word, ...pickDistractors(word, 2)])
+    return shuffle([word, ...pickKotenDistractors(word, 3)])
   }, [word?.id]) // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!deck.length) {
     return (
       <div className="flex h-full flex-col items-center justify-center gap-4 p-8 text-center">
         <div className="text-5xl">🧩</div>
-        <p className="font-display text-lg font-extrabold text-ink">出題できる単語がありません</p>
+        <p className="font-display text-lg font-extrabold text-ink">出題できる語がありません</p>
         <Button onClick={back}>もどる</Button>
+      </div>
+    )
+  }
+
+  const restart = () => {
+    const next = seed + 1
+    setSeed(next)
+    setDeck(buildQuizDeck(params.ids, next))
+    setI(0)
+    setSelected(null)
+    setCorrectCount(0)
+    setDone(false)
+  }
+
+  if (done) {
+    const pct = Math.round((correctCount / deck.length) * 100)
+    return (
+      <div className="flex h-full flex-col items-center justify-center gap-5 p-8 text-center">
+        <div className="text-6xl">{pct >= 80 ? '🏆' : pct >= 50 ? '👏' : '📚'}</div>
+        <div>
+          <p className="font-display text-2xl font-extrabold text-ink">{correctCount} / {deck.length} 正解</p>
+          <p className="mt-1 text-sm font-bold text-ink/55">正答率 {pct}%</p>
+        </div>
+        <div className="grid w-full max-w-xs grid-cols-2 gap-3">
+          <Button variant="secondary" onClick={restart}>もう一度</Button>
+          <Button onClick={back}>もどる</Button>
+        </div>
       </div>
     )
   }
 
   const answered = selected !== null
 
-  const finish = () => {
-    const xpGained = useStore.getState().stats.xp - xpAtStart.current
-    navigate('sessionResult', {
-      title: params.title ?? 'クイズ',
-      mode: 'quiz',
-      total: deck.length,
-      correct: results.current.correct,
-      wrong: results.current.wrong + results.current.unknown,
-      xpGained,
-      reviewIds: results.current.wrongIds.length ? results.current.wrongIds : deck.map((w) => w.id),
-      source: params.source,
-    })
-  }
-
   const choose = (optId) => {
     if (answered) return
     setSelected(optId)
-    if (optId === 'unknown') {
-      review(word.id, 'unknown')
-      results.current.unknown++
-      results.current.wrongIds.push(word.id)
-    } else if (optId === word.id) {
-      review(word.id, 'correct')
-      results.current.correct++
+    if (optId === word.id) {
+      reviewKoten(word.id, 'correct')
+      setCorrectCount((n) => n + 1)
     } else {
-      review(word.id, 'wrong')
-      results.current.wrong++
-      results.current.wrongIds.push(word.id)
+      reviewKoten(word.id, 'wrong')
     }
   }
 
   const next = () => {
-    if (i + 1 >= deck.length) finish()
+    if (i + 1 >= deck.length) setDone(true)
     else {
       setI(i + 1)
       setSelected(null)
@@ -93,7 +106,7 @@ export function VocabQuizScreen() {
           <Close size={22} />
         </IconButton>
         <div className="flex-1">
-          <ProgressBar value={i / deck.length} color="#0ea5e9" />
+          <ProgressBar value={i / deck.length} color="#f59e0b" />
         </div>
         <span className="w-12 text-right text-sm font-extrabold text-ink/50">
           {i + 1}/{deck.length}
@@ -103,13 +116,14 @@ export function VocabQuizScreen() {
       <div className="flex-1 overflow-y-auto px-4 pb-4">
         {/* 出題語 */}
         <div className="mt-2 flex flex-col items-center rounded-[2rem] bg-white p-6 text-center shadow-card">
-          <PosBadge pos={word.pos} className="self-start" />
+          <span className="self-start rounded-full bg-amber-100 px-2.5 py-1 text-[11px] font-extrabold text-amber-700">
+            {word.pos}
+          </span>
           <h2 className="mt-2 font-display text-4xl font-extrabold tracking-tight text-ink">{word.word}</h2>
-          {word.phonetic && <p className="mt-1 text-sm font-bold text-ink/40">{word.phonetic}</p>}
-          <div className="mt-3">
-            <SpeakButton text={word.word} size="md" />
-          </div>
-          <p className="mt-4 text-sm font-extrabold text-ink/55">この単語の意味は？</p>
+          {word.kana && word.kana !== word.word && (
+            <p className="mt-1 text-sm font-bold text-ink/40">{word.kana}</p>
+          )}
+          <p className="mt-4 text-sm font-extrabold text-ink/55">この古語の意味は？</p>
         </div>
 
         {/* 選択肢 */}
@@ -130,7 +144,7 @@ export function VocabQuizScreen() {
                 onClick={() => choose(o.id)}
                 className={cx(
                   'flex w-full items-center gap-3 rounded-2xl border-2 px-4 py-3.5 text-left font-bold transition-all',
-                  tone === 'idle' && 'border-brand-100 bg-white text-ink active:bg-brand-50 active:scale-[0.99]',
+                  tone === 'idle' && 'border-amber-100 bg-white text-ink active:bg-amber-50 active:scale-[0.99]',
                   tone === 'correct' && 'border-emerald-400 bg-correct-soft text-emerald-800',
                   tone === 'wrong' && 'animate-shake border-rose-400 bg-wrong-soft text-rose-800',
                   tone === 'dim' && 'border-transparent bg-paper text-ink/35',
@@ -142,43 +156,23 @@ export function VocabQuizScreen() {
               </button>
             )
           })}
-
-          {/* わからない */}
-          <button
-            disabled={answered}
-            onClick={() => choose('unknown')}
-            className={cx(
-              'w-full rounded-2xl border-2 border-dashed px-4 py-3 text-sm font-extrabold transition-all',
-              selected === 'unknown'
-                ? 'border-amber-400 bg-hint-soft text-amber-800'
-                : 'border-ink/15 bg-transparent text-ink/45 active:bg-ink/5',
-              answered && selected !== 'unknown' && 'opacity-40',
-            )}
-          >
-            わからない🙈
-          </button>
         </div>
 
         {/* 答え合わせ後 */}
         {answered && (
           <div className="mt-4 animate-slide-up rounded-2xl bg-white p-4 shadow-card">
             <p className={cx('font-display text-lg font-extrabold', isCorrectPick ? 'text-emerald-600' : 'text-rose-500')}>
-              {isCorrectPick ? '正解！🎉' : selected === 'unknown' ? '答えはこちら' : 'ざんねん…'}
+              {isCorrectPick ? '正解！🎉' : 'ざんねん…'}
             </p>
             <p className="mt-1 font-bold text-ink">
               <span className="font-display">{word.word}</span> ＝ {word.meanings.join('・')}
             </p>
-            <button
-              onClick={() => navigate('wordDetail', { id: word.id })}
-              className="mt-2 inline-flex items-center gap-1 text-sm font-extrabold text-brand-600"
-            >
-              語源をくわしく見る <ArrowRight size={15} />
-            </button>
+            {word.note && <p className="mt-1 text-sm font-bold text-ink/55">{word.note}</p>}
           </div>
         )}
       </div>
 
-      <div className="shrink-0 border-t border-brand-100 bg-white/90 p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] backdrop-blur">
+      <div className="shrink-0 border-t border-amber-100 bg-white/90 p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] backdrop-blur">
         <Button full size="lg" disabled={!answered} onClick={next}>
           {i + 1 >= deck.length ? '結果を見る' : '次へ'} <ArrowRight size={18} />
         </Button>
