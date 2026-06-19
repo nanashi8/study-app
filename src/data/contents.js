@@ -18,7 +18,7 @@
 export const CONTENTS = [
   {
     id: 'eigo-quest',
-    title: 'えいごクエスト',
+    title: '英語アプリ',
     subtitle: '英検5級〜1級の英単語・文法・長文',
     emoji: '🦉',
     color: '#6366f1',
@@ -27,7 +27,7 @@ export const CONTENTS = [
   },
   {
     id: 'math-quest',
-    title: 'すうがくクエスト',
+    title: '数学アプリ',
     subtitle: '中学〜高校数III・学習マップで理解度確認',
     emoji: '📐',
     color: '#7c3aed',
@@ -36,7 +36,7 @@ export const CONTENTS = [
   },
   {
     id: 'eigo-dict',
-    title: 'えいご辞書',
+    title: '英語アプリ辞書',
     subtitle: '英単語＋語源を辞書がわりに引ける',
     emoji: '📖',
     color: '#0ea5e9',
@@ -45,7 +45,7 @@ export const CONTENTS = [
   },
   {
     id: 'koten-quest',
-    title: 'こてんクエスト',
+    title: '古典アプリ',
     subtitle: '大学受験の頻出古文単語を覚える',
     emoji: '📜',
     color: '#d97706',

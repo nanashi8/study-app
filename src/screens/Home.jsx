@@ -6,7 +6,7 @@ import { todayIndex } from '../store/useStore.js'
 import { Card, ProgressRing, Chip } from '../components/ui.jsx'
 import { Flame, Star, Book, Cards, Sparkles, Bookmark, Refresh, ArrowRight, Headphones, Keyboard, Mic, Lightbulb, Target, ChevronLeft } from '../components/Icons.jsx'
 
-const APP_NAME = 'えいごクエスト'
+const APP_NAME = '英語アプリ'
 
 function ModeTile({ icon, label, sub, color, onClick, disabled }) {
   return (
@@ -63,7 +63,7 @@ export function HomeScreen() {
           onClick={() => navigate('portal')}
           className="mb-3 flex items-center gap-1 rounded-full bg-white/15 py-1 pl-1.5 pr-2.5 text-[11px] font-extrabold text-white/90 active:scale-95 transition-transform"
         >
-          <ChevronLeft size={14} /> ポータル
+          <ChevronLeft size={14} /> スタディアプリ
         </button>
         <div className="flex items-center justify-between">
           <div>

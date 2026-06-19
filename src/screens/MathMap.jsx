@@ -48,7 +48,7 @@ export function MathMapScreen() {
           onClick={() => navigate('portal')}
           className="mb-3 flex items-center gap-1 rounded-full bg-white/15 py-1 pl-1.5 pr-2.5 text-[11px] font-extrabold text-white/90 active:scale-95 transition-transform"
         >
-          <ChevronLeft size={14} /> ポータル
+          <ChevronLeft size={14} /> スタディアプリ
         </button>
         <p className="text-xs font-bold text-white/70">中学〜高校 数III</p>
         <h1 className="font-display text-2xl font-extrabold tracking-wide">学習マップ</h1>
