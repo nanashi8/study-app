@@ -1,5 +1,5 @@
 import { useStore } from '../store/useStore.js'
-import { getWord } from '../data/vocab.js'
+import { getWord, neighborWords } from '../data/vocab.js'
 import { getLevel } from '../data/levels.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { SpeakButton } from '../components/SpeakButton.jsx'
@@ -58,6 +58,40 @@ function RefChips({ items, tone, navigate }) {
         )
       })}
     </div>
+  )
+}
+
+// 辞書の前後（アルファベット順で隣り合う見出し語）。ページをめくる感覚で移動。
+function NeighborList({ word, navigate }) {
+  const { prev, next } = neighborWords(word.id, 2, 2)
+  const Row = ({ w, dir }) => {
+    const lv = getLevel(w.level)
+    return (
+      <button
+        onClick={() => navigate('wordDetail', { id: w.id })}
+        className="flex w-full items-center gap-2 rounded-xl px-2 py-2 text-left active:bg-brand-50"
+      >
+        <span className="w-4 shrink-0 text-center text-xs font-extrabold text-brand-300">
+          {dir === 'prev' ? '↑' : '↓'}
+        </span>
+        <span className="font-display font-extrabold text-ink">{w.word}</span>
+        <Chip color={lv.color}>{lv.label}</Chip>
+        <span className="min-w-0 flex-1 truncate text-xs font-bold text-ink/45">{w.meaning}</span>
+      </button>
+    )
+  }
+  return (
+    <Card className="p-3">
+      <div className="mb-1 px-1 text-[11px] font-extrabold uppercase tracking-wide text-ink/35">辞書の前後</div>
+      <div className="divide-y divide-brand-50">
+        {prev.map((w) => <Row key={w.id} w={w} dir="prev" />)}
+        <div className="flex items-center gap-2 px-2 py-2">
+          <span className="w-4 shrink-0 text-center text-xs font-extrabold text-brand-400">●</span>
+          <span className="font-display font-extrabold text-brand-600">{word.word}</span>
+        </div>
+        {next.map((w) => <Row key={w.id} w={w} dir="next" />)}
+      </div>
+    </Card>
   )
 }
 
@@ -204,6 +238,9 @@ export function WordDetailScreen() {
             <RelatedWords word={word} onPick={(wid) => navigate('wordDetail', { id: wid })} />
           </Card>
         )}
+
+        {/* 辞書の前後（隣の見出し語へ） */}
+        <NeighborList word={word} navigate={navigate} />
       </div>
 
       {/* 保存ボタン（固定） */}

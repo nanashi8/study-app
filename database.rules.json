@@ -9,6 +9,15 @@
         ".read": "auth != null && auth.uid === $uid",
         ".write": "auth != null && auth.uid === $uid"
       }
+    },
+    "//4": "辞書リクエスト：ログイン者は誰でも追記＆一覧閲覧（生徒も見られる）。",
+    "//5": "既存エントリの変更・削除は不可（!data.exists() で新規追加のみ）。",
+    "wordRequests": {
+      ".read": "auth != null",
+      "$id": {
+        ".write": "auth != null && !data.exists()",
+        ".validate": "newData.hasChildren(['word','ts'])"
+      }
     }
   }
 }

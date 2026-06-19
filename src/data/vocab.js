@@ -264,6 +264,24 @@ export const WORDS_BY_ID = Object.fromEntries(ALL_WORDS.map((w) => [w.id, w]))
 
 export const getWord = (id) => WORDS_BY_ID[id]
 
+// 辞書順（見出し語のアルファベット順）に並べた全語。検索・前後めくりで使う。
+export const SORTED_WORDS = [...ALL_WORDS].sort((a, b) =>
+  a.word.toLowerCase().localeCompare(b.word.toLowerCase(), 'en'),
+)
+
+const SORTED_INDEX = Object.fromEntries(SORTED_WORDS.map((w, i) => [w.id, i]))
+
+// 辞書順で前後に並ぶ見出し語（電子辞書のページめくり用）。
+// before/after 件数を指定。端は詰める。
+export function neighborWords(id, before = 2, after = 2) {
+  const i = SORTED_INDEX[id]
+  if (i === undefined) return { prev: [], next: [] }
+  return {
+    prev: SORTED_WORDS.slice(Math.max(0, i - before), i),
+    next: SORTED_WORDS.slice(i + 1, i + 1 + after),
+  }
+}
+
 export const wordsByLevel = (levelId) =>
   ALL_WORDS.filter((w) => w.level === levelId)
 
