@@ -15,6 +15,26 @@
       rel="stylesheet"
     />
     <title>スタディアプリ</title>
+    <script>
+      // キャッシュ復旧：古い index.html が消えた旧JSを参照して真っ白になる事故を防ぐ。
+      // 読み込み完了後しばらくしてもアプリが描画されていなければ、キャッシュされた
+      // 古いHTMLを避けるためクエリを変えて取り直す（無限ループ防止に1セッション1回だけ）。
+      (function () {
+        var KEY = 'sa-recovered'
+        window.addEventListener('load', function () {
+          setTimeout(function () {
+            var root = document.getElementById('root')
+            if (root && root.childElementCount > 0) {
+              sessionStorage.removeItem(KEY)
+              return
+            }
+            if (sessionStorage.getItem(KEY)) return // 既に1回リカバリ済み
+            sessionStorage.setItem(KEY, '1')
+            location.replace(location.pathname + '?r=' + Date.now() + location.hash)
+          }, 3500)
+        })
+      })()
+    </script>
   </head>
   <body>
     <div id="root"></div>
