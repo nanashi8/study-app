@@ -1,0 +1,7 @@
+{
+  "//": "Firebase CLI 用の設定。Realtime Database のセキュリティルールを",
+  "//1": "database.rules.json から自動デプロイするためだけに使う（Hosting は GitHub Pages）。",
+  "database": {
+    "rules": "database.rules.json"
+  }
+}
