@@ -1,4 +1,4 @@
-import { MathBlock, MathInline } from './MathText.jsx'
+import { MathBlock, MathInline, MathText } from './MathText.jsx'
 import { Refresh } from './Icons.jsx'
 import { cx } from './ui.jsx'
 
@@ -26,7 +26,7 @@ export function MathFillIn({ fill, bank, placed, result, onAdd, onRemove, onClea
 
   return (
     <div className="mt-4">
-      <p className="mb-2 px-1 font-extrabold text-ink/80">{fill.ask}</p>
+      <p className="mb-2 px-1 font-extrabold text-ink/80"><MathText>{fill.ask}</MathText></p>
 
       {/* 作業中の式（□が空所） */}
       <div className="rounded-2xl bg-white p-4 text-center shadow-card">

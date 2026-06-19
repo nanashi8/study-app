@@ -30,6 +30,7 @@ import { DictationPlayScreen } from './screens/DictationPlay.jsx'
 import { PronounceScreen } from './screens/Pronounce.jsx'
 import { PronouncePlayScreen } from './screens/PronouncePlay.jsx'
 import { VocabSearchScreen } from './screens/VocabSearch.jsx'
+import { WordRequestsScreen } from './screens/WordRequests.jsx'
 import { MathMapScreen } from './screens/MathMap.jsx'
 import { MathUnitsScreen } from './screens/MathUnits.jsx'
 import { MathSolveScreen } from './screens/MathSolve.jsx'
@@ -66,6 +67,7 @@ const SCREENS = {
   pronounce: PronounceScreen,
   pronouncePlay: PronouncePlayScreen,
   vocabSearch: VocabSearchScreen,
+  wordRequests: WordRequestsScreen,
   mathMap: MathMapScreen,
   mathUnits: MathUnitsScreen,
   mathSolve: MathSolveScreen,
@@ -85,7 +87,7 @@ const IMMERSIVE = new Set([
   'vocabStudy', 'vocabQuiz', 'sessionResult', 'reader', 'phraseStudy', 'phraseQuiz',
   'listeningQuiz', 'dictationPlay', 'pronouncePlay', 'mathSolve', 'grammarQuiz',
   // 別コンテンツ（ポータルから入る）
-  'vocabSearch', 'mathMap', 'mathUnits',
+  'vocabSearch', 'wordRequests', 'mathMap', 'mathUnits',
   'kotenList', 'kotenStudy', 'kotenQuiz',
 ])
 
