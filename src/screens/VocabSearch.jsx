@@ -2,14 +2,13 @@ import { useMemo, useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import { useAuth } from '../store/useAuth.js'
 import { ALL_WORDS, SORTED_WORDS } from '../data/vocab.js'
-import { LEVELS, getLevel } from '../data/levels.js'
+import { getLevel } from '../data/levels.js'
 import { requestWord } from '../lib/wordRequests.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { PosBadge } from '../components/WordBits.jsx'
 import { Chip, IconButton, Button } from '../components/ui.jsx'
 import { Search, Close, ArrowRight } from '../components/Icons.jsx'
-import { cx } from '../components/ui.jsx'
 
 // 見つからなかったときの案内＋「この単語をリクエスト」ボタン。
 // query が変わると state がリセットされるよう、呼び出し側で key={query} を付ける。
@@ -72,21 +71,19 @@ export function VocabSearchScreen() {
   const navigate = useStore((s) => s.navigate)
   const user = useAuth((s) => s.user)
   const [q, setQ] = useState('')
-  const [level, setLevel] = useState('all')
 
   const query = q.trim().toLowerCase()
   const results = useMemo(() => {
     if (!query) return []
     const hits = []
     for (const w of SORTED_WORDS) {
-      if (level !== 'all' && w.level !== level) continue
       const rank = matchRank(w, query)
       if (rank >= 0) hits.push({ w, rank })
     }
     // 一致ランク順、同ランク内は辞書順（SORTED_WORDS の順）を維持。
     hits.sort((a, b) => a.rank - b.rank)
     return hits.map((h) => h.w)
-  }, [query, level])
+  }, [query])
 
   const shown = results.slice(0, CAP)
 
@@ -122,26 +119,6 @@ export function VocabSearchScreen() {
               <Close size={16} />
             </IconButton>
           )}
-        </div>
-
-        {/* 級フィルタ */}
-        <div className="no-scrollbar mt-3 flex gap-1.5 overflow-x-auto pb-1">
-          {[{ id: 'all', label: 'すべて', color: '#6366f1' }, ...LEVELS].map((l) => {
-            const on = level === l.id
-            return (
-              <button
-                key={l.id}
-                onClick={() => setLevel(l.id)}
-                className={cx(
-                  'shrink-0 rounded-full px-3 py-1.5 text-xs font-extrabold transition-colors',
-                  on ? 'text-white' : 'bg-white text-ink/55 ring-1 ring-brand-100',
-                )}
-                style={on ? { background: l.color } : undefined}
-              >
-                {l.id === 'all' ? 'すべて' : l.label}
-              </button>
-            )
-          })}
         </div>
 
         {query && (
