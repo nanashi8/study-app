@@ -1,8 +1,9 @@
+// えいごクエスト Realtime Database セキュリティルール。
+// main に push すると .github/workflows/firebase-rules.yml が自動デプロイ（手動貼り付け不要）。
+// ・生徒は自分のデータ(students/自分のUID)だけ読み書き可。他人のは不可。
+// ・辞書リクエスト(wordRequests)はログイン者なら誰でも追記＆一覧閲覧（生徒も見られる）。
+//   既存エントリの変更・削除は不可（!data.exists() で新規追加のみ）。
 {
-  "//": "えいごクエスト Realtime Database セキュリティルール。",
-  "//1": "main に push すると .github/workflows/firebase-rules.yml が自動デプロイ（手動貼り付け不要）。",
-  "//2": "生徒は自分のデータ(students/自分のUID)だけ読み書き可。他人のは不可。",
-  "//3": "先生ダッシュボード用の『全生徒read』は、その画面を作るときに追加する。",
   "rules": {
     "students": {
       "$uid": {
@@ -10,8 +11,6 @@
         ".write": "auth != null && auth.uid === $uid"
       }
     },
-    "//4": "辞書リクエスト：ログイン者は誰でも追記＆一覧閲覧（生徒も見られる）。",
-    "//5": "既存エントリの変更・削除は不可（!data.exists() で新規追加のみ）。",
     "wordRequests": {
       ".read": "auth != null",
       "$id": {
