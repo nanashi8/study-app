@@ -1,12 +1,13 @@
 import { useStore } from '../store/useStore.js'
 import { unitsByGrade, unitCount } from '../data/math.js'
 import { Chip } from '../components/ui.jsx'
-import { ArrowRight, Check } from '../components/Icons.jsx'
+import { ArrowRight, Check, ChevronLeft } from '../components/Icons.jsx'
 
 // 単元一覧（中学＋高校を学年ごとにグループ表示）。
 // problems がある単元だけ挑戦でき、無い単元は「準備中」。
 export function MathUnitsScreen() {
   const navigate = useStore((s) => s.navigate)
+  const back = useStore((s) => s.back)
   const mathDone = useStore((s) => s.mathDone)
   const groups = unitsByGrade()
 
@@ -14,6 +15,12 @@ export function MathUnitsScreen() {
     <div className="pb-6">
       {/* ヒーロー */}
       <div className="rounded-b-[2.5rem] bg-gradient-to-br from-violet-500 via-violet-600 to-indigo-700 px-5 pb-7 pt-[calc(env(safe-area-inset-top)+1.25rem)] text-white">
+        <button
+          onClick={back}
+          className="mb-3 flex items-center gap-1 rounded-full bg-white/15 py-1 pl-1.5 pr-2.5 text-[11px] font-extrabold text-white/90 active:scale-95 transition-transform"
+        >
+          <ChevronLeft size={14} /> マップへ
+        </button>
         <p className="text-xs font-bold text-white/70">中学・高校</p>
         <h1 className="font-display text-2xl font-extrabold tracking-wide">数学クエスト</h1>
         <p className="mt-1 text-sm font-bold text-white/75">

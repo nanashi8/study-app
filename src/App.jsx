@@ -5,8 +5,10 @@ import { pullOrInit, startAutoSave } from './lib/cloudSync.js'
 import { LoginScreen, UnconfiguredScreen } from './screens/Login.jsx'
 import { AppShell } from './components/AppShell.jsx'
 import { BottomNav } from './components/BottomNav.jsx'
+import { PortalScreen } from './screens/Portal.jsx'
 import { HomeScreen } from './screens/Home.jsx'
 import { VocabLevelsScreen } from './screens/VocabLevels.jsx'
+import { VocabDecksScreen } from './screens/VocabDecks.jsx'
 import { VocabStudyScreen } from './screens/VocabStudy.jsx'
 import { VocabQuizScreen } from './screens/VocabQuiz.jsx'
 import { SessionResultScreen } from './screens/SessionResult.jsx'
@@ -34,10 +36,15 @@ import { MathSolveScreen } from './screens/MathSolve.jsx'
 import { GrammarScreen } from './screens/Grammar.jsx'
 import { GrammarQuizScreen } from './screens/GrammarQuiz.jsx'
 import { EnglishMapScreen } from './screens/EnglishMap.jsx'
+import { KotenListScreen } from './screens/KotenList.jsx'
+import { KotenStudyScreen } from './screens/KotenStudy.jsx'
+import { KotenQuizScreen } from './screens/KotenQuiz.jsx'
 
 const SCREENS = {
+  portal: PortalScreen,
   home: HomeScreen,
   vocabLevels: VocabLevelsScreen,
+  vocabDecks: VocabDecksScreen,
   vocabStudy: VocabStudyScreen,
   vocabQuiz: VocabQuizScreen,
   sessionResult: SessionResultScreen,
@@ -65,12 +72,21 @@ const SCREENS = {
   grammar: GrammarScreen,
   grammarQuiz: GrammarQuizScreen,
   englishMap: EnglishMapScreen,
+  kotenList: KotenListScreen,
+  kotenStudy: KotenStudyScreen,
+  kotenQuiz: KotenQuizScreen,
 }
 
-// 没入モード（学習・クイズ・結果系）はボトムナビを隠す。
+// ボトムナビ（えいごクエストのタブ）を隠す画面。
+//  ・没入モード（学習・クイズ・結果系）
+//  ・ポータル直下の別コンテンツ（辞書・すうがく・こてん）＝えいごクエストのタブを出さない
 const IMMERSIVE = new Set([
+  'portal',
   'vocabStudy', 'vocabQuiz', 'sessionResult', 'reader', 'phraseStudy', 'phraseQuiz',
   'listeningQuiz', 'dictationPlay', 'pronouncePlay', 'mathSolve', 'grammarQuiz',
+  // 別コンテンツ（ポータルから入る）
+  'vocabSearch', 'mathMap', 'mathUnits',
+  'kotenList', 'kotenStudy', 'kotenQuiz',
 ])
 
 // 学習アプリ本体（ログイン済みのときだけ表示）。

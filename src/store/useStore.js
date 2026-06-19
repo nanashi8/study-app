@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { decodeProgress, encodeProgress } from '../lib/progressCode.js'
 import { nextPosition, clampPos } from '../lib/adaptive.js'
+import { DEFAULT_CONTENT_ORDER } from '../data/contents.js'
 
 // ── 学習ロジックの定数 ──────────────────────────────────────────────
 // Leitner 式の間隔反復。box が上がるほど次に出る間隔（日数）が伸びる。
@@ -19,6 +20,16 @@ const RESULTS = {
 
 const today = () => Math.floor(Date.now() / 86400000) // 日番号（整数）
 
+// 保存済みのポータル並び順を正規化：既知のidだけ残し、未登場の新コンテンツは
+// 既定の位置（末尾寄り）で補う。データ追加後も保存値が壊れないようにする。
+export function normalizeOrder(order) {
+  const known = new Set(DEFAULT_CONTENT_ORDER)
+  const seen = new Set()
+  const kept = (Array.isArray(order) ? order : []).filter((id) => known.has(id) && !seen.has(id) && seen.add(id))
+  const missing = DEFAULT_CONTENT_ORDER.filter((id) => !seen.has(id))
+  return [...kept, ...missing]
+}
+
 const freshStats = () => ({
   xp: 0,
   streak: 0,
@@ -34,16 +45,20 @@ const DEFAULT_SETTINGS = {
   showPhonetic: true,
   autoSpeak: true,
   dailyGoal: 20,
+  revealAnswers: false, // 覚える/復習/マイ単語で、タップせず最初から意味・語源を表示する
 }
 
 const initialLearning = () => ({
   srs: {}, // wordId -> { box, correct, wrong, due, last }
+  kotenSrs: {}, // 古文単語の wordId -> { box, ... }（英単語と別管理。idが衝突しないよう分離）
   myList: [], // [wordId]
   readingsDone: [], // [passageId] 読了した長文
   mathDone: [], // [problemId] クリアした数学問題
   mathMastery: {}, // unitId -> 最高正答率(0-100) ＝ 理解度
   skillStats: {}, // skill -> { answered, correct, sessions, lastDay } ＝ スキル別テスト結果
   engPos: null, // 適応バトルの現在ポジション(0=5級…6=1級, 小数可)。null=未配置（初回に推定）
+  portalOrder: [...DEFAULT_CONTENT_ORDER], // ポータルのタイル並び順（コンテンツid配列）
+  portalHidden: [], // ポータルで非表示にしたコンテンツid
   stats: freshStats(),
   settings: { ...DEFAULT_SETTINGS },
 })
@@ -83,7 +98,8 @@ export const useStore = create(
   persist(
     (set, get) => ({
       // ── ナビゲーション（永続化しない） ──
-      screen: 'home',
+      // 起動時はポータル（コンテンツ選択）。各コンテンツに入ると 'home' 等へ。
+      screen: 'portal',
       params: {},
       stack: [],
       navigate: (screen, params = {}) =>
@@ -105,6 +121,13 @@ export const useStore = create(
 
       review: (wordId, result) =>
         set((st) => applyReview(st.srs, st.stats, wordId, result)),
+
+      // 古文単語の復習（英単語と同じLeitnerロジックを別srsで使う）。
+      reviewKoten: (wordId, result) =>
+        set((st) => {
+          const { srs, stats } = applyReview(st.kotenSrs, st.stats, wordId, result)
+          return { kotenSrs: srs, stats }
+        }),
 
       toggleMyList: (wordId) =>
         set((st) => ({
@@ -166,6 +189,28 @@ export const useStore = create(
       setSetting: (key, value) =>
         set((st) => ({ settings: { ...st.settings, [key]: value } })),
 
+      // ── ポータルのタイル並べ替え／表示オンオフ ──
+      // タイルを上下に動かす（dir: -1=上, +1=下）。並びは表示・非表示まとめて1列で管理。
+      moveContent: (id, dir) =>
+        set((st) => {
+          const order = normalizeOrder(st.portalOrder)
+          const i = order.indexOf(id)
+          const j = i + dir
+          if (i < 0 || j < 0 || j >= order.length) return {}
+          const next = [...order]
+          ;[next[i], next[j]] = [next[j], next[i]]
+          return { portalOrder: next }
+        }),
+      // タイルの表示／非表示を切り替える。
+      togglePortalHidden: (id) =>
+        set((st) => ({
+          portalHidden: st.portalHidden.includes(id)
+            ? st.portalHidden.filter((x) => x !== id)
+            : [...st.portalHidden, id],
+        })),
+      // 並び順・表示を初期状態に戻す。
+      resetPortal: () => set({ portalOrder: [...DEFAULT_CONTENT_ORDER], portalHidden: [] }),
+
       resetProgress: () => set(initialLearning()),
 
       // ── 進捗コード ──
@@ -174,12 +219,15 @@ export const useStore = create(
         const payload = decodeProgress(code) // 失敗時は例外
         set({
           srs: payload.srs ?? {},
+          kotenSrs: payload.kotenSrs ?? {},
           myList: payload.myList ?? [],
           readingsDone: payload.readingsDone ?? [],
           mathDone: payload.mathDone ?? [],
           mathMastery: payload.mathMastery ?? {},
           skillStats: payload.skillStats ?? {},
           engPos: payload.engPos ?? null,
+          portalOrder: normalizeOrder(payload.portalOrder),
+          portalHidden: payload.portalHidden ?? [],
           stats: { ...freshStats(), ...(payload.stats ?? {}) },
           settings: { ...DEFAULT_SETTINGS, ...(payload.settings ?? {}) },
         })
@@ -192,12 +240,15 @@ export const useStore = create(
       // ナビゲーション系は保存しない。
       partialize: (st) => ({
         srs: st.srs,
+        kotenSrs: st.kotenSrs,
         myList: st.myList,
         readingsDone: st.readingsDone,
         mathDone: st.mathDone,
         mathMastery: st.mathMastery,
         skillStats: st.skillStats,
         engPos: st.engPos,
+        portalOrder: st.portalOrder,
+        portalHidden: st.portalHidden,
         stats: st.stats,
         settings: st.settings,
       }),

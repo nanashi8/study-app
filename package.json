@@ -11,6 +11,7 @@
     "preview": "vite preview",
     "vocab": "node scripts/vocab-report.mjs",
     "map": "node scripts/vocab-map.mjs",
+    "decks": "node scripts/deck-report.mjs",
     "scaffold": "node scripts/frontier-scaffold.mjs",
     "import": "node scripts/import-words.mjs",
     "phonetics": "node scripts/gen-phonetics.mjs"

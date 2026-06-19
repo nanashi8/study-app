@@ -125,6 +125,16 @@ export function SettingsScreen() {
           </div>
         </Card>
 
+        {/* 学習カード */}
+        <Card className="px-4">
+          <h2 className="pt-3 font-display text-base font-extrabold text-ink/80">学習カード</h2>
+          <div className="divide-y divide-brand-50">
+            <Row title="答えを開いたまま見せる" desc="覚える・復習・マイ単語で、タップせず最初から意味・語源を表示">
+              <Toggle on={settings.revealAnswers} onChange={(v) => setSetting('revealAnswers', v)} />
+            </Row>
+          </div>
+        </Card>
+
         {/* 学習目標 */}
         <Card className="p-4">
           <h2 className="mb-2 font-display text-base font-extrabold text-ink/80">1日の目標（語数）</h2>

@@ -3,7 +3,7 @@ import { LEVELS } from '../data/levels.js'
 import { levelProgress, overallProgress, weakFoundationLevel } from '../lib/session.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { Card, ProgressRing, ProgressBar, Button, Chip, IconButton } from '../components/ui.jsx'
-import { Refresh, Bookmark, Book, Cards, Search, Lightbulb, ArrowRight } from '../components/Icons.jsx'
+import { Refresh, Bookmark, Book, Cards, Search, Lightbulb, ArrowRight, Sparkles } from '../components/Icons.jsx'
 
 // 下の級（前提）が弱点なら「先に固めよう」と案内するバナー。
 function WeakFoundationBanner({ srs, onReview }) {
@@ -33,7 +33,7 @@ function WeakFoundationBanner({ srs, onReview }) {
   )
 }
 
-function LevelCard({ level, srs, onStudy, onQuiz }) {
+function LevelCard({ level, srs, onStudy, onQuiz, onDecks }) {
   const p = levelProgress(level.id, srs)
   const masteredPct = p.total ? p.mastered / p.total : 0
   return (
@@ -73,6 +73,14 @@ function LevelCard({ level, srs, onStudy, onQuiz }) {
           <Cards size={16} /> クイズ
         </Button>
       </div>
+      <button
+        onClick={onDecks}
+        disabled={!p.total}
+        className="mt-2 flex w-full items-center justify-center gap-1.5 rounded-xl bg-paper py-2 text-xs font-extrabold text-brand-600 active:scale-[0.98] transition-transform disabled:opacity-50"
+      >
+        <Sparkles size={15} /> 目次・デッキでえらぶ
+        <ArrowRight size={15} />
+      </button>
     </Card>
   )
 }
@@ -147,6 +155,7 @@ export function VocabLevelsScreen() {
             srs={srs}
             onStudy={() => study(level.id, level.label)}
             onQuiz={() => quiz(level.id, level.label)}
+            onDecks={() => navigate('vocabDecks', { levelId: level.id })}
           />
         ))}
       </div>
