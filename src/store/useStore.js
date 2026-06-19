@@ -116,6 +116,13 @@ export const useStore = create(
         }),
       goHome: () => set({ screen: 'home', params: {}, stack: [] }),
 
+      // ── クイズの一時退避（永続化しない） ──
+      // 「語源をくわしく見る」等で一旦クイズ画面を離れて戻るとき、解答済みの
+      // 状態を失わないよう deck・進行位置・結果をここへ退避→復元する。
+      quizSession: null,
+      saveQuizSession: (session) => set({ quizSession: session }),
+      clearQuizSession: () => set({ quizSession: null }),
+
       // ── 学習state（永続化する） ──
       ...initialLearning(),
 

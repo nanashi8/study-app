@@ -8,23 +8,40 @@ import { Button, ProgressBar, IconButton } from '../components/ui.jsx'
 import { Close, Check, ArrowRight, SpeakerWave } from '../components/Icons.jsx'
 import { cx } from '../components/ui.jsx'
 
+// 出題ソース等からセッション同一性キーを作る（語源を見て戻ったときの復元照合用）。
+const sessionKey = (p) =>
+  `listening|${JSON.stringify(p.source ?? { type: 'due' })}|${p.title ?? ''}`
+
 export function ListeningQuizScreen() {
   const params = useStore((s) => s.params)
   const navigate = useStore((s) => s.navigate)
   const back = useStore((s) => s.back)
   const review = useStore((s) => s.review)
   const settings = useStore((s) => s.settings)
+  const saveQuizSession = useStore((s) => s.saveQuizSession)
+  const clearQuizSession = useStore((s) => s.clearQuizSession)
 
-  const xpAtStart = useRef(useStore.getState().stats.xp)
+  // 語源を見て戻ってきたときだけ復元（キー一致のセッションのみ採用）。
+  const [restore] = useState(() => {
+    const s = useStore.getState().quizSession
+    return s && s.key === sessionKey(params) ? s : null
+  })
+  useEffect(() => {
+    clearQuizSession()
+  }, [clearQuizSession])
+
+  const xpAtStart = useRef(restore ? restore.xpAtStart : useStore.getState().stats.xp)
   const [deck] = useState(() =>
-    buildDeck(params.source ?? { type: 'due' }, {
-      srs: useStore.getState().srs,
-      size: params.source?.type === 'level' ? 10 : 20,
-    }),
+    restore
+      ? restore.deck
+      : buildDeck(params.source ?? { type: 'due' }, {
+          srs: useStore.getState().srs,
+          size: params.source?.type === 'level' ? 10 : 20,
+        }),
   )
-  const [i, setI] = useState(0)
-  const [selected, setSelected] = useState(null)
-  const results = useRef({ correct: 0, wrong: 0, unknown: 0, wrongIds: [] })
+  const [i, setI] = useState(() => (restore ? restore.i : 0))
+  const [selected, setSelected] = useState(() => (restore ? restore.selected : null))
+  const results = useRef(restore ? restore.results : { correct: 0, wrong: 0, unknown: 0, wrongIds: [] })
 
   const word = deck[i]
   const options = useMemo(() => {
@@ -156,7 +173,18 @@ export function ListeningQuizScreen() {
               {isCorrectPick ? '正解！🎉' : selected === 'unknown' ? '答えはこちら' : 'ざんねん…'}
             </p>
             <p className="mt-1 font-bold text-ink"><span className="font-display">{word.word}</span> ＝ {word.meanings.join('・')}</p>
-            <button onClick={() => navigate('wordDetail', { id: word.id })} className="mt-2 inline-flex items-center gap-1 text-sm font-extrabold text-brand-600">
+            <button
+              onClick={() => {
+                saveQuizSession({
+                  key: sessionKey(params),
+                  deck, i, selected,
+                  results: results.current,
+                  xpAtStart: xpAtStart.current,
+                })
+                navigate('wordDetail', { id: word.id })
+              }}
+              className="mt-2 inline-flex items-center gap-1 text-sm font-extrabold text-brand-600"
+            >
               語源をくわしく見る <ArrowRight size={15} />
             </button>
           </div>
