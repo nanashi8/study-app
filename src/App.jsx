@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useStore } from './store/useStore.js'
 import { useAuth } from './store/useAuth.js'
 import { pullOrInit, startAutoSave } from './lib/cloudSync.js'
-import { LoginScreen, UnconfiguredScreen } from './screens/Login.jsx'
+import { LoginScreen } from './screens/Login.jsx'
 import { AppShell } from './components/AppShell.jsx'
 import { BottomNav } from './components/BottomNav.jsx'
 import { PortalScreen } from './screens/Portal.jsx'
@@ -43,6 +43,7 @@ import { KotenQuizScreen } from './screens/KotenQuiz.jsx'
 
 const SCREENS = {
   portal: PortalScreen,
+  login: LoginScreen,
   home: HomeScreen,
   vocabLevels: VocabLevelsScreen,
   vocabDecks: VocabDecksScreen,
@@ -84,6 +85,7 @@ const SCREENS = {
 //  ・ポータル直下の別コンテンツ（辞書・すうがく・こてん）＝えいごクエストのタブを出さない
 const IMMERSIVE = new Set([
   'portal',
+  'login',
   'vocabStudy', 'vocabQuiz', 'sessionResult', 'reader', 'phraseStudy', 'phraseQuiz',
   'listeningQuiz', 'dictationPlay', 'pronouncePlay', 'mathSolve', 'grammarQuiz',
   // 別コンテンツ（ポータルから入る）
@@ -115,7 +117,7 @@ function Splash({ label }) {
   )
 }
 
-// 認証ゲート：未ログインならログイン画面、ログイン済みならクラウド復元→本体。
+// 認証ゲート：未ログインはゲストとして本体へ、ログイン済みはクラウド復元→本体。
 export default function App() {
   const status = useAuth((s) => s.status)
   const user = useAuth((s) => s.user)
@@ -124,6 +126,14 @@ export default function App() {
 
   // 起動時にログイン状態の購読を開始。
   useEffect(() => init(), [init])
+
+  // QRのURL（#code=...）で開かれたら、進捗コード読込画面（記録）へ誘導する。
+  // 実際の読込確認は ProgressScreen 側で行う。
+  useEffect(() => {
+    if (/[#&]code=EQ1-/.test(location.hash)) {
+      useStore.getState().navigate('progress')
+    }
+  }, [])
 
   // ログインしたら：クラウドから進捗を復元 → 以後は自動保存。
   useEffect(() => {
@@ -139,6 +149,9 @@ export default function App() {
     ]).then(() => {
       if (!alive) return
       stop = startAutoSave(user.uid, user.email)
+      // ゲストからログインした直後はログイン画面に居るので、ポータルへ戻す。
+      const st = useStore.getState()
+      if (st.screen === 'login') st.navigate('portal')
       setSynced(true)
     })
     return () => {
@@ -147,20 +160,10 @@ export default function App() {
     }
   }, [status, user])
 
-  if (status === 'unconfigured')
-    return (
-      <AppShell>
-        <UnconfiguredScreen />
-      </AppShell>
-    )
+  // 認証の初期判定中だけ待つ。それ以外はログインの有無に関わらずアプリに入れる
+  // （未ログイン＝ゲスト。進捗はローカルに保存され、QR/コードで持ち運べる）。
   if (status === 'loading') return <Splash label="読み込み中…" />
-  if (status === 'out')
-    return (
-      <AppShell>
-        <LoginScreen />
-      </AppShell>
-    )
-  // status === 'in'
-  if (!synced) return <Splash label="進捗を読み込み中…" />
+  // ログイン直後のクラウド復元中だけスプラッシュ。
+  if (status === 'in' && !synced) return <Splash label="進捗を読み込み中…" />
   return <MainApp />
 }

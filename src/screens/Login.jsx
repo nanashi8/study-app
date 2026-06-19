@@ -1,12 +1,16 @@
 // ログイン画面。先生が発行した ID（メール）とパスワードで入る。
+// 未ログインでもアプリは使える（ゲスト）ので、この画面は任意。戻るで離脱できる。
 import { useState } from 'react'
 import { useAuth } from '../store/useAuth.js'
-import { Button, Card } from '../components/ui.jsx'
+import { useStore } from '../store/useStore.js'
+import { Button, Card, IconButton } from '../components/ui.jsx'
+import { ChevronLeft } from '../components/Icons.jsx'
 
 export function LoginScreen() {
   const signIn = useAuth((s) => s.signIn)
   const busy = useAuth((s) => s.busy)
   const error = useAuth((s) => s.error)
+  const back = useStore((s) => s.back)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
@@ -21,7 +25,10 @@ export function LoginScreen() {
     'outline-none focus:border-brand-400 placeholder:text-ink/30'
 
   return (
-    <div className="flex min-h-full flex-col items-center justify-center px-6 py-10">
+    <div className="relative flex min-h-full flex-col items-center justify-center px-6 py-10">
+      <div className="absolute left-3 top-[calc(env(safe-area-inset-top)+0.75rem)]">
+        <IconButton onClick={back} aria-label="戻る"><ChevronLeft size={24} /></IconButton>
+      </div>
       <div className="mb-6 text-center">
         <div className="text-5xl">⚔️</div>
         <h1 className="mt-2 font-display text-2xl font-extrabold text-ink">えいごクエスト</h1>
@@ -71,6 +78,16 @@ export function LoginScreen() {
           IDとパスワードは先生から受け取ってください。
         </p>
       </Card>
+
+      <button
+        onClick={back}
+        className="mt-5 text-xs font-extrabold text-brand-500 underline underline-offset-2"
+      >
+        ログインせずに使う（ゲスト）
+      </button>
+      <p className="mt-2 max-w-xs text-center text-[11px] font-bold text-ink/40">
+        ログインしなくても学習できます。進捗はこの端末に保存され、QRコードで持ち運べます。
+      </p>
     </div>
   )
 }
