@@ -31,7 +31,7 @@ export function LoginScreen() {
       </div>
       <div className="mb-6 text-center">
         <div className="text-5xl">⚔️</div>
-        <h1 className="mt-2 font-display text-2xl font-extrabold text-ink">えいごクエスト</h1>
+        <h1 className="mt-2 font-display text-2xl font-extrabold text-ink">英語アプリ</h1>
         <p className="mt-1 text-sm font-bold text-ink/50">ログインして続きから学習</p>
       </div>
 

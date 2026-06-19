@@ -22,7 +22,7 @@ export function MathUnitsScreen() {
           <ChevronLeft size={14} /> マップへ
         </button>
         <p className="text-xs font-bold text-white/70">中学・高校</p>
-        <h1 className="font-display text-2xl font-extrabold tracking-wide">数学クエスト</h1>
+        <h1 className="font-display text-2xl font-extrabold tracking-wide">数学アプリ</h1>
         <p className="mt-1 text-sm font-bold text-white/75">
           解き方の「型」を、ステップで身につけよう
         </p>

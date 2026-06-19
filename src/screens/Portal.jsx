@@ -117,7 +117,7 @@ export function PortalScreen() {
     <div className="min-h-full bg-paper">
       <div className="flex items-start justify-between gap-3 px-5 pb-6 pt-[calc(env(safe-area-inset-top)+2rem)]">
         <div className="min-w-0">
-          <h1 className="font-display text-2xl font-extrabold text-ink">まなびポータル</h1>
+          <h1 className="font-display text-2xl font-extrabold text-ink">スタディアプリ</h1>
           <p className="mt-1 truncate text-sm font-bold text-ink/50">
             {editing ? '並べ替え・表示の切り替えができます' : user?.email ? `${user.email}` : 'ゲストで学習中（ログインなし）'}
           </p>

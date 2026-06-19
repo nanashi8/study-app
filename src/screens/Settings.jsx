@@ -174,7 +174,7 @@ export function SettingsScreen() {
           </Button>
         </Card>
 
-        <p className="pt-2 text-center text-xs font-bold text-ink/30">えいごクエスト v0.1 ・ 英検5級〜1級</p>
+        <p className="pt-2 text-center text-xs font-bold text-ink/30">英語アプリ v0.1 ・ 英検5級〜1級</p>
       </div>
 
       <Sheet open={confirmReset} onClose={() => setConfirmReset(false)} title="進捗をリセットしますか？">

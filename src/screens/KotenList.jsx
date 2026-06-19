@@ -57,10 +57,10 @@ export function KotenListScreen() {
           onClick={() => navigate('portal')}
           className="mb-3 flex items-center gap-1 rounded-full bg-white/15 py-1 pl-1.5 pr-2.5 text-[11px] font-extrabold text-white/90 active:scale-95 transition-transform"
         >
-          <ChevronLeft size={14} /> ポータル
+          <ChevronLeft size={14} /> スタディアプリ
         </button>
         <p className="text-xs font-bold text-white/75">大学受験・頻出古文単語</p>
-        <h1 className="font-display text-2xl font-extrabold tracking-wide">こてんクエスト</h1>
+        <h1 className="font-display text-2xl font-extrabold tracking-wide">古典アプリ</h1>
         <p className="mt-1 text-sm font-bold text-white/80">
           全{KOTEN_WORDS.length}語 ・ 習得 {totalMastered}語
         </p>
