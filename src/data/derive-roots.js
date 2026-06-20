@@ -24,6 +24,8 @@ const PREFIX_SET = new Set(PREFIXES)
 // ここで上書きして精度を確保する（例: tain は 'ten' を使わない＝tend系の誤検出回避）。
 const STEM_OVERRIDE = {
   tain: ['tain'], // 'ten'(保つ) は tend(伸ばす) と衝突するため不採用
+  lect: ['lect'], // 'leg'/'lig'(法/束ねる)は別語源と衝突するため lect のみ
+  veri: ['veri'], // 'ver' は very/version 等と衝突するため veri のみ
 }
 
 // 同じ綴りでも語源が別系統で、語根に含めてはいけない語（語根id -> 除外語）。
@@ -59,6 +61,24 @@ const DENY = {
   sci: ['discipline','disciplinary','disciplined','disciple','scissors','rescind','scintilla','scintillating'],
   flu: ['fluster','flustered','flummox','flummoxed'],
   crat: ['crate','crater'],
+  // 追加バッチ2の除外
+  claim: ['clamber'],
+  clud: ['cluster'],
+  doc: ['dock','docks','docked'],
+  fract: ['fragrance','fragrant'],
+  liber: ['deliberate','deliberately','deliberation'],
+  loc: ['lock','locker','lockdown','lockout','locket','locked'],
+  mand: ['mendacious','mendacity'],
+  medi: ['medicine','medical','medication','medicinal','medic'],
+  nat: ['senator','senate','senatorial'],
+  prob: ['provoke','provide','provision','provisional','provincial','provocation','province','provident','providence','problem','problematic'],
+  quer: ['querulous'],
+  tact: ['protagonist','antagonist','antagonism','antagonize','tactician','tag','tangle'],
+  terr: ['terror','terrible','terribly','terrify','terrifying','terrified','deterrent','terrific','terrorist','terrorism','terrorize','interrupt','interruption'],
+  tort: ['tortoise'],
+  typ: ['typhoon'],
+  vad: ['vast','vase','devastate','devastation','devastated','devastating'],
+  veri: ['severity','severe','severely'],
 }
 
 // roots(配列) を受け取り、検出設定 [{id, stems, deny:Set}] を作る。
