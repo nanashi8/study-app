@@ -4,7 +4,7 @@ import { enemyLevel } from '../lib/adaptive.js'
 import { ROOTS, wordsByRoot } from '../data/vocab.js'
 import { todayIndex } from '../store/useStore.js'
 import { Card, ProgressRing, Chip } from '../components/ui.jsx'
-import { Flame, Star, Book, Cards, Sparkles, Bookmark, Refresh, ArrowRight, Headphones, Keyboard, Mic, Lightbulb, Target, ChevronLeft } from '../components/Icons.jsx'
+import { Flame, Star, Book, Cards, Sparkles, Bookmark, Refresh, ArrowRight, Headphones, Keyboard, Mic, Lightbulb, Target, ChevronLeft, Link } from '../components/Icons.jsx'
 
 const APP_NAME = '英語アプリ'
 
@@ -173,6 +173,10 @@ export function HomeScreen() {
             <ModeTile
               icon={<Lightbulb size={22} />} label="文法" sub="級ごとに4択"
               color="linear-gradient(135deg,#f59e0b,#ea580c)" onClick={() => navigate('grammar')}
+            />
+            <ModeTile
+              icon={<Link size={22} />} label="語源" sub="派生語をまとめて"
+              color="linear-gradient(135deg,#6366f1,#7c3aed)" onClick={() => navigate('roots')}
             />
             <ModeTile
               icon={<Headphones size={22} />} label="リスニング" sub="聞いて当てる"

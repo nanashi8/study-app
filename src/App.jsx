@@ -14,6 +14,7 @@ import { VocabQuizScreen } from './screens/VocabQuiz.jsx'
 import { SessionResultScreen } from './screens/SessionResult.jsx'
 import { WordDetailScreen } from './screens/WordDetail.jsx'
 import { RootDetailScreen } from './screens/RootDetail.jsx'
+import { RootsScreen } from './screens/Roots.jsx'
 import { MyListScreen } from './screens/MyList.jsx'
 import { ProgressScreen } from './screens/Progress.jsx'
 import { SettingsScreen } from './screens/Settings.jsx'
@@ -52,6 +53,7 @@ const SCREENS = {
   sessionResult: SessionResultScreen,
   wordDetail: WordDetailScreen,
   rootDetail: RootDetailScreen,
+  roots: RootsScreen,
   myList: MyListScreen,
   progress: ProgressScreen,
   settings: SettingsScreen,
