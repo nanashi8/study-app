@@ -143,13 +143,19 @@ import { WORDS_IMPORTED } from './words-imported.js'
 import { PHONETICS } from './phonetics.js'
 import { ROOTS, ROOTS_BY_ID } from './roots.js'
 import { LEVEL_OVERRIDE } from './levels-override.js'
+import { buildRootMatchers, autoRootIds } from './derive-roots.js'
 
-// 各単語に、parts から導いた root id 配列を正規化して付与しておく。
-// （データ側で roots を二重管理しないため）
+// 語根オートリンクの検出器（精度重視・形態素分解＋除外リスト）。
+const ROOT_MATCHERS = buildRootMatchers(ROOTS)
+
+// 各単語に root id 配列を付与する。
+//  1) 手書きの etymology.parts[].root（最優先・最も正確）
+//  2) 形態素分解で確実に当たる語根（derive-roots）を追記
+// （データ側で roots を二重管理しないため、ここで一元的に導出）
 const normalize = (w) => {
-  const roots = [
-    ...new Set((w.etymology?.parts ?? []).map((p) => p.root).filter(Boolean)),
-  ]
+  const manual = (w.etymology?.parts ?? []).map((p) => p.root).filter(Boolean)
+  const auto = autoRootIds((w.word ?? '').toLowerCase(), ROOT_MATCHERS)
+  const roots = [...new Set([...manual, ...auto])]
   // 取り込みデータに優しいフォールバック：意味は文字列1つでも可、語源は任意。
   const meanings = w.meanings?.length ? w.meanings : w.meaning ? [w.meaning] : []
   // 発音記号(IPA)は語自身に無ければ CMU辞書由来のマップから補完。

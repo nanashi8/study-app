@@ -4,7 +4,7 @@ import { getLevel } from '../data/levels.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { PosBadge } from '../components/WordBits.jsx'
 import { Card, Button, Chip } from '../components/ui.jsx'
-import { ArrowRight, Book } from '../components/Icons.jsx'
+import { ArrowRight, Book, Cards } from '../components/Icons.jsx'
 
 export function RootDetailScreen() {
   const rootId = useStore((s) => s.params.rootId)
@@ -39,13 +39,23 @@ export function RootDetailScreen() {
           </div>
           <div className="p-4">
             <p className="text-sm font-bold text-ink/60">語源：{root.origin}</p>
-            <Button
-              full
-              className="mt-3"
-              onClick={() => navigate('vocabStudy', { source: { type: 'root', rootId }, title: `語源 ${root.form}`, mode: 'study' })}
-            >
-              <Book size={18} /> この語根の単語をまとめて学習（{words.length}語）
-            </Button>
+            <p className="mt-1 text-xs font-bold text-ink/45">
+              この語根を持つ派生語 {words.length}語。意味のつながりでまとめて覚えよう。
+            </p>
+            <div className="mt-3 grid grid-cols-2 gap-2">
+              <Button
+                onClick={() => navigate('vocabStudy', { source: { type: 'root', rootId }, title: `語源 ${root.form}`, mode: 'study' })}
+              >
+                <Book size={18} /> 覚える
+              </Button>
+              <Button
+                variant="secondary"
+                disabled={words.length < 3}
+                onClick={() => navigate('vocabQuiz', { source: { type: 'root', rootId }, title: `語源 ${root.form}` })}
+              >
+                <Cards size={18} /> クイズ
+              </Button>
+            </div>
           </div>
         </Card>
 
