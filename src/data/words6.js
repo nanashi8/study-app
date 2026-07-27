@@ -94,7 +94,7 @@ const RAW = [
   ["synthesis","名","1","統合・合成","This theory is a synthesis of ideas.","この理論は諸説の統合だ。","ギリシャ syn(共に)+thesis(置く)→組み合わせ→「統合」。",{"field":"一般"}],
   ["autonomy","名","1","自律・自治","The region gained autonomy.","その地域は自治を得た。","ギリシャ auto(自ら)+nomos(法)→自らを律する→「自治」。",{"field":"一般"}],
   ["scrutiny","名","1","綿密な調査・精査","The plan faced close scrutiny.","その計画は厳しい精査を受けた。","ラテン scrutari(くず屋が探る)→隅々まで探る→「精査」。",{"field":"一般"}],
-  ["premise","名","1","前提","The argument rests on a false premise.","その議論は誤った前提に基づく。",{"parts":[{"t":"pre","kind":"prefix","gloss":"前に"},{"t":"mise","kind":"root","gloss":"送る・置く","root":"miss"},{"t":"","kind":"suffix","gloss":""}],"note":"前に(pre)置く(mise=miss)こと→「前提」。"},{"field":"一般"}],
+  ["premise","名","1","前提","The argument rests on a false premise.","その議論は誤った前提に基づく。",{"parts":[{"t":"pre","kind":"prefix","gloss":"前に"},{"t":"mise","kind":"root","gloss":"送る・置く","root":"miss"}],"note":"前に(pre)置く(mise=miss)こと→「前提」。"},{"field":"一般"}],
   ["consensus","名","1","総意・合意","We reached a consensus.","私たちは合意に達した。","ラテン con(共に)+sentire(感じる)→共に感じる→「合意」。sense と同源。",{"field":"一般"}],
   ["hierarchy","名","1","階層・序列","The company has a strict hierarchy.","その会社は厳格な序列を持つ。","ギリシャ hieros(神聖)+arkhia(支配)→聖職の序列→「階層」。",{"field":"一般"}],
   ["plausible","形","1","もっともらしい","That is a plausible explanation.","それはもっともらしい説明だ。","ラテン plaudere(拍手する)→拍手されうる→「もっともらしい」。applaud と同源。",{"field":"性質・状態"}],

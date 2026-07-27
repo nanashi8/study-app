@@ -2,11 +2,13 @@ import { useStore } from '../store/useStore.js'
 import { getRoot, wordsByRoot } from '../data/vocab.js'
 import { getLevel } from '../data/levels.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
-import { PosBadge } from '../components/WordBits.jsx'
+import { EtymologyFormula, hasRootBreakdown, PosBadge } from '../components/WordBits.jsx'
 import { Card, Button, Chip, ProgressRing } from '../components/ui.jsx'
 import { ArrowRight, Book, Cards, Sparkles, Check } from '../components/Icons.jsx'
 
 const MASTER_BOX = 4
+const LEARN_BATCH = 8
+const LEVEL_RANK = { '5': 0, '4': 1, '3': 2, pre2: 3, '2': 4, pre1: 5, '1': 6 }
 
 export function RootDetailScreen() {
   const rootId = useStore((s) => s.params.rootId)
@@ -32,34 +34,80 @@ export function RootDetailScreen() {
   const pts = words.reduce((a, w) => a + Math.min(boxOf(w), MASTER_BOX), 0)
   const ratio = total ? pts / (total * MASTER_BOX) : 0
 
-  // 未習得の語をまとめて学習（芋づる式に増やす）。deck ソースで対象語だけ出題。
+  // 同じ語源でも、意味をパーツから直接組み立てられる語と、
+  // 歴史的には同源だが意味が広がった語を分けて見せる。
+  const orderForReading = (list) =>
+    [...list].sort((a, b) => {
+      const knownDiff = Number(boxOf(b) >= MASTER_BOX) - Number(boxOf(a) >= MASTER_BOX)
+      if (knownDiff) return knownDiff
+      const levelDiff = (LEVEL_RANK[a.level] ?? 99) - (LEVEL_RANK[b.level] ?? 99)
+      return levelDiff || a.word.localeCompare(b.word, 'en')
+    })
+  const buildable = orderForReading(words.filter((w) => hasRootBreakdown(w, rootId)))
+  const historical = orderForReading(words.filter((w) => !hasRootBreakdown(w, rootId)))
+
+  // 一度に多すぎない8語。学習中の語を先にし、その後は「意味の式」がある易しい語から。
+  const nextBatch = [...toGain].sort((a, b) => {
+    const learningDiff = Number(boxOf(b) > 0) - Number(boxOf(a) > 0)
+    if (learningDiff) return learningDiff
+    const buildableDiff = Number(hasRootBreakdown(b, rootId)) - Number(hasRootBreakdown(a, rootId))
+    if (buildableDiff) return buildableDiff
+    return (LEVEL_RANK[a.level] ?? 99) - (LEVEL_RANK[b.level] ?? 99)
+  }).slice(0, LEARN_BATCH)
+
+  // 次の小さなまとまりだけを学習。deck ソースで対象語だけ出題する。
   const grow = () =>
     navigate('vocabStudy', {
-      source: { type: 'deck', ids: toGain.map((w) => w.id) },
-      title: `語源 ${root.form}`,
+      source: { type: 'deck', ids: nextBatch.map((w) => w.id) },
+      title: `${root.form} から広げる`,
       mode: 'study',
-      size: toGain.length,
+      size: nextBatch.length,
     })
   const quiz = () =>
     navigate('vocabQuiz', { source: { type: 'root', rootId }, title: `語源 ${root.form}` })
 
-  const WordRow = ({ w, dim }) => {
+  const WordRow = ({ w, build }) => {
     const level = getLevel(w.level)
+    const box = boxOf(w)
+    const mastered = box >= MASTER_BOX
     return (
       <button
         onClick={() => navigate('wordDetail', { id: w.id })}
-        className="flex w-full items-center gap-3 rounded-2xl bg-white p-3 text-left shadow-sm active:bg-brand-50"
+        className="w-full rounded-2xl bg-white p-3 text-left shadow-sm active:bg-brand-50"
       >
-        <PosBadge pos={w.pos} />
-        <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2">
-            <span className="font-display text-lg font-extrabold text-ink">{w.word}</span>
-            <Chip color={level.color}>{level.label}</Chip>
-            {dim && <Check size={14} className="text-emerald-500" />}
+        <div className="flex items-center gap-3">
+          <PosBadge pos={w.pos} />
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="font-display text-lg font-extrabold text-ink">{w.word}</span>
+              <Chip color={level.color}>{level.label}</Chip>
+              {mastered && (
+                <span className="inline-flex items-center gap-0.5 text-[10px] font-extrabold text-emerald-600">
+                  <Check size={13} /> 習得
+                </span>
+              )}
+              {!mastered && box > 0 && (
+                <span className="text-[10px] font-extrabold text-brand-500">学習中</span>
+              )}
+            </div>
+            {!build && <div className="truncate text-xs font-bold text-ink/55">{w.meaning}</div>}
           </div>
-          <div className="truncate text-xs font-bold text-ink/55">{w.meaning}</div>
+          <span className="text-brand-400"><ArrowRight size={18} /></span>
         </div>
-        <span className="text-brand-400"><ArrowRight size={18} /></span>
+        {build ? (
+          <div className="mt-2.5 pl-9">
+            <EtymologyFormula word={w} rootId={rootId} />
+            {w.etymology?.note && (
+              <p className="mt-2 text-xs font-bold leading-relaxed text-ink/55">
+                {w.etymology.note}
+              </p>
+            )}
+          </div>
+        ) : (
+          <p className="mt-2 pl-9 text-xs font-bold leading-relaxed text-ink/50">
+            {w.etymology?.note || w.etymology?.origin}
+          </p>
+        )}
       </button>
     )
   }
@@ -76,7 +124,8 @@ export function RootDetailScreen() {
               <span className="text-5xl">{root.emoji}</span>
               <div className="min-w-0 flex-1">
                 <h1 className="font-display text-3xl font-extrabold">{root.form}</h1>
-                <p className="text-sm font-bold text-white/80">＝{root.meaning}</p>
+                <p className="text-xs font-bold text-white/65">意味の核</p>
+                <p className="text-base font-extrabold text-white">＝{root.meaning}</p>
               </div>
               <ProgressRing value={ratio} size={56} stroke={7} color="#ffffff" track="rgba(255,255,255,0.25)">
                 <span className="text-[11px] font-extrabold">{Math.round(ratio * 100)}%</span>
@@ -85,13 +134,16 @@ export function RootDetailScreen() {
           </div>
           <div className="p-4">
             <p className="text-sm font-bold text-ink/60">語源：{root.origin}</p>
+            <p className="mt-2 rounded-xl bg-brand-50 px-3 py-2 text-xs font-bold leading-relaxed text-brand-700">
+              まず「{root.meaning}」を固定し、接頭辞・接尾辞の意味を足して単語を予想します。
+            </p>
             <p className="mt-1 text-xs font-extrabold text-brand-600">
-              1つの語源で {total}語 ・ 習得 {known.length}・あと {toGain.length}語
+              同語源 {total}語 ・ 習得 {known.length}・あと {toGain.length}語
             </p>
             {toGain.length > 0 ? (
               <div className="mt-3 grid grid-cols-2 gap-2">
                 <Button onClick={grow}>
-                  <Sparkles size={18} /> あと{toGain.length}語ふやす
+                  <Sparkles size={18} /> 次の{nextBatch.length}語
                 </Button>
                 <Button variant="secondary" disabled={total < 3} onClick={quiz}>
                   <Cards size={18} /> クイズ
@@ -110,34 +162,73 @@ export function RootDetailScreen() {
           </div>
         </Card>
 
-        {/* 足がかり：すでに知っている同語源の語 */}
-        {known.length > 0 && (
-          <>
-            <div className="mb-2 mt-5 flex items-center gap-1.5 px-1">
-              <Book size={16} className="text-emerald-500" />
-              <h2 className="font-display text-base font-extrabold text-ink/80">知っている語（足がかり）</h2>
+        {/* 既知語、または最初の易しい語を連想の足がかりにする。 */}
+        <Card className="mt-4 p-4">
+          <div className="flex items-center gap-1.5 text-emerald-600">
+            <Book size={16} />
+            <h2 className="font-display text-sm font-extrabold">
+              {known.length > 0 ? '知っている語を足がかりにする' : 'まず1語を足がかりにする'}
+            </h2>
+          </div>
+          <div className="mt-2 flex flex-wrap gap-1.5">
+            {(known.length > 0
+              ? orderForReading(known).slice(0, 5)
+              : (buildable.length ? buildable : historical).slice(0, 1)
+            ).map((w) => (
+              <button
+                key={w.id}
+                onClick={() => navigate('wordDetail', { id: w.id })}
+                className="rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-extrabold text-emerald-700 ring-1 ring-emerald-100 active:bg-emerald-100"
+              >
+                {w.word} <span className="opacity-65">＝{w.meanings.slice(0, 1).join('')}</span>
+              </button>
+            ))}
+          </div>
+          <p className="mt-2 text-xs font-bold leading-relaxed text-ink/45">
+            {known.length > 0
+              ? `この語と同じ「${root.meaning}」を探すと、初見語にも意味の手掛かりができます。`
+              : `この1語で「${root.form}＝${root.meaning}」をつかんでから、前後のパーツを入れ替えます。`}
+          </p>
+        </Card>
+
+        {/* 現代の意味をパーツから組み立てやすい語。 */}
+        {buildable.length > 0 && (
+          <section>
+            <div className="mb-2 mt-5 px-1">
+              <div className="flex items-center gap-1.5">
+                <Sparkles size={16} className="text-brand-500" />
+                <h2 className="font-display text-base font-extrabold text-ink/80">
+                  パーツを足して意味を組み立てる
+                </h2>
+              </div>
+              <p className="mt-1 text-xs font-bold leading-relaxed text-ink/45">
+                接頭辞・語根・接尾辞の「意味の式」を比べます（{buildable.length}語）。
+              </p>
             </div>
             <div className="space-y-2">
-              {known.map((w) => <WordRow key={w.id} w={w} dim />)}
+              {buildable.map((w) => <WordRow key={w.id} w={w} build />)}
             </div>
-          </>
+          </section>
         )}
 
-        {/* これから増やせる語 */}
-        <div className="mb-2 mt-5 flex items-center gap-1.5 px-1">
-          <Sparkles size={16} className="text-brand-500" />
-          <h2 className="font-display text-base font-extrabold text-ink/80">
-            {known.length > 0 ? 'ここから増やせる語' : `${root.form} を含む単語`}
-          </h2>
-        </div>
-        {toGain.length > 0 ? (
-          <div className="space-y-2">
-            {toGain.map((w) => <WordRow key={w.id} w={w} />)}
-          </div>
-        ) : (
-          <p className="rounded-2xl bg-white p-4 text-center text-sm font-bold text-ink/45 shadow-sm">
-            この語源の語はすべて習得済みです🎉
-          </p>
+        {/* 分解パーツ未整備の語は、既存の由来説明を手掛かりに同語源へ広げる。 */}
+        {historical.length > 0 && (
+          <section>
+            <div className="mb-2 mt-5 px-1">
+              <div className="flex items-center gap-1.5">
+                <Book size={16} className="text-violet-500" />
+                <h2 className="font-display text-base font-extrabold text-ink/80">
+                  由来の説明から広げる仲間
+                </h2>
+              </div>
+              <p className="mt-1 text-xs font-bold leading-relaxed text-ink/45">
+                表記の変化や意味の広がりを、短い由来ストーリーでつなぎます（{historical.length}語）。
+              </p>
+            </div>
+            <div className="space-y-2">
+              {historical.map((w) => <WordRow key={w.id} w={w} />)}
+            </div>
+          </section>
         )}
       </div>
     </div>

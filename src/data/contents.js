@@ -46,10 +46,19 @@ export const CONTENTS = [
   {
     id: 'koten-quest',
     title: '古典アプリ',
-    subtitle: '大学受験の頻出古文単語を覚える',
+    subtitle: '古典単語・文法・常識を短文で身につける',
     emoji: '📜',
     color: '#d97706',
     screen: 'kotenList',
+    status: 'available',
+  },
+  {
+    id: 'eikaiwa-novel',
+    title: '英会話ノベル',
+    subtitle: '英語だけの世界で学校生活＆冒険／受験英会話を体験',
+    emoji: '🗨️',
+    color: '#ec4899',
+    screen: 'vnList',
     status: 'available',
   },
   {

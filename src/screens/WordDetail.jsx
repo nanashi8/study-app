@@ -233,7 +233,7 @@ export function WordDetailScreen() {
           <Card className="p-4">
             <div className="mb-3 flex items-center gap-1.5 text-brand-600">
               <Link size={16} />
-              <span className="text-[11px] font-extrabold uppercase tracking-wide">語源でつながる単語</span>
+              <span className="text-[11px] font-extrabold uppercase tracking-wide">この語源から増やせる単語</span>
             </div>
             <RelatedWords word={word} onPick={(wid) => navigate('wordDetail', { id: wid })} />
           </Card>

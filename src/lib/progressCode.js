@@ -5,6 +5,8 @@ import LZString from 'lz-string'
 
 const CODE_VERSION = 1
 const PREFIX = 'EQ1-' // EigoQuest v1。先頭でアプリ/バージョンを判別する。
+const isRecord = (value) =>
+  !!value && typeof value === 'object' && !Array.isArray(value)
 
 // 状態のうち「持ち運ぶ」部分だけを抜き出す。
 // importCode / pullOrInit が読む全フィールドを網羅し、QR/コードで端末を
@@ -14,12 +16,17 @@ export function buildPayload(state) {
     v: CODE_VERSION,
     srs: state.srs,
     kotenSrs: state.kotenSrs,
+    kotenInterpretationSrs: state.kotenInterpretationSrs,
     myList: state.myList,
+    kotenWordList: state.kotenWordList,
+    kotenGrammarList: state.kotenGrammarList,
     readingsDone: state.readingsDone,
     mathDone: state.mathDone,
     mathMastery: state.mathMastery,
     skillStats: state.skillStats,
+    diagnosticHistory: state.diagnosticHistory,
     engPos: state.engPos,
+    vnCleared: state.vnCleared,
     portalOrder: state.portalOrder,
     portalHidden: state.portalHidden,
     stats: state.stats,
@@ -47,16 +54,53 @@ export function decodeProgress(code) {
   } catch {
     throw new Error('コードの中身を読み取れませんでした。')
   }
-  if (!payload || typeof payload !== 'object' || !('v' in payload)) {
+  if (!isRecord(payload) || !('v' in payload)) {
     throw new Error('コードの中身が不正です。')
+  }
+  if (payload.v !== CODE_VERSION) {
+    throw new Error(`この進捗コードのバージョン（${payload.v}）には対応していません。`)
+  }
+
+  const recordFields = [
+    'srs',
+    'kotenSrs',
+    'kotenInterpretationSrs',
+    'mathMastery',
+    'skillStats',
+    'stats',
+    'settings',
+  ]
+  const arrayFields = [
+    'myList',
+    'kotenWordList',
+    'kotenGrammarList',
+    'readingsDone',
+    'mathDone',
+    'diagnosticHistory',
+    'vnCleared',
+    'portalOrder',
+    'portalHidden',
+  ]
+  for (const field of recordFields) {
+    if (field in payload && !isRecord(payload[field])) {
+      throw new Error(`コードの ${field} が不正です。`)
+    }
+  }
+  for (const field of arrayFields) {
+    if (field in payload && !Array.isArray(payload[field])) {
+      throw new Error(`コードの ${field} が不正です。`)
+    }
+  }
+  if ('engPos' in payload && payload.engPos !== null && !Number.isFinite(payload.engPos)) {
+    throw new Error('コードの engPos が不正です。')
   }
   return payload
 }
 
 // 読込前のプレビュー用に、コードの中身を要約する。
-export function summarizePayload(payload) {
+export function summarizePayload(payload, isWordId = () => true) {
   const srs = payload.srs ?? {}
-  const wordIds = Object.keys(srs)
+  const wordIds = Object.keys(srs).filter(isWordId)
   const mastered = wordIds.filter((id) => (srs[id]?.box ?? 0) >= 4).length
   return {
     words: wordIds.length,

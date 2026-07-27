@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
-import { buildDeck } from '../lib/session.js'
+import { buildDeck, SESSION_SIZE } from '../lib/session.js'
 import { pickDistractors, shuffle } from '../data/vocab.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { PosBadge } from '../components/WordBits.jsx'
@@ -37,7 +37,11 @@ export function VocabQuizScreen() {
       ? restore.deck
       : buildDeck(params.source ?? { type: 'due' }, {
           srs: useStore.getState().srs,
-          size: params.size ?? (['level', 'battle'].includes(params.source?.type) ? 10 : 20),
+          size:
+            params.size ??
+            (['level', 'battle', 'all', 'field', 'pos'].includes(params.source?.type)
+              ? SESSION_SIZE
+              : 20),
         }),
   )
   const [i, setI] = useState(() => (restore ? restore.i : 0))
@@ -48,8 +52,10 @@ export function VocabQuizScreen() {
   // 選択肢（正解＋誤答2つ）を問題ごとに固定
   const options = useMemo(() => {
     if (!word) return []
+    // 詳細画面へ移動する直前の並びも復元し、選んだ誤答が消えないようにする。
+    if (restore?.i === i && restore.options?.length) return restore.options
     return shuffle([word, ...pickDistractors(word, 2)])
-  }, [word?.id]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [word?.id, i, restore])
 
   if (!deck.length) {
     return (
@@ -74,6 +80,7 @@ export function VocabQuizScreen() {
       xpGained,
       reviewIds: results.current.wrongIds.length ? results.current.wrongIds : deck.map((w) => w.id),
       source: params.source,
+      size: params.size,
     })
   }
 
@@ -195,6 +202,7 @@ export function VocabQuizScreen() {
                   deck,
                   i,
                   selected,
+                  options,
                   results: results.current,
                   xpAtStart: xpAtStart.current,
                 })

@@ -4,7 +4,7 @@ import { enemyLevel } from '../lib/adaptive.js'
 import { ROOTS, wordsByRoot } from '../data/vocab.js'
 import { todayIndex } from '../store/useStore.js'
 import { Card, ProgressRing, Chip } from '../components/ui.jsx'
-import { Flame, Star, Book, Cards, Sparkles, Bookmark, Refresh, ArrowRight, Headphones, Keyboard, Mic, Lightbulb, Target, ChevronLeft, Link } from '../components/Icons.jsx'
+import { Flame, Star, Book, Cards, Sparkles, Bookmark, Refresh, ArrowRight, Headphones, Keyboard, Mic, Lightbulb, Target, Trophy, ChevronLeft, Link } from '../components/Icons.jsx'
 
 const APP_NAME = '英語アプリ'
 
@@ -40,9 +40,11 @@ export function HomeScreen() {
   const srs = useStore((s) => s.srs)
   const settings = useStore((s) => s.settings)
   const myList = useStore((s) => s.myList)
+  const diagnosticHistory = useStore((s) => s.diagnosticHistory)
 
   const engPos = useStore((s) => s.engPos)
   const enemy = enemyLevel(engPos ?? suggestStartPosition(srs))
+  const latestDiagnostic = Array.isArray(diagnosticHistory) ? diagnosticHistory[0] : null
 
   const prog = overallProgress(srs)
   const goal = settings.dailyGoal || 20
@@ -91,7 +93,7 @@ export function HomeScreen() {
             <p className="text-sm font-bold text-white/75">
               {todayCount >= goal
                 ? '目標達成！すごい🎉'
-                : `あと ${goal - todayCount} 語で目標達成`}
+                : `あと ${goal - todayCount} 回で目標達成`}
             </p>
           </div>
         </div>
@@ -129,6 +131,32 @@ export function HomeScreen() {
             </button>
           </Card>
         )}
+
+        {/* 学習診断 */}
+        <Card className="overflow-hidden">
+          <button
+            onClick={() => navigate('diagnostic')}
+            className="flex w-full items-center gap-3 p-4 text-left active:bg-brand-50"
+          >
+            <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-violet-100 text-violet-600">
+              <Trophy size={24} />
+            </span>
+            <div className="min-w-0 flex-1">
+              <div className="font-display font-extrabold text-ink">学習診断テスト</div>
+              <div className="text-xs font-bold text-ink/50">
+                {latestDiagnostic
+                  ? `推定偏差値 ${latestDiagnostic.deviation}・英検${latestDiagnostic.estimatedLevel?.label ?? '—'}目安`
+                  : '28問で偏差値・英検級・弱点を診断'}
+              </div>
+            </div>
+            {latestDiagnostic && (
+              <span className="rounded-full bg-violet-100 px-2.5 py-1 font-display text-sm font-extrabold text-violet-700">
+                {latestDiagnostic.deviation}
+              </span>
+            )}
+            <span className="text-brand-500"><ArrowRight size={22} /></span>
+          </button>
+        </Card>
 
         {/* 学習マップ・弱点チェック */}
         <Card>
@@ -187,7 +215,7 @@ export function HomeScreen() {
               color="linear-gradient(135deg,#14b8a6,#0d9488)" onClick={() => navigate('dictation')}
             />
             <ModeTile
-              icon={<Mic size={22} />} label="発音採点" sub="話して採点"
+              icon={<Mic size={22} />} label="発音チェック" sub="認識一致度を確認"
               color="linear-gradient(135deg,#f43f5e,#e11d48)" onClick={() => navigate('pronounce')}
             />
             <ModeTile

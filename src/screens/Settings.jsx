@@ -154,12 +154,12 @@ export function SettingsScreen() {
           </div>
         </Card>
 
-        {/* 発音採点の注意 */}
+        {/* 発音チェックの注意 */}
         <Card className="p-4">
-          <h2 className="mb-1 font-display text-base font-extrabold text-ink/80">発音採点について</h2>
+          <h2 className="mb-1 font-display text-base font-extrabold text-ink/80">発音チェックについて</h2>
           <p className="text-xs font-bold leading-relaxed text-ink/55">
-            発音採点（自分の発音をマイクで判定）は今後追加予定です。ブラウザの音声認識を使うため、
-            iPhone の Safari など一部の環境では動作しないことがあります。お手本の読み上げは全環境で使えます。
+            ブラウザの音声認識結果と見出し語の綴りを比べる簡易チェックです。音素・母音・アクセントを
+            精密に採点する機能ではありません。iPhone の Safari など一部の環境では音声認識を利用できません。
           </p>
         </Card>
 

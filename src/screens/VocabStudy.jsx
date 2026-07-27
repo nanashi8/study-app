@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
-import { buildDeck } from '../lib/session.js'
+import { buildDeck, SESSION_SIZE } from '../lib/session.js'
 import { relatedByEtymology } from '../data/vocab.js'
 import { speak } from '../lib/tts.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
@@ -27,7 +27,9 @@ export function VocabStudyScreen() {
   const [deck] = useState(() =>
     buildDeck(params.source ?? { type: 'due' }, {
       srs: srsAtStart.current,
-      size: params.size ?? (params.source?.type === 'level' ? 10 : 20),
+      size:
+        params.size ??
+        (['level', 'all', 'field', 'pos'].includes(params.source?.type) ? SESSION_SIZE : 20),
     }),
   )
 

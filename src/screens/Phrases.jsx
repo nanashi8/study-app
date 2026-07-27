@@ -7,7 +7,7 @@ import { ScreenHeader } from '../components/AppShell.jsx'
 import { Sheet } from '../components/Sheet.jsx'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { Card, Button, Chip, ProgressBar } from '../components/ui.jsx'
-import { Book, Cards, Lightbulb } from '../components/Icons.jsx'
+import { Book, Cards, Lightbulb, Link, Refresh } from '../components/Icons.jsx'
 import { cx } from '../components/ui.jsx'
 
 const levelOrder = Object.fromEntries(LEVELS.map((l, i) => [l.id, i]))
@@ -26,6 +26,13 @@ export function PhrasesScreen() {
 
   const study = () => navigate('phraseStudy', { source: { type: 'phrase', kind }, title: meta.label, mode: 'study', engine: 'phrase' })
   const quiz = () => navigate('phraseQuiz', { source: { type: 'phrase', kind }, title: meta.label, engine: 'phrase' })
+  const reviewDue = () =>
+    navigate('phraseStudy', {
+      source: { type: 'phraseDue', kind },
+      title: `${meta.label}の復習`,
+      mode: 'study',
+      engine: 'phrase',
+    })
 
   return (
     <div className="pb-6">
@@ -70,6 +77,11 @@ export function PhrasesScreen() {
             <Button onClick={study}><Book size={16} /> 覚える</Button>
             <Button variant="secondary" onClick={quiz}><Cards size={16} /> クイズ</Button>
           </div>
+          {prog.due > 0 && (
+            <Button full variant="hint" className="mt-2" onClick={reviewDue}>
+              <Refresh size={16} /> 復習どき {prog.due}項目
+            </Button>
+          )}
         </Card>
 
         {/* 一覧 */}
@@ -119,6 +131,15 @@ export function PhrasesScreen() {
                 </div>
               </div>
             </div>
+            {detail.origin && (
+              <div className="rounded-2xl bg-violet-50 p-3 ring-1 ring-violet-100">
+                <div className="mb-1 flex items-center gap-1.5 text-violet-600">
+                  <Link size={16} />
+                  <span className="text-[11px] font-extrabold uppercase tracking-wide">成り立ち</span>
+                </div>
+                <p className="text-sm font-bold leading-relaxed text-violet-900/90">{detail.origin}</p>
+              </div>
+            )}
             {detail.note && (
               <div className="flex gap-2 rounded-2xl bg-hint-soft/70 p-3">
                 <span className="mt-0.5 shrink-0 text-hint"><Lightbulb size={18} /></span>

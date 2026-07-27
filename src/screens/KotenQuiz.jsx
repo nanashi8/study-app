@@ -2,7 +2,13 @@ import { useMemo, useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import { getKoten, pickKotenDistractors } from '../data/koten.js'
 import { Button, ProgressBar, IconButton } from '../components/ui.jsx'
-import { Close, Check, ArrowRight } from '../components/Icons.jsx'
+import {
+  Bookmark,
+  BookmarkFilled,
+  Close,
+  Check,
+  ArrowRight,
+} from '../components/Icons.jsx'
 import { cx } from '../components/ui.jsx'
 
 function shuffle(arr) {
@@ -24,6 +30,8 @@ export function KotenQuizScreen() {
   const params = useStore((s) => s.params)
   const back = useStore((s) => s.back)
   const reviewKoten = useStore((s) => s.reviewKoten)
+  const kotenWordList = useStore((s) => s.kotenWordList)
+  const toggleKotenWordList = useStore((s) => s.toggleKotenWordList)
 
   const [seed, setSeed] = useState(0)
   const [deck, setDeck] = useState(() => buildQuizDeck(params.ids, 0))
@@ -35,6 +43,7 @@ export function KotenQuizScreen() {
   const [done, setDone] = useState(false)
 
   const word = deck[i]
+  const saved = word ? kotenWordList.includes(word.id) : false
   const options = useMemo(() => {
     if (!word) return []
     return shuffle([word, ...pickKotenDistractors(word, 3)])
@@ -186,9 +195,23 @@ export function KotenQuizScreen() {
         {/* 答え合わせ後 */}
         {answered && (
           <div className="mt-4 animate-slide-up rounded-2xl bg-white p-4 shadow-card">
-            <p className={cx('font-display text-lg font-extrabold', isCorrectPick ? 'text-emerald-600' : 'text-rose-500')}>
-              {isCorrectPick ? '正解！🎉' : 'ざんねん…'}
-            </p>
+            <div className="flex items-start justify-between gap-2">
+              <p className={cx('font-display text-lg font-extrabold', isCorrectPick ? 'text-emerald-600' : 'text-rose-500')}>
+                {isCorrectPick ? '正解！🎉' : 'ざんねん…'}
+              </p>
+              <button
+                onClick={() => toggleKotenWordList(word.id)}
+                aria-label={saved ? `${word.word}を登録単語から外す` : `${word.word}を登録単語へ追加`}
+                aria-pressed={saved}
+                className={cx(
+                  'flex items-center gap-1 rounded-xl px-2.5 py-2 text-[11px] font-extrabold active:scale-95',
+                  saved ? 'bg-amber-100 text-amber-700' : 'bg-paper text-ink/45',
+                )}
+              >
+                {saved ? <BookmarkFilled size={16} /> : <Bookmark size={16} />}
+                {saved ? '登録済み' : '登録'}
+              </button>
+            </div>
             <p className="mt-1 font-bold text-ink">
               <span className="font-display">{word.word}</span> ＝ {word.meanings.join('・')}
             </p>

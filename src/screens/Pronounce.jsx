@@ -7,12 +7,12 @@ export function PronounceScreen() {
   const navigate = useStore((s) => s.navigate)
   const myList = useStore((s) => s.myList)
   const note = isRecognitionSupported()
-    ? 'お手本を聞いて発音してみよう。マイクで自動採点します。'
-    : '⚠️ この端末/ブラウザは自動採点（音声認識）に未対応です。お手本を聞いて練習し、自己評価で進められます（iPhoneのSafariなどが該当）。'
+    ? 'お手本を聞いて発音し、音声認識された単語との一致度を確認します。音素やアクセントの精密採点ではありません。'
+    : '⚠️ この端末/ブラウザは音声認識に未対応です。お手本を聞いて練習し、自己評価で進められます（iPhoneのSafariなどが該当）。'
   return (
     <LevelPicker
-      title="発音採点"
-      subtitle="お手本を聞いて発音しよう"
+      title="発音チェック"
+      subtitle="話した単語が認識されるか確かめよう"
       accent="#f43f5e"
       note={note}
       countFor={(l) => wordsByLevel(l).length}

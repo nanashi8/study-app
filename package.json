@@ -11,6 +11,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "vocab": "node scripts/vocab-report.mjs",
+    "etymology": "node scripts/etymology-report.mjs",
     "map": "node scripts/vocab-map.mjs",
     "decks": "node scripts/deck-report.mjs",
     "scaffold": "node scripts/frontier-scaffold.mjs",
@@ -19,6 +20,7 @@
   },
   "dependencies": {
     "firebase": "^12.14.0",
+    "jsqr": "^1.4.0",
     "katex": "^0.17.0",
     "lz-string": "^1.5.0",
     "qrcode.react": "^4.2.0",

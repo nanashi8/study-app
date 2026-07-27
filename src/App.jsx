@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { useStore } from './store/useStore.js'
 import { useAuth } from './store/useAuth.js'
 import { pullOrInit, startAutoSave } from './lib/cloudSync.js'
@@ -6,48 +6,74 @@ import { LoginScreen } from './screens/Login.jsx'
 import { AppShell } from './components/AppShell.jsx'
 import { BottomNav } from './components/BottomNav.jsx'
 import { PortalScreen } from './screens/Portal.jsx'
-import { HomeScreen } from './screens/Home.jsx'
-import { VocabLevelsScreen } from './screens/VocabLevels.jsx'
-import { VocabDecksScreen } from './screens/VocabDecks.jsx'
-import { VocabStudyScreen } from './screens/VocabStudy.jsx'
-import { VocabQuizScreen } from './screens/VocabQuiz.jsx'
-import { SessionResultScreen } from './screens/SessionResult.jsx'
-import { WordDetailScreen } from './screens/WordDetail.jsx'
-import { RootDetailScreen } from './screens/RootDetail.jsx'
-import { RootsScreen } from './screens/Roots.jsx'
-import { MyListScreen } from './screens/MyList.jsx'
-import { ProgressScreen } from './screens/Progress.jsx'
-import { SettingsScreen } from './screens/Settings.jsx'
-import { ReadingListScreen } from './screens/ReadingList.jsx'
-import { ReadingPrepScreen } from './screens/ReadingPrep.jsx'
-import { ReaderScreen } from './screens/Reader.jsx'
-import { ReadingSummaryScreen } from './screens/ReadingSummary.jsx'
-import { PhrasesScreen } from './screens/Phrases.jsx'
-import { PhraseStudyScreen } from './screens/PhraseStudy.jsx'
-import { PhraseQuizScreen } from './screens/PhraseQuiz.jsx'
-import { ListeningScreen } from './screens/Listening.jsx'
-import { ListeningQuizScreen } from './screens/ListeningQuiz.jsx'
-import { DictationScreen } from './screens/Dictation.jsx'
-import { DictationPlayScreen } from './screens/DictationPlay.jsx'
-import { PronounceScreen } from './screens/Pronounce.jsx'
-import { PronouncePlayScreen } from './screens/PronouncePlay.jsx'
-import { VocabSearchScreen } from './screens/VocabSearch.jsx'
-import { WordRequestsScreen } from './screens/WordRequests.jsx'
-import { MathMapScreen } from './screens/MathMap.jsx'
-import { MathUnitsScreen } from './screens/MathUnits.jsx'
-import { MathSolveScreen } from './screens/MathSolve.jsx'
-import { GrammarScreen } from './screens/Grammar.jsx'
-import { GrammarQuizScreen } from './screens/GrammarQuiz.jsx'
-import { EnglishMapScreen } from './screens/EnglishMap.jsx'
-import { KotenListScreen } from './screens/KotenList.jsx'
-import { KotenStudyScreen } from './screens/KotenStudy.jsx'
-import { KotenQuizScreen } from './screens/KotenQuiz.jsx'
+
+// ポータル初期表示で全語彙・数式・QR読取などを一括取得しないよう、各画面を遅延読込する。
+// named export の画面を React.lazy が要求する default export へ変換する小さなアダプタ。
+const lazyScreen = (loader, name) =>
+  lazy(() => loader().then((module) => ({ default: module[name] })))
+
+const HomeScreen = lazyScreen(() => import('./screens/Home.jsx'), 'HomeScreen')
+const VocabLevelsScreen = lazyScreen(() => import('./screens/VocabLevels.jsx'), 'VocabLevelsScreen')
+const VocabGroupsScreen = lazyScreen(() => import('./screens/VocabGroups.jsx'), 'VocabGroupsScreen')
+const VocabDecksScreen = lazyScreen(() => import('./screens/VocabDecks.jsx'), 'VocabDecksScreen')
+const VocabStudyScreen = lazyScreen(() => import('./screens/VocabStudy.jsx'), 'VocabStudyScreen')
+const VocabQuizScreen = lazyScreen(() => import('./screens/VocabQuiz.jsx'), 'VocabQuizScreen')
+const SessionResultScreen = lazyScreen(() => import('./screens/SessionResult.jsx'), 'SessionResultScreen')
+const WordDetailScreen = lazyScreen(() => import('./screens/WordDetail.jsx'), 'WordDetailScreen')
+const RootDetailScreen = lazyScreen(() => import('./screens/RootDetail.jsx'), 'RootDetailScreen')
+const RootsScreen = lazyScreen(() => import('./screens/Roots.jsx'), 'RootsScreen')
+const MyListScreen = lazyScreen(() => import('./screens/MyList.jsx'), 'MyListScreen')
+const ProgressScreen = lazyScreen(() => import('./screens/Progress.jsx'), 'ProgressScreen')
+const SettingsScreen = lazyScreen(() => import('./screens/Settings.jsx'), 'SettingsScreen')
+const ReadingListScreen = lazyScreen(() => import('./screens/ReadingList.jsx'), 'ReadingListScreen')
+const ReadingPrepScreen = lazyScreen(() => import('./screens/ReadingPrep.jsx'), 'ReadingPrepScreen')
+const ReaderScreen = lazyScreen(() => import('./screens/Reader.jsx'), 'ReaderScreen')
+const ReadingSummaryScreen = lazyScreen(() => import('./screens/ReadingSummary.jsx'), 'ReadingSummaryScreen')
+const PhrasesScreen = lazyScreen(() => import('./screens/Phrases.jsx'), 'PhrasesScreen')
+const PhraseStudyScreen = lazyScreen(() => import('./screens/PhraseStudy.jsx'), 'PhraseStudyScreen')
+const PhraseQuizScreen = lazyScreen(() => import('./screens/PhraseQuiz.jsx'), 'PhraseQuizScreen')
+const ListeningScreen = lazyScreen(() => import('./screens/Listening.jsx'), 'ListeningScreen')
+const ListeningQuizScreen = lazyScreen(() => import('./screens/ListeningQuiz.jsx'), 'ListeningQuizScreen')
+const DictationScreen = lazyScreen(() => import('./screens/Dictation.jsx'), 'DictationScreen')
+const DictationPlayScreen = lazyScreen(() => import('./screens/DictationPlay.jsx'), 'DictationPlayScreen')
+const PronounceScreen = lazyScreen(() => import('./screens/Pronounce.jsx'), 'PronounceScreen')
+const PronouncePlayScreen = lazyScreen(() => import('./screens/PronouncePlay.jsx'), 'PronouncePlayScreen')
+const VocabSearchScreen = lazyScreen(() => import('./screens/VocabSearch.jsx'), 'VocabSearchScreen')
+const WordRequestsScreen = lazyScreen(() => import('./screens/WordRequests.jsx'), 'WordRequestsScreen')
+const MathMapScreen = lazyScreen(() => import('./screens/MathMap.jsx'), 'MathMapScreen')
+const MathUnitsScreen = lazyScreen(() => import('./screens/MathUnits.jsx'), 'MathUnitsScreen')
+const MathSolveScreen = lazyScreen(() => import('./screens/MathSolve.jsx'), 'MathSolveScreen')
+const GrammarScreen = lazyScreen(() => import('./screens/Grammar.jsx'), 'GrammarScreen')
+const GrammarQuizScreen = lazyScreen(() => import('./screens/GrammarQuiz.jsx'), 'GrammarQuizScreen')
+const GrammarLessonsScreen = lazyScreen(() => import('./screens/GrammarLessons.jsx'), 'GrammarLessonsScreen')
+const VnListScreen = lazyScreen(() => import('./screens/VnList.jsx'), 'VnListScreen')
+const VnPlayScreen = lazyScreen(() => import('./screens/VnPlay.jsx'), 'VnPlayScreen')
+const EnglishMapScreen = lazyScreen(() => import('./screens/EnglishMap.jsx'), 'EnglishMapScreen')
+const DiagnosticScreen = lazyScreen(() => import('./screens/Diagnostic.jsx'), 'DiagnosticScreen')
+const KotenListScreen = lazyScreen(() => import('./screens/KotenList.jsx'), 'KotenListScreen')
+const KotenStudyScreen = lazyScreen(() => import('./screens/KotenStudy.jsx'), 'KotenStudyScreen')
+const KotenQuizScreen = lazyScreen(() => import('./screens/KotenQuiz.jsx'), 'KotenQuizScreen')
+const KotenInterpretationListScreen = lazyScreen(
+  () => import('./screens/KotenInterpretationList.jsx'),
+  'KotenInterpretationListScreen',
+)
+const KotenInterpretationPrepScreen = lazyScreen(
+  () => import('./screens/KotenInterpretationPrep.jsx'),
+  'KotenInterpretationPrepScreen',
+)
+const KotenInterpretationQuizScreen = lazyScreen(
+  () => import('./screens/KotenInterpretationQuiz.jsx'),
+  'KotenInterpretationQuizScreen',
+)
+const KotenGrammarScreen = lazyScreen(() => import('./screens/KotenGrammar.jsx'), 'KotenGrammarScreen')
+const KotenSavedScreen = lazyScreen(() => import('./screens/KotenSaved.jsx'), 'KotenSavedScreen')
 
 const SCREENS = {
   portal: PortalScreen,
   login: LoginScreen,
   home: HomeScreen,
   vocabLevels: VocabLevelsScreen,
+  vocabGroups: VocabGroupsScreen,
   vocabDecks: VocabDecksScreen,
   vocabStudy: VocabStudyScreen,
   vocabQuiz: VocabQuizScreen,
@@ -78,10 +104,19 @@ const SCREENS = {
   mathSolve: MathSolveScreen,
   grammar: GrammarScreen,
   grammarQuiz: GrammarQuizScreen,
+  grammarLessons: GrammarLessonsScreen,
   englishMap: EnglishMapScreen,
+  diagnostic: DiagnosticScreen,
   kotenList: KotenListScreen,
   kotenStudy: KotenStudyScreen,
   kotenQuiz: KotenQuizScreen,
+  kotenInterpretationList: KotenInterpretationListScreen,
+  kotenInterpretationPrep: KotenInterpretationPrepScreen,
+  kotenInterpretationQuiz: KotenInterpretationQuizScreen,
+  kotenGrammar: KotenGrammarScreen,
+  kotenSaved: KotenSavedScreen,
+  vnList: VnListScreen,
+  vnPlay: VnPlayScreen,
 }
 
 // ボトムナビ（英語アプリのタブ）を隠す画面。
@@ -90,11 +125,14 @@ const SCREENS = {
 const IMMERSIVE = new Set([
   'portal',
   'login',
-  'vocabStudy', 'vocabQuiz', 'sessionResult', 'readingPrep', 'reader', 'phraseStudy', 'phraseQuiz',
-  'listeningQuiz', 'dictationPlay', 'pronouncePlay', 'mathSolve', 'grammarQuiz',
+  'vocabStudy', 'vocabQuiz', 'wordDetail', 'sessionResult', 'readingPrep', 'reader', 'phraseStudy', 'phraseQuiz',
+  'listeningQuiz', 'dictationPlay', 'pronouncePlay', 'mathSolve', 'grammarQuiz', 'diagnostic',
   // 別コンテンツ（ポータルから入る）
   'vocabSearch', 'wordRequests', 'mathMap', 'mathUnits',
-  'kotenList', 'kotenStudy', 'kotenQuiz',
+  'kotenList', 'kotenStudy', 'kotenQuiz', 'kotenInterpretationList',
+  'kotenInterpretationPrep', 'kotenInterpretationQuiz',
+  'kotenGrammar', 'kotenSaved',
+  'vnList', 'vnPlay',
 ])
 
 // 学習アプリ本体（ログイン済みのときだけ表示）。
@@ -104,8 +142,19 @@ function MainApp() {
   const showNav = !IMMERSIVE.has(screen)
   return (
     <AppShell nav={showNav ? <BottomNav /> : null}>
-      <Screen />
+      <Suspense fallback={<ScreenLoader />}>
+        <Screen />
+      </Suspense>
     </AppShell>
+  )
+}
+
+function ScreenLoader() {
+  return (
+    <div className="flex min-h-full flex-col items-center justify-center gap-3 text-ink/50">
+      <div className="h-7 w-7 animate-spin rounded-full border-4 border-brand-200 border-t-brand-500" />
+      <p className="text-xs font-bold">画面を読み込み中…</p>
+    </div>
   )
 }
 

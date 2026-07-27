@@ -142,6 +142,7 @@ import { WORDS_MORE139 } from './words140.js'
 import { WORDS_IMPORTED } from './words-imported.js'
 import { READING_WORDS } from './reading-words.js'
 import { PHONETICS } from './phonetics.js'
+import { PHONETIC_OVERRIDES } from './phonetic-overrides.js'
 import { ROOTS, ROOTS_BY_ID } from './roots.js'
 import { LEVEL_OVERRIDE } from './levels-override.js'
 import { buildRootMatchers, autoRootIds } from './derive-roots.js'
@@ -159,8 +160,12 @@ const normalize = (w) => {
   const roots = [...new Set([...manual, ...auto])]
   // 取り込みデータに優しいフォールバック：意味は文字列1つでも可、語源は任意。
   const meanings = w.meanings?.length ? w.meanings : w.meaning ? [w.meaning] : []
-  // 発音記号(IPA)は語自身に無ければ CMU辞書由来のマップから補完。
-  const phonetic = w.phonetic || PHONETICS[w.word?.toLowerCase()] || ''
+  // 発音記号(IPA)は手書き値→品詞/語義別補正→CMU辞書の順で採用。
+  const phonetic =
+    w.phonetic ||
+    PHONETIC_OVERRIDES[w.id] ||
+    PHONETICS[w.word?.toLowerCase()] ||
+    ''
   // 級(level)補正：基本語の過大級づけを英検の実級へ補正（levels-override.js）。
   const level = LEVEL_OVERRIDE[w.word?.toLowerCase()] || w.level
   // 補助情報（類義語/反対語/派生語/使い方）は各語のタプル8番目に内包済み。
@@ -191,12 +196,14 @@ export const CURATED_IDS = seenIds
 const importedUnique = WORDS_IMPORTED.filter((w) => w.id && !seenIds.has(w.id))
 
 // 語族(fam)の自動拡充（可逆・高精度）。見出し語どうしを「同じ語族」としてリンクする。
-// 3経路の安全リンクを張り、各語の family を最大 FAM_MAX 件まで関連見出し語で補う。
+// 4経路の安全リンクを張り、各語の family を最大 FAM_MAX 件まで関連見出し語で補う。
 //   (1) 手書き語源リンクの双方向化：語源が「base(意味)+ -suffix」等で基語を名指しし、その基語が
 //       見出し語なら 派生語⇔基語 を相互リンク（例: knowledge⇔know, happiness⇔happy）。
-//   (2) 超安全な接尾辞のみ(-ness/-less/-ful/-ship/-hood/-ly, 語幹4字以上)で 語幹⇔派生 を相互リンク。
+//   (2) 語源説明が見出し語を「同源・同系・同根」と明記していれば、その組を双方向化。
+//       既存の説明に根拠が明記された組だけを拾い、綴りの似た別語を推測でつながない。
+//   (3) 超安全な接尾辞のみ(-ness/-less/-ful/-ship/-hood/-ly, 語幹4字以上)で 語幹⇔派生 を相互リンク。
 //       -sion/-al/-ous 等は短語の偶発一致(pen/pension, leg/legal)を生むため除外。
-//   (3) 複合語：末尾が共通語(house/work/time…)で前半が見出し語なら相互リンク(greenhouse⇔green)。
+//   (4) 複合語：末尾が共通語(house/work/time…)で前半が見出し語なら相互リンク(greenhouse⇔green)。
 // 関連語の意味は相手見出し語自身の意味を使う（正確）。手書きの family は保持し追記する。
 // 巻き戻すには deriveFamilies 呼び出しを外して .map(normalize) に戻すだけ。
 const FAM_PREFIX = new Set(['un', 'in', 'im', 'ir', 'il', 'dis', 'non', 're', 'over', 'under', 'mis', 'sub', 'pre', 'anti', 'up', 'out', 'de', 'ex', 'en', 'em', 'inter', 'trans', 'semi', 'co', 'com', 'con', 'a', 'ab', 'fore', 'counter'])
@@ -204,6 +211,7 @@ const FAM_STOP = new Set(['less', 'more'])
 const FAM_SUFFIX = ['ness', 'less', 'ful', 'ship', 'hood', 'ly']
 const FAM_TAIL = ['house', 'work', 'ware', 'time', 'way', 'place', 'land', 'light', 'room', 'book', 'side', 'yard', 'board', 'man', 'men', 'maker', 'keeper', 'mate', 'ground', 'line', 'field', 'fall', 'fold', 'print', 'storm', 'quake', 'craft', 'coast', 'mark', 'step']
 const FAM_MAX = 6
+const SAME_ORIGIN_RE = /([A-Za-z][A-Za-z'’-]{1,})(?:\s*[（(][^）)]*[）)])?\s*と同(?:語)?(?:源|系|根)/g
 const deriveFamilies = (words) => {
   const head = new Map(words.map((w) => [w.word.toLowerCase(), w]))
   const links = new Map() // lowercased word -> Set(lowercased related headword)
@@ -226,6 +234,12 @@ const deriveFamilies = (words) => {
         if (related && head.has(e) && (!baseId || e.length > baseId.length)) baseId = e
       }
       if (baseId) pair(wl, baseId)
+
+      // (2) 説明中で明示された同源語。全角/半角の意味括弧を許容する。
+      for (const match of note.matchAll(SAME_ORIGIN_RE)) {
+        const relatedId = match[1].toLowerCase().replace(/[^a-z]/g, '')
+        if (head.has(relatedId)) pair(wl, relatedId)
+      }
     }
     // 既存(手書き)の family が見出し語を指すなら双方向化
     for (const f of w.family) {
@@ -233,7 +247,7 @@ const deriveFamilies = (words) => {
       if (head.has(fw)) pair(wl, fw)
     }
   }
-  // (2)(3) 形態リンク（超安全な接尾辞＋複合語）
+  // (3)(4) 形態リンク（超安全な接尾辞＋複合語）
   for (const b of head.keys()) {
     for (const suf of FAM_SUFFIX) {
       if (b.endsWith(suf) && b.length - suf.length >= 4) {
@@ -294,6 +308,51 @@ export const wordsByLevel = (levelId) =>
   ALL_WORDS.filter((w) => w.level === levelId)
 
 export const levelCount = (levelId) => wordsByLevel(levelId).length
+
+// 全語彙の分類学習で使う分野・品詞インデックス。
+// 分野は小分類も「その他」へまとめず、そのまま独立した学習対象にする。
+const VOCAB_FIELD_PRIORITY = [
+  '一般', '動作・行為', '性質・状態', '様子・程度', '機能語', '時間・数量',
+  '心理', '家族・人', '食・生活', '料理', '自然', '気象', '環境',
+  '科学', '医学', '技術', '測定', '学問', '教育', '言語', '文学',
+  '歴史', '地理', '社会', '経済', 'ビジネス', '政治', '法律', '軍事',
+  '宗教', '交通', '農業', '建築', 'メディア', 'スポーツ', '芸術',
+  '音楽', '副詞',
+]
+
+const groupWordsBy = (key) => {
+  const groups = new Map()
+  for (const word of ALL_WORDS) {
+    const value = word[key]
+    if (!groups.has(value)) groups.set(value, [])
+    groups.get(value).push(word)
+  }
+  return groups
+}
+
+const WORDS_BY_FIELD = groupWordsBy('field')
+const WORDS_BY_POS = groupWordsBy('pos')
+
+export const VOCAB_FIELDS = [
+  ...VOCAB_FIELD_PRIORITY.filter((field) => WORDS_BY_FIELD.has(field)),
+  ...[...WORDS_BY_FIELD.keys()]
+    .filter((field) => !VOCAB_FIELD_PRIORITY.includes(field))
+    .sort((a, b) => a.localeCompare(b, 'ja')),
+]
+
+export const VOCAB_POS = [
+  { id: '名', label: '名詞' },
+  { id: '動', label: '動詞' },
+  { id: '形', label: '形容詞' },
+  { id: '副', label: '副詞' },
+  { id: '前', label: '前置詞' },
+  { id: '接', label: '接続詞' },
+  { id: '代', label: '代名詞' },
+]
+
+export const wordsByField = (field) => WORDS_BY_FIELD.get(field) ?? []
+
+export const wordsByPos = (pos) => WORDS_BY_POS.get(pos) ?? []
 
 // 指定の語根を含む単語たち
 export const wordsByRoot = (rootId) =>

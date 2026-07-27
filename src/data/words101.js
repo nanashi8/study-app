@@ -41,7 +41,7 @@ const RAW = [
   ['untruth', '名', '1', '虚偽・うそ', 'tell an untruth', 'うそをつく', 'un(否定)+truth(真実)。', { syn: [{ w: 'falsehood', m: '虚偽' }, { w: 'lie', m: 'うそ' }], ant: [{ w: 'truth', m: '真実' }], fam: [{ w: 'truth', m: '真実' }], field: '一般' }],
   ['unwell', '形', '1', '具合の悪い・病気の', 'feel unwell', '気分が悪い', 'un(否定)+well(健康な)。', { syn: [{ w: 'ill', m: '病気の' }, { w: 'sick', m: '具合が悪い' }], ant: [{ w: 'healthy', m: '健康な' }], field: '医学' }],
   ['unwieldy', '形', '1', '扱いにくい・かさばる', 'an unwieldy package', '扱いにくい荷物', 'un(否定)+wieldy(扱いやすい)。', { syn: [{ w: 'cumbersome', m: '煩雑な' }, { w: 'bulky', m: 'かさばる' }], ant: [{ w: 'manageable', m: '扱いやすい' }], field: '一般' }],
-  ['unwind', '動', '1', '緊張をほぐす・くつろぐ・ほどく', 'unwind after work', '仕事の後くつろぐ', 'un(逆)+wind(巻く)。', { syn: [{ w: 'relax', m: 'くつろぐ' }, { w: 'unwind', m: 'ほどく' }], ant: [{ w: 'tense', m: '緊張する' }], fam: [{ w: 'wind', m: '巻く' }], field: '心理' }],
+  ['unwind', '動', '1', '緊張をほぐす・くつろぐ・ほどく', 'unwind after work', '仕事の後くつろぐ', 'un(逆)+wind(巻く)。', { syn: [{ w: 'relax', m: 'くつろぐ' }], ant: [{ w: 'tense', m: '緊張する' }], fam: [{ w: 'wind', m: '巻く' }], field: '心理' }],
   ['unyielding', '形', '1', '不屈の・断固とした', 'unyielding determination', '不屈の決意', 'un(否定)+yielding(屈する)。', { syn: [{ w: 'inflexible', m: '頑とした' }, { w: 'resolute', m: '断固とした' }], ant: [{ w: 'yielding', m: '従順な' }], fam: [{ w: 'yield', m: '屈する' }], field: '心理' }],
   ['upbringing', '名', '1', '養育・しつけ', 'a strict upbringing', '厳しいしつけ', 'up(育てて)+bringing(育てること)。', { syn: [{ w: 'rearing', m: '養育' }, { w: 'nurture', m: '養育' }], field: '社会' }],
   ['upheaval', '名', '1', '激変・大変動', 'social upheaval', '社会的激変', 'up(上へ)+heave(持ち上げる)。', { syn: [{ w: 'turmoil', m: '混乱' }, { w: 'disruption', m: '混乱' }], ant: [{ w: 'stability', m: '安定' }], field: '社会' }],

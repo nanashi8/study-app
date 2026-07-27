@@ -1,7 +1,7 @@
 import { useMemo, useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import { shuffle } from '../data/vocab.js'
-import { grammarByLevel, grammarByTopic, getGrammar } from '../data/grammar.js'
+import { GRAMMAR, grammarByLevel, grammarByTopic, getGrammar } from '../data/grammar.js'
 import { todayIndex } from '../store/useStore.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { Button, ProgressBar, IconButton, Chip, cx } from '../components/ui.jsx'
@@ -10,6 +10,7 @@ import { Close, Check, ArrowRight, Lightbulb } from '../components/Icons.jsx'
 // source から出題候補を集める。
 function candidates(source = {}) {
   if (source.type === 'grammarList') return (source.ids ?? []).map(getGrammar).filter(Boolean)
+  if (source.type === 'grammarDue') return GRAMMAR
   if (source.topic) return grammarByTopic(source.level, source.topic)
   return grammarByLevel(source.level)
 }
@@ -17,7 +18,10 @@ function candidates(source = {}) {
 // 未習得・期限切れを優先しつつシャッフルして最大10問。
 function buildDeck(source, srs, size = 10) {
   const day = todayIndex()
-  const pool = shuffle(candidates(source))
+  let pool = shuffle(candidates(source))
+  if (source.type === 'grammarDue') {
+    pool = pool.filter((g) => srs[g.id] && srs[g.id].due <= day)
+  }
   pool.sort((a, b) => {
     const ra = srs[a.id]?.due <= day ? 0 : srs[a.id] ? 2 : 1 // due → 未着手 → それ以外
     const rb = srs[b.id]?.due <= day ? 0 : srs[b.id] ? 2 : 1

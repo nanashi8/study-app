@@ -10,6 +10,7 @@ import { Lightbulb, ArrowRight, Check } from '../components/Icons.jsx'
 
 // テスト結果から弱点を判定するしきい値。
 const MIN_ATTEMPTS = 10 // これ未満は「まだテスト不足」とみなす
+const READING_MIN_ATTEMPTS = 4
 const WEAK_ACC = 0.7 // 正答率がこれ未満なら弱点
 
 // スキル一覧（単語・文法・語法・長文・リスニング・ディクテーション）。
@@ -20,6 +21,7 @@ const SKILLS = [
   { id: 'reading', label: '長文読解', emoji: '📚', color: '#10b981', screen: 'readingList', kind: 'reading' },
   { id: 'listening', label: 'リスニング', emoji: '🎧', color: '#0ea5e9', screen: 'listening', kind: 'acc' },
   { id: 'dictation', label: 'ディクテーション', emoji: '⌨️', color: '#14b8a6', screen: 'dictation', kind: 'acc' },
+  { id: 'pronunciation', label: '発音チェック', emoji: '🎤', color: '#f43f5e', screen: 'pronounce', kind: 'acc' },
 ]
 
 // 各スキルの理解度・状態をまとめる。
@@ -28,9 +30,25 @@ function skillInfo(skill, skillStats, readingsDone) {
   if (skill.kind === 'reading') {
     const total = PASSAGES.length
     const read = readingsDone.length
-    const value = total ? read / total : 0
-    const status = read === 0 ? 'untested' : value >= 0.5 ? 'ok' : 'progress'
-    return { status, value, label: `${read}/${total} 本 読了`, attempts: read }
+    const s = skillStats.reading
+    const attempts = s?.answered ?? 0
+    if (attempts < READING_MIN_ATTEMPTS) {
+      return {
+        status: attempts ? 'progress' : 'untested',
+        value: 0,
+        label: `読解 ${attempts}問・${read}/${total}本 読了`,
+        attempts,
+      }
+    }
+    const acc = s.correct / s.answered
+    const status = acc < WEAK_ACC ? 'weak' : 'ok'
+    return {
+      status,
+      value: acc,
+      acc,
+      label: `読解正答率 ${Math.round(acc * 100)}%・${read}/${total}本`,
+      attempts,
+    }
   }
   const s = skillStats[skill.id]
   const attempts = s?.answered ?? 0

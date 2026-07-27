@@ -43,7 +43,7 @@ export const GRAMMAR = [
 
   // ───────── 3級（中3）─────────
   { id: 'gr_3_perf_1', level: '3', topic: '現在完了', q: 'I have ___ in Tokyo for ten years.', choices: ['lived', 'live', 'living', 'lives'], answer: 'lived', explain: '現在完了は have＋過去分詞。継続を表す。', sentence: { en: 'I have lived in Tokyo for ten years.', ja: '私は10年間東京に住んでいます。' } },
-  { id: 'gr_3_perf_2', level: '3', topic: '現在完了', q: 'Have you ___ finished it yet?', choices: ['already', 'ever', 'yet', 'since'], answer: 'already', explain: '完了用法の肯定文では already（もう）。yet は否定・疑問の文末。', sentence: { en: 'Have you already finished it?', ja: 'もう終えましたか。' } },
+  { id: 'gr_3_perf_2', level: '3', topic: '現在完了', q: 'Have you ___ finished it?', choices: ['already', 'ever', 'yet', 'since'], answer: 'already', explain: 'already は「もう・すでに」。疑問文では驚きや確認の気持ちを添える。', sentence: { en: 'Have you already finished it?', ja: 'もう終えましたか。' } },
   { id: 'gr_3_perf_3', level: '3', topic: '現在完了', q: 'She has ___ to Australia twice.', choices: ['been', 'gone', 'went', 'being'], answer: 'been', explain: 'have been to で「行ったことがある（経験）」。', sentence: { en: 'She has been to Australia twice.', ja: '彼女は2回オーストラリアに行ったことがあります。' } },
   { id: 'gr_3_pass_1', level: '3', topic: '受動態', q: 'This book ___ by many people.', choices: ['is read', 'reads', 'is reading', 'read'], answer: 'is read', explain: '受動態は be動詞＋過去分詞。「読まれている」。', sentence: { en: 'This book is read by many people.', ja: 'この本は多くの人に読まれています。' } },
   { id: 'gr_3_pass_2', level: '3', topic: '受動態', q: 'The room ___ cleaned yesterday.', choices: ['was', 'is', 'has', 'did'], answer: 'was', explain: '過去の受動態は was/were＋過去分詞。', sentence: { en: 'The room was cleaned yesterday.', ja: 'その部屋は昨日掃除された。' } },
@@ -132,7 +132,7 @@ export const GRAMMAR = [
   { id: 'gr_pre1_inv_2', level: 'pre1', topic: '倒置', q: 'Hardly had I arrived ___ it began to rain.', choices: ['when', 'than', 'that', 'then'], answer: 'when', explain: 'Hardly had S done when 〜（〜するやいなや）。', sentence: { en: 'Hardly had I arrived when it began to rain.', ja: '着くやいなや雨が降り出した。' } },
   { id: 'gr_pre1_subj_2', level: 'pre1', topic: '仮定法応用', q: '___ I known, I would have told you.', choices: ['Had', 'If', 'Have', 'Did'], answer: 'Had', explain: 'if省略の倒置：Had＋S＋過分（=If S had done）。', sentence: { en: 'Had I known, I would have told you.', ja: '知っていたら教えたのに。' } },
   { id: 'gr_pre1_part_1', level: 'pre1', topic: '独立分詞構文', q: 'The weather ___ fine, we went hiking.', choices: ['being', 'is', 'was', 'be'], answer: 'being', explain: '独立分詞構文：主語が異なる分詞構文（〜なので）。', sentence: { en: 'The weather being fine, we went hiking.', ja: '天気がよかったのでハイキングに行った。' } },
-  { id: 'gr_pre1_conc_2', level: 'pre1', topic: '譲歩', q: '___ tired she was, she kept working.', choices: ['Tired as', 'As tired', 'Though tired', 'Tired though'], answer: 'Tired as', explain: '〈形容詞＋as＋S＋V〉で「〜だけれども」（譲歩の倒置）。', sentence: { en: 'Tired as she was, she kept working.', ja: '疲れていたが彼女は働き続けた。' } },
+  { id: 'gr_pre1_conc_2', level: 'pre1', topic: '譲歩', q: '___ she was, she kept working.', choices: ['Tired as', 'As tired', 'Though tired', 'Tired though'], answer: 'Tired as', explain: '〈形容詞＋as＋S＋V〉で「〜だけれども」（譲歩の倒置）。', sentence: { en: 'Tired as she was, she kept working.', ja: '疲れていたが彼女は働き続けた。' } },
   { id: 'gr_pre1_nounclause_1', level: 'pre1', topic: '名詞節', q: 'The fact ___ he lied shocked us.', choices: ['that', 'which', 'what', 'whether'], answer: 'that', explain: '同格の that（〜という事実）。後ろは完全文。', sentence: { en: 'The fact that he lied shocked us.', ja: '彼がうそをついたという事実に私たちは衝撃を受けた。' } },
 
   // ───────── 1級 追加 ─────────
@@ -369,7 +369,7 @@ export const GRAMMAR = [
   { id: 'gr_pre1_comp_x2', level: 'pre1', topic: '複合関係詞', q: '___ comes will be welcome.', choices: ['Whoever', 'Whomever', 'Whatever', 'However'], answer: 'Whoever', explain: 'whoever は「〜する人は誰でも」（主格）。', sentence: { en: 'Whoever comes will be welcome.', ja: '来る人は誰でも歓迎する。' } },
   { id: 'gr_pre1_app_x1', level: 'pre1', topic: '同格', q: 'There is no doubt ___ he is guilty.', choices: ['that', 'which', 'what', 'if'], answer: 'that', explain: '同格の that（〜という疑い/事実）。後ろは完全文。', sentence: { en: 'There is no doubt that he is guilty.', ja: '彼が有罪なのは疑いない。' } },
   { id: 'gr_pre1_with_x1', level: 'pre1', topic: '付帯状況', q: 'He sat there ___ his eyes closed.', choices: ['with', 'by', 'on', 'of'], answer: 'with', explain: 'with＋O＋分詞/形容詞（〜したまま・付帯状況）。', sentence: { en: 'He sat there with his eyes closed.', ja: '彼は目を閉じたまま座っていた。' } },
-  { id: 'gr_pre1_ellip_x1', level: 'pre1', topic: '省略', q: 'Call me if ___ necessary.', choices: ['necessary', 'it necessary', 'is necessary', 'to be'], answer: 'necessary', explain: '副詞節中の〈S＋be〉は省略可（if (it is) necessary）。', sentence: { en: 'Call me if necessary.', ja: '必要なら電話して。' } },
+  { id: 'gr_pre1_ellip_x1', level: 'pre1', topic: '省略', q: 'Call me if ___.', choices: ['necessary', 'it necessary', 'is necessary', 'to be'], answer: 'necessary', explain: '副詞節中の〈S＋be〉は省略可（if (it is) necessary）。', sentence: { en: 'Call me if necessary.', ja: '必要なら電話して。' } },
   { id: 'gr_pre1_emph_x1', level: 'pre1', topic: '強調', q: 'It was not until noon ___ he woke up.', choices: ['that', 'when', 'which', 'then'], answer: 'that', explain: 'It is not until 〜 that …（〜して初めて…）。', sentence: { en: 'It was not until noon that he woke up.', ja: '正午になって初めて彼は目を覚ました。' } },
 
   // ── 1級 ──

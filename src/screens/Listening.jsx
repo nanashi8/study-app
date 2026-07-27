@@ -1,20 +1,47 @@
 import { useStore } from '../store/useStore.js'
-import { wordsByLevel } from '../data/vocab.js'
+import {
+  LISTENING_PROFILES,
+  LISTENING_TYPE_META,
+  listeningByLevel,
+} from '../data/listening.js'
+import { READING_LEVELS } from '../data/levels.js'
 import { LevelPicker } from '../components/LevelPicker.jsx'
+
+const profileDetail = (levelId) => {
+  const profile = LISTENING_PROFILES[levelId]
+  if (!profile) return ''
+  const formats = Object.keys(profile.typeTargets)
+    .map((type) => LISTENING_TYPE_META[type]?.label)
+    .filter(Boolean)
+    .join('・')
+  const playCounts = new Set(Object.values(profile.plays))
+  const plays =
+    playCounts.size === 1
+      ? `放送${[...playCounts][0]}回`
+      : '形式により放送1〜2回'
+  return `${formats}｜${plays}｜${profile.target}`
+}
 
 export function ListeningScreen() {
   const navigate = useStore((s) => s.navigate)
-  const myList = useStore((s) => s.myList)
+
   return (
     <LevelPicker
       title="リスニング"
-      subtitle="音声を聞いて意味を当てよう"
+      subtitle="英検形式で、聞いて考える"
       accent="#0ea5e9"
-      note="単語は表示されません。音だけを頼りに意味を選びます（端末の音声合成を使用）。"
-      countFor={(l) => wordsByLevel(l).length}
-      onPick={(levelId, label) => navigate('listeningQuiz', { source: { type: 'level', levelId }, title: `英検${label}` })}
-      myListCount={myList.length}
-      onMyList={() => navigate('listeningQuiz', { source: { type: 'mylist', ids: myList }, title: 'マイ単語' })}
+      levels={READING_LEVELS}
+      note="英検の級別形式と放送回数を参考にしたオリジナル問題です。会話・パッセージ・Real-Life・インタビューまで、級に応じて段階化しています（端末の音声合成を使用）。"
+      countFor={(levelId) => listeningByLevel(levelId).length}
+      countUnit="問"
+      detailFor={profileDetail}
+      onPick={(levelId, label) =>
+        navigate('listeningQuiz', {
+          source: { type: 'level', levelId },
+          title: `英検${label}`,
+          engine: 'listening',
+        })
+      }
     />
   )
 }
