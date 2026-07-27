@@ -16,8 +16,12 @@ import { PASSAGES } from '../src/data/passages.js'
 import {
   READING_STUDY,
   READING_WORD_COUNT_TARGETS,
+  getReadingWords,
   passageWordCount,
 } from '../src/data/reading-study.js'
+import { resolvePassageWord } from '../src/data/passage-gloss.js'
+import { READING_GRAMMAR_EXPECTATIONS } from '../src/data/reading-grammar-expectations.js'
+import { analyzeReadingSentence } from '../src/lib/reading-grammar.js'
 import {
   READING_QUESTION_COUNTS,
   getReadingQuestions,
@@ -163,11 +167,43 @@ for (const ps of PASSAGES) {
       }
     }
   }
-  for (const s of ps.sentences) {
+  const expectedPatterns = READING_GRAMMAR_EXPECTATIONS[ps.id]
+  if (!expectedPatterns) {
+    errors.push(`長文 ${ps.id}: 人手確認済みの主節文型正解表が無い`)
+  } else if (expectedPatterns.length !== ps.sentences.length) {
+    errors.push(
+      `長文 ${ps.id}: 文型正解表が${expectedPatterns.length}文分（本文は${ps.sentences.length}文）`,
+    )
+  }
+  for (const [sentenceIndex, s] of ps.sentences.entries()) {
     if (!s.en || !s.ja || !s.chunks?.length) errors.push(`長文 ${ps.id}: 文に en/ja/chunks 不足`)
     for (const [k, g] of Object.entries(s.gloss ?? {})) {
       if (g.id && !getWord(g.id)) errors.push(`長文 ${ps.id}: gloss "${k}"→${g.id} が辞書に無い`)
     }
+    const tokens = s.en.match(/[A-Za-z]+(?:['’][A-Za-z]+)*/g) ?? []
+    for (const surface of tokens) {
+      const key = surface.toLowerCase().replace('’', "'")
+      const resolved = resolvePassageWord(key, s.gloss)
+      const proper = s.gloss?.[key]?.proper === true
+      if (!resolved) {
+        errors.push(`長文 ${ps.id}: 本文語 "${surface}" の意味を解決できない (${s.en})`)
+      } else if (!resolved.id && !proper) {
+        errors.push(`長文 ${ps.id}: 本文語 "${surface}" に保存可能な共通辞書IDが無い`)
+      } else if (resolved.id && !getWord(resolved.id)) {
+        errors.push(`長文 ${ps.id}: 本文語 "${surface}" の辞書ID ${resolved.id} が実在しない`)
+      }
+    }
+    const expectedPattern = expectedPatterns?.[sentenceIndex]
+    const actualPattern = analyzeReadingSentence(s).mainPattern
+    if (expectedPattern && actualPattern !== expectedPattern) {
+      errors.push(
+        `長文 ${ps.id}: 第${sentenceIndex + 1}文の主節は${actualPattern || '未判定'}（正解表は${expectedPattern}）`,
+      )
+    }
+  }
+  const studyWordIds = new Set(getReadingWords(ps).map((word) => word.id))
+  for (const id of ps.vocab) {
+    if (!studyWordIds.has(id)) errors.push(`長文 ${ps.id}: vocab ${id} が読解前単語学習に出ない`)
   }
   const target = READING_WORD_COUNT_TARGETS[ps.level]
   const wordCount = passageWordCount(ps)

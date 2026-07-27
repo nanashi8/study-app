@@ -1,7 +1,146 @@
 // 長文教材で中心概念になるが、既存の単語帳に未収録だった語。
 // ALL_WORDS に合流させることで、通常学習・SRS・マイ単語と同じ ID を共有する。
 
+import { PASSAGES } from './passages.js'
+
+const passageExample = (surface) => {
+  const key = surface.toLowerCase()
+  for (const passage of PASSAGES) {
+    for (const sentence of passage.sentences) {
+      const tokens = sentence.en.match(/[A-Za-z]+(?:['’][A-Za-z]+)*/g) ?? []
+      if (tokens.some((token) => token.toLowerCase() === key)) {
+        return { en: sentence.en, ja: sentence.ja }
+      }
+    }
+  }
+  throw new Error(`長文辞書語 "${surface}" の例文が見つかりません`)
+}
+
+const makePassageWord = ({
+  id,
+  word = id,
+  surface = word,
+  pos,
+  level,
+  meaning,
+  field,
+  phonetic,
+  example,
+}) => ({
+  id,
+  word,
+  pos,
+  level,
+  meaning,
+  meanings: meaning.split('・'),
+  ...(phonetic ? { phonetic } : {}),
+  example: example ?? passageExample(surface),
+  etymology: {
+    parts: [{ t: word, kind: 'stem', gloss: meaning.split('・')[0] }],
+    note: `この項目では ${word} 全体を語幹として扱う。長文中では「${meaning}」の意味で用いられる。`,
+  },
+  field,
+})
+
+// 本文タップで未解決だった基本語・題材語。透明な派生語は passage-gloss.js で
+// 既存語族へ接続し、ここには独立した語義を学ぶ必要がある語だけを置く。
+const PASSAGE_DICTIONARY_WORDS = [
+  { id: 'junior', pos: '形', level: '5', meaning: '年下の・下級の・中学の', field: '教育' },
+  { id: 'english', word: 'English', pos: '名', level: '5', meaning: '英語・英語の', field: '言語' },
+  { id: 'many', pos: '形', level: '5', meaning: '多くの・たくさんの', field: '時間・数量' },
+  { id: 'after', pos: '前', level: '5', meaning: '〜の後に・〜の後で', field: '機能語' },
+  { id: 'under', pos: '前', level: '5', meaning: '〜の下に・〜の下で', field: '機能語' },
+  { id: 'thank', pos: '動', level: '5', meaning: '感謝する・礼を言う', field: 'コミュニケーション' },
+  {
+    id: 'ms',
+    word: 'Ms.',
+    surface: 'Ms',
+    pos: '名',
+    level: '4',
+    meaning: '〜さん・〜先生（女性への敬称）',
+    field: 'コミュニケーション',
+    phonetic: '/mɪz/',
+  },
+  { id: 'fifty', pos: '形', level: '4', meaning: '50の・50個の', field: '時間・数量' },
+  { id: 'glue', pos: '名', level: '4', meaning: 'のり・接着剤', field: '食・生活' },
+  { id: 'noon', pos: '名', level: '4', meaning: '正午', field: '時間・数量' },
+  { id: 'before', pos: '前', level: '4', meaning: '〜の前に・〜より前に', field: '機能語' },
+  { id: 'put', pos: '動', level: '4', meaning: '置く・載せる', field: '動作・行為' },
+  { id: 'plant', pos: '動', level: '3', meaning: '植える・植物', field: '自然' },
+  { id: 'spray', pos: '名', level: '3', meaning: '噴霧器・スプレー', field: '農業' },
+  { id: 'around', pos: '前', level: '4', meaning: '〜の周りに・およそ', field: '機能語' },
+  { id: 'cucumber', surface: 'cucumbers', pos: '名', level: '3', meaning: 'きゅうり', field: '食・生活' },
+  { id: 'center', pos: '名', level: '3', meaning: '中心・センター', field: '一般' },
+  { id: 'farm', surface: 'farming', pos: '名', level: '3', meaning: '農場・農業を営む', field: '農業' },
+  { id: 'tip', surface: 'tips', pos: '名', level: '3', meaning: '助言・こつ', field: 'コミュニケーション' },
+  { id: 'teenager', surface: 'teenagers', pos: '名', level: 'pre2', meaning: '10代の若者', field: '家族・人' },
+  { id: 'than', pos: '接', level: '4', meaning: '〜よりも・〜に比べて', field: '機能語' },
+  { id: 'program', pos: '名', level: 'pre2', meaning: '計画・活動・番組', field: '社会' },
+  { id: 'staff', pos: '名', level: 'pre2', meaning: '職員・スタッフ', field: 'ビジネス' },
+  { id: 'worksheet', surface: 'worksheets', pos: '名', level: 'pre2', meaning: '学習用ワークシート', field: '教育' },
+  { id: 'afternoon', pos: '名', level: '4', meaning: '午後', field: '時間・数量' },
+  { id: 'visitor', surface: 'visitors', pos: '名', level: 'pre2', meaning: '訪問者・来館者', field: '家族・人' },
+  { id: 'sense', pos: '名', level: 'pre2', meaning: '感覚・意識', field: '心理' },
+  { id: 'other', pos: '形', level: '4', meaning: 'ほかの・もう一方の', field: '機能語' },
+  { id: 'past', pos: '名', level: 'pre2', meaning: '過去・過ぎた', field: '時間・数量' },
+  { id: 'someone', pos: '代', level: '4', meaning: '誰か・ある人', field: '家族・人' },
+  { id: 'thing', surface: 'things', pos: '名', level: '5', meaning: '物・事', field: '一般' },
+  { id: 'counter', pos: '名', level: 'pre2', meaning: '受付台・カウンター', field: '食・生活' },
+  { id: 'digital', pos: '形', level: '2', meaning: 'デジタルの・電子式の', field: '技術' },
+  { id: 'seem', surface: 'seems', pos: '動', level: '3', meaning: '〜のように見える・思われる', field: '性質・状態' },
+  { id: 'themselves', pos: '代', level: 'pre2', meaning: '彼ら自身・彼女ら自身・それら自体', field: '機能語' },
+  { id: 'app', surface: 'apps', pos: '名', level: '3', meaning: 'アプリ・応用ソフト', field: '技術' },
+  { id: 'yet', pos: '接', level: 'pre2', meaning: 'しかし・それにもかかわらず', field: '機能語' },
+  { id: 'everywhere', pos: '副', level: '3', meaning: 'どこでも・至る所に', field: '副詞' },
+  { id: 'single', pos: '形', level: 'pre2', meaning: '一つの・単一の', field: '時間・数量' },
+  { id: 'downstream', pos: '副', level: 'pre1', meaning: '下流へ・下流で', field: '地理' },
+  { id: 'conditioner', surface: 'conditioners', pos: '名', level: '2', meaning: '調整装置・空調機', field: '技術' },
+  { id: 'rainwater', pos: '名', level: 'pre1', meaning: '雨水', field: '気象' },
+  { id: 'sidewalk', surface: 'sidewalks', pos: '名', level: 'pre2', meaning: '歩道', field: '交通' },
+  { id: 'root', surface: 'roots', pos: '名', level: 'pre1', meaning: '根・根本', field: '自然' },
+  { id: 'rent', surface: 'rents', pos: '名', level: 'pre1', meaning: '家賃・賃借料', field: '経済' },
+  { id: 'intersection', surface: 'intersections', pos: '名', level: '2', meaning: '交差点・交差', field: '交通' },
+  { id: 'such', pos: '形', level: '3', meaning: 'そのような・そのように', field: '機能語' },
+  {
+    id: 'politics',
+    word: 'politics',
+    surface: 'political',
+    pos: '名',
+    level: 'pre1',
+    meaning: '政治・政治学',
+    field: '政治',
+    example: { en: 'Politics can influence public memory.', ja: '政治は公共の記憶に影響を与えうる。' },
+  },
+  {
+    id: 'necessary',
+    surface: 'unnecessary',
+    pos: '形',
+    level: '3',
+    meaning: '必要な',
+    field: '性質・状態',
+    example: { en: 'Careful preparation is necessary.', ja: '入念な準備が必要です。' },
+  },
+  { id: 'rainfall', pos: '名', level: 'pre1', meaning: '降雨・降水量', field: '気象' },
+  { id: 'date', surface: 'dates', pos: '名', level: '4', meaning: '日付・期日', field: '時間・数量' },
+  { id: 'media', pos: '名', level: '2', meaning: 'メディア・情報媒体', field: 'メディア' },
+  { id: 'video', surface: 'videos', pos: '名', level: '3', meaning: '動画・映像', field: 'メディア' },
+  { id: 'pathway', surface: 'pathways', pos: '名', level: 'pre1', meaning: '経路・道筋', field: '一般' },
+  { id: 'university', surface: 'universities', pos: '名', level: 'pre2', meaning: '大学', field: '教育' },
+  { id: 'able', pos: '形', level: '3', meaning: '〜できる・能力がある', field: '性質・状態' },
+  { id: 'nor', pos: '接', level: 'pre1', meaning: '〜もまた…ない・そして…もない', field: '機能語' },
+  { id: 'role', pos: '名', level: 'pre2', meaning: '役割', field: '一般' },
+  { id: 'few', pos: '形', level: '4', meaning: '少数の・ほとんどない', field: '時間・数量' },
+  { id: 'self', pos: '名', level: 'pre1', meaning: '自己・自分自身', field: '心理' },
+  { id: 'alone', pos: '副', level: '3', meaning: '一人で・それだけで', field: '副詞' },
+  { id: 'headline', surface: 'headlines', pos: '名', level: '2', meaning: '見出し・主要ニュース', field: 'メディア' },
+].map(makePassageWord)
+
+export const PASSAGE_DICTIONARY_WORD_IDS = Object.freeze(
+  PASSAGE_DICTIONARY_WORDS.map((word) => word.id),
+)
+
 export const READING_WORDS = [
+  ...PASSAGE_DICTIONARY_WORDS,
   {
     id: 'volunteer',
     word: 'volunteer',
