@@ -35,7 +35,7 @@ export function MyGrammarScreen() {
         {items.length === 0 ? (
           <>
             <EmptyState icon="🧩" title="まだ保存した文法はありません">
-              英作文で英語カードを選ぶと、使った文法と語法が表示されます。🔖を押すと、ここへ保存してカードで復習できます。
+              英作文で語順を完成させると、使った文法と語法が表示されます。🔖を押すと、ここへ保存してカードで復習できます。
             </EmptyState>
             <Button
               className="mt-4"

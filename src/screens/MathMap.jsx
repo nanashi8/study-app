@@ -78,7 +78,7 @@ export function MathMapScreen() {
               {suggestions.map(({ unit, dependents }) => (
                 <button
                   key={unit.id}
-                  onClick={() => navigate('mathSolve', { unitId: unit.id })}
+                  onClick={() => navigate('mathIntro', { unitId: unit.id })}
                   className="inline-flex items-center gap-1 rounded-full bg-white px-3 py-1.5 text-xs font-extrabold text-amber-800 shadow-sm active:scale-95"
                 >
                   {unit.emoji} {unit.title}
@@ -123,8 +123,8 @@ export function MathMapScreen() {
                     state={unitState(u, mathDone, mathMastery)}
                     mathDone={mathDone}
                     mathMastery={mathMastery}
-                    onOpen={() => unitCount(u.id) && navigate('mathSolve', { unitId: u.id })}
-                    onOpenUnit={(id) => navigate('mathSolve', { unitId: id })}
+                    onOpen={() => unitCount(u.id) && navigate('mathIntro', { unitId: u.id })}
+                    onOpenUnit={(id) => navigate('mathIntro', { unitId: id })}
                   />
                 ))}
               </div>
@@ -198,7 +198,7 @@ function UnitNode({ unit, color, last, state, mathDone, mathMastery, onOpen, onO
                 `全${total}問・未着手`
               ) : (
                 <span>
-                  {done}/{total}問クリア
+                  動かして復習 ・ {done}/{total}問クリア
                   {mastery > 0 && <span className="text-violet-500"> ・ 正答率{mastery}%</span>}
                 </span>
               )}

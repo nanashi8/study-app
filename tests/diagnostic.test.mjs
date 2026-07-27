@@ -10,11 +10,12 @@ import {
   scoreDiagnostic,
   UNKNOWN_DIAGNOSTIC_ANSWER,
 } from '../src/lib/diagnostic.js'
+import { buildDiagnosticQuestions } from '../src/lib/diagnosticQuestions.js'
 import { decodeProgress, encodeProgress } from '../src/lib/progressCode.js'
 import { useStore } from '../src/store/useStore.js'
 
-const answersWith = (answerFor) =>
-  Object.fromEntries(DIAGNOSTIC_QUESTIONS.map((question, index) => [
+const answersWith = (answerFor, questions = DIAGNOSTIC_QUESTIONS) =>
+  Object.fromEntries(questions.map((question, index) => [
     question.id,
     answerFor(question, index),
   ]))
@@ -49,6 +50,60 @@ test('診断問題は4分野×7級を4択で均等に網羅する', () => {
       level.id,
     )
   }
+})
+
+test('診断問題は連続3回すべて入れ替わり、同じ回は再現できる', () => {
+  const seed = 0x1a2b3c4d
+  const forms = [1, 2, 3].map((attemptNumber) =>
+    buildDiagnosticQuestions({ attemptNumber, seed }))
+
+  assert.deepEqual(
+    forms[0],
+    buildDiagnosticQuestions({ attemptNumber: 1, seed }),
+    '同じseed・受験回なら同じ問題セットを再現する',
+  )
+
+  for (const questions of forms) {
+    assert.equal(questions.length, 28)
+    assert.equal(new Set(questions.map((question) => question.id)).size, 28)
+    for (const question of questions) {
+      assert.equal(question.choices.length, 4, question.id)
+      assert.equal(new Set(question.choices).size, 4, question.id)
+      assert.ok(question.choices.includes(question.answer), question.id)
+      assert.ok(question.sourceId, question.id)
+    }
+    for (const skill of DIAGNOSTIC_SKILLS) {
+      assert.equal(questions.filter((question) => question.skill === skill.id).length, 7)
+    }
+    for (const level of DIAGNOSTIC_LEVELS) {
+      assert.equal(questions.filter((question) => question.level === level.id).length, 4)
+    }
+  }
+
+  for (let index = 0; index < forms[0].length; index += 1) {
+    assert.equal(
+      new Set(forms.map((questions) => questions[index].sourceId)).size,
+      3,
+      `${forms[0][index].level}/${forms[0][index].skill}`,
+    )
+  }
+})
+
+test('生成した問題セットも同じ尺度で採点し、出題回を結果に残す', () => {
+  const questions = buildDiagnosticQuestions({ attemptNumber: 8, seed: 24680 })
+  const answers = answersWith((question) => question.answer, questions)
+  const result = scoreDiagnostic(answers, {
+    questions,
+    formNumber: 8,
+    completedAt: '2026-07-27T01:23:45.000Z',
+  })
+
+  assert.equal(result.score, 28)
+  assert.equal(result.total, 28)
+  assert.equal(result.formNumber, 8)
+  assert.match(result.id, /-f8-/)
+  assert.equal(result.skillResults.length, 4)
+  assert.equal(result.levelResults.length, 7)
 })
 
 test('推定偏差値は成績に対して単調で、上下限と級目安が妥当', () => {
@@ -102,6 +157,8 @@ test('診断結果は進捗コードで往復し、不正な履歴型を拒否�
     mathMastery: {},
     skillStats: {},
     diagnosticHistory: [result],
+    diagnosticAttempt: 12,
+    diagnosticSeed: 1234567890,
     engPos: null,
     vnCleared: [],
     portalOrder: [],
@@ -112,6 +169,8 @@ test('診断結果は進捗コードで往復し、不正な履歴型を拒否�
 
   const decoded = decodeProgress(encodeProgress(state))
   assert.deepEqual(decoded.diagnosticHistory, [result])
+  assert.equal(decoded.diagnosticAttempt, 12)
+  assert.equal(decoded.diagnosticSeed, 1234567890)
   const fiveResults = Array.from({ length: 5 }, (_, index) =>
     scoreDiagnostic(allCorrect(), {
       completedAt: `2026-07-${String(20 + index).padStart(2, '0')}T01:23:45.000Z`,
@@ -123,6 +182,14 @@ test('診断結果は進捗コードで往復し、不正な履歴型を拒否�
   assert.throws(
     () => decodeProgress(encodeProgress({ ...state, diagnosticHistory: {} })),
     /diagnosticHistory/,
+  )
+  assert.throws(
+    () => decodeProgress(encodeProgress({ ...state, diagnosticAttempt: -1 })),
+    /diagnosticAttempt/,
+  )
+  assert.throws(
+    () => decodeProgress(encodeProgress({ ...state, diagnosticSeed: 0x100000000 })),
+    /diagnosticSeed/,
   )
 })
 
@@ -155,4 +222,16 @@ test('診断保存は履歴・分野別成績・初回の適応位置へ一度�
   state = useStore.getState()
   assert.equal(state.diagnosticHistory.length, 5)
   assert.equal(state.diagnosticHistory[0].id, 'history-5')
+})
+
+test('診断開始回数は中断を含めて進み、同じseedを維持する', () => {
+  useStore.setState({ diagnosticAttempt: 0, diagnosticSeed: 987654321 })
+
+  const first = useStore.getState().beginDiagnosticAttempt()
+  const second = useStore.getState().beginDiagnosticAttempt()
+
+  assert.deepEqual(first, { attemptNumber: 1, seed: 987654321 })
+  assert.deepEqual(second, { attemptNumber: 2, seed: 987654321 })
+  assert.equal(useStore.getState().diagnosticAttempt, 2)
+  assert.equal(useStore.getState().diagnosticSeed, 987654321)
 })

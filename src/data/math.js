@@ -5054,7 +5054,7 @@ export const MATH_PROBLEMS = {
         formula: { name: '標本平均', tex: '\\text{母平均}\\approx\\text{標本平均}' },
         quiz: {
           q: '母集団の平均はおよそ？',
-          choices: ['標本平均と同じくらい', '標本平均の $2$ 倍', 'まったくわからない'],
+          choices: ['標本平均と同じくらい', '標本平均の $2$ 倍', '標本平均の半分'],
           answer: 0,
           why: '標本平均で母集団平均を推定する。',
         },
@@ -6514,7 +6514,7 @@ export const MATH_PROBLEMS = {
       steps: [
         {
           ask: '一方の接線が $5$ のとき、もう一方は？',
-          choices: ['$5$（等しい）', '$10$', '分からない'],
+          choices: ['$5$（等しい）', '$10$', '$2.5$'],
           answer: 0,
           note: '同じ点からの $2$ 接線は等長。',
         },

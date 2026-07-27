@@ -74,6 +74,8 @@ const initialLearning = () => ({
   mathMastery: {}, // unitId -> 最高正答率(0-100) ＝ 理解度
   skillStats: {}, // skill -> { answered, correct, sessions, lastDay } ＝ スキル別テスト結果
   diagnosticHistory: [], // 学習診断の新しい順の結果（最大5件）
+  diagnosticAttempt: 0, // 学習診断を開始した回数。問題候補を重複なしで順送りする
+  diagnosticSeed: null, // 端末ごとの問題候補の並びを再現する符号なし32bit整数
   engPos: null, // 適応バトルの現在ポジション(0=5級…6=1級, 小数可)。null=未配置（初回に推定）
   vnCleared: [], // [episodeId] クリアした英会話ノベルのエピソード
   portalOrder: [...DEFAULT_CONTENT_ORDER], // ポータルのタイル並び順（コンテンツid配列）
@@ -313,6 +315,21 @@ export const useStore = create(
           }
         }),
 
+      // 開始時点で回数を進める。中断したテストも消費済みにすることで、
+      // やり直した直後に同じ問題が再表示されないようにする。
+      beginDiagnosticAttempt: () => {
+        const st = get()
+        const previousAttempt = Number.isInteger(st.diagnosticAttempt) && st.diagnosticAttempt >= 0
+          ? st.diagnosticAttempt
+          : 0
+        const seed = Number.isInteger(st.diagnosticSeed)
+          ? st.diagnosticSeed >>> 0
+          : Math.floor(Math.random() * 0x100000000) >>> 0
+        const attemptNumber = previousAttempt + 1
+        set({ diagnosticAttempt: attemptNumber, diagnosticSeed: seed })
+        return { attemptNumber, seed }
+      },
+
       // 学習診断を保存し、同時に学習マップの分野別成績へ反映する。
       // 初めて現在地を決める場合だけ、診断した英検級を適応バトルの初期位置にも使う。
       recordDiagnosticResult: (result) =>
@@ -412,6 +429,8 @@ export const useStore = create(
           mathMastery: payload.mathMastery ?? {},
           skillStats: payload.skillStats ?? {},
           diagnosticHistory: payload.diagnosticHistory ?? [],
+          diagnosticAttempt: payload.diagnosticAttempt ?? 0,
+          diagnosticSeed: payload.diagnosticSeed ?? null,
           engPos: payload.engPos ?? null,
           vnCleared: payload.vnCleared ?? [],
           portalOrder: normalizeOrder(payload.portalOrder),
@@ -440,6 +459,8 @@ export const useStore = create(
         mathMastery: st.mathMastery,
         skillStats: st.skillStats,
         diagnosticHistory: st.diagnosticHistory,
+        diagnosticAttempt: st.diagnosticAttempt,
+        diagnosticSeed: st.diagnosticSeed,
         engPos: st.engPos,
         vnCleared: st.vnCleared,
         portalOrder: st.portalOrder,

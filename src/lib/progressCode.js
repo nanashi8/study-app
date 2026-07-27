@@ -27,6 +27,8 @@ export function buildPayload(state) {
     mathMastery: state.mathMastery,
     skillStats: state.skillStats,
     diagnosticHistory: state.diagnosticHistory,
+    diagnosticAttempt: state.diagnosticAttempt,
+    diagnosticSeed: state.diagnosticSeed,
     engPos: state.engPos,
     vnCleared: state.vnCleared,
     portalOrder: state.portalOrder,
@@ -97,6 +99,23 @@ export function decodeProgress(code) {
   }
   if ('engPos' in payload && payload.engPos !== null && !Number.isFinite(payload.engPos)) {
     throw new Error('コードの engPos が不正です。')
+  }
+  if (
+    'diagnosticAttempt' in payload
+    && (!Number.isSafeInteger(payload.diagnosticAttempt) || payload.diagnosticAttempt < 0)
+  ) {
+    throw new Error('コードの diagnosticAttempt が不正です。')
+  }
+  if (
+    'diagnosticSeed' in payload
+    && payload.diagnosticSeed !== null
+    && (
+      !Number.isInteger(payload.diagnosticSeed)
+      || payload.diagnosticSeed < 0
+      || payload.diagnosticSeed > 0xffffffff
+    )
+  ) {
+    throw new Error('コードの diagnosticSeed が不正です。')
   }
   return payload
 }

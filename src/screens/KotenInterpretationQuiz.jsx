@@ -7,6 +7,7 @@ import {
   KOTEN_INTERPRETATION_FOCUS,
 } from '../data/koten-interpretations.js'
 import { Button, Chip, cx, IconButton, ProgressBar } from '../components/ui.jsx'
+import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import {
   ArrowRight,
   Bookmark,
@@ -14,6 +15,7 @@ import {
   Check,
   Close,
 } from '../components/Icons.jsx'
+import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 
 function shuffle(items) {
   const result = [...items]
@@ -112,7 +114,7 @@ export function KotenInterpretationQuizScreen() {
     if (answered) return
     setSelected(choice)
     const ok = choice === item.answer
-    review(item.id, ok ? 'correct' : 'wrong')
+    review(item.id, choice === UNKNOWN_CHOICE_ID ? 'unknown' : ok ? 'correct' : 'wrong')
     if (ok) setCorrect((value) => value + 1)
   }
 
@@ -186,13 +188,18 @@ export function KotenInterpretationQuizScreen() {
               </button>
             )
           })}
+          <UnknownChoiceButton
+            selected={selected === UNKNOWN_CHOICE_ID}
+            disabled={answered}
+            onClick={() => choose(UNKNOWN_CHOICE_ID)}
+          />
         </div>
 
         {answered && (
           <div className="mt-4 space-y-3 animate-slide-up">
             <div className="rounded-3xl bg-white p-4 shadow-card">
               <p className={cx('font-display text-lg font-extrabold', isCorrect ? 'text-emerald-600' : 'text-rose-500')}>
-                {isCorrect ? '正解！' : 'ここを確認しよう'}
+                {isCorrect ? '正解！' : selected === UNKNOWN_CHOICE_ID ? '答えを確認しよう' : 'ここを確認しよう'}
               </p>
               <p className="mt-2 text-sm font-bold leading-relaxed text-ink">{item.translation}</p>
             </div>

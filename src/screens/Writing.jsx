@@ -18,14 +18,14 @@ import {
 const MODES = [
   {
     id: 'guide',
-    title: 'ガイド練習',
-    sub: 'おすすめと次の一手を表示',
+    title: 'ヒントあり',
+    sub: '文頭と組み立てのコツを表示',
     icon: Lightbulb,
   },
   {
     id: 'free',
-    title: '制約内フリー',
-    sub: 'ヒントを隠して自分で選ぶ',
+    title: 'チャレンジ',
+    sub: 'ヒントなしで語順に挑戦',
     icon: Sparkles,
   },
 ]
@@ -51,8 +51,8 @@ export function WritingScreen() {
   return (
     <div className="pb-8">
       <ScreenHeader
-        title="英作文・ことばルート"
-        subtitle="英語カードを選んで、伝わる文章へ"
+        title="英作文・語順ビルダー"
+        subtitle="バラバラの単語を並べて、伝わる一文へ"
         right={
           <button
             onClick={() => navigate('myGrammar')}
@@ -91,7 +91,7 @@ export function WritingScreen() {
             </div>
           </div>
           <p className="mt-4 max-w-sm text-sm font-bold leading-relaxed text-white/72">
-            決まったシナリオの中で、使う語句はあなたが選択。選んだ表現の文法をその場で確認しながら、導入から結論まで組み立てます。
+            作りたい内容を選んだら、バラバラの単語カードを正しい順番へ。一文ずつ語順を考えながら、導入から結論まで組み立てます。
           </p>
         </section>
 

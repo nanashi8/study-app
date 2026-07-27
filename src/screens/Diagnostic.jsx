@@ -10,7 +10,9 @@ import {
   scoreDiagnostic,
   UNKNOWN_DIAGNOSTIC_ANSWER,
 } from '../lib/diagnostic.js'
+import { buildDiagnosticQuestions } from '../lib/diagnosticQuestions.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
+import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { Button, Card, Chip, IconButton, ProgressBar, ProgressRing, cx } from '../components/ui.jsx'
 import { ArrowRight, Check, Close, Target, Trophy } from '../components/Icons.jsx'
 
@@ -113,10 +115,10 @@ function Intro({ history, onStart }) {
           <p className="mt-2 text-sm font-bold leading-relaxed text-white/75">
             5級から1級まで少しずつ難しくなる問題で、英語力を横断的に測ります。
           </p>
-          <div className="mt-4 flex gap-2">
+          <div className="mt-4 flex flex-wrap gap-2">
             <Chip className="bg-white/15 text-white">{DIAGNOSTIC_QUESTION_COUNT}問</Chip>
             <Chip className="bg-white/15 text-white">約10分</Chip>
-            <Chip className="bg-white/15 text-white">結果を保存</Chip>
+            <Chip className="bg-white/15 text-white">毎回出題が変化</Chip>
           </div>
         </div>
 
@@ -171,12 +173,12 @@ function Intro({ history, onStart }) {
   )
 }
 
-function TestQuestion({ index, answers, onSelect, onNext, onCancel }) {
-  const item = DIAGNOSTIC_QUESTIONS[index]
+function TestQuestion({ questions, index, answers, onSelect, onNext, onCancel }) {
+  const item = questions[index]
   const selected = answers[item.id]
   const level = LEVEL_BY_ID[item.level]
   const skill = SKILL_BY_ID[item.skill]
-  const last = index === DIAGNOSTIC_QUESTIONS.length - 1
+  const last = index === questions.length - 1
 
   return (
     <div className="flex min-h-full flex-col">
@@ -187,12 +189,12 @@ function TestQuestion({ index, answers, onSelect, onNext, onCancel }) {
           </IconButton>
           <div className="flex-1">
             <ProgressBar
-              value={(index + 1) / DIAGNOSTIC_QUESTIONS.length}
+              value={(index + 1) / questions.length}
               color="linear-gradient(90deg,#6366f1,#a855f7)"
             />
           </div>
           <span className="w-14 text-right text-sm font-extrabold text-ink/45">
-            {index + 1}/{DIAGNOSTIC_QUESTIONS.length}
+            {index + 1}/{questions.length}
           </span>
         </div>
         <div className="mt-1 flex items-center justify-center gap-2">
@@ -238,17 +240,11 @@ function TestQuestion({ index, answers, onSelect, onNext, onCancel }) {
             )
           })}
 
-          <button
+          <UnknownChoiceButton
+            selected={selected === UNKNOWN_DIAGNOSTIC_ANSWER}
             onClick={() => onSelect(UNKNOWN_DIAGNOSTIC_ANSWER)}
-            className={cx(
-              'w-full rounded-2xl border-2 border-dashed px-4 py-3 text-sm font-extrabold transition-colors',
-              selected === UNKNOWN_DIAGNOSTIC_ANSWER
-                ? 'border-amber-400 bg-amber-100 text-amber-800'
-                : 'border-ink/15 text-ink/40 active:bg-ink/5',
-            )}
-          >
-            わからない
-          </button>
+            label="わからない"
+          />
         </div>
       </div>
 
@@ -421,10 +417,13 @@ export function DiagnosticScreen() {
   const navigate = useStore((state) => state.navigate)
   const goHome = useStore((state) => state.goHome)
   const history = useStore((state) => state.diagnosticHistory)
+  const beginDiagnosticAttempt = useStore((state) => state.beginDiagnosticAttempt)
   const recordDiagnosticResult = useStore((state) => state.recordDiagnosticResult)
   const safeHistory = Array.isArray(history) ? history : []
 
   const [phase, setPhase] = useState('intro')
+  const [questions, setQuestions] = useState(DIAGNOSTIC_QUESTIONS)
+  const [formNumber, setFormNumber] = useState(null)
   const [index, setIndex] = useState(0)
   const [answers, setAnswers] = useState({})
   const [result, setResult] = useState(null)
@@ -436,6 +435,10 @@ export function DiagnosticScreen() {
   }, [phase, index])
 
   const start = () => {
+    const attempt = beginDiagnosticAttempt()
+    const nextQuestions = buildDiagnosticQuestions(attempt)
+    setQuestions(nextQuestions)
+    setFormNumber(attempt.attemptNumber)
     setAnswers({})
     setIndex(0)
     setResult(null)
@@ -443,18 +446,18 @@ export function DiagnosticScreen() {
   }
 
   const select = (answer) => {
-    const item = DIAGNOSTIC_QUESTIONS[index]
+    const item = questions[index]
     setAnswers((current) => ({ ...current, [item.id]: answer }))
   }
 
   const next = () => {
-    const item = DIAGNOSTIC_QUESTIONS[index]
+    const item = questions[index]
     if (!(item.id in answers)) return
-    if (index + 1 < DIAGNOSTIC_QUESTIONS.length) {
+    if (index + 1 < questions.length) {
       setIndex((value) => value + 1)
       return
     }
-    const scored = scoreDiagnostic(answers)
+    const scored = scoreDiagnostic(answers, { questions, formNumber })
     recordDiagnosticResult(scored)
     setResult(scored)
     setPhase('result')
@@ -464,6 +467,7 @@ export function DiagnosticScreen() {
     return (
       <div ref={rootRef} className="min-h-full">
         <TestQuestion
+          questions={questions}
           index={index}
           answers={answers}
           onSelect={select}

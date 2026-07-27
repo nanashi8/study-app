@@ -31,6 +31,14 @@ export async function pullOrInit(uid, email) {
       mathMastery: d.mathMastery ?? {},
       skillStats: d.skillStats ?? {},
       diagnosticHistory: d.diagnosticHistory ?? [],
+      diagnosticAttempt: Number.isSafeInteger(d.diagnosticAttempt) && d.diagnosticAttempt >= 0
+        ? d.diagnosticAttempt
+        : 0,
+      diagnosticSeed: Number.isInteger(d.diagnosticSeed)
+        && d.diagnosticSeed >= 0
+        && d.diagnosticSeed <= 0xffffffff
+        ? d.diagnosticSeed
+        : null,
       engPos: d.engPos ?? null,
       vnCleared: d.vnCleared ?? [],
       stats: { ...cur.stats, ...(d.stats ?? {}) },

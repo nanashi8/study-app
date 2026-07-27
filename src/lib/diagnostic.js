@@ -4,8 +4,9 @@ import {
   DIAGNOSTIC_SKILLS,
   DIAGNOSTIC_VERSION,
 } from '../data/diagnostic.js'
+import { UNKNOWN_CHOICE_ID } from './quizChoices.js'
 
-export const UNKNOWN_DIAGNOSTIC_ANSWER = '__unknown__'
+export const UNKNOWN_DIAGNOSTIC_ANSWER = UNKNOWN_CHOICE_ID
 
 const THETA_MIN = -3.5
 const THETA_MAX = 3.5
@@ -105,6 +106,7 @@ export function scoreDiagnostic(
   {
     questions = DIAGNOSTIC_QUESTIONS,
     completedAt = new Date().toISOString(),
+    formNumber = null,
   } = {},
 ) {
   if (!answers || typeof answers !== 'object' || Array.isArray(answers)) {
@@ -154,10 +156,14 @@ export function scoreDiagnostic(
   const strength = [...skillResults].sort(
     (a, b) => b.deviation - a.deviation || b.accuracy - a.accuracy,
   )[0]
+  const normalizedFormNumber = Number.isSafeInteger(formNumber) && formNumber > 0
+    ? formNumber
+    : null
 
   return {
-    id: `diagnostic-v${DIAGNOSTIC_VERSION}-${completedAt}`,
+    id: `diagnostic-v${DIAGNOSTIC_VERSION}${normalizedFormNumber ? `-f${normalizedFormNumber}` : ''}-${completedAt}`,
     version: DIAGNOSTIC_VERSION,
+    ...(normalizedFormNumber ? { formNumber: normalizedFormNumber } : {}),
     completedAt,
     score: overall.correct,
     total: overall.total,

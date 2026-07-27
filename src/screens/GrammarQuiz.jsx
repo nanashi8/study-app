@@ -10,8 +10,10 @@ import {
 } from '../data/grammar.js'
 import { todayIndex } from '../store/useStore.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
+import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { Button, ProgressBar, IconButton, Chip, cx } from '../components/ui.jsx'
 import { Close, Check, ArrowRight, Lightbulb } from '../components/Icons.jsx'
+import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 
 // source から出題候補を集める。
 function candidates(source = {}) {
@@ -59,7 +61,7 @@ export function GrammarQuizScreen() {
   const [deck] = useState(() => buildDeck(params.source ?? { type: 'grammar', level: '5' }, useStore.getState().srs))
   const [i, setI] = useState(0)
   const [selected, setSelected] = useState(null)
-  const results = useRef({ correct: 0, wrong: 0, wrongIds: [] })
+  const results = useRef({ correct: 0, wrong: 0, unknown: 0, wrongIds: [] })
 
   const item = deck[i]
   const options = useMemo(() => (item ? shuffle(item.choices) : []), [item?.id]) // eslint-disable-line react-hooks/exhaustive-deps
@@ -90,7 +92,7 @@ export function GrammarQuizScreen() {
       replayScreen: 'grammarQuiz',
       total: deck.length,
       correct: results.current.correct,
-      wrong: results.current.wrong,
+      wrong: results.current.wrong + results.current.unknown,
       xpGained,
       reviewIds: results.current.wrongIds.length ? results.current.wrongIds : deck.map((g) => g.id),
       source: params.source,
@@ -100,7 +102,11 @@ export function GrammarQuizScreen() {
   const choose = (opt) => {
     if (answered) return
     setSelected(opt)
-    if (opt === item.answer) {
+    if (opt === UNKNOWN_CHOICE_ID) {
+      review(item.id, 'unknown')
+      results.current.unknown++
+      results.current.wrongIds.push(item.id)
+    } else if (opt === item.answer) {
       review(item.id, 'correct')
       results.current.correct++
     } else {
@@ -160,12 +166,17 @@ export function GrammarQuizScreen() {
               </button>
             )
           })}
+          <UnknownChoiceButton
+            selected={selected === UNKNOWN_CHOICE_ID}
+            disabled={answered}
+            onClick={() => choose(UNKNOWN_CHOICE_ID)}
+          />
         </div>
 
         {answered && (
           <div className="mt-4 animate-slide-up rounded-2xl bg-white p-4 shadow-card">
             <p className={cx('font-display text-lg font-extrabold', isCorrectPick ? 'text-emerald-600' : 'text-rose-500')}>
-              {isCorrectPick ? '正解！🎉' : 'ざんねん…'}
+              {isCorrectPick ? '正解！🎉' : selected === UNKNOWN_CHOICE_ID ? '答えはこちら' : 'ざんねん…'}
             </p>
             <div className="mt-2 flex items-start gap-2">
               <SpeakButton text={item.sentence.en} size="sm" />

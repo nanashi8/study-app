@@ -9,6 +9,8 @@ import {
 } from '../data/listening.js'
 import { isTTSSupported } from '../lib/tts.js'
 import { playListeningItem, stopListeningAudio } from '../lib/listening.js'
+import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
+import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { Button, Chip, ProgressBar, IconButton, cx } from '../components/ui.jsx'
 import {
   Close,
@@ -58,7 +60,7 @@ export function ListeningQuizScreen() {
   const [playing, setPlaying] = useState(false)
   const [activeSegment, setActiveSegment] = useState(null)
   const [showTranscript, setShowTranscript] = useState(false)
-  const results = useRef({ correct: 0, wrong: 0, wrongIds: [] })
+  const results = useRef({ correct: 0, wrong: 0, unknown: 0, wrongIds: [] })
 
   const item = deck[i]
   const profile =
@@ -136,7 +138,7 @@ export function ListeningQuizScreen() {
       replayScreen: 'listeningQuiz',
       total: deck.length,
       correct: results.current.correct,
-      wrong: results.current.wrong,
+      wrong: results.current.wrong + results.current.unknown,
       xpGained,
       reviewIds: results.current.wrongIds.length
         ? results.current.wrongIds
@@ -149,7 +151,11 @@ export function ListeningQuizScreen() {
     if (answered) return
     setSelected(choiceId)
     setShowTranscript(true)
-    if (choiceId === item.answer) {
+    if (choiceId === UNKNOWN_CHOICE_ID) {
+      review(item.id, 'unknown')
+      results.current.unknown++
+      results.current.wrongIds.push(item.id)
+    } else if (choiceId === item.answer) {
       review(item.id, 'correct')
       results.current.correct++
     } else {
@@ -377,6 +383,11 @@ export function ListeningQuizScreen() {
               </button>
             )
           })}
+          <UnknownChoiceButton
+            selected={selected === UNKNOWN_CHOICE_ID}
+            disabled={answered}
+            onClick={() => choose(UNKNOWN_CHOICE_ID)}
+          />
         </div>
 
         {answered && (
@@ -387,7 +398,7 @@ export function ListeningQuizScreen() {
                 isCorrectPick ? 'text-emerald-600' : 'text-rose-500',
               )}
             >
-              {isCorrectPick ? '正解！🎉' : 'ざんねん…'}
+              {isCorrectPick ? '正解！🎉' : selected === UNKNOWN_CHOICE_ID ? '答えはこちら' : 'ざんねん…'}
             </p>
             <p className="mt-1 font-bold leading-relaxed text-ink">
               正解：{correctChoice?.text}
