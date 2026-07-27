@@ -1,10 +1,10 @@
-// 学習診断テストの固定問題。
+// 学習診断テストの尺度・基準問題・短文読解バンク。
 //
-// 4分野 × 英検5級〜1級の7段階 = 28問で、同じ問題を受け直したときにも
-// 結果を比較できるよう固定している。difficulty は母集団の実測値ではなく、
-// 級の並びを標準化したアプリ内推定用の尺度。
+// 実際の受験セットは lib/diagnosticQuestions.js が既存の単語・文法・熟語データと
+// 読解バンクから毎回生成する。difficulty は母集団の実測値ではなく、級の並びを
+// 標準化したアプリ内推定用の尺度。
 
-export const DIAGNOSTIC_VERSION = 1
+export const DIAGNOSTIC_VERSION = 2
 
 export const DIAGNOSTIC_LEVELS = [
   { id: '5', label: '5級', sub: '中1程度', difficulty: -1.8, color: '#10b981' },
@@ -63,11 +63,17 @@ const SKILL_DIFFICULTY_OFFSET = {
   reading: 0.15,
 }
 
+export function diagnosticDifficulty(levelId, skillId) {
+  const level = LEVEL_BY_ID[levelId]
+  if (!level) throw new Error(`不明な診断レベルです: ${levelId}`)
+  return level.difficulty + (SKILL_DIFFICULTY_OFFSET[skillId] ?? 0)
+}
+
 const q = ({ id, skill, level, ...question }) => ({
   id,
   skill,
   level,
-  difficulty: LEVEL_BY_ID[level].difficulty + SKILL_DIFFICULTY_OFFSET[skill],
+  difficulty: diagnosticDifficulty(level, skill),
   ...question,
 })
 
@@ -350,3 +356,156 @@ export const DIAGNOSTIC_QUESTIONS = [
 ]
 
 export const DIAGNOSTIC_QUESTION_COUNT = DIAGNOSTIC_QUESTIONS.length
+
+// 読解は通常の級別長文を丸ごと7本読むと診断が長くなりすぎるため、
+// 診断専用の短文を各級3種類用意する。連続3回は同じ本文を出さない。
+export const DIAGNOSTIC_READING_BANK = [
+  ...DIAGNOSTIC_QUESTIONS.filter((item) => item.skill === 'reading'),
+
+  q({
+    id: 'diag_r_5_b',
+    skill: 'reading',
+    level: '5',
+    passage:
+      'Yuta’s music class starts at nine. He leaves home at eight and takes a bus. He gets to school at eight forty.',
+    prompt: 'What time does Yuta get to school?',
+    choices: ['At eight.', 'At eight forty.', 'At nine.', 'At nine forty.'],
+    answer: 'At eight forty.',
+  }),
+  q({
+    id: 'diag_r_5_c',
+    skill: 'reading',
+    level: '5',
+    passage:
+      'Emma has a cat and a dog. She feeds the cat before school. After dinner, she walks the dog with her father.',
+    prompt: 'What does Emma do after dinner?',
+    choices: ['She feeds the cat.', 'She goes to school.', 'She walks the dog.', 'She reads with her father.'],
+    answer: 'She walks the dog.',
+  }),
+
+  q({
+    id: 'diag_r_4_b',
+    skill: 'reading',
+    level: '4',
+    passage:
+      'Kei planned a picnic for Saturday. The weather report said it would rain, so he changed it to Sunday and emailed his friends. Sunday was sunny.',
+    prompt: 'Why did Kei change the picnic day?',
+    choices: ['His friends were busy.', 'Saturday was expected to be rainy.', 'The park was closed on Sunday.', 'He forgot to buy food.'],
+    answer: 'Saturday was expected to be rainy.',
+  }),
+  q({
+    id: 'diag_r_4_c',
+    skill: 'reading',
+    level: '4',
+    passage:
+      'The town library closes at six on weekdays and at five on weekends. Aya arrived at four thirty on Saturday to return three books.',
+    prompt: 'How much time did Aya have before the library closed?',
+    choices: ['Thirty minutes.', 'One hour.', 'One and a half hours.', 'Two hours.'],
+    answer: 'Thirty minutes.',
+  }),
+
+  q({
+    id: 'diag_r_3_b',
+    skill: 'reading',
+    level: '3',
+    passage:
+      'Students made posters for their school festival, but the printer stopped working. They shared the event online instead, and more visitors came than they had expected.',
+    prompt: 'How did the students advertise the festival after the problem?',
+    choices: ['They repaired the printer.', 'They shared it online.', 'They called every visitor.', 'They canceled the posters.'],
+    answer: 'They shared it online.',
+  }),
+  q({
+    id: 'diag_r_3_c',
+    skill: 'reading',
+    level: '3',
+    passage:
+      'Sam wanted to use less water. He began taking shorter showers and turning off the tap while brushing his teeth. A month later, the water meter showed a clear decrease.',
+    prompt: 'What showed that Sam’s actions worked?',
+    choices: ['His showers became warmer.', 'He bought a new toothbrush.', 'The water meter reading decreased.', 'A month had passed.'],
+    answer: 'The water meter reading decreased.',
+  }),
+
+  q({
+    id: 'diag_r_pre2_b',
+    skill: 'reading',
+    level: 'pre2',
+    passage:
+      'A city bike-sharing program became popular, but downtown stations were often empty in the morning. The operator began moving bicycles from residential areas to downtown before sunrise. Complaints soon decreased.',
+    prompt: 'How did the operator address the shortage?',
+    choices: ['It bought cars for commuters.', 'It closed residential stations.', 'It moved bicycles before the morning rush.', 'It raised the price downtown.'],
+    answer: 'It moved bicycles before the morning rush.',
+  }),
+  q({
+    id: 'diag_r_pre2_c',
+    skill: 'reading',
+    level: 'pre2',
+    passage:
+      'In a study, one group kept their phones on their desks while another left them in a different room. The second group solved more difficult problems, although some members said they felt uneasy without their phones.',
+    prompt: 'What did the study suggest?',
+    choices: ['Phones can distract people even when unused.', 'Difficult problems require phone apps.', 'Feeling relaxed always improves scores.', 'People work best with phones on their desks.'],
+    answer: 'Phones can distract people even when unused.',
+  }),
+
+  q({
+    id: 'diag_r_2_b',
+    skill: 'reading',
+    level: '2',
+    passage:
+      'After a company adopted remote work, experienced staff remained productive, but new employees received less informal advice. The company then paired each newcomer with a mentor for a weekly online conversation. New employees began completing tasks more confidently.',
+    prompt: 'Why did the company introduce weekly mentoring?',
+    choices: ['To reduce the number of new employees.', 'To replace all formal training.', 'To restore guidance that remote work had reduced.', 'To measure how long online meetings lasted.'],
+    answer: 'To restore guidance that remote work had reduced.',
+  }),
+  q({
+    id: 'diag_r_2_c',
+    skill: 'reading',
+    level: '2',
+    passage:
+      'At a repair café, volunteers do not simply fix broken appliances for visitors. They explain each step and let the owners use the tools. Many visitors later report that they try simple repairs themselves instead of immediately throwing products away.',
+    prompt: 'What is an important benefit of the repair café’s approach?',
+    choices: ['Visitors learn skills that may reduce waste.', 'Volunteers can sell more new appliances.', 'Repairs are completed without any tools.', 'Owners no longer need to attend the café.'],
+    answer: 'Visitors learn skills that may reduce waste.',
+  }),
+
+  q({
+    id: 'diag_r_pre1_b',
+    skill: 'reading',
+    level: 'pre1',
+    passage:
+      'Citizen-science projects can collect observations across areas that professional researchers rarely visit. However, volunteers may identify species differently. Successful projects provide short training tasks and compare uncertain reports with expert-reviewed photographs.',
+    prompt: 'How do successful projects improve the reliability of volunteer data?',
+    choices: ['They accept reports only from professionals.', 'They limit observations to familiar locations.', 'They combine training with expert checks.', 'They ask volunteers to study every species.'],
+    answer: 'They combine training with expert checks.',
+  }),
+  q({
+    id: 'diag_r_pre1_c',
+    skill: 'reading',
+    level: 'pre1',
+    passage:
+      'Digitizing museum collections makes rare objects visible to people worldwide, but an image alone may hide an object’s uncertain origin or cultural role. Curators therefore increasingly publish records that include gaps, disputes, and the communities connected to each object.',
+    prompt: 'Why do curators publish detailed records with digital images?',
+    choices: ['To make every historical claim appear certain.', 'To provide context that an image cannot show by itself.', 'To prevent communities from discussing objects.', 'To replace physical collections completely.'],
+    answer: 'To provide context that an image cannot show by itself.',
+  }),
+
+  q({
+    id: 'diag_r_1_b',
+    skill: 'reading',
+    level: '1',
+    passage:
+      'Predictions about human behavior can alter the behavior they seek to forecast. A warning of a shortage may prompt consumers to buy extra supplies, thereby producing the shortage. Conversely, a credible warning can encourage conservation and prevent it. Social forecasts must therefore account for their own influence.',
+    prompt: 'What central difficulty of social forecasting does the passage identify?',
+    choices: ['Forecasts can change the outcome being predicted.', 'Consumers never respond to credible warnings.', 'Shortages occur only when data are unavailable.', 'Conservation makes forecasting unnecessary.'],
+    answer: 'Forecasts can change the outcome being predicted.',
+  }),
+  q({
+    id: 'diag_r_1_c',
+    skill: 'reading',
+    level: '1',
+    passage:
+      'Researchers are often rewarded more for novel findings than for attempts to reproduce earlier work. Registered reports address this imbalance by evaluating a study’s question and method before its results are known. Publication is then less dependent on whether the outcome appears surprising.',
+    prompt: 'Why can registered reports support more reliable research?',
+    choices: ['They guarantee that every hypothesis is correct.', 'They value the study design before the result is known.', 'They prevent researchers from repeating earlier work.', 'They publish only results that appear surprising.'],
+    answer: 'They value the study design before the result is known.',
+  }),
+]

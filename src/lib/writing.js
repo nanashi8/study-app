@@ -1,4 +1,4 @@
-// 分岐型英作文の純粋な組み立て・集計ロジック。
+// 語順組み立て型英作文の純粋な組み立て・集計ロジック。
 // UI とテストが同じ規則を使い、保存される英文と画面表示のずれを防ぐ。
 
 const cleanSpace = (text) =>
@@ -8,6 +8,62 @@ const cleanSpace = (text) =>
     .replace(/([“‘(])\s+/g, '$1')
     .replace(/\s+([”’)])/g, '$1')
     .trim()
+
+// 語順問題では句読点を直前の単語に付けたまま1枚のカードとして扱う。
+// たとえば "Sunday," や "friends." が別カードにならないため、
+// スマートフォンでも「単語を並べる」操作に集中できる。
+export function writingWordTokens(text = '') {
+  const trimmed = text.trim()
+  if (!trimmed) return []
+  return trimmed.split(/\s+/).map((word, originalIndex) => ({
+    id: `word-${originalIndex}`,
+    word,
+    originalIndex,
+  }))
+}
+
+const seedToNumber = (seed) => {
+  let value = 2166136261
+  for (const character of String(seed)) {
+    value ^= character.charCodeAt(0)
+    value = Math.imul(value, 16777619)
+  }
+  return value >>> 0
+}
+
+export function shuffledWritingTokens(text = '', seed = text) {
+  const tokens = writingWordTokens(text)
+  let state = seedToNumber(seed)
+
+  for (let index = tokens.length - 1; index > 0; index -= 1) {
+    state = (Math.imul(state, 1664525) + 1013904223) >>> 0
+    const swapIndex = state % (index + 1)
+    ;[tokens[index], tokens[swapIndex]] = [tokens[swapIndex], tokens[index]]
+  }
+
+  // 乱数の結果が偶然正解順になっても、問題を開いた時点で答えが
+  // 完成している状態にはしない。
+  if (
+    tokens.length > 1 &&
+    tokens.every((token, index) => token.originalIndex === index)
+  ) {
+    ;[tokens[0], tokens[1]] = [tokens[1], tokens[0]]
+  }
+
+  return tokens
+}
+
+export function buildWritingTokenText(tokens = []) {
+  return cleanSpace(tokens.map((token) => token.word).join(' '))
+}
+
+export function isWritingTokenOrderCorrect(tokens = [], targetText = '') {
+  const target = writingWordTokens(targetText)
+  return (
+    tokens.length === target.length &&
+    tokens.every((token, index) => token.word === target[index].word)
+  )
+}
 
 export function choiceForStep(step, choiceId) {
   return step?.options?.find((option) => option.id === choiceId)

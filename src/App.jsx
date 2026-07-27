@@ -42,6 +42,7 @@ const VocabSearchScreen = lazyScreen(() => import('./screens/VocabSearch.jsx'), 
 const WordRequestsScreen = lazyScreen(() => import('./screens/WordRequests.jsx'), 'WordRequestsScreen')
 const MathMapScreen = lazyScreen(() => import('./screens/MathMap.jsx'), 'MathMapScreen')
 const MathUnitsScreen = lazyScreen(() => import('./screens/MathUnits.jsx'), 'MathUnitsScreen')
+const MathIntroScreen = lazyScreen(() => import('./screens/MathIntro.jsx'), 'MathIntroScreen')
 const MathSolveScreen = lazyScreen(() => import('./screens/MathSolve.jsx'), 'MathSolveScreen')
 const GrammarScreen = lazyScreen(() => import('./screens/Grammar.jsx'), 'GrammarScreen')
 const GrammarQuizScreen = lazyScreen(() => import('./screens/GrammarQuiz.jsx'), 'GrammarQuizScreen')
@@ -108,6 +109,7 @@ const SCREENS = {
   wordRequests: WordRequestsScreen,
   mathMap: MathMapScreen,
   mathUnits: MathUnitsScreen,
+  mathIntro: MathIntroScreen,
   mathSolve: MathSolveScreen,
   grammar: GrammarScreen,
   grammarQuiz: GrammarQuizScreen,
@@ -137,7 +139,7 @@ const IMMERSIVE = new Set([
   'portal',
   'login',
   'vocabStudy', 'vocabQuiz', 'wordDetail', 'sessionResult', 'readingPrep', 'reader', 'phraseStudy', 'phraseQuiz',
-  'listeningQuiz', 'dictationPlay', 'pronouncePlay', 'mathSolve', 'grammarQuiz', 'diagnostic',
+  'listeningQuiz', 'dictationPlay', 'pronouncePlay', 'mathIntro', 'mathSolve', 'grammarQuiz', 'diagnostic',
   'writingPlay', 'writingGrammarReview',
   // 別コンテンツ（ポータルから入る）
   'vocabSearch', 'wordRequests', 'mathMap', 'mathUnits',

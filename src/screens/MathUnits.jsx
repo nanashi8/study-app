@@ -41,7 +41,7 @@ export function MathUnitsScreen() {
                   <button
                     key={u.id}
                     disabled={!ready}
-                    onClick={() => navigate('mathSolve', { unitId: u.id })}
+                    onClick={() => navigate('mathIntro', { unitId: u.id })}
                     className="relative flex w-full items-center gap-3 rounded-3xl bg-white p-4 text-left shadow-card transition-transform active:scale-[0.98] disabled:opacity-55 disabled:active:scale-100"
                   >
                     <span
@@ -59,10 +59,10 @@ export function MathUnitsScreen() {
                         {ready ? (
                           done >= n ? (
                             <span className="inline-flex items-center gap-1 text-emerald-600">
-                              <Check size={13} /> 全{n}問クリア
+                              <Check size={13} /> 全{n}問クリア・図で復習
                             </span>
                           ) : (
-                            `全${n}問${done > 0 ? `・${done}問クリア` : ''}`
+                            `動かして理解 → 全${n}問${done > 0 ? `・${done}問クリア` : ''}`
                           )
                         ) : (
                           u.desc || '準備中'

@@ -11,11 +11,15 @@ import {
 } from '../src/data/writing.js'
 import { getWord } from '../src/data/vocab.js'
 import {
+  buildWritingTokenText,
   buildWritingText,
+  isWritingTokenOrderCorrect,
   recommendedWritingTrail,
   selectedWritingGrammarIds,
   selectedWritingWordIds,
+  shuffledWritingTokens,
   writingCompletion,
+  writingWordTokens,
   writingWordCount,
 } from '../src/lib/writing.js'
 import {
@@ -108,6 +112,34 @@ test('英文の連結は句読点前の空白を除き、選択語・文法を�
   const grammarIds = selectedWritingGrammarIds(exercise, trail)
   assert.equal(new Set(wordIds).size, wordIds.length)
   assert.equal(new Set(grammarIds).size, grammarIds.length)
+})
+
+test('英作文の一文を単語カードへ分け、並び替えた語順を判定できる', () => {
+  const text = 'Last Sunday, I went to the park with my family.'
+  const ordered = writingWordTokens(text)
+  const shuffled = shuffledWritingTokens(text, 'writing-test')
+
+  assert.equal(buildWritingTokenText(ordered), text)
+  assert.deepEqual(
+    shuffled.map((token) => token.word).sort(),
+    ordered.map((token) => token.word).sort(),
+  )
+  assert.equal(
+    shuffled.every((token, index) => token.originalIndex === index),
+    false,
+  )
+  assert.equal(isWritingTokenOrderCorrect(shuffled, text), false)
+  assert.equal(isWritingTokenOrderCorrect(ordered, text), true)
+})
+
+test('同じseedの語カードは同じ順序になり、重複語も失わない', () => {
+  const text = 'I think I can do it.'
+  const first = shuffledWritingTokens(text, 'same-seed')
+  const second = shuffledWritingTokens(text, 'same-seed')
+
+  assert.deepEqual(first, second)
+  assert.equal(first.filter((token) => token.word === 'I').length, 2)
+  assert.equal(new Set(first.map((token) => token.id)).size, first.length)
 })
 
 test('全マイ文法カードは一意で、解説・型・例文を備える', () => {

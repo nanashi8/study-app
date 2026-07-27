@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import { getKoten, pickKotenDistractors } from '../data/koten.js'
 import { Button, ProgressBar, IconButton } from '../components/ui.jsx'
+import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import {
   Bookmark,
   BookmarkFilled,
@@ -10,6 +11,7 @@ import {
   ArrowRight,
 } from '../components/Icons.jsx'
 import { cx } from '../components/ui.jsx'
+import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 
 function shuffle(arr) {
   const a = [...arr]
@@ -111,7 +113,9 @@ export function KotenQuizScreen() {
     setSelected(optId)
     // 反映前の box を読み、正解で box+1 する前後を比べて「上がった/習得した」を数える。
     const prevBox = useStore.getState().kotenSrs[word.id]?.box ?? 0
-    if (optId === word.id) {
+    if (optId === UNKNOWN_CHOICE_ID) {
+      reviewKoten(word.id, 'unknown')
+    } else if (optId === word.id) {
       reviewKoten(word.id, 'correct')
       setCorrectCount((n) => n + 1)
       const newBox = Math.min(6, prevBox + 1)
@@ -190,6 +194,11 @@ export function KotenQuizScreen() {
               </button>
             )
           })}
+          <UnknownChoiceButton
+            selected={selected === UNKNOWN_CHOICE_ID}
+            disabled={answered}
+            onClick={() => choose(UNKNOWN_CHOICE_ID)}
+          />
         </div>
 
         {/* 答え合わせ後 */}
@@ -197,7 +206,7 @@ export function KotenQuizScreen() {
           <div className="mt-4 animate-slide-up rounded-2xl bg-white p-4 shadow-card">
             <div className="flex items-start justify-between gap-2">
               <p className={cx('font-display text-lg font-extrabold', isCorrectPick ? 'text-emerald-600' : 'text-rose-500')}>
-                {isCorrectPick ? '正解！🎉' : 'ざんねん…'}
+                {isCorrectPick ? '正解！🎉' : selected === UNKNOWN_CHOICE_ID ? '答えはこちら' : 'ざんねん…'}
               </p>
               <button
                 onClick={() => toggleKotenWordList(word.id)}

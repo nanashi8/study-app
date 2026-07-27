@@ -7,10 +7,14 @@ import {
 import { getLevel } from '../data/levels.js'
 import { getWord } from '../data/vocab.js'
 import {
+  buildWritingTokenText,
   buildWritingText,
+  isWritingTokenOrderCorrect,
   resolveWritingTrail,
   selectedWritingGrammarIds,
   selectedWritingWordIds,
+  shuffledWritingTokens,
+  writingWordTokens,
   writingCompletion,
   writingWordCount,
 } from '../lib/writing.js'
@@ -131,6 +135,9 @@ export function WritingPlayScreen() {
   const [selected, setSelected] = useState(null)
   const [showHint, setShowHint] = useState(false)
   const [finished, setFinished] = useState(false)
+  const [wordBank, setWordBank] = useState([])
+  const [answerTokens, setAnswerTokens] = useState([])
+  const [orderStatus, setOrderStatus] = useState('idle')
 
   if (!exercise) return <MissingWriting onBack={back} />
 
@@ -138,11 +145,18 @@ export function WritingPlayScreen() {
   const stepIndex = trail.length
   const currentStep = exercise.steps[stepIndex]
   const coachVisible = mode === 'guide' || showHint
-  const draft = buildWritingText(exercise, trail, selected)
+  const sentenceComplete = orderStatus === 'correct'
+  const draft = buildWritingText(
+    exercise,
+    trail,
+    sentenceComplete ? selected : null,
+  )
   const draftWords = writingWordCount(draft)
-  const selectedGrammar = selected
+  const selectedGrammar = selected && sentenceComplete
     ? getWritingGrammar(selected.grammarId)
     : null
+  const targetTokens = selected ? writingWordTokens(selected.text) : []
+  const arrangedText = buildWritingTokenText(answerTokens)
   const recommended =
     currentStep?.options.find((option) => option.recommended) ??
     currentStep?.options[0]
@@ -156,11 +170,65 @@ export function WritingPlayScreen() {
     setSelected(null)
     setShowHint(false)
     setFinished(false)
+    setWordBank([])
+    setAnswerTokens([])
+    setOrderStatus('idle')
+  }
+
+  const clearArrangement = () => {
+    setSelected(null)
+    setWordBank([])
+    setAnswerTokens([])
+    setOrderStatus('idle')
+  }
+
+  const chooseSentence = (option) => {
+    const shuffleSeed = [
+      exercise.id,
+      currentStep.id,
+      option.id,
+      Date.now(),
+      Math.random(),
+    ].join(':')
+    setSelected(option)
+    setWordBank(shuffledWritingTokens(option.text, shuffleSeed))
+    setAnswerTokens([])
+    setOrderStatus('idle')
+  }
+
+  const placeWord = (token) => {
+    if (sentenceComplete) return
+    setWordBank((items) => items.filter((item) => item.id !== token.id))
+    setAnswerTokens((items) => [...items, token])
+    setOrderStatus('idle')
+  }
+
+  const returnWord = (token) => {
+    if (sentenceComplete) return
+    setAnswerTokens((items) => items.filter((item) => item.id !== token.id))
+    setWordBank((items) => [...items, token])
+    setOrderStatus('idle')
+  }
+
+  const checkOrder = () => {
+    if (!selected || wordBank.length > 0) return
+    setOrderStatus(
+      isWritingTokenOrderCorrect(answerTokens, selected.text)
+        ? 'correct'
+        : 'wrong',
+    )
   }
 
   const undo = () => {
+    if (answerTokens.length && !sentenceComplete) {
+      const lastToken = answerTokens.at(-1)
+      setAnswerTokens((items) => items.slice(0, -1))
+      setWordBank((items) => [...items, lastToken])
+      setOrderStatus('idle')
+      return
+    }
     if (selected) {
-      setSelected(null)
+      clearArrangement()
       return
     }
     if (!trail.length) return
@@ -170,7 +238,7 @@ export function WritingPlayScreen() {
   }
 
   const advance = () => {
-    if (!currentStep || !selected) return
+    if (!currentStep || !selected || !sentenceComplete) return
     const nextTrail = [
       ...trail,
       { stepId: currentStep.id, choiceId: selected.id },
@@ -186,11 +254,17 @@ export function WritingPlayScreen() {
       })
       setTrail(nextTrail)
       setSelected(null)
+      setWordBank([])
+      setAnswerTokens([])
+      setOrderStatus('idle')
       setFinished(true)
       return
     }
     setTrail(nextTrail)
     setSelected(null)
+    setWordBank([])
+    setAnswerTokens([])
+    setOrderStatus('idle')
     setShowHint(false)
   }
 
@@ -228,13 +302,13 @@ export function WritingPlayScreen() {
               ✓
             </div>
             <p className="mt-4 text-xs font-extrabold tracking-[0.18em] text-cyan-200">
-              ROUTE COMPLETE
+              WORD ORDER COMPLETE
             </p>
             <h1 className="mt-1 font-display text-3xl font-extrabold">
               伝わる英文が完成！
             </h1>
             <p className="mt-1 text-sm font-bold text-white/65">
-              選んだことばが、ひとつの論理になりました
+              並べたことばが、ひとつの文章になりました
             </p>
           </div>
 
@@ -264,7 +338,7 @@ export function WritingPlayScreen() {
                   {completedResult.grammarIds.length} grammar
                 </Chip>
                 <Chip color="#0ea5e9">
-                  {mode === 'guide' ? 'ガイド練習' : '制約内フリー'}
+                  {mode === 'guide' ? 'ヒントあり' : 'チャレンジ'}
                 </Chip>
               </div>
             </div>
@@ -388,7 +462,7 @@ export function WritingPlayScreen() {
 
           <div className="mt-5 grid grid-cols-2 gap-3">
             <Button variant="secondary" onClick={reset}>
-              <Refresh size={17} /> 別ルート
+              <Refresh size={17} /> もう一度
             </Button>
             <Button onClick={() => navigate('writing')}>
               別のお題 <ArrowRight size={17} />
@@ -406,8 +480,14 @@ export function WritingPlayScreen() {
   }
 
   const resolved = resolveWritingTrail(exercise, trail)
+  const tokenProgress = targetTokens.length
+    ? answerTokens.length / targetTokens.length
+    : 0
+  const currentProgress = selected
+    ? 0.12 + tokenProgress * 0.76 + (sentenceComplete ? 0.12 : 0)
+    : 0
   const progressValue =
-    (trail.length + (selected ? 0.45 : 0)) / exercise.steps.length
+    (trail.length + currentProgress) / exercise.steps.length
   const nextStep = exercise.steps[stepIndex + 1]
 
   return (
@@ -434,7 +514,7 @@ export function WritingPlayScreen() {
           </div>
           <button
             onClick={undo}
-            disabled={!selected && !trail.length}
+            disabled={!answerTokens.length && !selected && !trail.length}
             className="flex h-10 w-10 items-center justify-center rounded-full text-brand-600 disabled:opacity-25"
             aria-label="ひとつ戻す"
           >
@@ -479,12 +559,12 @@ export function WritingPlayScreen() {
             </p>
           ) : (
             <div className="mt-2 flex min-h-20 items-center justify-center rounded-2xl border border-dashed border-white/20 bg-white/5 px-4 text-center text-sm font-bold text-white/45">
-              下の英語カードを選ぶと、
+              一文ずつ単語を並べると、
               <br />
               ここに作文が育ちます
             </div>
           )}
-          {resolved.length > 0 && (
+          {(resolved.length > 0 || selected) && (
             <div className="mt-3 flex gap-1.5 overflow-x-auto pb-0.5">
               {resolved.map(({ step }, index) => (
                 <span
@@ -494,9 +574,14 @@ export function WritingPlayScreen() {
                   ✓ {step.phase}
                 </span>
               ))}
-              {selected && (
+              {selected && !sentenceComplete && (
                 <span className="shrink-0 animate-pop-in rounded-full bg-cyan-300 px-2 py-1 text-[10px] font-extrabold text-indigo-950">
-                  {currentStep.phase}
+                  並べ替え中・{currentStep.phase}
+                </span>
+              )}
+              {selected && sentenceComplete && (
+                <span className="shrink-0 animate-pop-in rounded-full bg-emerald-300 px-2 py-1 text-[10px] font-extrabold text-emerald-950">
+                  ✓ {currentStep.phase}
                 </span>
               )}
             </div>
@@ -514,17 +599,21 @@ export function WritingPlayScreen() {
                   {currentStep.phase}
                 </span>
                 <span className="text-[11px] font-bold text-ink/40">
-                  次につなぐ英語
+                  一文ずつ語順トレーニング
                 </span>
               </div>
               <h1 className="mt-2 font-display text-xl font-extrabold leading-tight text-ink">
-                {currentStep.prompt}
+                {selected
+                  ? '単語を並べて一文を作ろう'
+                  : currentStep.prompt}
               </h1>
               <p className="mt-1 text-xs font-bold text-ink/52">
-                制約：{currentStep.constraint}
+                {selected
+                  ? '下のカードを、文の先頭から順番にタップ'
+                  : `条件：${currentStep.constraint}`}
               </p>
             </div>
-            {mode === 'free' && !showHint && !selected && (
+            {mode === 'free' && !showHint && !sentenceComplete && (
               <button
                 onClick={() => setShowHint(true)}
                 className="flex shrink-0 items-center gap-1 rounded-xl bg-amber-100 px-2.5 py-2 text-xs font-extrabold text-amber-700"
@@ -534,69 +623,185 @@ export function WritingPlayScreen() {
             )}
           </div>
 
-          {coachVisible && !selected && (
+          {coachVisible && (
             <div className="mt-3 flex items-start gap-2 rounded-2xl bg-cyan-50 p-3 text-cyan-950">
               <span className="mt-0.5 text-cyan-600">
                 <Sparkles size={17} />
               </span>
               <div>
                 <p className="text-[11px] font-extrabold text-cyan-700">
-                  ルートガイド
+                  組み立てヒント
                 </p>
                 <p className="mt-0.5 text-xs font-bold leading-relaxed text-cyan-950/75">
                   {currentStep.guide}
                 </p>
+                {selected && targetTokens[0] && (
+                  <p className="mt-1.5 text-xs font-extrabold text-cyan-800">
+                    文頭は「{targetTokens[0].word}」
+                  </p>
+                )}
               </div>
             </div>
           )}
 
-          <div className="mt-3 space-y-2.5">
-            {currentStep.options.map((option) => {
-              const on = selected?.id === option.id
-              const recommendedOn =
-                coachVisible && recommended?.id === option.id
-              return (
-                <button
-                  key={option.id}
-                  onClick={() => setSelected(option)}
-                  aria-pressed={on}
-                  className={cx(
-                    'relative w-full rounded-2xl border-2 p-3.5 text-left transition-all active:scale-[0.99]',
-                    on
-                      ? 'border-brand-500 bg-brand-50 shadow-card'
-                      : 'border-transparent bg-white shadow-sm',
-                    !on && selected && 'opacity-48',
-                  )}
-                >
-                  {recommendedOn && (
-                    <span className="absolute -top-2 right-3 rounded-full bg-amber-400 px-2 py-0.5 text-[10px] font-extrabold text-amber-950 shadow-sm">
-                      おすすめ
-                    </span>
-                  )}
-                  <div className="flex items-start gap-3">
-                    <span
-                      className={cx(
-                        'mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full border-2',
-                        on
-                          ? 'border-brand-500 bg-brand-500 text-white'
-                          : 'border-brand-100 bg-paper text-transparent',
-                      )}
+          {!selected ? (
+            <div className="mt-3">
+              <p className="mb-2 px-1 text-[11px] font-extrabold text-ink/45">
+                作りたい内容を日本語から選ぶ
+              </p>
+              <div className="space-y-2.5">
+                {currentStep.options.map((option, index) => {
+                  const recommendedOn =
+                    coachVisible && recommended?.id === option.id
+                  return (
+                    <button
+                      key={option.id}
+                      onClick={() => chooseSentence(option)}
+                      className="relative w-full rounded-2xl border-2 border-transparent bg-white p-3.5 text-left shadow-sm transition-all active:scale-[0.99] active:border-brand-300 active:bg-brand-50"
                     >
-                      <Check size={15} />
-                    </span>
-                    <div className="min-w-0 flex-1">
-                      <p className="font-display text-[15px] font-extrabold leading-relaxed text-ink">
-                        {option.text}
-                      </p>
-                      <p className="mt-1 text-xs font-bold leading-relaxed text-ink/46">
-                        {option.ja}
-                      </p>
-                    </div>
+                      {recommendedOn && (
+                        <span className="absolute -top-2 right-3 rounded-full bg-amber-400 px-2 py-0.5 text-[10px] font-extrabold text-amber-950 shadow-sm">
+                          おすすめ
+                        </span>
+                      )}
+                      <div className="flex items-center gap-3">
+                        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-100 font-display text-xs font-extrabold text-brand-600">
+                          {String.fromCharCode(65 + index)}
+                        </span>
+                        <p className="text-sm font-extrabold leading-relaxed text-ink/75">
+                          {option.ja}
+                        </p>
+                        <ArrowRight
+                          size={17}
+                          className="ml-auto shrink-0 text-brand-300"
+                        />
+                      </div>
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+          ) : (
+            <div className="mt-3 animate-slide-up">
+              <div className="flex items-start justify-between gap-3 rounded-2xl bg-white px-3.5 py-3 shadow-sm">
+                <div className="min-w-0">
+                  <p className="text-[10px] font-extrabold tracking-wide text-ink/38">
+                    作る文
+                  </p>
+                  <p className="mt-0.5 text-sm font-extrabold leading-relaxed text-ink/75">
+                    {selected.ja}
+                  </p>
+                </div>
+                {!sentenceComplete && (
+                  <button
+                    onClick={clearArrangement}
+                    className="shrink-0 rounded-xl bg-brand-50 px-2.5 py-2 text-[11px] font-extrabold text-brand-600"
+                  >
+                    選び直す
+                  </button>
+                )}
+              </div>
+
+              <div
+                className={cx(
+                  'mt-3 min-h-28 rounded-[1.5rem] border-2 bg-white p-3 transition-colors',
+                  orderStatus === 'correct' &&
+                    'border-emerald-400 bg-emerald-50',
+                  orderStatus === 'wrong' && 'border-rose-300 bg-rose-50',
+                  orderStatus === 'idle' && 'border-dashed border-brand-200',
+                )}
+              >
+                <div className="mb-2 flex items-center justify-between gap-3 px-0.5">
+                  <p className="text-[11px] font-extrabold text-ink/48">
+                    あなたの語順
+                  </p>
+                  <span className="text-[10px] font-extrabold text-ink/35">
+                    {answerTokens.length}/{targetTokens.length}語
+                  </span>
+                </div>
+                {answerTokens.length ? (
+                  <div
+                    className="flex flex-wrap gap-2"
+                    aria-label={`現在の語順: ${arrangedText}`}
+                  >
+                    {answerTokens.map((token, index) => (
+                      <button
+                        key={token.id}
+                        onClick={() => returnWord(token)}
+                        disabled={sentenceComplete}
+                        aria-label={`${index + 1}番目 ${token.word}${
+                          sentenceComplete ? '' : '。タップして戻す'
+                        }`}
+                        className={cx(
+                          'animate-pop-in rounded-xl border-2 px-3 py-2 font-display text-sm font-extrabold shadow-sm transition-transform',
+                          sentenceComplete
+                            ? 'border-emerald-300 bg-white text-emerald-800'
+                            : 'border-brand-300 bg-brand-50 text-brand-800 active:scale-95',
+                        )}
+                      >
+                        {token.word}
+                      </button>
+                    ))}
                   </div>
-                </button>
-              )
-            })}
-          </div>
+                ) : (
+                  <div className="flex min-h-16 items-center justify-center px-4 text-center text-xs font-bold leading-relaxed text-ink/35">
+                    下の単語カードを、
+                    <br />
+                    文の先頭からタップしよう
+                  </div>
+                )}
+              </div>
+
+              {orderStatus === 'wrong' && (
+                <div
+                  role="alert"
+                  className="mt-2 flex items-center gap-2 rounded-2xl bg-rose-100 px-3 py-2.5 text-xs font-extrabold text-rose-700"
+                >
+                  <Close size={16} />
+                  まだ語順が違います。カードを戻して並べ直そう。
+                </div>
+              )}
+              {orderStatus === 'correct' && (
+                <div
+                  role="status"
+                  className="mt-2 flex items-center gap-2 rounded-2xl bg-emerald-100 px-3 py-2.5 text-xs font-extrabold text-emerald-700"
+                >
+                  <Check size={16} />
+                  正しい語順です！ 文法を確認して次へ進もう。
+                </div>
+              )}
+
+              {!sentenceComplete && (
+                <div className="mt-3">
+                  <div className="mb-2 flex items-center justify-between px-1">
+                    <p className="text-[11px] font-extrabold text-ink/48">
+                      単語カード
+                    </p>
+                    <p className="text-[10px] font-bold text-ink/35">
+                      タップすると上へ移動
+                    </p>
+                  </div>
+                  <div className="flex min-h-24 flex-wrap content-start gap-2 rounded-[1.5rem] bg-brand-100/65 p-3">
+                    {wordBank.map((token) => (
+                      <button
+                        key={token.id}
+                        onClick={() => placeWord(token)}
+                        aria-label={`${token.word}を次に置く`}
+                        className="rounded-xl border border-white bg-white px-3 py-2 font-display text-sm font-extrabold text-ink shadow-[0_3px_8px_-4px_rgba(30,27,75,0.45)] transition-transform active:scale-95"
+                      >
+                        {token.word}
+                      </button>
+                    ))}
+                    {!wordBank.length && (
+                      <p className="m-auto text-xs font-extrabold text-brand-500/60">
+                        すべてのカードを使いました
+                      </p>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </section>
 
         {selected && selectedGrammar && (
@@ -655,14 +860,31 @@ export function WritingPlayScreen() {
       </main>
 
       <div className="fixed inset-x-0 bottom-0 z-30 mx-auto w-full max-w-md border-t border-brand-100 bg-white/94 p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] backdrop-blur">
-        <Button full size="lg" disabled={!selected} onClick={advance}>
-          {stepIndex + 1 >= exercise.steps.length
-            ? '作文を完成する'
-            : 'この表現でつなぐ'}
-          <ArrowRight size={18} />
+        <Button
+          full
+          size="lg"
+          disabled={!selected || (!sentenceComplete && wordBank.length > 0)}
+          onClick={sentenceComplete ? advance : checkOrder}
+        >
+          {!selected
+            ? '作る内容を選ぼう'
+            : sentenceComplete
+              ? stepIndex + 1 >= exercise.steps.length
+                ? '作文を完成する'
+                : '次の一文へ'
+              : wordBank.length > 0
+                ? `あと${wordBank.length}語を並べよう`
+                : '語順をチェック'}
+          {sentenceComplete ? (
+            <ArrowRight size={18} />
+          ) : (
+            <Check size={18} />
+          )}
         </Button>
         <p className="mt-2 text-center text-[10px] font-bold text-ink/35">
-          選択後に文法を確認してから次へ進みます
+          {sentenceComplete
+            ? '正しい語順と文法を確認してから次へ進みます'
+            : 'カードは何度でもタップして戻せます'}
         </p>
       </div>
     </div>

@@ -4,9 +4,11 @@ import { buildDeck, SESSION_SIZE } from '../lib/session.js'
 import { pickDistractors, shuffle } from '../data/vocab.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { PosBadge } from '../components/WordBits.jsx'
+import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { Button, ProgressBar, IconButton } from '../components/ui.jsx'
 import { Close, Check, ArrowRight } from '../components/Icons.jsx'
 import { cx } from '../components/ui.jsx'
+import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 
 // このクイズ画面の同一性キー（出題ソース・タイトル・問題数）。
 // 退避したセッションが「今まさに戻ってきたクイズ」のものかを照合するのに使う。
@@ -45,7 +47,11 @@ export function VocabQuizScreen() {
         }),
   )
   const [i, setI] = useState(() => (restore ? restore.i : 0))
-  const [selected, setSelected] = useState(() => (restore ? restore.selected : null)) // option id か 'unknown'
+  const [selected, setSelected] = useState(() => {
+    // 旧版で使っていた "unknown" は実在する単語IDと衝突するため、新しい番兵値へ移行する。
+    if (restore?.selected === 'unknown') return UNKNOWN_CHOICE_ID
+    return restore ? restore.selected : null
+  })
   const results = useRef(restore ? restore.results : { correct: 0, wrong: 0, unknown: 0, wrongIds: [] })
 
   const word = deck[i]
@@ -87,7 +93,7 @@ export function VocabQuizScreen() {
   const choose = (optId) => {
     if (answered) return
     setSelected(optId)
-    if (optId === 'unknown') {
+    if (optId === UNKNOWN_CHOICE_ID) {
       review(word.id, 'unknown')
       results.current.unknown++
       results.current.wrongIds.push(word.id)
@@ -169,27 +175,18 @@ export function VocabQuizScreen() {
             )
           })}
 
-          {/* わからない */}
-          <button
+          <UnknownChoiceButton
+            selected={selected === UNKNOWN_CHOICE_ID}
             disabled={answered}
-            onClick={() => choose('unknown')}
-            className={cx(
-              'w-full rounded-2xl border-2 border-dashed px-4 py-3 text-sm font-extrabold transition-all',
-              selected === 'unknown'
-                ? 'border-amber-400 bg-hint-soft text-amber-800'
-                : 'border-ink/15 bg-transparent text-ink/45 active:bg-ink/5',
-              answered && selected !== 'unknown' && 'opacity-40',
-            )}
-          >
-            わからない🙈
-          </button>
+            onClick={() => choose(UNKNOWN_CHOICE_ID)}
+          />
         </div>
 
         {/* 答え合わせ後 */}
         {answered && (
           <div className="mt-4 animate-slide-up rounded-2xl bg-white p-4 shadow-card">
             <p className={cx('font-display text-lg font-extrabold', isCorrectPick ? 'text-emerald-600' : 'text-rose-500')}>
-              {isCorrectPick ? '正解！🎉' : selected === 'unknown' ? '答えはこちら' : 'ざんねん…'}
+              {isCorrectPick ? '正解！🎉' : selected === UNKNOWN_CHOICE_ID ? '答えはこちら' : 'ざんねん…'}
             </p>
             <p className="mt-1 font-bold text-ink">
               <span className="font-display">{word.word}</span> ＝ {word.meanings.join('・')}

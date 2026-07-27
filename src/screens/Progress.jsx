@@ -40,6 +40,7 @@ export function ProgressScreen() {
     myGrammarList: s.myGrammarList, writingProgress: s.writingProgress,
     readingsDone: s.readingsDone, mathDone: s.mathDone, mathMastery: s.mathMastery,
     skillStats: s.skillStats, diagnosticHistory: s.diagnosticHistory,
+    diagnosticAttempt: s.diagnosticAttempt, diagnosticSeed: s.diagnosticSeed,
     engPos: s.engPos, vnCleared: s.vnCleared,
     portalOrder: s.portalOrder, portalHidden: s.portalHidden,
     stats: s.stats, settings: s.settings,

@@ -4,9 +4,11 @@ import { problemsForUnit, unitById } from '../data/math.js'
 import { shuffle } from '../data/vocab.js'
 import { MathBlock, MathText } from '../components/MathText.jsx'
 import { MathFillIn, resolveFill } from '../components/MathFillIn.jsx'
+import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { Button, ProgressBar, IconButton } from '../components/ui.jsx'
 import { cx } from '../components/ui.jsx'
 import { Close, Check, ArrowRight, Lightbulb, Target } from '../components/Icons.jsx'
+import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 
 // 誘導型の数学ソルバー。1問を「確認 → 穴埋め → 答え」で解き進める。
 //  ① recall  … 着眼点・公式を思い出し、方針を3択で確認
@@ -293,6 +295,11 @@ function Question({ q, badge, explain, sel, onChoose }) {
             </button>
           )
         })}
+        <UnknownChoiceButton
+          selected={sel === UNKNOWN_CHOICE_ID}
+          disabled={answered}
+          onClick={() => onChoose(UNKNOWN_CHOICE_ID)}
+        />
       </div>
 
       {answered && <ExplainCard correct={sel === q.answer} text={explain} />}
