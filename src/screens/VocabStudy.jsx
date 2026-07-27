@@ -67,6 +67,8 @@ export function VocabStudyScreen() {
       xpGained,
       reviewIds: deck.map((w) => w.id),
       source: params.source,
+      size: params.size,
+      continueTo: params.continueTo,
     })
   }
 

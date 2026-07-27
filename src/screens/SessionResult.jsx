@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import { ProgressRing, Button, Card } from '../components/ui.jsx'
-import { Star, Flame, Refresh, Home, Bookmark } from '../components/Icons.jsx'
+import { Star, Flame, Refresh, Home, Bookmark, ArrowRight } from '../components/Icons.jsx'
 import { enemyLevel, nextPosition, battleTrend } from '../lib/adaptive.js'
 
 // セッションの種類から「スキル」を判定する（弱点ナビ用）。
@@ -73,12 +73,21 @@ export function SessionResultScreen() {
     : { emoji: '🌱', text: 'ここから伸びる！', color: '#0ea5e9' }
 
   const isPhrase = engine === 'phrase'
+  const reviewUnit = isPhrase ? '項目' : '語'
 
   const replay = () => {
     const target =
       params.replayScreen ??
       (isPhrase ? (mode === 'quiz' ? 'phraseQuiz' : 'phraseStudy') : mode === 'quiz' ? 'vocabQuiz' : 'vocabStudy')
-    navigate(target, { source, title, mode, engine, replayScreen: params.replayScreen })
+    navigate(target, {
+      source,
+      title,
+      mode,
+      engine,
+      replayScreen: params.replayScreen,
+      size: params.size,
+      continueTo: params.continueTo,
+    })
   }
 
   const isGrammar = engine === 'grammar'
@@ -94,15 +103,25 @@ export function SessionResultScreen() {
         })
       : isPhrase
       ? navigate('phraseStudy', {
-          source: { type: 'phraseList', kind: source?.kind, ids: reviewIds },
+          source:
+            source?.type === 'customPhrase'
+              ? {
+                  type: 'customPhrase',
+                  items: (source.items ?? []).filter((item) => reviewIds.includes(item.id)),
+                }
+              : { type: 'phraseList', kind: source?.kind, ids: reviewIds },
           title: 'まちがい復習',
           mode: 'study',
           engine: 'phrase',
+          size: reviewIds.length,
+          continueTo: params.continueTo,
         })
       : navigate('vocabStudy', {
           source: { type: 'mylist', ids: reviewIds },
           title: 'まちがい復習',
           mode: 'study',
+          size: reviewIds.length,
+          continueTo: params.continueTo,
         })
 
   return (
@@ -135,9 +154,17 @@ export function SessionResultScreen() {
       {battle && <BattleOutcome battle={battle} />}
 
       <div className="mt-2 w-full max-w-xs space-y-2.5">
+        {params.continueTo?.screen && (
+          <Button
+            full
+            onClick={() => navigate(params.continueTo.screen, params.continueTo.params ?? {})}
+          >
+            {params.continueTo.label ?? '次へ'} <ArrowRight size={18} />
+          </Button>
+        )}
         {wrong > 0 && (
           <Button full variant="primary" onClick={reviewWrong}>
-            <Bookmark size={18} /> まちがい {wrong} 語を復習
+            <Bookmark size={18} /> まちがい {wrong}{reviewUnit}を復習
           </Button>
         )}
         <Button full variant="secondary" onClick={replay}>

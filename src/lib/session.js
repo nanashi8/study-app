@@ -107,6 +107,7 @@ export function weakFoundationLevel(srs) {
 // ── 熟語・構文（phrase）。SRS は単語と同じ srs を id で共用 ──
 function phraseCandidates(source) {
   if (source.type === 'phraseList') return (source.ids ?? []).map(getPhrase).filter(Boolean)
+  if (source.type === 'customPhrase') return source.items ?? []
   if (source.levelId) return phrasesByLevel(source.kind, source.levelId)
   return phrasesByKind(source.kind)
 }

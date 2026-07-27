@@ -19,6 +19,7 @@ import { MyListScreen } from './screens/MyList.jsx'
 import { ProgressScreen } from './screens/Progress.jsx'
 import { SettingsScreen } from './screens/Settings.jsx'
 import { ReadingListScreen } from './screens/ReadingList.jsx'
+import { ReadingPrepScreen } from './screens/ReadingPrep.jsx'
 import { ReaderScreen } from './screens/Reader.jsx'
 import { ReadingSummaryScreen } from './screens/ReadingSummary.jsx'
 import { PhrasesScreen } from './screens/Phrases.jsx'
@@ -58,6 +59,7 @@ const SCREENS = {
   progress: ProgressScreen,
   settings: SettingsScreen,
   readingList: ReadingListScreen,
+  readingPrep: ReadingPrepScreen,
   reader: ReaderScreen,
   readingSummary: ReadingSummaryScreen,
   phrases: PhrasesScreen,
@@ -88,7 +90,7 @@ const SCREENS = {
 const IMMERSIVE = new Set([
   'portal',
   'login',
-  'vocabStudy', 'vocabQuiz', 'sessionResult', 'reader', 'phraseStudy', 'phraseQuiz',
+  'vocabStudy', 'vocabQuiz', 'sessionResult', 'readingPrep', 'reader', 'phraseStudy', 'phraseQuiz',
   'listeningQuiz', 'dictationPlay', 'pronouncePlay', 'mathSolve', 'grammarQuiz',
   // 別コンテンツ（ポータルから入る）
   'vocabSearch', 'wordRequests', 'mathMap', 'mathUnits',

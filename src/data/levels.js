@@ -9,6 +9,23 @@ export const LEVELS = [
   { id: '1',    label: '1級',   sub: '大学上級程度', cefr: 'C1',     color: '#f43f5e', emoji: '👑' },
 ]
 
-export const LEVELS_BY_ID = Object.fromEntries(LEVELS.map((l) => [l.id, l]))
+// 準2級プラスは読解・リスニング教材で先行対応する。通常単語帳の7段階には混ぜず、
+// 準2級・2級の既存語彙を横断して学べるようにする。
+export const PRE2_PLUS_LEVEL = {
+  id: 'pre2plus',
+  label: '準2級プラス',
+  sub: '高校上級程度',
+  cefr: 'A2',
+  color: '#2563eb',
+  emoji: '📈',
+}
+
+export const READING_LEVELS = [
+  ...LEVELS.slice(0, 4),
+  PRE2_PLUS_LEVEL,
+  ...LEVELS.slice(4),
+]
+
+export const LEVELS_BY_ID = Object.fromEntries(READING_LEVELS.map((l) => [l.id, l]))
 
 export const getLevel = (id) => LEVELS_BY_ID[id] ?? LEVELS[0]
