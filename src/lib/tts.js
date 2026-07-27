@@ -45,6 +45,10 @@ export function getEnglishVoices() {
   return cachedVoices.filter((v) => /^en(-|_|$)/i.test(v.lang))
 }
 
+export function getJapaneseVoices() {
+  return cachedVoices.filter((v) => /^ja(-|_|$)/i.test(v.lang))
+}
+
 export function subscribeVoices(fn) {
   listeners.add(fn)
   if (cachedVoices.length) fn(cachedVoices)
@@ -65,6 +69,12 @@ function preferredVoice(voiceURI) {
   return pref || null
 }
 
+// 言語に応じて声を選ぶ。日本語なら日本語の声、それ以外は英語の好みの声。
+function voiceForLang(lang, voiceURI) {
+  if (/^ja/i.test(lang)) return getJapaneseVoices()[0] || null
+  return preferredVoice(voiceURI)
+}
+
 /** 英語テキストを読み上げる。成功なら true。 */
 export function speak(text, { rate = 0.9, voiceURI = null, lang = 'en-US' } = {}) {
   if (!isTTSSupported() || !text) return false
@@ -76,6 +86,37 @@ export function speak(text, { rate = 0.9, voiceURI = null, lang = 'en-US' } = {}
   const v = preferredVoice(voiceURI)
   if (v) u.voice = v
   synth.speak(u)
+  return true
+}
+
+/** 終了コールバック付きで読み上げる（連続再生・言語切替に対応）。
+ *  speak() と違って synth.cancel() を呼ばないので、onend で次を繋いで連続再生できる。
+ *  lang が ja-* なら日本語の声を、それ以外なら英語の好みの声を使う。 */
+export function speakWith(
+  text,
+  { rate = 0.9, pitch = 1, voiceURI = null, lang = 'en-US', onstart, onend } = {},
+) {
+  if (!isTTSSupported() || !text) {
+    onend?.()
+    return false
+  }
+  const u = new SpeechSynthesisUtterance(text)
+  u.lang = lang
+  u.rate = rate
+  u.pitch = pitch
+  const v = voiceForLang(lang, voiceURI)
+  if (v) u.voice = v
+  if (onstart) u.onstart = () => onstart()
+  // onend / onerror どちらでも次へ進めるようにする（cancel時の取りこぼし防止）
+  let fired = false
+  const finish = () => {
+    if (fired) return
+    fired = true
+    onend?.()
+  }
+  u.onend = finish
+  u.onerror = finish
+  window.speechSynthesis.speak(u)
   return true
 }
 
