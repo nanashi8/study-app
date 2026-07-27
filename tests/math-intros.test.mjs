@@ -6,6 +6,7 @@ import { createServer } from 'vite'
 
 import { MATH_UNITS } from '../src/data/math.js'
 import { MATH_INTROS, introForUnit } from '../src/data/math-intros.js'
+import { rangeProgress, stepRangeValue } from '../src/lib/mathVisualControls.js'
 
 test('数学45単元のすべてに動的な視覚導入がある', () => {
   const unitIds = MATH_UNITS.map((unit) => unit.id)
@@ -83,6 +84,59 @@ test('全単元の図は操作範囲の端でもSVGとして描画できる', as
         assert.match(markup, /role="img"/, `${unit.id}: accessible image`)
       }
     }
+  } finally {
+    await vite.close()
+  }
+})
+
+test('視覚教材の操作UIは値の位置・大きな操作対象・選択状態を明示する', async () => {
+  const vite = await createServer({
+    appType: 'custom',
+    logLevel: 'silent',
+    server: { middlewareMode: true },
+  })
+
+  try {
+    const { VisualControl } = await vite.ssrLoadModule('/src/screens/MathIntro.jsx')
+    const rangeControl = MATH_INTROS.pn.controls[0]
+
+    assert.equal(rangeProgress(rangeControl, rangeControl.min), 0)
+    assert.equal(rangeProgress(rangeControl, rangeControl.max), 100)
+    assert.equal(rangeProgress(rangeControl, rangeControl.initial), 83.3333)
+    assert.equal(stepRangeValue(rangeControl, rangeControl.min, -1), rangeControl.min)
+    assert.equal(stepRangeValue(rangeControl, rangeControl.max, 1), rangeControl.max)
+
+    const decimalControl = MATH_INTROS.simil.controls[0]
+    assert.equal(stepRangeValue(decimalControl, 0.4, 1), 0.5)
+
+    const rangeMarkup = renderToStaticMarkup(
+      React.createElement(VisualControl, {
+        control: rangeControl,
+        value: rangeControl.initial,
+        color: '#4f46e5',
+        onChange: () => {},
+      }),
+    )
+    assert.match(rangeMarkup, /class="math-visual-range"/)
+    assert.match(rangeMarkup, /--range-progress:83\.3333%/)
+    assert.match(rangeMarkup, /aria-label="足す数：前の値"/)
+    assert.match(rangeMarkup, /aria-label="足す数：次の値"/)
+    assert.match(rangeMarkup, /h-11 w-11/)
+    assert.match(rangeMarkup, /text-sm font-extrabold text-white/)
+
+    const optionsControl = MATH_INTROS.setlogic.controls[0]
+    const optionsMarkup = renderToStaticMarkup(
+      React.createElement(VisualControl, {
+        control: optionsControl,
+        value: optionsControl.initial,
+        color: '#4f46e5',
+        onChange: () => {},
+      }),
+    )
+    assert.match(optionsMarkup, /aria-pressed="true"/)
+    assert.match(optionsMarkup, /min-h-12/)
+    assert.match(optionsMarkup, /十分条件/)
+    assert.match(optionsMarkup, /必要条件/)
   } finally {
     await vite.close()
   }

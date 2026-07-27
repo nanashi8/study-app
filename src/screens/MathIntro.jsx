@@ -5,7 +5,11 @@ import { problemsForUnit, unitById } from '../data/math.js'
 import { MathVisual } from '../components/MathVisual.jsx'
 import { MathBlock, MathText } from '../components/MathText.jsx'
 import { Button, Chip, IconButton, cx } from '../components/ui.jsx'
-import { ArrowRight, ChevronLeft, Eye, Lightbulb, Sparkles } from '../components/Icons.jsx'
+import { rangeProgress, stepRangeValue } from '../lib/mathVisualControls.js'
+import {
+  ArrowRight, ChevronLeft, ChevronRight, Eye, Lightbulb, Sparkles,
+} from '../components/Icons.jsx'
+import './MathIntro.css'
 
 const defaultsFor = (intro) =>
   Object.fromEntries((intro?.controls ?? []).map((control) => [control.id, control.initial]))
@@ -102,16 +106,35 @@ export function MathIntroScreen() {
             />
           </div>
 
-          <div className="space-y-4 border-t border-violet-100 px-4 py-4">
-            {intro.controls.map((control) => (
-              <VisualControl
-                key={control.id}
-                control={control}
-                value={values[control.id]}
-                color={unit.color}
-                onChange={(value) => setValue(control.id, value)}
-              />
-            ))}
+          <div
+            className="border-t-2 border-violet-100 bg-gradient-to-b from-violet-50/80 to-white px-3 pb-4 pt-3"
+            aria-label="図を動かす操作"
+          >
+            <div className="mb-3 flex items-center gap-2 px-1">
+              <span
+                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-white text-base font-black shadow-sm"
+                style={{ color: unit.color }}
+                aria-hidden="true"
+              >
+                ↔
+              </span>
+              <div>
+                <h3 className="text-sm font-extrabold text-ink">図を動かす</h3>
+                <p className="text-[11px] font-bold text-ink/55">値を変えると、上の図へすぐ反映されます</p>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              {intro.controls.map((control) => (
+                <VisualControl
+                  key={control.id}
+                  control={control}
+                  value={values[control.id]}
+                  color={unit.color}
+                  onChange={(value) => setValue(control.id, value)}
+                />
+              ))}
+            </div>
           </div>
         </section>
 
@@ -156,13 +179,16 @@ export function MathIntroScreen() {
   )
 }
 
-function VisualControl({ control, value, color, onChange }) {
+export function VisualControl({ control, value, color, onChange }) {
   const shown = control.valueLabel ? control.valueLabel(value) : String(value)
 
   if (control.type === 'options') {
     return (
-      <fieldset>
-        <legend className="mb-2 text-xs font-extrabold text-ink/55">{control.label}</legend>
+      <fieldset
+        className="rounded-2xl border-2 bg-white p-3 shadow-sm"
+        style={{ borderColor: `${color}30` }}
+      >
+        <legend className="px-1 text-sm font-extrabold text-ink">{control.label}</legend>
         <div className="grid gap-2" style={{ gridTemplateColumns: `repeat(${control.options.length}, minmax(0, 1fr))` }}>
           {control.options.map((option) => {
             const selected = String(value) === String(option.value)
@@ -173,12 +199,14 @@ function VisualControl({ control, value, color, onChange }) {
                 aria-pressed={selected}
                 onClick={() => onChange(option.value)}
                 className={cx(
-                  'min-h-10 rounded-xl border-2 px-2 py-2 text-xs font-extrabold transition-all active:scale-[0.98]',
+                  'flex min-h-12 items-center justify-center gap-1 rounded-xl border-2 px-2 py-2.5 text-sm font-extrabold transition-all focus-visible:outline-3 focus-visible:outline-offset-2 active:scale-[0.98]',
                   selected
-                    ? 'text-white shadow-sm'
-                    : 'border-violet-100 bg-paper text-ink/60 active:bg-violet-50',
+                    ? 'text-white shadow-md'
+                    : 'border-slate-300 bg-white text-ink/80 shadow-sm active:bg-violet-50',
                 )}
-                style={selected ? { backgroundColor: color, borderColor: color } : undefined}
+                style={selected
+                  ? { backgroundColor: color, borderColor: color, outlineColor: color }
+                  : { outlineColor: color }}
               >
                 {option.label}
               </button>
@@ -189,30 +217,79 @@ function VisualControl({ control, value, color, onChange }) {
     )
   }
 
+  const progress = rangeProgress(control, value)
+  const atMin = Number(value) <= Number(control.min)
+  const atMax = Number(value) >= Number(control.max)
+  const inputId = `math-control-${control.id}`
+
   return (
-    <label className="block">
-      <span className="mb-2 flex items-center justify-between gap-3">
-        <span className="text-xs font-extrabold text-ink/55">{control.label}</span>
-        <output className="rounded-full px-2.5 py-1 text-xs font-extrabold" style={{ color, backgroundColor: `${color}16` }}>
+    <fieldset
+      className="rounded-2xl border-2 bg-white p-3 shadow-sm"
+      style={{ borderColor: `${color}30` }}
+    >
+      <legend className="sr-only">{control.label}</legend>
+      <div className="mb-1.5 flex items-center justify-between gap-3">
+        <label htmlFor={inputId} className="text-sm font-extrabold text-ink">
+          {control.label}
+        </label>
+        <output
+          htmlFor={inputId}
+          className="min-w-14 rounded-full px-3 py-1.5 text-center text-sm font-extrabold text-white shadow-sm"
+          style={{ backgroundColor: color }}
+          aria-live="polite"
+        >
           {shown}
         </output>
-      </span>
-      <input
-        type="range"
-        min={control.min}
-        max={control.max}
-        step={control.step}
-        value={value}
-        onChange={(event) => onChange(Number(event.target.value))}
-        className="h-2.5 w-full cursor-pointer appearance-none rounded-full bg-violet-100 accent-violet-600"
-        style={{ accentColor: color }}
-        aria-label={control.label}
-        aria-valuetext={shown}
-      />
-      <span className="mt-1 flex justify-between text-[10px] font-bold text-ink/35" aria-hidden="true">
-        <span>{control.valueLabel ? control.valueLabel(control.min) : control.min}</span>
-        <span>{control.valueLabel ? control.valueLabel(control.max) : control.max}</span>
-      </span>
-    </label>
+      </div>
+
+      <div className="flex items-start gap-2">
+        <button
+          type="button"
+          onClick={() => onChange(stepRangeValue(control, value, -1))}
+          disabled={atMin}
+          className="mt-0.5 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border-2 bg-white transition-transform focus-visible:outline-3 focus-visible:outline-offset-2 active:scale-95 disabled:cursor-not-allowed disabled:border-slate-200 disabled:bg-slate-100 disabled:text-slate-300"
+          style={atMin ? undefined : { color, borderColor: `${color}55`, outlineColor: color }}
+          aria-label={`${control.label}：前の値`}
+          aria-controls={inputId}
+        >
+          <ChevronLeft size={21} />
+        </button>
+
+        <div className="min-w-0 flex-1">
+          <input
+            id={inputId}
+            type="range"
+            min={control.min}
+            max={control.max}
+            step={control.step}
+            value={value}
+            onChange={(event) => onChange(Number(event.target.value))}
+            className="math-visual-range"
+            style={{
+              '--range-color': color,
+              '--range-progress': `${progress}%`,
+            }}
+            aria-label={control.label}
+            aria-valuetext={shown}
+          />
+          <span className="-mt-0.5 flex justify-between gap-3 text-xs font-extrabold text-ink/60" aria-hidden="true">
+            <span>{control.valueLabel ? control.valueLabel(control.min) : control.min}</span>
+            <span className="text-right">{control.valueLabel ? control.valueLabel(control.max) : control.max}</span>
+          </span>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => onChange(stepRangeValue(control, value, 1))}
+          disabled={atMax}
+          className="mt-0.5 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border-2 bg-white transition-transform focus-visible:outline-3 focus-visible:outline-offset-2 active:scale-95 disabled:cursor-not-allowed disabled:border-slate-200 disabled:bg-slate-100 disabled:text-slate-300"
+          style={atMax ? undefined : { color, borderColor: `${color}55`, outlineColor: color }}
+          aria-label={`${control.label}：次の値`}
+          aria-controls={inputId}
+        >
+          <ChevronRight size={21} />
+        </button>
+      </div>
+    </fieldset>
   )
 }

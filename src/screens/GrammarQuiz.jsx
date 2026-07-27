@@ -1,43 +1,14 @@
 import { useMemo, useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import { shuffle } from '../data/vocab.js'
-import {
-  GRAMMAR,
-  grammarByLevel,
-  grammarByTopic,
-  getGrammar,
-  samePatternExamplesFor,
-} from '../data/grammar.js'
+import { samePatternExamplesFor } from '../data/grammar.js'
+import { buildGrammarDeck } from '../lib/grammarDeck.js'
 import { todayIndex } from '../store/useStore.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { Button, ProgressBar, IconButton, Chip, cx } from '../components/ui.jsx'
 import { Close, Check, ArrowRight, Lightbulb } from '../components/Icons.jsx'
 import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
-
-// source から出題候補を集める。
-function candidates(source = {}) {
-  if (source.type === 'grammarList') return (source.ids ?? []).map(getGrammar).filter(Boolean)
-  if (source.type === 'grammarDue') return GRAMMAR
-  if (source.topic) return grammarByTopic(source.level, source.topic)
-  return grammarByLevel(source.level)
-}
-
-// 未習得・期限切れを優先しつつシャッフルして最大10問。
-function buildDeck(source, srs, size = 10) {
-  const day = todayIndex()
-  let pool = shuffle(candidates(source))
-  if (source.type === 'grammarDue') {
-    pool = pool.filter((g) => srs[g.id] && srs[g.id].due <= day)
-  }
-  pool.sort((a, b) => {
-    const ra = srs[a.id]?.due <= day ? 0 : srs[a.id] ? 2 : 1 // due → 未着手 → それ以外
-    const rb = srs[b.id]?.due <= day ? 0 : srs[b.id] ? 2 : 1
-    if (ra !== rb) return ra - rb
-    return (srs[a.id]?.box ?? 0) - (srs[b.id]?.box ?? 0)
-  })
-  return size ? pool.slice(0, size) : pool
-}
 
 // 空所 ___ を下線つきの空欄として表示。
 function renderQuestion(q) {
@@ -58,7 +29,12 @@ export function GrammarQuizScreen() {
   const color = params.levelColor ?? '#6366f1'
 
   const xpAtStart = useRef(useStore.getState().stats.xp)
-  const [deck] = useState(() => buildDeck(params.source ?? { type: 'grammar', level: '5' }, useStore.getState().srs))
+  const [deck] = useState(() =>
+    buildGrammarDeck(
+      params.source ?? { type: 'grammar', level: '5' },
+      { srs: useStore.getState().srs, day: todayIndex() },
+    ),
+  )
   const [i, setI] = useState(0)
   const [selected, setSelected] = useState(null)
   const results = useRef({ correct: 0, wrong: 0, unknown: 0, wrongIds: [] })

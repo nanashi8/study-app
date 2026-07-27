@@ -4,6 +4,36 @@
 
 export const MAX_HERO_LEVEL = 99
 
+// 冒険者LVごとの「挑戦できる英検ランク」の解放表。
+// 適応難易度はこの上限の内側だけで上下する。これにより、保存済みの engPos や
+// 高い診断結果があっても、低LVの冒険者がいきなり1級と戦うことはない。
+export const ENEMY_RANK_UNLOCKS = [
+  { rankIndex: 0, level: 1, label: '5級' },
+  { rankIndex: 1, level: 10, label: '4級' },
+  { rankIndex: 2, level: 20, label: '3級' },
+  { rankIndex: 3, level: 35, label: '準2級' },
+  { rankIndex: 4, level: 50, label: '2級' },
+  { rankIndex: 5, level: 70, label: '準1級' },
+  { rankIndex: 6, level: 85, label: '1級' },
+]
+
+export function maxEnemyRankIndexForHeroLevel(level) {
+  const safeLevel = Math.max(1, Math.min(MAX_HERO_LEVEL, Math.floor(level) || 1))
+  return [...ENEMY_RANK_UNLOCKS]
+    .reverse()
+    .find((unlock) => safeLevel >= unlock.level)?.rankIndex ?? 0
+}
+
+export function capEnemyPositionForHeroLevel(position, level) {
+  const safePosition = Math.max(0, Number.isFinite(position) ? position : 0)
+  return Math.min(safePosition, maxEnemyRankIndexForHeroLevel(level))
+}
+
+export function nextEnemyRankUnlockForHeroLevel(level) {
+  const safeLevel = Math.max(1, Math.min(MAX_HERO_LEVEL, Math.floor(level) || 1))
+  return ENEMY_RANK_UNLOCKS.find((unlock) => unlock.level > safeLevel) ?? null
+}
+
 // 序盤は6問正解ほどでLVが上がり、後半は少しずつ腰を据えて育てる曲線。
 // LV99到達は24,120XP。既存のXP（正解10 / 誤答3など）をそのまま使える。
 export function xpNeededForNextLevel(level) {
@@ -301,6 +331,8 @@ export function heroProgress(totalXp = 0) {
     chapter: chapterForLevel(level),
     relics: relicsForLevel(level),
     nextRelic: nextRelicForLevel(level),
+    enemyRankCap: maxEnemyRankIndexForHeroLevel(level),
+    nextEnemyRankUnlock: nextEnemyRankUnlockForHeroLevel(level),
   }
 }
 

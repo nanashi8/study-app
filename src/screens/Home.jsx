@@ -3,7 +3,7 @@ import { overallProgress, suggestStartPosition } from '../lib/session.js'
 import { enemyLevel } from '../lib/adaptive.js'
 import { ROOTS, wordsByRoot } from '../data/vocab.js'
 import { todayIndex } from '../store/useStore.js'
-import { heroProgress } from '../lib/rpg.js'
+import { capEnemyPositionForHeroLevel, heroProgress } from '../lib/rpg.js'
 import { Card, ProgressRing, ProgressBar, Chip } from '../components/ui.jsx'
 import { Flame, Star, Book, BookOpen, Cards, Sparkles, Bookmark, Refresh, ArrowRight, Headphones, Keyboard, Mic, Lightbulb, Target, Trophy, ChevronLeft, Link } from '../components/Icons.jsx'
 
@@ -46,8 +46,13 @@ export function HomeScreen() {
   const diagnosticHistory = useStore((s) => s.diagnosticHistory)
 
   const engPos = useStore((s) => s.engPos)
-  const enemy = enemyLevel(engPos ?? suggestStartPosition(srs))
   const hero = heroProgress(stats.xp)
+  const enemy = enemyLevel(
+    capEnemyPositionForHeroLevel(
+      engPos ?? suggestStartPosition(srs),
+      hero.level,
+    ),
+  )
   const latestDiagnostic = Array.isArray(diagnosticHistory) ? diagnosticHistory[0] : null
 
   const prog = overallProgress(srs)

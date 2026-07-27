@@ -38,14 +38,22 @@ export function nextPosition(pos, accuracy) {
 // 出題ソース（buildDeck に渡す）。敵LV＝ポジションの級。
 export function battleSource(pos) {
   const idx = enemyLevelIndex(pos)
-  return { type: 'battle', levelIndex: idx, levelId: LEVEL_ORDER[idx] }
+  return {
+    type: 'battle',
+    levelIndex: idx,
+    levelId: LEVEL_ORDER[idx],
+    position: clampPos(pos),
+  }
 }
 
-// 前進/据え置き/後退の判定（結果表示用）。
+// 結果表示用の移動判定。
+// 級そのものが変わった場合だけ up / down を返し、同じ級の中で
+// ポジションが動いただけなら advance / ease として区別する。
+// これにより「5級のままなのにランクアップ」と表示される矛盾を防ぐ。
 export function battleTrend(fromPos, toPos) {
   const a = enemyLevelIndex(fromPos)
   const b = enemyLevelIndex(toPos)
   if (b > a) return 'up'
   if (b < a) return 'down'
-  return toPos > fromPos ? 'up' : toPos < fromPos ? 'down' : 'flat'
+  return toPos > fromPos ? 'advance' : toPos < fromPos ? 'ease' : 'flat'
 }

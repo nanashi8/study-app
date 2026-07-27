@@ -6,9 +6,12 @@ import { enemyLevel, nextPosition, battleTrend } from '../lib/adaptive.js'
 import {
   battleQuest,
   battleVerdict,
+  capEnemyPositionForHeroLevel,
   encounterFor,
   heroProgress,
+  maxEnemyRankIndexForHeroLevel,
 } from '../lib/rpg.js'
+import battleVignette from '../assets/rpg-battle-vignette.jpg'
 
 // セッションの種類から「スキル」を判定する（弱点ナビ用）。
 function inferSkill({ engine, replayScreen }) {
@@ -60,6 +63,7 @@ export function SessionResultScreen() {
   const isBattle = source?.type === 'battle'
   const heroBefore = heroProgress(Math.max(0, totalXp - xpGained))
   const heroAfter = heroProgress(totalXp)
+  const battleRankCap = maxEnemyRankIndexForHeroLevel(heroAfter.level)
   const leveledUp = heroAfter.level > heroBefore.level
   const newRelics = heroAfter.relics.filter(
     (relic) => relic.level > heroBefore.level,
@@ -82,9 +86,15 @@ export function SessionResultScreen() {
     recordSkillResult(inferSkill(params), correct, total)
     // 適応バトルなら成績でポジションを上下させ、敵LVの変化を表示する。
     if (isBattle) {
-      const from = useStore.getState().engPos ?? 0
-      const to = nextPosition(from, acc)
-      recordBattle(acc)
+      const from = capEnemyPositionForHeroLevel(
+        source?.position
+          ?? source?.levelIndex
+          ?? useStore.getState().engPos
+          ?? 0,
+        heroAfter.level,
+      )
+      const to = Math.min(nextPosition(from, acc), battleRankCap)
+      recordBattle(acc, from, battleRankCap)
       setBattle({ from, to, trend: battleTrend(from, to) })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -318,6 +328,8 @@ function HeroLevelCard({ before, after, xpGained, newRelics }) {
 const TREND = {
   up: { text: '次は敵ランクアップ', tone: 'text-emerald-700', bg: 'bg-correct-soft' },
   down: { text: '次は敵ランクを調整', tone: 'text-amber-800', bg: 'bg-hint-soft' },
+  advance: { text: '昇格ポイント獲得', tone: 'text-emerald-700', bg: 'bg-correct-soft' },
+  ease: { text: '同じ級で難易度を調整', tone: 'text-amber-800', bg: 'bg-hint-soft' },
   flat: { text: '次も同じ敵ランク', tone: 'text-brand-700', bg: 'bg-brand-100' },
 }
 function BattleOutcome({ battle, encounter, verdict }) {
@@ -325,12 +337,25 @@ function BattleOutcome({ battle, encounter, verdict }) {
   const from = enemyLevel(battle.from)
   const to = enemyLevel(battle.to)
   const moved = from.id !== to.id
+  const pointChange = Math.round(Math.abs(battle.to - battle.from) * 100)
+  const nextBattleText = moved
+    ? battle.trend === 'up'
+      ? `次は英検${to.label}へランクアップ`
+      : `次は英検${to.label}へ調整`
+    : battle.trend === 'advance'
+      ? `次も英検${to.label}。昇格ポイント +${pointChange}`
+      : battle.trend === 'ease'
+        ? `次も英検${to.label}。難易度を${pointChange}ポイント調整`
+        : `次も英検${to.label}。ランク変化なし`
   return (
     <Card className={`w-full max-w-xs p-3.5 ${t.bg}`}>
       <div className="flex items-start gap-3 text-left">
-        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white/70 text-2xl">
-          {encounter.emoji}
-        </span>
+        <img
+          src={battleVignette}
+          alt=""
+          className="mob-portrait h-11 w-11 shrink-0 rounded-2xl object-cover ring-1 ring-white/70"
+          style={{ objectPosition: '88% 52%' }}
+        />
         <div>
           <div className={`font-display text-sm font-extrabold ${t.tone}`}>
             {verdict.title}
@@ -350,7 +375,7 @@ function BattleOutcome({ battle, encounter, verdict }) {
         </span>
       </div>
       <p className="mt-1.5 text-center text-[11px] font-bold text-ink/50">
-        {t.text}。{moved ? `英検${to.label}へ` : `英検${to.label}のまま`}
+        {nextBattleText}
       </p>
     </Card>
   )

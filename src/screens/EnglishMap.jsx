@@ -11,6 +11,7 @@ import {
 import {
   BATTLE_QUESTS,
   CHAPTERS,
+  capEnemyPositionForHeroLevel,
   encounterFor,
   featuredQuestId,
   heroProgress,
@@ -18,6 +19,7 @@ import {
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { ProgressRing, ProgressBar, Chip, cx } from '../components/ui.jsx'
 import { Lightbulb, ArrowRight, Check } from '../components/Icons.jsx'
+import battleVignette from '../assets/rpg-battle-vignette.jpg'
 
 // テスト結果から弱点を判定するしきい値。
 const MIN_ATTEMPTS = 10
@@ -81,14 +83,14 @@ export function EnglishMapScreen() {
   const stats = useStore((s) => s.stats)
   const engPos = useStore((s) => s.engPos)
   const setEngPos = useStore((s) => s.setEngPos)
+  const hero = heroProgress(stats.xp)
+  const inferredPos = engPos ?? suggestStartPosition(srs)
+  const pos = capEnemyPositionForHeroLevel(inferredPos, hero.level)
 
   useEffect(() => {
-    if (engPos == null) setEngPos(suggestStartPosition(srs))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+    if (engPos !== pos) setEngPos(pos)
+  }, [engPos, pos, setEngPos])
 
-  const pos = engPos ?? suggestStartPosition(srs)
-  const hero = heroProgress(stats.xp)
   const day = todayIndex()
   const encounter = encounterFor({
     level: hero.level,
@@ -204,6 +206,7 @@ export function EnglishMapScreen() {
 
 function AdventureCard({ pos, hero, encounter, day, onBattle }) {
   const enemyRank = enemyLevel(pos)
+  const maxEnemyRank = LEVELS[hero.enemyRankCap]
   const featured = featuredQuestId(day)
 
   return (
@@ -261,10 +264,33 @@ function AdventureCard({ pos, hero, encounter, day, onBattle }) {
         </p>
 
         <div className="mt-3 rounded-3xl bg-white p-3.5 text-ink shadow-xl shadow-black/15">
+          <div className="-mx-3.5 -mt-3.5 mb-3.5 aspect-[16/9] overflow-hidden rounded-t-3xl bg-slate-950">
+            <div className="relative h-full w-full">
+              <img
+                src={battleVignette}
+                alt={`${encounter.name}と対峙する冒険者`}
+                className="battle-vignette h-full w-full object-cover"
+              />
+              <div className="absolute inset-x-0 bottom-0 flex items-end justify-between bg-gradient-to-t from-slate-950/85 to-transparent px-3 pb-2.5 pt-10 text-white">
+                <span className="rounded-full bg-white/15 px-2 py-1 text-[9px] font-extrabold tracking-[0.14em] backdrop-blur">
+                  LIVE BATTLE
+                </span>
+                <span className="text-[10px] font-extrabold text-violet-200">
+                  {encounter.isBoss ? '⚠ CHAPTER BOSS' : 'TODAY’S MOB'}
+                </span>
+              </div>
+            </div>
+          </div>
+
           <div className="flex items-center gap-3">
-            <div className="relative flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-100 to-rose-100 text-4xl">
-              {encounter.emoji}
-              <span className="absolute -bottom-1 -right-1 rounded-full bg-rose-500 px-1.5 py-0.5 text-[8px] font-black tracking-wide text-white">
+            <div className="relative h-16 w-16 shrink-0 rounded-2xl bg-violet-950 ring-2 ring-violet-200">
+              <img
+                src={battleVignette}
+                alt=""
+                className="mob-portrait h-full w-full rounded-2xl object-cover"
+                style={{ objectPosition: '88% 52%' }}
+              />
+              <span className="absolute bottom-1 right-1 rounded-full bg-rose-500 px-1.5 py-0.5 text-[7px] font-black tracking-wide text-white">
                 ENEMY
               </span>
             </div>
@@ -278,9 +304,15 @@ function AdventureCard({ pos, hero, encounter, day, onBattle }) {
               <div className="mt-1 flex flex-wrap items-center gap-1.5">
                 <Chip color={enemyRank.color}>敵ランク：英検{enemyRank.label}</Chip>
                 <span className="text-[10px] font-bold text-ink/45">
-                  実力に合わせて変化
+                  LV{hero.level}の上限：英検{maxEnemyRank.label}
                 </span>
               </div>
+              {hero.nextEnemyRankUnlock && (
+                <p className="mt-1 text-[9px] font-bold text-ink/40">
+                  次の{hero.nextEnemyRankUnlock.label}は
+                  LV{hero.nextEnemyRankUnlock.level}で解放
+                </p>
+              )}
             </div>
           </div>
 
@@ -321,7 +353,7 @@ function AdventureCard({ pos, hero, encounter, day, onBattle }) {
         </div>
 
         <p className="mt-2.5 text-center text-[10px] font-bold leading-relaxed text-white/65">
-          冒険者LVは努力の記録なので下がりません。敵ランクだけが成績に合わせて変わります。
+          敵ランクは、冒険者LVで解放済みの範囲内だけで成績に合わせて変わります。
         </p>
       </div>
     </section>
