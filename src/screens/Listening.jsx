@@ -31,7 +31,7 @@ export function ListeningScreen() {
       subtitle="英検形式で、聞いて考える"
       accent="#0ea5e9"
       levels={READING_LEVELS}
-      note="英検の級別形式と放送回数を参考にしたオリジナル問題です。会話・パッセージ・Real-Life・インタビューまで、級に応じて段階化しています（端末の音声合成を使用）。"
+      note="英検の級別形式と放送回数を参考に作成したオリジナル問題です。問題画面では、準備ができてから再生ボタンを押してください。解答前は本番を想定した回数まで、解答後は本文を確認しながら何度でも聞き直せます。音声には端末の音声合成機能を使用します。"
       countFor={(levelId) => listeningByLevel(levelId).length}
       countUnit="問"
       detailFor={profileDetail}

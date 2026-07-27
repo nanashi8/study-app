@@ -1,7 +1,13 @@
 import { useMemo, useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import { shuffle } from '../data/vocab.js'
-import { GRAMMAR, grammarByLevel, grammarByTopic, getGrammar } from '../data/grammar.js'
+import {
+  GRAMMAR,
+  grammarByLevel,
+  grammarByTopic,
+  getGrammar,
+  samePatternExamplesFor,
+} from '../data/grammar.js'
 import { todayIndex } from '../store/useStore.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { Button, ProgressBar, IconButton, Chip, cx } from '../components/ui.jsx'
@@ -57,6 +63,10 @@ export function GrammarQuizScreen() {
 
   const item = deck[i]
   const options = useMemo(() => (item ? shuffle(item.choices) : []), [item?.id]) // eslint-disable-line react-hooks/exhaustive-deps
+  const patternExamples = useMemo(
+    () => samePatternExamplesFor(item),
+    [item?.id], // eslint-disable-line react-hooks/exhaustive-deps
+  )
 
   if (!deck.length) {
     return (
@@ -167,6 +177,23 @@ export function GrammarQuizScreen() {
             <div className="mt-3 flex gap-2 rounded-2xl bg-hint-soft/70 p-3">
               <span className="mt-0.5 shrink-0 text-hint"><Lightbulb size={18} /></span>
               <p className="text-sm font-bold leading-relaxed text-amber-900/90">{item.explain}</p>
+            </div>
+            <div className="mt-3 border-t border-brand-100 pt-3">
+              <p className="font-display text-sm font-extrabold text-ink/70">同じ形の例</p>
+              <div className="mt-2 space-y-2">
+                {patternExamples.map((example, index) => (
+                  <div key={example.id} className="flex items-start gap-2 rounded-xl bg-brand-50/70 p-2.5">
+                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-100 text-[11px] font-extrabold text-brand-600">
+                      {index + 1}
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-bold leading-relaxed text-ink">{example.en}</p>
+                      <p className="mt-0.5 text-xs font-bold leading-relaxed text-ink/50">{example.ja}</p>
+                    </div>
+                    <SpeakButton text={example.en} size="sm" />
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         )}

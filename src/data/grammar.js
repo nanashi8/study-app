@@ -1,3 +1,5 @@
+import { GRAMMAR_EXPANSION } from './grammar-expansion.js'
+
 // 級ごとの文法問題データ。4択（空所補充）形式。
 // SRS は単語・熟語と同じ store.srs を id で共用（id が一意なら衝突しない）。
 //   { id, level, topic, q(空所は ___ ), choices:[4], answer(正解の文字列), explain, sentence:{en,ja} }
@@ -104,7 +106,7 @@ export const GRAMMAR = [
   { id: 'gr_3_perf_4', level: '3', topic: '現在完了', q: 'I have known him ___ 2010.', choices: ['since', 'for', 'from', 'in'], answer: 'since', explain: '起点は since（〜以来）、期間は for。', sentence: { en: 'I have known him since 2010.', ja: '私は2010年から彼を知っている。' } },
   { id: 'gr_3_perf_5', level: '3', topic: '現在完了', q: 'He has not come home ___.', choices: ['yet', 'already', 'ever', 'since'], answer: 'yet', explain: '否定文の文末 yet は「まだ（〜ない）」。', sentence: { en: 'He has not come home yet.', ja: '彼はまだ帰宅していない。' } },
   { id: 'gr_3_pass_3', level: '3', topic: '受動態', q: 'English ___ all over the world.', choices: ['is spoken', 'speaks', 'is speaking', 'spoke'], answer: 'is spoken', explain: '受動態 be＋過去分詞。「話されている」。', sentence: { en: 'English is spoken all over the world.', ja: '英語は世界中で話されている。' } },
-  { id: 'gr_3_rel_3', level: '3', topic: '関係代名詞', q: 'The man ___ I met was kind.', choices: ['(that) ', 'who is', 'which', 'whose'], answer: '(that) ', explain: '目的格の関係代名詞は that／who(m)。省略も可。', sentence: { en: 'The man (that) I met was kind.', ja: '私が会った男性は親切だった。' } },
+  { id: 'gr_3_rel_3', level: '3', topic: '関係代名詞', q: 'The man ___ I met was kind.', choices: ['whom', 'who is', 'which', 'whose'], answer: 'whom', explain: '関係詞節で met の目的語になるため、目的格 whom を使う。会話では who や that、または省略も可能。', sentence: { en: 'The man whom I met was kind.', ja: '私が会った男性は親切だった。' } },
   { id: 'gr_3_inf_3', level: '3', topic: '不定詞応用', q: 'I was glad ___ the news.', choices: ['to hear', 'hear', 'hearing', 'heard'], answer: 'to hear', explain: '感情の原因を表す副詞的用法（〜して）。', sentence: { en: 'I was glad to hear the news.', ja: 'その知らせを聞いてうれしかった。' } },
   { id: 'gr_3_comp_2', level: '3', topic: '比較応用', q: 'Tokyo is one of the ___ cities in the world.', choices: ['largest', 'larger', 'large', 'more large'], answer: 'largest', explain: 'one of the＋最上級＋複数名詞（最も〜のひとつ）。', sentence: { en: 'Tokyo is one of the largest cities in the world.', ja: '東京は世界最大級の都市の一つだ。' } },
   { id: 'gr_3_so_1', level: '3', topic: 'so...that', q: 'He was ___ tired that he fell asleep.', choices: ['so', 'such', 'too', 'very'], answer: 'so', explain: 'so＋形容詞＋that …（とても〜なので…）。', sentence: { en: 'He was so tired that he fell asleep.', ja: '彼はとても疲れていて眠ってしまった。' } },
@@ -381,9 +383,38 @@ export const GRAMMAR = [
   { id: 'gr_1_idiom_x2', level: '1', topic: '高度語法', q: 'You cannot be ___ careful when you drive.', choices: ['too', 'very', 'so', 'much'], answer: 'too', explain: 'cannot be too 〜（いくら〜してもしすぎることはない）。', sentence: { en: 'You cannot be too careful when you drive.', ja: '運転はいくら注意してもしすぎることはない。' } },
   { id: 'gr_1_idiom_x3', level: '1', topic: '高度語法', q: 'It goes ___ saying that health is important.', choices: ['without', 'with', 'by', 'for'], answer: 'without', explain: 'It goes without saying that 〜（〜は言うまでもない）。', sentence: { en: 'It goes without saying that health is important.', ja: '健康が大切なのは言うまでもない。' } },
   { id: 'gr_1_opt_x1', level: '1', topic: '祈願文', q: 'Long ___ the king!', choices: ['live', 'lives', 'lived', 'living'], answer: 'live', explain: '祈願文は動詞の原形（May ... の may 省略）。', sentence: { en: 'Long live the king!', ja: '国王万歳！' } },
+
+  ...GRAMMAR_EXPANSION,
 ]
 
 export const grammarByLevel = (level) => GRAMMAR.filter((g) => g.level === level)
 export const grammarByTopic = (level, topic) => GRAMMAR.filter((g) => g.level === level && g.topic === topic)
 export const getGrammar = (id) => GRAMMAR.find((g) => g.id === id)
 export const topicsForLevel = (level) => [...new Set(grammarByLevel(level).map((g) => g.topic))]
+
+// 解説欄に出す「同じ形の例」。同じ級・単元の検証済み完成文から、現在の問題を除いて返す。
+export const samePatternExamplesFor = (item, limit = 2) => {
+  if (!item || limit <= 0) return []
+  return grammarByTopic(item.level, item.topic)
+    .filter((candidate) => candidate.id !== item.id)
+    .slice(0, limit)
+    .map((candidate) => ({
+      id: candidate.id,
+      en: candidate.sentence.en,
+      ja: candidate.sentence.ja,
+    }))
+}
+
+// 問題量の品質下限。追加は歓迎するが、どの級もこの反復量を下回らせない。
+export const GRAMMAR_LEVEL_TARGETS = Object.freeze({
+  5: 60,
+  4: 60,
+  3: 60,
+  pre2: 60,
+  2: 60,
+  pre1: 60,
+  1: 60,
+})
+
+// 単元別クイズと「同じ形の例」2文を成立させるため、各級・各単元に最低3問置く。
+export const GRAMMAR_TOPIC_MINIMUM = 3

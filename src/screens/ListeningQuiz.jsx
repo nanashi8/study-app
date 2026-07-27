@@ -4,20 +4,28 @@ import {
   buildListeningDeck,
   LISTENING_PROFILES,
   LISTENING_TYPE_META,
+  listeningSpokenSegments,
   shuffledListeningChoices,
 } from '../data/listening.js'
 import { isTTSSupported } from '../lib/tts.js'
 import { playListeningItem, stopListeningAudio } from '../lib/listening.js'
 import { Button, Chip, ProgressBar, IconButton, cx } from '../components/ui.jsx'
-import { Close, Check, ArrowRight, SpeakerWave } from '../components/Icons.jsx'
+import {
+  Close,
+  Check,
+  ArrowRight,
+  SpeakerWave,
+  Eye,
+  EyeOff,
+} from '../components/Icons.jsx'
 
 const PROMPTS = Object.freeze({
-  response: '最後の発話に最も自然な応答は？',
-  picture: 'イラストに合う英文はどれ？',
-  conversation: '会話の最後の質問に答えよう',
-  passage: '説明の最後の質問に答えよう',
-  realLife: '実生活の案内を聞いて答えよう',
-  interview: 'インタビューの要点・含意をつかもう',
+  response: '最後の発話に対する、最も自然な応答を選んでください。',
+  picture: 'イラストの内容に合う英文を選んでください。',
+  conversation: '会話と最後の質問を聞き、最も適切な答えを選んでください。',
+  passage: '説明と最後の質問を聞き、最も適切な答えを選んでください。',
+  realLife: '実生活の案内を聞き、最も適切な答えを選んでください。',
+  interview: 'インタビューを聞き、要点や話者の意図に合う答えを選んでください。',
 })
 
 const SPEAKER_LABELS = Object.freeze({
@@ -38,7 +46,6 @@ export function ListeningQuizScreen() {
 
   const source = params.source ?? { type: 'level', levelId: '5' }
   const xpAtStart = useRef(useStore.getState().stats.xp)
-  const autoPlayedItem = useRef(null)
   const [deck] = useState(() =>
     buildListeningDeck(source, {
       size: source.type === 'listeningList' ? 0 : 10,
@@ -50,6 +57,7 @@ export function ListeningQuizScreen() {
   const [practicePlays, setPracticePlays] = useState(0)
   const [playing, setPlaying] = useState(false)
   const [activeSegment, setActiveSegment] = useState(null)
+  const [showTranscript, setShowTranscript] = useState(false)
   const results = useRef({ correct: 0, wrong: 0, wrongIds: [] })
 
   const item = deck[i]
@@ -61,6 +69,10 @@ export function ListeningQuizScreen() {
     // 選択肢の並びは設問ごとに一度だけ決める。
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [item?.id],
+  )
+  const spokenSegments = useMemo(
+    () => listeningSpokenSegments(item),
+    [item],
   )
   const answered = selected !== null
   const isCorrectPick = answered && selected === item?.answer
@@ -99,13 +111,9 @@ export function ListeningQuizScreen() {
     setPracticePlays(0)
     setPlaying(false)
     setActiveSegment(null)
-    if (settings.autoSpeak !== false && autoPlayedItem.current !== item?.id) {
-      autoPlayedItem.current = item?.id
-      play()
-    }
+    setShowTranscript(false)
     return stopListeningAudio
-    // 設問が変わったときだけ、その級の速度・放送回数で自動再生する。
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // リスニングは準備前に始まらないよう、自動再生せず明示的な操作を待つ。
   }, [i, item?.id])
 
   if (!deck.length) {
@@ -140,6 +148,7 @@ export function ListeningQuizScreen() {
   const choose = (choiceId) => {
     if (answered) return
     setSelected(choiceId)
+    setShowTranscript(true)
     if (choiceId === item.answer) {
       review(item.id, 'correct')
       results.current.correct++
@@ -162,6 +171,7 @@ export function ListeningQuizScreen() {
     setPracticePlays(0)
     setPlaying(false)
     setActiveSegment(null)
+    setShowTranscript(false)
   }
 
   const quit = () => {
@@ -193,13 +203,21 @@ export function ListeningQuizScreen() {
         <div className="rounded-[2rem] bg-gradient-to-br from-sky-400 to-sky-600 p-5 text-white shadow-card">
           {!isTTSSupported() && (
             <p className="mb-3 rounded-xl bg-white/15 px-3 py-2 text-sm font-bold">
-              この端末は音声合成に対応していません
+              この端末では音声を再生できません。下の「放送文を表示」から本文をご確認ください。
             </p>
           )}
+          <div className="mb-4 rounded-2xl bg-white/15 px-4 py-3">
+            <p className="text-sm font-extrabold leading-relaxed">
+              準備ができましたら、再生ボタンを押して音声をお聞きください。
+            </p>
+            <p className="mt-1 text-xs font-bold leading-relaxed text-white/80">
+              解答前は本番を想定した回数まで再生できます。音声は自動では始まりません。
+            </p>
+          </div>
           <div className="flex items-center gap-4">
             <button
               onClick={() => play()}
-              disabled={playing || (!answered && remainingPlays <= 0)}
+              disabled={!isTTSSupported() || playing || (!answered && remainingPlays <= 0)}
               className="flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-white/20 transition-transform active:scale-90 disabled:opacity-45 disabled:active:scale-100"
               aria-label={answered ? '復習でもう一度聞く' : '音声を再生'}
             >
@@ -207,13 +225,21 @@ export function ListeningQuizScreen() {
             </button>
             <div className="min-w-0 flex-1">
               <p className="font-display text-lg font-extrabold">
-                {playing ? '再生中…' : answered ? '復習でもう一度' : '音声を聞こう'}
+                {playing
+                  ? '音声を再生しています…'
+                  : answered
+                    ? '音声を聞き直す'
+                    : playsUsed === 0
+                      ? '準備ができたら再生'
+                      : remainingPlays > 0
+                        ? 'もう一度聞く'
+                        : '本番形式での再生は終了'}
               </p>
               <p className="mt-1 text-xs font-bold text-white/80">
-                本番の放送：{item.plays}回
+                本番形式での放送回数：{item.plays}回
               </p>
               <p className="mt-2 text-xs font-extrabold">
-                本番 {playsUsed}/{item.plays}回
+                解答前 {playsUsed}/{item.plays}回
                 {practicePlays > 0 && (
                   <span className="ml-2 text-white/75">・復習 {practicePlays}回</span>
                 )}
@@ -225,9 +251,25 @@ export function ListeningQuizScreen() {
               )}
             </div>
           </div>
+          {!answered && playsUsed > 0 && remainingPlays > 0 && (
+            <p className="mt-3 rounded-xl bg-white/10 px-3 py-2 text-center text-xs font-bold leading-relaxed">
+              あと{remainingPlays}回、本番と同じ条件で聞き直せます。
+            </p>
+          )}
           {!answered && remainingPlays <= 0 && (
-            <p className="mt-3 rounded-xl bg-slate-900/15 px-3 py-2 text-center text-xs font-extrabold">
-              本番の放送回数を使い切りました。解答後は自由に復習できます。
+            <p
+              aria-live="polite"
+              className="mt-3 rounded-xl bg-slate-900/15 px-3 py-2 text-xs font-bold leading-relaxed"
+            >
+              {playing
+                ? '現在の音声が、解答前に聞ける最後の再生です。終了後は、聞き取れた内容をもとに解答してください。'
+                : '本番形式での再生回数に達しました。これは、試験と同じ放送回数で練習するための設定です。聞き取れた内容をもとに解答してください。'}
+              必要な場合は、下の「放送文を表示」から本文も確認できます。解答後は音声を何度でも聞き直せます。
+            </p>
+          )}
+          {answered && (
+            <p className="mt-3 rounded-xl bg-white/10 px-3 py-2 text-xs font-bold leading-relaxed">
+              解答後は、通常速度・ゆっくり速度のどちらでも何度でも復習できます。
             </p>
           )}
         </div>
@@ -238,13 +280,62 @@ export function ListeningQuizScreen() {
             aria-label={`イラスト問題：${item.topic}`}
           >
             <div className="text-5xl leading-relaxed" aria-hidden="true">{item.visual}</div>
-            <p className="mt-1 text-xs font-extrabold text-ink/40">イラストを見て音声を選ぼう</p>
+            <p className="mt-1 text-xs font-extrabold text-ink/40">
+              イラストを見ながら音声をお聞きください。
+            </p>
           </div>
         )}
 
         <p className="mt-4 text-center text-sm font-extrabold text-ink/55">
           {PROMPTS[item.type]}
         </p>
+
+        <div className="mt-3 overflow-hidden rounded-2xl border-2 border-sky-100 bg-white shadow-card">
+          <button
+            type="button"
+            onClick={() => setShowTranscript((visible) => !visible)}
+            aria-expanded={showTranscript}
+            aria-controls={`listening-transcript-${item.id}`}
+            className="flex w-full items-center gap-3 px-4 py-3 text-left text-sky-800 active:bg-sky-50"
+          >
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-sky-100">
+              {showTranscript ? <EyeOff size={19} /> : <Eye size={19} />}
+            </span>
+            <span className="flex-1">
+              <span className="block text-sm font-extrabold">
+                {showTranscript ? '放送文を隠す' : '放送文を表示'}
+              </span>
+              <span className="mt-0.5 block text-[11px] font-bold leading-relaxed text-sky-700/65">
+                英語の本文・質問・音声で読む選択肢を確認できます。
+              </span>
+            </span>
+          </button>
+
+          {showTranscript && (
+            <div
+              id={`listening-transcript-${item.id}`}
+              className="border-t border-sky-100 bg-sky-50/60 px-4 py-3"
+            >
+              {!answered && (
+                <p className="mb-3 rounded-xl bg-white px-3 py-2 text-[11px] font-bold leading-relaxed text-ink/50">
+                  本文の表示は学習用のヒントです。本番形式で挑戦する場合は、解答後にご確認ください。
+                </p>
+              )}
+              <div className="space-y-2">
+                {spokenSegments.map((segment, index) => (
+                  <div key={`${segment.speaker}-${index}`} className="flex items-start gap-2">
+                    <span className="mt-0.5 min-w-[4.5rem] rounded-lg bg-white px-2 py-1 text-center text-[10px] font-extrabold text-slate-600">
+                      {SPEAKER_LABELS[segment.speaker] ?? segment.speaker}
+                    </span>
+                    <p className="text-sm font-bold leading-relaxed text-ink/75">
+                      {segment.text}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
 
         <div className="mt-3 space-y-2.5">
           {options.map((choice, displayIndex) => {
@@ -310,24 +401,6 @@ export function ListeningQuizScreen() {
                 {item.questionJa}
               </p>
             </div>
-
-            {!!item.audio.length && (
-              <div className="mt-3 border-t border-brand-50 pt-3">
-                <p className="text-[11px] font-extrabold text-ink/40">スクリプト</p>
-                <div className="mt-2 space-y-2">
-                  {item.audio.map((segment, index) => (
-                    <div key={`${segment.speaker}-${index}`} className="flex items-start gap-2">
-                      <span className="mt-0.5 min-w-[4.5rem] rounded-lg bg-slate-100 px-2 py-1 text-center text-[10px] font-extrabold text-slate-600">
-                        {SPEAKER_LABELS[segment.speaker] ?? segment.speaker}
-                      </span>
-                      <p className="text-sm font-bold leading-relaxed text-ink/75">
-                        {segment.text}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
 
             <div className="mt-3 rounded-2xl bg-hint-soft/70 p-3">
               <p className="text-sm font-bold leading-relaxed text-amber-900/90">

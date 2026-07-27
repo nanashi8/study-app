@@ -5,7 +5,13 @@ import { localDayIndexAt, todayIndex } from '../src/store/useStore.js'
 import { buildDeck, buildPhraseDeck, overallProgress } from '../src/lib/session.js'
 import { ALL_WORDS, getWord } from '../src/data/vocab.js'
 import { PHONETIC_OVERRIDES } from '../src/data/phonetic-overrides.js'
-import { GRAMMAR } from '../src/data/grammar.js'
+import {
+  GRAMMAR,
+  GRAMMAR_LEVEL_TARGETS,
+  GRAMMAR_TOPIC_MINIMUM,
+  grammarByLevel,
+  samePatternExamplesFor,
+} from '../src/data/grammar.js'
 import { PHRASES } from '../src/data/phrases.js'
 import { PASSAGES } from '../src/data/passages.js'
 import {
@@ -102,6 +108,33 @@ test('全ての文法問題は正解を入れると完成文を含む', () => {
   for (const item of GRAMMAR) {
     const completed = normalize(item.q.replace('___', item.answer))
     assert.ok(completed.includes(normalize(item.sentence.en)), item.id)
+  }
+})
+
+test('英文法は全7級に60問以上あり、重複のない4択を備える', () => {
+  for (const [level, minimum] of Object.entries(GRAMMAR_LEVEL_TARGETS)) {
+    assert.ok(grammarByLevel(level).length >= minimum, level)
+  }
+  assert.equal(new Set(GRAMMAR.map((item) => item.id)).size, GRAMMAR.length)
+  assert.equal(new Set(GRAMMAR.map((item) => item.q)).size, GRAMMAR.length)
+  for (const item of GRAMMAR) {
+    assert.equal(item.choices.length, 4, item.id)
+    assert.equal(new Set(item.choices).size, 4, item.id)
+    assert.ok(item.choices.includes(item.answer), item.id)
+  }
+})
+
+test('全ての文法問題は同じ級・単元の完成例を2文表示できる', () => {
+  for (const item of GRAMMAR) {
+    const examples = samePatternExamplesFor(item)
+    assert.equal(examples.length, GRAMMAR_TOPIC_MINIMUM - 1, item.id)
+    assert.ok(examples.every((example) => example.id !== item.id), item.id)
+    assert.ok(examples.every((example) => example.en && example.ja), item.id)
+    for (const example of examples) {
+      const source = GRAMMAR.find((candidate) => candidate.id === example.id)
+      assert.equal(source.level, item.level, item.id)
+      assert.equal(source.topic, item.topic, item.id)
+    }
   }
 })
 
