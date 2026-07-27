@@ -371,6 +371,192 @@ export function featuredQuestId(day = 0) {
   return BATTLE_QUESTS[positiveMod(Math.floor(day) || 0, BATTLE_QUESTS.length)].id
 }
 
+// バトル中の正答率・XP・SRSは変えず、解答順に応じた遊び方だけを変える作戦。
+// 生徒が得意な戦い方を選べる一方、学習評価そのものは常に同じ基準に保つ。
+export const BATTLE_TACTICS = [
+  {
+    id: 'combo',
+    label: '連撃',
+    name: '連撃の型',
+    emoji: '🔥',
+    short: '3連続で奥義',
+    description: '3問連続で正解するたび、必殺の連撃が発動。最大コンボに挑戦。',
+  },
+  {
+    id: 'guard',
+    label: '守護',
+    name: '守護の型',
+    emoji: '🛡️',
+    short: '2正解で盾',
+    description: '2問正解するたびに盾を1枚獲得。次のミスによる反撃を防ぐ。',
+  },
+  {
+    id: 'counter',
+    label: '逆転',
+    name: '逆転の型',
+    emoji: '⚡',
+    short: 'ミス後に反撃',
+    description: 'ミスの直後に正解するとカウンターが発動し、失ったHPを回復。',
+  },
+]
+
+export function battleTactic(tacticId) {
+  return BATTLE_TACTICS.find((tactic) => tactic.id === tacticId) ?? BATTLE_TACTICS[0]
+}
+
+export function featuredBattleTacticId(day = 0) {
+  return BATTLE_TACTICS[
+    positiveMod(Math.floor(day) || 0, BATTLE_TACTICS.length)
+  ].id
+}
+
+const isMiss = (answer) => answer === 'wrong' || answer === 'unknown'
+
+// 正誤の並びから作戦の発動状況とHUD表示を再現する純ロジック。
+// 一時中断から戻った場合も battleLog だけで同じ戦況を復元できる。
+export function resolveBattleState({
+  answers = [],
+  total = 10,
+  tacticId = 'combo',
+} = {}) {
+  const tactic = battleTactic(tacticId)
+  const log = (Array.isArray(answers) ? answers : []).filter(
+    (answer) => answer === 'correct' || isMiss(answer),
+  )
+  const safeTotal = Math.max(1, Math.floor(Number(total) || 1))
+  const hitsToWin = Math.max(1, Math.ceil(safeTotal * 0.7))
+  const missesToFall = Math.max(1, Math.ceil(safeTotal * 0.5))
+
+  let correct = 0
+  let heroDamage = 0
+  let streak = 0
+  let maxStreak = 0
+  let comboBursts = 0
+  let guardCharge = 0
+  let shields = 0
+  let protectedHits = 0
+  let counters = 0
+  let previousWasMiss = false
+  let lastEvent = null
+
+  for (const answer of log) {
+    if (answer === 'correct') {
+      correct += 1
+      streak += 1
+      maxStreak = Math.max(maxStreak, streak)
+
+      if (tactic.id === 'combo' && streak % 3 === 0) {
+        comboBursts += 1
+        lastEvent = {
+          kind: 'burst',
+          emoji: '🔥',
+          title: `${streak}連撃！ 奥義が発動`,
+        }
+      } else if (tactic.id === 'guard') {
+        guardCharge += 1
+        if (guardCharge === 2) {
+          guardCharge = 0
+          shields += 1
+          lastEvent = {
+            kind: 'shield',
+            emoji: '🛡️',
+            title: '守護シールドを1枚獲得！',
+          }
+        } else {
+          lastEvent = { kind: 'hit', emoji: '⚔️', title: '敵に一撃！' }
+        }
+      } else if (tactic.id === 'counter' && previousWasMiss) {
+        counters += 1
+        heroDamage = Math.max(0, heroDamage - 1)
+        lastEvent = {
+          kind: 'counter',
+          emoji: '⚡',
+          title: '逆転カウンター！ HPも回復',
+        }
+      } else {
+        lastEvent = { kind: 'hit', emoji: '⚔️', title: '敵に一撃！' }
+      }
+      previousWasMiss = false
+      continue
+    }
+
+    streak = 0
+    previousWasMiss = true
+    if (tactic.id === 'guard' && shields > 0) {
+      shields -= 1
+      protectedHits += 1
+      lastEvent = {
+        kind: 'block',
+        emoji: '🛡️',
+        title: 'シールドで反撃を完全ガード！',
+      }
+    } else {
+      heroDamage += 1
+      lastEvent = answer === 'unknown'
+        ? {
+            kind: 'unknown',
+            emoji: '🧭',
+            title: '「わからない」を記録。次で立て直そう',
+          }
+        : {
+            kind: 'damage',
+            emoji: '💥',
+            title: '反撃を受けた…次の一手へ',
+          }
+    }
+  }
+
+  const enemyHp = Math.max(0, 100 - Math.floor((correct / hitsToWin) * 100))
+  const heroHp = Math.max(0, 100 - Math.floor((heroDamage / missesToFall) * 100))
+  const misses = log.length - correct
+
+  let status
+  let summary
+  let activations
+  if (tactic.id === 'guard') {
+    status = shields > 0
+      ? `盾 ${shields}枚 · 次の反撃を防ぐ`
+      : `シールド ${guardCharge}/2`
+    summary = `完全ガード ${protectedHits}回・盾 ${shields}枚`
+    activations = protectedHits
+  } else if (tactic.id === 'counter') {
+    status = previousWasMiss
+      ? 'COUNTER READY · 次の正解で回復'
+      : `カウンター ${counters}回`
+    summary = `逆転カウンター ${counters}回・HP回復 ${counters}回`
+    activations = counters
+  } else {
+    const comboStep = streak % 3
+    status = comboStep
+      ? `${streak} COMBO · あと${3 - comboStep}問で奥義`
+      : comboBursts
+        ? `奥義 ${comboBursts}回 · 次の3連撃へ`
+        : '0 COMBO · 3連続で奥義'
+    summary = `奥義 ${comboBursts}回・最大 ${maxStreak}連撃`
+    activations = comboBursts
+  }
+
+  return {
+    tacticId: tactic.id,
+    answered: log.length,
+    correct,
+    misses,
+    enemyHp,
+    heroHp,
+    streak,
+    maxStreak,
+    comboBursts,
+    guardCharge,
+    shields,
+    protectedHits,
+    counters,
+    activations,
+    status,
+    summary,
+    lastEvent,
+  }
+}
+
 export function encounterFor({
   level = 1,
   day = 0,

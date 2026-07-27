@@ -3,9 +3,11 @@ import { useStore, todayIndex } from '../store/useStore.js'
 import { buildDeck, SESSION_SIZE } from '../lib/session.js'
 import { enemyLevel } from '../lib/adaptive.js'
 import {
+  battleTactic,
   battleQuest,
   encounterFor,
   heroProgress,
+  resolveBattleState,
 } from '../lib/rpg.js'
 import { pickDistractors, shuffle } from '../data/vocab.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
@@ -21,6 +23,16 @@ import battleVignette from '../assets/rpg-battle-vignette.jpg'
 // 退避したセッションが「今まさに戻ってきたクイズ」のものかを照合するのに使う。
 const sessionKey = (p) =>
   `vocab|${JSON.stringify(p.source ?? { type: 'due' })}|${p.title ?? ''}|${p.size ?? ''}`
+
+const restoredBattleLog = (results = {}) => {
+  if (Array.isArray(results.battleLog)) return [...results.battleLog]
+  const count = (value) => Math.max(0, Math.floor(Number(value) || 0))
+  return [
+    ...Array(count(results.correct)).fill('correct'),
+    ...Array(count(results.wrong)).fill('wrong'),
+    ...Array(count(results.unknown)).fill('unknown'),
+  ]
+}
 
 export function VocabQuizScreen() {
   const params = useStore((s) => s.params)
@@ -59,7 +71,21 @@ export function VocabQuizScreen() {
     if (restore?.selected === 'unknown') return UNKNOWN_CHOICE_ID
     return restore ? restore.selected : null
   })
-  const results = useRef(restore ? restore.results : { correct: 0, wrong: 0, unknown: 0, wrongIds: [] })
+  const results = useRef(
+    restore
+      ? {
+          ...restore.results,
+          wrongIds: [...(restore.results?.wrongIds ?? [])],
+          battleLog: restoredBattleLog(restore.results),
+        }
+      : {
+          correct: 0,
+          wrong: 0,
+          unknown: 0,
+          wrongIds: [],
+          battleLog: [],
+        },
+  )
 
   const word = deck[i]
   const isBattle = params.source?.type === 'battle'
@@ -73,24 +99,17 @@ export function VocabQuizScreen() {
         enemyRankIndex: params.source?.levelIndex ?? 0,
       })
     : null
-  const battleAnswered = isBattle
-    ? results.current.correct + results.current.wrong + results.current.unknown
-    : 0
-  const hitsToWin = Math.max(1, Math.ceil(deck.length * 0.7))
-  const enemyHp = isBattle
-    ? Math.max(0, 100 - Math.floor((results.current.correct / hitsToWin) * 100))
-    : 100
-  const missesToFall = Math.max(1, Math.ceil(deck.length * 0.5))
-  const heroHp = isBattle
-    ? Math.max(
-        0,
-        100
-          - Math.floor(
-              ((results.current.wrong + results.current.unknown) / missesToFall)
-                * 100,
-            ),
-      )
-    : 100
+  const tactic = isBattle ? battleTactic(params.source?.tacticId) : null
+  const battleState = isBattle
+    ? resolveBattleState({
+        answers: results.current.battleLog,
+        total: deck.length,
+        tacticId: tactic.id,
+      })
+    : null
+  const battleAnswered = battleState?.answered ?? 0
+  const enemyHp = battleState?.enemyHp ?? 100
+  const heroHp = battleState?.heroHp ?? 100
   // 選択肢（正解＋誤答2つ）を問題ごとに固定
   const options = useMemo(() => {
     if (!word) return []
@@ -123,23 +142,32 @@ export function VocabQuizScreen() {
       reviewIds: results.current.wrongIds.length ? results.current.wrongIds : deck.map((w) => w.id),
       source: params.source,
       size: params.size,
+      battleReport: isBattle ? battleState : null,
     })
   }
 
   const choose = (optId) => {
     if (answered) return
     setSelected(optId)
+    let battleAnswer
     if (optId === UNKNOWN_CHOICE_ID) {
       review(word.id, 'unknown')
       results.current.unknown++
       results.current.wrongIds.push(word.id)
+      battleAnswer = 'unknown'
     } else if (optId === word.id) {
       review(word.id, 'correct')
       results.current.correct++
+      battleAnswer = 'correct'
     } else {
       review(word.id, 'wrong')
       results.current.wrong++
       results.current.wrongIds.push(word.id)
+      battleAnswer = 'wrong'
+    }
+    if (isBattle) {
+      results.current.battleLog ??= []
+      results.current.battleLog.push(battleAnswer)
     }
   }
 
@@ -152,6 +180,16 @@ export function VocabQuizScreen() {
   }
 
   const isCorrectPick = answered && selected === word.id
+  const battleEvent = answered ? battleState?.lastEvent : null
+  const battleFeedback = battleEvent?.kind === 'hit'
+    ? `${encounter.name}に一撃！ ⚔️`
+    : battleEvent?.title
+      ?? (isCorrectPick
+        ? `${encounter?.name ?? '敵'}に一撃！ ⚔️`
+        : selected === UNKNOWN_CHOICE_ID
+          ? '「わからない」を記録。次で立て直そう'
+          : '反撃を受けた…次の一手へ')
+  const positiveBattleFeedback = isCorrectPick || battleEvent?.kind === 'block'
 
   return (
     <div className="flex h-full flex-col">
@@ -179,6 +217,9 @@ export function VocabQuizScreen() {
             heroHp={heroHp}
             hit={answered && isCorrectPick}
             quest={quest}
+            tactic={tactic}
+            battleState={battleState}
+            eventActive={answered}
           />
         )}
       </div>
@@ -236,13 +277,14 @@ export function VocabQuizScreen() {
         {/* 答え合わせ後 */}
         {answered && (
           <div className="mt-4 animate-slide-up rounded-2xl bg-white p-4 shadow-card">
-            <p className={cx('font-display text-lg font-extrabold', isCorrectPick ? 'text-emerald-600' : 'text-rose-500')}>
+            <p
+              className={cx(
+                'font-display text-lg font-extrabold',
+                positiveBattleFeedback ? 'text-emerald-600' : 'text-rose-500',
+              )}
+            >
               {isBattle
-                ? isCorrectPick
-                  ? `${encounter.name}に一撃！ ⚔️`
-                  : selected === UNKNOWN_CHOICE_ID
-                    ? '敵の動きを見切った'
-                    : '反撃を受けた… 🛡️'
+                ? battleFeedback
                 : isCorrectPick
                   ? '正解！🎉'
                   : selected === UNKNOWN_CHOICE_ID
@@ -261,7 +303,11 @@ export function VocabQuizScreen() {
                   i,
                   selected,
                   options,
-                  results: results.current,
+                  results: {
+                    ...results.current,
+                    wrongIds: [...results.current.wrongIds],
+                    battleLog: [...(results.current.battleLog ?? [])],
+                  },
                   xpAtStart: xpAtStart.current,
                 })
                 navigate('wordDetail', { id: word.id })
@@ -290,50 +336,75 @@ export function VocabQuizScreen() {
   )
 }
 
-function BattleHud({ encounter, enemyRank, enemyHp, heroHp, hit, quest }) {
+function BattleHud({
+  encounter,
+  enemyRank,
+  enemyHp,
+  heroHp,
+  hit,
+  quest,
+  tactic,
+  battleState,
+  eventActive,
+}) {
+  const eventKind = eventActive ? battleState.lastEvent?.kind : null
+  const skillFlash = ['burst', 'shield', 'block', 'counter'].includes(eventKind)
   return (
-    <div className="mt-2 grid grid-cols-[1fr_auto_1fr] items-center gap-2 rounded-2xl bg-slate-900 p-2.5 text-white shadow-inner">
-      <div className="min-w-0">
-        <div className="flex items-center justify-between gap-1 text-[9px] font-extrabold text-emerald-300">
-          <span>YOU</span>
-          <span>{heroHp} HP</span>
-        </div>
-        <ProgressBar
-          value={heroHp / 100}
-          color="#34d399"
-          className="mt-1 h-1.5 bg-white/15"
-        />
-        <p className="mt-1 truncate text-[9px] font-bold text-white/55">
-          {quest.emoji} {quest.label}
-        </p>
-      </div>
-
-      <span className="text-[10px] font-black text-amber-300">VS</span>
-
-      <div className="flex min-w-0 items-center gap-1.5">
-        <img
-          src={battleVignette}
-          alt=""
-          className={cx(
-            'mob-portrait h-8 w-8 shrink-0 rounded-xl object-cover ring-1 ring-violet-300/50',
-            hit && 'mob-portrait-hit',
-          )}
-          style={{ objectPosition: '88% 52%' }}
-        />
-        <div className="min-w-0 flex-1">
-          <div className="flex items-center justify-between gap-1 text-[9px] font-extrabold text-rose-300">
-            <span className="truncate">{encounter.name}</span>
-            <span>{enemyHp} HP</span>
+    <div className="mt-2 rounded-2xl bg-slate-900 p-2.5 text-white shadow-inner">
+      <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
+        <div className="min-w-0">
+          <div className="flex items-center justify-between gap-1 text-[9px] font-extrabold text-emerald-300">
+            <span>YOU</span>
+            <span>{heroHp} HP</span>
           </div>
           <ProgressBar
-            value={enemyHp / 100}
-            color="#fb7185"
+            value={heroHp / 100}
+            color="#34d399"
             className="mt-1 h-1.5 bg-white/15"
           />
-          <p className="mt-1 truncate text-right text-[9px] font-bold text-white/55">
-            敵：英検{enemyRank.label}
+          <p className="mt-1 truncate text-[9px] font-bold text-white/55">
+            {quest.emoji} {quest.label}
           </p>
         </div>
+
+        <span className="text-[10px] font-black text-amber-300">VS</span>
+
+        <div className="flex min-w-0 items-center gap-1.5">
+          <img
+            src={battleVignette}
+            alt=""
+            className={cx(
+              'mob-portrait h-8 w-8 shrink-0 rounded-xl object-cover ring-1 ring-violet-300/50',
+              hit && 'mob-portrait-hit',
+            )}
+            style={{ objectPosition: '88% 52%' }}
+          />
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center justify-between gap-1 text-[9px] font-extrabold text-rose-300">
+              <span className="truncate">{encounter.name}</span>
+              <span>{enemyHp} HP</span>
+            </div>
+            <ProgressBar
+              value={enemyHp / 100}
+              color="#fb7185"
+              className="mt-1 h-1.5 bg-white/15"
+            />
+            <p className="mt-1 truncate text-right text-[9px] font-bold text-white/55">
+              敵：英検{enemyRank.label}
+            </p>
+          </div>
+        </div>
+      </div>
+      <div
+        key={`${battleState.answered}-${eventActive ? 'answer' : 'ready'}`}
+        className={cx(
+          'mt-2 flex items-center justify-between gap-2 rounded-xl bg-white/10 px-2 py-1.5 text-[9px] font-extrabold',
+          skillFlash && 'battle-skill-flash bg-amber-300 text-amber-950',
+        )}
+        aria-live="polite"
+      >
+        <span className="shrink-0">{tactic.emoji} {tactic.name}</span>
+        <span className="truncate text-right">{battleState.status}</span>
       </div>
     </div>
   )

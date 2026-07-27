@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useStore, todayIndex } from '../store/useStore.js'
 import { PASSAGES } from '../data/passages.js'
 import { LEVELS } from '../data/levels.js'
@@ -10,9 +10,12 @@ import {
 } from '../lib/adaptive.js'
 import {
   BATTLE_QUESTS,
+  BATTLE_TACTICS,
   CHAPTERS,
+  battleTactic,
   capEnemyPositionForHeroLevel,
   encounterFor,
+  featuredBattleTacticId,
   featuredQuestId,
   heroProgress,
 } from '../lib/rpg.js'
@@ -92,6 +95,7 @@ export function EnglishMapScreen() {
   }, [engPos, pos, setEngPos])
 
   const day = todayIndex()
+  const [tacticId, setTacticId] = useState(() => featuredBattleTacticId(day))
   const encounter = encounterFor({
     level: hero.level,
     day,
@@ -111,6 +115,7 @@ export function EnglishMapScreen() {
       source: {
         ...battleSource(pos),
         questId: quest.id,
+        tacticId,
         adventureDay: day,
         heroLevel: hero.level,
       },
@@ -138,6 +143,8 @@ export function EnglishMapScreen() {
           hero={hero}
           encounter={encounter}
           day={day}
+          tacticId={tacticId}
+          onTactic={setTacticId}
           onBattle={startBattle}
         />
 
@@ -204,10 +211,20 @@ export function EnglishMapScreen() {
   )
 }
 
-function AdventureCard({ pos, hero, encounter, day, onBattle }) {
+function AdventureCard({
+  pos,
+  hero,
+  encounter,
+  day,
+  tacticId,
+  onTactic,
+  onBattle,
+}) {
   const enemyRank = enemyLevel(pos)
   const maxEnemyRank = LEVELS[hero.enemyRankCap]
   const featured = featuredQuestId(day)
+  const featuredTactic = featuredBattleTacticId(day)
+  const selectedTactic = battleTactic(tacticId)
 
   return (
     <section
@@ -321,6 +338,62 @@ function AdventureCard({ pos, hero, encounter, day, onBattle }) {
             {encounter.intro}
           </div>
 
+          <div className="mt-3 rounded-2xl border border-brand-100 bg-brand-50/70 p-2.5">
+            <div className="flex items-end justify-between gap-2">
+              <div>
+                <p className="text-[9px] font-extrabold tracking-[0.15em] text-brand-500">
+                  TACTIC CARD
+                </p>
+                <p className="text-xs font-extrabold text-ink">作戦を選ぶ</p>
+              </div>
+              <span className="text-[8px] font-bold text-ink/40">
+                正答率・XPは共通
+              </span>
+            </div>
+            <div className="mt-2 grid grid-cols-3 gap-1.5">
+              {BATTLE_TACTICS.map((tactic) => {
+                const selected = tactic.id === tacticId
+                const isFeatured = tactic.id === featuredTactic
+                return (
+                  <button
+                    key={tactic.id}
+                    type="button"
+                    onClick={() => onTactic(tactic.id)}
+                    aria-pressed={selected}
+                    aria-label={`${tactic.name}。${tactic.description}`}
+                    className={cx(
+                      'relative min-h-16 rounded-xl border-2 px-1 py-1.5 text-center transition-transform active:scale-95',
+                      selected
+                        ? 'border-brand-500 bg-white text-brand-900 shadow-sm'
+                        : 'border-transparent bg-white/55 text-ink/55',
+                    )}
+                  >
+                    {isFeatured && (
+                      <span className="absolute -right-1 -top-1 rounded-full bg-amber-300 px-1.5 py-0.5 text-[7px] font-black text-amber-950">
+                        今日
+                      </span>
+                    )}
+                    <span className="block text-lg">{tactic.emoji}</span>
+                    <span className="block text-[10px] font-extrabold">{tactic.label}</span>
+                    <span className="block text-[8px] font-bold opacity-55">{tactic.short}</span>
+                  </button>
+                )
+              })}
+            </div>
+            <p
+              className="mt-2 rounded-xl bg-white px-2.5 py-2 text-[10px] font-bold leading-relaxed text-ink/60"
+              aria-live="polite"
+            >
+              <span className="font-extrabold text-brand-700">
+                {selectedTactic.emoji} {selectedTactic.name}：
+              </span>
+              {selectedTactic.description}
+            </p>
+          </div>
+
+          <p className="mt-3 text-[10px] font-extrabold text-ink/45">
+            戦闘時間を選ぶ
+          </p>
           <div className="mt-3 grid grid-cols-3 gap-2">
             {BATTLE_QUESTS.map((quest) => {
               const isFeatured = quest.id === featured

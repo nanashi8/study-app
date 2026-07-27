@@ -77,6 +77,11 @@
   65% { transform: translateX(-2px) scale(1.06); filter: brightness(1.35); }
   100% { transform: translateX(0) scale(1); filter: brightness(1); }
 }
+@keyframes battle-skill-flash {
+  0% { transform: scale(0.92); filter: brightness(1.8); }
+  55% { transform: scale(1.035); filter: brightness(1.15); }
+  100% { transform: scale(1); filter: brightness(1); }
+}
 
 .battle-vignette {
   animation: battle-vignette-breathe 7s ease-in-out infinite;
@@ -88,11 +93,15 @@
 .mob-portrait-hit {
   animation: mob-hit 0.38s ease-out;
 }
+.battle-skill-flash {
+  animation: battle-skill-flash 0.48s cubic-bezier(0.22, 1, 0.36, 1);
+}
 
 @media (prefers-reduced-motion: reduce) {
   .battle-vignette,
   .mob-portrait,
-  .mob-portrait-hit {
+  .mob-portrait-hit,
+  .battle-skill-flash {
     animation: none;
   }
 }

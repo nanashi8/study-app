@@ -4,6 +4,7 @@ import { ProgressRing, ProgressBar, Button, Card } from '../components/ui.jsx'
 import { Star, Flame, Refresh, Home, Bookmark, ArrowRight } from '../components/Icons.jsx'
 import { enemyLevel, nextPosition, battleTrend } from '../lib/adaptive.js'
 import {
+  battleTactic,
   battleQuest,
   battleVerdict,
   capEnemyPositionForHeroLevel,
@@ -53,7 +54,18 @@ export function SessionResultScreen() {
   const streak = useStore((s) => s.stats.streak)
   const totalXp = useStore((s) => s.stats.xp)
 
-  const { title = '学習', mode = 'study', total = 0, correct = 0, wrong = 0, xpGained = 0, reviewIds = [], source, engine = 'word' } = params
+  const {
+    title = '学習',
+    mode = 'study',
+    total = 0,
+    correct = 0,
+    wrong = 0,
+    xpGained = 0,
+    reviewIds = [],
+    source,
+    engine = 'word',
+    battleReport = null,
+  } = params
   const acc = total ? correct / total : 0
   const pct = Math.round(acc * 100)
 
@@ -76,6 +88,7 @@ export function SessionResultScreen() {
       })
     : null
   const quest = isBattle ? battleQuest(source?.questId) : null
+  const tactic = isBattle ? battleTactic(source?.tacticId) : null
   const verdict = isBattle ? battleVerdict(acc) : null
   const [battle, setBattle] = useState(null) // { from, to, trend }
   const recorded = useRef(false)
@@ -197,7 +210,7 @@ export function SessionResultScreen() {
       <h1 className="font-display text-2xl font-extrabold text-ink">{msg.text}</h1>
       <p className="-mt-3 text-sm font-bold text-ink/45">
         {isBattle
-          ? `${encounter.emoji} ${encounter.name}・${quest.label}`
+          ? `${encounter.emoji} ${encounter.name}・${quest.label}・${tactic.label}`
           : `${title}・${mode === 'quiz' ? 'クイズ' : '暗記'}`}
       </p>
 
@@ -233,6 +246,8 @@ export function SessionResultScreen() {
           battle={battle}
           encounter={encounter}
           verdict={verdict}
+          tactic={tactic}
+          battleReport={battleReport}
         />
       )}
 
@@ -251,8 +266,13 @@ export function SessionResultScreen() {
           </Button>
         )}
         <Button full variant="secondary" onClick={replay}>
-          <Refresh size={18} /> もう一度
+          <Refresh size={18} /> {isBattle ? `${tactic.label}でもう一度` : 'もう一度'}
         </Button>
+        {isBattle && (
+          <Button full variant="ghost" onClick={() => navigate('englishMap')}>
+            作戦を変える <ArrowRight size={18} />
+          </Button>
+        )}
         <Button full variant="ghost" onClick={goHome}>
           <Home size={18} /> ホームへ
         </Button>
@@ -332,7 +352,7 @@ const TREND = {
   ease: { text: '同じ級で難易度を調整', tone: 'text-amber-800', bg: 'bg-hint-soft' },
   flat: { text: '次も同じ敵ランク', tone: 'text-brand-700', bg: 'bg-brand-100' },
 }
-function BattleOutcome({ battle, encounter, verdict }) {
+function BattleOutcome({ battle, encounter, verdict, tactic, battleReport }) {
   const t = TREND[battle.trend] ?? TREND.flat
   const from = enemyLevel(battle.from)
   const to = enemyLevel(battle.to)
@@ -377,6 +397,20 @@ function BattleOutcome({ battle, encounter, verdict }) {
       <p className="mt-1.5 text-center text-[11px] font-bold text-ink/50">
         {nextBattleText}
       </p>
+      {battleReport && (
+        <div className="mt-3 flex items-center gap-2 rounded-2xl bg-slate-900 px-3 py-2.5 text-left text-white">
+          <span className="text-xl">{tactic.emoji}</span>
+          <div className="min-w-0 flex-1">
+            <p className="text-[9px] font-extrabold tracking-[0.14em] text-amber-300">
+              {battleReport.activations > 0 ? 'TACTIC ACTIVATED' : 'TACTIC RECORD'}
+            </p>
+            <p className="truncate text-xs font-extrabold">{tactic.name}</p>
+          </div>
+          <span className="text-right text-[10px] font-bold text-white/70">
+            {battleReport.summary}
+          </span>
+        </div>
+      )}
     </Card>
   )
 }
