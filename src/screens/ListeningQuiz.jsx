@@ -1,16 +1,33 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
-import { buildDeck } from '../lib/session.js'
-import { pickDistractors, shuffle } from '../data/vocab.js'
-import { speak, isTTSSupported } from '../lib/tts.js'
-import { PosBadge } from '../components/WordBits.jsx'
-import { Button, ProgressBar, IconButton } from '../components/ui.jsx'
+import {
+  buildListeningDeck,
+  LISTENING_PROFILES,
+  LISTENING_TYPE_META,
+  shuffledListeningChoices,
+} from '../data/listening.js'
+import { isTTSSupported } from '../lib/tts.js'
+import { playListeningItem, stopListeningAudio } from '../lib/listening.js'
+import { Button, Chip, ProgressBar, IconButton, cx } from '../components/ui.jsx'
 import { Close, Check, ArrowRight, SpeakerWave } from '../components/Icons.jsx'
-import { cx } from '../components/ui.jsx'
 
-// 出題ソース等からセッション同一性キーを作る（語源を見て戻ったときの復元照合用）。
-const sessionKey = (p) =>
-  `listening|${JSON.stringify(p.source ?? { type: 'due' })}|${p.title ?? ''}`
+const PROMPTS = Object.freeze({
+  response: '最後の発話に最も自然な応答は？',
+  picture: 'イラストに合う英文はどれ？',
+  conversation: '会話の最後の質問に答えよう',
+  passage: '説明の最後の質問に答えよう',
+  realLife: '実生活の案内を聞いて答えよう',
+  interview: 'インタビューの要点・含意をつかもう',
+})
+
+const SPEAKER_LABELS = Object.freeze({
+  A: '話者A',
+  B: '話者B',
+  N: 'ナレーター',
+  Q: '質問',
+})
+
+const clampRate = (rate) => Math.max(0.55, Math.min(1.25, rate))
 
 export function ListeningQuizScreen() {
   const params = useStore((s) => s.params)
@@ -18,127 +35,230 @@ export function ListeningQuizScreen() {
   const back = useStore((s) => s.back)
   const review = useStore((s) => s.review)
   const settings = useStore((s) => s.settings)
-  const saveQuizSession = useStore((s) => s.saveQuizSession)
-  const clearQuizSession = useStore((s) => s.clearQuizSession)
 
-  // 語源を見て戻ってきたときだけ復元（キー一致のセッションのみ採用）。
-  const [restore] = useState(() => {
-    const s = useStore.getState().quizSession
-    return s && s.key === sessionKey(params) ? s : null
-  })
-  useEffect(() => {
-    clearQuizSession()
-  }, [clearQuizSession])
-
-  const xpAtStart = useRef(restore ? restore.xpAtStart : useStore.getState().stats.xp)
+  const source = params.source ?? { type: 'level', levelId: '5' }
+  const xpAtStart = useRef(useStore.getState().stats.xp)
+  const autoPlayedItem = useRef(null)
   const [deck] = useState(() =>
-    restore
-      ? restore.deck
-      : buildDeck(params.source ?? { type: 'due' }, {
-          srs: useStore.getState().srs,
-          size: params.source?.type === 'level' ? 10 : 20,
-        }),
+    buildListeningDeck(source, {
+      size: source.type === 'listeningList' ? 0 : 10,
+    }),
   )
-  const [i, setI] = useState(() => (restore ? restore.i : 0))
-  const [selected, setSelected] = useState(() => (restore ? restore.selected : null))
-  const results = useRef(restore ? restore.results : { correct: 0, wrong: 0, unknown: 0, wrongIds: [] })
+  const [i, setI] = useState(0)
+  const [selected, setSelected] = useState(null)
+  const [playsUsed, setPlaysUsed] = useState(0)
+  const [practicePlays, setPracticePlays] = useState(0)
+  const [playing, setPlaying] = useState(false)
+  const [activeSegment, setActiveSegment] = useState(null)
+  const results = useRef({ correct: 0, wrong: 0, wrongIds: [] })
 
-  const word = deck[i]
-  const options = useMemo(() => {
-    if (!word) return []
-    return shuffle([word, ...pickDistractors(word, 2)])
-  }, [word?.id]) // eslint-disable-line react-hooks/exhaustive-deps
-
-  const play = (rate) => word && speak(word.word, { rate: rate ?? settings.ttsRate, voiceURI: settings.ttsVoiceURI })
-
-  // 設問が変わるたび自動再生
-  useEffect(() => {
-    play()
+  const item = deck[i]
+  const profile =
+    LISTENING_PROFILES[item?.level ?? source.levelId] ?? LISTENING_PROFILES['5']
+  const typeMeta = LISTENING_TYPE_META[item?.type]
+  const options = useMemo(
+    () => shuffledListeningChoices(item),
+    // 選択肢の並びは設問ごとに一度だけ決める。
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [i, word?.id])
+    [item?.id],
+  )
+  const answered = selected !== null
+  const isCorrectPick = answered && selected === item?.answer
+  const correctChoice = item?.choices.find((choice) => choice.id === item.answer)
+  const userRateScale = (settings.ttsRate ?? 0.9) / 0.9
+  const normalRate = clampRate(profile.rate * userRateScale)
+  const slowRate = clampRate(profile.slowRate * userRateScale)
+  const remainingPlays = Math.max(0, (item?.plays ?? 0) - playsUsed)
+
+  const play = ({ slow = false, practice = false } = {}) => {
+    if (!item || playing) return
+    const isPractice = practice || answered
+    if (!isPractice && remainingPlays <= 0) return
+
+    setPlaying(true)
+    setActiveSegment(null)
+    const started = playListeningItem(item, {
+      rate: slow ? slowRate : normalRate,
+      voiceURI: settings.ttsVoiceURI,
+      onSegment: (_segment, index) => setActiveSegment(index),
+      onEnd: () => {
+        setPlaying(false)
+        setActiveSegment(null)
+      },
+    })
+    if (!started) {
+      setPlaying(false)
+      return
+    }
+    if (isPractice) setPracticePlays((count) => count + 1)
+    else setPlaysUsed((count) => count + 1)
+  }
+
+  useEffect(() => {
+    setPlaysUsed(0)
+    setPracticePlays(0)
+    setPlaying(false)
+    setActiveSegment(null)
+    if (settings.autoSpeak !== false && autoPlayedItem.current !== item?.id) {
+      autoPlayedItem.current = item?.id
+      play()
+    }
+    return stopListeningAudio
+    // 設問が変わったときだけ、その級の速度・放送回数で自動再生する。
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [i, item?.id])
 
   if (!deck.length) {
     return (
       <div className="flex h-full flex-col items-center justify-center gap-4 p-8 text-center">
         <div className="text-5xl">🎧</div>
-        <p className="font-display text-lg font-extrabold text-ink">出題できる単語がありません</p>
+        <p className="font-display text-lg font-extrabold text-ink">出題できる問題がありません</p>
         <Button onClick={back}>もどる</Button>
       </div>
     )
   }
 
-  const answered = selected !== null
-
   const finish = () => {
+    stopListeningAudio()
     const xpGained = useStore.getState().stats.xp - xpAtStart.current
     navigate('sessionResult', {
-      title: params.title ?? 'リスニング', mode: 'quiz', engine: 'word', replayScreen: 'listeningQuiz',
-      total: deck.length, correct: results.current.correct,
-      wrong: results.current.wrong + results.current.unknown, xpGained,
-      reviewIds: results.current.wrongIds.length ? results.current.wrongIds : deck.map((w) => w.id),
-      source: params.source,
+      title: params.title ?? `英検${profile.label}`,
+      mode: 'quiz',
+      engine: 'listening',
+      replayScreen: 'listeningQuiz',
+      total: deck.length,
+      correct: results.current.correct,
+      wrong: results.current.wrong,
+      xpGained,
+      reviewIds: results.current.wrongIds.length
+        ? results.current.wrongIds
+        : deck.map((question) => question.id),
+      source,
     })
   }
 
-  const choose = (optId) => {
+  const choose = (choiceId) => {
     if (answered) return
-    setSelected(optId)
-    if (optId === 'unknown') { review(word.id, 'unknown'); results.current.unknown++; results.current.wrongIds.push(word.id) }
-    else if (optId === word.id) { review(word.id, 'correct'); results.current.correct++ }
-    else { review(word.id, 'wrong'); results.current.wrong++; results.current.wrongIds.push(word.id) }
+    setSelected(choiceId)
+    if (choiceId === item.answer) {
+      review(item.id, 'correct')
+      results.current.correct++
+    } else {
+      review(item.id, 'wrong')
+      results.current.wrong++
+      results.current.wrongIds.push(item.id)
+    }
   }
 
   const next = () => {
-    if (i + 1 >= deck.length) finish()
-    else { setI(i + 1); setSelected(null) }
+    stopListeningAudio()
+    if (i + 1 >= deck.length) {
+      finish()
+      return
+    }
+    setI((current) => current + 1)
+    setSelected(null)
+    setPlaysUsed(0)
+    setPracticePlays(0)
+    setPlaying(false)
+    setActiveSegment(null)
   }
 
-  const isCorrectPick = answered && selected === word.id
+  const quit = () => {
+    stopListeningAudio()
+    back()
+  }
 
   return (
     <div className="flex h-full flex-col">
       <div className="flex items-center gap-3 px-3 py-3">
-        <IconButton onClick={back} aria-label="やめる"><Close size={22} /></IconButton>
-        <div className="flex-1"><ProgressBar value={i / deck.length} color="#0ea5e9" /></div>
-        <span className="w-12 text-right text-sm font-extrabold text-ink/50">{i + 1}/{deck.length}</span>
+        <IconButton onClick={quit} aria-label="やめる"><Close size={22} /></IconButton>
+        <div className="flex-1">
+          <ProgressBar value={i / deck.length} color="#0ea5e9" />
+        </div>
+        <span className="w-12 text-right text-sm font-extrabold text-ink/50">
+          {i + 1}/{deck.length}
+        </span>
       </div>
 
       <div className="flex-1 overflow-y-auto px-4 pb-4">
-        {/* 再生カード */}
-        <div className="mt-2 flex flex-col items-center rounded-[2rem] bg-gradient-to-br from-sky-400 to-sky-600 p-6 text-center text-white shadow-card">
-          {!isTTSSupported() && <p className="text-sm font-bold">この端末は音声合成に未対応です</p>}
-          <button
-            onClick={() => play()}
-            className="flex h-24 w-24 items-center justify-center rounded-full bg-white/20 active:scale-90 transition-transform"
-            aria-label="もう一度聞く"
-          >
-            <SpeakerWave size={48} />
-          </button>
-          <p className="mt-3 font-display text-lg font-extrabold">タップでもう一度</p>
-          <button onClick={() => play(0.6)} className="mt-1 rounded-full bg-white/20 px-3 py-1 text-xs font-extrabold active:bg-white/30">
-            🐢 ゆっくり再生
-          </button>
-          {answered && (
-            <div className="mt-4 flex items-center gap-2 rounded-2xl bg-white/15 px-4 py-2 animate-pop-in">
-              <PosBadge pos={word.pos} className="bg-white/25 text-white" />
-              <span className="font-display text-2xl font-extrabold">{word.word}</span>
+        <div className="mb-3 flex flex-wrap items-center gap-2">
+          <Chip color="#0ea5e9">{profile.label}</Chip>
+          <Chip color="#64748b">{typeMeta?.icon} {typeMeta?.label}</Chip>
+          <span className="text-xs font-extrabold text-ink/45">
+            {profile.benchmark}
+          </span>
+        </div>
+
+        <div className="rounded-[2rem] bg-gradient-to-br from-sky-400 to-sky-600 p-5 text-white shadow-card">
+          {!isTTSSupported() && (
+            <p className="mb-3 rounded-xl bg-white/15 px-3 py-2 text-sm font-bold">
+              この端末は音声合成に対応していません
+            </p>
+          )}
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => play()}
+              disabled={playing || (!answered && remainingPlays <= 0)}
+              className="flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-white/20 transition-transform active:scale-90 disabled:opacity-45 disabled:active:scale-100"
+              aria-label={answered ? '復習でもう一度聞く' : '音声を再生'}
+            >
+              <SpeakerWave size={40} />
+            </button>
+            <div className="min-w-0 flex-1">
+              <p className="font-display text-lg font-extrabold">
+                {playing ? '再生中…' : answered ? '復習でもう一度' : '音声を聞こう'}
+              </p>
+              <p className="mt-1 text-xs font-bold text-white/80">
+                本番の放送：{item.plays}回
+              </p>
+              <p className="mt-2 text-xs font-extrabold">
+                本番 {playsUsed}/{item.plays}回
+                {practicePlays > 0 && (
+                  <span className="ml-2 text-white/75">・復習 {practicePlays}回</span>
+                )}
+              </p>
+              {playing && activeSegment !== null && (
+                <p className="mt-1 text-[11px] font-bold text-white/70">
+                  発話 {activeSegment + 1} を再生中
+                </p>
+              )}
             </div>
+          </div>
+          {!answered && remainingPlays <= 0 && (
+            <p className="mt-3 rounded-xl bg-slate-900/15 px-3 py-2 text-center text-xs font-extrabold">
+              本番の放送回数を使い切りました。解答後は自由に復習できます。
+            </p>
           )}
         </div>
 
-        <p className="mt-4 text-center text-sm font-extrabold text-ink/55">聞こえた単語の意味は？</p>
+        {item.visual && (
+          <div
+            className="mt-4 rounded-3xl border-2 border-sky-100 bg-white p-5 text-center shadow-card"
+            aria-label={`イラスト問題：${item.topic}`}
+          >
+            <div className="text-5xl leading-relaxed" aria-hidden="true">{item.visual}</div>
+            <p className="mt-1 text-xs font-extrabold text-ink/40">イラストを見て音声を選ぼう</p>
+          </div>
+        )}
+
+        <p className="mt-4 text-center text-sm font-extrabold text-ink/55">
+          {PROMPTS[item.type]}
+        </p>
 
         <div className="mt-3 space-y-2.5">
-          {options.map((o) => {
-            const correct = o.id === word.id
-            const chosen = selected === o.id
+          {options.map((choice, displayIndex) => {
+            const correct = choice.id === item.answer
+            const chosen = selected === choice.id
             let tone = 'idle'
             if (answered) tone = correct ? 'correct' : chosen ? 'wrong' : 'dim'
+            const hideText = typeMeta?.spokenChoices && !answered
             return (
               <button
-                key={o.id}
+                key={choice.id}
                 disabled={answered}
-                onClick={() => choose(o.id)}
+                onClick={() => choose(choice.id)}
+                aria-label={hideText ? `選択肢 ${displayIndex + 1}` : choice.text}
                 className={cx(
                   'flex w-full items-center gap-3 rounded-2xl border-2 px-4 py-3.5 text-left font-bold transition-all',
                   tone === 'idle' && 'border-brand-100 bg-white text-ink active:bg-brand-50 active:scale-[0.99]',
@@ -147,46 +267,91 @@ export function ListeningQuizScreen() {
                   tone === 'dim' && 'border-transparent bg-paper text-ink/35',
                 )}
               >
-                <span className="flex-1">{o.meanings?.[0] ?? o.meaning}</span>
+                <span
+                  className={cx(
+                    'flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-extrabold',
+                    tone === 'idle' && 'bg-sky-100 text-sky-700',
+                    tone === 'correct' && 'bg-emerald-200 text-emerald-800',
+                    tone === 'wrong' && 'bg-rose-200 text-rose-800',
+                    tone === 'dim' && 'bg-ink/5 text-ink/35',
+                  )}
+                >
+                  {displayIndex + 1}
+                </span>
+                <span className={cx('flex-1 leading-relaxed', hideText && 'text-center text-lg')}>
+                  {hideText ? '音声で聞く' : choice.text}
+                </span>
                 {tone === 'correct' && <Check size={20} className="text-emerald-600" />}
                 {tone === 'wrong' && <Close size={18} className="text-rose-500" />}
               </button>
             )
           })}
-
-          <button
-            disabled={answered}
-            onClick={() => choose('unknown')}
-            className={cx(
-              'w-full rounded-2xl border-2 border-dashed px-4 py-3 text-sm font-extrabold transition-all',
-              selected === 'unknown' ? 'border-amber-400 bg-hint-soft text-amber-800' : 'border-ink/15 bg-transparent text-ink/45 active:bg-ink/5',
-              answered && selected !== 'unknown' && 'opacity-40',
-            )}
-          >
-            わからない🙈
-          </button>
         </div>
 
         {answered && (
           <div className="mt-4 animate-slide-up rounded-2xl bg-white p-4 shadow-card">
-            <p className={cx('font-display text-lg font-extrabold', isCorrectPick ? 'text-emerald-600' : 'text-rose-500')}>
-              {isCorrectPick ? '正解！🎉' : selected === 'unknown' ? '答えはこちら' : 'ざんねん…'}
-            </p>
-            <p className="mt-1 font-bold text-ink"><span className="font-display">{word.word}</span> ＝ {word.meanings.join('・')}</p>
-            <button
-              onClick={() => {
-                saveQuizSession({
-                  key: sessionKey(params),
-                  deck, i, selected,
-                  results: results.current,
-                  xpAtStart: xpAtStart.current,
-                })
-                navigate('wordDetail', { id: word.id })
-              }}
-              className="mt-2 inline-flex items-center gap-1 text-sm font-extrabold text-brand-600"
+            <p
+              className={cx(
+                'font-display text-lg font-extrabold',
+                isCorrectPick ? 'text-emerald-600' : 'text-rose-500',
+              )}
             >
-              語源をくわしく見る <ArrowRight size={15} />
-            </button>
+              {isCorrectPick ? '正解！🎉' : 'ざんねん…'}
+            </p>
+            <p className="mt-1 font-bold leading-relaxed text-ink">
+              正解：{correctChoice?.text}
+            </p>
+
+            <div className="mt-3 rounded-2xl bg-sky-50 p-3">
+              <p className="text-sm font-extrabold leading-relaxed text-sky-900">
+                {item.question}
+              </p>
+              <p className="mt-1 text-xs font-bold leading-relaxed text-sky-800/70">
+                {item.questionJa}
+              </p>
+            </div>
+
+            {!!item.audio.length && (
+              <div className="mt-3 border-t border-brand-50 pt-3">
+                <p className="text-[11px] font-extrabold text-ink/40">スクリプト</p>
+                <div className="mt-2 space-y-2">
+                  {item.audio.map((segment, index) => (
+                    <div key={`${segment.speaker}-${index}`} className="flex items-start gap-2">
+                      <span className="mt-0.5 min-w-[4.5rem] rounded-lg bg-slate-100 px-2 py-1 text-center text-[10px] font-extrabold text-slate-600">
+                        {SPEAKER_LABELS[segment.speaker] ?? segment.speaker}
+                      </span>
+                      <p className="text-sm font-bold leading-relaxed text-ink/75">
+                        {segment.text}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div className="mt-3 rounded-2xl bg-hint-soft/70 p-3">
+              <p className="text-sm font-bold leading-relaxed text-amber-900/90">
+                💡 {item.explain}
+              </p>
+            </div>
+
+            <div className="mt-3 flex flex-wrap gap-2">
+              <button
+                onClick={() => play({ practice: true })}
+                disabled={playing}
+                className="rounded-xl bg-sky-100 px-3 py-2 text-xs font-extrabold text-sky-700 disabled:opacity-40"
+              >
+                🔊 通常速度で復習
+              </button>
+              <button
+                onClick={() => play({ slow: true, practice: true })}
+                disabled={playing}
+                className="rounded-xl bg-slate-100 px-3 py-2 text-xs font-extrabold text-slate-700 disabled:opacity-40"
+              >
+                🐢 ゆっくり復習
+              </button>
+              <Chip color="#64748b">{item.topic}</Chip>
+            </div>
           </div>
         )}
       </div>

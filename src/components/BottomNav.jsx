@@ -14,6 +14,7 @@ const TABS = [
 const SCREEN_TO_TAB = {
   home: 'home',
   vocabLevels: 'vocab',
+  vocabGroups: 'vocab',
   vocabDecks: 'vocab',
   vocabStudy: 'vocab',
   vocabQuiz: 'vocab',

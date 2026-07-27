@@ -49,7 +49,7 @@ const RAW = [
   ['glossy', '形', '1', '光沢のある・つやつやした', 'glossy paper', '光沢紙', 'gloss(つや)+ -y。', { syn: [{ w: 'shiny', m: '光る' }, { w: 'sleek', m: 'つやのある' }], ant: [{ w: 'matte', m: 'つや消しの' }], field: '一般' }],
   ['jagged', '形', '1', 'ぎざぎざの・とがった', 'jagged rocks', 'ぎざぎざの岩', 'jag(ぎざぎざ)+ -ed。', { syn: [{ w: 'serrated', m: '鋸歯状の' }, { w: 'ragged', m: 'ぎざぎざの' }], ant: [{ w: 'smooth', m: '滑らかな' }], field: '科学' }],
   ['lush', '形', 'pre1', '青々と茂った・豊かな', 'lush vegetation', '生い茂る草木', '中英語 lusch(柔らかい)。', { syn: [{ w: 'luxuriant', m: '繁茂した' }, { w: 'verdant', m: '青々とした' }], ant: [{ w: 'barren', m: '不毛の' }], field: '環境' }],
-  ['rustic', '形', '1', '田舎風の・素朴な', 'a rustic cottage', '田舎風の山小屋', 'ラテン rus(田舎)→ rural と同系。', { syn: [{ w: 'rural', m: '田舎の' }, { w: 'rural', m: '素朴な' }], ant: [{ w: 'urban', m: '都会の' }], field: '一般' }],
+  ['rustic', '形', '1', '田舎風の・素朴な', 'a rustic cottage', '田舎風の山小屋', 'ラテン rus(田舎)→ rural と同系。', { syn: [{ w: 'rural', m: '田舎の・素朴な' }], ant: [{ w: 'urban', m: '都会の' }], field: '一般' }],
   ['savvy', '形', '1', '精通した・抜け目のない・知識', 'tech-savvy', '技術に明るい', 'スペイン sabe(知っている)。', { syn: [{ w: 'shrewd', m: '抜け目のない' }, { w: 'knowledgeable', m: '博識な' }], ant: [{ w: 'naive', m: 'うぶな' }], field: '一般' }],
   ['scenic', '形', '2', '景色のよい・舞台の', 'a scenic route', '景色のよいルート', 'scene(景色)+ -ic。', { syn: [{ w: 'picturesque', m: '絵のような' }, { w: 'panoramic', m: '全景の' }], fam: [{ w: 'scenery', m: '景色' }], field: '地理' }],
   ['shrewd', '形', 'pre1', '抜け目のない・鋭敏な', 'a shrewd businessman', '抜け目のない実業家', '中英語 shrewe(意地の悪い人)。', { syn: [{ w: 'astute', m: '抜け目のない' }, { w: 'cunning', m: 'ずる賢い' }], ant: [{ w: 'naive', m: 'うぶな' }], field: 'ビジネス' }],

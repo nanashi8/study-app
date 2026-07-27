@@ -1,4 +1,4 @@
-// 古文単語（古典単語）データ。大学受験で頻出の重要古語を中心に約120語。
+// 古文単語（古典単語）データ。大学受験で頻出の重要古語300語。
 //
 // 英単語(vocab.js)と似た構造で、画面側はここ経由でデータを取る。
 //   id        … 安定キー（'k001'… 変更しない）
@@ -11,6 +11,9 @@
 //   example   … { ja: 古文の用例, gendai: 現代語訳 }（任意）
 //
 // 級は無いので、英単語の「級」に当たる軸は category（意味分野）で代用する。
+
+import { KOTEN_EXPANSION } from './koten-expanded.js'
+import { KOTEN_ADVANCED } from './koten-advanced.js'
 
 export const KOTEN_CATEGORIES = [
   { id: 'kanjo', label: '心情・気持ち', emoji: '💗', color: '#f43f5e' },
@@ -438,8 +441,10 @@ const RAW = [
     note: '「よし」を譲歩で用いる。' },
 ]
 
-// id を機械的に付与（'k001'…）。並びは RAW の順で安定。
-export const KOTEN_WORDS = RAW.map((w, i) => ({
+// id を機械的に付与（'k001'…）。
+// 既存語の後ろにだけ拡充分を連結し、保存済みの学習履歴との対応を保つ。
+const ALL_RAW = [...RAW, ...KOTEN_EXPANSION, ...KOTEN_ADVANCED]
+export const KOTEN_WORDS = ALL_RAW.map((w, i) => ({
   id: `k${String(i + 1).padStart(3, '0')}`,
   ...w,
   meaning: w.meanings[0] ?? '',

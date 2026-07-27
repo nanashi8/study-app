@@ -2,6 +2,7 @@ import { useStore } from '../store/useStore.js'
 import { ROOTS, wordsByRoot } from '../data/vocab.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { Card, ProgressRing } from '../components/ui.jsx'
+import { hasRootBreakdown } from '../components/WordBits.jsx'
 import { ArrowRight } from '../components/Icons.jsx'
 
 // box>=4 を「習得」、box1〜3 を「学習中」。リングは box 加重で進み具合を表す。
@@ -27,7 +28,10 @@ export function RootsScreen() {
   const items = ROOTS
     .map((r) => {
       const words = wordsByRoot(r.id)
-      return { r, words, ...rootProgress(words, srs) }
+      const examples = [...words]
+        .sort((a, b) => Number(hasRootBreakdown(b, r.id)) - Number(hasRootBreakdown(a, r.id)))
+        .slice(0, 3)
+      return { r, words, examples, ...rootProgress(words, srs) }
     })
     // 派生語が0の語根（データに該当語が無い）はマップに出さない。
     .filter((it) => it.total > 0)
@@ -42,11 +46,30 @@ export function RootsScreen() {
       />
 
       <div className="px-4">
-        <p className="mb-3 px-1 text-xs font-bold text-ink/50">
-          語根（語のもと）ごとに、意味のつながる派生語をまとめて覚えられます。
-        </p>
+        <Card className="mb-4 overflow-hidden">
+          <div className="bg-gradient-to-br from-brand-500 to-violet-600 p-4 text-white">
+            <p className="text-[11px] font-extrabold uppercase tracking-wide text-white/70">
+              1つの意味の核から、何語も増やす
+            </p>
+            <p className="mt-1 font-display text-lg font-extrabold leading-snug">
+              語根を覚え、前後のパーツを足して<br />知らない単語の意味まで予想しよう。
+            </p>
+          </div>
+          <div className="p-4">
+            <div className="flex flex-wrap items-center gap-1.5 text-xs font-extrabold">
+              <span className="rounded-lg bg-brand-100 px-2 py-1 text-brand-700">port＝運ぶ</span>
+              <span className="text-brand-300">→</span>
+              <span className="rounded-lg bg-amber-100 px-2 py-1 text-amber-700">import</span>
+              <span className="rounded-lg bg-amber-100 px-2 py-1 text-amber-700">export</span>
+              <span className="rounded-lg bg-amber-100 px-2 py-1 text-amber-700">transport</span>
+            </div>
+            <p className="mt-2 text-xs font-bold leading-relaxed text-ink/50">
+              各ページで「パーツの足し算」と「由来の説明から広げる仲間」を分けて学べます。
+            </p>
+          </div>
+        </Card>
         <div className="space-y-2.5">
-          {items.map(({ r, total, mastered, learning, ratio }) => (
+          {items.map(({ r, examples, total, mastered, learning, ratio }) => (
             <button
               key={r.id}
               onClick={() => navigate('rootDetail', { rootId: r.id })}
@@ -62,7 +85,10 @@ export function RootsScreen() {
                     <span className="truncate text-sm font-bold text-ink/55">＝{r.meaning}</span>
                   </div>
                   <p className="text-xs font-bold text-ink/45">
-                    派生語 {total}語 ・ 習得 {mastered}・学習中 {learning}
+                    同語源 {total}語 ・ 習得 {mastered}・学習中 {learning}
+                  </p>
+                  <p className="mt-1 truncate text-[11px] font-extrabold text-brand-500/80">
+                    {examples.map((w) => w.word).join(' ・ ')}
                   </p>
                 </div>
                 <ProgressRing value={ratio} size={44} stroke={6} color="#6366f1">

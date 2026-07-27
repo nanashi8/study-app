@@ -2,7 +2,15 @@ import { useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import { getKoten } from '../data/koten.js'
 import { Button, ProgressBar, IconButton } from '../components/ui.jsx'
-import { Close, ArrowRight, Eye, EyeOff, Lightbulb } from '../components/Icons.jsx'
+import {
+  Bookmark,
+  BookmarkFilled,
+  Close,
+  ArrowRight,
+  Eye,
+  EyeOff,
+  Lightbulb,
+} from '../components/Icons.jsx'
 
 // 渡された id 配列から学習デッキを作る（1回だけシャッフル）。
 function buildKotenDeck(ids, seed) {
@@ -18,8 +26,9 @@ function buildKotenDeck(ids, seed) {
 export function KotenStudyScreen() {
   const params = useStore((s) => s.params)
   const back = useStore((s) => s.back)
-  const navigate = useStore((s) => s.navigate)
   const reviewKoten = useStore((s) => s.reviewKoten)
+  const kotenWordList = useStore((s) => s.kotenWordList)
+  const toggleKotenWordList = useStore((s) => s.toggleKotenWordList)
   const settings = useStore((s) => s.settings)
   const setSetting = useStore((s) => s.setSetting)
   const revealAll = settings.revealAnswers
@@ -32,6 +41,7 @@ export function KotenStudyScreen() {
   const [remembered, setRemembered] = useState(0)
 
   const word = deck[i]
+  const saved = word ? kotenWordList.includes(word.id) : false
 
   if (!deck.length) {
     return (
@@ -118,6 +128,17 @@ export function KotenStudyScreen() {
             <span className="rounded-full bg-amber-100 px-2.5 py-1 text-[11px] font-extrabold text-amber-700">
               {word.pos}
             </span>
+            <IconButton
+              onClick={(event) => {
+                event.stopPropagation()
+                toggleKotenWordList(word.id)
+              }}
+              className={saved ? '-mr-2 -mt-2 text-amber-600' : '-mr-2 -mt-2 text-ink/25'}
+              aria-label={saved ? `${word.word}を登録単語から外す` : `${word.word}を登録単語へ追加`}
+              aria-pressed={saved}
+            >
+              {saved ? <BookmarkFilled size={22} /> : <Bookmark size={22} />}
+            </IconButton>
           </div>
 
           <div className="mt-2 flex flex-col items-center text-center">

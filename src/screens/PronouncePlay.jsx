@@ -1,7 +1,7 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { useStore } from '../store/useStore.js'
 import { buildDeck } from '../lib/session.js'
-import { isRecognitionSupported, recognizeOnce, scorePronunciation } from '../lib/speech.js'
+import { isRecognitionSupported, startRecognition, scorePronunciation } from '../lib/speech.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { PosBadge } from '../components/WordBits.jsx'
 import { Button, ProgressBar, ProgressRing, IconButton } from '../components/ui.jsx'
@@ -34,9 +34,13 @@ export function PronouncePlayScreen() {
   const [result, setResult] = useState(null)
   const [error, setError] = useState('')
   const results = useRef({ good: 0, wrongIds: [] })
+  const recRef = useRef(null) // 録音中のコントローラ
 
   const word = deck[i]
   const target = word?.word ?? ''
+
+  // 画面を離れる/単語が変わるときに録音が残らないよう後始末。
+  useEffect(() => () => recRef.current?.abort(), [])
 
   if (!deck.length) {
     return (
@@ -48,25 +52,61 @@ export function PronouncePlayScreen() {
     )
   }
 
-  const record = () => {
+  // 押した瞬間に録音開始（プッシュトゥトーク）。
+  const startRec = () => {
+    if (phase === 'recording' || recRef.current) return
     setError('')
     setResult(null)
     setPhase('recording')
-    recognizeOnce({ lang: 'en-US' })
-      .then(({ transcript }) => {
-        setResult(scorePronunciation(target, transcript))
-        setPhase('scored')
-      })
-      .catch((e) => {
+    const ctrl = startRecognition({ lang: 'en-US' })
+    recRef.current = ctrl
+    ctrl.result.then(({ transcript, error: err }) => {
+      recRef.current = null
+      if (err || !transcript) {
         setPhase('idle')
-        setError(ERR[e.message] || 'うまく認識できませんでした。もう一度試してください。')
-      })
+        setError(ERR[err] || 'うまく認識できませんでした。もう一度試してください。')
+        return
+      }
+      setResult(scorePronunciation(target, transcript))
+      setPhase('scored')
+    })
+  }
+
+  // 指を離したら確定。
+  const stopRec = () => {
+    if (recRef.current) recRef.current.stop()
+  }
+
+  // プッシュトゥトーク：押下で開始、離す/外れる/キャンセルで確定。
+  const pttHandlers = {
+    onPointerDown: (e) => {
+      if (e.pointerType === 'mouse' && e.button !== 0) return
+      e.preventDefault()
+      startRec()
+    },
+    onPointerUp: stopRec,
+    onPointerLeave: stopRec,
+    onPointerCancel: stopRec,
+    onKeyDown: (e) => {
+      if ((e.key === ' ' || e.key === 'Enter') && !e.repeat) {
+        e.preventDefault()
+        startRec()
+      }
+    },
+    onKeyUp: (e) => {
+      if (e.key === ' ' || e.key === 'Enter') {
+        e.preventDefault()
+        stopRec()
+      }
+    },
+    'aria-pressed': phase === 'recording',
+    'aria-label': phase === 'recording' ? '録音を終了する' : '押している間、発音を録音する',
   }
 
   const finish = () => {
     const xpGained = useStore.getState().stats.xp - xpAtStart.current
     navigate('sessionResult', {
-      title: params.title ?? '発音採点', mode: 'quiz', engine: 'word', replayScreen: 'pronouncePlay',
+      title: params.title ?? '発音チェック', mode: 'quiz', engine: 'word', replayScreen: 'pronouncePlay',
       total: deck.length, correct: results.current.good, wrong: deck.length - results.current.good, xpGained,
       reviewIds: results.current.wrongIds.length ? results.current.wrongIds : deck.map((w) => w.id),
       source: params.source,
@@ -109,9 +149,10 @@ export function PronouncePlayScreen() {
           <div className="mt-4 flex animate-pop-in flex-col items-center rounded-2xl bg-white p-4 shadow-card">
             <ProgressRing value={result.score / 100} size={96} stroke={10} color={scoreColor(result.score)}>
               <span className="font-display text-2xl font-extrabold text-ink">{result.score}</span>
+              <span className="text-[9px] font-bold text-ink/40">認識一致度</span>
             </ProgressRing>
             <p className="mt-2 font-display font-extrabold" style={{ color: scoreColor(result.score) }}>
-              {result.score >= 80 ? 'すばらしい発音！🎉' : result.score >= 50 ? 'いい感じ！もう一歩💪' : 'もう一度チャレンジ🔁'}
+              {result.score >= 80 ? 'はっきり認識されました！🎉' : result.score >= 50 ? 'ほぼ認識されました💪' : 'お手本を聞いてもう一度🔁'}
             </p>
             <div className="mt-2 flex flex-wrap justify-center gap-1.5">
               {result.perWord.map((p, k) => (
@@ -132,19 +173,19 @@ export function PronouncePlayScreen() {
         {supported ? (
           phase === 'scored' ? (
             <div className="grid grid-cols-2 gap-3">
-              <Button variant="secondary" size="lg" onClick={record}>もう一度話す</Button>
+              <Button variant="secondary" size="lg" className="touch-none" {...pttHandlers}>もう一度話す</Button>
               <Button size="lg" onClick={() => proceed(result.score)}>
                 {i + 1 >= deck.length ? '結果へ' : '次へ'} <ArrowRight size={18} />
               </Button>
             </div>
           ) : (
-            <Button full size="lg" variant={phase === 'recording' ? 'danger' : 'primary'} disabled={phase === 'recording'} onClick={record}>
-              {phase === 'recording' ? '🎤 聞いています…' : '🎤 タップして発音'}
+            <Button full size="lg" className="touch-none" variant={phase === 'recording' ? 'danger' : 'primary'} {...pttHandlers}>
+              {phase === 'recording' ? '🎤 指をはなすと採点…' : '🎤 押している間だけ話す'}
             </Button>
           )
         ) : (
           <div>
-            <p className="mb-2 text-center text-xs font-bold text-ink/45">自動採点は使えません。お手本に近づけたか自己評価しよう。</p>
+            <p className="mb-2 text-center text-xs font-bold text-ink/45">音声認識は使えません。お手本に近づけたか自己評価しよう。</p>
             <div className="grid grid-cols-2 gap-3">
               <Button variant="secondary" size="lg" onClick={() => proceed(40)}>むずかしい🤔</Button>
               <Button variant="success" size="lg" onClick={() => proceed(100)}>言えた👍</Button>

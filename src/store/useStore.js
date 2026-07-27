@@ -18,7 +18,19 @@ const RESULTS = {
   forgot: { box: 'reset', xp: 2 }, // カードで「まだ」
 }
 
-const today = () => Math.floor(Date.now() / 86400000) // 日番号（整数）
+const DAY_MS = 86400000
+
+// 端末の現地日付を連続した日番号へ変換する。
+// UTC の経過時間をそのまま割ると日本では午前9時に日付が変わるため、
+// その時点のタイムゾーン差を加味して現地の午前0時で切り替える。
+export function localDayIndexAt(
+  timestamp = Date.now(),
+  timezoneOffsetMinutes = new Date(timestamp).getTimezoneOffset(),
+) {
+  return Math.floor((timestamp - timezoneOffsetMinutes * 60000) / DAY_MS)
+}
+
+const today = () => localDayIndexAt()
 
 // 保存済みのポータル並び順を正規化：既知のidだけ残し、未登場の新コンテンツは
 // 既定の位置（末尾寄り）で補う。データ追加後も保存値が壊れないようにする。
@@ -51,12 +63,17 @@ const DEFAULT_SETTINGS = {
 const initialLearning = () => ({
   srs: {}, // wordId -> { box, correct, wrong, due, last }
   kotenSrs: {}, // 古文単語の wordId -> { box, ... }（英単語と別管理。idが衝突しないよう分離）
+  kotenInterpretationSrs: {}, // 古典短文の questionId -> { box, ... }
   myList: [], // [wordId]
+  kotenWordList: [], // [古文単語id] 登録単語
+  kotenGrammarList: [], // [古典文法id] 登録文法
   readingsDone: [], // [passageId] 読了した長文
   mathDone: [], // [problemId] クリアした数学問題
   mathMastery: {}, // unitId -> 最高正答率(0-100) ＝ 理解度
   skillStats: {}, // skill -> { answered, correct, sessions, lastDay } ＝ スキル別テスト結果
+  diagnosticHistory: [], // 学習診断の新しい順の結果（最大5件）
   engPos: null, // 適応バトルの現在ポジション(0=5級…6=1級, 小数可)。null=未配置（初回に推定）
+  vnCleared: [], // [episodeId] クリアした英会話ノベルのエピソード
   portalOrder: [...DEFAULT_CONTENT_ORDER], // ポータルのタイル並び順（コンテンツid配列）
   portalHidden: [], // ポータルで非表示にしたコンテンツid
   stats: freshStats(),
@@ -136,6 +153,18 @@ export const useStore = create(
           return { kotenSrs: srs, stats }
         }),
 
+      // 古典短文解釈も、問題ごとに同じ間隔反復で復習時期を管理する。
+      reviewKotenInterpretation: (questionId, result) =>
+        set((st) => {
+          const { srs, stats } = applyReview(
+            st.kotenInterpretationSrs,
+            st.stats,
+            questionId,
+            result,
+          )
+          return { kotenInterpretationSrs: srs, stats }
+        }),
+
       toggleMyList: (wordId) =>
         set((st) => ({
           myList: st.myList.includes(wordId)
@@ -148,6 +177,36 @@ export const useStore = create(
           myList: [...st.myList, ...ids.filter((id) => !st.myList.includes(id))],
         })),
 
+      toggleKotenWordList: (wordId) =>
+        set((st) => ({
+          kotenWordList: st.kotenWordList.includes(wordId)
+            ? st.kotenWordList.filter((id) => id !== wordId)
+            : [...st.kotenWordList, wordId],
+        })),
+
+      addManyToKotenWordList: (ids) =>
+        set((st) => ({
+          kotenWordList: [
+            ...st.kotenWordList,
+            ...ids.filter((id) => !st.kotenWordList.includes(id)),
+          ],
+        })),
+
+      toggleKotenGrammarList: (grammarId) =>
+        set((st) => ({
+          kotenGrammarList: st.kotenGrammarList.includes(grammarId)
+            ? st.kotenGrammarList.filter((id) => id !== grammarId)
+            : [...st.kotenGrammarList, grammarId],
+        })),
+
+      addManyToKotenGrammarList: (ids) =>
+        set((st) => ({
+          kotenGrammarList: [
+            ...st.kotenGrammarList,
+            ...ids.filter((id) => !st.kotenGrammarList.includes(id)),
+          ],
+        })),
+
       markReadingDone: (id) =>
         set((st) =>
           st.readingsDone.includes(id) ? {} : { readingsDone: [...st.readingsDone, id] },
@@ -156,6 +215,11 @@ export const useStore = create(
       markMathDone: (id) =>
         set((st) =>
           st.mathDone.includes(id) ? {} : { mathDone: [...st.mathDone, id] },
+        ),
+
+      markVnCleared: (id) =>
+        set((st) =>
+          st.vnCleared.includes(id) ? {} : { vnCleared: [...st.vnCleared, id] },
         ),
 
       // スキル別（単語/文法/語法/長文/リスニング/ディクテーション）のテスト結果を累積する。
@@ -173,6 +237,43 @@ export const useStore = create(
                 lastDay: today(),
               },
             },
+          }
+        }),
+
+      // 学習診断を保存し、同時に学習マップの分野別成績へ反映する。
+      // 初めて現在地を決める場合だけ、診断した英検級を適応バトルの初期位置にも使う。
+      recordDiagnosticResult: (result) =>
+        set((st) => {
+          if (!result?.id || !Array.isArray(result.skillResults)) return {}
+          const history = Array.isArray(st.diagnosticHistory) ? st.diagnosticHistory : []
+          if (history.some((item) => item.id === result.id)) return {}
+
+          const day = today()
+          const skillStats = { ...st.skillStats }
+          for (const item of result.skillResults) {
+            if (!item?.id || !Number.isFinite(item.correct) || !Number.isFinite(item.total) || item.total <= 0) {
+              continue
+            }
+            const prev = skillStats[item.id] ?? {
+              answered: 0,
+              correct: 0,
+              sessions: 0,
+              lastDay: null,
+            }
+            skillStats[item.id] = {
+              answered: prev.answered + item.total,
+              correct: prev.correct + item.correct,
+              sessions: prev.sessions + 1,
+              lastDay: day,
+            }
+          }
+
+          return {
+            diagnosticHistory: [result, ...history].slice(0, 5),
+            skillStats,
+            engPos: st.engPos == null && Number.isFinite(result.position)
+              ? clampPos(result.position)
+              : st.engPos,
           }
         }),
 
@@ -227,12 +328,17 @@ export const useStore = create(
         set({
           srs: payload.srs ?? {},
           kotenSrs: payload.kotenSrs ?? {},
+          kotenInterpretationSrs: payload.kotenInterpretationSrs ?? {},
           myList: payload.myList ?? [],
+          kotenWordList: payload.kotenWordList ?? [],
+          kotenGrammarList: payload.kotenGrammarList ?? [],
           readingsDone: payload.readingsDone ?? [],
           mathDone: payload.mathDone ?? [],
           mathMastery: payload.mathMastery ?? {},
           skillStats: payload.skillStats ?? {},
+          diagnosticHistory: payload.diagnosticHistory ?? [],
           engPos: payload.engPos ?? null,
+          vnCleared: payload.vnCleared ?? [],
           portalOrder: normalizeOrder(payload.portalOrder),
           portalHidden: payload.portalHidden ?? [],
           stats: { ...freshStats(), ...(payload.stats ?? {}) },
@@ -248,12 +354,17 @@ export const useStore = create(
       partialize: (st) => ({
         srs: st.srs,
         kotenSrs: st.kotenSrs,
+        kotenInterpretationSrs: st.kotenInterpretationSrs,
         myList: st.myList,
+        kotenWordList: st.kotenWordList,
+        kotenGrammarList: st.kotenGrammarList,
         readingsDone: st.readingsDone,
         mathDone: st.mathDone,
         mathMastery: st.mathMastery,
         skillStats: st.skillStats,
+        diagnosticHistory: st.diagnosticHistory,
         engPos: st.engPos,
+        vnCleared: st.vnCleared,
         portalOrder: st.portalOrder,
         portalHidden: st.portalHidden,
         stats: st.stats,

@@ -4,8 +4,20 @@ import { Chip } from './ui.jsx'
 import { ArrowRight, Bookmark } from './Icons.jsx'
 
 /** リスニング/ディクテーション/発音採点で使い回す級選択。
- *  countFor(levelId) -> 件数 / onPick(levelId, label) */
-export function LevelPicker({ title, subtitle, accent = '#6366f1', countFor, onPick, myListCount = 0, onMyList, note }) {
+ *  countFor(levelId) -> 件数 / detailFor(levelId) -> 級別の補足 */
+export function LevelPicker({
+  title,
+  subtitle,
+  accent = '#6366f1',
+  levels = LEVELS,
+  countFor,
+  countUnit = '語',
+  detailFor,
+  onPick,
+  myListCount = 0,
+  onMyList,
+  note,
+}) {
   return (
     <div className="pb-6">
       <ScreenHeader title={title} subtitle={subtitle} color={accent} />
@@ -30,8 +42,9 @@ export function LevelPicker({ title, subtitle, accent = '#6366f1', countFor, onP
           </button>
         )}
 
-        {LEVELS.map((l) => {
+        {levels.map((l) => {
           const n = countFor ? countFor(l.id) : 0
+          const detail = detailFor?.(l.id)
           return (
             <button
               key={l.id}
@@ -50,7 +63,8 @@ export function LevelPicker({ title, subtitle, accent = '#6366f1', countFor, onP
                   <span className="font-display text-lg font-extrabold text-ink">英検{l.label}</span>
                   <Chip color={l.color}>{l.cefr}</Chip>
                 </div>
-                <div className="text-xs font-bold text-ink/50">{l.sub}・{n}語</div>
+                <div className="text-xs font-bold text-ink/50">{l.sub}・{n}{countUnit}</div>
+                {detail && <div className="mt-1 text-[11px] font-bold leading-snug text-ink/40">{detail}</div>}
               </div>
               <ArrowRight size={20} className="text-brand-400" />
             </button>

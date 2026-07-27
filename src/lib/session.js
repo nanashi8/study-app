@@ -1,6 +1,14 @@
 // 学習セッションの「デッキ」を組む。
 // 出題優先度：① 復習期限が来た既習語 → ② 未習語 → ③ まだ期限前の語。
-import { ALL_WORDS, wordsByLevel, wordsByRoot, getWord, shuffle } from '../data/vocab.js'
+import {
+  ALL_WORDS,
+  wordsByField,
+  wordsByLevel,
+  wordsByPos,
+  wordsByRoot,
+  getWord,
+  shuffle,
+} from '../data/vocab.js'
 import { phrasesByKind, phrasesByLevel, getPhrase } from '../data/phrases.js'
 import { LEVELS } from '../data/levels.js'
 import { LEVEL_ORDER, enemyLevelIndex, clampPos } from './adaptive.js'
@@ -18,8 +26,14 @@ function battlePool(levelIndex, rng = Math.random) {
   return [...main, ...review]
 }
 
-function candidates(source) {
+export function wordsForSource(source = {}) {
   switch (source.type) {
+    case 'all':
+      return ALL_WORDS
+    case 'field':
+      return wordsByField(source.field)
+    case 'pos':
+      return wordsByPos(source.pos)
     case 'level':
       return wordsByLevel(source.levelId)
     case 'battle':
@@ -49,7 +63,7 @@ function rank(word, srs, day) {
 /** source からセッション用の単語配列を作る。 */
 export function buildDeck(source, { srs = {}, size = SESSION_SIZE } = {}) {
   const day = todayIndex()
-  let pool = shuffle(candidates(source))
+  let pool = shuffle(wordsForSource(source))
   if (source.type === 'due') {
     pool = pool.filter((w) => srs[w.id] && srs[w.id].due <= day)
   }
@@ -66,8 +80,12 @@ export function buildDeck(source, { srs = {}, size = SESSION_SIZE } = {}) {
 
 /** 級ごとの進捗集計（既習・習得・期限切れ件数）。 */
 export function levelProgress(levelId, srs) {
+  return wordProgress(wordsByLevel(levelId), srs)
+}
+
+/** 任意の単語集合について、既習・習得・復習どき件数を集計する。 */
+export function wordProgress(words, srs = {}) {
   const day = todayIndex()
-  const words = wordsByLevel(levelId)
   let seen = 0
   let mastered = 0
   let due = 0
@@ -114,7 +132,10 @@ function phraseCandidates(source) {
 
 export function buildPhraseDeck(source, { srs = {}, size = SESSION_SIZE } = {}) {
   const day = todayIndex()
-  const pool = shuffle(phraseCandidates(source))
+  let pool = shuffle(phraseCandidates(source))
+  if (source.type === 'phraseDue') {
+    pool = pool.filter((p) => srs[p.id] && srs[p.id].due <= day)
+  }
   pool.sort((a, b) => {
     const ra = rank(a, srs, day)
     const rb = rank(b, srs, day)
@@ -174,12 +195,17 @@ export function suggestStartPosition(srs) {
 /** 全体の習得数・期限切れ数。 */
 export function overallProgress(srs) {
   const day = todayIndex()
-  const ids = Object.keys(srs)
+  // 文法・熟語も同じ SRS 名前空間を使うため、英単語だけを明示的に数える。
+  // Object.keys(srs) を数えるとホームの「N語」と単語復習デッキが食い違う。
   let mastered = 0
   let due = 0
-  for (const id of ids) {
-    if (srs[id].box >= 4) mastered++
-    if (srs[id].due <= day) due++
+  let seen = 0
+  for (const word of ALL_WORDS) {
+    const entry = srs[word.id]
+    if (!entry) continue
+    seen++
+    if (entry.box >= 4) mastered++
+    if (entry.due <= day) due++
   }
-  return { seen: ids.length, mastered, due, total: ALL_WORDS.length }
+  return { seen, mastered, due, total: ALL_WORDS.length }
 }

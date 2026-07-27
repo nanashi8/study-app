@@ -19,12 +19,18 @@ export async function pullOrInit(uid, email) {
     const cur = useStore.getState()
     useStore.setState({
       srs: d.srs ?? {},
+      kotenSrs: d.kotenSrs ?? {},
+      kotenInterpretationSrs: d.kotenInterpretationSrs ?? {},
       myList: d.myList ?? [],
+      kotenWordList: d.kotenWordList ?? [],
+      kotenGrammarList: d.kotenGrammarList ?? [],
       readingsDone: d.readingsDone ?? [],
       mathDone: d.mathDone ?? [],
       mathMastery: d.mathMastery ?? {},
       skillStats: d.skillStats ?? {},
+      diagnosticHistory: d.diagnosticHistory ?? [],
       engPos: d.engPos ?? null,
+      vnCleared: d.vnCleared ?? [],
       stats: { ...cur.stats, ...(d.stats ?? {}) },
       settings: { ...cur.settings, ...(d.settings ?? {}) },
     })

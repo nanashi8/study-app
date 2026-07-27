@@ -28,6 +28,56 @@ const KIND_STYLE = {
   stem: { bg: 'bg-emerald-100', text: 'text-emerald-700', label: '語幹' },
 }
 
+/** 指定した語根が、単語の語源パーツとして明示的に分解されているか。 */
+export function hasRootBreakdown(word, rootId) {
+  return (word?.etymology?.parts ?? []).some((p) => p.kind === 'root' && p.root === rootId)
+}
+
+/**
+ * 接頭辞＋語根＋接尾辞 → 現在の意味、という「意味の式」。
+ * 語根ページや関連語一覧では、単語名と訳だけでなく推測の手掛かりも並べる。
+ */
+export function EtymologyFormula({ word, rootId, compact = false }) {
+  const parts = word?.etymology?.parts ?? []
+  if (!parts.length || (rootId && !hasRootBreakdown(word, rootId))) return null
+
+  return (
+    <div className="flex flex-wrap items-center gap-1.5">
+      {parts.map((p, i) => {
+        const st = KIND_STYLE[p.kind] ?? KIND_STYLE.stem
+        return (
+          <span key={`${p.t}-${i}`} className="contents">
+            <span
+              className={cx(
+                'inline-flex items-baseline gap-1 rounded-lg px-2 py-1',
+                st.bg,
+                st.text,
+              )}
+            >
+              <span className={cx('font-display font-extrabold', compact ? 'text-xs' : 'text-sm')}>
+                {p.t}
+              </span>
+              {p.gloss && (
+                <span className={cx('font-bold opacity-75', compact ? 'text-[10px]' : 'text-[11px]')}>
+                  {p.gloss}
+                </span>
+              )}
+            </span>
+            {i < parts.length - 1 && <span className="text-xs font-black text-ink/25">＋</span>}
+          </span>
+        )
+      })}
+      <span className="text-xs font-black text-brand-300">→</span>
+      <span className={cx(
+        'rounded-lg bg-white px-2 py-1 font-extrabold text-ink ring-1 ring-brand-100',
+        compact ? 'text-[11px]' : 'text-xs',
+      )}>
+        {word.meanings?.slice(0, 2).join('・') || word.meaning}
+      </span>
+    </div>
+  )
+}
+
 /** 単語を接頭辞＋語根＋接尾辞に分解して見せる。語根はタップで語源詳細へ。 */
 export function EtymologyParts({ parts = [], onRoot }) {
   return (
@@ -64,7 +114,21 @@ export function EtymologyBlock({ word, onRoot }) {
   if (!ety) return null
   return (
     <div className="space-y-3">
-      {ety.parts?.length > 0 && <EtymologyParts parts={ety.parts} onRoot={onRoot} />}
+      {ety.parts?.length > 0 && (
+        <div className="space-y-2">
+          <p className="px-1 text-[11px] font-extrabold text-ink/45">
+            パーツの意味を前から足してみよう
+          </p>
+          <EtymologyParts parts={ety.parts} onRoot={onRoot} />
+          <div className="flex flex-wrap items-center gap-2 rounded-xl bg-brand-50 px-3 py-2">
+            <span className="text-xs font-black text-brand-400">→</span>
+            <span className="text-[11px] font-bold text-ink/45">現在の意味</span>
+            <span className="font-extrabold text-ink">
+              {word.meanings?.slice(0, 2).join('・') || word.meaning}
+            </span>
+          </div>
+        </div>
+      )}
       {ety.note && (
         <div className="flex gap-2 rounded-2xl bg-hint-soft/70 p-3">
           <span className="mt-0.5 shrink-0 text-hint">
@@ -93,6 +157,9 @@ export function RelatedWords({ word, onPick }) {
     <div className="space-y-3">
       {Object.entries(byRoot).map(([rootId, words]) => {
         const root = getRoot(rootId)
+        const ordered = [...words].sort(
+          (a, b) => Number(hasRootBreakdown(b, rootId)) - Number(hasRootBreakdown(a, rootId)),
+        )
         return (
           <div key={rootId}>
             <div className="mb-1.5 flex items-center gap-1.5 px-1">
@@ -103,20 +170,35 @@ export function RelatedWords({ word, onPick }) {
               <span className="text-xs font-bold text-ink/45">＝{root?.meaning}</span>
             </div>
             <div className="flex flex-col gap-1.5">
-              {words.map((w) => (
+              {ordered.map((w) => (
                 <button
                   key={w.id}
                   onClick={() => onPick?.(w.id)}
-                  className="flex items-center gap-2 rounded-2xl bg-white p-2.5 text-left shadow-sm active:bg-brand-50"
+                  className="w-full rounded-2xl bg-white p-2.5 text-left shadow-sm active:bg-brand-50"
                 >
-                  <PosBadge pos={w.pos} />
-                  <div className="min-w-0 flex-1">
-                    <div className="font-display font-extrabold text-ink">{w.word}</div>
-                    <div className="truncate text-xs font-bold text-ink/55">{w.meaning}</div>
+                  <div className="flex items-center gap-2">
+                    <PosBadge pos={w.pos} />
+                    <div className="min-w-0 flex-1">
+                      <div className="font-display font-extrabold text-ink">{w.word}</div>
+                      {!hasRootBreakdown(w, rootId) && (
+                        <div className="truncate text-xs font-bold text-ink/55">{w.meaning}</div>
+                      )}
+                    </div>
+                    <span className="text-brand-400">
+                      <ArrowRight size={18} />
+                    </span>
                   </div>
-                  <span className="text-brand-400">
-                    <ArrowRight size={18} />
-                  </span>
+                  {hasRootBreakdown(w, rootId) ? (
+                    <div className="mt-2 pl-8">
+                      <EtymologyFormula word={w} rootId={rootId} compact />
+                    </div>
+                  ) : (
+                    w.etymology?.note && (
+                      <p className="mt-1.5 line-clamp-2 pl-8 text-[11px] font-bold leading-relaxed text-ink/45">
+                        {w.etymology.note}
+                      </p>
+                    )
+                  )}
                 </button>
               ))}
             </div>

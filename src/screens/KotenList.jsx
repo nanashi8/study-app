@@ -1,8 +1,18 @@
 import { useStore } from '../store/useStore.js'
 import { isDue } from '../store/useStore.js'
 import { KOTEN_TOC, KOTEN_WORDS } from '../data/koten.js'
+import { KOTEN_GRAMMAR } from '../data/koten-grammar.js'
+import { KOTEN_INTERPRETATIONS } from '../data/koten-interpretations.js'
 import { Card, ProgressRing, Button, Chip } from '../components/ui.jsx'
-import { Book, Cards, Refresh, ArrowRight, ChevronLeft } from '../components/Icons.jsx'
+import {
+  Book,
+  BookmarkFilled,
+  BookOpen,
+  Cards,
+  Refresh,
+  ArrowRight,
+  ChevronLeft,
+} from '../components/Icons.jsx'
 
 // box>=4 を「習得」、box1〜3 を「学習中」とみなす（英単語と同基準）。
 // 進み具合のリングは box 加重（1問正解=box+1 ごとに動く）。MAX=4 で満点。
@@ -55,9 +65,15 @@ function CategoryCard({ cat, words, srs, onStudy, onQuiz }) {
 export function KotenListScreen() {
   const navigate = useStore((s) => s.navigate)
   const kotenSrs = useStore((s) => s.kotenSrs)
+  const interpretationSrs = useStore((s) => s.kotenInterpretationSrs)
+  const savedWords = useStore((s) => s.kotenWordList)
+  const savedGrammar = useStore((s) => s.kotenGrammarList)
 
   const dueWords = KOTEN_WORDS.filter((w) => kotenSrs[w.id] && isDue(kotenSrs[w.id]))
   const total = kotenProgress(KOTEN_WORDS, kotenSrs)
+  const triedInterpretations = KOTEN_INTERPRETATIONS.filter(
+    (item) => (interpretationSrs[item.id]?.box ?? 0) > 0,
+  ).length
 
   const study = (ids, title) => navigate('kotenStudy', { ids, title })
   const quiz = (ids, title) => navigate('kotenQuiz', { ids, title })
@@ -72,14 +88,72 @@ export function KotenListScreen() {
         >
           <ChevronLeft size={14} /> スタディアプリ
         </button>
-        <p className="text-xs font-bold text-white/75">大学受験・頻出古文単語</p>
+        <p className="text-xs font-bold text-white/75">大学受験・古文読解</p>
         <h1 className="font-display text-2xl font-extrabold tracking-wide">古典アプリ</h1>
         <p className="mt-1 text-sm font-bold text-white/80">
-          全{KOTEN_WORDS.length}語 ・ 習得 {total.mastered}・学習中 {total.learning}語
+          単語・文法・常識をつないで、一文を読み切ろう
         </p>
       </div>
 
       <div className="space-y-3 px-4 pt-5">
+        <button
+          onClick={() => navigate('kotenInterpretationList')}
+          className="group w-full overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-amber-950 to-orange-900 p-5 text-left text-white shadow-card transition-transform active:scale-[0.99]"
+        >
+          <div className="flex items-start gap-3">
+            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/12 text-2xl">
+              📜
+            </span>
+            <div className="min-w-0 flex-1">
+              <div className="flex flex-wrap items-center gap-2">
+                <h2 className="font-display text-xl font-extrabold">短文解釈</h2>
+                <Chip className="bg-white/15 text-white">{KOTEN_INTERPRETATIONS.length}問</Chip>
+              </div>
+              <p className="mt-1 text-xs font-bold leading-relaxed text-white/70">
+                答え合わせで、古典単語・古典文法・古典常識を一度につなぐ
+              </p>
+              <p className="mt-2 text-[11px] font-extrabold text-amber-200">
+                挑戦 {triedInterpretations} / {KOTEN_INTERPRETATIONS.length}問
+              </p>
+            </div>
+            <ArrowRight size={22} className="mt-3 shrink-0 text-amber-300 transition-transform group-active:translate-x-1" />
+          </div>
+        </button>
+
+        <div className="grid grid-cols-2 gap-3">
+          <button
+            onClick={() => navigate('kotenGrammar')}
+            className="rounded-2xl bg-purple-100 p-3.5 text-left transition-transform active:scale-[0.98]"
+          >
+            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-purple-200 text-purple-700">
+              <BookOpen size={20} />
+            </span>
+            <div className="mt-2 font-display text-sm font-extrabold text-purple-950">古典文法</div>
+            <div className="mt-0.5 text-[11px] font-bold text-purple-800/65">全{KOTEN_GRAMMAR.length}項目</div>
+          </button>
+          <button
+            onClick={() => navigate('kotenSaved')}
+            className="rounded-2xl bg-sky-100 p-3.5 text-left transition-transform active:scale-[0.98]"
+          >
+            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-sky-200 text-sky-700">
+              <BookmarkFilled size={20} />
+            </span>
+            <div className="mt-2 font-display text-sm font-extrabold text-sky-950">登録リスト</div>
+            <div className="mt-0.5 text-[11px] font-bold text-sky-800/65">
+              単語{savedWords.length}・文法{savedGrammar.length}
+            </div>
+          </button>
+        </div>
+
+        <div className="flex items-end justify-between px-1 pt-2">
+          <div>
+            <h2 className="font-display text-lg font-extrabold text-ink">古典単語</h2>
+            <p className="text-xs font-bold text-ink/45">
+              全{KOTEN_WORDS.length}語・習得 {total.mastered}・学習中 {total.learning}語
+            </p>
+          </div>
+        </div>
+
         {/* 復習・全部のショートカット */}
         <div className="grid grid-cols-2 gap-3">
           <button

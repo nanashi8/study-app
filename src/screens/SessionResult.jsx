@@ -8,6 +8,8 @@ import { enemyLevel, nextPosition, battleTrend } from '../lib/adaptive.js'
 function inferSkill({ engine, replayScreen }) {
   if (engine === 'grammar') return 'grammar'
   if (engine === 'phrase') return 'usage'
+  if (engine === 'dictation') return 'dictation'
+  if (engine === 'listening') return 'listening'
   if (replayScreen === 'dictationPlay') return 'dictation'
   if (replayScreen === 'listeningQuiz') return 'listening'
   if (replayScreen === 'pronouncePlay') return 'pronunciation'
@@ -73,7 +75,10 @@ export function SessionResultScreen() {
     : { emoji: '🌱', text: 'ここから伸びる！', color: '#0ea5e9' }
 
   const isPhrase = engine === 'phrase'
-  const reviewUnit = isPhrase ? '項目' : '語'
+  const isGrammar = engine === 'grammar'
+  const isDictation = engine === 'dictation' || params.replayScreen === 'dictationPlay'
+  const isListening = engine === 'listening' || params.replayScreen === 'listeningQuiz'
+  const reviewUnit = isGrammar || isDictation || isListening ? '問' : isPhrase ? '項目' : '語'
 
   const replay = () => {
     const target =
@@ -90,10 +95,24 @@ export function SessionResultScreen() {
     })
   }
 
-  const isGrammar = engine === 'grammar'
-
   const reviewWrong = () =>
-    isGrammar
+    isListening
+      ? navigate('listeningQuiz', {
+          source: { type: 'listeningList', ids: reviewIds, levelId: source?.levelId },
+          title: `${title}・まちがい復習`,
+          mode: 'quiz',
+          engine: 'listening',
+          replayScreen: 'listeningQuiz',
+        })
+      : isDictation
+      ? navigate('dictationPlay', {
+          source: { type: 'dictationList', ids: reviewIds, levelId: source?.levelId },
+          title: `${title}・まちがい復習`,
+          mode: 'quiz',
+          engine: 'dictation',
+          replayScreen: 'dictationPlay',
+        })
+      : isGrammar
       ? navigate('grammarQuiz', {
           source: { type: 'grammarList', ids: reviewIds },
           title: 'まちがい復習',

@@ -1,14 +1,19 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { QRCodeCanvas } from 'qrcode.react'
+import jsQR from 'jsqr'
 import { useStore } from '../store/useStore.js'
 import { LEVELS } from '../data/levels.js'
+import { getWord } from '../data/vocab.js'
 import { levelProgress, overallProgress } from '../lib/session.js'
 import { encodeProgress, decodeProgress, summarizePayload } from '../lib/progressCode.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { Sheet } from '../components/Sheet.jsx'
 import { Card, Button, ProgressBar } from '../components/ui.jsx'
-import { Star, Flame, Trophy, Download, Upload, Check } from '../components/Icons.jsx'
+import { Star, Flame, Trophy, Download, Upload, Check, Share } from '../components/Icons.jsx'
+
+// 画像ファイルを共有できる端末（主にスマホ）なら共有シート経由でアルバムに保存できる。
+const CAN_SHARE_IMG = typeof navigator !== 'undefined' && !!navigator.canShare
 
 // QRコードに収まる上限の目安（バイト/英数字混在で安全側）。これを超えたら
 // QR化はあきらめてコード文字列のコピーに誘導する。
@@ -33,7 +38,8 @@ export function ProgressScreen() {
   const full = useStore(useShallow((s) => ({
     srs: s.srs, kotenSrs: s.kotenSrs, myList: s.myList,
     readingsDone: s.readingsDone, mathDone: s.mathDone, mathMastery: s.mathMastery,
-    skillStats: s.skillStats, engPos: s.engPos,
+    skillStats: s.skillStats, diagnosticHistory: s.diagnosticHistory,
+    engPos: s.engPos, vnCleared: s.vnCleared,
     portalOrder: s.portalOrder, portalHidden: s.portalHidden,
     stats: s.stats, settings: s.settings,
   })))
@@ -53,18 +59,80 @@ export function ProgressScreen() {
   const [error, setError] = useState('')
   const [preview, setPreview] = useState(null) // {summary} 確認シート
   const qrWrap = useRef(null)
+  const fileInput = useRef(null)
   const qrFits = shareUrl.length <= QR_MAX
+  const summarize = (payload) => summarizePayload(payload, (id) => !!getWord(id))
+
+  // 保存したQR画像を選んで読み込む。画像をcanvasに描いてjsQRでデコード→
+  // 中身（URL or 生コード）からEQ1-コードを取り出し、貼り付けたときと同じ
+  // プレビュー確認フローに乗せる（勝手に上書きはしない）。
+  const onPickQrImage = async (e) => {
+    setError('')
+    const file = e.target.files?.[0]
+    e.target.value = '' // 同じ画像を続けて選べるようにクリア
+    if (!file) return
+    try {
+      const bitmap = await createImageBitmap(file)
+      const canvas = document.createElement('canvas')
+      canvas.width = bitmap.width
+      canvas.height = bitmap.height
+      const ctx = canvas.getContext('2d')
+      ctx.drawImage(bitmap, 0, 0)
+      const { data, width, height } = ctx.getImageData(0, 0, canvas.width, canvas.height)
+      const result = jsQR(data, width, height)
+      if (!result) {
+        setError('画像からQRコードを読み取れませんでした。別の画像で試してください。')
+        return
+      }
+      // QRの中身はURL（#code=EQ1-...）か、生のEQ1-コード。どちらからも取り出す。
+      const m = result.data.match(/(EQ1-[^&\s]+)/)
+      if (!m) {
+        setError('このQRコードはえいごクエストの進捗コードではないようです。')
+        return
+      }
+      const incoming = decodeURIComponent(m[1])
+      const payload = decodeProgress(incoming)
+      setInput(incoming)
+      setPreview({ summary: summarize(payload) })
+    } catch {
+      setError('画像の読み込みに失敗しました。')
+    }
+  }
 
   // QRを画像（PNG）として保存。端末の「写真／ファイル」に残せば、機種変更や
   // 別端末でカメラ読み取り→続きから復元できる。
-  const saveQr = () => {
+  // スマホ（特にiOS）は a.download だとアルバムに入らないため、対応端末では
+  // Web Share API でファイル共有→「画像を保存」でカメラロールに入れられる。
+  // 非対応端末（主にPCブラウザ）は従来どおりダウンロードにフォールバック。
+  const saveQr = async () => {
     const canvas = qrWrap.current?.querySelector('canvas')
     if (!canvas) return
-    const url = canvas.toDataURL('image/png')
+    const blob = await new Promise((res) => canvas.toBlob(res, 'image/png'))
+    if (!blob) return
+    const file = new File([blob], 'eigo-quest-progress-qr.png', { type: 'image/png' })
+    // 画像ファイルを共有できる端末なら共有シートを開く（「画像を保存」でアルバムへ）。
+    if (navigator.canShare?.({ files: [file] })) {
+      try {
+        await navigator.share({
+          files: [file],
+          title: 'えいごクエストの学習記録',
+          text: 'この画像（QRコード）をカメラで読み取ると続きから復元できます。',
+        })
+        setSaved(true)
+        setTimeout(() => setSaved(false), 1800)
+        return
+      } catch {
+        // ユーザーがキャンセル→何もしない（ダウンロードに落とさない）。
+        return
+      }
+    }
+    // フォールバック：PNGをダウンロード（PCのダウンロードフォルダ等）。
+    const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
     a.download = 'eigo-quest-progress-qr.png'
     a.click()
+    URL.revokeObjectURL(url)
     setSaved(true)
     setTimeout(() => setSaved(false), 1800)
   }
@@ -83,7 +151,7 @@ export function ProgressScreen() {
     setError('')
     try {
       const payload = decodeProgress(input)
-      setPreview({ summary: summarizePayload(payload) })
+      setPreview({ summary: summarize(payload) })
     } catch (e) {
       setError(e.message || 'コードを読み込めませんでした。')
     }
@@ -112,7 +180,7 @@ export function ProgressScreen() {
     try {
       const payload = decodeProgress(incoming)
       setInput(incoming)
-      setPreview({ summary: summarizePayload(payload) })
+      setPreview({ summary: summarize(payload) })
     } catch {
       /* 壊れたコードは無視（通常の画面のまま） */
     }
@@ -170,10 +238,19 @@ export function ProgressScreen() {
                 <QRCodeCanvas value={shareUrl} size={180} level="L" includeMargin marginSize={2} />
               </div>
               <Button className="mt-1" variant={saved ? 'success' : 'secondary'} onClick={saveQr}>
-                {saved ? <><Check size={18} /> 保存しました</> : <><Download size={18} /> QRコードを画像で保存</>}
+                {saved ? (
+                  <><Check size={18} /> 保存しました</>
+                ) : CAN_SHARE_IMG ? (
+                  <><Share size={18} /> 画像をアルバムに保存</>
+                ) : (
+                  <><Download size={18} /> QRコードを画像で保存</>
+                )}
               </Button>
               <p className="text-center text-[11px] font-bold text-ink/40">
-                画像を「写真／ファイル」に保存しておけば、別端末で<br />カメラで読み取る→アプリが開いて続きから復元できます。
+                {CAN_SHARE_IMG
+                  ? '共有メニューの「画像を保存」でカメラロールに残せます。'
+                  : '画像を「写真／ファイル」に保存しておけば、'}
+                <br />別端末でカメラで読み取る→アプリが開いて続きから復元できます。
               </p>
             </div>
           ) : (
@@ -200,17 +277,34 @@ export function ProgressScreen() {
             <h2 className="font-display text-base font-extrabold">進捗コードを読み込む</h2>
           </div>
           <p className="mb-3 text-xs font-bold text-ink/50">
-            発行したコードを貼り付けて読み込むと、その時点から再開できます（今の進捗は上書きされます）。
+            保存したQR画像を選ぶか、発行したコードを貼り付けて読み込むと、その時点から再開できます（今の進捗は上書きされます）。
           </p>
+
+          {/* 保存したQR画像（アルバム/ファイル）を選んで読み込む */}
+          <input
+            ref={fileInput}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={onPickQrImage}
+          />
+          <Button full variant="secondary" onClick={() => fileInput.current?.click()}>
+            <Upload size={18} /> QR画像から読み込む
+          </Button>
+
+          <div className="my-3 flex items-center gap-2 text-[11px] font-bold text-ink/30">
+            <span className="h-px flex-1 bg-ink/10" />または<span className="h-px flex-1 bg-ink/10" />
+          </div>
+
           <textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="EQ1-..."
+            placeholder="EQ1-...（コードを貼り付け）"
             className="h-24 w-full resize-none rounded-2xl bg-paper p-3 font-mono text-xs text-ink ring-1 ring-brand-100 placeholder:text-ink/30"
           />
           {error && <p className="mt-2 text-xs font-bold text-rose-500">{error}</p>}
           <Button full className="mt-2" variant="secondary" disabled={!input.trim()} onClick={tryLoad}>
-            読み込む
+            コードを読み込む
           </Button>
         </Card>
       </div>

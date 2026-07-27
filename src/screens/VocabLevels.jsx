@@ -1,5 +1,6 @@
 import { useStore } from '../store/useStore.js'
 import { LEVELS } from '../data/levels.js'
+import { ALL_WORDS, VOCAB_FIELDS, VOCAB_POS } from '../data/vocab.js'
 import { levelProgress, overallProgress, weakFoundationLevel } from '../lib/session.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { Card, ProgressRing, ProgressBar, Button, Chip, IconButton } from '../components/ui.jsx'
@@ -66,21 +67,67 @@ function LevelCard({ level, srs, onStudy, onQuiz, onDecks }) {
       </div>
 
       <div className="mt-3 grid grid-cols-2 gap-2">
-        <Button variant="primary" size="sm" disabled={!p.total} onClick={onStudy}>
+        <Button
+          variant="primary"
+          size="sm"
+          disabled={!p.total}
+          onClick={onStudy}
+          aria-label={`英検${level.label}の単語を覚える`}
+        >
           <Book size={16} /> 覚える
         </Button>
-        <Button variant="secondary" size="sm" disabled={!p.total} onClick={onQuiz}>
+        <Button
+          variant="secondary"
+          size="sm"
+          disabled={!p.total}
+          onClick={onQuiz}
+          aria-label={`英検${level.label}の単語クイズ`}
+        >
           <Cards size={16} /> クイズ
         </Button>
       </div>
       <button
         onClick={onDecks}
         disabled={!p.total}
+        aria-label={`英検${level.label}の目次・デッキを選ぶ`}
         className="mt-2 flex w-full items-center justify-center gap-1.5 rounded-xl bg-paper py-2 text-xs font-extrabold text-brand-600 active:scale-[0.98] transition-transform disabled:opacity-50"
       >
         <Sparkles size={15} /> 目次・デッキでえらぶ
         <ArrowRight size={15} />
       </button>
+    </Card>
+  )
+}
+
+function AllVocabChooser({ onChoose }) {
+  const choices = [
+    { mode: 'random', emoji: '🎲', label: '標準ランダム' },
+    { mode: 'field', emoji: '🗂️', label: '分野別' },
+    { mode: 'pos', emoji: '🔤', label: '品詞別' },
+  ]
+  return (
+    <Card className="overflow-hidden">
+      <div className="bg-gradient-to-r from-brand-500 to-violet-500 p-4 text-white">
+        <div className="flex items-center gap-2">
+          <Sparkles size={18} />
+          <h2 className="font-display text-lg font-extrabold">全語彙から学ぶ</h2>
+        </div>
+        <p className="mt-1 text-xs font-bold text-white/80">
+          全{ALL_WORDS.length.toLocaleString('ja-JP')}語・{VOCAB_FIELDS.length}分野・{VOCAB_POS.length}品詞
+        </p>
+      </div>
+      <div className="grid grid-cols-3 gap-2 p-3">
+        {choices.map((choice) => (
+          <button
+            key={choice.mode}
+            onClick={() => onChoose(choice.mode)}
+            className="flex min-h-16 flex-col items-center justify-center gap-1 rounded-2xl bg-brand-50 px-1 py-2 text-center text-[11px] font-extrabold text-brand-700 transition-transform active:scale-[0.97] active:bg-brand-100"
+          >
+            <span className="text-xl">{choice.emoji}</span>
+            {choice.label}
+          </button>
+        ))}
+      </div>
     </Card>
   )
 }
@@ -147,6 +194,8 @@ export function VocabLevelsScreen() {
             </div>
           </button>
         </div>
+
+        <AllVocabChooser onChoose={(mode) => navigate('vocabGroups', { mode })} />
 
         {LEVELS.map((level) => (
           <LevelCard

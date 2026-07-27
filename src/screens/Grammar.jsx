@@ -1,16 +1,22 @@
 import { useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import { LEVELS, getLevel } from '../data/levels.js'
-import { grammarByLevel, grammarByTopic, topicsForLevel } from '../data/grammar.js'
+import { GRAMMAR, grammarByLevel, grammarByTopic, topicsForLevel } from '../data/grammar.js'
+import { todayIndex } from '../store/useStore.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { Card, Button, Chip, ProgressBar, cx } from '../components/ui.jsx'
-import { Cards, ArrowRight } from '../components/Icons.jsx'
+import { Cards, ArrowRight, Refresh } from '../components/Icons.jsx'
 
 // その級・トピックの習得状況（box>=4 を習得とみなす。単語・熟語と同じ基準）。
 function progressOf(items, srs) {
   let mastered = 0
-  for (const g of items) if ((srs[g.id]?.box ?? 0) >= 4) mastered++
-  return { total: items.length, mastered }
+  let due = 0
+  const day = todayIndex()
+  for (const g of items) {
+    if ((srs[g.id]?.box ?? 0) >= 4) mastered++
+    if (srs[g.id]?.due <= day) due++
+  }
+  return { total: items.length, mastered, due }
 }
 
 export function GrammarScreen() {
@@ -27,6 +33,7 @@ export function GrammarScreen() {
   const topics = topicsForLevel(level)
   const levelItems = grammarByLevel(level)
   const lp = progressOf(levelItems, srs)
+  const allProgress = progressOf(GRAMMAR, srs)
 
   const quizLevel = () =>
     navigate('grammarQuiz', { source: { type: 'grammar', level }, title: `${meta.label} 文法`, levelColor: meta.color })
@@ -38,6 +45,41 @@ export function GrammarScreen() {
       <ScreenHeader title="文法" subtitle="級ごとに4択で文法を身につける" />
 
       <div className="px-4">
+        {allProgress.due > 0 && (
+          <button
+            onClick={() =>
+              navigate('grammarQuiz', {
+                source: { type: 'grammarDue' },
+                title: '文法の復習',
+                levelColor: '#f59e0b',
+              })
+            }
+            className="mb-4 flex w-full items-center gap-3 rounded-2xl bg-hint-soft p-3.5 text-left text-amber-900 transition-transform active:scale-[0.99]"
+          >
+            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-200/70 text-amber-700">
+              <Refresh size={20} />
+            </span>
+            <div className="flex-1">
+              <div className="font-display font-extrabold">文法を復習しよう</div>
+              <div className="text-xs font-bold text-amber-800/75">{allProgress.due}問が復習どきです</div>
+            </div>
+            <ArrowRight size={20} />
+          </button>
+        )}
+
+        {/* 文法解説（中学・高校カリキュラム順に読む） */}
+        <button
+          onClick={() => navigate('grammarLessons')}
+          className="mb-4 flex w-full items-center gap-3 rounded-2xl bg-gradient-to-r from-brand-500 to-brand-400 p-4 text-left text-white shadow-pop transition-transform active:scale-[0.99]"
+        >
+          <span className="text-2xl">📖</span>
+          <div className="min-w-0 flex-1">
+            <div className="font-display font-extrabold">文法解説で学ぶ</div>
+            <div className="text-xs font-bold text-white/80">中学・高校のカリキュラム順に、形・ポイント・例文で理解する</div>
+          </div>
+          <ArrowRight size={20} />
+        </button>
+
         {/* 級タブ */}
         <div className="flex gap-2 overflow-x-auto pb-1">
           {activeLevels.map((l) => {
