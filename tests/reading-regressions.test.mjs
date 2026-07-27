@@ -155,6 +155,8 @@ test('代表的な5文型・受動態・存在構文を正しく区別する', (
     rina.blocks.flatMap((block) => block.svoc.parts).map((part) => part.role),
     ['S', 'V', 'C'],
   )
+  assert.match(rina.blocks[0].svoc.name, /SVCの骨格/)
+  assert.doesNotMatch(rina.blocks[0].svoc.name, /第1文型/)
 
   const fixtures = [
     ['cannot find her blue notebook', 'SVO'],

@@ -57,6 +57,10 @@ import {
   KOTEN_INTERPRETATION_FOCUS,
   KOTEN_INTERPRETATION_LEVELS,
 } from '../src/data/koten-interpretations.js'
+import {
+  WRITING_EXERCISES,
+  WRITING_GRAMMAR,
+} from '../src/data/writing.js'
 
 const LEVELS = new Set(['5', '4', '3', 'pre2', '2', 'pre1', '1'])
 const READING_LEVELS = new Set(['5', '4', '3', 'pre2', 'pre2plus', '2', 'pre1', '1'])
@@ -555,6 +559,89 @@ for (const episode of VN_EPISODES) {
     if (!reached.has(nodeId)) errors.push(`${at}/${nodeId}: start から到達できない`)
   }
   if (![...reached].some((id) => episode.nodes[id]?.end)) errors.push(`${at}: 到達可能な終了ノードが無い`)
+}
+
+// ── 全英語教材：機械的に確定できる英文破損を横断監査 ──
+function auditEnglish(label, text, { complete = false } = {}) {
+  if (typeof text !== 'string' || !/[A-Za-z]/.test(text)) return
+  if (/\s{2,}/.test(text)) errors.push(`${label}: 英文に連続空白あり (${text})`)
+  if (/\s+[,.!?;:]/.test(text)) errors.push(`${label}: 句読点直前に空白あり (${text})`)
+  if (/___|\{\{[^}]+\}\}/.test(text)) errors.push(`${label}: 未解決の空欄・変数あり (${text})`)
+  const withoutEllipses = text.replace(/\.{3}/g, '')
+  if (/[,!?;:]{2,}|\.\.(?!\.)/.test(withoutEllipses)) {
+    errors.push(`${label}: 句読点の重複あり (${text})`)
+  }
+  const duplicate = text.match(/\b([A-Za-z]+)\s+\1\b/i)?.[0]?.toLowerCase()
+  if (duplicate && duplicate !== 'had had' && duplicate !== 'that that') {
+    errors.push(`${label}: 同一語が連続 (${text})`)
+  }
+  for (const [open, close] of [['(', ')'], ['[', ']']]) {
+    const opens = [...text].filter((char) => char === open).length
+    const closes = [...text].filter((char) => char === close).length
+    if (opens !== closes) errors.push(`${label}: ${open}${close} の対応が不正 (${text})`)
+  }
+
+  const greeting = /^(?:Dear|Hello|Hi)\b.*,$/.test(text)
+  if (complete && !greeting && !/[.!?]['”’)]?$/.test(text)) {
+    errors.push(`${label}: 完全文の末尾に句点・疑問符・感嘆符が無い (${text})`)
+  }
+  if (complete && !/^[('"“‘]*[A-Z0-9]/.test(text)) {
+    errors.push(`${label}: 完全文が大文字で始まらない (${text})`)
+  }
+
+  for (const match of text.matchAll(/\b([Aa]n?|AN)\s+([a-z][A-Za-z'-]*)/g)) {
+    const article = match[1].toLowerCase()
+    if (match[1] === 'A' && match.index > 0) continue
+    const word = match[2].toLowerCase()
+    const silentH = /^(?:heir|honest|honor|hour)/.test(word)
+    const consonantSoundVowel =
+      /^(?:eulogy|euphem|euro|ewe|once|oneself|oneness|uni(?:form|que|t|vers)|use|user|usual|useful)/.test(word) ||
+      word === 'one' ||
+      word.startsWith('one-')
+    const expectsAn = (/^[aeiou]/.test(word) && !consonantSoundVowel) || silentH
+    if ((article === 'an') !== expectsAn) {
+      errors.push(`${label}: 冠詞 ${match[0]} のa/anが不正 (${text})`)
+    }
+  }
+}
+
+for (const word of ALL_WORDS) auditEnglish(`単語 ${word.id} 例文`, word.example?.en)
+for (const phrase of PHRASES) auditEnglish(`熟語 ${phrase.id} 例文`, phrase.example?.en)
+for (const passage of PASSAGES) {
+  passage.sentences.forEach((sentence, index) =>
+    auditEnglish(`長文 ${passage.id} 第${index + 1}文`, sentence.en, { complete: true }))
+}
+for (const item of GRAMMAR) {
+  auditEnglish(`文法 ${item.id} 完成文`, item.sentence?.en, { complete: true })
+}
+for (const item of DICTATION_ITEMS) {
+  auditEnglish(`ディクテーション ${item.id}`, item.text, { complete: true })
+}
+for (const item of LISTENING_ITEMS) {
+  item.audio.forEach((segment, index) =>
+    auditEnglish(`リスニング ${item.id} 音声${index + 1}`, segment.text, { complete: true }))
+  auditEnglish(`リスニング ${item.id} 設問`, item.question, { complete: true })
+  item.choices.forEach((choice) =>
+    auditEnglish(`リスニング ${item.id} 選択肢${choice.id}`, choice.text, { complete: true }))
+}
+for (const item of WRITING_GRAMMAR) {
+  auditEnglish(`英作文文法 ${item.id}`, item.example?.en, { complete: true })
+}
+for (const exercise of WRITING_EXERCISES) {
+  for (const step of exercise.steps) {
+    for (const option of step.options) {
+      auditEnglish(`英作文 ${exercise.id}/${step.id}/${option.id}`, option.text, { complete: true })
+    }
+  }
+}
+for (const episode of VN_EPISODES) {
+  for (const [nodeId, node] of Object.entries(episode.nodes ?? {})) {
+    auditEnglish(`英会話ノベル ${episode.id}/${nodeId}`, node.en, { complete: true })
+    for (const [index, choice] of (node.choices ?? []).entries()) {
+      auditEnglish(`英会話ノベル ${episode.id}/${nodeId} 選択肢${index + 1}`, choice.en, { complete: true })
+      auditEnglish(`英会話ノベル ${episode.id}/${nodeId} 返答${index + 1}`, choice.reply?.en, { complete: true })
+    }
+  }
 }
 
 if (errors.length) {
