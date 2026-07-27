@@ -22,6 +22,8 @@ export async function pullOrInit(uid, email) {
       kotenSrs: d.kotenSrs ?? {},
       kotenInterpretationSrs: d.kotenInterpretationSrs ?? {},
       myList: d.myList ?? [],
+      myGrammarList: d.myGrammarList ?? [],
+      writingProgress: d.writingProgress ?? {},
       kotenWordList: d.kotenWordList ?? [],
       kotenGrammarList: d.kotenGrammarList ?? [],
       readingsDone: d.readingsDone ?? [],

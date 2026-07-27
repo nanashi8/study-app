@@ -18,6 +18,8 @@ export function buildPayload(state) {
     kotenSrs: state.kotenSrs,
     kotenInterpretationSrs: state.kotenInterpretationSrs,
     myList: state.myList,
+    myGrammarList: state.myGrammarList,
+    writingProgress: state.writingProgress,
     kotenWordList: state.kotenWordList,
     kotenGrammarList: state.kotenGrammarList,
     readingsDone: state.readingsDone,
@@ -67,11 +69,13 @@ export function decodeProgress(code) {
     'kotenInterpretationSrs',
     'mathMastery',
     'skillStats',
+    'writingProgress',
     'stats',
     'settings',
   ]
   const arrayFields = [
     'myList',
+    'myGrammarList',
     'kotenWordList',
     'kotenGrammarList',
     'readingsDone',
@@ -106,6 +110,10 @@ export function summarizePayload(payload, isWordId = () => true) {
     words: wordIds.length,
     mastered,
     myList: (payload.myList ?? []).length,
+    myGrammar: (payload.myGrammarList ?? []).length,
+    writing: Object.values(payload.writingProgress ?? {}).filter(
+      (item) => (item?.completed ?? 0) > 0,
+    ).length,
     xp: payload.stats?.xp ?? 0,
     streak: payload.stats?.streak ?? 0,
   }

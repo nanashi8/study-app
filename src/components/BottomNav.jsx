@@ -23,6 +23,7 @@ const SCREEN_TO_TAB = {
   rootDetail: 'vocab',
   vocabSearch: 'vocab',
   myList: 'mylist',
+  myGrammar: 'mylist',
   progress: 'stats',
   settings: 'settings',
   englishMap: 'home',
@@ -38,6 +39,7 @@ const SCREEN_TO_TAB = {
   dictationPlay: 'home',
   pronounce: 'home',
   pronouncePlay: 'home',
+  writing: 'home',
 }
 
 export function BottomNav() {

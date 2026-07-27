@@ -46,6 +46,13 @@ const MathSolveScreen = lazyScreen(() => import('./screens/MathSolve.jsx'), 'Mat
 const GrammarScreen = lazyScreen(() => import('./screens/Grammar.jsx'), 'GrammarScreen')
 const GrammarQuizScreen = lazyScreen(() => import('./screens/GrammarQuiz.jsx'), 'GrammarQuizScreen')
 const GrammarLessonsScreen = lazyScreen(() => import('./screens/GrammarLessons.jsx'), 'GrammarLessonsScreen')
+const WritingScreen = lazyScreen(() => import('./screens/Writing.jsx'), 'WritingScreen')
+const WritingPlayScreen = lazyScreen(() => import('./screens/WritingPlay.jsx'), 'WritingPlayScreen')
+const MyGrammarScreen = lazyScreen(() => import('./screens/MyGrammar.jsx'), 'MyGrammarScreen')
+const WritingGrammarReviewScreen = lazyScreen(
+  () => import('./screens/WritingGrammarReview.jsx'),
+  'WritingGrammarReviewScreen',
+)
 const VnListScreen = lazyScreen(() => import('./screens/VnList.jsx'), 'VnListScreen')
 const VnPlayScreen = lazyScreen(() => import('./screens/VnPlay.jsx'), 'VnPlayScreen')
 const EnglishMapScreen = lazyScreen(() => import('./screens/EnglishMap.jsx'), 'EnglishMapScreen')
@@ -105,6 +112,10 @@ const SCREENS = {
   grammar: GrammarScreen,
   grammarQuiz: GrammarQuizScreen,
   grammarLessons: GrammarLessonsScreen,
+  writing: WritingScreen,
+  writingPlay: WritingPlayScreen,
+  myGrammar: MyGrammarScreen,
+  writingGrammarReview: WritingGrammarReviewScreen,
   englishMap: EnglishMapScreen,
   diagnostic: DiagnosticScreen,
   kotenList: KotenListScreen,
@@ -127,6 +138,7 @@ const IMMERSIVE = new Set([
   'login',
   'vocabStudy', 'vocabQuiz', 'wordDetail', 'sessionResult', 'readingPrep', 'reader', 'phraseStudy', 'phraseQuiz',
   'listeningQuiz', 'dictationPlay', 'pronouncePlay', 'mathSolve', 'grammarQuiz', 'diagnostic',
+  'writingPlay', 'writingGrammarReview',
   // 別コンテンツ（ポータルから入る）
   'vocabSearch', 'wordRequests', 'mathMap', 'mathUnits',
   'kotenList', 'kotenStudy', 'kotenQuiz', 'kotenInterpretationList',

@@ -4,7 +4,7 @@ import { enemyLevel } from '../lib/adaptive.js'
 import { ROOTS, wordsByRoot } from '../data/vocab.js'
 import { todayIndex } from '../store/useStore.js'
 import { Card, ProgressRing, Chip } from '../components/ui.jsx'
-import { Flame, Star, Book, Cards, Sparkles, Bookmark, Refresh, ArrowRight, Headphones, Keyboard, Mic, Lightbulb, Target, Trophy, ChevronLeft, Link } from '../components/Icons.jsx'
+import { Flame, Star, Book, BookOpen, Cards, Sparkles, Bookmark, Refresh, ArrowRight, Headphones, Keyboard, Mic, Lightbulb, Target, Trophy, ChevronLeft, Link } from '../components/Icons.jsx'
 
 const APP_NAME = '英語アプリ'
 
@@ -40,6 +40,8 @@ export function HomeScreen() {
   const srs = useStore((s) => s.srs)
   const settings = useStore((s) => s.settings)
   const myList = useStore((s) => s.myList)
+  const myGrammarList = useStore((s) => s.myGrammarList)
+  const writingProgress = useStore((s) => s.writingProgress)
   const diagnosticHistory = useStore((s) => s.diagnosticHistory)
 
   const engPos = useStore((s) => s.engPos)
@@ -50,6 +52,9 @@ export function HomeScreen() {
   const goal = settings.dailyGoal || 20
   const todayCount = stats.day === todayIndex() ? stats.todayCount : 0
   const goalPct = Math.min(1, todayCount / goal)
+  const writingDone = Object.values(writingProgress).filter(
+    (item) => (item?.completed ?? 0) > 0,
+  ).length
 
   const dayRoot = ROOTS[todayIndex() % ROOTS.length]
   const rootWords = wordsByRoot(dayRoot.id).slice(0, 3)
@@ -203,6 +208,10 @@ export function HomeScreen() {
               color="linear-gradient(135deg,#f59e0b,#ea580c)" onClick={() => navigate('grammar')}
             />
             <ModeTile
+              icon={<BookOpen size={22} />} label="英作文" sub={`${writingDone}/14 お題を完成`}
+              color="linear-gradient(135deg,#0f172a,#4f46e5)" onClick={() => navigate('writing')}
+            />
+            <ModeTile
               icon={<Link size={22} />} label="語源" sub="派生語をまとめて"
               color="linear-gradient(135deg,#6366f1,#7c3aed)" onClick={() => navigate('roots')}
             />
@@ -221,6 +230,10 @@ export function HomeScreen() {
             <ModeTile
               icon={<Bookmark size={22} />} label="マイ単語" sub={`${myList.length} 語を保存中`}
               color="linear-gradient(135deg,#f59e0b,#d97706)" onClick={() => navigate('myList')}
+            />
+            <ModeTile
+              icon={<Lightbulb size={22} />} label="マイ文法" sub={`${myGrammarList.length} 項目を保存中`}
+              color="linear-gradient(135deg,#a855f7,#7c3aed)" onClick={() => navigate('myGrammar')}
             />
           </div>
         </div>

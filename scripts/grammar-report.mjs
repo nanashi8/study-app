@@ -4,6 +4,7 @@ import {
   GRAMMAR,
   GRAMMAR_LEVEL_TARGETS,
   GRAMMAR_TOPIC_MINIMUM,
+  GRAMMAR_TOTAL_TARGET,
   grammarByLevel,
   grammarByTopic,
   topicsForLevel,
@@ -26,7 +27,7 @@ for (const level of LEVELS) {
 
   console.log(
     `\n${level.label.padEnd(4)} ${String(questions.length).padStart(3)}問` +
-      ` / 下限${target}問 / ${topics.length}単元 / 各単元${GRAMMAR_TOPIC_MINIMUM}問以上` +
+      ` / 目標${target}問 / ${topics.length}単元 / 各単元${GRAMMAR_TOPIC_MINIMUM}問以上` +
       ` / 解説接続${coveredTopics}単元`,
   )
   for (const topic of topics) {
@@ -41,6 +42,6 @@ const explainedQuestions = GRAMMAR.filter((question) =>
 ).length
 console.log('\n' + '-'.repeat(64))
 console.log(
-  `合計 ${GRAMMAR.length}問 / ${new Set(GRAMMAR.map((question) => question.topic)).size}種類の単元名` +
+  `合計 ${GRAMMAR.length}/${GRAMMAR_TOTAL_TARGET}問 / ${new Set(GRAMMAR.map((question) => question.topic)).size}種類の単元名` +
     ` / 単元解説へ接続可能 ${explainedQuestions}問`,
 )

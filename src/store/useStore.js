@@ -65,6 +65,8 @@ const initialLearning = () => ({
   kotenSrs: {}, // 古文単語の wordId -> { box, ... }（英単語と別管理。idが衝突しないよう分離）
   kotenInterpretationSrs: {}, // 古典短文の questionId -> { box, ... }
   myList: [], // [wordId]
+  myGrammarList: [], // [writingGrammarId] 英作文で保存した文法カード
+  writingProgress: {}, // exerciseId -> { completed, lastText, lastMode, lastDay, bestWords, grammarIds }
   kotenWordList: [], // [古文単語id] 登録単語
   kotenGrammarList: [], // [古典文法id] 登録文法
   readingsDone: [], // [passageId] 読了した長文
@@ -109,6 +111,22 @@ function applyReview(srs, stats, wordId, result) {
   s.xp += def.xp
 
   return { srs: { ...srs, [wordId]: next }, stats: s }
+}
+
+// 英作文1本の完成を、今日の学習回数・連続日数・XPへ反映する。
+function awardWriting(stats, xp = 20) {
+  const day = today()
+  const next = { ...stats }
+  if (next.day !== day) {
+    next.streak = next.day === day - 1 ? next.streak + 1 : 1
+    next.todayCount = 0
+    next.day = day
+  }
+  next.todayCount += 1
+  next.answered += 1
+  next.correct += 1
+  next.xp += xp
+  return next
 }
 
 export const useStore = create(
@@ -176,6 +194,61 @@ export const useStore = create(
         set((st) => ({
           myList: [...st.myList, ...ids.filter((id) => !st.myList.includes(id))],
         })),
+
+      toggleMyGrammar: (grammarId) =>
+        set((st) => ({
+          myGrammarList: st.myGrammarList.includes(grammarId)
+            ? st.myGrammarList.filter((id) => id !== grammarId)
+            : [...st.myGrammarList, grammarId],
+        })),
+
+      addManyToMyGrammar: (ids) =>
+        set((st) => ({
+          myGrammarList: [
+            ...st.myGrammarList,
+            ...ids.filter((id) => !st.myGrammarList.includes(id)),
+          ],
+        })),
+
+      // 完成作文は級別の再挑戦状況として保存する。全文は各課題の最新1本だけを保持。
+      recordWritingCompletion: ({ exerciseId, text, mode, wordCount, grammarIds }) =>
+        set((st) => {
+          if (!exerciseId || !text) return {}
+          const day = today()
+          const previous = st.writingProgress[exerciseId] ?? {
+            completed: 0,
+            bestWords: 0,
+          }
+          const writingSkill = st.skillStats.writing ?? {
+            answered: 0,
+            correct: 0,
+            sessions: 0,
+            lastDay: null,
+          }
+          return {
+            writingProgress: {
+              ...st.writingProgress,
+              [exerciseId]: {
+                completed: previous.completed + 1,
+                lastText: text,
+                lastMode: mode === 'free' ? 'free' : 'guide',
+                lastDay: day,
+                bestWords: Math.max(previous.bestWords ?? 0, Number(wordCount) || 0),
+                grammarIds: Array.isArray(grammarIds) ? [...new Set(grammarIds)] : [],
+              },
+            },
+            skillStats: {
+              ...st.skillStats,
+              writing: {
+                answered: writingSkill.answered + 1,
+                correct: writingSkill.correct + 1,
+                sessions: writingSkill.sessions + 1,
+                lastDay: day,
+              },
+            },
+            stats: awardWriting(st.stats),
+          }
+        }),
 
       toggleKotenWordList: (wordId) =>
         set((st) => ({
@@ -330,6 +403,8 @@ export const useStore = create(
           kotenSrs: payload.kotenSrs ?? {},
           kotenInterpretationSrs: payload.kotenInterpretationSrs ?? {},
           myList: payload.myList ?? [],
+          myGrammarList: payload.myGrammarList ?? [],
+          writingProgress: payload.writingProgress ?? {},
           kotenWordList: payload.kotenWordList ?? [],
           kotenGrammarList: payload.kotenGrammarList ?? [],
           readingsDone: payload.readingsDone ?? [],
@@ -356,6 +431,8 @@ export const useStore = create(
         kotenSrs: st.kotenSrs,
         kotenInterpretationSrs: st.kotenInterpretationSrs,
         myList: st.myList,
+        myGrammarList: st.myGrammarList,
+        writingProgress: st.writingProgress,
         kotenWordList: st.kotenWordList,
         kotenGrammarList: st.kotenGrammarList,
         readingsDone: st.readingsDone,

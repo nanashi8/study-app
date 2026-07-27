@@ -9,6 +9,7 @@ import {
   GRAMMAR,
   GRAMMAR_LEVEL_TARGETS,
   GRAMMAR_TOPIC_MINIMUM,
+  GRAMMAR_TOTAL_TARGET,
   grammarByLevel,
   samePatternExamplesFor,
 } from '../src/data/grammar.js'
@@ -111,9 +112,10 @@ test('全ての文法問題は正解を入れると完成文を含む', () => {
   }
 })
 
-test('英文法は全7級に60問以上あり、重複のない4択を備える', () => {
-  for (const [level, minimum] of Object.entries(GRAMMAR_LEVEL_TARGETS)) {
-    assert.ok(grammarByLevel(level).length >= minimum, level)
+test('英文法は全7級に均等な3000問があり、重複のない4択を備える', () => {
+  assert.equal(GRAMMAR.length, GRAMMAR_TOTAL_TARGET)
+  for (const [level, target] of Object.entries(GRAMMAR_LEVEL_TARGETS)) {
+    assert.equal(grammarByLevel(level).length, target, level)
   }
   assert.equal(new Set(GRAMMAR.map((item) => item.id)).size, GRAMMAR.length)
   assert.equal(new Set(GRAMMAR.map((item) => item.q)).size, GRAMMAR.length)
@@ -121,6 +123,24 @@ test('英文法は全7級に60問以上あり、重複のない4択を備える'
     assert.equal(item.choices.length, 4, item.id)
     assert.equal(new Set(item.choices).size, 4, item.id)
     assert.ok(item.choices.includes(item.answer), item.id)
+  }
+})
+
+test('生成した英文法は完成文・和訳・パターン情報を全件検証できる', () => {
+  const generated = GRAMMAR.filter((item) => item.id.startsWith('gr_auto_'))
+  assert.equal(generated.length, 2500)
+  for (const item of generated) {
+    assert.equal(item.q.replace('___', item.answer), item.sentence.en, item.id)
+    assert.doesNotMatch(item.sentence.ja, /[A-Za-z]/, item.id)
+    assert.match(item.pattern, /^auto:/, item.id)
+  }
+  const patternCounts = generated.reduce((groups, item) => {
+    groups.set(item.pattern, [...(groups.get(item.pattern) ?? []), item])
+    return groups
+  }, new Map())
+  assert.equal(patternCounts.size, 131)
+  for (const [pattern, items] of patternCounts) {
+    assert.ok(items.length >= 10, pattern)
   }
 })
 
@@ -133,7 +153,8 @@ test('全ての文法問題は同じ級・単元の完成例を2文表示でき�
     for (const example of examples) {
       const source = GRAMMAR.find((candidate) => candidate.id === example.id)
       assert.equal(source.level, item.level, item.id)
-      assert.equal(source.topic, item.topic, item.id)
+      if (item.pattern) assert.equal(source.pattern, item.pattern, item.id)
+      else assert.equal(source.topic, item.topic, item.id)
     }
   }
 })
