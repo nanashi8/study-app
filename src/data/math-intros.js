@@ -15,6 +15,11 @@ const nice = (value, digits = 2) => {
   return Object.is(rounded, -0) ? '0' : String(rounded)
 }
 
+const relationToRounded = (value, digits = 2) =>
+  Math.abs(Number(nice(value, digits)) - Number(value)) < 1e-10 ? '=' : '\\approx'
+const textRelationToRounded = (value, digits = 2) =>
+  relationToRounded(value, digits) === '=' ? '=' : '≈'
+
 const signed = (value) => Number(value) >= 0 ? `+${nice(value)}` : nice(value)
 const degree = (value) => `${value}°`
 const stepLabel = (labels) => (value) => labels[value] ?? String(value)
@@ -61,18 +66,24 @@ export const MATH_INTROS = {
       ]),
       range('a', '比例定数 a', -3, 3, 0.5, 1.5, nice),
     ],
-    formula: ({ mode, a }) => mode === 'direct' ? `y=${nice(a)}x` : `y=\\dfrac{${nice(a)}}{x}`,
+    formula: ({ mode, a }) => mode === 'direct'
+      ? `y=${nice(a)}x`
+      : Number(a) === 0
+        ? 'y=0\\quad(x\\ne0)\\qquad\\text{反比例ではない}'
+        : `y=\\dfrac{${nice(a)}}{x}`,
     insight: ({ mode, a }) => mode === 'direct'
       ? `a=${nice(a)} は、xが1増えたときのyの変化量。`
-      : `xとyの積はいつも a=${nice(a)} になる。`,
+      : Number(a) === 0
+        ? 'a=0では y=0 となり、反比例の条件 a≠0 を満たさない。'
+        : `xとyの積はいつも a=${nice(a)} になる。`,
   },
   plane1: {
     kind: 'geometry', variant: 'sector',
     question: 'おうぎ形は、円を角度の割合で切り取ったもの',
     instruction: '中心角を動かして、円周と面積の割合を見よう。',
     controls: [range('theta', '中心角', 30, 330, 15, 120, degree)],
-    formula: ({ theta }) => `\\dfrac{${theta}}{360}=\\dfrac{${nice(theta / 360)}}{1}`,
-    insight: ({ theta }) => `中心角が円全体の${nice(theta / 3.6)}%なので、弧と面積も同じ割合になる。`,
+    formula: ({ theta }) => `\\dfrac{${theta}}{360}${relationToRounded(theta / 360)}${nice(theta / 360)}`,
+    insight: ({ theta }) => `中心角は円全体の約${nice(theta / 3.6)}%で、弧と面積も同じ割合になる。`,
   },
   space1: {
     kind: 'solid', variant: 'prism',
@@ -105,7 +116,7 @@ export const MATH_INTROS = {
     question: '連立方程式の解は、2本の直線が出会う場所',
     instruction: '2本目の切片を動かし、交点が移る様子を見よう。',
     controls: [range('b', '2本目の切片 b', -3, 5, 0.5, 3, nice)],
-    formula: ({ b }) => `\\begin{cases}y=x+1\\\\y=-x+${nice(b)}\\end{cases}`,
+    formula: ({ b }) => `\\begin{cases}y=x+1\\\\y=-x${signed(b)}\\end{cases}`,
     insight: ({ b }) => `交点は (${nice((Number(b) - 1) / 2)}, ${nice((Number(b) + 1) / 2)})。両方の式を同時に満たす。`,
   },
   lin: {
@@ -113,7 +124,7 @@ export const MATH_INTROS = {
     question: '傾きは、右へ1進んだときの上下の動き',
     instruction: '傾きを動かして、直線の向きと急さを見よう。',
     controls: [range('a', '傾き a', -3, 3, 0.5, 1, nice)],
-    formula: ({ a }) => `y=${nice(a)}x+1`,
+    formula: ({ a }) => Number(a) === 0 ? 'y=1' : `y=${nice(a)}x+1`,
     insight: ({ a }) => Number(a) === 0
       ? '傾き0では、xが変わってもyは変わらない。'
       : `右へ1進むと、${a > 0 ? '上' : '下'}へ${Math.abs(a)}動く。`,
@@ -141,7 +152,7 @@ export const MATH_INTROS = {
     question: '確率は「同様に確からしい結果」のうち何個か',
     instruction: '「この数以下」を動かし、有利な目の数を数えよう。',
     controls: [range('favorable', 'この数以下', 1, 6, 1, 3)],
-    formula: ({ favorable }) => `P=\\dfrac{${favorable}}{6}=${nice(favorable / 6)}`,
+    formula: ({ favorable }) => `P=\\dfrac{${favorable}}{6}${relationToRounded(favorable / 6)}${nice(favorable / 6)}`,
     insight: ({ favorable }) => `6通りの目のうち、条件に合うのは${favorable}通り。`,
   },
   data2: {
@@ -190,7 +201,7 @@ export const MATH_INTROS = {
     controls: [range('c', '定数 c', -4, 4, 0.5, -2, nice)],
     formula: ({ c }) => `x^2${signed(c)}=0`,
     insight: ({ c }) => Number(c) < 0
-      ? `x軸と2点で交わり、実数解は x=±${nice(Math.sqrt(-Number(c)))}。`
+      ? `x軸と2点で交わり、実数解は x${textRelationToRounded(Math.sqrt(-Number(c)))}±${nice(Math.sqrt(-Number(c)))}。`
       : Number(c) === 0
         ? 'x軸に1点で接し、重解 x=0 をもつ。'
         : 'x軸と交わらないので、実数解はない。',
@@ -200,7 +211,7 @@ export const MATH_INTROS = {
     question: 'a は、放物線の向きと開き方を決める',
     instruction: 'a を動かして y=ax² の形を比べよう。',
     controls: [range('a', '係数 a', -2, 2, 0.25, 1, nice)],
-    formula: ({ a }) => `y=${nice(a)}x^2`,
+    formula: ({ a }) => Number(a) === 0 ? 'y=0' : `y=${nice(a)}x^2`,
     insight: ({ a }) => Number(a) === 0
       ? 'a=0では二次関数ではなく、x軸そのものになる。'
       : `${a > 0 ? '上' : '下'}に開き、|a|が大きいほど細くなる。`,
@@ -284,8 +295,8 @@ export const MATH_INTROS = {
     question: 'sin・cos・tan は、直角三角形の辺の比',
     instruction: '角度を動かし、3つの比がどう変わるか見よう。',
     controls: [range('theta', '角度 θ', 10, 80, 5, 35, degree)],
-    formula: ({ theta }) => `\\sin${theta}^\\circ=${nice(Math.sin(theta * Math.PI / 180))},\\quad\\cos${theta}^\\circ=${nice(Math.cos(theta * Math.PI / 180))}`,
-    insight: ({ theta }) => `斜辺を1とすると、横がcos=${nice(Math.cos(theta * Math.PI / 180))}、縦がsin=${nice(Math.sin(theta * Math.PI / 180))}。`,
+    formula: ({ theta }) => `\\begin{aligned}\\sin${theta}^\\circ&\\approx${nice(Math.sin(theta * Math.PI / 180))},\\quad\\cos${theta}^\\circ\\approx${nice(Math.cos(theta * Math.PI / 180))}\\\\\\tan${theta}^\\circ&\\approx${nice(Math.tan(theta * Math.PI / 180))}\\end{aligned}`,
+    insight: ({ theta }) => `斜辺を1とすると、横はcos≈${nice(Math.cos(theta * Math.PI / 180))}、縦はsin≈${nice(Math.sin(theta * Math.PI / 180))}、縦÷横はtan≈${nice(Math.tan(theta * Math.PI / 180))}。`,
   },
   dataI: {
     kind: 'data', variant: 'correlation',
@@ -322,7 +333,7 @@ export const MATH_INTROS = {
       '\\gcd(1071,462)',
       '1071=462\\times2+147',
       '462=147\\times3+21',
-      '147=21\\times7+0',
+      '\\begin{aligned}147&=21\\times7+0\\\\\\therefore\\ \\gcd(1071,462)&=21\\end{aligned}',
     ][step],
     insight: ({ step }) => [
       '大きい2数から始める。',
@@ -360,8 +371,11 @@ export const MATH_INTROS = {
     question: '三角関数の波は、円周上の高さを横へ記録したもの',
     instruction: '角度を1周動かして、円の高さとsinの波を結びつけよう。',
     controls: [range('theta', '角度 θ', 0, 360, 5, 60, degree)],
-    formula: ({ theta }) => `\\sin${theta}^\\circ=${nice(Math.sin(theta * Math.PI / 180))}`,
-    insight: ({ theta }) => `円周上の点の高さ ${nice(Math.sin(theta * Math.PI / 180))} が、波の同じ位置の値になる。`,
+    formula: ({ theta }) => {
+      const value = Math.sin(theta * Math.PI / 180)
+      return `\\sin${theta}^\\circ${relationToRounded(value)}${nice(value)}`
+    },
+    insight: ({ theta }) => `円周上の点の高さは約 ${nice(Math.sin(theta * Math.PI / 180))} で、波の同じ位置の値になる。`,
   },
   explog: {
     kind: 'graph', variant: 'exp-log',
@@ -390,15 +404,15 @@ export const MATH_INTROS = {
     question: '定積分は、細い短冊を足した面積',
     instruction: '右端 b を動かし、塗られる面積を増減させよう。',
     controls: [range('b', '右端 b', 0.5, 3, 0.25, 2, nice)],
-    formula: ({ b }) => `\\int_0^{${nice(b)}}x\\,dx=${nice(Number(b) ** 2 / 2)}`,
-    insight: ({ b }) => `0から${nice(b)}までの短冊を合計すると、三角形の面積${nice(Number(b) ** 2 / 2)}になる。`,
+    formula: ({ b }) => `\\int_0^{${nice(b)}}x\\,dx=${nice(Number(b) ** 2 / 2, 5)}`,
+    insight: ({ b }) => `0から${nice(b)}までの短冊を合計すると、三角形の面積${nice(Number(b) ** 2 / 2, 5)}になる。`,
   },
   seq: {
     kind: 'sequence', variant: 'arithmetic',
     question: '等差数列は、同じ差を繰り返して伸びる',
     instruction: '公差 d を動かし、項の並びとグラフを見よう。',
     controls: [range('d', '公差 d', -2, 4, 1, 2, signed)],
-    formula: ({ d }) => `a_n=3+(n-1)\\times${nice(d)}`,
+    formula: ({ d }) => `a_n=3+(n-1)\\times${Number(d) < 0 ? `(${nice(d)})` : nice(d)}`,
     insight: ({ d }) => Number(d) === 0
       ? '公差0なら、すべての項が同じ。'
       : `隣り合う項は毎回${Math.abs(d)}ずつ${d > 0 ? '増える' : '減る'}。`,
@@ -452,7 +466,10 @@ export const MATH_INTROS = {
     question: '回転体の体積は、円盤の面積を積み重ねる',
     instruction: '右端 b を動かし、回転してできる円盤の集まりを見よう。',
     controls: [range('b', '積み重ねる範囲 b', 0.5, 3, 0.25, 2, nice)],
-    formula: ({ b }) => `V=\\pi\\int_0^{${nice(b)}}x^2dx=${nice(Number(b) ** 3 / 3)}\\pi`,
+    formula: ({ b }) => {
+      const volume = Number(b) ** 3 / 3
+      return `V=\\pi\\int_0^{${nice(b)}}x^2dx${relationToRounded(volume)}${nice(volume)}\\pi`
+    },
     insight: ({ b }) => `半径y=xの円盤を0から${nice(b)}まで積む。上ほど円盤が大きい。`,
   },
 }
