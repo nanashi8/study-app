@@ -37,6 +37,7 @@ export function ProgressScreen() {
   // useShallow で浅い比較にし、毎回新オブジェクト→再レンダーループを防ぐ。
   const full = useStore(useShallow((s) => ({
     srs: s.srs, kotenSrs: s.kotenSrs, myList: s.myList,
+    myGrammarList: s.myGrammarList, writingProgress: s.writingProgress,
     readingsDone: s.readingsDone, mathDone: s.mathDone, mathMastery: s.mathMastery,
     skillStats: s.skillStats, diagnosticHistory: s.diagnosticHistory,
     engPos: s.engPos, vnCleared: s.vnCleared,
@@ -329,6 +330,14 @@ export function ProgressScreen() {
               <div className="rounded-2xl bg-hint-soft p-3 text-center">
                 <div className="font-display text-2xl font-extrabold text-amber-700">{preview.summary.myList}</div>
                 <div className="text-[11px] font-bold text-ink/50">マイ単語</div>
+              </div>
+              <div className="rounded-2xl bg-violet-50 p-3 text-center">
+                <div className="font-display text-2xl font-extrabold text-violet-700">{preview.summary.myGrammar}</div>
+                <div className="text-[11px] font-bold text-ink/50">マイ文法</div>
+              </div>
+              <div className="rounded-2xl bg-cyan-50 p-3 text-center">
+                <div className="font-display text-2xl font-extrabold text-cyan-700">{preview.summary.writing}</div>
+                <div className="text-[11px] font-bold text-ink/50">完成した英作文</div>
               </div>
             </div>
             <p className="text-xs font-bold text-rose-500">

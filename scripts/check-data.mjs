@@ -26,6 +26,7 @@ import {
   GRAMMAR,
   GRAMMAR_LEVEL_TARGETS,
   GRAMMAR_TOPIC_MINIMUM,
+  GRAMMAR_TOTAL_TARGET,
 } from '../src/data/grammar.js'
 import { PHONETIC_OVERRIDES } from '../src/data/phonetic-overrides.js'
 import { VN_EPISODES, SPEAKERS } from '../src/data/vn.js'
@@ -234,15 +235,40 @@ for (const g of GRAMMAR) {
   if (completed && expected && !completed.includes(expected)) {
     errors.push(`${at}: 正解を入れた問題文と完成文が不一致 (${completed} / ${expected})`)
   }
+  if (g.id?.startsWith('gr_auto_')) {
+    if (completed !== expected) {
+      errors.push(`${at}: 生成問題の完成文が空所補完結果と完全一致しない (${completed} / ${expected})`)
+    }
+    if (/[A-Za-z]/.test(g.sentence?.ja ?? '')) {
+      errors.push(`${at}: 生成問題の和訳に未翻訳の英字がある (${g.sentence.ja})`)
+    }
+    if (/(するし|するした|するして|するでき|するす|行きて|撮りて|手伝いて|ででした|をを)/.test(g.sentence?.ja ?? '')) {
+      errors.push(`${at}: 生成問題の和訳に不自然な活用がある (${g.sentence.ja})`)
+    }
+  }
 }
 for (const [level, minimum] of Object.entries(GRAMMAR_LEVEL_TARGETS)) {
   const count = GRAMMAR.filter((item) => item.level === level).length
-  if (count < minimum) errors.push(`文法 英検${level}級: ${count}問（品質下限は${minimum}問）`)
+  if (count !== minimum) errors.push(`文法 英検${level}級: ${count}問（収録目標は${minimum}問）`)
+}
+if (GRAMMAR.length !== GRAMMAR_TOTAL_TARGET) {
+  errors.push(`文法 合計: ${GRAMMAR.length}問（収録目標は${GRAMMAR_TOTAL_TARGET}問）`)
 }
 const grammarTopicCounts = new Map()
 for (const item of GRAMMAR) {
   const key = `${item.level}\u0000${item.topic}`
   grammarTopicCounts.set(key, (grammarTopicCounts.get(key) ?? 0) + 1)
+}
+const generatedPatternCounts = new Map()
+for (const item of GRAMMAR.filter((question) => question.id.startsWith('gr_auto_'))) {
+  if (!item.pattern?.startsWith('auto:')) {
+    errors.push(`文法 ${item.id}: 自動生成問題の pattern 無し`)
+    continue
+  }
+  generatedPatternCounts.set(item.pattern, (generatedPatternCounts.get(item.pattern) ?? 0) + 1)
+}
+for (const [pattern, count] of generatedPatternCounts) {
+  if (count < 10) errors.push(`文法 pattern ${pattern}: ${count}問（同型反復には10問以上必要）`)
 }
 for (const [key, count] of grammarTopicCounts) {
   if (count < GRAMMAR_TOPIC_MINIMUM) {

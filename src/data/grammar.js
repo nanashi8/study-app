@@ -1,4 +1,5 @@
 import { GRAMMAR_EXPANSION } from './grammar-expansion.js'
+import { GENERATED_GRAMMAR } from './grammar-generated.js'
 
 // 級ごとの文法問題データ。4択（空所補充）形式。
 // SRS は単語・熟語と同じ store.srs を id で共用（id が一意なら衝突しない）。
@@ -385,6 +386,7 @@ export const GRAMMAR = [
   { id: 'gr_1_opt_x1', level: '1', topic: '祈願文', q: 'Long ___ the king!', choices: ['live', 'lives', 'lived', 'living'], answer: 'live', explain: '祈願文は動詞の原形（May ... の may 省略）。', sentence: { en: 'Long live the king!', ja: '国王万歳！' } },
 
   ...GRAMMAR_EXPANSION,
+  ...GENERATED_GRAMMAR,
 ]
 
 export const grammarByLevel = (level) => GRAMMAR.filter((g) => g.level === level)
@@ -395,7 +397,13 @@ export const topicsForLevel = (level) => [...new Set(grammarByLevel(level).map((
 // 解説欄に出す「同じ形の例」。同じ級・単元の検証済み完成文から、現在の問題を除いて返す。
 export const samePatternExamplesFor = (item, limit = 2) => {
   if (!item || limit <= 0) return []
-  return grammarByTopic(item.level, item.topic)
+  const patternMatches = item.pattern
+    ? GRAMMAR.filter((candidate) => candidate.pattern === item.pattern)
+    : []
+  const candidates = patternMatches.length > limit
+    ? patternMatches
+    : grammarByTopic(item.level, item.topic)
+  return candidates
     .filter((candidate) => candidate.id !== item.id)
     .slice(0, limit)
     .map((candidate) => ({
@@ -405,16 +413,17 @@ export const samePatternExamplesFor = (item, limit = 2) => {
     }))
 }
 
-// 問題量の品質下限。追加は歓迎するが、どの級もこの反復量を下回らせない。
+// 3,000問を級間で均等化した収録目標。
 export const GRAMMAR_LEVEL_TARGETS = Object.freeze({
-  5: 60,
-  4: 60,
-  3: 60,
-  pre2: 60,
-  2: 60,
-  pre1: 60,
-  1: 60,
+  5: 429,
+  4: 429,
+  3: 429,
+  pre2: 429,
+  2: 428,
+  pre1: 428,
+  1: 428,
 })
 
 // 単元別クイズと「同じ形の例」2文を成立させるため、各級・各単元に最低3問置く。
 export const GRAMMAR_TOPIC_MINIMUM = 3
+export const GRAMMAR_TOTAL_TARGET = 3000
