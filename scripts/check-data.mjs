@@ -22,7 +22,11 @@ import {
   READING_QUESTION_COUNTS,
   getReadingQuestions,
 } from '../src/data/reading-questions.js'
-import { GRAMMAR } from '../src/data/grammar.js'
+import {
+  GRAMMAR,
+  GRAMMAR_LEVEL_TARGETS,
+  GRAMMAR_TOPIC_MINIMUM,
+} from '../src/data/grammar.js'
 import { PHONETIC_OVERRIDES } from '../src/data/phonetic-overrides.js'
 import { VN_EPISODES, SPEAKERS } from '../src/data/vn.js'
 import {
@@ -197,6 +201,7 @@ for (const level of READING_LEVELS) {
 
 // ── 文法：空所・正解・完成文の整合性 ──
 const grammarIds = new Set()
+const grammarPrompts = new Set()
 const normalizeSentence = (text) =>
   (text ?? '').replace(/\s+/g, ' ').replace(/\s+([,.?!])/g, '$1').trim()
 for (const g of GRAMMAR) {
@@ -204,14 +209,45 @@ for (const g of GRAMMAR) {
   if (!g.id || grammarIds.has(g.id)) errors.push(`${at}: id 無し/重複`)
   grammarIds.add(g.id)
   if (!LEVELS.has(g.level)) errors.push(`${at}: level が不正 (${g.level})`)
+  if (!g.topic?.trim()) errors.push(`${at}: topic 無し`)
   if (!g.q || (g.q.match(/___/g) ?? []).length !== 1) errors.push(`${at}: 空所 ___ は1個必要`)
-  if (!Array.isArray(g.choices) || g.choices.length < 3) errors.push(`${at}: choices は3件以上必要`)
+  if (!Array.isArray(g.choices) || g.choices.length !== 4) errors.push(`${at}: choices は4件必要`)
+  if (g.choices?.some((choice) => typeof choice !== 'string' || !choice.trim())) {
+    errors.push(`${at}: choices は空でない文字列が必要`)
+  }
+  if (g.choices?.some((choice) => choice !== choice.trim())) {
+    errors.push(`${at}: choices の前後に空白あり`)
+  }
+  if (g.choices && new Set(g.choices).size !== g.choices.length) {
+    errors.push(`${at}: choices に重複あり`)
+  }
+  if (typeof g.answer !== 'string' || g.answer !== g.answer.trim()) {
+    errors.push(`${at}: answer は前後に空白のない文字列が必要`)
+  }
   if (!g.choices?.includes(g.answer)) errors.push(`${at}: answer が choices に無い (${g.answer})`)
   if (!g.sentence?.en || !g.sentence?.ja || !g.explain) errors.push(`${at}: sentence(en/ja) または explain 不足`)
+  const promptKey = normalizeSentence(g.q).toLowerCase()
+  if (promptKey && grammarPrompts.has(promptKey)) errors.push(`${at}: 同一の問題文が重複`)
+  grammarPrompts.add(promptKey)
   const completed = normalizeSentence(g.q?.replace('___', g.answer))
   const expected = normalizeSentence(g.sentence?.en)
   if (completed && expected && !completed.includes(expected)) {
     errors.push(`${at}: 正解を入れた問題文と完成文が不一致 (${completed} / ${expected})`)
+  }
+}
+for (const [level, minimum] of Object.entries(GRAMMAR_LEVEL_TARGETS)) {
+  const count = GRAMMAR.filter((item) => item.level === level).length
+  if (count < minimum) errors.push(`文法 英検${level}級: ${count}問（品質下限は${minimum}問）`)
+}
+const grammarTopicCounts = new Map()
+for (const item of GRAMMAR) {
+  const key = `${item.level}\u0000${item.topic}`
+  grammarTopicCounts.set(key, (grammarTopicCounts.get(key) ?? 0) + 1)
+}
+for (const [key, count] of grammarTopicCounts) {
+  if (count < GRAMMAR_TOPIC_MINIMUM) {
+    const [level, topic] = key.split('\u0000')
+    errors.push(`文法 英検${level}級「${topic}」: ${count}問（単元下限は${GRAMMAR_TOPIC_MINIMUM}問）`)
   }
 }
 
