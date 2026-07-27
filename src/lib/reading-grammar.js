@@ -1256,11 +1256,46 @@ export function analyzeReadingSentence(sentence) {
     }
   })
 
+  const mainPattern = mainClausePattern(blocks)
+  const mainCoreIndex = blocks.findIndex(
+    (block) => block.kind === 'core' && block.svoc.pattern.includes('V'),
+  )
+  const explainedBlocks = blocks.map((block, index) => {
+    const inheritedSubject =
+      index === mainCoreIndex &&
+      !block.svoc.parts.some((part) => part.role === 'S') &&
+      blocks.slice(0, index).some((item) => item.role === 'S')
+    const effectivePattern = `${inheritedSubject ? 'S' : ''}${block.svoc.pattern}`
+    if (
+      index !== mainCoreIndex ||
+      !mainPattern ||
+      block.svoc.pattern === mainPattern ||
+      !mainPattern.startsWith(effectivePattern)
+    ) {
+      return block
+    }
+    const missingRoles = mainPattern.slice(effectivePattern.length)
+    const locations = [
+      inheritedSubject ? 'Sは前の句' : '',
+      missingRoles ? `${missingRoles}は後続ブロック` : '',
+    ].filter(Boolean).join('、')
+    return {
+      ...block,
+      note:
+        `${block.note} このブロックだけで文型を確定せず、前後の文法ブロックと合わせて` +
+        `文全体を${mainPattern}（${SVOC_NAMES[mainPattern]}）と判定します。`,
+      svoc: {
+        ...block.svoc,
+        name: `${mainPattern}の骨格（${locations}）`,
+      },
+    }
+  })
+
   return {
-    blocks,
-    marked: blocks.map((block) => block.displayEn).join(' '),
-    pattern: sentencePattern(blocks),
-    mainPattern: mainClausePattern(blocks),
+    blocks: explainedBlocks,
+    marked: explainedBlocks.map((block) => block.displayEn).join(' '),
+    pattern: sentencePattern(explainedBlocks),
+    mainPattern,
   }
 }
 
