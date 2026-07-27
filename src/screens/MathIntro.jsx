@@ -6,6 +6,7 @@ import { MathVisual } from '../components/MathVisual.jsx'
 import { MathBlock, MathText } from '../components/MathText.jsx'
 import { Button, Chip, IconButton, cx } from '../components/ui.jsx'
 import { rangeProgress, stepRangeValue } from '../lib/mathVisualControls.js'
+import { readableMathAccent } from '../lib/mathVisualColors.js'
 import {
   ArrowRight, ChevronLeft, ChevronRight, Eye, Lightbulb, Sparkles,
 } from '../components/Icons.jsx'
@@ -35,6 +36,8 @@ export function MathIntroScreen() {
     )
   }
 
+  const accent = readableMathAccent(unit.color)
+
   const setValue = (id, value) => {
     setSession((current) => ({
       unitId: params.unitId,
@@ -52,7 +55,7 @@ export function MathIntroScreen() {
     <div className="flex min-h-full flex-col">
       <div
         className="relative overflow-hidden px-4 pb-5 pt-[calc(env(safe-area-inset-top)+0.5rem)] text-white"
-        style={{ background: `linear-gradient(145deg, ${unit.color}, #4338ca)` }}
+        style={{ background: `linear-gradient(145deg, ${accent}, #312e81)` }}
       >
         <div className="pointer-events-none absolute -right-12 -top-16 h-44 w-44 rounded-full bg-white/10" />
         <div className="pointer-events-none absolute -bottom-20 -left-10 h-40 w-40 rounded-full bg-white/10" />
@@ -66,26 +69,26 @@ export function MathIntroScreen() {
             <ChevronLeft size={24} />
           </IconButton>
           <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-2 text-[11px] font-extrabold text-white/75">
+            <div className="flex items-center gap-2 text-[11px] font-extrabold text-white">
               <span>{unit.grade}</span>
               <span>•</span>
               <span>{unit.strand}</span>
             </div>
             <h1 className="truncate font-display text-xl font-extrabold">{unit.emoji} {unit.title}</h1>
           </div>
-          <span className="rounded-full bg-white/15 px-2.5 py-1 text-[10px] font-extrabold">
+          <span className="rounded-full bg-black/25 px-2.5 py-1 text-[10px] font-extrabold">
             導入
           </span>
         </div>
 
         <div className="relative mt-4">
-          <div className="mb-2 inline-flex items-center gap-1.5 rounded-full bg-white/15 px-2.5 py-1 text-[11px] font-extrabold text-white/90">
+          <div className="mb-2 inline-flex items-center gap-1.5 rounded-full bg-black/25 px-2.5 py-1 text-[11px] font-extrabold text-white">
             <Sparkles size={13} /> 動かして発見
           </div>
           <h2 className="max-w-sm font-display text-xl font-extrabold leading-snug">
             {intro.question}
           </h2>
-          <p className="mt-1.5 text-sm font-bold leading-relaxed text-white/75">
+          <p className="mt-1.5 text-sm font-bold leading-relaxed text-white">
             {intro.instruction}
           </p>
         </div>
@@ -94,7 +97,7 @@ export function MathIntroScreen() {
       <div className="flex-1 px-4 pb-28 pt-4">
         <section
           className="overflow-hidden rounded-[1.75rem] bg-white shadow-card"
-          style={{ '--intro-color': unit.color }}
+          style={{ '--intro-color': accent }}
           aria-label={`${unit.title}の動く図`}
         >
           <div className="bg-gradient-to-b from-white to-paper px-2 pb-1 pt-3">
@@ -113,14 +116,14 @@ export function MathIntroScreen() {
             <div className="mb-3 flex items-center gap-2 px-1">
               <span
                 className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-white text-base font-black shadow-sm"
-                style={{ color: unit.color }}
+                style={{ color: accent }}
                 aria-hidden="true"
               >
                 ↔
               </span>
               <div>
                 <h3 className="text-sm font-extrabold text-ink">図を動かす</h3>
-                <p className="text-[11px] font-bold text-ink/55">値を変えると、上の図へすぐ反映されます</p>
+                <p className="text-[11px] font-bold text-ink/75">値を変えると、上の図へすぐ反映されます</p>
               </div>
             </div>
 
@@ -130,7 +133,7 @@ export function MathIntroScreen() {
                   key={control.id}
                   control={control}
                   value={values[control.id]}
-                  color={unit.color}
+                  color={accent}
                   onChange={(value) => setValue(control.id, value)}
                 />
               ))}
@@ -140,8 +143,8 @@ export function MathIntroScreen() {
 
         <section className="mt-4 rounded-2xl border-2 border-violet-100 bg-white px-4 py-3.5">
           <div className="flex items-center gap-2">
-            <Eye size={17} className="shrink-0 text-violet-500" />
-            <p className="text-xs font-extrabold tracking-wide text-violet-500">いま図に出ている関係</p>
+            <Eye size={17} className="shrink-0 text-violet-700" />
+            <p className="text-xs font-extrabold tracking-wide text-violet-700">いま図に出ている関係</p>
           </div>
           <MathBlock tex={formula} className="mt-2 text-ink [&_.katex]:text-[1.2rem]" />
         </section>
@@ -158,8 +161,8 @@ export function MathIntroScreen() {
           </div>
         </section>
 
-        <div className="mt-4 flex items-center justify-center gap-2 text-xs font-bold text-ink/45">
-          <Chip color={unit.color}>{unit.desc}</Chip>
+        <div className="mt-4 flex items-center justify-center gap-2 text-xs font-bold text-ink/70">
+          <Chip color={accent}>{unit.desc}</Chip>
           <span>•</span>
           <span>練習 {problemCount}問</span>
         </div>
@@ -186,7 +189,7 @@ export function VisualControl({ control, value, color, onChange }) {
     return (
       <fieldset
         className="rounded-2xl border-2 bg-white p-3 shadow-sm"
-        style={{ borderColor: `${color}30` }}
+        style={{ borderColor: `${color}70` }}
       >
         <legend className="px-1 text-sm font-extrabold text-ink">{control.label}</legend>
         <div className="grid gap-2" style={{ gridTemplateColumns: `repeat(${control.options.length}, minmax(0, 1fr))` }}>
@@ -202,7 +205,7 @@ export function VisualControl({ control, value, color, onChange }) {
                   'flex min-h-12 items-center justify-center gap-1 rounded-xl border-2 px-2 py-2.5 text-sm font-extrabold transition-all focus-visible:outline-3 focus-visible:outline-offset-2 active:scale-[0.98]',
                   selected
                     ? 'text-white shadow-md'
-                    : 'border-slate-300 bg-white text-ink/80 shadow-sm active:bg-violet-50',
+                    : 'border-slate-500 bg-white text-ink/80 shadow-sm active:bg-violet-50',
                 )}
                 style={selected
                   ? { backgroundColor: color, borderColor: color, outlineColor: color }
@@ -225,7 +228,7 @@ export function VisualControl({ control, value, color, onChange }) {
   return (
     <fieldset
       className="rounded-2xl border-2 bg-white p-3 shadow-sm"
-      style={{ borderColor: `${color}30` }}
+      style={{ borderColor: `${color}70` }}
     >
       <legend className="sr-only">{control.label}</legend>
       <div className="mb-1.5 flex items-center justify-between gap-3">
@@ -248,7 +251,7 @@ export function VisualControl({ control, value, color, onChange }) {
           onClick={() => onChange(stepRangeValue(control, value, -1))}
           disabled={atMin}
           className="mt-0.5 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border-2 bg-white transition-transform focus-visible:outline-3 focus-visible:outline-offset-2 active:scale-95 disabled:cursor-not-allowed disabled:border-slate-200 disabled:bg-slate-100 disabled:text-slate-300"
-          style={atMin ? undefined : { color, borderColor: `${color}55`, outlineColor: color }}
+          style={atMin ? undefined : { color, borderColor: color, outlineColor: color }}
           aria-label={`${control.label}：前の値`}
           aria-controls={inputId}
         >
@@ -272,7 +275,7 @@ export function VisualControl({ control, value, color, onChange }) {
             aria-label={control.label}
             aria-valuetext={shown}
           />
-          <span className="-mt-0.5 flex justify-between gap-3 text-xs font-extrabold text-ink/60" aria-hidden="true">
+          <span className="-mt-0.5 flex justify-between gap-3 text-xs font-extrabold text-ink/75" aria-hidden="true">
             <span>{control.valueLabel ? control.valueLabel(control.min) : control.min}</span>
             <span className="text-right">{control.valueLabel ? control.valueLabel(control.max) : control.max}</span>
           </span>
@@ -283,7 +286,7 @@ export function VisualControl({ control, value, color, onChange }) {
           onClick={() => onChange(stepRangeValue(control, value, 1))}
           disabled={atMax}
           className="mt-0.5 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border-2 bg-white transition-transform focus-visible:outline-3 focus-visible:outline-offset-2 active:scale-95 disabled:cursor-not-allowed disabled:border-slate-200 disabled:bg-slate-100 disabled:text-slate-300"
-          style={atMax ? undefined : { color, borderColor: `${color}55`, outlineColor: color }}
+          style={atMax ? undefined : { color, borderColor: color, outlineColor: color }}
           aria-label={`${control.label}：次の値`}
           aria-controls={inputId}
         >

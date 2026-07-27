@@ -1,10 +1,14 @@
-const INK = '#312e81'
-const MUTED = '#8b8aa8'
-const GRID = '#e7e5f3'
-const PAPER = '#ffffff'
-const GOOD = '#10b981'
-const WARM = '#f59e0b'
-const ROSE = '#f43f5e'
+import { MATH_VISUAL_COLORS, readableMathAccent } from '../lib/mathVisualColors.js'
+
+const {
+  ink: INK,
+  muted: MUTED,
+  grid: GRID,
+  paper: PAPER,
+  good: GOOD,
+  warm: WARM,
+  rose: ROSE,
+} = MATH_VISUAL_COLORS
 
 const n = (value) => Number(value)
 const clamp = (value, min, max) => Math.max(min, Math.min(max, value))
@@ -25,6 +29,15 @@ function Stage({ label, markerId, color, children }) {
       <defs>
         <marker id={markerId} markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
           <path d="M0,0 L8,4 L0,8 Z" fill={color} />
+        </marker>
+        <marker id={`${markerId}-warm`} markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+          <path d="M0,0 L8,4 L0,8 Z" fill={WARM} />
+        </marker>
+        <marker id={`${markerId}-rose`} markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+          <path d="M0,0 L8,4 L0,8 Z" fill={ROSE} />
+        </marker>
+        <marker id={`${markerId}-muted`} markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+          <path d="M0,0 L8,4 L0,8 Z" fill={MUTED} />
         </marker>
         <pattern id={`${markerId}-grid`} width="18" height="18" patternUnits="userSpaceOnUse">
           <path d="M18 0H0V18" fill="none" stroke={GRID} strokeWidth="1" />
@@ -57,8 +70,10 @@ function NumberScene({ variant, values, color, markerId, label }) {
     const start = -3
     const end = start + n(values.b)
     const x = (value) => 28 + ((value + 10) / 20) * 304
-    const left = Math.min(x(start), x(end))
-    const right = Math.max(x(start), x(end))
+    const startX = x(start)
+    const endX = x(end)
+    const middleX = (startX + endX) / 2
+    const curveY = 72 - Math.min(24, Math.abs(endX - startX)) / 3
     return (
       <Stage label={label} markerId={markerId} color={color}>
         <line x1="28" y1="130" x2="332" y2="130" stroke={INK} strokeWidth="2" />
@@ -69,12 +84,15 @@ function NumberScene({ variant, values, color, markerId, label }) {
           </g>
         ))}
         <path
-          d={`M ${left} 108 Q ${(left + right) / 2} ${72 - Math.min(24, right - left) / 3} ${right} 108`}
+          data-number-motion="signed-add"
+          data-start-x={startX}
+          data-end-x={endX}
+          d={`M ${startX} 108 Q ${middleX} ${curveY} ${endX} 108`}
           fill="none"
           stroke={color}
           strokeWidth="5"
           strokeLinecap="round"
-          markerEnd={`url(#${markerId})`}
+          markerEnd={start === end ? undefined : `url(#${markerId})`}
           className="transition-all duration-300"
         />
         <circle cx={x(start)} cy="130" r="7" fill={PAPER} stroke={INK} strokeWidth="3" />
@@ -363,7 +381,18 @@ function GraphScene({ variant, values, color, markerId, label }) {
         { fn: (x) => a / x, stroke: color, domain: [-4, -0.08] },
         { fn: (x) => a / x, stroke: color, domain: [0.08, 4] },
       ]
-      marks = <><circle cx={sx(1)} cy={sy(a)} r="6" fill={WARM} /><circle cx={sx(a || 0.01)} cy={sy(1)} r="6" fill={WARM} /></>
+      marks = a === 0 ? (
+        <>
+          <circle cx={sx(1)} cy={sy(0)} r="6" fill={WARM} />
+          <circle cx={sx(0)} cy={sy(0)} r="6" fill={PAPER} stroke={color} strokeWidth="3" />
+          <SvgText x="180" y="208" size={11}>a=0 は反比例ではない</SvgText>
+        </>
+      ) : (
+        <>
+          <circle cx={sx(1)} cy={sy(a)} r="6" fill={WARM} />
+          <circle cx={sx(a)} cy={sy(1)} r="6" fill={WARM} />
+        </>
+      )
     }
   } else if (variant === 'intersection') {
     const b = n(values.b)
@@ -467,18 +496,47 @@ function GeometryScene({ variant, values, color, markerId, label }) {
 
   if (variant === 'angles') {
     const theta = n(values.theta)
-    const dx = 150 * Math.cos(rad(theta))
-    const dy = 150 * Math.sin(rad(theta))
+    const direction = { x: Math.cos(rad(theta)), y: -Math.sin(rad(theta)) }
+    const halfLength = 105
+    const intersections = [70, 154].map((y) => {
+      const distance = (y - 112) / direction.y
+      return { x: 180 + distance * direction.x, y }
+    })
+    const angleArc = ({ x, y }) => {
+      const radius = 21
+      const end = {
+        x: x + radius * Math.cos(rad(theta)),
+        y: y - radius * Math.sin(rad(theta)),
+      }
+      return `M${x + radius} ${y} A${radius} ${radius} 0 0 0 ${end.x} ${end.y}`
+    }
+    const angleLabel = ({ x, y }) => ({
+      x: x + 34 * Math.cos(rad(theta / 2)),
+      y: y - 34 * Math.sin(rad(theta / 2)),
+    })
     return (
       <Stage label={label} markerId={markerId} color={color}>
         <line x1="30" y1="70" x2="330" y2="70" stroke={INK} strokeWidth="4" />
         <line x1="30" y1="154" x2="330" y2="154" stroke={INK} strokeWidth="4" />
-        <line x1={180 - dx} y1={112 + dy} x2={180 + dx} y2={112 - dy} stroke={color} strokeWidth="4" />
+        <line
+          x1={180 - halfLength * direction.x}
+          y1={112 - halfLength * direction.y}
+          x2={180 + halfLength * direction.x}
+          y2={112 + halfLength * direction.y}
+          stroke={color}
+          strokeWidth="4"
+        />
         <path d="M70 58l12 12-12 12M286 58l12 12-12 12" fill="none" stroke={MUTED} strokeWidth="2" />
-        <circle cx={180 + (42 / Math.tan(rad(theta)))} cy="70" r="5" fill={WARM} />
-        <circle cx={180 - (42 / Math.tan(rad(theta)))} cy="154" r="5" fill={WARM} />
-        <SvgText x="235" y="93" size={13} fill={color}>{theta}°</SvgText>
-        <SvgText x="124" y="132" size={13} fill={color}>{theta}°</SvgText>
+        {intersections.map((intersection) => {
+          const text = angleLabel(intersection)
+          return (
+            <g key={intersection.y}>
+              <path d={angleArc(intersection)} fill="none" stroke={WARM} strokeWidth="4" />
+              <SvgText x={text.x} y={text.y} size={13} fill={color}>{theta}°</SvgText>
+              <circle cx={intersection.x} cy={intersection.y} r="3.5" fill={WARM} />
+            </g>
+          )
+        })}
         <SvgText x="258" y="47" size={11} fill={MUTED}>平行</SvgText>
         <SvgText x="180" y="203" size={11}>同じ印の角は、離れていても等しい</SvgText>
       </Stage>
@@ -573,6 +631,7 @@ function GeometryScene({ variant, values, color, markerId, label }) {
 
   if (variant === 'trig') {
     const theta = n(values.theta)
+    const tangent = Math.tan(rad(theta))
     const origin = { x: 80, y: 175 }
     const radius = 125
     const p = { x: origin.x + radius * Math.cos(rad(theta)), y: origin.y - radius * Math.sin(rad(theta)) }
@@ -587,6 +646,7 @@ function GeometryScene({ variant, values, color, markerId, label }) {
         <SvgText x={(origin.x + p.x) / 2} y={origin.y + 17} size={11} fill={GOOD}>cos θ</SvgText>
         <SvgText x={p.x + 24} y={(origin.y + p.y) / 2} size={11} fill={WARM}>sin θ</SvgText>
         <SvgText x={(origin.x + p.x) / 2 - 10} y={(origin.y + p.y) / 2 - 12} size={11} fill={color}>斜辺 1</SvgText>
+        <SvgText x="270" y="27" size={12} fill={ROSE}>tan θ ≈ {tangent.toFixed(2)}</SvgText>
       </Stage>
     )
   }
@@ -612,9 +672,10 @@ function GeometryScene({ variant, values, color, markerId, label }) {
 
   if (variant === 'circle-equation') {
     const radius = n(values.r)
-    const sx = (x) => 180 + x * 23
-    const sy = (y) => 105 - y * 23
-    const cx = sx(1), cy = sy(-1), rr = radius * 36
+    const unitScale = 18
+    const sx = (x) => 180 + x * unitScale
+    const sy = (y) => 105 - y * unitScale
+    const cx = sx(1), cy = sy(-1), rr = radius * unitScale
     const p = point(cx, cy, rr, 35)
     return (
       <Stage label={label} markerId={markerId} color={color}>
@@ -633,12 +694,15 @@ function GeometryScene({ variant, values, color, markerId, label }) {
 
   const e = n(values.e)
   if (e < 0.95) {
-    const ry = 40 + e * 34
+    const rx = 108
+    const ry = rx * Math.sqrt(1 - e ** 2)
+    const focusOffset = rx * e
     return (
       <Stage label={label} markerId={markerId} color={color}>
         <line x1="30" y1="112" x2="330" y2="112" stroke={GRID} strokeWidth="2" />
-        <ellipse cx="180" cy="112" rx="120" ry={ry} fill={`${color}16`} stroke={color} strokeWidth="4" />
-        <circle cx="125" cy="112" r="6" fill={WARM} /><circle cx="235" cy="112" r="6" fill={WARM} />
+        <ellipse cx="180" cy="112" rx={rx} ry={ry} fill={`${color}16`} stroke={color} strokeWidth="4" />
+        <circle cx={180 - focusOffset} cy="112" r="6" fill={WARM} />
+        <circle cx={180 + focusOffset} cy="112" r="6" fill={WARM} />
         <SvgText x="180" y="207" size={13} fill={color}>e &lt; 1　楕円</SvgText>
       </Stage>
     )
@@ -690,15 +754,17 @@ function SolidScene({ variant, values, color, markerId, label }) {
   const count = Math.max(3, Math.round(b * 5))
   const startX = 65
   const endX = 300
+  const axisY = 125
+  const radiusScale = 23
   return (
     <Stage label={label} markerId={markerId} color={color}>
-      <line x1="45" y1="165" x2="325" y2="165" stroke={INK} strokeWidth="2" />
-      <path d={`M${startX} 165 L${endX} ${165 - b * 38}`} fill="none" stroke={color} strokeWidth="4" />
+      <line x1="45" y1={axisY} x2="325" y2={axisY} stroke={INK} strokeWidth="2" />
+      <path d={`M${startX} ${axisY} L${endX} ${axisY - b * radiusScale}`} fill="none" stroke={color} strokeWidth="4" />
       {Array.from({ length: count }, (_, index) => {
         const t = (index + 1) / count
         const x = startX + (endX - startX) * t
-        const radius = b * 38 * t
-        return <ellipse key={index} cx={x} cy="165" rx="5" ry={radius} fill={`${color}10`} stroke={index === count - 1 ? WARM : `${color}88`} strokeWidth={index === count - 1 ? 3 : 1.5} />
+        const radius = b * radiusScale * t
+        return <ellipse key={index} cx={x} cy={axisY} rx="5" ry={radius} fill={`${color}10`} stroke={index === count - 1 ? WARM : `${color}88`} strokeWidth={index === count - 1 ? 3 : 1.5} />
       })}
       <SvgText x="180" y="28" size={13} fill={color}>半径 y=x の円盤を積み重ねる</SvgText>
       <SvgText x="180" y="207" size={11} fill={MUTED}>細い円盤ほど、曲線の形を正確に埋める</SvgText>
@@ -885,29 +951,52 @@ function SetScene({ values, color, markerId, label }) {
 
 function IntegerScene({ values, color, markerId, label }) {
   const step = n(values.step)
-  const pairs = [[1071, 462], [462, 147], [147, 21], [21, 0]]
-  const [large, small] = pairs[step]
-  const quotient = small ? Math.floor(large / small) : 0
-  const remainder = small ? large % small : 0
-  const unit = small ? 245 / large : 0
+  const divisions = [
+    { large: 1071, small: 462, quotient: 2, remainder: 147 },
+    { large: 462, small: 147, quotient: 3, remainder: 21 },
+    { large: 147, small: 21, quotient: 7, remainder: 0 },
+  ]
+
+  if (step === 0) {
+    return (
+      <Stage label={label} markerId={markerId} color={color}>
+        <SvgText x="180" y="30" size={15} fill={color}>1071 と 462 から開始</SvgText>
+        <rect x="55" y="66" width="112" height="64" rx="12" fill={`${color}18`} stroke={color} strokeWidth="2" />
+        <rect x="193" y="66" width="112" height="64" rx="12" fill={`${WARM}20`} stroke={WARM} strokeWidth="2" />
+        <SvgText x="111" y="84" size={10} fill={MUTED}>大きい数</SvgText>
+        <SvgText x="249" y="84" size={10} fill={MUTED}>小さい数</SvgText>
+        <SvgText x="111" y="108" size={20} fill={color}>1071</SvgText>
+        <SvgText x="249" y="108" size={20} fill={WARM}>462</SvgText>
+        <path d="M80 158H280" stroke={MUTED} strokeWidth="2" markerEnd={`url(#${markerId}-muted)`} />
+        <SvgText x="180" y="184" size={12}>大きい数を小さい数で割る</SvgText>
+      </Stage>
+    )
+  }
+
+  const { large, small, quotient, remainder } = divisions[step - 1]
+  const unit = 245 / large
+  const complete = remainder === 0
+
   return (
     <Stage label={label} markerId={markerId} color={color}>
-      <SvgText x="180" y="30" size={15} fill={color}>{step === 3 ? '余り 0 → 完了' : `${large} を ${small} で区切る`}</SvgText>
-      {step < 3 ? (
+      <SvgText x="180" y="30" size={15} fill={color}>{large} を {small} で割る</SvgText>
+      <rect x="55" y="62" width="250" height="42" rx="8" fill={`${color}14`} stroke={color} strokeWidth="2" />
+      {Array.from({ length: quotient }, (_, index) => (
+        <rect key={index} x={55 + index * small * unit} y="62" width={small * unit} height="42" fill={`${color}30`} stroke={PAPER} strokeWidth="2" />
+      ))}
+      {remainder > 0 && <rect x={55 + quotient * small * unit} y="62" width={remainder * unit} height="42" fill={`${WARM}45`} />}
+      <SvgText x="180" y="83" size={13}>{small} × {quotient}　+　余り {remainder}</SvgText>
+
+      {complete ? (
         <>
-          <rect x="55" y="78" width="250" height="42" rx="8" fill={`${color}14`} stroke={color} strokeWidth="2" />
-          {Array.from({ length: quotient }, (_, index) => (
-            <rect key={index} x={55 + index * small * unit} y="78" width={small * unit} height="42" fill={`${color}30`} stroke={PAPER} strokeWidth="2" />
-          ))}
-          {remainder > 0 && <rect x={55 + quotient * small * unit} y="78" width={remainder * unit} height="42" fill={`${WARM}45`} />}
-          <SvgText x="180" y="100" size={13}>{small} × {quotient}　+　余り {remainder}</SvgText>
-          <path d="M80 155H280" stroke={MUTED} strokeWidth="2" markerEnd={`url(#${markerId})`} />
-          <SvgText x="180" y="176" size={12}>次は ({small}, {remainder}) で同じことをする</SvgText>
+          <SvgText x="180" y="124" size={12} fill={GOOD}>余りが 0 → 完了</SvgText>
+          <rect x="91" y="145" width="178" height="50" rx="12" fill={`${GOOD}20`} stroke={GOOD} strokeWidth="3" />
+          <SvgText x="180" y="170" size={18} fill={GOOD}>最大公約数 = {small}</SvgText>
         </>
       ) : (
         <>
-          <rect x="95" y="78" width="170" height="58" rx="12" fill={`${GOOD}25`} stroke={GOOD} strokeWidth="3" />
-          <SvgText x="180" y="108" size={23} fill={GOOD}>gcd = 21</SvgText>
+          <path d="M80 143H280" stroke={MUTED} strokeWidth="2" markerEnd={`url(#${markerId}-muted)`} />
+          <SvgText x="180" y="169" size={12}>次は ({small}, {remainder}) で同じことをする</SvgText>
         </>
       )}
     </Stage>
@@ -919,12 +1008,30 @@ function ComplexScene({ values, color, markerId, label }) {
   const angle = turn * 90
   const p = point(180, 112, 70, angle)
   const labels = ['1', 'i', '−1', '−i', '1']
+  const rotationArcs = Array.from({ length: turn }, (_, index) => {
+    const start = point(180, 112, 56, index * 90)
+    const end = point(180, 112, 56, (index + 1) * 90)
+    return {
+      index,
+      path: `M${start.x} ${start.y} A56 56 0 0 0 ${end.x} ${end.y}`,
+    }
+  })
   return (
     <Stage label={label} markerId={markerId} color={color}>
       <line x1="55" y1="112" x2="305" y2="112" stroke={INK} strokeWidth="2" />
       <line x1="180" y1="20" x2="180" y2="204" stroke={INK} strokeWidth="2" />
       <circle cx="180" cy="112" r="70" fill={`${color}0e`} stroke={GRID} strokeWidth="2" />
-      <path d="M238 126 A62 62 0 0 0 194 54" fill="none" stroke={WARM} strokeWidth="3" markerEnd={`url(#${markerId})`} />
+      {rotationArcs.map((arc) => (
+        <path
+          key={arc.index}
+          d={arc.path}
+          fill="none"
+          stroke={WARM}
+          strokeWidth="3"
+          markerEnd={arc.index === rotationArcs.length - 1 ? `url(#${markerId}-warm)` : undefined}
+          data-rotation-quarter={arc.index + 1}
+        />
+      ))}
       <line x1="180" y1="112" x2={p.x} y2={p.y} stroke={color} strokeWidth="4" />
       <circle cx={p.x} cy={p.y} r="8" fill={color} />
       <SvgText x="267" y="112" size={12}>1</SvgText>
@@ -1039,19 +1146,19 @@ function SequenceScene({ values, color, markerId, label }) {
 
 function VectorScene({ values, color, markerId, label }) {
   const theta = n(values.theta)
-  const origin = { x: 65, y: 165 }
-  const a = { x: 125, y: 0 }
-  const b = { x: 78 * Math.cos(rad(theta)), y: -78 * Math.sin(rad(theta)) }
+  const origin = { x: 85, y: 165 }
+  const a = { x: 120, y: 0 }
+  const b = { x: 80 * Math.cos(rad(theta)), y: -80 * Math.sin(rad(theta)) }
   const aEnd = { x: origin.x + a.x, y: origin.y + a.y }
   const bEnd = { x: origin.x + b.x, y: origin.y + b.y }
   const sum = { x: origin.x + a.x + b.x, y: origin.y + b.y }
   return (
     <Stage label={label} markerId={markerId} color={color}>
-      <line x1={origin.x} y1={origin.y} x2={aEnd.x} y2={aEnd.y} stroke={color} strokeWidth="5" markerEnd={`url(#${markerId})`} />
-      <line x1={origin.x} y1={origin.y} x2={bEnd.x} y2={bEnd.y} stroke={ROSE} strokeWidth="5" />
+      <line data-vector="a" x1={origin.x} y1={origin.y} x2={aEnd.x} y2={aEnd.y} stroke={color} strokeWidth="5" markerEnd={`url(#${markerId})`} />
+      <line data-vector="b" x1={origin.x} y1={origin.y} x2={bEnd.x} y2={bEnd.y} stroke={ROSE} strokeWidth="5" markerEnd={`url(#${markerId}-rose)`} />
       <line x1={aEnd.x} y1={aEnd.y} x2={sum.x} y2={sum.y} stroke={ROSE} strokeWidth="3" strokeDasharray="6 4" />
       <line x1={bEnd.x} y1={bEnd.y} x2={sum.x} y2={sum.y} stroke={color} strokeWidth="3" strokeDasharray="6 4" />
-      <line x1={origin.x} y1={origin.y} x2={sum.x} y2={sum.y} stroke={WARM} strokeWidth="6" markerEnd={`url(#${markerId})`} />
+      <line data-vector="sum" x1={origin.x} y1={origin.y} x2={sum.x} y2={sum.y} stroke={WARM} strokeWidth="6" markerEnd={`url(#${markerId}-warm)`} />
       <circle cx={origin.x} cy={origin.y} r="5" fill={INK} />
       <SvgText x={(origin.x + aEnd.x) / 2} y={origin.y + 18} size={12} fill={color}>a</SvgText>
       <SvgText x={(origin.x + bEnd.x) / 2 - 10} y={(origin.y + bEnd.y) / 2 - 8} size={12} fill={ROSE}>b</SvgText>
@@ -1062,7 +1169,7 @@ function VectorScene({ values, color, markerId, label }) {
 }
 
 export function MathVisual({ intro, values, unit, label }) {
-  const color = unit?.color ?? '#6366f1'
+  const color = readableMathAccent(unit?.color)
   const markerId = `math-intro-arrow-${unit?.id ?? 'unit'}`
   const props = { variant: intro.variant, values, color, markerId, label }
 
