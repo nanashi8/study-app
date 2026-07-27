@@ -8,6 +8,43 @@
 //   syn=類義語 / ant=反対語 / der=派生語 / fam=語族(基語＋関連形, w=英単語, m=主な意味) / usage=使い分け / field=分野。
 //   （後方互換：extra が文字列なら etymology.origin として扱う）
 // IPA は省略可（npm run phonetics が CMU 辞書から自動補完）。すべての語に語源を付ける方針。
+const OPEN_PARENS = new Set(['(', '（'])
+const CLOSE_PARENS = new Map([
+  [')', '('],
+  ['）', '（'],
+])
+
+// 「・」は語義の区切りにも、括弧内の列挙にも使われる。
+// 括弧内では分割せず、クイズの選択肢に「(王位」のような断片を出さない。
+export function splitMeanings(meaning = '') {
+  const meanings = []
+  let current = ''
+  let depth = 0
+
+  for (const char of meaning) {
+    if (OPEN_PARENS.has(char)) depth++
+    if (char === '・' && depth === 0) {
+      if (current.trim()) meanings.push(current.trim())
+      current = ''
+      continue
+    }
+    current += char
+    if (CLOSE_PARENS.has(char)) depth = Math.max(0, depth - 1)
+  }
+
+  if (current.trim()) meanings.push(current.trim())
+  return meanings
+}
+
+export function hasBalancedParentheses(text = '') {
+  const stack = []
+  for (const char of text) {
+    if (OPEN_PARENS.has(char)) stack.push(char)
+    else if (CLOSE_PARENS.has(char) && stack.pop() !== CLOSE_PARENS.get(char)) return false
+  }
+  return stack.length === 0
+}
+
 export function expandCompact([word, pos, level, meaning, en, ja, ety, extra]) {
   const id = word.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '')
   const entry = {
@@ -16,7 +53,7 @@ export function expandCompact([word, pos, level, meaning, en, ja, ety, extra]) {
     pos,
     level,
     meaning,
-    meanings: meaning.split('・'),
+    meanings: splitMeanings(meaning),
     example: { en, ja },
   }
   let etymology

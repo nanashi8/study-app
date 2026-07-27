@@ -61,6 +61,7 @@ import {
   WRITING_EXERCISES,
   WRITING_GRAMMAR,
 } from '../src/data/writing.js'
+import { hasBalancedParentheses } from '../src/data/compact.js'
 
 const LEVELS = new Set(['5', '4', '3', 'pre2', '2', 'pre1', '1'])
 const READING_LEVELS = new Set(['5', '4', '3', 'pre2', 'pre2plus', '2', 'pre1', '1'])
@@ -82,6 +83,13 @@ for (const w of ALL_WORDS) {
   if (!LEVELS.has(w.level)) errors.push(`${at}: level が不正 (${w.level})`)
   if (!w.meaning) errors.push(`${at}: meaning 無し`)
   if (!w.meanings?.length) errors.push(`${at}: meanings 無し`)
+  if (!hasBalancedParentheses(w.meaning)) errors.push(`${at}: meaning の括弧が不整合 (${w.meaning})`)
+  for (const item of w.meanings ?? []) {
+    if (!hasBalancedParentheses(item)) errors.push(`${at}: 分割後の意味の括弧が不整合 (${item})`)
+  }
+  if (w.meanings?.join('・') !== w.meaning) {
+    errors.push(`${at}: meanings から meaning を復元できない (${w.meanings?.join('・')} != ${w.meaning})`)
+  }
   if (!w.example?.en || !w.example?.ja) errors.push(`${at}: 例文(en/ja) 無し`)
   if (!w.etymology) {
     errors.push(`${at}: 語源 無し`)

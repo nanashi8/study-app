@@ -4,6 +4,7 @@
 // 例文だけ 'EN?'/'JA?' のプレースホルダにする。人手は「例文を書く＋推定の確認」のみ＝高速化。
 import { writeFileSync } from 'node:fs'
 import { ALL_WORDS, WORDS_BY_ID } from '../src/data/vocab.js'
+import { splitMeanings } from '../src/data/compact.js'
 
 const N = Number(process.argv[2]) || 120
 const frontier = JSON.parse(
@@ -41,7 +42,7 @@ const SUF = [
 
 // 日本語訳から品詞を当てる（接尾辞が効かないとき）。
 function posFromGloss(m) {
-  const g = m.split('・')[0]
+  const g = splitMeanings(m)[0]
   if (/する$|せる$|る$|う$|む$|ぶ$|す$|つ$|ぐ$|く$|ける$/.test(g)) return '動'
   if (/な$|い$/.test(g)) return '形'
   if (/に$|的に$/.test(g)) return '副'
@@ -60,7 +61,7 @@ function scaffold(word, meaning) {
       if (base) {
         const be = WORDS_BY_ID[base]
         pos = p
-        ety = `${base}(${be.meaning.split('・')[0]})+ ${label}`
+        ety = `${base}(${splitMeanings(be.meaning)[0]})+ ${label}`
         fam = base
         field = be.field || null
         level = be.level || 'pre1'
@@ -79,7 +80,7 @@ const picked = frontier.filter((f) => /^[a-z]+$/i.test(f.word) && !ids.has(f.wor
 const lines = picked.map((f) => {
   const s = scaffold(f.word, f.meaning)
   const extra = ['field: ' + JSON.stringify(s.field)]
-  if (s.fam) extra.unshift(`fam: [{ w: ${JSON.stringify(s.fam)}, m: ${JSON.stringify((WORDS_BY_ID[s.fam]?.meaning || '').split('・')[0])} }]`)
+  if (s.fam) extra.unshift(`fam: [{ w: ${JSON.stringify(s.fam)}, m: ${JSON.stringify(splitMeanings(WORDS_BY_ID[s.fam]?.meaning || '')[0])} }]`)
   return `  [${JSON.stringify(s.word)}, ${JSON.stringify(s.pos)}, ${JSON.stringify(s.level)}, ${JSON.stringify(s.meaning)}, 'EN?', 'JA?', ${JSON.stringify(s.ety)}, { ${extra.join(', ')} }],`
 })
 
