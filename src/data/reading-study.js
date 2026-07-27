@@ -1,4 +1,6 @@
 import { getPhrase } from './phrases.js'
+import { resolvePassageWord } from './passage-gloss.js'
+import { PASSAGE_DICTIONARY_WORD_IDS } from './reading-words.js'
 import { getWord } from './vocab.js'
 
 // 本文固有の表現。kind は既存の熟語カードエンジンと共通で、
@@ -454,7 +456,24 @@ export const READING_STUDY = {
 }
 
 export function getReadingWords(passage) {
-  return (passage?.vocab ?? []).map(getWord).filter(Boolean)
+  const ids = []
+  const seen = new Set()
+  const add = (id) => {
+    if (!id || seen.has(id)) return
+    seen.add(id)
+    ids.push(id)
+  }
+  for (const id of passage?.vocab ?? []) add(id)
+
+  const supplementalIds = new Set(PASSAGE_DICTIONARY_WORD_IDS)
+  for (const sentence of passage?.sentences ?? []) {
+    const tokens = sentence.en.match(/[A-Za-z]+(?:['’][A-Za-z]+)*/g) ?? []
+    for (const token of tokens) {
+      const id = resolvePassageWord(token.toLowerCase(), sentence.gloss)?.id
+      if (supplementalIds.has(id)) add(id)
+    }
+  }
+  return ids.map(getWord).filter(Boolean)
 }
 
 export function getReadingPhrases(passageId) {

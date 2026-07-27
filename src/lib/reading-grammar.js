@@ -94,16 +94,24 @@ const DISCOURSE_PHRASES = [
   'by contrast',
   'by the end of',
   'even so',
+  'finally',
   'for example',
   'for instance',
   'for the museum',
+  'however',
   'in addition',
   'in contrast',
   'in fact',
+  'in practice',
   'in response',
   'in the long term',
   'instead of',
+  'more subtly',
+  'nevertheless',
   'on the other hand',
+  'rather',
+  'similarly',
+  'today',
 ]
 
 const REPORTING_VERBS = new Set([
@@ -121,17 +129,17 @@ const DOUBLE_OBJECT_VERBS = new Set([
 ])
 
 const OBJECT_COMPLEMENT_VERBS = new Set([
-  'allow', 'call', 'consider', 'encourage', 'expect', 'find', 'keep', 'make',
+  'allow', 'call', 'consider', 'encourage', 'expect', 'help', 'keep', 'make', 'treat',
 ])
 
 const AUXILIARIES = new Set([
   'am', 'are', 'be', 'been', 'being', 'can', 'could', 'did', 'do', 'does',
   'had', 'has', 'have', 'is', 'may', 'might', 'must', 'shall', 'should',
-  'was', 'were', 'will', 'would',
+  'was', 'were', 'will', 'would', 'cannot',
 ])
 
 const IRREGULAR_VERBS = new Set([
-  'became', 'began', 'brought', 'built', 'came', 'chose', 'did', 'felt',
+  'became', 'began', 'begun', 'brought', 'built', 'came', 'chose', 'did', 'felt',
   'forgot', 'found', 'gave', 'grew', 'had', 'held', 'kept', 'knew', 'led', 'left',
   'made', 'met', 'paid', 'put', 'ran', 'read', 'said', 'saw', 'sent',
   'showed', 'stood', 'taught', 'thought', 'told', 'took', 'understood',
@@ -140,7 +148,7 @@ const IRREGULAR_VERBS = new Set([
 
 const IRREGULAR_LEMMAS = {
   am: 'be', are: 'be', became: 'become', been: 'be', began: 'begin',
-  brought: 'bring', built: 'build', came: 'come', chose: 'choose', did: 'do',
+  begun: 'begin', brought: 'bring', built: 'build', came: 'come', chose: 'choose', did: 'do',
   does: 'do', felt: 'feel', forgot: 'forget', found: 'find', gave: 'give', grew: 'grow',
   had: 'have', has: 'have', held: 'hold', is: 'be', kept: 'keep', knew: 'know',
   led: 'lead', left: 'leave', made: 'make', met: 'meet', paid: 'pay',
@@ -150,9 +158,14 @@ const IRREGULAR_LEMMAS = {
 }
 
 const MID_SENTENCE_ADVERBS = new Set([
-  'also', 'always', 'already', 'even', 'frequently', 'generally', 'hardly',
-  'never', 'normally', 'often', 'only', 'probably', 'rarely', 'really',
-  'sometimes', 'still', 'usually',
+  'also', 'always', 'already', 'automatically', 'clearly', 'consequently',
+  'effectively', 'equally', 'even', 'frequently', 'generally', 'hardly',
+  'never', 'normally', 'now', 'often', 'only', 'probably', 'rarely', 'really',
+  'sometimes', 'still', 'then', 'therefore', 'traditionally', 'usually',
+])
+
+const RECIPIENT_PRONOUNS = new Set([
+  'her', 'him', 'me', 'someone', 'them', 'us', 'you',
 ])
 
 const KNOWN_FINITE_VERBS = new Set(['lies', 'planted'])
@@ -224,6 +237,19 @@ function isFiniteVerbAt(tokens, index) {
   return hasVerbRecord(key)
 }
 
+function isStrongFiniteVerbAt(tokens, index) {
+  const key = normalizeToken(tokenText(tokens[index]) ?? '')
+  const previous = normalizeToken(tokenText(tokens[index - 1]) ?? '')
+  if (!key || previous === 'to') return false
+  return AUXILIARIES.has(key) || IRREGULAR_VERBS.has(key) || KNOWN_FINITE_VERBS.has(key)
+}
+
+function isPastParticiple(word) {
+  const key = normalizeToken(word)
+  if (!key || getWord(toId(key))?.pos === '形') return false
+  return /ed$/.test(key) || IRREGULAR_VERBS.has(key)
+}
+
 function words(text) {
   return bare(text).match(/[A-Za-z][A-Za-z'’-]*/g) ?? []
 }
@@ -231,6 +257,11 @@ function words(text) {
 function hasFiniteVerb(text) {
   const tokens = words(text)
   return tokens.some((token, index) => isFiniteVerbAt(tokens, index))
+}
+
+function hasStrongFiniteVerb(text) {
+  const tokens = words(text)
+  return tokens.some((_, index) => isStrongFiniteVerbAt(tokens, index))
 }
 
 function hasClearFiniteVerb(text) {
@@ -456,6 +487,15 @@ function splitInternalClause(text) {
     if (index > 2 && index < body.length - 3 && !candidates.includes(index)) candidates.push(index)
   }
 
+  if (/^(?:that|who|which|whose|where)\b/i.test(body)) {
+    const tokenMatches = [...body.matchAll(/[A-Za-z][A-Za-z'’-]*/g)]
+    const firstFinite = tokenMatches.findIndex((_, index) => index > 0 && isFiniteVerbAt(tokenMatches, index))
+    const nextStrong = tokenMatches.findIndex(
+      (_, index) => index > firstFinite + 1 && isStrongFiniteVerbAt(tokenMatches, index),
+    )
+    if (firstFinite >= 0 && nextStrong > firstFinite) addAt(tokenMatches[nextStrong].index)
+  }
+
   for (const marker of [
     'even though', 'even when', 'because', 'although', 'unless', 'whereas',
     'while', 'when', 'if', 'since', 'before', 'after', 'once', 'as',
@@ -513,6 +553,7 @@ function findToInfinitiveSplit(text) {
     if (!isVerb(match[1])) continue
     const before = body.slice(0, match.index).trim()
     if (!hasFiniteVerb(before)) continue
+    if (/\b(?:how|what|where|whether|which|who|why)\s*$/i.test(before)) continue
     if (['have', 'use', 'ought'].includes(lastVerbLemma(before))) continue
     const punctuation = punctuationOf(text)
     return [before, `${body.slice(match.index).trim()}${punctuation}`]
@@ -586,6 +627,20 @@ function classifyUnit(unit, index, allUnits) {
   const lower = body.toLowerCase()
   const first = firstWord(body)
   const previous = allUnits[index - 1]?.text ?? ''
+  const priorText = allUnits.slice(0, index).map((item) => item.text).join(' ')
+
+  if (
+    index > 0 &&
+    first === 'as' &&
+    /\b(?:call|consider|describe|regard|treat)(?:ed|s)?\b/i.test(priorText)
+  ) {
+    return {
+      kind: 'phrase',
+      label: '目的格補語となるas句',
+      role: 'C',
+      note: 'treatなどの動詞に続く as ... は、目的語Oを「〜として」と説明する目的格補語Cです。',
+    }
+  }
 
   const multiMarker = lower.startsWith('even though ')
     ? 'although'
@@ -612,7 +667,15 @@ function classifyUnit(unit, index, allUnits) {
   if (index > 0 && NOUN_CLAUSE_MARKERS.has(first)) {
     const previousVerb = lastVerbLemma(previous)
     const purposeClause = first === 'that' && /\bso\s*$/i.test(bare(previous))
-    const complementClause = first === 'that' && previousVerb === 'be'
+    const complementClause =
+      first === 'that' &&
+      previousVerb === 'be' &&
+      /\b(?:am|are|be|been|is|was|were)(?:\s+(?:also|not|only|probably|still))*$/i
+        .test(bare(previous))
+    const previousSkeleton = analyzeSvoc(previous)
+    const secondObject =
+      ['show', 'teach', 'tell'].includes(previousVerb) &&
+      previousSkeleton.parts.some((part) => part.role === 'O1')
     const implicitRelative =
       first === 'that' &&
       !purposeClause &&
@@ -632,6 +695,14 @@ function classifyUnit(unit, index, allUnits) {
         label: '補語となる名詞節',
         role: 'C',
         note: 'be動詞の後ろに置かれたthat節です。主語の内容を説明する補語Cとして働きます。',
+      }
+    }
+    if (secondObject) {
+      return {
+        kind: 'clause',
+        label: '第4文型の直接目的語となる名詞節',
+        role: 'O2',
+        note: `${first} 以下の名詞節が「何を」に当たり、直前の人を表すO1と組んでO2として働きます。`,
       }
     }
     return implicitRelative
@@ -658,19 +729,37 @@ function classifyUnit(unit, index, allUnits) {
     }
   }
 
+  const startsWithToInfinitive =
+    first === 'to' &&
+    isVerb(words(body)[1] ?? '')
   if (
-    !hasFiniteVerb(body) &&
     (
-      DISCOURSE_PHRASES.some((phrase) => lower.startsWith(phrase)) ||
-      PREPOSITIONS.has(first)
+      DISCOURSE_PHRASES.some((phrase) => lower.startsWith(phrase)) &&
+      !hasStrongFiniteVerb(body)
+    ) ||
+    (
+      PREPOSITIONS.has(first) &&
+      !startsWithToInfinitive &&
+      !hasStrongFiniteVerb(body)
     )
   ) {
     const isInstead = lower.startsWith('instead of ')
+    const previousVerb = lastVerbLemma(previous)
+    const objectComplement =
+      previousVerb === 'keep' &&
+      first === 'in' &&
+      analyzeSvoc(previous).parts.some((part) => /^O/.test(part.role))
     return {
       kind: 'phrase',
-      label: isInstead ? '前置詞句（対案）' : '前置詞句',
-      role: 'M',
-      note: isInstead
+      label: objectComplement
+        ? '目的格補語となる前置詞句'
+        : isInstead
+          ? '前置詞句（対案）'
+          : '前置詞句',
+      role: objectComplement ? 'C' : 'M',
+      note: objectComplement
+        ? 'keep + O + in ... で、Oが置かれる状態を説明します。この前置詞句は目的格補語Cです。'
+        : isInstead
         ? 'instead of + 名詞・動名詞で「〜の代わりに」。主節の行動を修飾するMです。'
         : '前置詞 + 名詞のまとまりです。時・場所・方法・理由などを補うMとして働きます。',
     }
@@ -678,12 +767,28 @@ function classifyUnit(unit, index, allUnits) {
 
   if (/^to\s+[A-Za-z]/i.test(body)) {
     const previousVerb = lastVerbLemma(previous)
+    const previousSkeleton = analyzeSvoc(previous)
+    const followsObject =
+      previousSkeleton.parts.some((part) => /^O/.test(part.role))
+    const objectComplement =
+      ['allow', 'ask', 'encourage', 'expect', 'help', 'invite'].includes(previousVerb) &&
+      (followsObject || words(previous).length >= 2)
     const passiveComplement =
       ['allow', 'ask', 'encourage', 'expect'].includes(previousVerb) &&
       /\b(?:am|are|is|was|were|be|been)\b/i.test(previous)
-    const role = passiveComplement
+    const previousPassive =
+      /\b(?:am|are|be|been|being|is|was|were)(?:\s+\w+ly)*\s+[A-Za-z]+ed$/i
+        .test(bare(previous))
+    const linkingComplement =
+      LINKING_VERBS.has(previousVerb) &&
+      !previousPassive &&
+      !previousSkeleton.parts.some((part) => part.role === 'C')
+    const role = objectComplement || passiveComplement || linkingComplement
       ? 'C'
-      : ['allow', 'ask', 'decide', 'encourage', 'expect', 'help', 'need', 'try', 'want']
+      : [
+          'allow', 'ask', 'begin', 'continue', 'decide', 'encourage', 'expect',
+          'help', 'need', 'start', 'try', 'want',
+        ]
           .includes(previousVerb)
         ? 'O'
         : 'M'
@@ -700,7 +805,11 @@ function classifyUnit(unit, index, allUnits) {
   }
 
   if (/^[A-Za-z'’-]+ing\b/i.test(body)) {
-    const role = index === 0 && allUnits.length > 1 ? 'S' : 'M'
+    const role =
+      allUnits.length > 1 &&
+      (index === 0 || startsWithPredicate(allUnits[index + 1]?.text ?? ''))
+        ? 'S'
+        : 'M'
     return {
       kind: 'phrase',
       label: role === 'S' ? '動名詞句' : '分詞・動名詞句',
@@ -711,12 +820,51 @@ function classifyUnit(unit, index, allUnits) {
     }
   }
 
-  if (index === 0 && allUnits.length > 1 && !hasFiniteVerb(body)) {
+  if (
+    allUnits.length > 1 &&
+    !hasStrongFiniteVerb(body) &&
+    (
+      !hasFiniteVerb(body) ||
+      (
+        words(body).length === 2 &&
+        /^(?:a|an|the)\b/i.test(body) &&
+        /^(?:that|who|which|whose|where)\b/i.test(bare(allUnits[index + 1]?.text ?? ''))
+      )
+    ) &&
+    (index === 0 || /^(?:that|who|which|whose|where)\b/i.test(bare(allUnits[index + 1]?.text ?? '')))
+  ) {
     return {
       kind: 'phrase',
       label: '主語の名詞句',
       role: 'S',
       note: '主語の中心となる名詞のまとまりです。後ろの述語動詞Vと結び付けて読みます。',
+    }
+  }
+
+  if (
+    index > 0 &&
+    !hasFiniteVerb(body) &&
+    ['and', 'or'].includes(first) &&
+    analyzeSvoc(previous).parts.some((part) => /^O/.test(part.role))
+  ) {
+    return {
+      kind: 'phrase',
+      label: '並列された目的語',
+      role: 'O',
+      note: `${first} が直前の目的語と同じ働きの名詞句を追加しています。文型上は同じOの続きです。`,
+    }
+  }
+
+  if (
+    index > 0 &&
+    !hasFiniteVerb(body) &&
+    LINKING_VERBS.has(lastVerbLemma(previous))
+  ) {
+    return {
+      kind: 'phrase',
+      label: '補語となる名詞句・形容詞句',
+      role: 'C',
+      note: 'be動詞・連結動詞の後ろで主語の身分・性質・状態を説明するまとまりです。文型上の補語Cとして働きます。',
     }
   }
 
@@ -783,12 +931,23 @@ function analyzeSvoc(text, { implicitSubject = false } = {}) {
       )
     }
   }
-  for (let index = scanStart; index < tokens.length; index++) {
-    if (verbIndex >= 0) break
-    if (isFiniteVerbAt(tokens, index)) {
-      verbIndex = index
-      break
+  if (verbIndex < 0) {
+    for (let index = scanStart; index < tokens.length; index++) {
+      if (isStrongFiniteVerbAt(tokens, index)) {
+        verbIndex = index
+        break
+      }
     }
+  }
+  if (verbIndex < 0) {
+    const candidates = tokens
+      .map((_, index) => index)
+      .filter((index) => index >= scanStart && isFiniteVerbAt(tokens, index))
+    const afterAdverb = candidates.find((index) => {
+      const previous = normalizeToken(tokens[index - 1]?.[0] ?? '')
+      return MID_SENTENCE_ADVERBS.has(previous) || /ly$/.test(previous)
+    })
+    verbIndex = afterAdverb ?? candidates[0] ?? -1
   }
   if (verbIndex < 0) return { parts: [{ role: 'M', text: body }], pattern: 'M', name: '修飾語句' }
 
@@ -801,6 +960,13 @@ function analyzeSvoc(text, { implicitSubject = false } = {}) {
   let subject = body.slice(subjectStart, subjectEnd).trim().replace(/^(?:and|but|yet|so)\s+/i, '')
   let preVerbModifier = ''
   if (!implicitSubject && subject) {
+    const leadingAdverb = subject.match(
+      /^(?:finally|however|more subtly|nevertheless|rather|similarly|therefore|thus|today),?\s+/i,
+    )
+    if (leadingAdverb) {
+      preVerbModifier = leadingAdverb[0].trim().replace(/,$/, '')
+      subject = subject.slice(leadingAdverb[0].length).trim()
+    }
     const subjectTokens = [...subject.matchAll(/[A-Za-z][A-Za-z'’-]*/g)]
     const trailing = subjectTokens.at(-1)
     const trailingKey = normalizeToken(trailing?.[0] ?? '')
@@ -808,12 +974,15 @@ function analyzeSvoc(text, { implicitSubject = false } = {}) {
       subjectTokens.length > 1 &&
       (MID_SENTENCE_ADVERBS.has(trailingKey) || /ly$/.test(trailingKey))
     ) {
-      preVerbModifier = subject.slice(trailing.index).trim()
+      preVerbModifier = [preVerbModifier, subject.slice(trailing.index).trim()]
+        .filter(Boolean)
+        .join(' / ')
       subject = subject.slice(0, trailing.index).trim()
     }
   }
 
   let verbEndIndex = verbIndex + 1
+  let lexicalVerbCount = AUXILIARIES.has(normalizeToken(tokens[verbIndex][0])) ? 0 : 1
   while (verbEndIndex < tokens.length) {
     const token = normalizeToken(tokens[verbEndIndex][0])
     const groupKeys = tokens
@@ -824,11 +993,20 @@ function analyzeSvoc(text, { implicitSubject = false } = {}) {
       .reverse()
       .map(lemmaOf)
       .find((item) => !['be', 'do'].includes(item) && !MID_SENTENCE_ADVERBS.has(item))
+    const hasBe = groupKeys.some((item) =>
+      ['am', 'are', 'be', 'been', 'being', 'is', 'was', 'were'].includes(item))
+    const auxiliary = AUXILIARIES.has(token)
+    const participleAfterBe = hasBe && isPastParticiple(token)
+    const firstLexicalAfterAuxiliary =
+      hasAuxiliary &&
+      lexicalVerbCount === 0 &&
+      (isVerb(token) || participleAfterBe)
     if (
       token === 'not' ||
       MID_SENTENCE_ADVERBS.has(token) ||
       /ly$/.test(token) ||
-      (hasAuxiliary && isVerb(token)) ||
+      auxiliary ||
+      firstLexicalAfterAuxiliary ||
       (token === 'to' && ['have', 'use', 'ought'].includes(lexicalLemma)) ||
       (
         normalizeToken(tokens[verbEndIndex - 1]?.[0] ?? '') === 'to' &&
@@ -836,6 +1014,7 @@ function analyzeSvoc(text, { implicitSubject = false } = {}) {
         isVerb(token)
       )
     ) {
+      if (firstLexicalAfterAuxiliary && !auxiliary) lexicalVerbCount++
       verbEndIndex++
     }
     else break
@@ -850,22 +1029,34 @@ function analyzeSvoc(text, { implicitSubject = false } = {}) {
     .reverse()
     .find((token) => !AUXILIARIES.has(normalizeToken(token[0])) && isVerb(token[0]))
   const mainVerb = lexicalVerb ? lemmaOf(lexicalVerb[0]) : firstVerb
+  const beIndex = verbTokens.findIndex((token) => lemmaOf(token[0]) === 'be')
   const passive =
-    firstVerb === 'be' &&
-    verbTokens.slice(1).some((token) => {
+    beIndex >= 0 &&
+    verbTokens.slice(beIndex + 1).some((token) => {
       const key = normalizeToken(token[0])
-      return /(?:ed|en)$/.test(key) || IRREGULAR_VERBS.has(key)
+      return isPastParticiple(key)
     })
+  const hasLinkingVerb = verbTokens.some((token) => LINKING_VERBS.has(lemmaOf(token[0])))
+  const existential = normalizeToken(subject) === 'there' && hasLinkingVerb
 
   const parts = []
-  if (subject) parts.push({ role: 'S', text: subject })
+  if (subject) parts.push({ role: existential ? 'M' : 'S', text: subject })
   if (preVerbModifier) parts.push({ role: 'M', text: preVerbModifier })
   parts.push({ role: 'V', text: verbText })
 
   if (remainder) {
     const remainderFirst = firstWord(remainder)
-    if (LINKING_VERBS.has(mainVerb) || LINKING_VERBS.has(firstVerb)) {
-      if (PREPOSITIONS.has(remainderFirst)) {
+    if (existential) {
+      parts.push({ role: 'S', text: remainder })
+    } else if (!passive && (LINKING_VERBS.has(mainVerb) || hasLinkingVerb)) {
+      const remainderTokens = words(remainder)
+      const infinitiveComplement =
+        remainderFirst === 'to' &&
+        ![
+          'a', 'an', 'her', 'his', 'its', 'my', 'our', 'the', 'their', 'this',
+          'those', 'your',
+        ].includes(normalizeToken(remainderTokens[1] ?? ''))
+      if (PREPOSITIONS.has(remainderFirst) && !infinitiveComplement) {
         parts.push({ role: 'M', text: remainder })
       } else {
         const [complement, modifier] = splitObjectAndModifier(remainder)
@@ -875,25 +1066,62 @@ function analyzeSvoc(text, { implicitSubject = false } = {}) {
     } else if (
       PREPOSITIONS.has(remainderFirst) ||
       MID_SENTENCE_ADVERBS.has(remainderFirst) ||
-      ['more', 'less', 'well'].includes(remainderFirst) ||
+      ['better', 'farther', 'further', 'well'].includes(remainderFirst) ||
       /ly$/.test(remainderFirst)
+    ) {
+      parts.push({ role: 'M', text: remainder })
+    } else if (
+      /^(?:and|but|or)\s+/i.test(remainder) &&
+      isVerb(words(remainder)[1] ?? '')
     ) {
       parts.push({ role: 'M', text: remainder })
     } else if (passive) {
       parts.push({ role: 'M', text: remainder })
-    } else if (DOUBLE_OBJECT_VERBS.has(mainVerb) && words(remainder).length >= 3) {
+    } else if (DOUBLE_OBJECT_VERBS.has(mainVerb)) {
       const remainderWords = [...remainder.matchAll(/[A-Za-z][A-Za-z'’-]*/g)]
-      const boundary = remainderWords[1]?.index
-      if (boundary) {
+      const firstRemainder = normalizeToken(remainderWords[0]?.[0] ?? '')
+      const recipientWords = RECIPIENT_PRONOUNS.has(firstRemainder)
+        ? 1
+        : ['how', 'what', 'whether', 'which', 'who', 'why']
+            .includes(normalizeToken(remainderWords[1]?.[0] ?? ''))
+          ? 1
+        : (
+            remainderWords.length >= 4 &&
+            !PREPOSITIONS.has(normalizeToken(remainderWords[2]?.[0] ?? ''))
+          )
+          ? 2
+          : 0
+      const boundary = remainderWords[recipientWords]?.index
+      if (recipientWords > 0 && boundary) {
         parts.push({ role: 'O1', text: remainder.slice(0, boundary).trim() })
         parts.push({ role: 'O2', text: remainder.slice(boundary).trim() })
+      } else if (recipientWords > 0) {
+        parts.push({ role: 'O1', text: remainder })
       } else {
         parts.push({ role: 'O', text: remainder })
       }
-    } else if (OBJECT_COMPLEMENT_VERBS.has(mainVerb) && words(remainder).length >= 3) {
+    } else if (OBJECT_COMPLEMENT_VERBS.has(mainVerb) && words(remainder).length >= 2) {
       const remainderWords = [...remainder.matchAll(/[A-Za-z][A-Za-z'’-]*/g)]
-      const boundary = remainderWords[1]?.index
-      if (boundary) {
+      const complementIndex = remainderWords.findIndex((token, index) =>
+        index > 0 &&
+        (
+          (
+            mainVerb !== 'help' &&
+            ['as', 'more'].includes(normalizeToken(token[0]))
+          ) ||
+          (
+            index === 1 &&
+            ['help', 'make'].includes(mainVerb) &&
+            isVerb(token[0])
+          ) ||
+          (
+            mainVerb !== 'help' &&
+            wordRecord(token[0])?.pos === '形' &&
+            index === remainderWords.length - 1
+          )
+        ))
+      const boundary = complementIndex > 0 ? remainderWords[complementIndex]?.index : null
+      if (boundary != null) {
         parts.push({ role: 'O', text: remainder.slice(0, boundary).trim() })
         parts.push({ role: 'C', text: remainder.slice(boundary).trim() })
       } else {
@@ -909,7 +1137,7 @@ function analyzeSvoc(text, { implicitSubject = false } = {}) {
   const coreRoles = parts
     .map((part) => part.role.replace(/[12]$/, ''))
     .filter((role) => role !== 'M')
-  const pattern = coreRoles.join('')
+  const pattern = existential ? 'SV' : coreRoles.join('')
   return {
     parts,
     pattern,
@@ -953,24 +1181,53 @@ function mainClausePattern(blocks) {
     (block) => block.kind === 'core' && block.svoc.pattern.includes('V'),
   )
   if (coreIndex < 0) return ''
-  const roles = blocks[coreIndex].svoc.parts
-    .map((part) => part.role.replace(/[12]$/, ''))
+  const coreParts = blocks[coreIndex].svoc.parts
+  if (
+    blocks[coreIndex].svoc.pattern === 'SV' &&
+    coreParts.some((part) => part.role === 'M' && normalizeToken(part.text) === 'there')
+  ) {
+    return 'SV'
+  }
+  const roles = coreParts
+    .map((part) => part.role)
     .filter((role) => role !== 'M')
   if (!roles.includes('S') && blocks.slice(0, coreIndex).some((block) => block.role === 'S')) {
     roles.unshift('S')
   }
+  const verbPartIndex = coreParts.findIndex((part) => part.role === 'V')
+  if (
+    coreParts.some(
+      (part, index) =>
+        part.role === 'M' &&
+        index > verbPartIndex &&
+        (
+          PREPOSITIONS.has(firstWord(part.text)) ||
+          /\b(?:by|from|in|on|with)\s*$/i.test(part.text)
+        ),
+    )
+  ) {
+    return roles.map((role) => role.replace(/[12]$/, '')).join('')
+  }
   for (const block of blocks.slice(coreIndex + 1)) {
     if (block.kind === 'core' || block.role === '並列') break
-    const role = block.role?.replace(/[12]$/, '')
+    if (block.role === 'M') break
+    const rawRole = block.role
+    const role = rawRole?.replace(/[12]$/, '')
+    if (rawRole === 'O2' && roles.includes('O1')) {
+      roles.push('O2')
+      break
+    }
+    const normalizedRoles = roles.map((item) => item.replace(/[12]$/, ''))
     if (
       ['O', 'C'].includes(role) &&
-      !roles.includes(role) &&
-      !(role === 'O' && roles.includes('C'))
+      !normalizedRoles.includes(role) &&
+      !(role === 'O' && normalizedRoles.includes('C'))
     ) {
-      roles.push(role)
+      roles.push(rawRole)
+      break
     }
   }
-  return roles.join('')
+  return roles.map((role) => role.replace(/[12]$/, '')).join('')
 }
 
 export function analyzeReadingSentence(sentence) {

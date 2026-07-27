@@ -12,6 +12,74 @@ import { getWord } from './vocab.js'
 
 const toId = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '')
 
+// 表層形の意味を保ったまま、共通辞書の原形IDへ結び付ける不規則変化。
+// 単なる語尾削除では誤る形だけを明示し、本文タップ時の語義も文脈に合わせる。
+export const PASSAGE_IRREGULAR_FORMS = {
+  began: { lemma: 'begin', ja: '始めた・始まった' },
+  begun: { lemma: 'begin', ja: '始めた・始まった（beginの過去分詞）' },
+  broken: { lemma: 'break', ja: '壊れた・壊された' },
+  built: { lemma: 'build', ja: '建てた・作られた' },
+  children: { lemma: 'child', ja: '子どもたち' },
+  forgot: { lemma: 'forget', ja: '忘れた' },
+  gave: { lemma: 'give', ja: '与えた' },
+  grown: { lemma: 'grow', ja: '育てた・育った（growの過去分詞）' },
+  knew: { lemma: 'know', ja: '知っていた' },
+  left: { lemma: 'leave', ja: '去った・残された' },
+  made: { lemma: 'make', ja: '作った・〜させた' },
+  said: { lemma: 'say', ja: '言った' },
+  seen: { lemma: 'see', ja: '見られた・見た（seeの過去分詞）' },
+  sent: { lemma: 'send', ja: '送った・送られた' },
+  stood: { lemma: 'stand', ja: '立っていた・位置していた' },
+  taught: { lemma: 'teach', ja: '教えた' },
+  thought: { lemma: 'think', ja: '考えた・思った' },
+  worn: { lemma: 'wear', ja: 'すり減った・使い古された' },
+}
+
+// 透明な派生語は「語族=1辞書項目」の方針に従い、既存の基本語へ接続する。
+// ja は本文中の品詞・意味に合わせ、保存先だけを共通の辞書IDにする。
+export const PASSAGE_FORM_ALIASES = {
+  cannot: { id: 'can', ja: '〜できない' },
+  deepen: { id: 'deep', ja: '深める・悪化させる' },
+  description: { id: 'describe', ja: '説明・記述' },
+  distortion: { id: 'distort', ja: '歪曲・ゆがみ' },
+  environmental: { id: 'environment', ja: '環境の・環境保護の' },
+  farmland: { id: 'farm', ja: '農地' },
+  farther: { id: 'far', ja: 'さらに遠くへ・より遠い' },
+  historical: { id: 'history', ja: '歴史の・歴史上の' },
+  historian: { id: 'history', ja: '歴史家' },
+  historians: { id: 'history', ja: '歴史家たち' },
+  institutional: { id: 'institution', ja: '制度上の・組織の' },
+  interference: { id: 'interfere', ja: '干渉・妨害' },
+  interpretation: { id: 'interpret', ja: '解釈' },
+  investment: { id: 'invest', ja: '投資' },
+  investments: { id: 'invest', ja: '投資（複数）' },
+  permanence: { id: 'permanent', ja: '永続性' },
+  political: { id: 'politics', ja: '政治の・政治的な' },
+  politician: { id: 'politics', ja: '政治家' },
+  politicians: { id: 'politics', ja: '政治家たち' },
+  preparation: { id: 'prepare', ja: '準備' },
+  proof: { id: 'prove', ja: '証拠・証明' },
+  ranking: { id: 'rank', ja: '順位付け' },
+  rankings: { id: 'rank', ja: '順位付け（複数）' },
+  reflection: { id: 'reflect', ja: '熟考・省察' },
+  relation: { id: 'relate', ja: '関係' },
+  relations: { id: 'relate', ja: '関係（複数）' },
+  repeatedly: { id: 'repeat', ja: '繰り返し' },
+  researcher: { id: 'research', ja: '研究者' },
+  researchers: { id: 'research', ja: '研究者たち' },
+  searchable: { id: 'search', ja: '検索可能な' },
+  storage: { id: 'store', ja: '保管・保存' },
+  subtly: { id: 'subtle', ja: '微妙に・目立たない形で' },
+  transportation: { id: 'transport', ja: '交通・輸送' },
+  unavailable: { id: 'available', ja: '利用できない・入手できない' },
+  unexpected: { id: 'expect', ja: '予期しない・思いがけない' },
+  unnecessary: { id: 'necessary', ja: '不必要な' },
+  unreadable: { id: 'read', ja: '読めない' },
+  usable: { id: 'use', ja: '使用できる' },
+  user: { id: 'use', ja: '利用者' },
+  users: { id: 'use', ja: '利用者たち' },
+}
+
 // 原形の候補を緩く生成（最初に語彙データと一致したものを採用）。
 // -s/-d を先に試すことで uses/used を us と誤認しない。子音重複や y 変化も扱う。
 export function lemmaCandidates(k) {
@@ -26,6 +94,8 @@ export function lemmaCandidates(k) {
 
   if (k.endsWith('ies')) add(k.slice(0, -3) + 'y')
   if (k.endsWith('ied')) add(k.slice(0, -3) + 'y')
+  if (k.endsWith('ier')) add(k.slice(0, -3) + 'y')
+  if (k.endsWith('iest')) add(k.slice(0, -4) + 'y')
 
   // 三単現・複数形。uses→use を classes→class より先に安全に試す。
   if (k.endsWith('s') && !k.endsWith('ss')) add(k.slice(0, -1))
@@ -52,6 +122,11 @@ export function lemmaCandidates(k) {
 }
 
 function lemmaWord(key) {
+  const irregular = PASSAGE_IRREGULAR_FORMS[key]
+  if (irregular) {
+    const word = getWord(toId(irregular.lemma))
+    if (word) return word
+  }
   for (const cand of lemmaCandidates(key)) {
     const w = getWord(toId(cand))
     if (w) return w
@@ -62,8 +137,8 @@ function lemmaWord(key) {
 // 語彙データに無い／引きにくい基本語・機能語の補助辞書（小文字の表層形がキー）。
 // 「長文に出てくる語はすべて意味が出る」ことを保証するための最終フォールバック。
 export const READER_GLOSS = {
-  english: 'イングランドの・英語（の）',
-  many: 'たくさんの・多くの',
+  rina: 'リナ（人名）',
+  ken: 'ケン（人名）',
   // 冠詞・代名詞
   a: '（不定冠詞）ひとつの',
   an: '（不定冠詞）ひとつの',
@@ -164,11 +239,21 @@ export function resolvePassageWord(key, sentenceGloss) {
   if (!key) return null
   const inline = sentenceGloss?.[key]
   // インラインに ja があればそれを優先（id も使う）
-  const direct = getWord(toId(key))
-  const lemma = inline?.ja || direct ? null : lemmaWord(key)
-  const word = (inline?.id && getWord(inline.id)) || direct || lemma
+  const direct = inline?.proper ? null : getWord(toId(key))
+  const alias = PASSAGE_FORM_ALIASES[key]
+  const aliasWord = alias && getWord(alias.id)
+  const lemma = inline?.ja || direct || aliasWord ? null : lemmaWord(key)
+  const word = (inline?.id && getWord(inline.id)) || direct || aliasWord || lemma
+  const irregular = PASSAGE_IRREGULAR_FORMS[key]
   const fb = READER_GLOSS[key]
-  const ja = inline?.ja ?? word?.meaning ?? fb ?? null
-  const id = inline?.id ?? word?.id ?? null
+  const ja =
+    inline?.ja ??
+    direct?.meaning ??
+    irregular?.ja ??
+    (aliasWord ? alias.ja : null) ??
+    word?.meaning ??
+    fb ??
+    null
+  const id = inline?.proper ? null : (inline?.id ?? word?.id ?? null)
   return ja ? { ja, id } : null
 }

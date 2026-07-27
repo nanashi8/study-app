@@ -23,7 +23,7 @@ export const PASSAGES = [
     titleJa: 'リナのノート',
     blurb: '5級の短文・会話文をつないで読む、アプリ独自の読解入門。',
     vocab: [
-      'student', 'school', 'bus', 'class', 'teacher',
+      'junior', 'student', 'school', 'bus', 'class', 'teacher',
       'picture', 'notebook', 'friend', 'story', 'happy',
     ],
     sentences: [
@@ -340,6 +340,31 @@ export const PASSAGES = [
     ],
   },
 ]
+
+const PROPER_NAME_GLOSSES = [
+  { test: /\bRina\b/, words: { rina: 'リナ（人名）' } },
+  { test: /\bKen\b/, words: { ken: 'ケン（人名）' } },
+  {
+    test: /\bGreen Town Library\b/,
+    words: {
+      green: 'グリーン（施設名の一部）',
+      town: 'タウン（施設名の一部）',
+    },
+  },
+  { test: /\bMs\. Brown\b/, words: { brown: 'ブラウン（人名）' } },
+  { test: /\bMaple Junior High\b/, words: { maple: 'メープル（校名の一部）' } },
+]
+
+for (const passage of PASSAGES) {
+  for (const sentence of passage.sentences) {
+    for (const entry of PROPER_NAME_GLOSSES) {
+      if (!entry.test.test(sentence.en)) continue
+      for (const [key, ja] of Object.entries(entry.words)) {
+        sentence.gloss[key] = { ja, proper: true }
+      }
+    }
+  }
+}
 
 export const PASSAGES_BY_ID = Object.fromEntries(PASSAGES.map((p) => [p.id, p]))
 export const getPassage = (id) => PASSAGES_BY_ID[id]
