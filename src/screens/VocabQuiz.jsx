@@ -15,6 +15,7 @@ import { Button, ProgressBar, IconButton } from '../components/ui.jsx'
 import { Close, Check, ArrowRight } from '../components/Icons.jsx'
 import { cx } from '../components/ui.jsx'
 import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
+import battleVignette from '../assets/rpg-battle-vignette.jpg'
 
 // このクイズ画面の同一性キー（出題ソース・タイトル・問題数）。
 // 退避したセッションが「今まさに戻ってきたクイズ」のものかを照合するのに使う。
@@ -176,6 +177,7 @@ export function VocabQuizScreen() {
             enemyRank={enemyLevel(params.source?.levelIndex ?? 0)}
             enemyHp={enemyHp}
             heroHp={heroHp}
+            hit={answered && isCorrectPick}
             quest={quest}
           />
         )}
@@ -288,7 +290,7 @@ export function VocabQuizScreen() {
   )
 }
 
-function BattleHud({ encounter, enemyRank, enemyHp, heroHp, quest }) {
+function BattleHud({ encounter, enemyRank, enemyHp, heroHp, hit, quest }) {
   return (
     <div className="mt-2 grid grid-cols-[1fr_auto_1fr] items-center gap-2 rounded-2xl bg-slate-900 p-2.5 text-white shadow-inner">
       <div className="min-w-0">
@@ -308,21 +310,30 @@ function BattleHud({ encounter, enemyRank, enemyHp, heroHp, quest }) {
 
       <span className="text-[10px] font-black text-amber-300">VS</span>
 
-      <div className="min-w-0">
-        <div className="flex items-center justify-between gap-1 text-[9px] font-extrabold text-rose-300">
-          <span className="truncate">
-            {encounter.emoji} {encounter.name}
-          </span>
-          <span>{enemyHp} HP</span>
-        </div>
-        <ProgressBar
-          value={enemyHp / 100}
-          color="#fb7185"
-          className="mt-1 h-1.5 bg-white/15"
+      <div className="flex min-w-0 items-center gap-1.5">
+        <img
+          src={battleVignette}
+          alt=""
+          className={cx(
+            'mob-portrait h-8 w-8 shrink-0 rounded-xl object-cover ring-1 ring-violet-300/50',
+            hit && 'mob-portrait-hit',
+          )}
+          style={{ objectPosition: '88% 52%' }}
         />
-        <p className="mt-1 truncate text-right text-[9px] font-bold text-white/55">
-          敵ランク：英検{enemyRank.label}
-        </p>
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center justify-between gap-1 text-[9px] font-extrabold text-rose-300">
+            <span className="truncate">{encounter.name}</span>
+            <span>{enemyHp} HP</span>
+          </div>
+          <ProgressBar
+            value={enemyHp / 100}
+            color="#fb7185"
+            className="mt-1 h-1.5 bg-white/15"
+          />
+          <p className="mt-1 truncate text-right text-[9px] font-bold text-white/55">
+            敵：英検{enemyRank.label}
+          </p>
+        </div>
       </div>
     </div>
   )

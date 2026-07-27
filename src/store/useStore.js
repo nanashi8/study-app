@@ -371,9 +371,15 @@ export const useStore = create(
       // 明示的にポジションを設定（初回配置や復元時）。
       setEngPos: (pos) => set({ engPos: clampPos(pos) }),
       // バトルの正答率(0-1)で生徒のポジションを上下させる。
-      // 正解しつづければ前進して敵が強くなり、つまずけば後退して敵が弱くなる。
-      recordBattle: (accuracy) =>
-        set((st) => ({ engPos: nextPosition(st.engPos ?? 0, accuracy) })),
+      // fromPos / maxPos を渡すと、冒険者LVで解放済みの範囲内だけを移動する。
+      recordBattle: (accuracy, fromPos = null, maxPos = null) =>
+        set((st) => {
+          const start = Number.isFinite(fromPos) ? fromPos : st.engPos ?? 0
+          const next = nextPosition(start, accuracy)
+          return {
+            engPos: Number.isFinite(maxPos) ? Math.min(next, maxPos) : next,
+          }
+        }),
 
       // 単元セッション終了時に理解度（最高正答率）を更新する。
       setMathMastery: (unitId, pct) =>

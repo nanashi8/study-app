@@ -1,5 +1,51 @@
 import { GRAMMAR_EXPANSION } from './grammar-expansion.js'
 import { GENERATED_GRAMMAR } from './grammar-generated.js'
+import { GRAMMAR_EXAM_PATTERNS } from './grammar-exam-patterns.js'
+
+// 既存の手作り問題にも、生成問題・入試型問題と同じ文法判断を問うものがある。
+// IDや並び順は変えず、出題時だけ同じ variationGroup として重複を抑える。
+const LEGACY_VARIATION_GROUPS = Object.freeze({
+  gr_5_pron_1: 'exam:eiken:5_pronoun_form',
+  gr_5_pron_2: 'exam:eiken:5_pronoun_form',
+  gr_5_pron_3: 'exam:eiken:5_pronoun_form',
+  gr_5_pron_4: 'exam:eiken:5_pronoun_form',
+  gr_5_pron_x1: 'exam:eiken:5_pronoun_form',
+  gr_more_5_pron_01: 'exam:eiken:5_pronoun_form',
+  gr_5_neg_1: 'exam:eiken:5_present_negative',
+  gr_5_verb_x1: 'exam:eiken:5_present_negative',
+  gr_5_neg_2: 'auto:5_does_question',
+  gr_more_5_neg_01: 'auto:5_do_question',
+  gr_4_comp_1: 'auto:4_comparative',
+  gr_4_comp_2: 'auto:4_superlative',
+  gr_4_comp_3: 'auto:4_comparative',
+  gr_4_comp_4: 'auto:4_superlative',
+  gr_4_comp_5: 'auto:4_comparative',
+  gr_4_comp_6: 'exam:eiken:4_equal_comparison',
+  gr_4_comp_x1: 'auto:4_superlative',
+  gr_4_comp_x2: 'auto:4_comparative',
+  gr_more_4_comp_01: 'exam:eiken:4_equal_comparison',
+  gr_4_have_to_1: 'exam:eiken:4_have_to',
+  gr_more_4_modal_01: 'exam:eiken:4_have_to',
+  gr_3_perf_2: 'exam:eiken:3_perfect_question',
+  gr_3_perf_6: 'exam:eiken:3_perfect_question',
+  gr_more_3_perf_01: 'exam:eiken:3_perfect_question',
+  gr_pre2_ger_5: 'exam:eiken:pre2_used_to_contrast',
+  gr_more_pre1_conc_01: 'exam:university:pre1_concession_as',
+  gr_1_invc_1: 'exam:university:1_not_until_inversion',
+  gr_1_subj_1: 'exam:university:pre1_mandative',
+})
+
+const GENERATED_VARIATION_GROUPS = Object.freeze({
+  'auto:5_pronoun': 'exam:eiken:5_pronoun_form',
+  'auto:4_used_to': 'exam:eiken:pre2_used_to_contrast',
+  'auto:1_mandative': 'exam:university:pre1_mandative',
+})
+
+const withVariationGroup = (item) => {
+  const variationGroup = LEGACY_VARIATION_GROUPS[item.id]
+    ?? GENERATED_VARIATION_GROUPS[item.pattern]
+  return variationGroup ? { ...item, variationGroup } : item
+}
 
 // 級ごとの文法問題データ。4択（空所補充）形式。
 // SRS は単語・熟語と同じ store.srs を id で共用（id が一意なら衝突しない）。
@@ -387,18 +433,25 @@ export const GRAMMAR = [
 
   ...GRAMMAR_EXPANSION,
   ...GENERATED_GRAMMAR,
-]
+  ...GRAMMAR_EXAM_PATTERNS,
+].map(withVariationGroup)
 
 export const grammarByLevel = (level) => GRAMMAR.filter((g) => g.level === level)
 export const grammarByTopic = (level, topic) => GRAMMAR.filter((g) => g.level === level && g.topic === topic)
 export const getGrammar = (id) => GRAMMAR.find((g) => g.id === id)
 export const topicsForLevel = (level) => [...new Set(grammarByLevel(level).map((g) => g.topic))]
+export const grammarPatternGroup = (item) =>
+  item?.variationGroup ?? item?.pattern ?? null
 
 // 解説欄に出す「同じ形の例」。同じ級・単元の検証済み完成文から、現在の問題を除いて返す。
 export const samePatternExamplesFor = (item, limit = 2) => {
   if (!item || limit <= 0) return []
-  const patternMatches = item.pattern
-    ? GRAMMAR.filter((candidate) => candidate.pattern === item.pattern)
+  const patternGroup = grammarPatternGroup(item)
+  const patternMatches = patternGroup
+    ? GRAMMAR.filter((candidate) =>
+        candidate.level === item.level
+        && candidate.topic === item.topic
+        && grammarPatternGroup(candidate) === patternGroup)
     : []
   const candidates = patternMatches.length > limit
     ? patternMatches
@@ -413,17 +466,17 @@ export const samePatternExamplesFor = (item, limit = 2) => {
     }))
 }
 
-// 3,000問を級間で均等化した収録目標。
+// 3,140問を級間でほぼ均等化した収録目標。
 export const GRAMMAR_LEVEL_TARGETS = Object.freeze({
-  5: 429,
-  4: 429,
-  3: 429,
-  pre2: 429,
-  2: 428,
-  pre1: 428,
-  1: 428,
+  5: 449,
+  4: 449,
+  3: 449,
+  pre2: 449,
+  2: 448,
+  pre1: 448,
+  1: 448,
 })
 
 // 単元別クイズと「同じ形の例」2文を成立させるため、各級・各単元に最低3問置く。
 export const GRAMMAR_TOPIC_MINIMUM = 3
-export const GRAMMAR_TOTAL_TARGET = 3000
+export const GRAMMAR_TOTAL_TARGET = 3140

@@ -32,6 +32,12 @@ import {
   GRAMMAR_TOPIC_MINIMUM,
   GRAMMAR_TOTAL_TARGET,
 } from '../src/data/grammar.js'
+import {
+  GRAMMAR_EXAM_PATTERN_COUNT,
+  GRAMMAR_EXAM_PATTERN_FAMILIES,
+  GRAMMAR_EXAM_PATTERNS,
+  GRAMMAR_EXAM_QUESTION_COUNT,
+} from '../src/data/grammar-exam-patterns.js'
 import { PHONETIC_OVERRIDES } from '../src/data/phonetic-overrides.js'
 import { VN_EPISODES, SPEAKERS } from '../src/data/vn.js'
 import {
@@ -251,6 +257,7 @@ for (const level of READING_LEVELS) {
 // ── 文法：空所・正解・完成文の整合性 ──
 const grammarIds = new Set()
 const grammarPrompts = new Set()
+const grammarSentences = new Set()
 const normalizeSentence = (text) =>
   (text ?? '').replace(/\s+/g, ' ').replace(/\s+([,.?!])/g, '$1').trim()
 for (const g of GRAMMAR) {
@@ -278,6 +285,9 @@ for (const g of GRAMMAR) {
   const promptKey = normalizeSentence(g.q).toLowerCase()
   if (promptKey && grammarPrompts.has(promptKey)) errors.push(`${at}: 同一の問題文が重複`)
   grammarPrompts.add(promptKey)
+  const sentenceKey = normalizeSentence(g.sentence?.en).toLowerCase()
+  if (sentenceKey && grammarSentences.has(sentenceKey)) errors.push(`${at}: 同一の完成文が重複`)
+  grammarSentences.add(sentenceKey)
   const completed = normalizeSentence(g.q?.replace('___', g.answer))
   const expected = normalizeSentence(g.sentence?.en)
   if (completed && expected && !completed.includes(expected)) {
@@ -317,6 +327,66 @@ for (const item of GRAMMAR.filter((question) => question.id.startsWith('gr_auto_
 }
 for (const [pattern, count] of generatedPatternCounts) {
   if (count < 10) errors.push(`文法 pattern ${pattern}: ${count}問（同型反復には10問以上必要）`)
+}
+const examSources = new Set(['eiken', 'common', 'university'])
+const examPatternCounts = new Map()
+const examPatternMeta = new Map()
+const examItems = GRAMMAR.filter((question) => question.id.startsWith('gr_exam_'))
+const registeredExamIds = new Set(GRAMMAR_EXAM_PATTERNS.map((question) => question.id))
+if (examItems.length !== GRAMMAR_EXAM_QUESTION_COUNT) {
+  errors.push(`文法 入試型問題: ${examItems.length}問（収録目標は${GRAMMAR_EXAM_QUESTION_COUNT}問）`)
+}
+if (GRAMMAR_EXAM_PATTERN_FAMILIES.length !== GRAMMAR_EXAM_PATTERN_COUNT) {
+  errors.push(`文法 入試型 family 数が定数と不一致 (${GRAMMAR_EXAM_PATTERN_FAMILIES.length}/${GRAMMAR_EXAM_PATTERN_COUNT})`)
+}
+for (const family of GRAMMAR_EXAM_PATTERN_FAMILIES) {
+  if (family.length !== 10) {
+    errors.push(`文法 入試型 family ${family[0]?.pattern ?? '(空)'}: ${family.length}問（各型10問必要）`)
+  }
+  const focusCounts = new Map()
+  for (const item of family) {
+    focusCounts.set(item.examFocus, (focusCounts.get(item.examFocus) ?? 0) + 1)
+  }
+  if (focusCounts.size < 4) {
+    errors.push(`文法 入試型 family ${family[0]?.pattern ?? '(空)'}: 問う箇所が${focusCounts.size}種（4種以上必要）`)
+  }
+  if (Math.max(0, ...focusCounts.values()) > 3) {
+    errors.push(`文法 入試型 family ${family[0]?.pattern ?? '(空)'}: 同じ問題箇所が4問以上に偏っている`)
+  }
+  if (new Set(family.map((item) => item.answer)).size < 4) {
+    errors.push(`文法 入試型 family ${family[0]?.pattern ?? '(空)'}: 正解語句が4種未満`)
+  }
+}
+for (const item of examItems) {
+  const at = `文法 ${item.id}`
+  if (!registeredExamIds.has(item.id)) errors.push(`${at}: 入試型データ本体に未登録`)
+  if (!examSources.has(item.examSource)) errors.push(`${at}: examSource が不正 (${item.examSource})`)
+  if (!item.examFocus?.trim()) errors.push(`${at}: 問題箇所を示す examFocus が無い`)
+  if (!item.pattern?.startsWith(`exam:${item.examSource}:`)) {
+    errors.push(`${at}: pattern と examSource が不一致 (${item.pattern}/${item.examSource})`)
+    continue
+  }
+  const completed = normalizeSentence(item.q.replace('___', item.answer))
+  const expected = normalizeSentence(item.sentence.en)
+  if (completed !== expected) {
+    errors.push(`${at}: 入試型問題の完成文が空所補完結果と完全一致しない (${completed} / ${expected})`)
+  }
+  if (/[A-Za-z]/.test(item.sentence.ja)) {
+    errors.push(`${at}: 入試型問題の和訳に未翻訳の英字がある (${item.sentence.ja})`)
+  }
+  examPatternCounts.set(item.pattern, (examPatternCounts.get(item.pattern) ?? 0) + 1)
+  const meta = `${item.examSource}\u0000${item.level}\u0000${item.topic}`
+  const knownMeta = examPatternMeta.get(item.pattern)
+  if (knownMeta && knownMeta !== meta) {
+    errors.push(`${at}: 同じ入試型 pattern 内で source/level/topic が不一致`)
+  }
+  examPatternMeta.set(item.pattern, meta)
+}
+if (examPatternCounts.size !== GRAMMAR_EXAM_PATTERN_COUNT) {
+  errors.push(`文法 入試型 pattern: ${examPatternCounts.size}種（収録目標は${GRAMMAR_EXAM_PATTERN_COUNT}種）`)
+}
+for (const [pattern, count] of examPatternCounts) {
+  if (count !== 10) errors.push(`文法 入試型 pattern ${pattern}: ${count}問（各型10問必要）`)
 }
 for (const [key, count] of grammarTopicCounts) {
   if (count < GRAMMAR_TOPIC_MINIMUM) {

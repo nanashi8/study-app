@@ -1,0 +1,94 @@
+.math-visual-range {
+  --range-color: #4f46e5;
+  --range-progress: 50%;
+  -webkit-appearance: none;
+  appearance: none;
+  display: block;
+  width: 100%;
+  height: 2.75rem;
+  margin: 0;
+  cursor: pointer;
+  touch-action: pan-y;
+  background: transparent;
+  border-radius: 9999px;
+}
+
+.math-visual-range::-webkit-slider-runnable-track {
+  height: 0.75rem;
+  border: 1px solid rgb(30 27 75 / 0.12);
+  border-radius: 9999px;
+  background:
+    linear-gradient(
+      to right,
+      var(--range-color) 0,
+      var(--range-color) var(--range-progress),
+      #e2e4f2 var(--range-progress),
+      #e2e4f2 100%
+    );
+  box-shadow: inset 0 1px 2px rgb(30 27 75 / 0.12);
+}
+
+.math-visual-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  box-sizing: border-box;
+  width: 1.875rem;
+  height: 1.875rem;
+  margin-top: -0.625rem;
+  border: 0.3125rem solid var(--range-color);
+  border-radius: 9999px;
+  background: #fff;
+  box-shadow:
+    0 0 0 2px #fff,
+    0 3px 8px rgb(30 27 75 / 0.3);
+}
+
+.math-visual-range::-moz-range-track {
+  height: 0.75rem;
+  border: 1px solid rgb(30 27 75 / 0.12);
+  border-radius: 9999px;
+  background:
+    linear-gradient(
+      to right,
+      var(--range-color) 0,
+      var(--range-color) var(--range-progress),
+      #e2e4f2 var(--range-progress),
+      #e2e4f2 100%
+    );
+  box-shadow: inset 0 1px 2px rgb(30 27 75 / 0.12);
+}
+
+.math-visual-range::-moz-range-thumb {
+  box-sizing: border-box;
+  width: 1.875rem;
+  height: 1.875rem;
+  border: 0.3125rem solid var(--range-color);
+  border-radius: 9999px;
+  background: #fff;
+  box-shadow:
+    0 0 0 2px #fff,
+    0 3px 8px rgb(30 27 75 / 0.3);
+}
+
+.math-visual-range:focus-visible {
+  outline: 3px solid var(--range-color);
+  outline-offset: 2px;
+}
+
+.math-visual-range:active::-webkit-slider-thumb {
+  transform: scale(1.08);
+}
+
+.math-visual-range:active::-moz-range-thumb {
+  transform: scale(1.08);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .math-visual-range::-webkit-slider-thumb {
+    transition: transform 120ms ease, box-shadow 120ms ease;
+  }
+
+  .math-visual-range::-moz-range-thumb {
+    transition: transform 120ms ease, box-shadow 120ms ease;
+  }
+}

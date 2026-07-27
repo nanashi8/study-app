@@ -11,6 +11,7 @@ import {
   GRAMMAR_TOPIC_MINIMUM,
   GRAMMAR_TOTAL_TARGET,
   grammarByLevel,
+  grammarPatternGroup,
   samePatternExamplesFor,
 } from '../src/data/grammar.js'
 import { PHRASES } from '../src/data/phrases.js'
@@ -112,7 +113,7 @@ test('全ての文法問題は正解を入れると完成文を含む', () => {
   }
 })
 
-test('英文法は全7級に均等な3000問があり、重複のない4択を備える', () => {
+test('英文法は全7級にほぼ均等な3140問があり、重複のない4択を備える', () => {
   assert.equal(GRAMMAR.length, GRAMMAR_TOTAL_TARGET)
   for (const [level, target] of Object.entries(GRAMMAR_LEVEL_TARGETS)) {
     assert.equal(grammarByLevel(level).length, target, level)
@@ -153,8 +154,17 @@ test('全ての文法問題は同じ級・単元の完成例を2文表示でき�
     for (const example of examples) {
       const source = GRAMMAR.find((candidate) => candidate.id === example.id)
       assert.equal(source.level, item.level, item.id)
-      if (item.pattern) assert.equal(source.pattern, item.pattern, item.id)
-      else assert.equal(source.topic, item.topic, item.id)
+      assert.equal(source.topic, item.topic, item.id)
+      const patternGroup = grammarPatternGroup(item)
+      const sameGroupCount = patternGroup
+        ? GRAMMAR.filter((candidate) =>
+            candidate.level === item.level
+            && candidate.topic === item.topic
+            && grammarPatternGroup(candidate) === patternGroup).length
+        : 0
+      if (sameGroupCount > GRAMMAR_TOPIC_MINIMUM - 1) {
+        assert.equal(grammarPatternGroup(source), patternGroup, item.id)
+      }
     }
   }
 })
