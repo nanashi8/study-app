@@ -4,17 +4,21 @@ import assert from 'node:assert/strict'
 import { battleTrend } from '../src/lib/adaptive.js'
 import {
   BATTLE_QUESTS,
+  BATTLE_TACTICS,
   MAX_HERO_LEVEL,
   MAX_LEVEL_XP,
   battleQuest,
+  battleTactic,
   battleVerdict,
   capEnemyPositionForHeroLevel,
   chapterForLevel,
   encounterFor,
+  featuredBattleTacticId,
   featuredQuestId,
   heroProgress,
   maxEnemyRankIndexForHeroLevel,
   nextEnemyRankUnlockForHeroLevel,
+  resolveBattleState,
   xpAtLevel,
   xpNeededForNextLevel,
 } from '../src/lib/rpg.js'
@@ -72,6 +76,73 @@ test('戦闘時間は5・10・15問から選べ、日替わり推薦が循環す
     [0, 1, 2, 3].map(featuredQuestId),
     ['scout', 'duel', 'expedition', 'scout'],
   )
+})
+
+test('作戦カードは3種類から選べ、日替わり推薦が循環する', () => {
+  assert.deepEqual(
+    BATTLE_TACTICS.map((tactic) => tactic.id),
+    ['combo', 'guard', 'counter'],
+  )
+  assert.equal(battleTactic('guard').name, '守護の型')
+  assert.equal(battleTactic('unknown').id, 'combo')
+  assert.deepEqual(
+    [0, 1, 2, 3].map(featuredBattleTacticId),
+    ['combo', 'guard', 'counter', 'combo'],
+  )
+})
+
+test('連撃の型は3連続正解ごとに奥義を発動する', () => {
+  const state = resolveBattleState({
+    answers: ['correct', 'correct', 'correct', 'wrong', 'correct'],
+    total: 5,
+    tacticId: 'combo',
+  })
+  assert.equal(state.comboBursts, 1)
+  assert.equal(state.activations, 1)
+  assert.equal(state.maxStreak, 3)
+  assert.equal(state.heroHp, 67)
+  assert.match(state.summary, /奥義 1回/)
+})
+
+test('守護の型は2正解で盾を作り、次のミスだけを防ぐ', () => {
+  const blocked = resolveBattleState({
+    answers: ['correct', 'correct', 'unknown'],
+    total: 5,
+    tacticId: 'guard',
+  })
+  assert.equal(blocked.lastEvent.kind, 'block')
+  assert.equal(blocked.heroHp, 100)
+
+  const state = resolveBattleState({
+    answers: ['correct', 'correct', 'wrong', 'wrong'],
+    total: 5,
+    tacticId: 'guard',
+  })
+  assert.equal(state.protectedHits, 1)
+  assert.equal(state.shields, 0)
+  assert.equal(state.heroHp, 67)
+})
+
+test('逆転の型はミス直後の正解でカウンターしHPを回復する', () => {
+  const state = resolveBattleState({
+    answers: ['wrong', 'correct', 'unknown', 'wrong', 'correct'],
+    total: 5,
+    tacticId: 'counter',
+  })
+  assert.equal(state.counters, 2)
+  assert.equal(state.activations, 2)
+  assert.equal(state.heroHp, 67)
+  assert.match(state.summary, /HP回復 2回/)
+})
+
+test('作戦を変えても同じ正誤なら敵HPと学習評価は変わらない', () => {
+  const answers = ['correct', 'correct', 'wrong', 'correct', 'unknown']
+  const states = BATTLE_TACTICS.map((tactic) =>
+    resolveBattleState({ answers, total: 5, tacticId: tactic.id }),
+  )
+  assert.deepEqual(states.map((state) => state.correct), [3, 3, 3])
+  assert.deepEqual(states.map((state) => state.misses), [2, 2, 2])
+  assert.deepEqual(states.map((state) => state.enemyHp), [25, 25, 25])
 })
 
 test('戦果メッセージは正答率の4段階を返す', () => {
