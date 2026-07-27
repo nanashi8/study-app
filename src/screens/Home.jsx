@@ -3,7 +3,8 @@ import { overallProgress, suggestStartPosition } from '../lib/session.js'
 import { enemyLevel } from '../lib/adaptive.js'
 import { ROOTS, wordsByRoot } from '../data/vocab.js'
 import { todayIndex } from '../store/useStore.js'
-import { Card, ProgressRing, Chip } from '../components/ui.jsx'
+import { heroProgress } from '../lib/rpg.js'
+import { Card, ProgressRing, ProgressBar, Chip } from '../components/ui.jsx'
 import { Flame, Star, Book, BookOpen, Cards, Sparkles, Bookmark, Refresh, ArrowRight, Headphones, Keyboard, Mic, Lightbulb, Target, Trophy, ChevronLeft, Link } from '../components/Icons.jsx'
 
 const APP_NAME = '英語アプリ'
@@ -46,6 +47,7 @@ export function HomeScreen() {
 
   const engPos = useStore((s) => s.engPos)
   const enemy = enemyLevel(engPos ?? suggestStartPosition(srs))
+  const hero = heroProgress(stats.xp)
   const latestDiagnostic = Array.isArray(diagnosticHistory) ? diagnosticHistory[0] : null
 
   const prog = overallProgress(srs)
@@ -82,13 +84,42 @@ export function HomeScreen() {
               <Flame size={14} /> {stats.streak}日
             </Chip>
             <Chip className="bg-white/15 text-white">
-              <Star size={14} /> {stats.xp}
+              <Star size={14} /> LV{hero.level}
             </Chip>
           </div>
         </div>
 
+        {/* 冒険者LV：XPで1〜99まで上がり、下がらない長期成長。 */}
+        <button
+          onClick={() => navigate('englishMap')}
+          className="mt-4 flex w-full items-center gap-3 rounded-3xl border border-white/15 bg-slate-950/20 p-3 text-left backdrop-blur transition-transform active:scale-[0.99]"
+        >
+          <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/15 text-2xl">
+            {hero.title.emoji}
+          </span>
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center justify-between gap-2">
+              <span className="truncate font-display text-sm font-extrabold">
+                LV{hero.level} {hero.title.name}
+              </span>
+              <span className="text-[10px] font-extrabold text-white/60">
+                {hero.isMax ? 'MAX' : `あと ${hero.xpToNext} XP`}
+              </span>
+            </div>
+            <ProgressBar
+              value={hero.progress}
+              color="linear-gradient(90deg,#fde68a,#fbbf24)"
+              className="mt-1.5 h-2 bg-white/15"
+            />
+            <p className="mt-1 text-[10px] font-bold text-white/60">
+              {hero.chapter.emoji} {hero.chapter.name}を冒険中
+            </p>
+          </div>
+          <ArrowRight size={18} className="text-white/60" />
+        </button>
+
         {/* 今日の目標リング */}
-        <div className="mt-5 flex items-center gap-4 rounded-3xl bg-white/10 p-4 backdrop-blur">
+        <div className="mt-3 flex items-center gap-4 rounded-3xl bg-white/10 p-4 backdrop-blur">
           <ProgressRing value={goalPct} size={76} stroke={9} color="#ffffff" track="rgba(255,255,255,0.25)">
             <span className="font-display text-lg font-extrabold leading-none">{todayCount}</span>
             <span className="text-[10px] font-bold text-white/70">/{goal}</span>
@@ -173,9 +204,9 @@ export function HomeScreen() {
               <Target size={24} />
             </span>
             <div className="flex-1">
-              <div className="font-display font-extrabold text-ink">学習マップ・適応バトル</div>
+              <div className="font-display font-extrabold text-ink">冒険ギルド・学習バトル</div>
               <div className="text-xs font-bold text-ink/50">
-                敵LV：英検{enemy.label}・成績で強さが変化
+                冒険者LV{hero.level}・敵ランクは英検{enemy.label}
               </div>
             </div>
             <span className="text-brand-500"><ArrowRight size={22} /></span>

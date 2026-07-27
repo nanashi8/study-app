@@ -8,6 +8,7 @@ import { readFileSync, writeFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { dirname, resolve } from 'node:path'
 import { CURATED_IDS } from '../src/data/vocab.js'
+import { splitMeanings } from '../src/data/compact.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const root = resolve(__dirname, '..')
@@ -95,7 +96,7 @@ for (let i = 1; i < rows.length; i++) {
     pos: (col.pos >= 0 && r[col.pos]?.trim()) || '名',
     level,
     meaning,
-    meanings: meaning.split('・').map((m) => m.trim()).filter(Boolean),
+    meanings: splitMeanings(meaning),
   }
   const en = col.en >= 0 ? (r[col.en] ?? '').trim() : ''
   if (en) entry.example = { en, ja: col.ja >= 0 ? (r[col.ja] ?? '').trim() : '' }

@@ -146,6 +146,7 @@ import { PHONETIC_OVERRIDES } from './phonetic-overrides.js'
 import { ROOTS, ROOTS_BY_ID } from './roots.js'
 import { LEVEL_OVERRIDE } from './levels-override.js'
 import { buildRootMatchers, autoRootIds } from './derive-roots.js'
+import { splitMeanings } from './compact.js'
 
 // 語根オートリンクの検出器（精度重視・形態素分解＋除外リスト）。
 const ROOT_MATCHERS = buildRootMatchers(ROOTS)
@@ -158,8 +159,9 @@ const normalize = (w) => {
   const manual = (w.etymology?.parts ?? []).map((p) => p.root).filter(Boolean)
   const auto = autoRootIds((w.word ?? '').toLowerCase(), ROOT_MATCHERS)
   const roots = [...new Set([...manual, ...auto])]
-  // 取り込みデータに優しいフォールバック：意味は文字列1つでも可、語源は任意。
-  const meanings = w.meanings?.length ? w.meanings : w.meaning ? [w.meaning] : []
+  // meaning を正本として、取り込み済みデータも括弧を考慮した分割へ統一する。
+  const meaning = w.meaning ?? w.meanings?.join('・') ?? ''
+  const meanings = splitMeanings(meaning)
   // 発音記号(IPA)は手書き値→品詞/語義別補正→CMU辞書の順で採用。
   const phonetic =
     w.phonetic ||
@@ -174,7 +176,7 @@ const normalize = (w) => {
     level,
     roots,
     meanings,
-    meaning: w.meaning ?? meanings[0] ?? '',
+    meaning,
     phonetic,
     synonyms: w.synonyms ?? [],
     antonyms: w.antonyms ?? [],

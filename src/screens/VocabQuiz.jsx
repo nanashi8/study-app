@@ -1,6 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { useStore } from '../store/useStore.js'
+import { useStore, todayIndex } from '../store/useStore.js'
 import { buildDeck, SESSION_SIZE } from '../lib/session.js'
+import { enemyLevel } from '../lib/adaptive.js'
+import {
+  battleQuest,
+  encounterFor,
+  heroProgress,
+} from '../lib/rpg.js'
 import { pickDistractors, shuffle } from '../data/vocab.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { PosBadge } from '../components/WordBits.jsx'
@@ -55,6 +61,35 @@ export function VocabQuizScreen() {
   const results = useRef(restore ? restore.results : { correct: 0, wrong: 0, unknown: 0, wrongIds: [] })
 
   const word = deck[i]
+  const isBattle = params.source?.type === 'battle'
+  const quest = isBattle ? battleQuest(params.source?.questId) : null
+  const encounter = isBattle
+    ? encounterFor({
+        level:
+          params.source?.heroLevel
+          ?? heroProgress(useStore.getState().stats.xp).level,
+        day: params.source?.adventureDay ?? todayIndex(),
+        enemyRankIndex: params.source?.levelIndex ?? 0,
+      })
+    : null
+  const battleAnswered = isBattle
+    ? results.current.correct + results.current.wrong + results.current.unknown
+    : 0
+  const hitsToWin = Math.max(1, Math.ceil(deck.length * 0.7))
+  const enemyHp = isBattle
+    ? Math.max(0, 100 - Math.floor((results.current.correct / hitsToWin) * 100))
+    : 100
+  const missesToFall = Math.max(1, Math.ceil(deck.length * 0.5))
+  const heroHp = isBattle
+    ? Math.max(
+        0,
+        100
+          - Math.floor(
+              ((results.current.wrong + results.current.unknown) / missesToFall)
+                * 100,
+            ),
+      )
+    : 100
   // 選択肢（正解＋誤答2つ）を問題ごとに固定
   const options = useMemo(() => {
     if (!word) return []
@@ -120,16 +155,30 @@ export function VocabQuizScreen() {
   return (
     <div className="flex h-full flex-col">
       {/* 進捗 */}
-      <div className="flex items-center gap-3 px-3 py-3">
-        <IconButton onClick={back} aria-label="やめる">
-          <Close size={22} />
-        </IconButton>
-        <div className="flex-1">
-          <ProgressBar value={i / deck.length} color="#0ea5e9" />
+      <div className="border-b border-brand-100 bg-white/90 px-3 py-3 backdrop-blur">
+        <div className="flex items-center gap-3">
+          <IconButton onClick={back} aria-label="やめる">
+            <Close size={22} />
+          </IconButton>
+          <div className="flex-1">
+            <ProgressBar
+              value={isBattle ? battleAnswered / deck.length : i / deck.length}
+              color={isBattle ? '#f43f5e' : '#0ea5e9'}
+            />
+          </div>
+          <span className="w-12 text-right text-sm font-extrabold text-ink/50">
+            {i + 1}/{deck.length}
+          </span>
         </div>
-        <span className="w-12 text-right text-sm font-extrabold text-ink/50">
-          {i + 1}/{deck.length}
-        </span>
+        {isBattle && (
+          <BattleHud
+            encounter={encounter}
+            enemyRank={enemyLevel(params.source?.levelIndex ?? 0)}
+            enemyHp={enemyHp}
+            heroHp={heroHp}
+            quest={quest}
+          />
+        )}
       </div>
 
       <div className="flex-1 overflow-y-auto px-4 pb-4">
@@ -186,7 +235,17 @@ export function VocabQuizScreen() {
         {answered && (
           <div className="mt-4 animate-slide-up rounded-2xl bg-white p-4 shadow-card">
             <p className={cx('font-display text-lg font-extrabold', isCorrectPick ? 'text-emerald-600' : 'text-rose-500')}>
-              {isCorrectPick ? '正解！🎉' : selected === UNKNOWN_CHOICE_ID ? '答えはこちら' : 'ざんねん…'}
+              {isBattle
+                ? isCorrectPick
+                  ? `${encounter.name}に一撃！ ⚔️`
+                  : selected === UNKNOWN_CHOICE_ID
+                    ? '敵の動きを見切った'
+                    : '反撃を受けた… 🛡️'
+                : isCorrectPick
+                  ? '正解！🎉'
+                  : selected === UNKNOWN_CHOICE_ID
+                    ? '答えはこちら'
+                    : 'ざんねん…'}
             </p>
             <p className="mt-1 font-bold text-ink">
               <span className="font-display">{word.word}</span> ＝ {word.meanings.join('・')}
@@ -215,8 +274,55 @@ export function VocabQuizScreen() {
 
       <div className="shrink-0 border-t border-brand-100 bg-white/90 p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] backdrop-blur">
         <Button full size="lg" disabled={!answered} onClick={next}>
-          {i + 1 >= deck.length ? '結果を見る' : '次へ'} <ArrowRight size={18} />
+          {i + 1 >= deck.length
+            ? isBattle
+              ? '戦果を確認'
+              : '結果を見る'
+            : isBattle
+              ? '次の一手'
+              : '次へ'}{' '}
+          <ArrowRight size={18} />
         </Button>
+      </div>
+    </div>
+  )
+}
+
+function BattleHud({ encounter, enemyRank, enemyHp, heroHp, quest }) {
+  return (
+    <div className="mt-2 grid grid-cols-[1fr_auto_1fr] items-center gap-2 rounded-2xl bg-slate-900 p-2.5 text-white shadow-inner">
+      <div className="min-w-0">
+        <div className="flex items-center justify-between gap-1 text-[9px] font-extrabold text-emerald-300">
+          <span>YOU</span>
+          <span>{heroHp} HP</span>
+        </div>
+        <ProgressBar
+          value={heroHp / 100}
+          color="#34d399"
+          className="mt-1 h-1.5 bg-white/15"
+        />
+        <p className="mt-1 truncate text-[9px] font-bold text-white/55">
+          {quest.emoji} {quest.label}
+        </p>
+      </div>
+
+      <span className="text-[10px] font-black text-amber-300">VS</span>
+
+      <div className="min-w-0">
+        <div className="flex items-center justify-between gap-1 text-[9px] font-extrabold text-rose-300">
+          <span className="truncate">
+            {encounter.emoji} {encounter.name}
+          </span>
+          <span>{enemyHp} HP</span>
+        </div>
+        <ProgressBar
+          value={enemyHp / 100}
+          color="#fb7185"
+          className="mt-1 h-1.5 bg-white/15"
+        />
+        <p className="mt-1 truncate text-right text-[9px] font-bold text-white/55">
+          敵ランク：英検{enemyRank.label}
+        </p>
       </div>
     </div>
   )

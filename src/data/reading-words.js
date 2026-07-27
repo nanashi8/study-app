@@ -2,6 +2,7 @@
 // ALL_WORDS に合流させることで、通常学習・SRS・マイ単語と同じ ID を共有する。
 
 import { PASSAGES } from './passages.js'
+import { splitMeanings } from './compact.js'
 
 const passageExample = (surface) => {
   const key = surface.toLowerCase()
@@ -32,11 +33,11 @@ const makePassageWord = ({
   pos,
   level,
   meaning,
-  meanings: meaning.split('・'),
+  meanings: splitMeanings(meaning),
   ...(phonetic ? { phonetic } : {}),
   example: example ?? passageExample(surface),
   etymology: {
-    parts: [{ t: word, kind: 'stem', gloss: meaning.split('・')[0] }],
+    parts: [{ t: word, kind: 'stem', gloss: splitMeanings(meaning)[0] }],
     note: `この項目では ${word} 全体を語幹として扱う。長文中では「${meaning}」の意味で用いられる。`,
   },
   field,
