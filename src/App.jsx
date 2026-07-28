@@ -23,6 +23,7 @@ const WordDetailScreen = lazyScreen(() => import('./screens/WordDetail.jsx'), 'W
 const RootDetailScreen = lazyScreen(() => import('./screens/RootDetail.jsx'), 'RootDetailScreen')
 const RootsScreen = lazyScreen(() => import('./screens/Roots.jsx'), 'RootsScreen')
 const MyListScreen = lazyScreen(() => import('./screens/MyList.jsx'), 'MyListScreen')
+const VocabCameraScreen = lazyScreen(() => import('./screens/VocabCamera.jsx'), 'VocabCameraScreen')
 const ProgressScreen = lazyScreen(() => import('./screens/Progress.jsx'), 'ProgressScreen')
 const SettingsScreen = lazyScreen(() => import('./screens/Settings.jsx'), 'SettingsScreen')
 const ReadingListScreen = lazyScreen(() => import('./screens/ReadingList.jsx'), 'ReadingListScreen')
@@ -90,6 +91,7 @@ const SCREENS = {
   rootDetail: RootDetailScreen,
   roots: RootsScreen,
   myList: MyListScreen,
+  vocabCamera: VocabCameraScreen,
   progress: ProgressScreen,
   settings: SettingsScreen,
   readingList: ReadingListScreen,
@@ -138,7 +140,7 @@ const SCREENS = {
 const IMMERSIVE = new Set([
   'portal',
   'login',
-  'vocabStudy', 'vocabQuiz', 'wordDetail', 'sessionResult', 'readingPrep', 'reader', 'phraseStudy', 'phraseQuiz',
+  'vocabStudy', 'vocabQuiz', 'wordDetail', 'vocabCamera', 'sessionResult', 'readingPrep', 'reader', 'phraseStudy', 'phraseQuiz',
   'listeningQuiz', 'dictationPlay', 'pronouncePlay', 'mathIntro', 'mathSolve', 'grammarQuiz', 'diagnostic',
   'writingPlay', 'writingGrammarReview',
   // 別コンテンツ（ポータルから入る）
