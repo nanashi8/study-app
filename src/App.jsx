@@ -59,8 +59,6 @@ const WritingGrammarReviewScreen = lazyScreen(
   () => import('./screens/WritingGrammarReview.jsx'),
   'WritingGrammarReviewScreen',
 )
-const VnListScreen = lazyScreen(() => import('./screens/VnList.jsx'), 'VnListScreen')
-const VnPlayScreen = lazyScreen(() => import('./screens/VnPlay.jsx'), 'VnPlayScreen')
 const EnglishMapScreen = lazyScreen(() => import('./screens/EnglishMap.jsx'), 'EnglishMapScreen')
 const DiagnosticScreen = lazyScreen(() => import('./screens/Diagnostic.jsx'), 'DiagnosticScreen')
 const KotenListScreen = lazyScreen(() => import('./screens/KotenList.jsx'), 'KotenListScreen')
@@ -135,8 +133,6 @@ const SCREENS = {
   kotenInterpretationQuiz: KotenInterpretationQuizScreen,
   kotenGrammar: KotenGrammarScreen,
   kotenSaved: KotenSavedScreen,
-  vnList: VnListScreen,
-  vnPlay: VnPlayScreen,
 }
 
 // ボトムナビ（英語アプリのタブ）を隠す画面。
@@ -153,7 +149,6 @@ const IMMERSIVE = new Set([
   'kotenList', 'kotenStudy', 'kotenQuiz', 'kotenInterpretationList',
   'kotenInterpretationPrep', 'kotenInterpretationQuiz',
   'kotenGrammar', 'kotenSaved',
-  'vnList', 'vnPlay',
 ])
 
 // 学習アプリ本体（ログイン済みのときだけ表示）。

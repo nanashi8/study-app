@@ -31,7 +31,6 @@ export function buildPayload(state) {
     diagnosticAttempt: state.diagnosticAttempt,
     diagnosticSeed: state.diagnosticSeed,
     engPos: state.engPos,
-    vnCleared: state.vnCleared,
     portalOrder: state.portalOrder,
     portalHidden: state.portalHidden,
     stats: state.stats,
@@ -85,7 +84,6 @@ export function decodeProgress(code) {
     'readingsDone',
     'mathDone',
     'diagnosticHistory',
-    'vnCleared',
     'portalOrder',
     'portalHidden',
   ]

@@ -1,7 +1,8 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
+import LZString from 'lz-string'
 
-import { localDayIndexAt, todayIndex } from '../src/store/useStore.js'
+import { localDayIndexAt, todayIndex, useStore } from '../src/store/useStore.js'
 import { buildDeck, buildPhraseDeck, overallProgress } from '../src/lib/session.js'
 import { ALL_WORDS, getWord } from '../src/data/vocab.js'
 import { PHONETIC_OVERRIDES } from '../src/data/phonetic-overrides.js'
@@ -25,7 +26,6 @@ import {
   passageWordCount,
 } from '../src/data/reading-study.js'
 import { lemmaCandidates, resolvePassageWord } from '../src/data/passage-gloss.js'
-import { VN_EPISODES, SPEAKERS } from '../src/data/vn.js'
 import { decodeProgress, encodeProgress } from '../src/lib/progressCode.js'
 import {
   buildDictationDeck,
@@ -209,24 +209,7 @@ test('長文は級別の本試験上限対策語数と段落構成を満たす',
   }
 })
 
-test('英会話ノベルの返答話者と遷移先は解決できる', () => {
-  for (const episode of VN_EPISODES) {
-    assert.ok(episode.nodes[episode.start], episode.id)
-    for (const [nodeId, node] of Object.entries(episode.nodes)) {
-      if (node.next) assert.ok(episode.nodes[node.next], `${episode.id}/${nodeId}`)
-      for (const choice of node.choices ?? []) {
-        assert.ok(episode.nodes[choice.next], `${episode.id}/${nodeId}`)
-        if (choice.reply) {
-          const speaker = choice.reply.speaker ?? node.speaker
-          assert.notEqual(speaker, 'narration', `${episode.id}/${nodeId}`)
-          assert.ok(SPEAKERS[speaker], `${episode.id}/${nodeId}/${speaker}`)
-        }
-      }
-    }
-  }
-})
-
-test('進捗コードはVNクリア状況を保持し、不正な型を拒否する', () => {
+test('進捗コードは廃止済みデータを再保存せず、旧コードも読み込める', () => {
   const base = {
     srs: {},
     kotenSrs: {},
@@ -239,14 +222,22 @@ test('進捗コードはVNクリア状況を保持し、不正な型を拒否す
     mathMastery: {},
     skillStats: {},
     engPos: null,
-    vnCleared: ['ep1_first_day'],
     portalOrder: [],
     portalHidden: [],
     stats: {},
     settings: {},
   }
-  const restored = decodeProgress(encodeProgress(base))
+  const current = decodeProgress(encodeProgress({ ...base, vnCleared: ['ep1_first_day'] }))
+  assert.equal('vnCleared' in current, false)
+  const legacyCode = `EQ1-${LZString.compressToEncodedURIComponent(JSON.stringify({
+    ...base,
+    v: 1,
+    vnCleared: ['ep1_first_day'],
+  }))}`
+  const restored = decodeProgress(legacyCode)
   assert.deepEqual(restored.vnCleared, ['ep1_first_day'])
+  useStore.getState().importCode(legacyCode)
+  assert.equal('vnCleared' in useStore.getState(), false)
   assert.deepEqual(restored.kotenWordList, ['k001'])
   assert.deepEqual(restored.kotenGrammarList, ['kg_neg_zu'])
   assert.throws(() => decodeProgress(encodeProgress({ ...base, srs: [] })), /srs/)

@@ -55,7 +55,6 @@ import {
   GRAMMAR_EXAM_QUESTION_COUNT,
 } from '../src/data/grammar-exam-patterns.js'
 import { PHONETIC_OVERRIDES } from '../src/data/phonetic-overrides.js'
-import { VN_EPISODES, SPEAKERS } from '../src/data/vn.js'
 import {
   DICTATION_ITEMS,
   DICTATION_PROFILES,
@@ -802,46 +801,6 @@ for (const [id, ipa] of Object.entries(PHONETIC_OVERRIDES)) {
   else if (word.phonetic !== ipa) errors.push(`発音補正 ${id}: ${ipa} が適用されていない (${word.phonetic})`)
 }
 
-// ── 英会話ノベル：遷移先・到達可能性・返答話者 ──
-const episodeIds = new Set()
-for (const episode of VN_EPISODES) {
-  const at = `英会話ノベル ${episode.id ?? '(id無し)'}`
-  if (!episode.id || episodeIds.has(episode.id)) errors.push(`${at}: id 無し/重複`)
-  episodeIds.add(episode.id)
-  if (!episode.nodes?.[episode.start]) errors.push(`${at}: start (${episode.start}) が存在しない`)
-
-  for (const [nodeId, node] of Object.entries(episode.nodes ?? {})) {
-    const where = `${at}/${nodeId}`
-    if (node.speaker !== 'narration' && !SPEAKERS[node.speaker]) {
-      errors.push(`${where}: speaker が不明 (${node.speaker})`)
-    }
-    if (node.next && !episode.nodes[node.next]) errors.push(`${where}: next が不明 (${node.next})`)
-    for (const [i, choice] of (node.choices ?? []).entries()) {
-      if (!episode.nodes[choice.next]) errors.push(`${where}: choices[${i}].next が不明 (${choice.next})`)
-      const replySpeaker = choice.reply?.speaker ?? node.speaker
-      if (choice.reply && replySpeaker === 'narration') {
-        errors.push(`${where}: choices[${i}] の返答話者を明示する必要がある`)
-      } else if (choice.reply && !SPEAKERS[replySpeaker]) {
-        errors.push(`${where}: choices[${i}] の返答話者が不明 (${replySpeaker})`)
-      }
-    }
-  }
-
-  const reached = new Set()
-  const visit = (id) => {
-    if (!id || reached.has(id) || !episode.nodes?.[id]) return
-    reached.add(id)
-    const node = episode.nodes[id]
-    visit(node.next)
-    for (const choice of node.choices ?? []) visit(choice.next)
-  }
-  visit(episode.start)
-  for (const nodeId of Object.keys(episode.nodes ?? {})) {
-    if (!reached.has(nodeId)) errors.push(`${at}/${nodeId}: start から到達できない`)
-  }
-  if (![...reached].some((id) => episode.nodes[id]?.end)) errors.push(`${at}: 到達可能な終了ノードが無い`)
-}
-
 // ── 全英語教材：機械的に確定できる英文破損を横断監査 ──
 function auditEnglish(label, text, { complete = false } = {}) {
   if (typeof text !== 'string' || !/[A-Za-z]/.test(text)) return
@@ -925,16 +884,6 @@ for (const exercise of WRITING_EXERCISES) {
     }
   }
 }
-for (const episode of VN_EPISODES) {
-  for (const [nodeId, node] of Object.entries(episode.nodes ?? {})) {
-    auditEnglish(`英会話ノベル ${episode.id}/${nodeId}`, node.en, { complete: true })
-    for (const [index, choice] of (node.choices ?? []).entries()) {
-      auditEnglish(`英会話ノベル ${episode.id}/${nodeId} 選択肢${index + 1}`, choice.en, { complete: true })
-      auditEnglish(`英会話ノベル ${episode.id}/${nodeId} 返答${index + 1}`, choice.reply?.en, { complete: true })
-    }
-  }
-}
-
 if (errors.length) {
   console.error(`\n❌ データ検証 失敗（${errors.length}件）`)
   errors.slice(0, 40).forEach((e) => console.error('  - ' + e))

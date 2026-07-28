@@ -48,6 +48,11 @@ export function normalizeOrder(order) {
   return [...kept, ...missing]
 }
 
+function normalizeHidden(hidden) {
+  const known = new Set(DEFAULT_CONTENT_ORDER)
+  return (Array.isArray(hidden) ? hidden : []).filter((id) => known.has(id))
+}
+
 const freshStats = () => ({
   xp: 0,
   streak: 0,
@@ -84,7 +89,6 @@ const initialLearning = () => ({
   diagnosticAttempt: 0, // 学習診断を開始した回数。問題候補を重複なしで順送りする
   diagnosticSeed: null, // 端末ごとの問題候補の並びを再現する符号なし32bit整数
   engPos: null, // 適応バトルの現在ポジション(0=5級…6=1級, 小数可)。null=未配置（初回に推定）
-  vnCleared: [], // [episodeId] クリアした英会話ノベルのエピソード
   portalOrder: [...DEFAULT_CONTENT_ORDER], // ポータルのタイル並び順（コンテンツid配列）
   portalHidden: [], // ポータルで非表示にしたコンテンツid
   stats: freshStats(),
@@ -379,11 +383,6 @@ export const useStore = create(
           st.mathDone.includes(id) ? {} : { mathDone: [...st.mathDone, id] },
         ),
 
-      markVnCleared: (id) =>
-        set((st) =>
-          st.vnCleared.includes(id) ? {} : { vnCleared: [...st.vnCleared, id] },
-        ),
-
       // スキル別（単語/文法/語法/長文/リスニング/ディクテーション）のテスト結果を累積する。
       recordSkillResult: (skill, correct, total, options = {}) =>
         set((st) => {
@@ -573,9 +572,8 @@ export const useStore = create(
           diagnosticAttempt: payload.diagnosticAttempt ?? 0,
           diagnosticSeed: payload.diagnosticSeed ?? null,
           engPos: payload.engPos ?? null,
-          vnCleared: payload.vnCleared ?? [],
           portalOrder: normalizeOrder(payload.portalOrder),
-          portalHidden: payload.portalHidden ?? [],
+          portalHidden: normalizeHidden(payload.portalHidden),
           stats: { ...freshStats(), ...(payload.stats ?? {}) },
           settings: { ...DEFAULT_SETTINGS, ...(payload.settings ?? {}) },
         })
@@ -584,7 +582,15 @@ export const useStore = create(
     }),
     {
       name: 'eigo-quest',
-      version: 1,
+      version: 2,
+      migrate: (persistedState) => {
+        const state = { ...(persistedState ?? {}) }
+        // v1 に保存されていた廃止済みコンテンツの状態を、初回起動時に取り除く。
+        delete state.vnCleared
+        state.portalOrder = normalizeOrder(state.portalOrder)
+        state.portalHidden = normalizeHidden(state.portalHidden)
+        return state
+      },
       // ナビゲーション系は保存しない。
       partialize: (st) => ({
         srs: st.srs,
@@ -604,7 +610,6 @@ export const useStore = create(
         diagnosticAttempt: st.diagnosticAttempt,
         diagnosticSeed: st.diagnosticSeed,
         engPos: st.engPos,
-        vnCleared: st.vnCleared,
         portalOrder: st.portalOrder,
         portalHidden: st.portalHidden,
         stats: st.stats,

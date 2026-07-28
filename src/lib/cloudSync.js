@@ -41,7 +41,6 @@ export async function pullOrInit(uid, email) {
         ? d.diagnosticSeed
         : null,
       engPos: d.engPos ?? null,
-      vnCleared: d.vnCleared ?? [],
       stats: { ...cur.stats, ...(d.stats ?? {}) },
       settings: { ...cur.settings, ...(d.settings ?? {}) },
     })

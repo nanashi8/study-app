@@ -180,7 +180,6 @@ test('学習分析は進捗コードで持ち運べる', () => {
     learningAnalytics,
     diagnosticHistory: [],
     engPos: null,
-    vnCleared: [],
     portalOrder: [],
     portalHidden: [],
     stats: {},

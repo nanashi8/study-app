@@ -44,7 +44,7 @@ export function ProgressScreen() {
     skillStats: s.skillStats, learningAnalytics: s.learningAnalytics,
     diagnosticHistory: s.diagnosticHistory,
     diagnosticAttempt: s.diagnosticAttempt, diagnosticSeed: s.diagnosticSeed,
-    engPos: s.engPos, vnCleared: s.vnCleared,
+    engPos: s.engPos,
     portalOrder: s.portalOrder, portalHidden: s.portalHidden,
     stats: s.stats, settings: s.settings,
   })))
