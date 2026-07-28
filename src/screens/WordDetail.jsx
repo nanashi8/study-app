@@ -228,7 +228,14 @@ export function WordDetailScreen() {
         {word.etymology && (
           <Card className="p-4">
             <div className="mb-3 text-[11px] font-extrabold uppercase tracking-wide text-brand-400">語源で覚える</div>
-            <EtymologyBlock word={word} onRoot={(rootId) => navigate('rootDetail', { rootId })} />
+            <EtymologyBlock
+              word={word}
+              onRoot={(rootId) => navigate('rootDetail', { rootId })}
+              onPack={(packId, compression) =>
+                compression.mode === 'root'
+                  ? navigate('rootDetail', { rootId: compression.rootId })
+                  : navigate('etymologyPack', { packId })}
+            />
           </Card>
         )}
 

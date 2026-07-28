@@ -1,5 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
 
 import {
   DIAGNOSTIC_LEVELS,
@@ -7,6 +8,7 @@ import {
   DIAGNOSTIC_SKILLS,
 } from '../src/data/diagnostic.js'
 import {
+  buildDiagnosticAnswerReview,
   scoreDiagnostic,
   UNKNOWN_DIAGNOSTIC_ANSWER,
 } from '../src/lib/diagnostic.js'
@@ -104,6 +106,42 @@ test('生成した問題セットも同じ尺度で採点し、出題回を結�
   assert.match(result.id, /-f8-/)
   assert.equal(result.skillResults.length, 4)
   assert.equal(result.levelResults.length, 7)
+})
+
+test('診断終了後の答え合わせは問題順・自分の回答・正解判定を保持する', () => {
+  const questions = buildDiagnosticQuestions({ attemptNumber: 4, seed: 13579 })
+  const answers = answersWith((question, index) => {
+    if (index === 0) return UNKNOWN_DIAGNOSTIC_ANSWER
+    if (index === 1) return question.choices.find((choice) => choice !== question.answer)
+    return question.answer
+  }, questions)
+  const review = buildDiagnosticAnswerReview(questions, answers)
+
+  assert.equal(review.length, questions.length)
+  assert.deepEqual(
+    review.map((item) => item.questionNumber),
+    Array.from({ length: questions.length }, (_, index) => index + 1),
+  )
+  assert.equal(review[0].selectedAnswer, UNKNOWN_DIAGNOSTIC_ANSWER)
+  assert.equal(review[0].isUnknown, true)
+  assert.equal(review[0].isCorrect, false)
+  assert.equal(review[1].isUnknown, false)
+  assert.equal(review[1].isCorrect, false)
+  assert.equal(review[2].selectedAnswer, questions[2].answer)
+  assert.equal(review[2].isCorrect, true)
+  assert.equal(review.filter((item) => !item.isCorrect).length, 2)
+})
+
+test('診断結果は正解を含む全設問の回答と正答を表示する', () => {
+  const source = readFileSync(
+    new URL('../src/screens/Diagnostic.jsx', import.meta.url),
+    'utf8',
+  )
+
+  assert.match(source, /\{reviewItems\.map\(\(review\) =>/)
+  assert.match(source, /あなたの回答：/)
+  assert.match(source, /正しい答え/)
+  assert.doesNotMatch(source, /visibleItems\.map/)
 })
 
 test('推定偏差値は成績に対して単調で、上下限と級目安が妥当', () => {

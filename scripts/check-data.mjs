@@ -4,6 +4,9 @@
 // 1件でも不備があれば exit 1 でビルドを止める。データ生成ミスを二度と通さない。
 import {
   ALL_WORDS,
+  ETYMOLOGY_MODE_META,
+  ETYMOLOGY_PACKS,
+  ETYMOLOGY_SUMMARY,
   ROOTS,
   VOCAB_FIELDS,
   VOCAB_POS,
@@ -13,6 +16,11 @@ import {
 } from '../src/data/vocab.js'
 import { PHRASES, getPhrase } from '../src/data/phrases.js'
 import { EXAM_PHRASES } from '../src/data/phrases-exam.js'
+import { CURRICULUM_IDIOMS } from '../src/data/phrases-bank.js'
+import {
+  PHRASE_LEVEL_TARGETS,
+  PHRASE_TARGET_TOTALS,
+} from '../src/data/phrase-curriculum.js'
 import {
   EXAM_USAGE_GUIDES,
   EXAM_WORDS,
@@ -120,6 +128,57 @@ for (const w of ALL_WORDS) {
   if (!w.phonetic) errors.push(`${at}: 発音記号(IPA) 無し → npm run phonetics`)
 }
 
+// ── 全語源濃縮：全語が正確に1経路へ入り、パックは既存SRSで扱えるか ──
+const etymologyModes = new Set(Object.keys(ETYMOLOGY_MODE_META))
+const etymologyPackIds = new Set()
+const compressedIds = []
+for (const pack of ETYMOLOGY_PACKS) {
+  if (!pack.id) errors.push('語源濃縮パック: id 無し')
+  else if (etymologyPackIds.has(pack.id)) errors.push(`語源濃縮パックid重複: ${pack.id}`)
+  etymologyPackIds.add(pack.id)
+  if (!etymologyModes.has(pack.mode)) {
+    errors.push(`語源濃縮パック ${pack.id}: mode が不正 (${pack.mode})`)
+  }
+  if (!pack.coverageIds?.length) errors.push(`語源濃縮パック ${pack.id}: 対象語が空`)
+  if (!pack.studyIds?.length) errors.push(`語源濃縮パック ${pack.id}: 学習カードが空`)
+  if ((pack.studyIds?.length ?? 0) > 8) {
+    errors.push(`語源濃縮パック ${pack.id}: 一度の学習が8語超 (${pack.studyIds.length})`)
+  }
+  if (new Set(pack.studyIds ?? []).size !== (pack.studyIds?.length ?? 0)) {
+    errors.push(`語源濃縮パック ${pack.id}: 学習カードに重複`)
+  }
+  if (pack.mode === 'origin' && !pack.caution?.includes('同じ語根')) {
+    errors.push(`語源濃縮パック ${pack.id}: 非同根である注意書き無し`)
+  }
+  for (const id of [...(pack.coverageIds ?? []), ...(pack.studyIds ?? [])]) {
+    if (!ids.has(id)) errors.push(`語源濃縮パック ${pack.id}: 不明な単語id (${id})`)
+  }
+  for (const id of pack.coverageIds ?? []) {
+    compressedIds.push(id)
+    const word = getWord(id)
+    if (word?.compression?.packId !== pack.id) {
+      errors.push(`単語 ${id}: 濃縮パックの逆参照が不一致 (${word?.compression?.packId} != ${pack.id})`)
+    }
+    if (word?.compression?.mode !== pack.mode) {
+      errors.push(`単語 ${id}: 濃縮modeがパックと不一致`)
+    }
+  }
+}
+if (compressedIds.length !== ALL_WORDS.length) {
+  errors.push(`語源濃縮の合計が全語彙数と不一致 (${compressedIds.length}/${ALL_WORDS.length})`)
+}
+if (new Set(compressedIds).size !== ALL_WORDS.length) {
+  errors.push(`語源濃縮に重複または未収録あり (一意${new Set(compressedIds).size}/${ALL_WORDS.length})`)
+}
+if (
+  ETYMOLOGY_SUMMARY.total !== ALL_WORDS.length ||
+  ETYMOLOGY_SUMMARY.covered !== ALL_WORDS.length
+) {
+  errors.push(
+    `語源濃縮サマリー不一致 (${ETYMOLOGY_SUMMARY.covered}/${ETYMOLOGY_SUMMARY.total}, 全語${ALL_WORDS.length})`,
+  )
+}
+
 // ── 全語彙の分類学習：全件が分野・品詞にちょうど1回ずつ含まれるか ──
 function checkPartition(label, groups, select) {
   const members = groups.flatMap((group) => select(group))
@@ -223,18 +282,58 @@ for (const p of PHRASES) {
   if (!p.phrase || !p.meaning || !p.meanings?.length || !p.example?.en || !p.example?.ja) {
     errors.push(`熟語/構文 ${at}: 必須項目(phrase/meaning/meanings/example) 不足`)
   }
-}
-if (EXAM_PHRASES.length < 144 || PHRASES.length < 213) {
-  errors.push(`入試熟語・構文が不足 (追加${EXAM_PHRASES.length}/全${PHRASES.length})`)
-}
-for (const phrase of EXAM_PHRASES) {
-  if (!phrase.origin?.trim() || !phrase.note?.trim()) {
-    errors.push(`入試熟語/構文 ${phrase.id}: 成り立ち・語法注意が不足`)
+  if (!LEVELS.has(p.level) || !['idiom', 'syntax'].includes(p.kind)) {
+    errors.push(`熟語/構文 ${at}: 級または種別が不正 (${p.level}/${p.kind})`)
+  }
+  if (!p.origin?.trim() || !p.note?.trim()) {
+    errors.push(`熟語/構文 ${at}: 成り立ち・語法注意が不足`)
   }
 }
-for (const level of LEVELS) {
-  const count = PHRASES.filter((phrase) => phrase.level === level).length
-  if (count < 25) errors.push(`熟語/構文 ${level}級: 項目不足 (${count}/25)`)
+
+const phraseKindTotals = Object.fromEntries(
+  ['idiom', 'syntax'].map((kind) => [
+    kind,
+    PHRASES.filter((phrase) => phrase.kind === kind).length,
+  ]),
+)
+if (
+  EXAM_PHRASES.length < 144 ||
+  CURRICULUM_IDIOMS.length < 978 ||
+  PHRASES.length < PHRASE_TARGET_TOTALS.all ||
+  phraseKindTotals.idiom < PHRASE_TARGET_TOTALS.idiom ||
+  phraseKindTotals.syntax < PHRASE_TARGET_TOTALS.syntax
+) {
+  errors.push(
+    `熟語・構文カリキュラム不足 ` +
+      `(全${PHRASES.length}/${PHRASE_TARGET_TOTALS.all}, ` +
+      `熟語${phraseKindTotals.idiom}/${PHRASE_TARGET_TOTALS.idiom}, ` +
+      `構文${phraseKindTotals.syntax}/${PHRASE_TARGET_TOTALS.syntax})`,
+  )
+}
+
+for (const phrase of CURRICULUM_IDIOMS) {
+  if (!phrase.curriculumSupplement || !phrase.category) {
+    errors.push(`熟語カリキュラム ${phrase.id}: 補充元または分類が不足`)
+  }
+}
+
+for (const [level, target] of Object.entries(PHRASE_LEVEL_TARGETS)) {
+  for (const kind of ['idiom', 'syntax']) {
+    const count = PHRASES.filter(
+      (phrase) => phrase.level === level && phrase.kind === kind,
+    ).length
+    if (count < target[kind]) {
+      errors.push(`熟語/構文 ${level}級 ${kind}: 項目不足 (${count}/${target[kind]})`)
+    }
+  }
+}
+
+const phraseCollisionWordIds = new Set(ALL_WORDS.map((word) => word.id))
+const phraseCollisionGrammarIds = new Set(GRAMMAR.map((item) => item.id))
+for (const id of phraseIds) {
+  if (phraseCollisionWordIds.has(id) || phraseCollisionGrammarIds.has(id)) {
+    errors.push(`熟語/構文 id が単語・文法SRSと衝突 (${id})`)
+  }
 }
 
 // ── 高校文法解説：全追加単元が同じ論点の既存クイズへ接続するか ──

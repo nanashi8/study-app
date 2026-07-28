@@ -1,13 +1,16 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 
-import { battleTrend } from '../src/lib/adaptive.js'
+import { battleProgression, battleTrend } from '../src/lib/adaptive.js'
 import {
   BATTLE_QUESTS,
   BATTLE_TACTICS,
+  CHAPTERS,
   MAX_HERO_LEVEL,
   MAX_LEVEL_XP,
+  MOB_PROFILES,
   battleQuest,
+  battleSceneCue,
   battleTactic,
   battleVerdict,
   capEnemyPositionForHeroLevel,
@@ -15,8 +18,11 @@ import {
   encounterFor,
   featuredBattleTacticId,
   featuredQuestId,
+  heroBattleStats,
+  heroEquipmentForLevel,
   heroProgress,
   maxEnemyRankIndexForHeroLevel,
+  mobProfile,
   nextEnemyRankUnlockForHeroLevel,
   resolveBattleState,
   xpAtLevel,
@@ -51,6 +57,38 @@ test('各LVの境界と次LVまでのXPが一致する', () => {
   }
 })
 
+test('レベルアップと戦利品でHP・攻撃・防御が成長する', () => {
+  let previous = heroBattleStats(1)
+  assert.ok(previous.bonus.maxHp > 0)
+
+  for (let level = 2; level <= MAX_HERO_LEVEL; level += 1) {
+    const current = heroBattleStats(level)
+    assert.ok(current.maxHp > previous.maxHp, `LV${level} HP`)
+    assert.ok(current.attack > previous.attack, `LV${level} ATK`)
+    assert.ok(current.defense > previous.defense, `LV${level} DEF`)
+    previous = current
+  }
+
+  assert.equal(heroBattleStats(4).bonus.attack, 0)
+  assert.equal(heroBattleStats(5).bonus.attack, 2)
+  assert.equal(heroBattleStats(89).bonus.defense, 18)
+  assert.equal(heroBattleStats(90).bonus.defense, 26)
+  assert.deepEqual(
+    heroProgress(xpAtLevel(50)).battleStats,
+    heroBattleStats(50),
+  )
+})
+
+test('獲得した戦利品に合わせて主人公の装備外見が変わる', () => {
+  assert.equal(heroEquipmentForLevel(4).weapon, null)
+  assert.equal(heroEquipmentForLevel(5).weapon.name, '集中の羽根ペン')
+  assert.equal(heroEquipmentForLevel(49).weapon.name, '集中の羽根ペン')
+  assert.equal(heroEquipmentForLevel(50).weapon.name, '語彙騎士の剣')
+  assert.equal(heroEquipmentForLevel(89).offhand.name, '星読みの地図')
+  assert.equal(heroEquipmentForLevel(90).offhand.name, '守護者の盾')
+  assert.equal(heroEquipmentForLevel(99).head.name, 'ことばの王冠')
+})
+
 test('章ボスは各章の最終LVに固定される', () => {
   for (let level = 1; level <= MAX_HERO_LEVEL; level += 1) {
     const chapter = chapterForLevel(level)
@@ -66,6 +104,46 @@ test('日替わりエンカウントは同じ条件なら再現できる', () =>
     encounterFor(args).id,
     encounterFor({ ...args, day: args.day + 1 }).id,
   )
+})
+
+test('全51体のMOBにアトラス画像と固有設定がそろっている', () => {
+  const enemies = CHAPTERS.flatMap((chapter) => [...chapter.enemies, chapter.boss])
+  const ids = enemies.map((enemy) => enemy.id)
+  assert.equal(enemies.length, 51)
+  assert.equal(new Set(ids).size, 51)
+  assert.deepEqual(Object.keys(MOB_PROFILES).sort(), [...ids].sort())
+
+  const moves = new Set()
+  for (const enemy of enemies) {
+    const profile = mobProfile(enemy.id)
+    assert.equal(profile, MOB_PROFILES[enemy.id], enemy.id)
+    assert.ok(Number.isInteger(profile.sprite), enemy.id)
+    assert.ok(profile.sprite >= 0 && profile.sprite < 24, enemy.id)
+    assert.ok(Number.isFinite(profile.hue), enemy.id)
+    for (const key of [
+      'species',
+      'role',
+      'element',
+      'elementEmoji',
+      'accent',
+      'move',
+      'intent',
+      'lore',
+    ]) {
+      assert.ok(profile[key]?.length > 0, `${enemy.id}.${key}`)
+    }
+    moves.add(profile.move)
+  }
+  assert.equal(moves.size, 51)
+  assert.equal(mobProfile('not-registered').species, '未確認種')
+})
+
+test('エンカウントに章の情景とMOB図鑑情報が含まれる', () => {
+  const encounter = encounterFor({ level: 43, day: 20662, enemyRankIndex: 4 })
+  assert.equal(encounter.chapterNumber, 5)
+  assert.match(encounter.chapterGradient, /linear-gradient/)
+  assert.equal(encounter.move, MOB_PROFILES[encounter.id].move)
+  assert.equal(encounter.lore, MOB_PROFILES[encounter.id].lore)
 })
 
 test('戦闘時間は5・10・15問から選べ、日替わり推薦が循環する', () => {
@@ -91,6 +169,20 @@ test('作戦カードは3種類から選べ、日替わり推薦が循環する'
   )
 })
 
+test('戦闘イベントはミニ戦場の攻撃方向と表示へ変換できる', () => {
+  assert.equal(battleSceneCue().label, 'YOUR TURN')
+  assert.deepEqual(
+    ['hit', 'burst', 'counter'].map((kind) => battleSceneCue(kind).target),
+    ['enemy', 'enemy', 'enemy'],
+  )
+  assert.deepEqual(
+    ['damage', 'unknown', 'block'].map((kind) => battleSceneCue(kind).target),
+    ['hero', 'hero', 'hero'],
+  )
+  assert.equal(battleSceneCue('shield').emoji, '🛡️')
+  assert.equal(battleSceneCue('not-registered').label, 'YOUR TURN')
+})
+
 test('連撃の型は3連続正解ごとに奥義を発動する', () => {
   const state = resolveBattleState({
     answers: ['correct', 'correct', 'correct', 'wrong', 'correct'],
@@ -100,7 +192,7 @@ test('連撃の型は3連続正解ごとに奥義を発動する', () => {
   assert.equal(state.comboBursts, 1)
   assert.equal(state.activations, 1)
   assert.equal(state.maxStreak, 3)
-  assert.equal(state.heroHp, 67)
+  assert.equal(state.heroHp, 80)
   assert.match(state.summary, /奥義 1回/)
 })
 
@@ -120,7 +212,7 @@ test('守護の型は2正解で盾を作り、次のミスだけを防ぐ', () =
   })
   assert.equal(state.protectedHits, 1)
   assert.equal(state.shields, 0)
-  assert.equal(state.heroHp, 67)
+  assert.equal(state.heroHp, 80)
 })
 
 test('逆転の型はミス直後の正解でカウンターしHPを回復する', () => {
@@ -131,7 +223,7 @@ test('逆転の型はミス直後の正解でカウンターしHPを回復する
   })
   assert.equal(state.counters, 2)
   assert.equal(state.activations, 2)
-  assert.equal(state.heroHp, 67)
+  assert.equal(state.heroHp, 80)
   assert.match(state.summary, /HP回復 2回/)
 })
 
@@ -142,7 +234,100 @@ test('作戦を変えても同じ正誤なら敵HPと学習評価は変わらな
   )
   assert.deepEqual(states.map((state) => state.correct), [3, 3, 3])
   assert.deepEqual(states.map((state) => state.misses), [2, 2, 2])
-  assert.deepEqual(states.map((state) => state.enemyHp), [25, 25, 25])
+  assert.deepEqual(states.map((state) => state.enemyHp), [40, 40, 40])
+})
+
+test('高LVほど一撃の実ダメージが増えても学習上の討伐条件は変わらない', () => {
+  const args = {
+    answers: ['correct'],
+    total: 5,
+    tacticId: 'combo',
+    enemyRankIndex: 0,
+  }
+  const novice = resolveBattleState({ ...args, heroLevel: 1 })
+  const veteran = resolveBattleState({ ...args, heroLevel: 50 })
+
+  assert.ok(veteran.lastEvent.damage > novice.lastEvent.damage)
+  assert.ok(veteran.heroStats.attack > novice.heroStats.attack)
+  assert.equal(veteran.correct, novice.correct)
+  assert.equal(veteran.enemyHp, novice.enemyHp)
+  assert.equal(veteran.enemyHp, 80)
+})
+
+test('5・10・15問のどれでも残り問題がある間はHPが0にならない', () => {
+  const firstHitHealth = []
+
+  for (const quest of BATTLE_QUESTS) {
+    for (let answered = 0; answered < quest.size; answered += 1) {
+      const enemyState = resolveBattleState({
+        answers: Array(answered).fill('correct'),
+        total: quest.size,
+        tacticId: 'combo',
+      })
+      const heroState = resolveBattleState({
+        answers: Array(answered).fill('wrong'),
+        total: quest.size,
+        tacticId: 'combo',
+      })
+
+      assert.ok(enemyState.enemyCurrentHp > 0, `${quest.id}: enemy ${answered}`)
+      assert.ok(enemyState.enemyHealthPercent > 0, `${quest.id}: enemy% ${answered}`)
+      assert.ok(heroState.heroCurrentHp > 0, `${quest.id}: hero ${answered}`)
+      assert.ok(heroState.heroHealthPercent > 0, `${quest.id}: hero% ${answered}`)
+      assert.equal(enemyState.complete, false)
+      assert.equal(heroState.complete, false)
+    }
+
+    const wins = BATTLE_TACTICS.map((tactic) => resolveBattleState({
+      answers: Array(quest.size).fill('correct'),
+      total: quest.size,
+      tacticId: tactic.id,
+    }))
+    const lost = resolveBattleState({
+      answers: Array(quest.size).fill('wrong'),
+      total: quest.size,
+      tacticId: 'combo',
+    })
+    for (const won of wins) {
+      assert.equal(won.enemyCurrentHp, 0, `${quest.id}/${won.tacticId}: final enemy HP`)
+      assert.equal(won.enemyHealthPercent, 0, `${quest.id}/${won.tacticId}: final enemy%`)
+      assert.equal(won.enemyDefeated, true)
+      assert.equal(won.complete, true)
+    }
+    assert.equal(lost.heroCurrentHp, 0, `${quest.id}: final hero HP`)
+    assert.equal(lost.heroHealthPercent, 0, `${quest.id}: final hero%`)
+    assert.equal(lost.heroDefeated, true)
+    assert.equal(lost.complete, true)
+
+    firstHitHealth.push(resolveBattleState({
+      answers: ['correct'],
+      total: quest.size,
+      tacticId: 'combo',
+    }).enemyHealthPercent)
+  }
+
+  assert.ok(firstHitHealth[0] < firstHitHealth[1])
+  assert.ok(firstHitHealth[1] < firstHitHealth[2])
+})
+
+test('実HP・ダメージ・回復量を戦闘ログから再現できる', () => {
+  const state = resolveBattleState({
+    answers: ['wrong', 'correct'],
+    total: 5,
+    tacticId: 'counter',
+    heroLevel: 35,
+    enemyRankIndex: 2,
+  })
+
+  assert.ok(state.heroMaxHp > 100)
+  assert.ok(state.enemyMaxHp > 0)
+  assert.ok(state.damageDealt > 0)
+  assert.ok(state.damageTaken > 0)
+  assert.ok(state.healingDone > 0)
+  assert.equal(state.lastEvent.kind, 'counter')
+  assert.ok(state.lastEvent.damage > 0)
+  assert.ok(state.lastEvent.healing > 0)
+  assert.equal(state.heroCurrentHp, state.heroMaxHp)
 })
 
 test('戦果メッセージは正答率の4段階を返す', () => {
@@ -170,4 +355,28 @@ test('同じ級のポイント進行をランクアップと表示しない', ()
   assert.equal(battleTrend(0.4, 0.7), 'up')
   assert.equal(battleTrend(0.7, 0.4), 'down')
   assert.equal(battleTrend(0.3, 0.3), 'flat')
+})
+
+test('ランクアップ予告後の再戦sourceも実際の次ランクへ更新される', () => {
+  const battle = battleProgression(
+    {
+      type: 'battle',
+      levelIndex: 0,
+      levelId: '5',
+      position: 0.4,
+      questId: 'duel',
+      tacticId: 'guard',
+    },
+    0.8,
+    1,
+  )
+
+  assert.equal(battle.from, 0.4)
+  assert.equal(battle.to, 0.7)
+  assert.equal(battle.trend, 'up')
+  assert.equal(battle.source.position, 0.7)
+  assert.equal(battle.source.levelIndex, 1)
+  assert.equal(battle.source.levelId, '4')
+  assert.equal(battle.source.questId, 'duel')
+  assert.equal(battle.source.tacticId, 'guard')
 })

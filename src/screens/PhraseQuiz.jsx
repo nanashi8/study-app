@@ -65,14 +65,14 @@ export function PhraseQuizScreen() {
     if (answered) return
     setSelected(optId)
     if (optId === UNKNOWN_CHOICE_ID) {
-      review(item.id, 'unknown')
+      review(item.id, 'unknown', 'usage')
       results.current.unknown++
       results.current.wrongIds.push(item.id)
     } else if (optId === item.id) {
-      review(item.id, 'correct')
+      review(item.id, 'correct', 'usage')
       results.current.correct++
     } else {
-      review(item.id, 'wrong')
+      review(item.id, 'wrong', 'usage')
       results.current.wrong++
       results.current.wrongIds.push(item.id)
     }

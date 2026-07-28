@@ -7,6 +7,7 @@ import {
   DIAGNOSTIC_SKILLS,
 } from '../data/diagnostic.js'
 import {
+  buildDiagnosticAnswerReview,
   scoreDiagnostic,
   UNKNOWN_DIAGNOSTIC_ANSWER,
 } from '../lib/diagnostic.js'
@@ -144,7 +145,7 @@ function Intro({ history, onStart }) {
           <ul className="mt-2 space-y-2 text-xs font-bold leading-relaxed text-ink/55">
             <li className="flex gap-2"><Check size={16} className="shrink-0 text-emerald-500" />辞書や翻訳を使わず、今の力で答える</li>
             <li className="flex gap-2"><Check size={16} className="shrink-0 text-emerald-500" />迷ったら「わからない」を選んで進む</li>
-            <li className="flex gap-2"><Check size={16} className="shrink-0 text-emerald-500" />途中では正解を表示せず、最後にまとめて診断</li>
+            <li className="flex gap-2"><Check size={16} className="shrink-0 text-emerald-500" />途中では正解を表示せず、結果画面でまとめて答え合わせ</li>
           </ul>
         </Card>
 
@@ -260,7 +261,113 @@ function TestQuestion({ questions, index, answers, onSelect, onNext, onCancel })
   )
 }
 
-function Result({ result, history, onRetry, onHome, onOpenRecommendation }) {
+function AnswerReview({ questions, answers }) {
+  const reviewItems = buildDiagnosticAnswerReview(questions, answers)
+  const needsReview = reviewItems.filter((item) => !item.isCorrect)
+  const correctCount = reviewItems.length - needsReview.length
+
+  return (
+    <Card className="p-4" data-diagnostic-answer-review>
+      <div className="flex items-start gap-3">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-sky-100 text-xl">
+          📝
+        </div>
+        <div>
+          <h2 className="font-display text-base font-extrabold text-ink">答え合わせ</h2>
+          <p className="mt-0.5 text-xs font-bold leading-relaxed text-ink/50">
+            {needsReview.length > 0
+              ? `全${reviewItems.length}問を表示しています。正解${correctCount}問、要確認${needsReview.length}問です。`
+              : '全問正解です。すべての答えを確認できます。'}
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-4 space-y-3">
+        {reviewItems.map((review) => {
+          const { question } = review
+          const skill = SKILL_BY_ID[question.skill]
+          const level = LEVEL_BY_ID[question.level]
+          const selectedLabel = review.isUnknown
+            ? 'わからない'
+            : review.selectedAnswer ?? '未回答'
+
+          return (
+            <article
+              key={question.id}
+              className={cx(
+                'rounded-2xl border-2 p-3',
+                review.isCorrect
+                  ? 'border-emerald-100 bg-emerald-50/60'
+                  : 'border-rose-100 bg-rose-50/60',
+              )}
+            >
+              <div className="flex flex-wrap items-center gap-1.5">
+                <span className="text-[11px] font-extrabold text-ink/40">
+                  Q{review.questionNumber}
+                </span>
+                <Chip color={skill?.color}>{skill?.emoji} {skill?.shortLabel}</Chip>
+                <Chip color={level?.color}>英検{level?.label}</Chip>
+                <span
+                  className={cx(
+                    'ml-auto inline-flex items-center gap-1 text-[11px] font-extrabold',
+                    review.isCorrect ? 'text-emerald-700' : 'text-rose-600',
+                  )}
+                >
+                  {review.isCorrect ? <Check size={14} /> : <Close size={14} />}
+                  {review.isCorrect ? '正解' : '要確認'}
+                </span>
+              </div>
+
+              {question.passage && (
+                <details className="mt-3 rounded-xl bg-white/80 px-3 py-2">
+                  <summary className="cursor-pointer text-xs font-extrabold text-brand-700">
+                    読解本文を確認
+                  </summary>
+                  <p className="mt-2 text-xs font-bold leading-6 text-ink/65">
+                    {question.passage}
+                  </p>
+                </details>
+              )}
+
+              <p className="mt-3 text-sm font-extrabold leading-relaxed text-ink">
+                {question.prompt}
+              </p>
+
+              <p
+                className={cx(
+                  'mt-2 text-xs font-bold leading-relaxed',
+                  review.isCorrect ? 'text-emerald-700/75' : 'text-rose-700/75',
+                )}
+              >
+                あなたの回答：<span className="font-extrabold">{selectedLabel}</span>
+              </p>
+
+              <div className="mt-2 rounded-xl bg-emerald-100/80 px-3 py-2.5">
+                <p className="text-[10px] font-extrabold text-emerald-700">正しい答え</p>
+                <p
+                  className="mt-0.5 text-sm font-extrabold leading-relaxed text-emerald-900"
+                  data-diagnostic-correct-answer
+                >
+                  {question.answer}
+                </p>
+              </div>
+            </article>
+          )
+        })}
+      </div>
+    </Card>
+  )
+}
+
+function Result({
+  result,
+  history,
+  questions,
+  answers,
+  onRetry,
+  onHome,
+  onOpenRecommendation,
+}) {
   const priorityResult = result.skillResults.find((skill) => skill.id === result.prioritySkillId)
   const strengthResult = result.skillResults.find((skill) => skill.id === result.strengthSkillId)
   const priority = priorityResult
@@ -318,6 +425,8 @@ function Result({ result, history, onRetry, onHome, onOpenRecommendation }) {
             </div>
           </div>
         </div>
+
+        <AnswerReview questions={questions} answers={answers} />
 
         <Card className="p-4">
           <h2 className="font-display text-base font-extrabold text-ink">分野別プロフィール</h2>
@@ -484,6 +593,8 @@ export function DiagnosticScreen() {
         <Result
           result={result}
           history={safeHistory}
+          questions={questions}
+          answers={answers}
           onRetry={start}
           onHome={goHome}
           onOpenRecommendation={(screen) => navigate(screen)}

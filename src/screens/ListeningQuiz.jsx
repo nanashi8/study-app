@@ -152,14 +152,14 @@ export function ListeningQuizScreen() {
     setSelected(choiceId)
     setShowTranscript(true)
     if (choiceId === UNKNOWN_CHOICE_ID) {
-      review(item.id, 'unknown')
+      review(item.id, 'unknown', 'listening')
       results.current.unknown++
       results.current.wrongIds.push(item.id)
     } else if (choiceId === item.answer) {
-      review(item.id, 'correct')
+      review(item.id, 'correct', 'listening')
       results.current.correct++
     } else {
-      review(item.id, 'wrong')
+      review(item.id, 'wrong', 'listening')
       results.current.wrong++
       results.current.wrongIds.push(item.id)
     }

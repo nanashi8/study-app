@@ -88,7 +88,11 @@ export function DictationPlayScreen() {
     if (!answer.trim() || result) return
     const checked = scoreDictation(answer, item.text, { passScore: profile.passScore })
     setResult(checked)
-    review(item.id, checked.passed ? 'correct' : checked.score >= 60 ? 'wrong' : 'unknown')
+    review(
+      item.id,
+      checked.passed ? 'correct' : checked.score >= 60 ? 'wrong' : 'unknown',
+      'dictation',
+    )
     if (checked.passed) {
       results.current.correct++
     } else {

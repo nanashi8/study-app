@@ -101,7 +101,7 @@ export function WritingGrammarReviewScreen() {
   }
 
   const answer = (result) => {
-    review(item.id, result)
+    review(item.id, result, 'grammar')
     setResults((current) => ({
       ...current,
       [result === 'remembered' ? 'remembered' : 'forgot']:

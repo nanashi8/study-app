@@ -79,14 +79,14 @@ export function GrammarQuizScreen() {
     if (answered) return
     setSelected(opt)
     if (opt === UNKNOWN_CHOICE_ID) {
-      review(item.id, 'unknown')
+      review(item.id, 'unknown', 'grammar')
       results.current.unknown++
       results.current.wrongIds.push(item.id)
     } else if (opt === item.answer) {
-      review(item.id, 'correct')
+      review(item.id, 'correct', 'grammar')
       results.current.correct++
     } else {
-      review(item.id, 'wrong')
+      review(item.id, 'wrong', 'grammar')
       results.current.wrong++
       results.current.wrongIds.push(item.id)
     }

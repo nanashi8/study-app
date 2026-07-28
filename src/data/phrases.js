@@ -8,6 +8,9 @@
 //   origin           … 成り立ち（動詞＋前置詞/副詞 などの部品の意味から意味を導く＝単語の語源にあたる）
 //   note             … 使い方・文法上の注意
 import { EXAM_PHRASES } from './phrases-exam.js'
+import { PHRASE_LEVEL_TARGETS } from './phrase-curriculum.js'
+import { CURRICULUM_IDIOMS } from './phrases-bank.js'
+import { buildGrammarSyntaxPhrases } from './phrases-grammar.js'
 
 const CORE_PHRASES = [
   // ═══════════ 熟語 idiom ═══════════
@@ -382,7 +385,24 @@ const CORE_PHRASES = [
     note: 'It is not until ~ that … の強調構文が頻出。' },
 ]
 
-export const PHRASES = [...CORE_PHRASES, ...EXAM_PHRASES]
+const PHRASES_BEFORE_GRAMMAR = [...CORE_PHRASES, ...EXAM_PHRASES, ...CURRICULUM_IDIOMS]
+
+const syntaxNeedsByLevel = Object.fromEntries(
+  Object.entries(PHRASE_LEVEL_TARGETS).map(([level, target]) => [
+    level,
+    target.syntax -
+      PHRASES_BEFORE_GRAMMAR.filter(
+        (phrase) => phrase.level === level && phrase.kind === 'syntax',
+      ).length,
+  ]),
+)
+
+const GRAMMAR_SYNTAX_PHRASES = buildGrammarSyntaxPhrases({
+  needsByLevel: syntaxNeedsByLevel,
+  excludedHeads: PHRASES_BEFORE_GRAMMAR.map((phrase) => phrase.phrase),
+})
+
+export const PHRASES = [...PHRASES_BEFORE_GRAMMAR, ...GRAMMAR_SYNTAX_PHRASES]
 
 export const PHRASES_BY_ID = Object.fromEntries(PHRASES.map((p) => [p.id, p]))
 export const getPhrase = (id) => PHRASES_BY_ID[id]
@@ -391,6 +411,6 @@ export const phrasesByLevel = (kind, levelId) =>
   PHRASES.filter((p) => p.kind === kind && p.level === levelId)
 
 export const PHRASE_KINDS = [
-  { id: 'idiom', label: '熟語', emoji: '🧩', color: '#0ea5e9', desc: '句動詞・連語' },
-  { id: 'syntax', label: '構文', emoji: '🏗️', color: '#8b5cf6', desc: '文型・パターン' },
+  { id: 'idiom', label: '熟語', emoji: '🧩', color: '#0ea5e9', desc: '句動詞・連語・定型表現' },
+  { id: 'syntax', label: '構文', emoji: '🏗️', color: '#8b5cf6', desc: '文型・入試パターン例文' },
 ]

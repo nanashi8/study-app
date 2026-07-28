@@ -18,11 +18,13 @@ import {
   featuredBattleTacticId,
   featuredQuestId,
   heroProgress,
+  relicStatLabel,
 } from '../lib/rpg.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
+import { HeroPortrait } from '../components/HeroPortrait.jsx'
+import { MobPortrait } from '../components/MobPortrait.jsx'
 import { ProgressRing, ProgressBar, Chip, cx } from '../components/ui.jsx'
 import { Lightbulb, ArrowRight, Check } from '../components/Icons.jsx'
-import battleVignette from '../assets/rpg-battle-vignette.jpg'
 
 // テスト結果から弱点を判定するしきい値。
 const MIN_ATTEMPTS = 10
@@ -251,9 +253,11 @@ function AdventureCard({
 
         <div className="mt-3 rounded-2xl border border-white/15 bg-black/15 p-3 backdrop-blur-sm">
           <div className="flex items-center gap-3">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/15 text-3xl ring-1 ring-white/20">
-              {hero.title.emoji}
-            </div>
+            <HeroPortrait
+              level={hero.level}
+              title={hero.title}
+              className="h-14 w-14"
+            />
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2">
                 <span className="font-display text-xl font-extrabold">LV{hero.level}</span>
@@ -272,6 +276,17 @@ function AdventureCard({
                 <span>{hero.totalXp.toLocaleString()} XP</span>
                 <span>{hero.isMax ? 'MAX LEVEL' : `次まで ${hero.xpToNext} XP`}</span>
               </div>
+              <div className="mt-1.5 grid grid-cols-3 gap-1 text-center text-[9px] font-extrabold">
+                <span className="rounded-lg bg-white/10 px-1 py-1">
+                  HP {hero.battleStats.maxHp}
+                </span>
+                <span className="rounded-lg bg-white/10 px-1 py-1">
+                  ATK {hero.battleStats.attack}
+                </span>
+                <span className="rounded-lg bg-white/10 px-1 py-1">
+                  DEF {hero.battleStats.defense}
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -281,36 +296,46 @@ function AdventureCard({
         </p>
 
         <div className="mt-3 rounded-3xl bg-white p-3.5 text-ink shadow-xl shadow-black/15">
-          <div className="-mx-3.5 -mt-3.5 mb-3.5 aspect-[16/9] overflow-hidden rounded-t-3xl bg-slate-950">
-            <div className="relative h-full w-full">
-              <img
-                src={battleVignette}
-                alt={`${encounter.name}と対峙する冒険者`}
-                className="battle-vignette h-full w-full object-cover"
-              />
-              <div className="absolute inset-x-0 bottom-0 flex items-end justify-between bg-gradient-to-t from-slate-950/85 to-transparent px-3 pb-2.5 pt-10 text-white">
-                <span className="rounded-full bg-white/15 px-2 py-1 text-[9px] font-extrabold tracking-[0.14em] backdrop-blur">
-                  LIVE BATTLE
-                </span>
-                <span className="text-[10px] font-extrabold text-violet-200">
-                  {encounter.isBoss ? '⚠ CHAPTER BOSS' : 'TODAY’S MOB'}
+          <div
+            className="mob-battle-stage -mx-3.5 -mt-3.5 mb-3.5 aspect-[16/9] rounded-t-3xl text-white"
+            style={{ '--battle-scene': hero.chapter.gradient }}
+          >
+            <div className="absolute inset-x-0 top-0 z-10 flex items-center justify-between bg-gradient-to-b from-slate-950/65 to-transparent px-3 pb-7 pt-2.5">
+              <span className="rounded-full bg-white/15 px-2 py-1 text-[9px] font-extrabold tracking-[0.14em] backdrop-blur">
+                LIVE BATTLE
+              </span>
+              <span className="text-[10px] font-extrabold text-violet-100">
+                {encounter.isBoss ? '⚠ CHAPTER BOSS' : 'TODAY’S MOB'}
+              </span>
+            </div>
+            <div className="relative flex h-full items-end justify-between gap-2 px-4 pb-4 pt-8">
+              <div className="mb-1 flex shrink-0 flex-col items-center">
+                <HeroPortrait
+                  level={hero.level}
+                  title={hero.title}
+                  className="h-20 w-20"
+                />
+                <span className="mt-1 rounded-full bg-emerald-400 px-2 py-0.5 text-[8px] font-black tracking-wider text-emerald-950">
+                  YOU · LV{hero.level}
                 </span>
               </div>
+              <div className="mob-versus-rune mb-12 grid h-10 w-10 shrink-0 place-items-center rounded-full border border-amber-200/60 bg-slate-950/65 font-display text-xs font-black text-amber-300 shadow-[0_0_24px_rgba(251,191,36,0.35)]">
+                VS
+              </div>
+              <MobPortrait
+                encounter={encounter}
+                className="h-[92%] max-h-44 min-h-28 aspect-square rounded-[2rem] ring-1 ring-white/40"
+              />
             </div>
+            <div className="absolute inset-x-0 bottom-0 z-10 h-8 bg-gradient-to-t from-slate-950/55 to-transparent" />
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="relative h-16 w-16 shrink-0 rounded-2xl bg-violet-950 ring-2 ring-violet-200">
-              <img
-                src={battleVignette}
-                alt=""
-                className="mob-portrait h-full w-full rounded-2xl object-cover"
-                style={{ objectPosition: '88% 52%' }}
-              />
-              <span className="absolute bottom-1 right-1 rounded-full bg-rose-500 px-1.5 py-0.5 text-[7px] font-black tracking-wide text-white">
-                ENEMY
-              </span>
-            </div>
+            <MobPortrait
+              encounter={encounter}
+              decorative
+              className="h-16 w-16 shrink-0 rounded-2xl ring-2 ring-violet-200"
+            />
             <div className="min-w-0 flex-1">
               <p className="text-[10px] font-extrabold tracking-[0.14em] text-rose-500">
                 {encounter.isBoss ? 'CHAPTER BOSS' : 'TODAY’S ENCOUNTER'}
@@ -318,7 +343,21 @@ function AdventureCard({
               <h2 className="truncate font-display text-lg font-extrabold">
                 {encounter.name}
               </h2>
-              <div className="mt-1 flex flex-wrap items-center gap-1.5">
+              <div className="mt-1 flex flex-wrap gap-1">
+                <span
+                  className="rounded-full border bg-white px-2 py-0.5 text-[9px] font-extrabold text-ink"
+                  style={{ borderColor: encounter.accent }}
+                >
+                  {encounter.elementEmoji} {encounter.element}属性
+                </span>
+                <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[9px] font-bold text-ink/60">
+                  {encounter.species}
+                </span>
+                <span className="rounded-full bg-violet-50 px-2 py-0.5 text-[9px] font-bold text-violet-700">
+                  {encounter.role}
+                </span>
+              </div>
+              <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
                 <Chip color={enemyRank.color}>敵ランク：英検{enemyRank.label}</Chip>
                 <span className="text-[10px] font-bold text-ink/45">
                   LV{hero.level}の上限：英検{maxEnemyRank.label}
@@ -333,9 +372,32 @@ function AdventureCard({
             </div>
           </div>
 
-          <div className="mt-3 rounded-2xl bg-slate-900 px-3 py-2.5 text-xs font-bold leading-relaxed text-slate-100">
-            <span className="mr-1 text-amber-300">▶</span>
-            {encounter.intro}
+          <p className="mt-2.5 rounded-2xl bg-slate-50 px-3 py-2 text-[10px] font-bold leading-relaxed text-ink/55">
+            <span className="mr-1 font-extrabold text-brand-600">MOB図鑑：</span>
+            {encounter.lore}
+          </p>
+
+          <div className="mt-2 grid gap-2">
+            <div className="rounded-2xl bg-slate-900 px-3 py-2.5 text-xs font-bold leading-relaxed text-slate-100">
+              <span className="mr-1 text-amber-300">▶</span>
+              {encounter.intro}
+            </div>
+            <div className="flex items-center gap-2.5 rounded-2xl border border-rose-200 bg-rose-50 px-3 py-2.5">
+              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-rose-500 text-lg text-white shadow-sm">
+                {encounter.elementEmoji}
+              </span>
+              <div className="min-w-0">
+                <p className="text-[8px] font-black tracking-[0.16em] text-rose-500">
+                  ENEMY INTENT · 次の行動
+                </p>
+                <p className="truncate text-xs font-extrabold text-rose-950">
+                  {encounter.move}
+                </p>
+                <p className="truncate text-[9px] font-bold text-rose-800/65">
+                  {encounter.intent}
+                </p>
+              </div>
+            </div>
           </div>
 
           <div className="mt-3 rounded-2xl border border-brand-100 bg-brand-50/70 p-2.5">
@@ -458,6 +520,11 @@ function AdventureProgress({ hero }) {
       <p className="mt-1 text-xs font-bold text-ink/45">
         {next ? next.text : 'LV99の冒険は、何度でも続けられます。'}
       </p>
+      {next && (
+        <p className="mt-1 text-[10px] font-extrabold text-emerald-600">
+          装備効果：{relicStatLabel(next)}
+        </p>
+      )}
       <div className="mt-3 flex items-center gap-3">
         <span className="text-[10px] font-bold text-ink/45">章の進行</span>
         <ProgressBar value={progress} color={hero.chapter.gradient} className="flex-1" />
@@ -531,7 +598,10 @@ function RelicShelf({ hero }) {
             <span className="mt-1 text-[10px] font-extrabold leading-tight text-ink">
               {relic.name}
             </span>
-            <span className="mt-1 text-[9px] font-bold text-ink/35">LV{relic.level}</span>
+            <span className="mt-1 text-[9px] font-extrabold text-emerald-600">
+              {relicStatLabel(relic)}
+            </span>
+            <span className="mt-0.5 text-[9px] font-bold text-ink/35">LV{relic.level}</span>
           </div>
         ))}
       </div>

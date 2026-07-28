@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import { PHRASE_KINDS, phrasesByKind } from '../data/phrases.js'
 import { LEVELS, getLevel } from '../data/levels.js'
@@ -12,6 +12,7 @@ import { cx } from '../components/ui.jsx'
 
 const levelOrder = Object.fromEntries(LEVELS.map((l, i) => [l.id, i]))
 const speakText = (p) => (p.kind === 'syntax' ? p.example.en : p.phrase)
+const INITIAL_VISIBLE_ITEMS = 60
 
 export function PhrasesScreen() {
   const navigate = useStore((s) => s.navigate)
@@ -21,6 +22,7 @@ export function PhrasesScreen() {
   const [detail, setDetail] = useState(null)
   const [query, setQuery] = useState('')
   const [levelFilter, setLevelFilter] = useState('all')
+  const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE_ITEMS)
 
   const meta = PHRASE_KINDS.find((k) => k.id === kind)
   const prog = phraseKindProgress(kind, srs)
@@ -49,6 +51,12 @@ export function PhrasesScreen() {
   const selectedTitle = levelFilter === 'all'
     ? meta.label
     : `${getLevel(levelFilter).label} ${meta.label}`
+  const visibleItems = items.slice(0, visibleCount)
+
+  useEffect(() => {
+    setVisibleCount(INITIAL_VISIBLE_ITEMS)
+  }, [kind, levelFilter, normalizedQuery])
+
   const study = () => navigate('phraseStudy', { source: selectedSource, title: selectedTitle, mode: 'study', engine: 'phrase' })
   const quiz = () => navigate('phraseQuiz', { source: selectedSource, title: selectedTitle, engine: 'phrase' })
   const reviewDue = () =>
@@ -84,7 +92,7 @@ export function PhrasesScreen() {
           })}
         </div>
 
-        {/* 200項目以上でも目的の表現へすぐ到達できる検索・級フィルター */}
+        {/* 1,000項目以上でも目的の表現へすぐ到達できる検索・級フィルター */}
         <div className="mt-3 space-y-2">
           <label className="flex items-center gap-2 rounded-2xl bg-white px-3 shadow-sm ring-1 ring-brand-100 focus-within:ring-2 focus-within:ring-brand-300">
             <Search size={17} className="shrink-0 text-brand-400" />
@@ -150,10 +158,12 @@ export function PhrasesScreen() {
         {/* 一覧 */}
         <h2 className="mb-2 mt-5 px-1 font-display text-base font-extrabold text-ink/80">
           {meta.label}の一覧
-          <span className="ml-2 text-xs text-ink/35">{items.length}項目を表示</span>
+          <span className="ml-2 text-xs text-ink/35">
+            {Math.min(visibleCount, items.length)}/{items.length}項目を表示
+          </span>
         </h2>
         <div className="space-y-2">
-          {items.map((p) => {
+          {visibleItems.map((p) => {
             const level = getLevel(p.level)
             return (
               <div key={p.id} className="flex items-center gap-2 rounded-2xl bg-white p-3 shadow-sm">
@@ -172,6 +182,15 @@ export function PhrasesScreen() {
             <div className="rounded-2xl bg-white px-4 py-8 text-center text-sm font-bold text-ink/45">
               条件に合う{meta.label}はありません。
             </div>
+          )}
+          {visibleItems.length < items.length && (
+            <Button
+              full
+              variant="secondary"
+              onClick={() => setVisibleCount((count) => count + INITIAL_VISIBLE_ITEMS)}
+            >
+              続きを表示（残り {items.length - visibleItems.length}項目）
+            </Button>
           )}
         </div>
       </div>
