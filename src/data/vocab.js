@@ -147,6 +147,7 @@ import { ROOTS, ROOTS_BY_ID } from './roots.js'
 import { LEVEL_OVERRIDE } from './levels-override.js'
 import { buildRootMatchers, autoRootIds } from './derive-roots.js'
 import { splitMeanings } from './compact.js'
+import { EXAM_WORDS, USAGE_GUIDES_BY_WORD } from './exam-lexicon.js'
 
 // 語根オートリンクの検出器（精度重視・形態素分解＋除外リスト）。
 const ROOT_MATCHERS = buildRootMatchers(ROOTS)
@@ -183,6 +184,7 @@ const normalize = (w) => {
     derivatives: w.derivatives ?? [],
     family: w.family ?? [],
     usage: w.usage ?? '',
+    usageGuides: w.usageGuides ?? USAGE_GUIDES_BY_WORD[w.id] ?? [],
   }
 }
 
@@ -192,7 +194,7 @@ const CURATED = [
   ...WORDS_MORE6, ...WORDS_MORE7, ...WORDS_MORE8, ...WORDS_MORE9, ...WORDS_MORE10, ...WORDS_MORE11, ...WORDS_MORE12, ...WORDS_MORE13, ...WORDS_MORE14, ...WORDS_MORE15, ...WORDS_MORE16, ...WORDS_MORE17, ...WORDS_MORE18, ...WORDS_MORE19, ...WORDS_MORE20, ...WORDS_MORE21, ...WORDS_MORE22, ...WORDS_MORE23, ...WORDS_MORE24, ...WORDS_MORE25, ...WORDS_MORE26, ...WORDS_MORE27, ...WORDS_MORE28, ...WORDS_MORE29, ...WORDS_MORE30, ...WORDS_MORE31, ...WORDS_MORE32, ...WORDS_MORE33, ...WORDS_MORE34, ...WORDS_MORE35, ...WORDS_MORE36, ...WORDS_MORE37, ...WORDS_MORE38, ...WORDS_MORE39, ...WORDS_MORE40, ...WORDS_MORE41, ...WORDS_MORE42, ...WORDS_MORE43, ...WORDS_MORE44, ...WORDS_MORE45, ...WORDS_MORE46, ...WORDS_MORE47, ...WORDS_MORE48, ...WORDS_MORE49, ...WORDS_MORE50, ...WORDS_MORE51, ...WORDS_MORE52, ...WORDS_MORE53, ...WORDS_MORE54, ...WORDS_MORE55, ...WORDS_MORE56, ...WORDS_MORE57, ...WORDS_MORE58, ...WORDS_MORE59, ...WORDS_MORE60, ...WORDS_MORE61, ...WORDS_MORE62, ...WORDS_MORE63, ...WORDS_MORE64, ...WORDS_MORE65, ...WORDS_MORE66, ...WORDS_MORE67, ...WORDS_MORE68, ...WORDS_MORE69, ...WORDS_MORE70, ...WORDS_MORE71, ...WORDS_MORE72, ...WORDS_MORE73, ...WORDS_MORE74, ...WORDS_MORE75, ...WORDS_MORE76, ...WORDS_MORE77, ...WORDS_MORE78, ...WORDS_MORE79, ...WORDS_MORE80, ...WORDS_MORE81, ...WORDS_MORE82, ...WORDS_MORE83, ...WORDS_MORE84, ...WORDS_MORE85, ...WORDS_MORE86, ...WORDS_MORE87, ...WORDS_MORE88, ...WORDS_MORE89, ...WORDS_MORE90, ...WORDS_MORE91, ...WORDS_MORE92, ...WORDS_MORE93, ...WORDS_MORE94, ...WORDS_MORE95, ...WORDS_MORE96, ...WORDS_MORE97, ...WORDS_MORE98, ...WORDS_MORE99, ...WORDS_MORE100, ...WORDS_MORE101, ...WORDS_MORE102, ...WORDS_MORE103, ...WORDS_MORE104, ...WORDS_MORE105, ...WORDS_MORE106, ...WORDS_MORE107, ...WORDS_MORE108, ...WORDS_MORE109, ...WORDS_MORE110, ...WORDS_MORE111, ...WORDS_MORE112, ...WORDS_MORE113, ...WORDS_MORE114, ...WORDS_MORE115, ...WORDS_MORE116, ...WORDS_MORE117, ...WORDS_MORE118, ...WORDS_MORE119, ...WORDS_MORE120, ...WORDS_MORE121, ...WORDS_MORE122, ...WORDS_MORE123, ...WORDS_MORE124, ...WORDS_MORE125, ...WORDS_MORE126, ...WORDS_MORE127, ...WORDS_MORE128, ...WORDS_MORE129, ...WORDS_MORE130, ...WORDS_MORE131, ...WORDS_MORE132, ...WORDS_MORE133, ...WORDS_MORE134, ...WORDS_MORE135, ...WORDS_MORE136, ...WORDS_MORE137, ...WORDS_MORE138, ...WORDS_MORE139,
   ...READING_WORDS,
 ]
-const seenIds = new Set(CURATED.map((w) => w.id))
+const seenIds = new Set([...CURATED, ...EXAM_WORDS].map((w) => w.id))
 // 取り込みツールが重複判定に使う（手作業 curated を優先）。
 export const CURATED_IDS = seenIds
 const importedUnique = WORDS_IMPORTED.filter((w) => w.id && !seenIds.has(w.id))
@@ -282,7 +284,9 @@ const deriveFamilies = (words) => {
   return words
 }
 
-export const ALL_WORDS = deriveFamilies([...CURATED, ...importedUnique].map(normalize))
+// 既存の並び（curated → imported）を保ち、追加語は末尾へ置く。
+// SRS は id 基準だが、既存の辞書順以外のデッキ再現性にも配慮する。
+export const ALL_WORDS = deriveFamilies([...CURATED, ...importedUnique, ...EXAM_WORDS].map(normalize))
 
 export const WORDS_BY_ID = Object.fromEntries(ALL_WORDS.map((w) => [w.id, w]))
 

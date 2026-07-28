@@ -12,6 +12,11 @@ import {
   wordsByPos,
 } from '../src/data/vocab.js'
 import { PHRASES, getPhrase } from '../src/data/phrases.js'
+import { EXAM_PHRASES } from '../src/data/phrases-exam.js'
+import {
+  EXAM_USAGE_GUIDES,
+  EXAM_WORDS,
+} from '../src/data/exam-lexicon.js'
 import { PASSAGES } from '../src/data/passages.js'
 import {
   READING_STUDY,
@@ -31,7 +36,10 @@ import {
   GRAMMAR_LEVEL_TARGETS,
   GRAMMAR_TOPIC_MINIMUM,
   GRAMMAR_TOTAL_TARGET,
+  grammarByTopic,
 } from '../src/data/grammar.js'
+import { GRAMMAR_LESSONS } from '../src/data/grammar-lessons.js'
+import { EXAM_GRAMMAR_LESSONS } from '../src/data/grammar-lessons-exam.js'
 import {
   GRAMMAR_EXAM_PATTERN_COUNT,
   GRAMMAR_EXAM_PATTERN_FAMILIES,
@@ -153,11 +161,107 @@ for (const w of ALL_WORDS) {
   }
 }
 
+// ── 高校・入試・英検辞書補充：新規語、使い分け、推奨表現の接続 ──
+if (EXAM_WORDS.length < 139) {
+  errors.push(`入試辞書の新規見出し語が不足 (${EXAM_WORDS.length}/139)`)
+}
+for (const added of EXAM_WORDS) {
+  const word = getWord(added.id)
+  if (!word) errors.push(`入試辞書 ${added.id}: 共通辞書に統合されていない`)
+  else {
+    if (!word.usage?.trim()) errors.push(`入試辞書 ${added.id}: 語法・よく使う形が無い`)
+    if (!word.phonetic?.trim()) errors.push(`入試辞書 ${added.id}: 発音記号が無い`)
+  }
+}
+
+const usageGuideIds = new Set()
+const usageGuideWordIds = new Set()
+for (const guide of EXAM_USAGE_GUIDES) {
+  if (!guide.id || usageGuideIds.has(guide.id)) {
+    errors.push(`使い分けガイド id が無いか重複 (${guide.id ?? '?'})`)
+  }
+  usageGuideIds.add(guide.id)
+  if (!guide.title?.trim() || !guide.summary?.trim() || (guide.choices?.length ?? 0) < 2) {
+    errors.push(`使い分けガイド ${guide.id}: title/summary/choices が不足`)
+  }
+  for (const wordId of guide.wordIds ?? []) {
+    usageGuideWordIds.add(wordId)
+    const word = getWord(wordId)
+    if (!word) {
+      errors.push(`使い分けガイド ${guide.id}: 見出し語 ${wordId} が辞書に無い`)
+    } else if (!(word.usageGuides ?? []).some((item) => item.id === guide.id)) {
+      errors.push(`使い分けガイド ${guide.id}: ${wordId} の詳細画面へ逆参照されない`)
+    }
+  }
+  for (const [index, choice] of (guide.choices ?? []).entries()) {
+    if (!choice?.term || !choice?.rule || !choice?.example || !choice?.ja) {
+      errors.push(`使い分けガイド ${guide.id}: choices[${index}] の必須項目不足`)
+    }
+  }
+  if (guide.preferred && (
+    !guide.preferred.avoid ||
+    !guide.preferred.use ||
+    !guide.preferred.reason
+  )) {
+    errors.push(`使い分けガイド ${guide.id}: 推奨表現の avoid/use/reason 不足`)
+  }
+}
+if (EXAM_USAGE_GUIDES.length < 43 || usageGuideWordIds.size < 93) {
+  errors.push(`使い分けガイドの網羅性不足 (${EXAM_USAGE_GUIDES.length}ガイド/${usageGuideWordIds.size}語)`)
+}
+
 // ── 熟語・構文 ──
+const phraseIds = new Set()
+const phraseHeads = new Set()
 for (const p of PHRASES) {
   const at = p.id || p.phrase
+  if (!p.id || phraseIds.has(p.id)) errors.push(`熟語/構文 id が無いか重複 (${at})`)
+  phraseIds.add(p.id)
+  const head = p.phrase?.toLowerCase()
+  if (head && phraseHeads.has(head)) errors.push(`熟語/構文の見出し重複 (${p.phrase})`)
+  if (head) phraseHeads.add(head)
   if (!p.phrase || !p.meaning || !p.meanings?.length || !p.example?.en || !p.example?.ja) {
     errors.push(`熟語/構文 ${at}: 必須項目(phrase/meaning/meanings/example) 不足`)
+  }
+}
+if (EXAM_PHRASES.length < 144 || PHRASES.length < 213) {
+  errors.push(`入試熟語・構文が不足 (追加${EXAM_PHRASES.length}/全${PHRASES.length})`)
+}
+for (const phrase of EXAM_PHRASES) {
+  if (!phrase.origin?.trim() || !phrase.note?.trim()) {
+    errors.push(`入試熟語/構文 ${phrase.id}: 成り立ち・語法注意が不足`)
+  }
+}
+for (const level of LEVELS) {
+  const count = PHRASES.filter((phrase) => phrase.level === level).length
+  if (count < 25) errors.push(`熟語/構文 ${level}級: 項目不足 (${count}/25)`)
+}
+
+// ── 高校文法解説：全追加単元が同じ論点の既存クイズへ接続するか ──
+const grammarLessonIds = new Set()
+for (const lesson of GRAMMAR_LESSONS) {
+  if (!lesson.id || grammarLessonIds.has(lesson.id)) {
+    errors.push(`文法解説 id が無いか重複 (${lesson.id ?? '?'})`)
+  }
+  grammarLessonIds.add(lesson.id)
+}
+if (EXAM_GRAMMAR_LESSONS.length < 35) {
+  errors.push(`高校文法解説の追加単元が不足 (${EXAM_GRAMMAR_LESSONS.length}/35)`)
+}
+for (const lesson of EXAM_GRAMMAR_LESSONS) {
+  if (!lesson.summary?.trim() || !lesson.form?.trim() || (lesson.points?.length ?? 0) < 2) {
+    errors.push(`高校文法解説 ${lesson.id}: summary/form/points が不足`)
+  }
+  if ((lesson.examples?.length ?? 0) < 2) {
+    errors.push(`高校文法解説 ${lesson.id}: 例文が2文未満`)
+  }
+  if (!grammarByTopic(lesson.level, lesson.topic).length) {
+    errors.push(`高校文法解説 ${lesson.id}: ${lesson.level}/${lesson.topic} のクイズ接続先が無い`)
+  }
+  for (const [index, item] of (lesson.preferred ?? []).entries()) {
+    if (!item?.avoid || !item?.use || !item?.reason) {
+      errors.push(`高校文法解説 ${lesson.id}: preferred[${index}] の必須項目不足`)
+    }
   }
 }
 
@@ -685,6 +789,16 @@ function auditEnglish(label, text, { complete = false } = {}) {
 
 for (const word of ALL_WORDS) auditEnglish(`単語 ${word.id} 例文`, word.example?.en)
 for (const phrase of PHRASES) auditEnglish(`熟語 ${phrase.id} 例文`, phrase.example?.en)
+for (const guide of EXAM_USAGE_GUIDES) {
+  for (const [index, choice] of guide.choices.entries()) {
+    auditEnglish(`使い分け ${guide.id} 例文${index + 1}`, choice.example, { complete: true })
+  }
+}
+for (const lesson of EXAM_GRAMMAR_LESSONS) {
+  for (const [index, example] of lesson.examples.entries()) {
+    auditEnglish(`高校文法解説 ${lesson.id} 例文${index + 1}`, example.en, { complete: true })
+  }
+}
 for (const passage of PASSAGES) {
   passage.sentences.forEach((sentence, index) =>
     auditEnglish(`長文 ${passage.id} 第${index + 1}文`, sentence.en, { complete: true }))
@@ -731,4 +845,4 @@ if (errors.length) {
   process.exit(1)
 }
 
-console.log(`✅ データ検証OK: ${ALL_WORDS.length}英単語 / ${PHRASES.length}熟語・構文 / ${GRAMMAR.length}英文法 / ${PASSAGES.length}長文 / ${DICTATION_ITEMS.length}ディクテーション / ${LISTENING_ITEMS.length}リスニング / ${KOTEN_WORDS.length}古典単語 / ${KOTEN_GRAMMAR.length}古典文法 / ${KOTEN_INTERPRETATIONS.length}古典短文 — 全て必須項目を満たす`)
+console.log(`✅ データ検証OK: ${ALL_WORDS.length}英単語 / ${EXAM_USAGE_GUIDES.length}使い分けガイド / ${PHRASES.length}熟語・構文 / ${GRAMMAR.length}英文法 / ${GRAMMAR_LESSONS.length}文法解説 / ${PASSAGES.length}長文 / ${DICTATION_ITEMS.length}ディクテーション / ${LISTENING_ITEMS.length}リスニング / ${KOTEN_WORDS.length}古典単語 / ${KOTEN_GRAMMAR.length}古典文法 / ${KOTEN_INTERPRETATIONS.length}古典短文 — 全て必須項目を満たす`)

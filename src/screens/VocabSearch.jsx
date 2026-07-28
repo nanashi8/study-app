@@ -4,6 +4,7 @@ import { useAuth } from '../store/useAuth.js'
 import { ALL_WORDS, SORTED_WORDS } from '../data/vocab.js'
 import { getLevel } from '../data/levels.js'
 import { requestWord } from '../lib/wordRequests.js'
+import { normalizeVocabQuery, vocabMatchRank } from '../lib/vocabSearch.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { PosBadge } from '../components/WordBits.jsx'
@@ -55,29 +56,17 @@ function NoResults({ query, user, onSeeList }) {
 
 const CAP = 80
 
-// 引いた感じを出すための一致ランク。小さいほど上に出す。
-//  0: 見出し語が完全一致 / 1: 見出し語が前方一致 /
-//  2: 見出し語に含む       / 3: 意味に含む
-function matchRank(w, query) {
-  const word = w.word.toLowerCase()
-  if (word === query) return 0
-  if (word.startsWith(query)) return 1
-  if (word.includes(query)) return 2
-  if (w.meaning.toLowerCase().includes(query) || w.meanings.some((m) => m.toLowerCase().includes(query))) return 3
-  return -1
-}
-
 export function VocabSearchScreen() {
   const navigate = useStore((s) => s.navigate)
   const user = useAuth((s) => s.user)
   const [q, setQ] = useState('')
 
-  const query = q.trim().toLowerCase()
+  const query = normalizeVocabQuery(q)
   const results = useMemo(() => {
     if (!query) return []
     const hits = []
     for (const w of SORTED_WORDS) {
-      const rank = matchRank(w, query)
+      const rank = vocabMatchRank(w, query)
       if (rank >= 0) hits.push({ w, rank })
     }
     // 一致ランク順、同ランク内は辞書順（SORTED_WORDS の順）を維持。
@@ -109,7 +98,7 @@ export function VocabSearchScreen() {
           <input
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            placeholder="英語 / 日本語で検索（例: run, 走る）"
+            placeholder="単語・意味・語法で検索（例: affect, 影響, 余分な前置詞）"
             autoCapitalize="off"
             autoCorrect="off"
             className="h-12 flex-1 bg-transparent font-bold text-ink outline-none placeholder:font-normal placeholder:text-ink/30"
@@ -135,7 +124,7 @@ export function VocabSearchScreen() {
             <div className="text-4xl">📖</div>
             <p className="mt-3 font-extrabold text-ink/70">調べたい単語を入力</p>
             <p className="mt-1 text-sm font-bold text-ink/40">
-              英語でも日本語でも引けます（例: run, 走る）
+              単語・日本語・例文・使い分けから引けます
             </p>
             <p className="mt-1 text-xs font-bold text-ink/30">
               全{ALL_WORDS.length}語 ／ 単語ページで前後の見出し語もめくれます

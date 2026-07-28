@@ -20,7 +20,10 @@ const STAGE_META = {
 
 export function GrammarLessonsScreen() {
   const navigate = useStore((s) => s.navigate)
-  const [stage, setStage] = useState(GRAMMAR_STAGES[0])
+  const initialStage = useStore((s) => s.params.stage)
+  const [stage, setStage] = useState(
+    GRAMMAR_STAGES.includes(initialStage) ? initialStage : GRAMMAR_STAGES[0],
+  )
   const [openId, setOpenId] = useState(null)
 
   const lessons = lessonsByStage(stage)
@@ -164,6 +167,35 @@ export function GrammarLessonsScreen() {
                     </li>
                   ))}
                 </ul>
+              </div>
+            )}
+
+            {/* 意味が通るだけでなく、自然で明確な英文へ直す指針 */}
+            {lesson.preferred?.length > 0 && (
+              <div className="rounded-2xl bg-emerald-50 p-3.5 ring-1 ring-emerald-100">
+                <div className="mb-2 flex items-center gap-1.5 text-emerald-700">
+                  <Check size={16} />
+                  <span className="text-[11px] font-extrabold uppercase tracking-wide">
+                    自然・推奨表現
+                  </span>
+                </div>
+                <div className="space-y-3">
+                  {lesson.preferred.map((item, index) => (
+                    <div key={index} className="rounded-xl bg-white/75 p-3">
+                      <p className="text-sm font-bold text-rose-600">
+                        <span className="mr-1.5 rounded bg-rose-100 px-1.5 py-0.5 text-[10px]">避ける</span>
+                        {item.avoid}
+                      </p>
+                      <p className="mt-1.5 text-sm font-bold text-emerald-800">
+                        <span className="mr-1.5 rounded bg-emerald-100 px-1.5 py-0.5 text-[10px]">使う</span>
+                        {item.use}
+                      </p>
+                      <p className="mt-2 text-xs font-bold leading-relaxed text-emerald-900/65">
+                        {item.reason}
+                      </p>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
 

@@ -4,6 +4,7 @@ import { getLevel } from '../data/levels.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { EtymologyBlock, RelatedWords, PosBadge } from '../components/WordBits.jsx'
+import { UsageGuideCards } from '../components/UsageGuideCards.jsx'
 import { Card, Button, Chip, IconButton } from '../components/ui.jsx'
 import { Bookmark, BookmarkFilled, StarFilled, Star, Link, Lightbulb, ArrowRight } from '../components/Icons.jsx'
 import { MAX_BOX } from '../store/useStore.js'
@@ -190,6 +191,9 @@ export function WordDetailScreen() {
             )}
           </Card>
         )}
+
+        {/* 入試・英検で混同しやすい語の比較と推奨表現 */}
+        <UsageGuideCards guides={word.usageGuides} />
 
         {/* 語族（基語＋関連形） */}
         {word.family?.length > 0 && (

@@ -7,8 +7,9 @@
 //   example          … 例文 { en, ja }
 //   origin           … 成り立ち（動詞＋前置詞/副詞 などの部品の意味から意味を導く＝単語の語源にあたる）
 //   note             … 使い方・文法上の注意
+import { EXAM_PHRASES } from './phrases-exam.js'
 
-export const PHRASES = [
+const CORE_PHRASES = [
   // ═══════════ 熟語 idiom ═══════════
   // ── 5級 ──
   { id: 'idm_get_up', kind: 'idiom', level: '5', phrase: 'get up', meaning: '起きる',
@@ -380,6 +381,8 @@ export const PHRASES = [
     origin: 'until(まで)＋not。その時までは否定→「その時になって初めて」。',
     note: 'It is not until ~ that … の強調構文が頻出。' },
 ]
+
+export const PHRASES = [...CORE_PHRASES, ...EXAM_PHRASES]
 
 export const PHRASES_BY_ID = Object.fromEntries(PHRASES.map((p) => [p.id, p]))
 export const getPhrase = (id) => PHRASES_BY_ID[id]

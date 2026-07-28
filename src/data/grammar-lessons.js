@@ -12,10 +12,11 @@
 //   points : 押さえるポイント（配列）
 //   examples: 例文 [{en, ja}]
 //   pitfalls: つまずきやすい点（任意・配列）
+import { EXAM_GRAMMAR_LESSONS } from './grammar-lessons-exam.js'
 
 export const GRAMMAR_STAGES = ['中1', '中2', '中3', '高校基礎', '高校発展']
 
-export const GRAMMAR_LESSONS = [
+const CORE_GRAMMAR_LESSONS = [
   // ───────────────────── 中1（英検5級）─────────────────────
   {
     id: 'gl_j1_be',
@@ -630,6 +631,8 @@ export const GRAMMAR_LESSONS = [
     ],
   },
 ]
+
+export const GRAMMAR_LESSONS = [...CORE_GRAMMAR_LESSONS, ...EXAM_GRAMMAR_LESSONS]
 
 export const lessonsByStage = (stage) => GRAMMAR_LESSONS.filter((l) => l.stage === stage)
 export const getLesson = (id) => GRAMMAR_LESSONS.find((l) => l.id === id)

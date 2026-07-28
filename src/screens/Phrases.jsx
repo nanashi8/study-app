@@ -7,7 +7,7 @@ import { ScreenHeader } from '../components/AppShell.jsx'
 import { Sheet } from '../components/Sheet.jsx'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { Card, Button, Chip, ProgressBar } from '../components/ui.jsx'
-import { Book, Cards, Lightbulb, Link, Refresh } from '../components/Icons.jsx'
+import { Book, Cards, Lightbulb, Link, Refresh, Search } from '../components/Icons.jsx'
 import { cx } from '../components/ui.jsx'
 
 const levelOrder = Object.fromEntries(LEVELS.map((l, i) => [l.id, i]))
@@ -19,13 +19,38 @@ export function PhrasesScreen() {
   const initialKind = useStore((s) => s.params.kind) ?? 'idiom'
   const [kind, setKind] = useState(initialKind)
   const [detail, setDetail] = useState(null)
+  const [query, setQuery] = useState('')
+  const [levelFilter, setLevelFilter] = useState('all')
 
   const meta = PHRASE_KINDS.find((k) => k.id === kind)
   const prog = phraseKindProgress(kind, srs)
-  const items = [...phrasesByKind(kind)].sort((a, b) => levelOrder[a.level] - levelOrder[b.level])
+  const normalizedQuery = query.trim().toLowerCase()
+  const items = [...phrasesByKind(kind)]
+    .filter((item) => levelFilter === 'all' || item.level === levelFilter)
+    .filter((item) => {
+      if (!normalizedQuery) return true
+      return [
+        item.phrase,
+        item.meaning,
+        item.note,
+        item.example?.en,
+        item.example?.ja,
+      ].filter(Boolean).join(' ').toLowerCase().includes(normalizedQuery)
+    })
+    .sort((a, b) => levelOrder[a.level] - levelOrder[b.level])
 
-  const study = () => navigate('phraseStudy', { source: { type: 'phrase', kind }, title: meta.label, mode: 'study', engine: 'phrase' })
-  const quiz = () => navigate('phraseQuiz', { source: { type: 'phrase', kind }, title: meta.label, engine: 'phrase' })
+  const selectedSource = normalizedQuery
+    ? { type: 'phraseList', ids: items.map((item) => item.id) }
+    : {
+        type: 'phrase',
+        kind,
+        ...(levelFilter === 'all' ? {} : { levelId: levelFilter }),
+      }
+  const selectedTitle = levelFilter === 'all'
+    ? meta.label
+    : `${getLevel(levelFilter).label} ${meta.label}`
+  const study = () => navigate('phraseStudy', { source: selectedSource, title: selectedTitle, mode: 'study', engine: 'phrase' })
+  const quiz = () => navigate('phraseQuiz', { source: selectedSource, title: selectedTitle, engine: 'phrase' })
   const reviewDue = () =>
     navigate('phraseStudy', {
       source: { type: 'phraseDue', kind },
@@ -59,6 +84,44 @@ export function PhrasesScreen() {
           })}
         </div>
 
+        {/* 200項目以上でも目的の表現へすぐ到達できる検索・級フィルター */}
+        <div className="mt-3 space-y-2">
+          <label className="flex items-center gap-2 rounded-2xl bg-white px-3 shadow-sm ring-1 ring-brand-100 focus-within:ring-2 focus-within:ring-brand-300">
+            <Search size={17} className="shrink-0 text-brand-400" />
+            <input
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder="英語・意味・語法で絞り込む"
+              className="h-11 min-w-0 flex-1 bg-transparent text-sm font-bold text-ink outline-none placeholder:font-normal placeholder:text-ink/30"
+              aria-label="熟語と構文を検索"
+            />
+          </label>
+          <div className="no-scrollbar flex gap-1.5 overflow-x-auto pb-1">
+            <button
+              onClick={() => setLevelFilter('all')}
+              className={cx(
+                'shrink-0 rounded-full px-3 py-1.5 text-xs font-extrabold',
+                levelFilter === 'all' ? 'bg-ink text-white' : 'bg-white text-ink/50',
+              )}
+            >
+              全級
+            </button>
+            {LEVELS.map((level) => (
+              <button
+                key={level.id}
+                onClick={() => setLevelFilter(level.id)}
+                className={cx(
+                  'shrink-0 rounded-full px-3 py-1.5 text-xs font-extrabold',
+                  levelFilter === level.id ? 'text-white' : 'bg-white text-ink/50',
+                )}
+                style={levelFilter === level.id ? { background: level.color } : undefined}
+              >
+                {level.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
         {/* 進捗＋学習ボタン */}
         <Card className="mt-4 p-4">
           <div className="flex items-center justify-between">
@@ -74,8 +137,8 @@ export function PhrasesScreen() {
           </div>
           <ProgressBar className="mt-3" value={prog.total ? prog.mastered / prog.total : 0} color={meta.color} />
           <div className="mt-3 grid grid-cols-2 gap-2">
-            <Button onClick={study}><Book size={16} /> 覚える</Button>
-            <Button variant="secondary" onClick={quiz}><Cards size={16} /> クイズ</Button>
+            <Button onClick={study} disabled={!items.length}><Book size={16} /> 覚える</Button>
+            <Button variant="secondary" onClick={quiz} disabled={!items.length}><Cards size={16} /> クイズ</Button>
           </div>
           {prog.due > 0 && (
             <Button full variant="hint" className="mt-2" onClick={reviewDue}>
@@ -87,6 +150,7 @@ export function PhrasesScreen() {
         {/* 一覧 */}
         <h2 className="mb-2 mt-5 px-1 font-display text-base font-extrabold text-ink/80">
           {meta.label}の一覧
+          <span className="ml-2 text-xs text-ink/35">{items.length}項目を表示</span>
         </h2>
         <div className="space-y-2">
           {items.map((p) => {
@@ -104,6 +168,11 @@ export function PhrasesScreen() {
               </div>
             )
           })}
+          {items.length === 0 && (
+            <div className="rounded-2xl bg-white px-4 py-8 text-center text-sm font-bold text-ink/45">
+              条件に合う{meta.label}はありません。
+            </div>
+          )}
         </div>
       </div>
 
