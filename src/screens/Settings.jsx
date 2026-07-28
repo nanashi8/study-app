@@ -159,7 +159,7 @@ export function SettingsScreen() {
           <h2 className="mb-1 font-display text-base font-extrabold text-ink/80">発音チェックについて</h2>
           <p className="text-xs font-bold leading-relaxed text-ink/55">
             ブラウザの音声認識結果と見出し語の綴りを比べる簡易チェックです。音素・母音・アクセントを
-            精密に採点する機能ではありません。iPhone の Safari など一部の環境では音声認識を利用できません。
+            精密に採点する機能ではありません。音声認識に未対応の環境では自己評価に切り替わります。
           </p>
         </Card>
 

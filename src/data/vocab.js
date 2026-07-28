@@ -307,6 +307,13 @@ export const WORDS_BY_ID = Object.fromEntries(ALL_WORDS.map((w) => [w.id, w]))
 
 export const getWord = (id) => WORDS_BY_ID[id]
 
+// 音声認識が同音異綴りを返したとき、見出し語の発音と比較するための読み取り専用参照。
+// 手書き値・品詞別補正・自動生成値を統合済みの正本から引く。
+const PHONETIC_BY_WORD = Object.fromEntries(
+  ALL_WORDS.map((word) => [word.word.toLowerCase(), word.phonetic]),
+)
+export const phoneticForWord = (word) => PHONETIC_BY_WORD[word?.toLowerCase()] ?? ''
+
 // 辞書順（見出し語のアルファベット順）に並べた全語。検索・前後めくりで使う。
 export const SORTED_WORDS = [...ALL_WORDS].sort((a, b) =>
   a.word.toLowerCase().localeCompare(b.word.toLowerCase(), 'en'),
