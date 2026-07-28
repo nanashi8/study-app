@@ -20,6 +20,22 @@ export function MyListScreen() {
 
       <div className="px-4">
         <button
+          onClick={() => navigate('vocabCamera')}
+          className="mb-3 flex w-full items-center gap-3 rounded-2xl bg-gradient-to-r from-sky-500 to-brand-600 p-3.5 text-left text-white shadow-card active:scale-[0.99]"
+        >
+          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/15 text-xl">
+            📷
+          </span>
+          <div className="min-w-0 flex-1">
+            <p className="font-display font-extrabold">教科書から単語を追加</p>
+            <p className="text-xs font-bold text-white/70">
+              写真から英単語を読み取り、意味を確認して保存
+            </p>
+          </div>
+          <ArrowRight size={19} />
+        </button>
+
+        <button
           onClick={() => navigate('myGrammar')}
           className="mb-4 flex w-full items-center gap-3 rounded-2xl bg-gradient-to-r from-violet-600 to-brand-600 p-3.5 text-left text-white shadow-card active:scale-[0.99]"
         >
