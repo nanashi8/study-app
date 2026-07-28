@@ -36,7 +36,7 @@ export const CONTENTS = [
   },
   {
     id: 'eigo-dict',
-    title: '英語アプリ辞書',
+    title: '英和辞書',
     subtitle: '英単語＋語源を辞書がわりに引ける',
     emoji: '📖',
     color: '#0ea5e9',
