@@ -1,5 +1,10 @@
 // 単語まわりの再利用パーツ：品詞バッジ・語源分解・語源つながり。
-import { relatedByEtymology, getRoot } from '../data/vocab.js'
+import {
+  ETYMOLOGY_MODE_META,
+  getEtymologyPack,
+  getRoot,
+  relatedByEtymology,
+} from '../data/vocab.js'
 import { Lightbulb, ArrowRight } from './Icons.jsx'
 import { cx } from './ui.jsx'
 
@@ -108,12 +113,46 @@ export function EtymologyParts({ parts = [], onRoot }) {
   )
 }
 
-/** 語源ブロック：分解 + 由来ストーリー + 出典。 */
-export function EtymologyBlock({ word, onRoot }) {
+/** 語源ブロック：全語の濃縮ルート + 分解 + 由来ストーリー + 出典。 */
+export function EtymologyBlock({ word, onRoot, onPack }) {
   const ety = word.etymology
   if (!ety) return null
+  const profile = word.compression
+  const pack = profile ? getEtymologyPack(profile.packId) : null
+  const mode = profile ? ETYMOLOGY_MODE_META[profile.mode] : null
+  const compressionBody = profile && pack && (
+    <>
+      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white text-xl shadow-sm">
+        {mode.emoji}
+      </span>
+      <span className="min-w-0 flex-1 text-left">
+        <span className="block text-[10px] font-extrabold uppercase tracking-wide text-brand-400">
+          この語の濃縮ルート
+        </span>
+        <span className="block truncate text-sm font-extrabold text-brand-700">
+          {mode.label}・{profile.size > 1 ? `${profile.size}語を1束で` : '1語を部品へ圧縮'}
+        </span>
+      </span>
+      {onPack && <ArrowRight size={17} className="shrink-0 text-brand-400" />}
+    </>
+  )
   return (
     <div className="space-y-3">
+      {compressionBody && (
+        onPack ? (
+          <button
+            type="button"
+            onClick={() => onPack(profile.packId, profile)}
+            className="flex w-full items-center gap-2 rounded-2xl bg-brand-50 p-2.5 ring-1 ring-brand-100 active:bg-brand-100"
+          >
+            {compressionBody}
+          </button>
+        ) : (
+          <div className="flex items-center gap-2 rounded-2xl bg-brand-50 p-2.5 ring-1 ring-brand-100">
+            {compressionBody}
+          </div>
+        )
+      )}
       {ety.parts?.length > 0 && (
         <div className="space-y-2">
           <p className="px-1 text-[11px] font-extrabold text-ink/45">

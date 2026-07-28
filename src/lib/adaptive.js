@@ -46,6 +46,26 @@ export function battleSource(pos) {
   }
 }
 
+// 結果表示・保存・再戦で同じ次回位置を使うための単一計算。
+// 元の作戦・問題数などは保ちつつ、再戦用sourceの級とpositionを必ず更新する。
+export function battleProgression(source = {}, accuracy = 0, maxPos = POS_MAX) {
+  const safeSource = source && typeof source === 'object' ? source : {}
+  const start = Number.isFinite(safeSource.position)
+    ? safeSource.position
+    : safeSource.levelIndex
+  const from = clampPos(start)
+  const to = Math.min(nextPosition(from, accuracy), clampPos(maxPos))
+  return {
+    from,
+    to,
+    trend: battleTrend(from, to),
+    source: {
+      ...safeSource,
+      ...battleSource(to),
+    },
+  }
+}
+
 // 結果表示用の移動判定。
 // 級そのものが変わった場合だけ up / down を返し、同じ級の中で
 // ポジションが動いただけなら advance / ease として区別する。

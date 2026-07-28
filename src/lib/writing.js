@@ -57,11 +57,21 @@ export function buildWritingTokenText(tokens = []) {
   return cleanSpace(tokens.map((token) => token.word).join(' '))
 }
 
+// 置いた瞬間に、そのカードが正しい位置かを返す。
+// ID ではなく表示語を比べることで、"I ... I ..." のような重複語は
+// どちらの同語カードを選んでも正しく判定できる。
+export function writingTokenPositionResults(tokens = [], targetText = '') {
+  const target = writingWordTokens(targetText)
+  return tokens.map(
+    (token, index) => Boolean(token) && token.word === target[index]?.word,
+  )
+}
+
 export function isWritingTokenOrderCorrect(tokens = [], targetText = '') {
   const target = writingWordTokens(targetText)
   return (
     tokens.length === target.length &&
-    tokens.every((token, index) => token.word === target[index].word)
+    writingTokenPositionResults(tokens, targetText).every(Boolean)
   )
 }
 

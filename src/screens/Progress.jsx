@@ -8,6 +8,7 @@ import { getWord } from '../data/vocab.js'
 import { levelProgress, overallProgress } from '../lib/session.js'
 import { encodeProgress, decodeProgress, summarizePayload } from '../lib/progressCode.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
+import { LearningAnalyticsPanel } from '../components/LearningAnalytics.jsx'
 import { Sheet } from '../components/Sheet.jsx'
 import { Card, Button, ProgressBar } from '../components/ui.jsx'
 import { Star, Flame, Trophy, Download, Upload, Check, Share } from '../components/Icons.jsx'
@@ -36,10 +37,12 @@ export function ProgressScreen() {
   // 進捗コードは全データを持ち運ぶため、永続スライスをまとめて購読する。
   // useShallow で浅い比較にし、毎回新オブジェクト→再レンダーループを防ぐ。
   const full = useStore(useShallow((s) => ({
-    srs: s.srs, kotenSrs: s.kotenSrs, myList: s.myList,
+    srs: s.srs, kotenSrs: s.kotenSrs,
+    kotenInterpretationSrs: s.kotenInterpretationSrs, myList: s.myList,
     myGrammarList: s.myGrammarList, writingProgress: s.writingProgress,
     readingsDone: s.readingsDone, mathDone: s.mathDone, mathMastery: s.mathMastery,
-    skillStats: s.skillStats, diagnosticHistory: s.diagnosticHistory,
+    skillStats: s.skillStats, learningAnalytics: s.learningAnalytics,
+    diagnosticHistory: s.diagnosticHistory,
     diagnosticAttempt: s.diagnosticAttempt, diagnosticSeed: s.diagnosticSeed,
     engPos: s.engPos, vnCleared: s.vnCleared,
     portalOrder: s.portalOrder, portalHidden: s.portalHidden,
@@ -199,6 +202,14 @@ export function ProgressScreen() {
           <Stat icon={<Flame size={22} />} value={`${stats.streak}日`} label="連続" color="#f43f5e" />
           <Stat icon={<Trophy size={22} />} value={prog.mastered} label="習得" color="#6366f1" />
         </div>
+
+        <LearningAnalyticsPanel
+          learningAnalytics={full.learningAnalytics}
+          srs={srs}
+          kotenSrs={full.kotenSrs}
+          kotenInterpretationSrs={full.kotenInterpretationSrs}
+          skillStats={full.skillStats}
+        />
 
         {/* 級別の進捗 */}
         <Card className="p-4">

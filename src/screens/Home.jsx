@@ -248,7 +248,7 @@ export function HomeScreen() {
               color="linear-gradient(135deg,#0f172a,#4f46e5)" onClick={() => navigate('writing')}
             />
             <ModeTile
-              icon={<Link size={22} />} label="語源" sub="派生語をまとめて"
+              icon={<Link size={22} />} label="語源" sub="全単語を4経路へ濃縮"
               color="linear-gradient(135deg,#6366f1,#7c3aed)" onClick={() => navigate('roots')}
             />
             <ModeTile

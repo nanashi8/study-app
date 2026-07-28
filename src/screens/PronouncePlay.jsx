@@ -114,7 +114,7 @@ export function PronouncePlayScreen() {
   }
 
   const proceed = (score) => {
-    review(word.id, score >= 70 ? 'remembered' : 'forgot')
+    review(word.id, score >= 70 ? 'remembered' : 'forgot', 'pronunciation')
     if (score >= 70) results.current.good++
     else results.current.wrongIds.push(word.id)
     if (i + 1 >= deck.length) finish()

@@ -30,6 +30,7 @@ export async function pullOrInit(uid, email) {
       mathDone: d.mathDone ?? [],
       mathMastery: d.mathMastery ?? {},
       skillStats: d.skillStats ?? {},
+      learningAnalytics: d.learningAnalytics ?? cur.learningAnalytics,
       diagnosticHistory: d.diagnosticHistory ?? [],
       diagnosticAttempt: Number.isSafeInteger(d.diagnosticAttempt) && d.diagnosticAttempt >= 0
         ? d.diagnosticAttempt

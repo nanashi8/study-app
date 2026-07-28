@@ -21,6 +21,10 @@ const VocabQuizScreen = lazyScreen(() => import('./screens/VocabQuiz.jsx'), 'Voc
 const SessionResultScreen = lazyScreen(() => import('./screens/SessionResult.jsx'), 'SessionResultScreen')
 const WordDetailScreen = lazyScreen(() => import('./screens/WordDetail.jsx'), 'WordDetailScreen')
 const RootDetailScreen = lazyScreen(() => import('./screens/RootDetail.jsx'), 'RootDetailScreen')
+const EtymologyPackScreen = lazyScreen(
+  () => import('./screens/EtymologyPack.jsx'),
+  'EtymologyPackScreen',
+)
 const RootsScreen = lazyScreen(() => import('./screens/Roots.jsx'), 'RootsScreen')
 const MyListScreen = lazyScreen(() => import('./screens/MyList.jsx'), 'MyListScreen')
 const VocabCameraScreen = lazyScreen(() => import('./screens/VocabCamera.jsx'), 'VocabCameraScreen')
@@ -89,6 +93,7 @@ const SCREENS = {
   sessionResult: SessionResultScreen,
   wordDetail: WordDetailScreen,
   rootDetail: RootDetailScreen,
+  etymologyPack: EtymologyPackScreen,
   roots: RootsScreen,
   myList: MyListScreen,
   vocabCamera: VocabCameraScreen,

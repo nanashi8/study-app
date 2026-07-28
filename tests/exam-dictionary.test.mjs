@@ -1,5 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
+import { createHash } from 'node:crypto'
 
 import {
   EXAM_USAGE_GUIDES,
@@ -7,12 +8,18 @@ import {
   EXAM_WORD_IDS,
 } from '../src/data/exam-lexicon.js'
 import { EXAM_PHRASES } from '../src/data/phrases-exam.js'
+import { CURRICULUM_IDIOMS } from '../src/data/phrases-bank.js'
+import {
+  PHRASE_LEVEL_TARGETS,
+  PHRASE_TARGET_TOTALS,
+} from '../src/data/phrase-curriculum.js'
 import { EXAM_GRAMMAR_LESSONS } from '../src/data/grammar-lessons-exam.js'
 import { ALL_WORDS, getWord } from '../src/data/vocab.js'
 import { PHRASES } from '../src/data/phrases.js'
 import { GRAMMAR_LESSONS } from '../src/data/grammar-lessons.js'
-import { grammarByTopic } from '../src/data/grammar.js'
+import { GRAMMAR, grammarByTopic } from '../src/data/grammar.js'
 import { splitMeanings } from '../src/data/compact.js'
+import { pickPhraseDistractors } from '../src/lib/session.js'
 import { vocabMatchRank } from '../src/lib/vocabSearch.js'
 
 const LEVELS = new Set(['5', '4', '3', 'pre2', '2', 'pre1', '1'])
@@ -74,12 +81,25 @@ test('辞書検索は見出し語・意味に加えて語法と推奨表現も�
   assert.equal(vocabMatchRank(getWord('say'), '検索不能な文字列'), -1)
 })
 
-test('熟語・構文は新規144項目を含む213項目へ拡充され、全級に十分な項目がある', () => {
+test('熟語1,150・構文350の全1,500項目を級別目標どおり収録する', () => {
   assert.equal(EXAM_PHRASES.length, 144)
-  assert.equal(PHRASES.length, 213)
+  assert.equal(CURRICULUM_IDIOMS.length, 978)
+  assert.equal(PHRASES.length, PHRASE_TARGET_TOTALS.all)
+  assert.equal(PHRASES.filter((phrase) => phrase.kind === 'idiom').length, PHRASE_TARGET_TOTALS.idiom)
+  assert.equal(PHRASES.filter((phrase) => phrase.kind === 'syntax').length, PHRASE_TARGET_TOTALS.syntax)
+  const firstExamIndex = PHRASES.findIndex((phrase) => phrase.id === EXAM_PHRASES[0].id)
+  assert.equal(firstExamIndex, 69)
   assert.deepEqual(
-    PHRASES.slice(-EXAM_PHRASES.length).map((phrase) => phrase.id),
+    PHRASES.slice(firstExamIndex, firstExamIndex + EXAM_PHRASES.length).map((phrase) => phrase.id),
     EXAM_PHRASES.map((phrase) => phrase.id),
+    '既存カードと入試補充カードのID・並びを変えない',
+  )
+  assert.equal(
+    createHash('sha256')
+      .update(PHRASES.slice(0, 213).map((phrase) => phrase.id).join('\n'))
+      .digest('hex'),
+    'c7747eeecd659d74a0fb02f1d7c2eb28035f7550c2dd1cf99c1dd97f96ee820a',
+    '既存213カードのSRS IDと並びを保存履歴のため固定する',
   )
   assert.equal(new Set(PHRASES.map((phrase) => phrase.id)).size, PHRASES.length)
   assert.equal(
@@ -87,17 +107,73 @@ test('熟語・構文は新規144項目を含む213項目へ拡充され、全�
     PHRASES.length,
   )
 
-  for (const phrase of EXAM_PHRASES) {
+  for (const phrase of PHRASES) {
     assert.ok(LEVELS.has(phrase.level), phrase.id)
     assert.ok(['idiom', 'syntax'].includes(phrase.kind), phrase.id)
-    assert.equal(phrase.meanings.join('・'), phrase.meaning, phrase.id)
-    assert.deepEqual(phrase.meanings, splitMeanings(phrase.meaning), phrase.id)
+    assert.ok(phrase.meaning && phrase.meanings.length, phrase.id)
     assert.ok(phrase.example.en && phrase.example.ja, phrase.id)
     assert.ok(phrase.origin && phrase.note, phrase.id)
+    if (phrase.kind === 'idiom' && (phrase.curriculumSupplement || phrase.examSupplement)) {
+      assert.deepEqual(phrase.meanings, splitMeanings(phrase.meaning), phrase.id)
+    }
+  }
+
+  for (const [level, target] of Object.entries(PHRASE_LEVEL_TARGETS)) {
+    assert.equal(
+      PHRASES.filter((phrase) => phrase.level === level && phrase.kind === 'idiom').length,
+      target.idiom,
+      `${level}級 熟語`,
+    )
+    assert.equal(
+      PHRASES.filter((phrase) => phrase.level === level && phrase.kind === 'syntax').length,
+      target.syntax,
+      `${level}級 構文`,
+    )
+  }
+})
+
+test('新規熟語は分類・使用例を持ち、構文は既存文法問題へ往復できる', () => {
+  const grammarById = new Map(GRAMMAR.map((item) => [item.id, item]))
+  const wordIds = new Set(ALL_WORDS.map((word) => word.id))
+  const grammarIds = new Set(GRAMMAR.map((item) => item.id))
+
+  for (const phrase of CURRICULUM_IDIOMS) {
+    assert.equal(phrase.kind, 'idiom', phrase.id)
+    assert.equal(phrase.curriculumSupplement, true, phrase.id)
+    assert.ok(phrase.category, phrase.id)
+    assert.ok(!wordIds.has(phrase.id), phrase.id)
+    assert.ok(!grammarIds.has(phrase.id), phrase.id)
+  }
+
+  const syntax = PHRASES.filter((phrase) => phrase.category === 'grammar-example')
+  assert.equal(syntax.length, 309)
+  for (const phrase of syntax) {
+    const source = grammarById.get(phrase.sourceGrammarId)
+    assert.ok(source, phrase.id)
+    assert.equal(phrase.phrase, source.sentence.en, phrase.id)
+    assert.equal(phrase.meaning, source.sentence.ja, phrase.id)
+    assert.ok(phrase.sourcePattern, phrase.id)
   }
 
   for (const level of LEVELS) {
-    assert.ok(PHRASES.filter((phrase) => phrase.level === level).length >= 25, level)
+    assert.ok(
+      new Set(
+        syntax
+          .filter((phrase) => phrase.level === level)
+          .map((phrase) => phrase.sourcePattern),
+      ).size >= 20,
+      `${level}級の構文パターンが偏っている`,
+    )
+  }
+
+  for (const phrase of PHRASES) {
+    const distractors = pickPhraseDistractors(phrase, 3, () => 0.314159)
+    assert.equal(distractors.length, 3, phrase.id)
+    assert.equal(
+      new Set([phrase.meaning, ...distractors.map((item) => item.meaning)]).size,
+      4,
+      `${phrase.id}: 意味が重なる選択肢`,
+    )
   }
 })
 

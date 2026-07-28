@@ -1,7 +1,13 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { decodeProgress, encodeProgress } from '../lib/progressCode.js'
-import { nextPosition, clampPos } from '../lib/adaptive.js'
+import { battleProgression, clampPos } from '../lib/adaptive.js'
+import {
+  createLearningAnalytics,
+  learningSkillForItem,
+  recordLearningEvent,
+  recordLearningEvents,
+} from '../lib/learningAnalytics.js'
 import { DEFAULT_CONTENT_ORDER } from '../data/contents.js'
 
 // ── 学習ロジックの定数 ──────────────────────────────────────────────
@@ -73,6 +79,7 @@ const initialLearning = () => ({
   mathDone: [], // [problemId] クリアした数学問題
   mathMastery: {}, // unitId -> 最高正答率(0-100) ＝ 理解度
   skillStats: {}, // skill -> { answered, correct, sessions, lastDay } ＝ スキル別テスト結果
+  learningAnalytics: createLearningAnalytics(), // 時刻・反復間隔・正誤の匿名集計
   diagnosticHistory: [], // 学習診断の新しい順の結果（最大5件）
   diagnosticAttempt: 0, // 学習診断を開始した回数。問題候補を重複なしで順送りする
   diagnosticSeed: null, // 端末ごとの問題候補の並びを再現する符号なし32bit整数
@@ -84,9 +91,9 @@ const initialLearning = () => ({
   settings: { ...DEFAULT_SETTINGS },
 })
 
-function applyReview(srs, stats, wordId, result) {
+function applyReview(srs, stats, wordId, result, timestamp = Date.now()) {
   const def = RESULTS[result] ?? RESULTS.unknown
-  const day = today()
+  const day = localDayIndexAt(timestamp)
   const prev = srs[wordId] ?? { box: 0, correct: 0, wrong: 0, due: day, last: null }
   let box
   if (def.box === 'reset') box = 0
@@ -98,6 +105,7 @@ function applyReview(srs, stats, wordId, result) {
     wrong: prev.wrong + (result === 'wrong' || result === 'unknown' || result === 'forgot' ? 1 : 0),
     due: day + INTERVALS[box],
     last: day,
+    lastAt: timestamp,
   }
 
   // ── stats / streak / 今日のカウント ──
@@ -112,12 +120,23 @@ function applyReview(srs, stats, wordId, result) {
   if (result === 'correct' || result === 'remembered') s.correct += 1
   s.xp += def.xp
 
-  return { srs: { ...srs, [wordId]: next }, stats: s }
+  return {
+    srs: { ...srs, [wordId]: next },
+    stats: s,
+    reviewMeta: {
+      beforeBox: prev.box ?? 0,
+      afterBox: box,
+      gapHours: Number.isFinite(prev.lastAt)
+        ? Math.max(0, (timestamp - prev.lastAt) / 3600000)
+        : null,
+      repetitions: next.correct + next.wrong,
+    },
+  }
 }
 
 // 英作文1本の完成を、今日の学習回数・連続日数・XPへ反映する。
-function awardWriting(stats, xp = 20) {
-  const day = today()
+function awardWriting(stats, xp = 20, timestamp = Date.now()) {
+  const day = localDayIndexAt(timestamp)
   const next = { ...stats }
   if (next.day !== day) {
     next.streak = next.day === day - 1 ? next.streak + 1 : 1
@@ -163,26 +182,88 @@ export const useStore = create(
       // ── 学習state（永続化する） ──
       ...initialLearning(),
 
-      review: (wordId, result) =>
-        set((st) => applyReview(st.srs, st.stats, wordId, result)),
+      review: (wordId, result, skillHint = null) =>
+        set((st) => {
+          const timestamp = Date.now()
+          const { srs, stats, reviewMeta } = applyReview(
+            st.srs,
+            st.stats,
+            wordId,
+            result,
+            timestamp,
+          )
+          const remembered = result === 'correct' || result === 'remembered'
+          return {
+            srs,
+            stats,
+            learningAnalytics: recordLearningEvent(
+              st.learningAnalytics,
+              {
+                skill: learningSkillForItem(wordId, skillHint),
+                inputs: 1,
+                scored: 1,
+                correct: remembered ? 1 : 0,
+                ...reviewMeta,
+              },
+              timestamp,
+            ),
+          }
+        }),
 
       // 古文単語の復習（英単語と同じLeitnerロジックを別srsで使う）。
       reviewKoten: (wordId, result) =>
         set((st) => {
-          const { srs, stats } = applyReview(st.kotenSrs, st.stats, wordId, result)
-          return { kotenSrs: srs, stats }
+          const timestamp = Date.now()
+          const { srs, stats, reviewMeta } = applyReview(
+            st.kotenSrs,
+            st.stats,
+            wordId,
+            result,
+            timestamp,
+          )
+          return {
+            kotenSrs: srs,
+            stats,
+            learningAnalytics: recordLearningEvent(
+              st.learningAnalytics,
+              {
+                skill: 'koten',
+                inputs: 1,
+                scored: 1,
+                correct: result === 'correct' || result === 'remembered' ? 1 : 0,
+                ...reviewMeta,
+              },
+              timestamp,
+            ),
+          }
         }),
 
       // 古典短文解釈も、問題ごとに同じ間隔反復で復習時期を管理する。
       reviewKotenInterpretation: (questionId, result) =>
         set((st) => {
-          const { srs, stats } = applyReview(
+          const timestamp = Date.now()
+          const { srs, stats, reviewMeta } = applyReview(
             st.kotenInterpretationSrs,
             st.stats,
             questionId,
             result,
+            timestamp,
           )
-          return { kotenInterpretationSrs: srs, stats }
+          return {
+            kotenInterpretationSrs: srs,
+            stats,
+            learningAnalytics: recordLearningEvent(
+              st.learningAnalytics,
+              {
+                skill: 'koten_reading',
+                inputs: 1,
+                scored: 1,
+                correct: result === 'correct' || result === 'remembered' ? 1 : 0,
+                ...reviewMeta,
+              },
+              timestamp,
+            ),
+          }
         }),
 
       toggleMyList: (wordId) =>
@@ -216,7 +297,8 @@ export const useStore = create(
       recordWritingCompletion: ({ exerciseId, text, mode, wordCount, grammarIds }) =>
         set((st) => {
           if (!exerciseId || !text) return {}
-          const day = today()
+          const timestamp = Date.now()
+          const day = localDayIndexAt(timestamp)
           const previous = st.writingProgress[exerciseId] ?? {
             completed: 0,
             bestWords: 0,
@@ -248,7 +330,12 @@ export const useStore = create(
                 lastDay: day,
               },
             },
-            stats: awardWriting(st.stats),
+            stats: awardWriting(st.stats, 20, timestamp),
+            learningAnalytics: recordLearningEvent(
+              st.learningAnalytics,
+              { skill: 'writing', inputs: 1, scored: 0, correct: 0 },
+              timestamp,
+            ),
           }
         }),
 
@@ -298,9 +385,11 @@ export const useStore = create(
         ),
 
       // スキル別（単語/文法/語法/長文/リスニング/ディクテーション）のテスト結果を累積する。
-      recordSkillResult: (skill, correct, total) =>
+      recordSkillResult: (skill, correct, total, options = {}) =>
         set((st) => {
           if (!skill || !total) return {}
+          const timestamp = Date.now()
+          const day = localDayIndexAt(timestamp)
           const prev = st.skillStats[skill] ?? { answered: 0, correct: 0, sessions: 0, lastDay: null }
           return {
             skillStats: {
@@ -309,9 +398,23 @@ export const useStore = create(
                 answered: prev.answered + total,
                 correct: prev.correct + correct,
                 sessions: prev.sessions + 1,
-                lastDay: today(),
+                lastDay: day,
               },
             },
+            ...(options.trackLearning === false
+              ? {}
+              : {
+                  learningAnalytics: recordLearningEvent(
+                    st.learningAnalytics,
+                    {
+                      skill,
+                      inputs: total,
+                      scored: total,
+                      correct,
+                    },
+                    timestamp,
+                  ),
+                }),
           }
         }),
 
@@ -338,8 +441,10 @@ export const useStore = create(
           const history = Array.isArray(st.diagnosticHistory) ? st.diagnosticHistory : []
           if (history.some((item) => item.id === result.id)) return {}
 
-          const day = today()
+          const timestamp = Date.now()
+          const day = localDayIndexAt(timestamp)
           const skillStats = { ...st.skillStats }
+          const learningEvents = []
           for (const item of result.skillResults) {
             if (!item?.id || !Number.isFinite(item.correct) || !Number.isFinite(item.total) || item.total <= 0) {
               continue
@@ -356,11 +461,22 @@ export const useStore = create(
               sessions: prev.sessions + 1,
               lastDay: day,
             }
+            learningEvents.push({
+              skill: item.id,
+              inputs: item.total,
+              scored: item.total,
+              correct: item.correct,
+            })
           }
 
           return {
             diagnosticHistory: [result, ...history].slice(0, 5),
             skillStats,
+            learningAnalytics: recordLearningEvents(
+              st.learningAnalytics,
+              learningEvents,
+              timestamp,
+            ),
             engPos: st.engPos == null && Number.isFinite(result.position)
               ? clampPos(result.position)
               : st.engPos,
@@ -375,20 +491,38 @@ export const useStore = create(
       recordBattle: (accuracy, fromPos = null, maxPos = null) =>
         set((st) => {
           const start = Number.isFinite(fromPos) ? fromPos : st.engPos ?? 0
-          const next = nextPosition(start, accuracy)
+          const battle = battleProgression(
+            { position: start },
+            accuracy,
+            Number.isFinite(maxPos) ? maxPos : undefined,
+          )
           return {
-            engPos: Number.isFinite(maxPos) ? Math.min(next, maxPos) : next,
+            engPos: battle.to,
           }
         }),
 
       // 単元セッション終了時に理解度（最高正答率）を更新する。
       setMathMastery: (unitId, pct) =>
-        set((st) => ({
-          mathMastery: {
-            ...st.mathMastery,
-            [unitId]: Math.max(st.mathMastery[unitId] ?? 0, Math.round(pct)),
-          },
-        })),
+        set((st) => {
+          const timestamp = Date.now()
+          const normalizedPct = Math.max(0, Math.min(100, Number(pct) || 0))
+          return {
+            mathMastery: {
+              ...st.mathMastery,
+              [unitId]: Math.max(st.mathMastery[unitId] ?? 0, Math.round(normalizedPct)),
+            },
+            learningAnalytics: recordLearningEvent(
+              st.learningAnalytics,
+              {
+                skill: 'math',
+                inputs: 1,
+                scored: 1,
+                correct: normalizedPct / 100,
+              },
+              timestamp,
+            ),
+          }
+        }),
 
       setSetting: (key, value) =>
         set((st) => ({ settings: { ...st.settings, [key]: value } })),
@@ -434,6 +568,7 @@ export const useStore = create(
           mathDone: payload.mathDone ?? [],
           mathMastery: payload.mathMastery ?? {},
           skillStats: payload.skillStats ?? {},
+          learningAnalytics: payload.learningAnalytics ?? createLearningAnalytics(),
           diagnosticHistory: payload.diagnosticHistory ?? [],
           diagnosticAttempt: payload.diagnosticAttempt ?? 0,
           diagnosticSeed: payload.diagnosticSeed ?? null,
@@ -464,6 +599,7 @@ export const useStore = create(
         mathDone: st.mathDone,
         mathMastery: st.mathMastery,
         skillStats: st.skillStats,
+        learningAnalytics: st.learningAnalytics,
         diagnosticHistory: st.diagnosticHistory,
         diagnosticAttempt: st.diagnosticAttempt,
         diagnosticSeed: st.diagnosticSeed,

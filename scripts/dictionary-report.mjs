@@ -7,6 +7,8 @@ import {
 } from '../src/data/exam-lexicon.js'
 import { PHRASES } from '../src/data/phrases.js'
 import { EXAM_PHRASES } from '../src/data/phrases-exam.js'
+import { CURRICULUM_IDIOMS } from '../src/data/phrases-bank.js'
+import { PHRASE_LEVEL_TARGETS } from '../src/data/phrase-curriculum.js'
 import { GRAMMAR } from '../src/data/grammar.js'
 import { GRAMMAR_LESSONS } from '../src/data/grammar-lessons.js'
 import { EXAM_GRAMMAR_LESSONS } from '../src/data/grammar-lessons-exam.js'
@@ -28,7 +30,11 @@ line('語法説明付き見出し語', ALL_WORDS.filter((word) => word.usage).le
 line('使い分けガイド', EXAM_USAGE_GUIDES.length)
 line('使い分け対象見出し語', new Set(EXAM_USAGE_GUIDES.flatMap((guide) => guide.wordIds)).size)
 line('熟語・構文（全項目）', PHRASES.length)
-line('今回の熟語・構文補充', EXAM_PHRASES.length)
+line('熟語', PHRASES.filter((phrase) => phrase.kind === 'idiom').length)
+line('構文', PHRASES.filter((phrase) => phrase.kind === 'syntax').length)
+line('今回の級別熟語補充', CURRICULUM_IDIOMS.length)
+line('今回の文法連動構文補充', PHRASES.filter((phrase) => phrase.category === 'grammar-example').length)
+line('既存の入試熟語補充', EXAM_PHRASES.length)
 line('英文法クイズ', GRAMMAR.length)
 line('文法解説（全単元）', GRAMMAR_LESSONS.length)
 line('今回の高校文法補充', EXAM_GRAMMAR_LESSONS.length)
@@ -37,7 +43,16 @@ console.log('\n級別の英単語')
 for (const [level, count] of Object.entries(countByLevel(ALL_WORDS))) line(level, count)
 
 console.log('\n級別の熟語・構文')
-for (const [level, count] of Object.entries(countByLevel(PHRASES))) line(level, count)
+for (const level of LEVELS) {
+  const items = PHRASES.filter((phrase) => phrase.level === level.id)
+  const idioms = items.filter((phrase) => phrase.kind === 'idiom').length
+  const syntax = items.filter((phrase) => phrase.kind === 'syntax').length
+  const target = PHRASE_LEVEL_TARGETS[level.id]
+  line(
+    level.label,
+    `${items.length} (熟語${idioms}/${target.idiom} 構文${syntax}/${target.syntax})`,
+  )
+}
 
 console.log('\n学年別の文法解説')
 for (const stage of ['中1', '中2', '中3', '高校基礎', '高校発展']) {

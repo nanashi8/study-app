@@ -18,6 +18,7 @@ import {
   selectedWritingGrammarIds,
   selectedWritingWordIds,
   shuffledWritingTokens,
+  writingTokenPositionResults,
   writingCompletion,
   writingWordTokens,
   writingWordCount,
@@ -132,14 +133,61 @@ test('英作文の一文を単語カードへ分け、並び替えた語順を�
   assert.equal(isWritingTokenOrderCorrect(ordered, text), true)
 })
 
+test('英作文の語カードは置いた位置ごとに正誤を即時判定する', () => {
+  const text = 'Last Sunday, I went to the park with my family.'
+  const ordered = writingWordTokens(text)
+
+  assert.deepEqual(
+    writingTokenPositionResults([ordered[0], ordered[2]], text),
+    [true, false],
+  )
+  assert.deepEqual(
+    writingTokenPositionResults(ordered.slice(0, 4), text),
+    [true, true, true, true],
+  )
+})
+
+test('全英作文選択肢の語カードを位置ごとに判定できる', () => {
+  let optionCount = 0
+  let tokenCount = 0
+
+  for (const exercise of WRITING_EXERCISES) {
+    for (const step of exercise.steps) {
+      for (const option of step.options) {
+        const tokens = writingWordTokens(option.text)
+        const results = writingTokenPositionResults(tokens, option.text)
+        optionCount += 1
+        tokenCount += tokens.length
+
+        assert.ok(tokens.length > 0, `${exercise.id}/${step.id}/${option.id}`)
+        assert.ok(
+          results.every(Boolean),
+          `${exercise.id}/${step.id}/${option.id}`,
+        )
+      }
+    }
+  }
+
+  assert.ok(optionCount > 0)
+  assert.ok(tokenCount > optionCount)
+})
+
 test('同じseedの語カードは同じ順序になり、重複語も失わない', () => {
   const text = 'I think I can do it.'
   const first = shuffledWritingTokens(text, 'same-seed')
   const second = shuffledWritingTokens(text, 'same-seed')
+  const ordered = writingWordTokens(text)
 
   assert.deepEqual(first, second)
   assert.equal(first.filter((token) => token.word === 'I').length, 2)
   assert.equal(new Set(first.map((token) => token.id)).size, first.length)
+  assert.deepEqual(
+    writingTokenPositionResults(
+      [ordered[2], ordered[1], ordered[0], ...ordered.slice(3)],
+      text,
+    ),
+    [true, true, true, true, true, true],
+  )
 })
 
 test('全マイ文法カードは一意で、解説・型・例文を備える', () => {

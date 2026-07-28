@@ -75,7 +75,7 @@ export function VocabStudyScreen() {
   }
 
   const answer = (remembered) => {
-    review(word.id, remembered ? 'remembered' : 'forgot')
+    review(word.id, remembered ? 'remembered' : 'forgot', 'vocab')
     if (remembered) results.current.remembered++
     else results.current.forgot++
     if (i + 1 >= deck.length) finish()

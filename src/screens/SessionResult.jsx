@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { useStore } from '../store/useStore.js'
 import { ProgressRing, ProgressBar, Button, Card } from '../components/ui.jsx'
 import { Star, Flame, Refresh, Home, Bookmark, ArrowRight } from '../components/Icons.jsx'
-import { enemyLevel, nextPosition, battleTrend } from '../lib/adaptive.js'
+import { battleProgression, enemyLevel } from '../lib/adaptive.js'
 import {
   battleTactic,
   battleQuest,
@@ -11,8 +11,10 @@ import {
   encounterFor,
   heroProgress,
   maxEnemyRankIndexForHeroLevel,
+  relicStatLabel,
 } from '../lib/rpg.js'
-import battleVignette from '../assets/rpg-battle-vignette.jpg'
+import { HeroPortrait } from '../components/HeroPortrait.jsx'
+import { MobPortrait } from '../components/MobPortrait.jsx'
 
 // セッションの種類から「スキル」を判定する（弱点ナビ用）。
 function inferSkill({ engine, replayScreen }) {
@@ -71,7 +73,7 @@ export function SessionResultScreen() {
 
   // この結果をスキル別テスト結果として1回だけ記録する（学習マップの弱点ナビが参照）。
   const recordSkillResult = useStore((s) => s.recordSkillResult)
-  const recordBattle = useStore((s) => s.recordBattle)
+  const setEngPos = useStore((s) => s.setEngPos)
   const isBattle = source?.type === 'battle'
   const heroBefore = heroProgress(Math.max(0, totalXp - xpGained))
   const heroAfter = heroProgress(totalXp)
@@ -90,25 +92,33 @@ export function SessionResultScreen() {
   const quest = isBattle ? battleQuest(source?.questId) : null
   const tactic = isBattle ? battleTactic(source?.tacticId) : null
   const verdict = isBattle ? battleVerdict(acc) : null
-  const [battle, setBattle] = useState(null) // { from, to, trend }
-  const recorded = useRef(false)
-  useEffect(() => {
-    // 暗記カード（自己採点の study）はテストではないので弱点判定に含めない。
-    if (recorded.current || !total || mode === 'study') return
-    recorded.current = true
-    recordSkillResult(inferSkill(params), correct, total)
-    // 適応バトルなら成績でポジションを上下させ、敵LVの変化を表示する。
-    if (isBattle) {
-      const from = capEnemyPositionForHeroLevel(
+  const battleStart = isBattle
+    ? capEnemyPositionForHeroLevel(
         source?.position
           ?? source?.levelIndex
           ?? useStore.getState().engPos
           ?? 0,
         heroAfter.level,
       )
-      const to = Math.min(nextPosition(from, acc), battleRankCap)
-      recordBattle(acc, from, battleRankCap)
-      setBattle({ from, to, trend: battleTrend(from, to) })
+    : 0
+  const battle = isBattle
+    ? battleProgression(
+        { ...source, position: battleStart },
+        acc,
+        battleRankCap,
+      )
+    : null
+  const recorded = useRef(false)
+  useEffect(() => {
+    // 暗記カード（自己採点の study）はテストではないので弱点判定に含めない。
+    if (recorded.current || !total || mode === 'study') return
+    recorded.current = true
+    // 各設問は review() で時刻別分析へ記録済み。ここでは分野別の累計だけ更新する。
+    recordSkillResult(inferSkill(params), correct, total, { trackLearning: false })
+    // 適応バトルなら成績でポジションを上下させ、敵LVの変化を表示する。
+    if (isBattle) {
+      // 結果表示と同じ確定値を保存し、「予告だけ昇格」のずれを起こさない。
+      setEngPos(battle.to)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -139,14 +149,27 @@ export function SessionResultScreen() {
   const isDictation = engine === 'dictation' || params.replayScreen === 'dictationPlay'
   const isListening = engine === 'listening' || params.replayScreen === 'listeningQuiz'
   const reviewUnit = isGrammar || isDictation || isListening ? '問' : isPhrase ? '項目' : '語'
+  const replaySource = isBattle && battle
+    ? {
+        ...battle.source,
+        heroLevel: heroAfter.level,
+      }
+    : source
+  const replayEncounter = isBattle
+    ? encounterFor({
+        level: heroAfter.level,
+        day: replaySource?.adventureDay ?? 0,
+        enemyRankIndex: replaySource?.levelIndex ?? 0,
+      })
+    : null
 
   const replay = () => {
     const target =
       params.replayScreen ??
       (isPhrase ? (mode === 'quiz' ? 'phraseQuiz' : 'phraseStudy') : mode === 'quiz' ? 'vocabQuiz' : 'vocabStudy')
     navigate(target, {
-      source,
-      title,
+      source: replaySource,
+      title: isBattle ? `VS ${replayEncounter.name}` : title,
       mode,
       engine,
       replayScreen: params.replayScreen,
@@ -292,9 +315,11 @@ function HeroLevelCard({ before, after, xpGained, newRelics }) {
       }`}
     >
       <div className="flex items-center gap-3">
-        <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-brand-100 text-2xl">
-          {after.title.emoji}
-        </span>
+        <HeroPortrait
+          level={after.level}
+          title={after.title}
+          className="h-12 w-12"
+        />
         <div className="min-w-0 flex-1 text-left">
           <div className="flex items-center justify-between gap-2">
             <span className="font-display font-extrabold text-ink">
@@ -327,6 +352,31 @@ function HeroLevelCard({ before, after, xpGained, newRelics }) {
         </div>
       </div>
 
+      <div className="mt-3 grid grid-cols-3 gap-1.5">
+        {[
+          ['HP', before.battleStats.maxHp, after.battleStats.maxHp],
+          ['ATK', before.battleStats.attack, after.battleStats.attack],
+          ['DEF', before.battleStats.defense, after.battleStats.defense],
+        ].map(([label, oldValue, value]) => (
+          <div
+            key={label}
+            className="rounded-xl bg-white/75 px-1.5 py-2 text-center"
+          >
+            <p className="text-[8px] font-extrabold tracking-wider text-ink/40">
+              {label}
+            </p>
+            <p className="font-display text-sm font-extrabold text-ink">
+              {leveledUp && oldValue !== value ? (
+                <>
+                  <span className="text-[9px] text-ink/35">{oldValue} → </span>
+                  <span className="text-emerald-600">{value}</span>
+                </>
+              ) : value}
+            </p>
+          </div>
+        ))}
+      </div>
+
       {newRelics.length > 0 && (
         <div className="mt-3 rounded-2xl bg-white/80 p-2.5 text-left">
           <p className="text-[9px] font-extrabold tracking-[0.15em] text-amber-600">
@@ -335,7 +385,9 @@ function HeroLevelCard({ before, after, xpGained, newRelics }) {
           {newRelics.map((relic) => (
             <p key={relic.level} className="mt-0.5 text-xs font-extrabold text-ink">
               {relic.emoji} {relic.name}
-              <span className="ml-1 font-bold text-ink/40">を獲得！</span>
+              <span className="ml-1 font-bold text-ink/40">
+                を獲得！ {relicStatLabel(relic)}
+              </span>
             </p>
           ))}
         </div>
@@ -370,11 +422,11 @@ function BattleOutcome({ battle, encounter, verdict, tactic, battleReport }) {
   return (
     <Card className={`w-full max-w-xs p-3.5 ${t.bg}`}>
       <div className="flex items-start gap-3 text-left">
-        <img
-          src={battleVignette}
-          alt=""
-          className="mob-portrait h-11 w-11 shrink-0 rounded-2xl object-cover ring-1 ring-white/70"
-          style={{ objectPosition: '88% 52%' }}
+        <MobPortrait
+          encounter={encounter}
+          decorative
+          defeated={battleReport?.enemyDefeated === true}
+          className="h-11 w-11 shrink-0 rounded-2xl ring-1 ring-white/70"
         />
         <div>
           <div className={`font-display text-sm font-extrabold ${t.tone}`}>
@@ -384,6 +436,14 @@ function BattleOutcome({ battle, encounter, verdict, tactic, battleReport }) {
             {verdict.text}
           </p>
         </div>
+      </div>
+      <div className="mt-2.5 rounded-2xl bg-white/55 px-3 py-2 text-left">
+        <p className="text-[9px] font-extrabold tracking-[0.12em] text-brand-600">
+          {encounter.elementEmoji} MOB RECORD · {encounter.species}
+        </p>
+        <p className="mt-0.5 text-[10px] font-bold leading-relaxed text-ink/55">
+          {encounter.lore}
+        </p>
       </div>
       <div className="mt-3 flex items-center justify-center gap-2 rounded-2xl bg-white/55 p-2 text-ink">
         <span className="rounded-xl px-2.5 py-1 text-xs font-extrabold" style={{ backgroundColor: `${from.color}22`, color: from.color }}>
@@ -406,9 +466,12 @@ function BattleOutcome({ battle, encounter, verdict, tactic, battleReport }) {
             </p>
             <p className="truncate text-xs font-extrabold">{tactic.name}</p>
           </div>
-          <span className="text-right text-[10px] font-bold text-white/70">
-            {battleReport.summary}
-          </span>
+          <div className="text-right text-[9px] font-bold text-white/70">
+            <p>{battleReport.summary}</p>
+            <p className="mt-0.5 text-amber-300">
+              与ダメ {battleReport.damageDealt} · 被ダメ {battleReport.damageTaken}
+            </p>
+          </div>
         </div>
       )}
     </Card>

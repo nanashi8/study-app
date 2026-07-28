@@ -72,7 +72,7 @@ export function PhraseStudyScreen() {
   }
 
   const answer = (remembered) => {
-    review(item.id, remembered ? 'remembered' : 'forgot')
+    review(item.id, remembered ? 'remembered' : 'forgot', 'usage')
     if (remembered) results.current.remembered++
     else results.current.forgot++
     if (i + 1 >= deck.length) finish()

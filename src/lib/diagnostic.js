@@ -186,6 +186,26 @@ export function scoreDiagnostic(
   }
 }
 
+export function buildDiagnosticAnswerReview(questions, answers) {
+  if (!Array.isArray(questions)) {
+    throw new Error('診断テストの問題形式が不正です。')
+  }
+  if (!answers || typeof answers !== 'object' || Array.isArray(answers)) {
+    throw new Error('診断テストの回答形式が不正です。')
+  }
+
+  return questions.map((question, index) => {
+    const selectedAnswer = answers[question.id]
+    return {
+      question,
+      questionNumber: index + 1,
+      selectedAnswer,
+      isCorrect: selectedAnswer === question.answer,
+      isUnknown: selectedAnswer === UNKNOWN_DIAGNOSTIC_ANSWER,
+    }
+  })
+}
+
 export function latestDiagnostic(history) {
   return Array.isArray(history) && history.length ? history[0] : null
 }

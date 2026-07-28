@@ -21,6 +21,7 @@ const SCREEN_TO_TAB = {
   sessionResult: 'vocab',
   wordDetail: 'vocab',
   rootDetail: 'vocab',
+  etymologyPack: 'vocab',
   vocabSearch: 'vocab',
   myList: 'mylist',
   myGrammar: 'mylist',
