@@ -1,79 +1,159 @@
 // 音声認識（Web Speech API / SpeechRecognition）ラッパーと認識文字列の一致度計算。
-// Chrome / Edge は対応。iOS Safari / Firefox は未対応のことが多い → 要 feature-detect。
+// 対応状況はブラウザ名で決め打ちせず、その時点の実装を feature-detect する。
 
-const SR =
+const recognitionConstructor = () =>
   typeof window !== 'undefined'
     ? window.SpeechRecognition || window.webkitSpeechRecognition
     : null
 
-export const isRecognitionSupported = () => !!SR
+export const isRecognitionSupported = () => !!recognitionConstructor()
+export const PRONUNCIATION_PASS_SCORE = 80
 
-/** プッシュトゥトーク式の音声認識を開始する。
- *  押している間だけ録音し、stop() で確定 → result が resolve する。
- *  返り値 { stop, abort, result }。result は {transcript, confidence} か {error}。
- *  start/stop の競合（押した直後に離す）に備え、開始前の stop は保留して開始後に実行する。 */
-export function startRecognition({ lang = 'en-US' } = {}) {
-  if (!SR) return { stop() {}, abort() {}, result: Promise.resolve({ error: 'unsupported' }) }
+const candidateTranscripts = (chunks, limit = 20) => {
+  let combined = [{ transcript: '', confidenceTotal: 0, confidenceCount: 0 }]
+  for (const chunk of chunks.filter(Boolean)) {
+    const next = []
+    for (const prefix of combined) {
+      for (const alternative of chunk) {
+        const confidence = Number.isFinite(alternative.confidence) ? alternative.confidence : null
+        next.push({
+          transcript: `${prefix.transcript} ${alternative.transcript}`.trim(),
+          confidenceTotal: prefix.confidenceTotal + (confidence ?? 0),
+          confidenceCount: prefix.confidenceCount + (confidence === null ? 0 : 1),
+        })
+        if (next.length >= limit) break
+      }
+      if (next.length >= limit) break
+    }
+    combined = next
+    if (!combined.length) break
+  }
 
-  const rec = new SR()
+  const seen = new Set()
+  return combined
+    .map((entry) => ({
+      transcript: entry.transcript.trim(),
+      confidence: entry.confidenceCount
+        ? entry.confidenceTotal / entry.confidenceCount
+        : 0,
+    }))
+    .filter((entry) => entry.transcript && !seen.has(entry.transcript) && seen.add(entry.transcript))
+}
+
+/** 1回分の音声認識を開始する。
+ *  無音になるとブラウザ側で確定し、必要なら stop() でも確定できる。
+ *  返り値 { stop, abort, result }。result は
+ *  { transcript, confidence, alternatives } または { error }。
+ *  RecognitionCtor はブラウザ実装を差し替えるテスト用引数。 */
+export function startRecognition(
+  { lang = 'en-US', timeoutMs = 12_000 } = {},
+  RecognitionCtor = recognitionConstructor(),
+) {
+  if (!RecognitionCtor) {
+    return { stop() {}, abort() {}, result: Promise.resolve({ error: 'unsupported' }) }
+  }
+
+  let rec
+  try {
+    rec = new RecognitionCtor()
+  } catch {
+    return { stop() {}, abort() {}, result: Promise.resolve({ error: 'recognition-error' }) }
+  }
   rec.lang = lang
-  rec.interimResults = true // 押している間の取りこぼしを減らし、短い発話も拾う
+  rec.interimResults = true
   rec.continuous = false
-  rec.maxAlternatives = 3
+  rec.maxAlternatives = 5
 
   let started = false
   let pendingStop = false
   let settled = false
-  let finalText = ''
-  let interimText = ''
-  let confidence = 0
+  let timeoutId = null
+  let chunks = []
   let resolveResult
   const result = new Promise((res) => { resolveResult = res })
-  const settle = (val) => { if (!settled) { settled = true; resolveResult(val) } }
+  const settle = (val) => {
+    if (settled) return
+    settled = true
+    if (timeoutId !== null) clearTimeout(timeoutId)
+    resolveResult(val)
+  }
+  const stopBrowserRecognition = () => {
+    if (started) {
+      try { rec.stop() } catch {}
+    } else {
+      pendingStop = true
+    }
+  }
 
   rec.onstart = () => {
     started = true
-    if (pendingStop) { try { rec.stop() } catch {} }
+    if (timeoutMs > 0) {
+      timeoutId = setTimeout(() => {
+        settle({ error: 'timeout' })
+        try { rec.abort() } catch {}
+      }, timeoutMs)
+    }
+    if (pendingStop) stopBrowserRecognition()
   }
   rec.onresult = (e) => {
-    let interim = ''
-    for (let k = e.resultIndex; k < e.results.length; k++) {
-      const r = e.results[k]
-      if (r.isFinal) {
-        finalText += (finalText ? ' ' : '') + r[0].transcript
-        confidence = r[0].confidence
-      } else {
-        interim += r[0].transcript
+    const next = []
+    for (let k = 0; k < e.results.length; k++) {
+      const recognitionResult = e.results[k]
+      const alternatives = []
+      for (let j = 0; j < recognitionResult.length; j++) {
+        const alternative = recognitionResult[j]
+        const transcript = alternative?.transcript?.trim()
+        if (transcript) {
+          alternatives.push({
+            transcript,
+            confidence: alternative.confidence,
+          })
+        }
       }
+      if (alternatives.length) next[k] = alternatives
     }
-    interimText = interim
+    if (next.length) chunks = next
   }
   rec.onerror = (e) => settle({ error: e.error || 'recognition-error' })
   rec.onend = () => {
-    const transcript = (finalText || interimText).trim()
-    settle(transcript ? { transcript, confidence } : { error: 'no-speech' })
+    const alternatives = candidateTranscripts(chunks)
+    const best = alternatives[0]
+    settle(best
+      ? { transcript: best.transcript, confidence: best.confidence, alternatives }
+      : { error: 'no-speech' })
   }
+  // 1語を話し終えたら待たせず確定する。stop() は得られた結果を返す。
+  rec.onspeechend = stopBrowserRecognition
 
   try {
     rec.start()
   } catch (e) {
-    settle({ error: e?.name === 'InvalidStateError' ? 'no-speech' : 'recognition-error' })
+    settle({ error: e?.name === 'InvalidStateError' ? 'busy' : 'recognition-error' })
   }
 
   return {
-    stop() {
-      if (started) { try { rec.stop() } catch {} }
-      else pendingStop = true
+    stop: stopBrowserRecognition,
+    abort() {
+      settle({ error: 'aborted' })
+      try { rec.abort() } catch {}
     },
-    abort() { try { rec.abort() } catch {} },
     result,
   }
 }
 
 // ── 文字列ユーティリティ（採点用） ──
 const clean = (s) =>
-  (s || '').toLowerCase().replace(/[^a-z0-9'\s-]/g, '').replace(/\s+/g, ' ').trim()
+  (s || '')
+    .normalize('NFKC')
+    .toLowerCase()
+    .replace(/[’‘]/g, "'")
+    .replace(/[-‐‑‒–—]/g, ' ')
+    .replace(/[^a-z0-9'\s]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
 const words = (s) => clean(s).split(' ').filter(Boolean)
+const phoneticKey = (s) =>
+  (s || '').normalize('NFKC').replace(/[\/[\]\s.ˈˌ]/g, '').trim()
 
 function levenshtein(a, b) {
   const m = a.length
@@ -104,16 +184,70 @@ const similarity = (a, b) => {
 }
 
 /** お手本 target と、認識結果 transcript を比べて認識一致度を返す。
- *  target の各語について、transcript 中で最も近い語との類似度を平均し 0–100 に。 */
-export function scorePronunciation(target, transcript) {
-  const t = words(target)
-  const said = words(transcript)
-  if (!t.length) return { score: 0, perWord: [] }
-  const perWord = t.map((w) => {
-    let best = 0
-    for (const s of said) best = Math.max(best, similarity(w, s))
-    return { word: w, sim: best, ok: best >= 0.7 }
-  })
-  const avg = perWord.reduce((a, p) => a + p.sim, 0) / perWord.length
-  return { score: Math.round(avg * 100), perWord, heard: said.join(' ') }
+ *  複数の認識候補があれば最も近い候補を採用する。同音異綴りは、呼び出し側が
+ *  targetPhonetic と phoneticFor を渡した場合だけ同じ発音として扱う。 */
+export function scorePronunciation(
+  target,
+  transcriptOrAlternatives,
+  { targetPhonetic = '', phoneticFor } = {},
+) {
+  const targetWords = words(target)
+  if (!targetWords.length) return { score: 0, perWord: [] }
+
+  const inputs = Array.isArray(transcriptOrAlternatives)
+    ? transcriptOrAlternatives
+    : [transcriptOrAlternatives]
+  const candidates = [...new Set(inputs
+    .map((entry) => typeof entry === 'string' ? entry : entry?.transcript)
+    .map(clean)
+    .filter(Boolean))]
+
+  const lookupPhonetic = (word) => {
+    if (typeof phoneticFor !== 'function') return ''
+    try { return phoneticKey(phoneticFor(word)) } catch { return '' }
+  }
+  const targetSound = targetWords.length === 1
+    ? phoneticKey(targetPhonetic) || lookupPhonetic(targetWords[0])
+    : ''
+
+  let bestResult = null
+  for (const candidate of candidates.length ? candidates : ['']) {
+    const said = words(candidate)
+    const perWord = targetWords.map((word) => {
+      let best = { sim: 0, match: 'none' }
+      const expectedSound = targetWords.length === 1 && word === targetWords[0]
+        ? targetSound
+        : lookupPhonetic(word)
+      for (const spoken of said) {
+        const spokenSound = lookupPhonetic(spoken)
+        const soundMatch = !!expectedSound && !!spokenSound && expectedSound === spokenSound
+        const sim = soundMatch ? 1 : similarity(word, spoken)
+        if (sim > best.sim) best = { sim, match: soundMatch ? 'sound' : 'spelling' }
+      }
+      return {
+        word,
+        sim: best.sim,
+        match: best.match,
+        ok: best.sim >= PRONUNCIATION_PASS_SCORE / 100,
+      }
+    })
+    const avg = perWord.reduce((sum, part) => sum + part.sim, 0) / perWord.length
+    const scored = {
+      score: Math.round(avg * 100),
+      perWord,
+      heard: said.join(' '),
+      matchedBySound: perWord.some((part) => part.match === 'sound'),
+      candidateCount: candidates.length,
+    }
+    const exact = clean(target) === candidate
+    const bestExact = bestResult ? clean(target) === bestResult.heard : false
+    if (
+      !bestResult ||
+      scored.score > bestResult.score ||
+      (scored.score === bestResult.score && exact && !bestExact)
+    ) {
+      bestResult = scored
+    }
+  }
+  return bestResult
 }
