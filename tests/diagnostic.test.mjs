@@ -198,7 +198,6 @@ test('診断結果は進捗コードで往復し、不正な履歴型を拒否�
     diagnosticAttempt: 12,
     diagnosticSeed: 1234567890,
     engPos: null,
-    vnCleared: [],
     portalOrder: [],
     portalHidden: [],
     stats: {},

@@ -53,15 +53,6 @@ export const CONTENTS = [
     status: 'available',
   },
   {
-    id: 'eikaiwa-novel',
-    title: '英会話ノベル',
-    subtitle: '英語だけの世界で学校生活＆冒険／受験英会話を体験',
-    emoji: '🗨️',
-    color: '#ec4899',
-    screen: 'vnList',
-    status: 'available',
-  },
-  {
     id: 'other-subjects',
     title: 'ほかの教科',
     subtitle: '理科・社会などの確認機能（準備中）',

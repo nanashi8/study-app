@@ -237,7 +237,6 @@ test('進捗コードはマイ文法と級別英作文履歴を保持する', ()
     skillStats: {},
     diagnosticHistory: [],
     engPos: null,
-    vnCleared: [],
     portalOrder: [],
     portalHidden: [],
     stats: {},
