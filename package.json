@@ -17,7 +17,8 @@
     "scaffold": "node scripts/frontier-scaffold.mjs",
     "import": "node scripts/import-words.mjs",
     "phonetics": "node scripts/gen-phonetics.mjs",
-    "grammar": "node scripts/grammar-report.mjs"
+    "grammar": "node scripts/grammar-report.mjs",
+    "dictionary": "node scripts/dictionary-report.mjs"
   },
   "dependencies": {
     "firebase": "^12.14.0",

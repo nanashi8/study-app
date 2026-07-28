@@ -7,6 +7,14 @@ import { ScreenHeader } from '../components/AppShell.jsx'
 import { Card, Button, Chip, ProgressBar, cx } from '../components/ui.jsx'
 import { Cards, ArrowRight, Refresh } from '../components/Icons.jsx'
 
+const lessonStageForLevel = (level) => {
+  if (level === '5') return '中1'
+  if (level === '4') return '中2'
+  if (level === '3') return '中3'
+  if (level === 'pre2' || level === '2') return '高校基礎'
+  return '高校発展'
+}
+
 // その級・トピックの習得状況（box>=4 を習得とみなす。単語・熟語と同じ基準）。
 function progressOf(items, srs) {
   let mastered = 0
@@ -69,7 +77,7 @@ export function GrammarScreen() {
 
         {/* 文法解説（中学・高校カリキュラム順に読む） */}
         <button
-          onClick={() => navigate('grammarLessons')}
+          onClick={() => navigate('grammarLessons', { stage: lessonStageForLevel(level) })}
           className="mb-4 flex w-full items-center gap-3 rounded-2xl bg-gradient-to-r from-brand-500 to-brand-400 p-4 text-left text-white shadow-pop transition-transform active:scale-[0.99]"
         >
           <span className="text-2xl">📖</span>
