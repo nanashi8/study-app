@@ -10,9 +10,9 @@ const HIGH_QUALITY_VOICE_HINT =
 const LOW_QUALITY_VOICE_HINT =
   /(?:compact|basic|legacy|classic|eSpeak|low[-\s]?quality|低品質|低音質)/i
 const KNOWN_LOW_QUALITY_VOICE_NAME =
-  /^(?:Kyoko|Otoya|Albert|Fred|Junior|Kathy|Ralph|Bad News|Bahh|Boing|Bubbles|Cellos|Good News|Zarvox|Whisper|Organ|Bells|Trinoids|Jester|Superstar|Wobble|オルガン|ささやき声|スーパースター|トリノイド|ベル|震え|道化)$/i
+  /^(?:Kyoko|Otoya|Albert|Eddy(?:\s+\(.+\))?|Flo(?:\s+\(.+\))?|Fred|Grandma(?:\s+\(.+\))?|Grandpa(?:\s+\(.+\))?|Junior|Kathy|Ralph|Reed(?:\s+\(.+\))?|Rocko(?:\s+\(.+\))?|Sandy(?:\s+\(.+\))?|Shelley(?:\s+\(.+\))?|Bad News|Bahh|Boing|Bubbles|Cellos|Good News|Zarvox|Whisper|Organ|Bells|Trinoids|Jester|Superstar|Wobble|オルガン|ささやき声|スーパースター|トリノイド|ベル|震え|道化)$/i
 const NATURAL_STANDARD_VOICE_HINT =
-  /(?:samantha|alex|ava|allison|olivia|serena|daniel|karen|moira|tessa|rishi|sayaka|haruka|nanami|keita|mizuki|ayumi|ichiro|kyoko|otoya)/i
+  /(?:google|microsoft|samantha|alex|ava|allison|olivia|serena|daniel|karen|moira|tessa|rishi|sayaka|haruka|nanami|keita|mizuki|ayumi|ichiro|kyoko|otoya)/i
 
 const qualityRank = {
   high: 3,

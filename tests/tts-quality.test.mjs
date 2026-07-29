@@ -77,6 +77,48 @@ test('品質表記のない音声同士でも、教育向けの自然な声を�
   assert.equal(choice.quality, 'standard')
 })
 
+test('macOSの演出用日本語音声を通常音声より優先しない', () => {
+  const noveltyVoices = [
+    'Eddy (日本語（日本）)',
+    'Flo (日本語（日本）)',
+    'Grandma (日本語（日本）)',
+    'Grandpa (日本語（日本）)',
+    'Reed (日本語（日本）)',
+    'Rocko (日本語（日本）)',
+    'Sandy (日本語（日本）)',
+    'Shelley (日本語（日本）)',
+  ].map((name, index) =>
+    voice(name, {
+      voiceURI: `com.apple.eloquence.ja-JP.voice-${index}`,
+      isDefault: index === 0,
+    }))
+  const kyoko = voice('Kyoko')
+
+  for (const novelty of noveltyVoices) {
+    assert.equal(voiceQuality(novelty), 'low', novelty.name)
+  }
+  assert.equal(
+    choosePreferredVoice([...noveltyVoices, kyoko]).voice,
+    kyoko,
+  )
+})
+
+test('Google日本語音声があれば端末の演出用音声より優先する', () => {
+  const novelty = voice('Eddy (日本語（日本）)', {
+    voiceURI: 'com.apple.eloquence.ja-JP.Eddy',
+    isDefault: true,
+  })
+  const kyoko = voice('Kyoko')
+  const googleJapanese = voice('Google 日本語', {
+    voiceURI: 'Google 日本語',
+    localService: false,
+  })
+
+  const choice = choosePreferredVoice([novelty, kyoko, googleJapanese])
+  assert.equal(choice.voice, googleJapanese)
+  assert.equal(choice.quality, 'standard')
+})
+
 test('保存済みの低音質指定も、より良い音声が使えるときは自動で置き換える', () => {
   const compact = voice('Kyoko', {
     voiceURI: 'com.apple.voice.compact.ja-JP.Kyoko',
