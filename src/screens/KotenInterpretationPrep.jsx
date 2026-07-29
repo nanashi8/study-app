@@ -5,6 +5,7 @@ import { getKotenGrammar, KOTEN_GRAMMAR_CATEGORIES } from '../data/koten-grammar
 import { getKotenInterpretation } from '../data/koten-interpretations.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { Button, Card, Chip, cx, IconButton } from '../components/ui.jsx'
+import { KotenText, KotenWord } from '../components/KotenFurigana.jsx'
 import {
   ArrowRight,
   Book,
@@ -190,18 +191,19 @@ export function KotenInterpretationPrepScreen() {
                   <div key={word.id} className="flex items-start gap-2 rounded-2xl bg-white p-3 shadow-sm">
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-2">
-                        <span className="font-display font-extrabold text-ink">{word.word}</span>
+                        <span className="font-display font-extrabold leading-relaxed text-ink">
+                          <KotenWord word={word} />
+                        </span>
                         <Chip color="#d97706">{word.pos}</Chip>
                         {learned && <Check size={15} className="text-emerald-500" />}
                       </div>
-                      {word.kana && word.kana !== word.word && (
-                        <p className="mt-0.5 text-[11px] font-bold text-ink/35">{word.kana}</p>
-                      )}
                       <p className="mt-1 text-sm font-bold leading-relaxed text-ink/60">
-                        {word.meanings.join('・')}
+                        <KotenText>{word.meanings.join('・')}</KotenText>
                       </p>
                       {word.note && (
-                        <p className="mt-1.5 text-xs font-bold leading-relaxed text-ink/40">{word.note}</p>
+                        <p className="mt-1.5 text-xs font-bold leading-relaxed text-ink/40">
+                          <KotenText>{word.note}</KotenText>
+                        </p>
                       )}
                     </div>
                     <IconButton
@@ -309,10 +311,14 @@ export function KotenInterpretationPrepScreen() {
               <div key={`${item.id}:${item.title}`} className="rounded-2xl bg-white p-4 shadow-sm">
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="text-xl">🏯</span>
-                  <h2 className="font-display flex-1 font-extrabold text-purple-950">{item.title}</h2>
+                  <h2 className="font-display flex-1 font-extrabold leading-relaxed text-purple-950">
+                    <KotenText>{item.title}</KotenText>
+                  </h2>
                   <Chip color="#9333ea">{item.source}</Chip>
                 </div>
-                <p className="mt-2 text-sm font-bold leading-relaxed text-ink/60">{item.body}</p>
+                <p className="mt-2 text-sm font-bold leading-relaxed text-ink/60">
+                  <KotenText>{item.body}</KotenText>
+                </p>
               </div>
             ))}
           </section>

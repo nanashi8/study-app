@@ -65,6 +65,7 @@ const freshStats = () => ({
 const DEFAULT_SETTINGS = {
   ttsRate: 0.9,
   ttsVoiceURI: null,
+  ttsJapaneseVoiceURI: null,
   showPhonetic: true,
   autoSpeak: true,
   dailyGoal: 20,

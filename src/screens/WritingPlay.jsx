@@ -19,6 +19,7 @@ import {
   writingWordCount,
 } from '../lib/writing.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
+import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
 import {
   Button,
   Card,
@@ -38,6 +39,7 @@ import {
   Refresh,
   Sparkles,
 } from '../components/Icons.jsx'
+import { buildWritingInstructorExplanation } from '../lib/instructorExplanations.js'
 
 function MissingWriting({ onBack }) {
   return (
@@ -848,17 +850,14 @@ export function WritingPlayScreen() {
                 <div className="rounded-xl bg-amber-100/75 px-3 py-2 font-mono text-sm font-extrabold text-amber-900">
                   {selectedGrammar.pattern}
                 </div>
-                <p className="mt-3 text-sm font-bold leading-relaxed text-ink/72">
-                  {selectedGrammar.explanation}
-                </p>
-                <div className="mt-3 rounded-xl border-l-4 border-brand-400 bg-white p-3">
-                  <p className="text-[10px] font-extrabold text-brand-500">
-                    今選んだ表現では
-                  </p>
-                  <p className="mt-1 text-sm font-bold leading-relaxed text-ink/75">
-                    {selected.tip}
-                  </p>
-                </div>
+                <InstructorExplanation
+                  explanation={buildWritingInstructorExplanation(
+                    currentStep,
+                    selected,
+                    selectedGrammar,
+                  )}
+                  className="mt-3"
+                />
                 <WordSaveRow ids={selected.wordIds ?? []} />
               </div>
             </div>

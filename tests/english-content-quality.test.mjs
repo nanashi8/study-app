@@ -104,11 +104,13 @@ test('全英文法の誤答9420件は使える場面または不成立理由を�
 
 test('主要クイズは正答後に英文・和訳・学習ポイントを表示する', () => {
   const checks = {
-    'VocabQuiz.jsx': [/word\.example\.en/, /word\.example\.ja/, /word\.etymology/],
-    'GrammarQuiz.jsx': [/item\.sentence\.en/, /item\.sentence\.ja/, /data-grammar-choice-guidance/, /patternExamples/],
-    'PhraseQuiz.jsx': [/item\.example\.en/, /item\.example\.ja/, /item\.origin/, /item\.note/],
-    'DictationPlay.jsx': [/item\.text/, /item\.ja/, /聞き取りポイント/],
-    'Diagnostic.jsx': [/question\.review/, /question\.passageJa/, /question\.explain/],
+    'VocabQuiz.jsx': [/word\.example\.en/, /word\.example\.ja/, /buildVocabInstructorExplanation/],
+    'GrammarQuiz.jsx': [/item\.sentence\.en/, /item\.sentence\.ja/, /buildGrammarInstructorExplanation/, /data-grammar-choice-guidance/, /patternExamples/],
+    'PhraseQuiz.jsx': [/item\.example\.en/, /item\.example\.ja/, /buildPhraseInstructorExplanation/],
+    'ListeningQuiz.jsx': [/item\.questionJa/, /buildListeningInstructorExplanation/],
+    'DictationPlay.jsx': [/item\.text/, /item\.ja/, /buildDictationInstructorExplanation/],
+    'ReadingSummary.jsx': [/buildReadingInstructorExplanation/, /UnknownChoiceButton/],
+    'Diagnostic.jsx': [/question\.review/, /question\.passageJa/, /buildDiagnosticInstructorExplanation/],
   }
 
   for (const [filename, patterns] of Object.entries(checks)) {

@@ -16,6 +16,8 @@ import {
   IconButton,
   ProgressRing,
 } from '../components/ui.jsx'
+import { KotenText } from '../components/KotenFurigana.jsx'
+import { kotenTextForSearch } from '../lib/kotenFurigana.js'
 import {
   ArrowRight,
   Book,
@@ -108,8 +110,8 @@ export function KotenCultureScreen() {
     const base = category === 'all' ? KOTEN_CULTURE : kotenCultureByCategory(category)
     const normalized = query.trim().toLowerCase()
     if (!normalized) return base
-    return base.filter((item) =>
-      [
+    return base.filter((item) => {
+      const text = [
         item.title,
         item.keyword,
         item.prompt,
@@ -120,8 +122,8 @@ export function KotenCultureScreen() {
       ]
         .join(' ')
         .toLowerCase()
-        .includes(normalized),
-    )
+      return kotenTextForSearch(text).includes(normalized)
+    })
   }, [category, query])
 
   const study = (targetItems, title) =>
@@ -327,11 +329,15 @@ export function KotenCultureScreen() {
                       className="min-w-0 flex-1 text-left"
                     >
                       <div className="flex flex-wrap items-center gap-2">
-                        <span className="font-display text-sm font-extrabold text-ink">{item.title}</span>
+                        <span className="font-display text-sm font-extrabold leading-relaxed text-ink">
+                          <KotenText>{item.title}</KotenText>
+                        </span>
                         {categoryMeta && <Chip color={categoryMeta.color}>{categoryMeta.label}</Chip>}
                         {level && <Chip color={level.color}>{level.label}</Chip>}
                       </div>
-                      <p className="mt-1 text-xs font-bold text-ink/55">{item.core}</p>
+                      <p className="mt-1 text-xs font-bold leading-relaxed text-ink/55">
+                        <KotenText>{item.core}</KotenText>
+                      </p>
                     </button>
                     <IconButton
                       onClick={() => toggleSaved(item.id)}
@@ -352,14 +358,22 @@ export function KotenCultureScreen() {
 
                   {open && (
                     <div className="space-y-3 border-t border-violet-100 bg-violet-50/55 p-4 animate-slide-up">
-                      <p className="text-sm font-bold leading-relaxed text-ink/65">{item.detail}</p>
+                      <p className="text-sm font-bold leading-relaxed text-ink/65">
+                        <KotenText>{item.detail}</KotenText>
+                      </p>
                       <div className="rounded-2xl bg-white p-3">
                         <p className="text-[10px] font-extrabold tracking-wide text-violet-600">入試の読み方</p>
-                        <p className="mt-1 text-sm font-bold leading-relaxed text-ink/65">{item.examTip}</p>
+                        <p className="mt-1 text-sm font-bold leading-relaxed text-ink/65">
+                          <KotenText>{item.examTip}</KotenText>
+                        </p>
                       </div>
                       <div className="rounded-2xl bg-slate-50 p-3">
-                        <p className="font-serif font-bold leading-relaxed text-ink">{item.scene.text}</p>
-                        <p className="mt-1 text-xs font-bold leading-relaxed text-ink/45">{item.scene.note}</p>
+                        <p className="font-serif font-bold leading-relaxed text-ink">
+                          <KotenText>{item.scene.text}</KotenText>
+                        </p>
+                        <p className="mt-1 text-xs font-bold leading-relaxed text-ink/45">
+                          <KotenText>{item.scene.note}</KotenText>
+                        </p>
                       </div>
                       {item.relatedInterpretationIds.length > 0 && (
                         <button

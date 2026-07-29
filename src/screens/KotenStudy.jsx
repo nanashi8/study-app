@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import { getKoten } from '../data/koten.js'
 import { Button, ProgressBar, IconButton } from '../components/ui.jsx'
+import { KotenText, KotenWord } from '../components/KotenFurigana.jsx'
 import {
   Bookmark,
   BookmarkFilled,
@@ -142,10 +143,9 @@ export function KotenStudyScreen() {
           </div>
 
           <div className="mt-2 flex flex-col items-center text-center">
-            <h2 className="font-display text-4xl font-extrabold tracking-tight text-ink">{word.word}</h2>
-            {word.kana && word.kana !== word.word && (
-              <p className="mt-1 text-sm font-bold text-ink/45">{word.kana}</p>
-            )}
+            <h2 className="font-display pt-2 text-4xl font-extrabold tracking-tight text-ink">
+              <KotenWord word={word} />
+            </h2>
           </div>
 
           {!flipped ? (
@@ -159,7 +159,7 @@ export function KotenStudyScreen() {
               <div className="rounded-2xl bg-amber-50 p-4">
                 <div className="text-[11px] font-extrabold uppercase tracking-wide text-amber-500">意味</div>
                 <div className="mt-0.5 font-display text-xl font-extrabold text-ink">
-                  {word.meanings.join('・')}
+                  <KotenText>{word.meanings.join('・')}</KotenText>
                 </div>
               </div>
 
@@ -170,15 +170,21 @@ export function KotenStudyScreen() {
                     <Lightbulb size={16} />
                     <span className="text-[11px] font-extrabold uppercase tracking-wide">覚え方・ポイント</span>
                   </div>
-                  <p className="text-sm font-bold leading-relaxed text-ink/70">{word.note}</p>
+                  <p className="text-sm font-bold leading-relaxed text-ink/70">
+                    <KotenText>{word.note}</KotenText>
+                  </p>
                 </div>
               )}
 
               {/* 用例 */}
               {word.example && (
                 <div className="rounded-2xl bg-white p-3 ring-1 ring-amber-100">
-                  <p className="font-bold text-ink">{word.example.ja}</p>
-                  <p className="mt-0.5 text-sm font-bold text-ink/55">{word.example.gendai}</p>
+                  <p className="font-bold text-ink">
+                    <KotenText>{word.example.ja}</KotenText>
+                  </p>
+                  <p className="mt-0.5 text-sm font-bold text-ink/55">
+                    <KotenText>{word.example.gendai}</KotenText>
+                  </p>
                 </div>
               )}
             </div>

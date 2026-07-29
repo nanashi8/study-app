@@ -3,6 +3,8 @@ import { useStore } from '../store/useStore.js'
 import { getKoten, pickKotenDistractors } from '../data/koten.js'
 import { Button, ProgressBar, IconButton } from '../components/ui.jsx'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
+import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
+import { KotenText, KotenWord } from '../components/KotenFurigana.jsx'
 import {
   Bookmark,
   BookmarkFilled,
@@ -12,6 +14,7 @@ import {
 } from '../components/Icons.jsx'
 import { cx } from '../components/ui.jsx'
 import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
+import { buildKotenWordInstructorExplanation } from '../lib/instructorExplanations.js'
 
 function shuffle(arr) {
   const a = [...arr]
@@ -135,6 +138,14 @@ export function KotenQuizScreen() {
   }
 
   const isCorrectPick = answered && selected === word.id
+  const instructorExplanation = answered
+    ? buildKotenWordInstructorExplanation(
+        word,
+        selected === UNKNOWN_CHOICE_ID
+          ? UNKNOWN_CHOICE_ID
+          : options.find((option) => option.id === selected),
+      )
+    : null
 
   return (
     <div className="flex h-full flex-col">
@@ -157,10 +168,9 @@ export function KotenQuizScreen() {
           <span className="self-start rounded-full bg-amber-100 px-2.5 py-1 text-[11px] font-extrabold text-amber-700">
             {word.pos}
           </span>
-          <h2 className="mt-2 font-display text-4xl font-extrabold tracking-tight text-ink">{word.word}</h2>
-          {word.kana && word.kana !== word.word && (
-            <p className="mt-1 text-sm font-bold text-ink/40">{word.kana}</p>
-          )}
+          <h2 className="mt-2 pt-2 font-display text-4xl font-extrabold tracking-tight text-ink">
+            <KotenWord word={word} />
+          </h2>
           <p className="mt-4 text-sm font-extrabold text-ink/55">この古語の意味は？</p>
         </div>
 
@@ -188,7 +198,9 @@ export function KotenQuizScreen() {
                   tone === 'dim' && 'border-transparent bg-paper text-ink/35',
                 )}
               >
-                <span className="flex-1">{o.meanings?.[0] ?? o.meaning}</span>
+                <span className="flex-1">
+                  <KotenText>{o.meanings?.[0] ?? o.meaning}</KotenText>
+                </span>
                 {tone === 'correct' && <Check size={20} className="text-emerald-600" />}
                 {tone === 'wrong' && <Close size={18} className="text-rose-500" />}
               </button>
@@ -222,9 +234,15 @@ export function KotenQuizScreen() {
               </button>
             </div>
             <p className="mt-1 font-bold text-ink">
-              <span className="font-display">{word.word}</span> ＝ {word.meanings.join('・')}
+              <span className="font-display"><KotenWord word={word} /></span>
+              {' ＝ '}
+              <KotenText>{word.meanings.join('・')}</KotenText>
             </p>
-            {word.note && <p className="mt-1 text-sm font-bold text-ink/55">{word.note}</p>}
+            <InstructorExplanation
+              explanation={instructorExplanation}
+              className="mt-3"
+              renderText={(text) => <KotenText>{text}</KotenText>}
+            />
           </div>
         )}
       </div>

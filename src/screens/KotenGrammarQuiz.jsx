@@ -11,6 +11,7 @@ import {
 } from '../data/koten-grammar-questions.js'
 import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
+import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
 import { Button, Chip, cx, ProgressBar, IconButton } from '../components/ui.jsx'
 import {
   ArrowRight,
@@ -20,6 +21,7 @@ import {
   Check,
   Close,
 } from '../components/Icons.jsx'
+import { buildKotenGrammarInstructorExplanation } from '../lib/instructorExplanations.js'
 
 const SESSION_SIZE = 12
 const MASTER_BOX = 4
@@ -285,9 +287,10 @@ export function KotenGrammarQuizScreen() {
                 {question.answer}
               </p>
             </div>
-            <p className="mt-3 text-sm font-bold leading-relaxed text-ink/65">
-              {question.explanation}
-            </p>
+            <InstructorExplanation
+              explanation={buildKotenGrammarInstructorExplanation(question, selected)}
+              className="mt-3"
+            />
             {question.translation && (
               <div className="mt-3 rounded-xl bg-slate-50 px-3 py-2.5">
                 <p className="text-[10px] font-extrabold text-slate-500">現代語訳</p>

@@ -9,7 +9,9 @@ import {
   writingWordTokens,
 } from '../lib/writing.js'
 import { isTTSSupported, speak, stopSpeaking } from '../lib/tts.js'
+import { buildDictationInstructorExplanation } from '../lib/instructorExplanations.js'
 import { Button, Chip, ProgressBar, IconButton, cx } from '../components/ui.jsx'
+import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
 import { Close, ArrowRight, SpeakerWave, Check } from '../components/Icons.jsx'
 
 const clampRate = (rate) => Math.max(0.55, Math.min(1.25, rate))
@@ -387,10 +389,10 @@ export function DictationPlayScreen() {
                 通常再生 {normalPlays}回{slowPlays ? `・ゆっくり ${slowPlays}回` : ''}
               </span>
             </div>
-            <p className="mt-3 rounded-2xl bg-hint-soft/70 p-3 text-xs font-bold leading-relaxed text-amber-900/85">
-              💡 聞き取りポイント：{item.focus}。英文と和訳を意味のまとまりごとに対応させ、
-              正しい語順を声に出して確認しましょう。
-            </p>
+            <InstructorExplanation
+              explanation={buildDictationInstructorExplanation(item, result)}
+              className="mt-3"
+            />
           </div>
         )}
       </div>

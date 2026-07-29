@@ -9,9 +9,11 @@ import { buildGrammarDeck } from '../lib/grammarDeck.js'
 import { todayIndex } from '../store/useStore.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
+import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
 import { Button, ProgressBar, IconButton, Chip, cx } from '../components/ui.jsx'
-import { Close, Check, ArrowRight, Lightbulb } from '../components/Icons.jsx'
+import { Close, Check, ArrowRight } from '../components/Icons.jsx'
 import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
+import { buildGrammarInstructorExplanation } from '../lib/instructorExplanations.js'
 
 // 空所 ___ を下線つきの空欄として表示。
 function renderQuestion(q) {
@@ -72,6 +74,10 @@ export function GrammarQuizScreen() {
 
   const answered = selected !== null
   const isCorrectPick = answered && selected === item.answer
+  const selectedGuidance = choiceGuides.find(({ choice }) => choice === selected)?.guidance
+  const instructorExplanation = answered
+    ? buildGrammarInstructorExplanation(item, selected, selectedGuidance)
+    : null
 
   const finish = () => {
     const xpGained = useStore.getState().stats.xp - xpAtStart.current
@@ -175,10 +181,10 @@ export function GrammarQuizScreen() {
                 <p className="mt-0.5 text-sm font-bold text-ink/55">{item.sentence.ja}</p>
               </div>
             </div>
-            <div className="mt-3 flex gap-2 rounded-2xl bg-hint-soft/70 p-3">
-              <span className="mt-0.5 shrink-0 text-hint"><Lightbulb size={18} /></span>
-              <p className="text-sm font-bold leading-relaxed text-amber-900/90">{item.explain}</p>
-            </div>
+            <InstructorExplanation
+              explanation={instructorExplanation}
+              className="mt-3"
+            />
             <div className="mt-3 border-t border-brand-100 pt-3" data-grammar-choice-guidance>
               <p className="font-display text-sm font-extrabold text-ink/70">選択肢の使い分け</p>
               <p className="mt-1 text-xs font-bold leading-relaxed text-ink/45">

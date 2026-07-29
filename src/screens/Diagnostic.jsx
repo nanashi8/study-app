@@ -17,8 +17,10 @@ import { analyzeLearning } from '../lib/learningAnalytics.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
+import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
 import { Button, Card, Chip, IconButton, ProgressBar, ProgressRing, cx } from '../components/ui.jsx'
 import { ArrowRight, Check, Close, Sparkles, Target, Trophy } from '../components/Icons.jsx'
+import { buildDiagnosticInstructorExplanation } from '../lib/instructorExplanations.js'
 
 const LEVEL_BY_ID = Object.fromEntries(DIAGNOSTIC_LEVELS.map((level) => [level.id, level]))
 const SKILL_BY_ID = Object.fromEntries(DIAGNOSTIC_SKILLS.map((skill) => [skill.id, skill]))
@@ -746,14 +748,16 @@ function AnswerReview({ questions, answers }) {
                 </div>
               )}
 
-              {question.explain && (
-                <p
-                  className="mt-2 rounded-xl bg-amber-50 px-3 py-2.5 text-xs font-bold leading-relaxed text-amber-900/85"
-                  data-diagnostic-explanation
-                >
-                  💡 {question.explain}
-                </p>
-              )}
+              <div data-diagnostic-explanation>
+                <InstructorExplanation
+                  explanation={buildDiagnosticInstructorExplanation(
+                    question,
+                    review.selectedAnswer,
+                  )}
+                  className="mt-2"
+                  compact
+                />
+              </div>
             </article>
           )
         })}

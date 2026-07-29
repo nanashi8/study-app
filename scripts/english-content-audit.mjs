@@ -455,14 +455,14 @@ assert(
 // ── 習熟導線 ─────────────────────────────────────────────────────────
 
 const sourceChecks = [
-  ['VocabQuiz.jsx', [/\breview\(/, /UnknownChoiceButton/, /word\.example\.en/, /word\.example\.ja/]],
-  ['GrammarQuiz.jsx', [/\breview\(/, /UnknownChoiceButton/, /item\.explain/, /patternExamples/]],
-  ['PhraseQuiz.jsx', [/\breview\(/, /UnknownChoiceButton/, /item\.origin/, /item\.note/]],
-  ['ListeningQuiz.jsx', [/\breview\(/, /UnknownChoiceButton/, /item\.questionJa/, /item\.explain/]],
-  ['DictationPlay.jsx', [/\breview\(/, /positionResults/, /item\.ja/, /item\.focus/]],
-  ['ReadingSummary.jsx', [/markReadingDone\(/, /recordSkillResult\(/, /UnknownChoiceButton/, /q\.explain/]],
-  ['WritingPlay.jsx', [/recordWritingCompletion\(/, /writingTokenPositionResults/, /toggleMyList/, /toggleMyGrammar/]],
-  ['Diagnostic.jsx', [/recordDiagnosticResult\(/, /data-diagnostic-explanation/, /question\.passageJa/, /question\.review/]],
+  ['VocabQuiz.jsx', [/\breview\(/, /UnknownChoiceButton/, /word\.example\.en/, /buildVocabInstructorExplanation/]],
+  ['GrammarQuiz.jsx', [/\breview\(/, /UnknownChoiceButton/, /buildGrammarInstructorExplanation/, /patternExamples/]],
+  ['PhraseQuiz.jsx', [/\breview\(/, /UnknownChoiceButton/, /buildPhraseInstructorExplanation/, /InstructorExplanation/]],
+  ['ListeningQuiz.jsx', [/\breview\(/, /UnknownChoiceButton/, /item\.questionJa/, /buildListeningInstructorExplanation/]],
+  ['DictationPlay.jsx', [/\breview\(/, /positionResults/, /item\.ja/, /buildDictationInstructorExplanation/]],
+  ['ReadingSummary.jsx', [/markReadingDone\(/, /recordSkillResult\(/, /UnknownChoiceButton/, /buildReadingInstructorExplanation/]],
+  ['WritingPlay.jsx', [/recordWritingCompletion\(/, /writingTokenPositionResults/, /buildWritingInstructorExplanation/, /toggleMyGrammar/]],
+  ['Diagnostic.jsx', [/recordDiagnosticResult\(/, /data-diagnostic-explanation/, /buildDiagnosticInstructorExplanation/, /question\.review/]],
 ]
 for (const [filename, patterns] of sourceChecks) {
   const source = readFileSync(`${ROOT}/src/screens/${filename}`, 'utf8')

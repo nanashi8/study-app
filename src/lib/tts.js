@@ -5,6 +5,100 @@
 let cachedVoices = []
 const listeners = new Set()
 
+const HIGH_QUALITY_VOICE_HINT =
+  /(?:premium|enhanced|natural|neural|wavenet|studio|siri|high[-\s]?quality|高品質|高音質|拡張)/i
+const LOW_QUALITY_VOICE_HINT =
+  /(?:compact|basic|legacy|classic|eSpeak|low[-\s]?quality|低品質|低音質)/i
+const KNOWN_LOW_QUALITY_VOICE_NAME =
+  /^(?:Kyoko|Otoya|Albert|Fred|Junior|Kathy|Ralph|Bad News|Bahh|Boing|Bubbles|Cellos|Good News|Zarvox|Whisper|Organ|Bells|Trinoids|Jester|Superstar|Wobble|オルガン|ささやき声|スーパースター|トリノイド|ベル|震え|道化)$/i
+const NATURAL_STANDARD_VOICE_HINT =
+  /(?:samantha|alex|ava|allison|olivia|serena|daniel|karen|moira|tessa|rishi|sayaka|haruka|nanami|keita|mizuki|ayumi|ichiro|kyoko|otoya)/i
+
+const qualityRank = {
+  high: 3,
+  standard: 2,
+  low: 1,
+}
+
+const voiceDescriptor = (voice) =>
+  `${voice?.name ?? ''} ${voice?.voiceURI ?? ''}`.trim()
+
+/**
+ * Web Speech API には標準化された音質フィールドがないため、音声名・URIに
+ * ブラウザが付ける品質表記から判定する。判定できないものは低品質と決めつけず
+ * standard とし、compact / legacy 表記や既知の旧式・効果音声だけを低品質として扱う。
+ */
+export function voiceQuality(voice) {
+  const descriptor = voiceDescriptor(voice)
+  if (HIGH_QUALITY_VOICE_HINT.test(descriptor)) return 'high'
+  if (
+    LOW_QUALITY_VOICE_HINT.test(descriptor) ||
+    KNOWN_LOW_QUALITY_VOICE_NAME.test(voice?.name ?? '')
+  ) {
+    return 'low'
+  }
+  return 'standard'
+}
+
+export function voiceQualityLabel(voice) {
+  const quality = voiceQuality(voice)
+  if (quality === 'high') return '高品質'
+  if (quality === 'low') return '低音質・代替用'
+  return '標準'
+}
+
+function compareVoiceQuality(a, b) {
+  const qualityDifference = qualityRank[voiceQuality(b)] - qualityRank[voiceQuality(a)]
+  if (qualityDifference) return qualityDifference
+  const naturalDifference =
+    Number(NATURAL_STANDARD_VOICE_HINT.test(voiceDescriptor(b))) -
+    Number(NATURAL_STANDARD_VOICE_HINT.test(voiceDescriptor(a)))
+  if (naturalDifference) return naturalDifference
+  if (Boolean(a.default) !== Boolean(b.default)) return a.default ? -1 : 1
+  const usEnglishDifference =
+    Number(/^en-US$/i.test(b.lang ?? '')) - Number(/^en-US$/i.test(a.lang ?? ''))
+  if (usEnglishDifference) return usEnglishDifference
+  if (Boolean(a.localService) !== Boolean(b.localService)) return a.localService ? -1 : 1
+  return (a.name ?? '').localeCompare(b.name ?? '')
+}
+
+export function sortVoicesByQuality(voices) {
+  return [...(voices ?? [])].sort(compareVoiceQuality)
+}
+
+/**
+ * 自動選択は必ず high → standard → low の順。
+ * 保存済みの手動指定が低音質でも、より良い声が現在使えるなら低音質へ戻さない。
+ * 低音質の明示指定を許すのは、利用可能な声が低音質だけの場合に限る。
+ */
+export function choosePreferredVoice(voices, voiceURI = null) {
+  const ranked = sortVoicesByQuality(voices)
+  const selected = voiceURI
+    ? ranked.find((voice) => voice.voiceURI === voiceURI)
+    : null
+  const hasNonLowVoice = ranked.some((voice) => voiceQuality(voice) !== 'low')
+
+  if (selected && (voiceQuality(selected) !== 'low' || !hasNonLowVoice)) {
+    return {
+      voice: selected,
+      quality: voiceQuality(selected),
+      source: 'manual',
+    }
+  }
+
+  const voice = ranked[0] ?? null
+  return {
+    voice,
+    quality: voice ? voiceQuality(voice) : 'system',
+    source:
+      selected && voiceQuality(selected) === 'low' && hasNonLowVoice
+        ? 'upgraded'
+        : voiceQuality(voice) === 'low'
+          ? 'fallback'
+          : 'automatic',
+  }
+}
+
 function loadVoices() {
   if (typeof window === 'undefined' || !('speechSynthesis' in window)) return
   const v = window.speechSynthesis.getVoices()
@@ -42,11 +136,11 @@ export const isTTSSupported = () =>
   typeof window !== 'undefined' && 'speechSynthesis' in window
 
 export function getEnglishVoices() {
-  return cachedVoices.filter((v) => /^en(-|_|$)/i.test(v.lang))
+  return sortVoicesByQuality(cachedVoices.filter((v) => /^en(-|_|$)/i.test(v.lang)))
 }
 
 export function getJapaneseVoices() {
-  return cachedVoices.filter((v) => /^ja(-|_|$)/i.test(v.lang))
+  return sortVoicesByQuality(cachedVoices.filter((v) => /^ja(-|_|$)/i.test(v.lang)))
 }
 
 export function subscribeVoices(fn) {
@@ -55,24 +149,10 @@ export function subscribeVoices(fn) {
   return () => listeners.delete(fn)
 }
 
-function preferredVoice(voiceURI) {
-  const en = getEnglishVoices()
-  if (voiceURI) {
-    const exact = en.find((v) => v.voiceURI === voiceURI)
-    if (exact) return exact
-  }
-  // 自然な声を優先（端末によって名前は様々なので緩めに）
-  const pref =
-    en.find((v) => /natural|enhanced|samantha|google us english/i.test(v.name)) ||
-    en.find((v) => /en-US/i.test(v.lang)) ||
-    en[0]
-  return pref || null
-}
-
 // 言語に応じて声を選ぶ。日本語なら日本語の声、それ以外は英語の好みの声。
 function voiceForLang(lang, voiceURI) {
-  if (/^ja/i.test(lang)) return getJapaneseVoices()[0] || null
-  return preferredVoice(voiceURI)
+  const voices = /^ja/i.test(lang) ? getJapaneseVoices() : getEnglishVoices()
+  return choosePreferredVoice(voices, voiceURI).voice
 }
 
 /** 英語テキストを読み上げる。成功なら true。 */
@@ -83,7 +163,7 @@ export function speak(text, { rate = 0.9, voiceURI = null, lang = 'en-US' } = {}
   const u = new SpeechSynthesisUtterance(text)
   u.lang = lang
   u.rate = rate
-  const v = preferredVoice(voiceURI)
+  const v = voiceForLang(lang, voiceURI)
   if (v) u.voice = v
   synth.speak(u)
   return true

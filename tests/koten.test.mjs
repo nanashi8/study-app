@@ -1,5 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
 
 import {
   KOTEN_BY_ID,
@@ -9,6 +10,11 @@ import {
   getKoten,
   pickKotenDistractors,
 } from '../src/data/koten.js'
+import {
+  KOTEN_FURIGANA_ENTRIES,
+  kotenTextForSearch,
+  tokenizeKotenText,
+} from '../src/lib/kotenFurigana.js'
 
 const BASE_WORD_COUNT = 126
 const categoryIds = new Set(KOTEN_CATEGORIES.map((category) => category.id))
@@ -90,4 +96,73 @@ test('全古典単語で意味が重ならない誤答を3件作れる', () => {
     assert.ok(distractors.every((item) => item.id !== word.id), word.id)
     assert.ok(distractors.every((item) => item.meaning !== word.meaning), word.id)
   }
+})
+
+test('古文の難読語辞書は重複せず、長い語を優先してルビへ分割する', () => {
+  assert.equal(
+    new Set(KOTEN_FURIGANA_ENTRIES.map(([text]) => text)).size,
+    KOTEN_FURIGANA_ENTRIES.length,
+  )
+  for (const [text, reading] of KOTEN_FURIGANA_ENTRIES) {
+    assert.ok(text.trim(), 'furigana text')
+    assert.match(reading, /^[ぁ-ゖー・]+$/, text)
+  }
+
+  assert.deepEqual(tokenizeKotenText('内裏より御簾の内へ入る。'), [
+    { text: '内裏', reading: 'だいり' },
+    { text: 'より' },
+    { text: '御簾', reading: 'みす' },
+    { text: 'の内へ入る。' },
+  ])
+  assert.deepEqual(tokenizeKotenText('三日夜の餅と後朝の文。'), [
+    { text: '三日夜の餅', reading: 'みかよのもちい' },
+    { text: 'と' },
+    { text: '後朝の文', reading: 'きぬぎぬのふみ' },
+    { text: '。' },
+  ])
+  assert.deepEqual(tokenizeKotenText('効験'), [
+    { text: '効験', reading: 'こうけん' },
+  ])
+  assert.ok(kotenTextForSearch('内裏・宮中').includes('だいり'))
+})
+
+test('歴史的仮名遣いの古文単語は既存kanaをルビとして使える', () => {
+  const wordsWithReading = KOTEN_WORDS.filter(
+    (word) => word.kana && word.kana !== word.word,
+  )
+  assert.ok(wordsWithReading.length > 0)
+  for (const word of wordsWithReading) {
+    assert.deepEqual(
+      tokenizeKotenText(word.word, [[word.word, word.kana]]),
+      [{ text: word.word, reading: word.kana }],
+      word.id,
+    )
+  }
+})
+
+test('古文単語・古典常識の主要画面は共通ルビ表示を使う', () => {
+  const screens = [
+    'KotenStudy.jsx',
+    'KotenQuiz.jsx',
+    'KotenCulture.jsx',
+    'KotenCultureStudy.jsx',
+    'KotenCultureQuiz.jsx',
+    'KotenSaved.jsx',
+    'KotenInterpretationPrep.jsx',
+    'KotenInterpretationQuiz.jsx',
+  ]
+  for (const filename of screens) {
+    const source = readFileSync(
+      new URL(`../src/screens/${filename}`, import.meta.url),
+      'utf8',
+    )
+    assert.match(source, /Koten(?:Text|Word)/, filename)
+  }
+
+  const component = readFileSync(
+    new URL('../src/components/KotenFurigana.jsx', import.meta.url),
+    'utf8',
+  )
+  assert.match(component, /<ruby/)
+  assert.match(component, /<rt>/)
 })

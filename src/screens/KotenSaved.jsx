@@ -12,6 +12,7 @@ import {
   pickKotenInterpretationIds,
 } from '../data/koten-interpretations.js'
 import { Button, Chip, cx, EmptyState, IconButton } from '../components/ui.jsx'
+import { KotenText, KotenWord } from '../components/KotenFurigana.jsx'
 import {
   Book,
   BookmarkFilled,
@@ -128,14 +129,13 @@ export function KotenSavedScreen() {
                     <div key={word.id} className="flex items-center gap-2 rounded-2xl bg-white p-3 shadow-sm">
                       <div className="min-w-0 flex-1">
                         <div className="flex flex-wrap items-center gap-2">
-                          <span className="font-display font-extrabold text-ink">{word.word}</span>
+                          <span className="font-display font-extrabold leading-relaxed text-ink">
+                            <KotenWord word={word} />
+                          </span>
                           <Chip color="#d97706">{word.pos}</Chip>
                         </div>
-                        {word.kana && word.kana !== word.word && (
-                          <p className="mt-0.5 text-[11px] font-bold text-ink/35">{word.kana}</p>
-                        )}
                         <p className="mt-1 text-xs font-bold leading-relaxed text-ink/55">
-                          {word.meanings.join('・')}
+                          <KotenText>{word.meanings.join('・')}</KotenText>
                         </p>
                       </div>
                       <IconButton
@@ -307,11 +307,15 @@ export function KotenSavedScreen() {
                             className="min-w-0 flex-1 text-left"
                           >
                             <div className="flex flex-wrap items-center gap-2">
-                              <span className="font-display text-sm font-extrabold text-ink">{item.title}</span>
+                              <span className="font-display text-sm font-extrabold leading-relaxed text-ink">
+                                <KotenText>{item.title}</KotenText>
+                              </span>
                               {category && <Chip color={category.color}>{category.label}</Chip>}
                               {level && <Chip color={level.color}>{level.label}</Chip>}
                             </div>
-                            <p className="mt-1 text-xs font-bold text-ink/55">{item.core}</p>
+                            <p className="mt-1 text-xs font-bold leading-relaxed text-ink/55">
+                              <KotenText>{item.core}</KotenText>
+                            </p>
                           </button>
                           <IconButton
                             onClick={() => toggleCulture(item.id)}
@@ -330,10 +334,14 @@ export function KotenSavedScreen() {
                         </div>
                         {open && (
                           <div className="space-y-2 border-t border-violet-100 bg-violet-50/60 p-4 animate-slide-up">
-                            <p className="text-sm font-bold leading-relaxed text-ink/65">{item.detail}</p>
+                            <p className="text-sm font-bold leading-relaxed text-ink/65">
+                              <KotenText>{item.detail}</KotenText>
+                            </p>
                             <div className="rounded-2xl bg-white p-3">
                               <p className="text-[10px] font-extrabold text-violet-600">入試の読み方</p>
-                              <p className="mt-1 text-xs font-bold leading-relaxed text-ink/55">{item.examTip}</p>
+                              <p className="mt-1 text-xs font-bold leading-relaxed text-ink/55">
+                                <KotenText>{item.examTip}</KotenText>
+                              </p>
                             </div>
                           </div>
                         )}

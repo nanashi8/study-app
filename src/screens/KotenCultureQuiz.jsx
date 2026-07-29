@@ -9,6 +9,8 @@ import {
 } from '../data/koten-culture.js'
 import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
+import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
+import { KotenText } from '../components/KotenFurigana.jsx'
 import { Button, Chip, cx, ProgressBar, IconButton } from '../components/ui.jsx'
 import {
   ArrowRight,
@@ -18,6 +20,7 @@ import {
   Check,
   Close,
 } from '../components/Icons.jsx'
+import { buildKotenCultureInstructorExplanation } from '../lib/instructorExplanations.js'
 
 const SESSION_SIZE = 12
 const MASTER_BOX = 4
@@ -200,16 +203,18 @@ export function KotenCultureQuizScreen() {
           </div>
 
           <div className="mt-4 rounded-2xl bg-gradient-to-br from-slate-950 to-violet-950 p-4 text-white">
-            <p className="font-serif text-lg font-bold leading-[1.9]">{question.passage}</p>
+            <p className="font-serif text-lg font-bold leading-[1.9]">
+              <KotenText>{question.passage}</KotenText>
+            </p>
             {question.target && (
               <p className="mt-2 inline-flex rounded-lg bg-violet-300/15 px-2 py-1 text-xs font-extrabold text-violet-200">
-                注目：{question.target}
+                注目：<KotenText>{question.target}</KotenText>
               </p>
             )}
           </div>
 
           <p className="mt-4 text-sm font-extrabold leading-relaxed text-ink/75">
-            {question.question}
+            <KotenText>{question.question}</KotenText>
           </p>
         </section>
 
@@ -242,7 +247,9 @@ export function KotenCultureQuizScreen() {
                 )}>
                   {String.fromCharCode(65 + choiceIndex)}
                 </span>
-                <span className="min-w-0 flex-1 text-sm font-bold leading-relaxed">{choice}</span>
+                <span className="min-w-0 flex-1 text-sm font-bold leading-relaxed">
+                  <KotenText>{choice}</KotenText>
+                </span>
                 {tone === 'correct' && <Check size={19} className="mt-0.5 shrink-0 text-emerald-600" />}
                 {tone === 'wrong' && <Close size={17} className="mt-0.5 shrink-0 text-rose-500" />}
               </button>
@@ -280,22 +287,30 @@ export function KotenCultureQuizScreen() {
             <div className="mt-3 rounded-xl bg-emerald-50 px-3 py-2.5">
               <p className="text-[10px] font-extrabold text-emerald-600">正解</p>
               <p className="mt-0.5 text-sm font-extrabold leading-relaxed text-emerald-900">
-                {question.answer}
+                <KotenText>{question.answer}</KotenText>
               </p>
             </div>
-            <p className="mt-3 text-sm font-bold leading-relaxed text-ink/65">
-              {question.explanation}
-            </p>
+            <InstructorExplanation
+              explanation={buildKotenCultureInstructorExplanation(
+                question,
+                selected,
+                relatedCulture[0],
+              )}
+              className="mt-3"
+              renderText={(text) => <KotenText>{text}</KotenText>}
+            />
 
             <div className="mt-3 space-y-2">
               {relatedCulture.map((item) => (
                 <div key={item.id} className="rounded-xl border border-violet-100 px-3 py-2.5">
-                  <p className="text-xs font-extrabold text-violet-800">{item.title}</p>
+                  <p className="text-xs font-extrabold leading-relaxed text-violet-800">
+                    <KotenText>{item.title}</KotenText>
+                  </p>
                   <p className="mt-1 text-[11px] font-bold leading-relaxed text-ink/50">
-                    {item.core}
+                    <KotenText>{item.core}</KotenText>
                   </p>
                   <p className="mt-1 text-[11px] font-bold leading-relaxed text-ink/40">
-                    {item.examTip}
+                    <KotenText>{item.examTip}</KotenText>
                   </p>
                 </div>
               ))}

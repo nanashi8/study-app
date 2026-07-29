@@ -8,6 +8,8 @@ import {
 } from '../data/koten-interpretations.js'
 import { Button, Chip, cx, IconButton, ProgressBar } from '../components/ui.jsx'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
+import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
+import { KotenText, KotenWord } from '../components/KotenFurigana.jsx'
 import {
   ArrowRight,
   Bookmark,
@@ -16,6 +18,7 @@ import {
   Close,
 } from '../components/Icons.jsx'
 import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
+import { buildKotenInterpretationInstructorExplanation } from '../lib/instructorExplanations.js'
 
 function shuffle(items) {
   const result = [...items]
@@ -153,10 +156,14 @@ export function KotenInterpretationQuizScreen() {
             <span className="text-[11px] font-bold text-ink/40">{item.source}</span>
           </div>
           <p className="mt-4 font-serif text-[1.45rem] font-bold leading-[1.85] tracking-wide text-ink">
-            {item.text}
+            <KotenText
+              readings={words.map((word) => [word.word, word.kana])}
+            >
+              {item.text}
+            </KotenText>
           </p>
           <p className="mt-4 rounded-2xl bg-white/75 p-3 text-sm font-extrabold leading-relaxed text-ink/65">
-            {item.question}
+            <KotenText>{item.question}</KotenText>
           </p>
         </div>
 
@@ -183,7 +190,7 @@ export function KotenInterpretationQuizScreen() {
                   tone === 'dim' && 'border-transparent bg-paper text-ink/30',
                 )}
               >
-                <span className="min-w-0 flex-1">{choice}</span>
+                <span className="min-w-0 flex-1"><KotenText>{choice}</KotenText></span>
                 {tone === 'correct' && <Check size={20} className="mt-0.5 shrink-0 text-emerald-600" />}
                 {tone === 'wrong' && <Close size={18} className="mt-0.5 shrink-0 text-rose-500" />}
               </button>
@@ -202,7 +209,14 @@ export function KotenInterpretationQuizScreen() {
               <p className={cx('font-display text-lg font-extrabold', isCorrect ? 'text-emerald-600' : 'text-rose-500')}>
                 {isCorrect ? '正解！' : selected === UNKNOWN_CHOICE_ID ? '答えを確認しよう' : 'ここを確認しよう'}
               </p>
-              <p className="mt-2 text-sm font-bold leading-relaxed text-ink">{item.translation}</p>
+              <p className="mt-2 text-sm font-bold leading-relaxed text-ink">
+                <KotenText>{item.translation}</KotenText>
+              </p>
+              <InstructorExplanation
+                explanation={buildKotenInterpretationInstructorExplanation(item, selected)}
+                className="mt-3"
+                renderText={(text) => <KotenText>{text}</KotenText>}
+              />
             </div>
 
             <div className="rounded-3xl border border-sky-100 bg-sky-50 p-4">
@@ -210,13 +224,19 @@ export function KotenInterpretationQuizScreen() {
                 <span className="text-xl">📖</span>
                 <h3 className="font-display font-extrabold text-sky-900">古典単語</h3>
               </div>
-              <p className="mb-3 text-sm font-bold leading-relaxed text-sky-950/70">{item.vocabTip}</p>
+              <p className="mb-3 text-sm font-bold leading-relaxed text-sky-950/70">
+                <KotenText>{item.vocabTip}</KotenText>
+              </p>
               <div className="space-y-2">
                 {words.map((word) => (
                   <div key={word.id} className="flex items-center gap-2 rounded-2xl bg-white p-3">
                     <div className="min-w-0 flex-1">
-                      <div className="font-display font-extrabold text-ink">{word.word}</div>
-                      <div className="mt-0.5 text-xs font-bold text-ink/55">{word.meanings.join('・')}</div>
+                      <div className="font-display font-extrabold leading-relaxed text-ink">
+                        <KotenWord word={word} />
+                      </div>
+                      <div className="mt-0.5 text-xs font-bold leading-relaxed text-ink/55">
+                        <KotenText>{word.meanings.join('・')}</KotenText>
+                      </div>
                     </div>
                     <SaveButton
                       saved={wordList.includes(word.id)}
@@ -233,7 +253,9 @@ export function KotenInterpretationQuizScreen() {
                 <span className="text-xl">🧩</span>
                 <h3 className="font-display font-extrabold text-amber-900">古典文法</h3>
               </div>
-              <p className="mb-3 text-sm font-bold leading-relaxed text-amber-950/70">{item.grammarTip}</p>
+              <p className="mb-3 text-sm font-bold leading-relaxed text-amber-950/70">
+                <KotenText>{item.grammarTip}</KotenText>
+              </p>
               <div className="space-y-2">
                 {grammarItems.map((grammar) => (
                   <div key={grammar.id} className="flex items-center gap-2 rounded-2xl bg-white p-3">
@@ -254,10 +276,12 @@ export function KotenInterpretationQuizScreen() {
             <div className="rounded-3xl border border-purple-100 bg-purple-50 p-4">
               <div className="flex items-center gap-2">
                 <span className="text-xl">🏯</span>
-                <h3 className="font-display font-extrabold text-purple-900">{item.culture.title}</h3>
+                <h3 className="font-display font-extrabold leading-relaxed text-purple-900">
+                  <KotenText>{item.culture.title}</KotenText>
+                </h3>
               </div>
               <p className="mt-2 text-sm font-bold leading-relaxed text-purple-950/70">
-                {item.culture.body}
+                <KotenText>{item.culture.body}</KotenText>
               </p>
               <button
                 onClick={() => navigate('kotenCulture')}
