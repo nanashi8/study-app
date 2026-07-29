@@ -36,6 +36,21 @@ export function splitMeanings(meaning = '') {
   return meanings
 }
 
+// クイズ画面に実際に表示する代表語義。選択肢生成側も同じ関数を使い、
+// 「管・パイプ」と「管・導管」のように正本は違っても表示が同じ選択肢を防ぐ。
+export function quizMeaning(value) {
+  if (typeof value === 'string') return splitMeanings(value)[0] ?? ''
+  return value?.meanings?.[0] ?? splitMeanings(value?.meaning ?? '')[0] ?? ''
+}
+
+// 表記上の「〜」や空白だけが違う語義も、クイズでは同じ選択肢として扱う。
+export function quizMeaningKey(value) {
+  return quizMeaning(value)
+    .normalize('NFKC')
+    .replace(/[〜~\s]/g, '')
+    .toLowerCase()
+}
+
 export function hasBalancedParentheses(text = '') {
   const stack = []
   for (const char of text) {

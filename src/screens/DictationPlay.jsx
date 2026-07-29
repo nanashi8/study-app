@@ -387,6 +387,10 @@ export function DictationPlayScreen() {
                 通常再生 {normalPlays}回{slowPlays ? `・ゆっくり ${slowPlays}回` : ''}
               </span>
             </div>
+            <p className="mt-3 rounded-2xl bg-hint-soft/70 p-3 text-xs font-bold leading-relaxed text-amber-900/85">
+              💡 聞き取りポイント：{item.focus}。英文と和訳を意味のまとまりごとに対応させ、
+              正しい語順を声に出して確認しましょう。
+            </p>
           </div>
         )}
       </div>

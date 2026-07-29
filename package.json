@@ -5,9 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "test": "node --test tests/*.test.mjs",
-    "check": "node scripts/check-data.mjs",
-    "prebuild": "node scripts/check-data.mjs",
+    "test": "node --test --test-concurrency=1 tests/*.test.mjs",
+    "check": "node scripts/check-data.mjs && node scripts/english-content-audit.mjs",
+    "audit:english": "node scripts/english-content-audit.mjs",
+    "prebuild": "npm run check",
     "build": "vite build",
     "preview": "vite preview",
     "vocab": "node scripts/vocab-report.mjs",

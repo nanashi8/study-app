@@ -34,6 +34,14 @@ const ReadingListScreen = lazyScreen(() => import('./screens/ReadingList.jsx'), 
 const ReadingPrepScreen = lazyScreen(() => import('./screens/ReadingPrep.jsx'), 'ReadingPrepScreen')
 const ReaderScreen = lazyScreen(() => import('./screens/Reader.jsx'), 'ReaderScreen')
 const ReadingSummaryScreen = lazyScreen(() => import('./screens/ReadingSummary.jsx'), 'ReadingSummaryScreen')
+const LiteratureLibraryScreen = lazyScreen(
+  () => import('./screens/LiteratureLibrary.jsx'),
+  'LiteratureLibraryScreen',
+)
+const LiteratureReaderScreen = lazyScreen(
+  () => import('./screens/LiteratureReader.jsx'),
+  'LiteratureReaderScreen',
+)
 const PhrasesScreen = lazyScreen(() => import('./screens/Phrases.jsx'), 'PhrasesScreen')
 const PhraseStudyScreen = lazyScreen(() => import('./screens/PhraseStudy.jsx'), 'PhraseStudyScreen')
 const PhraseQuizScreen = lazyScreen(() => import('./screens/PhraseQuiz.jsx'), 'PhraseQuizScreen')
@@ -118,6 +126,8 @@ const SCREENS = {
   readingPrep: ReadingPrepScreen,
   reader: ReaderScreen,
   readingSummary: ReadingSummaryScreen,
+  literatureLibrary: LiteratureLibraryScreen,
+  literatureReader: LiteratureReaderScreen,
   phrases: PhrasesScreen,
   phraseStudy: PhraseStudyScreen,
   phraseQuiz: PhraseQuizScreen,
@@ -163,7 +173,7 @@ const SCREENS = {
 const IMMERSIVE = new Set([
   'portal',
   'login',
-  'vocabStudy', 'vocabQuiz', 'wordDetail', 'vocabCamera', 'sessionResult', 'readingPrep', 'reader', 'phraseStudy', 'phraseQuiz',
+  'vocabStudy', 'vocabQuiz', 'wordDetail', 'vocabCamera', 'sessionResult', 'readingPrep', 'reader', 'literatureLibrary', 'literatureReader', 'phraseStudy', 'phraseQuiz',
   'listeningQuiz', 'dictationPlay', 'pronouncePlay', 'mathIntro', 'mathSolve', 'grammarQuiz', 'diagnostic',
   'writingPlay', 'writingGrammarReview',
   // 別コンテンツ（ポータルから入る）

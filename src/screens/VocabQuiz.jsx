@@ -13,6 +13,7 @@ import {
   titleForLevel,
 } from '../lib/rpg.js'
 import { pickDistractors, shuffle } from '../data/vocab.js'
+import { quizMeaning } from '../data/compact.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { PosBadge } from '../components/WordBits.jsx'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
@@ -370,7 +371,7 @@ export function VocabQuizScreen() {
                   tone === 'dim' && 'border-transparent bg-paper text-ink/35',
                 )}
               >
-                <span className="flex-1">{o.meanings?.[0] ?? o.meaning}</span>
+                <span className="flex-1">{quizMeaning(o)}</span>
                 {tone === 'correct' && <Check size={20} className="text-emerald-600" />}
                 {tone === 'wrong' && <Close size={18} className="text-rose-500" />}
               </button>
@@ -405,6 +406,18 @@ export function VocabQuizScreen() {
             <p className="mt-1 font-bold text-ink">
               <span className="font-display">{word.word}</span> ＝ {word.meanings.join('・')}
             </p>
+            <div className="mt-3 flex items-start gap-2 rounded-2xl bg-brand-50/70 p-3">
+              <SpeakButton text={word.example.en} size="sm" />
+              <div className="min-w-0 text-left">
+                <p className="text-sm font-bold leading-relaxed text-ink">{word.example.en}</p>
+                <p className="mt-0.5 text-xs font-bold leading-relaxed text-ink/55">{word.example.ja}</p>
+              </div>
+            </div>
+            {word.etymology?.note && (
+              <p className="mt-2 rounded-xl bg-hint-soft/70 px-3 py-2 text-xs font-bold leading-relaxed text-amber-900/85">
+                💡 覚え方：{word.etymology.note}
+              </p>
+            )}
             <button
               onClick={() => {
                 // 解答済みの状態を退避してから語源詳細へ。戻ると結果画面のまま復元。

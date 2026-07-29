@@ -3,6 +3,7 @@ import { useStore } from '../store/useStore.js'
 import { getPassage } from '../data/passages.js'
 import { getLevel } from '../data/levels.js'
 import { getReadingStudy, passageWordCount } from '../data/reading-study.js'
+import { phraseSpeechText } from '../lib/phrase-speech.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { PosBadge } from '../components/WordBits.jsx'
@@ -220,7 +221,7 @@ export function ReadingPrepScreen() {
               return (
                 <div key={item.id} className="rounded-2xl bg-white p-3 shadow-sm">
                   <div className="flex items-start gap-2">
-                    <SpeakButton text={item.example.en} size="sm" />
+                    <SpeakButton text={phraseSpeechText(item)} size="sm" />
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-2">
                         <span className="font-display font-extrabold text-ink">{item.phrase}</span>

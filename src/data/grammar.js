@@ -1,6 +1,7 @@
 import { GRAMMAR_EXPANSION } from './grammar-expansion.js'
 import { GENERATED_GRAMMAR } from './grammar-generated.js'
 import { GRAMMAR_EXAM_PATTERNS } from './grammar-exam-patterns.js'
+import { createGrammarChoiceGuidance } from '../lib/grammarChoiceGuidance.js'
 
 // 既存の手作り問題にも、生成問題・入試型問題と同じ文法判断を問うものがある。
 // IDや並び順は変えず、出題時だけ同じ variationGroup として重複を抑える。
@@ -181,7 +182,7 @@ export const GRAMMAR = [
   { id: 'gr_pre1_inv_2', level: 'pre1', topic: '倒置', q: 'Hardly had I arrived ___ it began to rain.', choices: ['when', 'than', 'that', 'then'], answer: 'when', explain: 'Hardly had S done when 〜（〜するやいなや）。', sentence: { en: 'Hardly had I arrived when it began to rain.', ja: '着くやいなや雨が降り出した。' } },
   { id: 'gr_pre1_subj_2', level: 'pre1', topic: '仮定法応用', q: '___ I known, I would have told you.', choices: ['Had', 'If', 'Have', 'Did'], answer: 'Had', explain: 'if省略の倒置：Had＋S＋過分（=If S had done）。', sentence: { en: 'Had I known, I would have told you.', ja: '知っていたら教えたのに。' } },
   { id: 'gr_pre1_part_1', level: 'pre1', topic: '独立分詞構文', q: 'The weather ___ fine, we went hiking.', choices: ['being', 'is', 'was', 'be'], answer: 'being', explain: '独立分詞構文：主語が異なる分詞構文（〜なので）。', sentence: { en: 'The weather being fine, we went hiking.', ja: '天気がよかったのでハイキングに行った。' } },
-  { id: 'gr_pre1_conc_2', level: 'pre1', topic: '譲歩', q: '___ she was, she kept working.', choices: ['Tired as', 'As tired', 'Though tired', 'Tired though'], answer: 'Tired as', explain: '〈形容詞＋as＋S＋V〉で「〜だけれども」（譲歩の倒置）。', sentence: { en: 'Tired as she was, she kept working.', ja: '疲れていたが彼女は働き続けた。' } },
+  { id: 'gr_pre1_conc_2', level: 'pre1', topic: '譲歩', q: '___ she was, she kept working.', choices: ['Tired as', 'As tired', 'Though tired', 'Although tired'], answer: 'Tired as', explain: '〈形容詞＋as＋S＋V〉で「〜だけれども」（譲歩の倒置）。', sentence: { en: 'Tired as she was, she kept working.', ja: '疲れていたが彼女は働き続けた。' } },
   { id: 'gr_pre1_nounclause_1', level: 'pre1', topic: '名詞節', q: 'The fact ___ he lied shocked us.', choices: ['that', 'which', 'what', 'whether'], answer: 'that', explain: '同格の that（〜という事実）。後ろは完全文。', sentence: { en: 'The fact that he lied shocked us.', ja: '彼がうそをついたという事実に私たちは衝撃を受けた。' } },
 
   // ───────── 1級 追加 ─────────
@@ -442,6 +443,13 @@ export const getGrammar = (id) => GRAMMAR.find((g) => g.id === id)
 export const topicsForLevel = (level) => [...new Set(grammarByLevel(level).map((g) => g.topic))]
 export const grammarPatternGroup = (item) =>
   item?.variationGroup ?? item?.pattern ?? null
+
+const grammarChoiceGuidance = createGrammarChoiceGuidance(GRAMMAR)
+
+// 誤答を「別の場面なら使える形」と「標準英語では使わない形」に分け、
+// 正答の根拠だけでは残る「では、この選択肢はいつ使うのか」を全問で補う。
+export const grammarChoiceGuidanceFor = (item, choice) =>
+  grammarChoiceGuidance(item, choice)
 
 // 解説欄に出す「同じ形の例」。同じ級・単元の検証済み完成文から、現在の問題を除いて返す。
 export const samePatternExamplesFor = (item, limit = 2) => {

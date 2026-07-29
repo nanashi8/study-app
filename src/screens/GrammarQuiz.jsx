@@ -1,7 +1,10 @@
 import { useMemo, useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import { shuffle } from '../data/vocab.js'
-import { samePatternExamplesFor } from '../data/grammar.js'
+import {
+  grammarChoiceGuidanceFor,
+  samePatternExamplesFor,
+} from '../data/grammar.js'
 import { buildGrammarDeck } from '../lib/grammarDeck.js'
 import { todayIndex } from '../store/useStore.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
@@ -44,6 +47,17 @@ export function GrammarQuizScreen() {
   const patternExamples = useMemo(
     () => samePatternExamplesFor(item),
     [item?.id], // eslint-disable-line react-hooks/exhaustive-deps
+  )
+  const choiceGuides = useMemo(
+    () => item
+      ? options
+          .filter((choice) => choice !== item.answer)
+          .map((choice) => ({
+            choice,
+            guidance: grammarChoiceGuidanceFor(item, choice),
+          }))
+      : [],
+    [item?.id, options], // eslint-disable-line react-hooks/exhaustive-deps
   )
 
   if (!deck.length) {
@@ -164,6 +178,69 @@ export function GrammarQuizScreen() {
             <div className="mt-3 flex gap-2 rounded-2xl bg-hint-soft/70 p-3">
               <span className="mt-0.5 shrink-0 text-hint"><Lightbulb size={18} /></span>
               <p className="text-sm font-bold leading-relaxed text-amber-900/90">{item.explain}</p>
+            </div>
+            <div className="mt-3 border-t border-brand-100 pt-3" data-grammar-choice-guidance>
+              <p className="font-display text-sm font-extrabold text-ink/70">選択肢の使い分け</p>
+              <p className="mt-1 text-xs font-bold leading-relaxed text-ink/45">
+                誤答も、別の場面で使う形なのか、英語では使わない形なのかを確認しよう。
+              </p>
+              <div className="mt-2 space-y-2">
+                {choiceGuides.map(({ choice, guidance }) => {
+                  const chosenWrong = selected === choice
+                  const usable = guidance?.status === 'valid'
+                  const example = guidance?.example?.en ?? guidance?.pattern
+                  return (
+                    <div
+                      key={choice}
+                      data-grammar-choice-guide={choice}
+                      data-choice-status={guidance?.status}
+                      className={cx(
+                        'rounded-xl border p-3',
+                        usable
+                          ? 'border-brand-100 bg-brand-50/55'
+                          : 'border-rose-100 bg-rose-50/65',
+                        chosenWrong && 'ring-2 ring-rose-300',
+                      )}
+                    >
+                      <div className="flex flex-wrap items-center gap-1.5">
+                        <span className="font-display text-sm font-extrabold text-ink">
+                          {choice}
+                        </span>
+                        <span
+                          className={cx(
+                            'rounded-full px-2 py-0.5 text-[10px] font-extrabold',
+                            usable
+                              ? 'bg-brand-100 text-brand-700'
+                              : 'bg-rose-100 text-rose-700',
+                          )}
+                        >
+                          {usable ? '別の場面で使う' : 'この形は使わない'}
+                        </span>
+                        {chosenWrong && (
+                          <span className="rounded-full bg-rose-500 px-2 py-0.5 text-[10px] font-extrabold text-white">
+                            あなたの回答
+                          </span>
+                        )}
+                      </div>
+                      <p className="mt-1.5 text-xs font-bold leading-relaxed text-ink/65">
+                        {guidance?.summary}
+                      </p>
+                      {example && (
+                        <div className="mt-1.5 rounded-lg bg-white/80 px-2.5 py-2">
+                          <p className="text-xs font-extrabold leading-relaxed text-ink">
+                            例・型：{example}
+                          </p>
+                          {guidance?.example?.ja && (
+                            <p className="mt-0.5 text-[11px] font-bold leading-relaxed text-ink/45">
+                              {guidance.example.ja}
+                            </p>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
             </div>
             <div className="mt-3 border-t border-brand-100 pt-3">
               <p className="font-display text-sm font-extrabold text-ink/70">同じ形の例</p>

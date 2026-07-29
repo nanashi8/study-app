@@ -151,7 +151,7 @@ import {
   ETYMOLOGY_MODE_META,
   ETYMOLOGY_ORIGIN_META,
 } from './etymology-compression.js'
-import { splitMeanings } from './compact.js'
+import { quizMeaningKey, splitMeanings } from './compact.js'
 import { EXAM_WORDS, USAGE_GUIDES_BY_WORD } from './exam-lexicon.js'
 
 // 語根オートリンクの検出器（精度重視・形態素分解＋除外リスト）。
@@ -307,6 +307,12 @@ export const WORDS_BY_ID = Object.fromEntries(ALL_WORDS.map((w) => [w.id, w]))
 
 export const getWord = (id) => WORDS_BY_ID[id]
 
+const WORDS_BY_LEVEL = new Map()
+for (const word of ALL_WORDS) {
+  if (!WORDS_BY_LEVEL.has(word.level)) WORDS_BY_LEVEL.set(word.level, [])
+  WORDS_BY_LEVEL.get(word.level).push(word)
+}
+
 // 音声認識が同音異綴りを返したとき、見出し語の発音と比較するための読み取り専用参照。
 // 手書き値・品詞別補正・自動生成値を統合済みの正本から引く。
 const PHONETIC_BY_WORD = Object.fromEntries(
@@ -333,7 +339,7 @@ export function neighborWords(id, before = 2, after = 2) {
 }
 
 export const wordsByLevel = (levelId) =>
-  ALL_WORDS.filter((w) => w.level === levelId)
+  WORDS_BY_LEVEL.get(levelId) ?? []
 
 export const levelCount = (levelId) => wordsByLevel(levelId).length
 
@@ -404,21 +410,36 @@ export const relatedByEtymology = (word) => {
 
 export const getRoot = (id) => ROOTS_BY_ID[id]
 
-// クイズの誤答選択肢を作る：まず同レベルの別単語、足りなければ全体から補う。
+// クイズの誤答選択肢を作る。同じ級・品詞・分野を優先して、
+// 単なる品詞当てでは正解できない、学習価値のある選択肢にする。
 // rng は 0〜1 を返す関数（テスト/再現性のため差し替え可能）。
 export function pickDistractors(word, count, rng = Math.random) {
-  const sameLevel = wordsByLevel(word.level).filter((w) => w.id !== word.id)
-  const others = ALL_WORDS.filter(
-    (w) => w.id !== word.id && w.level !== word.level,
-  )
-  const pool = [...shuffle(sameLevel, rng), ...shuffle(others, rng)]
+  const sameLevel = wordsByLevel(word.level)
+  const samePos = wordsByPos(word.pos)
+  const sameField = wordsByField(word.field)
+  const tiers = [
+    sameLevel.filter((candidate) =>
+      candidate.pos === word.pos &&
+      candidate.field === word.field),
+    sameLevel.filter((candidate) => candidate.pos === word.pos),
+    sameField.filter((candidate) => candidate.pos === word.pos),
+    samePos,
+    sameLevel,
+    ALL_WORDS,
+  ]
+  const seenIds = new Set([word.id])
   const picked = []
-  const usedMeaning = new Set([word.meaning])
-  for (const w of pool) {
-    if (picked.length >= count) break
-    if (usedMeaning.has(w.meaning)) continue // 意味の重複を避ける
-    usedMeaning.add(w.meaning)
-    picked.push(w)
+  const usedMeaning = new Set([quizMeaningKey(word)])
+  for (const tier of tiers) {
+    for (const candidate of shuffle(tier, rng)) {
+      if (seenIds.has(candidate.id)) continue
+      seenIds.add(candidate.id)
+      const meaningKey = quizMeaningKey(candidate)
+      if (!meaningKey || usedMeaning.has(meaningKey)) continue
+      usedMeaning.add(meaningKey)
+      picked.push(candidate)
+      if (picked.length >= count) return picked
+    }
   }
   return picked
 }

@@ -3,12 +3,11 @@ import { useStore } from '../store/useStore.js'
 import { buildPhraseDeck } from '../lib/session.js'
 import { getLevel } from '../data/levels.js'
 import { speak } from '../lib/tts.js'
+import { phraseSpeechText } from '../lib/phrase-speech.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { Button, ProgressBar, IconButton, Chip } from '../components/ui.jsx'
 import { Close, ArrowRight, Lightbulb, Eye, EyeOff, Link } from '../components/Icons.jsx'
 
-const speakText = (p) =>
-  p.kind === 'syntax' || p.category === 'expression' ? p.example.en : p.phrase
 const itemKind = (p) =>
   p.category === 'expression' ? { label: '表現', color: '#0ea5e9' }
   : p.kind === 'syntax' ? { label: '構文', color: '#8b5cf6' }
@@ -39,7 +38,10 @@ export function PhraseStudyScreen() {
 
   useEffect(() => {
     if (item && settings.autoSpeak) {
-      speak(speakText(item), { rate: settings.ttsRate, voiceURI: settings.ttsVoiceURI })
+      speak(phraseSpeechText(item), {
+        rate: settings.ttsRate,
+        voiceURI: settings.ttsVoiceURI,
+      })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [i, item?.id])
@@ -113,7 +115,7 @@ export function PhraseStudyScreen() {
           </div>
           <div className="mt-3 flex flex-col items-center text-center">
             <h2 className="font-display text-3xl font-extrabold tracking-tight text-ink">{item.phrase}</h2>
-            <div className="mt-3"><SpeakButton text={speakText(item)} size="lg" /></div>
+            <div className="mt-3"><SpeakButton text={phraseSpeechText(item)} size="lg" /></div>
           </div>
 
           {!flipped ? (

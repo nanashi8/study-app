@@ -161,7 +161,7 @@ export const GRAMMAR_EXPANSION = [
   ['gr_depth_4_used_01', '4', 'used to', 'Did you ___ to play here as a child?', ['use', 'used', 'using', 'were used'], 'use', 'Did を使う疑問文では used to の used も原形 use に戻す。', '子どものころ、ここでよく遊びましたか。'],
   ['gr_depth_4_used_02', '4', 'used to', 'I did not ___ to like vegetables.', ['use', 'used', 'using', 'be used'], 'use', 'did not の後ろは動詞の原形なので use to となる。', '私は以前、野菜が好きではありませんでした。'],
   ['gr_depth_4_pron_01', '4', '代名詞', 'This cup is dirty. Please give me ___ one.', ['another', 'other', 'the other', 'others'], 'another', 'another＋単数名詞で「別のもう一つの〜」を表す。', 'このカップは汚れています。別のものを一つください。'],
-  ['gr_depth_4_pron_02', '4', '代名詞', '___ of my sisters can play the violin.', ['Both', 'Every', 'Either one of', 'All two'], 'Both', 'both of＋複数名詞で「2人（2つ）とも」を表し、複数動詞を取る。', '私の姉妹は2人ともバイオリンを弾けます。'],
+  ['gr_depth_4_pron_02', '4', '代名詞', 'My two sisters can play the violin. ___ of them practice together every day.', ['Both', 'Every', 'Either one of', 'All two'], 'Both', 'both of＋複数名詞で「2人（2つ）とも」を表し、複数動詞を取る。', '私の姉妹は2人ともバイオリンを弾けます。2人は毎日一緒に練習します。'],
 
   ['gr_depth_3_so_01', '3', 'so...that', 'The box was ___ heavy that I could not lift it.', ['so', 'such', 'too', 'very to'], 'so', 'so＋形容詞＋that 節で「とても〜なので…」を表す。', 'その箱はとても重かったので、私は持ち上げられませんでした。'],
   ['gr_depth_3_so_02', '3', 'so...that', 'She spoke ___ quietly that I could hardly hear her.', ['so', 'such', 'too', 'enough'], 'so', '副詞 quietly を強めて結果の that 節へつなぐので so ... that を使う。', '彼女はとても静かに話したので、ほとんど聞こえませんでした。'],

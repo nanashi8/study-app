@@ -23,7 +23,7 @@ const RAW = [
   ["myth","名","2","神話・俗説","It is just a popular myth.","それはよくある俗説にすぎない。","ギリシャ mythos(物語)。",{"syn":[{"w":"legend","m":"伝説"}],"field":"一般"}],
   ["nuisance","名","pre1","迷惑・厄介な物","These flies are a nuisance.","このハエは迷惑だ。","ラテン nocere(害する)→ innocent と同系。",{"syn":[{"w":"bother","m":"厄介"},{"w":"annoyance","m":"迷惑"}],"field":"一般"}],
   ["obligation","名","pre1","義務","You are under no obligation.","義務はありません。","ラテン ob+ligare(縛る)→ oblige と同源。",{"syn":[{"w":"duty","m":"義務"},{"w":"responsibility","m":"責任"}],"field":"一般"}],
-  ["outlook","名","pre1","見通し・考え方","The outlook is bright.","見通しは明るい。","out+look。",{"syn":[{"w":"prospect","m":"見通し"},{"w":"view","m":"見方"}],"field":"一般"}],
+  ["outlook","名","pre1","見通し・考え方","The outlook is bright.","見通しは明るい。","out（外へ）＋look（見る）。外を見渡すことから、将来の見通しや物の見方を表す。",{"syn":[{"w":"prospect","m":"見通し"},{"w":"view","m":"見方"}],"field":"一般"}],
   ["peril","名","1","危険","The sailors were in peril.","船員たちは危険にさらされた。","ラテン periculum(試み・危険)→ experiment と同系。",{"syn":[{"w":"danger","m":"危険"},{"w":"hazard","m":"危険"}],"field":"一般"}],
   ["prestige","名","1","名声・威信","The award brings prestige.","その賞は名声をもたらす。","ラテン praestigium(幻惑)。",{"syn":[{"w":"reputation","m":"評判"},{"w":"status","m":"地位"}],"field":"一般"}],
   ["privilege","名","pre1","特権・名誉","Education is a privilege.","教育は特権だ。","ラテン privus(個人の)+lex(法)→ private と同系。",{"syn":[{"w":"right","m":"権利"},{"w":"advantage","m":"利点"}],"der":[{"w":"privileged","m":"特権のある"}],"field":"一般"}],

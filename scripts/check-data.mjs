@@ -44,6 +44,7 @@ import {
   GRAMMAR_LEVEL_TARGETS,
   GRAMMAR_TOPIC_MINIMUM,
   GRAMMAR_TOTAL_TARGET,
+  grammarChoiceGuidanceFor,
   grammarByTopic,
 } from '../src/data/grammar.js'
 import { GRAMMAR_LESSONS } from '../src/data/grammar-lessons.js'
@@ -94,6 +95,11 @@ import {
   KOTEN_INTERPRETATION_FOCUS,
   KOTEN_INTERPRETATION_LEVELS,
 } from '../src/data/koten-interpretations.js'
+import {
+  PUBLIC_DOMAIN_LITERATURE,
+  literatureWordCount,
+} from '../src/data/public-domain-literature.js'
+import { buildLiteratureNarration } from '../src/lib/literature.js'
 import {
   WRITING_EXERCISES,
   WRITING_GRAMMAR,
@@ -514,6 +520,14 @@ for (const [position, count] of readingAnswerPositionCounts.entries()) {
 const grammarIds = new Set()
 const grammarPrompts = new Set()
 const grammarSentences = new Set()
+let grammarDistractorGuidanceCount = 0
+let grammarInvalidChoiceCount = 0
+const normalizeGrammarChoice = (text) =>
+  (text ?? '').trim().toLowerCase().replace(/[’]/g, "'").replace(/\s+/g, ' ')
+const grammarAnswerForms = new Set(GRAMMAR.map((item) => normalizeGrammarChoice(item.answer)))
+const vocabularyHeadwordForms = new Set(
+  ALL_WORDS.map((word) => normalizeGrammarChoice(word.word)),
+)
 const normalizeSentence = (text) =>
   (text ?? '').replace(/\s+/g, ' ').replace(/\s+([,.?!])/g, '$1').trim()
 for (const g of GRAMMAR) {
@@ -538,6 +552,33 @@ for (const g of GRAMMAR) {
   }
   if (!g.choices?.includes(g.answer)) errors.push(`${at}: answer が choices に無い (${g.answer})`)
   if (!g.sentence?.en || !g.sentence?.ja || !g.explain) errors.push(`${at}: sentence(en/ja) または explain 不足`)
+  for (const choice of g.choices?.filter((candidate) => candidate !== g.answer) ?? []) {
+    grammarDistractorGuidanceCount += 1
+    const guidance = grammarChoiceGuidanceFor(g, choice)
+    if (!guidance || !['valid', 'invalid'].includes(guidance.status)) {
+      errors.push(`${at}: 誤答「${choice}」の使う場面が未分類`)
+      continue
+    }
+    if (!guidance.summary?.trim()) {
+      errors.push(`${at}: 誤答「${choice}」の使い分け説明が空`)
+    }
+    if (guidance.source === 'unresolved' || guidance.source === 'related-vocabulary') {
+      errors.push(`${at}: 誤答「${choice}」が具体的な使い分けガイドに未接続`)
+    }
+    if (guidance.status === 'valid' && !guidance.example?.en && !guidance.pattern) {
+      errors.push(`${at}: 誤答「${choice}」の使用例・型が無い`)
+    }
+    if (guidance.status === 'invalid') {
+      grammarInvalidChoiceCount += 1
+      const normalizedChoice = normalizeGrammarChoice(choice)
+      if (grammarAnswerForms.has(normalizedChoice)) {
+        errors.push(`${at}: 別問題の正答「${choice}」を「使わない形」に分類`)
+      }
+      if (vocabularyHeadwordForms.has(normalizedChoice)) {
+        errors.push(`${at}: 登録語彙「${choice}」を「使わない形」に分類`)
+      }
+    }
+  }
   const promptKey = normalizeSentence(g.q).toLowerCase()
   if (promptKey && grammarPrompts.has(promptKey)) errors.push(`${at}: 同一の問題文が重複`)
   grammarPrompts.add(promptKey)
@@ -567,6 +608,15 @@ for (const [level, minimum] of Object.entries(GRAMMAR_LEVEL_TARGETS)) {
 }
 if (GRAMMAR.length !== GRAMMAR_TOTAL_TARGET) {
   errors.push(`文法 合計: ${GRAMMAR.length}問（収録目標は${GRAMMAR_TOTAL_TARGET}問）`)
+}
+if (grammarDistractorGuidanceCount !== GRAMMAR.length * 3) {
+  errors.push(
+    `文法 誤答使い分けガイド: ${grammarDistractorGuidanceCount}件` +
+      `（4択全問なら${GRAMMAR.length * 3}件必要）`,
+  )
+}
+if (grammarInvalidChoiceCount === 0) {
+  errors.push('文法 誤答使い分けガイド: 「使わない形」の分類が0件')
 }
 const grammarTopicCounts = new Map()
 for (const item of GRAMMAR) {
@@ -1017,6 +1067,75 @@ if (listeningIds.size !== LISTENING_ITEMS.length) {
   errors.push(`リスニング: id一意件数が全問題数と不一致 (${listeningIds.size}/${LISTENING_ITEMS.length})`)
 }
 
+// ── 名作交互朗読：権利カード、原文→訳の順序、共通SRS参照を全作品で検証 ──
+const literatureIds = new Set()
+for (const work of PUBLIC_DOMAIN_LITERATURE) {
+  const at = `名作朗読 ${work.id ?? '(id無し)'}`
+  if (!work.id || literatureIds.has(work.id)) errors.push(`${at}: id 無し/重複`)
+  literatureIds.add(work.id)
+  if (!['english', 'classical'].includes(work.kind)) {
+    errors.push(`${at}: kind が不正 (${work.kind})`)
+  }
+  if (!work.title || !work.titleJa || !work.author || !work.authorYears || !work.excerpt) {
+    errors.push(`${at}: title/titleJa/author/authorYears/excerpt 不足`)
+  }
+  if (!work.rights?.status || !work.rights?.basis || !work.rights?.translation) {
+    errors.push(`${at}: 著作権・独自訳の説明が不足`)
+  }
+  if (!/^https:\/\//.test(work.source?.url ?? '') || !work.source?.label || !work.source?.checkedOn) {
+    errors.push(`${at}: 出典URL/名称/確認日が不足`)
+  }
+  if ((work.scenes?.length ?? 0) < 5) errors.push(`${at}: 場面が5件未満`)
+
+  for (const [index, item] of (work.scenes ?? []).entries()) {
+    const sceneAt = `${at} 場面${index + 1}`
+    if (!item.original?.trim() || !item.translation?.trim() || !item.guide?.trim()) {
+      errors.push(`${sceneAt}: 原文/訳/読みのポイント不足`)
+    }
+    if (work.kind === 'classical' && !item.speech?.trim()) {
+      errors.push(`${sceneAt}: 古文読み上げ用の読み仮名不足`)
+    }
+  }
+
+  if (work.kind === 'english' && literatureWordCount(work) < 130) {
+    errors.push(`${at}: 英語原文が長文として短すぎる (${literatureWordCount(work)}語)`)
+  }
+
+  const narration = buildLiteratureNarration(work)
+  if (narration.length !== (work.scenes?.length ?? 0) * 2) {
+    errors.push(`${at}: 原文→訳の再生数が不正`)
+  }
+  narration.forEach((step, index) => {
+    const expectedPhase = index % 2 === 0 ? 'original' : 'translation'
+    if (step.phase !== expectedPhase || !step.text || !step.lang) {
+      errors.push(`${at}: 再生順または音声言語が不正 (${index + 1})`)
+    }
+  })
+
+  for (const id of new Set(work.wordIds ?? [])) {
+    if (!getWord(id)) errors.push(`${at}: 共通英単語 ${id} が無い`)
+  }
+  if (new Set(work.wordIds ?? []).size !== (work.wordIds ?? []).length) {
+    errors.push(`${at}: 共通英単語IDが重複`)
+  }
+  for (const id of new Set(work.kotenWordIds ?? [])) {
+    if (!getKoten(id)) errors.push(`${at}: 共通古典単語 ${id} が無い`)
+  }
+  if (new Set(work.kotenWordIds ?? []).size !== (work.kotenWordIds ?? []).length) {
+    errors.push(`${at}: 共通古典単語IDが重複`)
+  }
+  for (const id of new Set(work.grammarIds ?? [])) {
+    if (!getKotenGrammar(id)) errors.push(`${at}: 共通古典文法 ${id} が無い`)
+  }
+  if (new Set(work.grammarIds ?? []).size !== (work.grammarIds ?? []).length) {
+    errors.push(`${at}: 共通古典文法IDが重複`)
+  }
+}
+for (const kind of ['english', 'classical']) {
+  const count = PUBLIC_DOMAIN_LITERATURE.filter((work) => work.kind === kind).length
+  if (count < 3) errors.push(`名作朗読: ${kind} が3作品未満 (${count})`)
+}
+
 // ── 発音：同綴異音語の補正が実際の見出し語へ適用されているか ──
 for (const [id, ipa] of Object.entries(PHONETIC_OVERRIDES)) {
   const word = getWord(id)
@@ -1084,6 +1203,10 @@ for (const passage of PASSAGES) {
   passage.sentences.forEach((sentence, index) =>
     auditEnglish(`長文 ${passage.id} 第${index + 1}文`, sentence.en, { complete: true }))
 }
+for (const work of PUBLIC_DOMAIN_LITERATURE.filter((item) => item.kind === 'english')) {
+  work.scenes.forEach((item, index) =>
+    auditEnglish(`名作朗読 ${work.id} 場面${index + 1}`, item.original, { complete: true }))
+}
 for (const item of GRAMMAR) {
   auditEnglish(`文法 ${item.id} 完成文`, item.sentence?.en, { complete: true })
 }
@@ -1116,4 +1239,4 @@ if (errors.length) {
   process.exit(1)
 }
 
-console.log(`✅ データ検証OK: ${ALL_WORDS.length}英単語 / ${EXAM_USAGE_GUIDES.length}使い分けガイド / ${PHRASES.length}熟語・構文 / ${GRAMMAR.length}英文法 / ${GRAMMAR_LESSONS.length}文法解説 / ${PASSAGES.length}長文 / ${DICTATION_ITEMS.length}ディクテーション / ${LISTENING_ITEMS.length}リスニング / ${KOTEN_WORDS.length}古典単語 / ${KOTEN_GRAMMAR.length}古典文法 / ${KOTEN_GRAMMAR_QUESTIONS.length}古典文法問題 / ${KOTEN_CULTURE.length}古典常識 / ${KOTEN_CULTURE_QUESTIONS.length}古典常識問題 / ${KOTEN_INTERPRETATIONS.length}古典短文 — 全て必須項目を満たす`)
+console.log(`✅ データ検証OK: ${ALL_WORDS.length}英単語 / ${EXAM_USAGE_GUIDES.length}使い分けガイド / ${PHRASES.length}熟語・構文 / ${GRAMMAR.length}英文法 / ${GRAMMAR_LESSONS.length}文法解説 / ${PASSAGES.length}長文 / ${PUBLIC_DOMAIN_LITERATURE.length}名作朗読 / ${DICTATION_ITEMS.length}ディクテーション / ${LISTENING_ITEMS.length}リスニング / ${KOTEN_WORDS.length}古典単語 / ${KOTEN_GRAMMAR.length}古典文法 / ${KOTEN_GRAMMAR_QUESTIONS.length}古典文法問題 / ${KOTEN_CULTURE.length}古典常識 / ${KOTEN_CULTURE_QUESTIONS.length}古典常識問題 / ${KOTEN_INTERPRETATIONS.length}古典短文 — 全て必須項目を満たす`)

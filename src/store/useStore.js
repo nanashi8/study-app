@@ -83,7 +83,7 @@ const initialLearning = () => ({
   kotenWordList: [], // [古文単語id] 登録単語
   kotenGrammarList: [], // [古典文法id] 登録文法
   kotenCultureList: [], // [古典常識id] 登録常識
-  readingsDone: [], // [passageId] 読了した長文
+  readingsDone: [], // [passageId | literatureId] 読了した長文・名作朗読
   mathDone: [], // [problemId] クリアした数学問題
   mathMastery: {}, // unitId -> 最高正答率(0-100) ＝ 理解度
   skillStats: {}, // skill -> { answered, correct, sessions, lastDay } ＝ スキル別テスト結果
@@ -452,6 +452,21 @@ export const useStore = create(
         set((st) =>
           st.readingsDone.includes(id) ? {} : { readingsDone: [...st.readingsDone, id] },
         ),
+
+      // 名作朗読は既存の読了リスト・同期経路を再利用し、初回読了だけを分析へ加算する。
+      markLiteratureDone: (id, skill = 'reading', inputs = 1) =>
+        set((st) => {
+          if (!id || st.readingsDone.includes(id)) return {}
+          return {
+            readingsDone: [...st.readingsDone, id],
+            learningAnalytics: recordLearningEvent(st.learningAnalytics, {
+              skill,
+              inputs: Math.max(1, Number(inputs) || 1),
+              scored: 0,
+              correct: 0,
+            }),
+          }
+        }),
 
       markMathDone: (id) =>
         set((st) =>

@@ -3,6 +3,7 @@ import { useStore } from '../store/useStore.js'
 import { PHRASE_KINDS, phrasesByKind } from '../data/phrases.js'
 import { LEVELS, getLevel } from '../data/levels.js'
 import { phraseKindProgress } from '../lib/session.js'
+import { phraseSpeechText } from '../lib/phrase-speech.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { Sheet } from '../components/Sheet.jsx'
 import { SpeakButton } from '../components/SpeakButton.jsx'
@@ -11,7 +12,6 @@ import { Book, Cards, Lightbulb, Link, Refresh, Search } from '../components/Ico
 import { cx } from '../components/ui.jsx'
 
 const levelOrder = Object.fromEntries(LEVELS.map((l, i) => [l.id, i]))
-const speakText = (p) => (p.kind === 'syntax' ? p.example.en : p.phrase)
 const INITIAL_VISIBLE_ITEMS = 60
 
 export function PhrasesScreen() {
@@ -167,7 +167,7 @@ export function PhrasesScreen() {
             const level = getLevel(p.level)
             return (
               <div key={p.id} className="flex items-center gap-2 rounded-2xl bg-white p-3 shadow-sm">
-                <SpeakButton text={speakText(p)} size="sm" />
+                <SpeakButton text={phraseSpeechText(p)} size="sm" />
                 <button onClick={() => setDetail(p)} className="min-w-0 flex-1 text-left">
                   <div className="flex items-center gap-2">
                     <span className="font-display font-extrabold text-ink">{p.phrase}</span>
@@ -200,7 +200,7 @@ export function PhrasesScreen() {
         {detail && (
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <SpeakButton text={speakText(detail)} size="md" />
+              <SpeakButton text={phraseSpeechText(detail)} size="md" />
               <div>
                 <div className="font-display text-2xl font-extrabold text-ink">{detail.phrase}</div>
                 <Chip color={getLevel(detail.level).color}>英検{getLevel(detail.level).label}</Chip>

@@ -3,6 +3,11 @@
 // 実際の受験セットは lib/diagnosticQuestions.js が既存の単語・文法・熟語データと
 // 読解バンクから毎回生成する。difficulty は母集団の実測値ではなく、級の並びを
 // 標準化したアプリ内推定用の尺度。
+import {
+  DIAGNOSTIC_EXPLANATIONS,
+  DIAGNOSTIC_PASSAGE_JA,
+  DIAGNOSTIC_STATIC_REVIEWS,
+} from './diagnostic-feedback.js'
 
 export const DIAGNOSTIC_VERSION = 2
 
@@ -19,35 +24,35 @@ export const DIAGNOSTIC_LEVELS = [
 export const DIAGNOSTIC_SKILLS = [
   {
     id: 'vocab',
-    label: '単語',
+    label: '英単語',
     shortLabel: '単語',
     emoji: '📖',
     color: '#6366f1',
     screen: 'vocabLevels',
-    advice: '級別単語で、意味を即答できなかった語を復習しましょう。',
+    advice: '級別英単語を、英語を見て選ぶだけでなく、日本語から英語を思い出して復習しましょう。',
   },
   {
     id: 'grammar',
-    label: '文法',
-    shortLabel: '文法',
+    label: '文法・構文',
+    shortLabel: '構文',
     emoji: '💡',
     color: '#f59e0b',
     screen: 'grammar',
-    advice: '文法レッスンでルールを確認してから、単元クイズに進みましょう。',
+    advice: '文法・構文のルールを例文で確認してから、答えを隠して単元クイズに進みましょう。',
   },
   {
     id: 'usage',
-    label: '語法・熟語',
-    shortLabel: '語法',
+    label: '熟語・語法',
+    shortLabel: '熟語',
     emoji: '✨',
     color: '#8b5cf6',
     screen: 'phrases',
-    advice: '熟語を一語ずつではなく、まとまりと例文で覚えましょう。',
+    advice: '熟語を一語ずつに分けず、意味のまとまりと例文をセットにして思い出す練習をしましょう。',
   },
   {
     id: 'reading',
     label: '長文読解',
-    shortLabel: '読解',
+    shortLabel: '長文',
     emoji: '📚',
     color: '#10b981',
     screen: 'readingList',
@@ -69,13 +74,21 @@ export function diagnosticDifficulty(levelId, skillId) {
   return level.difficulty + (SKILL_DIFFICULTY_OFFSET[skillId] ?? 0)
 }
 
-const q = ({ id, skill, level, ...question }) => ({
-  id,
-  skill,
-  level,
-  difficulty: diagnosticDifficulty(level, skill),
-  ...question,
-})
+const q = ({ id, skill, level, ...question }) => {
+  const review = question.review ?? DIAGNOSTIC_STATIC_REVIEWS[id]
+  return {
+    id,
+    skill,
+    level,
+    difficulty: diagnosticDifficulty(level, skill),
+    ...question,
+    explain: question.explain ?? DIAGNOSTIC_EXPLANATIONS[id],
+    ...(question.passage
+      ? { passageJa: question.passageJa ?? DIAGNOSTIC_PASSAGE_JA[id] }
+      : {}),
+    ...(review ? { review } : {}),
+  }
+}
 
 export const DIAGNOSTIC_QUESTIONS = [
   // ── 英検5級 ───────────────────────────────────────────────────────

@@ -1,7 +1,9 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
 
 import { PASSAGES } from '../src/data/passages.js'
+import { PHRASES } from '../src/data/phrases.js'
 import { READING_LEVELS } from '../src/data/levels.js'
 import {
   READING_WORD_COUNT_TARGETS,
@@ -19,6 +21,7 @@ import {
   analyzePassageParagraphs,
   analyzeReadingSentence,
 } from '../src/lib/reading-grammar.js'
+import { phraseSpeechText } from '../src/lib/phrase-speech.js'
 
 const EXPECTED_LEVELS = ['5', '4', '3', 'pre2', 'pre2plus', '2', 'pre1', '1']
 
@@ -84,6 +87,40 @@ test('事前学習語彙は共通辞書で解決し、表現カードを備え�
       `${passage.id}: 事前学習IDが重複`,
     )
   }
+})
+
+test('全熟語・長文表現の主音声は熟語なら見出し、構文なら完成例文を使う', () => {
+  const readingPhrases = PASSAGES.flatMap((passage) => getReadingStudy(passage).phrases)
+  const allPhraseOccurrences = [...PHRASES, ...readingPhrases]
+
+  assert.ok(allPhraseOccurrences.length > PHRASES.length, '長文固有表現も監査対象に含める')
+  for (const item of allPhraseOccurrences) {
+    const expected = item.kind === 'syntax' ? item.example.en.trim() : item.phrase.trim()
+    assert.equal(phraseSpeechText(item), expected, item.id)
+  }
+
+  const readingIdioms = readingPhrases.filter((item) => item.kind === 'idiom')
+  assert.ok(readingIdioms.some((item) => item.category === 'expression'))
+  for (const item of readingIdioms) {
+    assert.equal(phraseSpeechText(item), item.phrase.trim(), item.id)
+  }
+})
+
+test('熟語の一覧・学習・クイズは共通の主音声判定を使う', () => {
+  for (const filename of ['Phrases.jsx', 'PhraseStudy.jsx', 'PhraseQuiz.jsx', 'ReadingPrep.jsx']) {
+    const source = readFileSync(new URL(`../src/screens/${filename}`, import.meta.url), 'utf8')
+    assert.match(source, /phraseSpeechText\(/, filename)
+  }
+
+  const studySource = readFileSync(
+    new URL('../src/screens/PhraseStudy.jsx', import.meta.url),
+    'utf8',
+  )
+  assert.doesNotMatch(
+    studySource,
+    /category\s*===\s*['"]expression['"][^\n]*example\.en/,
+    '長文固有表現だけ例文へ切り替えてはならない',
+  )
 })
 
 test('長文の全語は意味を引け、固有名詞以外は共通辞書へ保存できる', () => {

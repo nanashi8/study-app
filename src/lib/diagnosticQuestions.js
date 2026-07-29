@@ -7,6 +7,7 @@ import {
 import { GRAMMAR } from '../data/grammar.js'
 import { PHRASES } from '../data/phrases.js'
 import { pickDistractors, wordsByLevel } from '../data/vocab.js'
+import { pickPhraseDistractors } from './session.js'
 
 // 端末ごとの seed と受験回数から同じ問題列を再現できるようにする。
 // 一度並べた候補を受験回数で順送りするため、単なる乱数抽選と違い、
@@ -67,7 +68,19 @@ function shuffledChoices(choices, seed, sourceId, attemptNumber) {
   )
 }
 
-function baseQuestion({ id, sourceId, skill, level, prompt, choices, answer, passage }) {
+function baseQuestion({
+  id,
+  sourceId,
+  skill,
+  level,
+  prompt,
+  choices,
+  answer,
+  explain,
+  passage,
+  passageJa,
+  review,
+}) {
   return {
     id,
     sourceId,
@@ -75,9 +88,12 @@ function baseQuestion({ id, sourceId, skill, level, prompt, choices, answer, pas
     level,
     difficulty: diagnosticDifficulty(level, skill),
     ...(passage ? { passage } : {}),
+    ...(passageJa ? { passageJa } : {}),
+    ...(review ? { review } : {}),
     prompt,
     choices,
     answer,
+    explain,
   }
 }
 
@@ -108,6 +124,11 @@ function vocabQuestion(level, attemptNumber, seed) {
     prompt: `“${word.word}” の意味として最も近いものは？`,
     choices: shuffledChoices(choices, seed, sourceId, attemptNumber),
     answer: word.meaning,
+    explain: [
+      `${word.word} は「${word.meaning}」という意味です。`,
+      word.etymology?.note,
+    ].filter(Boolean).join(' '),
+    review: word.example,
   })
 }
 
@@ -134,6 +155,8 @@ function grammarQuestion(level, attemptNumber, seed) {
     prompt: item.q,
     choices: shuffledChoices(item.choices, seed, sourceId, attemptNumber),
     answer: item.answer,
+    explain: item.explain,
+    review: item.sentence,
   })
 }
 
@@ -144,21 +167,12 @@ function phraseQuestion(level, attemptNumber, seed) {
   )
   const item = pickForAttempt(pool, seed, `usage:${level}`, attemptNumber)
   const sourceId = `phrase:${item.id}`
-  const distractorPool = shuffle(
-    PHRASES.filter((candidate) => candidate.id !== item.id && candidate.meaning),
+  const distractors = pickPhraseDistractors(
+    item,
+    3,
     rngFor(seed, `usage-distractors:${item.id}:${attemptNumber}`),
   )
-  const distractors = uniqueBy(
-    [
-      ...distractorPool.filter((candidate) => candidate.level === level),
-      ...distractorPool.filter((candidate) => candidate.level !== level),
-    ],
-    (candidate) => candidate.meaning,
-  )
-    .filter((candidate) => candidate.meaning !== item.meaning)
-    .slice(0, 3)
-    .map((candidate) => candidate.meaning)
-  const choices = [item.meaning, ...distractors]
+  const choices = [item.meaning, ...distractors.map((candidate) => candidate.meaning)]
   if (choices.length !== 4) {
     throw new Error(`熟語診断の選択肢を4件作れません: ${item.id}`)
   }
@@ -170,6 +184,8 @@ function phraseQuestion(level, attemptNumber, seed) {
     prompt: `“${item.phrase}” の意味として最も近いものは？`,
     choices: shuffledChoices(choices, seed, sourceId, attemptNumber),
     answer: item.meaning,
+    explain: [item.origin, item.note].filter(Boolean).join(' '),
+    review: item.example,
   })
 }
 
@@ -183,9 +199,11 @@ function readingQuestion(level, attemptNumber, seed) {
     skill: 'reading',
     level,
     passage: item.passage,
+    passageJa: item.passageJa,
     prompt: item.prompt,
     choices: shuffledChoices(item.choices, seed, sourceId, attemptNumber),
     answer: item.answer,
+    explain: item.explain,
   })
 }
 

@@ -2,14 +2,14 @@ import { useMemo, useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import { buildPhraseDeck, pickPhraseDistractors } from '../lib/session.js'
 import { shuffle } from '../data/vocab.js'
+import { quizMeaning } from '../data/compact.js'
+import { phraseSpeechText } from '../lib/phrase-speech.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { Button, ProgressBar, IconButton, Chip } from '../components/ui.jsx'
 import { Close, Check, ArrowRight } from '../components/Icons.jsx'
 import { cx } from '../components/ui.jsx'
 import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
-
-const speakText = (p) => (p.kind === 'syntax' ? p.example.en : p.phrase)
 
 export function PhraseQuizScreen() {
   const params = useStore((s) => s.params)
@@ -102,7 +102,7 @@ export function PhraseQuizScreen() {
             {item.kind === 'syntax' ? '構文' : '熟語'}
           </Chip>
           <h2 className="mt-2 font-display text-3xl font-extrabold tracking-tight text-ink">{item.phrase}</h2>
-          <div className="mt-3"><SpeakButton text={speakText(item)} size="md" /></div>
+          <div className="mt-3"><SpeakButton text={phraseSpeechText(item)} size="md" /></div>
           <p className="mt-4 text-sm font-extrabold text-ink/55">この意味は？</p>
         </div>
 
@@ -125,7 +125,7 @@ export function PhraseQuizScreen() {
                   tone === 'dim' && 'border-transparent bg-paper text-ink/35',
                 )}
               >
-                <span className="flex-1">{o.meanings?.[0] ?? o.meaning}</span>
+                <span className="flex-1">{quizMeaning(o)}</span>
                 {tone === 'correct' && <Check size={20} className="text-emerald-600" />}
                 {tone === 'wrong' && <Close size={18} className="text-rose-500" />}
               </button>
@@ -147,7 +147,17 @@ export function PhraseQuizScreen() {
             <p className="mt-1 font-bold text-ink">
               <span className="font-display">{item.phrase}</span> ＝ {item.meanings.join('・')}
             </p>
-            <p className="mt-1 text-sm font-bold text-ink/55">{item.example.en}（{item.example.ja}）</p>
+            <div className="mt-3 flex items-start gap-2 rounded-2xl bg-brand-50/70 p-3">
+              <SpeakButton text={item.example.en} size="sm" />
+              <div className="min-w-0 text-left">
+                <p className="text-sm font-bold leading-relaxed text-ink">{item.example.en}</p>
+                <p className="mt-0.5 text-xs font-bold leading-relaxed text-ink/55">{item.example.ja}</p>
+              </div>
+            </div>
+            <div className="mt-2 space-y-1 rounded-xl bg-hint-soft/70 px-3 py-2 text-xs font-bold leading-relaxed text-amber-900/85">
+              <p>💡 成り立ち：{item.origin}</p>
+              <p>使い方：{item.note}</p>
+            </div>
           </div>
         )}
       </div>

@@ -10,6 +10,7 @@ import {
   shuffle,
 } from '../data/vocab.js'
 import { phrasesByKind, phrasesByLevel, getPhrase } from '../data/phrases.js'
+import { quizMeaningKey } from '../data/compact.js'
 import { LEVELS } from '../data/levels.js'
 import { LEVEL_ORDER, enemyLevelIndex, clampPos } from './adaptive.js'
 import { todayIndex } from '../store/useStore.js'
@@ -146,18 +147,27 @@ export function buildPhraseDeck(source, { srs = {}, size = SESSION_SIZE } = {}) 
 }
 
 export function pickPhraseDistractors(phrase, count, rng = Math.random) {
-  const sameKindLevel = phrasesByLevel(phrase.kind, phrase.level).filter((p) => p.id !== phrase.id)
-  const sameKind = phrasesByKind(phrase.kind).filter(
-    (p) => p.id !== phrase.id && p.level !== phrase.level,
-  )
-  const pool = [...shuffle(sameKindLevel, rng), ...shuffle(sameKind, rng)]
+  const candidates = phrasesByKind(phrase.kind).filter((item) => item.id !== phrase.id)
+  const tiers = [
+    candidates.filter((item) =>
+      item.level === phrase.level && item.category === phrase.category),
+    candidates.filter((item) => item.level === phrase.level),
+    candidates.filter((item) => item.category === phrase.category),
+    candidates,
+  ]
+  const seenIds = new Set([phrase.id])
   const picked = []
-  const used = new Set([phrase.meaning])
-  for (const p of pool) {
-    if (picked.length >= count) break
-    if (used.has(p.meaning)) continue
-    used.add(p.meaning)
-    picked.push(p)
+  const used = new Set([quizMeaningKey(phrase)])
+  for (const tier of tiers) {
+    for (const item of shuffle(tier, rng)) {
+      if (seenIds.has(item.id)) continue
+      seenIds.add(item.id)
+      const meaningKey = quizMeaningKey(item)
+      if (!meaningKey || used.has(meaningKey)) continue
+      used.add(meaningKey)
+      picked.push(item)
+      if (picked.length >= count) return picked
+    }
   }
   return picked
 }

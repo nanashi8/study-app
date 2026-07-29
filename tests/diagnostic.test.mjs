@@ -9,6 +9,8 @@ import {
 } from '../src/data/diagnostic.js'
 import {
   buildDiagnosticAnswerReview,
+  buildDiagnosticGuidance,
+  buildDiagnosticPerformanceReport,
   scoreDiagnostic,
   UNKNOWN_DIAGNOSTIC_ANSWER,
 } from '../src/lib/diagnostic.js'
@@ -132,6 +134,129 @@ test('診断終了後の答え合わせは問題順・自分の回答・正解�
   assert.equal(review.filter((item) => !item.isCorrect).length, 2)
 })
 
+test('成績表は級×分野の全28マスと、不正解・わからないを分けて集計する', () => {
+  const answers = allCorrect()
+  const unknownQuestion = DIAGNOSTIC_QUESTIONS.find(
+    (question) => question.level === '5' && question.skill === 'vocab',
+  )
+  const wrongQuestion = DIAGNOSTIC_QUESTIONS.find(
+    (question) => question.level === '4' && question.skill === 'grammar',
+  )
+  answers[unknownQuestion.id] = UNKNOWN_DIAGNOSTIC_ANSWER
+  answers[wrongQuestion.id] = wrongQuestion.choices.find(
+    (choice) => choice !== wrongQuestion.answer,
+  )
+
+  const report = buildDiagnosticPerformanceReport(DIAGNOSTIC_QUESTIONS, answers)
+  const cells = report.matrix.flatMap((row) => row.cells)
+  const vocab = report.skills.find((skill) => skill.id === 'vocab')
+  const grammar = report.skills.find((skill) => skill.id === 'grammar')
+
+  assert.equal(report.matrix.length, 7)
+  assert.equal(cells.length, 28)
+  assert.equal(
+    cells.find((cell) => cell.levelId === '5' && cell.skillId === 'vocab').mark,
+    'unknown',
+  )
+  assert.equal(
+    cells.find((cell) => cell.levelId === '4' && cell.skillId === 'grammar').mark,
+    'incorrect',
+  )
+  assert.equal(vocab.unknown, 1)
+  assert.equal(vocab.incorrect, 0)
+  assert.equal(grammar.unknown, 0)
+  assert.equal(grammar.incorrect, 1)
+  assert.equal(report.levels.find((level) => level.id === '5').correct, 3)
+  assert.equal(report.levels.find((level) => level.id === '4').correct, 3)
+})
+
+test('おすすめは最初の弱点級、診断根拠、個人の時間帯、間隔を空けた予定を示す', () => {
+  const answers = allCorrect()
+  for (const question of DIAGNOSTIC_QUESTIONS.filter((item) => item.skill === 'reading')) {
+    answers[question.id] = UNKNOWN_DIAGNOSTIC_ANSWER
+  }
+  const result = scoreDiagnostic(answers, {
+    completedAt: '2026-07-29T12:00:00.000Z',
+  })
+  const guidance = buildDiagnosticGuidance({
+    result,
+    questions: DIAGNOSTIC_QUESTIONS,
+    answers,
+    learningAnalysis: {
+      bestWindow: { start: 18, end: 21, scored: 24, correct: 20 },
+      hourly: [
+        { hour: 18, scored: 12, efficiency: 0.7 },
+        { hour: 19, scored: 12, efficiency: 0.85 },
+      ],
+      trackingReadiness: 'stable',
+      learnedItems: 20,
+      memoryScore: 68,
+      stages: { fragile: 5 },
+    },
+  })
+
+  assert.equal(guidance.recommendation.kind, 'foundation')
+  assert.equal(guidance.recommendation.skillId, 'reading')
+  assert.equal(guidance.recommendation.targetLevelId, '5')
+  assert.match(guidance.recommendation.title, /英検5級の長文読解/)
+  assert.match(guidance.recommendation.evidence.join(' '), /0\/7問/)
+  assert.match(guidance.recommendation.evidence.join(' '), /「わからない」7問/)
+  assert.equal(guidance.time.startHour, 19)
+  assert.equal(guidance.time.windowStartHour, 18)
+  assert.equal(guidance.time.personalized, true)
+  assert.equal(guidance.time.provisional, false)
+  assert.equal(guidance.memory.available, true)
+  assert.deepEqual(
+    guidance.schedule.map((step) => step.offsetDays),
+    [1, 3, 7],
+  )
+  assert.deepEqual(
+    guidance.schedule.map((step) => step.screen),
+    ['readingList', 'readingList', 'englishMap'],
+  )
+})
+
+test('時刻別の実績が足りない場合は19時を暫定提案し、測定と断定しない', () => {
+  const result = scoreDiagnostic(allCorrect(), {
+    completedAt: '2026-07-29T12:00:00.000Z',
+  })
+  const guidance = buildDiagnosticGuidance({
+    result,
+    questions: DIAGNOSTIC_QUESTIONS,
+    answers: allCorrect(),
+    learningAnalysis: {
+      bestWindow: null,
+      trackingReadiness: 'empty',
+      learnedItems: 0,
+      memoryScore: 0,
+      stages: { fragile: 0 },
+    },
+  })
+
+  assert.equal(guidance.recommendation.kind, 'stretch')
+  assert.equal(guidance.time.startHour, 19)
+  assert.equal(guidance.time.personalized, false)
+  assert.equal(guidance.time.provisional, true)
+  assert.match(guidance.time.evidence, /仮設定/)
+  assert.equal(guidance.memory.available, false)
+})
+
+test('全分野が同点の弱点なら、存在しない得意分野との比較を根拠にしない', () => {
+  const answers = allUnknown()
+  const result = scoreDiagnostic(answers, {
+    completedAt: '2026-07-29T12:00:00.000Z',
+  })
+  const guidance = buildDiagnosticGuidance({
+    result,
+    questions: DIAGNOSTIC_QUESTIONS,
+    answers,
+  })
+  const evidence = guidance.recommendation.evidence.join(' ')
+
+  assert.match(evidence, /同率の弱点が4分野/)
+  assert.doesNotMatch(evidence, /比較すると優先順位が明確/)
+})
+
 test('診断結果は正解を含む全設問の回答と正答を表示する', () => {
   const source = readFileSync(
     new URL('../src/screens/Diagnostic.jsx', import.meta.url),
@@ -142,6 +267,25 @@ test('診断結果は正解を含む全設問の回答と正答を表示する',
   assert.match(source, /あなたの回答：/)
   assert.match(source, /正しい答え/)
   assert.doesNotMatch(source, /visibleItems\.map/)
+})
+
+test('診断結果は成績表、根拠付きおすすめ、次回計画を答え合わせより先に表示する', () => {
+  const source = readFileSync(
+    new URL('../src/screens/Diagnostic.jsx', import.meta.url),
+    'utf8',
+  )
+
+  assert.match(source, /data-diagnostic-performance-report/)
+  assert.match(source, /data-diagnostic-matrix/)
+  assert.match(source, /data-diagnostic-recommendation/)
+  assert.match(source, /なぜ、これがおすすめ？/)
+  assert.match(source, /data-diagnostic-study-plan/)
+  assert.match(source, /次回は、ここから/)
+  assert.match(source, /脳波や医療検査による「脳力」の測定ではありません/)
+  assert.ok(
+    source.indexOf('<PerformanceReport') < source.indexOf('<AnswerReview'),
+    '成績と次回計画を全28問の答え合わせより先に読める',
+  )
 })
 
 test('推定偏差値は成績に対して単調で、上下限と級目安が妥当', () => {
