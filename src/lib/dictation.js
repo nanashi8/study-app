@@ -109,3 +109,30 @@ export function scoreDictation(answerText, targetText, { passScore = 90 } = {}) 
     passed: score >= passScore,
   }
 }
+
+// 単語カード式では、完成時の英文は必ず正しい語順になる。
+// そのため最終文ではなく、正しい位置以外へ置いた回数から
+// 「迷わず聞き取れた語」の割合を採点し、従来の進捗判定を保つ。
+export function scoreDictationSelection(
+  targetText,
+  wrongSelections = 0,
+  { passScore = 90 } = {},
+) {
+  // カードは英作文と同じく空白区切りで、well-designed のような
+  // ハイフン語は一枚として扱う。
+  const target = (targetText ?? '').trim().split(/\s+/).filter(Boolean)
+  const mistakes = Number.isFinite(wrongSelections)
+    ? Math.max(0, Math.trunc(wrongSelections))
+    : 0
+  const correctWords = Math.max(0, target.length - mistakes)
+  const score = Math.round((correctWords / Math.max(target.length, 1)) * 100)
+
+  return {
+    target,
+    wrongSelections: mistakes,
+    correctWords,
+    score,
+    exact: mistakes === 0,
+    passed: score >= passScore,
+  }
+}
