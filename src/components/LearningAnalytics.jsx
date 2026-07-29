@@ -313,16 +313,26 @@ export function LearningAnalyticsPanel({
   learningAnalytics,
   srs,
   kotenSrs,
+  kotenGrammarSrs,
+  kotenCultureSrs,
   kotenInterpretationSrs,
   skillStats,
 }) {
   const analysis = useMemo(
     () => analyzeLearning({
       learningAnalytics,
-      srsStores: [srs, kotenSrs, kotenInterpretationSrs],
+      srsStores: [srs, kotenSrs, kotenGrammarSrs, kotenCultureSrs, kotenInterpretationSrs],
       skillStats,
     }),
-    [learningAnalytics, srs, kotenSrs, kotenInterpretationSrs, skillStats],
+    [
+      learningAnalytics,
+      srs,
+      kotenSrs,
+      kotenGrammarSrs,
+      kotenCultureSrs,
+      kotenInterpretationSrs,
+      skillStats,
+    ],
   )
 
   return (

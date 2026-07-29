@@ -3,10 +3,12 @@ import { useStore, todayIndex } from '../store/useStore.js'
 import { buildDeck, SESSION_SIZE } from '../lib/session.js'
 import { enemyLevel } from '../lib/adaptive.js'
 import {
+  battleRelicForLevel,
   battleSceneCue,
   battleTactic,
   encounterFor,
   heroProgress,
+  relicBattleAbility,
   resolveBattleState,
   titleForLevel,
 } from '../lib/rpg.js'
@@ -73,6 +75,9 @@ export function VocabQuizScreen() {
     if (restore?.selected === 'unknown') return UNKNOWN_CHOICE_ID
     return restore ? restore.selected : null
   })
+  const [itemUsedAt, setItemUsedAt] = useState(() =>
+    Number.isSafeInteger(restore?.itemUsedAt) ? restore.itemUsedAt : null,
+  )
   const results = useRef(
     restore
       ? {
@@ -104,6 +109,10 @@ export function VocabQuizScreen() {
       })
     : null
   const tactic = isBattle ? battleTactic(params.source?.tacticId) : null
+  const battleRelic = isBattle
+    ? battleRelicForLevel(battleHeroLevel, params.source?.relicLevel)
+    : null
+  const battleItemAbility = isBattle ? relicBattleAbility(battleRelic) : null
   const battleState = isBattle
     ? resolveBattleState({
         answers: results.current.battleLog,
@@ -112,9 +121,10 @@ export function VocabQuizScreen() {
         heroLevel: battleHeroLevel,
         enemyRankIndex: params.source?.levelIndex ?? 0,
         isBoss: encounter.isBoss,
+        relicLevel: battleRelic.level,
+        itemUsedAt,
       })
     : null
-  const battleAnswered = battleState?.answered ?? 0
   const enemyHp = battleState?.enemyHealthPercent ?? 100
   const heroHp = battleState?.heroHealthPercent ?? 100
   // 選択肢（正解＋誤答2つ）を問題ごとに固定
@@ -186,11 +196,25 @@ export function VocabQuizScreen() {
     }
   }
 
+  const useBattleItem = () => {
+    if (
+      !isBattle
+      || !battleRelic
+      || battleState.itemUsed
+      || battleState.complete
+      || (
+        battleItemAbility.kind === 'heal'
+        && battleState.heroCurrentHp >= battleState.heroMaxHp
+      )
+    ) return
+    setItemUsedAt(battleState.answered)
+  }
+
   const isCorrectPick = answered && selected === word.id
   const battleEvent = answered ? battleState?.lastEvent : null
   const battleFeedback = battleEvent?.kind === 'hit'
     ? `${encounter.name}に ${battleEvent.damage} ダメージ！ ⚔️`
-    : ['burst', 'counter', 'shield'].includes(battleEvent?.kind)
+    : ['burst', 'counter', 'shield', 'item-power'].includes(battleEvent?.kind)
       ? `${battleEvent.title}（${battleEvent.damage}ダメージ）`
       : ['damage', 'unknown'].includes(battleEvent?.kind)
         ? `${battleEvent.title}（${battleEvent.damage}ダメージ）`
@@ -200,27 +224,51 @@ export function VocabQuizScreen() {
         : selected === UNKNOWN_CHOICE_ID
           ? '「わからない」を記録。次で立て直そう'
           : '反撃を受けた…次の一手へ')
-  const positiveBattleFeedback = isCorrectPick || battleEvent?.kind === 'block'
+  const positiveBattleFeedback =
+    isCorrectPick || ['block', 'item-guard'].includes(battleEvent?.kind)
+  const itemHealBlocked =
+    battleItemAbility?.kind === 'heal'
+    && battleState?.heroCurrentHp >= battleState?.heroMaxHp
+  const canUseBattleItem =
+    isBattle
+    && battleRelic
+    && !battleState.itemUsed
+    && !battleState.complete
+    && !itemHealBlocked
+  const battleItemLabel = battleState?.itemUsed
+    ? battleState.itemStatus
+    : itemHealBlocked
+      ? 'HP満タン'
+      : battleItemAbility?.label
+  const nextLabel = i + 1 >= deck.length
+    ? isBattle
+      ? '戦果を確認'
+      : '結果を見る'
+    : isBattle
+      ? '次の一手'
+      : '次へ'
 
   return (
-    <div className="flex h-full flex-col">
-      {/* 進捗 */}
-      <div className="border-b border-brand-100 bg-white/90 px-3 py-3 backdrop-blur">
-        <div className="flex items-center gap-3">
-          <IconButton onClick={back} aria-label="やめる">
-            <Close size={22} />
-          </IconButton>
-          <div className="flex-1">
-            <ProgressBar
-              value={isBattle ? battleAnswered / deck.length : i / deck.length}
-              color={isBattle ? '#f43f5e' : '#0ea5e9'}
-            />
+    <div className={cx('flex h-full flex-col', isBattle && 'battle-quiz-screen')}>
+      {/* 通常クイズの進捗。バトルはHUD内のターン表示へ一本化する。 */}
+      {!isBattle && (
+        <div className="border-b border-brand-100 bg-white/90 px-3 py-3 backdrop-blur">
+          <div className="flex items-center gap-3">
+            <IconButton onClick={back} aria-label="やめる">
+              <Close size={22} />
+            </IconButton>
+            <div className="flex-1">
+              <ProgressBar value={i / deck.length} color="#0ea5e9" />
+            </div>
+            <span className="w-12 text-right text-sm font-extrabold text-ink/50">
+              {i + 1}/{deck.length}
+            </span>
           </div>
-          <span className="w-12 text-right text-sm font-extrabold text-ink/50">
-            {i + 1}/{deck.length}
-          </span>
         </div>
-        {isBattle && (
+      )}
+
+      {isBattle && (
+        <div className="border-b border-brand-100 bg-white/90 p-2 backdrop-blur">
           <BattleHud
             encounter={encounter}
             enemyRank={enemyLevel(params.source?.levelIndex ?? 0)}
@@ -234,24 +282,69 @@ export function VocabQuizScreen() {
             heroTitle={battleHeroTitle}
             turns={results.current.battleLog}
             totalTurns={deck.length}
+            onExit={back}
           />
-        )}
-      </div>
+        </div>
+      )}
 
-      <div className="flex-1 overflow-y-auto px-4 pb-4">
+      <div
+        className={cx(
+          'flex-1 overflow-y-auto px-4 pb-4',
+          isBattle && 'px-3 pb-2',
+        )}
+      >
         {/* 出題語 */}
-        <div className="mt-2 flex flex-col items-center rounded-[2rem] bg-white p-6 text-center shadow-card">
-          <PosBadge pos={word.pos} className="self-start" />
-          <h2 className="mt-2 font-display text-4xl font-extrabold tracking-tight text-ink">{word.word}</h2>
-          {word.phonetic && <p className="mt-1 text-sm font-bold text-ink/40">{word.phonetic}</p>}
-          <div className="mt-3">
-            <SpeakButton text={word.word} size="md" />
-          </div>
-          <p className="mt-4 text-sm font-extrabold text-ink/55">この単語の意味は？</p>
+        <div
+          className={cx(
+            'mt-2 flex flex-col items-center bg-white text-center shadow-card',
+            isBattle ? 'rounded-2xl px-3 py-2.5' : 'rounded-[2rem] p-6',
+          )}
+        >
+          {isBattle ? (
+            <>
+              <div className="grid w-full grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2">
+                <PosBadge pos={word.pos} />
+                <div className="min-w-0">
+                  <h2 className="break-words font-display text-[clamp(1.25rem,6.8vw,1.75rem)] font-extrabold leading-none tracking-tight text-ink">
+                    {word.word}
+                  </h2>
+                  {word.phonetic && (
+                    <p className="mt-1 text-[11px] font-bold leading-none text-ink/40">
+                      {word.phonetic}
+                    </p>
+                  )}
+                </div>
+                <SpeakButton text={word.word} size="md" />
+              </div>
+              <p className="mt-1.5 text-[11px] font-extrabold text-ink/55">
+                この単語の意味は？
+              </p>
+            </>
+          ) : (
+            <>
+              <PosBadge pos={word.pos} className="self-start" />
+              <h2 className="mt-2 font-display text-4xl font-extrabold tracking-tight text-ink">
+                {word.word}
+              </h2>
+              {word.phonetic && (
+                <p className="mt-1 text-sm font-bold text-ink/40">{word.phonetic}</p>
+              )}
+              <div className="mt-3">
+                <SpeakButton text={word.word} size="md" />
+              </div>
+              <p className="mt-4 text-sm font-extrabold text-ink/55">
+                この単語の意味は？
+              </p>
+            </>
+          )}
         </div>
 
         {/* 選択肢 */}
-        <div className="mt-4 space-y-2.5">
+        <div
+          className={cx(
+            isBattle ? 'mt-2 grid grid-cols-2 gap-2' : 'mt-4 space-y-2.5',
+          )}
+        >
           {options.map((o) => {
             const correct = o.id === word.id
             const chosen = selected === o.id
@@ -267,7 +360,10 @@ export function VocabQuizScreen() {
                 disabled={answered}
                 onClick={() => choose(o.id)}
                 className={cx(
-                  'flex w-full items-center gap-3 rounded-2xl border-2 px-4 py-3.5 text-left font-bold transition-all',
+                  'flex w-full items-center gap-3 border-2 text-left font-bold transition-all',
+                  isBattle
+                    ? 'min-h-12 rounded-xl px-3 py-2 text-sm leading-snug'
+                    : 'rounded-2xl px-4 py-3.5',
                   tone === 'idle' && 'border-brand-100 bg-white text-ink active:bg-brand-50 active:scale-[0.99]',
                   tone === 'correct' && 'border-emerald-400 bg-correct-soft text-emerald-800',
                   tone === 'wrong' && 'animate-shake border-rose-400 bg-wrong-soft text-rose-800',
@@ -285,6 +381,7 @@ export function VocabQuizScreen() {
             selected={selected === UNKNOWN_CHOICE_ID}
             disabled={answered}
             onClick={() => choose(UNKNOWN_CHOICE_ID)}
+            className={isBattle ? 'min-h-12 py-2 leading-snug' : ''}
           />
         </div>
 
@@ -323,6 +420,7 @@ export function VocabQuizScreen() {
                     battleLog: [...(results.current.battleLog ?? [])],
                   },
                   xpAtStart: xpAtStart.current,
+                  itemUsedAt,
                 })
                 navigate('wordDetail', { id: word.id })
               }}
@@ -334,17 +432,46 @@ export function VocabQuizScreen() {
         )}
       </div>
 
-      <div className="shrink-0 border-t border-brand-100 bg-white/90 p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] backdrop-blur">
-        <Button full size="lg" disabled={!answered} onClick={next}>
-          {i + 1 >= deck.length
-            ? isBattle
-              ? '戦果を確認'
-              : '結果を見る'
-            : isBattle
-              ? '次の一手'
-              : '次へ'}{' '}
-          <ArrowRight size={18} />
-        </Button>
+      <div
+        className={cx(
+          'shrink-0 border-t border-brand-100 bg-white/90 backdrop-blur',
+          isBattle
+            ? 'p-2.5 pb-[calc(0.625rem+env(safe-area-inset-bottom))]'
+            : 'p-4 pb-[calc(1rem+env(safe-area-inset-bottom))]',
+        )}
+      >
+        {isBattle && battleRelic ? (
+          <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1.25fr)] gap-2">
+            <button
+              type="button"
+              disabled={!canUseBattleItem}
+              onClick={useBattleItem}
+              aria-label={
+                battleState.itemUsed
+                  ? `${battleRelic.name}は使用済み。${battleState.itemStatus}`
+                  : itemHealBlocked
+                    ? `${battleRelic.name}はHPが満タンのため使用できません`
+                    : `${battleRelic.name}を使う。${battleItemAbility.description}`
+              }
+              className={cx(
+                'flex h-12 min-w-0 items-center justify-center gap-1.5 rounded-2xl border-2 px-2 text-[11px] font-extrabold transition-transform active:scale-[0.97]',
+                canUseBattleItem
+                  ? 'border-amber-300 bg-amber-50 text-amber-900'
+                  : 'border-ink/10 bg-paper text-ink/35',
+              )}
+            >
+              <span className="shrink-0 text-base">{battleRelic.emoji}</span>
+              <span className="truncate" aria-live="polite">{battleItemLabel}</span>
+            </button>
+            <Button full size="md" disabled={!answered} onClick={next}>
+              {nextLabel} <ArrowRight size={18} />
+            </Button>
+          </div>
+        ) : (
+          <Button full size="lg" disabled={!answered} onClick={next}>
+            {nextLabel} <ArrowRight size={18} />
+          </Button>
+        )}
       </div>
     </div>
   )
@@ -363,11 +490,19 @@ function BattleHud({
   heroTitle,
   turns,
   totalTurns,
+  onExit,
 }) {
   const eventKind = eventActive ? battleState.lastEvent?.kind : null
   const cue = battleSceneCue(eventKind)
-  const skillFlash = ['burst', 'shield', 'block', 'counter'].includes(eventKind)
-  const guardActive = ['shield', 'block'].includes(eventKind)
+  const skillFlash = [
+    'burst',
+    'shield',
+    'block',
+    'counter',
+    'item-power',
+    'item-guard',
+  ].includes(eventKind)
+  const guardActive = ['shield', 'block', 'item-guard'].includes(eventKind)
   const heroAttacking =
     eventActive && cue.actor === 'hero' && cue.target === 'enemy'
   const enemyAttacking =
@@ -383,7 +518,7 @@ function BattleHud({
   const eventHealing = battleState.lastEvent?.healing ?? 0
   const damageLabel = !eventActive
     ? null
-    : eventKind === 'block'
+    : ['block', 'item-guard'].includes(eventKind)
       ? '0 DAMAGE'
       : eventKind === 'shield'
         ? `-${eventDamage} · SHIELD +1`
@@ -392,8 +527,17 @@ function BattleHud({
           : `-${eventDamage} DAMAGE`
 
   return (
-    <div className="mt-2 rounded-2xl bg-slate-950 p-2.5 text-white shadow-inner">
-      <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
+    <div className="relative rounded-2xl bg-slate-950 p-2 text-white shadow-inner">
+      <button
+        type="button"
+        onClick={onExit}
+        aria-label="バトルをやめる"
+        className="absolute right-2 top-2 z-10 inline-flex h-7 w-7 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white/70 transition-colors active:bg-white/20 active:text-white"
+      >
+        <Close size={15} />
+      </button>
+
+      <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 pr-8">
         <div className="flex min-w-0 items-center gap-1.5">
           <HeroPortrait
             level={heroLevel}
@@ -456,7 +600,7 @@ function BattleHud({
       <div
         key={`scene-${battleState.answered}-${eventKind ?? 'ready'}`}
         className={cx(
-          'mob-battle-stage battle-status-stage mt-2 rounded-xl',
+          'mob-battle-stage battle-status-stage mt-1.5 rounded-xl',
           skillFlash && 'battle-stage-skill',
         )}
         style={{ '--battle-scene': encounter.chapterGradient }}
@@ -479,7 +623,7 @@ function BattleHud({
             attacking={heroAttacking}
             damaged={heroDamaged}
             guarding={guardActive}
-            className="h-[58px] w-[58px]"
+            className="h-12 w-12"
           />
           <span>YOU</span>
         </div>
@@ -511,7 +655,7 @@ function BattleHud({
             decorative
             showBadge={false}
             hit={hit}
-            className="h-16 w-16 rounded-2xl ring-1 ring-white/35"
+            className="h-14 w-14 rounded-2xl ring-1 ring-white/35"
           />
           <span>{encounter.isBoss ? 'BOSS' : 'MOB'}</span>
         </div>
@@ -550,7 +694,7 @@ function BattleHud({
         })}
       </div>
 
-      <div className="mt-2 flex items-center gap-2 rounded-xl border border-rose-300/20 bg-rose-400/10 px-2 py-1.5">
+      <div className="mt-1.5 flex items-center gap-2 rounded-xl border border-rose-300/20 bg-rose-400/10 px-2 py-1">
         <span className="text-sm">{encounter.elementEmoji}</span>
         <p className="min-w-0 flex-1 truncate text-[9px] font-bold text-rose-100">
           <span className="mr-1 font-black tracking-wide text-rose-300">NEXT</span>
@@ -560,7 +704,7 @@ function BattleHud({
       <div
         key={`status-${battleState.answered}-${eventActive ? 'answer' : 'ready'}`}
         className={cx(
-          'mt-2 flex items-center justify-between gap-2 rounded-xl bg-white/10 px-2 py-1.5 text-[9px] font-extrabold',
+          'mt-1.5 flex items-center justify-between gap-2 rounded-xl bg-white/10 px-2 py-1 text-[9px] font-extrabold',
           skillFlash && 'battle-skill-flash bg-amber-300 text-amber-950',
         )}
         aria-live="polite"

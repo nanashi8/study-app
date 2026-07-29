@@ -5,6 +5,8 @@
 // 本試験の素材感に近づけるため、低い級は身近な生活・案内文、高い級は社会・科学・
 // 論説調の説明文にし、級が上がるほど語数と文構造を段階的に重くしている。
 
+import { EXAM_PASSAGES } from './passages-exam.js'
+
 const s = (en, ja, chunks, paragraphStart = false) => ({
   en,
   ja,
@@ -14,7 +16,7 @@ const s = (en, ja, chunks, paragraphStart = false) => ({
 })
 const p = (en, ja, chunks) => s(en, ja, chunks, true)
 
-export const PASSAGES = [
+const CORE_PASSAGES = [
   {
     id: 'p_5_lost_notebook',
     level: '5',
@@ -339,6 +341,49 @@ export const PASSAGES = [
       s('If that practice declines, even perfect archives will not prevent societies from losing their ability to learn from what they once knew.', 'その実践が衰えれば、完璧な記録保管所でさえ、社会がかつて知っていたことから学ぶ能力を失うのを防げないでしょう。'),
     ],
   },
+]
+
+const CORE_PASSAGE_META = {
+  p_5_lost_notebook: {
+    theme: '学校生活・身近な物語',
+    examFocus: ['人物と持ち物', '出来事の順序', '理由'],
+  },
+  p_4_library_event: {
+    theme: '公共施設・地域の歴史',
+    examFocus: ['日時と条件', '行動の順序', '要旨'],
+  },
+  p_3_school_garden: {
+    theme: '環境・地域交流',
+    examFocus: ['課題と解決策', '因果関係', '学んだこと'],
+  },
+  p_pre2_museum_volunteers: {
+    theme: '文化・ボランティア',
+    examFocus: ['具体例', '複数の利点', '要旨'],
+  },
+  p_pre2plus_repair_cafes: {
+    theme: '持続可能な消費',
+    examFocus: ['仕組みの説明', '利点と限界', '筆者の結論'],
+  },
+  p_2_quiet_technology: {
+    theme: '技術・公共空間',
+    examFocus: ['具体例の機能', '利点と懸念', '筆者の提案'],
+  },
+  p_pre1_resilient_cities: {
+    theme: '気候変動・都市政策',
+    examFocus: ['複数要因の整理', '公平性', '条件付き結論'],
+  },
+  p_1_collective_memory: {
+    theme: '歴史認識・公共制度',
+    examFocus: ['抽象概念', '反論への応答', '筆者の主張'],
+  },
+}
+
+export const PASSAGES = [
+  ...CORE_PASSAGES.map((passage) => ({
+    ...passage,
+    ...CORE_PASSAGE_META[passage.id],
+  })),
+  ...EXAM_PASSAGES,
 ]
 
 const PROPER_NAME_GLOSSES = [

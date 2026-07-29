@@ -15,7 +15,10 @@ export function ReadingListScreen() {
 
   return (
     <div className="pb-6">
-      <ScreenHeader title="長文を読む" subtitle="重要語と表現を確認してから本文へ" />
+      <ScreenHeader
+        title="長文を読む"
+        subtitle={`全${PASSAGES.length}題・テーマ必須語彙を確認してから本文へ`}
+      />
       <div className="space-y-3 px-4">
         {sorted.map((p) => {
           const level = getLevel(p.level)
@@ -41,13 +44,16 @@ export function ReadingListScreen() {
                     </Chip>
                   </div>
                   <p className="truncate text-sm font-bold text-ink/55">{p.titleJa}</p>
-                  <div className="mt-1 flex items-center gap-2 text-[11px] font-bold text-ink/40">
-                    <span className="inline-flex items-center gap-0.5">
+                  <p className="mt-0.5 truncate text-[11px] font-extrabold text-brand-600">
+                    {p.theme}
+                  </p>
+                  <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px] font-bold text-ink/40">
+                    <span className="inline-flex whitespace-nowrap items-center gap-0.5">
                       <Book size={12} /> 本文 {passageWordCount(p)}語
                     </span>
-                    <span>・ 事前学習 {words.length + phrases.length}項目</span>
+                    <span className="whitespace-nowrap">・ 必須語彙等 {words.length + phrases.length}項目</span>
                     {done && (
-                      <span className="inline-flex items-center gap-0.5 text-emerald-600">
+                      <span className="inline-flex whitespace-nowrap items-center gap-0.5 text-emerald-600">
                         <Check size={12} /> 読了
                       </span>
                     )}

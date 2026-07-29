@@ -20,12 +20,15 @@ export async function pullOrInit(uid, email) {
     useStore.setState({
       srs: d.srs ?? {},
       kotenSrs: d.kotenSrs ?? {},
+      kotenGrammarSrs: d.kotenGrammarSrs ?? {},
+      kotenCultureSrs: d.kotenCultureSrs ?? {},
       kotenInterpretationSrs: d.kotenInterpretationSrs ?? {},
       myList: d.myList ?? [],
       myGrammarList: d.myGrammarList ?? [],
       writingProgress: d.writingProgress ?? {},
       kotenWordList: d.kotenWordList ?? [],
       kotenGrammarList: d.kotenGrammarList ?? [],
+      kotenCultureList: d.kotenCultureList ?? [],
       readingsDone: d.readingsDone ?? [],
       mathDone: d.mathDone ?? [],
       mathMastery: d.mathMastery ?? {},
@@ -41,6 +44,12 @@ export async function pullOrInit(uid, email) {
         ? d.diagnosticSeed
         : null,
       engPos: d.engPos ?? null,
+      battleRelicLevel:
+        Number.isSafeInteger(d.battleRelicLevel)
+        && d.battleRelicLevel >= 1
+        && d.battleRelicLevel <= 99
+          ? d.battleRelicLevel
+          : null,
       stats: { ...cur.stats, ...(d.stats ?? {}) },
       settings: { ...cur.settings, ...(d.settings ?? {}) },
     })

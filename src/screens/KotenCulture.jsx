@@ -1,11 +1,13 @@
 import { useMemo, useState } from 'react'
 import { isDue, useStore } from '../store/useStore.js'
 import {
-  KOTEN_GRAMMAR,
-  KOTEN_GRAMMAR_CATEGORIES,
-  kotenGrammarByCategory,
-} from '../data/koten-grammar.js'
-import { KOTEN_GRAMMAR_QUESTIONS } from '../data/koten-grammar-questions.js'
+  KOTEN_CULTURE,
+  KOTEN_CULTURE_CATEGORIES,
+  KOTEN_CULTURE_LEVELS,
+  KOTEN_CULTURE_QUESTIONS,
+  kotenCultureByCategory,
+} from '../data/koten-culture.js'
+import { pickKotenInterpretationIds } from '../data/koten-interpretations.js'
 import {
   Button,
   Card,
@@ -29,7 +31,7 @@ import {
 
 const MASTER_BOX = 4
 
-function grammarProgress(items, srs) {
+function cultureProgress(items, srs) {
   let mastered = 0
   let learning = 0
   let points = 0
@@ -42,13 +44,12 @@ function grammarProgress(items, srs) {
   return {
     mastered,
     learning,
-    total: items.length,
     ratio: items.length ? points / (items.length * MASTER_BOX) : 0,
   }
 }
 
 function CategoryCard({ meta, items, srs, questionCount, onStudy, onQuiz }) {
-  const progress = grammarProgress(items, srs)
+  const progress = cultureProgress(items, srs)
   return (
     <Card className="p-4">
       <div className="flex items-center gap-3">
@@ -61,7 +62,7 @@ function CategoryCard({ meta, items, srs, questionCount, onStudy, onQuiz }) {
         <div className="min-w-0 flex-1">
           <h3 className="font-display text-base font-extrabold text-ink">{meta.label}</h3>
           <p className="mt-0.5 text-[11px] font-bold text-ink/45">
-            {items.length}項目・{questionCount}問
+            {items.length}テーマ・{questionCount}問
           </p>
           <p className="mt-0.5 text-[10px] font-bold text-ink/35">
             習得 {progress.mastered}・学習中 {progress.learning}
@@ -73,6 +74,7 @@ function CategoryCard({ meta, items, srs, questionCount, onStudy, onQuiz }) {
           </span>
         </ProgressRing>
       </div>
+      <p className="mt-2 text-[11px] font-bold leading-relaxed text-ink/45">{meta.subtitle}</p>
       <div className="mt-3 grid grid-cols-2 gap-2">
         <Button size="sm" onClick={onStudy}>
           <Book size={16} /> 覚える
@@ -85,29 +87,37 @@ function CategoryCard({ meta, items, srs, questionCount, onStudy, onQuiz }) {
   )
 }
 
-export function KotenGrammarScreen() {
+export function KotenCultureScreen() {
   const navigate = useStore((state) => state.navigate)
-  const grammarSrs = useStore((state) => state.kotenGrammarSrs)
-  const saved = useStore((state) => state.kotenGrammarList)
-  const toggleSaved = useStore((state) => state.toggleKotenGrammarList)
+  const cultureSrs = useStore((state) => state.kotenCultureSrs)
+  const saved = useStore((state) => state.kotenCultureList)
+  const toggleSaved = useStore((state) => state.toggleKotenCultureList)
   const [category, setCategory] = useState('all')
   const [query, setQuery] = useState('')
   const [openId, setOpenId] = useState(null)
 
-  const totalProgress = grammarProgress(KOTEN_GRAMMAR, grammarSrs)
-  const dueItems = KOTEN_GRAMMAR.filter(
-    (item) => grammarSrs[item.id] && isDue(grammarSrs[item.id]),
+  const totalProgress = cultureProgress(KOTEN_CULTURE, cultureSrs)
+  const dueItems = KOTEN_CULTURE.filter(
+    (item) => cultureSrs[item.id] && isDue(cultureSrs[item.id]),
   )
   const savedItems = saved
-    .map((id) => KOTEN_GRAMMAR.find((item) => item.id === id))
+    .map((id) => KOTEN_CULTURE.find((item) => item.id === id))
     .filter(Boolean)
 
   const items = useMemo(() => {
-    const base = category === 'all' ? KOTEN_GRAMMAR : kotenGrammarByCategory(category)
+    const base = category === 'all' ? KOTEN_CULTURE : kotenCultureByCategory(category)
     const normalized = query.trim().toLowerCase()
     if (!normalized) return base
     return base.filter((item) =>
-      [item.title, item.forms, item.connection, item.meaning, item.summary]
+      [
+        item.title,
+        item.keyword,
+        item.prompt,
+        item.core,
+        item.detail,
+        item.examTip,
+        item.scene.text,
+      ]
         .join(' ')
         .toLowerCase()
         .includes(normalized),
@@ -115,29 +125,29 @@ export function KotenGrammarScreen() {
   }, [category, query])
 
   const study = (targetItems, title) =>
-    navigate('kotenGrammarStudy', {
+    navigate('kotenCultureStudy', {
       ids: targetItems.map((item) => item.id),
       title,
     })
   const quiz = (targetItems, title) =>
-    navigate('kotenGrammarQuiz', {
+    navigate('kotenCultureQuiz', {
       ids: targetItems.map((item) => item.id),
       title,
     })
 
   return (
     <div className="pb-8">
-      <div className="rounded-b-[2.5rem] bg-gradient-to-br from-amber-700 via-orange-600 to-yellow-500 px-5 pb-7 pt-[calc(env(safe-area-inset-top)+1.25rem)] text-white">
+      <div className="rounded-b-[2.5rem] bg-gradient-to-br from-violet-800 via-purple-700 to-fuchsia-600 px-5 pb-7 pt-[calc(env(safe-area-inset-top)+1.25rem)] text-white">
         <button
           onClick={() => navigate('kotenList')}
           className="mb-3 flex items-center gap-1 rounded-full bg-white/15 py-1 pl-1.5 pr-2.5 text-[11px] font-extrabold text-white/90 transition-transform active:scale-95"
         >
           <ChevronLeft size={14} /> 古典アプリ
         </button>
-        <p className="text-xs font-bold text-white/70">大学受験・古文文法</p>
-        <h1 className="font-display text-2xl font-extrabold tracking-wide">古典文法</h1>
+        <p className="text-xs font-bold text-white/70">大学受験・古文の背景知識</p>
+        <h1 className="font-display text-2xl font-extrabold tracking-wide">古典常識</h1>
         <p className="mt-1 text-sm font-bold text-white/80">
-          覚える → 文中で見抜く → くり返して定着
+          覚える → 本文の行動理由を見抜く → 読解につなぐ
         </p>
 
         <div className="mt-4 grid grid-cols-[auto_1fr] items-center gap-4 rounded-2xl bg-white/15 p-3.5">
@@ -148,7 +158,7 @@ export function KotenGrammarScreen() {
           </ProgressRing>
           <div>
             <p className="font-display text-lg font-extrabold">
-              全{KOTEN_GRAMMAR.length}項目・{KOTEN_GRAMMAR_QUESTIONS.length}問
+              全{KOTEN_CULTURE.length}テーマ・{KOTEN_CULTURE_QUESTIONS.length}問
             </p>
             <p className="mt-0.5 text-xs font-bold text-white/70">
               習得 {totalProgress.mastered}・学習中 {totalProgress.learning}・登録 {savedItems.length}
@@ -160,32 +170,32 @@ export function KotenGrammarScreen() {
       <div className="space-y-5 px-4 pt-5">
         <section>
           <div className="mb-2 px-1">
-            <p className="text-[10px] font-extrabold tracking-[0.14em] text-amber-600">LEARN → CHALLENGE</p>
-            <h2 className="font-display text-lg font-extrabold text-ink">今日の古典文法</h2>
+            <p className="text-[10px] font-extrabold tracking-[0.14em] text-violet-600">LEARN → CHALLENGE</p>
+            <h2 className="font-display text-lg font-extrabold text-ink">今日の古典常識</h2>
           </div>
           <div className="grid grid-cols-2 gap-3">
             <button
-              onClick={() => study(KOTEN_GRAMMAR, '古典文法・全範囲')}
-              className="rounded-3xl bg-gradient-to-br from-amber-500 to-orange-600 p-4 text-left text-white shadow-card transition-transform active:scale-[0.98]"
+              onClick={() => study(KOTEN_CULTURE, '古典常識・全範囲')}
+              className="rounded-3xl bg-gradient-to-br from-violet-600 to-fuchsia-600 p-4 text-left text-white shadow-card transition-transform active:scale-[0.98]"
             >
               <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/15">
                 <Book size={23} />
               </span>
               <span className="mt-3 block font-display text-lg font-extrabold">覚える</span>
               <span className="mt-1 block text-[11px] font-bold leading-relaxed text-white/75">
-                意味・接続・活用をカードで想起
+                用語・背景・本文の手掛かりを想起
               </span>
             </button>
             <button
-              onClick={() => quiz(KOTEN_GRAMMAR, '全範囲・受験型腕試し')}
-              className="rounded-3xl bg-gradient-to-br from-slate-900 to-violet-900 p-4 text-left text-white shadow-card transition-transform active:scale-[0.98]"
+              onClick={() => quiz(KOTEN_CULTURE, '全範囲・入試型腕試し')}
+              className="rounded-3xl bg-gradient-to-br from-slate-900 to-indigo-950 p-4 text-left text-white shadow-card transition-transform active:scale-[0.98]"
             >
               <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/10">
                 <Cards size={23} />
               </span>
               <span className="mt-3 block font-display text-lg font-extrabold">腕試し</span>
               <span className="mt-1 block text-[11px] font-bold leading-relaxed text-white/65">
-                識別・活用・敬語を入試型4択で
+                本文・人物関係・資料から4択
               </span>
             </button>
           </div>
@@ -193,7 +203,7 @@ export function KotenGrammarScreen() {
           <div className="mt-3 grid grid-cols-2 gap-3">
             <button
               disabled={!dueItems.length}
-              onClick={() => study(dueItems, '古典文法の復習')}
+              onClick={() => study(dueItems, '古典常識の復習')}
               className="flex items-center gap-2 rounded-2xl bg-hint-soft p-3 text-left transition-transform active:scale-[0.98] disabled:opacity-45"
             >
               <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-hint/20 text-hint">
@@ -201,20 +211,20 @@ export function KotenGrammarScreen() {
               </span>
               <span>
                 <span className="block text-sm font-extrabold text-amber-900">復習</span>
-                <span className="block text-[11px] font-bold text-amber-800/65">{dueItems.length}項目</span>
+                <span className="block text-[11px] font-bold text-amber-800/65">{dueItems.length}テーマ</span>
               </span>
             </button>
             <button
               disabled={!savedItems.length}
-              onClick={() => study(savedItems, '登録文法')}
+              onClick={() => study(savedItems, '登録した古典常識')}
               className="flex items-center gap-2 rounded-2xl bg-sky-100 p-3 text-left transition-transform active:scale-[0.98] disabled:opacity-45"
             >
               <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-sky-200 text-sky-700">
                 <BookmarkFilled size={19} />
               </span>
               <span>
-                <span className="block text-sm font-extrabold text-sky-900">登録文法</span>
-                <span className="block text-[11px] font-bold text-sky-800/60">{savedItems.length}項目</span>
+                <span className="block text-sm font-extrabold text-sky-900">登録常識</span>
+                <span className="block text-[11px] font-bold text-sky-800/60">{savedItems.length}テーマ</span>
               </span>
             </button>
           </div>
@@ -223,15 +233,15 @@ export function KotenGrammarScreen() {
         <section>
           <div className="mb-2 flex items-end justify-between px-1">
             <div>
-              <p className="text-[10px] font-extrabold tracking-[0.14em] text-amber-600">COURSE</p>
+              <p className="text-[10px] font-extrabold tracking-[0.14em] text-violet-600">COURSE</p>
               <h2 className="font-display text-lg font-extrabold text-ink">分野から学ぶ</h2>
             </div>
-            <span className="text-[10px] font-bold text-ink/35">{KOTEN_GRAMMAR_CATEGORIES.length}分野</span>
+            <span className="text-[10px] font-bold text-ink/35">{KOTEN_CULTURE_CATEGORIES.length}分野</span>
           </div>
           <div className="space-y-3">
-            {KOTEN_GRAMMAR_CATEGORIES.map((meta) => {
-              const categoryItems = kotenGrammarByCategory(meta.id)
-              const questionCount = KOTEN_GRAMMAR_QUESTIONS.filter(
+            {KOTEN_CULTURE_CATEGORIES.map((meta) => {
+              const categoryItems = kotenCultureByCategory(meta.id)
+              const questionCount = KOTEN_CULTURE_QUESTIONS.filter(
                 (question) => question.category === meta.id,
               ).length
               return (
@@ -239,10 +249,10 @@ export function KotenGrammarScreen() {
                   key={meta.id}
                   meta={meta}
                   items={categoryItems}
-                  srs={grammarSrs}
+                  srs={cultureSrs}
                   questionCount={questionCount}
                   onStudy={() => study(categoryItems, `${meta.label}を覚える`)}
-                  onQuiz={() => quiz(categoryItems, `${meta.label}・受験型腕試し`)}
+                  onQuiz={() => quiz(categoryItems, `${meta.label}・入試型腕試し`)}
                 />
               )
             })}
@@ -252,12 +262,12 @@ export function KotenGrammarScreen() {
         <section>
           <div className="mb-2 flex items-end justify-between px-1">
             <div>
-              <p className="text-[10px] font-extrabold tracking-[0.14em] text-amber-600">REFERENCE</p>
-              <h2 className="font-display text-lg font-extrabold text-ink">文法辞典</h2>
+              <p className="text-[10px] font-extrabold tracking-[0.14em] text-violet-600">REFERENCE</p>
+              <h2 className="font-display text-lg font-extrabold text-ink">古典常識事典</h2>
             </div>
             <button
-              onClick={() => navigate('kotenSaved', { tab: 'grammar' })}
-              className="flex items-center gap-1 text-xs font-extrabold text-amber-700"
+              onClick={() => navigate('kotenSaved', { tab: 'culture' })}
+              className="flex items-center gap-1 text-xs font-extrabold text-violet-700"
             >
               <BookmarkFilled size={14} /> 登録リスト <ArrowRight size={14} />
             </button>
@@ -268,8 +278,8 @@ export function KotenGrammarScreen() {
             <input
               value={query}
               onChange={(event) => setQuery(event.target.value)}
-              placeholder="助動詞・意味・接続で検索"
-              aria-label="古典文法を検索"
+              placeholder="宮中・暦・信仰・作品名で検索"
+              aria-label="古典常識を検索"
               className="min-w-0 flex-1 bg-transparent text-sm font-bold text-ink outline-none placeholder:text-ink/30"
             />
           </label>
@@ -279,12 +289,12 @@ export function KotenGrammarScreen() {
               onClick={() => setCategory('all')}
               className={cx(
                 'shrink-0 rounded-xl px-3 py-2 text-xs font-extrabold transition-colors',
-                category === 'all' ? 'bg-amber-600 text-white' : 'bg-white text-ink/55',
+                category === 'all' ? 'bg-violet-700 text-white' : 'bg-white text-ink/55',
               )}
             >
-              すべて {KOTEN_GRAMMAR.length}
+              すべて {KOTEN_CULTURE.length}
             </button>
-            {KOTEN_GRAMMAR_CATEGORIES.map((meta) => (
+            {KOTEN_CULTURE_CATEGORIES.map((meta) => (
               <button
                 key={meta.id}
                 onClick={() => setCategory(meta.id)}
@@ -294,19 +304,20 @@ export function KotenGrammarScreen() {
                 )}
                 style={category === meta.id ? { backgroundColor: meta.color } : undefined}
               >
-                {meta.emoji} {meta.label} {kotenGrammarByCategory(meta.id).length}
+                {meta.emoji} {meta.label} {kotenCultureByCategory(meta.id).length}
               </button>
             ))}
           </div>
 
-          <p className="mb-2 mt-4 px-1 text-xs font-bold text-ink/45">{items.length}項目</p>
+          <p className="mb-2 mt-4 px-1 text-xs font-bold text-ink/45">{items.length}テーマ</p>
           <div className="space-y-2">
             {items.map((item) => {
               const open = openId === item.id
               const isSaved = saved.includes(item.id)
-              const categoryMeta = KOTEN_GRAMMAR_CATEGORIES.find(
+              const categoryMeta = KOTEN_CULTURE_CATEGORIES.find(
                 (meta) => meta.id === item.category,
               )
+              const level = KOTEN_CULTURE_LEVELS[item.level]
               return (
                 <div key={item.id} className="overflow-hidden rounded-2xl bg-white shadow-sm">
                   <div className="flex items-center gap-2 p-3">
@@ -318,14 +329,15 @@ export function KotenGrammarScreen() {
                       <div className="flex flex-wrap items-center gap-2">
                         <span className="font-display text-sm font-extrabold text-ink">{item.title}</span>
                         {categoryMeta && <Chip color={categoryMeta.color}>{categoryMeta.label}</Chip>}
+                        {level && <Chip color={level.color}>{level.label}</Chip>}
                       </div>
-                      <p className="mt-1 text-xs font-bold text-ink/55">{item.meaning}</p>
+                      <p className="mt-1 text-xs font-bold text-ink/55">{item.core}</p>
                     </button>
                     <IconButton
                       onClick={() => toggleSaved(item.id)}
                       aria-label={isSaved ? `${item.title}を登録から外す` : `${item.title}を登録する`}
                       aria-pressed={isSaved}
-                      className={isSaved ? 'text-amber-600' : 'text-ink/25'}
+                      className={isSaved ? 'text-violet-600' : 'text-ink/25'}
                     >
                       {isSaved ? <BookmarkFilled size={20} /> : <Bookmark size={20} />}
                     </IconButton>
@@ -339,20 +351,30 @@ export function KotenGrammarScreen() {
                   </div>
 
                   {open && (
-                    <div className="space-y-3 border-t border-amber-100 bg-amber-50/60 p-4 animate-slide-up">
-                      <div>
-                        <p className="text-[10px] font-extrabold tracking-wide text-amber-600">活用・形</p>
-                        <p className="mt-1 text-sm font-bold leading-relaxed text-ink/75">{item.forms}</p>
-                      </div>
-                      <div>
-                        <p className="text-[10px] font-extrabold tracking-wide text-amber-600">接続</p>
-                        <p className="mt-1 text-sm font-bold leading-relaxed text-ink/75">{item.connection}</p>
-                      </div>
-                      <p className="text-sm font-bold leading-relaxed text-ink/65">{item.summary}</p>
+                    <div className="space-y-3 border-t border-violet-100 bg-violet-50/55 p-4 animate-slide-up">
+                      <p className="text-sm font-bold leading-relaxed text-ink/65">{item.detail}</p>
                       <div className="rounded-2xl bg-white p-3">
-                        <p className="font-serif font-bold text-ink">{item.example.ja}</p>
-                        <p className="mt-1 text-xs font-bold text-ink/50">{item.example.gendai}</p>
+                        <p className="text-[10px] font-extrabold tracking-wide text-violet-600">入試の読み方</p>
+                        <p className="mt-1 text-sm font-bold leading-relaxed text-ink/65">{item.examTip}</p>
                       </div>
+                      <div className="rounded-2xl bg-slate-50 p-3">
+                        <p className="font-serif font-bold leading-relaxed text-ink">{item.scene.text}</p>
+                        <p className="mt-1 text-xs font-bold leading-relaxed text-ink/45">{item.scene.note}</p>
+                      </div>
+                      {item.relatedInterpretationIds.length > 0 && (
+                        <button
+                          onClick={() =>
+                            navigate('kotenInterpretationPrep', {
+                              ids: pickKotenInterpretationIds(item.relatedInterpretationIds),
+                              title: `${item.title}が出る短文`,
+                            })
+                          }
+                          className="flex w-full items-center justify-between rounded-xl bg-amber-100 px-3 py-2.5 text-left text-xs font-extrabold text-amber-800"
+                        >
+                          関連する短文解釈へ
+                          <ArrowRight size={15} />
+                        </button>
+                      )}
                       <div className="grid grid-cols-2 gap-2">
                         <Button size="sm" onClick={() => study([item], item.title)}>
                           <Book size={15} /> 覚える
@@ -371,7 +393,7 @@ export function KotenGrammarScreen() {
           {!items.length && (
             <div className="rounded-3xl bg-white/60 px-6 py-10 text-center">
               <div className="text-4xl">🔎</div>
-              <p className="mt-2 font-bold text-ink/70">一致する文法がありません</p>
+              <p className="mt-2 font-bold text-ink/70">一致する古典常識がありません</p>
             </div>
           )}
         </section>

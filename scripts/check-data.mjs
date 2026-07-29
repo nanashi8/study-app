@@ -74,6 +74,22 @@ import {
   getKotenGrammar,
 } from '../src/data/koten-grammar.js'
 import {
+  KOTEN_GRAMMAR_FOUNDATION_QUESTIONS,
+  KOTEN_GRAMMAR_LEVELS,
+  KOTEN_GRAMMAR_QUESTIONS,
+  KOTEN_GRAMMAR_QUESTION_FORMATS,
+} from '../src/data/koten-grammar-questions.js'
+import {
+  KOTEN_CULTURE,
+  KOTEN_CULTURE_CATEGORIES,
+  KOTEN_CULTURE_CONTEXT_QUESTIONS,
+  KOTEN_CULTURE_FOUNDATION_QUESTIONS,
+  KOTEN_CULTURE_LEVELS,
+  KOTEN_CULTURE_QUESTIONS,
+  KOTEN_CULTURE_QUESTION_FORMATS,
+  getKotenCulture,
+} from '../src/data/koten-culture.js'
+import {
   KOTEN_INTERPRETATIONS,
   KOTEN_INTERPRETATION_FOCUS,
   KOTEN_INTERPRETATION_LEVELS,
@@ -364,8 +380,36 @@ for (const lesson of EXAM_GRAMMAR_LESSONS) {
 }
 
 // ── 長文：まとめ語彙・gloss の id が辞書解決できるか ──
+const readingPassageIds = new Set()
+const readingThemes = new Set()
+const readingEssentialWordMinimums = {
+  5: 10,
+  4: 15,
+  3: 20,
+  pre2: 20,
+  pre2plus: 20,
+  2: 24,
+  pre1: 25,
+  1: 30,
+}
+const readingAnswerPositionCounts = [0, 0, 0, 0]
 for (const ps of PASSAGES) {
+  if (!ps.id || readingPassageIds.has(ps.id)) errors.push(`長文 ${ps.id ?? '(id無し)'}: id 無し/重複`)
+  readingPassageIds.add(ps.id)
   if (!READING_LEVELS.has(ps.level)) errors.push(`長文 ${ps.id}: level が不正 (${ps.level})`)
+  if (!ps.theme || readingThemes.has(ps.theme)) {
+    errors.push(`長文 ${ps.id}: theme が無い、または他教材と重複 (${ps.theme ?? '未設定'})`)
+  }
+  readingThemes.add(ps.theme)
+  if (!Array.isArray(ps.examFocus) || ps.examFocus.length < 3) {
+    errors.push(`長文 ${ps.id}: 入試・英検の読解ポイントが3件未満`)
+  }
+  if (ps.vocab.length < (readingEssentialWordMinimums[ps.level] ?? 10)) {
+    errors.push(
+      `長文 ${ps.id}: テーマ必須語彙が${ps.vocab.length}語` +
+      `（最低${readingEssentialWordMinimums[ps.level] ?? 10}語）`,
+    )
+  }
   for (const id of ps.vocab) if (!getWord(id)) errors.push(`長文 ${ps.id}: vocab ${id} が辞書に無い`)
   const study = READING_STUDY[ps.id]
   if (!study) {
@@ -448,12 +492,22 @@ for (const ps of PASSAGES) {
     if (!q.q || !q.explain) errors.push(`${at}: q/explain 不足`)
     if (!Array.isArray(q.choices) || q.choices.length < 3) errors.push(`${at}: choices は3件以上必要`)
     if (!q.choices?.includes(q.answer)) errors.push(`${at}: answer が choices に無い`)
+    const answerPosition = q.choices?.indexOf(q.answer) ?? -1
+    if (answerPosition >= 0) readingAnswerPositionCounts[answerPosition] += 1
+  }
+  const answerPositions = questions.map((question) => question.choices.indexOf(question.answer))
+  if (questions.length > 1 && new Set(answerPositions).size < 2) {
+    errors.push(`長文 ${ps.id}: 正解位置が1か所に固定`)
   }
 }
 for (const level of READING_LEVELS) {
-  if (!PASSAGES.some((passage) => passage.level === level)) {
-    errors.push(`長文: 英検${level}級の教材が無い`)
+  const count = PASSAGES.filter((passage) => passage.level === level).length
+  if (count < 2) {
+    errors.push(`長文: 英検${level}級の教材が${count}題（最低2題）`)
   }
+}
+for (const [position, count] of readingAnswerPositionCounts.entries()) {
+  if (count < 10) errors.push(`長文: 正解位置${position + 1}が${count}問（最低10問）`)
 }
 
 // ── 文法：空所・正解・完成文の整合性 ──
@@ -600,6 +654,9 @@ for (const [key, count] of grammarTopicCounts) {
 // ── 古典：文法登録項目と「単語・文法・常識」短文解釈の参照整合性 ──
 const kotenGrammarCategories = new Set(KOTEN_GRAMMAR_CATEGORIES.map((item) => item.id))
 const kotenGrammarIds = new Set()
+if (KOTEN_GRAMMAR.length < 70) {
+  errors.push(`古典文法: 70項目未満 (${KOTEN_GRAMMAR.length}項目)`)
+}
 for (const item of KOTEN_GRAMMAR) {
   const at = `古典文法 ${item.id ?? '(id無し)'}`
   if (!item.id || kotenGrammarIds.has(item.id)) errors.push(`${at}: id 無し/重複`)
@@ -615,6 +672,172 @@ for (const item of KOTEN_GRAMMAR) {
     !item.example?.gendai
   ) {
     errors.push(`${at}: title/forms/connection/meaning/summary/example が不足`)
+  }
+}
+
+const kotenGrammarQuestionIds = new Set()
+const kotenGrammarQuestionLevels = new Set(Object.keys(KOTEN_GRAMMAR_LEVELS))
+const kotenGrammarQuestionFormats = new Set(Object.keys(KOTEN_GRAMMAR_QUESTION_FORMATS))
+if (KOTEN_GRAMMAR_QUESTIONS.length < 120) {
+  errors.push(`古典文法問題: 120問未満 (${KOTEN_GRAMMAR_QUESTIONS.length}問)`)
+}
+for (const item of KOTEN_GRAMMAR_QUESTIONS) {
+  const at = `古典文法問題 ${item.id ?? '(id無し)'}`
+  if (!item.id || kotenGrammarQuestionIds.has(item.id)) errors.push(`${at}: id 無し/重複`)
+  kotenGrammarQuestionIds.add(item.id)
+  if (!kotenGrammarCategories.has(item.category)) {
+    errors.push(`${at}: category が不正 (${item.category})`)
+  }
+  if (!kotenGrammarQuestionLevels.has(item.level)) {
+    errors.push(`${at}: level が不正 (${item.level})`)
+  }
+  if (!kotenGrammarQuestionFormats.has(item.format)) {
+    errors.push(`${at}: format が不正 (${item.format})`)
+  }
+  if (!['context', 'foundation'].includes(item.style)) {
+    errors.push(`${at}: style が不正 (${item.style})`)
+  }
+  if (
+    !item.source ||
+    !item.passage ||
+    !item.target ||
+    !item.question ||
+    !item.explanation
+  ) {
+    errors.push(`${at}: source/passage/target/question/explanation が不足`)
+  }
+  if (!Array.isArray(item.choices) || item.choices.length !== 4) {
+    errors.push(`${at}: choices は4件必要`)
+  } else if (new Set(item.choices).size !== item.choices.length) {
+    errors.push(`${at}: choices に重複あり`)
+  }
+  if (!item.choices?.includes(item.answer)) errors.push(`${at}: answer が choices に無い`)
+  if (!Array.isArray(item.grammarIds) || !item.grammarIds.length) {
+    errors.push(`${at}: grammarIds が無い`)
+  }
+  for (const grammarId of item.grammarIds ?? []) {
+    if (!getKotenGrammar(grammarId)) errors.push(`${at}: 古典文法 ${grammarId} が存在しない`)
+  }
+  if (item.grammarIds?.[0] && getKotenGrammar(item.grammarIds[0])?.category !== item.category) {
+    errors.push(`${at}: primary grammar と category が不一致`)
+  }
+}
+const foundationGrammarIds = new Set(
+  KOTEN_GRAMMAR_FOUNDATION_QUESTIONS.flatMap((item) => item.grammarIds),
+)
+for (const grammarId of kotenGrammarIds) {
+  if (!foundationGrammarIds.has(grammarId)) {
+    errors.push(`古典文法 ${grammarId}: 基礎問題が無い`)
+  }
+}
+for (const categoryId of kotenGrammarCategories) {
+  if (
+    !KOTEN_GRAMMAR_QUESTIONS.some(
+      (item) => item.category === categoryId && item.style === 'context',
+    )
+  ) {
+    errors.push(`古典文法 ${categoryId}: 文脈型問題が無い`)
+  }
+}
+
+// ── 古典常識：テーマ・基礎問題・文脈問題・短文への導線を全件検査 ──
+const kotenCultureCategories = new Set(KOTEN_CULTURE_CATEGORIES.map((item) => item.id))
+const kotenCultureLevels = new Set(Object.keys(KOTEN_CULTURE_LEVELS))
+const kotenCultureFormats = new Set(Object.keys(KOTEN_CULTURE_QUESTION_FORMATS))
+const kotenCultureIds = new Set()
+const knownInterpretationIds = new Set(KOTEN_INTERPRETATIONS.map((item) => item.id))
+if (KOTEN_CULTURE.length < 50) {
+  errors.push(`古典常識: 50テーマ未満 (${KOTEN_CULTURE.length}テーマ)`)
+}
+if (KOTEN_CULTURE_CATEGORIES.length < 6) {
+  errors.push(`古典常識: 6分野未満 (${KOTEN_CULTURE_CATEGORIES.length}分野)`)
+}
+for (const item of KOTEN_CULTURE) {
+  const at = `古典常識 ${item.id ?? '(id無し)'}`
+  if (!item.id || kotenCultureIds.has(item.id)) errors.push(`${at}: id 無し/重複`)
+  kotenCultureIds.add(item.id)
+  if (!kotenCultureCategories.has(item.category)) {
+    errors.push(`${at}: category が不正 (${item.category})`)
+  }
+  if (!kotenCultureLevels.has(item.level)) errors.push(`${at}: level が不正 (${item.level})`)
+  if (
+    !item.title ||
+    !item.keyword ||
+    !item.prompt ||
+    !item.core ||
+    !item.detail ||
+    !item.examTip ||
+    !item.scene?.text ||
+    !item.scene?.note
+  ) {
+    errors.push(`${at}: title/keyword/prompt/core/detail/examTip/scene が不足`)
+  }
+  if (!Array.isArray(item.relatedInterpretationIds)) {
+    errors.push(`${at}: relatedInterpretationIds が配列でない`)
+  }
+  for (const interpretationId of item.relatedInterpretationIds ?? []) {
+    if (!knownInterpretationIds.has(interpretationId)) {
+      errors.push(`${at}: 古典短文 ${interpretationId} が存在しない`)
+    }
+  }
+  if (
+    !item.exam?.format ||
+    !item.exam?.passage ||
+    !item.exam?.question ||
+    !item.exam?.explanation
+  ) {
+    errors.push(`${at}: 文脈問題データが不足`)
+  }
+}
+
+const kotenCultureQuestionIds = new Set()
+if (KOTEN_CULTURE_QUESTIONS.length < 100) {
+  errors.push(`古典常識問題: 100問未満 (${KOTEN_CULTURE_QUESTIONS.length}問)`)
+}
+for (const item of KOTEN_CULTURE_QUESTIONS) {
+  const at = `古典常識問題 ${item.id ?? '(id無し)'}`
+  if (!item.id || kotenCultureQuestionIds.has(item.id)) errors.push(`${at}: id 無し/重複`)
+  kotenCultureQuestionIds.add(item.id)
+  if (!kotenCultureCategories.has(item.category)) {
+    errors.push(`${at}: category が不正 (${item.category})`)
+  }
+  if (!kotenCultureLevels.has(item.level)) errors.push(`${at}: level が不正 (${item.level})`)
+  if (!kotenCultureFormats.has(item.format)) errors.push(`${at}: format が不正 (${item.format})`)
+  if (!['context', 'foundation'].includes(item.style)) {
+    errors.push(`${at}: style が不正 (${item.style})`)
+  }
+  if (!item.source || !item.passage || !item.target || !item.question || !item.explanation) {
+    errors.push(`${at}: source/passage/target/question/explanation が不足`)
+  }
+  if (!Array.isArray(item.choices) || item.choices.length !== 4) {
+    errors.push(`${at}: choices は4件必要`)
+  } else if (new Set(item.choices).size !== item.choices.length) {
+    errors.push(`${at}: choices に重複あり`)
+  }
+  if (!item.choices?.includes(item.answer)) errors.push(`${at}: answer が choices に無い`)
+  if (!Array.isArray(item.cultureIds) || !item.cultureIds.length) {
+    errors.push(`${at}: cultureIds が無い`)
+  }
+  for (const cultureId of item.cultureIds ?? []) {
+    if (!getKotenCulture(cultureId)) errors.push(`${at}: 古典常識 ${cultureId} が存在しない`)
+  }
+  if (item.cultureIds?.[0] && getKotenCulture(item.cultureIds[0])?.category !== item.category) {
+    errors.push(`${at}: primary culture と category が不一致`)
+  }
+}
+const foundationCultureIds = new Set(
+  KOTEN_CULTURE_FOUNDATION_QUESTIONS.flatMap((item) => item.cultureIds),
+)
+const contextCultureIds = new Set(
+  KOTEN_CULTURE_CONTEXT_QUESTIONS.flatMap((item) => item.cultureIds),
+)
+for (const cultureId of kotenCultureIds) {
+  if (!foundationCultureIds.has(cultureId)) errors.push(`古典常識 ${cultureId}: 基礎問題が無い`)
+  if (!contextCultureIds.has(cultureId)) errors.push(`古典常識 ${cultureId}: 文脈問題が無い`)
+}
+for (const categoryId of kotenCultureCategories) {
+  if (!KOTEN_CULTURE_CONTEXT_QUESTIONS.some((item) => item.category === categoryId)) {
+    errors.push(`古典常識 ${categoryId}: 文脈型問題が無い`)
   }
 }
 
@@ -893,4 +1116,4 @@ if (errors.length) {
   process.exit(1)
 }
 
-console.log(`✅ データ検証OK: ${ALL_WORDS.length}英単語 / ${EXAM_USAGE_GUIDES.length}使い分けガイド / ${PHRASES.length}熟語・構文 / ${GRAMMAR.length}英文法 / ${GRAMMAR_LESSONS.length}文法解説 / ${PASSAGES.length}長文 / ${DICTATION_ITEMS.length}ディクテーション / ${LISTENING_ITEMS.length}リスニング / ${KOTEN_WORDS.length}古典単語 / ${KOTEN_GRAMMAR.length}古典文法 / ${KOTEN_INTERPRETATIONS.length}古典短文 — 全て必須項目を満たす`)
+console.log(`✅ データ検証OK: ${ALL_WORDS.length}英単語 / ${EXAM_USAGE_GUIDES.length}使い分けガイド / ${PHRASES.length}熟語・構文 / ${GRAMMAR.length}英文法 / ${GRAMMAR_LESSONS.length}文法解説 / ${PASSAGES.length}長文 / ${DICTATION_ITEMS.length}ディクテーション / ${LISTENING_ITEMS.length}リスニング / ${KOTEN_WORDS.length}古典単語 / ${KOTEN_GRAMMAR.length}古典文法 / ${KOTEN_GRAMMAR_QUESTIONS.length}古典文法問題 / ${KOTEN_CULTURE.length}古典常識 / ${KOTEN_CULTURE_QUESTIONS.length}古典常識問題 / ${KOTEN_INTERPRETATIONS.length}古典短文 — 全て必須項目を満たす`)

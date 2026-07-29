@@ -77,6 +77,23 @@ const KotenInterpretationQuizScreen = lazyScreen(
   'KotenInterpretationQuizScreen',
 )
 const KotenGrammarScreen = lazyScreen(() => import('./screens/KotenGrammar.jsx'), 'KotenGrammarScreen')
+const KotenGrammarStudyScreen = lazyScreen(
+  () => import('./screens/KotenGrammarStudy.jsx'),
+  'KotenGrammarStudyScreen',
+)
+const KotenGrammarQuizScreen = lazyScreen(
+  () => import('./screens/KotenGrammarQuiz.jsx'),
+  'KotenGrammarQuizScreen',
+)
+const KotenCultureScreen = lazyScreen(() => import('./screens/KotenCulture.jsx'), 'KotenCultureScreen')
+const KotenCultureStudyScreen = lazyScreen(
+  () => import('./screens/KotenCultureStudy.jsx'),
+  'KotenCultureStudyScreen',
+)
+const KotenCultureQuizScreen = lazyScreen(
+  () => import('./screens/KotenCultureQuiz.jsx'),
+  'KotenCultureQuizScreen',
+)
 const KotenSavedScreen = lazyScreen(() => import('./screens/KotenSaved.jsx'), 'KotenSavedScreen')
 
 const SCREENS = {
@@ -132,6 +149,11 @@ const SCREENS = {
   kotenInterpretationPrep: KotenInterpretationPrepScreen,
   kotenInterpretationQuiz: KotenInterpretationQuizScreen,
   kotenGrammar: KotenGrammarScreen,
+  kotenGrammarStudy: KotenGrammarStudyScreen,
+  kotenGrammarQuiz: KotenGrammarQuizScreen,
+  kotenCulture: KotenCultureScreen,
+  kotenCultureStudy: KotenCultureStudyScreen,
+  kotenCultureQuiz: KotenCultureQuizScreen,
   kotenSaved: KotenSavedScreen,
 }
 
@@ -148,7 +170,8 @@ const IMMERSIVE = new Set([
   'vocabSearch', 'wordRequests', 'mathMap', 'mathUnits',
   'kotenList', 'kotenStudy', 'kotenQuiz', 'kotenInterpretationList',
   'kotenInterpretationPrep', 'kotenInterpretationQuiz',
-  'kotenGrammar', 'kotenSaved',
+  'kotenGrammar', 'kotenGrammarStudy', 'kotenGrammarQuiz', 'kotenSaved',
+  'kotenCulture', 'kotenCultureStudy', 'kotenCultureQuiz',
 ])
 
 // 学習アプリ本体（ログイン済みのときだけ表示）。

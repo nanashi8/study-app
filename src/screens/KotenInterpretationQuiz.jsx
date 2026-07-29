@@ -49,6 +49,7 @@ function SaveButton({ saved, onClick, label }) {
 
 export function KotenInterpretationQuizScreen() {
   const params = useStore((state) => state.params)
+  const navigate = useStore((state) => state.navigate)
   const back = useStore((state) => state.back)
   const review = useStore((state) => state.reviewKotenInterpretation)
   const wordList = useStore((state) => state.kotenWordList)
@@ -258,6 +259,13 @@ export function KotenInterpretationQuizScreen() {
               <p className="mt-2 text-sm font-bold leading-relaxed text-purple-950/70">
                 {item.culture.body}
               </p>
+              <button
+                onClick={() => navigate('kotenCulture')}
+                className="mt-3 flex w-full items-center justify-between rounded-xl bg-white px-3 py-2.5 text-xs font-extrabold text-purple-800"
+              >
+                古典常識で覚え直す
+                <ArrowRight size={15} />
+              </button>
             </div>
           </div>
         )}

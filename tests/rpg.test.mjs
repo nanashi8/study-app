@@ -1,5 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
 
 import { battleProgression, battleTrend } from '../src/lib/adaptive.js'
 import {
@@ -9,7 +10,9 @@ import {
   MAX_HERO_LEVEL,
   MAX_LEVEL_XP,
   MOB_PROFILES,
+  RELICS,
   battleQuest,
+  battleRelicForLevel,
   battleSceneCue,
   battleTactic,
   battleVerdict,
@@ -24,6 +27,7 @@ import {
   maxEnemyRankIndexForHeroLevel,
   mobProfile,
   nextEnemyRankUnlockForHeroLevel,
+  relicBattleAbility,
   resolveBattleState,
   xpAtLevel,
   xpNeededForNextLevel,
@@ -87,6 +91,33 @@ test('獲得した戦利品に合わせて主人公の装備外見が変わる',
   assert.equal(heroEquipmentForLevel(89).offhand.name, '星読みの地図')
   assert.equal(heroEquipmentForLevel(90).offhand.name, '守護者の盾')
   assert.equal(heroEquipmentForLevel(99).head.name, 'ことばの王冠')
+})
+
+test('取得済み戦利品から持ち込みアイテムと効果を選べる', () => {
+  assert.equal(battleRelicForLevel(4, 5).name, '旅人のしおり')
+  assert.equal(battleRelicForLevel(15, 1).name, '旅人のしおり')
+  assert.equal(battleRelicForLevel(15, 15).name, '反復の小瓶')
+  assert.equal(battleRelicForLevel(15, null).name, '反復の小瓶')
+
+  assert.equal(relicBattleAbility(battleRelicForLevel(1, 1)).kind, 'heal')
+  assert.equal(relicBattleAbility(battleRelicForLevel(5, 5)).kind, 'power')
+  assert.equal(relicBattleAbility(battleRelicForLevel(15, 15)).kind, 'guard')
+})
+
+test('全21戦利品を取得LVから選べ、アクティブ効果に未対応品がない', () => {
+  const kindCounts = { heal: 0, power: 0, guard: 0 }
+
+  assert.equal(RELICS.length, 21)
+  for (const relic of RELICS) {
+    assert.equal(battleRelicForLevel(relic.level, relic.level), relic)
+    const ability = relicBattleAbility(relic)
+    assert.ok(ability.description)
+    assert.ok(ability.short)
+    assert.ok(ability.kind in kindCounts)
+    kindCounts[ability.kind] += 1
+  }
+
+  assert.deepEqual(kindCounts, { heal: 6, power: 9, guard: 6 })
 })
 
 test('章ボスは各章の最終LVに固定される', () => {
@@ -183,6 +214,64 @@ test('戦闘イベントはミニ戦場の攻撃方向と表示へ変換でき�
   assert.equal(battleSceneCue('not-registered').label, 'YOUR TURN')
 })
 
+test('バトル画面は共通クイズ進捗を重ねずHUDのターン表示へ一本化する', () => {
+  const source = readFileSync(
+    new URL('../src/screens/VocabQuiz.jsx', import.meta.url),
+    'utf8',
+  )
+  const standardStart = source.indexOf('{!isBattle && (')
+  const battleStart = source.indexOf('{isBattle && (', standardStart)
+  const questionStart = source.indexOf('{/* 出題語 */}', battleStart)
+
+  assert.ok(standardStart >= 0)
+  assert.ok(battleStart > standardStart)
+  assert.ok(questionStart > battleStart)
+
+  const standardHeader = source.slice(standardStart, battleStart)
+  const battleHeader = source.slice(battleStart, questionStart)
+  assert.match(standardHeader, /<ProgressBar\b/)
+  assert.match(battleHeader, /<BattleHud\b/)
+  assert.doesNotMatch(battleHeader, /<ProgressBar\b/)
+  assert.match(battleHeader, /onExit=\{back\}/)
+  assert.match(source, /aria-label="バトルをやめる"/)
+})
+
+test('バトル中は出題カードと4つの回答をコンパクト表示する', () => {
+  const source = readFileSync(
+    new URL('../src/screens/VocabQuiz.jsx', import.meta.url),
+    'utf8',
+  )
+
+  assert.match(source, /isBattle && 'battle-quiz-screen'/)
+  assert.match(source, /isBattle \? 'mt-2 grid grid-cols-2 gap-2'/)
+  assert.match(source, /min-h-12 rounded-xl/)
+  assert.match(source, /className=\{isBattle \? 'min-h-12 py-2 leading-snug'/)
+  assert.match(source, /<Button full size="md" disabled=\{!answered\}/)
+  assert.match(source, /<Button full size="lg" disabled=\{!answered\}/)
+})
+
+test('取得アイテムを選択し、バトルで1回使い、戦果で確認できる', () => {
+  const mapSource = readFileSync(
+    new URL('../src/screens/EnglishMap.jsx', import.meta.url),
+    'utf8',
+  )
+  const quizSource = readFileSync(
+    new URL('../src/screens/VocabQuiz.jsx', import.meta.url),
+    'utf8',
+  )
+  const resultSource = readFileSync(
+    new URL('../src/screens/SessionResult.jsx', import.meta.url),
+    'utf8',
+  )
+
+  assert.match(mapSource, /<BattleItemPicker\b/)
+  assert.match(mapSource, /onRelic=\{setBattleRelicLevel\}/)
+  assert.match(mapSource, /1バトル1回/)
+  assert.match(quizSource, /onClick=\{useBattleItem\}/)
+  assert.match(quizSource, /battleState\.itemUsed/)
+  assert.match(resultSource, /battleReport\.itemSummary/)
+})
+
 test('連撃の型は3連続正解ごとに奥義を発動する', () => {
   const state = resolveBattleState({
     answers: ['correct', 'correct', 'correct', 'wrong', 'correct'],
@@ -235,6 +324,73 @@ test('作戦を変えても同じ正誤なら敵HPと学習評価は変わらな
   assert.deepEqual(states.map((state) => state.correct), [3, 3, 3])
   assert.deepEqual(states.map((state) => state.misses), [2, 2, 2])
   assert.deepEqual(states.map((state) => state.enemyHp), [40, 40, 40])
+})
+
+test('攻撃アイテムは次の正解まで待機し、実ダメージだけを強化する', () => {
+  const answers = ['wrong', 'correct']
+  const normal = resolveBattleState({
+    answers,
+    total: 5,
+    tacticId: 'guard',
+    heroLevel: 5,
+  })
+  const boosted = resolveBattleState({
+    answers,
+    total: 5,
+    tacticId: 'guard',
+    heroLevel: 5,
+    relicLevel: 5,
+    itemUsedAt: 0,
+  })
+
+  assert.equal(boosted.lastEvent.kind, 'item-power')
+  assert.equal(boosted.itemTriggered, true)
+  assert.ok(boosted.itemBonusDamage > 0)
+  assert.ok(boosted.damageDealt > normal.damageDealt)
+  assert.equal(boosted.correct, normal.correct)
+  assert.equal(boosted.misses, normal.misses)
+  assert.equal(boosted.enemyHp, normal.enemyHp)
+})
+
+test('防御アイテムは正解中も待機し、次の反撃を1回だけ防ぐ', () => {
+  const state = resolveBattleState({
+    answers: ['correct', 'wrong', 'wrong'],
+    total: 5,
+    tacticId: 'combo',
+    heroLevel: 15,
+    relicLevel: 15,
+    itemUsedAt: 0,
+  })
+
+  assert.equal(state.itemBlocked, 1)
+  assert.equal(state.itemTriggered, true)
+  assert.equal(state.damageTaken, state.enemyStats.normalDamage)
+  assert.equal(state.correct, 1)
+  assert.equal(state.misses, 2)
+})
+
+test('HPアイテムは回答後でも次ターン前に1回だけ回復できる', () => {
+  const damaged = resolveBattleState({
+    answers: ['wrong'],
+    total: 5,
+    tacticId: 'combo',
+    heroLevel: 1,
+  })
+  const healed = resolveBattleState({
+    answers: ['wrong'],
+    total: 5,
+    tacticId: 'combo',
+    heroLevel: 1,
+    relicLevel: 1,
+    itemUsedAt: 1,
+  })
+
+  assert.equal(healed.itemUsed, true)
+  assert.equal(healed.itemTriggered, true)
+  assert.equal(healed.itemHealing, 14)
+  assert.equal(healed.heroCurrentHp, damaged.heroCurrentHp + healed.itemHealing)
+  assert.equal(healed.correct, damaged.correct)
+  assert.equal(healed.misses, damaged.misses)
 })
 
 test('高LVほど一撃の実ダメージが増えても学習上の討伐条件は変わらない', () => {

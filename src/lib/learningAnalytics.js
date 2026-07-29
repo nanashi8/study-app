@@ -21,6 +21,8 @@ export const LEARNING_SKILLS = {
   pronunciation: { label: '発音', emoji: '🗣️', color: '#f43f5e' },
   writing: { label: '英作文', emoji: '✍️', color: '#d946ef' },
   koten: { label: '古典単語', emoji: '📜', color: '#a16207' },
+  koten_grammar: { label: '古典文法', emoji: '🪶', color: '#d97706' },
+  koten_culture: { label: '古典常識', emoji: '🏯', color: '#7c3aed' },
   koten_reading: { label: '古典読解', emoji: '🏯', color: '#b45309' },
   math: { label: '数学', emoji: '📐', color: '#7c3aed' },
 }

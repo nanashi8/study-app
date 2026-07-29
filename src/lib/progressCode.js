@@ -16,12 +16,15 @@ export function buildPayload(state) {
     v: CODE_VERSION,
     srs: state.srs,
     kotenSrs: state.kotenSrs,
+    kotenGrammarSrs: state.kotenGrammarSrs,
+    kotenCultureSrs: state.kotenCultureSrs,
     kotenInterpretationSrs: state.kotenInterpretationSrs,
     myList: state.myList,
     myGrammarList: state.myGrammarList,
     writingProgress: state.writingProgress,
     kotenWordList: state.kotenWordList,
     kotenGrammarList: state.kotenGrammarList,
+    kotenCultureList: state.kotenCultureList,
     readingsDone: state.readingsDone,
     mathDone: state.mathDone,
     mathMastery: state.mathMastery,
@@ -31,6 +34,7 @@ export function buildPayload(state) {
     diagnosticAttempt: state.diagnosticAttempt,
     diagnosticSeed: state.diagnosticSeed,
     engPos: state.engPos,
+    battleRelicLevel: state.battleRelicLevel,
     portalOrder: state.portalOrder,
     portalHidden: state.portalHidden,
     stats: state.stats,
@@ -68,6 +72,8 @@ export function decodeProgress(code) {
   const recordFields = [
     'srs',
     'kotenSrs',
+    'kotenGrammarSrs',
+    'kotenCultureSrs',
     'kotenInterpretationSrs',
     'mathMastery',
     'skillStats',
@@ -81,6 +87,7 @@ export function decodeProgress(code) {
     'myGrammarList',
     'kotenWordList',
     'kotenGrammarList',
+    'kotenCultureList',
     'readingsDone',
     'mathDone',
     'diagnosticHistory',
@@ -99,6 +106,17 @@ export function decodeProgress(code) {
   }
   if ('engPos' in payload && payload.engPos !== null && !Number.isFinite(payload.engPos)) {
     throw new Error('コードの engPos が不正です。')
+  }
+  if (
+    'battleRelicLevel' in payload
+    && payload.battleRelicLevel !== null
+    && (
+      !Number.isSafeInteger(payload.battleRelicLevel)
+      || payload.battleRelicLevel < 1
+      || payload.battleRelicLevel > 99
+    )
+  ) {
+    throw new Error('コードの battleRelicLevel が不正です。')
   }
   if (
     'diagnosticAttempt' in payload

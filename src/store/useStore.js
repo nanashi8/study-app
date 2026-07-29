@@ -74,12 +74,15 @@ const DEFAULT_SETTINGS = {
 const initialLearning = () => ({
   srs: {}, // wordId -> { box, correct, wrong, due, last }
   kotenSrs: {}, // 古文単語の wordId -> { box, ... }（英単語と別管理。idが衝突しないよう分離）
+  kotenGrammarSrs: {}, // 古典文法の grammarId -> { box, ... }
+  kotenCultureSrs: {}, // 古典常識の cultureId -> { box, ... }
   kotenInterpretationSrs: {}, // 古典短文の questionId -> { box, ... }
   myList: [], // [wordId]
   myGrammarList: [], // [writingGrammarId] 英作文で保存した文法カード
   writingProgress: {}, // exerciseId -> { completed, lastText, lastMode, lastDay, bestWords, grammarIds }
   kotenWordList: [], // [古文単語id] 登録単語
   kotenGrammarList: [], // [古典文法id] 登録文法
+  kotenCultureList: [], // [古典常識id] 登録常識
   readingsDone: [], // [passageId] 読了した長文
   mathDone: [], // [problemId] クリアした数学問題
   mathMastery: {}, // unitId -> 最高正答率(0-100) ＝ 理解度
@@ -89,6 +92,7 @@ const initialLearning = () => ({
   diagnosticAttempt: 0, // 学習診断を開始した回数。問題候補を重複なしで順送りする
   diagnosticSeed: null, // 端末ごとの問題候補の並びを再現する符号なし32bit整数
   engPos: null, // 適応バトルの現在ポジション(0=5級…6=1級, 小数可)。null=未配置（初回に推定）
+  battleRelicLevel: null, // バトルへ持ち込む取得済み戦利品の解放LV。nullは最新を自動選択
   portalOrder: [...DEFAULT_CONTENT_ORDER], // ポータルのタイル並び順（コンテンツid配列）
   portalHidden: [], // ポータルで非表示にしたコンテンツid
   stats: freshStats(),
@@ -242,6 +246,62 @@ export const useStore = create(
           }
         }),
 
+      // 古典文法も「覚える→腕試し」を同じLeitner間隔でつなぐ。
+      reviewKotenGrammar: (grammarId, result) =>
+        set((st) => {
+          const timestamp = Date.now()
+          const { srs, stats, reviewMeta } = applyReview(
+            st.kotenGrammarSrs,
+            st.stats,
+            grammarId,
+            result,
+            timestamp,
+          )
+          return {
+            kotenGrammarSrs: srs,
+            stats,
+            learningAnalytics: recordLearningEvent(
+              st.learningAnalytics,
+              {
+                skill: 'koten_grammar',
+                inputs: 1,
+                scored: 1,
+                correct: result === 'correct' || result === 'remembered' ? 1 : 0,
+                ...reviewMeta,
+              },
+              timestamp,
+            ),
+          }
+        }),
+
+      // 古典常識も本文で思い出せるよう、暗記と入試型問題を同じSRSでつなぐ。
+      reviewKotenCulture: (cultureId, result) =>
+        set((st) => {
+          const timestamp = Date.now()
+          const { srs, stats, reviewMeta } = applyReview(
+            st.kotenCultureSrs,
+            st.stats,
+            cultureId,
+            result,
+            timestamp,
+          )
+          return {
+            kotenCultureSrs: srs,
+            stats,
+            learningAnalytics: recordLearningEvent(
+              st.learningAnalytics,
+              {
+                skill: 'koten_culture',
+                inputs: 1,
+                scored: 1,
+                correct: result === 'correct' || result === 'remembered' ? 1 : 0,
+                ...reviewMeta,
+              },
+              timestamp,
+            ),
+          }
+        }),
+
       // 古典短文解釈も、問題ごとに同じ間隔反復で復習時期を管理する。
       reviewKotenInterpretation: (questionId, result) =>
         set((st) => {
@@ -373,6 +433,21 @@ export const useStore = create(
           ],
         })),
 
+      toggleKotenCultureList: (cultureId) =>
+        set((st) => ({
+          kotenCultureList: st.kotenCultureList.includes(cultureId)
+            ? st.kotenCultureList.filter((id) => id !== cultureId)
+            : [...st.kotenCultureList, cultureId],
+        })),
+
+      addManyToKotenCultureList: (ids) =>
+        set((st) => ({
+          kotenCultureList: [
+            ...st.kotenCultureList,
+            ...ids.filter((id) => !st.kotenCultureList.includes(id)),
+          ],
+        })),
+
       markReadingDone: (id) =>
         set((st) =>
           st.readingsDone.includes(id) ? {} : { readingsDone: [...st.readingsDone, id] },
@@ -485,6 +560,13 @@ export const useStore = create(
       // ── 適応バトル（学習マップ）：ポジション＝立ち位置、敵LV＝出題級 ──
       // 明示的にポジションを設定（初回配置や復元時）。
       setEngPos: (pos) => set({ engPos: clampPos(pos) }),
+      setBattleRelicLevel: (level) =>
+        set({
+          battleRelicLevel:
+            Number.isSafeInteger(level) && level >= 1 && level <= 99
+              ? level
+              : null,
+        }),
       // バトルの正答率(0-1)で生徒のポジションを上下させる。
       // fromPos / maxPos を渡すと、冒険者LVで解放済みの範囲内だけを移動する。
       recordBattle: (accuracy, fromPos = null, maxPos = null) =>
@@ -557,12 +639,15 @@ export const useStore = create(
         set({
           srs: payload.srs ?? {},
           kotenSrs: payload.kotenSrs ?? {},
+          kotenGrammarSrs: payload.kotenGrammarSrs ?? {},
+          kotenCultureSrs: payload.kotenCultureSrs ?? {},
           kotenInterpretationSrs: payload.kotenInterpretationSrs ?? {},
           myList: payload.myList ?? [],
           myGrammarList: payload.myGrammarList ?? [],
           writingProgress: payload.writingProgress ?? {},
           kotenWordList: payload.kotenWordList ?? [],
           kotenGrammarList: payload.kotenGrammarList ?? [],
+          kotenCultureList: payload.kotenCultureList ?? [],
           readingsDone: payload.readingsDone ?? [],
           mathDone: payload.mathDone ?? [],
           mathMastery: payload.mathMastery ?? {},
@@ -572,6 +657,7 @@ export const useStore = create(
           diagnosticAttempt: payload.diagnosticAttempt ?? 0,
           diagnosticSeed: payload.diagnosticSeed ?? null,
           engPos: payload.engPos ?? null,
+          battleRelicLevel: payload.battleRelicLevel ?? null,
           portalOrder: normalizeOrder(payload.portalOrder),
           portalHidden: normalizeHidden(payload.portalHidden),
           stats: { ...freshStats(), ...(payload.stats ?? {}) },
@@ -595,12 +681,15 @@ export const useStore = create(
       partialize: (st) => ({
         srs: st.srs,
         kotenSrs: st.kotenSrs,
+        kotenGrammarSrs: st.kotenGrammarSrs,
+        kotenCultureSrs: st.kotenCultureSrs,
         kotenInterpretationSrs: st.kotenInterpretationSrs,
         myList: st.myList,
         myGrammarList: st.myGrammarList,
         writingProgress: st.writingProgress,
         kotenWordList: st.kotenWordList,
         kotenGrammarList: st.kotenGrammarList,
+        kotenCultureList: st.kotenCultureList,
         readingsDone: st.readingsDone,
         mathDone: st.mathDone,
         mathMastery: st.mathMastery,
@@ -610,6 +699,7 @@ export const useStore = create(
         diagnosticAttempt: st.diagnosticAttempt,
         diagnosticSeed: st.diagnosticSeed,
         engPos: st.engPos,
+        battleRelicLevel: st.battleRelicLevel,
         portalOrder: st.portalOrder,
         portalHidden: st.portalHidden,
         stats: st.stats,
