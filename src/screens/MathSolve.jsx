@@ -5,10 +5,16 @@ import { shuffle } from '../data/vocab.js'
 import { MathBlock, MathText } from '../components/MathText.jsx'
 import { MathFillIn, resolveFill } from '../components/MathFillIn.jsx'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
+import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
 import { Button, ProgressBar, IconButton } from '../components/ui.jsx'
 import { cx } from '../components/ui.jsx'
 import { Close, Check, ArrowRight, Lightbulb, Target } from '../components/Icons.jsx'
 import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
+import {
+  buildMathChoiceInstructorExplanation,
+  buildMathFillInstructorExplanation,
+  buildMathSolvedInstructorExplanation,
+} from '../lib/instructorExplanations.js'
 
 // 誘導型の数学ソルバー。1問を「確認 → 穴埋め → 答え」で解き進める。
 //  ① recall  … 着眼点・公式を思い出し、方針を3択で確認
@@ -190,7 +196,13 @@ export function MathSolveScreen() {
           <>
             <RecallCard recall={p.recall} />
             {quiz && (
-              <Question q={quiz} badge="方針" explain={quiz.why} sel={sel} onChoose={chooseOption} />
+              <Question
+                problem={p}
+                q={quiz}
+                badge="方針"
+                sel={sel}
+                onChoose={chooseOption}
+              />
             )}
           </>
         )}
@@ -203,10 +215,20 @@ export function MathSolveScreen() {
                 fill={step.fill} bank={bank} placed={placed} result={fillResult}
                 onAdd={addTile} onRemove={removeSlot} onClear={clearTiles}
               />
-              {fillResult && <ExplainCard correct={fillResult.correct} text={step.note} />}
+              {fillResult && (
+                <InstructorExplanation
+                  explanation={buildMathFillInstructorExplanation(
+                    p,
+                    step,
+                    placed.map((id) => bank.find((item) => item.id === id)?.label),
+                  )}
+                  className="mt-4 animate-slide-up"
+                  renderText={(text) => <MathText>{text}</MathText>}
+                />
+              )}
             </>
           ) : (
-            <Question q={step} explain={step.note} sel={sel} onChoose={chooseOption} />
+            <Question problem={p} q={step} sel={sel} onChoose={chooseOption} />
           )
         )}
 
@@ -253,7 +275,7 @@ function RecallCard({ recall }) {
 }
 
 // 3択（方針確認 / 3択ステップ）。
-function Question({ q, badge, explain, sel, onChoose }) {
+function Question({ problem, q, badge, sel, onChoose }) {
   const answered = sel !== null
   return (
     <div className="mt-4">
@@ -302,23 +324,13 @@ function Question({ q, badge, explain, sel, onChoose }) {
         />
       </div>
 
-      {answered && <ExplainCard correct={sel === q.answer} text={explain} />}
-    </div>
-  )
-}
-
-// 答え合わせ後の解説カード。
-function ExplainCard({ correct, text }) {
-  if (!text) return null
-  return (
-    <div className="mt-4 animate-slide-up rounded-2xl bg-white p-4 shadow-card">
-      <div className="flex items-center gap-1.5">
-        <Lightbulb size={16} className="text-amber-500" />
-        <span className="font-display text-sm font-extrabold text-ink/80">
-          {correct ? '正解！' : 'ここがポイント'}
-        </span>
-      </div>
-      <p className="mt-1.5 text-sm font-bold leading-relaxed text-ink/70"><MathText>{text}</MathText></p>
+      {answered && (
+        <InstructorExplanation
+          explanation={buildMathChoiceInstructorExplanation(problem, q, sel)}
+          className="mt-4 animate-slide-up"
+          renderText={(text) => <MathText>{text}</MathText>}
+        />
+      )}
     </div>
   )
 }
@@ -331,15 +343,10 @@ function Solved({ problem }) {
         <p className="mb-1 text-xs font-extrabold tracking-wide text-emerald-600">答え</p>
         <MathBlock tex={problem.answer} className="text-emerald-900 [&_.katex]:text-[1.4rem]" />
       </div>
-      {problem.pitfall && (
-        <div className="rounded-2xl bg-white p-4 shadow-card">
-          <div className="flex items-center gap-1.5">
-            <Target size={16} className="text-rose-500" />
-            <span className="font-display text-sm font-extrabold text-ink/80">つまずき注意</span>
-          </div>
-          <p className="mt-1.5 text-sm font-bold leading-relaxed text-ink/70"><MathText>{problem.pitfall}</MathText></p>
-        </div>
-      )}
+      <InstructorExplanation
+        explanation={buildMathSolvedInstructorExplanation(problem)}
+        renderText={(text) => <MathText>{text}</MathText>}
+      />
     </div>
   )
 }

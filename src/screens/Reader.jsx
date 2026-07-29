@@ -132,6 +132,7 @@ export function ReaderScreen() {
           setPhase('ja')
           speakWith(c.speechJa ?? c.ja, {
             rate: settings.ttsRate,
+            voiceURI: settings.ttsJapaneseVoiceURI,
             lang: 'ja-JP',
             onend: () => {
               if (tokenRef.current !== token) return
@@ -147,6 +148,7 @@ export function ReaderScreen() {
               setPhase('natural')
               speakWith(`文全体を自然な日本語に整えると、「${c.sentenceJa}」です。`, {
                 rate: settings.ttsRate,
+                voiceURI: settings.ttsJapaneseVoiceURI,
                 lang: 'ja-JP',
                 onend: finish,
               })
@@ -196,6 +198,7 @@ export function ReaderScreen() {
         if (tokenRef.current !== token) return
         speakWith(block.speechJa ?? block.ja, {
           rate: settings.ttsRate,
+          voiceURI: settings.ttsJapaneseVoiceURI,
           lang: 'ja-JP',
         })
       },

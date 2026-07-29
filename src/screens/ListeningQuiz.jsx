@@ -11,6 +11,7 @@ import { isTTSSupported } from '../lib/tts.js'
 import { playListeningItem, stopListeningAudio } from '../lib/listening.js'
 import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
+import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
 import { Button, Chip, ProgressBar, IconButton, cx } from '../components/ui.jsx'
 import {
   Close,
@@ -20,6 +21,7 @@ import {
   Eye,
   EyeOff,
 } from '../components/Icons.jsx'
+import { buildListeningInstructorExplanation } from '../lib/instructorExplanations.js'
 
 const PROMPTS = Object.freeze({
   response: '最後の発話に対する、最も自然な応答を選んでください。',
@@ -79,6 +81,14 @@ export function ListeningQuizScreen() {
   const answered = selected !== null
   const isCorrectPick = answered && selected === item?.answer
   const correctChoice = item?.choices.find((choice) => choice.id === item.answer)
+  const instructorExplanation = answered
+    ? buildListeningInstructorExplanation(
+        item,
+        selected === UNKNOWN_CHOICE_ID
+          ? UNKNOWN_CHOICE_ID
+          : options.find((choice) => choice.id === selected),
+      )
+    : null
   const userRateScale = (settings.ttsRate ?? 0.9) / 0.9
   const normalRate = clampRate(profile.rate * userRateScale)
   const slowRate = clampRate(profile.slowRate * userRateScale)
@@ -413,11 +423,10 @@ export function ListeningQuizScreen() {
               </p>
             </div>
 
-            <div className="mt-3 rounded-2xl bg-hint-soft/70 p-3">
-              <p className="text-sm font-bold leading-relaxed text-amber-900/90">
-                💡 {item.explain}
-              </p>
-            </div>
+            <InstructorExplanation
+              explanation={instructorExplanation}
+              className="mt-3"
+            />
 
             <div className="mt-3 flex flex-wrap gap-2">
               <button

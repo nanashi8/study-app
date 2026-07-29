@@ -11,9 +11,11 @@ import { stopSpeaking } from '../lib/tts.js'
 import { phoneticForWord } from '../data/vocab.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { PosBadge } from '../components/WordBits.jsx'
+import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
 import { Button, ProgressBar, ProgressRing, IconButton } from '../components/ui.jsx'
 import { Close, ArrowRight } from '../components/Icons.jsx'
 import { cx } from '../components/ui.jsx'
+import { buildPronunciationInstructorExplanation } from '../lib/instructorExplanations.js'
 
 const ERR = {
   'not-allowed': 'マイクの使用が許可されていません。ブラウザのサイト設定からマイクを許可してください。',
@@ -199,6 +201,11 @@ export function PronouncePlayScreen() {
             {result.matchedBySound && (
               <p className="mt-1 text-xs font-bold text-ink/40">同じ発音の別の綴りも正解として判定しました。</p>
             )}
+            <InstructorExplanation
+              explanation={buildPronunciationInstructorExplanation(word, result)}
+              className="mt-3 w-full text-left"
+              compact
+            />
           </div>
         )}
 

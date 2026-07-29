@@ -123,7 +123,10 @@ export function LiteratureReaderScreen() {
       speakWith(step.text, {
         lang: step.lang,
         rate,
-        voiceURI: settings.ttsVoiceURI,
+        voiceURI:
+          step.lang === 'ja-JP'
+            ? settings.ttsJapaneseVoiceURI
+            : settings.ttsVoiceURI,
         onend: () => {
           if (playToken.current === token) playStep(index + 1)
         },

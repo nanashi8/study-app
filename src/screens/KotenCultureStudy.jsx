@@ -15,6 +15,7 @@ import {
   EyeOff,
   Lightbulb,
 } from '../components/Icons.jsx'
+import { KotenText } from '../components/KotenFurigana.jsx'
 
 const SESSION_SIZE = 20
 
@@ -157,11 +158,11 @@ export function KotenCultureStudyScreen() {
 
           <div className="mt-5 text-center">
             <p className="text-[11px] font-extrabold tracking-[0.16em] text-violet-600">CLASSICAL CULTURE</p>
-            <h1 className="mt-2 font-display text-2xl font-extrabold leading-snug text-ink">
-              {item.title}
+            <h1 className="mt-2 pt-2 font-display text-2xl font-extrabold leading-relaxed text-ink">
+              <KotenText>{item.title}</KotenText>
             </h1>
             <p className="mt-3 text-sm font-extrabold leading-relaxed text-ink/65">
-              {item.prompt}
+              <KotenText>{item.prompt}</KotenText>
             </p>
           </div>
 
@@ -175,24 +176,30 @@ export function KotenCultureStudyScreen() {
               <div className="rounded-2xl bg-violet-50 p-4">
                 <p className="text-[10px] font-extrabold tracking-wide text-violet-600">まず一言で</p>
                 <p className="mt-1 font-display text-lg font-extrabold leading-relaxed text-ink">
-                  {item.core}
+                  <KotenText>{item.core}</KotenText>
                 </p>
               </div>
               <div className="rounded-2xl bg-sky-50 p-4">
                 <p className="text-[10px] font-extrabold tracking-wide text-sky-600">背景をつなぐ</p>
-                <p className="mt-1 text-sm font-bold leading-relaxed text-ink/65">{item.detail}</p>
+                <p className="mt-1 text-sm font-bold leading-relaxed text-ink/65">
+                  <KotenText>{item.detail}</KotenText>
+                </p>
               </div>
               <div className="rounded-2xl border border-violet-100 bg-white p-4">
                 <div className="mb-1.5 flex items-center gap-1.5 text-violet-700">
                   <Lightbulb size={16} />
                   <span className="text-[10px] font-extrabold tracking-wide">入試本文の読み方</span>
                 </div>
-                <p className="text-sm font-bold leading-relaxed text-ink/65">{item.examTip}</p>
+                <p className="text-sm font-bold leading-relaxed text-ink/65">
+                  <KotenText>{item.examTip}</KotenText>
+                </p>
               </div>
               <div className="rounded-2xl bg-slate-50 p-4">
-                <p className="font-serif text-base font-bold leading-relaxed text-ink">{item.scene.text}</p>
+                <p className="font-serif text-base font-bold leading-relaxed text-ink">
+                  <KotenText>{item.scene.text}</KotenText>
+                </p>
                 <p className="mt-1.5 text-xs font-bold leading-relaxed text-ink/50">
-                  {item.scene.note}
+                  <KotenText>{item.scene.note}</KotenText>
                 </p>
               </div>
             </div>

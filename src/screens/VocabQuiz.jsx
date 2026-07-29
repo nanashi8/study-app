@@ -17,12 +17,14 @@ import { quizMeaning } from '../data/compact.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { PosBadge } from '../components/WordBits.jsx'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
+import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
 import { MobPortrait } from '../components/MobPortrait.jsx'
 import { HeroPortrait } from '../components/HeroPortrait.jsx'
 import { Button, ProgressBar, IconButton } from '../components/ui.jsx'
 import { Close, Check, ArrowRight } from '../components/Icons.jsx'
 import { cx } from '../components/ui.jsx'
 import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
+import { buildVocabInstructorExplanation } from '../lib/instructorExplanations.js'
 
 // このクイズ画面の同一性キー（出題ソース・タイトル・問題数）。
 // 退避したセッションが「今まさに戻ってきたクイズ」のものかを照合するのに使う。
@@ -212,6 +214,14 @@ export function VocabQuizScreen() {
   }
 
   const isCorrectPick = answered && selected === word.id
+  const instructorExplanation = answered
+    ? buildVocabInstructorExplanation(
+        word,
+        selected === UNKNOWN_CHOICE_ID
+          ? UNKNOWN_CHOICE_ID
+          : options.find((option) => option.id === selected),
+      )
+    : null
   const battleEvent = answered ? battleState?.lastEvent : null
   const battleFeedback = battleEvent?.kind === 'hit'
     ? `${encounter.name}に ${battleEvent.damage} ダメージ！ ⚔️`
@@ -413,11 +423,10 @@ export function VocabQuizScreen() {
                 <p className="mt-0.5 text-xs font-bold leading-relaxed text-ink/55">{word.example.ja}</p>
               </div>
             </div>
-            {word.etymology?.note && (
-              <p className="mt-2 rounded-xl bg-hint-soft/70 px-3 py-2 text-xs font-bold leading-relaxed text-amber-900/85">
-                💡 覚え方：{word.etymology.note}
-              </p>
-            )}
+            <InstructorExplanation
+              explanation={instructorExplanation}
+              className="mt-3"
+            />
             <button
               onClick={() => {
                 // 解答済みの状態を退避してから語源詳細へ。戻ると結果画面のまま復元。

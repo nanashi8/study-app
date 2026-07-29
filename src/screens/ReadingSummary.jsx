@@ -8,9 +8,11 @@ import { ScreenHeader } from '../components/AppShell.jsx'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { PosBadge } from '../components/WordBits.jsx'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
+import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
 import { Card, Button, Chip, IconButton, cx } from '../components/ui.jsx'
 import { Book, Cards, Bookmark, BookmarkFilled, Check, ArrowRight } from '../components/Icons.jsx'
 import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
+import { buildReadingInstructorExplanation } from '../lib/instructorExplanations.js'
 
 export function ReadingSummaryScreen() {
   const passageId = useStore((s) => s.params.passageId)
@@ -106,7 +108,13 @@ export function ReadingSummaryScreen() {
                     className="rounded-xl py-2.5"
                   />
                 </div>
-                {checked && <p className="mt-2 text-xs font-bold leading-relaxed text-ink/55">{q.explain}</p>}
+                {checked && (
+                  <InstructorExplanation
+                    explanation={buildReadingInstructorExplanation(q, answers[qi])}
+                    className="mt-3"
+                    compact
+                  />
+                )}
               </fieldset>
             ))}
           </div>

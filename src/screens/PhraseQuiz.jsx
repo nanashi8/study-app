@@ -6,10 +6,12 @@ import { quizMeaning } from '../data/compact.js'
 import { phraseSpeechText } from '../lib/phrase-speech.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
+import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
 import { Button, ProgressBar, IconButton, Chip } from '../components/ui.jsx'
 import { Close, Check, ArrowRight } from '../components/Icons.jsx'
 import { cx } from '../components/ui.jsx'
 import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
+import { buildPhraseInstructorExplanation } from '../lib/instructorExplanations.js'
 
 export function PhraseQuizScreen() {
   const params = useStore((s) => s.params)
@@ -87,6 +89,14 @@ export function PhraseQuizScreen() {
   }
 
   const isCorrectPick = answered && selected === item.id
+  const instructorExplanation = answered
+    ? buildPhraseInstructorExplanation(
+        item,
+        selected === UNKNOWN_CHOICE_ID
+          ? UNKNOWN_CHOICE_ID
+          : options.find((option) => option.id === selected),
+      )
+    : null
 
   return (
     <div className="flex h-full flex-col">
@@ -154,10 +164,10 @@ export function PhraseQuizScreen() {
                 <p className="mt-0.5 text-xs font-bold leading-relaxed text-ink/55">{item.example.ja}</p>
               </div>
             </div>
-            <div className="mt-2 space-y-1 rounded-xl bg-hint-soft/70 px-3 py-2 text-xs font-bold leading-relaxed text-amber-900/85">
-              <p>💡 成り立ち：{item.origin}</p>
-              <p>使い方：{item.note}</p>
-            </div>
+            <InstructorExplanation
+              explanation={instructorExplanation}
+              className="mt-3"
+            />
           </div>
         )}
       </div>
