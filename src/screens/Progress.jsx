@@ -38,8 +38,12 @@ export function ProgressScreen() {
   // useShallow で浅い比較にし、毎回新オブジェクト→再レンダーループを防ぐ。
   const full = useStore(useShallow((s) => ({
     srs: s.srs, kotenSrs: s.kotenSrs,
+    kotenGrammarSrs: s.kotenGrammarSrs,
+    kotenCultureSrs: s.kotenCultureSrs,
     kotenInterpretationSrs: s.kotenInterpretationSrs, myList: s.myList,
     myGrammarList: s.myGrammarList, writingProgress: s.writingProgress,
+    kotenWordList: s.kotenWordList, kotenGrammarList: s.kotenGrammarList,
+    kotenCultureList: s.kotenCultureList,
     readingsDone: s.readingsDone, mathDone: s.mathDone, mathMastery: s.mathMastery,
     skillStats: s.skillStats, learningAnalytics: s.learningAnalytics,
     diagnosticHistory: s.diagnosticHistory,
@@ -207,6 +211,8 @@ export function ProgressScreen() {
           learningAnalytics={full.learningAnalytics}
           srs={srs}
           kotenSrs={full.kotenSrs}
+          kotenGrammarSrs={full.kotenGrammarSrs}
+          kotenCultureSrs={full.kotenCultureSrs}
           kotenInterpretationSrs={full.kotenInterpretationSrs}
           skillStats={full.skillStats}
         />

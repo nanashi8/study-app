@@ -298,6 +298,13 @@ export function KotenInterpretationPrepScreen() {
 
         {tab === 'culture' && (
           <section className="mt-3 space-y-2">
+            <Button
+              full
+              variant="secondary"
+              onClick={() => navigate('kotenCulture')}
+            >
+              <Book size={17} /> 古典常識を体系的に覚える
+            </Button>
             {cultureItems.map((item) => (
               <div key={`${item.id}:${item.title}`} className="rounded-2xl bg-white p-4 shadow-sm">
                 <div className="flex flex-wrap items-center gap-2">

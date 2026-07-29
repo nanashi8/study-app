@@ -213,15 +213,19 @@ test('進捗コードは廃止済みデータを再保存せず、旧コード�
   const base = {
     srs: {},
     kotenSrs: {},
+    kotenGrammarSrs: { kg_neg_zu: entry(20) },
+    kotenCultureSrs: { kc001: entry(21) },
     kotenInterpretationSrs: {},
     myList: [],
     kotenWordList: ['k001'],
     kotenGrammarList: ['kg_neg_zu'],
+    kotenCultureList: ['kc001'],
     readingsDone: [],
     mathDone: [],
     mathMastery: {},
     skillStats: {},
     engPos: null,
+    battleRelicLevel: 15,
     portalOrder: [],
     portalHidden: [],
     stats: {},
@@ -240,7 +244,15 @@ test('進捗コードは廃止済みデータを再保存せず、旧コード�
   assert.equal('vnCleared' in useStore.getState(), false)
   assert.deepEqual(restored.kotenWordList, ['k001'])
   assert.deepEqual(restored.kotenGrammarList, ['kg_neg_zu'])
+  assert.deepEqual(restored.kotenCultureList, ['kc001'])
+  assert.deepEqual(restored.kotenGrammarSrs, { kg_neg_zu: entry(20) })
+  assert.deepEqual(restored.kotenCultureSrs, { kc001: entry(21) })
+  assert.equal(restored.battleRelicLevel, 15)
   assert.throws(() => decodeProgress(encodeProgress({ ...base, srs: [] })), /srs/)
+  assert.throws(
+    () => decodeProgress(encodeProgress({ ...base, battleRelicLevel: 100 })),
+    /battleRelicLevel/,
+  )
 })
 
 test('古典短文は単語・文法・常識を備え、登録先をすべて解決できる', () => {

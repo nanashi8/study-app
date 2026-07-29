@@ -583,6 +583,7 @@ function splitGerundSubject(text) {
   const body = bare(text)
   const tokens = [...body.matchAll(/[A-Za-z][A-Za-z'’-]*/g)]
   if (!tokens[0] || !/ing$/i.test(tokens[0][0])) return [text]
+  if (wordRecord(tokens[0][0])?.pos === '名') return [text]
   for (let index = 2; index < tokens.length; index++) {
     if (!isVerb(tokens[index][0]) || /ing$/i.test(tokens[index][0])) continue
     const splitAt = tokens[index].index
@@ -804,7 +805,10 @@ function classifyUnit(unit, index, allUnits) {
     }
   }
 
-  if (/^[A-Za-z'’-]+ing\b/i.test(body)) {
+  if (
+    /^[A-Za-z'’-]+ing\b/i.test(body) &&
+    wordRecord(firstWord(body))?.pos !== '名'
+  ) {
     const role =
       allUnits.length > 1 &&
       (index === 0 || startsWithPredicate(allUnits[index + 1]?.text ?? ''))

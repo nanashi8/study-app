@@ -12,12 +12,14 @@ import {
   BATTLE_QUESTS,
   BATTLE_TACTICS,
   CHAPTERS,
+  battleRelicForLevel,
   battleTactic,
   capEnemyPositionForHeroLevel,
   encounterFor,
   featuredBattleTacticId,
   featuredQuestId,
   heroProgress,
+  relicBattleAbility,
   relicStatLabel,
 } from '../lib/rpg.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
@@ -88,7 +90,10 @@ export function EnglishMapScreen() {
   const stats = useStore((s) => s.stats)
   const engPos = useStore((s) => s.engPos)
   const setEngPos = useStore((s) => s.setEngPos)
+  const battleRelicLevel = useStore((s) => s.battleRelicLevel)
+  const setBattleRelicLevel = useStore((s) => s.setBattleRelicLevel)
   const hero = heroProgress(stats.xp)
+  const battleRelic = battleRelicForLevel(hero.level, battleRelicLevel)
   const inferredPos = engPos ?? suggestStartPosition(srs)
   const pos = capEnemyPositionForHeroLevel(inferredPos, hero.level)
 
@@ -118,6 +123,7 @@ export function EnglishMapScreen() {
         ...battleSource(pos),
         questId: quest.id,
         tacticId,
+        relicLevel: battleRelic.level,
         adventureDay: day,
         heroLevel: hero.level,
       },
@@ -146,15 +152,15 @@ export function EnglishMapScreen() {
           encounter={encounter}
           day={day}
           tacticId={tacticId}
+          battleRelic={battleRelic}
           onTactic={setTacticId}
+          onRelic={setBattleRelicLevel}
           onBattle={startBattle}
         />
 
         <AdventureProgress hero={hero} />
 
         <ChapterTrail hero={hero} />
-
-        <RelicShelf hero={hero} />
 
         <section>
           <div className="mb-2 flex items-end justify-between px-1">
@@ -219,7 +225,9 @@ function AdventureCard({
   encounter,
   day,
   tacticId,
+  battleRelic,
   onTactic,
+  onRelic,
   onBattle,
 }) {
   const enemyRank = enemyLevel(pos)
@@ -453,6 +461,12 @@ function AdventureCard({
             </p>
           </div>
 
+          <BattleItemPicker
+            relics={hero.relics}
+            selected={battleRelic}
+            onSelect={onRelic}
+          />
+
           <p className="mt-3 text-[10px] font-extrabold text-ink/45">
             戦闘時間を選ぶ
           </p>
@@ -580,32 +594,68 @@ function ChapterTrail({ hero }) {
   )
 }
 
-function RelicShelf({ hero }) {
-  const newest = [...hero.relics].reverse().slice(0, 3)
+function BattleItemPicker({ relics, selected, onSelect }) {
+  const ability = relicBattleAbility(selected)
   return (
-    <section>
-      <div className="mb-2 flex items-center justify-between px-1">
-        <h2 className="font-display text-base font-extrabold text-ink">戦利品コレクション</h2>
-        <span className="text-[10px] font-bold text-ink/40">{hero.relics.length}/21</span>
+    <div className="mt-3 rounded-2xl border border-white/15 bg-black/15 p-2.5">
+      <div className="flex items-end justify-between gap-2">
+        <div>
+          <p className="text-[9px] font-extrabold tracking-[0.15em] text-amber-200">
+            BATTLE ITEM
+          </p>
+          <p className="text-xs font-extrabold text-white">持ち込む戦利品を選ぶ</p>
+        </div>
+        <span className="text-[8px] font-bold text-white/50">
+          1バトル1回 · {relics.length}/21
+        </span>
       </div>
-      <div className="grid grid-cols-3 gap-2">
-        {newest.map((relic) => (
-          <div
-            key={relic.level}
-            className="flex min-h-24 flex-col items-center justify-center rounded-2xl bg-white p-2 text-center shadow-card"
-          >
-            <span className="text-2xl">{relic.emoji}</span>
-            <span className="mt-1 text-[10px] font-extrabold leading-tight text-ink">
-              {relic.name}
-            </span>
-            <span className="mt-1 text-[9px] font-extrabold text-emerald-600">
-              {relicStatLabel(relic)}
-            </span>
-            <span className="mt-0.5 text-[9px] font-bold text-ink/35">LV{relic.level}</span>
-          </div>
-        ))}
+      <div className="no-scrollbar -mx-1 mt-2 flex gap-1.5 overflow-x-auto px-1 pb-1">
+        {relics.map((relic) => {
+          const active = relic.level === selected?.level
+          const relicAbility = relicBattleAbility(relic)
+          return (
+            <button
+              key={relic.level}
+              type="button"
+              onClick={() => onSelect(relic.level)}
+              aria-pressed={active}
+              aria-label={`${relic.name}を持ち込む。${relicAbility.description}`}
+              className={cx(
+                'relative flex min-h-20 w-24 shrink-0 flex-col items-center justify-center rounded-xl border-2 px-1.5 py-2 text-center transition-transform active:scale-95',
+                active
+                  ? 'border-amber-300 bg-white text-ink shadow-sm'
+                  : 'border-transparent bg-white/10 text-white/65',
+              )}
+            >
+              {active && (
+                <span className="absolute right-1 top-1 rounded-full bg-amber-300 px-1.5 py-0.5 text-[7px] font-black text-amber-950">
+                  選択中
+                </span>
+              )}
+              <span className="text-xl">{relic.emoji}</span>
+              <span className="mt-1 text-[9px] font-extrabold leading-tight">
+                {relic.name}
+              </span>
+              <span className={cx(
+                'mt-1 text-[8px] font-extrabold',
+                active ? 'text-emerald-600' : 'text-emerald-200',
+              )}>
+                {relicAbility.label}
+              </span>
+            </button>
+          )
+        })}
       </div>
-    </section>
+      <div className="mt-1.5 rounded-xl bg-white/10 px-2.5 py-2">
+        <p className="text-[10px] font-extrabold text-white">
+          {selected.emoji} {selected.name}
+          <span className="ml-1 text-amber-200">— {ability.short}</span>
+        </p>
+        <p className="mt-0.5 text-[9px] font-bold leading-relaxed text-white/60">
+          {ability.description} 所持効果：{relicStatLabel(selected)}（選ばなくても有効）
+        </p>
+      </div>
+    </div>
   )
 }
 

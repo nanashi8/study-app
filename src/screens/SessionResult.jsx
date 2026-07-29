@@ -458,20 +458,38 @@ function BattleOutcome({ battle, encounter, verdict, tactic, battleReport }) {
         {nextBattleText}
       </p>
       {battleReport && (
-        <div className="mt-3 flex items-center gap-2 rounded-2xl bg-slate-900 px-3 py-2.5 text-left text-white">
-          <span className="text-xl">{tactic.emoji}</span>
-          <div className="min-w-0 flex-1">
-            <p className="text-[9px] font-extrabold tracking-[0.14em] text-amber-300">
-              {battleReport.activations > 0 ? 'TACTIC ACTIVATED' : 'TACTIC RECORD'}
-            </p>
-            <p className="truncate text-xs font-extrabold">{tactic.name}</p>
+        <div className="mt-3 space-y-2">
+          <div className="flex items-center gap-2 rounded-2xl bg-slate-900 px-3 py-2.5 text-left text-white">
+            <span className="text-xl">{tactic.emoji}</span>
+            <div className="min-w-0 flex-1">
+              <p className="text-[9px] font-extrabold tracking-[0.14em] text-amber-300">
+                {battleReport.activations > 0 ? 'TACTIC ACTIVATED' : 'TACTIC RECORD'}
+              </p>
+              <p className="truncate text-xs font-extrabold">{tactic.name}</p>
+            </div>
+            <div className="text-right text-[9px] font-bold text-white/70">
+              <p>{battleReport.summary}</p>
+              <p className="mt-0.5 text-amber-300">
+                与ダメ {battleReport.damageDealt} · 被ダメ {battleReport.damageTaken}
+              </p>
+            </div>
           </div>
-          <div className="text-right text-[9px] font-bold text-white/70">
-            <p>{battleReport.summary}</p>
-            <p className="mt-0.5 text-amber-300">
-              与ダメ {battleReport.damageDealt} · 被ダメ {battleReport.damageTaken}
-            </p>
-          </div>
+          {battleReport.itemRelic && (
+            <div className="flex items-center gap-2 rounded-2xl border border-amber-200 bg-amber-50 px-3 py-2.5 text-left text-amber-950">
+              <span className="text-xl">{battleReport.itemRelic.emoji}</span>
+              <div className="min-w-0 flex-1">
+                <p className="text-[9px] font-extrabold tracking-[0.14em] text-amber-600">
+                  {battleReport.itemUsed ? 'ITEM USED' : 'ITEM CARRIED'}
+                </p>
+                <p className="truncate text-xs font-extrabold">
+                  {battleReport.itemRelic.name}
+                </p>
+              </div>
+              <p className="text-right text-[9px] font-extrabold text-amber-700">
+                {battleReport.itemSummary}
+              </p>
+            </div>
+          )}
         </div>
       )}
     </Card>

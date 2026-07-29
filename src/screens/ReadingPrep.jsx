@@ -55,7 +55,7 @@ export function ReadingPrepScreen() {
     navigate('vocabStudy', {
       source: { type: 'deck', ids: wordIds },
       size: wordIds.length,
-      title: `${passage.titleJa}・重要語`,
+      title: `${passage.titleJa}・必須語彙`,
       mode: 'study',
       continueTo,
     })
@@ -97,10 +97,23 @@ export function ReadingPrepScreen() {
           </div>
           <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs font-extrabold text-ink/45">
             <span>本文 {passageWordCount(passage)}語</span>
-            <span>重要語 {words.length}語</span>
+            <span>テーマ必須語彙 {words.length}語</span>
             <span>熟語・表現 {phrases.length}項目</span>
           </div>
         </section>
+
+        <Card className="mb-4 p-4">
+          <div className="text-xs font-extrabold text-ink/45">厳選テーマ</div>
+          <div className="mt-1 font-display text-base font-extrabold text-ink">
+            {passage.theme}
+          </div>
+          <div className="mt-3 text-xs font-extrabold text-ink/45">入試・英検の読解ポイント</div>
+          <div className="mt-2 flex flex-wrap gap-2">
+            {passage.examFocus.map((focus) => (
+              <Chip key={focus} color={level.color}>{focus}</Chip>
+            ))}
+          </div>
+        </Card>
 
         <Card className="p-4">
           <div className="flex items-end justify-between gap-3">
@@ -121,7 +134,7 @@ export function ReadingPrepScreen() {
           />
           <div className="mt-4 grid grid-cols-2 gap-2">
             <Button onClick={studyWords} disabled={!words.length}>
-              <Cards size={17} /> 単語カード
+              <Cards size={17} /> 必須語カード
             </Button>
             <Button variant="secondary" onClick={studyPhrases} disabled={!phrases.length}>
               <BookOpen size={17} /> 熟語・表現
@@ -131,7 +144,7 @@ export function ReadingPrepScreen() {
 
         <div className="mt-4 grid grid-cols-2 rounded-2xl bg-brand-100 p-1">
           {[
-            { id: 'words', label: `重要語 ${words.length}` },
+            { id: 'words', label: `必須語彙 ${words.length}` },
             { id: 'phrases', label: `熟語・表現 ${phrases.length}` },
           ].map((item) => (
             <button

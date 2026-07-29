@@ -1,4 +1,4 @@
-// 長文180文の主節を、日本の英語教育で用いる5文型として人手確認した正解表。
+// 全長文の主節を、日本の英語教育で用いる5文型として人手確認した正解表。
 //
 // 判定規約:
 // - 前置詞句と副詞はMとし、主節の5文型には含めない。
@@ -7,9 +7,12 @@
 // - there構文は形式語thereをM、後置された名詞句を意味上のSとしてSV。
 // - tell/show/teach/give + 人 + 物・節はSVOO。
 
+import { EXAM_READING_GRAMMAR_EXPECTATIONS } from './reading-grammar-expectations-exam.js'
+
 const patterns = (source) => Object.freeze(source.trim().split(/\s+/))
 
 export const READING_GRAMMAR_EXPECTATIONS = Object.freeze({
+  ...EXAM_READING_GRAMMAR_EXPECTATIONS,
   p_5_lost_notebook: patterns(`
     SVC SV SVO SVO SVO SV SVO SVO SVC
   `),

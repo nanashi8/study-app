@@ -1,6 +1,9 @@
 // 長文ごとの内容理解問題。
-// choices は表示順を固定し、answer は choices の文字列と完全一致させる。
+// answer は choices の文字列と完全一致させ、表示時は正解位置を安定的に分散する。
+import { EXAM_READING_QUESTIONS } from './reading-questions-exam.js'
+
 export const READING_QUESTIONS = {
+  ...EXAM_READING_QUESTIONS,
   p_5_lost_notebook: [
     {
       q: 'How does Rina go to school every morning?',
@@ -407,4 +410,21 @@ export const READING_QUESTION_COUNTS = Object.freeze({
   1: 4,
 })
 
-export const getReadingQuestions = (passageId) => READING_QUESTIONS[passageId] ?? []
+const choiceSeed = (text) => {
+  let hash = 0
+  for (let i = 0; i < text.length; i += 1) {
+    hash = (Math.imul(hash, 31) + text.charCodeAt(i)) >>> 0
+  }
+  return hash
+}
+
+const arrangeChoices = (choices, seedText) => {
+  const offset = choiceSeed(seedText) % choices.length
+  return choices.map((_, index) => choices[(index + offset) % choices.length])
+}
+
+export const getReadingQuestions = (passageId) =>
+  (READING_QUESTIONS[passageId] ?? []).map((question) => ({
+    ...question,
+    choices: arrangeChoices(question.choices, `${passageId}:${question.q}`),
+  }))

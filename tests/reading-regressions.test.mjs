@@ -22,9 +22,22 @@ import {
 
 const EXPECTED_LEVELS = ['5', '4', '3', 'pre2', 'pre2plus', '2', 'pre1', '1']
 
-test('長文は全8区分を順番どおりに収録する', () => {
+test('長文は全8区分に2題ずつ、異なる厳選テーマを収録する', () => {
   assert.deepEqual(READING_LEVELS.map((level) => level.id), EXPECTED_LEVELS)
-  assert.deepEqual(PASSAGES.map((passage) => passage.level), EXPECTED_LEVELS)
+  assert.equal(PASSAGES.length, EXPECTED_LEVELS.length * 2)
+  for (const level of EXPECTED_LEVELS) {
+    assert.equal(
+      PASSAGES.filter((passage) => passage.level === level).length,
+      2,
+      `英検${level}級`,
+    )
+  }
+  assert.equal(new Set(PASSAGES.map((passage) => passage.id)).size, PASSAGES.length)
+  assert.equal(new Set(PASSAGES.map((passage) => passage.theme)).size, PASSAGES.length)
+  for (const passage of PASSAGES) {
+    assert.ok(passage.theme, `${passage.id}: テーマがない`)
+    assert.ok(passage.examFocus.length >= 3, `${passage.id}: 読解ポイントが不足`)
+  }
 })
 
 test('各長文は級別の上限対策語数と段落構成を満たす', () => {
@@ -44,7 +57,21 @@ test('各長文は級別の上限対策語数と段落構成を満たす', () =>
 })
 
 test('事前学習語彙は共通辞書で解決し、表現カードを備える', () => {
+  const minimumEssentialWords = {
+    5: 10,
+    4: 15,
+    3: 20,
+    pre2: 20,
+    pre2plus: 20,
+    2: 24,
+    pre1: 25,
+    1: 30,
+  }
   for (const passage of PASSAGES) {
+    assert.ok(
+      passage.vocab.length >= minimumEssentialWords[passage.level],
+      `${passage.id}: テーマ必須語彙が不足`,
+    )
     for (const id of passage.vocab) {
       assert.ok(getWord(id), `${passage.id}: ${id} が共通辞書にない`)
     }
@@ -96,6 +123,23 @@ test('級別の読解設問数と正解データが本文ごとに揃う', () =>
       assert.ok(question.choices.includes(question.answer), `${passage.id}: 正解が選択肢にない`)
       assert.ok(question.explain, `${passage.id}: 解説がない`)
     }
+  }
+})
+
+test('長文設問の正解位置は固定先頭にならず、安定して分散する', () => {
+  const answerPositionCounts = [0, 0, 0, 0]
+
+  for (const passage of PASSAGES) {
+    const questions = getReadingQuestions(passage.id)
+    assert.deepEqual(questions, getReadingQuestions(passage.id), `${passage.id}: 表示順が不安定`)
+    const positions = questions.map((question) => question.choices.indexOf(question.answer))
+
+    assert.ok(new Set(positions).size >= 2, `${passage.id}: 正解位置が1か所に固定`)
+    for (const position of positions) answerPositionCounts[position] += 1
+  }
+
+  for (const [position, count] of answerPositionCounts.entries()) {
+    assert.ok(count >= 10, `正解位置${position + 1}: ${count}問しかない`)
   }
 })
 

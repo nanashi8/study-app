@@ -615,6 +615,53 @@ export function relicStatLabel(relic) {
   ].filter(Boolean).join(' · ')
 }
 
+// 取得済み戦利品から、バトルへ1個だけ持ち込む。
+// 保存値が無い／未解放の値なら、これまでどおり最新の戦利品を自動選択する。
+export function battleRelicForLevel(level, selectedLevel = null) {
+  const relics = relicsForLevel(level)
+  const safeSelectedLevel = Number.isSafeInteger(selectedLevel)
+    ? selectedLevel
+    : Number(selectedLevel)
+  return relics.find((relic) => relic.level === safeSelectedLevel)
+    ?? relics[relics.length - 1]
+    ?? null
+}
+
+// 既存の能力補正から、1バトル1回のアクティブ効果を導く。
+// ATK系＝次の正解を強化、DEF系＝次の反撃を防止、HP系＝即時回復。
+export function relicBattleAbility(relic) {
+  if (!relic) return null
+  const stats = relic.stats ?? {}
+  if ((stats.attack ?? 0) > 0) {
+    const multiplier = Number(
+      Math.min(2, 1.3 + stats.attack * 0.05).toFixed(2),
+    )
+    return {
+      kind: 'power',
+      label: '威力UP',
+      short: `威力×${multiplier}`,
+      multiplier,
+      description: `次の正解攻撃を${multiplier}倍にする。ミスしても正解するまで効果は残る。`,
+    }
+  }
+  if ((stats.defense ?? 0) > 0) {
+    return {
+      kind: 'guard',
+      label: '反撃防止',
+      short: '反撃を1回防ぐ',
+      description: '次に受ける反撃を1回だけ完全に防ぐ。',
+    }
+  }
+  const healPercent = Math.min(40, 10 + (stats.maxHp ?? 0))
+  return {
+    kind: 'heal',
+    label: 'HP回復',
+    short: `HP${healPercent}%回復`,
+    healPercent,
+    description: `最大HPの${healPercent}%をその場で回復する。`,
+  }
+}
+
 // 戦利品は所持するだけでなく、各部位の最新アイテムが主人公の外見へ反映される。
 export function heroEquipmentForLevel(level) {
   const equipment = Object.fromEntries(
@@ -803,6 +850,20 @@ export const BATTLE_SCENE_CUES = {
     actor: 'hero',
     target: 'enemy',
   },
+  'item-power': {
+    emoji: '✨',
+    label: 'ITEM BOOST!',
+    title: 'アイテム強化',
+    actor: 'hero',
+    target: 'enemy',
+  },
+  'item-guard': {
+    emoji: '🛡️',
+    label: 'ITEM GUARD!',
+    title: 'アイテム防御',
+    actor: 'enemy',
+    target: 'hero',
+  },
   damage: {
     emoji: '💥',
     label: 'ENEMY HIT',
@@ -868,6 +929,8 @@ export function resolveBattleState({
   heroLevel = 1,
   enemyRankIndex = 0,
   isBoss = false,
+  relicLevel = null,
+  itemUsedAt = null,
 } = {}) {
   const tactic = battleTactic(tacticId)
   const log = (Array.isArray(answers) ? answers : []).filter(
@@ -875,6 +938,15 @@ export function resolveBattleState({
   ).slice(0, Math.max(1, Math.floor(Number(total) || 1)))
   const safeTotal = Math.max(1, Math.floor(Number(total) || 1))
   const heroStats = heroBattleStats(heroLevel)
+  const itemRelic = battleRelicForLevel(heroStats.level, relicLevel)
+  const itemAbility = relicBattleAbility(itemRelic)
+  const safeItemUsedAt =
+    itemRelic
+    && Number.isSafeInteger(itemUsedAt)
+    && itemUsedAt >= 0
+    && itemUsedAt < safeTotal
+      ? itemUsedAt
+      : null
   const enemyStats = enemyBattleStats({
     heroLevel: heroStats.level,
     enemyRankIndex,
@@ -899,8 +971,28 @@ export function resolveBattleState({
   let damageTaken = 0
   let healingDone = 0
   let lastDamageTaken = 0
+  let itemArmed = false
+  let itemTriggered = false
+  let itemBonusDamage = 0
+  let itemBlocked = 0
+  let itemHealing = 0
+
+  const activateItem = () => {
+    itemArmed = true
+    if (itemAbility?.kind !== 'heal') return
+    const healing = Math.min(
+      Math.ceil((heroStats.maxHp * itemAbility.healPercent) / 100),
+      heroStats.maxHp - heroCurrentHp,
+    )
+    heroCurrentHp += healing
+    healingDone += healing
+    itemHealing += healing
+    itemTriggered = true
+    itemArmed = false
+  }
 
   for (const [turnIndex, answer] of log.entries()) {
+    if (turnIndex === safeItemUsedAt) activateItem()
     const finalTurn = turnIndex + 1 >= safeTotal
     if (answer === 'correct') {
       correct += 1
@@ -946,25 +1038,43 @@ export function resolveBattleState({
         lastEvent = { kind: 'hit', emoji: '⚔️', title: '敵に一撃！' }
       }
 
-      const multiplier =
+      const tacticMultiplier =
         lastEvent.kind === 'burst'
           ? 1.5
           : lastEvent.kind === 'counter'
             ? 1.25
             : 1
-      let damage = Math.max(
+      const itemPowerActive = itemArmed && itemAbility?.kind === 'power'
+      const normalDamage = Math.max(
         1,
         Math.round(
-          Math.max(1, heroStats.attack - enemyStats.defense) * multiplier,
+          Math.max(1, heroStats.attack - enemyStats.defense) * tacticMultiplier,
         ),
       )
+      let damage = itemPowerActive
+        ? Math.max(1, Math.round(normalDamage * itemAbility.multiplier))
+        : normalDamage
+      if (itemPowerActive) {
+        itemArmed = false
+        itemTriggered = true
+        lastEvent = {
+          ...lastEvent,
+          kind: 'item-power',
+          emoji: itemRelic.emoji,
+          title: `${itemRelic.name}で威力アップ！`,
+        }
+      }
       // コンボを選ばない作戦でも、全問正解の最終問は残りHPを削り切る。
       if (finalTurn && correct === safeTotal) damage = enemyCurrentHp
       const minimumHp = finalTurn ? 0 : 1
-      const appliedDamage = Math.min(
-        damage,
-        Math.max(0, enemyCurrentHp - minimumHp),
-      )
+      const availableDamage = Math.max(0, enemyCurrentHp - minimumHp)
+      const appliedDamage = Math.min(damage, availableDamage)
+      if (itemPowerActive) {
+        itemBonusDamage += Math.max(
+          0,
+          appliedDamage - Math.min(normalDamage, availableDamage),
+        )
+      }
       enemyCurrentHp -= appliedDamage
       damageDealt += appliedDamage
       lastEvent.damage = appliedDamage
@@ -974,7 +1084,17 @@ export function resolveBattleState({
 
     streak = 0
     previousWasMiss = true
-    if (tactic.id === 'guard' && shields > 0) {
+    if (itemArmed && itemAbility?.kind === 'guard') {
+      itemArmed = false
+      itemTriggered = true
+      itemBlocked += 1
+      lastEvent = {
+        kind: 'item-guard',
+        emoji: itemRelic.emoji,
+        title: `${itemRelic.name}で反撃を防いだ！`,
+        damage: 0,
+      }
+    } else if (tactic.id === 'guard' && shields > 0) {
       shields -= 1
       protectedHits += 1
       lastEvent = {
@@ -1010,6 +1130,10 @@ export function resolveBattleState({
     }
   }
 
+  // 回答後に次ターン用として使った場合や、HP回復を回答前に使った場合も
+  // battleLogだけの再計算で同じ待機・回復状態を復元する。
+  if (safeItemUsedAt === log.length && log.length < safeTotal) activateItem()
+
   // HPの割合も選択した問題数を分母にする。全問正解／全問ミス以外では、
   // 最終問より前に0%へ到達しない。
   const enemyHp = Math.max(0, 100 - Math.floor((correct / safeTotal) * 100))
@@ -1041,6 +1165,32 @@ export function resolveBattleState({
     summary = `奥義 ${comboBursts}回・最大 ${maxStreak}連撃`
     activations = comboBursts
   }
+
+  const itemUsed = safeItemUsedAt !== null
+  const itemStatus = !itemUsed
+    ? '未使用'
+    : itemArmed
+      ? itemAbility.kind === 'power'
+        ? itemAbility.short
+        : '反撃防止 待機'
+      : itemAbility.kind === 'heal'
+        ? itemHealing > 0
+          ? `HP +${itemHealing}`
+          : 'HP満タン'
+        : itemAbility.kind === 'power'
+          ? itemBonusDamage > 0
+            ? `追加 +${itemBonusDamage}`
+            : '威力UP 発動'
+          : itemBlocked > 0
+            ? '反撃を防止'
+            : '使用済み'
+  const itemSummary = !itemUsed
+    ? '持ち込み・未使用'
+    : itemAbility.kind === 'heal'
+      ? `HPを${itemHealing}回復`
+      : itemAbility.kind === 'power'
+        ? `追加ダメージ ${itemBonusDamage}`
+        : `反撃防止 ${itemBlocked}回`
 
   return {
     tacticId: tactic.id,
@@ -1074,6 +1224,17 @@ export function resolveBattleState({
     status,
     summary,
     lastEvent,
+    itemRelic,
+    itemAbility,
+    itemUsed,
+    itemUsedAt: safeItemUsedAt,
+    itemArmed,
+    itemTriggered,
+    itemStatus,
+    itemSummary,
+    itemBonusDamage,
+    itemBlocked,
+    itemHealing,
   }
 }
 

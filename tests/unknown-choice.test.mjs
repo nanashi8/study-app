@@ -8,6 +8,8 @@ import { UNKNOWN_CHOICE_ID } from '../src/lib/quizChoices.js'
 const MULTIPLE_CHOICE_SCREENS = [
   'Diagnostic.jsx',
   'GrammarQuiz.jsx',
+  'KotenCultureQuiz.jsx',
+  'KotenGrammarQuiz.jsx',
   'KotenInterpretationQuiz.jsx',
   'KotenQuiz.jsx',
   'ListeningQuiz.jsx',
