@@ -1,0 +1,103 @@
+// 診断の基準問題と専用読解に対する、答え合わせ用の講師フィードバック。
+// 問題IDを互換キーとして保ちつつ、正答だけでなく根拠・英文・和訳まで確認できるようにする。
+
+export const DIAGNOSTIC_EXPLANATIONS = Object.freeze({
+  diag_v_5: 'always は頻度を表す副詞で、「いつも」という意味です。',
+  diag_g_5: '主語 She は3人称単数で、every Sunday は現在の習慣です。一般動詞 play に -s を付けて plays にします。',
+  diag_u_5: 'look for は「〜を探す」です。look at（〜を見る）と区別しましょう。',
+  diag_r_5: '“It is raining today, so she takes it to school.” の so 以下が、傘を持っていく理由を示しています。',
+
+  diag_v_4: 'invite は、人を行事や場所へ「招待する」という意味の動詞です。',
+  diag_g_4: '電話がかかってきた時点で夕食中だったので、過去進行形 were having を使います。',
+  diag_u_4: '「〜に興味がある」は be interested in です。interested の後ろの前置詞は in です。',
+  diag_r_4: '自転車のタイヤがパンクしていたため、Tom は walked to the park、つまり歩いて公園へ行きました。',
+
+  diag_v_3: 'environment は、人や生物を取り巻く「環境」という意味の名詞です。',
+  diag_g_3: '2020 は継続の開始時点なので since を使います。for は期間の長さの前に置きます。',
+  diag_u_3: 'take care of は「〜の世話をする」です。文中ではおばが年老いた犬の世話をしています。',
+  diag_r_3: '金曜日は曇ったため行事を土曜日へ移し、その土曜日は晴れたとあります。',
+
+  diag_v_pre2: 'maintain は、状態や水準を保って「維持する」という意味です。',
+  diag_g_pre2: 'standing by the window は現在分詞の句で、直前の The woman を「窓辺に立っている」と説明します。',
+  diag_u_pre2: 'put off は予定を後へ移す「延期する」です。call off（中止する）と区別しましょう。',
+  diag_r_pre2: '店が買うストローは以前の3分の1になったので、主な結果はプラスチックストローの大幅な削減です。',
+
+  diag_v_2: 'inevitable は、避けることができない「避けられない」という意味です。',
+  diag_g_2: '現在の事実に反する仮定なので、If 節を過去形 had、主節を would + 動詞の原形にします。',
+  diag_u_2: 'come up with は、案や解決策を「思いつく・考え出す」という意味です。',
+  diag_r_2: '成功した会社は静かな時間を残しつつ、緊急の質問だけを扱う連絡経路を設けました。',
+
+  diag_v_pre1: 'meticulous は、細部まで注意を払う「細心の・細部まで注意深い」という意味です。',
+  diag_g_pre1: 'Hardly が文頭に出る「〜するとすぐ」の構文では倒置し、過去完了の had the meeting started とします。',
+  diag_u_pre1: 'take A for granted は、Aの価値や存在を疑わず「Aを当然のものと思う」という意味です。',
+  diag_r_pre1: '植樹本数の発表だけでなく、長期の手入れと将来にも適応できる多様な樹種を優先すべきだと述べています。',
+
+  diag_v_1: 'ubiquitous は、どこにでも見られる「至る所にある」という意味です。',
+  diag_g_1: 'imperative など必要性を表す語の後の that 節では、仮定法現在として動詞の原形 submit を使います。',
+  diag_u_1: 'in the wake of は、出来事の「後を受けて・結果として」という意味です。',
+  diag_r_1: '指標は有用でも、単一目標にすると行動をゆがめるため、限界を見直し、捉えられない証拠と併せて解釈すべきだという主張です。',
+
+  diag_r_5_b: '最後の文の “He gets to school at eight forty.” が到着時刻を直接示しています。',
+  diag_r_5_c: '“After dinner, she walks the dog” とあるので、夕食後にするのは犬の散歩です。',
+  diag_r_4_b: '土曜日は雨の予報だったため、Kei はピクニックを日曜日へ変更しました。',
+  diag_r_4_c: '土曜日は5時閉館で、Aya は4時30分に着いたため、残り時間は30分です。',
+  diag_r_3_b: '印刷機が止まった後、“They shared the event online instead” とあり、オンラインで知らせました。',
+  diag_r_3_c: '1か月後に水道メーターの値が明確に下がったことが、節水行動の効果を示しています。',
+  diag_r_pre2_b: '運営者は朝の混雑前に住宅地から中心部へ自転車を移し、中心部の不足に対応しました。',
+  diag_r_pre2_c: '携帯電話を別室に置いた組の方が難問を多く解けたため、未使用でも携帯電話が注意をそらし得るとわかります。',
+  diag_r_2_b: '在宅勤務で減った非公式な助言を補うため、新入社員一人ずつにメンターを付けました。',
+  diag_r_2_c: '所有者自身が道具を使い手順を学ぶため、後に簡単な修理を自分で行い、廃棄を減らせます。',
+  diag_r_pre1_b: '短い訓練と、判断が難しい報告を専門家確認済みの写真と照合する方法を組み合わせています。',
+  diag_r_pre1_c: '画像だけではわからない由来の不確かさ、論争、文化的つながりを補うために詳しい記録を公開します。',
+  diag_r_1_b: '不足予測が買いだめを生み、逆に信頼できる警告が節約を促すように、予測自体が予測対象を変え得ます。',
+  diag_r_1_c: '結果が判明する前に問いと方法を評価するため、意外な結果かどうかに公開判断が左右されにくくなります。',
+})
+
+export const DIAGNOSTIC_PASSAGE_JA = Object.freeze({
+  diag_r_5: 'ミカは青い傘を持っています。今日は雨が降っているので、彼女はそれを学校へ持っていきます。',
+  diag_r_4: 'トムは昼食後に自転車に乗りたかったのですが、タイヤが1本パンクしているのを見て、代わりに歩いて公園へ行きました。',
+  diag_r_3: '科学部は金曜日に星を見る予定でした。その晩は空が曇ったので、先生は行事を土曜日へ移しました。そのときは晴れていました。',
+  diag_r_pre2: '地元のカフェは、プラスチック製ストローを自動的に渡すのをやめました。客は今も頼めますが、多くの人は冷たい飲み物に付く金属製スプーンを使っています。店主によると、購入するストローは以前の3分の1です。',
+  diag_r_2: 'いくつかの会社は、従業員が難しい仕事に集中できるよう午前中を会議なしにしました。初めは生産性が上がりましたが、後に緊急の質問が答えられず遅れが出たチームもありました。最も成功した会社は静かな時間を保ちつつ、本当に緊急の連絡用経路を設けました。',
+  diag_r_pre1: '街路樹は道路の温度を下げられますが、長期計画なしに植えると期待外れに終わりかねません。若木には何年もの水やりと手入れが必要で、今育つ樹種も温暖化した将来には育ちにくいかもしれません。そのため都市は、大きな植樹本数を発表するだけでなく、継続的な手入れに資金を出し、多様な樹種を選ぶ方が大きな効果を得られます。',
+  diag_r_1: '指標が政策の第一目標になると、人は本来の目的より数値をよくするよう行動しがちです。試験点だけで評価される学校は教育課程を狭め、入院期間の短さだけで報奨を受ける病院は複雑な患者を避けるかもしれません。これは測定が無用という意味ではなく、指標を見直せる状態にし、指標が捉えない証拠と併せて解釈すべきだという意味です。',
+
+  diag_r_5_b: 'ユウタの音楽の授業は9時に始まります。彼は8時に家を出てバスに乗り、8時40分に学校へ着きます。',
+  diag_r_5_c: 'エマは猫と犬を飼っています。学校へ行く前に猫へ餌をやり、夕食後には父親と犬を散歩させます。',
+  diag_r_4_b: 'ケイは土曜日にピクニックを計画していました。天気予報が雨だと言ったので日曜日へ変更し、友人へメールしました。日曜日は晴れました。',
+  diag_r_4_c: '町の図書館は平日は6時、週末は5時に閉まります。アヤは土曜日の4時30分に、3冊の本を返すため到着しました。',
+  diag_r_3_b: '生徒たちは学校祭のポスターを作りましたが、印刷機が動かなくなりました。代わりに催しをオンラインで共有したところ、予想より多くの来場者がありました。',
+  diag_r_3_c: 'サムは水の使用を減らしたいと思い、シャワーを短くし、歯磨き中は蛇口を閉め始めました。1か月後、水道メーターは明らかな減少を示しました。',
+  diag_r_pre2_b: '市の自転車共有事業は人気になりましたが、中心部の置き場は朝によく空になりました。運営者は日の出前に住宅地から中心部へ自転車を移し始め、苦情はまもなく減りました。',
+  diag_r_pre2_c: 'ある研究で、一方の組は携帯電話を机の上に置き、もう一方は別室に置きました。別室に置いた組はより多くの難問を解きましたが、携帯電話がないと不安だと話す人もいました。',
+  diag_r_2_b: '会社が在宅勤務を導入した後、経験豊かな社員は生産性を保ちましたが、新入社員が受ける非公式な助言は減りました。そこで会社は新入社員一人ずつにメンターを付け、週1回オンラインで話すようにしました。新入社員はより自信をもって仕事を終えるようになりました。',
+  diag_r_2_c: '修理カフェでは、ボランティアは来訪者の壊れた家電を直すだけではありません。各手順を説明し、所有者自身に道具を使ってもらいます。後に多くの来訪者が、製品をすぐ捨てず、簡単な修理を自分で試すようになったと報告しています。',
+  diag_r_pre1_b: '市民科学の活動は、専門研究者がほとんど訪れない地域からも観察を集められます。しかし、ボランティアによって種の判定が異なることがあります。成功する活動は短い訓練課題を用意し、不確かな報告を専門家が確認した写真と照合します。',
+  diag_r_pre1_c: '博物館資料をデジタル化すると、珍しい品を世界中の人が見られますが、画像だけでは品の不確かな由来や文化的役割が隠れることがあります。そのため学芸員は、情報の空白や論争、各資料につながる共同体を含む記録を公開するようになっています。',
+  diag_r_1_b: '人間行動についての予測は、予測しようとする行動自体を変えることがあります。不足の警告が買いだめを促し、実際に不足を生むことがあります。逆に、信頼できる警告が節約を促し、不足を防ぐこともあります。したがって社会予測は、自らが及ぼす影響を考慮しなければなりません。',
+  diag_r_1_c: '研究者は、以前の研究を再現する試みより、新しい発見に対して高く評価されがちです。事前登録報告は、結果が判明する前に研究の問いと方法を評価して、この偏りに対処します。その後の掲載は、結果が驚くべきものに見えるかどうかに左右されにくくなります。',
+})
+
+export const DIAGNOSTIC_STATIC_REVIEWS = Object.freeze({
+  diag_v_5: Object.freeze({ en: 'I always get up at six.', ja: '私はいつも6時に起きます。' }),
+  diag_g_5: Object.freeze({ en: 'She plays tennis every Sunday.', ja: '彼女は毎週日曜日にテニスをします。' }),
+  diag_u_5: Object.freeze({ en: 'I am looking for my key.', ja: '私は鍵を探しています。' }),
+  diag_v_4: Object.freeze({ en: 'We invited Ken to the party.', ja: '私たちはケンをパーティーへ招待しました。' }),
+  diag_g_4: Object.freeze({ en: 'We were having dinner when he called us.', ja: '彼が電話してきたとき、私たちは夕食中でした。' }),
+  diag_u_4: Object.freeze({ en: 'Aya is interested in science.', ja: 'アヤは科学に興味があります。' }),
+  diag_v_3: Object.freeze({ en: 'We must protect the environment.', ja: '私たちは環境を守らなければなりません。' }),
+  diag_g_3: Object.freeze({ en: 'I have lived in this town since 2020.', ja: '私は2020年からこの町に住んでいます。' }),
+  diag_u_3: Object.freeze({ en: 'My aunt takes care of her old dog.', ja: 'おばは年老いた犬の世話をしています。' }),
+  diag_v_pre2: Object.freeze({ en: 'It is important to maintain good health.', ja: '健康を維持することは大切です。' }),
+  diag_g_pre2: Object.freeze({ en: 'The woman standing by the window is my English teacher.', ja: '窓辺に立っている女性は私の英語の先生です。' }),
+  diag_u_pre2: Object.freeze({ en: 'We had to put off the game because of the rain.', ja: '雨のため試合を延期しなければなりませんでした。' }),
+  diag_v_2: Object.freeze({ en: 'Some change is inevitable.', ja: '変化の中には避けられないものもあります。' }),
+  diag_g_2: Object.freeze({ en: 'If I had more free time, I would learn Spanish.', ja: 'もっと自由な時間があれば、スペイン語を学ぶのに。' }),
+  diag_u_2: Object.freeze({ en: 'The team came up with a practical solution.', ja: 'チームは実用的な解決策を思いつきました。' }),
+  diag_v_pre1: Object.freeze({ en: 'She kept meticulous records.', ja: '彼女は細部まで注意深い記録を残しました。' }),
+  diag_g_pre1: Object.freeze({ en: 'Hardly had the meeting started when the alarm rang.', ja: '会議が始まるやいなや警報が鳴りました。' }),
+  diag_u_pre1: Object.freeze({ en: 'Many people take clean water for granted.', ja: '多くの人はきれいな水を当然のものと思っています。' }),
+  diag_v_1: Object.freeze({ en: 'Smartphones have become ubiquitous.', ja: 'スマートフォンは至る所で見られるようになりました。' }),
+  diag_g_1: Object.freeze({ en: 'It is imperative that every applicant submit the form by Friday.', ja: 'すべての応募者が金曜日までに用紙を提出することが不可欠です。' }),
+  diag_u_1: Object.freeze({ en: 'Several regulations were introduced in the wake of the accident.', ja: '事故を受けて複数の規制が導入されました。' }),
+})

@@ -1,5 +1,7 @@
+import { useMemo } from 'react'
 import { useStore } from '../store/useStore.js'
 import { overallProgress, suggestStartPosition } from '../lib/session.js'
+import { buildLearningPowerProfile } from '../lib/learningPower.js'
 import { enemyLevel } from '../lib/adaptive.js'
 import { ROOTS, wordsByRoot } from '../data/vocab.js'
 import { todayIndex } from '../store/useStore.js'
@@ -44,6 +46,12 @@ export function HomeScreen() {
   const myGrammarList = useStore((s) => s.myGrammarList)
   const writingProgress = useStore((s) => s.writingProgress)
   const diagnosticHistory = useStore((s) => s.diagnosticHistory)
+  const kotenSrs = useStore((s) => s.kotenSrs)
+  const kotenGrammarSrs = useStore((s) => s.kotenGrammarSrs)
+  const kotenCultureSrs = useStore((s) => s.kotenCultureSrs)
+  const kotenInterpretationSrs = useStore((s) => s.kotenInterpretationSrs)
+  const skillStats = useStore((s) => s.skillStats)
+  const learningAnalytics = useStore((s) => s.learningAnalytics)
 
   const engPos = useStore((s) => s.engPos)
   const hero = heroProgress(stats.xp)
@@ -56,6 +64,35 @@ export function HomeScreen() {
   const latestDiagnostic = Array.isArray(diagnosticHistory) ? diagnosticHistory[0] : null
 
   const prog = overallProgress(srs)
+  const learningPower = useMemo(
+    () => buildLearningPowerProfile({
+      learningAnalytics,
+      srsStores: [
+        srs,
+        kotenSrs,
+        kotenGrammarSrs,
+        kotenCultureSrs,
+        kotenInterpretationSrs,
+      ],
+      skillStats,
+      diagnosticHistory,
+      stats,
+      dueCount: prog.due,
+    }),
+    [
+      learningAnalytics,
+      srs,
+      kotenSrs,
+      kotenGrammarSrs,
+      kotenCultureSrs,
+      kotenInterpretationSrs,
+      skillStats,
+      diagnosticHistory,
+      stats,
+      prog.due,
+    ],
+  )
+  const recommendation = learningPower.recommendation
   const goal = settings.dailyGoal || 20
   const todayCount = stats.day === todayIndex() ? stats.todayCount : 0
   const goalPct = Math.min(1, todayCount / goal)
@@ -65,9 +102,6 @@ export function HomeScreen() {
 
   const dayRoot = ROOTS[todayIndex() % ROOTS.length]
   const rootWords = wordsByRoot(dayRoot.id).slice(0, 3)
-
-  const startDue = () =>
-    navigate('vocabStudy', { source: { type: 'due' }, title: '復習', mode: 'study' })
 
   return (
     <div className="pb-6">
@@ -141,37 +175,49 @@ export function HomeScreen() {
       </div>
 
       <div className="space-y-5 px-4 pt-5">
-        {/* 続きから / 復習 */}
-        {prog.due > 0 ? (
-          <Card className="overflow-hidden">
-            <button onClick={startDue} className="flex w-full items-center gap-3 p-4 text-left active:bg-brand-50">
-              <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-hint-soft text-hint">
-                <Refresh size={24} />
+        {/* テスト結果・記憶・習慣・得意時間帯を、その時点の次メニューに使う。 */}
+        <Card className="overflow-hidden">
+          <button
+            onClick={() => navigate(recommendation.screen, recommendation.params)}
+            className="w-full bg-gradient-to-br from-slate-900 via-indigo-950 to-violet-950 p-4 text-left text-white active:opacity-95"
+          >
+            <div className="flex items-start gap-3">
+              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/10 text-violet-200 ring-1 ring-inset ring-white/10">
+                {recommendation.id === 'review' ? <Refresh size={24} /> : <Sparkles size={24} />}
               </span>
-              <div className="flex-1">
-                <div className="font-display font-extrabold text-ink">復習しよう</div>
-                <div className="text-xs font-bold text-ink/50">{prog.due}語が復習どきです</div>
+              <div className="min-w-0 flex-1">
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <span className="text-[9px] font-extrabold tracking-[0.16em] text-violet-200/70">
+                    学習脳力ナビ
+                  </span>
+                  <span className="rounded-full bg-white/10 px-2 py-0.5 text-[9px] font-extrabold text-white/70">
+                    {recommendation.intensity}
+                  </span>
+                </div>
+                <p className="mt-1 font-display text-base font-extrabold">
+                  {recommendation.title}
+                </p>
+                <p className="mt-1 text-[10px] font-bold leading-relaxed text-white/55">
+                  {recommendation.reason}
+                </p>
+                <div className="mt-2 flex items-center justify-between gap-2">
+                  <span className="text-[9px] font-extrabold text-amber-200/80">
+                    {recommendation.timing}
+                  </span>
+                  <span className="inline-flex shrink-0 items-center gap-1 text-[10px] font-extrabold text-white/85">
+                    {recommendation.actionLabel} <ArrowRight size={14} />
+                  </span>
+                </div>
               </div>
-              <span className="text-brand-500"><ArrowRight size={22} /></span>
-            </button>
-          </Card>
-        ) : (
-          <Card>
-            <button
-              onClick={() => navigate('vocabLevels')}
-              className="flex w-full items-center gap-3 p-4 text-left active:bg-brand-50"
-            >
-              <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-100 text-brand-600">
-                <Sparkles size={24} />
+              <span className="flex h-12 w-12 shrink-0 flex-col items-center justify-center rounded-full bg-white/10 ring-1 ring-inset ring-white/10">
+                <span className="font-display text-lg font-extrabold leading-none">
+                  {learningPower.score ?? '—'}
+                </span>
+                <span className="mt-0.5 text-[7px] font-extrabold text-white/45">参考値</span>
               </span>
-              <div className="flex-1">
-                <div className="font-display font-extrabold text-ink">今日の学習をはじめる</div>
-                <div className="text-xs font-bold text-ink/50">レベルを選んで単語を覚えよう</div>
-              </div>
-              <span className="text-brand-500"><ArrowRight size={22} /></span>
-            </button>
-          </Card>
-        )}
+            </div>
+          </button>
+        </Card>
 
         {/* 学習診断 */}
         <Card className="overflow-hidden">
@@ -234,6 +280,10 @@ export function HomeScreen() {
             <ModeTile
               icon={<Book size={22} />} label="長文" sub="じっくり読解"
               color="linear-gradient(135deg,#10b981,#059669)" onClick={() => navigate('readingList')}
+            />
+            <ModeTile
+              icon={<Headphones size={22} />} label="名作朗読" sub="原文 → やさしい和訳"
+              color="linear-gradient(135deg,#0f766e,#0d9488)" onClick={() => navigate('literatureLibrary')}
             />
             <ModeTile
               icon={<Sparkles size={22} />} label="熟語・構文" sub="3択で覚える"

@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
-import { analyzeLearning } from '../lib/learningAnalytics.js'
-import { Card, ProgressBar, cx } from './ui.jsx'
+import { buildLearningPowerProfile } from '../lib/learningPower.js'
+import { Card, ProgressBar, ProgressRing, cx } from './ui.jsx'
 
 const asPercent = (value) =>
   value == null ? '—' : `${Math.round(value * 100)}%`
@@ -13,6 +13,13 @@ function readinessLabel(readiness) {
   if (readiness === 'growing') return '分析精度：成長中'
   if (readiness === 'starting') return '分析精度：初期'
   return '分析データを収集中'
+}
+
+function powerReadinessLabel(readiness) {
+  if (readiness === 'stable') return '信頼度：安定'
+  if (readiness === 'growing') return '信頼度：成長中'
+  if (readiness === 'starting') return '信頼度：初期'
+  return 'まだ計測前'
 }
 
 function hourColor(stat) {
@@ -56,6 +63,84 @@ function Metric({ label, value, note, tone = 'brand' }) {
       <p className="mt-0.5 font-display text-xl font-extrabold">{value}</p>
       <p className="mt-0.5 text-[9px] font-bold opacity-55">{note}</p>
     </div>
+  )
+}
+
+function LearningPowerProfile({ profile }) {
+  const { recommendation } = profile
+
+  return (
+    <Card className="overflow-hidden">
+      <div className="bg-gradient-to-br from-indigo-600 via-violet-600 to-fuchsia-600 p-4 text-white">
+        <div className="flex items-start gap-3">
+          <ProgressRing
+            value={(profile.score ?? 0) / 100}
+            size={82}
+            stroke={8}
+            color="#ffffff"
+            track="rgba(255,255,255,0.2)"
+          >
+            <span className="font-display text-2xl font-extrabold leading-none">
+              {profile.score ?? '—'}
+            </span>
+            <span className="mt-0.5 text-[8px] font-extrabold text-white/60">参考値 / 100</span>
+          </ProgressRing>
+
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-center gap-1.5">
+              <p className="text-[9px] font-extrabold tracking-[0.16em] text-white/55">
+                LEARNING POWER
+              </p>
+              <span className="rounded-full bg-white/15 px-2 py-0.5 text-[9px] font-extrabold text-white/80">
+                {powerReadinessLabel(profile.confidence)}
+              </span>
+            </div>
+            <h2 className="mt-1 font-display text-lg font-extrabold">学習脳力プロフィール</h2>
+            <p className="mt-1 text-[10px] font-bold leading-relaxed text-white/65">
+              テスト結果と学習習慣から、伸ばし方を選ぶための現在値を推定
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-4 grid grid-cols-2 gap-2">
+          {profile.dimensions.map((item) => (
+            <div
+              key={item.id}
+              className="min-w-0 rounded-2xl bg-white/10 p-3 ring-1 ring-inset ring-white/10"
+            >
+              <div className="flex items-baseline justify-between gap-1">
+                <p className="truncate text-[10px] font-extrabold text-white/70">{item.label}</p>
+                <p className="font-display text-lg font-extrabold">
+                  {item.score ?? '—'}
+                </p>
+              </div>
+              <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-white/15">
+                <div
+                  className="h-full rounded-full bg-white/85"
+                  style={{ width: `${item.score ?? 0}%` }}
+                />
+              </div>
+              <p className="mt-1.5 truncate text-[8px] font-bold text-white/50">
+                {item.evidence}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-3 rounded-2xl bg-slate-950/20 p-3 ring-1 ring-inset ring-white/10">
+          <div className="flex items-center justify-between gap-2">
+            <p className="text-[9px] font-extrabold tracking-wider text-amber-200">今の活かし方</p>
+            <span className="rounded-full bg-amber-300/15 px-2 py-0.5 text-[9px] font-extrabold text-amber-100">
+              {recommendation.intensity}
+            </span>
+          </div>
+          <p className="mt-1 text-sm font-extrabold">{recommendation.title}</p>
+          <p className="mt-1 text-[9px] font-bold leading-relaxed text-white/55">
+            {recommendation.reason}
+          </p>
+        </div>
+      </div>
+    </Card>
   )
 }
 
@@ -317,12 +402,18 @@ export function LearningAnalyticsPanel({
   kotenCultureSrs,
   kotenInterpretationSrs,
   skillStats,
+  diagnosticHistory,
+  stats,
+  dueCount,
 }) {
-  const analysis = useMemo(
-    () => analyzeLearning({
+  const profile = useMemo(
+    () => buildLearningPowerProfile({
       learningAnalytics,
       srsStores: [srs, kotenSrs, kotenGrammarSrs, kotenCultureSrs, kotenInterpretationSrs],
       skillStats,
+      diagnosticHistory,
+      stats,
+      dueCount,
     }),
     [
       learningAnalytics,
@@ -332,19 +423,24 @@ export function LearningAnalyticsPanel({
       kotenCultureSrs,
       kotenInterpretationSrs,
       skillStats,
+      diagnosticHistory,
+      stats,
+      dueCount,
     ],
   )
+  const analysis = profile.analysis
 
   return (
     <section className="space-y-4">
       <div className="px-1">
         <p className="text-[10px] font-extrabold tracking-[0.14em] text-brand-500">LEARNING ANALYTICS</p>
-        <h2 className="font-display text-xl font-extrabold text-ink">記憶と学習効率の分析</h2>
+        <h2 className="font-display text-xl font-extrabold text-ink">学習脳力と記憶の分析</h2>
         <p className="mt-1 text-[11px] font-bold leading-relaxed text-ink/45">
-          回答・復習間隔・学習時刻から、定着と忘却の傾向を推定します。
+          テスト結果・回答・復習間隔・学習時刻から、現在の学び方を推定します。
         </p>
       </div>
 
+      <LearningPowerProfile profile={profile} />
       <RetentionFlow analysis={analysis} />
       <MemoryBalance analysis={analysis} />
       <ForgettingCurve analysis={analysis} />
@@ -352,7 +448,8 @@ export function LearningAnalyticsPanel({
       <EfficiencyClock analysis={analysis} />
 
       <p className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-[10px] font-bold leading-relaxed text-slate-500">
-        この表示は学習履歴に基づくモデル推定で、脳波・医療検査による測定ではありません。
+        学習脳力は固定された才能やIQではなく、学習履歴に基づく変化する参考値です。
+        脳波・医療検査による測定ではありません。
         時刻別分析と忘却曲線は、今後の回答が増えるほど個人の傾向に近づきます。
       </p>
     </section>

@@ -49,7 +49,7 @@ const RAW = [
   ["edge","名","pre2","端・縁・刃","He stood at the edge of the cliff.","彼は崖の端に立った。","古英語 ecg「刃」。",{"field":"一般"}],
   ["election","名","2","選挙","The election will be held in May.","選挙は5月に行われる。","ラテン e(外へ)+legere(選ぶ)→ elect。",{"field":"政治"}],
   ["engine","名","3","エンジン・機関","The car engine made a noise.","車のエンジンが音を立てた。","ラテン ingenium「才能・仕掛け」→ ingenious と同源。",{"field":"技術"}],
-  ["engineer","名","3","技師・エンジニア","She is a software engineer.","彼女はソフトウェア技師だ。","engine + -er。",{"field":"一般"}],
+  ["engineer","名","3","技師・エンジニア","She is a software engineer.","彼女はソフトウェア技師だ。","engine（機械）＋人を表す -er。「機械を扱う人」から技術者。",{"field":"一般"}],
   ["entrance","名","3","入り口・入場","Meet me at the entrance.","入り口で会おう。","enter(入る)+ -ance。",{"field":"一般"}],
   ["envelope","名","pre2","封筒","Put the letter in the envelope.","手紙を封筒に入れて。","古フランス enveloper「包む」→ develop の反対。",{"field":"一般"}],
   ["equipment","名","2","設備・装備","We need new equipment.","私たちは新しい設備が必要だ。","古フランス equiper「装備する」。",{"field":"一般"}],

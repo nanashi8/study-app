@@ -53,6 +53,15 @@ export const CONTENTS = [
     status: 'available',
   },
   {
+    id: 'literature-listening',
+    title: '名作交互朗読',
+    subtitle: '英語原文と和訳・古文と現代語訳を交互に聴く',
+    emoji: '🎙️',
+    color: '#0f766e',
+    screen: 'literatureLibrary',
+    status: 'available',
+  },
+  {
     id: 'other-subjects',
     title: 'ほかの教科',
     subtitle: '理科・社会などの確認機能（準備中）',

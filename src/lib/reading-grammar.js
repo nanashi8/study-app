@@ -178,6 +178,28 @@ const SVOC_NAMES = {
   SVOC: '第5文型',
 }
 
+const PATTERN_READING_GUIDES = {
+  SV: '文全体は「主語は、どうする」の順で骨格を取ります。',
+  SVC: '文全体は「主語は、どんなもの・状態だ」の関係を押さえます。',
+  SVO: '文全体は「主語は、何を、どうする」の関係を押さえます。',
+  SVOO: '文全体は「主語は、だれに、何を、どうする」の関係を押さえます。',
+  SVOC: '文全体は、目的語と、その目的語を説明する語の関係まで押さえます。',
+}
+
+const CLAUSE_READING_GUIDES = {
+  '理由の副詞節': '理由を示す節なので、「なぜなら」「〜なので」と主節へつなぎます。',
+  '譲歩の副詞節': '予想に反する内容を示す節なので、「〜だけれども」と主節へつなぎます。',
+  '条件の副詞節': '主節が成り立つ条件を示す節なので、「もし〜なら」と受け取ります。',
+  '時の副詞節': '主節の時を示す節なので、「〜するとき」と場面を先に置きます。',
+  '時・対比の副詞節': '前後の内容を、時間または対比の関係でつなぐ節です。',
+  '対比の副詞節': '二つの内容を「一方で」と対照させる節です。',
+  '理由・時の副詞節': '文脈に合わせて、理由または時間の流れを主節へ足す節です。',
+  '時・条件の副詞節': '「いったん〜すると」と、時と条件をまとめて示す節です。',
+  '目的の副詞節': '主節の行動の目的を「〜するように」と示す節です。',
+  '関係詞節': '直前の名詞がどのような人・物・場所かを、後ろから説明する節です。',
+  '等位節': '前の節と同じ高さで、追加・対比・結果の内容を続ける節です。',
+}
+
 const clean = (text) => text.trim().replace(/\s+/g, ' ')
 const bare = (text) => clean(text).replace(/^[,;:]\s*/, '').replace(/\s*([,;:.!?]+)$/, '')
 const firstWord = (text) => normalizeToken(bare(text).split(/\s+/)[0] ?? '')
@@ -1234,12 +1256,69 @@ function mainClausePattern(blocks) {
   return roles.map((role) => role.replace(/[12]$/, '')).join('')
 }
 
+function roleReadingGuide(block) {
+  if (block.role === 'O' || block.role === 'O2') {
+    return 'このまとまり全体を、動詞の「何を」に当たる内容として受け取ります。'
+  }
+  if (block.role === 'O1') {
+    return 'このまとまりは、動作を受ける相手、「だれに」に当たります。'
+  }
+  if (block.role === 'C') {
+    return 'このまとまりは、前に出た主語や目的語の内容・状態を説明します。'
+  }
+  if (block.role === 'S') {
+    return 'このまとまり全体を、文の主語、「何が」に当たる内容として受け取ります。'
+  }
+  if (block.role === '並列') {
+    return '前の節と同じ高さで意味を続け、追加・対比・結果の関係を確かめます。'
+  }
+  return '文の骨格に、時・場所・手段・理由などの情報を付け足すまとまりです。'
+}
+
+function phraseReadingGuide(block) {
+  if (block.label === 'to不定詞句') {
+    if (block.role === 'O') return 'to以下を、前の動詞が表す「すること」の内容として受け取ります。'
+    if (block.role === 'C') return 'to以下が、前に出た人や物が何をするのかを説明します。'
+    return 'to以下を、目的・結果・名詞の説明として前の内容へ足します。'
+  }
+  if (block.label === '動名詞句') {
+    return '動作を「〜すること」という名詞のまとまりにして、文の主語として受け取ります。'
+  }
+  if (block.label === '分詞・動名詞句') {
+    return '動作や同時に起こる状況を、前の内容へ補って読みます。'
+  }
+  if (block.label.includes('補語')) {
+    return '前に出た主語や目的語が、どのようなもの・状態かを説明するまとまりです。'
+  }
+  if (block.label.includes('目的語')) {
+    return '前の動詞が向かう対象として、直前の内容と一続きに受け取ります。'
+  }
+  return roleReadingGuide(block)
+}
+
+function translationGuideFor(block, mainPattern) {
+  const orderLead = block.kind === 'core'
+    ? 'まず文の中心を、この語順のまま前からつかみます。'
+    : '前の内容へ、この語順のまま意味を足します。'
+  const grammarGuide = block.kind === 'core'
+    ? PATTERN_READING_GUIDES[mainPattern] ?? '主語と述語動詞を先に取り、残りの情報を順に結びます。'
+    : block.kind === 'clause'
+      ? CLAUSE_READING_GUIDES[block.label] ?? roleReadingGuide(block)
+      : phraseReadingGuide(block)
+  return [orderLead, grammarGuide, block.translationTip].filter(Boolean).join(' ')
+}
+
 export function analyzeReadingSentence(sentence) {
   const split = splitEnglish(sentence)
   const japanese = alignJapanese(split, sentence)
   const classifications = split.map((unit, index) => classifyUnit(unit, index, split))
   const blocks = split.map((unit, index) => {
     const classification = classifications[index]
+    const teachingBlock = sentence.translationScenario?.[index]
+    const hasTeachingBlock =
+      teachingBlock?.en === bare(unit.text) &&
+      typeof teachingBlock.ja === 'string' &&
+      teachingBlock.ja.trim().length > 0
     const inheritedSubject =
       classification.kind === 'core' &&
       startsWithPredicate(unit.text) &&
@@ -1250,8 +1329,15 @@ export function analyzeReadingSentence(sentence) {
     return {
       id: index,
       en: bare(unit.text),
-      ja: unit.manualJa ?? japanese[index]?.text ?? roughJapanese(unit.text, sentence.gloss),
-      jaSource: unit.manualJa ? 'manual' : (japanese[index]?.source ?? 'gloss'),
+      ja: hasTeachingBlock
+        ? teachingBlock.ja.trim()
+        : unit.manualJa ?? japanese[index]?.text ?? roughJapanese(unit.text, sentence.gloss),
+      jaSource: hasTeachingBlock
+        ? 'teaching'
+        : unit.manualJa
+          ? 'manual'
+          : (japanese[index]?.source ?? 'gloss'),
+      translationTip: hasTeachingBlock ? teachingBlock.tip?.trim() ?? '' : '',
       displayEn: classification.kind === 'core'
         ? displayCoreWithEmbeddedClause(unit.text, svoc)
         : displayText(unit.text, classification.kind),
@@ -1294,11 +1380,21 @@ export function analyzeReadingSentence(sentence) {
       },
     }
   })
+  const teachingBlocks = explainedBlocks.map((block) => {
+    const translationGuide = translationGuideFor(block, mainPattern)
+    return {
+      ...block,
+      translationGuide,
+      speechJa:
+        `意味は、「${block.ja}」。${translationGuide} ` +
+        `文法のポイントは、${block.note}`,
+    }
+  })
 
   return {
-    blocks: explainedBlocks,
-    marked: explainedBlocks.map((block) => block.displayEn).join(' '),
-    pattern: sentencePattern(explainedBlocks),
+    blocks: teachingBlocks,
+    marked: teachingBlocks.map((block) => block.displayEn).join(' '),
+    pattern: sentencePattern(teachingBlocks),
     mainPattern,
   }
 }

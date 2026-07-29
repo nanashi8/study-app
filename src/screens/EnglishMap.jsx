@@ -32,6 +32,7 @@ import { Lightbulb, ArrowRight, Check } from '../components/Icons.jsx'
 const MIN_ATTEMPTS = 10
 const READING_MIN_ATTEMPTS = 4
 const WEAK_ACC = 0.7
+const PASSAGE_IDS = new Set(PASSAGES.map((passage) => passage.id))
 
 const SKILLS = [
   { id: 'vocab', label: '単語', emoji: '📖', color: '#6366f1', screen: 'vocabLevels', kind: 'acc' },
@@ -46,7 +47,8 @@ const SKILLS = [
 function skillInfo(skill, skillStats, readingsDone) {
   if (skill.kind === 'reading') {
     const total = PASSAGES.length
-    const read = readingsDone.length
+    // 名作交互朗読も同じ readingsDone へ保存するため、英検長文だけを数える。
+    const read = new Set(readingsDone.filter((id) => PASSAGE_IDS.has(id))).size
     const s = skillStats.reading
     const attempts = s?.answered ?? 0
     if (attempts < READING_MIN_ATTEMPTS) {

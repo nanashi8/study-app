@@ -20,7 +20,7 @@ export const READING_QUESTIONS = {
         'Next to the teacher’s desk.',
       ],
       answer: 'Near the classroom door.',
-      explain: 'Ken sees the notebook near the classroom door.',
+      explain: '「ケンは教室のドアの近くでノートを見つける」とあるのが根拠です。',
     },
     {
       q: 'Why is Rina happy at the end?',

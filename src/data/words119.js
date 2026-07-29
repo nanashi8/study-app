@@ -32,7 +32,7 @@ const RAW = [
   ['ten', '形', '5', '10・10の', 'ten years', '10年', '古英語 tien(10)。', { field: '一般' }],
   ['eleven', '形', '5', '11', 'eleven o’clock', '11時', '古英語 endleofan(1余り)。', { field: '一般' }],
   ['twelve', '形', '5', '12', 'twelve months', '12か月', '古英語 twelf(2余り)。', { field: '一般' }],
-  ['thirteen', '形', '5', '13', 'thirteen years old', '13歳', 'three+ten。', { field: '一般' }],
+  ['thirteen', '形', '5', '13', 'thirteen years old', '13歳', 'three（3）＋ -teen（10台）で「13」。', { field: '一般' }],
   ['twenty', '形', '5', '20', 'twenty dollars', '20ドル', '古英語 twentig(2×10)。', { field: '一般' }],
   ['hundred', '形', '5', '100・百', 'a hundred yen', '100円', '古英語 hund(100)。', { field: '一般' }],
   ['thousand', '形', '4', '1000・千', 'a thousand people', '千人', '古英語 thusend(1000)。', { field: '一般' }],

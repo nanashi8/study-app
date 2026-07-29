@@ -6,6 +6,7 @@
 // 論説調の説明文にし、級が上がるほど語数と文構造を段階的に重くしている。
 
 import { EXAM_PASSAGES } from './passages-exam.js'
+import { READING_TRANSLATION_SCENARIOS } from './reading-translation-scenarios.js'
 
 const s = (en, ja, chunks, paragraphStart = false) => ({
   en,
@@ -401,7 +402,9 @@ const PROPER_NAME_GLOSSES = [
 ]
 
 for (const passage of PASSAGES) {
-  for (const sentence of passage.sentences) {
+  const translationScenarios = READING_TRANSLATION_SCENARIOS[passage.id] ?? []
+  for (const [sentenceIndex, sentence] of passage.sentences.entries()) {
+    sentence.translationScenario = translationScenarios[sentenceIndex] ?? null
     for (const entry of PROPER_NAME_GLOSSES) {
       if (!entry.test.test(sentence.en)) continue
       for (const [key, ja] of Object.entries(entry.words)) {

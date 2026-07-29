@@ -215,6 +215,9 @@ export function ProgressScreen() {
           kotenCultureSrs={full.kotenCultureSrs}
           kotenInterpretationSrs={full.kotenInterpretationSrs}
           skillStats={full.skillStats}
+          diagnosticHistory={full.diagnosticHistory}
+          stats={stats}
+          dueCount={prog.due}
         />
 
         {/* 級別の進捗 */}

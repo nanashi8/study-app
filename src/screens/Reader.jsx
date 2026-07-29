@@ -81,11 +81,16 @@ export function ReaderScreen() {
     [passage],
   )
 
-  // ── 構文交互再生（節・句・文法ブロックごとに英文→日本語）──
+  // ── 講師音声（節・句・文法ブロックごとに英文→語順訳・読解解説）──
   const chunks = useMemo(
     () => sentenceAnalyses.flatMap((analysis, si) =>
-      analysis.blocks.map((block) => ({ ...block, si }))),
-    [sentenceAnalyses],
+      analysis.blocks.map((block, blockIndex) => ({
+        ...block,
+        si,
+        isSentenceEnd: blockIndex === analysis.blocks.length - 1,
+        sentenceJa: passage?.sentences[si]?.ja ?? '',
+      }))),
+    [passage, sentenceAnalyses],
   )
   const paragraphs = useMemo(() => {
     const groups = []
@@ -99,13 +104,13 @@ export function ReaderScreen() {
   const [playIdx, setPlayIdx] = useState(0) // 現在のチャンク
   const [playing, setPlaying] = useState(false) // 自動送り中か
   const [dir, setDir] = useState(1) // 1=順送り / -1=戻り
-  const [phase, setPhase] = useState('en') // いま英語/日本語どちらを読んでいるか
+  const [phase, setPhase] = useState('en') // いま英語・語順訳解説・自然訳のどこを読んでいるか
   const tokenRef = useRef(0) // 再生の世代。停止・やり直しで無効化する
 
   // 画面を離れたら必ず止める
   useEffect(() => () => stopSpeaking(), [])
 
-  // idx の文法ブロックを「英→日」で読む。auto なら direction 方向へ続ける。
+  // idx の文法ブロックを「英語→語順訳解説→文全体の自然訳」で読む。
   const speakChunkSeq = (idx, { auto, direction }) => {
     const token = ++tokenRef.current
     stopSpeaking()
@@ -125,13 +130,26 @@ export function ReaderScreen() {
         onend: () => {
           if (tokenRef.current !== token) return
           setPhase('ja')
-          speakWith(c.ja, {
+          speakWith(c.speechJa ?? c.ja, {
             rate: settings.ttsRate,
             lang: 'ja-JP',
             onend: () => {
               if (tokenRef.current !== token) return
-              if (auto) run(i + direction)
-              else setPlaying(false)
+              const finish = () => {
+                if (tokenRef.current !== token) return
+                if (auto) run(i + direction)
+                else setPlaying(false)
+              }
+              if (!c.isSentenceEnd || !c.sentenceJa) {
+                finish()
+                return
+              }
+              setPhase('natural')
+              speakWith(`文全体を自然な日本語に整えると、「${c.sentenceJa}」です。`, {
+                rate: settings.ttsRate,
+                lang: 'ja-JP',
+                onend: finish,
+              })
             },
           })
         },
@@ -176,7 +194,7 @@ export function ReaderScreen() {
       lang: 'en-US',
       onend: () => {
         if (tokenRef.current !== token) return
-        speakWith(block.ja, {
+        speakWith(block.speechJa ?? block.ja, {
           rate: settings.ttsRate,
           lang: 'ja-JP',
         })
@@ -196,7 +214,7 @@ export function ReaderScreen() {
   const level = getLevel(passage.level)
   const sentence = activeIdx != null ? passage.sentences[activeIdx] : null
   const sentenceAnalysis = activeIdx != null ? sentenceAnalyses[activeIdx] : null
-  const cur = chunks[playIdx] // 構文交互再生でいま読んでいるブロック
+  const cur = chunks[playIdx] // 講師音声でいま読んでいるブロック
 
   const openSentence = (i) => {
     stopPlay()
@@ -277,7 +295,7 @@ export function ReaderScreen() {
             playOpen ? 'bg-brand-500 text-white' : 'bg-brand-100 text-brand-700',
           )}
         >
-          <SpeakerWave size={14} /> 構文交互再生
+          <SpeakerWave size={14} /> 語順訳・講師音声
         </button>
       </div>
 
@@ -356,22 +374,22 @@ export function ReaderScreen() {
           )}
         </div>
         <p className="mt-3 px-1 text-center text-xs font-bold text-ink/40">
-          一文をタップすると、節・句、SVOCM、文法解説、英日交互音声を確認できます。
+          一文をタップすると、節・句、SVOCM、前から読む語順訳、講師音声を確認できます。
         </p>
       </div>
 
-      {/* 構文交互再生バー（文法ブロックごとに英文→日本語） */}
+      {/* 講師音声バー（文法ブロックごとに英文→語順訳・読解解説） */}
       {playOpen && (
         <div className="shrink-0 border-t border-brand-100 bg-white px-4 py-3">
           <div className="mb-2 flex items-center justify-between">
             <span className="text-[11px] font-extrabold uppercase tracking-wide text-brand-400">
-              構文交互再生（英語 → 日本語）
+              講師音声（英語 → 語順訳・読解解説）
             </span>
             <div className="flex items-center gap-2">
               <span className="text-xs font-bold text-ink/40">
                 {Math.min(playIdx + 1, chunks.length)}/{chunks.length}
               </span>
-              <IconButton onClick={closePlayer} aria-label="構文交互再生を閉じる">
+              <IconButton onClick={closePlayer} aria-label="語順訳・講師音声を閉じる">
                 <Close size={18} />
               </IconButton>
             </div>
@@ -379,7 +397,7 @@ export function ReaderScreen() {
 
           {/* いま読んでいるまとまり */}
           {cur && (
-            <div className="mb-3 border border-brand-100 bg-brand-50 p-3">
+            <div className="mb-3 max-h-[42vh] overflow-y-auto border border-brand-100 bg-brand-50 p-3">
               <div className="mb-1.5 flex flex-wrap items-center gap-1.5 text-[10px] font-extrabold">
                 <span className="bg-white px-1.5 py-0.5 text-brand-700">{cur.label}</span>
                 <span className="bg-white px-1.5 py-0.5 text-ink/60">
@@ -402,8 +420,28 @@ export function ReaderScreen() {
               >
                 {cur.ja}
               </div>
+              <div className="mt-1.5 border-l-2 border-amber-300 pl-2 text-xs font-bold leading-relaxed text-ink/60">
+                {cur.translationGuide}
+              </div>
+              <div className="mt-1.5 border-l-2 border-sky-300 pl-2 text-xs font-bold leading-relaxed text-ink/60">
+                文法のポイント：{cur.note}
+              </div>
+              {cur.isSentenceEnd && (
+                <div
+                  className={cx(
+                    'mt-2 border border-emerald-100 bg-white px-2 py-1.5 text-xs font-bold leading-relaxed',
+                    phase === 'natural' ? 'text-emerald-700' : 'text-ink/45',
+                  )}
+                >
+                  文全体の自然訳：{cur.sentenceJa}
+                </div>
+              )}
               <div className="mt-1 text-[10px] font-bold text-ink/40">
-                {phase === 'en' ? '英語パート' : '日本語パート'}
+                {phase === 'en'
+                  ? '英語パート'
+                  : phase === 'ja'
+                    ? '語順訳・講師解説パート'
+                    : '文全体の自然訳パート'}
               </div>
             </div>
           )}
@@ -593,7 +631,9 @@ export function ReaderScreen() {
                     節・句・文法ブロック解説
                   </span>
                 </div>
-                <span className="text-[10px] font-bold text-ink/40">音声は英語 → 日本語</span>
+                <span className="text-[10px] font-bold text-ink/40">
+                  音声は英語 → 語順訳・講師解説
+                </span>
               </div>
               <div className="space-y-2">
                 {sentenceAnalysis.blocks.map((block, index) => (
@@ -601,7 +641,7 @@ export function ReaderScreen() {
                     <div className="flex items-start gap-2">
                       <button
                         onClick={() => speakBlockPair(block)}
-                        aria-label={`ブロック${index + 1}を英語、日本語の順で再生`}
+                        aria-label={`ブロック${index + 1}を英語、語順訳、講師解説の順で再生`}
                         className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-100 text-brand-700 active:bg-brand-200"
                       >
                         <SpeakerWave size={17} />
@@ -625,7 +665,7 @@ export function ReaderScreen() {
                         </div>
                         <p className="mt-1 font-bold leading-relaxed text-ink">{block.displayEn}</p>
                         <p className="mt-0.5 text-sm font-bold leading-relaxed text-brand-700">
-                          {block.jaSource === 'gloss' ? '語順メモ' : 'かたまりの意味'}：{block.ja}
+                          前から読む語順訳：{block.ja}
                         </p>
                       </div>
                     </div>
@@ -634,8 +674,11 @@ export function ReaderScreen() {
                         <SvocFlow parts={block.svoc.parts} />
                       </div>
                     )}
+                    <p className="mt-2 border-l-2 border-sky-300 bg-sky-50/70 px-2 py-1.5 text-xs font-bold leading-relaxed text-sky-900/75">
+                      読み方：{block.translationGuide}
+                    </p>
                     <p className="mt-2 border-l-2 border-amber-300 bg-amber-50/70 px-2 py-1.5 text-xs font-bold leading-relaxed text-ink/65">
-                      {block.note}
+                      文法のポイント：{block.note}
                     </p>
                   </article>
                 ))}

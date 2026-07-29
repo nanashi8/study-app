@@ -14,6 +14,7 @@ import {
   Refresh,
   ArrowRight,
   ChevronLeft,
+  Headphones,
 } from '../components/Icons.jsx'
 
 // box>=4 を「習得」、box1〜3 を「学習中」とみなす（英単語と同基準）。
@@ -99,6 +100,22 @@ export function KotenListScreen() {
       </div>
 
       <div className="space-y-3 px-4 pt-5">
+        <button
+          onClick={() => navigate('literatureLibrary', { kind: 'classical' })}
+          className="flex w-full items-center gap-3 rounded-3xl bg-gradient-to-r from-teal-900 to-emerald-800 p-4 text-left text-white shadow-card transition-transform active:scale-[0.99]"
+        >
+          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/12">
+            <Headphones size={24} />
+          </span>
+          <div className="min-w-0 flex-1">
+            <div className="font-display text-base font-extrabold">古典名作を交互朗読</div>
+            <div className="mt-0.5 text-xs font-bold text-white/65">
+              古文原文 → 現代語訳を一場面ずつ
+            </div>
+          </div>
+          <ArrowRight size={20} className="shrink-0 text-emerald-200" />
+        </button>
+
         <button
           onClick={() => navigate('kotenInterpretationList')}
           className="group w-full overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-amber-950 to-orange-900 p-5 text-left text-white shadow-card transition-transform active:scale-[0.99]"
