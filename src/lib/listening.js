@@ -43,6 +43,7 @@ export function playListeningItem(
       rate,
       pitch: PITCH_BY_SPEAKER[segment.speaker] ?? 1,
       voiceURI,
+      style: 'listening',
       onstart: () => {
         if (run === activeRun) onSegment?.(segment, index)
       },

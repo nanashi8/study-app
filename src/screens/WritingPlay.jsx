@@ -19,6 +19,7 @@ import {
   writingWordCount,
 } from '../lib/writing.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
+import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
 import {
   Button,
@@ -43,7 +44,10 @@ import { buildWritingInstructorExplanation } from '../lib/instructorExplanations
 
 function MissingWriting({ onBack }) {
   return (
-    <div className="flex min-h-full flex-col items-center justify-center gap-4 px-8 text-center">
+    <div className="relative flex min-h-full flex-col items-center justify-center gap-4 px-8 text-center">
+      <div className="absolute right-3 top-[calc(env(safe-area-inset-top)+0.75rem)]">
+        <SpeechSettingsButton compact />
+      </div>
       <div className="text-5xl">🧭</div>
       <p className="font-display text-lg font-extrabold text-ink">
         お題を読み込めませんでした
@@ -285,7 +289,7 @@ export function WritingPlayScreen() {
             <Chip className="bg-white/12 text-white">
               {level.emoji} {level.label}・{exercise.genre}
             </Chip>
-            <div className="w-11" />
+            <SpeechSettingsButton compact inverse />
           </div>
 
           <div className="mt-4 text-center text-white">
@@ -503,6 +507,7 @@ export function WritingPlayScreen() {
               color={level.color}
             />
           </div>
+          <SpeechSettingsButton compact />
           <button
             onClick={undo}
             disabled={!answerTokens.length && !selected && !trail.length}

@@ -43,7 +43,6 @@ import {
   buildMathFillInstructorExplanation,
   buildMathSolvedInstructorExplanation,
   buildPhraseInstructorExplanation,
-  buildPronunciationInstructorExplanation,
   buildReadingInstructorExplanation,
   buildVocabInstructorExplanation,
   buildWritingInstructorExplanation,
@@ -167,14 +166,6 @@ test('全教材の全設問から問題固有の予備校講師型4段解説を�
     assertContains(vocab.evidence, word.example?.en, `vocab:${word.id}.evidence`)
     units += 1
 
-    const pronunciation = buildPronunciationInstructorExplanation(word, {
-        heard: word.word,
-        perWord: [{ word: word.word, ok: true }],
-      })
-    assertExplanation(pronunciation, `pronunciation:${word.id}`)
-    assertContains(pronunciation.answer, word.word, `pronunciation:${word.id}.answer`)
-    assertContains(pronunciation.evidence, word.word, `pronunciation:${word.id}.evidence`)
-    units += 1
   }
 
   for (const item of PHRASES) {
@@ -347,7 +338,7 @@ test('全教材の全設問から問題固有の予備校講師型4段解説を�
     })
   }
 
-  assert.ok(units >= 23_000, `全件監査の対象数が不足しています: ${units}`)
+  assert.ok(units >= 15_000, `全件監査の対象数が不足しています: ${units}`)
 })
 
 test('全選択式問題の正答・全誤答・「わからない」に回答別の指導を返す', () => {
@@ -722,15 +713,7 @@ test('数学440穴埋めは正誤判定と解説が一致し、順不同7題は�
   assert.equal(unordered, 7)
 })
 
-test('発音とディクテーションも結果別の具体的な復習指示を返す', () => {
-  for (const word of ALL_WORDS) {
-    const value = buildPronunciationInstructorExplanation(word, {
-      heard: '別の語として認識',
-      perWord: [{ word: word.word, ok: false }],
-    })
-    assertExplanation(value, `pronunciation:${word.id}:missed`)
-    assertContains(value.evidence, word.word, `pronunciation:${word.id}:missed.evidence`)
-  }
+test('ディクテーションは結果別の具体的な復習指示を返す', () => {
   for (const item of DICTATION_ITEMS) {
     const value = buildDictationInstructorExplanation(item, { wrongSelections: 2 })
     assertExplanation(value, `dictation:${item.id}:wrong`)
@@ -751,7 +734,6 @@ test('採点を伴う全問題画面が共通の講師解説を表示する', as
     'ListeningQuiz.jsx',
     'MathSolve.jsx',
     'PhraseQuiz.jsx',
-    'PronouncePlay.jsx',
     'ReadingSummary.jsx',
     'VocabQuiz.jsx',
     'WritingPlay.jsx',

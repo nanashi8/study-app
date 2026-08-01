@@ -16,8 +16,16 @@ export function AppShell({ children, nav }) {
 import { useStore } from '../store/useStore.js'
 import { IconButton } from './ui.jsx'
 import { ChevronLeft } from './Icons.jsx'
+import { SpeechSettingsButton } from './SpeechSettings.jsx'
 
-export function ScreenHeader({ title, subtitle, right, onBack, color }) {
+export function ScreenHeader({
+  title,
+  subtitle,
+  right,
+  onBack,
+  color,
+  showSpeechSettings = true,
+}) {
   const back = useStore((s) => s.back)
   return (
     <header
@@ -36,6 +44,7 @@ export function ScreenHeader({ title, subtitle, right, onBack, color }) {
         {subtitle && <p className="truncate text-xs font-bold text-ink/50">{subtitle}</p>}
       </div>
       {right}
+      {showSpeechSettings && <SpeechSettingsButton />}
     </header>
   )
 }

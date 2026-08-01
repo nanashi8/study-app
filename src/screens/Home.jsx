@@ -2,12 +2,14 @@ import { useMemo } from 'react'
 import { useStore } from '../store/useStore.js'
 import { overallProgress, suggestStartPosition } from '../lib/session.js'
 import { buildLearningPowerProfile } from '../lib/learningPower.js'
+import { etymologyProgress } from '../lib/etymologyProgress.js'
 import { enemyLevel } from '../lib/adaptive.js'
-import { ROOTS, wordsByRoot } from '../data/vocab.js'
+import { ETYMOLOGY_PACKS, ROOTS, wordsByRoot } from '../data/vocab.js'
 import { todayIndex } from '../store/useStore.js'
 import { capEnemyPositionForHeroLevel, heroProgress } from '../lib/rpg.js'
 import { Card, ProgressRing, ProgressBar, Chip } from '../components/ui.jsx'
-import { Flame, Star, Book, BookOpen, Cards, Sparkles, Bookmark, Refresh, ArrowRight, Headphones, Keyboard, Mic, Lightbulb, Target, Trophy, ChevronLeft, Link } from '../components/Icons.jsx'
+import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
+import { Flame, Star, Book, BookOpen, Cards, Sparkles, Bookmark, Refresh, ArrowRight, Headphones, Keyboard, Lightbulb, Target, Trophy, ChevronLeft, Link } from '../components/Icons.jsx'
 
 const APP_NAME = '英語アプリ'
 
@@ -41,6 +43,7 @@ export function HomeScreen() {
   const navigate = useStore((s) => s.navigate)
   const stats = useStore((s) => s.stats)
   const srs = useStore((s) => s.srs)
+  const etymologySrs = useStore((s) => s.etymologySrs)
   const settings = useStore((s) => s.settings)
   const myList = useStore((s) => s.myList)
   const myGrammarList = useStore((s) => s.myGrammarList)
@@ -69,6 +72,7 @@ export function HomeScreen() {
       learningAnalytics,
       srsStores: [
         srs,
+        etymologySrs,
         kotenSrs,
         kotenGrammarSrs,
         kotenCultureSrs,
@@ -82,6 +86,7 @@ export function HomeScreen() {
     [
       learningAnalytics,
       srs,
+      etymologySrs,
       kotenSrs,
       kotenGrammarSrs,
       kotenCultureSrs,
@@ -99,6 +104,10 @@ export function HomeScreen() {
   const writingDone = Object.values(writingProgress).filter(
     (item) => (item?.completed ?? 0) > 0,
   ).length
+  const etymology = useMemo(
+    () => etymologyProgress(ETYMOLOGY_PACKS, etymologySrs),
+    [etymologySrs],
+  )
 
   const dayRoot = ROOTS[todayIndex() % ROOTS.length]
   const rootWords = wordsByRoot(dayRoot.id).slice(0, 3)
@@ -107,12 +116,15 @@ export function HomeScreen() {
     <div className="pb-6">
       {/* ヒーロー */}
       <div className="rounded-b-[2.5rem] bg-gradient-to-br from-brand-500 via-brand-600 to-brand-700 px-5 pb-7 pt-[calc(env(safe-area-inset-top)+1.25rem)] text-white">
-        <button
-          onClick={() => navigate('portal')}
-          className="mb-3 flex items-center gap-1 rounded-full bg-white/15 py-1 pl-1.5 pr-2.5 text-[11px] font-extrabold text-white/90 active:scale-95 transition-transform"
-        >
-          <ChevronLeft size={14} /> スタディアプリ
-        </button>
+        <div className="mb-3 flex items-center justify-between">
+          <button
+            onClick={() => navigate('portal')}
+            className="flex items-center gap-1 rounded-full bg-white/15 py-1 pl-1.5 pr-2.5 text-[11px] font-extrabold text-white/90 active:scale-95 transition-transform"
+          >
+            <ChevronLeft size={14} /> スタディアプリ
+          </button>
+          <SpeechSettingsButton compact inverse />
+        </div>
         <div className="flex items-center justify-between">
           <div>
             <p className="text-xs font-bold text-white/70">英検5級〜1級</p>
@@ -282,7 +294,7 @@ export function HomeScreen() {
               color="linear-gradient(135deg,#10b981,#059669)" onClick={() => navigate('readingList')}
             />
             <ModeTile
-              icon={<Headphones size={22} />} label="名作朗読" sub="原文 → やさしい和訳"
+              icon={<Headphones size={22} />} label="名作朗読" sub="一息ずつ → 区切り直訳"
               color="linear-gradient(135deg,#0f766e,#0d9488)" onClick={() => navigate('literatureLibrary')}
             />
             <ModeTile
@@ -298,7 +310,7 @@ export function HomeScreen() {
               color="linear-gradient(135deg,#0f172a,#4f46e5)" onClick={() => navigate('writing')}
             />
             <ModeTile
-              icon={<Link size={22} />} label="語源" sub="全単語を4経路へ濃縮"
+              icon={<Link size={22} />} label="語源" sub={`語源知識 ${etymology.mastered}/${etymology.total}`}
               color="linear-gradient(135deg,#6366f1,#7c3aed)" onClick={() => navigate('roots')}
             />
             <ModeTile
@@ -308,10 +320,6 @@ export function HomeScreen() {
             <ModeTile
               icon={<Keyboard size={22} />} label="ディクテーション" sub="聞いて書く"
               color="linear-gradient(135deg,#14b8a6,#0d9488)" onClick={() => navigate('dictation')}
-            />
-            <ModeTile
-              icon={<Mic size={22} />} label="発音チェック" sub="認識一致度を確認"
-              color="linear-gradient(135deg,#f43f5e,#e11d48)" onClick={() => navigate('pronounce')}
             />
             <ModeTile
               icon={<Bookmark size={22} />} label="マイ単語" sub={`${myList.length} 語を保存中`}

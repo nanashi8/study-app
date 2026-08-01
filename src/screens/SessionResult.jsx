@@ -14,7 +14,17 @@ import {
   relicStatLabel,
 } from '../lib/rpg.js'
 import { HeroPortrait } from '../components/HeroPortrait.jsx'
-import { MobPortrait } from '../components/MobPortrait.jsx'
+import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
+import {
+  battleStarsEarned,
+  newlyUnlockedBattleThemes,
+} from '../lib/battleThemes.js'
+import {
+  battleRivalById,
+  battleRivalForEncounter,
+  battleStudentById,
+  battleStudentPortrait,
+} from '../lib/battleCast.js'
 
 // セッションの種類から「スキル」を判定する（弱点ナビ用）。
 function inferSkill({ engine, replayScreen }) {
@@ -24,7 +34,6 @@ function inferSkill({ engine, replayScreen }) {
   if (engine === 'listening') return 'listening'
   if (replayScreen === 'dictationPlay') return 'dictation'
   if (replayScreen === 'listeningQuiz') return 'listening'
-  if (replayScreen === 'pronouncePlay') return 'pronunciation'
   return 'vocab'
 }
 
@@ -55,6 +64,7 @@ export function SessionResultScreen() {
   const goHome = useStore((s) => s.goHome)
   const streak = useStore((s) => s.stats.streak)
   const totalXp = useStore((s) => s.stats.xp)
+  const battleStars = useStore((s) => s.battleStars)
 
   const {
     title = '学習',
@@ -75,6 +85,13 @@ export function SessionResultScreen() {
   const recordSkillResult = useStore((s) => s.recordSkillResult)
   const setEngPos = useStore((s) => s.setEngPos)
   const isBattle = source?.type === 'battle'
+  const battleStarsGained = isBattle ? battleStarsEarned(correct) : 0
+  const newBattleThemes = isBattle
+    ? newlyUnlockedBattleThemes(
+        Math.max(0, battleStars - battleStarsGained),
+        battleStars,
+      )
+    : []
   const heroBefore = heroProgress(Math.max(0, totalXp - xpGained))
   const heroAfter = heroProgress(totalXp)
   const battleRankCap = maxEnemyRankIndexForHeroLevel(heroAfter.level)
@@ -88,6 +105,13 @@ export function SessionResultScreen() {
         day: source?.adventureDay ?? 0,
         enemyRankIndex: source?.levelIndex ?? 0,
       })
+    : null
+  const battleStudent = isBattle ? battleStudentById(source?.studentId) : null
+  const battleRival = isBattle
+    ? battleRivalById(
+        source?.rivalId
+        ?? battleRivalForEncounter(encounter, source?.adventureDay ?? 0).id,
+      )
     : null
   const quest = isBattle ? battleQuest(source?.questId) : null
   const tactic = isBattle ? battleTactic(source?.tacticId) : null
@@ -148,6 +172,7 @@ export function SessionResultScreen() {
   const isGrammar = engine === 'grammar'
   const isDictation = engine === 'dictation' || params.replayScreen === 'dictationPlay'
   const isListening = engine === 'listening' || params.replayScreen === 'listeningQuiz'
+  const isVocabStudy = mode === 'study' && engine === 'word'
   const reviewUnit = isGrammar || isDictation || isListening ? '問' : isPhrase ? '項目' : '語'
   const replaySource = isBattle && battle
     ? {
@@ -155,21 +180,13 @@ export function SessionResultScreen() {
         heroLevel: heroAfter.level,
       }
     : source
-  const replayEncounter = isBattle
-    ? encounterFor({
-        level: heroAfter.level,
-        day: replaySource?.adventureDay ?? 0,
-        enemyRankIndex: replaySource?.levelIndex ?? 0,
-      })
-    : null
-
   const replay = () => {
     const target =
       params.replayScreen ??
       (isPhrase ? (mode === 'quiz' ? 'phraseQuiz' : 'phraseStudy') : mode === 'quiz' ? 'vocabQuiz' : 'vocabStudy')
     navigate(target, {
       source: replaySource,
-      title: isBattle ? `VS ${replayEncounter.name}` : title,
+      title: isBattle ? `VS ${battleRival.name}` : title,
       mode,
       engine,
       replayScreen: params.replayScreen,
@@ -229,6 +246,9 @@ export function SessionResultScreen() {
   return (
     <div className="relative flex min-h-full flex-col items-center gap-5 overflow-x-hidden px-6 pb-8 pt-8 text-center">
       {(pct >= 80 || leveledUp) && <Confetti />}
+      <div className="absolute right-3 top-[calc(env(safe-area-inset-top)+0.75rem)] z-20">
+        <SpeechSettingsButton compact />
+      </div>
       <div className="text-6xl animate-float">{msg.emoji}</div>
       <h1 className="font-display text-2xl font-extrabold text-ink">{msg.text}</h1>
       <p className="-mt-3 text-sm font-bold text-ink/45">
@@ -257,6 +277,14 @@ export function SessionResultScreen() {
         </Card>
       </div>
 
+      {isBattle && (
+        <BattleStarsCard
+          total={battleStars}
+          gained={battleStarsGained}
+          newThemes={newBattleThemes}
+        />
+      )}
+
       <HeroLevelCard
         before={heroBefore}
         after={heroAfter}
@@ -271,6 +299,9 @@ export function SessionResultScreen() {
           verdict={verdict}
           tactic={tactic}
           battleReport={battleReport}
+          battleStudent={battleStudent}
+          battleRival={battleRival}
+          accuracy={acc}
         />
       )}
 
@@ -289,7 +320,8 @@ export function SessionResultScreen() {
           </Button>
         )}
         <Button full variant="secondary" onClick={replay}>
-          <Refresh size={18} /> {isBattle ? `${tactic.label}でもう一度` : 'もう一度'}
+          {isVocabStudy ? <ArrowRight size={18} /> : <Refresh size={18} />}
+          {isBattle ? `${tactic.label}でもう一度` : isVocabStudy ? '次に進む' : 'もう一度'}
         </Button>
         {isBattle && (
           <Button full variant="ghost" onClick={() => navigate('englishMap')}>
@@ -301,6 +333,49 @@ export function SessionResultScreen() {
         </Button>
       </div>
     </div>
+  )
+}
+
+function BattleStarsCard({ total, gained, newThemes }) {
+  return (
+    <Card className="w-full max-w-xs overflow-hidden bg-gradient-to-br from-violet-50 via-pink-50 to-cyan-50 p-3.5 text-left ring-1 ring-violet-100">
+      <div className="flex items-center gap-3">
+        <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-violet-600 text-2xl text-white shadow-lg shadow-violet-200">
+          ✦
+        </span>
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center justify-between gap-2">
+            <span className="font-display text-sm font-extrabold text-violet-950">
+              放課後スター
+            </span>
+            <span className="rounded-full bg-white px-2 py-1 text-[10px] font-extrabold text-violet-700">
+              +{gained}
+            </span>
+          </div>
+          <p className="mt-0.5 text-[11px] font-bold text-violet-900/55">
+            合計 {total.toLocaleString()}・バトル演出の解放に使用
+          </p>
+        </div>
+      </div>
+
+      {newThemes.map((theme) => (
+        <div key={theme.id} className="mt-3 flex items-center gap-2 rounded-2xl bg-white/85 p-2">
+          <img
+            src={theme.preview}
+            alt=""
+            className="h-12 w-10 rounded-lg object-cover object-top [image-rendering:pixelated]"
+          />
+          <div className="min-w-0">
+            <p className="text-[9px] font-extrabold tracking-[0.14em] text-amber-600">
+              NEW BATTLE STYLE
+            </p>
+            <p className="truncate text-xs font-extrabold text-ink">
+              {theme.emoji} {theme.name} を解放！
+            </p>
+          </div>
+        </div>
+      ))}
+    </Card>
   )
 }
 
@@ -325,7 +400,7 @@ function HeroLevelCard({ before, after, xpGained, newRelics }) {
             <span className="font-display font-extrabold text-ink">
               {leveledUp
                 ? `LEVEL UP! ${before.level} → ${after.level}`
-                : `冒険者 LV${after.level}`}
+                : `生徒 LV${after.level}`}
             </span>
             <span className="text-[10px] font-extrabold text-brand-500">
               +{xpGained} XP
@@ -398,13 +473,22 @@ function HeroLevelCard({ before, after, xpGained, newRelics }) {
 
 // バトルの物語上の決着と、次回の適応敵ランクをまとめて示す。
 const TREND = {
-  up: { text: '次は敵ランクアップ', tone: 'text-emerald-700', bg: 'bg-correct-soft' },
-  down: { text: '次は敵ランクを調整', tone: 'text-amber-800', bg: 'bg-hint-soft' },
+  up: { text: '次は相手ランクアップ', tone: 'text-emerald-700', bg: 'bg-correct-soft' },
+  down: { text: '次は相手ランクを調整', tone: 'text-amber-800', bg: 'bg-hint-soft' },
   advance: { text: '昇格ポイント獲得', tone: 'text-emerald-700', bg: 'bg-correct-soft' },
   ease: { text: '同じ級で難易度を調整', tone: 'text-amber-800', bg: 'bg-hint-soft' },
-  flat: { text: '次も同じ敵ランク', tone: 'text-brand-700', bg: 'bg-brand-100' },
+  flat: { text: '次も同じ相手ランク', tone: 'text-brand-700', bg: 'bg-brand-100' },
 }
-function BattleOutcome({ battle, encounter, verdict, tactic, battleReport }) {
+function BattleOutcome({
+  battle,
+  encounter,
+  verdict,
+  tactic,
+  battleReport,
+  battleStudent,
+  battleRival,
+  accuracy,
+}) {
   const t = TREND[battle.trend] ?? TREND.flat
   const from = enemyLevel(battle.from)
   const to = enemyLevel(battle.to)
@@ -419,14 +503,22 @@ function BattleOutcome({ battle, encounter, verdict, tactic, battleReport }) {
       : battle.trend === 'ease'
         ? `次も英検${to.label}。難易度を${pointChange}ポイント調整`
         : `次も英検${to.label}。ランク変化なし`
+  const studentEmotion = battleReport?.heroDefeated
+    ? 'exhausted'
+    : battleReport?.enemyDefeated
+      ? 'victory'
+      : accuracy >= 0.7
+        ? 'delighted'
+        : accuracy >= 0.4
+          ? 'relieved'
+          : 'sad'
   return (
     <Card className={`w-full max-w-xs p-3.5 ${t.bg}`}>
       <div className="flex items-start gap-3 text-left">
-        <MobPortrait
-          encounter={encounter}
-          decorative
-          defeated={battleReport?.enemyDefeated === true}
-          className="h-11 w-11 shrink-0 rounded-2xl ring-1 ring-white/70"
+        <img
+          src={battleRival.portrait}
+          alt={`${battleRival.name}のポートレート`}
+          className={`h-11 w-11 shrink-0 rounded-2xl object-cover ring-1 ring-white/70 [image-rendering:pixelated] ${battleReport?.enemyDefeated ? 'grayscale' : ''}`}
         />
         <div>
           <div className={`font-display text-sm font-extrabold ${t.tone}`}>
@@ -439,10 +531,13 @@ function BattleOutcome({ battle, encounter, verdict, tactic, battleReport }) {
       </div>
       <div className="mt-2.5 rounded-2xl bg-white/55 px-3 py-2 text-left">
         <p className="text-[9px] font-extrabold tracking-[0.12em] text-brand-600">
-          {encounter.elementEmoji} MOB RECORD · {encounter.species}
+          {encounter.elementEmoji} {battleRival.name} · {battleRival.title}
         </p>
         <p className="mt-0.5 text-[10px] font-bold leading-relaxed text-ink/55">
           {encounter.lore}
+        </p>
+        <p className="mt-1 text-[10px] font-extrabold text-rose-600">
+          {encounter.attackEmoji ?? encounter.elementEmoji} 必殺技：{encounter.move}
         </p>
       </div>
       <div className="mt-3 flex items-center justify-center gap-2 rounded-2xl bg-white/55 p-2 text-ink">
@@ -474,6 +569,33 @@ function BattleOutcome({ battle, encounter, verdict, tactic, battleReport }) {
               </p>
             </div>
           </div>
+          {battleReport.battleTheme && (
+            <div
+              className="flex items-center gap-2 rounded-2xl border px-3 py-2.5 text-left"
+              style={{
+                borderColor: battleReport.battleTheme.accent,
+                backgroundColor: battleReport.battleTheme.accentSoft,
+                color: battleReport.battleTheme.accentStrong,
+              }}
+            >
+              <img
+                src={battleStudentPortrait(battleStudent.id, studentEmotion)}
+                alt={`${battleStudent.name}の戦闘後の表情`}
+                className="h-10 w-10 rounded-xl object-cover [image-rendering:pixelated]"
+              />
+              <div className="min-w-0 flex-1">
+                <p className="text-[9px] font-extrabold tracking-[0.14em] opacity-65">
+                  AREA ABILITY
+                </p>
+                <p className="truncate text-xs font-extrabold">
+                  {battleStudent.name} · {battleReport.themeAbility.emoji} {battleReport.themeAbility.name}
+                </p>
+              </div>
+              <p className="max-w-[46%] text-right text-[9px] font-extrabold">
+                {battleReport.themeSummary}
+              </p>
+            </div>
+          )}
           {battleReport.itemRelic && (
             <div className="flex items-center gap-2 rounded-2xl border border-amber-200 bg-amber-50 px-3 py-2.5 text-left text-amber-950">
               <span className="text-xl">{battleReport.itemRelic.emoji}</span>

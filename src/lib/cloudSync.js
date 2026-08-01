@@ -8,6 +8,12 @@ import { ref, get, set, serverTimestamp } from 'firebase/database'
 import { db } from './firebase.js'
 import { useStore } from '../store/useStore.js'
 import { buildPayload } from './progressCode.js'
+import {
+  battleThemeById,
+  normalizeBattleXpSpent,
+  normalizeBattleStars,
+} from './battleThemes.js'
+import { normalizeBattleStudentId } from './battleCast.js'
 
 const node = (uid) => ref(db, `students/${uid}`)
 
@@ -17,8 +23,11 @@ export async function pullOrInit(uid, email) {
   if (snap.exists()) {
     const d = snap.val() || {}
     const cur = useStore.getState()
+    const battleStars = normalizeBattleStars(d.battleStars)
+    const stats = { ...cur.stats, ...(d.stats ?? {}) }
     useStore.setState({
       srs: d.srs ?? {},
+      etymologySrs: d.etymologySrs ?? {},
       kotenSrs: d.kotenSrs ?? {},
       kotenGrammarSrs: d.kotenGrammarSrs ?? {},
       kotenCultureSrs: d.kotenCultureSrs ?? {},
@@ -50,7 +59,11 @@ export async function pullOrInit(uid, email) {
         && d.battleRelicLevel <= 99
           ? d.battleRelicLevel
           : null,
-      stats: { ...cur.stats, ...(d.stats ?? {}) },
+      battleStars,
+      battleXpSpent: normalizeBattleXpSpent(d.battleXpSpent, stats.xp),
+      battleThemeId: battleThemeById(d.battleThemeId, battleStars).id,
+      battleStudentId: normalizeBattleStudentId(d.battleStudentId),
+      stats,
       settings: { ...cur.settings, ...(d.settings ?? {}) },
     })
   } else {

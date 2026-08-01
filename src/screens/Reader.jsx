@@ -12,6 +12,7 @@ import {
 import { speak, speakWith, stopSpeaking } from '../lib/tts.js'
 import { Sheet } from '../components/Sheet.jsx'
 import { SpeakButton } from '../components/SpeakButton.jsx'
+import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { Button, Chip, IconButton } from '../components/ui.jsx'
 import { Close, SpeakerWave, ArrowRight, Lightbulb, Link, ChevronLeft, ChevronRight, Bookmark, BookmarkFilled, BookOpen } from '../components/Icons.jsx'
 import { cx } from '../components/ui.jsx'
@@ -127,6 +128,7 @@ export function ReaderScreen() {
         rate: settings.ttsRate,
         voiceURI: settings.ttsVoiceURI,
         lang: 'en-US',
+        style: 'narration',
         onend: () => {
           if (tokenRef.current !== token) return
           setPhase('ja')
@@ -134,6 +136,7 @@ export function ReaderScreen() {
             rate: settings.ttsRate,
             voiceURI: settings.ttsJapaneseVoiceURI,
             lang: 'ja-JP',
+            style: 'translation',
             onend: () => {
               if (tokenRef.current !== token) return
               const finish = () => {
@@ -150,6 +153,7 @@ export function ReaderScreen() {
                 rate: settings.ttsRate,
                 voiceURI: settings.ttsJapaneseVoiceURI,
                 lang: 'ja-JP',
+                style: 'explanation',
                 onend: finish,
               })
             },
@@ -194,12 +198,14 @@ export function ReaderScreen() {
       rate: settings.ttsRate,
       voiceURI: settings.ttsVoiceURI,
       lang: 'en-US',
+      style: 'narration',
       onend: () => {
         if (tokenRef.current !== token) return
         speakWith(block.speechJa ?? block.ja, {
           rate: settings.ttsRate,
           voiceURI: settings.ttsJapaneseVoiceURI,
           lang: 'ja-JP',
+          style: 'translation',
         })
       },
     })
@@ -207,7 +213,10 @@ export function ReaderScreen() {
 
   if (!passage) {
     return (
-      <div className="flex h-full flex-col items-center justify-center gap-3 p-8 text-center">
+      <div className="relative flex h-full flex-col items-center justify-center gap-3 p-8 text-center">
+        <div className="absolute right-3 top-[calc(env(safe-area-inset-top)+0.75rem)]">
+          <SpeechSettingsButton compact />
+        </div>
         <p className="font-bold text-ink/50">長文が見つかりませんでした。</p>
         <Button onClick={back}>もどる</Button>
       </div>
@@ -225,7 +234,11 @@ export function ReaderScreen() {
     setActiveIdx(i)
   }
   const tapToken = (tok) => {
-    speak(tok.word, { rate: settings.ttsRate, voiceURI: settings.ttsVoiceURI })
+    speak(tok.word, {
+      rate: settings.ttsRate,
+      voiceURI: settings.ttsVoiceURI,
+      style: 'word',
+    })
     const meaning = resolvePassageWord(tok.key, sentence?.gloss)
     setActiveWord({ word: tok.word, ja: meaning?.ja ?? null, id: meaning?.id ?? null })
   }
@@ -248,6 +261,7 @@ export function ReaderScreen() {
           <h1 className="truncate font-display text-base font-extrabold text-ink">{passage.title}</h1>
           <p className="truncate text-xs font-bold text-ink/50">{passage.titleJa}</p>
         </div>
+        <SpeechSettingsButton compact />
         <Chip color={level.color}>英検{level.label}</Chip>
       </header>
 
@@ -282,10 +296,20 @@ export function ReaderScreen() {
         <button
           onClick={() => {
             stopPlay()
-            speak(passage.sentences.map((s) => s.en).join(' '), {
-              rate: settings.ttsRate,
-              voiceURI: settings.ttsVoiceURI,
-            })
+            speak(
+              passage.sentences
+                .map(
+                  (sentence, index) =>
+                    `${index > 0 && sentence.paragraphStart ? '\n\n' : ' '}${sentence.en}`,
+              )
+                .join('')
+                .trim(),
+              {
+                rate: settings.ttsRate,
+                voiceURI: settings.ttsVoiceURI,
+                style: 'passage',
+              },
+            )
           }}
           className="flex items-center gap-1 rounded-full bg-brand-100 px-3 py-1.5 text-xs font-extrabold text-brand-700"
         >

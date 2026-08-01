@@ -28,6 +28,8 @@ jobs:
       # optional 依存(@emnapi/*)が macOS 生成の lock に入らず、Linux で npm ci が
       # 厳格一致チェックに失敗するため。install はインストール時に解決して通る。
       - run: npm install --no-audit --no-fund
+      - name: Verify GitHub Pages is the only deployment target
+        run: npm run check:deployment
       - run: npm run build
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3

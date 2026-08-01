@@ -13,6 +13,7 @@ import {
 } from '../data/koten-interpretations.js'
 import { Button, Chip, cx, EmptyState, IconButton } from '../components/ui.jsx'
 import { KotenText, KotenWord } from '../components/KotenFurigana.jsx'
+import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import {
   Book,
   BookmarkFilled,
@@ -48,12 +49,15 @@ export function KotenSavedScreen() {
   return (
     <div className="pb-7">
       <div className="rounded-b-[2.5rem] bg-gradient-to-br from-amber-600 via-orange-500 to-yellow-500 px-5 pb-6 pt-[calc(env(safe-area-inset-top)+1.25rem)] text-white">
-        <button
-          onClick={() => navigate('kotenList')}
-          className="mb-3 flex items-center gap-1 rounded-full bg-white/15 py-1 pl-1.5 pr-2.5 text-[11px] font-extrabold text-white/90 transition-transform active:scale-95"
-        >
-          <ChevronLeft size={14} /> 古典アプリ
-        </button>
+        <div className="mb-3 flex items-center justify-between">
+          <button
+            onClick={() => navigate('kotenList')}
+            className="flex items-center gap-1 rounded-full bg-white/15 py-1 pl-1.5 pr-2.5 text-[11px] font-extrabold text-white/90 transition-transform active:scale-95"
+          >
+            <ChevronLeft size={14} /> 古典アプリ
+          </button>
+          <SpeechSettingsButton compact inverse />
+        </div>
         <p className="text-xs font-bold text-white/75">あとで何度でも見直せる</p>
         <h1 className="font-display text-2xl font-extrabold tracking-wide">古典の登録リスト</h1>
         <p className="mt-1 text-sm font-bold text-white/80">

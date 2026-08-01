@@ -15,6 +15,7 @@ export function SpeakButton({
   text,
   size = 'md',
   rate,
+  style = 'auto',
   className = '',
   tone = 'brand',
   disabled = false,
@@ -24,7 +25,11 @@ export function SpeakButton({
   const handle = (e) => {
     e.stopPropagation()
     if (disabled) return
-    speak(text, { rate: rate ?? settings.ttsRate, voiceURI: settings.ttsVoiceURI })
+    speak(text, {
+      rate: rate ?? settings.ttsRate,
+      voiceURI: settings.ttsVoiceURI,
+      style,
+    })
   }
   return (
     <button

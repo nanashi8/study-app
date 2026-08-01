@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { readFileSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 
 import { battleProgression, battleTrend } from '../src/lib/adaptive.js'
 import {
@@ -11,6 +11,7 @@ import {
   MAX_LEVEL_XP,
   MOB_PROFILES,
   RELICS,
+  TEACHER_RIVALS,
   battleQuest,
   battleRelicForLevel,
   battleSceneCue,
@@ -32,6 +33,230 @@ import {
   xpAtLevel,
   xpNeededForNextLevel,
 } from '../src/lib/rpg.js'
+import {
+  BATTLE_STAR_PER_CORRECT,
+  BATTLE_STARS_PER_EXCHANGE,
+  BATTLE_THEMES,
+  BATTLE_XP_PER_EXCHANGE,
+  battleXpExchange,
+  battleStarsEarned,
+  battleThemeById,
+  newlyUnlockedBattleThemes,
+  nextBattleTheme,
+  unlockedBattleThemes,
+} from '../src/lib/battleThemes.js'
+import {
+  BATTLE_EMOTION_STATES,
+  BATTLE_RIVAL_GROUPS,
+  BATTLE_RIVALS,
+  BATTLE_STUDENTS,
+  battleRivalForEncounter,
+  battleStudentPortrait,
+  battleStudentState,
+} from '../src/lib/battleCast.js'
+
+function pixelSizeOfWebp(path) {
+  const buffer = readFileSync(new URL(`../public${path}`, import.meta.url))
+  const signature = buffer.indexOf(Buffer.from([0x9d, 0x01, 0x2a]))
+  assert.ok(signature >= 0, `${path}: VP8 frame header`)
+  return {
+    width: buffer.readUInt16LE(signature + 3) & 0x3fff,
+    height: buffer.readUInt16LE(signature + 5) & 0x3fff,
+  }
+}
+
+test('正解スターで採用済み3演出を順番に解放する', () => {
+  assert.equal(BATTLE_STAR_PER_CORRECT, 10)
+  assert.deepEqual(BATTLE_THEMES.map((theme) => theme.id), [
+    'music-pastel',
+    'art-tactics',
+    'library-cinema',
+  ])
+  assert.deepEqual(BATTLE_THEMES.map((theme) => theme.unlockAt), [0, 150, 400])
+  assert.deepEqual(BATTLE_THEMES.map((theme) => theme.ability.id), [
+    'encore',
+    'draft-guard',
+    'page-burst',
+  ])
+  assert.equal(battleStarsEarned(5), 50)
+  assert.deepEqual(unlockedBattleThemes(149).map((theme) => theme.id), ['music-pastel'])
+  assert.deepEqual(unlockedBattleThemes(150).map((theme) => theme.id), [
+    'music-pastel',
+    'art-tactics',
+  ])
+  assert.equal(battleThemeById('art-tactics', 149).id, 'music-pastel')
+  assert.equal(battleThemeById('library-cinema', 399).id, 'art-tactics')
+  assert.equal(nextBattleTheme(150).id, 'library-cinema')
+  assert.deepEqual(
+    newlyUnlockedBattleThemes(140, 410).map((theme) => theme.id),
+    ['art-tactics', 'library-cinema'],
+  )
+
+  for (const theme of BATTLE_THEMES) {
+    for (const path of [
+      theme.preview,
+      theme.stage,
+      theme.heroPortrait,
+      theme.rivalPortrait,
+      theme.actorsSheet,
+    ]) {
+      assert.equal(existsSync(new URL(`../public${path}`, import.meta.url)), true, path)
+    }
+    assert.equal(theme.scenes.length, 3, theme.id)
+    assert.ok(theme.particles.length >= 6, theme.id)
+  }
+})
+
+test('未変換の学習XPを一度だけ放課後スターへまとめて変換する', () => {
+  assert.equal(BATTLE_XP_PER_EXCHANGE, 50)
+  assert.equal(BATTLE_STARS_PER_EXCHANGE, 25)
+
+  const exchange = battleXpExchange(289, 40, 100)
+  assert.deepEqual(
+    {
+      availableXp: exchange.availableXp,
+      exchanges: exchange.exchanges,
+      xpCost: exchange.xpCost,
+      starsGained: exchange.starsGained,
+      availableAfter: exchange.availableAfter,
+      nextSpentXp: exchange.nextSpentXp,
+      nextBattleStars: exchange.nextBattleStars,
+    },
+    {
+      availableXp: 249,
+      exchanges: 4,
+      xpCost: 200,
+      starsGained: 100,
+      availableAfter: 49,
+      nextSpentXp: 240,
+      nextBattleStars: 200,
+    },
+  )
+  assert.equal(exchange.canExchange, true)
+
+  const remainder = battleXpExchange(289, exchange.nextSpentXp, exchange.nextBattleStars)
+  assert.equal(remainder.canExchange, false)
+  assert.equal(remainder.xpUntilNext, 1)
+  assert.equal(battleXpExchange(100, 999, 0).availableXp, 0)
+  assert.equal(battleXpExchange(500, 0, 9_999_990).starCapacityReached, true)
+})
+
+test('主役10人×24状態と先生・敵役50人の全290画像が揃う', () => {
+  assert.equal(BATTLE_STUDENTS.length, 10)
+  assert.equal(BATTLE_EMOTION_STATES.length, 24)
+  assert.equal(BATTLE_RIVALS.length, 50)
+  assert.equal(BATTLE_RIVAL_GROUPS.length, 5)
+  assert.equal(new Set(BATTLE_STUDENTS.map((student) => student.id)).size, 10)
+  assert.equal(new Set(BATTLE_EMOTION_STATES.map((emotion) => emotion.id)).size, 24)
+  assert.equal(new Set(BATTLE_RIVALS.map((rival) => rival.id)).size, 50)
+  assert.equal(new Set(BATTLE_RIVALS.map((rival) => rival.name)).size, 50)
+  assert.deepEqual(
+    new Set(BATTLE_EMOTION_STATES.map((emotion) => emotion.id)),
+    new Set([
+      'idle', 'gentle', 'delighted', 'playful', 'healing', 'relieved',
+      'confident', 'focused', 'curious', 'thinking', 'surprised',
+      'embarrassed', 'worried', 'sad', 'crying', 'angry', 'determined',
+      'scared', 'hurt', 'exhausted', 'attack', 'guard', 'victory', 'cheering',
+    ]),
+  )
+
+  const studentAssets = BATTLE_STUDENTS.flatMap((student) =>
+    BATTLE_EMOTION_STATES.map((emotion) =>
+      battleStudentPortrait(student.id, emotion.id),
+    ),
+  )
+  const rivalAssets = BATTLE_RIVALS.map((rival) => rival.portrait)
+  const allAssets = [...studentAssets, ...rivalAssets]
+  assert.equal(studentAssets.length, 240)
+  assert.equal(rivalAssets.length, 50)
+  assert.equal(new Set(allAssets).size, 290)
+
+  for (const path of allAssets) {
+    assert.equal(existsSync(new URL(`../public${path}`, import.meta.url)), true, path)
+    assert.deepEqual(pixelSizeOfWebp(path), { width: 256, height: 256 }, path)
+  }
+
+  for (const group of BATTLE_RIVAL_GROUPS) {
+    assert.equal(
+      BATTLE_RIVALS.filter((rival) => rival.groupId === group.id).length,
+      10,
+      group.id,
+    )
+  }
+})
+
+test('回答イベントは生徒の喜怒哀楽・癒し・戦闘状態へ決定的に切り替わる', () => {
+  const state = (lastEvent = null, extra = {}) => ({
+    answered: 1,
+    streak: 0,
+    enemyDefeated: false,
+    heroDefeated: false,
+    lastEvent,
+    ...extra,
+  })
+  assert.equal(battleStudentState(), 'idle')
+  assert.equal(
+    battleStudentState({
+      battleState: state({ kind: 'hit', themeAbility: 'encore' }),
+      eventActive: true,
+    }),
+    'healing',
+  )
+  assert.equal(
+    battleStudentState({ battleState: state({ kind: 'block' }), eventActive: true }),
+    'guard',
+  )
+  assert.equal(
+    battleStudentState({ battleState: state({ kind: 'unknown' }), eventActive: true }),
+    'worried',
+  )
+  assert.equal(
+    battleStudentState({ battleState: state({ kind: 'damage' }), eventActive: true }),
+    'hurt',
+  )
+  assert.equal(
+    battleStudentState({ battleState: state(null, { enemyDefeated: true }) }),
+    'victory',
+  )
+  assert.equal(
+    battleStudentState({ battleState: state(null, { heroDefeated: true }) }),
+    'exhausted',
+  )
+  assert.equal(
+    battleStudentState({ battleState: state(null, { streak: 3 }) }),
+    'confident',
+  )
+
+  const encounter = { id: 'teacher-math', name: '数学の試練', teacherSubject: '数学' }
+  const first = battleRivalForEncounter(encounter, 7)
+  assert.equal(battleRivalForEncounter(encounter, 7).id, first.id)
+  assert.equal(first.groupId, 'stem')
+})
+
+test('3エリア固有能力は戦闘演出だけを変え、学習評価を変えない', () => {
+  const answers = ['wrong', 'correct', 'correct', 'correct']
+  const states = BATTLE_THEMES.map((theme) =>
+    resolveBattleState({
+      answers,
+      total: 5,
+      tacticId: 'combo',
+      heroLevel: 20,
+      themeId: theme.id,
+    }),
+  )
+
+  assert.deepEqual(states.map((state) => state.correct), [3, 3, 3])
+  assert.deepEqual(states.map((state) => state.misses), [1, 1, 1])
+  assert.deepEqual(states.map((state) => state.enemyHp), [40, 40, 40])
+  assert.deepEqual(states.map((state) => state.heroHp), [80, 80, 80])
+  assert.ok(states[0].themeHealing > 0)
+  assert.ok(states[1].themeBlockedDamage > 0)
+  assert.ok(states[2].themeBonusDamage > 0)
+  for (const state of states) {
+    assert.equal(state.themeActivations, 1)
+    assert.match(state.themeSummary, new RegExp(state.themeAbility.name))
+  }
+})
 
 test('冒険者LVはXPとともに1〜99まで単調に上がる', () => {
   assert.equal(heroProgress(-100).level, 1)
@@ -83,21 +308,21 @@ test('レベルアップと戦利品でHP・攻撃・防御が成長する', () 
   )
 })
 
-test('獲得した戦利品に合わせて主人公の装備外見が変わる', () => {
+test('獲得した学校アイテムに合わせて主人公の装備外見が変わる', () => {
   assert.equal(heroEquipmentForLevel(4).weapon, null)
-  assert.equal(heroEquipmentForLevel(5).weapon.name, '集中の羽根ペン')
-  assert.equal(heroEquipmentForLevel(49).weapon.name, '集中の羽根ペン')
-  assert.equal(heroEquipmentForLevel(50).weapon.name, '語彙騎士の剣')
-  assert.equal(heroEquipmentForLevel(89).offhand.name, '星読みの地図')
-  assert.equal(heroEquipmentForLevel(90).offhand.name, '守護者の盾')
-  assert.equal(heroEquipmentForLevel(99).head.name, 'ことばの王冠')
+  assert.equal(heroEquipmentForLevel(5).weapon.name, '勝負チョーク')
+  assert.equal(heroEquipmentForLevel(49).weapon.name, '勝負チョーク')
+  assert.equal(heroEquipmentForLevel(50).weapon.name, '添削の赤ペン')
+  assert.equal(heroEquipmentForLevel(89).offhand.name, '校内見取り図')
+  assert.equal(heroEquipmentForLevel(90).offhand.name, '生徒会の通学かばん')
+  assert.equal(heroEquipmentForLevel(99).head.name, 'ことばの卒業帽')
 })
 
-test('取得済み戦利品から持ち込みアイテムと効果を選べる', () => {
-  assert.equal(battleRelicForLevel(4, 5).name, '旅人のしおり')
-  assert.equal(battleRelicForLevel(15, 1).name, '旅人のしおり')
-  assert.equal(battleRelicForLevel(15, 15).name, '反復の小瓶')
-  assert.equal(battleRelicForLevel(15, null).name, '反復の小瓶')
+test('取得済み学校アイテムから持ち込みと効果を選べる', () => {
+  assert.equal(battleRelicForLevel(4, 5).name, '保健室のばんそうこう')
+  assert.equal(battleRelicForLevel(15, 1).name, '保健室のばんそうこう')
+  assert.equal(battleRelicForLevel(15, 15).name, '無音の黒板消し')
+  assert.equal(battleRelicForLevel(15, null).name, '無音の黒板消し')
 
   assert.equal(relicBattleAbility(battleRelicForLevel(1, 1)).kind, 'heal')
   assert.equal(relicBattleAbility(battleRelicForLevel(5, 5)).kind, 'power')
@@ -108,6 +333,11 @@ test('全21戦利品を取得LVから選べ、アクティブ効果に未対応�
   const kindCounts = { heal: 0, power: 0, guard: 0 }
 
   assert.equal(RELICS.length, 21)
+  assert.equal(new Set(RELICS.map((relic) => relic.name)).size, 21)
+  assert.doesNotMatch(
+    RELICS.map((relic) => relic.name).join('、'),
+    /旅人|騎士|王冠|水晶|羽根ペン/,
+  )
   for (const relic of RELICS) {
     assert.equal(battleRelicForLevel(relic.level, relic.level), relic)
     const ability = relicBattleAbility(relic)
@@ -126,6 +356,42 @@ test('章ボスは各章の最終LVに固定される', () => {
     const encounter = encounterFor({ level, day: 100, enemyRankIndex: 2 })
     assert.equal(encounter.isBoss, level === chapter.maxLevel, `LV${level}`)
   }
+})
+
+test('全11章のボスが固有備品で攻撃する架空の先生ライバルになる', () => {
+  const bossIds = CHAPTERS.map((chapter) => chapter.boss.id)
+  assert.deepEqual(Object.keys(TEACHER_RIVALS).sort(), [...bossIds].sort())
+
+  const moves = new Set()
+  const attackLines = new Set()
+  for (const chapter of CHAPTERS) {
+    const encounter = encounterFor({
+      level: chapter.maxLevel,
+      day: 100,
+      enemyRankIndex: 2,
+    })
+    assert.equal(encounter.id, chapter.boss.id)
+    assert.equal(encounter.isTeacher, true)
+    assert.ok(encounter.teacherSubject)
+    assert.ok(encounter.portraitEmoji)
+    assert.ok(encounter.attackEmoji)
+    assert.ok(encounter.attackLine.endsWith('！'))
+    moves.add(encounter.move)
+    attackLines.add(encounter.attackLine)
+  }
+
+  assert.equal(moves.size, CHAPTERS.length)
+  assert.equal(attackLines.size, CHAPTERS.length)
+  assert.match(TEACHER_RIVALS['grass-wolf'].attackLine, /チョークを投げた/)
+  assert.match(TEACHER_RIVALS['forest-keeper'].attackLine, /黒板消し/)
+  assert.match(TEACHER_RIVALS['endless-book'].move, /朝礼ロングスピーチ/)
+})
+
+test('全章が校内ステージとして表示される', () => {
+  assert.match(
+    CHAPTERS.map((chapter) => chapter.name).join('、'),
+    /教室.*図書室.*廊下.*プール.*理科室.*音楽室.*体育館.*校舎.*職員室.*校長室.*講堂/,
+  )
 })
 
 test('日替わりエンカウントは同じ条件なら再現できる', () => {
@@ -192,7 +458,7 @@ test('作戦カードは3種類から選べ、日替わり推薦が循環する'
     BATTLE_TACTICS.map((tactic) => tactic.id),
     ['combo', 'guard', 'counter'],
   )
-  assert.equal(battleTactic('guard').name, '守護の型')
+  assert.equal(battleTactic('guard').name, '見直しモード')
   assert.equal(battleTactic('unknown').id, 'combo')
   assert.deepEqual(
     [0, 1, 2, 3].map(featuredBattleTacticId),
@@ -201,7 +467,7 @@ test('作戦カードは3種類から選べ、日替わり推薦が循環する'
 })
 
 test('戦闘イベントはミニ戦場の攻撃方向と表示へ変換できる', () => {
-  assert.equal(battleSceneCue().label, 'YOUR TURN')
+  assert.equal(battleSceneCue().label, 'READY')
   assert.deepEqual(
     ['hit', 'burst', 'counter'].map((kind) => battleSceneCue(kind).target),
     ['enemy', 'enemy', 'enemy'],
@@ -210,8 +476,8 @@ test('戦闘イベントはミニ戦場の攻撃方向と表示へ変換でき�
     ['damage', 'unknown', 'block'].map((kind) => battleSceneCue(kind).target),
     ['hero', 'hero', 'hero'],
   )
-  assert.equal(battleSceneCue('shield').emoji, '🛡️')
-  assert.equal(battleSceneCue('not-registered').label, 'YOUR TURN')
+  assert.equal(battleSceneCue('shield').emoji, '📒')
+  assert.equal(battleSceneCue('not-registered').label, 'READY')
 })
 
 test('バトル画面は共通クイズ進捗を重ねずHUDのターン表示へ一本化する', () => {
@@ -245,12 +511,91 @@ test('バトル中は出題カードと4つの回答をコンパクト表示す�
   assert.match(source, /isBattle && 'battle-quiz-screen'/)
   assert.match(source, /isBattle \? 'mt-2 grid grid-cols-2 gap-2'/)
   assert.match(source, /min-h-12 rounded-xl/)
-  assert.match(source, /className=\{isBattle \? 'min-h-12 py-2 leading-snug'/)
+  assert.match(source, /className=\{isBattle \? 'pixel-battle-choice min-h-12 py-2 leading-snug'/)
   assert.match(source, /<Button full size="md" disabled=\{!answered\}/)
   assert.match(source, /<Button full size="lg" disabled=\{!answered\}/)
 })
 
-test('取得アイテムを選択し、バトルで1回使い、戦果で確認できる', () => {
+test('放課後スターはバトル正解とXP変換で増え、演出選択と全保存経路へつながる', () => {
+  const mapSource = readFileSync(
+    new URL('../src/screens/EnglishMap.jsx', import.meta.url),
+    'utf8',
+  )
+  const quizSource = readFileSync(
+    new URL('../src/screens/VocabQuiz.jsx', import.meta.url),
+    'utf8',
+  )
+  const resultSource = readFileSync(
+    new URL('../src/screens/SessionResult.jsx', import.meta.url),
+    'utf8',
+  )
+  const storeSource = readFileSync(
+    new URL('../src/store/useStore.js', import.meta.url),
+    'utf8',
+  )
+  const progressSource = readFileSync(
+    new URL('../src/lib/progressCode.js', import.meta.url),
+    'utf8',
+  )
+  const cloudSource = readFileSync(
+    new URL('../src/lib/cloudSync.js', import.meta.url),
+    'utf8',
+  )
+
+  assert.match(quizSource, /if \(isBattle\) addBattleStars\(BATTLE_STAR_PER_CORRECT\)/)
+  assert.match(quizSource, /pixel-battle-portrait/)
+  assert.match(quizSource, /battleTheme\.stage/)
+  assert.match(mapSource, /BATTLE_THEMES\.map/)
+  assert.match(mapSource, /themeId: battleTheme\.id/)
+  assert.match(mapSource, /正解1問 \+\{BATTLE_STAR_PER_CORRECT\}/)
+  assert.match(mapSource, /<XpExchangeCard/)
+  assert.match(mapSource, /exchangeXpForBattleStars/)
+  assert.match(resultSource, /<BattleStarsCard/)
+  for (const source of [storeSource, progressSource, cloudSource]) {
+    assert.match(source, /battleStars/)
+    assert.match(source, /battleXpSpent/)
+    assert.match(source, /battleThemeId/)
+    assert.match(source, /battleStudentId/)
+  }
+})
+
+test('キャラ選択・全24表情・50人図鑑・3場面演出が実際のバトルへつながる', () => {
+  const mapSource = readFileSync(
+    new URL('../src/screens/EnglishMap.jsx', import.meta.url),
+    'utf8',
+  )
+  const quizSource = readFileSync(
+    new URL('../src/screens/VocabQuiz.jsx', import.meta.url),
+    'utf8',
+  )
+  const cssSource = readFileSync(
+    new URL('../src/index.css', import.meta.url),
+    'utf8',
+  )
+
+  assert.match(mapSource, /<BattleCastRoster/)
+  assert.match(mapSource, /BATTLE_STUDENTS\.map/)
+  assert.match(mapSource, /BATTLE_EMOTION_STATES\.map/)
+  assert.match(mapSource, /BATTLE_RIVAL_GROUPS\.map/)
+  assert.match(mapSource, /studentId: battleStudent\.id/)
+  assert.match(mapSource, /rivalId: battleRival\.id/)
+  assert.match(mapSource, /theme\.actorsSheet/)
+  assert.match(mapSource, /theme\.scenes\.map/)
+
+  assert.match(quizSource, /battleStudentState\(\{ battleState, eventActive \}\)/)
+  assert.match(quizSource, /battleStudentPortrait\(battleStudent\.id, studentState\)/)
+  assert.match(quizSource, /battleTheme\.particles\.map/)
+  assert.match(quizSource, /battleTheme\.actorsSheet/)
+  assert.match(quizSource, /battleTheme\.scenes\[sceneIndex\]/)
+  assert.match(quizSource, /battleRival\.portrait/)
+
+  assert.match(cssSource, /@keyframes battle-expression-in/)
+  assert.match(cssSource, /@keyframes battle-particle-float/)
+  assert.match(cssSource, /@keyframes battle-ability-cut-in/)
+  assert.match(cssSource, /prefers-reduced-motion: reduce/)
+})
+
+test('学校アイテムをシンプルに選択し、バトルで1回使い、戦果で確認できる', () => {
   const mapSource = readFileSync(
     new URL('../src/screens/EnglishMap.jsx', import.meta.url),
     'utf8',
@@ -264,15 +609,20 @@ test('取得アイテムを選択し、バトルで1回使い、戦果で確認�
     'utf8',
   )
 
-  assert.match(mapSource, /<BattleItemPicker\b/)
+  assert.match(mapSource, /id="school-battle-item"/)
   assert.match(mapSource, /onRelic=\{setBattleRelicLevel\}/)
   assert.match(mapSource, /1バトル1回/)
+  assert.match(mapSource, /<details className="school-battle-options/)
+  assert.match(mapSource, /問題数をえらぶ/)
+  assert.match(mapSource, /問バトルをはじめる/)
   assert.match(quizSource, /onClick=\{useBattleItem\}/)
   assert.match(quizSource, /battleState\.itemUsed/)
+  assert.match(quizSource, /encounter\.attackLine/)
   assert.match(resultSource, /battleReport\.itemSummary/)
+  assert.match(resultSource, /必殺技：\{encounter\.move\}/)
 })
 
-test('連撃の型は3連続正解ごとに奥義を発動する', () => {
+test('集中モードは3連続正解ごとに花まるコンボを発動する', () => {
   const state = resolveBattleState({
     answers: ['correct', 'correct', 'correct', 'wrong', 'correct'],
     total: 5,
@@ -282,7 +632,7 @@ test('連撃の型は3連続正解ごとに奥義を発動する', () => {
   assert.equal(state.activations, 1)
   assert.equal(state.maxStreak, 3)
   assert.equal(state.heroHp, 80)
-  assert.match(state.summary, /奥義 1回/)
+  assert.match(state.summary, /花まるコンボ 1回/)
 })
 
 test('守護の型は2正解で盾を作り、次のミスだけを防ぐ', () => {

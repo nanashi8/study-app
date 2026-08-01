@@ -4,6 +4,8 @@
 // 読み仮名、translation / guide は本アプリ独自の現代語訳・読解案内。
 // 既存の長文・古典IDとは別名前空間にして、保存済み進捗との衝突を避ける。
 
+import { LITERATURE_NARRATION_SEGMENTS } from './literature-narration-segments.js'
+
 const scene = (original, translation, guide, speech = null) =>
   Object.freeze({ original, translation, guide, speech })
 
@@ -28,7 +30,7 @@ export const LITERATURE_KIND_META = Object.freeze({
     id: 'english',
     label: '英語名作',
     shortLabel: '英語',
-    description: '英語原文 → やさしい和訳',
+    description: '英語 → 区切り直訳',
     emoji: '📘',
     color: '#2563eb',
   },
@@ -36,13 +38,13 @@ export const LITERATURE_KIND_META = Object.freeze({
     id: 'classical',
     label: '日本古典',
     shortLabel: '古典',
-    description: '古文原文 → わかりやすい現代語訳',
+    description: '古文 → 区切り現代語訳',
     emoji: '📜',
     color: '#b45309',
   },
 })
 
-export const PUBLIC_DOMAIN_LITERATURE = Object.freeze([
+const BASE_PUBLIC_DOMAIN_LITERATURE = Object.freeze([
   Object.freeze({
     id: 'lit_en_alice_rabbit_hole',
     kind: 'english',
@@ -476,6 +478,23 @@ export const PUBLIC_DOMAIN_LITERATURE = Object.freeze([
     ]),
   }),
 ])
+
+export const PUBLIC_DOMAIN_LITERATURE = Object.freeze(
+  BASE_PUBLIC_DOMAIN_LITERATURE.map((work) =>
+    Object.freeze({
+      ...work,
+      scenes: Object.freeze(
+        work.scenes.map((item, sceneIndex) =>
+          Object.freeze({
+            ...item,
+            narrationSegments:
+              LITERATURE_NARRATION_SEGMENTS[work.id]?.[sceneIndex] ?? Object.freeze([]),
+          }),
+        ),
+      ),
+    }),
+  ),
+)
 
 const WORKS_BY_ID = new Map(PUBLIC_DOMAIN_LITERATURE.map((work) => [work.id, work]))
 

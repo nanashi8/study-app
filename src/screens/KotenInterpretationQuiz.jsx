@@ -10,6 +10,7 @@ import { Button, Chip, cx, IconButton, ProgressBar } from '../components/ui.jsx'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
 import { KotenText, KotenWord } from '../components/KotenFurigana.jsx'
+import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import {
   ArrowRight,
   Bookmark,
@@ -144,6 +145,7 @@ export function KotenInterpretationQuizScreen() {
         <div className="flex-1">
           <ProgressBar value={index / deck.length} color="#d97706" />
         </div>
+        <SpeechSettingsButton compact />
         <span className="w-12 text-right text-sm font-extrabold text-ink/50">
           {index + 1}/{deck.length}
         </span>

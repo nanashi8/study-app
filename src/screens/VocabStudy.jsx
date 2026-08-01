@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
-import { buildDeck, SESSION_SIZE } from '../lib/session.js'
+import { buildDeck, recordStudyAnswer, SESSION_SIZE } from '../lib/session.js'
 import { relatedByEtymology } from '../data/vocab.js'
 import { speak } from '../lib/tts.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
+import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { EtymologyBlock } from '../components/WordBits.jsx'
 import { PosBadge } from '../components/WordBits.jsx'
 import { Button, ProgressBar, IconButton } from '../components/ui.jsx'
@@ -35,14 +36,18 @@ export function VocabStudyScreen() {
 
   const [i, setI] = useState(0)
   const [flipped, setFlipped] = useState(revealAll)
-  const results = useRef({ remembered: 0, forgot: 0 })
+  const results = useRef({ remembered: 0, forgot: 0, forgotIds: [] })
 
   const word = deck[i]
 
   // カードが変わるたび自動で読み上げ
   useEffect(() => {
     if (word && settings.autoSpeak) {
-      speak(word.word, { rate: settings.ttsRate, voiceURI: settings.ttsVoiceURI })
+      speak(word.word, {
+        rate: settings.ttsRate,
+        voiceURI: settings.ttsVoiceURI,
+        style: 'word',
+      })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [i, word?.id])
@@ -67,7 +72,7 @@ export function VocabStudyScreen() {
       correct: results.current.remembered,
       wrong: results.current.forgot,
       xpGained,
-      reviewIds: deck.map((w) => w.id),
+      reviewIds: results.current.forgotIds,
       source: params.source,
       size: params.size,
       continueTo: params.continueTo,
@@ -76,8 +81,7 @@ export function VocabStudyScreen() {
 
   const answer = (remembered) => {
     review(word.id, remembered ? 'remembered' : 'forgot', 'vocab')
-    if (remembered) results.current.remembered++
-    else results.current.forgot++
+    results.current = recordStudyAnswer(results.current, word.id, remembered)
     if (i + 1 >= deck.length) finish()
     else {
       setI(i + 1)
@@ -110,6 +114,7 @@ export function VocabStudyScreen() {
         >
           {revealAll ? <Eye size={22} /> : <EyeOff size={22} />}
         </IconButton>
+        <SpeechSettingsButton compact />
         <span className="w-12 text-right text-sm font-extrabold text-ink/50">
           {i + 1}/{deck.length}
         </span>

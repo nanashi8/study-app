@@ -3,6 +3,7 @@ import { useStore } from '../store/useStore.js'
 import { getKoten } from '../data/koten.js'
 import { Button, ProgressBar, IconButton } from '../components/ui.jsx'
 import { KotenText, KotenWord } from '../components/KotenFurigana.jsx'
+import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import {
   Bookmark,
   BookmarkFilled,
@@ -113,6 +114,7 @@ export function KotenStudyScreen() {
         >
           {revealAll ? <Eye size={22} /> : <EyeOff size={22} />}
         </IconButton>
+        <SpeechSettingsButton compact />
         <span className="w-12 text-right text-sm font-extrabold text-ink/50">
           {i + 1}/{deck.length}
         </span>

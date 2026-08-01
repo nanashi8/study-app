@@ -167,6 +167,22 @@ test('画面では推定値をIQや固定能力と区別し、ホーム推薦に
 
   assert.match(analyticsSource, /固定された才能やIQではなく/)
   assert.match(analyticsSource, /diagnosticHistory/)
+  assert.match(analyticsSource, /data-diagnostic-status/)
+  assert.match(analyticsSource, /最新の学習診断/)
+  assert.match(analyticsSource, /今回の得意/)
+  assert.match(analyticsSource, /復習優先/)
+  assert.match(analyticsSource, /profile\.diagnostic/)
   assert.match(homeSource, /learningPower\.recommendation/)
   assert.match(homeSource, /navigate\(recommendation\.screen, recommendation\.params\)/)
+})
+
+test('単語暗記の結果だけは、同じ出題元の次の学習へ進む表示にする', () => {
+  const resultSource = readFileSync(
+    new URL('../src/screens/SessionResult.jsx', import.meta.url),
+    'utf8',
+  )
+
+  assert.match(resultSource, /isVocabStudy = mode === 'study' && engine === 'word'/)
+  assert.match(resultSource, /isVocabStudy \? '次に進む' : 'もう一度'/)
+  assert.match(resultSource, /isVocabStudy \? <ArrowRight/)
 })

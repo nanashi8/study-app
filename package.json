@@ -1,12 +1,13 @@
 {
-  "name": "eigo-quest",
+  "name": "study-app",
   "private": true,
   "version": "0.1.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "test": "node --test --test-concurrency=1 tests/*.test.mjs",
-    "check": "node scripts/check-data.mjs && node scripts/english-content-audit.mjs",
+    "check": "npm run check:deployment && node scripts/check-data.mjs && node scripts/english-content-audit.mjs",
+    "check:deployment": "node scripts/check-deployment-target.mjs",
     "audit:english": "node scripts/english-content-audit.mjs",
     "prebuild": "npm run check",
     "build": "vite build",

@@ -149,8 +149,14 @@ import { buildRootMatchers, autoRootIds } from './derive-roots.js'
 import {
   buildEtymologyCompression,
   ETYMOLOGY_MODE_META,
-  ETYMOLOGY_ORIGIN_META,
 } from './etymology-compression.js'
+import {
+  ETYMOLOGY_DOMAIN_META,
+  ETYMOLOGY_FIELD_TO_DOMAIN,
+  ETYMOLOGY_FORMATION_META,
+  ETYMOLOGY_SOURCE_META,
+  etymologyHistoryFor,
+} from './etymology-history.js'
 import { quizMeaningKey, splitMeanings } from './compact.js'
 import { EXAM_WORDS, USAGE_GUIDES_BY_WORD } from './exam-lexicon.js'
 
@@ -293,7 +299,7 @@ const deriveFamilies = (words) => {
 // SRS は id 基準だが、既存の辞書順以外のデッキ再現性にも配慮する。
 const NORMALIZED_WORDS = deriveFamilies([...CURATED, ...importedUnique, ...EXAM_WORDS].map(normalize))
 
-// 全語を「部品の式 / 共有語根 / 語族 / 由来の型」のいずれか1経路へ割り当てる。
+// 全語を「部品の式 / 共有語根 / 語族 / 成り立ち・変化」のいずれか1経路へ割り当てる。
 // 語源の確度が違う経路を混同せず、既存SRSへ渡せる最大8語の学習パックも同時に作る。
 const ETYMOLOGY_INDEX = buildEtymologyCompression(NORMALIZED_WORDS, ROOTS)
 
@@ -301,7 +307,14 @@ export const ALL_WORDS = ETYMOLOGY_INDEX.words
 export const ETYMOLOGY_PACKS = ETYMOLOGY_INDEX.packs
 export const ETYMOLOGY_SUMMARY = ETYMOLOGY_INDEX.summary
 export const getEtymologyPack = (id) => ETYMOLOGY_INDEX.packsById[id]
-export { ETYMOLOGY_MODE_META, ETYMOLOGY_ORIGIN_META }
+export {
+  ETYMOLOGY_DOMAIN_META,
+  ETYMOLOGY_FIELD_TO_DOMAIN,
+  ETYMOLOGY_FORMATION_META,
+  ETYMOLOGY_MODE_META,
+  ETYMOLOGY_SOURCE_META,
+  etymologyHistoryFor,
+}
 
 export const WORDS_BY_ID = Object.fromEntries(ALL_WORDS.map((w) => [w.id, w]))
 
@@ -312,13 +325,6 @@ for (const word of ALL_WORDS) {
   if (!WORDS_BY_LEVEL.has(word.level)) WORDS_BY_LEVEL.set(word.level, [])
   WORDS_BY_LEVEL.get(word.level).push(word)
 }
-
-// 音声認識が同音異綴りを返したとき、見出し語の発音と比較するための読み取り専用参照。
-// 手書き値・品詞別補正・自動生成値を統合済みの正本から引く。
-const PHONETIC_BY_WORD = Object.fromEntries(
-  ALL_WORDS.map((word) => [word.word.toLowerCase(), word.phonetic]),
-)
-export const phoneticForWord = (word) => PHONETIC_BY_WORD[word?.toLowerCase()] ?? ''
 
 // 辞書順（見出し語のアルファベット順）に並べた全語。検索・前後めくりで使う。
 export const SORTED_WORDS = [...ALL_WORDS].sort((a, b) =>

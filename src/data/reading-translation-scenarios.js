@@ -1,7 +1,8 @@
 // 長文の節・句・文法ブロックを、英語の語順のまま理解するための講師監修シナリオ。
 //
-// en は reading-grammar.js が作るブロックとの照合キー、ja はそのブロックだけを
-// 前から読んだときの自然な語順訳。tip は、その訳し方で特に伝えたい補足だけを書く。
+// en は reading-grammar.js が作るブロックとの照合キー。orderedJa は、英語に現れる
+// 意味単位を「／」で区切り、必ず前から同じ順に並べる。表示では「→」、音声では
+// 「次に」に変換する。tip は、その読み方で特に伝えたい補足だけを書く。
 // 文全体の自然な和訳（passages.js の sentence.ja）とは役割を分けている。
 
 import { INTERMEDIATE_READING_TRANSLATION_SCENARIOS } from './reading-translation-scenarios-intermediate.js'
@@ -14,7 +15,7 @@ const b = (en, orderedJa, tip = '') => {
     en,
     ja: jaSegments.join(' → '),
     jaSegments,
-    speechJa: jaSegments.join('、'),
+    speechJa: jaSegments.join('。次に、'),
     tip,
   })
 }
@@ -121,7 +122,7 @@ export const READING_TRANSLATION_SCENARIOS = Object.freeze({
       b('on the first Saturday of every month', '毎月の第1土曜日に'),
     ],
     [
-      b('Children can listen to stories, make small cards', '子どもたちは／できます／物語を聞くこと、小さなカードを作ることが'),
+      b('Children can listen to stories, make small cards', '子どもたちは／できます／聞くことが／物語を／作ることが／小さなカードを'),
       b('and borrow books', 'そして／借りることもできます／本を'),
       b('about the month\'s topic', '内容は／その月のテーマについて'),
     ],
@@ -219,7 +220,7 @@ export const READING_TRANSLATION_SCENARIOS = Object.freeze({
     ],
     [
       b('The week ends with a practice ride', 'その安全週間は／終わります／練習走行で'),
-      b('on Saturday morning', '土曜日の朝に行う'),
+      b('on Saturday morning', '土曜日の朝に'),
     ],
     [
       b('Volunteers will ride with small groups', 'ボランティアは／走ります／小さなグループと一緒に'),

@@ -17,6 +17,21 @@ import { todayIndex } from '../store/useStore.js'
 
 export const SESSION_SIZE = 10
 
+/** 暗記セッションの回答を記録し、忘れた項目の ID だけを復習対象として残す。 */
+export function recordStudyAnswer(results, itemId, remembered) {
+  if (remembered) {
+    return {
+      ...results,
+      remembered: results.remembered + 1,
+    }
+  }
+  return {
+    ...results,
+    forgot: results.forgot + 1,
+    forgotIds: [...results.forgotIds, itemId],
+  }
+}
+
 // 適応バトルの出題プール：敵LV（その級）を主力に、ひとつ下の級から少量だけ
 // 復習を混ぜる（土台を確認しつつ学習効率を上げる）。
 function battlePool(levelIndex, rng = Math.random) {

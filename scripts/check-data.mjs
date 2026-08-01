@@ -4,8 +4,12 @@
 // 1件でも不備があれば exit 1 でビルドを止める。データ生成ミスを二度と通さない。
 import {
   ALL_WORDS,
+  ETYMOLOGY_DOMAIN_META,
+  ETYMOLOGY_FIELD_TO_DOMAIN,
+  ETYMOLOGY_FORMATION_META,
   ETYMOLOGY_MODE_META,
   ETYMOLOGY_PACKS,
+  ETYMOLOGY_SOURCE_META,
   ETYMOLOGY_SUMMARY,
   ROOTS,
   VOCAB_FIELDS,
@@ -110,6 +114,9 @@ const LEVELS = new Set(['5', '4', '3', 'pre2', '2', 'pre1', '1'])
 const READING_LEVELS = new Set(['5', '4', '3', 'pre2', 'pre2plus', '2', 'pre1', '1'])
 const POS = new Set(['動', '名', '形', '副', '前', '接', '代'])
 const ETYMOLOGY_KINDS = new Set(['prefix', 'root', 'suffix', 'stem'])
+const ETYMOLOGY_FORMATIONS = new Set(Object.keys(ETYMOLOGY_FORMATION_META))
+const ETYMOLOGY_SOURCES = new Set(Object.keys(ETYMOLOGY_SOURCE_META))
+const ETYMOLOGY_DOMAINS = new Set(Object.keys(ETYMOLOGY_DOMAIN_META))
 const ROOT_IDS = new Set(ROOTS.map((r) => r.id))
 const errors = []
 const ids = new Set()
@@ -168,8 +175,25 @@ for (const pack of ETYMOLOGY_PACKS) {
   if (new Set(pack.studyIds ?? []).size !== (pack.studyIds?.length ?? 0)) {
     errors.push(`語源濃縮パック ${pack.id}: 学習カードに重複`)
   }
-  if (pack.mode === 'origin' && !pack.caution?.includes('同じ語根')) {
-    errors.push(`語源濃縮パック ${pack.id}: 非同根である注意書き無し`)
+  if (pack.mode === 'origin') {
+    if (!pack.caution?.includes('同じ語根')) {
+      errors.push(`語源濃縮パック ${pack.id}: 非同根である注意書き無し`)
+    }
+    if (!pack.caution?.includes('共通点')) {
+      errors.push(`語源濃縮パック ${pack.id}: 束の共通軸説明無し`)
+    }
+    if (!ETYMOLOGY_FORMATIONS.has(pack.formationKey)) {
+      errors.push(`語源濃縮パック ${pack.id}: formationKey が不正 (${pack.formationKey})`)
+    }
+    if (!ETYMOLOGY_SOURCES.has(pack.sourceKey)) {
+      errors.push(`語源濃縮パック ${pack.id}: sourceKey が不正 (${pack.sourceKey})`)
+    }
+    if (!ETYMOLOGY_DOMAINS.has(pack.domainKey)) {
+      errors.push(`語源濃縮パック ${pack.id}: domainKey が不正 (${pack.domainKey})`)
+    }
+    if (pack.domainKey === 'core' && pack.wordClasses?.length !== 1) {
+      errors.push(`語源濃縮パック ${pack.id}: 基礎・日常の品詞群が混在`)
+    }
   }
   for (const id of [...(pack.coverageIds ?? []), ...(pack.studyIds ?? [])]) {
     if (!ids.has(id)) errors.push(`語源濃縮パック ${pack.id}: 不明な単語id (${id})`)
@@ -182,6 +206,20 @@ for (const pack of ETYMOLOGY_PACKS) {
     }
     if (word?.compression?.mode !== pack.mode) {
       errors.push(`単語 ${id}: 濃縮modeがパックと不一致`)
+    }
+    if (pack.mode === 'origin') {
+      if (word?.compression?.formationKey !== pack.formationKey) {
+        errors.push(`単語 ${id}: 形成法が由来パックと不一致`)
+      }
+      if (word?.compression?.sourceKey !== pack.sourceKey) {
+        errors.push(`単語 ${id}: 出発言語が由来パックと不一致`)
+      }
+      if (word?.compression?.domainKey !== pack.domainKey) {
+        errors.push(`単語 ${id}: 意味領域が由来パックと不一致`)
+      }
+      if ((ETYMOLOGY_FIELD_TO_DOMAIN[word?.field] ?? 'other') !== pack.domainKey) {
+        errors.push(`単語 ${id}: 分野 ${word?.field} が由来パックの意味領域と不一致`)
+      }
     }
   }
 }
@@ -399,6 +437,10 @@ const readingEssentialWordMinimums = {
   1: 30,
 }
 const readingAnswerPositionCounts = [0, 0, 0, 0]
+let readingTranslationSentenceCount = 0
+let readingTranslationBlockCount = 0
+let readingTranslationSegmentCount = 0
+let readingTranslationSequenceCount = 0
 for (const ps of PASSAGES) {
   if (!ps.id || readingPassageIds.has(ps.id)) errors.push(`長文 ${ps.id ?? '(id無し)'}: id 無し/重複`)
   readingPassageIds.add(ps.id)
@@ -446,6 +488,7 @@ for (const ps of PASSAGES) {
     )
   }
   for (const [sentenceIndex, s] of ps.sentences.entries()) {
+    readingTranslationSentenceCount += 1
     if (!s.en || !s.ja || !s.chunks?.length) errors.push(`長文 ${ps.id}: 文に en/ja/chunks 不足`)
     for (const [k, g] of Object.entries(s.gloss ?? {})) {
       if (g.id && !getWord(g.id)) errors.push(`長文 ${ps.id}: gloss "${k}"→${g.id} が辞書に無い`)
@@ -463,8 +506,56 @@ for (const ps of PASSAGES) {
         errors.push(`長文 ${ps.id}: 本文語 "${surface}" の辞書ID ${resolved.id} が実在しない`)
       }
     }
+    const analysis = analyzeReadingSentence(s)
+    const scenario = s.translationScenario
+    const translationAt = `長文 ${ps.id}: 第${sentenceIndex + 1}文の語順訳`
+    if (!Array.isArray(scenario)) {
+      errors.push(`${translationAt}: 監修シナリオが無い`)
+    } else if (scenario.length !== analysis.blocks.length) {
+      errors.push(
+        `${translationAt}: ${scenario.length}ブロック（英文解析は${analysis.blocks.length}ブロック）`,
+      )
+    } else {
+      for (const [blockIndex, block] of analysis.blocks.entries()) {
+        readingTranslationBlockCount += 1
+        const scripted = scenario[blockIndex]
+        const blockAt = `${translationAt} 第${blockIndex + 1}ブロック`
+        if (scripted.en !== block.en) errors.push(`${blockAt}: 英文との対応がずれている`)
+        if (!Array.isArray(scripted.jaSegments) || scripted.jaSegments.length === 0) {
+          errors.push(`${blockAt}: 英語順の意味単位が無い`)
+          continue
+        }
+        readingTranslationSegmentCount += scripted.jaSegments.length
+        if (scripted.jaSegments.length > 1) readingTranslationSequenceCount += 1
+        if (
+          scripted.jaSegments.some(
+            (segment) =>
+              typeof segment !== 'string' ||
+              segment.length === 0 ||
+              segment !== segment.trim() ||
+              !/[ぁ-んァ-ヶ一-龠]/.test(segment) ||
+              /[。！？→]/.test(segment),
+          )
+        ) {
+          errors.push(`${blockAt}: 意味単位に空欄・自然訳の文末・区切り混入がある`)
+        }
+        if (scripted.ja !== scripted.jaSegments.join(' → ')) {
+          errors.push(`${blockAt}: 表示順が意味単位の順と一致しない`)
+        }
+        if (scripted.speechJa !== scripted.jaSegments.join('。次に、')) {
+          errors.push(`${blockAt}: 音声順が意味単位の順と一致しない`)
+        }
+        if (
+          block.jaSource !== 'teaching' ||
+          block.ja !== scripted.ja ||
+          block.orderedSpeechJa !== scripted.speechJa
+        ) {
+          errors.push(`${blockAt}: 監修した表示・音声が英文解析へ接続されていない`)
+        }
+      }
+    }
     const expectedPattern = expectedPatterns?.[sentenceIndex]
-    const actualPattern = analyzeReadingSentence(s).mainPattern
+    const actualPattern = analysis.mainPattern
     if (expectedPattern && actualPattern !== expectedPattern) {
       errors.push(
         `長文 ${ps.id}: 第${sentenceIndex + 1}文の主節は${actualPattern || '未判定'}（正解表は${expectedPattern}）`,
@@ -514,6 +605,12 @@ for (const level of READING_LEVELS) {
 }
 for (const [position, count] of readingAnswerPositionCounts.entries()) {
   if (count < 10) errors.push(`長文: 正解位置${position + 1}が${count}問（最低10問）`)
+}
+if (readingTranslationSequenceCount <= readingTranslationBlockCount / 2) {
+  errors.push(
+    `長文語順訳: 前へ進む意味単位を明示したブロックが${readingTranslationSequenceCount}/` +
+    `${readingTranslationBlockCount}件`,
+  )
 }
 
 // ── 文法：空所・正解・完成文の整合性 ──
@@ -1069,6 +1166,8 @@ if (listeningIds.size !== LISTENING_ITEMS.length) {
 
 // ── 名作交互朗読：権利カード、原文→訳の順序、共通SRS参照を全作品で検証 ──
 const literatureIds = new Set()
+let literatureSceneCount = 0
+let literatureNarrationSegmentCount = 0
 for (const work of PUBLIC_DOMAIN_LITERATURE) {
   const at = `名作朗読 ${work.id ?? '(id無し)'}`
   if (!work.id || literatureIds.has(work.id)) errors.push(`${at}: id 無し/重複`)
@@ -1089,11 +1188,46 @@ for (const work of PUBLIC_DOMAIN_LITERATURE) {
 
   for (const [index, item] of (work.scenes ?? []).entries()) {
     const sceneAt = `${at} 場面${index + 1}`
+    literatureSceneCount += 1
     if (!item.original?.trim() || !item.translation?.trim() || !item.guide?.trim()) {
       errors.push(`${sceneAt}: 原文/訳/読みのポイント不足`)
     }
     if (work.kind === 'classical' && !item.speech?.trim()) {
       errors.push(`${sceneAt}: 古文読み上げ用の読み仮名不足`)
+    }
+
+    const narrationSegments = item.narrationSegments ?? []
+    if (narrationSegments.length < 2) {
+      errors.push(`${sceneAt}: 間で区切った朗読が2組未満`)
+    }
+    literatureNarrationSegmentCount += narrationSegments.length
+    const joiner = work.kind === 'english' ? ' ' : ''
+    if (narrationSegments.map((segment) => segment.original).join(joiner) !== item.original) {
+      errors.push(`${sceneAt}: 区切りを連結しても原文を復元できない`)
+    }
+    if (
+      narrationSegments.map((segment) => segment.speech).join(joiner) !==
+      (item.speech || item.original)
+    ) {
+      errors.push(`${sceneAt}: 区切りを連結しても読み上げ原稿を復元できない`)
+    }
+    for (const [segmentIndex, segment] of narrationSegments.entries()) {
+      const segmentAt = `${sceneAt} 区切り${segmentIndex + 1}`
+      if (!segment.original?.trim() || !segment.speech?.trim()) {
+        errors.push(`${segmentAt}: 原文または読み上げ原稿が空`)
+      }
+      if (
+        !segment.translation?.trim() ||
+        !/[ぁ-んァ-ヶ一-龠]/.test(segment.translation)
+      ) {
+        errors.push(`${segmentAt}: 対応する日本語の直訳・現代語訳が無い`)
+      }
+      if (
+        work.kind === 'english' &&
+        segment.original.trim().split(/\s+/).filter(Boolean).length > 12
+      ) {
+        errors.push(`${segmentAt}: 一息の英語が12語を超える`)
+      }
     }
   }
 
@@ -1102,12 +1236,23 @@ for (const work of PUBLIC_DOMAIN_LITERATURE) {
   }
 
   const narration = buildLiteratureNarration(work)
-  if (narration.length !== (work.scenes?.length ?? 0) * 2) {
-    errors.push(`${at}: 原文→訳の再生数が不正`)
+  const expectedNarrationLength = (work.scenes ?? []).reduce(
+    (count, item) => count + (item.narrationSegments?.length ?? 0) * 2,
+    0,
+  )
+  if (narration.length !== expectedNarrationLength) {
+    errors.push(`${at}: 区切り原文→対応する訳の再生数が不正`)
   }
   narration.forEach((step, index) => {
     const expectedPhase = index % 2 === 0 ? 'original' : 'translation'
-    if (step.phase !== expectedPhase || !step.text || !step.lang) {
+    const pairedStep = narration[index - (index % 2)]
+    if (
+      step.phase !== expectedPhase ||
+      !step.text ||
+      !step.lang ||
+      step.sceneIndex !== pairedStep?.sceneIndex ||
+      step.segmentIndex !== pairedStep?.segmentIndex
+    ) {
       errors.push(`${at}: 再生順または音声言語が不正 (${index + 1})`)
     }
   })
@@ -1239,4 +1384,4 @@ if (errors.length) {
   process.exit(1)
 }
 
-console.log(`✅ データ検証OK: ${ALL_WORDS.length}英単語 / ${EXAM_USAGE_GUIDES.length}使い分けガイド / ${PHRASES.length}熟語・構文 / ${GRAMMAR.length}英文法 / ${GRAMMAR_LESSONS.length}文法解説 / ${PASSAGES.length}長文 / ${PUBLIC_DOMAIN_LITERATURE.length}名作朗読 / ${DICTATION_ITEMS.length}ディクテーション / ${LISTENING_ITEMS.length}リスニング / ${KOTEN_WORDS.length}古典単語 / ${KOTEN_GRAMMAR.length}古典文法 / ${KOTEN_GRAMMAR_QUESTIONS.length}古典文法問題 / ${KOTEN_CULTURE.length}古典常識 / ${KOTEN_CULTURE_QUESTIONS.length}古典常識問題 / ${KOTEN_INTERPRETATIONS.length}古典短文 — 全て必須項目を満たす`)
+console.log(`✅ データ検証OK: ${ALL_WORDS.length}英単語 / ${EXAM_USAGE_GUIDES.length}使い分けガイド / ${PHRASES.length}熟語・構文 / ${GRAMMAR.length}英文法 / ${GRAMMAR_LESSONS.length}文法解説 / ${PASSAGES.length}長文（${readingTranslationSentenceCount}文・${readingTranslationBlockCount}語順訳ブロック・${readingTranslationSegmentCount}意味単位） / ${PUBLIC_DOMAIN_LITERATURE.length}名作朗読（${literatureSceneCount}場面・${literatureNarrationSegmentCount}区切り） / ${DICTATION_ITEMS.length}ディクテーション / ${LISTENING_ITEMS.length}リスニング / ${KOTEN_WORDS.length}古典単語 / ${KOTEN_GRAMMAR.length}古典文法 / ${KOTEN_GRAMMAR_QUESTIONS.length}古典文法問題 / ${KOTEN_CULTURE.length}古典常識 / ${KOTEN_CULTURE_QUESTIONS.length}古典常識問題 / ${KOTEN_INTERPRETATIONS.length}古典短文 — 全て必須項目を満たす`)

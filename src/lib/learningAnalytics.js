@@ -13,12 +13,12 @@ const INTERVAL_BUCKETS = [
 
 export const LEARNING_SKILLS = {
   vocab: { label: '英単語', emoji: '📖', color: '#6366f1' },
+  etymology: { label: '語源知識', emoji: '🧩', color: '#7c3aed' },
   grammar: { label: '英文法', emoji: '💡', color: '#f59e0b' },
   usage: { label: '熟語・語法', emoji: '✨', color: '#8b5cf6' },
   reading: { label: '長文読解', emoji: '📚', color: '#10b981' },
   listening: { label: 'リスニング', emoji: '🎧', color: '#0ea5e9' },
   dictation: { label: 'ディクテーション', emoji: '⌨️', color: '#14b8a6' },
-  pronunciation: { label: '発音', emoji: '🗣️', color: '#f43f5e' },
   writing: { label: '英作文', emoji: '✍️', color: '#d946ef' },
   koten: { label: '古典単語', emoji: '📜', color: '#a16207' },
   koten_grammar: { label: '古典文法', emoji: '🪶', color: '#d97706' },
@@ -229,11 +229,11 @@ function bestThreeHourWindow(hourly) {
 }
 
 function skillResultsFrom(analytics, skillStats) {
-  const ids = new Set([
-    ...Object.keys(skillStats ?? {}),
-    ...Object.keys(analytics.skills ?? {}),
-  ])
-  return [...ids].map((id) => {
+  // 現在サポートしている分野だけを表示し、旧版や未知の分野が推薦導線へ戻らないようにする。
+  const ids = Object.keys(LEARNING_SKILLS).filter(
+    (id) => skillStats?.[id] || analytics.skills?.[id],
+  )
+  return ids.map((id) => {
     const tracked = normalizeAggregate(analytics.skills[id])
     const historic = skillStats?.[id] ?? {}
     // 新分析が5回答以上たまるまでは既存の分野別成績を使い、少数回答の振れを避ける。
@@ -242,11 +242,7 @@ function skillResultsFrom(analytics, skillStats) {
     const correct = useTracked
       ? tracked.correct
       : clamp(nonNegative(historic.correct), 0, scored)
-    const meta = LEARNING_SKILLS[id] ?? {
-      label: id,
-      emoji: '📝',
-      color: '#64748b',
-    }
+    const meta = LEARNING_SKILLS[id]
     return {
       id,
       ...meta,

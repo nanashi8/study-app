@@ -1,7 +1,13 @@
-# えいごクエスト 📚
+# スタディアプリ 📚
 
-英検5級〜1級対応・スマホ最適の英語学習アプリ（GitHub Pages で公開できる静的サイト）。
+英検5級〜1級対応・スマホ最適の学習アプリ。正式版は
+[GitHub Pages](https://nanashi8.github.io/study-app/) で公開する静的サイトです。
 Vite + React + Tailwind CSS で作られています。
+
+> [!IMPORTANT]
+> 正式な公開先は `https://nanashi8.github.io/study-app/` のみです。
+> 旧「Eigo Quest」のChatGPT Sites版は廃止済みであり、公開・更新には使用しません。
+> `npm run check:deployment` は旧Sites設定の混入を検出すると失敗します。
 
 ## いまできること（v0.1）
 
@@ -31,11 +37,6 @@ Vite + React + Tailwind CSS で作られています。
   - 診断履歴は端末・進捗コード・ログイン時のクラウド同期に保存
 - **リスニング** … 単語を伏せて音声だけ再生 → 意味を3択（ゆっくり再生あり）
 - **ディクテーション** … 英文音声を聞き、バラバラの単語ブロックを聞こえた順にタップして並べる（タイプ不要）→ 位置ごとに採点
-- **発音チェック** … お手本TTS＋マイク（音声認識）で、認識文字列との一致度を0–100で表示
-  - 録音ボタンを1回タップして発音。無音検知で自動採点し、必要なら再タップで終了
-  - 複数の認識候補を比較し、辞書上で同じ発音の別綴りも正解として扱う
-  - 音素・母音・アクセントを精密に測る採点ではありません
-  - ⚠️ 対応状況は実行時に判定し、未対応・権限拒否時も自己評価で進行可能
 - **進捗コード** … バックエンド無しで進捗を「発行」し、別端末や次回に「読込」で再開（「記録」タブ）
 - **きょうの語源** … 日替わりで語根を紹介。「パーツを足して意味を組み立てる語」と「由来の説明から広げる同語源語」を分け、語彙を芋づる式に増やせる
 - 発音お手本の読み上げ（Web Speech API。全環境で動作）
@@ -55,11 +56,13 @@ npm run import f.csv  # CSVから単語を一括取り込み → src/data/words-
 
 ## GitHub Pages へ公開
 
+このリポジトリの唯一の公開経路です。`main` への反映後、GitHub Actionsが正式版を更新します。
+
 1. このフォルダを Git リポジトリにして GitHub に push する：
    ```bash
    git init
    git add -A
-   git commit -m "init: えいごクエスト"
+   git commit -m "init: スタディアプリ"
    git branch -M main
    git remote add origin https://github.com/<ユーザー名>/<リポジトリ名>.git
    git push -u origin main
@@ -67,7 +70,8 @@ npm run import f.csv  # CSVから単語を一括取り込み → src/data/words-
 2. GitHub のリポジトリ → **Settings → Pages → Build and deployment → Source** を
    **「GitHub Actions」** に設定する。
 3. `main` に push するたびに [.github/workflows/deploy.yml](.github/workflows/deploy.yml) が
-   自動でビルド＆公開します。URL は `https://<ユーザー名>.github.io/<リポジトリ名>/`。
+   公開先監査・ビルド・公開を行います。正式URLは
+   `https://nanashi8.github.io/study-app/` です。
 
 > `vite.config.js` の `base: './'` により、リポジトリ名に関係なくそのまま動きます（設定変更不要）。
 
@@ -117,11 +121,11 @@ npm run import f.csv  # CSVから単語を一括取り込み → src/data/words-
 
 ## これから（ロードマップ）
 
-要望されたモードは一通り実装済みです（単語・熟語・構文・長文・リスニング・ディクテーション・発音チェック）。
+要望された主要モードは一通り実装済みです（単語・熟語・構文・長文・リスニング・ディクテーション）。
 今後は主に **中身の充実と磨き込み**：
 
 - 各データの増量（現在はサンプル中心。本番の英検語彙・長文へ）
-- 音素ベースの発音評価、リスニングの文・会話問題化
+- リスニングの文・会話問題化
 - UI・アニメの調整
 
 データ追加は単語 [`src/data/words.js`](src/data/words.js) / [`words2.js`](src/data/words2.js)、

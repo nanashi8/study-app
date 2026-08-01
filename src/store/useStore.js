@@ -9,6 +9,17 @@ import {
   recordLearningEvents,
 } from '../lib/learningAnalytics.js'
 import { DEFAULT_CONTENT_ORDER } from '../data/contents.js'
+import {
+  BATTLE_THEMES,
+  battleXpExchange,
+  battleThemeById,
+  normalizeBattleXpSpent,
+  normalizeBattleStars,
+} from '../lib/battleThemes.js'
+import {
+  DEFAULT_BATTLE_STUDENT_ID,
+  normalizeBattleStudentId,
+} from '../lib/battleCast.js'
 
 // ── 学習ロジックの定数 ──────────────────────────────────────────────
 // Leitner 式の間隔反復。box が上がるほど次に出る間隔（日数）が伸びる。
@@ -74,6 +85,7 @@ const DEFAULT_SETTINGS = {
 
 const initialLearning = () => ({
   srs: {}, // wordId -> { box, correct, wrong, due, last }
+  etymologySrs: {}, // etymologyPackId -> { box, correct, wrong, due, last }
   kotenSrs: {}, // 古文単語の wordId -> { box, ... }（英単語と別管理。idが衝突しないよう分離）
   kotenGrammarSrs: {}, // 古典文法の grammarId -> { box, ... }
   kotenCultureSrs: {}, // 古典常識の cultureId -> { box, ... }
@@ -94,6 +106,10 @@ const initialLearning = () => ({
   diagnosticSeed: null, // 端末ごとの問題候補の並びを再現する符号なし32bit整数
   engPos: null, // 適応バトルの現在ポジション(0=5級…6=1級, 小数可)。null=未配置（初回に推定）
   battleRelicLevel: null, // バトルへ持ち込む取得済み戦利品の解放LV。nullは最新を自動選択
+  battleStars: 0, // バトル正解やXP変換で貯まる、演出スキン解放専用の放課後スター
+  battleXpSpent: 0, // 放課後スターへ一度だけ変換済みの累計XP
+  battleThemeId: BATTLE_THEMES[0].id,
+  battleStudentId: DEFAULT_BATTLE_STUDENT_ID, // 放課後バトルで操作する主役生徒
   portalOrder: [...DEFAULT_CONTENT_ORDER], // ポータルのタイル並び順（コンテンツid配列）
   portalHidden: [], // ポータルで非表示にしたコンテンツid
   stats: freshStats(),
@@ -167,6 +183,9 @@ export const useStore = create(
       screen: 'portal',
       params: {},
       stack: [],
+      speechSettingsOpen: false,
+      openSpeechSettings: () => set({ speechSettingsOpen: true }),
+      closeSpeechSettings: () => set({ speechSettingsOpen: false }),
       navigate: (screen, params = {}) =>
         set((st) => ({
           screen,
@@ -212,6 +231,34 @@ export const useStore = create(
                 inputs: 1,
                 scored: 1,
                 correct: remembered ? 1 : 0,
+                ...reviewMeta,
+              },
+              timestamp,
+            ),
+          }
+        }),
+
+      // 語源知識は単語の正誤と分け、濃縮パックそのものを1つの暗記項目として反復する。
+      reviewEtymology: (packId, result) =>
+        set((st) => {
+          const timestamp = Date.now()
+          const { srs, stats, reviewMeta } = applyReview(
+            st.etymologySrs,
+            st.stats,
+            packId,
+            result,
+            timestamp,
+          )
+          return {
+            etymologySrs: srs,
+            stats,
+            learningAnalytics: recordLearningEvent(
+              st.learningAnalytics,
+              {
+                skill: 'etymology',
+                inputs: 1,
+                scored: 1,
+                correct: result === 'correct' || result === 'remembered' ? 1 : 0,
                 ...reviewMeta,
               },
               timestamp,
@@ -583,6 +630,32 @@ export const useStore = create(
               ? level
               : null,
         }),
+      addBattleStars: (amount) =>
+        set((st) => ({
+          battleStars: normalizeBattleStars(
+            normalizeBattleStars(st.battleStars) + normalizeBattleStars(amount),
+          ),
+        })),
+      exchangeXpForBattleStars: () =>
+        set((st) => {
+          const exchange = battleXpExchange(
+            st.stats?.xp,
+            st.battleXpSpent,
+            st.battleStars,
+          )
+          if (!exchange.canExchange) return {}
+          return {
+            battleXpSpent: exchange.nextSpentXp,
+            battleStars: exchange.nextBattleStars,
+          }
+        }),
+      setBattleThemeId: (themeId) =>
+        set((st) => {
+          const theme = battleThemeById(themeId, st.battleStars)
+          return theme.id === themeId ? { battleThemeId: themeId } : {}
+        }),
+      setBattleStudentId: (studentId) =>
+        set({ battleStudentId: normalizeBattleStudentId(studentId) }),
       // バトルの正答率(0-1)で生徒のポジションを上下させる。
       // fromPos / maxPos を渡すと、冒険者LVで解放済みの範囲内だけを移動する。
       recordBattle: (accuracy, fromPos = null, maxPos = null) =>
@@ -652,8 +725,11 @@ export const useStore = create(
       exportCode: () => encodeProgress(get()),
       importCode: (code) => {
         const payload = decodeProgress(code) // 失敗時は例外
+        const battleStars = normalizeBattleStars(payload.battleStars)
+        const stats = { ...freshStats(), ...(payload.stats ?? {}) }
         set({
           srs: payload.srs ?? {},
+          etymologySrs: payload.etymologySrs ?? {},
           kotenSrs: payload.kotenSrs ?? {},
           kotenGrammarSrs: payload.kotenGrammarSrs ?? {},
           kotenCultureSrs: payload.kotenCultureSrs ?? {},
@@ -674,9 +750,13 @@ export const useStore = create(
           diagnosticSeed: payload.diagnosticSeed ?? null,
           engPos: payload.engPos ?? null,
           battleRelicLevel: payload.battleRelicLevel ?? null,
+          battleStars,
+          battleXpSpent: normalizeBattleXpSpent(payload.battleXpSpent, stats.xp),
+          battleThemeId: battleThemeById(payload.battleThemeId, battleStars).id,
+          battleStudentId: normalizeBattleStudentId(payload.battleStudentId),
           portalOrder: normalizeOrder(payload.portalOrder),
           portalHidden: normalizeHidden(payload.portalHidden),
-          stats: { ...freshStats(), ...(payload.stats ?? {}) },
+          stats,
           settings: { ...DEFAULT_SETTINGS, ...(payload.settings ?? {}) },
         })
         return payload
@@ -691,11 +771,22 @@ export const useStore = create(
         delete state.vnCleared
         state.portalOrder = normalizeOrder(state.portalOrder)
         state.portalHidden = normalizeHidden(state.portalHidden)
+        state.battleStars = normalizeBattleStars(state.battleStars)
+        state.battleXpSpent = normalizeBattleXpSpent(
+          state.battleXpSpent,
+          state.stats?.xp,
+        )
+        state.battleThemeId = battleThemeById(
+          state.battleThemeId,
+          state.battleStars,
+        ).id
+        state.battleStudentId = normalizeBattleStudentId(state.battleStudentId)
         return state
       },
       // ナビゲーション系は保存しない。
       partialize: (st) => ({
         srs: st.srs,
+        etymologySrs: st.etymologySrs,
         kotenSrs: st.kotenSrs,
         kotenGrammarSrs: st.kotenGrammarSrs,
         kotenCultureSrs: st.kotenCultureSrs,
@@ -716,6 +807,10 @@ export const useStore = create(
         diagnosticSeed: st.diagnosticSeed,
         engPos: st.engPos,
         battleRelicLevel: st.battleRelicLevel,
+        battleStars: st.battleStars,
+        battleXpSpent: st.battleXpSpent,
+        battleThemeId: st.battleThemeId,
+        battleStudentId: st.battleStudentId,
         portalOrder: st.portalOrder,
         portalHidden: st.portalHidden,
         stats: st.stats,

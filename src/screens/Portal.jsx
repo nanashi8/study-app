@@ -3,6 +3,7 @@ import { useStore, normalizeOrder } from '../store/useStore.js'
 import { useAuth } from '../store/useAuth.js'
 import { CONTENTS_BY_ID } from '../data/contents.js'
 import { cx } from '../components/ui.jsx'
+import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { ArrowRight, ChevronUp, ChevronDown, Eye, EyeOff } from '../components/Icons.jsx'
 
 // 通常表示のコンテンツタイル。available はタップで入れる／coming は「準備中」。
@@ -123,6 +124,7 @@ export function PortalScreen() {
           </p>
         </div>
         <div className="flex shrink-0 items-center gap-2">
+          <SpeechSettingsButton compact />
           {/* 未ログイン時だけ：ログイン導線（任意） */}
           {!editing && status === 'out' && (
             <button

@@ -55,7 +55,7 @@ export const CONTENTS = [
   {
     id: 'literature-listening',
     title: '名作交互朗読',
-    subtitle: '英語原文と和訳・古文と現代語訳を交互に聴く',
+    subtitle: '間で区切った原文と直訳を一対ずつ交互に聴く',
     emoji: '🎙️',
     color: '#0f766e',
     screen: 'literatureLibrary',

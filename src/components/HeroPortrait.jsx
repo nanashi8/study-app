@@ -29,7 +29,7 @@ export function HeroPortrait({
             ? 'forest'
             : 'novice'
   const label = [
-    `冒険者レベル${safeLevel}、${heroTitle.name}`,
+    `生徒レベル${safeLevel}、${heroTitle.name}`,
     equipped.length
       ? `装備：${equipped.map((relic) => relic.name).join('、')}`
       : null,

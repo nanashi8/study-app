@@ -4,7 +4,12 @@ import { QRCodeCanvas } from 'qrcode.react'
 import jsQR from 'jsqr'
 import { useStore } from '../store/useStore.js'
 import { LEVELS } from '../data/levels.js'
-import { getWord } from '../data/vocab.js'
+import {
+  ETYMOLOGY_MODE_META,
+  ETYMOLOGY_PACKS,
+  getWord,
+} from '../data/vocab.js'
+import { etymologyProgress } from '../lib/etymologyProgress.js'
 import { levelProgress, overallProgress } from '../lib/session.js'
 import { encodeProgress, decodeProgress, summarizePayload } from '../lib/progressCode.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
@@ -31,13 +36,14 @@ function Stat({ icon, value, label, color }) {
 }
 
 export function ProgressScreen() {
+  const navigate = useStore((s) => s.navigate)
   const srs = useStore((s) => s.srs)
   const myList = useStore((s) => s.myList)
   const stats = useStore((s) => s.stats)
   // 進捗コードは全データを持ち運ぶため、永続スライスをまとめて購読する。
   // useShallow で浅い比較にし、毎回新オブジェクト→再レンダーループを防ぐ。
   const full = useStore(useShallow((s) => ({
-    srs: s.srs, kotenSrs: s.kotenSrs,
+    srs: s.srs, etymologySrs: s.etymologySrs, kotenSrs: s.kotenSrs,
     kotenGrammarSrs: s.kotenGrammarSrs,
     kotenCultureSrs: s.kotenCultureSrs,
     kotenInterpretationSrs: s.kotenInterpretationSrs, myList: s.myList,
@@ -48,13 +54,29 @@ export function ProgressScreen() {
     skillStats: s.skillStats, learningAnalytics: s.learningAnalytics,
     diagnosticHistory: s.diagnosticHistory,
     diagnosticAttempt: s.diagnosticAttempt, diagnosticSeed: s.diagnosticSeed,
-    engPos: s.engPos,
+    engPos: s.engPos, battleRelicLevel: s.battleRelicLevel,
     portalOrder: s.portalOrder, portalHidden: s.portalHidden,
     stats: s.stats, settings: s.settings,
   })))
   const importCode = useStore((s) => s.importCode)
 
   const prog = overallProgress(srs)
+  const etymology = useMemo(
+    () => etymologyProgress(ETYMOLOGY_PACKS, full.etymologySrs),
+    [full.etymologySrs],
+  )
+  const etymologyByMode = useMemo(
+    () => Object.fromEntries(
+      Object.keys(ETYMOLOGY_MODE_META).map((mode) => [
+        mode,
+        etymologyProgress(
+          ETYMOLOGY_PACKS.filter((pack) => pack.mode === mode),
+          full.etymologySrs,
+        ),
+      ]),
+    ),
+    [full.etymologySrs],
+  )
   const code = useMemo(() => encodeProgress(full), [full])
   // QRはアプリURL＋コード。別端末でカメラ読み取り→アプリが開いて復元確認が出る。
   const shareUrl = useMemo(
@@ -210,6 +232,7 @@ export function ProgressScreen() {
         <LearningAnalyticsPanel
           learningAnalytics={full.learningAnalytics}
           srs={srs}
+          etymologySrs={full.etymologySrs}
           kotenSrs={full.kotenSrs}
           kotenGrammarSrs={full.kotenGrammarSrs}
           kotenCultureSrs={full.kotenCultureSrs}
@@ -218,6 +241,7 @@ export function ProgressScreen() {
           diagnosticHistory={full.diagnosticHistory}
           stats={stats}
           dueCount={prog.due}
+          onOpenDiagnostic={() => navigate('diagnostic')}
         />
 
         {/* 級別の進捗 */}
@@ -241,6 +265,40 @@ export function ProgressScreen() {
               )
             })}
           </div>
+        </Card>
+
+        {/* 語源知識は単語SRSとは分け、部品式・語根・語族ごとの進み具合を示す。 */}
+        <Card className="p-4">
+          <div className="mb-3 flex items-start justify-between gap-3">
+            <div>
+              <h2 className="font-display text-base font-extrabold text-ink/80">語源知識の進捗</h2>
+              <p className="mt-0.5 text-[11px] font-bold text-ink/45">
+                学習済み {etymology.started}/{etymology.total}項目・復習待ち {etymology.due}
+              </p>
+            </div>
+            <span className="rounded-full bg-violet-50 px-2.5 py-1 text-xs font-extrabold text-violet-700">
+              習得 {etymology.mastered}
+            </span>
+          </div>
+          <div className="space-y-2.5">
+            {Object.entries(ETYMOLOGY_MODE_META).map(([mode, meta]) => {
+              const progress = etymologyByMode[mode]
+              return (
+                <div key={mode}>
+                  <div className="mb-1 flex justify-between text-xs font-bold">
+                    <span className="text-ink/70">{meta.emoji} {meta.label}</span>
+                    <span className="text-ink/40">
+                      {progress.mastered}/{progress.total}
+                    </span>
+                  </div>
+                  <ProgressBar value={progress.ratio} color="#7c3aed" />
+                </div>
+              )
+            })}
+          </div>
+          <Button full className="mt-4" variant="secondary" onClick={() => navigate('roots')}>
+            未着手・学習中・習得で分類して見る
+          </Button>
         </Card>
 
         {/* 進捗コード：発行 */}
@@ -343,6 +401,14 @@ export function ProgressScreen() {
               <div className="rounded-2xl bg-brand-50 p-3 text-center">
                 <div className="font-display text-2xl font-extrabold text-brand-700">{preview.summary.mastered}</div>
                 <div className="text-[11px] font-bold text-ink/50">習得した単語</div>
+              </div>
+              <div className="rounded-2xl bg-violet-50 p-3 text-center">
+                <div className="font-display text-2xl font-extrabold text-violet-700">{preview.summary.etymologyStarted}</div>
+                <div className="text-[11px] font-bold text-ink/50">学習済みの語源</div>
+              </div>
+              <div className="rounded-2xl bg-violet-50 p-3 text-center">
+                <div className="font-display text-2xl font-extrabold text-violet-700">{preview.summary.etymologyMastered}</div>
+                <div className="text-[11px] font-bold text-ink/50">習得した語源</div>
               </div>
               <div className="rounded-2xl bg-hint-soft p-3 text-center">
                 <div className="font-display text-2xl font-extrabold text-amber-700">{preview.summary.xp}</div>
