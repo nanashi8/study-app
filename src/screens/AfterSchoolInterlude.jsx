@@ -15,10 +15,7 @@ import {
   afterSchoolEpisodeNumber,
   afterSchoolScene,
 } from '../lib/afterSchoolStory.js'
-
-function publicAssetUrl(path) {
-  return `${import.meta.env.BASE_URL}${String(path ?? '').replace(/^\//, '')}`
-}
+import { publicAssetUrl } from '../lib/publicAssetUrl.js'
 
 function scenePortrait(scene, studentId, emotionId) {
   if (scene.outfitId === 'home' || scene.outfitId === 'weekend') {

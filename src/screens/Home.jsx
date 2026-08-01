@@ -8,14 +8,12 @@ import { ETYMOLOGY_PACKS, ROOTS, wordsByRoot } from '../data/vocab.js'
 import { todayIndex } from '../store/useStore.js'
 import { capEnemyPositionForHeroLevel, heroProgress } from '../lib/rpg.js'
 import { AFTER_SCHOOL_CHRONICLE } from '../lib/afterSchoolStory.js'
+import { publicAssetUrl } from '../lib/publicAssetUrl.js'
 import { Card, ProgressRing, ProgressBar, Chip } from '../components/ui.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { Flame, Star, Book, BookOpen, Cards, Sparkles, Bookmark, Refresh, ArrowRight, Headphones, Keyboard, Lightbulb, Target, Trophy, ChevronLeft, Link } from '../components/Icons.jsx'
 
 const APP_NAME = '英語アプリ'
-
-const publicAssetUrl = (path) =>
-  `${import.meta.env.BASE_URL}${String(path ?? '').replace(/^\//, '')}`
 
 function ModeTile({ icon, label, sub, color, onClick, disabled }) {
   return (

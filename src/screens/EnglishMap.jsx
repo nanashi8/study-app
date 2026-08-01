@@ -82,6 +82,7 @@ import { ScreenHeader } from '../components/AppShell.jsx'
 import { MobPortrait } from '../components/MobPortrait.jsx'
 import { ProgressRing, ProgressBar, Chip, cx } from '../components/ui.jsx'
 import { Lightbulb, ArrowRight, Check } from '../components/Icons.jsx'
+import { publicAssetUrl } from '../lib/publicAssetUrl.js'
 
 // テスト結果から弱点を判定するしきい値。
 const MIN_ATTEMPTS = 10
@@ -312,10 +313,6 @@ export function AfterSchoolChronicleScreen() {
       </div>
     </div>
   )
-}
-
-function publicAssetUrl(path) {
-  return `${import.meta.env.BASE_URL}${String(path ?? '').replace(/^\//, '')}`
 }
 
 function ChroniclePortalCard({ hero, storyStep, onOpen }) {

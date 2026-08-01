@@ -1,3 +1,5 @@
+import { publicAssetUrl } from '../lib/publicAssetUrl.js'
+
 export const SCHOOL_LIFE_VISUAL_CATEGORIES = [
   { id: 'all', label: 'すべて', emoji: '✨' },
   { id: 'commute', label: '通学', emoji: '🚲' },
@@ -16,7 +18,7 @@ export const SCHOOL_LIFE_VISUALS = [
     emoji: '🌸',
     time: '07:45',
     category: 'commute',
-    image: '/assets/battle/school-life/school-gate-arrival-v2.webp',
+    image: publicAssetUrl('/assets/battle/school-life/school-gate-arrival-v2.webp'),
     description: '桜の校門をくぐり、それぞれの教室へ向かう新しい一日の始まり。',
   },
   {
@@ -26,7 +28,7 @@ export const SCHOOL_LIFE_VISUALS = [
     emoji: '🚲',
     time: '07:25',
     category: 'commute',
-    image: '/assets/battle/school-life/bicycle-commute-v2.webp',
+    image: publicAssetUrl('/assets/battle/school-life/bicycle-commute-v2.webp'),
     description: '朝日を受けた川沿いの自転車道を、安全な間隔で学校へ走る。',
   },
   {
@@ -36,7 +38,7 @@ export const SCHOOL_LIFE_VISUALS = [
     emoji: '🚆',
     time: '07:15',
     category: 'commute',
-    image: '/assets/battle/school-life/train-commute-v2.webp',
+    image: publicAssetUrl('/assets/battle/school-life/train-commute-v2.webp'),
     description: '点字ブロックの内側で電車を待ち、各自の時間を静かに過ごす。',
   },
   {
@@ -46,7 +48,7 @@ export const SCHOOL_LIFE_VISUALS = [
     emoji: '👟',
     time: '07:50',
     category: 'commute',
-    image: '/assets/battle/school-life/shoe-lockers-v2.webp',
+    image: publicAssetUrl('/assets/battle/school-life/shoe-lockers-v2.webp'),
     description: '下足箱で靴を履き替え、鞄を持って朝の教室へ向かう。',
   },
   {
@@ -56,7 +58,7 @@ export const SCHOOL_LIFE_VISUALS = [
     emoji: '🎤',
     time: '08:20',
     category: 'routine',
-    image: '/assets/battle/school-life/morning-assembly-v2.webp',
+    image: publicAssetUrl('/assets/battle/school-life/morning-assembly-v2.webp'),
     description: '全校生徒が床のラインに沿って整列し、校長先生の話を聞く。',
   },
   {
@@ -66,7 +68,7 @@ export const SCHOOL_LIFE_VISUALS = [
     emoji: '🗓️',
     time: '08:30',
     category: 'learning',
-    image: '/assets/battle/school-life/morning-homeroom-v2.webp',
+    image: publicAssetUrl('/assets/battle/school-life/morning-homeroom-v2.webp'),
     description: '前の黒板に向かって座り、今日の予定と連絡事項を確認する。',
   },
   {
@@ -76,7 +78,7 @@ export const SCHOOL_LIFE_VISUALS = [
     emoji: '✏️',
     time: '10:10',
     category: 'learning',
-    image: '/assets/battle/school-life/pop-quiz-v2.webp',
+    image: publicAssetUrl('/assets/battle/school-life/pop-quiz-v2.webp'),
     description: '机を前へそろえ、静かな教室で短い確認問題に集中する。',
   },
   {
@@ -86,7 +88,7 @@ export const SCHOOL_LIFE_VISUALS = [
     emoji: '📚',
     time: '17:10',
     category: 'learning',
-    image: '/assets/battle/school-life/test-prep-v2.webp',
+    image: publicAssetUrl('/assets/battle/school-life/test-prep-v2.webp'),
     description: '図書室の大机で、それぞれの教材と課題に向き合う試験勉強。',
   },
   {
@@ -96,7 +98,7 @@ export const SCHOOL_LIFE_VISUALS = [
     emoji: '📝',
     time: '09:00',
     category: 'learning',
-    image: '/assets/battle/school-life/midterm-exam-v2.webp',
+    image: publicAssetUrl('/assets/battle/school-life/midterm-exam-v2.webp'),
     description: '全員が前を向く教室で、答案と時計だけを見て問題を解く。',
   },
   {
@@ -106,7 +108,7 @@ export const SCHOOL_LIFE_VISUALS = [
     emoji: '📄',
     time: '14:40',
     category: 'learning',
-    image: '/assets/battle/school-life/test-return-v2.webp',
+    image: publicAssetUrl('/assets/battle/school-life/test-return-v2.webp'),
     description: '先生から答案を受け取り、席で間違いと解き方を確かめる。',
   },
   {
@@ -116,7 +118,7 @@ export const SCHOOL_LIFE_VISUALS = [
     emoji: '🍱',
     time: '12:25',
     category: 'lunch',
-    image: '/assets/battle/school-life/lunch-classroom.webp',
+    image: publicAssetUrl('/assets/battle/school-life/lunch-classroom.webp'),
     description: '4台の机を2×2にそろえ、一人ひとつのお弁当を囲む。',
   },
   {
@@ -126,7 +128,7 @@ export const SCHOOL_LIFE_VISUALS = [
     emoji: '🥖',
     time: '12:15',
     category: 'lunch',
-    image: '/assets/battle/school-life/school-store.webp',
+    image: publicAssetUrl('/assets/battle/school-life/school-store.webp'),
     description: '列に並び、カウンターでパンや飲み物を順番に受け取る。',
   },
   {
@@ -136,7 +138,7 @@ export const SCHOOL_LIFE_VISUALS = [
     emoji: '🍛',
     time: '12:35',
     category: 'lunch',
-    image: '/assets/battle/school-life/cafeteria-v2.webp',
+    image: publicAssetUrl('/assets/battle/school-life/cafeteria-v2.webp'),
     description: '学校らしい白い長机に全員で座り、普通の昼食を楽しむ。',
   },
   {
@@ -146,7 +148,7 @@ export const SCHOOL_LIFE_VISUALS = [
     emoji: '🧹',
     time: '15:35',
     category: 'routine',
-    image: '/assets/battle/school-life/cleaning-time-v2.webp',
+    image: publicAssetUrl('/assets/battle/school-life/cleaning-time-v2.webp'),
     description: 'ほうき、ちりとり、雑巾を分担して教室を整える。',
   },
   {
@@ -156,7 +158,7 @@ export const SCHOOL_LIFE_VISUALS = [
     emoji: '📋',
     time: '16:05',
     category: 'routine',
-    image: '/assets/battle/school-life/committee-meeting-v2.webp',
+    image: publicAssetUrl('/assets/battle/school-life/committee-meeting-v2.webp'),
     description: '会議机で資料を開き、行事の役割と進行を話し合う。',
   },
   {
@@ -166,7 +168,7 @@ export const SCHOOL_LIFE_VISUALS = [
     emoji: '🏃',
     time: '16:45',
     category: 'club',
-    image: '/assets/battle/school-life/track-club.webp',
+    image: publicAssetUrl('/assets/battle/school-life/track-club.webp'),
     description: '同じレーンと進行方向を守り、交換ゾーンでバトンを渡す。',
   },
   {
@@ -176,7 +178,7 @@ export const SCHOOL_LIFE_VISUALS = [
     emoji: '🏀',
     time: '16:30',
     category: 'club',
-    image: '/assets/battle/school-life/basketball-club.webp',
+    image: publicAssetUrl('/assets/battle/school-life/basketball-club.webp'),
     description: 'コートを広く使い、パスとシュートの連係練習に励む。',
   },
   {
@@ -186,7 +188,7 @@ export const SCHOOL_LIFE_VISUALS = [
     emoji: '🎨',
     time: '16:40',
     category: 'club',
-    image: '/assets/battle/school-life/art-club-v2.webp',
+    image: publicAssetUrl('/assets/battle/school-life/art-club-v2.webp'),
     description: '石膏像、キャンバス、描き手の視線を一直線にして観察する。',
   },
   {
@@ -196,7 +198,7 @@ export const SCHOOL_LIFE_VISUALS = [
     emoji: '🧪',
     time: '16:35',
     category: 'club',
-    image: '/assets/battle/school-life/science-club.webp',
+    image: publicAssetUrl('/assets/battle/school-life/science-club.webp'),
     description: '実験区域の全員が白衣と保護眼鏡を着け、反応を観察する。',
   },
   {
@@ -206,7 +208,7 @@ export const SCHOOL_LIFE_VISUALS = [
     emoji: '🎌',
     time: '10:30',
     category: 'event',
-    image: '/assets/battle/school-life/sports-festival.webp',
+    image: publicAssetUrl('/assets/battle/school-life/sports-festival.webp'),
     description: '校庭で競技する選手を、決められた応援席から全力で支える。',
   },
   {
@@ -216,7 +218,7 @@ export const SCHOOL_LIFE_VISUALS = [
     emoji: '🎊',
     time: '13:20',
     category: 'event',
-    image: '/assets/battle/school-life/culture-festival-v2.webp',
+    image: publicAssetUrl('/assets/battle/school-life/culture-festival-v2.webp'),
     description: '装飾した教室で、案内、配膳、会計を分担して来場者を迎える。',
   },
   {
@@ -226,7 +228,7 @@ export const SCHOOL_LIFE_VISUALS = [
     emoji: '🚌',
     time: '11:00',
     category: 'event',
-    image: '/assets/battle/school-life/school-trip-v2.webp',
+    image: publicAssetUrl('/assets/battle/school-life/school-trip-v2.webp'),
     description: '班ごとに地図と資料を持ち、歴史ある街並みを見学する。',
   },
   {
@@ -236,7 +238,7 @@ export const SCHOOL_LIFE_VISUALS = [
     emoji: '🌸',
     time: '10:00',
     category: 'event',
-    image: '/assets/battle/school-life/entrance-ceremony-v2.webp',
+    image: publicAssetUrl('/assets/battle/school-life/entrance-ceremony-v2.webp'),
     description: '体育館の列をきれいにそろえ、新入生として式に臨む。',
   },
   {
@@ -246,7 +248,7 @@ export const SCHOOL_LIFE_VISUALS = [
     emoji: '🎒',
     time: '16:15',
     category: 'commute',
-    image: '/assets/battle/school-life/school-gate-dismissal-v2.webp',
+    image: publicAssetUrl('/assets/battle/school-life/school-gate-dismissal-v2.webp'),
     description: '校門を出て、部活、駅、自宅へとそれぞれの道に分かれる。',
   },
 ]

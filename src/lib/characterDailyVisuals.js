@@ -1,4 +1,5 @@
 import { BATTLE_STUDENTS } from './battleCast.js'
+import { publicAssetUrl } from './publicAssetUrl.js'
 
 export const CHARACTER_DAILY_VISUAL_MOMENTS = [
   {
@@ -125,7 +126,7 @@ export const CHARACTER_DAILY_VISUALS = BATTLE_STUDENTS.flatMap((student) => (
     id: `${student.id}:${moment.id}`,
     studentId: student.id,
     sceneId: moment.id,
-    image: `/assets/battle/daily/${student.id}/${moment.id}.webp`,
+    image: publicAssetUrl(`/assets/battle/daily/${student.id}/${moment.id}.webp`),
     imageAlt: `${student.name}が${moment.place}で${moment.interactionCue}場面。主人公の手・姿・影・反射は描かれていない。`,
     label: moment.label,
     emoji: moment.emoji,

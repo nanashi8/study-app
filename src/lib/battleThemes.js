@@ -1,9 +1,11 @@
+import { publicAssetUrl } from './publicAssetUrl.js'
+
 export const BATTLE_STAR_PER_CORRECT = 10
 export const MAX_BATTLE_STARS = 9_999_999
 export const BATTLE_XP_PER_EXCHANGE = 50
 export const BATTLE_STARS_PER_EXCHANGE = 25
 
-export const BATTLE_BARRIER_MAP_IMAGE = '/assets/battle/world/barrier-district-night-v2.webp'
+export const BATTLE_BARRIER_MAP_IMAGE = publicAssetUrl('/assets/battle/world/barrier-district-night-v2.webp')
 
 // 夜景の窓明かり。百分率座標なので画面幅が変わっても建物の上に留まる。
 export const BATTLE_BARRIER_WINDOW_LIGHTS = [
@@ -211,11 +213,11 @@ export const BATTLE_THEMES = [
       healPercent: 5,
       label: '3正解ごとにHPを5%回復',
     },
-    preview: '/assets/battle/pixel/music-preview.webp',
-    stage: '/assets/battle/pixel/music-stage.webp',
-    heroPortrait: '/assets/battle/pixel/music-hero.webp',
-    rivalPortrait: '/assets/battle/pixel/music-rival.webp',
-    actorsSheet: '/assets/battle/pixel/music-actors-v2.webp',
+    preview: publicAssetUrl('/assets/battle/pixel/music-preview.webp'),
+    stage: publicAssetUrl('/assets/battle/pixel/music-stage.webp'),
+    heroPortrait: publicAssetUrl('/assets/battle/pixel/music-hero.webp'),
+    rivalPortrait: publicAssetUrl('/assets/battle/pixel/music-rival.webp'),
+    actorsSheet: publicAssetUrl('/assets/battle/pixel/music-actors-v2.webp'),
     particles: ['♪', '♫', '✦', '♬', '♡', '♩'],
     scenes: [
       {
@@ -260,11 +262,11 @@ export const BATTLE_THEMES = [
       reductionPercent: 50,
       label: '最初の反撃ダメージを半減',
     },
-    preview: '/assets/battle/pixel/art-preview.webp',
-    stage: '/assets/battle/pixel/art-stage.webp',
-    heroPortrait: '/assets/battle/pixel/art-hero.webp',
-    rivalPortrait: '/assets/battle/pixel/art-rival.webp',
-    actorsSheet: '/assets/battle/pixel/art-actors-v2.webp',
+    preview: publicAssetUrl('/assets/battle/pixel/art-preview.webp'),
+    stage: publicAssetUrl('/assets/battle/pixel/art-stage.webp'),
+    heroPortrait: publicAssetUrl('/assets/battle/pixel/art-hero.webp'),
+    rivalPortrait: publicAssetUrl('/assets/battle/pixel/art-rival.webp'),
+    actorsSheet: publicAssetUrl('/assets/battle/pixel/art-actors-v2.webp'),
     particles: ['◆', '●', '▲', '■', '✦', '◇'],
     scenes: [
       {
@@ -310,11 +312,11 @@ export const BATTLE_THEMES = [
       bonusPercent: 35,
       label: '3正解ごとに追加ダメージ',
     },
-    preview: '/assets/battle/pixel/library-preview.webp',
-    stage: '/assets/battle/pixel/library-stage.webp',
-    heroPortrait: '/assets/battle/pixel/library-hero.webp',
-    rivalPortrait: '/assets/battle/pixel/library-rival.webp',
-    actorsSheet: '/assets/battle/pixel/library-actors-v2.webp',
+    preview: publicAssetUrl('/assets/battle/pixel/library-preview.webp'),
+    stage: publicAssetUrl('/assets/battle/pixel/library-stage.webp'),
+    heroPortrait: publicAssetUrl('/assets/battle/pixel/library-hero.webp'),
+    rivalPortrait: publicAssetUrl('/assets/battle/pixel/library-rival.webp'),
+    actorsSheet: publicAssetUrl('/assets/battle/pixel/library-actors-v2.webp'),
     particles: ['▱', '✦', '◇', '⌁', '✧', '▰'],
     scenes: [
       {

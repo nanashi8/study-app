@@ -1,3 +1,5 @@
+import { publicAssetUrl } from './publicAssetUrl.js'
+
 export const BATTLE_EMOTION_STATES = [
   { id: 'idle', label: '待機', emoji: '🌙', group: 'calm' },
   { id: 'gentle', label: 'やさしい', emoji: '🌷', group: 'healing' },
@@ -124,9 +126,9 @@ export const BATTLE_STUDENTS = [
   },
 ].map((student) => ({
   ...student,
-  assetBase: `/assets/battle/cast/students/${student.id}`,
-  motionBase: `/assets/battle/motion/students/${student.id}`,
-  lifestyleBase: `/assets/battle/cast/lifestyle/${student.id}`,
+  assetBase: publicAssetUrl(`/assets/battle/cast/students/${student.id}`),
+  motionBase: publicAssetUrl(`/assets/battle/motion/students/${student.id}`),
+  lifestyleBase: publicAssetUrl(`/assets/battle/cast/lifestyle/${student.id}`),
 }))
 
 export const BATTLE_LIFESTYLE_OUTFITS = [
@@ -182,7 +184,7 @@ export const BATTLE_DAILY_SCENES = [
     time: '06:45',
     contextId: 'school',
     outfitId: 'uniform',
-    image: '/assets/battle/scenes/morning.webp',
+    image: publicAssetUrl('/assets/battle/scenes/morning.webp'),
     description: '制服に袖を通し、今日のノートを鞄へ。静かな朝が冒険の始まり。',
     episode: {
       title: '朝からつまずいた日',
@@ -227,7 +229,7 @@ export const BATTLE_DAILY_SCENES = [
     time: '07:38',
     contextId: 'school',
     outfitId: 'uniform',
-    image: '/assets/battle/scenes/commute-v2.webp',
+    image: publicAssetUrl('/assets/battle/scenes/commute-v2.webp'),
     description: '紫陽花の道を駅へ。昨日の雨も、今朝はきらめく作戦会議の舞台。',
     episode: {
       title: '間に合わないかもしれない',
@@ -272,7 +274,7 @@ export const BATTLE_DAILY_SCENES = [
     time: '10:20',
     contextId: 'school',
     outfitId: 'uniform',
-    image: '/assets/battle/scenes/classroom-v3.webp',
+    image: publicAssetUrl('/assets/battle/scenes/classroom-v3.webp'),
     description: '考えて、書いて、手を挙げる。正解へ近づく小さな瞬間を三人で。',
     episode: {
       title: '手を挙げたいのに',
@@ -318,7 +320,7 @@ export const BATTLE_DAILY_SCENES = [
     time: '12:35',
     contextId: 'school',
     outfitId: 'uniform',
-    image: '/assets/battle/scenes/everyday.webp',
+    image: publicAssetUrl('/assets/battle/scenes/everyday.webp'),
     description: '中庭の木陰でお弁当。何でもない会話が、午後の元気を回復する。',
     episode: {
       title: '会話に入れない昼休み',
@@ -364,7 +366,7 @@ export const BATTLE_DAILY_SCENES = [
     time: '14:20',
     contextId: 'weekend',
     outfitId: 'weekend',
-    image: '/assets/battle/scenes/park.webp',
+    image: publicAssetUrl('/assets/battle/scenes/park.webp'),
     description: '休日の私服で一枚のシートを囲み、三人とも同じシンボルカードの一手に注目。',
     episode: {
       title: '次の一手を一緒に',
@@ -410,7 +412,7 @@ export const BATTLE_DAILY_SCENES = [
     time: '16:18',
     contextId: 'school',
     outfitId: 'uniform',
-    image: '/assets/battle/scenes/club.webp',
+    image: publicAssetUrl('/assets/battle/scenes/club.webp'),
     description: '歌と絵と体力を持ち寄って、文化祭の景色を少しずつ完成させる。',
     episode: {
       title: '自分だけ遅れて見える',
@@ -456,7 +458,7 @@ export const BATTLE_DAILY_SCENES = [
     time: '16:52',
     contextId: 'afterschool',
     outfitId: 'uniform',
-    image: '/assets/battle/scenes/cafe.webp',
+    image: publicAssetUrl('/assets/battle/scenes/cafe.webp'),
     description: '放課後のカフェで一枚の地図とスマホを囲み、三人で週末の行き先を相談。',
     episode: {
       title: '三人で決める寄り道',
@@ -502,7 +504,7 @@ export const BATTLE_DAILY_SCENES = [
     time: '17:06',
     contextId: 'afterschool',
     outfitId: 'uniform',
-    image: '/assets/battle/scenes/snack-v2.webp',
+    image: publicAssetUrl('/assets/battle/scenes/snack-v2.webp'),
     description: '商店街の揚げたてを分け合う。今日の頑張りに、おいしい回復時間。',
     episode: {
       title: '小テストのあとで',
@@ -548,7 +550,7 @@ export const BATTLE_DAILY_SCENES = [
     time: '17:24',
     contextId: 'weekend',
     outfitId: 'weekend',
-    image: '/assets/battle/scenes/shopping-casual.webp',
+    image: publicAssetUrl('/assets/battle/scenes/shopping-casual.webp'),
     description: '休日の私服で文具と小物を見比べる。三人で一つの買い物候補を相談中。',
     episode: {
       title: 'なかなか決められない',
@@ -594,7 +596,7 @@ export const BATTLE_DAILY_SCENES = [
     time: '17:41',
     contextId: 'afterschool',
     outfitId: 'uniform',
-    image: '/assets/battle/scenes/library.webp',
+    image: publicAssetUrl('/assets/battle/scenes/library.webp'),
     description: 'ページをめくり、手がかりをつなぐ。夕日の書架で心まで整う。',
     episode: {
       title: '読んでも頭に入らない',
@@ -640,7 +642,7 @@ export const BATTLE_DAILY_SCENES = [
     time: '17:55',
     contextId: 'afterschool',
     outfitId: 'uniform',
-    image: '/assets/battle/scenes/arcade.webp',
+    image: publicAssetUrl('/assets/battle/scenes/arcade.webp'),
     description: 'ノアのリズムゲームをカイトが応援し、レンは三人で取った景品を抱える放課後。',
     episode: {
       title: '最後のリズムだけ',
@@ -686,7 +688,7 @@ export const BATTLE_DAILY_SCENES = [
     time: '18:03',
     contextId: 'afterschool',
     outfitId: 'uniform',
-    image: '/assets/battle/scenes/homeward-v2.webp',
+    image: publicAssetUrl('/assets/battle/scenes/homeward-v2.webp'),
     description: '川沿いを歩きながら一日を振り返る。明日の一問へ続く穏やかな帰り道。',
     episode: {
       title: '頑張った実感がない',
@@ -863,7 +865,7 @@ export const BATTLE_RIVALS = RIVAL_DEFINITIONS.map(
     name,
     title,
     groupId,
-    portrait: `/assets/battle/cast/rivals/${id}.webp`,
+    portrait: publicAssetUrl(`/assets/battle/cast/rivals/${id}.webp`),
   }),
 )
 

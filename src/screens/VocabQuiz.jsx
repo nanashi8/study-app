@@ -40,16 +40,12 @@ import {
   battleTraitById,
 } from '../lib/battleTraits.js'
 import { battleManaPresentation } from '../lib/battleMana.js'
+import { publicAssetUrl } from '../lib/publicAssetUrl.js'
 
 // このクイズ画面の同一性キー（出題ソース・タイトル・問題数）。
 // 退避したセッションが「今まさに戻ってきたクイズ」のものかを照合するのに使う。
 const sessionKey = (p) =>
   `vocab|${JSON.stringify(p.source ?? { type: 'due' })}|${p.title ?? ''}|${p.size ?? ''}`
-
-const publicAssetUrl = (assetPath) => {
-  if (!assetPath || /^(?:data:|blob:|https?:)/.test(assetPath)) return assetPath
-  return `${import.meta.env.BASE_URL}${String(assetPath).replace(/^\/+/, '')}`
-}
 
 const restoredBattleLog = (results = {}) => {
   if (Array.isArray(results.battleLog)) return [...results.battleLog]
