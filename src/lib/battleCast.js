@@ -69,9 +69,9 @@ export const BATTLE_STUDENTS = [
     accent: '#f97316',
   },
   {
-    id: 'sora',
-    name: '風間ソラ',
-    reading: 'かざま そら',
+    id: 'kaito',
+    name: '風間カイト',
+    reading: 'かざま かいと',
     club: '陸上部',
     emoji: '👟',
     trait: '考えるより一歩先へ。仲間を引っぱる俊足。',
@@ -125,10 +125,54 @@ export const BATTLE_STUDENTS = [
 ].map((student) => ({
   ...student,
   assetBase: `/assets/battle/cast/students/${student.id}`,
+  motionBase: `/assets/battle/motion/students/${student.id}`,
+  lifestyleBase: `/assets/battle/cast/lifestyle/${student.id}`,
 }))
 
+export const BATTLE_LIFESTYLE_OUTFITS = [
+  { id: 'home', label: '自宅の私服', emoji: '🏠' },
+  { id: 'weekend', label: '休日の私服', emoji: '🗓️' },
+  { id: 'club', label: '部活動中の姿', emoji: '🎽' },
+]
+
+const BATTLE_LIFESTYLE_OUTFIT_IDS = new Set(
+  BATTLE_LIFESTYLE_OUTFITS.map((outfit) => outfit.id),
+)
+
+export const BATTLE_CHARACTER_VISUAL_COUNT = BATTLE_STUDENTS.length
+  * (BATTLE_EMOTION_STATES.length + BATTLE_LIFESTYLE_OUTFITS.length)
+
+export const BATTLE_MOTION_STATES = [
+  'attack',
+  'guard',
+  'healing',
+  'hurt',
+  'victory',
+]
+
+const MOTION_BY_EMOTION = new Map([
+  ['attack', 'attack'],
+  ['delighted', 'attack'],
+  ['determined', 'attack'],
+  ['guard', 'guard'],
+  ['healing', 'healing'],
+  ['relieved', 'healing'],
+  ['hurt', 'hurt'],
+  ['worried', 'hurt'],
+  ['scared', 'hurt'],
+  ['exhausted', 'hurt'],
+  ['victory', 'victory'],
+])
+
+export const BATTLE_SUPPORT_STYLES = [
+  { id: 'empathy', label: '気持ちに寄り添う', emoji: '🤝' },
+  { id: 'idea', label: '小さな工夫を提案', emoji: '💡' },
+  { id: 'together', label: '一緒にやってみる', emoji: '🌱' },
+]
+
 // バトルの外にも同じ10人が暮らしていることを見せる日常ストーリー。
-// 学習評価や能力値には接続せず、表情差分と世界観だけを共有する。
+// 声掛けには正解・不正解を設けず、学習評価や能力値へ接続しない。
+// 選んだ言葉に応じて、生徒の表情と返事だけが変わる。
 export const BATTLE_DAILY_SCENES = [
   {
     id: 'morning',
@@ -136,8 +180,40 @@ export const BATTLE_DAILY_SCENES = [
     shortName: '朝',
     emoji: '🌅',
     time: '06:45',
+    contextId: 'school',
+    outfitId: 'uniform',
     image: '/assets/battle/scenes/morning.webp',
     description: '制服に袖を通し、今日のノートを鞄へ。静かな朝が冒険の始まり。',
+    episode: {
+      title: '朝からつまずいた日',
+      speakerId: 'yuu',
+      openingEmotionId: 'worried',
+      situation: 'ユウは昨夜決めた早起きができず、予定していた英単語の復習も手つかずです。',
+      opening: '「また続かなかった。朝からもう、今日はだめな気がする」',
+      choices: [
+        {
+          id: 'morning-empathy',
+          styleId: 'empathy',
+          label: '「朝から調子が出ない日、あるよ」',
+          reply: '「そっか、私だけじゃないんだ。今からできることを見てみる」',
+          emotionId: 'relieved',
+        },
+        {
+          id: 'morning-idea',
+          styleId: 'idea',
+          label: '「今日は一つだけ終わらせよう」',
+          reply: '「全部取り戻さなくていいんだね。単語を5個だけ見てみる」',
+          emotionId: 'focused',
+        },
+        {
+          id: 'morning-together',
+          styleId: 'together',
+          label: '「登校までの5分、一緒に見よう」',
+          reply: '「一緒なら始められそう。最初のページを開いてみるね」',
+          emotionId: 'gentle',
+        },
+      ],
+    },
     cast: [
       { studentId: 'mio', emotionId: 'gentle' },
       { studentId: 'yuu', emotionId: 'focused' },
@@ -149,11 +225,43 @@ export const BATTLE_DAILY_SCENES = [
     shortName: '通学',
     emoji: '🚲',
     time: '07:38',
-    image: '/assets/battle/scenes/commute.webp',
+    contextId: 'school',
+    outfitId: 'uniform',
+    image: '/assets/battle/scenes/commute-v2.webp',
     description: '紫陽花の道を駅へ。昨日の雨も、今朝はきらめく作戦会議の舞台。',
+    episode: {
+      title: '間に合わないかもしれない',
+      speakerId: 'ren',
+      openingEmotionId: 'worried',
+      situation: '雨で電車が遅れ、レンは一時間目の発表準備に間に合わないのではと焦っています。',
+      opening: '「遅れたら班のみんなに迷惑をかける。もっと早く出ればよかった」',
+      choices: [
+        {
+          id: 'commute-empathy',
+          styleId: 'empathy',
+          label: '「焦るよね。でもレンのせいじゃないよ」',
+          reply: '「そう言ってもらえると、少し息ができる。まず落ち着くよ」',
+          emotionId: 'relieved',
+        },
+        {
+          id: 'commute-idea',
+          styleId: 'idea',
+          label: '「班へ先に状況を伝えておこう」',
+          reply: '「連絡なら今できるね。着く時間と資料の場所を送ってみる」',
+          emotionId: 'focused',
+        },
+        {
+          id: 'commute-together',
+          styleId: 'together',
+          label: '「着いたら準備を一緒に手伝うよ」',
+          reply: '「ありがとう。一人で全部背負わなくていいんだね」',
+          emotionId: 'gentle',
+        },
+      ],
+    },
     cast: [
       { studentId: 'ren', emotionId: 'curious' },
-      { studentId: 'sora', emotionId: 'playful' },
+      { studentId: 'kaito', emotionId: 'playful' },
     ],
   },
   {
@@ -162,8 +270,40 @@ export const BATTLE_DAILY_SCENES = [
     shortName: '授業',
     emoji: '✋',
     time: '10:20',
-    image: '/assets/battle/scenes/classroom.webp',
+    contextId: 'school',
+    outfitId: 'uniform',
+    image: '/assets/battle/scenes/classroom-v3.webp',
     description: '考えて、書いて、手を挙げる。正解へ近づく小さな瞬間を三人で。',
+    episode: {
+      title: '手を挙げたいのに',
+      speakerId: 'haru',
+      openingEmotionId: 'scared',
+      situation: 'ハルは答えの考え方が浮かんでいますが、間違えて笑われる場面を想像して手を挙げられません。',
+      opening: '「たぶん分かる。でも、違っていたらと思うと声が出ない」',
+      choices: [
+        {
+          id: 'classroom-empathy',
+          styleId: 'empathy',
+          label: '「みんなの前で話すの、こわいよね」',
+          reply: '「うん。分かってもらえただけで、肩の力が少し抜けたよ」',
+          emotionId: 'relieved',
+        },
+        {
+          id: 'classroom-idea',
+          styleId: 'idea',
+          label: '「答えより、考え方から話してみる？」',
+          reply: '「それなら言えそう。途中まででも、自分の考えを伝えてみる」',
+          emotionId: 'determined',
+        },
+        {
+          id: 'classroom-together',
+          styleId: 'together',
+          label: '「次の問いは私も一緒に手を挙げる」',
+          reply: '「隣に仲間がいると思えば挑戦できそう。次はやってみるよ」',
+          emotionId: 'confident',
+        },
+      ],
+    },
     cast: [
       { studentId: 'haru', emotionId: 'confident' },
       { studentId: 'rei', emotionId: 'focused' },
@@ -176,12 +316,90 @@ export const BATTLE_DAILY_SCENES = [
     shortName: '日常',
     emoji: '🍱',
     time: '12:35',
+    contextId: 'school',
+    outfitId: 'uniform',
     image: '/assets/battle/scenes/everyday.webp',
     description: '中庭の木陰でお弁当。何でもない会話が、午後の元気を回復する。',
+    episode: {
+      title: '会話に入れない昼休み',
+      speakerId: 'noa',
+      openingEmotionId: 'embarrassed',
+      situation: 'ノアは友達の盛り上がっている話題を知らず、会話へ入るきっかけを逃してしまいました。',
+      opening: '「今さら何の話って聞いたら、空気を止めちゃいそうで……」',
+      choices: [
+        {
+          id: 'everyday-empathy',
+          styleId: 'empathy',
+          label: '「入るタイミング、難しいときあるよね」',
+          reply: '「あるって言ってもらえて安心した。黙っていた自分を責めなくてよさそう」',
+          emotionId: 'relieved',
+        },
+        {
+          id: 'everyday-idea',
+          styleId: 'idea',
+          label: '「“それ何？”って一言だけ聞いてみよう」',
+          reply: '「詳しく知らなくても質問ならできるね。ちょっと聞いてみたい」',
+          emotionId: 'curious',
+        },
+        {
+          id: 'everyday-together',
+          styleId: 'together',
+          label: '「まず私と一緒に輪へ戻ろう」',
+          reply: '「隣にいてくれるなら行けそう。今度は私からも話してみる」',
+          emotionId: 'gentle',
+        },
+      ],
+    },
     cast: [
       { studentId: 'nao', emotionId: 'playful' },
       { studentId: 'noa', emotionId: 'curious' },
       { studentId: 'tsubaki', emotionId: 'gentle' },
+    ],
+  },
+  {
+    id: 'park',
+    name: 'カードピクニック',
+    shortName: '公園',
+    emoji: '🃏',
+    time: '14:20',
+    contextId: 'weekend',
+    outfitId: 'weekend',
+    image: '/assets/battle/scenes/park.webp',
+    description: '休日の私服で一枚のシートを囲み、三人とも同じシンボルカードの一手に注目。',
+    episode: {
+      title: '次の一手を一緒に',
+      speakerId: 'haru',
+      openingEmotionId: 'thinking',
+      situation: '公園のピクニックで、ツバキ・ナオ・ハルは一つのカードゲームを囲んでいます。ハルは手札と中央の並びを見比べ、あなたにも相談しました。',
+      opening: '「この星を先に出すか、みんなの印がそろうまで待つか。君ならどうする？」',
+      choices: [
+        {
+          id: 'park-empathy',
+          styleId: 'empathy',
+          label: '「迷うよね。急がず一緒に見よう」',
+          reply: '「ありがとう。勝ち負けだけじゃなく、考える時間もみんなで楽しめそうだ」',
+          emotionId: 'relieved',
+        },
+        {
+          id: 'park-idea',
+          styleId: 'idea',
+          label: '「中央と同じ印からつなげよう」',
+          reply: '「なるほど、全員が同じ並びを追えるね。ナオとツバキにも見せてみる」',
+          emotionId: 'curious',
+        },
+        {
+          id: 'park-together',
+          styleId: 'together',
+          label: '「私も輪に入って、次を考えるよ」',
+          reply: '「うれしいな。では四人で同じカードを見ながら、もう一局やろう」',
+          emotionId: 'delighted',
+        },
+      ],
+    },
+    cast: [
+      { studentId: 'tsubaki', emotionId: 'focused' },
+      { studentId: 'nao', emotionId: 'playful' },
+      { studentId: 'haru', emotionId: 'curious' },
     ],
   },
   {
@@ -190,12 +408,90 @@ export const BATTLE_DAILY_SCENES = [
     shortName: '部活',
     emoji: '🎨',
     time: '16:18',
+    contextId: 'school',
+    outfitId: 'uniform',
     image: '/assets/battle/scenes/club.webp',
     description: '歌と絵と体力を持ち寄って、文化祭の景色を少しずつ完成させる。',
+    episode: {
+      title: '自分だけ遅れて見える',
+      speakerId: 'mio',
+      openingEmotionId: 'sad',
+      situation: '文化祭の練習で周りが上達するなか、ミオは同じところで何度もつまずいています。',
+      opening: '「みんなの足を引っ張ってる気がする。私がいない方が進むのかな」',
+      choices: [
+        {
+          id: 'club-empathy',
+          styleId: 'empathy',
+          label: '「比べ続けると苦しくなるよね」',
+          reply: '「うん、本当は悔しかったんだ。言葉にしたら少し軽くなったよ」',
+          emotionId: 'relieved',
+        },
+        {
+          id: 'club-idea',
+          styleId: 'idea',
+          label: '「今日は一小節だけ確かめよう」',
+          reply: '「全部うまくやろうとしてた。一小節なら変化を見つけられそう」',
+          emotionId: 'focused',
+        },
+        {
+          id: 'club-together',
+          styleId: 'together',
+          label: '「苦手な部分を一緒に合わせよう」',
+          reply: '「ありがとう。できないところを隠さず、もう一度やってみるね」',
+          emotionId: 'determined',
+        },
+      ],
+    },
     cast: [
       { studentId: 'mio', emotionId: 'delighted' },
       { studentId: 'ren', emotionId: 'focused' },
-      { studentId: 'sora', emotionId: 'cheering' },
+      { studentId: 'kaito', emotionId: 'cheering' },
+    ],
+  },
+  {
+    id: 'cafe',
+    name: '週末プラン会議',
+    shortName: 'カフェ',
+    emoji: '☕',
+    time: '16:52',
+    contextId: 'afterschool',
+    outfitId: 'uniform',
+    image: '/assets/battle/scenes/cafe.webp',
+    description: '放課後のカフェで一枚の地図とスマホを囲み、三人で週末の行き先を相談。',
+    episode: {
+      title: '三人で決める寄り道',
+      speakerId: 'akari',
+      openingEmotionId: 'curious',
+      situation: 'ミオ・アカリ・レイは同じ地図を広げ、週末に三人で回る店の順番を考えています。あなたにもスマホの候補を見せてきました。',
+      opening: '「この店から始めれば全部回れそう！　でも休憩も入れた方がいいかな？」',
+      choices: [
+        {
+          id: 'cafe-empathy',
+          styleId: 'empathy',
+          label: '「楽しみだと全部行きたくなるよね」',
+          reply: '「そう、それ！　分かってもらえたら、焦らず楽しい順番を考えられそう」',
+          emotionId: 'delighted',
+        },
+        {
+          id: 'cafe-idea',
+          styleId: 'idea',
+          label: '「地図に休憩場所も印をつけよう」',
+          reply: '「いいね。三人とも無理せず回れるルートにして、レイとミオにも見せるよ」',
+          emotionId: 'focused',
+        },
+        {
+          id: 'cafe-together',
+          styleId: 'together',
+          label: '「私も候補を一つ持ってくる」',
+          reply: '「四人の行きたい場所を一本につなごう。次の会議もこの席でね！」',
+          emotionId: 'playful',
+        },
+      ],
+    },
+    cast: [
+      { studentId: 'mio', emotionId: 'gentle' },
+      { studentId: 'akari', emotionId: 'delighted' },
+      { studentId: 'rei', emotionId: 'focused' },
     ],
   },
   {
@@ -204,10 +500,42 @@ export const BATTLE_DAILY_SCENES = [
     shortName: '買い食い',
     emoji: '🥟',
     time: '17:06',
-    image: '/assets/battle/scenes/snack.webp',
+    contextId: 'afterschool',
+    outfitId: 'uniform',
+    image: '/assets/battle/scenes/snack-v2.webp',
     description: '商店街の揚げたてを分け合う。今日の頑張りに、おいしい回復時間。',
+    episode: {
+      title: '小テストのあとで',
+      speakerId: 'yuu',
+      openingEmotionId: 'sad',
+      situation: '小テストで思うような点が取れず、ユウは友達との楽しい帰り道にも後ろめたさを感じています。',
+      opening: '「できなかったのに、こんなふうに休んでいていいのかな」',
+      choices: [
+        {
+          id: 'snack-empathy',
+          styleId: 'empathy',
+          label: '「うまくいかない日にも休んでいいよ」',
+          reply: '「休むのも次へ進むためなんだね。今はちゃんと味わってみる」',
+          emotionId: 'relieved',
+        },
+        {
+          id: 'snack-idea',
+          styleId: 'idea',
+          label: '「あとで間違えた一問だけ見よう」',
+          reply: '「全部やり直すと思って重かったんだ。一問なら向き合えそう」',
+          emotionId: 'focused',
+        },
+        {
+          id: 'snack-together',
+          styleId: 'together',
+          label: '「食べ終わったら一緒に答えを見よう」',
+          reply: '「一人で開くのが嫌だったんだ。隣にいてくれたら見られるよ」',
+          emotionId: 'gentle',
+        },
+      ],
+    },
     cast: [
-      { studentId: 'sora', emotionId: 'playful' },
+      { studentId: 'kaito', emotionId: 'playful' },
       { studentId: 'yuu', emotionId: 'delighted' },
       { studentId: 'mio', emotionId: 'gentle' },
     ],
@@ -218,8 +546,40 @@ export const BATTLE_DAILY_SCENES = [
     shortName: '買い物',
     emoji: '🛍️',
     time: '17:24',
-    image: '/assets/battle/scenes/shopping.webp',
-    description: '文具と小物を見比べて、三人それぞれの「好き」を見つける放課後。',
+    contextId: 'weekend',
+    outfitId: 'weekend',
+    image: '/assets/battle/scenes/shopping-casual.webp',
+    description: '休日の私服で文具と小物を見比べる。三人で一つの買い物候補を相談中。',
+    episode: {
+      title: 'なかなか決められない',
+      speakerId: 'akari',
+      openingEmotionId: 'thinking',
+      situation: '限られたお小遣いで文具を一つ選びたいアカリは、友達を待たせている気がして焦っています。',
+      opening: '「二つとも好き。でも迷ってばかりだと、みんなを困らせるよね」',
+      choices: [
+        {
+          id: 'shopping-empathy',
+          styleId: 'empathy',
+          label: '「大切に選んでいるから迷うんだよ」',
+          reply: '「遅いんじゃなくて、大事に考えてたんだ。もう少し見てみたい」',
+          emotionId: 'relieved',
+        },
+        {
+          id: 'shopping-idea',
+          styleId: 'idea',
+          label: '「使う場面を一つずつ想像してみよう」',
+          reply: '「毎日使う方を考えたら、気持ちが少しはっきりしてきたよ」',
+          emotionId: 'curious',
+        },
+        {
+          id: 'shopping-together',
+          styleId: 'together',
+          label: '「二つの良いところを一緒に比べよう」',
+          reply: '「急かさず付き合ってくれてありがとう。納得して決められそう」',
+          emotionId: 'delighted',
+        },
+      ],
+    },
     cast: [
       { studentId: 'akari', emotionId: 'delighted' },
       { studentId: 'rei', emotionId: 'curious' },
@@ -232,12 +592,90 @@ export const BATTLE_DAILY_SCENES = [
     shortName: '図書館',
     emoji: '📚',
     time: '17:41',
+    contextId: 'afterschool',
+    outfitId: 'uniform',
     image: '/assets/battle/scenes/library.webp',
     description: 'ページをめくり、手がかりをつなぐ。夕日の書架で心まで整う。',
+    episode: {
+      title: '読んでも頭に入らない',
+      speakerId: 'haru',
+      openingEmotionId: 'exhausted',
+      situation: 'ハルは同じ英文を何度も読み直していますが、意味がつながらず集中力も切れてきました。',
+      opening: '「さっきから同じ行ばかり。読むのが向いていないのかな」',
+      choices: [
+        {
+          id: 'library-empathy',
+          styleId: 'empathy',
+          label: '「頭に入らない日、誰にでもあるよ」',
+          reply: '「能力のせいと決めなくていいんだね。少し休んで戻ってみる」',
+          emotionId: 'relieved',
+        },
+        {
+          id: 'library-idea',
+          styleId: 'idea',
+          label: '「一段落を一言でメモしてみよう」',
+          reply: '「全部覚えようとしてた。一言なら文章の道筋を追えそうだ」',
+          emotionId: 'focused',
+        },
+        {
+          id: 'library-together',
+          styleId: 'together',
+          label: '「一文ずつ交代で読んでみよう」',
+          reply: '「声に出すと区切りが見えるかも。一緒に最初からお願い」',
+          emotionId: 'curious',
+        },
+      ],
+    },
     cast: [
       { studentId: 'haru', emotionId: 'focused' },
       { studentId: 'yuu', emotionId: 'gentle' },
       { studentId: 'mio', emotionId: 'healing' },
+    ],
+  },
+  {
+    id: 'arcade',
+    name: '一曲を三人で攻略',
+    shortName: 'ゲーム',
+    emoji: '🎮',
+    time: '17:55',
+    contextId: 'afterschool',
+    outfitId: 'uniform',
+    image: '/assets/battle/scenes/arcade.webp',
+    description: 'ノアのリズムゲームをカイトが応援し、レンは三人で取った景品を抱える放課後。',
+    episode: {
+      title: '最後のリズムだけ',
+      speakerId: 'noa',
+      openingEmotionId: 'focused',
+      situation: 'ノアが同じリズムゲームへ挑戦し、カイトは画面を見て声援、レンは直前に三人で取った景品を持って見守っています。残る難所は最後の一拍です。',
+      opening: '「最後だけ少し早い。みんな、次の一回も同じ画面を見て合図してくれる？」',
+      choices: [
+        {
+          id: 'arcade-empathy',
+          styleId: 'empathy',
+          label: '「あと一歩だと力が入るよね」',
+          reply: '「うん。だからこそ三人の声が聞こえると、いつものリズムへ戻れそう」',
+          emotionId: 'relieved',
+        },
+        {
+          id: 'arcade-idea',
+          styleId: 'idea',
+          label: '「最後の四拍だけ一緒に数えよう」',
+          reply: '「それなら画面と合図を一本にできる。カイトとレンにも同じ数え方を頼むね」',
+          emotionId: 'curious',
+        },
+        {
+          id: 'arcade-together',
+          styleId: 'together',
+          label: '「次は隣の台で一緒に挑戦する」',
+          reply: '「協力プレイへ切り替えよう。四人で同じ曲をそろえたら、きっと最高だよ」',
+          emotionId: 'delighted',
+        },
+      ],
+    },
+    cast: [
+      { studentId: 'noa', emotionId: 'focused' },
+      { studentId: 'kaito', emotionId: 'cheering' },
+      { studentId: 'ren', emotionId: 'delighted' },
     ],
   },
   {
@@ -246,8 +684,40 @@ export const BATTLE_DAILY_SCENES = [
     shortName: '帰宅',
     emoji: '🌇',
     time: '18:03',
-    image: '/assets/battle/scenes/homeward.webp',
+    contextId: 'afterschool',
+    outfitId: 'uniform',
+    image: '/assets/battle/scenes/homeward-v2.webp',
     description: '川沿いを歩きながら一日を振り返る。明日の一問へ続く穏やかな帰り道。',
+    episode: {
+      title: '頑張った実感がない',
+      speakerId: 'haru',
+      openingEmotionId: 'sad',
+      situation: '毎日勉強しているのに結果がすぐ数字へ表れず、ハルは友達と自分を比べています。',
+      opening: '「続けてるのに追いつけない。僕のやり方は無駄なのかな」',
+      choices: [
+        {
+          id: 'homeward-empathy',
+          styleId: 'empathy',
+          label: '「結果が見えない時期、つらいよね」',
+          reply: '「うん。すぐ前向きになれなくてもいいと思えたら、少し楽になった」',
+          emotionId: 'relieved',
+        },
+        {
+          id: 'homeward-idea',
+          styleId: 'idea',
+          label: '「昨日よりできた一つを探してみよう」',
+          reply: '「今日は前より速く読めた文があった。小さくても進んでいたんだね」',
+          emotionId: 'confident',
+        },
+        {
+          id: 'homeward-together',
+          styleId: 'together',
+          label: '「明日の最初の一問も一緒にやろう」',
+          reply: '「明日につながる約束があると安心する。もう一日だけ続けてみるよ」',
+          emotionId: 'gentle',
+        },
+      ],
+    },
     cast: [
       { studentId: 'haru', emotionId: 'relieved' },
       { studentId: 'yuu', emotionId: 'gentle' },
@@ -259,16 +729,31 @@ const STUDENT_BY_ID = new Map(
   BATTLE_STUDENTS.map((student) => [student.id, student]),
 )
 
+// 旧プロフィールを保存済みの端末・進捗コード・クラウドデータだけを、
+// 現在の正式IDへ移行する。新規保存や画面内参照には旧IDを残さない。
+const LEGACY_BATTLE_STUDENT_IDS = new Map([
+  ['sora', 'kaito'],
+])
+
 const DAILY_SCENE_BY_ID = new Map(
   BATTLE_DAILY_SCENES.map((scene) => [scene.id, scene]),
+)
+
+const SUPPORT_STYLE_BY_ID = new Map(
+  BATTLE_SUPPORT_STYLES.map((style) => [style.id, style]),
 )
 
 export function isBattleStudentId(id) {
   return STUDENT_BY_ID.has(id)
 }
 
+export function isRestorableBattleStudentId(id) {
+  return isBattleStudentId(id) || LEGACY_BATTLE_STUDENT_IDS.has(id)
+}
+
 export function normalizeBattleStudentId(id) {
-  return isBattleStudentId(id) ? id : DEFAULT_BATTLE_STUDENT_ID
+  const currentId = LEGACY_BATTLE_STUDENT_IDS.get(id) ?? id
+  return isBattleStudentId(currentId) ? currentId : DEFAULT_BATTLE_STUDENT_ID
 }
 
 export function battleStudentById(id) {
@@ -279,6 +764,10 @@ export function battleDailySceneById(id) {
   return DAILY_SCENE_BY_ID.get(id) ?? BATTLE_DAILY_SCENES[0]
 }
 
+export function battleSupportStyleById(id) {
+  return SUPPORT_STYLE_BY_ID.get(id) ?? BATTLE_SUPPORT_STYLES[0]
+}
+
 export function battleEmotionById(id) {
   return EMOTION_BY_ID.get(id) ?? EMOTION_BY_ID.get('idle')
 }
@@ -287,6 +776,20 @@ export function battleStudentPortrait(studentId, emotionId = 'idle') {
   const student = battleStudentById(studentId)
   const emotion = battleEmotionById(emotionId)
   return `${student.assetBase}/${emotion.id}.webp`
+}
+
+export function battleStudentLifestylePortrait(studentId, outfitId = 'uniform') {
+  const student = battleStudentById(studentId)
+  if (BATTLE_LIFESTYLE_OUTFIT_IDS.has(outfitId)) {
+    return `${student.lifestyleBase}/${outfitId}.webp`
+  }
+  return battleStudentPortrait(student.id, 'idle')
+}
+
+export function battleStudentMotion(studentId, emotionId = 'idle') {
+  const student = battleStudentById(studentId)
+  const motionId = MOTION_BY_EMOTION.get(battleEmotionById(emotionId).id)
+  return motionId ? `${student.motionBase}/${motionId}.webm` : null
 }
 
 export const BATTLE_RIVAL_GROUPS = [
@@ -404,20 +907,26 @@ export function battleRivalForEncounter(encounter, seed = 0) {
 }
 
 // 回答イベントを24種類の表情・動作へ結びつける。評価値やダメージ計算には触れない。
-export function battleStudentState({ battleState, eventActive = false } = {}) {
+export function battleStudentState({
+  battleState,
+  eventActive = false,
+  eventKind = null,
+} = {}) {
   if (!battleState) return 'idle'
   if (battleState.enemyDefeated) return 'victory'
   if (battleState.heroDefeated) return 'exhausted'
 
   const event = battleState.lastEvent
+  const resolvedEventKind = eventKind ?? event?.kind
   if (eventActive && event?.themeAbility === 'encore') return 'healing'
   if (eventActive) {
-    if (['block', 'shield', 'item-guard'].includes(event?.kind)) return 'guard'
-    if (event?.kind === 'unknown') return 'worried'
-    if (event?.kind === 'damage') return 'hurt'
-    if (event?.kind === 'counter' && event?.healing) return 'relieved'
-    if (['burst', 'item-power'].includes(event?.kind)) return 'determined'
-    if (event?.kind === 'hit') return battleState.streak >= 3 ? 'delighted' : 'attack'
+    if (resolvedEventKind === 'item-heal') return 'healing'
+    if (['block', 'shield', 'item-guard'].includes(resolvedEventKind)) return 'guard'
+    if (resolvedEventKind === 'unknown') return 'worried'
+    if (resolvedEventKind === 'damage') return 'hurt'
+    if (resolvedEventKind === 'counter' && event?.healing) return 'relieved'
+    if (['burst', 'item-power'].includes(resolvedEventKind)) return 'determined'
+    if (resolvedEventKind === 'hit') return battleState.streak >= 3 ? 'delighted' : 'attack'
   }
 
   if (battleState.answered === 0) return 'idle'

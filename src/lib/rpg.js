@@ -1044,6 +1044,13 @@ export const BATTLE_SCENE_CUES = {
     actor: 'enemy',
     target: 'hero',
   },
+  'item-heal': {
+    emoji: '🩹',
+    label: 'ITEM HEAL!',
+    title: 'アイテムで回復',
+    actor: 'hero',
+    target: 'hero',
+  },
   damage: {
     emoji: '💥',
     label: 'ENEMY HIT',

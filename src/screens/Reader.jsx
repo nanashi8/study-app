@@ -7,7 +7,6 @@ import { resolvePassageWord } from '../data/passage-gloss.js'
 import {
   analyzePassageParagraphs,
   analyzeReadingSentence,
-  grammarPatternName,
 } from '../lib/reading-grammar.js'
 import { speak, speakWith, stopSpeaking } from '../lib/tts.js'
 import { Sheet } from '../components/Sheet.jsx'
@@ -16,6 +15,7 @@ import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { Button, Chip, IconButton } from '../components/ui.jsx'
 import { Close, SpeakerWave, ArrowRight, Lightbulb, Link, ChevronLeft, ChevronRight, Bookmark, BookmarkFilled, BookOpen } from '../components/Icons.jsx'
 import { cx } from '../components/ui.jsx'
+import { translationRoleMeta } from '../lib/translation-roles.js'
 
 const ROLE_STYLE = {
   S: 'border-emerald-200 bg-emerald-50 text-emerald-800',
@@ -25,38 +25,75 @@ const ROLE_STYLE = {
   O2: 'border-cyan-200 bg-cyan-50 text-cyan-800',
   C: 'border-amber-200 bg-amber-50 text-amber-800',
   M: 'border-violet-200 bg-violet-50 text-violet-800',
+  LINK: 'border-slate-200 bg-slate-50 text-slate-700',
   並列: 'border-slate-200 bg-slate-50 text-slate-700',
+}
+
+const PHRASE_STATUS = {
+  'review-needed': {
+    label: '確認待ち',
+    className: 'border-amber-200 bg-amber-50 text-amber-800',
+  },
+  reviewed: {
+    label: '本文見直し済み',
+    className: 'border-sky-200 bg-sky-50 text-sky-800',
+  },
+  confirmed: {
+    label: '監査確認済み',
+    className: 'border-emerald-200 bg-emerald-50 text-emerald-800',
+  },
+}
+
+const phraseStatusLabel = (phrase, fallback) => {
+  if (phrase.reviewState === 'rule-review-needed') return '方法確認待ち'
+  if (phrase.reviewState === 'unregistered') return '未登録・確認待ち'
+  return fallback
 }
 
 function SvocFlow({ parts }) {
   if (!parts?.length) return null
   return (
-    <div className="overflow-x-auto pb-1">
-      <div className="flex min-w-max items-stretch gap-1">
-        {parts.map((part, index) => (
-          <div key={`${part.role}-${index}`} className="flex items-center gap-1">
-            <div
-              className={cx(
-                'flex min-h-14 w-32 flex-col justify-center border px-2 py-1.5 text-center',
-                ROLE_STYLE[part.role] ?? 'border-brand-200 bg-brand-50 text-brand-800',
-              )}
-            >
-              <span className="text-[11px] font-black">{part.role}</span>
-              <span className="line-clamp-2 text-xs font-bold leading-snug">{part.text}</span>
+    <ol className="space-y-1.5" aria-label="SVOCMを英語順に読む型">
+      {parts.map((part, index) => {
+        const meta = translationRoleMeta(part.role)
+        return (
+          <li
+            key={`${part.role}-${index}`}
+            className="grid grid-cols-[2.5rem_minmax(0,1fr)] items-start gap-2 border border-ink/5 bg-white px-2 py-2"
+          >
+            <span className={cx(
+              'flex h-7 items-center justify-center border text-[11px] font-black',
+              ROLE_STYLE[part.role] ?? 'border-brand-200 bg-brand-50 text-brand-800',
+            )}>
+              {meta.code}
+            </span>
+            <div className="min-w-0">
+              <p lang="en" className="break-words text-xs font-extrabold leading-relaxed text-ink">
+                {part.text}
+              </p>
+              <p className="mt-0.5 text-[10px] font-bold leading-relaxed text-ink/50">
+                {meta.label}：{meta.question} → {meta.japaneseShape}
+              </p>
             </div>
-            {index < parts.length - 1 && <ArrowRight size={15} className="shrink-0 text-ink/30" />}
-          </div>
-        ))}
-      </div>
-    </div>
+          </li>
+        )
+      })}
+    </ol>
   )
 }
 
+function blockFlowParts(block) {
+  return block?.phrasePairs.flatMap((pair) =>
+    pair.roleParts.map((part) => ({ role: part.role, text: part.en }))) ?? []
+}
+
 function sentenceFlowParts(analysis) {
-  return analysis?.blocks.flatMap((block) =>
-    block.kind === 'core'
-      ? block.svoc.parts
-      : [{ role: block.role ?? 'M', text: block.displayEn }]) ?? []
+  return analysis?.phraseSequence.flatMap((pair) =>
+    pair.roleParts.map((part) => ({ role: part.role, text: part.en }))) ?? []
+}
+
+function flowPattern(parts) {
+  return parts.map((part) => translationRoleMeta(part.role).code).join(' → ')
 }
 
 export function ReaderScreen() {
@@ -82,15 +119,20 @@ export function ReaderScreen() {
     [passage],
   )
 
-  // ── 講師音声（節・句・文法ブロックごとに英文→語順訳・読解解説）──
+  // ── 講師音声（文全体の意味フレーズごとに英語→直訳→必要な解説）──
   const chunks = useMemo(
     () => sentenceAnalyses.flatMap((analysis, si) =>
-      analysis.blocks.map((block, blockIndex) => ({
-        ...block,
+      analysis.phraseSequence.map((phrase, phraseIndex) => ({
+        ...phrase,
+        en: phrase.spokenEn ?? phrase.en,
+        displayEn: phrase.displayEn ?? phrase.en,
+        phraseIndex,
+        phraseCount: analysis.phraseSequence.length,
         si,
-        isSentenceEnd: blockIndex === analysis.blocks.length - 1,
+        isSentenceEnd: phraseIndex === analysis.phraseSequence.length - 1,
         sentenceJa: passage?.sentences[si]?.ja ?? '',
-      }))),
+      })),
+    ),
     [passage, sentenceAnalyses],
   )
   const paragraphs = useMemo(() => {
@@ -105,13 +147,13 @@ export function ReaderScreen() {
   const [playIdx, setPlayIdx] = useState(0) // 現在のチャンク
   const [playing, setPlaying] = useState(false) // 自動送り中か
   const [dir, setDir] = useState(1) // 1=順送り / -1=戻り
-  const [phase, setPhase] = useState('en') // いま英語・語順訳解説・自然訳のどこを読んでいるか
+  const [phase, setPhase] = useState('en') // 英語・フレーズ訳・解説・自然訳のどこを読んでいるか
   const tokenRef = useRef(0) // 再生の世代。停止・やり直しで無効化する
 
   // 画面を離れたら必ず止める
   useEffect(() => () => stopSpeaking(), [])
 
-  // idx の文法ブロックを「英語→語順訳解説→文全体の自然訳」で読む。
+  // idx の意味フレーズを「原文の英語→直訳→そのフレーズに必要な解説」で読む。
   const speakChunkSeq = (idx, { auto, direction }) => {
     const token = ++tokenRef.current
     stopSpeaking()
@@ -132,29 +174,44 @@ export function ReaderScreen() {
         onend: () => {
           if (tokenRef.current !== token) return
           setPhase('ja')
-          speakWith(c.speechJa ?? c.ja, {
+          speakWith(`前からは、「${c.ja}」と取ります。`, {
             rate: settings.ttsRate,
             voiceURI: settings.ttsJapaneseVoiceURI,
             lang: 'ja-JP',
             style: 'translation',
             onend: () => {
               if (tokenRef.current !== token) return
-              const finish = () => {
+              const finishPhrase = () => {
                 if (tokenRef.current !== token) return
-                if (auto) run(i + direction)
-                else setPlaying(false)
+                const advance = () => {
+                  if (tokenRef.current !== token) return
+                  if (auto) run(i + direction)
+                  else setPlaying(false)
+                }
+                if (!c.isSentenceEnd || !c.sentenceJa) {
+                  advance()
+                  return
+                }
+                setPhase('natural')
+                speakWith(`文全体を自然な日本語に整えると、「${c.sentenceJa}」です。`, {
+                  rate: settings.ttsRate,
+                  voiceURI: settings.ttsJapaneseVoiceURI,
+                  lang: 'ja-JP',
+                  style: 'explanation',
+                  onend: advance,
+                })
               }
-              if (!c.isSentenceEnd || !c.sentenceJa) {
-                finish()
+              if (!c.explanation) {
+                finishPhrase()
                 return
               }
-              setPhase('natural')
-              speakWith(`文全体を自然な日本語に整えると、「${c.sentenceJa}」です。`, {
+              setPhase('explanation')
+              speakWith(c.explanation, {
                 rate: settings.ttsRate,
                 voiceURI: settings.ttsJapaneseVoiceURI,
                 lang: 'ja-JP',
                 style: 'explanation',
-                onend: finish,
+                onend: finishPhrase,
               })
             },
           })
@@ -194,18 +251,93 @@ export function ReaderScreen() {
     const token = ++tokenRef.current
     stopSpeaking()
     setPlaying(false)
-    speakWith(block.en, {
+    const speakBlockSummary = () => {
+      if (tokenRef.current !== token) return
+      speakWith(
+        `ブロック全体の読み方は、${block.translationGuide} 文法上の注意は、${block.note}`,
+        {
+          rate: settings.ttsRate,
+          voiceURI: settings.ttsJapaneseVoiceURI,
+          lang: 'ja-JP',
+          style: 'explanation',
+        },
+      )
+    }
+    const run = (index) => {
+      if (tokenRef.current !== token) return
+      const pair = block.phrasePairs[index]
+      if (!pair) return
+      speakWith(pair.spokenEn ?? pair.en, {
+        rate: settings.ttsRate,
+        voiceURI: settings.ttsVoiceURI,
+        lang: 'en-US',
+        style: 'narration',
+        onend: () => {
+          if (tokenRef.current !== token) return
+          speakWith(`前からは、「${pair.ja}」と取ります。`, {
+            rate: settings.ttsRate,
+            voiceURI: settings.ttsJapaneseVoiceURI,
+            lang: 'ja-JP',
+            style: 'translation',
+            onend: () => {
+              if (tokenRef.current !== token) return
+              const advance = () => {
+                if (tokenRef.current !== token) return
+                if (index < block.phrasePairs.length - 1) {
+                  run(index + 1)
+                  return
+                }
+                speakBlockSummary()
+              }
+              const phraseExplanation =
+                pair.grammar ?? pair.explanation ?? pair.roleNote
+              if (!phraseExplanation) {
+                advance()
+                return
+              }
+              speakWith(
+                phraseExplanation,
+                {
+                  rate: settings.ttsRate,
+                  voiceURI: settings.ttsJapaneseVoiceURI,
+                  lang: 'ja-JP',
+                  style: 'explanation',
+                  onend: advance,
+                },
+              )
+            },
+          })
+        },
+      })
+    }
+    run(0)
+  }
+  const speakReviewedPhrasePair = (phraseItem) => {
+    const token = ++tokenRef.current
+    stopSpeaking()
+    setPlaying(false)
+    speakWith(phraseItem.spokenEn ?? phraseItem.en, {
       rate: settings.ttsRate,
       voiceURI: settings.ttsVoiceURI,
       lang: 'en-US',
       style: 'narration',
       onend: () => {
         if (tokenRef.current !== token) return
-        speakWith(block.speechJa ?? block.ja, {
+        speakWith(`前からは、「${phraseItem.ja}」と取ります。`, {
           rate: settings.ttsRate,
           voiceURI: settings.ttsJapaneseVoiceURI,
           lang: 'ja-JP',
           style: 'translation',
+          onend: () => {
+            const grammar = phraseItem.grammar ?? phraseItem.explanation
+            if (tokenRef.current !== token || !grammar) return
+            speakWith(grammar, {
+              rate: settings.ttsRate,
+              voiceURI: settings.ttsJapaneseVoiceURI,
+              lang: 'ja-JP',
+              style: 'explanation',
+            })
+          },
         })
       },
     })
@@ -322,7 +454,7 @@ export function ReaderScreen() {
             playOpen ? 'bg-brand-500 text-white' : 'bg-brand-100 text-brand-700',
           )}
         >
-          <SpeakerWave size={14} /> 語順訳・講師音声
+          <SpeakerWave size={14} /> フレーズ直訳・講師音声
         </button>
       </div>
 
@@ -401,22 +533,22 @@ export function ReaderScreen() {
           )}
         </div>
         <p className="mt-3 px-1 text-center text-xs font-bold text-ink/40">
-          一文をタップすると、節・句、SVOCM、前から読む語順訳、講師音声を確認できます。
+          一文をタップすると、英語フレーズ→直訳の組、SVOCM、文法上の注意を確認できます。
         </p>
       </div>
 
-      {/* 講師音声バー（文法ブロックごとに英文→語順訳・読解解説） */}
+      {/* 講師音声バー（意味フレーズごとに英語→直訳、その後に読解・文法解説） */}
       {playOpen && (
         <div className="shrink-0 border-t border-brand-100 bg-white px-4 py-3">
           <div className="mb-2 flex items-center justify-between">
             <span className="text-[11px] font-extrabold uppercase tracking-wide text-brand-400">
-              講師音声（英語 → 語順訳・読解解説）
+              講師音声（英語フレーズ → 直訳 → 読解・文法解説）
             </span>
             <div className="flex items-center gap-2">
               <span className="text-xs font-bold text-ink/40">
                 {Math.min(playIdx + 1, chunks.length)}/{chunks.length}
               </span>
-              <IconButton onClick={closePlayer} aria-label="語順訳・講師音声を閉じる">
+              <IconButton onClick={closePlayer} aria-label="フレーズ直訳・講師音声を閉じる">
                 <Close size={18} />
               </IconButton>
             </div>
@@ -426,13 +558,23 @@ export function ReaderScreen() {
           {cur && (
             <div className="mb-3 max-h-[42vh] overflow-y-auto border border-brand-100 bg-brand-50 p-3">
               <div className="mb-1.5 flex flex-wrap items-center gap-1.5 text-[10px] font-extrabold">
-                <span className="bg-white px-1.5 py-0.5 text-brand-700">{cur.label}</span>
+                <span className="bg-white px-1.5 py-0.5 text-brand-700">
+                  {cur.label || '意味フレーズ'}
+                </span>
                 <span className="bg-white px-1.5 py-0.5 text-ink/60">
                   {cur.role ? `文中の働き ${cur.role}` : '主節'}
+                </span>
+                <span className="bg-white px-1.5 py-0.5 text-ink/60">
+                  フレーズ {cur.phraseIndex + 1}/{cur.phraseCount}
                 </span>
                 {cur.svoc?.pattern && cur.kind !== 'phrase' && (
                   <span className="bg-white px-1.5 py-0.5 text-ink/60">
                     節内 {cur.svoc.pattern}
+                  </span>
+                )}
+                {PHRASE_STATUS[cur.status] && (
+                  <span className={cx('border px-1.5 py-0.5', PHRASE_STATUS[cur.status].className)}>
+                    {phraseStatusLabel(cur, PHRASE_STATUS[cur.status].label)}
                   </span>
                 )}
               </div>
@@ -445,14 +587,18 @@ export function ReaderScreen() {
                   phase === 'ja' ? 'text-amber-600' : 'text-ink/55',
                 )}
               >
-                {cur.ja}
+                前からの直訳：{cur.ja}
               </div>
-              <div className="mt-1.5 border-l-2 border-amber-300 pl-2 text-xs font-bold leading-relaxed text-ink/60">
-                {cur.translationGuide}
-              </div>
-              <div className="mt-1.5 border-l-2 border-sky-300 pl-2 text-xs font-bold leading-relaxed text-ink/60">
-                文法のポイント：{cur.note}
-              </div>
+              {cur.readingGuide && (
+                <div className="mt-1.5 border-l-2 border-amber-300 pl-2 text-xs font-bold leading-relaxed text-ink/60">
+                  読み方：{cur.readingGuide}
+                </div>
+              )}
+              {cur.grammarNote && (
+                <div className="mt-1.5 border-l-2 border-sky-300 pl-2 text-xs font-bold leading-relaxed text-ink/60">
+                  文法上の注意：{cur.grammarNote}
+                </div>
+              )}
               {cur.isSentenceEnd && (
                 <div
                   className={cx(
@@ -465,10 +611,12 @@ export function ReaderScreen() {
               )}
               <div className="mt-1 text-[10px] font-bold text-ink/40">
                 {phase === 'en'
-                  ? '英語パート'
+                  ? '英語フレーズの発音'
                   : phase === 'ja'
-                    ? '語順訳・講師解説パート'
-                    : '文全体の自然訳パート'}
+                    ? 'このフレーズの直訳'
+                    : phase === 'explanation'
+                      ? '読み方・文法上の注意'
+                      : '文全体の自然訳'}
               </div>
             </div>
           )}
@@ -637,16 +785,85 @@ export function ReaderScreen() {
               </p>
               <div className="mt-2 flex flex-wrap items-center gap-2 text-xs font-extrabold">
                 <span className="bg-brand-100 px-2 py-1 text-brand-800">
-                  文全体の流れ：{sentenceAnalysis.pattern || '文法ブロック'}
-                </span>
-                <span className="bg-amber-50 px-2 py-1 text-amber-800">
-                  主節 {sentenceAnalysis.mainPattern || '構文'}・
-                  {grammarPatternName(sentenceAnalysis.mainPattern)}
+                  S・V・O・C・Mを、下の英語順で一つずつ確認
                 </span>
               </div>
               <div className="mt-3">
                 <SvocFlow parts={sentenceFlowParts(sentenceAnalysis)} />
               </div>
+            </section>
+
+            {/* 文法ブロックから独立した、全363文共通の発音・意味フレーズ列 */}
+            <section
+              className="border-y border-emerald-100 bg-emerald-50/40 py-3"
+              data-reading-phrase-method={sentenceAnalysis.phraseMethod}
+            >
+                <div className="mb-2 flex items-center gap-1.5 text-emerald-700">
+                  <BookOpen size={16} />
+                  <span className="text-[11px] font-extrabold uppercase tracking-wide">
+                    前から読むフレーズ解説
+                  </span>
+                </div>
+                <p className="mb-3 text-xs font-bold leading-relaxed text-emerald-950/65">
+                  英文をS・V・O・C・M・接続の役割と短い意味単位に分け、原文の語順のまま直訳します。
+                </p>
+                <div className="space-y-2" aria-label="文全体のフレーズと直訳">
+                  {sentenceAnalysis.phraseSequence.map((phraseItem, phraseIndex) => {
+                    const status = PHRASE_STATUS[phraseItem.status]
+                    return (
+                      <article
+                        key={phraseItem.id}
+                        className="border border-emerald-100 bg-white p-3"
+                        data-reading-phrase-status={phraseItem.status}
+                        data-reading-review-state={phraseItem.reviewState}
+                      >
+                        <div className="flex items-start gap-2">
+                          <button
+                            onClick={() => speakReviewedPhrasePair(phraseItem)}
+                            aria-label={`${phraseItem.en}を英語、直訳、文法解説の順で再生`}
+                            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-700 active:bg-emerald-200"
+                          >
+                            <SpeakerWave size={17} />
+                          </button>
+                          <div className="min-w-0 flex-1">
+                            <div className="mb-1 flex flex-wrap items-center gap-1 text-[10px] font-extrabold">
+                              <span className="border border-emerald-100 bg-emerald-50 px-1.5 py-0.5 text-emerald-800">
+                                {phraseIndex + 1}. {phraseItem.pattern || phraseItem.label || '意味フレーズ'}
+                              </span>
+                              {phraseItem.role && (
+                                <span className={cx(
+                                  'border px-1.5 py-0.5',
+                                  ROLE_STYLE[phraseItem.role] ?? ROLE_STYLE.M,
+                                )}>
+                                  {translationRoleMeta(phraseItem.role).code}
+                                </span>
+                              )}
+                              {status && (
+                                <span className={cx('border px-1.5 py-0.5', status.className)}>
+                                  {phraseStatusLabel(phraseItem, status.label)}
+                                </span>
+                              )}
+                            </div>
+                            <p lang="en" className="font-bold leading-relaxed text-ink">
+                              {phraseItem.displayEn}
+                            </p>
+                            {phraseItem.structureEn && (
+                              <p className="mt-0.5 text-[10px] font-bold text-ink/45">
+                                音声では原文どおり「{phraseItem.spokenEn}」と発音
+                              </p>
+                            )}
+                            <p className="mt-1 text-sm font-bold leading-relaxed text-brand-700">
+                              フレーズ訳：{phraseItem.ja}
+                            </p>
+                          </div>
+                        </div>
+                        <p className="mt-2 border-l-2 border-sky-300 bg-sky-50/70 px-2 py-1.5 text-xs font-bold leading-relaxed text-ink/65">
+                          文法・読み方：{phraseItem.grammar ?? phraseItem.explanation}
+                        </p>
+                      </article>
+                    )
+                  })}
+                </div>
             </section>
 
             {/* 節・句・文法ブロックごとの解説 */}
@@ -655,11 +872,13 @@ export function ReaderScreen() {
                 <div className="flex items-center gap-1.5 text-brand-600">
                   <BookOpen size={16} />
                   <span className="text-[11px] font-extrabold uppercase tracking-wide">
-                    節・句・文法ブロック解説
+                    {sentenceAnalysis.phraseExplanationGuide
+                      ? '構造を確かめる文法ブロック解説'
+                      : '節・句・文法ブロック解説'}
                   </span>
                 </div>
                 <span className="text-[10px] font-bold text-ink/40">
-                  音声は英語 → 語順訳・講師解説
+                  音声は英語フレーズ → 直訳 → 読み方・文法
                 </span>
               </div>
               <div className="space-y-2">
@@ -668,7 +887,7 @@ export function ReaderScreen() {
                     <div className="flex items-start gap-2">
                       <button
                         onClick={() => speakBlockPair(block)}
-                        aria-label={`ブロック${index + 1}を英語、語順訳、講師解説の順で再生`}
+                        aria-label={`ブロック${index + 1}を英語フレーズ、直訳、講師解説の順で再生`}
                         className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-100 text-brand-700 active:bg-brand-200"
                       >
                         <SpeakerWave size={17} />
@@ -684,28 +903,72 @@ export function ReaderScreen() {
                           )}>
                             {block.role ? `文中の働き ${block.role}` : '主節'}
                           </span>
-                          {block.kind !== 'phrase' && block.svoc.pattern && (
+                          {blockFlowParts(block).length > 0 && (
                             <span className="bg-ink/5 px-1.5 py-0.5 text-ink/60">
-                              節内 {block.svoc.pattern}・{block.svoc.name}
+                              内部の順：{flowPattern(blockFlowParts(block))}
                             </span>
                           )}
                         </div>
-                        <p className="mt-1 font-bold leading-relaxed text-ink">{block.displayEn}</p>
-                        <p className="mt-0.5 text-sm font-bold leading-relaxed text-brand-700">
-                          前から読む語順訳：{block.ja}
+                        <p className="mt-1 text-xs font-bold leading-relaxed text-ink/55">
+                          文法ブロック：{block.displayEn}
                         </p>
                       </div>
                     </div>
-                    {block.kind !== 'phrase' && block.svoc.parts.length > 1 && (
+                    <div className="mt-2 space-y-1.5" aria-label="英語フレーズと前からの直訳">
+                        {block.phrasePairs.map((pair, phraseIndex) => (
+                        <div
+                          key={`${block.id}-${phraseIndex}`}
+                          className="grid grid-cols-[1.5rem_minmax(0,1fr)] gap-2 border border-brand-100 bg-brand-50/60 px-2 py-2"
+                        >
+                          <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white text-[10px] font-black text-brand-600">
+                            {phraseIndex + 1}
+                          </span>
+                          <div className="min-w-0">
+                            <div
+                              className="mb-1 flex flex-wrap gap-1"
+                              data-translation-role-flow
+                              aria-label={`${pair.roleHeading}の順`}
+                            >
+                              {pair.roleParts.map((part) => (
+                                <span
+                                  key={`${part.role}-${part.en}`}
+                                  className={cx(
+                                    'max-w-full border px-1.5 py-0.5 text-[10px] font-extrabold leading-relaxed',
+                                    ROLE_STYLE[part.role] ?? 'border-brand-200 bg-brand-50 text-brand-800',
+                                  )}
+                                >
+                                  {part.code} {part.en}
+                                </span>
+                              ))}
+                            </div>
+                            <p lang="en" className="font-bold leading-relaxed text-ink">
+                              {pair.displayEn ?? pair.en}
+                            </p>
+                            {pair.structureEn && (
+                              <p className="mt-0.5 text-[10px] font-bold text-ink/45">
+                                音声では原文どおり「{pair.spokenEn}」と発音
+                              </p>
+                            )}
+                            <p className="mt-0.5 text-sm font-bold leading-relaxed text-brand-700">
+                              前からの直訳：{pair.ja}
+                            </p>
+                            <p className="mt-1 text-[10px] font-bold leading-relaxed text-ink/50">
+                              {pair.grammar ?? pair.explanation ?? pair.roleNote}
+                            </p>
+                          </div>
+                        </div>
+                        ))}
+                    </div>
+                    {blockFlowParts(block).length > 1 && (
                       <div className="mt-2">
-                        <SvocFlow parts={block.svoc.parts} />
+                        <SvocFlow parts={blockFlowParts(block)} />
                       </div>
                     )}
                     <p className="mt-2 border-l-2 border-sky-300 bg-sky-50/70 px-2 py-1.5 text-xs font-bold leading-relaxed text-sky-900/75">
                       読み方：{block.translationGuide}
                     </p>
                     <p className="mt-2 border-l-2 border-amber-300 bg-amber-50/70 px-2 py-1.5 text-xs font-bold leading-relaxed text-ink/65">
-                      文法のポイント：{block.note}
+                      文法上の注意：{block.note}
                     </p>
                   </article>
                 ))}

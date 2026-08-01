@@ -1925,7 +1925,7 @@ const PRE1_FAMILIES = [
       q: `If ___, ${academic.subject} will ${academic.base} ${academic.object} again ${context}.`,
       choices: [answer, `it ${answer}`, `is ${answer}`, `to be ${answer}`],
       answer,
-      ja: `${answer === 'necessary' ? '必要なら' : answer === 'possible' ? '可能なら' : answer === 'appropriate' ? '適切なら' : '求められれば'}、${academic.jaSubject}は再び${academic.jaAction}でしょう。`,
+      ja: `${answer === 'necessary' ? '必要なら' : answer === 'possible' ? '可能なら' : answer === 'appropriate' ? '適切なら' : '求められれば'}、${academic.jaSubject}は${context === 'after consultation' ? '協議のあとで' : context === 'before the deadline' ? '期限前に' : context === 'under the rules' ? '規則のもとで' : '法律によって'}再び${academic.jaAction}でしょう。`,
     }),
   }),
   family({

@@ -4,7 +4,9 @@ import { buildPhraseDeck, pickPhraseDistractors } from '../lib/session.js'
 import { shuffle } from '../data/vocab.js'
 import { quizMeaning } from '../data/compact.js'
 import { phraseSpeechText } from '../lib/phrase-speech.js'
+import { longSentenceTranslationFor } from '../data/long-sentence-translations.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
+import { LongSentenceTranslation } from '../components/LongSentenceTranslation.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
@@ -98,6 +100,7 @@ export function PhraseQuizScreen() {
           : options.find((option) => option.id === selected),
       )
     : null
+  const longSentenceTranslation = longSentenceTranslationFor(item)
 
   return (
     <div className="flex h-full flex-col">
@@ -163,9 +166,13 @@ export function PhraseQuizScreen() {
               <SpeakButton text={item.example.en} size="sm" />
               <div className="min-w-0 text-left">
                 <p className="text-sm font-bold leading-relaxed text-ink">{item.example.en}</p>
-                <p className="mt-0.5 text-xs font-bold leading-relaxed text-ink/55">{item.example.ja}</p>
+                <p className="mt-0.5 text-xs font-bold leading-relaxed text-ink/55">
+                  {longSentenceTranslation && <span className="mr-1 text-[10px] text-ink/35">自然な和訳</span>}
+                  {item.example.ja}
+                </p>
               </div>
             </div>
+            <LongSentenceTranslation guide={longSentenceTranslation} className="mt-3" />
             <InstructorExplanation
               explanation={instructorExplanation}
               className="mt-3"

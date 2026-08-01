@@ -340,7 +340,7 @@ test('英語と日本語の選択設定が読み上げ画面まで接続され�
   assert.match(settings, /「拡張」「Premium」「Enhanced」/)
   assert.equal(
     reader.match(/voiceURI:\s*settings\.ttsJapaneseVoiceURI/g)?.length,
-    3,
+    7,
   )
   assert.match(literature, /step\.lang === 'ja-JP'/)
   assert.match(literature, /settings\.ttsJapaneseVoiceURI/)
@@ -365,7 +365,7 @@ test('全ての直接読み上げ経路が用途別の自然朗読スタイル�
     assert.ok(callCount > 0, path)
     assert.equal(styleCount, callCount, path)
   }
-  assert.equal(routeFiles.length, 8)
+  assert.equal(routeFiles.length, 9)
 
   const literature = readFileSync(
     new URL('../src/screens/LiteratureReader.jsx', import.meta.url),

@@ -2,9 +2,11 @@ import { useEffect, useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import { buildPhraseDeck, recordStudyAnswer } from '../lib/session.js'
 import { getLevel } from '../data/levels.js'
+import { longSentenceTranslationFor } from '../data/long-sentence-translations.js'
 import { speak } from '../lib/tts.js'
 import { phraseSpeechText } from '../lib/phrase-speech.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
+import { LongSentenceTranslation } from '../components/LongSentenceTranslation.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { Button, ProgressBar, IconButton, Chip } from '../components/ui.jsx'
 import { Close, ArrowRight, Lightbulb, Eye, EyeOff, Link } from '../components/Icons.jsx'
@@ -87,6 +89,7 @@ export function PhraseStudyScreen() {
 
   const level = getLevel(item.level)
   const kind = itemKind(item)
+  const longSentenceTranslation = longSentenceTranslationFor(item)
 
   return (
     <div className="flex h-full flex-col">
@@ -148,10 +151,14 @@ export function PhraseStudyScreen() {
                   <SpeakButton text={item.example.en} size="sm" />
                   <div>
                     <p className="font-bold text-ink">{item.example.en}</p>
-                    <p className="mt-0.5 text-sm font-bold text-ink/55">{item.example.ja}</p>
+                    <p className="mt-0.5 text-sm font-bold text-ink/55">
+                      {longSentenceTranslation && <span className="mr-1 text-[11px] text-ink/35">自然な和訳</span>}
+                      {item.example.ja}
+                    </p>
                   </div>
                 </div>
               </div>
+              <LongSentenceTranslation guide={longSentenceTranslation} />
               {item.note && (
                 <div className="flex gap-2 rounded-2xl bg-hint-soft/70 p-3">
                   <span className="mt-0.5 shrink-0 text-hint"><Lightbulb size={18} /></span>

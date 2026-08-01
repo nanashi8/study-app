@@ -240,6 +240,38 @@ export function SpeechSettingsPanel({ heading = true }) {
         </SettingRow>
       </div>
 
+      <h2 className="pt-4 font-display text-base font-extrabold text-ink/80">
+        ゲームBGM
+      </h2>
+      <p className="mt-1 text-xs font-bold leading-relaxed text-ink/50">
+        放課後マップ・級別バトル・先生戦・結果に合わせて、約3分のオリジナル30曲を自動で切り替えます。読み上げ中はBGMを自動で小さくします。
+      </p>
+      <div className="mt-2 divide-y divide-brand-50">
+        <SettingRow title="ゲームBGMを再生" desc="ゲーム画面を開き、最初に操作した後から再生">
+          <Toggle
+            label="ゲームBGMを再生"
+            on={settings.bgmEnabled !== false}
+            onChange={(value) => setSetting('bgmEnabled', value)}
+          />
+        </SettingRow>
+        <SettingRow
+          title="BGM音量"
+          desc={`現在 ${Math.round((settings.bgmVolume ?? 0.35) * 100)}%`}
+          stacked
+        >
+          <input
+            type="range"
+            min="0"
+            max="1"
+            step="0.05"
+            value={settings.bgmVolume ?? 0.35}
+            onChange={(event) => setSetting('bgmVolume', Number(event.target.value))}
+            aria-label="BGM音量"
+            className="w-full accent-brand-500"
+          />
+        </SettingRow>
+      </div>
+
       <div className="grid grid-cols-2 gap-2 pb-3">
         <Button
           variant="soft"

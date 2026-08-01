@@ -15,3 +15,10 @@
 - Run `npm run check:deployment` before reporting any hosting or release work as
   ready. A failure is a release blocker.
 
+## Visual direction
+
+- Before generating, editing, selecting, or reviewing game visuals, read
+  `docs/game-visual-direction.md` in full.
+- Treat every item in its "Hard rejection gates" section as a release gate.
+- Do not add an image that has not passed the documented scene-logic and
+  character-continuity checklist.

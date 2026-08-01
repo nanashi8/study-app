@@ -9,12 +9,16 @@ import { INTERMEDIATE_READING_TRANSLATION_SCENARIOS } from './reading-translatio
 import { UPPER_READING_TRANSLATION_SCENARIOS } from './reading-translation-scenarios-upper.js'
 import { ADVANCED_READING_TRANSLATION_SCENARIOS } from './reading-translation-scenarios-advanced.js'
 
-const b = (en, orderedJa, tip = '') => {
+const b = (en, orderedJa, tip = '', orderedEn = '') => {
   const jaSegments = Object.freeze(orderedJa.split('／').map((segment) => segment.trim()))
+  const enSegments = orderedEn
+    ? Object.freeze(orderedEn.split('／').map((segment) => segment.trim()))
+    : null
   return Object.freeze({
     en,
     ja: jaSegments.join(' → '),
     jaSegments,
+    enSegments,
     speechJa: jaSegments.join('。次に、'),
     tip,
   })
@@ -33,8 +37,8 @@ export const READING_TRANSLATION_SCENARIOS = Object.freeze({
     [
       b(
         'She goes to school',
-        '彼女は／行きます／学校に',
-        'goes で「行きます」と動作をつかみ、to school で行き先の「学校に」を足します。',
+        '彼女は／行きます／学校へ',
+        'goes で「行きます」と動作をつかみ、to school で行き先の「学校へ」を足します。',
       ),
       b(
         'by bus every morning',
@@ -44,7 +48,12 @@ export const READING_TRANSLATION_SCENARIOS = Object.freeze({
     ],
     [
       b('On Monday', '月曜日に'),
-      b('she has English, music, and science classes', '彼女には／あります／英語・音楽・理科の授業が'),
+      b(
+        'she has English, music, and science classes',
+        '彼女には／あります／英語・音楽・理科の授業が',
+        '',
+        'she／has／English, music, and science classes',
+      ),
     ],
     [
       b('She likes English', '彼女は／好きです／英語が'),
@@ -63,7 +72,12 @@ export const READING_TRANSLATION_SCENARIOS = Object.freeze({
       b('near the classroom door', '教室のドアの近くで'),
     ],
     [
-      b('Rina says thank you and writes a short story', 'リナは／お礼を言います／そして書きます／短い物語を'),
+      b(
+        'Rina says thank you and writes a short story',
+        'リナは／お礼を言います／そして書きます／短い物語を',
+        '',
+        'Rina／says thank you／and writes／a short story',
+      ),
       b('in it', 'そのノートの中に'),
     ],
     [
@@ -108,7 +122,7 @@ export const READING_TRANSLATION_SCENARIOS = Object.freeze({
     [
       b('Please ask a teacher', 'どうぞ／尋ねてください／先生に'),
       b('near the front door', '正面のドアの近くにいる'),
-      b('if you have any questions', 'もし／何か質問が／あれば'),
+      b('if you have any questions', 'もし／あなたに／何か質問があれば'),
     ],
     [
       b('The open day will end', '学校公開日は／終わります'),
@@ -124,7 +138,12 @@ export const READING_TRANSLATION_SCENARIOS = Object.freeze({
     [
       b('Children can listen to stories, make small cards', '子どもたちは／できます／聞くことが／物語を／作ることが／小さなカードを'),
       b('and borrow books', 'そして／借りることもできます／本を'),
-      b('about the month\'s topic', '内容は／その月のテーマについて'),
+      b(
+        'about the month\'s topic',
+        '〜について（対象は次へ）／その月のテーマ',
+        '',
+        'about／the month\'s topic',
+      ),
     ],
     [
       b('This month, the topic is local history', '今月は／テーマは／〜です／地域の歴史'),
@@ -144,7 +163,12 @@ export const READING_TRANSLATION_SCENARIOS = Object.freeze({
       b('After the talk', '話のあとに'),
       b('children will work', '子どもたちは／作業します'),
       b('in small groups', '小さなグループで'),
-      b('to build a paper model of the station', '作るために／駅の紙模型を'),
+      b(
+        'to build a paper model of the station',
+        '作るために／一つの紙模型を／その駅の',
+        '',
+        'to build／a paper model／of the station',
+      ),
     ],
     [
       b('The library will provide paper and glue', '図書館は／用意します／紙とのりを'),
@@ -161,7 +185,12 @@ export const READING_TRANSLATION_SCENARIOS = Object.freeze({
       b('before lunch', '昼食の前に'),
     ],
     [
-      b('People do not have to pay', '参加者は／支払う必要はありません／お金を'),
+      b(
+        'People do not have to pay',
+        '参加者は／〜する必要はありません／支払うこと（参加費を）',
+        '',
+        'People／do not have to／pay',
+      ),
       b('but they should bring a pencil', 'しかし／参加者は／持ってくるべきです／鉛筆を'),
     ],
     [
@@ -199,7 +228,12 @@ export const READING_TRANSLATION_SCENARIOS = Object.freeze({
     [
       b('Children will also learn the correct place', '子どもたちは／さらに学びます／正しい場所を'),
       b('to stop', '止まるための'),
-      b('before they cross a busy road', 'その前に／子どもたちが／渡る／交通量の多い道路を'),
+      b(
+        'before they cross a busy road',
+        'その前に／子どもたちが／渡る／交通量の多い道路を',
+        '',
+        'before／they／cross／a busy road',
+      ),
     ],
     [
       b('They must use bicycle lights', '子どもたちは／使わなければなりません／自転車のライトを'),
@@ -228,7 +262,12 @@ export const READING_TRANSLATION_SCENARIOS = Object.freeze({
     ],
     [
       b('Parents should join the ride too', '保護者も／参加するべきです／その走行に'),
-      b('so they can practice the rules', 'そうすれば／保護者は／練習できます／そのルールを'),
+      b(
+        'so they can practice the rules',
+        'そうすれば／保護者は／練習できます／そのルールを',
+        '',
+        'so／they／can practice／the rules',
+      ),
       b('with their children', '自分の子どもたちと一緒に'),
     ],
     [

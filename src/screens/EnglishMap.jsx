@@ -2,6 +2,11 @@ import { useEffect, useState } from 'react'
 import { useStore, todayIndex } from '../store/useStore.js'
 import { PASSAGES } from '../data/passages.js'
 import { LEVELS } from '../data/levels.js'
+import {
+  SCHOOL_LIFE_VISUAL_CATEGORIES,
+  SCHOOL_LIFE_VISUALS,
+  schoolLifeVisualById,
+} from '../data/school-life-visuals.js'
 import { suggestStartPosition } from '../lib/session.js'
 import {
   battleSource,
@@ -24,10 +29,17 @@ import {
   relicStatLabel,
 } from '../lib/rpg.js'
 import {
+  BATTLE_BARRIER_CENTER,
+  BATTLE_BARRIER_MAP_IMAGE,
+  BATTLE_BARRIER_NODES,
+  BATTLE_BARRIER_STAR_ORDER,
+  BATTLE_BARRIER_TRAFFIC_LIGHTS,
+  BATTLE_BARRIER_WINDOW_LIGHTS,
   BATTLE_STAR_PER_CORRECT,
   BATTLE_STARS_PER_EXCHANGE,
   BATTLE_THEMES,
   BATTLE_XP_PER_EXCHANGE,
+  battleBarrierLocationById,
   battleXpExchange,
   battleThemeById,
   nextBattleTheme,
@@ -42,9 +54,26 @@ import {
   battleEmotionById,
   battleRivalForEncounter,
   battleStudentById,
+  battleStudentLifestylePortrait,
   battleStudentPortrait,
+  battleSupportStyleById,
 } from '../lib/battleCast.js'
+import {
+  BATTLE_TRAITS,
+  BATTLE_TRAIT_POINT_STARS,
+  MAX_BATTLE_TRAIT_LEVEL,
+  battleStudentTraitProfile,
+  canRaiseBattleTrait,
+} from '../lib/battleTraits.js'
+import {
+  TEACHER_SCHOOL_LIFE,
+  TEACHER_TEST_SCORE_CHOICES,
+  createTeacherSchoolLifeConversation,
+  teacherRemedialSubjectChoices,
+  teacherSchoolLifeById,
+} from '../lib/teacherSchoolLife.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
+import { MobPortrait } from '../components/MobPortrait.jsx'
 import { ProgressRing, ProgressBar, Chip, cx } from '../components/ui.jsx'
 import { Lightbulb, ArrowRight, Check } from '../components/Icons.jsx'
 
@@ -120,10 +149,18 @@ export function EnglishMapScreen() {
   const setBattleThemeId = useStore((s) => s.setBattleThemeId)
   const battleStudentId = useStore((s) => s.battleStudentId)
   const setBattleStudentId = useStore((s) => s.setBattleStudentId)
+  const battleTraitInvestments = useStore((s) => s.battleTraitInvestments)
+  const raiseBattleTrait = useStore((s) => s.raiseBattleTrait)
+  const resetBattleStudentTraits = useStore((s) => s.resetBattleStudentTraits)
   const hero = heroProgress(stats.xp)
   const battleRelic = battleRelicForLevel(hero.level, battleRelicLevel)
   const battleTheme = battleThemeById(battleThemeId, battleStars)
   const battleStudent = battleStudentById(battleStudentId)
+  const studentTraitProfile = battleStudentTraitProfile(
+    battleStudent.id,
+    battleTraitInvestments,
+    battleStars,
+  )
   const inferredPos = engPos ?? suggestStartPosition(srs)
   const pos = capEnemyPositionForHeroLevel(inferredPos, hero.level)
 
@@ -157,6 +194,7 @@ export function EnglishMapScreen() {
         relicLevel: battleRelic.level,
         themeId: battleTheme.id,
         studentId: battleStudent.id,
+        traitId: studentTraitProfile.dominant.id,
         rivalId: battleRival.id,
         adventureDay: day,
         heroLevel: hero.level,
@@ -195,6 +233,7 @@ export function EnglishMapScreen() {
           battleStars={battleStars}
           battleTheme={battleTheme}
           battleStudent={battleStudent}
+          studentTraitProfile={studentTraitProfile}
           battleRival={battleRival}
           onTactic={setTacticId}
           onRelic={setBattleRelicLevel}
@@ -215,11 +254,21 @@ export function EnglishMapScreen() {
           onTheme={setBattleThemeId}
         />
 
-        <CampusLifeGallery />
+        <SchoolBarrierMap />
+
+        <CampusLifeGallery onTalk={() => navigate('characterTalk')} />
+
+        <SchoolLifeAlbum />
+
+        <TeacherSchoolLife student={battleStudent} />
 
         <BattleCastRoster
           selectedStudentId={battleStudent.id}
           onStudent={setBattleStudentId}
+          battleStars={battleStars}
+          investments={battleTraitInvestments}
+          onRaiseTrait={raiseBattleTrait}
+          onResetTraits={resetBattleStudentTraits}
         />
 
         <AdventureProgress hero={hero} />
@@ -369,6 +418,7 @@ function AdventureCard({
   battleStars,
   battleTheme,
   battleStudent,
+  studentTraitProfile,
   battleRival,
   onTactic,
   onRelic,
@@ -413,7 +463,13 @@ function AdventureCard({
         </div>
 
         <div className="mt-3 flex items-center gap-3">
-          <span className="battle-map-student-portrait h-12 w-12 shrink-0 overflow-hidden rounded-2xl">
+          <span
+            className="battle-map-student-portrait battle-trait-avatar-aura h-12 w-12 shrink-0 overflow-hidden rounded-2xl"
+            style={{
+              '--student-trait-color': studentTraitProfile.dominant.color,
+              '--student-trait-secondary': studentTraitProfile.secondary.color,
+            }}
+          >
             <img
               src={battleStudentPortrait(battleStudent.id, 'confident')}
               alt={`${battleStudent.name}の自信の表情`}
@@ -434,6 +490,9 @@ function AdventureCard({
               color="linear-gradient(90deg,#fde68a,#f9a8d4)"
               className="mt-1.5 h-2 bg-white/15"
             />
+            <p className="mt-1 truncate text-[8px] font-extrabold text-white/65">
+              {studentTraitProfile.dominant.emoji} 発現色：{studentTraitProfile.colorLabel}
+            </p>
           </div>
         </div>
 
@@ -766,10 +825,218 @@ function AfterSchoolWorld({ battleStars, selectedTheme, onTheme }) {
   )
 }
 
-function CampusLifeGallery() {
+function SchoolBarrierMap() {
+  const [locationId, setLocationId] = useState(BATTLE_BARRIER_CENTER.id)
+  const selectedLocation = battleBarrierLocationById(locationId)
+  const locationById = new Map(
+    BATTLE_BARRIER_NODES.map((location) => [location.id, location]),
+  )
+  const outerPoints = BATTLE_BARRIER_NODES
+    .map((location) => `${location.x},${location.y}`)
+    .join(' ')
+  const starPoints = BATTLE_BARRIER_STAR_ORDER
+    .map((id) => locationById.get(id))
+    .map((location) => `${location.x},${location.y}`)
+    .join(' ')
+
+  return (
+    <section className="school-barrier-card overflow-hidden rounded-3xl bg-slate-950 text-white shadow-card">
+      <div className="flex items-start justify-between gap-3 px-4 pb-3 pt-4">
+        <div>
+          <p className="text-[9px] font-extrabold tracking-[0.18em] text-cyan-300">
+            STAR BARRIER DISTRICT
+          </p>
+          <h2 className="mt-0.5 font-display text-base font-extrabold">
+            星環学区結界
+          </h2>
+        </div>
+        <span className="shrink-0 rounded-full border border-amber-200/20 bg-amber-100/10 px-2 py-0.5 text-[7px] font-extrabold tracking-[0.12em] text-amber-100">
+          ● LIVE DISTRICT
+        </span>
+      </div>
+      <p className="px-4 pb-3 text-[10px] font-bold leading-relaxed text-white/55">
+        学校を中心核として、街の五地点が五芒星を結ぶ。地点をタップして結界を確認しよう。
+      </p>
+
+      <div
+        className="school-barrier-map relative aspect-video overflow-hidden bg-indigo-950"
+        role="group"
+        aria-label="学校を中心とする五芒星結界マップ"
+      >
+        <img
+          src={BATTLE_BARRIER_MAP_IMAGE}
+          alt="中央の学校と、図書館、駅前、中央公園、神社、競技場を俯瞰した現代日本の夜の街"
+          className="school-barrier-map-image h-full w-full object-cover"
+        />
+        <span className="school-barrier-map-shade pointer-events-none absolute inset-0" />
+
+        <span
+          className="school-barrier-window-lights pointer-events-none absolute inset-0"
+          aria-hidden="true"
+        >
+          {BATTLE_BARRIER_WINDOW_LIGHTS.map((light) => (
+            <i
+              key={light.id}
+              className="school-barrier-window-light absolute rounded-full"
+              style={{
+                left: `${light.x}%`,
+                top: `${light.y}%`,
+                '--window-light-delay': `${-light.delay}s`,
+                '--window-light-duration': `${light.duration}s`,
+                '--window-light-size': `${light.size}px`,
+              }}
+            />
+          ))}
+        </span>
+
+        <svg
+          className="school-barrier-traffic pointer-events-none absolute inset-0 h-full w-full"
+          viewBox="0 0 100 100"
+          preserveAspectRatio="none"
+          aria-hidden="true"
+        >
+          {BATTLE_BARRIER_TRAFFIC_LIGHTS.map((light) => (
+            <g
+              key={light.id}
+              className={cx(
+                'school-barrier-traffic-car',
+                `school-barrier-traffic-${light.kind}`,
+              )}
+            >
+              <ellipse
+                className="school-barrier-traffic-trail"
+                cx="-1.45"
+                rx={light.kind === 'train' ? '3.4' : '2.15'}
+                ry="0.34"
+              />
+              <circle className="school-barrier-traffic-glow" r="1.65" />
+              <circle className="school-barrier-traffic-lamp" r="0.52" />
+              <animateMotion
+                path={light.path}
+                dur={`${light.duration}s`}
+                begin={`${light.delay}s`}
+                repeatCount="indefinite"
+              />
+            </g>
+          ))}
+        </svg>
+
+        <svg
+          className="school-barrier-lines pointer-events-none absolute inset-0 h-full w-full"
+          viewBox="0 0 100 100"
+          preserveAspectRatio="none"
+          aria-hidden="true"
+        >
+          <polygon className="school-barrier-outer" points={outerPoints} />
+          {BATTLE_BARRIER_NODES.map((location) => (
+            <line
+              key={location.id}
+              className="school-barrier-spoke"
+              x1={BATTLE_BARRIER_CENTER.x}
+              y1={BATTLE_BARRIER_CENTER.y}
+              x2={location.x}
+              y2={location.y}
+            />
+          ))}
+          <polyline className="school-barrier-star" points={starPoints} />
+          <circle
+            className="school-barrier-core-ring"
+            cx={BATTLE_BARRIER_CENTER.x}
+            cy={BATTLE_BARRIER_CENTER.y}
+            r="5.5"
+          />
+        </svg>
+
+        {[BATTLE_BARRIER_CENTER, ...BATTLE_BARRIER_NODES].map((location) => {
+          const selected = location.id === selectedLocation.id
+          const center = location.id === BATTLE_BARRIER_CENTER.id
+          return (
+            <button
+              key={location.id}
+              type="button"
+              onClick={() => setLocationId(location.id)}
+              aria-pressed={selected}
+              aria-label={`${location.name}・${location.role}`}
+              className={cx(
+                'school-barrier-marker absolute z-10 -translate-x-1/2 -translate-y-1/2 text-center transition-transform active:scale-95',
+                center && 'school-barrier-marker-core',
+                selected && 'school-barrier-marker-selected',
+              )}
+              style={{
+                left: `${location.x}%`,
+                top: `${location.y}%`,
+                '--barrier-node-color': location.accent,
+              }}
+            >
+              <span className="school-barrier-marker-icon mx-auto grid place-items-center rounded-full border-2 bg-slate-950/85 shadow-lg backdrop-blur-sm">
+                {location.emoji}
+              </span>
+              <span className="school-barrier-marker-label mt-0.5 block whitespace-nowrap rounded-full border border-white/15 bg-slate-950/80 px-1.5 py-0.5 text-[6px] font-extrabold leading-none shadow-md backdrop-blur-sm">
+                {location.name}
+              </span>
+            </button>
+          )
+        })}
+      </div>
+
+      <div className="school-barrier-location flex items-center gap-3 px-4 py-3" aria-live="polite">
+        <span
+          key={selectedLocation.id}
+          className="school-barrier-location-icon grid h-11 w-11 shrink-0 place-items-center rounded-2xl border text-xl"
+          style={{
+            borderColor: `${selectedLocation.accent}80`,
+            backgroundColor: `${selectedLocation.accent}18`,
+            color: selectedLocation.accent,
+          }}
+        >
+          {selectedLocation.emoji}
+        </span>
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-2">
+            <h3 className="font-display text-sm font-extrabold">
+              {selectedLocation.name}
+            </h3>
+            <span
+              className="rounded-full px-2 py-0.5 text-[7px] font-extrabold"
+              style={{
+                backgroundColor: `${selectedLocation.accent}1f`,
+                color: selectedLocation.accent,
+              }}
+            >
+              {selectedLocation.role}
+            </span>
+          </div>
+          <p className="mt-1 text-[9px] font-bold leading-relaxed text-white/55">
+            {selectedLocation.description}
+          </p>
+        </div>
+        <span className="shrink-0 text-[8px] font-extrabold tracking-[0.12em] text-emerald-300">
+          CONNECTED
+        </span>
+      </div>
+    </section>
+  )
+}
+
+function CampusLifeGallery({ onTalk }) {
   const [sceneId, setSceneId] = useState(BATTLE_DAILY_SCENES[0].id)
+  const [choiceByScene, setChoiceByScene] = useState({})
   const scene = battleDailySceneById(sceneId)
   const sceneNumber = BATTLE_DAILY_SCENES.findIndex((item) => item.id === scene.id) + 1
+  const episode = scene.episode
+  const speaker = battleStudentById(episode.speakerId)
+  const scenePortrait = (studentId, emotionId = 'idle') => (
+    scene.outfitId === 'home' || scene.outfitId === 'weekend'
+      ? battleStudentLifestylePortrait(studentId, scene.outfitId)
+      : battleStudentPortrait(studentId, emotionId)
+  )
+  const selectedChoice = episode.choices.find(
+    (choice) => choice.id === choiceByScene[scene.id],
+  ) ?? null
+
+  const selectEpisodeChoice = (choiceId) => {
+    setChoiceByScene((current) => ({ ...current, [scene.id]: choiceId }))
+  }
 
   return (
     <section className="campus-life-gallery overflow-hidden rounded-3xl bg-slate-950 text-white shadow-card">
@@ -779,12 +1046,16 @@ function CampusLifeGallery() {
             CAMPUS LIFE STORIES
           </p>
           <h2 className="mt-0.5 font-display text-base font-extrabold">
-            学生たちの一日
+            友達と過ごす日常
           </h2>
         </div>
-        <span className="shrink-0 rounded-full bg-white/10 px-2.5 py-1 text-[9px] font-extrabold text-cyan-100">
-          9 SCENES
-        </span>
+        <button
+          type="button"
+          onClick={onTalk}
+          className="min-h-9 shrink-0 rounded-full bg-gradient-to-r from-fuchsia-500 to-violet-500 px-3 text-[9px] font-extrabold text-white shadow-md transition-transform active:scale-95"
+        >
+          💬 日常トークへ
+        </button>
       </div>
 
       <div
@@ -797,8 +1068,8 @@ function CampusLifeGallery() {
         <span key={scene.id} className="campus-life-scene-frame absolute inset-0">
           <img
             src={scene.image}
-            alt={`${scene.name}を過ごす生徒たちのドット絵`}
-            className="campus-life-scene-image h-full w-full object-cover [image-rendering:pixelated]"
+            alt={`${scene.name}で同じ活動を一緒に楽しむ友達のイラスト`}
+            className="campus-life-scene-image h-full w-full object-cover"
           />
         </span>
         <span className="campus-life-scanlines pointer-events-none absolute inset-0" />
@@ -811,6 +1082,9 @@ function CampusLifeGallery() {
             <div className="min-w-0 flex-1">
               <span className="inline-flex rounded-full border border-white/20 bg-white/10 px-2 py-1 text-[8px] font-extrabold text-amber-100 backdrop-blur-sm">
                 {scene.emoji} {scene.time}
+              </span>
+              <span className="ml-1 inline-flex rounded-full border border-white/20 bg-white/10 px-2 py-1 text-[8px] font-extrabold text-cyan-100 backdrop-blur-sm">
+                {scene.outfitId === 'weekend' ? '休日私服' : '学校・放課後'}
               </span>
               <h3 className="mt-1.5 font-display text-base font-extrabold leading-tight">
                 {scene.name}
@@ -830,10 +1104,10 @@ function CampusLifeGallery() {
                     title={`${student.name}・${battleEmotionById(emotionId).label}`}
                   >
                     <img
-                      src={battleStudentPortrait(student.id, emotionId)}
+                      src={scenePortrait(student.id, emotionId)}
                       alt={student.name}
                       loading="lazy"
-                      className="h-full w-full object-cover [image-rendering:pixelated]"
+                      className="h-full w-full object-cover"
                     />
                   </span>
                 )
@@ -845,7 +1119,7 @@ function CampusLifeGallery() {
 
       <div
         className="campus-life-scene-list flex gap-2 overflow-x-auto px-3 py-3"
-        role="list"
+        role="group"
         aria-label="学生の日常シーンを選択"
       >
         {BATTLE_DAILY_SCENES.map((item) => {
@@ -863,13 +1137,12 @@ function CampusLifeGallery() {
                   ? 'border-pink-200 bg-white/15 ring-2 ring-pink-300/30'
                   : 'border-white/10 bg-white/[0.06]',
               )}
-              role="listitem"
             >
               <img
                 src={item.image}
                 alt=""
                 loading="lazy"
-                className="aspect-video w-full object-cover [image-rendering:pixelated]"
+                className="aspect-video w-full object-cover"
               />
               <span className="flex items-center justify-between gap-1 px-1.5 py-1.5">
                 <strong className="truncate text-[8px] font-extrabold">
@@ -883,12 +1156,756 @@ function CampusLifeGallery() {
           )
         })}
       </div>
+
+      <div className="border-t border-white/10 bg-white/[0.04] px-4 pb-4 pt-3">
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            <p className="text-[9px] font-extrabold tracking-[0.16em] text-amber-200">
+              SHORT EPISODE
+            </p>
+            <h3 className="mt-0.5 font-display text-base font-extrabold text-white">
+              {episode.title}
+            </h3>
+          </div>
+          <span className="shrink-0 rounded-full bg-pink-400/15 px-2 py-1 text-[8px] font-extrabold text-pink-100">
+            {speaker.emoji} {speaker.name}
+          </span>
+        </div>
+
+        <p className="mt-2 text-[11px] font-bold leading-relaxed text-white/60">
+          {episode.situation}
+        </p>
+
+        <div className="mt-3 flex items-start gap-3 rounded-2xl border border-white/10 bg-slate-950/65 p-3">
+          <span className="battle-expression-change h-14 w-14 shrink-0 overflow-hidden rounded-2xl border-2 border-white/15 bg-slate-900">
+            <img
+              src={scenePortrait(speaker.id, episode.openingEmotionId)}
+              alt={`${speaker.name}の${battleEmotionById(episode.openingEmotionId).label}の表情`}
+              className="h-full w-full object-cover"
+            />
+          </span>
+          <div className="min-w-0 flex-1">
+            <span className="text-[9px] font-extrabold text-cyan-200">
+              {speaker.name} · {speaker.club}
+            </span>
+            <p className="mt-1 text-xs font-extrabold leading-relaxed text-white">
+              {episode.opening}
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-3">
+          <div className="flex items-end justify-between gap-2">
+            <p className="text-xs font-extrabold text-white">
+              {speaker.name}へ、どんな声をかける？
+            </p>
+            <span className="text-[8px] font-bold text-white/35">
+              採点なし
+            </span>
+          </div>
+          <p className="mt-1 text-[9px] font-bold leading-relaxed text-white/45">
+            どれを選んでも正解・不正解はありません。言葉によって返事と表情が変わります。
+          </p>
+
+          <div
+            className="mt-2.5 grid gap-2"
+            role="group"
+            aria-label={`${speaker.name}への声掛けを選択`}
+          >
+            {episode.choices.map((choice) => {
+              const style = battleSupportStyleById(choice.styleId)
+              const selected = selectedChoice?.id === choice.id
+              return (
+                <button
+                  key={choice.id}
+                  type="button"
+                  onClick={() => selectEpisodeChoice(choice.id)}
+                  aria-pressed={selected}
+                  className={cx(
+                    'min-h-12 rounded-2xl border px-3 py-2.5 text-left transition-transform active:scale-[0.99]',
+                    selected
+                      ? 'border-pink-200 bg-white/20 ring-2 ring-pink-300/20'
+                      : 'border-white/10 bg-white/[0.06]',
+                  )}
+                >
+                  <span className="block text-[8px] font-extrabold text-amber-200">
+                    {style.emoji} {style.label}
+                  </span>
+                  <strong className="mt-0.5 block text-[11px] font-extrabold leading-relaxed text-white">
+                    {choice.label}
+                  </strong>
+                </button>
+              )
+            })}
+          </div>
+        </div>
+
+        {selectedChoice && (
+          <div
+            key={`${scene.id}-${selectedChoice.id}`}
+            className="battle-expression-change mt-3 rounded-2xl border border-cyan-200/20 bg-gradient-to-br from-cyan-400/15 to-pink-400/10 p-3"
+            role="status"
+            aria-live="polite"
+          >
+            <div className="ml-auto max-w-[88%] rounded-2xl rounded-br-md bg-violet-500/75 px-3 py-2 text-right">
+              <span className="text-[8px] font-extrabold text-violet-100">あなた（主人公）の声かけ</span>
+              <p className="mt-0.5 text-[11px] font-extrabold leading-relaxed text-white">
+                {selectedChoice.label}
+              </p>
+            </div>
+            <div className="mt-2 flex items-start gap-3">
+              <span className="h-14 w-14 shrink-0 overflow-hidden rounded-2xl border-2 border-cyan-100/30 bg-slate-900">
+                <img
+                  src={scenePortrait(speaker.id, selectedChoice.emotionId)}
+                  alt={`${speaker.name}の${battleEmotionById(selectedChoice.emotionId).label}の表情`}
+                  className="h-full w-full object-cover"
+                />
+              </span>
+              <div className="min-w-0 flex-1">
+                <span className="text-[9px] font-extrabold text-cyan-100">
+                  {speaker.name}の返事 · {battleEmotionById(selectedChoice.emotionId).emoji}
+                  {' '}{battleEmotionById(selectedChoice.emotionId).label}
+                </span>
+                <p className="mt-1 text-xs font-extrabold leading-relaxed text-white">
+                  {selectedChoice.reply}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </section>
   )
 }
 
-function BattleCastRoster({ selectedStudentId, onStudent }) {
+function SchoolLifeAlbum() {
+  const [categoryId, setCategoryId] = useState('all')
+  const [visualId, setVisualId] = useState(SCHOOL_LIFE_VISUALS[0].id)
+  const visual = schoolLifeVisualById(visualId)
+  const category = SCHOOL_LIFE_VISUAL_CATEGORIES.find(
+    (item) => item.id === visual.category,
+  )
+  const filteredVisuals = categoryId === 'all'
+    ? SCHOOL_LIFE_VISUALS
+    : SCHOOL_LIFE_VISUALS.filter((item) => item.category === categoryId)
+  const visualNumber = SCHOOL_LIFE_VISUALS.findIndex((item) => item.id === visual.id) + 1
+  const totalSceneCount = BATTLE_DAILY_SCENES.length + SCHOOL_LIFE_VISUALS.length
+
+  const selectCategory = (nextCategoryId) => {
+    setCategoryId(nextCategoryId)
+    if (nextCategoryId === 'all' || visual.category === nextCategoryId) return
+    const firstVisual = SCHOOL_LIFE_VISUALS.find(
+      (item) => item.category === nextCategoryId,
+    )
+    if (firstVisual) setVisualId(firstVisual.id)
+  }
+
+  return (
+    <section className="school-life-album overflow-hidden rounded-3xl bg-slate-950 text-white shadow-card">
+      <div className="flex items-start justify-between gap-3 px-4 pb-3 pt-4">
+        <div className="min-w-0">
+          <p className="text-[9px] font-extrabold tracking-[0.18em] text-cyan-300">
+            SCHOOL LIFE ALBUM
+          </p>
+          <h2 className="mt-0.5 font-display text-base font-extrabold">
+            学校生活の一日と行事
+          </h2>
+          <p className="mt-1 text-[9px] font-bold leading-relaxed text-white/50">
+            通学から授業、昼休み、部活、行事、下校までを場面別に見る。
+          </p>
+        </div>
+        <div className="flex shrink-0 flex-col items-end gap-1">
+          <span className="rounded-full border border-cyan-200/20 bg-cyan-400/10 px-2 py-1 text-[8px] font-extrabold text-cyan-100">
+            {totalSceneCount} SCENES
+          </span>
+          <span className="text-[7px] font-extrabold tracking-[0.12em] text-pink-300">
+            +{SCHOOL_LIFE_VISUALS.length} NEW
+          </span>
+        </div>
+      </div>
+
+      <div
+        className="school-life-category-list flex gap-2 overflow-x-auto px-3 pb-3"
+        role="group"
+        aria-label="学校生活アルバムのカテゴリ"
+      >
+        {SCHOOL_LIFE_VISUAL_CATEGORIES.map((item) => {
+          const selected = item.id === categoryId
+          const count = item.id === 'all'
+            ? SCHOOL_LIFE_VISUALS.length
+            : SCHOOL_LIFE_VISUALS.filter((visualItem) => visualItem.category === item.id).length
+          return (
+            <button
+              key={item.id}
+              type="button"
+              onClick={() => selectCategory(item.id)}
+              aria-pressed={selected}
+              className={cx(
+                'min-h-11 shrink-0 rounded-full border px-3 text-[9px] font-extrabold transition-transform active:scale-95',
+                selected
+                  ? 'border-cyan-200 bg-cyan-300 text-slate-950 shadow-lg shadow-cyan-500/15'
+                  : 'border-white/10 bg-white/[0.06] text-white/70',
+              )}
+            >
+              {item.emoji} {item.label} <span className="opacity-60">{count}</span>
+            </button>
+          )
+        })}
+      </div>
+
+      <div
+        id="school-life-album-scene"
+        className="campus-life-stage relative aspect-video overflow-hidden bg-indigo-950"
+        role="region"
+        aria-live="polite"
+        aria-label={`${visual.name}。${visual.description}`}
+      >
+        <span key={visual.id} className="campus-life-scene-frame absolute inset-0">
+          <img
+            src={visual.image}
+            alt={`${visual.name}。${visual.description}`}
+            className="campus-life-scene-image h-full w-full object-cover"
+          />
+        </span>
+        <span className="campus-life-scanlines pointer-events-none absolute inset-0" />
+        <span className="absolute right-3 top-3 z-[2] rounded-full border border-white/20 bg-slate-950/70 px-2 py-1 text-[8px] font-extrabold tracking-[0.12em] backdrop-blur-sm">
+          {String(visualNumber).padStart(2, '0')} / {String(SCHOOL_LIFE_VISUALS.length).padStart(2, '0')}
+        </span>
+
+        <div className="absolute inset-x-0 bottom-0 z-[2] bg-gradient-to-t from-slate-950 via-slate-950/78 to-transparent px-4 pb-3 pt-10">
+          <div className="flex flex-wrap items-center gap-1">
+            <span className="rounded-full border border-white/20 bg-white/10 px-2 py-1 text-[8px] font-extrabold text-amber-100 backdrop-blur-sm">
+              {visual.emoji} {visual.time}
+            </span>
+            <span className="rounded-full border border-white/20 bg-white/10 px-2 py-1 text-[8px] font-extrabold text-cyan-100 backdrop-blur-sm">
+              {category?.emoji} {category?.label}
+            </span>
+          </div>
+          <h3 className="mt-1.5 font-display text-base font-extrabold leading-tight">
+            {visual.name}
+          </h3>
+          <p className="mt-1 max-w-[35rem] text-[9px] font-bold leading-relaxed text-white/65">
+            {visual.description}
+          </p>
+        </div>
+      </div>
+
+      <div
+        className="school-life-visual-grid grid grid-cols-2 gap-2 p-3 sm:grid-cols-3"
+        role="group"
+        aria-label="学校生活の場面を選択"
+      >
+        {filteredVisuals.map((item) => {
+          const selected = item.id === visual.id
+          return (
+            <button
+              key={item.id}
+              type="button"
+              onClick={() => setVisualId(item.id)}
+              aria-pressed={selected}
+              aria-controls="school-life-album-scene"
+              className={cx(
+                'school-life-visual-choice min-h-24 overflow-hidden rounded-2xl border text-left transition-transform active:scale-[0.98]',
+                selected
+                  ? 'border-cyan-200 bg-white/15 ring-2 ring-cyan-300/30'
+                  : 'border-white/10 bg-white/[0.05]',
+              )}
+            >
+              <span className="relative block">
+                <img
+                  src={item.image}
+                  alt=""
+                  loading="lazy"
+                  className="aspect-video w-full object-cover"
+                />
+                <span className="absolute bottom-1 right-1 rounded-full bg-slate-950/75 px-1.5 py-0.5 text-[7px] font-extrabold text-white/80">
+                  {item.time}
+                </span>
+              </span>
+              <span className="block truncate px-2 py-2 text-[9px] font-extrabold">
+                {item.emoji} {item.shortName}
+              </span>
+            </button>
+          )
+        })}
+      </div>
+    </section>
+  )
+}
+
+function TeacherSchoolLife({ student }) {
+  const [teacherId, setTeacherId] = useState(TEACHER_SCHOOL_LIFE[0].id)
+  const [scoreChoiceId, setScoreChoiceId] = useState(null)
+  const [remedialSubject, setRemedialSubject] = useState(null)
+  const [resolutionId, setResolutionId] = useState(null)
+  const teacher = teacherSchoolLifeById(teacherId)
+  const conversation = createTeacherSchoolLifeConversation({
+    teacherId: teacher.id,
+    studentId: student.id,
+    scoreChoiceId,
+    remedialSubject,
+    resolutionId,
+  })
+  const subjectChoices = teacherRemedialSubjectChoices(teacher.id)
+
+  const resetConversation = () => {
+    setScoreChoiceId(null)
+    setRemedialSubject(null)
+    setResolutionId(null)
+  }
+
+  const selectTeacher = (nextTeacherId) => {
+    setTeacherId(nextTeacherId)
+    setScoreChoiceId(null)
+    setRemedialSubject(null)
+    setResolutionId(null)
+  }
+
+  const selectScore = (nextScoreChoiceId) => {
+    setScoreChoiceId(nextScoreChoiceId)
+    setRemedialSubject(null)
+    setResolutionId(null)
+  }
+
+  return (
+    <section className="teacher-school-life overflow-hidden rounded-3xl bg-white shadow-card">
+      <div
+        className="relative overflow-hidden px-4 pb-3 pt-4 text-white"
+        style={{
+          background: `linear-gradient(135deg,#0f172a 0%,${teacher.accent} 145%)`,
+        }}
+      >
+        <div className="pointer-events-none absolute -right-5 -top-8 text-[7rem] opacity-10">
+          {teacher.subjectEmoji}
+        </div>
+        <div className="relative flex items-start justify-between gap-3">
+          <div>
+            <p className="text-[9px] font-extrabold tracking-[0.18em] text-amber-200">
+              FACULTY CAMPUS STORIES
+            </p>
+            <h2 className="mt-0.5 font-display text-base font-extrabold">
+              先生たちとの学校生活
+            </h2>
+          </div>
+          <span className="shrink-0 rounded-full bg-white/10 px-2 py-1 text-[8px] font-extrabold">
+            11人 · 成績4分岐
+          </span>
+        </div>
+        <p className="relative mt-2 text-[10px] font-bold leading-relaxed text-white/65">
+          愛情も、冗談も、厳しさも先生ごとに別。選んだクラスメイトとして放課後の会話を体験できます。
+        </p>
+
+        <div
+          className="teacher-school-life-selector relative mt-3 flex gap-2 overflow-x-auto pb-2"
+          role="list"
+          aria-label="話す先生を選ぶ"
+        >
+          {TEACHER_SCHOOL_LIFE.map((item) => {
+            const selected = item.id === teacher.id
+            return (
+              <button
+                key={item.id}
+                type="button"
+                role="listitem"
+                aria-pressed={selected}
+                onClick={() => selectTeacher(item.id)}
+                className={cx(
+                  'w-[70px] shrink-0 rounded-2xl border px-1.5 py-2 text-center transition-transform active:scale-95',
+                  selected
+                    ? 'border-amber-200 bg-white/20 ring-2 ring-amber-200/25'
+                    : 'border-white/10 bg-white/[0.06]',
+                )}
+              >
+                <span className="block text-2xl" aria-hidden="true">
+                  {item.portraitEmoji}
+                </span>
+                <strong className="mt-1 block truncate text-[8px] font-extrabold">
+                  {item.name.replace(/先生$/u, '')}
+                </strong>
+                <span className="block truncate text-[7px] font-bold text-white/45">
+                  {item.teacherSubject}
+                </span>
+              </button>
+            )
+          })}
+        </div>
+      </div>
+
+      <div className="p-3.5">
+        <div className="flex items-center gap-3 rounded-2xl bg-slate-950 p-3 text-white">
+          <MobPortrait
+            encounter={teacher}
+            className="h-20 w-20 shrink-0 rounded-2xl"
+            showBadge={false}
+          />
+          <div className="min-w-0 flex-1">
+            <span
+              className="inline-flex rounded-full px-2 py-1 text-[8px] font-extrabold text-slate-950"
+              style={{ backgroundColor: teacher.accent }}
+            >
+              {teacher.subjectEmoji} {teacher.teacherSubject}担当
+            </span>
+            <h3 className="mt-1.5 font-display text-base font-extrabold">
+              {teacher.name}
+            </h3>
+            <p className="mt-0.5 text-[9px] font-bold leading-relaxed text-white/50">
+              {teacher.lore}
+            </p>
+          </div>
+          <span className="h-14 w-14 shrink-0 overflow-hidden rounded-2xl border-2 border-white/20 bg-slate-900">
+            <img
+              src={battleStudentPortrait(student.id, conversation.phase === 'resolution' ? 'surprised' : 'curious')}
+              alt={`${student.name}の表情`}
+              className="h-full w-full object-cover [image-rendering:pixelated]"
+            />
+          </span>
+        </div>
+
+        <div
+          className="mt-3 space-y-2 rounded-2xl border border-slate-200 bg-slate-50 p-2.5"
+          role="log"
+          aria-live="polite"
+          aria-label={`${teacher.name}と${student.name}の学校生活会話`}
+        >
+          {conversation.messages.map((item, index) => {
+            if (item.role === 'narration') {
+              return (
+                <p
+                  key={`${item.role}-${index}`}
+                  className="rounded-xl bg-amber-50 px-2.5 py-2 text-[9px] font-bold leading-relaxed text-amber-900"
+                >
+                  ✦ {item.text}
+                </p>
+              )
+            }
+            const isStudent = item.role === 'student'
+            return (
+              <div
+                key={`${item.role}-${index}`}
+                className={cx('flex', isStudent ? 'justify-end' : 'justify-start')}
+              >
+                <div
+                  className={cx(
+                    'max-w-[88%] rounded-2xl px-3 py-2 shadow-sm',
+                    isStudent
+                      ? 'rounded-br-md bg-gradient-to-br from-violet-500 to-fuchsia-500 text-white'
+                      : 'rounded-tl-md border border-slate-200 bg-white text-ink',
+                  )}
+                >
+                  <span className={cx(
+                    'block text-[8px] font-extrabold',
+                    isStudent ? 'text-white/65' : 'text-violet-500',
+                  )}
+                  >
+                    {isStudent ? student.name : teacher.name}
+                  </span>
+                  <p className="mt-0.5 text-[10px] font-extrabold leading-relaxed">
+                    {item.text}
+                  </p>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+
+        {conversation.phase === 'score' && (
+          <div className="mt-3 grid grid-cols-2 gap-2" role="group" aria-label="定期テストの点数を選ぶ">
+            {TEACHER_TEST_SCORE_CHOICES.map((choice) => (
+              <button
+                key={choice.id}
+                type="button"
+                onClick={() => selectScore(choice.id)}
+                className={cx(
+                  'min-h-12 rounded-2xl border px-2 py-2 text-[10px] font-extrabold transition-transform active:scale-[0.98]',
+                  choice.id === 'remedial'
+                    ? 'border-rose-200 bg-rose-50 text-rose-700'
+                    : 'border-violet-100 bg-violet-50 text-violet-800',
+                )}
+              >
+                {choice.label}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {conversation.phase === 'subject' && (
+          <div className="mt-3 grid grid-cols-3 gap-2" role="group" aria-label="補習になった教科を選ぶ">
+            {subjectChoices.map((subject) => (
+              <button
+                key={subject.id}
+                type="button"
+                onClick={() => setRemedialSubject(subject.id)}
+                className="min-h-12 rounded-2xl border border-amber-200 bg-amber-50 px-1.5 py-2 text-[9px] font-extrabold text-amber-900 transition-transform active:scale-[0.98]"
+              >
+                <span className="block text-base">{subject.emoji}</span>
+                {subject.label}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {conversation.phase === 'resolution' && (
+          <div className="mt-3 grid grid-cols-2 gap-2" role="group" aria-label="先生に見つかった後の行動を選ぶ">
+            <button
+              type="button"
+              onClick={() => setResolutionId('escape')}
+              className="min-h-12 rounded-2xl bg-gradient-to-r from-orange-500 to-rose-500 px-3 py-2 text-[10px] font-extrabold text-white shadow-md transition-transform active:scale-[0.98]"
+            >
+              🏃 逃げる！
+            </button>
+            <button
+              type="button"
+              onClick={() => setResolutionId('stay')}
+              className="min-h-12 rounded-2xl bg-gradient-to-r from-cyan-500 to-violet-500 px-3 py-2 text-[10px] font-extrabold text-white shadow-md transition-transform active:scale-[0.98]"
+            >
+              📘 補習を受ける
+            </button>
+          </div>
+        )}
+
+        {conversation.phase === 'complete' && (
+          <button
+            type="button"
+            onClick={resetConversation}
+            className="mt-3 min-h-11 w-full rounded-2xl border border-violet-200 bg-violet-50 px-3 text-[10px] font-extrabold text-violet-700 transition-transform active:scale-[0.99]"
+          >
+            ↻ {teacher.name}と別の会話を試す
+          </button>
+        )}
+
+        <p className="mt-2 text-center text-[8px] font-bold leading-relaxed text-ink/35">
+          ここで選ぶ点数は物語上の架空成績です。実際の正答率・XP・SRS・診断結果は変わりません。
+        </p>
+      </div>
+    </section>
+  )
+}
+
+const TRAIT_STAR_DRAW_ORDER = [0, 2, 4, 1, 3, 0]
+const TRAIT_SPHERE_CENTER = { x: 120, y: 112 }
+
+function traitSpherePoint(trait, level) {
+  const ratio = Math.max(0, Math.min(MAX_BATTLE_TRAIT_LEVEL, level))
+    / MAX_BATTLE_TRAIT_LEVEL
+  return {
+    x: TRAIT_SPHERE_CENTER.x + (trait.x - TRAIT_SPHERE_CENTER.x) * ratio,
+    y: TRAIT_SPHERE_CENTER.y + (trait.y - TRAIT_SPHERE_CENTER.y) * ratio,
+  }
+}
+
+function BattleTraitSphere({
+  student,
+  battleStars,
+  investments,
+  onRaise,
+  onReset,
+}) {
+  const profile = battleStudentTraitProfile(student.id, investments, battleStars)
+  const radarPoints = BATTLE_TRAITS.map((trait) =>
+    traitSpherePoint(trait, profile.levels[trait.id]))
+  const outerStar = TRAIT_STAR_DRAW_ORDER.map((index) => {
+    const trait = BATTLE_TRAITS[index]
+    return `${trait.x},${trait.y}`
+  }).join(' ')
+  const radarShape = radarPoints.map((point) => `${point.x},${point.y}`).join(' ')
+  const sphereLabel = BATTLE_TRAITS.map(
+    (trait) => `${trait.name}レベル${profile.levels[trait.id]}`,
+  ).join('、')
+
+  return (
+    <section
+      className="battle-trait-sphere mt-4 overflow-hidden rounded-3xl border border-violet-100 bg-slate-950 text-white"
+      style={{
+        '--student-trait-color': profile.dominant.color,
+        '--student-trait-secondary': profile.secondary.color,
+      }}
+    >
+      <div className="flex items-start justify-between gap-3 px-3 pb-1 pt-3">
+        <div>
+          <p className="text-[8px] font-black tracking-[0.18em] text-cyan-300">
+            CHROMA SPHERE
+          </p>
+          <h4 className="mt-0.5 text-sm font-extrabold">五芒星の星彩スフィア</h4>
+        </div>
+        <div className="shrink-0 rounded-xl border border-white/10 bg-white/[0.07] px-2 py-1.5 text-right">
+          <span className="block text-[8px] font-bold text-white/45">全員共通</span>
+          <strong className="block text-[11px] text-amber-200">
+            ◈ {profile.summary.available}/{profile.summary.budget} pt
+          </strong>
+        </div>
+      </div>
+
+      <div className="grid items-center gap-1 px-2 sm:grid-cols-[minmax(0,1fr)_112px]">
+        <svg
+          viewBox="0 0 240 220"
+          className="mx-auto block w-full max-w-[250px]"
+          role="img"
+          aria-label={`${student.name}の星彩スフィア。${sphereLabel}。発現色は${profile.colorLabel}`}
+        >
+          <polygon
+            points={outerStar}
+            fill="rgba(255,255,255,0.025)"
+            stroke="rgba(255,255,255,0.34)"
+            strokeWidth="2"
+            strokeLinejoin="round"
+          />
+          {BATTLE_TRAITS.map((trait) => (
+            <line
+              key={`spoke-${trait.id}`}
+              x1={TRAIT_SPHERE_CENTER.x}
+              y1={TRAIT_SPHERE_CENTER.y}
+              x2={trait.x}
+              y2={trait.y}
+              stroke={trait.color}
+              strokeOpacity="0.28"
+              strokeWidth="1.5"
+              strokeDasharray="3 4"
+            />
+          ))}
+          {BATTLE_TRAITS.map((trait, index) => {
+            const point = radarPoints[index]
+            const nextPoint = radarPoints[(index + 1) % radarPoints.length]
+            return (
+              <polygon
+                key={`sector-${trait.id}`}
+                points={`${TRAIT_SPHERE_CENTER.x},${TRAIT_SPHERE_CENTER.y} ${point.x},${point.y} ${nextPoint.x},${nextPoint.y}`}
+                fill={trait.color}
+                fillOpacity="0.38"
+              />
+            )
+          })}
+          <polygon
+            points={radarShape}
+            fill="none"
+            stroke="rgba(255,255,255,0.88)"
+            strokeWidth="2.2"
+            strokeLinejoin="round"
+          />
+          <circle
+            cx={TRAIT_SPHERE_CENTER.x}
+            cy={TRAIT_SPHERE_CENTER.y}
+            r="10"
+            fill={profile.dominant.color}
+            opacity="0.95"
+            className="battle-trait-sphere-core"
+          />
+          {BATTLE_TRAITS.map((trait) => {
+            const level = profile.levels[trait.id]
+            return (
+              <g key={`node-${trait.id}`}>
+                <circle
+                  cx={trait.x}
+                  cy={trait.y}
+                  r={12 + level * 0.8}
+                  fill={trait.color}
+                  fillOpacity={0.34 + level * 0.11}
+                  stroke="rgba(255,255,255,0.8)"
+                  strokeWidth="1.5"
+                  className="battle-trait-sphere-node"
+                />
+                <text
+                  x={trait.x}
+                  y={trait.y + 3}
+                  textAnchor="middle"
+                  fill="white"
+                  fontSize="9"
+                  fontWeight="900"
+                >
+                  {level}
+                </text>
+              </g>
+            )
+          })}
+        </svg>
+
+        <div className="px-1 pb-2 text-center sm:text-left">
+          <span
+            className="inline-flex items-center rounded-full px-2 py-1 text-[9px] font-extrabold text-slate-950"
+            style={{ background: profile.aura }}
+          >
+            {profile.dominant.emoji} 発現色：{profile.colorLabel}
+          </span>
+          <p
+            key={`${student.id}-${profile.dominant.id}`}
+            className="battle-trait-voice mt-2 text-[10px] font-extrabold leading-relaxed text-white/85"
+            aria-live="polite"
+          >
+            {profile.voice}
+          </p>
+          <p className="mt-1.5 text-[8px] font-bold leading-relaxed text-white/40">
+            {profile.dominant.description}
+          </p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-5 gap-1.5 border-t border-white/10 bg-white/[0.035] p-2">
+        {BATTLE_TRAITS.map((trait) => {
+          const level = profile.levels[trait.id]
+          const invested = profile.invested[trait.id] ?? 0
+          const canRaise = canRaiseBattleTrait({
+            battleStars,
+            investments,
+            studentId: student.id,
+            traitId: trait.id,
+          })
+          return (
+            <button
+              key={trait.id}
+              type="button"
+              disabled={!canRaise}
+              onClick={() => onRaise(student.id, trait.id)}
+              aria-label={`${student.name}の${trait.name}をレベル${level}から上げる。星彩ポイントを1消費`}
+              className="battle-trait-button min-h-16 min-w-0 rounded-xl border px-1 py-1.5 text-center transition-transform enabled:active:scale-95 disabled:opacity-55"
+              style={{
+                '--trait-color': trait.color,
+                '--trait-soft': trait.softColor,
+              }}
+            >
+              <span className="block text-sm">{trait.emoji}</span>
+              <strong className="block truncate text-[9px]">{trait.name}</strong>
+              <span className="block text-[8px] font-black text-white/55">
+                LV{level}{level < MAX_BATTLE_TRAIT_LEVEL ? ' ＋' : ' MAX'}
+              </span>
+              {invested > 0 && (
+                <span className="block text-[7px] font-bold text-white/35">育成+{invested}</span>
+              )}
+            </button>
+          )
+        })}
+      </div>
+
+      <div className="flex min-h-10 items-center justify-between gap-2 border-t border-white/10 px-3 py-2">
+        <p className="text-[8px] font-bold leading-relaxed text-white/40">
+          ✦ {BATTLE_TRAIT_POINT_STARS}スターで1pt。色と台詞だけが成長し、学習評価は変わりません。
+        </p>
+        {profile.investedTotal > 0 && (
+          <button
+            type="button"
+            onClick={() => onReset(student.id)}
+            className="shrink-0 rounded-lg border border-white/15 px-2 py-1.5 text-[8px] font-extrabold text-white/65 active:bg-white/10"
+          >
+            振り直す
+          </button>
+        )}
+      </div>
+    </section>
+  )
+}
+
+function BattleCastRoster({
+  selectedStudentId,
+  onStudent,
+  battleStars,
+  investments,
+  onRaiseTrait,
+  onResetTraits,
+}) {
   const selectedStudent = battleStudentById(selectedStudentId)
+  const traitProfile = battleStudentTraitProfile(
+    selectedStudent.id,
+    investments,
+    battleStars,
+  )
   const [emotionId, setEmotionId] = useState('playful')
   const emotion = battleEmotionById(emotionId)
 
@@ -898,10 +1915,10 @@ function BattleCastRoster({ selectedStudentId, onStudent }) {
         <div className="flex items-start justify-between gap-3">
           <div>
             <p className="text-[9px] font-extrabold tracking-[0.18em] text-cyan-300">
-              PLAYABLE CAST
+              CLASSMATE CAST
             </p>
             <h2 className="mt-0.5 font-display text-base font-extrabold">
-              主役の生徒をえらぶ
+              同行するクラスメイトをえらぶ
             </h2>
           </div>
           <div className="flex shrink-0 gap-1">
@@ -914,7 +1931,7 @@ function BattleCastRoster({ selectedStudentId, onStudent }) {
           </div>
         </div>
         <p className="mt-2 text-[10px] font-bold leading-relaxed text-white/55">
-          能力差はありません。好きな生徒を選ぶと、回答結果に合わせて表情と動作が変わります。
+          学習の正答率やXPに能力差はありません。育てた五つの資質は、色・台詞・バトル演出に現れます。
         </p>
 
         <div className="battle-student-selector mt-3 flex gap-2 overflow-x-auto pb-2" role="list">
@@ -958,8 +1975,12 @@ function BattleCastRoster({ selectedStudentId, onStudent }) {
         <div className="flex items-center gap-3">
           <span
             key={`${selectedStudent.id}-${emotion.id}`}
-            className="battle-expression-change h-24 w-24 shrink-0 overflow-hidden rounded-[1.6rem] border-4 bg-slate-950 shadow-lg"
-            style={{ borderColor: selectedStudent.accent }}
+            className="battle-expression-change battle-trait-avatar-aura h-24 w-24 shrink-0 overflow-hidden rounded-[1.6rem] border-4 bg-slate-950 shadow-lg"
+            style={{
+              '--student-trait-color': traitProfile.dominant.color,
+              '--student-trait-secondary': traitProfile.secondary.color,
+              borderColor: traitProfile.dominant.color,
+            }}
           >
             <img
               src={battleStudentPortrait(selectedStudent.id, emotion.id)}
@@ -970,9 +1991,9 @@ function BattleCastRoster({ selectedStudentId, onStudent }) {
           <div className="min-w-0 flex-1">
             <span
               className="inline-flex rounded-full px-2 py-1 text-[8px] font-extrabold text-white"
-              style={{ backgroundColor: selectedStudent.accent }}
+              style={{ background: traitProfile.aura }}
             >
-              SELECTED · {emotion.emoji} {emotion.label}
+              {traitProfile.dominant.emoji} 発現色 · {traitProfile.colorLabel}
             </span>
             <h3 className="mt-1.5 font-display text-lg font-extrabold text-ink">
               {selectedStudent.emoji} {selectedStudent.name}
@@ -985,6 +2006,14 @@ function BattleCastRoster({ selectedStudentId, onStudent }) {
             </p>
           </div>
         </div>
+
+        <BattleTraitSphere
+          student={selectedStudent}
+          battleStars={battleStars}
+          investments={investments}
+          onRaise={onRaiseTrait}
+          onReset={onResetTraits}
+        />
 
         <div className="mt-3 grid grid-cols-4 gap-1.5">
           {['gentle', 'playful', 'healing', 'victory'].map((featuredEmotionId) => {

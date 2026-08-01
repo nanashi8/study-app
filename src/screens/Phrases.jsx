@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import { PHRASE_KINDS, phrasesByKind } from '../data/phrases.js'
+import { longSentenceTranslationFor } from '../data/long-sentence-translations.js'
 import { LEVELS, getLevel } from '../data/levels.js'
 import { phraseKindProgress } from '../lib/session.js'
 import { phraseSpeechText } from '../lib/phrase-speech.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { Sheet } from '../components/Sheet.jsx'
 import { SpeakButton } from '../components/SpeakButton.jsx'
+import { LongSentenceTranslation } from '../components/LongSentenceTranslation.jsx'
 import { Card, Button, Chip, ProgressBar } from '../components/ui.jsx'
 import { Book, Cards, Lightbulb, Link, Refresh, Search } from '../components/Icons.jsx'
 import { cx } from '../components/ui.jsx'
@@ -52,6 +54,7 @@ export function PhrasesScreen() {
     ? meta.label
     : `${getLevel(levelFilter).label} ${meta.label}`
   const visibleItems = items.slice(0, visibleCount)
+  const detailTranslation = longSentenceTranslationFor(detail)
 
   useEffect(() => {
     setVisibleCount(INITIAL_VISIBLE_ITEMS)
@@ -215,10 +218,14 @@ export function PhrasesScreen() {
                 <SpeakButton text={detail.example.en} size="sm" />
                 <div>
                   <p className="font-bold text-ink">{detail.example.en}</p>
-                  <p className="mt-0.5 text-sm font-bold text-ink/55">{detail.example.ja}</p>
+                  <p className="mt-0.5 text-sm font-bold text-ink/55">
+                    {detailTranslation && <span className="mr-1 text-[11px] text-ink/35">自然な和訳</span>}
+                    {detail.example.ja}
+                  </p>
                 </div>
               </div>
             </div>
+            <LongSentenceTranslation guide={detailTranslation} />
             {detail.origin && (
               <div className="rounded-2xl bg-violet-50 p-3 ring-1 ring-violet-100">
                 <div className="mb-1 flex items-center gap-1.5 text-violet-600">
