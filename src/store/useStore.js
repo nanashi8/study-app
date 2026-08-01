@@ -20,6 +20,11 @@ import {
   DEFAULT_BATTLE_STUDENT_ID,
   normalizeBattleStudentId,
 } from '../lib/battleCast.js'
+import {
+  normalizeBattleTraitInvestments,
+  raiseBattleTrait,
+  resetBattleStudentTraits,
+} from '../lib/battleTraits.js'
 
 // ── 学習ロジックの定数 ──────────────────────────────────────────────
 // Leitner 式の間隔反復。box が上がるほど次に出る間隔（日数）が伸びる。
@@ -81,6 +86,8 @@ const DEFAULT_SETTINGS = {
   autoSpeak: true,
   dailyGoal: 20,
   revealAnswers: false, // 覚える/復習/マイ単語で、タップせず最初から意味・語源を表示する
+  bgmEnabled: true,
+  bgmVolume: 0.35,
 }
 
 const initialLearning = () => ({
@@ -109,7 +116,8 @@ const initialLearning = () => ({
   battleStars: 0, // バトル正解やXP変換で貯まる、演出スキン解放専用の放課後スター
   battleXpSpent: 0, // 放課後スターへ一度だけ変換済みの累計XP
   battleThemeId: BATTLE_THEMES[0].id,
-  battleStudentId: DEFAULT_BATTLE_STUDENT_ID, // 放課後バトルで操作する主役生徒
+  battleStudentId: DEFAULT_BATTLE_STUDENT_ID, // 放課後バトルへ同行するクラスメイト
+  battleTraitInvestments: {}, // 生徒id -> 五つの星彩パラメータへ配分したポイント
   portalOrder: [...DEFAULT_CONTENT_ORDER], // ポータルのタイル並び順（コンテンツid配列）
   portalHidden: [], // ポータルで非表示にしたコンテンツid
   stats: freshStats(),
@@ -173,6 +181,29 @@ function awardWriting(stats, xp = 20, timestamp = Date.now()) {
   next.correct += 1
   next.xp += xp
   return next
+}
+
+export function migratePersistedState(persistedState) {
+  const state = { ...(persistedState ?? {}) }
+  // v1 に保存されていた廃止済みコンテンツの状態を、初回起動時に取り除く。
+  delete state.vnCleared
+  state.portalOrder = normalizeOrder(state.portalOrder)
+  state.portalHidden = normalizeHidden(state.portalHidden)
+  state.battleStars = normalizeBattleStars(state.battleStars)
+  state.battleXpSpent = normalizeBattleXpSpent(
+    state.battleXpSpent,
+    state.stats?.xp,
+  )
+  state.battleThemeId = battleThemeById(
+    state.battleThemeId,
+    state.battleStars,
+  ).id
+  state.battleStudentId = normalizeBattleStudentId(state.battleStudentId)
+  state.battleTraitInvestments = normalizeBattleTraitInvestments(
+    state.battleTraitInvestments,
+    state.battleStars,
+  )
+  return state
 }
 
 export const useStore = create(
@@ -656,6 +687,23 @@ export const useStore = create(
         }),
       setBattleStudentId: (studentId) =>
         set({ battleStudentId: normalizeBattleStudentId(studentId) }),
+      raiseBattleTrait: (studentId, traitId) =>
+        set((st) => ({
+          battleTraitInvestments: raiseBattleTrait({
+            battleStars: st.battleStars,
+            investments: st.battleTraitInvestments,
+            studentId,
+            traitId,
+          }),
+        })),
+      resetBattleStudentTraits: (studentId) =>
+        set((st) => ({
+          battleTraitInvestments: resetBattleStudentTraits({
+            battleStars: st.battleStars,
+            investments: st.battleTraitInvestments,
+            studentId,
+          }),
+        })),
       // バトルの正答率(0-1)で生徒のポジションを上下させる。
       // fromPos / maxPos を渡すと、冒険者LVで解放済みの範囲内だけを移動する。
       recordBattle: (accuracy, fromPos = null, maxPos = null) =>
@@ -754,6 +802,10 @@ export const useStore = create(
           battleXpSpent: normalizeBattleXpSpent(payload.battleXpSpent, stats.xp),
           battleThemeId: battleThemeById(payload.battleThemeId, battleStars).id,
           battleStudentId: normalizeBattleStudentId(payload.battleStudentId),
+          battleTraitInvestments: normalizeBattleTraitInvestments(
+            payload.battleTraitInvestments,
+            battleStars,
+          ),
           portalOrder: normalizeOrder(payload.portalOrder),
           portalHidden: normalizeHidden(payload.portalHidden),
           stats,
@@ -764,25 +816,8 @@ export const useStore = create(
     }),
     {
       name: 'eigo-quest',
-      version: 2,
-      migrate: (persistedState) => {
-        const state = { ...(persistedState ?? {}) }
-        // v1 に保存されていた廃止済みコンテンツの状態を、初回起動時に取り除く。
-        delete state.vnCleared
-        state.portalOrder = normalizeOrder(state.portalOrder)
-        state.portalHidden = normalizeHidden(state.portalHidden)
-        state.battleStars = normalizeBattleStars(state.battleStars)
-        state.battleXpSpent = normalizeBattleXpSpent(
-          state.battleXpSpent,
-          state.stats?.xp,
-        )
-        state.battleThemeId = battleThemeById(
-          state.battleThemeId,
-          state.battleStars,
-        ).id
-        state.battleStudentId = normalizeBattleStudentId(state.battleStudentId)
-        return state
-      },
+      version: 3,
+      migrate: migratePersistedState,
       // ナビゲーション系は保存しない。
       partialize: (st) => ({
         srs: st.srs,
@@ -811,6 +846,7 @@ export const useStore = create(
         battleXpSpent: st.battleXpSpent,
         battleThemeId: st.battleThemeId,
         battleStudentId: st.battleStudentId,
+        battleTraitInvestments: st.battleTraitInvestments,
         portalOrder: st.portalOrder,
         portalHidden: st.portalHidden,
         stats: st.stats,

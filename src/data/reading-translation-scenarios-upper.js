@@ -1,11 +1,15 @@
 // 2級・準1級長文の講師監修・語順訳シナリオ。「／」の各意味単位を英語の出現順に並べる。
 
-const b = (en, orderedJa, tip = '') => {
+const b = (en, orderedJa, tip = '', orderedEn = '') => {
   const jaSegments = Object.freeze(orderedJa.split('／').map((segment) => segment.trim()))
+  const enSegments = orderedEn
+    ? Object.freeze(orderedEn.split('／').map((segment) => segment.trim()))
+    : null
   return Object.freeze({
     en,
     ja: jaSegments.join(' → '),
     jaSegments,
+    enSegments,
     speechJa: jaSegments.join('。次に、'),
     tip,
   })
@@ -22,14 +26,24 @@ export const UPPER_READING_TRANSLATION_SCENARIOS = Object.freeze({
     ],
     [
       b('In recent years', '近年では'),
-      b('however, some of the most useful technologies have been designed', 'しかし／最も役立つ技術のいくつかは／設計されてきました'),
+      b(
+        'however, some of the most useful technologies have been designed',
+        'しかし／いくつかは／最も役立つ技術の／設計されてきました',
+        '',
+        'however,／some／of the most useful technologies／have been designed',
+      ),
       b('to be almost invisible', 'ほとんど目立たないように'),
     ],
     [
       b('For example', '例えば'),
       b('several train stations have introduced sensors', 'いくつかの駅は／導入しています／センサーを'),
       b('that measure', 'そしてそのセンサーが／測ります'),
-      b('how crowded each platform is', 'どのくらい混雑しているかを／それぞれのホームが'),
+      b(
+        'how crowded each platform is',
+        'どのくらい混雑している状態か／それぞれのホームが／〜であるのかを',
+        '',
+        'how crowded／each platform／is',
+      ),
     ],
     [
       b('The information is sent to signs and phone apps', 'その情報は／送られます／表示板とスマートフォンのアプリへ'),
@@ -56,7 +70,7 @@ export const UPPER_READING_TRANSLATION_SCENARIOS = Object.freeze({
       b('Visitors may not notice the system', '来館者は／気づかないかもしれません／そのシステムに'),
       b('at all', 'まったく'),
       b('yet it affects', 'それでも／そのシステムは／影響を与えます'),
-      b('how long they can read or study', 'どのくらい長く／来館者が／読書や勉強を続けられるかに'),
+      b('how long they can read or study', 'どのくらい長く／来館者が／読書や勉強を続けられるかに', '', 'how long／they／can read or study'),
       b('without becoming tired', '疲れることなく'),
     ],
     [
@@ -73,7 +87,12 @@ export const UPPER_READING_TRANSLATION_SCENARIOS = Object.freeze({
     [
       b('Privacy is another concern', 'プライバシーは／もう一つの懸念です'),
       b('because sensors can collect data', 'なぜなら／センサーは／集められるからです／データを'),
-      b('about public behavior', '内容は／公共の場での人々の行動について'),
+      b(
+        'about public behavior',
+        '〜について（対象は次へ）／公共の場での人々の行動',
+        '',
+        'about／public behavior',
+      ),
     ],
     [
       b('For that reason', 'その理由から'),
@@ -90,8 +109,9 @@ export const UPPER_READING_TRANSLATION_SCENARIOS = Object.freeze({
       ),
       b(
         'to overlook',
-        '見落とすことが／つまり見落としやすい問題です',
+        '〜することが／見落とす（ことが容易です）',
         'easy to overlook を一つにすると「見落としやすい」。to overlook は easy の具体的な内容です。',
+        'to／overlook',
       ),
     ],
     [
@@ -114,7 +134,7 @@ export const UPPER_READING_TRANSLATION_SCENARIOS = Object.freeze({
       b('a simple repair to an old bus stop or a clearer sign may help residents more than an expensive digital service', '簡単な修理は／古いバス停への／あるいは、より分かりやすい標識は／役立つかもしれません／住民に／高価なデジタルサービスより'),
     ],
     [
-      b('Several cities have therefore begun small trial programs', 'いくつかの都市は／そのため始めています／小規模な試験運用を'),
+      b('Several cities have therefore begun small trial programs', 'いくつかの都市は／そのため始めています／小規模な試験運用を', '', 'Several cities／have therefore begun／small trial programs'),
       b('before introducing a system everywhere', '〜する前に／導入する／システムを／あらゆる場所へ'),
     ],
     [
@@ -122,12 +142,17 @@ export const UPPER_READING_TRANSLATION_SCENARIOS = Object.freeze({
       b('and complaints in different neighborhoods, then publish the results', 'そして苦情を／異なる地域の／そのあと公表します／結果を'),
     ],
     [
-      b('This evidence makes it easier', 'この証拠は／より容易にします／次のことを'),
+      b(
+        'This evidence makes it easier',
+        'この証拠は／〜にします／次のことを／より容易に',
+        '',
+        'This evidence／makes／it／easier',
+      ),
       b('to improve a design or decide', '改善することを／設計を／または判断することを'),
       b('that a simpler solution would work better', 'もっと単純な解決策が／よりうまく機能するだろうと'),
     ],
     [
-      b('Technology should be judged not by', '技術は／評価されるべきです／次の基準によってではなく'),
+      b('Technology should be judged not by', '技術は／評価されるべきです／次の基準によってではなく', '', 'Technology／should be judged／not by'),
       b('how modern it appears', 'どのくらい現代的に／それが／見えるか'),
       b('but by whether it solves a real problem', 'そうではなく／〜かどうかによって／それが／解決する／実際の問題を'),
       b('for the people', 'その人々にとっての'),
@@ -148,7 +173,7 @@ export const UPPER_READING_TRANSLATION_SCENARIOS = Object.freeze({
       b('within a day', '1日のうちに'),
     ],
     [
-      b('The speaker may sound confident and may even mention a scientific study', '話し手は／自信があるように聞こえるかもしれません／そして触れることさえあるかもしれません／科学的研究に'),
+      b('The speaker may sound confident and may even mention a scientific study', '話し手は／自信があるように聞こえるかもしれません／そして触れることさえあるかもしれません／科学的研究に', '', 'The speaker／may sound confident／and may even mention／a scientific study'),
     ],
     [
       b('Yet these details alone do not show', 'しかし／こうした詳細だけでは／示せません'),
@@ -166,7 +191,12 @@ export const UPPER_READING_TRANSLATION_SCENARIOS = Object.freeze({
     ],
     [
       b('However', 'しかし'),
-      b('the name of an expert or institution should not end the investigation', '専門家や機関の名前は／終わらせるべきではありません／調査を'),
+      b(
+        'the name of an expert or institution should not end the investigation',
+        'その名前は／専門家や機関についての／終わらせるべきではありません／調査を',
+        '',
+        'the name／of an expert or institution／should not end／the investigation',
+      ),
     ],
     [
       b('Readers still need', '読み手は／それでも必要としています'),
@@ -179,10 +209,20 @@ export const UPPER_READING_TRANSLATION_SCENARIOS = Object.freeze({
     ],
     [
       b('A result from twelve volunteers may be interesting', 'ある結果は／12人のボランティアからの／興味深いかもしれません'),
-      b('but it may not apply to people of different ages or health conditions', 'しかし／それは／当てはまらないかもしれません／年齢や健康状態が異なる人々には'),
+      b(
+        'but it may not apply to people of different ages or health conditions',
+        'しかし／それは／当てはまらないかもしれません／人々には／年齢や健康状態が異なる',
+        '',
+        'but／it／may not apply／to people／of different ages or health conditions',
+      ),
     ],
     [
-      b('A useful study also compares groups so', '役立つ研究は／さらに比較します／グループを／その目的は'),
+      b(
+        'A useful study also compares groups so',
+        '役立つ研究は／さらに比較します／グループを／そうするのは',
+        '',
+        'A useful study／also compares／groups／so',
+      ),
       b('that researchers can separate the treatment', '研究者が／分けられるようにすることです／治療の効果を'),
       b('from other possible factors', 'ほかの考えられる要因から'),
     ],
@@ -203,11 +243,16 @@ export const UPPER_READING_TRANSLATION_SCENARIOS = Object.freeze({
     ],
     [
       b('Tea might reduce stress', 'お茶が／減らすのかもしれません／ストレスを'),
-      b('but perhaps relaxed people simply choose', 'しかし／もしかすると／リラックスした人々は／ただ選ぶのかもしれません'),
+      b('but perhaps relaxed people simply choose', 'しかし／もしかすると／リラックスした人々は／ただ選ぶのかもしれません', '', 'but／perhaps／relaxed people／simply choose'),
       b('to drink more tea', '飲むことを／もっと多くのお茶を'),
     ],
     [
-      b('Income, working hours, and social habits might influence both tea drinking and stress as well', '収入・労働時間・社会的習慣も／影響している可能性があります／お茶を飲むこととストレスの両方に'),
+      b(
+        'Income, working hours, and social habits might influence both tea drinking and stress as well',
+        '収入が／労働時間が／そして社会的習慣も／影響している可能性があります／両方に／お茶を飲むことと／そしてストレスに／同じく',
+        '',
+        'Income,／working hours,／and social habits／might influence／both／tea drinking／and stress／as well',
+      ),
     ],
     [
       b('Readers should also distinguish an early report', '読み手は／さらに区別するべきです／初期の報告を'),
@@ -230,7 +275,12 @@ export const UPPER_READING_TRANSLATION_SCENARIOS = Object.freeze({
       b('whether the company sells the product being tested', '〜かどうかを／その企業が／販売している／試験されている製品を'),
     ],
     [
-      b('Independent review and a clear statement of possible conflicts make the evidence easier', '独立した審査と、起こり得る利害対立の明確な説明は／します／証拠を／より容易に'),
+      b(
+        'Independent review and a clear statement of possible conflicts make the evidence easier',
+        '独立した審査と／明確な説明は／起こり得る利害対立についての／します／証拠を／より容易に',
+        '',
+        'Independent review／and a clear statement／of possible conflicts／make／the evidence／easier',
+      ),
       b('to evaluate', '評価することが'),
     ],
     [
@@ -248,17 +298,17 @@ export const UPPER_READING_TRANSLATION_SCENARIOS = Object.freeze({
     ],
     [
       b('Responsible readers are not people', '責任ある読み手は／そのような人々ではありません'),
-      b('who doubt everything', 'つまり／あらゆることを疑う人々ではなく'),
+      b('who doubt everything', 'そしてその人々は／疑います／あらゆることを'),
       b('they are people', '責任ある読み手は／そのような人々です'),
-      b('who match their confidence to the quality of the evidence', 'つまり／合わせる人々です／自分の確信の強さを／証拠の質に'),
+      b('who match their confidence to the quality of the evidence', 'そしてその人々は／合わせます／自分の確信の強さを／証拠の質に'),
     ],
   ]),
 
   p_pre1_resilient_cities: passage([
     [
-      b('Cities have always had to respond to weather', '都市は／常に対応しなければなりませんでした／天候に'),
+      b('Cities have always had to respond to weather', '都市は／常に対応しなければなりませんでした／天候に', '', 'Cities／have always had to respond／to weather'),
       b('but the challenge has become more complicated', 'しかし／その課題は／さらに複雑になっています'),
-      b('as extreme heat and sudden storms occur more frequently', '〜するにつれて／猛暑や突然の嵐が／起こる／より頻繁に'),
+      b('as extreme heat and sudden storms occur more frequently', '〜するにつれて／猛暑や突然の嵐が／起こる／より頻繁に', '', 'as／extreme heat and sudden storms／occur／more frequently'),
     ],
     [
       b('In the past', 'かつては'),
@@ -270,30 +320,36 @@ export const UPPER_READING_TRANSLATION_SCENARIOS = Object.freeze({
       b('Today', '今日では'),
       b('many planners argue', '多くの都市計画者は／主張しています'),
       b('that cities need a broader framework', '都市は／必要としていると／より広い枠組みを'),
-      b('that connects transportation, housing, energy, and public health', 'そしてその枠組みは／結び付けます／交通・住宅・エネルギー・公衆衛生を'),
+      b(
+        'that connects transportation, housing, energy, and public health',
+        'そしてその枠組みは／結び付けます／交通を／住宅を／エネルギーを／そして公衆衛生を',
+        '',
+        'that／connects／transportation,／housing,／energy,／and public health',
+      ),
     ],
     [
       b('One reason is', '理由の一つは／〜です（内容は次へ）'),
       b('that a measure designed', 'ある対策が／設計された'),
       b('for a single purpose', '一つの目的のために'),
-      b('can have unexpected consequences', 'もたらす可能性があることです／予期しない結果を'),
+      b('can have unexpected consequences', 'もたらす可能性があることです／予期しない結果を', '', 'can have／unexpected consequences'),
       b('in another area', '別の分野で'),
     ],
     [
       b('For instance', '例えば'),
-      b('building higher concrete walls along a river may reduce flooding', '建てることは／より高いコンクリート壁を／川沿いに／減らすかもしれません／洪水を'),
+      b('building higher concrete walls along a river may reduce flooding', '建てることは／より高いコンクリート壁を／川沿いに／減らすかもしれません／洪水を', '', 'building／higher concrete walls／along a river／may reduce／flooding'),
       b('in one district while pushing water toward a poorer neighborhood downstream', 'ある地区では／同時に水を押しやりながら／より貧しい地域へ／その地域は下流にあります'),
     ],
     [
       b('Similarly', '同様に'),
       b('installing powerful', '設置することは／強力な（内容は次へ）'),
-      b('air conditioners in public buildings may protect residents', 'エアコンを／公共施設に／守るかもしれません／住民を'),
+      b('air conditioners in public buildings may protect residents', 'エアコンを／公共施設に／守るかもしれません／住民を', '', 'air conditioners／in public buildings／may protect／residents'),
       b('during heat waves', '熱波の間に'),
       b('yet it can increase energy demand', 'しかし／それは／増やす可能性があります／エネルギー需要を'),
       b(
         'when the power supply is already',
         '〜するときに／電力供給が／すでに（状態は次へ）',
         'be under pressure の途中です。already まで読んだら、状態を表す under pressure を次で受けます。',
+        'when／the power supply／is already',
       ),
       b('under pressure', '大きな負担を受けている'),
     ],
@@ -323,7 +379,12 @@ export const UPPER_READING_TRANSLATION_SCENARIOS = Object.freeze({
     ],
     [
       b('This illustrates a problem', 'これは／示しています／ある問題を'),
-      b('that researchers call maladaptation: an attempt', 'そして研究者は／呼びます／その問題を／不適応と／つまり、ある試みが'),
+      b(
+        'that researchers call maladaptation: an attempt',
+        'そしてその問題を／研究者は／呼びます／不適応と／つまり、ある試みが',
+        '',
+        'that／researchers／call／maladaptation:／an attempt',
+      ),
       b('to reduce one risk', '減らすための／一つの危険を'),
       b('can create a new risk or deepen an old inequality', '生み出す可能性がある／新しい危険を／または深める可能性がある／以前からの不平等を'),
     ],
@@ -334,7 +395,7 @@ export const UPPER_READING_TRANSLATION_SCENARIOS = Object.freeze({
     ],
     [
       b('Planners must therefore examine not only', '計画者は／したがって検討しなければなりません／次のことだけでなく'),
-      b('whether an intervention works physically but also', '〜かどうかを／対策が／物理的に機能する／だけでなく、さらに'),
+      b('whether an intervention works physically but also', '〜かどうかを／対策が／物理的に機能する／だけでなく、さらに', '', 'whether／an intervention／works physically／but also'),
       b('how its costs and benefits are distributed', 'どのように／その費用と恩恵が／分配されるのかも'),
     ],
     [
@@ -360,13 +421,18 @@ export const UPPER_READING_TRANSLATION_SCENARIOS = Object.freeze({
       b('that their daily experience is treated as valuable information', '自分たちの日常の経験が／扱われていると／価値ある情報として'),
     ],
     [
-      b('Local knowledge also helps officials identify failures', '地域の知識は／さらに助けます／行政担当者が／見つけることを／不具合を'),
-      b('that computer models miss', 'そしてその不具合を／コンピューターモデルは／見落とします'),
+      b('Local knowledge also helps officials identify failures', '地域の知識は／さらに助けます／行政担当者が／見つけることを／不具合を', '', 'Local knowledge／also helps／officials／identify／failures'),
+      b('that computer models miss', 'そしてその不具合を／コンピューターモデルは／見落とします', '', 'that／computer models／miss'),
     ],
     [
       b('A drainage map may look complete', '排水地図は／完全に見えるかもしれません'),
       b('yet residents may know', 'それでも／住民は／知っているかもしれません'),
-      b('that blocked street drains regularly send water', '道路の排水口の詰まりが／繰り返し流し込むということを／水を'),
+      b(
+        'that blocked street drains regularly send water',
+        '〜ということを／詰まった道路の排水口が／繰り返し水を流し込みます',
+        '',
+        'that／blocked street drains／regularly send water',
+      ),
       b('into a particular apartment building', '特定の集合住宅へ'),
     ],
     [
@@ -382,19 +448,29 @@ export const UPPER_READING_TRANSLATION_SCENARIOS = Object.freeze({
       b('because they are visible and can be announced as decisive action', 'なぜなら／それらは／目に見えやすく／そして発表できるからです／決定的な行動として'),
     ],
     [
-      b('Yet smaller investments, such as training neighborhood volunteers or improving warning messages in several languages, may save more lives', 'しかし／より小規模な投資は／例えば訓練すること／地域のボランティアを／あるいは改善すること／警告文を／複数の言語での／救うかもしれません／より多くの命を'),
+      b(
+        'Yet smaller investments, such as training neighborhood volunteers or improving warning messages in several languages, may save more lives',
+        'しかし／より小規模な投資は／例えば訓練すること／地域のボランティアを／あるいは改善すること／警告文を／複数の言語での／救うかもしれません／より多くの命を',
+        '',
+        'Yet／smaller investments,／such as training／neighborhood volunteers／or improving／warning messages／in several languages,／may save／more lives',
+      ),
       b('during an emergency', '緊急時に'),
     ],
     [
       b('Because these measures are less dramatic', 'なぜなら／こうした対策は／目立ちにくいからです'),
       b('they are often the first', 'こうした対策は／しばしば最初のものになります'),
       b('to be reduced', '削減される'),
-      b('when budgets become tight', '〜するときに／予算が／厳しくなる'),
+      b('when budgets become tight', '〜するときに／予算が／厳しくなる', '', 'when／budgets／become tight'),
     ],
     [
-      b('A city that takes resilience seriously must therefore evaluate projects over a long period rather than only', 'ある都市は／そしてその都市は重視します／回復力を／したがって評価しなければなりません／事業を／長期間にわたって／〜だけでなく'),
+      b(
+        'A city that takes resilience seriously must therefore evaluate projects over a long period rather than only',
+        'ある都市は／そしてその都市は重視します／回復力を／したがって評価しなければなりません／事業を／長期間にわたって／〜だけでなく',
+        '',
+        'A city／that takes／resilience seriously／must therefore evaluate／projects／over a long period／rather than only',
+      ),
       b('during the year in', 'その年の間だけ／その中で'),
-      b('which they are introduced', '事業が／導入される'),
+      b('which they are introduced', 'その年を受けて／事業が／導入される', '', 'which／they／are introduced'),
     ],
     [
       b('It must also recognize', '都市は／さらに認識しなければなりません'),
@@ -407,10 +483,10 @@ export const UPPER_READING_TRANSLATION_SCENARIOS = Object.freeze({
     ],
     [
       b('A project', 'ある事業は'),
-      b('that performs well', 'そしてその事業が／うまく機能する'),
+      b('that performs well', 'そしてその事業が／うまく機能する', '', 'that／performs well'),
       b('under today\'s conditions', '現在の条件のもとで'),
-      b('may be inadequate', '〜かもしれません／不十分である'),
-      b('if migration, land use', 'もし／人口移動や土地利用が'),
+      b('may be inadequate', '〜かもしれません／不十分である', '', 'may be／inadequate'),
+      b('if migration, land use', 'もし／人口移動や土地利用が', '', 'if／migration, land use'),
       b('or rainfall patterns change', 'あるいは降雨の傾向が／変化すれば'),
     ],
     [
@@ -418,16 +494,26 @@ export const UPPER_READING_TRANSLATION_SCENARIOS = Object.freeze({
       b('to revise policies without treating revision as failure', '改めることを／政策を／見直しを失敗とみなさずに'),
     ],
     [
-      b('As climate conditions remain uncertain', '〜である中／気候条件が／不確かなまま'),
-      b('the cities that adapt most successfully will probably be those that combine technical knowledge', '都市は／最もうまく適応する／おそらくそのような都市でしょう／組み合わせる／専門知識を'),
+      b('As climate conditions remain uncertain', '〜である中／気候条件が／続く／不確かなまま', '', 'As／climate conditions／remain／uncertain'),
+      b('the cities that adapt most successfully will probably be those that combine technical knowledge', '都市は／最もうまく適応する／おそらくそのような都市でしょう／組み合わせる／専門知識を', '', 'the cities／that adapt most successfully／will probably be those／that combine／technical knowledge'),
       b('with public participation', '市民参加と'),
     ],
   ]),
 
   p_pre1_cashless_inclusion: passage([
     [
-      b('Cashless payment has recently moved from a convenient option to the expected form of payment', 'キャッシュレス決済は／近年移ってきました／便利な選択肢から／当然とされる支払い方法へ'),
-      b('in many shops, transport systems, and public facilities', '多くの店や交通機関や公共施設で'),
+      b(
+        'Cashless payment has recently moved from a convenient option to the expected form of payment',
+        'キャッシュレス決済は／近年移ってきました／便利な選択肢から／当然とされる支払い方法へ',
+        '',
+        'Cashless payment／has recently moved／from a convenient option／to the expected form of payment',
+      ),
+      b(
+        'in many shops, transport systems, and public facilities',
+        '多くの店で／交通機関で／そして公共施設で',
+        '',
+        'in many shops,／transport systems,／and public facilities',
+      ),
     ],
     [
       b('Supporters cite faster transactions, lower handling costs', '支持者は／挙げます／より速い取引・より低い現金処理費用を'),
@@ -458,24 +544,39 @@ export const UPPER_READING_TRANSLATION_SCENARIOS = Object.freeze({
     [
       b('For these users', 'こうした利用者にとって'),
       b('refusing cash', '受け付けないことは／現金を'),
-      b('does more than remove a familiar habit', '〜以上のことをします／なくすことよりも／慣れた習慣を'),
-      b('it can limit access to food, transport, and public life', 'それは／制限する可能性があります／食料・交通・公共生活へのアクセスを'),
+      b('does more than remove a familiar habit', '〜以上の影響があります／なくすこと／慣れた習慣を', '', 'does more than／remove／a familiar habit'),
+      b(
+        'it can limit access to food, transport, and public life',
+        'それは／制限する可能性があります／アクセスを／食料への／交通への／そして公共生活への',
+        '',
+        'it／can limit／access／to food,／transport,／and public life',
+      ),
     ],
     [
       b('Privacy is a different concern', 'プライバシーは／別の懸念です'),
     ],
     [
-      b('Cash usually leaves no detailed record linking a person to a particular purchase', '現金は／通常残しません／詳しい記録を／そしてその記録は結び付ける／人を／特定の購入に'),
+      b('Cash usually leaves no detailed record linking a person to a particular purchase', '現金は／通常残しません／詳しい記録を／そしてその記録は結び付ける／人を／特定の購入に', '', 'Cash／usually leaves／no detailed record／linking／a person／to a particular purchase'),
       b('whereas digital payment creates data', '一方／デジタル決済は／生み出します／データを'),
-      b('that may be stored, combined, or sold', 'そしてそのデータは／保存・結合・販売されるかもしれません'),
+      b(
+        'that may be stored, combined, or sold',
+        'そしてそのデータは／保存されるかもしれず／結合または販売されることもあります',
+        '',
+        'that／may be stored,／combined, or sold',
+      ),
     ],
     [
       b('Such records can detect fraud and improve services', 'そのような記録は／発見できます／不正を／そして改善できます／サービスを'),
-      b('yet they can also reveal medical needs, political interests, or daily movements', 'しかし／記録は／さらに明らかにできます／医療上の必要・政治的関心・日々の移動を'),
+      b(
+        'yet they can also reveal medical needs, political interests, or daily movements',
+        'しかし／記録は／さらに明らかにできます／医療上の必要を／政治的関心を／あるいは日々の移動を',
+        '',
+        'yet／they／can also reveal／medical needs,／political interests,／or daily movements',
+      ),
     ],
     [
       b('People with little economic or political power may be especially vulnerable', '人々は／経済的または政治的な力が乏しい／特に弱い立場に置かれるかもしれません'),
-      b('when they cannot choose a private alternative', '〜するときに／その人々が／選べない／プライバシーを守れる代替手段を'),
+      b('when they cannot choose a private alternative', '〜するときに／その人々が／選べない／プライバシーを守れる代替手段を', '', 'when／they／cannot choose／a private alternative'),
     ],
     [
       b('A common response is', '一般的な対応は／〜です（内容は次へ）'),
@@ -492,7 +593,7 @@ export const UPPER_READING_TRANSLATION_SCENARIOS = Object.freeze({
     [
       b('Nor should inclusion mean forcing everyone', 'さらに／包摂は／意味するべきではありません／押し込むことを／全員を'),
       b('into a system simply', '一つの仕組みの中へ、ただ'),
-      b('because institutions find it efficient', '制度を運営する側が／それを／効率的だと考えるからという理由で'),
+      b('because institutions find it efficient', '〜だからという理由で／制度を運営する側が／それを効率的だと考える', '', 'because／institutions／find it efficient'),
     ],
     [
       b('Cash can also provide a simple budgeting tool', '現金は／さらに提供できます／簡単な家計管理の手段を'),
@@ -502,7 +603,7 @@ export const UPPER_READING_TRANSLATION_SCENARIOS = Object.freeze({
     ],
     [
       b('A fixed amount', '決まった金額は'),
-      b('in an envelope stays visible', '封筒の中で／目に見えるままです'),
+      b('in an envelope stays visible', '封筒の中で／目に見えるままです', '', 'in an envelope／stays visible'),
       b('while digital balances may be divided', '一方／デジタルの残高は／分けられているかもしれません'),
       b('across several apps and delayed transactions', '複数のアプリや、処理が遅れた取引にまたがって'),
     ],
@@ -513,7 +614,7 @@ export const UPPER_READING_TRANSLATION_SCENARIOS = Object.freeze({
       b('on a person’s circumstances rather than technical knowledge alone', 'その人の事情によって／技術知識だけでなく'),
     ],
     [
-      b('Some governments therefore require essential businesses', '一部の政府は／そのため求めています／生活に不可欠な事業者に'),
+      b('Some governments therefore require essential businesses', '一部の政府は／そのため求めています／生活に不可欠な事業者に', '', 'Some governments／therefore require／essential businesses'),
       b('to accept cash while encouraging digital innovation elsewhere', '受け入れるように／現金を／同時に促しながら／デジタル革新を／ほかの場では'),
     ],
     [
@@ -546,7 +647,7 @@ export const UPPER_READING_TRANSLATION_SCENARIOS = Object.freeze({
     [
       b('Cash may sometimes appear inefficient', '現金は／ときに非効率に見えるかもしれません'),
       b('as an option, just', '選択肢として／ちょうど'),
-      b('as backup power can appear wasteful', '〜と同じように／予備電源が／無駄に見えることがある'),
+      b('as backup power can appear wasteful', '〜と同じように／予備電源が／無駄に見えることがある', '', 'as／backup power／can appear wasteful'),
       b('on an ordinary day', '平常の日には'),
     ],
     [

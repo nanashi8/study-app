@@ -31,14 +31,25 @@ import {
   battleRivalById,
   battleRivalForEncounter,
   battleStudentById,
+  battleStudentMotion,
   battleStudentPortrait,
   battleStudentState,
 } from '../lib/battleCast.js'
+import {
+  battleStudentTraitProfile,
+  battleTraitById,
+} from '../lib/battleTraits.js'
+import { battleManaPresentation } from '../lib/battleMana.js'
 
 // このクイズ画面の同一性キー（出題ソース・タイトル・問題数）。
 // 退避したセッションが「今まさに戻ってきたクイズ」のものかを照合するのに使う。
 const sessionKey = (p) =>
   `vocab|${JSON.stringify(p.source ?? { type: 'due' })}|${p.title ?? ''}|${p.size ?? ''}`
+
+const publicAssetUrl = (assetPath) => {
+  if (!assetPath || /^(?:data:|blob:|https?:)/.test(assetPath)) return assetPath
+  return `${import.meta.env.BASE_URL}${String(assetPath).replace(/^\/+/, '')}`
+}
 
 const restoredBattleLog = (results = {}) => {
   if (Array.isArray(results.battleLog)) return [...results.battleLog]
@@ -61,6 +72,7 @@ export function VocabQuizScreen() {
   const battleStars = useStore((s) => s.battleStars)
   const battleThemeId = useStore((s) => s.battleThemeId)
   const battleStudentId = useStore((s) => s.battleStudentId)
+  const battleTraitInvestments = useStore((s) => s.battleTraitInvestments)
 
   // 語源を見て戻ってきたときだけ復元。退避セッションのキーが一致したら採用。
   const [restore] = useState(() => {
@@ -94,6 +106,9 @@ export function VocabQuizScreen() {
   const [itemUsedAt, setItemUsedAt] = useState(() =>
     Number.isSafeInteger(restore?.itemUsedAt) ? restore.itemUsedAt : null,
   )
+  // 学習評価や再現可能な戦闘計算には混ぜない、短時間の表示専用イベント。
+  // 即時回復アイテムのように lastEvent を置き換えない操作だけをここで補う。
+  const [battleVisualEvent, setBattleVisualEvent] = useState(null)
   const results = useRef(
     restore
       ? {
@@ -128,6 +143,26 @@ export function VocabQuizScreen() {
     : null
   const battleStudent = isBattle
     ? battleStudentById(params.source?.studentId ?? battleStudentId)
+    : null
+  const studentTraitProfile = isBattle
+    ? battleStudentTraitProfile(
+        battleStudent.id,
+        battleTraitInvestments,
+        battleStars,
+      )
+    : null
+  const battleTrait = isBattle
+    ? battleTraitById(
+        params.source?.traitId
+        ?? studentTraitProfile.dominant.id,
+      )
+    : null
+  const battleSecondaryTrait = isBattle
+    ? battleTraitById(
+        studentTraitProfile.dominant.id === battleTrait.id
+          ? studentTraitProfile.secondary.id
+          : studentTraitProfile.dominant.id,
+      )
     : null
   const battleRival = isBattle
     ? battleRivalById(
@@ -196,6 +231,7 @@ export function VocabQuizScreen() {
 
   const choose = (optId) => {
     if (answered) return
+    if (isBattle) setBattleVisualEvent(null)
     setSelected(optId)
     let battleAnswer
     if (optId === UNKNOWN_CHOICE_ID) {
@@ -225,6 +261,7 @@ export function VocabQuizScreen() {
     else {
       setI(i + 1)
       setSelected(null)
+      setBattleVisualEvent(null)
     }
   }
 
@@ -240,6 +277,13 @@ export function VocabQuizScreen() {
       )
     ) return
     setItemUsedAt(battleState.answered)
+    if (battleItemAbility.kind === 'heal') {
+      setBattleVisualEvent({
+        kind: 'item-heal',
+        emoji: battleRelic.emoji,
+        title: battleRelic.name,
+      })
+    }
   }
 
   const isCorrectPick = answered && selected === word.id
@@ -332,7 +376,10 @@ export function VocabQuizScreen() {
             battleStars={battleStars}
             battleTheme={battleTheme}
             battleStudent={battleStudent}
+            battleTrait={battleTrait}
+            battleSecondaryTrait={battleSecondaryTrait}
             battleRival={battleRival}
+            visualEvent={battleVisualEvent}
             onExit={back}
           />
         </div>
@@ -553,10 +600,15 @@ function BattleHud({
   battleStars,
   battleTheme,
   battleStudent,
+  battleTrait,
+  battleSecondaryTrait,
   battleRival,
+  visualEvent,
   onExit,
 }) {
-  const eventKind = eventActive ? battleState.lastEvent?.kind : null
+  const eventKind = visualEvent?.kind
+    ?? (eventActive ? battleState.lastEvent?.kind : null)
+  const presentationActive = eventActive || Boolean(visualEvent)
   const cue = battleSceneCue(eventKind)
   const skillFlash = [
     'burst',
@@ -565,51 +617,83 @@ function BattleHud({
     'counter',
     'item-power',
     'item-guard',
+    'item-heal',
   ].includes(eventKind)
   const guardActive = ['shield', 'block', 'item-guard'].includes(eventKind)
+  const healingActive = eventKind === 'item-heal'
   const heroAttacking =
-    eventActive && cue.actor === 'hero' && cue.target === 'enemy'
+    presentationActive && cue.actor === 'hero' && cue.target === 'enemy'
   const enemyAttacking =
-    eventActive && cue.actor === 'enemy' && cue.target === 'hero'
-  const heroDamaged = eventActive && cue.target === 'hero' && !guardActive
-  const enemyDamaged = eventActive && cue.target === 'enemy'
+    presentationActive && cue.actor === 'enemy' && cue.target === 'hero'
+  const heroDamaged =
+    presentationActive && cue.target === 'hero' && !guardActive && !healingActive
+  const enemyDamaged = presentationActive && cue.target === 'enemy'
   const safeTurns = Array.isArray(turns) ? turns : []
   const currentTurn = Math.min(
     totalTurns,
     battleState.answered + (eventActive ? 0 : 1),
   )
-  const eventDamage = battleState.lastEvent?.damage ?? 0
-  const eventHealing = battleState.lastEvent?.healing ?? 0
-  const themeTriggered = eventActive && battleState.lastEvent?.themeAbility
-  const studentState = battleStudentState({ battleState, eventActive })
+  const eventDamage = visualEvent ? 0 : battleState.lastEvent?.damage ?? 0
+  const eventHealing = healingActive
+    ? battleState.itemHealing
+    : battleState.lastEvent?.healing ?? 0
+  const manaPresentation = battleManaPresentation({
+    traitId: battleTrait.id,
+    secondaryTraitId: battleSecondaryTrait.id,
+    eventActive: presentationActive,
+    eventKind,
+    enemyDefeated: battleState.enemyDefeated,
+    heroDefeated: battleState.heroDefeated,
+    healing: eventHealing,
+    themeAbility: visualEvent ? null : battleState.lastEvent?.themeAbility,
+  })
+  const themeTriggered =
+    !visualEvent && eventActive && battleState.lastEvent?.themeAbility
+  const studentState = battleStudentState({
+    battleState,
+    eventActive: presentationActive,
+    eventKind,
+  })
   const studentPortrait = battleStudentPortrait(battleStudent.id, studentState)
+  const studentMotion = presentationActive
+    ? battleStudentMotion(battleStudent.id, studentState)
+    : null
   const sceneIndex = Math.max(
     0,
     battleState.answered - (eventActive ? 1 : 0),
   ) % battleTheme.scenes.length
   const scene = battleTheme.scenes[sceneIndex]
+  const battleStageUrl = publicAssetUrl(battleTheme.stage)
   const actionEmoji = themeTriggered
     ? battleState.themeAbility.emoji
-    : enemyAttacking
-      ? encounter.attackEmoji ?? cue.emoji
-      : cue.emoji
+    : visualEvent?.emoji
+      ? visualEvent.emoji
+      : enemyAttacking
+        ? encounter.attackEmoji ?? cue.emoji
+        : cue.emoji
   const actionTitle = themeTriggered
     ? battleState.lastEvent.title
-    : enemyAttacking
-      ? `${battleRival.name}の「${encounter.move}」！`
-      : cue.title
+    : visualEvent?.title
+      ? `${visualEvent.title}！`
+      : enemyAttacking
+        ? `${battleRival.name}の「${encounter.move}」！`
+        : cue.title
   const signalTitle = themeTriggered
     ? battleState.themeAbility.name
-    : enemyAttacking ? encounter.move : cue.title
-  const damageLabel = !eventActive
+    : visualEvent?.title
+      ? visualEvent.title
+      : enemyAttacking ? encounter.move : cue.title
+  const damageLabel = !presentationActive
     ? null
-    : ['block', 'item-guard'].includes(eventKind)
-      ? '0 DAMAGE'
-      : eventKind === 'shield'
-        ? `-${eventDamage} · GUARD +1`
-        : cue.target === 'enemy'
-          ? `-${eventDamage} HP${eventHealing ? ` · +${eventHealing} HP` : ''}`
-          : `-${eventDamage} HP`
+    : healingActive
+      ? `+${eventHealing} HP`
+      : ['block', 'item-guard'].includes(eventKind)
+        ? '0 DAMAGE'
+        : eventKind === 'shield'
+          ? `-${eventDamage} · GUARD +1`
+          : cue.target === 'enemy'
+            ? `-${eventDamage} HP${eventHealing ? ` · +${eventHealing} HP` : ''}`
+            : `-${eventDamage} HP`
 
   return (
     <div
@@ -619,6 +703,10 @@ function BattleHud({
         '--battle-accent-strong': battleTheme.accentStrong,
         '--battle-accent-soft': battleTheme.accentSoft,
         '--battle-enemy': battleTheme.enemy,
+        '--battle-hero': battleTrait.color,
+        '--battle-mana-primary': battleTrait.color,
+        '--battle-mana-secondary': battleSecondaryTrait.color,
+        '--battle-character-accent': battleStudent.accent,
         '--battle-surface': battleTheme.surface,
       }}
     >
@@ -651,7 +739,14 @@ function BattleHud({
                 heroHp <= 34 ? 'text-rose-500' : 'text-emerald-600',
               )}
             >
-              <span className="truncate">{battleStudent.name}</span>
+              <span className="truncate">
+                <i
+                  className="mr-1 inline-block h-1.5 w-1.5 rounded-full align-middle"
+                  style={{ backgroundColor: battleTrait.color }}
+                  aria-hidden="true"
+                />
+                {battleStudent.name}
+              </span>
               <span>
                 {battleState.heroCurrentHp}/{battleState.heroMaxHp}
               </span>
@@ -713,10 +808,10 @@ function BattleHud({
           skillFlash && 'battle-stage-skill',
         )}
         style={{
-          '--battle-scene': `${scene.overlay}, linear-gradient(90deg,rgba(15,23,42,.18),rgba(15,23,42,.02),rgba(15,23,42,.26)), url("${battleTheme.stage}") ${scene.position} / cover`,
+          '--battle-scene': `${scene.overlay}, linear-gradient(90deg,rgba(15,23,42,.18),rgba(15,23,42,.02),rgba(15,23,42,.26)), url("${battleStageUrl}") ${scene.position} / cover`,
         }}
         role="img"
-        aria-label={`戦闘状況。${battleStudent.name}は${battleState.heroCurrentHp}/${battleState.heroMaxHp}HP、${battleRival.name}は${battleState.enemyCurrentHp}/${battleState.enemyMaxHp}HP。${cue.title}`}
+        aria-label={`戦闘状況。${battleStudent.name}は${battleState.heroCurrentHp}/${battleState.heroMaxHp}HP、${battleRival.name}は${battleState.enemyCurrentHp}/${battleState.enemyMaxHp}HP。${cue.title}。${manaPresentation.ariaLabel}`}
       >
         <span className="battle-scene-label" aria-hidden="true">
           {battleTheme.emoji} {scene.name}
@@ -736,11 +831,12 @@ function BattleHud({
             </i>
           ))}
         </span>
+        <BattleManaAnimation presentation={manaPresentation} />
         {themeTriggered && (
           <span className="battle-ability-cut-in" aria-hidden="true">
             <i
               className="battle-ability-actor"
-              style={{ backgroundImage: `url("${battleTheme.actorsSheet}")` }}
+              style={{ backgroundImage: `url("${publicAssetUrl(battleTheme.actorsSheet)}")` }}
             />
             <b>{battleState.themeAbility.emoji} {battleState.themeAbility.name}</b>
           </span>
@@ -756,11 +852,12 @@ function BattleHud({
           <PixelBattlePortrait
             key={`stage-${battleStudent.id}-${studentState}`}
             src={studentPortrait}
+            motionSrc={studentMotion}
             className="h-14 w-14"
             tone="hero"
             label={`${battleStudent.name}・${studentState}`}
           />
-          <span>{battleStudent.name}</span>
+          <span>{battleTrait.emoji} {battleStudent.name}</span>
         </div>
 
         <div
@@ -829,7 +926,7 @@ function BattleHud({
       </div>
 
       <div
-        key={`status-${battleState.answered}-${eventActive ? 'answer' : 'ready'}`}
+        key={`status-${battleState.answered}-${presentationActive ? eventKind : 'ready'}`}
         className={cx(
           'pixel-battle-status mt-1.5 flex min-h-8 items-center gap-2 rounded-xl px-2.5 py-1.5 text-[9px] font-extrabold',
           skillFlash && 'battle-skill-flash bg-amber-100 text-amber-900',
@@ -837,10 +934,10 @@ function BattleHud({
         aria-live="polite"
       >
         <span className="shrink-0 text-sm">
-          {eventActive ? actionEmoji : encounter.attackEmoji ?? encounter.elementEmoji}
+          {presentationActive ? actionEmoji : encounter.attackEmoji ?? encounter.elementEmoji}
         </span>
         <span className="min-w-0 flex-1 truncate">
-          {eventActive
+          {presentationActive
             ? actionTitle
             : `つぎの攻撃：${encounter.attackLine ?? encounter.move}`}
         </span>
@@ -855,7 +952,128 @@ function BattleHud({
   )
 }
 
-function PixelBattlePortrait({ src, className, tone = 'hero', label = '' }) {
+function BattleManaAnimation({ presentation }) {
+  const { affinity, sequence } = presentation
+
+  return (
+    <span
+      className={`battle-mana-layer battle-mana-${sequence.id} battle-mana-affinity-${affinity.style}`}
+      data-mana-affinity={affinity.id}
+      data-mana-sequence={sequence.id}
+      aria-hidden="true"
+    >
+      <span className="battle-mana-label">
+        <i>{affinity.glyph}</i> {presentation.label}
+      </span>
+
+      <svg
+        className="battle-mana-geometry"
+        viewBox="0 0 320 96"
+        preserveAspectRatio="none"
+        focusable="false"
+      >
+        <g className="battle-mana-focus-geometry">
+          <circle className="battle-mana-ring battle-mana-ring-outer" cx="54" cy="55" r="27" />
+          <polygon
+            className="battle-mana-ring battle-mana-ring-inner"
+            points="54,31 75,43 75,67 54,79 33,67 33,43"
+          />
+          <circle className="battle-mana-ring battle-mana-ring-core" cx="54" cy="55" r="10" />
+        </g>
+
+        <path
+          className="battle-mana-route battle-mana-route-forward"
+          pathLength="1"
+          d="M70 52 C108 17 176 77 250 50 C266 44 272 45 281 49"
+        />
+        <path
+          className="battle-mana-route battle-mana-route-reverse"
+          pathLength="1"
+          d="M278 49 C235 15 176 78 91 51 C79 47 70 47 61 52"
+        />
+
+        <g className="battle-mana-ward-geometry">
+          <path className="battle-mana-ward-line battle-mana-ward-line-outer" pathLength="1" d="M17 82 Q54 3 91 82" />
+          <path className="battle-mana-ward-line battle-mana-ward-line-inner" pathLength="1" d="M25 81 Q54 19 83 81" />
+          <path className="battle-mana-ward-line battle-mana-ward-cross" pathLength="1" d="M27 48 L81 48 M22 63 L86 63" />
+        </g>
+
+        <g className="battle-mana-restore-geometry">
+          <path className="battle-mana-restore-line" pathLength="1" d="M54 85 C19 72 85 58 48 45 C21 35 77 22 55 10" />
+          <path className="battle-mana-restore-line battle-mana-restore-line-alt" pathLength="1" d="M45 82 C83 69 27 55 64 42 C86 34 38 21 56 12" />
+        </g>
+
+        <g className="battle-mana-break-geometry">
+          <path className="battle-mana-break-line" pathLength="1" d="M84 27 L61 48 L78 56 L46 81" />
+          <path className="battle-mana-break-line battle-mana-break-line-alt" pathLength="1" d="M25 32 L47 50 L31 61 L58 81" />
+        </g>
+
+        <g className="battle-mana-triumph-geometry">
+          <path className="battle-mana-triumph-arc" pathLength="1" d="M28 65 Q160 -5 292 65" />
+          <path className="battle-mana-triumph-arc battle-mana-triumph-arc-alt" pathLength="1" d="M43 76 Q160 19 277 76" />
+        </g>
+      </svg>
+
+      <span className="battle-mana-glyph">{affinity.glyph}</span>
+      <span className="battle-mana-bolt"><i>{affinity.glyph}</i></span>
+      <span className="battle-mana-impact">
+        <i />
+        <i />
+        <i />
+      </span>
+      <span className="battle-mana-motes">
+        {Array.from({ length: 8 }, (_, index) => (
+          <i
+            key={index}
+            style={{
+              '--mana-mote-index': index,
+              '--mana-mote-delay': `${index * -0.11}s`,
+              '--mana-mote-left': `${20 + ((index * 13) % 62)}%`,
+            }}
+          >
+            {index % 2 === 0 ? affinity.glyph : '•'}
+          </i>
+        ))}
+      </span>
+      <span className="battle-mana-phase-track">
+        {sequence.phases.map((phase, index) => (
+          <i key={phase} title={phase} style={{ '--mana-phase-index': index }} />
+        ))}
+      </span>
+    </span>
+  )
+}
+
+function usePrefersReducedMotion() {
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(() =>
+    typeof window !== 'undefined'
+      && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches,
+  )
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.matchMedia) return undefined
+    const media = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const update = () => setPrefersReducedMotion(media.matches)
+    media.addEventListener?.('change', update)
+    return () => media.removeEventListener?.('change', update)
+  }, [])
+
+  return prefersReducedMotion
+}
+
+function PixelBattlePortrait({
+  src,
+  motionSrc = null,
+  className,
+  tone = 'hero',
+  label = '',
+}) {
+  const prefersReducedMotion = usePrefersReducedMotion()
+  const [motionFailed, setMotionFailed] = useState(false)
+  const showMotion = motionSrc && !prefersReducedMotion && !motionFailed
+  const resolvedSrc = publicAssetUrl(src)
+  const resolvedMotionSrc = publicAssetUrl(motionSrc)
+
   return (
     <div
       className={cx(
@@ -867,7 +1085,22 @@ function PixelBattlePortrait({ src, className, tone = 'hero', label = '' }) {
       aria-label={label || undefined}
       aria-hidden={label ? undefined : 'true'}
     >
-      <img src={src} alt="" className="h-full w-full object-cover" />
+      {showMotion ? (
+        <video
+          src={resolvedMotionSrc}
+          poster={resolvedSrc}
+          className="battle-motion-video h-full w-full object-cover"
+          autoPlay
+          muted
+          playsInline
+          preload="auto"
+          disablePictureInPicture
+          aria-hidden="true"
+          onError={() => setMotionFailed(true)}
+        />
+      ) : (
+        <img src={resolvedSrc} alt="" className="h-full w-full object-cover" />
+      )}
     </div>
   )
 }

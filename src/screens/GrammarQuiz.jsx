@@ -5,9 +5,11 @@ import {
   grammarChoiceGuidanceFor,
   samePatternExamplesFor,
 } from '../data/grammar.js'
+import { longSentenceTranslationFor } from '../data/long-sentence-translations.js'
 import { buildGrammarDeck } from '../lib/grammarDeck.js'
 import { todayIndex } from '../store/useStore.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
+import { LongSentenceTranslation } from '../components/LongSentenceTranslation.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
@@ -79,6 +81,7 @@ export function GrammarQuizScreen() {
   const instructorExplanation = answered
     ? buildGrammarInstructorExplanation(item, selected, selectedGuidance)
     : null
+  const longSentenceTranslation = longSentenceTranslationFor(item)
 
   const finish = () => {
     const xpGained = useStore.getState().stats.xp - xpAtStart.current
@@ -180,9 +183,13 @@ export function GrammarQuizScreen() {
               <SpeakButton text={item.sentence.en} size="sm" />
               <div>
                 <p className="font-bold text-ink">{item.sentence.en}</p>
-                <p className="mt-0.5 text-sm font-bold text-ink/55">{item.sentence.ja}</p>
+                <p className="mt-0.5 text-sm font-bold text-ink/55">
+                  {longSentenceTranslation && <span className="mr-1 text-[11px] text-ink/35">自然な和訳</span>}
+                  {item.sentence.ja}
+                </p>
               </div>
             </div>
+            <LongSentenceTranslation guide={longSentenceTranslation} className="mt-3" />
             <InstructorExplanation
               explanation={instructorExplanation}
               className="mt-3"

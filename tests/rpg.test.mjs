@@ -34,10 +34,17 @@ import {
   xpNeededForNextLevel,
 } from '../src/lib/rpg.js'
 import {
+  BATTLE_BARRIER_CENTER,
+  BATTLE_BARRIER_MAP_IMAGE,
+  BATTLE_BARRIER_NODES,
+  BATTLE_BARRIER_STAR_ORDER,
+  BATTLE_BARRIER_TRAFFIC_LIGHTS,
+  BATTLE_BARRIER_WINDOW_LIGHTS,
   BATTLE_STAR_PER_CORRECT,
   BATTLE_STARS_PER_EXCHANGE,
   BATTLE_THEMES,
   BATTLE_XP_PER_EXCHANGE,
+  battleBarrierLocationById,
   battleXpExchange,
   battleStarsEarned,
   battleThemeById,
@@ -46,14 +53,46 @@ import {
   unlockedBattleThemes,
 } from '../src/lib/battleThemes.js'
 import {
+  BATTLE_DAILY_SCENES,
+  BATTLE_CHARACTER_VISUAL_COUNT,
   BATTLE_EMOTION_STATES,
+  BATTLE_LIFESTYLE_OUTFITS,
+  BATTLE_MOTION_STATES,
   BATTLE_RIVAL_GROUPS,
   BATTLE_RIVALS,
   BATTLE_STUDENTS,
+  BATTLE_SUPPORT_STYLES,
+  battleDailySceneById,
   battleRivalForEncounter,
+  battleStudentLifestylePortrait,
+  battleStudentMotion,
   battleStudentPortrait,
   battleStudentState,
+  battleSupportStyleById,
+  isBattleStudentId,
+  isRestorableBattleStudentId,
+  normalizeBattleStudentId,
 } from '../src/lib/battleCast.js'
+import {
+  BATTLE_STUDENT_BASE_TRAITS,
+  BATTLE_TRAITS,
+  BATTLE_TRAIT_POINT_STARS,
+  MAX_BATTLE_TRAIT_LEVEL,
+  battleStudentTraitProfile,
+  battleTraitPointBudget,
+  battleTraitPointSummary,
+  canRaiseBattleTrait,
+  isValidBattleTraitInvestments,
+  normalizeBattleTraitInvestments,
+  raiseBattleTrait,
+  resetBattleStudentTraits,
+} from '../src/lib/battleTraits.js'
+import {
+  BATTLE_MANA_AFFINITIES,
+  BATTLE_MANA_SEQUENCES,
+  battleManaPresentation,
+  battleManaSequenceFor,
+} from '../src/lib/battleMana.js'
 
 function pixelSizeOfWebp(path) {
   const buffer = readFileSync(new URL(`../public${path}`, import.meta.url))
@@ -107,6 +146,69 @@ test('正解スターで採用済み3演出を順番に解放する', () => {
   }
 })
 
+test('学校を中央核として街の五地点が五芒星結界を構成する', () => {
+  assert.equal(BATTLE_BARRIER_CENTER.id, 'school')
+  assert.deepEqual(
+    BATTLE_BARRIER_NODES.map((location) => location.id),
+    ['library', 'station', 'central-park', 'shrine', 'stadium'],
+  )
+  assert.deepEqual(BATTLE_BARRIER_STAR_ORDER, [
+    'library',
+    'central-park',
+    'stadium',
+    'station',
+    'shrine',
+    'library',
+  ])
+  assert.equal(
+    existsSync(new URL(`../public${BATTLE_BARRIER_MAP_IMAGE}`, import.meta.url)),
+    true,
+  )
+  assert.deepEqual(
+    pixelSizeOfWebp(BATTLE_BARRIER_MAP_IMAGE),
+    { width: 1440, height: 810 },
+  )
+
+  assert.ok(BATTLE_BARRIER_WINDOW_LIGHTS.length >= 30)
+  assert.equal(
+    new Set(BATTLE_BARRIER_WINDOW_LIGHTS.map((light) => `${light.x}:${light.y}`)).size,
+    BATTLE_BARRIER_WINDOW_LIGHTS.length,
+  )
+  for (const light of BATTLE_BARRIER_WINDOW_LIGHTS) {
+    assert.ok(light.x > 0 && light.x < 100, `${light.id}: x`)
+    assert.ok(light.y > 0 && light.y < 100, `${light.id}: y`)
+    assert.ok(light.duration > 0, `${light.id}: duration`)
+    assert.ok(light.size > 0, `${light.id}: size`)
+  }
+
+  assert.ok(BATTLE_BARRIER_TRAFFIC_LIGHTS.length >= 8)
+  assert.deepEqual(
+    new Set(BATTLE_BARRIER_TRAFFIC_LIGHTS.map((light) => light.kind)),
+    new Set(['headlight', 'taillight', 'train']),
+  )
+  for (const light of BATTLE_BARRIER_TRAFFIC_LIGHTS) {
+    assert.match(light.path, /^M /, `${light.id}: path`)
+    assert.ok(light.duration > 0, `${light.id}: duration`)
+    assert.ok(light.delay <= 0, `${light.id}: delay`)
+  }
+
+  const nodeIds = new Set(BATTLE_BARRIER_NODES.map((location) => location.id))
+  assert.deepEqual(new Set(BATTLE_BARRIER_STAR_ORDER.slice(0, -1)), nodeIds)
+  assert.equal(BATTLE_BARRIER_STAR_ORDER.at(0), BATTLE_BARRIER_STAR_ORDER.at(-1))
+  assert.equal(
+    new Set(BATTLE_BARRIER_NODES.map((location) => `${location.x}:${location.y}`)).size,
+    5,
+  )
+
+  for (const location of [BATTLE_BARRIER_CENTER, ...BATTLE_BARRIER_NODES]) {
+    assert.ok(location.name && location.role && location.description, location.id)
+    assert.ok(location.x > 0 && location.x < 100, `${location.id}: x`)
+    assert.ok(location.y > 0 && location.y < 100, `${location.id}: y`)
+    assert.equal(battleBarrierLocationById(location.id), location)
+  }
+  assert.equal(battleBarrierLocationById('unknown'), BATTLE_BARRIER_CENTER)
+})
+
 test('未変換の学習XPを一度だけ放課後スターへまとめて変換する', () => {
   assert.equal(BATTLE_XP_PER_EXCHANGE, 50)
   assert.equal(BATTLE_STARS_PER_EXCHANGE, 25)
@@ -141,12 +243,172 @@ test('未変換の学習XPを一度だけ放課後スターへまとめて変換
   assert.equal(battleXpExchange(500, 0, 9_999_990).starCapacityReached, true)
 })
 
+test('五つの星彩パラメータは全10人に固有の初期形と発現色を与える', () => {
+  assert.equal(BATTLE_TRAITS.length, 5)
+  assert.equal(new Set(BATTLE_TRAITS.map((trait) => trait.id)).size, 5)
+  assert.equal(new Set(BATTLE_TRAITS.map((trait) => trait.color)).size, 5)
+  assert.deepEqual(
+    BATTLE_TRAITS.map((trait) => trait.name),
+    ['知性', '共感', '調和', '信念', '勇気'],
+  )
+  assert.equal(Object.keys(BATTLE_STUDENT_BASE_TRAITS).length, BATTLE_STUDENTS.length)
+
+  for (const student of BATTLE_STUDENTS) {
+    const profile = battleStudentTraitProfile(student.id, {}, 0)
+    assert.equal(profile.studentId, student.id)
+    assert.ok(profile.dominant.color && profile.voice, student.id)
+    for (const trait of BATTLE_TRAITS) {
+      assert.ok(profile.levels[trait.id] >= 1, `${student.id}: ${trait.id}`)
+      assert.ok(
+        profile.levels[trait.id] <= MAX_BATTLE_TRAIT_LEVEL,
+        `${student.id}: ${trait.id}`,
+      )
+    }
+  }
+  assert.equal(battleStudentTraitProfile('kaito', {}, 0).colorLabel, '橙・勇気')
+})
+
+test('五属性×6動作の30通りでマナ術式を段階演出できる', () => {
+  assert.deepEqual(
+    BATTLE_MANA_AFFINITIES.map((affinity) => affinity.id),
+    BATTLE_TRAITS.map((trait) => trait.id),
+  )
+  assert.deepEqual(
+    BATTLE_MANA_SEQUENCES.map((sequence) => sequence.id),
+    ['focus', 'cast', 'ward', 'restore', 'break', 'triumph'],
+  )
+  for (const sequence of BATTLE_MANA_SEQUENCES) {
+    assert.equal(sequence.phases.length, 4, sequence.id)
+    assert.equal(new Set(sequence.phases).size, 4, sequence.id)
+  }
+
+  const scenarios = [
+    [{}, 'focus'],
+    [{ eventActive: true, eventKind: 'hit' }, 'cast'],
+    [{ eventActive: true, eventKind: 'block' }, 'ward'],
+    [{ eventActive: true, eventKind: 'counter', healing: 3 }, 'restore'],
+    [{ eventActive: true, eventKind: 'damage' }, 'break'],
+    [{ eventActive: true, eventKind: 'hit', enemyDefeated: true }, 'triumph'],
+  ]
+  for (const [input, expected] of scenarios) {
+    assert.equal(battleManaSequenceFor(input).id, expected)
+  }
+
+  const presentations = BATTLE_MANA_AFFINITIES.flatMap((affinity, index) =>
+    scenarios.map(([input]) => battleManaPresentation({
+      traitId: affinity.id,
+      secondaryTraitId: BATTLE_MANA_AFFINITIES[
+        (index + 1) % BATTLE_MANA_AFFINITIES.length
+      ].id,
+      ...input,
+    })),
+  )
+  assert.equal(presentations.length, 30)
+  assert.equal(new Set(presentations.map(({ label }) => label)).size, 30)
+  for (const presentation of presentations) {
+    assert.notEqual(presentation.affinity.id, presentation.secondaryAffinity.id)
+    assert.match(presentation.ariaLabel, /マナを操る/)
+  }
+})
+
+test('放課後スター100個ごとの星彩ポイントを五芒星へ安全に配分・振り直しできる', () => {
+  assert.equal(BATTLE_TRAIT_POINT_STARS, 100)
+  assert.equal(battleTraitPointBudget(99), 0)
+  assert.equal(battleTraitPointBudget(300), 3)
+
+  let investments = {}
+  investments = raiseBattleTrait({
+    battleStars: 300,
+    investments,
+    studentId: 'kaito',
+    traitId: 'courage',
+  })
+  investments = raiseBattleTrait({
+    battleStars: 300,
+    investments,
+    studentId: 'kaito',
+    traitId: 'courage',
+  })
+  investments = raiseBattleTrait({
+    battleStars: 300,
+    investments,
+    studentId: 'mio',
+    traitId: 'empathy',
+  })
+
+  assert.deepEqual(investments, {
+    mio: { empathy: 1 },
+    kaito: { courage: 2 },
+  })
+  assert.equal(battleStudentTraitProfile('kaito', investments, 300).levels.courage, 5)
+  assert.deepEqual(
+    battleTraitPointSummary(300, investments),
+    {
+      budget: 3,
+      spent: 3,
+      available: 0,
+      starsUntilNext: 100,
+      investments,
+    },
+  )
+  assert.equal(canRaiseBattleTrait({
+    battleStars: 300,
+    investments,
+    studentId: 'mio',
+    traitId: 'insight',
+  }), false)
+
+  const noFourthPoint = raiseBattleTrait({
+    battleStars: 300,
+    investments,
+    studentId: 'mio',
+    traitId: 'insight',
+  })
+  assert.deepEqual(noFourthPoint, investments)
+
+  const reset = resetBattleStudentTraits({
+    battleStars: 300,
+    investments,
+    studentId: 'kaito',
+  })
+  assert.deepEqual(reset, { mio: { empathy: 1 } })
+  assert.equal(battleTraitPointSummary(300, reset).available, 2)
+})
+
+test('星彩パラメータは旧sora IDをkaitoへ移し、不正値や未獲得ポイントを拒否する', () => {
+  assert.deepEqual(
+    normalizeBattleTraitInvestments({ sora: { courage: 1 } }, 100),
+    { kaito: { courage: 1 } },
+  )
+  assert.equal(
+    isValidBattleTraitInvestments({ kaito: { courage: 1 } }, 100),
+    true,
+  )
+  assert.equal(
+    isValidBattleTraitInvestments({ kaito: { courage: 2 } }, 100),
+    false,
+  )
+  assert.equal(
+    isValidBattleTraitInvestments({ kaito: { unknown: 1 } }, 100),
+    false,
+  )
+})
+
 test('主役10人×24状態と先生・敵役50人の全290画像が揃う', () => {
   assert.equal(BATTLE_STUDENTS.length, 10)
   assert.equal(BATTLE_EMOTION_STATES.length, 24)
   assert.equal(BATTLE_RIVALS.length, 50)
   assert.equal(BATTLE_RIVAL_GROUPS.length, 5)
   assert.equal(new Set(BATTLE_STUDENTS.map((student) => student.id)).size, 10)
+  const kaito = BATTLE_STUDENTS.find((student) => student.id === 'kaito')
+  assert.deepEqual(
+    kaito && { name: kaito.name, reading: kaito.reading, club: kaito.club },
+    { name: '風間カイト', reading: 'かざま かいと', club: '陸上部' },
+  )
+  assert.equal(isBattleStudentId('sora'), false)
+  assert.equal(isRestorableBattleStudentId('sora'), true)
+  assert.equal(normalizeBattleStudentId('sora'), 'kaito')
+  assert.equal(battleStudentPortrait('sora', 'idle'), battleStudentPortrait('kaito', 'idle'))
   assert.equal(new Set(BATTLE_EMOTION_STATES.map((emotion) => emotion.id)).size, 24)
   assert.equal(new Set(BATTLE_RIVALS.map((rival) => rival.id)).size, 50)
   assert.equal(new Set(BATTLE_RIVALS.map((rival) => rival.name)).size, 50)
@@ -185,6 +447,153 @@ test('主役10人×24状態と先生・敵役50人の全290画像が揃う', () 
   }
 })
 
+test('主役10人×5行動の表情差分動画が揃い、戦闘状態から選べる', () => {
+  assert.deepEqual(
+    BATTLE_MOTION_STATES,
+    ['attack', 'guard', 'healing', 'hurt', 'victory'],
+  )
+  assert.equal(battleStudentMotion('mio', 'idle'), null)
+  assert.match(battleStudentMotion('mio', 'attack'), /mio\/attack\.webm$/)
+  assert.match(battleStudentMotion('mio', 'determined'), /mio\/attack\.webm$/)
+  assert.match(battleStudentMotion('mio', 'relieved'), /mio\/healing\.webm$/)
+  assert.match(battleStudentMotion('mio', 'exhausted'), /mio\/hurt\.webm$/)
+  assert.match(battleStudentMotion('sora', 'victory'), /kaito\/victory\.webm$/)
+
+  const motionAssets = BATTLE_STUDENTS.flatMap((student) =>
+    BATTLE_MOTION_STATES.map((motionId) =>
+      `${student.motionBase}/${motionId}.webm`,
+    ),
+  )
+  assert.equal(motionAssets.length, 50)
+  assert.equal(new Set(motionAssets).size, 50)
+
+  for (const path of motionAssets) {
+    const buffer = readFileSync(new URL(`../public${path}`, import.meta.url))
+    assert.equal(buffer.length > 2_000, true, `${path}: non-trivial video`)
+    assert.deepEqual(
+      [...buffer.subarray(0, 4)],
+      [0x1a, 0x45, 0xdf, 0xa3],
+      `${path}: WebM header`,
+    )
+  }
+})
+
+test('学校・放課後・休日まで12の日常ビジュアルが共同動作と衣装文脈を保つ', () => {
+  assert.deepEqual(
+    BATTLE_DAILY_SCENES.map((scene) => scene.id),
+    [
+      'morning',
+      'commute',
+      'classroom',
+      'everyday',
+      'park',
+      'club',
+      'cafe',
+      'snack',
+      'shopping',
+      'library',
+      'arcade',
+      'homeward',
+    ],
+  )
+  assert.equal(new Set(BATTLE_DAILY_SCENES.map((scene) => scene.image)).size, 12)
+  assert.equal(battleDailySceneById('commute').image, '/assets/battle/scenes/commute-v2.webp')
+  assert.equal(battleDailySceneById('classroom').image, '/assets/battle/scenes/classroom-v3.webp')
+  assert.equal(battleDailySceneById('snack').image, '/assets/battle/scenes/snack-v2.webp')
+  assert.equal(battleDailySceneById('homeward').image, '/assets/battle/scenes/homeward-v2.webp')
+  assert.equal(battleDailySceneById('park').image, '/assets/battle/scenes/park.webp')
+  assert.equal(battleDailySceneById('shopping').image, '/assets/battle/scenes/shopping-casual.webp')
+  assert.equal(battleDailySceneById('library').shortName, '図書館')
+  assert.equal(battleDailySceneById('unknown').id, 'morning')
+
+  const studentIds = new Set(BATTLE_STUDENTS.map((student) => student.id))
+  const emotionIds = new Set(BATTLE_EMOTION_STATES.map((emotion) => emotion.id))
+  const supportStyleIds = new Set(BATTLE_SUPPORT_STYLES.map((style) => style.id))
+  const featuredStudentIds = new Set()
+  const episodeTitles = new Set()
+  const episodeChoiceIds = new Set()
+
+  assert.deepEqual(
+    BATTLE_SUPPORT_STYLES.map((style) => style.id),
+    ['empathy', 'idea', 'together'],
+  )
+  assert.equal(battleSupportStyleById('idea').label, '小さな工夫を提案')
+  assert.equal(battleSupportStyleById('unknown').id, 'empathy')
+
+  for (const scene of BATTLE_DAILY_SCENES) {
+    assert.ok(scene.name && scene.shortName && scene.description, scene.id)
+    assert.match(scene.time, /^\d{2}:\d{2}$/)
+    assert.equal(['school', 'afterschool', 'weekend'].includes(scene.contextId), true, scene.id)
+    assert.equal(
+      scene.outfitId,
+      scene.contextId === 'weekend' ? 'weekend' : 'uniform',
+      `${scene.id}: outfit follows setting`,
+    )
+    assert.ok(scene.cast.length >= 2, scene.id)
+    assert.equal(existsSync(new URL(`../public${scene.image}`, import.meta.url)), true, scene.image)
+    assert.deepEqual(pixelSizeOfWebp(scene.image), { width: 960, height: 540 }, scene.image)
+
+    const episode = scene.episode
+    assert.ok(episode?.title && episode.situation && episode.opening, `${scene.id}: episode`)
+    assert.equal(episodeTitles.has(episode.title), false, `${scene.id}: unique title`)
+    episodeTitles.add(episode.title)
+    assert.equal(
+      scene.cast.some((member) => member.studentId === episode.speakerId),
+      true,
+      `${scene.id}: episode speaker appears in scene`,
+    )
+    assert.equal(emotionIds.has(episode.openingEmotionId), true, `${scene.id}: opening emotion`)
+    assert.equal(episode.choices.length, 3, `${scene.id}: choices`)
+    assert.deepEqual(
+      new Set(episode.choices.map((choice) => choice.styleId)),
+      supportStyleIds,
+      `${scene.id}: three support styles`,
+    )
+
+    for (const choice of episode.choices) {
+      assert.equal(episodeChoiceIds.has(choice.id), false, `${scene.id}: unique choice id`)
+      episodeChoiceIds.add(choice.id)
+      assert.ok(choice.label && choice.reply, `${scene.id}: choice copy`)
+      assert.equal(choice.label.length <= 30, true, `${scene.id}: mobile choice length`)
+      assert.equal(choice.reply.length >= 18, true, `${scene.id}: meaningful reply`)
+      assert.equal(supportStyleIds.has(choice.styleId), true, `${scene.id}: support style`)
+      assert.equal(emotionIds.has(choice.emotionId), true, `${scene.id}: reply emotion`)
+    }
+
+    for (const castMember of scene.cast) {
+      assert.equal(studentIds.has(castMember.studentId), true, `${scene.id}: student`)
+      assert.equal(emotionIds.has(castMember.emotionId), true, `${scene.id}: emotion`)
+      featuredStudentIds.add(castMember.studentId)
+    }
+  }
+
+  assert.deepEqual(featuredStudentIds, studentIds)
+  assert.equal(episodeTitles.size, BATTLE_DAILY_SCENES.length)
+  assert.equal(episodeChoiceIds.size, BATTLE_DAILY_SCENES.length * 3)
+
+  const parkCopy = JSON.stringify(battleDailySceneById('park'))
+  assert.match(parkCopy, /一枚のシート|一つのカードゲーム/)
+  assert.match(parkCopy, /同じシンボルカード|同じカード/)
+  assert.doesNotMatch(parkCopy, /バドミントン|シャトル|ラケット|得点係/)
+})
+
+test('全10人に自宅・休日・部活動の固有ビジュアルがある', () => {
+  const paths = BATTLE_STUDENTS.flatMap((student) => (
+    BATTLE_LIFESTYLE_OUTFITS.map((outfit) => (
+      battleStudentLifestylePortrait(student.id, outfit.id)
+    ))
+  ))
+  assert.equal(BATTLE_LIFESTYLE_OUTFITS.length, 3)
+  assert.equal(BATTLE_CHARACTER_VISUAL_COUNT, 270)
+  assert.equal(paths.length, 30)
+  assert.equal(new Set(paths).size, 30)
+  assert.equal(battleStudentLifestylePortrait('mio', 'uniform'), battleStudentPortrait('mio', 'idle'))
+  for (const path of paths) {
+    assert.equal(existsSync(new URL(`../public${path}`, import.meta.url)), true, path)
+    assert.deepEqual(pixelSizeOfWebp(path), { width: 512, height: 512 }, path)
+  }
+})
+
 test('回答イベントは生徒の喜怒哀楽・癒し・戦闘状態へ決定的に切り替わる', () => {
   const state = (lastEvent = null, extra = {}) => ({
     answered: 1,
@@ -205,6 +614,14 @@ test('回答イベントは生徒の喜怒哀楽・癒し・戦闘状態へ決�
   assert.equal(
     battleStudentState({ battleState: state({ kind: 'block' }), eventActive: true }),
     'guard',
+  )
+  assert.equal(
+    battleStudentState({
+      battleState: state({ kind: 'damage' }),
+      eventActive: true,
+      eventKind: 'item-heal',
+    }),
+    'healing',
   )
   assert.equal(
     battleStudentState({ battleState: state({ kind: 'unknown' }), eventActive: true }),
@@ -477,6 +894,14 @@ test('戦闘イベントはミニ戦場の攻撃方向と表示へ変換でき�
     ['hero', 'hero', 'hero'],
   )
   assert.equal(battleSceneCue('shield').emoji, '📒')
+  assert.deepEqual(
+    {
+      label: battleSceneCue('item-heal').label,
+      actor: battleSceneCue('item-heal').actor,
+      target: battleSceneCue('item-heal').target,
+    },
+    { label: 'ITEM HEAL!', actor: 'hero', target: 'hero' },
+  )
   assert.equal(battleSceneCue('not-registered').label, 'READY')
 })
 
@@ -556,6 +981,7 @@ test('放課後スターはバトル正解とXP変換で増え、演出選択と
     assert.match(source, /battleXpSpent/)
     assert.match(source, /battleThemeId/)
     assert.match(source, /battleStudentId/)
+    assert.match(source, /battleTraitInvestments/)
   }
 })
 
@@ -574,24 +1000,71 @@ test('キャラ選択・全24表情・50人図鑑・3場面演出が実際のバ
   )
 
   assert.match(mapSource, /<BattleCastRoster/)
+  assert.match(mapSource, /<CampusLifeGallery/)
+  assert.match(mapSource, /<SchoolBarrierMap/)
+  assert.match(mapSource, /BATTLE_BARRIER_NODES\.map/)
+  assert.match(mapSource, /BATTLE_BARRIER_WINDOW_LIGHTS\.map/)
+  assert.match(mapSource, /BATTLE_BARRIER_TRAFFIC_LIGHTS\.map/)
+  assert.match(mapSource, /<animateMotion/)
+  assert.doesNotMatch(mapSource, /scenicMode|夜景表示|結界表示|夜の学区を眺める/)
+  assert.match(mapSource, /BATTLE_DAILY_SCENES\.map/)
+  assert.match(mapSource, /episode\.choices\.map/)
+  assert.match(mapSource, /choiceByScene/)
+  assert.match(mapSource, /battleSupportStyleById/)
+  assert.match(mapSource, /どれを選んでも正解・不正解はありません/)
+  assert.match(mapSource, /aria-live="polite"/)
   assert.match(mapSource, /BATTLE_STUDENTS\.map/)
   assert.match(mapSource, /BATTLE_EMOTION_STATES\.map/)
+  assert.match(mapSource, /<BattleTraitSphere/)
+  assert.match(mapSource, /BATTLE_TRAITS\.map/)
+  assert.match(mapSource, /五芒星の星彩スフィア/)
+  assert.match(mapSource, /発現色/)
+  assert.match(mapSource, /学習評価は変わりません/)
   assert.match(mapSource, /BATTLE_RIVAL_GROUPS\.map/)
   assert.match(mapSource, /studentId: battleStudent\.id/)
   assert.match(mapSource, /rivalId: battleRival\.id/)
   assert.match(mapSource, /theme\.actorsSheet/)
   assert.match(mapSource, /theme\.scenes\.map/)
 
-  assert.match(quizSource, /battleStudentState\(\{ battleState, eventActive \}\)/)
+  assert.match(
+    quizSource,
+    /battleStudentState\(\{[\s\S]*?eventActive: presentationActive,[\s\S]*?eventKind,/,
+  )
   assert.match(quizSource, /battleStudentPortrait\(battleStudent\.id, studentState\)/)
+  assert.match(quizSource, /battleStudentMotion\(battleStudent\.id, studentState\)/)
+  assert.match(quizSource, /battleManaPresentation/)
+  assert.match(quizSource, /battleTraitById/)
+  assert.match(quizSource, /--battle-hero/)
+  assert.match(quizSource, /--battle-mana-primary/)
+  assert.match(quizSource, /--battle-mana-secondary/)
+  assert.match(quizSource, /data-mana-affinity/)
+  assert.match(quizSource, /data-mana-sequence/)
+  assert.match(quizSource, /import\.meta\.env\.BASE_URL/)
+  assert.match(quizSource, /<video/)
+  assert.match(quizSource, /autoPlay/)
+  assert.match(quizSource, /playsInline/)
+  assert.match(quizSource, /prefers-reduced-motion: reduce/)
   assert.match(quizSource, /battleTheme\.particles\.map/)
   assert.match(quizSource, /battleTheme\.actorsSheet/)
   assert.match(quizSource, /battleTheme\.scenes\[sceneIndex\]/)
   assert.match(quizSource, /battleRival\.portrait/)
 
   assert.match(cssSource, /@keyframes battle-expression-in/)
+  assert.match(cssSource, /@keyframes campus-life-scene-in/)
+  assert.match(cssSource, /@keyframes campus-life-drift/)
+  assert.match(cssSource, /@keyframes school-barrier-trace/)
+  assert.match(cssSource, /@keyframes school-barrier-window-twinkle/)
+  assert.doesNotMatch(cssSource, /school-barrier-map-scenic|school-barrier-scenic-drift|school-barrier-view-toggle/)
+  assert.match(cssSource, /school-barrier-star/)
+  assert.match(cssSource, /school-barrier-traffic-car/)
   assert.match(cssSource, /@keyframes battle-particle-float/)
   assert.match(cssSource, /@keyframes battle-ability-cut-in/)
+  assert.match(cssSource, /@keyframes battle-mana-charge/)
+  assert.match(cssSource, /@keyframes battle-mana-bolt-forward/)
+  assert.match(cssSource, /@keyframes battle-mana-ward-open/)
+  assert.match(cssSource, /@keyframes battle-mana-mote-restore/)
+  assert.match(cssSource, /@keyframes battle-mana-break-flash/)
+  assert.match(cssSource, /@keyframes battle-mana-triumph-rise/)
   assert.match(cssSource, /prefers-reduced-motion: reduce/)
 })
 
@@ -617,6 +1090,9 @@ test('学校アイテムをシンプルに選択し、バトルで1回使い、�
   assert.match(mapSource, /問バトルをはじめる/)
   assert.match(quizSource, /onClick=\{useBattleItem\}/)
   assert.match(quizSource, /battleState\.itemUsed/)
+  assert.match(quizSource, /setBattleVisualEvent/)
+  assert.match(quizSource, /kind: 'item-heal'/)
+  assert.match(quizSource, /visualEvent=\{battleVisualEvent\}/)
   assert.match(quizSource, /encounter\.attackLine/)
   assert.match(resultSource, /battleReport\.itemSummary/)
   assert.match(resultSource, /必殺技：\{encounter\.move\}/)

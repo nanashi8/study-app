@@ -6,7 +6,11 @@ import {
   MAX_BATTLE_STARS,
   isBattleThemeId,
 } from './battleThemes.js'
-import { isBattleStudentId } from './battleCast.js'
+import { isRestorableBattleStudentId } from './battleCast.js'
+import {
+  battleTraitPointsSpent,
+  isValidBattleTraitInvestments,
+} from './battleTraits.js'
 
 const CODE_VERSION = 1
 const PREFIX = 'EQ1-' // EigoQuest v1。先頭でアプリ/バージョンを判別する。
@@ -45,6 +49,7 @@ export function buildPayload(state) {
     battleXpSpent: state.battleXpSpent,
     battleThemeId: state.battleThemeId,
     battleStudentId: state.battleStudentId,
+    battleTraitInvestments: state.battleTraitInvestments,
     portalOrder: state.portalOrder,
     portalHidden: state.portalHidden,
     stats: state.stats,
@@ -90,6 +95,7 @@ export function decodeProgress(code) {
     'skillStats',
     'learningAnalytics',
     'writingProgress',
+    'battleTraitInvestments',
     'stats',
     'settings',
   ]
@@ -160,9 +166,18 @@ export function decodeProgress(code) {
   }
   if (
     'battleStudentId' in payload
-    && !isBattleStudentId(payload.battleStudentId)
+    && !isRestorableBattleStudentId(payload.battleStudentId)
   ) {
     throw new Error('コードの battleStudentId が不正です。')
+  }
+  if (
+    'battleTraitInvestments' in payload
+    && !isValidBattleTraitInvestments(
+      payload.battleTraitInvestments,
+      payload.battleStars,
+    )
+  ) {
+    throw new Error('コードの battleTraitInvestments が不正です。')
   }
   if (
     'diagnosticAttempt' in payload
@@ -206,5 +221,6 @@ export function summarizePayload(payload, isWordId = () => true) {
     streak: payload.stats?.streak ?? 0,
     battleStars: payload.battleStars ?? 0,
     battleXpSpent: payload.battleXpSpent ?? 0,
+    battleTraitPoints: battleTraitPointsSpent(payload.battleTraitInvestments),
   }
 }

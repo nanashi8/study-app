@@ -1,11 +1,15 @@
 // 1級長文の講師監修・語順訳シナリオ。「／」の各意味単位を英語の出現順に並べる。
 
-const b = (en, orderedJa, tip = '') => {
+const b = (en, orderedJa, tip = '', orderedEn = '') => {
   const jaSegments = Object.freeze(orderedJa.split('／').map((segment) => segment.trim()))
+  const enSegments = orderedEn
+    ? Object.freeze(orderedEn.split('／').map((segment) => segment.trim()))
+    : null
   return Object.freeze({
     en,
     ja: jaSegments.join(' → '),
     jaSegments,
+    enSegments,
     speechJa: jaSegments.join('。次に、'),
     tip,
   })
@@ -21,7 +25,12 @@ export const ADVANCED_READING_TRANSLATION_SCENARIOS = Object.freeze({
       b('in books, archives, or digital databases', '本や記録保管所、またはデジタルデータベースに'),
     ],
     [
-      b('Yet collective memory is a far more fragile phenomenon than the existence of records might suggest', 'しかし／集合的記憶は／はるかにもろい現象です／記録の存在が示すかもしれない以上に'),
+      b(
+        'Yet collective memory is a far more fragile phenomenon than the existence of records might suggest',
+        'しかし／集合的記憶は／〜です／はるかにもろい現象／〜よりも／記録の存在が／示すかもしれない',
+        '',
+        'Yet／collective memory／is／a far more fragile phenomenon／than／the existence of records／might suggest',
+      ),
     ],
     [
       b('A document can survive', '一つの文書は／残ることができます'),
@@ -30,7 +39,12 @@ export const ADVANCED_READING_TRANSLATION_SCENARIOS = Object.freeze({
     ],
     [
       b('The reason is', 'その理由は／〜です（内容は次へ）'),
-      b('that memory depends not only on preservation but also on repeated interpretation', '記憶は／依存しているということです／保存だけでなく、繰り返される解釈にも'),
+      b(
+        'that memory depends not only on preservation but also on repeated interpretation',
+        '〜ということです／記憶は／依存します／保存だけでなく／繰り返される解釈にも',
+        '',
+        'that／memory／depends／not only on preservation／but also on repeated interpretation',
+      ),
       b('within families, schools, media, and political institutions', '家庭、学校、メディア、政治制度の中で'),
     ],
     [
@@ -43,9 +57,9 @@ export const ADVANCED_READING_TRANSLATION_SCENARIOS = Object.freeze({
       b('in the digital age', 'デジタル時代に'),
     ],
     [
-      b('It is now possible to store enormous amounts of information', 'それは／今では可能です／保存することが／膨大な量の情報を'),
+      b('It is now possible to store enormous amounts of information', '形式主語です（真の主語は次へ）／今では可能です／保存することが／膨大な量の情報を', '', 'It／is now possible／to store／enormous amounts of information'),
       b('at little cost', 'わずかな費用で'),
-      b('and many people therefore believe', 'そして／多くの人は／そのため考えます'),
+      b('and many people therefore believe', 'そして／多くの人は／そのため考えます', '', 'and／many people／therefore believe'),
       b('that forgetting has become less likely', '忘却は／起こりにくくなったと'),
     ],
     [
@@ -53,14 +67,19 @@ export const ADVANCED_READING_TRANSLATION_SCENARIOS = Object.freeze({
       b('however, abundance can produce a different kind of loss', 'しかし／情報が豊富にあることは／生むことがあります／別の種類の喪失を'),
     ],
     [
-      b('When search results, short videos, and algorithmic recommendations compete', '〜すると／検索結果・短い動画・アルゴリズムによる推薦が／競い合う'),
+      b(
+        'When search results, short videos, and algorithmic recommendations compete',
+        '〜すると／検索結果が／短い動画が／そしてアルゴリズムによる推薦が／競い合う',
+        '',
+        'When／search results,／short videos,／and algorithmic recommendations／compete',
+      ),
       b('for attention', '人々の注意を得ようと'),
       b('materials that require slow reading or moral reflection may become almost invisible', '資料は／そしてその資料は必要とする／ゆっくり読むことや道徳的な考察を／ほとんど見えなくなるかもしれません'),
     ],
     [
-      b('The integrity of public memory is then shaped less by', '公共的記憶の健全さは／そのとき形づくられます／次のものによることが少なく'),
-      b('what is available than by', '何が／利用できるかによって／よりは'),
-      b('what is repeatedly presented as relevant', '何が／繰り返し示されるかによって／関連あるものとして'),
+      b('The integrity of public memory is then shaped less by', '公共的記憶の健全さは／そのとき形づくられます／次のものによることが少なく', '', 'The integrity of public memory／is then shaped／less by'),
+      b('what is available than by', '何が／利用できるかによって／〜によるよりも（比較先は次へ）'),
+      b('what is repeatedly presented as relevant', '何が／繰り返し示されるかによって／関連あるものとして', '', 'what／is repeatedly presented／as relevant'),
     ],
     [
       b('Digital records also depend', 'デジタル記録は／さらに依存しています'),
@@ -70,7 +89,7 @@ export const ADVANCED_READING_TRANSLATION_SCENARIOS = Object.freeze({
     [
       b('A file may still exist but become unreadable', 'ファイルは／まだ存在していても／読めなくなることがあります'),
       b('when software changes', '〜すると／ソフトウェアが／変わる'),
-      b('while a searchable collection can effectively disappear', '一方／検索可能な資料群は／実質的に消えることがあります'),
+      b('while a searchable collection can effectively disappear', '一方／検索可能な資料群は／実質的に消えることがあります', '', 'while／a searchable collection／can effectively disappear'),
       b('if its indexing system is neglected', 'もし／その索引の仕組みが／放置されれば'),
     ],
     [
@@ -86,16 +105,31 @@ export const ADVANCED_READING_TRANSLATION_SCENARIOS = Object.freeze({
       b('that make data intelligible and discoverable', 'そしてその経路が／します／データを／理解可能で発見可能に'),
     ],
     [
-      b('This raises a difficult question', 'これは／提起します／難しい問いを'),
+      b(
+        'This raises a difficult question',
+        'これは／提起します／難しい問いを',
+        '',
+        'This／raises／a difficult question',
+      ),
       b('about institutional responsibility', '制度的な責任についての'),
     ],
     [
-      b('Libraries, museums, universities, and news organizations have traditionally claimed a degree of autonomy so', '図書館・博物館・大学・報道機関は／伝統的に主張してきました／一定の自律性を／その目的は'),
+      b(
+        'Libraries, museums, universities, and news organizations have traditionally claimed a degree of autonomy so',
+        '図書館は／博物館は／大学は／そして報道機関は／伝統的に主張してきました／一定の自律性を／そのため（so that ... と続く）',
+        '',
+        'Libraries,／museums,／universities,／and news organizations／have traditionally claimed／a degree of autonomy／so',
+      ),
       b('that they can protect records', 'それらの機関が／守れるようにすることです／記録を'),
       b('from temporary political pressure', '一時的な政治的圧力から'),
     ],
     [
-      b('That autonomy remains essential', 'その自律性は／依然として不可欠です'),
+      b(
+        'That autonomy remains essential',
+        'その自律性は／依然として不可欠です',
+        '',
+        'That autonomy／remains essential',
+      ),
       b('but it can also be misused', 'しかし／それは／さらに悪用される可能性があります'),
       b('if institutions avoid scrutiny', 'もし／機関が／避けるなら／検証を'),
       b('by describing all criticism as interference', '表現することによって／すべての批判を／干渉だと'),
@@ -121,7 +155,7 @@ export const ADVANCED_READING_TRANSLATION_SCENARIOS = Object.freeze({
     ],
     [
       b('A public consultation may reproduce existing inequalities', '公開協議は／再生産するかもしれません／既存の不平等を'),
-      b('if organized groups can speak more loudly than communities', 'もし／組織化された集団が／より大きな声で話せるなら／共同体より'),
+      b('if organized groups can speak more loudly than communities', 'もし／組織化された集団が／より大きな声で話せるなら／共同体より', '', 'if／organized groups／can speak more loudly／than communities'),
       b('with less time, money', '時間・資金が少ない'),
       b('or trust in institutions', 'あるいは、制度への信頼が乏しい'),
     ],
@@ -138,11 +172,11 @@ export const ADVANCED_READING_TRANSLATION_SCENARIOS = Object.freeze({
     ],
     [
       b('A photograph may reveal suffering to one group and national achievement to another', '一枚の写真は／示すかもしれません／苦しみを／ある集団に／そして国家的な達成を／別の集団に'),
-      b('a monument may be seen as heritage by some and as exclusion', 'ある記念碑は／見られるかもしれません／遺産として／一部の人々に／そして排除として'),
+      b('a monument may be seen as heritage by some and as exclusion', 'ある記念碑は／見られるかもしれません／遺産として／一部の人々によって／そして排除の象徴として', '', 'a monument／may be seen／as heritage／by some／and as exclusion'),
       b('by others', '別の人々によって'),
     ],
     [
-      b('The aim should not be to force a single consensus', '目標は／〜であるべきではありません／強いること／一つの合意を'),
+      b('The aim should not be to force a single consensus', '目標は／〜であるべきではありません／強いること／一つの合意を', '', 'The aim／should not be／to force／a single consensus'),
       b('that erases conflict', 'そしてその合意が／消し去ります／対立を'),
     ],
     [
@@ -189,10 +223,15 @@ export const ADVANCED_READING_TRANSLATION_SCENARIOS = Object.freeze({
       b('to distinguish careful revision from deliberate distortion', '区別するための／慎重な見直しを／意図的な歪曲から'),
     ],
     [
-      b('Digital platforms intensify this risk because they reward speed, emotional certainty, and loyalty to a group more readily than patient investigation', 'デジタルプラットフォームは／強めます／この危険を／なぜなら、それらは／報いるからです／速さ・感情的な確信・集団への忠誠を／より容易に／粘り強い調査より'),
+      b(
+        'Digital platforms intensify this risk because they reward speed, emotional certainty, and loyalty to a group more readily than patient investigation',
+        'デジタルプラットフォームは／強めます／この危険を／なぜなら、それらは／報いるからです／速さを／感情的な確信を／そして忠誠を／集団への／より容易に／粘り強い調査より',
+        '',
+        'Digital platforms／intensify／this risk／because they／reward／speed,／emotional certainty,／and loyalty／to a group／more readily／than patient investigation',
+      ),
     ],
     [
-      b('A rumor that confirms a community\'s self-image may travel farther than a well-documented study that complicates it', 'あるうわさは／そしてそのうわさは裏付ける／共同体の自己像を／より遠くまで広がるかもしれません／十分に裏付けられた研究より／そしてその研究は複雑にする／その自己像を'),
+      b('A rumor that confirms a community\'s self-image may travel farther than a well-documented study that complicates it', 'あるうわさは／そしてそのうわさは裏付ける／共同体の自己像を／より遠くまで広がるかもしれません／十分な根拠のある研究よりも／そしてその研究は複雑にする／その自己像を', '', 'A rumor／that confirms／a community\'s self-image／may travel farther／than a well-documented study／that complicates／it'),
     ],
     [
       b('Some observers respond', '一部の人々は／それに対して対応します'),
@@ -201,13 +240,13 @@ export const ADVANCED_READING_TRANSLATION_SCENARIOS = Object.freeze({
     ],
     [
       b('Although such action can limit obvious fabrications', '〜ではあるものの／そのような行動は／抑えることができます／明らかな捏造を'),
-      b('it also gives private companies substantial authority', 'その行動は／さらに与えます／民間企業に／大きな権限を'),
+      b('it also gives private companies substantial authority', 'その行動は／さらに与えます／民間企業に／大きな権限を', '', 'it／also gives／private companies／substantial authority'),
       b('over public memory', '公共的記憶に対する'),
     ],
     [
       b('The alternative is not', '代案は／次のことではありません'),
       b('to abandon moderation', '放棄すること／情報管理を'),
-      b('but to combine it with accessible evidence, independent review, and explanations that users can examine rather than merely obey', 'そうではなく、組み合わせることです／情報管理を／入手しやすい証拠・独立した審査・説明と／そしてその説明を／利用者が／検討できる／ただ従うのではなく'),
+      b('but to combine it with accessible evidence, independent review, and explanations that users can examine rather than merely obey', 'そうではなく、組み合わせることです／情報管理を／入手しやすい証拠・独立した審査と／そしてその説明を／利用者が／検討できる／ただ従うのではなく'),
     ],
     [
       b('A warning label without a visible chain of reasoning may suppress circulation while doing little', 'ある警告表示は／見える根拠の連鎖がない／抑えるかもしれません／情報の流通を／同時にほとんど役立たず'),
@@ -219,11 +258,11 @@ export const ADVANCED_READING_TRANSLATION_SCENARIOS = Object.freeze({
       b('by experts alone', '専門家だけでは'),
     ],
     [
-      b('It also requires citizens', '公共的記憶は／さらに必要とします／市民を'),
+      b('It also requires citizens', '公共的記憶は／さらに必要とします／市民を', '', 'It／also requires／citizens'),
       b('who are willing', 'そしてその市民は／進んで行います'),
       b('to read beyond headlines, tolerate uncertainty', '読むことを／見出しを越えて／受け入れることを／不確実性を'),
       b('and revise their views', 'そして改めることを／自分の見解を'),
-      b('when stronger evidence appears', '〜するときに／さらに強い証拠が／現れる'),
+      b('when stronger evidence appears', '〜するときに／さらに強い証拠が／現れる', '', 'when／stronger evidence／appears'),
     ],
     [
       b('This civic dimension explains', 'この市民的な側面が／説明します'),
@@ -237,7 +276,12 @@ export const ADVANCED_READING_TRANSLATION_SCENARIOS = Object.freeze({
     ],
     [
       b('Remembering, in this sense', '記憶することは／この意味では'),
-      b('is not a passive act of storage but an active practice of civic discipline', '保存という受動的な行為ではなく／市民的規律の能動的な実践です'),
+      b(
+        'is not a passive act of storage but an active practice of civic discipline',
+        '〜ではありません／受動的な行為／保存という／しかし／能動的な実践です／市民的規律の',
+        '',
+        'is not／a passive act／of storage／but／an active practice／of civic discipline',
+      ),
     ],
     [
       b('If that practice declines', 'もし／その実践が／衰えれば'),
@@ -248,13 +292,15 @@ export const ADVANCED_READING_TRANSLATION_SCENARIOS = Object.freeze({
       ),
       b(
         'from losing their ability',
-        '社会が／失うのを／自分たちの能力を',
+        '〜するのを（prevent A from doing の続き）／失うこと／自分たちの能力を',
         'prevent societies from losing で「社会が失うのを防ぐ」。from は日本語では「〜するのを」と受けます。',
+        'from／losing／their ability',
       ),
       b(
         'to learn from',
-        'その能力とは／学ぶ力です／〜から',
+        'その能力とは「学ぶ力」です／〜から',
         'to learn が ability の内容を後ろから説明します。learn from の目的語は次の what 節です。',
+        'to learn／from',
       ),
       b(
         'what they',
@@ -271,8 +317,8 @@ export const ADVANCED_READING_TRANSLATION_SCENARIOS = Object.freeze({
 
   p_1_metric_fixation: passage([
     [
-      b('Modern institutions measure almost everything they hope', '現代の制度は／測定します／ほぼすべてを／自分たちが望んでいる'),
-      b('to improve in complex systems with competing public purposes', '改善することを／複雑な仕組みの中で／競合する公共目的を持つ'),
+      b('Modern institutions measure almost everything they hope', '現代の制度は／測定します／ほぼすべてを／自分たちが望んでいる', '', 'Modern institutions／measure／almost everything／they hope'),
+      b('to improve in complex systems with competing public purposes', '改善することを／複雑な仕組みの中で／競合する公共目的を持つ', '', 'to improve／in complex systems／with competing public purposes'),
     ],
     [
       b('Schools compare test scores, hospitals track waiting times, universities count publications', '学校は／比較します／テスト得点を／病院は／追跡します／待ち時間を／大学は／数えます／出版物を'),
@@ -290,7 +336,12 @@ export const ADVANCED_READING_TRANSLATION_SCENARIOS = Object.freeze({
     ],
     [
       b('The difficulty begins', '困難は／始まります'),
-      b('when a useful measure becomes the institution’s practical definition of success', '〜するときに／役立つ測定値が／なります／制度にとって事実上の成功の定義に'),
+      b(
+        'when a useful measure becomes the institution’s practical definition of success',
+        '〜するときに／役立つ測定値が／なります／制度にとって事実上の定義に／成功の',
+        '',
+        'when／a useful measure／becomes／the institution’s practical definition／of success',
+      ),
     ],
     [
       b('An indicator is necessarily a simplified representation of a broader objective', '指標は／必然的に単純化された表現です／より広い目的の'),
@@ -301,12 +352,12 @@ export const ADVANCED_READING_TRANSLATION_SCENARIOS = Object.freeze({
       b('but not every capacity that makes someone a thoughtful reader', 'しかし捉えません／すべての能力を／そしてその能力が／します／人を／思慮深い読み手に'),
     ],
     [
-      b('Once rewards or penalties depend heavily', 'いったん／報酬や罰が／大きく左右されるようになると'),
+      b('Once rewards or penalties depend heavily', 'いったん／報酬や罰が／大きく左右されるようになると', '', 'Once／rewards or penalties／depend heavily'),
       b('on the score', 'その得点によって'),
       b('people have an incentive to optimize the proxy rather than pursue the underlying mission', '人々は／持ちます／動機を／最適化する／代理指標を／根本的な使命を追うより'),
     ],
     [
-      b('This response need not involve obvious cheating', 'この反応は／伴うとは限りません／明らかな不正を'),
+      b('This response need not involve obvious cheating', 'この反応は／伴うとは限りません／明らかな不正を', '', 'This response／need not involve／obvious cheating'),
     ],
     [
       b('A school may devote more time to easily tested skills while neglecting discussion, curiosity', '学校は／割くかもしれません／より多くの時間を／試験しやすい技能に／同時に軽視しながら／話し合い・好奇心を'),
@@ -316,7 +367,7 @@ export const ADVANCED_READING_TRANSLATION_SCENARIOS = Object.freeze({
     ],
     [
       b('A hospital may transfer difficult patients or redefine', '病院は／移送するかもしれません／対応が難しい患者を／または定義し直すかもしれません'),
-      b('when the waiting-time clock officially starts', 'いつ／待ち時間を測る時計が／公式に始まるかを'),
+      b('when the waiting-time clock officially starts', 'いつ／待ち時間を測る時計が／公式に始まるかを', '', 'when／the waiting-time clock／officially starts'),
     ],
     [
       b('Each action can improve the reported number without producing an equivalent improvement', 'どちらの行動も／良くできます／報告される数字を／生み出さずに／それに相当する改善を'),
@@ -332,7 +383,7 @@ export const ADVANCED_READING_TRANSLATION_SCENARIOS = Object.freeze({
       b('for genuine learning', '本当の学習のために'),
     ],
     [
-      b('Critics sometimes conclude', '批判する人々は／ときに結論づけます'),
+      b('Critics sometimes conclude', '批判する人々は／ときに結論づけます', '', 'Critics／sometimes conclude'),
       b('that quantification itself is the problem and', '数量化そのものが／問題であり／そして'),
       b(
         'that experienced professionals should simply',
@@ -351,8 +402,13 @@ export const ADVANCED_READING_TRANSLATION_SCENARIOS = Object.freeze({
       b('in the first place', 'そもそも'),
     ],
     [
-      b('Judgment can remain informed and humane', '判断は／知識に基づき人道的であり続けられます'),
-      b('but it can also become inconsistent, biased, and difficult', 'しかし／判断は／さらに一貫性を欠き、偏り、難しいものにもなり得ます'),
+      b('Judgment can remain informed and humane', '判断は／知識に基づき人道的であり続けられます', '', 'Judgment／can remain informed and humane'),
+      b(
+        'but it can also become inconsistent, biased, and difficult',
+        'しかし／判断は／さらに〜にもなり得ます／一貫性を欠いた／偏った／そして難しいものに',
+        '',
+        'but／it／can also become／inconsistent,／biased,／and difficult',
+      ),
       b('for outsiders to challenge', '外部の人々が／異議を唱えるには'),
     ],
     [
@@ -361,7 +417,12 @@ export const ADVANCED_READING_TRANSLATION_SCENARIOS = Object.freeze({
       b('while ignoring evidence that it repeatedly fails particular communities', '同時に無視しながら／証拠を／その活動が／繰り返し失敗している／特定の共同体で'),
     ],
     [
-      b('The relevant choice is neither perfect numbers nor pure wisdom', 'ここで必要な選択肢は／完全な数字でも純粋な英知でもありません'),
+      b(
+        'The relevant choice is neither perfect numbers nor pure wisdom',
+        'ここで必要な選択肢は／〜ではありません／完全な数字でも／純粋な英知でも',
+        '',
+        'The relevant choice／is／neither perfect numbers／nor pure wisdom',
+      ),
       b('because neither exists', 'なぜなら／どちらも／存在しないからです'),
     ],
     [
@@ -369,7 +430,12 @@ export const ADVANCED_READING_TRANSLATION_SCENARIOS = Object.freeze({
       b('within a process of judgment rather than as automatic verdicts', '判断の過程の中で／自動的な判決としてではなく'),
     ],
     [
-      b('This requires several forms of institutional restraint', 'これには／必要です／いくつかの形の制度的な抑制が'),
+      b(
+        'This requires several forms of institutional restraint',
+        'これには／必要です／いくつかの形の制度的な抑制が',
+        '',
+        'This／requires／several forms of institutional restraint',
+      ),
     ],
     [
       b('First, decision makers should use multiple measures', '第一に／意思決定者は／使うべきです／複数の測定値を'),
@@ -377,11 +443,11 @@ export const ADVANCED_READING_TRANSLATION_SCENARIOS = Object.freeze({
     ],
     [
       b('Graduation rates may be considered alongside student surveys, samples of actual work', '卒業率は／検討できます／生徒への調査・実際の成果物の標本と並べて'),
-      b('and information about what graduates can do later', 'そして情報とも／次のことについて／何を／卒業生が／できるのか／後に'),
+      b('and information about what graduates can do later', 'そして情報とも／次のことについて／何を／卒業生が／できるのか／後に', '', 'and information／about／what／graduates／can do／later'),
     ],
     [
       b('No collection of measures eliminates judgment', 'どの測定値の組合せも／なくしません／判断を'),
-      b('but plural indicators make it harder', 'しかし／複数の指標は／より難しくします'),
+      b('but plural indicators make it harder', 'しかし／複数の指標は／より難しくします', '', 'but／plural indicators／make it harder'),
       b('for one narrow target', '一つの狭い目標が'),
       b('to dominate behavior', '支配することを／行動を'),
     ],
@@ -403,11 +469,11 @@ export const ADVANCED_READING_TRANSLATION_SCENARIOS = Object.freeze({
     [
       b('Third, organizations must examine', '第三に／組織は／調べなければなりません'),
       b('how people adapt', 'どのように／人々が／適応するのかを'),
-      b('once a measure carries consequences', 'いったん／測定値が／結果を伴うようになったら'),
+      b('once a measure carries consequences', 'いったん／測定値が／結果を伴うようになったら', '', 'once／a measure／carries consequences'),
     ],
     [
       b('A quiet diagnostic metric can become unreliable', '目立たない診断用の指標は／信頼できなくなることがあります'),
-      b('after promotion, funding', '〜したあと／昇進・資金が（次へ続く）'),
+      b('after promotion, funding', '〜したあと／昇進・資金が（次へ続く）', '', 'after／promotion, funding'),
       b('or punishment depends', 'あるいは処罰が／左右される'),
       b('on it', 'その指標によって'),
     ],
@@ -419,7 +485,7 @@ export const ADVANCED_READING_TRANSLATION_SCENARIOS = Object.freeze({
     ],
     [
       b('Evaluation systems must be adaptive', '評価制度は／適応的でなければなりません'),
-      b('because the behavior they observe changes', 'なぜなら／行動が／制度が観察する／変化するからです'),
+      b('because the behavior they observe changes', 'なぜなら／行動が／制度が観察する／変化するからです', '', 'because／the behavior／they observe／changes'),
       b('in response to observation', '観察されることに反応して'),
     ],
     [
@@ -428,7 +494,12 @@ export const ADVANCED_READING_TRANSLATION_SCENARIOS = Object.freeze({
     ],
     [
       b('A dashboard can appear open while hiding decisions', '一覧画面は／開かれているように見えることがあります／同時に隠しながら／決定を'),
-      b('about definitions, missing cases, statistical adjustments, and acceptable thresholds', '内容は／定義・欠落した事例・統計的な調整・許容される基準値について'),
+      b(
+        'about definitions, missing cases, statistical adjustments, and acceptable thresholds',
+        '〜について（対象は次へ）／定義／欠落した事例／統計的な調整／そして許容される基準値',
+        '',
+        'about／definitions,／missing cases,／statistical adjustments,／and acceptable thresholds',
+      ),
     ],
     [
       b('Meaningful transparency explains', '意味のある透明性は／説明します'),
@@ -443,27 +514,27 @@ export const ADVANCED_READING_TRANSLATION_SCENARIOS = Object.freeze({
       b('about goals instead of limiting debate to technical compliance', '目標について／限ることの代わりに／議論を／技術的な規則順守に'),
     ],
     [
-      b('It also gives independent researchers a way to test', 'その説明は／さらに与えます／独立した研究者に／検証する方法を'),
-      b('whether alternative definitions would tell a substantially different story', '〜かどうかを／別の定義が／示す／大きく異なる実態を'),
+      b('It also gives independent researchers a way to test', 'その説明は／さらに与えます／独立した研究者に／検証する方法を', '', 'It／also gives／independent researchers／a way to test'),
+      b('whether alternative definitions would tell a substantially different story', '〜かどうかを／別の定義が／示す／大きく異なる実態を', '', 'whether／alternative definitions／would tell／a substantially different story'),
     ],
     [
       b('There is also a political question about', 'あります／さらに政治的な問いが／次のことについて'),
       b('who bears the burden of being measured', 'だれが／負うのか／測定される負担を'),
     ],
     [
-      b('Frontline workers and vulnerable citizens often supply detailed data', '現場の労働者や弱い立場の市民は／しばしば提供します／詳しいデータを'),
+      b('Frontline workers and vulnerable citizens often supply detailed data', '現場の労働者や弱い立場の市民は／しばしば提供します／詳しいデータを', '', 'Frontline workers and vulnerable citizens／often supply／detailed data'),
       b('while senior institutions retain discretion over', '一方／上位の機関は／保ちます／裁量を／次のことについて'),
       b('how the numbers are interpreted', 'どのように／数字が／解釈されるのか'),
     ],
     [
       b('If measurement increases surveillance below but accountability does not increase above', 'もし／測定が／強めるなら／下位への監視を／しかし説明責任が／上位で強まらないなら'),
-      b('the system may weaken rather than strengthen legitimacy', 'その制度は／弱めるかもしれません／正当性を／強めるのではなく'),
+      b('the system may weaken rather than strengthen legitimacy', 'その制度は／弱めるかもしれません／強めるのではなく／正当性を', '', 'the system／may weaken／rather than strengthen／legitimacy'),
     ],
     [
       b('Those', 'その人々は（説明は次へ）'),
       b('who design indicators should therefore', 'つまり設計する／指標を／したがって（述語は次へ）'),
       b('be answerable', '説明責任を負うべきです'),
-      b('for their consequences, including the administrative labor they create', 'その結果について／そこには含まれます／事務作業も／そしてその事務作業を／指標が／生み出します'),
+      b('for their consequences, including the administrative labor they create', 'その結果について／そこには〜も含まれます／事務作業も（内容は次へ）／指標が生み出すものです', '', 'for their consequences,／including／the administrative labor／they create'),
     ],
     [
       b('A mature culture of evaluation recognizes', '成熟した評価文化は／認識します'),
@@ -485,29 +556,49 @@ export const ADVANCED_READING_TRANSLATION_SCENARIOS = Object.freeze({
       b('Institutions can strengthen trust', '機関は／強められます／信頼を'),
       b('by publicly stating', '公に示すことによって'),
       b('that limit', 'その限界を'),
-      b('because this prevents precision from being mistaken', 'なぜなら／このことは／防ぐからです／正確さが取り違えられるのを'),
+      b('because this prevents precision from being mistaken', 'なぜなら／このことは防ぐからです／正確さが／取り違えられるのを', '', 'because／this prevents／precision／from being mistaken'),
       b('for certainty', '確実さと'),
     ],
     [
       b('Metrics are most valuable', '指標は／最も価値を持ちます'),
-      b('when they create questions rather than close them', '〜するときに／指標が／生み出す／問いを／閉じるのではなく／それらを'),
+      b(
+        'when they create questions rather than close them',
+        '〜するときに／指標が／生み出す／問いを／閉じるのではなく／それらを',
+        '',
+        'when／they／create／questions／rather than close／them',
+      ),
     ],
     [
-      b('They should direct attention toward patterns', '指標は／向けるべきです／注意を／傾向へ'),
-      b('that require explanation, provide feedback', 'そしてその傾向は／必要とします／説明を／指標は提供するべきです／改善の手がかりを'),
+      b('They should direct attention toward patterns', '指標は／向けるべきです／注意を／傾向へ', '', 'They／should direct／attention／toward patterns'),
+      b('that require explanation, provide feedback', 'そしてその傾向は／必要とします／説明を／そして提供します／改善の手がかりを', '', 'that／require／explanation,／provide／feedback'),
       b('for revision', '見直しのための'),
       b('and reveal', 'そして、明らかにするべきです'),
       b('whether policies serve their stated mission', '〜かどうかを／政策が／役立っている／掲げた使命に'),
     ],
     [
-      b('When a measure becomes a substitute', '〜すると／測定値が／置き換えるものになる（対象は次へ）'),
+      b(
+        'When a measure becomes a substitute',
+        '〜すると／測定値が／置き換えるものになる（対象は次へ）',
+        '',
+        'When／a measure／becomes a substitute',
+      ),
       b('for that mission', 'その使命を'),
       b('apparent precision can conceal institutional drift', '見かけ上の正確さが／隠す可能性があります／制度が使命からずれていくことを'),
     ],
     [
-      b('When it remains one disciplined source of evidence', '〜するとき／測定が／規律ある一つの証拠源であり続ける'),
+      b(
+        'When it remains one disciplined source of evidence',
+        '〜するとき／測定が／〜であり続ける／規律ある一つの証拠源／証拠の',
+        '',
+        'When／it／remains／one disciplined source／of evidence',
+      ),
       b('among others', 'ほかの証拠源と並ぶ'),
-      b('measurement can support both learning and democratic accountability across changing circumstances and competing interpretations of public value', '測定は／支えることができます／学習と民主的な説明責任の両方を／変化する状況と、公共的価値をめぐる競合する解釈を越えて'),
+      b(
+        'measurement can support both learning and democratic accountability across changing circumstances and competing interpretations of public value',
+        '測定は／支えることができます／学習と民主的な説明責任の両方を／変化する状況を越えて／そして競合する解釈を越えて／公共的価値についての',
+        '',
+        'measurement／can support／both learning and democratic accountability／across changing circumstances／and competing interpretations／of public value',
+      ),
       b('over time', '時間の経過を通じて'),
     ],
   ]),

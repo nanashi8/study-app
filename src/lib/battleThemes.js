@@ -3,6 +3,196 @@ export const MAX_BATTLE_STARS = 9_999_999
 export const BATTLE_XP_PER_EXCHANGE = 50
 export const BATTLE_STARS_PER_EXCHANGE = 25
 
+export const BATTLE_BARRIER_MAP_IMAGE = '/assets/battle/world/barrier-district-night-v2.webp'
+
+// 夜景の窓明かり。百分率座標なので画面幅が変わっても建物の上に留まる。
+export const BATTLE_BARRIER_WINDOW_LIGHTS = [
+  [6, 7, 0.1, 3.8, 1.4], [13, 14, 1.7, 4.6, 1.1],
+  [20, 6, 2.4, 5.2, 1.3], [28, 12, 0.8, 4.1, 1.2],
+  [36, 8, 3.1, 5.8, 1.4], [43, 17, 1.2, 3.9, 1.1],
+  [47, 14, 2.1, 4.4, 1.5], [50, 13, 0.4, 5.1, 1.7],
+  [53, 14, 2.8, 4.7, 1.4], [59, 8, 1.5, 5.5, 1.2],
+  [67, 12, 3.4, 4.2, 1.4], [75, 8, 0.7, 3.7, 1.1],
+  [84, 15, 2.5, 5.6, 1.4], [93, 8, 1.1, 4.8, 1.2],
+  [15, 26, 2.9, 4.3, 1.7], [23, 31, 0.3, 5.3, 1.3],
+  [72, 25, 1.9, 3.6, 1.5], [78, 27, 0.9, 4.9, 1.8],
+  [84, 30, 3.2, 5.4, 1.2], [41, 39, 1.4, 4.5, 1.4],
+  [46, 40, 2.7, 5.1, 1.6], [50, 37, 0.5, 3.8, 1.8],
+  [56, 41, 2.2, 4.7, 1.5], [60, 45, 1.0, 5.7, 1.2],
+  [47, 48, 3.0, 4.2, 1.7], [22, 71, 0.6, 5.0, 1.3],
+  [25, 74, 2.3, 3.9, 1.6], [73, 69, 1.6, 4.6, 1.3],
+  [78, 76, 0.2, 5.2, 1.6], [83, 72, 2.6, 4.1, 1.2],
+  [35, 82, 1.3, 5.5, 1.4], [45, 88, 3.3, 4.8, 1.2],
+  [60, 84, 0.8, 3.7, 1.5], [90, 80, 2.0, 5.3, 1.3],
+].map(([x, y, delay, duration, size], index) => ({
+  id: `window-${index + 1}`,
+  x,
+  y,
+  delay,
+  duration,
+  size,
+}))
+
+// 画像内の主要道路に沿う車灯。白系は前照灯、赤系は尾灯、青系は列車灯。
+export const BATTLE_BARRIER_TRAFFIC_LIGHTS = [
+  {
+    id: 'ring-eastbound',
+    kind: 'headlight',
+    path: 'M -5 54 C 12 51 20 39 35 38 C 46 37 50 31 59 31 C 73 32 84 40 105 38',
+    duration: 13,
+    delay: -1,
+  },
+  {
+    id: 'ring-westbound',
+    kind: 'taillight',
+    path: 'M 105 41 C 83 42 71 36 59 35 C 49 34 44 42 34 43 C 20 44 12 56 -5 59',
+    duration: 15,
+    delay: -8,
+  },
+  {
+    id: 'south-eastbound',
+    kind: 'headlight',
+    path: 'M -5 68 C 16 62 28 63 40 68 C 54 74 63 64 71 58 C 82 48 92 49 105 52',
+    duration: 17,
+    delay: -4,
+  },
+  {
+    id: 'south-westbound',
+    kind: 'taillight',
+    path: 'M 105 55 C 91 53 82 52 73 61 C 63 70 55 78 40 72 C 26 66 12 66 -5 72',
+    duration: 18,
+    delay: -12,
+  },
+  {
+    id: 'shrine-to-library',
+    kind: 'headlight',
+    path: 'M 18 105 C 20 88 28 75 39 67 C 47 61 50 55 50 45 C 50 31 49 19 51 -5',
+    duration: 16,
+    delay: -10,
+  },
+  {
+    id: 'library-to-shrine',
+    kind: 'taillight',
+    path: 'M 53 -5 C 51 20 53 34 52 46 C 51 58 46 64 39 70 C 28 79 24 91 22 105',
+    duration: 19,
+    delay: -3,
+  },
+  {
+    id: 'park-loop-headlight',
+    kind: 'headlight',
+    path: 'M 69 69 C 75 63 85 65 88 75 C 90 84 81 92 72 88 C 65 84 63 75 69 69 Z',
+    duration: 11,
+    delay: -2,
+  },
+  {
+    id: 'park-loop-taillight',
+    kind: 'taillight',
+    path: 'M 72 88 C 63 84 65 72 70 67 C 77 61 88 67 89 77 C 89 86 80 92 72 88 Z',
+    duration: 14,
+    delay: -9,
+  },
+  {
+    id: 'north-arterial',
+    kind: 'taillight',
+    path: 'M -5 10 C 18 7 23 17 38 17 C 54 16 66 9 82 12 C 92 14 98 8 105 5',
+    duration: 20,
+    delay: -6,
+  },
+  {
+    id: 'station-train',
+    kind: 'train',
+    path: 'M 64 18 C 77 17 89 15 106 17',
+    duration: 8,
+    delay: -5,
+  },
+]
+
+export const BATTLE_BARRIER_CENTER = {
+  id: 'school',
+  name: '学校',
+  role: '中央核',
+  emoji: '🏫',
+  x: 50,
+  y: 53,
+  accent: '#fde68a',
+  description: '五つの結界脈を束ねる中心核。生徒たちの学びが結界を安定させる。',
+}
+
+// 背景画像のランドマーク位置に合わせた百分率座標。
+// outer は外周、star は五芒星を描く順番として画面側で使う。
+export const BATTLE_BARRIER_NODES = [
+  {
+    id: 'library',
+    name: '図書館',
+    role: '知識の頂点',
+    emoji: '📚',
+    x: 50,
+    y: 17,
+    accent: '#a78bfa',
+    description: '街に蓄えられた記憶と言葉を守る、北端の結界点。',
+  },
+  {
+    id: 'station',
+    name: '駅前',
+    role: '交流の頂点',
+    emoji: '🚉',
+    x: 79,
+    y: 29,
+    accent: '#38bdf8',
+    description: '人とことばが行き交い、新しい物語を運び込む東の玄関。',
+  },
+  {
+    id: 'central-park',
+    name: '中央公園',
+    role: '調和の頂点',
+    emoji: '🌳',
+    x: 75,
+    y: 76,
+    accent: '#34d399',
+    description: '噴水と緑が街の呼吸を整える、憩いの結界点。',
+  },
+  {
+    id: 'shrine',
+    name: '神社',
+    role: '継承の頂点',
+    emoji: '⛩️',
+    x: 25,
+    y: 77,
+    accent: '#fb7185',
+    description: '古い誓いと地域の記憶を受け継ぐ、静かな結界点。',
+  },
+  {
+    id: 'stadium',
+    name: '競技場',
+    role: '意志の頂点',
+    emoji: '🏟️',
+    x: 20,
+    y: 32,
+    accent: '#f59e0b',
+    description: '挑戦する身体と意志の熱を蓄える、西側の結界点。',
+  },
+]
+
+export const BATTLE_BARRIER_STAR_ORDER = [
+  'library',
+  'central-park',
+  'stadium',
+  'station',
+  'shrine',
+  'library',
+]
+
+const BARRIER_LOCATION_BY_ID = new Map(
+  [BATTLE_BARRIER_CENTER, ...BATTLE_BARRIER_NODES].map((location) => [
+    location.id,
+    location,
+  ]),
+)
+
+export function battleBarrierLocationById(id) {
+  return BARRIER_LOCATION_BY_ID.get(id) ?? BATTLE_BARRIER_CENTER
+}
+
 export const BATTLE_THEMES = [
   {
     id: 'music-pastel',

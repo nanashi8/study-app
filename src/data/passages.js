@@ -7,6 +7,7 @@
 
 import { EXAM_PASSAGES } from './passages-exam.js'
 import { READING_TRANSLATION_SCENARIOS } from './reading-translation-scenarios.js'
+import { reviewSourceFingerprint } from './reading-phrase-review-ledger.js'
 
 const s = (en, ja, chunks, paragraphStart = false) => ({
   en,
@@ -403,7 +404,12 @@ const PROPER_NAME_GLOSSES = [
 
 for (const passage of PASSAGES) {
   const translationScenarios = READING_TRANSLATION_SCENARIOS[passage.id] ?? []
+  const reviewPassageFingerprint = reviewSourceFingerprint(
+    passage.sentences.map((sentence) => sentence.en).join('\n'),
+  )
   for (const [sentenceIndex, sentence] of passage.sentences.entries()) {
+    sentence.reviewId = `${passage.id}#${sentenceIndex + 1}`
+    sentence.reviewPassageFingerprint = reviewPassageFingerprint
     sentence.translationScenario = translationScenarios[sentenceIndex] ?? null
     for (const entry of PROPER_NAME_GLOSSES) {
       if (!entry.test.test(sentence.en)) continue

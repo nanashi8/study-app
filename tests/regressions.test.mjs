@@ -1,8 +1,14 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
 import LZString from 'lz-string'
 
-import { localDayIndexAt, todayIndex, useStore } from '../src/store/useStore.js'
+import {
+  localDayIndexAt,
+  migratePersistedState,
+  todayIndex,
+  useStore,
+} from '../src/store/useStore.js'
 import { buildDeck, buildPhraseDeck, overallProgress } from '../src/lib/session.js'
 import { ALL_WORDS, getWord } from '../src/data/vocab.js'
 import { PHONETIC_OVERRIDES } from '../src/data/phonetic-overrides.js'
@@ -230,6 +236,10 @@ test('進捗コードは廃止済みデータを再保存せず、旧コード�
     battleXpSpent: 200,
     battleThemeId: 'art-tactics',
     battleStudentId: 'noa',
+    battleTraitInvestments: {
+      noa: { insight: 1 },
+      kaito: { courage: 1 },
+    },
     portalOrder: [],
     portalHidden: [],
     stats: { xp: 500 },
@@ -256,6 +266,25 @@ test('進捗コードは廃止済みデータを再保存せず、旧コード�
   assert.equal(restored.battleXpSpent, 200)
   assert.equal(restored.battleThemeId, 'art-tactics')
   assert.equal(restored.battleStudentId, 'noa')
+  assert.deepEqual(restored.battleTraitInvestments, {
+    noa: { insight: 1 },
+    kaito: { courage: 1 },
+  })
+  const legacyStudentCode = encodeProgress({ ...base, battleStudentId: 'sora' })
+  assert.equal(decodeProgress(legacyStudentCode).battleStudentId, 'sora')
+  useStore.getState().importCode(legacyStudentCode)
+  assert.equal(useStore.getState().battleStudentId, 'kaito')
+  assert.equal(decodeProgress(useStore.getState().exportCode()).battleStudentId, 'kaito')
+  assert.equal(
+    migratePersistedState({ ...base, battleStudentId: 'sora' }).battleStudentId,
+    'kaito',
+  )
+  const storeSource = readFileSync(
+    new URL('../src/store/useStore.js', import.meta.url),
+    'utf8',
+  )
+  assert.match(storeSource, /version: 3/)
+  assert.match(storeSource, /migrate: migratePersistedState/)
   assert.throws(() => decodeProgress(encodeProgress({ ...base, srs: [] })), /srs/)
   assert.throws(
     () => decodeProgress(encodeProgress({ ...base, battleRelicLevel: 100 })),
@@ -277,9 +306,18 @@ test('進捗コードは廃止済みデータを再保存せず、旧コード�
     () => decodeProgress(encodeProgress({ ...base, battleStudentId: 'transfer-student' })),
     /battleStudentId/,
   )
+  assert.throws(
+    () => decodeProgress(encodeProgress({
+      ...base,
+      battleStars: 100,
+      battleTraitInvestments: { kaito: { courage: 2 } },
+    })),
+    /battleTraitInvestments/,
+  )
   const olderBase = { ...base }
   delete olderBase.battleStudentId
   delete olderBase.battleXpSpent
+  delete olderBase.battleTraitInvestments
   const olderCode = `EQ1-${LZString.compressToEncodedURIComponent(JSON.stringify({
     ...olderBase,
     v: 1,
@@ -287,6 +325,30 @@ test('進捗コードは廃止済みデータを再保存せず、旧コード�
   useStore.getState().importCode(olderCode)
   assert.equal(useStore.getState().battleStudentId, 'mio')
   assert.equal(useStore.getState().battleXpSpent, 0)
+  assert.deepEqual(useStore.getState().battleTraitInvestments, {})
+})
+
+test('星彩ポイント配分は累計XPと放課後スターを減らさず保存される', () => {
+  const previous = useStore.getState()
+  useStore.setState({
+    stats: { ...previous.stats, xp: 500 },
+    battleStars: 200,
+    battleTraitInvestments: {},
+  })
+
+  useStore.getState().raiseBattleTrait('kaito', 'courage')
+  assert.equal(useStore.getState().stats.xp, 500)
+  assert.equal(useStore.getState().battleStars, 200)
+  assert.deepEqual(useStore.getState().battleTraitInvestments, {
+    kaito: { courage: 1 },
+  })
+
+  const restored = decodeProgress(useStore.getState().exportCode())
+  assert.deepEqual(restored.battleTraitInvestments, {
+    kaito: { courage: 1 },
+  })
+  useStore.getState().resetBattleStudentTraits('kaito')
+  assert.deepEqual(useStore.getState().battleTraitInvestments, {})
 })
 
 test('XP変換は累計XPとLV用の値を減らさず、交換済み分だけを記録する', () => {

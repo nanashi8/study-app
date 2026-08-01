@@ -7,6 +7,7 @@ import { enemyLevel } from '../lib/adaptive.js'
 import { ETYMOLOGY_PACKS, ROOTS, wordsByRoot } from '../data/vocab.js'
 import { todayIndex } from '../store/useStore.js'
 import { capEnemyPositionForHeroLevel, heroProgress } from '../lib/rpg.js'
+import { BATTLE_CHARACTER_VISUAL_COUNT } from '../lib/battleCast.js'
 import { Card, ProgressRing, ProgressBar, Chip } from '../components/ui.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { Flame, Star, Book, BookOpen, Cards, Sparkles, Bookmark, Refresh, ArrowRight, Headphones, Keyboard, Lightbulb, Target, Trophy, ChevronLeft, Link } from '../components/Icons.jsx'
@@ -273,6 +274,25 @@ export function HomeScreen() {
               </div>
             </div>
             <span className="text-brand-500"><ArrowRight size={22} /></span>
+          </button>
+        </Card>
+
+        {/* 学校キャストとの採点なし会話。学習評価・バトル能力には接続しない。 */}
+        <Card className="overflow-hidden">
+          <button
+            onClick={() => navigate('characterTalk')}
+            className="flex w-full items-center gap-3 bg-gradient-to-br from-fuchsia-50 via-white to-cyan-50 p-4 text-left active:opacity-90"
+          >
+            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-fuchsia-500 to-violet-600 text-2xl text-white shadow-md">
+              💬
+            </span>
+            <div className="min-w-0 flex-1">
+              <div className="font-display font-extrabold text-ink">放課後トーク</div>
+              <div className="text-xs font-bold text-ink/50">
+                主人公として仲間と話す、{BATTLE_CHARACTER_VISUAL_COUNT}枚のキャラ絵・100枚の日常絵・150の質問・1000万通り以上の掛け合い
+              </div>
+            </div>
+            <span className="text-fuchsia-500"><ArrowRight size={22} /></span>
           </button>
         </Card>
 

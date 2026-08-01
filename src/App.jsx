@@ -6,6 +6,7 @@ import { LoginScreen } from './screens/Login.jsx'
 import { AppShell } from './components/AppShell.jsx'
 import { BottomNav } from './components/BottomNav.jsx'
 import { SpeechSettingsSheet } from './components/SpeechSettings.jsx'
+import { GameBgmController } from './components/GameBgm.jsx'
 import { PortalScreen } from './screens/Portal.jsx'
 
 // ポータル初期表示で全語彙・数式・QR読取などを一括取得しないよう、各画面を遅延読込する。
@@ -71,6 +72,10 @@ const WritingGrammarReviewScreen = lazyScreen(
   'WritingGrammarReviewScreen',
 )
 const EnglishMapScreen = lazyScreen(() => import('./screens/EnglishMap.jsx'), 'EnglishMapScreen')
+const CharacterTalkScreen = lazyScreen(
+  () => import('./screens/CharacterTalk.jsx'),
+  'CharacterTalkScreen',
+)
 const DiagnosticScreen = lazyScreen(() => import('./screens/Diagnostic.jsx'), 'DiagnosticScreen')
 const KotenListScreen = lazyScreen(() => import('./screens/KotenList.jsx'), 'KotenListScreen')
 const KotenStudyScreen = lazyScreen(() => import('./screens/KotenStudy.jsx'), 'KotenStudyScreen')
@@ -153,6 +158,7 @@ const SCREENS = {
   myGrammar: MyGrammarScreen,
   writingGrammarReview: WritingGrammarReviewScreen,
   englishMap: EnglishMapScreen,
+  characterTalk: CharacterTalkScreen,
   diagnostic: DiagnosticScreen,
   kotenList: KotenListScreen,
   kotenStudy: KotenStudyScreen,
@@ -178,6 +184,7 @@ const IMMERSIVE = new Set([
   'vocabStudy', 'vocabQuiz', 'etymologyStudy', 'wordDetail', 'vocabCamera', 'sessionResult', 'readingPrep', 'reader', 'literatureLibrary', 'literatureReader', 'phraseStudy', 'phraseQuiz',
   'listeningQuiz', 'dictationPlay', 'mathIntro', 'mathSolve', 'grammarQuiz', 'diagnostic',
   'writingPlay', 'writingGrammarReview',
+  'characterTalk',
   // 別コンテンツ（ポータルから入る）
   'vocabSearch', 'wordRequests', 'mathMap', 'mathUnits',
   'kotenList', 'kotenStudy', 'kotenQuiz', 'kotenInterpretationList',
@@ -199,6 +206,7 @@ function MainApp() {
         </Suspense>
       </AppShell>
       <SpeechSettingsSheet />
+      <GameBgmController />
     </>
   )
 }
