@@ -340,7 +340,7 @@ test('英語と日本語の選択設定が読み上げ画面まで接続され�
   assert.match(settings, /「拡張」「Premium」「Enhanced」/)
   assert.equal(
     reader.match(/voiceURI:\s*settings\.ttsJapaneseVoiceURI/g)?.length,
-    7,
+    8,
   )
   assert.match(literature, /step\.lang === 'ja-JP'/)
   assert.match(literature, /settings\.ttsJapaneseVoiceURI/)

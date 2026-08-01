@@ -715,7 +715,7 @@ test('同じ種類の質問が続いても同席キャラの相槌を連続重�
   assert.notEqual(first.messages[2].text, second.messages[2].text)
 })
 
-test('放課後トークはホームと日常シーンから入り、狭幅向け4択と無限継続UIを持つ', async () => {
+test('仲間との会話は放課後ことば探検記へ統合し、狭幅向け4択と無限継続UIを持つ', async () => {
   const [app, home, map, screen, css, talkLogic, dailyLogic, visualLogic, revealLogic, grievanceLogic] = await Promise.all([
     readFile(new URL('../src/App.jsx', import.meta.url), 'utf8'),
     readFile(new URL('../src/screens/Home.jsx', import.meta.url), 'utf8'),
@@ -731,10 +731,13 @@ test('放課後トークはホームと日常シーンから入り、狭幅向�
 
   assert.match(app, /characterTalk: CharacterTalkScreen/)
   assert.match(app, /'characterTalk'/)
-  assert.match(home, /navigate\('characterTalk'\)/)
-  assert.match(home, /BATTLE_CHARACTER_VISUAL_COUNT}枚のキャラ絵・100枚の日常絵・150の質問・1000万通り以上の掛け合い/)
-  assert.match(map, /CampusLifeGallery onTalk=\{\(\) => navigate\('characterTalk'\)\}/)
+  assert.match(app, /afterSchoolChronicle: AfterSchoolChronicleScreen/)
+  assert.match(home, /navigate\('afterSchoolChronicle'\)/)
+  assert.match(home, /AFTER_SCHOOL_CHRONICLE\.title/)
+  assert.doesNotMatch(home, /navigate\('characterTalk'\)/)
+  assert.match(map, /navigate\('characterTalk', \{ fromGame: true, storyStep: battleStoryStep \}\)/)
   assert.match(map, /💬 日常トークへ/)
+  assert.match(screen, /AFTER_SCHOOL_CHRONICLE\.shortTitle}・仲間との会話/)
 
   assert.match(screen, /質問・相談/)
   assert.match(screen, /仲間の話/)
@@ -771,7 +774,6 @@ test('放課後トークはホームと日常シーンから入り、狭幅向�
   assert.match(screen, /部活動ビジュアル/)
   assert.match(screen, /dailyOutfitForCategory/)
   assert.match(screen, /outfitId/)
-  assert.match(screen, /CHARACTER_DAILY_VISUAL_COUNT/)
   assert.match(screen, /日常アルバム/)
   assert.match(screen, /主人公は画面外/)
   assert.match(screen, /手・姿・影・反射/)

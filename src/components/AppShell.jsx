@@ -14,7 +14,7 @@ export function AppShell({ children, nav }) {
 
 // 各画面共通のヘッダー（戻る・タイトル・右アクション）。
 import { useStore } from '../store/useStore.js'
-import { IconButton } from './ui.jsx'
+import { IconButton, cx } from './ui.jsx'
 import { ChevronLeft } from './Icons.jsx'
 import { SpeechSettingsButton } from './SpeechSettings.jsx'
 
@@ -24,6 +24,7 @@ export function ScreenHeader({
   right,
   onBack,
   color,
+  inverse = false,
   showSpeechSettings = true,
 }) {
   const back = useStore((s) => s.back)
@@ -36,15 +37,35 @@ export function ScreenHeader({
           : 'linear-gradient(to bottom, rgba(255,255,255,0.9), rgba(255,255,255,0.0))',
       }}
     >
-      <IconButton onClick={onBack ?? back} aria-label="戻る">
+      <IconButton
+        onClick={onBack ?? back}
+        aria-label="戻る"
+        className={inverse ? 'text-white active:bg-white/10' : ''}
+      >
         <ChevronLeft size={24} />
       </IconButton>
       <div className="min-w-0 flex-1">
-        {title && <h1 className="truncate font-display text-lg font-extrabold leading-tight text-ink">{title}</h1>}
-        {subtitle && <p className="truncate text-xs font-bold text-ink/50">{subtitle}</p>}
+        {title && (
+          <h1 className={cx(
+            'truncate font-display text-lg font-extrabold leading-tight',
+            inverse ? 'text-white' : 'text-ink',
+          )}
+          >
+            {title}
+          </h1>
+        )}
+        {subtitle && (
+          <p className={cx(
+            'truncate text-xs font-bold',
+            inverse ? 'text-white/55' : 'text-ink/50',
+          )}
+          >
+            {subtitle}
+          </p>
+        )}
       </div>
       {right}
-      {showSpeechSettings && <SpeechSettingsButton />}
+      {showSpeechSettings && <SpeechSettingsButton inverse={inverse} />}
     </header>
   )
 }

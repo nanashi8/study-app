@@ -240,6 +240,7 @@ test('進捗コードは廃止済みデータを再保存せず、旧コード�
       noa: { insight: 1 },
       kaito: { courage: 1 },
     },
+    battleStoryStep: 7,
     portalOrder: [],
     portalHidden: [],
     stats: { xp: 500 },
@@ -270,6 +271,7 @@ test('進捗コードは廃止済みデータを再保存せず、旧コード�
     noa: { insight: 1 },
     kaito: { courage: 1 },
   })
+  assert.equal(restored.battleStoryStep, 7)
   const legacyStudentCode = encodeProgress({ ...base, battleStudentId: 'sora' })
   assert.equal(decodeProgress(legacyStudentCode).battleStudentId, 'sora')
   useStore.getState().importCode(legacyStudentCode)
@@ -314,10 +316,15 @@ test('進捗コードは廃止済みデータを再保存せず、旧コード�
     })),
     /battleTraitInvestments/,
   )
+  assert.throws(
+    () => decodeProgress(encodeProgress({ ...base, battleStoryStep: -1 })),
+    /battleStoryStep/,
+  )
   const olderBase = { ...base }
   delete olderBase.battleStudentId
   delete olderBase.battleXpSpent
   delete olderBase.battleTraitInvestments
+  delete olderBase.battleStoryStep
   const olderCode = `EQ1-${LZString.compressToEncodedURIComponent(JSON.stringify({
     ...olderBase,
     v: 1,
@@ -326,6 +333,7 @@ test('進捗コードは廃止済みデータを再保存せず、旧コード�
   assert.equal(useStore.getState().battleStudentId, 'mio')
   assert.equal(useStore.getState().battleXpSpent, 0)
   assert.deepEqual(useStore.getState().battleTraitInvestments, {})
+  assert.equal(useStore.getState().battleStoryStep, 0)
 })
 
 test('星彩ポイント配分は累計XPと放課後スターを減らさず保存される', () => {

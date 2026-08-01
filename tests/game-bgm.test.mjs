@@ -75,21 +75,24 @@ test('全曲が約3分で、全音符イベントを有限値だけで生成す�
   assert.ok(eventCount > 60_000)
 })
 
-test('放課後マップは12の日常曲を日替わりで循環する', () => {
-  const firstCycle = BATTLE_DAILY_SCENES.map((scene, day) => {
-    const track = gameBgmTrackForState({ screen: 'englishMap', day })
+test('放課後ことば探検記は12の日常曲を物語順に循環し、通常学習では鳴らない', () => {
+  const firstCycle = BATTLE_DAILY_SCENES.map((scene, storyStep) => {
+    const track = gameBgmTrackForState({ screen: 'afterSchoolChronicle', storyStep })
     assert.equal(track, DAILY_BGM_BY_SCENE_ID.get(scene.id))
     return track.id
   })
   assert.equal(new Set(firstCycle).size, 12)
   assert.equal(
-    gameBgmTrackForState({ screen: 'englishMap', day: 12 }).id,
+    gameBgmTrackForState({ screen: 'afterSchoolInterlude', storyStep: 12 }).id,
     firstCycle[0],
   )
   assert.equal(
-    gameBgmTrackForState({ screen: 'englishMap', day: -1 }).id,
-    firstCycle.at(-1),
+    gameBgmTrackForState({ screen: 'characterTalk', storyStep: 1 }).id,
+    firstCycle[1],
   )
+  assert.equal(gameBgmTrackForState({ screen: 'englishMap', storyStep: 1 }), null)
+  assert.equal(gameBgmTrackForState({ screen: 'vocabStudy', storyStep: 1 }), null)
+  assert.equal(gameBgmTrackForState({ screen: 'reader', storyStep: 1 }), null)
 })
 
 test('通常戦は英検級曲、章末戦は先生ごとの専用曲を選ぶ', () => {
@@ -146,12 +149,16 @@ test('全画面コントローラー・音量設定・読み上げダッキン�
   const player = read('../src/lib/gameBgmPlayer.js')
 
   assert.match(app, /<GameBgmController \/>/)
-  assert.match(settings, />\s*ゲームBGM\s*</)
+  assert.match(settings, />\s*放課後ことば探検記 BGM\s*</)
+  assert.match(settings, /通常の単語・文法・長文など学習画面では鳴りません/)
   assert.match(settings, /setSetting\('bgmEnabled'/)
   assert.match(settings, /setSetting\('bgmVolume'/)
   assert.match(store, /bgmEnabled:\s*true/)
   assert.match(store, /bgmVolume:\s*0\.35/)
   assert.match(store.slice(store.indexOf('partialize:')), /settings:\s*st\.settings/)
+  assert.match(app, /afterSchoolChronicle: AfterSchoolChronicleScreen/)
+  assert.match(app, /afterSchoolInterlude: AfterSchoolInterludeScreen/)
+  assert.match(read('../src/components/GameBgm.jsx'), /battleStoryStep/)
   assert.match(player, /speechSynthesis\?\.speaking/)
   assert.match(player, /SPEECH_DUCK_FACTOR/)
 })

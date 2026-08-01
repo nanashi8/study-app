@@ -11,6 +11,7 @@ import {
   battleTraitPointsSpent,
   isValidBattleTraitInvestments,
 } from './battleTraits.js'
+import { MAX_BATTLE_STORY_STEP } from './afterSchoolStory.js'
 
 const CODE_VERSION = 1
 const PREFIX = 'EQ1-' // EigoQuest v1。先頭でアプリ/バージョンを判別する。
@@ -50,6 +51,7 @@ export function buildPayload(state) {
     battleThemeId: state.battleThemeId,
     battleStudentId: state.battleStudentId,
     battleTraitInvestments: state.battleTraitInvestments,
+    battleStoryStep: state.battleStoryStep,
     portalOrder: state.portalOrder,
     portalHidden: state.portalHidden,
     stats: state.stats,
@@ -180,6 +182,16 @@ export function decodeProgress(code) {
     throw new Error('コードの battleTraitInvestments が不正です。')
   }
   if (
+    'battleStoryStep' in payload
+    && (
+      !Number.isSafeInteger(payload.battleStoryStep)
+      || payload.battleStoryStep < 0
+      || payload.battleStoryStep > MAX_BATTLE_STORY_STEP
+    )
+  ) {
+    throw new Error('コードの battleStoryStep が不正です。')
+  }
+  if (
     'diagnosticAttempt' in payload
     && (!Number.isSafeInteger(payload.diagnosticAttempt) || payload.diagnosticAttempt < 0)
   ) {
@@ -222,5 +234,6 @@ export function summarizePayload(payload, isWordId = () => true) {
     battleStars: payload.battleStars ?? 0,
     battleXpSpent: payload.battleXpSpent ?? 0,
     battleTraitPoints: battleTraitPointsSpent(payload.battleTraitInvestments),
+    battleStoryStep: payload.battleStoryStep ?? 0,
   }
 }

@@ -18,6 +18,10 @@ import {
   READING_MODIFIER_PHRASE_WORD_LIMIT,
   analyzeReadingSentence,
 } from './reading-grammar.js'
+import {
+  serializeStructureTokens,
+  structureGroupOutline,
+} from './structure-markers.js'
 
 const PREPOSITIONS = new Set([
   'about', 'across', 'after', 'against', 'along', 'among', 'around', 'at',
@@ -528,6 +532,56 @@ const READING_BINDING_EXPECTATIONS = new Map([
   ['Missed medical appointments could indicate irresponsibility, but interviews might reveal that a new transport schedule made the clinic inaccessible.|||made', { ja: '〜にしました（対象・状態は次へ）' }],
   ['Missed medical appointments could indicate irresponsibility, but interviews might reveal that a new transport schedule made the clinic inaccessible.|||inaccessible', { ja: '利用しにくい状態に（したということを）' }],
   ['Good projects reduce these problems through clear training and careful design.|||through clear training and careful design', { ingBinding: undefined }],
+])
+
+const READING_BLOCK_MARKED_EXPECTATIONS = new Map([
+  [
+    'This evidence makes it easier to improve a design or decide that a simpler solution would work better.',
+    'This evidence makes it easier <to improve a design or decide (that a simpler solution would work better)>',
+  ],
+  [
+    'The integrity of public memory is then shaped less by what is available than by what is repeatedly presented as relevant.',
+    'The integrity of public memory is then shaped less (by what is available) than (by what is repeatedly presented as relevant)',
+  ],
+  [
+    'If that practice declines, even perfect archives will not prevent societies from losing their ability to learn from what they once knew.',
+    '(If that practice declines) even perfect archives will not prevent societies <from losing their ability> <to learn> (from what they once knew)',
+  ],
+])
+
+const READING_BLOCK_STRUCTURE_TOKEN_EXPECTATIONS = new Map([
+  [
+    'This evidence makes it easier to improve a design or decide that a simpler solution would work better.',
+    [
+      {
+        kind: 'phrase', depth: 0, parentKind: null,
+        text: 'to improve a design or decide that a simpler solution would work better',
+      },
+      {
+        kind: 'clause', depth: 1, parentKind: 'phrase',
+        text: 'that a simpler solution would work better',
+      },
+    ],
+  ],
+  [
+    'The integrity of public memory is then shaped less by what is available than by what is repeatedly presented as relevant.',
+    [
+      { kind: 'clause', depth: 0, parentKind: null, text: 'by what is available' },
+      {
+        kind: 'clause', depth: 0, parentKind: null,
+        text: 'by what is repeatedly presented as relevant',
+      },
+    ],
+  ],
+  [
+    'If that practice declines, even perfect archives will not prevent societies from losing their ability to learn from what they once knew.',
+    [
+      { kind: 'clause', depth: 0, parentKind: null, text: 'If that practice declines' },
+      { kind: 'phrase', depth: 0, parentKind: null, text: 'from losing their ability' },
+      { kind: 'phrase', depth: 0, parentKind: null, text: 'to learn' },
+      { kind: 'clause', depth: 0, parentKind: null, text: 'from what they once knew' },
+    ],
+  ],
 ])
 
 const READING_SEQUENCE_EXPECTATIONS = new Map([
@@ -1155,6 +1209,7 @@ export function auditPhraseExplanations() {
     semanticBindingErrors: [],
     structuralDisplayMismatches: [],
     staleGrammarBlockPayloads: [],
+    grammarBlockStructureMismatches: [],
     misclassifiedGrammarBlocks: [],
     invalidJapaneseFallbacks: [],
     correctionMismatches: [],
@@ -1167,6 +1222,7 @@ export function auditPhraseExplanations() {
   const seenStructuralDisplayTargets = new Set()
   const seenReadingClosureTargets = new Set()
   const seenReadingReviewIds = new Set()
+  const seenGrammarBlockStructureTargets = new Set()
   let manuallyReviewedReadingSentenceCount = 0
   let readingGrammarBlockCount = 0
 
@@ -1257,6 +1313,45 @@ export function auditPhraseExplanations() {
           }))
         }
       })
+      const expectedMarked = READING_BLOCK_MARKED_EXPECTATIONS.get(sentence.en)
+      if (
+        analysis.structureMarkerErrors.length > 0 ||
+        serializeStructureTokens(analysis.structureTokens) !== analysis.marked
+      ) {
+        readingIssues.grammarBlockStructureMismatches.push(Object.freeze({
+          passageId: passage.id,
+          sentenceIndex,
+          sentence: sentence.en,
+          phrase: '(sentence-structure-tokens)',
+          field: '見取り図マーカーを画面用トークンへ損失なく変換できません',
+        }))
+      }
+      if (expectedMarked) {
+        seenGrammarBlockStructureTargets.add(sentence.en)
+        if (analysis.marked !== expectedMarked) {
+          readingIssues.grammarBlockStructureMismatches.push(Object.freeze({
+            passageId: passage.id,
+            sentenceIndex,
+            sentence: sentence.en,
+            phrase: '(sentence-structure-display)',
+            field: `見取り図が「${expectedMarked}」と一致しません`,
+          }))
+        }
+        const expectedTokens = READING_BLOCK_STRUCTURE_TOKEN_EXPECTATIONS.get(sentence.en)
+        if (
+          !expectedTokens ||
+          stableSemanticValue(structureGroupOutline(analysis.structureTokens)) !==
+            stableSemanticValue(expectedTokens)
+        ) {
+          readingIssues.grammarBlockStructureMismatches.push(Object.freeze({
+            passageId: passage.id,
+            sentenceIndex,
+            sentence: sentence.en,
+            phrase: '(sentence-structure-token-tree)',
+            field: '実レンダー用の節・句トークン階層が本文別期待値と一致しません',
+          }))
+        }
+      }
       if (!analysis.phraseSequence.every((phrase) => phrase.status === 'confirmed')) {
         readingIssues.unreviewedSentences.push(Object.freeze({
           passageId: passage.id,
@@ -1445,6 +1540,18 @@ export function auditPhraseExplanations() {
       sentence,
       phrase,
       field: `構造表示期待 ${expectedDisplay} に対応する実フレーズがありません`,
+    }))
+  }
+
+  for (const [sentence, expectedMarked] of READING_BLOCK_MARKED_EXPECTATIONS) {
+    if (seenGrammarBlockStructureTargets.has(sentence)) continue
+    readingIssues.grammarBlockStructureMismatches.push(Object.freeze({
+      passageId: '',
+      sentenceIndex: -1,
+      phraseIndex: -1,
+      sentence,
+      phrase: '(sentence-structure-display)',
+      field: `見取り図期待「${expectedMarked}」に対応する実文がありません`,
     }))
   }
 

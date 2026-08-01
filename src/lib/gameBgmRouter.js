@@ -1,6 +1,6 @@
 import { LEVELS } from '../data/levels.js'
-import { BATTLE_DAILY_SCENES } from './battleCast.js'
 import { battleVerdict, encounterFor } from './rpg.js'
+import { afterSchoolScene } from './afterSchoolStory.js'
 import {
   bossBgmTrack,
   dailyBgmTrack,
@@ -8,13 +8,20 @@ import {
   resultBgmTrack,
 } from '../data/game-bgm.js'
 
-const positiveMod = (value, modulus) => ((value % modulus) + modulus) % modulus
+const DAILY_GAME_SCREENS = new Set([
+  'afterSchoolChronicle',
+  'afterSchoolInterlude',
+  'characterTalk',
+])
 
 /** 現在のゲーム画面と保存済みバトルsourceから、鳴らす1曲を決める。 */
-export function gameBgmTrackForState({ screen, params = {}, day = 0 } = {}) {
-  if (screen === 'englishMap') {
-    const index = positiveMod(Math.floor(Number(day) || 0), BATTLE_DAILY_SCENES.length)
-    return dailyBgmTrack(BATTLE_DAILY_SCENES[index].id)
+export function gameBgmTrackForState({ screen, params = {}, day = 0, storyStep = 0 } = {}) {
+  if (DAILY_GAME_SCREENS.has(screen)) {
+    const scene = afterSchoolScene({
+      sceneId: params.sceneId,
+      step: Number.isSafeInteger(params.storyStep) ? params.storyStep : storyStep,
+    })
+    return dailyBgmTrack(scene.id)
   }
 
   const source = params?.source

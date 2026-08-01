@@ -67,6 +67,10 @@
   0%, 100% { transform: scale(1.01); }
   50% { transform: scale(1.055); }
 }
+@keyframes after-school-key-drift {
+  from { transform: scale(1.01) translate3d(0, 0, 0); }
+  to { transform: scale(1.055) translate3d(-0.7%, -0.45%, 0); }
+}
 @keyframes mob-hover {
   0%, 100% { transform: translateY(0) scale(1); }
   50% { transform: translateY(-2px) scale(1.03); }
@@ -300,6 +304,38 @@
 .battle-vignette {
   animation: battle-vignette-breathe 7s ease-in-out infinite;
   transform-origin: center;
+}
+.after-school-portal,
+.after-school-key-visual,
+.after-school-interlude-hero {
+  isolation: isolate;
+}
+.after-school-portal > img,
+.after-school-key-visual > img,
+.after-school-interlude-hero > img {
+  animation: after-school-key-drift 15s ease-in-out infinite alternate;
+  transform-origin: center;
+}
+.after-school-portal::after,
+.after-school-key-visual::after,
+.after-school-interlude-hero::after {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  pointer-events: none;
+  content: '';
+  opacity: 0.13;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0 3px,
+    rgb(255 255 255 / 0.12) 3px 4px
+  );
+  mix-blend-mode: soft-light;
+}
+.after-school-portal > span,
+.after-school-key-visual > div,
+.after-school-interlude-hero > div {
+  z-index: 2;
 }
 .mob-battle-stage {
   position: relative;
@@ -1680,6 +1716,9 @@
 @media (prefers-reduced-motion: reduce) {
   .mob-battle-stage::before,
   .battle-vignette,
+  .after-school-portal > img,
+  .after-school-key-visual > img,
+  .after-school-interlude-hero > img,
   .mob-portrait,
   .mob-portrait-hit,
   .mob-versus-rune,

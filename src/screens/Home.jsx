@@ -7,12 +7,15 @@ import { enemyLevel } from '../lib/adaptive.js'
 import { ETYMOLOGY_PACKS, ROOTS, wordsByRoot } from '../data/vocab.js'
 import { todayIndex } from '../store/useStore.js'
 import { capEnemyPositionForHeroLevel, heroProgress } from '../lib/rpg.js'
-import { BATTLE_CHARACTER_VISUAL_COUNT } from '../lib/battleCast.js'
+import { AFTER_SCHOOL_CHRONICLE } from '../lib/afterSchoolStory.js'
 import { Card, ProgressRing, ProgressBar, Chip } from '../components/ui.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { Flame, Star, Book, BookOpen, Cards, Sparkles, Bookmark, Refresh, ArrowRight, Headphones, Keyboard, Lightbulb, Target, Trophy, ChevronLeft, Link } from '../components/Icons.jsx'
 
 const APP_NAME = '英語アプリ'
+
+const publicAssetUrl = (path) =>
+  `${import.meta.env.BASE_URL}${String(path ?? '').replace(/^\//, '')}`
 
 function ModeTile({ icon, label, sub, color, onClick, disabled }) {
   return (
@@ -143,7 +146,7 @@ export function HomeScreen() {
 
         {/* 冒険者LV：XPで1〜99まで上がり、下がらない長期成長。 */}
         <button
-          onClick={() => navigate('englishMap')}
+          onClick={() => navigate('afterSchoolChronicle')}
           className="mt-4 flex w-full items-center gap-3 rounded-3xl border border-white/15 bg-slate-950/20 p-3 text-left backdrop-blur transition-transform active:scale-[0.99]"
         >
           <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/15 text-2xl">
@@ -164,7 +167,7 @@ export function HomeScreen() {
               className="mt-1.5 h-2 bg-white/15"
             />
             <p className="mt-1 text-[10px] font-bold text-white/60">
-              {hero.chapter.emoji} {hero.chapter.name}を冒険中
+              {hero.chapter.emoji} {AFTER_SCHOOL_CHRONICLE.shortTitle}・{hero.chapter.name}
             </p>
           </div>
           <ArrowRight size={18} className="text-white/60" />
@@ -258,7 +261,41 @@ export function HomeScreen() {
           </button>
         </Card>
 
-        {/* 学習マップ・弱点チェック */}
+        {/* 学校生活とことばの対決を一つの物語として遊ぶゲーム入口。 */}
+        <Card className="overflow-hidden">
+          <button
+            onClick={() => navigate('afterSchoolChronicle')}
+            className="relative block w-full overflow-hidden bg-slate-950 text-left text-white active:opacity-95"
+          >
+            <img
+              src={publicAssetUrl(AFTER_SCHOOL_CHRONICLE.keyVisual)}
+              alt="放課後の昇降口で、4人の高校生が校内図を囲んで次の課題ルートを相談している"
+              className="aspect-[16/8] w-full object-cover"
+            />
+            <span className="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/35 to-transparent" />
+            <span className="absolute inset-x-0 bottom-0 flex items-end gap-3 p-4">
+              <span className="min-w-0 flex-1">
+                <span className="text-[8px] font-extrabold tracking-[0.16em] text-cyan-200">
+                  AFTER SCHOOL CHRONICLE
+                </span>
+                <strong className="mt-0.5 block font-display text-lg font-extrabold">
+                  {AFTER_SCHOOL_CHRONICLE.title}
+                </strong>
+                <span className="mt-1 block text-[10px] font-bold leading-relaxed text-white/65">
+                  日常 → ことばの対決 → 放課後日誌
+                </span>
+                <span className="mt-1 block text-[9px] font-extrabold text-amber-100">
+                  {hero.title.emoji} LV{hero.level} · 英検{enemy.label}の課題に挑戦中
+                </span>
+              </span>
+              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-white text-violet-700 shadow-lg">
+                <ArrowRight size={20} />
+              </span>
+            </span>
+          </button>
+        </Card>
+
+        {/* 学習結果をゲームと分けて確認する通常の学習マップ。 */}
         <Card>
           <button
             onClick={() => navigate('englishMap')}
@@ -268,31 +305,12 @@ export function HomeScreen() {
               <Target size={24} />
             </span>
             <div className="flex-1">
-              <div className="font-display font-extrabold text-ink">冒険ギルド・学習バトル</div>
+              <div className="font-display font-extrabold text-ink">学習マップ・弱点チェック</div>
               <div className="text-xs font-bold text-ink/50">
-                冒険者LV{hero.level}・敵ランクは英検{enemy.label}
+                6分野の結果から、次に学ぶ内容を選ぶ
               </div>
             </div>
             <span className="text-brand-500"><ArrowRight size={22} /></span>
-          </button>
-        </Card>
-
-        {/* 学校キャストとの採点なし会話。学習評価・バトル能力には接続しない。 */}
-        <Card className="overflow-hidden">
-          <button
-            onClick={() => navigate('characterTalk')}
-            className="flex w-full items-center gap-3 bg-gradient-to-br from-fuchsia-50 via-white to-cyan-50 p-4 text-left active:opacity-90"
-          >
-            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-fuchsia-500 to-violet-600 text-2xl text-white shadow-md">
-              💬
-            </span>
-            <div className="min-w-0 flex-1">
-              <div className="font-display font-extrabold text-ink">放課後トーク</div>
-              <div className="text-xs font-bold text-ink/50">
-                主人公として仲間と話す、{BATTLE_CHARACTER_VISUAL_COUNT}枚のキャラ絵・100枚の日常絵・150の質問・1000万通り以上の掛け合い
-              </div>
-            </div>
-            <span className="text-fuchsia-500"><ArrowRight size={22} /></span>
           </button>
         </Card>
 

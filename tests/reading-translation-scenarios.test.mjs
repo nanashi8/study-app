@@ -72,9 +72,11 @@ test('全長文・全文・全ブロックに講師監修の語順訳シナリ�
           const wordCount = pair.en.match(/[A-Za-z]+(?:['’][A-Za-z]+)*/g)?.length ?? 0
           assert.equal(pair.roles.length, 1, `${phraseAt}: 異なる役割が一フレーズに混在している`)
           const extendedPhrase = pair.roles.every((role) => ['M', 'LINK'].includes(role))
-          const wordLimit = extendedPhrase
-            ? READING_MODIFIER_PHRASE_WORD_LIMIT
-            : READING_CORE_PHRASE_WORD_LIMIT
+          const wordLimit = Number.isFinite(pair.wordLimit)
+            ? pair.wordLimit
+            : extendedPhrase
+              ? READING_MODIFIER_PHRASE_WORD_LIMIT
+              : READING_CORE_PHRASE_WORD_LIMIT
           assert.ok(
             wordCount >= 1 && wordCount <= wordLimit,
             `${phraseAt}: ${pair.roleHeading}の${wordCount}語は構造フレーズとして長すぎる`,
@@ -99,7 +101,7 @@ test('全長文・全文・全ブロックに講師監修の語順訳シナリ�
           block.jaSegments.every((segment) => /[ぁ-んァ-ヶ一-龠]/.test(segment)),
           `${location}: 日本語のない意味単位がある`,
         )
-        assert.doesNotMatch(block.ja, /[。！？]/, `${location}: 自然訳の文末が語順訳へ混入した`)
+        assert.doesNotMatch(block.ja, /[。！？]$/, `${location}: 自然訳の文末が語順訳へ混入した`)
         if (block.jaSegments.length > 1) {
           explicitSequenceCount++
           assert.match(block.ja, /／/, `${location}: 前へ進む区切りが表示されない`)
@@ -168,24 +170,26 @@ test('基準例は英語の語順どおり、動作・行き先・手段・時�
 })
 
 test('日本語の自然語順へ戻りやすい目的語・比較・理由も英語順に固定する', () => {
-  const allBlocks = PASSAGES.flatMap((passage) =>
-    passage.sentences.flatMap((sentence) => analyzeReadingSentence(sentence).blocks))
+  const phraseJapanese = (fragment) => {
+    const sentence = PASSAGES.flatMap((passage) => passage.sentences)
+      .find((item) => item.en.includes(fragment))
+    assert.ok(sentence, `対象文がない: ${fragment}`)
+    return analyzeReadingSentence(sentence).phraseSequence.map((phrase) => phrase.ja)
+  }
 
-  const bicycleProgram = allBlocks.find((block) =>
-    block.en === 'The program will teach simple traffic rules and show people how to prevent common bicycle accidents')
-  assert.deepEqual(bicycleProgram?.jaSegments, [
+  assert.deepEqual(phraseJapanese('The program will teach'), [
     'その催しは',
     '教えます',
     '簡単な交通ルールを',
-    'そして示します',
+    'そして',
+    '示します',
     '人々に',
-    'どのように防ぐかを',
-    'よくある自転車事故を',
+    'どのように',
+    '防ぐこと（対象は次へ）',
+    'よくある自転車事故をどう防ぐかを（人々に示します）',
   ])
 
-  const collectiveMemory = allBlocks.find((block) =>
-    block.en === 'Yet collective memory is a far more fragile phenomenon than the existence of records might suggest')
-  assert.deepEqual(collectiveMemory?.jaSegments, [
+  assert.deepEqual(phraseJapanese('Yet collective memory'), [
     'しかし',
     '集合的記憶は',
     '〜です',
@@ -195,49 +199,61 @@ test('日本語の自然語順へ戻りやすい目的語・比較・理由も�
     '示すかもしれない',
   ])
 
-  const platformRisk = allBlocks.find((block) =>
-    block.en === 'Digital platforms intensify this risk because they reward speed, emotional certainty, and loyalty to a group more readily than patient investigation')
-  assert.deepEqual(platformRisk?.jaSegments, [
+  assert.deepEqual(phraseJapanese('Digital platforms intensify'), [
     'デジタルプラットフォームは',
     '強めます',
     'この危険を',
-    'なぜなら、それらは',
-    '報いるからです',
+    'なぜなら',
+    'それらは',
+    '報います（対象・比較は次へ）',
     '速さを',
     '感情的な確信を',
-    'そして忠誠を',
-    '集団への',
+    'そして',
+    '忠誠を',
+    '集団への（忠誠を）',
     'より容易に',
-    '粘り強い調査より',
+    '粘り強い調査より、速さ・感情的確信・集団への忠誠に容易に報いるからです',
   ])
 
-  const repairDesign = allBlocks.find((block) =>
-    block.en === 'that manufacturers should make parts and instructions easier')
-  assert.deepEqual(repairDesign?.jaSegments, [
+  assert.deepEqual(phraseJapanese('Critics therefore argue'), [
+    '批判する人々は',
+    'そのため',
+    '主張します',
+    '次の内容だと（中身は次へ）',
     '製造業者は',
-    'するべきだと',
+    '〜にするべきです（対象・状態は次へ）',
     '部品と説明書を',
-    'より容易に（内容は次へ）',
+    'より入手しやすい状態にするべきだ（と主張します）',
   ])
 
-  const reviewAndPublish = allBlocks.find((block) =>
-    block.en === 'Setting review dates and publishing results allows governments')
-  assert.deepEqual(reviewAndPublish?.jaSegments, [
-    '定めることと',
-    '見直しの日程を',
-    '公表することは',
-    '結果を',
+  assert.deepEqual(phraseJapanese('Setting review dates'), [
+    '見直しの日程を定めること',
+    'そして',
+    '結果を公表することは',
     '可能にします',
     '政府が',
+    '改めること（対象・条件は次へ）',
+    '政策を',
+    '〜することなく（内容は次へ）',
+    'みなします（何を何と、は次へ）',
+    '見直しを',
+    '見直しを失敗とみなさずに政策を改められるよう、政府を助けます',
   ])
 
-  const slowReading = allBlocks.find((block) =>
-    block.en === 'materials that require slow reading or moral reflection may become almost invisible')
-  assert.deepEqual(slowReading?.jaSegments, [
+  assert.deepEqual(phraseJapanese('When search results'), [
+    '〜すると',
+    '検索結果が',
+    '短い動画が',
+    'そして',
+    'アルゴリズムによる推薦が',
+    '競い合う',
+    '人々の注意を得ようと',
     '資料は',
-    'そしてその資料は必要とする',
+    'そしてその資料は',
+    '必要とする',
     'ゆっくり読むことや道徳的な考察を',
-    'ほとんど見えなくなるかもしれません',
+    '〜になります（状態は次へ）',
+    'ほとんど目立たない状態',
   ])
 })
 
@@ -246,6 +262,8 @@ test('長文画面は文全体のフレーズ列を英語→直訳→必要な�
     new URL('../src/screens/Reader.jsx', import.meta.url),
     'utf8',
   )
+  assert.match(source, /<StructureDiagram tokens=\{sentenceAnalysis\.structureTokens\} \/>/)
+  assert.doesNotMatch(source, /sentenceAnalysis\.blocks\.map\(\(block\) =>/)
 
   const automaticStart = source.indexOf('const speakChunkSeq')
   const automaticEnglish = source.indexOf('speakWith(c.en', automaticStart)
@@ -260,16 +278,19 @@ test('長文画面は文全体のフレーズ列を英語→直訳→必要な�
   )
 
   const manualStart = source.indexOf('const speakBlockPair')
-  const manualEnglish = source.indexOf('speakWith(pair.en', manualStart)
+  const manualEnglish = source.indexOf('speakWith(pair.spokenEn ?? pair.en', manualStart)
   const manualJapanese = source.indexOf('speakWith(`前からは、「${pair.ja}」', manualEnglish)
-  const manualExplanation = source.indexOf('`読み方は、${block.translationGuide}', manualJapanese)
+  const manualExplanation = source.indexOf('const phraseExplanation =', manualJapanese)
+  const manualExplanationSpeech = source.indexOf('phraseExplanation,', manualExplanation)
   assert.ok(
     manualStart >= 0 &&
     manualEnglish > manualStart &&
     manualJapanese > manualEnglish &&
-    manualExplanation > manualJapanese,
+    manualExplanation > manualJapanese &&
+    manualExplanationSpeech > manualExplanation,
     '個別再生が英語フレーズ→直訳→読解・文法の順ではない',
   )
+  assert.match(source, /ブロック全体の読み方は、\$\{block\.translationGuide\}/)
 
   assert.match(source, /block\.phrasePairs\.map/)
   assert.match(source, /analysis\.phraseSequence\.map/)

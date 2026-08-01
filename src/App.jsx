@@ -72,6 +72,14 @@ const WritingGrammarReviewScreen = lazyScreen(
   'WritingGrammarReviewScreen',
 )
 const EnglishMapScreen = lazyScreen(() => import('./screens/EnglishMap.jsx'), 'EnglishMapScreen')
+const AfterSchoolChronicleScreen = lazyScreen(
+  () => import('./screens/EnglishMap.jsx'),
+  'AfterSchoolChronicleScreen',
+)
+const AfterSchoolInterludeScreen = lazyScreen(
+  () => import('./screens/AfterSchoolInterlude.jsx'),
+  'AfterSchoolInterludeScreen',
+)
 const CharacterTalkScreen = lazyScreen(
   () => import('./screens/CharacterTalk.jsx'),
   'CharacterTalkScreen',
@@ -158,6 +166,8 @@ const SCREENS = {
   myGrammar: MyGrammarScreen,
   writingGrammarReview: WritingGrammarReviewScreen,
   englishMap: EnglishMapScreen,
+  afterSchoolChronicle: AfterSchoolChronicleScreen,
+  afterSchoolInterlude: AfterSchoolInterludeScreen,
   characterTalk: CharacterTalkScreen,
   diagnostic: DiagnosticScreen,
   kotenList: KotenListScreen,
@@ -185,6 +195,7 @@ const IMMERSIVE = new Set([
   'listeningQuiz', 'dictationPlay', 'mathIntro', 'mathSolve', 'grammarQuiz', 'diagnostic',
   'writingPlay', 'writingGrammarReview',
   'characterTalk',
+  'afterSchoolChronicle', 'afterSchoolInterlude',
   // 別コンテンツ（ポータルから入る）
   'vocabSearch', 'wordRequests', 'mathMap', 'mathUnits',
   'kotenList', 'kotenStudy', 'kotenQuiz', 'kotenInterpretationList',
