@@ -1,0 +1,24 @@
+{
+  "name": "スタディアプリ｜学習が、冒険になる。",
+  "short_name": "スタディアプリ",
+  "description": "XPでLV1〜99へ育つ、学習バトルアプリ。",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#eef2ff",
+  "theme_color": "#4f46e5",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

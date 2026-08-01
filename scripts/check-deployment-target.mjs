@@ -1,5 +1,5 @@
-import { access, readFile } from 'node:fs/promises'
-import { dirname, resolve } from 'node:path'
+import { access, readFile, readdir } from 'node:fs/promises'
+import { dirname, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
@@ -26,6 +26,16 @@ async function readProjectFile(path) {
   }
 }
 
+async function sourceFilesUnder(directory) {
+  const entries = await readdir(directory, { withFileTypes: true })
+  const files = await Promise.all(entries.map(async (entry) => {
+    const path = resolve(directory, entry.name)
+    if (entry.isDirectory()) return sourceFilesUnder(path)
+    return /\.(?:js|jsx|css)$/.test(entry.name) ? [path] : []
+  }))
+  return files.flat()
+}
+
 if (await fileExists(fromRoot('.openai', 'hosting.json'))) {
   failures.push('.openai/hosting.json が存在します。旧Sites設定を削除してください。')
 }
@@ -36,6 +46,21 @@ const [workflow, html, viteConfig, packageJsonText] = await Promise.all([
   readProjectFile('vite.config.js'),
   readProjectFile('package.json'),
 ])
+
+const requiredIconFiles = [
+  'public/favicon.svg',
+  'public/favicon-32x32.png',
+  'public/apple-touch-icon.png',
+  'public/icon-192.png',
+  'public/icon-512.png',
+  'public/site.webmanifest',
+]
+
+for (const iconFile of requiredIconFiles) {
+  if (!(await fileExists(fromRoot(iconFile)))) {
+    failures.push(`サイトアイコンがありません: ${iconFile}`)
+  }
+}
 
 for (const requiredAction of [
   'actions/configure-pages@',
@@ -69,6 +94,30 @@ for (const requiredMetadata of [
   }
 }
 
+for (const requiredIconMetadata of [
+  '%BASE_URL%favicon.svg',
+  '%BASE_URL%favicon-32x32.png',
+  '%BASE_URL%apple-touch-icon.png',
+  '%BASE_URL%site.webmanifest',
+]) {
+  if (!html.includes(requiredIconMetadata)) {
+    failures.push(`index.html にサイトアイコン指定がありません: ${requiredIconMetadata}`)
+  }
+}
+
+// `/assets/...` はGitHub Pagesのドメイン直下へ解決され、/study-app/ を失う。
+// publicAssetUrl() を必須にして、ゲーム画像の一括404を公開前に止める。
+for (const sourceFile of await sourceFilesUnder(fromRoot('src'))) {
+  const source = await readFile(sourceFile, 'utf8')
+  source.split('\n').forEach((line, index) => {
+    if (/['"`]\/assets\//.test(line) && !line.includes('publicAssetUrl(')) {
+      failures.push(
+        `${relative(projectRoot, sourceFile)}:${index + 1} のpublic画像がGitHub Pagesのbaseを通っていません。`,
+      )
+    }
+  })
+}
+
 try {
   const packageJson = JSON.parse(packageJsonText)
   if (packageJson.name !== 'study-app') {
@@ -85,4 +134,3 @@ if (failures.length > 0) {
 } else {
   console.log(`✅ 公開先監査OK: ${canonicalUrl}`)
 }
-

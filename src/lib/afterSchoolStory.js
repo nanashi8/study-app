@@ -1,11 +1,12 @@
 import { BATTLE_DAILY_SCENES, battleDailySceneById } from './battleCast.js'
+import { publicAssetUrl } from './publicAssetUrl.js'
 
 export const AFTER_SCHOOL_CHRONICLE = {
   id: 'after-school-chronicle',
   title: '放課後ことば探検記',
   shortTitle: 'ことば探検記',
   subtitle: '仲間との日常と、先生からの課題を巡る校内ストーリー',
-  keyVisual: '/assets/battle/chronicle/after-school-route-key-visual.webp',
+  keyVisual: publicAssetUrl('/assets/battle/chronicle/after-school-route-key-visual.webp'),
 }
 
 export const AFTER_SCHOOL_STORY_PHASES = [
