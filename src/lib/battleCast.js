@@ -935,3 +935,12 @@ export function battleStudentState({
   if (battleState.streak === 1) return 'curious'
   return 'determined'
 }
+
+// 戦闘中と結果画面で同じ決着表情を使い、選択中の生徒の連続性を保つ。
+export function battleStudentResultState({ battleState, accuracy = 0 } = {}) {
+  if (battleState?.heroDefeated) return 'exhausted'
+  if (battleState?.enemyDefeated) return 'victory'
+  if (accuracy >= 0.7) return 'delighted'
+  if (accuracy >= 0.4) return 'relieved'
+  return 'sad'
+}

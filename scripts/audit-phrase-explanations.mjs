@@ -39,6 +39,7 @@ const issueRows = [
   ['長文・語彙glossフォールバック破損', audit.reading.issues.invalidJapaneseFallbacks],
   ['長文・構造表示台帳の相互不一致', audit.reading.issues.structuralDisplayMismatches],
   ['長文・下段文法ブロックの表示／音声payload不一致', audit.reading.issues.staleGrammarBlockPayloads],
+  ['長文・文全体の構文見取り図不一致', audit.reading.issues.grammarBlockStructureMismatches],
   ['長文・内容節／関係詞節のブロック誤分類', audit.reading.issues.misclassifiedGrammarBlocks],
   ['長文・本文別SVOCM判断の未適用', audit.reading.issues.correctionMismatches],
   ['長文・手動レビュー台帳の不整合', audit.reading.issues.missingManualReviewEvidence],

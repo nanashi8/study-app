@@ -18,7 +18,7 @@ test('音声設定メニューは一つの共通シートを全画面から開�
     })
 
   assert.match(app, /<SpeechSettingsSheet \/>/)
-  assert.match(header, /<SpeechSettingsButton \/>/)
+  assert.match(header, /<SpeechSettingsButton inverse=\{inverse\} \/>/)
   assert.match(settings, /data-speech-settings-trigger/)
   assert.deepEqual(missing, [])
 })

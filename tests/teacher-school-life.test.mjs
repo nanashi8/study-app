@@ -148,7 +148,7 @@ test('逃げる場面は全10人の性格と所属に応じた別々の行動に
   assert.equal(new Set(narrations).size, 10)
 })
 
-test('放課後バトル画面から先生の日常会話を操作でき、実学習成績へ混ぜない', () => {
+test('放課後ことば探検記から先生の日常会話を操作でき、実学習成績へ混ぜない', () => {
   const source = readFileSync(
     new URL('../src/screens/EnglishMap.jsx', import.meta.url),
     'utf8',

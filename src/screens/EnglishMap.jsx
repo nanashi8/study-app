@@ -72,6 +72,12 @@ import {
   teacherRemedialSubjectChoices,
   teacherSchoolLifeById,
 } from '../lib/teacherSchoolLife.js'
+import {
+  AFTER_SCHOOL_CHRONICLE,
+  AFTER_SCHOOL_STORY_PHASES,
+  afterSchoolEpisodeNumber,
+  afterSchoolSceneForStep,
+} from '../lib/afterSchoolStory.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { MobPortrait } from '../components/MobPortrait.jsx'
 import { ProgressRing, ProgressBar, Chip, cx } from '../components/ui.jsx'
@@ -136,6 +142,39 @@ export function EnglishMapScreen() {
   const navigate = useStore((s) => s.navigate)
   const skillStats = useStore((s) => s.skillStats)
   const readingsDone = useStore((s) => s.readingsDone)
+  const stats = useStore((s) => s.stats)
+  const battleStoryStep = useStore((s) => s.battleStoryStep)
+  const hero = heroProgress(stats.xp)
+
+  const infos = SKILLS.map((skill) => ({
+    skill,
+    info: skillInfo(skill, skillStats, readingsDone),
+  }))
+  const weak = infos
+    .filter(({ info }) => info.status === 'weak')
+    .sort((a, b) => (a.info.acc ?? 1) - (b.info.acc ?? 1))
+
+  return (
+    <div className="pb-8">
+      <ScreenHeader
+        title="学習マップ"
+        subtitle="英語力を確認して、次の学習を選ぶ"
+      />
+
+      <div className="space-y-4 px-4">
+        <ChroniclePortalCard
+          hero={hero}
+          storyStep={battleStoryStep}
+          onOpen={() => navigate('afterSchoolChronicle')}
+        />
+        <TrainingBoard navigate={navigate} weak={weak} infos={infos} />
+      </div>
+    </div>
+  )
+}
+
+export function AfterSchoolChronicleScreen() {
+  const navigate = useStore((s) => s.navigate)
   const srs = useStore((s) => s.srs)
   const stats = useStore((s) => s.stats)
   const engPos = useStore((s) => s.engPos)
@@ -152,6 +191,7 @@ export function EnglishMapScreen() {
   const battleTraitInvestments = useStore((s) => s.battleTraitInvestments)
   const raiseBattleTrait = useStore((s) => s.raiseBattleTrait)
   const resetBattleStudentTraits = useStore((s) => s.resetBattleStudentTraits)
+  const battleStoryStep = useStore((s) => s.battleStoryStep)
   const hero = heroProgress(stats.xp)
   const battleRelic = battleRelicForLevel(hero.level, battleRelicLevel)
   const battleTheme = battleThemeById(battleThemeId, battleStars)
@@ -176,14 +216,7 @@ export function EnglishMapScreen() {
     enemyRankIndex: enemyLevelIndex(pos),
   })
   const battleRival = battleRivalForEncounter(encounter, day)
-
-  const infos = SKILLS.map((skill) => ({
-    skill,
-    info: skillInfo(skill, skillStats, readingsDone),
-  }))
-  const weak = infos
-    .filter(({ info }) => info.status === 'weak')
-    .sort((a, b) => (a.info.acc ?? 1) - (b.info.acc ?? 1))
+  const storyScene = afterSchoolSceneForStep(battleStoryStep)
 
   const startBattle = (quest) => {
     navigate('vocabQuiz', {
@@ -197,9 +230,10 @@ export function EnglishMapScreen() {
         traitId: studentTraitProfile.dominant.id,
         rivalId: battleRival.id,
         adventureDay: day,
+        storyStep: battleStoryStep,
         heroLevel: hero.level,
       },
-      title: `VS ${battleRival.name}`,
+      title: `ことばの対決：${battleRival.name}`,
       mode: 'quiz',
       size: quest.size,
     })
@@ -208,21 +242,20 @@ export function EnglishMapScreen() {
   return (
     <div className="pb-8">
       <ScreenHeader
-        title="放課後バトル"
-        subtitle="先生や校内モンスターと、ことばで勝負！"
-        right={
-          <div className="mr-2 flex items-center gap-1">
-            <Chip className="bg-violet-100 text-violet-800">
-              ✦ {battleStars.toLocaleString()}
-            </Chip>
-            <Chip className="bg-amber-100 text-amber-800">
-              {hero.title.emoji} LV{hero.level}
-            </Chip>
-          </div>
-        }
+        title={AFTER_SCHOOL_CHRONICLE.title}
+        subtitle={AFTER_SCHOOL_CHRONICLE.subtitle}
       />
 
       <div className="space-y-4 px-4">
+        <ChronicleHero
+          hero={hero}
+          scene={storyScene}
+          storyStep={battleStoryStep}
+          onInterlude={() => navigate('afterSchoolInterlude')}
+        />
+
+        <ChronicleLoop />
+
         <AdventureCard
           pos={pos}
           hero={hero}
@@ -241,6 +274,10 @@ export function EnglishMapScreen() {
           onBattle={startBattle}
         />
 
+        <CampusLifeGallery
+          onTalk={() => navigate('characterTalk', { fromGame: true, storyStep: battleStoryStep })}
+        />
+
         <XpExchangeCard
           totalXp={stats.xp}
           spentXp={battleXpSpent}
@@ -255,8 +292,6 @@ export function EnglishMapScreen() {
         />
 
         <SchoolBarrierMap />
-
-        <CampusLifeGallery onTalk={() => navigate('characterTalk')} />
 
         <SchoolLifeAlbum />
 
@@ -274,61 +309,177 @@ export function EnglishMapScreen() {
         <AdventureProgress hero={hero} />
 
         <ChapterTrail hero={hero} />
-
-        <section>
-          <div className="mb-2 flex items-end justify-between px-1">
-            <div>
-              <p className="text-[10px] font-extrabold tracking-[0.18em] text-brand-500">
-                TRAINING BOARD
-              </p>
-              <h2 className="font-display text-base font-extrabold text-ink">
-                バトル前のトレーニング
-              </h2>
-            </div>
-            <span className="text-[10px] font-bold text-ink/40">苦手を見つけて補強</span>
-          </div>
-
-          {weak.length > 0 ? (
-            <div className="mb-3 rounded-2xl border-2 border-amber-300 bg-hint-soft p-3.5">
-              <div className="flex items-center gap-1.5">
-                <Lightbulb size={16} className="text-amber-600" />
-                <span className="font-display text-sm font-extrabold text-amber-900">
-                  攻略のヒント — 弱点を補強しよう
-                </span>
-              </div>
-              <div className="mt-2 flex flex-wrap gap-2">
-                {weak.map(({ skill, info }) => (
-                  <button
-                    key={skill.id}
-                    onClick={() => navigate(skill.screen)}
-                    className="inline-flex items-center gap-1 rounded-full bg-white px-3 py-1.5 text-xs font-extrabold text-amber-800 shadow-sm active:scale-95"
-                  >
-                    {skill.emoji} {skill.label}
-                    <span className="text-amber-500">（{Math.round(info.acc * 100)}%）</span>
-                    <ArrowRight size={13} />
-                  </button>
-                ))}
-              </div>
-            </div>
-          ) : (
-            <div className="mb-3 rounded-2xl bg-correct-soft p-3.5 text-center text-sm font-bold text-emerald-700">
-              大きな弱点なし。好きな修行を選んで先へ進もう 💪
-            </div>
-          )}
-
-          <div className="space-y-2.5">
-            {infos.map(({ skill, info }) => (
-              <SkillCard
-                key={skill.id}
-                skill={skill}
-                info={info}
-                onOpen={() => navigate(skill.screen)}
-              />
-            ))}
-          </div>
-        </section>
       </div>
     </div>
+  )
+}
+
+function publicAssetUrl(path) {
+  return `${import.meta.env.BASE_URL}${String(path ?? '').replace(/^\//, '')}`
+}
+
+function ChroniclePortalCard({ hero, storyStep, onOpen }) {
+  const scene = afterSchoolSceneForStep(storyStep)
+  return (
+    <button
+      type="button"
+      onClick={onOpen}
+      className="after-school-portal group relative block w-full overflow-hidden rounded-[2rem] bg-slate-950 text-left text-white shadow-[0_20px_50px_-24px_rgba(76,29,149,0.8)] transition-transform active:scale-[0.99]"
+      aria-label={`${AFTER_SCHOOL_CHRONICLE.title}を開く`}
+    >
+      <img
+        src={publicAssetUrl(AFTER_SCHOOL_CHRONICLE.keyVisual)}
+        alt="放課後の昇降口で、4人の高校生が校内図を囲んで次の課題ルートを相談している"
+        className="aspect-[16/10] w-full object-cover"
+      />
+      <span className="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/38 to-transparent" />
+      <span className="absolute inset-x-0 bottom-0 p-4">
+        <span className="inline-flex rounded-full border border-white/20 bg-slate-950/55 px-2 py-1 text-[8px] font-extrabold tracking-[0.16em] text-cyan-100 backdrop-blur-sm">
+          AFTER SCHOOL CHRONICLE
+        </span>
+        <strong className="mt-2 block font-display text-xl font-extrabold leading-tight">
+          {AFTER_SCHOOL_CHRONICLE.title}
+        </strong>
+        <span className="mt-1 block text-[10px] font-bold leading-relaxed text-white/65">
+          {AFTER_SCHOOL_CHRONICLE.subtitle}
+        </span>
+        <span className="mt-3 flex items-center justify-between gap-3">
+          <span className="min-w-0 truncate text-[9px] font-extrabold text-amber-100">
+            {hero.title.emoji} LV{hero.level} · 日誌{afterSchoolEpisodeNumber(storyStep)}「{scene.shortName}」
+          </span>
+          <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-white px-3 py-1.5 text-[9px] font-extrabold text-violet-800">
+            物語へ <ArrowRight size={13} />
+          </span>
+        </span>
+      </span>
+    </button>
+  )
+}
+
+function ChronicleHero({ hero, scene, storyStep, onInterlude }) {
+  return (
+    <section className="after-school-key-visual relative overflow-hidden rounded-[2rem] bg-slate-950 text-white shadow-2xl">
+      <img
+        src={publicAssetUrl(AFTER_SCHOOL_CHRONICLE.keyVisual)}
+        alt="放課後の昇降口で、4人の高校生が校内図を囲んで次の課題ルートを相談している"
+        className="aspect-[16/10] w-full object-cover"
+      />
+      <span className="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/35 to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 p-4">
+        <div className="flex flex-wrap items-center gap-1.5">
+          <span className="rounded-full border border-white/20 bg-slate-950/60 px-2 py-1 text-[8px] font-extrabold tracking-[0.14em] backdrop-blur-sm">
+            STORY {String(afterSchoolEpisodeNumber(storyStep)).padStart(2, '0')}
+          </span>
+          <span className="rounded-full border border-white/20 bg-white/10 px-2 py-1 text-[8px] font-extrabold text-amber-100 backdrop-blur-sm">
+            {hero.chapter.emoji} {hero.chapter.name}
+          </span>
+        </div>
+        <h2 className="mt-2 font-display text-xl font-extrabold">今日の放課後を始めよう</h2>
+        <p className="mt-1 text-[10px] font-bold leading-relaxed text-white/65">
+          {scene.emoji} {scene.name} — {scene.description}
+        </p>
+        <button
+          type="button"
+          onClick={onInterlude}
+          className="mt-3 inline-flex min-h-11 items-center gap-2 rounded-2xl bg-gradient-to-r from-fuchsia-500 to-violet-500 px-4 text-xs font-extrabold text-white shadow-lg transition-transform active:scale-[0.98]"
+        >
+          日常の一幕から読む <ArrowRight size={16} />
+        </button>
+      </div>
+    </section>
+  )
+}
+
+function ChronicleLoop() {
+  return (
+    <section className="rounded-3xl border border-violet-100 bg-white p-4 shadow-card">
+      <div className="flex items-end justify-between gap-3">
+        <div>
+          <p className="text-[9px] font-extrabold tracking-[0.18em] text-violet-500">
+            STORY LOOP
+          </p>
+          <h2 className="mt-0.5 font-display text-base font-extrabold text-ink">
+            放課後の一日
+          </h2>
+        </div>
+        <span className="text-[9px] font-bold text-ink/40">日常と対決を交互に進む</span>
+      </div>
+      <div className="mt-3 grid grid-cols-3 gap-1.5">
+        {AFTER_SCHOOL_STORY_PHASES.map((phase, index) => (
+          <div key={phase.id} className="relative rounded-2xl bg-gradient-to-b from-violet-50 to-slate-50 px-2 py-3 text-center ring-1 ring-violet-100">
+            <span className="text-xl" aria-hidden="true">{phase.emoji}</span>
+            <strong className="mt-1 block text-[10px] font-extrabold text-ink">
+              {phase.number} {phase.label}
+            </strong>
+            <span className="mt-1 block text-[8px] font-bold leading-snug text-ink/40">
+              {phase.description}
+            </span>
+            {index < AFTER_SCHOOL_STORY_PHASES.length - 1 && (
+              <span className="absolute -right-2 top-1/2 z-[1] -translate-y-1/2 rounded-full bg-violet-500 px-1 text-[8px] font-black text-white" aria-hidden="true">
+                →
+              </span>
+            )}
+          </div>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+function TrainingBoard({ navigate, weak, infos }) {
+  return (
+    <section>
+      <div className="mb-2 flex items-end justify-between px-1">
+        <div>
+          <p className="text-[10px] font-extrabold tracking-[0.18em] text-brand-500">
+            LEARNING BOARD
+          </p>
+          <h2 className="font-display text-base font-extrabold text-ink">
+            次の学習を選ぶ
+          </h2>
+        </div>
+        <span className="text-[10px] font-bold text-ink/40">苦手を見つけて補強</span>
+      </div>
+
+      {weak.length > 0 ? (
+        <div className="mb-3 rounded-2xl border-2 border-amber-300 bg-hint-soft p-3.5">
+          <div className="flex items-center gap-1.5">
+            <Lightbulb size={16} className="text-amber-600" />
+            <span className="font-display text-sm font-extrabold text-amber-900">
+              学習のヒント — 弱点を補強しよう
+            </span>
+          </div>
+          <div className="mt-2 flex flex-wrap gap-2">
+            {weak.map(({ skill, info }) => (
+              <button
+                key={skill.id}
+                onClick={() => navigate(skill.screen)}
+                className="inline-flex items-center gap-1 rounded-full bg-white px-3 py-1.5 text-xs font-extrabold text-amber-800 shadow-sm active:scale-95"
+              >
+                {skill.emoji} {skill.label}
+                <span className="text-amber-500">（{Math.round(info.acc * 100)}%）</span>
+                <ArrowRight size={13} />
+              </button>
+            ))}
+          </div>
+        </div>
+      ) : (
+        <div className="mb-3 rounded-2xl bg-correct-soft p-3.5 text-center text-sm font-bold text-emerald-700">
+          大きな弱点なし。伸ばしたい分野を選ぼう 💪
+        </div>
+      )}
+
+      <div className="space-y-2.5">
+        {infos.map(({ skill, info }) => (
+          <SkillCard
+            key={skill.id}
+            skill={skill}
+            info={info}
+            onOpen={() => navigate(skill.screen)}
+          />
+        ))}
+      </div>
+    </section>
   )
 }
 
@@ -435,8 +586,8 @@ function AdventureCard({
   const itemAbility = relicBattleAbility(battleRelic)
   const nextTheme = nextBattleTheme(battleStars)
   const opponentLabel = encounter.isTeacher
-    ? `${encounter.teacherSubject}の先生チャレンジ`
-    : '校内モンスター'
+    ? `${encounter.teacherSubject}の先生からの課題`
+    : '校内のことば課題'
 
   return (
     <section
@@ -455,7 +606,7 @@ function AdventureCard({
       <div className="relative">
         <div className="flex items-center gap-2.5">
           <span className="rounded-full border border-white/25 bg-white/15 px-2.5 py-1 text-[10px] font-extrabold tracking-[0.14em] text-white/90 backdrop-blur">
-            SCHOOL STAGE {hero.chapter.number}
+            CHRONICLE STAGE {hero.chapter.number}
           </span>
           <span className="min-w-0 truncate text-xs font-extrabold">
             {hero.chapter.emoji} {hero.chapter.name}
@@ -515,7 +666,7 @@ function AdventureCard({
             </>
           ) : (
             <p className="mt-1 text-[9px] font-bold text-white/70">
-              3つのバトル演出をすべて解放済み
+              3つの対決演出をすべて解放済み
             </p>
           )}
         </div>
@@ -555,7 +706,7 @@ function AdventureCard({
             <div className="flex items-end justify-between gap-2">
               <div>
                 <p className="text-[9px] font-extrabold tracking-[0.14em] text-violet-500">
-                  BATTLE SIZE
+                  CHALLENGE SIZE
                 </p>
                 <p className="text-xs font-extrabold text-ink">問題数をえらぶ</p>
               </div>
@@ -634,7 +785,7 @@ function AdventureCard({
               })}
               </div>
               <p className="mt-2.5 text-[9px] font-bold text-ink/45">
-                バトル演出（放課後スターで解放）
+                対決演出（放課後スターで解放）
               </p>
               <div className="mt-1.5 grid grid-cols-3 gap-1.5">
                 {BATTLE_THEMES.map((theme) => {
@@ -708,17 +859,17 @@ function AdventureCard({
           <button
             type="button"
             onClick={() => onBattle(selectedQuest)}
-            aria-label={`${battleRival.name}との${selectedQuest.size}問バトルを開始`}
+            aria-label={`${battleRival.name}との${selectedQuest.size}問のことば対決を開始`}
             className="school-battle-start mt-3 flex min-h-14 w-full items-center justify-center gap-2 rounded-2xl bg-violet-600 px-4 py-3 font-display text-base font-extrabold text-white shadow-[0_10px_24px_-10px_rgba(79,70,229,0.8)] transition-transform active:scale-[0.98]"
           >
             <span>{encounter.isTeacher ? '🏫' : '✨'}</span>
-            {selectedQuest.size}問バトルをはじめる
+            {selectedQuest.size}問のことば対決へ
             <ArrowRight size={18} />
           </button>
         </div>
 
         <p className="mt-2.5 text-center text-[10px] font-bold leading-relaxed text-white/70">
-          先生はこわい悪役ではなく、成長を試す放課後のライバルです。
+          先生は悪役ではなく、ことばの成長を見守る放課後のライバルです。
         </p>
       </div>
     </section>
@@ -2132,7 +2283,7 @@ function AdventureProgress({ hero }) {
         </span>
       </div>
       <p className="mt-1 text-xs font-bold text-ink/45">
-        {next ? next.text : 'LV99の放課後バトルは、何度でも続けられます。'}
+        {next ? next.text : 'LV99の放課後ことば探検記は、何度でも続けられます。'}
       </p>
       {next && (
         <p className="mt-1 text-[10px] font-extrabold text-emerald-600">

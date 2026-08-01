@@ -11,11 +11,15 @@ import {
   READING_PHRASE_BACK_REFERENCES,
   READING_PHRASE_CORRECTIONS,
 } from '../data/reading-phrase-corrections.js'
-import { READING_BLOCK_STRUCTURE_OVERRIDES } from '../data/reading-block-structure-overrides.js'
+import {
+  READING_BLOCK_STRUCTURE_OVERRIDES,
+  READING_SENTENCE_STRUCTURE_OVERRIDES,
+} from '../data/reading-block-structure-overrides.js'
 import {
   pendingVerbGroupRule,
   readingManualReviewEvidence,
 } from '../data/reading-phrase-review-ledger.js'
+import { parseStructureMarkers } from './structure-markers.js'
 
 export const READING_CORE_PHRASE_WORD_LIMIT = 5
 export const READING_MODIFIER_PHRASE_WORD_LIMIT = 7
@@ -5646,13 +5650,26 @@ function contentClauseBlockMeta(block, phrases) {
   const notes = phrases.map((phrase) => `${phrase.explanation ?? ''}`).join(' ')
   const appositive = /(?:同格|(?:proof|evidence|warning)に続き)/.test(notes)
   const indirectObjectContent = /teach の内容/.test(notes)
+  const role = appositive
+    ? 'M'
+    : indirectObjectContent
+      ? 'O2'
+      : block.role === 'C'
+        ? 'C'
+        : 'O'
   return {
-    label: appositive ? '同格のthat内容節' : '内容節',
+    label: appositive
+      ? '同格のthat内容節'
+      : role === 'C'
+        ? '補語となるthat内容節'
+        : '内容節',
     kind: 'clause',
-    role: appositive ? 'M' : indirectObjectContent ? 'O2' : 'O',
+    role,
     scope: appositive ? '同格の内容節内' : '内容節内',
     note: appositive
       ? 'that は関係代名詞ではなく、直前の名詞が表す内容を同格で示す節の入口です。'
+      : role === 'C'
+        ? 'that は関係代名詞ではなく、be動詞の後ろで主語の具体的な内容を説明する補語節の入口です。'
       : 'that は関係代名詞ではなく、前の動詞・表現が受ける内容節の入口です。節全体を目的内容として読みます。',
   }
 }
@@ -5859,6 +5876,10 @@ export function analyzeReadingSentence(sentence) {
   )
   const projectedBlocks = projectedTeachingBlocks(teachingBlocks, phraseSequence, sentence.en)
 
+  const marked = READING_SENTENCE_STRUCTURE_OVERRIDES[sentence.en] ??
+    projectedBlocks.map((block) => block.displayEn).join(' ')
+  const structureMarkerParse = parseStructureMarkers(marked)
+
   return {
     blocks: projectedBlocks,
     phraseSequence,
@@ -5866,7 +5887,9 @@ export function analyzeReadingSentence(sentence) {
     phraseMethod: phraseSequence.every((phrase) => phrase.status === 'confirmed')
       ? 'corpus-svocm-confirmed'
       : 'corpus-svocm-review-needed',
-    marked: projectedBlocks.map((block) => block.displayEn).join(' '),
+    marked,
+    structureTokens: structureMarkerParse.tokens,
+    structureMarkerErrors: structureMarkerParse.errors,
     pattern: sentencePattern(projectedBlocks),
     mainPattern,
   }

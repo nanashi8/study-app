@@ -12,6 +12,7 @@ export function GameBgmController() {
   const params = useStore((state) => state.params)
   const enabled = useStore((state) => state.settings.bgmEnabled !== false)
   const volume = useStore((state) => state.settings.bgmVolume ?? 0.35)
+  const storyStep = useStore((state) => state.battleStoryStep)
   const playerRef = useRef(null)
 
   if (!playerRef.current && typeof window !== 'undefined') {
@@ -19,8 +20,8 @@ export function GameBgmController() {
   }
 
   const track = useMemo(
-    () => gameBgmTrackForState({ screen, params, day: todayIndex() }),
-    [screen, params],
+    () => gameBgmTrackForState({ screen, params, day: todayIndex(), storyStep }),
+    [screen, params, storyStep],
   )
 
   useEffect(() => {

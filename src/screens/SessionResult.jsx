@@ -24,6 +24,7 @@ import {
   battleRivalForEncounter,
   battleStudentById,
   battleStudentPortrait,
+  battleStudentResultState,
 } from '../lib/battleCast.js'
 
 // セッションの種類から「スキル」を判定する（弱点ナビ用）。
@@ -107,6 +108,9 @@ export function SessionResultScreen() {
       })
     : null
   const battleStudent = isBattle ? battleStudentById(source?.studentId) : null
+  const battleStudentEmotion = isBattle
+    ? battleStudentResultState({ battleState: battleReport, accuracy: acc })
+    : null
   const battleRival = isBattle
     ? battleRivalById(
         source?.rivalId
@@ -186,7 +190,7 @@ export function SessionResultScreen() {
       (isPhrase ? (mode === 'quiz' ? 'phraseQuiz' : 'phraseStudy') : mode === 'quiz' ? 'vocabQuiz' : 'vocabStudy')
     navigate(target, {
       source: replaySource,
-      title: isBattle ? `VS ${battleRival.name}` : title,
+      title: isBattle ? `ことばの対決：${battleRival.name}` : title,
       mode,
       engine,
       replayScreen: params.replayScreen,
@@ -249,7 +253,16 @@ export function SessionResultScreen() {
       <div className="absolute right-3 top-[calc(env(safe-area-inset-top)+0.75rem)] z-20">
         <SpeechSettingsButton compact />
       </div>
-      <div className="text-6xl animate-float">{msg.emoji}</div>
+      {battleStudent ? (
+        <BattleResultStudentPortrait
+          student={battleStudent}
+          emotion={battleStudentEmotion}
+          placement="lead"
+          prominent
+        />
+      ) : (
+        <div className="text-6xl animate-float">{msg.emoji}</div>
+      )}
       <h1 className="font-display text-2xl font-extrabold text-ink">{msg.text}</h1>
       <p className="-mt-3 text-sm font-bold text-ink/45">
         {isBattle
@@ -290,6 +303,8 @@ export function SessionResultScreen() {
         after={heroAfter}
         xpGained={xpGained}
         newRelics={newRelics}
+        battleStudent={battleStudent}
+        studentEmotion={battleStudentEmotion}
       />
 
       {battle && (
@@ -301,11 +316,25 @@ export function SessionResultScreen() {
           battleReport={battleReport}
           battleStudent={battleStudent}
           battleRival={battleRival}
-          accuracy={acc}
+          studentEmotion={battleStudentEmotion}
         />
       )}
 
       <div className="mt-2 w-full max-w-xs space-y-2.5">
+        {isBattle && (
+          <Button
+            full
+            size="lg"
+            onClick={() => navigate('afterSchoolInterlude', {
+              fromBattle: true,
+              rivalName: battleRival.name,
+              verdictId: verdict.id,
+              storyStep: source?.storyStep,
+            })}
+          >
+            放課後のつづきへ <ArrowRight size={18} />
+          </Button>
+        )}
         {params.continueTo?.screen && (
           <Button
             full
@@ -319,13 +348,10 @@ export function SessionResultScreen() {
             <Bookmark size={18} /> まちがい {wrong}{reviewUnit}を復習
           </Button>
         )}
-        <Button full variant="secondary" onClick={replay}>
-          {isVocabStudy ? <ArrowRight size={18} /> : <Refresh size={18} />}
-          {isBattle ? `${tactic.label}でもう一度` : isVocabStudy ? '次に進む' : 'もう一度'}
-        </Button>
-        {isBattle && (
-          <Button full variant="ghost" onClick={() => navigate('englishMap')}>
-            作戦を変える <ArrowRight size={18} />
+        {!isBattle && (
+          <Button full variant="secondary" onClick={replay}>
+            {isVocabStudy ? <ArrowRight size={18} /> : <Refresh size={18} />}
+            {isVocabStudy ? '次に進む' : 'もう一度'}
           </Button>
         )}
         <Button full variant="ghost" onClick={goHome}>
@@ -379,7 +405,54 @@ function BattleStarsCard({ total, gained, newThemes }) {
   )
 }
 
-function HeroLevelCard({ before, after, xpGained, newRelics }) {
+function BattleResultStudentPortrait({
+  student,
+  emotion,
+  level = null,
+  placement,
+  prominent = false,
+}) {
+  const label = `${student.name}の戦闘後の表情${level ? `、生徒レベル${level}` : ''}`
+  return (
+    <div
+      role="img"
+      aria-label={label}
+      data-testid={`battle-result-${placement}-student`}
+      data-student-id={student.id}
+      className={`relative grid shrink-0 place-items-center ${
+        prominent ? 'h-20 w-20 animate-float' : 'h-12 w-12'
+      }`}
+    >
+      <img
+        src={battleStudentPortrait(student.id, emotion)}
+        alt=""
+        aria-hidden="true"
+        className="h-full w-full rounded-[30%] border-2 bg-slate-900 object-cover object-top shadow-lg [image-rendering:pixelated]"
+        style={{
+          borderColor: student.accent,
+          boxShadow: `0 8px 22px ${student.accent}44`,
+        }}
+      />
+      {level && (
+        <span
+          aria-hidden="true"
+          className="absolute -bottom-1 -right-1 grid h-5 min-w-5 place-items-center rounded-full border border-white bg-slate-950 px-1 text-[9px] font-black leading-none text-amber-200"
+        >
+          {level}
+        </span>
+      )}
+    </div>
+  )
+}
+
+function HeroLevelCard({
+  before,
+  after,
+  xpGained,
+  newRelics,
+  battleStudent,
+  studentEmotion,
+}) {
   const leveledUp = after.level > before.level
   return (
     <Card
@@ -390,11 +463,20 @@ function HeroLevelCard({ before, after, xpGained, newRelics }) {
       }`}
     >
       <div className="flex items-center gap-3">
-        <HeroPortrait
-          level={after.level}
-          title={after.title}
-          className="h-12 w-12"
-        />
+        {battleStudent ? (
+          <BattleResultStudentPortrait
+            student={battleStudent}
+            emotion={studentEmotion}
+            level={after.level}
+            placement="level"
+          />
+        ) : (
+          <HeroPortrait
+            level={after.level}
+            title={after.title}
+            className="h-12 w-12"
+          />
+        )}
         <div className="min-w-0 flex-1 text-left">
           <div className="flex items-center justify-between gap-2">
             <span className="font-display font-extrabold text-ink">
@@ -487,7 +569,7 @@ function BattleOutcome({
   battleReport,
   battleStudent,
   battleRival,
-  accuracy,
+  studentEmotion,
 }) {
   const t = TREND[battle.trend] ?? TREND.flat
   const from = enemyLevel(battle.from)
@@ -503,15 +585,6 @@ function BattleOutcome({
       : battle.trend === 'ease'
         ? `次も英検${to.label}。難易度を${pointChange}ポイント調整`
         : `次も英検${to.label}。ランク変化なし`
-  const studentEmotion = battleReport?.heroDefeated
-    ? 'exhausted'
-    : battleReport?.enemyDefeated
-      ? 'victory'
-      : accuracy >= 0.7
-        ? 'delighted'
-        : accuracy >= 0.4
-          ? 'relieved'
-          : 'sad'
   return (
     <Card className={`w-full max-w-xs p-3.5 ${t.bg}`}>
       <div className="flex items-start gap-3 text-left">

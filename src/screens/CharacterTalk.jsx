@@ -3,7 +3,6 @@ import { ScreenHeader } from '../components/AppShell.jsx'
 import { cx } from '../components/ui.jsx'
 import { useStore } from '../store/useStore.js'
 import {
-  BATTLE_CHARACTER_VISUAL_COUNT,
   BATTLE_STUDENTS,
   battleEmotionById,
   battleStudentById,
@@ -30,7 +29,6 @@ import {
   nextCharacterSchoolTest,
 } from '../lib/characterDailyTalk.js'
 import {
-  CHARACTER_DAILY_VISUAL_COUNT,
   characterDailyVisualById,
   characterDailyVisualForCategory,
   characterDailyVisualsByStudent,
@@ -43,6 +41,7 @@ import {
   createCharacterGrievanceExchange,
 } from '../lib/characterGrievanceTalk.js'
 import { characterRevealSceneById } from '../lib/characterRevealScenes.js'
+import { AFTER_SCHOOL_CHRONICLE } from '../lib/afterSchoolStory.js'
 
 const MAX_VISIBLE_MESSAGES = 42
 const CHARACTER_TALK_TOTAL_PATTERN_COUNT = CHARACTER_TALK_PATTERN_COUNT
@@ -523,8 +522,8 @@ export function CharacterTalkScreen() {
   return (
     <div className="character-talk-shell flex h-full min-h-0 flex-col bg-slate-100">
       <ScreenHeader
-        title="放課後トーク"
-        subtitle={`キャラ絵${BATTLE_CHARACTER_VISUAL_COUNT}枚・日常絵${CHARACTER_DAILY_VISUAL_COUNT}枚・質問${CHARACTER_DAILY_QUESTIONS.length}種＋愚痴${CHARACTER_GRIEVANCE_COUNT}種`}
+        title={`${AFTER_SCHOOL_CHRONICLE.shortTitle}・仲間との会話`}
+        subtitle={`採点なしの日常会話・質問${CHARACTER_DAILY_QUESTIONS.length}種＋相談${CHARACTER_GRIEVANCE_COUNT}種`}
       />
 
       <div className="flex min-h-0 flex-1 flex-col gap-2 px-3 pb-[calc(env(safe-area-inset-bottom)+0.75rem)]">

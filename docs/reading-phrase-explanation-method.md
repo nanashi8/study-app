@@ -137,7 +137,7 @@ that ... [LINK]
 次の三つを混同しない。
 
 1. `review-needed`: 本文別判断または意味監査が未完。
-2. `reviewed`: 明示的な全文レビュー台帳にあり、原文だけでなく `en / role / ja / displayEn / spokenEn / 項目固有説明` の静的fingerprintが一致する。新規文、または既存項目の訳・role・説明変更は自動的に `review-needed` へ戻る。
+2. `reviewed`: 明示的な全文レビュー台帳にあり、原文とフレーズの `en / role / ja / displayEn / spokenEn / 項目固有説明` に加え、投影後ブロックの `en境界 / label / kind / role / note / translationGuide / phrase ID列` の静的fingerprintも一致する。新規文、既存フレーズの訳・role・説明変更、またはブロック分類・説明変更は自動的に `review-needed` へ戻る。
 3. `confirmed`: 原文復元、音声、役割、短さ、項目別説明、独立期待値、テストをすべて通過。
 
 一律に全件confirmedへ書き換えない。未解決があればその文・フレーズだけを確認待ちとして残し、本文監査済み件数と分けて表示する。
@@ -159,7 +159,7 @@ that ... [LINK]
 - `src/data/reading-phrase-rules.js`: 再利用する方法規則。
 - `src/data/reading-phrase-explanations.js`: 12文の回帰例。全件対応数の代用ではない。
 - `src/data/reading-phrase-corrections.js`: 363文の本文別判断と受け直し。
-- `src/data/reading-phrase-review-ledger.js`: 全363文・33文の安定ID、原文fingerprint、表示内容fingerprint、未決規則の適用範囲。
+- `src/data/reading-phrase-review-ledger.js`: 全363文・33文の安定ID、原文fingerprint、フレーズfingerprint、全1,042ブロックの構造fingerprint、未決規則の適用範囲。
 - `src/lib/reading-grammar.js`: フレーズ生成、specialGrammar、binding、構造表示。
 - `src/data/reading-block-structure-overrides.js`: 自動境界だけでは表せない、内容節・融合関係詞・共有不定詞の確認済みブロック構造。
 - `src/lib/phrase-explanation-audit.js`: 全件数・復元・役割・意味期待値・確認状態の監査。
@@ -168,6 +168,6 @@ that ... [LINK]
 
 現時点で、`less / than`、二つ目の`by what`、`from what`、並列scope、否定作用域は本文別判断へ反映済みで、方法上の未確定事項には置かない。新しい曖昧さが実文で見つかった場合だけ、文例・候補・影響範囲を示して確認対象へ戻す。
 
-Reader下段の文法ブロックは、旧自動解析の `phrasePairs` を別経路で表示しない。最終確認済み `phraseSequence` を原文位置へ投影し、`en / spokenEn / displayEn / role / ja / roleHeading / roleNote / explanation` を同じpayloadから表示・再生する。全363文で両列をdeep-equalし、内容節を関係詞節とする旧分類も独立に拒否する。
+Reader下段の文法ブロックは、旧自動解析の `phrasePairs` を別経路で表示しない。最終確認済み `phraseSequence` を原文位置へ投影し、`en / spokenEn / displayEn / role / ja / roleHeading / roleNote / explanation` を同じpayloadから表示・再生する。全363文で両列をdeep-equalし、内容節を関係詞節とする旧分類も独立に拒否する。さらに、投影後の全1,042ブロックを文ごとの静的fingerprintで固定し、境界・label・kind・role・note・translationGuideのどれかが変わった文を確認待ちへ戻す。文上部の見取り図はカード境界を機械的に括弧へ変換せず、`analysis.marked` を節・句の入れ子トークンへ損失なく変換して、そのトークンをReaderが直接描画する。`from what they once knew` のように複数カードへまたがる一節、`less A than B` の比較境界、形式目的語の実質内容とその内側のthat節を、文字列・トークン階層・実レンダーの三段階で検査する。
 
 文全体の論理接続を担う `therefore / consequently` が助動詞と本動詞の間へ入る6件は、`have therefore begun[V]`、`should therefore be[V]` のように、三語の短いVとして一単位にする。外側の役割は述語Vであり、論理副詞の働きは項目別説明で示す。これにより `have begun` を分断せず、原文音声の順序と一息の短さを保つ。既に確認済みの `is then shaped / is repeatedly presented` も同じ扱いである。この限定判断を、長すぎる句や異なる外側役割の無条件な結合へ広げない。

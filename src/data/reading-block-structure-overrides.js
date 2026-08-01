@@ -98,3 +98,15 @@ export const READING_BLOCK_STRUCTURE_OVERRIDES = Object.freeze({
     }),
   ]),
 })
+
+// block数を変えずに、文全体の見取り図では本来の節・句の範囲を示す。
+// 下段カードの分割境界をそのまま括弧へすると、同じ節が二つに見えたり、
+// than が融合関係詞節の内側に見えたりするため、直接確認済みの三文を固定する。
+export const READING_SENTENCE_STRUCTURE_OVERRIDES = Object.freeze({
+  'This evidence makes it easier to improve a design or decide that a simpler solution would work better.':
+    'This evidence makes it easier <to improve a design or decide (that a simpler solution would work better)>',
+  'The integrity of public memory is then shaped less by what is available than by what is repeatedly presented as relevant.':
+    'The integrity of public memory is then shaped less (by what is available) than (by what is repeatedly presented as relevant)',
+  'If that practice declines, even perfect archives will not prevent societies from losing their ability to learn from what they once knew.':
+    '(If that practice declines) even perfect archives will not prevent societies <from losing their ability> <to learn> (from what they once knew)',
+})

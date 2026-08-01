@@ -35,6 +35,26 @@ const EXPECTED_VISUAL_IDS = [
   'school-gate-dismissal',
 ]
 
+const SAILOR_UNIFORM_REPLACEMENT_IDS = [
+  'school-gate-arrival',
+  'bicycle-commute',
+  'train-commute',
+  'shoe-lockers',
+  'morning-assembly',
+  'morning-homeroom',
+  'pop-quiz',
+  'test-prep',
+  'midterm-exam',
+  'test-return',
+  'cleaning-time',
+  'committee-meeting',
+  'art-club',
+  'culture-festival',
+  'school-trip',
+  'entrance-ceremony',
+  'school-gate-dismissal',
+]
+
 function pixelSizeOfWebp(path) {
   const buffer = readFileSync(new URL(`../public${path}`, import.meta.url))
   const signature = buffer.indexOf(Buffer.from([0x9d, 0x01, 0x2a]))
@@ -92,6 +112,35 @@ test('全カテゴリが空でなく、全画像が960×540のWebPとして存�
   )
 })
 
+test('制服違反を直した17場面はセーラー服版の資産だけを参照する', () => {
+  for (const id of SAILOR_UNIFORM_REPLACEMENT_IDS) {
+    assert.equal(
+      schoolLifeVisualById(id).image,
+      `/assets/battle/school-life/${id}-v2.webp`,
+      id,
+    )
+  }
+  assert.equal(schoolLifeVisualById('cafeteria').image.endsWith('-v2.webp'), true)
+})
+
+test('制服監査台帳は全24場面と男女・場面別の着衣ルールを保持する', () => {
+  const audit = readFileSync(
+    new URL('../docs/school-life-uniform-audit.md', import.meta.url),
+    'utf8',
+  )
+
+  for (const visual of SCHOOL_LIFE_VISUALS) {
+    const filename = visual.image.split('/').at(-1)
+    assert.ok(
+      audit.includes(`| \`${visual.id}\` | \`${filename}\` |`),
+      visual.id,
+    )
+  }
+  assert.match(audit, /including small\s+background figures/)
+  assert.match(audit, /gives a boy white sailor sleeves or a sailor collar is rejected/)
+  assert.match(audit, /Situation-specific clothing is allowed only when the activity requires it/)
+})
+
 test('学校生活アルバムはカテゴリ選択とモバイル向け遅延読込を備える', () => {
   const mapSource = readFileSync(
     new URL('../src/screens/EnglishMap.jsx', import.meta.url),
@@ -126,5 +175,5 @@ test('ビジュアル指導はリポジトリ内の拒否ゲートとして継�
   assert.match(visualGuide, /Classroom geometry is explicit/)
   assert.match(visualGuide, /Assembly and ceremony protagonists/)
   assert.match(visualGuide, /standard school uniform is always the same sailor uniform/)
-  assert.match(visualGuide, /one continuous conversation span/)
+  assert.match(visualGuide, /one continuous conversation\s+span/)
 })

@@ -25,6 +25,7 @@ import {
   raiseBattleTrait,
   resetBattleStudentTraits,
 } from '../lib/battleTraits.js'
+import { normalizeBattleStoryStep } from '../lib/afterSchoolStory.js'
 
 // ── 学習ロジックの定数 ──────────────────────────────────────────────
 // Leitner 式の間隔反復。box が上がるほど次に出る間隔（日数）が伸びる。
@@ -116,8 +117,9 @@ const initialLearning = () => ({
   battleStars: 0, // バトル正解やXP変換で貯まる、演出スキン解放専用の放課後スター
   battleXpSpent: 0, // 放課後スターへ一度だけ変換済みの累計XP
   battleThemeId: BATTLE_THEMES[0].id,
-  battleStudentId: DEFAULT_BATTLE_STUDENT_ID, // 放課後バトルへ同行するクラスメイト
+  battleStudentId: DEFAULT_BATTLE_STUDENT_ID, // 放課後ことば探検記へ同行するクラスメイト
   battleTraitInvestments: {}, // 生徒id -> 五つの星彩パラメータへ配分したポイント
+  battleStoryStep: 0, // 放課後日誌を読み終えた回数。学習評価とは独立
   portalOrder: [...DEFAULT_CONTENT_ORDER], // ポータルのタイル並び順（コンテンツid配列）
   portalHidden: [], // ポータルで非表示にしたコンテンツid
   stats: freshStats(),
@@ -203,6 +205,7 @@ export function migratePersistedState(persistedState) {
     state.battleTraitInvestments,
     state.battleStars,
   )
+  state.battleStoryStep = normalizeBattleStoryStep(state.battleStoryStep)
   return state
 }
 
@@ -228,6 +231,21 @@ export const useStore = create(
           if (!st.stack.length) return { screen: 'home', params: {} }
           const prev = st.stack[st.stack.length - 1]
           return { screen: prev.screen, params: prev.params, stack: st.stack.slice(0, -1) }
+        }),
+      returnToAfterSchoolChronicle: () =>
+        set((st) => {
+          let homeIndex = -1
+          for (let index = st.stack.length - 1; index >= 0; index -= 1) {
+            if (st.stack[index]?.screen === 'home') {
+              homeIndex = index
+              break
+            }
+          }
+          return {
+            screen: 'afterSchoolChronicle',
+            params: {},
+            stack: homeIndex >= 0 ? st.stack.slice(0, homeIndex + 1) : [],
+          }
         }),
       goHome: () => set({ screen: 'home', params: {}, stack: [] }),
 
@@ -704,6 +722,10 @@ export const useStore = create(
             studentId,
           }),
         })),
+      advanceBattleStory: () =>
+        set((st) => ({
+          battleStoryStep: normalizeBattleStoryStep(st.battleStoryStep + 1),
+        })),
       // バトルの正答率(0-1)で生徒のポジションを上下させる。
       // fromPos / maxPos を渡すと、冒険者LVで解放済みの範囲内だけを移動する。
       recordBattle: (accuracy, fromPos = null, maxPos = null) =>
@@ -806,6 +828,7 @@ export const useStore = create(
             payload.battleTraitInvestments,
             battleStars,
           ),
+          battleStoryStep: normalizeBattleStoryStep(payload.battleStoryStep),
           portalOrder: normalizeOrder(payload.portalOrder),
           portalHidden: normalizeHidden(payload.portalHidden),
           stats,
@@ -847,6 +870,7 @@ export const useStore = create(
         battleThemeId: st.battleThemeId,
         battleStudentId: st.battleStudentId,
         battleTraitInvestments: st.battleTraitInvestments,
+        battleStoryStep: st.battleStoryStep,
         portalOrder: st.portalOrder,
         portalHidden: st.portalHidden,
         stats: st.stats,

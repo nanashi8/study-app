@@ -16,6 +16,7 @@ import { Button, Chip, IconButton } from '../components/ui.jsx'
 import { Close, SpeakerWave, ArrowRight, Lightbulb, Link, ChevronLeft, ChevronRight, Bookmark, BookmarkFilled, BookOpen } from '../components/Icons.jsx'
 import { cx } from '../components/ui.jsx'
 import { translationRoleMeta } from '../lib/translation-roles.js'
+import { StructureDiagram } from '../components/StructureDiagram.js'
 
 const ROLE_STYLE = {
   S: 'border-emerald-200 bg-emerald-50 text-emerald-800',
@@ -767,21 +768,16 @@ export function ReaderScreen() {
               </div>
               <div className="mb-2 flex flex-wrap gap-2 text-[11px] font-bold text-ink/55">
                 <span><b className="text-sky-700">( )</b> は節（S+Vを含む）</span>
-                <span><b className="text-violet-700">&lt; &gt;</b> は句（S+Vを含まない）</span>
+                <span>
+                  <b className="text-violet-700">&lt; &gt;</b> は句
+                  （句自体にS+Vなし・中に節を含む場合あり）
+                </span>
               </div>
-              <p className="text-base font-bold leading-loose text-ink">
-                {sentenceAnalysis.blocks.map((block) => (
-                  <span
-                    key={block.id}
-                    className={cx(
-                      'mr-1',
-                      block.kind === 'clause' && 'text-sky-800',
-                      block.kind === 'phrase' && 'text-violet-800',
-                    )}
-                  >
-                    {block.displayEn}
-                  </span>
-                ))}
+              <p
+                className="text-base font-bold leading-loose text-ink"
+                data-reading-structure-diagram={sentenceAnalysis.marked}
+              >
+                <StructureDiagram tokens={sentenceAnalysis.structureTokens} />
               </p>
               <div className="mt-2 flex flex-wrap items-center gap-2 text-xs font-extrabold">
                 <span className="bg-brand-100 px-2 py-1 text-brand-800">

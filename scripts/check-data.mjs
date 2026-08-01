@@ -43,7 +43,10 @@ import {
   READING_PHRASE_EXPLANATIONS,
   READING_PHRASE_OPEN_QUESTIONS,
 } from '../src/data/reading-phrase-explanations.js'
-import { READING_MANUAL_REVIEW_LEDGER } from '../src/data/reading-phrase-review-ledger.js'
+import {
+  READING_MANUAL_BLOCK_FINGERPRINTS,
+  READING_MANUAL_REVIEW_LEDGER,
+} from '../src/data/reading-phrase-review-ledger.js'
 import {
   READING_STUDY,
   READING_WORD_COUNT_TARGETS,
@@ -637,53 +640,47 @@ for (const ps of PASSAGES) {
     } else {
       for (const [blockIndex, block] of analysis.blocks.entries()) {
         readingTranslationBlockCount += 1
-        const scripted = scenario[blockIndex]
         const blockAt = `${translationAt} 第${blockIndex + 1}ブロック`
-        if (scripted.en !== block.en) errors.push(`${blockAt}: 英文との対応がずれている`)
-        if (!Array.isArray(scripted.jaSegments) || scripted.jaSegments.length === 0) {
+        if (!Array.isArray(block.jaSegments) || block.jaSegments.length === 0) {
           errors.push(`${blockAt}: 英語順の意味単位が無い`)
           continue
         }
-        readingTranslationSegmentCount += scripted.jaSegments.length
-        if (scripted.jaSegments.length > 1) readingTranslationSequenceCount += 1
+        readingTranslationSegmentCount += block.jaSegments.length
+        if (block.jaSegments.length > 1) readingTranslationSequenceCount += 1
         if (
-          scripted.jaSegments.some(
+          block.jaSegments.some(
             (segment) =>
               typeof segment !== 'string' ||
               segment.length === 0 ||
               segment !== segment.trim() ||
               !/[ぁ-んァ-ヶ一-龠]/.test(segment) ||
-              /[。！？→]/.test(segment),
+              /[。！？]$|→/.test(segment),
           )
         ) {
           errors.push(`${blockAt}: 意味単位に空欄・自然訳の文末・区切り混入がある`)
         }
-        if (scripted.ja !== scripted.jaSegments.join(' → ')) {
+        if (block.ja !== block.jaSegments.join('／')) {
           errors.push(`${blockAt}: 表示順が意味単位の順と一致しない`)
         }
-        if (scripted.speechJa !== scripted.jaSegments.join('。次に、')) {
+        if (block.orderedSpeechJa !== block.jaSegments.join('。')) {
           errors.push(`${blockAt}: 音声順が意味単位の順と一致しない`)
         }
-        if (
-          block.jaSource !== 'teaching' ||
-          block.ja !== scripted.ja ||
-          block.orderedSpeechJa !== scripted.speechJa
-        ) {
-          errors.push(`${blockAt}: 監修した表示・音声が英文解析へ接続されていない`)
-        }
+        if (block.jaSource !== 'teaching') errors.push(`${blockAt}: 監修訳が英文解析へ接続されていない`)
         if (!Array.isArray(block.phrasePairs) || block.phrasePairs.length === 0) {
           errors.push(`${blockAt}: 役割別の英日フレーズがない`)
         } else {
           readingPhrasePairCount += block.phrasePairs.length
-          if (block.phrasePairs.map((pair) => pair.en).join(' ') !== block.en) {
+          if (block.phrasePairs.map((pair) => pair.spokenEn ?? pair.en).join(' ') !== block.en) {
             errors.push(`${blockAt}: 英語フレーズを連結しても元の英文を復元できない`)
           }
           if (block.phrasePairs.some((pair) => {
             const wordCount = (pair.en.match(/[A-Za-z]+(?:['’][A-Za-z]+)*/g) ?? []).length
             const extendedPhrase = pair.roles?.every((role) => ['M', 'LINK'].includes(role))
-            const wordLimit = extendedPhrase
-              ? READING_MODIFIER_PHRASE_WORD_LIMIT
-              : READING_CORE_PHRASE_WORD_LIMIT
+            const wordLimit = Number.isFinite(pair.wordLimit)
+              ? pair.wordLimit
+              : extendedPhrase
+                ? READING_MODIFIER_PHRASE_WORD_LIMIT
+                : READING_CORE_PHRASE_WORD_LIMIT
             return !pair.en?.trim() ||
               !pair.ja?.trim() ||
               wordCount > wordLimit ||
@@ -704,6 +701,23 @@ for (const ps of PASSAGES) {
         ) {
           errors.push(`${blockAt}: 読み方または文法上の注意が不足`)
         }
+      }
+      const visiblePayload = (phrase) => ({
+        en: phrase.en,
+        spokenEn: phrase.spokenEn ?? phrase.en,
+        displayEn: phrase.displayEn ?? phrase.en,
+        role: phrase.role,
+        ja: phrase.ja,
+        roleHeading: phrase.roleHeading,
+        roleNote: phrase.roleNote,
+        explanation: phrase.explanation ?? phrase.grammarNote ?? '',
+      })
+      const blockPhrasePayload = analysis.blocks
+        .flatMap((block) => block.phrasePairs)
+        .map(visiblePayload)
+      const reviewedPhrasePayload = analysis.phraseSequence.map(visiblePayload)
+      if (JSON.stringify(blockPhrasePayload) !== JSON.stringify(reviewedPhrasePayload)) {
+        errors.push(`${translationAt}: 下段文法ブロックが最終確認済みフレーズ列と一致しない`)
       }
     }
     const expectedPattern = expectedPatterns?.[sentenceIndex]
@@ -768,23 +782,26 @@ if (
   PASSAGES.length !== 16 ||
   readingTranslationSentenceCount !== 363 ||
   readingTranslationBlockCount !== 1042 ||
-  readingPhrasePairCount !== 3221 ||
+  readingPhrasePairCount !== 3238 ||
   readingPhraseSequenceCount !== 3238
 ) {
   errors.push(
     `長文フレーズ監査: ${PASSAGES.length}長文・${readingTranslationSentenceCount}文・` +
     `${readingTranslationBlockCount}ブロック・${readingPhrasePairCount}ブロック内英日フレーズ・` +
     `${readingPhraseSequenceCount}表示フレーズ` +
-    '（現行全件は16長文・363文・1,042ブロック・3,221ブロック内英日フレーズ・3,238表示フレーズ）',
+    '（現行全件は16長文・363文・1,042ブロック・3,238ブロック内英日フレーズ・3,238表示フレーズ）',
   )
 }
 if (
   Object.keys(READING_MANUAL_REVIEW_LEDGER).length !== 363 ||
-  readingManualReviewSentenceCount !== 363
+  readingManualReviewSentenceCount !== 363 ||
+  PASSAGES.some((passage) =>
+    READING_MANUAL_BLOCK_FINGERPRINTS[passage.id]?.length !== passage.sentences.length)
 ) {
   errors.push(
     `長文の手動レビュー台帳: ${readingManualReviewSentenceCount}/363文照合、` +
-    `${Object.keys(READING_MANUAL_REVIEW_LEDGER).length}/363 ID登録`,
+    `${Object.keys(READING_MANUAL_REVIEW_LEDGER).length}/363 ID登録、` +
+    `${Object.values(READING_MANUAL_BLOCK_FINGERPRINTS).reduce((sum, items) => sum + items.length, 0)}/363 ブロック構造fingerprint`,
   )
 }
 if (readingReviewedPhraseSentenceCount !== READING_PHRASE_EXPLANATIONS.length) {

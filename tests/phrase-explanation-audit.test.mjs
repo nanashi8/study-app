@@ -1,9 +1,11 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
+import { renderToStaticMarkup } from 'react-dom/server'
 
 import { auditPhraseExplanations } from '../src/lib/phrase-explanation-audit.js'
 import { PASSAGES } from '../src/data/passages.js'
 import {
+  READING_MANUAL_BLOCK_FINGERPRINTS,
   READING_MANUAL_REVIEW_LEDGER,
   readingManualReviewEvidence,
   reviewedBlockFingerprint,
@@ -12,6 +14,11 @@ import {
   analyzeReadingSentence,
   applyReadingManualReviewState,
 } from '../src/lib/reading-grammar.js'
+import { StructureDiagram } from '../src/components/StructureDiagram.js'
+import {
+  serializeStructureTokens,
+  structureGroupOutline,
+} from '../src/lib/structure-markers.js'
 
 const sentenceByEnglish = (english) => PASSAGES
   .flatMap((passage) => passage.sentences)
@@ -26,7 +33,8 @@ const substantiveReadingIssueNames = [
   'adjacentJapaneseCaseCollisions',
   'missingPunctuationBoundaries', 'semanticBindingErrors',
   'invalidJapaneseFallbacks', 'structuralDisplayMismatches',
-  'staleGrammarBlockPayloads', 'misclassifiedGrammarBlocks', 'correctionMismatches',
+  'staleGrammarBlockPayloads', 'grammarBlockStructureMismatches',
+  'misclassifiedGrammarBlocks', 'correctionMismatches',
   'missingManualReviewEvidence',
 ]
 
@@ -83,6 +91,13 @@ test('全規則と全文を監査確認済みにし、台帳外変更は別状�
 
 test('明示台帳外の新規文と、既存文のJA・role・文法ブロック変更はreview-neededへ戻る', () => {
   assert.equal(Object.keys(READING_MANUAL_REVIEW_LEDGER).length, 363)
+  assert.equal(
+    Object.values(READING_MANUAL_BLOCK_FINGERPRINTS)
+      .reduce((total, fingerprints) => total + fingerprints.length, 0),
+    363,
+  )
+  assert.ok(Object.values(READING_MANUAL_REVIEW_LEDGER)
+    .every((evidence) => evidence.blockFingerprint))
   const sourceSentence = sentenceByEnglish('She goes to school by bus every morning.')
   const analysis = analyzeReadingSentence(sourceSentence)
   assert.ok(readingManualReviewEvidence(
@@ -255,6 +270,20 @@ test('下段文法ブロックも最終phraseSequenceと同じ表示・音声pay
   assert.equal(formalObject.blocks[2].label, 'decideの目的語となる内容節')
   assert.equal(formalObject.blocks[2].role, 'O')
   assert.doesNotMatch(formalObject.blocks[2].note, /関係詞節/)
+  assert.equal(
+    formalObject.marked,
+    'This evidence makes it easier <to improve a design or decide (that a simpler solution would work better)>',
+  )
+  assert.deepEqual(structureGroupOutline(formalObject.structureTokens), [
+    {
+      kind: 'phrase', depth: 0, parentKind: null,
+      text: 'to improve a design or decide that a simpler solution would work better',
+    },
+    {
+      kind: 'clause', depth: 1, parentKind: 'phrase',
+      text: 'that a simpler solution would work better',
+    },
+  ])
 
   const comparison = analysisFor(
     'The integrity of public memory is then shaped less by what is available than by what is repeatedly presented as relevant.',
@@ -266,6 +295,17 @@ test('下段文法ブロックも最終phraseSequenceと同じ表示・音声pay
   ])
   assert.match(comparison.blocks[1].label, /融合関係詞節/)
   assert.match(comparison.blocks[2].note, /present A as C/)
+  assert.equal(
+    comparison.marked,
+    'The integrity of public memory is then shaped less (by what is available) than (by what is repeatedly presented as relevant)',
+  )
+  assert.deepEqual(structureGroupOutline(comparison.structureTokens), [
+    { kind: 'clause', depth: 0, parentKind: null, text: 'by what is available' },
+    {
+      kind: 'clause', depth: 0, parentKind: null,
+      text: 'by what is repeatedly presented as relevant',
+    },
+  ])
 
   const fusedRelative = analysisFor(
     'If that practice declines, even perfect archives will not prevent societies from losing their ability to learn from what they once knew.',
@@ -276,4 +316,38 @@ test('下段文法ブロックも最終phraseSequenceと同じ表示・音声pay
     'from what融合関係詞節・後半',
   ])
   assert.doesNotMatch(fusedRelative.blocks.at(-1).note, /時・条件の副詞節/)
+  assert.equal(
+    fusedRelative.marked,
+    '(If that practice declines) even perfect archives will not prevent societies <from losing their ability> <to learn> (from what they once knew)',
+  )
+  assert.deepEqual(structureGroupOutline(fusedRelative.structureTokens), [
+    { kind: 'clause', depth: 0, parentKind: null, text: 'If that practice declines' },
+    { kind: 'phrase', depth: 0, parentKind: null, text: 'from losing their ability' },
+    { kind: 'phrase', depth: 0, parentKind: null, text: 'to learn' },
+    { kind: 'clause', depth: 0, parentKind: null, text: 'from what they once knew' },
+  ])
+
+  for (const analysis of [formalObject, comparison, fusedRelative]) {
+    assert.deepEqual(analysis.structureMarkerErrors, [])
+    assert.equal(serializeStructureTokens(analysis.structureTokens), analysis.marked)
+    const html = renderToStaticMarkup(StructureDiagram({
+      tokens: analysis.structureTokens,
+    }))
+    const renderedText = html
+      .replace(/<[^>]+>/g, '')
+      .replaceAll('&lt;', '<')
+      .replaceAll('&gt;', '>')
+      .replaceAll('&amp;', '&')
+    assert.equal(renderedText, analysis.marked)
+  }
+
+  const formalHtml = renderToStaticMarkup(StructureDiagram({
+    tokens: formalObject.structureTokens,
+  }))
+  const phraseStart = formalHtml.indexOf('data-structure-kind="phrase"')
+  const nestedClauseStart = formalHtml.indexOf('data-structure-kind="clause"')
+  const phraseClose = formalHtml.indexOf('&gt;</span>', nestedClauseStart)
+  assert.ok(phraseStart >= 0 && nestedClauseStart > phraseStart)
+  assert.ok(phraseClose > nestedClauseStart)
+  assert.match(formalHtml, /data-structure-depth="1"/)
 })

@@ -241,10 +241,10 @@ export function SpeechSettingsPanel({ heading = true }) {
       </div>
 
       <h2 className="pt-4 font-display text-base font-extrabold text-ink/80">
-        ゲームBGM
+        放課後ことば探検記 BGM
       </h2>
       <p className="mt-1 text-xs font-bold leading-relaxed text-ink/50">
-        放課後マップ・級別バトル・先生戦・結果に合わせて、約3分のオリジナル30曲を自動で切り替えます。読み上げ中はBGMを自動で小さくします。
+        日常・ことばの対決・先生戦・結果に合わせて、約3分のオリジナル33曲を切り替えます。通常の単語・文法・長文など学習画面では鳴りません。
       </p>
       <div className="mt-2 divide-y divide-brand-50">
         <SettingRow title="ゲームBGMを再生" desc="ゲーム画面を開き、最初に操作した後から再生">

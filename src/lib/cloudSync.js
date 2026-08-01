@@ -15,6 +15,7 @@ import {
 } from './battleThemes.js'
 import { normalizeBattleStudentId } from './battleCast.js'
 import { normalizeBattleTraitInvestments } from './battleTraits.js'
+import { normalizeBattleStoryStep } from './afterSchoolStory.js'
 
 const node = (uid) => ref(db, `students/${uid}`)
 
@@ -68,6 +69,7 @@ export async function pullOrInit(uid, email) {
         d.battleTraitInvestments,
         battleStars,
       ),
+      battleStoryStep: normalizeBattleStoryStep(d.battleStoryStep),
       stats,
       settings: { ...cur.settings, ...(d.settings ?? {}) },
     })

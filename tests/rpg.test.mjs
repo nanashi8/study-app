@@ -67,6 +67,7 @@ import {
   battleStudentLifestylePortrait,
   battleStudentMotion,
   battleStudentPortrait,
+  battleStudentResultState,
   battleStudentState,
   battleSupportStyleById,
   isBattleStudentId,
@@ -650,6 +651,20 @@ test('回答イベントは生徒の喜怒哀楽・癒し・戦闘状態へ決�
   assert.equal(first.groupId, 'stem')
 })
 
+test('バトル結果は決着に合う生徒の表情へ切り替わる', () => {
+  assert.equal(
+    battleStudentResultState({ battleState: { heroDefeated: true }, accuracy: 1 }),
+    'exhausted',
+  )
+  assert.equal(
+    battleStudentResultState({ battleState: { enemyDefeated: true }, accuracy: 0 }),
+    'victory',
+  )
+  assert.equal(battleStudentResultState({ accuracy: 0.8 }), 'delighted')
+  assert.equal(battleStudentResultState({ accuracy: 0.5 }), 'relieved')
+  assert.equal(battleStudentResultState({ accuracy: 0.2 }), 'sad')
+})
+
 test('3エリア固有能力は戦闘演出だけを変え、学習評価を変えない', () => {
   const answers = ['wrong', 'correct', 'correct', 'correct']
   const states = BATTLE_THEMES.map((theme) =>
@@ -982,6 +997,7 @@ test('放課後スターはバトル正解とXP変換で増え、演出選択と
     assert.match(source, /battleThemeId/)
     assert.match(source, /battleStudentId/)
     assert.match(source, /battleTraitInvestments/)
+    assert.match(source, /battleStoryStep/)
   }
 })
 
@@ -996,6 +1012,10 @@ test('キャラ選択・全24表情・50人図鑑・3場面演出が実際のバ
   )
   const cssSource = readFileSync(
     new URL('../src/index.css', import.meta.url),
+    'utf8',
+  )
+  const resultSource = readFileSync(
+    new URL('../src/screens/SessionResult.jsx', import.meta.url),
     'utf8',
   )
 
@@ -1049,6 +1069,12 @@ test('キャラ選択・全24表情・50人図鑑・3場面演出が実際のバ
   assert.match(quizSource, /battleTheme\.scenes\[sceneIndex\]/)
   assert.match(quizSource, /battleRival\.portrait/)
 
+  assert.match(resultSource, /battleStudentResultState/)
+  assert.match(resultSource, /battle-result-\$\{placement\}-student/)
+  assert.match(resultSource, /battleStudentPortrait\(student\.id, emotion\)/)
+  assert.match(resultSource, /placement="lead"/)
+  assert.match(resultSource, /placement="level"/)
+
   assert.match(cssSource, /@keyframes battle-expression-in/)
   assert.match(cssSource, /@keyframes campus-life-scene-in/)
   assert.match(cssSource, /@keyframes campus-life-drift/)
@@ -1087,7 +1113,7 @@ test('学校アイテムをシンプルに選択し、バトルで1回使い、�
   assert.match(mapSource, /1バトル1回/)
   assert.match(mapSource, /<details className="school-battle-options/)
   assert.match(mapSource, /問題数をえらぶ/)
-  assert.match(mapSource, /問バトルをはじめる/)
+  assert.match(mapSource, /問のことば対決へ/)
   assert.match(quizSource, /onClick=\{useBattleItem\}/)
   assert.match(quizSource, /battleState\.itemUsed/)
   assert.match(quizSource, /setBattleVisualEvent/)
