@@ -35,7 +35,7 @@ export function LiteratureLibraryScreen() {
     <div className="pb-7">
       <ScreenHeader
         title="名作交互朗読"
-        subtitle="原文を聴く → やさしい訳で確かめる"
+        subtitle="間で区切る → 一対ずつ直訳で確かめる"
         color="#0f766e"
       />
 
@@ -50,10 +50,10 @@ export function LiteratureLibraryScreen() {
                 Listen & understand
               </p>
               <h1 className="mt-1 font-display text-xl font-extrabold">
-                一場面ずつ、原文と訳を往復
+                一息ずつ、原文と訳を往復
               </h1>
               <p className="mt-2 text-xs font-bold leading-relaxed text-white/70">
-                英語は英語原文→和訳、古典は古文原文→現代語訳。意味のまとまりごとに交互に読み上げます。
+                英語は英語→区切りの直訳、古典は古文→区切りの現代語訳。朗読で間を置くまとまりごとに交互に読み上げます。
               </p>
             </div>
           </div>

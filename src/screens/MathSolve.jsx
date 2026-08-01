@@ -6,6 +6,7 @@ import { MathBlock, MathText } from '../components/MathText.jsx'
 import { MathFillIn, resolveFill } from '../components/MathFillIn.jsx'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
+import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { Button, ProgressBar, IconButton } from '../components/ui.jsx'
 import { cx } from '../components/ui.jsx'
 import { Close, Check, ArrowRight, Lightbulb, Target } from '../components/Icons.jsx'
@@ -167,6 +168,7 @@ export function MathSolveScreen() {
       <div className="flex items-center gap-3 px-3 py-3">
         <IconButton onClick={back} aria-label="やめる"><Close size={22} /></IconButton>
         <div className="flex-1"><ProgressBar value={pIndex / problems.length} color="#8b5cf6" /></div>
+        <SpeechSettingsButton compact />
         <span className="w-12 text-right text-sm font-extrabold text-ink/50">{pIndex + 1}/{problems.length}</span>
       </div>
 

@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useAuth } from '../store/useAuth.js'
 import { useStore } from '../store/useStore.js'
 import { Button, Card, IconButton } from '../components/ui.jsx'
+import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { ChevronLeft } from '../components/Icons.jsx'
 
 export function LoginScreen() {
@@ -28,6 +29,9 @@ export function LoginScreen() {
     <div className="relative flex min-h-full flex-col items-center justify-center px-6 py-10">
       <div className="absolute left-3 top-[calc(env(safe-area-inset-top)+0.75rem)]">
         <IconButton onClick={back} aria-label="戻る"><ChevronLeft size={24} /></IconButton>
+      </div>
+      <div className="absolute right-3 top-[calc(env(safe-area-inset-top)+0.75rem)]">
+        <SpeechSettingsButton compact />
       </div>
       <div className="mb-6 text-center">
         <div className="text-5xl">⚔️</div>

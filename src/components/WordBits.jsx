@@ -1,6 +1,9 @@
 // 単語まわりの再利用パーツ：品詞バッジ・語源分解・語源つながり。
 import {
+  ETYMOLOGY_FORMATION_META,
   ETYMOLOGY_MODE_META,
+  ETYMOLOGY_SOURCE_META,
+  etymologyHistoryFor,
   getEtymologyPack,
   getRoot,
   relatedByEtymology,
@@ -113,6 +116,76 @@ export function EtymologyParts({ parts = [], onRoot }) {
   )
 }
 
+/**
+ * 同根関係を持たない語の履歴を「形成法 / 出発言語 / 意味の橋 / 現在義」に分ける。
+ * 言語名と形成法を別バッジにし、由来説明の矢印は順序を保って表示する。
+ */
+export function EtymologyHistoryTrail({ word, compact = false }) {
+  const history = etymologyHistoryFor(word)
+  const formation = ETYMOLOGY_FORMATION_META[history.formationKey]
+  const source = ETYMOLOGY_SOURCE_META[history.sourceKey]
+
+  return (
+    <div className={cx(
+      'rounded-xl bg-slate-50 ring-1 ring-slate-100',
+      compact ? 'space-y-1.5 p-2.5' : 'space-y-2.5 p-3',
+    )}>
+      <div className="flex flex-wrap gap-1.5">
+        <span className="rounded-full bg-violet-100 px-2 py-0.5 text-[10px] font-extrabold text-violet-700">
+          {formation.emoji} {formation.label}
+        </span>
+        <span className="rounded-full bg-sky-100 px-2 py-0.5 text-[10px] font-extrabold text-sky-700">
+          {source.emoji} {source.label}
+        </span>
+      </div>
+
+      {!compact && (
+        <div className="flex gap-2">
+          <span className="shrink-0 text-[10px] font-extrabold text-ink/40">出発点</span>
+          <span className="text-xs font-bold leading-relaxed text-ink/65">
+            {history.sourceText}
+          </span>
+        </div>
+      )}
+
+      {history.arrowSteps.length > 1 ? (
+        <div className="flex flex-wrap items-center gap-1">
+          {history.arrowSteps.map((step, index) => (
+            <span key={`${step}-${index}`} className="contents">
+              <span className={cx(
+                'rounded-lg bg-white font-bold leading-relaxed text-ink/65 ring-1 ring-slate-200',
+                compact ? 'px-1.5 py-1 text-[10px]' : 'px-2 py-1 text-xs',
+              )}>
+                {step}
+              </span>
+              {index < history.arrowSteps.length - 1 && (
+                <span className="text-xs font-black text-brand-300">→</span>
+              )}
+            </span>
+          ))}
+        </div>
+      ) : (
+        <p className={cx(
+          'font-bold leading-relaxed text-ink/60',
+          compact ? 'line-clamp-3 text-[11px]' : 'text-sm',
+        )}>
+          {history.note}
+        </p>
+      )}
+
+      <div className="flex items-start gap-2 border-t border-slate-200/70 pt-1.5">
+        <span className="shrink-0 text-[10px] font-extrabold text-brand-500">現在義</span>
+        <span className={cx(
+          'font-extrabold text-ink',
+          compact ? 'text-[11px]' : 'text-sm',
+        )}>
+          {history.currentMeaning}
+        </span>
+      </div>
+    </div>
+  )
+}
+
 /** 語源ブロック：全語の濃縮ルート + 分解 + 由来ストーリー + 出典。 */
 export function EtymologyBlock({ word, onRoot, onPack }) {
   const ety = word.etymology
@@ -120,6 +193,10 @@ export function EtymologyBlock({ word, onRoot, onPack }) {
   const profile = word.compression
   const pack = profile ? getEtymologyPack(profile.packId) : null
   const mode = profile ? ETYMOLOGY_MODE_META[profile.mode] : null
+  const formation = profile?.formationKey
+    ? ETYMOLOGY_FORMATION_META[profile.formationKey]
+    : null
+  const source = profile?.sourceKey ? ETYMOLOGY_SOURCE_META[profile.sourceKey] : null
   const compressionBody = profile && pack && (
     <>
       <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white text-xl shadow-sm">
@@ -130,7 +207,9 @@ export function EtymologyBlock({ word, onRoot, onPack }) {
           この語の濃縮ルート
         </span>
         <span className="block truncate text-sm font-extrabold text-brand-700">
-          {mode.label}・{profile.size > 1 ? `${profile.size}語を1束で` : '1語を部品へ圧縮'}
+          {profile.mode === 'origin'
+            ? `${formation?.short ?? mode.label}・${source?.label ?? '由来を確認'}`
+            : `${mode.label}・${profile.size > 1 ? `${profile.size}語を1束で` : '1語を部品へ圧縮'}`}
         </span>
       </span>
       {onPack && <ArrowRight size={17} className="shrink-0 text-brand-400" />}
@@ -168,7 +247,9 @@ export function EtymologyBlock({ word, onRoot, onPack }) {
           </div>
         </div>
       )}
-      {ety.note && (
+      {profile?.mode === 'origin' ? (
+        <EtymologyHistoryTrail word={word} />
+      ) : ety.note && (
         <div className="flex gap-2 rounded-2xl bg-hint-soft/70 p-3">
           <span className="mt-0.5 shrink-0 text-hint">
             <Lightbulb size={18} />
@@ -176,7 +257,7 @@ export function EtymologyBlock({ word, onRoot, onPack }) {
           <p className="text-sm font-bold leading-relaxed text-amber-900/90">{ety.note}</p>
         </div>
       )}
-      {ety.origin && (
+      {profile?.mode !== 'origin' && ety.origin && (
         <p className="px-1 text-xs font-bold text-ink/45">語源：{ety.origin}</p>
       )}
     </div>

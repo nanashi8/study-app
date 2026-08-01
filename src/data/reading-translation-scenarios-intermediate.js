@@ -1,4 +1,4 @@
-// 中級長文の講師監修・語順訳シナリオ。
+// 中級長文の講師監修・語順訳シナリオ。「／」の各意味単位を英語の出現順に並べる。
 
 const b = (en, orderedJa, tip = '') => {
   const jaSegments = Object.freeze(orderedJa.split('／').map((segment) => segment.trim()))
@@ -6,7 +6,7 @@ const b = (en, orderedJa, tip = '') => {
     en,
     ja: jaSegments.join(' → '),
     jaSegments,
-    speechJa: jaSegments.join('、'),
+    speechJa: jaSegments.join('。次に、'),
     tip,
   })
 }
@@ -63,7 +63,7 @@ export const INTERMEDIATE_READING_TRANSLATION_SCENARIOS = Object.freeze({
       b('They learned', '生徒たちは／学びました'),
       b('that certain flowers attract insects', 'ある種の花が／引き寄せるということを／昆虫を'),
       b('that eat garden pests', 'そしてその昆虫は／食べます／庭の害虫を'),
-      b('without harming the vegetables', '野菜を傷つけることなく'),
+      b('without harming the vegetables', '傷つけることなく／野菜を'),
     ],
     [
       b('The class planted those flowers', 'クラスは／植えました／その花を'),
@@ -73,10 +73,10 @@ export const INTERMEDIATE_READING_TRANSLATION_SCENARIOS = Object.freeze({
     [
       b('In July', '7月に'),
       b('they picked enough cucumbers and tomatoes', '生徒たちは／収穫しました／十分な量のキュウリとトマトを'),
-      b('to share with people at a nearby community center', '分け合えるだけの量を／人々と／近くのコミュニティセンターの'),
+      b('to share with people at a nearby community center', '分け合えるほど／人々と／近くのコミュニティセンターにいる'),
     ],
     [
-      b('Instead of simply giving the food away', 'ただ食べ物を渡してしまう代わりに'),
+      b('Instead of simply giving the food away', '〜する代わりに／ただ渡してしまう／食べ物を'),
       b('the students visited the center and explained', '生徒たちは／訪れました／そのセンターを／そして説明しました'),
       b('how they had grown it', 'どのように／自分たちが／育てたのかを／それを'),
     ],
@@ -92,7 +92,7 @@ export const INTERMEDIATE_READING_TRANSLATION_SCENARIOS = Object.freeze({
     ],
     [
       b('The experience taught them', 'その経験は／教えました／生徒たちに'),
-      b('that protecting the environment can begin', '環境を守ることは／始められるということを'),
+      b('that protecting the environment can begin', '守ることは／環境を／始められるということを'),
       b('with small daily actions', '日々の小さな行動から'),
     ],
     [
@@ -103,7 +103,7 @@ export const INTERMEDIATE_READING_TRANSLATION_SCENARIOS = Object.freeze({
     [
       b('By the end of the project', 'その活動が終わるころまでには'),
       b('even the students', '〜でさえ／その生徒たちは'),
-      b('who had disliked gardening', '以前は園芸が嫌いだった'),
+      b('who had disliked gardening', 'そしてその生徒たちは／以前は嫌っていた／園芸を'),
       b('were proud of the result', '誇りに思っていました／その結果を'),
     ],
   ]),
@@ -120,7 +120,7 @@ export const INTERMEDIATE_READING_TRANSLATION_SCENARIOS = Object.freeze({
     ],
     [
       b('A science class decided', 'ある理科のクラスは／決めました'),
-      b('to study the problem instead of simply asking everyone to eat more', '調べることを／その問題を／〜する代わりに／ただ全員に／もっと食べるよう頼むことを'),
+      b('to study the problem instead of simply asking everyone to eat more', '調べることを／その問題を／ただ頼むことの代わりに／全員に／もっと食べるように'),
     ],
     [
       b('First, the students gave the other classes a short survey', 'まず／生徒たちは／渡しました／ほかのクラスに／短いアンケートを'),
@@ -171,7 +171,7 @@ export const INTERMEDIATE_READING_TRANSLATION_SCENARIOS = Object.freeze({
     ],
     [
       b('The project taught them', 'その活動は／教えました／生徒たちに'),
-      b('that reducing food waste does not require one perfect rule', '食品ロスを減らすことは／必要としないということを／一つの完璧な規則を'),
+      b('that reducing food waste does not require one perfect rule', '減らすことは／食品ロスを／必要としないということを／一つの完璧な規則を'),
       b('for everyone', '対象が／全員となる'),
     ],
     [
@@ -195,8 +195,8 @@ export const INTERMEDIATE_READING_TRANSLATION_SCENARIOS = Object.freeze({
   p_pre2_museum_volunteers: passage([
     [
       b('Many museums are trying', '多くの博物館は／取り組んでいます'),
-      b('to become places', 'そのような場所になることに'),
-      b('where teenagers can do more than simply look at objects', 'そこでは／10代の若者が／できます／ただ展示物を見ることより多くのことが'),
+      b('to become places', 'なることに／場所に'),
+      b('where teenagers can do more than simply look at objects', 'そこでは／10代の若者が／できます／ただ見ることより多くのことが／展示物を'),
       b('behind glass', 'ガラスの向こうにある'),
     ],
     [
@@ -230,7 +230,7 @@ export const INTERMEDIATE_READING_TRANSLATION_SCENARIOS = Object.freeze({
     [
       b('They may not know the answer to every question', '生徒たちは／知らないかもしれません／答えを／すべての質問への'),
       b('so they are taught', 'そのため／生徒たちは／教えられます'),
-      b('to admit uncertainty and ask a staff member', '分からないと認めるように／そして尋ねるように／職員に'),
+      b('to admit uncertainty and ask a staff member', '認めるように／分からないことを／そして尋ねるように／職員に'),
       b('for help', '助けを求めて'),
     ],
     [
@@ -246,7 +246,7 @@ export const INTERMEDIATE_READING_TRANSLATION_SCENARIOS = Object.freeze({
       b('that a museum is connected to schools, shops, parks, and many other parts of the community', '博物館が／つながっていることに／学校・商店・公園・地域のほかの多くの場所と'),
     ],
     [
-      b('One student said she had become more confident after answering questions', 'ある生徒は／言いました／自分は／より自信を持つようになったと／質問に答えたあとで'),
+      b('One student said she had become more confident after answering questions', 'ある生徒は／言いました／自分は／より自信を持つようになったと／答えたあとで／質問に'),
       b('from foreign visitors', 'その質問は／外国からの来館者からの'),
     ],
     [
@@ -263,10 +263,10 @@ export const INTERMEDIATE_READING_TRANSLATION_SCENARIOS = Object.freeze({
       b('When young people take part', '〜すると／若者が／参加する'),
       b('exhibitions feel more open', '展示は／より開かれたものに感じられます'),
       b('and visitors are more willing', 'そして／来館者は／もっと進んで行おうとします'),
-      b('to ask questions', '質問することを'),
+      b('to ask questions', '尋ねることを／質問を'),
     ],
     [
-      b('The museum has also changed the way it prepares labels', '博物館は／さらに変えました／方法を／説明文を準備する'),
+      b('The museum has also changed the way it prepares labels', '博物館は／さらに変えました／方法を／博物館が／準備する／説明文を'),
       b('for new displays', '新しい展示のための'),
     ],
     [
@@ -282,7 +282,7 @@ export const INTERMEDIATE_READING_TRANSLATION_SCENARIOS = Object.freeze({
     ],
     [
       b('The students also record the questions visitors ask most often', '生徒たちは／さらに記録します／質問を／来館者が最もよく尋ねる'),
-      b('and the museum uses this feedback when planning future exhibitions', 'そして／博物館は／利用します／この意見を／今後の展示を計画するときに'),
+      b('and the museum uses this feedback when planning future exhibitions', 'そして／博物館は／利用します／この意見を／計画するときに／今後の展示を'),
     ],
     [
       b('The program shows', 'そのプログラムは／示しています'),
@@ -357,14 +357,14 @@ export const INTERMEDIATE_READING_TRANSLATION_SCENARIOS = Object.freeze({
     ],
     [
       b('Because each community is different', 'なぜなら／地域はそれぞれ／異なるからです'),
-      b('changing the clock alone', '時刻だけを変えることは'),
+      b('changing the clock alone', '変えることは／時刻だけを'),
       b('is not a complete solution', '〜ではありません／完全な解決策'),
     ],
     [
       b('Schools need', '学校は／必要としています'),
       b('to examine bus routes, club times', '調べることを／バス路線・部活動の時間を'),
       b('and family needs', 'そして／家庭の必要も'),
-      b('before choosing a new schedule', '〜する前に／新しい予定を選ぶ'),
+      b('before choosing a new schedule', '〜する前に／選ぶ／新しい予定を'),
     ],
     [
       b('They should also teach students', '学校は／さらに教えるべきです／生徒たちに'),
@@ -413,8 +413,8 @@ export const INTERMEDIATE_READING_TRANSLATION_SCENARIOS = Object.freeze({
       b('but in other cases only a small part has stopped working', 'しかし／別の場合には／小さな部品だけが／動かなくなっています'),
     ],
     [
-      b('Because buying a new item is often easier than finding someone', 'なぜなら／新しい品物を買うことは／しばしばより簡単だからです／人を見つけることより'),
-      b('to fix the old one', '直してくれる／古い品物を'),
+      b('Because buying a new item is often easier than finding someone', 'なぜなら／買うことは／新しい品物を／しばしばより簡単だからです／見つけることより／人を'),
+      b('to fix the old one', 'その人は／直してくれる／古い品物を'),
       b('usable products become waste', 'まだ使える製品が／ごみになります'),
     ],
     [
@@ -432,7 +432,7 @@ export const INTERMEDIATE_READING_TRANSLATION_SCENARIOS = Object.freeze({
     ],
     [
       b('Visitors are expected', '来場者は／求められています'),
-      b('to sit with volunteers and take part in the work instead of simply leaving an item', '座ることを／ボランティアと／そして参加することを／作業に／〜する代わりに／ただ品物を預ける'),
+      b('to sit with volunteers and take part in the work instead of simply leaving an item', '座ることを／ボランティアと／そして参加することを／作業に／ただ預けることの代わりに／品物を'),
       b('at a counter', '受付に'),
     ],
     [
@@ -452,15 +452,15 @@ export const INTERMEDIATE_READING_TRANSLATION_SCENARIOS = Object.freeze({
     [
       b('Older residents may know', '年配の住民は／知っているかもしれません'),
       b('how older machines were built', 'どのように／古い機械が／作られていたのかを'),
-      b('while younger participants may be more comfortable finding digital information', '一方／若い参加者は／より慣れているかもしれません／デジタル情報を探すことに'),
+      b('while younger participants may be more comfortable finding digital information', '一方／若い参加者は／より慣れているかもしれません／探すことに／デジタル情報を'),
     ],
     [
       b('Supporters say repair cafes offer both environmental and social benefits', '支持者は／言います／リペアカフェは／もたらすと／環境面と社会面の両方の利点を'),
     ],
     [
-      b('Extending the life of a product', '製品の寿命を延ばすことは'),
+      b('Extending the life of a product', '延ばすことは／寿命を／製品の'),
       b('reduces waste and lowers demand', '減らします／ごみを／そして下げます／需要を'),
-      b('for the energy and resources required', 'エネルギーと資源への／必要とされる'),
+      b('for the energy and resources required', 'エネルギーと資源への／そしてそれらは／必要とされます'),
       b('to make new goods', '作るために／新しい製品を'),
     ],
     [
@@ -498,8 +498,8 @@ export const INTERMEDIATE_READING_TRANSLATION_SCENARIOS = Object.freeze({
     ],
     [
       b('Critics therefore argue', 'そのため／批判する人々は／主張します'),
-      b('that manufacturers should make parts and instructions easier', '製造業者は／より容易にすべきだと／部品と説明書を'),
-      b('to obtain', '入手できるように'),
+      b('that manufacturers should make parts and instructions easier', '製造業者は／するべきだと／部品と説明書を／より容易に（内容は次へ）'),
+      b('to obtain', '入手することを'),
     ],
     [
       b('Repair cafes cannot change product design', 'リペアカフェは／変えられません／製品設計を'),
@@ -570,7 +570,7 @@ export const INTERMEDIATE_READING_TRANSLATION_SCENARIOS = Object.freeze({
       ),
       b(
         'to reach more often than distant or unsafe locations',
-        '到達することが／より頻繁に訪れます／遠い場所や危険な場所よりも',
+        '到達することが（容易です）／そして人々はより頻繁に訪れます／遠い場所や危険な場所よりも',
         'to reach は easy の内容です。more often than 以下は visit に戻して、「遠い場所などより頻繁に訪れる」と読みます。',
       ),
     ],
@@ -626,7 +626,7 @@ export const INTERMEDIATE_READING_TRANSLATION_SCENARIOS = Object.freeze({
     [
       b('The partnership also shows', 'この協力関係は／さらに示しています'),
       b('that useful science depends', '役立つ科学は／かかっていると'),
-      b('on recording uncertainty as honestly as discovery', '不確実性を記録することに／発見を記録するのと同じくらい正直に'),
+      b('on recording uncertainty as honestly as discovery', '記録することに／不確実性を／発見を記録するのと同じくらい正直に'),
     ],
   ]),
 })

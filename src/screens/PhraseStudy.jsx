@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
-import { buildPhraseDeck } from '../lib/session.js'
+import { buildPhraseDeck, recordStudyAnswer } from '../lib/session.js'
 import { getLevel } from '../data/levels.js'
 import { speak } from '../lib/tts.js'
 import { phraseSpeechText } from '../lib/phrase-speech.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
+import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { Button, ProgressBar, IconButton, Chip } from '../components/ui.jsx'
 import { Close, ArrowRight, Lightbulb, Eye, EyeOff, Link } from '../components/Icons.jsx'
 
@@ -33,7 +34,7 @@ export function PhraseStudyScreen() {
   )
   const [i, setI] = useState(0)
   const [flipped, setFlipped] = useState(revealAll)
-  const results = useRef({ remembered: 0, forgot: 0 })
+  const results = useRef({ remembered: 0, forgot: 0, forgotIds: [] })
   const item = deck[i]
 
   useEffect(() => {
@@ -41,6 +42,7 @@ export function PhraseStudyScreen() {
       speak(phraseSpeechText(item), {
         rate: settings.ttsRate,
         voiceURI: settings.ttsVoiceURI,
+        style: item.kind === 'syntax' ? 'sentence' : 'phrase',
       })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -66,7 +68,7 @@ export function PhraseStudyScreen() {
       correct: results.current.remembered,
       wrong: results.current.forgot,
       xpGained,
-      reviewIds: deck.map((p) => p.id),
+      reviewIds: results.current.forgotIds,
       source: params.source,
       size: params.size,
       continueTo: params.continueTo,
@@ -75,8 +77,7 @@ export function PhraseStudyScreen() {
 
   const answer = (remembered) => {
     review(item.id, remembered ? 'remembered' : 'forgot', 'usage')
-    if (remembered) results.current.remembered++
-    else results.current.forgot++
+    results.current = recordStudyAnswer(results.current, item.id, remembered)
     if (i + 1 >= deck.length) finish()
     else {
       setI(i + 1)
@@ -104,6 +105,7 @@ export function PhraseStudyScreen() {
         >
           {revealAll ? <Eye size={22} /> : <EyeOff size={22} />}
         </IconButton>
+        <SpeechSettingsButton compact />
         <span className="w-12 text-right text-sm font-extrabold text-ink/50">{i + 1}/{deck.length}</span>
       </div>
 

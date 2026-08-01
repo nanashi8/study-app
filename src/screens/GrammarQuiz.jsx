@@ -8,6 +8,7 @@ import {
 import { buildGrammarDeck } from '../lib/grammarDeck.js'
 import { todayIndex } from '../store/useStore.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
+import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
 import { Button, ProgressBar, IconButton, Chip, cx } from '../components/ui.jsx'
@@ -90,7 +91,7 @@ export function GrammarQuizScreen() {
       correct: results.current.correct,
       wrong: results.current.wrong + results.current.unknown,
       xpGained,
-      reviewIds: results.current.wrongIds.length ? results.current.wrongIds : deck.map((g) => g.id),
+      reviewIds: results.current.wrongIds,
       source: params.source,
     })
   }
@@ -125,6 +126,7 @@ export function GrammarQuizScreen() {
       <div className="flex items-center gap-3 px-3 py-3">
         <IconButton onClick={back} aria-label="やめる"><Close size={22} /></IconButton>
         <div className="flex-1"><ProgressBar value={i / deck.length} color={color} /></div>
+        <SpeechSettingsButton compact />
         <span className="w-12 text-right text-sm font-extrabold text-ink/50">{i + 1}/{deck.length}</span>
       </div>
 

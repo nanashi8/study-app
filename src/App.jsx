@@ -5,6 +5,7 @@ import { pullOrInit, startAutoSave } from './lib/cloudSync.js'
 import { LoginScreen } from './screens/Login.jsx'
 import { AppShell } from './components/AppShell.jsx'
 import { BottomNav } from './components/BottomNav.jsx'
+import { SpeechSettingsSheet } from './components/SpeechSettings.jsx'
 import { PortalScreen } from './screens/Portal.jsx'
 
 // ポータル初期表示で全語彙・数式・QR読取などを一括取得しないよう、各画面を遅延読込する。
@@ -24,6 +25,10 @@ const RootDetailScreen = lazyScreen(() => import('./screens/RootDetail.jsx'), 'R
 const EtymologyPackScreen = lazyScreen(
   () => import('./screens/EtymologyPack.jsx'),
   'EtymologyPackScreen',
+)
+const EtymologyStudyScreen = lazyScreen(
+  () => import('./screens/EtymologyStudy.jsx'),
+  'EtymologyStudyScreen',
 )
 const RootsScreen = lazyScreen(() => import('./screens/Roots.jsx'), 'RootsScreen')
 const MyListScreen = lazyScreen(() => import('./screens/MyList.jsx'), 'MyListScreen')
@@ -49,8 +54,6 @@ const ListeningScreen = lazyScreen(() => import('./screens/Listening.jsx'), 'Lis
 const ListeningQuizScreen = lazyScreen(() => import('./screens/ListeningQuiz.jsx'), 'ListeningQuizScreen')
 const DictationScreen = lazyScreen(() => import('./screens/Dictation.jsx'), 'DictationScreen')
 const DictationPlayScreen = lazyScreen(() => import('./screens/DictationPlay.jsx'), 'DictationPlayScreen')
-const PronounceScreen = lazyScreen(() => import('./screens/Pronounce.jsx'), 'PronounceScreen')
-const PronouncePlayScreen = lazyScreen(() => import('./screens/PronouncePlay.jsx'), 'PronouncePlayScreen')
 const VocabSearchScreen = lazyScreen(() => import('./screens/VocabSearch.jsx'), 'VocabSearchScreen')
 const WordRequestsScreen = lazyScreen(() => import('./screens/WordRequests.jsx'), 'WordRequestsScreen')
 const MathMapScreen = lazyScreen(() => import('./screens/MathMap.jsx'), 'MathMapScreen')
@@ -117,6 +120,7 @@ const SCREENS = {
   wordDetail: WordDetailScreen,
   rootDetail: RootDetailScreen,
   etymologyPack: EtymologyPackScreen,
+  etymologyStudy: EtymologyStudyScreen,
   roots: RootsScreen,
   myList: MyListScreen,
   vocabCamera: VocabCameraScreen,
@@ -135,8 +139,6 @@ const SCREENS = {
   listeningQuiz: ListeningQuizScreen,
   dictation: DictationScreen,
   dictationPlay: DictationPlayScreen,
-  pronounce: PronounceScreen,
-  pronouncePlay: PronouncePlayScreen,
   vocabSearch: VocabSearchScreen,
   wordRequests: WordRequestsScreen,
   mathMap: MathMapScreen,
@@ -173,8 +175,8 @@ const SCREENS = {
 const IMMERSIVE = new Set([
   'portal',
   'login',
-  'vocabStudy', 'vocabQuiz', 'wordDetail', 'vocabCamera', 'sessionResult', 'readingPrep', 'reader', 'literatureLibrary', 'literatureReader', 'phraseStudy', 'phraseQuiz',
-  'listeningQuiz', 'dictationPlay', 'pronouncePlay', 'mathIntro', 'mathSolve', 'grammarQuiz', 'diagnostic',
+  'vocabStudy', 'vocabQuiz', 'etymologyStudy', 'wordDetail', 'vocabCamera', 'sessionResult', 'readingPrep', 'reader', 'literatureLibrary', 'literatureReader', 'phraseStudy', 'phraseQuiz',
+  'listeningQuiz', 'dictationPlay', 'mathIntro', 'mathSolve', 'grammarQuiz', 'diagnostic',
   'writingPlay', 'writingGrammarReview',
   // 別コンテンツ（ポータルから入る）
   'vocabSearch', 'wordRequests', 'mathMap', 'mathUnits',
@@ -190,11 +192,14 @@ function MainApp() {
   const Screen = SCREENS[screen] ?? HomeScreen
   const showNav = !IMMERSIVE.has(screen)
   return (
-    <AppShell nav={showNav ? <BottomNav /> : null}>
-      <Suspense fallback={<ScreenLoader />}>
-        <Screen />
-      </Suspense>
-    </AppShell>
+    <>
+      <AppShell nav={showNav ? <BottomNav /> : null}>
+        <Suspense fallback={<ScreenLoader />}>
+          <Screen />
+        </Suspense>
+      </AppShell>
+      <SpeechSettingsSheet />
+    </>
   )
 }
 

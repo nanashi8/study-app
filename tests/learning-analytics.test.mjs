@@ -113,7 +113,24 @@ test('教材IDと明示ヒントから分析分野を判定する', () => {
   assert.equal(learningSkillForItem('gr_5_be_1'), 'grammar')
   assert.equal(learningSkillForItem('idm_get_up'), 'usage')
   assert.equal(learningSkillForItem('ordinary-word'), 'vocab')
-  assert.equal(learningSkillForItem('ordinary-word', 'pronunciation'), 'pronunciation')
+})
+
+test('現在サポートしていない旧分野は履歴の総数を保ったまま分析表示から外す', () => {
+  const learningAnalytics = recordLearningEvent(
+    createLearningAnalytics(),
+    { skill: 'retired-skill', inputs: 8, scored: 8, correct: 3 },
+    atHour(11),
+  )
+  const analysis = analyzeLearning({
+    learningAnalytics,
+    skillStats: {
+      'retired-skill': { answered: 8, correct: 3, sessions: 1 },
+    },
+  })
+
+  assert.equal(analysis.scored, 8)
+  assert.equal(analysis.correct, 3)
+  assert.equal(analysis.skills.some((skill) => skill.id === 'retired-skill'), false)
 })
 
 test('通常の復習操作はSRSと時刻分析を同時に一度だけ更新する', () => {

@@ -4,6 +4,7 @@ import { introForUnit } from '../data/math-intros.js'
 import { problemsForUnit, unitById } from '../data/math.js'
 import { MathVisual } from '../components/MathVisual.jsx'
 import { MathBlock, MathText } from '../components/MathText.jsx'
+import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { Button, Chip, IconButton, cx } from '../components/ui.jsx'
 import { rangeProgress, stepRangeValue } from '../lib/mathVisualControls.js'
 import { readableMathAccent } from '../lib/mathVisualColors.js'
@@ -28,7 +29,10 @@ export function MathIntroScreen() {
 
   if (!unit || !intro) {
     return (
-      <div className="flex min-h-full flex-col items-center justify-center gap-4 p-8 text-center">
+      <div className="relative flex min-h-full flex-col items-center justify-center gap-4 p-8 text-center">
+        <div className="absolute right-3 top-[calc(env(safe-area-inset-top)+0.75rem)]">
+          <SpeechSettingsButton compact />
+        </div>
         <div className="text-5xl">🧭</div>
         <p className="font-display text-lg font-extrabold text-ink">この単元の導入は準備中です</p>
         <Button onClick={back}>もどる</Button>
@@ -76,6 +80,7 @@ export function MathIntroScreen() {
             </div>
             <h1 className="truncate font-display text-xl font-extrabold">{unit.emoji} {unit.title}</h1>
           </div>
+          <SpeechSettingsButton compact inverse />
           <span className="rounded-full bg-black/25 px-2.5 py-1 text-[10px] font-extrabold">
             導入
           </span>

@@ -1,6 +1,13 @@
 import { useMemo } from 'react'
 import { buildLearningPowerProfile } from '../lib/learningPower.js'
-import { Card, ProgressBar, ProgressRing, cx } from './ui.jsx'
+import { Button, Card, ProgressBar, ProgressRing, cx } from './ui.jsx'
+
+const DIAGNOSTIC_SKILL_META = {
+  vocab: { emoji: '📖', label: '英単語' },
+  grammar: { emoji: '💡', label: '文法・構文' },
+  usage: { emoji: '✨', label: '熟語・語法' },
+  reading: { emoji: '📚', label: '長文読解' },
+}
 
 const asPercent = (value) =>
   value == null ? '—' : `${Math.round(value * 100)}%`
@@ -63,6 +70,119 @@ function Metric({ label, value, note, tone = 'brand' }) {
       <p className="mt-0.5 font-display text-xl font-extrabold">{value}</p>
       <p className="mt-0.5 text-[9px] font-bold opacity-55">{note}</p>
     </div>
+  )
+}
+
+function formatDiagnosticDate(value) {
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return '実施日不明'
+  return new Intl.DateTimeFormat('ja-JP', {
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric',
+  }).format(date)
+}
+
+function DiagnosticSnapshot({ diagnostic, onOpen }) {
+  if (!diagnostic) {
+    return (
+      <Card className="p-4" data-diagnostic-status>
+        <p className="text-[10px] font-extrabold tracking-[0.14em] text-brand-500">
+          LEARNING DIAGNOSTIC
+        </p>
+        <h2 className="mt-1 font-display text-lg font-extrabold text-ink">学習診断の現在地</h2>
+        <p className="mt-1 text-[11px] font-bold leading-relaxed text-ink/45">
+          まだ診断結果がありません。28問で英語4分野の得意と復習優先を確認できます。
+        </p>
+        <Button full className="mt-3" variant="secondary" onClick={onOpen}>
+          学習診断を受ける
+        </Button>
+      </Card>
+    )
+  }
+
+  const skillResults = Array.isArray(diagnostic.skillResults)
+    ? diagnostic.skillResults
+    : []
+  const strength = skillResults.find(
+    (skill) => skill.id === diagnostic.strengthSkillId,
+  )
+  const priority = skillResults.find(
+    (skill) => skill.id === diagnostic.prioritySkillId,
+  )
+  const strengthMeta = DIAGNOSTIC_SKILL_META[strength?.id]
+  const priorityMeta = DIAGNOSTIC_SKILL_META[priority?.id]
+  const total = Number(diagnostic.total) || 0
+  const score = Number(diagnostic.score) || 0
+  const accuracy = Number.isFinite(diagnostic.accuracy)
+    ? diagnostic.accuracy
+    : total
+      ? score / total
+      : 0
+
+  return (
+    <Card className="overflow-hidden" data-diagnostic-status>
+      <div className="bg-gradient-to-br from-indigo-600 via-violet-600 to-fuchsia-600 p-4 text-white">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <p className="text-[10px] font-extrabold tracking-[0.14em] text-white/55">
+              LATEST DIAGNOSTIC
+            </p>
+            <h2 className="mt-1 font-display text-lg font-extrabold">最新の学習診断</h2>
+          </div>
+          <span className="rounded-full bg-white/15 px-2.5 py-1 text-[10px] font-extrabold text-white/75">
+            {formatDiagnosticDate(diagnostic.completedAt)}
+          </span>
+        </div>
+
+        <div className="mt-3 grid grid-cols-3 gap-2">
+          <div className="rounded-2xl bg-white/10 px-2 py-3 text-center">
+            <p className="text-[9px] font-bold text-white/55">推定偏差値</p>
+            <p className="font-display text-2xl font-extrabold">{diagnostic.deviation ?? '—'}</p>
+          </div>
+          <div className="rounded-2xl bg-white/10 px-2 py-3 text-center">
+            <p className="text-[9px] font-bold text-white/55">正答率</p>
+            <p className="font-display text-2xl font-extrabold">{Math.round(accuracy * 100)}%</p>
+            <p className="text-[8px] font-bold text-white/45">{score}/{total}問</p>
+          </div>
+          <div className="rounded-2xl bg-white/10 px-2 py-3 text-center">
+            <p className="text-[9px] font-bold text-white/55">英検目安</p>
+            <p className="font-display text-lg font-extrabold leading-7">
+              {diagnostic.estimatedLevel?.label ?? '—'}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="p-4">
+        <div className="grid grid-cols-2 gap-2">
+          <div className="rounded-2xl bg-emerald-50 p-3">
+            <p className="text-[9px] font-extrabold text-emerald-600">今回の得意</p>
+            <p className="mt-1 text-sm font-extrabold text-emerald-900">
+              {strengthMeta ? `${strengthMeta.emoji} ${strengthMeta.label}` : '— 判定中'}
+            </p>
+            <p className="mt-0.5 text-[10px] font-bold text-emerald-700/65">
+              {strength ? `${strength.correct}/${strength.total}問` : '結果を確認してください'}
+            </p>
+          </div>
+          <div className="rounded-2xl bg-amber-50 p-3">
+            <p className="text-[9px] font-extrabold text-amber-600">復習優先</p>
+            <p className="mt-1 text-sm font-extrabold text-amber-900">
+              {priorityMeta ? `${priorityMeta.emoji} ${priorityMeta.label}` : '🎉 明確な弱点なし'}
+            </p>
+            <p className="mt-0.5 text-[10px] font-bold text-amber-700/65">
+              {priority ? `${priority.correct}/${priority.total}問` : '次は総合演習へ'}
+            </p>
+          </div>
+        </div>
+        <p className="mt-2 text-[9px] font-bold leading-relaxed text-ink/35">
+          最新28問の一部を表示。偏差値と級はアプリ内モデルによる推定です。
+        </p>
+        <Button full className="mt-3" variant="secondary" onClick={onOpen}>
+          学習診断の4分野を見る
+        </Button>
+      </div>
+    </Card>
   )
 }
 
@@ -397,6 +517,7 @@ function EfficiencyClock({ analysis }) {
 export function LearningAnalyticsPanel({
   learningAnalytics,
   srs,
+  etymologySrs,
   kotenSrs,
   kotenGrammarSrs,
   kotenCultureSrs,
@@ -405,11 +526,19 @@ export function LearningAnalyticsPanel({
   diagnosticHistory,
   stats,
   dueCount,
+  onOpenDiagnostic,
 }) {
   const profile = useMemo(
     () => buildLearningPowerProfile({
       learningAnalytics,
-      srsStores: [srs, kotenSrs, kotenGrammarSrs, kotenCultureSrs, kotenInterpretationSrs],
+      srsStores: [
+        srs,
+        etymologySrs,
+        kotenSrs,
+        kotenGrammarSrs,
+        kotenCultureSrs,
+        kotenInterpretationSrs,
+      ],
       skillStats,
       diagnosticHistory,
       stats,
@@ -418,6 +547,7 @@ export function LearningAnalyticsPanel({
     [
       learningAnalytics,
       srs,
+      etymologySrs,
       kotenSrs,
       kotenGrammarSrs,
       kotenCultureSrs,
@@ -440,6 +570,10 @@ export function LearningAnalyticsPanel({
         </p>
       </div>
 
+      <DiagnosticSnapshot
+        diagnostic={profile.diagnostic}
+        onOpen={onOpenDiagnostic}
+      />
       <LearningPowerProfile profile={profile} />
       <RetentionFlow analysis={analysis} />
       <MemoryBalance analysis={analysis} />

@@ -48,7 +48,6 @@ export const Sprout = (p) => base(<><path d="M12 20v-7" /><path d="M12 13c0-3-2.
 export const Lightbulb = (p) => base(<><path d="M9 18h6" /><path d="M10 21h4" /><path d="M12 3a6 6 0 0 0-4 10.5c.6.6 1 1.4 1 2.5h6c0-1.1.4-1.9 1-2.5A6 6 0 0 0 12 3z" /></>, p)
 export const Target = (p) => base(<><circle cx="12" cy="12" r="8" /><circle cx="12" cy="12" r="4" /><circle cx="12" cy="12" r="1" fill="currentColor" /></>, p)
 export const ArrowRight = (p) => base(<><path d="M5 12h14" /><path d="m13 6 6 6-6 6" /></>, { ...p, strokeWidth: 2.2 })
-export const Mic = (p) => base(<><rect x="9" y="3" width="6" height="11" rx="3" /><path d="M5 11a7 7 0 0 0 14 0" /><path d="M12 18v3" /></>, p)
 export const Search = (p) => base(<><circle cx="11" cy="11" r="7" /><path d="m20 20-3.6-3.6" /></>, { ...p, strokeWidth: 2.2 })
 export const Keyboard = (p) => base(<><rect x="3" y="6" width="18" height="12" rx="2" /><path d="M7 10h.01M11 10h.01M15 10h.01M8 14h8" /></>, p)
 export const Headphones = (p) => base(<><path d="M4 14v-2a8 8 0 0 1 16 0v2" /><rect x="3" y="13" width="4" height="6" rx="1.5" /><rect x="17" y="13" width="4" height="6" rx="1.5" /></>, p)

@@ -12,6 +12,7 @@ import { isTTSSupported, speak, stopSpeaking } from '../lib/tts.js'
 import { buildDictationInstructorExplanation } from '../lib/instructorExplanations.js'
 import { Button, Chip, ProgressBar, IconButton, cx } from '../components/ui.jsx'
 import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
+import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { Close, ArrowRight, SpeakerWave, Check } from '../components/Icons.jsx'
 
 const clampRate = (rate) => Math.max(0.55, Math.min(1.25, rate))
@@ -67,6 +68,7 @@ export function DictationPlayScreen() {
     const started = speak(item.text, {
       rate: slow ? slowRate : normalRate,
       voiceURI: settings.ttsVoiceURI,
+      style: 'listening',
     })
     if (started) {
       if (slow) setSlowPlays((count) => count + 1)
@@ -104,9 +106,7 @@ export function DictationPlayScreen() {
       correct: results.current.correct,
       wrong: results.current.wrong,
       xpGained,
-      reviewIds: results.current.wrongIds.length
-        ? results.current.wrongIds
-        : deck.map((question) => question.id),
+      reviewIds: results.current.wrongIds,
       source,
     })
   }
@@ -167,6 +167,7 @@ export function DictationPlayScreen() {
       <div className="flex items-center gap-3 px-3 py-3">
         <IconButton onClick={back} aria-label="やめる"><Close size={22} /></IconButton>
         <div className="flex-1"><ProgressBar value={i / deck.length} color="#14b8a6" /></div>
+        <SpeechSettingsButton compact />
         <span className="w-12 text-right text-sm font-extrabold text-ink/50">{i + 1}/{deck.length}</span>
       </div>
 

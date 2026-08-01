@@ -5,6 +5,9 @@ dist-ssr
 *.local
 .vite
 
+# 廃止済みChatGPT Sitesへの再接続を防ぐ
+.openai/hosting.json
+
 # 生成物（探索マップ）
 vocab-frontier.json
 

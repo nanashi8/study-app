@@ -8,6 +8,7 @@ import {
   pickKotenInterpretationIds,
 } from '../data/koten-interpretations.js'
 import { Button, Card, Chip, ProgressRing } from '../components/ui.jsx'
+import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { ArrowRight, Cards, ChevronLeft, Refresh } from '../components/Icons.jsx'
 
 const MASTER_BOX = 4
@@ -45,12 +46,15 @@ export function KotenInterpretationListScreen() {
   return (
     <div className="pb-7">
       <div className="rounded-b-[2.5rem] bg-gradient-to-br from-orange-500 via-amber-500 to-yellow-500 px-5 pb-7 pt-[calc(env(safe-area-inset-top)+1.25rem)] text-white">
-        <button
-          onClick={() => navigate('kotenList')}
-          className="mb-3 flex items-center gap-1 rounded-full bg-white/15 py-1 pl-1.5 pr-2.5 text-[11px] font-extrabold text-white/90 transition-transform active:scale-95"
-        >
-          <ChevronLeft size={14} /> 古典アプリ
-        </button>
+        <div className="mb-3 flex items-center justify-between">
+          <button
+            onClick={() => navigate('kotenList')}
+            className="flex items-center gap-1 rounded-full bg-white/15 py-1 pl-1.5 pr-2.5 text-[11px] font-extrabold text-white/90 transition-transform active:scale-95"
+          >
+            <ChevronLeft size={14} /> 古典アプリ
+          </button>
+          <SpeechSettingsButton compact inverse />
+        </div>
         <p className="text-xs font-bold text-white/75">単語 × 文法 × 古典常識</p>
         <h1 className="font-display text-2xl font-extrabold tracking-wide">短文解釈</h1>
         <p className="mt-1 max-w-sm text-sm font-bold leading-relaxed text-white/85">

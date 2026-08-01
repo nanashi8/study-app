@@ -1326,12 +1326,22 @@ export function analyzeReadingSentence(sentence) {
     const svoc = classification.kind === 'phrase'
       ? { parts: [{ role: classification.role, text: bare(unit.text) }], pattern: classification.role, name: classification.label }
       : analyzeSvoc(unit.text, { implicitSubject: inheritedSubject })
+    const ja = hasTeachingBlock
+      ? teachingBlock.ja.trim()
+      : unit.manualJa ?? japanese[index]?.text ?? roughJapanese(unit.text, sentence.gloss)
+    const jaSegments =
+      hasTeachingBlock && Array.isArray(teachingBlock.jaSegments)
+        ? teachingBlock.jaSegments
+        : [ja]
     return {
       id: index,
       en: bare(unit.text),
-      ja: hasTeachingBlock
-        ? teachingBlock.ja.trim()
-        : unit.manualJa ?? japanese[index]?.text ?? roughJapanese(unit.text, sentence.gloss),
+      ja,
+      jaSegments,
+      orderedSpeechJa:
+        hasTeachingBlock && typeof teachingBlock.speechJa === 'string'
+          ? teachingBlock.speechJa.trim()
+          : ja,
       jaSource: hasTeachingBlock
         ? 'teaching'
         : unit.manualJa
@@ -1386,7 +1396,7 @@ export function analyzeReadingSentence(sentence) {
       ...block,
       translationGuide,
       speechJa:
-        `意味は、「${block.ja}」。${translationGuide} ` +
+        `意味は、「${block.orderedSpeechJa}」。${translationGuide} ` +
         `文法のポイントは、${block.note}`,
     }
   })

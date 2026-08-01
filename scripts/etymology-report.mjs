@@ -3,7 +3,9 @@
 // 「語源が存在するか」だけでなく、語彙を横に増やす手掛かりがどの経路であるかを全件分類する。
 import {
   ALL_WORDS,
+  ETYMOLOGY_FORMATION_META,
   ETYMOLOGY_PACKS,
+  ETYMOLOGY_SOURCE_META,
   ETYMOLOGY_SUMMARY,
   ROOTS,
 } from '../src/data/vocab.js'
@@ -71,8 +73,25 @@ const unusedRoots = rootUse.filter(({ words }) => words.length === 0).map(({ roo
 const duplicateNotes = [...noteCounts.entries()]
   .filter(([, count]) => count > 1)
   .sort((a, b) => b[1] - a[1])
+const wordsById = new Map(ALL_WORDS.map((word) => [word.id, word]))
+const originPacks = ETYMOLOGY_PACKS.filter((pack) => pack.mode === 'origin')
+for (const pack of originPacks) {
+  const packedWords = pack.coverageIds.map((id) => wordsById.get(id)).filter(Boolean)
+  for (const axis of ['formationKey', 'sourceKey', 'domainKey']) {
+    const values = new Set(packedWords.map((word) => word.compression?.[axis]))
+    if (values.size !== 1 || !values.has(pack[axis])) {
+      hardProblems.push(`${pack.id}: ${axis} が同じ束の中で不一致`)
+    }
+  }
+}
 
 const pct = (value) => `${(value / counts.total * 100).toFixed(1)}%`
+const printAxis = (meta, countsByKey) => {
+  for (const [key, item] of Object.entries(meta)) {
+    const count = countsByKey[key] ?? 0
+    if (count) console.log(`  ${item.label.padEnd(18)} ${String(count).padStart(5)}語`)
+  }
+}
 
 console.log(`\n語源学習・全件監査: ${counts.total}語`)
 console.log('─'.repeat(56))
@@ -87,9 +106,18 @@ console.log('\n全語の濃縮ルート（重複なし）')
 console.log(`  部品の式                  ${String(ETYMOLOGY_SUMMARY.counts.formula).padStart(5)}語  ${pct(ETYMOLOGY_SUMMARY.counts.formula)}`)
 console.log(`  共有語根                  ${String(ETYMOLOGY_SUMMARY.counts.root).padStart(5)}語  ${pct(ETYMOLOGY_SUMMARY.counts.root)}`)
 console.log(`  語族                      ${String(ETYMOLOGY_SUMMARY.counts.family).padStart(5)}語  ${pct(ETYMOLOGY_SUMMARY.counts.family)}`)
-console.log(`  由来の型                  ${String(ETYMOLOGY_SUMMARY.counts.origin).padStart(5)}語  ${pct(ETYMOLOGY_SUMMARY.counts.origin)}`)
+console.log(`  成り立ち・変化            ${String(ETYMOLOGY_SUMMARY.counts.origin).padStart(5)}語  ${pct(ETYMOLOGY_SUMMARY.counts.origin)}`)
 console.log(`  経路あり                  ${String(ETYMOLOGY_SUMMARY.covered).padStart(5)}語  ${pct(ETYMOLOGY_SUMMARY.covered)}`)
 console.log(`  学習パック                ${String(ETYMOLOGY_SUMMARY.packs).padStart(5)}束`)
+console.log('\n成り立ち・変化の内訳（形成法と言語層は別集計）')
+console.log('  [英語への入り方・作られ方]')
+printAxis(ETYMOLOGY_FORMATION_META, ETYMOLOGY_SUMMARY.origin.formationCounts)
+console.log('  [由来記述の出発言語]')
+printAxis(ETYMOLOGY_SOURCE_META, ETYMOLOGY_SUMMARY.origin.sourceCounts)
+console.log(
+  `  3軸がそろったパック       ${String(ETYMOLOGY_SUMMARY.origin.packs).padStart(5)}束` +
+  `（1語だけ ${ETYMOLOGY_SUMMARY.origin.singletonPacks}束）`,
+)
 console.log('\n改善候補')
 console.log(`  短いストーリー単独(<20字) ${shortStoryOnly.length}語`)
 console.log(`  仮置き文言                 ${placeholderWords.length}語`)

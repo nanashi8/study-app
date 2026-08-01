@@ -1,4 +1,4 @@
-// 2級・準1級長文の講師監修・語順訳シナリオ。
+// 2級・準1級長文の講師監修・語順訳シナリオ。「／」の各意味単位を英語の出現順に並べる。
 
 const b = (en, orderedJa, tip = '') => {
   const jaSegments = Object.freeze(orderedJa.split('／').map((segment) => segment.trim()))
@@ -6,7 +6,7 @@ const b = (en, orderedJa, tip = '') => {
     en,
     ja: jaSegments.join(' → '),
     jaSegments,
-    speechJa: jaSegments.join('、'),
+    speechJa: jaSegments.join('。次に、'),
     tip,
   })
 }
@@ -115,7 +115,7 @@ export const UPPER_READING_TRANSLATION_SCENARIOS = Object.freeze({
     ],
     [
       b('Several cities have therefore begun small trial programs', 'いくつかの都市は／そのため始めています／小規模な試験運用を'),
-      b('before introducing a system everywhere', '〜する前に／システムを導入する／あらゆる場所へ'),
+      b('before introducing a system everywhere', '〜する前に／導入する／システムを／あらゆる場所へ'),
     ],
     [
       b('They compare energy use, waiting times', '都市は／比較します／エネルギー使用量・待ち時間を'),
@@ -170,7 +170,7 @@ export const UPPER_READING_TRANSLATION_SCENARIOS = Object.freeze({
     ],
     [
       b('Readers still need', '読み手は／それでも必要としています'),
-      b('to examine', '調べることが'),
+      b('to examine', '調べることを'),
       b('how the study was designed and', 'どのように／その研究が／設計されたのか／そして'),
       b('whether other researchers found similar results', '〜かどうかを／ほかの研究者も／得た／同様の結果を'),
     ],
@@ -193,12 +193,12 @@ export const UPPER_READING_TRANSLATION_SCENARIOS = Object.freeze({
     ],
     [
       b('Another common mistake is', 'もう一つのよくある誤りは／〜です（内容は次へ）'),
-      b('to treat correlation', '相関関係を扱うことです'),
+      b('to treat correlation', '扱うことです／相関関係を'),
       b('as proof of cause', '原因の証明として'),
     ],
     [
       b('Suppose a survey finds', '仮定してください／ある調査が／見つけたと'),
-      b('that people', 'その人々は'),
+      b('that people', '人々が（説明は次へ）'),
       b('who drink more tea report less stress', 'そしてその人々は／飲みます／より多くのお茶を／報告します／より少ないストレスを'),
     ],
     [
@@ -239,7 +239,7 @@ export const UPPER_READING_TRANSLATION_SCENARIOS = Object.freeze({
     ],
     [
       b('Instead, they help readers to judge', 'その代わりに／こうした問いは／助けます／読み手が／判断することを'),
-      b('how strong a conclusion can reasonably be', 'どの程度強く／結論が／妥当であり得るのかを'),
+      b('how strong a conclusion can reasonably be', 'どの程度強い／結論が／妥当であり得るのかを'),
     ],
     [
       b('When a decision involves serious health risks', '〜するとき／ある決定が／伴う／重大な健康上の危険を'),
@@ -281,8 +281,8 @@ export const UPPER_READING_TRANSLATION_SCENARIOS = Object.freeze({
     ],
     [
       b('For instance', '例えば'),
-      b('building higher concrete walls along a river may reduce flooding', 'より高いコンクリート壁を建てることは／川沿いに／減らすかもしれません／洪水を'),
-      b('in one district while pushing water toward a poorer neighborhood downstream', 'ある地区では／同時に水を押しやりながら／より貧しい地域へ／下流の'),
+      b('building higher concrete walls along a river may reduce flooding', '建てることは／より高いコンクリート壁を／川沿いに／減らすかもしれません／洪水を'),
+      b('in one district while pushing water toward a poorer neighborhood downstream', 'ある地区では／同時に水を押しやりながら／より貧しい地域へ／その地域は下流にあります'),
     ],
     [
       b('Similarly', '同様に'),
@@ -301,7 +301,7 @@ export const UPPER_READING_TRANSLATION_SCENARIOS = Object.freeze({
       b('A more resilient city therefore begins', 'より回復力のある都市は／したがって始めます'),
       b('by assessing', '評価することから'),
       b('who is most vulnerable and', 'だれが／最も弱い立場にあるのか／そして'),
-      b('which resources can serve several needs', 'どの資源が／役立てるのかを／複数の必要に'),
+      b('which resources can serve several needs', 'どの資源が／役立つことができるのかを／複数の必要に'),
       b('at once', '同時に'),
     ],
     [
@@ -314,12 +314,12 @@ export const UPPER_READING_TRANSLATION_SCENARIOS = Object.freeze({
     ],
     [
       b('However', 'しかし'),
-      b('planting trees', '木を植えることは'),
-      b('is not a simple solution', '単純な解決策ではありません'),
+      b('planting trees', '植えることは／木を'),
+      b('is not a simple solution', '〜ではありません／単純な解決策'),
       b('if maintenance money is limited or', 'もし／維持費が／限られているなら／あるいは'),
       b('if sidewalks are too narrow', 'もし／歩道が／狭すぎるなら'),
       b('for roots', '根にとって'),
-      b('to grow safely', '安全に伸びるには'),
+      b('to grow safely', '伸びるには／安全に'),
     ],
     [
       b('This illustrates a problem', 'これは／示しています／ある問題を'),
@@ -328,7 +328,7 @@ export const UPPER_READING_TRANSLATION_SCENARIOS = Object.freeze({
       b('can create a new risk or deepen an old inequality', '生み出す可能性がある／新しい危険を／または深める可能性がある／以前からの不平等を'),
     ],
     [
-      b('A park that cools a wealthy district, for example, may increase nearby rents and force lower-income residents', 'ある公園は／裕福な地区を涼しくする／例えば／上げるかもしれません／近隣の家賃を／そして強いるかもしれません／低所得の住民に'),
+      b('A park that cools a wealthy district, for example, may increase nearby rents and force lower-income residents', 'ある公園は／そしてその公園は涼しくする／裕福な地区を／例えば／上げるかもしれません／近隣の家賃を／そして強いるかもしれません／低所得の住民に'),
       b('to move', '転居するように'),
       b('before they enjoy the benefits', '〜する前に／その住民が／享受する／恩恵を'),
     ],
@@ -382,7 +382,7 @@ export const UPPER_READING_TRANSLATION_SCENARIOS = Object.freeze({
       b('because they are visible and can be announced as decisive action', 'なぜなら／それらは／目に見えやすく／そして発表できるからです／決定的な行動として'),
     ],
     [
-      b('Yet smaller investments, such as training neighborhood volunteers or improving warning messages in several languages, may save more lives', 'しかし／より小規模な投資は／例えば地域ボランティアの訓練や、多言語の警告文の改善／救うかもしれません／より多くの命を'),
+      b('Yet smaller investments, such as training neighborhood volunteers or improving warning messages in several languages, may save more lives', 'しかし／より小規模な投資は／例えば訓練すること／地域のボランティアを／あるいは改善すること／警告文を／複数の言語での／救うかもしれません／より多くの命を'),
       b('during an emergency', '緊急時に'),
     ],
     [
@@ -392,7 +392,7 @@ export const UPPER_READING_TRANSLATION_SCENARIOS = Object.freeze({
       b('when budgets become tight', '〜するときに／予算が／厳しくなる'),
     ],
     [
-      b('A city that takes resilience seriously must therefore evaluate projects over a long period rather than only', 'ある都市は／回復力を真剣に扱う／したがって評価しなければなりません／事業を／長期間にわたって／〜だけでなく'),
+      b('A city that takes resilience seriously must therefore evaluate projects over a long period rather than only', 'ある都市は／そしてその都市は重視します／回復力を／したがって評価しなければなりません／事業を／長期間にわたって／〜だけでなく'),
       b('during the year in', 'その年の間だけ／その中で'),
       b('which they are introduced', '事業が／導入される'),
     ],
@@ -409,12 +409,12 @@ export const UPPER_READING_TRANSLATION_SCENARIOS = Object.freeze({
       b('A project', 'ある事業は'),
       b('that performs well', 'そしてその事業が／うまく機能する'),
       b('under today\'s conditions', '現在の条件のもとで'),
-      b('may be inadequate', '不十分になるかもしれません'),
+      b('may be inadequate', '〜かもしれません／不十分である'),
       b('if migration, land use', 'もし／人口移動や土地利用が'),
       b('or rainfall patterns change', 'あるいは降雨の傾向が／変化すれば'),
     ],
     [
-      b('Setting review dates and publishing results allows governments', '見直しの日程を定めて結果を公表することは／可能にします／政府が'),
+      b('Setting review dates and publishing results allows governments', '定めることと／見直しの日程を／公表することは／結果を／可能にします／政府が'),
       b('to revise policies without treating revision as failure', '改めることを／政策を／見直しを失敗とみなさずに'),
     ],
     [
@@ -426,153 +426,153 @@ export const UPPER_READING_TRANSLATION_SCENARIOS = Object.freeze({
 
   p_pre1_cashless_inclusion: passage([
     [
-      b('Cashless payment has recently moved from a convenient option to the expected form of payment', 'キャッシュレス決済は近年、便利な選択肢から、当然とされる支払い方法へ変化してきました'),
+      b('Cashless payment has recently moved from a convenient option to the expected form of payment', 'キャッシュレス決済は／近年移ってきました／便利な選択肢から／当然とされる支払い方法へ'),
       b('in many shops, transport systems, and public facilities', '多くの店や交通機関や公共施設で'),
     ],
     [
-      b('Supporters cite faster transactions, lower handling costs', '支持者は、より速い取引や、より低い現金処理費用を挙げます'),
+      b('Supporters cite faster transactions, lower handling costs', '支持者は／挙げます／より速い取引・より低い現金処理費用を'),
       b('and reduced risk of theft', 'そして、盗難の危険が減ることも'),
       b('for merchants', '商店にとって'),
     ],
     [
-      b('Digital records can also help consumers follow their spending and allow small businesses', 'デジタル記録は、消費者が支出を追う助けとなり、小規模事業者ができるようにもします'),
-      b('to sell goods online', 'オンラインで商品を売ることが'),
+      b('Digital records can also help consumers follow their spending and allow small businesses', 'デジタル記録は／さらに助けます／消費者が／追うことを／自分の支出を／そして可能にします／小規模事業者が'),
+      b('to sell goods online', '売ることが／商品を／オンラインで'),
     ],
     [
-      b('These benefits are real', 'こうした利点は現実にあります'),
-      b('but they are not shared equally', 'しかし、その利点は平等に共有されてはいません'),
+      b('These benefits are real', 'こうした利点は／現実にあります'),
+      b('but they are not shared equally', 'しかし／その利点は／共有されていません／平等には'),
     ],
     [
-      b('Some people do not have a bank account', '銀行口座を持たない人もいます'),
+      b('Some people do not have a bank account', '一部の人々は／持っていません／銀行口座を'),
       b('a suitable phone', '適した電話も'),
       b('reliable internet access', '信頼できるインターネット接続も'),
-      b('or the identity documents required', 'あるいは、必要とされる身分証明書も'),
-      b('to open a digital account', 'デジタル口座を開設するために'),
+      b('or the identity documents required', 'あるいは身分証明書も／必要とされる'),
+      b('to open a digital account', '開設するために／デジタル口座を'),
     ],
     [
-      b('Others can use digital services but struggle', '別の人々はデジタルサービスを使えますが、苦労しています'),
+      b('Others can use digital services but struggle', '別の人々は／使えます／デジタルサービスを／しかし苦労しています'),
       b('with small fees, complex passwords', '少額の手数料や複雑なパスワードに'),
-      b('or interfaces that were not designed', 'あるいは、設計されていない画面に'),
+      b('or interfaces that were not designed', 'あるいは画面に／設計されていない'),
       b('for disabilities', '障害のある人々のために'),
     ],
     [
       b('For these users', 'こうした利用者にとって'),
-      b('refusing cash', '現金を拒否されることは'),
-      b('does more than remove a familiar habit', '慣れ親しんだ習慣を奪うだけにはとどまりません'),
-      b('it can limit access to food, transport, and public life', '食料や交通や公共生活へのアクセスを制限する可能性があります'),
+      b('refusing cash', '受け付けないことは／現金を'),
+      b('does more than remove a familiar habit', '〜以上のことをします／なくすことよりも／慣れた習慣を'),
+      b('it can limit access to food, transport, and public life', 'それは／制限する可能性があります／食料・交通・公共生活へのアクセスを'),
     ],
     [
-      b('Privacy is a different concern', 'プライバシーは別の懸念です'),
+      b('Privacy is a different concern', 'プライバシーは／別の懸念です'),
     ],
     [
-      b('Cash usually leaves no detailed record linking a person to a particular purchase', '現金は通常、人と特定の購入を結び付ける詳しい記録を残しません'),
-      b('whereas digital payment creates data', '一方、デジタル決済はデータを生み出します'),
-      b('that may be stored, combined, or sold', 'そのデータは、保存されたり、組み合わされたり、販売されたりするかもしれません'),
+      b('Cash usually leaves no detailed record linking a person to a particular purchase', '現金は／通常残しません／詳しい記録を／そしてその記録は結び付ける／人を／特定の購入に'),
+      b('whereas digital payment creates data', '一方／デジタル決済は／生み出します／データを'),
+      b('that may be stored, combined, or sold', 'そしてそのデータは／保存・結合・販売されるかもしれません'),
     ],
     [
-      b('Such records can detect fraud and improve services', 'そのような記録は、不正を発見し、サービスを改善できます'),
-      b('yet they can also reveal medical needs, political interests, or daily movements', 'しかし、医療上の必要や政治的関心、日々の移動を明らかにすることもあります'),
+      b('Such records can detect fraud and improve services', 'そのような記録は／発見できます／不正を／そして改善できます／サービスを'),
+      b('yet they can also reveal medical needs, political interests, or daily movements', 'しかし／記録は／さらに明らかにできます／医療上の必要・政治的関心・日々の移動を'),
     ],
     [
-      b('People with little economic or political power may be especially vulnerable', '経済的または政治的な力が乏しい人々は、特に弱い立場に置かれるかもしれません'),
-      b('when they cannot choose a private alternative', 'プライバシーを守れる代替手段を選べないときに'),
+      b('People with little economic or political power may be especially vulnerable', '人々は／経済的または政治的な力が乏しい／特に弱い立場に置かれるかもしれません'),
+      b('when they cannot choose a private alternative', '〜するときに／その人々が／選べない／プライバシーを守れる代替手段を'),
     ],
     [
-      b('A common response is', '一般的な対応は、次のことです'),
-      b('to teach digital skills and provide low-cost accounts', 'デジタル技能を教え、低費用の口座を提供することです'),
+      b('A common response is', '一般的な対応は／〜です（内容は次へ）'),
+      b('to teach digital skills and provide low-cost accounts', '教えること／デジタル技能を／そして提供すること／低費用の口座を'),
     ],
     [
-      b('These measures can expand participation', 'こうした対策は参加を広げられます'),
-      b('but they do not solve every problem', 'しかし、すべての問題を解決するわけではありません'),
+      b('These measures can expand participation', 'こうした対策は／広げられます／参加を'),
+      b('but they do not solve every problem', 'しかし／対策は／解決するわけではありません／すべての問題を'),
     ],
     [
-      b('Training provides only limited value in rural areas with weak mobile service or during payment system failures', '訓練は、携帯通信が弱い農村部や、決済システムの停止中には、限られた価値しか持ちません'),
-      b('after serious natural disasters and emergencies', '深刻な自然災害や緊急事態のあとに起こる'),
+      b('Training provides only limited value in rural areas with weak mobile service or during payment system failures', '訓練は／提供します／限られた価値だけを／携帯通信が弱い農村部で／あるいは決済システムの停止中に'),
+      b('after serious natural disasters and emergencies', '深刻な自然災害や緊急事態のあとに起きる'),
     ],
     [
-      b('Nor should inclusion mean forcing everyone', 'さらに、包摂は全員に強いることを意味するべきではありません'),
+      b('Nor should inclusion mean forcing everyone', 'さらに／包摂は／意味するべきではありません／押し込むことを／全員を'),
       b('into a system simply', '一つの仕組みの中へ、ただ'),
-      b('because institutions find it efficient', '制度を運営する側が、それを効率的だと考えるからという理由で'),
+      b('because institutions find it efficient', '制度を運営する側が／それを／効率的だと考えるからという理由で'),
     ],
     [
-      b('Cash can also provide a simple budgeting tool', '現金は簡単な家計管理の手段にもなります'),
+      b('Cash can also provide a simple budgeting tool', '現金は／さらに提供できます／簡単な家計管理の手段を'),
       b('for households', '家庭にとって'),
-      b('whose income changes', 'その家庭の収入は変化します'),
+      b('whose income changes', 'そしてその家庭の収入は／変化します'),
       b('from week to week', '週ごとに'),
     ],
     [
       b('A fixed amount', '決まった金額は'),
-      b('in an envelope stays visible', '封筒の中にあれば、目に見えるままです'),
-      b('while digital balances may be divided', '一方、デジタルの残高は分かれているかもしれません'),
+      b('in an envelope stays visible', '封筒の中で／目に見えるままです'),
+      b('while digital balances may be divided', '一方／デジタルの残高は／分けられているかもしれません'),
       b('across several apps and delayed transactions', '複数のアプリや、処理が遅れた取引にまたがって'),
     ],
     [
-      b('This does not make cash universally superior', 'このことが、現金をあらゆる場合に優れたものにするわけではありません'),
-      b('but it shows', 'しかし、このことは示しています'),
-      b('why a preferred tool can depend', 'なぜ、好ましい道具が左右されることがあるのかを'),
-      b('on a person’s circumstances rather than technical knowledge alone', '技術知識だけでなく、その人の事情によって'),
+      b('This does not make cash universally superior', 'このことは／するわけではありません／現金を／あらゆる場合に優れたものに'),
+      b('but it shows', 'しかし／このことは／示しています'),
+      b('why a preferred tool can depend', 'なぜ／好ましい道具が／左右されることがあるのかを'),
+      b('on a person’s circumstances rather than technical knowledge alone', 'その人の事情によって／技術知識だけでなく'),
     ],
     [
-      b('Some governments therefore require essential businesses', 'そのため、一部の政府は生活に不可欠な事業者に求めています'),
-      b('to accept cash while encouraging digital innovation elsewhere', 'ほかではデジタル革新を促しながら、現金を受け入れるように'),
+      b('Some governments therefore require essential businesses', '一部の政府は／そのため求めています／生活に不可欠な事業者に'),
+      b('to accept cash while encouraging digital innovation elsewhere', '受け入れるように／現金を／同時に促しながら／デジタル革新を／ほかの場では'),
     ],
     [
-      b('Critics argue', '批判する人々は主張します'),
-      b('that such rules create costs', 'そのような規則が費用を生じさせると'),
+      b('Critics argue', '批判する人々は／主張します'),
+      b('that such rules create costs', 'そのような規則が／生じさせると／費用を'),
       b('for merchants', '商店にとって'),
-      b('who must maintain two payment systems', 'その商店は二つの決済方式を維持しなければなりません'),
+      b('who must maintain two payment systems', 'そしてその商店は／維持しなければなりません／二つの決済方式を'),
     ],
     [
-      b('That objection is important, particularly for small shops', 'その反論は重要です、特に小規模な店にとって'),
+      b('That objection is important, particularly for small shops', 'その反論は／重要です／特に小規模な店にとって'),
       b('with narrow profit margins', '利益幅の小さい'),
     ],
     [
-      b('Policy can reduce the burden', '政策はその負担を減らせます'),
+      b('Policy can reduce the burden', '政策は／減らせます／その負担を'),
       b('through shared cash services, tax incentives', '共同の現金取扱サービスや税制上の優遇によって'),
       b('or exemptions for clearly defined cases', 'あるいは、明確に定義された場合の免除によって'),
     ],
     [
-      b('The broader lesson is', 'より広い教訓は、次のことです'),
-      b('that innovation should be judged', '革新は評価されるべきだということです'),
+      b('The broader lesson is', 'より広い教訓は／〜です（内容は次へ）'),
+      b('that innovation should be judged', '革新は／評価されるべきだということです'),
       b('by the range of people', '人々の範囲によって'),
-      b('who can use it, not only', 'その革新を利用できる、そして次の基準だけでなく'),
+      b('who can use it, not only', 'つまり利用できる／その革新を／次の基準だけでなく'),
       b('by the speed of its average transaction', '平均的な取引の速さによってだけではなく'),
     ],
     [
-      b('A payment system is part of social infrastructure', '決済制度は社会基盤の一部です'),
-      b('and infrastructure must remain usable', 'そして、社会基盤は利用できる状態を保たなければなりません'),
+      b('A payment system is part of social infrastructure', '決済制度は／社会基盤の一部です'),
+      b('and infrastructure must remain usable', 'そして／社会基盤は／利用できる状態を保たなければなりません'),
       b('under varied human and technical conditions', '多様な人間的・技術的条件のもとで'),
     ],
     [
-      b('Cash may sometimes appear inefficient', '現金は、ときに非効率に見えるかもしれません'),
-      b('as an option, just', '選択肢として、ちょうど'),
-      b('as backup power can appear wasteful', '予備電源が無駄に見えるのと同じように'),
+      b('Cash may sometimes appear inefficient', '現金は／ときに非効率に見えるかもしれません'),
+      b('as an option, just', '選択肢として／ちょうど'),
+      b('as backup power can appear wasteful', '〜と同じように／予備電源が／無駄に見えることがある'),
       b('on an ordinary day', '平常の日には'),
     ],
     [
       b('However', 'しかし'),
-      b('this apparent duplication provides valuable resilience', 'この一見した重複が、価値ある回復力をもたらします'),
+      b('this apparent duplication provides valuable resilience', 'この一見した重複が／もたらします／価値ある回復力を'),
       b('during a network failure', '通信障害の間に'),
     ],
     [
-      b('The goal need not be', '目標は、そのことである必要はありません'),
-      b('to stop the transition toward digital payment', 'デジタル決済への移行を止めること'),
+      b('The goal need not be', '目標は／〜である必要はありません（内容は次へ）'),
+      b('to stop the transition toward digital payment', '止めること／移行を／デジタル決済へ'),
     ],
     [
-      b('It should be', '目標は、そのことであるべきです'),
-      b('to preserve meaningful alternatives', '実質的な代替手段を保つこと'),
-      b('while removing barriers that prevent people', '同時に、人々を妨げる障壁を取り除くこと'),
+      b('It should be', '目標は／〜であるべきです（内容は次へ）'),
+      b('to preserve meaningful alternatives', '保つこと／実質的な代替手段を'),
+      b('while removing barriers that prevent people', '同時に取り除くこと／障壁を／そしてその障壁は妨げる／人々が'),
       b(
         'from choosing freely',
-        '自由に選ぶのを',
+        '選ぶのを／自由に',
         'prevent A from doing で「Aが〜するのを妨げる」。前の people と合わせて「人々が自由に選ぶのを妨げる障壁」です。',
       ),
     ],
     [
-      b('A genuinely modern system is not one', '真に現代的な制度とは、そのようなものではありません'),
-      b('that eliminates older tools as quickly as possible', '古い道具をできるだけ早くなくす'),
-      b('but one that combines convenience, privacy, inclusion', 'そうではなく、利便性、プライバシー、包摂を組み合わせるものです'),
-      b('and flexibility in practice', 'そして、実際の柔軟性も'),
+      b('A genuinely modern system is not one', '真に現代的な制度は／そのようなものではありません'),
+      b('that eliminates older tools as quickly as possible', 'つまり／なくすものではありません／古い道具を／できるだけ早く'),
+      b('but one that combines convenience, privacy, inclusion', 'そうではなく／組み合わせるものです／利便性・プライバシー・包摂を'),
+      b('and flexibility in practice', 'そして柔軟性も／実際の場での'),
     ],
   ]),
 })

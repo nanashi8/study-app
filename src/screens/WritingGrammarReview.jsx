@@ -3,6 +3,7 @@ import { useStore, isDue } from '../store/useStore.js'
 import { getLevel } from '../data/levels.js'
 import { getWritingGrammar } from '../data/writing.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
+import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { Button, Chip, IconButton, ProgressBar } from '../components/ui.jsx'
 import {
   ArrowRight,
@@ -47,7 +48,10 @@ export function WritingGrammarReviewScreen() {
 
   if (!deck.length) {
     return (
-      <div className="flex min-h-full flex-col items-center justify-center gap-4 px-8 text-center">
+      <div className="relative flex min-h-full flex-col items-center justify-center gap-4 px-8 text-center">
+        <div className="absolute right-3 top-[calc(env(safe-area-inset-top)+0.75rem)]">
+          <SpeechSettingsButton compact />
+        </div>
         <div className="text-5xl">🧩</div>
         <p className="font-display text-lg font-extrabold text-ink">
           復習する文法がありません
@@ -59,7 +63,10 @@ export function WritingGrammarReviewScreen() {
 
   if (finished) {
     return (
-      <div className="flex min-h-full flex-col bg-gradient-to-b from-violet-700 to-brand-900 px-5 pb-10 pt-[calc(env(safe-area-inset-top)+2rem)] text-white">
+      <div className="relative flex min-h-full flex-col bg-gradient-to-b from-violet-700 to-brand-900 px-5 pb-10 pt-[calc(env(safe-area-inset-top)+2rem)] text-white">
+        <div className="absolute right-3 top-[calc(env(safe-area-inset-top)+0.75rem)]">
+          <SpeechSettingsButton compact inverse />
+        </div>
         <div className="flex flex-1 flex-col items-center justify-center text-center">
           <div className="flex h-24 w-24 items-center justify-center rounded-[2rem] bg-white/15 text-5xl shadow-pop">
             🧠
@@ -122,6 +129,7 @@ export function WritingGrammarReviewScreen() {
           value={index / deck.length}
           color={level.color}
         />
+        <SpeechSettingsButton compact />
         <span className="w-12 text-right text-sm font-extrabold text-ink/45">
           {index + 1}/{deck.length}
         </span>

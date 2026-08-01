@@ -5,6 +5,7 @@ import {
   KOTEN_GRAMMAR_CATEGORIES,
 } from '../data/koten-grammar.js'
 import { Button, Chip, ProgressBar, IconButton } from '../components/ui.jsx'
+import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import {
   ArrowRight,
   Bookmark,
@@ -123,6 +124,7 @@ export function KotenGrammarStudyScreen() {
           >
             {revealAll ? <Eye size={21} /> : <EyeOff size={21} />}
           </IconButton>
+          <SpeechSettingsButton compact />
           <span className="w-12 text-right text-sm font-extrabold text-ink/50">
             {index + 1}/{deck.length}
           </span>

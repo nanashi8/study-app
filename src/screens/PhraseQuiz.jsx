@@ -5,6 +5,7 @@ import { shuffle } from '../data/vocab.js'
 import { quizMeaning } from '../data/compact.js'
 import { phraseSpeechText } from '../lib/phrase-speech.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
+import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
 import { Button, ProgressBar, IconButton, Chip } from '../components/ui.jsx'
@@ -58,7 +59,7 @@ export function PhraseQuizScreen() {
       correct: results.current.correct,
       wrong: results.current.wrong + results.current.unknown,
       xpGained,
-      reviewIds: results.current.wrongIds.length ? results.current.wrongIds : deck.map((p) => p.id),
+      reviewIds: results.current.wrongIds,
       source: params.source,
     })
   }
@@ -103,6 +104,7 @@ export function PhraseQuizScreen() {
       <div className="flex items-center gap-3 px-3 py-3">
         <IconButton onClick={back} aria-label="やめる"><Close size={22} /></IconButton>
         <div className="flex-1"><ProgressBar value={i / deck.length} color="#8b5cf6" /></div>
+        <SpeechSettingsButton compact />
         <span className="w-12 text-right text-sm font-extrabold text-ink/50">{i + 1}/{deck.length}</span>
       </div>
 

@@ -12,6 +12,7 @@ import { playListeningItem, stopListeningAudio } from '../lib/listening.js'
 import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
+import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { Button, Chip, ProgressBar, IconButton, cx } from '../components/ui.jsx'
 import {
   Close,
@@ -150,9 +151,7 @@ export function ListeningQuizScreen() {
       correct: results.current.correct,
       wrong: results.current.wrong + results.current.unknown,
       xpGained,
-      reviewIds: results.current.wrongIds.length
-        ? results.current.wrongIds
-        : deck.map((question) => question.id),
+      reviewIds: results.current.wrongIds,
       source,
     })
   }
@@ -202,6 +201,7 @@ export function ListeningQuizScreen() {
         <div className="flex-1">
           <ProgressBar value={i / deck.length} color="#0ea5e9" />
         </div>
+        <SpeechSettingsButton compact />
         <span className="w-12 text-right text-sm font-extrabold text-ink/50">
           {i + 1}/{deck.length}
         </span>

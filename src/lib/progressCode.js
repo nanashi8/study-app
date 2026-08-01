@@ -2,6 +2,11 @@
 // 学習状態を JSON → lz-string で圧縮し、URIセーフな文字列にする。
 // 静的サイト（github.io）でもバックエンド無しで進捗を持ち運べる。
 import LZString from 'lz-string'
+import {
+  MAX_BATTLE_STARS,
+  isBattleThemeId,
+} from './battleThemes.js'
+import { isBattleStudentId } from './battleCast.js'
 
 const CODE_VERSION = 1
 const PREFIX = 'EQ1-' // EigoQuest v1。先頭でアプリ/バージョンを判別する。
@@ -15,6 +20,7 @@ export function buildPayload(state) {
   return {
     v: CODE_VERSION,
     srs: state.srs,
+    etymologySrs: state.etymologySrs,
     kotenSrs: state.kotenSrs,
     kotenGrammarSrs: state.kotenGrammarSrs,
     kotenCultureSrs: state.kotenCultureSrs,
@@ -35,6 +41,10 @@ export function buildPayload(state) {
     diagnosticSeed: state.diagnosticSeed,
     engPos: state.engPos,
     battleRelicLevel: state.battleRelicLevel,
+    battleStars: state.battleStars,
+    battleXpSpent: state.battleXpSpent,
+    battleThemeId: state.battleThemeId,
+    battleStudentId: state.battleStudentId,
     portalOrder: state.portalOrder,
     portalHidden: state.portalHidden,
     stats: state.stats,
@@ -71,6 +81,7 @@ export function decodeProgress(code) {
 
   const recordFields = [
     'srs',
+    'etymologySrs',
     'kotenSrs',
     'kotenGrammarSrs',
     'kotenCultureSrs',
@@ -119,6 +130,41 @@ export function decodeProgress(code) {
     throw new Error('コードの battleRelicLevel が不正です。')
   }
   if (
+    'battleStars' in payload
+    && (
+      !Number.isSafeInteger(payload.battleStars)
+      || payload.battleStars < 0
+      || payload.battleStars > MAX_BATTLE_STARS
+    )
+  ) {
+    throw new Error('コードの battleStars が不正です。')
+  }
+  if (
+    'battleXpSpent' in payload
+    && (
+      !Number.isSafeInteger(payload.battleXpSpent)
+      || payload.battleXpSpent < 0
+      || (
+        Number.isFinite(payload.stats?.xp)
+        && payload.battleXpSpent > Math.max(0, Math.floor(payload.stats.xp))
+      )
+    )
+  ) {
+    throw new Error('コードの battleXpSpent が不正です。')
+  }
+  if (
+    'battleThemeId' in payload
+    && !isBattleThemeId(payload.battleThemeId)
+  ) {
+    throw new Error('コードの battleThemeId が不正です。')
+  }
+  if (
+    'battleStudentId' in payload
+    && !isBattleStudentId(payload.battleStudentId)
+  ) {
+    throw new Error('コードの battleStudentId が不正です。')
+  }
+  if (
     'diagnosticAttempt' in payload
     && (!Number.isSafeInteger(payload.diagnosticAttempt) || payload.diagnosticAttempt < 0)
   ) {
@@ -141,11 +187,16 @@ export function decodeProgress(code) {
 // 読込前のプレビュー用に、コードの中身を要約する。
 export function summarizePayload(payload, isWordId = () => true) {
   const srs = payload.srs ?? {}
+  const etymologySrs = payload.etymologySrs ?? {}
   const wordIds = Object.keys(srs).filter(isWordId)
   const mastered = wordIds.filter((id) => (srs[id]?.box ?? 0) >= 4).length
   return {
     words: wordIds.length,
     mastered,
+    etymologyStarted: Object.keys(etymologySrs).length,
+    etymologyMastered: Object.values(etymologySrs).filter(
+      (entry) => (entry?.box ?? 0) >= 4,
+    ).length,
     myList: (payload.myList ?? []).length,
     myGrammar: (payload.myGrammarList ?? []).length,
     writing: Object.values(payload.writingProgress ?? {}).filter(
@@ -153,5 +204,7 @@ export function summarizePayload(payload, isWordId = () => true) {
     ).length,
     xp: payload.stats?.xp ?? 0,
     streak: payload.stats?.streak ?? 0,
+    battleStars: payload.battleStars ?? 0,
+    battleXpSpent: payload.battleXpSpent ?? 0,
   }
 }

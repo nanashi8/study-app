@@ -6,6 +6,7 @@ import {
 } from '../data/public-domain-literature.js'
 import {
   buildLiteratureNarration,
+  literatureNarrationSegments,
   narrationStepIndex,
 } from '../lib/literature.js'
 import {
@@ -32,6 +33,11 @@ const PACES = [
   { id: 'brisk', label: '速め', factor: 1.14 },
 ]
 
+const NARRATION_PAUSE_MS = {
+  original: 260,
+  translation: 420,
+}
+
 export function LiteratureReaderScreen() {
   const workId = useStore((state) => state.params.workId)
   const navigate = useStore((state) => state.navigate)
@@ -48,14 +54,17 @@ export function LiteratureReaderScreen() {
   const work = getLiteratureWork(workId)
   const steps = useMemo(() => buildLiteratureNarration(work), [work])
   const [sceneIndex, setSceneIndex] = useState(0)
+  const [segmentIndex, setSegmentIndex] = useState(0)
   const [phase, setPhase] = useState('original')
   const [paceId, setPaceId] = useState('normal')
   const [playing, setPlaying] = useState(false)
   const playToken = useRef(0)
+  const pauseTimer = useRef(null)
 
   useEffect(
     () => () => {
       playToken.current += 1
+      if (pauseTimer.current) window.clearTimeout(pauseTimer.current)
       stopSpeaking()
     },
     [],
@@ -74,7 +83,8 @@ export function LiteratureReaderScreen() {
 
   const meta = LITERATURE_KIND_META[work.kind]
   const currentScene = work.scenes[sceneIndex]
-  const currentStep = narrationStepIndex(sceneIndex, phase)
+  const currentSegments = literatureNarrationSegments(currentScene)
+  const currentStep = narrationStepIndex(work, sceneIndex, segmentIndex, phase)
   const completed = readingsDone.includes(work.id)
   const ttsSupported = isTTSSupported()
   const pace = PACES.find((item) => item.id === paceId) ?? PACES[1]
@@ -85,6 +95,10 @@ export function LiteratureReaderScreen() {
 
   const stopPlayback = () => {
     playToken.current += 1
+    if (pauseTimer.current) {
+      window.clearTimeout(pauseTimer.current)
+      pauseTimer.current = null
+    }
     stopSpeaking()
     setPlaying(false)
   }
@@ -92,6 +106,12 @@ export function LiteratureReaderScreen() {
   const finishWork = () => {
     setPlaying(false)
     setSceneIndex(work.scenes.length - 1)
+    setSegmentIndex(
+      Math.max(
+        0,
+        literatureNarrationSegments(work.scenes[work.scenes.length - 1]).length - 1,
+      ),
+    )
     setPhase('translation')
     markLiteratureDone(
       work.id,
@@ -104,6 +124,10 @@ export function LiteratureReaderScreen() {
     if (!ttsSupported || !steps.length) return
     const token = playToken.current + 1
     playToken.current = token
+    if (pauseTimer.current) {
+      window.clearTimeout(pauseTimer.current)
+      pauseTimer.current = null
+    }
     stopSpeaking()
     setPlaying(true)
 
@@ -116,6 +140,7 @@ export function LiteratureReaderScreen() {
 
       const step = steps[index]
       setSceneIndex(step.sceneIndex)
+      setSegmentIndex(step.segmentIndex)
       setPhase(step.phase)
       const baseRate = Math.max(0.55, Math.min(1.45, settings.ttsRate * pace.factor))
       const rate = step.lang === 'ja-JP' ? Math.min(baseRate, 1.08) : baseRate
@@ -123,12 +148,17 @@ export function LiteratureReaderScreen() {
       speakWith(step.text, {
         lang: step.lang,
         rate,
+        style: step.phase === 'original' ? 'narration' : 'translation',
         voiceURI:
           step.lang === 'ja-JP'
             ? settings.ttsJapaneseVoiceURI
             : settings.ttsVoiceURI,
         onend: () => {
-          if (playToken.current === token) playStep(index + 1)
+          if (playToken.current !== token) return
+          pauseTimer.current = window.setTimeout(() => {
+            pauseTimer.current = null
+            if (playToken.current === token) playStep(index + 1)
+          }, NARRATION_PAUSE_MS[step.phase])
         },
       })
     }
@@ -139,6 +169,13 @@ export function LiteratureReaderScreen() {
   const moveToScene = (nextIndex) => {
     stopPlayback()
     setSceneIndex(Math.max(0, Math.min(nextIndex, work.scenes.length - 1)))
+    setSegmentIndex(0)
+    setPhase('original')
+  }
+
+  const moveToSegment = (nextIndex) => {
+    stopPlayback()
+    setSegmentIndex(Math.max(0, Math.min(nextIndex, currentSegments.length - 1)))
     setPhase('original')
   }
 
@@ -227,78 +264,139 @@ export function LiteratureReaderScreen() {
                 </p>
                 <h2 className="font-display text-base font-extrabold text-ink">
                   {sceneIndex + 1} / {work.scenes.length} 場面
+                  <span className="ml-2 text-xs text-ink/40">
+                    区切り {segmentIndex + 1} / {currentSegments.length}
+                  </span>
                 </h2>
               </div>
               <Chip color={phase === 'original' ? meta.color : '#d97706'}>
-                {phase === 'original'
-                  ? work.kind === 'english'
-                    ? '英語を再生中'
-                    : '古文を再生中'
-                  : work.kind === 'english'
-                    ? '和訳を再生中'
-                    : '現代語訳を再生中'}
+                {playing
+                  ? phase === 'original'
+                    ? work.kind === 'english'
+                      ? '英語を再生中'
+                      : '古文を再生中'
+                    : work.kind === 'english'
+                      ? '直訳を再生中'
+                      : '現代語訳を再生中'
+                  : `区切り ${segmentIndex + 1}`}
               </Chip>
             </div>
             <ProgressBar
-              value={(currentStep + (playing ? 0.5 : 0)) / steps.length}
+              value={
+                steps.length
+                  ? (currentStep + (playing ? 0.5 : 0)) / steps.length
+                  : 0
+              }
               className="mt-3"
               color={meta.color}
             />
           </div>
 
           <div className="space-y-3 p-4" aria-live="polite">
-            <section
-              className={cx(
-                'rounded-2xl border-2 p-4 transition-colors',
-                phase === 'original'
-                  ? 'border-teal-400 bg-teal-50'
-                  : 'border-transparent bg-paper',
-              )}
-            >
-              <div className="mb-2 flex items-center gap-2 text-teal-700">
-                <SpeakerWave size={16} />
-                <span className="text-[11px] font-extrabold uppercase tracking-wide">
-                  {work.kind === 'english' ? '原文 English' : '原文 古文'}
-                </span>
-              </div>
-              <p
-                className={cx(
-                  'font-bold leading-[1.9] text-ink',
-                  work.kind === 'classical' ? 'font-serif text-lg' : 'text-base',
-                )}
-              >
-                {currentScene.original}
+            <div className="rounded-2xl bg-teal-50 p-3">
+              <p className="flex items-center gap-2 text-xs font-extrabold text-teal-800">
+                <SpeakerWave size={15} />
+                間で区切る交互朗読
               </p>
-              {work.kind === 'classical' && currentScene.speech && (
-                <details className="mt-3 rounded-xl bg-white/70 px-3 py-2">
-                  <summary className="cursor-pointer text-xs font-extrabold text-teal-800">
-                    読み仮名を確認
-                  </summary>
-                  <p className="mt-2 text-sm font-bold leading-relaxed text-ink/55">
-                    {currentScene.speech}
-                  </p>
-                </details>
-              )}
+              <p className="mt-1 text-[11px] font-bold leading-relaxed text-teal-950/55">
+                {work.kind === 'english'
+                  ? '英語を一息ぶん読み、その区切りの直訳を続けて読みます。'
+                  : '古文を一息ぶん読み、その区切りの現代語訳を続けて読みます。'}
+              </p>
+            </div>
+
+            <section className="space-y-2" aria-label="間で区切った交互朗読">
+              {currentSegments.map((segment, index) => {
+                const active = segmentIndex === index
+                return (
+                  <button
+                    key={`${sceneIndex}:${index}`}
+                    type="button"
+                    onClick={() => moveToSegment(index)}
+                    aria-current={active ? 'step' : undefined}
+                    aria-label={`区切り${index + 1}から再生`}
+                    className={cx(
+                      'w-full overflow-hidden rounded-2xl border-2 text-left transition-colors',
+                      active
+                        ? 'border-teal-300 shadow-sm'
+                        : 'border-ink/5 bg-white',
+                    )}
+                  >
+                    <div
+                      className={cx(
+                        'p-3.5 transition-colors',
+                        active && phase === 'original' ? 'bg-teal-50' : 'bg-white',
+                      )}
+                    >
+                      <div className="mb-1.5 flex items-center justify-between gap-2">
+                        <span className="text-[10px] font-extrabold uppercase tracking-wide text-teal-700">
+                          {work.kind === 'english' ? 'English' : '古文'} {index + 1}
+                        </span>
+                        {playing && active && phase === 'original' && (
+                          <span className="text-[10px] font-extrabold text-teal-700">
+                            再生中
+                          </span>
+                        )}
+                      </div>
+                      <p
+                        className={cx(
+                          'font-bold leading-[1.8] text-ink',
+                          work.kind === 'classical'
+                            ? 'font-serif text-lg'
+                            : 'text-base',
+                        )}
+                      >
+                        {segment.original}
+                      </p>
+                    </div>
+                    <div
+                      className={cx(
+                        'border-t border-ink/5 p-3.5 transition-colors',
+                        active && phase === 'translation'
+                          ? 'bg-amber-50'
+                          : 'bg-paper',
+                      )}
+                    >
+                      <div className="mb-1.5 flex items-center justify-between gap-2">
+                        <span className="text-[10px] font-extrabold tracking-wide text-amber-700">
+                          {work.kind === 'english' ? '区切りの直訳' : '区切りの現代語訳'}
+                        </span>
+                        {playing && active && phase === 'translation' && (
+                          <span className="text-[10px] font-extrabold text-amber-700">
+                            再生中
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-sm font-bold leading-[1.8] text-ink">
+                        {segment.translation}
+                      </p>
+                    </div>
+                  </button>
+                )
+              })}
             </section>
 
-            <section
-              className={cx(
-                'rounded-2xl border-2 p-4 transition-colors',
-                phase === 'translation'
-                  ? 'border-amber-400 bg-amber-50'
-                  : 'border-transparent bg-paper',
-              )}
-            >
-              <div className="mb-2 flex items-center gap-2 text-amber-700">
-                <Book size={16} />
-                <span className="text-[11px] font-extrabold uppercase tracking-wide">
-                  {work.kind === 'english' ? 'やさしい和訳' : 'わかりやすい現代語訳'}
-                </span>
-              </div>
-              <p className="text-base font-bold leading-[1.9] text-ink">
+            {work.kind === 'classical' && currentScene.speech && (
+              <details className="rounded-xl bg-white px-3 py-2">
+                <summary className="cursor-pointer text-xs font-extrabold text-teal-800">
+                  場面全体の読み仮名
+                </summary>
+                <p className="mt-2 text-sm font-bold leading-relaxed text-ink/55">
+                  {currentScene.speech}
+                </p>
+              </details>
+            )}
+
+            <details className="rounded-xl bg-amber-50 px-3 py-2">
+              <summary className="cursor-pointer text-xs font-extrabold text-amber-800">
+                {work.kind === 'english'
+                  ? '場面全体の自然な和訳'
+                  : '場面全体の現代語訳'}
+              </summary>
+              <p className="mt-2 text-sm font-bold leading-relaxed text-ink/65">
                 {currentScene.translation}
               </p>
-            </section>
+            </details>
 
             <div className="rounded-2xl bg-violet-50 p-3">
               <p className="text-[11px] font-extrabold text-violet-700">読みのポイント</p>
@@ -479,7 +577,8 @@ export function LiteratureReaderScreen() {
           </IconButton>
         </div>
         <p className="mt-2 text-center text-[10px] font-bold text-ink/35">
-          {work.kind === 'english' ? '英語原文 → 和訳' : '古文原文 → 現代語訳'}を場面ごとに再生
+          {work.kind === 'english' ? '英語 → 区切りの直訳' : '古文 → 区切りの現代語訳'}
+          を間の区切りごとに交互再生
         </p>
       </div>
     </div>

@@ -21,7 +21,9 @@ const SCREEN_TO_TAB = {
   sessionResult: 'vocab',
   wordDetail: 'vocab',
   rootDetail: 'vocab',
+  roots: 'vocab',
   etymologyPack: 'vocab',
+  etymologyStudy: 'vocab',
   vocabSearch: 'vocab',
   myList: 'mylist',
   myGrammar: 'mylist',
@@ -38,8 +40,6 @@ const SCREEN_TO_TAB = {
   listeningQuiz: 'home',
   dictation: 'home',
   dictationPlay: 'home',
-  pronounce: 'home',
-  pronouncePlay: 'home',
   writing: 'home',
 }
 

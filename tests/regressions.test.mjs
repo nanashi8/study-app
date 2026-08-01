@@ -226,9 +226,13 @@ test('進捗コードは廃止済みデータを再保存せず、旧コード�
     skillStats: {},
     engPos: null,
     battleRelicLevel: 15,
+    battleStars: 390,
+    battleXpSpent: 200,
+    battleThemeId: 'art-tactics',
+    battleStudentId: 'noa',
     portalOrder: [],
     portalHidden: [],
-    stats: {},
+    stats: { xp: 500 },
     settings: {},
   }
   const current = decodeProgress(encodeProgress({ ...base, vnCleared: ['ep1_first_day'] }))
@@ -248,11 +252,60 @@ test('進捗コードは廃止済みデータを再保存せず、旧コード�
   assert.deepEqual(restored.kotenGrammarSrs, { kg_neg_zu: entry(20) })
   assert.deepEqual(restored.kotenCultureSrs, { kc001: entry(21) })
   assert.equal(restored.battleRelicLevel, 15)
+  assert.equal(restored.battleStars, 390)
+  assert.equal(restored.battleXpSpent, 200)
+  assert.equal(restored.battleThemeId, 'art-tactics')
+  assert.equal(restored.battleStudentId, 'noa')
   assert.throws(() => decodeProgress(encodeProgress({ ...base, srs: [] })), /srs/)
   assert.throws(
     () => decodeProgress(encodeProgress({ ...base, battleRelicLevel: 100 })),
     /battleRelicLevel/,
   )
+  assert.throws(
+    () => decodeProgress(encodeProgress({ ...base, battleStars: -1 })),
+    /battleStars/,
+  )
+  assert.throws(
+    () => decodeProgress(encodeProgress({ ...base, battleXpSpent: 501 })),
+    /battleXpSpent/,
+  )
+  assert.throws(
+    () => decodeProgress(encodeProgress({ ...base, battleThemeId: 'locked-room' })),
+    /battleThemeId/,
+  )
+  assert.throws(
+    () => decodeProgress(encodeProgress({ ...base, battleStudentId: 'transfer-student' })),
+    /battleStudentId/,
+  )
+  const olderBase = { ...base }
+  delete olderBase.battleStudentId
+  delete olderBase.battleXpSpent
+  const olderCode = `EQ1-${LZString.compressToEncodedURIComponent(JSON.stringify({
+    ...olderBase,
+    v: 1,
+  }))}`
+  useStore.getState().importCode(olderCode)
+  assert.equal(useStore.getState().battleStudentId, 'mio')
+  assert.equal(useStore.getState().battleXpSpent, 0)
+})
+
+test('XP変換は累計XPとLV用の値を減らさず、交換済み分だけを記録する', () => {
+  const previous = useStore.getState()
+  useStore.setState({
+    stats: { ...previous.stats, xp: 289 },
+    battleXpSpent: 40,
+    battleStars: 100,
+  })
+
+  useStore.getState().exchangeXpForBattleStars()
+  assert.equal(useStore.getState().stats.xp, 289)
+  assert.equal(useStore.getState().battleXpSpent, 240)
+  assert.equal(useStore.getState().battleStars, 200)
+
+  useStore.getState().exchangeXpForBattleStars()
+  assert.equal(useStore.getState().stats.xp, 289)
+  assert.equal(useStore.getState().battleXpSpent, 240)
+  assert.equal(useStore.getState().battleStars, 200)
 })
 
 test('古典短文は単語・文法・常識を備え、登録先をすべて解決できる', () => {

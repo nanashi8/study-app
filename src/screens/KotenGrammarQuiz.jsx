@@ -12,6 +12,7 @@ import {
 import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
+import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { Button, Chip, cx, ProgressBar, IconButton } from '../components/ui.jsx'
 import {
   ArrowRight,
@@ -187,6 +188,7 @@ export function KotenGrammarQuizScreen() {
               {params.title ?? '受験文法・腕試し'}
             </p>
           </div>
+          <SpeechSettingsButton compact />
           <span className="w-12 text-right text-sm font-extrabold text-ink/50">
             {index + 1}/{deck.length}
           </span>

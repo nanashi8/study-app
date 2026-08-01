@@ -1,9 +1,19 @@
+import {
+  ETYMOLOGY_DOMAIN_META,
+  ETYMOLOGY_FORMATION_META,
+  ETYMOLOGY_SOURCE_META,
+  etymologyDomainKey,
+  etymologyFormationKey,
+  etymologySourceKey,
+} from './etymology-history.js'
+
 // 全語彙を、語源の確かさに応じた小さな学習パックへまとめる。
 //
 // 大切な境界:
 // - parts / roots / family は、既存データに明示された関係だけを使う。
-// - それらが無い語は、同語根だと推測せず「由来の型」で整理する。
-// - 由来の型は記憶方法をそろえる箱であり、語どうしの同源関係を主張しない。
+// - それらが無い語は、同語根だと推測せず「成り立ち・出発言語・意味分野」の
+//   3軸で整理する。
+// - 言語名と形成法を同じ「型」へ混在させず、語どうしの同源関係も主張しない。
 
 export const ETYMOLOGY_PACK_SIZE = 8
 
@@ -27,73 +37,10 @@ export const ETYMOLOGY_MODE_META = {
     description: '基語と派生形を往復し、綴りと意味をまとめます。',
   },
   origin: {
-    label: '由来の型',
-    short: '由来',
-    emoji: '🗺️',
-    description: '分解できない語は、借用元や意味変化の型で整理します。',
-  },
-}
-
-export const ETYMOLOGY_ORIGIN_META = {
-  compound: {
-    label: '見える部品・短縮',
-    emoji: '🧱',
-    description: '複合語・短縮語として、見える材料を手掛かりにします。',
-  },
-  sound: {
-    label: '音から生まれた語',
-    emoji: '🔊',
-    description: '擬音・音の響きと単語を結び付けます。',
-  },
-  name: {
-    label: '名前・地名から',
-    emoji: '📍',
-    description: '人名・地名・固有名と現在の意味を結び付けます。',
-  },
-  uncertain: {
-    label: '由来未詳の基本語',
-    emoji: '🪨',
-    description: '無理に分解せず、古くからある形を一つの核として固定します。',
-  },
-  oldEnglish: {
-    label: '古英語の基本語',
-    emoji: '🏡',
-    description: '英語の古い層にある日常語を、由来の流れで整理します。',
-  },
-  norse: {
-    label: '古ノルド語の層',
-    emoji: '⛵',
-    description: '北欧から英語へ入った語を、歴史の層として整理します。',
-  },
-  germanic: {
-    label: '英語・ゲルマン語の層',
-    emoji: '🌲',
-    description: '英語・中英語・ゲルマン諸語の古い語をまとめます。',
-  },
-  french: {
-    label: 'フランス語経由',
-    emoji: '🏰',
-    description: 'フランス語を経て英語へ入った語を、意味変化と一緒に覚えます。',
-  },
-  latin: {
-    label: 'ラテン語の層',
-    emoji: '🏛️',
-    description: 'ラテン語由来の語を、元の意味から現在の意味へたどります。',
-  },
-  greek: {
-    label: 'ギリシャ語の層',
-    emoji: '🏺',
-    description: '学術語に多いギリシャ語由来の語を、元の像で固定します。',
-  },
-  world: {
-    label: '世界からの借用語',
-    emoji: '🌍',
-    description: 'さまざまな言語から英語へ入った語を、借用の物語で覚えます。',
-  },
-  story: {
-    label: '意味変化の物語',
-    emoji: '💡',
-    description: '元の意味から現在の意味へ進む短い物語を記憶フックにします。',
+    label: '成り立ち・変化',
+    short: '履歴',
+    emoji: '🧭',
+    description: '同根でない語は、成り立ち・出発言語・意味分野を分けて整理します。',
   },
 }
 
@@ -108,11 +55,34 @@ const LEVEL_LABEL = {
   '1': '1級',
 }
 const MODE_ORDER = { formula: 0, root: 1, family: 2, origin: 3 }
+const FORMATION_ORDER = Object.fromEntries(
+  Object.keys(ETYMOLOGY_FORMATION_META).map((key, index) => [key, index]),
+)
+const SOURCE_ORDER = Object.fromEntries(
+  Object.keys(ETYMOLOGY_SOURCE_META).map((key, index) => [key, index]),
+)
+const DOMAIN_ORDER = Object.fromEntries(
+  Object.keys(ETYMOLOGY_DOMAIN_META).map((key, index) => [key, index]),
+)
+const WORD_CLASS_LABEL = {
+  名: '名詞',
+  動: '動詞',
+  形: '修飾語',
+  副: '修飾語',
+  前: '機能語',
+  接: '機能語',
+  代: '機能語',
+}
 
 const compactHead = (value = '') =>
   value.toLowerCase().replace(/[^a-z0-9]+/g, '')
 
 const exactHead = (value = '') => value.trim().toLowerCase()
+
+// 語源進捗はパックIDをFirebaseのオブジェクトキーにも使う。
+// 「. # $ [ ] /」を含む語源注記でも保存できるよう、動的部分だけURI形式へ逃がす。
+const safeKeySegment = (value = '') =>
+  encodeURIComponent(String(value)).replaceAll('.', '%2E')
 
 const unique = (items) => [...new Set(items)]
 
@@ -135,32 +105,44 @@ const wordSort = (a, b) =>
   (LEVEL_RANK[a.level] ?? 99) - (LEVEL_RANK[b.level] ?? 99) ||
   a.word.localeCompare(b.word, 'en')
 
-/** 由来説明を、同源関係ではなく「覚え方の型」へ分類する。 */
-export function etymologyOriginKey(word) {
-  const text = `${word.etymology?.origin ?? ''} ${word.etymology?.note ?? ''}`
+const levelSpan = (words) => {
+  const levels = unique(words.map((word) => word.level))
+    .sort((a, b) => (LEVEL_RANK[a] ?? 99) - (LEVEL_RANK[b] ?? 99))
+  if (!levels.length) return ''
+  const first = LEVEL_LABEL[levels[0]] ?? levels[0]
+  const last = LEVEL_LABEL[levels.at(-1)] ?? levels.at(-1)
+  return first === last ? first : `${first}〜${last}`
+}
 
-  if (/由来(?:は)?(?:不明|未詳|はっきりしない)|語源(?:は)?(?:不明|未詳)/.test(text)) {
-    return 'uncertain'
+// 同じ形成法・言語層・意味領域の中でも、まず同じ詳細分野を8語ずつ固める。
+// 8語未満の端数だけを同じ意味領域内で合わせ、無関係な分野の機械分割を避ける。
+const originCohesiveGroups = (words, domainKey) => {
+  const byField = new Map()
+  for (const word of words) {
+    const key = domainKey === 'core'
+      ? `${word.field}:${WORD_CLASS_LABEL[word.pos] ?? word.pos}`
+      : word.field
+    if (!byField.has(key)) byField.set(key, [])
+    byField.get(key).push(word)
   }
-  if (/(?:\+|＋)|複合語|短縮(?:形|語)?|略語|略称|頭文字|を組み合わせ|を合わせた/.test(text)) {
-    return 'compound'
+
+  const complete = []
+  const remainder = []
+  for (const field of [...byField.keys()].sort((a, b) => a.localeCompare(b, 'ja'))) {
+    const sorted = byField.get(field).sort(wordSort)
+    const fullLength = Math.floor(sorted.length / ETYMOLOGY_PACK_SIZE) * ETYMOLOGY_PACK_SIZE
+    for (let index = 0; index < fullLength; index += ETYMOLOGY_PACK_SIZE) {
+      complete.push(sorted.slice(index, index + ETYMOLOGY_PACK_SIZE))
+    }
+    const leftover = sorted.slice(fullLength)
+    if (domainKey === 'core' && leftover.length) complete.push(leftover)
+    else remainder.push(...leftover)
   }
-  if (/擬音|擬態|鳴き声|音をまね|音の響き|音から生まれ/.test(text)) return 'sound'
-  if (/人名|地名|姓|固有名|商標|発明者|神名|人物名/.test(text)) return 'name'
-  if (/古英語/.test(text)) return 'oldEnglish'
-  if (/古ノルド|ノルド語/.test(text)) return 'norse'
-  if (/フランス語/.test(text)) return 'french'
-  if (/ラテン語|ラテン /.test(text)) return 'latin'
-  if (/ギリシャ語|ギリシャ /.test(text)) return 'greek'
-  if (/中英語|ゲルマン語|古高ドイツ語|オランダ語|ドイツ語|英語由来/.test(text)) {
-    return 'germanic'
-  }
-  if (
-    /アラビア|サンスクリット|ヒンディー|ウルドゥー|ペルシャ|トルコ|中国語|日本語|マレー語|ポリネシア|イタリア語|スペイン語|ポルトガル語|ロシア語|ケルト語|ウェールズ語|アフリカ/.test(text)
-  ) {
-    return 'world'
-  }
-  return 'story'
+
+  return [...complete, ...chunks(remainder, ETYMOLOGY_PACK_SIZE)].sort((a, b) =>
+    (LEVEL_RANK[a[0]?.level] ?? 99) - (LEVEL_RANK[b[0]?.level] ?? 99) ||
+    a[0]?.field.localeCompare(b[0]?.field, 'ja') ||
+    a[0]?.word.localeCompare(b[0]?.word, 'en'))
 }
 
 function makeHeadwordLookup(words) {
@@ -295,10 +277,12 @@ export function buildEtymologyCompression(words, roots) {
       continue
     }
 
-    const originKey = etymologyOriginKey(word)
-    const groupKey = `${originKey}-${word.level}`
+    const sourceKey = etymologySourceKey(word)
+    const formationKey = etymologyFormationKey(word, sourceKey)
+    const domainKey = etymologyDomainKey(word)
+    const groupKey = `${formationKey}:${sourceKey}:${domainKey}`
     assignments.set(word.id, { mode: 'origin', groupKey })
-    add(originBuckets, groupKey, word.id, { originKey, level: word.level })
+    add(originBuckets, groupKey, word.id, { formationKey, sourceKey, domainKey })
   }
 
   const packs = []
@@ -317,7 +301,9 @@ export function buildEtymologyCompression(words, roots) {
         size: Math.max(pack.coverageIds.length, pack.studyIds.length),
         rootId: pack.rootId,
         anchorId: pack.anchorId,
-        originKey: pack.originKey,
+        formationKey: pack.formationKey,
+        sourceKey: pack.sourceKey,
+        domainKey: pack.domainKey,
       })
     }
   }
@@ -334,7 +320,7 @@ export function buildEtymologyCompression(words, roots) {
           ? `${part.kind === 'prefix' ? `${part.t}-` : `-${part.t}`} を使う意味の式`
           : 'パーツで組み立てる'
       registerPack({
-        id: `formula:${groupKey}:${coverageIds[0]}`,
+        id: `formula:${safeKeySegment(groupKey)}:${safeKeySegment(coverageIds[0])}`,
         mode: 'formula',
         title,
         subtitle: '前から足して意味を予想',
@@ -355,7 +341,7 @@ export function buildEtymologyCompression(words, roots) {
       .sort(wordSort)
       .map((word) => word.id)
     registerPack({
-      id: `root:${rootId}`,
+      id: `root:${safeKeySegment(rootId)}`,
       mode: 'root',
       title: `${root?.form ?? rootId}＝${root?.meaning ?? '意味の核'}`,
       subtitle: `${coverageIds.length}語を1つの核で整理`,
@@ -383,7 +369,7 @@ export function buildEtymologyCompression(words, roots) {
       const studyIds = unique([anchorId, ...coverageIds, ...supportIds])
         .slice(0, ETYMOLOGY_PACK_SIZE)
       registerPack({
-        id: `family:${anchorId}:${coverageIds[0]}`,
+        id: `family:${safeKeySegment(anchorId)}:${safeKeySegment(coverageIds[0])}`,
         mode: 'family',
         title: `${anchor.word} を核にまとめる`,
         subtitle: '基語・派生形を1セットに',
@@ -398,20 +384,43 @@ export function buildEtymologyCompression(words, roots) {
   }
 
   for (const [groupKey, bucket] of originBuckets) {
-    const meta = ETYMOLOGY_ORIGIN_META[bucket.originKey]
-    const sorted = bucket.ids.map((id) => byId.get(id)).sort((a, b) =>
-      a.field.localeCompare(b.field, 'ja') || wordSort(a, b))
-    for (const group of chunks(sorted, ETYMOLOGY_PACK_SIZE)) {
+    const formation = ETYMOLOGY_FORMATION_META[bucket.formationKey]
+    const source = ETYMOLOGY_SOURCE_META[bucket.sourceKey]
+    const domain = ETYMOLOGY_DOMAIN_META[bucket.domainKey]
+    const grouped = originCohesiveGroups(
+      bucket.ids.map((id) => byId.get(id)),
+      bucket.domainKey,
+    )
+    for (const group of grouped) {
       const coverageIds = group.map((word) => word.id)
+      const fields = unique(group.map((word) => word.field))
+      const wordClasses = unique(group.map((word) => WORD_CLASS_LABEL[word.pos] ?? word.pos))
+      const fieldLabel = bucket.domainKey === 'core' && wordClasses.length === 1
+        ? `${domain.label}の${wordClasses[0]}`
+        : fields.length === 1
+          ? fields[0]
+          : domain.label
+      const sharedLabel = `${formation.label}・${source.label}・${fieldLabel}`
       registerPack({
-        id: `origin:${groupKey}:${coverageIds[0]}`,
+        id: `origin:${safeKeySegment(groupKey)}:${safeKeySegment(coverageIds[0])}`,
         mode: 'origin',
-        title: `${meta.label}・${LEVEL_LABEL[bucket.level] ?? bucket.level}`,
-        subtitle: '由来の読み方をそろえる',
-        description: meta.description,
-        caution: 'この箱は同じ語根の集まりではありません。由来の覚え方だけを共有します。',
-        emoji: meta.emoji,
-        originKey: bucket.originKey,
+        title: `${formation.short}｜${source.label}・${fieldLabel}`,
+        subtitle: `共通軸：${sharedLabel}（${levelSpan(group)}）`,
+        description:
+          `「英語への入り方」「由来記述の出発言語」「現在の意味分野」が一致する語だけをまとめました。` +
+          `${formation.description}${source.description}`,
+        caution:
+          `同じ語根とは限りません。共通点は「${sharedLabel}」です。` +
+          '各語の出発点から現在義までを個別にたどります。',
+        emoji: formation.emoji,
+        formationKey: bucket.formationKey,
+        sourceKey: bucket.sourceKey,
+        domainKey: bucket.domainKey,
+        fields,
+        wordClasses,
+        fieldLabel,
+        sharedLabel,
+        levelLabel: levelSpan(group),
         coverageIds,
         studyIds: coverageIds,
       })
@@ -420,6 +429,9 @@ export function buildEtymologyCompression(words, roots) {
 
   packs.sort((a, b) =>
     MODE_ORDER[a.mode] - MODE_ORDER[b.mode] ||
+    (FORMATION_ORDER[a.formationKey] ?? 99) - (FORMATION_ORDER[b.formationKey] ?? 99) ||
+    (SOURCE_ORDER[a.sourceKey] ?? 99) - (SOURCE_ORDER[b.sourceKey] ?? 99) ||
+    (DOMAIN_ORDER[a.domainKey] ?? 99) - (DOMAIN_ORDER[b.domainKey] ?? 99) ||
     a.levelRank - b.levelRank ||
     b.coverageIds.length - a.coverageIds.length ||
     a.title.localeCompare(b.title, 'ja') ||
@@ -431,6 +443,14 @@ export function buildEtymologyCompression(words, roots) {
     mode,
     packs.filter((pack) => pack.mode === mode).length,
   ]))
+  const originProfiles = [...profiles.values()].filter((profile) => profile.mode === 'origin')
+  const countOriginAxis = (meta, key) => Object.fromEntries(
+    Object.keys(meta).map((id) => [
+      id,
+      originProfiles.filter((profile) => profile[key] === id).length,
+    ]),
+  )
+  const originPacks = packs.filter((pack) => pack.mode === 'origin')
 
   return {
     words: words.map((word) => ({
@@ -445,6 +465,13 @@ export function buildEtymologyCompression(words, roots) {
       counts,
       packCounts,
       packs: packs.length,
+      origin: {
+        formationCounts: countOriginAxis(ETYMOLOGY_FORMATION_META, 'formationKey'),
+        sourceCounts: countOriginAxis(ETYMOLOGY_SOURCE_META, 'sourceKey'),
+        domainCounts: countOriginAxis(ETYMOLOGY_DOMAIN_META, 'domainKey'),
+        packs: originPacks.length,
+        singletonPacks: originPacks.filter((pack) => pack.coverageIds.length === 1).length,
+      },
     },
   }
 }

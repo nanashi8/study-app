@@ -1,6 +1,5 @@
 import {
   analyzeLearning,
-  LEARNING_SKILLS,
   normalizeLearningAnalytics,
 } from './learningAnalytics.js'
 
@@ -19,6 +18,11 @@ const SKILL_ROUTES = {
     params: { intent: 'quiz' },
     label: '英単語',
     actionLabel: '単語クイズへ',
+  },
+  etymology: {
+    screen: 'roots',
+    label: '語源知識',
+    actionLabel: '語源カードへ',
   },
   grammar: {
     screen: 'grammar',
@@ -44,11 +48,6 @@ const SKILL_ROUTES = {
     screen: 'dictation',
     label: 'ディクテーション',
     actionLabel: 'ディクテーションへ',
-  },
-  pronunciation: {
-    screen: 'pronounce',
-    label: '発音',
-    actionLabel: '発音チェックへ',
   },
   writing: {
     screen: 'writing',

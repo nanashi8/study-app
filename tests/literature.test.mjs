@@ -37,34 +37,120 @@ test('名作交互朗読は英語3作品・古典3作品を一意IDで収録す�
   }
 })
 
-test('全場面が原文・訳・解説を持ち、古文は読み仮名を備える', () => {
+test('全42場面が原文・訳・解説と、間で区切った一対一の朗読データを持つ', () => {
+  let sceneCount = 0
+  let segmentCount = 0
   for (const work of PUBLIC_DOMAIN_LITERATURE) {
     for (const [index, scene] of work.scenes.entries()) {
       const at = `${work.id}:${index + 1}`
+      sceneCount += 1
       assert.ok(scene.original.trim(), `${at}: 原文`)
       assert.ok(scene.translation.trim(), `${at}: 訳`)
       assert.ok(scene.guide.trim(), `${at}: 解説`)
       if (work.kind === 'classical') assert.ok(scene.speech?.trim(), `${at}: 読み仮名`)
+      assert.ok(scene.narrationSegments.length >= 2, `${at}: 間の区切り`)
+      segmentCount += scene.narrationSegments.length
+
+      const joiner = work.kind === 'english' ? ' ' : ''
+      assert.equal(
+        scene.narrationSegments.map((segment) => segment.original).join(joiner),
+        scene.original,
+        `${at}: 区切りから原文を復元`,
+      )
+      assert.equal(
+        scene.narrationSegments.map((segment) => segment.speech).join(joiner),
+        scene.speech || scene.original,
+        `${at}: 区切りから読み上げ文を復元`,
+      )
+      for (const [segmentIndex, segment] of scene.narrationSegments.entries()) {
+        const segmentAt = `${at}:${segmentIndex + 1}`
+        assert.ok(segment.original.trim(), `${segmentAt}: 区切り原文`)
+        assert.ok(segment.translation.trim(), `${segmentAt}: 区切り訳`)
+        assert.ok(segment.speech.trim(), `${segmentAt}: 音声原稿`)
+        assert.match(segment.translation, /[ぁ-んァ-ヶ一-龠]/, `${segmentAt}: 日本語訳`)
+      }
     }
     if (work.kind === 'english') {
       assert.ok(literatureWordCount(work) >= 130, `${work.id}: 長文語数`)
     }
   }
+  assert.equal(sceneCount, 42)
+  assert.equal(segmentCount, 208)
 })
 
-test('朗読順は全作品・全場面で必ず原文→訳になる', () => {
+test('朗読順は全作品・全区切りで必ず原文→対応する直訳になる', () => {
   for (const work of PUBLIC_DOMAIN_LITERATURE) {
     const steps = buildLiteratureNarration(work)
-    assert.equal(steps.length, work.scenes.length * 2, work.id)
-    for (const [index, step] of steps.entries()) {
-      const expectedPhase = index % 2 === 0 ? 'original' : 'translation'
-      assert.equal(step.phase, expectedPhase, step.id)
-      assert.equal(step.sceneIndex, Math.floor(index / 2), step.id)
-      assert.equal(narrationStepIndex(step.sceneIndex, step.phase), index, step.id)
-      assert.ok(step.text)
-      assert.equal(step.lang, expectedPhase === 'translation' ? 'ja-JP' : work.language)
+    const expectedSegmentCount = work.scenes.reduce(
+      (count, scene) => count + scene.narrationSegments.length,
+      0,
+    )
+    assert.equal(steps.length, expectedSegmentCount * 2, work.id)
+
+    let expectedStepIndex = 0
+    for (const [sceneIndex, scene] of work.scenes.entries()) {
+      for (const [segmentIndex, segment] of scene.narrationSegments.entries()) {
+        const originalStep = steps[expectedStepIndex]
+        const translationStep = steps[expectedStepIndex + 1]
+        assert.equal(originalStep.phase, 'original', originalStep.id)
+        assert.equal(translationStep.phase, 'translation', translationStep.id)
+        assert.equal(originalStep.sceneIndex, sceneIndex, originalStep.id)
+        assert.equal(translationStep.sceneIndex, sceneIndex, translationStep.id)
+        assert.equal(originalStep.segmentIndex, segmentIndex, originalStep.id)
+        assert.equal(translationStep.segmentIndex, segmentIndex, translationStep.id)
+        assert.equal(originalStep.displayText, segment.original, originalStep.id)
+        assert.equal(translationStep.text, segment.translation, translationStep.id)
+        assert.equal(originalStep.lang, work.language, originalStep.id)
+        assert.equal(translationStep.lang, 'ja-JP', translationStep.id)
+        assert.equal(
+          narrationStepIndex(work, sceneIndex, segmentIndex, 'original'),
+          expectedStepIndex,
+          originalStep.id,
+        )
+        assert.equal(
+          narrationStepIndex(work, sceneIndex, segmentIndex, 'translation'),
+          expectedStepIndex + 1,
+          translationStep.id,
+        )
+        expectedStepIndex += 2
+      }
     }
   }
+})
+
+test('指定されたアリスの場面は、実際に間を置く6区切りで英語→直訳になる', () => {
+  const work = getLiteratureWork('lit_en_alice_rabbit_hole')
+  const segments = work.scenes[6].narrationSegments
+  assert.deepEqual(
+    segments.map((segment) => segment.original),
+    [
+      'In another moment',
+      'down went Alice',
+      'after it,',
+      'never once considering how',
+      'in the world',
+      'she was to get out again.',
+    ],
+  )
+  assert.deepEqual(
+    buildLiteratureNarration(work)
+      .filter((step) => step.sceneIndex === 6)
+      .map((step) => step.phase),
+    [
+      'original',
+      'translation',
+      'original',
+      'translation',
+      'original',
+      'translation',
+      'original',
+      'translation',
+      'original',
+      'translation',
+      'original',
+      'translation',
+    ],
+  )
 })
 
 test('作品語彙・古典文法は既存の共通学習データへ解決できる', () => {
@@ -133,6 +219,9 @@ test('画面導線・連続TTS・通常長文の分離集計を実装してい�
   assert.match(app, /literatureLibrary:\s*LiteratureLibraryScreen/)
   assert.match(app, /literatureReader:\s*LiteratureReaderScreen/)
   assert.match(reader, /speakWith\(/)
+  assert.match(reader, /segmentIndex/)
+  assert.match(reader, /NARRATION_PAUSE_MS/)
+  assert.match(reader, /区切りの直訳/)
   assert.match(reader, /markLiteratureDone\(/)
   assert.match(map, /PASSAGE_IDS\.has\(id\)/)
   assert.match(store, /learningAnalytics:\s*recordLearningEvent/)

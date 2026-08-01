@@ -609,18 +609,6 @@ export function buildWritingInstructorExplanation(step, option, grammar) {
   })
 }
 
-export function buildPronunciationInstructorExplanation(word, result) {
-  const missed = result?.perWord?.filter((part) => !part.ok).map((part) => part.word) ?? []
-  return explanation({
-    answer: `目標は${quote(`${word?.word} ${word?.phonetic ?? ''}`)}。綴りではなく、お手本の音のまとまりをまねる。`,
-    evidence: result?.heard
-      ? `端末には${quote(result.heard)}と認識された。${missed.length ? `${quote(list(missed, '、'))}の音を重点的に聞き直す。` : '語全体は目標語として認識された。'}`
-      : 'お手本を一度聞き、強く読む位置と母音・語末の音を意識して一語だけ発音する。',
-    trap: '認識一致度は端末の音声認識結果であり、発音の絶対評価ではない。点数だけを追わず、お手本との違いを聞いて修正する。',
-    strategy: 'お手本を聞く → 強勢のある音節を少し強く言う → 母音と語末を保って一語で録音する、の順で反復する。',
-  })
-}
-
 export function isCompleteInstructorExplanation(value) {
   return ['answer', 'evidence', 'trap', 'strategy'].every(
     (key) => (

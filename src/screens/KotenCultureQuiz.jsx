@@ -11,6 +11,7 @@ import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
 import { KotenText } from '../components/KotenFurigana.jsx'
+import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { Button, Chip, cx, ProgressBar, IconButton } from '../components/ui.jsx'
 import {
   ArrowRight,
@@ -186,6 +187,7 @@ export function KotenCultureQuizScreen() {
               {params.title ?? '古典常識・入試型腕試し'}
             </p>
           </div>
+          <SpeechSettingsButton compact />
           <span className="w-12 text-right text-sm font-extrabold text-ink/50">
             {index + 1}/{deck.length}
           </span>

@@ -22,7 +22,10 @@ export function MobPortrait({
   )
   const column = sprite % ATLAS_COLUMNS
   const row = Math.floor(sprite / ATLAS_COLUMNS)
-  const label = `${encounter?.name ?? 'モンスター'}。${encounter?.element ?? '未知'}属性、${encounter?.species ?? '未確認種'}`
+  const isTeacher = encounter?.isTeacher === true
+  const label = isTeacher
+    ? `${encounter.name}。${encounter.teacherSubject}の先生ライバル。必殺技は${encounter.move}`
+    : `${encounter?.name ?? 'モンスター'}。${encounter?.element ?? '未知'}属性、${encounter?.species ?? '未確認種'}`
 
   return (
     <div
@@ -31,6 +34,7 @@ export function MobPortrait({
       aria-hidden={decorative || undefined}
       className={cx(
         'mob-avatar mob-portrait',
+        isTeacher && 'teacher-portrait',
         hit && 'mob-portrait-hit',
         defeated && 'mob-portrait-defeated',
         className,
@@ -41,17 +45,28 @@ export function MobPortrait({
       }}
     >
       <span className="mob-avatar-grid" aria-hidden="true" />
-      <span className="mob-atlas-sprite-frame" aria-hidden="true">
-        <span
-          className="mob-atlas-sprite"
-          style={{
-            backgroundImage: `url(${mobAtlas})`,
-            backgroundPosition: `${atlasPosition(column, ATLAS_COLUMNS)} ${atlasPosition(row, ATLAS_ROWS)}`,
-            filter: `hue-rotate(${Number(encounter?.hue) || 0}deg) saturate(1.08)`,
-            transform: encounter?.flip ? 'scaleX(-1)' : undefined,
-          }}
-        />
-      </span>
+      {isTeacher ? (
+        <>
+          <span className="teacher-portrait-face" aria-hidden="true">
+            {encounter.portraitEmoji}
+          </span>
+          <span className="teacher-portrait-tool" aria-hidden="true">
+            {encounter.attackEmoji}
+          </span>
+        </>
+      ) : (
+        <span className="mob-atlas-sprite-frame" aria-hidden="true">
+          <span
+            className="mob-atlas-sprite"
+            style={{
+              backgroundImage: `url(${mobAtlas})`,
+              backgroundPosition: `${atlasPosition(column, ATLAS_COLUMNS)} ${atlasPosition(row, ATLAS_ROWS)}`,
+              filter: `hue-rotate(${Number(encounter?.hue) || 0}deg) saturate(1.08)`,
+              transform: encounter?.flip ? 'scaleX(-1)' : undefined,
+            }}
+          />
+        </span>
+      )}
       {showBadge && (
         <span className="mob-element-badge" aria-hidden="true">
           {encounter?.elementEmoji ?? '✦'}

@@ -1,6 +1,7 @@
 // 学習XPを、下がらない「冒険者LV 1〜99」へ変換する純ロジック。
 // 英検級に応じて上下する適応難易度（adaptive.js）とは別軸にすることで、
 // 苦手な問題で敵ランクが下がっても、これまでの努力は失われない。
+import { battleThemeById } from './battleThemes.js'
 
 export const MAX_HERO_LEVEL = 99
 
@@ -55,185 +56,185 @@ export function xpAtLevel(level) {
 }
 
 const TITLES = [
-  { level: 1, name: '見習いの旅人', emoji: '🌱' },
-  { level: 10, name: 'ことばの探索者', emoji: '🧭' },
-  { level: 20, name: '記憶の森番', emoji: '🌲' },
-  { level: 30, name: '知識の航海士', emoji: '⛵' },
-  { level: 40, name: '文法の魔導士', emoji: '🔮' },
-  { level: 50, name: '語彙の騎士', emoji: '⚔️' },
-  { level: 60, name: '読解の賢者', emoji: '📜' },
-  { level: 70, name: '不屈の冒険者', emoji: '🔥' },
-  { level: 80, name: '天空の書記官', emoji: '🪽' },
-  { level: 90, name: '言葉の守護者', emoji: '🛡️' },
-  { level: 99, name: 'ことばマスター', emoji: '👑' },
+  { level: 1, name: '放課後ルーキー', emoji: '🌱' },
+  { level: 10, name: 'ことばノート係', emoji: '📒' },
+  { level: 20, name: '図書室の探索者', emoji: '🔎' },
+  { level: 30, name: '校内クイズ名人', emoji: '💡' },
+  { level: 40, name: '文法クラブ部長', emoji: '📐' },
+  { level: 50, name: '語彙テスト王', emoji: '✏️' },
+  { level: 60, name: '読解委員長', emoji: '📚' },
+  { level: 70, name: '放課後の挑戦者', emoji: '🔥' },
+  { level: 80, name: '生徒会の知恵袋', emoji: '🎖️' },
+  { level: 90, name: '学園のことば守り', emoji: '🛡️' },
+  { level: 99, name: 'ことばマスター', emoji: '🎓' },
 ]
 
 export const RELICS = [
   {
     level: 1,
-    name: '旅人のしおり',
-    emoji: '🔖',
-    text: '最初の一歩を記すしおり',
+    name: '保健室のばんそうこう',
+    emoji: '🩹',
+    text: 'ちょっとしたピンチをやさしく手当てする',
     slot: 'charm',
     stats: { maxHp: 4 },
   },
   {
     level: 5,
-    name: '集中の羽根ペン',
-    emoji: '🪶',
-    text: '迷いを一行ずつほどく羽根ペン',
+    name: '勝負チョーク',
+    emoji: '✏️',
+    text: '黒板に書いた答えが攻撃の合図になる',
     slot: 'weapon',
     stats: { attack: 2 },
   },
   {
     level: 10,
-    name: '森番の単語帳',
+    name: 'ひみつの単語ノート',
     emoji: '📗',
-    text: '覚えた言葉が淡く光る手帳',
+    text: '覚えた単語にだけ花まるが浮かぶ',
     slot: 'offhand',
     stats: { maxHp: 8 },
   },
   {
     level: 15,
-    name: '反復の小瓶',
-    emoji: '🧪',
-    text: '忘れかけた記憶を呼び戻す小瓶',
+    name: '無音の黒板消し',
+    emoji: '🧽',
+    text: '粉を立てずに相手の一撃を消してしまう',
     slot: 'charm',
     stats: { defense: 2 },
   },
   {
     level: 20,
-    name: '記憶樹の葉',
-    emoji: '🍃',
-    text: '積み重ねた復習の証',
+    name: '先生の花まるシール',
+    emoji: '💮',
+    text: 'がんばったページに貼られる元気のしるし',
     slot: 'aura',
     stats: { maxHp: 8 },
   },
   {
     level: 25,
-    name: '旅路のコンパス',
-    emoji: '🧭',
-    text: '弱点の方角を示すコンパス',
+    name: '三角定規ブーメラン',
+    emoji: '📐',
+    text: '正しい角度で投げると手元へ戻ってくる',
     slot: 'charm',
     stats: { attack: 3 },
   },
   {
     level: 30,
-    name: '青海の羅針盤',
-    emoji: '🧿',
-    text: '長い英文でも道を見失わない',
+    name: '鉄壁の下敷き',
+    emoji: '🟦',
+    text: 'ノートも反撃も折れ目ひとつ付けずに守る',
     slot: 'offhand',
     stats: { defense: 3 },
   },
   {
     level: 35,
-    name: '静寂の耳飾り',
+    name: '放送室ヘッドホン',
     emoji: '🎧',
-    text: '小さな音の違いを聞き分ける',
+    text: '校内放送の小さな音まで聞き分ける',
     slot: 'head',
     stats: { defense: 3 },
   },
   {
     level: 40,
-    name: '構文の水晶',
-    emoji: '💎',
-    text: '文の骨組みを映し出す水晶',
+    name: '理科室のプリズム',
+    emoji: '🔺',
+    text: '長い文を意味の色へ分けて見せる',
     slot: 'offhand',
     stats: { attack: 4 },
   },
   {
     level: 45,
-    name: 'ひらめきの鍵',
-    emoji: '🗝️',
-    text: '難問への入口を開く鍵',
+    name: '旧校舎のロッカー鍵',
+    emoji: '🔑',
+    text: '難問の奥にしまわれたヒントを開ける',
     slot: 'charm',
     stats: { attack: 4 },
   },
   {
     level: 50,
-    name: '語彙騎士の剣',
-    emoji: '🗡️',
-    text: '知っている言葉を力へ変える剣',
+    name: '添削の赤ペン',
+    emoji: '🖊️',
+    text: '迷いのある選択肢へ鋭い一本線を引く',
     slot: 'weapon',
     stats: { attack: 6 },
   },
   {
     level: 55,
-    name: '連続のマント',
-    emoji: '🧣',
-    text: '毎日の歩みを守る旅装',
+    name: '給食当番のエプロン',
+    emoji: '🥼',
+    text: '毎日の元気と小さなこぼれを受け止める',
     slot: 'aura',
     stats: { maxHp: 12 },
   },
   {
     level: 60,
-    name: '賢者の巻物',
-    emoji: '📜',
-    text: '長文の要点が浮かぶ巻物',
+    name: '使い込んだ英語辞典',
+    emoji: '📖',
+    text: '引いた回数だけ答えへの道が太くなる',
     slot: 'weapon',
     stats: { attack: 6 },
   },
   {
     level: 65,
-    name: '発音の音叉',
+    name: '音楽室の音叉',
     emoji: '🎵',
-    text: '声の響きを整える音叉',
+    text: '正しい響きで相手の攻撃を打ち消す',
     slot: 'charm',
     stats: { defense: 4 },
   },
   {
     level: 70,
-    name: '不屈の灯火',
-    emoji: '🏮',
-    text: '間違えても消えない灯火',
+    name: '放送委員のマイク',
+    emoji: '🎙️',
+    text: '間違えても次の一問をはっきり宣言できる',
     slot: 'aura',
     stats: { maxHp: 16 },
   },
   {
     level: 75,
-    name: '星読みの地図',
+    name: '校内見取り図',
     emoji: '🗺️',
-    text: '次に学ぶべき場所を示す地図',
+    text: '次に向かう教室と弱点の場所が分かる',
     slot: 'offhand',
     stats: { attack: 6 },
   },
   {
     level: 80,
-    name: '天空図書の羽',
-    emoji: '🪽',
-    text: '知識の階段を軽やかに上る羽',
+    name: '卒業記念リボン',
+    emoji: '🎀',
+    text: '積み重ねた努力をそっと結び直す',
     slot: 'head',
     stats: { maxHp: 20 },
   },
   {
     level: 85,
-    name: '時戻しの砂',
-    emoji: '⏳',
-    text: '復習の好機を逃さない砂時計',
+    name: '体育倉庫のストップウォッチ',
+    emoji: '⏱️',
+    text: '落ち着いて見直す一瞬を作り出す',
     slot: 'charm',
     stats: { defense: 6 },
   },
   {
     level: 90,
-    name: '守護者の盾',
-    emoji: '🛡️',
-    text: '難しい問題にも向き合える盾',
+    name: '生徒会の通学かばん',
+    emoji: '🎒',
+    text: '大切なノートも強い反撃も受け止める',
     slot: 'offhand',
     stats: { defense: 8 },
   },
   {
     level: 95,
-    name: '王城の古辞書',
+    name: '校長室の大辞典',
     emoji: '📕',
-    text: '長い旅で集めた言葉の記録',
+    text: '学校じゅうで集めた言葉の記録',
     slot: 'weapon',
     stats: { attack: 10 },
   },
   {
     level: 99,
-    name: 'ことばの王冠',
-    emoji: '👑',
-    text: 'LV99へ到達した冒険者の証',
+    name: 'ことばの卒業帽',
+    emoji: '🎓',
+    text: 'LV99へ到達した生徒だけに贈られる',
     slot: 'head',
     stats: { maxHp: 30, attack: 12, defense: 10 },
   },
@@ -245,10 +246,10 @@ export const CHAPTERS = [
     number: 1,
     minLevel: 1,
     maxLevel: 9,
-    name: 'はじまりの草原',
-    emoji: '🌿',
-    gradient: 'linear-gradient(135deg,#064e3b,#0f766e 52%,#2563eb)',
-    story: '消えた「ことばの種」を探し、朝露の街道へ踏み出す。',
+    name: 'はじまりの教室',
+    emoji: '🏫',
+    gradient: 'linear-gradient(135deg,#7c3aed,#6366f1 52%,#0ea5e9)',
+    story: '放課後のチャイムが鳴ったら、ことばバトルの授業が始まる。',
     enemies: [
       { id: 'moss-slime', name: 'モススライム', emoji: '🟢' },
       { id: 'riddle-rabbit', name: 'なぞかけウサギ', emoji: '🐇' },
@@ -262,10 +263,10 @@ export const CHAPTERS = [
     number: 2,
     minLevel: 10,
     maxLevel: 19,
-    name: 'こだまの霧森',
-    emoji: '🌲',
-    gradient: 'linear-gradient(135deg,#052e16,#166534 52%,#0f766e)',
-    story: '似た意味の声がこだまする森で、本物の答えを聞き分ける。',
+    name: 'ひみつの図書室',
+    emoji: '📚',
+    gradient: 'linear-gradient(135deg,#065f46,#0f766e 52%,#0891b2)',
+    story: '本棚の間でささやく似た意味から、本物の答えを見つけ出す。',
     enemies: [
       { id: 'echo-owl', name: 'こだまフクロウ', emoji: '🦉' },
       { id: 'thorn-goblin', name: 'いばらゴブリン', emoji: '👺' },
@@ -279,10 +280,10 @@ export const CHAPTERS = [
     number: 3,
     minLevel: 20,
     maxLevel: 29,
-    name: '時忘れの時計塔',
+    name: '放課後の時計廊下',
     emoji: '🕰️',
-    gradient: 'linear-gradient(135deg,#172554,#1e40af 52%,#0891b2)',
-    story: 'ばらばらになった時制の歯車を、正しい順序へ戻していく。',
+    gradient: 'linear-gradient(135deg,#1e3a8a,#2563eb 52%,#06b6d4)',
+    story: '止まった校内時計を、正しい時制の順番で動かしていく。',
     enemies: [
       { id: 'minute-mimic', name: 'ミニットミミック', emoji: '⏱️' },
       { id: 'gear-spider', name: '歯車グモ', emoji: '🕷️' },
@@ -296,10 +297,10 @@ export const CHAPTERS = [
     number: 4,
     minLevel: 30,
     maxLevel: 39,
-    name: '群青のことば海',
-    emoji: '🌊',
-    gradient: 'linear-gradient(135deg,#082f49,#0369a1 52%,#4f46e5)',
-    story: '長文の波を読み、失われた一文を載せた船を追う。',
+    name: 'きらめく屋内プール',
+    emoji: '🏊',
+    gradient: 'linear-gradient(135deg,#0369a1,#0891b2 52%,#6366f1)',
+    story: '長文の波を読み切り、向こう岸の正解タイルへ泳ぎ着く。',
     enemies: [
       { id: 'comma-jelly', name: 'コンマクラゲ', emoji: '🪼' },
       { id: 'phrase-pirate', name: 'フレーズ海賊', emoji: '🏴‍☠️' },
@@ -313,10 +314,10 @@ export const CHAPTERS = [
     number: 5,
     minLevel: 40,
     maxLevel: 49,
-    name: '水晶の大図書館',
-    emoji: '🔮',
-    gradient: 'linear-gradient(135deg,#2e1065,#6d28d9 52%,#4f46e5)',
-    story: '文法の水晶に閉じ込められた、千の例文を解き放つ。',
+    name: 'ふしぎな理科室',
+    emoji: '🧪',
+    gradient: 'linear-gradient(135deg,#581c87,#7c3aed 52%,#4f46e5)',
+    story: '文法の実験式を完成させ、千の例文をビーカーから解き放つ。',
     enemies: [
       { id: 'syntax-armor', name: '構文アーマー', emoji: '🦾' },
       { id: 'page-golem', name: 'ページゴーレム', emoji: '📄' },
@@ -330,10 +331,10 @@ export const CHAPTERS = [
     number: 6,
     minLevel: 50,
     maxLevel: 59,
-    name: '星降る航路',
-    emoji: '🌠',
-    gradient: 'linear-gradient(135deg,#0f172a,#4338ca 52%,#7e22ce)',
-    story: '音だけで光る星を頼りに、夜空の航路を進む。',
+    name: '星降る音楽室',
+    emoji: '🎼',
+    gradient: 'linear-gradient(135deg,#312e81,#4f46e5 52%,#9333ea)',
+    story: '音だけで光る楽譜を頼りに、静かなフレーズを聞き分ける。',
     enemies: [
       { id: 'noise-comet', name: 'ノイズ彗星', emoji: '☄️' },
       { id: 'moon-moth', name: '月影モス', emoji: '🦋' },
@@ -347,10 +348,10 @@ export const CHAPTERS = [
     number: 7,
     minLevel: 60,
     maxLevel: 69,
-    name: '雷鳴の連峰',
-    emoji: '⛰️',
-    gradient: 'linear-gradient(135deg,#422006,#b45309 52%,#be123c)',
-    story: '一瞬のひらめきをつなぎ、雷より速く山頂を目指す。',
+    name: '夕焼けの体育館',
+    emoji: '🏀',
+    gradient: 'linear-gradient(135deg,#9a3412,#ea580c 52%,#db2777)',
+    story: '一瞬のひらめきをつなぎ、終了の笛より先にゴールを決める。',
     enemies: [
       { id: 'spark-hare', name: 'スパークヘア', emoji: '🐰' },
       { id: 'thunder-griffin', name: '雷羽グリフォン', emoji: '🦅' },
@@ -364,10 +365,10 @@ export const CHAPTERS = [
     number: 8,
     minLevel: 70,
     maxLevel: 79,
-    name: '虚ろの空中城',
-    emoji: '🏰',
-    gradient: 'linear-gradient(135deg,#18181b,#52525b 52%,#7c3aed)',
-    story: '選ばなかった答えがささやく城で、自分の判断を貫く。',
+    name: 'しずかな旧校舎',
+    emoji: '🏚️',
+    gradient: 'linear-gradient(135deg,#27272a,#52525b 52%,#7c3aed)',
+    story: '選ばなかった答えがささやく廊下で、自分の根拠を貫く。',
     enemies: [
       { id: 'doubt-knight', name: '疑念の騎士', emoji: '🥷' },
       { id: 'mirror-mage', name: '鏡像メイジ', emoji: '🪞' },
@@ -381,10 +382,10 @@ export const CHAPTERS = [
     number: 9,
     minLevel: 80,
     maxLevel: 89,
-    name: '天空の記憶書庫',
+    name: '雲の上の職員室',
     emoji: '☁️',
-    gradient: 'linear-gradient(135deg,#0c4a6e,#0284c7 52%,#7c3aed)',
-    story: 'これまで覚えた言葉が、本棚の星座になって空へ続く。',
+    gradient: 'linear-gradient(135deg,#075985,#0284c7 52%,#8b5cf6)',
+    story: 'これまで覚えた言葉が出席簿の星座になって空へ続く。',
     enemies: [
       { id: 'archive-bee', name: '索引ハチ', emoji: '🐝' },
       { id: 'cloud-sphinx', name: '雲上スフィンクス', emoji: '🦁' },
@@ -398,10 +399,10 @@ export const CHAPTERS = [
     number: 10,
     minLevel: 90,
     maxLevel: 98,
-    name: 'ことばの王城',
-    emoji: '🏯',
-    gradient: 'linear-gradient(135deg,#450a0a,#be123c 52%,#7c2d12)',
-    story: 'すべての章で得た知識を携え、最後の門へ挑む。',
+    name: '最上階の校長室',
+    emoji: '🚪',
+    gradient: 'linear-gradient(135deg,#701a75,#be185d 52%,#ea580c)',
+    story: 'すべての教室で得た知識を携え、最後のドアをノックする。',
     enemies: [
       { id: 'royal-guard', name: '王城の近衛兵', emoji: '💂' },
       { id: 'lexicon-lion', name: '辞書獅子レクス', emoji: '🦁' },
@@ -415,10 +416,10 @@ export const CHAPTERS = [
     number: 11,
     minLevel: 99,
     maxLevel: 99,
-    name: '語彙王の玉座',
-    emoji: '👑',
-    gradient: 'linear-gradient(135deg,#713f12,#d97706 52%,#be123c)',
-    story: 'LV99の先にあるのは終わりではない。知識を磨く新しい周回の始まり。',
+    name: '卒業式の講堂',
+    emoji: '🎓',
+    gradient: 'linear-gradient(135deg,#92400e,#f59e0b 52%,#db2777)',
+    story: 'LV99は終わりではない。卒業後も、ことばを磨く新学期が始まる。',
     enemies: [],
     boss: { id: 'endless-book', name: '無限書典インフィニタス', emoji: '📖' },
   },
@@ -560,6 +561,185 @@ export const MOB_PROFILES = {
   'endless-book': mob(23, 42, '無限書典', '周回型', '無限', 'インフィニット・ページ', '学ぶたびに新しいページを開き、終わりなき挑戦を作る', 'LV99の記録から生まれた最後で最初の書。ページの先は毎日増え続ける。'),
 }
 
+const teacherRival = ({
+  name,
+  subject,
+  portraitEmoji,
+  subjectEmoji,
+  accent,
+  attackEmoji,
+  move,
+  attackLine,
+  intent,
+  lore,
+  intro,
+}) => ({
+  isTeacher: true,
+  kindLabel: 'TEACHER',
+  name,
+  teacherSubject: subject,
+  portraitEmoji,
+  species: `${subject}担当`,
+  role: '先生ライバル',
+  element: subject,
+  elementEmoji: subjectEmoji,
+  accent,
+  attackEmoji,
+  move,
+  attackLine,
+  intent,
+  lore,
+  intro,
+})
+
+// 章ボスのIDは変えず、校内では架空の先生ライバルとして登場させる。
+// 保存済みセッションとの互換性を守りながら、先生ごとの備品攻撃を表示できる。
+export const TEACHER_RIVALS = {
+  'grass-wolf': teacherRival({
+    name: '英語の白石先生',
+    subject: '英語',
+    portraitEmoji: '👩‍🏫',
+    subjectEmoji: '🔤',
+    accent: '#818cf8',
+    attackEmoji: '✏️',
+    move: 'チョーク・スナイプ',
+    attackLine: '白石先生がチョークを投げた！',
+    intent: '正解そっくりの単語を黒板いっぱいに書く',
+    lore: 'テンポのよい授業で人気の先生。正解すると「Excellent!」の花まるをくれる。',
+    intro: '白石先生がチョークを構えた。「最初の小テスト、いくよ！」',
+  }),
+  'forest-keeper': teacherRival({
+    name: '国語の文月先生',
+    subject: '国語',
+    portraitEmoji: '🧑‍🏫',
+    subjectEmoji: '📝',
+    accent: '#34d399',
+    attackEmoji: '🧽',
+    move: '黒板消しクラップ',
+    attackLine: '文月先生が黒板消しをパンッと叩いた！',
+    intent: 'チョークの粉で決め手になる一語を隠す',
+    lore: 'ことばの理由を大切にする先生。根拠まで言える生徒にはとびきり大きな丸を付ける。',
+    intro: '図書室の奥で、文月先生が黒板消しを両手に持って待っている。',
+  }),
+  chronos: teacherRival({
+    name: '数学の角田先生',
+    subject: '数学',
+    portraitEmoji: '👨‍🏫',
+    subjectEmoji: '➗',
+    accent: '#38bdf8',
+    attackEmoji: '📐',
+    move: '巨大コンパス・ターン',
+    attackLine: '角田先生が巨大コンパスをくるりと回した！',
+    intent: '選択肢の順番を正確な角度で入れ替える',
+    lore: '図形と英文の構造を同じように見抜く先生。途中式ならぬ「途中の根拠」をほめてくれる。',
+    intro: '廊下の時計が止まり、角田先生の巨大コンパスだけが動き始めた。',
+  }),
+  leviathan: teacherRival({
+    name: '社会の地図野先生',
+    subject: '社会',
+    portraitEmoji: '👩‍🏫',
+    subjectEmoji: '🌏',
+    accent: '#22d3ee',
+    attackEmoji: '🌍',
+    move: '地球儀スピン',
+    attackLine: '地図野先生が地球儀を高速で回した！',
+    intent: '長文の舞台を世界の反対側まで飛ばす',
+    lore: '例文の国や文化まで教えてくれる先生。地球儀が止まった場所からクイズが始まる。',
+    intro: '水面に地球儀が浮かび、地図野先生が次の国を指さした。',
+  }),
+  librarian: teacherRival({
+    name: '理科の火野先生',
+    subject: '理科',
+    portraitEmoji: '🧑‍🔬',
+    subjectEmoji: '🔬',
+    accent: '#c084fc',
+    attackEmoji: '🧪',
+    move: 'ビーカー・バブル',
+    attackLine: '火野先生が重曹入りビーカーを泡立てた！',
+    intent: 'カラフルな泡で文法の手掛かりを包み込む',
+    lore: '失敗も立派な観察結果だと教える先生。安全ゴーグルと復習だけは忘れない。',
+    intro: '理科室のビーカーがふくらみ、火野先生が実験開始を宣言した。',
+  }),
+  'silent-dragon': teacherRival({
+    name: '音楽の響先生',
+    subject: '音楽',
+    portraitEmoji: '👨‍🏫',
+    subjectEmoji: '🎼',
+    accent: '#a78bfa',
+    attackEmoji: '🎵',
+    move: '音叉レゾナンス',
+    attackLine: '響先生が音叉を鳴らした！',
+    intent: '似た発音を同じ高さで響かせて迷わせる',
+    lore: '単語のリズムを手拍子で教える先生。耳を澄ませた一答には静かに拍手する。',
+    intro: '音楽室が静まり、響先生の音叉から澄んだ一音が広がった。',
+  }),
+  tempest: teacherRival({
+    name: '体育の速水先生',
+    subject: '体育',
+    portraitEmoji: '🧑‍🏫',
+    subjectEmoji: '🏃',
+    accent: '#fb923c',
+    attackEmoji: '📣',
+    move: 'ホイッスル・ショック',
+    attackLine: '速水先生がホイッスルを鋭く鳴らした！',
+    intent: '終了の笛で一瞬だけ焦らせる',
+    lore: '速さより最後までやり切ることを評価する先生。再挑戦する生徒には必ず声援を送る。',
+    intro: '夕焼けの体育館に笛が響く。「用意はいいか、ラストまで走るぞ！」',
+  }),
+  'nameless-king': teacherRival({
+    name: '技術の工藤先生',
+    subject: '技術',
+    portraitEmoji: '👨‍🏫',
+    subjectEmoji: '🛠️',
+    accent: '#94a3b8',
+    attackEmoji: '🔨',
+    move: '木工ハンマー・スタンプ',
+    attackLine: '工藤先生が木工ハンマーで机をコンと叩いた！',
+    intent: '文の部品をいったん外し、組み立て直させる',
+    lore: '壊れた文も直せば強くなると教える先生。道具の片付けまでがバトルだ。',
+    intro: '旧校舎の工作台で、工藤先生が文のパーツをきれいに並べた。',
+  }),
+  'archive-angel': teacherRival({
+    name: '美術の彩先生',
+    subject: '美術',
+    portraitEmoji: '👩‍🎨',
+    subjectEmoji: '🎨',
+    accent: '#f472b6',
+    attackEmoji: '🖌️',
+    move: '絵の具スプラッシュ',
+    attackLine: '彩先生が大きな絵筆で絵の具を飛ばした！',
+    intent: '選択肢を似た色に塗って輪郭をぼかす',
+    lore: '一つの見方に縛られない先生。答えの決め手を見つける観察眼を試してくる。',
+    intro: '職員室のドアがキャンバスに変わり、彩先生が鮮やかな一筆を走らせた。',
+  }),
+  'word-emperor': teacherRival({
+    name: '教頭の鐘ヶ江先生',
+    subject: '総合',
+    portraitEmoji: '🧑‍💼',
+    subjectEmoji: '🔔',
+    accent: '#fb7185',
+    attackEmoji: '📒',
+    move: '出席簿プレス',
+    attackLine: '鐘ヶ江教頭が分厚い出席簿を開いた！',
+    intent: 'これまでの全教科から一気に問いかける',
+    lore: '校内の努力を誰よりよく見ている教頭先生。毎日の一問まで出席簿に記録している。',
+    intro: '校長室の前で鐘ヶ江教頭が出席簿を開く。「ここまでの成果を見せてください」',
+  }),
+  'endless-book': teacherRival({
+    name: '校長の学園坂先生',
+    subject: '卒業試験',
+    portraitEmoji: '🧑‍🎓',
+    subjectEmoji: '🎓',
+    accent: '#fbbf24',
+    attackEmoji: '🎙️',
+    move: '朝礼ロングスピーチ',
+    attackLine: '学園坂校長がとても長い朝礼スピーチを始めた！',
+    intent: '大事な一文を長い話の中へそっと隠す',
+    lore: '話は長いが、生徒の成長を心から喜ぶ校長先生。卒業後の再挑戦もいつでも歓迎する。',
+    intro: '卒業式の講堂でマイクが入る。「短く一言……では、始めましょう」',
+  }),
+}
+
 const UNKNOWN_MOB_PROFILE = mob(
   23,
   0,
@@ -576,10 +756,10 @@ export function mobProfile(enemyId) {
 }
 
 const ENCOUNTER_LINES = [
-  '行く手の文字がざわめき、影がゆっくりと形をとった。',
-  '忘れかけた言葉をまとい、敵が道をふさいでいる。',
-  '遠くで鐘が鳴る。今夜の一戦が始まろうとしている。',
-  'ページをめくる風の中から、新たな挑戦者が現れた。',
+  '放課後のチャイムと同時に、教室の備品がそっと動き出した。',
+  '廊下の先から、今日のことばライバルがやって来た。',
+  '校内放送が鳴る。今日の一戦が始まろうとしている。',
+  'ノートをめくる風の中から、新たな挑戦者が現れた。',
 ]
 
 const positiveMod = (value, divisor) => ((value % divisor) + divisor) % divisor
@@ -736,24 +916,24 @@ export function heroProgress(totalXp = 0) {
 export const BATTLE_QUESTS = [
   {
     id: 'scout',
-    label: '偵察戦',
-    emoji: '🗡️',
+    label: '小テスト',
+    emoji: '✏️',
     size: 5,
     minutes: '約2分',
-    description: 'すきま時間で5問',
+    description: 'さくっと5問',
   },
   {
     id: 'duel',
-    label: '討伐戦',
-    emoji: '⚔️',
+    label: '放課後戦',
+    emoji: '🎒',
     size: 10,
     minutes: '約4分',
-    description: '標準の10問バトル',
+    description: 'ちょうどいい10問',
   },
   {
     id: 'expedition',
-    label: '総力戦',
-    emoji: '🏹',
+    label: '学年末戦',
+    emoji: '🏫',
     size: 15,
     minutes: '約7分',
     description: 'じっくり15問',
@@ -773,27 +953,27 @@ export function featuredQuestId(day = 0) {
 export const BATTLE_TACTICS = [
   {
     id: 'combo',
-    label: '連撃',
-    name: '連撃の型',
+    label: '集中',
+    name: '集中モード',
     emoji: '🔥',
-    short: '3連続で奥義',
-    description: '3問連続で正解するたび、必殺の連撃が発動。最大コンボに挑戦。',
+    short: '3連続で花まる',
+    description: '3問連続で正解するたび、花まるコンボが発動。最大コンボに挑戦。',
   },
   {
     id: 'guard',
-    label: '守護',
-    name: '守護の型',
-    emoji: '🛡️',
-    short: '2正解で盾',
-    description: '2問正解するたびに盾を1枚獲得。次のミスによる反撃を防ぐ。',
+    label: '見直し',
+    name: '見直しモード',
+    emoji: '📒',
+    short: '2正解でガード',
+    description: '2問正解するたびに見直しガードを1枚獲得。次のミスによる反撃を防ぐ。',
   },
   {
     id: 'counter',
-    label: '逆転',
-    name: '逆転の型',
-    emoji: '⚡',
-    short: 'ミス後に反撃',
-    description: 'ミスの直後に正解するとカウンターが発動し、失ったHPを回復。',
+    label: 'やり直し',
+    name: 'やり直しモード',
+    emoji: '💡',
+    short: 'ミス後の正解で回復',
+    description: 'ミスの直後に正解するとリトライが成功し、失ったHPを回復。',
   },
 ]
 
@@ -809,30 +989,30 @@ export function featuredBattleTacticId(day = 0) {
 
 export const BATTLE_SCENE_CUES = {
   ready: {
-    emoji: '⚔️',
-    label: 'YOUR TURN',
-    title: '次の一手を選ぶ',
+    emoji: '✏️',
+    label: 'READY',
+    title: '答えをえらぼう',
     actor: 'hero',
     target: null,
   },
   hit: {
-    emoji: '⚔️',
-    label: 'HIT!',
-    title: '攻撃成功',
+    emoji: '💮',
+    label: 'NICE!',
+    title: '正解アタック',
     actor: 'hero',
     target: 'enemy',
   },
   burst: {
     emoji: '🔥',
     label: 'COMBO!',
-    title: '奥義発動',
+    title: '花まるコンボ',
     actor: 'hero',
     target: 'enemy',
   },
   shield: {
-    emoji: '🛡️',
-    label: 'SHIELD UP',
-    title: '守りを展開',
+    emoji: '📒',
+    label: 'GUARD +1',
+    title: '見直しガード',
     actor: 'hero',
     target: 'hero',
   },
@@ -844,9 +1024,9 @@ export const BATTLE_SCENE_CUES = {
     target: 'hero',
   },
   counter: {
-    emoji: '⚡',
-    label: 'COUNTER!',
-    title: '逆転反撃',
+    emoji: '💡',
+    label: 'RETRY!',
+    title: 'やり直し成功',
     actor: 'hero',
     target: 'enemy',
   },
@@ -931,8 +1111,11 @@ export function resolveBattleState({
   isBoss = false,
   relicLevel = null,
   itemUsedAt = null,
+  themeId = 'music-pastel',
 } = {}) {
   const tactic = battleTactic(tacticId)
+  const battleTheme = battleThemeById(themeId)
+  const themeAbility = battleTheme.ability
   const log = (Array.isArray(answers) ? answers : []).filter(
     (answer) => answer === 'correct' || isMiss(answer),
   ).slice(0, Math.max(1, Math.floor(Number(total) || 1)))
@@ -976,6 +1159,10 @@ export function resolveBattleState({
   let itemBonusDamage = 0
   let itemBlocked = 0
   let itemHealing = 0
+  let themeActivations = 0
+  let themeHealing = 0
+  let themeBonusDamage = 0
+  let themeBlockedDamage = 0
 
   const activateItem = () => {
     itemArmed = true
@@ -1004,7 +1191,7 @@ export function resolveBattleState({
         lastEvent = {
           kind: 'burst',
           emoji: '🔥',
-          title: `${streak}連撃！ 奥義が発動`,
+          title: `${streak}連続！ 花まるコンボ`,
         }
       } else if (tactic.id === 'guard') {
         guardCharge += 1
@@ -1013,11 +1200,11 @@ export function resolveBattleState({
           shields += 1
           lastEvent = {
             kind: 'shield',
-            emoji: '🛡️',
-            title: '守護シールドを1枚獲得！',
+            emoji: '📒',
+            title: '見直しガードを1枚獲得！',
           }
         } else {
-          lastEvent = { kind: 'hit', emoji: '⚔️', title: '敵に一撃！' }
+          lastEvent = { kind: 'hit', emoji: '💮', title: '正解アタック！' }
         }
       } else if (tactic.id === 'counter' && previousWasMiss) {
         counters += 1
@@ -1030,12 +1217,33 @@ export function resolveBattleState({
         healingDone += healing
         lastEvent = {
           kind: 'counter',
-          emoji: '⚡',
-          title: '逆転カウンター！ HPも回復',
+          emoji: '💡',
+          title: 'やり直し成功！ HPも回復',
           healing,
         }
       } else {
-        lastEvent = { kind: 'hit', emoji: '⚔️', title: '敵に一撃！' }
+        lastEvent = { kind: 'hit', emoji: '💮', title: '正解アタック！' }
+      }
+
+      const themeHealActive =
+        themeAbility.kind === 'heal'
+        && correct % themeAbility.every === 0
+      if (themeHealActive) {
+        const healing = Math.min(
+          Math.ceil((heroStats.maxHp * themeAbility.healPercent) / 100),
+          heroStats.maxHp - heroCurrentHp,
+        )
+        heroCurrentHp += healing
+        healingDone += healing
+        themeHealing += healing
+        themeActivations += 1
+        lastEvent = {
+          ...lastEvent,
+          emoji: themeAbility.emoji,
+          title: `${lastEvent.title}・${themeAbility.name}！`,
+          healing: (lastEvent.healing ?? 0) + healing,
+          themeAbility: themeAbility.id,
+        }
       }
 
       const tacticMultiplier =
@@ -1064,15 +1272,39 @@ export function resolveBattleState({
           title: `${itemRelic.name}で威力アップ！`,
         }
       }
+      const themePowerActive =
+        themeAbility.kind === 'power'
+        && correct % themeAbility.every === 0
+      const damageBeforeTheme = damage
+      if (themePowerActive) {
+        damage += Math.max(
+          1,
+          Math.round((normalDamage * themeAbility.bonusPercent) / 100),
+        )
+        themeActivations += 1
+        lastEvent = {
+          ...lastEvent,
+          emoji: themeAbility.emoji,
+          title: `${lastEvent.title}・${themeAbility.name}！`,
+          themeAbility: themeAbility.id,
+        }
+      }
       // コンボを選ばない作戦でも、全問正解の最終問は残りHPを削り切る。
       if (finalTurn && correct === safeTotal) damage = enemyCurrentHp
       const minimumHp = finalTurn ? 0 : 1
       const availableDamage = Math.max(0, enemyCurrentHp - minimumHp)
       const appliedDamage = Math.min(damage, availableDamage)
+      if (themePowerActive) {
+        themeBonusDamage += Math.max(
+          0,
+          appliedDamage - Math.min(damageBeforeTheme, availableDamage),
+        )
+      }
       if (itemPowerActive) {
+        const appliedBeforeTheme = Math.min(damageBeforeTheme, availableDamage)
         itemBonusDamage += Math.max(
           0,
-          appliedDamage - Math.min(normalDamage, availableDamage),
+          appliedBeforeTheme - Math.min(normalDamage, availableDamage),
         )
       }
       enemyCurrentHp -= appliedDamage
@@ -1099,13 +1331,24 @@ export function resolveBattleState({
       protectedHits += 1
       lastEvent = {
         kind: 'block',
-        emoji: '🛡️',
-        title: 'シールドで反撃を完全ガード！',
+        emoji: '📒',
+        title: '見直しガードで反撃を防いだ！',
         damage: 0,
       }
     } else {
       heroDamage += 1
-      const damage = enemyStats.normalDamage
+      const themeGuardActive =
+        themeAbility.kind === 'guard'
+        && themeActivations === 0
+      const damage = themeGuardActive
+        ? Math.max(
+            1,
+            Math.ceil(
+              enemyStats.normalDamage
+              * (1 - themeAbility.reductionPercent / 100),
+            ),
+          )
+        : enemyStats.normalDamage
       const minimumHp = finalTurn ? 0 : 1
       const appliedDamage = Math.min(
         damage,
@@ -1114,6 +1357,10 @@ export function resolveBattleState({
       heroCurrentHp -= appliedDamage
       damageTaken += appliedDamage
       lastDamageTaken = appliedDamage
+      if (themeGuardActive) {
+        themeActivations += 1
+        themeBlockedDamage += Math.max(0, enemyStats.normalDamage - damage)
+      }
       lastEvent = answer === 'unknown'
         ? {
             kind: 'unknown',
@@ -1124,9 +1371,17 @@ export function resolveBattleState({
         : {
             kind: 'damage',
             emoji: '💥',
-            title: '反撃を受けた…次の一手へ',
+            title: '相手の反撃！ 次の一問で取り返そう',
             damage: appliedDamage,
           }
+      if (themeGuardActive) {
+        lastEvent = {
+          ...lastEvent,
+          emoji: themeAbility.emoji,
+          title: `${themeAbility.name}で反撃を軽減！`,
+          themeAbility: themeAbility.id,
+        }
+      }
     }
   }
 
@@ -1145,24 +1400,24 @@ export function resolveBattleState({
   let activations
   if (tactic.id === 'guard') {
     status = shields > 0
-      ? `盾 ${shields}枚 · 次の反撃を防ぐ`
-      : `シールド ${guardCharge}/2`
-    summary = `完全ガード ${protectedHits}回・盾 ${shields}枚`
+      ? `ガード ${shields}枚`
+      : `見直し ${guardCharge}/2`
+    summary = `見直しガード ${protectedHits}回・残り ${shields}枚`
     activations = protectedHits
   } else if (tactic.id === 'counter') {
     status = previousWasMiss
-      ? 'COUNTER READY · 次の正解で回復'
-      : `カウンター ${counters}回`
-    summary = `逆転カウンター ${counters}回・HP回復 ${counters}回`
+      ? 'RETRY READY'
+      : `やり直し ${counters}回`
+    summary = `やり直し成功 ${counters}回・HP回復 ${counters}回`
     activations = counters
   } else {
     const comboStep = streak % 3
     status = comboStep
-      ? `${streak} COMBO · あと${3 - comboStep}問で奥義`
+      ? `${streak}連続 · あと${3 - comboStep}問`
       : comboBursts
-        ? `奥義 ${comboBursts}回 · 次の3連撃へ`
-        : '0 COMBO · 3連続で奥義'
-    summary = `奥義 ${comboBursts}回・最大 ${maxStreak}連撃`
+        ? `花まる ${comboBursts}回`
+        : '3連続で花まる'
+    summary = `花まるコンボ ${comboBursts}回・最大 ${maxStreak}連続`
     activations = comboBursts
   }
 
@@ -1190,10 +1445,23 @@ export function resolveBattleState({
       ? `HPを${itemHealing}回復`
       : itemAbility.kind === 'power'
         ? `追加ダメージ ${itemBonusDamage}`
-        : `反撃防止 ${itemBlocked}回`
+          : `反撃防止 ${itemBlocked}回`
+  const themeSummary = themeAbility.kind === 'heal'
+    ? `${themeAbility.name} ${themeActivations}回・HP回復 ${themeHealing}`
+    : themeAbility.kind === 'guard'
+      ? `${themeAbility.name} ${themeActivations}回・軽減 ${themeBlockedDamage}`
+      : `${themeAbility.name} ${themeActivations}回・追加 ${themeBonusDamage}`
 
   return {
     tacticId: tactic.id,
+    themeId: battleTheme.id,
+    battleTheme,
+    themeAbility,
+    themeActivations,
+    themeHealing,
+    themeBonusDamage,
+    themeBlockedDamage,
+    themeSummary,
     answered: log.length,
     correct,
     misses,
@@ -1252,18 +1520,20 @@ export function encounterFor({
     pool.length,
   )
   const enemy = isBoss ? chapter.boss : pool[index]
+  const teacher = isBoss ? TEACHER_RIVALS[enemy.id] : null
   const lineIndex = positiveMod(Math.floor(day) + safeLevel + index, ENCOUNTER_LINES.length)
 
   return {
     ...enemy,
     ...mobProfile(enemy.id),
+    ...teacher,
     isBoss,
     chapterId: chapter.id,
     chapterNumber: chapter.number,
     chapterName: chapter.name,
     chapterEmoji: chapter.emoji,
     chapterGradient: chapter.gradient,
-    intro: ENCOUNTER_LINES[lineIndex],
+    intro: teacher?.intro ?? ENCOUNTER_LINES[lineIndex],
   }
 }
 
@@ -1275,30 +1545,30 @@ export function battleVerdict(accuracy = 0) {
       emoji: '🏆',
       title: safe === 1 ? '完全勝利！' : '圧勝！',
       text: safe === 1
-        ? '最後の一問まで正解し、敵のHPをきれいに削り切った。'
-        : 'ほとんどの攻撃を決めて敵を退けた。街に新しい噂が広がっていく。',
+        ? '最後の一問まで正解。先生から特大の花まるをもらった！'
+        : 'ほとんどの問題を正解し、教室じゅうから拍手が起こった。',
     }
   }
   if (safe >= 0.7) {
     return {
       id: 'victory',
-      emoji: '⚔️',
+      emoji: '💮',
       title: '勝利！',
-      text: '積み重ねた正解で敵を退けた。覚えた言葉が、確かな力に変わった。',
+      text: '積み重ねた正解で今日のチャレンジをクリア。覚えた言葉が確かな力になった。',
     }
   }
   if (safe >= 0.4) {
     return {
       id: 'draw',
-      emoji: '🛡️',
+      emoji: '📒',
       title: '互角の戦い',
-      text: '敵は霧の向こうへ退いた。復習して再戦すれば、次は押し切れそうだ。',
+      text: 'あと少しで合格ライン。ノートを見直して再挑戦すれば、次は押し切れそうだ。',
     }
   }
   return {
     id: 'retreat',
-    emoji: '🔥',
+    emoji: '💡',
     title: '作戦を立て直そう',
-    text: '今日は偵察まで。それでも得たXPと見つけた弱点は、次の勝利につながる。',
+    text: '今日は弱点を見つけられた。それだけでも大収穫。復習して、もう一度挑戦しよう。',
   }
 }
