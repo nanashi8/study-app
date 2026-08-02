@@ -186,7 +186,7 @@ test('指定されたアリスの場面は、実際に間を置く6区切りで�
   )
 })
 
-test('漢文3作品は全17場面で白文を表示し、書き下し→現代語訳の順に読む', () => {
+test('漢文3作品は全17場面で原文を表示し、書き下し→現代語訳の順に読む', () => {
   const works = literatureByKind('kanbun')
   assert.deepEqual(
     works.map((work) => work.id),
@@ -305,7 +305,7 @@ test('画面導線・連続TTS・通常長文の分離集計を実装してい�
 
   assert.match(app, /literatureLibrary:\s*LiteratureLibraryScreen/)
   assert.match(app, /literatureReader:\s*LiteratureReaderScreen/)
-  assert.match(reader, /speakWith\(/)
+  assert.match(reader, /playSpeechItems\(/)
   assert.match(reader, /segmentIndex/)
   assert.match(reader, /NARRATION_PAUSE_MS/)
   assert.match(reader, /区切りの直訳/)

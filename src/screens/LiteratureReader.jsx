@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import {
   LITERATURE_KIND_META,
@@ -9,29 +9,21 @@ import {
   literatureNarrationSegments,
   narrationStepIndex,
 } from '../lib/literature.js'
+import { isTTSSupported } from '../lib/tts.js'
 import {
-  isTTSSupported,
-  speakWith,
-  stopSpeaking,
-} from '../lib/tts.js'
+  dismissSpeechPlayer,
+  playSpeechItems,
+} from '../lib/speech-player.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
-import { Button, Card, Chip, IconButton, ProgressBar, cx } from '../components/ui.jsx'
+import { Button, Card, Chip, ProgressBar, cx } from '../components/ui.jsx'
 import {
   Book,
   Bookmark,
   Check,
-  ChevronLeft,
   ChevronRight,
   Link,
-  Close,
   SpeakerWave,
 } from '../components/Icons.jsx'
-
-const PACES = [
-  { id: 'slow', label: 'ゆっくり', factor: 0.82 },
-  { id: 'normal', label: '標準', factor: 1 },
-  { id: 'brisk', label: '速め', factor: 1.14 },
-]
 
 const NARRATION_PAUSE_MS = {
   original: 260,
@@ -62,9 +54,9 @@ const READER_COPY = Object.freeze({
   kanbun: Object.freeze({
     playingOriginal: '書き下しを再生中',
     playingTranslation: '現代語訳を再生中',
-    originalSegment: '漢文（白文）',
+    originalSegment: '漢文（原文）',
     translationSegment: '区切りの現代語訳',
-    help: '漢文の白文を目で追い、書き下し文を一息ぶん読んだあと、対応する現代語訳を続けて読みます。',
+    help: '漢文の原文を目で追い、書き下し文を一息ぶん読んだあと、対応する現代語訳を続けて読みます。',
     speechSummary: '場面全体の書き下し文',
     footer: '漢文（書き下し） → 区切りの現代語訳',
     gradient: 'linear-gradient(135deg,#4c0519,#9f1239,#7f1d1d)',
@@ -89,19 +81,41 @@ export function LiteratureReaderScreen() {
   const [sceneIndex, setSceneIndex] = useState(0)
   const [segmentIndex, setSegmentIndex] = useState(0)
   const [phase, setPhase] = useState('original')
-  const [paceId, setPaceId] = useState('normal')
-  const [playing, setPlaying] = useState(false)
-  const playToken = useRef(0)
-  const pauseTimer = useRef(null)
+  const [playbackStatus, setPlaybackStatus] = useState('stopped')
 
-  useEffect(
-    () => () => {
-      playToken.current += 1
-      if (pauseTimer.current) window.clearTimeout(pauseTimer.current)
-      stopSpeaking()
-    },
-    [],
-  )
+  const narrationItems = useMemo(() => {
+    const items = []
+    for (const step of steps) {
+      const previous = items.at(-1)
+      const samePhrase =
+        previous?.meta.sceneIndex === step.sceneIndex &&
+        previous?.meta.segmentIndex === step.segmentIndex
+      const item = samePhrase
+        ? previous
+        : {
+            id: `${step.sceneIndex}:${step.segmentIndex}`,
+            label: step.text,
+            meta: {
+              sceneIndex: step.sceneIndex,
+              segmentIndex: step.segmentIndex,
+            },
+            segments: [],
+          }
+      item.segments.push({
+        text: step.text,
+        label: step.phase === 'original' ? '原文' : '対応する訳',
+        lang: step.lang,
+        style: step.phase === 'original' ? 'narration' : 'translation',
+        maxRate: step.lang === 'ja-JP' ? 1.08 : 1.4,
+        pauseAfterMs: NARRATION_PAUSE_MS[step.phase],
+        meta: { phase: step.phase },
+      })
+      if (!samePhrase) items.push(item)
+    }
+    return items
+  }, [steps])
+
+  useEffect(() => dismissSpeechPlayer, [])
 
   if (!work) {
     return (
@@ -121,24 +135,28 @@ export function LiteratureReaderScreen() {
   const currentStep = narrationStepIndex(work, sceneIndex, segmentIndex, phase)
   const completed = readingsDone.includes(work.id)
   const ttsSupported = isTTSSupported()
-  const pace = PACES.find((item) => item.id === paceId) ?? PACES[1]
+  const currentNarrationIndex = Math.max(
+    0,
+    narrationItems.findIndex(
+      (item) =>
+        item.meta.sceneIndex === sceneIndex &&
+        item.meta.segmentIndex === segmentIndex,
+    ),
+  )
+  const playing = playbackStatus === 'playing'
+  const playbackActive = playing || playbackStatus === 'paused'
   const learnedIds = work.kind === 'english' ? myList : kotenWordList
   const savedWordCount = (work.kind === 'english' ? work.wordIds : work.kotenWordIds)
     .filter((id) => learnedIds.includes(id)).length
   const savedGrammarCount = work.grammarIds.filter((id) => kotenGrammarList.includes(id)).length
 
   const stopPlayback = () => {
-    playToken.current += 1
-    if (pauseTimer.current) {
-      window.clearTimeout(pauseTimer.current)
-      pauseTimer.current = null
-    }
-    stopSpeaking()
-    setPlaying(false)
+    dismissSpeechPlayer()
+    setPlaybackStatus('stopped')
   }
 
   const finishWork = () => {
-    setPlaying(false)
+    setPlaybackStatus('ended')
     setSceneIndex(work.scenes.length - 1)
     setSegmentIndex(
       Math.max(
@@ -154,50 +172,24 @@ export function LiteratureReaderScreen() {
     )
   }
 
-  const startPlayback = (fromStep = currentStep) => {
-    if (!ttsSupported || !steps.length) return
-    const token = playToken.current + 1
-    playToken.current = token
-    if (pauseTimer.current) {
-      window.clearTimeout(pauseTimer.current)
-      pauseTimer.current = null
-    }
-    stopSpeaking()
-    setPlaying(true)
-
-    const playStep = (index) => {
-      if (playToken.current !== token) return
-      if (index >= steps.length) {
-        finishWork()
-        return
-      }
-
-      const step = steps[index]
-      setSceneIndex(step.sceneIndex)
-      setSegmentIndex(step.segmentIndex)
-      setPhase(step.phase)
-      const baseRate = Math.max(0.55, Math.min(1.45, settings.ttsRate * pace.factor))
-      const rate = step.lang === 'ja-JP' ? Math.min(baseRate, 1.08) : baseRate
-
-      speakWith(step.text, {
-        lang: step.lang,
-        rate,
-        style: step.phase === 'original' ? 'narration' : 'translation',
-        voiceURI:
-          step.lang === 'ja-JP'
-            ? settings.ttsJapaneseVoiceURI
-            : settings.ttsVoiceURI,
-        onend: () => {
-          if (playToken.current !== token) return
-          pauseTimer.current = window.setTimeout(() => {
-            pauseTimer.current = null
-            if (playToken.current === token) playStep(index + 1)
-          }, NARRATION_PAUSE_MS[step.phase])
-        },
-      })
-    }
-
-    playStep(Math.max(0, Math.min(fromStep, steps.length - 1)))
+  const startPlayback = (fromIndex = currentNarrationIndex) => {
+    if (!ttsSupported || !narrationItems.length) return
+    playSpeechItems(narrationItems, {
+      index: fromIndex,
+      title: '名作に親しむ',
+      rate: settings.ttsRate,
+      voiceURI: settings.ttsVoiceURI,
+      japaneseVoiceURI: settings.ttsJapaneseVoiceURI,
+      autoAdvance: true,
+      onIndexChange: (_index, item) => {
+        setSceneIndex(item.meta.sceneIndex)
+        setSegmentIndex(item.meta.segmentIndex)
+        setPhase('original')
+      },
+      onSegmentChange: (segment) => setPhase(segment.meta.phase),
+      onStatusChange: setPlaybackStatus,
+      onComplete: finishWork,
+    })
   }
 
   const moveToScene = (nextIndex) => {
@@ -301,7 +293,9 @@ export function LiteratureReaderScreen() {
                 </h2>
               </div>
               <Chip color={phase === 'original' ? meta.color : '#d97706'}>
-                {playing
+                {playbackStatus === 'paused'
+                  ? '一時停止中'
+                  : playing
                   ? phase === 'original'
                     ? copy.playingOriginal
                     : copy.playingTranslation
@@ -311,7 +305,7 @@ export function LiteratureReaderScreen() {
             <ProgressBar
               value={
                 steps.length
-                  ? (currentStep + (playing ? 0.5 : 0)) / steps.length
+                  ? (currentStep + (playbackActive ? 0.5 : 0)) / steps.length
                   : 0
               }
               className="mt-3"
@@ -330,6 +324,18 @@ export function LiteratureReaderScreen() {
               </p>
             </div>
 
+            <Button
+              full
+              disabled={!ttsSupported || playbackActive}
+              onClick={() => startPlayback(currentNarrationIndex)}
+            >
+              <SpeakerWave size={17} />
+              {playbackActive ? '共通コンソールで操作中' : 'ここから交互再生'}
+            </Button>
+            <p className="text-center text-[10px] font-bold text-ink/35">
+              再生後は下の共通コンソールで、前後のフレーズ・停止・速度を操作できます。
+            </p>
+
             <section className="space-y-2" aria-label="間で区切った交互朗読">
               {currentSegments.map((segment, index) => {
                 const active = segmentIndex === index
@@ -339,7 +345,7 @@ export function LiteratureReaderScreen() {
                     type="button"
                     onClick={() => moveToSegment(index)}
                     aria-current={active ? 'step' : undefined}
-                    aria-label={`区切り${index + 1}から再生`}
+                    aria-label={`区切り${index + 1}を選択`}
                     className={cx(
                       'w-full overflow-hidden rounded-2xl border-2 text-left transition-colors',
                       active
@@ -357,7 +363,7 @@ export function LiteratureReaderScreen() {
                         <span className="text-[10px] font-extrabold uppercase tracking-wide text-teal-700">
                           {copy.originalSegment} {index + 1}
                         </span>
-                        {playing && active && phase === 'original' && (
+                        {playbackActive && active && phase === 'original' && (
                           <span className="text-[10px] font-extrabold text-teal-700">
                             再生中
                           </span>
@@ -396,7 +402,7 @@ export function LiteratureReaderScreen() {
                         <span className="text-[10px] font-extrabold tracking-wide text-amber-700">
                           {copy.translationSegment}
                         </span>
-                        {playing && active && phase === 'translation' && (
+                        {playbackActive && active && phase === 'translation' && (
                           <span className="text-[10px] font-extrabold text-amber-700">
                             再生中
                           </span>
@@ -564,57 +570,6 @@ export function LiteratureReaderScreen() {
         </Button>
       </div>
 
-      <div className="sticky bottom-0 z-20 mt-5 border-t border-teal-100 bg-white/95 px-4 py-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] backdrop-blur">
-        <div className="mb-2 flex items-center justify-center gap-1.5">
-          <span className="mr-1 text-[11px] font-extrabold text-ink/40">速さ</span>
-          {PACES.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => {
-                stopPlayback()
-                setPaceId(item.id)
-              }}
-              aria-pressed={paceId === item.id}
-              className={cx(
-                'rounded-full px-3 py-1 text-[11px] font-extrabold',
-                paceId === item.id
-                  ? 'bg-teal-700 text-white'
-                  : 'bg-teal-50 text-teal-800/60',
-              )}
-            >
-              {item.label}
-            </button>
-          ))}
-        </div>
-        <div className="flex items-center gap-2">
-          <IconButton
-            onClick={() => moveToScene(sceneIndex - 1)}
-            disabled={sceneIndex === 0}
-            aria-label="前の場面"
-          >
-            <ChevronLeft size={22} />
-          </IconButton>
-          {playing ? (
-            <Button full variant="secondary" onClick={stopPlayback}>
-              <Close size={17} /> 一時停止
-            </Button>
-          ) : (
-            <Button full disabled={!ttsSupported} onClick={() => startPlayback(currentStep)}>
-              <SpeakerWave size={17} /> ここから交互再生
-            </Button>
-          )}
-          <IconButton
-            onClick={() => moveToScene(sceneIndex + 1)}
-            disabled={sceneIndex >= work.scenes.length - 1}
-            aria-label="次の場面"
-          >
-            <ChevronRight size={22} />
-          </IconButton>
-        </div>
-        <p className="mt-2 text-center text-[10px] font-bold text-ink/35">
-          {copy.footer}を間の区切りごとに交互再生
-        </p>
-      </div>
     </div>
   )
 }

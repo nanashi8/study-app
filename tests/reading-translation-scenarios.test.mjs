@@ -265,13 +265,13 @@ test('長文画面は文全体のフレーズ列を英語→直訳→必要な�
   assert.match(source, /<StructureDiagram tokens=\{sentenceAnalysis\.structureTokens\} \/>/)
   assert.doesNotMatch(source, /sentenceAnalysis\.blocks\.map\(\(block\) =>/)
 
-  const automaticStart = source.indexOf('const speakChunkSeq')
-  const automaticEnglish = source.indexOf('speakWith(c.en', automaticStart)
+  const automaticStart = source.indexOf('const chunkSpeechItems')
+  const automaticEnglish = source.indexOf('text: chunk.en', automaticStart)
   const automaticJapanese = source.indexOf(
-    'speakWith(`前からは、「${japanesePhraseSpeechText(c.ja)}」',
+    'japanesePhraseSpeechText(chunk.ja)',
     automaticEnglish,
   )
-  const automaticExplanation = source.indexOf('speakWith(c.explanation', automaticJapanese)
+  const automaticExplanation = source.indexOf('text: chunk.explanation', automaticJapanese)
   assert.ok(
     automaticStart >= 0 &&
     automaticEnglish > automaticStart &&
@@ -281,19 +281,17 @@ test('長文画面は文全体のフレーズ列を英語→直訳→必要な�
   )
 
   const manualStart = source.indexOf('const speakBlockPair')
-  const manualEnglish = source.indexOf('speakWith(pair.spokenEn ?? pair.en', manualStart)
+  const manualEnglish = source.indexOf('text: pair.spokenEn ?? pair.en', manualStart)
   const manualJapanese = source.indexOf(
-    'speakWith(`前からは、「${japanesePhraseSpeechText(pair.ja)}」',
+    'japanesePhraseSpeechText(pair.ja)',
     manualEnglish,
   )
-  const manualExplanation = source.indexOf('const phraseExplanation =', manualJapanese)
-  const manualExplanationSpeech = source.indexOf('phraseExplanation,', manualExplanation)
+  const manualExplanationSpeech = source.indexOf('text: explanation', manualJapanese)
   assert.ok(
     manualStart >= 0 &&
     manualEnglish > manualStart &&
     manualJapanese > manualEnglish &&
-    manualExplanation > manualJapanese &&
-    manualExplanationSpeech > manualExplanation,
+    manualExplanationSpeech > manualJapanese,
     '個別再生が英語フレーズ→直訳→読解・文法の順ではない',
   )
   assert.match(source, /ブロック全体の読み方は、\$\{block\.translationGuide\}/)
@@ -305,8 +303,8 @@ test('長文画面は文全体のフレーズ列を英語→直訳→必要な�
   assert.match(source, /pair\.displayEn \?\? pair\.en/)
   assert.match(source, /pair\.grammar \?\? pair\.explanation \?\? pair\.roleNote/)
   assert.match(source, /data-reading-phrase-method=\{sentenceAnalysis\.phraseMethod\}/)
-  assert.match(source, /speakWith\(phraseItem\.spokenEn \?\? phraseItem\.en/)
-  assert.match(source, /japanesePhraseSpeechText\(phraseItem\.ja\)/)
+  assert.match(source, /text:\s*item\.spokenEn \?\? item\.en/)
+  assert.match(source, /japanesePhraseSpeechText\(item\.ja\)/)
   assert.match(source, /data-translation-role-flow/)
   assert.match(source, /pair\.roleNote/)
   assert.match(source, /<SpeakerWave size=\{14\} \/> 講師音声/)
@@ -318,5 +316,5 @@ test('長文画面は文全体のフレーズ列を英語→直訳→必要な�
   assert.match(source, /\{pair\.ja\}/)
   assert.match(source, /読み方：\{block\.translationGuide\}/)
   assert.match(source, /文法上の注意：\{block\.note\}/)
-  assert.match(source, /文法上の注意：\{cur\.grammarNote\}/)
+  assert.match(source, /label:\s*'読み方・文法上の注意'/)
 })

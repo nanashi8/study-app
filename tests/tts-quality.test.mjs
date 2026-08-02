@@ -12,6 +12,17 @@ import {
   voiceQuality,
   voiceQualityLabel,
 } from '../src/lib/tts.js'
+import {
+  dismissSpeechPlayer,
+  getSpeechPlayerSnapshot,
+  nextSpeechItem,
+  pauseSpeechPlayer,
+  playSpeechItems,
+  playSpeechPlayer,
+  previousSpeechItem,
+  setSpeechPlayerRate,
+  stopSpeechPlayer,
+} from '../src/lib/speech-player.js'
 
 const voice = (
   name,
@@ -316,6 +327,77 @@ test('複数文の発話を順に再生し、途中停止後は古い連鎖を�
   }
 })
 
+test('共通コンソールは同じ位置から一時停止を再開し、フレーズ前後・停止・速度を制御する', () => {
+  const previousWindow = globalThis.window
+  const PreviousUtterance = globalThis.SpeechSynthesisUtterance
+  const queued = []
+  let paused = 0
+  let resumed = 0
+  let cancelled = 0
+
+  class MockUtterance {
+    constructor(text) {
+      this.text = text
+      this.lang = ''
+      this.rate = 1
+      this.pitch = 1
+    }
+  }
+
+  globalThis.window = {
+    speechSynthesis: {
+      getVoices: () => [],
+      cancel: () => { cancelled += 1 },
+      pause: () => { paused += 1 },
+      resume: () => { resumed += 1 },
+      speak: (utterance) => queued.push(utterance),
+    },
+    setTimeout,
+    clearTimeout,
+  }
+  globalThis.SpeechSynthesisUtterance = MockUtterance
+
+  try {
+    assert.equal(
+      playSpeechItems(['first phrase', 'second phrase'], {
+        rate: 0.9,
+        style: 'phrase',
+      }),
+      true,
+    )
+    assert.equal(getSpeechPlayerSnapshot().index, 0)
+    assert.equal(getSpeechPlayerSnapshot().canNext, true)
+    assert.equal(queued.at(-1).text, 'first phrase')
+
+    assert.equal(pauseSpeechPlayer(), true)
+    assert.equal(paused, 1)
+    assert.equal(getSpeechPlayerSnapshot().status, 'paused')
+    assert.equal(playSpeechPlayer(), true)
+    assert.equal(getSpeechPlayerSnapshot().status, 'playing')
+
+    assert.equal(nextSpeechItem(), true)
+    assert.equal(getSpeechPlayerSnapshot().index, 1)
+    assert.equal(queued.at(-1).text, 'second phrase')
+    assert.equal(previousSpeechItem(), true)
+    assert.equal(getSpeechPlayerSnapshot().index, 0)
+
+    assert.equal(setSpeechPlayerRate(1.1), true)
+    assert.equal(getSpeechPlayerSnapshot().rate, 1.1)
+    assert.equal(queued.at(-1).rate, 1.089)
+
+    assert.equal(stopSpeechPlayer(), true)
+    assert.equal(getSpeechPlayerSnapshot().status, 'stopped')
+    assert.ok(cancelled >= 4)
+    assert.ok(resumed >= 1)
+  } finally {
+    dismissSpeechPlayer()
+    if (previousWindow === undefined) delete globalThis.window
+    else globalThis.window = previousWindow
+    if (PreviousUtterance === undefined) delete globalThis.SpeechSynthesisUtterance
+    else globalThis.SpeechSynthesisUtterance = PreviousUtterance
+  }
+})
+
 test('英語と日本語の選択設定が読み上げ画面まで接続されている', () => {
   const store = readFileSync(
     new URL('../src/store/useStore.js', import.meta.url),
@@ -333,17 +415,20 @@ test('英語と日本語の選択設定が読み上げ画面まで接続され�
     new URL('../src/screens/LiteratureReader.jsx', import.meta.url),
     'utf8',
   )
+  const player = readFileSync(
+    new URL('../src/lib/speech-player.js', import.meta.url),
+    'utf8',
+  )
 
   assert.match(store, /ttsJapaneseVoiceURI:\s*null/)
   assert.match(settings, /自動（高品質優先）/)
   assert.match(settings, /低音質は高品質・標準音声が使えない場合だけ使用します/)
   assert.match(settings, /「拡張」「Premium」「Enhanced」/)
-  assert.equal(
-    reader.match(/voiceURI:\s*settings\.ttsJapaneseVoiceURI/g)?.length,
-    8,
-  )
-  assert.match(literature, /step\.lang === 'ja-JP'/)
+  assert.match(reader, /japaneseVoiceURI:\s*settings\.ttsJapaneseVoiceURI/)
+  assert.match(literature, /lang:\s*step\.lang/)
   assert.match(literature, /settings\.ttsJapaneseVoiceURI/)
+  assert.match(player, /\^ja\/i\.test\(segment\.lang/)
+  assert.match(player, /session\.japaneseVoiceURI/)
 })
 
 test('全ての直接読み上げ経路が用途別の自然朗読スタイルを共通処理へ渡す', () => {
@@ -358,14 +443,10 @@ test('全ての直接読み上げ経路が用途別の自然朗読スタイル�
         readFileSync(new URL(path, import.meta.url), 'utf8'),
       ))
 
-  for (const path of routeFiles) {
-    const source = readFileSync(new URL(path, import.meta.url), 'utf8')
-    const callCount = source.match(/\b(?:speak|speakWith)\s*\(/g)?.length ?? 0
-    const styleCount = source.match(/\bstyle\s*(?=:|,)/g)?.length ?? 0
-    assert.ok(callCount > 0, path)
-    assert.equal(styleCount, callCount, path)
-  }
-  assert.equal(routeFiles.length, 9)
+  assert.deepEqual(routeFiles, ['../src/lib/speech-player.js'])
+  const player = readFileSync(new URL(routeFiles[0], import.meta.url), 'utf8')
+  assert.match(player, /speakWith\(segment\.text/)
+  assert.match(player, /style:\s*segment\.style \?\? 'auto'/)
 
   const literature = readFileSync(
     new URL('../src/screens/LiteratureReader.jsx', import.meta.url),
@@ -377,7 +458,7 @@ test('全ての直接読み上げ経路が用途別の自然朗読スタイル�
   )
   assert.match(
     literature,
-    /step\.phase === 'original' \? 'narration' : 'translation'/,
+    /style:\s*step\.phase === 'original' \? 'narration' : 'translation'/,
   )
   assert.match(settings, /自然な間・抑揚補正：すべての読み上げで有効/)
 })

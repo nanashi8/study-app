@@ -368,6 +368,7 @@ export function createNaturalSpeechPlan(
 }
 
 let playbackGeneration = 0
+let speechManuallyPaused = false
 const pendingSpeechTimers = new Set()
 
 function clearPendingSpeechTimers() {
@@ -442,7 +443,7 @@ function playSpeechPlan(
     utterance.onend = continuePlan
     utterance.onerror = continuePlan
     try {
-      window.speechSynthesis.resume()
+      if (!speechManuallyPaused) window.speechSynthesis.resume()
       window.speechSynthesis.speak(utterance)
     } catch {
       continuePlan()
@@ -506,6 +507,7 @@ export function speakWith(
 
 export function stopSpeaking() {
   playbackGeneration += 1
+  speechManuallyPaused = false
   if (typeof window !== 'undefined') clearPendingSpeechTimers()
   if (isTTSSupported()) window.speechSynthesis.cancel()
 }
@@ -514,9 +516,11 @@ export function stopSpeaking() {
 export function pauseSpeaking() {
   if (!isTTSSupported()) return false
   try {
+    speechManuallyPaused = true
     window.speechSynthesis.pause()
     return true
   } catch {
+    speechManuallyPaused = false
     return false
   }
 }
@@ -525,6 +529,7 @@ export function pauseSpeaking() {
 export function resumeSpeaking() {
   if (!isTTSSupported()) return false
   try {
+    speechManuallyPaused = false
     window.speechSynthesis.resume()
     return true
   } catch {
