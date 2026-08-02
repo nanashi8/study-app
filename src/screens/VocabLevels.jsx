@@ -1,10 +1,15 @@
 import { useStore } from '../store/useStore.js'
 import { LEVELS } from '../data/levels.js'
 import { ALL_WORDS, VOCAB_FIELDS, VOCAB_POS } from '../data/vocab.js'
-import { levelProgress, overallProgress, weakFoundationLevel } from '../lib/session.js'
+import {
+  levelProgress,
+  overallProgress,
+  reviewActionState,
+  weakFoundationLevel,
+} from '../lib/session.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { Card, ProgressRing, ProgressBar, Button, Chip, IconButton } from '../components/ui.jsx'
-import { Refresh, Bookmark, Book, Cards, Search, Lightbulb, ArrowRight, Sparkles } from '../components/Icons.jsx'
+import { Refresh, Bookmark, Book, Cards, Search, Lightbulb, ArrowRight, Sparkles, Check } from '../components/Icons.jsx'
 
 // 下の級（前提）が弱点なら「先に固めよう」と案内するバナー。
 function WeakFoundationBanner({ srs, onReview }) {
@@ -137,6 +142,8 @@ export function VocabLevelsScreen() {
   const srs = useStore((s) => s.srs)
   const myList = useStore((s) => s.myList)
   const prog = overallProgress(srs)
+  const reviewState = reviewActionState(prog)
+  const reviewComplete = reviewState === 'complete'
 
   const study = (levelId, label) =>
     navigate('vocabStudy', { source: { type: 'level', levelId }, title: `英検${label}`, mode: 'study' })
@@ -168,14 +175,26 @@ export function VocabLevelsScreen() {
           <button
             disabled={!prog.due}
             onClick={() => navigate('vocabStudy', { source: { type: 'due' }, title: '復習', mode: 'study' })}
-            className="flex items-center gap-2 rounded-2xl bg-hint-soft p-3 text-left active:scale-[0.98] transition-transform disabled:opacity-50"
+            aria-label={reviewComplete ? '復習完了。次の復習待ち' : `復習 ${prog.due}語`}
+            data-review-state={reviewState}
+            className={`flex items-center gap-2 rounded-2xl p-3 text-left transition-transform active:scale-[0.98] disabled:cursor-default ${
+              reviewComplete ? 'bg-emerald-50' : 'bg-hint-soft disabled:opacity-50'
+            }`}
           >
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-hint/20 text-hint">
-              <Refresh size={20} />
+            <span
+              className={`flex h-9 w-9 items-center justify-center rounded-xl ${
+                reviewComplete ? 'bg-emerald-100 text-emerald-600' : 'bg-hint/20 text-hint'
+              }`}
+            >
+              {reviewComplete ? <Check size={20} /> : <Refresh size={20} />}
             </span>
             <div>
-              <div className="text-sm font-extrabold text-amber-900">復習</div>
-              <div className="text-[11px] font-bold text-amber-800/70">{prog.due}語</div>
+              <div className={`text-sm font-extrabold ${reviewComplete ? 'text-emerald-900' : 'text-amber-900'}`}>
+                {reviewComplete ? '復習完了' : '復習'}
+              </div>
+              <div className={`text-[11px] font-bold ${reviewComplete ? 'text-emerald-700/70' : 'text-amber-800/70'}`}>
+                {reviewComplete ? '次の復習待ち' : `${prog.due}語`}
+              </div>
             </div>
           </button>
           <button

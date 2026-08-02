@@ -27,11 +27,25 @@ function pixelSizeOfWebp(path) {
   }
 }
 
+function pixelSizeOfPng(path) {
+  const buffer = readFileSync(publicAsset(path))
+  assert.deepEqual(
+    [...buffer.subarray(0, 8)],
+    [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a],
+    `${path}: PNG signature`,
+  )
+  assert.equal(buffer[25], 6, `${path}: transparent RGBA`)
+  return {
+    width: buffer.readUInt32BE(16),
+    height: buffer.readUInt32BE(20),
+  }
+}
+
 function contentHash(path) {
   return createHash('sha256').update(readFileSync(publicAsset(path))).digest('hex')
 }
 
-test('桐生ツバキの直毛ルールと全64アセットを継続監査する', () => {
+test('桐生ツバキの直毛ルールと全65アセットを継続監査する', () => {
   const tsubaki = BATTLE_STUDENTS.find((student) => student.id === 'tsubaki')
   assert.deepEqual(tsubaki?.hairProfile, {
     color: 'dark-purple-black',
@@ -55,17 +69,19 @@ test('桐生ツバキの直毛ルールと全64アセットを継続監査する
   const motion = BATTLE_MOTION_STATES.map(
     (id) => `${tsubaki.motionBase}/${id}.webm`,
   )
+  const standing = [tsubaki.standingSheet]
 
   const rasters = [...portraits, ...lifestyle, ...daily, ...reveal, ...shared]
-  const allAssets = [...rasters, ...motion]
+  const allAssets = [...rasters, ...motion, ...standing]
   assert.equal(portraits.length, 24)
   assert.equal(lifestyle.length, 3)
   assert.equal(daily.length, 30)
   assert.equal(reveal.length, 1)
   assert.equal(shared.length, 1)
   assert.equal(motion.length, 5)
-  assert.equal(allAssets.length, 64)
-  assert.equal(new Set(allAssets).size, 64)
+  assert.equal(standing.length, 1)
+  assert.equal(allAssets.length, 65)
+  assert.equal(new Set(allAssets).size, 65)
   assert.equal(new Set(portraits.map(contentHash)).size, 24, 'all emotion portraits differ')
   assert.equal(new Set(daily.map(contentHash)).size, 30, 'all daily scenes differ')
   assert.equal(new Set(motion.map(contentHash)).size, 5, 'all derived motions differ')
@@ -87,4 +103,5 @@ test('桐生ツバキの直毛ルールと全64アセットを継続監査する
     assert.equal(buffer.length > 2_000, true, `${path}: non-trivial video`)
     assert.deepEqual([...buffer.subarray(0, 4)], [0x1a, 0x45, 0xdf, 0xa3])
   }
+  assert.deepEqual(pixelSizeOfPng(standing[0]), { width: 1254, height: 1254 })
 })

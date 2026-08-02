@@ -72,12 +72,14 @@ test('共通カード・ボタン・下部ナビは装飾を減らし文字優�
   assert.match(css, /--shadow-card: 0 2px 8px -5px/)
 })
 
-test('ホームはタイトル画面の3操作だけを先に出し、全学習を別表示へ分ける', async () => {
+test('英語ホームは学習選択を直接表示し、リスニング直後にゲームを置く', async () => {
   const home = await readFile(new URL('../src/screens/Home.jsx', import.meta.url), 'utf8')
   const primaryModes = home.match(/const PRIMARY_LEARNING_MODES = \[([\s\S]*?)\n\]/)?.[1] ?? ''
   const extraModes = home.match(/const EXTRA_LEARNING_MODES = \[([\s\S]*?)\n\]/)?.[1] ?? ''
+  const primaryGroupIndex = home.indexOf('data-home-mode-group="primary"')
+  const gameGroupIndex = home.indexOf('data-home-mode-group="game"')
+  const supportGroupIndex = home.indexOf('data-home-mode-group="support"')
 
-  assert.equal((home.match(/data-home-title-action=/g) ?? []).length, 3)
   assert.deepEqual(
     [...primaryModes.matchAll(/id: '([^']+)'/g)].map((match) => match[1]),
     ['vocab', 'quiz', 'reading', 'phrases', 'grammar', 'listening'],
@@ -86,14 +88,18 @@ test('ホームはタイトル画面の3操作だけを先に出し、全学習�
     [...extraModes.matchAll(/id: '([^']+)'/g)].map((match) => match[1]),
     ['literature', 'writing', 'roots', 'dictation', 'saved-vocab', 'saved-grammar'],
   )
-  assert.match(home, /data-testid="home-title-screen"/)
-  assert.match(home, /if \(learningMenuOpen\)/)
   assert.match(home, /data-home-learning-menu/)
   assert.match(home, /PRIMARY_LEARNING_MODES\.map/)
+  assert.match(home, /data-home-mode="after-school-chronicle"/)
+  assert.match(home, /navigate\('afterSchoolChronicle'\)/)
+  assert.match(home, /AFTER_SCHOOL_CHRONICLE\.title/)
   assert.match(home, /EXTRA_LEARNING_MODES\.map/)
   assert.match(home, /home-learning-more/)
-  assert.match(home, /つづきから/)
   assert.match(home, /学習を選ぶ/)
+  assert.match(home, /aria-label="スタディアプリへ戻る"/)
+  assert.ok(primaryGroupIndex >= 0 && primaryGroupIndex < gameGroupIndex)
+  assert.ok(gameGroupIndex < supportGroupIndex)
+  assert.doesNotMatch(home, /home-title-screen|data-home-title-action|learningMenuOpen|つづきから/)
   assert.doesNotMatch(home, /recommendation\.reason|recommendation\.timing|ProgressRing|きょうの語源/)
 })
 
