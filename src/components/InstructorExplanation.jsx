@@ -22,7 +22,7 @@ export function InstructorExplanation({
         className,
       )}
       data-instructor-explanation
-      aria-label="予備校講師の徹底解説"
+      aria-label="徹底解説"
     >
       <div className={cx(
         'flex items-center gap-2 border-b border-amber-200 bg-gradient-to-r from-amber-50 to-orange-50',
@@ -36,7 +36,7 @@ export function InstructorExplanation({
             PROFESSIONAL LESSON
           </p>
           <h3 className="font-display text-sm font-extrabold text-ink">
-            予備校講師の徹底解説
+            徹底解説
           </h3>
         </div>
       </div>

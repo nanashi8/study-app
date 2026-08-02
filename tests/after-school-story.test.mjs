@@ -23,6 +23,28 @@ test('放課後ことば探検記は日常・対決・日誌の3段階を持つ'
   )
 })
 
+test('ゲーム入口の主要アイコンはOS絵文字に依存せず、絵文字フォントも明示する', async () => {
+  const [map, css] = await Promise.all([
+    readFile(new URL('../src/screens/EnglishMap.jsx', import.meta.url), 'utf8'),
+    readFile(new URL('../src/index.css', import.meta.url), 'utf8'),
+  ])
+  const chronicleScreen = map.slice(
+    map.indexOf('export function AfterSchoolChronicleScreen'),
+    map.indexOf('function ChroniclePortalCard'),
+  )
+
+  assert.match(map, /function ChronicleIcon/)
+  assert.match(map, /data-chronicle-icon=\{kind\}/)
+  assert.match(chronicleScreen, /className="after-school-game-icons pb-8"/)
+  assert.match(map, /<ChronicleIcon kind=\{phase\.id\}/)
+  assert.doesNotMatch(map, /<span className="text-xl" aria-hidden="true">\{phase\.emoji\}<\/span>/)
+  assert.match(css, /\.chronicle-vector-icon/)
+  assert.match(css, /font-variant-emoji:\s*emoji/)
+  assert.match(css, /"Apple Color Emoji"/)
+  assert.match(css, /"Segoe UI Emoji"/)
+  assert.match(css, /"Noto Color Emoji"/)
+})
+
 test('放課後日誌は12場面を保存済み進行順に循環する', () => {
   assert.deepEqual(
     BATTLE_DAILY_SCENES.map((scene, step) => afterSchoolSceneForStep(step).id),

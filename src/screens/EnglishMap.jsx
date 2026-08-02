@@ -81,7 +81,22 @@ import {
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { MobPortrait } from '../components/MobPortrait.jsx'
 import { ProgressRing, ProgressBar, Chip, cx } from '../components/ui.jsx'
-import { Lightbulb, ArrowRight, Check } from '../components/Icons.jsx'
+import {
+  ArrowRight,
+  BookOpen,
+  Cards,
+  Check,
+  Flame,
+  Gear,
+  Home as SchoolIcon,
+  Lightbulb,
+  Lock,
+  Sparkles,
+  Sprout,
+  StarFilled,
+  Teacher,
+  Target,
+} from '../components/Icons.jsx'
 import { publicAssetUrl } from '../lib/publicAssetUrl.js'
 
 // テスト結果から弱点を判定するしきい値。
@@ -98,6 +113,38 @@ const SKILLS = [
   { id: 'listening', label: 'リスニング', emoji: '🎧', color: '#0ea5e9', screen: 'listening', kind: 'acc' },
   { id: 'dictation', label: 'ディクテーション', emoji: '⌨️', color: '#14b8a6', screen: 'dictation', kind: 'acc' },
 ]
+
+const CHRONICLE_ICON_COMPONENTS = {
+  title: StarFilled,
+  chapter: SchoolIcon,
+  scene: Sparkles,
+  daily: Sprout,
+  challenge: Target,
+  journal: BookOpen,
+  trait: StarFilled,
+  theme: Sparkles,
+  quest: Cards,
+  battle: Flame,
+  options: Gear,
+  lock: Lock,
+  faculty: Teacher,
+}
+
+// ゲーム入口の主要アイコンはOSの絵文字フォントへ依存させない。
+// 文字と別レイヤーのインラインSVGなので、絵文字を持たない端末でも必ず表示される。
+function ChronicleIcon({ kind, size = 20, className = '' }) {
+  const Icon = CHRONICLE_ICON_COMPONENTS[kind] ?? Sparkles
+  return (
+    <span
+      className={cx('chronicle-vector-icon', className)}
+      data-chronicle-icon={kind}
+      style={{ width: size, height: size }}
+      aria-hidden="true"
+    >
+      <Icon size={Math.max(12, Math.round(size * 0.62))} />
+    </span>
+  )
+}
 
 function skillInfo(skill, skillStats, readingsDone) {
   if (skill.kind === 'reading') {
@@ -241,7 +288,7 @@ export function AfterSchoolChronicleScreen() {
   }
 
   return (
-    <div className="pb-8">
+    <div className="after-school-game-icons pb-8">
       <ScreenHeader
         title={AFTER_SCHOOL_CHRONICLE.title}
         subtitle={AFTER_SCHOOL_CHRONICLE.subtitle}
@@ -341,8 +388,9 @@ function ChroniclePortalCard({ hero, storyStep, onOpen }) {
           {AFTER_SCHOOL_CHRONICLE.subtitle}
         </span>
         <span className="mt-3 flex items-center justify-between gap-3">
-          <span className="min-w-0 truncate text-[9px] font-extrabold text-amber-100">
-            {hero.title.emoji} LV{hero.level} · 日誌{afterSchoolEpisodeNumber(storyStep)}「{scene.shortName}」
+          <span className="flex min-w-0 items-center gap-1 truncate text-[9px] font-extrabold text-amber-100">
+            <ChronicleIcon kind="title" size={14} />
+            <span className="truncate">LV{hero.level} · 日誌{afterSchoolEpisodeNumber(storyStep)}「{scene.shortName}」</span>
           </span>
           <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-white px-3 py-1.5 text-[9px] font-extrabold text-violet-800">
             物語へ <ArrowRight size={13} />
@@ -367,13 +415,15 @@ function ChronicleHero({ hero, scene, storyStep, onInterlude }) {
           <span className="rounded-full border border-white/20 bg-slate-950/60 px-2 py-1 text-[8px] font-extrabold tracking-[0.14em] backdrop-blur-sm">
             STORY {String(afterSchoolEpisodeNumber(storyStep)).padStart(2, '0')}
           </span>
-          <span className="rounded-full border border-white/20 bg-white/10 px-2 py-1 text-[8px] font-extrabold text-amber-100 backdrop-blur-sm">
-            {hero.chapter.emoji} {hero.chapter.name}
+          <span className="inline-flex items-center gap-1 rounded-full border border-white/20 bg-white/10 px-2 py-1 text-[8px] font-extrabold text-amber-100 backdrop-blur-sm">
+            <ChronicleIcon kind="chapter" size={13} />
+            {hero.chapter.name}
           </span>
         </div>
         <h2 className="mt-2 font-display text-xl font-extrabold">今日の放課後を始めよう</h2>
-        <p className="mt-1 text-[10px] font-bold leading-relaxed text-white/65">
-          {scene.emoji} {scene.name} — {scene.description}
+        <p className="mt-1 flex items-start gap-1.5 text-[10px] font-bold leading-relaxed text-white/65">
+          <ChronicleIcon kind="scene" size={14} className="mt-px" />
+          <span>{scene.name} — {scene.description}</span>
         </p>
         <button
           type="button"
@@ -404,7 +454,7 @@ function ChronicleLoop() {
       <div className="mt-3 grid grid-cols-3 gap-1.5">
         {AFTER_SCHOOL_STORY_PHASES.map((phase, index) => (
           <div key={phase.id} className="relative rounded-2xl bg-gradient-to-b from-violet-50 to-slate-50 px-2 py-3 text-center ring-1 ring-violet-100">
-            <span className="text-xl" aria-hidden="true">{phase.emoji}</span>
+            <ChronicleIcon kind={phase.id} size={30} className="mx-auto" />
             <strong className="mt-1 block text-[10px] font-extrabold text-ink">
               {phase.number} {phase.label}
             </strong>
@@ -595,8 +645,8 @@ function AdventureCard({
         '--battle-accent-strong': battleTheme.accentStrong,
       }}
     >
-      <div className="pointer-events-none absolute -right-10 -top-12 text-[9rem] opacity-[0.08]">
-        {hero.chapter.emoji}
+      <div className="pointer-events-none absolute -right-10 -top-12 opacity-[0.08]">
+        <ChronicleIcon kind="chapter" size={144} className="chronicle-vector-icon-ghost" />
       </div>
       <div className="pointer-events-none absolute -bottom-20 -left-16 h-48 w-48 rounded-full bg-pink-300/20 blur-3xl" />
 
@@ -605,8 +655,9 @@ function AdventureCard({
           <span className="rounded-full border border-white/25 bg-white/15 px-2.5 py-1 text-[10px] font-extrabold tracking-[0.14em] text-white/90 backdrop-blur">
             CHRONICLE STAGE {hero.chapter.number}
           </span>
-          <span className="min-w-0 truncate text-xs font-extrabold">
-            {hero.chapter.emoji} {hero.chapter.name}
+          <span className="flex min-w-0 items-center gap-1 truncate text-xs font-extrabold">
+            <ChronicleIcon kind="chapter" size={17} />
+            <span className="truncate">{hero.chapter.name}</span>
           </span>
         </div>
 
@@ -638,8 +689,9 @@ function AdventureCard({
               color="linear-gradient(90deg,#fde68a,#f9a8d4)"
               className="mt-1.5 h-2 bg-white/15"
             />
-            <p className="mt-1 truncate text-[8px] font-extrabold text-white/65">
-              {studentTraitProfile.dominant.emoji} 発現色：{studentTraitProfile.colorLabel}
+            <p className="mt-1 flex items-center gap-1 truncate text-[8px] font-extrabold text-white/65">
+              <ChronicleIcon kind="trait" size={13} />
+              <span className="truncate">発現色：{studentTraitProfile.colorLabel}</span>
             </p>
           </div>
         </div>
@@ -656,9 +708,10 @@ function AdventureCard({
                 color="linear-gradient(90deg,#fde68a,#f9a8d4,#67e8f9)"
                 className="mt-2 h-1.5 bg-white/15"
               />
-              <p className="mt-1 text-[9px] font-bold text-white/70">
+              <p className="mt-1 flex items-center gap-1 text-[9px] font-bold text-white/70">
                 あと {(nextTheme.unlockAt - battleStars).toLocaleString()} で
-                {' '}{nextTheme.emoji} {nextTheme.name} を解放
+                <ChronicleIcon kind="theme" size={13} />
+                {nextTheme.name} を解放
               </p>
             </>
           ) : (
@@ -688,15 +741,17 @@ function AdventureCard({
                 {opponentLabel} · {encounter.name} · 英検{enemyRank.label}
               </p>
               <div className="mt-2 inline-flex max-w-full items-center gap-1.5 rounded-full bg-rose-50 px-2.5 py-1.5 text-[10px] font-extrabold text-rose-700">
-                <span>{encounter.attackEmoji ?? encounter.elementEmoji}</span>
+                <ChronicleIcon kind="battle" size={15} />
                 <span className="truncate">{encounter.move}</span>
               </div>
             </div>
           </div>
 
-          <p className="mt-3 rounded-2xl bg-violet-50/75 px-3 py-2.5 text-[11px] font-bold leading-relaxed text-ink/65">
-            <span className="mr-1">{encounter.isTeacher ? '💬' : '✨'}</span>
-            {battleRival.name}が「{encounter.move}」で待ち受ける。{encounter.intro}
+          <p className="mt-3 flex items-start gap-1.5 rounded-2xl bg-violet-50/75 px-3 py-2.5 text-[11px] font-bold leading-relaxed text-ink/65">
+            <ChronicleIcon kind={encounter.isTeacher ? 'chapter' : 'scene'} size={16} />
+            <span>
+              {battleRival.name}が「{encounter.move}」で待ち受ける。{encounter.intro}
+            </span>
           </p>
 
           <div className="mt-3">
@@ -732,7 +787,7 @@ function AdventureCard({
                         おすすめ
                       </span>
                     )}
-                    <span className="block text-sm">{quest.emoji}</span>
+                    <ChronicleIcon kind="quest" size={22} className="mx-auto" />
                     <span className="block text-[11px] font-extrabold">{quest.size}問</span>
                     <span className="block text-[8px] font-bold opacity-50">{quest.minutes}</span>
                   </button>
@@ -743,9 +798,14 @@ function AdventureCard({
 
           <details className="school-battle-options mt-3 rounded-2xl border border-violet-100 bg-violet-50/55">
             <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-2 px-3 py-2 text-xs font-extrabold text-violet-800">
-              <span>⚙️ 作戦・持ち物・演出</span>
-              <span className="text-[9px] font-bold text-violet-500">
-                {selectedTactic.emoji} {battleRelic.emoji} {battleTheme.emoji} 変更
+              <span className="inline-flex items-center gap-1">
+                <ChronicleIcon kind="options" size={16} />
+                作戦・持ち物・演出
+              </span>
+              <span className="inline-flex items-center gap-1 text-[9px] font-bold text-violet-500">
+                <ChronicleIcon kind="battle" size={14} />
+                <ChronicleIcon kind="theme" size={14} />
+                変更
               </span>
             </summary>
             <div className="border-t border-violet-100 px-3 pb-3 pt-2.5">
@@ -775,7 +835,7 @@ function AdventureCard({
                         今日
                       </span>
                     )}
-                    <span className="block text-lg">{tactic.emoji}</span>
+                    <ChronicleIcon kind="battle" size={22} className="mx-auto" />
                     <span className="block text-[10px] font-extrabold">{tactic.label}</span>
                   </button>
                 )
@@ -817,12 +877,15 @@ function AdventureCard({
                         />
                         {!unlocked && (
                           <span className="absolute inset-0 grid place-items-center bg-slate-950/55 text-sm">
-                            🔒
+                            <ChronicleIcon kind="lock" size={20} />
                           </span>
                         )}
                       </span>
                       <span className="block truncate px-1.5 pb-1.5 pt-1 text-[8px] font-extrabold text-ink">
-                        {theme.emoji} {theme.shortName}
+                        <span className="inline-flex items-center gap-1">
+                          <ChronicleIcon kind="theme" size={13} />
+                          {theme.shortName}
+                        </span>
                       </span>
                       <span className="block px-1.5 pb-1 text-[7px] font-bold text-ink/40">
                         {unlocked ? (selected ? '選択中' : '解放済み') : `✦ ${theme.unlockAt}`}
@@ -842,13 +905,13 @@ function AdventureCard({
               >
                 {hero.relics.map((relic) => (
                   <option key={relic.level} value={relic.level}>
-                    {relic.emoji} {relic.name} · {relicBattleAbility(relic).label}
+                    {relic.name} · {relicBattleAbility(relic).label}
                   </option>
                 ))}
               </select>
-              <p className="mt-1.5 text-[9px] font-bold leading-relaxed text-ink/50">
-                {battleRelic.emoji} {itemAbility.description}
-                {' '}所持効果：{relicStatLabel(battleRelic)}
+              <p className="mt-1.5 flex items-start gap-1 text-[9px] font-bold leading-relaxed text-ink/50">
+                <ChronicleIcon kind="options" size={14} />
+                <span>{itemAbility.description} 所持効果：{relicStatLabel(battleRelic)}</span>
               </p>
             </div>
           </details>
@@ -859,7 +922,7 @@ function AdventureCard({
             aria-label={`${battleRival.name}との${selectedQuest.size}問のことば対決を開始`}
             className="school-battle-start mt-3 flex min-h-14 w-full items-center justify-center gap-2 rounded-2xl bg-violet-600 px-4 py-3 font-display text-base font-extrabold text-white shadow-[0_10px_24px_-10px_rgba(79,70,229,0.8)] transition-transform active:scale-[0.98]"
           >
-            <span>{encounter.isTeacher ? '🏫' : '✨'}</span>
+            <ChronicleIcon kind={encounter.isTeacher ? 'chapter' : 'battle'} size={22} />
             {selectedQuest.size}問のことば対決へ
             <ArrowRight size={18} />
           </button>
@@ -1631,8 +1694,9 @@ function TeacherSchoolLife({ student }) {
             <p className="text-[9px] font-extrabold tracking-[0.18em] text-amber-200">
               FACULTY CAMPUS STORIES
             </p>
-            <h2 className="mt-0.5 font-display text-base font-extrabold">
-              先生たちとの学校生活
+            <h2 className="mt-0.5 flex items-center gap-1.5 font-display text-base font-extrabold">
+              <ChronicleIcon kind="faculty" size={24} />
+              <span>先生たちとの学校生活</span>
             </h2>
           </div>
           <span className="shrink-0 rounded-full bg-white/10 px-2 py-1 text-[8px] font-extrabold">

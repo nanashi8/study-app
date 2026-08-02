@@ -23,6 +23,15 @@ const STUDENT_IDS = [
   'yuu',
 ]
 
+function selectedStudentIds(args) {
+  if (args.length === 0) return STUDENT_IDS
+  const unknown = args.filter((studentId) => !STUDENT_IDS.includes(studentId))
+  if (unknown.length > 0) {
+    throw new Error(`不明な生徒IDです: ${unknown.join(', ')}`)
+  }
+  return [...new Set(args)]
+}
+
 // 既存の表情差分を短い一回再生の映像へまとめる。
 // 最終フレームを行動表情に戻し、再生後も戦況が読み取れる構成にする。
 const MOTION_SEQUENCES = {
@@ -186,6 +195,7 @@ async function main() {
   }
 
   const ffmpeg = findFfmpeg()
+  const targetStudentIds = selectedStudentIds(process.argv.slice(2))
   const tempRoot = await mkdtemp(path.join(tmpdir(), 'study-app-battle-motion-'))
   const requiredStates = new Set(
     Object.values(MOTION_SEQUENCES).flatMap((sequence) =>
@@ -195,7 +205,7 @@ async function main() {
   let created = 0
 
   try {
-    for (const studentId of STUDENT_IDS) {
+    for (const studentId of targetStudentIds) {
       const frames = await convertPortraitsToJpeg(studentId, requiredStates, tempRoot)
       for (const [motionId, sequence] of Object.entries(MOTION_SEQUENCES)) {
         await encodeMotion(
@@ -211,7 +221,7 @@ async function main() {
     await rm(tempRoot, { recursive: true, force: true })
   }
 
-  console.log(`battle motion: ${created} WebM clips (${STUDENT_IDS.length} students × ${Object.keys(MOTION_SEQUENCES).length} actions)`)
+  console.log(`battle motion: ${created} WebM clips (${targetStudentIds.length} students × ${Object.keys(MOTION_SEQUENCES).length} actions)`)
 }
 
 await main()

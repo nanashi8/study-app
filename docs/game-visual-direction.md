@@ -70,6 +70,17 @@ Reject and regenerate or edit an image when any item below is false.
   some students at the same bench. For a no-goggle scene, choose a clearly dry,
   non-projectile observation and keep chemicals out of the frame.
 
+### 4a. Character hair continuity is identity-critical
+
+- Kiryu Tsubaki's hair is always dark purple-black and visibly straight. It may
+  be worn down, in one high straight ponytail, or in two high straight ponytails.
+- Tsubaki's tied hair falls in clean, gravity-aligned tapered strands. Reject
+  waves, curls, ringlets, S-curves, fluffy bends, and curled tips in portraits,
+  lifestyle art, daily scenes, reveal scenes, shared scenes, and motion frames.
+- A change of activity or outfit never changes Tsubaki's hair texture. Edit only
+  the tie arrangement when a scene needs it; do not redesign her face, bangs,
+  hair color, eye color, or identity.
+
 ### 5. Classroom geometry is explicit
 
 - The front blackboard is centered on the front wall. The teacher's desk and
@@ -212,3 +223,6 @@ after adding the reason to the next prompt's forbidden block.
 - Girls' school uniforms are standardized as the established white-and-navy
   sailor uniform with a violet ribbon; ordinary school scenes must not use a
   blazer-and-tie variant.
+- Kiryu Tsubaki always has straight dark purple-black hair. Down hair, a straight
+  high ponytail, and straight high twin ponytails are allowed; wavy or curly
+  lengths and curled tips are rejected in every visual and derived motion frame.

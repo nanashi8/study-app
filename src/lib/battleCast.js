@@ -105,6 +105,12 @@ export const BATTLE_STUDENTS = [
     emoji: '⚔️',
     trait: '迷いを断ち切り、仲間の前に立つ守り手。',
     accent: '#dc2626',
+    hairProfile: {
+      color: 'dark-purple-black',
+      texture: 'straight',
+      allowedStyles: ['down', 'high-ponytail', 'high-twin-tails'],
+      forbiddenTextures: ['wavy', 'curly', 'ringlet'],
+    },
   },
   {
     id: 'noa',
@@ -908,7 +914,21 @@ export function battleRivalForEncounter(encounter, seed = 0) {
   return pool[stableBattleHash(key) % pool.length]
 }
 
-// 回答イベントを24種類の表情・動作へ結びつける。評価値やダメージ計算には触れない。
+const BATTLE_SITUATION_MARGIN = 10
+
+function battleHealthSituation(battleState) {
+  const heroHealth = Number(battleState?.heroHealthPercent)
+  const enemyHealth = Number(battleState?.enemyHealthPercent)
+  if (!Number.isFinite(heroHealth) || !Number.isFinite(enemyHealth)) return 'even'
+
+  const lead = heroHealth - enemyHealth
+  if (lead >= BATTLE_SITUATION_MARGIN) return 'advantage'
+  if (lead <= -BATTLE_SITUATION_MARGIN) return 'disadvantage'
+  return 'even'
+}
+
+// 回答イベントとHP差を24種類の表情・動作へ結びつける。
+// 表示だけを変え、評価値やダメージ計算には触れない。
 export function battleStudentState({
   battleState,
   eventActive = false,
@@ -920,11 +940,14 @@ export function battleStudentState({
 
   const event = battleState.lastEvent
   const resolvedEventKind = eventKind ?? event?.kind
+  const situation = battleHealthSituation(battleState)
   if (eventActive && event?.themeAbility === 'encore') return 'healing'
   if (eventActive) {
     if (resolvedEventKind === 'item-heal') return 'healing'
     if (['block', 'shield', 'item-guard'].includes(resolvedEventKind)) return 'guard'
-    if (resolvedEventKind === 'unknown') return 'worried'
+    if (resolvedEventKind === 'unknown') {
+      return situation === 'advantage' ? 'focused' : 'worried'
+    }
     if (resolvedEventKind === 'damage') return 'hurt'
     if (resolvedEventKind === 'counter' && event?.healing) return 'relieved'
     if (['burst', 'item-power'].includes(resolvedEventKind)) return 'determined'
@@ -932,6 +955,8 @@ export function battleStudentState({
   }
 
   if (battleState.answered === 0) return 'idle'
+  if (situation === 'advantage') return 'confident'
+  if (situation === 'disadvantage') return 'worried'
   if (battleState.streak >= 3) return 'confident'
   if (battleState.streak === 2) return 'focused'
   if (battleState.streak === 1) return 'curious'

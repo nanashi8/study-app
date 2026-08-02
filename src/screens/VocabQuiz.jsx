@@ -335,9 +335,23 @@ export function VocabQuizScreen() {
     : isBattle
       ? 'つぎへ'
       : '次へ'
+  const battleScreenStyle = isBattle
+    ? {
+        '--battle-accent': battleTheme.accent,
+        '--battle-accent-strong': battleTheme.accentStrong,
+        '--battle-accent-soft': battleTheme.accentSoft,
+        '--battle-enemy': battleTheme.enemy,
+        '--battle-surface': battleTheme.surface,
+      }
+    : undefined
 
   return (
-    <div className={cx('flex h-full flex-col', isBattle && 'battle-quiz-screen')}>
+    <div
+      className={cx('flex h-full flex-col', isBattle && 'battle-quiz-screen')}
+      data-battle-theme={battleTheme?.id}
+      data-battle-layout={battleTheme?.presentation.layout}
+      style={battleScreenStyle}
+    >
       {/* 通常クイズの進捗。バトルはHUD内のターン表示へ一本化する。 */}
       {!isBattle && (
         <div className="border-b border-brand-100 bg-white/90 px-3 py-3 backdrop-blur">
@@ -357,7 +371,7 @@ export function VocabQuizScreen() {
       )}
 
       {isBattle && (
-        <div className="border-b border-brand-100 bg-white/90 p-2 backdrop-blur">
+        <div className="battle-hud-shell border-b border-brand-100 bg-white/90 p-2 backdrop-blur">
           <BattleHud
             encounter={encounter}
             enemyRank={enemyLevel(params.source?.levelIndex ?? 0)}
@@ -410,8 +424,9 @@ export function VocabQuizScreen() {
                 </div>
                 <SpeakButton text={word.word} size="md" />
               </div>
-              <p className="mt-1.5 text-[11px] font-extrabold text-ink/55">
-                この単語の意味は？
+              <p className="battle-command-prompt mt-1.5 text-[11px] font-extrabold text-ink/55">
+                <span>{battleTheme.presentation.commandLabel}</span>
+                {battleTheme.presentation.prompt}
               </p>
             </>
           ) : (
@@ -436,10 +451,12 @@ export function VocabQuizScreen() {
         {/* 選択肢 */}
         <div
           className={cx(
-            isBattle ? 'mt-2 grid grid-cols-2 gap-2' : 'mt-4 space-y-2.5',
+            isBattle
+              ? 'battle-command-grid mt-2 grid grid-cols-2 gap-2'
+              : 'mt-4 space-y-2.5',
           )}
         >
-          {options.map((o) => {
+          {options.map((o, optionIndex) => {
             const correct = o.id === word.id
             const chosen = selected === o.id
             let tone = 'idle'
@@ -456,7 +473,7 @@ export function VocabQuizScreen() {
                 className={cx(
                   'flex w-full items-center gap-3 border-2 text-left font-bold transition-all',
                   isBattle
-                    ? 'pixel-battle-choice min-h-12 rounded-xl px-3 py-2 text-sm leading-snug'
+                    ? 'pixel-battle-choice battle-command-choice min-h-12 rounded-xl px-2 py-2 text-sm leading-snug'
                     : 'rounded-2xl px-4 py-3.5',
                   tone === 'idle' && 'border-brand-100 bg-white text-ink active:bg-brand-50 active:scale-[0.99]',
                   tone === 'correct' && 'border-emerald-400 bg-correct-soft text-emerald-800',
@@ -464,7 +481,17 @@ export function VocabQuizScreen() {
                   tone === 'dim' && 'border-transparent bg-paper text-ink/35',
                 )}
               >
-                <span className="flex-1">{quizMeaning(o)}</span>
+                {isBattle && (
+                  <>
+                    <span className="battle-command-index" aria-hidden="true">
+                      {optionIndex + 1}
+                    </span>
+                    <span className="battle-command-glyph" aria-hidden="true">
+                      {battleTheme.presentation.choiceGlyphs[optionIndex]}
+                    </span>
+                  </>
+                )}
+                <span className="battle-command-text flex-1">{quizMeaning(o)}</span>
                 {tone === 'correct' && <Check size={20} className="text-emerald-600" />}
                 {tone === 'wrong' && <Close size={18} className="text-rose-500" />}
               </button>
@@ -475,7 +502,16 @@ export function VocabQuizScreen() {
             selected={selected === UNKNOWN_CHOICE_ID}
             disabled={answered}
             onClick={() => choose(UNKNOWN_CHOICE_ID)}
-            className={isBattle ? 'pixel-battle-choice min-h-12 py-2 leading-snug' : ''}
+            label={isBattle ? (
+              <span className="battle-command-unknown-label">
+                <span className="battle-command-index" aria-hidden="true">4</span>
+                <span className="battle-command-glyph" aria-hidden="true">
+                  {battleTheme.presentation.unknownGlyph}
+                </span>
+                <span className="battle-command-text">わからない</span>
+              </span>
+            ) : undefined}
+            className={isBattle ? 'pixel-battle-choice battle-command-choice battle-command-unknown min-h-12 py-2 leading-snug' : ''}
           />
         </div>
 
@@ -694,6 +730,8 @@ function BattleHud({
   return (
     <div
       className="school-battle-hud pixel-battle-hud relative rounded-[1.4rem] border p-2 text-ink shadow-card"
+      data-battle-theme={battleTheme.id}
+      data-battle-layout={battleTheme.presentation.layout}
       style={{
         '--battle-accent': battleTheme.accent,
         '--battle-accent-strong': battleTheme.accentStrong,
@@ -760,6 +798,9 @@ function BattleHud({
 
         <div className="pixel-battle-turn rounded-xl px-2 py-1 text-center">
           <span className="block text-[7px] font-black tracking-wider text-violet-400">
+            <i className="battle-turn-glyph" aria-hidden="true">
+              {battleTheme.presentation.turnGlyph}
+            </i>{' '}
             TURN
           </span>
           <span className="block text-[11px] font-black text-violet-700">
@@ -806,11 +847,16 @@ function BattleHud({
         style={{
           '--battle-scene': `${scene.overlay}, linear-gradient(90deg,rgba(15,23,42,.18),rgba(15,23,42,.02),rgba(15,23,42,.26)), url("${battleStageUrl}") ${scene.position} / cover`,
         }}
+        data-battle-theme={battleTheme.id}
+        data-battle-layout={battleTheme.presentation.layout}
         role="img"
         aria-label={`戦闘状況。${battleStudent.name}は${battleState.heroCurrentHp}/${battleState.heroMaxHp}HP、${battleRival.name}は${battleState.enemyCurrentHp}/${battleState.enemyMaxHp}HP。${cue.title}。${manaPresentation.ariaLabel}`}
       >
         <span className="battle-scene-label" aria-hidden="true">
-          {battleTheme.emoji} {scene.name}
+          {battleTheme.presentation.modeLabel} · {scene.name}
+        </span>
+        <span className="battle-theme-stage-decoration" aria-hidden="true">
+          {Array.from({ length: 5 }, (_, index) => <i key={index} />)}
         </span>
         <span className="battle-theme-particles" aria-hidden="true">
           {battleTheme.particles.map((particle, index) => (
@@ -828,6 +874,23 @@ function BattleHud({
           ))}
         </span>
         <BattleManaAnimation presentation={manaPresentation} />
+        {presentationActive && (
+          <span
+            className={cx(
+              'battle-theme-action-effect',
+              cue.target === 'enemy' && !guardActive && 'battle-theme-effect-to-enemy',
+              cue.target === 'hero' && !guardActive && !healingActive && 'battle-theme-effect-to-hero',
+              (guardActive || healingActive) && 'battle-theme-effect-self',
+            )}
+            aria-hidden="true"
+          >
+            {battleTheme.presentation.effectGlyphs.map((glyph, index) => (
+              <i key={`${glyph}-${index}`} style={{ '--effect-index': index }}>
+                {glyph}
+              </i>
+            ))}
+          </span>
+        )}
         {themeTriggered && (
           <span className="battle-ability-cut-in" aria-hidden="true">
             <i
@@ -889,7 +952,8 @@ function BattleHud({
       </div>
 
       <div
-        className="mt-1.5 grid gap-1"
+        className="battle-turn-track mt-1.5 grid gap-1"
+        data-battle-theme={battleTheme.id}
         style={{ gridTemplateColumns: `repeat(${totalTurns}, minmax(0, 1fr))` }}
         role="img"
         aria-label={`${totalTurns}ターン中${battleState.answered}ターン終了。正解${battleState.correct}、ミス${battleState.misses}`}
