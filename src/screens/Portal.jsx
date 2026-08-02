@@ -36,7 +36,7 @@ function ContentTile({ content, onOpen }) {
   )
 }
 
-// トップページ＝コンテンツ選択。並び順・表示の変更は共通設定メニューへ集約する。
+// トップページ＝コンテンツ選択。並び順・表示の変更は共通メニュー内の設定へ集約する。
 export function PortalScreen() {
   const navigate = useStore((s) => s.navigate)
   const user = useAuth((s) => s.user)
@@ -77,7 +77,7 @@ export function PortalScreen() {
       <div className="space-y-3.5 px-4">
         {visible.length === 0 ? (
           <p className="rounded-2xl bg-white p-5 text-center text-sm font-bold text-ink/45 shadow-card">
-            表示中のコンテンツがありません。右上の設定メニューから表示できます。
+            表示中のコンテンツがありません。右上のメニューから「設定」を開くと表示できます。
           </p>
         ) : (
           visible.map((content) => (

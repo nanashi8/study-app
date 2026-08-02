@@ -142,7 +142,7 @@ test('32曲の完成済みAACが全件そろい、manifest・尺・容量が一�
   assert.ok(totalBytes < 110 * 1024 * 1024)
 })
 
-test('放課後の魔法と言葉は11の日常曲を物語順に循環し、通常学習では鳴らない', () => {
+test('放課後と魔法の言葉は11の日常曲を物語順に循環し、通常学習では鳴らない', () => {
   const firstCycle = BATTLE_DAILY_SCENES.map((scene, storyStep) => {
     const track = gameBgmTrackForState({ screen: 'afterSchoolChronicle', storyStep })
     assert.equal(track, DAILY_BGM_BY_SCENE_ID.get(scene.id))
@@ -219,7 +219,7 @@ test('全画面コントローラー・音量設定・読み上げダッキン�
   const player = read('../src/lib/gameBgmPlayer.js')
 
   assert.match(app, /<GameBgmController \/>/)
-  assert.match(settings, />\s*放課後の魔法と言葉 BGM\s*</)
+  assert.match(settings, />\s*放課後と魔法の言葉 BGM\s*</)
   assert.match(settings, /通常の単語・文法・長文など学習画面では鳴りません/)
   assert.match(settings, /setSetting\('bgmEnabled'/)
   assert.match(settings, /setSetting\('bgmVolume'/)

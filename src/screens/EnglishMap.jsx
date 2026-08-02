@@ -76,12 +76,20 @@ import {
 } from '../lib/teacherSchoolLife.js'
 import {
   AFTER_SCHOOL_CHRONICLE,
+  afterSchoolBattleChapter,
+  afterSchoolPrologue,
 } from '../lib/afterSchoolStory.js'
 import {
   afterSchoolBattleSkill,
   afterSchoolBondState,
+  normalizeUnlockedBattleStudentIds,
 } from '../lib/afterSchoolBonds.js'
+import {
+  AFTER_SCHOOL_STORY_ARCS,
+  afterSchoolStoryArcForStep,
+} from '../lib/storyProgression.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
+import { LightNovelScene } from '../components/LightNovelScene.jsx'
 import { MobPortrait } from '../components/MobPortrait.jsx'
 import { TeacherPortrait } from '../components/TeacherPortrait.jsx'
 import { ProgressRing, ProgressBar, Chip, cx } from '../components/ui.jsx'
@@ -134,6 +142,13 @@ const CHRONICLE_ICON_COMPONENTS = {
   faculty: Teacher,
 }
 
+const CHRONICLE_MENU_SECTIONS = Object.freeze([
+  { id: 'battle', label: '対決', description: '今日の先生課題に挑む', icon: 'battle' },
+  { id: 'growth', label: '育成', description: 'XPと進行報酬を確認する', icon: 'trait' },
+  { id: 'friends', label: '仲間', description: '関係と同行者を振り返る', icon: 'journal' },
+  { id: 'school', label: '学園', description: '校内の物語と先生に会う', icon: 'faculty' },
+])
+
 // ゲーム入口の主要アイコンはOSの絵文字フォントへ依存させない。
 // 文字と別レイヤーのインラインSVGなので、絵文字を持たない端末でも必ず表示される。
 function ChronicleIcon({ kind, size = 20, className = '' }) {
@@ -153,7 +168,7 @@ function ChronicleIcon({ kind, size = 20, className = '' }) {
 function skillInfo(skill, skillStats, readingsDone) {
   if (skill.kind === 'reading') {
     const total = PASSAGES.length
-    // 名作交互朗読も同じ readingsDone へ保存するため、英検長文だけを数える。
+    // 「名作に親しむ」も同じ readingsDone へ保存するため、英検長文だけを数える。
     const read = new Set(readingsDone.filter((id) => PASSAGE_IDS.has(id))).size
     const s = skillStats.reading
     const attempts = s?.answered ?? 0
@@ -236,6 +251,7 @@ export function AfterSchoolChronicleScreen() {
   const battleThemeId = useStore((s) => s.battleThemeId)
   const battleStudentId = useStore((s) => s.battleStudentId)
   const afterSchoolBonds = useStore((s) => s.afterSchoolBonds)
+  const unlockedBattleStudentIds = useStore((s) => s.unlockedBattleStudentIds)
   const battleTraitInvestments = useStore((s) => s.battleTraitInvestments)
   const battleStoryStep = useStore((s) => s.battleStoryStep)
   const hero = heroProgress(stats.xp)
@@ -257,7 +273,10 @@ export function AfterSchoolChronicleScreen() {
   }, [engPos, pos, setEngPos])
 
   const day = todayIndex()
+  const [menuSectionId, setMenuSectionId] = useState('battle')
   const [tacticId, setTacticId] = useState(() => featuredBattleTacticId(day))
+  const [showPrologue, setShowPrologue] = useState(() => battleStoryStep === 0)
+  const [pendingQuest, setPendingQuest] = useState(null)
   const encounter = encounterFor({
     level: hero.level,
     day,
@@ -271,7 +290,7 @@ export function AfterSchoolChronicleScreen() {
     battleStudent.id,
     teacherSubject,
   )
-  const startBattle = (quest) => {
+  const launchBattle = (quest) => {
     navigate('vocabQuiz', {
       source: {
         ...battleSource(pos),
@@ -294,69 +313,200 @@ export function AfterSchoolChronicleScreen() {
     })
   }
 
+  const prologue = afterSchoolPrologue({ studentName: battleStudent.name })
+  const battleChapter = pendingQuest
+    ? afterSchoolBattleChapter({
+        storyStep: battleStoryStep,
+        studentName: battleStudent.name,
+        rivalName: battleRival.name,
+        encounterName: encounter.chapterName ?? encounter.name,
+        move: encounter.move,
+        subject: teacherAffinity.subject,
+        affinityLabel: teacherAffinity.label,
+        questSize: pendingQuest.size,
+        isTeacher: encounter.isTeacher,
+      })
+    : null
+  const novelPortraits = {
+    'student-curious': battleStudentPortrait(battleStudent.id, 'curious'),
+    'student-determined': battleStudentPortrait(battleStudent.id, 'determined'),
+    'student-focused': battleStudentPortrait(battleStudent.id, 'focused'),
+  }
+  const menuSection = CHRONICLE_MENU_SECTIONS.find(({ id }) => id === menuSectionId)
+    ?? CHRONICLE_MENU_SECTIONS[0]
+
+  if (showPrologue) {
+    return (
+      <LightNovelScene
+        story={prologue}
+        image={AFTER_SCHOOL_CHRONICLE.keyVisual}
+        imageAlt="放課後の昇降口で、クラスメイトたちが校内図を囲んでいる"
+        portraits={novelPortraits}
+        onBack={() => setShowPrologue(false)}
+        onComplete={() => setShowPrologue(false)}
+        completeLabel="課題の章へ"
+        skipLabel="章選択へ"
+      />
+    )
+  }
+
+  if (pendingQuest && battleChapter) {
+    return (
+      <LightNovelScene
+        story={battleChapter}
+        image={battleTheme.stage}
+        imageAlt={`${battleTheme.name}。${battleRival.name}とのことばの対決が始まる舞台`}
+        portraits={novelPortraits}
+        onBack={() => setPendingQuest(null)}
+        onComplete={() => launchBattle(pendingQuest)}
+        completeLabel="ことばの対決へ"
+        skipLabel="対決へ進む"
+      />
+    )
+  }
+
   return (
     <div className="after-school-game-icons pb-8">
       <ScreenHeader
         title={AFTER_SCHOOL_CHRONICLE.title}
-        subtitle={AFTER_SCHOOL_CHRONICLE.subtitle}
+        subtitle="学習XPで進む放課後ゲーム"
+        titleClassName="after-school-screen-title"
+        subtitleClassName="after-school-screen-subtitle"
       />
 
-      <div className="space-y-4 px-4">
-        <ChronicleHero
-          hero={hero}
-        />
+      <div className="px-4">
+        <div className="after-school-handheld" data-game-console>
+          <div className="after-school-console-bezel">
+            <div className="after-school-console-status" aria-hidden="true">
+              <span>{menuSection.label}</span>
+              <span>LV {hero.level}</span>
+              <span>✦ {battleStars.toLocaleString()}</span>
+            </div>
 
-        <AdventureCard
-          pos={pos}
-          hero={hero}
-          encounter={encounter}
-          day={day}
-          tacticId={tacticId}
-          battleRelic={battleRelic}
-          battleStars={battleStars}
-          battleTheme={battleTheme}
-          battleStudent={battleStudent}
-          battleBond={battleBond}
-          battleBondSkill={battleBondSkill}
-          studentTraitProfile={studentTraitProfile}
-          battleRival={battleRival}
-          teacherAffinity={teacherAffinity}
-          onTactic={setTacticId}
-          onBattle={startBattle}
-        />
+            <div
+              key={menuSection.id}
+              className="after-school-console-screen space-y-3"
+              data-game-menu-panel={menuSection.id}
+              role="region"
+              aria-label={`${menuSection.label}メニュー。${menuSection.description}`}
+              tabIndex={0}
+            >
+              {menuSection.id === 'battle' && (
+                <AdventureCard
+                  pos={pos}
+                  hero={hero}
+                  encounter={encounter}
+                  day={day}
+                  tacticId={tacticId}
+                  battleRelic={battleRelic}
+                  battleStars={battleStars}
+                  battleTheme={battleTheme}
+                  battleStudent={battleStudent}
+                  battleBond={battleBond}
+                  battleBondSkill={battleBondSkill}
+                  studentTraitProfile={studentTraitProfile}
+                  battleRival={battleRival}
+                  teacherAffinity={teacherAffinity}
+                  onTactic={setTacticId}
+                  onBattle={setPendingQuest}
+                />
+              )}
 
-        <XpExchangeCard
-          totalXp={stats.xp}
-          spentXp={battleXpSpent}
-          battleStars={battleStars}
-          onExchange={exchangeXpForBattleStars}
-        />
+              {menuSection.id === 'growth' && (
+                <>
+                  <XpExchangeCard
+                    totalXp={stats.xp}
+                    spentXp={battleXpSpent}
+                    battleStars={battleStars}
+                    onExchange={exchangeXpForBattleStars}
+                  />
+                  <ChronicleDrawer
+                    icon="chapter"
+                    title="育成の記録"
+                    description="エリア・次の報酬・校内マップ"
+                  >
+                    <AfterSchoolWorld battleStars={battleStars} selectedTheme={battleTheme} />
+                    <AdventureProgress hero={hero} />
+                    <ChapterTrail hero={hero} />
+                  </ChronicleDrawer>
+                </>
+              )}
 
-        <AfterSchoolWorld
-          battleStars={battleStars}
-          selectedTheme={battleTheme}
-        />
+              {menuSection.id === 'friends' && (
+                <>
+                  <AfterSchoolBondBoard
+                    bonds={afterSchoolBonds}
+                    currentStudentId={battleStudent.id}
+                    unlockedStudentIds={unlockedBattleStudentIds}
+                  />
+                  <ChronicleDrawer
+                    icon="trait"
+                    title="仲間のプロフィール"
+                    description="同行者・星彩・表情・人物記録"
+                  >
+                    <BattleCastRoster
+                      selectedStudentId={battleStudent.id}
+                      battleStars={battleStars}
+                      investments={battleTraitInvestments}
+                      unlockedStudentIds={unlockedBattleStudentIds}
+                    />
+                  </ChronicleDrawer>
+                </>
+              )}
 
-        <AfterSchoolBondBoard
-          bonds={afterSchoolBonds}
-          currentStudentId={battleStudent.id}
-        />
+              {menuSection.id === 'school' && (
+                <>
+                  <StoryArcTimeline storyStep={battleStoryStep} />
+                  <ChronicleDrawer
+                    icon="chapter"
+                    title="校内マップ"
+                    description="五芒星の結界と各地点"
+                  >
+                    <SchoolBarrierMap />
+                  </ChronicleDrawer>
+                  <ChronicleDrawer
+                    icon="journal"
+                    title="思い出アルバム"
+                    description="学校生活の記録"
+                  >
+                    <SchoolLifeAlbum />
+                  </ChronicleDrawer>
+                  <ChronicleDrawer
+                    icon="faculty"
+                    title="先生と話す"
+                    description="12科目の先生との学校生活"
+                  >
+                    <TeacherSchoolLife student={battleStudent} />
+                  </ChronicleDrawer>
+                </>
+              )}
+            </div>
+          </div>
 
-        <SchoolBarrierMap />
+          <nav className="after-school-console-menu" aria-label="ゲームメニュー">
+            {CHRONICLE_MENU_SECTIONS.map((section) => {
+              const selected = section.id === menuSection.id
+              return (
+                <button
+                  key={section.id}
+                  type="button"
+                  data-game-menu={section.id}
+                  aria-pressed={selected}
+                  onClick={() => setMenuSectionId(section.id)}
+                  className="after-school-console-key"
+                >
+                  <ChronicleIcon kind={section.icon} size={20} />
+                  <span>{section.label}</span>
+                </button>
+              )
+            })}
+          </nav>
 
-        <SchoolLifeAlbum />
-
-        <TeacherSchoolLife student={battleStudent} />
-
-        <BattleCastRoster
-          selectedStudentId={battleStudent.id}
-          battleStars={battleStars}
-          investments={battleTraitInvestments}
-        />
-
-        <AdventureProgress hero={hero} />
-
-        <ChapterTrail hero={hero} />
+          <div className="after-school-console-footer" aria-hidden="true">
+            <span>ことば端末</span>
+            <span className="after-school-console-speaker" />
+          </div>
+        </div>
       </div>
     </div>
   )
@@ -367,65 +517,54 @@ function ChroniclePortalCard({ hero, onOpen }) {
     <button
       type="button"
       onClick={onOpen}
-      className="after-school-portal group relative block w-full overflow-hidden rounded-[2rem] bg-slate-950 text-left text-white shadow-[0_20px_50px_-24px_rgba(76,29,149,0.8)] transition-transform active:scale-[0.99]"
+      className="after-school-portal after-school-portal-console block w-full text-left transition-transform active:scale-[0.99]"
       aria-label={`${AFTER_SCHOOL_CHRONICLE.title}を開く`}
     >
-      <img
-        src={publicAssetUrl(AFTER_SCHOOL_CHRONICLE.keyVisual)}
-        alt="放課後の昇降口で、4人の高校生が校内図を囲んで次の課題ルートを相談している"
-        className="aspect-[16/7] w-full object-cover"
-      />
-      <span className="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/38 to-transparent" />
-      <span className="absolute inset-x-0 bottom-0 p-4">
-        <span className="inline-flex rounded-full border border-white/20 bg-slate-950/55 px-2 py-1 text-[8px] font-extrabold tracking-[0.16em] text-cyan-100 backdrop-blur-sm">
-          BATTLE &amp; FRIENDS
-        </span>
-        <strong className="mt-2 block font-display text-xl font-extrabold leading-tight">
-          {AFTER_SCHOOL_CHRONICLE.title}
-        </strong>
-        <span className="mt-1 block text-[10px] font-bold leading-relaxed text-white/65">
-          {AFTER_SCHOOL_CHRONICLE.subtitle}
-        </span>
-        <span className="mt-3 flex items-center justify-between gap-3">
-          <span className="flex min-w-0 items-center gap-1 truncate text-[9px] font-extrabold text-amber-100">
-            <ChronicleIcon kind="title" size={14} />
-            <span className="truncate">LV{hero.level} · {hero.chapter.name}の先生課題へ</span>
+      <span className="after-school-portal-bezel">
+        <span className="after-school-portal-screen">
+          <img
+            src={publicAssetUrl(AFTER_SCHOOL_CHRONICLE.keyVisual)}
+            alt="放課後の昇降口で、4人の高校生が校内図を囲んで次の課題ルートを相談している"
+          />
+          <span className="after-school-portal-screen-label">
+            LV{hero.level} · {hero.chapter.name}
           </span>
-          <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-white px-3 py-1.5 text-[9px] font-extrabold text-violet-800">
-            ゲームへ <ArrowRight size={13} />
+        </span>
+      </span>
+      <span className="after-school-portal-copy">
+        <span className="min-w-0">
+          <strong className="block truncate font-display text-lg font-extrabold leading-tight text-ink">
+            {AFTER_SCHOOL_CHRONICLE.title}
+          </strong>
+          <span className="mt-1 block truncate text-[10px] font-bold text-ink/50">
+            対決・育成・仲間・学園
           </span>
+        </span>
+        <span className="after-school-portal-action">
+          はじめる <ArrowRight size={14} />
         </span>
       </span>
     </button>
   )
 }
 
-function ChronicleHero({ hero }) {
+function ChronicleDrawer({ icon, title, description, children }) {
   return (
-    <section className="after-school-key-visual relative overflow-hidden rounded-[2rem] bg-slate-950 text-white shadow-2xl">
-      <img
-        src={publicAssetUrl(AFTER_SCHOOL_CHRONICLE.keyVisual)}
-        alt="放課後の昇降口で、4人の高校生が校内図を囲んで次の課題ルートを相談している"
-        className="aspect-[16/7] w-full object-cover"
-      />
-      <span className="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/35 to-transparent" />
-      <div className="absolute inset-x-0 bottom-0 p-3.5">
-        <div className="flex flex-wrap items-center gap-1.5">
-          <span className="rounded-full border border-white/20 bg-slate-950/60 px-2 py-1 text-[8px] font-extrabold tracking-[0.14em] backdrop-blur-sm">
-            NEXT BATTLE
+    <details className="after-school-console-drawer">
+      <summary>
+        <span className="after-school-console-drawer-title">
+          <ChronicleIcon kind={icon} size={22} />
+          <span className="min-w-0">
+            <strong>{title}</strong>
+            <small>{description}</small>
           </span>
-          <span className="inline-flex items-center gap-1 rounded-full border border-white/20 bg-white/10 px-2 py-1 text-[8px] font-extrabold text-amber-100 backdrop-blur-sm">
-            <ChronicleIcon kind="chapter" size={13} />
-            {hero.chapter.name}
-          </span>
-        </div>
-        <h2 className="mt-2 font-display text-xl font-extrabold">今日の先生課題へ挑もう</h2>
-        <p className="mt-1 flex items-start gap-1.5 text-[10px] font-bold leading-relaxed text-white/65">
-          <ChronicleIcon kind="scene" size={14} className="mt-px" />
-          <span>対決後は3つの放課後ルートへ分岐。関係を育ててXP・特技・アイテムを獲得できます。</span>
-        </p>
+        </span>
+        <span className="after-school-console-drawer-action" aria-hidden="true" />
+      </summary>
+      <div className="after-school-console-drawer-body space-y-3">
+        {children}
       </div>
-    </section>
+    </details>
   )
 }
 
@@ -502,8 +641,8 @@ function XpExchangeCard({ totalXp, spentXp, battleStars, onExchange }) {
     <section className="overflow-hidden rounded-3xl border-2 border-amber-200 bg-gradient-to-br from-amber-50 via-white to-violet-50 p-4 shadow-card">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <p className="text-[9px] font-extrabold tracking-[0.18em] text-amber-600">
-            XP CONVERTER
+          <p className="text-[9px] font-extrabold tracking-[0.12em] text-amber-600">
+            学習XP → 放課後スター
           </p>
           <h2 className="mt-0.5 font-display text-base font-extrabold text-ink">
             学習XPをゲームの力へ
@@ -592,7 +731,7 @@ function AdventureCard({
 
   return (
     <section
-      className="school-battle-card relative overflow-hidden rounded-[2rem] p-4 text-white shadow-[0_18px_50px_-22px_rgba(79,70,229,0.65)]"
+      className="school-battle-card after-school-start-card relative overflow-hidden rounded-[2rem] p-4 text-white shadow-[0_18px_50px_-22px_rgba(79,70,229,0.65)]"
       data-battle-theme={battleTheme.id}
       data-battle-layout={battleTheme.presentation.layout}
       style={{
@@ -606,8 +745,8 @@ function AdventureCard({
       </div>
       <div className="pointer-events-none absolute -bottom-20 -left-16 h-48 w-48 rounded-full bg-pink-300/20 blur-3xl" />
 
-      <div className="relative">
-        <div className="flex items-center gap-2.5">
+      <div className="after-school-start-layout relative">
+        <div className="after-school-start-meta flex items-center gap-2.5">
           <span className="rounded-full border border-white/25 bg-white/15 px-2.5 py-1 text-[10px] font-extrabold tracking-[0.14em] text-white/90 backdrop-blur">
             CHRONICLE STAGE {hero.chapter.number}
           </span>
@@ -617,7 +756,7 @@ function AdventureCard({
           </span>
         </div>
 
-        <div className="mt-3 flex items-center gap-2 rounded-2xl border border-white/15 bg-slate-950/15 p-2">
+        <div className="after-school-player-strip mt-3 flex items-center gap-2 rounded-2xl border border-white/15 bg-slate-950/15 p-2">
           <span
             className="battle-map-student-portrait battle-trait-avatar-aura h-10 w-10 shrink-0 overflow-hidden rounded-xl"
             style={{
@@ -644,7 +783,7 @@ function AdventureCard({
           </span>
         </div>
 
-        <details className="school-battle-context mt-2 rounded-2xl border border-white/15 bg-white/10">
+        <details className="school-battle-context order-6 mt-2 rounded-2xl border border-white/15 bg-white/10">
           <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-2 px-3 py-2 text-xs font-extrabold">
             <span>相性・絆・対決演出</span>
             <span className="text-[9px] font-bold text-white/65">詳細 ＋</span>
@@ -706,7 +845,7 @@ function AdventureCard({
                 <p className="truncate text-[8px] font-bold text-white/60">
                   {battleBondSkill
                     ? battleBondSkill.description
-                    : `あと${Math.max(0, 3 - battleBond.points)}絆 · 対決後の放課後ルートで育つ`}
+                    : `あと${Math.max(0, 3 - battleBond.points)}絆 · 対決後の日常パートで育つ`}
                 </p>
               </div>
             </div>
@@ -730,7 +869,7 @@ function AdventureCard({
           </div>
         </details>
 
-        <div className="school-battle-paper mt-3 flex flex-col rounded-[1.65rem] bg-white p-3.5 text-ink shadow-xl shadow-black/15">
+        <div className="school-battle-paper order-1 mt-3 flex flex-col rounded-[1.65rem] bg-white p-3.5 text-ink shadow-xl shadow-black/15">
           <div className="flex items-center gap-3">
             <span className="battle-map-rival-portrait h-16 w-16 shrink-0 overflow-hidden rounded-2xl ring-2 ring-violet-100">
               {encounter.isTeacher ? (
@@ -757,19 +896,16 @@ function AdventureCard({
             </div>
           </div>
 
-          <p className="mt-2 flex items-start gap-1.5 rounded-xl bg-violet-50/75 px-2.5 py-2 text-[10px] font-bold leading-relaxed text-ink/65">
+          <p className="after-school-opponent-intro mt-2 flex items-start gap-1.5 rounded-xl bg-violet-50/75 px-2.5 py-2 text-[10px] font-bold leading-relaxed text-ink/65">
             <ChronicleIcon kind={encounter.isTeacher ? 'chapter' : 'scene'} size={16} />
             <span className="line-clamp-2">
               {battleRival.name}が「{encounter.move}」で待ち受ける。{encounter.intro}
             </span>
           </p>
 
-          <div className="mt-3">
+          <div className="after-school-quest-picker mt-3">
             <div className="flex items-end justify-between gap-2">
               <div>
-                <p className="text-[9px] font-extrabold tracking-[0.14em] text-violet-500">
-                  CHALLENGE SIZE
-                </p>
                 <p className="text-xs font-extrabold text-ink">問題数をえらぶ</p>
               </div>
               <span className="text-[9px] font-bold text-ink/40">
@@ -856,7 +992,7 @@ function AdventureCard({
                   {battleRelic.emoji} {battleRelic.name} · {battleTheme.emoji} {battleTheme.shortName}
                 </p>
                 <p className="mt-1 text-[8px] font-bold leading-relaxed text-ink/40">
-                  持ち物・対決演出・バトルUIは右上の設定メニューで変更します。
+                  持ち物・対決演出・バトル画面は、右上のメニュー内「設定」で変更します。
                 </p>
               </div>
             </div>
@@ -874,7 +1010,7 @@ function AdventureCard({
           </button>
         </div>
 
-        <p className="mt-2.5 text-center text-[10px] font-bold leading-relaxed text-white/70">
+        <p className="after-school-battle-note order-7 mt-2.5 text-center text-[10px] font-bold leading-relaxed text-white/70">
           先生は悪役ではなく、ことばの成長を見守る放課後のライバルです。
         </p>
       </div>
@@ -891,7 +1027,7 @@ function AfterSchoolWorld({ battleStars, selectedTheme }) {
             AFTER SCHOOL ACADEMY
           </p>
           <h2 className="mt-0.5 font-display text-base font-extrabold">
-            3つの放課後エリア
+            3つの物語エリア
           </h2>
         </div>
         <span className="shrink-0 rounded-full bg-white/10 px-2.5 py-1 text-[10px] font-extrabold text-amber-200">
@@ -899,7 +1035,7 @@ function AfterSchoolWorld({ battleStars, selectedTheme }) {
         </span>
       </div>
       <p className="mt-2 text-[10px] font-bold leading-relaxed text-white/55">
-        バトル正解やXP変換で閉ざされた校舎を開きます。次の対決演出は設定メニューで選びます。
+        バトル正解やXP変換で閉ざされた校舎を開きます。次の対決演出はメニュー内「設定」で選びます。
       </p>
 
       <div className="mt-3 space-y-2">
@@ -978,7 +1114,81 @@ function AfterSchoolWorld({ battleStars, selectedTheme }) {
   )
 }
 
-function AfterSchoolBondBoard({ bonds, currentStudentId }) {
+function StoryArcTimeline({ storyStep }) {
+  const current = afterSchoolStoryArcForStep(storyStep)
+  const currentIndex = AFTER_SCHOOL_STORY_ARCS.findIndex((arc) => arc.id === current.id)
+
+  return (
+    <section className="overflow-hidden rounded-3xl bg-slate-950 text-white shadow-card">
+      <div className="bg-[radial-gradient(circle_at_top_right,rgba(34,211,238,.2),transparent_40%),linear-gradient(145deg,#0f172a,#312e81)] p-4">
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            <p className="text-[9px] font-extrabold tracking-[0.12em] text-cyan-200">現在の物語 · 全11章</p>
+            <h2 className="mt-0.5 font-display text-base font-extrabold">噂から龍脈へつながる物語</h2>
+          </div>
+          <span className="shrink-0 rounded-full border border-white/15 bg-white/10 px-2.5 py-1 text-[8px] font-extrabold text-amber-100">
+            {current.number} / {AFTER_SCHOOL_STORY_ARCS.length}
+          </span>
+        </div>
+        <div className="mt-3 rounded-2xl border border-cyan-200/20 bg-white/10 p-3">
+          <p className="text-[8px] font-extrabold tracking-[0.1em] text-cyan-200">調査中</p>
+          <h3 className="mt-1 text-sm font-extrabold">{current.title}</h3>
+          <p className="mt-1 text-[10px] font-bold leading-relaxed text-white/60">{current.summary}</p>
+          <p className="mt-2 text-[9px] font-extrabold leading-relaxed text-amber-100">🔎 {current.investigation}</p>
+        </div>
+        <ProgressBar
+          value={(currentIndex + 1) / AFTER_SCHOOL_STORY_ARCS.length}
+          color="linear-gradient(90deg,#22d3ee,#a78bfa,#f9a8d4)"
+          className="mt-3 h-1.5 bg-white/10"
+        />
+      </div>
+
+      <details className="group">
+        <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between px-4 py-3 text-xs font-extrabold text-white/75">
+          <span>11段階の物語全体を見る</span>
+          <span className="text-[9px] text-cyan-200 group-open:hidden">開く</span>
+          <span className="hidden text-[9px] text-cyan-200 group-open:inline">閉じる</span>
+        </summary>
+        <ol className="border-t border-white/10 px-3 pb-4 pt-3">
+          {AFTER_SCHOOL_STORY_ARCS.map((arc, index) => {
+            const completed = index < currentIndex
+            const active = index === currentIndex
+            return (
+              <li key={arc.id} className="grid grid-cols-[2rem_minmax(0,1fr)] gap-2.5">
+                <span className="relative flex justify-center">
+                  <span className={cx(
+                    'relative z-[1] grid h-7 w-7 place-items-center rounded-full border text-[9px] font-extrabold',
+                    completed && 'border-emerald-300 bg-emerald-300 text-slate-950',
+                    active && 'border-cyan-200 bg-cyan-300 text-slate-950 ring-4 ring-cyan-300/15',
+                    !completed && !active && 'border-white/15 bg-white/[0.05] text-white/30',
+                  )}>
+                    {completed ? '✓' : arc.number}
+                  </span>
+                  {index < AFTER_SCHOOL_STORY_ARCS.length - 1 && (
+                    <span className={cx(
+                      'absolute bottom-0 top-7 w-px',
+                      index < currentIndex ? 'bg-emerald-300/55' : 'bg-white/10',
+                    )} />
+                  )}
+                </span>
+                <div className={cx('pb-3.5', !completed && !active && 'opacity-40')}>
+                  <p className="text-[10px] font-extrabold leading-relaxed">{arc.title}</p>
+                  {(completed || active) && (
+                    <p className="mt-0.5 text-[8px] font-bold leading-relaxed text-white/45">{arc.summary}</p>
+                  )}
+                </div>
+              </li>
+            )
+          })}
+        </ol>
+      </details>
+    </section>
+  )
+}
+
+function AfterSchoolBondBoard({ bonds, currentStudentId, unlockedStudentIds }) {
+  const normalizedUnlockedIds = normalizeUnlockedBattleStudentIds(unlockedStudentIds)
+  const unlockedIdSet = new Set(normalizedUnlockedIds)
   const relationshipStates = BATTLE_STUDENTS.map((student) => (
     afterSchoolBondState(bonds, student.id)
   ))
@@ -993,19 +1203,19 @@ function AfterSchoolBondBoard({ bonds, currentStudentId }) {
       <div className="bg-gradient-to-br from-indigo-950 via-violet-950 to-fuchsia-950 p-4 text-white">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <p className="text-[9px] font-extrabold tracking-[0.18em] text-cyan-200">
-              RELATIONSHIP ROUTES
+            <p className="text-[9px] font-extrabold tracking-[0.12em] text-cyan-200">
+              関係と報酬
             </p>
             <h2 className="mt-0.5 font-display text-base font-extrabold">
               放課後の関係ノート
             </h2>
           </div>
           <span className="shrink-0 rounded-full bg-white/10 px-2.5 py-1 text-[8px] font-extrabold text-amber-100">
-            特技 {skillCount}/10 · アイテム {itemCount}/10
+            仲間 {normalizedUnlockedIds.length}/{BATTLE_STUDENTS.length}
           </span>
         </div>
         <p className="mt-2 text-[10px] font-bold leading-relaxed text-white/60">
-          対決後は毎回3つの行き先を選択。声掛けで関係を育て、XP・特技・思い出アイテムを獲得できます。
+          対決後の行き先で新しいクラスメイトと知り合うと共闘可能に。再び会って関係を育てると、特技とアイテムも増えます。
         </p>
 
         <div className="mt-3 flex items-center gap-3 rounded-2xl border border-white/15 bg-white/10 p-3">
@@ -1037,40 +1247,52 @@ function AfterSchoolBondBoard({ bonds, currentStudentId }) {
 
       <details className="group">
         <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 text-xs font-extrabold text-violet-800">
-          <span>10人の関係と報酬を見る</span>
+          <span>仲間・出会い・関係報酬を見る</span>
           <span className="text-[9px] text-violet-500 group-open:hidden">開く</span>
           <span className="hidden text-[9px] text-violet-500 group-open:inline">閉じる</span>
         </summary>
         <div className="grid grid-cols-2 gap-2 border-t border-violet-100 bg-violet-50/45 p-3">
-          {relationshipStates.map((state) => (
-            <div
-              key={state.student.id}
-              className={cx(
-                'min-w-0 rounded-2xl border bg-white p-2.5',
-                state.student.id === currentStudentId ? 'border-violet-300 ring-2 ring-violet-100' : 'border-ink/10',
-              )}
-            >
+          {relationshipStates.map((state) => {
+            const unlocked = unlockedIdSet.has(state.student.id)
+            return (
+              <div
+                key={state.student.id}
+                className={cx(
+                  'min-w-0 rounded-2xl border p-2.5',
+                  unlocked ? 'bg-white' : 'bg-slate-100/80',
+                  state.student.id === currentStudentId ? 'border-violet-300 ring-2 ring-violet-100' : 'border-ink/10',
+                )}
+              >
               <div className="flex items-center gap-2">
                 <img
                   src={battleStudentPortrait(state.student.id, 'idle')}
                   alt=""
                   loading="lazy"
-                  className="h-9 w-9 shrink-0 rounded-xl bg-slate-900 object-cover [image-rendering:pixelated]"
+                  className={cx(
+                    'h-9 w-9 shrink-0 rounded-xl bg-slate-900 object-cover [image-rendering:pixelated]',
+                    !unlocked && 'brightness-0 opacity-55',
+                  )}
                 />
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-[10px] font-extrabold text-ink">{state.student.name}</p>
-                  <p className="truncate text-[8px] font-bold text-violet-600">絆LV{state.level.level} · {state.points}pt</p>
+                  <p className="truncate text-[10px] font-extrabold text-ink">{unlocked ? state.student.name : '？？？'}</p>
+                  <p className={cx('truncate text-[8px] font-bold', unlocked ? 'text-violet-600' : 'text-ink/35')}>
+                    {unlocked ? `絆LV${state.level.level} · ${state.points}pt` : '🔒 放課後イベントで出会う'}
+                  </p>
                 </div>
               </div>
-              <p className={cx('mt-2 truncate text-[8px] font-extrabold', state.skillUnlocked ? 'text-cyan-700' : 'text-ink/35')}>
-                {state.profile.skill.emoji} {state.skillUnlocked ? state.profile.skill.name : 'LV2 特技'}
+              <p className={cx('mt-2 truncate text-[8px] font-extrabold', unlocked && state.skillUnlocked ? 'text-cyan-700' : 'text-ink/35')}>
+                {unlocked ? state.profile.skill.emoji : '✦'} {unlocked && state.skillUnlocked ? state.profile.skill.name : unlocked ? 'LV2 特技' : '共闘能力 未確認'}
               </p>
-              <p className={cx('mt-0.5 truncate text-[8px] font-extrabold', state.itemUnlocked ? 'text-amber-700' : 'text-ink/35')}>
-                {state.profile.item.emoji} {state.itemUnlocked ? state.profile.item.name : 'LV3 アイテム'}
+              <p className={cx('mt-0.5 truncate text-[8px] font-extrabold', unlocked && state.itemUnlocked ? 'text-amber-700' : 'text-ink/35')}>
+                {unlocked ? state.profile.item.emoji : '🔒'} {unlocked && state.itemUnlocked ? state.profile.item.name : unlocked ? 'LV3 アイテム' : '思い出 未記録'}
               </p>
-            </div>
-          ))}
+              </div>
+            )
+          })}
         </div>
+        <p className="border-t border-violet-100 bg-white px-4 py-2 text-[8px] font-bold text-ink/40">
+          現在：特技 {skillCount}/{BATTLE_STUDENTS.length} · アイテム {itemCount}/{BATTLE_STUDENTS.length}
+        </p>
       </details>
     </section>
   )
@@ -1556,13 +1778,13 @@ function SchoolLifeAlbum() {
       <div className="flex items-start justify-between gap-3 px-4 pb-3 pt-4">
         <div className="min-w-0">
           <p className="text-[9px] font-extrabold tracking-[0.18em] text-cyan-300">
-            SCHOOL LIFE ALBUM
+            SCHOOL LIFE GALLERY
           </p>
           <h2 className="mt-0.5 font-display text-base font-extrabold">
-            学校生活・行事アルバム
+            学校生活・行事ギャラリー
           </h2>
           <p className="mt-1 text-[9px] font-bold leading-relaxed text-white/50">
-            通学、授業、昼休み、部活、行事、下校の記録を場面別に見る。
+            物語の舞台になる通学、授業、昼休み、部活、行事、下校の場面を見る。
           </p>
         </div>
         <div className="flex shrink-0 flex-col items-end gap-1">
@@ -2118,7 +2340,7 @@ function BattleTraitSphere({
 
       <div className="min-h-10 border-t border-white/10 px-3 py-2">
         <p className="text-[8px] font-bold leading-relaxed text-white/40">
-          ✦ {BATTLE_TRAIT_POINT_STARS}スターで1pt。育成・振り直しは設定メニューで行います。学習評価は変わりません。
+          ✦ {BATTLE_TRAIT_POINT_STARS}スターで1pt。育成・振り直しはメニュー内「設定」で行います。学習評価は変わりません。
         </p>
       </div>
     </section>
@@ -2129,7 +2351,9 @@ function BattleCastRoster({
   selectedStudentId,
   battleStars,
   investments,
+  unlockedStudentIds,
 }) {
+  const unlockedCount = normalizeUnlockedBattleStudentIds(unlockedStudentIds).length
   const selectedStudent = battleStudentById(selectedStudentId)
   const traitProfile = battleStudentTraitProfile(
     selectedStudent.id,
@@ -2153,7 +2377,7 @@ function BattleCastRoster({
           </div>
           <div className="flex shrink-0 gap-1">
             <span className="rounded-full bg-white/10 px-2 py-1 text-[8px] font-extrabold">
-              10人
+              仲間 {unlockedCount}/{BATTLE_STUDENTS.length}
             </span>
             <span className="rounded-full bg-pink-400/20 px-2 py-1 text-[8px] font-extrabold text-pink-100">
               次の変更は戦果後
@@ -2161,7 +2385,7 @@ function BattleCastRoster({
           </div>
         </div>
         <p className="mt-2 text-[10px] font-bold leading-relaxed text-white/55">
-          ここでは現在の同行者と星彩を確認できます。育成は設定メニュー、同行者の選択はバトル後の戦果画面で行い、次のバトルから反映されます。
+          ここでは現在の同行者と星彩を確認できます。育成はメニュー内「設定」、同行者の選択はバトル後の戦果画面で行い、次のバトルから反映されます。
         </p>
       </div>
 
@@ -2335,7 +2559,7 @@ function AdventureProgress({ hero }) {
         </span>
       </div>
       <p className="mt-1 text-xs font-bold text-ink/45">
-        {next ? next.text : 'LV99になっても、「放課後の魔法と言葉」は何度でも続けられます。'}
+        {next ? next.text : 'LV99になっても、「放課後と魔法の言葉」は何度でも続けられます。'}
       </p>
       {next && (
         <p className="mt-1 text-[10px] font-extrabold text-emerald-600">

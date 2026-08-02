@@ -742,19 +742,30 @@ export function characterTalkPersonaById(id) {
   return CHARACTER_TALK_PERSONAS[normalizeSpeakerId(id)]
 }
 
-export function chooseCharacterTalkCompanion(speakerId, seed = 0, excludedId = null) {
+export function chooseCharacterTalkCompanion(
+  speakerId,
+  seed = 0,
+  excludedId = null,
+  candidateIds = null,
+) {
   const normalizedSpeakerId = normalizeSpeakerId(speakerId)
   const normalizedExcludedIds = new Set(
     (Array.isArray(excludedId) ? excludedId : [excludedId])
       .filter(Boolean)
       .map((id) => normalizeSpeakerId(id)),
   )
-  const candidates = BATTLE_STUDENTS.filter(
+  const allowedIds = Array.isArray(candidateIds)
+    ? new Set(candidateIds.map((id) => normalizeSpeakerId(id)))
+    : null
+  const availableStudents = allowedIds
+    ? BATTLE_STUDENTS.filter((student) => allowedIds.has(student.id))
+    : BATTLE_STUDENTS
+  const candidates = availableStudents.filter(
     (student) => student.id !== normalizedSpeakerId && !normalizedExcludedIds.has(student.id),
   )
   const pool = candidates.length > 0
     ? candidates
-    : BATTLE_STUDENTS.filter((student) => student.id !== normalizedSpeakerId)
+    : availableStudents.filter((student) => student.id !== normalizedSpeakerId)
   return pick(pool, 'companion', normalizedSpeakerId, seed)
 }
 

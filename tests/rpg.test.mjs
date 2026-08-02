@@ -1456,7 +1456,7 @@ test('学校アイテムをボックスで整理・装備し、バトルで1回�
   assert.match(settingsSource, /onEquip=\{setBattleRelicLevel\}/)
   assert.match(settingsSource, /1バトル1回/)
   assert.doesNotMatch(mapSource, /setBattleRelicLevel|<BattleItemBox/)
-  assert.match(mapSource, /右上の設定メニューで変更します/)
+  assert.match(mapSource, /右上のメニュー内「設定」で変更します/)
   assert.match(mapSource, /<details className="school-battle-options/)
   assert.match(mapSource, /問題数をえらぶ/)
   assert.match(mapSource, /問のことば対決へ/)

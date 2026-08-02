@@ -509,3 +509,25 @@ export function stopSpeaking() {
   if (typeof window !== 'undefined') clearPendingSpeechTimers()
   if (isTTSSupported()) window.speechSynthesis.cancel()
 }
+
+/** 現在の発話位置を保ったまま一時停止する。 */
+export function pauseSpeaking() {
+  if (!isTTSSupported()) return false
+  try {
+    window.speechSynthesis.pause()
+    return true
+  } catch {
+    return false
+  }
+}
+
+/** 一時停止した発話を同じ位置から再開する。 */
+export function resumeSpeaking() {
+  if (!isTTSSupported()) return false
+  try {
+    window.speechSynthesis.resume()
+    return true
+  } catch {
+    return false
+  }
+}

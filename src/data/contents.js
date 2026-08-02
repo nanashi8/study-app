@@ -54,7 +54,7 @@ export const CONTENTS = [
   },
   {
     id: 'literature-listening',
-    title: '名作交互朗読',
+    title: '名作に親しむ',
     subtitle: '間で区切った原文と直訳を一対ずつ交互に聴く',
     emoji: '🎙️',
     color: '#0f766e',

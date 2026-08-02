@@ -1,12 +1,210 @@
 import { BATTLE_DAILY_SCENES, battleDailySceneById } from './battleCast.js'
 import { publicAssetUrl } from './publicAssetUrl.js'
+import {
+  afterSchoolNextStoryArc,
+  afterSchoolStoryArcForStep,
+} from './storyProgression.js'
 
 export const AFTER_SCHOOL_CHRONICLE = {
   id: 'after-school-chronicle',
-  title: '放課後の魔法と言葉',
-  shortTitle: '魔法と言葉',
-  subtitle: '先生の課題に挑み、対決後の3つの放課後ルートで関係を育てる校内ストーリー',
+  title: '放課後と魔法の言葉',
+  shortTitle: '放課後と魔法の言葉',
+  subtitle: '先生の課題に挑み、対決後は友達との日常へ進む学園ライトノベル',
   keyVisual: publicAssetUrl('/assets/battle/chronicle/after-school-route-key-visual.webp'),
+}
+
+const VERDICT_EPILOGUES = Object.freeze({
+  legendary: {
+    title: '影のほどける音',
+    narration: '最後の正答が光へ変わり、影蝕の術式は音もなくほどけた。教室に残ったのは、夕陽と、使い込まれたチョークの匂いだけだった。',
+  },
+  victory: {
+    title: 'いつもの声が戻るまで',
+    narration: '積み重ねた正答が術式の中心を貫く。黒い文字列は薄い光へ変わり、先生のまなざしにいつもの穏やかさが戻った。',
+  },
+  draw: {
+    title: '余白に残った一行',
+    narration: '影蝕の文字列は大きく揺らぎ、いくつかの行が消えていく。完全にはほどけなくても、次に読み解くべき一行は見えた。',
+  },
+  retreat: {
+    title: '次に解く言葉',
+    narration: '術式はまだ黒板に残っている。それでも正答の光が一筋だけ差し込み、次にほどくべき言葉を照らしていた。',
+  },
+})
+
+function safeStoryText(value, fallback) {
+  const text = String(value ?? '').trim()
+  return text || fallback
+}
+
+export function afterSchoolPrologue({ studentName = 'クラスメイト' } = {}) {
+  const companion = safeStoryText(studentName, 'クラスメイト')
+  return {
+    id: 'after-school-prologue',
+    chapterLabel: 'PROLOGUE',
+    title: 'チャイムのあとに残る噂',
+    pages: [
+      {
+        kind: 'narration',
+        text: '「放課後、誰もいない教室で消したはずの文字が光る」。そんな噂が、昼休みの教室で小さく広がっていた。',
+      },
+      {
+        kind: 'dialogue',
+        speaker: companion,
+        portraitId: 'student-curious',
+        text: '「気になるなら、今日の放課後に確かめよう。私も同じ噂を聞いて、ずっと引っかかってたんだ」',
+      },
+      {
+        kind: 'narration',
+        text: `チャイムのあと、あなたと${companion}は噂の教室へ向かった。何が起きても一人で抱えず、見たものを二人で記録する。それが最初の約束になった。`,
+      },
+      {
+        kind: 'dialogue',
+        speaker: companion,
+        portraitId: 'student-determined',
+        text: '「まだ魔法かどうかも分からない。でも、噂を噂のままにしないで調べよう。——行こう。私も隣で考える」',
+      },
+    ],
+  }
+}
+
+export function afterSchoolBattleChapter({
+  storyStep = 0,
+  studentName = 'クラスメイト',
+  rivalName = '先生',
+  encounterName = '放課後の教室',
+  move = 'ことばの課題',
+  subject = '総合',
+  affinityLabel = 'ふつう',
+  questSize = 10,
+  isTeacher = true,
+} = {}) {
+  const episode = afterSchoolEpisodeNumber(storyStep)
+  const arc = afterSchoolStoryArcForStep(storyStep)
+  const companion = safeStoryText(studentName, 'クラスメイト')
+  const rival = safeStoryText(rivalName, '先生')
+  const location = safeStoryText(encounterName, '放課後の教室')
+  const challenge = safeStoryText(move, 'ことばの課題')
+  const affinity = safeStoryText(affinityLabel, 'ふつう')
+  const subjectName = safeStoryText(subject, '総合')
+  const questionCount = Math.max(1, Math.floor(Number(questSize)) || 10)
+
+  return {
+    id: `after-school-battle-${episode}`,
+    storyArcId: arc.id,
+    chapterLabel: `MYSTERY FILE ${String(arc.number).padStart(2, '0')}`,
+    title: arc.title,
+    pages: [
+      {
+        kind: 'narration',
+        text: `${arc.investigation}${location}へ足を踏み入れた瞬間、宙に浮かぶ文字が一斉にこちらを向き、中央に${rival}の姿が現れた。`,
+      },
+      {
+        kind: 'dialogue',
+        speaker: rival,
+        text: isTeacher
+          ? `「今日の課題は『${challenge}』。${questionCount}問、あなたの言葉で答えを示しなさい」`
+          : `「『${challenge}』を読み解け。${questionCount}問の言葉が、先へ進む道を決める」`,
+      },
+      {
+        kind: 'dialogue',
+        speaker: companion,
+        portraitId: 'student-focused',
+        text: `「${subjectName}との相性は『${affinity}』。でも、最後に術式を動かすのはあなたの正答だよ。焦らず一問ずついこう」`,
+      },
+      {
+        kind: 'narration',
+        text: isTeacher
+          ? '先生を倒すんじゃない。解くべき相手は先生を縛る影の文章だ。ノートを開くと、覚えた言葉が淡い光になり、影だけをほどくため指先へ集まった。'
+          : '姿に惑わされず、異変を形づくる文章の意味を読み取る。ノートを開くと、覚えた言葉が淡い光になって指先へ集まった。',
+      },
+    ],
+  }
+}
+
+export function afterSchoolBattleEpilogue({
+  storyStep = 0,
+  studentName = 'クラスメイト',
+  rivalName = '先生',
+  verdictId = 'draw',
+  isTeacher = true,
+  teacherDefeated = false,
+} = {}) {
+  const episode = afterSchoolEpisodeNumber(storyStep)
+  const arc = afterSchoolStoryArcForStep(storyStep)
+  const nextArc = afterSchoolNextStoryArc(storyStep)
+  const companion = safeStoryText(studentName, 'クラスメイト')
+  const rival = safeStoryText(rivalName, '先生')
+  const outcome = VERDICT_EPILOGUES[verdictId] ?? VERDICT_EPILOGUES.draw
+
+  return {
+    id: `after-school-epilogue-${episode}`,
+    storyArcId: arc.id,
+    chapterLabel: `EPISODE ${String(episode).padStart(2, '0')} · AFTER BATTLE`,
+    title: outcome.title,
+    pages: [
+      {
+        kind: 'narration',
+        text: outcome.narration,
+      },
+      {
+        kind: 'dialogue',
+        speaker: isTeacher ? rival : companion,
+        portraitId: isTeacher ? undefined : 'student-relieved',
+        text: isTeacher
+          ? '「採点はここまで。正解した理由も、迷った理由も、次の一問へ持っていきなさい」'
+          : `「記録できた。${arc.discovery} 次の場所でも同じ印を探そう」`,
+      },
+      {
+        kind: 'narration',
+        text: `現実の校舎には傷ひとつない。対決の魔力が静かに消えると、窓の外から運動部の掛け声と商店街の音が戻ってきた。${isTeacher && teacherDefeated ? `${rival}を覆っていた影蝕も光へほどけた。` : ''}${arc.discovery}`,
+      },
+      {
+        kind: 'dialogue',
+        speaker: companion,
+        portraitId: 'student-relieved',
+        text: `「${arc.nextLead}${nextArc ? ` 次は『${nextArc.shortTitle}』を確かめよう。` : ''}その前に、今日出会った人とも話していこう」`,
+      },
+    ],
+  }
+}
+
+export function afterSchoolDailyChapter({
+  storyStep = 0,
+  studentName = 'クラスメイト',
+  routeLabel = '友達との日常',
+  location = '帰り道',
+  situation = '対決を終え、友達といつもの時間へ戻っていく。',
+  opening = '「少し話していかない？」',
+  firstMeeting = false,
+} = {}) {
+  const episode = afterSchoolEpisodeNumber(storyStep)
+  const arc = afterSchoolStoryArcForStep(storyStep)
+  const companion = safeStoryText(studentName, 'クラスメイト')
+  return {
+    id: `after-school-daily-${episode}`,
+    storyArcId: arc.id,
+    chapterLabel: `DAILY STORY ${String(episode).padStart(2, '0')}`,
+    title: `${firstMeeting ? 'はじめての出会い' : safeStoryText(routeLabel, '友達との日常')} · ${safeStoryText(location, '帰り道')}`,
+    pages: [
+      {
+        kind: 'narration',
+        text: safeStoryText(situation, '対決を終え、友達といつもの時間へ戻っていく。'),
+      },
+      {
+        kind: 'dialogue',
+        speaker: companion,
+        portraitId: 'student-opening',
+        text: safeStoryText(opening, '「少し話していかない？」'),
+      },
+      {
+        kind: 'narration',
+        text: firstMeeting
+          ? `${companion}も放課後の異変を気にしていた。ここで交わす言葉が、一緒に噂を調べ、次の戦いで力を貸してもらう最初のきっかけになる。`
+          : `教科書の答えではなく、友達へ返す自分の言葉を選ぶ時間が始まる。『${arc.shortTitle}』の調査も、こうした日常の会話から次へ続いていく。`,
+      },
+    ],
+  }
 }
 
 export const MAX_BATTLE_STORY_STEP = 999_999

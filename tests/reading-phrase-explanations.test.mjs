@@ -136,6 +136,10 @@ test('方法台帳は確定事項と真の未解決事項だけを区別する',
     READING_PHRASE_RULES.find((item) => item.id === 'adverb-inside-verb-group')?.status,
     'confirmed',
   )
+  assert.equal(
+    READING_PHRASE_RULES.find((item) => item.id === 'connector-closure-back-reference')?.status,
+    'confirmed',
+  )
   assert.deepEqual(READING_PHRASE_OPEN_QUESTIONS, [])
   assert.ok(READING_PHRASE_OPEN_QUESTIONS.every((item) =>
     item.example && item.proposal && item.alternative && item.reason))

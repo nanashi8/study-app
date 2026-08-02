@@ -267,7 +267,10 @@ test('長文画面は文全体のフレーズ列を英語→直訳→必要な�
 
   const automaticStart = source.indexOf('const speakChunkSeq')
   const automaticEnglish = source.indexOf('speakWith(c.en', automaticStart)
-  const automaticJapanese = source.indexOf('speakWith(`前からは、「${c.ja}」', automaticEnglish)
+  const automaticJapanese = source.indexOf(
+    'speakWith(`前からは、「${japanesePhraseSpeechText(c.ja)}」',
+    automaticEnglish,
+  )
   const automaticExplanation = source.indexOf('speakWith(c.explanation', automaticJapanese)
   assert.ok(
     automaticStart >= 0 &&
@@ -279,7 +282,10 @@ test('長文画面は文全体のフレーズ列を英語→直訳→必要な�
 
   const manualStart = source.indexOf('const speakBlockPair')
   const manualEnglish = source.indexOf('speakWith(pair.spokenEn ?? pair.en', manualStart)
-  const manualJapanese = source.indexOf('speakWith(`前からは、「${pair.ja}」', manualEnglish)
+  const manualJapanese = source.indexOf(
+    'speakWith(`前からは、「${japanesePhraseSpeechText(pair.ja)}」',
+    manualEnglish,
+  )
   const manualExplanation = source.indexOf('const phraseExplanation =', manualJapanese)
   const manualExplanationSpeech = source.indexOf('phraseExplanation,', manualExplanation)
   assert.ok(
@@ -300,6 +306,7 @@ test('長文画面は文全体のフレーズ列を英語→直訳→必要な�
   assert.match(source, /pair\.grammar \?\? pair\.explanation \?\? pair\.roleNote/)
   assert.match(source, /data-reading-phrase-method=\{sentenceAnalysis\.phraseMethod\}/)
   assert.match(source, /speakWith\(phraseItem\.spokenEn \?\? phraseItem\.en/)
+  assert.match(source, /japanesePhraseSpeechText\(phraseItem\.ja\)/)
   assert.match(source, /data-translation-role-flow/)
   assert.match(source, /pair\.roleNote/)
   assert.match(source, /<SpeakerWave size=\{14\} \/> 講師音声/)

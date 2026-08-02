@@ -14,6 +14,7 @@ const FILTERS = [
   { id: 'all', label: 'すべて' },
   { id: 'english', label: '英語' },
   { id: 'classical', label: '古典' },
+  { id: 'kanbun', label: '漢文' },
 ]
 
 export function LiteratureLibraryScreen() {
@@ -21,7 +22,7 @@ export function LiteratureLibraryScreen() {
   const readingsDone = useStore((state) => state.readingsDone)
   const initialKind = useStore((state) => state.params.kind)
   const [filter, setFilter] = useState(() =>
-    ['english', 'classical'].includes(initialKind) ? initialKind : 'all',
+    ['english', 'classical', 'kanbun'].includes(initialKind) ? initialKind : 'all',
   )
 
   const works =
@@ -34,7 +35,7 @@ export function LiteratureLibraryScreen() {
   return (
     <div className="pb-7">
       <ScreenHeader
-        title="名作交互朗読"
+        title="名作に親しむ"
         subtitle="間で区切る → 一対ずつ直訳で確かめる"
         color="#0f766e"
       />
@@ -53,7 +54,7 @@ export function LiteratureLibraryScreen() {
                 一息ずつ、原文と訳を往復
               </h1>
               <p className="mt-2 text-xs font-bold leading-relaxed text-white/70">
-                英語は英語→区切りの直訳、古典は古文→区切りの現代語訳。朗読で間を置くまとまりごとに交互に読み上げます。
+                英語は英語→直訳、古典は古文→現代語訳、漢文は白文を見ながら書き下し→現代語訳。朗読で間を置くまとまりごとに交互に読み上げます。
               </p>
             </div>
           </div>
@@ -101,7 +102,7 @@ export function LiteratureLibraryScreen() {
           </div>
         </Card>
 
-        <div className="grid grid-cols-3 rounded-2xl bg-teal-100 p-1">
+        <div className="grid grid-cols-4 rounded-2xl bg-teal-100 p-1">
           {FILTERS.map((item) => (
             <button
               key={item.id}

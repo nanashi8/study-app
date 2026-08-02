@@ -14,8 +14,15 @@ import {
 import { MAX_BATTLE_STORY_STEP } from './afterSchoolStory.js'
 import {
   isValidAfterSchoolBonds,
+  isValidUnlockedBattleStudentIds,
   normalizeAfterSchoolBonds,
+  normalizeUnlockedBattleStudentIds,
 } from './afterSchoolBonds.js'
+import {
+  isValidStoryKeyVisualAlbum,
+  normalizeStoryKeyVisualAlbum,
+  storyKeyVisualAlbumCount,
+} from './storyAlbum.js'
 import { normalizeVocabHistory } from './vocabHistory.js'
 
 const CODE_VERSION = 1
@@ -60,6 +67,10 @@ export function buildPayload(state) {
     battleStoryStep: state.battleStoryStep,
     battleStoryLastDay: state.battleStoryLastDay,
     afterSchoolBonds: normalizeAfterSchoolBonds(state.afterSchoolBonds),
+    unlockedBattleStudentIds: normalizeUnlockedBattleStudentIds(
+      state.unlockedBattleStudentIds,
+    ),
+    storyKeyVisualAlbum: normalizeStoryKeyVisualAlbum(state.storyKeyVisualAlbum),
     portalOrder: state.portalOrder,
     portalHidden: state.portalHidden,
     stats: state.stats,
@@ -107,6 +118,7 @@ export function decodeProgress(code) {
     'writingProgress',
     'battleTraitInvestments',
     'afterSchoolBonds',
+    'storyKeyVisualAlbum',
     'stats',
     'settings',
   ]
@@ -122,6 +134,7 @@ export function decodeProgress(code) {
     'diagnosticHistory',
     'portalOrder',
     'portalHidden',
+    'unlockedBattleStudentIds',
   ]
   for (const field of recordFields) {
     if (field in payload && !isRecord(payload[field])) {
@@ -218,6 +231,18 @@ export function decodeProgress(code) {
     throw new Error('コードの afterSchoolBonds が不正です。')
   }
   if (
+    'unlockedBattleStudentIds' in payload
+    && !isValidUnlockedBattleStudentIds(payload.unlockedBattleStudentIds)
+  ) {
+    throw new Error('コードの unlockedBattleStudentIds が不正です。')
+  }
+  if (
+    'storyKeyVisualAlbum' in payload
+    && !isValidStoryKeyVisualAlbum(payload.storyKeyVisualAlbum)
+  ) {
+    throw new Error('コードの storyKeyVisualAlbum が不正です。')
+  }
+  if (
     'diagnosticAttempt' in payload
     && (!Number.isSafeInteger(payload.diagnosticAttempt) || payload.diagnosticAttempt < 0)
   ) {
@@ -261,5 +286,7 @@ export function summarizePayload(payload, isWordId = () => true) {
     battleXpSpent: payload.battleXpSpent ?? 0,
     battleTraitPoints: battleTraitPointsSpent(payload.battleTraitInvestments),
     battleStoryStep: payload.battleStoryStep ?? 0,
+    unlockedBattleStudents: (payload.unlockedBattleStudentIds ?? []).length,
+    keyVisualMemories: storyKeyVisualAlbumCount(payload.storyKeyVisualAlbum),
   }
 }

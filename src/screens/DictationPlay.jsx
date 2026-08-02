@@ -8,7 +8,11 @@ import {
   writingTokenPositionResults,
   writingWordTokens,
 } from '../lib/writing.js'
-import { isTTSSupported, speak, stopSpeaking } from '../lib/tts.js'
+import { isTTSSupported } from '../lib/tts.js'
+import {
+  dismissSpeechPlayer,
+  playSpeechItems,
+} from '../lib/speech-player.js'
 import { buildDictationInstructorExplanation } from '../lib/instructorExplanations.js'
 import { Button, Chip, ProgressBar, IconButton, cx } from '../components/ui.jsx'
 import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
@@ -65,22 +69,31 @@ export function DictationPlayScreen() {
 
   const play = (slow = false) => {
     if (!item) return
-    const started = speak(item.text, {
-      rate: slow ? slowRate : normalRate,
-      voiceURI: settings.ttsVoiceURI,
+    const effectiveRate = slow ? slowRate : normalRate
+    playSpeechItems([{
+      text: item.text,
+      label: item.text,
       style: 'listening',
+      rateFactor: effectiveRate / settings.ttsRate,
+      minRate: 0.55,
+      maxRate: 1.25,
+    }], {
+      title: slow ? 'ディクテーション・ゆっくり' : 'ディクテーション',
+      rate: settings.ttsRate,
+      voiceURI: settings.ttsVoiceURI,
+      japaneseVoiceURI: settings.ttsJapaneseVoiceURI,
+      onPlayStart: () => {
+        if (slow) setSlowPlays((count) => count + 1)
+        else setNormalPlays((count) => count + 1)
+      },
     })
-    if (started) {
-      if (slow) setSlowPlays((count) => count + 1)
-      else setNormalPlays((count) => count + 1)
-    }
   }
 
   useEffect(() => {
     setNormalPlays(0)
     setSlowPlays(0)
     if (settings.autoSpeak !== false) play()
-    return stopSpeaking
+    return dismissSpeechPlayer
     // 設問が変わったときだけ、その級の速度で自動再生する。
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [i, item?.id])

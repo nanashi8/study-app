@@ -125,6 +125,7 @@ import {
   literatureWordCount,
 } from '../src/data/public-domain-literature.js'
 import { buildLiteratureNarration } from '../src/lib/literature.js'
+import { japanesePhraseSpeechText } from '../src/lib/phrase-speech.js'
 import {
   WRITING_EXERCISES,
   WRITING_GRAMMAR,
@@ -1367,7 +1368,7 @@ if (listeningIds.size !== LISTENING_ITEMS.length) {
   errors.push(`リスニング: id一意件数が全問題数と不一致 (${listeningIds.size}/${LISTENING_ITEMS.length})`)
 }
 
-// ── 名作交互朗読：権利カード、原文→訳の順序、共通SRS参照を全作品で検証 ──
+// ── 名作に親しむ：権利カード、原文→訳の順序、共通SRS参照を全作品で検証 ──
 const literatureIds = new Set()
 let literatureSceneCount = 0
 let literatureNarrationSegmentCount = 0
@@ -1375,7 +1376,7 @@ for (const work of PUBLIC_DOMAIN_LITERATURE) {
   const at = `名作朗読 ${work.id ?? '(id無し)'}`
   if (!work.id || literatureIds.has(work.id)) errors.push(`${at}: id 無し/重複`)
   literatureIds.add(work.id)
-  if (!['english', 'classical'].includes(work.kind)) {
+  if (!['english', 'classical', 'kanbun'].includes(work.kind)) {
     errors.push(`${at}: kind が不正 (${work.kind})`)
   }
   if (!work.title || !work.titleJa || !work.author || !work.authorYears || !work.excerpt) {
@@ -1395,8 +1396,8 @@ for (const work of PUBLIC_DOMAIN_LITERATURE) {
     if (!item.original?.trim() || !item.translation?.trim() || !item.guide?.trim()) {
       errors.push(`${sceneAt}: 原文/訳/読みのポイント不足`)
     }
-    if (work.kind === 'classical' && !item.speech?.trim()) {
-      errors.push(`${sceneAt}: 古文読み上げ用の読み仮名不足`)
+    if (work.kind !== 'english' && !item.speech?.trim()) {
+      errors.push(`${sceneAt}: 古文・漢文の読み上げ文不足`)
     }
 
     const narrationSegments = item.narrationSegments ?? []
@@ -1449,6 +1450,7 @@ for (const work of PUBLIC_DOMAIN_LITERATURE) {
   narration.forEach((step, index) => {
     const expectedPhase = index % 2 === 0 ? 'original' : 'translation'
     const pairedStep = narration[index - (index % 2)]
+    const segment = work.scenes?.[step.sceneIndex]?.narrationSegments?.[step.segmentIndex]
     if (
       step.phase !== expectedPhase ||
       !step.text ||
@@ -1457,6 +1459,16 @@ for (const work of PUBLIC_DOMAIN_LITERATURE) {
       step.segmentIndex !== pairedStep?.segmentIndex
     ) {
       errors.push(`${at}: 再生順または音声言語が不正 (${index + 1})`)
+    }
+    if (
+      step.phase === 'translation' &&
+      (
+        step.displayText !== segment?.translation ||
+        step.text !== japanesePhraseSpeechText(segment?.translation) ||
+        /[（）()]/u.test(step.text)
+      )
+    ) {
+      errors.push(`${at}: 日本語フレーズの括弧表示と音声原稿が分離されていない (${index + 1})`)
     }
   })
 
@@ -1479,7 +1491,7 @@ for (const work of PUBLIC_DOMAIN_LITERATURE) {
     errors.push(`${at}: 共通古典文法IDが重複`)
   }
 }
-for (const kind of ['english', 'classical']) {
+for (const kind of ['english', 'classical', 'kanbun']) {
   const count = PUBLIC_DOMAIN_LITERATURE.filter((work) => work.kind === kind).length
   if (count < 3) errors.push(`名作朗読: ${kind} が3作品未満 (${count})`)
 }

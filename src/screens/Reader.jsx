@@ -9,6 +9,7 @@ import {
   analyzeReadingSentence,
 } from '../lib/reading-grammar.js'
 import { speak, speakWith, stopSpeaking } from '../lib/tts.js'
+import { japanesePhraseSpeechText } from '../lib/phrase-speech.js'
 import { Sheet } from '../components/Sheet.jsx'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
@@ -176,7 +177,7 @@ export function ReaderScreen() {
         onend: () => {
           if (tokenRef.current !== token) return
           setPhase('ja')
-          speakWith(`前からは、「${c.ja}」と取ります。`, {
+          speakWith(`前からは、「${japanesePhraseSpeechText(c.ja)}」と取ります。`, {
             rate: settings.ttsRate,
             voiceURI: settings.ttsJapaneseVoiceURI,
             lang: 'ja-JP',
@@ -276,7 +277,7 @@ export function ReaderScreen() {
         style: 'narration',
         onend: () => {
           if (tokenRef.current !== token) return
-          speakWith(`前からは、「${pair.ja}」と取ります。`, {
+          speakWith(`前からは、「${japanesePhraseSpeechText(pair.ja)}」と取ります。`, {
             rate: settings.ttsRate,
             voiceURI: settings.ttsJapaneseVoiceURI,
             lang: 'ja-JP',
@@ -325,7 +326,7 @@ export function ReaderScreen() {
       style: 'narration',
       onend: () => {
         if (tokenRef.current !== token) return
-        speakWith(`前からは、「${phraseItem.ja}」と取ります。`, {
+        speakWith(`前からは、「${japanesePhraseSpeechText(phraseItem.ja)}」と取ります。`, {
           rate: settings.ttsRate,
           voiceURI: settings.ttsJapaneseVoiceURI,
           lang: 'ja-JP',

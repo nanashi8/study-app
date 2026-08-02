@@ -357,8 +357,8 @@ export function GameSettingsPanel() {
   return (
     <section aria-label="ゲーム設定">
       <GameSettingRow
-        title="バトルUI"
-        desc="情報優先の簡易UIと、演出を含むゲーミングUIを切り替え"
+        title="バトル画面"
+        desc="情報優先の簡易画面と、演出を含むゲーミング画面を切り替え"
         stacked
       >
         <div className="grid grid-cols-2 gap-2">
@@ -369,6 +369,7 @@ export function GameSettingsPanel() {
             <button
               key={mode.id}
               type="button"
+              data-battle-ui-mode-choice={mode.id}
               onClick={() => setSetting('battleUiMode', mode.id)}
               aria-pressed={battleUiMode === mode.id}
               className={cx(
@@ -386,7 +387,7 @@ export function GameSettingsPanel() {
       </GameSettingRow>
 
       <h3 className="pt-2 font-display text-sm font-extrabold text-ink">
-        放課後の魔法と言葉 BGM
+        放課後と魔法の言葉 BGM
       </h3>
       <p className="mt-1 text-xs font-bold leading-relaxed text-ink/50">
         日常・ことばの対決・先生戦・結果で切り替わります。通常の単語・文法・長文など学習画面では鳴りません。

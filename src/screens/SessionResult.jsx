@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { todayIndex, useStore } from '../store/useStore.js'
 import { ProgressRing, ProgressBar, Button, Card } from '../components/ui.jsx'
-import { Star, Flame, Refresh, Home, Bookmark, ArrowRight, Check, Teacher } from '../components/Icons.jsx'
+import { Star, Flame, Refresh, Home, Bookmark, ArrowRight, Check } from '../components/Icons.jsx'
 import { battleProgression, enemyLevel, enemyLevelIndex } from '../lib/adaptive.js'
 import {
   battleTactic,
@@ -32,6 +32,7 @@ import {
   battleStudentResultState,
   battleTeacherAffinity,
 } from '../lib/battleCast.js'
+import { isBattleStudentUnlocked } from '../lib/afterSchoolBonds.js'
 
 // セッションの種類から「スキル」を判定する（弱点ナビ用）。
 function inferSkill({ engine, replayScreen }) {
@@ -76,6 +77,8 @@ export function SessionResultScreen() {
   const setBattleStudentId = useStore((s) => s.setBattleStudentId)
   const battleStoryStep = useStore((s) => s.battleStoryStep)
   const markBattleStorySeen = useStore((s) => s.markBattleStorySeen)
+  const unlockedBattleStudentIds = useStore((s) => s.unlockedBattleStudentIds)
+  const recordTeacherKeyVisual = useStore((s) => s.recordTeacherKeyVisual)
 
   const {
     title = '学習',
@@ -184,6 +187,13 @@ export function SessionResultScreen() {
     if (isBattle) {
       // 結果表示と同じ確定値を保存し、「予告だけ昇格」のずれを起こさない。
       setEngPos(battle.to)
+      if (encounter.isTeacher && battleReport?.enemyDefeated) {
+        recordTeacherKeyVisual({
+          teacherId: encounter.id,
+          studentId: battleStudent.id,
+          themeId: battleReport?.battleTheme?.id ?? source?.themeId,
+        })
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -292,6 +302,8 @@ export function SessionResultScreen() {
       rivalName: battleRival.name,
       verdictId: verdict.id,
       storyStep: battleStoryStep,
+      isTeacher: encounter.isTeacher,
+      teacherDefeated: encounter.isTeacher && battleReport?.enemyDefeated === true,
     })
   }
 
@@ -381,8 +393,17 @@ export function SessionResultScreen() {
           selectedStudent={nextBattleStudent}
           teacher={upcomingTeacher}
           affinity={nextTeacherAffinity}
+          unlockedStudentIds={unlockedBattleStudentIds}
           onSelect={setBattleStudentId}
         />
+      )}
+
+      {isBattle && encounter.isTeacher && battleReport?.enemyDefeated && (
+        <Card className="w-full max-w-xs border border-amber-200 bg-amber-50 p-3 text-left">
+          <p className="text-[9px] font-extrabold tracking-[0.14em] text-amber-700">KEY VISUAL SAVED</p>
+          <p className="mt-1 text-xs font-extrabold text-ink">📖 {encounter.name}の影蝕解除をアルバムへ保存</p>
+          <p className="mt-1 text-[9px] font-bold leading-relaxed text-ink/45">戦った仲間と舞台も含めて、物語画面の思い出アルバムから振り返れます。</p>
+        </Card>
       )}
 
       <div className="mt-2 w-full max-w-xs space-y-2.5">
@@ -392,7 +413,7 @@ export function SessionResultScreen() {
             size="lg"
             onClick={continueAfterBattle}
           >
-            放課後の行き先を選ぶ <ArrowRight size={18} />
+            友達と過ごす日常へ <ArrowRight size={18} />
           </Button>
         )}
         {params.continueTo?.screen && (
@@ -431,9 +452,11 @@ function NextBattleCompanionCard({
   selectedStudent,
   teacher,
   affinity,
+  unlockedStudentIds,
   onSelect,
 }) {
   const changed = currentStudent.id !== selectedStudent.id
+  const unlockedCount = unlockedStudentIds.length
 
   return (
     <Card className="w-full max-w-xs overflow-hidden p-0 text-left ring-1 ring-violet-100">
@@ -444,17 +467,17 @@ function NextBattleCompanionCard({
               AFTER BATTLE · NEXT CLASSMATE
             </p>
             <h2 className="mt-0.5 font-display text-base font-extrabold">
-              次の同行者を選ぶ
+            次の同行者を選ぶ
             </h2>
           </div>
           <span className="shrink-0 rounded-full bg-emerald-400/15 px-2 py-1 text-[8px] font-extrabold text-emerald-100">
-            次戦から反映
+            次戦から反映 · 仲間 {unlockedCount}/{BATTLE_STUDENTS.length}
           </span>
         </div>
 
         <div className="mt-2 flex items-center gap-2 rounded-2xl border border-white/15 bg-white/10 px-2.5 py-2">
-          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-white/10 text-lg">
-            <Teacher size={18} />
+          <span className="h-11 w-11 shrink-0 overflow-hidden rounded-xl border border-white/20 bg-white/10">
+            <TeacherPortrait teacher={teacher} className="h-full w-full" />
           </span>
           <div className="min-w-0 flex-1">
             <p className="truncate text-[9px] font-extrabold text-white/60">次の先生</p>
@@ -478,34 +501,40 @@ function NextBattleCompanionCard({
               teacher.teacherSubject,
             )
             const selected = student.id === selectedStudent.id
+            const unlocked = isBattleStudentUnlocked(unlockedStudentIds, student.id)
             const shortName = student.name.match(/[ァ-ヶー].*$/u)?.[0] ?? student.name
             return (
               <button
                 key={student.id}
                 type="button"
-                onClick={() => onSelect(student.id)}
+                onClick={() => unlocked && onSelect(student.id)}
+                disabled={!unlocked}
                 aria-pressed={selected}
-                aria-label={`${student.name}。得意科目${battleStudentBestSubjects(student.id).join('、')}。${teacher.teacherSubject}の先生に対し、${studentAffinity.gradeBasisLabel}評定${studentAffinity.grade}、${studentAffinity.label}、${studentAffinity.bonusLabel}`}
-                className={`flex min-h-[66px] items-center gap-2 rounded-2xl border p-2 transition-transform active:scale-[0.98] ${selected ? 'border-violet-400 bg-violet-50 ring-2 ring-violet-100' : 'border-ink/10 bg-paper'}`}
+                aria-label={unlocked
+                  ? `${student.name}。得意科目${battleStudentBestSubjects(student.id).join('、')}。${teacher.teacherSubject}の先生に対し、${studentAffinity.gradeBasisLabel}評定${studentAffinity.grade}、${studentAffinity.label}、${studentAffinity.bonusLabel}`
+                  : 'まだ出会っていないクラスメイト。放課後イベントで仲間になります。'}
+                className={`flex min-h-[66px] items-center gap-2 rounded-2xl border p-2 transition-transform active:scale-[0.98] ${selected ? 'border-violet-400 bg-violet-50 ring-2 ring-violet-100' : unlocked ? 'border-ink/10 bg-paper' : 'cursor-not-allowed border-ink/5 bg-slate-100 opacity-65'}`}
               >
                 <img
                   src={battleStudentPortrait(student.id, selected ? 'delighted' : 'idle')}
                   alt=""
                   loading="lazy"
-                  className="h-11 w-11 shrink-0 rounded-xl object-cover [image-rendering:pixelated]"
+                  className={`h-11 w-11 shrink-0 rounded-xl object-cover [image-rendering:pixelated] ${unlocked ? '' : 'brightness-0'}`}
                 />
                 <span className="min-w-0 flex-1">
                   <span className="flex items-center justify-between gap-1">
                     <strong className="truncate text-[10px] font-extrabold text-ink">
-                      {shortName}
+                      {unlocked ? shortName : '？？？'}
                     </strong>
                     {selected && <Check size={13} className="shrink-0 text-violet-600" />}
                   </span>
-                  <span className="mt-0.5 block text-[8px] font-extrabold" style={{ color: studentAffinity.color }}>
-                    {studentAffinity.gradeBasisLabel} {studentAffinity.grade} · {studentAffinity.emoji}{studentAffinity.label}
+                  <span className="mt-0.5 block text-[8px] font-extrabold" style={{ color: unlocked ? studentAffinity.color : '#64748b' }}>
+                    {unlocked
+                      ? `${studentAffinity.gradeBasisLabel} ${studentAffinity.grade} · ${studentAffinity.emoji}${studentAffinity.label}`
+                      : '🔒 放課後で出会う'}
                   </span>
                   <span className="block truncate text-[7px] font-bold text-ink/40">
-                    得意：{battleStudentBestSubjects(student.id).join('・')}
+                    {unlocked ? `得意：${battleStudentBestSubjects(student.id).join('・')}` : 'イベントを終えると共闘可能'}
                   </span>
                 </span>
               </button>

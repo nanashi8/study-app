@@ -19,7 +19,15 @@ import {
   normalizeBattleStoryLastDay,
   normalizeBattleStoryStep,
 } from './afterSchoolStory.js'
-import { normalizeAfterSchoolBonds } from './afterSchoolBonds.js'
+import {
+  LEGACY_UNLOCKED_BATTLE_STUDENT_IDS,
+  normalizeAfterSchoolBonds,
+  normalizeUnlockedBattleStudentIds,
+} from './afterSchoolBonds.js'
+import {
+  normalizeStoryKeyVisualAlbum,
+  storyKeyVisualAlbumFromLegacyBonds,
+} from './storyAlbum.js'
 import { normalizeVocabHistory } from './vocabHistory.js'
 
 const node = (uid) => ref(db, `students/${uid}`)
@@ -32,6 +40,14 @@ export async function pullOrInit(uid, email) {
     const cur = useStore.getState()
     const battleStars = normalizeBattleStars(d.battleStars)
     const stats = { ...cur.stats, ...(d.stats ?? {}) }
+    const battleStudentId = normalizeBattleStudentId(d.battleStudentId)
+    const afterSchoolBonds = normalizeAfterSchoolBonds(d.afterSchoolBonds)
+    const unlockedBattleStudentIds = normalizeUnlockedBattleStudentIds(
+      Array.isArray(d.unlockedBattleStudentIds)
+        ? [...d.unlockedBattleStudentIds, battleStudentId]
+        : LEGACY_UNLOCKED_BATTLE_STUDENT_IDS,
+      { legacyFallback: !Array.isArray(d.unlockedBattleStudentIds) },
+    )
     useStore.setState({
       srs: d.srs ?? {},
       etymologySrs: d.etymologySrs ?? {},
@@ -70,7 +86,7 @@ export async function pullOrInit(uid, email) {
       battleStars,
       battleXpSpent: normalizeBattleXpSpent(d.battleXpSpent, stats.xp),
       battleThemeId: battleThemeById(d.battleThemeId, battleStars).id,
-      battleStudentId: normalizeBattleStudentId(d.battleStudentId),
+      battleStudentId,
       battleTraitInvestments: normalizeBattleTraitInvestments(
         d.battleTraitInvestments,
         battleStars,
@@ -78,6 +94,10 @@ export async function pullOrInit(uid, email) {
       battleStoryStep: normalizeBattleStoryStep(d.battleStoryStep),
       battleStoryLastDay: normalizeBattleStoryLastDay(d.battleStoryLastDay),
       afterSchoolBonds: normalizeAfterSchoolBonds(d.afterSchoolBonds),
+      unlockedBattleStudentIds,
+      storyKeyVisualAlbum: d.storyKeyVisualAlbum
+        ? normalizeStoryKeyVisualAlbum(d.storyKeyVisualAlbum)
+        : storyKeyVisualAlbumFromLegacyBonds(afterSchoolBonds),
       stats,
       settings: { ...cur.settings, ...(d.settings ?? {}) },
     })

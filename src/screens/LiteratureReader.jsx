@@ -38,6 +38,39 @@ const NARRATION_PAUSE_MS = {
   translation: 420,
 }
 
+const READER_COPY = Object.freeze({
+  english: Object.freeze({
+    playingOriginal: '英語を再生中',
+    playingTranslation: '直訳を再生中',
+    originalSegment: 'English',
+    translationSegment: '区切りの直訳',
+    help: '英語を一息ぶん読み、その区切りの直訳を続けて読みます。',
+    speechSummary: null,
+    footer: '英語 → 区切りの直訳',
+    gradient: 'linear-gradient(135deg,#0f172a,#1e3a8a,#0f766e)',
+  }),
+  classical: Object.freeze({
+    playingOriginal: '古文を再生中',
+    playingTranslation: '現代語訳を再生中',
+    originalSegment: '古文',
+    translationSegment: '区切りの現代語訳',
+    help: '古文を一息ぶん読み、その区切りの現代語訳を続けて読みます。',
+    speechSummary: '場面全体の読み仮名',
+    footer: '古文 → 区切りの現代語訳',
+    gradient: 'linear-gradient(135deg,#451a03,#92400e,#7c2d12)',
+  }),
+  kanbun: Object.freeze({
+    playingOriginal: '書き下しを再生中',
+    playingTranslation: '現代語訳を再生中',
+    originalSegment: '漢文（白文）',
+    translationSegment: '区切りの現代語訳',
+    help: '漢文の白文を目で追い、書き下し文を一息ぶん読んだあと、対応する現代語訳を続けて読みます。',
+    speechSummary: '場面全体の書き下し文',
+    footer: '漢文（書き下し） → 区切りの現代語訳',
+    gradient: 'linear-gradient(135deg,#4c0519,#9f1239,#7f1d1d)',
+  }),
+})
+
 export function LiteratureReaderScreen() {
   const workId = useStore((state) => state.params.workId)
   const navigate = useStore((state) => state.navigate)
@@ -73,7 +106,7 @@ export function LiteratureReaderScreen() {
   if (!work) {
     return (
       <div>
-        <ScreenHeader title="名作交互朗読" />
+        <ScreenHeader title="名作に親しむ" />
         <div className="p-8 text-center font-bold text-ink/50">
           作品が見つかりませんでした。
         </div>
@@ -82,6 +115,7 @@ export function LiteratureReaderScreen() {
   }
 
   const meta = LITERATURE_KIND_META[work.kind]
+  const copy = READER_COPY[work.kind] ?? READER_COPY.classical
   const currentScene = work.scenes[sceneIndex]
   const currentSegments = literatureNarrationSegments(currentScene)
   const currentStep = narrationStepIndex(work, sceneIndex, segmentIndex, phase)
@@ -212,10 +246,7 @@ export function LiteratureReaderScreen() {
         <section
           className="overflow-hidden rounded-3xl p-5 text-white shadow-card"
           style={{
-            background:
-              work.kind === 'english'
-                ? 'linear-gradient(135deg,#0f172a,#1e3a8a,#0f766e)'
-                : 'linear-gradient(135deg,#451a03,#92400e,#7c2d12)',
+            background: copy.gradient,
           }}
         >
           <div className="flex items-start gap-3">
@@ -272,12 +303,8 @@ export function LiteratureReaderScreen() {
               <Chip color={phase === 'original' ? meta.color : '#d97706'}>
                 {playing
                   ? phase === 'original'
-                    ? work.kind === 'english'
-                      ? '英語を再生中'
-                      : '古文を再生中'
-                    : work.kind === 'english'
-                      ? '直訳を再生中'
-                      : '現代語訳を再生中'
+                    ? copy.playingOriginal
+                    : copy.playingTranslation
                   : `区切り ${segmentIndex + 1}`}
               </Chip>
             </div>
@@ -299,9 +326,7 @@ export function LiteratureReaderScreen() {
                 間で区切る交互朗読
               </p>
               <p className="mt-1 text-[11px] font-bold leading-relaxed text-teal-950/55">
-                {work.kind === 'english'
-                  ? '英語を一息ぶん読み、その区切りの直訳を続けて読みます。'
-                  : '古文を一息ぶん読み、その区切りの現代語訳を続けて読みます。'}
+                {copy.help}
               </p>
             </div>
 
@@ -330,7 +355,7 @@ export function LiteratureReaderScreen() {
                     >
                       <div className="mb-1.5 flex items-center justify-between gap-2">
                         <span className="text-[10px] font-extrabold uppercase tracking-wide text-teal-700">
-                          {work.kind === 'english' ? 'English' : '古文'} {index + 1}
+                          {copy.originalSegment} {index + 1}
                         </span>
                         {playing && active && phase === 'original' && (
                           <span className="text-[10px] font-extrabold text-teal-700">
@@ -341,13 +366,23 @@ export function LiteratureReaderScreen() {
                       <p
                         className={cx(
                           'font-bold leading-[1.8] text-ink',
-                          work.kind === 'classical'
+                          work.kind !== 'english'
                             ? 'font-serif text-lg'
                             : 'text-base',
                         )}
                       >
                         {segment.original}
                       </p>
+                      {work.kind === 'kanbun' && (
+                        <div className="mt-2 border-t border-teal-100 pt-2">
+                          <span className="text-[10px] font-extrabold tracking-wide text-rose-700">
+                            書き下し（朗読）
+                          </span>
+                          <p className="mt-1 text-sm font-bold leading-[1.8] text-ink/65">
+                            {segment.speech}
+                          </p>
+                        </div>
+                      )}
                     </div>
                     <div
                       className={cx(
@@ -359,7 +394,7 @@ export function LiteratureReaderScreen() {
                     >
                       <div className="mb-1.5 flex items-center justify-between gap-2">
                         <span className="text-[10px] font-extrabold tracking-wide text-amber-700">
-                          {work.kind === 'english' ? '区切りの直訳' : '区切りの現代語訳'}
+                          {copy.translationSegment}
                         </span>
                         {playing && active && phase === 'translation' && (
                           <span className="text-[10px] font-extrabold text-amber-700">
@@ -376,10 +411,10 @@ export function LiteratureReaderScreen() {
               })}
             </section>
 
-            {work.kind === 'classical' && currentScene.speech && (
+            {copy.speechSummary && currentScene.speech && (
               <details className="rounded-xl bg-white px-3 py-2">
                 <summary className="cursor-pointer text-xs font-extrabold text-teal-800">
-                  場面全体の読み仮名
+                  {copy.speechSummary}
                 </summary>
                 <p className="mt-2 text-sm font-bold leading-relaxed text-ink/55">
                   {currentScene.speech}
@@ -577,8 +612,7 @@ export function LiteratureReaderScreen() {
           </IconButton>
         </div>
         <p className="mt-2 text-center text-[10px] font-bold text-ink/35">
-          {work.kind === 'english' ? '英語 → 区切りの直訳' : '古文 → 区切りの現代語訳'}
-          を間の区切りごとに交互再生
+          {copy.footer}を間の区切りごとに交互再生
         </p>
       </div>
     </div>
