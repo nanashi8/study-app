@@ -30,51 +30,67 @@ const PREFIX = 'EQ1-' // EigoQuest v1。先頭でアプリ/バージョンを判
 const isRecord = (value) =>
   !!value && typeof value === 'object' && !Array.isArray(value)
 
+// 端末保存・進捗コード・クラウド同期・「学習の記録」画面で共有する永続項目。
+// 項目追加時に各経路へ手書きで転記すると購読漏れが起きるため、ここを唯一の一覧にする。
+export const PERSISTED_PROGRESS_FIELDS = Object.freeze([
+  'srs',
+  'etymologySrs',
+  'kotenSrs',
+  'kotenGrammarSrs',
+  'kotenCultureSrs',
+  'kotenInterpretationSrs',
+  'myList',
+  'vocabHistory',
+  'myGrammarList',
+  'writingProgress',
+  'kotenWordList',
+  'kotenGrammarList',
+  'kotenCultureList',
+  'readingsDone',
+  'mathDone',
+  'mathMastery',
+  'skillStats',
+  'learningAnalytics',
+  'diagnosticHistory',
+  'diagnosticAttempt',
+  'diagnosticSeed',
+  'engPos',
+  'battleRelicLevel',
+  'battleStars',
+  'battleXpSpent',
+  'battleThemeId',
+  'battleStudentId',
+  'battleTraitInvestments',
+  'battleStoryStep',
+  'battleStoryLastDay',
+  'afterSchoolBonds',
+  'unlockedBattleStudentIds',
+  'storyKeyVisualAlbum',
+  'portalOrder',
+  'portalHidden',
+  'stats',
+  'settings',
+])
+
+export function selectProgressState(state = {}) {
+  return Object.fromEntries(
+    PERSISTED_PROGRESS_FIELDS.map((field) => [field, state[field]]),
+  )
+}
+
 // 状態のうち「持ち運ぶ」部分だけを抜き出す。
 // importCode / pullOrInit が読む全フィールドを網羅し、QR/コードで端末を
 // 移っても古文・並び順まで丸ごと「続きから」復元できるようにする。
-export function buildPayload(state) {
+export function buildPayload(state = {}) {
   return {
     v: CODE_VERSION,
-    srs: state.srs,
-    etymologySrs: state.etymologySrs,
-    kotenSrs: state.kotenSrs,
-    kotenGrammarSrs: state.kotenGrammarSrs,
-    kotenCultureSrs: state.kotenCultureSrs,
-    kotenInterpretationSrs: state.kotenInterpretationSrs,
-    myList: state.myList,
+    ...selectProgressState(state),
     vocabHistory: normalizeVocabHistory(state.vocabHistory),
-    myGrammarList: state.myGrammarList,
-    writingProgress: state.writingProgress,
-    kotenWordList: state.kotenWordList,
-    kotenGrammarList: state.kotenGrammarList,
-    kotenCultureList: state.kotenCultureList,
-    readingsDone: state.readingsDone,
-    mathDone: state.mathDone,
-    mathMastery: state.mathMastery,
-    skillStats: state.skillStats,
-    learningAnalytics: state.learningAnalytics,
-    diagnosticHistory: state.diagnosticHistory,
-    diagnosticAttempt: state.diagnosticAttempt,
-    diagnosticSeed: state.diagnosticSeed,
-    engPos: state.engPos,
-    battleRelicLevel: state.battleRelicLevel,
-    battleStars: state.battleStars,
-    battleXpSpent: state.battleXpSpent,
-    battleThemeId: state.battleThemeId,
-    battleStudentId: state.battleStudentId,
-    battleTraitInvestments: state.battleTraitInvestments,
-    battleStoryStep: state.battleStoryStep,
-    battleStoryLastDay: state.battleStoryLastDay,
     afterSchoolBonds: normalizeAfterSchoolBonds(state.afterSchoolBonds),
     unlockedBattleStudentIds: normalizeUnlockedBattleStudentIds(
       state.unlockedBattleStudentIds,
     ),
     storyKeyVisualAlbum: normalizeStoryKeyVisualAlbum(state.storyKeyVisualAlbum),
-    portalOrder: state.portalOrder,
-    portalHidden: state.portalHidden,
-    stats: state.stats,
-    settings: state.settings,
   }
 }
 

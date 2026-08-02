@@ -38,9 +38,10 @@ const statusLabel = (item, fallback) => {
 
 export function LongSentenceTranslation({ guide, className = '' }) {
   const settings = useStore((state) => state.settings)
-  if (!guide?.steps?.length) return null
+  const phraseSteps = guide?.meaningSteps?.length ? guide.meaningSteps : guide?.steps
+  if (!phraseSteps?.length) return null
 
-  const speechItems = guide.steps.map((item, index) => {
+  const speechItems = phraseSteps.map((item, index) => {
     const explanation = [item.note, item.roleNote]
       .filter(Boolean)
       .join(' ')
@@ -56,7 +57,7 @@ export function LongSentenceTranslation({ guide, className = '' }) {
         },
         {
           text: `前からは、「${japanesePhraseSpeechText(item.ja)}」と取ります。`,
-          label: '前から読む直訳',
+          label: '対応する日本語',
           lang: 'ja-JP',
           style: 'translation',
         },
@@ -88,11 +89,11 @@ export function LongSentenceTranslation({ guide, className = '' }) {
       data-long-sentence-translation
     >
       <p className="text-xs font-bold leading-relaxed text-sky-950/65">
-        英語を戻らず、上から順に意味を足します。
+        英語を発音できて意味が通るまとまりで読み、上から順に意味を足します。SVOCMは各フレーズ内部の構造を示します。
       </p>
 
       <ol className="mt-3 space-y-2">
-        {guide.steps.map((item, index) => (
+        {phraseSteps.map((item, index) => (
           <li
             key={`${index}-${item.en}`}
             className="rounded-xl bg-white p-3 ring-1 ring-sky-100"
@@ -150,7 +151,7 @@ export function LongSentenceTranslation({ guide, className = '' }) {
               <button
                 type="button"
                 onClick={() => speakPhraseExplanation(index)}
-                aria-label={`${item.spokenEn ?? item.en}を英語、直訳、文法解説の順で再生`}
+                aria-label={`${item.spokenEn ?? item.en}を英語、対応する日本語、文法解説の順で再生`}
                 className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-sky-100 text-sky-700 active:bg-sky-200"
               >
                 <SpeakerWave size={17} />

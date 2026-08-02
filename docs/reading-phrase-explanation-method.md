@@ -1,60 +1,63 @@
-# 長文のフレーズ訳・解説方法
+# 英文の意味フレーズ解説方法
 
 ## 目的と対象
 
-高校生が長い英文も英語の語順のまま追えるように、役割と発音可能性の両方を満たす短い単位へ分ける。
+高校生が長い英文も英語の語順のまま追えるように、発音できて意味を受け取れるまとまりへ分ける。SVOCMはフレーズ境界ではなく、各まとまり内部の構造を確認するために使う。
 
 - 長文読解16本・363文・全フレーズを対象にする。12文の例だけを対応済みとは数えない。
 - 「長い一文」は12語以上の構文例33文を別コーパスとして同じ基準で監査する。
-- 各単位は、原文英語の音声 → 隣接する前からの直訳 → その文で必要な文法説明、の順に示す。
-- 文全体の自然な和訳はフレーズ直訳と混ぜず、全文の最後にだけ示す。
+- 各単位は、原文英語の音声 → 隣接する対応日本語 → その文で必要な文法説明、の順に示す。
+- 文全体の自然な和訳は意味フレーズの対応日本語と混ぜず、全文の最後にだけ示す。
 
 ## 最優先の区切り基準
 
-### SVOCMの役割境界を保つ
+### 意味と発音のまとまりを優先する
 
-基本順は次のとおり。
+SVOCMで構造を確認するときの基本順は次のとおりだが、このラベルが変わるたびにフレーズを切らない。
 
 ```text
 Sが → Vする → Oを → Cに／だと → Mで／に
 ```
 
-主語と動詞を一律に一フレーズへ結合しない。
+短いS＋Vが一つの出来事として自然に発音できるなら、一つのフレーズにする。
 
 ```text
-She [S]
-彼女は
-
-goes [V]
-行きます
+She goes [S＋V]
+彼女は行きます
 
 to school [M]
 学校へ
 ```
 
 ```text
-Rina [S]
-リナは
+This evidence [S]
+この証拠は
 
-is [V]
-〜です（内容は次へ）
+makes it easier [V＋O＋C]
+それを簡単にします
 
-a junior high school student [C]
-一人の中学生
+to improve a design [V＋O]
+設計を改善することを
 ```
 
-SとV、VとO、VとC、MとVなど、異なる役割を短さのために同じフレーズへ混ぜない。同じ役割の内部では、意味・発音上必要なまとまりを保つ。たとえば `cannot find`、`had to choose`、`may be stored` はV内部なので分断しない。
+S＋V、V＋O、V＋C、V＋O＋Cなど、複数の役割でも一息の意味が完成するなら同じフレーズにする。長い主語、長い目的語、後置修飾、比較、節の入口などは、意味を見失わない境界で分ける。`cannot find`、`had to choose`、`may be stored` のような動詞群も分断しない。
+
+したがって、S＋Vを常に結合する規則でも、常に分ける規則でもない。次を本文別に判断する。
+
+- その英語を一息で自然に発音できるか。
+- その日本語だけで意味を受け取れるか。
+- 後続の目的語・補語・修飾語を不自然に先取りしていないか。
+- 文法上重要な結び付きや比較・並列を壊していないか。
 
 ### 短さの上限
 
-- 長文読解: S/V/O/Cなどは原則5語以内、M/LINKは7語以内。
-- 12語以上の「長い一文」: coreは4語以内、M/LINKは5語以内。
+- 長文読解と12語以上の「長い一文」は、学習者向け意味フレーズを原則8語以内にする。
 - 上限内でも、高校生が一度に役割を判定しにくい列挙・節・比較はさらに分ける。
 - 上限を守るために前置詞と目的語、疑問限定詞と名詞、助動詞と本動詞を不自然に切らない。
 
-## 前からの直訳
+## 英語順の対応日本語
 
-日本語を自然語順へ先回りさせず、現在の英語フレーズに対応する意味だけを置く。後ろを待つ必要があれば、仮置きと括弧受け直しを使う。
+文全体を先に自然な日本語へ並べ替えず、現在の英語フレーズに対応する意味を置く。ただし、一つのフレーズ内部では `makes it easier → それを簡単にします` のように、日本語として理解できる語順に整える。後ろを待つ必要があれば、仮置きと括弧受け直しを使う。
 
 ```text
 by what
@@ -85,9 +88,9 @@ the Rabbit actually took a watch
 
 この判定は `reading-connector-closure-reviews.js` の全件台帳と全件監査で固定する。新しい本文や接続候補を追加した場合は、「括弧受け直し」または「既に明確」のどちらかを本文別に登録しない限り、監査を完了扱いにしない。
 
-括弧は、英語音声へ語を追加する記号ではない。日本語で係り先を見失わないための受け直しである。自然訳、文法用語、説明文を直訳欄へ入れない。
+括弧は、英語音声へ語を追加する記号ではない。日本語で係り先を見失わないための受け直しである。自然訳、文法用語、説明文を対応日本語欄へ入れない。
 
-後置修飾を独立フレーズにする場合、`of the station → その駅の` のように「の」で止めず、`その駅の（紙模型を）` のように修飾先を受け直す。名詞と合わせても語数上限内なら、一役割の自然単位に保ってよい。
+後置修飾を独立フレーズにする場合、`of the station → その駅の` のように「の」で止めず、`その駅の（紙模型を）` のように修飾先を受け直す。名詞と合わせて自然な一息になるなら、役割が複数でも同じ意味フレーズにしてよい。
 
 ## 特殊構文の扱い
 
@@ -95,19 +98,17 @@ the Rabbit actually took a watch
 
 ```text
 This evidence [S]
-makes [V]
-it [O]
-easier [C]
-to improve [V]
-a design [O]
+makes it easier [V＋O＋C]
+to improve a design [V＋O]
 or [LINK]
-(to) decide [V]
-that ... [LINK]
+(to) decide that [V＋LINK]
+a simpler solution would work [S＋V]
+better [M]
 ```
 
-`it` の直訳は「それを」とし、形式目的語・後重心は説明欄に置く。すべてのitを形式目的語扱いせず、普通の指示代名詞との区別を本文別に確定する。
+`makes it easier` は「それを簡単にします」と一つの述部で読み、内部にV＋O＋Cを示す。itが形式目的語で、英語が長い実質内容を後ろへ置く後重心を好むことは説明欄に置く。すべてのitを形式目的語扱いせず、普通の指示代名詞との区別を本文別に確定する。
 
-`decide` は `to improve` と並列され、二つ目のtoが共有される。構造表示だけ `(to) decide` とし、`spokenEn` は原文どおり `decide` のままにする。同様に共有された `(can)`、`(may)`、`(should)`、`(how to)` も表示だけへ補い、音声へ混ぜない。
+`decide that` は `to improve a design` と並列され、二つ目のtoが共有される。構造表示だけ `(to) decide that` とし、`spokenEn` は原文どおり `decide that` のままにする。同様に共有された `(can)`、`(may)`、`(should)`、`(how to)` も表示だけへ補い、音声へ混ぜない。
 
 ### 関係詞・疑問詞・前置詞＋wh
 
@@ -153,19 +154,20 @@ that ... [LINK]
 次の三つを混同しない。
 
 1. `review-needed`: 本文別判断または意味監査が未完。
-2. `reviewed`: 明示的な全文レビュー台帳にあり、原文とフレーズの `en / role / ja / displayEn / spokenEn / 項目固有説明` に加え、投影後ブロックの `en境界 / label / kind / role / note / translationGuide / phrase ID列` の静的fingerprintも一致する。新規文、既存フレーズの訳・role・説明変更、またはブロック分類・説明変更は自動的に `review-needed` へ戻る。
+2. `reviewed`: 明示的な全文レビュー台帳にあり、内部SVOCM単位の `en / role / ja / displayEn / spokenEn / 項目固有説明` と、投影後ブロックの静的fingerprintが一致する。学習者向け意味フレーズは、この確認済み単位を欠落なくまとめ、独立した意味フレーズ期待値と照合する。
 3. `confirmed`: 原文復元、音声、役割、短さ、項目別説明、独立期待値、テストをすべて通過。
 
 一律に全件confirmedへ書き換えない。未解決があればその文・フレーズだけを確認待ちとして残し、本文監査済み件数と分けて表示する。
 
 ## 全件完成ゲート
 
-- 長文16本・363文と、長い一文33文を全件数える。
+- 長文16本・363文、長い一文33文、文学朗読9作品・59場面・257区切りを全件数える。
 - 英語フレーズ連結で原文を、欠落・追加・入れ替えなく復元する。
 - `spokenEn` は原文と一致し、構造表示の括弧補いを発音しない。
 - 日本語フレーズの括弧内は意味として読み、括弧記号だけを音声原稿から除く。
 - 英語、隣接日本語、項目固有説明、音声、自然訳が欠落しない。
-- 語数上限超過0、複数役割混在0、真の助動詞／本動詞分断0、未説明の前置詞断片0。
+- 意味フレーズの8語上限超過0、不要なSVOCM単位分断0、真の助動詞／本動詞分断0、未説明の前置詞断片0。
+- S＋V、V＋O、V＋C、V＋O＋Cなど複数役割を含む意味フレーズが正しく存在し、複数役割そのものを失敗扱いしない。
 - 特殊文法説明不足0、並列binding不備0、句読点境界欠落0。
 - 報告済み回帰文は、生成側とは独立した期待台帳で、role列と `type / governor / semanticSubject / left / right / sharedMarker / displayEn` をdeep-equal照合する。
 - 本文別訂正台帳は全判断が適用され、死んだ旧値を残さない。
@@ -176,15 +178,18 @@ that ... [LINK]
 - `src/data/reading-phrase-rules.js`: 再利用する方法規則。
 - `src/data/reading-phrase-explanations.js`: 12文の回帰例。全件対応数の代用ではない。
 - `src/data/reading-phrase-corrections.js`: 363文の本文別判断と受け直し。
+- `src/data/reading-meaning-phrase-overrides.js`: 自動結合だけでは決められない本文別の意味フレーズ訳・分割。
 - `src/data/reading-phrase-review-ledger.js`: 全363文・33文の安定ID、原文fingerprint、フレーズfingerprint、全1,042ブロックの構造fingerprint、未決規則の適用範囲。
-- `src/lib/reading-grammar.js`: フレーズ生成、specialGrammar、binding、構造表示。
+- `src/lib/meaning-phrases.js`: 確認済みSVOCM単位を、発音可能な意味フレーズへ結合する共通処理。
+- `src/lib/reading-grammar.js`: 内部SVOCM単位、意味フレーズ、specialGrammar、binding、構造表示。
 - `src/data/reading-block-structure-overrides.js`: 自動境界だけでは表せない、内容節・融合関係詞・共有不定詞の確認済みブロック構造。
 - `src/lib/phrase-explanation-audit.js`: 全件数・復元・役割・意味期待値・確認状態の監査。
 - `src/data/long-sentence-translations.js`: 12語以上の33文に対する同基準の台帳。
-- `src/data/long-sentence-role-expectations.js`: 33文・236フレーズすべての独立した英語／role列期待値。
+- `src/data/long-sentence-meaning-phrases.js`: 長い一文33文すべての学習者向け意味フレーズ定義。
+- `src/data/long-sentence-role-expectations.js`: 33文・236内部SVOCM単位の独立した英語／role列期待値。
 
 現時点で、`less / than`、二つ目の`by what`、`from what`、並列scope、否定作用域は本文別判断へ反映済みで、方法上の未確定事項には置かない。新しい曖昧さが実文で見つかった場合だけ、文例・候補・影響範囲を示して確認対象へ戻す。
 
-Reader下段の文法ブロックは、旧自動解析の `phrasePairs` を別経路で表示しない。最終確認済み `phraseSequence` を原文位置へ投影し、`en / spokenEn / displayEn / role / ja / roleHeading / roleNote / explanation` を同じpayloadから表示・再生する。全363文で両列をdeep-equalし、内容節を関係詞節とする旧分類も独立に拒否する。さらに、投影後の全1,042ブロックを文ごとの静的fingerprintで固定し、境界・label・kind・role・note・translationGuideのどれかが変わった文を確認待ちへ戻す。文上部の見取り図はカード境界を機械的に括弧へ変換せず、`analysis.marked` を節・句の入れ子トークンへ損失なく変換して、そのトークンをReaderが直接描画する。`from what they once knew` のように複数カードへまたがる一節、`less A than B` の比較境界、形式目的語の実質内容とその内側のthat節を、文字列・トークン階層・実レンダーの三段階で検査する。
+Readerは、文型監査用の `phraseSequence` を直接フレーズカードとして表示しない。そこから作った `meaningPhraseSequence` を主表示・音声・下段ブロックへ共通投影し、SVOCMは各カード内部の小さな注釈として示す。内部単位のfingerprintは文法判断の退行を検知し、意味フレーズ監査は不自然な細切れ・原文復元・対応日本語・音声を別に検知する。文上部の見取り図はカード境界を括弧へ変換せず、節・句の入れ子構造として独立表示する。
 
 文全体の論理接続を担う `therefore / consequently` が助動詞と本動詞の間へ入る6件は、`have therefore begun[V]`、`should therefore be[V]` のように、三語の短いVとして一単位にする。外側の役割は述語Vであり、論理副詞の働きは項目別説明で示す。これにより `have begun` を分断せず、原文音声の順序と一息の短さを保つ。既に確認済みの `is then shaped / is repeatedly presented` も同じ扱いである。この限定判断を、長すぎる句や異なる外側役割の無条件な結合へ広げない。

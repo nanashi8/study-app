@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef } from 'react'
 import { useStore, todayIndex } from '../store/useStore.js'
 import { GameBgmPlayer } from '../lib/gameBgmPlayer.js'
 import { gameBgmTrackForState } from '../lib/gameBgmRouter.js'
@@ -16,7 +16,8 @@ export function GameBgmController() {
   const playerRef = useRef(null)
 
   if (!playerRef.current && typeof window !== 'undefined') {
-    playerRef.current = new GameBgmPlayer()
+    // 初回Effectより先にユーザー操作が入っても、保存済みのOFFを破らない。
+    playerRef.current = new GameBgmPlayer({ enabled, volume })
   }
 
   const track = useMemo(
@@ -24,8 +25,8 @@ export function GameBgmController() {
     [screen, params, storyStep],
   )
 
-  useEffect(() => {
-    const player = playerRef.current ?? new GameBgmPlayer()
+  useLayoutEffect(() => {
+    const player = playerRef.current ?? new GameBgmPlayer({ enabled, volume })
     playerRef.current = player
     player.setEnabled(enabled)
     player.setVolume(volume)
@@ -35,9 +36,14 @@ export function GameBgmController() {
 
   useEffect(() => {
     if (typeof window === 'undefined') return undefined
-    const player = playerRef.current ?? new GameBgmPlayer()
+    const player = playerRef.current ?? new GameBgmPlayer({ enabled, volume })
     playerRef.current = player
-    const unlock = () => player.unlock()
+    const unlock = (event) => {
+      // OFFスイッチを押したpointerdown自体でAudioContextを解除し、
+      // ReactのonClickより一瞬先に再生を始める競合を防ぐ。
+      if (event?.target?.closest?.('[data-game-bgm-control]')) return
+      void player.unlock()
+    }
     const visibility = () => {
       if (document.hidden) player.suspend()
       else player.resume()

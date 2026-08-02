@@ -211,6 +211,13 @@ for (const [category, expected] of Object.entries(expectedCategoryCounts)) {
 if (soundtrackManifest.version !== GAME_SOUNDTRACK_VERSION) {
   fail(`manifestの音源バージョンが不一致です (${soundtrackManifest.version})`)
 }
+if (!soundtrackManifest.renderer?.includes('FluidSynth')) {
+  fail(`完成音源が高品質FluidSynthレンダラーではありません (${soundtrackManifest.renderer})`)
+}
+if (!Number.isFinite(soundtrackManifest.soundBank?.bytes)
+  || soundtrackManifest.soundBank.bytes < 10 * 1024 * 1024) {
+  fail('完成音源の実サンプルSoundFontが10 MiB未満、または記録されていません')
+}
 if (soundtrackManifest.renderedTrackCount !== expectedTrackCount) {
   fail(`manifestは全${expectedTrackCount}曲を収録していません`)
 }

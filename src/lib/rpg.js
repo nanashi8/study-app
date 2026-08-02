@@ -574,6 +574,7 @@ const teacherRival = ({
   intent,
   lore,
   intro,
+  resultLines,
 }) => ({
   id,
   portraitId: id,
@@ -592,6 +593,7 @@ const teacherRival = ({
   intent,
   lore,
   intro,
+  resultLines,
 })
 
 // 章ボスのIDは変えず、校内では架空の先生ライバルとして登場させる。
@@ -608,7 +610,12 @@ export const TEACHER_RIVALS = {
     attackLine: '白石先生がチョークを投げた！',
     intent: '正解そっくりの単語を黒板いっぱいに書く',
     lore: 'テンポのよい授業で人気の先生。正解すると「Excellent!」の花まるをくれる。',
-    intro: '白石先生がチョークを構えた。「最初の小テスト、いくよ！」',
+    intro: '悪いマナが白石先生の瞳を覆い、チョークが宙に浮く。「正しい単語など、全部まぎらわせてあげる！」',
+    resultLines: {
+      defeated: 'Perfectだと？ 今のはチョークが滑っただけよ……次は一語も読ませない！',
+      unresolved: 'まだ終わりじゃない。次の黒板は、もっと紛らわしい単語で埋めてあげる！',
+      dominant: 'ふふ、迷ったわね。その自信ごと黒板の粉にしてあげる！',
+    },
   }),
   'forest-keeper': teacherRival({
     id: 'forest-keeper',
@@ -621,7 +628,12 @@ export const TEACHER_RIVALS = {
     attackLine: '文月先生が黒板消しをパンッと叩いた！',
     intent: 'チョークの粉で決め手になる一語を隠す',
     lore: 'ことばの理由を大切にする先生。根拠まで言える生徒にはとびきり大きな丸を付ける。',
-    intro: '図書室の奥で、文月先生が黒板消しを両手に持って待っている。',
+    intro: '悪いマナが図書室を黒板の粉で閉ざす。文月先生が笑う。「決め手の一語など、行間ごと消してしまいましょう」',
+    resultLines: {
+      defeated: '私の行間を読んだですって……今回は見逃してあげるだけです！',
+      unresolved: '結末はまだ書き終えていません。次の一文で形勢を塗り替えます！',
+      dominant: '根拠を失った答えはただの空白。あなたたちの物語はここまでです！',
+    },
   }),
   chronos: teacherRival({
     id: 'chronos',
@@ -634,7 +646,12 @@ export const TEACHER_RIVALS = {
     attackLine: '角田先生が巨大コンパスをくるりと回した！',
     intent: '選択肢の順番を正確な角度で入れ替える',
     lore: '図形と英文の構造を同じように見抜く先生。途中式ならぬ「途中の根拠」をほめてくれる。',
-    intro: '廊下の時計が止まり、角田先生の巨大コンパスだけが動き始めた。',
+    intro: '悪いマナが廊下の時計を止め、角田先生の巨大コンパスが開く。「正解へ向かう角度は、私がゼロにしてやる！」',
+    resultLines: {
+      defeated: 'この誤差は想定外だ……だが次は逃げ道まで計算に入れる！',
+      unresolved: 'まだ解は出ていない。次の式でお前たちを袋小路へ追い込む！',
+      dominant: '計算どおりだ。お前たちの勝ち筋は最初から存在しない！',
+    },
   }),
   leviathan: teacherRival({
     id: 'leviathan',
@@ -647,7 +664,12 @@ export const TEACHER_RIVALS = {
     attackLine: '地図野先生が地球儀を高速で回した！',
     intent: '長文の舞台を世界の反対側まで飛ばす',
     lore: '例文の国や文化まで教えてくれる先生。地球儀が止まった場所からクイズが始まる。',
-    intro: '水面に地球儀が浮かび、地図野先生が次の国を指さした。',
+    intro: '悪いマナに沈んだ水面へ地球儀が浮かぶ。地図野先生が告げる。「逃げ道は地図から消した。世界の果てまで迷うがいい！」',
+    resultLines: {
+      defeated: 'その経路だけは地図になかった……次はどこにもたどり着かせない！',
+      unresolved: '現在地を見失ったようだな。次は方角まで奪ってやる！',
+      dominant: 'ここは私の地図の上だ。お前たちに帰り道などない！',
+    },
   }),
   librarian: teacherRival({
     id: 'librarian',
@@ -660,7 +682,12 @@ export const TEACHER_RIVALS = {
     attackLine: '火野先生が重曹入りビーカーを泡立てた！',
     intent: 'カラフルな泡で文法の手掛かりを包み込む',
     lore: '失敗も立派な観察結果だと教える先生。安全ゴーグルと復習だけは忘れない。',
-    intro: '理科室のビーカーがふくらみ、火野先生が実験開始を宣言した。',
+    intro: '悪いマナが理科室のビーカーを黒く泡立てる。火野先生が手を伸ばす。「手掛かりは全部この泡に溶かしてやる。迷い続けるがいい！」',
+    resultLines: {
+      defeated: '反応条件が違っただけだ……次の実験では必ず封じ込める！',
+      unresolved: 'まだ反応は終わっていない。次の一滴で形勢を変えてやる！',
+      dominant: '観察終了だ。お前たちの答えは泡の底へ沈んだ！',
+    },
   }),
   'silent-dragon': teacherRival({
     id: 'silent-dragon',
@@ -673,7 +700,12 @@ export const TEACHER_RIVALS = {
     attackLine: '響先生が英語のフレーズをリズムよく読み上げた！',
     intent: '似た発音のフレーズを同じ速さで重ねて聞き分けさせる',
     lore: '発音と聞き取りをリズムで教える先生。伝わる一言には静かに拍手する。',
-    intro: '音楽室が静まり、響先生の英語の呼びかけが澄んだリズムで広がった。',
+    intro: '悪いマナが音楽室の音を奇妙に重ねる。響先生が囁く。「正しい音は雑音に沈める。聞き分けられるものならやってみなさい！」',
+    resultLines: {
+      defeated: 'このリズムを破るなんて……次は息継ぎさえさせない！',
+      unresolved: 'まだ静かにするには早い。次のフレーズで判断を狂わせる！',
+      dominant: '聞こえなかったでしょう？ お前たちの答えはもう雑音の中よ！',
+    },
   }),
   tempest: teacherRival({
     id: 'tempest',
@@ -686,7 +718,12 @@ export const TEACHER_RIVALS = {
     attackLine: '速水先生が台車のストップウォッチを押した！',
     intent: '速度と向きを一気に変え、運動の法則を問いかける',
     lore: '運動部の記録も授業データにする物理教師。式だけでなく実際の動きを確かめる。',
-    intro: '夕焼けの体育館に実験用の台車が並ぶ。「速度の変化を最後まで追うぞ！」',
+    intro: '悪いマナが夕焼けの体育館で台車を加速させる。速水先生が叫ぶ。「お前たちが考える前に、勝負を終わらせてやる！」',
+    resultLines: {
+      defeated: 'この加速度は計算外だ……次は一歩も先へ行かせん！',
+      unresolved: 'まだ速度は落ちていない。次の一問で一気に突き放す！',
+      dominant: '遅すぎる！ お前たちの答えなど、とっくに置き去りだ！',
+    },
   }),
   'nameless-king': teacherRival({
     id: 'nameless-king',
@@ -699,7 +736,12 @@ export const TEACHER_RIVALS = {
     attackLine: '工藤先生が岩石ハンマーで標本をコンと叩いた！',
     intent: '地層の順番をずらし、過去の環境を読み直させる',
     lore: '石と地層を校舎の記憶として読む先生。採集道具の片付けまでが観察だ。',
-    intro: '旧校舎の標本台で、工藤先生が岩石と化石を年代順に並べた。',
+    intro: '悪いマナが旧校舎の地層をせり上げる。工藤先生が岩石ハンマーを掲げる。「お前たちの答えも、古い地層の下へ埋めてやる！」',
+    resultLines: {
+      defeated: 'この逆転は地層に残らん……次こそ歴史ごと埋め直す！',
+      unresolved: 'まだ掘り当てたつもりか。真相はもっと深い層に眠っている！',
+      dominant: '見当違いの層を掘ったな。お前たちの勝機は化石になった！',
+    },
   }),
   'archive-angel': teacherRival({
     id: 'archive-angel',
@@ -712,7 +754,12 @@ export const TEACHER_RIVALS = {
     attackLine: '彩先生が顕微鏡の像をスクリーンへ映した！',
     intent: 'よく似た細胞を並べ、形と働きの違いを観察させる',
     lore: '観察スケッチを大切にする生物教師。小さな違いから生命の仕組みを見つける。',
-    intro: '生物準備室の標本が光り、彩先生が顕微鏡の焦点を合わせた。',
+    intro: '悪いマナが生物準備室の標本を光らせる。彩先生が顕微鏡をのぞく。「その自信、細胞ひとつまで分解して観察してあげる！」',
+    resultLines: {
+      defeated: 'この個体差は想定外……次は逃げ道のない観察区画に閉じ込めてあげる！',
+      unresolved: 'まだ観察は終わらない。次は弱点を顕微鏡で見つけてあげる！',
+      dominant: '見つけたわ、その弱点。もう私の視野からは逃げられない！',
+    },
   }),
   'word-emperor': teacherRival({
     id: 'word-emperor',
@@ -725,7 +772,12 @@ export const TEACHER_RIVALS = {
     attackLine: '鐘ヶ江教頭が巨大な日本史年表を開いた！',
     intent: '出来事の順番と因果関係を出席簿のように照合する',
     lore: '教頭を務めながら日本史も教える先生。校内の歩みを時代の流れへ結びつける。',
-    intro: '校長室の前で鐘ヶ江教頭が年表を開く。「出来事を流れで説明してください」',
+    intro: '悪いマナが校長室前の年表を黒く塗りつぶす。鐘ヶ江教頭が出席簿を開く。「反抗の記録はすべて年表に刻む。ここで屈しなさい！」',
+    resultLines: {
+      defeated: 'この敗北は臨時記録だ……正式な年表には載せんぞ！',
+      unresolved: 'まだ判定は終わっていない。次の時代まで出席簿を閉じるな！',
+      dominant: '敗北の記録を追加した。お前たちの反抗はここで終わりだ！',
+    },
   }),
   'endless-book': teacherRival({
     id: 'endless-book',
@@ -738,7 +790,12 @@ export const TEACHER_RIVALS = {
     attackLine: '学園坂校長が世界史の長い講話を始めた！',
     intent: '大事な年代を文明の長い物語の中へそっと隠す',
     lore: '校長を務めながら世界史も教える先生。異なる地域の歩みを一つの物語として語る。',
-    intro: '卒業式の講堂で世界地図が開く。「短く一言……文明のつながりから始めましょう」',
+    intro: '悪いマナが卒業式の講堂を包み、世界地図が開く。学園坂校長が声を響かせる。「この講堂で、お前たちの反抗の歴史は終わる！」',
+    resultLines: {
+      defeated: '歴史の一ページが乱れただけだ……次の章では私が勝者だ！',
+      unresolved: 'まだ講話は序章にすぎない。次の文明まで逃がしはしない！',
+      dominant: '歴史は勝者が記すもの。今日の結末は私が決めた！',
+    },
   }),
 }
 
@@ -1778,6 +1835,15 @@ export function encounterFor({
   }
 }
 
+// 先生本人の日常会話とは分離し、影蝕中だけの敵役台詞を決着に合わせて返す。
+// 先生が倒れた場合は悪いマナがほどける直前の負け惜しみとして扱う。
+export function teacherBattleResultLine(encounter, battleState = {}) {
+  if (!encounter?.isTeacher || !encounter.resultLines) return null
+  if (battleState?.enemyDefeated) return encounter.resultLines.defeated
+  if (battleState?.heroDefeated) return encounter.resultLines.dominant
+  return encounter.resultLines.unresolved
+}
+
 export function battleVerdict(accuracy = 0) {
   const safe = Math.max(0, Math.min(1, Number(accuracy) || 0))
   if (safe >= 0.9) {
@@ -1786,14 +1852,14 @@ export function battleVerdict(accuracy = 0) {
       emoji: '🏆',
       title: safe === 1 ? '完全勝利！' : '圧勝！',
       text: safe === 1
-        ? '最後の一問まで正解。先生から特大の花まるをもらった！'
-        : 'ほとんどの問題を正解し、教室じゅうから拍手が起こった。',
+        ? '最後の一問まで正解し、悪いマナの結界を鮮やかに打ち破った！'
+        : 'ほとんどの問題を正解し、悪いマナの結界を大きく押し返した。',
     }
   }
   if (safe >= 0.7) {
     return {
       id: 'victory',
-      emoji: '💮',
+      emoji: '⚔️',
       title: '勝利！',
       text: '積み重ねた正解で今日のチャレンジをクリア。覚えた言葉が確かな力になった。',
     }

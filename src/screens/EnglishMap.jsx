@@ -84,11 +84,14 @@ import {
   afterSchoolStoryArcForStep,
 } from '../lib/storyProgression.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
+import { BattleCompanionPicker } from '../components/BattleCompanionPicker.jsx'
 import { LightNovelScene } from '../components/LightNovelScene.jsx'
 import { MobPortrait } from '../components/MobPortrait.jsx'
 import { TeacherPortrait } from '../components/TeacherPortrait.jsx'
 import { BattleStandingActor } from '../components/BattleStandingActor.jsx'
-import { ProgressRing, ProgressBar, Chip, cx } from '../components/ui.jsx'
+import { BattleOpponentStandingActor } from '../components/BattleOpponentStandingActor.jsx'
+import { BattleStageBackdrop } from '../components/BattleStageBackdrop.jsx'
+import { Button, ProgressRing, ProgressBar, Chip, cx } from '../components/ui.jsx'
 import {
   ArrowRight,
   BookOpen,
@@ -244,6 +247,7 @@ export function AfterSchoolChronicleScreen() {
   const exchangeXpForBattleStars = useStore((s) => s.exchangeXpForBattleStars)
   const battleThemeId = useStore((s) => s.battleThemeId)
   const battleStudentId = useStore((s) => s.battleStudentId)
+  const setBattleStudentId = useStore((s) => s.setBattleStudentId)
   const afterSchoolBonds = useStore((s) => s.afterSchoolBonds)
   const unlockedBattleStudentIds = useStore((s) => s.unlockedBattleStudentIds)
   const battleTraitInvestments = useStore((s) => s.battleTraitInvestments)
@@ -269,6 +273,7 @@ export function AfterSchoolChronicleScreen() {
   const [menuSectionId, setMenuSectionId] = useState('battle')
   const [showPrologue, setShowPrologue] = useState(() => battleStoryStep === 0)
   const [pendingQuest, setPendingQuest] = useState(null)
+  const [battleBriefingRead, setBattleBriefingRead] = useState(false)
   const encounter = encounterFor({
     level: hero.level,
     day,
@@ -338,7 +343,7 @@ export function AfterSchoolChronicleScreen() {
     )
   }
 
-  if (pendingQuest && battleChapter) {
+  if (pendingQuest && battleChapter && !battleBriefingRead) {
     return (
       <LightNovelScene
         story={battleChapter}
@@ -346,9 +351,31 @@ export function AfterSchoolChronicleScreen() {
         imageAlt={`${battleTheme.name}。${battleRival.name}とのことばの対決が始まる舞台`}
         portraits={novelPortraits}
         onBack={() => setPendingQuest(null)}
-        onComplete={() => launchBattle(pendingQuest)}
-        completeLabel="ことばの対決へ"
-        skipLabel="対決へ進む"
+        onComplete={() => setBattleBriefingRead(true)}
+        completeLabel="対決準備へ"
+        skipLabel="対決準備へ"
+      />
+    )
+  }
+
+  if (pendingQuest && battleChapter && battleBriefingRead) {
+    return (
+      <BattlePreparationScreen
+        chapterTitle={battleChapter.title}
+        quest={pendingQuest}
+        encounter={encounter}
+        opponent={battleRival}
+        teacherSubject={teacherSubject}
+        battleTheme={battleTheme}
+        selectedStudent={battleStudent}
+        unlockedStudentIds={unlockedBattleStudentIds}
+        onSelectStudent={setBattleStudentId}
+        onReviewStory={() => setBattleBriefingRead(false)}
+        onCancel={() => {
+          setPendingQuest(null)
+          setBattleBriefingRead(false)
+        }}
+        onStart={() => launchBattle(pendingQuest)}
       />
     )
   }
@@ -391,7 +418,10 @@ export function AfterSchoolChronicleScreen() {
                   studentTraitProfile={studentTraitProfile}
                   battleRival={battleRival}
                   teacherSubject={teacherAffinity.subject}
-                  onBattle={setPendingQuest}
+                  onBattle={(quest) => {
+                    setPendingQuest(quest)
+                    setBattleBriefingRead(false)
+                  }}
                 />
               )}
 
@@ -520,7 +550,7 @@ function ChroniclePortalCard({ hero, onOpen }) {
             {AFTER_SCHOOL_CHRONICLE.title}
           </strong>
           <span className="mt-1 block truncate text-[10px] font-bold text-ink/50">
-            対決後は友達と過ごす3つの日常へ
+            戦果・結末・自由時間・次の事件がつながる
           </span>
         </span>
         <span className="after-school-portal-action">
@@ -684,6 +714,88 @@ function XpExchangeCard({ totalXp, spentXp, battleStars, onExchange }) {
   )
 }
 
+function BattlePreparationScreen({
+  chapterTitle,
+  quest,
+  encounter,
+  opponent,
+  teacherSubject,
+  battleTheme,
+  selectedStudent,
+  unlockedStudentIds,
+  onSelectStudent,
+  onReviewStory,
+  onCancel,
+  onStart,
+}) {
+  return (
+    <div className="min-h-full bg-gradient-to-b from-slate-950 via-indigo-950 to-violet-950 pb-8 text-white">
+      <ScreenHeader
+        title="対決前の作戦会議"
+        subtitle={`${opponent.name}との${quest.size}問に備える`}
+        onBack={onReviewStory}
+        color="#0f172a"
+        inverse
+      />
+
+      <div className="space-y-4 px-4">
+        <section className="relative overflow-hidden rounded-[1.75rem] border border-white/15 bg-slate-900 shadow-2xl">
+          <img
+            src={publicAssetUrl(battleTheme.stage)}
+            alt={`${battleTheme.name}。${opponent.name}との対決準備をする舞台`}
+            className="aspect-[16/8] w-full object-cover"
+          />
+          <span className="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/35 to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 flex items-end gap-3 p-3">
+            <span className="h-14 w-14 shrink-0 overflow-hidden rounded-2xl border-2 border-white/45 bg-slate-900">
+              {encounter.isTeacher ? (
+                <TeacherPortrait teacher={encounter} className="h-full w-full" />
+              ) : (
+                <img
+                  src={opponent.portrait}
+                  alt=""
+                  className="h-full w-full object-cover [image-rendering:pixelated]"
+                />
+              )}
+            </span>
+            <div className="min-w-0 flex-1">
+              <p className="text-[9px] font-extrabold tracking-[0.14em] text-cyan-200">NEXT MISSION</p>
+              <h1 className="truncate font-display text-lg font-extrabold">{chapterTitle}</h1>
+              <p className="truncate text-[10px] font-bold text-white/65">
+                {opponent.name} · {teacherSubject} · {quest.size}問
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section className="rounded-2xl border border-cyan-200/15 bg-white/[0.07] p-3 text-[10px] font-bold leading-relaxed text-white/65">
+          <p className="font-extrabold text-cyan-100">相手と目的を知ってから、同行者を決めます。</p>
+          <p className="mt-1">物語を読み返すなら左上へ。準備ができたら、この画面から対決を始められます。</p>
+        </section>
+
+        <BattleCompanionPicker
+          selectedStudent={selectedStudent}
+          opponent={opponent}
+          encounter={encounter}
+          teacherSubject={teacherSubject}
+          unlockedStudentIds={unlockedStudentIds}
+          onSelect={onSelectStudent}
+        />
+
+        <div className="space-y-2">
+          <Button full size="lg" onClick={onStart}>
+            {selectedStudent.name}と{quest.size}問の対決へ <ArrowRight size={19} />
+          </Button>
+          <Button full variant="secondary" onClick={onReviewStory}>バトル導入を読み返す</Button>
+          <Button full variant="ghost" className="text-white/65 active:bg-white/10" onClick={onCancel}>
+            今日の対決選択へ戻る
+          </Button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function AdventureCard({
   pos,
   hero,
@@ -780,6 +892,10 @@ function AdventureCard({
             role="img"
             aria-label={`${battleStudent.name}が背中を見せて${battleRival.name}との対決へ向かう`}
           >
+            <BattleStageBackdrop
+              scene="var(--battle-entry-standing-scene)"
+              phase="entry"
+            />
             <BattleStandingActor
               student={battleStudent}
               pose="back"
@@ -795,17 +911,25 @@ function AdventureCard({
               )}
             />
             <span className="battle-entry-standing-versus" aria-hidden="true">VS</span>
-            <span className="battle-map-rival-portrait battle-entry-standing-rival shrink-0 overflow-hidden rounded-2xl ring-2 ring-violet-100">
-              {encounter.isTeacher ? (
-                <TeacherPortrait teacher={encounter} className="h-full w-full" />
-              ) : (
-                <img
-                  src={battleRival.portrait}
-                  alt={`${battleRival.name}のドット絵ポートレート`}
-                  className="h-full w-full object-cover [image-rendering:pixelated]"
-                />
+            <BattleOpponentStandingActor
+              opponent={battleRival}
+              phase="entry"
+              className="battle-entry-standing-opponent"
+              label={`${battleRival.name}・対決の構え`}
+              fallback={(
+                <span className="battle-map-rival-portrait battle-entry-standing-rival shrink-0 overflow-hidden rounded-2xl ring-2 ring-violet-100">
+                  {encounter.isTeacher ? (
+                    <TeacherPortrait teacher={encounter} className="h-full w-full" />
+                  ) : (
+                    <img
+                      src={battleRival.portrait}
+                      alt={`${battleRival.name}のドット絵ポートレート`}
+                      className="h-full w-full object-cover [image-rendering:pixelated]"
+                    />
+                  )}
+                </span>
               )}
-            </span>
+            />
           </div>
 
           <div className="mt-2 text-center">
@@ -2235,12 +2359,12 @@ function BattleCastRoster({
               仲間 {unlockedCount}/{BATTLE_STUDENTS.length}
             </span>
             <span className="rounded-full bg-pink-400/20 px-2 py-1 text-[8px] font-extrabold text-pink-100">
-              次の変更は戦果後
+              対決前に変更
             </span>
           </div>
         </div>
         <p className="mt-2 text-[10px] font-bold leading-relaxed text-white/55">
-          ここでは現在の同行者と星彩を確認できます。育成はメニュー内「設定」、同行者の選択はバトル後の戦果画面で行い、次のバトルから反映されます。
+          ここでは現在の同行者と星彩を確認できます。育成はメニュー内「設定」、同行者の選択は次の相手が分かるバトル前の作戦会議で行います。
         </p>
       </div>
 

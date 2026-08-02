@@ -1,9 +1,14 @@
 {
-  "version": "school-ensemble-v2",
+  "version": "school-ensemble-v3",
   "title": "放課後と魔法の言葉 Original Game Soundtrack",
   "originality": "Original compositions; no melodies or arrangements copied from referenced works.",
-  "renderer": "macOS AVAudioUnitSampler + General MIDI ensemble",
-  "codec": "AAC-LC stereo 44.1 kHz, target 128 kbps",
+  "renderer": "FluidSynth 2.5+ offline render with per-part MIDI channels",
+  "soundBank": {
+    "name": "GeneralUser-GS-2.0.3.sf2",
+    "bytes": 32319396,
+    "sha256": "9575028c7a1f589f5770fccc8cff2734566af40cd26ed836944e9a5152688cfe"
+  },
+  "codec": "AAC-LC stereo 44.1 kHz, 160 kbps, -18 LUFS / -1.5 dBTP target",
   "targetTrackCount": 32,
   "renderedTrackCount": 32,
   "totalDurationSeconds": 5791.011,
@@ -54,8 +59,10 @@
         }
       ],
       "noteCount": 2563,
-      "bytes": 2944822,
-      "sha256": "9bca0c263ae8ec7ca3708f015d6c6924b6caf5fdb0833f77cb251d18d3bea8c1"
+      "bytes": 3674080,
+      "sha256": "d3926721fbe35b1dbb7801d73e08107bde18047105cc3e21814bd02f203195bf",
+      "renderingEngine": "FluidSynth",
+      "soundBank": "GeneralUser-GS-2.0.3.sf2"
     },
     {
       "id": "daily-commute",
@@ -103,8 +110,10 @@
         }
       ],
       "noteCount": 2978,
-      "bytes": 3030859,
-      "sha256": "7e7753db757cc1b0067cc560405ceb89ae44766ca5f53d3e0167bd6406978445"
+      "bytes": 3809451,
+      "sha256": "367b87ee82d8976745f45dfe712c133c2e95930d08734f235edcfb5d00a0e1db",
+      "renderingEngine": "FluidSynth",
+      "soundBank": "GeneralUser-GS-2.0.3.sf2"
     },
     {
       "id": "daily-classroom",
@@ -156,8 +165,10 @@
         }
       ],
       "noteCount": 3830,
-      "bytes": 2957213,
-      "sha256": "a56e7e0766726e5239bc8d85b759e6783d9c48ddb1b1048e765e7419bfc7fd37"
+      "bytes": 3780394,
+      "sha256": "ed3daa844d86578c1847ec1b018e083aeb3224ab3aa5d7240b3d9d44a3a248f1",
+      "renderingEngine": "FluidSynth",
+      "soundBank": "GeneralUser-GS-2.0.3.sf2"
     },
     {
       "id": "daily-everyday",
@@ -205,8 +216,10 @@
         }
       ],
       "noteCount": 2651,
-      "bytes": 2987440,
-      "sha256": "b54867d0b73b436a7ecb08ddb3d13b7efae554d1569a47cd388ec03ca6a06cee"
+      "bytes": 3718579,
+      "sha256": "3e5ab8ca21fbd18f5babaf96f565eb5f93e906c55e84b99bcd2a716ba9454ad2",
+      "renderingEngine": "FluidSynth",
+      "soundBank": "GeneralUser-GS-2.0.3.sf2"
     },
     {
       "id": "daily-club",
@@ -258,8 +271,10 @@
         }
       ],
       "noteCount": 3592,
-      "bytes": 2992583,
-      "sha256": "b7db29fd471a7d406ed23e70ea1847463d7cc24b1e54f48a95fdc1f96217c348"
+      "bytes": 3760579,
+      "sha256": "961becf49825937b0b3fbd299b8cacbcaac8f495b006e49f68ce3a38ac830dde",
+      "renderingEngine": "FluidSynth",
+      "soundBank": "GeneralUser-GS-2.0.3.sf2"
     },
     {
       "id": "daily-cafe",
@@ -307,8 +322,10 @@
         }
       ],
       "noteCount": 3184,
-      "bytes": 3012237,
-      "sha256": "b36445655303abdba736a7ab3afa8f36ff6197244a148fb96b33d54f092b78bd"
+      "bytes": 3846097,
+      "sha256": "095fff584521ad058fd20d5da8201d80e6a1b4108ce968f925db4c245f2034d3",
+      "renderingEngine": "FluidSynth",
+      "soundBank": "GeneralUser-GS-2.0.3.sf2"
     },
     {
       "id": "daily-snack",
@@ -356,8 +373,10 @@
         }
       ],
       "noteCount": 3034,
-      "bytes": 3060899,
-      "sha256": "496b1cbdea4557a3a9af1dfd1850c1856ca45ee4d4c0a56881242ae795f5dc7c"
+      "bytes": 3911842,
+      "sha256": "c9a9b49a60d2b64f656e324be69ae73fbe6c1f9a2e5fb0b81dfca5ee69a226c2",
+      "renderingEngine": "FluidSynth",
+      "soundBank": "GeneralUser-GS-2.0.3.sf2"
     },
     {
       "id": "daily-shopping",
@@ -409,8 +428,10 @@
         }
       ],
       "noteCount": 4560,
-      "bytes": 3101835,
-      "sha256": "759c05173d2f555ad59686ee4fb311fa4f7eb4a1b3ebcd3582f10825916f55f2"
+      "bytes": 3883382,
+      "sha256": "a123da1c29a7ce9e15805c7998403f5645de523a2097547e65616000d752225d",
+      "renderingEngine": "FluidSynth",
+      "soundBank": "GeneralUser-GS-2.0.3.sf2"
     },
     {
       "id": "daily-library",
@@ -450,8 +471,10 @@
         }
       ],
       "noteCount": 1323,
-      "bytes": 3059429,
-      "sha256": "d918f1d58d2e444e46895805f839f2a896ed8037238cd4b875c29f180aedc9d6"
+      "bytes": 3717559,
+      "sha256": "4a9256afe0ab3ba34578974a83c2ede6da3cc37ea30b2478bc6559436e613d0f",
+      "renderingEngine": "FluidSynth",
+      "soundBank": "GeneralUser-GS-2.0.3.sf2"
     },
     {
       "id": "daily-arcade",
@@ -503,8 +526,10 @@
         }
       ],
       "noteCount": 5385,
-      "bytes": 3026444,
-      "sha256": "d75b4af50b78cbe4757934387eba421ad4325d559fa389025f0b4e2120b6a56d"
+      "bytes": 3815622,
+      "sha256": "c789476c05312ec3e40e4b632f8d413b87236be3185e651712674bf85b979051",
+      "renderingEngine": "FluidSynth",
+      "soundBank": "GeneralUser-GS-2.0.3.sf2"
     },
     {
       "id": "daily-homeward",
@@ -552,8 +577,10 @@
         }
       ],
       "noteCount": 2335,
-      "bytes": 3157573,
-      "sha256": "5a323523363fae4d71b9d36ddde06896a030c3654ca0c723472d8e1c7c976982"
+      "bytes": 3845625,
+      "sha256": "73a54b20505235ffda21e572485a4bb5a1ea6792ad614e5b0d95ab1bcf68feaf",
+      "renderingEngine": "FluidSynth",
+      "soundBank": "GeneralUser-GS-2.0.3.sf2"
     },
     {
       "id": "rank-5",
@@ -605,8 +632,10 @@
         }
       ],
       "noteCount": 4365,
-      "bytes": 3029648,
-      "sha256": "178603902b4c5a235cafda369e8e03f9604b03840b07d4aad1d5c76e8a88300b"
+      "bytes": 3845612,
+      "sha256": "b5a830db16c45158767a233720fb3b33c57393e70aa26107392bbbb08bad652c",
+      "renderingEngine": "FluidSynth",
+      "soundBank": "GeneralUser-GS-2.0.3.sf2"
     },
     {
       "id": "rank-4",
@@ -658,8 +687,10 @@
         }
       ],
       "noteCount": 4508,
-      "bytes": 3065608,
-      "sha256": "a4d880097c849756538b011bf48355080077f15e1cff1797d3cc9c8d549783f1"
+      "bytes": 3855167,
+      "sha256": "c99523e81ed542380aa1be83c7ed9b44949a8310ca03585697f25f4f846f872d",
+      "renderingEngine": "FluidSynth",
+      "soundBank": "GeneralUser-GS-2.0.3.sf2"
     },
     {
       "id": "rank-3",
@@ -711,8 +742,10 @@
         }
       ],
       "noteCount": 4508,
-      "bytes": 3144229,
-      "sha256": "e743359d81a63b4b0bf11acb05f9f6c10706feecc4751b652bd110aa1add3194"
+      "bytes": 3720264,
+      "sha256": "d6b9a9513134d25a4a2784156d2405c39c2774639a53c1fdb6933a95ae274b55",
+      "renderingEngine": "FluidSynth",
+      "soundBank": "GeneralUser-GS-2.0.3.sf2"
     },
     {
       "id": "rank-pre2",
@@ -764,8 +797,10 @@
         }
       ],
       "noteCount": 4751,
-      "bytes": 2993149,
-      "sha256": "8f9f5d1ab9050d75184d11bd2c2323d17e2ea93a0a7a02506e32105ebeef95fa"
+      "bytes": 3719753,
+      "sha256": "19cb4518b23eb00815f84a36383eeef705483e211b40b2a6b2b866843663cebe",
+      "renderingEngine": "FluidSynth",
+      "soundBank": "GeneralUser-GS-2.0.3.sf2"
     },
     {
       "id": "rank-2",
@@ -817,8 +852,10 @@
         }
       ],
       "noteCount": 4966,
-      "bytes": 3028659,
-      "sha256": "6558981dabe18416fd2fa4c3bab45738c94b1774d7cb9bbb41166638a40af9c5"
+      "bytes": 3798931,
+      "sha256": "886aea95a2c74ccd727694d97320a53aae00f52bf4c54466efa5651066269ebc",
+      "renderingEngine": "FluidSynth",
+      "soundBank": "GeneralUser-GS-2.0.3.sf2"
     },
     {
       "id": "rank-pre1",
@@ -870,8 +907,10 @@
         }
       ],
       "noteCount": 4037,
-      "bytes": 3052625,
-      "sha256": "289fa31e276be681c072c4962e863c23c7bf4f2fec38f44a513091e4370fcf1b"
+      "bytes": 3812731,
+      "sha256": "8fd6e2d2324f33d157fd841f154f6b01da3f93a6ceaec2323c845775e08fb395",
+      "renderingEngine": "FluidSynth",
+      "soundBank": "GeneralUser-GS-2.0.3.sf2"
     },
     {
       "id": "rank-1",
@@ -923,8 +962,10 @@
         }
       ],
       "noteCount": 4194,
-      "bytes": 2991572,
-      "sha256": "90459afdcba7823bd549859afb0bb64aa8ec27a939b39548cfdb8f0a729dd25f"
+      "bytes": 3735636,
+      "sha256": "28c27142ad8b8824f80836adc52ad810e2b08930cea1ef69f4cc1c678d4a6e3f",
+      "renderingEngine": "FluidSynth",
+      "soundBank": "GeneralUser-GS-2.0.3.sf2"
     },
     {
       "id": "boss-grass-wolf",
@@ -976,8 +1017,10 @@
         }
       ],
       "noteCount": 4685,
-      "bytes": 3100828,
-      "sha256": "49c21a4e00aa1c2275487ab97959153e75a8a6b7c2227fa871438a6a9db49757"
+      "bytes": 3798551,
+      "sha256": "6c201a62c53b4b4af9638f69428b4045326f72e3638d915b42f8c0603690d0df",
+      "renderingEngine": "FluidSynth",
+      "soundBank": "GeneralUser-GS-2.0.3.sf2"
     },
     {
       "id": "boss-forest-keeper",
@@ -1025,8 +1068,10 @@
         }
       ],
       "noteCount": 3102,
-      "bytes": 2994067,
-      "sha256": "ac620cf0d16a46ee0fe57aae033de861657393c194792c7977e27c52ef3d28f1"
+      "bytes": 3742119,
+      "sha256": "2e0ca6fb9bbf803080440cf305bf15e3952a002a519d8f84a2b47adadb47c5be",
+      "renderingEngine": "FluidSynth",
+      "soundBank": "GeneralUser-GS-2.0.3.sf2"
     },
     {
       "id": "boss-chronos",
@@ -1078,8 +1123,10 @@
         }
       ],
       "noteCount": 4520,
-      "bytes": 3019008,
-      "sha256": "e82bf3ad81cda361c59d63d9fb37c8f174e6bde4f5d862d2891dfdb2a959e0b9"
+      "bytes": 3759677,
+      "sha256": "3a3656bc71d3d80fd8f90a363a62f683fe0668b9b29499cd4e05150ce9c53621",
+      "renderingEngine": "FluidSynth",
+      "soundBank": "GeneralUser-GS-2.0.3.sf2"
     },
     {
       "id": "boss-leviathan",
@@ -1131,8 +1178,10 @@
         }
       ],
       "noteCount": 3622,
-      "bytes": 3056740,
-      "sha256": "254cfafa7e1cd783463c9f30d2cdc95b53a2367009e2eb87418832db68bed0a0"
+      "bytes": 3631465,
+      "sha256": "2236c97dea33231356cd6257967118384fe1d423a6fd7f2741c956f85aea67d4",
+      "renderingEngine": "FluidSynth",
+      "soundBank": "GeneralUser-GS-2.0.3.sf2"
     },
     {
       "id": "boss-librarian",
@@ -1184,8 +1233,10 @@
         }
       ],
       "noteCount": 4744,
-      "bytes": 3079479,
-      "sha256": "3049bff584ed289b7753106cfa1bb7f7e0ba32a6c1c6026daaf5cbdbe316190e"
+      "bytes": 3736551,
+      "sha256": "556a6f133f7dfcb9ae6ba4be3f634478cee662c7a70f6a23b1c267e2f0ada2a1",
+      "renderingEngine": "FluidSynth",
+      "soundBank": "GeneralUser-GS-2.0.3.sf2"
     },
     {
       "id": "boss-silent-dragon",
@@ -1237,8 +1288,10 @@
         }
       ],
       "noteCount": 3552,
-      "bytes": 3181236,
-      "sha256": "49b67e898c5159ed615f90e977735376e1d5dfb8f3a87eed2741b9b0287744ff"
+      "bytes": 3784366,
+      "sha256": "1d72064c376a5f2ba846ffd0589ad462d9ed8711f9af5de0eb930c857baa8362",
+      "renderingEngine": "FluidSynth",
+      "soundBank": "GeneralUser-GS-2.0.3.sf2"
     },
     {
       "id": "boss-tempest",
@@ -1290,8 +1343,10 @@
         }
       ],
       "noteCount": 5382,
-      "bytes": 3051610,
-      "sha256": "1fc34e8259e521d0475404fe85adc1db6e8ae3b2dc8c16a033147a6b3586f1bb"
+      "bytes": 3796448,
+      "sha256": "eb16af587f35a94253ac60ba56e4ad582df8c133c2517ea10419b67b00265f2a",
+      "renderingEngine": "FluidSynth",
+      "soundBank": "GeneralUser-GS-2.0.3.sf2"
     },
     {
       "id": "boss-nameless-king",
@@ -1343,8 +1398,10 @@
         }
       ],
       "noteCount": 3887,
-      "bytes": 2989735,
-      "sha256": "fd4866b1d352c9a2aa46f905abbfb8330837e269343bf2c09708f18c931313e2"
+      "bytes": 3695872,
+      "sha256": "53e33f8a33519c886483cc0ab7c42b65f4d4350a6a9871f1b05b5472a388a175",
+      "renderingEngine": "FluidSynth",
+      "soundBank": "GeneralUser-GS-2.0.3.sf2"
     },
     {
       "id": "boss-archive-angel",
@@ -1396,8 +1453,10 @@
         }
       ],
       "noteCount": 3805,
-      "bytes": 3128010,
-      "sha256": "5a80c6f03cd504ba840d08fd7b31f4e6569946fb9c42f44c996c8c2d420e290d"
+      "bytes": 3724543,
+      "sha256": "01cb6652bd0a61ca90f6e35f39fd1bb48b3789b8dd640ec9a151acbe94103faf",
+      "renderingEngine": "FluidSynth",
+      "soundBank": "GeneralUser-GS-2.0.3.sf2"
     },
     {
       "id": "boss-word-emperor",
@@ -1449,8 +1508,10 @@
         }
       ],
       "noteCount": 5022,
-      "bytes": 3072429,
-      "sha256": "b3648f42a7e1516d3f2f7fb0f2ee4c08f73f887e59d27958aad896d2943f63c6"
+      "bytes": 3820898,
+      "sha256": "86555a2bbe27220e7eb7e6f5480d6ccb77e3bcf311892c8ecd0b277cada524a4",
+      "renderingEngine": "FluidSynth",
+      "soundBank": "GeneralUser-GS-2.0.3.sf2"
     },
     {
       "id": "boss-endless-book",
@@ -1502,12 +1563,14 @@
         }
       ],
       "noteCount": 4194,
-      "bytes": 2959790,
-      "sha256": "1746c46ef0e9ffc6632ddcc7fa5f065e47d55d842792e2614ed30d357bfd2dcc"
+      "bytes": 3701510,
+      "sha256": "336bc58c1f36b620a32a6ea062bc5651f5bb36e12c4b61da391481dd495acf6b",
+      "renderingEngine": "FluidSynth",
+      "soundBank": "GeneralUser-GS-2.0.3.sf2"
     },
     {
       "id": "result-victory",
-      "title": "特大の花まる",
+      "title": "勝利の放課後チャイム",
       "category": "result",
       "contextId": "victory",
       "path": "assets/bgm/school-ensemble/result-victory.m4a",
@@ -1555,8 +1618,10 @@
         }
       ],
       "noteCount": 3974,
-      "bytes": 3056599,
-      "sha256": "f99dc83a017b213f13f88cba2abf2f38851866c62980b60de3e19387fb854243"
+      "bytes": 3844467,
+      "sha256": "ebce889a0912033ffb31e4b239ed2451b5e4d4c717d2273c891a2eb2e4b90940",
+      "renderingEngine": "FluidSynth",
+      "soundBank": "GeneralUser-GS-2.0.3.sf2"
     },
     {
       "id": "result-draw",
@@ -1604,8 +1669,10 @@
         }
       ],
       "noteCount": 2611,
-      "bytes": 2992692,
-      "sha256": "8888071a29a22e7b4130369162ee38507ac20d72ab32a5e4b85715761e1280a9"
+      "bytes": 3747599,
+      "sha256": "87d4ae098370a7c2158d670737d03371e586c5f7990aa9eb373b0937613a0a87",
+      "renderingEngine": "FluidSynth",
+      "soundBank": "GeneralUser-GS-2.0.3.sf2"
     },
     {
       "id": "result-retreat",
@@ -1645,8 +1712,10 @@
         }
       ],
       "noteCount": 1323,
-      "bytes": 3025276,
-      "sha256": "ba516a2b9616d27b3d2277dd06696ca18a17eb32c69980c53badd5c85e0a8d18"
+      "bytes": 3620880,
+      "sha256": "28088d6a191b1f7aeedd7915d6918d2ce4f931ddfba4fcbd811ac16d2a5a3e27",
+      "renderingEngine": "FluidSynth",
+      "soundBank": "GeneralUser-GS-2.0.3.sf2"
     }
   ]
 }

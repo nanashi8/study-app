@@ -2,6 +2,7 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 
 import {
+  LEARNING_SKILLS,
   analyzeLearning,
   createLearningAnalytics,
   learningSkillForItem,
@@ -154,6 +155,62 @@ test('通常の復習操作はSRSと時刻分析を同時に一度だけ更新�
   assert.equal(state.learningAnalytics.scored, 2)
   assert.equal(state.learningAnalytics.correct, 1)
   assert.equal(state.learningAnalytics.intervals.under1h.scored, 1)
+})
+
+test('全13分野の学習操作が対応する記録へ漏れなく反映される', () => {
+  const original = useStore.getState()
+  useStore.setState({
+    srs: {},
+    etymologySrs: {},
+    kotenSrs: {},
+    kotenGrammarSrs: {},
+    kotenCultureSrs: {},
+    kotenInterpretationSrs: {},
+    writingProgress: {},
+    mathMastery: {},
+    skillStats: {},
+    learningAnalytics: createLearningAnalytics(),
+    stats: { xp: 0, streak: 0, day: null, todayCount: 0, answered: 0, correct: 0 },
+  })
+
+  try {
+    useStore.getState().review('audit-vocab', 'correct', 'vocab')
+    useStore.getState().review('audit-grammar', 'correct', 'grammar')
+    useStore.getState().review('audit-usage', 'correct', 'usage')
+    useStore.getState().review('audit-listening', 'correct', 'listening')
+    useStore.getState().review('audit-dictation', 'correct', 'dictation')
+    useStore.getState().reviewEtymology('audit-etymology', 'remembered')
+    useStore.getState().reviewKoten('audit-koten', 'remembered')
+    useStore.getState().reviewKotenGrammar('audit-koten-grammar', 'remembered')
+    useStore.getState().reviewKotenCulture('audit-koten-culture', 'remembered')
+    useStore.getState().reviewKotenInterpretation('audit-koten-reading', 'correct')
+    useStore.getState().recordSkillResult('reading', 3, 4)
+    useStore.getState().recordWritingCompletion({
+      exerciseId: 'audit-writing',
+      text: 'I keep a careful learning record.',
+      mode: 'guide',
+      wordCount: 6,
+      grammarIds: [],
+    })
+    useStore.getState().setMathMastery('audit-math', 80)
+
+    const state = useStore.getState()
+    assert.deepEqual(
+      Object.keys(state.learningAnalytics.skills).sort(),
+      Object.keys(LEARNING_SKILLS).sort(),
+    )
+    assert.equal(state.srs['audit-vocab'].box, 1)
+    assert.equal(state.etymologySrs['audit-etymology'].box, 1)
+    assert.equal(state.kotenSrs['audit-koten'].box, 1)
+    assert.equal(state.kotenGrammarSrs['audit-koten-grammar'].box, 1)
+    assert.equal(state.kotenCultureSrs['audit-koten-culture'].box, 1)
+    assert.equal(state.kotenInterpretationSrs['audit-koten-reading'].box, 1)
+    assert.equal(state.skillStats.reading.answered, 4)
+    assert.equal(state.writingProgress['audit-writing'].completed, 1)
+    assert.equal(state.mathMastery['audit-math'], 80)
+  } finally {
+    useStore.setState(original, true)
+  }
 })
 
 test('クイズ結果の分野別累計は設問履歴と二重集計せず、読解結果は集計する', () => {

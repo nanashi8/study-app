@@ -382,7 +382,7 @@ const BOSS_TRACKS = [
 
 const RESULT_TRACKS = [
   {
-    id: 'result-victory', title: '特大の花まる', category: 'result', contextId: 'victory',
+    id: 'result-victory', title: '勝利の放課後チャイム', category: 'result', contextId: 'victory',
     tempo: 120, rootMidi: 60, mode: 'major', progression: [0, 3, 4, 0],
     motif: [0, 4, 7, 9, 11, 9, 7, 4, 5, 7, 9, 12, 11, 9, 7, null],
     lead: 'brass', pad: 'strings', bass: 'round', drums: 'pop', ornament: 'sparkle',

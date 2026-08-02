@@ -198,6 +198,10 @@ test('放課後と魔法の言葉から先生の日常会話を操作でき、�
 })
 
 test('先生専用ビジュアルを学校生活・章末準備・戦闘・結果で共通利用する', () => {
+  const companionPicker = readFileSync(
+    new URL('../src/components/BattleCompanionPicker.jsx', import.meta.url),
+    'utf8',
+  )
   const sources = [
     '../src/screens/EnglishMap.jsx',
     '../src/screens/VocabQuiz.jsx',
@@ -205,7 +209,7 @@ test('先生専用ビジュアルを学校生活・章末準備・戦闘・結�
     '../src/components/MobPortrait.jsx',
   ].map((path) => readFileSync(new URL(path, import.meta.url), 'utf8'))
 
-  for (const source of sources) {
+  for (const source of [...sources, companionPicker]) {
     assert.match(source, /TeacherPortrait/u)
     assert.doesNotMatch(source, /portraitEmoji/u)
   }
@@ -221,5 +225,5 @@ test('先生専用ビジュアルを学校生活・章末準備・戦闘・結�
   assert.match(sources[0], /battleOpponentForEncounter/u)
   assert.match(sources[1], /battleOpponentForEncounter/u)
   assert.match(sources[2], /battleOpponentForEncounter/u)
-  assert.match(sources[2], /<TeacherPortrait teacher=\{teacher\} className="h-full w-full" \/>/u)
+  assert.match(companionPicker, /<TeacherPortrait teacher=\{encounter\} className="h-full w-full" \/>/u)
 })

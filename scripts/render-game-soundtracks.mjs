@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-// macOSのGeneral MIDIサンプラーを使い、全32曲を完成済みAACへオフラインレンダリングする。
-// OpenAIなどの従量課金APIは呼ばない。再生成: npm run render:bgm -- --force
+// 全32曲を完成済みAACへオフラインレンダリングする。
+// 高品質版はFluidSynth + SoundFont、引数なしではmacOS内蔵音源を再現用fallbackに使う。
 
 import { spawnSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
@@ -28,25 +28,48 @@ import {
 
 const scriptDir = dirname(fileURLToPath(import.meta.url))
 const projectRoot = resolve(scriptDir, '..')
-const outputDir = join(projectRoot, 'public/assets/bgm/school-ensemble')
-const manifestPath = join(outputDir, 'manifest.json')
+const defaultOutputDir = join(projectRoot, 'public/assets/bgm/school-ensemble')
 const swiftSource = join(scriptDir, 'render-game-soundtrack.swift')
 
 const args = process.argv.slice(2)
-const force = args.includes('--force')
-const requestedTrackIndex = args.indexOf('--track')
-const requestedTrackId = requestedTrackIndex >= 0 ? args[requestedTrackIndex + 1] : null
-const unknownArgs = args.filter((arg, index) => (
-  !['--force', '--all', '--track'].includes(arg)
-  && !(requestedTrackIndex >= 0 && index === requestedTrackIndex + 1)
-))
+let force = false
+let requestedTrackId = null
+let requestedSoundFont = process.env.GAME_SOUND_FONT || null
+let requestedOutputDir = null
 
-if (unknownArgs.length > 0 || (requestedTrackIndex >= 0 && !requestedTrackId)) {
-  console.error('usage: npm run render:bgm -- [--all] [--track TRACK_ID] [--force]')
+const usage = () => {
+  console.error(
+    'usage: npm run render:bgm -- [--all] [--track TRACK_ID] [--force] '
+    + '[--sound-font FILE.sf2] [--output-dir DIRECTORY]',
+  )
   process.exit(2)
 }
-if (process.platform !== 'darwin') {
-  console.error('このレンダラーはmacOSの内蔵General MIDI音源を使用します。')
+
+for (let index = 0; index < args.length; index += 1) {
+  const arg = args[index]
+  if (arg === '--force') force = true
+  else if (arg === '--all') continue
+  else if (['--track', '--sound-font', '--output-dir'].includes(arg)) {
+    const value = args[index + 1]
+    if (!value || value.startsWith('--')) usage()
+    if (arg === '--track') requestedTrackId = value
+    if (arg === '--sound-font') requestedSoundFont = value
+    if (arg === '--output-dir') requestedOutputDir = value
+    index += 1
+  } else usage()
+}
+
+const soundFontPath = requestedSoundFont ? resolve(requestedSoundFont) : null
+const outputDir = requestedOutputDir ? resolve(requestedOutputDir) : defaultOutputDir
+const manifestPath = join(outputDir, 'manifest.json')
+const usesFluidSynth = Boolean(soundFontPath)
+
+if (soundFontPath && !existsSync(soundFontPath)) {
+  console.error(`SoundFontが見つかりません: ${soundFontPath}`)
+  process.exit(2)
+}
+if (!usesFluidSynth && process.platform !== 'darwin') {
+  console.error('SoundFontを指定しないfallbackレンダラーはmacOS専用です。')
   process.exit(2)
 }
 
@@ -101,19 +124,27 @@ const clangModuleCache = join(tmpdir(), 'study-app-soundtrack-clang-cache')
 const manifestEntries = existingManifestEntries()
 
 try {
-  console.log(`音源レンダラーをコンパイル中: ${basename(swiftSource)}`)
-  mkdirSync(swiftModuleCache, { recursive: true })
-  mkdirSync(clangModuleCache, { recursive: true })
-  run('swiftc', [swiftSource, '-O', '-o', rendererPath], {
-    env: {
-      ...process.env,
-      SWIFT_MODULECACHE_PATH: swiftModuleCache,
-      CLANG_MODULE_CACHE_PATH: clangModuleCache,
-    },
-  })
+  if (usesFluidSynth) {
+    const version = run('fluidsynth', ['--version']).split('\n')[0]
+    console.log(`高品質音源レンダラー: ${version} / ${basename(soundFontPath)}`)
+  } else {
+    console.warn('注意: macOS内蔵の小容量GM音源を使うfallbackレンダリングです。')
+    console.log(`音源レンダラーをコンパイル中: ${basename(swiftSource)}`)
+    mkdirSync(swiftModuleCache, { recursive: true })
+    mkdirSync(clangModuleCache, { recursive: true })
+    run('swiftc', [swiftSource, '-O', '-o', rendererPath], {
+      env: {
+        ...process.env,
+        SWIFT_MODULECACHE_PATH: swiftModuleCache,
+        CLANG_MODULE_CACHE_PATH: clangModuleCache,
+      },
+    })
+  }
 
   for (const [index, track] of selectedTracks.entries()) {
-    const destination = join(projectRoot, 'public', track.audioPath)
+    const destination = requestedOutputDir
+      ? join(outputDir, `${track.id}.m4a`)
+      : join(projectRoot, 'public', track.audioPath)
     if (existsSync(destination) && !force) {
       console.log(`[${index + 1}/${selectedTracks.length}] 既存音源を保持: ${track.id}`)
       continue
@@ -125,31 +156,80 @@ try {
     const encodedPath = join(tempRoot, `${track.id}.m4a`)
     const configPath = join(tempRoot, `${track.id}.json`)
     writeFileSync(midiPath, soundtrackArrangementToMidi(arrangement))
-    writeFileSync(configPath, `${JSON.stringify({
-      trackId: track.id,
-      midiPath,
-      outputPath: wavPath,
-      durationSeconds: track.durationSeconds,
-      reverbMix: arrangement.reverbMix,
-      masterGainDb: arrangement.masterGainDb,
-      instruments: arrangement.instruments,
-    }, null, 2)}\n`)
+    if (!usesFluidSynth) {
+      writeFileSync(configPath, `${JSON.stringify({
+        trackId: track.id,
+        midiPath,
+        outputPath: wavPath,
+        durationSeconds: track.durationSeconds,
+        reverbMix: arrangement.reverbMix,
+        masterGainDb: arrangement.masterGainDb,
+        instruments: arrangement.instruments,
+      }, null, 2)}\n`)
+    }
 
     console.log(
       `[${index + 1}/${selectedTracks.length}] ${track.id}: ${arrangement.noteCount.toLocaleString()}音 / ${arrangement.instruments.length}パート`,
     )
-    run(rendererPath, [configPath])
-    run('afconvert', [
-      wavPath,
-      '-o', encodedPath,
-      '-f', 'm4af',
-      '-d', 'aac',
-      '-b', '128000',
-      '-q', '127',
-      '-s', '2',
-      '--soundcheck-generate',
-      '--media-kind', 'Music',
-    ])
+    if (usesFluidSynth) {
+      run('fluidsynth', [
+        '-ni', '-q',
+        '-F', wavPath,
+        '-T', 'wav',
+        '-O', 's24',
+        '-r', '44100',
+        '-g', '0.34',
+        '-o', 'synth.cpu-cores=4',
+        '-o', 'synth.polyphony=512',
+        '-o', 'synth.midi-bank-select=gm',
+        '-o', 'synth.reverb.active=1',
+        '-o', 'synth.reverb.damp=0.3',
+        '-o', 'synth.reverb.level=0.7',
+        '-o', 'synth.reverb.room-size=0.5',
+        '-o', 'synth.reverb.width=0.8',
+        '-o', 'synth.chorus.active=1',
+        '-o', 'synth.chorus.depth=3.6',
+        '-o', 'synth.chorus.level=0.55',
+        '-o', 'synth.chorus.nr=4',
+        '-o', 'synth.chorus.speed=0.36',
+        soundFontPath,
+        midiPath,
+      ])
+    } else {
+      run(rendererPath, [configPath])
+    }
+    if (usesFluidSynth) {
+      run('ffmpeg', [
+        '-hide_banner', '-loglevel', 'error', '-y',
+        '-i', wavPath,
+        '-af', [
+          'loudnorm=I=-18:TP=-1.5:LRA=11',
+          'apad=pad_dur=8',
+          `atrim=duration=${track.durationSeconds.toFixed(6)}`,
+          'asetpts=N/SR/TB',
+        ].join(','),
+        '-ar', '44100',
+        '-ac', '2',
+        '-c:a', 'aac',
+        '-profile:a', 'aac_low',
+        '-b:a', '160k',
+        '-movflags', '+faststart',
+        '-map_metadata', '-1',
+        encodedPath,
+      ])
+    } else {
+      run('afconvert', [
+        wavPath,
+        '-o', encodedPath,
+        '-f', 'm4af',
+        '-d', 'aac',
+        '-b', '128000',
+        '-q', '127',
+        '-s', '2',
+        '--soundcheck-generate',
+        '--media-kind', 'Music',
+      ])
+    }
     mkdirSync(dirname(destination), { recursive: true })
     copyFileSync(encodedPath, destination)
 
@@ -158,7 +238,7 @@ try {
       title: track.title,
       category: track.category,
       contextId: track.contextId,
-      path: track.audioPath,
+      path: requestedOutputDir ? basename(destination) : track.audioPath,
       durationSeconds: track.durationSeconds,
       tempo: track.tempo,
       bars: track.bars,
@@ -168,6 +248,8 @@ try {
       noteCount: arrangement.noteCount,
       bytes: statSync(destination).size,
       sha256: sha256(destination),
+      renderingEngine: usesFluidSynth ? 'FluidSynth' : 'AVAudioUnitSampler',
+      soundBank: usesFluidSynth ? basename(soundFontPath) : 'macOS gs_instruments.dls',
     })
   }
 
@@ -178,8 +260,19 @@ try {
     version: GAME_SOUNDTRACK_VERSION,
     title: '放課後と魔法の言葉 Original Game Soundtrack',
     originality: 'Original compositions; no melodies or arrangements copied from referenced works.',
-    renderer: 'macOS AVAudioUnitSampler + General MIDI ensemble',
-    codec: 'AAC-LC stereo 44.1 kHz, target 128 kbps',
+    renderer: usesFluidSynth
+      ? 'FluidSynth 2.5+ offline render with per-part MIDI channels'
+      : 'macOS AVAudioUnitSampler + General MIDI ensemble (fallback)',
+    soundBank: usesFluidSynth
+      ? {
+          name: basename(soundFontPath),
+          bytes: statSync(soundFontPath).size,
+          sha256: sha256(soundFontPath),
+        }
+      : { name: 'macOS gs_instruments.dls' },
+    codec: usesFluidSynth
+      ? 'AAC-LC stereo 44.1 kHz, 160 kbps, -18 LUFS / -1.5 dBTP target'
+      : 'AAC-LC stereo 44.1 kHz, target 128 kbps',
     targetTrackCount: GAME_BGM_TRACKS.length,
     renderedTrackCount: orderedEntries.length,
     totalDurationSeconds: Number(

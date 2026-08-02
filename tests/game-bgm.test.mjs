@@ -19,7 +19,11 @@ import { bgmEventsAtStep, bgmTotalSteps } from '../src/lib/gameBgmSequencer.js'
 import { gameBgmTrackForState } from '../src/lib/gameBgmRouter.js'
 import { CHAPTERS, TEACHER_RIVALS } from '../src/lib/rpg.js'
 import { decodeProgress, encodeProgress } from '../src/lib/progressCode.js'
-import { buildSoundtrackArrangement } from '../scripts/game-soundtrack-arrangement.mjs'
+import {
+  buildSoundtrackArrangement,
+  soundtrackInstrumentChannels,
+} from '../scripts/game-soundtrack-arrangement.mjs'
+import { GameBgmPlayer } from '../src/lib/gameBgmPlayer.js'
 
 const read = (path) => readFileSync(new URL(path, import.meta.url), 'utf8')
 const soundtrackDirectory = new URL('../public/assets/bgm/school-ensemble/', import.meta.url)
@@ -32,6 +36,74 @@ function m4aDurationSeconds(buffer) {
     return buffer.readUInt32BE(index + 20) / buffer.readUInt32BE(index + 16)
   }
   return Number(buffer.readBigUInt64BE(index + 28)) / buffer.readUInt32BE(index + 24)
+}
+
+function fakeAudioWindow() {
+  const sources = []
+  let timerId = 0
+  const audioParam = (initial = 0) => ({
+    value: initial,
+    cancelScheduledValues() {},
+    setValueAtTime(value) { this.value = value },
+    setTargetAtTime(value) { this.value = value },
+    exponentialRampToValueAtTime(value) { this.value = value },
+  })
+  class FakeAudioContext {
+    constructor() {
+      this.currentTime = 0
+      this.destination = {}
+      this.state = 'suspended'
+    }
+
+    createGain() {
+      return {
+        gain: audioParam(),
+        connect() {},
+        disconnect() {},
+      }
+    }
+
+    createBufferSource() {
+      const source = {
+        stopped: false,
+        connect() {},
+        disconnect() {},
+        start() {},
+        stop() { this.stopped = true },
+      }
+      sources.push(source)
+      return source
+    }
+
+    async resume() { this.state = 'running' }
+    async close() { this.state = 'closed' }
+    async suspend() { this.state = 'suspended' }
+    async decodeAudioData() { return { duration: 180 } }
+  }
+  return {
+    sources,
+    window: {
+      AudioContext: FakeAudioContext,
+      fetch: async () => ({ ok: true, arrayBuffer: async () => new ArrayBuffer(8) }),
+      setInterval: () => ++timerId,
+      clearInterval() {},
+      setTimeout: () => ++timerId,
+      clearTimeout() {},
+      speechSynthesis: { speaking: false, pending: false },
+    },
+  }
+}
+
+async function withFakeAudioWindow(run) {
+  const originalWindow = globalThis.window
+  const fake = fakeAudioWindow()
+  globalThis.window = fake.window
+  try {
+    await run(fake)
+  } finally {
+    if (originalWindow === undefined) delete globalThis.window
+    else globalThis.window = originalWindow
+  }
 }
 
 test('ゲームBGMは11日常・7級・11先生・3結果の全32曲を持つ', () => {
@@ -82,6 +154,11 @@ test('全曲が約3分で、元譜とサウンドトラック編曲を有限値�
     assert.ok(arrangement.instruments.length >= 6, track.id)
     assert.ok(arrangement.noteCount >= 1_000, track.id)
     assert.equal(arrangement.ensemble, track.ensemble, track.id)
+    const channels = soundtrackInstrumentChannels(arrangement)
+    assert.equal(new Set(Object.values(channels)).size, arrangement.instruments.length, track.id)
+    for (const instrument of arrangement.instruments) {
+      assert.equal(channels[instrument.role] === 9, instrument.percussion, `${track.id}: ${instrument.role}`)
+    }
     for (const notes of Object.values(arrangement.notesByRole)) {
       for (const note of notes) {
         assert.ok(Number.isFinite(note.startBeat), track.id)
@@ -115,6 +192,8 @@ test('32曲の完成済みAACが全件そろい、manifest・尺・容量が一�
   const manifest = JSON.parse(readFileSync(new URL('manifest.json', soundtrackDirectory), 'utf8'))
   const files = readdirSync(soundtrackDirectory).filter((name) => name.endsWith('.m4a'))
   assert.equal(manifest.version, GAME_SOUNDTRACK_VERSION)
+  assert.match(manifest.renderer, /FluidSynth/)
+  assert.ok(manifest.soundBank.bytes > 10 * 1024 * 1024)
   assert.equal(manifest.renderedTrackCount, GAME_BGM_TRACKS.length)
   assert.deepEqual(
     new Set(files.map((name) => name.slice(0, -4))),
@@ -135,11 +214,12 @@ test('32曲の完成済みAACが全件そろい、manifest・尺・容量が一�
     assert.equal(audio.subarray(4, 8).toString('ascii'), 'ftyp', track.id)
     assert.ok(Math.abs(m4aDurationSeconds(audio) - track.durationSeconds) < 0.15, track.id)
     assert.equal(entry.bytes, audio.length, track.id)
+    assert.equal(entry.title, track.title, track.id)
     assert.equal(entry.path, track.audioPath, track.id)
     assert.equal(entry.noteCount, buildSoundtrackArrangement(track).noteCount, track.id)
   }
   assert.ok(totalBytes > 85 * 1024 * 1024)
-  assert.ok(totalBytes < 110 * 1024 * 1024)
+  assert.ok(totalBytes < 125 * 1024 * 1024)
 })
 
 test('放課後と魔法の言葉は11の日常曲を物語順に循環し、通常学習では鳴らない', () => {
@@ -209,6 +289,7 @@ test('バトル結果は勝利・互角・撤退の3曲へ正答率で切り替�
   assert.equal(resultTrack(4), RESULT_BGM_BY_VERDICT_ID.get('draw'))
   assert.equal(resultTrack(3), RESULT_BGM_BY_VERDICT_ID.get('retreat'))
   assert.equal(resultTrack(0, 0), RESULT_BGM_BY_VERDICT_ID.get('retreat'))
+  assert.equal(RESULT_BGM_BY_VERDICT_ID.get('victory').title, '勝利の放課後チャイム')
   assert.equal(gameBgmTrackForState({ screen: 'home' }), null)
 })
 
@@ -225,7 +306,7 @@ test('全画面コントローラー・音量設定・読み上げダッキン�
   assert.match(settings, /setSetting\('bgmVolume'/)
   assert.match(store, /bgmEnabled:\s*true/)
   assert.match(store, /bgmVolume:\s*0\.35/)
-  assert.match(store.slice(store.indexOf('partialize:')), /settings:\s*st\.settings/)
+  assert.match(store, /partialize:\s*selectProgressState/)
   assert.match(app, /afterSchoolChronicle: AfterSchoolChronicleScreen/)
   assert.match(app, /afterSchoolInterlude: AfterSchoolInterludeScreen/)
   assert.match(read('../src/components/GameBgm.jsx'), /battleStoryStep/)
@@ -234,7 +315,38 @@ test('全画面コントローラー・音量設定・読み上げダッキン�
   assert.match(player, /decodeAudioData/)
   assert.match(player, /createBufferSource/)
   assert.match(player, /source\.loop = true/)
+  assert.match(read('../src/components/GameSettings.jsx'), /data-game-bgm-control/)
+  assert.match(read('../src/components/GameBgm.jsx'), /closest\?\.\('\[data-game-bgm-control\]'\)/)
   assert.doesNotMatch(player, /createOscillator/)
+})
+
+test('保存済みBGM OFFは初回操作でもAudioContextの再生を始めない', async () => {
+  await withFakeAudioWindow(async ({ sources }) => {
+    const player = new GameBgmPlayer({ enabled: false, volume: 0.35 })
+    player.setTrack(GAME_BGM_TRACKS[0])
+    await player.unlock()
+    assert.equal(sources.length, 0)
+    assert.equal(player.masterGain.gain.value, 0)
+    player.destroy()
+  })
+})
+
+test('BGM OFFは曲間フェード中の旧曲を含む全Voiceを即時停止する', async () => {
+  await withFakeAudioWindow(async ({ sources }) => {
+    const player = new GameBgmPlayer({ enabled: true, volume: 0.35 })
+    player.setTrack(GAME_BGM_TRACKS[0])
+    await player.unlock()
+    player.requestedTrack = GAME_BGM_TRACKS[1]
+    await player._startTrack(GAME_BGM_TRACKS[1])
+    assert.equal(player.voices.size, 2)
+
+    player.setEnabled(false)
+    assert.equal(player.masterGain.gain.value, 0)
+    assert.equal(player.voices.size, 0)
+    assert.equal(player.activeVoice, null)
+    assert.equal(sources.every((source) => source.stopped), true)
+    player.destroy()
+  })
 })
 
 test('BGM設定は進捗コードで端末間を移動できる', () => {

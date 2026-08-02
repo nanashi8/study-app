@@ -1,7 +1,7 @@
 // 「放課後と魔法の言葉」オリジナル・サウンドトラックの音源設計。
 // General MIDI番号はレンダリング時だけ使い、ブラウザでは完成済みAACを再生する。
 
-export const GAME_SOUNDTRACK_VERSION = 'school-ensemble-v2'
+export const GAME_SOUNDTRACK_VERSION = 'school-ensemble-v3'
 
 const profile = (spec) => Object.freeze({
   ...spec,

@@ -86,7 +86,7 @@ test('共通メニューから保存される学習・音声・ゲーム・コ�
   assert.match(settingsScreen, /<SettingsMenuPanel \/>/)
 })
 
-test('永続設定の変更処理は共通メニュー・読み上げコンソールに集約し、同行者だけ戦果後に残す', () => {
+test('永続設定の変更処理は共通メニューへ集約し、同行者変更だけ対決前の作戦会議に置く', () => {
   const files = ['components', 'screens'].flatMap((directory) =>
     readdirSync(new URL(`../src/${directory}/`, import.meta.url))
       .filter((filename) => filename.endsWith('.jsx'))
@@ -108,7 +108,7 @@ test('永続設定の変更処理は共通メニュー・読み上げコンソ�
     ['moveContent', ['components/PortalSettings.jsx']],
     ['togglePortalHidden', ['components/PortalSettings.jsx']],
     ['resetPortal', ['components/PortalSettings.jsx']],
-    ['setBattleStudentId', ['screens/SessionResult.jsx']],
+    ['setBattleStudentId', ['screens/EnglishMap.jsx']],
   ])
   const violations = []
 
@@ -121,14 +121,16 @@ test('永続設定の変更処理は共通メニュー・読み上げコンソ�
   }
 
   assert.deepEqual(violations, [])
-  assert.match(read('../src/screens/SessionResult.jsx'), /次の同行者を選ぶ/)
-  assert.match(read('../src/screens/EnglishMap.jsx'), /同行者の選択はバトル後の戦果画面/)
+  assert.doesNotMatch(read('../src/screens/SessionResult.jsx'), /<BattleCompanionPicker/)
+  assert.match(read('../src/components/BattleCompanionPicker.jsx'), /この対決の同行者を選ぶ/)
+  assert.match(read('../src/screens/EnglishMap.jsx'), /同行者の選択は次の相手が分かるバトル前の作戦会議/)
 })
 
 test('簡易UIとゲーミングUIは共通設定から切り替わり戦闘計算を変えない', () => {
   const store = read('../src/store/useStore.js')
   const settings = read('../src/components/GameSettings.jsx')
   const quiz = read('../src/screens/VocabQuiz.jsx')
+  const result = read('../src/screens/SessionResult.jsx')
   const css = read('../src/index.css')
 
   assert.match(store, /battleUiMode:\s*'gaming'/)
@@ -136,18 +138,21 @@ test('簡易UIとゲーミングUIは共通設定から切り替わり戦闘計�
   assert.match(settings, /簡易UI/)
   assert.match(settings, /ゲーミングUI/)
   assert.match(quiz, /data-battle-ui-mode=/)
+  assert.match(result, /s\.settings\.battleUiMode === 'simple'/)
+  assert.match(result, /data-testid="battle-result-console"/)
+  assert.match(result, /data-battle-ui-mode=\{battleUiMode\}/)
   assert.match(css, /data-battle-ui-mode='simple'/)
   assert.doesNotMatch(read('../src/lib/rpg.js'), /battleUiMode/)
 })
 
 test('音声設定シートの開閉状態は学習データとは別の一時状態として動く', () => {
   const store = read('../src/store/useStore.js')
-  const persistedFields = store.slice(store.indexOf('partialize:'))
+  const progressCode = read('../src/lib/progressCode.js')
 
   assert.match(store, /speechSettingsOpen:\s*false/)
   assert.match(store, /openSpeechSettings:\s*\(\) => set\(\{ speechSettingsOpen: true \}\)/)
   assert.match(store, /closeSpeechSettings:\s*\(\) => set\(\{ speechSettingsOpen: false \}\)/)
-  assert.doesNotMatch(persistedFields, /speechSettingsOpen:\s*st\.speechSettingsOpen/)
+  assert.doesNotMatch(progressCode, /['"]speechSettingsOpen['"]/)
 })
 
 test('リスニングとディクテーションも共通速度を級別速度へ掛け合わせる', () => {

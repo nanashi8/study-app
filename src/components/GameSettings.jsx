@@ -386,33 +386,35 @@ export function GameSettingsPanel() {
         </div>
       </GameSettingRow>
 
-      <h3 className="pt-2 font-display text-sm font-extrabold text-ink">
-        放課後と魔法の言葉 BGM
-      </h3>
-      <p className="mt-1 text-xs font-bold leading-relaxed text-ink/50">
-        日常・ことばの対決・先生戦・結果で切り替わります。通常の単語・文法・長文など学習画面では鳴りません。
-      </p>
-      <div className="divide-y divide-brand-50">
-        <GameSettingRow title="ゲームBGMを再生" desc="ゲーム画面で最初に操作した後から再生">
-          <Toggle
-            label="ゲームBGMを再生"
-            on={settings.bgmEnabled !== false}
-            onChange={(value) => setSetting('bgmEnabled', value)}
-          />
-        </GameSettingRow>
-        <GameSettingRow title="BGM音量" desc={`現在 ${Math.round((settings.bgmVolume ?? 0.35) * 100)}%`} stacked>
-          <input
-            type="range"
-            min="0"
-            max="1"
-            step="0.05"
-            value={settings.bgmVolume ?? 0.35}
-            onChange={(event) => setSetting('bgmVolume', Number(event.target.value))}
-            aria-label="BGM音量"
-            className="w-full accent-brand-500"
-          />
-        </GameSettingRow>
-      </div>
+      <section data-game-bgm-control>
+        <h3 className="pt-2 font-display text-sm font-extrabold text-ink">
+          放課後と魔法の言葉 BGM
+        </h3>
+        <p className="mt-1 text-xs font-bold leading-relaxed text-ink/50">
+          日常・ことばの対決・先生戦・結果で切り替わります。通常の単語・文法・長文など学習画面では鳴りません。
+        </p>
+        <div className="divide-y divide-brand-50">
+          <GameSettingRow title="ゲームBGMを再生" desc="ゲーム画面で最初に操作した後から再生">
+            <Toggle
+              label="ゲームBGMを再生"
+              on={settings.bgmEnabled !== false}
+              onChange={(value) => setSetting('bgmEnabled', value)}
+            />
+          </GameSettingRow>
+          <GameSettingRow title="BGM音量" desc={`現在 ${Math.round((settings.bgmVolume ?? 0.35) * 100)}%`} stacked>
+            <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.05"
+              value={settings.bgmVolume ?? 0.35}
+              onChange={(event) => setSetting('bgmVolume', Number(event.target.value))}
+              aria-label="BGM音量"
+              className="w-full accent-brand-500"
+            />
+          </GameSettingRow>
+        </div>
+      </section>
 
       <BattleThemeSettings
         battleStars={battleStars}

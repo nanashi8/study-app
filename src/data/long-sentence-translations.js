@@ -12,6 +12,8 @@ import {
   longManualReviewEvidence,
   pendingVerbGroupRule,
 } from './reading-phrase-review-ledger.js'
+import { buildMeaningPhraseSequence } from '../lib/meaning-phrases.js'
+import { longSentenceMeaningPhrasesFor } from './long-sentence-meaning-phrases.js'
 
 export const LONG_SENTENCE_WORD_THRESHOLD = 12
 export const LONG_SENTENCE_CORE_WORD_LIMIT = 4
@@ -627,9 +629,14 @@ const applyManualReviewState = (id, rawGuide) => {
   }))
   const allStepsConfirmed = steps.every((item) => item.status === 'confirmed')
   const allStepsReviewed = steps.every((item) => ['reviewed', 'confirmed'].includes(item.status))
+  const meaningSteps = buildMeaningPhraseSequence(steps, {
+    wordLimit: 8,
+    explicitGroups: longSentenceMeaningPhrasesFor(id),
+  })
   return Object.freeze({
     ...rawGuide,
     steps,
+    meaningSteps,
     reviewEvidenceId: reviewEvidence?.id ?? '',
     reviewState: allStepsConfirmed
       ? 'audit-confirmed'

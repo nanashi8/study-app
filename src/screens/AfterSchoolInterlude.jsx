@@ -52,6 +52,56 @@ function BondMeter({ bond, inverse = false }) {
   )
 }
 
+function ConversationContext({ profile, scene, bond }) {
+  const openingEmotion = battleEmotionById(profile.openingEmotionId)
+
+  return (
+    <aside
+      className="after-school-conversation-context sticky top-[4.75rem] z-10 mt-4 rounded-2xl border border-cyan-100/25 bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 p-3 shadow-xl"
+      data-testid="after-school-conversation-context"
+      aria-labelledby="after-school-conversation-title"
+    >
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <p className="text-[9px] font-extrabold tracking-[0.14em] text-cyan-200">いま聞いた話</p>
+          <h3 id="after-school-conversation-title" className="mt-0.5 text-sm font-extrabold leading-snug">
+            {profile.title}
+          </h3>
+        </div>
+        <span className="shrink-0 rounded-full bg-cyan-200/10 px-2 py-1 text-[8px] font-extrabold text-cyan-100">
+          見ながら選べます
+        </span>
+      </div>
+
+      <p
+        id="after-school-conversation-situation"
+        className="mt-2 text-[11px] font-bold leading-relaxed text-white/70"
+      >
+        {profile.situation}
+      </p>
+
+      <div className="mt-2.5 flex items-start gap-2.5 rounded-xl border border-white/10 bg-white/[0.07] p-2.5">
+        <img
+          src={publicAssetUrl(scenePortrait(scene, bond.student.id, profile.openingEmotionId))}
+          alt=""
+          className="h-11 w-11 shrink-0 rounded-xl border border-white/25 bg-slate-900 object-cover [image-rendering:pixelated]"
+        />
+        <div className="min-w-0 flex-1">
+          <p className="text-[9px] font-extrabold text-amber-200">
+            {bond.student.name} · {openingEmotion.emoji} {openingEmotion.label}
+          </p>
+          <blockquote
+            id="after-school-conversation-opening"
+            className="mt-1 text-xs font-extrabold leading-relaxed text-white"
+          >
+            {profile.opening}
+          </blockquote>
+        </div>
+      </div>
+    </aside>
+  )
+}
+
 function RouteHub({
   options,
   bonds,
@@ -59,14 +109,15 @@ function RouteHub({
   unlockedStudentIds,
   onSelect,
   onBack,
+  onSkip,
   onHome,
 }) {
   const unlockedCount = unlockedStudentIds.length
   return (
     <div className="min-h-full bg-gradient-to-b from-slate-950 via-indigo-950 to-violet-950 pb-8 text-white">
       <ScreenHeader
-        title="友達と過ごす日常"
-        subtitle="対決のあと、誰とどんな時間を過ごす？"
+        title="戦いのあとの放課後"
+        subtitle="交流するか、次の事件へ進むかを選ぶ"
         onBack={onBack}
         color="#0f172a"
         inverse
@@ -95,7 +146,7 @@ function RouteHub({
           <div className="flex items-end justify-between gap-2 px-1">
             <div>
               <p className="text-[9px] font-extrabold tracking-[0.16em] text-cyan-200">CHOOSE A ROUTE</p>
-              <h2 className="mt-0.5 font-display text-lg font-extrabold">3つの日常</h2>
+              <h2 className="mt-0.5 font-display text-lg font-extrabold">3つの日常イベント</h2>
             </div>
             <span className="rounded-full bg-white/10 px-2 py-1 text-[8px] font-extrabold text-white/55">仲間 {unlockedCount}/{BATTLE_STUDENTS.length}</span>
           </div>
@@ -162,10 +213,13 @@ function RouteHub({
         </section>
 
         <p className="rounded-2xl border border-white/10 bg-white/[0.05] px-3 py-2.5 text-[9px] font-bold leading-relaxed text-white/50">
-          放課後は採点なしです。どの声掛けでも絆とXPを得られ、性格に合う言葉では絆が少し多く伸びます。
+          日常イベントは任意です。選ぶと絆とXPを得られ、性格に合う言葉では絆が少し多く伸びます。
         </p>
+        <Button full variant="secondary" onClick={onSkip}>
+          日常イベントを見ず、次の事件へ <ArrowRight size={18} />
+        </Button>
         <Button full variant="ghost" className="text-white/65 active:bg-white/10" onClick={onHome}>
-          今回は日常パートを終える
+          今回はここで終える
         </Button>
       </div>
     </div>
@@ -181,13 +235,14 @@ export function AfterSchoolInterludeScreen() {
   const bonds = useStore((state) => state.afterSchoolBonds)
   const unlockedStudentIds = useStore((state) => state.unlockedBattleStudentIds)
   const completeAfterSchoolRoute = useStore((state) => state.completeAfterSchoolRoute)
+  const skipAfterSchoolRoute = useStore((state) => state.skipAfterSchoolRoute)
   const returnToChronicle = useStore((state) => state.returnToAfterSchoolChronicle)
   const currentStudent = battleStudentById(currentStudentId)
   const options = useMemo(
     () => afterSchoolBranchOptions({ step: storyStep, currentStudentId }),
     [storyStep, currentStudentId],
   )
-  // 対決後は毎回ここから始め、同行者を含む3つの行き先を自分で選ぶ。
+  // 対決の結末後に自由時間へ入り、3つの日常か次の事件かを自分で選ぶ。
   const [branchId, setBranchId] = useState(null)
   const [choiceId, setChoiceId] = useState(null)
   const [reward, setReward] = useState(null)
@@ -209,6 +264,7 @@ export function AfterSchoolInterludeScreen() {
     verdictId: params.verdictId,
     isTeacher: params.isTeacher,
     teacherDefeated: params.teacherDefeated,
+    teacherBattleLine: params.teacherBattleLine,
   })
   const isFirstMeeting = profile
     ? !isBattleStudentUnlocked(unlockedStudentIds, profile.studentId)
@@ -236,8 +292,8 @@ export function AfterSchoolInterludeScreen() {
         }}
         onBack={returnToChronicle}
         onComplete={() => setEpilogueRead(true)}
-        completeLabel="友達との日常へ"
-        skipLabel="日常へ進む"
+        completeLabel="放課後をどう過ごす？"
+        skipLabel="自由時間へ進む"
       />
     )
   }
@@ -256,6 +312,9 @@ export function AfterSchoolInterludeScreen() {
           setBranchStoryRead(false)
         }}
         onBack={returnToChronicle}
+        onSkip={() => {
+          if (skipAfterSchoolRoute({ step: storyStep })) returnToChronicle()
+        }}
         onHome={goHome}
       />
     )
@@ -361,11 +420,13 @@ export function AfterSchoolInterludeScreen() {
           <p className="text-[9px] font-extrabold tracking-[0.16em] text-pink-200">YOUR RESPONSE</p>
           <h2 className="mt-1 font-display text-lg font-extrabold">返す言葉を選ぶ</h2>
           <p className="mt-2 text-[11px] font-bold leading-relaxed text-white/60">
-            {bond.student.name}の話を聞いて、今の自分らしい言葉を返そう。
+            話の内容を読み返しながら、今の自分らしい言葉を返そう。
           </p>
 
           {!reward && (
             <>
+              <ConversationContext profile={profile} scene={scene} bond={bond} />
+
               <div className="mt-4 flex items-end justify-between gap-2">
                 <div>
                   <h3 className="text-sm font-extrabold">どんな声をかける？</h3>
@@ -374,7 +435,12 @@ export function AfterSchoolInterludeScreen() {
                 <span className="rounded-full bg-white/10 px-2 py-1 text-[8px] font-extrabold text-white/55">3 CHOICES</span>
               </div>
 
-              <div className="mt-2.5 grid gap-2" role="group" aria-label={`${bond.student.name}への声かけ`}>
+              <div
+                className="mt-2.5 grid gap-2"
+                role="group"
+                aria-label={`${bond.student.name}への声かけ`}
+                aria-describedby="after-school-conversation-situation after-school-conversation-opening"
+              >
                 {profile.choices.map((choice) => {
                   const style = battleSupportStyleById(choice.styleId)
                   const selected = selectedChoice?.id === choice.id
