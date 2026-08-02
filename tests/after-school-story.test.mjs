@@ -340,7 +340,7 @@ test('戦果から結末・任意の日常・次章導入・同行者選択・�
 
   assert.match(app, /afterSchoolChronicle: AfterSchoolChronicleScreen/)
   assert.match(app, /afterSchoolInterlude: AfterSchoolInterludeScreen/)
-  assert.match(result, /戦いの結末を見る/)
+  assert.match(result, /次へ：戦いの結末/)
   assert.match(result, /onClick=\{continueAfterBattle\}/)
   assert.match(result, /navigate\('afterSchoolInterlude'/)
   assert.doesNotMatch(result, /NextBattleCompanionCard|次の同行者を選ぶ/)
@@ -364,6 +364,7 @@ test('戦果から結末・任意の日常・次章導入・同行者選択・�
   )
   assert.match(interlude, /profile\.choices\.map/)
   assert.match(interlude, /日常イベントは任意です/)
+  assert.match(interlude, /次の相手が分かった後の作戦会議で同行者に選べます/)
   assert.match(interlude, /completeAfterSchoolRoute/)
   assert.match(interlude, /skipAfterSchoolRoute/)
   assert.match(interlude, /日常イベントを見ず、次の事件へ/)

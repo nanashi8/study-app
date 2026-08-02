@@ -25,6 +25,15 @@ const OPTIONAL_BINDINGS = Object.freeze([
 
 const PENDING_JAPANESE = /(?:次へ|続き|対象|内容|中身|何を|だれを|どんな|どのよう|実際の|評価|様子|期間|状態は|基準は)/u
 const CONTENT_LINKS = new Set(['that', 'whether'])
+const CLAUSE_STARTING_MODIFIERS = new Set(['how', 'what', 'when', 'where', 'whether', 'why'])
+const MEANINGFUL_LINK_PAIRS = new Set([
+  'and how',
+  'and that',
+  'and whether',
+  'but because',
+  'but when',
+  'or if',
+])
 
 const englishWords = (value = '') =>
   `${value}`.match(/[A-Za-z][A-Za-z'’-]*/g) ?? []
@@ -100,8 +109,13 @@ function japaneseEndsWithCaseParticle(value = '') {
 }
 
 function japaneseLooksComplete(value = '') {
-  return /(?:です|でした|でしょう|ます|ました|ません|ない|なかった|ある|いる|なる|なった|できる|できない|られる|れる|せる|たい|ほしい|必要|可能|困難|容易|明らか|同じ)$/u
+  return /(?:です|でした|でしょう|ます|ました|ません|ない|なかった|だった|である|であり|ある|いる|なる|なった|できる|できない|える|られる|れる|せる|たい|ほしい)$/u
     .test(`${value}`.trim())
+}
+
+function japaneseParentheticalCompletesPredicate(value = '') {
+  return japanesePieces(value).completions.some((content) =>
+    /(?:ます|ました|ません|です|でした|でしょう|なら|たら|れば|ため|とき|から|ので|ながら|一方で|考え|学び|測り|助け|望み|決め)/u.test(content))
 }
 
 function japaneseList(items, bases) {
@@ -128,13 +142,22 @@ function japaneseWithPlaceholder(predicate, content) {
   if (/〜に/u.test(predicate) && replacement.endsWith('な')) {
     replacement = replacement.slice(0, -1)
   }
-  if (japaneseLooksComplete(replacement)) return replacement
+  const keepsOuterMeaning = /(?:かもしれ|べき|なければ|必要|でしょう|であり続け|のままで)/u.test(predicate)
+  if (/であるべき/u.test(predicate) && replacement.endsWith('できる')) {
+    return replacement.replace(/できる$/u, 'できなければなりません')
+  }
+  if (/であるべき/u.test(predicate) && replacement.endsWith('べき')) {
+    return predicate.replace('〜であるべき', replacement)
+  }
+  if (japaneseLooksComplete(replacement) && !keepsOuterMeaning) return replacement
   if (/〜(?:では|である|にも)/u.test(predicate)) {
     replacement = replacement.replace(/な$/u, '')
   } else if (/〜です/u.test(predicate) && /な$/u.test(replacement)) {
     replacement = replacement.slice(0, -1)
   }
-  if (/〜です/u.test(predicate) && japaneseLooksComplete(replacement)) return replacement
+  if (/〜です/u.test(predicate) && japaneseLooksComplete(replacement) && !keepsOuterMeaning) {
+    return replacement
+  }
   return predicate.replace('〜', replacement)
 }
 
@@ -170,7 +193,12 @@ function japaneseForMeaningGroup(items) {
   if (/^S(?:\+M)*\+V$/.test(signature)) {
     const last = finalItem.closureBinding ? finalItem.ja : bases.at(-1)
     const subject = bases[0]
-    if (finalItem.closureBinding && subject && last.includes(subject)) return last
+    const subjectStem = subject.replace(/[はが]$/u, '')
+    if (
+      finalItem.closureBinding &&
+      subjectStem &&
+      last.includes(subjectStem)
+    ) return last
     return joinJapanese([...bases.slice(0, -1), last])
   }
 
@@ -217,9 +245,17 @@ function japaneseForMeaningGroup(items) {
   }
 
   if (/^V(?:\+C)+$/.test(signature)) {
-    if (finalItem.closureBinding || japaneseHasCompletion(finalItem.ja)) return finalItem.ja
+    if (
+      finalItem.closureBinding ||
+      (japaneseHasCompletion(finalItem.ja) && (
+        japaneseLooksComplete(bases.at(-1)) ||
+        japaneseParentheticalCompletesPredicate(finalItem.ja)
+      ))
+    ) return finalItem.ja
     const complements = japaneseList(items.slice(1), bases.slice(1))
-    if (completion) return joinJapanese([complements, completion])
+    if (completion && japaneseParentheticalCompletesPredicate(finalItem.ja)) {
+      return joinJapanese([complements, completion])
+    }
     return japaneseWithPlaceholder(japanesePieces(items[0].ja).base, complements)
   }
 
@@ -245,6 +281,18 @@ function japaneseForMeaningGroup(items) {
     }
     const particle = /(?:こと|ことを)$/u.test(inner) && !/ことを$/u.test(inner) ? 'を' : ''
     return joinJapanese([inner, particle, outer])
+  }
+
+  if (/^V\+(?:O|O1|O2)\+V(?:\+(?:O|O1|O2|C|M))*$/.test(signature)) {
+    if (finalItem.closureBinding) return finalItem.ja
+    const controller = bases[1]
+    const inner = japaneseForMeaningGroup(items.slice(2))
+    const outer = cleanJapaneseBase(items[0].ja)
+    if (
+      japaneseIncludesBase(inner, outer) ||
+      (japaneseLooksComplete(inner) && japaneseIncludesBase(inner, controller))
+    ) return inner
+    return joinJapanese([controller, inner, outer])
   }
 
   // be / seem などの外側V＋不定詞C＋その目的語・補語。
@@ -273,7 +321,7 @@ function japaneseForMeaningGroup(items) {
 
   if (/^V(?:\+(?:O|O1|O2))+\+LINK$/.test(signature) && normalizedEnglish(finalItem.en) === 'that') {
     const argumentsJa = japaneseList(items.slice(1, -1), bases.slice(1, -1))
-    return joinJapanese([argumentsJa, 'that以下の内容を', bases[0]])
+    return `${argumentsJa}、that以下の内容を${bases[0]}`
   }
 
   if (/^V\+C\+LINK$/.test(signature) && normalizedEnglish(finalItem.en) === 'that') {
@@ -288,7 +336,16 @@ function japaneseForMeaningGroup(items) {
   }
 
   if (signature === 'V+LINK' && CONTENT_LINKS.has(normalizedEnglish(finalItem.en))) {
-    return completion || bases[1] || joinJapanese(bases)
+    const linkKey = normalizedEnglish(finalItem.en)
+    const verbKey = normalizedEnglish(items[0].en)
+    if (/^(?:am|are|is|was|were)$/u.test(verbKey)) {
+      return completion || bases[1] || joinJapanese(bases)
+    }
+    if (linkKey === 'that' && /気づ/u.test(bases[0])) {
+      return `that以下の内容に${bases[0]}`
+    }
+    if (linkKey === 'that') return `that以下の内容を${bases[0]}`
+    return joinJapanese([bases[1], bases[0]])
   }
 
   if (finalItem.closureBinding) return finalItem.ja
@@ -373,6 +430,7 @@ function buildMeaningPhrase(items, index, overrides) {
     note: specificExplanationText || roleNote,
     label: override?.label ?? '意味・発音のまとまり',
     pattern: override?.pattern ?? roles.map((role) => translationRoleMeta(role).code).join('＋'),
+    meaningBoundaryAfter: override?.boundaryAfter ?? '',
     source: 'meaning-phrase',
     sourceItems: Object.freeze(items),
     specialGrammar,
@@ -386,20 +444,49 @@ function isShortInternalModifier(item) {
   if (primaryRole(item) !== 'M') return false
   const key = normalizedEnglish(item.en)
   return englishWords(item.en).length <= 2 &&
+    !CLAUSE_STARTING_MODIFIERS.has(key) &&
     !/^(?:at|by|for|from|in|into|of|on|to|under|with|without)\b/.test(key)
 }
 
-function collectMeaningGroups(items, wordLimit) {
+function collectMeaningGroups(items, wordLimit, separations = []) {
+  const separationKeys = new Set(separations.map((value) => normalizedEnglish(value)))
+  const mustSeparate = (left, right) =>
+    separationKeys.has(normalizedEnglish(`${left.en} / ${right.en}`)) ||
+    separationKeys.has(normalizedEnglish(`${left.en} ${right.en}`))
   const groups = []
   for (let index = 0; index < items.length;) {
     const current = items[index]
     const role = primaryRole(current)
+    const currentKey = normalizedEnglish(current.en)
+
+    if (
+      role === 'M' &&
+      currentKey === 'how' &&
+      primaryRole(items[index + 1]) === 'C' &&
+      primaryRole(items[index + 2]) === 'S' &&
+      primaryRole(items[index + 3]) === 'V' &&
+      englishWords(spokenEnglish(items.slice(index, index + 4))).length <= wordLimit
+    ) {
+      groups.push(items.slice(index, index + 4))
+      index += 4
+      continue
+    }
 
     if (role === 'LINK') {
       const next = items[index + 1]
       if (
+        currentKey === 'nor' &&
+        primaryRole(next) === 'C' &&
+        englishWords(spokenEnglish([current, next])).length <= wordLimit
+      ) {
+        groups.push([current, next])
+        index += 2
+        continue
+      }
+      if (
         next &&
         primaryRole(next) === 'LINK' &&
+        MEANINGFUL_LINK_PAIRS.has(normalizedEnglish(`${current.en} ${next.en}`)) &&
         englishWords(`${current.en} ${next.en}`).length <= 3
       ) {
         groups.push([current, next])
@@ -415,11 +502,18 @@ function collectMeaningGroups(items, wordLimit) {
       let verbIndex = index + 1
       while (isShortInternalModifier(items[verbIndex])) verbIndex++
       const verb = items[verbIndex]
-      const nextRole = primaryRole(items[verbIndex + 1])
       const verbKey = normalizedEnglish(verb?.en)
+      const nextRole = primaryRole(items[verbIndex + 1])
+      const nextVerbItem = items[verbIndex + 1]
+      const nextVerbBinding = nextVerbItem?.infinitiveBinding ?? nextVerbItem?.ingBinding
+      const hasPredicateComplement = nextRole === 'V' && (
+        (nextVerbBinding && `${nextVerbBinding.type ?? ''}` !== 'noun-modifier') ||
+        /\bhelp(?:ed|s)?$/u.test(verbKey)
+      )
       const incompleteAuxiliary = /^(?:am|are|is|was|were|be|been|being|can|could|do|does|did|had|has|have|may|might|must|shall|should|will|would)$/u.test(verbKey)
       const incompletePredicate = incompleteAuxiliary || /〜/u.test(`${verb?.ja ?? ''}`)
       const hasImmediateArgument = ARGUMENT_ROLES.has(nextRole) ||
+        hasPredicateComplement ||
         (nextRole === 'LINK' && incompletePredicate)
       const candidate = items.slice(index, verbIndex + 1)
       if (
@@ -439,6 +533,79 @@ function collectMeaningGroups(items, wordLimit) {
     }
 
     if (role === 'V') {
+      const controlledSubject = items[index + 1]
+      const controlledVerb = items[index + 2]
+      const controlledBinding = controlledVerb?.infinitiveBinding
+      const bareObjectControlGovernor = /\b(?:help|helps|helped|make|makes|made|making)$/u
+        .test(currentKey)
+      if (
+        ['O', 'O1', 'O2'].includes(primaryRole(controlledSubject)) &&
+        primaryRole(controlledVerb) === 'V' &&
+        (controlledBinding?.type === 'object-to-infinitive' || bareObjectControlGovernor)
+      ) {
+        const candidate = [current, controlledSubject, controlledVerb]
+        let cursor = index + 3
+        while (cursor < items.length) {
+          const next = items[cursor]
+          const nextRole = primaryRole(next)
+          const key = normalizedEnglish(next.en)
+          const includeArgument = ARGUMENT_ROLES.has(nextRole)
+          const includeModifier = nextRole === 'M' &&
+            !CLAUSE_STARTING_MODIFIERS.has(key) &&
+            !/^(?:after|before|instead|to|while|without)$/u.test(key)
+          if (!includeArgument && !includeModifier) break
+          if (isRelativeBoundary(next)) break
+          if (englishWords(spokenEnglish([...candidate, next])).length > wordLimit) break
+          candidate.push(next)
+          cursor++
+        }
+        groups.push(candidate)
+        index = cursor
+        continue
+      }
+
+      if (
+        currentKey === 'prevent' &&
+        ['O', 'O1', 'O2'].includes(primaryRole(items[index + 1]))
+      ) {
+        const candidate = [current]
+        let cursor = index + 1
+        while (cursor < items.length) {
+          const next = items[cursor]
+          const nextRole = primaryRole(next)
+          if (!['O', 'O1', 'O2', 'M', 'C'].includes(nextRole)) break
+          if (englishWords(spokenEnglish([...candidate, next])).length > wordLimit) break
+          candidate.push(next)
+          cursor++
+        }
+        groups.push(candidate)
+        index = cursor
+        continue
+      }
+
+      if (
+        currentKey === 'would' &&
+        isShortInternalModifier(items[index + 1]) &&
+        primaryRole(items[index + 2]) === 'V' &&
+        primaryRole(items[index + 3]) === 'C' &&
+        englishWords(spokenEnglish(items.slice(index, index + 4))).length <= wordLimit
+      ) {
+        groups.push(items.slice(index, index + 4))
+        index += 4
+        continue
+      }
+
+      if (
+        /^(?:am|are|is|was|were)$/u.test(currentKey) &&
+        normalizedEnglish(items[index + 1]?.en) === 'neither' &&
+        primaryRole(items[index + 2]) === 'C' &&
+        englishWords(spokenEnglish(items.slice(index, index + 3))).length <= wordLimit
+      ) {
+        groups.push(items.slice(index, index + 3))
+        index += 3
+        continue
+      }
+
       const complementVerb = items[index + 1]
       const complementBinding = complementVerb?.infinitiveBinding ?? complementVerb?.ingBinding
       const complementType = `${complementBinding?.type ?? ''}`
@@ -496,6 +663,7 @@ function collectMeaningGroups(items, wordLimit) {
           /^from\b/i.test(items[cursor + 1]?.en ?? '')
         if (preventFromConstruction) break
         if (!ARGUMENT_ROLES.has(nextRole) && !contentLink) break
+        if (mustSeparate(candidate.at(-1), next)) break
         if (isRelativeBoundary(next)) break
         if (
           contentLink &&
@@ -644,7 +812,7 @@ export function buildMeaningPhraseSequence(items, {
         [spokenEnglish(group)]: definition,
       })))
   }
-  const groups = collectMeaningGroups(expandedItems, wordLimit)
+  const groups = collectMeaningGroups(expandedItems, wordLimit, overrides?.separate ?? [])
   return Object.freeze(groups.map((group, index) =>
     buildMeaningPhrase(group, index, overrides)))
 }

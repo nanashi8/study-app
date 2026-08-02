@@ -117,21 +117,18 @@ test('入口・実戦・結果の背景が戦況に応じて動き、停止設�
   assert.match(css, /@media \(prefers-reduced-motion: reduce\)[\s\S]*?\.battle-stage-backdrop :where\([\s\S]*?animation: none !important;[\s\S]*?transform: none !important;/)
 })
 
-test('戦闘結果は選択した舞台、生徒、相手、決着を一枚の結果画面に残す', async () => {
+test('戦闘結果は舞台・決着・主要4指標・次の操作だけを一枚に残す', async () => {
   const source = await readSource('../src/screens/SessionResult.jsx')
 
   assert.match(source, /data-testid="battle-result-console"/)
   assert.match(source, /data-testid="battle-result-hud"/)
-  assert.match(source, /BATTLE_RESULT_PANELS/)
-  assert.match(source, /id: 'outcome', label: '戦果'/)
-  assert.match(source, /id: 'growth', label: '成長'/)
-  assert.doesNotMatch(source, /id: 'companion', label: '同行者'/)
-  assert.match(source, /data-battle-result-panel=\{battleResultPanel\}/)
-  assert.match(source, /battleResultPanel === 'outcome'/)
-  assert.match(source, /battleResultPanel === 'growth'/)
-  assert.doesNotMatch(source, /battleResultPanel === 'companion'/)
+  assert.match(source, /<div><b>\{percent\}%<\/b><small>\{correct\}\/\{total\} 正解<\/small><\/div>/)
+  assert.match(source, /<div><b>\+\{xpGained\}<\/b><small>XP<\/small><\/div>/)
+  assert.match(source, /<div><b>\+\{battleStarsGained\}<\/b><small>スター<\/small><\/div>/)
+  assert.match(source, /<div><b>LV \{level\}<\/b>/)
+  assert.doesNotMatch(source, /BATTLE_RESULT_PANELS|battleResultPanel|battle-result-tablist|battle-result-panel/)
   assert.doesNotMatch(source, /<BattleCompanionPicker/)
-  assert.match(source, /戦いの結末を見る/)
+  assert.match(source, /次へ：戦いの結末/)
   assert.match(source, /function BattleResultStage/)
   assert.match(source, /data-testid="battle-result-stage"/)
   assert.match(source, /url\("\$\{theme\.stage\}"\)/)
@@ -155,7 +152,7 @@ test('戦闘結果は生徒別のかわいい・かっこいい動画演出を�
   assert.match(source, /battleStudentMotion\(student\.id, motionEmotion\)/)
   assert.match(source, /className="battle-result-motion-video"/)
   assert.match(source, /<video[\s\S]*?autoPlay[\s\S]*?muted[\s\S]*?playsInline/)
-  assert.match(source, /バトル結果の演出をもう一度見る/)
+  assert.doesNotMatch(source, /バトル結果の演出をもう一度見る|battle-result-replay/)
   assert.match(source, /prefers-reduced-motion: reduce/)
 })
 
@@ -168,8 +165,8 @@ test('共通CSSは狭幅・低画面・動きを減らす設定まで対決演�
   assert.match(css, /\.battle-result-stage\s*\{/)
   assert.match(css, /\.battle-result-console-shell\s*\{/)
   assert.match(css, /\.battle-result-hud\s*\{/)
-  assert.match(css, /\.battle-result-tablist\s*\{/)
-  assert.match(css, /\.battle-result-panel\s*\{/)
+  assert.match(css, /grid-template-columns: repeat\(4, minmax\(0, 1fr\)\)/)
+  assert.doesNotMatch(css, /\.battle-result-tablist\s*\{|\.battle-result-panel\s*\{/)
   assert.match(css, /\.battle-result-screen\[data-battle-ui-mode='gaming'\]/)
   assert.match(css, /\.battle-result-console-shell\[data-battle-ui-mode='simple'\]/)
   assert.match(css, /@keyframes battle-result-cute-hero/)
@@ -196,7 +193,7 @@ test('共通CSSは狭幅・低画面・動きを減らす設定まで対決演�
   assert.match(css, /@media \(prefers-reduced-motion: reduce\)/)
   assert.match(css, /\.battle-stage-clash-axis,/)
   assert.match(css, /\.battle-result-stage,/)
-  assert.match(css, /\.battle-result-effect-field,[\s\S]*?\.battle-result-replay,[\s\S]*?\.battle-standing-motion-cut-in\s*\{[\s\S]*?display: none;/)
+  assert.match(css, /\.battle-result-effect-field,[\s\S]*?\.battle-standing-motion-cut-in\s*\{[\s\S]*?display: none;/)
 })
 
 test('先生たちとの学校生活は専用の先生ビジュアルと配色を持つ', async () => {

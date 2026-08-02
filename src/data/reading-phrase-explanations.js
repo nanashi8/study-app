@@ -170,7 +170,8 @@ const guides = [
       phrase('is available', 'V', '利用可能な（あるものによって）'),
       phrase('than', 'LINK', '〜よりも'),
       phrase('by what', 'M', 'あるものによって'),
-      phrase('is repeatedly presented as relevant', ['V', 'C'], '関連があるものとして繰り返し提示される'),
+      phrase('is repeatedly presented', 'V', '繰り返し提示される（あるものによって）'),
+      phrase('as relevant', 'C', '関連があるものとして'),
     ],
   ),
   guide(

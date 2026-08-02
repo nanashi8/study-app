@@ -280,7 +280,7 @@ function BattleTraitSettings({ student, battleStars, investments, onRaise, onRes
           <h3 className="truncate font-display text-sm font-extrabold text-ink">同行中：{student.name}</h3>
           <p className="mt-0.5 text-[10px] font-bold text-violet-600">発現色：{profile.colorLabel}</p>
           <p className="mt-1 text-[10px] font-bold leading-relaxed text-ink/45">
-            同行者の変更はバトル後の戦果画面だけで行います。
+            同行者は次の相手が分かってから、対決前の作戦会議で変更できます。
           </p>
         </div>
       </div>

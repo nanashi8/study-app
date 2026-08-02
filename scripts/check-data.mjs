@@ -356,6 +356,7 @@ const phraseHeads = new Set()
 const longSentenceTargetIds = new Set()
 let longSentenceTranslationCount = 0
 let longSentenceTranslationStepCount = 0
+let longSentenceMeaningStepCount = 0
 for (const p of PHRASES) {
   const at = p.id || p.phrase
   if (!p.id || phraseIds.has(p.id)) errors.push(`熟語/構文 id が無いか重複 (${at})`)
@@ -380,6 +381,7 @@ for (const p of PHRASES) {
     } else {
       longSentenceTranslationCount += 1
       longSentenceTranslationStepCount += translation.steps?.length ?? 0
+      longSentenceMeaningStepCount += translation.meaningSteps?.length ?? 0
       const rebuiltEnglish = translation.steps?.map((part) => part.en).join(' ')
       if (rebuiltEnglish?.replace(/\s+/g, ' ').trim() !== p.example.en.replace(/\s+/g, ' ').trim()) {
         errors.push(`長い一文 ${at}: フレーズ連結で元英文を復元できない`)
@@ -410,6 +412,28 @@ for (const p of PHRASES) {
       ) {
         errors.push(`長い一文 ${at}: 直訳フレーズまたは項目別解説が不足`)
       }
+      const rebuiltMeaningEnglish = translation.meaningSteps
+        ?.map((part) => part.spokenEn ?? part.en)
+        .join(' ')
+      if (
+        !Array.isArray(translation.meaningSteps) ||
+        translation.meaningSteps.length < 2 ||
+        rebuiltMeaningEnglish?.replace(/\s+/g, ' ').trim() !==
+          p.example.en.replace(/\s+/g, ' ').trim() ||
+        translation.meaningSteps.some((part) =>
+          !part.en?.trim() ||
+          !part.ja?.trim() ||
+          englishWordCount(part.en) > 8 ||
+          part.spokenEn !== part.en ||
+          !Array.isArray(part.roles) ||
+          part.roles.length < 1 ||
+          !Array.isArray(part.roleParts) ||
+          part.roleParts.length < 1 ||
+          part.status !== 'confirmed' ||
+          part.reviewState !== 'audit-confirmed')
+      ) {
+        errors.push(`長い一文 ${at}: 意味・発音フレーズまたは対応する日本語が不正`)
+      }
     }
   }
 }
@@ -422,11 +446,13 @@ for (const id of Object.keys(LONG_SENTENCE_TRANSLATIONS)) {
 if (
   longSentenceTargetIds.size !== 33 ||
   longSentenceTranslationCount !== longSentenceTargetIds.size ||
+  longSentenceMeaningStepCount !== 103 ||
   Object.keys(LONG_SENTENCE_TRANSLATIONS).length !== longSentenceTargetIds.size
 ) {
   errors.push(
-    `長い一文フレーズ直訳: ${longSentenceTranslationCount}/${longSentenceTargetIds.size}文・` +
-    `${longSentenceTranslationStepCount}フレーズ（現行の全対象は33文）`,
+    `長い一文フレーズ監査: ${longSentenceTranslationCount}/${longSentenceTargetIds.size}文・` +
+    `${longSentenceMeaningStepCount}意味フレーズ・${longSentenceTranslationStepCount}内部SVOCM単位` +
+    '（現行の全対象は33文・103意味フレーズ）',
   )
 }
 
@@ -524,6 +550,8 @@ let readingTranslationSegmentCount = 0
 let readingTranslationSequenceCount = 0
 let readingPhrasePairCount = 0
 let readingPhraseSequenceCount = 0
+let readingMeaningPhraseCount = 0
+let readingMeaningMultiRoleCount = 0
 let readingReviewedPhraseSentenceCount = 0
 let readingManualReviewSentenceCount = 0
 const readingPhraseWords = (text) =>
@@ -595,6 +623,32 @@ for (const ps of PASSAGES) {
     }
     const analysis = analyzeReadingSentence(s)
     readingPhraseSequenceCount += analysis.phraseSequence.length
+    readingMeaningPhraseCount += analysis.meaningPhraseSequence.length
+    readingMeaningMultiRoleCount += analysis.meaningPhraseSequence
+      .filter((phrase) => phrase.roles.length > 1)
+      .length
+    if (
+      JSON.stringify(
+        analysis.meaningPhraseSequence.flatMap((phrase) =>
+          readingPhraseWords(phrase.spokenEn ?? phrase.en)),
+      ) !== JSON.stringify(readingPhraseWords(s.en)) ||
+      analysis.meaningPhraseSequence.some((phrase) =>
+        !phrase.en?.trim() ||
+        !phrase.ja?.trim() ||
+        !(phrase.explanation ?? phrase.grammarNote)?.trim() ||
+        phrase.spokenEn !== phrase.en ||
+        readingPhraseWords(phrase.en).length > 8 ||
+        !Array.isArray(phrase.roles) ||
+        phrase.roles.length < 1 ||
+        !Array.isArray(phrase.roleParts) ||
+        phrase.roleParts.length < 1 ||
+        phrase.status !== 'confirmed' ||
+        phrase.reviewState !== 'audit-confirmed')
+    ) {
+      errors.push(
+        `長文 ${ps.id}: 第${sentenceIndex + 1}文の意味・発音フレーズまたは対応する日本語が不正`,
+      )
+    }
     if (analysis.phraseSequence.length > 0 && analysis.phraseSequence.every(
       (phrase) => phrase.reviewEvidenceId === s.reviewId,
     )) {
@@ -614,12 +668,17 @@ for (const ps of PASSAGES) {
       ) {
         errors.push(`${phraseAt}: 連結しても原文の語順を復元できない`)
       }
+      const visibleMeaning = (phrase) => ({
+        en: phrase.en,
+        roles: phrase.roles,
+        ja: phrase.ja,
+        displayEn: phrase.displayEn ?? phrase.en,
+        spokenEn: phrase.spokenEn ?? phrase.en,
+      })
       if (
-        analysis.phraseSequence.length !== reviewed.phrases.length ||
-        analysis.phraseSequence.some((phrase, phraseIndex) =>
-          phrase.en !== reviewed.phrases[phraseIndex]?.en ||
-          phrase.role !== reviewed.phrases[phraseIndex]?.role)
-      ) errors.push(`${phraseAt}: 全件SVOCM出力が回帰例の役割列と一致しない`)
+        JSON.stringify(analysis.meaningPhraseSequence.map(visibleMeaning)) !==
+        JSON.stringify(reviewed.phrases.map(visibleMeaning))
+      ) errors.push(`${phraseAt}: 全件意味フレーズ出力が回帰例と一致しない`)
       if (reviewed.phrases.some((phrase) =>
         !phrase.en?.trim() ||
         !phrase.ja?.trim() ||
@@ -627,7 +686,7 @@ for (const ps of PASSAGES) {
         phrase.spokenEn !== phrase.en ||
         !['confirmed', 'reviewed', 'review-needed'].includes(phrase.status)
       )) {
-        errors.push(`${phraseAt}: 英語・直訳・解説・確認状態・原文音声のいずれかが不正`)
+        errors.push(`${phraseAt}: 英語・対応する日本語・解説・確認状態・原文音声のいずれかが不正`)
       }
     }
     const scenario = s.translationScenario
@@ -720,6 +779,21 @@ for (const ps of PASSAGES) {
       if (JSON.stringify(blockPhrasePayload) !== JSON.stringify(reviewedPhrasePayload)) {
         errors.push(`${translationAt}: 下段文法ブロックが最終確認済みフレーズ列と一致しない`)
       }
+      const visibleMeaningPayload = (phrase) => ({
+        en: phrase.en,
+        spokenEn: phrase.spokenEn ?? phrase.en,
+        displayEn: phrase.displayEn ?? phrase.en,
+        roles: phrase.roles,
+        ja: phrase.ja,
+        explanation: phrase.explanation ?? phrase.grammarNote ?? '',
+      })
+      const blockMeaningPayload = analysis.blocks
+        .flatMap((block) => block.meaningPhrasePairs ?? [])
+        .map(visibleMeaningPayload)
+      const sentenceMeaningPayload = analysis.meaningPhraseSequence.map(visibleMeaningPayload)
+      if (JSON.stringify(blockMeaningPayload) !== JSON.stringify(sentenceMeaningPayload)) {
+        errors.push(`${translationAt}: 下段ブロックの意味フレーズが文全体の表示・音声と一致しない`)
+      }
     }
     const expectedPattern = expectedPatterns?.[sentenceIndex]
     const actualPattern = analysis.mainPattern
@@ -784,13 +858,16 @@ if (
   readingTranslationSentenceCount !== 363 ||
   readingTranslationBlockCount !== 1042 ||
   readingPhrasePairCount !== 3238 ||
-  readingPhraseSequenceCount !== 3238
+  readingPhraseSequenceCount !== 3238 ||
+  readingMeaningPhraseCount !== 2290 ||
+  readingMeaningMultiRoleCount !== 775
 ) {
   errors.push(
     `長文フレーズ監査: ${PASSAGES.length}長文・${readingTranslationSentenceCount}文・` +
-    `${readingTranslationBlockCount}ブロック・${readingPhrasePairCount}ブロック内英日フレーズ・` +
-    `${readingPhraseSequenceCount}表示フレーズ` +
-    '（現行全件は16長文・363文・1,042ブロック・3,238ブロック内英日フレーズ・3,238表示フレーズ）',
+    `${readingTranslationBlockCount}ブロック・${readingMeaningPhraseCount}意味フレーズ` +
+    `（複数役割${readingMeaningMultiRoleCount}件）・${readingPhrasePairCount}ブロック内内部SVOCM単位・` +
+    `${readingPhraseSequenceCount}文全体内部SVOCM単位` +
+    '（現行全件は16長文・363文・1,042ブロック・2,290意味フレーズ・3,238内部SVOCM単位）',
   )
 }
 if (
@@ -1599,4 +1676,4 @@ if (errors.length) {
   process.exit(1)
 }
 
-console.log(`✅ データ検証OK: ${ALL_WORDS.length}英単語 / ${EXAM_USAGE_GUIDES.length}使い分けガイド / ${PHRASES.length}熟語・構文（長い一文${longSentenceTranslationCount}文・${longSentenceTranslationStepCount}直訳フレーズ） / ${GRAMMAR.length}英文法 / ${GRAMMAR_LESSONS.length}文法解説 / ${PASSAGES.length}長文（${readingTranslationSentenceCount}文・${readingTranslationBlockCount}語順訳ブロック・${readingPhrasePairCount}ブロック内英日フレーズ・${readingPhraseSequenceCount}表示フレーズ・手動本文台帳${readingManualReviewSentenceCount}文・回帰例${readingReviewedPhraseSentenceCount}文） / ${PUBLIC_DOMAIN_LITERATURE.length}名作朗読（${literatureSceneCount}場面・${literatureNarrationSegmentCount}区切り） / ${DICTATION_ITEMS.length}ディクテーション / ${LISTENING_ITEMS.length}リスニング / ${KOTEN_WORDS.length}古典単語 / ${KOTEN_GRAMMAR.length}古典文法 / ${KOTEN_GRAMMAR_QUESTIONS.length}古典文法問題 / ${KOTEN_CULTURE.length}古典常識 / ${KOTEN_CULTURE_QUESTIONS.length}古典常識問題 / ${KOTEN_INTERPRETATIONS.length}古典短文 — 全て必須項目を満たす`)
+console.log(`✅ データ検証OK: ${ALL_WORDS.length}英単語 / ${EXAM_USAGE_GUIDES.length}使い分けガイド / ${PHRASES.length}熟語・構文（長い一文${longSentenceTranslationCount}文・${longSentenceMeaningStepCount}意味フレーズ・${longSentenceTranslationStepCount}内部SVOCM単位） / ${GRAMMAR.length}英文法 / ${GRAMMAR_LESSONS.length}文法解説 / ${PASSAGES.length}長文（${readingTranslationSentenceCount}文・${readingTranslationBlockCount}語順訳ブロック・${readingMeaningPhraseCount}意味フレーズ・${readingPhrasePairCount}ブロック内内部SVOCM単位・手動本文台帳${readingManualReviewSentenceCount}文・回帰例${readingReviewedPhraseSentenceCount}文） / ${PUBLIC_DOMAIN_LITERATURE.length}名作朗読（${literatureSceneCount}場面・${literatureNarrationSegmentCount}区切り） / ${DICTATION_ITEMS.length}ディクテーション / ${LISTENING_ITEMS.length}リスニング / ${KOTEN_WORDS.length}古典単語 / ${KOTEN_GRAMMAR.length}古典文法 / ${KOTEN_GRAMMAR_QUESTIONS.length}古典文法問題 / ${KOTEN_CULTURE.length}古典常識 / ${KOTEN_CULTURE_QUESTIONS.length}古典常識問題 / ${KOTEN_INTERPRETATIONS.length}古典短文 — 全て必須項目を満たす`)

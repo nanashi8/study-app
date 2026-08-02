@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "test": "node --test --test-concurrency=1 tests/*.test.mjs",
-    "check": "npm run check:deployment && npm run check:bgm && node scripts/check-data.mjs && node scripts/english-content-audit.mjs",
+    "check": "npm run check:deployment && npm run check:bgm && node scripts/check-data.mjs && node scripts/english-content-audit.mjs && npm run audit:phrases",
     "check:deployment": "node scripts/check-deployment-target.mjs",
     "check:bgm": "node scripts/check-game-bgm.mjs",
     "audit:english": "node scripts/english-content-audit.mjs",

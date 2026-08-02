@@ -1224,12 +1224,19 @@ function meaningPhraseFragmentation(parts, index) {
   if (!current || !next) return null
   const currentRoles = rolesOf(current)
   const nextRoles = rolesOf(next)
+  if (
+    current.meaningBoundaryAfter &&
+    sameEnglish(current.meaningBoundaryAfter, next.en)
+  ) return null
   const combinedWords = englishWords(`${current.en} ${next.en}`).length
   if (
     currentRoles.length === 1 &&
     currentRoles[0] === 'S' &&
     nextRoles.length === 1 &&
     nextRoles[0] === 'V' &&
+    (next.sourceItems?.length ?? 1) === 1 &&
+    !auxiliaryOnlyPhrase(next.en) &&
+    !/\bprevent\b/i.test(next.en) &&
     combinedWords <= 6
   ) {
     return '短いS＋Vが意味の完成する一息なのに分断されています'
@@ -1237,6 +1244,7 @@ function meaningPhraseFragmentation(parts, index) {
   if (
     currentRoles.length === 1 &&
     currentRoles[0] === 'V' &&
+    !/\bprevent\b/i.test(current.en) &&
     nextRoles.some((role) => ['O', 'O1', 'O2', 'C'].includes(role)) &&
     combinedWords <= 8
   ) {

@@ -25,7 +25,7 @@ const guideBySentence = () => Object.fromEntries(
   READING_PHRASE_EXPLANATIONS.map((guide) => [guide.sentence, guide]),
 )
 
-test('12文の回帰例は全363文と同じSVOCM役割列へ接続する', () => {
+test('12文の回帰例は全363文と同じ意味・発音フレーズ列へ接続する', () => {
   assert.equal(READING_PHRASE_EXPLANATIONS.length, 12)
 
   for (const guide of READING_PHRASE_EXPLANATIONS) {
@@ -41,51 +41,49 @@ test('12文の回帰例は全363文と同じSVOCM役割列へ接続する', () =
 
     const analysis = analyzeReadingSentence(sentence)
     assert.equal(analysis.phraseExplanationGuide, guide)
-    assert.match(analysis.phraseMethod, /^corpus-svocm-(?:reviewed|confirmed)$/)
-    const visibleFields = ({ en, role, ja, displayEn, spokenEn }) => ({
-      en, role, ja, displayEn, spokenEn,
+    assert.match(analysis.phraseMethod, /^corpus-meaning-phrase-(?:reviewed|confirmed)$/)
+    const visibleFields = ({ en, roles, ja, displayEn, spokenEn }) => ({
+      en, roles, ja, displayEn, spokenEn,
     })
     assert.deepEqual(
-      analysis.phraseSequence.map(visibleFields),
+      analysis.meaningPhraseSequence.map(visibleFields),
       guide.phrases.map(visibleFields),
-      `${guide.id}: 実出力が回帰例の英語・役割・直訳・表示・音声と一致しない`,
+      `${guide.id}: 実出力が回帰例の英語・内部役割・日本語・表示・音声と一致しない`,
     )
-    assert.ok(analysis.phraseSequence.every((phrase) =>
+    assert.ok(analysis.meaningPhraseSequence.every((phrase) =>
       ['reviewed', 'confirmed'].includes(phrase.status) && phrase.reviewState))
   }
 })
 
-test('SとVを一律結合せず、S→V→O/C/Mの役割境界を固定する', () => {
+test('SVOCMを機械的に分断せず、発音できて意味が通るまとまりを固定する', () => {
   const bySentence = guideBySentence()
 
   assert.deepEqual(
     bySentence['She goes to school by bus every morning.'].phrases
-      .map(({ en, role, ja }) => ({ en, role, ja })),
+      .map(({ en, roles, ja }) => ({ en, roles, ja })),
     [
-      { en: 'She', role: 'S', ja: '彼女は' },
-      { en: 'goes', role: 'V', ja: '行きます' },
-      { en: 'to school', role: 'M', ja: '学校へ' },
-      { en: 'by bus', role: 'M', ja: 'バスで' },
-      { en: 'every morning', role: 'M', ja: '毎朝' },
+      { en: 'She goes', roles: ['S', 'V'], ja: '彼女は行きます' },
+      { en: 'to school', roles: ['M'], ja: '学校へ' },
+      { en: 'by bus', roles: ['M'], ja: 'バスで' },
+      { en: 'every morning', roles: ['M'], ja: '毎朝' },
     ],
   )
 
   assert.deepEqual(
     bySentence['Rina is a junior high school student.'].phrases
-      .map(({ en, role, ja }) => ({ en, role, ja })),
+      .map(({ en, roles, ja }) => ({ en, roles, ja })),
     [
-      { en: 'Rina', role: 'S', ja: 'リナは' },
-      { en: 'is', role: 'V', ja: '〜です（内容は次へ）' },
-      { en: 'a junior high school student', role: 'C', ja: '一人の中学生' },
+      { en: 'Rina', roles: ['S'], ja: 'リナは' },
+      { en: 'is a junior high school student', roles: ['V', 'C'], ja: '一人の中学生です' },
     ],
   )
 
   assert.deepEqual(
     bySentence['She likes English because her teacher uses many pictures.'].phrases
-      .map(({ en, role }) => [en, role]),
+      .map(({ en, roles }) => [en, roles]),
     [
-      ['She', 'S'], ['likes', 'V'], ['English', 'O'], ['because', 'LINK'],
-      ['her teacher', 'S'], ['uses', 'V'], ['many pictures', 'O'],
+      ['She', ['S']], ['likes English', ['V', 'O']], ['because', ['LINK']],
+      ['her teacher', ['S']], ['uses many pictures', ['V', 'O']],
     ],
   )
 })
@@ -96,17 +94,18 @@ test('形式目的語・共有to・比較・前置詞＋whatの確定例を回�
     'This evidence makes it easier to improve a design or decide that a simpler solution would work better.'
   ]
   assert.deepEqual(
-    evidence.phrases.map(({ en, role }) => [en, role]),
+    evidence.phrases.map(({ en, roles }) => [en, roles]),
     [
-      ['This evidence', 'S'], ['makes', 'V'], ['it', 'O'], ['easier', 'C'],
-      ['to improve', 'V'], ['a design', 'O'], ['or', 'LINK'], ['decide', 'V'],
-      ['that', 'LINK'], ['a simpler solution', 'S'], ['would work', 'V'], ['better', 'M'],
+      ['This evidence', ['S']], ['makes it easier', ['V', 'O', 'C']],
+      ['to improve a design', ['V', 'O']], ['or', ['LINK']],
+      ['decide that', ['V', 'LINK']], ['a simpler solution would work', ['S', 'V']],
+      ['better', ['M']],
     ],
   )
-  const decide = evidence.phrases.find((phrase) => phrase.en === 'decide')
-  assert.equal(decide.displayEn, '(to) decide')
-  assert.equal(decide.spokenEn, 'decide')
-  assert.match(decide.grammar, /共通の to|共有to|共有され/)
+  const decide = evidence.phrases.find((phrase) => phrase.en === 'decide that')
+  assert.equal(decide.displayEn, '(to) decide that')
+  assert.equal(decide.spokenEn, 'decide that')
+  assert.match(decide.grammar, /二つ目のto|省略|並列/)
   assert.equal(evidence.phrases.find((phrase) => phrase.en === 'better')?.ja,
     'よりうまく（機能するだろう）')
 
@@ -118,13 +117,16 @@ test('形式目的語・共有to・比較・前置詞＋whatの確定例を回�
     'is available', 'than', 'by what', 'is repeatedly presented', 'as relevant',
   ])
   assert.equal(memory.phrases[3].ja, 'あるものによって')
-  assert.equal(memory.phrases[8].role, 'C')
+  assert.deepEqual(memory.phrases[8].roles, ['C'])
 
   const learn = bySentence[
     'If that practice declines, even perfect archives will not prevent societies from losing their ability to learn from what they once knew.'
   ]
-  assert.deepEqual(learn.phrases.slice(-4).map(({ en, role }) => [en, role]), [
-    ['from what', 'M'], ['they', 'S'], ['once', 'M'], ['knew', 'V'],
+  assert.deepEqual(learn.phrases.slice(-4).map(({ en, roles }) => [en, roles]), [
+    ['societies from losing their ability', ['O', 'M']],
+    ['to learn', ['V']],
+    ['from what', ['M']],
+    ['they once knew', ['S', 'M', 'V']],
   ])
 })
 

@@ -124,6 +124,7 @@ test('永続設定の変更処理は共通メニューへ集約し、同行者�
   assert.doesNotMatch(read('../src/screens/SessionResult.jsx'), /<BattleCompanionPicker/)
   assert.match(read('../src/components/BattleCompanionPicker.jsx'), /この対決の同行者を選ぶ/)
   assert.match(read('../src/screens/EnglishMap.jsx'), /同行者の選択は次の相手が分かるバトル前の作戦会議/)
+  assert.match(read('../src/components/GameSettings.jsx'), /次の相手が分かってから、対決前の作戦会議で変更できます/)
 })
 
 test('簡易UIとゲーミングUIは共通設定から切り替わり戦闘計算を変えない', () => {

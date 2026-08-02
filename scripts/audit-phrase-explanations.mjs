@@ -11,7 +11,9 @@ console.log(
 )
 console.log(
   `  長文読解: ${audit.reading.confirmedSentenceCount}/${audit.reading.sentenceCount}文、` +
-  `${audit.reading.confirmedPhraseCount}/${audit.reading.phraseCount}フレーズ確認済み、` +
+  `学習者向け意味フレーズ ${audit.reading.meaningPhraseCount}件` +
+  `（複数役割 ${audit.reading.meaningMultiRoleCount}件）、` +
+  `内部SVOCM単位 ${audit.reading.confirmedPhraseCount}/${audit.reading.phraseCount}件確認済み、` +
   `手動本文照合 ${audit.reading.manuallyReviewedSentenceCount}/${audit.reading.sentenceCount}文、` +
   `本文別判断 ${audit.reading.appliedCorrectionCount}/${audit.reading.correctionDecisionCount}件適用`,
 )
@@ -22,8 +24,15 @@ console.log(
 )
 console.log(
   `  長い一文: ${audit.longSentences.confirmedSentenceCount}/${audit.longSentences.sentenceCount}文、` +
-  `${audit.longSentences.confirmedPhraseCount}/${audit.longSentences.phraseCount}フレーズ確認済み、` +
+  `学習者向け意味フレーズ ${audit.longSentences.meaningPhraseCount}件` +
+  `（複数役割 ${audit.longSentences.meaningMultiRoleCount}件）、` +
+  `内部SVOCM単位 ${audit.longSentences.confirmedPhraseCount}/${audit.longSentences.phraseCount}件確認済み、` +
   `手動本文照合 ${audit.longSentences.manuallyReviewedSentenceCount}/${audit.longSentences.sentenceCount}文`,
+)
+console.log(
+  `  文学朗読: ${audit.literature.workCount}作品・${audit.literature.sceneCount}場面・` +
+  `${audit.literature.segmentCount}意味区切り` +
+  `（英語作品 ${audit.literature.englishSegmentCount}英語フレーズ）`,
 )
 
 const issueRows = [
@@ -31,7 +40,7 @@ const issueRows = [
   ['長文・必須欄の欠落', audit.reading.issues.missingFields],
   ['長文・発音原文の不一致', audit.reading.issues.spokenMismatches],
   ['長文・語数上限超過', audit.reading.issues.overWordLimit],
-  ['長文・複数役割の混在', audit.reading.issues.mixedRoles],
+  ['長文・内部SVOCM単位の複数役割混在', audit.reading.issues.mixedRoles],
   ['長文・真の助動詞/本動詞分断', audit.reading.issues.splitAuxiliaryVerb],
   ['長文・目的語のない前置詞', audit.reading.issues.prepositionFragments],
   ['長文・特殊文法の項目別説明不足', audit.reading.issues.missingSpecialGrammar],
@@ -52,12 +61,20 @@ const issueRows = [
   ['長文・未決規則に該当するフレーズ', audit.reading.issues.pendingRulePhrases],
   ['長文・最終監査未確認文', audit.reading.issues.unreviewedSentences],
   ['長文・最終監査未確認フレーズ', audit.reading.issues.nonConfirmedPhrases],
+  ['長文・意味フレーズの原文復元エラー', audit.reading.issues.meaningReconstructionErrors],
+  ['長文・意味フレーズの必須欄欠落', audit.reading.issues.meaningMissingFields],
+  ['長文・意味フレーズの発音原文不一致', audit.reading.issues.meaningSpokenMismatches],
+  ['長文・意味フレーズの8語上限超過', audit.reading.issues.meaningOverWordLimit],
+  ['長文・意味フレーズの不要な細切れ', audit.reading.issues.unnecessaryMeaningFragmentation],
+  ['長文・意味フレーズの日本語連結不備', audit.reading.issues.invalidMeaningJapanese],
+  ['長文・意味フレーズのブロック投影不一致', audit.reading.issues.staleMeaningBlockPayloads],
+  ['長文・意味フレーズ回帰例との不一致', audit.reading.issues.meaningRegressionMismatches],
   ['長い一文・ガイド欠落', audit.longSentences.issues.missingGuides],
   ['長い一文・原文復元エラー', audit.longSentences.issues.reconstructionErrors],
   ['長い一文・必須欄の欠落', audit.longSentences.issues.missingFields],
   ['長い一文・発音原文の不一致', audit.longSentences.issues.spokenMismatches],
   ['長い一文・語数上限超過', audit.longSentences.issues.overWordLimit],
-  ['長い一文・複数役割の混在', audit.longSentences.issues.mixedRoles],
+  ['長い一文・内部SVOCM単位の複数役割混在', audit.longSentences.issues.mixedRoles],
   ['長い一文・真の助動詞/本動詞分断', audit.longSentences.issues.splitAuxiliaryVerb],
   ['長い一文・目的語のない前置詞', audit.longSentences.issues.prepositionFragments],
   ['長い一文・特殊文法の項目別説明不足', audit.longSentences.issues.missingSpecialGrammar],
@@ -70,6 +87,18 @@ const issueRows = [
   ['長い一文・未決規則に該当するフレーズ', audit.longSentences.issues.pendingRulePhrases],
   ['長い一文・最終監査未確認文', audit.longSentences.issues.unreviewedGuides],
   ['長い一文・最終監査未確認フレーズ', audit.longSentences.issues.nonConfirmedSteps],
+  ['長い一文・意味フレーズの原文復元エラー', audit.longSentences.issues.meaningReconstructionErrors],
+  ['長い一文・意味フレーズの必須欄欠落', audit.longSentences.issues.meaningMissingFields],
+  ['長い一文・意味フレーズの発音原文不一致', audit.longSentences.issues.meaningSpokenMismatches],
+  ['長い一文・意味フレーズの8語上限超過', audit.longSentences.issues.meaningOverWordLimit],
+  ['長い一文・意味フレーズの不要な細切れ', audit.longSentences.issues.unnecessaryMeaningFragmentation],
+  ['長い一文・意味フレーズの日本語連結不備', audit.longSentences.issues.invalidMeaningJapanese],
+  ['長い一文・意味フレーズの最終監査未確認', audit.longSentences.issues.nonConfirmedMeaningSteps],
+  ['文学朗読・必須欄欠落', audit.literature.issues.missingFields],
+  ['文学朗読・原文復元エラー', audit.literature.issues.reconstructionErrors],
+  ['文学朗読・発音原文不一致', audit.literature.issues.spokenMismatches],
+  ['文学朗読・英語フレーズの8語上限超過', audit.literature.issues.overWordLimit],
+  ['文学朗読・日本語括弧音声不一致', audit.literature.issues.invalidJapaneseSpeech],
 ]
 
 for (const [label, items] of issueRows) {

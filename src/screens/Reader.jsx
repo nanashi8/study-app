@@ -92,6 +92,12 @@ function blockFlowParts(block) {
     pair.roleParts.map((part) => ({ role: part.role, text: part.en }))) ?? []
 }
 
+function learnerPhrasePairsForBlock(block) {
+  // 空配列は「この文法ブロックが前後を含む意味フレーズに統合済み」の印です。
+  // length で旧SVOCM列へ戻すと、学習者向け表示だけが再び細切れになります。
+  return block?.meaningPhrasePairs ?? block?.phrasePairs ?? []
+}
+
 function sentenceFlowParts(analysis) {
   return analysis?.phraseSequence.flatMap((pair) =>
     pair.roleParts.map((part) => ({ role: part.role, text: part.en }))) ?? []
@@ -125,7 +131,7 @@ export function ReaderScreen() {
     [passage],
   )
 
-  // ── 講師音声（文全体の意味フレーズごとに英語→直訳→必要な解説）──
+  // ── 講師音声（文全体の意味フレーズごとに英語→対応する日本語→必要な解説）──
   const chunks = useMemo(
     () => sentenceAnalyses.flatMap((analysis, si) =>
       analysis.meaningPhraseSequence.map((phrase, phraseIndex) => ({
@@ -193,7 +199,7 @@ export function ReaderScreen() {
   // 画面を離れたら必ず止める
   useEffect(() => dismissSpeechPlayer, [])
 
-  // 原文の英語→直訳→必要な解説を、意味フレーズ単位で共通コンソールへ渡す。
+  // 原文の英語→対応する日本語→必要な解説を、意味フレーズ単位で共通コンソールへ渡す。
   const playChunks = (index = 0) => {
     playSpeechItems(chunkSpeechItems, {
       index,
@@ -210,9 +216,8 @@ export function ReaderScreen() {
   }
 
   const speakBlockPair = (block) => {
-    const phrasePairs = block.meaningPhrasePairs?.length
-      ? block.meaningPhrasePairs
-      : block.phrasePairs
+    const phrasePairs = learnerPhrasePairsForBlock(block)
+    if (!phrasePairs.length) return
     const items = phrasePairs.map((pair, index) => {
       const explanation = pair.grammar ?? pair.explanation ?? pair.roleNote
       return {
@@ -697,13 +702,22 @@ export function ReaderScreen() {
                 {sentenceAnalysis.blocks.map((block, index) => (
                   <article key={block.id} className="border border-brand-100 bg-white p-3">
                     <div className="flex items-start gap-2">
-                      <button
-                        onClick={() => speakBlockPair(block)}
-                        aria-label={`ブロック${index + 1}を英語フレーズ、対応する日本語、講師解説の順で再生`}
-                        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-100 text-brand-700 active:bg-brand-200"
-                      >
-                        <SpeakerWave size={17} />
-                      </button>
+                      {learnerPhrasePairsForBlock(block).length > 0 ? (
+                        <button
+                          onClick={() => speakBlockPair(block)}
+                          aria-label={`ブロック${index + 1}を英語フレーズ、対応する日本語、講師解説の順で再生`}
+                          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-100 text-brand-700 active:bg-brand-200"
+                        >
+                          <SpeakerWave size={17} />
+                        </button>
+                      ) : (
+                        <span
+                          aria-hidden="true"
+                          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-ink/5 text-ink/30"
+                        >
+                          <BookOpen size={17} />
+                        </span>
+                      )}
                       <div className="min-w-0 flex-1">
                         <div className="flex flex-wrap items-center gap-1 text-[10px] font-extrabold">
                           <span className="bg-brand-50 px-1.5 py-0.5 text-brand-700">
@@ -727,9 +741,7 @@ export function ReaderScreen() {
                       </div>
                     </div>
                     <div className="mt-2 space-y-1.5" aria-label="英語と対応する日本語">
-                        {(block.meaningPhrasePairs?.length
-                          ? block.meaningPhrasePairs
-                          : block.phrasePairs).map((pair, phraseIndex) => (
+                        {learnerPhrasePairsForBlock(block).map((pair, phraseIndex) => (
                         <div
                           key={`${block.id}-${phraseIndex}`}
                           className="grid grid-cols-[1.5rem_minmax(0,1fr)] gap-2 border border-brand-100 bg-brand-50/60 px-2 py-2"
@@ -772,6 +784,11 @@ export function ReaderScreen() {
                           </div>
                         </div>
                         ))}
+                        {learnerPhrasePairsForBlock(block).length === 0 && (
+                          <p className="border border-brand-100 bg-brand-50/60 px-2 py-2 text-xs font-bold leading-relaxed text-ink/55">
+                            この部分は、前後を含む上段の意味フレーズにまとめています。ここでは文法構造だけを確認します。
+                          </p>
+                        )}
                     </div>
                     {blockFlowParts(block).length > 1 && (
                       <div className="mt-2">

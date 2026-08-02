@@ -10,6 +10,14 @@ import {
   analyzeReadingSentence,
 } from '../src/lib/reading-grammar.js'
 
+const normalizeEnglish = (value = '') => value
+  .replace(/\s+([,.;:!?])/g, '$1')
+  .replace(/\s+/g, ' ')
+  .trim()
+
+const englishWords = (value = '') =>
+  (value.match(/[A-Za-z]+(?:['’][A-Za-z]+)*/g) ?? []).map((word) => word.toLowerCase())
+
 test('全長文・全文・全ブロックに講師監修の語順訳シナリオが対応する', () => {
   assert.deepEqual(
     Object.keys(READING_TRANSLATION_SCENARIOS).sort(),
@@ -21,6 +29,8 @@ test('全長文・全文・全ブロックに講師監修の語順訳シナリ�
   let blockCount = 0
   let orderedSegmentCount = 0
   let phrasePairCount = 0
+  let meaningPhraseCount = 0
+  let meaningMultiRoleCount = 0
   let explicitSequenceCount = 0
   for (const passage of PASSAGES) {
     const passageScenarios = READING_TRANSLATION_SCENARIOS[passage.id]
@@ -39,6 +49,23 @@ test('全長文・全文・全ブロックに講師監修の語順訳シナリ�
       )
       const analysis = analyzeReadingSentence(sentence)
       const scenario = passageScenarios[sentenceIndex]
+      assert.match(analysis.phraseMethod, /^corpus-meaning-phrase-(?:reviewed|confirmed)$/)
+      assert.deepEqual(
+        englishWords(analysis.meaningPhraseSequence.map((phrase) => phrase.spokenEn).join(' ')),
+        englishWords(sentence.en),
+        `${passage.id}: 第${sentenceIndex + 1}文の意味フレーズから原文を復元できない`,
+      )
+      for (const [phraseIndex, phrase] of analysis.meaningPhraseSequence.entries()) {
+        const phraseAt = `${passage.id}: 第${sentenceIndex + 1}文・意味フレーズ${phraseIndex + 1}`
+        const wordCount = phrase.en.match(/[A-Za-z]+(?:['’][A-Za-z]+)*/g)?.length ?? 0
+        assert.ok(wordCount >= 1 && wordCount <= 8, `${phraseAt}: 一息の上限8語を超えている`)
+        assert.ok(phrase.en && phrase.ja && phrase.explanation, `${phraseAt}: 必須欄がない`)
+        assert.equal(phrase.spokenEn, phrase.en, `${phraseAt}: 原文にない補いを発音する`)
+        assert.ok(phrase.roles.length >= 1, `${phraseAt}: 内部SVOCMがない`)
+        assert.ok(phrase.roleParts.length >= 1, `${phraseAt}: 役割別英語がない`)
+        meaningPhraseCount++
+        if (phrase.roles.length > 1) meaningMultiRoleCount++
+      }
       assert.equal(
         scenario.length,
         analysis.blocks.length,
@@ -144,6 +171,8 @@ test('全長文・全文・全ブロックに講師監修の語順訳シナリ�
   assert.equal(sentenceCount, 363, '全363文を対象にする')
   assert.equal(blockCount, 1042, '全1,042文法ブロックを対象にする')
   assert.equal(phrasePairCount, 3238, '全3,238ブロック内役割単位を英語フレーズと直訳の組にする')
+  assert.equal(meaningPhraseCount, 2290, '全2,290件の学習者向け意味フレーズを対象にする')
+  assert.equal(meaningMultiRoleCount, 775, 'SVOCMを内部に複数含む775件も一つの意味フレーズとして保つ')
 })
 
 test('基準例は英語の語順どおり、動作・行き先・手段・時を丁寧に読める', () => {
@@ -154,19 +183,17 @@ test('基準例は英語の語順どおり、動作・行き先・手段・時�
 
   const analysis = analyzeReadingSentence(sentence)
   assert.deepEqual(
-    analysis.phraseSequence.map(({ en, ja }) => ({ en, ja })),
+    analysis.meaningPhraseSequence.map(({ en, roles, ja }) => ({ en, roles, ja })),
     [
-      { en: 'She', ja: '彼女は' },
-      { en: 'goes', ja: '行きます' },
-      { en: 'to school', ja: '学校へ' },
-      { en: 'by bus', ja: 'バスで' },
-      { en: 'every morning', ja: '毎朝' },
+      { en: 'She goes', roles: ['S', 'V'], ja: '彼女は行きます' },
+      { en: 'to school', roles: ['M'], ja: '学校へ' },
+      { en: 'by bus', roles: ['M'], ja: 'バスで' },
+      { en: 'every morning', roles: ['M'], ja: '毎朝' },
     ],
   )
-  assert.match(analysis.phraseMethod, /^corpus-svocm-(?:reviewed|confirmed)$/)
-  assert.equal(analysis.phraseSequence[0].role, 'S')
-  assert.equal(analysis.phraseSequence[1].role, 'V')
-  assert.match(analysis.phraseSequence[2].explanation, /M（修飾語）/)
+  assert.match(analysis.phraseMethod, /^corpus-meaning-phrase-(?:reviewed|confirmed)$/)
+  assert.deepEqual(analysis.meaningPhraseSequence[0].roles, ['S', 'V'])
+  assert.match(analysis.meaningPhraseSequence[1].explanation, /M（修飾語）/)
 })
 
 test('日本語の自然語順へ戻りやすい目的語・比較・理由も英語順に固定する', () => {
@@ -257,7 +284,7 @@ test('日本語の自然語順へ戻りやすい目的語・比較・理由も�
   ])
 })
 
-test('長文画面は文全体のフレーズ列を英語→直訳→必要な解説の順で再生する', () => {
+test('長文画面は文全体の意味フレーズを英語→対応する日本語→必要な解説の順で再生する', () => {
   const source = readFileSync(
     new URL('../src/screens/Reader.jsx', import.meta.url),
     'utf8',
@@ -277,7 +304,7 @@ test('長文画面は文全体のフレーズ列を英語→直訳→必要な�
     automaticEnglish > automaticStart &&
     automaticJapanese > automaticEnglish &&
     automaticExplanation > automaticJapanese,
-    '自動再生が英語フレーズ→直訳→必要な解説の順ではない',
+    '自動再生が英語フレーズ→対応する日本語→必要な解説の順ではない',
   )
 
   const manualStart = source.indexOf('const speakBlockPair')
@@ -292,13 +319,15 @@ test('長文画面は文全体のフレーズ列を英語→直訳→必要な�
     manualEnglish > manualStart &&
     manualJapanese > manualEnglish &&
     manualExplanationSpeech > manualJapanese,
-    '個別再生が英語フレーズ→直訳→読解・文法の順ではない',
+    '個別再生が英語フレーズ→対応する日本語→読解・文法の順ではない',
   )
   assert.match(source, /ブロック全体の読み方は、\$\{block\.translationGuide\}/)
 
-  assert.match(source, /block\.phrasePairs\.map/)
-  assert.match(source, /analysis\.phraseSequence\.map/)
-  assert.match(source, /sentenceAnalysis\.phraseSequence\.map/)
+  assert.match(source, /learnerPhrasePairsForBlock\(block\)/)
+  assert.match(source, /block\?\.meaningPhrasePairs \?\? block\?\.phrasePairs/)
+  assert.match(source, /phrasePairs\.map/)
+  assert.match(source, /analysis\.meaningPhraseSequence\.map/)
+  assert.match(source, /sentenceAnalysis\.meaningPhraseSequence\.map/)
   assert.match(source, /pair\.spokenEn \?\? pair\.en/)
   assert.match(source, /pair\.displayEn \?\? pair\.en/)
   assert.match(source, /pair\.grammar \?\? pair\.explanation \?\? pair\.roleNote/)
@@ -313,6 +342,9 @@ test('長文画面は文全体のフレーズ列を英語→直訳→必要な�
   assert.doesNotMatch(source, /前からの直訳：\{pair\.ja\}/)
   assert.doesNotMatch(source, /フレーズ訳：\{phraseItem\.ja\}/)
   assert.doesNotMatch(source, /前から読むフレーズ解説/)
+  assert.match(source, /英文を発音できて意味が通るまとまりに区切ります/)
+  assert.match(source, /S・V・O・C・Mはフレーズ内の構造を確かめる注釈です/)
+  assert.match(source, /前後を含む上段の意味フレーズにまとめています/)
   assert.match(source, /\{pair\.ja\}/)
   assert.match(source, /読み方：\{block\.translationGuide\}/)
   assert.match(source, /文法上の注意：\{block\.note\}/)

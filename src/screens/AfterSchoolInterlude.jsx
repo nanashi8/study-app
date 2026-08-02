@@ -524,7 +524,7 @@ export function AfterSchoolInterludeScreen() {
                 <div className="mt-2 rounded-xl border border-pink-200/25 bg-pink-300/10 px-3 py-2">
                   <p className="text-[8px] font-extrabold text-pink-200">NEW COMPANION · KEY VISUAL SAVED</p>
                   <p className="mt-0.5 text-xs font-extrabold">🤝 {bond.student.name}が共闘できる仲間になった</p>
-                  <p className="mt-0.5 text-[9px] font-bold text-white/55">この出会いはアルバムから振り返れ、次の戦果画面から同行者に選べます。</p>
+                  <p className="mt-0.5 text-[9px] font-bold text-white/55">この出会いはアルバムから振り返れ、次の相手が分かった後の作戦会議で同行者に選べます。</p>
                 </div>
               )}
               <p className="mt-2 text-[8px] font-bold leading-relaxed text-white/40">放課後XPは冒険者LVへ加算されます。学習の正答率・SRS・診断結果は変わりません。</p>

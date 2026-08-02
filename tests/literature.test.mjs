@@ -80,7 +80,7 @@ test('全59場面が原文・訳・解説と、間で区切った一対一の朗
   assert.equal(segmentCount, 257)
 })
 
-test('朗読順は全作品・全区切りで必ず原文→対応する直訳になる', () => {
+test('朗読順は全作品・全区切りで必ず原文→対応する日本語になる', () => {
   for (const work of PUBLIC_DOMAIN_LITERATURE) {
     const steps = buildLiteratureNarration(work)
     const expectedSegmentCount = work.scenes.reduce(
@@ -151,7 +151,7 @@ test('接続の受け直しは括弧付きで表示し、括弧内の語だけ�
   assert.doesNotMatch(translationStep.text, /[（）()]/u)
 })
 
-test('指定されたアリスの場面は、実際に間を置く6区切りで英語→直訳になる', () => {
+test('指定されたアリスの場面は、実際に間を置く6区切りで英語→対応する日本語になる', () => {
   const work = getLiteratureWork('lit_en_alice_rabbit_hole')
   const segments = work.scenes[6].narrationSegments
   assert.deepEqual(
@@ -308,7 +308,8 @@ test('画面導線・連続TTS・通常長文の分離集計を実装してい�
   assert.match(reader, /playSpeechItems\(/)
   assert.match(reader, /segmentIndex/)
   assert.match(reader, /NARRATION_PAUSE_MS/)
-  assert.match(reader, /区切りの直訳/)
+  assert.match(reader, /対応する日本語/)
+  assert.doesNotMatch(reader, /前からの直訳|フレーズ訳|区切りの直訳/)
   assert.match(reader, /書き下し（朗読）/)
   assert.match(reader, /markLiteratureDone\(/)
   assert.match(library, /title="名作に親しむ"/)

@@ -2,9 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 import { todayIndex, useStore } from '../store/useStore.js'
 import { ProgressRing, ProgressBar, Button, Card } from '../components/ui.jsx'
 import { Star, Flame, Refresh, Home, Bookmark, ArrowRight } from '../components/Icons.jsx'
-import { battleProgression, enemyLevel } from '../lib/adaptive.js'
+import { battleProgression } from '../lib/adaptive.js'
 import {
-  battleQuest,
   battleVerdict,
   capEnemyPositionForHeroLevel,
   encounterFor,
@@ -19,10 +18,7 @@ import { TeacherPortrait } from '../components/TeacherPortrait.jsx'
 import { BattleStandingActor } from '../components/BattleStandingActor.jsx'
 import { BattleOpponentStandingActor } from '../components/BattleOpponentStandingActor.jsx'
 import { BattleStageBackdrop } from '../components/BattleStageBackdrop.jsx'
-import {
-  battleStarsEarned,
-  newlyUnlockedBattleThemes,
-} from '../lib/battleThemes.js'
+import { battleStarsEarned } from '../lib/battleThemes.js'
 import {
   battleOpponentForEncounter,
   battleRivalById,
@@ -47,11 +43,6 @@ function inferSkill({ engine, replayScreen }) {
 }
 
 const PIECES = ['🎉', '✨', '⭐', '🎊', '💫', '🌟']
-const BATTLE_RESULT_PANELS = [
-  { id: 'outcome', label: '戦果', glyph: '⚔' },
-  { id: 'growth', label: '成長', glyph: '✦' },
-]
-
 function Confetti() {
   return (
     <div className="pointer-events-none absolute inset-0 z-10 overflow-hidden">
@@ -95,15 +86,12 @@ export function SessionResultScreen() {
   const goHome = useStore((s) => s.goHome)
   const streak = useStore((s) => s.stats.streak)
   const totalXp = useStore((s) => s.stats.xp)
-  const battleStars = useStore((s) => s.battleStars)
   const battleStoryStep = useStore((s) => s.battleStoryStep)
   const markBattleStorySeen = useStore((s) => s.markBattleStorySeen)
   const recordTeacherKeyVisual = useStore((s) => s.recordTeacherKeyVisual)
   const battleUiMode = useStore((s) => (
     s.settings.battleUiMode === 'simple' ? 'simple' : 'gaming'
   ))
-  const [battleResultPanel, setBattleResultPanel] = useState('outcome')
-
   const {
     title = '学習',
     mode = 'study',
@@ -124,12 +112,6 @@ export function SessionResultScreen() {
   const setEngPos = useStore((s) => s.setEngPos)
   const isBattle = source?.type === 'battle'
   const battleStarsGained = isBattle ? battleStarsEarned(correct) : 0
-  const newBattleThemes = isBattle
-    ? newlyUnlockedBattleThemes(
-        Math.max(0, battleStars - battleStarsGained),
-        battleStars,
-      )
-    : []
   const heroBefore = heroProgress(Math.max(0, totalXp - xpGained))
   const heroAfter = heroProgress(totalXp)
   const battleRankCap = maxEnemyRankIndexForHeroLevel(heroAfter.level)
@@ -164,7 +146,6 @@ export function SessionResultScreen() {
         ),
       )
     : null
-  const quest = isBattle ? battleQuest(source?.questId) : null
   const verdict = isBattle ? battleVerdict(acc) : null
   const battleStart = isBattle
     ? capEnemyPositionForHeroLevel(
@@ -315,22 +296,6 @@ export function SessionResultScreen() {
     })
   }
 
-  const moveBattleResultTab = (event, panelIndex) => {
-    let nextIndex = panelIndex
-    if (event.key === 'ArrowRight') nextIndex = (panelIndex + 1) % BATTLE_RESULT_PANELS.length
-    else if (event.key === 'ArrowLeft') nextIndex = (panelIndex - 1 + BATTLE_RESULT_PANELS.length) % BATTLE_RESULT_PANELS.length
-    else if (event.key === 'Home') nextIndex = 0
-    else if (event.key === 'End') nextIndex = BATTLE_RESULT_PANELS.length - 1
-    else return
-
-    event.preventDefault()
-    const nextPanel = BATTLE_RESULT_PANELS[nextIndex]
-    setBattleResultPanel(nextPanel.id)
-    event.currentTarget.parentElement
-      ?.querySelector(`[data-battle-result-tab="${nextPanel.id}"]`)
-      ?.focus()
-  }
-
   return (
     <div
       className={isBattle
@@ -352,14 +317,8 @@ export function SessionResultScreen() {
         >
           <div className="battle-result-console-display">
             <header className="battle-result-console-header">
-              <span className="battle-result-console-lights" aria-hidden="true">
-                <i /><i /><i />
-              </span>
-              <span className="min-w-0 text-left">
-                <small>AFTER SCHOOL BATTLE</small>
-                <strong>戦果レポート</strong>
-              </span>
-              <em>{battleUiMode === 'gaming' ? 'GAMING UI' : '簡易UI'}</em>
+              <strong>戦果</strong>
+              <small>RESULT</small>
             </header>
 
             <BattleResultStage
@@ -369,7 +328,6 @@ export function SessionResultScreen() {
               emotion={battleStudentEmotion}
               verdict={verdict}
               encounter={encounter}
-              quest={quest}
               animation={battleResultAnimation}
               uiMode={battleUiMode}
             />
@@ -381,104 +339,36 @@ export function SessionResultScreen() {
               total={total}
               xpGained={xpGained}
               battleStarsGained={battleStarsGained}
-              streak={streak}
-              color={msg.color}
+              beforeLevel={heroBefore.level}
+              level={heroAfter.level}
+              leveledUp={leveledUp}
             />
 
-            <div
-              className="battle-result-tablist"
-              role="tablist"
-              aria-label="戦果の詳細"
-            >
-              {BATTLE_RESULT_PANELS.map((panel, panelIndex) => {
-                const active = battleResultPanel === panel.id
-                return (
-                  <button
-                    key={panel.id}
-                    type="button"
-                    role="tab"
-                    id={`battle-result-tab-${panel.id}`}
-                    aria-controls={`battle-result-panel-${panel.id}`}
-                    aria-selected={active}
-                    tabIndex={active ? 0 : -1}
-                    data-battle-result-tab={panel.id}
-                    onClick={() => setBattleResultPanel(panel.id)}
-                    onKeyDown={(event) => moveBattleResultTab(event, panelIndex)}
-                  >
-                    <span aria-hidden="true">{panel.glyph}</span>
-                    {panel.label}
-                  </button>
-                )
-              })}
-            </div>
-
-            <div
-              id={`battle-result-panel-${battleResultPanel}`}
-              className="battle-result-panel"
-              role="tabpanel"
-              aria-labelledby={`battle-result-tab-${battleResultPanel}`}
-              data-battle-result-panel={battleResultPanel}
-            >
-              {battleResultPanel === 'outcome' && (
-                <div className="battle-result-panel-stack">
-                  <BattleOutcome
-                    battle={battle}
-                    encounter={encounter}
-                    verdict={verdict}
-                    battleReport={battleReport}
-                    battleRival={battleRival}
-                  />
-                  {encounter.isTeacher && battleReport?.enemyDefeated && (
-                    <Card className="battle-result-key-visual-card w-full border border-amber-200 bg-amber-50 p-3 text-left">
-                      <p className="text-[9px] font-extrabold tracking-[0.14em] text-amber-700">KEY VISUAL SAVED</p>
-                      <p className="mt-1 text-xs font-extrabold text-ink">📖 {encounter.name}の影蝕解除をアルバムへ保存</p>
-                      <p className="mt-1 text-[9px] font-bold leading-relaxed text-ink/45">戦った仲間と舞台も含めて、物語画面の思い出アルバムから振り返れます。</p>
-                    </Card>
-                  )}
-                </div>
-              )}
-
-              {battleResultPanel === 'growth' && (
-                <div className="battle-result-panel-stack">
-                  <HeroLevelCard
-                    before={heroBefore}
-                    after={heroAfter}
-                    xpGained={xpGained}
-                    newRelics={newRelics}
-                    battleStudent={battleStudent}
-                    studentEmotion={battleStudentEmotion}
-                  />
-                  <BattleStarsCard
-                    total={battleStars}
-                    gained={battleStarsGained}
-                    newThemes={newBattleThemes}
-                  />
-                </div>
-              )}
-
-            </div>
+            {battleReport?.itemRelic && (
+              <p className="battle-result-item-note">
+                <span>{battleReport.itemRelic.emoji} {battleReport.itemRelic.name}</span>
+                <b>{battleReport.itemUsed ? battleReport.itemSummary : '持ち込み'}</b>
+              </p>
+            )}
+            {encounter.isTeacher && battleReport?.enemyDefeated && (
+              <p className="battle-result-saved-note">📖 結末をアルバムに記録しました</p>
+            )}
           </div>
 
           <div className="battle-result-console-actions">
-            <Button full size="lg" onClick={continueAfterBattle}>
-              戦いの結末を見る <ArrowRight size={18} />
+            <Button full onClick={continueAfterBattle}>
+              次へ：戦いの結末 <ArrowRight size={18} />
             </Button>
-            {params.continueTo?.screen && (
-              <Button
-                full
-                onClick={() => navigate(params.continueTo.screen, params.continueTo.params ?? {})}
-              >
-                {params.continueTo.label ?? '次へ'} <ArrowRight size={18} />
+            <div className="battle-result-secondary-actions">
+              {wrong > 0 && (
+                <Button full size="sm" variant="secondary" onClick={reviewWrong}>
+                  <Bookmark size={16} /> 復習 {wrong}{reviewUnit}
+                </Button>
+              )}
+              <Button full size="sm" variant="ghost" onClick={goHome}>
+                <Home size={16} /> ホーム
               </Button>
-            )}
-            {wrong > 0 && (
-              <Button full variant="secondary" onClick={reviewWrong}>
-                <Bookmark size={18} /> まちがい {wrong}{reviewUnit}を復習
-              </Button>
-            )}
-            <Button full variant="ghost" onClick={goHome}>
-              <Home size={18} /> ホームへ
-            </Button>
+            </div>
           </div>
         </section>
       ) : (
@@ -548,92 +438,26 @@ export function SessionResultScreen() {
 }
 
 function BattleResultHud({
-  accuracy,
   percent,
   correct,
   total,
   xpGained,
   battleStarsGained,
-  streak,
-  color,
+  beforeLevel,
+  level,
+  leveledUp,
 }) {
   return (
     <section
       className="battle-result-hud"
       data-testid="battle-result-hud"
-      aria-label={`正答率${percent}パーセント、${correct}問正解、獲得XP${xpGained}、獲得スター${battleStarsGained}、連続${streak}日`}
+      aria-label={`正答率${percent}パーセント、${correct}問正解、獲得XP${xpGained}、獲得スター${battleStarsGained}、レベル${level}`}
     >
-      <div className="battle-result-score">
-        <ProgressRing
-          value={accuracy}
-          size={76}
-          stroke={8}
-          color={color}
-          track="rgb(148 163 184 / 0.24)"
-        >
-          <strong>{percent}%</strong>
-          <small>正答率</small>
-        </ProgressRing>
-        <span>{correct}/{total} 正解</span>
-      </div>
-      <div className="battle-result-hud-metrics">
-        <div>
-          <Star size={18} aria-hidden="true" />
-          <span><b>+{xpGained}</b><small>獲得XP</small></span>
-        </div>
-        <div>
-          <span className="battle-result-star" aria-hidden="true">✦</span>
-          <span><b>+{battleStarsGained}</b><small>スター</small></span>
-        </div>
-        <div>
-          <Flame size={18} aria-hidden="true" />
-          <span><b>{streak}日</b><small>連続記録</small></span>
-        </div>
-      </div>
+      <div><b>{percent}%</b><small>{correct}/{total} 正解</small></div>
+      <div><b>+{xpGained}</b><small>XP</small></div>
+      <div><b>+{battleStarsGained}</b><small>スター</small></div>
+      <div><b>LV {level}</b><small>{leveledUp ? `${beforeLevel} → ${level}` : '現在'}</small></div>
     </section>
-  )
-}
-
-function BattleStarsCard({ total, gained, newThemes }) {
-  return (
-    <Card className="w-full max-w-xs overflow-hidden bg-gradient-to-br from-violet-50 via-pink-50 to-cyan-50 p-3.5 text-left ring-1 ring-violet-100">
-      <div className="flex items-center gap-3">
-        <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-violet-600 text-2xl text-white shadow-lg shadow-violet-200">
-          ✦
-        </span>
-        <div className="min-w-0 flex-1">
-          <div className="flex items-center justify-between gap-2">
-            <span className="font-display text-sm font-extrabold text-violet-950">
-              放課後スター
-            </span>
-            <span className="rounded-full bg-white px-2 py-1 text-[10px] font-extrabold text-violet-700">
-              +{gained}
-            </span>
-          </div>
-          <p className="mt-0.5 text-[11px] font-bold text-violet-900/55">
-            合計 {total.toLocaleString()}・バトル演出の解放に使用
-          </p>
-        </div>
-      </div>
-
-      {newThemes.map((theme) => (
-        <div key={theme.id} className="mt-3 flex items-center gap-2 rounded-2xl bg-white/85 p-2">
-          <img
-            src={theme.preview}
-            alt=""
-            className="h-12 w-10 rounded-lg object-cover object-top [image-rendering:pixelated]"
-          />
-          <div className="min-w-0">
-            <p className="text-[9px] font-extrabold tracking-[0.14em] text-amber-600">
-              NEW BATTLE STYLE
-            </p>
-            <p className="truncate text-xs font-extrabold text-ink">
-              {theme.emoji} {theme.name} を解放！
-            </p>
-          </div>
-        </div>
-      ))}
-    </Card>
   )
 }
 
@@ -750,13 +574,11 @@ function BattleResultStage({
   emotion,
   verdict,
   encounter,
-  quest,
   animation,
   uiMode = 'gaming',
 }) {
   const prefersReducedMotion = usePrefersReducedMotion()
   const motionDisabled = prefersReducedMotion || uiMode === 'simple'
-  const [animationKey, setAnimationKey] = useState(0)
   const theme = battleReport?.battleTheme
   const outcome = battleReport?.enemyDefeated
     ? 'victory'
@@ -798,24 +620,7 @@ function BattleResultStage({
       aria-label={`${student.name}と${rival.name}の対決結果。${verdict.title}`}
     >
       <span className="battle-result-cinema-frame" aria-hidden="true" />
-      <div className="battle-result-stage-heading">
-        <span aria-hidden="true">{theme?.presentation?.modeLabel ?? 'SCHOOL DUEL'}</span>
-        <span className="battle-result-stage-heading-actions">
-          <strong aria-hidden="true">BATTLE RESULT</strong>
-          {!motionDisabled && (
-            <button
-              type="button"
-              className="battle-result-replay"
-              onClick={() => setAnimationKey((key) => key + 1)}
-              aria-label="バトル結果の演出をもう一度見る"
-            >
-              <span aria-hidden="true">↻</span>
-              <span className="battle-result-replay-label">もう一度</span>
-            </button>
-          )}
-        </span>
-      </div>
-      <div key={animationKey} className="battle-result-animation-sequence">
+      <div className="battle-result-animation-sequence">
         <BattleStageBackdrop
           scene="var(--battle-result-scene)"
           phase={standingPhase}
@@ -885,11 +690,6 @@ function BattleResultStage({
           </div>
         </div>
       </div>
-      <p className="battle-result-stage-route">
-        <span>{encounter.emoji} {encounter.name}</span>
-        <i aria-hidden="true">◆</i>
-        <span>{quest.label}</span>
-      </p>
     </section>
   )
 }
@@ -996,112 +796,6 @@ function HeroLevelCard({
               </span>
             </p>
           ))}
-        </div>
-      )}
-    </Card>
-  )
-}
-
-// バトルの物語上の決着と、次回の適応敵ランクをまとめて示す。
-const TREND = {
-  up: { text: '次は相手ランクアップ', tone: 'text-emerald-700', bg: 'bg-correct-soft' },
-  down: { text: '次は相手ランクを調整', tone: 'text-amber-800', bg: 'bg-hint-soft' },
-  advance: { text: '昇格ポイント獲得', tone: 'text-emerald-700', bg: 'bg-correct-soft' },
-  ease: { text: '同じ級で難易度を調整', tone: 'text-amber-800', bg: 'bg-hint-soft' },
-  flat: { text: '次も同じ相手ランク', tone: 'text-brand-700', bg: 'bg-brand-100' },
-}
-function BattleOutcome({
-  battle,
-  encounter,
-  verdict,
-  battleReport,
-  battleRival,
-}) {
-  const teacherResultLine = teacherBattleResultLine(encounter, battleReport)
-  const t = TREND[battle.trend] ?? TREND.flat
-  const from = enemyLevel(battle.from)
-  const to = enemyLevel(battle.to)
-  const moved = from.id !== to.id
-  const pointChange = Math.round(Math.abs(battle.to - battle.from) * 100)
-  const nextBattleText = moved
-    ? battle.trend === 'up'
-      ? `次は英検${to.label}へランクアップ`
-      : `次は英検${to.label}へ調整`
-    : battle.trend === 'advance'
-      ? `次も英検${to.label}。昇格ポイント +${pointChange}`
-      : battle.trend === 'ease'
-        ? `次も英検${to.label}。難易度を${pointChange}ポイント調整`
-        : `次も英検${to.label}。ランク変化なし`
-  return (
-    <Card className={`w-full max-w-xs p-3.5 ${t.bg}`}>
-      <div className="flex items-start gap-3 text-left">
-        {battleRival.isTeacher ? (
-          <TeacherPortrait
-            teacher={encounter}
-            defeated={battleReport?.enemyDefeated}
-            className="h-11 w-11 shrink-0 rounded-2xl ring-1 ring-white/70"
-          />
-        ) : (
-          <img
-            src={battleRival.portrait}
-            alt={`${battleRival.name}のポートレート`}
-            className={`h-11 w-11 shrink-0 rounded-2xl object-cover ring-1 ring-white/70 [image-rendering:pixelated] ${battleReport?.enemyDefeated ? 'grayscale' : ''}`}
-          />
-        )}
-        <div>
-          <div className={`font-display text-sm font-extrabold ${t.tone}`}>
-            {verdict.title}
-          </div>
-          <p className="mt-0.5 text-[11px] font-bold leading-relaxed text-ink/55">
-            {verdict.text}
-          </p>
-        </div>
-      </div>
-      {teacherResultLine && (
-        <blockquote
-          className="mt-2 rounded-xl border border-violet-200/80 bg-slate-950/90 px-3 py-2 text-left text-white"
-          data-testid="teacher-battle-result-line"
-        >
-          <span className="block text-[9px] font-extrabold tracking-[0.12em] text-violet-200">
-            {battleReport?.enemyDefeated
-              ? `${encounter.name} · 悪いマナがほどける直前`
-              : `${encounter.name} · 悪いマナに支配されている`}
-          </span>
-          <p className="mt-1 text-[11px] font-extrabold leading-relaxed">
-            「{teacherResultLine}」
-          </p>
-        </blockquote>
-      )}
-      <div className="mt-3 flex items-center justify-center gap-2 rounded-2xl bg-white/55 p-2 text-ink">
-        <span className="rounded-xl px-2.5 py-1 text-xs font-extrabold" style={{ backgroundColor: `${from.color}22`, color: from.color }}>
-          英検{from.label}
-        </span>
-        <span className="font-extrabold text-ink/40">→</span>
-        <span className="rounded-xl px-2.5 py-1 text-xs font-extrabold" style={{ backgroundColor: `${to.color}22`, color: to.color }}>
-          英検{to.label}
-        </span>
-      </div>
-      <p className="mt-1.5 text-center text-[11px] font-bold text-ink/50">
-        {nextBattleText}
-      </p>
-      {battleReport && (
-        <div className="mt-3 space-y-2">
-          {battleReport.itemRelic && (
-            <div className="flex items-center gap-2 rounded-2xl border border-amber-200 bg-amber-50 px-3 py-2.5 text-left text-amber-950">
-              <span className="text-xl">{battleReport.itemRelic.emoji}</span>
-              <div className="min-w-0 flex-1">
-                <p className="text-[9px] font-extrabold tracking-[0.14em] text-amber-600">
-                  {battleReport.itemUsed ? 'ITEM USED' : 'ITEM CARRIED'}
-                </p>
-                <p className="truncate text-xs font-extrabold">
-                  {battleReport.itemRelic.name}
-                </p>
-              </div>
-              <p className="text-right text-[9px] font-extrabold text-amber-700">
-                {battleReport.itemSummary}
-              </p>
-            </div>
-          )}
         </div>
       )}
     </Card>
