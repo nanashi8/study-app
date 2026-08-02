@@ -651,6 +651,46 @@ test('回答イベントは生徒の喜怒哀楽・癒し・戦闘状態へ決�
   assert.equal(first.groupId, 'stem')
 })
 
+test('生徒の待機表情はHP差に合い、優勢時のわからないを困り顔にしない', () => {
+  const state = ({ heroHealthPercent, enemyHealthPercent, ...extra }) => ({
+    answered: 3,
+    streak: 0,
+    enemyDefeated: false,
+    heroDefeated: false,
+    lastEvent: null,
+    heroHealthPercent,
+    enemyHealthPercent,
+    ...extra,
+  })
+  const advantage = state({ heroHealthPercent: 80, enemyHealthPercent: 40 })
+  const even = state({ heroHealthPercent: 60, enemyHealthPercent: 55, streak: 2 })
+  const disadvantage = state({ heroHealthPercent: 30, enemyHealthPercent: 70 })
+
+  assert.equal(battleStudentState({ battleState: advantage }), 'confident')
+  assert.equal(battleStudentState({ battleState: even }), 'focused')
+  assert.equal(battleStudentState({ battleState: disadvantage }), 'worried')
+  assert.equal(
+    battleStudentState({
+      battleState: {
+        ...advantage,
+        lastEvent: { kind: 'unknown' },
+      },
+      eventActive: true,
+    }),
+    'focused',
+  )
+  assert.equal(
+    battleStudentState({
+      battleState: {
+        ...disadvantage,
+        lastEvent: { kind: 'unknown' },
+      },
+      eventActive: true,
+    }),
+    'worried',
+  )
+})
+
 test('バトル結果は決着に合う生徒の表情へ切り替わる', () => {
   assert.equal(
     battleStudentResultState({ battleState: { heroDefeated: true }, accuracy: 1 }),

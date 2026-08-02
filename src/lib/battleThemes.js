@@ -218,6 +218,16 @@ export const BATTLE_THEMES = [
     heroPortrait: publicAssetUrl('/assets/battle/pixel/music-hero.webp'),
     rivalPortrait: publicAssetUrl('/assets/battle/pixel/music-rival.webp'),
     actorsSheet: publicAssetUrl('/assets/battle/pixel/music-actors-v2.webp'),
+    presentation: {
+      layout: 'music-duel',
+      modeLabel: 'SCORE DUEL',
+      commandLabel: 'MELODY',
+      prompt: '音符を選び、旋律をつなぐ',
+      choiceGlyphs: ['𝄞', '♪', '𝄢'],
+      unknownGlyph: '♩',
+      turnGlyph: '♪',
+      effectGlyphs: ['♪', '♫', '✦'],
+    },
     particles: ['♪', '♫', '✦', '♬', '♡', '♩'],
     scenes: [
       {
@@ -248,8 +258,8 @@ export const BATTLE_THEMES = [
   },
   {
     id: 'art-tactics',
-    name: '図工室タクティクス',
-    shortName: '図工室',
+    name: '美術室タクティクス',
+    shortName: '美術室',
     emoji: '🎨',
     unlockAt: 150,
     description: '校内を盤面にする、アイソメトリック演出',
@@ -267,6 +277,16 @@ export const BATTLE_THEMES = [
     heroPortrait: publicAssetUrl('/assets/battle/pixel/art-hero.webp'),
     rivalPortrait: publicAssetUrl('/assets/battle/pixel/art-rival.webp'),
     actorsSheet: publicAssetUrl('/assets/battle/pixel/art-actors-v2.webp'),
+    presentation: {
+      layout: 'art-grid',
+      modeLabel: 'ART TACTICS',
+      commandLabel: 'TOOLS',
+      prompt: '画材カードを選び、盤面を進める',
+      choiceGlyphs: ['✎', '▤', '▰'],
+      unknownGlyph: '⌫',
+      turnGlyph: '◆',
+      effectGlyphs: ['✎', '◆', '✦'],
+    },
     particles: ['◆', '●', '▲', '■', '✦', '◇'],
     scenes: [
       {
@@ -317,6 +337,16 @@ export const BATTLE_THEMES = [
     heroPortrait: publicAssetUrl('/assets/battle/pixel/library-hero.webp'),
     rivalPortrait: publicAssetUrl('/assets/battle/pixel/library-rival.webp'),
     actorsSheet: publicAssetUrl('/assets/battle/pixel/library-actors-v2.webp'),
+    presentation: {
+      layout: 'library-duel',
+      modeLabel: 'ARCHIVE DUEL',
+      commandLabel: 'FORMULA',
+      prompt: '意味を見抜き、術式を完成させる',
+      choiceGlyphs: ['＋', '−', '×'],
+      unknownGlyph: '÷',
+      turnGlyph: '◇',
+      effectGlyphs: ['＋', '×', '✦'],
+    },
     particles: ['▱', '✦', '◇', '⌁', '✧', '▰'],
     scenes: [
       {

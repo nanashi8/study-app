@@ -156,6 +156,8 @@ test('放課後ことば探検記から先生の日常会話を操作でき、�
 
   assert.match(source, /<TeacherSchoolLife student=\{battleStudent\}/)
   assert.match(source, /TEACHER_SCHOOL_LIFE\.map/)
+  assert.match(source, /faculty:\s*Teacher/)
+  assert.match(source, /<ChronicleIcon kind="faculty" size=\{24\} \/>/)
   assert.match(source, /TEACHER_TEST_SCORE_CHOICES\.map/)
   assert.match(source, /teacherRemedialSubjectChoices/)
   assert.match(source, /🏃 逃げる！/u)
