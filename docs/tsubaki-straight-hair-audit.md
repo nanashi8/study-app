@@ -6,7 +6,7 @@ profile is on Tsubaki's `BATTLE_STUDENTS` entry.
 
 ## Full target
 
-The explicit Tsubaki asset universe contains 45 app-displayed assets:
+The explicit Tsubaki asset universe contains 44 app-displayed assets:
 
 | Group | Count | Paths |
 | --- | ---: | --- |
@@ -14,17 +14,17 @@ The explicit Tsubaki asset universe contains 45 app-displayed assets:
 | lifestyle portraits | 3 | `public/assets/battle/cast/lifestyle/tsubaki/*.webp` |
 | character daily visuals | 10 | `public/assets/battle/daily/tsubaki/*.webp` |
 | character reveal | 1 | `public/assets/battle/reveals/tsubaki.webp` |
-| shared daily scenes | 2 | `public/assets/battle/scenes/everyday.webp`, `park.webp` |
+| shared daily scenes | 1 | `public/assets/battle/scenes/everyday.webp` |
 | derived battle motions | 5 | `public/assets/battle/motion/students/tsubaki/*.webm` |
-| **Total** | **45** | |
+| **Total** | **44** | |
 
-The two shared scenes are selected from `BATTLE_DAILY_SCENES` by the explicit
-`cast` entries for Tsubaki. Generic background students and unidentified people
-are not silently treated as Tsubaki.
+The shared scene is selected from `BATTLE_DAILY_SCENES` by the explicit `cast`
+entry for Tsubaki. Generic background students and unidentified people are not
+silently treated as Tsubaki.
 
 ## Acceptance result
 
-- All 40 raster sources use dark purple-black straight hair.
+- All 39 raster sources use dark purple-black straight hair.
 - A high straight ponytail is the default. The lunch scene may use straight high
   twin ponytails, as allowed by the character profile.
 - All 24 emotions remain distinct; the straight-hair edit does not flatten the
@@ -32,8 +32,8 @@ are not silently treated as Tsubaki.
 - The reveal keeps the French dolls' intentionally curled wigs unchanged; only
   Tsubaki's own hair follows her continuity rule.
 - The five WebM clips are regenerated from the corrected portrait frames.
-- Existing public asset URLs, IDs, ordering, saved progress, and persistence
-  contracts remain unchanged.
+- The removed park scene is no longer selected by `BATTLE_DAILY_SCENES`.
+  Remaining character asset URLs and persistence contracts stay unchanged.
 
 `tests/character-visual-continuity.test.mjs` checks the exact target count,
 dimensions, shared-scene selection, profile rule, and derived video presence.

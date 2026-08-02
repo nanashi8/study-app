@@ -13,6 +13,7 @@
     "audit:phrases": "node scripts/audit-phrase-explanations.mjs",
     "prebuild": "npm run check",
     "build": "vite build",
+    "render:bgm": "node scripts/render-game-soundtracks.mjs --all",
     "generate:battle-motion": "node scripts/generate-battle-motion.mjs",
     "preview": "vite preview",
     "vocab": "node scripts/vocab-report.mjs",

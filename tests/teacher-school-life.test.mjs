@@ -2,7 +2,13 @@ import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import test from 'node:test'
 import { BATTLE_STUDENTS } from '../src/lib/battleCast.js'
-import { TEACHER_RIVALS } from '../src/lib/rpg.js'
+import { SCHOOL_TEACHERS, TEACHER_RIVALS } from '../src/lib/rpg.js'
+import { SCHOOL_SUBJECT_NAMES } from '../src/lib/schoolSubjects.js'
+import {
+  TEACHER_PORTRAIT_IDS,
+  hasTeacherPortrait,
+  teacherPortraitProfile,
+} from '../src/lib/teacherPortraits.js'
 import {
   TEACHER_SCHOOL_LIFE,
   TEACHER_SCHOOL_LIFE_IDS,
@@ -13,11 +19,16 @@ import {
   teacherSchoolLifeBySubject,
 } from '../src/lib/teacherSchoolLife.js'
 
-test('全11章の先生が愛情・面白さ・厳しさを持つ学校生活会話へ登場する', () => {
-  assert.equal(TEACHER_SCHOOL_LIFE.length, 11)
-  assert.deepEqual(TEACHER_SCHOOL_LIFE_IDS, Object.keys(TEACHER_RIVALS))
-  assert.equal(new Set(TEACHER_SCHOOL_LIFE_IDS).size, 11)
-  assert.equal(new Set(TEACHER_SCHOOL_LIFE.map((teacher) => teacher.teacherSubject)).size, 11)
+test('全12科目の担当教員が愛情・面白さ・厳しさを持つ学校生活会話へ登場する', () => {
+  assert.equal(Object.keys(TEACHER_RIVALS).length, 11)
+  assert.equal(TEACHER_SCHOOL_LIFE.length, 12)
+  assert.deepEqual(TEACHER_SCHOOL_LIFE_IDS, Object.keys(SCHOOL_TEACHERS))
+  assert.equal(new Set(TEACHER_SCHOOL_LIFE_IDS).size, 12)
+  assert.deepEqual(TEACHER_PORTRAIT_IDS, TEACHER_SCHOOL_LIFE_IDS)
+  assert.deepEqual(
+    new Set(TEACHER_SCHOOL_LIFE.map((teacher) => teacher.teacherSubject)),
+    new Set(SCHOOL_SUBJECT_NAMES),
+  )
 
   for (const teacher of TEACHER_SCHOOL_LIFE) {
     assert.equal(teacherSchoolLifeById(teacher.id), teacher)
@@ -27,11 +38,21 @@ test('全11章の先生が愛情・面白さ・厳しさを持つ学校生活会
     assert.ok(teacher.ownRemedial && teacher.stay && teacher.pursuit, teacher.id)
     assert.ok(teacher.otherConcern && teacher.lore, teacher.id)
     assert.match(teacher.ownRemedial, /赤点|補習|卒業/u, teacher.id)
+    assert.equal(teacher.portraitId, teacher.id)
+    assert.equal(hasTeacherPortrait(teacher), true)
   }
+
+  assert.equal(
+    new Set(TEACHER_SCHOOL_LIFE.map((teacher) => {
+      const profile = teacherPortraitProfile(teacher)
+      return `${profile.initial}/${profile.subjectMark}/${profile.hairStyle}/${profile.jacket}`
+    })).size,
+    12,
+  )
 
   assert.match(
     teacherSchoolLifeById('tempest').ownRemedial,
-    /なにぃぃぃ.*貴様っ.*私の体育で赤点/u,
+    /なにぃぃぃ.*貴様っ.*私の物理で赤点/u,
   )
 })
 
@@ -148,7 +169,7 @@ test('逃げる場面は全10人の性格と所属に応じた別々の行動に
   assert.equal(new Set(narrations).size, 10)
 })
 
-test('放課後ことば探検記から先生の日常会話を操作でき、実学習成績へ混ぜない', () => {
+test('放課後の魔法と言葉から先生の日常会話を操作でき、実学習成績へ混ぜない', () => {
   const source = readFileSync(
     new URL('../src/screens/EnglishMap.jsx', import.meta.url),
     'utf8',
@@ -156,6 +177,7 @@ test('放課後ことば探検記から先生の日常会話を操作でき、�
 
   assert.match(source, /<TeacherSchoolLife student=\{battleStudent\}/)
   assert.match(source, /TEACHER_SCHOOL_LIFE\.map/)
+  assert.match(source, /TEACHER_SCHOOL_LIFE\.length\}人 · 12科目/u)
   assert.match(source, /faculty:\s*Teacher/)
   assert.match(source, /<ChronicleIcon kind="faculty" size=\{24\} \/>/)
   assert.match(source, /TEACHER_TEST_SCORE_CHOICES\.map/)
@@ -163,4 +185,22 @@ test('放課後ことば探検記から先生の日常会話を操作でき、�
   assert.match(source, /🏃 逃げる！/u)
   assert.match(source, /📘 補習を受ける/u)
   assert.match(source, /実際の正答率・XP・SRS・診断結果は変わりません/u)
+})
+
+test('先生専用アイコンを学校生活・章末準備・戦闘・結果で共通利用する', () => {
+  const sources = [
+    '../src/screens/EnglishMap.jsx',
+    '../src/screens/VocabQuiz.jsx',
+    '../src/screens/SessionResult.jsx',
+    '../src/components/MobPortrait.jsx',
+  ].map((path) => readFileSync(new URL(path, import.meta.url), 'utf8'))
+
+  for (const source of sources) {
+    assert.match(source, /TeacherPortrait/u)
+    assert.doesNotMatch(source, /portraitEmoji/u)
+  }
+
+  assert.match(sources[0], /battleOpponentForEncounter/u)
+  assert.match(sources[1], /battleOpponentForEncounter/u)
+  assert.match(sources[2], /battleOpponentForEncounter/u)
 })

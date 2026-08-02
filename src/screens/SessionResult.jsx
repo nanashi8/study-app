@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react'
-import { useStore } from '../store/useStore.js'
+import { todayIndex, useStore } from '../store/useStore.js'
 import { ProgressRing, ProgressBar, Button, Card } from '../components/ui.jsx'
-import { Star, Flame, Refresh, Home, Bookmark, ArrowRight } from '../components/Icons.jsx'
-import { battleProgression, enemyLevel } from '../lib/adaptive.js'
+import { Star, Flame, Refresh, Home, Bookmark, ArrowRight, Check, Teacher } from '../components/Icons.jsx'
+import { battleProgression, enemyLevel, enemyLevelIndex } from '../lib/adaptive.js'
 import {
   battleTactic,
   battleQuest,
@@ -15,16 +15,22 @@ import {
 } from '../lib/rpg.js'
 import { HeroPortrait } from '../components/HeroPortrait.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
+import { TeacherPortrait } from '../components/TeacherPortrait.jsx'
 import {
   battleStarsEarned,
   newlyUnlockedBattleThemes,
 } from '../lib/battleThemes.js'
 import {
+  BATTLE_STUDENTS,
+  battleOpponentForEncounter,
   battleRivalById,
   battleRivalForEncounter,
+  battleRivalTeacherSubject,
   battleStudentById,
+  battleStudentBestSubjects,
   battleStudentPortrait,
   battleStudentResultState,
+  battleTeacherAffinity,
 } from '../lib/battleCast.js'
 
 // セッションの種類から「スキル」を判定する（弱点ナビ用）。
@@ -66,6 +72,10 @@ export function SessionResultScreen() {
   const streak = useStore((s) => s.stats.streak)
   const totalXp = useStore((s) => s.stats.xp)
   const battleStars = useStore((s) => s.battleStars)
+  const nextBattleStudentId = useStore((s) => s.battleStudentId)
+  const setBattleStudentId = useStore((s) => s.setBattleStudentId)
+  const battleStoryStep = useStore((s) => s.battleStoryStep)
+  const markBattleStorySeen = useStore((s) => s.markBattleStorySeen)
 
   const {
     title = '学習',
@@ -112,9 +122,12 @@ export function SessionResultScreen() {
     ? battleStudentResultState({ battleState: battleReport, accuracy: acc })
     : null
   const battleRival = isBattle
-    ? battleRivalById(
-        source?.rivalId
-        ?? battleRivalForEncounter(encounter, source?.adventureDay ?? 0).id,
+    ? battleOpponentForEncounter(
+        encounter,
+        battleRivalById(
+          source?.rivalId
+          ?? battleRivalForEncounter(encounter, source?.adventureDay ?? 0).id,
+        ),
       )
     : null
   const quest = isBattle ? battleQuest(source?.questId) : null
@@ -136,6 +149,30 @@ export function SessionResultScreen() {
         battleRankCap,
       )
     : null
+  const upcomingEncounter = isBattle
+    ? encounterFor({
+        level: heroAfter.level,
+        day: source?.adventureDay ?? 0,
+        enemyRankIndex: enemyLevelIndex(battle?.to ?? battleStart),
+      })
+    : null
+  const upcomingRival = isBattle
+    ? battleRivalForEncounter(upcomingEncounter, source?.adventureDay ?? 0)
+    : null
+  const upcomingTeacher = isBattle
+    ? {
+        name: upcomingRival.name,
+        teacherSubject: upcomingEncounter.teacherSubject
+          ?? battleRivalTeacherSubject(upcomingRival.id),
+      }
+    : null
+  const nextBattleStudent = isBattle
+    ? battleStudentById(nextBattleStudentId)
+    : null
+  const nextTeacherAffinity = isBattle
+    ? battleTeacherAffinity(nextBattleStudent.id, upcomingTeacher.teacherSubject)
+    : null
+  const battleDay = isBattle ? todayIndex() : null
   const recorded = useRef(false)
   useEffect(() => {
     // 暗記カード（自己採点の study）はテストではないので弱点判定に含めない。
@@ -177,6 +214,7 @@ export function SessionResultScreen() {
   const isDictation = engine === 'dictation' || params.replayScreen === 'dictationPlay'
   const isListening = engine === 'listening' || params.replayScreen === 'listeningQuiz'
   const isVocabStudy = mode === 'study' && engine === 'word'
+  const isMemoryCheck = mode === 'study' && (engine === 'word' || engine === 'phrase')
   const reviewUnit = isGrammar || isDictation || isListening ? '問' : isPhrase ? '項目' : '語'
   const replaySource = isBattle && battle
     ? {
@@ -219,7 +257,7 @@ export function SessionResultScreen() {
       : isGrammar
       ? navigate('grammarQuiz', {
           source: { type: 'grammarList', ids: reviewIds },
-          title: 'まちがい復習',
+          title: isMemoryCheck ? 'もう一度確認' : 'まちがい復習',
           mode: 'quiz',
           engine: 'grammar',
           replayScreen: 'grammarQuiz',
@@ -233,7 +271,7 @@ export function SessionResultScreen() {
                   items: (source.items ?? []).filter((item) => reviewIds.includes(item.id)),
                 }
               : { type: 'phraseList', kind: source?.kind, ids: reviewIds },
-          title: 'まちがい復習',
+          title: isMemoryCheck ? 'もう一度確認' : 'まちがい復習',
           mode: 'study',
           engine: 'phrase',
           size: reviewIds.length,
@@ -247,28 +285,45 @@ export function SessionResultScreen() {
           continueTo: params.continueTo,
         })
 
+  const continueAfterBattle = () => {
+    markBattleStorySeen(battleDay)
+    navigate('afterSchoolInterlude', {
+      fromBattle: true,
+      rivalName: battleRival.name,
+      verdictId: verdict.id,
+      storyStep: battleStoryStep,
+    })
+  }
+
   return (
-    <div className="relative flex min-h-full flex-col items-center gap-5 overflow-x-hidden px-6 pb-8 pt-8 text-center">
+    <div
+      className={`relative flex min-h-full flex-col items-center gap-5 overflow-x-hidden px-6 pb-8 pt-8 text-center ${isBattle ? 'battle-result-screen' : ''}`}
+      data-battle-theme={battleReport?.battleTheme?.id}
+    >
       {(pct >= 80 || leveledUp) && <Confetti />}
       <div className="absolute right-3 top-[calc(env(safe-area-inset-top)+0.75rem)] z-20">
         <SpeechSettingsButton compact />
       </div>
-      {battleStudent ? (
-        <BattleResultStudentPortrait
+      {isBattle ? (
+        <BattleResultStage
+          battleReport={battleReport}
           student={battleStudent}
+          rival={battleRival}
           emotion={battleStudentEmotion}
-          placement="lead"
-          prominent
+          verdict={verdict}
+          encounter={encounter}
+          quest={quest}
+          tactic={tactic}
         />
       ) : (
-        <div className="text-6xl animate-float">{msg.emoji}</div>
+        <>
+          <div className="text-6xl animate-float">{msg.emoji}</div>
+          <h1 className="font-display text-2xl font-extrabold text-ink">{msg.text}</h1>
+          <p className="-mt-3 text-sm font-bold text-ink/45">
+            {title}・{mode === 'quiz' ? 'クイズ' : '暗記'}
+          </p>
+        </>
       )}
-      <h1 className="font-display text-2xl font-extrabold text-ink">{msg.text}</h1>
-      <p className="-mt-3 text-sm font-bold text-ink/45">
-        {isBattle
-          ? `${encounter.emoji} ${encounter.name}・${quest.label}・${tactic.label}`
-          : `${title}・${mode === 'quiz' ? 'クイズ' : '暗記'}`}
-      </p>
 
       <ProgressRing value={acc} size={150} stroke={14} color={msg.color}>
         <span className="font-display text-4xl font-extrabold text-ink">{pct}%</span>
@@ -320,19 +375,24 @@ export function SessionResultScreen() {
         />
       )}
 
+      {isBattle && (
+        <NextBattleCompanionCard
+          currentStudent={battleStudent}
+          selectedStudent={nextBattleStudent}
+          teacher={upcomingTeacher}
+          affinity={nextTeacherAffinity}
+          onSelect={setBattleStudentId}
+        />
+      )}
+
       <div className="mt-2 w-full max-w-xs space-y-2.5">
         {isBattle && (
           <Button
             full
             size="lg"
-            onClick={() => navigate('afterSchoolInterlude', {
-              fromBattle: true,
-              rivalName: battleRival.name,
-              verdictId: verdict.id,
-              storyStep: source?.storyStep,
-            })}
+            onClick={continueAfterBattle}
           >
-            放課後のつづきへ <ArrowRight size={18} />
+            放課後の行き先を選ぶ <ArrowRight size={18} />
           </Button>
         )}
         {params.continueTo?.screen && (
@@ -345,7 +405,11 @@ export function SessionResultScreen() {
         )}
         {wrong > 0 && (
           <Button full variant="primary" onClick={reviewWrong}>
-            <Bookmark size={18} /> まちがい {wrong}{reviewUnit}を復習
+            {isMemoryCheck ? (
+              <><Refresh size={18} /> 「まだ」の{wrong}{reviewUnit}をもう一度確認する</>
+            ) : (
+              <><Bookmark size={18} /> まちがい {wrong}{reviewUnit}を復習</>
+            )}
           </Button>
         )}
         {!isBattle && (
@@ -359,6 +423,120 @@ export function SessionResultScreen() {
         </Button>
       </div>
     </div>
+  )
+}
+
+function NextBattleCompanionCard({
+  currentStudent,
+  selectedStudent,
+  teacher,
+  affinity,
+  onSelect,
+}) {
+  const changed = currentStudent.id !== selectedStudent.id
+
+  return (
+    <Card className="w-full max-w-xs overflow-hidden p-0 text-left ring-1 ring-violet-100">
+      <div className="bg-gradient-to-br from-indigo-950 via-violet-950 to-fuchsia-950 p-3.5 text-white">
+        <div className="flex items-start justify-between gap-2">
+          <div>
+            <p className="text-[8px] font-extrabold tracking-[0.15em] text-cyan-200">
+              AFTER BATTLE · NEXT CLASSMATE
+            </p>
+            <h2 className="mt-0.5 font-display text-base font-extrabold">
+              次の同行者を選ぶ
+            </h2>
+          </div>
+          <span className="shrink-0 rounded-full bg-emerald-400/15 px-2 py-1 text-[8px] font-extrabold text-emerald-100">
+            次戦から反映
+          </span>
+        </div>
+
+        <div className="mt-2 flex items-center gap-2 rounded-2xl border border-white/15 bg-white/10 px-2.5 py-2">
+          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-white/10 text-lg">
+            <Teacher size={18} />
+          </span>
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-[9px] font-extrabold text-white/60">次の先生</p>
+            <p className="truncate text-[11px] font-extrabold">{teacher.name}</p>
+            <p className="text-[8px] font-bold text-white/55">
+              {teacher.teacherSubject}の先生 × {affinity.gradeBasisLabel}で相性判定
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="p-3">
+        <div
+          className="grid grid-cols-2 gap-2"
+          role="group"
+          aria-label={`${teacher.name}に向けた次の同行クラスメート`}
+        >
+          {BATTLE_STUDENTS.map((student) => {
+            const studentAffinity = battleTeacherAffinity(
+              student.id,
+              teacher.teacherSubject,
+            )
+            const selected = student.id === selectedStudent.id
+            const shortName = student.name.match(/[ァ-ヶー].*$/u)?.[0] ?? student.name
+            return (
+              <button
+                key={student.id}
+                type="button"
+                onClick={() => onSelect(student.id)}
+                aria-pressed={selected}
+                aria-label={`${student.name}。得意科目${battleStudentBestSubjects(student.id).join('、')}。${teacher.teacherSubject}の先生に対し、${studentAffinity.gradeBasisLabel}評定${studentAffinity.grade}、${studentAffinity.label}、${studentAffinity.bonusLabel}`}
+                className={`flex min-h-[66px] items-center gap-2 rounded-2xl border p-2 transition-transform active:scale-[0.98] ${selected ? 'border-violet-400 bg-violet-50 ring-2 ring-violet-100' : 'border-ink/10 bg-paper'}`}
+              >
+                <img
+                  src={battleStudentPortrait(student.id, selected ? 'delighted' : 'idle')}
+                  alt=""
+                  loading="lazy"
+                  className="h-11 w-11 shrink-0 rounded-xl object-cover [image-rendering:pixelated]"
+                />
+                <span className="min-w-0 flex-1">
+                  <span className="flex items-center justify-between gap-1">
+                    <strong className="truncate text-[10px] font-extrabold text-ink">
+                      {shortName}
+                    </strong>
+                    {selected && <Check size={13} className="shrink-0 text-violet-600" />}
+                  </span>
+                  <span className="mt-0.5 block text-[8px] font-extrabold" style={{ color: studentAffinity.color }}>
+                    {studentAffinity.gradeBasisLabel} {studentAffinity.grade} · {studentAffinity.emoji}{studentAffinity.label}
+                  </span>
+                  <span className="block truncate text-[7px] font-bold text-ink/40">
+                    得意：{battleStudentBestSubjects(student.id).join('・')}
+                  </span>
+                </span>
+              </button>
+            )
+          })}
+        </div>
+
+        <div className="mt-3 flex items-center gap-2 rounded-2xl bg-violet-50 px-3 py-2.5">
+          <img
+            src={battleStudentPortrait(selectedStudent.id, 'confident')}
+            alt=""
+            className="h-10 w-10 shrink-0 rounded-xl object-cover [image-rendering:pixelated]"
+          />
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-[10px] font-extrabold text-violet-950">
+              次回：{selectedStudent.name} · {affinity.emoji} {affinity.label}
+            </p>
+            <p className="text-[8px] font-bold text-violet-700">
+              {affinity.gradeBasisLabel} 評定{affinity.grade} · {affinity.bonusLabel}
+            </p>
+          </div>
+          <span className="shrink-0 text-[8px] font-extrabold text-violet-500">
+            {changed ? '変更済み' : '継続'}
+          </span>
+        </div>
+
+        <p className="mt-2 text-[8px] font-bold leading-relaxed text-ink/40">
+          成績はキャラクター設定です。苦手相性でも正答率・XP・SRS・敵ランク・決着条件に不利はありません。
+        </p>
+      </div>
+    </Card>
   )
 }
 
@@ -442,6 +620,89 @@ function BattleResultStudentPortrait({
         </span>
       )}
     </div>
+  )
+}
+
+function BattleResultStage({
+  battleReport,
+  student,
+  rival,
+  emotion,
+  verdict,
+  encounter,
+  quest,
+  tactic,
+}) {
+  const theme = battleReport?.battleTheme
+  const outcome = battleReport?.enemyDefeated
+    ? 'victory'
+    : battleReport?.heroDefeated
+      ? 'defeat'
+      : verdict.id
+  const scene = theme?.stage
+    ? `linear-gradient(180deg,rgba(2,6,23,.16),rgba(2,6,23,.82)), url("${theme.stage}") center / cover`
+    : 'linear-gradient(135deg,#312e81,#0f172a 68%,#164e63)'
+
+  return (
+    <section
+      className="battle-result-stage w-full max-w-xs"
+      data-testid="battle-result-stage"
+      data-battle-theme={theme?.id ?? 'fallback'}
+      data-battle-outcome={outcome}
+      style={{
+        '--battle-result-scene': scene,
+        '--battle-result-accent': theme?.accent ?? '#a78bfa',
+        '--battle-result-enemy': theme?.enemy ?? '#fb7185',
+        '--battle-result-student': student.accent,
+      }}
+      aria-label={`${student.name}と${rival.name}の対決結果。${verdict.title}`}
+    >
+      <span className="battle-result-cinema-frame" aria-hidden="true" />
+      <div className="battle-result-stage-heading" aria-hidden="true">
+        <span>{theme?.presentation?.modeLabel ?? 'SCHOOL DUEL'}</span>
+        <strong>BATTLE RESULT</strong>
+      </div>
+      <div className="battle-result-duelists">
+        <div className="battle-result-duelist battle-result-duelist-hero">
+          <BattleResultStudentPortrait
+            student={student}
+            emotion={emotion}
+            placement="lead"
+            prominent
+          />
+          <b>{student.name}</b>
+        </div>
+
+        <div className="battle-result-verdict">
+          <span aria-hidden="true">{verdict.emoji}</span>
+          <h1>{verdict.title}</h1>
+          <small>対決終了</small>
+        </div>
+
+        <div className="battle-result-duelist battle-result-duelist-enemy">
+          {rival.isTeacher ? (
+            <TeacherPortrait
+              teacher={encounter}
+              defeated={battleReport?.enemyDefeated}
+            />
+          ) : (
+            <img
+              src={rival.portrait}
+              alt={`${rival.name}の戦闘後の表情`}
+              className={battleReport?.enemyDefeated ? 'grayscale' : ''}
+            />
+          )}
+          <b>{rival.name}</b>
+        </div>
+      </div>
+      <p className="battle-result-stage-route">
+        <span>{encounter.emoji} {encounter.name}</span>
+        <i aria-hidden="true">◆</i>
+        <span>{quest.label}</span>
+        <i aria-hidden="true">◆</i>
+        <span>{tactic.emoji} {tactic.label}</span>
+      </p>
+    </section>
   )
 }
 
@@ -588,11 +849,19 @@ function BattleOutcome({
   return (
     <Card className={`w-full max-w-xs p-3.5 ${t.bg}`}>
       <div className="flex items-start gap-3 text-left">
-        <img
-          src={battleRival.portrait}
-          alt={`${battleRival.name}のポートレート`}
-          className={`h-11 w-11 shrink-0 rounded-2xl object-cover ring-1 ring-white/70 [image-rendering:pixelated] ${battleReport?.enemyDefeated ? 'grayscale' : ''}`}
-        />
+        {battleRival.isTeacher ? (
+          <TeacherPortrait
+            teacher={encounter}
+            defeated={battleReport?.enemyDefeated}
+            className="h-11 w-11 shrink-0 rounded-2xl ring-1 ring-white/70"
+          />
+        ) : (
+          <img
+            src={battleRival.portrait}
+            alt={`${battleRival.name}のポートレート`}
+            className={`h-11 w-11 shrink-0 rounded-2xl object-cover ring-1 ring-white/70 [image-rendering:pixelated] ${battleReport?.enemyDefeated ? 'grayscale' : ''}`}
+          />
+        )}
         <div>
           <div className={`font-display text-sm font-extrabold ${t.tone}`}>
             {verdict.title}
@@ -642,6 +911,47 @@ function BattleOutcome({
               </p>
             </div>
           </div>
+          {battleReport.teacherAffinity?.active && (
+            <div className="flex items-center gap-2 rounded-2xl border border-emerald-200 bg-emerald-50 px-3 py-2.5 text-left text-emerald-950">
+              <img
+                src={battleStudentPortrait(battleStudent.id, studentEmotion)}
+                alt=""
+                className="h-10 w-10 rounded-xl object-cover [image-rendering:pixelated]"
+              />
+              <div className="min-w-0 flex-1">
+                <p className="text-[9px] font-extrabold tracking-[0.12em] text-emerald-600">
+                  SUBJECT COMPATIBILITY
+                </p>
+                <p className="truncate text-xs font-extrabold">
+                  {battleReport.teacherAffinity.gradeBasisLabel} 評定{battleReport.teacherAffinity.grade} · {battleReport.teacherAffinity.emoji} {battleReport.teacherAffinity.label}
+                </p>
+              </div>
+              <p className="max-w-[42%] text-right text-[9px] font-extrabold text-emerald-700">
+                {battleReport.teacherAffinity.bonusLabel}<br />
+                追加 {battleReport.affinityBonusDamage}
+              </p>
+            </div>
+          )}
+          {battleReport.bondSkill && (
+            <div className="flex items-center gap-2 rounded-2xl border border-cyan-200 bg-cyan-50 px-3 py-2.5 text-left text-cyan-950">
+              <img
+                src={battleStudentPortrait(battleStudent.id, studentEmotion)}
+                alt=""
+                className="h-10 w-10 rounded-xl object-cover [image-rendering:pixelated]"
+              />
+              <div className="min-w-0 flex-1">
+                <p className="text-[9px] font-extrabold tracking-[0.12em] text-cyan-600">
+                  RELATIONSHIP SKILL
+                </p>
+                <p className="truncate text-xs font-extrabold">
+                  {battleReport.bondSkill.emoji} {battleReport.bondSkill.name}
+                </p>
+              </div>
+              <p className="max-w-[46%] text-right text-[9px] font-extrabold text-cyan-700">
+                {battleReport.bondSummary}
+              </p>
+            </div>
+          )}
           {battleReport.battleTheme && (
             <div
               className="flex items-center gap-2 rounded-2xl border px-3 py-2.5 text-left"

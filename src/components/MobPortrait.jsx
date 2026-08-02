@@ -1,5 +1,6 @@
 import mobAtlas from '../assets/rpg-mob-atlas-v2.webp'
 import { cx } from './ui.jsx'
+import { TeacherPortrait } from './TeacherPortrait.jsx'
 
 const ATLAS_COLUMNS = 6
 const ATLAS_ROWS = 4
@@ -46,14 +47,12 @@ export function MobPortrait({
     >
       <span className="mob-avatar-grid" aria-hidden="true" />
       {isTeacher ? (
-        <>
-          <span className="teacher-portrait-face" aria-hidden="true">
-            {encounter.portraitEmoji}
-          </span>
-          <span className="teacher-portrait-tool" aria-hidden="true">
-            {encounter.attackEmoji}
-          </span>
-        </>
+        <TeacherPortrait
+          teacher={encounter}
+          decorative
+          defeated={defeated}
+          className="teacher-portrait-icon"
+        />
       ) : (
         <span className="mob-atlas-sprite-frame" aria-hidden="true">
           <span

@@ -3,19 +3,19 @@ export const cx = (...xs) => xs.filter(Boolean).join(' ')
 
 const VARIANTS = {
   primary:
-    'bg-gradient-to-b from-brand-500 to-brand-600 text-white shadow-pop active:from-brand-600 active:to-brand-700',
+    'bg-brand-600 text-white shadow-sm active:bg-brand-700',
   secondary:
-    'bg-white text-brand-700 border-2 border-brand-200 active:bg-brand-50',
+    'bg-white text-brand-700 border border-brand-200 active:bg-brand-50',
   ghost: 'bg-transparent text-brand-700 active:bg-brand-50',
   soft: 'bg-brand-100 text-brand-700 active:bg-brand-200',
-  success: 'bg-gradient-to-b from-emerald-400 to-emerald-500 text-white shadow-[0_8px_20px_-8px_rgba(16,185,129,0.6)]',
-  danger: 'bg-gradient-to-b from-rose-400 to-rose-500 text-white shadow-[0_8px_20px_-8px_rgba(244,63,94,0.6)]',
-  hint: 'bg-amber-100 text-amber-700 border-2 border-amber-200 active:bg-amber-200',
+  success: 'bg-emerald-500 text-white shadow-sm active:bg-emerald-600',
+  danger: 'bg-rose-500 text-white shadow-sm active:bg-rose-600',
+  hint: 'bg-amber-100 text-amber-800 border border-amber-200 active:bg-amber-200',
 }
 
 const SIZES = {
-  sm: 'h-9 px-3 text-sm rounded-xl',
-  md: 'h-12 px-5 text-base rounded-2xl',
+  sm: 'h-10 px-3 text-sm rounded-xl',
+  md: 'h-12 px-5 text-base rounded-xl',
   lg: 'h-14 px-6 text-lg rounded-2xl',
 }
 
@@ -30,7 +30,7 @@ export function Button({
   return (
     <button
       className={cx(
-        'inline-flex items-center justify-center gap-2 font-bold tracking-wide',
+        'inline-flex items-center justify-center gap-2 font-bold',
         'transition-transform duration-100 active:scale-[0.97]',
         'disabled:opacity-40 disabled:active:scale-100 select-none',
         VARIANTS[variant],
@@ -64,7 +64,7 @@ export function IconButton({ className = '', children, ...props }) {
 export function Card({ className = '', children, ...props }) {
   return (
     <div
-      className={cx('rounded-3xl bg-white shadow-card', className)}
+      className={cx('rounded-2xl border border-slate-200/70 bg-white shadow-card', className)}
       {...props}
     >
       {children}

@@ -13,7 +13,9 @@ import {
 } from '../lib/tts.js'
 import { Sheet } from './Sheet.jsx'
 import { Button, cx } from './ui.jsx'
-import { SpeakerWave } from './Icons.jsx'
+import { Gear, SpeakerWave } from './Icons.jsx'
+import { GameSettingsPanel } from './GameSettings.jsx'
+import { PortalSettingsPanel } from './PortalSettings.jsx'
 
 const VOICE_GROUPS = [
   { quality: 'high', label: '高品質音声' },
@@ -26,6 +28,8 @@ const RATE_PRESETS = [
   { value: 0.9, label: '標準' },
   { value: 1.1, label: 'はやめ' },
 ]
+
+const DAILY_GOALS = [10, 20, 30, 50]
 
 function SettingRow({ title, desc, children, stacked = false }) {
   return (
@@ -240,38 +244,6 @@ export function SpeechSettingsPanel({ heading = true }) {
         </SettingRow>
       </div>
 
-      <h2 className="pt-4 font-display text-base font-extrabold text-ink/80">
-        放課後ことば探検記 BGM
-      </h2>
-      <p className="mt-1 text-xs font-bold leading-relaxed text-ink/50">
-        日常・ことばの対決・先生戦・結果に合わせて、約3分のオリジナル33曲を切り替えます。通常の単語・文法・長文など学習画面では鳴りません。
-      </p>
-      <div className="mt-2 divide-y divide-brand-50">
-        <SettingRow title="ゲームBGMを再生" desc="ゲーム画面を開き、最初に操作した後から再生">
-          <Toggle
-            label="ゲームBGMを再生"
-            on={settings.bgmEnabled !== false}
-            onChange={(value) => setSetting('bgmEnabled', value)}
-          />
-        </SettingRow>
-        <SettingRow
-          title="BGM音量"
-          desc={`現在 ${Math.round((settings.bgmVolume ?? 0.35) * 100)}%`}
-          stacked
-        >
-          <input
-            type="range"
-            min="0"
-            max="1"
-            step="0.05"
-            value={settings.bgmVolume ?? 0.35}
-            onChange={(event) => setSetting('bgmVolume', Number(event.target.value))}
-            aria-label="BGM音量"
-            className="w-full accent-brand-500"
-          />
-        </SettingRow>
-      </div>
-
       <div className="grid grid-cols-2 gap-2 pb-3">
         <Button
           variant="soft"
@@ -305,20 +277,126 @@ export function SpeechSettingsPanel({ heading = true }) {
   )
 }
 
+function LearningSettingsPanel() {
+  const settings = useStore((state) => state.settings)
+  const setSetting = useStore((state) => state.setSetting)
+
+  return (
+    <section aria-label="学習設定">
+      <div className="divide-y divide-brand-50">
+        <SettingRow
+          title="答えを開いたまま見せる"
+          desc="覚える・復習・マイ単語で、意味や語源を最初から表示"
+        >
+          <Toggle
+            label="答えを開いたまま見せる"
+            on={settings.revealAnswers === true}
+            onChange={(value) => setSetting('revealAnswers', value)}
+          />
+        </SettingRow>
+        <SettingRow
+          title="1日の目標"
+          desc={`現在 ${settings.dailyGoal ?? 20}語`}
+          stacked
+        >
+          <div className="grid grid-cols-4 gap-2">
+            {DAILY_GOALS.map((goal) => (
+              <button
+                key={goal}
+                type="button"
+                onClick={() => setSetting('dailyGoal', goal)}
+                aria-pressed={settings.dailyGoal === goal}
+                className={cx(
+                  'min-h-11 rounded-xl text-sm font-extrabold transition-colors',
+                  settings.dailyGoal === goal
+                    ? 'bg-brand-500 text-white'
+                    : 'bg-brand-50 text-brand-700',
+                )}
+              >
+                {goal}語
+              </button>
+            ))}
+          </div>
+        </SettingRow>
+      </div>
+    </section>
+  )
+}
+
+function SettingsSection({ title, desc, children, defaultOpen = false }) {
+  return (
+    <details
+      className="group overflow-hidden rounded-2xl border border-slate-200/80 bg-white"
+      open={defaultOpen}
+    >
+      <summary className="flex min-h-16 cursor-pointer list-none items-center justify-between gap-3 px-4 py-3">
+        <span className="min-w-0">
+          <strong className="block font-display text-base font-extrabold text-ink">{title}</strong>
+          <span className="mt-0.5 block text-xs font-bold leading-relaxed text-ink/45">{desc}</span>
+        </span>
+        <span className="shrink-0 text-lg font-extrabold text-brand-500 transition-transform group-open:rotate-45" aria-hidden="true">＋</span>
+      </summary>
+      <div className="border-t border-slate-100 px-4 pb-2">{children}</div>
+    </details>
+  )
+}
+
+export function SettingsMenuPanel({ heading = true }) {
+  return (
+    <section aria-label="設定メニュー" data-settings-central-panel>
+      {heading && (
+        <div className="pt-3">
+          <h2 className="font-display text-lg font-extrabold text-ink">設定メニュー</h2>
+          <p className="mt-1 text-xs font-bold leading-relaxed text-ink/50">
+            保存される学習・音声・ゲーム・コンテンツ設定は、すべてここで変更します。
+          </p>
+        </div>
+      )}
+      <div className={cx('space-y-3', heading ? 'mt-3' : '')}>
+        <SettingsSection
+          title="学習カード・目標"
+          desc="答えの表示方法と1日の学習量"
+          defaultOpen
+        >
+          <LearningSettingsPanel />
+        </SettingsSection>
+        <SettingsSection
+          title="音声・発音"
+          desc="速度、英語・日本語の声、自動発音、発音記号"
+        >
+          <SpeechSettingsPanel heading={false} />
+        </SettingsSection>
+        <SettingsSection
+          title="ゲーム"
+          desc="簡易／ゲーミングUI、BGM、演出、持ち物、星彩"
+        >
+          <GameSettingsPanel />
+        </SettingsSection>
+        <SettingsSection
+          title="コンテンツメニュー"
+          desc="トップメニューの並び順と表示・非表示"
+        >
+          <PortalSettingsPanel />
+        </SettingsSection>
+      </div>
+    </section>
+  )
+}
+
 export function SpeechSettingsButton({
   className = '',
   compact = false,
   inverse = false,
 }) {
-  const rate = useStore((state) => state.settings.ttsRate)
   const openSpeechSettings = useStore((state) => state.openSpeechSettings)
 
   return (
     <button
       type="button"
       onClick={openSpeechSettings}
-      aria-label={`音声・発音メニューを開く（現在${rate.toFixed(1)}倍）`}
+      aria-label="設定メニューを開く"
       aria-haspopup="dialog"
+      data-settings-menu-trigger
       data-speech-settings-trigger
       className={cx(
         'inline-flex h-11 shrink-0 items-center justify-center gap-1.5 rounded-full font-extrabold transition-transform active:scale-90',
@@ -329,8 +407,8 @@ export function SpeechSettingsButton({
         className,
       )}
     >
-      <SpeakerWave size={compact ? 20 : 18} />
-      {!compact && <span className="text-[11px]">{rate.toFixed(1)}倍</span>}
+      <Gear size={compact ? 20 : 18} />
+      {!compact && <span className="text-[11px]">設定</span>}
     </button>
   )
 }
@@ -344,8 +422,13 @@ export function SpeechSettingsSheet() {
   }
 
   return (
-    <Sheet open={open} onClose={close} title="音声・発音" maxH="90vh">
-      <SpeechSettingsPanel heading={false} />
+    <Sheet open={open} onClose={close} title="設定メニュー" maxH="92vh">
+      <SettingsMenuPanel heading={false} />
     </Sheet>
   )
 }
+
+// 既存画面の import 名は保存データと同様に互換性を保ちつつ、
+// 新しい画面からは設定メニューとして参照できるよう別名も公開する。
+export const SettingsMenuButton = SpeechSettingsButton
+export const SettingsMenuSheet = SpeechSettingsSheet

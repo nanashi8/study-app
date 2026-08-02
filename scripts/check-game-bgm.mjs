@@ -1,6 +1,9 @@
 #!/usr/bin/env node
 // ゲームBGMの全曲・全場面対応をbuild前に監査する。
-// Web Audioで鳴らすイベントまで全ステップ展開し、NaNや欠落曲を通さない。
+// 楽譜イベントと完成済みAACの双方を全件検査し、音源欠落・破損・尺ずれを通さない。
+import { createHash } from 'node:crypto'
+import { existsSync, readFileSync, readdirSync } from 'node:fs'
+
 import { BATTLE_DAILY_SCENES } from '../src/lib/battleCast.js'
 import { LEVELS } from '../src/data/levels.js'
 import { TEACHER_RIVALS } from '../src/lib/rpg.js'
@@ -16,14 +19,43 @@ import {
   resultBgmTrack,
 } from '../src/data/game-bgm.js'
 import {
+  GAME_SOUNDTRACK_PRODUCTION_BY_TRACK_ID,
+  GAME_SOUNDTRACK_VERSION,
+} from '../src/data/game-soundtrack-production.js'
+import {
   BGM_SCALES,
   bgmEventsAtStep,
   bgmStepSeconds,
   bgmTotalSteps,
 } from '../src/lib/gameBgmSequencer.js'
+import { buildSoundtrackArrangement } from './game-soundtrack-arrangement.mjs'
 
 const failures = []
 const fail = (message) => failures.push(message)
+const soundtrackDirectory = new URL('../public/assets/bgm/school-ensemble/', import.meta.url)
+const soundtrackManifestUrl = new URL('manifest.json', soundtrackDirectory)
+
+function m4aDurationSeconds(buffer) {
+  const marker = Buffer.from('mvhd')
+  const index = buffer.indexOf(marker)
+  if (index < 0 || index + 36 > buffer.length) return null
+  const version = buffer[index + 4]
+  if (version === 0) {
+    const timescale = buffer.readUInt32BE(index + 16)
+    const duration = buffer.readUInt32BE(index + 20)
+    return timescale > 0 ? duration / timescale : null
+  }
+  if (version === 1) {
+    const timescale = buffer.readUInt32BE(index + 24)
+    const duration = buffer.readBigUInt64BE(index + 28)
+    return timescale > 0 ? Number(duration) / timescale : null
+  }
+  return null
+}
+
+function sha256(buffer) {
+  return createHash('sha256').update(buffer).digest('hex')
+}
 
 function expectExactSet(label, actualValues, expectedValues) {
   const actual = [...new Set(actualValues)].sort()
@@ -33,16 +65,31 @@ function expectExactSet(label, actualValues, expectedValues) {
   }
 }
 
-const expectedCategoryCounts = { daily: 12, rank: 7, boss: 11, result: 3 }
+const expectedCategoryCounts = {
+  daily: BATTLE_DAILY_SCENES.length,
+  rank: 7,
+  boss: 11,
+  result: 3,
+}
+const expectedTrackCount = Object.values(expectedCategoryCounts)
+  .reduce((sum, count) => sum + count, 0)
 const ids = new Set()
 const titles = new Set()
 const arrangementSignatures = new Set()
 const categoryCounts = {}
 let eventCount = 0
+let soundtrackNoteCount = 0
 let totalSeconds = 0
+let totalAudioBytes = 0
 
-if (GAME_BGM_TRACKS.length !== 33) {
-  fail(`曲数は33曲必須です (${GAME_BGM_TRACKS.length})`)
+if (!existsSync(soundtrackManifestUrl)) fail('完成済みBGMのmanifest.jsonがありません')
+const soundtrackManifest = existsSync(soundtrackManifestUrl)
+  ? JSON.parse(readFileSync(soundtrackManifestUrl, 'utf8'))
+  : { tracks: [] }
+const manifestById = new Map((soundtrackManifest.tracks ?? []).map((entry) => [entry.id, entry]))
+
+if (GAME_BGM_TRACKS.length !== expectedTrackCount) {
+  fail(`曲数は${expectedTrackCount}曲必須です (${GAME_BGM_TRACKS.length})`)
 }
 
 for (const track of GAME_BGM_TRACKS) {
@@ -63,9 +110,46 @@ for (const track of GAME_BGM_TRACKS) {
   if (track.motif.length !== 16) fail(`${at}: モチーフは16ステップ必要です`)
   if (track.bars % 4 !== 0) fail(`${at}: 小節数は4の倍数にしてください`)
   if (track.stepsPerBar !== GAME_BGM_STEPS_PER_BAR) fail(`${at}: stepsPerBarが不一致です`)
-  if (track.license !== 'original-procedural') fail(`${at}: オリジナル曲の権利表示がありません`)
+  if (track.license !== 'original-rendered-soundtrack') fail(`${at}: オリジナル曲の権利表示がありません`)
+  if (track.soundtrackVersion !== GAME_SOUNDTRACK_VERSION) fail(`${at}: 音源バージョンが不一致です`)
+  if (!track.audioPath?.endsWith(`/${track.id}.m4a`)) fail(`${at}: AAC音源パスが不正です`)
+  if (!track.ensemble?.trim()) fail(`${at}: 楽器編成の説明がありません`)
+  if (!GAME_SOUNDTRACK_PRODUCTION_BY_TRACK_ID[track.id]) fail(`${at}: 音源プロファイルがありません`)
   if (track.durationSeconds < 170 || track.durationSeconds > 190) {
     fail(`${at}: 約3分の範囲外です (${track.durationSeconds}秒)`)
+  }
+
+  const soundtrackArrangement = buildSoundtrackArrangement(track)
+  soundtrackNoteCount += soundtrackArrangement.noteCount
+  if (soundtrackArrangement.instruments.length < 6) fail(`${at}: サウンドトラックが6パート未満です`)
+  if (soundtrackArrangement.noteCount < 1_000) fail(`${at}: サウンドトラックの演奏音が少なすぎます`)
+
+  const audioUrl = new URL(`../public/${track.audioPath}`, import.meta.url)
+  if (!existsSync(audioUrl)) {
+    fail(`${at}: 完成済みAACがありません (${track.audioPath})`)
+  } else {
+    const audio = readFileSync(audioUrl)
+    totalAudioBytes += audio.length
+    if (audio.subarray(4, 8).toString('ascii') !== 'ftyp') fail(`${at}: M4Aヘッダーが不正です`)
+    const audioDuration = m4aDurationSeconds(audio)
+    if (!Number.isFinite(audioDuration) || Math.abs(audioDuration - track.durationSeconds) > 0.15) {
+      fail(`${at}: AACの尺が設計値と一致しません (${audioDuration} != ${track.durationSeconds})`)
+    }
+    if (audio.length < 2_000_000 || audio.length > 5_000_000) {
+      fail(`${at}: AACのファイルサイズが想定外です (${audio.length} bytes)`)
+    }
+    const manifestEntry = manifestById.get(track.id)
+    if (!manifestEntry) {
+      fail(`${at}: manifestに収録情報がありません`)
+    } else {
+      if (manifestEntry.path !== track.audioPath) fail(`${at}: manifestのパスが不一致です`)
+      if (manifestEntry.bytes !== audio.length) fail(`${at}: manifestのバイト数が不一致です`)
+      if (manifestEntry.sha256 !== sha256(audio)) fail(`${at}: AACのSHA-256が不一致です`)
+      if ((manifestEntry.instruments?.length ?? 0) < 6) fail(`${at}: 6パート未満の簡易編成です`)
+      if (manifestEntry.noteCount !== soundtrackArrangement.noteCount) {
+        fail(`${at}: manifestの演奏音数が編曲データと不一致です`)
+      }
+    }
   }
 
   const calculatedDuration = bgmTotalSteps(track) * bgmStepSeconds(track)
@@ -124,6 +208,25 @@ for (const [category, expected] of Object.entries(expectedCategoryCounts)) {
   }
 }
 
+if (soundtrackManifest.version !== GAME_SOUNDTRACK_VERSION) {
+  fail(`manifestの音源バージョンが不一致です (${soundtrackManifest.version})`)
+}
+if (soundtrackManifest.renderedTrackCount !== expectedTrackCount) {
+  fail(`manifestは全${expectedTrackCount}曲を収録していません`)
+}
+expectExactSet(
+  '完成済みAACファイル',
+  existsSync(soundtrackDirectory)
+    ? readdirSync(soundtrackDirectory).filter((name) => name.endsWith('.m4a')).map((name) => name.slice(0, -4))
+    : [],
+  GAME_BGM_TRACKS.map((track) => track.id),
+)
+expectExactSet(
+  '音源プロファイル',
+  Object.keys(GAME_SOUNDTRACK_PRODUCTION_BY_TRACK_ID),
+  GAME_BGM_TRACKS.map((track) => track.id),
+)
+
 expectExactSet(
   '日常場面BGM',
   DAILY_BGM_BY_SCENE_ID.keys(),
@@ -165,6 +268,6 @@ if (failures.length > 0) {
   process.exitCode = 1
 } else {
   console.log(
-    `✅ ゲームBGM監査OK: ${GAME_BGM_TRACKS.length}曲 / ${(totalSeconds / 60).toFixed(1)}分 / ${eventCount.toLocaleString()}イベント`,
+    `✅ ゲームBGM監査OK: ${GAME_BGM_TRACKS.length}曲 / ${(totalSeconds / 60).toFixed(1)}分 / ${(totalAudioBytes / 1024 / 1024).toFixed(1)} MiB / ${soundtrackNoteCount.toLocaleString()}演奏音 / ${eventCount.toLocaleString()}元譜イベント`,
   )
 }

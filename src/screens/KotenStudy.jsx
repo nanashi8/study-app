@@ -9,8 +9,6 @@ import {
   BookmarkFilled,
   Close,
   ArrowRight,
-  Eye,
-  EyeOff,
   Lightbulb,
 } from '../components/Icons.jsx'
 
@@ -32,7 +30,6 @@ export function KotenStudyScreen() {
   const kotenWordList = useStore((s) => s.kotenWordList)
   const toggleKotenWordList = useStore((s) => s.toggleKotenWordList)
   const settings = useStore((s) => s.settings)
-  const setSetting = useStore((s) => s.setSetting)
   const revealAll = settings.revealAnswers
 
   const [seed, setSeed] = useState(0)
@@ -103,17 +100,6 @@ export function KotenStudyScreen() {
         <div className="flex-1">
           <ProgressBar value={i / deck.length} color="#f59e0b" />
         </div>
-        <IconButton
-          onClick={() => {
-            const next = !revealAll
-            setSetting('revealAnswers', next)
-            if (next) setFlipped(true)
-          }}
-          className={revealAll ? 'text-amber-500' : 'text-ink/35'}
-          aria-label={revealAll ? '答えを隠してタップ式にする' : '答えを開いたまま見せる'}
-        >
-          {revealAll ? <Eye size={22} /> : <EyeOff size={22} />}
-        </IconButton>
         <SpeechSettingsButton compact />
         <span className="w-12 text-right text-sm font-extrabold text-ink/50">
           {i + 1}/{deck.length}

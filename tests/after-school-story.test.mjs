@@ -1,26 +1,64 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { readFile } from 'node:fs/promises'
+import { access, readFile } from 'node:fs/promises'
 
-import { BATTLE_DAILY_SCENES } from '../src/lib/battleCast.js'
+import { BATTLE_DAILY_SCENES, BATTLE_STUDENTS } from '../src/lib/battleCast.js'
 import {
+  AFTER_SCHOOL_INTERLUDE_CHANCE,
   AFTER_SCHOOL_CHRONICLE,
-  AFTER_SCHOOL_STORY_PHASES,
   MAX_BATTLE_STORY_STEP,
   afterSchoolEpisodeNumber,
   afterSchoolSceneForStep,
+  normalizeBattleStoryLastDay,
   normalizeBattleStoryStep,
+  shouldContinueToAfterSchoolInterlude,
 } from '../src/lib/afterSchoolStory.js'
+import {
+  AFTER_SCHOOL_BRANCHES,
+  afterSchoolBattleSkill,
+  afterSchoolBondState,
+  afterSchoolBranchOptions,
+  afterSchoolBranchScene,
+  isValidAfterSchoolBonds,
+  resolveAfterSchoolReward,
+} from '../src/lib/afterSchoolBonds.js'
+import { resolveBattleState } from '../src/lib/rpg.js'
 import { decodeProgress, encodeProgress } from '../src/lib/progressCode.js'
 import { useStore } from '../src/store/useStore.js'
 
-test('放課後ことば探検記は日常・対決・日誌の3段階を持つ', () => {
-  assert.equal(AFTER_SCHOOL_CHRONICLE.title, '放課後ことば探検記')
+test('放課後の魔法と言葉は先生課題から3つの放課後ルートへつながる', () => {
+  assert.equal(AFTER_SCHOOL_CHRONICLE.title, '放課後の魔法と言葉')
+  assert.equal(AFTER_SCHOOL_CHRONICLE.shortTitle, '魔法と言葉')
   assert.equal(AFTER_SCHOOL_CHRONICLE.keyVisual.endsWith('.webp'), true)
-  assert.deepEqual(
-    AFTER_SCHOOL_STORY_PHASES.map((phase) => phase.id),
-    ['daily', 'challenge', 'journal'],
-  )
+  assert.match(AFTER_SCHOOL_CHRONICLE.subtitle, /対決後の3つの放課後ルート/)
+})
+
+test('旧ランダム分岐ヘルパーは保存互換のためだけに残す', () => {
+  assert.equal(AFTER_SCHOOL_INTERLUDE_CHANCE, 1 / 3)
+  assert.equal(shouldContinueToAfterSchoolInterlude({
+    storyStep: 0,
+    currentDay: 100,
+    roll: 0.99,
+  }), true)
+  assert.equal(shouldContinueToAfterSchoolInterlude({
+    storyStep: 1,
+    lastDay: 99,
+    currentDay: 100,
+    roll: AFTER_SCHOOL_INTERLUDE_CHANCE - 0.01,
+  }), true)
+  assert.equal(shouldContinueToAfterSchoolInterlude({
+    storyStep: 1,
+    lastDay: 99,
+    currentDay: 100,
+    roll: AFTER_SCHOOL_INTERLUDE_CHANCE,
+  }), false)
+  assert.equal(shouldContinueToAfterSchoolInterlude({
+    storyStep: 1,
+    lastDay: 100,
+    currentDay: 100,
+    roll: 0,
+  }), false)
+  assert.equal(normalizeBattleStoryLastDay(-1), null)
 })
 
 test('ゲーム入口の主要アイコンはOS絵文字に依存せず、絵文字フォントも明示する', async () => {
@@ -36,8 +74,7 @@ test('ゲーム入口の主要アイコンはOS絵文字に依存せず、絵文
   assert.match(map, /function ChronicleIcon/)
   assert.match(map, /data-chronicle-icon=\{kind\}/)
   assert.match(chronicleScreen, /className="after-school-game-icons pb-8"/)
-  assert.match(map, /<ChronicleIcon kind=\{phase\.id\}/)
-  assert.doesNotMatch(map, /<span className="text-xl" aria-hidden="true">\{phase\.emoji\}<\/span>/)
+  assert.match(map, /<ChronicleIcon kind="chapter"/)
   assert.match(css, /\.chronicle-vector-icon/)
   assert.match(css, /font-variant-emoji:\s*emoji/)
   assert.match(css, /"Apple Color Emoji"/)
@@ -45,7 +82,208 @@ test('ゲーム入口の主要アイコンはOS絵文字に依存せず、絵文
   assert.match(css, /"Noto Color Emoji"/)
 })
 
-test('放課後日誌は12場面を保存済み進行順に循環する', () => {
+test('10人全員に固有の放課後分岐・共感エピソード・監査済み舞台画像がある', async () => {
+  assert.equal(AFTER_SCHOOL_BRANCHES.length, BATTLE_STUDENTS.length)
+  assert.deepEqual(
+    new Set(AFTER_SCHOOL_BRANCHES.map((profile) => profile.studentId)),
+    new Set(BATTLE_STUDENTS.map((student) => student.id)),
+  )
+  assert.equal(new Set(AFTER_SCHOOL_BRANCHES.map((profile) => profile.id)).size, 10)
+
+  for (const profile of AFTER_SCHOOL_BRANCHES) {
+    const scene = afterSchoolBranchScene(profile)
+    assert.equal(BATTLE_DAILY_SCENES.some((item) => item.id === scene.id), true, profile.id)
+    assert.match(profile.time, /^16:/, profile.id)
+    assert.ok(profile.situation.length >= 25, profile.id)
+    assert.ok(profile.opening.length >= 15, profile.id)
+    assert.equal(profile.choices.length, 3, profile.id)
+    assert.deepEqual(
+      new Set(profile.choices.map((choice) => choice.styleId)),
+      new Set(['empathy', 'idea', 'together']),
+      profile.id,
+    )
+    for (const choice of profile.choices) {
+      assert.ok(choice.reply.length >= 15, `${profile.id}/${choice.id}`)
+    }
+    const assetPath = scene.image.replace(/^\/(?:study-app\/)?/, '')
+    await access(new URL(`../public/${assetPath}`, import.meta.url))
+  }
+})
+
+test('任意のルート一覧は3候補を提示し、同行者を先頭にしながら候補を循環する', () => {
+  const seenAlternatives = new Set()
+  for (let step = 0; step < 10; step += 1) {
+    const options = afterSchoolBranchOptions({ step, currentStudentId: 'kaito' })
+    assert.equal(options.length, 3)
+    assert.equal(options[0].studentId, 'kaito')
+    assert.equal(new Set(options.map((option) => option.id)).size, 3)
+    options.slice(1).forEach((option) => seenAlternatives.add(option.studentId))
+  }
+  assert.equal(seenAlternatives.size, 9)
+})
+
+test('声掛けは全て報酬を得て、性格一致・絆LV・思い出アイテムで伸びる', () => {
+  const profile = AFTER_SCHOOL_BRANCHES.find((item) => item.studentId === 'mio')
+  const preferred = profile.choices.find((choice) => choice.styleId === profile.preferredStyleId)
+  const other = profile.choices.find((choice) => choice.styleId !== profile.preferredStyleId)
+  const matched = resolveAfterSchoolReward({ bonds: {}, branchId: profile.id, choiceId: preferred.id })
+  const unmatched = resolveAfterSchoolReward({ bonds: {}, branchId: profile.id, choiceId: other.id })
+
+  assert.equal(matched.bondPointsGained, 2)
+  assert.equal(unmatched.bondPointsGained, 1)
+  assert.ok(matched.xpGained > unmatched.xpGained)
+
+  const skillUnlock = resolveAfterSchoolReward({
+    bonds: { mio: { points: 2, visits: 1 } },
+    branchId: profile.id,
+    choiceId: preferred.id,
+  })
+  assert.equal(skillUnlock.unlockedSkill.id, profile.skill.id)
+  assert.equal(afterSchoolBattleSkill('mio', { mio: skillUnlock.nextBondEntry }).id, profile.skill.id)
+
+  const itemUnlock = resolveAfterSchoolReward({
+    bonds: { mio: { points: 7, visits: 3 } },
+    branchId: profile.id,
+    choiceId: other.id,
+  })
+  assert.equal(itemUnlock.unlockedItem.id, profile.item.id)
+  const withItem = resolveAfterSchoolReward({
+    bonds: { mio: itemUnlock.nextBondEntry },
+    branchId: profile.id,
+    choiceId: other.id,
+  })
+  assert.equal(withItem.itemXpBonus, profile.item.xpBonus)
+  assert.equal(withItem.xpGained, 6 + 3 * 2 + profile.item.xpBonus)
+  assert.ok(withItem.xpGained > itemUnlock.xpGained)
+})
+
+test('関係特技は実HP・実ダメージだけに作用し、正答数と決着条件を変えない', () => {
+  const powerSkill = AFTER_SCHOOL_BRANCHES.find((item) => item.studentId === 'ren').skill
+  const healSkill = AFTER_SCHOOL_BRANCHES.find((item) => item.studentId === 'mio').skill
+  const guardSkill = AFTER_SCHOOL_BRANCHES.find((item) => item.studentId === 'haru').skill
+  const answers = ['wrong', 'correct', 'correct', 'correct', 'correct']
+  const normal = resolveBattleState({ answers, total: 5, tacticId: 'combo' })
+  const powered = resolveBattleState({ answers, total: 5, tacticId: 'combo', bondSkill: powerSkill })
+  const healed = resolveBattleState({ answers, total: 5, tacticId: 'combo', bondSkill: healSkill })
+  const guarded = resolveBattleState({ answers: ['wrong'], total: 5, tacticId: 'combo', bondSkill: guardSkill })
+  const unguarded = resolveBattleState({ answers: ['wrong'], total: 5, tacticId: 'combo' })
+
+  assert.equal(powered.correct, normal.correct)
+  assert.equal(powered.misses, normal.misses)
+  assert.equal(powered.enemyHp, normal.enemyHp)
+  assert.ok(powered.bondBonusDamage > 0)
+  assert.ok(powered.damageDealt > normal.damageDealt)
+  assert.ok(healed.bondHealing > 0)
+  assert.ok(guarded.damageTaken < unguarded.damageTaken)
+
+  const lost = resolveBattleState({
+    answers: Array(5).fill('wrong'),
+    total: 5,
+    tacticId: 'combo',
+    bondSkill: guardSkill,
+  })
+  assert.equal(lost.heroDefeated, true)
+  assert.equal(lost.heroCurrentHp, 0)
+})
+
+test('放課後の関係と日常進行は進捗コードで往復し、不正値を拒否する', () => {
+  const afterSchoolBonds = { mio: { points: 9, visits: 4 }, kaito: { points: 3, visits: 2 } }
+  const restored = decodeProgress(encodeProgress({
+    battleStoryStep: 17,
+    battleStoryLastDay: 20_000,
+    afterSchoolBonds,
+  }))
+  assert.equal(restored.battleStoryStep, 17)
+  assert.equal(restored.battleStoryLastDay, 20_000)
+  assert.deepEqual(restored.afterSchoolBonds, afterSchoolBonds)
+  assert.equal(isValidAfterSchoolBonds(restored.afterSchoolBonds), true)
+  assert.equal(isValidAfterSchoolBonds({ mio: { points: -1, visits: 0 } }), false)
+  assert.throws(
+    () => decodeProgress(encodeProgress({ battleStoryStep: -1 })),
+    /battleStoryStep/,
+  )
+  assert.throws(
+    () => decodeProgress(encodeProgress({ battleStoryLastDay: -1 })),
+    /battleStoryLastDay/,
+  )
+})
+
+test('放課後報酬は一度だけ原子的に確定し、正答・SRS・分析値へ混ぜない', () => {
+  const original = useStore.getState()
+  const profile = AFTER_SCHOOL_BRANCHES.find((item) => item.studentId === 'mio')
+  const preferred = profile.choices.find((choice) => choice.styleId === profile.preferredStyleId)
+  const srs = { sample: { box: 2, correct: 3, wrong: 1, due: 10, last: 9 } }
+  try {
+    useStore.setState({
+      battleStoryStep: 40,
+      afterSchoolBonds: { mio: { points: 2, visits: 1 } },
+      srs,
+      stats: { ...original.stats, xp: 100, answered: 12, correct: 9 },
+    })
+    const reward = useStore.getState().completeAfterSchoolRoute({
+      step: 40,
+      branchId: profile.id,
+      choiceId: preferred.id,
+    })
+    const after = useStore.getState()
+    assert.equal(reward.unlockedSkill.id, profile.skill.id)
+    assert.equal(after.battleStoryStep, 41)
+    assert.equal(after.stats.xp, 100 + reward.xpGained)
+    assert.equal(after.stats.answered, 12)
+    assert.equal(after.stats.correct, 9)
+    assert.strictEqual(after.srs, srs)
+    assert.deepEqual(after.afterSchoolBonds.mio, reward.nextBondEntry)
+    assert.equal(useStore.getState().completeAfterSchoolRoute({
+      step: 40,
+      branchId: profile.id,
+      choiceId: preferred.id,
+    }), null)
+    assert.equal(useStore.getState().stats.xp, 100 + reward.xpGained)
+  } finally {
+    useStore.setState(original, true)
+  }
+})
+
+test('対決結果は毎回3つの放課後ルートへ進み、特技・関係・報酬を全保存経路へ通す', async () => {
+  const [app, result, interlude, map, quiz, store, cloud] = await Promise.all([
+    readFile(new URL('../src/App.jsx', import.meta.url), 'utf8'),
+    readFile(new URL('../src/screens/SessionResult.jsx', import.meta.url), 'utf8'),
+    readFile(new URL('../src/screens/AfterSchoolInterlude.jsx', import.meta.url), 'utf8'),
+    readFile(new URL('../src/screens/EnglishMap.jsx', import.meta.url), 'utf8'),
+    readFile(new URL('../src/screens/VocabQuiz.jsx', import.meta.url), 'utf8'),
+    readFile(new URL('../src/store/useStore.js', import.meta.url), 'utf8'),
+    readFile(new URL('../src/lib/cloudSync.js', import.meta.url), 'utf8'),
+  ])
+
+  assert.match(app, /afterSchoolChronicle: AfterSchoolChronicleScreen/)
+  assert.match(app, /afterSchoolInterlude: AfterSchoolInterludeScreen/)
+  assert.match(result, /放課後の行き先を選ぶ/)
+  assert.match(result, /onClick=\{continueAfterBattle\}/)
+  assert.match(result, /navigate\('afterSchoolInterlude'/)
+  assert.doesNotMatch(result, /shouldContinueToAfterSchoolInterlude/)
+  assert.doesNotMatch(result, /continueToInterlude/)
+  assert.match(result, /battleReport\.bondSummary/)
+  assert.match(interlude, /title="放課後ルートを選ぶ"/)
+  assert.match(interlude, /afterSchoolBranchOptions/)
+  assert.match(interlude, /useState\(null\)/)
+  assert.match(interlude, /profile\.choices\.map/)
+  assert.match(interlude, /どの声掛けでも絆とXPを得られ/)
+  assert.match(interlude, /completeAfterSchoolRoute/)
+  assert.match(interlude, /navigate\('characterTalk'/)
+  assert.match(map, /function AfterSchoolBondBoard/)
+  assert.match(map, /bondSkillId:\s*battleBondSkill/)
+  assert.doesNotMatch(map, /interludeRoll:\s*Math\.random\(\)/)
+  assert.match(map, /対決後は3つの放課後ルートへ分岐/)
+  assert.match(quiz, /afterSchoolSkillById/)
+  assert.match(quiz, /bondSkill:\s*battleBondSkill/)
+  assert.match(store, /completeAfterSchoolRoute/)
+  assert.match(store.slice(store.indexOf('partialize:')), /battleStoryLastDay:\s*st\.battleStoryLastDay/)
+  assert.match(store.slice(store.indexOf('partialize:')), /afterSchoolBonds:\s*st\.afterSchoolBonds/)
+  assert.match(cloud, /battleStoryLastDay:\s*normalizeBattleStoryLastDay/)
+  assert.match(cloud, /afterSchoolBonds:\s*normalizeAfterSchoolBonds/)
+})
+
+test('現在の放課後場面は保存済み進行順に循環し、校内へ戻る履歴も安全に畳む', () => {
   assert.deepEqual(
     BATTLE_DAILY_SCENES.map((scene, step) => afterSchoolSceneForStep(step).id),
     BATTLE_DAILY_SCENES.map((scene) => scene.id),
@@ -54,60 +292,38 @@ test('放課後日誌は12場面を保存済み進行順に循環する', () => 
   assert.equal(afterSchoolEpisodeNumber(0), 1)
   assert.equal(normalizeBattleStoryStep(-1), 0)
   assert.equal(normalizeBattleStoryStep(MAX_BATTLE_STORY_STEP + 1), MAX_BATTLE_STORY_STEP)
-})
 
-test('放課後日誌の進行は進捗コードで往復し、不正値を拒否する', () => {
-  const restored = decodeProgress(encodeProgress({ battleStoryStep: 17 }))
-  assert.equal(restored.battleStoryStep, 17)
-  assert.throws(
-    () => decodeProgress(encodeProgress({ battleStoryStep: -1 })),
-    /battleStoryStep/,
-  )
-})
-
-test('対決結果から採点なしの日常パートを経てゲーム画面へ戻る', async () => {
-  const [app, result, interlude, map, store, cloud] = await Promise.all([
-    readFile(new URL('../src/App.jsx', import.meta.url), 'utf8'),
-    readFile(new URL('../src/screens/SessionResult.jsx', import.meta.url), 'utf8'),
-    readFile(new URL('../src/screens/AfterSchoolInterlude.jsx', import.meta.url), 'utf8'),
-    readFile(new URL('../src/screens/EnglishMap.jsx', import.meta.url), 'utf8'),
-    readFile(new URL('../src/store/useStore.js', import.meta.url), 'utf8'),
-    readFile(new URL('../src/lib/cloudSync.js', import.meta.url), 'utf8'),
-  ])
-
-  assert.match(app, /afterSchoolChronicle: AfterSchoolChronicleScreen/)
-  assert.match(app, /afterSchoolInterlude: AfterSchoolInterludeScreen/)
-  assert.match(result, /放課後のつづきへ/)
-  assert.match(result, /navigate\('afterSchoolInterlude'/)
-  assert.match(interlude, /episode\.choices\.map/)
-  assert.match(interlude, /採点なし・学習評価には影響しません/)
-  assert.match(interlude, /advanceBattleStory\(\)/)
-  assert.match(interlude, /returnToAfterSchoolChronicle/)
-  assert.match(map, /AFTER_SCHOOL_CHRONICLE\.keyVisual/)
-  assert.match(store.slice(store.indexOf('partialize:')), /battleStoryStep:\s*st\.battleStoryStep/)
-  assert.match(cloud, /battleStoryStep:\s*normalizeBattleStoryStep/)
-})
-
-test('日誌から校内へ戻ると対決画面の履歴を捨て、次の戻る操作はホームへ進む', () => {
-  useStore.setState({
-    screen: 'afterSchoolInterlude',
-    params: { fromBattle: true },
-    stack: [
+  const original = useStore.getState()
+  try {
+    useStore.setState({
+      screen: 'afterSchoolInterlude',
+      params: { fromBattle: true },
+      stack: [
+        { screen: 'portal', params: {} },
+        { screen: 'home', params: {} },
+        { screen: 'afterSchoolChronicle', params: {} },
+        { screen: 'vocabQuiz', params: {} },
+        { screen: 'sessionResult', params: {} },
+      ],
+    })
+    useStore.getState().returnToAfterSchoolChronicle()
+    assert.equal(useStore.getState().screen, 'afterSchoolChronicle')
+    assert.deepEqual(useStore.getState().stack, [
       { screen: 'portal', params: {} },
       { screen: 'home', params: {} },
-      { screen: 'afterSchoolChronicle', params: {} },
-      { screen: 'vocabQuiz', params: {} },
-      { screen: 'sessionResult', params: {} },
-    ],
-  })
+    ])
+    useStore.getState().back()
+    assert.equal(useStore.getState().screen, 'home')
+  } finally {
+    useStore.setState(original, true)
+  }
+})
 
-  useStore.getState().returnToAfterSchoolChronicle()
-  assert.equal(useStore.getState().screen, 'afterSchoolChronicle')
-  assert.deepEqual(useStore.getState().stack, [
-    { screen: 'portal', params: {} },
-    { screen: 'home', params: {} },
-  ])
-
-  useStore.getState().back()
-  assert.equal(useStore.getState().screen, 'home')
+test('絆メーターは次LVまでの進捗と特技・アイテム解放を返す', () => {
+  const state = afterSchoolBondState({ kaito: { points: 8, visits: 5 } }, 'kaito')
+  assert.equal(state.level.level, 3)
+  assert.equal(state.skillUnlocked, true)
+  assert.equal(state.itemUnlocked, true)
+  assert.equal(state.pointsToNext, 7)
+  assert.equal(state.visits, 5)
 })

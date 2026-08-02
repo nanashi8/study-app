@@ -50,7 +50,7 @@ export function BottomNav() {
   const active = SCREEN_TO_TAB[screen] ?? 'home'
 
   return (
-    <nav className="shrink-0 border-t border-brand-100 bg-white/95 backdrop-blur pb-[env(safe-area-inset-bottom)]">
+    <nav className="shrink-0 border-t border-slate-200 bg-white pb-[env(safe-area-inset-bottom)]">
       <div className="flex items-stretch justify-around px-1">
         {TABS.map(({ key, label, screen: target, Icon }) => {
           const on = active === key
@@ -59,14 +59,18 @@ export function BottomNav() {
               key={key}
               onClick={() => (target === 'home' ? goHome() : navigate(target))}
               className={cx(
-                'flex flex-1 flex-col items-center gap-0.5 py-2 transition-colors select-none',
-                on ? 'text-brand-600' : 'text-ink/35',
+                'flex min-h-14 flex-1 flex-col items-center justify-center gap-0.5 py-1.5 transition-colors select-none',
+                on ? 'text-brand-700' : 'text-ink/55',
               )}
             >
-              <span className={cx('transition-transform', on && '-translate-y-0.5 scale-110')}>
-                <Icon size={24} strokeWidth={on ? 2.4 : 2} />
+              <span className={cx(
+                'grid h-7 w-11 place-items-center rounded-xl transition-colors',
+                on && 'bg-brand-100',
+              )}
+              >
+                <Icon size={22} strokeWidth={on ? 2.4 : 2} />
               </span>
-              <span className={cx('text-[10px]', on ? 'font-extrabold' : 'font-bold')}>{label}</span>
+              <span className={cx('text-xs', on ? 'font-extrabold' : 'font-bold')}>{label}</span>
             </button>
           )
         })}

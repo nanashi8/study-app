@@ -1,4 +1,5 @@
 import { publicAssetUrl } from './publicAssetUrl.js'
+import { SCHOOL_SUBJECT_NAMES } from './schoolSubjects.js'
 
 export const BATTLE_EMOTION_STATES = [
   { id: 'idle', label: '待機', emoji: '🌙', group: 'calm' },
@@ -33,6 +34,10 @@ const EMOTION_BY_ID = new Map(
 
 export const DEFAULT_BATTLE_STUDENT_ID = 'mio'
 
+// 先生ライバルの担当教科と照合する、物語上の通知表。
+// ユーザー本人の正答率・診断・SRSとは完全に分離し、キャラクター相性だけに使う。
+export const BATTLE_GRADE_SUBJECTS = SCHOOL_SUBJECT_NAMES
+
 export const BATTLE_STUDENTS = [
   {
     id: 'mio',
@@ -42,6 +47,7 @@ export const BATTLE_STUDENTS = [
     emoji: '🎼',
     trait: '気持ちを音に変える、やさしい旋律使い。',
     accent: '#ec4899',
+    grades: { 国語: 4, 英語: 4, 数学: 3, 物理: 3, 化学: 3, 生物: 4, 地学: 3, 地理: 3, 日本史: 3, 世界史: 3, 古文: 4, 英コミュ: 5 },
   },
   {
     id: 'ren',
@@ -51,6 +57,7 @@ export const BATTLE_STUDENTS = [
     emoji: '✏️',
     trait: 'ひらめきを一筆で描く、放課後の作戦家。',
     accent: '#0ea5e9',
+    grades: { 国語: 4, 英語: 3, 数学: 4, 物理: 3, 化学: 3, 生物: 5, 地学: 5, 地理: 4, 日本史: 3, 世界史: 3, 古文: 4, 英コミュ: 3 },
   },
   {
     id: 'haru',
@@ -60,6 +67,7 @@ export const BATTLE_STUDENTS = [
     emoji: '📘',
     trait: '静かな観察眼で、答えへの道筋を読む。',
     accent: '#6366f1',
+    grades: { 国語: 5, 英語: 5, 数学: 4, 物理: 3, 化学: 3, 生物: 4, 地学: 3, 地理: 4, 日本史: 4, 世界史: 4, 古文: 5, 英コミュ: 4 },
   },
   {
     id: 'akari',
@@ -69,6 +77,7 @@ export const BATTLE_STUDENTS = [
     emoji: '🧪',
     trait: '失敗も実験データに変える、前向きな発明家。',
     accent: '#f97316',
+    grades: { 国語: 3, 英語: 3, 数学: 5, 物理: 5, 化学: 5, 生物: 4, 地学: 4, 地理: 3, 日本史: 3, 世界史: 3, 古文: 2, 英コミュ: 3 },
   },
   {
     id: 'kaito',
@@ -78,6 +87,7 @@ export const BATTLE_STUDENTS = [
     emoji: '👟',
     trait: '考えるより一歩先へ。仲間を引っぱる俊足。',
     accent: '#10b981',
+    grades: { 国語: 3, 英語: 3, 数学: 4, 物理: 5, 化学: 3, 生物: 4, 地学: 3, 地理: 4, 日本史: 4, 世界史: 3, 古文: 3, 英コミュ: 3 },
   },
   {
     id: 'rei',
@@ -87,6 +97,7 @@ export const BATTLE_STUDENTS = [
     emoji: '📋',
     trait: '冷静な判断と小さな笑顔で作戦を整える。',
     accent: '#8b5cf6',
+    grades: { 国語: 4, 英語: 4, 数学: 4, 物理: 4, 化学: 4, 生物: 4, 地学: 4, 地理: 4, 日本史: 5, 世界史: 5, 古文: 4, 英コミュ: 4 },
   },
   {
     id: 'nao',
@@ -96,6 +107,7 @@ export const BATTLE_STUDENTS = [
     emoji: '🌍',
     trait: 'ことばの壁を楽しさに変えるムードメーカー。',
     accent: '#14b8a6',
+    grades: { 国語: 4, 英語: 5, 数学: 3, 物理: 3, 化学: 3, 生物: 3, 地学: 3, 地理: 5, 日本史: 4, 世界史: 4, 古文: 3, 英コミュ: 5 },
   },
   {
     id: 'tsubaki',
@@ -105,6 +117,7 @@ export const BATTLE_STUDENTS = [
     emoji: '⚔️',
     trait: '迷いを断ち切り、仲間の前に立つ守り手。',
     accent: '#dc2626',
+    grades: { 国語: 5, 英語: 3, 数学: 3, 物理: 4, 化学: 3, 生物: 3, 地学: 3, 地理: 4, 日本史: 5, 世界史: 4, 古文: 5, 英コミュ: 3 },
     hairProfile: {
       color: 'dark-purple-black',
       texture: 'straight',
@@ -120,6 +133,7 @@ export const BATTLE_STUDENTS = [
     emoji: '💻',
     trait: '好奇心とコードで、校内の謎を解析する。',
     accent: '#06b6d4',
+    grades: { 国語: 3, 英語: 4, 数学: 5, 物理: 5, 化学: 4, 生物: 4, 地学: 5, 地理: 3, 日本史: 3, 世界史: 4, 古文: 2, 英コミュ: 4 },
   },
   {
     id: 'yuu',
@@ -129,6 +143,7 @@ export const BATTLE_STUDENTS = [
     emoji: '🖋️',
     trait: '物語の結末を信じ、最後の一問まで諦めない。',
     accent: '#64748b',
+    grades: { 国語: 5, 英語: 4, 数学: 3, 物理: 3, 化学: 3, 生物: 4, 地学: 3, 地理: 4, 日本史: 4, 世界史: 5, 古文: 5, 英コミュ: 4 },
   },
 ].map((student) => ({
   ...student,
@@ -362,52 +377,6 @@ export const BATTLE_DAILY_SCENES = [
       { studentId: 'nao', emotionId: 'playful' },
       { studentId: 'noa', emotionId: 'curious' },
       { studentId: 'tsubaki', emotionId: 'gentle' },
-    ],
-  },
-  {
-    id: 'park',
-    name: 'カードピクニック',
-    shortName: '公園',
-    emoji: '🃏',
-    time: '14:20',
-    contextId: 'weekend',
-    outfitId: 'weekend',
-    image: publicAssetUrl('/assets/battle/scenes/park.webp'),
-    description: '休日の私服で一枚のシートを囲み、三人とも同じシンボルカードの一手に注目。',
-    episode: {
-      title: '次の一手を一緒に',
-      speakerId: 'haru',
-      openingEmotionId: 'thinking',
-      situation: '公園のピクニックで、ツバキ・ナオ・ハルは一つのカードゲームを囲んでいます。ハルは手札と中央の並びを見比べ、あなたにも相談しました。',
-      opening: '「この星を先に出すか、みんなの印がそろうまで待つか。君ならどうする？」',
-      choices: [
-        {
-          id: 'park-empathy',
-          styleId: 'empathy',
-          label: '「迷うよね。急がず一緒に見よう」',
-          reply: '「ありがとう。勝ち負けだけじゃなく、考える時間もみんなで楽しめそうだ」',
-          emotionId: 'relieved',
-        },
-        {
-          id: 'park-idea',
-          styleId: 'idea',
-          label: '「中央と同じ印からつなげよう」',
-          reply: '「なるほど、全員が同じ並びを追えるね。ナオとツバキにも見せてみる」',
-          emotionId: 'curious',
-        },
-        {
-          id: 'park-together',
-          styleId: 'together',
-          label: '「私も輪に入って、次を考えるよ」',
-          reply: '「うれしいな。では四人で同じカードを見ながら、もう一局やろう」',
-          emotionId: 'delighted',
-        },
-      ],
-    },
-    cast: [
-      { studentId: 'tsubaki', emotionId: 'focused' },
-      { studentId: 'nao', emotionId: 'playful' },
-      { studentId: 'haru', emotionId: 'curious' },
     ],
   },
   {
@@ -768,6 +737,125 @@ export function battleStudentById(id) {
   return STUDENT_BY_ID.get(normalizeBattleStudentId(id))
 }
 
+export const BATTLE_TEACHER_AFFINITIES = [
+  {
+    id: 'excellent',
+    minGrade: 5,
+    label: '相性◎',
+    gradeLabel: '得意',
+    emoji: '✨',
+    color: '#d97706',
+    damageBonusPercent: 20,
+  },
+  {
+    id: 'good',
+    minGrade: 4,
+    label: '相性○',
+    gradeLabel: '好相性',
+    emoji: '🌟',
+    color: '#059669',
+    damageBonusPercent: 10,
+  },
+  {
+    id: 'standard',
+    minGrade: 3,
+    label: '相性＝',
+    gradeLabel: '標準',
+    emoji: '📘',
+    color: '#4f46e5',
+    damageBonusPercent: 0,
+  },
+  {
+    id: 'challenge',
+    minGrade: 1,
+    label: '相性△',
+    gradeLabel: '挑戦',
+    emoji: '🧭',
+    color: '#64748b',
+    damageBonusPercent: 0,
+  },
+]
+
+// 先生側の大分類を、通知表の12科目へ正直に対応づける。
+// 専用評定がない実技・校務系と総合試験は、存在しない成績を作らず12科目平均で判定する。
+const BATTLE_TEACHER_GRADE_SUBJECTS = Object.freeze({
+  社会: Object.freeze(['地理', '日本史', '世界史']),
+  理科: Object.freeze(['物理', '化学', '生物', '地学']),
+  音楽: BATTLE_GRADE_SUBJECTS,
+  体育: BATTLE_GRADE_SUBJECTS,
+  技術: BATTLE_GRADE_SUBJECTS,
+  美術: BATTLE_GRADE_SUBJECTS,
+  総合: BATTLE_GRADE_SUBJECTS,
+  卒業試験: BATTLE_GRADE_SUBJECTS,
+})
+
+function battleTeacherGradeSubjects(teacherSubject) {
+  if (BATTLE_GRADE_SUBJECTS.includes(teacherSubject)) return [teacherSubject]
+  if (BATTLE_TEACHER_GRADE_SUBJECTS[teacherSubject]) {
+    return BATTLE_TEACHER_GRADE_SUBJECTS[teacherSubject]
+  }
+  return null
+}
+
+function battleGradeBasisLabel(subjects) {
+  if (!subjects) return '担当教科'
+  if (subjects.length === BATTLE_GRADE_SUBJECTS.length) return '12科目平均'
+  if (subjects.length === 1) return subjects[0]
+  return `${subjects.join('・')}平均`
+}
+
+export function battleStudentSubjectGrade(studentId, teacherSubject) {
+  const student = battleStudentById(studentId)
+  const subjects = battleTeacherGradeSubjects(teacherSubject)
+  if (!subjects) return null
+  const total = subjects.reduce((sum, subject) => sum + student.grades[subject], 0)
+  return Math.round(total / subjects.length)
+}
+
+export function battleStudentBestSubjects(studentId) {
+  const student = battleStudentById(studentId)
+  const bestGrade = Math.max(...BATTLE_GRADE_SUBJECTS.map((subject) => student.grades[subject]))
+  return BATTLE_GRADE_SUBJECTS.filter((subject) => student.grades[subject] === bestGrade)
+}
+
+export function battleTeacherAffinity(studentId, teacherSubject) {
+  const gradeSubjects = battleTeacherGradeSubjects(teacherSubject)
+  const grade = battleStudentSubjectGrade(studentId, teacherSubject)
+  if (grade === null) {
+    return {
+      id: 'inactive',
+      active: false,
+      subject: null,
+      grade: null,
+      label: '相性待機',
+      gradeLabel: '先生戦で発動',
+      emoji: '🏫',
+      color: '#64748b',
+      damageBonusPercent: 0,
+      bonusLabel: '担当教科で判定',
+      gradeSubjects: [],
+      gradeBasisLabel: '担当教科',
+      summary: '先生戦では、同行者の担当教科評定に応じてサポートが発動します。',
+    }
+  }
+
+  const tier = BATTLE_TEACHER_AFFINITIES.find((item) => grade >= item.minGrade)
+    ?? BATTLE_TEACHER_AFFINITIES.at(-1)
+  const bonusLabel = tier.damageBonusPercent > 0
+    ? `正解攻撃 +${tier.damageBonusPercent}%`
+    : '追加補正なし'
+  return {
+    ...tier,
+    active: true,
+    subject: teacherSubject,
+    grade,
+    gradeSubjects: [...gradeSubjects],
+    gradeBasisLabel: battleGradeBasisLabel(gradeSubjects),
+    bonusLabel,
+    summary: `${teacherSubject}の先生 × ${battleGradeBasisLabel(gradeSubjects)} 評定${grade}・${tier.gradeLabel}。${bonusLabel}。`,
+  }
+}
+
 export function battleDailySceneById(id) {
   return DAILY_SCENE_BY_ID.get(id) ?? BATTLE_DAILY_SCENES[0]
 }
@@ -805,7 +893,8 @@ export const BATTLE_RIVAL_GROUPS = [
   { id: 'stem', name: '理数・科学棟', emoji: '🧪', accent: '#0ea5e9' },
   { id: 'arts', name: '芸術・表現棟', emoji: '🎨', accent: '#ec4899' },
   { id: 'campus', name: '体育・校務棟', emoji: '🏫', accent: '#10b981' },
-  { id: 'mystery', name: '七不思議・最深部', emoji: '🌙', accent: '#a855f7' },
+  // `mystery` は既存アセット参照との互換用ID。画面上の設定は学園都市の運営者へ改める。
+  { id: 'mystery', name: '学園都市・運営評議会', emoji: '🏛️', accent: '#a855f7' },
 ]
 
 const RIVAL_DEFINITIONS = [
@@ -853,16 +942,16 @@ const RIVAL_DEFINITIONS = [
   ['principal-albert', 'アルバート校長', '校長・学びの紳士', 'campus'],
   ['caretaker-tetsu', '用務員テツ', '校務員・鍵束の守護者', 'campus'],
 
-  ['ghost-prefect', '幽霊風紀委員', '七不思議・消えない出席簿', 'mystery'],
-  ['clock-keeper', '時計塔の番人', '七不思議・止まった放課後', 'mystery'],
-  ['ink-phantom', 'インクの幻影', '七不思議・黒い答案', 'mystery'],
-  ['archive-mask', '書庫の仮面', '七不思議・記憶を読む者', 'mystery'],
-  ['violet-alchemist', '紫苑の錬金教師', '最深部・感情結晶の研究者', 'mystery'],
-  ['mirror-twin', '鏡廊の双子', '七不思議・答えを反転する影', 'mystery'],
-  ['roof-oracle', '屋上の託宣者', '七不思議・星風の予言者', 'mystery'],
-  ['basement-mechanic', '地下機関の整備士', '七不思議・校舎心臓の番人', 'mystery'],
-  ['festival-magician', '文化祭の魔術師', '七不思議・終わらない前夜祭', 'mystery'],
-  ['shadow-headmaster', '影の学園長', '最終試験・黄昏校舎の主', 'mystery'],
+  ['ghost-prefect', '白銀玲司', '学区管理官・校内規律と生徒安全の責任者', 'mystery'],
+  ['clock-keeper', '時任鐘司', '街区管理官・公共施設と時刻運用の統括', 'mystery'],
+  ['ink-phantom', '墨谷 絢', '教育委員長・試験制度と学習環境の責任者', 'mystery'],
+  ['archive-mask', '蔵前史織', '市立文書館長・学校と街の記録管理者', 'mystery'],
+  ['violet-alchemist', '紫苑綾香', '市研究センター長・教育技術の審査責任者', 'mystery'],
+  ['mirror-twin', '鏡宮 澪', '学校法人監査役・校務と会計の監督者', 'mystery'],
+  ['roof-oracle', '天城星羅', '街区防災局長・気象観測と避難計画の責任者', 'mystery'],
+  ['basement-mechanic', '黒鉄 基', '施設管理部長・校舎と街区設備の保守責任者', 'mystery'],
+  ['festival-magician', '祭屋 景', '商店街理事長・地域行事と連携事業の運営者', 'mystery'],
+  ['shadow-headmaster', '久世総司', '学校法人理事長・学園と街を結ぶ最高責任者', 'mystery'],
 ]
 
 export const BATTLE_RIVALS = RIVAL_DEFINITIONS.map(
@@ -876,6 +965,51 @@ export const BATTLE_RIVALS = RIVAL_DEFINITIONS.map(
 )
 
 const RIVAL_BY_ID = new Map(BATTLE_RIVALS.map((rival) => [rival.id, rival]))
+
+// 通常戦の人物にも担当教科を持たせ、表示上は先生なのに相性が発動しない状態を防ぐ。
+// 実技・校務・評議会は通知表に専用科目がないため、相性側で12科目平均へ変換する。
+const BATTLE_RIVAL_SUBJECT_GROUPS = Object.freeze({
+  英語: ['english-kanda'],
+  国語: ['literature-murasaki', 'librarian-kisaragi', 'debate-kuroda', 'calligraphy-mikage', 'drama-orihara', 'counselor-madoka'],
+  日本史: ['history-sakaki'],
+  地理: ['geography-nanase'],
+  世界史: ['social-takamine'],
+  英コミュ: ['international-elena'],
+  数学: ['math-takagi', 'robotics-dan', 'computing-makino', 'statistics-yukari'],
+  物理: ['physics-aoi', 'engineering-genda'],
+  化学: ['chemistry-shirabe', 'lab-sae'],
+  生物: ['biology-mori', 'nurse-hinata'],
+  地学: ['astronomy-tsukishiro'],
+  音楽: ['piano-ayane', 'choir-kiryu', 'brass-shindo', 'dance-ran'],
+  美術: ['art-kurose', 'sculpture-haku', 'photo-reika', 'film-ryuji', 'design-maya', 'crafts-gen'],
+  体育: ['pe-go', 'swim-kai', 'kendo-jin', 'track-hayate', 'soccer-shun'],
+  技術: ['caretaker-tetsu'],
+  総合: [
+    'vice-soma',
+    'principal-albert',
+    'ghost-prefect',
+    'clock-keeper',
+    'ink-phantom',
+    'archive-mask',
+    'violet-alchemist',
+    'mirror-twin',
+    'roof-oracle',
+    'basement-mechanic',
+    'festival-magician',
+    'shadow-headmaster',
+  ],
+})
+
+const BATTLE_RIVAL_SUBJECT_BY_ID = new Map(
+  Object.entries(BATTLE_RIVAL_SUBJECT_GROUPS).flatMap(([subject, ids]) => (
+    ids.map((id) => [id, subject])
+  )),
+)
+
+export function battleRivalTeacherSubject(rivalId) {
+  return RIVAL_BY_ID.has(rivalId) ? BATTLE_RIVAL_SUBJECT_BY_ID.get(rivalId) ?? null : null
+}
+
 const RIVALS_BY_GROUP = new Map(
   BATTLE_RIVAL_GROUPS.map((group) => [
     group.id,
@@ -912,6 +1046,20 @@ export function battleRivalForEncounter(encounter, seed = 0) {
   const pool = RIVALS_BY_GROUP.get(groupId) ?? BATTLE_RIVALS
   const key = `${encounter?.id ?? encounter?.name ?? 'school'}:${seed}`
   return pool[stableBattleHash(key) % pool.length]
+}
+
+// 章末では保存互換用の一般ライバルIDを維持しつつ、表示上の人物だけを
+// 実際の担当教師へ統一する。これにより準備・戦闘・結果で別人の画像や名前が出ない。
+export function battleOpponentForEncounter(encounter, rival) {
+  const fallback = rival ?? battleRivalForEncounter(encounter)
+  if (!encounter?.isTeacher) return fallback
+  return {
+    ...fallback,
+    name: encounter.name,
+    title: `${encounter.teacherSubject}担当・先生ライバル`,
+    isTeacher: true,
+    teacherId: encounter.id,
+  }
 }
 
 const BATTLE_SITUATION_MARGIN = 10

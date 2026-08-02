@@ -12,6 +12,11 @@ import {
   isValidBattleTraitInvestments,
 } from './battleTraits.js'
 import { MAX_BATTLE_STORY_STEP } from './afterSchoolStory.js'
+import {
+  isValidAfterSchoolBonds,
+  normalizeAfterSchoolBonds,
+} from './afterSchoolBonds.js'
+import { normalizeVocabHistory } from './vocabHistory.js'
 
 const CODE_VERSION = 1
 const PREFIX = 'EQ1-' // EigoQuest v1。先頭でアプリ/バージョンを判別する。
@@ -31,6 +36,7 @@ export function buildPayload(state) {
     kotenCultureSrs: state.kotenCultureSrs,
     kotenInterpretationSrs: state.kotenInterpretationSrs,
     myList: state.myList,
+    vocabHistory: normalizeVocabHistory(state.vocabHistory),
     myGrammarList: state.myGrammarList,
     writingProgress: state.writingProgress,
     kotenWordList: state.kotenWordList,
@@ -52,6 +58,8 @@ export function buildPayload(state) {
     battleStudentId: state.battleStudentId,
     battleTraitInvestments: state.battleTraitInvestments,
     battleStoryStep: state.battleStoryStep,
+    battleStoryLastDay: state.battleStoryLastDay,
+    afterSchoolBonds: normalizeAfterSchoolBonds(state.afterSchoolBonds),
     portalOrder: state.portalOrder,
     portalHidden: state.portalHidden,
     stats: state.stats,
@@ -98,11 +106,13 @@ export function decodeProgress(code) {
     'learningAnalytics',
     'writingProgress',
     'battleTraitInvestments',
+    'afterSchoolBonds',
     'stats',
     'settings',
   ]
   const arrayFields = [
     'myList',
+    'vocabHistory',
     'myGrammarList',
     'kotenWordList',
     'kotenGrammarList',
@@ -190,6 +200,22 @@ export function decodeProgress(code) {
     )
   ) {
     throw new Error('コードの battleStoryStep が不正です。')
+  }
+  if (
+    'battleStoryLastDay' in payload
+    && payload.battleStoryLastDay !== null
+    && (
+      !Number.isSafeInteger(payload.battleStoryLastDay)
+      || payload.battleStoryLastDay < 0
+    )
+  ) {
+    throw new Error('コードの battleStoryLastDay が不正です。')
+  }
+  if (
+    'afterSchoolBonds' in payload
+    && !isValidAfterSchoolBonds(payload.afterSchoolBonds)
+  ) {
+    throw new Error('コードの afterSchoolBonds が不正です。')
   }
   if (
     'diagnosticAttempt' in payload

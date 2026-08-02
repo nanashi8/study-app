@@ -25,7 +25,18 @@ import {
   raiseBattleTrait,
   resetBattleStudentTraits,
 } from '../lib/battleTraits.js'
-import { normalizeBattleStoryStep } from '../lib/afterSchoolStory.js'
+import {
+  normalizeBattleStoryLastDay,
+  normalizeBattleStoryStep,
+} from '../lib/afterSchoolStory.js'
+import {
+  normalizeAfterSchoolBonds,
+  resolveAfterSchoolReward,
+} from '../lib/afterSchoolBonds.js'
+import {
+  normalizeVocabHistory,
+  prependVocabHistory,
+} from '../lib/vocabHistory.js'
 
 // ── 学習ロジックの定数 ──────────────────────────────────────────────
 // Leitner 式の間隔反復。box が上がるほど次に出る間隔（日数）が伸びる。
@@ -87,6 +98,7 @@ const DEFAULT_SETTINGS = {
   autoSpeak: true,
   dailyGoal: 20,
   revealAnswers: false, // 覚える/復習/マイ単語で、タップせず最初から意味・語源を表示する
+  battleUiMode: 'gaming', // 'simple' | 'gaming'。学習評価や戦闘計算は変えない
   bgmEnabled: true,
   bgmVolume: 0.35,
 }
@@ -99,6 +111,7 @@ const initialLearning = () => ({
   kotenCultureSrs: {}, // 古典常識の cultureId -> { box, ... }
   kotenInterpretationSrs: {}, // 古典短文の questionId -> { box, ... }
   myList: [], // [wordId]
+  vocabHistory: [], // 最近検索・参照・マイ単語登録した英単語ID（新しい順）
   myGrammarList: [], // [writingGrammarId] 英作文で保存した文法カード
   writingProgress: {}, // exerciseId -> { completed, lastText, lastMode, lastDay, bestWords, grammarIds }
   kotenWordList: [], // [古文単語id] 登録単語
@@ -117,9 +130,11 @@ const initialLearning = () => ({
   battleStars: 0, // バトル正解やXP変換で貯まる、演出スキン解放専用の放課後スター
   battleXpSpent: 0, // 放課後スターへ一度だけ変換済みの累計XP
   battleThemeId: BATTLE_THEMES[0].id,
-  battleStudentId: DEFAULT_BATTLE_STUDENT_ID, // 放課後ことば探検記へ同行するクラスメイト
+  battleStudentId: DEFAULT_BATTLE_STUDENT_ID, // 放課後の魔法と言葉へ同行するクラスメイト
   battleTraitInvestments: {}, // 生徒id -> 五つの星彩パラメータへ配分したポイント
-  battleStoryStep: 0, // 放課後日誌を読み終えた回数。学習評価とは独立
+  battleStoryStep: 0, // 日常パートを読み終えた回数。学習評価とは独立
+  battleStoryLastDay: null, // 日常パートを最後に表示した学習日。同日中の連続表示を防ぐ
+  afterSchoolBonds: {}, // 生徒id -> { points, visits }。放課後分岐で育つ関係性
   portalOrder: [...DEFAULT_CONTENT_ORDER], // ポータルのタイル並び順（コンテンツid配列）
   portalHidden: [], // ポータルで非表示にしたコンテンツid
   stats: freshStats(),
@@ -189,8 +204,10 @@ export function migratePersistedState(persistedState) {
   const state = { ...(persistedState ?? {}) }
   // v1 に保存されていた廃止済みコンテンツの状態を、初回起動時に取り除く。
   delete state.vnCleared
+  state.settings = { ...DEFAULT_SETTINGS, ...(state.settings ?? {}) }
   state.portalOrder = normalizeOrder(state.portalOrder)
   state.portalHidden = normalizeHidden(state.portalHidden)
+  state.vocabHistory = normalizeVocabHistory(state.vocabHistory)
   state.battleStars = normalizeBattleStars(state.battleStars)
   state.battleXpSpent = normalizeBattleXpSpent(
     state.battleXpSpent,
@@ -206,6 +223,8 @@ export function migratePersistedState(persistedState) {
     state.battleStars,
   )
   state.battleStoryStep = normalizeBattleStoryStep(state.battleStoryStep)
+  state.battleStoryLastDay = normalizeBattleStoryLastDay(state.battleStoryLastDay)
+  state.afterSchoolBonds = normalizeAfterSchoolBonds(state.afterSchoolBonds)
   return state
 }
 
@@ -427,17 +446,41 @@ export const useStore = create(
           }
         }),
 
-      toggleMyList: (wordId) =>
+      recordVocabHistory: (wordId) =>
         set((st) => ({
-          myList: st.myList.includes(wordId)
-            ? st.myList.filter((id) => id !== wordId)
-            : [...st.myList, wordId],
+          vocabHistory: prependVocabHistory(st.vocabHistory, [wordId]),
         })),
 
+      clearVocabHistory: () => set({ vocabHistory: [] }),
+
+      toggleMyList: (wordId) =>
+        set((st) => {
+          const saved = st.myList.includes(wordId)
+          return {
+            myList: saved
+              ? st.myList.filter((id) => id !== wordId)
+              : [...st.myList, wordId],
+            // 登録した単語は、詳細画面以外から保存しても辞書履歴へ出す。
+            vocabHistory: saved
+              ? st.vocabHistory
+              : prependVocabHistory(st.vocabHistory, [wordId]),
+          }
+        }),
+
       addManyToMyList: (ids) =>
-        set((st) => ({
-          myList: [...st.myList, ...ids.filter((id) => !st.myList.includes(id))],
-        })),
+        set((st) => {
+          const known = new Set(st.myList)
+          const added = []
+          for (const id of Array.isArray(ids) ? ids : []) {
+            if (typeof id !== 'string' || !id || known.has(id)) continue
+            known.add(id)
+            added.push(id)
+          }
+          return {
+            myList: [...st.myList, ...added],
+            vocabHistory: prependVocabHistory(st.vocabHistory, added),
+          }
+        }),
 
       toggleMyGrammar: (grammarId) =>
         set((st) => ({
@@ -726,6 +769,31 @@ export const useStore = create(
         set((st) => ({
           battleStoryStep: normalizeBattleStoryStep(st.battleStoryStep + 1),
         })),
+      completeAfterSchoolRoute: ({ step, branchId, choiceId } = {}) => {
+        const st = get()
+        const currentStep = normalizeBattleStoryStep(st.battleStoryStep)
+        // 表示時のstepと保存中のstepが一致するときだけ、XPと絆を一括確定する。
+        // 戻る・再読込・連打でも同じ放課後報酬を二重受取できない。
+        if (normalizeBattleStoryStep(step) !== currentStep) return null
+        const bonds = normalizeAfterSchoolBonds(st.afterSchoolBonds)
+        const reward = resolveAfterSchoolReward({ bonds, branchId, choiceId })
+        if (!reward) return null
+        set({
+          afterSchoolBonds: {
+            ...bonds,
+            [reward.studentId]: reward.nextBondEntry,
+          },
+          battleStoryStep: normalizeBattleStoryStep(currentStep + 1),
+          // 放課後XPは冒険者LVへ加えるが、正答数・SRS・診断結果には混ぜない。
+          stats: {
+            ...st.stats,
+            xp: Math.max(0, Math.floor(Number(st.stats?.xp) || 0)) + reward.xpGained,
+          },
+        })
+        return reward
+      },
+      markBattleStorySeen: (day) =>
+        set({ battleStoryLastDay: normalizeBattleStoryLastDay(day) }),
       // バトルの正答率(0-1)で生徒のポジションを上下させる。
       // fromPos / maxPos を渡すと、冒険者LVで解放済みの範囲内だけを移動する。
       recordBattle: (accuracy, fromPos = null, maxPos = null) =>
@@ -805,6 +873,7 @@ export const useStore = create(
           kotenCultureSrs: payload.kotenCultureSrs ?? {},
           kotenInterpretationSrs: payload.kotenInterpretationSrs ?? {},
           myList: payload.myList ?? [],
+          vocabHistory: normalizeVocabHistory(payload.vocabHistory),
           myGrammarList: payload.myGrammarList ?? [],
           writingProgress: payload.writingProgress ?? {},
           kotenWordList: payload.kotenWordList ?? [],
@@ -829,6 +898,8 @@ export const useStore = create(
             battleStars,
           ),
           battleStoryStep: normalizeBattleStoryStep(payload.battleStoryStep),
+          battleStoryLastDay: normalizeBattleStoryLastDay(payload.battleStoryLastDay),
+          afterSchoolBonds: normalizeAfterSchoolBonds(payload.afterSchoolBonds),
           portalOrder: normalizeOrder(payload.portalOrder),
           portalHidden: normalizeHidden(payload.portalHidden),
           stats,
@@ -850,6 +921,7 @@ export const useStore = create(
         kotenCultureSrs: st.kotenCultureSrs,
         kotenInterpretationSrs: st.kotenInterpretationSrs,
         myList: st.myList,
+        vocabHistory: st.vocabHistory,
         myGrammarList: st.myGrammarList,
         writingProgress: st.writingProgress,
         kotenWordList: st.kotenWordList,
@@ -871,6 +943,8 @@ export const useStore = create(
         battleStudentId: st.battleStudentId,
         battleTraitInvestments: st.battleTraitInvestments,
         battleStoryStep: st.battleStoryStep,
+        battleStoryLastDay: st.battleStoryLastDay,
+        afterSchoolBonds: st.afterSchoolBonds,
         portalOrder: st.portalOrder,
         portalHidden: st.portalHidden,
         stats: st.stats,

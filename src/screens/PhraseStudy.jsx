@@ -9,7 +9,7 @@ import { SpeakButton } from '../components/SpeakButton.jsx'
 import { LongSentenceTranslation } from '../components/LongSentenceTranslation.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { Button, ProgressBar, IconButton, Chip } from '../components/ui.jsx'
-import { Close, ArrowRight, Lightbulb, Eye, EyeOff, Link } from '../components/Icons.jsx'
+import { Close, ArrowRight, Lightbulb, Link } from '../components/Icons.jsx'
 
 const itemKind = (p) =>
   p.category === 'expression' ? { label: '表現', color: '#0ea5e9' }
@@ -22,7 +22,6 @@ export function PhraseStudyScreen() {
   const back = useStore((s) => s.back)
   const review = useStore((s) => s.review)
   const settings = useStore((s) => s.settings)
-  const setSetting = useStore((s) => s.setSetting)
 
   // 暗記モード：ONなら毎カード最初から意味・成り立ちを開いて見せる（単語学習と共通）。
   const revealAll = settings.revealAnswers
@@ -96,18 +95,6 @@ export function PhraseStudyScreen() {
       <div className="flex items-center gap-3 px-3 py-3">
         <IconButton onClick={back} aria-label="やめる"><Close size={22} /></IconButton>
         <div className="flex-1"><ProgressBar value={i / deck.length} color="#8b5cf6" /></div>
-        {/* 暗記モード：タップせず内容を開いたまま見せる切り替え（再タップで戻せる） */}
-        <IconButton
-          onClick={() => {
-            const next = !revealAll
-            setSetting('revealAnswers', next)
-            setFlipped(next)
-          }}
-          className={revealAll ? 'text-violet-500' : 'text-ink/35'}
-          aria-label={revealAll ? '内容を隠してタップ式にする' : '内容を開いたまま見せる'}
-        >
-          {revealAll ? <Eye size={22} /> : <EyeOff size={22} />}
-        </IconButton>
         <SpeechSettingsButton compact />
         <span className="w-12 text-right text-sm font-extrabold text-ink/50">{i + 1}/{deck.length}</span>
       </div>

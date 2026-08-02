@@ -3,6 +3,7 @@ import { useStore } from '../store/useStore.js'
 import { LEVELS, getLevel } from '../data/levels.js'
 import {
   WRITING_LEVEL_PROFILES,
+  getWritingGrammar,
   writingExercisesByLevel,
 } from '../data/writing.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
@@ -19,13 +20,13 @@ const MODES = [
   {
     id: 'guide',
     title: 'ヒントあり',
-    sub: '文頭と組み立てのコツを表示',
+    sub: '必須の型と次の1語を確認',
     icon: Lightbulb,
   },
   {
     id: 'free',
     title: 'チャレンジ',
-    sub: 'ヒントなしで語順に挑戦',
+    sub: '型を自分で選び、必要時だけ確認',
     icon: Sparkles,
   },
 ]
@@ -51,8 +52,8 @@ export function WritingScreen() {
   return (
     <div className="pb-8">
       <ScreenHeader
-        title="英作文・語順ビルダー"
-        subtitle="バラバラの単語を並べて、伝わる一文へ"
+        title="英作文・単元別ビルダー"
+        subtitle="使う場面と型をつないで、迷わず一文へ"
         right={
           <button
             onClick={() => navigate('myGrammar')}
@@ -77,9 +78,9 @@ export function WritingScreen() {
                 BUILD YOUR ENGLISH
               </p>
               <h2 className="mt-1 font-display text-2xl font-extrabold leading-tight">
-                選ぶたび、英文の
+                必要な型が先にわかる。
                 <br />
-                「なぜ」がわかる。
+                すぐ作文で使える。
               </h2>
             </div>
             <div className="relative h-20 w-20 shrink-0">
@@ -91,7 +92,7 @@ export function WritingScreen() {
             </div>
           </div>
           <p className="mt-4 max-w-sm text-sm font-bold leading-relaxed text-white/72">
-            作りたい内容を選んだら、バラバラの単語カードを正しい順番へ。一文ずつ語順を考えながら、導入から結論まで組み立てます。
+            単元ごとに「使う場面 → 英文の型 → 最後の確認」を先に整理します。作りたい内容を選び、型を手掛かりに単語を並べて、導入から結論まで組み立てます。
           </p>
         </section>
 
@@ -210,7 +211,7 @@ export function WritingScreen() {
 
         <section>
           <h2 className="mb-2.5 px-1 font-display text-base font-extrabold text-ink">
-            お題・ジャンル
+            単元・ジャンル
           </h2>
           <div className="space-y-3">
             {exercises.map((exercise) => {
@@ -252,6 +253,36 @@ export function WritingScreen() {
                         <p className="mt-2 rounded-xl bg-paper px-2.5 py-2 text-[11px] font-extrabold leading-relaxed text-ink/60">
                           お題：{exercise.task}
                         </p>
+                        <div className="mt-2.5 rounded-xl border border-brand-100 bg-brand-50/55 px-2.5 py-2.5">
+                          <p className="text-[10px] font-extrabold tracking-wide text-brand-600">
+                            この単元で使う型
+                          </p>
+                          <p className="mt-1 text-[11px] font-bold leading-relaxed text-ink/55">
+                            {exercise.unitGuide.goal}
+                          </p>
+                          <div className="mt-2 flex flex-wrap gap-1.5">
+                            {exercise.unitGuide.knowledge
+                              .slice(0, 3)
+                              .map((knowledge) => {
+                                const grammar = getWritingGrammar(
+                                  knowledge.grammarId,
+                                )
+                                return (
+                                  <span
+                                    key={`${exercise.id}-${knowledge.stepId}`}
+                                    className="rounded-lg bg-white px-2 py-1 text-[10px] font-extrabold text-brand-700 shadow-sm"
+                                  >
+                                    {grammar?.title}
+                                  </span>
+                                )
+                              })}
+                            {exercise.unitGuide.knowledge.length > 3 && (
+                              <span className="rounded-lg bg-white px-2 py-1 text-[10px] font-extrabold text-ink/40 shadow-sm">
+                                +{exercise.unitGuide.knowledge.length - 3}個
+                              </span>
+                            )}
+                          </div>
+                        </div>
                       </div>
                       <span className="mt-2 text-brand-400">
                         <ArrowRight size={21} />

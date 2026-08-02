@@ -7,6 +7,7 @@ import {
   WRITING_GRAMMAR_BY_ID,
   WRITING_LEVEL_ORDER,
   WRITING_LEVEL_PROFILES,
+  WRITING_UNIT_GUIDES,
   writingExercisesByLevel,
 } from '../src/data/writing.js'
 import { getWord } from '../src/data/vocab.js'
@@ -18,6 +19,7 @@ import {
   selectedWritingGrammarIds,
   selectedWritingWordIds,
   shuffledWritingTokens,
+  writingNextTokenGuide,
   writingTokenPositionResults,
   writingCompletion,
   writingWordTokens,
@@ -47,6 +49,59 @@ test('英作文は全7級に2ジャンルずつあり、級別の作文能力を
       level,
     )
   }
+})
+
+test('全14単元・110段階・330選択肢は必須知識を基本ルートで実際に使う', () => {
+  assert.equal(Object.keys(WRITING_UNIT_GUIDES).length, 14)
+  let stepCount = 0
+  let optionCount = 0
+
+  for (const exercise of WRITING_EXERCISES) {
+    const guide = exercise.unitGuide
+    assert.equal(guide, WRITING_UNIT_GUIDES[exercise.id], exercise.id)
+    assert.ok(guide.goal.length >= 30, `${exercise.id}: goal`)
+    assert.ok(guide.knowledge.length >= 3, `${exercise.id}: knowledge`)
+    assert.equal(
+      new Set(guide.knowledge.map((item) => item.grammarId)).size,
+      guide.knowledge.length,
+      `${exercise.id}: duplicate knowledge`,
+    )
+
+    for (const knowledge of guide.knowledge) {
+      const grammar = WRITING_GRAMMAR_BY_ID[knowledge.grammarId]
+      const step = exercise.steps.find((item) => item.id === knowledge.stepId)
+      const recommended = step?.options.find((option) => option.recommended)
+
+      assert.ok(grammar, `${exercise.id}/${knowledge.grammarId}`)
+      assert.ok(step, `${exercise.id}/${knowledge.stepId}`)
+      assert.equal(
+        recommended?.grammarId,
+        knowledge.grammarId,
+        `${exercise.id}/${knowledge.stepId}: 基本ルートで必須型を使わない`,
+      )
+      assert.ok(knowledge.cue.length >= 12, `${exercise.id}/${knowledge.stepId}: cue`)
+      assert.ok(knowledge.check.length >= 12, `${exercise.id}/${knowledge.stepId}: check`)
+    }
+
+    for (const step of exercise.steps) {
+      stepCount += 1
+      optionCount += step.options.length
+      const recommended = step.options.find((option) => option.recommended)
+      assert.ok(
+        WRITING_GRAMMAR_BY_ID[recommended.grammarId]?.pattern,
+        `${exercise.id}/${step.id}: pattern`,
+      )
+      for (const option of step.options) {
+        assert.ok(
+          WRITING_GRAMMAR_BY_ID[option.grammarId]?.pattern && option.tip,
+          `${exercise.id}/${step.id}/${option.id}: 選択前後の手掛かり`,
+        )
+      }
+    }
+  }
+
+  assert.equal(stepCount, 110)
+  assert.equal(optionCount, 330)
 })
 
 test('全英作文ルートの選択肢は文法解説と解決可能なマイ単語候補を持つ', () => {
@@ -145,6 +200,31 @@ test('英作文の語カードは置いた位置ごとに正誤を即時判定�
     writingTokenPositionResults(ordered.slice(0, 4), text),
     [true, true, true, true],
   )
+})
+
+test('ヒントありでは最初の誤位置、または次の未配置語を1語ずつ案内する', () => {
+  const text = 'Last Sunday, I went to the park with my family.'
+  const ordered = writingWordTokens(text)
+
+  assert.deepEqual(writingNextTokenGuide([], text), {
+    index: 0,
+    position: 1,
+    word: 'Last',
+    correction: false,
+  })
+  assert.deepEqual(writingNextTokenGuide(ordered.slice(0, 2), text), {
+    index: 2,
+    position: 3,
+    word: 'I',
+    correction: false,
+  })
+  assert.deepEqual(writingNextTokenGuide([ordered[0], ordered[2]], text), {
+    index: 1,
+    position: 2,
+    word: 'Sunday,',
+    correction: true,
+  })
+  assert.equal(writingNextTokenGuide(ordered, text), null)
 })
 
 test('全英作文選択肢の語カードを位置ごとに判定できる', () => {

@@ -1,9 +1,9 @@
 // アプリ外枠。スマホは全幅、PCでは中央に「スマホ幅」のアプリを表示。
 export function AppShell({ children, nav }) {
   return (
-    <div className="flex min-h-[100dvh] w-full justify-center bg-gradient-to-b from-brand-100 to-brand-50">
-      <div className="relative flex h-[100dvh] w-full max-w-md flex-col overflow-hidden bg-paper shadow-2xl sm:rounded-none">
-        <main className="no-scrollbar flex-1 overflow-y-auto overflow-x-hidden overscroll-contain">
+    <div className="study-app-viewport flex min-h-[100dvh] w-full justify-center bg-brand-50">
+      <div className="study-app-surface relative flex h-[100dvh] w-full max-w-md flex-col overflow-hidden bg-paper shadow-lg sm:rounded-none">
+        <main className="study-app-content no-scrollbar flex-1 overflow-y-auto overflow-x-hidden overscroll-contain">
           {children}
         </main>
         {nav}
@@ -30,11 +30,16 @@ export function ScreenHeader({
   const back = useStore((s) => s.back)
   return (
     <header
-      className="sticky top-0 z-20 flex items-center gap-1 px-2 py-2.5 backdrop-blur"
+      className={cx(
+        'sticky top-0 z-20 flex min-h-16 items-center gap-2 border-b px-3 py-2.5',
+        inverse ? 'border-white/10' : 'border-slate-200/80',
+      )}
       style={{
-        background: color
-          ? `linear-gradient(to bottom, ${color}22, transparent)`
-          : 'linear-gradient(to bottom, rgba(255,255,255,0.9), rgba(255,255,255,0.0))',
+        background: inverse
+          ? (color ?? '#0f172a')
+          : color
+            ? `color-mix(in srgb, ${color} 10%, white)`
+            : 'rgba(255,255,255,0.97)',
       }}
     >
       <IconButton
@@ -47,7 +52,7 @@ export function ScreenHeader({
       <div className="min-w-0 flex-1">
         {title && (
           <h1 className={cx(
-            'truncate font-display text-lg font-extrabold leading-tight',
+            'truncate font-display text-xl font-extrabold leading-tight',
             inverse ? 'text-white' : 'text-ink',
           )}
           >
@@ -56,8 +61,8 @@ export function ScreenHeader({
         )}
         {subtitle && (
           <p className={cx(
-            'truncate text-xs font-bold',
-            inverse ? 'text-white/55' : 'text-ink/50',
+            'truncate text-[13px] font-bold leading-snug',
+            inverse ? 'text-white/75' : 'text-ink/60',
           )}
           >
             {subtitle}

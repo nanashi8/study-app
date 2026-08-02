@@ -361,6 +361,168 @@ export const WRITING_GRAMMAR_BY_ID = Object.fromEntries(
   WRITING_GRAMMAR.map((item) => [item.id, item]),
 )
 
+const unitKnowledge = (stepId, grammarId, cue, check) => ({
+  stepId,
+  grammarId,
+  cue,
+  check,
+})
+
+const unitGuide = (goal, knowledge) => ({ goal, knowledge })
+
+// 各単元で「いつ、どの型を、何に注意して使うか」を先に示すための
+// 必須知識。stepId はおすすめルートで実際にその型を使う段階へ結び、
+// 単元説明だけ読んで終わらず、直後の作文で必ず運用できるようにする。
+export const WRITING_UNIT_GUIDES = {
+  wr_5_self_intro: unitGuide(
+    '文の目的を「名乗る・好きを言う・習慣を言う・希望を言う」に分け、合う型を選べるようになる。',
+    [
+      unitKnowledge('opening', 'wg_be_intro', '名前や立場を「A＝B」で紹介するとき', 'I には am、My name には is を置く'),
+      unitKnowledge('like', 'wg_like_ing', '好きな活動を「〜すること」として伝えるとき', 'like / love の後ろの動作を -ing 形にする'),
+      unitKnowledge('habit', 'wg_simple_present', 'ふだん繰り返す行動を伝えるとき', '主語が I なら動詞に s を付けない'),
+      unitKnowledge('wish', 'wg_to_purpose', 'これからしたいこと・望むことを伝えるとき', 'want / hope to の後ろを動詞の原形にする'),
+      unitKnowledge('closing', 'wg_lets', '最後に相手へ一緒の行動を呼びかけるとき', "Let's の後ろを動詞の原形にする"),
+    ],
+  ),
+  wr_5_favorite_day: unitGuide(
+    'いつもの行動を現在形で並べ、because で理由を加えて、好きな一日の説明を完成できるようになる。',
+    [
+      unitKnowledge('day', 'wg_simple_present', '好きな日や、その日にいつもすることを述べるとき', '現在の習慣なので動詞を現在形にそろえる'),
+      unitKnowledge('feeling', 'wg_because', '「なぜ好きか」を理由まで説明するとき', 'because の後ろに主語と動詞のある文を置く'),
+      unitKnowledge('closing', 'wg_feeling', '一日全体の感想を短くまとめるとき', '出来事を受ける主語は It にする'),
+    ],
+  ),
+  wr_4_weekend_diary: unitGuide(
+    '過去形と順序語を手掛かりに、出来事を起きた順に並べ、感想と次の希望まで書けるようになる。',
+    [
+      unitKnowledge('where', 'wg_past_time', 'yesterday / last ... の出来事を始めるとき', '時の合図を見たら動詞を過去形にする'),
+      unitKnowledge('first', 'wg_sequence', '複数の出来事を起きた順に見せるとき', 'First, Then, After that の後ろも過去形にする'),
+      unitKnowledge('surprise', 'wg_and_but', '追加または予想外の変化を一文でつなぐとき', '追加は and、反対方向の変化は but を選ぶ'),
+      unitKnowledge('feeling', 'wg_feeling', '出来事全体または自分の気持ちを述べるとき', '出来事は It was、自分は I was で始める'),
+      unitKnowledge('next', 'wg_future_plan', '日記の最後に次の予定や希望を書くとき', 'will / want to の後ろを動詞の原形にする'),
+    ],
+  ),
+  wr_4_thank_you: unitGuide(
+    'お礼の定型、過去形、順序語、次の誘いを役割ごとに使い分け、自然なお礼文を書けるようになる。',
+    [
+      unitKnowledge('thanks', 'wg_thank_for', '相手がしてくれた行動へお礼を言うとき', 'Thank you for の後ろの動作を -ing 形にする'),
+      unitKnowledge('memory1', 'wg_past_time', '楽しかった具体的な出来事を振り返るとき', '終わった出来事なので動詞を過去形にする'),
+      unitKnowledge('memory2', 'wg_sequence', '二つ目の思い出を時間順に足すとき', 'Then / After that を文頭に置いて流れを示す'),
+      unitKnowledge('invite', 'wg_lets', '最後にこちらから次の行動へ誘うとき', "Let's の後ろに動詞の原形を置く"),
+    ],
+  ),
+  wr_3_festival_email: unitGuide(
+    'メールの各部分の役割を見分け、誘い・理由・質問・結びに合う型を迷わず選べるようになる。',
+    [
+      unitKnowledge('hello', 'wg_email_opening', 'メールの最初に相手へ呼びかけるとき', 'Hi / Dear と名前の後ろにコンマを置く'),
+      unitKnowledge('invite', 'wg_invitation', '相手を丁寧に学校祭へ誘うとき', 'Would you like to の後ろを動詞の原形にする'),
+      unitKnowledge('feature', 'wg_modal_proposal', '会場でできること・見られるものを紹介するとき', 'can の後ろを動詞の原形にする'),
+      unitKnowledge('reason', 'wg_because', '誘う理由を相手に説明するとき', 'because の後ろに主語＋動詞を置く'),
+      unitKnowledge('question', 'wg_wh_question', '返事に必要な時刻や希望を具体的に聞くとき', '疑問詞を文頭に置き、その後ろを疑問文語順にする'),
+      unitKnowledge('closing', 'wg_email_closing', '返事を待つ気持ちを示してメールを閉じるとき', 'I hope / I look forward to で読み手へ戻す'),
+    ],
+  ),
+  wr_3_club_request: unitGuide(
+    '自己紹介から見学依頼、理由、具体的な質問、結びまで、丁寧な依頼メールの型を順に使えるようになる。',
+    [
+      unitKnowledge('hello', 'wg_email_opening', '先輩や担当者へ丁寧に呼びかけるとき', 'Dear / Hello と相手の後ろにコンマを置く'),
+      unitKnowledge('intro', 'wg_be_intro', '自分の学年や所属を短く示すとき', '単数の主語に合う be動詞を選ぶ'),
+      unitKnowledge('request', 'wg_invitation', '見学の許可を柔らかくお願いするとき', 'Could I / Would it be possible to の後ろを正しい形にする'),
+      unitKnowledge('reason', 'wg_because', '見学したい理由を依頼へ結びつけるとき', 'because の後ろを主語＋動詞の完全文にする'),
+      unitKnowledge('question', 'wg_wh_question', '日時や持ち物など必要情報を聞くとき', '疑問詞の直後を疑問文全体の語順にする'),
+      unitKnowledge('closing', 'wg_email_closing', 'お礼を添えて返信をお願いするとき', '最後の一文を相手への期待で閉じる'),
+    ],
+  ),
+  wr_pre2_uniforms: unitGuide(
+    '主張、二つの理由、具体例、結果、注意点、結論の役割をつなぎ語で明示し、一段落を組み立てられるようになる。',
+    [
+      unitKnowledge('claim', 'wg_opinion_claim', '段落の最初に自分の立場を示すとき', 'I think / In my opinion の直後に主張を置く'),
+      unitKnowledge('reason1', 'wg_signpost', '一つ目・二つ目の理由を読み手へ予告するとき', 'First / Another reason で理由の順番を示す'),
+      unitKnowledge('example1', 'wg_example', '理由を朝の具体的な場面で支えるとき', 'For example の後ろに主語＋動詞のある例を置く'),
+      unitKnowledge('example2', 'wg_reason_result', '理由から生じる結果を示すとき', 'As a result で直前の内容を原因として受ける'),
+      unitKnowledge('balance', 'wg_contrast', '賛成でも注意点を一つ認めるとき', 'However で方向を切り替え、主張は捨てない'),
+      unitKnowledge('conclusion', 'wg_conclusion', '最後に理由を受けて立場を言い直すとき', 'For these reasons の後ろに最初の主張を戻す'),
+    ],
+  ),
+  wr_pre2_volunteering: unitGuide(
+    '提案を二つの利点と具体例で支え、実施条件と期待される結果まで一続きに書けるようになる。',
+    [
+      unitKnowledge('claim', 'wg_opinion_claim', '最初に学校への提案を明示するとき', '主張を一文で固定してから理由へ進む'),
+      unitKnowledge('reason1', 'wg_signpost', '生徒側と地域側の利点を分けて示すとき', 'First / Another reason で二つの視点を整理する'),
+      unitKnowledge('example1', 'wg_example', '実際の活動を挙げて利点を見える形にするとき', 'For example の後ろに具体的な人と行動を置く'),
+      unitKnowledge('method', 'wg_condition', '提案が実行しやすくなる条件を示すとき', 'If 節は現在形、結果側は can / will を使う'),
+      unitKnowledge('result', 'wg_reason_result', '実施方法から生まれる効果を述べるとき', 'As a result / This would で直前の方法を受ける'),
+      unitKnowledge('conclusion', 'wg_conclusion', '利点と方法を受けて提案をまとめるとき', 'For these reasons で中心提案へ戻る'),
+    ],
+  ),
+  wr_2_learning_technology: unitGuide(
+    '利点だけでなく、対象、課題、安全条件、効果を結びつけ、条件付きの提案として論じられるようになる。',
+    [
+      unitKnowledge('claim', 'wg_modal_proposal', '学校が取るべき方針を最初に示すとき', 'should の後ろを動詞の原形にし、使い方も限定する'),
+      unitKnowledge('target', 'wg_relative_clause', '特に支援が必要な生徒を具体化するとき', 'who 節を直前の students に結びつける'),
+      unitKnowledge('risk', 'wg_contrast', '利点から課題へ視点を切り替えるとき', 'However / While で対比する二面を明確にする'),
+      unitKnowledge('condition', 'wg_condition', '安全に利用できる条件を示すとき', 'If 節を現在形にし、条件と結果を一組にする'),
+      unitKnowledge('effect', 'wg_effect', '条件を守った場合の教育効果をまとめるとき', 'This で直前の提案全体を受けて効果へつなぐ'),
+      unitKnowledge('conclusion', 'wg_conclusion', '利点と条件を一つの最終判断へ戻すとき', 'Overall / Therefore の後ろで条件付き賛成を言い直す'),
+    ],
+  ),
+  wr_2_environment: unitGuide(
+    '問題と原因を示し、家庭・企業への対策、実施条件、地域全体の効果まで因果が切れない提案を書けるようになる。',
+    [
+      unitKnowledge('problem', 'wg_modal_proposal', '中心問題と町が取るべき方向を示すとき', 'should の後ろに具体的な行動を置く'),
+      unitKnowledge('cause', 'wg_signpost', '対策の前に、問題が続く理由を整理するとき', 'One reason is that の後ろを完全文にする'),
+      unitKnowledge('effect1', 'wg_relative_clause', '対策が役立つ住民や対象を限定するとき', 'who / that 節を説明する名詞の直後に置く'),
+      unitKnowledge('condition', 'wg_condition', '負担が偏らない実施条件を示すとき', 'If 節の条件と主節の支援を対応させる'),
+      unitKnowledge('community', 'wg_effect', '複数の対策が地域へ生む効果を統合するとき', 'This / Together で前の対策全体を受ける'),
+      unitKnowledge('conclusion', 'wg_conclusion', '実行を促す最終提案へ戻るとき', 'Therefore / For these reasons で結論の根拠を示す'),
+    ],
+  ),
+  wr_pre1_remote_work: unitGuide(
+    '利点と課題を公平に扱い、根拠、反論への応答、制度条件を経て、強すぎない結論を導けるようになる。',
+    [
+      unitKnowledge('context', 'wg_nominalization', '在宅勤務の広がりを一つの論点として提示するとき', '動作を名詞化して文の主題を短く固定する'),
+      unitKnowledge('claim', 'wg_concession', '利点を認めつつ、無条件の賛成を避けるとき', 'Although / While の譲歩と主節の立場を対にする'),
+      unitKnowledge('benefit1', 'wg_causal', '働き方の変化と具体的な利益を一文で結ぶとき', 'By -ing を手段、主節を結果として対応させる'),
+      unitKnowledge('example1', 'wg_evidence', '利点が特に強く出る条件を根拠として示すとき', 'This is especially true when で当てはまる場面を絞る'),
+      unitKnowledge('counter', 'wg_counterresponse', '想定される反対意見を取り上げて応答するとき', '反論を正確に示してから nevertheless / yet で戻る'),
+      unitKnowledge('policy', 'wg_hedged_conclusion', '制度を認めるための条件を最終判断に含めるとき', 'provided that 以下を主張の必須条件にする'),
+    ],
+  ),
+  wr_pre1_food_waste: unitGuide(
+    '消費者・企業・政府の責任を分け、行動と効果、反論、実施条件を統合した提言を書けるようになる。',
+    [
+      unitKnowledge('context', 'wg_nominalization', '食品ロスを複数の原因を持つ政策課題として置くとき', '動作や状態を名詞化して論点の主語にする'),
+      unitKnowledge('claim', 'wg_synthesis', '責任を一つの主体だけに限定しないとき', 'not only A but also B で責任範囲を広げる'),
+      unitKnowledge('consumer', 'wg_causal', '消費者の行動が削減へつながる仕組みを示すとき', 'By -ing の行動と主節の効果を対応させる'),
+      unitKnowledge('government', 'wg_modal_proposal', '政府が使える具体的な政策手段を提案するとき', 'could / should の後ろを動詞の原形にする'),
+      unitKnowledge('counter', 'wg_counterresponse', '規制コストへの反論を受け止めるとき', '反論を示した後、応答の接続語で自分の論へ戻る'),
+      unitKnowledge('condition', 'wg_hedged_conclusion', '政策を公平で実行可能にする条件を付けるとき', 'provided that 以下で提案の適用範囲を限定する'),
+    ],
+  ),
+  wr_1_public_ai: unitGuide(
+    '導入の利益と権利上の危険を評価し、反論の妥当範囲、不可欠な条件、統合原則まで一貫して論じられるようになる。',
+    [
+      unitKnowledge('context', 'wg_nominalization', 'AI導入という複雑な変化を政策課題として定義するとき', '名詞化した論点を主語にして評価対象を固定する'),
+      unitKnowledge('claim', 'wg_qualified_claim', '導入賛成を必要条件つきで示すとき', 'but only if 以下を省けない採用条件として置く'),
+      unitKnowledge('benefit2', 'wg_causal', '行政上の手段から二次的な効果まで示すとき', 'thereby -ing の動作主を主節の主語と一致させる'),
+      unitKnowledge('counter', 'wg_advanced_counter', '推進側の反論が妥当な範囲だけを認めるとき', 'insofar as で認める範囲を限定し、yet で不足を示す'),
+      unitKnowledge('condition1', 'wg_policy_condition', '透明性など不可欠な条件を強調するとき', 'Only when が文頭なら主節を助動詞＋主語の倒置にする'),
+      unitKnowledge('synthesis', 'wg_synthesis', '効率と権利を二者択一にせず統合するとき', 'Rather than choosing between A and B の後ろで両方を守る方針を示す'),
+    ],
+  ),
+  wr_1_urban_resilience: unitGuide(
+    '防災投資の長期効果と公平性を両立させ、反論を評価し、審査条件と統合戦略へまとめられるようになる。',
+    [
+      unitKnowledge('context', 'wg_synthesis', '災害を工学だけでなく社会制度の課題として捉え直すとき', 'not merely A but B で論点の範囲を広げる'),
+      unitKnowledge('claim', 'wg_qualified_claim', '投資賛成と公平な配分条件を同時に示すとき', 'but only if 以下を投資の正当化条件にする'),
+      unitKnowledge('infrastructure', 'wg_causal', '物理的投資が障害を防ぐ仕組みを示すとき', 'By -ing を手段、主節を防げる結果として結ぶ'),
+      unitKnowledge('social', 'wg_relative_clause', '優先して守る住民を具体的に示すとき', 'who / whose 節を説明対象の名詞の直後に置く'),
+      unitKnowledge('counter', 'wg_advanced_counter', '費用への懸念が妥当な条件だけを認めるとき', 'insofar as で妥当範囲を絞り、その範囲外へ応答する'),
+      unitKnowledge('condition1', 'wg_policy_condition', '投資前に満たす審査条件を強調するとき', 'Only when が文頭なら主節を助動詞＋主語の倒置にする'),
+    ],
+  ),
+}
+
 const choice = (
   id,
   text,
@@ -382,6 +544,7 @@ const step = (id, phase, prompt, constraint, guide, options) => ({
 
 const makeExercise = (data) => ({
   ...data,
+  unitGuide: WRITING_UNIT_GUIDES[data.id],
   steps: data.steps.map((item, index) => ({
     ...item,
     index,

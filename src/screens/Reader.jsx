@@ -104,6 +104,7 @@ export function ReaderScreen() {
   const settings = useStore((s) => s.settings)
   const myList = useStore((s) => s.myList)
   const toggleMyList = useStore((s) => s.toggleMyList)
+  const recordVocabHistory = useStore((s) => s.recordVocabHistory)
   const passage = getPassage(passageId)
 
   const [showJa, setShowJa] = useState(false)
@@ -373,6 +374,7 @@ export function ReaderScreen() {
       style: 'word',
     })
     const meaning = resolvePassageWord(tok.key, sentence?.gloss)
+    if (meaning?.id) recordVocabHistory(meaning.id)
     setActiveWord({ word: tok.word, ja: meaning?.ja ?? null, id: meaning?.id ?? null })
   }
   const closeSentence = () => {
@@ -455,7 +457,7 @@ export function ReaderScreen() {
             playOpen ? 'bg-brand-500 text-white' : 'bg-brand-100 text-brand-700',
           )}
         >
-          <SpeakerWave size={14} /> フレーズ直訳・講師音声
+          <SpeakerWave size={14} /> 講師音声
         </button>
       </div>
 
@@ -534,7 +536,7 @@ export function ReaderScreen() {
           )}
         </div>
         <p className="mt-3 px-1 text-center text-xs font-bold text-ink/40">
-          一文をタップすると、英語フレーズ→直訳の組、SVOCM、文法上の注意を確認できます。
+          一文をタップすると、英語と対応する日本語、SVOCM、文法上の注意を確認できます。
         </p>
       </div>
 
@@ -543,13 +545,13 @@ export function ReaderScreen() {
         <div className="shrink-0 border-t border-brand-100 bg-white px-4 py-3">
           <div className="mb-2 flex items-center justify-between">
             <span className="text-[11px] font-extrabold uppercase tracking-wide text-brand-400">
-              講師音声（英語フレーズ → 直訳 → 読解・文法解説）
+              講師音声
             </span>
             <div className="flex items-center gap-2">
               <span className="text-xs font-bold text-ink/40">
                 {Math.min(playIdx + 1, chunks.length)}/{chunks.length}
               </span>
-              <IconButton onClick={closePlayer} aria-label="フレーズ直訳・講師音声を閉じる">
+              <IconButton onClick={closePlayer} aria-label="講師音声を閉じる">
                 <Close size={18} />
               </IconButton>
             </div>
@@ -588,7 +590,7 @@ export function ReaderScreen() {
                   phase === 'ja' ? 'text-amber-600' : 'text-ink/55',
                 )}
               >
-                前からの直訳：{cur.ja}
+                {cur.ja}
               </div>
               {cur.readingGuide && (
                 <div className="mt-1.5 border-l-2 border-amber-300 pl-2 text-xs font-bold leading-relaxed text-ink/60">
@@ -614,7 +616,7 @@ export function ReaderScreen() {
                 {phase === 'en'
                   ? '英語フレーズの発音'
                   : phase === 'ja'
-                    ? 'このフレーズの直訳'
+                    ? '対応する日本語'
                     : phase === 'explanation'
                       ? '読み方・文法上の注意'
                       : '文全体の自然訳'}
@@ -794,16 +796,10 @@ export function ReaderScreen() {
               className="border-y border-emerald-100 bg-emerald-50/40 py-3"
               data-reading-phrase-method={sentenceAnalysis.phraseMethod}
             >
-                <div className="mb-2 flex items-center gap-1.5 text-emerald-700">
-                  <BookOpen size={16} />
-                  <span className="text-[11px] font-extrabold uppercase tracking-wide">
-                    前から読むフレーズ解説
-                  </span>
-                </div>
                 <p className="mb-3 text-xs font-bold leading-relaxed text-emerald-950/65">
                   英文をS・V・O・C・M・接続の役割と短い意味単位に分け、原文の語順のまま直訳します。
                 </p>
-                <div className="space-y-2" aria-label="文全体のフレーズと直訳">
+                <div className="space-y-2" aria-label="英文と対応する日本語">
                   {sentenceAnalysis.phraseSequence.map((phraseItem, phraseIndex) => {
                     const status = PHRASE_STATUS[phraseItem.status]
                     return (
@@ -849,7 +845,7 @@ export function ReaderScreen() {
                               </p>
                             )}
                             <p className="mt-1 text-sm font-bold leading-relaxed text-brand-700">
-                              フレーズ訳：{phraseItem.ja}
+                              {phraseItem.ja}
                             </p>
                           </div>
                         </div>
@@ -874,7 +870,7 @@ export function ReaderScreen() {
                   </span>
                 </div>
                 <span className="text-[10px] font-bold text-ink/40">
-                  音声は英語フレーズ → 直訳 → 読み方・文法
+                  音声は英語 → 日本語 → 読み方・文法
                 </span>
               </div>
               <div className="space-y-2">
@@ -910,7 +906,7 @@ export function ReaderScreen() {
                         </p>
                       </div>
                     </div>
-                    <div className="mt-2 space-y-1.5" aria-label="英語フレーズと前からの直訳">
+                    <div className="mt-2 space-y-1.5" aria-label="英語と対応する日本語">
                         {block.phrasePairs.map((pair, phraseIndex) => (
                         <div
                           key={`${block.id}-${phraseIndex}`}
@@ -946,7 +942,7 @@ export function ReaderScreen() {
                               </p>
                             )}
                             <p className="mt-0.5 text-sm font-bold leading-relaxed text-brand-700">
-                              前からの直訳：{pair.ja}
+                              {pair.ja}
                             </p>
                             <p className="mt-1 text-[10px] font-bold leading-relaxed text-ink/50">
                               {pair.grammar ?? pair.explanation ?? pair.roleNote}

@@ -8,7 +8,7 @@ import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { EtymologyBlock } from '../components/WordBits.jsx'
 import { PosBadge } from '../components/WordBits.jsx'
 import { Button, ProgressBar, IconButton } from '../components/ui.jsx'
-import { Close, Bookmark, BookmarkFilled, ArrowRight, Lightbulb, Eye, EyeOff } from '../components/Icons.jsx'
+import { Close, Bookmark, BookmarkFilled, ArrowRight, Lightbulb } from '../components/Icons.jsx'
 
 export function VocabStudyScreen() {
   const params = useStore((s) => s.params)
@@ -18,7 +18,6 @@ export function VocabStudyScreen() {
   const settings = useStore((s) => s.settings)
   const myList = useStore((s) => s.myList)
   const toggleMyList = useStore((s) => s.toggleMyList)
-  const setSetting = useStore((s) => s.setSetting)
 
   // 暗記モード：ONなら毎カード、タップせず最初から意味・語源を開いて見せる。
   const revealAll = settings.revealAnswers
@@ -102,18 +101,6 @@ export function VocabStudyScreen() {
         <div className="flex-1">
           <ProgressBar value={(i) / deck.length} />
         </div>
-        {/* 暗記モード：タップせず答えを開いたまま見せる切り替え */}
-        <IconButton
-          onClick={() => {
-            const next = !revealAll
-            setSetting('revealAnswers', next)
-            if (next) setFlipped(true)
-          }}
-          className={revealAll ? 'text-brand-500' : 'text-ink/35'}
-          aria-label={revealAll ? '答えを隠してタップ式にする' : '答えを開いたまま見せる'}
-        >
-          {revealAll ? <Eye size={22} /> : <EyeOff size={22} />}
-        </IconButton>
         <SpeechSettingsButton compact />
         <span className="w-12 text-right text-sm font-extrabold text-ink/50">
           {i + 1}/{deck.length}

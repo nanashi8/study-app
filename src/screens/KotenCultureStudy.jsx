@@ -12,8 +12,6 @@ import {
   Bookmark,
   BookmarkFilled,
   Close,
-  Eye,
-  EyeOff,
   Lightbulb,
 } from '../components/Icons.jsx'
 import { KotenText } from '../components/KotenFurigana.jsx'
@@ -41,7 +39,6 @@ export function KotenCultureStudyScreen() {
   const savedIds = useStore((state) => state.kotenCultureList)
   const toggleSaved = useStore((state) => state.toggleKotenCultureList)
   const settings = useStore((state) => state.settings)
-  const setSetting = useStore((state) => state.setSetting)
   const revealAll = settings.revealAnswers
 
   const [deck, setDeck] = useState(() => buildDeck(params.ids))
@@ -116,17 +113,6 @@ export function KotenCultureStudyScreen() {
               {params.title ?? '古典常識を覚える'}
             </p>
           </div>
-          <IconButton
-            onClick={() => {
-              const next = !revealAll
-              setSetting('revealAnswers', next)
-              if (next) setFlipped(true)
-            }}
-            className={revealAll ? 'text-violet-600' : 'text-ink/35'}
-            aria-label={revealAll ? '答えを隠してタップ式にする' : '答えを開いたまま見せる'}
-          >
-            {revealAll ? <Eye size={21} /> : <EyeOff size={21} />}
-          </IconButton>
           <SpeechSettingsButton compact />
           <span className="w-12 text-right text-sm font-extrabold text-ink/50">
             {index + 1}/{deck.length}

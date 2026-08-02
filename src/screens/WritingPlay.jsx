@@ -13,6 +13,7 @@ import {
   selectedWritingGrammarIds,
   selectedWritingWordIds,
   shuffledWritingTokens,
+  writingNextTokenGuide,
   writingTokenPositionResults,
   writingWordTokens,
   writingCompletion,
@@ -31,6 +32,7 @@ import {
 } from '../components/ui.jsx'
 import {
   ArrowRight,
+  BookOpen,
   Bookmark,
   BookmarkFilled,
   Check,
@@ -39,6 +41,7 @@ import {
   Lightbulb,
   Refresh,
   Sparkles,
+  Target,
 } from '../components/Icons.jsx'
 import { buildWritingInstructorExplanation } from '../lib/instructorExplanations.js'
 
@@ -125,6 +128,162 @@ function WordSaveRow({ ids }) {
   )
 }
 
+function WritingUnitBriefing({
+  exercise,
+  level,
+  mode,
+  onBack,
+  onStart,
+  resume = false,
+}) {
+  return (
+    <div className="flex min-h-full flex-col bg-paper">
+      <header className="sticky top-0 z-20 border-b border-brand-100 bg-white/92 px-3 pb-3 pt-[calc(env(safe-area-inset-top)+0.5rem)] backdrop-blur">
+        <div className="flex items-center gap-2">
+          <IconButton onClick={onBack} aria-label="単元一覧へ戻る">
+            <Close size={21} />
+          </IconButton>
+          <div className="min-w-0 flex-1">
+            <p className="text-[10px] font-extrabold tracking-wide text-brand-500">
+              UNIT KNOWLEDGE
+            </p>
+            <p className="truncate font-display text-sm font-extrabold text-ink">
+              {exercise.emoji} {exercise.title}
+            </p>
+          </div>
+          <SpeechSettingsButton compact />
+        </div>
+      </header>
+
+      <main className="flex-1 px-4 pb-36 pt-4">
+        <section className="overflow-hidden rounded-[1.8rem] bg-gradient-to-br from-slate-950 via-indigo-950 to-brand-800 p-5 text-white shadow-pop">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <Chip className="bg-white/12 text-white">
+                {level.emoji} {level.label}・{exercise.genre}
+              </Chip>
+              <h1 className="mt-3 font-display text-2xl font-extrabold leading-tight">
+                この単元で、できるようになること
+              </h1>
+            </div>
+            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/10 text-cyan-200">
+              <Target size={24} />
+            </span>
+          </div>
+          <p className="mt-3 text-sm font-bold leading-relaxed text-white/78">
+            {exercise.unitGuide.goal}
+          </p>
+          <div className="mt-4 rounded-2xl border border-white/10 bg-white/8 px-3.5 py-3">
+            <p className="text-[10px] font-extrabold tracking-wide text-cyan-200">
+              今回のお題
+            </p>
+            <p className="mt-1 text-xs font-bold leading-relaxed text-white/72">
+              {exercise.task}
+            </p>
+          </div>
+        </section>
+
+        <section className="mt-4">
+          <div className="flex items-center gap-2 px-1">
+            <BookOpen size={18} className="text-brand-600" />
+            <div>
+              <h2 className="font-display text-base font-extrabold text-ink">
+                迷わず使う必須知識
+              </h2>
+              <p className="text-[11px] font-bold text-ink/42">
+                使う場面 → 型 → 最後の確認、の順に見よう
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-3 space-y-3">
+            {exercise.unitGuide.knowledge.map((knowledge, index) => {
+              const grammar = getWritingGrammar(knowledge.grammarId)
+              const step = exercise.steps.find(
+                (item) => item.id === knowledge.stepId,
+              )
+              return (
+                <Card
+                  key={`${exercise.id}-${knowledge.stepId}`}
+                  className="overflow-hidden"
+                >
+                  <div className="flex items-center gap-3 border-b border-brand-100 bg-brand-50/65 px-3.5 py-2.5">
+                    <span
+                      className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-xs font-extrabold text-white"
+                      style={{ background: level.color }}
+                    >
+                      {index + 1}
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-[10px] font-extrabold text-ink/40">
+                        {step?.phase}で使う
+                      </p>
+                      <h3 className="truncate font-display text-sm font-extrabold text-ink">
+                        {grammar?.title}
+                      </h3>
+                    </div>
+                  </div>
+                  <div className="space-y-2.5 p-3.5">
+                    <div>
+                      <p className="text-[10px] font-extrabold tracking-wide text-brand-500">
+                        使う場面
+                      </p>
+                      <p className="mt-0.5 text-xs font-bold leading-relaxed text-ink/68">
+                        {knowledge.cue}
+                      </p>
+                    </div>
+                    <div className="rounded-xl bg-slate-950 px-3 py-2.5 text-white">
+                      <p className="text-[9px] font-extrabold tracking-wide text-cyan-200">
+                        英文の型
+                      </p>
+                      <p className="mt-1 font-mono text-xs font-extrabold leading-relaxed">
+                        {grammar?.pattern}
+                      </p>
+                    </div>
+                    <div className="flex items-start gap-2 rounded-xl bg-emerald-50 px-3 py-2.5 text-emerald-900">
+                      <Check size={15} className="mt-0.5 shrink-0 text-emerald-600" />
+                      <p className="text-xs font-extrabold leading-relaxed">
+                        {knowledge.check}
+                      </p>
+                    </div>
+                  </div>
+                </Card>
+              )
+            })}
+          </div>
+        </section>
+
+        <section className="mt-4 rounded-2xl bg-white p-4 shadow-sm">
+          <p className="text-[10px] font-extrabold tracking-wide text-ink/38">
+            作文の設計図
+          </p>
+          <div className="mt-2 flex flex-wrap gap-1.5">
+            {exercise.steps.map((step, index) => (
+              <span key={step.id} className="contents">
+                <span className="rounded-full bg-paper px-2.5 py-1.5 text-[10px] font-extrabold text-ink/60">
+                  {index + 1}. {step.phase}
+                </span>
+              </span>
+            ))}
+          </div>
+        </section>
+      </main>
+
+      <div className="fixed inset-x-0 bottom-0 z-30 mx-auto w-full max-w-md border-t border-brand-100 bg-white/94 p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] backdrop-blur">
+        <Button full size="lg" onClick={onStart}>
+          {resume ? '作文の続きへ戻る' : '知識を使って始める'}
+          <ArrowRight size={18} />
+        </Button>
+        <p className="mt-2 text-center text-[10px] font-bold text-ink/35">
+          {mode === 'guide'
+            ? 'ヒントあり：型と次の1語を確認しながら進みます'
+            : 'チャレンジ：必要なときだけ型と次の1語を確認できます'}
+        </p>
+      </div>
+    </div>
+  )
+}
+
 export function WritingPlayScreen() {
   const params = useStore((s) => s.params)
   const back = useStore((s) => s.back)
@@ -137,6 +296,7 @@ export function WritingPlayScreen() {
 
   const exercise = getWritingExercise(params.exerciseId)
   const mode = params.mode === 'free' ? 'free' : 'guide'
+  const [started, setStarted] = useState(false)
   const [trail, setTrail] = useState([])
   const [selected, setSelected] = useState(null)
   const [showHint, setShowHint] = useState(false)
@@ -147,6 +307,20 @@ export function WritingPlayScreen() {
   if (!exercise) return <MissingWriting onBack={back} />
 
   const level = getLevel(exercise.level)
+
+  if (!started) {
+    return (
+      <WritingUnitBriefing
+        exercise={exercise}
+        level={level}
+        mode={mode}
+        onBack={back}
+        onStart={() => setStarted(true)}
+        resume={trail.length > 0 || Boolean(selected)}
+      />
+    )
+  }
+
   const stepIndex = trail.length
   const currentStep = exercise.steps[stepIndex]
   const coachVisible = mode === 'guide' || showHint
@@ -165,13 +339,22 @@ export function WritingPlayScreen() {
     sentenceComplete ? selected : null,
   )
   const draftWords = writingWordCount(draft)
-  const selectedGrammar = selected && sentenceComplete
+  const selectedGrammar = selected
     ? getWritingGrammar(selected.grammarId)
     : null
   const arrangedText = buildWritingTokenText(answerTokens)
   const recommended =
     currentStep?.options.find((option) => option.recommended) ??
     currentStep?.options[0]
+  const recommendedGrammar = recommended
+    ? getWritingGrammar(recommended.grammarId)
+    : null
+  const currentUnitKnowledge = exercise.unitGuide.knowledge.find(
+    (item) => item.stepId === currentStep?.id,
+  )
+  const nextTokenGuide = selected
+    ? writingNextTokenGuide(answerTokens, selected.text)
+    : null
 
   const completedResult = finished
     ? writingCompletion(exercise, trail)
@@ -341,7 +524,10 @@ export function WritingPlayScreen() {
 
           <Card className="mt-4 p-4">
             <p className="font-display text-base font-extrabold text-ink">
-              この級の作文チェック
+              この単元の到達チェック
+            </p>
+            <p className="mt-0.5 text-xs font-bold text-ink/45">
+              文の役割を順に満たし、必要な型を作文で使いました
             </p>
             <div className="mt-3 space-y-2">
               {completedResult.checks.map((item) => (
@@ -527,7 +713,7 @@ export function WritingPlayScreen() {
           >
             🎯
           </span>
-          <div>
+          <div className="min-w-0 flex-1">
             <p className="text-[10px] font-extrabold tracking-wide text-ink/38">
               今回のお題
             </p>
@@ -535,6 +721,12 @@ export function WritingPlayScreen() {
               {exercise.task}
             </p>
           </div>
+          <button
+            onClick={() => setStarted(false)}
+            className="shrink-0 rounded-xl bg-brand-50 px-2.5 py-2 text-[10px] font-extrabold text-brand-600"
+          >
+            型一覧
+          </button>
         </section>
 
         <section className="rounded-[1.75rem] bg-gradient-to-br from-slate-950 via-indigo-950 to-brand-800 p-4 text-white shadow-card">
@@ -624,17 +816,41 @@ export function WritingPlayScreen() {
               <span className="mt-0.5 text-cyan-600">
                 <Sparkles size={17} />
               </span>
-              <div>
+              <div className="min-w-0 flex-1">
                 <p className="text-[11px] font-extrabold text-cyan-700">
-                  組み立てヒント
+                  {selected ? 'この文で使う知識' : 'この段階の基本ルート'}
                 </p>
                 <p className="mt-0.5 text-xs font-bold leading-relaxed text-cyan-950/75">
                   {currentStep.guide}
                 </p>
-                {selected && targetTokens[0] && (
-                  <p className="mt-1.5 text-xs font-extrabold text-cyan-800">
-                    文頭は「{targetTokens[0].word}」
-                  </p>
+                {(selectedGrammar || recommendedGrammar) && (
+                  <div className="mt-2 rounded-xl border border-cyan-200 bg-white/75 px-3 py-2.5">
+                    <p className="text-[10px] font-extrabold text-cyan-700">
+                      {selectedGrammar?.title ?? recommendedGrammar?.title}
+                    </p>
+                    <p className="mt-1 font-mono text-[11px] font-extrabold leading-relaxed text-indigo-900">
+                      {selectedGrammar?.pattern ?? recommendedGrammar?.pattern}
+                    </p>
+                    <p className="mt-1.5 text-[11px] font-bold leading-relaxed text-ink/60">
+                      {selected
+                        ? selected.tip
+                        : currentUnitKnowledge?.cue ?? currentStep.constraint}
+                    </p>
+                  </div>
+                )}
+                {selected && nextTokenGuide && (
+                  <div className="mt-2 flex items-center justify-between gap-3 rounded-xl bg-cyan-100 px-3 py-2">
+                    <p className="text-[11px] font-extrabold text-cyan-900">
+                      {nextTokenGuide.correction
+                        ? `${nextTokenGuide.position}語目を直す`
+                        : answerTokens.length
+                          ? '次の1語'
+                          : '文頭'}
+                    </p>
+                    <span className="rounded-lg bg-white px-2.5 py-1 font-mono text-xs font-extrabold text-indigo-900 shadow-sm">
+                      {nextTokenGuide.word}
+                    </span>
+                  </div>
                 )}
               </div>
             </div>
@@ -649,6 +865,9 @@ export function WritingPlayScreen() {
                 {currentStep.options.map((option, index) => {
                   const recommendedOn =
                     coachVisible && recommended?.id === option.id
+                  const optionGrammar = coachVisible
+                    ? getWritingGrammar(option.grammarId)
+                    : null
                   return (
                     <button
                       key={option.id}
@@ -664,9 +883,16 @@ export function WritingPlayScreen() {
                         <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-100 font-display text-xs font-extrabold text-brand-600">
                           {String.fromCharCode(65 + index)}
                         </span>
-                        <p className="text-sm font-extrabold leading-relaxed text-ink/75">
-                          {option.ja}
-                        </p>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-sm font-extrabold leading-relaxed text-ink/75">
+                            {option.ja}
+                          </p>
+                          {optionGrammar && (
+                            <p className="mt-1 text-[10px] font-bold leading-relaxed text-brand-600">
+                              {optionGrammar.title}：{optionGrammar.pattern}
+                            </p>
+                          )}
+                        </div>
                         <ArrowRight
                           size={17}
                           className="ml-auto shrink-0 text-brand-300"
@@ -834,7 +1060,7 @@ export function WritingPlayScreen() {
           )}
         </section>
 
-        {selected && selectedGrammar && (
+        {selected && selectedGrammar && sentenceComplete && (
           <section className="mt-4 animate-slide-up">
             <div className="overflow-hidden rounded-[1.6rem] border border-amber-200 bg-amber-50 shadow-card">
               <div className="flex items-center gap-3 border-b border-amber-200/70 bg-white/65 px-4 py-3">
