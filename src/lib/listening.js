@@ -1,7 +1,9 @@
 import { listeningSpokenSegments } from '../data/listening.js'
-import { isTTSSupported, speakWith, stopSpeaking } from './tts.js'
-
-let activeRun = 0
+import { isTTSSupported } from './tts.js'
+import {
+  dismissSpeechPlayer,
+  playSpeechItems,
+} from './speech-player.js'
 
 const PITCH_BY_SPEAKER = Object.freeze({
   A: 0.94,
@@ -16,7 +18,16 @@ const PITCH_BY_SPEAKER = Object.freeze({
  */
 export function playListeningItem(
   item,
-  { rate = 0.95, voiceURI = null, onSegment, onEnd } = {},
+  {
+    rate = 0.9,
+    rateFactor = 1,
+    voiceURI = null,
+    japaneseVoiceURI = null,
+    navigationLocked = false,
+    onSegment,
+    onStatusChange,
+    onEnd,
+  } = {},
 ) {
   if (!item || !isTTSSupported()) {
     onEnd?.()
@@ -29,33 +40,32 @@ export function playListeningItem(
     return false
   }
 
-  const run = ++activeRun
-  stopSpeaking()
-
-  const playAt = (index) => {
-    if (run !== activeRun) return
-    if (index >= segments.length) {
-      onEnd?.()
-      return
-    }
-    const segment = segments[index]
-    speakWith(segment.text, {
-      rate,
+  return playSpeechItems(
+    segments.map((segment) => ({
+      label: segment.text,
+      meta: segment,
+      text: segment.text,
       pitch: PITCH_BY_SPEAKER[segment.speaker] ?? 1,
-      voiceURI,
+      rateFactor,
+      minRate: 0.55,
+      maxRate: 1.25,
       style: 'listening',
-      onstart: () => {
-        if (run === activeRun) onSegment?.(segment, index)
-      },
-      onend: () => playAt(index + 1),
-    })
-  }
-
-  playAt(0)
-  return true
+    })),
+    {
+      title: 'リスニング',
+      rate,
+      voiceURI,
+      japaneseVoiceURI,
+      autoAdvance: true,
+      allowReplay: false,
+      navigationLocked,
+      onIndexChange: (index, speechItem) => onSegment?.(speechItem.meta, index),
+      onStatusChange,
+      onComplete: onEnd,
+    },
+  )
 }
 
 export function stopListeningAudio() {
-  activeRun += 1
-  stopSpeaking()
+  dismissSpeechPlayer()
 }

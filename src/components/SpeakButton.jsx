@@ -1,5 +1,6 @@
 import { useStore } from '../store/useStore.js'
-import { speak, isTTSSupported } from '../lib/tts.js'
+import { isTTSSupported } from '../lib/tts.js'
+import { playSpeechItems } from '../lib/speech-player.js'
 import { SpeakerWave } from './Icons.jsx'
 import { cx } from './ui.jsx'
 
@@ -19,15 +20,23 @@ export function SpeakButton({
   className = '',
   tone = 'brand',
   disabled = false,
+  phrases,
+  phraseIndex = 0,
+  title = '読み上げ',
+  lang = 'en-US',
 }) {
   const settings = useStore((s) => s.settings)
   if (!isTTSSupported()) return null
   const handle = (e) => {
     e.stopPropagation()
     if (disabled) return
-    speak(text, {
+    playSpeechItems(phrases?.length ? phrases : [text], {
+      index: phraseIndex,
+      title,
       rate: rate ?? settings.ttsRate,
       voiceURI: settings.ttsVoiceURI,
+      japaneseVoiceURI: settings.ttsJapaneseVoiceURI,
+      lang,
       style,
     })
   }

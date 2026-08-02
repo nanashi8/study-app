@@ -3,7 +3,7 @@ import { useStore } from '../store/useStore.js'
 import { buildPhraseDeck, recordStudyAnswer } from '../lib/session.js'
 import { getLevel } from '../data/levels.js'
 import { longSentenceTranslationFor } from '../data/long-sentence-translations.js'
-import { speak } from '../lib/tts.js'
+import { playSpeechItems } from '../lib/speech-player.js'
 import { phraseSpeechText } from '../lib/phrase-speech.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { LongSentenceTranslation } from '../components/LongSentenceTranslation.jsx'
@@ -40,10 +40,18 @@ export function PhraseStudyScreen() {
 
   useEffect(() => {
     if (item && settings.autoSpeak) {
-      speak(phraseSpeechText(item), {
+      playSpeechItems([
+        {
+          text: phraseSpeechText(item),
+          label: phraseSpeechText(item),
+          style: item.kind === 'syntax' ? 'sentence' : 'phrase',
+        },
+        { text: item.example.en, label: item.example.en, style: 'sentence' },
+      ], {
+        title: '熟語・構文カード',
         rate: settings.ttsRate,
         voiceURI: settings.ttsVoiceURI,
-        style: item.kind === 'syntax' ? 'sentence' : 'phrase',
+        japaneseVoiceURI: settings.ttsJapaneseVoiceURI,
       })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -89,6 +97,14 @@ export function PhraseStudyScreen() {
   const level = getLevel(item.level)
   const kind = itemKind(item)
   const longSentenceTranslation = longSentenceTranslationFor(item)
+  const phraseSpeechItems = [
+    {
+      text: phraseSpeechText(item),
+      label: phraseSpeechText(item),
+      style: item.kind === 'syntax' ? 'sentence' : 'phrase',
+    },
+    { text: item.example.en, label: item.example.en, style: 'sentence' },
+  ]
 
   return (
     <div className="flex h-full flex-col">
@@ -107,7 +123,15 @@ export function PhraseStudyScreen() {
           </div>
           <div className="mt-3 flex flex-col items-center text-center">
             <h2 className="font-display text-3xl font-extrabold tracking-tight text-ink">{item.phrase}</h2>
-            <div className="mt-3"><SpeakButton text={phraseSpeechText(item)} size="lg" /></div>
+            <div className="mt-3">
+              <SpeakButton
+                text={phraseSpeechText(item)}
+                phrases={phraseSpeechItems}
+                phraseIndex={0}
+                title="熟語・構文カード"
+                size="lg"
+              />
+            </div>
           </div>
 
           {!flipped ? (
@@ -135,7 +159,13 @@ export function PhraseStudyScreen() {
 
               <div className="rounded-2xl bg-white p-3 ring-1 ring-brand-100">
                 <div className="flex items-start gap-2">
-                  <SpeakButton text={item.example.en} size="sm" />
+                  <SpeakButton
+                    text={item.example.en}
+                    phrases={phraseSpeechItems}
+                    phraseIndex={1}
+                    title="熟語・構文カード"
+                    size="sm"
+                  />
                   <div>
                     <p className="font-bold text-ink">{item.example.en}</p>
                     <p className="mt-0.5 text-sm font-bold text-ink/55">

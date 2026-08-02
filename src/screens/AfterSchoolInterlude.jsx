@@ -2,21 +2,27 @@ import { useMemo, useState } from 'react'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { Button, ProgressBar, cx } from '../components/ui.jsx'
 import { ArrowRight, Check } from '../components/Icons.jsx'
+import { LightNovelScene } from '../components/LightNovelScene.jsx'
 import { useStore } from '../store/useStore.js'
 import {
+  BATTLE_STUDENTS,
   battleEmotionById,
+  battleStudentById,
   battleStudentLifestylePortrait,
   battleStudentPortrait,
   battleSupportStyleById,
 } from '../lib/battleCast.js'
 import {
   AFTER_SCHOOL_CHRONICLE,
+  afterSchoolBattleEpilogue,
+  afterSchoolDailyChapter,
   afterSchoolEpisodeNumber,
 } from '../lib/afterSchoolStory.js'
 import {
   afterSchoolBondState,
   afterSchoolBranchOptions,
   afterSchoolBranchScene,
+  isBattleStudentUnlocked,
   resolveAfterSchoolReward,
 } from '../lib/afterSchoolBonds.js'
 import { publicAssetUrl } from '../lib/publicAssetUrl.js'
@@ -46,12 +52,21 @@ function BondMeter({ bond, inverse = false }) {
   )
 }
 
-function RouteHub({ options, bonds, currentStudentId, fromBattle, rivalName, onSelect, onBack, onHome }) {
+function RouteHub({
+  options,
+  bonds,
+  currentStudentId,
+  unlockedStudentIds,
+  onSelect,
+  onBack,
+  onHome,
+}) {
+  const unlockedCount = unlockedStudentIds.length
   return (
     <div className="min-h-full bg-gradient-to-b from-slate-950 via-indigo-950 to-violet-950 pb-8 text-white">
       <ScreenHeader
-        title="放課後ルートを選ぶ"
-        subtitle="校門から、今日はどこへ寄っていく？"
+        title="友達と過ごす日常"
+        subtitle="対決のあと、誰とどんな時間を過ごす？"
         onBack={onBack}
         color="#0f172a"
         inverse
@@ -69,34 +84,28 @@ function RouteHub({ options, bonds, currentStudentId, fromBattle, rivalName, onS
             <span className="rounded-full border border-cyan-100/25 bg-slate-950/60 px-2 py-1 text-[8px] font-extrabold tracking-[0.16em] text-cyan-100 backdrop-blur-sm">
               AFTER SCHOOL CROSSROADS
             </span>
-            <h1 className="mt-2 font-display text-xl font-extrabold">放課後は一つじゃない</h1>
+            <h1 className="mt-2 font-display text-xl font-extrabold">戦いのあとは、いつもの時間</h1>
             <p className="mt-1 text-[10px] font-bold leading-relaxed text-white/65">
               行き先と過ごす相手で、会話も育つ関係も変わります。
             </p>
           </div>
         </section>
 
-        {fromBattle && (
-          <section className="rounded-2xl border border-amber-200/20 bg-amber-100/10 px-3 py-2.5 text-[10px] font-bold leading-relaxed text-amber-50">
-            <span className="font-extrabold text-amber-200">ことばの対決を終えて：</span>
-            {' '}{rivalName ?? '今日の相手'}との課題を終え、昇降口から三つの道を選べます。
-          </section>
-        )}
-
         <section>
           <div className="flex items-end justify-between gap-2 px-1">
             <div>
               <p className="text-[9px] font-extrabold tracking-[0.16em] text-cyan-200">CHOOSE A ROUTE</p>
-              <h2 className="mt-0.5 font-display text-lg font-extrabold">今日の3ルート</h2>
+              <h2 className="mt-0.5 font-display text-lg font-extrabold">3つの日常</h2>
             </div>
-            <span className="rounded-full bg-white/10 px-2 py-1 text-[8px] font-extrabold text-white/55">3 BRANCHES</span>
+            <span className="rounded-full bg-white/10 px-2 py-1 text-[8px] font-extrabold text-white/55">仲間 {unlockedCount}/{BATTLE_STUDENTS.length}</span>
           </div>
 
-          <div className="mt-2.5 space-y-2.5" aria-label="放課後の行き先">
+          <div className="mt-2.5 space-y-2.5" aria-label="日常の行き先">
             {options.map((profile) => {
               const scene = afterSchoolBranchScene(profile)
               const bond = afterSchoolBondState(bonds, profile.studentId)
               const isCurrent = profile.studentId === currentStudentId
+              const unlocked = isBattleStudentUnlocked(unlockedStudentIds, profile.studentId)
               const nextReward = !bond.skillUnlocked
                 ? `${profile.skill.emoji} 特技まであと${Math.max(0, 3 - bond.points)}`
                 : !bond.itemUnlocked
@@ -119,8 +128,14 @@ function RouteHub({ options, bonds, currentStudentId, fromBattle, rivalName, onS
                     <img
                       src={publicAssetUrl(scenePortrait(scene, bond.student.id, 'curious'))}
                       alt=""
-                      className="absolute bottom-1 left-1 h-12 w-12 rounded-xl border-2 border-white/50 bg-slate-900 object-cover [image-rendering:pixelated]"
+                      className={cx(
+                        'absolute bottom-1 left-1 h-12 w-12 rounded-xl border-2 border-white/50 bg-slate-900 object-cover [image-rendering:pixelated]',
+                        !unlocked && 'brightness-0 opacity-70',
+                      )}
                     />
+                    {!unlocked && (
+                      <span className="absolute bottom-4 left-5 text-base" aria-hidden="true">🔒</span>
+                    )}
                   </span>
                   <span className="min-w-0 p-3">
                     <span className="flex items-center justify-between gap-2">
@@ -128,10 +143,17 @@ function RouteHub({ options, bonds, currentStudentId, fromBattle, rivalName, onS
                       {isCurrent && (
                         <span className="shrink-0 rounded-full bg-emerald-400/15 px-2 py-1 text-[7px] font-extrabold text-emerald-100">同行中</span>
                       )}
+                      {!unlocked && (
+                        <span className="shrink-0 rounded-full bg-pink-400/15 px-2 py-1 text-[7px] font-extrabold text-pink-100">出会い</span>
+                      )}
                     </span>
-                    <span className="mt-0.5 block truncate text-[9px] font-bold text-cyan-100">{bond.student.name} · {profile.location}</span>
+                    <span className="mt-0.5 block truncate text-[9px] font-bold text-cyan-100">
+                      {unlocked ? bond.student.name : 'まだ知らないクラスメイト'} · {profile.location}
+                    </span>
                     <span className="mt-1.5 block"><BondMeter bond={bond} inverse /></span>
-                    <span className="mt-1.5 block truncate text-[8px] font-extrabold text-amber-200">NEXT · {nextReward}</span>
+                    <span className="mt-1.5 block truncate text-[8px] font-extrabold text-amber-200">
+                      {unlocked ? `NEXT · ${nextReward}` : 'FIRST EVENT · 話すと共闘できる仲間に'}
+                    </span>
                   </span>
                 </button>
               )
@@ -143,7 +165,7 @@ function RouteHub({ options, bonds, currentStudentId, fromBattle, rivalName, onS
           放課後は採点なしです。どの声掛けでも絆とXPを得られ、性格に合う言葉では絆が少し多く伸びます。
         </p>
         <Button full variant="ghost" className="text-white/65 active:bg-white/10" onClick={onHome}>
-          今回は寄り道せず帰る
+          今回は日常パートを終える
         </Button>
       </div>
     </div>
@@ -157,8 +179,10 @@ export function AfterSchoolInterludeScreen() {
   const storyStep = useStore((state) => state.battleStoryStep)
   const currentStudentId = useStore((state) => state.battleStudentId)
   const bonds = useStore((state) => state.afterSchoolBonds)
+  const unlockedStudentIds = useStore((state) => state.unlockedBattleStudentIds)
   const completeAfterSchoolRoute = useStore((state) => state.completeAfterSchoolRoute)
   const returnToChronicle = useStore((state) => state.returnToAfterSchoolChronicle)
+  const currentStudent = battleStudentById(currentStudentId)
   const options = useMemo(
     () => afterSchoolBranchOptions({ step: storyStep, currentStudentId }),
     [storyStep, currentStudentId],
@@ -167,6 +191,8 @@ export function AfterSchoolInterludeScreen() {
   const [branchId, setBranchId] = useState(null)
   const [choiceId, setChoiceId] = useState(null)
   const [reward, setReward] = useState(null)
+  const [epilogueRead, setEpilogueRead] = useState(() => !params.fromBattle)
+  const [branchStoryRead, setBranchStoryRead] = useState(false)
 
   const profile = options.find((item) => item.id === branchId) ?? null
   const scene = profile ? afterSchoolBranchScene(profile) : null
@@ -176,6 +202,45 @@ export function AfterSchoolInterludeScreen() {
     ? resolveAfterSchoolReward({ bonds, branchId: profile.id, choiceId: selectedChoice.id })
     : null
   const episodeNumber = afterSchoolEpisodeNumber(storyStep)
+  const epilogue = afterSchoolBattleEpilogue({
+    storyStep,
+    studentName: currentStudent.name,
+    rivalName: params.rivalName,
+    verdictId: params.verdictId,
+    isTeacher: params.isTeacher,
+    teacherDefeated: params.teacherDefeated,
+  })
+  const isFirstMeeting = profile
+    ? !isBattleStudentUnlocked(unlockedStudentIds, profile.studentId)
+    : false
+  const dailyChapter = profile
+    ? afterSchoolDailyChapter({
+        storyStep,
+        studentName: bond.student.name,
+        routeLabel: profile.routeLabel,
+        location: profile.location,
+        situation: profile.situation,
+        opening: profile.opening,
+        firstMeeting: isFirstMeeting,
+      })
+    : null
+
+  if (!epilogueRead) {
+    return (
+      <LightNovelScene
+        story={epilogue}
+        image={AFTER_SCHOOL_CHRONICLE.keyVisual}
+        imageAlt="ことばの対決を終え、クラスメイトたちが日常へ戻る昇降口"
+        portraits={{
+          'student-relieved': battleStudentPortrait(currentStudent.id, 'relieved'),
+        }}
+        onBack={returnToChronicle}
+        onComplete={() => setEpilogueRead(true)}
+        completeLabel="友達との日常へ"
+        skipLabel="日常へ進む"
+      />
+    )
+  }
 
   if (!profile || !scene || !bond) {
     return (
@@ -183,15 +248,32 @@ export function AfterSchoolInterludeScreen() {
         options={options}
         bonds={bonds}
         currentStudentId={currentStudentId}
-        fromBattle={params.fromBattle}
-        rivalName={params.rivalName}
+        unlockedStudentIds={unlockedStudentIds}
         onSelect={(nextBranchId) => {
           setBranchId(nextBranchId)
           setChoiceId(null)
           setReward(null)
+          setBranchStoryRead(false)
         }}
         onBack={returnToChronicle}
         onHome={goHome}
+      />
+    )
+  }
+
+  if (!branchStoryRead && dailyChapter) {
+    return (
+      <LightNovelScene
+        story={dailyChapter}
+        image={scene.image}
+        imageAlt={`${profile.location}。${profile.situation}`}
+        portraits={{
+          'student-opening': scenePortrait(scene, bond.student.id, profile.openingEmotionId),
+        }}
+        onBack={() => setBranchId(null)}
+        onComplete={() => setBranchStoryRead(true)}
+        completeLabel="返す言葉を選ぶ"
+        skipLabel="会話へ進む"
       />
     )
   }
@@ -216,13 +298,14 @@ export function AfterSchoolInterludeScreen() {
     if (reward) return
     setBranchId(null)
     setChoiceId(null)
+    setBranchStoryRead(false)
   }
 
   return (
     <div className="min-h-full bg-gradient-to-b from-slate-950 via-indigo-950 to-violet-950 pb-8 text-white">
       <ScreenHeader
         title={profile.routeLabel}
-        subtitle={`${bond.student.name}と過ごす、分岐した放課後`}
+        subtitle={`${bond.student.name}と過ごす日常`}
         onBack={reward ? returnToChronicle : selectAnotherRoute}
         color="#0f172a"
         inverse
@@ -275,23 +358,11 @@ export function AfterSchoolInterludeScreen() {
         </section>
 
         <section className="rounded-[1.75rem] border border-white/10 bg-white/[0.07] p-4 shadow-xl backdrop-blur-sm">
-          <p className="text-[9px] font-extrabold tracking-[0.16em] text-pink-200">BRANCH EPISODE</p>
-          <h2 className="mt-1 font-display text-lg font-extrabold">{profile.title}</h2>
-          <p className="mt-2 text-[11px] font-bold leading-relaxed text-white/60">{profile.situation}</p>
-
-          <div className="mt-3 flex items-start gap-3 rounded-2xl border border-white/10 bg-slate-950/55 p-3">
-            <span className="h-16 w-16 shrink-0 overflow-hidden rounded-2xl border-2 border-pink-200/25 bg-slate-900">
-              <img
-                src={publicAssetUrl(scenePortrait(scene, bond.student.id, profile.openingEmotionId))}
-                alt=""
-                className="h-full w-full object-cover [image-rendering:pixelated]"
-              />
-            </span>
-            <div className="min-w-0 flex-1">
-              <span className="text-[9px] font-extrabold text-cyan-200">{bond.student.name} · {bond.student.club}</span>
-              <p className="mt-1 text-xs font-extrabold leading-relaxed">{profile.opening}</p>
-            </div>
-          </div>
+          <p className="text-[9px] font-extrabold tracking-[0.16em] text-pink-200">YOUR RESPONSE</p>
+          <h2 className="mt-1 font-display text-lg font-extrabold">返す言葉を選ぶ</h2>
+          <p className="mt-2 text-[11px] font-bold leading-relaxed text-white/60">
+            {bond.student.name}の話を聞いて、今の自分らしい言葉を返そう。
+          </p>
 
           {!reward && (
             <>
@@ -383,6 +454,13 @@ export function AfterSchoolInterludeScreen() {
                   <p className="mt-0.5 text-[9px] font-bold text-white/55">{reward.unlockedItem.description}</p>
                 </div>
               )}
+              {reward.companionUnlocked && (
+                <div className="mt-2 rounded-xl border border-pink-200/25 bg-pink-300/10 px-3 py-2">
+                  <p className="text-[8px] font-extrabold text-pink-200">NEW COMPANION · KEY VISUAL SAVED</p>
+                  <p className="mt-0.5 text-xs font-extrabold">🤝 {bond.student.name}が共闘できる仲間になった</p>
+                  <p className="mt-0.5 text-[9px] font-bold text-white/55">この出会いはアルバムから振り返れ、次の戦果画面から同行者に選べます。</p>
+                </div>
+              )}
               <p className="mt-2 text-[8px] font-bold leading-relaxed text-white/40">放課後XPは冒険者LVへ加算されます。学習の正答率・SRS・診断結果は変わりません。</p>
             </div>
           )}
@@ -399,7 +477,7 @@ export function AfterSchoolInterludeScreen() {
           ) : (
             <>
               <Button full size="lg" onClick={() => finishEpisode()}>
-                次の課題へ戻る <ArrowRight size={19} />
+                物語へ戻る <ArrowRight size={19} />
               </Button>
               <Button full variant="secondary" onClick={() => finishEpisode({ openTalk: true })}>
                 もっと友達と話す

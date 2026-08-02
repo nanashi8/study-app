@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import { buildDeck, recordStudyAnswer, SESSION_SIZE } from '../lib/session.js'
 import { relatedByEtymology } from '../data/vocab.js'
-import { speak } from '../lib/tts.js'
+import { playSpeechItems } from '../lib/speech-player.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { EtymologyBlock } from '../components/WordBits.jsx'
@@ -42,10 +42,16 @@ export function VocabStudyScreen() {
   // カードが変わるたび自動で読み上げ
   useEffect(() => {
     if (word && settings.autoSpeak) {
-      speak(word.word, {
+      playSpeechItems([
+        { text: word.word, label: word.word, style: 'word' },
+        ...(word.example
+          ? [{ text: word.example.en, label: word.example.en, style: 'sentence' }]
+          : []),
+      ], {
+        title: '単語カード',
         rate: settings.ttsRate,
         voiceURI: settings.ttsVoiceURI,
-        style: 'word',
+        japaneseVoiceURI: settings.ttsJapaneseVoiceURI,
       })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -90,6 +96,12 @@ export function VocabStudyScreen() {
 
   const relatedCount = relatedByEtymology(word).length
   const saved = myList.includes(word.id)
+  const wordSpeechItems = [
+    { text: word.word, label: word.word, style: 'word' },
+    ...(word.example
+      ? [{ text: word.example.en, label: word.example.en, style: 'sentence' }]
+      : []),
+  ]
 
   return (
     <div className="flex h-full flex-col">
@@ -135,7 +147,13 @@ export function VocabStudyScreen() {
               <p className="mt-1 text-sm font-bold text-ink/45">{word.phonetic}</p>
             )}
             <div className="mt-3">
-              <SpeakButton text={word.word} size="lg" />
+              <SpeakButton
+                text={word.word}
+                phrases={wordSpeechItems}
+                phraseIndex={0}
+                title="単語カード"
+                size="lg"
+              />
             </div>
           </div>
 
@@ -158,7 +176,13 @@ export function VocabStudyScreen() {
               {word.example && (
                 <div className="rounded-2xl bg-white p-3 ring-1 ring-brand-100">
                   <div className="flex items-start gap-2">
-                    <SpeakButton text={word.example.en} size="sm" />
+                    <SpeakButton
+                      text={word.example.en}
+                      phrases={wordSpeechItems}
+                      phraseIndex={1}
+                      title="単語カード"
+                      size="sm"
+                    />
                     <div className="flex-1">
                       <p className="font-bold text-ink">{word.example.en}</p>
                       <p className="mt-0.5 text-sm font-bold text-ink/55">{word.example.ja}</p>

@@ -5,15 +5,29 @@ import {
   getEnglishVoices,
   getJapaneseVoices,
   isTTSSupported,
-  speak,
-  stopSpeaking,
   subscribeVoices,
   voiceQuality,
   voiceQualityLabel,
 } from '../lib/tts.js'
+import {
+  dismissSpeechPlayer,
+  playSpeechItems,
+} from '../lib/speech-player.js'
+import { AFTER_SCHOOL_CHRONICLE } from '../lib/afterSchoolStory.js'
 import { Sheet } from './Sheet.jsx'
 import { Button, cx } from './ui.jsx'
-import { Gear, SpeakerWave } from './Icons.jsx'
+import {
+  BookOpen,
+  Chart,
+  ChevronLeft,
+  ChevronRight,
+  Gear,
+  Home,
+  Menu,
+  SpeakerWave,
+  Sparkles,
+  StarFilled,
+} from './Icons.jsx'
 import { GameSettingsPanel } from './GameSettings.jsx'
 import { PortalSettingsPanel } from './PortalSettings.jsx'
 
@@ -249,7 +263,8 @@ export function SpeechSettingsPanel({ heading = true }) {
           variant="soft"
           size="sm"
           onClick={() =>
-            speak('After a brief pause, Alice looked up. “Where am I going?” she wondered.', {
+            playSpeechItems(['After a brief pause, Alice looked up. “Where am I going?” she wondered.'], {
+              title: '英語の試聴',
               rate: settings.ttsRate,
               voiceURI: settings.ttsVoiceURI,
               style: 'passage',
@@ -262,10 +277,11 @@ export function SpeechSettingsPanel({ heading = true }) {
           variant="soft"
           size="sm"
           onClick={() =>
-            speak('少し間を置いて、アリスは顔を上げました。「ここはどこ？」と、静かにたずねます。', {
+            playSpeechItems(['少し間を置いて、アリスは顔を上げました。「ここはどこ？」と、静かにたずねます。'], {
+              title: '日本語の試聴',
               lang: 'ja-JP',
               rate: settings.ttsRate,
-              voiceURI: settings.ttsJapaneseVoiceURI,
+              japaneseVoiceURI: settings.ttsJapaneseVoiceURI,
               style: 'passage',
             })
           }
@@ -327,6 +343,7 @@ function SettingsSection({ title, desc, children, defaultOpen = false }) {
   return (
     <details
       className="group overflow-hidden rounded-2xl border border-slate-200/80 bg-white"
+      data-settings-section={title}
       open={defaultOpen}
     >
       <summary className="flex min-h-16 cursor-pointer list-none items-center justify-between gap-3 px-4 py-3">
@@ -343,12 +360,12 @@ function SettingsSection({ title, desc, children, defaultOpen = false }) {
 
 export function SettingsMenuPanel({ heading = true }) {
   return (
-    <section aria-label="設定メニュー" data-settings-central-panel>
+    <section aria-label="設定" data-settings-central-panel>
       {heading && (
         <div className="pt-3">
-          <h2 className="font-display text-lg font-extrabold text-ink">設定メニュー</h2>
+          <h2 className="font-display text-lg font-extrabold text-ink">設定</h2>
           <p className="mt-1 text-xs font-bold leading-relaxed text-ink/50">
-            保存される学習・音声・ゲーム・コンテンツ設定は、すべてここで変更します。
+            保存される学習・音声・ゲーム・コンテンツ設定は、メニュー内のここに集約しています。
           </p>
         </div>
       )}
@@ -368,7 +385,7 @@ export function SettingsMenuPanel({ heading = true }) {
         </SettingsSection>
         <SettingsSection
           title="ゲーム"
-          desc="簡易／ゲーミングUI、BGM、演出、持ち物、星彩"
+          desc="バトル画面、BGM、演出、持ち物、星彩"
         >
           <GameSettingsPanel />
         </SettingsSection>
@@ -378,6 +395,116 @@ export function SettingsMenuPanel({ heading = true }) {
         >
           <PortalSettingsPanel />
         </SettingsSection>
+      </div>
+    </section>
+  )
+}
+
+const APP_MENU_DESTINATIONS = [
+  {
+    screen: 'portal',
+    label: 'スタディトップ',
+    desc: '学ぶコンテンツを選ぶ',
+    Icon: Home,
+  },
+  {
+    screen: 'home',
+    label: '英語ホーム',
+    desc: '英語の学習を続ける',
+    Icon: BookOpen,
+  },
+  {
+    screen: 'afterSchoolChronicle',
+    label: AFTER_SCHOOL_CHRONICLE.title,
+    desc: '学園ライトノベルと対決へ',
+    Icon: StarFilled,
+  },
+  {
+    screen: 'progress',
+    label: '学習記録',
+    desc: '成績と進捗コードを確認',
+    Icon: Chart,
+  },
+]
+
+const APP_MENU_EXTRAS = [
+  {
+    screen: 'storyAlbum',
+    label: '思い出アルバム',
+    desc: '出会いと先生戦のキービジュアル',
+    Icon: Sparkles,
+  },
+]
+
+export function AppMenuPanel({ onNavigate, onOpenSettings }) {
+  return (
+    <section aria-label="アプリメニュー" data-app-menu-panel>
+      <p className="text-xs font-bold leading-relaxed text-ink/50">
+        画面移動と設定を一つのメニューにまとめています。
+      </p>
+
+      <button
+        type="button"
+        onClick={onOpenSettings}
+        data-menu-settings-entry
+        className="mt-3 flex min-h-16 w-full items-center gap-3 rounded-2xl bg-gradient-to-r from-brand-600 to-violet-600 px-4 text-left text-white shadow-lg shadow-brand-200/60 active:scale-[0.99]"
+      >
+        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-white/15">
+          <Gear size={22} />
+        </span>
+        <span className="min-w-0 flex-1">
+          <strong className="block font-display text-base font-extrabold">設定</strong>
+          <span className="block truncate text-[10px] font-bold text-white/70">
+            学習・音声・バトル画面・BGM・持ち物・表示
+          </span>
+        </span>
+        <ChevronRight size={20} />
+      </button>
+
+      <div className="mt-3 divide-y divide-slate-100 overflow-hidden rounded-2xl border border-slate-200/80 bg-white">
+        {APP_MENU_DESTINATIONS.map(({ screen, label, desc, Icon }) => (
+          <button
+            key={screen}
+            type="button"
+            onClick={() => onNavigate?.(screen)}
+            className="flex min-h-14 w-full items-center gap-3 px-4 py-2 text-left active:bg-brand-50"
+          >
+            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-brand-50 text-brand-600">
+              <Icon size={19} />
+            </span>
+            <span className="min-w-0 flex-1">
+              <strong className="block text-sm font-extrabold text-ink">{label}</strong>
+              <span className="block truncate text-[10px] font-bold text-ink/45">{desc}</span>
+            </span>
+            <ChevronRight size={18} className="text-ink/25" />
+          </button>
+        ))}
+      </div>
+
+      <div className="mt-4" data-menu-extras>
+        <p className="px-1 text-[10px] font-extrabold tracking-[0.12em] text-ink/40">
+          おまけ
+        </p>
+        <div className="mt-1.5 overflow-hidden rounded-2xl border border-violet-100 bg-violet-50/70">
+          {APP_MENU_EXTRAS.map(({ screen, label, desc, Icon }) => (
+            <button
+              key={screen}
+              type="button"
+              onClick={() => onNavigate?.(screen)}
+              data-menu-extra={screen}
+              className="flex min-h-14 w-full items-center gap-3 px-4 py-2 text-left active:bg-violet-100"
+            >
+              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-white text-violet-600 shadow-sm">
+                <Icon size={19} />
+              </span>
+              <span className="min-w-0 flex-1">
+                <strong className="block text-sm font-extrabold text-ink">{label}</strong>
+                <span className="block truncate text-[10px] font-bold text-ink/45">{desc}</span>
+              </span>
+              <ChevronRight size={18} className="text-ink/25" />
+            </button>
+          ))}
+        </div>
       </div>
     </section>
   )
@@ -394,7 +521,7 @@ export function SpeechSettingsButton({
     <button
       type="button"
       onClick={openSpeechSettings}
-      aria-label="設定メニューを開く"
+      aria-label="メニューを開く"
       aria-haspopup="dialog"
       data-settings-menu-trigger
       data-speech-settings-trigger
@@ -407,8 +534,8 @@ export function SpeechSettingsButton({
         className,
       )}
     >
-      <Gear size={compact ? 20 : 18} />
-      {!compact && <span className="text-[11px]">設定</span>}
+      <Menu size={compact ? 20 : 18} />
+      {!compact && <span className="text-[11px]">メニュー</span>}
     </button>
   )
 }
@@ -416,19 +543,47 @@ export function SpeechSettingsButton({
 export function SpeechSettingsSheet() {
   const open = useStore((state) => state.speechSettingsOpen)
   const closeSpeechSettings = useStore((state) => state.closeSpeechSettings)
+  const navigate = useStore((state) => state.navigate)
+  const [view, setView] = useState('menu')
+
+  useEffect(() => {
+    if (!open) setView('menu')
+  }, [open])
+
   const close = () => {
-    stopSpeaking()
+    setView('menu')
+    dismissSpeechPlayer()
     closeSpeechSettings()
+  }
+  const openScreen = (screen) => {
+    close()
+    navigate(screen)
   }
 
   return (
-    <Sheet open={open} onClose={close} title="設定メニュー" maxH="92vh">
-      <SettingsMenuPanel heading={false} />
+    <Sheet open={open} onClose={close} title={view === 'settings' ? '設定' : 'メニュー'} maxH="92vh">
+      {view === 'settings' ? (
+        <>
+          <button
+            type="button"
+            onClick={() => setView('menu')}
+            className="mb-3 inline-flex min-h-11 items-center gap-1 rounded-xl px-2 text-xs font-extrabold text-brand-700 active:bg-brand-50"
+          >
+            <ChevronLeft size={18} /> メニューへ戻る
+          </button>
+          <SettingsMenuPanel heading={false} />
+        </>
+      ) : (
+        <AppMenuPanel
+          onNavigate={openScreen}
+          onOpenSettings={() => setView('settings')}
+        />
+      )}
     </Sheet>
   )
 }
 
-// 既存画面の import 名は保存データと同様に互換性を保ちつつ、
-// 新しい画面からは設定メニューとして参照できるよう別名も公開する。
+// 既存画面の import 名は互換性のため保ち、
+// 新しい画面からは共通メニューとして参照できる別名も公開する。
 export const SettingsMenuButton = SpeechSettingsButton
 export const SettingsMenuSheet = SpeechSettingsSheet

@@ -52,7 +52,7 @@ export function WritingScreen() {
   return (
     <div className="pb-8">
       <ScreenHeader
-        title="英作文・単元別ビルダー"
+        title="英作文"
         subtitle="使う場面と型をつないで、迷わず一文へ"
         right={
           <button

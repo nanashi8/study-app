@@ -37,6 +37,13 @@ export const READING_PHRASE_RULES = Object.freeze([
     decision: '節の入口を接続として示し、節内でもS・V・O・C・Mを分ける。接続語ごとに理由・条件・時・内容を説明する。',
   }),
   rule({
+    id: 'connector-closure-back-reference',
+    appliesTo: 'when/while/if/because等を先に訳し、後続フレーズで節の関係を完成すると分かりやすい箇所',
+    example: 'But when / the Rabbit actually took a watch = しかし、その時 / ウサギが本当に時計を取り出した（時）',
+    decision: '接続の意味を入口で示し、関係が完成する後続フレーズでは必要な語だけを日本語の括弧で受け直す。日本語音声は括弧内も読み、括弧記号そのものは読まない。',
+    caution: 'つながりが既に明白な箇所へ機械的に重ねず、英語順で係り先を見失う箇所に限る。',
+  }),
+  rule({
     id: 'preposition-plus-fused-relative',
     appliesTo: '前置詞＋先行詞を含むwhat',
     example: 'by what / is available; from what / they / once / knew',

@@ -105,6 +105,7 @@ test('長い一文の自然訳と英語順の対応訳は、一覧詳細・学�
   assert.match(component, /本文見直し済み/)
   assert.match(component, /監査確認済み/)
   assert.match(component, /item\.spokenEn \?\? item\.en/)
+  assert.match(component, /japanesePhraseSpeechText\(item\.ja\)/)
   assert.match(component, /前からは、/)
   assert.match(component, /英語、直訳、文法解説の順で再生/)
   assert.match(component, /roleParts/)

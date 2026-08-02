@@ -70,8 +70,8 @@ test('全16長文・363文・3,238フレーズと長い一文33文・236フレ�
 test('全規則と全文を監査確認済みにし、台帳外変更は別状態として扱う', () => {
   const audit = auditPhraseExplanations()
   assert.equal(audit.complete, true)
-  assert.equal(audit.rules.total, 16)
-  assert.equal(audit.rules.confirmed, 16)
+  assert.equal(audit.rules.total, 17)
+  assert.equal(audit.rules.confirmed, 17)
   assert.equal(audit.rules.reviewNeeded, 0)
   assert.equal(audit.reading.manuallyReviewedSentenceCount, 363)
   assert.equal(audit.longSentences.manuallyReviewedSentenceCount, 33)

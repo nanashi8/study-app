@@ -1,74 +1,150 @@
-import { useMemo } from 'react'
-import { useStore } from '../store/useStore.js'
-import { overallProgress, suggestStartPosition } from '../lib/session.js'
+import { useMemo, useState } from 'react'
+import { useStore, todayIndex } from '../store/useStore.js'
+import { overallProgress } from '../lib/session.js'
 import { buildLearningPowerProfile } from '../lib/learningPower.js'
-import { etymologyProgress } from '../lib/etymologyProgress.js'
-import { enemyLevel } from '../lib/adaptive.js'
-import { ETYMOLOGY_PACKS, ROOTS, wordsByRoot } from '../data/vocab.js'
-import { todayIndex } from '../store/useStore.js'
-import { capEnemyPositionForHeroLevel, heroProgress } from '../lib/rpg.js'
+import { heroProgress } from '../lib/rpg.js'
 import { AFTER_SCHOOL_CHRONICLE } from '../lib/afterSchoolStory.js'
 import { publicAssetUrl } from '../lib/publicAssetUrl.js'
-import { Card, ProgressRing, Chip } from '../components/ui.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
-import { Flame, Star, Book, BookOpen, Cards, Sparkles, Bookmark, Refresh, ArrowRight, Headphones, Keyboard, Lightbulb, Target, Trophy, ChevronLeft, Link } from '../components/Icons.jsx'
+import {
+  ArrowRight,
+  Book,
+  BookOpen,
+  Bookmark,
+  Cards,
+  ChevronLeft,
+  Headphones,
+  Keyboard,
+  Lightbulb,
+  Link,
+  Refresh,
+  Sparkles,
+  Star,
+  Target,
+  Trophy,
+} from '../components/Icons.jsx'
 
 const APP_NAME = '英語アプリ'
 
-function ModeTile({ icon, label, sub, color, onClick, disabled }) {
+const PRIMARY_LEARNING_MODES = [
+  { id: 'vocab', label: '単語', Icon: Book, color: '#6366f1', screen: 'vocabLevels' },
+  { id: 'quiz', label: 'クイズ', Icon: Cards, color: '#0ea5e9', screen: 'vocabLevels', params: { intent: 'quiz' } },
+  { id: 'reading', label: '長文', Icon: BookOpen, color: '#10b981', screen: 'readingList' },
+  { id: 'phrases', label: '熟語・構文', Icon: Sparkles, color: '#8b5cf6', screen: 'phrases' },
+  { id: 'grammar', label: '文法', Icon: Lightbulb, color: '#f59e0b', screen: 'grammar' },
+  { id: 'listening', label: 'リスニング', Icon: Headphones, color: '#0284c7', screen: 'listening' },
+]
+
+const EXTRA_LEARNING_MODES = [
+  { id: 'literature', label: '名作に親しむ', Icon: Headphones, color: '#0f766e', screen: 'literatureLibrary' },
+  { id: 'writing', label: '英作文', Icon: BookOpen, color: '#4338ca', screen: 'writing' },
+  { id: 'roots', label: '語源', Icon: Link, color: '#7c3aed', screen: 'roots' },
+  { id: 'dictation', label: 'ディクテーション', Icon: Keyboard, color: '#0d9488', screen: 'dictation' },
+  { id: 'saved-vocab', label: 'マイ単語', Icon: Bookmark, color: '#d97706', screen: 'myList' },
+  { id: 'saved-grammar', label: 'マイ文法', Icon: Lightbulb, color: '#9333ea', screen: 'myGrammar' },
+]
+
+function LearningModeButton({ mode, onOpen }) {
+  const { Icon } = mode
   return (
     <button
-      onClick={onClick}
-      disabled={disabled}
-      className="relative flex min-h-24 flex-col items-start gap-2 rounded-2xl border border-slate-200/70 bg-white p-3 text-left shadow-card active:bg-brand-50 disabled:opacity-55"
+      type="button"
+      onClick={() => onOpen(mode.screen, mode.params)}
+      className="flex min-h-14 items-center gap-2.5 rounded-2xl border border-slate-200/80 bg-white px-3 py-2.5 text-left shadow-sm active:bg-brand-50"
+      data-home-mode={mode.id}
     >
       <span
-        className="flex h-10 w-10 items-center justify-center rounded-xl text-white"
-        style={{ background: color }}
+        className="grid h-9 w-9 shrink-0 place-items-center rounded-xl text-white"
+        style={{ backgroundColor: mode.color }}
       >
-        {icon}
+        <Icon size={19} />
       </span>
-      <div>
-        <div className="font-display text-base font-extrabold text-ink">{label}</div>
-        <div className="text-xs font-bold text-ink/45">{sub}</div>
-      </div>
-      {disabled && (
-        <span className="absolute right-3 top-3 rounded-full bg-ink/10 px-2 py-0.5 text-[10px] font-extrabold text-ink/50">
-          準備中
-        </span>
-      )}
+      <span className="min-w-0 flex-1 truncate font-display text-sm font-extrabold text-ink">
+        {mode.label}
+      </span>
+      <ArrowRight size={16} className="shrink-0 text-ink/25" />
     </button>
   )
 }
 
-export function HomeScreen() {
-  const navigate = useStore((s) => s.navigate)
-  const stats = useStore((s) => s.stats)
-  const srs = useStore((s) => s.srs)
-  const etymologySrs = useStore((s) => s.etymologySrs)
-  const settings = useStore((s) => s.settings)
-  const myList = useStore((s) => s.myList)
-  const myGrammarList = useStore((s) => s.myGrammarList)
-  const writingProgress = useStore((s) => s.writingProgress)
-  const diagnosticHistory = useStore((s) => s.diagnosticHistory)
-  const kotenSrs = useStore((s) => s.kotenSrs)
-  const kotenGrammarSrs = useStore((s) => s.kotenGrammarSrs)
-  const kotenCultureSrs = useStore((s) => s.kotenCultureSrs)
-  const kotenInterpretationSrs = useStore((s) => s.kotenInterpretationSrs)
-  const skillStats = useStore((s) => s.skillStats)
-  const learningAnalytics = useStore((s) => s.learningAnalytics)
+function LearningMenu({ navigate, onBack }) {
+  const open = (screen, params) => navigate(screen, params ?? {})
 
-  const engPos = useStore((s) => s.engPos)
-  const hero = heroProgress(stats.xp)
-  const enemy = enemyLevel(
-    capEnemyPositionForHeroLevel(
-      engPos ?? suggestStartPosition(srs),
-      hero.level,
-    ),
+  return (
+    <div className="min-h-full bg-slate-100 pb-8" data-home-learning-menu>
+      <header className="sticky top-0 z-20 flex min-h-16 items-center gap-3 border-b border-slate-200/80 bg-white/95 px-3 py-2.5 backdrop-blur">
+        <button
+          type="button"
+          onClick={onBack}
+          aria-label="タイトル画面へ戻る"
+          className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl text-ink/70 active:bg-brand-50"
+        >
+          <ChevronLeft size={24} />
+        </button>
+        <div className="min-w-0 flex-1">
+          <p className="text-xs font-extrabold tracking-[0.14em] text-brand-500">SELECT MODE</p>
+          <h1 className="font-display text-xl font-extrabold text-ink">学習を選ぶ</h1>
+        </div>
+      </header>
+
+      <div className="space-y-4 px-4 pt-4">
+        <section>
+          <h2 className="mb-2 px-1 font-display text-sm font-extrabold text-ink/65">基本学習</h2>
+          <div className="grid grid-cols-2 gap-2.5" data-home-mode-group="primary">
+            {PRIMARY_LEARNING_MODES.map((mode) => (
+              <LearningModeButton key={mode.id} mode={mode} onOpen={open} />
+            ))}
+          </div>
+        </section>
+
+        <div className="grid grid-cols-2 gap-2.5">
+          <button
+            type="button"
+            onClick={() => open('diagnostic')}
+            className="flex min-h-14 items-center gap-2.5 rounded-2xl bg-violet-100 px-3 text-left font-display text-sm font-extrabold text-violet-800 active:bg-violet-200"
+          >
+            <Trophy size={20} /> 学習診断
+          </button>
+          <button
+            type="button"
+            onClick={() => open('englishMap')}
+            className="flex min-h-14 items-center gap-2.5 rounded-2xl bg-amber-100 px-3 text-left font-display text-sm font-extrabold text-amber-800 active:bg-amber-200"
+          >
+            <Target size={20} /> 学習マップ
+          </button>
+        </div>
+
+        <details className="home-learning-more rounded-2xl border border-slate-200/80 bg-white">
+          <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between px-4 font-display text-sm font-extrabold text-brand-700">
+            <span>そのほかの学習</span>
+          </summary>
+          <div className="grid grid-cols-2 gap-2.5 border-t border-slate-200/70 p-3" data-home-mode-group="secondary">
+            {EXTRA_LEARNING_MODES.map((mode) => (
+              <LearningModeButton key={mode.id} mode={mode} onOpen={open} />
+            ))}
+          </div>
+        </details>
+      </div>
+    </div>
   )
-  const latestDiagnostic = Array.isArray(diagnosticHistory) ? diagnosticHistory[0] : null
+}
 
-  const prog = overallProgress(srs)
+export function HomeScreen() {
+  const navigate = useStore((state) => state.navigate)
+  const stats = useStore((state) => state.stats)
+  const settings = useStore((state) => state.settings)
+  const srs = useStore((state) => state.srs)
+  const etymologySrs = useStore((state) => state.etymologySrs)
+  const diagnosticHistory = useStore((state) => state.diagnosticHistory)
+  const kotenSrs = useStore((state) => state.kotenSrs)
+  const kotenGrammarSrs = useStore((state) => state.kotenGrammarSrs)
+  const kotenCultureSrs = useStore((state) => state.kotenCultureSrs)
+  const kotenInterpretationSrs = useStore((state) => state.kotenInterpretationSrs)
+  const skillStats = useStore((state) => state.skillStats)
+  const learningAnalytics = useStore((state) => state.learningAnalytics)
+  const [learningMenuOpen, setLearningMenuOpen] = useState(false)
+
+  const dueCount = overallProgress(srs).due
   const learningPower = useMemo(
     () => buildLearningPowerProfile({
       learningAnalytics,
@@ -83,7 +159,7 @@ export function HomeScreen() {
       skillStats,
       diagnosticHistory,
       stats,
-      dueCount: prog.due,
+      dueCount,
     }),
     [
       learningAnalytics,
@@ -96,274 +172,108 @@ export function HomeScreen() {
       skillStats,
       diagnosticHistory,
       stats,
-      prog.due,
+      dueCount,
     ],
   )
   const recommendation = learningPower.recommendation
+  const hero = heroProgress(stats.xp)
   const goal = settings.dailyGoal || 20
   const todayCount = stats.day === todayIndex() ? stats.todayCount : 0
-  const goalPct = Math.min(1, todayCount / goal)
-  const writingDone = Object.values(writingProgress).filter(
-    (item) => (item?.completed ?? 0) > 0,
-  ).length
-  const etymology = useMemo(
-    () => etymologyProgress(ETYMOLOGY_PACKS, etymologySrs),
-    [etymologySrs],
-  )
 
-  const dayRoot = ROOTS[todayIndex() % ROOTS.length]
-  const rootWords = wordsByRoot(dayRoot.id).slice(0, 3)
+  if (learningMenuOpen) {
+    return (
+      <LearningMenu
+        navigate={navigate}
+        onBack={() => setLearningMenuOpen(false)}
+      />
+    )
+  }
 
   return (
-    <div className="pb-6">
-      {/* ヒーロー */}
-      <div className="rounded-b-[2.5rem] bg-gradient-to-br from-brand-500 via-brand-600 to-brand-700 px-5 pb-7 pt-[calc(env(safe-area-inset-top)+1.25rem)] text-white">
-        <div className="mb-3 flex items-center justify-between">
+    <div
+      className="home-title-screen relative flex min-h-full flex-col overflow-hidden bg-slate-950 text-white"
+      data-testid="home-title-screen"
+    >
+      <section className="home-title-art relative overflow-hidden">
+        <img
+          src={publicAssetUrl(AFTER_SCHOOL_CHRONICLE.keyVisual)}
+          alt="放課後の昇降口で、友達と次の学習へ向かう"
+          className="absolute inset-0 h-full w-full object-cover object-center"
+        />
+        <span className="pointer-events-none absolute inset-0 bg-gradient-to-b from-slate-950/45 via-slate-950/5 to-slate-950" />
+
+        <div className="absolute inset-x-0 top-0 flex items-center justify-between px-4 pt-[calc(env(safe-area-inset-top)+1rem)]">
           <button
+            type="button"
             onClick={() => navigate('portal')}
-            className="flex items-center gap-1 rounded-full bg-white/15 py-1 pl-1.5 pr-2.5 text-[11px] font-extrabold text-white/90 active:scale-95 transition-transform"
+            className="inline-flex min-h-10 items-center gap-1 rounded-full border border-white/15 bg-slate-950/50 px-3 text-xs font-extrabold text-white/85 backdrop-blur-sm active:bg-slate-950/70"
           >
-            <ChevronLeft size={14} /> スタディアプリ
+            <ChevronLeft size={15} /> スタディアプリ
           </button>
           <SpeechSettingsButton compact inverse />
         </div>
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-xs font-bold text-white/70">英検5級〜1級</p>
-            <h1 className="font-display text-2xl font-extrabold tracking-wide">{APP_NAME}</h1>
-          </div>
-          <div className="flex items-center gap-2">
-            <Chip className="bg-white/15 text-white">
-              <Flame size={14} /> {stats.streak}日
-            </Chip>
-            <Chip className="bg-white/15 text-white">
-              <Star size={14} /> LV{hero.level}
-            </Chip>
-          </div>
-        </div>
 
-        {/* 今日の目標リング */}
-        <div className="mt-4 flex items-center gap-4 rounded-2xl bg-white/10 p-4">
-          <ProgressRing value={goalPct} size={76} stroke={9} color="#ffffff" track="rgba(255,255,255,0.25)">
-            <span className="font-display text-lg font-extrabold leading-none">{todayCount}</span>
-            <span className="text-[10px] font-bold text-white/70">/{goal}</span>
-          </ProgressRing>
-          <div className="flex-1">
-            <p className="font-display text-lg font-extrabold">今日の学習</p>
-            <p className="text-sm font-bold text-white/75">
-              {todayCount >= goal
-                ? '目標達成！すごい🎉'
-                : `あと ${goal - todayCount} 回で目標達成`}
-            </p>
-          </div>
+        <div className="absolute inset-x-0 bottom-0 px-5 pb-5 text-center">
+          <p className="text-xs font-extrabold tracking-[0.26em] text-cyan-200">ENGLISH ADVENTURE</p>
+          <h1 className="mt-1 font-display text-4xl font-extrabold tracking-wide drop-shadow-lg">
+            {APP_NAME}
+          </h1>
+          <p className="mt-1 text-sm font-bold text-white/65">英検5級〜1級</p>
         </div>
-      </div>
+      </section>
 
-      <div className="space-y-5 px-4 pt-5">
-        {/* テスト結果・記憶・習慣・得意時間帯を、その時点の次メニューに使う。 */}
-        <Card className="overflow-hidden">
+      <section className="home-title-panel flex flex-1 flex-col justify-center px-5 pb-5 pt-3">
+        <div className="home-title-actions space-y-2.5" data-home-title-menu>
           <button
+            type="button"
             onClick={() => navigate(recommendation.screen, recommendation.params)}
-            className="w-full bg-gradient-to-br from-slate-900 via-indigo-950 to-violet-950 p-4 text-left text-white active:opacity-95"
+            className="flex min-h-16 w-full items-center gap-3 rounded-2xl bg-white px-4 text-left text-slate-950 shadow-lg active:scale-[0.99]"
+            data-home-title-action="continue"
           >
-            <div className="flex items-start gap-3">
-              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/10 text-violet-200 ring-1 ring-inset ring-white/10">
-                {recommendation.id === 'review' ? <Refresh size={24} /> : <Sparkles size={24} />}
-              </span>
-              <div className="min-w-0 flex-1">
-                <div className="flex flex-wrap items-center gap-1.5">
-                  <span className="text-[9px] font-extrabold tracking-[0.16em] text-violet-200/70">
-                    学習脳力ナビ
-                  </span>
-                  <span className="rounded-full bg-white/10 px-2 py-0.5 text-[9px] font-extrabold text-white/70">
-                    {recommendation.intensity}
-                  </span>
-                </div>
-                <p className="mt-1 font-display text-base font-extrabold">
-                  {recommendation.title}
-                </p>
-                <p className="mt-1 text-[10px] font-bold leading-relaxed text-white/55">
-                  {recommendation.reason}
-                </p>
-                <div className="mt-2 flex items-center justify-between gap-2">
-                  <span className="text-[9px] font-extrabold text-amber-200/80">
-                    {recommendation.timing}
-                  </span>
-                  <span className="inline-flex shrink-0 items-center gap-1 text-[10px] font-extrabold text-white/85">
-                    {recommendation.actionLabel} <ArrowRight size={14} />
-                  </span>
-                </div>
-              </div>
-            </div>
-          </button>
-        </Card>
-
-        {/* 学習診断 */}
-        <Card className="overflow-hidden">
-          <button
-            onClick={() => navigate('diagnostic')}
-            className="flex w-full items-center gap-3 p-4 text-left active:bg-brand-50"
-          >
-            <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-violet-100 text-violet-600">
-              <Trophy size={24} />
+            <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-violet-100 text-violet-700">
+              {recommendation.id === 'review' ? <Refresh size={21} /> : <Sparkles size={21} />}
             </span>
-            <div className="min-w-0 flex-1">
-              <div className="font-display font-extrabold text-ink">学習診断テスト</div>
-              <div className="text-xs font-bold text-ink/50">
-                {latestDiagnostic
-                  ? `推定偏差値 ${latestDiagnostic.deviation}・英検${latestDiagnostic.estimatedLevel?.label ?? '—'}目安`
-                  : '28問で偏差値・英検級・弱点を診断'}
-              </div>
-            </div>
-            {latestDiagnostic && (
-              <span className="rounded-full bg-violet-100 px-2.5 py-1 font-display text-sm font-extrabold text-violet-700">
-                {latestDiagnostic.deviation}
+            <span className="min-w-0 flex-1">
+              <strong className="block font-display text-base font-extrabold">つづきから</strong>
+              <span className="block truncate text-xs font-bold text-slate-500">
+                {recommendation.actionLabel}
               </span>
-            )}
-            <span className="text-brand-500"><ArrowRight size={22} /></span>
+            </span>
+            <ArrowRight size={20} className="shrink-0 text-violet-600" />
           </button>
-        </Card>
 
-        {/* 学校生活とことばの対決を一つの物語として遊ぶゲーム入口。 */}
-        <Card className="overflow-hidden">
           <button
+            type="button"
             onClick={() => navigate('afterSchoolChronicle')}
-            className="relative block w-full overflow-hidden bg-slate-950 text-left text-white active:opacity-95"
+            className="flex min-h-14 w-full items-center gap-3 rounded-2xl border border-white/15 bg-white/10 px-4 text-left active:bg-white/15"
+            data-home-title-action="battle"
           >
-            <img
-              src={publicAssetUrl(AFTER_SCHOOL_CHRONICLE.keyVisual)}
-              alt="放課後の昇降口で、4人の高校生が校内図を囲んで次の課題ルートを相談している"
-              className="aspect-[16/8] w-full object-cover"
-            />
-            <span className="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/35 to-transparent" />
-            <span className="absolute inset-x-0 bottom-0 flex items-end gap-3 p-4">
-              <span className="min-w-0 flex-1">
-                <span className="text-[8px] font-extrabold tracking-[0.16em] text-cyan-200">
-                  BATTLE &amp; FRIENDS
-                </span>
-                <strong className="mt-0.5 block font-display text-lg font-extrabold">
-                  {AFTER_SCHOOL_CHRONICLE.title}
-                </strong>
-                <span className="mt-1 block text-[10px] font-bold leading-relaxed text-white/65">
-                  ことばの対決 → 3つの放課後ルート → 関係報酬
-                </span>
-                <span className="mt-1 block text-[9px] font-extrabold text-amber-100">
-                  {hero.title.emoji} LV{hero.level} · 英検{enemy.label}の課題に挑戦中
-                </span>
-              </span>
-              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-white text-violet-700 shadow-lg">
-                <ArrowRight size={20} />
-              </span>
+            <Star size={20} className="shrink-0 text-amber-300" />
+            <span className="min-w-0 flex-1 truncate font-display text-sm font-extrabold">
+              {AFTER_SCHOOL_CHRONICLE.title}
             </span>
+            <ArrowRight size={18} className="shrink-0 text-white/55" />
           </button>
-        </Card>
 
-        {/* 学習結果をゲームと分けて確認する通常の学習マップ。 */}
-        <Card>
           <button
-            onClick={() => navigate('englishMap')}
-            className="flex w-full items-center gap-3 p-4 text-left active:bg-brand-50"
+            type="button"
+            onClick={() => setLearningMenuOpen(true)}
+            className="flex min-h-14 w-full items-center gap-3 rounded-2xl border border-white/15 bg-white/10 px-4 text-left active:bg-white/15"
+            data-home-title-action="learn"
           >
-            <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-100 text-amber-600">
-              <Target size={24} />
-            </span>
-            <div className="flex-1">
-              <div className="font-display font-extrabold text-ink">学習マップ・弱点チェック</div>
-              <div className="text-xs font-bold text-ink/50">
-                6分野の結果から、次に学ぶ内容を選ぶ
-              </div>
-            </div>
-            <span className="text-brand-500"><ArrowRight size={22} /></span>
+            <BookOpen size={20} className="shrink-0 text-cyan-200" />
+            <span className="min-w-0 flex-1 font-display text-sm font-extrabold">学習を選ぶ</span>
+            <ArrowRight size={18} className="shrink-0 text-white/55" />
           </button>
-        </Card>
-
-        {/* モード */}
-        <div>
-          <h2 className="mb-2.5 px-1 font-display text-lg font-extrabold text-ink/90">学習モード</h2>
-          <div className="grid grid-cols-2 gap-3" data-home-mode-group="primary">
-            <ModeTile
-              icon={<Book size={22} />} label="単語" sub={`${prog.seen}/${prog.total} 語`}
-              color="linear-gradient(135deg,#6366f1,#4f46e5)" onClick={() => navigate('vocabLevels')}
-            />
-            <ModeTile
-              icon={<Cards size={22} />} label="クイズ" sub="3択で力だめし"
-              color="linear-gradient(135deg,#0ea5e9,#0284c7)"
-              onClick={() => navigate('vocabLevels', { intent: 'quiz' })}
-            />
-            <ModeTile
-              icon={<Book size={22} />} label="長文" sub="じっくり読解"
-              color="linear-gradient(135deg,#10b981,#059669)" onClick={() => navigate('readingList')}
-            />
-            <ModeTile
-              icon={<Sparkles size={22} />} label="熟語・構文" sub="3択で覚える"
-              color="linear-gradient(135deg,#8b5cf6,#7c3aed)" onClick={() => navigate('phrases')}
-            />
-            <ModeTile
-              icon={<Lightbulb size={22} />} label="文法" sub="級ごとに4択"
-              color="linear-gradient(135deg,#f59e0b,#ea580c)" onClick={() => navigate('grammar')}
-            />
-            <ModeTile
-              icon={<Headphones size={22} />} label="リスニング" sub="聞いて当てる"
-              color="linear-gradient(135deg,#0ea5e9,#0284c7)" onClick={() => navigate('listening')}
-            />
-          </div>
-          <details className="home-more-modes mt-3 rounded-2xl border border-slate-200/80 bg-white">
-            <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between px-4 py-3 font-display text-sm font-extrabold text-brand-700">
-              <span>ほかの学習メニュー</span>
-              <span className="text-xs font-bold text-ink/50">6種類</span>
-            </summary>
-            <div className="grid grid-cols-2 gap-3 border-t border-slate-200/70 p-3" data-home-mode-group="secondary">
-              <ModeTile
-                icon={<Headphones size={22} />} label="名作朗読" sub="原文と直訳を聴く"
-                color="linear-gradient(135deg,#0f766e,#0d9488)" onClick={() => navigate('literatureLibrary')}
-              />
-              <ModeTile
-                icon={<BookOpen size={22} />} label="英作文" sub={`${writingDone}/14 お題を完成`}
-                color="linear-gradient(135deg,#0f172a,#4f46e5)" onClick={() => navigate('writing')}
-              />
-              <ModeTile
-                icon={<Link size={22} />} label="語源" sub={`習得 ${etymology.mastered}/${etymology.total}`}
-                color="linear-gradient(135deg,#6366f1,#7c3aed)" onClick={() => navigate('roots')}
-              />
-              <ModeTile
-                icon={<Keyboard size={22} />} label="ディクテーション" sub="聞いて書く"
-                color="linear-gradient(135deg,#14b8a6,#0d9488)" onClick={() => navigate('dictation')}
-              />
-              <ModeTile
-                icon={<Bookmark size={22} />} label="マイ単語" sub={`${myList.length} 語を保存中`}
-                color="linear-gradient(135deg,#f59e0b,#d97706)" onClick={() => navigate('myList')}
-              />
-              <ModeTile
-                icon={<Lightbulb size={22} />} label="マイ文法" sub={`${myGrammarList.length} 項目を保存中`}
-                color="linear-gradient(135deg,#a855f7,#7c3aed)" onClick={() => navigate('myGrammar')}
-              />
-            </div>
-          </details>
         </div>
 
-        {/* 今日の語源 */}
-        <div>
-          <h2 className="mb-2.5 px-1 font-display text-base font-extrabold text-ink/80">きょうの語源</h2>
-          <Card className="p-4">
-            <button
-              onClick={() => navigate('rootDetail', { rootId: dayRoot.id })}
-              className="flex w-full items-center gap-3 text-left"
-            >
-              <span className="text-4xl">{dayRoot.emoji}</span>
-              <div className="flex-1">
-                <div className="font-display text-xl font-extrabold text-brand-700">{dayRoot.form}</div>
-                <div className="text-sm font-bold text-ink/60">＝{dayRoot.meaning}</div>
-              </div>
-              <span className="text-brand-400"><ArrowRight size={22} /></span>
-            </button>
-            <div className="mt-3 flex flex-wrap gap-1.5">
-              {rootWords.map((w) => (
-                <Chip key={w.id} color={dayRoot ? '#6366f1' : undefined}>{w.word}</Chip>
-              ))}
-            </div>
-          </Card>
-        </div>
-      </div>
+        <p
+          className="mt-4 text-center text-xs font-extrabold text-white/45"
+          data-home-compact-status
+        >
+          今日 {todayCount}/{goal} ・ {stats.streak}日連続 ・ LV{hero.level}
+        </p>
+      </section>
     </div>
   )
 }

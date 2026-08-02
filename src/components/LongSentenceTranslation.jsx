@@ -1,5 +1,6 @@
 import { useStore } from '../store/useStore.js'
-import { speakWith, stopSpeaking } from '../lib/tts.js'
+import { playSpeechItems } from '../lib/speech-player.js'
+import { japanesePhraseSpeechText } from '../lib/phrase-speech.js'
 import { ArrowRight, Lightbulb, SpeakerWave } from './Icons.jsx'
 import { cx } from './ui.jsx'
 
@@ -39,33 +40,45 @@ export function LongSentenceTranslation({ guide, className = '' }) {
   const settings = useStore((state) => state.settings)
   if (!guide?.steps?.length) return null
 
-  const speakPhraseExplanation = (item) => {
-    stopSpeaking()
-    speakWith(item.spokenEn ?? item.en, {
-      rate: settings.ttsRate,
-      voiceURI: settings.ttsVoiceURI,
-      lang: 'en-US',
-      style: 'narration',
-      onend: () => {
-        speakWith(`前からは、「${item.ja}」と取ります。`, {
-          rate: settings.ttsRate,
-          voiceURI: settings.ttsJapaneseVoiceURI,
+  const speechItems = guide.steps.map((item, index) => {
+    const explanation = [item.note, item.roleNote]
+      .filter(Boolean)
+      .join(' ')
+    return {
+      id: `${index}-${item.en}`,
+      label: item.displayEn ?? item.en,
+      segments: [
+        {
+          text: item.spokenEn ?? item.en,
+          label: '英語フレーズ',
+          lang: 'en-US',
+          style: 'narration',
+        },
+        {
+          text: `前からは、「${japanesePhraseSpeechText(item.ja)}」と取ります。`,
+          label: '前から読む直訳',
           lang: 'ja-JP',
           style: 'translation',
-          onend: () => {
-            const explanation = [item.note, item.roleNote]
-              .filter(Boolean)
-              .join(' ')
-            if (!explanation) return
-            speakWith(explanation, {
-              rate: settings.ttsRate,
-              voiceURI: settings.ttsJapaneseVoiceURI,
+        },
+        ...(explanation
+          ? [{
+              text: explanation,
+              label: '読み方・文法解説',
               lang: 'ja-JP',
               style: 'explanation',
-            })
-          },
-        })
-      },
+            }]
+          : []),
+      ],
+    }
+  })
+
+  const speakPhraseExplanation = (index) => {
+    playSpeechItems(speechItems, {
+      index,
+      title: 'フレーズ解説',
+      rate: settings.ttsRate,
+      voiceURI: settings.ttsVoiceURI,
+      japaneseVoiceURI: settings.ttsJapaneseVoiceURI,
     })
   }
 
@@ -136,7 +149,7 @@ export function LongSentenceTranslation({ guide, className = '' }) {
               </div>
               <button
                 type="button"
-                onClick={() => speakPhraseExplanation(item)}
+                onClick={() => speakPhraseExplanation(index)}
                 aria-label={`${item.spokenEn ?? item.en}を英語、直訳、文法解説の順で再生`}
                 className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-sky-100 text-sky-700 active:bg-sky-200"
               >

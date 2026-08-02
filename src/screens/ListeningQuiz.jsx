@@ -102,10 +102,19 @@ export function ListeningQuizScreen() {
 
     setPlaying(true)
     setActiveSegment(null)
+    const effectiveRate = slow ? slowRate : normalRate
     const started = playListeningItem(item, {
-      rate: slow ? slowRate : normalRate,
+      rate: settings.ttsRate,
+      rateFactor: effectiveRate / settings.ttsRate,
       voiceURI: settings.ttsVoiceURI,
+      japaneseVoiceURI: settings.ttsJapaneseVoiceURI,
+      navigationLocked: !answered,
       onSegment: (_segment, index) => setActiveSegment(index),
+      onStatusChange: (status) => {
+        const active = status === 'playing' || status === 'paused'
+        setPlaying(active)
+        if (!active) setActiveSegment(null)
+      },
       onEnd: () => {
         setPlaying(false)
         setActiveSegment(null)

@@ -422,6 +422,371 @@
 .after-school-interlude-hero > div {
   z-index: 2;
 }
+
+/* 放課後ゲームは、ひとつの携帯ゲーム機の中で画面を切り替える。
+   初期表示では主要操作だけを見せ、記録類は共通の引き出しへ収める。 */
+.after-school-portal-console {
+  position: relative;
+  overflow: hidden;
+  padding: 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 24px;
+  background: #e7e5e4;
+  box-shadow: 0 10px 24px -18px rgb(15 23 42 / 0.55);
+}
+.after-school-portal-console::after {
+  display: none;
+}
+.after-school-portal-bezel {
+  display: block;
+  padding: 6px;
+  border-radius: 15px;
+  background: #172033;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.08);
+}
+.after-school-portal-screen {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  border: 1px solid #526052;
+  border-radius: 9px;
+  background: #dce5d5;
+}
+.after-school-portal-screen > img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 6;
+  object-fit: cover;
+  filter: saturate(0.88) contrast(0.96);
+}
+.after-school-portal-screen::after {
+  position: absolute;
+  inset: 0;
+  content: '';
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0 3px,
+    rgb(15 23 42 / 0.035) 3px 4px
+  );
+}
+.after-school-portal-screen-label {
+  position: absolute;
+  z-index: 1;
+  right: 7px;
+  bottom: 6px;
+  max-width: calc(100% - 14px);
+  overflow: hidden;
+  padding: 3px 7px;
+  border-radius: 6px;
+  color: white;
+  background: rgb(15 23 42 / 0.78);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10px;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.after-school-portal-copy {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 2px 1px;
+}
+.after-school-portal-action {
+  display: inline-flex;
+  min-height: 40px;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 4px;
+  padding: 0 12px;
+  border: 1px solid #4338ca;
+  border-radius: 10px;
+  color: white;
+  background: #4f46e5;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.after-school-handheld {
+  width: 100%;
+  max-width: 46rem;
+  margin-inline: auto;
+  padding: 10px 10px 7px;
+  border: 1px solid #cbd5e1;
+  border-radius: 28px;
+  background: #e7e5e4;
+  box-shadow:
+    inset 0 1px rgb(255 255 255 / 0.85),
+    0 14px 30px -22px rgb(15 23 42 / 0.7);
+}
+.after-school-console-bezel {
+  padding: 7px;
+  border-radius: 19px;
+  background: #172033;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.08);
+}
+.after-school-console-status {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 10px;
+  align-items: center;
+  min-height: 28px;
+  padding: 0 5px 5px;
+  color: #dbe5d4;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.035em;
+}
+.after-school-console-status > span:first-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.after-school-console-screen {
+  height: clamp(20rem, 58dvh, 36rem);
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scroll-padding: 10px;
+  padding: 9px;
+  border: 1px solid #5d695e;
+  border-radius: 10px;
+  color: #1e293b;
+  background: #edf2e8;
+  box-shadow:
+    inset 0 0 0 2px rgb(15 23 42 / 0.06),
+    inset 0 10px 22px rgb(15 23 42 / 0.035);
+  scrollbar-color: rgb(71 85 105 / 0.46) transparent;
+}
+.after-school-console-screen:focus-visible {
+  outline-color: #a5b4fc;
+  outline-offset: 2px;
+}
+.after-school-console-screen > section,
+.after-school-console-drawer-body > section {
+  border-radius: 14px !important;
+  box-shadow: none !important;
+}
+.after-school-console-screen > section {
+  border: 1px solid #d4dbd0;
+}
+.after-school-console-menu {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+  padding: 9px 2px 2px;
+}
+.after-school-console-key {
+  display: flex;
+  min-width: 0;
+  min-height: 52px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  border: 1px solid #b8c0c8;
+  border-radius: 12px;
+  color: #475569;
+  background: #f8fafc;
+  box-shadow:
+    inset 0 1px rgb(255 255 255 / 0.95),
+    0 3px 0 #b6bdc5;
+  font-size: 12px;
+  font-weight: 900;
+  transition: transform 120ms ease, background-color 120ms ease;
+}
+.after-school-console-key:active {
+  transform: translateY(2px);
+  box-shadow: inset 0 1px rgb(255 255 255 / 0.5), 0 1px 0 #a7afb8;
+}
+.after-school-console-key[aria-pressed='true'] {
+  border-color: #3730a3;
+  color: white;
+  background: #4f46e5;
+  box-shadow:
+    inset 0 1px rgb(255 255 255 / 0.25),
+    0 3px 0 #312e81;
+}
+.after-school-console-key .chronicle-vector-icon {
+  border: 0;
+  color: currentColor;
+  background: transparent;
+  box-shadow: none;
+}
+.after-school-console-footer {
+  display: flex;
+  min-height: 18px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 6px 0;
+  color: #64748b;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+}
+.after-school-console-speaker {
+  width: 48px;
+  height: 7px;
+  opacity: 0.52;
+  background: repeating-radial-gradient(circle, #64748b 0 1px, transparent 1.5px 6px);
+  background-size: 7px 7px;
+}
+
+.after-school-console-drawer {
+  overflow: hidden;
+  border: 1px solid #d4dbd0;
+  border-radius: 14px;
+  background: #f8fafc;
+}
+.after-school-console-drawer > summary {
+  display: flex;
+  min-height: 56px;
+  cursor: pointer;
+  list-style: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 10px;
+  color: #273449;
+}
+.after-school-console-drawer > summary::-webkit-details-marker {
+  display: none;
+}
+.after-school-console-drawer-title {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 9px;
+}
+.after-school-console-drawer-title .chronicle-vector-icon {
+  border-color: #cbd5e1;
+  box-shadow: none;
+}
+.after-school-console-drawer-title strong,
+.after-school-console-drawer-title small {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.after-school-console-drawer-title strong {
+  font-size: 13px;
+  font-weight: 900;
+}
+.after-school-console-drawer-title small {
+  margin-top: 1px;
+  color: #64748b;
+  font-size: 10px;
+  font-weight: 700;
+}
+.after-school-console-drawer-action::after {
+  display: inline-flex;
+  min-width: 42px;
+  min-height: 30px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  color: #475569;
+  background: white;
+  content: 'ひらく';
+  font-size: 9px;
+  font-weight: 900;
+}
+.after-school-console-drawer[open] .after-school-console-drawer-action::after {
+  content: 'とじる';
+}
+.after-school-console-drawer-body {
+  padding: 8px;
+  border-top: 1px solid #d4dbd0;
+  background: #e9eee5;
+}
+
+.after-school-start-card {
+  padding: 0 !important;
+  color: #1e293b !important;
+  background: #f8fafc !important;
+  box-shadow: none !important;
+}
+.after-school-start-card::before,
+.after-school-start-card > .pointer-events-none {
+  display: none;
+}
+.after-school-start-layout {
+  display: flex;
+  flex-direction: column;
+}
+.after-school-start-meta,
+.after-school-player-strip {
+  display: none;
+}
+.after-school-start-card .school-battle-paper {
+  margin-top: 0;
+  padding: 10px;
+  border-radius: 13px;
+  box-shadow: none;
+}
+.after-school-start-card .school-battle-paper > .flex:first-child {
+  gap: 9px;
+}
+.after-school-start-card .battle-map-rival-portrait {
+  width: 54px;
+  height: 54px;
+  border-width: 1px;
+  border-radius: 11px;
+  box-shadow: none;
+}
+.after-school-opponent-intro {
+  margin-top: 7px;
+  padding: 6px 8px;
+  border: 1px solid #e2e8f0;
+  color: #475569;
+  background: #f1f5f9;
+}
+.after-school-quest-picker {
+  margin-top: 8px;
+}
+.after-school-quest-picker .grid {
+  gap: 6px;
+  margin-top: 6px;
+}
+.after-school-quest-picker button {
+  min-height: 46px;
+  padding-block: 5px;
+  border-width: 1px;
+  border-radius: 10px;
+}
+.after-school-quest-picker button .chronicle-vector-icon {
+  display: none;
+}
+.after-school-start-card .school-battle-start {
+  min-height: 48px;
+  margin-top: 8px;
+  border-radius: 10px;
+  background: #4f46e5;
+  box-shadow: none;
+}
+.after-school-start-card .school-battle-options {
+  margin-top: 8px;
+  border-color: #d8dee9;
+  border-radius: 10px;
+  background: #f8fafc;
+}
+.after-school-start-card .school-battle-context {
+  margin: 8px 10px 0;
+  border-color: rgb(255 255 255 / 0.12);
+  border-radius: 11px;
+  color: white;
+  background: #1f2937;
+}
+.after-school-start-card .after-school-battle-note {
+  margin: 7px 12px 10px;
+  color: #64748b;
+}
 .mob-battle-stage {
   position: relative;
   isolation: isolate;
@@ -509,10 +874,13 @@
     0 6px 16px -9px color-mix(in srgb, var(--teacher-icon-accent) 75%, transparent);
   vertical-align: middle;
 }
-.teacher-avatar-icon > svg {
+.teacher-avatar-icon > img {
   display: block;
   width: 100%;
   height: 100%;
+  object-fit: cover;
+  object-position: center;
+  image-rendering: pixelated;
 }
 .teacher-avatar-icon[data-defeated='true'] {
   filter: grayscale(1);
@@ -3105,19 +3473,55 @@ button { -webkit-tap-highlight-color: transparent; }
   font-size: 10px;
 }
 
-.home-more-modes summary::-webkit-details-marker {
+.home-learning-more summary::-webkit-details-marker {
   display: none;
 }
-.home-more-modes summary::after {
+.home-learning-more summary::after {
   color: rgb(79 70 229 / 0.7);
   content: '＋';
   font-size: 1rem;
 }
-.home-more-modes[open] summary::after {
+.home-learning-more[open] summary::after {
   content: '−';
 }
 
+.home-title-art {
+  min-height: clamp(15rem, 42dvh, 22rem);
+}
+
+.home-title-panel {
+  background:
+    radial-gradient(circle at 50% 0%, rgb(79 70 229 / 0.3), transparent 44%),
+    linear-gradient(180deg, #0f172a, #020617);
+}
+
+@media (max-height: 640px) {
+  .home-title-art {
+    min-height: 12.5rem;
+  }
+  .home-title-art h1 {
+    font-size: 1.875rem;
+    line-height: 2.25rem;
+  }
+  .home-title-panel {
+    justify-content: flex-start;
+    padding-top: 0.625rem;
+  }
+  .home-title-actions > button {
+    min-height: 3rem;
+  }
+}
+
 @media (max-width: 350px) {
+  .after-school-screen-title {
+    overflow: visible;
+    font-size: 1rem;
+    white-space: normal;
+    text-overflow: clip;
+  }
+  .after-school-screen-subtitle {
+    display: none;
+  }
   .study-app-surface :where(.text-\[6px\], .text-\[7px\]) {
     font-size: 0.5625rem;
   }

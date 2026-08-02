@@ -30,9 +30,19 @@ import {
   normalizeBattleStoryStep,
 } from '../lib/afterSchoolStory.js'
 import {
+  INITIAL_UNLOCKED_BATTLE_STUDENT_IDS,
+  LEGACY_UNLOCKED_BATTLE_STUDENT_IDS,
+  isBattleStudentUnlocked,
   normalizeAfterSchoolBonds,
+  normalizeUnlockedBattleStudentIds,
   resolveAfterSchoolReward,
 } from '../lib/afterSchoolBonds.js'
+import {
+  normalizeStoryKeyVisualAlbum,
+  recordAfterSchoolEventMemory,
+  recordTeacherVictoryMemory,
+  storyKeyVisualAlbumFromLegacyBonds,
+} from '../lib/storyAlbum.js'
 import {
   normalizeVocabHistory,
   prependVocabHistory,
@@ -130,11 +140,13 @@ const initialLearning = () => ({
   battleStars: 0, // バトル正解やXP変換で貯まる、演出スキン解放専用の放課後スター
   battleXpSpent: 0, // 放課後スターへ一度だけ変換済みの累計XP
   battleThemeId: BATTLE_THEMES[0].id,
-  battleStudentId: DEFAULT_BATTLE_STUDENT_ID, // 放課後の魔法と言葉へ同行するクラスメイト
+  battleStudentId: DEFAULT_BATTLE_STUDENT_ID, // 放課後と魔法の言葉へ同行するクラスメイト
   battleTraitInvestments: {}, // 生徒id -> 五つの星彩パラメータへ配分したポイント
   battleStoryStep: 0, // 日常パートを読み終えた回数。学習評価とは独立
   battleStoryLastDay: null, // 日常パートを最後に表示した学習日。同日中の連続表示を防ぐ
   afterSchoolBonds: {}, // 生徒id -> { points, visits }。放課後分岐で育つ関係性
+  unlockedBattleStudentIds: [...INITIAL_UNLOCKED_BATTLE_STUDENT_IDS], // 出会いイベントを終え、共闘できる生徒
+  storyKeyVisualAlbum: { events: [], teacherVictories: [] }, // 出会いイベント・先生戦の振り返り
   portalOrder: [...DEFAULT_CONTENT_ORDER], // ポータルのタイル並び順（コンテンツid配列）
   portalHidden: [], // ポータルで非表示にしたコンテンツid
   stats: freshStats(),
@@ -225,6 +237,16 @@ export function migratePersistedState(persistedState) {
   state.battleStoryStep = normalizeBattleStoryStep(state.battleStoryStep)
   state.battleStoryLastDay = normalizeBattleStoryLastDay(state.battleStoryLastDay)
   state.afterSchoolBonds = normalizeAfterSchoolBonds(state.afterSchoolBonds)
+  const hadUnlockedStudents = Array.isArray(state.unlockedBattleStudentIds)
+  state.unlockedBattleStudentIds = normalizeUnlockedBattleStudentIds(
+    hadUnlockedStudents
+      ? [...state.unlockedBattleStudentIds, state.battleStudentId]
+      : LEGACY_UNLOCKED_BATTLE_STUDENT_IDS,
+    { legacyFallback: !hadUnlockedStudents },
+  )
+  state.storyKeyVisualAlbum = state.storyKeyVisualAlbum
+    ? normalizeStoryKeyVisualAlbum(state.storyKeyVisualAlbum)
+    : storyKeyVisualAlbumFromLegacyBonds(state.afterSchoolBonds)
   return state
 }
 
@@ -747,7 +769,12 @@ export const useStore = create(
           return theme.id === themeId ? { battleThemeId: themeId } : {}
         }),
       setBattleStudentId: (studentId) =>
-        set({ battleStudentId: normalizeBattleStudentId(studentId) }),
+        set((st) => {
+          const nextStudentId = normalizeBattleStudentId(studentId)
+          return isBattleStudentUnlocked(st.unlockedBattleStudentIds, nextStudentId)
+            ? { battleStudentId: nextStudentId }
+            : {}
+        }),
       raiseBattleTrait: (studentId, traitId) =>
         set((st) => ({
           battleTraitInvestments: raiseBattleTrait({
@@ -778,11 +805,29 @@ export const useStore = create(
         const bonds = normalizeAfterSchoolBonds(st.afterSchoolBonds)
         const reward = resolveAfterSchoolReward({ bonds, branchId, choiceId })
         if (!reward) return null
+        const unlockedStudentIds = normalizeUnlockedBattleStudentIds(
+          st.unlockedBattleStudentIds,
+        )
+        const companionUnlocked = !unlockedStudentIds.includes(reward.studentId)
+        const nextUnlockedStudentIds = normalizeUnlockedBattleStudentIds([
+          ...unlockedStudentIds,
+          reward.studentId,
+        ])
+        const granted = {
+          ...reward,
+          companionUnlocked,
+          unlockedCompanion: companionUnlocked ? reward.studentId : null,
+        }
         set({
           afterSchoolBonds: {
             ...bonds,
             [reward.studentId]: reward.nextBondEntry,
           },
+          unlockedBattleStudentIds: nextUnlockedStudentIds,
+          storyKeyVisualAlbum: recordAfterSchoolEventMemory(
+            st.storyKeyVisualAlbum,
+            { branchId, storyStep: currentStep },
+          ),
           battleStoryStep: normalizeBattleStoryStep(currentStep + 1),
           // 放課後XPは冒険者LVへ加えるが、正答数・SRS・診断結果には混ぜない。
           stats: {
@@ -790,8 +835,15 @@ export const useStore = create(
             xp: Math.max(0, Math.floor(Number(st.stats?.xp) || 0)) + reward.xpGained,
           },
         })
-        return reward
+        return granted
       },
+      recordTeacherKeyVisual: ({ teacherId, studentId, themeId } = {}) =>
+        set((st) => ({
+          storyKeyVisualAlbum: recordTeacherVictoryMemory(
+            st.storyKeyVisualAlbum,
+            { teacherId, studentId, themeId },
+          ),
+        })),
       markBattleStorySeen: (day) =>
         set({ battleStoryLastDay: normalizeBattleStoryLastDay(day) }),
       // バトルの正答率(0-1)で生徒のポジションを上下させる。
@@ -865,6 +917,13 @@ export const useStore = create(
         const payload = decodeProgress(code) // 失敗時は例外
         const battleStars = normalizeBattleStars(payload.battleStars)
         const stats = { ...freshStats(), ...(payload.stats ?? {}) }
+        const battleStudentId = normalizeBattleStudentId(payload.battleStudentId)
+        const unlockedBattleStudentIds = normalizeUnlockedBattleStudentIds(
+          Array.isArray(payload.unlockedBattleStudentIds)
+            ? [...payload.unlockedBattleStudentIds, battleStudentId]
+            : LEGACY_UNLOCKED_BATTLE_STUDENT_IDS,
+          { legacyFallback: !Array.isArray(payload.unlockedBattleStudentIds) },
+        )
         set({
           srs: payload.srs ?? {},
           etymologySrs: payload.etymologySrs ?? {},
@@ -892,7 +951,7 @@ export const useStore = create(
           battleStars,
           battleXpSpent: normalizeBattleXpSpent(payload.battleXpSpent, stats.xp),
           battleThemeId: battleThemeById(payload.battleThemeId, battleStars).id,
-          battleStudentId: normalizeBattleStudentId(payload.battleStudentId),
+          battleStudentId,
           battleTraitInvestments: normalizeBattleTraitInvestments(
             payload.battleTraitInvestments,
             battleStars,
@@ -900,6 +959,10 @@ export const useStore = create(
           battleStoryStep: normalizeBattleStoryStep(payload.battleStoryStep),
           battleStoryLastDay: normalizeBattleStoryLastDay(payload.battleStoryLastDay),
           afterSchoolBonds: normalizeAfterSchoolBonds(payload.afterSchoolBonds),
+          unlockedBattleStudentIds,
+          storyKeyVisualAlbum: payload.storyKeyVisualAlbum
+            ? normalizeStoryKeyVisualAlbum(payload.storyKeyVisualAlbum)
+            : storyKeyVisualAlbumFromLegacyBonds(payload.afterSchoolBonds),
           portalOrder: normalizeOrder(payload.portalOrder),
           portalHidden: normalizeHidden(payload.portalHidden),
           stats,
@@ -910,7 +973,7 @@ export const useStore = create(
     }),
     {
       name: 'eigo-quest',
-      version: 3,
+      version: 4,
       migrate: migratePersistedState,
       // ナビゲーション系は保存しない。
       partialize: (st) => ({
@@ -945,6 +1008,8 @@ export const useStore = create(
         battleStoryStep: st.battleStoryStep,
         battleStoryLastDay: st.battleStoryLastDay,
         afterSchoolBonds: st.afterSchoolBonds,
+        unlockedBattleStudentIds: st.unlockedBattleStudentIds,
+        storyKeyVisualAlbum: st.storyKeyVisualAlbum,
         portalOrder: st.portalOrder,
         portalHidden: st.portalHidden,
         stats: st.stats,

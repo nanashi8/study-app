@@ -84,6 +84,10 @@ const CharacterTalkScreen = lazyScreen(
   () => import('./screens/CharacterTalk.jsx'),
   'CharacterTalkScreen',
 )
+const StoryAlbumScreen = lazyScreen(
+  () => import('./screens/StoryAlbum.jsx'),
+  'StoryAlbumScreen',
+)
 const DiagnosticScreen = lazyScreen(() => import('./screens/Diagnostic.jsx'), 'DiagnosticScreen')
 const KotenListScreen = lazyScreen(() => import('./screens/KotenList.jsx'), 'KotenListScreen')
 const KotenStudyScreen = lazyScreen(() => import('./screens/KotenStudy.jsx'), 'KotenStudyScreen')
@@ -169,6 +173,7 @@ const SCREENS = {
   afterSchoolChronicle: AfterSchoolChronicleScreen,
   afterSchoolInterlude: AfterSchoolInterludeScreen,
   characterTalk: CharacterTalkScreen,
+  storyAlbum: StoryAlbumScreen,
   diagnostic: DiagnosticScreen,
   kotenList: KotenListScreen,
   kotenStudy: KotenStudyScreen,
@@ -194,7 +199,7 @@ const IMMERSIVE = new Set([
   'vocabStudy', 'vocabQuiz', 'etymologyStudy', 'wordDetail', 'vocabCamera', 'sessionResult', 'readingPrep', 'reader', 'literatureLibrary', 'literatureReader', 'phraseStudy', 'phraseQuiz',
   'listeningQuiz', 'dictationPlay', 'mathIntro', 'mathSolve', 'grammarQuiz', 'diagnostic',
   'writingPlay', 'writingGrammarReview',
-  'characterTalk',
+  'characterTalk', 'storyAlbum',
   'afterSchoolChronicle', 'afterSchoolInterlude',
   // 別コンテンツ（ポータルから入る）
   'vocabSearch', 'wordRequests', 'mathMap', 'mathUnits',

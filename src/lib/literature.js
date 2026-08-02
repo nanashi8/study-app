@@ -1,6 +1,8 @@
 // 朗読プレイヤーとテストで共有する、短い原文→区切り訳の再生順。
 // UI状態とは分離し、全作品が必ず同じ一対一の順番で再生されるようにする。
 
+import { japanesePhraseSpeechText } from './phrase-speech.js'
+
 export function literatureNarrationSegments(scene) {
   if (scene?.narrationSegments?.length) return scene.narrationSegments
   if (!scene?.original || !scene?.translation) return []
@@ -24,10 +26,15 @@ export function buildLiteratureNarration(work) {
         segmentIndex,
         segmentCount: segments.length,
         phase: 'original',
-        label: work.kind === 'english' ? '英語' : '古文',
+        label:
+          work.kind === 'english'
+            ? '英語'
+            : work.kind === 'kanbun'
+              ? '書き下し文'
+              : '古文',
         text: segment.speech || segment.original,
         displayText: segment.original,
-        lang: work.kind === 'english' ? 'en-US' : 'ja-JP',
+        lang: work.language || (work.kind === 'english' ? 'en-US' : 'ja-JP'),
       },
       {
         id: `${work.id}:${sceneIndex}:${segmentIndex}:translation`,
@@ -35,8 +42,9 @@ export function buildLiteratureNarration(work) {
         segmentIndex,
         segmentCount: segments.length,
         phase: 'translation',
-        label: work.kind === 'english' ? '区切りの直訳' : '区切りの現代語訳',
-        text: segment.translation,
+        label:
+          work.kind === 'english' ? '区切りの直訳' : '区切りの現代語訳',
+        text: japanesePhraseSpeechText(segment.translation),
         displayText: segment.translation,
         lang: 'ja-JP',
       },

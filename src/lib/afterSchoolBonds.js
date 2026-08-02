@@ -1,5 +1,6 @@
 import {
   BATTLE_STUDENTS,
+  DEFAULT_BATTLE_STUDENT_ID,
   battleDailySceneById,
   battleStudentById,
   isRestorableBattleStudentId,
@@ -8,6 +9,14 @@ import {
 
 export const MAX_AFTER_SCHOOL_BOND_POINTS = 999
 export const MAX_AFTER_SCHOOL_BOND_VISITS = 999_999
+
+export const INITIAL_UNLOCKED_BATTLE_STUDENT_IDS = Object.freeze([
+  DEFAULT_BATTLE_STUDENT_ID,
+])
+
+export const LEGACY_UNLOCKED_BATTLE_STUDENT_IDS = Object.freeze(
+  BATTLE_STUDENTS.map((student) => student.id),
+)
 
 export const AFTER_SCHOOL_BOND_LEVELS = Object.freeze([
   { level: 1, minPoints: 0, label: 'クラスメイト' },
@@ -188,6 +197,40 @@ const STYLE_IDS = new Set(['empathy', 'idea', 'together'])
 const clampInteger = (value, max) => (
   Number.isSafeInteger(value) ? Math.max(0, Math.min(max, value)) : 0
 )
+
+export function normalizeUnlockedBattleStudentIds(value, { legacyFallback = false } = {}) {
+  const source = Array.isArray(value)
+    ? value
+    : legacyFallback
+      ? LEGACY_UNLOCKED_BATTLE_STUDENT_IDS
+      : INITIAL_UNLOCKED_BATTLE_STUDENT_IDS
+  const normalized = new Set([DEFAULT_BATTLE_STUDENT_ID])
+  for (const studentId of source) {
+    if (isRestorableBattleStudentId(studentId)) {
+      normalized.add(normalizeBattleStudentId(studentId))
+    }
+  }
+  return BATTLE_STUDENTS
+    .filter((student) => normalized.has(student.id))
+    .map((student) => student.id)
+}
+
+export function isValidUnlockedBattleStudentIds(value) {
+  if (!Array.isArray(value) || value.length === 0) return false
+  const normalized = normalizeUnlockedBattleStudentIds(value)
+  return normalized.length === value.length
+    && normalized.every((studentId, index) => studentId === value[index])
+}
+
+export function isBattleStudentUnlocked(unlockedStudentIds, studentId) {
+  const normalizedId = normalizeBattleStudentId(studentId)
+  return normalizeUnlockedBattleStudentIds(unlockedStudentIds).includes(normalizedId)
+}
+
+export function unlockedBattleStudents(unlockedStudentIds) {
+  const ids = new Set(normalizeUnlockedBattleStudentIds(unlockedStudentIds))
+  return BATTLE_STUDENTS.filter((student) => ids.has(student.id))
+}
 
 export function afterSchoolBranchById(id) {
   return BRANCH_BY_ID.get(id) ?? AFTER_SCHOOL_BRANCHES[0]

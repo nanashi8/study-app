@@ -7,7 +7,11 @@ import {
   AFTER_SCHOOL_INTERLUDE_CHANCE,
   AFTER_SCHOOL_CHRONICLE,
   MAX_BATTLE_STORY_STEP,
+  afterSchoolBattleChapter,
+  afterSchoolBattleEpilogue,
+  afterSchoolDailyChapter,
   afterSchoolEpisodeNumber,
+  afterSchoolPrologue,
   afterSchoolSceneForStep,
   normalizeBattleStoryLastDay,
   normalizeBattleStoryStep,
@@ -26,11 +30,61 @@ import { resolveBattleState } from '../src/lib/rpg.js'
 import { decodeProgress, encodeProgress } from '../src/lib/progressCode.js'
 import { useStore } from '../src/store/useStore.js'
 
-test('放課後の魔法と言葉は先生課題から3つの放課後ルートへつながる', () => {
-  assert.equal(AFTER_SCHOOL_CHRONICLE.title, '放課後の魔法と言葉')
-  assert.equal(AFTER_SCHOOL_CHRONICLE.shortTitle, '魔法と言葉')
+test('放課後と魔法の言葉は先生課題から友達との日常へつながる', () => {
+  assert.equal(AFTER_SCHOOL_CHRONICLE.title, '放課後と魔法の言葉')
+  assert.equal(AFTER_SCHOOL_CHRONICLE.shortTitle, '放課後と魔法の言葉')
   assert.equal(AFTER_SCHOOL_CHRONICLE.keyVisual.endsWith('.webp'), true)
-  assert.match(AFTER_SCHOOL_CHRONICLE.subtitle, /対決後の3つの放課後ルート/)
+  assert.match(AFTER_SCHOOL_CHRONICLE.subtitle, /対決後は友達との日常/)
+})
+
+test('導入・対決直前・結果後・日常をライトノベルのページとして構成する', () => {
+  const prologue = afterSchoolPrologue({ studentName: '音羽ミオ' })
+  const battle = afterSchoolBattleChapter({
+    storyStep: 4,
+    studentName: '音羽ミオ',
+    rivalName: '神田エイジ',
+    encounterName: '英語準備室',
+    move: 'アクセントブレイク',
+    subject: '英語',
+    affinityLabel: '得意',
+    questSize: 10,
+  })
+  const victory = afterSchoolBattleEpilogue({
+    storyStep: 4,
+    studentName: '音羽ミオ',
+    rivalName: '神田エイジ',
+    verdictId: 'victory',
+  })
+  const retreat = afterSchoolBattleEpilogue({
+    storyStep: 4,
+    studentName: '音羽ミオ',
+    rivalName: '神田エイジ',
+    verdictId: 'retreat',
+  })
+  const daily = afterSchoolDailyChapter({
+    storyStep: 4,
+    studentName: '音羽ミオ',
+    routeLabel: '商店街へ',
+    location: '帰り道',
+    situation: '対決を終え、商店街の灯りの下で足を止めた。',
+    opening: '「少し話していかない？」',
+  })
+  const allText = [prologue, battle, victory, retreat, daily]
+    .flatMap((story) => story.pages.map((page) => page.text))
+    .join('\n')
+
+  assert.equal(prologue.pages.length, 4)
+  assert.equal(battle.pages.length, 4)
+  assert.equal(victory.pages.length, 4)
+  assert.equal(daily.pages.length, 3)
+  assert.match(prologue.title, /チャイムのあと/)
+  assert.match(allText, /先生を倒すんじゃない/)
+  assert.match(allText, /影だけをほどく/)
+  assert.match(allText, /現実の校舎には傷ひとつない/)
+  assert.match(victory.pages[0].text, /まなざしにいつもの穏やかさ/)
+  assert.match(retreat.pages[0].text, /術式はまだ/)
+  assert.match(daily.chapterLabel, /DAILY STORY/)
+  assert.doesNotMatch(allText, /放課後の一日|七不思議/)
 })
 
 test('旧ランダム分岐ヘルパーは保存互換のためだけに残す', () => {
@@ -244,12 +298,13 @@ test('放課後報酬は一度だけ原子的に確定し、正答・SRS・分�
   }
 })
 
-test('対決結果は毎回3つの放課後ルートへ進み、特技・関係・報酬を全保存経路へ通す', async () => {
-  const [app, result, interlude, map, quiz, store, cloud] = await Promise.all([
+test('対決結果は毎回ライトノベルを経て友達との日常へ進み、特技・関係・報酬を全保存経路へ通す', async () => {
+  const [app, result, interlude, map, novel, quiz, store, cloud] = await Promise.all([
     readFile(new URL('../src/App.jsx', import.meta.url), 'utf8'),
     readFile(new URL('../src/screens/SessionResult.jsx', import.meta.url), 'utf8'),
     readFile(new URL('../src/screens/AfterSchoolInterlude.jsx', import.meta.url), 'utf8'),
     readFile(new URL('../src/screens/EnglishMap.jsx', import.meta.url), 'utf8'),
+    readFile(new URL('../src/components/LightNovelScene.jsx', import.meta.url), 'utf8'),
     readFile(new URL('../src/screens/VocabQuiz.jsx', import.meta.url), 'utf8'),
     readFile(new URL('../src/store/useStore.js', import.meta.url), 'utf8'),
     readFile(new URL('../src/lib/cloudSync.js', import.meta.url), 'utf8'),
@@ -257,13 +312,16 @@ test('対決結果は毎回3つの放課後ルートへ進み、特技・関係�
 
   assert.match(app, /afterSchoolChronicle: AfterSchoolChronicleScreen/)
   assert.match(app, /afterSchoolInterlude: AfterSchoolInterludeScreen/)
-  assert.match(result, /放課後の行き先を選ぶ/)
+  assert.match(result, /友達と過ごす日常へ/)
   assert.match(result, /onClick=\{continueAfterBattle\}/)
   assert.match(result, /navigate\('afterSchoolInterlude'/)
   assert.doesNotMatch(result, /shouldContinueToAfterSchoolInterlude/)
   assert.doesNotMatch(result, /continueToInterlude/)
   assert.match(result, /battleReport\.bondSummary/)
-  assert.match(interlude, /title="放課後ルートを選ぶ"/)
+  assert.match(interlude, /title="友達と過ごす日常"/)
+  assert.match(interlude, /afterSchoolBattleEpilogue/)
+  assert.match(interlude, /afterSchoolDailyChapter/)
+  assert.match(interlude, /<LightNovelScene/)
   assert.match(interlude, /afterSchoolBranchOptions/)
   assert.match(interlude, /useState\(null\)/)
   assert.match(interlude, /profile\.choices\.map/)
@@ -273,7 +331,13 @@ test('対決結果は毎回3つの放課後ルートへ進み、特技・関係�
   assert.match(map, /function AfterSchoolBondBoard/)
   assert.match(map, /bondSkillId:\s*battleBondSkill/)
   assert.doesNotMatch(map, /interludeRoll:\s*Math\.random\(\)/)
-  assert.match(map, /対決後は3つの放課後ルートへ分岐/)
+  assert.match(map, /afterSchoolPrologue/)
+  assert.match(map, /afterSchoolBattleChapter/)
+  assert.match(map, /onBattle=\{setPendingQuest\}/)
+  assert.match(map, /対決後は友達と過ごす3つの日常へ/)
+  assert.match(novel, /data-light-novel-scene/)
+  assert.match(novel, /次のページ/)
+  assert.match(novel, /前のページ/)
   assert.match(quiz, /afterSchoolSkillById/)
   assert.match(quiz, /bondSkill:\s*battleBondSkill/)
   assert.match(store, /completeAfterSchoolRoute/)

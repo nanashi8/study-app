@@ -3,7 +3,6 @@ import { ScreenHeader } from '../components/AppShell.jsx'
 import { cx } from '../components/ui.jsx'
 import { useStore } from '../store/useStore.js'
 import {
-  BATTLE_STUDENTS,
   battleEmotionById,
   battleStudentById,
   battleStudentLifestylePortrait,
@@ -42,6 +41,7 @@ import {
 } from '../lib/characterGrievanceTalk.js'
 import { characterRevealSceneById } from '../lib/characterRevealScenes.js'
 import { AFTER_SCHOOL_CHRONICLE } from '../lib/afterSchoolStory.js'
+import { unlockedBattleStudents } from '../lib/afterSchoolBonds.js'
 
 const MAX_VISIBLE_MESSAGES = 42
 const CHARACTER_TALK_TOTAL_PATTERN_COUNT = CHARACTER_TALK_PATTERN_COUNT
@@ -265,14 +265,77 @@ function CharacterRevealDialog({
   )
 }
 
+function CharacterTalkLocked({ students, onOpenStory }) {
+  return (
+    <div className="min-h-full bg-gradient-to-b from-slate-950 via-indigo-950 to-violet-950 pb-8 text-white">
+      <ScreenHeader
+        title={`${AFTER_SCHOOL_CHRONICLE.shortTitle}・仲間との会話`}
+        subtitle="出会った仲間だけが集まる放課後トーク"
+        color="#0f172a"
+        inverse
+      />
+      <div className="px-4">
+        <section className="overflow-hidden rounded-[2rem] border border-white/15 bg-white/[0.07] p-5 text-center shadow-2xl">
+          <div className="mx-auto flex w-fit -space-x-2">
+            {students.map((student) => (
+              <img
+                key={student.id}
+                src={battleStudentPortrait(student.id, 'curious')}
+                alt={student.name}
+                className="h-14 w-14 rounded-2xl border-2 border-white/60 bg-slate-900 object-cover [image-rendering:pixelated]"
+              />
+            ))}
+            {Array.from({ length: Math.max(0, 3 - students.length) }).map((_, index) => (
+              <span key={index} className="grid h-14 w-14 place-items-center rounded-2xl border-2 border-white/20 bg-slate-900 text-lg text-white/35">🔒</span>
+            ))}
+          </div>
+          <p className="mt-4 text-[9px] font-extrabold tracking-[0.16em] text-cyan-200">FRIEND GROUP {students.length}/3</p>
+          <h1 className="mt-1 font-display text-lg font-extrabold">あと{3 - students.length}人と出会うと、みんなで話せる</h1>
+          <p className="mt-2 text-[10px] font-bold leading-relaxed text-white/55">
+            先生戦のあとの放課後イベントでクラスメイトと知り合うと、共闘できる仲間と会話の相手が増えます。
+          </p>
+          <button
+            type="button"
+            onClick={onOpenStory}
+            className="mt-5 min-h-12 w-full rounded-2xl bg-gradient-to-r from-cyan-400 to-violet-400 px-4 text-xs font-extrabold text-slate-950 active:scale-[0.99]"
+          >
+            噂の調査と先生課題へ戻る
+          </button>
+        </section>
+      </div>
+    </div>
+  )
+}
+
 export function CharacterTalkScreen() {
+  const unlockedStudentIds = useStore((state) => state.unlockedBattleStudentIds)
+  const navigate = useStore((state) => state.navigate)
+  const students = unlockedBattleStudents(unlockedStudentIds)
+  return students.length < 3
+    ? <CharacterTalkLocked students={students} onOpenStory={() => navigate('afterSchoolChronicle')} />
+    : <CharacterTalkConversation talkStudents={students} />
+}
+
+function CharacterTalkConversation({ talkStudents }) {
   const preferredStudentId = useStore((state) => state.battleStudentId)
+  const talkStudentIds = talkStudents.map((student) => student.id)
   const boot = useRef(null)
   if (!boot.current) {
     const seed = characterTalkHash(`${Date.now()}|${Math.random()}|character-talk`)
-    const player = battleStudentById(preferredStudentId)
-    const speaker = chooseCharacterTalkCompanion(player.id, `${seed}|speaker`)
-    const companion = chooseCharacterTalkCompanion(speaker.id, `${seed}|companion`, player.id)
+    const player = talkStudents.find((student) => student.id === preferredStudentId)
+      ?? talkStudents[0]
+    const speaker = chooseCharacterTalkCompanion(
+      player.id,
+      `${seed}|speaker`,
+      null,
+      talkStudentIds,
+    )
+    const companion = chooseCharacterTalkCompanion(
+      speaker.id,
+      `${seed}|companion`,
+      player.id,
+      talkStudentIds,
+    )
     const topic = CHARACTER_TALK_TOPICS[seed % CHARACTER_TALK_TOPICS.length]
     const opening = createCharacterTalkOpening({
       playerId: player.id,
@@ -416,6 +479,7 @@ export function CharacterTalkScreen() {
       speaker.id,
       nextSeed,
       [player.id, companion.id],
+      talkStudentIds,
     )
     restartConversation({
       nextCompanionId: nextCompanion.id,
@@ -597,7 +661,7 @@ export function CharacterTalkScreen() {
           <summary className="flex min-h-10 cursor-pointer list-none items-center justify-between px-3 py-2 text-[10px] font-extrabold text-slate-600">
             <span>👥 話す相手・話題を変える</span>
             <span className="text-[8px] text-slate-400">
-              相手{BATTLE_STUDENTS.length - 1}人・{CHARACTER_TALK_TOPICS.length}話題・{CHARACTER_DAILY_QUESTIONS.length}質問
+              相手{talkStudents.length - 1}人・{CHARACTER_TALK_TOPICS.length}話題・{CHARACTER_DAILY_QUESTIONS.length}質問
             </span>
           </summary>
           <div className="max-h-[30dvh] space-y-3 overflow-y-auto border-t border-slate-100 px-3 pb-3 pt-2.5">
@@ -613,7 +677,7 @@ export function CharacterTalkScreen() {
                 </button>
               </div>
               <div className="character-talk-selector mt-2 flex gap-2 overflow-x-auto pb-1" role="group" aria-label="主人公が話しかける相手を選ぶ">
-                {BATTLE_STUDENTS.filter((student) => student.id !== player.id).map((student) => {
+                {talkStudents.filter((student) => student.id !== player.id).map((student) => {
                   const selected = student.id === speaker.id
                   return (
                     <button

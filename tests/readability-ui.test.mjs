@@ -12,7 +12,7 @@ async function jsxFiles(directory) {
   return nested.flat()
 }
 
-test('全62ルートは共通の可読性レイヤーと簡潔な共通ヘッダーを通る', async () => {
+test('全63ルートは共通の可読性レイヤーと簡潔な共通ヘッダーを通る', async () => {
   const [app, shell] = await Promise.all([
     readFile(new URL('../src/App.jsx', import.meta.url), 'utf8'),
     readFile(new URL('../src/components/AppShell.jsx', import.meta.url), 'utf8'),
@@ -20,7 +20,7 @@ test('全62ルートは共通の可読性レイヤーと簡潔な共通ヘッダ
   const screenMap = app.slice(app.indexOf('const SCREENS = {'), app.indexOf('// ボトムナビ'))
   const routeCount = (screenMap.match(/^  [A-Za-z][A-Za-z0-9]*:/gm) ?? []).length
 
-  assert.equal(routeCount, 62)
+  assert.equal(routeCount, 63)
   assert.match(app, /<AppShell nav=/)
   assert.match(shell, /study-app-surface/)
   assert.match(shell, /study-app-content/)
@@ -72,16 +72,29 @@ test('共通カード・ボタン・下部ナビは装飾を減らし文字優�
   assert.match(css, /--shadow-card: 0 2px 8px -5px/)
 })
 
-test('ホームは主要6モードを先に出し、残り6モードを一つの開閉欄へまとめる', async () => {
+test('ホームはタイトル画面の3操作だけを先に出し、全学習を別表示へ分ける', async () => {
   const home = await readFile(new URL('../src/screens/Home.jsx', import.meta.url), 'utf8')
-  const primary = home.match(/data-home-mode-group="primary">([\s\S]*?)<\/div>\s*<details/)?.[1] ?? ''
-  const secondary = home.match(/data-home-mode-group="secondary">([\s\S]*?)<\/div>\s*<\/details>/)?.[1] ?? ''
+  const primaryModes = home.match(/const PRIMARY_LEARNING_MODES = \[([\s\S]*?)\n\]/)?.[1] ?? ''
+  const extraModes = home.match(/const EXTRA_LEARNING_MODES = \[([\s\S]*?)\n\]/)?.[1] ?? ''
 
-  assert.equal((primary.match(/<ModeTile/g) ?? []).length, 6)
-  assert.equal((secondary.match(/<ModeTile/g) ?? []).length, 6)
-  assert.match(home, /home-more-modes/)
-  assert.match(home, /ほかの学習メニュー/)
-  assert.doesNotMatch(home, /hero\.xpToNext|hero\.progress/)
+  assert.equal((home.match(/data-home-title-action=/g) ?? []).length, 3)
+  assert.deepEqual(
+    [...primaryModes.matchAll(/id: '([^']+)'/g)].map((match) => match[1]),
+    ['vocab', 'quiz', 'reading', 'phrases', 'grammar', 'listening'],
+  )
+  assert.deepEqual(
+    [...extraModes.matchAll(/id: '([^']+)'/g)].map((match) => match[1]),
+    ['literature', 'writing', 'roots', 'dictation', 'saved-vocab', 'saved-grammar'],
+  )
+  assert.match(home, /data-testid="home-title-screen"/)
+  assert.match(home, /if \(learningMenuOpen\)/)
+  assert.match(home, /data-home-learning-menu/)
+  assert.match(home, /PRIMARY_LEARNING_MODES\.map/)
+  assert.match(home, /EXTRA_LEARNING_MODES\.map/)
+  assert.match(home, /home-learning-more/)
+  assert.match(home, /つづきから/)
+  assert.match(home, /学習を選ぶ/)
+  assert.doesNotMatch(home, /recommendation\.reason|recommendation\.timing|ProgressRing|きょうの語源/)
 })
 
 test('五芒星マップは選択中の地点名だけを表示し、ボタン名は保持する', async () => {
@@ -109,4 +122,63 @@ test('ゲーム入口は開始操作を詳細設定より先に見せ、低い�
   assert.match(quiz, /\{options\.map\(/)
   assert.match(quiz, /<UnknownChoiceButton/)
   assert.match(css, /@media \(max-height: 640px\)[\s\S]*height: 72px;[\s\S]*grid-auto-rows: 58px;/)
+})
+
+test('ゲーム全体は携帯ゲーム機の共通枠と4分類に統一し、詳細を引き出しへしまう', async () => {
+  const [map, shell, css, menu, album, app] = await Promise.all([
+    readFile(new URL('../src/screens/EnglishMap.jsx', import.meta.url), 'utf8'),
+    readFile(new URL('../src/components/AppShell.jsx', import.meta.url), 'utf8'),
+    readFile(new URL('../src/index.css', import.meta.url), 'utf8'),
+    readFile(new URL('../src/components/SpeechSettings.jsx', import.meta.url), 'utf8'),
+    readFile(new URL('../src/screens/StoryAlbum.jsx', import.meta.url), 'utf8'),
+    readFile(new URL('../src/App.jsx', import.meta.url), 'utf8'),
+  ])
+  const menuConfig = map.slice(
+    map.indexOf('const CHRONICLE_MENU_SECTIONS'),
+    map.indexOf('// ゲーム入口の主要アイコン'),
+  )
+  const screen = map.slice(
+    map.indexOf('export function AfterSchoolChronicleScreen'),
+    map.indexOf('function ChroniclePortalCard'),
+  )
+
+  assert.deepEqual(
+    [...menuConfig.matchAll(/id: '([^']+)', label: '([^']+)'/g)]
+      .map(([, id, label]) => [id, label]),
+    [
+      ['battle', '対決'],
+      ['growth', '育成'],
+      ['friends', '仲間'],
+      ['school', '学園'],
+    ],
+  )
+  assert.match(screen, /aria-label="ゲームメニュー"/)
+  assert.match(screen, /data-game-console/)
+  assert.match(screen, /className="after-school-console-screen space-y-3"/)
+  assert.match(screen, /className="after-school-console-key"/)
+  assert.match(screen, /data-game-menu=\{section\.id\}/)
+  assert.match(screen, /data-game-menu-panel=\{menuSection\.id\}/)
+  assert.match(screen, /menuSection\.id === 'battle'[\s\S]*<AdventureCard/)
+  assert.doesNotMatch(screen, /ChronicleHero/)
+  assert.match(screen, /menuSection\.id === 'growth'[\s\S]*<XpExchangeCard[\s\S]*<AfterSchoolWorld[\s\S]*<AdventureProgress[\s\S]*<ChapterTrail/)
+  assert.match(screen, /menuSection\.id === 'friends'[\s\S]*<AfterSchoolBondBoard[\s\S]*<BattleCastRoster/)
+  assert.match(screen, /menuSection\.id === 'school'[\s\S]*<StoryArcTimeline[\s\S]*<SchoolBarrierMap[\s\S]*<SchoolLifeAlbum[\s\S]*<TeacherSchoolLife/)
+  assert.match(screen, /title="育成の記録"/)
+  assert.match(screen, /title="仲間のプロフィール"/)
+  assert.match(screen, /title="先生と話す"/)
+  assert.doesNotMatch(screen, /StoryKeyVisualAlbum|storyKeyVisualAlbum/)
+  assert.match(menu, /const APP_MENU_EXTRAS[\s\S]*screen: 'storyAlbum'[\s\S]*label: '思い出アルバム'/)
+  assert.match(menu, /data-menu-extras/)
+  assert.match(menu, /data-menu-extra=\{screen\}/)
+  assert.match(album, /data-story-album-screen/)
+  assert.match(album, /<StoryKeyVisualAlbum album=\{album\} \/>/)
+  assert.match(app, /storyAlbum: StoryAlbumScreen/)
+  assert.match(screen, /titleClassName="after-school-screen-title"/)
+  assert.match(map, /after-school-portal-console/)
+  assert.match(shell, /titleClassName = ''/)
+  assert.match(css, /\.after-school-handheld\s*\{/)
+  assert.match(css, /\.after-school-console-screen\s*\{[\s\S]*height: clamp\(20rem, 58dvh, 36rem\);[\s\S]*overflow-y: auto;/)
+  assert.match(css, /\.after-school-console-key\[aria-pressed='true'\]/)
+  assert.match(css, /\.after-school-console-drawer-action::after[\s\S]*content: 'ひらく';/)
+  assert.match(css, /@media \(max-width: 350px\)[\s\S]*\.after-school-screen-title[\s\S]*white-space: normal;[\s\S]*\.after-school-screen-subtitle[\s\S]*display: none;/)
 })

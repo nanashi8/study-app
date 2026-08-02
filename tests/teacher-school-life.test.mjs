@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
-import { readFileSync } from 'node:fs'
+import { createHash } from 'node:crypto'
+import { existsSync, readFileSync } from 'node:fs'
 import test from 'node:test'
 import { BATTLE_STUDENTS } from '../src/lib/battleCast.js'
 import { SCHOOL_TEACHERS, TEACHER_RIVALS } from '../src/lib/rpg.js'
@@ -42,13 +43,22 @@ test('全12科目の担当教員が愛情・面白さ・厳しさを持つ学校
     assert.equal(hasTeacherPortrait(teacher), true)
   }
 
-  assert.equal(
-    new Set(TEACHER_SCHOOL_LIFE.map((teacher) => {
-      const profile = teacherPortraitProfile(teacher)
-      return `${profile.initial}/${profile.subjectMark}/${profile.hairStyle}/${profile.jacket}`
-    })).size,
-    12,
-  )
+  const portraits = TEACHER_SCHOOL_LIFE.map((teacher) => teacherPortraitProfile(teacher))
+  assert.equal(new Set(portraits.map((profile) => profile.src)).size, 12)
+  const portraitHashes = []
+  for (const profile of portraits) {
+    assert.match(profile.src, /^\/assets\/battle\/teachers\/[a-z-]+\.webp$/u)
+    const portraitUrl = new URL(`../public${profile.src}`, import.meta.url)
+    assert.equal(
+      existsSync(portraitUrl),
+      true,
+      `${profile.id}: visual file`,
+    )
+    const image = readFileSync(portraitUrl)
+    assert.ok(image.byteLength > 20_000, `${profile.id}: full visual data`)
+    portraitHashes.push(createHash('sha256').update(image).digest('hex'))
+  }
+  assert.equal(new Set(portraitHashes).size, 12, 'all teachers use different visuals')
 
   assert.match(
     teacherSchoolLifeById('tempest').ownRemedial,
@@ -169,7 +179,7 @@ test('逃げる場面は全10人の性格と所属に応じた別々の行動に
   assert.equal(new Set(narrations).size, 10)
 })
 
-test('放課後の魔法と言葉から先生の日常会話を操作でき、実学習成績へ混ぜない', () => {
+test('放課後と魔法の言葉から先生の日常会話を操作でき、実学習成績へ混ぜない', () => {
   const source = readFileSync(
     new URL('../src/screens/EnglishMap.jsx', import.meta.url),
     'utf8',
@@ -187,7 +197,7 @@ test('放課後の魔法と言葉から先生の日常会話を操作でき、�
   assert.match(source, /実際の正答率・XP・SRS・診断結果は変わりません/u)
 })
 
-test('先生専用アイコンを学校生活・章末準備・戦闘・結果で共通利用する', () => {
+test('先生専用ビジュアルを学校生活・章末準備・戦闘・結果で共通利用する', () => {
   const sources = [
     '../src/screens/EnglishMap.jsx',
     '../src/screens/VocabQuiz.jsx',
@@ -200,7 +210,16 @@ test('先生専用アイコンを学校生活・章末準備・戦闘・結果�
     assert.doesNotMatch(source, /portraitEmoji/u)
   }
 
+  const portraitComponent = readFileSync(
+    new URL('../src/components/TeacherPortrait.jsx', import.meta.url),
+    'utf8',
+  )
+  assert.match(portraitComponent, /data-teacher-visual=\{profile\.src\}/u)
+  assert.match(portraitComponent, /<img[\s\S]*src=\{profile\.src\}/u)
+  assert.doesNotMatch(portraitComponent, /<svg/u)
+
   assert.match(sources[0], /battleOpponentForEncounter/u)
   assert.match(sources[1], /battleOpponentForEncounter/u)
   assert.match(sources[2], /battleOpponentForEncounter/u)
+  assert.match(sources[2], /<TeacherPortrait teacher=\{teacher\} className="h-full w-full" \/>/u)
 })

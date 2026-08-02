@@ -412,12 +412,12 @@ test('スルーと冷たい返しは、聞く・励ますとは異なる現実�
   assert.notEqual(exchanges.ignore.messages[3].text, exchanges.cold.messages[3].text)
 })
 
-test('日常アルバムは10人×10場面の100枚を持ち、主人公を描かず私服でやりとりを表す', async () => {
-  assert.equal(CHARACTER_DAILY_VISUAL_MOMENTS.length, 10)
-  assert.equal(CHARACTER_DAILY_VISUAL_COUNT, 100)
-  assert.equal(CHARACTER_DAILY_VISUALS.length, 100)
-  assert.equal(new Set(CHARACTER_DAILY_VISUALS.map((visual) => visual.id)).size, 100)
-  assert.equal(new Set(CHARACTER_DAILY_VISUALS.map((visual) => visual.image)).size, 100)
+test('日常アルバムは10人×30場面の300枚を持ち、主人公を描かず私服でやりとりを表す', async () => {
+  assert.equal(CHARACTER_DAILY_VISUAL_MOMENTS.length, 30)
+  assert.equal(CHARACTER_DAILY_VISUAL_COUNT, 300)
+  assert.equal(CHARACTER_DAILY_VISUALS.length, 300)
+  assert.equal(new Set(CHARACTER_DAILY_VISUALS.map((visual) => visual.id)).size, 300)
+  assert.equal(new Set(CHARACTER_DAILY_VISUALS.map((visual) => visual.image)).size, 300)
   assert.deepEqual(
     new Set(CHARACTER_DAILY_VISUALS.map((visual) => visual.studentId)),
     studentIds,
@@ -425,9 +425,9 @@ test('日常アルバムは10人×10場面の100枚を持ち、主人公を描�
 
   for (const student of BATTLE_STUDENTS) {
     const visuals = characterDailyVisualsByStudent(student.id)
-    assert.equal(visuals.length, 10, `${student.id}: daily visual count`)
-    assert.equal(visuals.filter((visual) => visual.outfitId === 'home').length, 5)
-    assert.equal(visuals.filter((visual) => visual.outfitId === 'weekend').length, 5)
+    assert.equal(visuals.length, 30, `${student.id}: daily visual count`)
+    assert.equal(visuals.filter((visual) => visual.outfitId === 'home').length, 15)
+    assert.equal(visuals.filter((visual) => visual.outfitId === 'weekend').length, 15)
 
     for (const visual of visuals) {
       assert.equal(visual.protagonistVisible, false, visual.id)
@@ -443,12 +443,15 @@ test('日常アルバムは10人×10場面の100枚を持ち、主人公を描�
     }
   }
 
+  const categorySceneIds = new Set()
   for (const category of CHARACTER_DAILY_CATEGORIES) {
     const visual = characterDailyVisualForCategory('mio', category.id)
     assert.ok(visual, category.id)
     assert.equal(visual.studentId, 'mio')
     assert.equal(['home', 'weekend'].includes(visual.outfitId), true, category.id)
+    categorySceneIds.add(visual.sceneId)
   }
+  assert.equal(categorySceneIds.size, 30)
 })
 
 test('意外な一面は10人分の固有設定と、主人公にバレる画像付き3択シーンを持つ', async () => {

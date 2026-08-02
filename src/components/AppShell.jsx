@@ -6,6 +6,7 @@ export function AppShell({ children, nav }) {
         <main className="study-app-content no-scrollbar flex-1 overflow-y-auto overflow-x-hidden overscroll-contain">
           {children}
         </main>
+        <GlobalSpeechConsole />
         {nav}
       </div>
     </div>
@@ -17,6 +18,7 @@ import { useStore } from '../store/useStore.js'
 import { IconButton, cx } from './ui.jsx'
 import { ChevronLeft } from './Icons.jsx'
 import { SpeechSettingsButton } from './SpeechSettings.jsx'
+import { GlobalSpeechConsole } from './SpeechConsole.jsx'
 
 export function ScreenHeader({
   title,
@@ -26,6 +28,8 @@ export function ScreenHeader({
   color,
   inverse = false,
   showSpeechSettings = true,
+  titleClassName = '',
+  subtitleClassName = '',
 }) {
   const back = useStore((s) => s.back)
   return (
@@ -54,6 +58,7 @@ export function ScreenHeader({
           <h1 className={cx(
             'truncate font-display text-xl font-extrabold leading-tight',
             inverse ? 'text-white' : 'text-ink',
+            titleClassName,
           )}
           >
             {title}
@@ -63,6 +68,7 @@ export function ScreenHeader({
           <p className={cx(
             'truncate text-[13px] font-bold leading-snug',
             inverse ? 'text-white/75' : 'text-ink/60',
+            subtitleClassName,
           )}
           >
             {subtitle}

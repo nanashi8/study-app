@@ -1,6 +1,6 @@
 {
   "version": "school-ensemble-v2",
-  "title": "放課後の魔法と言葉 Original Game Soundtrack",
+  "title": "放課後と魔法の言葉 Original Game Soundtrack",
   "originality": "Original compositions; no melodies or arrangements copied from referenced works.",
   "renderer": "macOS AVAudioUnitSampler + General MIDI ensemble",
   "codec": "AAC-LC stereo 44.1 kHz, target 128 kbps",

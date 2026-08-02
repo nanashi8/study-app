@@ -63,7 +63,7 @@ test('共通CSSは狭幅・低画面・動きを減らす設定まで対決演�
   assert.match(css, /\.battle-result-stage,/)
 })
 
-test('先生たちとの学校生活は専用の先生アイコンと配色を持つ', async () => {
+test('先生たちとの学校生活は専用の先生ビジュアルと配色を持つ', async () => {
   const [source, css] = await Promise.all([
     readSource('../src/screens/EnglishMap.jsx'),
     readSource('../src/index.css'),
@@ -72,4 +72,5 @@ test('先生たちとの学校生活は専用の先生アイコンと配色を�
   assert.match(source, /faculty:\s*Teacher/)
   assert.match(source, /<ChronicleIcon kind="faculty" size=\{24\} \/>/)
   assert.match(css, /\.chronicle-vector-icon\[data-chronicle-icon='faculty'\]\s*\{/)
+  assert.match(css, /\.teacher-avatar-icon > img\s*\{/)
 })

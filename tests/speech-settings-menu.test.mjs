@@ -5,10 +5,11 @@ import { readFileSync, readdirSync } from 'node:fs'
 const read = (path) =>
   readFileSync(new URL(path, import.meta.url), 'utf8')
 
-test('設定メニューは一つの共通シートを全画面から開く', () => {
+test('一つの共通メニューを全画面から開き、その中の設定へ進む', () => {
   const app = read('../src/App.jsx')
   const header = read('../src/components/AppShell.jsx')
   const settings = read('../src/components/SpeechSettings.jsx')
+  const bottomNav = read('../src/components/BottomNav.jsx')
   const screenDirectory = new URL('../src/screens/', import.meta.url)
   const missing = readdirSync(screenDirectory)
     .filter((filename) => filename.endsWith('.jsx'))
@@ -19,10 +20,19 @@ test('設定メニューは一つの共通シートを全画面から開く', ()
 
   assert.match(app, /<SpeechSettingsSheet \/>/)
   assert.match(header, /<SpeechSettingsButton inverse=\{inverse\} \/>/)
-  assert.match(settings, /title="設定メニュー"/)
+  assert.match(settings, /title=\{view === 'settings' \? '設定' : 'メニュー'\}/)
+  assert.match(settings, /data-app-menu-panel/)
+  assert.match(settings, /data-menu-settings-entry/)
+  assert.match(settings, /data-menu-extras/)
+  assert.match(settings, /screen: 'storyAlbum'/)
+  assert.match(settings, />\s*おまけ\s*</)
+  assert.match(app, /storyAlbum: StoryAlbumScreen/)
   assert.match(settings, /data-settings-menu-trigger/)
-  assert.match(settings, /<Gear /)
+  assert.match(settings, /<Menu /)
   assert.match(settings, /data-speech-settings-trigger/)
+  assert.match(bottomNav, /label: 'メニュー'/)
+  assert.match(bottomNav, /openSpeechSettings\(\)/)
+  assert.doesNotMatch(bottomNav, /label: '設定', screen: 'settings'/)
   assert.deepEqual(missing, [])
 })
 
@@ -118,6 +128,7 @@ test('簡易UIとゲーミングUIは共通設定から切り替わり戦闘計�
   const css = read('../src/index.css')
 
   assert.match(store, /battleUiMode:\s*'gaming'/)
+  assert.match(settings, /title="バトル画面"/)
   assert.match(settings, /簡易UI/)
   assert.match(settings, /ゲーミングUI/)
   assert.match(quiz, /data-battle-ui-mode=/)

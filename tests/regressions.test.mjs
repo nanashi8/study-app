@@ -285,7 +285,7 @@ test('進捗コードは廃止済みデータを再保存せず、旧コード�
     new URL('../src/store/useStore.js', import.meta.url),
     'utf8',
   )
-  assert.match(storeSource, /version: 3/)
+  assert.match(storeSource, /version: 4/)
   assert.match(storeSource, /migrate: migratePersistedState/)
   assert.throws(() => decodeProgress(encodeProgress({ ...base, srs: [] })), /srs/)
   assert.throws(
