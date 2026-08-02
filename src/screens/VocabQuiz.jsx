@@ -19,6 +19,7 @@ import { PosBadge } from '../components/WordBits.jsx'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
 import { TeacherPortrait } from '../components/TeacherPortrait.jsx'
+import { BattleStandingActor } from '../components/BattleStandingActor.jsx'
 import { Button, ProgressBar, IconButton } from '../components/ui.jsx'
 import { Close, Check, ArrowRight } from '../components/Icons.jsx'
 import { cx } from '../components/ui.jsx'
@@ -36,6 +37,7 @@ import {
   battleStudentById,
   battleStudentMotion,
   battleStudentPortrait,
+  battleStandingPoseForPhase,
   battleStudentState,
 } from '../lib/battleCast.js'
 import {
@@ -745,6 +747,7 @@ function BattleHud({
     'enemy-action': '相手の一手',
     ready: '対決中',
   }[battlePhase]
+  const standingPose = battleStandingPoseForPhase(battlePhase, eventKind)
 
   return (
     <div
@@ -931,18 +934,23 @@ function BattleHud({
         )}
         <div
           className={cx(
-            'battle-stage-unit battle-stage-hero',
-            battleStudent.fullBody && 'battle-stage-unit-fullbody',
+            'battle-stage-unit battle-stage-hero battle-stage-unit-fullbody',
             heroAttacking && 'battle-unit-lunge-right',
             heroDamaged && 'battle-unit-damaged',
             guardActive && 'battle-unit-guard',
           )}
         >
-          <FullBodyBattleActor
+          <BattleStandingActor
             key={`stage-${battleStudent.id}-${studentState}`}
-            src={battleStudent.fullBody}
-            side="hero"
-            label={`${battleStudent.name}・${studentState}`}
+            student={battleStudent}
+            pose={standingPose}
+            phase={battlePhase}
+            motionSrc={studentMotion}
+            motionActive={presentationActive}
+            posterSrc={studentPortrait}
+            defeated={battleState.heroDefeated}
+            className="battle-stage-standing-hero"
+            label={`${battleStudent.name}・${studentState}・${standingPose}`}
             fallback={(
               <PixelBattlePortrait
                 src={studentPortrait}

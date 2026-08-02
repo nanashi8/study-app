@@ -63,6 +63,7 @@ import {
   BATTLE_GRADE_SUBJECTS,
   BATTLE_LIFESTYLE_OUTFITS,
   BATTLE_MOTION_STATES,
+  BATTLE_RESULT_ANIMATION_STYLES,
   BATTLE_RIVAL_GROUPS,
   BATTLE_RIVALS,
   BATTLE_STUDENTS,
@@ -76,6 +77,7 @@ import {
   battleStudentBestSubjects,
   battleStudentMotion,
   battleStudentPortrait,
+  battleStudentResultAnimation,
   battleStudentResultState,
   battleStudentState,
   battleStudentSubjectGrade,
@@ -857,6 +859,74 @@ test('バトル結果は決着に合う生徒の表情へ切り替わる', () =>
   assert.equal(battleStudentResultState({ accuracy: 0.2 }), 'sad')
 })
 
+test('バトル結果は全10人の性格に合わせてかわいいまたはかっこいい演出を選ぶ', () => {
+  assert.deepEqual(BATTLE_RESULT_ANIMATION_STYLES, ['cute', 'cool'])
+
+  const profiles = BATTLE_STUDENTS.map((student) => (
+    battleStudentResultAnimation({
+      studentId: student.id,
+      battleState: { enemyDefeated: true },
+      accuracy: 1,
+    })
+  ))
+  assert.equal(profiles.length, 10)
+  assert.deepEqual(new Set(profiles.map((profile) => profile.style)), new Set(['cute', 'cool']))
+  assert.equal(profiles.every((profile) => profile.phase === 'victory'), true)
+  assert.equal(profiles.every((profile) => profile.motionEmotion === 'victory'), true)
+  assert.equal(profiles.every((profile) => profile.glyphs.length === 4), true)
+
+  assert.deepEqual(
+    battleStudentResultAnimation({
+      studentId: 'mio',
+      battleState: { enemyDefeated: true },
+      accuracy: 1,
+    }),
+    {
+      id: 'cute-victory',
+      style: 'cute',
+      phase: 'victory',
+      label: 'きらめきフィニッシュ！',
+      motionEmotion: 'victory',
+      glyphs: ['🎼', '♥', '✦', '☆'],
+    },
+  )
+  assert.equal(
+    battleStudentResultAnimation({
+      studentId: 'tsubaki',
+      battleState: { enemyDefeated: true },
+      accuracy: 1,
+    }).id,
+    'cool-victory',
+  )
+  assert.deepEqual(
+    battleStudentResultAnimation({
+      studentId: 'kaito',
+      battleState: { heroDefeated: true },
+      accuracy: 1,
+    }),
+    {
+      id: 'cool-recovery',
+      style: 'cool',
+      phase: 'recovery',
+      label: '態勢を整えて再挑戦',
+      motionEmotion: 'healing',
+      glyphs: ['👟', '◇', '✦', '↑'],
+    },
+  )
+  assert.equal(
+    battleStudentResultAnimation({ studentId: 'rei', accuracy: 0.5 }).motionEmotion,
+    'guard',
+  )
+  assert.equal(
+    battleStudentResultAnimation({ studentId: 'akari', accuracy: 0.5 }).motionEmotion,
+    'healing',
+  )
+  assert.equal(
+    battleStudentResultAnimation({ studentId: 'sora', accuracy: 1 }).style,
+    'cool',
+  )
+})
+
 test('3エリア固有能力は戦闘演出だけを変え、学習評価を変えない', () => {
   const answers = ['wrong', 'correct', 'correct', 'correct']
   const states = BATTLE_THEMES.map((theme) =>
@@ -1400,7 +1470,8 @@ test('キャラ選択・全24表情・50人図鑑・3場面演出が実際のバ
   assert.match(resultSource, /battleStudentResultState/)
   assert.match(resultSource, /battle-result-\$\{placement\}-student/)
   assert.match(resultSource, /battleStudentPortrait\(student\.id, emotion\)/)
-  assert.match(resultSource, /placement="lead"/)
+  assert.match(resultSource, /data-testid="battle-result-lead-student"/)
+  assert.match(resultSource, /<BattleStandingActor/)
   assert.match(resultSource, /placement="level"/)
 
   assert.match(cssSource, /@keyframes battle-expression-in/)

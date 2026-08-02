@@ -87,6 +87,7 @@ import { ScreenHeader } from '../components/AppShell.jsx'
 import { LightNovelScene } from '../components/LightNovelScene.jsx'
 import { MobPortrait } from '../components/MobPortrait.jsx'
 import { TeacherPortrait } from '../components/TeacherPortrait.jsx'
+import { BattleStandingActor } from '../components/BattleStandingActor.jsx'
 import { ProgressRing, ProgressBar, Chip, cx } from '../components/ui.jsx'
 import {
   ArrowRight,
@@ -770,8 +771,31 @@ function AdventureCard({
         </div>
 
         <div className="school-battle-paper order-1 mt-3 flex flex-col rounded-[1.65rem] bg-white p-3.5 text-ink shadow-xl shadow-black/15">
-          <div className="flex items-center gap-3">
-            <span className="battle-map-rival-portrait h-16 w-16 shrink-0 overflow-hidden rounded-2xl ring-2 ring-violet-100">
+          <div
+            className="battle-entry-standing-stage"
+            data-battle-standing-entry
+            style={{
+              '--battle-entry-standing-scene': `linear-gradient(90deg,rgba(2,6,23,.34),rgba(2,6,23,.08),rgba(2,6,23,.42)), url("${publicAssetUrl(battleTheme.stage)}") center / cover`,
+            }}
+            role="img"
+            aria-label={`${battleStudent.name}が背中を見せて${battleRival.name}との対決へ向かう`}
+          >
+            <BattleStandingActor
+              student={battleStudent}
+              pose="back"
+              phase="entry"
+              className="battle-entry-standing-hero"
+              label={`${battleStudent.name}・背中を見せる構え`}
+              fallback={(
+                <img
+                  src={battleStudentPortrait(battleStudent.id, 'determined')}
+                  alt=""
+                  className="battle-entry-standing-fallback"
+                />
+              )}
+            />
+            <span className="battle-entry-standing-versus" aria-hidden="true">VS</span>
+            <span className="battle-map-rival-portrait battle-entry-standing-rival shrink-0 overflow-hidden rounded-2xl ring-2 ring-violet-100">
               {encounter.isTeacher ? (
                 <TeacherPortrait teacher={encounter} className="h-full w-full" />
               ) : (
@@ -782,14 +806,15 @@ function AdventureCard({
                 />
               )}
             </span>
-            <div className="min-w-0 flex-1">
-              <p className="text-[9px] font-extrabold text-violet-500">
-                {opponentLabel} · 英検{enemyRank.label}
-              </p>
-              <h2 className="font-display text-lg font-extrabold leading-tight">
-                {battleRival.name}
-              </h2>
-            </div>
+          </div>
+
+          <div className="mt-2 text-center">
+            <p className="text-[9px] font-extrabold text-violet-500">
+              {opponentLabel} · 英検{enemyRank.label}
+            </p>
+            <h2 className="font-display text-lg font-extrabold leading-tight">
+              {battleRival.name}
+            </h2>
           </div>
 
           <div className="after-school-quest-picker mt-3">

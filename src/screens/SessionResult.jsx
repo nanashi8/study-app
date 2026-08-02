@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { todayIndex, useStore } from '../store/useStore.js'
 import { ProgressRing, ProgressBar, Button, Card } from '../components/ui.jsx'
 import { Star, Flame, Refresh, Home, Bookmark, ArrowRight, Check } from '../components/Icons.jsx'
@@ -15,6 +15,7 @@ import {
 import { HeroPortrait } from '../components/HeroPortrait.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { TeacherPortrait } from '../components/TeacherPortrait.jsx'
+import { BattleStandingActor } from '../components/BattleStandingActor.jsx'
 import {
   battleStarsEarned,
   newlyUnlockedBattleThemes,
@@ -27,8 +28,11 @@ import {
   battleRivalTeacherSubject,
   battleStudentById,
   battleStudentBestSubjects,
+  battleStudentMotion,
   battleStudentPortrait,
+  battleStudentResultAnimation,
   battleStudentResultState,
+  battleStandingPoseForPhase,
   battleTeacherAffinity,
 } from '../lib/battleCast.js'
 import { isBattleStudentUnlocked } from '../lib/afterSchoolBonds.js'
@@ -63,6 +67,23 @@ function Confetti() {
       ))}
     </div>
   )
+}
+
+function usePrefersReducedMotion() {
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(() =>
+    typeof window !== 'undefined'
+      && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches,
+  )
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.matchMedia) return undefined
+    const media = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const update = () => setPrefersReducedMotion(media.matches)
+    media.addEventListener?.('change', update)
+    return () => media.removeEventListener?.('change', update)
+  }, [])
+
+  return prefersReducedMotion
 }
 
 export function SessionResultScreen() {
@@ -122,6 +143,13 @@ export function SessionResultScreen() {
   const battleStudent = isBattle ? battleStudentById(source?.studentId) : null
   const battleStudentEmotion = isBattle
     ? battleStudentResultState({ battleState: battleReport, accuracy: acc })
+    : null
+  const battleResultAnimation = isBattle
+    ? battleStudentResultAnimation({
+        studentId: battleStudent.id,
+        battleState: battleReport,
+        accuracy: acc,
+      })
     : null
   const battleRival = isBattle
     ? battleOpponentForEncounter(
@@ -323,6 +351,7 @@ export function SessionResultScreen() {
           verdict={verdict}
           encounter={encounter}
           quest={quest}
+          animation={battleResultAnimation}
         />
       ) : (
         <>
@@ -612,28 +641,57 @@ function BattleResultStudentPortrait({
   level = null,
   placement,
   prominent = false,
+  motionEmotion = null,
+  prefersReducedMotion = false,
 }) {
+  const [motionFailed, setMotionFailed] = useState(false)
   const label = `${student.name}の戦闘後の表情${level ? `、生徒レベル${level}` : ''}`
+  const portraitSrc = battleStudentPortrait(student.id, emotion)
+  const motionSrc = motionEmotion
+    ? battleStudentMotion(student.id, motionEmotion)
+    : null
+  const showMotion = motionSrc && !prefersReducedMotion && !motionFailed
+
+  useEffect(() => {
+    setMotionFailed(false)
+  }, [motionSrc])
+
   return (
     <div
       role="img"
       aria-label={label}
       data-testid={`battle-result-${placement}-student`}
       data-student-id={student.id}
-      className={`relative grid shrink-0 place-items-center ${
+      data-result-motion={showMotion ? motionEmotion : 'still'}
+      className={`battle-result-student-portrait relative grid shrink-0 place-items-center ${
         prominent ? 'h-20 w-20 animate-float' : 'h-12 w-12'
       }`}
     >
-      <img
-        src={battleStudentPortrait(student.id, emotion)}
-        alt=""
-        aria-hidden="true"
-        className="h-full w-full rounded-[30%] border-2 bg-slate-900 object-cover object-top shadow-lg [image-rendering:pixelated]"
+      <span
+        className="battle-result-student-media h-full w-full"
         style={{
           borderColor: student.accent,
           boxShadow: `0 8px 22px ${student.accent}44`,
         }}
-      />
+        aria-hidden="true"
+      >
+        {showMotion ? (
+          <video
+            key={motionSrc}
+            src={motionSrc}
+            poster={portraitSrc}
+            className="battle-result-motion-video"
+            autoPlay
+            muted
+            playsInline
+            preload="auto"
+            disablePictureInPicture
+            onError={() => setMotionFailed(true)}
+          />
+        ) : (
+          <img src={portraitSrc} alt="" />
+        )}
+      </span>
       {level && (
         <span
           aria-hidden="true"
@@ -646,6 +704,43 @@ function BattleResultStudentPortrait({
   )
 }
 
+function BattleResultEffects({ animation }) {
+  return (
+    <span
+      className="battle-result-effect-field"
+      data-result-effect={animation.style}
+      data-result-phase={animation.phase}
+      aria-hidden="true"
+    >
+      <i className="battle-result-effect-halo" />
+      {Array.from({ length: 8 }, (_, index) => (
+        <i
+          key={`${animation.id}-glyph-${index}`}
+          className="battle-result-effect-glyph"
+          style={{
+            '--result-effect-index': index,
+            '--result-effect-delay': `${index * 0.07}s`,
+            '--result-effect-x': `${8 + ((index * 29) % 84)}px`,
+            '--result-effect-y': `${8 + ((index * 37) % 116)}px`,
+          }}
+        >
+          {animation.glyphs[index % animation.glyphs.length]}
+        </i>
+      ))}
+      {animation.style === 'cool' && Array.from({ length: 3 }, (_, index) => (
+        <i
+          key={`${animation.id}-slash-${index}`}
+          className="battle-result-effect-slash"
+          style={{
+            '--result-effect-y': `${42 + index * 29}px`,
+            '--result-effect-delay': `${0.16 + index * 0.1}s`,
+          }}
+        />
+      ))}
+    </span>
+  )
+}
+
 function BattleResultStage({
   battleReport,
   student,
@@ -654,7 +749,10 @@ function BattleResultStage({
   verdict,
   encounter,
   quest,
+  animation,
 }) {
+  const prefersReducedMotion = usePrefersReducedMotion()
+  const [animationKey, setAnimationKey] = useState(0)
   const theme = battleReport?.battleTheme
   const outcome = battleReport?.enemyDefeated
     ? 'victory'
@@ -664,6 +762,19 @@ function BattleResultStage({
   const scene = theme?.stage
     ? `linear-gradient(180deg,rgba(2,6,23,.16),rgba(2,6,23,.82)), url("${theme.stage}") center / cover`
     : 'linear-gradient(135deg,#312e81,#0f172a 68%,#164e63)'
+  const standingPhase = outcome === 'victory' || outcome === 'legendary'
+    ? 'victory'
+    : outcome === 'defeat'
+      ? 'defeat'
+      : animation.phase === 'recovery'
+        ? 'healing'
+        : 'hero-action'
+  const standingPose = battleStandingPoseForPhase(
+    standingPhase,
+    animation.phase === 'recovery' ? 'item-heal' : null,
+  )
+  const standingMotion = battleStudentMotion(student.id, animation.motionEmotion)
+  const standingPoster = battleStudentPortrait(student.id, emotion)
 
   return (
     <section
@@ -671,6 +782,8 @@ function BattleResultStage({
       data-testid="battle-result-stage"
       data-battle-theme={theme?.id ?? 'fallback'}
       data-battle-outcome={outcome}
+      data-battle-result-style={animation.style}
+      data-battle-result-phase={animation.phase}
       style={{
         '--battle-result-scene': scene,
         '--battle-result-accent': theme?.accent ?? '#a78bfa',
@@ -680,41 +793,80 @@ function BattleResultStage({
       aria-label={`${student.name}と${rival.name}の対決結果。${verdict.title}`}
     >
       <span className="battle-result-cinema-frame" aria-hidden="true" />
-      <div className="battle-result-stage-heading" aria-hidden="true">
-        <span>{theme?.presentation?.modeLabel ?? 'SCHOOL DUEL'}</span>
-        <strong>BATTLE RESULT</strong>
-      </div>
-      <div className="battle-result-duelists">
-        <div className="battle-result-duelist battle-result-duelist-hero">
-          <BattleResultStudentPortrait
-            student={student}
-            emotion={emotion}
-            placement="lead"
-            prominent
-          />
-          <b>{student.name}</b>
-        </div>
-
-        <div className="battle-result-verdict">
-          <span aria-hidden="true">{verdict.emoji}</span>
-          <h1>{verdict.title}</h1>
-          <small>対決終了</small>
-        </div>
-
-        <div className="battle-result-duelist battle-result-duelist-enemy">
-          {rival.isTeacher ? (
-            <TeacherPortrait
-              teacher={encounter}
-              defeated={battleReport?.enemyDefeated}
-            />
-          ) : (
-            <img
-              src={rival.portrait}
-              alt={`${rival.name}の戦闘後の表情`}
-              className={battleReport?.enemyDefeated ? 'grayscale' : ''}
-            />
+      <div className="battle-result-stage-heading">
+        <span aria-hidden="true">{theme?.presentation?.modeLabel ?? 'SCHOOL DUEL'}</span>
+        <span className="battle-result-stage-heading-actions">
+          <strong aria-hidden="true">BATTLE RESULT</strong>
+          {!prefersReducedMotion && (
+            <button
+              type="button"
+              className="battle-result-replay"
+              onClick={() => setAnimationKey((key) => key + 1)}
+              aria-label="バトル結果の演出をもう一度見る"
+            >
+              <span aria-hidden="true">↻</span>
+              <span className="battle-result-replay-label">もう一度</span>
+            </button>
           )}
-          <b>{rival.name}</b>
+        </span>
+      </div>
+      <div key={animationKey} className="battle-result-animation-sequence">
+        {!prefersReducedMotion && <BattleResultEffects animation={animation} />}
+        <div className="battle-result-duelists">
+          <div className="battle-result-duelist battle-result-duelist-hero">
+            <div
+              className="battle-result-standing-student"
+              data-testid="battle-result-lead-student"
+              data-student-id={student.id}
+              data-result-motion={prefersReducedMotion ? 'still' : animation.motionEmotion}
+            >
+              <BattleStandingActor
+                student={student}
+                pose={standingPose}
+                phase={standingPhase}
+                motionSrc={standingMotion}
+                motionActive={!prefersReducedMotion}
+                posterSrc={standingPoster}
+                defeated={outcome === 'defeat'}
+                label={`${student.name}・${standingPose}・${animation.label}`}
+                fallback={(
+                  <BattleResultStudentPortrait
+                    student={student}
+                    emotion={emotion}
+                    placement="lead-fallback"
+                    prominent
+                    motionEmotion={animation.motionEmotion}
+                    prefersReducedMotion={prefersReducedMotion}
+                  />
+                )}
+              />
+            </div>
+            <b>{student.name}</b>
+          </div>
+
+          <div className="battle-result-verdict">
+            <span aria-hidden="true">{verdict.emoji}</span>
+            <h1>{verdict.title}</h1>
+            <small data-result-animation-label={animation.id}>
+              {animation.label}
+            </small>
+          </div>
+
+          <div className="battle-result-duelist battle-result-duelist-enemy">
+            {rival.isTeacher ? (
+              <TeacherPortrait
+                teacher={encounter}
+                defeated={battleReport?.enemyDefeated}
+              />
+            ) : (
+              <img
+                src={rival.portrait}
+                alt={`${rival.name}の戦闘後の表情`}
+                className={battleReport?.enemyDefeated ? 'grayscale' : ''}
+              />
+            )}
+            <b>{rival.name}</b>
+          </div>
         </div>
       </div>
       <p className="battle-result-stage-route">

@@ -17,6 +17,15 @@ import { todayIndex } from '../store/useStore.js'
 
 export const SESSION_SIZE = 10
 
+/**
+ * 復習ショートカットの表示状態。
+ * 未着手の 0 件と、学習後に復習をすべて終えた 0 件を区別する。
+ */
+export function reviewActionState({ seen = 0, due = 0 } = {}) {
+  if (due > 0) return 'due'
+  return seen > 0 ? 'complete' : 'empty'
+}
+
 /** 暗記セッションの回答を記録し、忘れた項目の ID だけを復習対象として残す。 */
 export function recordStudyAnswer(results, itemId, remembered) {
   if (remembered) {

@@ -40,6 +40,13 @@ export const DEFAULT_BATTLE_STUDENT_ID = 'mio'
 const FULL_BODY_BATTLE_STUDENT_IDS = new Set(['mio'])
 const FULL_BODY_BATTLE_RIVAL_IDS = new Set(['math-takagi'])
 
+export const BATTLE_STANDING_POSES = [
+  { id: 'back', label: '背中を見せる構え' },
+  { id: 'wind', label: '風になびく待機' },
+  { id: 'battle', label: '戦闘ポーズ' },
+  { id: 'mana', label: 'マナ集中' },
+]
+
 // 先生ライバルの担当教科と照合する、物語上の通知表。
 // ユーザー本人の正答率・診断・SRSとは完全に分離し、キャラクター相性だけに使う。
 export const BATTLE_GRADE_SUBJECTS = SCHOOL_SUBJECT_NAMES
@@ -53,6 +60,7 @@ export const BATTLE_STUDENTS = [
     emoji: '🎼',
     trait: '気持ちを音に変える、やさしい旋律使い。',
     accent: '#ec4899',
+    resultStyle: 'cute',
     grades: { 国語: 4, 英語: 4, 数学: 3, 物理: 3, 化学: 3, 生物: 4, 地学: 3, 地理: 3, 日本史: 3, 世界史: 3, 古文: 4, 英コミュ: 5 },
   },
   {
@@ -63,6 +71,7 @@ export const BATTLE_STUDENTS = [
     emoji: '✏️',
     trait: 'ひらめきを一筆で描く、放課後の作戦家。',
     accent: '#0ea5e9',
+    resultStyle: 'cool',
     grades: { 国語: 4, 英語: 3, 数学: 4, 物理: 3, 化学: 3, 生物: 5, 地学: 5, 地理: 4, 日本史: 3, 世界史: 3, 古文: 4, 英コミュ: 3 },
   },
   {
@@ -73,6 +82,7 @@ export const BATTLE_STUDENTS = [
     emoji: '📘',
     trait: '静かな観察眼で、答えへの道筋を読む。',
     accent: '#6366f1',
+    resultStyle: 'cool',
     grades: { 国語: 5, 英語: 5, 数学: 4, 物理: 3, 化学: 3, 生物: 4, 地学: 3, 地理: 4, 日本史: 4, 世界史: 4, 古文: 5, 英コミュ: 4 },
   },
   {
@@ -83,6 +93,7 @@ export const BATTLE_STUDENTS = [
     emoji: '🧪',
     trait: '失敗も実験データに変える、前向きな発明家。',
     accent: '#f97316',
+    resultStyle: 'cute',
     grades: { 国語: 3, 英語: 3, 数学: 5, 物理: 5, 化学: 5, 生物: 4, 地学: 4, 地理: 3, 日本史: 3, 世界史: 3, 古文: 2, 英コミュ: 3 },
   },
   {
@@ -93,6 +104,7 @@ export const BATTLE_STUDENTS = [
     emoji: '👟',
     trait: '考えるより一歩先へ。仲間を引っぱる俊足。',
     accent: '#10b981',
+    resultStyle: 'cool',
     grades: { 国語: 3, 英語: 3, 数学: 4, 物理: 5, 化学: 3, 生物: 4, 地学: 3, 地理: 4, 日本史: 4, 世界史: 3, 古文: 3, 英コミュ: 3 },
   },
   {
@@ -103,6 +115,7 @@ export const BATTLE_STUDENTS = [
     emoji: '📋',
     trait: '冷静な判断と小さな笑顔で作戦を整える。',
     accent: '#8b5cf6',
+    resultStyle: 'cool',
     grades: { 国語: 4, 英語: 4, 数学: 4, 物理: 4, 化学: 4, 生物: 4, 地学: 4, 地理: 4, 日本史: 5, 世界史: 5, 古文: 4, 英コミュ: 4 },
   },
   {
@@ -113,6 +126,7 @@ export const BATTLE_STUDENTS = [
     emoji: '🌍',
     trait: 'ことばの壁を楽しさに変えるムードメーカー。',
     accent: '#14b8a6',
+    resultStyle: 'cute',
     grades: { 国語: 4, 英語: 5, 数学: 3, 物理: 3, 化学: 3, 生物: 3, 地学: 3, 地理: 5, 日本史: 4, 世界史: 4, 古文: 3, 英コミュ: 5 },
   },
   {
@@ -123,6 +137,7 @@ export const BATTLE_STUDENTS = [
     emoji: '⚔️',
     trait: '迷いを断ち切り、仲間の前に立つ守り手。',
     accent: '#dc2626',
+    resultStyle: 'cool',
     grades: { 国語: 5, 英語: 3, 数学: 3, 物理: 4, 化学: 3, 生物: 3, 地学: 3, 地理: 4, 日本史: 5, 世界史: 4, 古文: 5, 英コミュ: 3 },
     hairProfile: {
       color: 'dark-purple-black',
@@ -139,6 +154,7 @@ export const BATTLE_STUDENTS = [
     emoji: '💻',
     trait: '好奇心とコードで、校内の謎を解析する。',
     accent: '#06b6d4',
+    resultStyle: 'cute',
     grades: { 国語: 3, 英語: 4, 数学: 5, 物理: 5, 化学: 4, 生物: 4, 地学: 5, 地理: 3, 日本史: 3, 世界史: 4, 古文: 2, 英コミュ: 4 },
   },
   {
@@ -149,17 +165,22 @@ export const BATTLE_STUDENTS = [
     emoji: '🖋️',
     trait: '物語の結末を信じ、最後の一問まで諦めない。',
     accent: '#64748b',
+    resultStyle: 'cool',
     grades: { 国語: 5, 英語: 4, 数学: 3, 物理: 3, 化学: 3, 生物: 4, 地学: 3, 地理: 4, 日本史: 4, 世界史: 5, 古文: 5, 英コミュ: 4 },
   },
 ].map((student) => ({
   ...student,
   assetBase: publicAssetUrl(`/assets/battle/cast/students/${student.id}`),
   motionBase: publicAssetUrl(`/assets/battle/motion/students/${student.id}`),
+  standingSheet: publicAssetUrl(`/assets/battle/standing/students/${student.id}-poses.png`),
   lifestyleBase: publicAssetUrl(`/assets/battle/cast/lifestyle/${student.id}`),
   fullBody: FULL_BODY_BATTLE_STUDENT_IDS.has(student.id)
     ? publicAssetUrl(`/assets/battle/fullbody/students/${student.id}.png`)
     : null,
 }))
+
+export const BATTLE_STANDING_VISUAL_COUNT = BATTLE_STUDENTS.length
+  * BATTLE_STANDING_POSES.length
 
 export const BATTLE_LIFESTYLE_OUTFITS = [
   { id: 'home', label: '自宅の私服', emoji: '🏠' },
@@ -897,6 +918,26 @@ export function battleStudentMotion(studentId, emotionId = 'idle') {
   return motionId ? `${student.motionBase}/${motionId}.webm` : null
 }
 
+const MANA_STANDING_EVENTS = new Set([
+  'burst',
+  'shield',
+  'counter',
+  'item-power',
+  'item-guard',
+  'item-heal',
+])
+
+export function battleStandingPoseForPhase(phase = 'ready', eventKind = null) {
+  if (phase === 'entry' || phase === 'defeat' || phase === 'enemy-action') {
+    return 'back'
+  }
+  if (phase === 'healing' || MANA_STANDING_EVENTS.has(eventKind)) {
+    return 'mana'
+  }
+  if (phase === 'hero-action' || phase === 'guard') return 'battle'
+  return 'wind'
+}
+
 export const BATTLE_RIVAL_GROUPS = [
   { id: 'humanities', name: 'ことば・社会棟', emoji: '📚', accent: '#8b5cf6' },
   { id: 'stem', name: '理数・科学棟', emoji: '🧪', accent: '#0ea5e9' },
@@ -1130,4 +1171,69 @@ export function battleStudentResultState({ battleState, accuracy = 0 } = {}) {
   if (accuracy >= 0.7) return 'delighted'
   if (accuracy >= 0.4) return 'relieved'
   return 'sad'
+}
+
+export const BATTLE_RESULT_ANIMATION_STYLES = ['cute', 'cool']
+
+// 戦績や報酬と切り離した、結果画面専用の演出プロファイル。
+// 勝利は決めポーズ、互角は次の一手、敗北は責めない回復演出にする。
+export function battleStudentResultAnimation({
+  studentId,
+  battleState,
+  accuracy = 0,
+} = {}) {
+  const student = battleStudentById(studentId)
+  const style = BATTLE_RESULT_ANIMATION_STYLES.includes(student.resultStyle)
+    ? student.resultStyle
+    : 'cool'
+  const resultState = battleStudentResultState({ battleState, accuracy })
+  const phase = ['victory', 'delighted'].includes(resultState)
+    ? 'victory'
+    : ['exhausted', 'sad'].includes(resultState)
+      ? 'recovery'
+      : 'resolve'
+
+  const presentation = {
+    cute: {
+      victory: {
+        label: 'きらめきフィニッシュ！',
+        motionEmotion: 'victory',
+        glyphs: [student.emoji, '♥', '✦', '☆'],
+      },
+      resolve: {
+        label: 'あと一歩、いっしょに！',
+        motionEmotion: 'healing',
+        glyphs: [student.emoji, '♡', '✦', '○'],
+      },
+      recovery: {
+        label: 'ひと息ついて、また一歩',
+        motionEmotion: 'healing',
+        glyphs: [student.emoji, '♡', '✦', '♫'],
+      },
+    },
+    cool: {
+      victory: {
+        label: '決め技フィニッシュ！',
+        motionEmotion: 'victory',
+        glyphs: [student.emoji, '◆', '✦', '⚡'],
+      },
+      resolve: {
+        label: '次の一手は見えた',
+        motionEmotion: 'guard',
+        glyphs: [student.emoji, '◇', '✦', '›'],
+      },
+      recovery: {
+        label: '態勢を整えて再挑戦',
+        motionEmotion: 'healing',
+        glyphs: [student.emoji, '◇', '✦', '↑'],
+      },
+    },
+  }[style][phase]
+
+  return {
+    id: `${style}-${phase}`,
+    style,
+    phase,
+    ...presentation,
+  }
 }
