@@ -25,7 +25,7 @@ export function MobPortrait({
   const row = Math.floor(sprite / ATLAS_COLUMNS)
   const isTeacher = encounter?.isTeacher === true
   const label = isTeacher
-    ? `${encounter.name}。${encounter.teacherSubject}の先生ライバル。必殺技は${encounter.move}`
+    ? `${encounter.name}。${encounter.teacherSubject}担当の先生。`
     : `${encounter?.name ?? 'モンスター'}。${encounter?.element ?? '未知'}属性、${encounter?.species ?? '未確認種'}`
 
   return (

@@ -73,9 +73,6 @@ export function afterSchoolBattleChapter({
   studentName = 'クラスメイト',
   rivalName = '先生',
   encounterName = '放課後の教室',
-  move = 'ことばの課題',
-  subject = '総合',
-  affinityLabel = 'ふつう',
   questSize = 10,
   isTeacher = true,
 } = {}) {
@@ -84,9 +81,6 @@ export function afterSchoolBattleChapter({
   const companion = safeStoryText(studentName, 'クラスメイト')
   const rival = safeStoryText(rivalName, '先生')
   const location = safeStoryText(encounterName, '放課後の教室')
-  const challenge = safeStoryText(move, 'ことばの課題')
-  const affinity = safeStoryText(affinityLabel, 'ふつう')
-  const subjectName = safeStoryText(subject, '総合')
   const questionCount = Math.max(1, Math.floor(Number(questSize)) || 10)
 
   return {
@@ -103,14 +97,14 @@ export function afterSchoolBattleChapter({
         kind: 'dialogue',
         speaker: rival,
         text: isTeacher
-          ? `「今日の課題は『${challenge}』。${questionCount}問、あなたの言葉で答えを示しなさい」`
-          : `「『${challenge}』を読み解け。${questionCount}問の言葉が、先へ進む道を決める」`,
+          ? `「今日の課題は${questionCount}問。あなたの言葉で答えを示しなさい」`
+          : `「${questionCount}問の言葉を読み解け。答えが、先へ進む道を決める」`,
       },
       {
         kind: 'dialogue',
         speaker: companion,
         portraitId: 'student-focused',
-        text: `「${subjectName}との相性は『${affinity}』。でも、最後に術式を動かすのはあなたの正答だよ。焦らず一問ずついこう」`,
+        text: '「焦らず一問ずついこう。覚えた言葉を思い出せば、きっと答えは見つかるよ」',
       },
       {
         kind: 'narration',

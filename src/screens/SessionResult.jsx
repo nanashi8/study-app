@@ -4,7 +4,6 @@ import { ProgressRing, ProgressBar, Button, Card } from '../components/ui.jsx'
 import { Star, Flame, Refresh, Home, Bookmark, ArrowRight, Check } from '../components/Icons.jsx'
 import { battleProgression, enemyLevel, enemyLevelIndex } from '../lib/adaptive.js'
 import {
-  battleTactic,
   battleQuest,
   battleVerdict,
   capEnemyPositionForHeroLevel,
@@ -134,7 +133,6 @@ export function SessionResultScreen() {
       )
     : null
   const quest = isBattle ? battleQuest(source?.questId) : null
-  const tactic = isBattle ? battleTactic(source?.tacticId) : null
   const verdict = isBattle ? battleVerdict(acc) : null
   const battleStart = isBattle
     ? capEnemyPositionForHeroLevel(
@@ -325,7 +323,6 @@ export function SessionResultScreen() {
           verdict={verdict}
           encounter={encounter}
           quest={quest}
-          tactic={tactic}
         />
       ) : (
         <>
@@ -379,11 +376,8 @@ export function SessionResultScreen() {
           battle={battle}
           encounter={encounter}
           verdict={verdict}
-          tactic={tactic}
           battleReport={battleReport}
-          battleStudent={battleStudent}
           battleRival={battleRival}
-          studentEmotion={battleStudentEmotion}
         />
       )}
 
@@ -660,7 +654,6 @@ function BattleResultStage({
   verdict,
   encounter,
   quest,
-  tactic,
 }) {
   const theme = battleReport?.battleTheme
   const outcome = battleReport?.enemyDefeated
@@ -728,8 +721,6 @@ function BattleResultStage({
         <span>{encounter.emoji} {encounter.name}</span>
         <i aria-hidden="true">◆</i>
         <span>{quest.label}</span>
-        <i aria-hidden="true">◆</i>
-        <span>{tactic.emoji} {tactic.label}</span>
       </p>
     </section>
   )
@@ -855,11 +846,8 @@ function BattleOutcome({
   battle,
   encounter,
   verdict,
-  tactic,
   battleReport,
-  battleStudent,
   battleRival,
-  studentEmotion,
 }) {
   const t = TREND[battle.trend] ?? TREND.flat
   const from = enemyLevel(battle.from)
@@ -900,17 +888,6 @@ function BattleOutcome({
           </p>
         </div>
       </div>
-      <div className="mt-2.5 rounded-2xl bg-white/55 px-3 py-2 text-left">
-        <p className="text-[9px] font-extrabold tracking-[0.12em] text-brand-600">
-          {encounter.elementEmoji} {battleRival.name} · {battleRival.title}
-        </p>
-        <p className="mt-0.5 text-[10px] font-bold leading-relaxed text-ink/55">
-          {encounter.lore}
-        </p>
-        <p className="mt-1 text-[10px] font-extrabold text-rose-600">
-          {encounter.attackEmoji ?? encounter.elementEmoji} 必殺技：{encounter.move}
-        </p>
-      </div>
       <div className="mt-3 flex items-center justify-center gap-2 rounded-2xl bg-white/55 p-2 text-ink">
         <span className="rounded-xl px-2.5 py-1 text-xs font-extrabold" style={{ backgroundColor: `${from.color}22`, color: from.color }}>
           英検{from.label}
@@ -925,89 +902,6 @@ function BattleOutcome({
       </p>
       {battleReport && (
         <div className="mt-3 space-y-2">
-          <div className="flex items-center gap-2 rounded-2xl bg-slate-900 px-3 py-2.5 text-left text-white">
-            <span className="text-xl">{tactic.emoji}</span>
-            <div className="min-w-0 flex-1">
-              <p className="text-[9px] font-extrabold tracking-[0.14em] text-amber-300">
-                {battleReport.activations > 0 ? 'TACTIC ACTIVATED' : 'TACTIC RECORD'}
-              </p>
-              <p className="truncate text-xs font-extrabold">{tactic.name}</p>
-            </div>
-            <div className="text-right text-[9px] font-bold text-white/70">
-              <p>{battleReport.summary}</p>
-              <p className="mt-0.5 text-amber-300">
-                与ダメ {battleReport.damageDealt} · 被ダメ {battleReport.damageTaken}
-              </p>
-            </div>
-          </div>
-          {battleReport.teacherAffinity?.active && (
-            <div className="flex items-center gap-2 rounded-2xl border border-emerald-200 bg-emerald-50 px-3 py-2.5 text-left text-emerald-950">
-              <img
-                src={battleStudentPortrait(battleStudent.id, studentEmotion)}
-                alt=""
-                className="h-10 w-10 rounded-xl object-cover [image-rendering:pixelated]"
-              />
-              <div className="min-w-0 flex-1">
-                <p className="text-[9px] font-extrabold tracking-[0.12em] text-emerald-600">
-                  SUBJECT COMPATIBILITY
-                </p>
-                <p className="truncate text-xs font-extrabold">
-                  {battleReport.teacherAffinity.gradeBasisLabel} 評定{battleReport.teacherAffinity.grade} · {battleReport.teacherAffinity.emoji} {battleReport.teacherAffinity.label}
-                </p>
-              </div>
-              <p className="max-w-[42%] text-right text-[9px] font-extrabold text-emerald-700">
-                {battleReport.teacherAffinity.bonusLabel}<br />
-                追加 {battleReport.affinityBonusDamage}
-              </p>
-            </div>
-          )}
-          {battleReport.bondSkill && (
-            <div className="flex items-center gap-2 rounded-2xl border border-cyan-200 bg-cyan-50 px-3 py-2.5 text-left text-cyan-950">
-              <img
-                src={battleStudentPortrait(battleStudent.id, studentEmotion)}
-                alt=""
-                className="h-10 w-10 rounded-xl object-cover [image-rendering:pixelated]"
-              />
-              <div className="min-w-0 flex-1">
-                <p className="text-[9px] font-extrabold tracking-[0.12em] text-cyan-600">
-                  RELATIONSHIP SKILL
-                </p>
-                <p className="truncate text-xs font-extrabold">
-                  {battleReport.bondSkill.emoji} {battleReport.bondSkill.name}
-                </p>
-              </div>
-              <p className="max-w-[46%] text-right text-[9px] font-extrabold text-cyan-700">
-                {battleReport.bondSummary}
-              </p>
-            </div>
-          )}
-          {battleReport.battleTheme && (
-            <div
-              className="flex items-center gap-2 rounded-2xl border px-3 py-2.5 text-left"
-              style={{
-                borderColor: battleReport.battleTheme.accent,
-                backgroundColor: battleReport.battleTheme.accentSoft,
-                color: battleReport.battleTheme.accentStrong,
-              }}
-            >
-              <img
-                src={battleStudentPortrait(battleStudent.id, studentEmotion)}
-                alt={`${battleStudent.name}の戦闘後の表情`}
-                className="h-10 w-10 rounded-xl object-cover [image-rendering:pixelated]"
-              />
-              <div className="min-w-0 flex-1">
-                <p className="text-[9px] font-extrabold tracking-[0.14em] opacity-65">
-                  AREA ABILITY
-                </p>
-                <p className="truncate text-xs font-extrabold">
-                  {battleStudent.name} · {battleReport.themeAbility.emoji} {battleReport.themeAbility.name}
-                </p>
-              </div>
-              <p className="max-w-[46%] text-right text-[9px] font-extrabold">
-                {battleReport.themeSummary}
-              </p>
-            </div>
-          )}
           {battleReport.itemRelic && (
             <div className="flex items-center gap-2 rounded-2xl border border-amber-200 bg-amber-50 px-3 py-2.5 text-left text-amber-950">
               <span className="text-xl">{battleReport.itemRelic.emoji}</span>

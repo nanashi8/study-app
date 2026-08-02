@@ -44,9 +44,6 @@ test('導入・対決直前・結果後・日常をライトノベルのペー�
     studentName: '音羽ミオ',
     rivalName: '神田エイジ',
     encounterName: '英語準備室',
-    move: 'アクセントブレイク',
-    subject: '英語',
-    affinityLabel: '得意',
     questSize: 10,
   })
   const victory = afterSchoolBattleEpilogue({
@@ -84,6 +81,7 @@ test('導入・対決直前・結果後・日常をライトノベルのペー�
   assert.match(victory.pages[0].text, /まなざしにいつもの穏やかさ/)
   assert.match(retreat.pages[0].text, /術式はまだ/)
   assert.match(daily.chapterLabel, /DAILY STORY/)
+  assert.doesNotMatch(battle.pages.map((page) => page.text).join('\n'), /必殺技|相性|アクセントブレイク/)
   assert.doesNotMatch(allText, /放課後の一日|七不思議/)
 })
 
@@ -317,7 +315,7 @@ test('対決結果は毎回ライトノベルを経て友達との日常へ進�
   assert.match(result, /navigate\('afterSchoolInterlude'/)
   assert.doesNotMatch(result, /shouldContinueToAfterSchoolInterlude/)
   assert.doesNotMatch(result, /continueToInterlude/)
-  assert.match(result, /battleReport\.bondSummary/)
+  assert.doesNotMatch(result, /battleReport\.bondSummary/)
   assert.match(interlude, /title="友達と過ごす日常"/)
   assert.match(interlude, /afterSchoolBattleEpilogue/)
   assert.match(interlude, /afterSchoolDailyChapter/)
