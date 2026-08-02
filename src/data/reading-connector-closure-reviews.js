@@ -192,7 +192,7 @@ export const READING_CONNECTOR_CLOSURE_REVIEWS = Object.freeze([
   ),
   review(
     'Professional scientists cannot be everywhere at once, especially when they study animals that move across wide areas.',
-    'especially when', 'across wide areas', 'M', '広い地域を横切って（移動する動物を研究するときには）',
+    'especially when', 'across wide areas', 'M', '広い地域を横切って（そのような動物を研究するときには）',
     binding('time-clause', 'especially when', 'cannot be everywhere at once', 'they study animals that move across wide areas'),
   ),
   review(
@@ -252,7 +252,7 @@ export const READING_CONNECTOR_CLOSURE_REVIEWS = Object.freeze([
   ),
   review(
     'A school may devote more time to easily tested skills while neglecting discussion, curiosity, or students whose improvement is unlikely to change its ranking.',
-    'while', 'its ranking', 'O', '学校の順位を（変える見込みが低い生徒を軽視する一方で）',
+    'while', 'its ranking', 'O', '学校の順位を（その生徒の向上が変える見込みは低く、その生徒を軽視する一方で）',
     binding('contrast-clause', 'while', 'may devote more time', 'neglecting discussion, curiosity, or students whose improvement is unlikely to change its ranking'),
   ),
   review(
@@ -287,6 +287,68 @@ export const READING_CONNECTOR_CLOSURE_REVIEWS = Object.freeze([
   ),
 ])
 
+const noChange = (sentence, connector, occurrence, reason) => Object.freeze({
+  sentence,
+  connector,
+  occurrence,
+  reason,
+  status: 'confirmed',
+})
+
+// 全102候補のうち、既存の節末ですでに関係が完成しているもの、または
+// 「一方」のように日本語の独立したつなぎだけで明確なもの。
+export const READING_CONNECTOR_NO_BACK_REFERENCE_REVIEWS = Object.freeze([
+  noChange('She likes English because her teacher uses many pictures.', 'because', 1, 'already-complete'),
+  noChange('She is happy because she can use the story in English class.', 'because', 1, 'already-complete'),
+  noChange('If it becomes full, the library will put a message on its website.', 'If', 1, 'already-complete'),
+  noChange('The event is popular because children can learn about their town in a fun way.', 'because', 1, 'already-complete'),
+  noChange('The work is not always easy because volunteers must communicate politely even when the building is crowded.', 'because', 1, 'already-complete'),
+  noChange('The work is not always easy because volunteers must communicate politely even when the building is crowded.', 'even when', 1, 'already-complete'),
+  noChange('Another student decided to study history at college because he wanted to protect old buildings in his town.', 'because', 1, 'already-complete'),
+  noChange('If the students cannot understand an important point, the staff try to make the language clearer without removing the main idea.', 'If', 1, 'already-complete'),
+  noChange('Older residents may know how older machines were built, while younger participants may be more comfortable finding digital information.', 'while', 1, 'standalone-link'),
+  noChange('Privacy is another concern because sensors can collect data about public behavior.', 'because', 1, 'already-complete'),
+  noChange('If only wealthy areas receive the newest systems, technology may make public services more unequal instead of more convenient.', 'If', 1, 'already-complete'),
+  noChange('If these issues are handled carefully, quiet technology can improve public spaces without making people feel controlled by it.', 'If', 1, 'already-complete'),
+  noChange('However, planting trees is not a simple solution if maintenance money is limited or if sidewalks are too narrow for roots to grow safely.', 'if', 1, 'already-complete'),
+  noChange('However, planting trees is not a simple solution if maintenance money is limited or if sidewalks are too narrow for roots to grow safely.', 'if', 2, 'already-complete'),
+  noChange('Large infrastructure projects are attractive to politicians because they are visible and can be announced as decisive action.', 'because', 1, 'already-complete'),
+  noChange("A project that performs well under today's conditions may be inadequate if migration, land use, or rainfall patterns change.", 'if', 1, 'already-complete'),
+  noChange('Societies often assume that important events will be remembered simply because they are recorded in books, archives, or digital databases.', 'because', 1, 'already-complete'),
+  noChange('A file may still exist but become unreadable when software changes, while a searchable collection can effectively disappear if its indexing system is neglected.', 'while', 1, 'standalone-link'),
+  noChange('A file may still exist but become unreadable when software changes, while a searchable collection can effectively disappear if its indexing system is neglected.', 'if', 1, 'already-complete'),
+  noChange('That autonomy remains essential, but it can also be misused if institutions avoid scrutiny by describing all criticism as interference.', 'if', 1, 'already-complete'),
+  noChange('Institutions must be free to preserve uncomfortable evidence, while citizens must be able to ask how decisions about selection, description, and access are made.', 'while', 1, 'standalone-link'),
+  noChange('Calls for complete neutrality do not resolve the problem, since every archive must decide what to collect, how to describe it, and which materials receive scarce conservation resources.', 'since', 1, 'already-complete'),
+  noChange('A public consultation may reproduce existing inequalities if organized groups can speak more loudly than communities with less time, money, or trust in institutions.', 'if', 1, 'already-complete'),
+  noChange('Two historians may accept the same evidence yet assign different significance to it because they ask different questions.', 'because', 1, 'already-complete'),
+  noChange('If every account of the past is dismissed as merely political, citizens lose the capacity to distinguish careful revision from deliberate distortion.', 'If', 1, 'already-complete'),
+  noChange('Digital platforms intensify this risk because they reward speed, emotional certainty, and loyalty to a group more readily than patient investigation.', 'because', 1, 'already-complete'),
+  noChange('It also requires citizens who are willing to read beyond headlines, tolerate uncertainty, and revise their views when stronger evidence appears.', 'when', 1, 'already-complete'),
+  noChange('If that practice declines, even perfect archives will not prevent societies from losing their ability to learn from what they once knew.', 'If', 1, 'already-complete'),
+  noChange('Please ask a teacher near the front door if you have any questions.', 'if', 1, 'already-complete'),
+  noChange('They must use bicycle lights because drivers may not notice them after dark.', 'because', 1, 'already-complete'),
+  noChange('Many younger students said the usual portions were too large, while some older students wanted more food after sports practice.', 'while', 1, 'standalone-link'),
+  noChange('They explain that every meal uses water, energy, and work before it reaches a plate, so even a small improvement can protect valuable resources.', 'before', 1, 'already-complete'),
+  noChange('Schools need to examine bus routes, club times, and family needs before choosing a new schedule.', 'before', 1, 'already-complete'),
+  noChange('An experienced observer may identify a bird by its song, while a beginner may confuse two similar species.', 'while', 1, 'standalone-link'),
+  noChange('They may ask participants to watch for the same length of time and to report visits when no birds appeared.', 'when', 1, 'already-complete'),
+  noChange('Citizen science is valuable not because volunteers replace professionals, but because the two groups contribute different strengths.', 'not because', 1, 'already-complete'),
+  noChange('Citizen science is valuable not because volunteers replace professionals, but because the two groups contribute different strengths.', 'because', 1, 'already-complete'),
+  noChange('One experiment can suggest a possibility, whereas repeated studies help show whether an effect appears under different conditions.', 'whereas', 1, 'standalone-link'),
+  noChange('Cash usually leaves no detailed record linking a person to a particular purchase, whereas digital payment creates data that may be stored, combined, or sold.', 'whereas', 1, 'standalone-link'),
+  noChange('Nor should inclusion mean forcing everyone into a system simply because institutions find it efficient.', 'because', 1, 'already-complete'),
+  noChange('A fixed amount in an envelope stays visible, while digital balances may be divided across several apps and delayed transactions.', 'while', 1, 'standalone-link'),
+  noChange('A hospital may transfer difficult patients or redefine when the waiting-time clock officially starts.', 'when', 1, 'already-complete'),
+  noChange('The relevant choice is neither perfect numbers nor pure wisdom, because neither exists.', 'because', 1, 'already-complete'),
+  noChange('Third, organizations must examine how people adapt once a measure carries consequences.', 'once', 1, 'already-complete'),
+  noChange('Evaluation systems must be adaptive because the behavior they observe changes in response to observation.', 'because', 1, 'already-complete'),
+  noChange('Frontline workers and vulnerable citizens often supply detailed data, while senior institutions retain discretion over how the numbers are interpreted.', 'while', 1, 'standalone-link'),
+  noChange('If measurement increases surveillance below but accountability does not increase above, the system may weaken rather than strengthen legitimacy.', 'If', 1, 'already-complete'),
+  noChange('Institutions can strengthen trust by publicly stating that limit because this prevents precision from being mistaken for certainty.', 'because', 1, 'already-complete'),
+  noChange('Metrics are most valuable when they create questions rather than close them.', 'when', 1, 'already-complete'),
+])
+
 const directCorrection = (sentence, target, role, ja, note) => Object.freeze({
   sentence,
   target,
@@ -304,6 +366,11 @@ export const READING_CONNECTOR_PREMATURE_CLOSURE_FIXES = Object.freeze([
     'Nevertheless, it can build trust because residents see that their daily experience is treated as valuable information.',
     'see', 'V', '分かります（内容は次へ）',
     'because理由節をthat内容節より前で閉じず、内容節末の受け直しまで待ちます。',
+  ),
+  directCorrection(
+    'Nevertheless, it can build trust because residents see that their daily experience is treated as valuable information.',
+    'is treated', 'V', '扱われています（どのようなものとしてかは次へ）',
+    '受動態をas補語より前で閉じず、どのような情報として扱われるかを次へ保留します。',
   ),
   directCorrection(
     'Calls for complete neutrality do not resolve the problem, since every archive must decide what to collect, how to describe it, and which materials receive scarce conservation resources.',

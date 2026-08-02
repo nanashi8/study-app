@@ -34,6 +34,12 @@ const EMOTION_BY_ID = new Map(
 
 export const DEFAULT_BATTLE_STUDENT_ID = 'mio'
 
+// 初期に採用した3枚のバトル画面と同じく、実戦では胸上アイコンではなく
+// 透明背景の全身立ち絵を優先する。素材を追加した人物だけを明示し、
+// 存在しないURLへアクセスして壊れた画像を出さない。
+const FULL_BODY_BATTLE_STUDENT_IDS = new Set(['mio'])
+const FULL_BODY_BATTLE_RIVAL_IDS = new Set(['math-takagi'])
+
 // 先生ライバルの担当教科と照合する、物語上の通知表。
 // ユーザー本人の正答率・診断・SRSとは完全に分離し、キャラクター相性だけに使う。
 export const BATTLE_GRADE_SUBJECTS = SCHOOL_SUBJECT_NAMES
@@ -150,6 +156,9 @@ export const BATTLE_STUDENTS = [
   assetBase: publicAssetUrl(`/assets/battle/cast/students/${student.id}`),
   motionBase: publicAssetUrl(`/assets/battle/motion/students/${student.id}`),
   lifestyleBase: publicAssetUrl(`/assets/battle/cast/lifestyle/${student.id}`),
+  fullBody: FULL_BODY_BATTLE_STUDENT_IDS.has(student.id)
+    ? publicAssetUrl(`/assets/battle/fullbody/students/${student.id}.png`)
+    : null,
 }))
 
 export const BATTLE_LIFESTYLE_OUTFITS = [
@@ -961,6 +970,9 @@ export const BATTLE_RIVALS = RIVAL_DEFINITIONS.map(
     title,
     groupId,
     portrait: publicAssetUrl(`/assets/battle/cast/rivals/${id}.webp`),
+    fullBody: FULL_BODY_BATTLE_RIVAL_IDS.has(id)
+      ? publicAssetUrl(`/assets/battle/fullbody/rivals/${id}.png`)
+      : null,
   }),
 )
 

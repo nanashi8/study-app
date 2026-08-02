@@ -39,7 +39,7 @@ function ConsoleButton({ label, disabled, onClick, children, primary = false }) 
       disabled={disabled}
       aria-label={label}
       className={cx(
-        'flex min-h-12 min-w-0 flex-col items-center justify-center gap-0.5 rounded-xl px-1 text-[10px] font-extrabold transition-colors',
+        'flex min-h-11 min-w-0 flex-col items-center justify-center gap-px rounded-lg px-0.5 text-[9px] font-extrabold leading-none transition-colors',
         primary
           ? 'bg-brand-600 text-white active:bg-brand-700'
           : 'bg-slate-100 text-ink/70 active:bg-slate-200',
@@ -58,61 +58,61 @@ export function SpeechConsole({ state, onRateChange }) {
     <section
       aria-label="読み上げコンソール"
       data-speech-console
-      className="border-t border-brand-100 bg-white/98 px-3 py-2 shadow-[0_-10px_30px_-22px_rgba(15,23,42,0.6)] backdrop-blur"
+      className="border-t border-brand-100 bg-white/98 px-2 py-1.5 shadow-[0_-10px_30px_-22px_rgba(15,23,42,0.6)] backdrop-blur"
     >
-      <div className="mb-2 flex min-w-0 items-center gap-2">
-        <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2">
-            <span className="text-[10px] font-black tracking-[0.12em] text-brand-600">
-              {state.title}
-            </span>
-            <span aria-live="polite" className="text-[10px] font-extrabold text-ink/40">
-              {STATUS_LABEL[state.status] ?? '待機中'}
-            </span>
-          </div>
-          <p className="truncate text-xs font-extrabold text-ink">
-            {state.itemLabel || '読み上げるフレーズを選んでください'}
+      <div className="mb-1 flex min-w-0 items-center gap-1.5">
+        <div className="flex min-w-0 flex-1 items-center gap-1">
+          <span className="max-w-[5.5rem] shrink-0 truncate text-[9px] font-black tracking-[0.08em] text-brand-600">
+            {state.title}
+          </span>
+          <span
+            aria-live="polite"
+            className="shrink-0 rounded bg-slate-100 px-1 py-0.5 text-[9px] font-extrabold leading-none text-ink/45"
+          >
+            {STATUS_LABEL[state.status] ?? '待機中'}
+          </span>
+          <p className="min-w-0 flex-1 truncate text-[11px] font-extrabold leading-tight text-ink">
+            {state.itemLabel || 'フレーズを選択'}
+            {state.segmentLabel && (
+              <span className="ml-1 font-bold text-ink/45">· {state.segmentLabel}</span>
+            )}
           </p>
-          {state.segmentLabel && (
-            <p className="truncate text-[10px] font-bold text-ink/45">{state.segmentLabel}</p>
-          )}
         </div>
-        <span className="shrink-0 text-[11px] font-extrabold tabular-nums text-ink/40">
+        <span className="shrink-0 text-[10px] font-extrabold tabular-nums text-ink/40">
           {state.count ? `${state.index + 1}/${state.count}` : '—'}
         </span>
+        <label className="flex h-7 shrink-0 items-center gap-1 rounded-lg bg-brand-50 px-1.5 text-[9px] font-extrabold text-brand-800">
+          <span>速度</span>
+          <select
+            value={state.rate}
+            onChange={(event) => onRateChange(Number(event.target.value))}
+            aria-label="読み上げ速度"
+            className="h-6 rounded-md bg-white px-1 text-[10px] font-extrabold text-brand-800 ring-1 ring-brand-100"
+          >
+            {RATE_OPTIONS.map((rate) => (
+              <option key={rate} value={rate}>{rate.toFixed(1)}倍</option>
+            ))}
+          </select>
+        </label>
       </div>
 
-      <div className="grid grid-cols-5 gap-1.5" data-speech-console-controls>
+      <div className="grid grid-cols-5 gap-1" data-speech-console-controls>
         <ConsoleButton label="前へ" disabled={!state.canPrevious} onClick={previousSpeechItem}>
-          <ChevronLeft size={18} />
+          <ChevronLeft size={16} />
         </ConsoleButton>
         <ConsoleButton label="再生" disabled={!state.canPlay} onClick={playSpeechPlayer} primary>
-          <Play size={18} />
+          <Play size={16} />
         </ConsoleButton>
         <ConsoleButton label="一時停止" disabled={!state.canPause} onClick={pauseSpeechPlayer}>
-          <Pause size={18} />
+          <Pause size={16} />
         </ConsoleButton>
         <ConsoleButton label="次へ" disabled={!state.canNext} onClick={nextSpeechItem}>
-          <ChevronRight size={18} />
+          <ChevronRight size={16} />
         </ConsoleButton>
         <ConsoleButton label="停止" disabled={!state.canStop} onClick={() => stopSpeechPlayer()}>
-          <Stop size={17} />
+          <Stop size={15} />
         </ConsoleButton>
       </div>
-
-      <label className="mt-2 flex min-h-9 items-center justify-between gap-3 rounded-xl bg-brand-50 px-3 text-xs font-extrabold text-brand-800">
-        <span>速度</span>
-        <select
-          value={state.rate}
-          onChange={(event) => onRateChange(Number(event.target.value))}
-          aria-label="読み上げ速度"
-          className="min-h-8 rounded-lg bg-white px-2 font-extrabold text-brand-800 ring-1 ring-brand-100"
-        >
-          {RATE_OPTIONS.map((rate) => (
-            <option key={rate} value={rate}>{rate.toFixed(1)}倍</option>
-          ))}
-        </select>
-      </label>
     </section>
   )
 }

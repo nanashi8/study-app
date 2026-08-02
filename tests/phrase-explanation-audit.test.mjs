@@ -30,6 +30,7 @@ const substantiveReadingIssueNames = [
   'reconstructionErrors', 'missingFields', 'spokenMismatches', 'overWordLimit',
   'mixedRoles', 'splitAuxiliaryVerb', 'prepositionFragments', 'missingSpecialGrammar',
   'invalidCoordinationBindings', 'missingConditionClosures', 'missingClauseClosures',
+  'unreviewedConnectorClosures',
   'adjacentJapaneseCaseCollisions',
   'missingPunctuationBoundaries', 'semanticBindingErrors',
   'invalidJapaneseFallbacks', 'structuralDisplayMismatches',
@@ -54,8 +55,13 @@ test('全16長文・363文・3,238フレーズと長い一文33文・236フレ�
   assert.equal(audit.reading.sentenceCount, 363)
   assert.equal(audit.reading.phraseCount, 3238)
   assert.equal(audit.reading.grammarBlockCount, 1042)
-  assert.equal(audit.reading.correctionDecisionCount, 675)
-  assert.equal(audit.reading.appliedCorrectionCount, 675)
+  assert.equal(audit.reading.correctionDecisionCount, 732)
+  assert.equal(audit.reading.appliedCorrectionCount, 732)
+  assert.deepEqual(audit.reading.connectorClosureReview, {
+    candidateCount: 102,
+    backReferenceCount: 53,
+    alreadyClearCount: 49,
+  })
   assert.equal(audit.longSentences.sentenceCount, 33)
   assert.equal(audit.longSentences.phraseCount, 236)
 

@@ -108,20 +108,20 @@ test('五芒星マップは選択中の地点名だけを表示し、ボタン�
   assert.match(map, /aria-label=\{`\$\{location\.name\}・\$\{location\.role\}`\}/)
 })
 
-test('ゲーム入口は開始操作を詳細設定より先に見せ、低い画面でも4択を保つ', async () => {
+test('ゲーム入口は対決情報を絞り、低い画面でも4択を保つ', async () => {
   const [css, map, quiz] = await Promise.all([
     readFile(new URL('../src/index.css', import.meta.url), 'utf8'),
     readFile(new URL('../src/screens/EnglishMap.jsx', import.meta.url), 'utf8'),
     readFile(new URL('../src/screens/VocabQuiz.jsx', import.meta.url), 'utf8'),
   ])
 
-  assert.match(map, /school-battle-context/)
   assert.match(map, /school-battle-start order-4/)
-  assert.match(map, /school-battle-options order-5/)
+  assert.doesNotMatch(map, /school-battle-context|school-battle-options/)
+  assert.doesNotMatch(map, /相性・絆・対決演出|このバトルの作戦|先生は悪役/)
   assert.match(quiz, /battle-command-grid mt-2 grid grid-cols-2/)
   assert.match(quiz, /\{options\.map\(/)
   assert.match(quiz, /<UnknownChoiceButton/)
-  assert.match(css, /@media \(max-height: 640px\)[\s\S]*height: 112px;[\s\S]*grid-auto-rows: 58px;/)
+  assert.match(css, /@media \(max-height: 640px\)[\s\S]*height: 164px;[\s\S]*\.battle-turn-track,[\s\S]*display: none;[\s\S]*grid-auto-rows: 58px;/)
 })
 
 test('ゲーム全体は携帯ゲーム機の共通枠と4分類に統一し、詳細を引き出しへしまう', async () => {

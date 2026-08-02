@@ -15,14 +15,11 @@ import {
 } from '../lib/adaptive.js'
 import {
   BATTLE_QUESTS,
-  BATTLE_TACTICS,
   CHAPTERS,
   battleQuest,
   battleRelicForLevel,
-  battleTactic,
   capEnemyPositionForHeroLevel,
   encounterFor,
-  featuredBattleTacticId,
   featuredQuestId,
   heroProgress,
   relicStatLabel,
@@ -34,14 +31,12 @@ import {
   BATTLE_BARRIER_STAR_ORDER,
   BATTLE_BARRIER_TRAFFIC_LIGHTS,
   BATTLE_BARRIER_WINDOW_LIGHTS,
-  BATTLE_STAR_PER_CORRECT,
   BATTLE_STARS_PER_EXCHANGE,
   BATTLE_THEMES,
   BATTLE_XP_PER_EXCHANGE,
   battleBarrierLocationById,
   battleXpExchange,
   battleThemeById,
-  nextBattleTheme,
 } from '../lib/battleThemes.js'
 import {
   BATTLE_DAILY_SCENES,
@@ -99,7 +94,6 @@ import {
   Cards,
   Check,
   Flame,
-  Gear,
   Home as SchoolIcon,
   Lightbulb,
   Lock,
@@ -137,7 +131,6 @@ const CHRONICLE_ICON_COMPONENTS = {
   theme: Sparkles,
   quest: Cards,
   battle: Flame,
-  options: Gear,
   lock: Lock,
   faculty: Teacher,
 }
@@ -258,7 +251,6 @@ export function AfterSchoolChronicleScreen() {
   const battleRelic = battleRelicForLevel(hero.level, battleRelicLevel)
   const battleTheme = battleThemeById(battleThemeId, battleStars)
   const battleStudent = battleStudentById(battleStudentId)
-  const battleBond = afterSchoolBondState(afterSchoolBonds, battleStudent.id)
   const battleBondSkill = afterSchoolBattleSkill(battleStudent.id, afterSchoolBonds)
   const studentTraitProfile = battleStudentTraitProfile(
     battleStudent.id,
@@ -274,7 +266,6 @@ export function AfterSchoolChronicleScreen() {
 
   const day = todayIndex()
   const [menuSectionId, setMenuSectionId] = useState('battle')
-  const [tacticId, setTacticId] = useState(() => featuredBattleTacticId(day))
   const [showPrologue, setShowPrologue] = useState(() => battleStoryStep === 0)
   const [pendingQuest, setPendingQuest] = useState(null)
   const encounter = encounterFor({
@@ -295,7 +286,6 @@ export function AfterSchoolChronicleScreen() {
       source: {
         ...battleSource(pos),
         questId: quest.id,
-        tacticId,
         relicLevel: battleRelic.level,
         themeId: battleTheme.id,
         studentId: battleStudent.id,
@@ -320,9 +310,6 @@ export function AfterSchoolChronicleScreen() {
         studentName: battleStudent.name,
         rivalName: battleRival.name,
         encounterName: encounter.chapterName ?? encounter.name,
-        move: encounter.move,
-        subject: teacherAffinity.subject,
-        affinityLabel: teacherAffinity.label,
         questSize: pendingQuest.size,
         isTeacher: encounter.isTeacher,
       })
@@ -397,17 +384,12 @@ export function AfterSchoolChronicleScreen() {
                   hero={hero}
                   encounter={encounter}
                   day={day}
-                  tacticId={tacticId}
-                  battleRelic={battleRelic}
                   battleStars={battleStars}
                   battleTheme={battleTheme}
                   battleStudent={battleStudent}
-                  battleBond={battleBond}
-                  battleBondSkill={battleBondSkill}
                   studentTraitProfile={studentTraitProfile}
                   battleRival={battleRival}
-                  teacherAffinity={teacherAffinity}
-                  onTactic={setTacticId}
+                  teacherSubject={teacherAffinity.subject}
                   onBattle={setPendingQuest}
                 />
               )}
@@ -706,28 +688,20 @@ function AdventureCard({
   hero,
   encounter,
   day,
-  tacticId,
-  battleRelic,
   battleStars,
   battleTheme,
   battleStudent,
-  battleBond,
-  battleBondSkill,
   studentTraitProfile,
   battleRival,
-  teacherAffinity,
-  onTactic,
+  teacherSubject,
   onBattle,
 }) {
   const enemyRank = enemyLevel(pos)
   const maxEnemyRank = LEVELS[hero.enemyRankCap]
   const featured = featuredQuestId(day)
-  const featuredTactic = featuredBattleTacticId(day)
-  const selectedTactic = battleTactic(tacticId)
   const [questId, setQuestId] = useState(featured)
   const selectedQuest = battleQuest(questId)
-  const nextTheme = nextBattleTheme(battleStars)
-  const opponentLabel = `${teacherAffinity.subject}担当からの課題`
+  const opponentLabel = `${teacherSubject}担当からの課題`
 
   return (
     <section
@@ -795,92 +769,6 @@ function AdventureCard({
           </div>
         </div>
 
-        <details className="school-battle-context order-6 mt-2 rounded-2xl border border-white/15 bg-white/10">
-          <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-2 px-3 py-2 text-xs font-extrabold">
-            <span>相性・絆・対決演出</span>
-            <span className="text-[9px] font-bold text-white/65">詳細 ＋</span>
-          </summary>
-          <div className="border-t border-white/15 px-3 pb-3 pt-2">
-            <div
-              className="battle-entry-route mt-3"
-              data-battle-theme={battleTheme.id}
-              style={{
-                '--battle-entry-scene': `linear-gradient(90deg,rgba(15,23,42,.38),rgba(15,23,42,.08),rgba(15,23,42,.5)), url("${battleTheme.stage}") center / cover`,
-              }}
-              role="img"
-              aria-label={`${battleTheme.name}で${battleStudent.name}と${battleRival.name}が対決する準備画面`}
-            >
-              <span className="battle-entry-route-label" aria-hidden="true">
-                {battleTheme.presentation.modeLabel}
-              </span>
-              <span className="battle-entry-fighter battle-entry-fighter-hero" aria-hidden="true">
-                <img src={battleStudentPortrait(battleStudent.id, 'confident')} alt="" />
-                <b>{battleStudent.name}</b>
-              </span>
-              <span className="battle-entry-versus" aria-hidden="true">
-                <small>NEXT</small>
-                <strong>VS</strong>
-              </span>
-              <span className="battle-entry-fighter battle-entry-fighter-enemy" aria-hidden="true">
-                {encounter.isTeacher ? (
-                  <TeacherPortrait teacher={encounter} decorative />
-                ) : (
-                  <img src={battleRival.portrait} alt="" />
-                )}
-                <b>{battleRival.name}</b>
-              </span>
-            </div>
-
-            <div className="mt-2 flex items-center gap-2 rounded-xl bg-slate-950/20 px-2.5 py-2 text-left">
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-[10px] font-extrabold">
-                  {battleStudent.name} × {battleRival.name}
-                </p>
-                <p className="truncate text-[8px] font-bold text-white/60">
-                  {teacherAffinity.subject}担当 · {teacherAffinity.gradeBasisLabel} 評定{teacherAffinity.grade} · {teacherAffinity.bonusLabel}
-                </p>
-              </div>
-              <span
-                className="shrink-0 rounded-full bg-white px-2 py-1 text-[9px] font-extrabold"
-                style={{ color: teacherAffinity.color }}
-              >
-                {teacherAffinity.emoji} {teacherAffinity.label}
-              </span>
-            </div>
-
-            <div className="mt-2 flex items-center gap-2 rounded-xl bg-cyan-200/10 px-2.5 py-2 text-left">
-              <span className="text-lg">{battleBondSkill?.emoji ?? '🤝'}</span>
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-[10px] font-extrabold">
-                  絆LV{battleBond.level.level} · {battleBondSkill ? battleBondSkill.name : '特技は絆LV2で解放'}
-                </p>
-                <p className="truncate text-[8px] font-bold text-white/60">
-                  {battleBondSkill
-                    ? battleBondSkill.description
-                    : `あと${Math.max(0, 3 - battleBond.points)}絆 · 対決後の日常パートで育つ`}
-                </p>
-              </div>
-            </div>
-
-            <div className="mt-2 rounded-xl bg-slate-950/20 px-2.5 py-2">
-              <div className="flex items-center justify-between gap-2 text-[9px] font-extrabold">
-                <span>正解1問 +{BATTLE_STAR_PER_CORRECT}</span>
-                <span>{nextTheme ? `次：${nextTheme.name}` : '演出を全解放済み'}</span>
-              </div>
-              {nextTheme && (
-                <ProgressBar
-                  value={battleStars / nextTheme.unlockAt}
-                  color="linear-gradient(90deg,#fde68a,#f9a8d4,#67e8f9)"
-                  className="mt-2 h-1.5 bg-white/15"
-                />
-              )}
-            </div>
-            <p className="mt-2 text-center text-[8px] font-bold text-white/55">
-              同行クラスメートの変更は、バトル後の戦果画面で行います。
-            </p>
-          </div>
-        </details>
-
         <div className="school-battle-paper order-1 mt-3 flex flex-col rounded-[1.65rem] bg-white p-3.5 text-ink shadow-xl shadow-black/15">
           <div className="flex items-center gap-3">
             <span className="battle-map-rival-portrait h-16 w-16 shrink-0 overflow-hidden rounded-2xl ring-2 ring-violet-100">
@@ -901,19 +789,8 @@ function AdventureCard({
               <h2 className="font-display text-lg font-extrabold leading-tight">
                 {battleRival.name}
               </h2>
-              <div className="mt-1 inline-flex max-w-full items-center gap-1.5 rounded-full bg-rose-50 px-2.5 py-1 text-[10px] font-extrabold text-rose-700">
-                <ChronicleIcon kind="battle" size={15} />
-                <span className="truncate">{encounter.move}</span>
-              </div>
             </div>
           </div>
-
-          <p className="after-school-opponent-intro mt-2 flex items-start gap-1.5 rounded-xl bg-violet-50/75 px-2.5 py-2 text-[10px] font-bold leading-relaxed text-ink/65">
-            <ChronicleIcon kind={encounter.isTeacher ? 'chapter' : 'scene'} size={16} />
-            <span className="line-clamp-2">
-              {battleRival.name}が「{encounter.move}」で待ち受ける。{encounter.intro}
-            </span>
-          </p>
 
           <div className="after-school-quest-picker mt-3">
             <div className="flex items-end justify-between gap-2">
@@ -954,62 +831,6 @@ function AdventureCard({
             </div>
           </div>
 
-          <details className="school-battle-options order-5 mt-3 rounded-2xl border border-violet-100 bg-violet-50/55">
-            <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-2 px-3 py-2 text-xs font-extrabold text-violet-800">
-              <span className="inline-flex items-center gap-1">
-                <ChronicleIcon kind="options" size={16} />
-                このバトルの作戦
-              </span>
-              <span className="inline-flex items-center gap-1 text-[9px] font-bold text-violet-500">
-                <ChronicleIcon kind="battle" size={14} />
-                今回だけ
-              </span>
-            </summary>
-            <div className="border-t border-violet-100 px-3 pb-3 pt-2.5">
-              <p className="text-[9px] font-bold text-ink/45">
-                作戦（正答率・XPは変わりません）
-              </p>
-              <div className="mt-1.5 grid grid-cols-3 gap-1.5">
-              {BATTLE_TACTICS.map((tactic) => {
-                const selected = tactic.id === tacticId
-                const isFeatured = tactic.id === featuredTactic
-                return (
-                  <button
-                    key={tactic.id}
-                    type="button"
-                    onClick={() => onTactic(tactic.id)}
-                    aria-pressed={selected}
-                    aria-label={`${tactic.name}。${tactic.description}`}
-                    className={cx(
-                      'relative min-h-16 rounded-xl border-2 px-1 py-1.5 text-center transition-transform active:scale-95',
-                      selected
-                        ? 'border-violet-500 bg-white text-violet-900 shadow-sm'
-                        : 'border-transparent bg-white/55 text-ink/55',
-                    )}
-                  >
-                    {isFeatured && (
-                      <span className="absolute -right-1 -top-1 rounded-full bg-amber-300 px-1.5 py-0.5 text-[7px] font-black text-amber-950">
-                        今日
-                      </span>
-                    )}
-                    <ChronicleIcon kind="battle" size={22} className="mx-auto" />
-                    <span className="block text-[10px] font-extrabold">{tactic.label}</span>
-                  </button>
-                )
-              })}
-              </div>
-              <div className="mt-3 rounded-xl border border-violet-100 bg-white px-2.5 py-2.5" data-battle-settings-summary>
-                <p className="text-[9px] font-extrabold text-violet-700">共通設定を使用</p>
-                <p className="mt-1 truncate text-[10px] font-bold text-ink/60">
-                  {battleRelic.emoji} {battleRelic.name} · {battleTheme.emoji} {battleTheme.shortName}
-                </p>
-                <p className="mt-1 text-[8px] font-bold leading-relaxed text-ink/40">
-                  持ち物・対決演出・バトル画面は、右上のメニュー内「設定」で変更します。
-                </p>
-              </div>
-            </div>
-          </details>
-
           <button
             type="button"
             onClick={() => onBattle(selectedQuest)}
@@ -1022,9 +843,6 @@ function AdventureCard({
           </button>
         </div>
 
-        <p className="after-school-battle-note order-7 mt-2.5 text-center text-[10px] font-bold leading-relaxed text-white/70">
-          先生は悪役ではなく、ことばの成長を見守る放課後のライバルです。
-        </p>
       </div>
     </section>
   )

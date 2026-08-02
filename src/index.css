@@ -3262,8 +3262,8 @@
 .battle-quiz-screen[data-battle-theme] .battle-key-visual-stage,
 .pixel-battle-hud[data-battle-ui-mode='simple'][data-battle-theme] .battle-key-visual-stage {
   display: block;
-  height: clamp(160px, 28dvh, 240px);
-  min-height: 160px;
+  height: clamp(220px, 36dvh, 340px);
+  min-height: 220px;
   margin-top: 6px;
   border: 1px solid #64748b;
   border-radius: 9px;
@@ -3291,6 +3291,79 @@
 .battle-quiz-screen[data-battle-theme] .pixel-battle-stage .battle-stage-unit .pixel-battle-portrait {
   width: 78px;
   height: 78px;
+}
+
+/* 最初に採用した music / art / library の3画面を構図の基準にする。
+   両者を小さな顔アイコンにせず、対決空間へ全身で立たせる。 */
+.battle-quiz-screen[data-battle-theme] .pixel-battle-stage .battle-stage-unit-fullbody {
+  bottom: 0;
+  width: 46%;
+  height: calc(100% - 14px);
+}
+.battle-quiz-screen[data-battle-theme] .pixel-battle-stage .battle-stage-unit-fullbody.battle-stage-hero {
+  left: -1.5%;
+}
+.battle-quiz-screen[data-battle-theme] .pixel-battle-stage .battle-stage-unit-fullbody.battle-stage-enemy {
+  right: -1.5%;
+}
+.battle-fullbody-actor {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: transparent;
+  filter: drop-shadow(0 5px 4px rgb(2 6 23 / 0.44));
+  transform-origin: center bottom;
+}
+.battle-fullbody-actor > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center bottom;
+  image-rendering: pixelated;
+}
+.battle-fullbody-actor-defeated {
+  filter: grayscale(0.55) brightness(0.72) drop-shadow(0 4px 4px rgb(2 6 23 / 0.5));
+}
+.battle-quiz-screen[data-battle-theme] .battle-stage-unit-fullbody > .battle-stage-unit-name {
+  position: absolute;
+  right: 4px;
+  bottom: 3px;
+  left: 4px;
+  z-index: 6;
+  overflow: hidden;
+  margin: 0;
+  border: 1px solid rgb(255 255 255 / 0.32);
+  border-radius: 999px;
+  padding: 2px 5px;
+  color: white;
+  background: rgb(2 6 23 / 0.78);
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.pixel-battle-stage[data-battle-layout='music-duel'] .battle-stage-unit-fullbody {
+  height: calc(100% - 10px);
+}
+.pixel-battle-stage[data-battle-layout='art-grid'] .battle-stage-unit-fullbody.battle-stage-hero {
+  bottom: -2%;
+  left: 1%;
+  width: 42%;
+  height: 74%;
+}
+.pixel-battle-stage[data-battle-layout='art-grid'] .battle-stage-unit-fullbody.battle-stage-enemy {
+  right: 1%;
+  bottom: 25%;
+  width: 40%;
+  height: 70%;
+}
+.pixel-battle-stage[data-battle-layout='library-duel'] .battle-stage-unit-fullbody {
+  width: 45%;
+  height: calc(100% - 8px);
 }
 .pixel-battle-hud[data-battle-ui-mode='simple'][data-battle-theme] .battle-key-visual-stage .battle-theme-stage-decoration,
 .pixel-battle-hud[data-battle-ui-mode='simple'][data-battle-theme] .battle-key-visual-stage .battle-theme-particles,
@@ -3398,12 +3471,16 @@
   }
   .battle-quiz-screen[data-battle-theme] .battle-key-visual-stage,
   .pixel-battle-hud[data-battle-ui-mode='simple'][data-battle-theme] .battle-key-visual-stage {
-    height: 112px;
-    min-height: 112px;
+    height: 164px;
+    min-height: 164px;
   }
   .battle-quiz-screen[data-battle-theme] .pixel-battle-stage .battle-stage-unit .pixel-battle-portrait {
     width: 58px;
     height: 58px;
+  }
+  .battle-quiz-screen[data-battle-theme] .battle-turn-track,
+  .battle-quiz-screen[data-battle-theme] .pixel-battle-status {
+    display: none;
   }
   .battle-quiz-screen .pixel-battle-question {
     padding-top: 6px;

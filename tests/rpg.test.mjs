@@ -1175,7 +1175,7 @@ test('戦闘時間は5・10・15問から選べ、日替わり推薦が循環す
   )
 })
 
-test('作戦カードは3種類から選べ、日替わり推薦が循環する', () => {
+test('旧作戦データは過去セッションの再現用に互換性を保つ', () => {
   assert.deepEqual(
     BATTLE_TACTICS.map((tactic) => tactic.id),
     ['combo', 'guard', 'counter'],
@@ -1279,7 +1279,7 @@ test('放課後スターはバトル正解とXP変換で増え、演出選択と
   assert.match(quizSource, /battleTheme\.stage/)
   assert.match(mapSource, /BATTLE_THEMES\.map/)
   assert.match(mapSource, /themeId: battleTheme\.id/)
-  assert.match(mapSource, /正解1問 \+\{BATTLE_STAR_PER_CORRECT\}/)
+  assert.doesNotMatch(mapSource, /正解1問 \+\{BATTLE_STAR_PER_CORRECT\}/)
   assert.match(mapSource, /<XpExchangeCard/)
   assert.match(mapSource, /exchangeXpForBattleStars/)
   assert.match(resultSource, /<BattleStarsCard/)
@@ -1309,7 +1309,7 @@ test('同行クラスメートはバトル前に固定され、戦果確認後�
 
   assert.doesNotMatch(mapSource, /setBattleStudentId|onStudent=/)
   assert.match(mapSource, /現在の同行クラスメート/)
-  assert.match(mapSource, /変更は、バトル後の戦果画面/)
+  assert.match(mapSource, /同行者の選択はバトル後の戦果画面/)
   assert.match(mapSource, /studentId: battleStudent\.id/)
   assert.match(mapSource, /rivalId: battleRival\.id,\s*teacherSubject,/)
   assert.match(resultSource, /<NextBattleCompanionCard/)
@@ -1389,7 +1389,7 @@ test('キャラ選択・全24表情・50人図鑑・3場面演出が実際のバ
   assert.match(quizSource, /playsInline/)
   assert.match(quizSource, /prefers-reduced-motion: reduce/)
   assert.match(quizSource, /battleTheme\.particles\.map/)
-  assert.match(quizSource, /battleTheme\.actorsSheet/)
+  assert.doesNotMatch(quizSource, /battleTheme\.actorsSheet/)
   assert.match(quizSource, /battleTheme\.scenes\[sceneIndex\]/)
   assert.match(quizSource, /data-battle-layout=\{battleTheme\.presentation\.layout\}/)
   assert.match(quizSource, /battle-theme-stage-decoration/)
@@ -1456,8 +1456,8 @@ test('学校アイテムをボックスで整理・装備し、バトルで1回�
   assert.match(settingsSource, /onEquip=\{setBattleRelicLevel\}/)
   assert.match(settingsSource, /1バトル1回/)
   assert.doesNotMatch(mapSource, /setBattleRelicLevel|<BattleItemBox/)
-  assert.match(mapSource, /右上のメニュー内「設定」で変更します/)
-  assert.match(mapSource, /<details className="school-battle-options/)
+  assert.doesNotMatch(mapSource, /右上のメニュー内「設定」で変更します/)
+  assert.doesNotMatch(mapSource, /<details className="school-battle-options/)
   assert.match(mapSource, /問題数をえらぶ/)
   assert.match(mapSource, /問のことば対決へ/)
   assert.match(quizSource, /onClick=\{useBattleItem\}/)
@@ -1465,9 +1465,10 @@ test('学校アイテムをボックスで整理・装備し、バトルで1回�
   assert.match(quizSource, /setBattleVisualEvent/)
   assert.match(quizSource, /kind: 'item-heal'/)
   assert.match(quizSource, /visualEvent=\{battleVisualEvent\}/)
-  assert.match(quizSource, /encounter\.attackLine/)
+  assert.doesNotMatch(quizSource, /encounter\.(?:attackLine|move)/)
   assert.match(resultSource, /battleReport\.itemSummary/)
-  assert.match(resultSource, /必殺技：\{encounter\.move\}/)
+  assert.doesNotMatch(resultSource, /必殺技|encounter\.move|TACTIC (?:ACTIVATED|RECORD)|SUBJECT COMPATIBILITY|RELATIONSHIP SKILL|AREA ABILITY/)
+  assert.doesNotMatch(mapSource, /相性・絆・対決演出|このバトルの作戦|先生は悪役|encounter\.move/)
 })
 
 test('集中モードは3連続正解ごとに花まるコンボを発動する', () => {

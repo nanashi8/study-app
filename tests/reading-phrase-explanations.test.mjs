@@ -7,7 +7,12 @@ import {
   READING_PHRASE_OPEN_QUESTIONS,
 } from '../src/data/reading-phrase-explanations.js'
 import { READING_PHRASE_RULES } from '../src/data/reading-phrase-rules.js'
+import {
+  READING_CONNECTOR_CLOSURE_REVIEWS,
+  READING_CONNECTOR_NO_BACK_REFERENCE_REVIEWS,
+} from '../src/data/reading-connector-closure-reviews.js'
 import { analyzeReadingSentence } from '../src/lib/reading-grammar.js'
+import { japanesePhraseSpeechText } from '../src/lib/phrase-speech.js'
 
 const words = (text) =>
   (text.match(/[A-Za-z]+(?:['’][A-Za-z]+)*/g) ?? []).map((word) => word.toLowerCase())
@@ -143,4 +148,26 @@ test('方法台帳は確定事項と真の未解決事項だけを区別する',
   assert.deepEqual(READING_PHRASE_OPEN_QUESTIONS, [])
   assert.ok(READING_PHRASE_OPEN_QUESTIONS.every((item) =>
     item.example && item.proposal && item.alternative && item.reason))
+})
+
+test('接続関係102件を全件判定し、必要な53件だけを括弧で受け直す', () => {
+  assert.equal(READING_CONNECTOR_CLOSURE_REVIEWS.length, 53)
+  assert.equal(READING_CONNECTOR_NO_BACK_REFERENCE_REVIEWS.length, 49)
+  assert.ok([
+    ...READING_CONNECTOR_CLOSURE_REVIEWS,
+    ...READING_CONNECTOR_NO_BACK_REFERENCE_REVIEWS,
+  ].every((item) => item.status === 'confirmed'))
+
+  for (const review of READING_CONNECTOR_CLOSURE_REVIEWS) {
+    const phrase = analyzeReadingSentence(sentenceByEnglish(review.sentence)).phraseSequence
+      .find((item) => words(item.en).join(' ') === words(review.target).join(' '))
+    assert.ok(phrase, `${review.connector}: ${review.target}`)
+    assert.equal(phrase.ja, review.ja)
+    assert.deepEqual(phrase.closureBinding, review.closureBinding)
+    assert.match(phrase.ja, /（[^）]+）/u)
+    assert.equal(
+      japanesePhraseSpeechText(phrase.ja),
+      phrase.ja.replace(/[（）()]/gu, ''),
+    )
+  }
 })

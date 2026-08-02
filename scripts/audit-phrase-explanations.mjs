@@ -16,6 +16,11 @@ console.log(
   `本文別判断 ${audit.reading.appliedCorrectionCount}/${audit.reading.correctionDecisionCount}件適用`,
 )
 console.log(
+  `  接続関係: ${audit.reading.connectorClosureReview.candidateCount}件全件確認、` +
+  `括弧受け直し ${audit.reading.connectorClosureReview.backReferenceCount}件、` +
+  `既に明確 ${audit.reading.connectorClosureReview.alreadyClearCount}件`,
+)
+console.log(
   `  長い一文: ${audit.longSentences.confirmedSentenceCount}/${audit.longSentences.sentenceCount}文、` +
   `${audit.longSentences.confirmedPhraseCount}/${audit.longSentences.phraseCount}フレーズ確認済み、` +
   `手動本文照合 ${audit.longSentences.manuallyReviewedSentenceCount}/${audit.longSentences.sentenceCount}文`,
@@ -33,6 +38,7 @@ const issueRows = [
   ['長文・並列の支配関係メタデータ不備', audit.reading.issues.invalidCoordinationBindings],
   ['長文・条件節末の前から訳不足', audit.reading.issues.missingConditionClosures],
   ['長文・節／句末の前から訳不足', audit.reading.issues.missingClauseClosures],
+  ['長文・接続関係の受け直し未確認', audit.reading.issues.unreviewedConnectorClosures],
   ['長文・V/M直後Oとの隣接格衝突', audit.reading.issues.adjacentJapaneseCaseCollisions],
   ['長文・セミコロン／コロン境界の欠落', audit.reading.issues.missingPunctuationBoundaries],
   ['長文・文脈機能メタデータ不整合', audit.reading.issues.semanticBindingErrors],

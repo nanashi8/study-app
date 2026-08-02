@@ -7,7 +7,10 @@ import {
 import { PASSAGES } from '../data/passages.js'
 import { PHRASES } from '../data/phrases.js'
 import { READING_PHRASE_CORRECTIONS } from '../data/reading-phrase-corrections.js'
-import { READING_CONNECTOR_CLOSURE_REVIEWS } from '../data/reading-connector-closure-reviews.js'
+import {
+  READING_CONNECTOR_CLOSURE_REVIEWS,
+  READING_CONNECTOR_NO_BACK_REFERENCE_REVIEWS,
+} from '../data/reading-connector-closure-reviews.js'
 import {
   LONG_MANUAL_REVIEW_LEDGER,
   READING_MANUAL_REVIEW_LEDGER,
@@ -73,6 +76,25 @@ const englishWords = (value = '') =>
 const normalizedWords = (value = '') => englishWords(value).map((word) => word.toLowerCase())
 const phraseKey = (value = '') => normalizedWords(value).join(' ')
 const rolesOf = (phrase) => [...new Set(phrase.roles ?? (phrase.role ? [phrase.role] : []))]
+
+const CONNECTOR_CLOSURE_CANDIDATES = new Set([
+  'after', 'although', 'as', 'because', 'before', 'even though', 'even when',
+  'especially when', 'if', 'just as', 'not because', 'once', 'since',
+  'so that', 'unless', 'when', 'whereas', 'while',
+])
+
+const connectorReviewKey = (sentence, connector, occurrence = 1) =>
+  `${sentence}|||${phraseKey(connector)}|||${occurrence}`
+
+const connectorBackReferenceReviewKeys = new Set(
+  READING_CONNECTOR_CLOSURE_REVIEWS.map((item) =>
+    connectorReviewKey(item.sentence, item.connector, item.occurrence ?? 1)),
+)
+
+const connectorNoBackReferenceReviewKeys = new Set(
+  READING_CONNECTOR_NO_BACK_REFERENCE_REVIEWS.map((item) =>
+    connectorReviewKey(item.sentence, item.connector, item.occurrence)),
+)
 
 function sameEnglish(left, right) {
   return JSON.stringify(normalizedWords(left)) === JSON.stringify(normalizedWords(right))
@@ -1209,6 +1231,7 @@ export function auditPhraseExplanations() {
     invalidCoordinationBindings: [],
     missingConditionClosures: [],
     missingClauseClosures: [],
+    unreviewedConnectorClosures: [],
     adjacentJapaneseCaseCollisions: [],
     missingPunctuationBoundaries: [],
     semanticBindingErrors: [],
@@ -1226,15 +1249,41 @@ export function auditPhraseExplanations() {
   const reviewCategoryCounts = new Map()
   const seenStructuralDisplayTargets = new Set()
   const seenReadingClosureTargets = new Set()
+  const seenConnectorClosureReviewKeys = new Set()
   const seenReadingReviewIds = new Set()
   const seenGrammarBlockStructureTargets = new Set()
   let manuallyReviewedReadingSentenceCount = 0
   let readingGrammarBlockCount = 0
+  let readingConnectorCandidateCount = 0
 
   for (const passage of PASSAGES) {
     passage.sentences.forEach((sentence, sentenceIndex) => {
       const analysis = analyzeReadingSentence(sentence)
       readingSentences.push(sentence.en)
+      const connectorOccurrences = new Map()
+      analysis.phraseSequence.forEach((phrase, phraseIndex) => {
+        const connector = phraseKey(phrase.en)
+        if (phrase.role !== 'LINK' || !CONNECTOR_CLOSURE_CANDIDATES.has(connector)) return
+        const occurrence = (connectorOccurrences.get(connector) ?? 0) + 1
+        connectorOccurrences.set(connector, occurrence)
+        readingConnectorCandidateCount++
+        const key = connectorReviewKey(sentence.en, connector, occurrence)
+        if (
+          connectorBackReferenceReviewKeys.has(key) ||
+          connectorNoBackReferenceReviewKeys.has(key)
+        ) {
+          seenConnectorClosureReviewKeys.add(key)
+          return
+        }
+        readingIssues.unreviewedConnectorClosures.push(readingRef(
+          passage,
+          sentenceIndex,
+          phraseIndex,
+          sentence,
+          phrase,
+          { field: '接続関係の受け直し要否が全件台帳にありません' },
+        ))
+      })
       const sentenceReviewEvidenceMatches = analysis.phraseSequence.length > 0 &&
         analysis.phraseSequence.every((phrase) => phrase.reviewEvidenceId === sentence.reviewId)
       if (sentenceReviewEvidenceMatches) {
@@ -1569,6 +1618,19 @@ export function auditPhraseExplanations() {
     }))
   }
 
+  for (const expectedKey of [
+    ...connectorBackReferenceReviewKeys,
+    ...connectorNoBackReferenceReviewKeys,
+  ]) {
+    if (seenConnectorClosureReviewKeys.has(expectedKey)) continue
+    const [sentence, connector] = expectedKey.split('|||')
+    readingIssues.unreviewedConnectorClosures.push(Object.freeze({
+      passageId: '', sentenceIndex: -1, phraseIndex: -1, sentence,
+      phrase: connector,
+      field: '接続関係の全件台帳に対応する実フレーズがありません',
+    }))
+  }
+
   for (const reviewId of Object.keys(READING_MANUAL_REVIEW_LEDGER)) {
     if (seenReadingReviewIds.has(reviewId)) continue
     readingIssues.missingManualReviewEvidence.push(Object.freeze({
@@ -1838,6 +1900,11 @@ export function auditPhraseExplanations() {
       )),
       correctionDecisionCount: Object.values(READING_PHRASE_CORRECTIONS)
         .reduce((sum, decisions) => sum + decisions.length, 0),
+      connectorClosureReview: Object.freeze({
+        candidateCount: readingConnectorCandidateCount,
+        backReferenceCount: READING_CONNECTOR_CLOSURE_REVIEWS.length,
+        alreadyClearCount: READING_CONNECTOR_NO_BACK_REFERENCE_REVIEWS.length,
+      }),
       appliedCorrectionCount: Object.values(READING_PHRASE_CORRECTIONS)
         .reduce((sum, decisions) => sum + decisions.length, 0) -
         readingIssues.correctionMismatches.length,
