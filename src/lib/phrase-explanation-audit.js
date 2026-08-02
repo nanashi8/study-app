@@ -7,6 +7,7 @@ import {
 import { PASSAGES } from '../data/passages.js'
 import { PHRASES } from '../data/phrases.js'
 import { READING_PHRASE_CORRECTIONS } from '../data/reading-phrase-corrections.js'
+import { READING_CONNECTOR_CLOSURE_REVIEWS } from '../data/reading-connector-closure-reviews.js'
 import {
   LONG_MANUAL_REVIEW_LEDGER,
   READING_MANUAL_REVIEW_LEDGER,
@@ -512,7 +513,7 @@ const READING_BINDING_EXPECTATIONS = new Map([
   ['That position underestimates why measurement became attractive in the first place.|||became', { ja: '〜になりました（状態は次へ）' }],
   ['That position underestimates why measurement became attractive in the first place.|||attractive', { ja: '魅力的に' }],
   ['Judgment can remain informed and humane, but it can also become inconsistent, biased, and difficult for outsiders to challenge.|||to challenge', { role: 'V', ja: '異議を唱えることが（難しい）', infinitiveBinding: { type: 'adjective-complement', governor: 'difficult', semanticSubject: 'outsiders' } }],
-  ['Without records, leaders may celebrate a program’s intentions while ignoring evidence that it repeatedly fails particular communities.|||particular communities', { role: 'O', ja: '特定の共同体に対して（期待に応えられないことを）' }],
+  ['Without records, leaders may celebrate a program’s intentions while ignoring evidence that it repeatedly fails particular communities.|||particular communities', { role: 'O', ja: '特定の共同体に対して（繰り返し期待に応えられないという証拠を無視する一方で）' }],
   ['Second, metrics should be interpreted with qualitative evidence from the people represented by them.|||by them', { ja: 'その指標によって表される（人々から得た証拠とともに）' }],
   ['Evaluation systems must be adaptive because the behavior they observe changes in response to observation.|||observe', { ja: '観察する（その行動が主節へ戻り）' }],
   ['Evaluation systems must be adaptive because the behavior they observe changes in response to observation.|||changes', { ja: 'その行動は変化します（きっかけは次へ）' }],
@@ -934,6 +935,10 @@ const READING_CLOSURE_EXPECTATIONS = new Map([
   ["No collection of measures eliminates judgment, but plural indicators make it harder for one narrow target to dominate behavior.|||behavior", { ja: "行動を一つの狭い目標が支配しにくくします", binding: { type: "formal-object-for-to-infinitive", opener: "for / to dominate", governor: "make it harder", clause: "for one narrow target to dominate behavior" } }],
   ["Context does not excuse every poor result; it helps institutions distinguish causes that demand different responses.|||different responses", { ja: "異なる対応を必要とする原因を制度が区別する助けになります", binding: { type: "help-object-bare-infinitive", opener: "distinguish", governor: "helps institutions", clause: "institutions distinguish causes that demand different responses" } }],
   ["Meaningful transparency explains why a measure was chosen, what it omits, how uncertainty was handled, and who can question its use.|||was chosen", { ja: "選ばれたのかを", binding: { type: "parallel-embedded-question", opener: "why", governor: "explains", clause: "why a measure was chosen" } }],
+  ...READING_CONNECTOR_CLOSURE_REVIEWS.map((item) => [
+    `${item.sentence}|||${item.target}`,
+    { ja: item.ja, binding: item.closureBinding },
+  ]),
 ].map(([key, value]) => {
   const [sentence, phrase] = key.split('|||')
   return [`${sentence}|||${phraseKey(phrase)}`, value]

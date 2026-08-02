@@ -130,7 +130,7 @@ export function KotenListScreen() {
           <div className="min-w-0 flex-1">
             <div className="font-display text-base font-extrabold">漢文の名作に親しむ</div>
             <div className="mt-0.5 text-xs font-bold text-white/65">
-              白文を見て、書き下し → 現代語訳を一息ずつ
+              原文を見て、書き下し → 現代語訳を一息ずつ
             </div>
           </div>
           <ArrowRight size={20} className="shrink-0 text-rose-200" />

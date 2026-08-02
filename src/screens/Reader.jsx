@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef, useEffect } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { useStore } from '../store/useStore.js'
 import { getPassage } from '../data/passages.js'
 import { getLevel } from '../data/levels.js'
@@ -8,13 +8,16 @@ import {
   analyzePassageParagraphs,
   analyzeReadingSentence,
 } from '../lib/reading-grammar.js'
-import { speak, speakWith, stopSpeaking } from '../lib/tts.js'
+import {
+  dismissSpeechPlayer,
+  playSpeechItems,
+} from '../lib/speech-player.js'
 import { japanesePhraseSpeechText } from '../lib/phrase-speech.js'
 import { Sheet } from '../components/Sheet.jsx'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { Button, Chip, IconButton } from '../components/ui.jsx'
-import { Close, SpeakerWave, ArrowRight, Lightbulb, Link, ChevronLeft, ChevronRight, Bookmark, BookmarkFilled, BookOpen } from '../components/Icons.jsx'
+import { Close, SpeakerWave, ArrowRight, Lightbulb, Link, Bookmark, BookmarkFilled, BookOpen } from '../components/Icons.jsx'
 import { cx } from '../components/ui.jsx'
 import { translationRoleMeta } from '../lib/translation-roles.js'
 import { StructureDiagram } from '../components/StructureDiagram.js'
@@ -146,203 +149,148 @@ export function ReaderScreen() {
     }
     return groups
   }, [passage])
-  const [playOpen, setPlayOpen] = useState(false) // 再生パネルの表示
   const [playIdx, setPlayIdx] = useState(0) // 現在のチャンク
-  const [playing, setPlaying] = useState(false) // 自動送り中か
-  const [dir, setDir] = useState(1) // 1=順送り / -1=戻り
-  const [phase, setPhase] = useState('en') // 英語・フレーズ訳・解説・自然訳のどこを読んでいるか
-  const tokenRef = useRef(0) // 再生の世代。停止・やり直しで無効化する
+  const [playerActive, setPlayerActive] = useState(false)
 
-  // 画面を離れたら必ず止める
-  useEffect(() => () => stopSpeaking(), [])
-
-  // idx の意味フレーズを「原文の英語→直訳→そのフレーズに必要な解説」で読む。
-  const speakChunkSeq = (idx, { auto, direction }) => {
-    const token = ++tokenRef.current
-    stopSpeaking()
-    const run = (i) => {
-      if (tokenRef.current !== token) return
-      if (i < 0 || i >= chunks.length) {
-        setPlaying(false)
-        return
-      }
-      setPlayIdx(i)
-      const c = chunks[i]
-      setPhase('en')
-      speakWith(c.en, {
-        rate: settings.ttsRate,
-        voiceURI: settings.ttsVoiceURI,
-        lang: 'en-US',
-        style: 'narration',
-        onend: () => {
-          if (tokenRef.current !== token) return
-          setPhase('ja')
-          speakWith(`前からは、「${japanesePhraseSpeechText(c.ja)}」と取ります。`, {
-            rate: settings.ttsRate,
-            voiceURI: settings.ttsJapaneseVoiceURI,
-            lang: 'ja-JP',
-            style: 'translation',
-            onend: () => {
-              if (tokenRef.current !== token) return
-              const finishPhrase = () => {
-                if (tokenRef.current !== token) return
-                const advance = () => {
-                  if (tokenRef.current !== token) return
-                  if (auto) run(i + direction)
-                  else setPlaying(false)
-                }
-                if (!c.isSentenceEnd || !c.sentenceJa) {
-                  advance()
-                  return
-                }
-                setPhase('natural')
-                speakWith(`文全体を自然な日本語に整えると、「${c.sentenceJa}」です。`, {
-                  rate: settings.ttsRate,
-                  voiceURI: settings.ttsJapaneseVoiceURI,
-                  lang: 'ja-JP',
-                  style: 'explanation',
-                  onend: advance,
-                })
-              }
-              if (!c.explanation) {
-                finishPhrase()
-                return
-              }
-              setPhase('explanation')
-              speakWith(c.explanation, {
-                rate: settings.ttsRate,
-                voiceURI: settings.ttsJapaneseVoiceURI,
-                lang: 'ja-JP',
-                style: 'explanation',
-                onend: finishPhrase,
-              })
-            },
-          })
-        },
-      })
-    }
-    run(idx)
-  }
-
-  const stopPlay = () => {
-    tokenRef.current++ // 進行中の連鎖を無効化
-    stopSpeaking()
-    setPlaying(false)
-  }
-  // direction 方向に現在位置から自動再生
-  const playChunks = (direction) => {
-    setDir(direction)
-    setPlaying(true)
-    speakChunkSeq(playIdx, { auto: true, direction })
-  }
-  // 1チャンクだけ手動で移動して読む
-  const stepChunk = (delta) => {
-    const ni = Math.min(chunks.length - 1, Math.max(0, playIdx + delta))
-    stopPlay()
-    speakChunkSeq(ni, { auto: false, direction: dir })
-  }
-  const openPlayer = () => {
-    setPlayOpen(true)
-    setPlayIdx(0)
-    setPhase('en')
-  }
-  const closePlayer = () => {
-    stopPlay()
-    setPlayOpen(false)
-  }
-  const speakBlockPair = (block) => {
-    const token = ++tokenRef.current
-    stopSpeaking()
-    setPlaying(false)
-    const speakBlockSummary = () => {
-      if (tokenRef.current !== token) return
-      speakWith(
-        `ブロック全体の読み方は、${block.translationGuide} 文法上の注意は、${block.note}`,
+  const chunkSpeechItems = useMemo(
+    () => chunks.map((chunk) => ({
+      id: chunk.id,
+      label: chunk.displayEn,
+      segments: [
         {
-          rate: settings.ttsRate,
-          voiceURI: settings.ttsJapaneseVoiceURI,
-          lang: 'ja-JP',
-          style: 'explanation',
+          text: chunk.en,
+          label: '英語フレーズ',
+          lang: 'en-US',
+          style: 'narration',
         },
-      )
-    }
-    const run = (index) => {
-      if (tokenRef.current !== token) return
-      const pair = block.phrasePairs[index]
-      if (!pair) return
-      speakWith(pair.spokenEn ?? pair.en, {
-        rate: settings.ttsRate,
-        voiceURI: settings.ttsVoiceURI,
-        lang: 'en-US',
-        style: 'narration',
-        onend: () => {
-          if (tokenRef.current !== token) return
-          speakWith(`前からは、「${japanesePhraseSpeechText(pair.ja)}」と取ります。`, {
-            rate: settings.ttsRate,
-            voiceURI: settings.ttsJapaneseVoiceURI,
-            lang: 'ja-JP',
-            style: 'translation',
-            onend: () => {
-              if (tokenRef.current !== token) return
-              const advance = () => {
-                if (tokenRef.current !== token) return
-                if (index < block.phrasePairs.length - 1) {
-                  run(index + 1)
-                  return
-                }
-                speakBlockSummary()
-              }
-              const phraseExplanation =
-                pair.grammar ?? pair.explanation ?? pair.roleNote
-              if (!phraseExplanation) {
-                advance()
-                return
-              }
-              speakWith(
-                phraseExplanation,
-                {
-                  rate: settings.ttsRate,
-                  voiceURI: settings.ttsJapaneseVoiceURI,
-                  lang: 'ja-JP',
-                  style: 'explanation',
-                  onend: advance,
-                },
-              )
-            },
-          })
-        },
-      })
-    }
-    run(0)
-  }
-  const speakReviewedPhrasePair = (phraseItem) => {
-    const token = ++tokenRef.current
-    stopSpeaking()
-    setPlaying(false)
-    speakWith(phraseItem.spokenEn ?? phraseItem.en, {
-      rate: settings.ttsRate,
-      voiceURI: settings.ttsVoiceURI,
-      lang: 'en-US',
-      style: 'narration',
-      onend: () => {
-        if (tokenRef.current !== token) return
-        speakWith(`前からは、「${japanesePhraseSpeechText(phraseItem.ja)}」と取ります。`, {
-          rate: settings.ttsRate,
-          voiceURI: settings.ttsJapaneseVoiceURI,
+        {
+          text: `前からは、「${japanesePhraseSpeechText(chunk.ja)}」と取ります。`,
+          label: '対応する日本語',
           lang: 'ja-JP',
           style: 'translation',
-          onend: () => {
-            const grammar = phraseItem.grammar ?? phraseItem.explanation
-            if (tokenRef.current !== token || !grammar) return
-            speakWith(grammar, {
-              rate: settings.ttsRate,
-              voiceURI: settings.ttsJapaneseVoiceURI,
+        },
+        ...(chunk.explanation
+          ? [{
+              text: chunk.explanation,
+              label: '読み方・文法上の注意',
               lang: 'ja-JP',
               style: 'explanation',
-            })
-          },
-        })
+            }]
+          : []),
+        ...(chunk.isSentenceEnd && chunk.sentenceJa
+          ? [{
+              text: `文全体を自然な日本語に整えると、「${chunk.sentenceJa}」です。`,
+              label: '文全体の自然訳',
+              lang: 'ja-JP',
+              style: 'explanation',
+            }]
+          : []),
+      ],
+    })),
+    [chunks],
+  )
+
+  // 画面を離れたら必ず止める
+  useEffect(() => dismissSpeechPlayer, [])
+
+  // 原文の英語→直訳→必要な解説を、意味フレーズ単位で共通コンソールへ渡す。
+  const playChunks = (index = 0) => {
+    playSpeechItems(chunkSpeechItems, {
+      index,
+      title: '講師音声',
+      rate: settings.ttsRate,
+      voiceURI: settings.ttsVoiceURI,
+      japaneseVoiceURI: settings.ttsJapaneseVoiceURI,
+      autoAdvance: true,
+      onIndexChange: (nextIndex) => setPlayIdx(nextIndex),
+      onStatusChange: (status) => {
+        setPlayerActive(status === 'playing' || status === 'paused')
       },
+    })
+  }
+
+  const speakBlockPair = (block) => {
+    const items = block.phrasePairs.map((pair, index) => {
+      const explanation = pair.grammar ?? pair.explanation ?? pair.roleNote
+      return {
+        label: pair.displayEn ?? pair.en,
+        segments: [
+          {
+            text: pair.spokenEn ?? pair.en,
+            label: '英語フレーズ',
+            lang: 'en-US',
+            style: 'narration',
+          },
+          {
+            text: `前からは、「${japanesePhraseSpeechText(pair.ja)}」と取ります。`,
+            label: '前から読む直訳',
+            lang: 'ja-JP',
+            style: 'translation',
+          },
+          ...(explanation
+            ? [{
+                text: explanation,
+                label: 'フレーズ解説',
+                lang: 'ja-JP',
+                style: 'explanation',
+              }]
+            : []),
+          ...(index === block.phrasePairs.length - 1
+            ? [{
+                text: `ブロック全体の読み方は、${block.translationGuide} 文法上の注意は、${block.note}`,
+                label: 'ブロック全体の解説',
+                lang: 'ja-JP',
+                style: 'explanation',
+              }]
+            : []),
+        ],
+      }
+    })
+    playSpeechItems(items, {
+      title: 'ブロック解説',
+      rate: settings.ttsRate,
+      voiceURI: settings.ttsVoiceURI,
+      japaneseVoiceURI: settings.ttsJapaneseVoiceURI,
+      autoAdvance: true,
+    })
+  }
+
+  const speakReviewedPhrasePair = (phraseItem, phraseIndex) => {
+    const phrases = sentenceAnalysis?.phraseSequence ?? [phraseItem]
+    const items = phrases.map((item) => {
+      const grammar = item.grammar ?? item.explanation
+      return {
+        label: item.displayEn ?? item.en,
+        segments: [
+          {
+            text: item.spokenEn ?? item.en,
+            label: '英語フレーズ',
+            lang: 'en-US',
+            style: 'narration',
+          },
+          {
+            text: `前からは、「${japanesePhraseSpeechText(item.ja)}」と取ります。`,
+            label: '前から読む直訳',
+            lang: 'ja-JP',
+            style: 'translation',
+          },
+          ...(grammar
+            ? [{
+                text: grammar,
+                label: '読み方・文法解説',
+                lang: 'ja-JP',
+                style: 'explanation',
+              }]
+            : []),
+        ],
+      }
+    })
+    playSpeechItems(items, {
+      index: Math.max(0, phraseIndex ?? 0),
+      title: 'フレーズ解説',
+      rate: settings.ttsRate,
+      voiceURI: settings.ttsVoiceURI,
+      japaneseVoiceURI: settings.ttsJapaneseVoiceURI,
     })
   }
 
@@ -361,25 +309,27 @@ export function ReaderScreen() {
   const level = getLevel(passage.level)
   const sentence = activeIdx != null ? passage.sentences[activeIdx] : null
   const sentenceAnalysis = activeIdx != null ? sentenceAnalyses[activeIdx] : null
-  const cur = chunks[playIdx] // 講師音声でいま読んでいるブロック
 
   const openSentence = (i) => {
-    stopPlay()
+    dismissSpeechPlayer()
+    setPlayerActive(false)
     setActiveWord(null)
     setActiveIdx(i)
   }
   const tapToken = (tok) => {
-    speak(tok.word, {
+    playSpeechItems([{ text: tok.word, label: tok.word, style: 'word' }], {
+      title: '単語の読み上げ',
       rate: settings.ttsRate,
       voiceURI: settings.ttsVoiceURI,
-      style: 'word',
+      japaneseVoiceURI: settings.ttsJapaneseVoiceURI,
     })
     const meaning = resolvePassageWord(tok.key, sentence?.gloss)
     if (meaning?.id) recordVocabHistory(meaning.id)
     setActiveWord({ word: tok.word, ja: meaning?.ja ?? null, id: meaning?.id ?? null })
   }
   const closeSentence = () => {
-    stopPlay()
+    dismissSpeechPlayer()
+    setPlayerActive(false)
     setActiveIdx(null)
   }
 
@@ -430,32 +380,30 @@ export function ReaderScreen() {
           段落解説 {showParagraphGuide ? 'ON' : 'OFF'}
         </button>
         <button
-          onClick={() => {
-            stopPlay()
-            speak(
-              passage.sentences
-                .map(
-                  (sentence, index) =>
-                    `${index > 0 && sentence.paragraphStart ? '\n\n' : ' '}${sentence.en}`,
-              )
-                .join('')
-                .trim(),
-              {
-                rate: settings.ttsRate,
-                voiceURI: settings.ttsVoiceURI,
-                style: 'passage',
-              },
-            )
-          }}
+          onClick={() => playSpeechItems(
+            passage.sentences.map((item) => ({
+              label: item.en,
+              text: item.en,
+              style: 'passage',
+            })),
+            {
+              title: '長文・全文',
+              rate: settings.ttsRate,
+              voiceURI: settings.ttsVoiceURI,
+              japaneseVoiceURI: settings.ttsJapaneseVoiceURI,
+              autoAdvance: true,
+              pauseBetweenItemsMs: 250,
+            },
+          )}
           className="flex items-center gap-1 rounded-full bg-brand-100 px-3 py-1.5 text-xs font-extrabold text-brand-700"
         >
           <SpeakerWave size={14} /> 全文を読み上げ
         </button>
         <button
-          onClick={openPlayer}
+          onClick={() => playChunks(0)}
           className={cx(
             'flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-extrabold transition-colors',
-            playOpen ? 'bg-brand-500 text-white' : 'bg-brand-100 text-brand-700',
+            playerActive ? 'bg-brand-500 text-white' : 'bg-brand-100 text-brand-700',
           )}
         >
           <SpeakerWave size={14} /> 講師音声
@@ -498,7 +446,7 @@ export function ReaderScreen() {
                         onClick={() => openSentence(index)}
                         className={cx(
                           'rounded-md px-0.5 text-left transition-colors hover:bg-brand-50 active:bg-brand-100',
-                          playOpen && chunks[playIdx]?.si === index && 'bg-amber-200',
+                          playerActive && chunks[playIdx]?.si === index && 'bg-amber-200',
                         )}
                       >
                         {item.en}
@@ -540,138 +488,6 @@ export function ReaderScreen() {
           一文をタップすると、英語と対応する日本語、SVOCM、文法上の注意を確認できます。
         </p>
       </div>
-
-      {/* 講師音声バー（意味フレーズごとに英語→直訳、その後に読解・文法解説） */}
-      {playOpen && (
-        <div className="shrink-0 border-t border-brand-100 bg-white px-4 py-3">
-          <div className="mb-2 flex items-center justify-between">
-            <span className="text-[11px] font-extrabold uppercase tracking-wide text-brand-400">
-              講師音声
-            </span>
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-bold text-ink/40">
-                {Math.min(playIdx + 1, chunks.length)}/{chunks.length}
-              </span>
-              <IconButton onClick={closePlayer} aria-label="講師音声を閉じる">
-                <Close size={18} />
-              </IconButton>
-            </div>
-          </div>
-
-          {/* いま読んでいるまとまり */}
-          {cur && (
-            <div className="mb-3 max-h-[42vh] overflow-y-auto border border-brand-100 bg-brand-50 p-3">
-              <div className="mb-1.5 flex flex-wrap items-center gap-1.5 text-[10px] font-extrabold">
-                <span className="bg-white px-1.5 py-0.5 text-brand-700">
-                  {cur.label || '意味フレーズ'}
-                </span>
-                <span className="bg-white px-1.5 py-0.5 text-ink/60">
-                  {cur.role ? `文中の働き ${cur.role}` : '主節'}
-                </span>
-                <span className="bg-white px-1.5 py-0.5 text-ink/60">
-                  フレーズ {cur.phraseIndex + 1}/{cur.phraseCount}
-                </span>
-                {cur.svoc?.pattern && cur.kind !== 'phrase' && (
-                  <span className="bg-white px-1.5 py-0.5 text-ink/60">
-                    節内 {cur.svoc.pattern}
-                  </span>
-                )}
-                {PHRASE_STATUS[cur.status] && (
-                  <span className={cx('border px-1.5 py-0.5', PHRASE_STATUS[cur.status].className)}>
-                    {phraseStatusLabel(cur, PHRASE_STATUS[cur.status].label)}
-                  </span>
-                )}
-              </div>
-              <div className={cx('font-bold leading-snug', phase === 'en' ? 'text-brand-700' : 'text-ink')}>
-                {cur.displayEn}
-              </div>
-              <div
-                className={cx(
-                  'mt-0.5 text-sm font-bold leading-snug',
-                  phase === 'ja' ? 'text-amber-600' : 'text-ink/55',
-                )}
-              >
-                {cur.ja}
-              </div>
-              {cur.readingGuide && (
-                <div className="mt-1.5 border-l-2 border-amber-300 pl-2 text-xs font-bold leading-relaxed text-ink/60">
-                  読み方：{cur.readingGuide}
-                </div>
-              )}
-              {cur.grammarNote && (
-                <div className="mt-1.5 border-l-2 border-sky-300 pl-2 text-xs font-bold leading-relaxed text-ink/60">
-                  文法上の注意：{cur.grammarNote}
-                </div>
-              )}
-              {cur.isSentenceEnd && (
-                <div
-                  className={cx(
-                    'mt-2 border border-emerald-100 bg-white px-2 py-1.5 text-xs font-bold leading-relaxed',
-                    phase === 'natural' ? 'text-emerald-700' : 'text-ink/45',
-                  )}
-                >
-                  文全体の自然訳：{cur.sentenceJa}
-                </div>
-              )}
-              <div className="mt-1 text-[10px] font-bold text-ink/40">
-                {phase === 'en'
-                  ? '英語フレーズの発音'
-                  : phase === 'ja'
-                    ? '対応する日本語'
-                    : phase === 'explanation'
-                      ? '読み方・文法上の注意'
-                      : '文全体の自然訳'}
-              </div>
-            </div>
-          )}
-
-          {/* 操作：前へ / 再生・一時停止 / 次へ */}
-          <div className="flex items-center gap-2">
-            <IconButton onClick={() => stepChunk(-1)} disabled={playIdx <= 0} aria-label="前のまとまり">
-              <ChevronLeft size={20} />
-            </IconButton>
-            {playing ? (
-              <Button full variant="secondary" onClick={stopPlay}>
-                一時停止
-              </Button>
-            ) : (
-              <Button full onClick={() => playChunks(dir)}>
-                <SpeakerWave size={16} /> {dir === 1 ? '順に再生' : '戻して再生'}
-              </Button>
-            )}
-            <IconButton
-              onClick={() => stepChunk(1)}
-              disabled={playIdx >= chunks.length - 1}
-              aria-label="次のまとまり"
-            >
-              <ChevronRight size={20} />
-            </IconButton>
-          </div>
-
-          {/* 向き（順送り / 戻り読み）切替 */}
-          <div className="mt-2 flex items-center justify-center gap-1.5">
-            <span className="text-[11px] font-bold text-ink/40">向き</span>
-            {[
-              { v: 1, label: '順送り' },
-              { v: -1, label: '戻り読み' },
-            ].map((o) => (
-              <button
-                key={o.v}
-                onClick={() => {
-                  setDir(o.v)
-                  if (playing) playChunks(o.v)
-                }}
-                className={cx(
-                  'rounded-full px-3 py-1 text-xs font-extrabold transition-colors',
-                  dir === o.v ? 'bg-brand-500 text-white' : 'bg-brand-100 text-brand-700',
-                )}
-              >
-                {o.label}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
 
       {/* フッター */}
       <div className="shrink-0 border-t border-brand-100 bg-white/90 p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] backdrop-blur">
@@ -812,7 +628,7 @@ export function ReaderScreen() {
                       >
                         <div className="flex items-start gap-2">
                           <button
-                            onClick={() => speakReviewedPhrasePair(phraseItem)}
+                            onClick={() => speakReviewedPhrasePair(phraseItem, phraseIndex)}
                             aria-label={`${phraseItem.en}を英語、直訳、文法解説の順で再生`}
                             className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-700 active:bg-emerald-200"
                           >

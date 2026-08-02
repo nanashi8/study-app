@@ -537,7 +537,7 @@ function ChroniclePortalCard({ hero, onOpen }) {
             {AFTER_SCHOOL_CHRONICLE.title}
           </strong>
           <span className="mt-1 block truncate text-[10px] font-bold text-ink/50">
-            対決・育成・仲間・学園
+            対決後は友達と過ごす3つの日常へ
           </span>
         </span>
         <span className="after-school-portal-action">
@@ -781,6 +781,18 @@ function AdventureCard({
           <span className="shrink-0 rounded-full bg-white/10 px-2.5 py-1 text-[10px] font-extrabold text-amber-100">
             ✦ {battleStars.toLocaleString()}
           </span>
+        </div>
+
+        <div className="after-school-start-key-visual order-0">
+          <img
+            src={publicAssetUrl(AFTER_SCHOOL_CHRONICLE.keyVisual)}
+            alt="放課後の昇降口で、4人の高校生が校内図を囲んで今日の対決ルートを相談している"
+          />
+          <span className="pointer-events-none absolute inset-0 bg-gradient-to-r from-slate-950/80 via-slate-950/25 to-transparent" />
+          <div>
+            <small>{hero.chapter.name}</small>
+            <strong>今日の対決を選ぶ</strong>
+          </div>
         </div>
 
         <details className="school-battle-context order-6 mt-2 rounded-2xl border border-white/15 bg-white/10">

@@ -121,7 +121,7 @@ test('ゲーム入口は開始操作を詳細設定より先に見せ、低い�
   assert.match(quiz, /battle-command-grid mt-2 grid grid-cols-2/)
   assert.match(quiz, /\{options\.map\(/)
   assert.match(quiz, /<UnknownChoiceButton/)
-  assert.match(css, /@media \(max-height: 640px\)[\s\S]*height: 72px;[\s\S]*grid-auto-rows: 58px;/)
+  assert.match(css, /@media \(max-height: 640px\)[\s\S]*height: 112px;[\s\S]*grid-auto-rows: 58px;/)
 })
 
 test('ゲーム全体は携帯ゲーム機の共通枠と4分類に統一し、詳細を引き出しへしまう', async () => {

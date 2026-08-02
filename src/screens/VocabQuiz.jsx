@@ -396,7 +396,7 @@ export function VocabQuizScreen() {
       )}
 
       {isBattle && (
-        <div className="battle-hud-shell border-b border-brand-100 bg-white/90 p-2 backdrop-blur">
+        <div className="battle-hud-shell battle-console-shell border-b border-brand-100 bg-white/90 p-2 backdrop-blur">
           <BattleHud
             encounter={encounter}
             enemyRank={enemyLevel(params.source?.levelIndex ?? 0)}
@@ -424,7 +424,7 @@ export function VocabQuizScreen() {
       <div
         className={cx(
           'flex-1 overflow-y-auto px-4 pb-4',
-          isBattle && 'px-3 pb-2',
+          isBattle && 'battle-command-shell px-3 pb-2',
         )}
       >
         {/* 出題語 */}
@@ -451,8 +451,8 @@ export function VocabQuizScreen() {
                 <SpeakButton text={word.word} size="md" />
               </div>
               <p className="battle-command-prompt mt-1.5 text-[11px] font-extrabold text-ink/55">
-                <span>{battleTheme.presentation.commandLabel}</span>
-                {battleTheme.presentation.prompt}
+                <span>ことば</span>
+                正しい意味を選ぶ
               </p>
             </>
           ) : (
@@ -815,7 +815,7 @@ function BattleHud({
         className="absolute right-10 top-2 z-10 !h-7 !w-7"
       />
 
-      <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 pr-16">
+      <div className="battle-combatants-bar grid grid-cols-[1fr_auto_1fr] items-center gap-2 pr-16">
         <div className="flex min-w-0 items-center gap-1.5">
           <PixelBattlePortrait
             key={`hud-${battleStudent.id}-${studentState}`}
@@ -837,7 +837,7 @@ function BattleHud({
                   style={{ backgroundColor: battleTrait.color }}
                   aria-hidden="true"
                 />
-                {battleStudent.name}
+                自分
               </span>
               <span>
                 {battleState.heroCurrentHp}/{battleState.heroMaxHp}
@@ -878,7 +878,7 @@ function BattleHud({
         <div className="flex min-w-0 items-center justify-end gap-1.5">
           <div className="min-w-0 flex-1">
             <div className="flex items-center justify-between gap-1 text-[9px] font-extrabold text-rose-500">
-              <span className="truncate">{battleRival.name}</span>
+              <span className="truncate">相手</span>
               <span>
                 {battleState.enemyCurrentHp}/{battleState.enemyMaxHp}
               </span>
@@ -912,7 +912,7 @@ function BattleHud({
         key={`scene-${battleState.answered}-${eventKind ?? 'ready'}`}
         className={cx(
           'mob-battle-stage battle-status-stage mt-1.5 rounded-xl',
-          'school-battle-stage pixel-battle-stage',
+          'school-battle-stage pixel-battle-stage battle-key-visual-stage',
           skillFlash && 'battle-stage-skill',
         )}
         style={{
@@ -921,11 +921,12 @@ function BattleHud({
         data-battle-theme={battleTheme.id}
         data-battle-layout={battleTheme.presentation.layout}
         data-battle-phase={battlePhase}
+        data-battle-key-visual={battleStageUrl}
         role="img"
         aria-label={`戦闘状況。${battleStudent.name}は${battleState.heroCurrentHp}/${battleState.heroMaxHp}HP、${battleRival.name}は${battleState.enemyCurrentHp}/${battleState.enemyMaxHp}HP。${battleState.teacherAffinity.active ? `${battleState.teacherAffinity.subject}の先生に対し、${battleState.teacherAffinity.gradeBasisLabel}評定${battleState.teacherAffinity.grade}で${battleState.teacherAffinity.label}。` : ''}${battleState.bondSkill ? `関係特技は${battleState.bondSkill.name}。` : ''}${cue.title}。${manaPresentation.ariaLabel}`}
       >
         <span className="battle-scene-label" aria-hidden="true">
-          {battleTheme.presentation.modeLabel} · {scene.name}
+          {battleTheme.name} · {scene.name}
         </span>
         <span className="battle-theme-stage-decoration" aria-hidden="true">
           {Array.from({ length: 5 }, (_, index) => <i key={index} />)}

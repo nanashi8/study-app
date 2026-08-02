@@ -86,7 +86,7 @@ test('共通メニューから保存される学習・音声・ゲーム・コ�
   assert.match(settingsScreen, /<SettingsMenuPanel \/>/)
 })
 
-test('永続設定の変更処理は共通メニューにだけ置き、同行者だけ戦果後に残す', () => {
+test('永続設定の変更処理は共通メニュー・読み上げコンソールに集約し、同行者だけ戦果後に残す', () => {
   const files = ['components', 'screens'].flatMap((directory) =>
     readdirSync(new URL(`../src/${directory}/`, import.meta.url))
       .filter((filename) => filename.endsWith('.jsx'))
@@ -96,7 +96,11 @@ test('永続設定の変更処理は共通メニューにだけ置き、同行�
       })),
   )
   const allowed = new Map([
-    ['setSetting', ['components/SpeechSettings.jsx', 'components/GameSettings.jsx']],
+    ['setSetting', [
+      'components/SpeechSettings.jsx',
+      'components/SpeechConsole.jsx',
+      'components/GameSettings.jsx',
+    ]],
     ['setBattleRelicLevel', ['components/GameSettings.jsx']],
     ['setBattleThemeId', ['components/GameSettings.jsx']],
     ['raiseBattleTrait', ['components/GameSettings.jsx']],
@@ -152,4 +156,48 @@ test('リスニングとディクテーションも共通速度を級別速度�
 
   assert.match(listening, /const userRateScale = \(settings\.ttsRate \?\? 0\.9\) \/ 0\.9/)
   assert.match(dictation, /const userRateScale = \(settings\.ttsRate \?\? 0\.9\) \/ 0\.9/)
+})
+
+test('全画面共通の読み上げコンソールに6操作を一つずつ備える', () => {
+  const shell = read('../src/components/AppShell.jsx')
+  const consoleSource = read('../src/components/SpeechConsole.jsx')
+  const player = read('../src/lib/speech-player.js')
+  const speakButton = read('../src/components/SpeakButton.jsx')
+
+  assert.match(shell, /<GlobalSpeechConsole \/>/)
+  assert.match(consoleSource, /aria-label="読み上げコンソール"/)
+  for (const label of ['再生', '一時停止', '前へ', '次へ', '停止', '速度']) {
+    assert.match(consoleSource, new RegExp(`(?:label=|<span>)"?${label}`), label)
+  }
+  assert.match(player, /pauseSpeaking\(\)/)
+  assert.match(player, /resumeSpeaking\(\)/)
+  assert.match(player, /previousSpeechItem/)
+  assert.match(player, /nextSpeechItem/)
+  assert.match(player, /setSpeechPlayerRate/)
+  assert.match(speakButton, /data-speech-text=/)
+  assert.match(speakButton, /visibleSpeechButtons/)
+})
+
+test('読み上げを持つ全25 UIモジュールが共通プレイヤー経由になる', () => {
+  const files = ['components', 'screens'].flatMap((directory) =>
+    readdirSync(new URL(`../src/${directory}/`, import.meta.url))
+      .filter((filename) => filename.endsWith('.jsx'))
+      .map((filename) => ({
+        path: `${directory}/${filename}`,
+        source: read(`../src/${directory}/${filename}`),
+      })),
+  )
+  const speechUi = files.filter(({ source }) =>
+    /<SpeakButton|playSpeechItems\(|playListeningItem\(/.test(source),
+  )
+  const screenCount = speechUi.filter(({ path }) => path.startsWith('screens/')).length
+
+  assert.equal(speechUi.length, 25)
+  assert.equal(screenCount, 21)
+  assert.ok(speechUi.some(({ path }) => path === 'screens/Reader.jsx'))
+  assert.ok(speechUi.some(({ path }) => path === 'screens/LiteratureReader.jsx'))
+  assert.ok(speechUi.some(({ path }) => path === 'screens/ListeningQuiz.jsx'))
+  assert.ok(speechUi.some(({ path }) => path === 'screens/DictationPlay.jsx'))
+  assert.doesNotMatch(read('../src/screens/Reader.jsx'), /const stopPlay|stepChunk/)
+  assert.doesNotMatch(read('../src/screens/LiteratureReader.jsx'), /PACES|paceId/)
 })

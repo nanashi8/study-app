@@ -724,10 +724,53 @@
 .after-school-player-strip {
   display: none;
 }
+.after-school-start-key-visual {
+  position: relative;
+  isolation: isolate;
+  height: 64px;
+  overflow: hidden;
+  border-bottom: 1px solid #d8dee9;
+  background: #172033;
+}
+.after-school-start-key-visual > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 44%;
+  filter: saturate(0.9) contrast(0.96);
+}
+.after-school-start-key-visual > div {
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  left: 10px;
+  display: flex;
+  max-width: 72%;
+  transform: translateY(-50%);
+  flex-direction: column;
+  color: white;
+}
+.after-school-start-key-visual small,
+.after-school-start-key-visual strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.after-school-start-key-visual small {
+  color: #dbeafe;
+  font-size: 9px;
+  font-weight: 800;
+}
+.after-school-start-key-visual strong {
+  margin-top: 1px;
+  font-size: 13px;
+  font-weight: 950;
+}
 .after-school-start-card .school-battle-paper {
   margin-top: 0;
   padding: 10px;
-  border-radius: 13px;
+  border-radius: 0 0 13px 13px;
   box-shadow: none;
 }
 .after-school-start-card .school-battle-paper > .flex:first-child {
@@ -3167,6 +3210,143 @@
   animation: battle-skill-flash 0.48s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+/* 実戦も入口と同じ携帯ゲーム機の文法へ統一する。
+   舞台画像を主役にし、重複する小ポートレートと装飾的な選択肢を減らす。 */
+.battle-quiz-screen[data-battle-theme] {
+  background: #edf2e8;
+}
+.battle-quiz-screen[data-battle-theme] .battle-console-shell {
+  margin: 6px 8px 0;
+  padding: 6px;
+  border: 1px solid #cbd5e1;
+  border-radius: 22px;
+  background: #e7e5e4;
+  box-shadow:
+    inset 0 1px rgb(255 255 255 / 0.85),
+    0 9px 20px -17px rgb(15 23 42 / 0.62);
+  backdrop-filter: none;
+}
+.battle-quiz-screen[data-battle-theme] .pixel-battle-hud[data-battle-theme] {
+  padding: 6px;
+  border: 5px solid #172033;
+  border-radius: 16px;
+  color: #1e293b;
+  background: #edf2e8;
+  box-shadow:
+    inset 0 0 0 1px rgb(15 23 42 / 0.08),
+    inset 0 9px 18px rgb(15 23 42 / 0.025);
+}
+.battle-quiz-screen[data-battle-theme] .battle-combatants-bar {
+  min-height: 34px;
+  gap: 6px;
+}
+.battle-quiz-screen[data-battle-theme] .battle-combatants-bar .pixel-battle-portrait,
+.battle-quiz-screen[data-battle-theme] .battle-combatants-bar p {
+  display: none;
+}
+.battle-quiz-screen[data-battle-theme] .battle-combatants-bar > div:first-child > div > div {
+  color: #059669;
+}
+.battle-quiz-screen[data-battle-theme] .battle-combatants-bar > div:last-child > div > div {
+  color: #e11d48;
+}
+.battle-quiz-screen[data-battle-theme] .battle-combatants-bar .pixel-battle-turn {
+  border-color: #cbd5e1;
+  border-radius: 8px;
+  background: white;
+  box-shadow: none;
+}
+.battle-quiz-screen[data-battle-theme] .battle-combatants-bar .pixel-battle-turn span {
+  color: #4338ca;
+}
+.battle-quiz-screen[data-battle-theme] .battle-key-visual-stage,
+.pixel-battle-hud[data-battle-ui-mode='simple'][data-battle-theme] .battle-key-visual-stage {
+  display: block;
+  height: clamp(160px, 28dvh, 240px);
+  min-height: 160px;
+  margin-top: 6px;
+  border: 1px solid #64748b;
+  border-radius: 9px;
+  box-shadow: none;
+}
+.battle-quiz-screen[data-battle-theme] .battle-key-visual-stage::after {
+  background:
+    linear-gradient(90deg, rgb(15 23 42 / 0.22), transparent 30% 70%, rgb(15 23 42 / 0.22)),
+    linear-gradient(0deg, rgb(2 6 23 / 0.42), transparent 50%);
+}
+.battle-quiz-screen[data-battle-theme] .battle-key-visual-stage .battle-scene-label {
+  top: 5px;
+  left: 6px;
+  border-color: rgb(255 255 255 / 0.28);
+  border-radius: 5px;
+  color: white;
+  background: rgb(15 23 42 / 0.76);
+}
+.battle-quiz-screen[data-battle-theme] .battle-key-visual-stage .battle-theme-stage-decoration {
+  opacity: 0.34;
+}
+.battle-quiz-screen[data-battle-theme] .battle-key-visual-stage .battle-theme-particles {
+  opacity: 0.58;
+}
+.battle-quiz-screen[data-battle-theme] .pixel-battle-stage .battle-stage-unit .pixel-battle-portrait {
+  width: 78px;
+  height: 78px;
+}
+.pixel-battle-hud[data-battle-ui-mode='simple'][data-battle-theme] .battle-key-visual-stage .battle-theme-stage-decoration,
+.pixel-battle-hud[data-battle-ui-mode='simple'][data-battle-theme] .battle-key-visual-stage .battle-theme-particles,
+.pixel-battle-hud[data-battle-ui-mode='simple'][data-battle-theme] .battle-key-visual-stage .battle-stage-depth {
+  display: none;
+}
+.battle-quiz-screen[data-battle-theme] .battle-turn-track {
+  margin-top: 5px;
+}
+.battle-quiz-screen[data-battle-theme] .pixel-battle-status {
+  min-height: 30px;
+  margin-top: 5px;
+  border-color: #cbd5e1;
+  border-radius: 8px;
+  color: #334155;
+  background: white;
+}
+.battle-quiz-screen[data-battle-theme] .battle-command-shell {
+  padding-inline: 8px;
+  background: #edf2e8;
+}
+.battle-quiz-screen[data-battle-theme] .pixel-battle-question {
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  color: #1e293b;
+  background: white;
+  box-shadow: none;
+}
+.battle-quiz-screen[data-battle-theme] .pixel-battle-question h2,
+.battle-quiz-screen[data-battle-theme] .pixel-battle-question p {
+  color: #1e293b;
+}
+.battle-quiz-screen[data-battle-theme] .battle-command-prompt > span {
+  border-color: #cbd5e1;
+  border-radius: 6px;
+  color: #4338ca;
+  background: #eef2ff;
+  letter-spacing: 0.04em;
+}
+.battle-quiz-screen[data-battle-theme] .battle-command-choice:not(:disabled) {
+  border-color: #cbd5e1;
+  border-radius: 10px;
+  color: #1e293b;
+  background: white;
+  box-shadow: none;
+}
+.battle-quiz-screen[data-battle-theme] .battle-command-choice:not(:disabled) .battle-command-index {
+  border-color: color-mix(in srgb, var(--battle-accent, #6366f1) 45%, #cbd5e1);
+  color: var(--battle-accent-strong, #4338ca);
+  background: var(--battle-accent-soft, #eef2ff);
+  text-shadow: none;
+}
+.battle-quiz-screen[data-battle-theme] .battle-command-glyph {
+  display: none;
+}
+
 @media (max-width: 350px) {
   .battle-entry-fighter b { display: none; }
   .battle-entry-fighter-hero { left: 6px; }
@@ -3209,19 +3389,21 @@
 }
 
 @media (max-height: 640px) {
-  .battle-quiz-screen .battle-hud-shell {
+  .battle-quiz-screen[data-battle-theme] .battle-console-shell {
+    margin: 4px 6px 0;
     padding: 4px;
   }
-  .battle-quiz-screen .pixel-battle-hud {
-    padding: 6px;
+  .battle-quiz-screen[data-battle-theme] .pixel-battle-hud[data-battle-theme] {
+    padding: 5px;
   }
-  .pixel-battle-hud .battle-status-stage {
-    height: 72px;
-    min-height: 72px;
+  .battle-quiz-screen[data-battle-theme] .battle-key-visual-stage,
+  .pixel-battle-hud[data-battle-ui-mode='simple'][data-battle-theme] .battle-key-visual-stage {
+    height: 112px;
+    min-height: 112px;
   }
-  .pixel-battle-stage .battle-stage-unit .pixel-battle-portrait {
-    width: 46px;
-    height: 46px;
+  .battle-quiz-screen[data-battle-theme] .pixel-battle-stage .battle-stage-unit .pixel-battle-portrait {
+    width: 58px;
+    height: 58px;
   }
   .battle-quiz-screen .pixel-battle-question {
     padding-top: 6px;

@@ -2,6 +2,8 @@
 // match は現在の連続フレーズ、parts は英語順を保った訂正後の役割・隣接訳。
 // 日本語は他の役割の意味を先取りせず、必要なら括弧で係り先を受け直す。
 
+import { READING_CONNECTOR_CLOSURE_CORRECTIONS } from './reading-connector-closure-reviews.js'
+
 const correction = (match, parts, note, occurrence = 1) => Object.freeze({
   match: Object.freeze(match),
   parts: Object.freeze(parts.map((part) => Object.freeze(part))),
@@ -3389,6 +3391,7 @@ export const READING_PHRASE_CORRECTIONS = Object.freeze(Object.fromEntries(
     ...Object.keys(ADDITIONAL_READING_PHRASE_CORRECTIONS),
     ...Object.keys(CLOSURE_READING_PHRASE_CORRECTIONS),
     ...Object.keys(ADJACENT_JA_READING_PHRASE_CORRECTIONS),
+    ...Object.keys(READING_CONNECTOR_CLOSURE_CORRECTIONS),
   ])].map((sentence) => [
     sentence,
     Object.freeze([
@@ -3396,6 +3399,7 @@ export const READING_PHRASE_CORRECTIONS = Object.freeze(Object.fromEntries(
       ...(ADDITIONAL_READING_PHRASE_CORRECTIONS[sentence] ?? []),
       ...(CLOSURE_READING_PHRASE_CORRECTIONS[sentence] ?? []),
       ...(ADJACENT_JA_READING_PHRASE_CORRECTIONS[sentence] ?? []),
+      ...(READING_CONNECTOR_CLOSURE_CORRECTIONS[sentence] ?? []),
     ]),
   ]),
 ))
