@@ -9,7 +9,7 @@ import { todayIndex } from '../store/useStore.js'
 import { capEnemyPositionForHeroLevel, heroProgress } from '../lib/rpg.js'
 import { AFTER_SCHOOL_CHRONICLE } from '../lib/afterSchoolStory.js'
 import { publicAssetUrl } from '../lib/publicAssetUrl.js'
-import { Card, ProgressRing, ProgressBar, Chip } from '../components/ui.jsx'
+import { Card, ProgressRing, Chip } from '../components/ui.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { Flame, Star, Book, BookOpen, Cards, Sparkles, Bookmark, Refresh, ArrowRight, Headphones, Keyboard, Lightbulb, Target, Trophy, ChevronLeft, Link } from '../components/Icons.jsx'
 
@@ -20,16 +20,16 @@ function ModeTile({ icon, label, sub, color, onClick, disabled }) {
     <button
       onClick={onClick}
       disabled={disabled}
-      className="relative flex flex-col items-start gap-2 rounded-3xl bg-white p-4 text-left shadow-card active:scale-[0.98] transition-transform disabled:opacity-55 disabled:active:scale-100"
+      className="relative flex min-h-24 flex-col items-start gap-2 rounded-2xl border border-slate-200/70 bg-white p-3 text-left shadow-card active:bg-brand-50 disabled:opacity-55"
     >
       <span
-        className="flex h-11 w-11 items-center justify-center rounded-2xl text-white"
+        className="flex h-10 w-10 items-center justify-center rounded-xl text-white"
         style={{ background: color }}
       >
         {icon}
       </span>
       <div>
-        <div className="font-display font-extrabold text-ink">{label}</div>
+        <div className="font-display text-base font-extrabold text-ink">{label}</div>
         <div className="text-xs font-bold text-ink/45">{sub}</div>
       </div>
       {disabled && (
@@ -142,37 +142,8 @@ export function HomeScreen() {
           </div>
         </div>
 
-        {/* 冒険者LV：XPで1〜99まで上がり、下がらない長期成長。 */}
-        <button
-          onClick={() => navigate('afterSchoolChronicle')}
-          className="mt-4 flex w-full items-center gap-3 rounded-3xl border border-white/15 bg-slate-950/20 p-3 text-left backdrop-blur transition-transform active:scale-[0.99]"
-        >
-          <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/15 text-2xl">
-            {hero.title.emoji}
-          </span>
-          <div className="min-w-0 flex-1">
-            <div className="flex items-center justify-between gap-2">
-              <span className="truncate font-display text-sm font-extrabold">
-                LV{hero.level} {hero.title.name}
-              </span>
-              <span className="text-[10px] font-extrabold text-white/60">
-                {hero.isMax ? 'MAX' : `あと ${hero.xpToNext} XP`}
-              </span>
-            </div>
-            <ProgressBar
-              value={hero.progress}
-              color="linear-gradient(90deg,#fde68a,#fbbf24)"
-              className="mt-1.5 h-2 bg-white/15"
-            />
-            <p className="mt-1 text-[10px] font-bold text-white/60">
-              {hero.chapter.emoji} {AFTER_SCHOOL_CHRONICLE.shortTitle}・{hero.chapter.name}
-            </p>
-          </div>
-          <ArrowRight size={18} className="text-white/60" />
-        </button>
-
         {/* 今日の目標リング */}
-        <div className="mt-3 flex items-center gap-4 rounded-3xl bg-white/10 p-4 backdrop-blur">
+        <div className="mt-4 flex items-center gap-4 rounded-2xl bg-white/10 p-4">
           <ProgressRing value={goalPct} size={76} stroke={9} color="#ffffff" track="rgba(255,255,255,0.25)">
             <span className="font-display text-lg font-extrabold leading-none">{todayCount}</span>
             <span className="text-[10px] font-bold text-white/70">/{goal}</span>
@@ -223,12 +194,6 @@ export function HomeScreen() {
                   </span>
                 </div>
               </div>
-              <span className="flex h-12 w-12 shrink-0 flex-col items-center justify-center rounded-full bg-white/10 ring-1 ring-inset ring-white/10">
-                <span className="font-display text-lg font-extrabold leading-none">
-                  {learningPower.score ?? '—'}
-                </span>
-                <span className="mt-0.5 text-[7px] font-extrabold text-white/45">参考値</span>
-              </span>
             </div>
           </button>
         </Card>
@@ -274,13 +239,13 @@ export function HomeScreen() {
             <span className="absolute inset-x-0 bottom-0 flex items-end gap-3 p-4">
               <span className="min-w-0 flex-1">
                 <span className="text-[8px] font-extrabold tracking-[0.16em] text-cyan-200">
-                  AFTER SCHOOL CHRONICLE
+                  BATTLE &amp; FRIENDS
                 </span>
                 <strong className="mt-0.5 block font-display text-lg font-extrabold">
                   {AFTER_SCHOOL_CHRONICLE.title}
                 </strong>
                 <span className="mt-1 block text-[10px] font-bold leading-relaxed text-white/65">
-                  日常 → ことばの対決 → 放課後日誌
+                  ことばの対決 → 3つの放課後ルート → 関係報酬
                 </span>
                 <span className="mt-1 block text-[9px] font-extrabold text-amber-100">
                   {hero.title.emoji} LV{hero.level} · 英検{enemy.label}の課題に挑戦中
@@ -314,8 +279,8 @@ export function HomeScreen() {
 
         {/* モード */}
         <div>
-          <h2 className="mb-2.5 px-1 font-display text-base font-extrabold text-ink/80">学習モード</h2>
-          <div className="grid grid-cols-2 gap-3">
+          <h2 className="mb-2.5 px-1 font-display text-lg font-extrabold text-ink/90">学習モード</h2>
+          <div className="grid grid-cols-2 gap-3" data-home-mode-group="primary">
             <ModeTile
               icon={<Book size={22} />} label="単語" sub={`${prog.seen}/${prog.total} 語`}
               color="linear-gradient(135deg,#6366f1,#4f46e5)" onClick={() => navigate('vocabLevels')}
@@ -330,10 +295,6 @@ export function HomeScreen() {
               color="linear-gradient(135deg,#10b981,#059669)" onClick={() => navigate('readingList')}
             />
             <ModeTile
-              icon={<Headphones size={22} />} label="名作朗読" sub="一息ずつ → 区切り直訳"
-              color="linear-gradient(135deg,#0f766e,#0d9488)" onClick={() => navigate('literatureLibrary')}
-            />
-            <ModeTile
               icon={<Sparkles size={22} />} label="熟語・構文" sub="3択で覚える"
               color="linear-gradient(135deg,#8b5cf6,#7c3aed)" onClick={() => navigate('phrases')}
             />
@@ -342,30 +303,42 @@ export function HomeScreen() {
               color="linear-gradient(135deg,#f59e0b,#ea580c)" onClick={() => navigate('grammar')}
             />
             <ModeTile
-              icon={<BookOpen size={22} />} label="英作文" sub={`${writingDone}/14 お題を完成`}
-              color="linear-gradient(135deg,#0f172a,#4f46e5)" onClick={() => navigate('writing')}
-            />
-            <ModeTile
-              icon={<Link size={22} />} label="語源" sub={`語源知識 ${etymology.mastered}/${etymology.total}`}
-              color="linear-gradient(135deg,#6366f1,#7c3aed)" onClick={() => navigate('roots')}
-            />
-            <ModeTile
               icon={<Headphones size={22} />} label="リスニング" sub="聞いて当てる"
               color="linear-gradient(135deg,#0ea5e9,#0284c7)" onClick={() => navigate('listening')}
             />
-            <ModeTile
-              icon={<Keyboard size={22} />} label="ディクテーション" sub="聞いて書く"
-              color="linear-gradient(135deg,#14b8a6,#0d9488)" onClick={() => navigate('dictation')}
-            />
-            <ModeTile
-              icon={<Bookmark size={22} />} label="マイ単語" sub={`${myList.length} 語を保存中`}
-              color="linear-gradient(135deg,#f59e0b,#d97706)" onClick={() => navigate('myList')}
-            />
-            <ModeTile
-              icon={<Lightbulb size={22} />} label="マイ文法" sub={`${myGrammarList.length} 項目を保存中`}
-              color="linear-gradient(135deg,#a855f7,#7c3aed)" onClick={() => navigate('myGrammar')}
-            />
           </div>
+          <details className="home-more-modes mt-3 rounded-2xl border border-slate-200/80 bg-white">
+            <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between px-4 py-3 font-display text-sm font-extrabold text-brand-700">
+              <span>ほかの学習メニュー</span>
+              <span className="text-xs font-bold text-ink/50">6種類</span>
+            </summary>
+            <div className="grid grid-cols-2 gap-3 border-t border-slate-200/70 p-3" data-home-mode-group="secondary">
+              <ModeTile
+                icon={<Headphones size={22} />} label="名作朗読" sub="原文と直訳を聴く"
+                color="linear-gradient(135deg,#0f766e,#0d9488)" onClick={() => navigate('literatureLibrary')}
+              />
+              <ModeTile
+                icon={<BookOpen size={22} />} label="英作文" sub={`${writingDone}/14 お題を完成`}
+                color="linear-gradient(135deg,#0f172a,#4f46e5)" onClick={() => navigate('writing')}
+              />
+              <ModeTile
+                icon={<Link size={22} />} label="語源" sub={`習得 ${etymology.mastered}/${etymology.total}`}
+                color="linear-gradient(135deg,#6366f1,#7c3aed)" onClick={() => navigate('roots')}
+              />
+              <ModeTile
+                icon={<Keyboard size={22} />} label="ディクテーション" sub="聞いて書く"
+                color="linear-gradient(135deg,#14b8a6,#0d9488)" onClick={() => navigate('dictation')}
+              />
+              <ModeTile
+                icon={<Bookmark size={22} />} label="マイ単語" sub={`${myList.length} 語を保存中`}
+                color="linear-gradient(135deg,#f59e0b,#d97706)" onClick={() => navigate('myList')}
+              />
+              <ModeTile
+                icon={<Lightbulb size={22} />} label="マイ文法" sub={`${myGrammarList.length} 項目を保存中`}
+                color="linear-gradient(135deg,#a855f7,#7c3aed)" onClick={() => navigate('myGrammar')}
+              />
+            </div>
+          </details>
         </div>
 
         {/* 今日の語源 */}

@@ -604,8 +604,8 @@ export function buildWritingInstructorExplanation(step, option, grammar) {
   return explanation({
     answer: `完成文は${quote(option?.text)}。${quote(option?.ja)}を、英語の基本語順で表している。`,
     evidence: `${clean(grammar?.explanation)} この文では ${clean(option?.tip)}`,
-    trap: `日本語の語順で語を置くのではなく、条件${quote(step?.constraint)}を満たす骨格を先に作る。修飾語は、何を詳しくするかを決めてから置く。`,
-    strategy: `①主語 ②動詞 ③目的語・補語 ④場所・時などの修飾語、の順に骨格を組む。完成後は${quote(grammar?.pattern)}に当てはめて音読する。`,
+    trap: `この段階の条件は${quote(step?.constraint)}。日本語の語順だけで並べると、${quote(grammar?.pattern)}の核が崩れる。この文では${quote(option?.tip)}を外さない。`,
+    strategy: `①${quote(step?.prompt)}で文の役割を確認する ②${quote(grammar?.pattern)}の型を先に置く ③${quote(option?.tip)}を確認して残りの語をつなぐ ④完成文を見ずに同じ型でもう一文言う。`,
   })
 }
 

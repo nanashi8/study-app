@@ -91,12 +91,12 @@ test('独立した長い構文33文すべてに、前から読むフレーズ直
   }
 })
 
-test('長い一文の自然訳とフレーズ直訳は、一覧詳細・学習・クイズで共通表示する', () => {
+test('長い一文の自然訳と英語順の対応訳は、一覧詳細・学習・クイズで共通表示する', () => {
   const component = readFileSync(
     new URL('../src/components/LongSentenceTranslation.jsx', import.meta.url),
     'utf8',
   )
-  assert.match(component, /フレーズで前から直訳/)
+  assert.doesNotMatch(component, /フレーズで前から直訳/)
   assert.match(component, /英語を戻らず、上から順に意味を足します/)
   assert.match(component, /data-long-sentence-step/)
   assert.match(component, /item\.roleParts\.map/)

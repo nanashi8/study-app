@@ -3,41 +3,37 @@ import { publicAssetUrl } from './publicAssetUrl.js'
 
 export const AFTER_SCHOOL_CHRONICLE = {
   id: 'after-school-chronicle',
-  title: '放課後ことば探検記',
-  shortTitle: 'ことば探検記',
-  subtitle: '仲間との日常と、先生からの課題を巡る校内ストーリー',
+  title: '放課後の魔法と言葉',
+  shortTitle: '魔法と言葉',
+  subtitle: '先生の課題に挑み、対決後の3つの放課後ルートで関係を育てる校内ストーリー',
   keyVisual: publicAssetUrl('/assets/battle/chronicle/after-school-route-key-visual.webp'),
 }
 
-export const AFTER_SCHOOL_STORY_PHASES = [
-  {
-    id: 'daily',
-    number: '01',
-    emoji: '🌇',
-    label: '日常の一幕',
-    description: '仲間の悩みや出来事を知る',
-  },
-  {
-    id: 'challenge',
-    number: '02',
-    emoji: '📝',
-    label: 'ことばの対決',
-    description: '先生の課題へ英語で挑む',
-  },
-  {
-    id: 'journal',
-    number: '03',
-    emoji: '📔',
-    label: '放課後日誌',
-    description: '声をかけ、次の一日へ進む',
-  },
-]
-
 export const MAX_BATTLE_STORY_STEP = 999_999
+export const AFTER_SCHOOL_INTERLUDE_CHANCE = 1 / 3
 
 export function normalizeBattleStoryStep(value) {
   if (!Number.isSafeInteger(value) || value < 0) return 0
   return Math.min(value, MAX_BATTLE_STORY_STEP)
+}
+
+export function normalizeBattleStoryLastDay(value) {
+  return Number.isSafeInteger(value) && value >= 0 ? value : null
+}
+
+// 旧バージョンの保存データ・テストとの互換用。現在の戦果画面は毎回3ルートへ進む。
+export function shouldContinueToAfterSchoolInterlude({
+  storyStep = 0,
+  lastDay = null,
+  currentDay = null,
+  roll = 1,
+} = {}) {
+  const day = normalizeBattleStoryLastDay(currentDay)
+  if (day !== null && normalizeBattleStoryLastDay(lastDay) === day) return false
+  if (normalizeBattleStoryStep(storyStep) === 0) return true
+  return Number.isFinite(roll)
+    && roll >= 0
+    && roll < AFTER_SCHOOL_INTERLUDE_CHANCE
 }
 
 export function afterSchoolSceneForStep(step) {

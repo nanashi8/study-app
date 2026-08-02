@@ -1,6 +1,6 @@
 import { useStore } from '../store/useStore.js'
 import { speakWith, stopSpeaking } from '../lib/tts.js'
-import { ArrowRight, BookOpen, Lightbulb, SpeakerWave } from './Icons.jsx'
+import { ArrowRight, Lightbulb, SpeakerWave } from './Icons.jsx'
 import { cx } from './ui.jsx'
 
 const ROLE_STYLE = {
@@ -74,13 +74,7 @@ export function LongSentenceTranslation({ guide, className = '' }) {
       className={`rounded-2xl border border-sky-100 bg-sky-50/60 p-3 ${className}`}
       data-long-sentence-translation
     >
-      <div className="flex items-center gap-1.5 text-sky-700">
-        <BookOpen size={16} />
-        <span className="text-[11px] font-extrabold uppercase tracking-wide">
-          フレーズで前から直訳
-        </span>
-      </div>
-      <p className="mt-1 text-xs font-bold leading-relaxed text-sky-950/65">
+      <p className="text-xs font-bold leading-relaxed text-sky-950/65">
         英語を戻らず、上から順に意味を足します。
       </p>
 

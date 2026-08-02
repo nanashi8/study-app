@@ -15,7 +15,12 @@ import {
 } from './battleThemes.js'
 import { normalizeBattleStudentId } from './battleCast.js'
 import { normalizeBattleTraitInvestments } from './battleTraits.js'
-import { normalizeBattleStoryStep } from './afterSchoolStory.js'
+import {
+  normalizeBattleStoryLastDay,
+  normalizeBattleStoryStep,
+} from './afterSchoolStory.js'
+import { normalizeAfterSchoolBonds } from './afterSchoolBonds.js'
+import { normalizeVocabHistory } from './vocabHistory.js'
 
 const node = (uid) => ref(db, `students/${uid}`)
 
@@ -35,6 +40,7 @@ export async function pullOrInit(uid, email) {
       kotenCultureSrs: d.kotenCultureSrs ?? {},
       kotenInterpretationSrs: d.kotenInterpretationSrs ?? {},
       myList: d.myList ?? [],
+      vocabHistory: normalizeVocabHistory(d.vocabHistory ?? cur.vocabHistory),
       myGrammarList: d.myGrammarList ?? [],
       writingProgress: d.writingProgress ?? {},
       kotenWordList: d.kotenWordList ?? [],
@@ -70,6 +76,8 @@ export async function pullOrInit(uid, email) {
         battleStars,
       ),
       battleStoryStep: normalizeBattleStoryStep(d.battleStoryStep),
+      battleStoryLastDay: normalizeBattleStoryLastDay(d.battleStoryLastDay),
+      afterSchoolBonds: normalizeAfterSchoolBonds(d.afterSchoolBonds),
       stats,
       settings: { ...cur.settings, ...(d.settings ?? {}) },
     })

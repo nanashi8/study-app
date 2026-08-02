@@ -31,7 +31,7 @@ function contentHash(path) {
   return createHash('sha256').update(readFileSync(publicAsset(path))).digest('hex')
 }
 
-test('桐生ツバキの直毛ルールと全45アセットを継続監査する', () => {
+test('桐生ツバキの直毛ルールと全44アセットを継続監査する', () => {
   const tsubaki = BATTLE_STUDENTS.find((student) => student.id === 'tsubaki')
   assert.deepEqual(tsubaki?.hairProfile, {
     color: 'dark-purple-black',
@@ -50,7 +50,7 @@ test('桐生ツバキの直毛ルールと全45アセットを継続監査する
   const reveal = [CHARACTER_REVEAL_SCENES.tsubaki.image]
   const sharedScenes = BATTLE_DAILY_SCENES
     .filter((scene) => scene.cast.some(({ studentId }) => studentId === 'tsubaki'))
-  assert.deepEqual(sharedScenes.map(({ id }) => id), ['everyday', 'park'])
+  assert.deepEqual(sharedScenes.map(({ id }) => id), ['everyday'])
   const shared = sharedScenes.map(({ image }) => image)
   const motion = BATTLE_MOTION_STATES.map(
     (id) => `${tsubaki.motionBase}/${id}.webm`,
@@ -62,10 +62,10 @@ test('桐生ツバキの直毛ルールと全45アセットを継続監査する
   assert.equal(lifestyle.length, 3)
   assert.equal(daily.length, 10)
   assert.equal(reveal.length, 1)
-  assert.equal(shared.length, 2)
+  assert.equal(shared.length, 1)
   assert.equal(motion.length, 5)
-  assert.equal(allAssets.length, 45)
-  assert.equal(new Set(allAssets).size, 45)
+  assert.equal(allAssets.length, 44)
+  assert.equal(new Set(allAssets).size, 44)
   assert.equal(new Set(portraits.map(contentHash)).size, 24, 'all emotion portraits differ')
   assert.equal(new Set(daily.map(contentHash)).size, 10, 'all daily scenes differ')
   assert.equal(new Set(motion.map(contentHash)).size, 5, 'all derived motions differ')

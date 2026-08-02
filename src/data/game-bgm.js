@@ -1,6 +1,11 @@
-// 放課後ことば探検記専用のオリジナルBGM設計。
-// 外部の楽曲・録音・サンプルは使わず、Web Audioで決定論的に演奏する。
-// 1曲は4小節単位で約3分になるように小節数を決め、終端から先頭へ循環する。
+// 「放課後の魔法と言葉」専用のオリジナル・サウンドトラック設計。
+// 既存作品の旋律や編曲は流用せず、各曲を実楽器サンプラーで約3分のAACへレンダリングする。
+// 下記の和声・モチーフ情報は再生成と全曲監査に使い、ブラウザでは完成音源を再生する。
+
+import {
+  gameSoundtrackAudioPath,
+  gameSoundtrackProduction,
+} from './game-soundtrack-production.js'
 
 export const GAME_BGM_TARGET_SECONDS = 180
 export const GAME_BGM_STEPS_PER_BAR = 16
@@ -14,6 +19,8 @@ function barsNearThreeMinutes(tempo) {
 
 function track(spec) {
   const bars = barsNearThreeMinutes(spec.tempo)
+  const production = gameSoundtrackProduction(spec.id)
+  if (!production) throw new Error(`BGM音源設計がありません: ${spec.id}`)
   return Object.freeze({
     ...spec,
     bars,
@@ -22,7 +29,10 @@ function track(spec) {
     durationSeconds: Number(((bars * 240) / spec.tempo).toFixed(3)),
     progression: freezeList(spec.progression),
     motif: freezeList(spec.motif),
-    license: 'original-procedural',
+    audioPath: gameSoundtrackAudioPath(spec.id),
+    ensemble: production.ensemble,
+    soundtrackVersion: production.soundtrackVersion,
+    license: 'original-rendered-soundtrack',
   })
 }
 
@@ -102,25 +112,6 @@ const DAILY_TRACKS = [
     energy: 0.32,
     swing: 0.14,
     seed: 139,
-  },
-  {
-    id: 'daily-park',
-    title: 'カードを囲む木漏れ日',
-    category: 'daily',
-    contextId: 'park',
-    tempo: 90,
-    rootMidi: 62,
-    mode: 'mixolydian',
-    progression: [0, 3, 4, 5],
-    motif: [0, 2, null, 4, 5, 4, 2, null, 3, 5, 7, 5, 4, 2, 0, null],
-    lead: 'reed',
-    pad: 'air',
-    bass: 'round',
-    drums: 'brush',
-    ornament: 'pages',
-    energy: 0.3,
-    swing: 0.12,
-    seed: 149,
   },
   {
     id: 'daily-club',
@@ -346,42 +337,42 @@ const BOSS_TRACKS = [
     energy: 0.8, swing: 0.01, seed: 373,
   },
   {
-    id: 'boss-silent-dragon', title: '音叉レゾナンス', category: 'boss', contextId: 'silent-dragon',
+    id: 'boss-silent-dragon', title: 'シャドーイング・レゾナンス', category: 'boss', contextId: 'silent-dragon',
     tempo: 120, rootMidi: 57, mode: 'harmonicMinor', progression: [0, 3, 4, 6],
     motif: [0, 7, 4, 11, 7, 14, 11, 7, 5, 12, 8, 5, 3, 10, 7, null],
     lead: 'bell', pad: 'organ', bass: 'deep', drums: 'cinematic', ornament: 'counter',
     energy: 0.82, swing: 0, seed: 389,
   },
   {
-    id: 'boss-tempest', title: 'ホイッスル・スプリント決勝', category: 'boss', contextId: 'tempest',
+    id: 'boss-tempest', title: '加速度スプリント実験', category: 'boss', contextId: 'tempest',
     tempo: 144, rootMidi: 64, mode: 'dorian', progression: [0, 3, 5, 4],
     motif: [0, 2, 3, 5, 7, 10, 8, 7, 5, 7, 10, 12, 14, 12, 10, null],
     lead: 'brass', pad: 'strings', bass: 'pulse', drums: 'sports', ornament: 'arp',
     energy: 0.94, swing: 0, seed: 401,
   },
   {
-    id: 'boss-nameless-king', title: '工作台リビルド', category: 'boss', contextId: 'nameless-king',
+    id: 'boss-nameless-king', title: '地層ハンマー・フィールド', category: 'boss', contextId: 'nameless-king',
     tempo: 134, rootMidi: 65, mode: 'minor', progression: [0, 6, 3, 4],
     motif: [0, 3, 7, 5, 2, 5, 8, 7, 3, 6, 10, 8, 5, 3, 2, null],
     lead: 'saw', pad: 'organ', bass: 'deep', drums: 'industrial', ornament: 'arp',
     energy: 0.86, swing: 0.01, seed: 419,
   },
   {
-    id: 'boss-archive-angel', title: '絵の具スプラッシュ狂詩曲', category: 'boss', contextId: 'archive-angel',
+    id: 'boss-archive-angel', title: '細胞スケッチ狂詩曲', category: 'boss', contextId: 'archive-angel',
     tempo: 126, rootMidi: 60, mode: 'lydian', progression: [0, 1, 4, 3],
     motif: [0, 4, 6, 9, 7, 6, 4, 2, 3, 6, 8, 11, 9, 8, 6, null],
     lead: 'glass', pad: 'choir', bass: 'round', drums: 'world', ornament: 'sparkle',
     energy: 0.79, swing: 0.05, seed: 431,
   },
   {
-    id: 'boss-word-emperor', title: '出席簿プレス行進曲', category: 'boss', contextId: 'word-emperor',
+    id: 'boss-word-emperor', title: '年表プレス行進曲', category: 'boss', contextId: 'word-emperor',
     tempo: 138, rootMidi: 67, mode: 'minor', progression: [0, 4, 5, 3],
     motif: [0, 0, 3, 5, 7, 7, 5, 3, 2, 2, 5, 8, 10, 8, 7, null],
     lead: 'brass', pad: 'strings', bass: 'deep', drums: 'march', ornament: 'counter',
     energy: 0.91, swing: 0, seed: 443,
   },
   {
-    id: 'boss-endless-book', title: '短く一言、卒業試験', category: 'boss', contextId: 'endless-book',
+    id: 'boss-endless-book', title: '文明ロングスピーチ', category: 'boss', contextId: 'endless-book',
     tempo: 146, rootMidi: 62, mode: 'harmonicMinor', progression: [0, 5, 3, 6],
     motif: [0, 3, 7, 11, 14, 15, 14, 11, 8, 12, 15, 18, 17, 14, 11, null],
     lead: 'brass', pad: 'choir', bass: 'deep', drums: 'cinematic', ornament: 'counter',

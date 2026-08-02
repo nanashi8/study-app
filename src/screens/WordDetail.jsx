@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useStore } from '../store/useStore.js'
 import { getWord, neighborWords } from '../data/vocab.js'
 import { getLevel } from '../data/levels.js'
@@ -101,8 +102,13 @@ export function WordDetailScreen() {
   const navigate = useStore((s) => s.navigate)
   const myList = useStore((s) => s.myList)
   const toggleMyList = useStore((s) => s.toggleMyList)
+  const recordVocabHistory = useStore((s) => s.recordVocabHistory)
   const entry = useStore((s) => s.srs[id])
   const word = getWord(id)
+
+  useEffect(() => {
+    if (word) recordVocabHistory(word.id)
+  }, [recordVocabHistory, word])
 
   if (!word) {
     return (

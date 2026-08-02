@@ -5,12 +5,15 @@ import { existsSync, readFileSync } from 'node:fs'
 import { battleProgression, battleTrend } from '../src/lib/adaptive.js'
 import {
   BATTLE_QUESTS,
+  BATTLE_ITEM_FILTERS,
+  BATTLE_ITEM_SORTS,
   BATTLE_TACTICS,
   CHAPTERS,
   MAX_HERO_LEVEL,
   MAX_LEVEL_XP,
   MOB_PROFILES,
   RELICS,
+  SCHOOL_TEACHERS,
   TEACHER_RIVALS,
   battleQuest,
   battleRelicForLevel,
@@ -28,6 +31,7 @@ import {
   maxEnemyRankIndexForHeroLevel,
   mobProfile,
   nextEnemyRankUnlockForHeroLevel,
+  organizeBattleItems,
   relicBattleAbility,
   resolveBattleState,
   xpAtLevel,
@@ -56,20 +60,27 @@ import {
   BATTLE_DAILY_SCENES,
   BATTLE_CHARACTER_VISUAL_COUNT,
   BATTLE_EMOTION_STATES,
+  BATTLE_GRADE_SUBJECTS,
   BATTLE_LIFESTYLE_OUTFITS,
   BATTLE_MOTION_STATES,
   BATTLE_RIVAL_GROUPS,
   BATTLE_RIVALS,
   BATTLE_STUDENTS,
   BATTLE_SUPPORT_STYLES,
+  BATTLE_TEACHER_AFFINITIES,
   battleDailySceneById,
+  battleOpponentForEncounter,
   battleRivalForEncounter,
+  battleRivalTeacherSubject,
   battleStudentLifestylePortrait,
+  battleStudentBestSubjects,
   battleStudentMotion,
   battleStudentPortrait,
   battleStudentResultState,
   battleStudentState,
+  battleStudentSubjectGrade,
   battleSupportStyleById,
+  battleTeacherAffinity,
   isBattleStudentId,
   isRestorableBattleStudentId,
   normalizeBattleStudentId,
@@ -94,6 +105,8 @@ import {
   battleManaPresentation,
   battleManaSequenceFor,
 } from '../src/lib/battleMana.js'
+import { SCHOOL_SUBJECT_NAMES } from '../src/lib/schoolSubjects.js'
+import { hasTeacherPortrait } from '../src/lib/teacherPortraits.js'
 
 function pixelSizeOfWebp(path) {
   const buffer = readFileSync(new URL(`../public${path}`, import.meta.url))
@@ -117,6 +130,16 @@ test('正解スターで採用済み3演出を順番に解放する', () => {
     'encore',
     'draft-guard',
     'page-burst',
+  ])
+  assert.deepEqual(BATTLE_THEMES.map((theme) => theme.presentation.layout), [
+    'music-duel',
+    'art-grid',
+    'library-duel',
+  ])
+  assert.deepEqual(BATTLE_THEMES.map((theme) => theme.presentation.commandLabel), [
+    'MELODY',
+    'TOOLS',
+    'FORMULA',
   ])
   assert.equal(battleStarsEarned(5), 50)
   assert.deepEqual(unlockedBattleThemes(149).map((theme) => theme.id), ['music-pastel'])
@@ -144,6 +167,9 @@ test('正解スターで採用済み3演出を順番に解放する', () => {
     }
     assert.equal(theme.scenes.length, 3, theme.id)
     assert.ok(theme.particles.length >= 6, theme.id)
+    assert.equal(theme.presentation.choiceGlyphs.length, 3, theme.id)
+    assert.equal(theme.presentation.effectGlyphs.length, 3, theme.id)
+    assert.ok(theme.presentation.unknownGlyph, theme.id)
   }
 })
 
@@ -448,6 +474,136 @@ test('主役10人×24状態と先生・敵役50人の全290画像が揃う', () 
   }
 })
 
+test('旧七不思議枠の10人は街と学校を運営する現実の役職として登場する', () => {
+  const councilGroup = BATTLE_RIVAL_GROUPS.find((group) => group.id === 'mystery')
+  const council = BATTLE_RIVALS.filter((rival) => rival.groupId === 'mystery')
+
+  assert.equal(councilGroup.name, '学園都市・運営評議会')
+  assert.equal(council.length, 10)
+  assert.ok(council.some((rival) => rival.title.includes('街区管理官')))
+  assert.ok(council.some((rival) => rival.title.includes('学校法人理事長')))
+  for (const rival of council) {
+    assert.match(rival.title, /管理官|委員長|館長|センター長|監査役|局長|管理部長|理事長/)
+    assert.doesNotMatch(`${rival.name} ${rival.title}`, /七不思議|幽霊|幻影|仮面|錬金|託宣|魔術師|影の/)
+  }
+})
+
+test('全10人の12科目評定と全12担当教員が欠けなく対応する', () => {
+  assert.deepEqual(SCHOOL_SUBJECT_NAMES, [
+    '国語', '英語', '数学', '物理', '化学', '生物',
+    '地学', '地理', '日本史', '世界史', '古文', '英コミュ',
+  ])
+  assert.deepEqual(BATTLE_GRADE_SUBJECTS, SCHOOL_SUBJECT_NAMES)
+  assert.deepEqual(
+    BATTLE_TEACHER_AFFINITIES.map(({ id, damageBonusPercent }) => [id, damageBonusPercent]),
+    [
+      ['excellent', 20],
+      ['good', 10],
+      ['standard', 0],
+      ['challenge', 0],
+    ],
+  )
+
+  for (const student of BATTLE_STUDENTS) {
+    assert.deepEqual(Object.keys(student.grades), BATTLE_GRADE_SUBJECTS, student.id)
+    for (const subject of BATTLE_GRADE_SUBJECTS) {
+      assert.equal(Number.isInteger(student.grades[subject]), true, `${student.id}/${subject}`)
+      assert.ok(student.grades[subject] >= 1 && student.grades[subject] <= 5)
+    }
+    const bestSubjects = battleStudentBestSubjects(student.id)
+    assert.ok(bestSubjects.length >= 1 && bestSubjects.length <= 3, student.id)
+  }
+
+  assert.deepEqual(
+    new Set(BATTLE_STUDENTS.flatMap((student) => battleStudentBestSubjects(student.id))),
+    new Set(SCHOOL_SUBJECT_NAMES),
+  )
+  assert.deepEqual(
+    Object.fromEntries(BATTLE_STUDENTS.map((student) => [
+      student.id,
+      battleStudentBestSubjects(student.id),
+    ])),
+    {
+      mio: ['英コミュ'],
+      ren: ['生物', '地学'],
+      haru: ['国語', '英語', '古文'],
+      akari: ['数学', '物理', '化学'],
+      kaito: ['物理'],
+      rei: ['日本史', '世界史'],
+      nao: ['英語', '地理', '英コミュ'],
+      tsubaki: ['国語', '日本史', '古文'],
+      noa: ['数学', '物理', '地学'],
+      yuu: ['国語', '世界史', '古文'],
+    },
+  )
+
+  const teacherSubjects = Object.values(TEACHER_RIVALS).map(({ teacherSubject }) => teacherSubject)
+  assert.equal(teacherSubjects.length, 11)
+  assert.deepEqual(
+    new Set(teacherSubjects),
+    new Set(SCHOOL_SUBJECT_NAMES.filter((subject) => subject !== '古文')),
+  )
+  assert.equal(Object.keys(SCHOOL_TEACHERS).length, 12)
+  assert.deepEqual(
+    Object.fromEntries(
+      Object.entries(SCHOOL_TEACHERS).map(([id, teacher]) => [id, teacher.teacherSubject]),
+    ),
+    {
+      'grass-wolf': '英語',
+      'forest-keeper': '国語',
+      chronos: '数学',
+      leviathan: '地理',
+      librarian: '化学',
+      'silent-dragon': '英コミュ',
+      tempest: '物理',
+      'nameless-king': '地学',
+      'archive-angel': '生物',
+      'word-emperor': '日本史',
+      'endless-book': '世界史',
+      'classical-ogura': '古文',
+    },
+  )
+  assert.deepEqual(
+    new Set(Object.values(SCHOOL_TEACHERS).map(({ teacherSubject }) => teacherSubject)),
+    new Set(SCHOOL_SUBJECT_NAMES),
+  )
+  const allAffinities = BATTLE_STUDENTS.flatMap((student) => (
+    teacherSubjects.map((subject) => battleTeacherAffinity(student.id, subject))
+  ))
+  assert.equal(allAffinities.length, 110)
+  for (const affinity of allAffinities) {
+    assert.equal(affinity.active, true)
+    assert.ok(affinity.grade >= 1 && affinity.grade <= 5)
+    assert.match(affinity.label, /^相性/)
+    assert.ok(affinity.gradeSubjects.length >= 1)
+    assert.ok(affinity.gradeBasisLabel.length >= 1)
+  }
+
+  const rivalSubjects = BATTLE_RIVALS.map((rival) => battleRivalTeacherSubject(rival.id))
+  assert.equal(rivalSubjects.length, 50)
+  assert.equal(rivalSubjects.every(Boolean), true)
+  for (const student of BATTLE_STUDENTS) {
+    assert.equal(
+      BATTLE_RIVALS.every((rival) => (
+        battleTeacherAffinity(student.id, battleRivalTeacherSubject(rival.id)).active
+      )),
+      true,
+      student.id,
+    )
+  }
+
+  assert.equal(battleStudentSubjectGrade('mio', '英コミュ'), 5)
+  assert.equal(battleTeacherAffinity('mio', '英コミュ').damageBonusPercent, 20)
+  assert.equal(battleTeacherAffinity('mio', '英コミュ').gradeBasisLabel, '英コミュ')
+  assert.equal(battleStudentSubjectGrade('akari', '古文'), 2)
+  assert.equal(battleTeacherAffinity('akari', '古文').damageBonusPercent, 0)
+  assert.equal(battleTeacherAffinity('mio', '理科').gradeBasisLabel, '物理・化学・生物・地学平均')
+  assert.equal(battleTeacherAffinity('mio', '音楽').gradeBasisLabel, '12科目平均')
+  assert.equal(battleStudentSubjectGrade('rei', '総合'), 4)
+  assert.equal(battleStudentSubjectGrade('rei', '卒業試験'), 4)
+  assert.equal(battleTeacherAffinity('mio', null).active, false)
+})
+
 test('主役10人×5行動の表情差分動画が揃い、戦闘状態から選べる', () => {
   assert.deepEqual(
     BATTLE_MOTION_STATES,
@@ -479,7 +635,7 @@ test('主役10人×5行動の表情差分動画が揃い、戦闘状態から選
   }
 })
 
-test('学校・放課後・休日まで12の日常ビジュアルが共同動作と衣装文脈を保つ', () => {
+test('学校・放課後・休日まで11の日常ビジュアルが共同動作と衣装文脈を保つ', () => {
   assert.deepEqual(
     BATTLE_DAILY_SCENES.map((scene) => scene.id),
     [
@@ -487,7 +643,6 @@ test('学校・放課後・休日まで12の日常ビジュアルが共同動作
       'commute',
       'classroom',
       'everyday',
-      'park',
       'club',
       'cafe',
       'snack',
@@ -497,12 +652,12 @@ test('学校・放課後・休日まで12の日常ビジュアルが共同動作
       'homeward',
     ],
   )
-  assert.equal(new Set(BATTLE_DAILY_SCENES.map((scene) => scene.image)).size, 12)
+  assert.equal(new Set(BATTLE_DAILY_SCENES.map((scene) => scene.image)).size, 11)
   assert.equal(battleDailySceneById('commute').image, '/assets/battle/scenes/commute-v2.webp')
   assert.equal(battleDailySceneById('classroom').image, '/assets/battle/scenes/classroom-v3.webp')
   assert.equal(battleDailySceneById('snack').image, '/assets/battle/scenes/snack-v2.webp')
   assert.equal(battleDailySceneById('homeward').image, '/assets/battle/scenes/homeward-v2.webp')
-  assert.equal(battleDailySceneById('park').image, '/assets/battle/scenes/park.webp')
+  assert.equal(battleDailySceneById('park').id, 'morning')
   assert.equal(battleDailySceneById('shopping').image, '/assets/battle/scenes/shopping-casual.webp')
   assert.equal(battleDailySceneById('library').shortName, '図書館')
   assert.equal(battleDailySceneById('unknown').id, 'morning')
@@ -572,10 +727,7 @@ test('学校・放課後・休日まで12の日常ビジュアルが共同動作
   assert.equal(episodeTitles.size, BATTLE_DAILY_SCENES.length)
   assert.equal(episodeChoiceIds.size, BATTLE_DAILY_SCENES.length * 3)
 
-  const parkCopy = JSON.stringify(battleDailySceneById('park'))
-  assert.match(parkCopy, /一枚のシート|一つのカードゲーム/)
-  assert.match(parkCopy, /同じシンボルカード|同じカード/)
-  assert.doesNotMatch(parkCopy, /バドミントン|シャトル|ラケット|得点係/)
+  assert.doesNotMatch(JSON.stringify(BATTLE_DAILY_SCENES), /シンボルカード/)
 })
 
 test('全10人に自宅・休日・部活動の固有ビジュアルがある', () => {
@@ -730,6 +882,42 @@ test('3エリア固有能力は戦闘演出だけを変え、学習評価を変�
   }
 })
 
+test('先生の担当教科との相性は実ダメージだけを支援し、学習評価と決着条件を変えない', () => {
+  const shared = {
+    answers: ['correct'],
+    total: 5,
+    tacticId: 'combo',
+    heroLevel: 20,
+    isBoss: true,
+    studentId: 'akari',
+  }
+  const excellent = resolveBattleState({ ...shared, teacherSubject: '数学' })
+  const challenge = resolveBattleState({ ...shared, teacherSubject: '古文' })
+
+  assert.equal(excellent.teacherAffinity.id, 'excellent')
+  assert.equal(challenge.teacherAffinity.id, 'challenge')
+  assert.ok(excellent.damageDealt > challenge.damageDealt)
+  assert.ok(excellent.affinityBonusDamage > 0)
+  assert.equal(challenge.affinityBonusDamage, 0)
+  assert.equal(excellent.correct, challenge.correct)
+  assert.equal(excellent.misses, challenge.misses)
+  assert.equal(excellent.enemyHp, challenge.enemyHp)
+  assert.equal(excellent.enemyDefeated, false)
+
+  const partial = resolveBattleState({
+    ...shared,
+    answers: ['correct', 'correct', 'correct', 'correct', 'wrong'],
+  })
+  const perfect = resolveBattleState({
+    ...shared,
+    answers: Array(5).fill('correct'),
+  })
+  assert.ok(partial.enemyCurrentHp > 0)
+  assert.equal(partial.enemyDefeated, false)
+  assert.equal(perfect.enemyCurrentHp, 0)
+  assert.equal(perfect.enemyDefeated, true)
+})
+
 test('冒険者LVはXPとともに1〜99まで単調に上がる', () => {
   assert.equal(heroProgress(-100).level, 1)
   assert.equal(heroProgress(0).level, 1)
@@ -822,6 +1010,54 @@ test('全21戦利品を取得LVから選べ、アクティブ効果に未対応�
   assert.deepEqual(kindCounts, { heal: 6, power: 9, guard: 6 })
 })
 
+test('アイテムボックスは効果で絞り込み、取得順・新しい順・種類順に整理できる', () => {
+  const originalLevels = RELICS.map((relic) => relic.level)
+
+  assert.deepEqual(
+    BATTLE_ITEM_FILTERS.map(({ id }) => id),
+    ['all', 'power', 'guard', 'heal'],
+  )
+  assert.deepEqual(
+    BATTLE_ITEM_SORTS.map(({ id }) => id),
+    ['acquired', 'newest', 'kind'],
+  )
+  assert.deepEqual(
+    organizeBattleItems(RELICS, { filterId: 'power' })
+      .map((relic) => relic.level),
+    [5, 25, 40, 45, 50, 60, 75, 95, 99],
+  )
+  assert.deepEqual(
+    organizeBattleItems(RELICS, { filterId: 'guard' })
+      .map((relic) => relic.level),
+    [15, 30, 35, 65, 85, 90],
+  )
+  assert.deepEqual(
+    organizeBattleItems(RELICS, { filterId: 'heal' })
+      .map((relic) => relic.level),
+    [1, 10, 20, 55, 70, 80],
+  )
+  assert.deepEqual(
+    organizeBattleItems(RELICS, { sortId: 'newest' })
+      .map((relic) => relic.level),
+    [...originalLevels].reverse(),
+  )
+  assert.deepEqual(
+    organizeBattleItems(RELICS, { sortId: 'kind' })
+      .map((relic) => relicBattleAbility(relic).kind),
+    [
+      ...Array(9).fill('power'),
+      ...Array(6).fill('guard'),
+      ...Array(6).fill('heal'),
+    ],
+  )
+  assert.deepEqual(RELICS.map((relic) => relic.level), originalLevels)
+  assert.deepEqual(
+    organizeBattleItems(RELICS, { filterId: 'unknown', sortId: 'unknown' })
+      .map((relic) => relic.level),
+    originalLevels,
+  )
+})
+
 test('章ボスは各章の最終LVに固定される', () => {
   for (let level = 1; level <= MAX_HERO_LEVEL; level += 1) {
     const chapter = chapterForLevel(level)
@@ -845,7 +1081,8 @@ test('全11章のボスが固有備品で攻撃する架空の先生ライバル
     assert.equal(encounter.id, chapter.boss.id)
     assert.equal(encounter.isTeacher, true)
     assert.ok(encounter.teacherSubject)
-    assert.ok(encounter.portraitEmoji)
+    assert.equal(encounter.portraitId, encounter.id)
+    assert.equal(hasTeacherPortrait(encounter), true)
     assert.ok(encounter.attackEmoji)
     assert.ok(encounter.attackLine.endsWith('！'))
     moves.add(encounter.move)
@@ -854,9 +1091,22 @@ test('全11章のボスが固有備品で攻撃する架空の先生ライバル
 
   assert.equal(moves.size, CHAPTERS.length)
   assert.equal(attackLines.size, CHAPTERS.length)
+
+  const bossEncounter = encounterFor({
+    level: CHAPTERS[0].maxLevel,
+    day: 100,
+    enemyRankIndex: 2,
+  })
+  const savedRival = battleRivalForEncounter(bossEncounter, 100)
+  const displayedTeacher = battleOpponentForEncounter(bossEncounter, savedRival)
+  assert.equal(displayedTeacher.id, savedRival.id, '保存済み一般ライバルIDは維持する')
+  assert.equal(displayedTeacher.name, bossEncounter.name)
+  assert.equal(displayedTeacher.teacherId, bossEncounter.id)
+  assert.equal(displayedTeacher.isTeacher, true)
+
   assert.match(TEACHER_RIVALS['grass-wolf'].attackLine, /チョークを投げた/)
   assert.match(TEACHER_RIVALS['forest-keeper'].attackLine, /黒板消し/)
-  assert.match(TEACHER_RIVALS['endless-book'].move, /朝礼ロングスピーチ/)
+  assert.match(TEACHER_RIVALS['endless-book'].move, /文明ロングスピーチ/)
 })
 
 test('全章が校内ステージとして表示される', () => {
@@ -989,9 +1239,11 @@ test('バトル中は出題カードと4つの回答をコンパクト表示す�
   )
 
   assert.match(source, /isBattle && 'battle-quiz-screen'/)
-  assert.match(source, /isBattle \? 'mt-2 grid grid-cols-2 gap-2'/)
-  assert.match(source, /min-h-12 rounded-xl/)
-  assert.match(source, /className=\{isBattle \? 'pixel-battle-choice min-h-12 py-2 leading-snug'/)
+  assert.match(source, /battle-command-grid mt-2 grid grid-cols-2 gap-2/)
+  assert.match(source, /battle-command-choice min-h-12 rounded-xl/)
+  assert.match(source, /battle-command-unknown min-h-12 py-2 leading-snug/)
+  assert.match(source, /battleTheme\.presentation\.choiceGlyphs\[optionIndex\]/)
+  assert.match(source, /battleTheme\.presentation\.unknownGlyph/)
   assert.match(source, /<Button full size="md" disabled=\{!answered\}/)
   assert.match(source, /<Button full size="lg" disabled=\{!answered\}/)
 })
@@ -1041,6 +1293,35 @@ test('放課後スターはバトル正解とXP変換で増え、演出選択と
   }
 })
 
+test('同行クラスメートはバトル前に固定され、戦果確認後に次戦用として選べる', () => {
+  const mapSource = readFileSync(
+    new URL('../src/screens/EnglishMap.jsx', import.meta.url),
+    'utf8',
+  )
+  const resultSource = readFileSync(
+    new URL('../src/screens/SessionResult.jsx', import.meta.url),
+    'utf8',
+  )
+  const quizSource = readFileSync(
+    new URL('../src/screens/VocabQuiz.jsx', import.meta.url),
+    'utf8',
+  )
+
+  assert.doesNotMatch(mapSource, /setBattleStudentId|onStudent=/)
+  assert.match(mapSource, /現在の同行クラスメート/)
+  assert.match(mapSource, /変更は、バトル後の戦果画面/)
+  assert.match(mapSource, /studentId: battleStudent\.id/)
+  assert.match(mapSource, /rivalId: battleRival\.id,\s*teacherSubject,/)
+  assert.match(resultSource, /<NextBattleCompanionCard/)
+  assert.match(resultSource, /次の同行者を選ぶ/)
+  assert.match(resultSource, /BATTLE_STUDENTS\.map/)
+  assert.match(resultSource, /onSelect=\{setBattleStudentId\}/)
+  assert.match(resultSource, /次戦から反映/)
+  assert.match(quizSource, /studentId: battleStudent\.id/)
+  assert.match(quizSource, /battleRivalTeacherSubject\(battleRival\.id\)/)
+  assert.match(resultSource, /upcomingRival/)
+})
+
 test('キャラ選択・全24表情・50人図鑑・3場面演出が実際のバトルへつながる', () => {
   const mapSource = readFileSync(
     new URL('../src/screens/EnglishMap.jsx', import.meta.url),
@@ -1058,22 +1339,24 @@ test('キャラ選択・全24表情・50人図鑑・3場面演出が実際のバ
     new URL('../src/screens/SessionResult.jsx', import.meta.url),
     'utf8',
   )
+  const interludeSource = readFileSync(
+    new URL('../src/screens/AfterSchoolInterlude.jsx', import.meta.url),
+    'utf8',
+  )
 
   assert.match(mapSource, /<BattleCastRoster/)
-  assert.match(mapSource, /<CampusLifeGallery/)
+  assert.doesNotMatch(mapSource, /<CampusLifeGallery/)
   assert.match(mapSource, /<SchoolBarrierMap/)
   assert.match(mapSource, /BATTLE_BARRIER_NODES\.map/)
   assert.match(mapSource, /BATTLE_BARRIER_WINDOW_LIGHTS\.map/)
   assert.match(mapSource, /BATTLE_BARRIER_TRAFFIC_LIGHTS\.map/)
   assert.match(mapSource, /<animateMotion/)
   assert.doesNotMatch(mapSource, /scenicMode|夜景表示|結界表示|夜の学区を眺める/)
-  assert.match(mapSource, /BATTLE_DAILY_SCENES\.map/)
-  assert.match(mapSource, /episode\.choices\.map/)
-  assert.match(mapSource, /choiceByScene/)
-  assert.match(mapSource, /battleSupportStyleById/)
-  assert.match(mapSource, /どれを選んでも正解・不正解はありません/)
-  assert.match(mapSource, /aria-live="polite"/)
-  assert.match(mapSource, /BATTLE_STUDENTS\.map/)
+  assert.match(interludeSource, /profile\.choices\.map/)
+  assert.match(interludeSource, /battleSupportStyleById/)
+  assert.match(interludeSource, /放課後は採点なしです/)
+  assert.match(interludeSource, /aria-live="polite"/)
+  assert.match(resultSource, /BATTLE_STUDENTS\.map/)
   assert.match(mapSource, /BATTLE_EMOTION_STATES\.map/)
   assert.match(mapSource, /<BattleTraitSphere/)
   assert.match(mapSource, /BATTLE_TRAITS\.map/)
@@ -1108,6 +1391,10 @@ test('キャラ選択・全24表情・50人図鑑・3場面演出が実際のバ
   assert.match(quizSource, /battleTheme\.particles\.map/)
   assert.match(quizSource, /battleTheme\.actorsSheet/)
   assert.match(quizSource, /battleTheme\.scenes\[sceneIndex\]/)
+  assert.match(quizSource, /data-battle-layout=\{battleTheme\.presentation\.layout\}/)
+  assert.match(quizSource, /battle-theme-stage-decoration/)
+  assert.match(quizSource, /battle-theme-action-effect/)
+  assert.match(quizSource, /battleTheme\.presentation\.effectGlyphs\.map/)
   assert.match(quizSource, /battleRival\.portrait/)
 
   assert.match(resultSource, /battleStudentResultState/)
@@ -1126,6 +1413,13 @@ test('キャラ選択・全24表情・50人図鑑・3場面演出が実際のバ
   assert.match(cssSource, /school-barrier-traffic-car/)
   assert.match(cssSource, /@keyframes battle-particle-float/)
   assert.match(cssSource, /@keyframes battle-ability-cut-in/)
+  assert.match(cssSource, /@keyframes battle-theme-projectile-right/)
+  assert.match(cssSource, /data-battle-layout='music-duel'/)
+  assert.match(cssSource, /data-battle-layout='art-grid'/)
+  assert.match(cssSource, /data-battle-layout='library-duel'/)
+  assert.match(cssSource, /data-battle-theme='music-pastel'/)
+  assert.match(cssSource, /data-battle-theme='art-tactics'/)
+  assert.match(cssSource, /data-battle-theme='library-cinema'/)
   assert.match(cssSource, /@keyframes battle-mana-charge/)
   assert.match(cssSource, /@keyframes battle-mana-bolt-forward/)
   assert.match(cssSource, /@keyframes battle-mana-ward-open/)
@@ -1135,9 +1429,13 @@ test('キャラ選択・全24表情・50人図鑑・3場面演出が実際のバ
   assert.match(cssSource, /prefers-reduced-motion: reduce/)
 })
 
-test('学校アイテムをシンプルに選択し、バトルで1回使い、戦果で確認できる', () => {
+test('学校アイテムをボックスで整理・装備し、バトルで1回使い、戦果で確認できる', () => {
   const mapSource = readFileSync(
     new URL('../src/screens/EnglishMap.jsx', import.meta.url),
+    'utf8',
+  )
+  const settingsSource = readFileSync(
+    new URL('../src/components/GameSettings.jsx', import.meta.url),
     'utf8',
   )
   const quizSource = readFileSync(
@@ -1149,9 +1447,16 @@ test('学校アイテムをシンプルに選択し、バトルで1回使い、�
     'utf8',
   )
 
-  assert.match(mapSource, /id="school-battle-item"/)
-  assert.match(mapSource, /onRelic=\{setBattleRelicLevel\}/)
-  assert.match(mapSource, /1バトル1回/)
+  assert.match(settingsSource, /id="school-battle-item-box"/)
+  assert.match(settingsSource, /アイテムボックス/)
+  assert.match(settingsSource, /organizeBattleItems/)
+  assert.match(settingsSource, /BATTLE_ITEM_FILTERS/)
+  assert.match(settingsSource, /BATTLE_ITEM_SORTS/)
+  assert.match(settingsSource, /装備中/)
+  assert.match(settingsSource, /onEquip=\{setBattleRelicLevel\}/)
+  assert.match(settingsSource, /1バトル1回/)
+  assert.doesNotMatch(mapSource, /setBattleRelicLevel|<BattleItemBox/)
+  assert.match(mapSource, /右上の設定メニューで変更します/)
   assert.match(mapSource, /<details className="school-battle-options/)
   assert.match(mapSource, /問題数をえらぶ/)
   assert.match(mapSource, /問のことば対決へ/)

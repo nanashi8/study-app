@@ -2,6 +2,7 @@
 // 英検級に応じて上下する適応難易度（adaptive.js）とは別軸にすることで、
 // 苦手な問題で敵ランクが下がっても、これまでの努力は失われない。
 import { battleThemeById } from './battleThemes.js'
+import { battleTeacherAffinity } from './battleCast.js'
 
 export const MAX_HERO_LEVEL = 99
 
@@ -562,9 +563,9 @@ export const MOB_PROFILES = {
 }
 
 const teacherRival = ({
+  id,
   name,
   subject,
-  portraitEmoji,
   subjectEmoji,
   accent,
   attackEmoji,
@@ -574,11 +575,12 @@ const teacherRival = ({
   lore,
   intro,
 }) => ({
+  id,
+  portraitId: id,
   isTeacher: true,
   kindLabel: 'TEACHER',
   name,
   teacherSubject: subject,
-  portraitEmoji,
   species: `${subject}担当`,
   role: '先生ライバル',
   element: subject,
@@ -596,9 +598,9 @@ const teacherRival = ({
 // 保存済みセッションとの互換性を守りながら、先生ごとの備品攻撃を表示できる。
 export const TEACHER_RIVALS = {
   'grass-wolf': teacherRival({
+    id: 'grass-wolf',
     name: '英語の白石先生',
     subject: '英語',
-    portraitEmoji: '👩‍🏫',
     subjectEmoji: '🔤',
     accent: '#818cf8',
     attackEmoji: '✏️',
@@ -609,9 +611,9 @@ export const TEACHER_RIVALS = {
     intro: '白石先生がチョークを構えた。「最初の小テスト、いくよ！」',
   }),
   'forest-keeper': teacherRival({
+    id: 'forest-keeper',
     name: '国語の文月先生',
     subject: '国語',
-    portraitEmoji: '🧑‍🏫',
     subjectEmoji: '📝',
     accent: '#34d399',
     attackEmoji: '🧽',
@@ -622,9 +624,9 @@ export const TEACHER_RIVALS = {
     intro: '図書室の奥で、文月先生が黒板消しを両手に持って待っている。',
   }),
   chronos: teacherRival({
+    id: 'chronos',
     name: '数学の角田先生',
     subject: '数学',
-    portraitEmoji: '👨‍🏫',
     subjectEmoji: '➗',
     accent: '#38bdf8',
     attackEmoji: '📐',
@@ -635,9 +637,9 @@ export const TEACHER_RIVALS = {
     intro: '廊下の時計が止まり、角田先生の巨大コンパスだけが動き始めた。',
   }),
   leviathan: teacherRival({
-    name: '社会の地図野先生',
-    subject: '社会',
-    portraitEmoji: '👩‍🏫',
+    id: 'leviathan',
+    name: '地理の地図野先生',
+    subject: '地理',
     subjectEmoji: '🌏',
     accent: '#22d3ee',
     attackEmoji: '🌍',
@@ -648,9 +650,9 @@ export const TEACHER_RIVALS = {
     intro: '水面に地球儀が浮かび、地図野先生が次の国を指さした。',
   }),
   librarian: teacherRival({
-    name: '理科の火野先生',
-    subject: '理科',
-    portraitEmoji: '🧑‍🔬',
+    id: 'librarian',
+    name: '化学の火野先生',
+    subject: '化学',
     subjectEmoji: '🔬',
     accent: '#c084fc',
     attackEmoji: '🧪',
@@ -661,83 +663,106 @@ export const TEACHER_RIVALS = {
     intro: '理科室のビーカーがふくらみ、火野先生が実験開始を宣言した。',
   }),
   'silent-dragon': teacherRival({
-    name: '音楽の響先生',
-    subject: '音楽',
-    portraitEmoji: '👨‍🏫',
-    subjectEmoji: '🎼',
+    id: 'silent-dragon',
+    name: '英コミュの響先生',
+    subject: '英コミュ',
+    subjectEmoji: '🗣️',
     accent: '#a78bfa',
-    attackEmoji: '🎵',
-    move: '音叉レゾナンス',
-    attackLine: '響先生が音叉を鳴らした！',
-    intent: '似た発音を同じ高さで響かせて迷わせる',
-    lore: '単語のリズムを手拍子で教える先生。耳を澄ませた一答には静かに拍手する。',
-    intro: '音楽室が静まり、響先生の音叉から澄んだ一音が広がった。',
+    attackEmoji: '🎧',
+    move: 'リズム・シャドーイング',
+    attackLine: '響先生が英語のフレーズをリズムよく読み上げた！',
+    intent: '似た発音のフレーズを同じ速さで重ねて聞き分けさせる',
+    lore: '発音と聞き取りをリズムで教える先生。伝わる一言には静かに拍手する。',
+    intro: '音楽室が静まり、響先生の英語の呼びかけが澄んだリズムで広がった。',
   }),
   tempest: teacherRival({
-    name: '体育の速水先生',
-    subject: '体育',
-    portraitEmoji: '🧑‍🏫',
-    subjectEmoji: '🏃',
+    id: 'tempest',
+    name: '物理の速水先生',
+    subject: '物理',
+    subjectEmoji: '🧲',
     accent: '#fb923c',
-    attackEmoji: '📣',
-    move: 'ホイッスル・ショック',
-    attackLine: '速水先生がホイッスルを鋭く鳴らした！',
-    intent: '終了の笛で一瞬だけ焦らせる',
-    lore: '速さより最後までやり切ることを評価する先生。再挑戦する生徒には必ず声援を送る。',
-    intro: '夕焼けの体育館に笛が響く。「用意はいいか、ラストまで走るぞ！」',
+    attackEmoji: '⏱️',
+    move: '加速度スプリント',
+    attackLine: '速水先生が台車のストップウォッチを押した！',
+    intent: '速度と向きを一気に変え、運動の法則を問いかける',
+    lore: '運動部の記録も授業データにする物理教師。式だけでなく実際の動きを確かめる。',
+    intro: '夕焼けの体育館に実験用の台車が並ぶ。「速度の変化を最後まで追うぞ！」',
   }),
   'nameless-king': teacherRival({
-    name: '技術の工藤先生',
-    subject: '技術',
-    portraitEmoji: '👨‍🏫',
-    subjectEmoji: '🛠️',
+    id: 'nameless-king',
+    name: '地学の工藤先生',
+    subject: '地学',
+    subjectEmoji: '🌋',
     accent: '#94a3b8',
-    attackEmoji: '🔨',
-    move: '木工ハンマー・スタンプ',
-    attackLine: '工藤先生が木工ハンマーで机をコンと叩いた！',
-    intent: '文の部品をいったん外し、組み立て直させる',
-    lore: '壊れた文も直せば強くなると教える先生。道具の片付けまでがバトルだ。',
-    intro: '旧校舎の工作台で、工藤先生が文のパーツをきれいに並べた。',
+    attackEmoji: '⛏️',
+    move: '地層ハンマー・スタンプ',
+    attackLine: '工藤先生が岩石ハンマーで標本をコンと叩いた！',
+    intent: '地層の順番をずらし、過去の環境を読み直させる',
+    lore: '石と地層を校舎の記憶として読む先生。採集道具の片付けまでが観察だ。',
+    intro: '旧校舎の標本台で、工藤先生が岩石と化石を年代順に並べた。',
   }),
   'archive-angel': teacherRival({
-    name: '美術の彩先生',
-    subject: '美術',
-    portraitEmoji: '👩‍🎨',
-    subjectEmoji: '🎨',
+    id: 'archive-angel',
+    name: '生物の彩先生',
+    subject: '生物',
+    subjectEmoji: '🧬',
     accent: '#f472b6',
-    attackEmoji: '🖌️',
-    move: '絵の具スプラッシュ',
-    attackLine: '彩先生が大きな絵筆で絵の具を飛ばした！',
-    intent: '選択肢を似た色に塗って輪郭をぼかす',
-    lore: '一つの見方に縛られない先生。答えの決め手を見つける観察眼を試してくる。',
-    intro: '職員室のドアがキャンバスに変わり、彩先生が鮮やかな一筆を走らせた。',
+    attackEmoji: '🔬',
+    move: '細胞スケッチ・スキャン',
+    attackLine: '彩先生が顕微鏡の像をスクリーンへ映した！',
+    intent: 'よく似た細胞を並べ、形と働きの違いを観察させる',
+    lore: '観察スケッチを大切にする生物教師。小さな違いから生命の仕組みを見つける。',
+    intro: '生物準備室の標本が光り、彩先生が顕微鏡の焦点を合わせた。',
   }),
   'word-emperor': teacherRival({
-    name: '教頭の鐘ヶ江先生',
-    subject: '総合',
-    portraitEmoji: '🧑‍💼',
-    subjectEmoji: '🔔',
+    id: 'word-emperor',
+    name: '日本史の鐘ヶ江先生',
+    subject: '日本史',
+    subjectEmoji: '🏯',
     accent: '#fb7185',
-    attackEmoji: '📒',
-    move: '出席簿プレス',
-    attackLine: '鐘ヶ江教頭が分厚い出席簿を開いた！',
-    intent: 'これまでの全教科から一気に問いかける',
-    lore: '校内の努力を誰よりよく見ている教頭先生。毎日の一問まで出席簿に記録している。',
-    intro: '校長室の前で鐘ヶ江教頭が出席簿を開く。「ここまでの成果を見せてください」',
+    attackEmoji: '📜',
+    move: '年表・出席簿プレス',
+    attackLine: '鐘ヶ江教頭が巨大な日本史年表を開いた！',
+    intent: '出来事の順番と因果関係を出席簿のように照合する',
+    lore: '教頭を務めながら日本史も教える先生。校内の歩みを時代の流れへ結びつける。',
+    intro: '校長室の前で鐘ヶ江教頭が年表を開く。「出来事を流れで説明してください」',
   }),
   'endless-book': teacherRival({
-    name: '校長の学園坂先生',
-    subject: '卒業試験',
-    portraitEmoji: '🧑‍🎓',
-    subjectEmoji: '🎓',
+    id: 'endless-book',
+    name: '世界史の学園坂先生',
+    subject: '世界史',
+    subjectEmoji: '🌐',
     accent: '#fbbf24',
-    attackEmoji: '🎙️',
-    move: '朝礼ロングスピーチ',
-    attackLine: '学園坂校長がとても長い朝礼スピーチを始めた！',
-    intent: '大事な一文を長い話の中へそっと隠す',
-    lore: '話は長いが、生徒の成長を心から喜ぶ校長先生。卒業後の再挑戦もいつでも歓迎する。',
-    intro: '卒業式の講堂でマイクが入る。「短く一言……では、始めましょう」',
+    attackEmoji: '🗺️',
+    move: '文明ロングスピーチ',
+    attackLine: '学園坂校長が世界史の長い講話を始めた！',
+    intent: '大事な年代を文明の長い物語の中へそっと隠す',
+    lore: '校長を務めながら世界史も教える先生。異なる地域の歩みを一つの物語として語る。',
+    intro: '卒業式の講堂で世界地図が開く。「短く一言……文明のつながりから始めましょう」',
   }),
+}
+
+// 11章のボスIDは保存互換のため増減させず、不足する古文担当だけを
+// 学校生活へ登場する一般教員として追加する。
+export const FACULTY_TEACHERS = {
+  'classical-ogura': teacherRival({
+    id: 'classical-ogura',
+    name: '古文の小倉先生',
+    subject: '古文',
+    subjectEmoji: '📜',
+    accent: '#a16207',
+    attackEmoji: '🪭',
+    move: '助動詞・扇',
+    attackLine: '小倉先生が助動詞を書いた扇を開いた！',
+    intent: '昔のことばを現代の場面へつなぎ、心情を読み取らせる',
+    lore: '声に出した響きと場面を結びつける古文教師。暗記だけでなく、登場人物の気持ちを尋ねる。',
+    intro: '古典教室で扇が開き、小倉先生が一節をゆっくり読み始めた。',
+  }),
+}
+
+export const SCHOOL_TEACHERS = {
+  ...TEACHER_RIVALS,
+  ...FACULTY_TEACHERS,
 }
 
 const UNKNOWN_MOB_PROFILE = mob(
@@ -840,6 +865,56 @@ export function relicBattleAbility(relic) {
     healPercent,
     description: `最大HPの${healPercent}%をその場で回復する。`,
   }
+}
+
+export const BATTLE_ITEM_FILTERS = [
+  { id: 'all', label: 'すべて' },
+  { id: 'power', label: '攻撃' },
+  { id: 'guard', label: '防御' },
+  { id: 'heal', label: '回復' },
+]
+
+export const BATTLE_ITEM_SORTS = [
+  { id: 'acquired', label: '入手順' },
+  { id: 'newest', label: '新しい順' },
+  { id: 'kind', label: '種類順' },
+]
+
+const BATTLE_ITEM_KIND_ORDER = {
+  power: 0,
+  guard: 1,
+  heal: 2,
+}
+
+// アイテムボックスの整理は表示順だけを変え、取得順や永続化IDは変更しない。
+// 不正な絞り込み・並び順は既定値へ戻し、古い画面状態からでも全所持品を失わない。
+export function organizeBattleItems(
+  relics,
+  { filterId = 'all', sortId = 'acquired' } = {},
+) {
+  const safeRelics = Array.isArray(relics) ? relics.filter(Boolean) : []
+  const safeFilterId = BATTLE_ITEM_FILTERS.some(({ id }) => id === filterId)
+    ? filterId
+    : 'all'
+  const safeSortId = BATTLE_ITEM_SORTS.some(({ id }) => id === sortId)
+    ? sortId
+    : 'acquired'
+  const filtered = safeFilterId === 'all'
+    ? [...safeRelics]
+    : safeRelics.filter(
+      (relic) => relicBattleAbility(relic)?.kind === safeFilterId,
+    )
+
+  return filtered.sort((left, right) => {
+    if (safeSortId === 'newest') return right.level - left.level
+    if (safeSortId === 'kind') {
+      const kindDifference =
+        (BATTLE_ITEM_KIND_ORDER[relicBattleAbility(left)?.kind] ?? 99)
+        - (BATTLE_ITEM_KIND_ORDER[relicBattleAbility(right)?.kind] ?? 99)
+      if (kindDifference !== 0) return kindDifference
+    }
+    return left.level - right.level
+  })
 }
 
 // 戦利品は所持するだけでなく、各部位の最新アイテムが主人公の外見へ反映される。
@@ -1073,6 +1148,44 @@ export function battleSceneCue(eventKind) {
 
 const isMiss = (answer) => answer === 'wrong' || answer === 'unknown'
 
+function normalizeBondSkill(skill) {
+  if (
+    !skill
+    || typeof skill !== 'object'
+    || !['heal', 'power', 'guard'].includes(skill.kind)
+    || typeof skill.id !== 'string'
+    || typeof skill.name !== 'string'
+  ) return null
+
+  const normalized = {
+    id: skill.id,
+    name: skill.name,
+    emoji: typeof skill.emoji === 'string' ? skill.emoji : '🤝',
+    description: typeof skill.description === 'string' ? skill.description : '',
+    kind: skill.kind,
+  }
+  if (skill.kind === 'guard') {
+    normalized.reductionPercent = Math.max(
+      1,
+      Math.min(90, Math.floor(Number(skill.reductionPercent) || 0)),
+    )
+    return normalized
+  }
+  normalized.every = Math.max(1, Math.min(100, Math.floor(Number(skill.every) || 1)))
+  if (skill.kind === 'heal') {
+    normalized.healPercent = Math.max(
+      1,
+      Math.min(100, Math.floor(Number(skill.healPercent) || 0)),
+    )
+  } else {
+    normalized.bonusPercent = Math.max(
+      1,
+      Math.min(100, Math.floor(Number(skill.bonusPercent) || 0)),
+    )
+  }
+  return normalized
+}
+
 export function enemyBattleStats({
   heroLevel = 1,
   enemyRankIndex = 0,
@@ -1116,13 +1229,17 @@ export function resolveBattleState({
   heroLevel = 1,
   enemyRankIndex = 0,
   isBoss = false,
+  studentId = null,
+  teacherSubject = null,
   relicLevel = null,
   itemUsedAt = null,
   themeId = 'music-pastel',
+  bondSkill = null,
 } = {}) {
   const tactic = battleTactic(tacticId)
   const battleTheme = battleThemeById(themeId)
   const themeAbility = battleTheme.ability
+  const teacherAffinity = battleTeacherAffinity(studentId, teacherSubject)
   const log = (Array.isArray(answers) ? answers : []).filter(
     (answer) => answer === 'correct' || isMiss(answer),
   ).slice(0, Math.max(1, Math.floor(Number(total) || 1)))
@@ -1130,6 +1247,7 @@ export function resolveBattleState({
   const heroStats = heroBattleStats(heroLevel)
   const itemRelic = battleRelicForLevel(heroStats.level, relicLevel)
   const itemAbility = relicBattleAbility(itemRelic)
+  const activeBondSkill = normalizeBondSkill(bondSkill)
   const safeItemUsedAt =
     itemRelic
     && Number.isSafeInteger(itemUsedAt)
@@ -1170,6 +1288,12 @@ export function resolveBattleState({
   let themeHealing = 0
   let themeBonusDamage = 0
   let themeBlockedDamage = 0
+  let affinityActivations = 0
+  let affinityBonusDamage = 0
+  let bondActivations = 0
+  let bondHealing = 0
+  let bondBonusDamage = 0
+  let bondBlockedDamage = 0
 
   const activateItem = () => {
     itemArmed = true
@@ -1253,6 +1377,27 @@ export function resolveBattleState({
         }
       }
 
+      const bondHealActive =
+        activeBondSkill?.kind === 'heal'
+        && correct % activeBondSkill.every === 0
+      if (bondHealActive) {
+        const healing = Math.min(
+          Math.ceil((heroStats.maxHp * activeBondSkill.healPercent) / 100),
+          heroStats.maxHp - heroCurrentHp,
+        )
+        heroCurrentHp += healing
+        healingDone += healing
+        bondHealing += healing
+        bondActivations += 1
+        lastEvent = {
+          ...lastEvent,
+          emoji: activeBondSkill.emoji,
+          title: `${lastEvent.title}・${activeBondSkill.name}！`,
+          healing: (lastEvent.healing ?? 0) + healing,
+          bondSkill: activeBondSkill.id,
+        }
+      }
+
       const tacticMultiplier =
         lastEvent.kind === 'burst'
           ? 1.5
@@ -1279,15 +1424,37 @@ export function resolveBattleState({
           title: `${itemRelic.name}で威力アップ！`,
         }
       }
+      const damageAfterItem = damage
+      const bondPowerActive =
+        activeBondSkill?.kind === 'power'
+        && correct % activeBondSkill.every === 0
+      const damageBeforeBond = damage
+      let bondPowerBonus = 0
+      if (bondPowerActive) {
+        bondPowerBonus = Math.max(
+          1,
+          Math.round((normalDamage * activeBondSkill.bonusPercent) / 100),
+        )
+        damage += bondPowerBonus
+        bondActivations += 1
+        lastEvent = {
+          ...lastEvent,
+          emoji: activeBondSkill.emoji,
+          title: `${lastEvent.title}・${activeBondSkill.name}！`,
+          bondSkill: activeBondSkill.id,
+        }
+      }
       const themePowerActive =
         themeAbility.kind === 'power'
         && correct % themeAbility.every === 0
       const damageBeforeTheme = damage
+      let themePowerBonus = 0
       if (themePowerActive) {
-        damage += Math.max(
+        themePowerBonus = Math.max(
           1,
           Math.round((normalDamage * themeAbility.bonusPercent) / 100),
         )
+        damage += themePowerBonus
         themeActivations += 1
         lastEvent = {
           ...lastEvent,
@@ -1296,19 +1463,49 @@ export function resolveBattleState({
           themeAbility: themeAbility.id,
         }
       }
+      const affinityActive = teacherAffinity.damageBonusPercent > 0
+      const damageBeforeAffinity = damage
+      if (affinityActive) {
+        damage += Math.max(
+          1,
+          Math.round((normalDamage * teacherAffinity.damageBonusPercent) / 100),
+        )
+        affinityActivations += 1
+        lastEvent = {
+          ...lastEvent,
+          title: `${lastEvent.title}・教科相性サポート！`,
+          teacherAffinity: teacherAffinity.id,
+        }
+      }
       // コンボを選ばない作戦でも、全問正解の最終問は残りHPを削り切る。
-      if (finalTurn && correct === safeTotal) damage = enemyCurrentHp
-      const minimumHp = finalTurn ? 0 : 1
+      const forceFinisher = finalTurn && correct === safeTotal
+      if (forceFinisher) damage = enemyCurrentHp
+      // 相性・エリア・アイテムで実ダメージが増えても、全問正解以外では倒し切らない。
+      const minimumHp = forceFinisher ? 0 : 1
       const availableDamage = Math.max(0, enemyCurrentHp - minimumHp)
       const appliedDamage = Math.min(damage, availableDamage)
-      if (themePowerActive) {
-        themeBonusDamage += Math.max(
+      if (affinityActive && !forceFinisher) {
+        affinityBonusDamage += Math.max(
           0,
-          appliedDamage - Math.min(damageBeforeTheme, availableDamage),
+          appliedDamage - Math.min(damageBeforeAffinity, availableDamage),
         )
       }
-      if (itemPowerActive) {
-        const appliedBeforeTheme = Math.min(damageBeforeTheme, availableDamage)
+      if (themePowerActive && !forceFinisher) {
+        themeBonusDamage += Math.max(
+          0,
+          Math.min(damageBeforeTheme + themePowerBonus, availableDamage)
+            - Math.min(damageBeforeTheme, availableDamage),
+        )
+      }
+      if (bondPowerActive && !forceFinisher) {
+        bondBonusDamage += Math.max(
+          0,
+          Math.min(damageBeforeBond + bondPowerBonus, availableDamage)
+            - Math.min(damageBeforeBond, availableDamage),
+        )
+      }
+      if (itemPowerActive && !forceFinisher) {
+        const appliedBeforeTheme = Math.min(damageAfterItem, availableDamage)
         itemBonusDamage += Math.max(
           0,
           appliedBeforeTheme - Math.min(normalDamage, availableDamage),
@@ -1347,26 +1544,35 @@ export function resolveBattleState({
       const themeGuardActive =
         themeAbility.kind === 'guard'
         && themeActivations === 0
-      const damage = themeGuardActive
-        ? Math.max(
-            1,
-            Math.ceil(
-              enemyStats.normalDamage
-              * (1 - themeAbility.reductionPercent / 100),
-            ),
-          )
+      const bondGuardActive =
+        activeBondSkill?.kind === 'guard'
+        && bondActivations === 0
+      const damageAfterTheme = themeGuardActive
+        ? Math.max(1, Math.ceil(
+            enemyStats.normalDamage * (1 - themeAbility.reductionPercent / 100),
+          ))
         : enemyStats.normalDamage
+      const damage = bondGuardActive
+        ? Math.max(1, Math.ceil(
+            damageAfterTheme * (1 - activeBondSkill.reductionPercent / 100),
+          ))
+        : damageAfterTheme
       const minimumHp = finalTurn ? 0 : 1
-      const appliedDamage = Math.min(
-        damage,
-        Math.max(0, heroCurrentHp - minimumHp),
-      )
+      // 防御特技があっても全問不正解なら敗北する、従来の決着条件を保つ。
+      const forceDefeat = finalTurn && correct === 0
+      const appliedDamage = forceDefeat
+        ? heroCurrentHp
+        : Math.min(damage, Math.max(0, heroCurrentHp - minimumHp))
       heroCurrentHp -= appliedDamage
       damageTaken += appliedDamage
       lastDamageTaken = appliedDamage
       if (themeGuardActive) {
         themeActivations += 1
-        themeBlockedDamage += Math.max(0, enemyStats.normalDamage - damage)
+        themeBlockedDamage += Math.max(0, enemyStats.normalDamage - damageAfterTheme)
+      }
+      if (bondGuardActive) {
+        bondActivations += 1
+        bondBlockedDamage += Math.max(0, damageAfterTheme - damage)
       }
       lastEvent = answer === 'unknown'
         ? {
@@ -1387,6 +1593,14 @@ export function resolveBattleState({
           emoji: themeAbility.emoji,
           title: `${themeAbility.name}で反撃を軽減！`,
           themeAbility: themeAbility.id,
+        }
+      }
+      if (bondGuardActive) {
+        lastEvent = {
+          ...lastEvent,
+          emoji: activeBondSkill.emoji,
+          title: `${activeBondSkill.name}で反撃を軽減！`,
+          bondSkill: activeBondSkill.id,
         }
       }
     }
@@ -1458,6 +1672,16 @@ export function resolveBattleState({
     : themeAbility.kind === 'guard'
       ? `${themeAbility.name} ${themeActivations}回・軽減 ${themeBlockedDamage}`
       : `${themeAbility.name} ${themeActivations}回・追加 ${themeBonusDamage}`
+  const affinitySummary = teacherAffinity.active
+    ? `${teacherAffinity.summary} 発動 ${affinityActivations}回・追加 ${affinityBonusDamage}`
+    : teacherAffinity.summary
+  const bondSummary = !activeBondSkill
+    ? '同行特技 未解放'
+    : activeBondSkill.kind === 'heal'
+      ? `${activeBondSkill.name} ${bondActivations}回・HP回復 ${bondHealing}`
+      : activeBondSkill.kind === 'guard'
+        ? `${activeBondSkill.name} ${bondActivations}回・軽減 ${bondBlockedDamage}`
+        : `${activeBondSkill.name} ${bondActivations}回・追加 ${bondBonusDamage}`
 
   return {
     tacticId: tactic.id,
@@ -1469,6 +1693,16 @@ export function resolveBattleState({
     themeBonusDamage,
     themeBlockedDamage,
     themeSummary,
+    teacherAffinity,
+    affinityActivations,
+    affinityBonusDamage,
+    affinitySummary,
+    bondSkill: activeBondSkill,
+    bondActivations,
+    bondHealing,
+    bondBonusDamage,
+    bondBlockedDamage,
+    bondSummary,
     answered: log.length,
     correct,
     misses,

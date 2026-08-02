@@ -67,6 +67,25 @@ export function writingTokenPositionResults(tokens = [], targetText = '') {
   )
 }
 
+// ガイド練習で次に直す／置く1語を返す。途中に誤りがあれば最初の
+// 誤位置を優先し、そこまで正しければ未配置の次位置を案内する。
+// 完成英文を一度に見せず、必要な瞬間だけ足場を出すための情報に絞る。
+export function writingNextTokenGuide(tokens = [], targetText = '') {
+  const target = writingWordTokens(targetText)
+  const positionResults = writingTokenPositionResults(tokens, targetText)
+  const incorrectIndex = positionResults.findIndex((correct) => !correct)
+  const index = incorrectIndex >= 0 ? incorrectIndex : tokens.length
+  const expected = target[index]
+
+  if (!expected) return null
+  return {
+    index,
+    position: index + 1,
+    word: expected.word,
+    correction: incorrectIndex >= 0,
+  }
+}
+
 export function isWritingTokenOrderCorrect(tokens = [], targetText = '') {
   const target = writingWordTokens(targetText)
   return (
