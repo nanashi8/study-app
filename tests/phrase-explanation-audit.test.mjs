@@ -37,6 +37,9 @@ const substantiveReadingIssueNames = [
   'staleGrammarBlockPayloads', 'grammarBlockStructureMismatches',
   'misclassifiedGrammarBlocks', 'correctionMismatches',
   'missingManualReviewEvidence',
+  'meaningReconstructionErrors', 'meaningMissingFields', 'meaningSpokenMismatches',
+  'meaningOverWordLimit', 'unnecessaryMeaningFragmentation', 'invalidMeaningJapanese',
+  'staleMeaningBlockPayloads', 'meaningRegressionMismatches',
 ]
 
 const substantiveLongIssueNames = [
@@ -47,13 +50,18 @@ const substantiveLongIssueNames = [
   'missingPunctuationBoundaries',
   'semanticBindingErrors',
   'missingManualReviewEvidence',
+  'meaningReconstructionErrors', 'meaningMissingFields', 'meaningSpokenMismatches',
+  'meaningOverWordLimit', 'unnecessaryMeaningFragmentation', 'invalidMeaningJapanese',
+  'nonConfirmedMeaningSteps',
 ]
 
-test('全16長文・363文・3,238フレーズと長い一文33文・236フレーズを監査する', () => {
+test('全長文・長い一文・文学の意味フレーズと内部SVOCMを監査する', () => {
   const audit = auditPhraseExplanations()
   assert.equal(audit.reading.passageCount, 16)
   assert.equal(audit.reading.sentenceCount, 363)
   assert.equal(audit.reading.phraseCount, 3238)
+  assert.equal(audit.reading.meaningPhraseCount, 2290)
+  assert.equal(audit.reading.meaningMultiRoleCount, 775)
   assert.equal(audit.reading.grammarBlockCount, 1042)
   assert.equal(audit.reading.correctionDecisionCount, 732)
   assert.equal(audit.reading.appliedCorrectionCount, 732)
@@ -64,12 +72,21 @@ test('全16長文・363文・3,238フレーズと長い一文33文・236フレ�
   })
   assert.equal(audit.longSentences.sentenceCount, 33)
   assert.equal(audit.longSentences.phraseCount, 236)
+  assert.equal(audit.longSentences.meaningPhraseCount, 103)
+  assert.equal(audit.longSentences.meaningMultiRoleCount, 65)
+  assert.equal(audit.literature.workCount, 9)
+  assert.equal(audit.literature.sceneCount, 59)
+  assert.equal(audit.literature.segmentCount, 257)
+  assert.equal(audit.literature.englishSegmentCount, 106)
 
   for (const issueName of substantiveReadingIssueNames) {
     assert.equal(audit.reading.issues[issueName].length, 0, `長文: ${issueName}`)
   }
   for (const issueName of substantiveLongIssueNames) {
     assert.equal(audit.longSentences.issues[issueName].length, 0, `長い一文: ${issueName}`)
+  }
+  for (const [issueName, issues] of Object.entries(audit.literature.issues)) {
+    assert.equal(issues.length, 0, `文学朗読: ${issueName}`)
   }
 })
 
@@ -89,9 +106,13 @@ test('全規則と全文を監査確認済みにし、台帳外変更は別状�
   assert.equal(audit.longSentences.issues.unreviewedGuides.length, 0)
   const phrases = PASSAGES.flatMap((passage) => passage.sentences)
     .flatMap((sentence) => analysisFor(sentence.en).phraseSequence)
+  const meaningPhrases = PASSAGES.flatMap((passage) => passage.sentences)
+    .flatMap((sentence) => analysisFor(sentence.en).meaningPhraseSequence)
   const pending = phrases.filter((phrase) => phrase.pendingRule)
   assert.deepEqual(pending, [])
   assert.ok(phrases.every((phrase) =>
+    phrase.status === 'confirmed' && phrase.reviewState === 'audit-confirmed'))
+  assert.ok(meaningPhrases.every((phrase) =>
     phrase.status === 'confirmed' && phrase.reviewState === 'audit-confirmed'))
 })
 
@@ -241,7 +262,7 @@ test('比較・部分否定・並列の支配関係を本文別bindingで固定�
   assert.equal(neglect.coordinationBinding.governor, 'neglecting')
 })
 
-test('下段文法ブロックも最終phraseSequenceと同じ表示・音声payloadを使う', () => {
+test('下段ブロックは内部SVOCMと学習者向け意味フレーズの双方を同じpayloadで使う', () => {
   for (const passage of PASSAGES) {
     for (const sentence of passage.sentences) {
       const analysis = analyzeReadingSentence(sentence)
@@ -261,6 +282,19 @@ test('下段文法ブロックも最終phraseSequenceと同じ表示・音声pay
         sentence.en,
       )
       assert.ok(analysis.blocks.every((block) => block.phrasePairs.length > 0), sentence.en)
+      const visibleMeaning = ({ en, spokenEn, displayEn, roles, ja, explanation }) => ({
+        en,
+        spokenEn: spokenEn ?? en,
+        displayEn: displayEn ?? en,
+        roles,
+        ja,
+        explanation,
+      })
+      assert.deepEqual(
+        analysis.blocks.flatMap((block) => block.meaningPhrasePairs).map(visibleMeaning),
+        analysis.meaningPhraseSequence.map(visibleMeaning),
+        sentence.en,
+      )
     }
   }
 

@@ -43,7 +43,7 @@ export function buildLiteratureNarration(work) {
         segmentCount: segments.length,
         phase: 'translation',
         label:
-          work.kind === 'english' ? '区切りの直訳' : '区切りの現代語訳',
+          work.kind === 'english' ? '対応する日本語' : '区切りの現代語訳',
         text: japanesePhraseSpeechText(segment.translation),
         displayText: segment.translation,
         lang: 'ja-JP',

@@ -1,4 +1,4 @@
-// 全363文で再利用する、英語順フレーズ訳の機械可読な方法台帳。
+// 全363文で再利用する、英語順の意味・発音フレーズの機械可読な方法台帳。
 // confirmed は、本文別監査・回帰監査まで通した現行基準を表す。
 
 const rule = ({ id, status = 'confirmed', appliesTo, example, decision, caution = '' }) =>
@@ -29,7 +29,7 @@ export const READING_PHRASE_RULES = Object.freeze([
     id: 'object-and-complement-boundary',
     appliesTo: 'SVO・SVOC・SVOO',
     example: 'makes it easier = それを簡単にします; revise the proposal = 提案を修正します',
-    decision: '短いV＋O、V＋C、V＋O＋Cは、自然な日本語の述部として一つにする。役割順は内部のSVOCMラベルで示し、フレーズ訳を不自然な未完成形へ砕かない。',
+    decision: '短いV＋O、V＋C、V＋O＋Cは、自然な日本語の述部として一つにする。役割順は内部のSVOCMラベルで示し、対応する日本語を不自然な未完成形へ砕かない。',
   }),
   rule({
     id: 'clause-entry-and-inner-roles',

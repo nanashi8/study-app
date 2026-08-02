@@ -37,7 +37,7 @@ export const LITERATURE_KIND_META = Object.freeze({
     id: 'english',
     label: '英語名作',
     shortLabel: '英語',
-    description: '英語 → 区切り直訳',
+    description: '英語 → 対応する日本語',
     emoji: '📘',
     color: '#2563eb',
   },

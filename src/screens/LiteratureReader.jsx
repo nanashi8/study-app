@@ -33,12 +33,12 @@ const NARRATION_PAUSE_MS = {
 const READER_COPY = Object.freeze({
   english: Object.freeze({
     playingOriginal: '英語を再生中',
-    playingTranslation: '直訳を再生中',
+    playingTranslation: '対応する日本語を再生中',
     originalSegment: 'English',
-    translationSegment: '区切りの直訳',
-    help: '英語を一息ぶん読み、その区切りの直訳を続けて読みます。',
+    translationSegment: '対応する日本語',
+    help: '英語を一息ぶん読み、その区切りに対応する日本語を続けて読みます。',
     speechSummary: null,
-    footer: '英語 → 区切りの直訳',
+    footer: '英語 → 対応する日本語',
     gradient: 'linear-gradient(135deg,#0f172a,#1e3a8a,#0f766e)',
   }),
   classical: Object.freeze({

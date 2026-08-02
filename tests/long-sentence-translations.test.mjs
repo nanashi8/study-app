@@ -18,7 +18,7 @@ import { LONG_SENTENCE_ROLE_EXPECTATIONS } from '../src/data/long-sentence-role-
 
 const normalizeEnglish = (value = '') => value.replace(/\s+/g, ' ').trim()
 
-test('独立した長い構文33文すべてに、前から読むフレーズ直訳と解説が対応する', () => {
+test('独立した長い構文33文すべてに、意味・発音フレーズと内部SVOCMが対応する', () => {
   assert.equal(LONG_SENTENCE_WORD_THRESHOLD, 12)
 
   const targets = PHRASES.filter(isLongSyntaxSentence)
@@ -27,7 +27,13 @@ test('独立した長い構文33文すべてに、前から読むフレーズ直
   assert.ok(
     Object.values(LONG_SENTENCE_TRANSLATIONS)
       .reduce((sum, item) => sum + item.steps.length, 0) >= targets.length * 2,
-    '全33文をそれぞれ複数の意味フレーズへ分ける',
+    '全33文をそれぞれ複数の内部SVOCM単位へ分ける',
+  )
+  assert.equal(
+    Object.values(LONG_SENTENCE_TRANSLATIONS)
+      .reduce((sum, item) => sum + item.meaningSteps.length, 0),
+    103,
+    '全33文の学習者向け意味フレーズを全件固定する',
   )
   assert.deepEqual(
     Object.keys(LONG_SENTENCE_TRANSLATIONS).sort(),
@@ -39,11 +45,17 @@ test('独立した長い構文33文すべてに、前から読むフレーズ直
     const translation = longSentenceTranslationFor(item)
     assert.ok(translation, item.id)
     assert.ok(englishWordCount(item.example.en) >= LONG_SENTENCE_WORD_THRESHOLD, item.id)
-    assert.ok(translation.steps.length >= 2, `${item.id}: 一文を複数フレーズへ分ける`)
+    assert.ok(translation.steps.length >= 2, `${item.id}: 一文を複数の内部SVOCM単位へ分ける`)
+    assert.ok(translation.meaningSteps.length >= 2, `${item.id}: 一文を複数の意味フレーズへ分ける`)
     assert.equal(
       normalizeEnglish(translation.steps.map((part) => part.en).join(' ')),
       normalizeEnglish(item.example.en),
       `${item.id}: フレーズを連結しても元の英文を復元できない`,
+    )
+    assert.equal(
+      normalizeEnglish(translation.meaningSteps.map((part) => part.spokenEn).join(' ')),
+      normalizeEnglish(item.example.en),
+      `${item.id}: 意味フレーズを連結しても元の英文を復元できない`,
     )
     assert.deepEqual(
       translation.steps.map((part) => [part.en, part.role]),
@@ -81,6 +93,22 @@ test('独立した長い構文33文すべてに、前から読むフレーズ直
       assert.match(part.ja, /[ぁ-んァ-ヶ一-龠]/, `${at}: 日本語の直訳がない`)
       assert.ok(part.note.length >= 7, `${at}: 項目固有の解説が短い`)
     }
+    for (const [index, part] of translation.meaningSteps.entries()) {
+      const at = `${item.id}: 意味フレーズ${index + 1}`
+      assert.ok(part.en.trim(), `${at}: 英語が空`)
+      assert.ok(englishWordCount(part.en) <= 8, `${at}: 一息の上限8語を超えている`)
+      assert.ok(part.roles.length >= 1, `${at}: 内部SVOCMがない`)
+      assert.ok(part.roleParts.length >= 1, `${at}: 内部の役割別英語がない`)
+      assert.deepEqual(
+        [...new Set(part.roleParts.map((rolePart) => rolePart.role))],
+        part.roles,
+        `${at}: 内部SVOCMと役割一覧が一致しない`,
+      )
+      assert.equal(part.spokenEn, part.en, `${at}: 表示用の補いを原文音声へ混ぜない`)
+      assert.match(part.ja, /[ぁ-んァ-ヶ一-龠]/, `${at}: 対応する日本語がない`)
+      assert.equal(part.status, 'confirmed', `${at}: 最終監査未確認`)
+      assert.equal(part.reviewState, 'audit-confirmed', `${at}: 本文見直し未確認`)
+    }
     if (item.sourceGrammarId) {
       assert.equal(
         longSentenceTranslationFor({ id: item.sourceGrammarId }),
@@ -97,7 +125,9 @@ test('長い一文の自然訳と英語順の対応訳は、一覧詳細・学�
     'utf8',
   )
   assert.doesNotMatch(component, /フレーズで前から直訳/)
-  assert.match(component, /英語を戻らず、上から順に意味を足します/)
+  assert.match(component, /英語を発音できて意味が通るまとまり/)
+  assert.match(component, /SVOCMは各フレーズ内部の構造を示します/)
+  assert.match(component, /guide\?\.meaningSteps/)
   assert.match(component, /data-long-sentence-step/)
   assert.match(component, /item\.roleParts\.map/)
   assert.match(component, /item\.roleQuestion/)
@@ -107,7 +137,7 @@ test('長い一文の自然訳と英語順の対応訳は、一覧詳細・学�
   assert.match(component, /item\.spokenEn \?\? item\.en/)
   assert.match(component, /japanesePhraseSpeechText\(item\.ja\)/)
   assert.match(component, /前からは、/)
-  assert.match(component, /英語、直訳、文法解説の順で再生/)
+  assert.match(component, /英語、対応する日本語、文法解説の順で再生/)
   assert.match(component, /roleParts/)
   assert.match(component, /roleNote/)
   assert.match(component, /読み方：/)
@@ -131,6 +161,8 @@ test('33文は明示台帳一致時だけ最終監査確認済みになる', () 
   assert.ok(guides.every((item) => item.status === 'confirmed'))
   assert.ok(guides.every((item) => item.reviewState === 'audit-confirmed'))
   assert.ok(guides.every((item) => item.steps.every((part) =>
+    part.status === 'confirmed' && part.reviewState === 'audit-confirmed')))
+  assert.ok(guides.every((item) => item.meaningSteps.every((part) =>
     part.status === 'confirmed' && part.reviewState === 'audit-confirmed')))
 
   const source = LONG_SENTENCE_TRANSLATIONS.exam_syn_as_long_as

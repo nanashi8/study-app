@@ -1353,7 +1353,7 @@ test('放課後スターはバトル正解とXP変換で増え、演出選択と
   assert.doesNotMatch(mapSource, /正解1問 \+\{BATTLE_STAR_PER_CORRECT\}/)
   assert.match(mapSource, /<XpExchangeCard/)
   assert.match(mapSource, /exchangeXpForBattleStars/)
-  assert.match(resultSource, /<BattleStarsCard/)
+  assert.match(resultSource, /<div><b>\+\{battleStarsGained\}<\/b><small>スター<\/small><\/div>/)
   for (const source of [storeSource, progressSource, cloudSource]) {
     assert.match(source, /battleStars/)
     assert.match(source, /battleXpSpent/)
@@ -1392,7 +1392,7 @@ test('同行クラスメートは次の相手の導入後、対決前の作戦�
   assert.match(mapSource, /studentId: battleStudent\.id/)
   assert.match(mapSource, /rivalId: battleRival\.id,\s*teacherSubject,/)
   assert.doesNotMatch(resultSource, /NextBattleCompanionCard|次の同行者を選ぶ|upcomingRival/)
-  assert.match(resultSource, /戦いの結末を見る/)
+  assert.match(resultSource, /次へ：戦いの結末/)
   assert.match(companionSource, /この対決の同行者を選ぶ/)
   assert.match(companionSource, /BATTLE_STUDENTS\.map/)
   assert.match(companionSource, /onSelect\(student\.id\)/)
@@ -1811,9 +1811,8 @@ test('影蝕中の先生11人は開戦時と戦果で固有の悪役台詞を返
     new URL('../src/screens/SessionResult.jsx', import.meta.url),
     'utf8',
   )
-  assert.match(resultSource, /data-testid="teacher-battle-result-line"/)
-  assert.match(resultSource, /悪いマナがほどける直前/)
-  assert.match(resultSource, /悪いマナに支配されている/)
+  assert.match(resultSource, /teacherBattleLine: teacherBattleResultLine\(encounter, battleReport\)/)
+  assert.doesNotMatch(resultSource, /data-testid="teacher-battle-result-line"/)
 })
 
 test('敵ランクは冒険者LVの解放上限を超えない', () => {

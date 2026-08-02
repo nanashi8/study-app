@@ -54,7 +54,7 @@ export function LiteratureLibraryScreen() {
                 一息ずつ、原文と訳を往復
               </h1>
               <p className="mt-2 text-xs font-bold leading-relaxed text-white/70">
-                英語は英語→直訳、古典は古文→現代語訳、漢文は原文を見ながら書き下し→現代語訳。朗読で間を置くまとまりごとに交互に読み上げます。
+                英語は英語→対応する日本語、古典は古文→現代語訳、漢文は原文を見ながら書き下し→現代語訳。朗読で間を置くまとまりごとに交互に読み上げます。
               </p>
             </div>
           </div>
