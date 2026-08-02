@@ -6,9 +6,11 @@ import LZString from 'lz-string'
 import {
   localDayIndexAt,
   migratePersistedState,
+  progressStateFromPayload,
   todayIndex,
   useStore,
 } from '../src/store/useStore.js'
+import { progressStateFromCloud } from '../src/lib/cloudSync.js'
 import { buildDeck, buildPhraseDeck, overallProgress } from '../src/lib/session.js'
 import { ALL_WORDS, getWord } from '../src/data/vocab.js'
 import { PHONETIC_OVERRIDES } from '../src/data/phonetic-overrides.js'
@@ -32,7 +34,13 @@ import {
   passageWordCount,
 } from '../src/data/reading-study.js'
 import { lemmaCandidates, resolvePassageWord } from '../src/data/passage-gloss.js'
-import { decodeProgress, encodeProgress } from '../src/lib/progressCode.js'
+import {
+  PERSISTED_PROGRESS_FIELDS,
+  buildPayload,
+  decodeProgress,
+  encodeProgress,
+  selectProgressState,
+} from '../src/lib/progressCode.js'
 import {
   buildDictationDeck,
   DICTATION_ITEMS,
@@ -213,6 +221,66 @@ test('長文は級別の本試験上限対策語数と段落構成を満たす',
       `${passage.id}: 段落`,
     )
   }
+})
+
+test('学習記録の全永続項目は端末保存・画面発行・クラウド復元で同じ契約を使う', () => {
+  const state = useStore.getState()
+  const transientFields = new Set([
+    'screen',
+    'params',
+    'stack',
+    'speechSettingsOpen',
+    'quizSession',
+  ])
+  const stateDataFields = Object.keys(state)
+    .filter((field) => typeof state[field] !== 'function' && !transientFields.has(field))
+    .sort()
+
+  assert.deepEqual([...PERSISTED_PROGRESS_FIELDS].sort(), stateDataFields)
+  assert.deepEqual(Object.keys(selectProgressState(state)), PERSISTED_PROGRESS_FIELDS)
+  assert.deepEqual(
+    Object.keys(buildPayload(state)).filter((field) => field !== 'v'),
+    PERSISTED_PROGRESS_FIELDS,
+  )
+  assert.deepEqual(Object.keys(progressStateFromPayload(buildPayload(state))), PERSISTED_PROGRESS_FIELDS)
+  assert.deepEqual(
+    Object.keys(progressStateFromCloud(buildPayload(state), state)),
+    PERSISTED_PROGRESS_FIELDS,
+  )
+
+  const currentPortal = {
+    ...state,
+    portalOrder: [...state.portalOrder].reverse(),
+    portalHidden: [state.portalOrder[0]],
+  }
+  const legacyCloudState = progressStateFromCloud({}, currentPortal)
+  assert.deepEqual(legacyCloudState.portalOrder, currentPortal.portalOrder)
+  assert.deepEqual(legacyCloudState.portalHidden, currentPortal.portalHidden)
+
+  const portable = selectProgressState({
+    ...state,
+    vocabHistory: ['read', 'access'],
+    battleStars: 123,
+    battleXpSpent: 50,
+    battleStoryStep: 5,
+    stats: { ...state.stats, xp: 500 },
+  })
+  const restored = decodeProgress(encodeProgress(portable))
+  assert.deepEqual(restored.vocabHistory, ['read', 'access'])
+  assert.equal(restored.battleStars, 123)
+  assert.equal(restored.battleXpSpent, 50)
+  assert.equal(restored.battleStoryStep, 5)
+
+  const progressSource = readFileSync(
+    new URL('../src/screens/Progress.jsx', import.meta.url),
+    'utf8',
+  )
+  const storeSource = readFileSync(
+    new URL('../src/store/useStore.js', import.meta.url),
+    'utf8',
+  )
+  assert.match(progressSource, /useStore\(useShallow\(selectProgressState\)\)/)
+  assert.match(storeSource, /partialize:\s*selectProgressState/)
 })
 
 test('進捗コードは廃止済みデータを再保存せず、旧コードも読み込める', () => {

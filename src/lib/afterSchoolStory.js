@@ -16,11 +16,11 @@ export const AFTER_SCHOOL_CHRONICLE = {
 const VERDICT_EPILOGUES = Object.freeze({
   legendary: {
     title: '影のほどける音',
-    narration: '最後の正答が光へ変わり、影蝕の術式は音もなくほどけた。教室に残ったのは、夕陽と、使い込まれたチョークの匂いだけだった。',
+    narration: '最後の正答が光へ変わる。崩れかけた影蝕は、先生の口を借りて最後の捨て台詞を吐き、音もなくほどけ始めた。',
   },
   victory: {
     title: 'いつもの声が戻るまで',
-    narration: '積み重ねた正答が術式の中心を貫く。黒い文字列は薄い光へ変わり、先生のまなざしにいつもの穏やかさが戻った。',
+    narration: '積み重ねた正答が術式の中心を貫く。黒い文字列は薄い光へ変わりながら、先生の口元に最後の強がりを残した。',
   },
   draw: {
     title: '余白に残った一行',
@@ -95,9 +95,9 @@ export function afterSchoolBattleChapter({
       },
       {
         kind: 'dialogue',
-        speaker: rival,
+        speaker: isTeacher ? `${rival}（悪いマナに支配されている）` : rival,
         text: isTeacher
-          ? `「今日の課題は${questionCount}問。あなたの言葉で答えを示しなさい」`
+          ? `「${questionCount}問すべてを迷わせてやる。覚えた言葉ごと、悪いマナの底へ沈むがいい！」`
           : `「${questionCount}問の言葉を読み解け。答えが、先へ進む道を決める」`,
       },
       {
@@ -123,6 +123,7 @@ export function afterSchoolBattleEpilogue({
   verdictId = 'draw',
   isTeacher = true,
   teacherDefeated = false,
+  teacherBattleLine = '',
 } = {}) {
   const episode = afterSchoolEpisodeNumber(storyStep)
   const arc = afterSchoolStoryArcForStep(storyStep)
@@ -130,6 +131,10 @@ export function afterSchoolBattleEpilogue({
   const companion = safeStoryText(studentName, 'クラスメイト')
   const rival = safeStoryText(rivalName, '先生')
   const outcome = VERDICT_EPILOGUES[verdictId] ?? VERDICT_EPILOGUES.draw
+  const controlledTeacherLine = safeStoryText(
+    teacherBattleLine,
+    'まだ終わりではない……次の対決では、一問たりとも答えさせん！',
+  )
 
   return {
     id: `after-school-epilogue-${episode}`,
@@ -143,10 +148,12 @@ export function afterSchoolBattleEpilogue({
       },
       {
         kind: 'dialogue',
-        speaker: isTeacher ? rival : companion,
+        speaker: isTeacher
+          ? `${rival}（${teacherDefeated ? '悪いマナがほどける直前' : '悪いマナに支配されている'}）`
+          : companion,
         portraitId: isTeacher ? undefined : 'student-relieved',
         text: isTeacher
-          ? '「採点はここまで。正解した理由も、迷った理由も、次の一問へ持っていきなさい」'
+          ? `「${controlledTeacherLine}」`
           : `「記録できた。${arc.discovery} 次の場所でも同じ印を探そう」`,
       },
       {

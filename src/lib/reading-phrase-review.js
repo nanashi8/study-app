@@ -1,5 +1,5 @@
-// 互換用のレビュー補助。区切りを変更したり、S+Vを自動で確認済みにしたりしない。
-// 現行基準では、一フレーズ一役割と本文別の意味監査が確認状態を決める。
+// 互換用のレビュー補助。学習者向けフレーズは意味・発音のまとまりを優先し、
+// SVOCMはその内部構造として複数保持できる。
 
 const rolesOf = (phrase) => [...new Set(
   phrase.roles ?? (phrase.role ? [phrase.role] : []),
@@ -7,7 +7,7 @@ const rolesOf = (phrase) => [...new Set(
 
 function reviewCategoryFor(phrase) {
   const roles = rolesOf(phrase)
-  if (roles.length !== 1) return 'mixed-svocm-role'
+  if (!roles.length) return 'missing-svocm-annotation'
   if (!`${phrase.en ?? ''}`.trim()) return 'missing-source-english'
   if (!`${phrase.ja ?? ''}`.trim()) return 'missing-adjacent-japanese'
   if (!`${phrase.explanation ?? phrase.grammarNote ?? ''}`.trim()) {
@@ -40,11 +40,11 @@ export function reviewGeneratedReadingPhrases(phrases) {
 export function readingPhraseMethod(reviewedGuide, phrases) {
   if (reviewedGuide?.status === 'confirmed') return 'regression-example-confirmed'
   if (phrases.length && phrases.every((phrase) => phrase.status === 'confirmed')) {
-    return 'corpus-svocm-confirmed'
+    return 'corpus-meaning-phrase-confirmed'
   }
   if (phrases.length && phrases.every((phrase) =>
     ['reviewed', 'confirmed'].includes(phrase.status))) {
-    return 'corpus-svocm-reviewed'
+    return 'corpus-meaning-phrase-reviewed'
   }
-  return 'corpus-svocm-review-needed'
+  return 'corpus-meaning-phrase-review-needed'
 }

@@ -12,19 +12,21 @@ test('対決入口はキービジュアル・先生・問題数・開始操作�
   assert.match(source, /今日の対決を選ぶ/)
   assert.match(source, /data-battle-theme=\{battleTheme\.id\}/)
   assert.match(source, /<BattleStandingActor[\s\S]*?pose="back"[\s\S]*?phase="entry"/)
+  assert.match(source, /<BattleOpponentStandingActor[\s\S]*?phase="entry"/)
   assert.match(source, /data-battle-standing-entry/)
   assert.match(source, /battleStudentPortrait\(battleStudent\.id, 'confident'\)/)
-  assert.match(source, /src=\{battleRival\.portrait\}/)
+  assert.match(source, /opponent=\{battleRival\}/)
   assert.match(source, /問題数をえらぶ/)
   assert.match(source, /問のことば対決へ/)
   assert.doesNotMatch(source, /battle-entry-route|相性・絆・対決演出|このバトルの作戦|先生は悪役|encounter\.move/)
 })
 
 test('実戦は全生徒の4姿と既存モーションを舞台の主役にする', async () => {
-  const [source, cast, actor] = await Promise.all([
+  const [source, cast, actor, opponentActor] = await Promise.all([
     readSource('../src/screens/VocabQuiz.jsx'),
     readSource('../src/lib/battleCast.js'),
     readSource('../src/components/BattleStandingActor.jsx'),
+    readSource('../src/components/BattleOpponentStandingActor.jsx'),
   ])
 
   for (const phase of [
@@ -42,23 +44,24 @@ test('実戦は全生徒の4姿と既存モーションを舞台の主役にす�
   assert.match(source, /data-battle-key-visual=\{battleStageUrl\}/)
   assert.match(source, /data-battle-reference-visual=\{battleTheme\.preview\}/)
   assert.match(source, /\{battleTheme\.name\} · \{scene\.name\}/)
-  assert.match(source, /function FullBodyBattleActor/)
-  assert.match(source, /data-battle-full-body=\{resolvedSrc\}/)
   assert.match(source, /<BattleStandingActor/)
+  assert.match(source, /<BattleOpponentStandingActor/)
   assert.match(source, /student=\{battleStudent\}/)
   assert.match(source, /pose=\{standingPose\}/)
   assert.match(source, /motionSrc=\{studentMotion\}/)
   assert.match(source, /motionActive=\{presentationActive\}/)
-  assert.match(source, /src=\{battleRival\.fullBody\}/)
+  assert.match(source, /opponent=\{battleRival\}/)
+  assert.match(source, /phase=\{battlePhase\}/)
   assert.match(source, /battle-stage-unit-fullbody/)
   assert.match(cast, /BATTLE_STANDING_POSES/)
   assert.match(cast, /standingSheet: publicAssetUrl/)
   assert.match(cast, /battleStandingPoseForPhase/)
-  assert.match(cast, /FULL_BODY_BATTLE_RIVAL_IDS = new Set\(\['math-takagi'\]\)/)
+  assert.match(cast, /standing: publicAssetUrl\(`\/assets\/battle\/standing\/rivals\/\$\{id\}\.png`\)/)
   assert.match(actor, /data-battle-standing-pose=\{pose\}/)
   assert.match(actor, /<video[\s\S]*?autoPlay[\s\S]*?muted[\s\S]*?playsInline/)
   assert.match(actor, /prefers-reduced-motion: reduce/)
-  await access(new URL('../public/assets/battle/fullbody/rivals/math-takagi.png', import.meta.url))
+  assert.match(opponentActor, /data-battle-standing-opponent=\{opponentId\}/)
+  await access(new URL('../public/assets/battle/standing/rivals/math-takagi.png', import.meta.url))
   assert.match(source, /battle-combatants-bar/)
   assert.match(source, /battle-command-shell/)
   assert.match(source, /data-battle-phase=\{battlePhase\}/)
@@ -69,17 +72,75 @@ test('実戦は全生徒の4姿と既存モーションを舞台の主役にす�
   assert.match(source, /<em>\{battlePhaseLabel\}<\/em>/)
 })
 
+test('入口・実戦・結果の背景が戦況に応じて動き、停止設定も守る', async () => {
+  const [backdrop, entry, battle, result, css] = await Promise.all([
+    readSource('../src/components/BattleStageBackdrop.jsx'),
+    readSource('../src/screens/EnglishMap.jsx'),
+    readSource('../src/screens/VocabQuiz.jsx'),
+    readSource('../src/screens/SessionResult.jsx'),
+    readSource('../src/index.css'),
+  ])
+
+  assert.match(backdrop, /data-battle-stage-backdrop/)
+  assert.match(backdrop, /data-battle-backdrop-phase=\{phase\}/)
+  assert.match(backdrop, /battle-stage-backdrop-image/)
+  assert.match(backdrop, /battle-stage-backdrop-atmosphere/)
+  assert.match(entry, /<BattleStageBackdrop[\s\S]*?scene="var\(--battle-entry-standing-scene\)"[\s\S]*?phase="entry"/)
+  assert.match(battle, /<BattleStageBackdrop[\s\S]*?scene="var\(--battle-scene\)"[\s\S]*?phase=\{battlePhase\}/)
+  assert.match(result, /<BattleStageBackdrop[\s\S]*?scene="var\(--battle-result-scene\)"[\s\S]*?phase=\{standingPhase\}/)
+
+  for (const animation of [
+    'idle',
+    'entry',
+    'hero-impact',
+    'enemy-impact',
+    'guard',
+    'healing',
+    'victory',
+    'defeat',
+  ]) {
+    assert.match(css, new RegExp(`@keyframes battle-stage-backdrop-${animation}`), animation)
+  }
+  for (const phase of [
+    'entry',
+    'hero-action',
+    'enemy-action',
+    'guard',
+    'healing',
+    'victory',
+    'defeat',
+  ]) {
+    assert.match(css, new RegExp(`data-battle-backdrop-phase='${phase}'`), phase)
+  }
+  assert.match(css, /data-battle-ui-mode='simple'[\s\S]*?\.battle-stage-backdrop[\s\S]*?animation: none;/)
+  assert.match(css, /@media \(prefers-reduced-motion: reduce\)[\s\S]*?\.battle-stage-backdrop-image,[\s\S]*?animation: none;/)
+  assert.match(css, /@media \(prefers-reduced-motion: reduce\)[\s\S]*?\.battle-stage-backdrop :where\([\s\S]*?animation: none !important;[\s\S]*?transform: none !important;/)
+})
+
 test('戦闘結果は選択した舞台、生徒、相手、決着を一枚の結果画面に残す', async () => {
   const source = await readSource('../src/screens/SessionResult.jsx')
 
+  assert.match(source, /data-testid="battle-result-console"/)
+  assert.match(source, /data-testid="battle-result-hud"/)
+  assert.match(source, /BATTLE_RESULT_PANELS/)
+  assert.match(source, /id: 'outcome', label: '戦果'/)
+  assert.match(source, /id: 'growth', label: '成長'/)
+  assert.doesNotMatch(source, /id: 'companion', label: '同行者'/)
+  assert.match(source, /data-battle-result-panel=\{battleResultPanel\}/)
+  assert.match(source, /battleResultPanel === 'outcome'/)
+  assert.match(source, /battleResultPanel === 'growth'/)
+  assert.doesNotMatch(source, /battleResultPanel === 'companion'/)
+  assert.doesNotMatch(source, /<BattleCompanionPicker/)
+  assert.match(source, /戦いの結末を見る/)
   assert.match(source, /function BattleResultStage/)
   assert.match(source, /data-testid="battle-result-stage"/)
   assert.match(source, /url\("\$\{theme\.stage\}"\)/)
   assert.match(source, /data-testid="battle-result-lead-student"/)
   assert.match(source, /<BattleStandingActor/)
+  assert.match(source, /<BattleOpponentStandingActor/)
   assert.match(source, /pose=\{standingPose\}/)
   assert.match(source, /motionSrc=\{standingMotion\}/)
-  assert.match(source, /src=\{rival\.portrait\}/)
+  assert.match(source, /opponent=\{rival\}/)
   assert.match(source, /<h1>\{verdict\.title\}<\/h1>/)
   assert.match(source, /aria-label=\{`\$\{student\.name\}と\$\{rival\.name\}の対決結果。\$\{verdict\.title\}`\}/)
 })
@@ -105,6 +166,12 @@ test('共通CSSは狭幅・低画面・動きを減らす設定まで対決演�
   assert.match(css, /\.pixel-battle-stage\[data-battle-phase='hero-action'\]/)
   assert.match(css, /\.pixel-battle-stage\[data-battle-phase='enemy-action'\]/)
   assert.match(css, /\.battle-result-stage\s*\{/)
+  assert.match(css, /\.battle-result-console-shell\s*\{/)
+  assert.match(css, /\.battle-result-hud\s*\{/)
+  assert.match(css, /\.battle-result-tablist\s*\{/)
+  assert.match(css, /\.battle-result-panel\s*\{/)
+  assert.match(css, /\.battle-result-screen\[data-battle-ui-mode='gaming'\]/)
+  assert.match(css, /\.battle-result-console-shell\[data-battle-ui-mode='simple'\]/)
   assert.match(css, /@keyframes battle-result-cute-hero/)
   assert.match(css, /@keyframes battle-result-cool-hero/)
   assert.match(css, /@keyframes battle-result-cute-pop/)

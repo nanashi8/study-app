@@ -24,7 +24,7 @@ export function gameBgmAssetUrl(path) {
  * 旧実装のOscillatorNodeによる簡易演奏は使わず、AAC内の実楽器アンサンブルをそのまま鳴らす。
  */
 export class GameBgmPlayer {
-  constructor() {
+  constructor({ enabled = true, volume = 0.35 } = {}) {
     this.context = null
     this.masterGain = null
     this.activeVoice = null
@@ -34,9 +34,10 @@ export class GameBgmPlayer {
     this.loadGeneration = 0
     this.bufferCache = new Map()
     this.cleanupTimers = new Set()
+    this.voices = new Set()
     this.speechWatcher = null
-    this.enabled = true
-    this.volume = 0.35
+    this.enabled = Boolean(enabled)
+    this.volume = clamp(volume, 0, 1)
     this.ducked = false
   }
 
@@ -86,9 +87,13 @@ export class GameBgmPlayer {
     if (!this.enabled) {
       this.loadGeneration += 1
       this.loadingTrackId = null
-      this._fadeOutActiveVoice()
+      // OFFは演出上のフェードではなく利用者の明示的な停止命令。
+      // 曲切替中の旧Voiceも含め、同じフレームで全出力を無音化する。
+      this._applyVolume(true)
+      this._stopAllVoicesImmediately()
       return
     }
+    this._applyVolume(true)
     if (this.context?.state === 'running' && this.requestedTrack) {
       void this._startTrack(this.requestedTrack)
     }
@@ -102,7 +107,9 @@ export class GameBgmPlayer {
   _applyVolume(immediate = false) {
     if (!this.context || !this.masterGain) return
     const now = this.context.currentTime
-    const target = MAX_MASTER_GAIN * this.volume * (this.ducked ? SPEECH_DUCK_FACTOR : 1)
+    const target = this.enabled
+      ? MAX_MASTER_GAIN * this.volume * (this.ducked ? SPEECH_DUCK_FACTOR : 1)
+      : 0
     this.masterGain.gain.cancelScheduledValues(now)
     if (immediate) this.masterGain.gain.setValueAtTime(target, now)
     else this.masterGain.gain.setTargetAtTime(target, now, this.ducked ? 0.055 : 0.16)
@@ -192,28 +199,53 @@ export class GameBgmPlayer {
     gain.connect(this.masterGain)
 
     const previous = this.activeVoice
-    const voice = { source, gain, track }
+    const voice = { source, gain, track, cleanupTimer: null }
     this.activeVoice = voice
     this.track = track
+    this.voices.add(voice)
     source.start(now)
     if (previous) this._fadeAndStop(previous)
     return true
   }
 
   _fadeAndStop(voice) {
-    if (!this.context || !voice) return
+    if (!this.context || !voice || !this.voices.has(voice)) return
+    if (voice.cleanupTimer) return
     const now = this.context.currentTime
     voice.gain.gain.cancelScheduledValues(now)
     voice.gain.gain.setValueAtTime(Math.max(0.0001, voice.gain.gain.value), now)
     voice.gain.gain.exponentialRampToValueAtTime(0.0001, now + TRACK_FADE_SECONDS)
     const timer = window.setTimeout(() => {
       this.cleanupTimers.delete(timer)
-      try { voice.source.stop() } catch { /* 停止済み */ }
-      try { voice.source.disconnect() } catch { /* 切断済み */ }
-      try { voice.gain.disconnect() } catch { /* 切断済み */ }
+      voice.cleanupTimer = null
+      this._stopVoiceImmediately(voice)
       if (voice.track.id !== this.activeVoice?.track.id) this.bufferCache.delete(voice.track.id)
     }, (TRACK_FADE_SECONDS + 0.08) * 1000)
+    voice.cleanupTimer = timer
     this.cleanupTimers.add(timer)
+  }
+
+  _stopVoiceImmediately(voice) {
+    if (!voice) return
+    if (voice.cleanupTimer) {
+      window.clearTimeout(voice.cleanupTimer)
+      this.cleanupTimers.delete(voice.cleanupTimer)
+      voice.cleanupTimer = null
+    }
+    try { voice.source.stop() } catch { /* 停止済み */ }
+    try { voice.source.disconnect() } catch { /* 切断済み */ }
+    try { voice.gain.disconnect() } catch { /* 切断済み */ }
+    this.voices.delete(voice)
+    if (this.activeVoice === voice) {
+      this.activeVoice = null
+      this.track = null
+    }
+  }
+
+  _stopAllVoicesImmediately() {
+    this.activeVoice = null
+    this.track = null
+    for (const voice of [...this.voices]) this._stopVoiceImmediately(voice)
   }
 
   _fadeOutActiveVoice() {
@@ -235,9 +267,9 @@ export class GameBgmPlayer {
 
   destroy() {
     this.loadGeneration += 1
-    this._fadeOutActiveVoice()
-    for (const timer of this.cleanupTimers) window.clearTimeout(timer)
-    this.cleanupTimers.clear()
+    this.enabled = false
+    this._applyVolume(true)
+    this._stopAllVoicesImmediately()
     if (this.speechWatcher && typeof window !== 'undefined') {
       window.clearInterval(this.speechWatcher)
       this.speechWatcher = null

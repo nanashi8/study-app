@@ -1,6 +1,10 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import { decodeProgress, encodeProgress } from '../lib/progressCode.js'
+import {
+  decodeProgress,
+  encodeProgress,
+  selectProgressState,
+} from '../lib/progressCode.js'
 import { battleProgression, clampPos } from '../lib/adaptive.js'
 import {
   createLearningAnalytics,
@@ -86,7 +90,7 @@ export function normalizeOrder(order) {
   return [...kept, ...missing]
 }
 
-function normalizeHidden(hidden) {
+export function normalizeHidden(hidden) {
   const known = new Set(DEFAULT_CONTENT_ORDER)
   return (Array.isArray(hidden) ? hidden : []).filter((id) => known.has(id))
 }
@@ -248,6 +252,64 @@ export function migratePersistedState(persistedState) {
     ? normalizeStoryKeyVisualAlbum(state.storyKeyVisualAlbum)
     : storyKeyVisualAlbumFromLegacyBonds(state.afterSchoolBonds)
   return state
+}
+
+// 進捗コードから復元する永続項目を一括で組み立てる。
+// importCode 内へ項目を散らさず、永続項目一覧との全件照合を可能にする。
+export function progressStateFromPayload(payload = {}) {
+  const battleStars = normalizeBattleStars(payload.battleStars)
+  const stats = { ...freshStats(), ...(payload.stats ?? {}) }
+  const battleStudentId = normalizeBattleStudentId(payload.battleStudentId)
+  const unlockedBattleStudentIds = normalizeUnlockedBattleStudentIds(
+    Array.isArray(payload.unlockedBattleStudentIds)
+      ? [...payload.unlockedBattleStudentIds, battleStudentId]
+      : LEGACY_UNLOCKED_BATTLE_STUDENT_IDS,
+    { legacyFallback: !Array.isArray(payload.unlockedBattleStudentIds) },
+  )
+  return {
+    srs: payload.srs ?? {},
+    etymologySrs: payload.etymologySrs ?? {},
+    kotenSrs: payload.kotenSrs ?? {},
+    kotenGrammarSrs: payload.kotenGrammarSrs ?? {},
+    kotenCultureSrs: payload.kotenCultureSrs ?? {},
+    kotenInterpretationSrs: payload.kotenInterpretationSrs ?? {},
+    myList: payload.myList ?? [],
+    vocabHistory: normalizeVocabHistory(payload.vocabHistory),
+    myGrammarList: payload.myGrammarList ?? [],
+    writingProgress: payload.writingProgress ?? {},
+    kotenWordList: payload.kotenWordList ?? [],
+    kotenGrammarList: payload.kotenGrammarList ?? [],
+    kotenCultureList: payload.kotenCultureList ?? [],
+    readingsDone: payload.readingsDone ?? [],
+    mathDone: payload.mathDone ?? [],
+    mathMastery: payload.mathMastery ?? {},
+    skillStats: payload.skillStats ?? {},
+    learningAnalytics: payload.learningAnalytics ?? createLearningAnalytics(),
+    diagnosticHistory: payload.diagnosticHistory ?? [],
+    diagnosticAttempt: payload.diagnosticAttempt ?? 0,
+    diagnosticSeed: payload.diagnosticSeed ?? null,
+    engPos: payload.engPos ?? null,
+    battleRelicLevel: payload.battleRelicLevel ?? null,
+    battleStars,
+    battleXpSpent: normalizeBattleXpSpent(payload.battleXpSpent, stats.xp),
+    battleThemeId: battleThemeById(payload.battleThemeId, battleStars).id,
+    battleStudentId,
+    battleTraitInvestments: normalizeBattleTraitInvestments(
+      payload.battleTraitInvestments,
+      battleStars,
+    ),
+    battleStoryStep: normalizeBattleStoryStep(payload.battleStoryStep),
+    battleStoryLastDay: normalizeBattleStoryLastDay(payload.battleStoryLastDay),
+    afterSchoolBonds: normalizeAfterSchoolBonds(payload.afterSchoolBonds),
+    unlockedBattleStudentIds,
+    storyKeyVisualAlbum: payload.storyKeyVisualAlbum
+      ? normalizeStoryKeyVisualAlbum(payload.storyKeyVisualAlbum)
+      : storyKeyVisualAlbumFromLegacyBonds(payload.afterSchoolBonds),
+    portalOrder: normalizeOrder(payload.portalOrder),
+    portalHidden: normalizeHidden(payload.portalHidden),
+    stats,
+    settings: { ...DEFAULT_SETTINGS, ...(payload.settings ?? {}) },
+  }
 }
 
 export const useStore = create(
@@ -796,6 +858,15 @@ export const useStore = create(
         set((st) => ({
           battleStoryStep: normalizeBattleStoryStep(st.battleStoryStep + 1),
         })),
+      skipAfterSchoolRoute: ({ step } = {}) => {
+        const currentStep = normalizeBattleStoryStep(get().battleStoryStep)
+        // 任意の日常を見送った場合も、完了時と同じく物語だけを一話進める。
+        // 表示時のstepを照合し、連打や古い画面からの二重進行を防ぐ。
+        if (!Number.isSafeInteger(step) || step < 0) return false
+        if (normalizeBattleStoryStep(step) !== currentStep) return false
+        set({ battleStoryStep: normalizeBattleStoryStep(currentStep + 1) })
+        return true
+      },
       completeAfterSchoolRoute: ({ step, branchId, choiceId } = {}) => {
         const st = get()
         const currentStep = normalizeBattleStoryStep(st.battleStoryStep)
@@ -915,59 +986,7 @@ export const useStore = create(
       exportCode: () => encodeProgress(get()),
       importCode: (code) => {
         const payload = decodeProgress(code) // 失敗時は例外
-        const battleStars = normalizeBattleStars(payload.battleStars)
-        const stats = { ...freshStats(), ...(payload.stats ?? {}) }
-        const battleStudentId = normalizeBattleStudentId(payload.battleStudentId)
-        const unlockedBattleStudentIds = normalizeUnlockedBattleStudentIds(
-          Array.isArray(payload.unlockedBattleStudentIds)
-            ? [...payload.unlockedBattleStudentIds, battleStudentId]
-            : LEGACY_UNLOCKED_BATTLE_STUDENT_IDS,
-          { legacyFallback: !Array.isArray(payload.unlockedBattleStudentIds) },
-        )
-        set({
-          srs: payload.srs ?? {},
-          etymologySrs: payload.etymologySrs ?? {},
-          kotenSrs: payload.kotenSrs ?? {},
-          kotenGrammarSrs: payload.kotenGrammarSrs ?? {},
-          kotenCultureSrs: payload.kotenCultureSrs ?? {},
-          kotenInterpretationSrs: payload.kotenInterpretationSrs ?? {},
-          myList: payload.myList ?? [],
-          vocabHistory: normalizeVocabHistory(payload.vocabHistory),
-          myGrammarList: payload.myGrammarList ?? [],
-          writingProgress: payload.writingProgress ?? {},
-          kotenWordList: payload.kotenWordList ?? [],
-          kotenGrammarList: payload.kotenGrammarList ?? [],
-          kotenCultureList: payload.kotenCultureList ?? [],
-          readingsDone: payload.readingsDone ?? [],
-          mathDone: payload.mathDone ?? [],
-          mathMastery: payload.mathMastery ?? {},
-          skillStats: payload.skillStats ?? {},
-          learningAnalytics: payload.learningAnalytics ?? createLearningAnalytics(),
-          diagnosticHistory: payload.diagnosticHistory ?? [],
-          diagnosticAttempt: payload.diagnosticAttempt ?? 0,
-          diagnosticSeed: payload.diagnosticSeed ?? null,
-          engPos: payload.engPos ?? null,
-          battleRelicLevel: payload.battleRelicLevel ?? null,
-          battleStars,
-          battleXpSpent: normalizeBattleXpSpent(payload.battleXpSpent, stats.xp),
-          battleThemeId: battleThemeById(payload.battleThemeId, battleStars).id,
-          battleStudentId,
-          battleTraitInvestments: normalizeBattleTraitInvestments(
-            payload.battleTraitInvestments,
-            battleStars,
-          ),
-          battleStoryStep: normalizeBattleStoryStep(payload.battleStoryStep),
-          battleStoryLastDay: normalizeBattleStoryLastDay(payload.battleStoryLastDay),
-          afterSchoolBonds: normalizeAfterSchoolBonds(payload.afterSchoolBonds),
-          unlockedBattleStudentIds,
-          storyKeyVisualAlbum: payload.storyKeyVisualAlbum
-            ? normalizeStoryKeyVisualAlbum(payload.storyKeyVisualAlbum)
-            : storyKeyVisualAlbumFromLegacyBonds(payload.afterSchoolBonds),
-          portalOrder: normalizeOrder(payload.portalOrder),
-          portalHidden: normalizeHidden(payload.portalHidden),
-          stats,
-          settings: { ...DEFAULT_SETTINGS, ...(payload.settings ?? {}) },
-        })
+        set(progressStateFromPayload(payload))
         return payload
       },
     }),
@@ -976,45 +995,7 @@ export const useStore = create(
       version: 4,
       migrate: migratePersistedState,
       // ナビゲーション系は保存しない。
-      partialize: (st) => ({
-        srs: st.srs,
-        etymologySrs: st.etymologySrs,
-        kotenSrs: st.kotenSrs,
-        kotenGrammarSrs: st.kotenGrammarSrs,
-        kotenCultureSrs: st.kotenCultureSrs,
-        kotenInterpretationSrs: st.kotenInterpretationSrs,
-        myList: st.myList,
-        vocabHistory: st.vocabHistory,
-        myGrammarList: st.myGrammarList,
-        writingProgress: st.writingProgress,
-        kotenWordList: st.kotenWordList,
-        kotenGrammarList: st.kotenGrammarList,
-        kotenCultureList: st.kotenCultureList,
-        readingsDone: st.readingsDone,
-        mathDone: st.mathDone,
-        mathMastery: st.mathMastery,
-        skillStats: st.skillStats,
-        learningAnalytics: st.learningAnalytics,
-        diagnosticHistory: st.diagnosticHistory,
-        diagnosticAttempt: st.diagnosticAttempt,
-        diagnosticSeed: st.diagnosticSeed,
-        engPos: st.engPos,
-        battleRelicLevel: st.battleRelicLevel,
-        battleStars: st.battleStars,
-        battleXpSpent: st.battleXpSpent,
-        battleThemeId: st.battleThemeId,
-        battleStudentId: st.battleStudentId,
-        battleTraitInvestments: st.battleTraitInvestments,
-        battleStoryStep: st.battleStoryStep,
-        battleStoryLastDay: st.battleStoryLastDay,
-        afterSchoolBonds: st.afterSchoolBonds,
-        unlockedBattleStudentIds: st.unlockedBattleStudentIds,
-        storyKeyVisualAlbum: st.storyKeyVisualAlbum,
-        portalOrder: st.portalOrder,
-        portalHidden: st.portalHidden,
-        stats: st.stats,
-        settings: st.settings,
-      }),
+      partialize: selectProgressState,
     },
   ),
 )

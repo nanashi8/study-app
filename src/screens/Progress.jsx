@@ -11,7 +11,12 @@ import {
 } from '../data/vocab.js'
 import { etymologyProgress } from '../lib/etymologyProgress.js'
 import { levelProgress, overallProgress } from '../lib/session.js'
-import { encodeProgress, decodeProgress, summarizePayload } from '../lib/progressCode.js'
+import {
+  decodeProgress,
+  encodeProgress,
+  selectProgressState,
+  summarizePayload,
+} from '../lib/progressCode.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { LearningAnalyticsPanel } from '../components/LearningAnalytics.jsx'
 import { Sheet } from '../components/Sheet.jsx'
@@ -38,26 +43,10 @@ function Stat({ icon, value, label, color }) {
 export function ProgressScreen() {
   const navigate = useStore((s) => s.navigate)
   const srs = useStore((s) => s.srs)
-  const myList = useStore((s) => s.myList)
   const stats = useStore((s) => s.stats)
   // 進捗コードは全データを持ち運ぶため、永続スライスをまとめて購読する。
-  // useShallow で浅い比較にし、毎回新オブジェクト→再レンダーループを防ぐ。
-  const full = useStore(useShallow((s) => ({
-    srs: s.srs, etymologySrs: s.etymologySrs, kotenSrs: s.kotenSrs,
-    kotenGrammarSrs: s.kotenGrammarSrs,
-    kotenCultureSrs: s.kotenCultureSrs,
-    kotenInterpretationSrs: s.kotenInterpretationSrs, myList: s.myList,
-    myGrammarList: s.myGrammarList, writingProgress: s.writingProgress,
-    kotenWordList: s.kotenWordList, kotenGrammarList: s.kotenGrammarList,
-    kotenCultureList: s.kotenCultureList,
-    readingsDone: s.readingsDone, mathDone: s.mathDone, mathMastery: s.mathMastery,
-    skillStats: s.skillStats, learningAnalytics: s.learningAnalytics,
-    diagnosticHistory: s.diagnosticHistory,
-    diagnosticAttempt: s.diagnosticAttempt, diagnosticSeed: s.diagnosticSeed,
-    engPos: s.engPos, battleRelicLevel: s.battleRelicLevel,
-    portalOrder: s.portalOrder, portalHidden: s.portalHidden,
-    stats: s.stats, settings: s.settings,
-  })))
+  // 共有セレクタを使い、項目追加時も画面だけ購読漏れにならないようにする。
+  const full = useStore(useShallow(selectProgressState))
   const importCode = useStore((s) => s.importCode)
 
   const prog = overallProgress(srs)

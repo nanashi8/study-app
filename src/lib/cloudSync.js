@@ -6,7 +6,7 @@
 //   /students/{uid} = { email, updatedAt, srs, myList, readingsDone, stats, settings }
 import { ref, get, set, serverTimestamp } from 'firebase/database'
 import { db } from './firebase.js'
-import { useStore } from '../store/useStore.js'
+import { normalizeHidden, normalizeOrder, useStore } from '../store/useStore.js'
 import { buildPayload } from './progressCode.js'
 import {
   battleThemeById,
@@ -32,75 +32,83 @@ import { normalizeVocabHistory } from './vocabHistory.js'
 
 const node = (uid) => ref(db, `students/${uid}`)
 
+// クラウドから復元する永続項目を一括で組み立てる。
+// ネットワークなしの回帰テストでも、全項目が戻る契約を検査できるようにする。
+export function progressStateFromCloud(data = {}, current = useStore.getState()) {
+  const battleStars = normalizeBattleStars(data.battleStars)
+  const stats = { ...current.stats, ...(data.stats ?? {}) }
+  const battleStudentId = normalizeBattleStudentId(data.battleStudentId)
+  const afterSchoolBonds = normalizeAfterSchoolBonds(data.afterSchoolBonds)
+  const unlockedBattleStudentIds = normalizeUnlockedBattleStudentIds(
+    Array.isArray(data.unlockedBattleStudentIds)
+      ? [...data.unlockedBattleStudentIds, battleStudentId]
+      : LEGACY_UNLOCKED_BATTLE_STUDENT_IDS,
+    { legacyFallback: !Array.isArray(data.unlockedBattleStudentIds) },
+  )
+  return {
+    srs: data.srs ?? {},
+    etymologySrs: data.etymologySrs ?? {},
+    kotenSrs: data.kotenSrs ?? {},
+    kotenGrammarSrs: data.kotenGrammarSrs ?? {},
+    kotenCultureSrs: data.kotenCultureSrs ?? {},
+    kotenInterpretationSrs: data.kotenInterpretationSrs ?? {},
+    myList: data.myList ?? [],
+    vocabHistory: normalizeVocabHistory(data.vocabHistory ?? current.vocabHistory),
+    myGrammarList: data.myGrammarList ?? [],
+    writingProgress: data.writingProgress ?? {},
+    kotenWordList: data.kotenWordList ?? [],
+    kotenGrammarList: data.kotenGrammarList ?? [],
+    kotenCultureList: data.kotenCultureList ?? [],
+    readingsDone: data.readingsDone ?? [],
+    mathDone: data.mathDone ?? [],
+    mathMastery: data.mathMastery ?? {},
+    skillStats: data.skillStats ?? {},
+    learningAnalytics: data.learningAnalytics ?? current.learningAnalytics,
+    diagnosticHistory: data.diagnosticHistory ?? [],
+    diagnosticAttempt: Number.isSafeInteger(data.diagnosticAttempt) && data.diagnosticAttempt >= 0
+      ? data.diagnosticAttempt
+      : 0,
+    diagnosticSeed: Number.isInteger(data.diagnosticSeed)
+      && data.diagnosticSeed >= 0
+      && data.diagnosticSeed <= 0xffffffff
+      ? data.diagnosticSeed
+      : null,
+    engPos: data.engPos ?? null,
+    battleRelicLevel:
+      Number.isSafeInteger(data.battleRelicLevel)
+      && data.battleRelicLevel >= 1
+      && data.battleRelicLevel <= 99
+        ? data.battleRelicLevel
+        : null,
+    battleStars,
+    battleXpSpent: normalizeBattleXpSpent(data.battleXpSpent, stats.xp),
+    battleThemeId: battleThemeById(data.battleThemeId, battleStars).id,
+    battleStudentId,
+    battleTraitInvestments: normalizeBattleTraitInvestments(
+      data.battleTraitInvestments,
+      battleStars,
+    ),
+    battleStoryStep: normalizeBattleStoryStep(data.battleStoryStep),
+    battleStoryLastDay: normalizeBattleStoryLastDay(data.battleStoryLastDay),
+    afterSchoolBonds,
+    unlockedBattleStudentIds,
+    storyKeyVisualAlbum: data.storyKeyVisualAlbum
+      ? normalizeStoryKeyVisualAlbum(data.storyKeyVisualAlbum)
+      : storyKeyVisualAlbumFromLegacyBonds(afterSchoolBonds),
+    portalOrder: normalizeOrder(data.portalOrder ?? current.portalOrder),
+    portalHidden: normalizeHidden(data.portalHidden ?? current.portalHidden),
+    stats,
+    settings: { ...current.settings, ...(data.settings ?? {}) },
+  }
+}
+
 // ログイン直後：クラウドに保存済みなら読み込んで上書き、無ければ今の状態で新規作成。
 export async function pullOrInit(uid, email) {
   const snap = await get(node(uid))
   if (snap.exists()) {
     const d = snap.val() || {}
     const cur = useStore.getState()
-    const battleStars = normalizeBattleStars(d.battleStars)
-    const stats = { ...cur.stats, ...(d.stats ?? {}) }
-    const battleStudentId = normalizeBattleStudentId(d.battleStudentId)
-    const afterSchoolBonds = normalizeAfterSchoolBonds(d.afterSchoolBonds)
-    const unlockedBattleStudentIds = normalizeUnlockedBattleStudentIds(
-      Array.isArray(d.unlockedBattleStudentIds)
-        ? [...d.unlockedBattleStudentIds, battleStudentId]
-        : LEGACY_UNLOCKED_BATTLE_STUDENT_IDS,
-      { legacyFallback: !Array.isArray(d.unlockedBattleStudentIds) },
-    )
-    useStore.setState({
-      srs: d.srs ?? {},
-      etymologySrs: d.etymologySrs ?? {},
-      kotenSrs: d.kotenSrs ?? {},
-      kotenGrammarSrs: d.kotenGrammarSrs ?? {},
-      kotenCultureSrs: d.kotenCultureSrs ?? {},
-      kotenInterpretationSrs: d.kotenInterpretationSrs ?? {},
-      myList: d.myList ?? [],
-      vocabHistory: normalizeVocabHistory(d.vocabHistory ?? cur.vocabHistory),
-      myGrammarList: d.myGrammarList ?? [],
-      writingProgress: d.writingProgress ?? {},
-      kotenWordList: d.kotenWordList ?? [],
-      kotenGrammarList: d.kotenGrammarList ?? [],
-      kotenCultureList: d.kotenCultureList ?? [],
-      readingsDone: d.readingsDone ?? [],
-      mathDone: d.mathDone ?? [],
-      mathMastery: d.mathMastery ?? {},
-      skillStats: d.skillStats ?? {},
-      learningAnalytics: d.learningAnalytics ?? cur.learningAnalytics,
-      diagnosticHistory: d.diagnosticHistory ?? [],
-      diagnosticAttempt: Number.isSafeInteger(d.diagnosticAttempt) && d.diagnosticAttempt >= 0
-        ? d.diagnosticAttempt
-        : 0,
-      diagnosticSeed: Number.isInteger(d.diagnosticSeed)
-        && d.diagnosticSeed >= 0
-        && d.diagnosticSeed <= 0xffffffff
-        ? d.diagnosticSeed
-        : null,
-      engPos: d.engPos ?? null,
-      battleRelicLevel:
-        Number.isSafeInteger(d.battleRelicLevel)
-        && d.battleRelicLevel >= 1
-        && d.battleRelicLevel <= 99
-          ? d.battleRelicLevel
-          : null,
-      battleStars,
-      battleXpSpent: normalizeBattleXpSpent(d.battleXpSpent, stats.xp),
-      battleThemeId: battleThemeById(d.battleThemeId, battleStars).id,
-      battleStudentId,
-      battleTraitInvestments: normalizeBattleTraitInvestments(
-        d.battleTraitInvestments,
-        battleStars,
-      ),
-      battleStoryStep: normalizeBattleStoryStep(d.battleStoryStep),
-      battleStoryLastDay: normalizeBattleStoryLastDay(d.battleStoryLastDay),
-      afterSchoolBonds: normalizeAfterSchoolBonds(d.afterSchoolBonds),
-      unlockedBattleStudentIds,
-      storyKeyVisualAlbum: d.storyKeyVisualAlbum
-        ? normalizeStoryKeyVisualAlbum(d.storyKeyVisualAlbum)
-        : storyKeyVisualAlbumFromLegacyBonds(afterSchoolBonds),
-      stats,
-      settings: { ...cur.settings, ...(d.settings ?? {}) },
-    })
+    useStore.setState(progressStateFromCloud(d, cur))
   } else {
     // 初回ログイン：今ローカルにある進捗をそのままクラウドへ。
     await push(uid, email)

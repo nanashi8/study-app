@@ -228,6 +228,30 @@ test('日本語の鉤括弧を次の発話へ保ち、文の途中へ余計な�
   )
 })
 
+test('講師音声は引用符・括弧を発音用テキストから除き、中の説明は残す', () => {
+  const translation = createNaturalSpeechPlan(
+    '前からは、「彼は（昨日）来た」と取ります。',
+    { lang: 'ja-JP', style: 'translation' },
+  )
+  const explanation = createNaturalSpeechPlan(
+    'S（主語）は「だれが・何が」を示します。',
+    { lang: 'ja-JP', style: 'explanation' },
+  )
+
+  assert.deepEqual(
+    translation.map(({ text }) => text),
+    ['前からは、彼は昨日来たと取ります。'],
+  )
+  assert.deepEqual(
+    explanation.map(({ text }) => text),
+    ['S主語はだれが・何がを示します。'],
+  )
+  assert.doesNotMatch(
+    [...translation, ...explanation].map(({ text }) => text).join(''),
+    /[「」（）()]/u,
+  )
+})
+
 test('単語・句・例文・長文を自動判別し、学習対象そのものは改変しない', () => {
   assert.equal(inferSpeechStyle('Alice'), 'word')
   assert.equal(inferSpeechStyle('look after'), 'phrase')

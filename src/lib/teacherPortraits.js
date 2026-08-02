@@ -4,6 +4,7 @@ const portrait = (id, file, accent) => Object.freeze({
   id,
   file,
   src: publicAssetUrl(`/assets/battle/teachers/${file}`),
+  standing: publicAssetUrl(`/assets/battle/standing/teachers/${id}.png`),
   accent,
 })
 
@@ -33,6 +34,7 @@ const FALLBACK_TEACHER_PORTRAIT = Object.freeze({
   id: 'faculty-fallback',
   file: null,
   src: publicAssetUrl('/assets/battle/cast/rivals/counselor-madoka.webp'),
+  standing: publicAssetUrl('/assets/battle/standing/rivals/counselor-madoka.png'),
   accent: '#818cf8',
 })
 
@@ -48,4 +50,8 @@ export function hasTeacherPortrait(teacherOrId) {
     ? teacherOrId
     : teacherOrId?.portraitId ?? teacherOrId?.teacherId ?? teacherOrId?.id
   return Object.hasOwn(TEACHER_PORTRAIT_PROFILES, id)
+}
+
+export function teacherStandingSrc(teacherOrId) {
+  return teacherPortraitProfile(teacherOrId).standing
 }

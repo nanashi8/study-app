@@ -6,6 +6,10 @@ import { BGM_SCALES } from '../src/lib/gameBgmSequencer.js'
 
 export const MIDI_TICKS_PER_BEAT = 480
 
+// General MIDIの10ch（0基準では9）は打楽器専用。各パートを同じchへ重ねると
+// Program Changeが上書きし合うため、FluidSynthでは必ず別chへ割り当てる。
+const MELODIC_MIDI_CHANNELS = Object.freeze([0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15])
+
 const GM_PROGRAM_NAMES = Object.freeze({
   0: 'Grand Piano', 1: 'Bright Piano', 4: 'Electric Piano', 9: 'Glockenspiel',
   11: 'Vibraphone', 12: 'Marimba', 13: 'Xylophone', 19: 'Church Organ',
@@ -422,12 +426,24 @@ function tempoTrackBytes(arrangement) {
   })
 }
 
-function instrumentTrackBytes(arrangement, instrument) {
-  const channel = instrument.percussion ? 9 : 0
+function instrumentTrackBytes(arrangement, instrument, channel) {
   const sourceNotes = arrangement.notesByRole[instrument.role] ?? []
+  const channelVolume = clamp(
+    Math.round(80 * (10 ** (instrument.gainDb / 20))),
+    1,
+    127,
+  )
+  const channelPan = clamp(Math.round((instrument.pan + 1) * 63.5), 0, 127)
+  const reverbSend = clamp(Math.round(arrangement.reverbMix * 2), 0, 80)
+  const chorusSend = instrument.percussion ? 2 : instrument.role === 'strings' ? 14 : 8
   const events = [
-    { tick: 0, priority: -2, bytes: textMeta(0x03, instrument.name) },
-    { tick: 0, priority: -1, bytes: [0xc0 | channel, instrument.program & 0x7f] },
+    { tick: 0, priority: -7, bytes: textMeta(0x03, instrument.name) },
+    { tick: 0, priority: -6, bytes: [0xb0 | channel, 0x00, 0x00] },
+    { tick: 0, priority: -5, bytes: [0xc0 | channel, instrument.program & 0x7f] },
+    { tick: 0, priority: -4, bytes: [0xb0 | channel, 0x07, channelVolume] },
+    { tick: 0, priority: -3, bytes: [0xb0 | channel, 0x0a, channelPan] },
+    { tick: 0, priority: -2, bytes: [0xb0 | channel, 0x5b, reverbSend] },
+    { tick: 0, priority: -1, bytes: [0xb0 | channel, 0x5d, chorusSend] },
   ]
   for (const note of sourceNotes) {
     const startTick = clamp(Math.round(note.startBeat * MIDI_TICKS_PER_BEAT), 0, 0x7fffffff)
@@ -459,10 +475,29 @@ function instrumentTrackBytes(arrangement, instrument) {
   })
 }
 
+export function soundtrackInstrumentChannels(arrangement) {
+  let melodicIndex = 0
+  const entries = arrangement.instruments.map((instrument) => {
+    if (instrument.percussion) return [instrument.role, 9]
+    const channel = MELODIC_MIDI_CHANNELS[melodicIndex]
+    if (!Number.isInteger(channel)) {
+      throw new Error(`MIDI melodic channelが不足しています: ${arrangement.trackId}`)
+    }
+    melodicIndex += 1
+    return [instrument.role, channel]
+  })
+  return Object.freeze(Object.fromEntries(entries))
+}
+
 export function soundtrackArrangementToMidi(arrangement) {
+  const channels = soundtrackInstrumentChannels(arrangement)
   const tracks = [
     tempoTrackBytes(arrangement),
-    ...arrangement.instruments.map((instrument) => instrumentTrackBytes(arrangement, instrument)),
+    ...arrangement.instruments.map((instrument) => instrumentTrackBytes(
+      arrangement,
+      instrument,
+      channels[instrument.role],
+    )),
   ]
   const header = chunk('MThd', [
     0x00, 0x01,

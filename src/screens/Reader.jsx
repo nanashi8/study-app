@@ -128,14 +128,14 @@ export function ReaderScreen() {
   // ── 講師音声（文全体の意味フレーズごとに英語→直訳→必要な解説）──
   const chunks = useMemo(
     () => sentenceAnalyses.flatMap((analysis, si) =>
-      analysis.phraseSequence.map((phrase, phraseIndex) => ({
+      analysis.meaningPhraseSequence.map((phrase, phraseIndex) => ({
         ...phrase,
         en: phrase.spokenEn ?? phrase.en,
         displayEn: phrase.displayEn ?? phrase.en,
         phraseIndex,
-        phraseCount: analysis.phraseSequence.length,
+        phraseCount: analysis.meaningPhraseSequence.length,
         si,
-        isSentenceEnd: phraseIndex === analysis.phraseSequence.length - 1,
+        isSentenceEnd: phraseIndex === analysis.meaningPhraseSequence.length - 1,
         sentenceJa: passage?.sentences[si]?.ja ?? '',
       })),
     ),
@@ -210,7 +210,10 @@ export function ReaderScreen() {
   }
 
   const speakBlockPair = (block) => {
-    const items = block.phrasePairs.map((pair, index) => {
+    const phrasePairs = block.meaningPhrasePairs?.length
+      ? block.meaningPhrasePairs
+      : block.phrasePairs
+    const items = phrasePairs.map((pair, index) => {
       const explanation = pair.grammar ?? pair.explanation ?? pair.roleNote
       return {
         label: pair.displayEn ?? pair.en,
@@ -223,7 +226,7 @@ export function ReaderScreen() {
           },
           {
             text: `前からは、「${japanesePhraseSpeechText(pair.ja)}」と取ります。`,
-            label: '前から読む直訳',
+            label: '対応する日本語',
             lang: 'ja-JP',
             style: 'translation',
           },
@@ -235,7 +238,7 @@ export function ReaderScreen() {
                 style: 'explanation',
               }]
             : []),
-          ...(index === block.phrasePairs.length - 1
+          ...(index === phrasePairs.length - 1
             ? [{
                 text: `ブロック全体の読み方は、${block.translationGuide} 文法上の注意は、${block.note}`,
                 label: 'ブロック全体の解説',
@@ -256,7 +259,7 @@ export function ReaderScreen() {
   }
 
   const speakReviewedPhrasePair = (phraseItem, phraseIndex) => {
-    const phrases = sentenceAnalysis?.phraseSequence ?? [phraseItem]
+    const phrases = sentenceAnalysis?.meaningPhraseSequence ?? [phraseItem]
     const items = phrases.map((item) => {
       const grammar = item.grammar ?? item.explanation
       return {
@@ -270,7 +273,7 @@ export function ReaderScreen() {
           },
           {
             text: `前からは、「${japanesePhraseSpeechText(item.ja)}」と取ります。`,
-            label: '前から読む直訳',
+            label: '対応する日本語',
             lang: 'ja-JP',
             style: 'translation',
           },
@@ -600,7 +603,7 @@ export function ReaderScreen() {
               </p>
               <div className="mt-2 flex flex-wrap items-center gap-2 text-xs font-extrabold">
                 <span className="bg-brand-100 px-2 py-1 text-brand-800">
-                  S・V・O・C・Mを、下の英語順で一つずつ確認
+                  まず意味のまとまりで読み、内部のS・V・O・C・Mを確認
                 </span>
               </div>
               <div className="mt-3">
@@ -614,10 +617,10 @@ export function ReaderScreen() {
               data-reading-phrase-method={sentenceAnalysis.phraseMethod}
             >
                 <p className="mb-3 text-xs font-bold leading-relaxed text-emerald-950/65">
-                  英文をS・V・O・C・M・接続の役割と短い意味単位に分け、原文の語順のまま直訳します。
+                  英文を発音できて意味が通るまとまりに区切ります。S・V・O・C・Mはフレーズ内の構造を確かめる注釈です。
                 </p>
                 <div className="space-y-2" aria-label="英文と対応する日本語">
-                  {sentenceAnalysis.phraseSequence.map((phraseItem, phraseIndex) => {
+                  {sentenceAnalysis.meaningPhraseSequence.map((phraseItem, phraseIndex) => {
                     const status = PHRASE_STATUS[phraseItem.status]
                     return (
                       <article
@@ -629,7 +632,7 @@ export function ReaderScreen() {
                         <div className="flex items-start gap-2">
                           <button
                             onClick={() => speakReviewedPhrasePair(phraseItem, phraseIndex)}
-                            aria-label={`${phraseItem.en}を英語、直訳、文法解説の順で再生`}
+                            aria-label={`${phraseItem.en}を英語、対応する日本語、文法解説の順で再生`}
                             className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-700 active:bg-emerald-200"
                           >
                             <SpeakerWave size={17} />
@@ -639,14 +642,14 @@ export function ReaderScreen() {
                               <span className="border border-emerald-100 bg-emerald-50 px-1.5 py-0.5 text-emerald-800">
                                 {phraseIndex + 1}. {phraseItem.pattern || phraseItem.label || '意味フレーズ'}
                               </span>
-                              {phraseItem.role && (
+                              {(phraseItem.roles ?? [phraseItem.role]).filter(Boolean).map((role) => (
                                 <span className={cx(
                                   'border px-1.5 py-0.5',
-                                  ROLE_STYLE[phraseItem.role] ?? ROLE_STYLE.M,
-                                )}>
-                                  {translationRoleMeta(phraseItem.role).code}
+                                  ROLE_STYLE[role] ?? ROLE_STYLE.M,
+                                )} key={role}>
+                                  {translationRoleMeta(role).code}
                                 </span>
-                              )}
+                              ))}
                               {status && (
                                 <span className={cx('border px-1.5 py-0.5', status.className)}>
                                   {phraseStatusLabel(phraseItem, status.label)}
@@ -696,7 +699,7 @@ export function ReaderScreen() {
                     <div className="flex items-start gap-2">
                       <button
                         onClick={() => speakBlockPair(block)}
-                        aria-label={`ブロック${index + 1}を英語フレーズ、直訳、講師解説の順で再生`}
+                        aria-label={`ブロック${index + 1}を英語フレーズ、対応する日本語、講師解説の順で再生`}
                         className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-100 text-brand-700 active:bg-brand-200"
                       >
                         <SpeakerWave size={17} />
@@ -724,7 +727,9 @@ export function ReaderScreen() {
                       </div>
                     </div>
                     <div className="mt-2 space-y-1.5" aria-label="英語と対応する日本語">
-                        {block.phrasePairs.map((pair, phraseIndex) => (
+                        {(block.meaningPhrasePairs?.length
+                          ? block.meaningPhrasePairs
+                          : block.phrasePairs).map((pair, phraseIndex) => (
                         <div
                           key={`${block.id}-${phraseIndex}`}
                           className="grid grid-cols-[1.5rem_minmax(0,1fr)] gap-2 border border-brand-100 bg-brand-50/60 px-2 py-2"

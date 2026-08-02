@@ -70,6 +70,7 @@ const SENTENCE_ENDING = /[.!?。！？…]/
 const TRAILING_CLOSERS = /["”»」』]+$/u
 const TRAILING_QUOTE_MARKS = /["“”«»「」『』]+$/u
 const TRAILING_OPEN_QUOTES = /[“«「『]+$/u
+const UNSPOKEN_EXPLANATION_MARKS = /[\p{Ps}\p{Pe}\p{Pi}\p{Pf}]/gu
 
 const qualityRank = {
   high: 3,
@@ -223,6 +224,13 @@ function normalizedSpeechText(text) {
     .trim()
 }
 
+// 画面では引用・補足の境界を見せる一方、講師音声では「かぎかっこ」や
+// 「かっこ」と読ませない。囲まれた本文は学習内容なので削らず、記号だけ除く。
+function explanationSpeechText(text, style) {
+  if (style !== 'translation' && style !== 'explanation') return text
+  return text.replace(UNSPOKEN_EXPLANATION_MARKS, '').trim()
+}
+
 function textWithoutTrailingClosers(text) {
   return text.trim().replace(TRAILING_QUOTE_MARKS, '')
 }
@@ -352,7 +360,11 @@ export function createNaturalSpeechPlan(
     : [{ text: normalized.replace(/\n+/g, ' '), paragraphEnd: false }]
 
   return units.map((unit, index) => {
-    const spokenText = terminalizeSpeechText(unit.text, profile.terminal, lang)
+    const spokenText = terminalizeSpeechText(
+      explanationSpeechText(unit.text, resolvedStyle),
+      profile.terminal,
+      lang,
+    )
     const isLast = index === units.length - 1
     return Object.freeze({
       text: spokenText,

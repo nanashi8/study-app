@@ -20,6 +20,8 @@ import {
   readingManualReviewEvidence,
 } from '../data/reading-phrase-review-ledger.js'
 import { parseStructureMarkers } from './structure-markers.js'
+import { buildMeaningPhraseSequence } from './meaning-phrases.js'
+import { readingMeaningPhraseOverridesFor } from '../data/reading-meaning-phrase-overrides.js'
 
 export const READING_CORE_PHRASE_WORD_LIMIT = 5
 export const READING_MODIFIER_PHRASE_WORD_LIMIT = 7
@@ -5875,18 +5877,28 @@ export function analyzeReadingSentence(sentence) {
     structuredBlocks,
   )
   const projectedBlocks = projectedTeachingBlocks(teachingBlocks, phraseSequence, sentence.en)
+  const meaningPhraseSequence = buildMeaningPhraseSequence(phraseSequence, {
+    wordLimit: 8,
+    overrides: readingMeaningPhraseOverridesFor(sentence.en),
+  })
+  const meaningGroups = projectPhraseGroupsToSourceBlocks(projectedBlocks, meaningPhraseSequence)
+  const learnerBlocks = Object.freeze(projectedBlocks.map((block, index) => Object.freeze({
+    ...block,
+    meaningPhrasePairs: Object.freeze(meaningGroups[index]),
+  })))
 
   const marked = READING_SENTENCE_STRUCTURE_OVERRIDES[sentence.en] ??
     projectedBlocks.map((block) => block.displayEn).join(' ')
   const structureMarkerParse = parseStructureMarkers(marked)
 
   return {
-    blocks: projectedBlocks,
+    blocks: learnerBlocks,
     phraseSequence,
+    meaningPhraseSequence,
     phraseExplanationGuide,
-    phraseMethod: phraseSequence.every((phrase) => phrase.status === 'confirmed')
-      ? 'corpus-svocm-confirmed'
-      : 'corpus-svocm-review-needed',
+    phraseMethod: meaningPhraseSequence.every((phrase) => phrase.status === 'confirmed')
+      ? 'corpus-meaning-phrase-confirmed'
+      : 'corpus-meaning-phrase-review-needed',
     marked,
     structureTokens: structureMarkerParse.tokens,
     structureMarkerErrors: structureMarkerParse.errors,

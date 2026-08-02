@@ -1,5 +1,6 @@
 import { publicAssetUrl } from './publicAssetUrl.js'
 import { SCHOOL_SUBJECT_NAMES } from './schoolSubjects.js'
+import { teacherStandingSrc } from './teacherPortraits.js'
 
 export const BATTLE_EMOTION_STATES = [
   { id: 'idle', label: '待機', emoji: '🌙', group: 'calm' },
@@ -38,7 +39,6 @@ export const DEFAULT_BATTLE_STUDENT_ID = 'mio'
 // 透明背景の全身立ち絵を優先する。素材を追加した人物だけを明示し、
 // 存在しないURLへアクセスして壊れた画像を出さない。
 const FULL_BODY_BATTLE_STUDENT_IDS = new Set(['mio'])
-const FULL_BODY_BATTLE_RIVAL_IDS = new Set(['math-takagi'])
 
 export const BATTLE_STANDING_POSES = [
   { id: 'back', label: '背中を見せる構え' },
@@ -1011,9 +1011,7 @@ export const BATTLE_RIVALS = RIVAL_DEFINITIONS.map(
     title,
     groupId,
     portrait: publicAssetUrl(`/assets/battle/cast/rivals/${id}.webp`),
-    fullBody: FULL_BODY_BATTLE_RIVAL_IDS.has(id)
-      ? publicAssetUrl(`/assets/battle/fullbody/rivals/${id}.png`)
-      : null,
+    standing: publicAssetUrl(`/assets/battle/standing/rivals/${id}.png`),
   }),
 )
 
@@ -1112,6 +1110,7 @@ export function battleOpponentForEncounter(encounter, rival) {
     title: `${encounter.teacherSubject}担当・先生ライバル`,
     isTeacher: true,
     teacherId: encounter.id,
+    standing: teacherStandingSrc(encounter),
   }
 }
 

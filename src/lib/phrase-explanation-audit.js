@@ -17,6 +17,7 @@ import {
 } from '../data/reading-phrase-review-ledger.js'
 import { READING_PHRASE_RULES } from '../data/reading-phrase-rules.js'
 import { LONG_SENTENCE_ROLE_EXPECTATIONS } from '../data/long-sentence-role-expectations.js'
+import { PUBLIC_DOMAIN_LITERATURE } from '../data/public-domain-literature.js'
 import {
   READING_CORE_PHRASE_WORD_LIMIT,
   READING_MODIFIER_PHRASE_WORD_LIMIT,
@@ -26,6 +27,7 @@ import {
   serializeStructureTokens,
   structureGroupOutline,
 } from './structure-markers.js'
+import { japanesePhraseSpeechText } from './phrase-speech.js'
 
 const PREPOSITIONS = new Set([
   'about', 'across', 'after', 'against', 'along', 'among', 'around', 'at',
@@ -1216,9 +1218,47 @@ function longRef(item, stepIndex, part, extra = {}) {
   })
 }
 
+function meaningPhraseFragmentation(parts, index) {
+  const current = parts[index]
+  const next = parts[index + 1]
+  if (!current || !next) return null
+  const currentRoles = rolesOf(current)
+  const nextRoles = rolesOf(next)
+  const combinedWords = englishWords(`${current.en} ${next.en}`).length
+  if (
+    currentRoles.length === 1 &&
+    currentRoles[0] === 'S' &&
+    nextRoles.length === 1 &&
+    nextRoles[0] === 'V' &&
+    combinedWords <= 6
+  ) {
+    return '短いS＋Vが意味の完成する一息なのに分断されています'
+  }
+  if (
+    currentRoles.length === 1 &&
+    currentRoles[0] === 'V' &&
+    nextRoles.some((role) => ['O', 'O1', 'O2', 'C'].includes(role)) &&
+    combinedWords <= 8
+  ) {
+    return '短い述語とO/Cが意味の完成前に分断されています'
+  }
+  return null
+}
+
+function meaningJapaneseIssue(value = '') {
+  if (/(?:ますます|ですです|したした|するする|ましたました|でしょうでしょう|をを|がが|にに)/u.test(value)) {
+    return '日本語の結合部に重複があります'
+  }
+  if (/^(?:を|へ|に|が|は|の)$/u.test(`${value}`.trim())) {
+    return '助詞だけで意味フレーズになっています'
+  }
+  return ''
+}
+
 export function auditPhraseExplanations() {
   const readingSentences = []
   const readingPhrases = []
+  const readingMeaningPhrases = []
   const readingIssues = {
     reconstructionErrors: [],
     missingFields: [],
@@ -1245,6 +1285,14 @@ export function auditPhraseExplanations() {
     pendingRulePhrases: [],
     unreviewedSentences: [],
     nonConfirmedPhrases: [],
+    meaningReconstructionErrors: [],
+    meaningMissingFields: [],
+    meaningSpokenMismatches: [],
+    meaningOverWordLimit: [],
+    unnecessaryMeaningFragmentation: [],
+    invalidMeaningJapanese: [],
+    staleMeaningBlockPayloads: [],
+    meaningRegressionMismatches: [],
   }
   const reviewCategoryCounts = new Map()
   const seenStructuralDisplayTargets = new Set()
@@ -1309,6 +1357,79 @@ export function auditPhraseExplanations() {
           reconstructed,
         }))
       }
+      const meaningReconstructed = analysis.meaningPhraseSequence
+        .map((phrase) => phrase.spokenEn ?? phrase.en)
+        .join(' ')
+      if (!sameEnglish(meaningReconstructed, sentence.en)) {
+        readingIssues.meaningReconstructionErrors.push(Object.freeze({
+          passageId: passage.id,
+          sentenceIndex,
+          sentence: sentence.en,
+          reconstructed: meaningReconstructed,
+        }))
+      }
+      if (analysis.phraseExplanationGuide) {
+        const actual = analysis.meaningPhraseSequence.map((phrase) => ({
+          en: phrase.en,
+          roles: rolesOf(phrase),
+          ja: phrase.ja,
+          displayEn: phrase.displayEn ?? phrase.en,
+          spokenEn: phrase.spokenEn ?? phrase.en,
+        }))
+        const expected = analysis.phraseExplanationGuide.phrases.map((phrase) => ({
+          en: phrase.en,
+          roles: rolesOf(phrase),
+          ja: phrase.ja,
+          displayEn: phrase.displayEn ?? phrase.en,
+          spokenEn: phrase.spokenEn ?? phrase.en,
+        }))
+        if (stableSemanticValue(actual) !== stableSemanticValue(expected)) {
+          readingIssues.meaningRegressionMismatches.push(Object.freeze({
+            passageId: passage.id,
+            sentenceIndex,
+            sentence: sentence.en,
+            phrase: '(meaning-phrase-regression)',
+            field: '学習者向け意味フレーズが独立回帰例と一致しません',
+          }))
+        }
+      }
+      analysis.meaningPhraseSequence.forEach((phrase, phraseIndex) => {
+        readingMeaningPhrases.push(phrase)
+        const ref = (extra = {}) => readingRef(
+          passage,
+          sentenceIndex,
+          phraseIndex,
+          sentence,
+          phrase,
+          extra,
+        )
+        for (const [field, value] of Object.entries({
+          en: phrase.en,
+          spokenEn: phrase.spokenEn,
+          ja: phrase.ja,
+          explanation: phrase.explanation ?? phrase.grammarNote,
+        })) {
+          if (!`${value ?? ''}`.trim()) readingIssues.meaningMissingFields.push(ref({ field }))
+        }
+        if (!sameEnglish(phrase.spokenEn ?? phrase.en, phrase.en)) {
+          readingIssues.meaningSpokenMismatches.push(ref({ spokenEn: phrase.spokenEn }))
+        }
+        const wordCount = englishWords(phrase.en).length
+        if (wordCount > 8) {
+          readingIssues.meaningOverWordLimit.push(ref({ wordCount, limit: 8 }))
+        }
+        const fragmentation = meaningPhraseFragmentation(
+          analysis.meaningPhraseSequence,
+          phraseIndex,
+        )
+        if (fragmentation) {
+          readingIssues.unnecessaryMeaningFragmentation.push(ref({ field: fragmentation }))
+        }
+        const japaneseIssue = meaningJapaneseIssue(phrase.ja)
+        if (japaneseIssue) {
+          readingIssues.invalidMeaningJapanese.push(ref({ field: japaneseIssue }))
+        }
+      })
       readingGrammarBlockCount += analysis.blocks.length
       const blockPhrases = analysis.blocks.flatMap((block) => block.phrasePairs)
       const visiblePayload = (phrase) => ({
@@ -1337,6 +1458,26 @@ export function auditPhraseExplanations() {
           sentence: sentence.en,
           phrase: '(grammar-block-payload)',
           field: '下段ブロックの表示・音声payloadが最終phraseSequenceと一致しません',
+        }))
+      }
+      const meaningBlockPhrases = analysis.blocks.flatMap(
+        (block) => block.meaningPhrasePairs ?? [],
+      )
+      const meaningBlockPayload = meaningBlockPhrases.map(visiblePayload)
+      const meaningPhrasePayload = analysis.meaningPhraseSequence.map(visiblePayload)
+      const meaningBlockReconstructed = meaningBlockPhrases
+        .map((phrase) => phrase.spokenEn ?? phrase.en)
+        .join(' ')
+      if (
+        !sameEnglish(meaningBlockReconstructed, sentence.en) ||
+        JSON.stringify(meaningBlockPayload) !== JSON.stringify(meaningPhrasePayload)
+      ) {
+        readingIssues.staleMeaningBlockPayloads.push(Object.freeze({
+          passageId: passage.id,
+          sentenceIndex,
+          sentence: sentence.en,
+          phrase: '(meaning-block-payload)',
+          field: '下段ブロックの意味フレーズが主表示・音声payloadと一致しません',
         }))
       }
       analysis.blocks.forEach((block, blockIndex) => {
@@ -1664,8 +1805,17 @@ export function auditPhraseExplanations() {
     pendingRulePhrases: [],
     unreviewedGuides: [],
     nonConfirmedSteps: [],
+    meaningReconstructionErrors: [],
+    meaningMissingFields: [],
+    meaningSpokenMismatches: [],
+    meaningOverWordLimit: [],
+    unnecessaryMeaningFragmentation: [],
+    invalidMeaningJapanese: [],
+    nonConfirmedMeaningSteps: [],
   }
   let longStepCount = 0
+  let longMeaningStepCount = 0
+  let longMeaningMultiRoleCount = 0
   const seenLongClosureTargets = new Set()
   const seenLongReviewIds = new Set()
   const seenLongSequenceIds = new Set()
@@ -1678,6 +1828,10 @@ export function auditPhraseExplanations() {
       continue
     }
     longStepCount += guide.steps.length
+    longMeaningStepCount += guide.meaningSteps?.length ?? 0
+    longMeaningMultiRoleCount += guide.meaningSteps?.filter(
+      (part) => rolesOf(part).length > 1,
+    ).length ?? 0
     const guideReviewEvidenceMatches = guide.reviewEvidenceId === item.id &&
       guide.steps.every((part) => part.reviewEvidenceId === item.id)
     if (guideReviewEvidenceMatches) {
@@ -1693,6 +1847,37 @@ export function auditPhraseExplanations() {
     if (!sameEnglish(reconstructed, item.example.en)) {
       longIssues.reconstructionErrors.push(longRef(item, -1, null, { reconstructed }))
     }
+    const meaningReconstructed = (guide.meaningSteps ?? [])
+      .map((part) => part.spokenEn ?? part.en)
+      .join(' ')
+    if (!guide.meaningSteps?.length || !sameEnglish(meaningReconstructed, item.example.en)) {
+      longIssues.meaningReconstructionErrors.push(longRef(item, -1, null, {
+        reconstructed: meaningReconstructed,
+      }))
+    }
+    ;(guide.meaningSteps ?? []).forEach((part, meaningIndex) => {
+      const ref = (extra = {}) => longRef(item, meaningIndex, part, extra)
+      for (const [field, value] of Object.entries({
+        en: part.en,
+        spokenEn: part.spokenEn,
+        ja: part.ja,
+        explanation: part.explanation ?? part.grammarNote ?? part.note,
+      })) {
+        if (!`${value ?? ''}`.trim()) longIssues.meaningMissingFields.push(ref({ field }))
+      }
+      if (!sameEnglish(part.spokenEn ?? part.en, part.en)) {
+        longIssues.meaningSpokenMismatches.push(ref({ spokenEn: part.spokenEn }))
+      }
+      const wordCount = englishWords(part.en).length
+      if (wordCount > 8) longIssues.meaningOverWordLimit.push(ref({ wordCount, limit: 8 }))
+      const fragmentation = meaningPhraseFragmentation(guide.meaningSteps, meaningIndex)
+      if (fragmentation) {
+        longIssues.unnecessaryMeaningFragmentation.push(ref({ field: fragmentation }))
+      }
+      const japaneseIssue = meaningJapaneseIssue(part.ja)
+      if (japaneseIssue) longIssues.invalidMeaningJapanese.push(ref({ field: japaneseIssue }))
+      if (part.status !== 'confirmed') longIssues.nonConfirmedMeaningSteps.push(ref())
+    })
     if (guide.status !== 'confirmed') longIssues.unreviewedGuides.push(longRef(item, -1, null))
     const expectedSequence = LONG_SEQUENCE_EXPECTATIONS.get(item.id)
     if (expectedSequence) {
@@ -1860,6 +2045,71 @@ export function auditPhraseExplanations() {
     }))
   }
 
+  const literatureIssues = {
+    missingFields: [],
+    reconstructionErrors: [],
+    spokenMismatches: [],
+    overWordLimit: [],
+    invalidJapaneseSpeech: [],
+  }
+  let literatureSceneCount = 0
+  let literatureSegmentCount = 0
+  let literatureEnglishSegmentCount = 0
+  for (const work of PUBLIC_DOMAIN_LITERATURE) {
+    work.scenes.forEach((scene, sceneIndex) => {
+      literatureSceneCount++
+      const segments = scene.narrationSegments ?? []
+      literatureSegmentCount += segments.length
+      const joiner = work.kind === 'english' ? ' ' : ''
+      const reconstructedOriginal = segments.map((segment) => segment.original).join(joiner)
+      const reconstructedSpeech = segments.map((segment) => segment.speech).join(joiner)
+      if (
+        reconstructedOriginal !== scene.original ||
+        reconstructedSpeech !== (scene.speech || scene.original)
+      ) {
+        literatureIssues.reconstructionErrors.push(Object.freeze({
+          workId: work.id,
+          sceneIndex,
+          original: scene.original,
+          reconstructedOriginal,
+          reconstructedSpeech,
+        }))
+      }
+      segments.forEach((segment, segmentIndex) => {
+        const ref = (extra = {}) => Object.freeze({
+          workId: work.id,
+          sceneIndex,
+          segmentIndex,
+          phrase: segment.original,
+          ...extra,
+        })
+        for (const [field, value] of Object.entries({
+          original: segment.original,
+          translation: segment.translation,
+          speech: segment.speech,
+        })) {
+          if (!`${value ?? ''}`.trim()) literatureIssues.missingFields.push(ref({ field }))
+        }
+        if (work.kind === 'english') {
+          literatureEnglishSegmentCount++
+          const wordCount = englishWords(segment.original).length
+          if (wordCount > 8) {
+            literatureIssues.overWordLimit.push(ref({ wordCount, limit: 8 }))
+          }
+        }
+        if (/（[^）]+）/u.test(segment.translation)) {
+          const spokenJapanese = japanesePhraseSpeechText(segment.translation)
+          if (
+            /[（）()]/u.test(spokenJapanese) ||
+            spokenJapanese !== segment.translation.replace(/[（）()]/gu, '')
+          ) {
+            literatureIssues.invalidJapaneseSpeech.push(ref({ spokenJapanese }))
+          }
+        }
+      })
+    })
+  }
+
   const readingConfirmedSentenceCount =
     readingSentences.length - readingIssues.unreviewedSentences.length
   const longConfirmedSentenceCount = longTargets.length -
@@ -1869,15 +2119,25 @@ export function auditPhraseExplanations() {
     .reduce((sum, items) => sum + items.length, 0)
   const blockingLongIssueCount = Object.values(longIssues)
     .reduce((sum, items) => sum + items.length, 0)
+  const blockingLiteratureIssueCount = Object.values(literatureIssues)
+    .reduce((sum, items) => sum + items.length, 0)
+  const readingMeaningMultiRoleCount = readingMeaningPhrases
+    .filter((phrase) => rolesOf(phrase).length > 1).length
   const confirmedRuleCount = READING_PHRASE_RULES
     .filter((item) => item.status === 'confirmed').length
   const complete =
     PASSAGES.length === 16 &&
     readingSentences.length === 363 &&
     longTargets.length === 33 &&
+    PUBLIC_DOMAIN_LITERATURE.length === 9 &&
+    literatureSceneCount === 59 &&
+    literatureSegmentCount === 257 &&
+    readingMeaningMultiRoleCount > 0 &&
+    longMeaningMultiRoleCount > 0 &&
     confirmedRuleCount === READING_PHRASE_RULES.length &&
     blockingReadingIssueCount === 0 &&
-    blockingLongIssueCount === 0
+    blockingLongIssueCount === 0 &&
+    blockingLiteratureIssueCount === 0
 
   return Object.freeze({
     complete,
@@ -1892,6 +2152,8 @@ export function auditPhraseExplanations() {
       confirmedSentenceCount: readingConfirmedSentenceCount,
       manuallyReviewedSentenceCount: manuallyReviewedReadingSentenceCount,
       phraseCount: readingPhrases.length,
+      meaningPhraseCount: readingMeaningPhrases.length,
+      meaningMultiRoleCount: readingMeaningMultiRoleCount,
       grammarBlockCount: readingGrammarBlockCount,
       confirmedPhraseCount: readingPhrases.length - readingIssues.nonConfirmedPhrases.length,
       patternCounts: patternCounts(readingSentences),
@@ -1918,9 +2180,20 @@ export function auditPhraseExplanations() {
       manuallyReviewedSentenceCount: manuallyReviewedLongSentenceCount,
       phraseCount: longStepCount,
       confirmedPhraseCount: longStepCount - longIssues.nonConfirmedSteps.length,
+      meaningPhraseCount: longMeaningStepCount,
+      meaningMultiRoleCount: longMeaningMultiRoleCount,
       patternCounts: patternCounts(longSentences),
       issues: Object.freeze(Object.fromEntries(
         Object.entries(longIssues).map(([key, value]) => [key, Object.freeze(value)]),
+      )),
+    }),
+    literature: Object.freeze({
+      workCount: PUBLIC_DOMAIN_LITERATURE.length,
+      sceneCount: literatureSceneCount,
+      segmentCount: literatureSegmentCount,
+      englishSegmentCount: literatureEnglishSegmentCount,
+      issues: Object.freeze(Object.fromEntries(
+        Object.entries(literatureIssues).map(([key, value]) => [key, Object.freeze(value)]),
       )),
     }),
   })

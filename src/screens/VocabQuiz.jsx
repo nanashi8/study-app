@@ -20,6 +20,8 @@ import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
 import { TeacherPortrait } from '../components/TeacherPortrait.jsx'
 import { BattleStandingActor } from '../components/BattleStandingActor.jsx'
+import { BattleOpponentStandingActor } from '../components/BattleOpponentStandingActor.jsx'
+import { BattleStageBackdrop } from '../components/BattleStageBackdrop.jsx'
 import { Button, ProgressBar, IconButton } from '../components/ui.jsx'
 import { Close, Check, ArrowRight } from '../components/Icons.jsx'
 import { cx } from '../components/ui.jsx'
@@ -886,6 +888,10 @@ function BattleHud({
         role="img"
         aria-label={`戦闘状況。${battleStudent.name}は${battleState.heroCurrentHp}/${battleState.heroMaxHp}HP、${battleRival.name}は${battleState.enemyCurrentHp}/${battleState.enemyMaxHp}HP。${cue.title}。`}
       >
+        <BattleStageBackdrop
+          scene="var(--battle-scene)"
+          phase={battlePhase}
+        />
         <span className="battle-scene-label" aria-hidden="true">
           {battleTheme.name} · {scene.name}
         </span>
@@ -983,17 +989,17 @@ function BattleHud({
 
         <div
           className={cx(
-            'battle-stage-unit battle-stage-enemy',
-            battleRival.fullBody && 'battle-stage-unit-fullbody',
+            'battle-stage-unit battle-stage-enemy battle-stage-unit-fullbody',
             enemyAttacking && 'battle-unit-lunge-left',
             enemyDamaged && 'battle-unit-damaged',
           )}
         >
-          <FullBodyBattleActor
-            src={battleRival.fullBody}
-            side="enemy"
-            label={battleRival.name}
+          <BattleOpponentStandingActor
+            opponent={battleRival}
+            phase={battlePhase}
             defeated={battleState.enemyDefeated}
+            className="battle-stage-standing-opponent"
+            label={`${battleRival.name}・${battlePhase}`}
             fallback={encounter.isTeacher ? (
               <TeacherPortrait
                 teacher={encounter}
@@ -1180,44 +1186,6 @@ function usePrefersReducedMotion() {
   }, [])
 
   return prefersReducedMotion
-}
-
-function FullBodyBattleActor({
-  src,
-  side,
-  label,
-  defeated = false,
-  fallback,
-}) {
-  const [failed, setFailed] = useState(false)
-
-  useEffect(() => {
-    setFailed(false)
-  }, [src])
-
-  if (!src || failed) return fallback
-
-  const resolvedSrc = publicAssetUrl(src)
-  return (
-    <div
-      className={cx(
-        'battle-fullbody-actor',
-        `battle-fullbody-actor-${side}`,
-        defeated && 'battle-fullbody-actor-defeated',
-      )}
-      data-battle-full-body={resolvedSrc}
-      data-battle-actor={side}
-      data-battle-actor-label={label}
-      aria-hidden="true"
-    >
-      <img
-        src={resolvedSrc}
-        alt=""
-        decoding="async"
-        onError={() => setFailed(true)}
-      />
-    </div>
-  )
 }
 
 function PixelBattlePortrait({

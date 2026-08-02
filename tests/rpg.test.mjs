@@ -34,6 +34,7 @@ import {
   organizeBattleItems,
   relicBattleAbility,
   resolveBattleState,
+  teacherBattleResultLine,
   xpAtLevel,
   xpNeededForNextLevel,
 } from '../src/lib/rpg.js'
@@ -1363,9 +1364,13 @@ test('放課後スターはバトル正解とXP変換で増え、演出選択と
   }
 })
 
-test('同行クラスメートはバトル前に固定され、戦果確認後に次戦用として選べる', () => {
+test('同行クラスメートは次の相手の導入後、対決前の作戦会議で選べる', () => {
   const mapSource = readFileSync(
     new URL('../src/screens/EnglishMap.jsx', import.meta.url),
+    'utf8',
+  )
+  const companionSource = readFileSync(
+    new URL('../src/components/BattleCompanionPicker.jsx', import.meta.url),
     'utf8',
   )
   const resultSource = readFileSync(
@@ -1377,19 +1382,22 @@ test('同行クラスメートはバトル前に固定され、戦果確認後�
     'utf8',
   )
 
-  assert.doesNotMatch(mapSource, /setBattleStudentId|onStudent=/)
+  assert.match(mapSource, /const \[battleBriefingRead, setBattleBriefingRead\]/)
   assert.match(mapSource, /現在の同行クラスメート/)
-  assert.match(mapSource, /同行者の選択はバトル後の戦果画面/)
+  assert.match(mapSource, /同行者の選択は次の相手が分かるバトル前の作戦会議/)
+  assert.match(mapSource, /onComplete=\{\(\) => setBattleBriefingRead\(true\)\}/)
+  assert.match(mapSource, /<BattlePreparationScreen/)
+  assert.match(mapSource, /<BattleCompanionPicker/)
+  assert.match(mapSource, /onSelectStudent=\{setBattleStudentId\}/)
   assert.match(mapSource, /studentId: battleStudent\.id/)
   assert.match(mapSource, /rivalId: battleRival\.id,\s*teacherSubject,/)
-  assert.match(resultSource, /<NextBattleCompanionCard/)
-  assert.match(resultSource, /次の同行者を選ぶ/)
-  assert.match(resultSource, /BATTLE_STUDENTS\.map/)
-  assert.match(resultSource, /onSelect=\{setBattleStudentId\}/)
-  assert.match(resultSource, /次戦から反映/)
+  assert.doesNotMatch(resultSource, /NextBattleCompanionCard|次の同行者を選ぶ|upcomingRival/)
+  assert.match(resultSource, /戦いの結末を見る/)
+  assert.match(companionSource, /この対決の同行者を選ぶ/)
+  assert.match(companionSource, /BATTLE_STUDENTS\.map/)
+  assert.match(companionSource, /onSelect\(student\.id\)/)
   assert.match(quizSource, /studentId: battleStudent\.id/)
   assert.match(quizSource, /battleRivalTeacherSubject\(battleRival\.id\)/)
-  assert.match(resultSource, /upcomingRival/)
 })
 
 test('キャラ選択・全24表情・50人図鑑・3場面演出が実際のバトルへつながる', () => {
@@ -1409,6 +1417,10 @@ test('キャラ選択・全24表情・50人図鑑・3場面演出が実際のバ
     new URL('../src/screens/SessionResult.jsx', import.meta.url),
     'utf8',
   )
+  const companionSource = readFileSync(
+    new URL('../src/components/BattleCompanionPicker.jsx', import.meta.url),
+    'utf8',
+  )
   const interludeSource = readFileSync(
     new URL('../src/screens/AfterSchoolInterlude.jsx', import.meta.url),
     'utf8',
@@ -1424,9 +1436,9 @@ test('キャラ選択・全24表情・50人図鑑・3場面演出が実際のバ
   assert.doesNotMatch(mapSource, /scenicMode|夜景表示|結界表示|夜の学区を眺める/)
   assert.match(interludeSource, /profile\.choices\.map/)
   assert.match(interludeSource, /battleSupportStyleById/)
-  assert.match(interludeSource, /放課後は採点なしです/)
+  assert.match(interludeSource, /日常イベントは任意です/)
   assert.match(interludeSource, /aria-live="polite"/)
-  assert.match(resultSource, /BATTLE_STUDENTS\.map/)
+  assert.match(companionSource, /BATTLE_STUDENTS\.map/)
   assert.match(mapSource, /BATTLE_EMOTION_STATES\.map/)
   assert.match(mapSource, /<BattleTraitSphere/)
   assert.match(mapSource, /BATTLE_TRAITS\.map/)
@@ -1761,6 +1773,47 @@ test('戦果メッセージは正答率の4段階を返す', () => {
   assert.equal(battleVerdict(0.7).id, 'victory')
   assert.equal(battleVerdict(0.4).id, 'draw')
   assert.equal(battleVerdict(0).id, 'retreat')
+  assert.doesNotMatch(battleVerdict(1).text, /先生|花まる/u)
+})
+
+test('影蝕中の先生11人は開戦時と戦果で固有の悪役台詞を返す', () => {
+  const allResultLines = new Set()
+
+  for (const chapter of CHAPTERS) {
+    const encounter = encounterFor({
+      level: chapter.maxLevel,
+      day: 100,
+      enemyRankIndex: 2,
+    })
+    assert.match(encounter.intro, /悪いマナ/u, encounter.id)
+    assert.deepEqual(
+      Object.keys(encounter.resultLines).sort(),
+      ['defeated', 'dominant', 'unresolved'],
+      encounter.id,
+    )
+
+    const defeated = teacherBattleResultLine(encounter, { enemyDefeated: true })
+    const unresolved = teacherBattleResultLine(encounter, {})
+    const dominant = teacherBattleResultLine(encounter, { heroDefeated: true })
+    assert.equal(defeated, encounter.resultLines.defeated, encounter.id)
+    assert.equal(unresolved, encounter.resultLines.unresolved, encounter.id)
+    assert.equal(dominant, encounter.resultLines.dominant, encounter.id)
+    assert.equal(new Set([defeated, unresolved, dominant]).size, 3, encounter.id)
+    assert.doesNotMatch([defeated, unresolved, dominant].join(''), /花まる|褒め|拍手/u, encounter.id)
+    for (const line of [defeated, unresolved, dominant]) allResultLines.add(line)
+  }
+
+  assert.equal(allResultLines.size, CHAPTERS.length * 3)
+  const ordinaryEncounter = encounterFor({ level: CHAPTERS[0].minLevel, day: 100 })
+  assert.equal(teacherBattleResultLine(ordinaryEncounter, { enemyDefeated: true }), null)
+
+  const resultSource = readFileSync(
+    new URL('../src/screens/SessionResult.jsx', import.meta.url),
+    'utf8',
+  )
+  assert.match(resultSource, /data-testid="teacher-battle-result-line"/)
+  assert.match(resultSource, /悪いマナがほどける直前/)
+  assert.match(resultSource, /悪いマナに支配されている/)
 })
 
 test('敵ランクは冒険者LVの解放上限を超えない', () => {
