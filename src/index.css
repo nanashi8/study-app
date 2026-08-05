@@ -2681,7 +2681,7 @@
   flex-direction: column;
   align-items: center;
 }
-.battle-stage-unit > span {
+.battle-stage-unit > .battle-stage-unit-name {
   position: relative;
   z-index: 4;
   margin-top: -8px;
@@ -2719,11 +2719,11 @@
   right: 8%;
   bottom: 38%;
 }
-.pixel-battle-stage[data-battle-layout='art-grid'] .battle-stage-unit > span {
+.pixel-battle-stage[data-battle-layout='art-grid'] .battle-stage-unit > .battle-stage-unit-name {
   border-radius: 5px;
   background: rgb(8 47 73 / 0.86);
 }
-.pixel-battle-stage[data-battle-layout='art-grid'] .battle-stage-enemy > span {
+.pixel-battle-stage[data-battle-layout='art-grid'] .battle-stage-enemy > .battle-stage-unit-name {
   background: rgb(127 29 29 / 0.86);
 }
 .pixel-battle-stage[data-battle-layout='library-duel'] .battle-stage-hero {
@@ -2732,12 +2732,12 @@
 .pixel-battle-stage[data-battle-layout='library-duel'] .battle-stage-enemy {
   right: 4%;
 }
-.pixel-battle-stage[data-battle-layout='library-duel'] .battle-stage-hero > span {
+.pixel-battle-stage[data-battle-layout='library-duel'] .battle-stage-hero > .battle-stage-unit-name {
   border-color: rgb(34 211 238 / 0.52);
   color: #a5f3fc;
   background: rgb(3 105 161 / 0.82);
 }
-.pixel-battle-stage[data-battle-layout='library-duel'] .battle-stage-enemy > span {
+.pixel-battle-stage[data-battle-layout='library-duel'] .battle-stage-enemy > .battle-stage-unit-name {
   border-color: rgb(244 114 182 / 0.52);
   color: #fbcfe8;
   background: rgb(131 24 67 / 0.84);
@@ -4593,7 +4593,7 @@ button { -webkit-tap-highlight-color: transparent; }
   letter-spacing: 0.06em;
 }
 .study-app-surface :where(
-  .battle-stage-unit > span,
+  .battle-stage-unit > .battle-stage-unit-name,
   .battle-action-signal > em,
   .battle-action-signal > small,
   .battle-action-signal > b,
