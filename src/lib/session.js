@@ -51,6 +51,16 @@ function battlePool(levelIndex, rng = Math.random) {
   return [...main, ...review]
 }
 
+function dragonVeinWordPool(source = {}) {
+  const byLevel = wordsByLevel(source.levelId)
+  const fields = new Set(Array.isArray(source.fields) ? source.fields : [])
+  if (!fields.size) return byLevel
+  const focused = byLevel.filter((word) => fields.has(word.field))
+  // 担当分野が少数でも100問へ到達できるよう、同じ級の語を後段へ補う。
+  const focusedIds = new Set(focused.map((word) => word.id))
+  return [...focused, ...byLevel.filter((word) => !focusedIds.has(word.id))]
+}
+
 export function wordsForSource(source = {}) {
   switch (source.type) {
     case 'all':
@@ -63,6 +73,8 @@ export function wordsForSource(source = {}) {
       return wordsByLevel(source.levelId)
     case 'battle':
       return battlePool(source.levelIndex ?? enemyLevelIndex(source.pos ?? 0))
+    case 'dragonVein':
+      return dragonVeinWordPool(source)
     case 'root':
       return wordsByRoot(source.rootId)
     case 'mylist':
@@ -151,6 +163,12 @@ export function weakFoundationLevel(srs) {
 function phraseCandidates(source) {
   if (source.type === 'phraseList') return (source.ids ?? []).map(getPhrase).filter(Boolean)
   if (source.type === 'customPhrase') return source.items ?? []
+  if (source.type === 'dragonVeinPhrase') {
+    return [
+      ...phrasesByLevel('idiom', source.levelId),
+      ...phrasesByLevel('syntax', source.levelId),
+    ]
+  }
   if (source.levelId) return phrasesByLevel(source.kind, source.levelId)
   return phrasesByKind(source.kind)
 }
@@ -167,6 +185,10 @@ export function buildPhraseDeck(source, { srs = {}, size = SESSION_SIZE } = {}) 
     if (ra !== rb) return ra - rb
     return (srs[a.id]?.box ?? 0) - (srs[b.id]?.box ?? 0)
   })
+  if (source.type === 'dragonVeinPhrase' && size && pool.length > 0 && pool.length < size) {
+    const original = [...pool]
+    while (pool.length < size) pool.push(original[pool.length % original.length])
+  }
   return size ? pool.slice(0, size) : pool
 }
 

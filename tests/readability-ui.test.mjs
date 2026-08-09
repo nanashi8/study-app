@@ -45,7 +45,7 @@ test('画面・共通部品の6〜11px指定は全件を共通拡大規則で受
   }
   const uniqueSizes = [...new Set(sizes)].sort((a, b) => a - b)
 
-  assert.ok(sizes.length >= 700, `audited ${sizes.length} compact labels`)
+  assert.ok(sizes.length >= 650, `audited ${sizes.length} compact labels`)
   assert.deepEqual(uniqueSizes, [6, 7, 8, 9, 10, 11])
   for (const size of uniqueSizes) {
     assert.equal(css.includes(`.text-\\[${size}px\\]`), true, `${size}px override`)
@@ -114,20 +114,23 @@ test('五芒星マップは選択中の地点名だけを表示し、ボタン�
   assert.match(map, /aria-label=\{`\$\{location\.name\}・\$\{location\.role\}`\}/)
 })
 
-test('ゲーム入口は対決情報を絞り、低い画面でも4択を保つ', async () => {
+test('龍脈調査入口は修復情報を絞り、低い画面でも4択を保つ', async () => {
   const [css, map, quiz] = await Promise.all([
     readFile(new URL('../src/index.css', import.meta.url), 'utf8'),
     readFile(new URL('../src/screens/EnglishMap.jsx', import.meta.url), 'utf8'),
     readFile(new URL('../src/screens/VocabQuiz.jsx', import.meta.url), 'utf8'),
   ])
 
-  assert.match(map, /school-battle-start order-4/)
-  assert.doesNotMatch(map, /school-battle-context|school-battle-options/)
-  assert.doesNotMatch(map, /相性・絆・対決演出|このバトルの作戦|先生は悪役/)
-  assert.match(quiz, /battle-command-grid mt-2 grid grid-cols-2/)
+  assert.match(map, /data-testid="dragon-vein-restoration-board"/)
+  assert.match(map, /一度に解く問題数/)
+  assert.doesNotMatch(map.slice(
+    map.indexOf('export function AfterSchoolChronicleScreen'),
+    map.indexOf('function ChroniclePortalCard'),
+  ), /school-battle-context|相性・絆・対決演出|このバトルの作戦|先生は悪役|HP|ATK|DEF/)
+  assert.match(quiz, /isDragonVein \? 'mt-2 grid grid-cols-2 gap-2'/)
   assert.match(quiz, /\{options\.map\(/)
   assert.match(quiz, /<UnknownChoiceButton/)
-  assert.match(css, /@media \(max-height: 640px\)[\s\S]*height: 164px;[\s\S]*\.battle-turn-track,[\s\S]*display: none;[\s\S]*grid-auto-rows: 58px;/)
+  assert.match(css, /@media \(max-width: 350px\), \(max-height: 640px\)[\s\S]*\.dragon-vein-stage-scene \{ height: 11\.25rem; \}/)
 })
 
 test('ゲーム全体は携帯ゲーム機の共通枠と4分類に統一し、詳細を引き出しへしまう', async () => {
@@ -152,9 +155,9 @@ test('ゲーム全体は携帯ゲーム機の共通枠と4分類に統一し、�
     [...menuConfig.matchAll(/id: '([^']+)', label: '([^']+)'/g)]
       .map(([, id, label]) => [id, label]),
     [
-      ['battle', '対決'],
-      ['growth', '育成'],
-      ['friends', '仲間'],
+      ['restoration', '修復'],
+      ['growth', '調査'],
+      ['friends', '協力者'],
       ['school', '学園'],
     ],
   )
@@ -164,14 +167,14 @@ test('ゲーム全体は携帯ゲーム機の共通枠と4分類に統一し、�
   assert.match(screen, /className="after-school-console-key"/)
   assert.match(screen, /data-game-menu=\{section\.id\}/)
   assert.match(screen, /data-game-menu-panel=\{menuSection\.id\}/)
-  assert.match(screen, /menuSection\.id === 'battle'[\s\S]*<AdventureCard/)
+  assert.match(screen, /menuSection\.id === 'restoration'[\s\S]*<DragonVeinRestorationBoard/)
   assert.doesNotMatch(screen, /ChronicleHero/)
-  assert.match(screen, /menuSection\.id === 'growth'[\s\S]*<XpExchangeCard[\s\S]*<AfterSchoolWorld[\s\S]*<AdventureProgress[\s\S]*<ChapterTrail/)
+  assert.match(screen, /menuSection\.id === 'growth'[\s\S]*<InvestigationExperienceCard[\s\S]*<DragonVeinProgressSummary/)
   assert.match(screen, /menuSection\.id === 'friends'[\s\S]*<AfterSchoolBondBoard[\s\S]*<BattleCastRoster/)
   assert.match(screen, /menuSection\.id === 'school'[\s\S]*<StoryArcTimeline[\s\S]*<SchoolBarrierMap[\s\S]*<SchoolLifeAlbum[\s\S]*<TeacherSchoolLife/)
-  assert.match(screen, /title="育成の記録"/)
-  assert.match(screen, /title="仲間のプロフィール"/)
-  assert.match(screen, /title="先生と話す"/)
+  assert.match(screen, /title="調査の記録"/)
+  assert.match(screen, /title="協力する生徒たち"/)
+  assert.match(screen, /title="先生の記憶を聞く"/)
   assert.doesNotMatch(screen, /StoryKeyVisualAlbum|storyKeyVisualAlbum/)
   assert.match(menu, /const APP_MENU_EXTRAS[\s\S]*screen: 'storyAlbum'[\s\S]*label: '思い出アルバム'/)
   assert.match(menu, /data-menu-extras/)

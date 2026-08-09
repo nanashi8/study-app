@@ -5,7 +5,7 @@ export const MAX_BATTLE_STARS = 9_999_999
 export const BATTLE_XP_PER_EXCHANGE = 50
 export const BATTLE_STARS_PER_EXCHANGE = 25
 
-export const BATTLE_BARRIER_MAP_IMAGE = publicAssetUrl('/assets/battle/world/barrier-district-night-v2.webp')
+export const BATTLE_BARRIER_MAP_IMAGE = publicAssetUrl('/assets/battle/world/dragon-vein-district.webp')
 
 // 夜景の窓明かり。百分率座標なので画面幅が変わっても建物の上に留まる。
 export const BATTLE_BARRIER_WINDOW_LIGHTS = [
@@ -112,12 +112,12 @@ export const BATTLE_BARRIER_TRAFFIC_LIGHTS = [
 export const BATTLE_BARRIER_CENTER = {
   id: 'school',
   name: '学校',
-  role: '中央核',
+  role: '龍脈観測拠点',
   emoji: '🏫',
   x: 50,
   y: 53,
   accent: '#fde68a',
-  description: '五つの結界脈を束ねる中心核。生徒たちの学びが結界を安定させる。',
+  description: '先生と生徒が英語記憶の欠落を持ち寄り、五つの龍脈を観測する学校。',
 }
 
 // 背景画像のランドマーク位置に合わせた百分率座標。
@@ -126,52 +126,52 @@ export const BATTLE_BARRIER_NODES = [
   {
     id: 'library',
     name: '図書館',
-    role: '知識の頂点',
+    role: '5級・記憶の頂点',
     emoji: '📚',
     x: 50,
     y: 17,
     accent: '#a78bfa',
-    description: '街に蓄えられた記憶と言葉を守る、北端の結界点。',
+    description: '如月先生と、英単語100語・熟語と構文100題を古い索引から復元する。',
   },
   {
     id: 'station',
     name: '駅前',
-    role: '交流の頂点',
+    role: '4級・交流の頂点',
     emoji: '🚉',
     x: 79,
     y: 29,
     accent: '#38bdf8',
-    description: '人とことばが行き交い、新しい物語を運び込む東の玄関。',
+    description: 'エレナ先生と、案内表示から消えた英語を100語・100題ずつ復元する。',
   },
   {
     id: 'central-park',
     name: '中央公園',
-    role: '調和の頂点',
+    role: '3級・生命の頂点',
     emoji: '🌳',
     x: 75,
     y: 76,
     accent: '#34d399',
-    description: '噴水と緑が街の呼吸を整える、憩いの結界点。',
+    description: '森先生と、生き物や環境に残る英語の違和感を100語・100題ずつ調べる。',
   },
   {
     id: 'shrine',
     name: '神社',
-    role: '継承の頂点',
+    role: '準2級・継承の頂点',
     emoji: '⛩️',
     x: 25,
     y: 77,
     accent: '#fb7185',
-    description: '古い誓いと地域の記憶を受け継ぐ、静かな結界点。',
+    description: '榊先生と、古い奉納文へ紛れた英語を100語・100題ずつ読み解く。',
   },
   {
     id: 'stadium',
     name: '競技場',
-    role: '意志の頂点',
+    role: '2級・意志の頂点',
     emoji: '🏟️',
     x: 20,
     y: 32,
     accent: '#f59e0b',
-    description: '挑戦する身体と意志の熱を蓄える、西側の結界点。',
+    description: '風早先生と、記録や戦術から消えた英語を100語・100題ずつ再構成する。',
   },
 ]
 
@@ -215,6 +215,10 @@ export const BATTLE_STAGE_BACKGROUNDS = Object.freeze([
 const BATTLE_STAGE_BY_ID = new Map(
   BATTLE_STAGE_BACKGROUNDS.map((stage) => [stage.id, stage]),
 )
+
+export function battleStageById(id) {
+  return BATTLE_STAGE_BY_ID.get(id) ?? BATTLE_STAGE_BACKGROUNDS[0]
+}
 
 const BATTLE_STAGE_GROUP_POOLS = Object.freeze({
   humanities: ['grand-library', 'classroom', 'shrine-forecourt', 'station-platform', 'central-park', 'riverside-promenade'],

@@ -116,8 +116,8 @@ function RouteHub({
   return (
     <div className="min-h-full bg-gradient-to-b from-slate-950 via-indigo-950 to-violet-950 pb-8 text-white">
       <ScreenHeader
-        title="戦いのあとの放課後"
-        subtitle="交流するか、次の事件へ進むかを選ぶ"
+        title="調査のあとの放課後"
+        subtitle="交流するか、次の歪みを調べるかを選ぶ"
         onBack={onBack}
         color="#0f172a"
         inverse
@@ -135,7 +135,7 @@ function RouteHub({
             <span className="rounded-full border border-cyan-100/25 bg-slate-950/60 px-2 py-1 text-[8px] font-extrabold tracking-[0.16em] text-cyan-100 backdrop-blur-sm">
               AFTER SCHOOL CROSSROADS
             </span>
-            <h1 className="mt-2 font-display text-xl font-extrabold">戦いのあとは、いつもの時間</h1>
+            <h1 className="mt-2 font-display text-xl font-extrabold">調査のあとは、いつもの時間</h1>
             <p className="mt-1 text-[10px] font-bold leading-relaxed text-white/65">
               行き先と過ごす相手で、会話も育つ関係も変わります。
             </p>
@@ -203,7 +203,7 @@ function RouteHub({
                     </span>
                     <span className="mt-1.5 block"><BondMeter bond={bond} inverse /></span>
                     <span className="mt-1.5 block truncate text-[8px] font-extrabold text-amber-200">
-                      {unlocked ? `NEXT · ${nextReward}` : 'FIRST EVENT · 話すと共闘できる仲間に'}
+                      {unlocked ? `NEXT · ${nextReward}` : 'FIRST EVENT · 話すと調査に協力する仲間に'}
                     </span>
                   </span>
                 </button>
@@ -216,7 +216,7 @@ function RouteHub({
           日常イベントは任意です。選ぶと絆とXPを得られ、性格に合う言葉では絆が少し多く伸びます。
         </p>
         <Button full variant="secondary" onClick={onSkip}>
-          日常イベントを見ず、次の事件へ <ArrowRight size={18} />
+          日常イベントを見ず、次の調査へ <ArrowRight size={18} />
         </Button>
         <Button full variant="ghost" className="text-white/65 active:bg-white/10" onClick={onHome}>
           今回はここで終える
@@ -242,7 +242,7 @@ export function AfterSchoolInterludeScreen() {
     () => afterSchoolBranchOptions({ step: storyStep, currentStudentId }),
     [storyStep, currentStudentId],
   )
-  // 対決の結末後に自由時間へ入り、3つの日常か次の事件かを自分で選ぶ。
+  // 共同解読のあとに自由時間へ入り、3つの日常か次の調査かを自分で選ぶ。
   const [branchId, setBranchId] = useState(null)
   const [choiceId, setChoiceId] = useState(null)
   const [reward, setReward] = useState(null)
@@ -286,7 +286,7 @@ export function AfterSchoolInterludeScreen() {
       <LightNovelScene
         story={epilogue}
         image={AFTER_SCHOOL_CHRONICLE.keyVisual}
-        imageAlt="ことばの対決を終え、クラスメイトたちが日常へ戻る昇降口"
+        imageAlt="龍脈の共同解読を終え、クラスメイトたちが日常へ戻る昇降口"
         portraits={{
           'student-relieved': battleStudentPortrait(currentStudent.id, 'relieved'),
         }}
@@ -523,7 +523,7 @@ export function AfterSchoolInterludeScreen() {
               {reward.companionUnlocked && (
                 <div className="mt-2 rounded-xl border border-pink-200/25 bg-pink-300/10 px-3 py-2">
                   <p className="text-[8px] font-extrabold text-pink-200">NEW COMPANION · KEY VISUAL SAVED</p>
-                  <p className="mt-0.5 text-xs font-extrabold">🤝 {bond.student.name}が共闘できる仲間になった</p>
+                  <p className="mt-0.5 text-xs font-extrabold">🤝 {bond.student.name}が龍脈調査に協力する仲間になった</p>
                   <p className="mt-0.5 text-[9px] font-bold text-white/55">この出会いはアルバムから振り返れ、次の相手が分かった後の作戦会議で同行者に選べます。</p>
                 </div>
               )}

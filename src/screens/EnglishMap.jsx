@@ -1,42 +1,19 @@
 import { useEffect, useState } from 'react'
 import { useStore, todayIndex } from '../store/useStore.js'
 import { PASSAGES } from '../data/passages.js'
-import { LEVELS } from '../data/levels.js'
 import {
   SCHOOL_LIFE_VISUAL_CATEGORIES,
   SCHOOL_LIFE_VISUALS,
   schoolLifeVisualById,
 } from '../data/school-life-visuals.js'
 import { suggestStartPosition } from '../lib/session.js'
-import {
-  battleSource,
-  enemyLevel,
-  enemyLevelIndex,
-} from '../lib/adaptive.js'
-import {
-  BATTLE_QUESTS,
-  CHAPTERS,
-  battleQuest,
-  battleRelicForLevel,
-  capEnemyPositionForHeroLevel,
-  encounterFor,
-  featuredQuestId,
-  heroProgress,
-  relicStatLabel,
-} from '../lib/rpg.js'
+import { heroProgress } from '../lib/rpg.js'
 import {
   BATTLE_BARRIER_CENTER,
   BATTLE_BARRIER_MAP_IMAGE,
   BATTLE_BARRIER_NODES,
   BATTLE_BARRIER_STAR_ORDER,
-  BATTLE_BARRIER_TRAFFIC_LIGHTS,
-  BATTLE_BARRIER_WINDOW_LIGHTS,
-  BATTLE_STARS_PER_EXCHANGE,
-  BATTLE_THEMES,
-  BATTLE_XP_PER_EXCHANGE,
   battleBarrierLocationById,
-  battleXpExchange,
-  battleThemeById,
 } from '../lib/battleThemes.js'
 import {
   BATTLE_DAILY_SCENES,
@@ -46,9 +23,6 @@ import {
   BATTLE_STUDENTS,
   battleDailySceneById,
   battleEmotionById,
-  battleOpponentForEncounter,
-  battleRivalForEncounter,
-  battleRivalTeacherSubject,
   battleStudentBestSubjects,
   battleStudentById,
   battleStudentLifestylePortrait,
@@ -56,12 +30,6 @@ import {
   battleSupportStyleById,
   battleTeacherAffinity,
 } from '../lib/battleCast.js'
-import {
-  BATTLE_TRAITS,
-  BATTLE_TRAIT_POINT_STARS,
-  MAX_BATTLE_TRAIT_LEVEL,
-  battleStudentTraitProfile,
-} from '../lib/battleTraits.js'
 import {
   TEACHER_SCHOOL_LIFE,
   TEACHER_TEST_SCORE_CHOICES,
@@ -71,11 +39,9 @@ import {
 } from '../lib/teacherSchoolLife.js'
 import {
   AFTER_SCHOOL_CHRONICLE,
-  afterSchoolBattleChapter,
   afterSchoolPrologue,
 } from '../lib/afterSchoolStory.js'
 import {
-  afterSchoolBattleSkill,
   afterSchoolBondState,
   normalizeUnlockedBattleStudentIds,
 } from '../lib/afterSchoolBonds.js'
@@ -84,13 +50,9 @@ import {
   afterSchoolStoryArcForStep,
 } from '../lib/storyProgression.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
-import { BattleCompanionPicker } from '../components/BattleCompanionPicker.jsx'
 import { LightNovelScene } from '../components/LightNovelScene.jsx'
 import { MobPortrait } from '../components/MobPortrait.jsx'
 import { TeacherPortrait } from '../components/TeacherPortrait.jsx'
-import { BattleStandingActor } from '../components/BattleStandingActor.jsx'
-import { BattleOpponentStandingActor } from '../components/BattleOpponentStandingActor.jsx'
-import { BattleStageBackdrop } from '../components/BattleStageBackdrop.jsx'
 import { Button, ProgressRing, ProgressBar, Chip, cx } from '../components/ui.jsx'
 import {
   ArrowRight,
@@ -108,6 +70,15 @@ import {
   Target,
 } from '../components/Icons.jsx'
 import { publicAssetUrl } from '../lib/publicAssetUrl.js'
+import {
+  DRAGON_VEIN_MAIN_NODE_IDS,
+  DRAGON_VEIN_NODES,
+  DRAGON_VEIN_TARGET,
+  dailyDistortionForDay,
+  dragonVeinNodeStatus,
+  dragonVeinSessionSource,
+  dragonVeinSummary,
+} from '../lib/dragonVein.js'
 
 // テスト結果から弱点を判定するしきい値。
 const MIN_ATTEMPTS = 10
@@ -140,10 +111,10 @@ const CHRONICLE_ICON_COMPONENTS = {
 }
 
 const CHRONICLE_MENU_SECTIONS = Object.freeze([
-  { id: 'battle', label: '対決', description: '今日の先生課題に挑む', icon: 'battle' },
-  { id: 'growth', label: '育成', description: 'XPと進行報酬を確認する', icon: 'trait' },
-  { id: 'friends', label: '仲間', description: '関係と同行者を振り返る', icon: 'journal' },
-  { id: 'school', label: '学園', description: '校内の物語と先生に会う', icon: 'faculty' },
+  { id: 'restoration', label: '修復', description: '五地点と日常の歪みを解読する', icon: 'challenge' },
+  { id: 'growth', label: '調査', description: 'XPと龍脈印を確認する', icon: 'trait' },
+  { id: 'friends', label: '協力者', description: '生徒たちとの調査記録', icon: 'journal' },
+  { id: 'school', label: '学園', description: '龍脈図と先生の記憶を調べる', icon: 'faculty' },
 ])
 
 // ゲーム入口の主要アイコンはOSの絵文字フォントへ依存させない。
@@ -237,89 +208,23 @@ export function EnglishMapScreen() {
 
 export function AfterSchoolChronicleScreen() {
   const navigate = useStore((s) => s.navigate)
-  const srs = useStore((s) => s.srs)
+  const params = useStore((s) => s.params)
   const stats = useStore((s) => s.stats)
-  const engPos = useStore((s) => s.engPos)
-  const setEngPos = useStore((s) => s.setEngPos)
-  const battleRelicLevel = useStore((s) => s.battleRelicLevel)
-  const battleStars = useStore((s) => s.battleStars)
-  const battleXpSpent = useStore((s) => s.battleXpSpent)
-  const exchangeXpForBattleStars = useStore((s) => s.exchangeXpForBattleStars)
-  const battleThemeId = useStore((s) => s.battleThemeId)
   const battleStudentId = useStore((s) => s.battleStudentId)
-  const setBattleStudentId = useStore((s) => s.setBattleStudentId)
   const afterSchoolBonds = useStore((s) => s.afterSchoolBonds)
   const unlockedBattleStudentIds = useStore((s) => s.unlockedBattleStudentIds)
-  const battleTraitInvestments = useStore((s) => s.battleTraitInvestments)
   const battleStoryStep = useStore((s) => s.battleStoryStep)
+  const dragonVeinProgress = useStore((s) => s.dragonVeinProgress)
   const hero = heroProgress(stats.xp)
-  const battleRelic = battleRelicForLevel(hero.level, battleRelicLevel)
-  const battleTheme = battleThemeById(battleThemeId, battleStars)
   const battleStudent = battleStudentById(battleStudentId)
-  const battleBondSkill = afterSchoolBattleSkill(battleStudent.id, afterSchoolBonds)
-  const studentTraitProfile = battleStudentTraitProfile(
-    battleStudent.id,
-    battleTraitInvestments,
-    battleStars,
-  )
-  const inferredPos = engPos ?? suggestStartPosition(srs)
-  const pos = capEnemyPositionForHeroLevel(inferredPos, hero.level)
-
-  useEffect(() => {
-    if (engPos !== pos) setEngPos(pos)
-  }, [engPos, pos, setEngPos])
-
   const day = todayIndex()
-  const [menuSectionId, setMenuSectionId] = useState('battle')
+  const [menuSectionId, setMenuSectionId] = useState(() => (
+    CHRONICLE_MENU_SECTIONS.some(({ id }) => id === params?.menuSectionId)
+      ? params.menuSectionId
+      : 'restoration'
+  ))
   const [showPrologue, setShowPrologue] = useState(() => battleStoryStep === 0)
-  const [pendingQuest, setPendingQuest] = useState(null)
-  const [battleBriefingRead, setBattleBriefingRead] = useState(false)
-  const encounter = encounterFor({
-    level: hero.level,
-    day,
-    enemyRankIndex: enemyLevelIndex(pos),
-  })
-  const baseBattleRival = battleRivalForEncounter(encounter, day)
-  const battleRival = battleOpponentForEncounter(encounter, baseBattleRival)
-  const teacherSubject = encounter.teacherSubject
-    ?? battleRivalTeacherSubject(battleRival.id)
-  const teacherAffinity = battleTeacherAffinity(
-    battleStudent.id,
-    teacherSubject,
-  )
-  const launchBattle = (quest) => {
-    navigate('vocabQuiz', {
-      source: {
-        ...battleSource(pos),
-        questId: quest.id,
-        relicLevel: battleRelic.level,
-        themeId: battleTheme.id,
-        studentId: battleStudent.id,
-        bondSkillId: battleBondSkill?.id ?? null,
-        traitId: studentTraitProfile.dominant.id,
-        rivalId: battleRival.id,
-        teacherSubject,
-        adventureDay: day,
-        storyStep: battleStoryStep,
-        heroLevel: hero.level,
-      },
-      title: `ことばの対決：${battleRival.name}`,
-      mode: 'quiz',
-      size: quest.size,
-    })
-  }
-
   const prologue = afterSchoolPrologue({ studentName: battleStudent.name })
-  const battleChapter = pendingQuest
-    ? afterSchoolBattleChapter({
-        storyStep: battleStoryStep,
-        studentName: battleStudent.name,
-        rivalName: battleRival.name,
-        encounterName: encounter.chapterName ?? encounter.name,
-        questSize: pendingQuest.size,
-        isTeacher: encounter.isTeacher,
-      })
-    : null
   const novelPortraits = {
     'student-curious': battleStudentPortrait(battleStudent.id, 'curious'),
     'student-determined': battleStudentPortrait(battleStudent.id, 'determined'),
@@ -337,54 +242,57 @@ export function AfterSchoolChronicleScreen() {
         portraits={novelPortraits}
         onBack={() => setShowPrologue(false)}
         onComplete={() => setShowPrologue(false)}
-        completeLabel="課題の章へ"
-        skipLabel="章選択へ"
+        completeLabel="龍脈調査へ"
+        skipLabel="調査端末へ"
       />
     )
   }
 
-  if (pendingQuest && battleChapter && !battleBriefingRead) {
-    return (
-      <LightNovelScene
-        story={battleChapter}
-        image={battleTheme.stage}
-        imageAlt={`${battleTheme.name}。${battleRival.name}とのことばの対決が始まる舞台`}
-        portraits={novelPortraits}
-        onBack={() => setPendingQuest(null)}
-        onComplete={() => setBattleBriefingRead(true)}
-        completeLabel="対決準備へ"
-        skipLabel="対決準備へ"
-      />
-    )
+  const launchRestoration = (node, kind, size) => {
+    const source = dragonVeinSessionSource(node.id, kind, {
+      studentId: battleStudent.id,
+      guideName: node.guideName,
+      guideRole: node.guideRole,
+    })
+    navigate(kind === 'phrase' ? 'phraseQuiz' : 'vocabQuiz', {
+      source,
+      title: `${node.name}・${kind === 'phrase' ? '熟語と構文' : '英単語'}の龍脈解読`,
+      mode: 'quiz',
+      engine: kind === 'phrase' ? 'phrase' : 'vocab',
+      size,
+    })
   }
 
-  if (pendingQuest && battleChapter && battleBriefingRead) {
-    return (
-      <BattlePreparationScreen
-        chapterTitle={battleChapter.title}
-        quest={pendingQuest}
-        encounter={encounter}
-        opponent={battleRival}
-        teacherSubject={teacherSubject}
-        battleTheme={battleTheme}
-        selectedStudent={battleStudent}
-        unlockedStudentIds={unlockedBattleStudentIds}
-        onSelectStudent={setBattleStudentId}
-        onReviewStory={() => setBattleBriefingRead(false)}
-        onCancel={() => {
-          setPendingQuest(null)
-          setBattleBriefingRead(false)
-        }}
-        onStart={() => launchBattle(pendingQuest)}
-      />
-    )
+  const launchDailyRestoration = () => {
+    const distortion = dailyDistortionForDay(day)
+    const nodeId = DRAGON_VEIN_NODES.find((node) => node.levelId === distortion.levelId)?.id
+      ?? DRAGON_VEIN_MAIN_NODE_IDS[0]
+    const source = dragonVeinSessionSource(nodeId, distortion.kind, {
+      isDaily: true,
+      distortionId: distortion.id,
+      distortionTitle: distortion.title,
+      distortionPlace: distortion.place,
+      distortionSummary: distortion.summary,
+      levelId: distortion.levelId,
+      guideId: distortion.guideId,
+      fields: distortion.fields ?? [],
+      stageId: distortion.stageId,
+      studentId: battleStudent.id,
+    })
+    navigate(distortion.kind === 'phrase' ? 'phraseQuiz' : 'vocabQuiz', {
+      source,
+      title: `日常の歪み：${distortion.title}`,
+      mode: 'quiz',
+      engine: distortion.kind === 'phrase' ? 'phrase' : 'vocab',
+      size: 10,
+    })
   }
 
   return (
     <div className="after-school-game-icons pb-8">
       <ScreenHeader
-        title={AFTER_SCHOOL_CHRONICLE.title}
-        subtitle="学習XPで進む放課後ゲーム"
+        title="英語記憶・龍脈調査録"
+        subtitle="先生と生徒で、消えた英語を日常へ戻す"
         titleClassName="after-school-screen-title"
         subtitleClassName="after-school-screen-subtitle"
       />
@@ -394,8 +302,8 @@ export function AfterSchoolChronicleScreen() {
           <div className="after-school-console-bezel">
             <div className="after-school-console-status" aria-hidden="true">
               <span>{menuSection.label}</span>
-              <span>LV {hero.level}</span>
-              <span>✦ {battleStars.toLocaleString()}</span>
+              <span>調査LV {hero.level}</span>
+              <span>調査XP {stats.xp.toLocaleString()}</span>
             </div>
 
             <div
@@ -406,41 +314,29 @@ export function AfterSchoolChronicleScreen() {
               aria-label={`${menuSection.label}メニュー。${menuSection.description}`}
               tabIndex={0}
             >
-              {menuSection.id === 'battle' && (
-                <AdventureCard
-                  pos={pos}
-                  hero={hero}
-                  encounter={encounter}
+              {menuSection.id === 'restoration' && (
+                <DragonVeinRestorationBoard
+                  progress={dragonVeinProgress}
+                  student={battleStudent}
                   day={day}
-                  battleStars={battleStars}
-                  battleTheme={battleTheme}
-                  battleStudent={battleStudent}
-                  studentTraitProfile={studentTraitProfile}
-                  battleRival={battleRival}
-                  teacherSubject={teacherAffinity.subject}
-                  onBattle={(quest) => {
-                    setPendingQuest(quest)
-                    setBattleBriefingRead(false)
-                  }}
+                  onDaily={launchDailyRestoration}
+                  onLaunch={launchRestoration}
                 />
               )}
 
               {menuSection.id === 'growth' && (
                 <>
-                  <XpExchangeCard
+                  <InvestigationExperienceCard
                     totalXp={stats.xp}
-                    spentXp={battleXpSpent}
-                    battleStars={battleStars}
-                    onExchange={exchangeXpForBattleStars}
+                    hero={hero}
+                    progress={dragonVeinProgress}
                   />
                   <ChronicleDrawer
                     icon="chapter"
-                    title="育成の記録"
-                    description="エリア・次の報酬・校内マップ"
+                    title="調査の記録"
+                    description="五地点の正常化と次の目標"
                   >
-                    <AfterSchoolWorld battleStars={battleStars} selectedTheme={battleTheme} />
-                    <AdventureProgress hero={hero} />
-                    <ChapterTrail hero={hero} />
+                    <DragonVeinProgressSummary progress={dragonVeinProgress} />
                   </ChronicleDrawer>
                 </>
               )}
@@ -454,14 +350,12 @@ export function AfterSchoolChronicleScreen() {
                   />
                   <ChronicleDrawer
                     icon="trait"
-                    title="仲間のプロフィール"
-                    description="同行者・星彩・表情・人物記録"
+                    title="協力する生徒たち"
+                    description="同行者・得意分野・表情・人物記録"
                   >
-                    <BattleCastRoster
-                      selectedStudentId={battleStudent.id}
-                      battleStars={battleStars}
-                      investments={battleTraitInvestments}
-                      unlockedStudentIds={unlockedBattleStudentIds}
+                  <BattleCastRoster
+                    selectedStudentId={battleStudent.id}
+                    unlockedStudentIds={unlockedBattleStudentIds}
                     />
                   </ChronicleDrawer>
                 </>
@@ -472,10 +366,10 @@ export function AfterSchoolChronicleScreen() {
                   <StoryArcTimeline storyStep={battleStoryStep} />
                   <ChronicleDrawer
                     icon="chapter"
-                    title="校内マップ"
-                    description="五芒星の結界と各地点"
+                    title="龍脈俯瞰図"
+                    description="学校を中心とする五芒星と五地点"
                   >
-                    <SchoolBarrierMap />
+                    <SchoolBarrierMap progress={dragonVeinProgress} />
                   </ChronicleDrawer>
                   <ChronicleDrawer
                     icon="journal"
@@ -486,8 +380,8 @@ export function AfterSchoolChronicleScreen() {
                   </ChronicleDrawer>
                   <ChronicleDrawer
                     icon="faculty"
-                    title="先生と話す"
-                    description="12科目の先生との学校生活"
+                    title="先生の記憶を聞く"
+                    description="担当分野に残る英語の違和感を調査"
                   >
                     <TeacherSchoolLife student={battleStudent} />
                   </ChronicleDrawer>
@@ -516,12 +410,140 @@ export function AfterSchoolChronicleScreen() {
           </nav>
 
           <div className="after-school-console-footer" aria-hidden="true">
-            <span>ことば端末</span>
+            <span>龍脈調査端末</span>
             <span className="after-school-console-speaker" />
           </div>
         </div>
       </div>
     </div>
+  )
+}
+
+function DragonVeinRestorationBoard({ progress, student, day, onDaily, onLaunch }) {
+  const summary = dragonVeinSummary(progress)
+  const distortion = dailyDistortionForDay(day)
+  return (
+    <div className="space-y-3" data-testid="dragon-vein-restoration-board">
+      <section className="overflow-hidden rounded-3xl bg-slate-950 text-white shadow-card">
+        <img
+          src={BATTLE_BARRIER_MAP_IMAGE}
+          alt="学校を中心に、図書館、駅前、中央公園、神社、競技場へ龍脈が伸びる現代日本の街"
+          className="aspect-video w-full object-cover"
+        />
+        <div className="p-4">
+          <p className="text-[9px] font-extrabold tracking-[0.18em] text-cyan-300">THE FORGOTTEN ENGLISH</p>
+          <h2 className="mt-0.5 font-display text-lg font-extrabold">英語を忘れた街の龍脈</h2>
+          <p className="mt-2 text-[10px] font-bold leading-relaxed text-white/65">
+            英語が当たり前に使われていた記憶は、主人公たちと一部の生徒にしか残っていない。
+            先生たちのかすかな記憶と専門知識を借り、五つの頂点で単語100語・熟語と構文100題を紡ぎ直す。
+          </p>
+          <div className="mt-3 flex items-center gap-3">
+            <img src={battleStudentPortrait(student.id, 'thinking')} alt={`${student.name}が龍脈について考えている表情`} className="h-12 w-12 rounded-xl bg-slate-900 object-cover [image-rendering:pixelated]" />
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center justify-between text-[10px] font-extrabold"><span>主要五地点</span><span>{summary.completeNodes}/{summary.totalNodes} 正常化</span></div>
+              <ProgressBar value={summary.restored / summary.target} color="linear-gradient(90deg,#22d3ee,#a78bfa,#fbbf24)" className="mt-1.5" />
+              <p className="mt-1 text-[8px] font-bold text-white/45">復元 {summary.restored}/{summary.target} 断片</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <DailyDistortionCard distortion={distortion} progress={progress} onStart={onDaily} />
+
+      <div className="space-y-2">
+        {DRAGON_VEIN_NODES.map((node) => (
+          <DragonVeinNodeCard
+            key={node.id}
+            node={node}
+            status={dragonVeinNodeStatus(progress, node.id)}
+            extraUnlocked={summary.extraUnlocked}
+            onLaunch={onLaunch}
+          />
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function DailyDistortionCard({ distortion, progress, onStart }) {
+  return (
+    <section className="rounded-3xl border-2 border-emerald-200 bg-gradient-to-br from-emerald-50 via-white to-cyan-50 p-4 shadow-card">
+      <div className="flex items-start justify-between gap-2">
+        <div>
+          <p className="text-[9px] font-extrabold tracking-[0.14em] text-emerald-600">TODAY'S DISTORTION · {distortion.place}</p>
+          <h2 className="mt-1 font-display text-base font-extrabold text-ink">{distortion.title}</h2>
+        </div>
+        <span className="rounded-full bg-emerald-100 px-2 py-1 text-[9px] font-extrabold text-emerald-800">10問</span>
+      </div>
+      <p className="mt-2 text-[10px] font-bold leading-relaxed text-ink/55">{distortion.summary}</p>
+      <div className="mt-3 flex items-center justify-between gap-3 rounded-2xl bg-white/80 p-3 ring-1 ring-emerald-100">
+        <div><b className="block text-xs text-ink">日常修復 {progress?.daily?.repairs ?? 0}件</b><small className="font-bold text-ink/40">経験値を蓄えて五芒星へ挑む</small></div>
+        <button type="button" onClick={onStart} className="min-h-10 shrink-0 rounded-xl bg-emerald-600 px-3 text-[10px] font-extrabold text-white active:scale-95">調査する</button>
+      </div>
+    </section>
+  )
+}
+
+function DragonVeinNodeCard({ node, status, extraUnlocked, onLaunch }) {
+  const locked = node.extra && !extraUnlocked
+  const [size, setSize] = useState(10)
+  return (
+    <section
+      className={cx(
+        'overflow-hidden rounded-3xl border-2 bg-white shadow-card',
+        locked ? 'border-slate-200 opacity-75' : status.complete ? 'border-emerald-300' : 'border-violet-100',
+      )}
+      data-dragon-node={node.id}
+    >
+      <div className="flex items-center gap-3 p-3.5">
+        <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl text-2xl" style={{ backgroundColor: `${node.accent}18`, color: node.accent }}>{locked ? '🔒' : node.emoji}</span>
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-2"><h3 className="font-display text-sm font-extrabold text-ink">{node.name}</h3><span className="rounded-full px-2 py-0.5 text-[8px] font-extrabold" style={{ backgroundColor: `${node.accent}18`, color: node.accent }}>{node.levelLabel}</span></div>
+          <p className="mt-0.5 truncate text-[9px] font-bold text-ink/45">協力：{node.guideName} · {node.guideRole}</p>
+        </div>
+        {status.complete && <span className="text-xl" aria-label="正常化済み">✨</span>}
+      </div>
+      {locked ? (
+        <p className="border-t border-slate-100 px-4 py-3 text-[10px] font-bold leading-relaxed text-ink/50">五つの主要地点で単語と熟語・構文を各100正解すると、1級の記憶層が開く。</p>
+      ) : (
+        <div className="border-t border-slate-100 p-3">
+          <div className="grid grid-cols-2 gap-2">
+            {[
+              ['vocab', '英単語', status.vocab],
+              ['phrase', '熟語・構文', status.phrase],
+            ].map(([kind, label, track]) => (
+              <div key={kind} className="rounded-2xl bg-slate-50 p-2.5">
+                <div className="flex items-center justify-between text-[9px] font-extrabold text-ink"><span>{label}</span><span>{track.correct}/{DRAGON_VEIN_TARGET}</span></div>
+                <ProgressBar value={track.correct / DRAGON_VEIN_TARGET} color={node.accent} className="mt-1.5 h-1.5" />
+                <button type="button" onClick={() => onLaunch(node, kind, size)} className="mt-2 min-h-9 w-full rounded-xl text-[9px] font-extrabold text-white active:scale-95" style={{ backgroundColor: node.accent }}>{track.correct >= DRAGON_VEIN_TARGET ? '再調査' : `${size}問を解読`}</button>
+              </div>
+            ))}
+          </div>
+          <div className="mt-2 flex items-center justify-between gap-2">
+            <span className="text-[9px] font-bold text-ink/45">一度に解く問題数</span>
+            <div className="flex gap-1">
+              {[10, 20, 100].map((value) => <button key={value} type="button" aria-pressed={size === value} onClick={() => setSize(value)} className={cx('min-h-8 rounded-lg px-2.5 text-[9px] font-extrabold', size === value ? 'bg-slate-900 text-white' : 'bg-slate-100 text-ink/55')}>{value}</button>)}
+            </div>
+          </div>
+        </div>
+      )}
+    </section>
+  )
+}
+
+function DragonVeinProgressSummary({ progress }) {
+  const summary = dragonVeinSummary(progress)
+  return (
+    <section className="rounded-3xl bg-slate-950 p-4 text-white shadow-card">
+      <p className="text-[9px] font-extrabold tracking-[0.18em] text-cyan-300">DRAGON VEIN LEDGER</p>
+      <h2 className="font-display text-base font-extrabold">世界正常化までの記録</h2>
+      <div className="mt-3 grid grid-cols-3 gap-2 text-center">
+        <div className="rounded-2xl bg-white/10 p-2"><b className="block text-lg">{summary.completeNodes}/5</b><small className="text-[8px] font-bold text-white/50">正常化地点</small></div>
+        <div className="rounded-2xl bg-white/10 p-2"><b className="block text-lg">{summary.restored}</b><small className="text-[8px] font-bold text-white/50">復元断片</small></div>
+        <div className="rounded-2xl bg-white/10 p-2"><b className="block text-lg">{progress?.daily?.repairs ?? 0}</b><small className="text-[8px] font-bold text-white/50">日常修復</small></div>
+      </div>
+      <p className="mt-3 text-[9px] font-bold leading-relaxed text-white/55">主要五地点の合計目標は1,000断片。すべて正常化すると世界の英語記憶が戻り、1級EXTRAが解放される。</p>
+    </section>
   )
 }
 
@@ -531,7 +553,7 @@ function ChroniclePortalCard({ hero, onOpen }) {
       type="button"
       onClick={onOpen}
       className="after-school-portal after-school-portal-console block w-full text-left transition-transform active:scale-[0.99]"
-      aria-label={`${AFTER_SCHOOL_CHRONICLE.title}を開く`}
+      aria-label="英語記憶・龍脈調査録を開く"
     >
       <span className="after-school-portal-bezel">
         <span className="after-school-portal-screen">
@@ -547,10 +569,10 @@ function ChroniclePortalCard({ hero, onOpen }) {
       <span className="after-school-portal-copy">
         <span className="min-w-0">
           <strong className="block truncate font-display text-lg font-extrabold leading-tight text-ink">
-            {AFTER_SCHOOL_CHRONICLE.title}
+            英語記憶・龍脈調査録
           </strong>
           <span className="mt-1 block truncate text-[10px] font-bold text-ink/50">
-            戦果・結末・自由時間・次の事件がつながる
+            先生と協力し、日常から消えた英語の記憶を取り戻す
           </span>
         </span>
         <span className="after-school-portal-action">
@@ -638,461 +660,46 @@ function TrainingBoard({ navigate, weak, infos }) {
   )
 }
 
-function XpExchangeCard({ totalXp, spentXp, battleStars, onExchange }) {
-  const [message, setMessage] = useState('')
-  const exchange = battleXpExchange(totalXp, spentXp, battleStars)
-
-  const exchangeNow = () => {
-    if (!exchange.canExchange) return
-    onExchange()
-    setMessage(
-      `${exchange.xpCost.toLocaleString()} XPを、放課後スター ${exchange.starsGained.toLocaleString()}個に変換しました。`,
-    )
-  }
-
+function InvestigationExperienceCard({ totalXp, hero, progress }) {
+  const summary = dragonVeinSummary(progress)
   return (
     <section className="overflow-hidden rounded-3xl border-2 border-amber-200 bg-gradient-to-br from-amber-50 via-white to-violet-50 p-4 shadow-card">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <p className="text-[9px] font-extrabold tracking-[0.12em] text-amber-600">
-            学習XP → 放課後スター
-          </p>
-          <h2 className="mt-0.5 font-display text-base font-extrabold text-ink">
-            学習XPをゲームの力へ
-          </h2>
+          <p className="text-[9px] font-extrabold tracking-[0.12em] text-amber-600">INVESTIGATION EXPERIENCE</p>
+          <h2 className="mt-0.5 font-display text-base font-extrabold text-ink">日常調査で積み上げた経験</h2>
         </div>
         <span className="shrink-0 rounded-full bg-amber-100 px-2.5 py-1 text-[10px] font-extrabold text-amber-800">
-          {BATTLE_XP_PER_EXCHANGE} XP → ✦ {BATTLE_STARS_PER_EXCHANGE}
+          調査LV {hero.level}
         </span>
       </div>
-
       <p className="mt-2 text-[10px] font-bold leading-relaxed text-ink/50">
-        英語クイズなどで貯めた未変換XPを、ドット絵エリアの解放に使う放課後スターへ変換できます。
+        通常の英語学習と日常の歪みを解くたびにXPが増えます。XPを消費せず、そのまま五芒星の調査へ挑めます。
       </p>
-
-      <div className="mt-3 grid grid-cols-2 gap-2">
-        <div className="rounded-2xl bg-white px-3 py-2.5 ring-1 ring-amber-100">
-          <span className="block text-[9px] font-bold text-ink/40">交換できるXP</span>
-          <strong className="mt-0.5 block font-display text-lg font-extrabold text-amber-700">
-            {exchange.availableXp.toLocaleString()} XP
-          </strong>
-          <span className="block text-[8px] font-bold text-ink/35">
-            累計 {exchange.totalXp.toLocaleString()} XP
-          </span>
+      <div className="mt-3 grid grid-cols-3 gap-2 text-center">
+        <div className="rounded-2xl bg-white p-2.5 ring-1 ring-amber-100">
+          <b className="block text-lg text-amber-700">{totalXp.toLocaleString()}</b>
+          <small className="text-[8px] font-bold text-ink/40">累計XP</small>
         </div>
-        <div className="rounded-2xl bg-white px-3 py-2.5 ring-1 ring-violet-100">
-          <span className="block text-[9px] font-bold text-ink/40">放課後スター</span>
-          <strong className="mt-0.5 block font-display text-lg font-extrabold text-violet-700">
-            ✦ {battleStars.toLocaleString()}
-          </strong>
-          <span className="block text-[8px] font-bold text-ink/35">
-            背景・エリア能力の解放に使用
-          </span>
+        <div className="rounded-2xl bg-white p-2.5 ring-1 ring-emerald-100">
+          <b className="block text-lg text-emerald-700">{progress?.daily?.repairs ?? 0}</b>
+          <small className="text-[8px] font-bold text-ink/40">日常修復</small>
+        </div>
+        <div className="rounded-2xl bg-white p-2.5 ring-1 ring-violet-100">
+          <b className="block text-lg text-violet-700">{summary.restored}</b>
+          <small className="text-[8px] font-bold text-ink/40">主要断片</small>
         </div>
       </div>
-
-      <button
-        type="button"
-        disabled={!exchange.canExchange}
-        onClick={exchangeNow}
-        className="mt-3 min-h-12 w-full rounded-2xl bg-gradient-to-r from-amber-500 to-violet-600 px-3 py-2.5 font-display text-sm font-extrabold text-white shadow-md transition-transform active:scale-[0.98] disabled:cursor-not-allowed disabled:from-slate-200 disabled:to-slate-300 disabled:text-slate-500 disabled:shadow-none"
-      >
-        {exchange.canExchange
-          ? `${exchange.xpCost.toLocaleString()} XPを ✦ ${exchange.starsGained.toLocaleString()} にまとめて変換`
-          : exchange.starCapacityReached
-            ? '放課後スターは上限です'
-            : `あと ${exchange.xpUntilNext.toLocaleString()} XPで変換できます`}
-      </button>
-
-      <p className="mt-2 text-center text-[9px] font-bold leading-relaxed text-ink/40">
-        LVに使う累計XPは減りません。一度変換した分は再変換できません。
-      </p>
-      <p className="sr-only" aria-live="polite" role="status">
-        {message}
+      <div className="mt-3 flex items-center gap-3">
+        <span className="text-[9px] font-extrabold text-ink/45">{hero.isMax ? '最高調査LV' : `次のLVまで ${hero.xpToNext} XP`}</span>
+        <ProgressBar value={hero.progress} color="#f59e0b" className="flex-1" />
+      </div>
+      <p className="mt-2 text-[9px] font-bold leading-relaxed text-ink/40">
+        正答率・SRS・診断は通常どおり記録し、物語表示が学習評価を変えることはありません。
       </p>
     </section>
   )
 }
-
-function BattlePreparationScreen({
-  chapterTitle,
-  quest,
-  encounter,
-  opponent,
-  teacherSubject,
-  battleTheme,
-  selectedStudent,
-  unlockedStudentIds,
-  onSelectStudent,
-  onReviewStory,
-  onCancel,
-  onStart,
-}) {
-  return (
-    <div className="min-h-full bg-gradient-to-b from-slate-950 via-indigo-950 to-violet-950 pb-8 text-white">
-      <ScreenHeader
-        title="対決前の作戦会議"
-        subtitle={`${opponent.name}との${quest.size}問に備える`}
-        onBack={onReviewStory}
-        color="#0f172a"
-        inverse
-      />
-
-      <div className="space-y-4 px-4">
-        <section className="relative overflow-hidden rounded-[1.75rem] border border-white/15 bg-slate-900 shadow-2xl">
-          <img
-            src={publicAssetUrl(battleTheme.stage)}
-            alt={`${battleTheme.name}。${opponent.name}との対決準備をする舞台`}
-            className="aspect-[16/8] w-full object-cover"
-          />
-          <span className="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/35 to-transparent" />
-          <div className="absolute inset-x-0 bottom-0 flex items-end gap-3 p-3">
-            <span className="h-14 w-14 shrink-0 overflow-hidden rounded-2xl border-2 border-white/45 bg-slate-900">
-              {encounter.isTeacher ? (
-                <TeacherPortrait teacher={encounter} className="h-full w-full" />
-              ) : (
-                <img
-                  src={opponent.portrait}
-                  alt=""
-                  className="h-full w-full object-cover [image-rendering:pixelated]"
-                />
-              )}
-            </span>
-            <div className="min-w-0 flex-1">
-              <p className="text-[9px] font-extrabold tracking-[0.14em] text-cyan-200">NEXT MISSION</p>
-              <h1 className="truncate font-display text-lg font-extrabold">{chapterTitle}</h1>
-              <p className="truncate text-[10px] font-bold text-white/65">
-                {opponent.name} · {teacherSubject} · {quest.size}問
-              </p>
-            </div>
-          </div>
-        </section>
-
-        <section className="rounded-2xl border border-cyan-200/15 bg-white/[0.07] p-3 text-[10px] font-bold leading-relaxed text-white/65">
-          <p className="font-extrabold text-cyan-100">相手と目的を知ってから、同行者を決めます。</p>
-          <p className="mt-1">物語を読み返すなら左上へ。準備ができたら、この画面から対決を始められます。</p>
-        </section>
-
-        <BattleCompanionPicker
-          selectedStudent={selectedStudent}
-          opponent={opponent}
-          encounter={encounter}
-          teacherSubject={teacherSubject}
-          unlockedStudentIds={unlockedStudentIds}
-          onSelect={onSelectStudent}
-        />
-
-        <div className="space-y-2">
-          <Button full size="lg" onClick={onStart}>
-            {selectedStudent.name}と{quest.size}問の対決へ <ArrowRight size={19} />
-          </Button>
-          <Button full variant="secondary" onClick={onReviewStory}>バトル導入を読み返す</Button>
-          <Button full variant="ghost" className="text-white/65 active:bg-white/10" onClick={onCancel}>
-            今日の対決選択へ戻る
-          </Button>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function AdventureCard({
-  pos,
-  hero,
-  encounter,
-  day,
-  battleStars,
-  battleTheme,
-  battleStudent,
-  studentTraitProfile,
-  battleRival,
-  teacherSubject,
-  onBattle,
-}) {
-  const enemyRank = enemyLevel(pos)
-  const maxEnemyRank = LEVELS[hero.enemyRankCap]
-  const featured = featuredQuestId(day)
-  const [questId, setQuestId] = useState(featured)
-  const selectedQuest = battleQuest(questId)
-  const opponentLabel = `${teacherSubject}担当からの課題`
-
-  return (
-    <section
-      className="school-battle-card after-school-start-card relative overflow-hidden rounded-[2rem] p-4 text-white shadow-[0_18px_50px_-22px_rgba(79,70,229,0.65)]"
-      data-battle-theme={battleTheme.id}
-      data-battle-layout={battleTheme.presentation.layout}
-      style={{
-        background: battleTheme.gradient,
-        '--battle-accent': battleTheme.accent,
-        '--battle-accent-strong': battleTheme.accentStrong,
-      }}
-    >
-      <div className="pointer-events-none absolute -right-10 -top-12 opacity-[0.08]">
-        <ChronicleIcon kind="chapter" size={144} className="chronicle-vector-icon-ghost" />
-      </div>
-      <div className="pointer-events-none absolute -bottom-20 -left-16 h-48 w-48 rounded-full bg-pink-300/20 blur-3xl" />
-
-      <div className="after-school-start-layout relative">
-        <div className="after-school-start-meta flex items-center gap-2.5">
-          <span className="rounded-full border border-white/25 bg-white/15 px-2.5 py-1 text-[10px] font-extrabold tracking-[0.14em] text-white/90 backdrop-blur">
-            CHRONICLE STAGE {hero.chapter.number}
-          </span>
-          <span className="flex min-w-0 items-center gap-1 truncate text-xs font-extrabold">
-            <ChronicleIcon kind="chapter" size={17} />
-            <span className="truncate">{hero.chapter.name}</span>
-          </span>
-        </div>
-
-        <div className="after-school-player-strip mt-3 flex items-center gap-2 rounded-2xl border border-white/15 bg-slate-950/15 p-2">
-          <span
-            className="battle-map-student-portrait battle-trait-avatar-aura h-10 w-10 shrink-0 overflow-hidden rounded-xl"
-            style={{
-              '--student-trait-color': studentTraitProfile.dominant.color,
-              '--student-trait-secondary': studentTraitProfile.secondary.color,
-            }}
-          >
-            <img
-              src={battleStudentPortrait(battleStudent.id, 'confident')}
-              alt={`${battleStudent.name}の自信の表情`}
-              className="h-full w-full object-cover [image-rendering:pixelated]"
-            />
-          </span>
-          <div className="min-w-0 flex-1">
-            <p className="truncate text-xs font-extrabold">
-              LV{hero.level} · {hero.title.name}
-            </p>
-            <p className="truncate text-[9px] font-bold text-white/65">
-              {hero.isMax ? '最高レベル' : `次まで ${hero.xpToNext} XP`} · {studentTraitProfile.colorLabel}
-            </p>
-          </div>
-          <span className="shrink-0 rounded-full bg-white/10 px-2.5 py-1 text-[10px] font-extrabold text-amber-100">
-            ✦ {battleStars.toLocaleString()}
-          </span>
-        </div>
-
-        <div className="after-school-start-key-visual order-0">
-          <img
-            src={publicAssetUrl(AFTER_SCHOOL_CHRONICLE.keyVisual)}
-            alt="放課後の昇降口で、4人の高校生が校内図を囲んで今日の対決ルートを相談している"
-          />
-          <span className="pointer-events-none absolute inset-0 bg-gradient-to-r from-slate-950/80 via-slate-950/25 to-transparent" />
-          <div>
-            <small>{hero.chapter.name}</small>
-            <strong>今日の対決を選ぶ</strong>
-          </div>
-        </div>
-
-        <div className="school-battle-paper order-1 mt-3 flex flex-col rounded-[1.65rem] bg-white p-3.5 text-ink shadow-xl shadow-black/15">
-          <div
-            className="battle-entry-standing-stage"
-            data-battle-standing-entry
-            style={{
-              '--battle-entry-standing-scene': `linear-gradient(90deg,rgba(2,6,23,.34),rgba(2,6,23,.08),rgba(2,6,23,.42)), url("${publicAssetUrl(battleTheme.stage)}") center / cover`,
-            }}
-            role="img"
-            aria-label={`${battleStudent.name}が背中を見せて${battleRival.name}との対決へ向かう`}
-          >
-            <BattleStageBackdrop
-              scene="var(--battle-entry-standing-scene)"
-              phase="entry"
-            />
-            <BattleStandingActor
-              student={battleStudent}
-              pose="back"
-              phase="entry"
-              className="battle-entry-standing-hero"
-              label={`${battleStudent.name}・背中を見せる構え`}
-              fallback={(
-                <img
-                  src={battleStudentPortrait(battleStudent.id, 'determined')}
-                  alt=""
-                  className="battle-entry-standing-fallback"
-                />
-              )}
-            />
-            <span className="battle-entry-standing-versus" aria-hidden="true">VS</span>
-            <BattleOpponentStandingActor
-              opponent={battleRival}
-              phase="entry"
-              className="battle-entry-standing-opponent"
-              label={`${battleRival.name}・対決の構え`}
-              fallback={(
-                <span className="battle-map-rival-portrait battle-entry-standing-rival shrink-0 overflow-hidden rounded-2xl ring-2 ring-violet-100">
-                  {encounter.isTeacher ? (
-                    <TeacherPortrait teacher={encounter} className="h-full w-full" />
-                  ) : (
-                    <img
-                      src={battleRival.portrait}
-                      alt={`${battleRival.name}のドット絵ポートレート`}
-                      className="h-full w-full object-cover [image-rendering:pixelated]"
-                    />
-                  )}
-                </span>
-              )}
-            />
-          </div>
-
-          <div className="mt-2 text-center">
-            <p className="text-[9px] font-extrabold text-violet-500">
-              {opponentLabel} · 英検{enemyRank.label}
-            </p>
-            <h2 className="font-display text-lg font-extrabold leading-tight">
-              {battleRival.name}
-            </h2>
-          </div>
-
-          <div className="after-school-quest-picker mt-3">
-            <div className="flex items-end justify-between gap-2">
-              <div>
-                <p className="text-xs font-extrabold text-ink">問題数をえらぶ</p>
-              </div>
-              <span className="text-[9px] font-bold text-ink/40">
-                上限 英検{maxEnemyRank.label}
-              </span>
-            </div>
-            <div className="mt-2 grid grid-cols-3 gap-2">
-              {BATTLE_QUESTS.map((quest) => {
-                const selected = quest.id === questId
-                return (
-                  <button
-                    key={quest.id}
-                    type="button"
-                    onClick={() => setQuestId(quest.id)}
-                    aria-pressed={selected}
-                    className={cx(
-                      'relative min-h-14 rounded-2xl border-2 px-1.5 py-2 text-center transition-transform active:scale-95',
-                      selected
-                        ? 'border-violet-500 bg-violet-50 text-violet-900 shadow-sm'
-                        : 'border-slate-100 bg-white text-ink/55',
-                    )}
-                  >
-                    {quest.id === featured && (
-                      <span className="absolute -right-1 -top-1 rounded-full bg-amber-300 px-1.5 py-0.5 text-[7px] font-black text-amber-950">
-                        おすすめ
-                      </span>
-                    )}
-                    <ChronicleIcon kind="quest" size={22} className="mx-auto" />
-                    <span className="block text-[11px] font-extrabold">{quest.size}問</span>
-                    <span className="block text-[8px] font-bold opacity-50">{quest.minutes}</span>
-                  </button>
-                )
-              })}
-            </div>
-          </div>
-
-          <button
-            type="button"
-            onClick={() => onBattle(selectedQuest)}
-            aria-label={`${battleRival.name}との${selectedQuest.size}問のことば対決を開始`}
-            className="school-battle-start order-4 mt-3 flex min-h-14 w-full items-center justify-center gap-2 rounded-2xl bg-violet-600 px-4 py-3 font-display text-base font-extrabold text-white shadow-[0_10px_24px_-10px_rgba(79,70,229,0.8)] transition-transform active:scale-[0.98]"
-          >
-            <ChronicleIcon kind={encounter.isTeacher ? 'chapter' : 'battle'} size={22} />
-            {selectedQuest.size}問のことば対決へ
-            <ArrowRight size={18} />
-          </button>
-        </div>
-
-      </div>
-    </section>
-  )
-}
-
-function AfterSchoolWorld({ battleStars, selectedTheme }) {
-  return (
-    <section className="overflow-hidden rounded-3xl bg-slate-950 p-4 text-white shadow-card">
-      <div className="flex items-end justify-between gap-3">
-        <div>
-          <p className="text-[9px] font-extrabold tracking-[0.18em] text-cyan-300">
-            AFTER SCHOOL ACADEMY
-          </p>
-          <h2 className="mt-0.5 font-display text-base font-extrabold">
-            3つの物語エリア
-          </h2>
-        </div>
-        <span className="shrink-0 rounded-full bg-white/10 px-2.5 py-1 text-[10px] font-extrabold text-amber-200">
-          ✦ {battleStars.toLocaleString()}
-        </span>
-      </div>
-      <p className="mt-2 text-[10px] font-bold leading-relaxed text-white/55">
-        バトル正解やXP変換で閉ざされた校舎を開きます。次の対決演出はメニュー内「設定」で選びます。
-      </p>
-
-      <div className="mt-3 space-y-2">
-        {BATTLE_THEMES.map((theme, index) => {
-          const unlocked = battleStars >= theme.unlockAt
-          const selected = theme.id === selectedTheme.id
-          return (
-            <article
-              key={theme.id}
-              className={cx(
-                'flex w-full overflow-hidden rounded-2xl border text-left',
-                selected
-                  ? 'border-white/65 bg-white/14'
-                  : unlocked
-                    ? 'border-white/10 bg-white/[0.07]'
-                    : 'border-white/5 bg-white/[0.035] opacity-65',
-              )}
-            >
-              <span className="relative h-24 w-20 shrink-0 overflow-hidden bg-slate-900">
-                <img
-                  src={theme.preview}
-                  alt=""
-                  className="h-full w-full object-cover object-top [image-rendering:pixelated]"
-                />
-                {!unlocked && (
-                  <span className="absolute inset-0 grid place-items-center bg-slate-950/65 text-xl">
-                    🔒
-                  </span>
-                )}
-                <span className="absolute left-1.5 top-1.5 rounded-md bg-slate-950/70 px-1.5 py-0.5 text-[7px] font-black">
-                  AREA {index + 1}
-                </span>
-                <span
-                  className="battle-theme-actor-preview"
-                  style={{ backgroundImage: `url("${theme.actorsSheet}")` }}
-                  aria-hidden="true"
-                />
-              </span>
-              <span className="min-w-0 flex-1 px-3 py-2.5">
-                <span className="flex items-center justify-between gap-2">
-                  <strong className="truncate text-xs font-extrabold">
-                    {theme.emoji} {theme.name}
-                  </strong>
-                  <span className="shrink-0 text-[8px] font-extrabold text-amber-200">
-                    {unlocked ? (selected ? 'SELECTED' : 'OPEN') : `✦ ${theme.unlockAt}`}
-                  </span>
-                </span>
-                <span className="mt-1 block text-[9px] font-bold leading-relaxed text-white/55">
-                  {theme.lore}
-                </span>
-                <span
-                  className="mt-1.5 inline-flex rounded-full px-2 py-1 text-[8px] font-extrabold"
-                  style={{
-                    backgroundColor: `${theme.accent}24`,
-                    color: theme.accent === '#a78bfa' ? '#ddd6fe' : theme.accent,
-                  }}
-                >
-                  {theme.ability.emoji} {theme.ability.name}：{theme.ability.label}
-                </span>
-                <span className="mt-1.5 flex flex-wrap gap-1">
-                  {theme.scenes.map((scene) => (
-                    <span
-                      key={scene.id}
-                      className="rounded-full border border-white/10 px-1.5 py-0.5 text-[7px] font-extrabold text-white/50"
-                    >
-                      {scene.name}
-                    </span>
-                  ))}
-                </span>
-              </span>
-            </article>
-          )
-        })}
-      </div>
-    </section>
-  )
-}
-
 function StoryArcTimeline({ storyStep }) {
   const current = afterSchoolStoryArcForStep(storyStep)
   const currentIndex = AFTER_SCHOOL_STORY_ARCS.findIndex((arc) => arc.id === current.id)
@@ -1194,7 +801,7 @@ function AfterSchoolBondBoard({ bonds, currentStudentId, unlockedStudentIds }) {
           </span>
         </div>
         <p className="mt-2 text-[10px] font-bold leading-relaxed text-white/60">
-          対決後の行き先で新しいクラスメイトと知り合うと共闘可能に。再び会って関係を育てると、特技とアイテムも増えます。
+          調査後の行き先で新しいクラスメイトと知り合うと、龍脈調査の協力者になります。再び会って関係を育てると、得意な助言と記念品も増えます。
         </p>
 
         <div className="mt-3 flex items-center gap-3 rounded-2xl border border-white/15 bg-white/10 p-3">
@@ -1260,7 +867,7 @@ function AfterSchoolBondBoard({ bonds, currentStudentId, unlockedStudentIds }) {
                 </div>
               </div>
               <p className={cx('mt-2 truncate text-[8px] font-extrabold', unlocked && state.skillUnlocked ? 'text-cyan-700' : 'text-ink/35')}>
-                {unlocked ? state.profile.skill.emoji : '✦'} {unlocked && state.skillUnlocked ? state.profile.skill.name : unlocked ? 'LV2 特技' : '共闘能力 未確認'}
+                {unlocked ? state.profile.skill.emoji : '✦'} {unlocked && state.skillUnlocked ? state.profile.skill.name : unlocked ? 'LV2 得意な助言' : '調査適性 未確認'}
               </p>
               <p className={cx('mt-0.5 truncate text-[8px] font-extrabold', unlocked && state.itemUnlocked ? 'text-amber-700' : 'text-ink/35')}>
                 {unlocked ? state.profile.item.emoji : '🔒'} {unlocked && state.itemUnlocked ? state.profile.item.name : unlocked ? 'LV3 アイテム' : '思い出 未記録'}
@@ -1277,7 +884,7 @@ function AfterSchoolBondBoard({ bonds, currentStudentId, unlockedStudentIds }) {
   )
 }
 
-function SchoolBarrierMap() {
+function SchoolBarrierMap({ progress }) {
   const [locationId, setLocationId] = useState(BATTLE_BARRIER_CENTER.id)
   const selectedLocation = battleBarrierLocationById(locationId)
   const locationById = new Map(
@@ -1296,82 +903,31 @@ function SchoolBarrierMap() {
       <div className="flex items-start justify-between gap-3 px-4 pb-3 pt-4">
         <div>
           <p className="text-[9px] font-extrabold tracking-[0.18em] text-cyan-300">
-            STAR BARRIER DISTRICT
+            DRAGON VEIN DISTRICT
           </p>
           <h2 className="mt-0.5 font-display text-base font-extrabold">
-            星環学区結界
+            五芒星・龍脈俯瞰図
           </h2>
         </div>
         <span className="shrink-0 rounded-full border border-amber-200/20 bg-amber-100/10 px-2 py-0.5 text-[7px] font-extrabold tracking-[0.12em] text-amber-100">
-          ● LIVE DISTRICT
+          記憶修復網
         </span>
       </div>
       <p className="px-4 pb-3 text-[10px] font-bold leading-relaxed text-white/55">
-        学校を中心核として、街の五地点が五芒星を結ぶ。地点をタップして結界を確認しよう。
+        学校を中心として、図書館・駅前・中央公園・神社・競技場の五地点に龍脈が伸びる。地点をタップして修復状況を確認しよう。
       </p>
 
       <div
         className="school-barrier-map relative aspect-video overflow-hidden bg-indigo-950"
         role="group"
-        aria-label="学校を中心とする五芒星結界マップ"
+        aria-label="学校を中心とする五芒星の龍脈修復マップ"
       >
         <img
           src={BATTLE_BARRIER_MAP_IMAGE}
-          alt="中央の学校と、図書館、駅前、中央公園、神社、競技場を俯瞰した現代日本の夜の街"
+          alt="中央の学校と、図書館、駅前、中央公園、神社、競技場を俯瞰した現代日本の昼の街"
           className="school-barrier-map-image h-full w-full object-cover"
         />
         <span className="school-barrier-map-shade pointer-events-none absolute inset-0" />
-
-        <span
-          className="school-barrier-window-lights pointer-events-none absolute inset-0"
-          aria-hidden="true"
-        >
-          {BATTLE_BARRIER_WINDOW_LIGHTS.map((light) => (
-            <i
-              key={light.id}
-              className="school-barrier-window-light absolute rounded-full"
-              style={{
-                left: `${light.x}%`,
-                top: `${light.y}%`,
-                '--window-light-delay': `${-light.delay}s`,
-                '--window-light-duration': `${light.duration}s`,
-                '--window-light-size': `${light.size}px`,
-              }}
-            />
-          ))}
-        </span>
-
-        <svg
-          className="school-barrier-traffic pointer-events-none absolute inset-0 h-full w-full"
-          viewBox="0 0 100 100"
-          preserveAspectRatio="none"
-          aria-hidden="true"
-        >
-          {BATTLE_BARRIER_TRAFFIC_LIGHTS.map((light) => (
-            <g
-              key={light.id}
-              className={cx(
-                'school-barrier-traffic-car',
-                `school-barrier-traffic-${light.kind}`,
-              )}
-            >
-              <ellipse
-                className="school-barrier-traffic-trail"
-                cx="-1.45"
-                rx={light.kind === 'train' ? '3.4' : '2.15'}
-                ry="0.34"
-              />
-              <circle className="school-barrier-traffic-glow" r="1.65" />
-              <circle className="school-barrier-traffic-lamp" r="0.52" />
-              <animateMotion
-                path={light.path}
-                dur={`${light.duration}s`}
-                begin={`${light.delay}s`}
-                repeatCount="indefinite"
-              />
-            </g>
-          ))}
-        </svg>
 
         <svg
           className="school-barrier-lines pointer-events-none absolute inset-0 h-full w-full"
@@ -1463,7 +1019,9 @@ function SchoolBarrierMap() {
           </p>
         </div>
         <span className="shrink-0 text-[8px] font-extrabold tracking-[0.12em] text-emerald-300">
-          CONNECTED
+          {selectedLocation.id === BATTLE_BARRIER_CENTER.id
+            ? `${dragonVeinSummary(progress).completeNodes}/5 正常化`
+            : `${dragonVeinNodeStatus(progress, selectedLocation.id).restored}/${DRAGON_VEIN_TARGET * 2}`}
         </span>
       </div>
     </section>
@@ -2136,210 +1694,13 @@ function TeacherSchoolLife({ student }) {
   )
 }
 
-const TRAIT_STAR_DRAW_ORDER = [0, 2, 4, 1, 3, 0]
-const TRAIT_SPHERE_CENTER = { x: 120, y: 112 }
-
-function traitSpherePoint(trait, level) {
-  const ratio = Math.max(0, Math.min(MAX_BATTLE_TRAIT_LEVEL, level))
-    / MAX_BATTLE_TRAIT_LEVEL
-  return {
-    x: TRAIT_SPHERE_CENTER.x + (trait.x - TRAIT_SPHERE_CENTER.x) * ratio,
-    y: TRAIT_SPHERE_CENTER.y + (trait.y - TRAIT_SPHERE_CENTER.y) * ratio,
-  }
-}
-
-function BattleTraitSphere({
-  student,
-  battleStars,
-  investments,
-}) {
-  const profile = battleStudentTraitProfile(student.id, investments, battleStars)
-  const radarPoints = BATTLE_TRAITS.map((trait) =>
-    traitSpherePoint(trait, profile.levels[trait.id]))
-  const outerStar = TRAIT_STAR_DRAW_ORDER.map((index) => {
-    const trait = BATTLE_TRAITS[index]
-    return `${trait.x},${trait.y}`
-  }).join(' ')
-  const radarShape = radarPoints.map((point) => `${point.x},${point.y}`).join(' ')
-  const sphereLabel = BATTLE_TRAITS.map(
-    (trait) => `${trait.name}レベル${profile.levels[trait.id]}`,
-  ).join('、')
-
-  return (
-    <section
-      className="battle-trait-sphere mt-4 overflow-hidden rounded-3xl border border-violet-100 bg-slate-950 text-white"
-      style={{
-        '--student-trait-color': profile.dominant.color,
-        '--student-trait-secondary': profile.secondary.color,
-      }}
-    >
-      <div className="flex items-start justify-between gap-3 px-3 pb-1 pt-3">
-        <div>
-          <p className="text-[8px] font-black tracking-[0.18em] text-cyan-300">
-            CHROMA SPHERE
-          </p>
-          <h4 className="mt-0.5 text-sm font-extrabold">五芒星の星彩スフィア</h4>
-        </div>
-        <div className="shrink-0 rounded-xl border border-white/10 bg-white/[0.07] px-2 py-1.5 text-right">
-          <span className="block text-[8px] font-bold text-white/45">全員共通</span>
-          <strong className="block text-[11px] text-amber-200">
-            ◈ {profile.summary.available}/{profile.summary.budget} pt
-          </strong>
-        </div>
-      </div>
-
-      <div className="grid items-center gap-1 px-2 sm:grid-cols-[minmax(0,1fr)_112px]">
-        <svg
-          viewBox="0 0 240 220"
-          className="mx-auto block w-full max-w-[250px]"
-          role="img"
-          aria-label={`${student.name}の星彩スフィア。${sphereLabel}。発現色は${profile.colorLabel}`}
-        >
-          <polygon
-            points={outerStar}
-            fill="rgba(255,255,255,0.025)"
-            stroke="rgba(255,255,255,0.34)"
-            strokeWidth="2"
-            strokeLinejoin="round"
-          />
-          {BATTLE_TRAITS.map((trait) => (
-            <line
-              key={`spoke-${trait.id}`}
-              x1={TRAIT_SPHERE_CENTER.x}
-              y1={TRAIT_SPHERE_CENTER.y}
-              x2={trait.x}
-              y2={trait.y}
-              stroke={trait.color}
-              strokeOpacity="0.28"
-              strokeWidth="1.5"
-              strokeDasharray="3 4"
-            />
-          ))}
-          {BATTLE_TRAITS.map((trait, index) => {
-            const point = radarPoints[index]
-            const nextPoint = radarPoints[(index + 1) % radarPoints.length]
-            return (
-              <polygon
-                key={`sector-${trait.id}`}
-                points={`${TRAIT_SPHERE_CENTER.x},${TRAIT_SPHERE_CENTER.y} ${point.x},${point.y} ${nextPoint.x},${nextPoint.y}`}
-                fill={trait.color}
-                fillOpacity="0.38"
-              />
-            )
-          })}
-          <polygon
-            points={radarShape}
-            fill="none"
-            stroke="rgba(255,255,255,0.88)"
-            strokeWidth="2.2"
-            strokeLinejoin="round"
-          />
-          <circle
-            cx={TRAIT_SPHERE_CENTER.x}
-            cy={TRAIT_SPHERE_CENTER.y}
-            r="10"
-            fill={profile.dominant.color}
-            opacity="0.95"
-            className="battle-trait-sphere-core"
-          />
-          {BATTLE_TRAITS.map((trait) => {
-            const level = profile.levels[trait.id]
-            return (
-              <g key={`node-${trait.id}`}>
-                <circle
-                  cx={trait.x}
-                  cy={trait.y}
-                  r={12 + level * 0.8}
-                  fill={trait.color}
-                  fillOpacity={0.34 + level * 0.11}
-                  stroke="rgba(255,255,255,0.8)"
-                  strokeWidth="1.5"
-                  className="battle-trait-sphere-node"
-                />
-                <text
-                  x={trait.x}
-                  y={trait.y + 3}
-                  textAnchor="middle"
-                  fill="white"
-                  fontSize="9"
-                  fontWeight="900"
-                >
-                  {level}
-                </text>
-              </g>
-            )
-          })}
-        </svg>
-
-        <div className="px-1 pb-2 text-center sm:text-left">
-          <span
-            className="inline-flex items-center rounded-full px-2 py-1 text-[9px] font-extrabold text-slate-950"
-            style={{ background: profile.aura }}
-          >
-            {profile.dominant.emoji} 発現色：{profile.colorLabel}
-          </span>
-          <p
-            key={`${student.id}-${profile.dominant.id}`}
-            className="battle-trait-voice mt-2 text-[10px] font-extrabold leading-relaxed text-white/85"
-            aria-live="polite"
-          >
-            {profile.voice}
-          </p>
-          <p className="mt-1.5 text-[8px] font-bold leading-relaxed text-white/40">
-            {profile.dominant.description}
-          </p>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-5 gap-1.5 border-t border-white/10 bg-white/[0.035] p-2">
-        {BATTLE_TRAITS.map((trait) => {
-          const level = profile.levels[trait.id]
-          const invested = profile.invested[trait.id] ?? 0
-          return (
-            <div
-              key={trait.id}
-              className="battle-trait-button min-h-16 min-w-0 rounded-xl border px-1 py-1.5 text-center"
-              style={{
-                '--trait-color': trait.color,
-                '--trait-soft': trait.softColor,
-              }}
-            >
-              <span className="block text-sm">{trait.emoji}</span>
-              <strong className="block truncate text-[9px]">{trait.name}</strong>
-              <span className="block text-[8px] font-black text-white/55">
-                LV{level}{level >= MAX_BATTLE_TRAIT_LEVEL ? ' MAX' : ''}
-              </span>
-              {invested > 0 && (
-                <span className="block text-[7px] font-bold text-white/35">育成+{invested}</span>
-              )}
-            </div>
-          )
-        })}
-      </div>
-
-      <div className="min-h-10 border-t border-white/10 px-3 py-2">
-        <p className="text-[8px] font-bold leading-relaxed text-white/40">
-          ✦ {BATTLE_TRAIT_POINT_STARS}スターで1pt。育成・振り直しはメニュー内「設定」で行います。学習評価は変わりません。
-        </p>
-      </div>
-    </section>
-  )
-}
-
 function BattleCastRoster({
   selectedStudentId,
-  battleStars,
-  investments,
   unlockedStudentIds,
 }) {
   const unlockedCount = normalizeUnlockedBattleStudentIds(unlockedStudentIds).length
   const selectedStudent = battleStudentById(selectedStudentId)
-  const traitProfile = battleStudentTraitProfile(
-    selectedStudent.id,
-    investments,
-    battleStars,
-  )
-  const [emotionId, setEmotionId] = useState('playful')
+  const [emotionId, setEmotionId] = useState('thinking')
   const emotion = battleEmotionById(emotionId)
 
   return (
@@ -2351,7 +1712,7 @@ function BattleCastRoster({
               CLASSMATE CAST
             </p>
             <h2 className="mt-0.5 font-display text-base font-extrabold">
-              現在の同行クラスメート
+              龍脈調査メンバー
             </h2>
           </div>
           <div className="flex shrink-0 gap-1">
@@ -2359,12 +1720,12 @@ function BattleCastRoster({
               仲間 {unlockedCount}/{BATTLE_STUDENTS.length}
             </span>
             <span className="rounded-full bg-pink-400/20 px-2 py-1 text-[8px] font-extrabold text-pink-100">
-              対決前に変更
+              表情24種
             </span>
           </div>
         </div>
         <p className="mt-2 text-[10px] font-bold leading-relaxed text-white/55">
-          ここでは現在の同行者と星彩を確認できます。育成はメニュー内「設定」、同行者の選択は次の相手が分かるバトル前の作戦会議で行います。
+          英語の記憶を保った生徒たちの得意分野と、解読中に見せる表情を確認できます。
         </p>
       </div>
 
@@ -2374,9 +1735,9 @@ function BattleCastRoster({
             key={`${selectedStudent.id}-${emotion.id}`}
             className="battle-expression-change battle-trait-avatar-aura h-24 w-24 shrink-0 overflow-hidden rounded-[1.6rem] border-4 bg-slate-950 shadow-lg"
             style={{
-              '--student-trait-color': traitProfile.dominant.color,
-              '--student-trait-secondary': traitProfile.secondary.color,
-              borderColor: traitProfile.dominant.color,
+              '--student-trait-color': selectedStudent.accent,
+              '--student-trait-secondary': selectedStudent.accent,
+              borderColor: selectedStudent.accent,
             }}
           >
             <img
@@ -2386,11 +1747,8 @@ function BattleCastRoster({
             />
           </span>
           <div className="min-w-0 flex-1">
-            <span
-              className="inline-flex rounded-full px-2 py-1 text-[8px] font-extrabold text-white"
-              style={{ background: traitProfile.aura }}
-            >
-              {traitProfile.dominant.emoji} 発現色 · {traitProfile.colorLabel}
+            <span className="inline-flex rounded-full px-2 py-1 text-[8px] font-extrabold text-white" style={{ background: selectedStudent.accent }}>
+              記憶保持者 · 調査協力生徒
             </span>
             <h3 className="mt-1.5 font-display text-lg font-extrabold text-ink">
               {selectedStudent.emoji} {selectedStudent.name}
@@ -2407,14 +1765,8 @@ function BattleCastRoster({
           </div>
         </div>
 
-        <BattleTraitSphere
-          student={selectedStudent}
-          battleStars={battleStars}
-          investments={investments}
-        />
-
         <div className="mt-3 grid grid-cols-4 gap-1.5">
-          {['gentle', 'playful', 'healing', 'victory'].map((featuredEmotionId) => {
+          {['thinking', 'focused', 'worried', 'delighted'].map((featuredEmotionId) => {
             const featured = battleEmotionById(featuredEmotionId)
             return (
               <button
@@ -2438,7 +1790,7 @@ function BattleCastRoster({
         <details className="battle-cast-details mt-3 rounded-2xl border border-violet-100 bg-violet-50/50">
           <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between px-3 text-xs font-extrabold text-violet-800">
             <span>🎭 {selectedStudent.name}の全24表情・動作</span>
-            <span className="text-[9px] text-violet-500">喜怒哀楽＋癒し＋戦闘</span>
+            <span className="text-[9px] text-violet-500">喜怒哀楽＋思考＋癒し</span>
           </summary>
           <div className="grid grid-cols-4 gap-2 border-t border-violet-100 p-3">
             {BATTLE_EMOTION_STATES.map((item) => (
@@ -2470,7 +1822,7 @@ function BattleCastRoster({
 
         <details className="battle-cast-details mt-2 rounded-2xl border border-slate-200 bg-slate-50">
           <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between px-3 text-xs font-extrabold text-ink">
-            <span>🏫 先生・敵役アーカイブ</span>
+            <span>🏫 先生・地域協力者アーカイブ</span>
             <span className="text-[9px] text-ink/40">5陣営 · 50人</span>
           </summary>
           <div className="space-y-4 border-t border-slate-200 p-3">
@@ -2513,98 +1865,6 @@ function BattleCastRoster({
       </div>
     </section>
   )
-}
-
-function AdventureProgress({ hero }) {
-  const next = hero.nextRelic
-  const progress = hero.chapter.maxLevel === hero.chapter.minLevel
-    ? 1
-    : (hero.level - hero.chapter.minLevel)
-      / (hero.chapter.maxLevel - hero.chapter.minLevel)
-
-  return (
-    <section className="rounded-3xl bg-white p-4 shadow-card">
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-[10px] font-extrabold tracking-[0.16em] text-brand-500">
-            NEXT REWARD
-          </p>
-          <h2 className="font-display text-base font-extrabold text-ink">
-            {next ? `${next.emoji} ${next.name}` : '🎓 学校アイテムをすべて獲得'}
-          </h2>
-        </div>
-        <span className="rounded-full bg-brand-100 px-2.5 py-1 text-xs font-extrabold text-brand-700">
-          {next ? `LV${next.level}` : 'COMPLETE'}
-        </span>
-      </div>
-      <p className="mt-1 text-xs font-bold text-ink/45">
-        {next ? next.text : 'LV99になっても、「放課後と魔法の言葉」は何度でも続けられます。'}
-      </p>
-      {next && (
-        <p className="mt-1 text-[10px] font-extrabold text-emerald-600">
-          装備効果：{relicStatLabel(next)}
-        </p>
-      )}
-      <div className="mt-3 flex items-center gap-3">
-        <span className="text-[10px] font-bold text-ink/45">校内ステージ</span>
-        <ProgressBar value={progress} color={hero.chapter.gradient} className="flex-1" />
-        <span className="text-[10px] font-extrabold text-ink/60">
-          {hero.level}/{hero.chapter.maxLevel}
-        </span>
-      </div>
-    </section>
-  )
-}
-
-function ChapterTrail({ hero }) {
-  return (
-    <section>
-      <div className="mb-2 flex items-center justify-between px-1">
-        <h2 className="font-display text-base font-extrabold text-ink">放課後の校内マップ</h2>
-        <span className="text-[10px] font-bold text-ink/40">LV1 → LV99</span>
-      </div>
-      <div className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 pb-1">
-        {CHAPTERS.map((chapter) => {
-          const current = chapter.id === hero.chapter.id
-          const cleared = hero.level > chapter.maxLevel
-          const locked = hero.level < chapter.minLevel
-          return (
-            <div
-              key={chapter.id}
-              className={cx(
-                'flex w-28 shrink-0 flex-col rounded-2xl border-2 p-3',
-                current && 'border-brand-400 bg-brand-50 shadow-card',
-                cleared && 'border-emerald-200 bg-emerald-50',
-                locked && 'border-transparent bg-white opacity-55',
-              )}
-            >
-              <div className="flex items-center justify-between">
-                <span className="text-xl">{cleared ? '✅' : chapter.emoji}</span>
-                <span className="text-[9px] font-extrabold text-ink/35">
-                  {chapter.minLevel === chapter.maxLevel
-                    ? `LV${chapter.minLevel}`
-                    : `LV${chapter.minLevel}–${chapter.maxLevel}`}
-                </span>
-              </div>
-              <span className="mt-2 text-xs font-extrabold leading-tight text-ink">
-                {chapter.name}
-              </span>
-              <span className="mt-1 text-[9px] font-bold text-ink/40">
-                {current ? '挑戦中' : cleared ? 'クリア' : '未解放'}
-              </span>
-            </div>
-          )
-        })}
-      </div>
-    </section>
-  )
-}
-
-const STATUS_BADGE = {
-  weak: { label: '弱点', cls: 'bg-amber-100 text-amber-700' },
-  ok: { label: '良好', cls: 'bg-emerald-100 text-emerald-700' },
-  progress: { label: '学習中', cls: 'bg-brand-100 text-brand-700' },
-  untested: { label: 'テスト不足', cls: 'bg-ink/10 text-ink/50' },
 }
 
 function SkillCard({ skill, info, onOpen }) {

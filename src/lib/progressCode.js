@@ -24,6 +24,12 @@ import {
   storyKeyVisualAlbumCount,
 } from './storyAlbum.js'
 import { normalizeVocabHistory } from './vocabHistory.js'
+import {
+  compactDragonVeinProgress,
+  expandDragonVeinProgress,
+  isValidDragonVeinProgress,
+  normalizeDragonVeinProgress,
+} from './dragonVein.js'
 
 const CODE_VERSION = 1
 const PREFIX = 'EQ1-' // EigoQuest v1。先頭でアプリ/バージョンを判別する。
@@ -66,6 +72,7 @@ export const PERSISTED_PROGRESS_FIELDS = Object.freeze([
   'afterSchoolBonds',
   'unlockedBattleStudentIds',
   'storyKeyVisualAlbum',
+  'dragonVeinProgress',
   'portalOrder',
   'portalHidden',
   'stats',
@@ -91,11 +98,14 @@ export function buildPayload(state = {}) {
       state.unlockedBattleStudentIds,
     ),
     storyKeyVisualAlbum: normalizeStoryKeyVisualAlbum(state.storyKeyVisualAlbum),
+    dragonVeinProgress: normalizeDragonVeinProgress(state.dragonVeinProgress),
   }
 }
 
 export function encodeProgress(state) {
-  const json = JSON.stringify(buildPayload(state))
+  const payload = buildPayload(state)
+  payload.dragonVeinProgress = compactDragonVeinProgress(payload.dragonVeinProgress)
+  const json = JSON.stringify(payload)
   return PREFIX + LZString.compressToEncodedURIComponent(json)
 }
 
@@ -120,6 +130,9 @@ export function decodeProgress(code) {
   if (payload.v !== CODE_VERSION) {
     throw new Error(`この進捗コードのバージョン（${payload.v}）には対応していません。`)
   }
+  if ('dragonVeinProgress' in payload) {
+    payload.dragonVeinProgress = expandDragonVeinProgress(payload.dragonVeinProgress)
+  }
 
   const recordFields = [
     'srs',
@@ -135,6 +148,7 @@ export function decodeProgress(code) {
     'battleTraitInvestments',
     'afterSchoolBonds',
     'storyKeyVisualAlbum',
+    'dragonVeinProgress',
     'stats',
     'settings',
   ]
@@ -257,6 +271,12 @@ export function decodeProgress(code) {
     && !isValidStoryKeyVisualAlbum(payload.storyKeyVisualAlbum)
   ) {
     throw new Error('コードの storyKeyVisualAlbum が不正です。')
+  }
+  if (
+    'dragonVeinProgress' in payload
+    && !isValidDragonVeinProgress(payload.dragonVeinProgress)
+  ) {
+    throw new Error('コードの dragonVeinProgress が不正です。')
   }
   if (
     'diagnosticAttempt' in payload

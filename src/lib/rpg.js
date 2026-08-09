@@ -568,36 +568,34 @@ const teacherRival = ({
   subject,
   subjectEmoji,
   accent,
-  attackEmoji,
-  move,
-  attackLine,
-  intent,
   lore,
-  intro,
-  resultLines,
 }) => ({
   id,
   portraitId: id,
   isTeacher: true,
-  kindLabel: 'TEACHER',
+  kindLabel: 'GUIDE TEACHER',
   name,
   teacherSubject: subject,
   species: `${subject}担当`,
-  role: '先生ライバル',
+  role: '龍脈解読の協力教員',
   element: subject,
   elementEmoji: subjectEmoji,
   accent,
-  attackEmoji,
-  move,
-  attackLine,
-  intent,
+  // 旧セーブが参照するフィールド名は維持するが、対戦技ではなく専門的助言として扱う。
+  attackEmoji: subjectEmoji,
+  move: `${subject}の専門メモ`,
+  attackLine: `${name}が${subject}の知識から手掛かりを示した。`,
+  intent: `${subject}の文脈と英語の記憶断片を照合する`,
   lore,
-  intro,
-  resultLines,
+  intro: `${name}は英語そのものを思い出せないが、${subject}の用語に不自然な空白があると気づいている。「私の専門知識を使って、一緒に記憶を復元しよう」`,
+  resultLines: {
+    defeated: '記憶の断片がつながった。今の根拠を調査記録へ残しておこう。',
+    unresolved: 'まだ決め手が足りない。誤りも手掛かりとして、文脈をもう一度確かめよう。',
+    dominant: '難しい層だが、一人で抱えなくていい。別の例と専門資料を一緒に探そう。',
+  },
 })
 
-// 章ボスのIDは変えず、校内では架空の先生ライバルとして登場させる。
-// 保存済みセッションとの互換性を守りながら、先生ごとの備品攻撃を表示できる。
+// 旧章IDは保存互換のため変えず、先生は全員、専門分野から解読を助ける協力者として扱う。
 export const TEACHER_RIVALS = {
   'grass-wolf': teacherRival({
     id: 'grass-wolf',

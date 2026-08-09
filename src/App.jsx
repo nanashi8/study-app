@@ -6,7 +6,6 @@ import { LoginScreen } from './screens/Login.jsx'
 import { AppShell } from './components/AppShell.jsx'
 import { BottomNav } from './components/BottomNav.jsx'
 import { SpeechSettingsSheet } from './components/SpeechSettings.jsx'
-import { GameBgmController } from './components/GameBgm.jsx'
 import { PortalScreen } from './screens/Portal.jsx'
 
 // ポータル初期表示で全語彙・数式・QR読取などを一括取得しないよう、各画面を遅延読込する。
@@ -222,7 +221,6 @@ function MainApp() {
         </Suspense>
       </AppShell>
       <SpeechSettingsSheet />
-      <GameBgmController />
     </>
   )
 }

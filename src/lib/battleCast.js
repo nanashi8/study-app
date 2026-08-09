@@ -1009,7 +1009,8 @@ export const BATTLE_RIVALS = RIVAL_DEFINITIONS.map(
   ([id, name, title, groupId]) => ({
     id,
     name,
-    title,
+    title: `${title.split('・')[0]}・龍脈調査協力者`,
+    legacyTitle: title,
     groupId,
     portrait: publicAssetUrl(`/assets/battle/cast/rivals/${id}.webp`),
     standing: publicAssetUrl(`/assets/battle/standing/rivals/${id}.png`),
@@ -1108,7 +1109,7 @@ export function battleOpponentForEncounter(encounter, rival) {
   return {
     ...fallback,
     name: encounter.name,
-    title: `${encounter.teacherSubject}担当・先生ライバル`,
+    title: `${encounter.teacherSubject}担当・龍脈解読協力者`,
     isTeacher: true,
     teacherId: encounter.id,
     standing: teacherStandingSrc(encounter),
