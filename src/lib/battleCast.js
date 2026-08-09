@@ -928,13 +928,14 @@ const MANA_STANDING_EVENTS = new Set([
 ])
 
 export function battleStandingPoseForPhase(phase = 'ready', eventKind = null) {
-  if (phase === 'entry' || phase === 'defeat' || phase === 'enemy-action') {
+  if (phase === 'entry' || phase === 'defeat') {
     return 'back'
   }
   if (phase === 'healing' || MANA_STANDING_EVENTS.has(eventKind)) {
     return 'mana'
   }
-  if (phase === 'hero-action' || phase === 'guard') return 'battle'
+  if (phase === 'guard') return 'battle'
+  if (phase === 'hero-action' || phase === 'enemy-action') return 'wind'
   return 'wind'
 }
 

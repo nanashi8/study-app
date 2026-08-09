@@ -149,18 +149,19 @@
   100% { transform: translate3d(0, 0, 0) scale(1); filter: brightness(1); }
 }
 @keyframes battle-stage-backdrop-hero-impact {
-  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
-  36% { transform: translate3d(1.8%, -0.7%, 0) scale(1.035); filter: brightness(1.22); }
-  62% { transform: translate3d(-0.6%, 0.3%, 0) scale(1.012); }
+  0%, 58%, 100% { transform: translate3d(0, 0, 0) scale(1); filter: brightness(1); }
+  64% { transform: translate3d(1.1%, -0.45%, 0) scale(1.022); filter: brightness(1.16); }
+  76% { transform: translate3d(-0.35%, 0.2%, 0) scale(1.008); filter: brightness(1.04); }
 }
 @keyframes battle-stage-backdrop-enemy-impact {
-  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
-  36% { transform: translate3d(-1.8%, -0.7%, 0) scale(1.035); filter: brightness(1.18); }
-  62% { transform: translate3d(0.6%, 0.3%, 0) scale(1.012); }
+  0%, 58%, 100% { transform: translate3d(0, 0, 0) scale(1); filter: brightness(1); }
+  64% { transform: translate3d(-1.1%, -0.45%, 0) scale(1.022); filter: brightness(1.14); }
+  76% { transform: translate3d(0.35%, 0.2%, 0) scale(1.008); filter: brightness(1.03); }
 }
 @keyframes battle-stage-backdrop-guard {
-  0%, 100% { transform: scale(1); filter: brightness(1); }
-  48% { transform: scale(1.018); filter: brightness(1.18) saturate(0.9); }
+  0%, 58%, 100% { transform: scale(1); filter: brightness(1); }
+  64% { transform: scale(1.014); filter: brightness(1.14) saturate(0.92); }
+  78% { transform: scale(1.004); filter: brightness(1.03); }
 }
 @keyframes battle-stage-backdrop-healing {
   0% { transform: translate3d(0, 1.2%, 0) scale(1); filter: brightness(0.94); }
@@ -948,13 +949,13 @@
   animation: battle-stage-backdrop-entry 2.8s ease-out both;
 }
 .battle-stage-backdrop[data-battle-backdrop-phase='hero-action'] .battle-stage-backdrop-motion {
-  animation: battle-stage-backdrop-hero-impact 0.7s ease-out both;
+  animation: battle-stage-backdrop-hero-impact 1.46s cubic-bezier(0.2, 0.72, 0.24, 1) both;
 }
 .battle-stage-backdrop[data-battle-backdrop-phase='enemy-action'] .battle-stage-backdrop-motion {
-  animation: battle-stage-backdrop-enemy-impact 0.7s ease-out both;
+  animation: battle-stage-backdrop-enemy-impact 1.46s cubic-bezier(0.2, 0.72, 0.24, 1) both;
 }
 .battle-stage-backdrop[data-battle-backdrop-phase='guard'] .battle-stage-backdrop-motion {
-  animation: battle-stage-backdrop-guard 0.82s ease-out both;
+  animation: battle-stage-backdrop-guard 1.46s cubic-bezier(0.2, 0.72, 0.24, 1) both;
 }
 .battle-stage-backdrop[data-battle-backdrop-phase='healing'] .battle-stage-backdrop-motion {
   animation: battle-stage-backdrop-healing 1.05s ease-out both;
@@ -4314,11 +4315,12 @@
 }
 
 /* -------------------------------------------------------------------------
-   Layered battle anime
-   Background plates stay clean and still while the two full-body actors carry
-   the readable action: approach -> strike/block -> reaction -> reset.
-   Decorative icons, mana circles and portrait-video cut-ins are not part of
-   the live battle stage.
+   Layered battle magic
+   Background plates stay clean while the two full-body actors and one brief
+   directional spell carry the readable action:
+   cast -> projectile -> impact/reaction -> reset.
+   Fighters remain in their own stage zones. Decorative icons, mana circles
+   and portrait-video cut-ins are not part of the live battle stage.
    ---------------------------------------------------------------------- */
 .battle-quiz-screen[data-battle-theme] .school-battle-stage::before,
 .battle-quiz-screen[data-battle-theme] .battle-theme-stage-decoration,
@@ -4384,59 +4386,141 @@
   overflow: hidden;
   border-radius: inherit;
   pointer-events: none;
+  --spell-hero-x: 27%;
+  --spell-enemy-x: 73%;
+  --spell-hero-y: 54%;
+  --spell-enemy-y: 54%;
+  --spell-hero-angle: 0deg;
+  --spell-enemy-angle: 0deg;
+  --spell-hero-rise-mid: 0%;
+  --spell-hero-rise: 0%;
+  --spell-enemy-fall-mid: 0%;
+  --spell-enemy-fall: 0%;
 }
 
-.battle-anime-speed-lines,
-.battle-anime-impact-frame {
+.pixel-battle-stage[data-battle-layout='art-grid'] .battle-anime-effects {
+  --spell-hero-y: 62%;
+  --spell-enemy-y: 42%;
+  --spell-hero-angle: -10deg;
+  --spell-enemy-angle: 10deg;
+  --spell-hero-rise-mid: -105%;
+  --spell-hero-rise: -315%;
+  --spell-enemy-fall-mid: 105%;
+  --spell-enemy-fall: 315%;
+}
+
+.battle-spell-bolt,
+.battle-spell-impact {
   position: absolute;
   display: block;
   opacity: 0;
   pointer-events: none;
+  will-change: transform, opacity, filter;
 }
 
-.battle-anime-speed-lines {
-  inset: -22%;
-  background: repeating-linear-gradient(
-    102deg,
-    transparent 0 16px,
-    rgb(255 255 255 / 0.42) 17px 18px,
-    transparent 19px 34px
+.battle-spell-bolt {
+  width: 19%;
+  min-width: 48px;
+  height: 12px;
+  transform-origin: left center;
+  clip-path: polygon(0 50%, 18% 8%, 76% 20%, 100% 50%, 76% 80%, 18% 92%);
+  background: linear-gradient(
+    90deg,
+    transparent 0,
+    color-mix(in srgb, var(--spell-color) 82%, white) 20%,
+    white 68%,
+    var(--spell-color) 100%
   );
+  filter:
+    drop-shadow(0 0 3px white)
+    drop-shadow(0 0 8px color-mix(in srgb, var(--spell-color) 86%, transparent));
   mix-blend-mode: screen;
 }
 
-.battle-anime-impact-frame {
-  top: 7%;
-  bottom: 5%;
-  left: 62%;
-  width: 5px;
-  transform: rotate(18deg) scaleY(0.2);
-  background: linear-gradient(180deg, transparent, white 20% 78%, transparent);
-  box-shadow: 0 0 8px white, 0 0 18px rgb(250 204 21 / 0.72);
+.battle-spell-bolt::before {
+  position: absolute;
+  inset: 3px 28% 3px -20%;
+  clip-path: polygon(0 50%, 28% 8%, 100% 34%, 100% 66%, 28% 92%);
+  content: '';
+  background: linear-gradient(90deg, transparent, var(--spell-color));
+  filter: blur(1px);
+  opacity: 0.72;
+}
+
+.battle-spell-bolt-hero {
+  top: var(--spell-hero-y);
+  left: var(--spell-hero-x);
+  --spell-color: var(--battle-hero, #38bdf8);
+}
+
+.battle-spell-bolt-enemy {
+  top: var(--spell-enemy-y);
+  left: var(--spell-enemy-x);
+  transform-origin: right center;
+  --spell-color: var(--battle-enemy, #fb7185);
+}
+
+.battle-spell-impact {
+  width: clamp(44px, 16%, 72px);
+  aspect-ratio: 1;
+  transform: translate3d(-50%, -50%, 0) rotate(45deg) scale(0.12);
+  filter:
+    drop-shadow(0 0 4px white)
+    drop-shadow(0 0 10px color-mix(in srgb, var(--spell-color) 88%, transparent));
+  mix-blend-mode: screen;
+}
+
+.battle-spell-impact::before,
+.battle-spell-impact::after {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 7px;
+  transform: translate(-50%, -50%);
+  clip-path: polygon(0 50%, 40% 22%, 50% 0, 60% 22%, 100% 50%, 60% 78%, 50% 100%, 40% 78%);
+  content: '';
+  background: linear-gradient(90deg, transparent, var(--spell-color) 28%, white 50% 55%, var(--spell-color) 72%, transparent);
+}
+
+.battle-spell-impact::after {
+  transform: translate(-50%, -50%) rotate(90deg) scaleX(0.78);
+}
+
+.battle-spell-impact-on-enemy {
+  top: var(--spell-enemy-y);
+  left: var(--spell-enemy-x);
+  --spell-color: var(--battle-hero, #38bdf8);
+}
+
+.battle-spell-impact-on-hero {
+  top: var(--spell-hero-y);
+  left: var(--spell-hero-x);
+  --spell-color: var(--battle-enemy, #fb7185);
 }
 
 .battle-quiz-screen[data-battle-theme] .pixel-battle-stage[data-battle-phase='hero-action'] .battle-anime-fighter-hero {
-  animation: battle-anime-hero-combo 1.08s cubic-bezier(0.16, 0.84, 0.24, 1) both;
+  animation: battle-anime-hero-cast 1.46s cubic-bezier(0.2, 0.72, 0.24, 1) both;
 }
 
 .battle-quiz-screen[data-battle-theme] .pixel-battle-stage[data-battle-phase='hero-action'] .battle-anime-fighter-enemy {
-  animation: battle-anime-enemy-hit 1.08s ease-out both;
+  animation: battle-anime-enemy-hit 1.46s cubic-bezier(0.2, 0.72, 0.24, 1) both;
 }
 
 .battle-quiz-screen[data-battle-theme] .pixel-battle-stage[data-battle-phase='enemy-action'] .battle-anime-fighter-enemy {
-  animation: battle-anime-enemy-combo 1.08s cubic-bezier(0.16, 0.84, 0.24, 1) both;
+  animation: battle-anime-enemy-cast 1.46s cubic-bezier(0.2, 0.72, 0.24, 1) both;
 }
 
 .battle-quiz-screen[data-battle-theme] .pixel-battle-stage[data-battle-phase='enemy-action'] .battle-anime-fighter-hero {
-  animation: battle-anime-hero-hit 1.08s ease-out both;
+  animation: battle-anime-hero-hit 1.46s cubic-bezier(0.2, 0.72, 0.24, 1) both;
 }
 
 .battle-quiz-screen[data-battle-theme] .pixel-battle-stage[data-battle-phase='guard'] .battle-anime-fighter-enemy {
-  animation: battle-anime-enemy-guarded-strike 1.02s cubic-bezier(0.16, 0.84, 0.24, 1) both;
+  animation: battle-anime-enemy-cast 1.46s cubic-bezier(0.2, 0.72, 0.24, 1) both;
 }
 
 .battle-quiz-screen[data-battle-theme] .pixel-battle-stage[data-battle-phase='guard'] .battle-anime-fighter-hero {
-  animation: battle-anime-hero-guard 1.02s ease-out both;
+  animation: battle-anime-hero-guard 1.46s cubic-bezier(0.2, 0.72, 0.24, 1) both;
 }
 
 .battle-quiz-screen[data-battle-theme] .pixel-battle-stage[data-battle-phase='healing'] .battle-anime-fighter-hero {
@@ -4459,30 +4543,25 @@
   animation: battle-anime-enemy-victory 1.12s ease-out both;
 }
 
-.pixel-battle-stage[data-battle-phase='hero-action'] .battle-anime-speed-lines {
-  animation: battle-anime-lines-right 0.82s ease-out both;
+.battle-quiz-screen[data-battle-theme] .pixel-battle-stage[data-battle-phase='hero-action'] .battle-spell-bolt-hero {
+  animation: battle-spell-bolt-right 1.46s cubic-bezier(0.18, 0.72, 0.22, 1) both;
 }
 
-.pixel-battle-stage[data-battle-phase='enemy-action'] .battle-anime-speed-lines,
-.pixel-battle-stage[data-battle-phase='guard'] .battle-anime-speed-lines {
-  animation: battle-anime-lines-left 0.82s ease-out both;
+.battle-quiz-screen[data-battle-theme] .pixel-battle-stage[data-battle-phase='enemy-action'] .battle-spell-bolt-enemy,
+.battle-quiz-screen[data-battle-theme] .pixel-battle-stage[data-battle-phase='guard'] .battle-spell-bolt-enemy {
+  animation: battle-spell-bolt-left 1.46s cubic-bezier(0.18, 0.72, 0.22, 1) both;
 }
 
-.pixel-battle-stage[data-battle-phase='hero-action'] .battle-anime-impact-frame {
-  left: 62%;
-  animation: battle-anime-impact 1.08s linear both;
+.battle-quiz-screen[data-battle-theme] .pixel-battle-stage[data-battle-phase='hero-action'] .battle-spell-impact-on-enemy {
+  animation: battle-spell-impact 1.46s cubic-bezier(0.18, 0.72, 0.22, 1) both;
 }
 
-.pixel-battle-stage[data-battle-phase='enemy-action'] .battle-anime-impact-frame {
-  left: 38%;
-  transform: rotate(-18deg) scaleY(0.2);
-  animation: battle-anime-impact-reverse 1.08s linear both;
+.battle-quiz-screen[data-battle-theme] .pixel-battle-stage[data-battle-phase='enemy-action'] .battle-spell-impact-on-hero {
+  animation: battle-spell-impact 1.46s cubic-bezier(0.18, 0.72, 0.22, 1) both;
 }
 
-.pixel-battle-stage[data-battle-phase='guard'] .battle-anime-impact-frame {
-  left: 35%;
-  transform: rotate(-8deg) scaleY(0.2);
-  animation: battle-anime-impact-reverse 1.02s linear both;
+.battle-quiz-screen[data-battle-theme] .pixel-battle-stage[data-battle-phase='guard'] .battle-spell-impact-on-hero {
+  animation: battle-spell-impact-guard 1.46s cubic-bezier(0.18, 0.72, 0.22, 1) both;
 }
 
 .battle-cinematic-caption {
@@ -4532,57 +4611,55 @@
   line-height: 1;
 }
 
-@keyframes battle-anime-hero-combo {
-  0%, 8% { transform: translate3d(0, 0, 0) scale(1); }
-  18% { transform: translate3d(-8%, 1%, 0) scale(0.96) rotate(-1.5deg); }
-  32% { transform: translate3d(18%, -1%, 0) scale(1.02) rotate(1deg); }
-  44% { transform: translate3d(86%, -3%, 0) scale(1.1) rotate(4deg); }
-  52% { transform: translate3d(76%, -2%, 0) scale(1.06) rotate(2deg); }
-  70% { transform: translate3d(28%, 0, 0) scale(1.02); }
-  100% { transform: translate3d(0, 0, 0) scale(1); }
+@keyframes battle-anime-hero-cast {
+  0%, 10% { transform: translate3d(0, 0, 0) scale(1) rotate(0); }
+  22% { transform: translate3d(-3.5%, 0.8%, 0) scale(0.985) rotate(-1.2deg); }
+  34% { transform: translate3d(-1.5%, -0.5%, 0) scale(1.008) rotate(-0.4deg); }
+  43% { transform: translate3d(4.5%, -1.4%, 0) scale(1.024) rotate(1.4deg); }
+  52% { transform: translate3d(-1.2%, 0.4%, 0) scale(0.994) rotate(-0.5deg); }
+  68% { transform: translate3d(0.8%, -0.3%, 0) scale(1.005) rotate(0.25deg); }
+  84% { transform: translate3d(-0.3%, 0.1%, 0) scale(0.999); }
+  100% { transform: translate3d(0, 0, 0) scale(1) rotate(0); }
 }
 
 @keyframes battle-anime-enemy-hit {
-  0%, 39% { transform: translate3d(0, 0, 0); filter: brightness(1); }
-  44% { transform: translate3d(2%, 0, 0); filter: brightness(2.1) contrast(1.15); }
-  50% { transform: translate3d(14%, -2%, 0) rotate(4deg) scale(0.97); filter: brightness(0.78) saturate(0.75); }
-  59% { transform: translate3d(7%, 1%, 0) rotate(-2deg); filter: brightness(1.15); }
-  72% { transform: translate3d(10%, 0, 0) rotate(1deg); }
-  100% { transform: translate3d(0, 0, 0); filter: brightness(1); }
+  0%, 60% { transform: translate3d(0, 0, 0) scale(1) rotate(0); filter: brightness(1); }
+  64% { transform: translate3d(1.5%, -0.3%, 0) scale(1.012); filter: brightness(2) contrast(1.12); }
+  70% { transform: translate3d(10%, -1.4%, 0) rotate(3deg) scale(0.975); filter: brightness(0.8) saturate(0.78); }
+  77% { transform: translate3d(4.5%, 0.8%, 0) rotate(-1.4deg) scale(0.99); filter: brightness(1.12); }
+  85% { transform: translate3d(6.5%, 0, 0) rotate(0.7deg) scale(0.994); filter: brightness(0.96); }
+  93% { transform: translate3d(1.5%, 0, 0) rotate(-0.2deg) scale(0.999); filter: brightness(1.02); }
+  100% { transform: translate3d(0, 0, 0) scale(1) rotate(0); filter: brightness(1); }
 }
 
-@keyframes battle-anime-enemy-combo {
-  0%, 8% { transform: translate3d(0, 0, 0) scale(1); }
-  18% { transform: translate3d(8%, 1%, 0) scale(0.96) rotate(1.5deg); }
-  32% { transform: translate3d(-18%, -1%, 0) scale(1.02) rotate(-1deg); }
-  44% { transform: translate3d(-86%, -3%, 0) scale(1.1) rotate(-4deg); }
-  52% { transform: translate3d(-76%, -2%, 0) scale(1.06) rotate(-2deg); }
-  70% { transform: translate3d(-28%, 0, 0) scale(1.02); }
-  100% { transform: translate3d(0, 0, 0) scale(1); }
+@keyframes battle-anime-enemy-cast {
+  0%, 10% { transform: translate3d(0, 0, 0) scale(1) rotate(0); }
+  22% { transform: translate3d(3.5%, 0.8%, 0) scale(0.985) rotate(1.2deg); }
+  34% { transform: translate3d(1.5%, -0.5%, 0) scale(1.008) rotate(0.4deg); }
+  43% { transform: translate3d(-4.5%, -1.4%, 0) scale(1.024) rotate(-1.4deg); }
+  52% { transform: translate3d(1.2%, 0.4%, 0) scale(0.994) rotate(0.5deg); }
+  68% { transform: translate3d(-0.8%, -0.3%, 0) scale(1.005) rotate(-0.25deg); }
+  84% { transform: translate3d(0.3%, 0.1%, 0) scale(0.999); }
+  100% { transform: translate3d(0, 0, 0) scale(1) rotate(0); }
 }
 
 @keyframes battle-anime-hero-hit {
-  0%, 39% { transform: translate3d(0, 0, 0); filter: brightness(1); }
-  44% { transform: translate3d(-2%, 0, 0); filter: brightness(2.1) contrast(1.15); }
-  50% { transform: translate3d(-14%, -2%, 0) rotate(-4deg) scale(0.97); filter: brightness(0.78) saturate(0.75); }
-  59% { transform: translate3d(-7%, 1%, 0) rotate(2deg); filter: brightness(1.15); }
-  72% { transform: translate3d(-10%, 0, 0) rotate(-1deg); }
-  100% { transform: translate3d(0, 0, 0); filter: brightness(1); }
-}
-
-@keyframes battle-anime-enemy-guarded-strike {
-  0%, 12% { transform: translate3d(0, 0, 0); }
-  28% { transform: translate3d(8%, 1%, 0) scale(0.97); }
-  46% { transform: translate3d(-62%, -2%, 0) scale(1.06) rotate(-3deg); }
-  58% { transform: translate3d(-49%, 0, 0) rotate(2deg); }
-  100% { transform: translate3d(0, 0, 0); }
+  0%, 60% { transform: translate3d(0, 0, 0) scale(1) rotate(0); filter: brightness(1); }
+  64% { transform: translate3d(-1.5%, -0.3%, 0) scale(1.012); filter: brightness(2) contrast(1.12); }
+  70% { transform: translate3d(-10%, -1.4%, 0) rotate(-3deg) scale(0.975); filter: brightness(0.8) saturate(0.78); }
+  77% { transform: translate3d(-4.5%, 0.8%, 0) rotate(1.4deg) scale(0.99); filter: brightness(1.12); }
+  85% { transform: translate3d(-6.5%, 0, 0) rotate(-0.7deg) scale(0.994); filter: brightness(0.96); }
+  93% { transform: translate3d(-1.5%, 0, 0) rotate(0.2deg) scale(0.999); filter: brightness(1.02); }
+  100% { transform: translate3d(0, 0, 0) scale(1) rotate(0); filter: brightness(1); }
 }
 
 @keyframes battle-anime-hero-guard {
-  0%, 35% { transform: translate3d(0, 0, 0) scale(1); filter: brightness(1); }
-  46% { transform: translate3d(-6%, 1%, 0) scale(0.98) rotate(-2deg); filter: brightness(1.5); }
-  58% { transform: translate3d(-3%, 0, 0) scale(1.01) rotate(1deg); }
-  100% { transform: translate3d(0, 0, 0) scale(1); filter: brightness(1); }
+  0%, 34% { transform: translate3d(0, 0, 0) scale(1) rotate(0); filter: brightness(1); }
+  48% { transform: translate3d(-2.2%, 0.8%, 0) scale(0.985) rotate(-1deg); filter: brightness(1.05); }
+  63% { transform: translate3d(-4.8%, 1.2%, 0) scale(0.97) rotate(-1.8deg); filter: brightness(1.58) saturate(0.92); }
+  72% { transform: translate3d(-2.4%, 0, 0) scale(1.01) rotate(0.8deg); filter: brightness(1.12); }
+  84% { transform: translate3d(-1%, 0.2%, 0) scale(0.997) rotate(-0.25deg); filter: brightness(1.02); }
+  100% { transform: translate3d(0, 0, 0) scale(1) rotate(0); filter: brightness(1); }
 }
 
 @keyframes battle-anime-hero-recover {
@@ -4615,52 +4692,126 @@
   100% { transform: translate3d(0, 0, 0) scale(1.01); }
 }
 
-@keyframes battle-anime-lines-right {
-  0%, 18% { transform: translate3d(-16%, 0, 0); opacity: 0; }
-  36% { opacity: 0.55; }
-  72% { transform: translate3d(13%, 0, 0); opacity: 0.2; }
-  100% { transform: translate3d(22%, 0, 0); opacity: 0; }
+@keyframes battle-spell-bolt-right {
+  0%, 28% {
+    transform: translate3d(0, -50%, 0) rotate(var(--spell-hero-angle)) scaleX(0.06);
+    opacity: 0;
+  }
+  34% {
+    transform: translate3d(0, -50%, 0) rotate(var(--spell-hero-angle)) scaleX(0.58);
+    opacity: 0.88;
+  }
+  45% {
+    transform: translate3d(48%, calc(-50% + var(--spell-hero-rise-mid)), 0) rotate(var(--spell-hero-angle)) scaleX(1);
+    opacity: 1;
+  }
+  61% {
+    transform: translate3d(208%, calc(-50% + var(--spell-hero-rise)), 0) rotate(var(--spell-hero-angle)) scaleX(1.08);
+    opacity: 1;
+  }
+  67% {
+    transform: translate3d(236%, calc(-50% + var(--spell-hero-rise)), 0) rotate(var(--spell-hero-angle)) scaleX(0.72);
+    opacity: 0.68;
+  }
+  70%, 100% {
+    transform: translate3d(240%, calc(-50% + var(--spell-hero-rise)), 0) rotate(var(--spell-hero-angle)) scaleX(0.18);
+    opacity: 0;
+  }
 }
 
-@keyframes battle-anime-lines-left {
-  0%, 18% { transform: translate3d(16%, 0, 0) scaleX(-1); opacity: 0; }
-  36% { opacity: 0.55; }
-  72% { transform: translate3d(-13%, 0, 0) scaleX(-1); opacity: 0.2; }
-  100% { transform: translate3d(-22%, 0, 0) scaleX(-1); opacity: 0; }
+@keyframes battle-spell-bolt-left {
+  0%, 28% {
+    transform: translate3d(0, -50%, 0) rotate(calc(180deg + var(--spell-enemy-angle))) scaleX(0.06);
+    opacity: 0;
+  }
+  34% {
+    transform: translate3d(0, -50%, 0) rotate(calc(180deg + var(--spell-enemy-angle))) scaleX(0.58);
+    opacity: 0.88;
+  }
+  45% {
+    transform: translate3d(-48%, calc(-50% + var(--spell-enemy-fall-mid)), 0) rotate(calc(180deg + var(--spell-enemy-angle))) scaleX(1);
+    opacity: 1;
+  }
+  61% {
+    transform: translate3d(-208%, calc(-50% + var(--spell-enemy-fall)), 0) rotate(calc(180deg + var(--spell-enemy-angle))) scaleX(1.08);
+    opacity: 1;
+  }
+  67% {
+    transform: translate3d(-236%, calc(-50% + var(--spell-enemy-fall)), 0) rotate(calc(180deg + var(--spell-enemy-angle))) scaleX(0.72);
+    opacity: 0.68;
+  }
+  70%, 100% {
+    transform: translate3d(-240%, calc(-50% + var(--spell-enemy-fall)), 0) rotate(calc(180deg + var(--spell-enemy-angle))) scaleX(0.18);
+    opacity: 0;
+  }
 }
 
-@keyframes battle-anime-impact {
-  0%, 38% { transform: rotate(18deg) scaleY(0.2); opacity: 0; }
-  44% { transform: rotate(18deg) scaleY(1.1); opacity: 1; }
-  52% { transform: rotate(18deg) scaleY(0.82); opacity: 0.42; }
-  65%, 100% { transform: rotate(18deg) scaleY(0.2); opacity: 0; }
+@keyframes battle-spell-impact {
+  0%, 59% {
+    transform: translate3d(-50%, -50%, 0) rotate(36deg) scale(0.12);
+    filter: brightness(1);
+    opacity: 0;
+  }
+  64% {
+    transform: translate3d(-50%, -50%, 0) rotate(45deg) scale(1.08);
+    filter: brightness(1.7);
+    opacity: 1;
+  }
+  70% {
+    transform: translate3d(-50%, -50%, 0) rotate(51deg) scale(0.82);
+    filter: brightness(1.18);
+    opacity: 0.58;
+  }
+  78%, 100% {
+    transform: translate3d(-50%, -50%, 0) rotate(58deg) scale(1.28);
+    filter: brightness(1);
+    opacity: 0;
+  }
 }
 
-@keyframes battle-anime-impact-reverse {
-  0%, 38% { transform: rotate(-18deg) scaleY(0.2); opacity: 0; }
-  44% { transform: rotate(-18deg) scaleY(1.1); opacity: 1; }
-  52% { transform: rotate(-18deg) scaleY(0.82); opacity: 0.42; }
-  65%, 100% { transform: rotate(-18deg) scaleY(0.2); opacity: 0; }
+@keyframes battle-spell-impact-guard {
+  0%, 59% {
+    transform: translate3d(-50%, -50%, 0) rotate(36deg) scale(0.12);
+    opacity: 0;
+  }
+  64% {
+    transform: translate3d(-50%, -50%, 0) rotate(45deg) scale(0.84);
+    filter: brightness(1.35) saturate(0.82);
+    opacity: 0.82;
+  }
+  72% {
+    transform: translate3d(-50%, -50%, 0) rotate(51deg) scale(0.68);
+    opacity: 0.38;
+  }
+  80%, 100% {
+    transform: translate3d(-50%, -50%, 0) rotate(56deg) scale(1.04);
+    opacity: 0;
+  }
 }
 
 .pixel-battle-hud[data-battle-ui-mode='simple'] .battle-anime-fighter,
-.pixel-battle-hud[data-battle-ui-mode='simple'] .battle-anime-speed-lines,
-.pixel-battle-hud[data-battle-ui-mode='simple'] .battle-anime-impact-frame {
-  animation: none;
-  transform: none;
+.pixel-battle-hud[data-battle-ui-mode='simple'] .battle-spell-bolt,
+.pixel-battle-hud[data-battle-ui-mode='simple'] .battle-spell-impact {
+  animation: none !important;
+  transform: none !important;
+}
+
+.pixel-battle-hud[data-battle-ui-mode='simple'] .battle-spell-bolt,
+.pixel-battle-hud[data-battle-ui-mode='simple'] .battle-spell-impact {
+  display: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .battle-anime-fighter,
-  .battle-anime-speed-lines,
-  .battle-anime-impact-frame {
+  .battle-spell-bolt,
+  .battle-spell-impact {
     animation: none !important;
     transform: none !important;
     filter: none !important;
   }
 
-  .battle-anime-speed-lines,
-  .battle-anime-impact-frame {
+  .battle-spell-bolt,
+  .battle-spell-impact {
     display: none;
   }
 }

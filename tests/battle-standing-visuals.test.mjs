@@ -93,11 +93,11 @@ test('通常ライバル50人と先生12人の全員に専用の透過全身立�
 
 test('戦況ごとに4姿を使い分け、マナ技は集中姿へ切り替える', () => {
   assert.equal(battleStandingPoseForPhase('entry'), 'back')
-  assert.equal(battleStandingPoseForPhase('enemy-action'), 'back')
+  assert.equal(battleStandingPoseForPhase('enemy-action'), 'wind')
   assert.equal(battleStandingPoseForPhase('defeat'), 'back')
   assert.equal(battleStandingPoseForPhase('ready'), 'wind')
   assert.equal(battleStandingPoseForPhase('victory'), 'wind')
-  assert.equal(battleStandingPoseForPhase('hero-action'), 'battle')
+  assert.equal(battleStandingPoseForPhase('hero-action'), 'wind')
   assert.equal(battleStandingPoseForPhase('guard'), 'battle')
   assert.equal(battleStandingPoseForPhase('healing'), 'mana')
 
@@ -150,8 +150,10 @@ test('入口・実戦・結果が共通立ち絵を使い、実戦は全身レ�
     assert.match(css, new RegExp(`data-battle-standing-pose='${pose}'`), pose)
   }
   assert.match(css, /@keyframes battle-standing-wind/)
-  assert.match(css, /@keyframes battle-anime-hero-combo/)
-  assert.match(css, /@keyframes battle-anime-enemy-combo/)
+  assert.match(css, /@keyframes battle-anime-hero-cast/)
+  assert.match(css, /@keyframes battle-anime-enemy-cast/)
+  assert.match(css, /@keyframes battle-spell-bolt-right/)
+  assert.match(css, /@keyframes battle-spell-bolt-left/)
   assert.match(css, /@keyframes battle-anime-hero-hit/)
   assert.match(css, /@keyframes battle-anime-enemy-hit/)
   assert.match(css, /@media \(prefers-reduced-motion: reduce\)[\s\S]*\.battle-standing-actor,/)

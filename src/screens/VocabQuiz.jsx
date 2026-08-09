@@ -881,8 +881,10 @@ function BattleHud({
           {battleStage.name}
         </span>
         <span className="battle-anime-effects" aria-hidden="true">
-          <i className="battle-anime-speed-lines" />
-          <i className="battle-anime-impact-frame" />
+          <i className="battle-spell-bolt battle-spell-bolt-hero" />
+          <i className="battle-spell-bolt battle-spell-bolt-enemy" />
+          <i className="battle-spell-impact battle-spell-impact-on-enemy" />
+          <i className="battle-spell-impact battle-spell-impact-on-hero" />
         </span>
         <span className="battle-stage-cinema-frame" aria-hidden="true" />
         <div
