@@ -29,6 +29,7 @@ import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { buildVocabInstructorExplanation } from '../lib/instructorExplanations.js'
 import {
   BATTLE_STAR_PER_CORRECT,
+  battleStageForEncounter,
   battleThemeById,
 } from '../lib/battleThemes.js'
 import {
@@ -37,7 +38,6 @@ import {
   battleRivalForEncounter,
   battleRivalTeacherSubject,
   battleStudentById,
-  battleStudentMotion,
   battleStudentPortrait,
   battleStandingPoseForPhase,
   battleStudentState,
@@ -46,7 +46,6 @@ import {
   battleStudentTraitProfile,
   battleTraitById,
 } from '../lib/battleTraits.js'
-import { battleManaPresentation } from '../lib/battleMana.js'
 import { publicAssetUrl } from '../lib/publicAssetUrl.js'
 import { afterSchoolSkillById } from '../lib/afterSchoolBonds.js'
 
@@ -668,9 +667,6 @@ function BattleHud({
     presentationActive && cue.actor === 'hero' && cue.target === 'enemy'
   const enemyAttacking =
     presentationActive && cue.actor === 'enemy' && cue.target === 'hero'
-  const heroDamaged =
-    presentationActive && cue.target === 'hero' && !guardActive && !healingActive
-  const enemyDamaged = presentationActive && cue.target === 'enemy'
   const safeTurns = Array.isArray(turns) ? turns : []
   const currentTurn = Math.min(
     totalTurns,
@@ -680,31 +676,17 @@ function BattleHud({
   const eventHealing = healingActive
     ? battleState.itemHealing
     : battleState.lastEvent?.healing ?? 0
-  const manaPresentation = battleManaPresentation({
-    traitId: battleTrait.id,
-    secondaryTraitId: battleSecondaryTrait.id,
-    eventActive: presentationActive,
-    eventKind,
-    enemyDefeated: battleState.enemyDefeated,
-    heroDefeated: battleState.heroDefeated,
-    healing: eventHealing,
-    themeAbility: visualEvent ? null : battleState.lastEvent?.themeAbility,
-  })
   const studentState = battleStudentState({
     battleState,
     eventActive: presentationActive,
     eventKind,
   })
   const studentPortrait = battleStudentPortrait(battleStudent.id, studentState)
-  const studentMotion = presentationActive
-    ? battleStudentMotion(battleStudent.id, studentState)
-    : null
-  const sceneIndex = Math.max(
-    0,
-    battleState.answered - (eventActive ? 1 : 0),
-  ) % battleTheme.scenes.length
-  const scene = battleTheme.scenes[sceneIndex]
-  const battleStageUrl = publicAssetUrl(battleTheme.stage)
+  const battleStage = battleStageForEncounter(
+    battleRival.id,
+    battleRival.groupId,
+  )
+  const battleStageUrl = battleStage.image
   const actionEmoji = visualEvent?.emoji
     ? visualEvent.emoji
     : enemyAttacking
@@ -750,6 +732,9 @@ function BattleHud({
     ready: '対決中',
   }[battlePhase]
   const standingPose = battleStandingPoseForPhase(battlePhase, eventKind)
+  const showBattleCaption = presentationActive
+    || battleState.enemyDefeated
+    || battleState.heroDefeated
 
   return (
     <div
@@ -875,14 +860,14 @@ function BattleHud({
         className={cx(
           'mob-battle-stage battle-status-stage mt-1.5 rounded-xl',
           'school-battle-stage pixel-battle-stage battle-key-visual-stage',
-          skillFlash && 'battle-stage-skill',
         )}
         style={{
-          '--battle-scene': `${scene.overlay}, linear-gradient(90deg,rgba(15,23,42,.18),rgba(15,23,42,.02),rgba(15,23,42,.26)), url("${battleStageUrl}") ${scene.position} / cover`,
+          '--battle-scene': `linear-gradient(90deg,rgba(2,6,23,.2),transparent 26% 74%,rgba(2,6,23,.24)), url("${battleStageUrl}") center / cover`,
         }}
         data-battle-theme={battleTheme.id}
         data-battle-layout={battleTheme.presentation.layout}
         data-battle-phase={battlePhase}
+        data-battle-stage-id={battleStage.id}
         data-battle-key-visual={battleStageUrl}
         data-battle-reference-visual={battleTheme.preview}
         role="img"
@@ -893,74 +878,27 @@ function BattleHud({
           phase={battlePhase}
         />
         <span className="battle-scene-label" aria-hidden="true">
-          {battleTheme.name} · {scene.name}
+          {battleStage.name}
         </span>
-        <span className="battle-theme-stage-decoration" aria-hidden="true">
-          {Array.from({ length: 5 }, (_, index) => <i key={index} />)}
-        </span>
-        <span className="battle-stage-depth" aria-hidden="true">
-          <i className="battle-stage-ground" />
-          <i className="battle-stage-aura battle-stage-aura-hero" />
-          <i className="battle-stage-aura battle-stage-aura-enemy" />
-          <i className="battle-stage-clash-axis"><b /><b /><b /></i>
+        <span className="battle-anime-effects" aria-hidden="true">
+          <i className="battle-anime-speed-lines" />
+          <i className="battle-anime-impact-frame" />
         </span>
         <span className="battle-stage-cinema-frame" aria-hidden="true" />
-        <span className="battle-theme-particles" aria-hidden="true">
-          {battleTheme.particles.map((particle, index) => (
-            <i
-              key={`${particle}-${index}`}
-              style={{
-                '--particle-index': index,
-                '--particle-left': `${8 + ((index * 17) % 82)}%`,
-                '--particle-size': `${8 + index}px`,
-                '--particle-delay': `${index * -0.55}s`,
-              }}
-            >
-              {particle}
-            </i>
-          ))}
-        </span>
-        <BattleManaAnimation presentation={manaPresentation} />
-        {presentationActive && (
-          <span
-            className={cx(
-              'battle-theme-action-effect',
-              cue.target === 'enemy' && !guardActive && 'battle-theme-effect-to-enemy',
-              cue.target === 'hero' && !guardActive && !healingActive && 'battle-theme-effect-to-hero',
-              (guardActive || healingActive) && 'battle-theme-effect-self',
-            )}
-            aria-hidden="true"
-          >
-            {battleTheme.presentation.effectGlyphs.map((glyph, index) => (
-              <i key={`${glyph}-${index}`} style={{ '--effect-index': index }}>
-                {glyph}
-              </i>
-            ))}
-          </span>
-        )}
         <div
-          className={cx(
-            'battle-stage-unit battle-stage-hero battle-stage-unit-fullbody',
-            heroAttacking && 'battle-unit-lunge-right',
-            heroDamaged && 'battle-unit-damaged',
-            guardActive && 'battle-unit-guard',
-          )}
+          className="battle-stage-unit battle-stage-hero battle-stage-unit-fullbody battle-anime-fighter battle-anime-fighter-hero"
         >
           <BattleStandingActor
             key={`stage-${battleStudent.id}-${studentState}`}
             student={battleStudent}
             pose={standingPose}
             phase={battlePhase}
-            motionSrc={studentMotion}
-            motionActive={presentationActive}
-            posterSrc={studentPortrait}
             defeated={battleState.heroDefeated}
             className="battle-stage-standing-hero"
             label={`${battleStudent.name}・${studentState}・${standingPose}`}
             fallback={(
               <PixelBattlePortrait
                 src={studentPortrait}
-                motionSrc={studentMotion}
                 className="h-14 w-14"
                 tone="hero"
                 label={`${battleStudent.name}・${studentState}`}
@@ -970,29 +908,20 @@ function BattleHud({
           <span className="battle-stage-unit-name">{battleStudent.name}</span>
         </div>
 
-        <div
-          className={cx(
-            'battle-action-signal',
-            cue.target === 'enemy' && 'battle-action-to-enemy',
-            cue.target === 'hero' && !guardActive && 'battle-action-to-hero',
-            guardActive && 'battle-action-guard',
-          )}
-          data-battle-phase={battlePhase}
-          aria-hidden="true"
-        >
-          <em>{battlePhaseLabel}</em>
-          <span>{actionEmoji}</span>
-          <strong>{cue.label}</strong>
-          <small>{signalTitle}</small>
-          {damageLabel && <b>{damageLabel}</b>}
-        </div>
+        {showBattleCaption && (
+          <div
+            className="battle-cinematic-caption"
+            data-battle-phase={battlePhase}
+            aria-hidden="true"
+          >
+            <em>{battlePhaseLabel}</em>
+            <strong>{signalTitle}</strong>
+            {damageLabel && <b>{damageLabel}</b>}
+          </div>
+        )}
 
         <div
-          className={cx(
-            'battle-stage-unit battle-stage-enemy battle-stage-unit-fullbody',
-            enemyAttacking && 'battle-unit-lunge-left',
-            enemyDamaged && 'battle-unit-damaged',
-          )}
+          className="battle-stage-unit battle-stage-enemy battle-stage-unit-fullbody battle-anime-fighter battle-anime-fighter-enemy"
         >
           <BattleOpponentStandingActor
             opponent={battleRival}
@@ -1083,123 +1012,13 @@ function BattleHud({
   )
 }
 
-function BattleManaAnimation({ presentation }) {
-  const { affinity, sequence } = presentation
-
-  return (
-    <span
-      className={`battle-mana-layer battle-mana-${sequence.id} battle-mana-affinity-${affinity.style}`}
-      data-mana-affinity={affinity.id}
-      data-mana-sequence={sequence.id}
-      aria-hidden="true"
-    >
-      <svg
-        className="battle-mana-geometry"
-        viewBox="0 0 320 96"
-        preserveAspectRatio="none"
-        focusable="false"
-      >
-        <g className="battle-mana-focus-geometry">
-          <circle className="battle-mana-ring battle-mana-ring-outer" cx="54" cy="55" r="27" />
-          <polygon
-            className="battle-mana-ring battle-mana-ring-inner"
-            points="54,31 75,43 75,67 54,79 33,67 33,43"
-          />
-          <circle className="battle-mana-ring battle-mana-ring-core" cx="54" cy="55" r="10" />
-        </g>
-
-        <path
-          className="battle-mana-route battle-mana-route-forward"
-          pathLength="1"
-          d="M70 52 C108 17 176 77 250 50 C266 44 272 45 281 49"
-        />
-        <path
-          className="battle-mana-route battle-mana-route-reverse"
-          pathLength="1"
-          d="M278 49 C235 15 176 78 91 51 C79 47 70 47 61 52"
-        />
-
-        <g className="battle-mana-ward-geometry">
-          <path className="battle-mana-ward-line battle-mana-ward-line-outer" pathLength="1" d="M17 82 Q54 3 91 82" />
-          <path className="battle-mana-ward-line battle-mana-ward-line-inner" pathLength="1" d="M25 81 Q54 19 83 81" />
-          <path className="battle-mana-ward-line battle-mana-ward-cross" pathLength="1" d="M27 48 L81 48 M22 63 L86 63" />
-        </g>
-
-        <g className="battle-mana-restore-geometry">
-          <path className="battle-mana-restore-line" pathLength="1" d="M54 85 C19 72 85 58 48 45 C21 35 77 22 55 10" />
-          <path className="battle-mana-restore-line battle-mana-restore-line-alt" pathLength="1" d="M45 82 C83 69 27 55 64 42 C86 34 38 21 56 12" />
-        </g>
-
-        <g className="battle-mana-break-geometry">
-          <path className="battle-mana-break-line" pathLength="1" d="M84 27 L61 48 L78 56 L46 81" />
-          <path className="battle-mana-break-line battle-mana-break-line-alt" pathLength="1" d="M25 32 L47 50 L31 61 L58 81" />
-        </g>
-
-        <g className="battle-mana-triumph-geometry">
-          <path className="battle-mana-triumph-arc" pathLength="1" d="M28 65 Q160 -5 292 65" />
-          <path className="battle-mana-triumph-arc battle-mana-triumph-arc-alt" pathLength="1" d="M43 76 Q160 19 277 76" />
-        </g>
-      </svg>
-
-      <span className="battle-mana-glyph">{affinity.glyph}</span>
-      <span className="battle-mana-bolt"><i>{affinity.glyph}</i></span>
-      <span className="battle-mana-impact">
-        <i />
-        <i />
-        <i />
-      </span>
-      <span className="battle-mana-motes">
-        {Array.from({ length: 8 }, (_, index) => (
-          <i
-            key={index}
-            style={{
-              '--mana-mote-index': index,
-              '--mana-mote-delay': `${index * -0.11}s`,
-              '--mana-mote-left': `${20 + ((index * 13) % 62)}%`,
-            }}
-          >
-            {index % 2 === 0 ? affinity.glyph : '•'}
-          </i>
-        ))}
-      </span>
-      <span className="battle-mana-phase-track">
-        {sequence.phases.map((phase, index) => (
-          <i key={phase} title={phase} style={{ '--mana-phase-index': index }} />
-        ))}
-      </span>
-    </span>
-  )
-}
-
-function usePrefersReducedMotion() {
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(() =>
-    typeof window !== 'undefined'
-      && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches,
-  )
-
-  useEffect(() => {
-    if (typeof window === 'undefined' || !window.matchMedia) return undefined
-    const media = window.matchMedia('(prefers-reduced-motion: reduce)')
-    const update = () => setPrefersReducedMotion(media.matches)
-    media.addEventListener?.('change', update)
-    return () => media.removeEventListener?.('change', update)
-  }, [])
-
-  return prefersReducedMotion
-}
-
 function PixelBattlePortrait({
   src,
-  motionSrc = null,
   className,
   tone = 'hero',
   label = '',
 }) {
-  const prefersReducedMotion = usePrefersReducedMotion()
-  const [motionFailed, setMotionFailed] = useState(false)
-  const showMotion = motionSrc && !prefersReducedMotion && !motionFailed
   const resolvedSrc = publicAssetUrl(src)
-  const resolvedMotionSrc = publicAssetUrl(motionSrc)
 
   return (
     <div
@@ -1212,22 +1031,7 @@ function PixelBattlePortrait({
       aria-label={label || undefined}
       aria-hidden={label ? undefined : 'true'}
     >
-      {showMotion ? (
-        <video
-          src={resolvedMotionSrc}
-          poster={resolvedSrc}
-          className="battle-motion-video h-full w-full object-cover"
-          autoPlay
-          muted
-          playsInline
-          preload="auto"
-          disablePictureInPicture
-          aria-hidden="true"
-          onError={() => setMotionFailed(true)}
-        />
-      ) : (
-        <img src={resolvedSrc} alt="" className="h-full w-full object-cover" />
-      )}
+      <img src={resolvedSrc} alt="" className="h-full w-full object-cover" />
     </div>
   )
 }

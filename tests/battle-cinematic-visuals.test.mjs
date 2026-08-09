@@ -21,7 +21,7 @@ test('対決入口はキービジュアル・先生・問題数・開始操作�
   assert.doesNotMatch(source, /battle-entry-route|相性・絆・対決演出|このバトルの作戦|先生は悪役|encounter\.move/)
 })
 
-test('実戦は全生徒の4姿と既存モーションを舞台の主役にする', async () => {
+test('実戦は独立背景の上で生徒と先生の全身アニメを主役にする', async () => {
   const [source, cast, actor, opponentActor] = await Promise.all([
     readSource('../src/screens/VocabQuiz.jsx'),
     readSource('../src/lib/battleCast.js'),
@@ -43,36 +43,38 @@ test('実戦は全生徒の4姿と既存モーションを舞台の主役にす�
   assert.match(source, /battle-key-visual-stage/)
   assert.match(source, /data-battle-key-visual=\{battleStageUrl\}/)
   assert.match(source, /data-battle-reference-visual=\{battleTheme\.preview\}/)
-  assert.match(source, /\{battleTheme\.name\} · \{scene\.name\}/)
+  assert.match(source, /\{battleStage\.name\}/)
   assert.match(source, /<BattleStandingActor/)
   assert.match(source, /<BattleOpponentStandingActor/)
   assert.match(source, /student=\{battleStudent\}/)
   assert.match(source, /pose=\{standingPose\}/)
-  assert.match(source, /motionSrc=\{studentMotion\}/)
-  assert.match(source, /motionActive=\{presentationActive\}/)
   assert.match(source, /opponent=\{battleRival\}/)
   assert.match(source, /phase=\{battlePhase\}/)
   assert.match(source, /battle-stage-unit-fullbody/)
+  assert.match(source, /battle-anime-fighter-hero/)
+  assert.match(source, /battle-anime-fighter-enemy/)
+  assert.match(source, /battle-anime-speed-lines/)
+  assert.match(source, /battle-anime-impact-frame/)
+  assert.match(source, /battle-cinematic-caption/)
+  assert.match(source, /battleStageForEncounter\(/)
+  assert.match(source, /data-battle-stage-id=\{battleStage\.id\}/)
+  assert.doesNotMatch(source, /BattleManaAnimation|battle-stage-aura|battle-stage-clash-axis/)
+  assert.doesNotMatch(source, /battle-theme-stage-decoration|battle-theme-particles|battle-theme-action-effect/)
   assert.match(cast, /BATTLE_STANDING_POSES/)
   assert.match(cast, /standingSheet: publicAssetUrl/)
   assert.match(cast, /battleStandingPoseForPhase/)
   assert.match(cast, /standing: publicAssetUrl\(`\/assets\/battle\/standing\/rivals\/\$\{id\}\.png`\)/)
   assert.match(actor, /data-battle-standing-pose=\{pose\}/)
-  assert.match(actor, /<video[\s\S]*?autoPlay[\s\S]*?muted[\s\S]*?playsInline/)
-  assert.match(actor, /prefers-reduced-motion: reduce/)
+  assert.doesNotMatch(actor, /<video|battle-standing-motion-cut-in|motionSrc|motionActive/)
   assert.match(opponentActor, /data-battle-standing-opponent=\{opponentId\}/)
   await access(new URL('../public/assets/battle/standing/rivals/math-takagi.png', import.meta.url))
   assert.match(source, /battle-combatants-bar/)
   assert.match(source, /battle-command-shell/)
   assert.match(source, /data-battle-phase=\{battlePhase\}/)
-  assert.match(source, /className="battle-stage-ground"/)
-  assert.match(source, /battle-stage-aura-hero/)
-  assert.match(source, /battle-stage-aura-enemy/)
-  assert.match(source, /battle-stage-clash-axis/)
   assert.match(source, /<em>\{battlePhaseLabel\}<\/em>/)
 })
 
-test('入口・実戦・結果の背景が戦況に応じて動き、停止設定も守る', async () => {
+test('背景は独立レイヤーで待機中は静止し、戦況カメラと停止設定を守る', async () => {
   const [backdrop, entry, battle, result, css] = await Promise.all([
     readSource('../src/components/BattleStageBackdrop.jsx'),
     readSource('../src/screens/EnglishMap.jsx'),
@@ -84,13 +86,12 @@ test('入口・実戦・結果の背景が戦況に応じて動き、停止設�
   assert.match(backdrop, /data-battle-stage-backdrop/)
   assert.match(backdrop, /data-battle-backdrop-phase=\{phase\}/)
   assert.match(backdrop, /battle-stage-backdrop-image/)
-  assert.match(backdrop, /battle-stage-backdrop-atmosphere/)
+  assert.doesNotMatch(backdrop, /battle-stage-backdrop-atmosphere/)
   assert.match(entry, /<BattleStageBackdrop[\s\S]*?scene="var\(--battle-entry-standing-scene\)"[\s\S]*?phase="entry"/)
   assert.match(battle, /<BattleStageBackdrop[\s\S]*?scene="var\(--battle-scene\)"[\s\S]*?phase=\{battlePhase\}/)
   assert.match(result, /<BattleStageBackdrop[\s\S]*?scene="var\(--battle-result-scene\)"[\s\S]*?phase=\{standingPhase\}/)
 
   for (const animation of [
-    'idle',
     'entry',
     'hero-impact',
     'enemy-impact',
@@ -101,6 +102,7 @@ test('入口・実戦・結果の背景が戦況に応じて動き、停止設�
   ]) {
     assert.match(css, new RegExp(`@keyframes battle-stage-backdrop-${animation}`), animation)
   }
+  assert.match(css, /\.battle-stage-backdrop-image\s*\{[\s\S]*?animation: none;/)
   for (const phase of [
     'entry',
     'hero-action',
@@ -136,7 +138,7 @@ test('戦闘結果は舞台・決着・主要4指標・次の操作だけを一�
   assert.match(source, /<BattleStandingActor/)
   assert.match(source, /<BattleOpponentStandingActor/)
   assert.match(source, /pose=\{standingPose\}/)
-  assert.match(source, /motionSrc=\{standingMotion\}/)
+  assert.doesNotMatch(source, /motionSrc=\{standingMotion\}/)
   assert.match(source, /opponent=\{rival\}/)
   assert.match(source, /<h1>\{verdict\.title\}<\/h1>/)
   assert.match(source, /aria-label=\{`\$\{student\.name\}と\$\{rival\.name\}の対決結果。\$\{verdict\.title\}`\}/)
@@ -185,15 +187,22 @@ test('共通CSSは狭幅・低画面・動きを減らす設定まで対決演�
   assert.match(css, /\.battle-standing-actor\[data-battle-standing-pose='wind'\]/)
   assert.match(css, /\.battle-standing-actor\[data-battle-standing-pose='battle'\]/)
   assert.match(css, /\.battle-standing-actor\[data-battle-standing-pose='mana'\]/)
-  assert.match(css, /\.pixel-battle-stage\[data-battle-layout='music-duel'\] \.battle-stage-unit-fullbody/)
-  assert.match(css, /\.pixel-battle-stage\[data-battle-layout='art-grid'\] \.battle-stage-unit-fullbody\.battle-stage-hero/)
-  assert.match(css, /\.pixel-battle-stage\[data-battle-layout='library-duel'\] \.battle-stage-unit-fullbody/)
+  assert.match(css, /\.battle-anime-fighter-hero/)
+  assert.match(css, /\.battle-anime-fighter-enemy/)
+  assert.match(css, /\.battle-quiz-screen\[data-battle-theme\] \.pixel-battle-stage\[data-battle-phase='hero-action'\] \.battle-anime-fighter-hero\s*\{[\s\S]*?animation: battle-anime-hero-combo/)
+  assert.match(css, /\.battle-quiz-screen\[data-battle-theme\] \.pixel-battle-stage\[data-battle-phase='enemy-action'\] \.battle-anime-fighter-enemy\s*\{[\s\S]*?animation: battle-anime-enemy-combo/)
+  assert.match(css, /@keyframes battle-anime-hero-combo/)
+  assert.match(css, /@keyframes battle-anime-enemy-combo/)
+  assert.match(css, /@keyframes battle-anime-hero-guard/)
+  assert.match(css, /@keyframes battle-anime-hero-recover/)
+  assert.match(css, /@keyframes battle-anime-hero-victory/)
   assert.match(css, /@media \(max-height: 640px\)[\s\S]*\.battle-key-visual-stage[\s\S]*height: 164px;/)
   assert.match(css, /\.battle-combatants-bar \.pixel-battle-portrait,[\s\S]*display: none;/)
   assert.match(css, /@media \(prefers-reduced-motion: reduce\)/)
-  assert.match(css, /\.battle-stage-clash-axis,/)
+  assert.match(css, /\.battle-anime-speed-lines/)
+  assert.match(css, /\.battle-anime-impact-frame/)
   assert.match(css, /\.battle-result-stage,/)
-  assert.match(css, /\.battle-result-effect-field,[\s\S]*?\.battle-standing-motion-cut-in\s*\{[\s\S]*?display: none;/)
+  assert.match(css, /@media \(prefers-reduced-motion: reduce\)[\s\S]*?\.battle-anime-fighter,[\s\S]*?animation: none !important;/)
 })
 
 test('先生たちとの学校生活は専用の先生ビジュアルと配色を持つ', async () => {

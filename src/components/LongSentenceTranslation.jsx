@@ -15,27 +15,6 @@ const ROLE_STYLE = {
   M: 'border-violet-200 bg-violet-50 text-violet-800',
 }
 
-const STATUS_STYLE = {
-  'review-needed': {
-    label: '確認待ち',
-    className: 'border-amber-200 bg-amber-50 text-amber-800',
-  },
-  reviewed: {
-    label: '本文見直し済み',
-    className: 'border-sky-200 bg-sky-50 text-sky-800',
-  },
-  confirmed: {
-    label: '監査確認済み',
-    className: 'border-emerald-200 bg-emerald-50 text-emerald-800',
-  },
-}
-
-const statusLabel = (item, fallback) => {
-  if (item.reviewState === 'rule-review-needed') return '方法確認待ち'
-  if (item.reviewState === 'unregistered') return '未登録・確認待ち'
-  return fallback
-}
-
 export function LongSentenceTranslation({ guide, className = '' }) {
   const settings = useStore((state) => state.settings)
   const phraseSteps = guide?.meaningSteps?.length ? guide.meaningSteps : guide?.steps
@@ -120,14 +99,6 @@ export function LongSentenceTranslation({ guide, className = '' }) {
                   <span className="text-[10px] font-bold text-ink/45">
                     {item.roleQuestion}
                   </span>
-                  {STATUS_STYLE[item.status] && (
-                    <span className={cx(
-                      'border px-1.5 py-0.5 text-[10px] font-black',
-                      STATUS_STYLE[item.status].className,
-                    )}>
-                      {statusLabel(item, STATUS_STYLE[item.status].label)}
-                    </span>
-                  )}
                 </div>
                 <p className="break-words text-sm font-extrabold leading-relaxed text-ink">
                   {item.displayEn}

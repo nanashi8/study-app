@@ -599,9 +599,6 @@ function BattleResultStage({
     standingPhase,
     animation.phase === 'recovery' ? 'item-heal' : null,
   )
-  const standingMotion = battleStudentMotion(student.id, animation.motionEmotion)
-  const standingPoster = battleStudentPortrait(student.id, emotion)
-
   return (
     <section
       className="battle-result-stage w-full max-w-xs"
@@ -638,9 +635,6 @@ function BattleResultStage({
                 student={student}
                 pose={standingPose}
                 phase={standingPhase}
-                motionSrc={standingMotion}
-                motionActive={!motionDisabled}
-                posterSrc={standingPoster}
                 defeated={outcome === 'defeat'}
                 label={`${student.name}・${standingPose}・${animation.label}`}
                 fallback={(
