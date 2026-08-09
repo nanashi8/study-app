@@ -164,13 +164,17 @@ Reject and regenerate or edit an image when any item below is false.
   contain at least 10 coherent school or barrier-district locations, selected
   deterministically rather than switching places after each answer.
 - Waiting characters are still. Motion plays once only for a named readable
-  state: approach, attack, hit reaction, guard, recovery, victory, or defeat.
-  The attacker moves toward the defender, the defender reacts after contact,
-  and both return or settle in a physically understandable order.
-- Anime speed lines, a brief camera push, and a single impact frame may support
-  a character action. Never animate answer icons, choice glyphs, portraits,
-  decorative particles, unexplained geometry, or continuous ambient effects
-  as a replacement for character acting.
+  state: cast, projectile travel, hit reaction, guard, recovery, victory, or
+  defeat. For an ordinary magic attack, the caster remains on their own side
+  and uses only a small brace, cast, recoil, and settle motion. The spell alone
+  crosses the stage; the defender reacts only after its visible impact. A body
+  crossing the stage or making contact is reserved for an explicitly named
+  physical technique and must never represent a normal answer attack.
+- A brief camera push and one compact impact flash may support the ordered
+  cast-projectile-impact-reaction sequence. The projectile must be temporary,
+  directional, and visually tied to its caster. Never animate answer icons,
+  choice glyphs, portraits, decorative particles, persistent rings, unexplained
+  geometry, or continuous ambient effects as a replacement for character acting.
 - `prefers-reduced-motion` and the simple battle mode must stop all battle
   choreography while preserving the same readable background and full-body
   character composition.
@@ -253,3 +257,7 @@ after adding the reason to the next prompt's forbidden block.
   opponent layers. Do not restore floating circles, mana rings, icon motion,
   circular portrait videos, or unexplained decorative motion. Use only a
   readable one-shot attack, hit, guard, recovery, victory, or defeat sequence.
+- Ordinary magic attacks keep both fighters in their own stage zones. Show a
+  small casting motion, a clearly directional spell crossing the space, impact,
+  then the defender's reaction; never slide the caster into body contact or
+  swap to a running, jumping, kicking, or punching pose for a normal answer.
