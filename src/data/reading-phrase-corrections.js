@@ -22,10 +22,10 @@ const BASE_READING_PHRASE_CORRECTIONS = Object.freeze({
   'On Monday, she has English, music, and science classes.': Object.freeze([
     correction(['she'], [
       { role: 'S', en: 'she', ja: '彼女は' },
-    ], '主語Sを「彼女は」と置き、存在構文への言い換えは最後の自然訳で示します。'),
+    ], '主語Sをそのまま置き、存在構文への言い換えは最後の自然訳で示します。'),
     correction(['has'], [
       { role: 'V', en: 'has', ja: '受けます' },
-    ], '授業予定の文脈なので、has を「受けます」と取って対象を次へ保留します。'),
+    ], '授業予定の文脈なので、has を「受ける」の意味に取って対象を次へ保留します。'),
     correction(['English, music, and science classes'], [
       { role: 'O', en: 'English, music, and science classes', ja: '英語・音楽・理科の授業を' },
     ], '三教科の classes 全体が has の目的語Oです。'),
@@ -516,7 +516,7 @@ const BASE_READING_PHRASE_CORRECTIONS = Object.freeze({
     ], 'depends は「頼る」ではなく、質が後ろの条件によって決まるというVです。'),
     correction(['on whether'], [
       { role: 'M', en: 'on whether', ja: '〜かどうかで' },
-    ], 'on whether は depends の条件を示すMで、「〜かどうかで決まる」とつなぎます。'),
+    ], 'on whether は depends の条件を示すMです。'),
     correction(['recognize'], [
       { role: 'V', en: 'recognize', ja: '認識することができ' },
     ], 'recognize は can use と並列された目的内容の動詞Vです。'),
@@ -640,7 +640,7 @@ const BASE_READING_PHRASE_CORRECTIONS = Object.freeze({
     ], 'students は目的を表す so (that) 節の主語Sです。省略された that の後ろに置かれています。'),
     correction(['could choose'], [
       { role: 'V', en: 'could choose', ja: '選べるように' },
-    ], 'could choose は目的節の動詞Vで、前の so と合わせて「生徒が選べるように」と目的を完成します。'),
+    ], 'could choose は目的節の動詞Vで、前の so と合わせて目的を完成します。'),
     correction(['the counter'], [
       { role: 'M', en: 'the counter', ja: '配膳台に' },
     ], 'the counter は reaching の到達先を示します。'),
@@ -952,7 +952,7 @@ const BASE_READING_PHRASE_CORRECTIONS = Object.freeze({
   'Training provides only limited value in rural areas with weak mobile service or during payment system failures after serious natural disasters and emergencies.': Object.freeze([
     correction(['only', 'limited value'], [
       { role: 'O', en: 'only limited value', ja: '限られた価値しか' },
-    ], 'only と呼応し、provides の目的語Oを「限られた価値しか」と取ります。'),
+    ], 'only と呼応し、provides の目的語Oを限定して取ります。'),
   ]),
   'Nor should inclusion mean forcing everyone into a system simply because institutions find it efficient.': Object.freeze([
     correction(['Nor'], [
@@ -1920,7 +1920,7 @@ const ADDITIONAL_READING_PHRASE_CORRECTIONS = Object.freeze({
           governor: 'should support / (should) replace',
         },
       },
-    ], 'not は英語では replace を否定します。日本語の否定は次のV「置き換えるべきではありません」で一度だけ完成し、ここでは対照を「一方で」と示します。'),
+    ], 'not は英語では replace を否定します。日本語の否定は次のVで一度だけ完成し、ここでは対照を示します。'),
     correction(['replace'], [
       { role: 'V', en: 'replace', ja: '置き換えるべきではありません（対象は次へ）' },
     ], 'replace は should support と助動詞shouldを共有する対照側Vです。not の否定を日本語ではここで実現します。構造表示は (should) replace、音声は replace のままです。'),
@@ -2028,7 +2028,7 @@ const ADDITIONAL_READING_PHRASE_CORRECTIONS = Object.freeze({
     ], 'difficult は Judgment の状態Cで、後ろの for outsiders to challenge が難しい具体的内容を示します。'),
     correction(['for outsiders'], [
       { role: 'M', en: 'for outsiders', ja: '外部の人々が' },
-    ], 'for outsiders は to challenge の意味上の主語を示すMです。日本語では「外部の人々が」と置きます。'),
+    ], 'for outsiders は to challenge の意味上の主語を示すMです。'),
     correction(['to challenge'], [
       {
         role: 'V',
@@ -2145,7 +2145,7 @@ const ADDITIONAL_READING_PHRASE_CORRECTIONS = Object.freeze({
     ], 'required は主節Vではなく、the identity documents (that are) required ... の関係詞＋be動詞を省いた過去分詞後置修飾Mです。'),
     correction(['to open'], [
       { role: 'V', en: 'to open', ja: '開設するために' },
-    ], 'to open は required を具体化し、「デジタル口座を開設するために必要な書類」という用途・条件を作る不定詞です。'),
+    ], 'to open は required を具体化し、用途・条件を作る不定詞です。'),
   ]),
   'Extending the life of a product reduces waste and lowers demand for the energy and resources required to make new goods.': Object.freeze([
     correction(['Extending', 'the life'], [
@@ -2286,7 +2286,7 @@ const ADDITIONAL_READING_PHRASE_CORRECTIONS = Object.freeze({
     ], 'become は前の may を共有する二つ目のVです。可能性を日本語にも回収し、変化後の状態を次へ保留します。'),
     correction(['unreadable'], [
       { role: 'C', en: 'unreadable', ja: '読めない状態に' },
-    ], 'unreadable は become の補語Cです。前の共有mayと合わせて「読めない状態になる可能性もあります」とつなぎます。'),
+    ], 'unreadable は become の補語Cです。前の共有mayと合わせて、変化後の状態としてつなぎます。'),
   ]),
   'The alternative is not to abandon moderation, but to combine it with accessible evidence, independent review, and explanations that users can examine rather than merely obey.': Object.freeze([
     correction(['explanations'], [

@@ -529,7 +529,7 @@ export function VocabCameraScreen() {
                         辞書にない単語
                       </h2>
                       <p className="mt-0.5 text-xs font-bold leading-relaxed text-ink/50">
-                        選んだ語だけをFirebaseの辞書登録リクエストへ送ります。
+                        選んだ語だけを辞書登録リクエストへ送ります。
                         写真や教科書の本文は送信しません。誤読や人名は選択から外してください。
                       </p>
                     </div>
@@ -602,7 +602,7 @@ export function VocabCameraScreen() {
 
                   {requestedCount > 0 && (
                     <p className="mt-3 rounded-xl bg-emerald-50 p-2.5 text-center text-xs font-extrabold text-emerald-700">
-                      {requestedCount}語をFirebaseへ送信しました。
+                      {requestedCount}語を送信しました。
                     </p>
                   )}
                   {requestError && (
@@ -618,8 +618,8 @@ export function VocabCameraScreen() {
                     onClick={sendRequests}
                   >
                     📩 {requesting
-                      ? 'Firebaseへ送信中…'
-                      : `選んだ ${selectedRequests.size}語をFirebaseへ送る`}
+                      ? '送信中…'
+                      : `選んだ ${selectedRequests.size}語を送る`}
                   </Button>
                 </Card>
               </section>

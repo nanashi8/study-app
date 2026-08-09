@@ -112,7 +112,8 @@ test('熟語1,150・構文350の全1,500項目を級別目標どおり収録す�
     assert.ok(['idiom', 'syntax'].includes(phrase.kind), phrase.id)
     assert.ok(phrase.meaning && phrase.meanings.length, phrase.id)
     assert.ok(phrase.example.en && phrase.example.ja, phrase.id)
-    assert.ok(phrase.origin && phrase.note, phrase.id)
+    assert.ok(phrase.note, phrase.id)
+    if (phrase.kind === 'idiom') assert.ok(phrase.origin, phrase.id)
     if (phrase.kind === 'idiom' && (phrase.curriculumSupplement || phrase.examSupplement)) {
       assert.deepEqual(phrase.meanings, splitMeanings(phrase.meaning), phrase.id)
     }

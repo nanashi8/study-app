@@ -69,11 +69,11 @@ export function translationRoleExplanation(roles, ja, scope = '') {
       : `${scope}の中で、`
     : ''
   if (!normalized.length) {
-    return `${prefix}「${ja}」を、直前までの意味へ英語の順で足します。`
+    return `${prefix}直前までの意味へ、英語の語順のまま足します。`
   }
   if (normalized.length === 1) {
     const meta = translationRoleMeta(normalized[0])
-    return `${prefix}${meta.code}（${meta.label}）は「${meta.question}」を示す部分です。直訳では${meta.japaneseShape}の形で「${ja}」と置きます。`
+    return `${prefix}${meta.code}（${meta.label}）は「${meta.question}」を示す部分です。直訳では${meta.japaneseShape}の形で表します。`
   }
   const route = normalized
     .map((role) => {
@@ -81,5 +81,5 @@ export function translationRoleExplanation(roles, ja, scope = '') {
       return `${meta.code}（${meta.label}）`
     })
     .join('→')
-  return `${prefix}この短いまとまりには${route}が続きます。「${ja}」の中でも、この順を意識します。`
+  return `${prefix}この短いまとまりには${route}が続きます。`
 }

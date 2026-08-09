@@ -3105,7 +3105,7 @@ function mergeSentenceBoundaryPhraseSequence(phrases, sentenceGloss) {
     })
     const explanation =
       `${left.en} と ${right.en} を、前置詞とその対象がそろう一つの意味単位として読みます。` +
-      `英語を戻らず「${ja}」と取ります。`
+      `英語を戻らず、この語順のまま意味を取ります。`
     merged.push(Object.freeze({
       ...left,
       ...rolePair,
@@ -3126,17 +3126,17 @@ const reviewedPhraseKey = (value = '') => words(value).map(normalizeToken).join(
 
 const CONTEXT_RELATIVE_PRONOUNS = new Set(['that', 'which', 'who', 'whom'])
 const CLAUSE_CONNECTOR_MEANINGS = Object.freeze({
-  after: 'after は時の節の入口で、後ろのS→Vを「〜したあとで」と主節へ足します。',
-  before: 'before は時の節の入口で、後ろのS→Vを「〜する前に」と主節へ足します。',
-  because: 'because は理由節の入口で、後ろのS→Vを「なぜなら〜だから」と主節へ足します。',
-  if: 'if は条件節の入口で、後ろのS→Vを「もし〜なら」と主節へ足します。',
-  once: 'once は時・条件の節の入口で、後ろのS→Vを「いったん〜すると」と主節へ足します。',
-  unless: 'unless は否定条件の入口で、後ろのS→Vを「〜でない限り」と主節へ足します。',
-  whereas: 'whereas は対比節の入口で、前の内容と後ろのS→Vを「一方で」と対照させます。',
-  although: 'although は譲歩節の入口で、後ろのS→Vを「〜だけれども」と主節へ足します。',
-  though: 'though は譲歩節の入口で、後ろのS→Vを「〜だけれども」と主節へ足します。',
-  'so that': 'so that は目的・結果の節を導き、後ろのS→Vを「〜するように／その結果〜」と主節へつなぎます。',
-  whether: 'whether は「〜かどうか」という間接疑問の入口で、後ろのS→V全体を内容としてまとめます。',
+  after: 'after は時の節の入口で、後ろのS→Vを主節へ足します。',
+  before: 'before は時の節の入口で、後ろのS→Vを主節へ足します。',
+  because: 'because は理由節の入口で、後ろのS→Vを主節へ足します。',
+  if: 'if は条件節の入口で、後ろのS→Vを主節へ足します。',
+  once: 'once は時・条件の節の入口で、後ろのS→Vを主節へ足します。',
+  unless: 'unless は否定条件の入口で、後ろのS→Vを主節へ足します。',
+  whereas: 'whereas は対比節の入口で、前の内容と後ろのS→Vを対照させます。',
+  although: 'although は譲歩節の入口で、後ろのS→Vを主節へ足します。',
+  though: 'though は譲歩節の入口で、後ろのS→Vを主節へ足します。',
+  'so that': 'so that は目的・結果の節を導き、後ろのS→Vを主節へつなぎます。',
+  whether: 'whether は間接疑問の入口で、後ろのS→V全体を内容としてまとめます。',
 })
 
 const INFINITIVE_BASE_VERBS = new Set([
@@ -3154,7 +3154,7 @@ const INFINITIVE_BASE_VERBS = new Set([
 const INFINITIVE_CONTEXT_OVERRIDES = new Map([
   [
     "After the talk, children will work in small groups to build a paper model of the station.|||to build",
-    'to build は work in small groups の目的を示す不定詞で、「紙模型を作るために班で作業する」とつながります。',
+    'to build は work in small groups の目的を示す不定詞で、班で作業する目的とつながります。',
   ],
   [
     'In July, they picked enough cucumbers and tomatoes to share with people at a nearby community center.|||to share',
@@ -3162,11 +3162,11 @@ const INFINITIVE_CONTEXT_OVERRIDES = new Map([
   ],
   [
     'The students used this advice to plan a second garden, which made the project continue beyond one school term.|||to plan',
-    'to plan は used this advice の目的を示す不定詞で、「二つ目の畑を計画するためにこの助言を使った」とつながります。',
+    'to plan は used this advice の目的を示す不定詞で、この助言を使った目的とつながります。',
   ],
   [
     'Some projects also send several volunteers the same observation task and compare their answers to estimate how often mistakes occur.|||to estimate',
-    'to estimate は compare their answers の目的を示す不定詞で、「誤りの頻度を推定するために答えを比べる」とつながります。',
+    'to estimate は compare their answers の目的を示す不定詞で、答えを比べる目的とつながります。',
   ],
   [
     'Some people do not have a bank account, a suitable phone, reliable internet access, or the identity documents required to open a digital account.|||to open',
@@ -3198,11 +3198,11 @@ const INFINITIVE_CONTEXT_OVERRIDES = new Map([
   ],
   [
     'Calls for complete neutrality do not resolve the problem, since every archive must decide what to collect, how to describe it, and which materials receive scarce conservation resources.|||to collect',
-    'what to collect は疑問詞＋不定詞で、「何を収集するか」という decide の一つ目の内容を作ります。',
+    'what to collect は疑問詞＋不定詞で、decide の一つ目の内容を作ります。',
   ],
   [
     'Calls for complete neutrality do not resolve the problem, since every archive must decide what to collect, how to describe it, and which materials receive scarce conservation resources.|||to describe',
-    'how to describe は疑問詞＋不定詞で、「それをどう記述するか」という decide の二つ目の内容を作ります。',
+    'how to describe は疑問詞＋不定詞で、decide の二つ目の内容を作ります。',
   ],
   [
     'Rather, a mature society keeps multiple perspectives in conversation while refusing to treat evidence as optional.|||to treat',
@@ -3352,7 +3352,7 @@ function relativeGrammarCue(phrases, index, sentenceEn) {
     const clauseRole = roles.includes('O') ? '目的語O' : '主語S'
     const forward = roles.includes('O')
       ? '後ろのS→Vを読んだあと、先行詞を「〜を」と受け直します。'
-      : `英語順では「${phrase.ja}」と補ってから節のVへ進みます。`
+      : '英語順のまま、先行詞を主語として節のVへ進みます。'
     return {
       kind: 'relative',
       note: `${phrase.en} は ${antecedent} を先行詞に取る関係代名詞で、この節では${clauseRole}です。${forward}`,
@@ -3411,13 +3411,13 @@ function interrogativeGrammarCue(phrases, index, sentenceEn) {
   if (first === 'where' || first === 'when') {
     return {
       kind: 'embedded-question',
-      note: `${phrase.en} は間接疑問の中で「${first === 'where' ? 'どこで・どこに' : 'いつ'}」を表す副詞Mです。後ろのS→Vまでを内容としてまとめます。`,
+      note: `${phrase.en} は間接疑問の中の疑問副詞Mです。後ろのS→Vまでを内容としてまとめます。`,
     }
   }
   const clauseRole = (phrase.roles ?? [phrase.role]).includes('O') ? '目的語O' : '主語S'
   return {
     kind: 'embedded-question',
-    note: `${phrase.en} は先行詞を受ける関係詞ではなく、間接疑問の中で「${phrase.ja}」を表し、この節では${clauseRole}になります。`,
+    note: `${phrase.en} は先行詞を受ける関係詞ではなく、間接疑問の疑問詞として、この節では${clauseRole}になります。`,
   }
 }
 
@@ -3575,7 +3575,7 @@ function connectorGrammarCue(phrases, index) {
   ) {
     return {
       kind: 'clause-connector',
-      note: 'when は時の節の入口で、後ろのS→Vを「〜するとき／〜したとき」と主節へ足します。',
+      note: 'when は時の節の入口で、後ろのS→Vを主節へ足します。',
     }
   }
   if (key === 'while') {
@@ -3810,13 +3810,13 @@ function negativeFocusGrammarCue(phrases, index, sentenceEn) {
   if (key === 'even') {
     return {
       kind: 'focus',
-      note: `even は直後の ${next?.en ?? '語句'}（${next?.role ?? '次の要素'}）を焦点化し、「〜でさえ／〜も」と予想外の例を加えます。`,
+      note: `even は直後の ${next?.en ?? '語句'}（${next?.role ?? '次の要素'}）を焦点化し、予想外の例を加えます。`,
     }
   }
   if (key === 'even though') {
     return {
       kind: 'focus-clause',
-      note: `${phrase.en} は後ろの事実をいったん認めながら、主節では予想と逆の結果を示す譲歩節の入口です。「〜にもかかわらず」と読み、時の even when とは区別します。`,
+      note: `${phrase.en} は後ろの事実をいったん認めながら、主節では予想と逆の結果を示す譲歩節の入口です。時の even when とは区別します。`,
     }
   }
   if (key === 'even when') {
@@ -3835,7 +3835,7 @@ function negativeFocusGrammarCue(phrases, index, sentenceEn) {
     const followingVerb = phrases.slice(index + 1).find((item) => item.role === 'V')
     return {
       kind: 'negative-focus',
-      note: `英語では no longer が後続の ${followingVerb?.en ?? 'V'} の継続を否定します。日本語では「もはや」をここで置き、否定形「〜ない」は述語 ${followingVerb?.en ?? 'V'} で一度だけ完成させます。`,
+      note: `英語では no longer が後続の ${followingVerb?.en ?? 'V'} の継続を否定します。日本語の否定形「〜ない」は述語 ${followingVerb?.en ?? 'V'} で一度だけ完成させます。`,
     }
   }
   if (key === 'not by') {
@@ -3961,7 +3961,7 @@ const ZERO_RELATIVE_CONTEXTS = new Map([
       antecedent: 'the way',
       gapRole: '方法を示す関係副詞 that / in which',
       returnTo: 'changed の目的語 the way',
-      note: 'the way の後ろでは関係語 that / in which が省略されています。it prepares ... が「博物館が説明文を準備する方法」を限定し、節を読み終えたら changed の目的語 the way へ戻ります。',
+      note: 'the way の後ろでは関係語 that / in which が省略されています。it prepares ... が the way を限定し、節を読み終えたら changed の目的語 the way へ戻ります。',
     },
   ],
   [
@@ -4202,11 +4202,11 @@ const ING_CONTEXT_OVERRIDES = new Map([
   ],
   [
     'Visitors are expected to sit with volunteers and take part in the work instead of simply leaving an item at a counter.|||leaving',
-    { type: 'preposition-gerund', governor: 'instead of', semanticSubject: 'Visitors', note: 'leaving ... は instead of の目的語となる動名詞で、意味上の主語は Visitors です。「品を置いて立ち去るだけでなく」とつながります。' },
+    { type: 'preposition-gerund', governor: 'instead of', semanticSubject: 'Visitors', note: 'leaving ... は instead of の目的語となる動名詞で、意味上の主語は Visitors です。' },
   ],
   [
     'They provide shade, absorb rainwater, improve air quality, and make streets more pleasant for walking.|||for walking',
-    { type: 'preposition-gerund', governor: 'for', semanticSubject: '通りを歩く一般の利用者', note: 'walking は前置詞 for の目的語となる動名詞で、「歩くのに快適な通り」とつながります。歩く主体は trees / They ではなく、通りの一般利用者です。' },
+    { type: 'preposition-gerund', governor: 'for', semanticSubject: '通りを歩く一般の利用者', note: 'walking は前置詞 for の目的語となる動名詞です。歩く主体は trees / They ではなく、通りの一般利用者です。' },
   ],
   [
     'Setting review dates and publishing results allows governments to revise policies without treating revision as failure.|||treating',
@@ -5084,8 +5084,8 @@ function coordinationGrammarCue(phrases, index, sentenceEn) {
     return {
       kind: 'coordination',
       note: isNor
-        ? `文頭の Nor は前文の否定へ「〜もまた…ない」を追加し、後ろでは助動詞 ${next.en} を主語より前へ出す倒置を起こします。`
-        : `文頭の Yet は前の文の内容と、後続の主語S ${next.en} から始まる新しい文を「しかし」と対比します。`,
+        ? `文頭の Nor は前文の否定を受け継ぎ、後ろでは助動詞 ${next.en} を主語より前へ出す倒置を起こします。`
+        : `文頭の Yet は前の文の内容と、後続の主語S ${next.en} から始まる新しい文を対比します。`,
       coordinationBinding: Object.freeze(binding),
     }
   }

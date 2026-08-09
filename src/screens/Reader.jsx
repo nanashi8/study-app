@@ -34,27 +34,6 @@ const ROLE_STYLE = {
   並列: 'border-slate-200 bg-slate-50 text-slate-700',
 }
 
-const PHRASE_STATUS = {
-  'review-needed': {
-    label: '確認待ち',
-    className: 'border-amber-200 bg-amber-50 text-amber-800',
-  },
-  reviewed: {
-    label: '本文見直し済み',
-    className: 'border-sky-200 bg-sky-50 text-sky-800',
-  },
-  confirmed: {
-    label: '監査確認済み',
-    className: 'border-emerald-200 bg-emerald-50 text-emerald-800',
-  },
-}
-
-const phraseStatusLabel = (phrase, fallback) => {
-  if (phrase.reviewState === 'rule-review-needed') return '方法確認待ち'
-  if (phrase.reviewState === 'unregistered') return '未登録・確認待ち'
-  return fallback
-}
-
 function SvocFlow({ parts }) {
   if (!parts?.length) return null
   return (
@@ -606,11 +585,6 @@ export function ReaderScreen() {
               >
                 <StructureDiagram tokens={sentenceAnalysis.structureTokens} />
               </p>
-              <div className="mt-2 flex flex-wrap items-center gap-2 text-xs font-extrabold">
-                <span className="bg-brand-100 px-2 py-1 text-brand-800">
-                  まず意味のまとまりで読み、内部のS・V・O・C・Mを確認
-                </span>
-              </div>
               <div className="mt-3">
                 <SvocFlow parts={sentenceFlowParts(sentenceAnalysis)} />
               </div>
@@ -626,7 +600,6 @@ export function ReaderScreen() {
                 </p>
                 <div className="space-y-2" aria-label="英文と対応する日本語">
                   {sentenceAnalysis.meaningPhraseSequence.map((phraseItem, phraseIndex) => {
-                    const status = PHRASE_STATUS[phraseItem.status]
                     return (
                       <article
                         key={phraseItem.id}
@@ -647,19 +620,6 @@ export function ReaderScreen() {
                               <span className="border border-emerald-100 bg-emerald-50 px-1.5 py-0.5 text-emerald-800">
                                 {phraseIndex + 1}. {phraseItem.pattern || phraseItem.label || '意味フレーズ'}
                               </span>
-                              {(phraseItem.roles ?? [phraseItem.role]).filter(Boolean).map((role) => (
-                                <span className={cx(
-                                  'border px-1.5 py-0.5',
-                                  ROLE_STYLE[role] ?? ROLE_STYLE.M,
-                                )} key={role}>
-                                  {translationRoleMeta(role).code}
-                                </span>
-                              ))}
-                              {status && (
-                                <span className={cx('border px-1.5 py-0.5', status.className)}>
-                                  {phraseStatusLabel(phraseItem, status.label)}
-                                </span>
-                              )}
                             </div>
                             <p lang="en" className="font-bold leading-relaxed text-ink">
                               {phraseItem.displayEn}
@@ -735,8 +695,8 @@ export function ReaderScreen() {
                             </span>
                           )}
                         </div>
-                        <p className="mt-1 text-xs font-bold leading-relaxed text-ink/55">
-                          文法ブロック：{block.displayEn}
+                        <p lang="en" className="mt-1 text-xs font-bold leading-relaxed text-ink/55">
+                          {block.displayEn}
                         </p>
                       </div>
                     </div>

@@ -46,10 +46,12 @@ import {
   BATTLE_BARRIER_TRAFFIC_LIGHTS,
   BATTLE_BARRIER_WINDOW_LIGHTS,
   BATTLE_STAR_PER_CORRECT,
+  BATTLE_STAGE_BACKGROUNDS,
   BATTLE_STARS_PER_EXCHANGE,
   BATTLE_THEMES,
   BATTLE_XP_PER_EXCHANGE,
   battleBarrierLocationById,
+  battleStageForEncounter,
   battleXpExchange,
   battleStarsEarned,
   battleThemeById,
@@ -174,6 +176,27 @@ test('正解スターで採用済み3演出を順番に解放する', () => {
     assert.equal(theme.presentation.effectGlyphs.length, 3, theme.id)
     assert.ok(theme.presentation.unknownGlyph, theme.id)
   }
+})
+
+test('バトル背景は人物なしの独立プレートを12地点ぶん持ち、敵ごとに固定される', () => {
+  assert.equal(BATTLE_STAGE_BACKGROUNDS.length, 12)
+  assert.equal(new Set(BATTLE_STAGE_BACKGROUNDS.map(({ id }) => id)).size, 12)
+  assert.ok(new Set(BATTLE_STAGE_BACKGROUNDS.map(({ location }) => location)).size >= 7)
+
+  for (const stage of BATTLE_STAGE_BACKGROUNDS) {
+    assert.equal(
+      existsSync(new URL(`../public${stage.image}`, import.meta.url)),
+      true,
+      stage.id,
+    )
+    const size = pixelSizeOfWebp(stage.image)
+    assert.equal(size.width, 1280, `${stage.id}: 横解像度`)
+    assert.ok(size.height >= 590 && size.height <= 600, `${stage.id}: 超横長背景`)
+  }
+
+  const first = battleStageForEncounter('math-takagi', 'stem')
+  assert.equal(battleStageForEncounter('math-takagi', 'stem'), first)
+  assert.ok(BATTLE_STAGE_BACKGROUNDS.includes(first))
 })
 
 test('学校を中央核として街の五地点が五芒星結界を構成する', () => {
@@ -1347,7 +1370,7 @@ test('放課後スターはバトル正解とXP変換で増え、演出選択と
 
   assert.match(quizSource, /if \(isBattle\) addBattleStars\(BATTLE_STAR_PER_CORRECT\)/)
   assert.match(quizSource, /pixel-battle-portrait/)
-  assert.match(quizSource, /battleTheme\.stage/)
+  assert.match(quizSource, /battleStageForEncounter\(/)
   assert.match(mapSource, /BATTLE_THEMES\.map/)
   assert.match(mapSource, /themeId: battleTheme\.id/)
   assert.doesNotMatch(mapSource, /正解1問 \+\{BATTLE_STAR_PER_CORRECT\}/)
@@ -1456,27 +1479,24 @@ test('キャラ選択・全24表情・50人図鑑・3場面演出が実際のバ
     /battleStudentState\(\{[\s\S]*?eventActive: presentationActive,[\s\S]*?eventKind,/,
   )
   assert.match(quizSource, /battleStudentPortrait\(battleStudent\.id, studentState\)/)
-  assert.match(quizSource, /battleStudentMotion\(battleStudent\.id, studentState\)/)
-  assert.match(quizSource, /battleManaPresentation/)
+  assert.match(quizSource, /battleStageForEncounter\(/)
+  assert.match(quizSource, /data-battle-stage-id=\{battleStage\.id\}/)
+  assert.match(quizSource, /battle-anime-fighter-hero/)
+  assert.match(quizSource, /battle-anime-fighter-enemy/)
+  assert.match(quizSource, /battle-anime-speed-lines/)
+  assert.match(quizSource, /battle-anime-impact-frame/)
+  assert.doesNotMatch(quizSource, /battleStudentMotion\(battleStudent\.id, studentState\)/)
+  assert.doesNotMatch(quizSource, /battleManaPresentation|BattleManaAnimation/)
   assert.match(quizSource, /battleTraitById/)
   assert.match(quizSource, /--battle-hero/)
   assert.match(quizSource, /--battle-mana-primary/)
   assert.match(quizSource, /--battle-mana-secondary/)
-  assert.match(quizSource, /data-mana-affinity/)
-  assert.match(quizSource, /data-mana-sequence/)
   assert.match(quizSource, /import \{ publicAssetUrl \} from '\.\.\/lib\/publicAssetUrl\.js'/)
   assert.match(quizSource, /const resolvedSrc = publicAssetUrl\(src\)/)
-  assert.match(quizSource, /<video/)
-  assert.match(quizSource, /autoPlay/)
-  assert.match(quizSource, /playsInline/)
-  assert.match(quizSource, /prefers-reduced-motion: reduce/)
-  assert.match(quizSource, /battleTheme\.particles\.map/)
+  assert.doesNotMatch(quizSource, /<video|autoPlay|playsInline/)
   assert.doesNotMatch(quizSource, /battleTheme\.actorsSheet/)
-  assert.match(quizSource, /battleTheme\.scenes\[sceneIndex\]/)
   assert.match(quizSource, /data-battle-layout=\{battleTheme\.presentation\.layout\}/)
-  assert.match(quizSource, /battle-theme-stage-decoration/)
-  assert.match(quizSource, /battle-theme-action-effect/)
-  assert.match(quizSource, /battleTheme\.presentation\.effectGlyphs\.map/)
+  assert.doesNotMatch(quizSource, /battle-theme-stage-decoration|battle-theme-action-effect|battle-theme-particles/)
   assert.match(quizSource, /battleRival\.portrait/)
 
   assert.match(resultSource, /battleStudentResultState/)

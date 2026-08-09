@@ -63,7 +63,6 @@ export function buildGrammarSyntaxPhrases({ needsByLevel, excludedHeads = [] }) 
         meaning: item.sentence.ja,
         meanings: [item.sentence.ja],
         example: { ...item.sentence },
-        origin: `${item.topic}の構文を、完成した一文の語順ごと身につけるカード。`,
         note: item.explain,
         category: 'grammar-example',
         sourcePattern: item.variationGroup ?? item.pattern ?? `${item.level}:${item.topic}`,

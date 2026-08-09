@@ -14,25 +14,25 @@ export const READING_MEANING_PHRASE_OVERRIDES = Object.freeze({
   'She goes to school by bus every morning.': sentence({
     'She goes': item(
       '彼女は行きます',
-      'She がS、goes がVです。ただし、二語で「彼女は行きます」という自然な一息の意味になるため、一つのフレーズで読みます。',
+      'She がS、goes がVです。ただし、二語で自然な一息の意味になるため、一つのフレーズで読みます。',
     ),
   }),
 
   'Rina is a junior high school student.': sentence({
     'is a junior high school student': item(
       '一人の中学生です',
-      'is と補語 a junior high school student を「一人の中学生です」という一つの述部として読みます。SVCの分析は内部注釈で確認します。',
+      'is と補語 a junior high school student を一つの述部として読みます。SVCの分析は内部注釈で確認します。',
     ),
   }),
 
   'Many families come early because the room is not very large.': sentence({
     'Many families come': item(
       '多くの家族が来ます',
-      'Many families がS、come がVです。ここは「多くの家族が来ます」と一息で意味が完成します。',
+      'Many families がS、come がVです。ここは一息で意味が完成します。',
     ),
     'is not very large': item(
       'あまり広くありません（からです）',
-      'is not と補語 very large を分断せず、「あまり広くありません」と一つの状態として読みます。括弧内で because の理由関係を節末に受け直します。',
+      'is not と補語 very large を分断せず、一つの状態として読みます。括弧内で because の理由関係を節末に受け直します。',
     ),
   }),
 
@@ -248,25 +248,25 @@ export const READING_MEANING_PHRASE_OVERRIDES = Object.freeze({
   'Citizen science is valuable not because volunteers replace professionals, but because the two groups contribute different strengths.': sentence({
     'is valuable': item(
       '価値があります',
-      'is と補語 valuable を「価値があります」という一つの状態として読みます。後ろの not because ... but because ... が、その理由を対比します。',
+      'is と補語 valuable を一つの状態として読みます。後ろの not because ... but because ... が、その理由を対比します。',
     ),
   }),
 
   'Yet these details alone do not show whether the health claim is reliable.': sentence({
     'is reliable': item(
       '信頼できるのかを（示しません）',
-      'whether節内の is＋C です。「その主張が信頼できるのか」を一つにし、括弧で do not show へ受け直します。',
+      'whether節内の is＋C です。主張が信頼できるかを一つにし、括弧で do not show へ受け直します。',
     ),
   }),
 
   'A careful reader first asks who produced the message and what evidence is actually available.': sentence({
     'A careful reader first asks': item(
       '注意深い読み手は最初に尋ねます',
-      'S＋時の副詞＋Vが「注意深い読み手は最初に尋ねます」という一息の導入になります。尋ねる二つの内容は後ろで順に示されます。',
+      'S＋時の副詞＋Vが一息の導入になります。尋ねる二つの内容は後ろで順に示されます。',
     ),
     'is actually available': item(
       '実際に利用可能なのかを（尋ねます）',
-      'what evidence を主語とする間接疑問の述部です。is、actually、available を「実際に利用可能なのか」と一つにします。',
+      'what evidence を主語とする間接疑問の述部です。is、actually、available を一つにします。',
     ),
   }),
 
@@ -358,7 +358,7 @@ export const READING_MEANING_PHRASE_OVERRIDES = Object.freeze({
     ),
     'societies from losing their ability': item(
       '社会が自分たちの能力を失うのを',
-      'prevent O from -ing の O は、from losing の意味上の主語です。societies を「社会を」と切り離さず、「社会が自分たちの能力を失うのを」という一つの内容で読みます。',
+      'prevent O from -ing の O は、from losing の意味上の主語です。societies を「社会を」と切り離さず、一つの内容で読みます。',
     ),
     'they once knew': item(
       '社会がかつて知っていた（ものから）',

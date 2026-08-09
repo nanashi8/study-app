@@ -195,6 +195,51 @@ export function battleBarrierLocationById(id) {
   return BARRIER_LOCATION_BY_ID.get(id) ?? BATTLE_BARRIER_CENTER
 }
 
+// 背景・生徒・対戦相手を別レイヤーで合成するための、人物なし背景プレート。
+// 相手IDから決定的に1枚を選び、同じ対戦中に場所が切り替わらないようにする。
+export const BATTLE_STAGE_BACKGROUNDS = Object.freeze([
+  { id: 'music-room', name: '夕映え音楽室', location: 'school', image: publicAssetUrl('/assets/battle/stages/v2/music-room.webp') },
+  { id: 'art-room', name: '放課後の美術室', location: 'school', image: publicAssetUrl('/assets/battle/stages/v2/art-room.webp') },
+  { id: 'grand-library', name: '黄昏の大図書室', location: 'library', image: publicAssetUrl('/assets/battle/stages/v2/grand-library.webp') },
+  { id: 'classroom', name: '夕方の教室', location: 'school', image: publicAssetUrl('/assets/battle/stages/v2/classroom.webp') },
+  { id: 'science-lab', name: '理科実験室', location: 'school', image: publicAssetUrl('/assets/battle/stages/v2/science-lab.webp') },
+  { id: 'school-rooftop', name: '校舎屋上', location: 'school', image: publicAssetUrl('/assets/battle/stages/v2/school-rooftop.webp') },
+  { id: 'school-courtyard', name: '中央校庭', location: 'school', image: publicAssetUrl('/assets/battle/stages/v2/school-courtyard.webp') },
+  { id: 'station-platform', name: '駅前ホーム', location: 'station', image: publicAssetUrl('/assets/battle/stages/v2/station-platform.webp') },
+  { id: 'central-park', name: '中央公園', location: 'central-park', image: publicAssetUrl('/assets/battle/stages/v2/central-park.webp') },
+  { id: 'shrine-forecourt', name: '神社境内', location: 'shrine', image: publicAssetUrl('/assets/battle/stages/v2/shrine-forecourt.webp') },
+  { id: 'stadium-field', name: '競技場', location: 'stadium', image: publicAssetUrl('/assets/battle/stages/v2/stadium-field.webp') },
+  { id: 'riverside-promenade', name: '川沿い遊歩道', location: 'town', image: publicAssetUrl('/assets/battle/stages/v2/riverside-promenade.webp') },
+])
+
+const BATTLE_STAGE_BY_ID = new Map(
+  BATTLE_STAGE_BACKGROUNDS.map((stage) => [stage.id, stage]),
+)
+
+const BATTLE_STAGE_GROUP_POOLS = Object.freeze({
+  humanities: ['grand-library', 'classroom', 'shrine-forecourt', 'station-platform', 'central-park', 'riverside-promenade'],
+  stem: ['science-lab', 'school-rooftop', 'classroom', 'station-platform', 'stadium-field', 'school-courtyard'],
+  arts: ['music-room', 'art-room', 'school-courtyard', 'central-park', 'stadium-field', 'grand-library'],
+  campus: ['stadium-field', 'school-courtyard', 'school-rooftop', 'riverside-promenade', 'station-platform', 'central-park'],
+  mystery: ['shrine-forecourt', 'grand-library', 'station-platform', 'central-park', 'riverside-promenade', 'science-lab'],
+})
+
+function battleStageHash(value) {
+  let hash = 2166136261
+  for (const char of String(value || 'school')) {
+    hash ^= char.codePointAt(0)
+    hash = Math.imul(hash, 16777619)
+  }
+  return hash >>> 0
+}
+
+export function battleStageForEncounter(rivalId, groupId = 'campus') {
+  const pool = BATTLE_STAGE_GROUP_POOLS[groupId]
+    ?? BATTLE_STAGE_BACKGROUNDS.map((stage) => stage.id)
+  const stageId = pool[battleStageHash(`${groupId}:${rivalId}`) % pool.length]
+  return BATTLE_STAGE_BY_ID.get(stageId) ?? BATTLE_STAGE_BACKGROUNDS[0]
+}
+
 export const BATTLE_THEMES = [
   {
     id: 'music-pastel',
@@ -214,7 +259,7 @@ export const BATTLE_THEMES = [
       label: '3正解ごとにHPを5%回復',
     },
     preview: publicAssetUrl('/assets/battle/pixel/music-preview.webp'),
-    stage: publicAssetUrl('/assets/battle/pixel/music-stage.webp'),
+    stage: publicAssetUrl('/assets/battle/stages/v2/music-room.webp'),
     heroPortrait: publicAssetUrl('/assets/battle/pixel/music-hero.webp'),
     rivalPortrait: publicAssetUrl('/assets/battle/pixel/music-rival.webp'),
     actorsSheet: publicAssetUrl('/assets/battle/pixel/music-actors-v2.webp'),
@@ -273,7 +318,7 @@ export const BATTLE_THEMES = [
       label: '最初の反撃ダメージを半減',
     },
     preview: publicAssetUrl('/assets/battle/pixel/art-preview.webp'),
-    stage: publicAssetUrl('/assets/battle/pixel/art-stage.webp'),
+    stage: publicAssetUrl('/assets/battle/stages/v2/art-room.webp'),
     heroPortrait: publicAssetUrl('/assets/battle/pixel/art-hero.webp'),
     rivalPortrait: publicAssetUrl('/assets/battle/pixel/art-rival.webp'),
     actorsSheet: publicAssetUrl('/assets/battle/pixel/art-actors-v2.webp'),
@@ -333,7 +378,7 @@ export const BATTLE_THEMES = [
       label: '3正解ごとに追加ダメージ',
     },
     preview: publicAssetUrl('/assets/battle/pixel/library-preview.webp'),
-    stage: publicAssetUrl('/assets/battle/pixel/library-stage.webp'),
+    stage: publicAssetUrl('/assets/battle/stages/v2/grand-library.webp'),
     heroPortrait: publicAssetUrl('/assets/battle/pixel/library-hero.webp'),
     rivalPortrait: publicAssetUrl('/assets/battle/pixel/library-rival.webp'),
     actorsSheet: publicAssetUrl('/assets/battle/pixel/library-actors-v2.webp'),

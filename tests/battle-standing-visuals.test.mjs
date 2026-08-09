@@ -113,7 +113,7 @@ test('戦況ごとに4姿を使い分け、マナ技は集中姿へ切り替え�
   }
 })
 
-test('入口・実戦・結果の全バトル経路が両者の共通立ち絵とモーションを使う', async () => {
+test('入口・実戦・結果が共通立ち絵を使い、実戦は全身レイヤーだけを動かす', async () => {
   const [entry, battle, result, actor, opponentActor, css] = await Promise.all([
     readSource('../src/screens/EnglishMap.jsx'),
     readSource('../src/screens/VocabQuiz.jsx'),
@@ -127,18 +127,21 @@ test('入口・実戦・結果の全バトル経路が両者の共通立ち絵�
   assert.match(entry, /<BattleStandingActor[\s\S]*?pose="back"[\s\S]*?phase="entry"/)
   assert.match(entry, /<BattleOpponentStandingActor[\s\S]*?phase="entry"/)
   assert.match(battle, /battleStandingPoseForPhase\(battlePhase, eventKind\)/)
-  assert.match(battle, /<BattleStandingActor[\s\S]*?motionSrc=\{studentMotion\}[\s\S]*?motionActive=\{presentationActive\}/)
+  assert.match(battle, /<BattleStandingActor[\s\S]*?phase=\{battlePhase\}/)
+  assert.match(battle, /battle-anime-fighter-hero/)
+  assert.match(battle, /battle-anime-fighter-enemy/)
+  assert.doesNotMatch(battle, /motionSrc=\{studentMotion\}|BattleManaAnimation/)
   assert.match(battle, /<BattleOpponentStandingActor[\s\S]*?phase=\{battlePhase\}/)
   assert.match(result, /battleStandingPoseForPhase\(/)
   assert.match(result, /data-testid="battle-result-lead-student"/)
-  assert.match(result, /<BattleStandingActor[\s\S]*?motionSrc=\{standingMotion\}/)
+  assert.match(result, /<BattleStandingActor[\s\S]*?phase=\{standingPhase\}/)
+  assert.doesNotMatch(result, /motionSrc=\{standingMotion\}/)
   assert.match(result, /<BattleOpponentStandingActor[\s\S]*?battleReport\?\.enemyDefeated \? 'defeat' : 'result'/)
 
   assert.match(actor, /data-battle-standing-student=\{student\.id\}/)
   assert.match(actor, /data-battle-standing-pose=\{pose\}/)
   assert.match(actor, /data-battle-standing-phase=\{phase\}/)
-  assert.match(actor, /<video[\s\S]*?autoPlay[\s\S]*?muted[\s\S]*?playsInline/)
-  assert.match(actor, /prefers-reduced-motion: reduce/)
+  assert.doesNotMatch(actor, /<video|battle-standing-motion-cut-in/)
   assert.match(opponentActor, /data-battle-standing-opponent=\{opponentId\}/)
   assert.match(opponentActor, /data-battle-standing-phase=\{phase\}/)
   assert.match(opponentActor, /opponent\?\.standing/)
@@ -147,10 +150,10 @@ test('入口・実戦・結果の全バトル経路が両者の共通立ち絵�
     assert.match(css, new RegExp(`data-battle-standing-pose='${pose}'`), pose)
   }
   assert.match(css, /@keyframes battle-standing-wind/)
-  assert.match(css, /@keyframes battle-standing-strike/)
-  assert.match(css, /@keyframes battle-standing-mana/)
-  assert.match(css, /@keyframes battle-opponent-standing-strike/)
-  assert.match(css, /@keyframes battle-opponent-standing-hit/)
+  assert.match(css, /@keyframes battle-anime-hero-combo/)
+  assert.match(css, /@keyframes battle-anime-enemy-combo/)
+  assert.match(css, /@keyframes battle-anime-hero-hit/)
+  assert.match(css, /@keyframes battle-anime-enemy-hit/)
   assert.match(css, /@media \(prefers-reduced-motion: reduce\)[\s\S]*\.battle-standing-actor,/)
   assert.match(css, /@media \(prefers-reduced-motion: reduce\)[\s\S]*\.battle-opponent-standing-actor,/)
   assert.match(css, /@media \(max-width: 350px\)[\s\S]*\.battle-result-standing-student > \.battle-standing-actor/)

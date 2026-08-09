@@ -17,11 +17,6 @@ export function BattleStageBackdrop({
       <span className="battle-stage-backdrop-motion">
         <span className="battle-stage-backdrop-image" />
       </span>
-      <span className="battle-stage-backdrop-atmosphere">
-        <i />
-        <i />
-        <i />
-      </span>
     </span>
   )
 }

@@ -152,6 +152,29 @@ Reject and regenerate or edit an image when any item below is false.
   visible to the viewer, use an over-the-shoulder camera on the artist's side;
   never show the canvas front facing away from the person drawing it.
 
+### 10. Battle backgrounds and motion are separate, readable layers
+
+- A live battle background is an empty environment plate. It contains no
+  student, teacher, partial limb, portrait, game UI, floating icon, magic
+  circle, aura ring, glyph, or pre-rendered combat effect.
+- The student and opponent are separate full-body foreground layers. Both must
+  remain recognizable and visible against the environment; a face icon or
+  circular video cut-in is not a substitute for the opponent's standing art.
+- Keep a stable location throughout one encounter. The battle library must
+  contain at least 10 coherent school or barrier-district locations, selected
+  deterministically rather than switching places after each answer.
+- Waiting characters are still. Motion plays once only for a named readable
+  state: approach, attack, hit reaction, guard, recovery, victory, or defeat.
+  The attacker moves toward the defender, the defender reacts after contact,
+  and both return or settle in a physically understandable order.
+- Anime speed lines, a brief camera push, and a single impact frame may support
+  a character action. Never animate answer icons, choice glyphs, portraits,
+  decorative particles, unexplained geometry, or continuous ambient effects
+  as a replacement for character acting.
+- `prefers-reduced-motion` and the simple battle mode must stop all battle
+  choreography while preserving the same readable background and full-body
+  character composition.
+
 ## Required pre-generation scene card
 
 Write this compact card before every prompt:
@@ -226,3 +249,7 @@ after adding the reason to the next prompt's forbidden block.
 - Kiryu Tsubaki always has straight dark purple-black hair. Down hair, a straight
   high ponytail, and straight high twin ponytails are allowed; wavy or curly
   lengths and curled tips are rejected in every visual and derived motion frame.
+- Battle scenes use clean backgrounds plus separate full-body student and
+  opponent layers. Do not restore floating circles, mana rings, icon motion,
+  circular portrait videos, or unexplained decorative motion. Use only a
+  readable one-shot attack, hit, guard, recovery, victory, or defeat sequence.
