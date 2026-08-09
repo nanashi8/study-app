@@ -197,22 +197,20 @@ test('放課後と魔法の言葉から先生の日常会話を操作でき、�
   assert.match(source, /実際の正答率・XP・SRS・診断結果は変わりません/u)
 })
 
-test('先生専用ビジュアルを学校生活・章末準備・戦闘・結果で共通利用する', () => {
-  const companionPicker = readFileSync(
-    new URL('../src/components/BattleCompanionPicker.jsx', import.meta.url),
-    'utf8',
-  )
-  const sources = [
-    '../src/screens/EnglishMap.jsx',
-    '../src/screens/VocabQuiz.jsx',
-    '../src/screens/SessionResult.jsx',
-    '../src/components/MobPortrait.jsx',
-  ].map((path) => readFileSync(new URL(path, import.meta.url), 'utf8'))
+test('先生専用ビジュアルを学校生活と龍脈の共同解読で利用する', () => {
+  const map = readFileSync(new URL('../src/screens/EnglishMap.jsx', import.meta.url), 'utf8')
+  const stage = readFileSync(new URL('../src/components/DragonVeinCipherStage.jsx', import.meta.url), 'utf8')
+  const vocab = readFileSync(new URL('../src/screens/VocabQuiz.jsx', import.meta.url), 'utf8')
+  const result = readFileSync(new URL('../src/screens/SessionResult.jsx', import.meta.url), 'utf8')
 
-  for (const source of [...sources, companionPicker]) {
-    assert.match(source, /TeacherPortrait/u)
-    assert.doesNotMatch(source, /portraitEmoji/u)
-  }
+  assert.match(map, /TeacherPortrait/u)
+  assert.match(map, /先生の記憶を聞く/u)
+  assert.match(stage, /guide\.standing/u)
+  assert.match(stage, /dragon-vein-guide-layer/u)
+  assert.match(stage, /手掛かり/u)
+  assert.match(vocab, /<DragonVeinCipherStage/u)
+  assert.match(result, /<DragonVeinCipherStage/u)
+  for (const source of [map, stage, vocab, result]) assert.doesNotMatch(source, /portraitEmoji/u)
 
   const portraitComponent = readFileSync(
     new URL('../src/components/TeacherPortrait.jsx', import.meta.url),
@@ -222,8 +220,5 @@ test('先生専用ビジュアルを学校生活・章末準備・戦闘・結�
   assert.match(portraitComponent, /<img[\s\S]*src=\{profile\.src\}/u)
   assert.doesNotMatch(portraitComponent, /<svg/u)
 
-  assert.match(sources[0], /battleOpponentForEncounter/u)
-  assert.match(sources[1], /battleOpponentForEncounter/u)
-  assert.match(sources[2], /battleOpponentForEncounter/u)
-  assert.match(companionPicker, /<TeacherPortrait teacher=\{encounter\} className="h-full w-full" \/>/u)
+  assert.doesNotMatch(stage, /BattleOpponentStandingActor|enemy|attack|defeat/u)
 })

@@ -113,50 +113,30 @@ test('戦況ごとに4姿を使い分け、マナ技は集中姿へ切り替え�
   }
 })
 
-test('入口・実戦・結果が共通立ち絵を使い、実戦は全身レイヤーだけを動かす', async () => {
-  const [entry, battle, result, actor, opponentActor, css] = await Promise.all([
-    readSource('../src/screens/EnglishMap.jsx'),
+test('共同解読は生徒と先生の立ち絵を別レイヤーで使い、攻撃モーションを出さない', async () => {
+  const [stage, vocab, result, actor, css] = await Promise.all([
+    readSource('../src/components/DragonVeinCipherStage.jsx'),
     readSource('../src/screens/VocabQuiz.jsx'),
     readSource('../src/screens/SessionResult.jsx'),
     readSource('../src/components/BattleStandingActor.jsx'),
-    readSource('../src/components/BattleOpponentStandingActor.jsx'),
     readSource('../src/index.css'),
   ])
 
-  assert.match(entry, /data-battle-standing-entry/)
-  assert.match(entry, /<BattleStandingActor[\s\S]*?pose="back"[\s\S]*?phase="entry"/)
-  assert.match(entry, /<BattleOpponentStandingActor[\s\S]*?phase="entry"/)
-  assert.match(battle, /battleStandingPoseForPhase\(battlePhase, eventKind\)/)
-  assert.match(battle, /<BattleStandingActor[\s\S]*?phase=\{battlePhase\}/)
-  assert.match(battle, /battle-anime-fighter-hero/)
-  assert.match(battle, /battle-anime-fighter-enemy/)
-  assert.doesNotMatch(battle, /motionSrc=\{studentMotion\}|BattleManaAnimation/)
-  assert.match(battle, /<BattleOpponentStandingActor[\s\S]*?phase=\{battlePhase\}/)
-  assert.match(result, /battleStandingPoseForPhase\(/)
-  assert.match(result, /data-testid="battle-result-lead-student"/)
-  assert.match(result, /<BattleStandingActor[\s\S]*?phase=\{standingPhase\}/)
-  assert.doesNotMatch(result, /motionSrc=\{standingMotion\}/)
-  assert.match(result, /<BattleOpponentStandingActor[\s\S]*?battleReport\?\.enemyDefeated \? 'defeat' : 'result'/)
+  assert.match(stage, /<BattleStandingActor[\s\S]*?pose="wind"[\s\S]*?phase="ready"/)
+  assert.match(stage, /className="dragon-vein-guide-layer"/)
+  assert.match(stage, /<img src=\{guide\.standing\}/)
+  assert.match(stage, /battleStudentPortrait\(student\.id, expression\)/)
+  assert.match(vocab, /<DragonVeinCipherStage/)
+  assert.match(result, /<DragonVeinCipherStage/)
+  assert.doesNotMatch(stage, /BattleOpponentStandingActor|enemy|attack|defeat|victory/)
+  assert.doesNotMatch(vocab, /battleStandingPoseForPhase|battle-anime-fighter-enemy|BattleManaAnimation/)
+  assert.doesNotMatch(result, /enemyDefeated|battle-result-lead-student/)
 
   assert.match(actor, /data-battle-standing-student=\{student\.id\}/)
   assert.match(actor, /data-battle-standing-pose=\{pose\}/)
   assert.match(actor, /data-battle-standing-phase=\{phase\}/)
   assert.doesNotMatch(actor, /<video|battle-standing-motion-cut-in/)
-  assert.match(opponentActor, /data-battle-standing-opponent=\{opponentId\}/)
-  assert.match(opponentActor, /data-battle-standing-phase=\{phase\}/)
-  assert.match(opponentActor, /opponent\?\.standing/)
-
-  for (const pose of ['back', 'wind', 'battle', 'mana']) {
-    assert.match(css, new RegExp(`data-battle-standing-pose='${pose}'`), pose)
-  }
-  assert.match(css, /@keyframes battle-standing-wind/)
-  assert.match(css, /@keyframes battle-anime-hero-cast/)
-  assert.match(css, /@keyframes battle-anime-enemy-cast/)
-  assert.match(css, /@keyframes battle-spell-bolt-right/)
-  assert.match(css, /@keyframes battle-spell-bolt-left/)
-  assert.match(css, /@keyframes battle-anime-hero-hit/)
-  assert.match(css, /@keyframes battle-anime-enemy-hit/)
-  assert.match(css, /@media \(prefers-reduced-motion: reduce\)[\s\S]*\.battle-standing-actor,/)
-  assert.match(css, /@media \(prefers-reduced-motion: reduce\)[\s\S]*\.battle-opponent-standing-actor,/)
-  assert.match(css, /@media \(max-width: 350px\)[\s\S]*\.battle-result-standing-student > \.battle-standing-actor/)
+  assert.match(css, /\.dragon-vein-student-layer > :first-child/)
+  assert.match(css, /@keyframes dragon-vein-natural-breathe/)
+  assert.match(css, /@media \(prefers-reduced-motion: reduce\)[\s\S]*\.dragon-vein-student-layer \{ animation: none; \}/)
 })

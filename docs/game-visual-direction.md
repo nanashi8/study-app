@@ -152,32 +152,32 @@ Reject and regenerate or edit an image when any item below is false.
   visible to the viewer, use an over-the-shoulder camera on the artist's side;
   never show the canvas front facing away from the person drawing it.
 
-### 10. Battle backgrounds and motion are separate, readable layers
+### 10. Dragon-vein restoration scenes are cooperative, readable layers
 
-- A live battle background is an empty environment plate. It contains no
-  student, teacher, partial limb, portrait, game UI, floating icon, magic
-  circle, aura ring, glyph, or pre-rendered combat effect.
-- The student and opponent are separate full-body foreground layers. Both must
-  remain recognizable and visible against the environment; a face icon or
-  circular video cut-in is not a substitute for the opponent's standing art.
-- Keep a stable location throughout one encounter. The battle library must
-  contain at least 10 coherent school or barrier-district locations, selected
-  deterministically rather than switching places after each answer.
-- Waiting characters are still. Motion plays once only for a named readable
-  state: cast, projectile travel, hit reaction, guard, recovery, victory, or
-  defeat. For an ordinary magic attack, the caster remains on their own side
-  and uses only a small brace, cast, recoil, and settle motion. The spell alone
-  crosses the stage; the defender reacts only after its visible impact. A body
-  crossing the stage or making contact is reserved for an explicitly named
-  physical technique and must never represent a normal answer attack.
-- A brief camera push and one compact impact flash may support the ordered
-  cast-projectile-impact-reaction sequence. The projectile must be temporary,
-  directional, and visually tied to its caster. Never animate answer icons,
-  choice glyphs, portraits, decorative particles, persistent rings, unexplained
-  geometry, or continuous ambient effects as a replacement for character acting.
-- `prefers-reduced-motion` and the simple battle mode must stop all battle
-  choreography while preserving the same readable background and full-body
-  character composition.
+- The teacher-as-enemy and student-versus-teacher battle system is retired.
+  Teachers are expert guides who retain subject-specific unease and clues; never
+  pose them as attackers, bosses, defeated opponents, or hostile silhouettes.
+- A restoration background is an environment plate without people, UI,
+  floating icons, magic circles, aura rings, attack glyphs, projectiles, or
+  pre-rendered effects. The student, teacher, and decoded manuscript are
+  separate foreground layers.
+- Stage the student and teacher on the same cooperative side of the task, with a
+  manuscript, archive card, sign, observation record, or other concrete clue as
+  the shared focal point. Do not use `VS`, HP, ATK, DEF, damage, weapons, hit
+  reactions, victory/defeat poses, or opponent framing.
+- Student acting must match cognition: `thinking` or `focused` before an answer,
+  `worried` for initial uncertainty, `hurt` for visible anguish after repeated
+  mistakes, `thinking` for deep reconsideration, `relieved` after a correct
+  reconstruction, `confident` after three consecutive correct answers, and
+  `delighted` as the exceptional broad smile after five or more.
+- Motion is limited to subtle natural breathing, a short change of expression,
+  a page or note being consulted, and a restrained restoration highlight.
+  Never animate answer icons, choice glyphs, projectiles, persistent rings,
+  unexplained geometry, attacks, dashes, jumps, kicks, punches, or physical
+  contact. `prefers-reduced-motion` stops all nonessential movement.
+- Keep a stable, believable location throughout one decoding session. Reuse the
+  environment library deterministically by location and keep all scene logic,
+  furniture geometry, uniforms, and safety requirements from the gates above.
 
 ## Required pre-generation scene card
 
@@ -253,11 +253,11 @@ after adding the reason to the next prompt's forbidden block.
 - Kiryu Tsubaki always has straight dark purple-black hair. Down hair, a straight
   high ponytail, and straight high twin ponytails are allowed; wavy or curly
   lengths and curled tips are rejected in every visual and derived motion frame.
-- Battle scenes use clean backgrounds plus separate full-body student and
-  opponent layers. Do not restore floating circles, mana rings, icon motion,
-  circular portrait videos, or unexplained decorative motion. Use only a
-  readable one-shot attack, hit, guard, recovery, victory, or defeat sequence.
-- Ordinary magic attacks keep both fighters in their own stage zones. Show a
-  small casting motion, a clearly directional spell crossing the space, impact,
-  then the defender's reaction; never slide the caster into body contact or
-  swap to a running, jumping, kicking, or punching pose for a normal answer.
+- The former teacher battle presentation is retired. Dragon-vein restoration
+  uses clean backgrounds plus separate student, cooperating teacher, and clue
+  layers. Do not restore floating circles, mana rings, icon motion, circular
+  portrait videos, opponent framing, or unexplained decorative motion.
+- Student expressions must communicate actual reasoning: focused thought,
+  worry, anguish, deep reconsideration, relief, confidence, and a broad smile
+  only after a genuine answer streak. Teachers remain calm collaborators whose
+  subject knowledge supplies clues rather than attacks.

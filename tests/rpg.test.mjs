@@ -199,7 +199,7 @@ test('バトル背景は人物なしの独立プレートを12地点ぶん持ち
   assert.ok(BATTLE_STAGE_BACKGROUNDS.includes(first))
 })
 
-test('学校を中央核として街の五地点が五芒星結界を構成する', () => {
+test('学校を中央核として街の五地点が五芒星の龍脈を構成する', () => {
   assert.equal(BATTLE_BARRIER_CENTER.id, 'school')
   assert.deepEqual(
     BATTLE_BARRIER_NODES.map((location) => location.id),
@@ -219,31 +219,8 @@ test('学校を中央核として街の五地点が五芒星結界を構成す�
   )
   assert.deepEqual(
     pixelSizeOfWebp(BATTLE_BARRIER_MAP_IMAGE),
-    { width: 1440, height: 810 },
+    { width: 1672, height: 941 },
   )
-
-  assert.ok(BATTLE_BARRIER_WINDOW_LIGHTS.length >= 30)
-  assert.equal(
-    new Set(BATTLE_BARRIER_WINDOW_LIGHTS.map((light) => `${light.x}:${light.y}`)).size,
-    BATTLE_BARRIER_WINDOW_LIGHTS.length,
-  )
-  for (const light of BATTLE_BARRIER_WINDOW_LIGHTS) {
-    assert.ok(light.x > 0 && light.x < 100, `${light.id}: x`)
-    assert.ok(light.y > 0 && light.y < 100, `${light.id}: y`)
-    assert.ok(light.duration > 0, `${light.id}: duration`)
-    assert.ok(light.size > 0, `${light.id}: size`)
-  }
-
-  assert.ok(BATTLE_BARRIER_TRAFFIC_LIGHTS.length >= 8)
-  assert.deepEqual(
-    new Set(BATTLE_BARRIER_TRAFFIC_LIGHTS.map((light) => light.kind)),
-    new Set(['headlight', 'taillight', 'train']),
-  )
-  for (const light of BATTLE_BARRIER_TRAFFIC_LIGHTS) {
-    assert.match(light.path, /^M /, `${light.id}: path`)
-    assert.ok(light.duration > 0, `${light.id}: duration`)
-    assert.ok(light.delay <= 0, `${light.id}: delay`)
-  }
 
   const nodeIds = new Set(BATTLE_BARRIER_NODES.map((location) => location.id))
   assert.deepEqual(new Set(BATTLE_BARRIER_STAR_ORDER.slice(0, -1)), nodeIds)
@@ -260,8 +237,14 @@ test('学校を中央核として街の五地点が五芒星結界を構成す�
     assert.equal(battleBarrierLocationById(location.id), location)
   }
   assert.equal(battleBarrierLocationById('unknown'), BATTLE_BARRIER_CENTER)
-})
 
+  const mapSource = readFileSync(
+    new URL('../src/screens/EnglishMap.jsx', import.meta.url),
+    'utf8',
+  )
+  assert.match(mapSource, /dragon-vein-district|BATTLE_BARRIER_MAP_IMAGE/)
+  assert.doesNotMatch(mapSource, /BATTLE_BARRIER_WINDOW_LIGHTS\.map|BATTLE_BARRIER_TRAFFIC_LIGHTS\.map|animateMotion/)
+})
 test('未変換の学習XPを一度だけ放課後スターへまとめて変換する', () => {
   assert.equal(BATTLE_XP_PER_EXCHANGE, 50)
   assert.equal(BATTLE_STARS_PER_EXCHANGE, 25)
@@ -1160,12 +1143,11 @@ test('章ボスは各章の最終LVに固定される', () => {
   }
 })
 
-test('全11章のボスが固有備品で攻撃する架空の先生ライバルになる', () => {
+test('全11章の先生は担当分野から記憶復元を助ける協力者になる', () => {
   const bossIds = CHAPTERS.map((chapter) => chapter.boss.id)
   assert.deepEqual(Object.keys(TEACHER_RIVALS).sort(), [...bossIds].sort())
 
-  const moves = new Set()
-  const attackLines = new Set()
+  const specialtyNotes = new Set()
   for (const chapter of CHAPTERS) {
     const encounter = encounterFor({
       level: chapter.maxLevel,
@@ -1177,14 +1159,18 @@ test('全11章のボスが固有備品で攻撃する架空の先生ライバル
     assert.ok(encounter.teacherSubject)
     assert.equal(encounter.portraitId, encounter.id)
     assert.equal(hasTeacherPortrait(encounter), true)
-    assert.ok(encounter.attackEmoji)
-    assert.ok(encounter.attackLine.endsWith('！'))
-    moves.add(encounter.move)
-    attackLines.add(encounter.attackLine)
+    assert.equal(encounter.role, '龍脈解読の協力教員')
+    assert.equal(encounter.move, encounter.teacherSubject + 'の専門メモ')
+    assert.match(encounter.attackLine, /知識から手掛かりを示した。$/u)
+    assert.match(encounter.intro, /一緒に記憶を復元しよう/u)
+    assert.doesNotMatch(
+      [encounter.intro, encounter.attackLine, ...Object.values(encounter.resultLines)].join('。'),
+      /攻撃|倒す|悪いマナ|投げた|叩いた|勝者/u,
+    )
+    specialtyNotes.add(encounter.move)
   }
 
-  assert.equal(moves.size, CHAPTERS.length)
-  assert.equal(attackLines.size, CHAPTERS.length)
+  assert.equal(specialtyNotes.size, CHAPTERS.length)
 
   const bossEncounter = encounterFor({
     level: CHAPTERS[0].maxLevel,
@@ -1197,12 +1183,7 @@ test('全11章のボスが固有備品で攻撃する架空の先生ライバル
   assert.equal(displayedTeacher.name, bossEncounter.name)
   assert.equal(displayedTeacher.teacherId, bossEncounter.id)
   assert.equal(displayedTeacher.isTeacher, true)
-
-  assert.match(TEACHER_RIVALS['grass-wolf'].attackLine, /チョークを投げた/)
-  assert.match(TEACHER_RIVALS['forest-keeper'].attackLine, /黒板消し/)
-  assert.match(TEACHER_RIVALS['endless-book'].move, /文明ロングスピーチ/)
 })
-
 test('全章が校内ステージとして表示される', () => {
   assert.match(
     CHAPTERS.map((chapter) => chapter.name).join('、'),
@@ -1304,49 +1285,33 @@ test('戦闘イベントはミニ戦場の攻撃方向と表示へ変換でき�
   assert.equal(battleSceneCue('not-registered').label, 'READY')
 })
 
-test('バトル画面は共通クイズ進捗を重ねずHUDのターン表示へ一本化する', () => {
-  const source = readFileSync(
-    new URL('../src/screens/VocabQuiz.jsx', import.meta.url),
-    'utf8',
-  )
-  const standardStart = source.indexOf('{!isBattle && (')
-  const battleStart = source.indexOf('{isBattle && (', standardStart)
-  const questionStart = source.indexOf('{/* 出題語 */}', battleStart)
-
-  assert.ok(standardStart >= 0)
-  assert.ok(battleStart > standardStart)
-  assert.ok(questionStart > battleStart)
-
-  const standardHeader = source.slice(standardStart, battleStart)
-  const battleHeader = source.slice(battleStart, questionStart)
-  assert.match(standardHeader, /<ProgressBar\b/)
-  assert.match(battleHeader, /<BattleHud\b/)
-  assert.doesNotMatch(battleHeader, /<ProgressBar\b/)
-  assert.match(battleHeader, /onExit=\{back\}/)
-  assert.match(source, /aria-label="バトルをやめる"/)
-})
-
-test('バトル中は出題カードと4つの回答をコンパクト表示する', () => {
+test('龍脈解読画面は通常進捗と共同解読ビジュアルを一つの流れにする', () => {
   const source = readFileSync(
     new URL('../src/screens/VocabQuiz.jsx', import.meta.url),
     'utf8',
   )
 
-  assert.match(source, /isBattle && 'battle-quiz-screen'/)
-  assert.match(source, /battle-command-grid mt-2 grid grid-cols-2 gap-2/)
-  assert.match(source, /battle-command-choice min-h-12 rounded-xl/)
-  assert.match(source, /battle-command-unknown min-h-12 py-2 leading-snug/)
-  assert.match(source, /battleTheme\.presentation\.choiceGlyphs\[optionIndex\]/)
-  assert.match(source, /battleTheme\.presentation\.unknownGlyph/)
-  assert.match(source, /<Button full size="md" disabled=\{!answered\}/)
-  assert.match(source, /<Button full size="lg" disabled=\{!answered\}/)
+  assert.match(source, /<ProgressBar value=\{index \/ deck\.length\}/)
+  assert.match(source, /<DragonVeinCipherStage/)
+  assert.match(source, /current=\{index \+ 1\}/)
+  assert.match(source, /total=\{deck\.length\}/)
+  assert.match(source, /aria-label=\{isDragonVein \? '解読を中断' : 'やめる'\}/)
+  assert.doesNotMatch(source, /<BattleHud|heroCurrentHp|enemyCurrentHp|data-battle-ui-mode/)
 })
-
-test('放課後スターはバトル正解とXP変換で増え、演出選択と全保存経路へつながる', () => {
-  const mapSource = readFileSync(
-    new URL('../src/screens/EnglishMap.jsx', import.meta.url),
+test('龍脈解読中は記憶断片カードと4つの回答をコンパクト表示する', () => {
+  const source = readFileSync(
+    new URL('../src/screens/VocabQuiz.jsx', import.meta.url),
     'utf8',
   )
+
+  assert.match(source, /isDragonVein \? 'mt-2 grid grid-cols-2 gap-2'/)
+  assert.match(source, /isDragonVein \? 'min-h-14 rounded-xl px-3 py-2\.5 text-sm'/)
+  assert.match(source, /<UnknownChoiceButton/)
+  assert.match(source, /この記憶断片が指す意味は？/)
+  assert.match(source, /<Button full size=\{isDragonVein \? 'md' : 'lg'\}/)
+  assert.doesNotMatch(source, /choiceGlyphs|unknownGlyph|battle-command-choice/)
+})
+test('龍脈進捗は正解結果とXPを分離し、全保存経路へつながる', () => {
   const quizSource = readFileSync(
     new URL('../src/screens/VocabQuiz.jsx', import.meta.url),
     'utf8',
@@ -1368,32 +1333,20 @@ test('放課後スターはバトル正解とXP変換で増え、演出選択と
     'utf8',
   )
 
-  assert.match(quizSource, /if \(isBattle\) addBattleStars\(BATTLE_STAR_PER_CORRECT\)/)
-  assert.match(quizSource, /pixel-battle-portrait/)
-  assert.match(quizSource, /battleStageForEncounter\(/)
-  assert.match(mapSource, /BATTLE_THEMES\.map/)
-  assert.match(mapSource, /themeId: battleTheme\.id/)
-  assert.doesNotMatch(mapSource, /正解1問 \+\{BATTLE_STAR_PER_CORRECT\}/)
-  assert.match(mapSource, /<XpExchangeCard/)
-  assert.match(mapSource, /exchangeXpForBattleStars/)
-  assert.match(resultSource, /<div><b>\+\{battleStarsGained\}<\/b><small>スター<\/small><\/div>/)
+  assert.doesNotMatch(quizSource, /addBattleStars|BATTLE_STAR_PER_CORRECT/)
+  assert.match(resultSource, /recordDragonVeinSession/)
+  assert.match(resultSource, /復元断片/)
+  assert.match(resultSource, /調査XP/)
   for (const source of [storeSource, progressSource, cloudSource]) {
-    assert.match(source, /battleStars/)
-    assert.match(source, /battleXpSpent/)
-    assert.match(source, /battleThemeId/)
-    assert.match(source, /battleStudentId/)
-    assert.match(source, /battleTraitInvestments/)
-    assert.match(source, /battleStoryStep/)
+    assert.match(source, /dragonVeinProgress/)
   }
+  assert.match(progressSource, /compactDragonVeinProgress/)
+  assert.match(progressSource, /expandDragonVeinProgress/)
+  assert.doesNotMatch(resultSource, /battleStarsGained|enemyDefeated|damage/)
 })
-
-test('同行クラスメートは次の相手の導入後、対決前の作戦会議で選べる', () => {
+test('選んだ生徒は協力者として龍脈解読へ同行し、対戦相手にはしない', () => {
   const mapSource = readFileSync(
     new URL('../src/screens/EnglishMap.jsx', import.meta.url),
-    'utf8',
-  )
-  const companionSource = readFileSync(
-    new URL('../src/components/BattleCompanionPicker.jsx', import.meta.url),
     'utf8',
   )
   const resultSource = readFileSync(
@@ -1404,137 +1357,62 @@ test('同行クラスメートは次の相手の導入後、対決前の作戦�
     new URL('../src/screens/VocabQuiz.jsx', import.meta.url),
     'utf8',
   )
+  const activeMap = mapSource.slice(
+    mapSource.indexOf('export function AfterSchoolChronicleScreen'),
+    mapSource.indexOf('function ChroniclePortalCard'),
+  )
 
-  assert.match(mapSource, /const \[battleBriefingRead, setBattleBriefingRead\]/)
-  assert.match(mapSource, /現在の同行クラスメート/)
-  assert.match(mapSource, /同行者の選択は次の相手が分かるバトル前の作戦会議/)
-  assert.match(mapSource, /onComplete=\{\(\) => setBattleBriefingRead\(true\)\}/)
-  assert.match(mapSource, /<BattlePreparationScreen/)
-  assert.match(mapSource, /<BattleCompanionPicker/)
-  assert.match(mapSource, /onSelectStudent=\{setBattleStudentId\}/)
-  assert.match(mapSource, /studentId: battleStudent\.id/)
-  assert.match(mapSource, /rivalId: battleRival\.id,\s*teacherSubject,/)
-  assert.doesNotMatch(resultSource, /NextBattleCompanionCard|次の同行者を選ぶ|upcomingRival/)
-  assert.match(resultSource, /次へ：戦いの結末/)
-  assert.match(companionSource, /この対決の同行者を選ぶ/)
-  assert.match(companionSource, /BATTLE_STUDENTS\.map/)
-  assert.match(companionSource, /onSelect\(student\.id\)/)
-  assert.match(quizSource, /studentId: battleStudent\.id/)
-  assert.match(quizSource, /battleRivalTeacherSubject\(battleRival\.id\)/)
+  assert.match(activeMap, /const battleStudent = battleStudentById\(battleStudentId\)/)
+  assert.match(activeMap, /studentId: battleStudent\.id/)
+  assert.match(activeMap, /協力する生徒たち/)
+  assert.match(quizSource, /selectedStudentId/)
+  assert.match(quizSource, /studentId=\{selectedStudentId\}/)
+  assert.match(resultSource, /studentId=\{selectedStudentId\}/)
+  assert.doesNotMatch(activeMap, /BattlePreparationScreen|BattleCompanionPicker|VS|対決前|次の相手/)
+  assert.doesNotMatch(resultSource, /NextBattleCompanionCard|upcomingRival|戦いの結末/)
 })
-
-test('キャラ選択・全24表情・50人図鑑・3場面演出が実際のバトルへつながる', () => {
+test('10人の豊富な表情と先生立ち絵を共同解読の状況へつなぐ', () => {
   const mapSource = readFileSync(
     new URL('../src/screens/EnglishMap.jsx', import.meta.url),
     'utf8',
   )
   const quizSource = readFileSync(
     new URL('../src/screens/VocabQuiz.jsx', import.meta.url),
+    'utf8',
+  )
+  const stageSource = readFileSync(
+    new URL('../src/components/DragonVeinCipherStage.jsx', import.meta.url),
+    'utf8',
+  )
+  const resultSource = readFileSync(
+    new URL('../src/screens/SessionResult.jsx', import.meta.url),
     'utf8',
   )
   const cssSource = readFileSync(
     new URL('../src/index.css', import.meta.url),
     'utf8',
   )
-  const resultSource = readFileSync(
-    new URL('../src/screens/SessionResult.jsx', import.meta.url),
-    'utf8',
-  )
-  const companionSource = readFileSync(
-    new URL('../src/components/BattleCompanionPicker.jsx', import.meta.url),
-    'utf8',
-  )
-  const interludeSource = readFileSync(
-    new URL('../src/screens/AfterSchoolInterlude.jsx', import.meta.url),
-    'utf8',
-  )
 
   assert.match(mapSource, /<BattleCastRoster/)
-  assert.doesNotMatch(mapSource, /<CampusLifeGallery/)
   assert.match(mapSource, /<SchoolBarrierMap/)
-  assert.match(mapSource, /BATTLE_BARRIER_NODES\.map/)
-  assert.match(mapSource, /BATTLE_BARRIER_WINDOW_LIGHTS\.map/)
-  assert.match(mapSource, /BATTLE_BARRIER_TRAFFIC_LIGHTS\.map/)
-  assert.match(mapSource, /<animateMotion/)
-  assert.doesNotMatch(mapSource, /scenicMode|夜景表示|結界表示|夜の学区を眺める/)
-  assert.match(interludeSource, /profile\.choices\.map/)
-  assert.match(interludeSource, /battleSupportStyleById/)
-  assert.match(interludeSource, /日常イベントは任意です/)
-  assert.match(interludeSource, /aria-live="polite"/)
-  assert.match(companionSource, /BATTLE_STUDENTS\.map/)
   assert.match(mapSource, /BATTLE_EMOTION_STATES\.map/)
-  assert.match(mapSource, /<BattleTraitSphere/)
-  assert.match(mapSource, /BATTLE_TRAITS\.map/)
-  assert.match(mapSource, /五芒星の星彩スフィア/)
-  assert.match(mapSource, /発現色/)
-  assert.match(mapSource, /学習評価は変わりません/)
-  assert.match(mapSource, /BATTLE_RIVAL_GROUPS\.map/)
-  assert.match(mapSource, /studentId: battleStudent\.id/)
-  assert.match(mapSource, /rivalId: battleRival\.id/)
-  assert.match(mapSource, /theme\.actorsSheet/)
-  assert.match(mapSource, /theme\.scenes\.map/)
-
-  assert.match(
-    quizSource,
-    /battleStudentState\(\{[\s\S]*?eventActive: presentationActive,[\s\S]*?eventKind,/,
+  assert.match(stageSource, /thinking: '思考中'/)
+  assert.match(stageSource, /worried: '焦りを抑えて再考'/)
+  assert.match(stageSource, /hurt: '苦悶しながら立て直し'/)
+  assert.match(stageSource, /delighted: 'とびきりの笑顔'/)
+  assert.match(stageSource, /battleStudentPortrait\(student\.id, expression\)/)
+  assert.match(stageSource, /guide\.standing/)
+  assert.match(quizSource, /wrongStreak=\{streakState\.wrongStreak\}/)
+  assert.match(quizSource, /連続.*正解/)
+  assert.match(resultSource, /expressionStreak = accuracy >= 0\.9 \? 5/)
+  assert.match(cssSource, /@keyframes dragon-vein-natural-breathe/)
+  assert.match(cssSource, /@media \(prefers-reduced-motion: reduce\)[\s\S]*dragon-vein-student-layer/)
+  assert.doesNotMatch(
+    [quizSource, stageSource, resultSource].join('\n'),
+    /BattleOpponentStandingActor|battle-spell|enemyDefeated|damageTaken|攻撃モーション/u,
   )
-  assert.match(quizSource, /battleStudentPortrait\(battleStudent\.id, studentState\)/)
-  assert.match(quizSource, /battleStageForEncounter\(/)
-  assert.match(quizSource, /data-battle-stage-id=\{battleStage\.id\}/)
-  assert.match(quizSource, /battle-anime-fighter-hero/)
-  assert.match(quizSource, /battle-anime-fighter-enemy/)
-  assert.match(quizSource, /battle-spell-bolt-hero/)
-  assert.match(quizSource, /battle-spell-bolt-enemy/)
-  assert.match(quizSource, /battle-spell-impact-on-enemy/)
-  assert.match(quizSource, /battle-spell-impact-on-hero/)
-  assert.doesNotMatch(quizSource, /battleStudentMotion\(battleStudent\.id, studentState\)/)
-  assert.doesNotMatch(quizSource, /battleManaPresentation|BattleManaAnimation/)
-  assert.match(quizSource, /battleTraitById/)
-  assert.match(quizSource, /--battle-hero/)
-  assert.match(quizSource, /--battle-mana-primary/)
-  assert.match(quizSource, /--battle-mana-secondary/)
-  assert.match(quizSource, /import \{ publicAssetUrl \} from '\.\.\/lib\/publicAssetUrl\.js'/)
-  assert.match(quizSource, /const resolvedSrc = publicAssetUrl\(src\)/)
-  assert.doesNotMatch(quizSource, /<video|autoPlay|playsInline/)
-  assert.doesNotMatch(quizSource, /battleTheme\.actorsSheet/)
-  assert.match(quizSource, /data-battle-layout=\{battleTheme\.presentation\.layout\}/)
-  assert.doesNotMatch(quizSource, /battle-theme-stage-decoration|battle-theme-action-effect|battle-theme-particles/)
-  assert.match(quizSource, /battleRival\.portrait/)
-
-  assert.match(resultSource, /battleStudentResultState/)
-  assert.match(resultSource, /battle-result-\$\{placement\}-student/)
-  assert.match(resultSource, /battleStudentPortrait\(student\.id, emotion\)/)
-  assert.match(resultSource, /data-testid="battle-result-lead-student"/)
-  assert.match(resultSource, /<BattleStandingActor/)
-  assert.match(resultSource, /placement="level"/)
-
-  assert.match(cssSource, /@keyframes battle-expression-in/)
-  assert.match(cssSource, /@keyframes campus-life-scene-in/)
-  assert.match(cssSource, /@keyframes campus-life-drift/)
-  assert.match(cssSource, /@keyframes school-barrier-trace/)
-  assert.match(cssSource, /@keyframes school-barrier-window-twinkle/)
-  assert.doesNotMatch(cssSource, /school-barrier-map-scenic|school-barrier-scenic-drift|school-barrier-view-toggle/)
-  assert.match(cssSource, /school-barrier-star/)
-  assert.match(cssSource, /school-barrier-traffic-car/)
-  assert.match(cssSource, /@keyframes battle-particle-float/)
-  assert.match(cssSource, /@keyframes battle-ability-cut-in/)
-  assert.match(cssSource, /@keyframes battle-theme-projectile-right/)
-  assert.match(cssSource, /data-battle-layout='music-duel'/)
-  assert.match(cssSource, /data-battle-layout='art-grid'/)
-  assert.match(cssSource, /data-battle-layout='library-duel'/)
-  assert.match(cssSource, /data-battle-theme='music-pastel'/)
-  assert.match(cssSource, /data-battle-theme='art-tactics'/)
-  assert.match(cssSource, /data-battle-theme='library-cinema'/)
-  assert.match(cssSource, /@keyframes battle-mana-charge/)
-  assert.match(cssSource, /@keyframes battle-mana-bolt-forward/)
-  assert.match(cssSource, /@keyframes battle-mana-ward-open/)
-  assert.match(cssSource, /@keyframes battle-mana-mote-restore/)
-  assert.match(cssSource, /@keyframes battle-mana-break-flash/)
-  assert.match(cssSource, /@keyframes battle-mana-triumph-rise/)
-  assert.match(cssSource, /prefers-reduced-motion: reduce/)
 })
-
-test('学校アイテムをボックスで整理・装備し、バトルで1回使い、戦果で確認できる', () => {
+test('廃止した戦闘アイテムと装備効果を現行の調査画面へ出さない', () => {
   const mapSource = readFileSync(
     new URL('../src/screens/EnglishMap.jsx', import.meta.url),
     'utf8',
@@ -1551,31 +1429,21 @@ test('学校アイテムをボックスで整理・装備し、バトルで1回�
     new URL('../src/screens/SessionResult.jsx', import.meta.url),
     'utf8',
   )
+  const activeMap = mapSource.slice(
+    mapSource.indexOf('export function AfterSchoolChronicleScreen'),
+    mapSource.indexOf('function ChroniclePortalCard'),
+  )
 
-  assert.match(settingsSource, /id="school-battle-item-box"/)
-  assert.match(settingsSource, /アイテムボックス/)
-  assert.match(settingsSource, /organizeBattleItems/)
-  assert.match(settingsSource, /BATTLE_ITEM_FILTERS/)
-  assert.match(settingsSource, /BATTLE_ITEM_SORTS/)
-  assert.match(settingsSource, /装備中/)
-  assert.match(settingsSource, /onEquip=\{setBattleRelicLevel\}/)
-  assert.match(settingsSource, /1バトル1回/)
-  assert.doesNotMatch(mapSource, /setBattleRelicLevel|<BattleItemBox/)
-  assert.doesNotMatch(mapSource, /右上のメニュー内「設定」で変更します/)
-  assert.doesNotMatch(mapSource, /<details className="school-battle-options/)
-  assert.match(mapSource, /問題数をえらぶ/)
-  assert.match(mapSource, /問のことば対決へ/)
-  assert.match(quizSource, /onClick=\{useBattleItem\}/)
-  assert.match(quizSource, /battleState\.itemUsed/)
-  assert.match(quizSource, /setBattleVisualEvent/)
-  assert.match(quizSource, /kind: 'item-heal'/)
-  assert.match(quizSource, /visualEvent=\{battleVisualEvent\}/)
-  assert.doesNotMatch(quizSource, /encounter\.(?:attackLine|move)/)
-  assert.match(resultSource, /battleReport\.itemSummary/)
-  assert.doesNotMatch(resultSource, /必殺技|encounter\.move|TACTIC (?:ACTIVATED|RECORD)|SUBJECT COMPATIBILITY|RELATIONSHIP SKILL|AREA ABILITY/)
-  assert.doesNotMatch(mapSource, /相性・絆・対決演出|このバトルの作戦|先生は悪役|encounter\.move/)
+  for (const source of [activeMap, settingsSource, quizSource, resultSource]) {
+    assert.doesNotMatch(
+      source,
+      /BattleItemBox|school-battle-item-box|useBattleItem|itemUsed|enemyCurrentHp|heroCurrentHp|damageTaken|1バトル1回/u,
+    )
+  }
+  assert.match(settingsSource, /対戦・攻撃・HPの演出はありません/u)
+  assert.match(quizSource, /<DragonVeinCipherStage/u)
+  assert.match(resultSource, /復元断片/u)
 })
-
 test('集中モードは3連続正解ごとに花まるコンボを発動する', () => {
   const state = resolveBattleState({
     answers: ['correct', 'correct', 'correct', 'wrong', 'correct'],
@@ -1798,45 +1666,38 @@ test('戦果メッセージは正答率の4段階を返す', () => {
   assert.doesNotMatch(battleVerdict(1).text, /先生|花まる/u)
 })
 
-test('影蝕中の先生11人は開戦時と戦果で固有の悪役台詞を返す', () => {
-  const allResultLines = new Set()
-
+test('先生11人は敵ではなく担当分野の共同解読者として助言する', () => {
   for (const chapter of CHAPTERS) {
     const encounter = encounterFor({
       level: chapter.maxLevel,
       day: 100,
       enemyRankIndex: 2,
     })
-    assert.match(encounter.intro, /悪いマナ/u, encounter.id)
+    assert.equal(encounter.isTeacher, true)
+    assert.equal(encounter.role, '龍脈解読の協力教員')
+    assert.match(encounter.intro, /専門知識を使って、一緒に記憶を復元しよう/u)
+    assert.match(encounter.move, /専門メモ/u)
+    assert.match(encounter.attackLine, /知識から手掛かりを示した/u)
     assert.deepEqual(
       Object.keys(encounter.resultLines).sort(),
       ['defeated', 'dominant', 'unresolved'],
+    )
+    const lines = Object.values(encounter.resultLines).join('。')
+    assert.match(lines, /記録|文脈|資料/u)
+    assert.doesNotMatch(
+      [encounter.intro, encounter.attackLine, lines].join('。'),
+      /悪いマナ|敵|倒|攻撃|投げた|叩いた|封じ込め|勝者/u,
       encounter.id,
     )
-
-    const defeated = teacherBattleResultLine(encounter, { enemyDefeated: true })
-    const unresolved = teacherBattleResultLine(encounter, {})
-    const dominant = teacherBattleResultLine(encounter, { heroDefeated: true })
-    assert.equal(defeated, encounter.resultLines.defeated, encounter.id)
-    assert.equal(unresolved, encounter.resultLines.unresolved, encounter.id)
-    assert.equal(dominant, encounter.resultLines.dominant, encounter.id)
-    assert.equal(new Set([defeated, unresolved, dominant]).size, 3, encounter.id)
-    assert.doesNotMatch([defeated, unresolved, dominant].join(''), /花まる|褒め|拍手/u, encounter.id)
-    for (const line of [defeated, unresolved, dominant]) allResultLines.add(line)
   }
-
-  assert.equal(allResultLines.size, CHAPTERS.length * 3)
-  const ordinaryEncounter = encounterFor({ level: CHAPTERS[0].minLevel, day: 100 })
-  assert.equal(teacherBattleResultLine(ordinaryEncounter, { enemyDefeated: true }), null)
 
   const resultSource = readFileSync(
     new URL('../src/screens/SessionResult.jsx', import.meta.url),
     'utf8',
   )
-  assert.match(resultSource, /teacherBattleLine: teacherBattleResultLine\(encounter, battleReport\)/)
-  assert.doesNotMatch(resultSource, /data-testid="teacher-battle-result-line"/)
+  assert.match(resultSource, /<DragonVeinCipherStage/u)
+  assert.doesNotMatch(resultSource, /teacherBattleResultLine|enemyDefeated/u)
 })
-
 test('敵ランクは冒険者LVの解放上限を超えない', () => {
   assert.equal(maxEnemyRankIndexForHeroLevel(1), 0)
   assert.equal(maxEnemyRankIndexForHeroLevel(9), 0)

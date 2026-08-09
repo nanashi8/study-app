@@ -36,7 +36,7 @@ test('一つの共通メニューを全画面から開き、その中の設定�
   assert.deepEqual(missing, [])
 })
 
-test('共通メニューから保存される学習・音声・ゲーム・コンテンツ設定を変更できる', () => {
+test('共通メニューから保存される学習・音声・コンテンツ設定を変更できる', () => {
   const source = read('../src/components/SpeechSettings.jsx')
   const game = read('../src/components/GameSettings.jsx')
   const portal = read('../src/components/PortalSettings.jsx')
@@ -57,9 +57,6 @@ test('共通メニューから保存される学習・音声・ゲーム・コ�
     'autoSpeak',
     'dailyGoal',
     'revealAnswers',
-    'battleUiMode',
-    'bgmEnabled',
-    'bgmVolume',
   ])
 
   assert.match(source, /data-settings-central-panel/)
@@ -73,20 +70,15 @@ test('共通メニューから保存される学習・音声・ゲーム・コ�
   assert.match(source, /setSetting\('showPhonetic'/)
   assert.match(source, /英語をテスト/)
   assert.match(source, /日本語をテスト/)
-  assert.match(game, /setSetting\('battleUiMode'/)
-  assert.match(game, /setSetting\('bgmEnabled'/)
-  assert.match(game, /setSetting\('bgmVolume'/)
-  assert.match(game, /setBattleRelicLevel/)
-  assert.match(game, /setBattleThemeId/)
-  assert.match(game, /raiseBattleTrait/)
-  assert.match(game, /resetBattleStudentTraits/)
+  assert.doesNotMatch(game, /setSetting/)
+  assert.doesNotMatch(game, /setBattleRelicLevel|setBattleThemeId|raiseBattleTrait|resetBattleStudentTraits/)
   assert.match(portal, /moveContent/)
   assert.match(portal, /togglePortalHidden/)
   assert.match(portal, /resetPortal/)
   assert.match(settingsScreen, /<SettingsMenuPanel \/>/)
 })
 
-test('永続設定の変更処理は共通メニューへ集約し、同行者変更だけ対決前の作戦会議に置く', () => {
+test('永続設定の変更処理は共通メニューへ集約し、廃止した対戦設定を表示しない', () => {
   const files = ['components', 'screens'].flatMap((directory) =>
     readdirSync(new URL(`../src/${directory}/`, import.meta.url))
       .filter((filename) => filename.endsWith('.jsx'))
@@ -122,28 +114,26 @@ test('永続設定の変更処理は共通メニューへ集約し、同行者�
 
   assert.deepEqual(violations, [])
   assert.doesNotMatch(read('../src/screens/SessionResult.jsx'), /<BattleCompanionPicker/)
-  assert.match(read('../src/components/BattleCompanionPicker.jsx'), /この対決の同行者を選ぶ/)
-  assert.match(read('../src/screens/EnglishMap.jsx'), /同行者の選択は次の相手が分かるバトル前の作戦会議/)
-  assert.match(read('../src/components/GameSettings.jsx'), /次の相手が分かってから、対決前の作戦会議で変更できます/)
+  const gameSettings = read('../src/components/GameSettings.jsx')
+  assert.match(gameSettings, /龍脈調査の設定/)
+  assert.match(gameSettings, /対戦・攻撃・HPの演出はありません/)
+  assert.doesNotMatch(gameSettings, /setBattleRelicLevel|setBattleThemeId|raiseBattleTrait|resetBattleStudentTraits|BattleCompanionPicker/)
 })
 
-test('簡易UIとゲーミングUIは共通設定から切り替わり戦闘計算を変えない', () => {
-  const store = read('../src/store/useStore.js')
+test('龍脈調査設定は表示説明だけを扱い、解読の正誤判定を変えない', () => {
   const settings = read('../src/components/GameSettings.jsx')
   const quiz = read('../src/screens/VocabQuiz.jsx')
   const result = read('../src/screens/SessionResult.jsx')
   const css = read('../src/index.css')
 
-  assert.match(store, /battleUiMode:\s*'gaming'/)
-  assert.match(settings, /title="バトル画面"/)
-  assert.match(settings, /簡易UI/)
-  assert.match(settings, /ゲーミングUI/)
-  assert.match(quiz, /data-battle-ui-mode=/)
-  assert.match(result, /s\.settings\.battleUiMode === 'simple'/)
-  assert.match(result, /data-testid="battle-result-console"/)
-  assert.match(result, /data-battle-ui-mode=\{battleUiMode\}/)
-  assert.match(css, /data-battle-ui-mode='simple'/)
-  assert.doesNotMatch(read('../src/lib/rpg.js'), /battleUiMode/)
+  assert.doesNotMatch(settings, /audio|Audio|音量|再生/)
+  assert.match(settings, /正答率・SRS・診断・経験値の判定を変更しません/)
+  assert.doesNotMatch(settings, /battleUiMode|簡易UI|ゲーミングUI|HP・ターン|装備|防御/)
+  assert.match(settings, /対戦・攻撃・HPの演出はありません/)
+  assert.match(quiz, /isDragonVeinSource/)
+  assert.match(quiz, /<DragonVeinCipherStage/)
+  assert.match(result, /recordDragonVeinSession/)
+  assert.match(css, /@media \(prefers-reduced-motion: reduce\)[\s\S]*\.dragon-vein-student-layer/)
 })
 
 test('音声設定シートの開閉状態は学習データとは別の一時状態として動く', () => {

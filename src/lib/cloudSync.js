@@ -6,7 +6,12 @@
 //   /students/{uid} = { email, updatedAt, srs, myList, readingsDone, stats, settings }
 import { ref, get, set, serverTimestamp } from 'firebase/database'
 import { db } from './firebase.js'
-import { normalizeHidden, normalizeOrder, useStore } from '../store/useStore.js'
+import {
+  normalizeHidden,
+  normalizeOrder,
+  normalizeSettings,
+  useStore,
+} from '../store/useStore.js'
 import { buildPayload } from './progressCode.js'
 import {
   battleThemeById,
@@ -29,6 +34,7 @@ import {
   storyKeyVisualAlbumFromLegacyBonds,
 } from './storyAlbum.js'
 import { normalizeVocabHistory } from './vocabHistory.js'
+import { normalizeDragonVeinProgress } from './dragonVein.js'
 
 const node = (uid) => ref(db, `students/${uid}`)
 
@@ -95,10 +101,11 @@ export function progressStateFromCloud(data = {}, current = useStore.getState())
     storyKeyVisualAlbum: data.storyKeyVisualAlbum
       ? normalizeStoryKeyVisualAlbum(data.storyKeyVisualAlbum)
       : storyKeyVisualAlbumFromLegacyBonds(afterSchoolBonds),
+    dragonVeinProgress: normalizeDragonVeinProgress(data.dragonVeinProgress),
     portalOrder: normalizeOrder(data.portalOrder ?? current.portalOrder),
     portalHidden: normalizeHidden(data.portalHidden ?? current.portalHidden),
     stats,
-    settings: { ...current.settings, ...(data.settings ?? {}) },
+    settings: normalizeSettings({ ...current.settings, ...(data.settings ?? {}) }),
   }
 }
 

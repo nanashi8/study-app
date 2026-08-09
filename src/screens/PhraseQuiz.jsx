@@ -10,30 +10,54 @@ import { LongSentenceTranslation } from '../components/LongSentenceTranslation.j
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
+import { DragonVeinCipherStage } from '../components/DragonVeinCipherStage.jsx'
 import { Button, ProgressBar, IconButton, Chip } from '../components/ui.jsx'
 import { Close, Check, ArrowRight } from '../components/Icons.jsx'
 import { cx } from '../components/ui.jsx'
 import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { buildPhraseInstructorExplanation } from '../lib/instructorExplanations.js'
+import { isDragonVeinSource } from '../lib/dragonVein.js'
+
+const newSessionId = () => (
+  globalThis.crypto?.randomUUID?.()
+  ?? `dragon-phrase-${Date.now()}-${Math.random().toString(36).slice(2)}`
+)
+
+function streaksFromLog(log) {
+  let streak = 0
+  let wrongStreak = 0
+  for (const answer of log) {
+    if (answer === 'correct') {
+      streak += 1
+      wrongStreak = 0
+    } else {
+      streak = 0
+      wrongStreak += 1
+    }
+  }
+  return { streak, wrongStreak, lastAnswer: log.at(-1) ?? null }
+}
 
 export function PhraseQuizScreen() {
-  const params = useStore((s) => s.params)
-  const navigate = useStore((s) => s.navigate)
-  const back = useStore((s) => s.back)
-  const review = useStore((s) => s.review)
+  const params = useStore((state) => state.params)
+  const navigate = useStore((state) => state.navigate)
+  const back = useStore((state) => state.back)
+  const review = useStore((state) => state.review)
+  const selectedStudentId = useStore((state) => state.battleStudentId)
+  const source = params.source ?? { type: 'phrase', kind: 'idiom' }
+  const isDragonVein = isDragonVeinSource(source)
 
   const xpAtStart = useRef(useStore.getState().stats.xp)
-  const [deck] = useState(() =>
-    buildPhraseDeck(params.source ?? { type: 'phrase', kind: 'idiom' }, {
-      srs: useStore.getState().srs,
-      size: 10,
-    }),
-  )
-  const [i, setI] = useState(0)
+  const sessionId = useRef(newSessionId())
+  const [deck] = useState(() => buildPhraseDeck(source, {
+    srs: useStore.getState().srs,
+    size: params.size ?? 10,
+  }))
+  const [index, setIndex] = useState(0)
   const [selected, setSelected] = useState(null)
-  const results = useRef({ correct: 0, wrong: 0, unknown: 0, wrongIds: [] })
+  const results = useRef({ correct: 0, wrong: 0, unknown: 0, wrongIds: [], answerLog: [] })
 
-  const item = deck[i]
+  const item = deck[index]
   const options = useMemo(() => {
     if (!item) return []
     return shuffle([item, ...pickPhraseDistractors(item, 2)])
@@ -50,47 +74,7 @@ export function PhraseQuizScreen() {
   }
 
   const answered = selected !== null
-
-  const finish = () => {
-    const xpGained = useStore.getState().stats.xp - xpAtStart.current
-    navigate('sessionResult', {
-      title: params.title ?? '熟語・構文',
-      mode: 'quiz',
-      engine: 'phrase',
-      total: deck.length,
-      correct: results.current.correct,
-      wrong: results.current.wrong + results.current.unknown,
-      xpGained,
-      reviewIds: results.current.wrongIds,
-      source: params.source,
-    })
-  }
-
-  const choose = (optId) => {
-    if (answered) return
-    setSelected(optId)
-    if (optId === UNKNOWN_CHOICE_ID) {
-      review(item.id, 'unknown', 'usage')
-      results.current.unknown++
-      results.current.wrongIds.push(item.id)
-    } else if (optId === item.id) {
-      review(item.id, 'correct', 'usage')
-      results.current.correct++
-    } else {
-      review(item.id, 'wrong', 'usage')
-      results.current.wrong++
-      results.current.wrongIds.push(item.id)
-    }
-  }
-
-  const next = () => {
-    if (i + 1 >= deck.length) finish()
-    else {
-      setI(i + 1)
-      setSelected(null)
-    }
-  }
-
+  const streakState = streaksFromLog(results.current.answerLog)
   const isCorrectPick = answered && selected === item.id
   const instructorExplanation = answered
     ? buildPhraseInstructorExplanation(
@@ -102,66 +86,148 @@ export function PhraseQuizScreen() {
     : null
   const longSentenceTranslation = longSentenceTranslationFor(item)
 
+  const finish = () => {
+    const xpGained = useStore.getState().stats.xp - xpAtStart.current
+    navigate('sessionResult', {
+      title: params.title ?? (isDragonVein ? '龍脈の熟語・構文解読' : '熟語・構文'),
+      mode: 'quiz',
+      engine: 'phrase',
+      total: deck.length,
+      correct: results.current.correct,
+      wrong: results.current.wrong + results.current.unknown,
+      xpGained,
+      reviewIds: results.current.wrongIds,
+      source,
+      size: params.size,
+      sessionId: sessionId.current,
+      answerLog: [...results.current.answerLog],
+    })
+  }
+
+  const choose = (optionId) => {
+    if (answered) return
+    setSelected(optionId)
+    let answer
+    if (optionId === UNKNOWN_CHOICE_ID) {
+      review(item.id, 'unknown', 'usage')
+      results.current.unknown += 1
+      results.current.wrongIds.push(item.id)
+      answer = 'unknown'
+    } else if (optionId === item.id) {
+      review(item.id, 'correct', 'usage')
+      results.current.correct += 1
+      answer = 'correct'
+    } else {
+      review(item.id, 'wrong', 'usage')
+      results.current.wrong += 1
+      results.current.wrongIds.push(item.id)
+      answer = 'wrong'
+    }
+    results.current.answerLog.push(answer)
+  }
+
+  const next = () => {
+    if (index + 1 >= deck.length) finish()
+    else {
+      setIndex((current) => current + 1)
+      setSelected(null)
+    }
+  }
+
+  const feedback = isCorrectPick
+    ? streakState.streak >= 5
+      ? `連続${streakState.streak}正解！ 消えた言い回しが鮮明に戻った`
+      : '正解。文脈のつながりを1つ復元した'
+    : selected === UNKNOWN_CHOICE_ID
+      ? '未解読として記録。例文の語順を手掛かりにしよう'
+      : '文脈がつながらない。例文で使われる場面を確かめよう'
+
   return (
-    <div className="flex h-full flex-col">
-      <div className="flex items-center gap-3 px-3 py-3">
-        <IconButton onClick={back} aria-label="やめる"><Close size={22} /></IconButton>
-        <div className="flex-1"><ProgressBar value={i / deck.length} color="#8b5cf6" /></div>
+    <div className={cx('flex h-full flex-col', isDragonVein && 'dragon-vein-quiz-screen')}>
+      <div className="flex items-center gap-3 border-b border-brand-100 bg-white/90 px-3 py-3 backdrop-blur">
+        <IconButton onClick={back} aria-label={isDragonVein ? '解読を中断' : 'やめる'}><Close size={22} /></IconButton>
+        <div className="flex-1"><ProgressBar value={index / deck.length} color={isDragonVein ? '#8b5cf6' : '#0ea5e9'} /></div>
         <SpeechSettingsButton compact />
-        <span className="w-12 text-right text-sm font-extrabold text-ink/50">{i + 1}/{deck.length}</span>
+        <span className="w-14 text-right text-sm font-extrabold text-ink/50">{index + 1}/{deck.length}</span>
       </div>
 
-      <div className="flex-1 overflow-y-auto px-4 pb-4">
-        <div className="mt-2 flex flex-col items-center rounded-[2rem] bg-white p-6 text-center shadow-card">
+      <div className="flex-1 overflow-y-auto px-3 pb-4">
+        {isDragonVein && (
+          <DragonVeinCipherStage
+            source={source}
+            studentId={selectedStudentId}
+            answered={answered}
+            lastAnswer={streakState.lastAnswer}
+            streak={streakState.streak}
+            wrongStreak={streakState.wrongStreak}
+            current={index + 1}
+            total={deck.length}
+            className="mx-auto mt-2 w-full max-w-xl"
+          />
+        )}
+
+        <div className={cx(
+          'mx-auto mt-3 flex w-full max-w-xl flex-col items-center bg-white text-center shadow-card',
+          isDragonVein ? 'rounded-2xl px-4 py-3' : 'rounded-[2rem] p-6',
+        )}>
           <Chip color={item.kind === 'syntax' ? '#8b5cf6' : '#0ea5e9'} className="self-start">
             {item.kind === 'syntax' ? '構文' : '熟語'}
           </Chip>
-          <h2 className="mt-2 font-display text-3xl font-extrabold tracking-tight text-ink">{item.phrase}</h2>
-          <div className="mt-3"><SpeakButton text={phraseSpeechText(item)} size="md" /></div>
-          <p className="mt-4 text-sm font-extrabold text-ink/55">この意味は？</p>
+          <div className="mt-2 flex items-center justify-center gap-3">
+            <h2 className={cx('font-display font-extrabold tracking-tight text-ink', isDragonVein ? 'text-2xl' : 'text-3xl')}>
+              {item.phrase}
+            </h2>
+            <SpeakButton text={phraseSpeechText(item)} size="md" />
+          </div>
+          <p className="mt-3 text-sm font-extrabold text-ink/55">
+            {isDragonVein ? 'この文脈暗号が指す意味は？' : 'この意味は？'}
+          </p>
         </div>
 
-        <div className="mt-4 space-y-2.5">
-          {options.map((o) => {
-            const correct = o.id === item.id
-            const chosen = selected === o.id
+        <div className={cx(
+          'mx-auto w-full max-w-xl',
+          isDragonVein ? 'mt-2 grid grid-cols-2 gap-2' : 'mt-4 space-y-2.5',
+        )}>
+          {options.map((option, optionIndex) => {
+            const correct = option.id === item.id
+            const chosen = selected === option.id
             let tone = 'idle'
             if (answered) tone = correct ? 'correct' : chosen ? 'wrong' : 'dim'
             return (
               <button
-                key={o.id}
+                key={option.id}
                 disabled={answered}
-                onClick={() => choose(o.id)}
+                onClick={() => choose(option.id)}
                 className={cx(
-                  'flex w-full items-center gap-3 rounded-2xl border-2 px-4 py-3.5 text-left font-bold transition-all',
-                  tone === 'idle' && 'border-brand-100 bg-white text-ink active:bg-brand-50 active:scale-[0.99]',
+                  'flex w-full items-center gap-3 border-2 text-left font-bold transition-all',
+                  isDragonVein ? 'min-h-14 rounded-xl px-3 py-2.5 text-sm' : 'rounded-2xl px-4 py-3.5',
+                  tone === 'idle' && 'border-brand-100 bg-white text-ink active:scale-[0.99] active:bg-brand-50',
                   tone === 'correct' && 'border-emerald-400 bg-correct-soft text-emerald-800',
                   tone === 'wrong' && 'animate-shake border-rose-400 bg-wrong-soft text-rose-800',
                   tone === 'dim' && 'border-transparent bg-paper text-ink/35',
                 )}
               >
-                <span className="flex-1">{quizMeaning(o)}</span>
+                {isDragonVein && <span className="grid h-6 w-6 shrink-0 place-items-center rounded-md bg-slate-900 text-xs font-black text-amber-100">{optionIndex + 1}</span>}
+                <span className="flex-1">{quizMeaning(option)}</span>
                 {tone === 'correct' && <Check size={20} className="text-emerald-600" />}
                 {tone === 'wrong' && <Close size={18} className="text-rose-500" />}
               </button>
             )
           })}
-
           <UnknownChoiceButton
             selected={selected === UNKNOWN_CHOICE_ID}
             disabled={answered}
             onClick={() => choose(UNKNOWN_CHOICE_ID)}
+            className={isDragonVein ? 'min-h-14 rounded-xl py-2.5' : ''}
           />
         </div>
 
         {answered && (
-          <div className="mt-4 animate-slide-up rounded-2xl bg-white p-4 shadow-card">
+          <div className="mx-auto mt-4 w-full max-w-xl animate-slide-up rounded-2xl bg-white p-4 shadow-card">
             <p className={cx('font-display text-lg font-extrabold', isCorrectPick ? 'text-emerald-600' : 'text-rose-500')}>
-              {isCorrectPick ? '正解！🎉' : selected === UNKNOWN_CHOICE_ID ? '答えはこちら' : 'ざんねん…'}
+              {isDragonVein ? feedback : isCorrectPick ? '正解！🎉' : selected === UNKNOWN_CHOICE_ID ? '答えはこちら' : 'ざんねん…'}
             </p>
-            <p className="mt-1 font-bold text-ink">
-              <span className="font-display">{item.phrase}</span> ＝ {item.meanings.join('・')}
-            </p>
+            <p className="mt-1 font-bold text-ink"><span className="font-display">{item.phrase}</span> ＝ {item.meanings.join('・')}</p>
             <div className="mt-3 flex items-start gap-2 rounded-2xl bg-brand-50/70 p-3">
               <SpeakButton text={item.example.en} size="sm" />
               <div className="min-w-0 text-left">
@@ -173,17 +239,16 @@ export function PhraseQuizScreen() {
               </div>
             </div>
             <LongSentenceTranslation guide={longSentenceTranslation} className="mt-3" />
-            <InstructorExplanation
-              explanation={instructorExplanation}
-              className="mt-3"
-            />
+            <InstructorExplanation explanation={instructorExplanation} className="mt-3" />
           </div>
         )}
       </div>
 
-      <div className="shrink-0 border-t border-brand-100 bg-white/90 p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] backdrop-blur">
+      <div className="shrink-0 border-t border-brand-100 bg-white/90 p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] backdrop-blur">
         <Button full size="lg" disabled={!answered} onClick={next}>
-          {i + 1 >= deck.length ? '結果を見る' : '次へ'} <ArrowRight size={18} />
+          {index + 1 >= deck.length
+            ? isDragonVein ? '修復結果を確認' : '結果を見る'
+            : '次の断片へ'} <ArrowRight size={18} />
         </Button>
       </div>
     </div>

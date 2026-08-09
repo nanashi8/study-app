@@ -1,16 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { useStore, todayIndex } from '../store/useStore.js'
+import { useStore } from '../store/useStore.js'
 import { buildDeck, SESSION_SIZE } from '../lib/session.js'
-import { enemyLevel } from '../lib/adaptive.js'
-import {
-  battleRelicForLevel,
-  battleSceneCue,
-  battleTactic,
-  encounterFor,
-  heroProgress,
-  relicBattleAbility,
-  resolveBattleState,
-} from '../lib/rpg.js'
 import { pickDistractors, shuffle } from '../data/vocab.js'
 import { quizMeaning } from '../data/compact.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
@@ -18,43 +8,25 @@ import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { PosBadge } from '../components/WordBits.jsx'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
-import { TeacherPortrait } from '../components/TeacherPortrait.jsx'
-import { BattleStandingActor } from '../components/BattleStandingActor.jsx'
-import { BattleOpponentStandingActor } from '../components/BattleOpponentStandingActor.jsx'
-import { BattleStageBackdrop } from '../components/BattleStageBackdrop.jsx'
+import { DragonVeinCipherStage } from '../components/DragonVeinCipherStage.jsx'
 import { Button, ProgressBar, IconButton } from '../components/ui.jsx'
 import { Close, Check, ArrowRight } from '../components/Icons.jsx'
 import { cx } from '../components/ui.jsx'
 import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { buildVocabInstructorExplanation } from '../lib/instructorExplanations.js'
-import {
-  BATTLE_STAR_PER_CORRECT,
-  battleStageForEncounter,
-  battleThemeById,
-} from '../lib/battleThemes.js'
-import {
-  battleOpponentForEncounter,
-  battleRivalById,
-  battleRivalForEncounter,
-  battleRivalTeacherSubject,
-  battleStudentById,
-  battleStudentPortrait,
-  battleStandingPoseForPhase,
-  battleStudentState,
-} from '../lib/battleCast.js'
-import {
-  battleStudentTraitProfile,
-  battleTraitById,
-} from '../lib/battleTraits.js'
-import { publicAssetUrl } from '../lib/publicAssetUrl.js'
-import { afterSchoolSkillById } from '../lib/afterSchoolBonds.js'
+import { isDragonVeinSource } from '../lib/dragonVein.js'
 
-// このクイズ画面の同一性キー（出題ソース・タイトル・問題数）。
-// 退避したセッションが「今まさに戻ってきたクイズ」のものかを照合するのに使う。
-const sessionKey = (p) =>
-  `vocab|${JSON.stringify(p.source ?? { type: 'due' })}|${p.title ?? ''}|${p.size ?? ''}`
+const sessionKey = (params) => (
+  `vocab|${JSON.stringify(params.source ?? { type: 'due' })}|${params.title ?? ''}|${params.size ?? ''}`
+)
 
-const restoredBattleLog = (results = {}) => {
+const newSessionId = () => (
+  globalThis.crypto?.randomUUID?.()
+  ?? `dragon-${Date.now()}-${Math.random().toString(36).slice(2)}`
+)
+
+function restoredAnswerLog(results = {}) {
+  if (Array.isArray(results.answerLog)) return [...results.answerLog]
   if (Array.isArray(results.battleLog)) return [...results.battleLog]
   const count = (value) => Math.max(0, Math.floor(Number(value) || 0))
   return [
@@ -64,159 +36,71 @@ const restoredBattleLog = (results = {}) => {
   ]
 }
 
-export function VocabQuizScreen() {
-  const params = useStore((s) => s.params)
-  const navigate = useStore((s) => s.navigate)
-  const back = useStore((s) => s.back)
-  const review = useStore((s) => s.review)
-  const saveQuizSession = useStore((s) => s.saveQuizSession)
-  const clearQuizSession = useStore((s) => s.clearQuizSession)
-  const addBattleStars = useStore((s) => s.addBattleStars)
-  const battleStars = useStore((s) => s.battleStars)
-  const battleThemeId = useStore((s) => s.battleThemeId)
-  const battleStudentId = useStore((s) => s.battleStudentId)
-  const battleTraitInvestments = useStore((s) => s.battleTraitInvestments)
-  const battleUiMode = useStore((s) => (
-    s.settings.battleUiMode === 'simple' ? 'simple' : 'gaming'
-  ))
+function streaksFromLog(log = []) {
+  let streak = 0
+  let wrongStreak = 0
+  for (const answer of log) {
+    if (answer === 'correct') {
+      streak += 1
+      wrongStreak = 0
+    } else {
+      streak = 0
+      wrongStreak += 1
+    }
+  }
+  return { streak, wrongStreak, lastAnswer: log.at(-1) ?? null }
+}
 
-  // 語源を見て戻ってきたときだけ復元。退避セッションのキーが一致したら採用。
+export function VocabQuizScreen() {
+  const params = useStore((state) => state.params)
+  const navigate = useStore((state) => state.navigate)
+  const back = useStore((state) => state.back)
+  const review = useStore((state) => state.review)
+  const saveQuizSession = useStore((state) => state.saveQuizSession)
+  const clearQuizSession = useStore((state) => state.clearQuizSession)
+  const selectedStudentId = useStore((state) => state.battleStudentId)
+  const source = params.source ?? { type: 'due' }
+  const isDragonVein = isDragonVeinSource(source)
+
   const [restore] = useState(() => {
-    const s = useStore.getState().quizSession
-    return s && s.key === sessionKey(params) ? s : null
+    const saved = useStore.getState().quizSession
+    return saved && saved.key === sessionKey(params) ? saved : null
   })
-  // 取り出したら退避は消費（古いセッションが残って誤復元しないよう必ずクリア）。
-  useEffect(() => {
-    clearQuizSession()
-  }, [clearQuizSession])
+  useEffect(() => clearQuizSession(), [clearQuizSession])
 
   const xpAtStart = useRef(restore ? restore.xpAtStart : useStore.getState().stats.xp)
-  const [deck] = useState(() =>
-    restore
-      ? restore.deck
-      : buildDeck(params.source ?? { type: 'due' }, {
-          srs: useStore.getState().srs,
-          size:
-            params.size ??
-            (['level', 'battle', 'all', 'field', 'pos'].includes(params.source?.type)
-              ? SESSION_SIZE
-              : 20),
-        }),
-  )
-  const [i, setI] = useState(() => (restore ? restore.i : 0))
-  const [selected, setSelected] = useState(() => {
-    // 旧版で使っていた "unknown" は実在する単語IDと衝突するため、新しい番兵値へ移行する。
-    if (restore?.selected === 'unknown') return UNKNOWN_CHOICE_ID
-    return restore ? restore.selected : null
-  })
-  const [itemUsedAt, setItemUsedAt] = useState(() =>
-    Number.isSafeInteger(restore?.itemUsedAt) ? restore.itemUsedAt : null,
-  )
-  // 学習評価や再現可能な戦闘計算には混ぜない、短時間の表示専用イベント。
-  // 即時回復アイテムのように lastEvent を置き換えない操作だけをここで補う。
-  const [battleVisualEvent, setBattleVisualEvent] = useState(null)
+  const sessionId = useRef(restore?.sessionId ?? newSessionId())
+  const [deck] = useState(() => (
+    restore?.deck
+    ?? buildDeck(source, {
+      srs: useStore.getState().srs,
+      size: params.size ?? (
+        ['level', 'battle', 'dragonVein', 'all', 'field', 'pos'].includes(source.type)
+          ? SESSION_SIZE
+          : 20
+      ),
+    })
+  ))
+  const [index, setIndex] = useState(restore?.i ?? 0)
+  const [selected, setSelected] = useState(() => (
+    restore?.selected === 'unknown' ? UNKNOWN_CHOICE_ID : restore?.selected ?? null
+  ))
   const results = useRef(
     restore
       ? {
           ...restore.results,
           wrongIds: [...(restore.results?.wrongIds ?? [])],
-          battleLog: restoredBattleLog(restore.results),
+          answerLog: restoredAnswerLog(restore.results),
         }
-      : {
-          correct: 0,
-          wrong: 0,
-          unknown: 0,
-          wrongIds: [],
-          battleLog: [],
-        },
+      : { correct: 0, wrong: 0, unknown: 0, wrongIds: [], answerLog: [] },
   )
 
-  const word = deck[i]
-  const isBattle = params.source?.type === 'battle'
-  const battleTheme = isBattle
-    ? battleThemeById(params.source?.themeId ?? battleThemeId, battleStars)
-    : null
-  const battleHeroLevel = isBattle
-    ? params.source?.heroLevel
-      ?? heroProgress(useStore.getState().stats.xp).level
-    : 1
-  const encounter = isBattle
-    ? encounterFor({
-        level: battleHeroLevel,
-        day: params.source?.adventureDay ?? todayIndex(),
-        enemyRankIndex: params.source?.levelIndex ?? 0,
-      })
-    : null
-  const battleStudent = isBattle
-    ? battleStudentById(params.source?.studentId ?? battleStudentId)
-    : null
-  const studentTraitProfile = isBattle
-    ? battleStudentTraitProfile(
-        battleStudent.id,
-        battleTraitInvestments,
-        battleStars,
-      )
-    : null
-  const battleTrait = isBattle
-    ? battleTraitById(
-        params.source?.traitId
-        ?? studentTraitProfile.dominant.id,
-      )
-    : null
-  const battleSecondaryTrait = isBattle
-    ? battleTraitById(
-        studentTraitProfile.dominant.id === battleTrait.id
-          ? studentTraitProfile.secondary.id
-          : studentTraitProfile.dominant.id,
-      )
-    : null
-  const battleRival = isBattle
-    ? battleOpponentForEncounter(
-        encounter,
-        battleRivalById(
-          params.source?.rivalId
-          ?? battleRivalForEncounter(
-            encounter,
-            params.source?.adventureDay ?? todayIndex(),
-          ).id,
-        ),
-      )
-    : null
-  const tactic = isBattle ? battleTactic(params.source?.tacticId) : null
-  const battleRelic = isBattle
-    ? battleRelicForLevel(battleHeroLevel, params.source?.relicLevel)
-    : null
-  const battleItemAbility = isBattle ? relicBattleAbility(battleRelic) : null
-  const battleBondSkill = isBattle
-    ? afterSchoolSkillById(params.source?.bondSkillId)
-    : null
-  const battleState = isBattle
-    ? resolveBattleState({
-        answers: results.current.battleLog,
-        total: deck.length,
-        tacticId: tactic.id,
-        heroLevel: battleHeroLevel,
-        enemyRankIndex: params.source?.levelIndex ?? 0,
-        isBoss: encounter.isBoss,
-        studentId: battleStudent.id,
-        teacherSubject: params.source?.teacherSubject
-          ?? encounter.teacherSubject
-          ?? battleRivalTeacherSubject(battleRival.id),
-        relicLevel: battleRelic.level,
-        itemUsedAt,
-        themeId: battleTheme.id,
-        bondSkill: battleBondSkill,
-      })
-    : null
-  const enemyHp = battleState?.enemyHealthPercent ?? 100
-  const heroHp = battleState?.heroHealthPercent ?? 100
-  // 選択肢（正解＋誤答2つ）を問題ごとに固定
+  const word = deck[index]
   const options = useMemo(() => {
     if (!word) return []
-    // 詳細画面へ移動する直前の並びも復元し、選んだ誤答が消えないようにする。
-    if (restore?.i === i && restore.options?.length) return restore.options
+    if (restore?.i === index && restore.options?.length) return restore.options
     return shuffle([word, ...pickDistractors(word, 2)])
-  }, [word?.id, i, restore])
+  }, [word?.id, index, restore])
 
   if (!deck.length) {
     return (
@@ -229,80 +113,7 @@ export function VocabQuizScreen() {
   }
 
   const answered = selected !== null
-
-  const finish = () => {
-    const xpGained = useStore.getState().stats.xp - xpAtStart.current
-    navigate('sessionResult', {
-      title: params.title ?? 'クイズ',
-      mode: 'quiz',
-      total: deck.length,
-      correct: results.current.correct,
-      wrong: results.current.wrong + results.current.unknown,
-      xpGained,
-      reviewIds: results.current.wrongIds,
-      source: params.source,
-      size: params.size,
-      battleReport: isBattle ? battleState : null,
-    })
-  }
-
-  const choose = (optId) => {
-    if (answered) return
-    if (isBattle) setBattleVisualEvent(null)
-    setSelected(optId)
-    let battleAnswer
-    if (optId === UNKNOWN_CHOICE_ID) {
-      review(word.id, 'unknown', 'vocab')
-      results.current.unknown++
-      results.current.wrongIds.push(word.id)
-      battleAnswer = 'unknown'
-    } else if (optId === word.id) {
-      review(word.id, 'correct', 'vocab')
-      results.current.correct++
-      battleAnswer = 'correct'
-      if (isBattle) addBattleStars(BATTLE_STAR_PER_CORRECT)
-    } else {
-      review(word.id, 'wrong', 'vocab')
-      results.current.wrong++
-      results.current.wrongIds.push(word.id)
-      battleAnswer = 'wrong'
-    }
-    if (isBattle) {
-      results.current.battleLog ??= []
-      results.current.battleLog.push(battleAnswer)
-    }
-  }
-
-  const next = () => {
-    if (i + 1 >= deck.length) finish()
-    else {
-      setI(i + 1)
-      setSelected(null)
-      setBattleVisualEvent(null)
-    }
-  }
-
-  const useBattleItem = () => {
-    if (
-      !isBattle
-      || !battleRelic
-      || battleState.itemUsed
-      || battleState.complete
-      || (
-        battleItemAbility.kind === 'heal'
-        && battleState.heroCurrentHp >= battleState.heroMaxHp
-      )
-    ) return
-    setItemUsedAt(battleState.answered)
-    if (battleItemAbility.kind === 'heal') {
-      setBattleVisualEvent({
-        kind: 'item-heal',
-        emoji: battleRelic.emoji,
-        title: battleRelic.name,
-      })
-    }
-  }
-
+  const streakState = streaksFromLog(results.current.answerLog)
   const isCorrectPick = answered && selected === word.id
   const instructorExplanation = answered
     ? buildVocabInstructorExplanation(
@@ -312,232 +123,184 @@ export function VocabQuizScreen() {
           : options.find((option) => option.id === selected),
       )
     : null
-  const battleEvent = answered ? battleState?.lastEvent : null
-  const battleFeedback = isCorrectPick
-    ? `正解！ ✦+${BATTLE_STAR_PER_CORRECT}・${battleRival.name}に ${battleEvent?.damage ?? 0} ダメージ 💮`
+
+  const finish = () => {
+    const xpGained = useStore.getState().stats.xp - xpAtStart.current
+    navigate('sessionResult', {
+      title: params.title ?? (isDragonVein ? '龍脈の単語解読' : 'クイズ'),
+      mode: 'quiz',
+      engine: 'vocab',
+      total: deck.length,
+      correct: results.current.correct,
+      wrong: results.current.wrong + results.current.unknown,
+      xpGained,
+      reviewIds: results.current.wrongIds,
+      source,
+      size: params.size,
+      sessionId: sessionId.current,
+      answerLog: [...results.current.answerLog],
+    })
+  }
+
+  const choose = (optionId) => {
+    if (answered) return
+    setSelected(optionId)
+    let answer
+    if (optionId === UNKNOWN_CHOICE_ID) {
+      review(word.id, 'unknown', 'vocab')
+      results.current.unknown += 1
+      results.current.wrongIds.push(word.id)
+      answer = 'unknown'
+    } else if (optionId === word.id) {
+      review(word.id, 'correct', 'vocab')
+      results.current.correct += 1
+      answer = 'correct'
+    } else {
+      review(word.id, 'wrong', 'vocab')
+      results.current.wrong += 1
+      results.current.wrongIds.push(word.id)
+      answer = 'wrong'
+    }
+    results.current.answerLog.push(answer)
+  }
+
+  const next = () => {
+    if (index + 1 >= deck.length) finish()
+    else {
+      setIndex((current) => current + 1)
+      setSelected(null)
+    }
+  }
+
+  const saveBeforeDetail = () => {
+    saveQuizSession({
+      key: sessionKey(params),
+      sessionId: sessionId.current,
+      deck,
+      i: index,
+      selected,
+      options,
+      results: {
+        ...results.current,
+        wrongIds: [...results.current.wrongIds],
+        answerLog: [...results.current.answerLog],
+        // 旧版の退避セッションを読める期間は同じ値も残す。
+        battleLog: [...results.current.answerLog],
+      },
+      xpAtStart: xpAtStart.current,
+    })
+    navigate('wordDetail', { id: word.id })
+  }
+
+  const feedback = isCorrectPick
+    ? streakState.streak >= 5
+      ? `連続${streakState.streak}正解！ 記憶の文脈が一気につながった`
+      : '正解。英語の記憶断片を1つ復元した'
     : selected === UNKNOWN_CHOICE_ID
-      ? '「わからない」を記録。次で立て直そう'
-      : `${battleRival?.name ?? '相手'}からの問い返し。次の一問で取り返そう`
-  const positiveBattleFeedback =
-    isCorrectPick || ['block', 'item-guard'].includes(battleEvent?.kind)
-  const itemHealBlocked =
-    battleItemAbility?.kind === 'heal'
-    && battleState?.heroCurrentHp >= battleState?.heroMaxHp
-  const canUseBattleItem =
-    isBattle
-    && battleRelic
-    && !battleState.itemUsed
-    && !battleState.complete
-    && !itemHealBlocked
-  const battleItemLabel = battleState?.itemUsed
-    ? battleState.itemStatus
-    : itemHealBlocked
-      ? 'HP満タン'
-      : battleRelic?.name
-  const nextLabel = i + 1 >= deck.length
-    ? isBattle
-      ? '戦果を確認'
-      : '結果を見る'
-    : isBattle
-      ? 'つぎへ'
-      : '次へ'
-  const battleScreenStyle = isBattle
-    ? {
-        '--battle-accent': battleTheme.accent,
-        '--battle-accent-strong': battleTheme.accentStrong,
-        '--battle-accent-soft': battleTheme.accentSoft,
-        '--battle-enemy': battleTheme.enemy,
-        '--battle-surface': battleTheme.surface,
-      }
-    : undefined
+      ? '未解読として記録。例文から手掛かりを拾おう'
+      : '組み合わせが合わない。意味と語源を見直そう'
 
   return (
-    <div
-      className={cx('flex h-full flex-col', isBattle && 'battle-quiz-screen')}
-      data-battle-theme={battleTheme?.id}
-      data-battle-layout={battleTheme?.presentation.layout}
-      data-battle-ui-mode={isBattle ? battleUiMode : undefined}
-      style={battleScreenStyle}
-    >
-      {/* 通常クイズの進捗。バトルはHUD内のターン表示へ一本化する。 */}
-      {!isBattle && (
-        <div className="border-b border-brand-100 bg-white/90 px-3 py-3 backdrop-blur">
-          <div className="flex items-center gap-3">
-            <IconButton onClick={back} aria-label="やめる">
-              <Close size={22} />
-            </IconButton>
-            <div className="flex-1">
-              <ProgressBar value={i / deck.length} color="#0ea5e9" />
-            </div>
-            <SpeechSettingsButton compact />
-            <span className="w-12 text-right text-sm font-extrabold text-ink/50">
-              {i + 1}/{deck.length}
-            </span>
+    <div className={cx('flex h-full flex-col', isDragonVein && 'dragon-vein-quiz-screen')}>
+      <div className="border-b border-brand-100 bg-white/90 px-3 py-3 backdrop-blur">
+        <div className="flex items-center gap-3">
+          <IconButton onClick={back} aria-label={isDragonVein ? '解読を中断' : 'やめる'}>
+            <Close size={22} />
+          </IconButton>
+          <div className="flex-1">
+            <ProgressBar value={index / deck.length} color={isDragonVein ? '#8b5cf6' : '#0ea5e9'} />
           </div>
+          <SpeechSettingsButton compact />
+          <span className="w-14 text-right text-sm font-extrabold text-ink/50">
+            {index + 1}/{deck.length}
+          </span>
         </div>
-      )}
+      </div>
 
-      {isBattle && (
-        <div className="battle-hud-shell battle-console-shell border-b border-brand-100 bg-white/90 p-2 backdrop-blur">
-          <BattleHud
-            encounter={encounter}
-            enemyRank={enemyLevel(params.source?.levelIndex ?? 0)}
-            enemyHp={enemyHp}
-            heroHp={heroHp}
-            hit={answered && isCorrectPick}
-            battleState={battleState}
-            eventActive={answered}
-            turns={results.current.battleLog}
-            totalTurns={deck.length}
-            battleStars={battleStars}
-            battleTheme={battleTheme}
-            battleStudent={battleStudent}
-            battleTrait={battleTrait}
-            battleSecondaryTrait={battleSecondaryTrait}
-            battleRival={battleRival}
-            visualEvent={battleVisualEvent}
-            uiMode={battleUiMode}
-            onExit={back}
+      <div className="flex-1 overflow-y-auto px-3 pb-4">
+        {isDragonVein && (
+          <DragonVeinCipherStage
+            source={source}
+            studentId={selectedStudentId}
+            answered={answered}
+            lastAnswer={streakState.lastAnswer}
+            streak={streakState.streak}
+            wrongStreak={streakState.wrongStreak}
+            current={index + 1}
+            total={deck.length}
+            className="mx-auto mt-2 w-full max-w-xl"
           />
-        </div>
-      )}
-
-      <div
-        className={cx(
-          'flex-1 overflow-y-auto px-4 pb-4',
-          isBattle && 'battle-command-shell px-3 pb-2',
         )}
-      >
-        {/* 出題語 */}
-        <div
-          className={cx(
-            'mt-2 flex flex-col items-center bg-white text-center shadow-card',
-            isBattle ? 'pixel-battle-question rounded-2xl px-3 py-2.5' : 'rounded-[2rem] p-6',
-          )}
-        >
-          {isBattle ? (
-            <>
-              <div className="grid w-full grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2">
-                <PosBadge pos={word.pos} />
-                <div className="min-w-0">
-                  <h2 className="break-words font-display text-[clamp(1.25rem,6.8vw,1.75rem)] font-extrabold leading-none tracking-tight text-ink">
-                    {word.word}
-                  </h2>
-                  {word.phonetic && (
-                    <p className="mt-1 text-[11px] font-bold leading-none text-ink/40">
-                      {word.phonetic}
-                    </p>
-                  )}
-                </div>
-                <SpeakButton text={word.word} size="md" />
-              </div>
-              <p className="battle-command-prompt mt-1.5 text-[11px] font-extrabold text-ink/55">
-                <span>ことば</span>
-                正しい意味を選ぶ
-              </p>
-            </>
-          ) : (
-            <>
-              <PosBadge pos={word.pos} className="self-start" />
-              <h2 className="mt-2 font-display text-4xl font-extrabold tracking-tight text-ink">
-                {word.word}
-              </h2>
-              {word.phonetic && (
-                <p className="mt-1 text-sm font-bold text-ink/40">{word.phonetic}</p>
-              )}
-              <div className="mt-3">
-                <SpeakButton text={word.word} size="md" />
-              </div>
-              <p className="mt-4 text-sm font-extrabold text-ink/55">
-                この単語の意味は？
-              </p>
-            </>
-          )}
+
+        <div className={cx(
+          'mx-auto mt-3 flex w-full max-w-xl flex-col items-center bg-white text-center shadow-card',
+          isDragonVein ? 'rounded-2xl px-4 py-3' : 'rounded-[2rem] p-6',
+        )}>
+          <PosBadge pos={word.pos} className="self-start" />
+          <div className="flex w-full items-center justify-center gap-3">
+            <div>
+              <h2 className={cx(
+                'font-display font-extrabold tracking-tight text-ink',
+                isDragonVein ? 'text-3xl' : 'mt-2 text-4xl',
+              )}>{word.word}</h2>
+              {word.phonetic && <p className="mt-1 text-sm font-bold text-ink/40">{word.phonetic}</p>}
+            </div>
+            <SpeakButton text={word.word} size="md" />
+          </div>
+          <p className="mt-2 text-sm font-extrabold text-ink/55">
+            {isDragonVein ? 'この記憶断片が指す意味は？' : 'この単語の意味は？'}
+          </p>
         </div>
 
-        {/* 選択肢 */}
-        <div
-          className={cx(
-            isBattle
-              ? 'battle-command-grid mt-2 grid grid-cols-2 gap-2'
-              : 'mt-4 space-y-2.5',
-          )}
-        >
-          {options.map((o, optionIndex) => {
-            const correct = o.id === word.id
-            const chosen = selected === o.id
+        <div className={cx(
+          'mx-auto w-full max-w-xl',
+          isDragonVein ? 'mt-2 grid grid-cols-2 gap-2' : 'mt-4 space-y-2.5',
+        )}>
+          {options.map((option, optionIndex) => {
+            const correct = option.id === word.id
+            const chosen = selected === option.id
             let tone = 'idle'
-            if (answered) {
-              if (correct) tone = 'correct'
-              else if (chosen) tone = 'wrong'
-              else tone = 'dim'
-            }
+            if (answered) tone = correct ? 'correct' : chosen ? 'wrong' : 'dim'
             return (
               <button
-                key={o.id}
+                key={option.id}
                 disabled={answered}
-                onClick={() => choose(o.id)}
+                onClick={() => choose(option.id)}
                 className={cx(
                   'flex w-full items-center gap-3 border-2 text-left font-bold transition-all',
-                  isBattle
-                    ? 'pixel-battle-choice battle-command-choice min-h-12 rounded-xl px-2 py-2 text-sm leading-snug'
-                    : 'rounded-2xl px-4 py-3.5',
-                  tone === 'idle' && 'border-brand-100 bg-white text-ink active:bg-brand-50 active:scale-[0.99]',
+                  isDragonVein ? 'min-h-14 rounded-xl px-3 py-2.5 text-sm' : 'rounded-2xl px-4 py-3.5',
+                  tone === 'idle' && 'border-brand-100 bg-white text-ink active:scale-[0.99] active:bg-brand-50',
                   tone === 'correct' && 'border-emerald-400 bg-correct-soft text-emerald-800',
                   tone === 'wrong' && 'animate-shake border-rose-400 bg-wrong-soft text-rose-800',
                   tone === 'dim' && 'border-transparent bg-paper text-ink/35',
                 )}
               >
-                {isBattle && (
-                  <>
-                    <span className="battle-command-index" aria-hidden="true">
-                      {optionIndex + 1}
-                    </span>
-                    <span className="battle-command-glyph" aria-hidden="true">
-                      {battleTheme.presentation.choiceGlyphs[optionIndex]}
-                    </span>
-                  </>
+                {isDragonVein && (
+                  <span className="grid h-6 w-6 shrink-0 place-items-center rounded-md bg-slate-900 text-xs font-black text-amber-100">
+                    {optionIndex + 1}
+                  </span>
                 )}
-                <span className="battle-command-text flex-1">{quizMeaning(o)}</span>
+                <span className="flex-1">{quizMeaning(option)}</span>
                 {tone === 'correct' && <Check size={20} className="text-emerald-600" />}
                 {tone === 'wrong' && <Close size={18} className="text-rose-500" />}
               </button>
             )
           })}
-
           <UnknownChoiceButton
             selected={selected === UNKNOWN_CHOICE_ID}
             disabled={answered}
             onClick={() => choose(UNKNOWN_CHOICE_ID)}
-            label={isBattle ? (
-              <span className="battle-command-unknown-label">
-                <span className="battle-command-index" aria-hidden="true">4</span>
-                <span className="battle-command-glyph" aria-hidden="true">
-                  {battleTheme.presentation.unknownGlyph}
-                </span>
-                <span className="battle-command-text">わからない</span>
-              </span>
-            ) : undefined}
-            className={isBattle ? 'pixel-battle-choice battle-command-choice battle-command-unknown min-h-12 py-2 leading-snug' : ''}
+            className={isDragonVein ? 'min-h-14 rounded-xl py-2.5' : ''}
           />
         </div>
 
-        {/* 答え合わせ後 */}
         {answered && (
-          <div className="mt-4 animate-slide-up rounded-2xl bg-white p-4 shadow-card">
-            <p
-              className={cx(
-                'font-display text-lg font-extrabold',
-                positiveBattleFeedback ? 'text-emerald-600' : 'text-rose-500',
-              )}
-            >
-              {isBattle
-                ? battleFeedback
-                : isCorrectPick
-                  ? '正解！🎉'
-                  : selected === UNKNOWN_CHOICE_ID
-                    ? '答えはこちら'
-                    : 'ざんねん…'}
+          <div className="mx-auto mt-4 w-full max-w-xl animate-slide-up rounded-2xl bg-white p-4 shadow-card">
+            <p className={cx(
+              'font-display text-lg font-extrabold',
+              isCorrectPick ? 'text-emerald-600' : 'text-rose-500',
+            )}>
+              {isDragonVein ? feedback : isCorrectPick ? '正解！🎉' : selected === UNKNOWN_CHOICE_ID ? '答えはこちら' : 'ざんねん…'}
             </p>
             <p className="mt-1 font-bold text-ink">
               <span className="font-display">{word.word}</span> ＝ {word.meanings.join('・')}
@@ -549,491 +312,21 @@ export function VocabQuizScreen() {
                 <p className="mt-0.5 text-xs font-bold leading-relaxed text-ink/55">{word.example.ja}</p>
               </div>
             </div>
-            <InstructorExplanation
-              explanation={instructorExplanation}
-              className="mt-3"
-            />
-            <button
-              onClick={() => {
-                // 解答済みの状態を退避してから語源詳細へ。戻ると結果画面のまま復元。
-                saveQuizSession({
-                  key: sessionKey(params),
-                  deck,
-                  i,
-                  selected,
-                  options,
-                  results: {
-                    ...results.current,
-                    wrongIds: [...results.current.wrongIds],
-                    battleLog: [...(results.current.battleLog ?? [])],
-                  },
-                  xpAtStart: xpAtStart.current,
-                  itemUsedAt,
-                })
-                navigate('wordDetail', { id: word.id })
-              }}
-              className="mt-2 inline-flex items-center gap-1 text-sm font-extrabold text-brand-600"
-            >
+            <InstructorExplanation explanation={instructorExplanation} className="mt-3" />
+            <button onClick={saveBeforeDetail} className="mt-2 inline-flex items-center gap-1 text-sm font-extrabold text-brand-600">
               語源をくわしく見る <ArrowRight size={15} />
             </button>
           </div>
         )}
       </div>
 
-      <div
-        className={cx(
-          'shrink-0 border-t border-brand-100 bg-white/90 backdrop-blur',
-          isBattle
-            ? 'p-2.5 pb-[calc(0.625rem+env(safe-area-inset-bottom))]'
-            : 'p-4 pb-[calc(1rem+env(safe-area-inset-bottom))]',
-        )}
-      >
-        {isBattle && battleRelic ? (
-          <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1.25fr)] gap-2">
-            <button
-              type="button"
-              disabled={!canUseBattleItem}
-              onClick={useBattleItem}
-              aria-label={
-                battleState.itemUsed
-                  ? `${battleRelic.name}は使用済み。${battleState.itemStatus}`
-                  : itemHealBlocked
-                    ? `${battleRelic.name}はHPが満タンのため使用できません`
-                    : `${battleRelic.name}を使う。${battleItemAbility.description}`
-              }
-              className={cx(
-                'flex h-12 min-w-0 items-center justify-center gap-1.5 rounded-2xl border-2 px-2 text-[11px] font-extrabold transition-transform active:scale-[0.97]',
-                canUseBattleItem
-                  ? 'border-amber-300 bg-amber-50 text-amber-900'
-                  : 'border-ink/10 bg-paper text-ink/35',
-              )}
-            >
-              <span className="shrink-0 text-base">{battleRelic.emoji}</span>
-              <span className="truncate" aria-live="polite">{battleItemLabel}</span>
-            </button>
-            <Button full size="md" disabled={!answered} onClick={next}>
-              {nextLabel} <ArrowRight size={18} />
-            </Button>
-          </div>
-        ) : (
-          <Button full size="lg" disabled={!answered} onClick={next}>
-            {nextLabel} <ArrowRight size={18} />
-          </Button>
-        )}
+      <div className="shrink-0 border-t border-brand-100 bg-white/90 p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] backdrop-blur">
+        <Button full size={isDragonVein ? 'md' : 'lg'} disabled={!answered} onClick={next}>
+          {index + 1 >= deck.length
+            ? isDragonVein ? '修復結果を確認' : '結果を見る'
+            : '次の断片へ'} <ArrowRight size={18} />
+        </Button>
       </div>
-    </div>
-  )
-}
-
-function BattleHud({
-  encounter,
-  enemyRank,
-  enemyHp,
-  heroHp,
-  hit,
-  battleState,
-  eventActive,
-  turns,
-  totalTurns,
-  battleStars,
-  battleTheme,
-  battleStudent,
-  battleTrait,
-  battleSecondaryTrait,
-  battleRival,
-  visualEvent,
-  uiMode,
-  onExit,
-}) {
-  const eventKind = visualEvent?.kind
-    ?? (eventActive ? battleState.lastEvent?.kind : null)
-  const presentationActive = eventActive || Boolean(visualEvent)
-  const cue = battleSceneCue(eventKind)
-  const bondTriggered =
-    !visualEvent && eventActive && battleState.lastEvent?.bondSkill
-  const skillFlash = [
-    'burst',
-    'shield',
-    'block',
-    'counter',
-    'item-power',
-    'item-guard',
-    'item-heal',
-  ].includes(eventKind)
-  const guardActive = ['shield', 'block', 'item-guard'].includes(eventKind)
-    || (bondTriggered && battleState.bondSkill?.kind === 'guard')
-  const healingActive = eventKind === 'item-heal'
-  const heroAttacking =
-    presentationActive && cue.actor === 'hero' && cue.target === 'enemy'
-  const enemyAttacking =
-    presentationActive && cue.actor === 'enemy' && cue.target === 'hero'
-  const safeTurns = Array.isArray(turns) ? turns : []
-  const currentTurn = Math.min(
-    totalTurns,
-    battleState.answered + (eventActive ? 0 : 1),
-  )
-  const eventDamage = visualEvent ? 0 : battleState.lastEvent?.damage ?? 0
-  const eventHealing = healingActive
-    ? battleState.itemHealing
-    : battleState.lastEvent?.healing ?? 0
-  const studentState = battleStudentState({
-    battleState,
-    eventActive: presentationActive,
-    eventKind,
-  })
-  const studentPortrait = battleStudentPortrait(battleStudent.id, studentState)
-  const battleStage = battleStageForEncounter(
-    battleRival.id,
-    battleRival.groupId,
-  )
-  const battleStageUrl = battleStage.image
-  const actionEmoji = visualEvent?.emoji
-    ? visualEvent.emoji
-    : enemyAttacking
-      ? encounter.attackEmoji ?? cue.emoji
-      : cue.emoji
-  const actionTitle = visualEvent?.title
-    ? `${visualEvent.title}！`
-    : enemyAttacking
-      ? `${battleRival.name}からの問い返し！`
-      : cue.title
-  const signalTitle = visualEvent?.title ?? cue.label
-  const damageLabel = !presentationActive
-    ? null
-    : healingActive
-      ? `+${eventHealing} HP`
-      : ['block', 'item-guard'].includes(eventKind)
-        ? '0 DAMAGE'
-        : eventKind === 'shield'
-          ? `-${eventDamage} · GUARD +1`
-          : cue.target === 'enemy'
-            ? `-${eventDamage} HP${eventHealing ? ` · +${eventHealing} HP` : ''}`
-            : `-${eventDamage} HP`
-  const battlePhase = battleState.enemyDefeated
-    ? 'victory'
-    : battleState.heroDefeated
-      ? 'defeat'
-      : healingActive
-        ? 'healing'
-        : guardActive
-          ? 'guard'
-          : heroAttacking
-            ? 'hero-action'
-            : enemyAttacking
-              ? 'enemy-action'
-              : 'ready'
-  const battlePhaseLabel = {
-    victory: '決着',
-    defeat: '再起',
-    healing: '回復',
-    guard: '防御',
-    'hero-action': 'こちらの一手',
-    'enemy-action': '相手の一手',
-    ready: '対決中',
-  }[battlePhase]
-  const standingPose = battleStandingPoseForPhase(battlePhase, eventKind)
-  const showBattleCaption = presentationActive
-    || battleState.enemyDefeated
-    || battleState.heroDefeated
-
-  return (
-    <div
-      className="school-battle-hud pixel-battle-hud relative rounded-[1.4rem] border p-2 text-ink shadow-card"
-      data-battle-theme={battleTheme.id}
-      data-battle-layout={battleTheme.presentation.layout}
-      data-battle-phase={battlePhase}
-      data-battle-ui-mode={uiMode}
-      style={{
-        '--battle-accent': battleTheme.accent,
-        '--battle-accent-strong': battleTheme.accentStrong,
-        '--battle-accent-soft': battleTheme.accentSoft,
-        '--battle-enemy': battleTheme.enemy,
-        '--battle-hero': battleTrait.color,
-        '--battle-mana-primary': battleTrait.color,
-        '--battle-mana-secondary': battleSecondaryTrait.color,
-        '--battle-character-accent': battleStudent.accent,
-        '--battle-surface': battleTheme.surface,
-      }}
-    >
-      <button
-        type="button"
-        onClick={onExit}
-        aria-label="バトルをやめる"
-        className="absolute right-2 top-2 z-10 inline-flex h-7 w-7 items-center justify-center rounded-full border border-violet-100 bg-violet-50 text-violet-500 transition-colors active:bg-violet-100"
-      >
-        <Close size={15} />
-      </button>
-      <SpeechSettingsButton
-        compact
-        className="absolute right-10 top-2 z-10 !h-7 !w-7"
-      />
-
-      <div className="battle-combatants-bar grid grid-cols-[1fr_auto_1fr] items-center gap-2 pr-16">
-        <div className="flex min-w-0 items-center gap-1.5">
-          <PixelBattlePortrait
-            key={`hud-${battleStudent.id}-${studentState}`}
-            src={studentPortrait}
-            className="h-9 w-9"
-            tone="hero"
-            label={`${battleStudent.name}・${studentState}`}
-          />
-          <div className="min-w-0 flex-1">
-            <div
-              className={cx(
-                'flex items-center justify-between gap-1 text-[9px] font-extrabold',
-                heroHp <= 34 ? 'text-rose-500' : 'text-emerald-600',
-              )}
-            >
-              <span className="truncate">
-                <i
-                  className="mr-1 inline-block h-1.5 w-1.5 rounded-full align-middle"
-                  style={{ backgroundColor: battleTrait.color }}
-                  aria-hidden="true"
-                />
-                自分
-              </span>
-              <span>
-                {battleState.heroCurrentHp}/{battleState.heroMaxHp}
-              </span>
-            </div>
-            <ProgressBar
-              value={heroHp / 100}
-              color="#34d399"
-              className="mt-1 h-1.5 bg-slate-100"
-            />
-            <p className="mt-1 truncate text-[8px] font-bold text-ink/40">
-              ⚔{battleState.heroStats.attack} · 🛡{battleState.heroStats.defense}
-            </p>
-          </div>
-        </div>
-
-        <div className="pixel-battle-turn rounded-xl px-2 py-1 text-center">
-          <span className="block text-[7px] font-black tracking-wider text-violet-400">
-            <i className="battle-turn-glyph" aria-hidden="true">
-              {battleTheme.presentation.turnGlyph}
-            </i>{' '}
-            TURN
-          </span>
-          <span className="block text-[11px] font-black text-violet-700">
-            {currentTurn}/{totalTurns}
-          </span>
-          <span className="mt-0.5 block whitespace-nowrap text-[7px] font-black text-amber-600">
-            ✦ {battleStars.toLocaleString()}
-          </span>
-        </div>
-
-        <div className="flex min-w-0 items-center justify-end gap-1.5">
-          <div className="min-w-0 flex-1">
-            <div className="flex items-center justify-between gap-1 text-[9px] font-extrabold text-rose-500">
-              <span className="truncate">相手</span>
-              <span>
-                {battleState.enemyCurrentHp}/{battleState.enemyMaxHp}
-              </span>
-            </div>
-            <ProgressBar
-              value={enemyHp / 100}
-              color={battleTheme.enemy}
-              className="mt-1 h-1.5 bg-slate-100"
-            />
-            <p className="mt-1 truncate text-right text-[8px] font-bold text-ink/40">
-              {encounter.elementEmoji} {battleRival.title} · 英検{enemyRank.label}
-            </p>
-          </div>
-          {encounter.isTeacher ? (
-            <TeacherPortrait
-              teacher={encounter}
-              className="pixel-battle-portrait pixel-battle-portrait-enemy h-9 w-9 shrink-0 rounded-xl"
-            />
-          ) : (
-            <PixelBattlePortrait
-              src={battleRival.portrait}
-              className="h-9 w-9"
-              tone="enemy"
-              label={battleRival.name}
-            />
-          )}
-        </div>
-      </div>
-
-      <div
-        key={`scene-${battleState.answered}-${eventKind ?? 'ready'}`}
-        className={cx(
-          'mob-battle-stage battle-status-stage mt-1.5 rounded-xl',
-          'school-battle-stage pixel-battle-stage battle-key-visual-stage',
-        )}
-        style={{
-          '--battle-scene': `linear-gradient(90deg,rgba(2,6,23,.2),transparent 26% 74%,rgba(2,6,23,.24)), url("${battleStageUrl}") center / cover`,
-        }}
-        data-battle-theme={battleTheme.id}
-        data-battle-layout={battleTheme.presentation.layout}
-        data-battle-phase={battlePhase}
-        data-battle-stage-id={battleStage.id}
-        data-battle-key-visual={battleStageUrl}
-        data-battle-reference-visual={battleTheme.preview}
-        role="img"
-        aria-label={`戦闘状況。${battleStudent.name}は${battleState.heroCurrentHp}/${battleState.heroMaxHp}HP、${battleRival.name}は${battleState.enemyCurrentHp}/${battleState.enemyMaxHp}HP。${cue.title}。`}
-      >
-        <BattleStageBackdrop
-          scene="var(--battle-scene)"
-          phase={battlePhase}
-        />
-        <span className="battle-scene-label" aria-hidden="true">
-          {battleStage.name}
-        </span>
-        <span className="battle-anime-effects" aria-hidden="true">
-          <i className="battle-spell-bolt battle-spell-bolt-hero" />
-          <i className="battle-spell-bolt battle-spell-bolt-enemy" />
-          <i className="battle-spell-impact battle-spell-impact-on-enemy" />
-          <i className="battle-spell-impact battle-spell-impact-on-hero" />
-        </span>
-        <span className="battle-stage-cinema-frame" aria-hidden="true" />
-        <div
-          className="battle-stage-unit battle-stage-hero battle-stage-unit-fullbody battle-anime-fighter battle-anime-fighter-hero"
-        >
-          <BattleStandingActor
-            key={`stage-${battleStudent.id}-${studentState}`}
-            student={battleStudent}
-            pose={standingPose}
-            phase={battlePhase}
-            defeated={battleState.heroDefeated}
-            className="battle-stage-standing-hero"
-            label={`${battleStudent.name}・${studentState}・${standingPose}`}
-            fallback={(
-              <PixelBattlePortrait
-                src={studentPortrait}
-                className="h-14 w-14"
-                tone="hero"
-                label={`${battleStudent.name}・${studentState}`}
-              />
-            )}
-          />
-          <span className="battle-stage-unit-name">{battleStudent.name}</span>
-        </div>
-
-        {showBattleCaption && (
-          <div
-            className="battle-cinematic-caption"
-            data-battle-phase={battlePhase}
-            aria-hidden="true"
-          >
-            <em>{battlePhaseLabel}</em>
-            <strong>{signalTitle}</strong>
-            {damageLabel && <b>{damageLabel}</b>}
-          </div>
-        )}
-
-        <div
-          className="battle-stage-unit battle-stage-enemy battle-stage-unit-fullbody battle-anime-fighter battle-anime-fighter-enemy"
-        >
-          <BattleOpponentStandingActor
-            opponent={battleRival}
-            phase={battlePhase}
-            defeated={battleState.enemyDefeated}
-            className="battle-stage-standing-opponent"
-            label={`${battleRival.name}・${battlePhase}`}
-            fallback={encounter.isTeacher ? (
-              <TeacherPortrait
-                teacher={encounter}
-                defeated={battleState.enemyDefeated}
-                className={cx(
-                  'pixel-battle-portrait pixel-battle-portrait-enemy h-14 w-14 shrink-0 rounded-xl',
-                  hit && 'pixel-battle-portrait-hit',
-                )}
-              />
-            ) : (
-              <PixelBattlePortrait
-                src={battleRival.portrait}
-                className={cx('h-14 w-14', hit && 'pixel-battle-portrait-hit')}
-                tone="enemy"
-                label={battleRival.name}
-              />
-            )}
-          />
-          <span className="battle-stage-unit-name">{battleRival.name}</span>
-        </div>
-      </div>
-
-      <div
-        className="battle-turn-track mt-1.5 grid gap-1"
-        data-battle-theme={battleTheme.id}
-        style={{ gridTemplateColumns: `repeat(${totalTurns}, minmax(0, 1fr))` }}
-        role="img"
-        aria-label={`${totalTurns}ターン中${battleState.answered}ターン終了。正解${battleState.correct}、ミス${battleState.misses}`}
-      >
-        {Array.from({ length: totalTurns }, (_, index) => {
-          const result = safeTurns[index]
-          const current = !eventActive && index === battleState.answered
-          return (
-            <span
-              key={index}
-              className={cx(
-                'battle-turn-mark',
-                result === 'correct' && 'battle-turn-correct',
-                result === 'wrong' && 'battle-turn-wrong',
-                result === 'unknown' && 'battle-turn-unknown',
-                current && 'battle-turn-current',
-              )}
-              aria-hidden="true"
-            >
-              {result === 'correct'
-                ? '✓'
-                : result === 'wrong'
-                  ? '×'
-                  : result === 'unknown'
-                    ? '?'
-                    : index + 1}
-            </span>
-          )
-        })}
-      </div>
-
-      <div
-        key={`status-${battleState.answered}-${presentationActive ? eventKind : 'ready'}`}
-        className={cx(
-          'pixel-battle-status mt-1.5 flex min-h-8 items-center gap-2 rounded-xl px-2.5 py-1.5 text-[9px] font-extrabold',
-          skillFlash && 'battle-skill-flash bg-amber-100 text-amber-900',
-        )}
-        aria-live="polite"
-      >
-        <span className="shrink-0 text-sm">
-          {presentationActive ? actionEmoji : encounter.attackEmoji ?? encounter.elementEmoji}
-        </span>
-        <span className="min-w-0 flex-1 truncate">
-          {presentationActive
-            ? actionTitle
-            : '次の問題に挑戦'}
-        </span>
-        <span
-          className="max-w-[46%] shrink-0 truncate rounded-full bg-white/70 px-2 py-1 text-[8px] text-violet-700"
-          title={`正解${battleState.correct}、ミス${battleState.misses}`}
-        >
-          正解 {battleState.correct} · ミス {battleState.misses}
-        </span>
-      </div>
-    </div>
-  )
-}
-
-function PixelBattlePortrait({
-  src,
-  className,
-  tone = 'hero',
-  label = '',
-}) {
-  const resolvedSrc = publicAssetUrl(src)
-
-  return (
-    <div
-      className={cx(
-        'pixel-battle-portrait shrink-0 overflow-hidden rounded-xl',
-        tone === 'enemy' ? 'pixel-battle-portrait-enemy' : 'pixel-battle-portrait-hero',
-        className,
-      )}
-      role={label ? 'img' : undefined}
-      aria-label={label || undefined}
-      aria-hidden={label ? undefined : 'true'}
-    >
-      <img src={resolvedSrc} alt="" className="h-full w-full object-cover" />
     </div>
   )
 }

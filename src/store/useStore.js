@@ -51,6 +51,11 @@ import {
   normalizeVocabHistory,
   prependVocabHistory,
 } from '../lib/vocabHistory.js'
+import {
+  createDragonVeinProgress,
+  normalizeDragonVeinProgress,
+  recordDragonVeinResult,
+} from '../lib/dragonVein.js'
 
 // ── 学習ロジックの定数 ──────────────────────────────────────────────
 // Leitner 式の間隔反復。box が上がるほど次に出る間隔（日数）が伸びる。
@@ -112,9 +117,16 @@ const DEFAULT_SETTINGS = {
   autoSpeak: true,
   dailyGoal: 20,
   revealAnswers: false, // 覚える/復習/マイ単語で、タップせず最初から意味・語源を表示する
-  battleUiMode: 'gaming', // 'simple' | 'gaming'。学習評価や戦闘計算は変えない
-  bgmEnabled: true,
-  bgmVolume: 0.35,
+}
+
+export function normalizeSettings(settings) {
+  const source = settings && typeof settings === 'object' ? settings : {}
+  return Object.fromEntries(
+    Object.entries(DEFAULT_SETTINGS).map(([key, fallback]) => [
+      key,
+      Object.hasOwn(source, key) ? source[key] : fallback,
+    ]),
+  )
 }
 
 const initialLearning = () => ({
@@ -151,6 +163,7 @@ const initialLearning = () => ({
   afterSchoolBonds: {}, // 生徒id -> { points, visits }。放課後分岐で育つ関係性
   unlockedBattleStudentIds: [...INITIAL_UNLOCKED_BATTLE_STUDENT_IDS], // 出会いイベントを終え、共闘できる生徒
   storyKeyVisualAlbum: { events: [], teacherVictories: [] }, // 出会いイベント・先生戦の振り返り
+  dragonVeinProgress: createDragonVeinProgress(), // 龍脈五地点と日常の歪みを修復した記録
   portalOrder: [...DEFAULT_CONTENT_ORDER], // ポータルのタイル並び順（コンテンツid配列）
   portalHidden: [], // ポータルで非表示にしたコンテンツid
   stats: freshStats(),
@@ -220,7 +233,7 @@ export function migratePersistedState(persistedState) {
   const state = { ...(persistedState ?? {}) }
   // v1 に保存されていた廃止済みコンテンツの状態を、初回起動時に取り除く。
   delete state.vnCleared
-  state.settings = { ...DEFAULT_SETTINGS, ...(state.settings ?? {}) }
+  state.settings = normalizeSettings(state.settings)
   state.portalOrder = normalizeOrder(state.portalOrder)
   state.portalHidden = normalizeHidden(state.portalHidden)
   state.vocabHistory = normalizeVocabHistory(state.vocabHistory)
@@ -251,6 +264,7 @@ export function migratePersistedState(persistedState) {
   state.storyKeyVisualAlbum = state.storyKeyVisualAlbum
     ? normalizeStoryKeyVisualAlbum(state.storyKeyVisualAlbum)
     : storyKeyVisualAlbumFromLegacyBonds(state.afterSchoolBonds)
+  state.dragonVeinProgress = normalizeDragonVeinProgress(state.dragonVeinProgress)
   return state
 }
 
@@ -305,10 +319,11 @@ export function progressStateFromPayload(payload = {}) {
     storyKeyVisualAlbum: payload.storyKeyVisualAlbum
       ? normalizeStoryKeyVisualAlbum(payload.storyKeyVisualAlbum)
       : storyKeyVisualAlbumFromLegacyBonds(payload.afterSchoolBonds),
+    dragonVeinProgress: normalizeDragonVeinProgress(payload.dragonVeinProgress),
     portalOrder: normalizeOrder(payload.portalOrder),
     portalHidden: normalizeHidden(payload.portalHidden),
     stats,
-    settings: { ...DEFAULT_SETTINGS, ...(payload.settings ?? {}) },
+    settings: normalizeSettings(payload.settings),
   }
 }
 
@@ -932,6 +947,28 @@ export const useStore = create(
           }
         }),
 
+      // 龍脈修復は通常の正誤・SRS・XPとは別の表示用進捗として記録する。
+      // sessionId を保持し、結果画面の再表示や連打による二重加算を防ぐ。
+      recordDragonVeinSession: ({ sessionId, source, correct, answered } = {}) => {
+        if (!sessionId || !source) return false
+        const st = get()
+        const recent = Array.isArray(st.dragonVeinProgress?.recentSessionIds)
+          ? st.dragonVeinProgress.recentSessionIds
+          : []
+        if (recent.includes(sessionId)) return false
+        const next = recordDragonVeinResult(st.dragonVeinProgress, source, {
+          correct,
+          answered,
+        })
+        set({
+          dragonVeinProgress: {
+            ...next,
+            recentSessionIds: [sessionId, ...recent].slice(0, 40),
+          },
+        })
+        return true
+      },
+
       // 単元セッション終了時に理解度（最高正答率）を更新する。
       setMathMastery: (unitId, pct) =>
         set((st) => {
@@ -992,7 +1029,7 @@ export const useStore = create(
     }),
     {
       name: 'eigo-quest',
-      version: 4,
+      version: 5,
       migrate: migratePersistedState,
       // ナビゲーション系は保存しない。
       partialize: selectProgressState,

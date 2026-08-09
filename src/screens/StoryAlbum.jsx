@@ -27,7 +27,7 @@ function StoryKeyVisualStage({ slot }) {
           <span className="text-3xl" aria-hidden="true">📕</span>
           <p className="mt-2 text-xs font-extrabold text-white">まだ記録されていません</p>
           <p className="mt-1 text-[9px] font-bold leading-relaxed text-white/45">
-            放課後イベントを終えるか、先生の影蝕を解除するとキービジュアルが開きます。
+            放課後イベントを終えるか、先生と専門記憶を復元するとキービジュアルが開きます。
           </p>
         </div>
       </div>
@@ -69,29 +69,28 @@ function StoryKeyVisualStage({ slot }) {
     <div className="relative aspect-video overflow-hidden bg-slate-900">
       <img
         src={slot.theme.stage}
-        alt={`${slot.theme.name}の先生戦舞台`}
+        alt={`${slot.theme.name}で行った龍脈調査の記録`}
         className="h-full w-full object-cover"
       />
       <span className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent" />
       <img
-        src={battleStudentPortrait(student.id, 'victory')}
-        alt={`${student.name}の勝利した表情`}
+        src={battleStudentPortrait(student.id, 'delighted')}
+        alt={`${student.name}の記憶を復元して喜ぶ表情`}
         className="absolute bottom-3 left-3 h-20 w-20 rounded-2xl border-2 border-amber-200/70 bg-slate-900 object-cover shadow-xl [image-rendering:pixelated]"
       />
       <span className="absolute bottom-3 right-3 h-20 w-20 rounded-2xl border-2 border-cyan-100/60 bg-white shadow-xl">
         <TeacherPortrait
           teacher={slot.teacher}
           teacherId={slot.teacher.id}
-          defeated
           className="h-full w-full"
         />
       </span>
       <div className="absolute inset-x-0 top-0 bg-gradient-to-b from-slate-950/90 to-transparent p-3 pb-10 text-center">
         <p className="text-[8px] font-extrabold tracking-[0.13em] text-amber-200">
-          TEACHER LIBERATION
+          FACULTY MEMORY
         </p>
         <h3 className="mt-1 font-display text-sm font-extrabold text-white">
-          {slot.teacher.name} · 影蝕解除
+          {slot.teacher.name} · 専門記憶の復元
         </h3>
       </div>
     </div>
@@ -157,7 +156,7 @@ export function StoryKeyVisualAlbum({ album }) {
             思い出キービジュアル
           </h2>
           <p className="mt-1 text-[9px] font-bold leading-relaxed text-white/50">
-            仲間とのイベントと、先生の影蝕を解除した瞬間をいつでも振り返る。
+            仲間とのイベントと、先生と記憶の断片をつないだ瞬間をいつでも振り返る。
           </p>
         </div>
         <span className="shrink-0 rounded-full border border-amber-200/20 bg-amber-300/10 px-2.5 py-1 text-[8px] font-extrabold text-amber-100">
@@ -168,7 +167,7 @@ export function StoryKeyVisualAlbum({ album }) {
       <div className="grid grid-cols-2 gap-2 px-3 pb-3" role="tablist" aria-label="思い出の種類">
         {[
           { id: 'event', label: `🤝 出会い・イベント ${normalized.events.length}/${eventSlots.length}` },
-          { id: 'teacher', label: `💮 先生戦 ${normalized.teacherVictories.length}/${teacherSlots.length}` },
+          { id: 'teacher', label: `💮 先生の記憶 ${normalized.teacherVictories.length}/${teacherSlots.length}` },
         ].map((item) => (
           <button
             key={item.id}
@@ -201,7 +200,7 @@ export function StoryKeyVisualAlbum({ album }) {
           const selected = slot.id === selectedSlot?.id
           const label = slot.kind === 'event'
             ? slot.unlocked ? slot.branch.title : '未記録のイベント'
-            : slot.unlocked ? `${slot.teacher.name}の影蝕解除` : '未解除の先生戦'
+            : slot.unlocked ? `${slot.teacher.name}の専門記憶を復元` : '未調査の先生記録'
           const preview = slot.unlocked
             ? slot.kind === 'event' ? slot.scene.image : slot.theme?.preview
             : null
@@ -260,7 +259,7 @@ export function StoryAlbumScreen() {
     <div className="pb-8" data-story-album-screen>
       <ScreenHeader
         title="おまけアルバム"
-        subtitle="出会いと先生戦のキービジュアル"
+        subtitle="出会いと龍脈調査のキービジュアル"
       />
       <div className="space-y-3 px-4 pt-4">
         <aside className="rounded-2xl border border-violet-100 bg-violet-50 px-4 py-3">
@@ -268,7 +267,7 @@ export function StoryAlbumScreen() {
             BONUS
           </p>
           <p className="mt-1 text-[10px] font-bold leading-relaxed text-ink/55">
-            物語や対決の進行には影響しない、おまけの振り返り機能です。
+            物語や龍脈修復の進行には影響しない、おまけの振り返り機能です。
           </p>
         </aside>
         <StoryKeyVisualAlbum album={album} />

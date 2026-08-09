@@ -385,7 +385,7 @@ export function SettingsMenuPanel({ heading = true }) {
         </SettingsSection>
         <SettingsSection
           title="ゲーム"
-          desc="バトル画面、BGM、演出、持ち物、星彩"
+          desc="龍脈調査の表示"
         >
           <GameSettingsPanel />
         </SettingsSection>
@@ -416,7 +416,7 @@ const APP_MENU_DESTINATIONS = [
   {
     screen: 'afterSchoolChronicle',
     label: AFTER_SCHOOL_CHRONICLE.title,
-    desc: '学園ライトノベルと対決へ',
+    desc: '日常の歪みと五地点を調査',
     Icon: StarFilled,
   },
   {
@@ -431,7 +431,7 @@ const APP_MENU_EXTRAS = [
   {
     screen: 'storyAlbum',
     label: '思い出アルバム',
-    desc: '出会いと先生戦のキービジュアル',
+    desc: '出会いと龍脈調査のキービジュアル',
     Icon: Sparkles,
   },
 ]
@@ -455,7 +455,7 @@ export function AppMenuPanel({ onNavigate, onOpenSettings }) {
         <span className="min-w-0 flex-1">
           <strong className="block font-display text-base font-extrabold">設定</strong>
           <span className="block truncate text-[10px] font-bold text-white/70">
-            学習・音声・バトル画面・BGM・持ち物・表示
+            学習・音声・龍脈調査・表示
           </span>
         </span>
         <ChevronRight size={20} />

@@ -4314,6 +4314,197 @@
   }
 }
 
+/* ── 龍脈修復：背景・人物・古文書を独立レイヤーで合成する協力解読画面 ── */
+.dragon-vein-cipher-stage {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--dragon-accent) 42%, white);
+  border-radius: 1.25rem;
+  background: #111827;
+  color: white;
+  box-shadow: 0 16px 36px rgb(15 23 42 / 0.28);
+}
+
+.dragon-vein-stage-scene {
+  position: relative;
+  height: clamp(13.5rem, 34dvh, 18.5rem);
+  overflow: hidden;
+  background-image: var(--dragon-stage);
+  background-position: center;
+  background-size: cover;
+  isolation: isolate;
+}
+
+.dragon-vein-stage-vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    linear-gradient(180deg, rgb(2 6 23 / 0.05) 35%, rgb(2 6 23 / 0.72)),
+    linear-gradient(90deg, rgb(2 6 23 / 0.38), transparent 35% 66%, rgb(2 6 23 / 0.34));
+}
+
+.dragon-vein-student-layer,
+.dragon-vein-guide-layer {
+  position: absolute;
+  z-index: 2;
+  bottom: -9%;
+  height: 94%;
+  width: 45%;
+  filter: drop-shadow(0 10px 12px rgb(2 6 23 / 0.45));
+}
+
+.dragon-vein-student-layer {
+  left: -4%;
+  transform-origin: bottom center;
+  animation: dragon-vein-natural-breathe 3.8s ease-in-out infinite;
+}
+
+.dragon-vein-guide-layer {
+  right: -3%;
+}
+
+.dragon-vein-student-layer > :first-child,
+.dragon-vein-guide-layer > img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center bottom;
+}
+
+.dragon-vein-expression-inset {
+  position: absolute;
+  left: 18%;
+  top: 8%;
+  width: clamp(3.25rem, 15vw, 4.75rem);
+  aspect-ratio: 1;
+  object-fit: cover;
+  border: 2px solid rgb(255 255 255 / 0.86);
+  border-radius: 0.7rem;
+  background: rgb(15 23 42 / 0.84);
+  box-shadow: 0 5px 18px rgb(2 6 23 / 0.46);
+}
+
+.dragon-vein-manuscript-layer {
+  position: absolute;
+  z-index: 3;
+  left: 50%;
+  bottom: 11%;
+  width: min(36%, 10rem);
+  min-height: 6.3rem;
+  translate: -50% 0;
+  rotate: -1deg;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0.7rem;
+  border: 1px solid #f5d58a;
+  border-radius: 0.35rem;
+  background:
+    linear-gradient(90deg, rgb(126 77 28 / 0.1), transparent 16% 84%, rgb(126 77 28 / 0.1)),
+    #fff6d9;
+  color: #553516;
+  box-shadow: 0 10px 22px rgb(2 6 23 / 0.46), 0 0 18px color-mix(in srgb, var(--dragon-accent) 50%, transparent);
+}
+
+.dragon-vein-manuscript-mark {
+  font-size: 0.54rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+}
+
+.dragon-vein-manuscript-lines {
+  width: 88%;
+  height: 2.6rem;
+  margin-block: 0.35rem;
+  background: repeating-linear-gradient(180deg, #8f6c3b 0 1px, transparent 1px 0.55rem);
+  opacity: 0.56;
+}
+
+.dragon-vein-manuscript-layer b {
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+}
+
+.dragon-vein-stage-meta,
+.dragon-vein-guide-note {
+  position: relative;
+  z-index: 5;
+}
+
+.dragon-vein-stage-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.65rem 0.75rem 0.45rem;
+  background: linear-gradient(90deg, #0f172a, #172554);
+}
+
+.dragon-vein-stage-title {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dragon-vein-stage-title > span { font-size: 1.4rem; }
+.dragon-vein-stage-title p { min-width: 0; line-height: 1.05; }
+.dragon-vein-stage-title small { display: block; color: rgb(255 255 255 / 0.58); font-size: 0.55rem; font-weight: 800; }
+.dragon-vein-stage-title b { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.79rem; }
+
+.dragon-vein-feeling {
+  flex: none;
+  border: 1px solid color-mix(in srgb, var(--dragon-accent) 65%, white);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--dragon-accent) 26%, #0f172a);
+  padding: 0.28rem 0.48rem;
+  font-size: 0.56rem;
+  font-weight: 900;
+}
+
+.dragon-vein-guide-note {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: baseline;
+  gap: 0.1rem 0.45rem;
+  padding: 0.1rem 0.75rem 0.65rem;
+  background: #172554;
+}
+
+.dragon-vein-guide-note strong { font-size: 0.7rem; }
+.dragon-vein-guide-note span { color: rgb(255 255 255 / 0.55); font-size: 0.58rem; font-weight: 800; }
+.dragon-vein-guide-note p { grid-column: 1 / -1; color: rgb(255 255 255 / 0.8); font-size: 0.65rem; font-weight: 700; line-height: 1.45; }
+
+.dragon-vein-stage-progress {
+  height: 0.25rem;
+  background: rgb(255 255 255 / 0.12);
+}
+.dragon-vein-stage-progress i {
+  display: block;
+  width: var(--dragon-progress);
+  height: 100%;
+  background: linear-gradient(90deg, var(--dragon-accent), #fef3c7);
+  transition: width 320ms ease;
+}
+
+@keyframes dragon-vein-natural-breathe {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-0.35rem); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dragon-vein-student-layer { animation: none; }
+  .dragon-vein-stage-progress i { transition: none; }
+}
+
+@media (max-width: 350px), (max-height: 640px) {
+  .dragon-vein-stage-scene { height: 11.25rem; }
+  .dragon-vein-guide-note p { display: none; }
+  .dragon-vein-manuscript-layer { min-height: 5.2rem; }
+}
+
 /* -------------------------------------------------------------------------
    Layered battle magic
    Background plates stay clean while the two full-body actors and one brief
