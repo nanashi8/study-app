@@ -2,6 +2,9 @@ import { GRAMMAR } from './grammar.js'
 
 const normalizeHead = (value = '') => value.trim().toLowerCase()
 
+const grammarFormation = (item) =>
+  `文法問題「${item.q}」の空所に「${item.answer}」を置くと完成する${item.topic}の構文。${item.explain}`
+
 const groupedByPattern = (items) => {
   const groups = new Map()
   for (const item of items) {
@@ -63,6 +66,7 @@ export function buildGrammarSyntaxPhrases({ needsByLevel, excludedHeads = [] }) 
         meaning: item.sentence.ja,
         meanings: [item.sentence.ja],
         example: { ...item.sentence },
+        origin: grammarFormation(item),
         note: item.explain,
         category: 'grammar-example',
         sourcePattern: item.variationGroup ?? item.pattern ?? `${item.level}:${item.topic}`,
@@ -74,4 +78,3 @@ export function buildGrammarSyntaxPhrases({ needsByLevel, excludedHeads = [] }) 
 
   return phrases
 }
-

@@ -153,6 +153,9 @@ test('新規熟語は分類・使用例を持ち、構文は既存文法問題�
     assert.ok(source, phrase.id)
     assert.equal(phrase.phrase, source.sentence.en, phrase.id)
     assert.equal(phrase.meaning, source.sentence.ja, phrase.id)
+    assert.match(phrase.origin, new RegExp(source.answer.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), phrase.id)
+    assert.ok(phrase.origin.includes(source.topic), phrase.id)
+    assert.equal(phrase.note, source.explain, phrase.id)
     assert.ok(phrase.sourcePattern, phrase.id)
   }
 
