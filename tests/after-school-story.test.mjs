@@ -323,8 +323,8 @@ test('任意の日常を見送っても物語だけを一度進め、学習・�
   }
 })
 
-test('解読結果から龍脈台帳へ戻り、日常調査と五地点を継続できる', async () => {
-  const [app, result, map, novel, quiz, store, cloud] = await Promise.all([
+test('終了した龍脈台帳は公開ルートから外しても保存互換性を維持する', async () => {
+  const [app, result, map, novel, quiz, store, cloud, visibility] = await Promise.all([
     readFile(new URL('../src/App.jsx', import.meta.url), 'utf8'),
     readFile(new URL('../src/screens/SessionResult.jsx', import.meta.url), 'utf8'),
     readFile(new URL('../src/screens/EnglishMap.jsx', import.meta.url), 'utf8'),
@@ -332,9 +332,11 @@ test('解読結果から龍脈台帳へ戻り、日常調査と五地点を継�
     readFile(new URL('../src/screens/VocabQuiz.jsx', import.meta.url), 'utf8'),
     readFile(new URL('../src/store/useStore.js', import.meta.url), 'utf8'),
     readFile(new URL('../src/lib/cloudSync.js', import.meta.url), 'utf8'),
+    readFile(new URL('../src/lib/learnerVisibility.js', import.meta.url), 'utf8'),
   ])
 
-  assert.match(app, /afterSchoolChronicle: AfterSchoolChronicleScreen/)
+  assert.doesNotMatch(app, /afterSchoolChronicle: AfterSchoolChronicleScreen/)
+  assert.match(visibility, /'afterSchoolChronicle'/)
   assert.match(result, /data-testid="dragon-vein-result"/)
   assert.match(result, /記憶の文脈が鮮明に戻った/)
   assert.match(result, /navigate\('afterSchoolChronicle', \{ menuSectionId: 'restoration' \}\)/)
@@ -355,7 +357,7 @@ test('解読結果から龍脈台帳へ戻り、日常調査と五地点を継�
   assert.match(cloud, /progressStateFromCloud/)
 })
 
-test('現在の放課後場面は保存済み進行順に循環し、校内へ戻る履歴も安全に畳む', () => {
+test('現在の放課後場面は保存済み進行順を保ち、旧戻り操作は学習ホームへ退避する', () => {
   assert.deepEqual(
     BATTLE_DAILY_SCENES.map((scene, step) => afterSchoolSceneForStep(step).id),
     BATTLE_DAILY_SCENES.map((scene) => scene.id),
@@ -379,11 +381,8 @@ test('現在の放課後場面は保存済み進行順に循環し、校内へ�
       ],
     })
     useStore.getState().returnToAfterSchoolChronicle()
-    assert.equal(useStore.getState().screen, 'afterSchoolChronicle')
-    assert.deepEqual(useStore.getState().stack, [
-      { screen: 'portal', params: {} },
-      { screen: 'home', params: {} },
-    ])
+    assert.equal(useStore.getState().screen, 'home')
+    assert.deepEqual(useStore.getState().stack, [])
     useStore.getState().back()
     assert.equal(useStore.getState().screen, 'home')
   } finally {

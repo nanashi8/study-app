@@ -2,7 +2,6 @@ import { useMemo } from 'react'
 import { useStore } from '../store/useStore.js'
 import { overallProgress } from '../lib/session.js'
 import { buildLearningPowerProfile } from '../lib/learningPower.js'
-import { AFTER_SCHOOL_CHRONICLE } from '../lib/afterSchoolStory.js'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import {
   ArrowRight,
@@ -17,8 +16,6 @@ import {
   Link,
   Refresh,
   Sparkles,
-  Star,
-  Target,
   Trophy,
 } from '../components/Icons.jsx'
 
@@ -114,38 +111,13 @@ function LearningMenu({ navigate, onBack, recommendation }) {
           </div>
         </section>
 
-        <section data-home-mode-group="game">
-          <h2 className="mb-2 px-1 font-display text-sm font-extrabold text-ink/65">ゲーム</h2>
-          <button
-            type="button"
-            onClick={() => navigate('afterSchoolChronicle')}
-            className="flex min-h-14 w-full items-center gap-2.5 rounded-2xl border border-violet-200/80 bg-white px-3 py-2.5 text-left shadow-sm active:bg-violet-50"
-            data-home-mode="after-school-chronicle"
-          >
-            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-violet-600 text-white">
-              <Star size={19} />
-            </span>
-            <span className="min-w-0 flex-1 truncate font-display text-sm font-extrabold text-ink">
-              {AFTER_SCHOOL_CHRONICLE.title}
-            </span>
-            <ArrowRight size={16} className="shrink-0 text-ink/25" />
-          </button>
-        </section>
-
-        <div className="grid grid-cols-2 gap-2.5" data-home-mode-group="support">
+        <div data-home-mode-group="support">
           <button
             type="button"
             onClick={() => open('diagnostic')}
-            className="flex min-h-14 items-center gap-2.5 rounded-2xl bg-violet-100 px-3 text-left font-display text-sm font-extrabold text-violet-800 active:bg-violet-200"
+            className="flex min-h-14 w-full items-center gap-2.5 rounded-2xl bg-violet-100 px-3 text-left font-display text-sm font-extrabold text-violet-800 active:bg-violet-200"
           >
             <Trophy size={20} /> 学習診断
-          </button>
-          <button
-            type="button"
-            onClick={() => open('englishMap')}
-            className="flex min-h-14 items-center gap-2.5 rounded-2xl bg-amber-100 px-3 text-left font-display text-sm font-extrabold text-amber-800 active:bg-amber-200"
-          >
-            <Target size={20} /> 学習マップ
           </button>
         </div>
 

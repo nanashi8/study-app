@@ -29,7 +29,6 @@ const SCREEN_TO_TAB = {
   myGrammar: 'mylist',
   progress: 'stats',
   settings: 'menu',
-  englishMap: 'home',
   readingList: 'home',
   reader: 'home',
   readingSummary: 'home',

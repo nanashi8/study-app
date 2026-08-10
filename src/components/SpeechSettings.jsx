@@ -13,7 +13,6 @@ import {
   dismissSpeechPlayer,
   playSpeechItems,
 } from '../lib/speech-player.js'
-import { AFTER_SCHOOL_CHRONICLE } from '../lib/afterSchoolStory.js'
 import { Sheet } from './Sheet.jsx'
 import { Button, cx } from './ui.jsx'
 import {
@@ -25,10 +24,7 @@ import {
   Home,
   Menu,
   SpeakerWave,
-  Sparkles,
-  StarFilled,
 } from './Icons.jsx'
-import { GameSettingsPanel } from './GameSettings.jsx'
 import { PortalSettingsPanel } from './PortalSettings.jsx'
 
 const VOICE_GROUPS = [
@@ -365,7 +361,7 @@ export function SettingsMenuPanel({ heading = true }) {
         <div className="pt-3">
           <h2 className="font-display text-lg font-extrabold text-ink">設定</h2>
           <p className="mt-1 text-xs font-bold leading-relaxed text-ink/50">
-            保存される学習・音声・ゲーム・コンテンツ設定は、メニュー内のここに集約しています。
+            保存される学習・音声・コンテンツ設定は、メニュー内のここに集約しています。
           </p>
         </div>
       )}
@@ -382,12 +378,6 @@ export function SettingsMenuPanel({ heading = true }) {
           desc="速度、英語・日本語の声、自動発音、発音記号"
         >
           <SpeechSettingsPanel heading={false} />
-        </SettingsSection>
-        <SettingsSection
-          title="ゲーム"
-          desc="龍脈調査の表示"
-        >
-          <GameSettingsPanel />
         </SettingsSection>
         <SettingsSection
           title="コンテンツメニュー"
@@ -414,25 +404,10 @@ const APP_MENU_DESTINATIONS = [
     Icon: BookOpen,
   },
   {
-    screen: 'afterSchoolChronicle',
-    label: AFTER_SCHOOL_CHRONICLE.title,
-    desc: '日常の歪みと五地点を調査',
-    Icon: StarFilled,
-  },
-  {
     screen: 'progress',
     label: '学習記録',
     desc: '成績と進捗コードを確認',
     Icon: Chart,
-  },
-]
-
-const APP_MENU_EXTRAS = [
-  {
-    screen: 'storyAlbum',
-    label: '思い出アルバム',
-    desc: '出会いと龍脈調査のキービジュアル',
-    Icon: Sparkles,
   },
 ]
 
@@ -455,7 +430,7 @@ export function AppMenuPanel({ onNavigate, onOpenSettings }) {
         <span className="min-w-0 flex-1">
           <strong className="block font-display text-base font-extrabold">設定</strong>
           <span className="block truncate text-[10px] font-bold text-white/70">
-            学習・音声・龍脈調査・表示
+            学習・音声・表示
           </span>
         </span>
         <ChevronRight size={20} />
@@ -481,31 +456,6 @@ export function AppMenuPanel({ onNavigate, onOpenSettings }) {
         ))}
       </div>
 
-      <div className="mt-4" data-menu-extras>
-        <p className="px-1 text-[10px] font-extrabold tracking-[0.12em] text-ink/40">
-          おまけ
-        </p>
-        <div className="mt-1.5 overflow-hidden rounded-2xl border border-violet-100 bg-violet-50/70">
-          {APP_MENU_EXTRAS.map(({ screen, label, desc, Icon }) => (
-            <button
-              key={screen}
-              type="button"
-              onClick={() => onNavigate?.(screen)}
-              data-menu-extra={screen}
-              className="flex min-h-14 w-full items-center gap-3 px-4 py-2 text-left active:bg-violet-100"
-            >
-              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-white text-violet-600 shadow-sm">
-                <Icon size={19} />
-              </span>
-              <span className="min-w-0 flex-1">
-                <strong className="block text-sm font-extrabold text-ink">{label}</strong>
-                <span className="block truncate text-[10px] font-bold text-ink/45">{desc}</span>
-              </span>
-              <ChevronRight size={18} className="text-ink/25" />
-            </button>
-          ))}
-        </div>
-      </div>
     </section>
   )
 }

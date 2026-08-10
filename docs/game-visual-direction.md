@@ -1,5 +1,13 @@
 # Game visual direction and rejection gates
 
+## Retirement status
+
+The dragon-vein investigation game is retired and must not be exposed to
+learners. Do not add or restore learner routes, menu entries, settings, quiz
+entry points, result links, or production assets for it. Existing code, assets,
+and saved fields remain only for backward compatibility and must not be treated
+as an active product surface.
+
 This file is the persistent source of truth for generated game visuals. Read it
 before writing prompts, editing images, accepting an output, or wiring an asset
 into the app. A visually attractive image still fails if its activity, geometry,

@@ -212,7 +212,7 @@ test('おすすめは最初の弱点級、診断根拠、個人の時間帯、�
   )
   assert.deepEqual(
     guidance.schedule.map((step) => step.screen),
-    ['readingList', 'readingList', 'englishMap'],
+    ['readingList', 'readingList', 'diagnostic'],
   )
 })
 
@@ -234,6 +234,8 @@ test('時刻別の実績が足りない場合は19時を暫定提案し、測定
   })
 
   assert.equal(guidance.recommendation.kind, 'stretch')
+  assert.equal(guidance.recommendation.screen, 'vocabLevels')
+  assert.equal(guidance.recommendation.routeLabel, '級別英単語クイズ')
   assert.equal(guidance.time.startHour, 19)
   assert.equal(guidance.time.personalized, false)
   assert.equal(guidance.time.provisional, true)
