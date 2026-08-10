@@ -12,7 +12,7 @@ async function jsxFiles(directory) {
   return nested.flat()
 }
 
-test('全63ルートは共通の可読性レイヤーと簡潔な共通ヘッダーを通る', async () => {
+test('公開中の全58ルートは共通の可読性レイヤーと簡潔な共通ヘッダーを通る', async () => {
   const [app, shell] = await Promise.all([
     readFile(new URL('../src/App.jsx', import.meta.url), 'utf8'),
     readFile(new URL('../src/components/AppShell.jsx', import.meta.url), 'utf8'),
@@ -20,7 +20,7 @@ test('全63ルートは共通の可読性レイヤーと簡潔な共通ヘッダ
   const screenMap = app.slice(app.indexOf('const SCREENS = {'), app.indexOf('// ボトムナビ'))
   const routeCount = (screenMap.match(/^  [A-Za-z][A-Za-z0-9]*:/gm) ?? []).length
 
-  assert.equal(routeCount, 63)
+  assert.equal(routeCount, 58)
   assert.match(app, /<AppShell nav=/)
   assert.match(shell, /study-app-surface/)
   assert.match(shell, /study-app-content/)
@@ -72,12 +72,11 @@ test('共通カード・ボタン・下部ナビは装飾を減らし文字優�
   assert.match(css, /--shadow-card: 0 2px 8px -5px/)
 })
 
-test('英語ホームは学習選択を直接表示し、リスニング直後にゲームを置く', async () => {
+test('英語ホームは学習選択を直接表示し、終了したゲーム導線を出さない', async () => {
   const home = await readFile(new URL('../src/screens/Home.jsx', import.meta.url), 'utf8')
   const primaryModes = home.match(/const PRIMARY_LEARNING_MODES = \[([\s\S]*?)\n\]/)?.[1] ?? ''
   const extraModes = home.match(/const EXTRA_LEARNING_MODES = \[([\s\S]*?)\n\]/)?.[1] ?? ''
   const primaryGroupIndex = home.indexOf('data-home-mode-group="primary"')
-  const gameGroupIndex = home.indexOf('data-home-mode-group="game"')
   const supportGroupIndex = home.indexOf('data-home-mode-group="support"')
 
   assert.deepEqual(
@@ -90,15 +89,12 @@ test('英語ホームは学習選択を直接表示し、リスニング直後�
   )
   assert.match(home, /data-home-learning-menu/)
   assert.match(home, /PRIMARY_LEARNING_MODES\.map/)
-  assert.match(home, /data-home-mode="after-school-chronicle"/)
-  assert.match(home, /navigate\('afterSchoolChronicle'\)/)
-  assert.match(home, /AFTER_SCHOOL_CHRONICLE\.title/)
   assert.match(home, /EXTRA_LEARNING_MODES\.map/)
   assert.match(home, /home-learning-more/)
   assert.match(home, /学習を選ぶ/)
   assert.match(home, /aria-label="スタディアプリへ戻る"/)
-  assert.ok(primaryGroupIndex >= 0 && primaryGroupIndex < gameGroupIndex)
-  assert.ok(gameGroupIndex < supportGroupIndex)
+  assert.ok(primaryGroupIndex >= 0 && primaryGroupIndex < supportGroupIndex)
+  assert.doesNotMatch(home, /data-home-mode-group="game"|afterSchoolChronicle|englishMap|AFTER_SCHOOL_CHRONICLE/)
   assert.doesNotMatch(home, /home-title-screen|data-home-title-action|learningMenuOpen|つづきから/)
   assert.doesNotMatch(home, /recommendation\.reason|recommendation\.timing|ProgressRing|きょうの語源/)
 })
@@ -133,14 +129,15 @@ test('龍脈調査入口は修復情報を絞り、低い画面でも4択を保�
   assert.match(css, /@media \(max-width: 350px\), \(max-height: 640px\)[\s\S]*\.dragon-vein-stage-scene \{ height: 11\.25rem; \}/)
 })
 
-test('ゲーム全体は携帯ゲーム機の共通枠と4分類に統一し、詳細を引き出しへしまう', async () => {
-  const [map, shell, css, menu, album, app] = await Promise.all([
+test('終了したゲーム実装は互換用に保持しても、公開ルートとメニューへ接続しない', async () => {
+  const [map, shell, css, menu, album, app, visibility] = await Promise.all([
     readFile(new URL('../src/screens/EnglishMap.jsx', import.meta.url), 'utf8'),
     readFile(new URL('../src/components/AppShell.jsx', import.meta.url), 'utf8'),
     readFile(new URL('../src/index.css', import.meta.url), 'utf8'),
     readFile(new URL('../src/components/SpeechSettings.jsx', import.meta.url), 'utf8'),
     readFile(new URL('../src/screens/StoryAlbum.jsx', import.meta.url), 'utf8'),
     readFile(new URL('../src/App.jsx', import.meta.url), 'utf8'),
+    readFile(new URL('../src/lib/learnerVisibility.js', import.meta.url), 'utf8'),
   ])
   const menuConfig = map.slice(
     map.indexOf('const CHRONICLE_MENU_SECTIONS'),
@@ -176,12 +173,13 @@ test('ゲーム全体は携帯ゲーム機の共通枠と4分類に統一し、�
   assert.match(screen, /title="協力する生徒たち"/)
   assert.match(screen, /title="先生の記憶を聞く"/)
   assert.doesNotMatch(screen, /StoryKeyVisualAlbum|storyKeyVisualAlbum/)
-  assert.match(menu, /const APP_MENU_EXTRAS[\s\S]*screen: 'storyAlbum'[\s\S]*label: '思い出アルバム'/)
-  assert.match(menu, /data-menu-extras/)
-  assert.match(menu, /data-menu-extra=\{screen\}/)
+  assert.doesNotMatch(menu, /APP_MENU_EXTRAS|data-menu-extras|data-menu-extra|storyAlbum|afterSchoolChronicle|GameSettingsPanel|龍脈/)
   assert.match(album, /data-story-album-screen/)
   assert.match(album, /<StoryKeyVisualAlbum album=\{album\} \/>/)
-  assert.match(app, /storyAlbum: StoryAlbumScreen/)
+  assert.doesNotMatch(app, /englishMap:|afterSchoolChronicle:|afterSchoolInterlude:|characterTalk:|storyAlbum:/)
+  for (const screen of ['englishMap', 'afterSchoolChronicle', 'afterSchoolInterlude', 'characterTalk', 'storyAlbum']) {
+    assert.match(visibility, new RegExp(`'${screen}'`))
+  }
   assert.match(screen, /titleClassName="after-school-screen-title"/)
   assert.match(map, /after-school-portal-console/)
   assert.match(shell, /titleClassName = ''/)

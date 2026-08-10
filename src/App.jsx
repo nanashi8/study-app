@@ -7,6 +7,7 @@ import { AppShell } from './components/AppShell.jsx'
 import { BottomNav } from './components/BottomNav.jsx'
 import { SpeechSettingsSheet } from './components/SpeechSettings.jsx'
 import { PortalScreen } from './screens/Portal.jsx'
+import { learnerDestination } from './lib/learnerVisibility.js'
 
 // ポータル初期表示で全語彙・数式・QR読取などを一括取得しないよう、各画面を遅延読込する。
 // named export の画面を React.lazy が要求する default export へ変換する小さなアダプタ。
@@ -69,23 +70,6 @@ const MyGrammarScreen = lazyScreen(() => import('./screens/MyGrammar.jsx'), 'MyG
 const WritingGrammarReviewScreen = lazyScreen(
   () => import('./screens/WritingGrammarReview.jsx'),
   'WritingGrammarReviewScreen',
-)
-const EnglishMapScreen = lazyScreen(() => import('./screens/EnglishMap.jsx'), 'EnglishMapScreen')
-const AfterSchoolChronicleScreen = lazyScreen(
-  () => import('./screens/EnglishMap.jsx'),
-  'AfterSchoolChronicleScreen',
-)
-const AfterSchoolInterludeScreen = lazyScreen(
-  () => import('./screens/AfterSchoolInterlude.jsx'),
-  'AfterSchoolInterludeScreen',
-)
-const CharacterTalkScreen = lazyScreen(
-  () => import('./screens/CharacterTalk.jsx'),
-  'CharacterTalkScreen',
-)
-const StoryAlbumScreen = lazyScreen(
-  () => import('./screens/StoryAlbum.jsx'),
-  'StoryAlbumScreen',
 )
 const DiagnosticScreen = lazyScreen(() => import('./screens/Diagnostic.jsx'), 'DiagnosticScreen')
 const KotenListScreen = lazyScreen(() => import('./screens/KotenList.jsx'), 'KotenListScreen')
@@ -168,11 +152,6 @@ const SCREENS = {
   writingPlay: WritingPlayScreen,
   myGrammar: MyGrammarScreen,
   writingGrammarReview: WritingGrammarReviewScreen,
-  englishMap: EnglishMapScreen,
-  afterSchoolChronicle: AfterSchoolChronicleScreen,
-  afterSchoolInterlude: AfterSchoolInterludeScreen,
-  characterTalk: CharacterTalkScreen,
-  storyAlbum: StoryAlbumScreen,
   diagnostic: DiagnosticScreen,
   kotenList: KotenListScreen,
   kotenStudy: KotenStudyScreen,
@@ -198,8 +177,6 @@ const IMMERSIVE = new Set([
   'vocabStudy', 'vocabQuiz', 'etymologyStudy', 'wordDetail', 'vocabCamera', 'sessionResult', 'readingPrep', 'reader', 'literatureLibrary', 'literatureReader', 'phraseStudy', 'phraseQuiz',
   'listeningQuiz', 'dictationPlay', 'mathIntro', 'mathSolve', 'grammarQuiz', 'diagnostic',
   'writingPlay', 'writingGrammarReview',
-  'characterTalk', 'storyAlbum',
-  'afterSchoolChronicle', 'afterSchoolInterlude',
   // 別コンテンツ（ポータルから入る）
   'vocabSearch', 'wordRequests', 'mathMap', 'mathUnits',
   'kotenList', 'kotenStudy', 'kotenQuiz', 'kotenInterpretationList',
@@ -211,8 +188,10 @@ const IMMERSIVE = new Set([
 // 学習アプリ本体（ログイン済みのときだけ表示）。
 function MainApp() {
   const screen = useStore((s) => s.screen)
-  const Screen = SCREENS[screen] ?? HomeScreen
-  const showNav = !IMMERSIVE.has(screen)
+  const params = useStore((s) => s.params)
+  const destination = learnerDestination(screen, params)
+  const Screen = SCREENS[destination.screen] ?? HomeScreen
+  const showNav = !IMMERSIVE.has(destination.screen)
   return (
     <>
       <AppShell nav={showNav ? <BottomNav /> : null}>

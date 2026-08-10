@@ -443,7 +443,7 @@ export function buildDiagnosticGuidance({
     ? {
         kind: 'foundation',
         skillId: weakestResult.id,
-        screen: weakestMeta?.screen ?? 'englishMap',
+        screen: weakestMeta?.screen ?? 'vocabLevels',
         routeLabel: action.routeLabel,
         targetLevelId: firstGap?.id ?? result.estimatedLevel?.id,
         targetLevelLabel: firstGap?.label ?? result.estimatedLevel?.label,
@@ -466,8 +466,8 @@ export function buildDiagnosticGuidance({
     : {
         kind: 'stretch',
         skillId: null,
-        screen: 'englishMap',
-        routeLabel: '英語学習マップ',
+        screen: 'vocabLevels',
+        routeLabel: '級別英単語クイズ',
         targetLevelId: result.estimatedLevel?.id,
         targetLevelLabel: result.estimatedLevel?.label,
         title: `英検${result.estimatedLevel?.label}目安の総合演習`,
@@ -478,7 +478,7 @@ export function buildDiagnosticGuidance({
         reason:
           '同じ問題の見直しより、現在地に合う別問題で再現できるか確かめると、実力として定着しているか判断できます。',
         firstAction:
-          '学習マップの適応問題を解き、別の単語・構文・熟語・長文でも同じ正答率を保てるか確かめます。',
+          '推定級の英単語クイズを解き、今回とは別の語でも同じ正答率を保てるか確かめます。',
         duration: 15,
       }
 
@@ -529,7 +529,7 @@ export function buildDiagnosticGuidance({
         task:
           '単語・文法構文・熟語・長文を混ぜて解き、正答率が上がったか次の診断前に確認します。',
         duration: 15,
-        screen: 'englishMap',
+        screen: 'diagnostic',
       },
     ],
   }

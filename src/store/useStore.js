@@ -56,6 +56,7 @@ import {
   normalizeDragonVeinProgress,
   recordDragonVeinResult,
 } from '../lib/dragonVein.js'
+import { learnerDestination } from '../lib/learnerVisibility.js'
 
 // ── 学習ロジックの定数 ──────────────────────────────────────────────
 // Leitner 式の間隔反復。box が上がるほど次に出る間隔（日数）が伸びる。
@@ -339,32 +340,30 @@ export const useStore = create(
       openSpeechSettings: () => set({ speechSettingsOpen: true }),
       closeSpeechSettings: () => set({ speechSettingsOpen: false }),
       navigate: (screen, params = {}) =>
-        set((st) => ({
-          screen,
-          params,
-          stack: [...st.stack, { screen: st.screen, params: st.params }].slice(-20),
-        })),
+        set((st) => {
+          const destination = learnerDestination(screen, params)
+          if (destination.screen === 'home' && screen !== 'home') {
+            return { ...destination, stack: [] }
+          }
+          return {
+            ...destination,
+            stack: [...st.stack, { screen: st.screen, params: st.params }].slice(-20),
+          }
+        }),
       back: () =>
         set((st) => {
           if (!st.stack.length) return { screen: 'home', params: {} }
           const prev = st.stack[st.stack.length - 1]
-          return { screen: prev.screen, params: prev.params, stack: st.stack.slice(0, -1) }
+          const destination = learnerDestination(prev.screen, prev.params)
+          return {
+            ...destination,
+            stack: destination.screen === 'home' && prev.screen !== 'home'
+              ? []
+              : st.stack.slice(0, -1),
+          }
         }),
       returnToAfterSchoolChronicle: () =>
-        set((st) => {
-          let homeIndex = -1
-          for (let index = st.stack.length - 1; index >= 0; index -= 1) {
-            if (st.stack[index]?.screen === 'home') {
-              homeIndex = index
-              break
-            }
-          }
-          return {
-            screen: 'afterSchoolChronicle',
-            params: {},
-            stack: homeIndex >= 0 ? st.stack.slice(0, homeIndex + 1) : [],
-          }
-        }),
+        set({ screen: 'home', params: {}, stack: [] }),
       goHome: () => set({ screen: 'home', params: {}, stack: [] }),
 
       // ── クイズの一時退避（永続化しない） ──

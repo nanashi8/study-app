@@ -718,7 +718,7 @@ test('同じ種類の質問が続いても同席キャラの相槌を連続重�
   assert.notEqual(first.messages[2].text, second.messages[2].text)
 })
 
-test('仲間との会話はバトル後の日常へ統合し、狭幅向け4択と無限継続UIを持つ', async () => {
+test('終了した仲間会話は公開導線から外し、互換用UIだけを保持する', async () => {
   const [app, home, map, interlude, screen, css, talkLogic, dailyLogic, visualLogic, revealLogic, grievanceLogic] = await Promise.all([
     readFile(new URL('../src/App.jsx', import.meta.url), 'utf8'),
     readFile(new URL('../src/screens/Home.jsx', import.meta.url), 'utf8'),
@@ -733,11 +733,10 @@ test('仲間との会話はバトル後の日常へ統合し、狭幅向け4択�
     readFile(new URL('../src/lib/characterGrievanceTalk.js', import.meta.url), 'utf8'),
   ])
 
-  assert.match(app, /characterTalk: CharacterTalkScreen/)
-  assert.match(app, /'characterTalk'/)
-  assert.match(app, /afterSchoolChronicle: AfterSchoolChronicleScreen/)
-  assert.match(home, /navigate\('afterSchoolChronicle'\)/)
-  assert.match(home, /AFTER_SCHOOL_CHRONICLE\.title/)
+  assert.doesNotMatch(app, /characterTalk: CharacterTalkScreen/)
+  assert.doesNotMatch(app, /afterSchoolChronicle: AfterSchoolChronicleScreen/)
+  assert.doesNotMatch(home, /navigate\('afterSchoolChronicle'\)/)
+  assert.doesNotMatch(home, /AFTER_SCHOOL_CHRONICLE\.title/)
   assert.doesNotMatch(home, /navigate\('characterTalk'\)/)
   assert.doesNotMatch(map, /<CampusLifeGallery/)
   assert.match(interlude, /navigate\('characterTalk', \{ fromBattle: true, storyStep \}\)/)
