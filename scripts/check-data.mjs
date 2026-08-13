@@ -12,9 +12,11 @@ import {
   ETYMOLOGY_SOURCE_META,
   ETYMOLOGY_SUMMARY,
   ROOTS,
+  VOCAB_FIELD_GROUPS,
   VOCAB_FIELDS,
   VOCAB_POS,
   getWord,
+  vocabFieldFor,
   wordsByField,
   wordsByPos,
 } from '../src/data/vocab.js'
@@ -260,7 +262,7 @@ if (
   )
 }
 
-// ── 全語彙の分類学習：全件が分野・品詞にちょうど1回ずつ含まれるか ──
+// ── 全語彙の分類学習：10分野へ漏れなく一意にまとまっているか ──
 function checkPartition(label, groups, select) {
   const members = groups.flatMap((group) => select(group))
   const memberIds = new Set(members.map((word) => word.id))
@@ -273,6 +275,27 @@ function checkPartition(label, groups, select) {
   for (const group of groups) {
     const words = select(group)
     if (!words.length) errors.push(`${label}分類「${typeof group === 'string' ? group : group.id}」が空`)
+  }
+}
+
+if (VOCAB_FIELD_GROUPS.length !== 10 || VOCAB_FIELDS.length !== 10) {
+  errors.push(`学習者向け英単語分野は10分野であること (${VOCAB_FIELD_GROUPS.length}/${VOCAB_FIELDS.length})`)
+}
+const configuredSourceFields = VOCAB_FIELD_GROUPS.flatMap((group) => group.sourceFields)
+const configuredSourceFieldSet = new Set(configuredSourceFields)
+const actualSourceFieldSet = new Set(ALL_WORDS.map((word) => word.field))
+if (configuredSourceFieldSet.size !== configuredSourceFields.length) {
+  errors.push('学習者向け英単語分野の元分類に重複あり')
+}
+for (const field of actualSourceFieldSet) {
+  if (!configuredSourceFieldSet.has(field)) errors.push(`元分類「${field}」が10分野へ未割当`)
+}
+for (const field of configuredSourceFieldSet) {
+  if (!actualSourceFieldSet.has(field)) errors.push(`10分野の元分類「${field}」に単語がない`)
+}
+for (const word of ALL_WORDS) {
+  if (!VOCAB_FIELDS.includes(vocabFieldFor(word))) {
+    errors.push(`${word.id}: 学習者向け英単語分野が不明 (${word.field})`)
   }
 }
 

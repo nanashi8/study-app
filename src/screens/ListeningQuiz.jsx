@@ -15,12 +15,14 @@ import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { Button, Chip, ProgressBar, IconButton, cx } from '../components/ui.jsx'
 import {
-  Close,
-  Check,
   ArrowRight,
-  SpeakerWave,
+  Bookmark,
+  BookmarkFilled,
+  Check,
+  Close,
   Eye,
   EyeOff,
+  SpeakerWave,
 } from '../components/Icons.jsx'
 import { buildListeningInstructorExplanation } from '../lib/instructorExplanations.js'
 
@@ -48,6 +50,8 @@ export function ListeningQuizScreen() {
   const back = useStore((s) => s.back)
   const review = useStore((s) => s.review)
   const settings = useStore((s) => s.settings)
+  const toggleNotebookItem = useStore((s) => s.toggleNotebookItem)
+  const learningNotebook = useStore((s) => s.learningNotebook)
 
   const source = params.source ?? { type: 'level', levelId: '5' }
   const xpAtStart = useRef(useStore.getState().stats.xp)
@@ -68,6 +72,7 @@ export function ListeningQuizScreen() {
   const item = deck[i]
   const profile =
     LISTENING_PROFILES[item?.level ?? source.levelId] ?? LISTENING_PROFILES['5']
+  const saved = Boolean(item && learningNotebook?.entries?.[`listening:${item.id}`]?.saved)
   const typeMeta = LISTENING_TYPE_META[item?.type]
   const options = useMemo(
     () => shuffledListeningChoices(item),
@@ -210,6 +215,14 @@ export function ListeningQuizScreen() {
         <div className="flex-1">
           <ProgressBar value={i / deck.length} color="#0ea5e9" />
         </div>
+        <IconButton
+          onClick={() => item && toggleNotebookItem('listening', item.id)}
+          aria-label={saved ? `${item?.topic}をマイ学習ノートから外す` : `${item?.topic}をマイ学習ノートへ保存`}
+          aria-pressed={saved}
+          className={saved ? 'text-amber-600' : 'text-ink/30'}
+        >
+          {saved ? <BookmarkFilled size={20} /> : <Bookmark size={20} />}
+        </IconButton>
         <SpeechSettingsButton compact />
         <span className="w-12 text-right text-sm font-extrabold text-ink/50">
           {i + 1}/{deck.length}
@@ -231,14 +244,6 @@ export function ListeningQuizScreen() {
               この端末では音声を再生できません。下の「放送文を表示」から本文をご確認ください。
             </p>
           )}
-          <div className="mb-4 rounded-2xl bg-white/15 px-4 py-3">
-            <p className="text-sm font-extrabold leading-relaxed">
-              準備ができましたら、再生ボタンを押して音声をお聞きください。
-            </p>
-            <p className="mt-1 text-xs font-bold leading-relaxed text-white/80">
-              解答前は本番を想定した回数まで再生できます。音声は自動では始まりません。
-            </p>
-          </div>
           <div className="flex items-center gap-4">
             <button
               onClick={() => play()}
@@ -255,7 +260,7 @@ export function ListeningQuizScreen() {
                   : answered
                     ? '音声を聞き直す'
                     : playsUsed === 0
-                      ? '準備ができたら再生'
+                      ? '問題を再生する'
                       : remainingPlays > 0
                         ? 'もう一度聞く'
                         : '本番形式での再生は終了'}
@@ -374,7 +379,7 @@ export function ListeningQuizScreen() {
                 key={choice.id}
                 disabled={answered}
                 onClick={() => choose(choice.id)}
-                aria-label={hideText ? `選択肢 ${displayIndex + 1}` : choice.text}
+                aria-label={hideText ? `第${displayIndex + 1}番を選ぶ` : choice.text}
                 className={cx(
                   'flex w-full items-center gap-3 rounded-2xl border-2 px-4 py-3.5 text-left font-bold transition-all',
                   tone === 'idle' && 'border-brand-100 bg-white text-ink active:bg-brand-50 active:scale-[0.99]',
@@ -383,20 +388,26 @@ export function ListeningQuizScreen() {
                   tone === 'dim' && 'border-transparent bg-paper text-ink/35',
                 )}
               >
-                <span
-                  className={cx(
-                    'flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-extrabold',
-                    tone === 'idle' && 'bg-sky-100 text-sky-700',
-                    tone === 'correct' && 'bg-emerald-200 text-emerald-800',
-                    tone === 'wrong' && 'bg-rose-200 text-rose-800',
-                    tone === 'dim' && 'bg-ink/5 text-ink/35',
-                  )}
-                >
-                  {displayIndex + 1}
-                </span>
-                <span className={cx('flex-1 leading-relaxed', hideText && 'text-center text-lg')}>
-                  {hideText ? '音声で聞く' : choice.text}
-                </span>
+                {hideText ? (
+                  <span className="flex-1 py-0.5 text-center text-lg leading-relaxed">
+                    第{displayIndex + 1}番を選ぶ
+                  </span>
+                ) : (
+                  <>
+                    <span
+                      className={cx(
+                        'flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-extrabold',
+                        tone === 'idle' && 'bg-sky-100 text-sky-700',
+                        tone === 'correct' && 'bg-emerald-200 text-emerald-800',
+                        tone === 'wrong' && 'bg-rose-200 text-rose-800',
+                        tone === 'dim' && 'bg-ink/5 text-ink/35',
+                      )}
+                    >
+                      {displayIndex + 1}
+                    </span>
+                    <span className="flex-1 leading-relaxed">{choice.text}</span>
+                  </>
+                )}
                 {tone === 'correct' && <Check size={20} className="text-emerald-600" />}
                 {tone === 'wrong' && <Close size={18} className="text-rose-500" />}
               </button>

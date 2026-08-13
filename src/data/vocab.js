@@ -350,14 +350,89 @@ export const wordsByLevel = (levelId) =>
 export const levelCount = (levelId) => wordsByLevel(levelId).length
 
 // 全語彙の分類学習で使う分野・品詞インデックス。
-// 分野は小分類も「その他」へまとめず、そのまま独立した学習対象にする。
-const VOCAB_FIELD_PRIORITY = [
-  '一般', '動作・行為', '性質・状態', '様子・程度', '機能語', '時間・数量',
-  '心理', '家族・人', '食・生活', '料理', '自然', '気象', '環境',
-  '科学', '医学', '技術', '測定', '学問', '教育', '言語', '文学',
-  '歴史', '地理', '社会', '経済', 'ビジネス', '政治', '法律', '軍事',
-  '宗教', '交通', '農業', '建築', 'メディア', 'スポーツ', '芸術',
-  '音楽', '副詞',
+// 元データの細分類は語源整理・誤答生成・旧 source 互換のため保持し、
+// 学習者には中高生が見通しを持ちやすい10テーマへまとめて見せる。
+export const VOCAB_FIELD_GROUPS = [
+  {
+    id: 'daily',
+    label: '基本・日常',
+    emoji: '🏠',
+    color: '#0ea5e9',
+    description: '基本語、家族、食事、時間など',
+    sourceFields: ['一般', '機能語', '時間・数量', '家族・人', '食・生活', '料理'],
+  },
+  {
+    id: 'action',
+    label: '動作・変化',
+    emoji: '🏃',
+    color: '#f97316',
+    description: '行動、出来事、ものごとの変化',
+    sourceFields: ['動作・行為'],
+  },
+  {
+    id: 'qualities',
+    label: '性質・様子',
+    emoji: '🎨',
+    color: '#8b5cf6',
+    description: '人やものの特徴、状態、程度',
+    sourceFields: ['性質・状態', '様子・程度', '副詞'],
+  },
+  {
+    id: 'mind',
+    label: '心・コミュニケーション',
+    emoji: '💭',
+    color: '#ec4899',
+    description: '感情、考え、ことば、伝え合い',
+    sourceFields: ['心理', 'コミュニケーション', '言語'],
+  },
+  {
+    id: 'school-culture',
+    label: '学校・文化・スポーツ',
+    emoji: '🎓',
+    color: '#6366f1',
+    description: '学習、文学、芸術、音楽、スポーツ',
+    sourceFields: ['教育', '学問', '文学', '芸術', '音楽', 'スポーツ'],
+  },
+  {
+    id: 'society-life',
+    label: '社会・くらし',
+    emoji: '🏙️',
+    color: '#14b8a6',
+    description: '社会、メディア、交通、まちと産業',
+    sourceFields: ['社会', 'メディア', '交通', '農業', '建築'],
+  },
+  {
+    id: 'work-economy',
+    label: '仕事・経済',
+    emoji: '💼',
+    color: '#f59e0b',
+    description: '仕事、会社、お金、経済の動き',
+    sourceFields: ['経済', 'ビジネス'],
+  },
+  {
+    id: 'civics-history',
+    label: '政治・法律・歴史',
+    emoji: '⚖️',
+    color: '#64748b',
+    description: '政治、制度、法律、歴史、宗教',
+    sourceFields: ['政治', '法律', '軍事', '宗教', '歴史'],
+  },
+  {
+    id: 'science-health',
+    label: '科学・技術・健康',
+    emoji: '🔬',
+    color: '#06b6d4',
+    description: '科学、IT、数と測定、医療',
+    sourceFields: ['科学', '技術', '測定', '情報', '数学', '医学'],
+  },
+  {
+    id: 'nature-earth',
+    label: '自然・環境・地理',
+    emoji: '🌿',
+    color: '#22c55e',
+    description: '自然、天気、環境、世界の地域',
+    sourceFields: ['自然', '気象', '環境', '地理'],
+  },
 ]
 
 const groupWordsBy = (key) => {
@@ -370,15 +445,36 @@ const groupWordsBy = (key) => {
   return groups
 }
 
-const WORDS_BY_FIELD = groupWordsBy('field')
+const WORDS_BY_SOURCE_FIELD = groupWordsBy('field')
 const WORDS_BY_POS = groupWordsBy('pos')
 
-export const VOCAB_FIELDS = [
-  ...VOCAB_FIELD_PRIORITY.filter((field) => WORDS_BY_FIELD.has(field)),
-  ...[...WORDS_BY_FIELD.keys()]
-    .filter((field) => !VOCAB_FIELD_PRIORITY.includes(field))
-    .sort((a, b) => a.localeCompare(b, 'ja')),
-]
+const VOCAB_FIELD_GROUP_BY_ID = new Map(VOCAB_FIELD_GROUPS.map((group) => [group.id, group]))
+const VOCAB_FIELD_GROUP_BY_LABEL = new Map(VOCAB_FIELD_GROUPS.map((group) => [group.label, group]))
+const VOCAB_FIELD_GROUP_BY_SOURCE = new Map(
+  VOCAB_FIELD_GROUPS.flatMap((group) => group.sourceFields.map((field) => [field, group])),
+)
+
+export function vocabFieldGroupFor(wordOrField) {
+  const field = typeof wordOrField === 'string' ? wordOrField : wordOrField?.field
+  return VOCAB_FIELD_GROUP_BY_ID.get(field) ??
+    VOCAB_FIELD_GROUP_BY_LABEL.get(field) ??
+    VOCAB_FIELD_GROUP_BY_SOURCE.get(field) ??
+    null
+}
+
+export function vocabFieldFor(wordOrField) {
+  const group = vocabFieldGroupFor(wordOrField)
+  if (group) return group.label
+  return typeof wordOrField === 'string' ? wordOrField : wordOrField?.field ?? ''
+}
+
+const WORDS_BY_LEARNING_FIELD = new Map(VOCAB_FIELD_GROUPS.map((group) => [group.id, []]))
+for (const word of ALL_WORDS) {
+  const group = vocabFieldGroupFor(word)
+  if (group) WORDS_BY_LEARNING_FIELD.get(group.id).push(word)
+}
+
+export const VOCAB_FIELDS = VOCAB_FIELD_GROUPS.map((group) => group.label)
 
 export const VOCAB_POS = [
   { id: '名', label: '名詞' },
@@ -390,7 +486,13 @@ export const VOCAB_POS = [
   { id: '代', label: '代名詞' },
 ]
 
-export const wordsByField = (field) => WORDS_BY_FIELD.get(field) ?? []
+// 新しい10分野は id/label のどちらでも選べる。旧版の細分類名が渡された
+// 場合は従来と同じ狭い集合を返し、古いセッション source を壊さない。
+export const wordsByField = (field) => {
+  const learningGroup = VOCAB_FIELD_GROUP_BY_ID.get(field) ?? VOCAB_FIELD_GROUP_BY_LABEL.get(field)
+  if (learningGroup) return WORDS_BY_LEARNING_FIELD.get(learningGroup.id) ?? []
+  return WORDS_BY_SOURCE_FIELD.get(field) ?? []
+}
 
 export const wordsByPos = (pos) => WORDS_BY_POS.get(pos) ?? []
 

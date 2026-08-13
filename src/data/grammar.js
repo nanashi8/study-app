@@ -446,8 +446,7 @@ export const grammarPatternGroup = (item) =>
 
 const grammarChoiceGuidance = createGrammarChoiceGuidance(GRAMMAR)
 
-// 誤答を「別の場面なら使える形」と「標準英語では使わない形」に分け、
-// 正答の根拠だけでは残る「では、この選択肢はいつ使うのか」を全問で補う。
+// 各選択肢がこの問題の条件に合わない理由と、その形が成立する条件を全問で補う。
 export const grammarChoiceGuidanceFor = (item, choice) =>
   grammarChoiceGuidance(item, choice)
 

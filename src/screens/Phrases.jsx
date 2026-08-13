@@ -15,6 +15,17 @@ import { cx } from '../components/ui.jsx'
 
 const levelOrder = Object.fromEntries(LEVELS.map((l, i) => [l.id, i]))
 const INITIAL_VISIBLE_ITEMS = 60
+const PHRASE_COUNTS = Object.freeze(Object.fromEntries(
+  PHRASE_KINDS.map((item) => [item.id, phrasesByKind(item.id).length]),
+))
+const PHRASE_TOTAL = Object.values(PHRASE_COUNTS).reduce((sum, count) => sum + count, 0)
+const PHRASE_LEVEL_COUNTS = Object.freeze(Object.fromEntries(
+  LEVELS.map((level) => {
+    const idiom = phrasesByKind('idiom').filter((item) => item.level === level.id).length
+    const syntax = phrasesByKind('syntax').filter((item) => item.level === level.id).length
+    return [level.id, Object.freeze({ idiom, syntax, total: idiom + syntax })]
+  }),
+))
 
 export function PhrasesScreen() {
   const navigate = useStore((s) => s.navigate)
@@ -94,6 +105,58 @@ export function PhrasesScreen() {
             )
           })}
         </div>
+
+        <section
+          className="mt-3 overflow-hidden rounded-2xl border border-slate-200 bg-white"
+          aria-label="熟語・構文の収録状況"
+          data-phrase-corpus-summary
+        >
+          <div className="grid grid-cols-3 divide-x divide-slate-200 text-center">
+            {[
+              ['総収録', PHRASE_TOTAL],
+              ['熟語', PHRASE_COUNTS.idiom],
+              ['構文', PHRASE_COUNTS.syntax],
+            ].map(([label, value]) => (
+              <div key={label} className="px-2 py-2.5">
+                <p className="text-[10px] font-extrabold text-slate-500">{label}</p>
+                <p className="font-display text-lg font-extrabold tabular-nums text-slate-900">
+                  {value.toLocaleString()}
+                </p>
+              </div>
+            ))}
+          </div>
+          <details className="border-t border-slate-200">
+            <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between px-3 text-xs font-extrabold text-slate-600">
+              <span>英検5級〜1級の級別内訳</span>
+              <span className="text-slate-400">全7級</span>
+            </summary>
+            <div className="overflow-x-auto border-t border-slate-100 p-3 pt-2">
+              <table className="w-full min-w-[19rem] border-collapse text-xs" data-phrase-level-table>
+                <thead>
+                  <tr className="border-b border-slate-300 text-left text-[10px] font-extrabold text-slate-500">
+                    <th className="py-1.5">級</th>
+                    <th className="py-1.5 text-right">熟語</th>
+                    <th className="py-1.5 text-right">構文</th>
+                    <th className="py-1.5 text-right">計</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {LEVELS.map((level) => {
+                    const counts = PHRASE_LEVEL_COUNTS[level.id]
+                    return (
+                      <tr key={level.id} className="border-b border-slate-100 font-bold text-slate-700 last:border-0">
+                        <th className="py-1.5 text-left">{level.label}</th>
+                        <td className="py-1.5 text-right tabular-nums">{counts.idiom}</td>
+                        <td className="py-1.5 text-right tabular-nums">{counts.syntax}</td>
+                        <td className="py-1.5 text-right tabular-nums">{counts.total}</td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </details>
+        </section>
 
         {/* 1,000項目以上でも目的の表現へすぐ到達できる検索・級フィルター */}
         <div className="mt-3 space-y-2">

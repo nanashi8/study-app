@@ -781,7 +781,7 @@ function Result({
 
   return (
     <div className="pb-8">
-      <ScreenHeader title="診断結果" subtitle={formatCompletedAt(result.completedAt)} onBack={onHome} />
+      <ScreenHeader title="診断結果" subtitle={formatCompletedAt(result.completedAt)} />
       <div className="space-y-4 px-4">
         <div className="rounded-[2rem] bg-gradient-to-br from-indigo-600 via-violet-600 to-fuchsia-600 p-5 text-white shadow-card">
           <div className="flex items-center justify-center gap-2 text-amber-300">

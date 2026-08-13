@@ -2,9 +2,9 @@ import { Lightbulb, Target } from './Icons.jsx'
 import { cx } from './ui.jsx'
 
 const SECTION_META = [
-  { key: 'evidence', label: '根拠を一本化', tone: 'bg-sky-50 text-sky-950', dot: 'bg-sky-500' },
-  { key: 'trap', label: '誤答を切る', tone: 'bg-rose-50 text-rose-950', dot: 'bg-rose-400' },
-  { key: 'strategy', label: '次も解ける型', tone: 'bg-violet-50 text-violet-950', dot: 'bg-violet-500' },
+  { key: 'evidence', label: '根拠', tone: 'bg-sky-50 text-sky-950', dot: 'bg-sky-500' },
+  { key: 'trap', label: '消去法', tone: 'bg-rose-50 text-rose-950', dot: 'bg-rose-400' },
+  { key: 'strategy', label: '考え方', tone: 'bg-violet-50 text-violet-950', dot: 'bg-violet-500' },
 ]
 
 export function InstructorExplanation({

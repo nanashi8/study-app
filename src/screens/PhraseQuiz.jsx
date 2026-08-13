@@ -12,7 +12,7 @@ import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
 import { DragonVeinCipherStage } from '../components/DragonVeinCipherStage.jsx'
 import { Button, ProgressBar, IconButton, Chip } from '../components/ui.jsx'
-import { Close, Check, ArrowRight } from '../components/Icons.jsx'
+import { ArrowRight, Bookmark, BookmarkFilled, Check, Close } from '../components/Icons.jsx'
 import { cx } from '../components/ui.jsx'
 import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { buildPhraseInstructorExplanation } from '../lib/instructorExplanations.js'
@@ -43,6 +43,8 @@ export function PhraseQuizScreen() {
   const navigate = useStore((state) => state.navigate)
   const back = useStore((state) => state.back)
   const review = useStore((state) => state.review)
+  const toggleNotebookItem = useStore((state) => state.toggleNotebookItem)
+  const learningNotebook = useStore((state) => state.learningNotebook)
   const selectedStudentId = useStore((state) => state.battleStudentId)
   const source = params.source ?? { type: 'phrase', kind: 'idiom' }
   const isDragonVein = isDragonVeinSource(source)
@@ -85,6 +87,7 @@ export function PhraseQuizScreen() {
       )
     : null
   const longSentenceTranslation = longSentenceTranslationFor(item)
+  const saved = learningNotebook?.entries?.[`phrases:${item.id}`]?.saved === true
 
   const finish = () => {
     const xpGained = useStore.getState().stats.xp - xpAtStart.current
@@ -147,6 +150,14 @@ export function PhraseQuizScreen() {
       <div className="flex items-center gap-3 border-b border-brand-100 bg-white/90 px-3 py-3 backdrop-blur">
         <IconButton onClick={back} aria-label={isDragonVein ? '解読を中断' : 'やめる'}><Close size={22} /></IconButton>
         <div className="flex-1"><ProgressBar value={index / deck.length} color={isDragonVein ? '#8b5cf6' : '#0ea5e9'} /></div>
+        <IconButton
+          onClick={() => toggleNotebookItem('phrases', item.id)}
+          aria-label={saved ? `${item.phrase}をマイ学習ノートから外す` : `${item.phrase}をマイ学習ノートへ保存`}
+          aria-pressed={saved}
+          className={saved ? 'text-amber-600' : 'text-ink/30'}
+        >
+          {saved ? <BookmarkFilled size={20} /> : <Bookmark size={20} />}
+        </IconButton>
         <SpeechSettingsButton compact />
         <span className="w-14 text-right text-sm font-extrabold text-ink/50">{index + 1}/{deck.length}</span>
       </div>

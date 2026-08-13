@@ -230,6 +230,7 @@ test('学習記録の全永続項目は端末保存・画面発行・クラウ�
     'params',
     'stack',
     'speechSettingsOpen',
+    'speechSettingsRequest',
     'quizSession',
   ])
   const stateDataFields = Object.keys(state)
@@ -281,6 +282,42 @@ test('学習記録の全永続項目は端末保存・画面発行・クラウ�
   )
   assert.match(progressSource, /useStore\(useShallow\(selectProgressState\)\)/)
   assert.match(storeSource, /partialize:\s*selectProgressState/)
+})
+
+test('学習状況のリセットは全学習履歴を消し、端末設定とメニュー配置を保つ', () => {
+  const original = useStore.getState()
+  const settings = { ...original.settings, dailyGoal: 50, ttsRate: 1.1 }
+  const portalOrder = [...original.portalOrder].reverse()
+  const portalHidden = portalOrder.slice(0, 1)
+
+  try {
+    useStore.setState({
+      srs: { resetWord: entry() },
+      etymologySrs: { resetRoot: entry() },
+      myList: ['resetWord'],
+      diagnosticHistory: [{ id: 'reset-diagnostic' }],
+      learningAnalytics: { ...original.learningAnalytics, inputs: 12, scored: 12, correct: 8 },
+      stats: { ...original.stats, xp: 321, answered: 12, correct: 8 },
+      settings,
+      portalOrder,
+      portalHidden,
+    })
+
+    useStore.getState().resetProgress()
+    const reset = useStore.getState()
+
+    assert.deepEqual(reset.srs, {})
+    assert.deepEqual(reset.etymologySrs, {})
+    assert.deepEqual(reset.myList, [])
+    assert.deepEqual(reset.diagnosticHistory, [])
+    assert.equal(reset.learningAnalytics.inputs, 0)
+    assert.equal(reset.stats.xp, 0)
+    assert.deepEqual(reset.settings, settings)
+    assert.deepEqual(reset.portalOrder, portalOrder)
+    assert.deepEqual(reset.portalHidden, portalHidden)
+  } finally {
+    useStore.setState(original, true)
+  }
 })
 
 test('進捗コードは廃止済みデータを再保存せず、旧コードも読み込める', () => {
@@ -353,7 +390,7 @@ test('進捗コードは廃止済みデータを再保存せず、旧コード�
     new URL('../src/store/useStore.js', import.meta.url),
     'utf8',
   )
-  assert.match(storeSource, /version: 5/)
+  assert.match(storeSource, /version: 6/)
   assert.match(storeSource, /migrate: migratePersistedState/)
   assert.throws(() => decodeProgress(encodeProgress({ ...base, srs: [] })), /srs/)
   assert.throws(

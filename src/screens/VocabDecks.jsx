@@ -1,6 +1,6 @@
 import { useStore } from '../store/useStore.js'
 import { getLevel } from '../data/levels.js'
-import { DECK_TOC, deckMastery } from '../data/decks.js'
+import { LEARNING_DECK_TOC, deckMastery } from '../data/decks.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { Card, ProgressRing, Button, Chip } from '../components/ui.jsx'
 import { Book, Cards } from '../components/Icons.jsx'
@@ -38,7 +38,7 @@ export function VocabDecksScreen() {
 
   const levelId = params.levelId ?? '5'
   const level = getLevel(levelId)
-  const toc = DECK_TOC.find((t) => t.level.id === levelId)
+  const toc = LEARNING_DECK_TOC.find((t) => t.level.id === levelId)
 
   const study = (deck) =>
     navigate('vocabStudy', {
@@ -63,10 +63,16 @@ export function VocabDecksScreen() {
       <div className="space-y-5 px-4">
         {!toc && <p className="text-sm font-bold text-ink/50">この級のデッキはまだありません。</p>}
         {toc?.chapters.map((ch) => (
-          <div key={ch.field}>
-            <div className="mb-2 flex items-center gap-2 px-1">
-              <h2 className="font-display text-base font-extrabold text-ink/80">{ch.field}</h2>
-              <Chip color={level.color}>{ch.size}語</Chip>
+          <div key={ch.fieldId}>
+            <div className="mb-2 flex items-start gap-2 px-1">
+              <span className="mt-0.5 text-lg" aria-hidden="true">{ch.emoji}</span>
+              <div className="min-w-0 flex-1">
+                <div className="flex flex-wrap items-center gap-2">
+                  <h2 className="font-display text-base font-extrabold text-ink/80">{ch.field}</h2>
+                  <Chip color={level.color}>{ch.size}語</Chip>
+                </div>
+                <p className="text-[11px] font-bold text-ink/45">{ch.description}</p>
+              </div>
             </div>
             <div className="grid grid-cols-1 gap-2.5">
               {ch.decks.map((deck) => (

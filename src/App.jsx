@@ -33,6 +33,10 @@ const EtymologyStudyScreen = lazyScreen(
 )
 const RootsScreen = lazyScreen(() => import('./screens/Roots.jsx'), 'RootsScreen')
 const MyListScreen = lazyScreen(() => import('./screens/MyList.jsx'), 'MyListScreen')
+const MyLearningScreen = lazyScreen(
+  () => import('./screens/MyLearning.jsx'),
+  'MyLearningScreen',
+)
 const VocabCameraScreen = lazyScreen(() => import('./screens/VocabCamera.jsx'), 'VocabCameraScreen')
 const ProgressScreen = lazyScreen(() => import('./screens/Progress.jsx'), 'ProgressScreen')
 const SettingsScreen = lazyScreen(() => import('./screens/Settings.jsx'), 'SettingsScreen')
@@ -122,6 +126,7 @@ const SCREENS = {
   etymologyPack: EtymologyPackScreen,
   etymologyStudy: EtymologyStudyScreen,
   roots: RootsScreen,
+  myLearning: MyLearningScreen,
   myList: MyListScreen,
   vocabCamera: VocabCameraScreen,
   progress: ProgressScreen,
@@ -168,22 +173,7 @@ const SCREENS = {
   kotenSaved: KotenSavedScreen,
 }
 
-// ボトムナビ（英語アプリのタブ）を隠す画面。
-//  ・没入モード（学習・クイズ・結果系）
-//  ・ポータル直下の別コンテンツ（辞書・数学・古典）＝英語アプリのタブを出さない
-const IMMERSIVE = new Set([
-  'portal',
-  'login',
-  'vocabStudy', 'vocabQuiz', 'etymologyStudy', 'wordDetail', 'vocabCamera', 'sessionResult', 'readingPrep', 'reader', 'literatureLibrary', 'literatureReader', 'phraseStudy', 'phraseQuiz',
-  'listeningQuiz', 'dictationPlay', 'mathIntro', 'mathSolve', 'grammarQuiz', 'diagnostic',
-  'writingPlay', 'writingGrammarReview',
-  // 別コンテンツ（ポータルから入る）
-  'vocabSearch', 'wordRequests', 'mathMap', 'mathUnits',
-  'kotenList', 'kotenStudy', 'kotenQuiz', 'kotenInterpretationList',
-  'kotenInterpretationPrep', 'kotenInterpretationQuiz',
-  'kotenGrammar', 'kotenGrammarStudy', 'kotenGrammarQuiz', 'kotenSaved',
-  'kotenCulture', 'kotenCultureStudy', 'kotenCultureQuiz',
-])
+// 下部ナビは全公開画面で共通。途中学習からの移動は保存確認を経由する。
 
 // 学習アプリ本体（ログイン済みのときだけ表示）。
 function MainApp() {
@@ -191,10 +181,9 @@ function MainApp() {
   const params = useStore((s) => s.params)
   const destination = learnerDestination(screen, params)
   const Screen = SCREENS[destination.screen] ?? HomeScreen
-  const showNav = !IMMERSIVE.has(destination.screen)
   return (
     <>
-      <AppShell nav={showNav ? <BottomNav /> : null}>
+      <AppShell nav={<BottomNav />}>
         <Suspense fallback={<ScreenLoader />}>
           <Screen />
         </Suspense>
@@ -216,7 +205,7 @@ function ScreenLoader() {
 // 中央寄せのシンプルなスプラッシュ（読み込み中表示）。
 function Splash({ label }) {
   return (
-    <AppShell>
+    <AppShell showGlobalMenu={false}>
       <div className="flex min-h-full flex-col items-center justify-center gap-3 text-ink/50">
         <div className="h-8 w-8 animate-spin rounded-full border-4 border-brand-200 border-t-brand-500" />
         <p className="text-sm font-bold">{label}</p>

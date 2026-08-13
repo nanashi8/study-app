@@ -1,6 +1,7 @@
 import { useStore } from '../store/useStore.js'
 import { playSpeechItems } from '../lib/speech-player.js'
 import { japanesePhraseSpeechText } from '../lib/phrase-speech.js'
+import { longSentenceExplanationTexts } from '../lib/explanationDedup.js'
 import { ArrowRight, Lightbulb, SpeakerWave } from './Icons.jsx'
 import { cx } from './ui.jsx'
 
@@ -19,9 +20,11 @@ export function LongSentenceTranslation({ guide, className = '' }) {
   const settings = useStore((state) => state.settings)
   const phraseSteps = guide?.meaningSteps?.length ? guide.meaningSteps : guide?.steps
   if (!phraseSteps?.length) return null
+  const explanationTexts = longSentenceExplanationTexts(phraseSteps)
 
   const speechItems = phraseSteps.map((item, index) => {
-    const explanation = [item.note, item.roleNote]
+    const explanation = explanationTexts
+      .slice(index * 2, index * 2 + 2)
       .filter(Boolean)
       .join(' ')
     return {
@@ -112,12 +115,16 @@ export function LongSentenceTranslation({ guide, className = '' }) {
                   <ArrowRight size={14} className="mt-0.5 shrink-0" />
                   <p className="text-sm font-extrabold leading-relaxed">{item.ja}</p>
                 </div>
-                <p className="mt-1.5 border-l-2 border-sky-200 pl-2 text-[11px] font-bold leading-relaxed text-ink/55">
-                  {item.note}
-                </p>
-                <p className="mt-1.5 bg-slate-50 px-2 py-1.5 text-[10px] font-bold leading-relaxed text-ink/50">
-                  {item.roleNote}
-                </p>
+                {explanationTexts[index * 2] && (
+                  <p className="mt-1.5 border-l-2 border-sky-200 pl-2 text-[11px] font-bold leading-relaxed text-ink/55">
+                    {explanationTexts[index * 2]}
+                  </p>
+                )}
+                {explanationTexts[index * 2 + 1] && (
+                  <p className="mt-1.5 bg-slate-50 px-2 py-1.5 text-[10px] font-bold leading-relaxed text-ink/50">
+                    {explanationTexts[index * 2 + 1]}
+                  </p>
+                )}
               </div>
               <button
                 type="button"
