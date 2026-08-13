@@ -9,7 +9,7 @@ import { SpeakButton } from '../components/SpeakButton.jsx'
 import { LongSentenceTranslation } from '../components/LongSentenceTranslation.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { Button, ProgressBar, IconButton, Chip } from '../components/ui.jsx'
-import { Close, ArrowRight, Lightbulb, Link } from '../components/Icons.jsx'
+import { ArrowRight, Bookmark, BookmarkFilled, Close, Lightbulb, Link } from '../components/Icons.jsx'
 
 const itemKind = (p) =>
   p.category === 'expression' ? { label: '表現', color: '#0ea5e9' }
@@ -22,6 +22,8 @@ export function PhraseStudyScreen() {
   const back = useStore((s) => s.back)
   const review = useStore((s) => s.review)
   const settings = useStore((s) => s.settings)
+  const toggleNotebookItem = useStore((s) => s.toggleNotebookItem)
+  const learningNotebook = useStore((s) => s.learningNotebook)
 
   // 暗記モード：ONなら毎カード最初から意味・成り立ちを開いて見せる（単語学習と共通）。
   const revealAll = settings.revealAnswers
@@ -105,12 +107,21 @@ export function PhraseStudyScreen() {
     },
     { text: item.example.en, label: item.example.en, style: 'sentence' },
   ]
+  const saved = learningNotebook?.entries?.[`phrases:${item.id}`]?.saved === true
 
   return (
     <div className="flex h-full flex-col">
       <div className="flex items-center gap-3 px-3 py-3">
         <IconButton onClick={back} aria-label="やめる"><Close size={22} /></IconButton>
         <div className="flex-1"><ProgressBar value={i / deck.length} color="#8b5cf6" /></div>
+        <IconButton
+          onClick={() => toggleNotebookItem('phrases', item.id)}
+          aria-label={saved ? `${item.phrase}をマイ学習ノートから外す` : `${item.phrase}をマイ学習ノートへ保存`}
+          aria-pressed={saved}
+          className={saved ? 'text-amber-600' : 'text-ink/30'}
+        >
+          {saved ? <BookmarkFilled size={20} /> : <Bookmark size={20} />}
+        </IconButton>
         <SpeechSettingsButton compact />
         <span className="w-12 text-right text-sm font-extrabold text-ink/50">{i + 1}/{deck.length}</span>
       </div>

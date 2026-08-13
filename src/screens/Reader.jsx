@@ -21,6 +21,10 @@ import { Close, SpeakerWave, ArrowRight, Lightbulb, Link, Bookmark, BookmarkFill
 import { cx } from '../components/ui.jsx'
 import { translationRoleMeta } from '../lib/translation-roles.js'
 import { StructureDiagram } from '../components/StructureDiagram.js'
+import {
+  readingBlockExplanationTexts,
+  readingPhraseExplanationTexts,
+} from '../lib/explanationDedup.js'
 
 const ROLE_STYLE = {
   S: 'border-emerald-200 bg-emerald-50 text-emerald-800',
@@ -71,12 +75,6 @@ function blockFlowParts(block) {
     pair.roleParts.map((part) => ({ role: part.role, text: part.en }))) ?? []
 }
 
-function learnerPhrasePairsForBlock(block) {
-  // 空配列は「この文法ブロックが前後を含む意味フレーズに統合済み」の印です。
-  // length で旧SVOCM列へ戻すと、学習者向け表示だけが再び細切れになります。
-  return block?.meaningPhrasePairs ?? block?.phrasePairs ?? []
-}
-
 function sentenceFlowParts(analysis) {
   return analysis?.phraseSequence.flatMap((pair) =>
     pair.roleParts.map((part) => ({ role: part.role, text: part.en }))) ?? []
@@ -112,18 +110,20 @@ export function ReaderScreen() {
 
   // ── 講師音声（文全体の意味フレーズごとに英語→対応する日本語→必要な解説）──
   const chunks = useMemo(
-    () => sentenceAnalyses.flatMap((analysis, si) =>
-      analysis.meaningPhraseSequence.map((phrase, phraseIndex) => ({
+    () => sentenceAnalyses.flatMap((analysis, si) => {
+      const explanationTexts = readingPhraseExplanationTexts(analysis)
+      return analysis.meaningPhraseSequence.map((phrase, phraseIndex) => ({
         ...phrase,
         en: phrase.spokenEn ?? phrase.en,
         displayEn: phrase.displayEn ?? phrase.en,
+        learnerExplanation: explanationTexts[phraseIndex],
         phraseIndex,
         phraseCount: analysis.meaningPhraseSequence.length,
         si,
         isSentenceEnd: phraseIndex === analysis.meaningPhraseSequence.length - 1,
         sentenceJa: passage?.sentences[si]?.ja ?? '',
-      })),
-    ),
+      }))
+    }),
     [passage, sentenceAnalyses],
   )
   const paragraphs = useMemo(() => {
@@ -154,9 +154,9 @@ export function ReaderScreen() {
           lang: 'ja-JP',
           style: 'translation',
         },
-        ...(chunk.explanation
+        ...(chunk.learnerExplanation
           ? [{
-              text: chunk.explanation,
+              text: chunk.learnerExplanation,
               label: '読み方・文法上の注意',
               lang: 'ja-JP',
               style: 'explanation',
@@ -194,58 +194,13 @@ export function ReaderScreen() {
     })
   }
 
-  const speakBlockPair = (block) => {
-    const phrasePairs = learnerPhrasePairsForBlock(block)
-    if (!phrasePairs.length) return
-    const items = phrasePairs.map((pair, index) => {
-      const explanation = pair.grammar ?? pair.explanation ?? pair.roleNote
-      return {
-        label: pair.displayEn ?? pair.en,
-        segments: [
-          {
-            text: pair.spokenEn ?? pair.en,
-            label: '英語フレーズ',
-            lang: 'en-US',
-            style: 'narration',
-          },
-          {
-            text: `前からは、「${japanesePhraseSpeechText(pair.ja)}」と取ります。`,
-            label: '対応する日本語',
-            lang: 'ja-JP',
-            style: 'translation',
-          },
-          ...(explanation
-            ? [{
-                text: explanation,
-                label: 'フレーズ解説',
-                lang: 'ja-JP',
-                style: 'explanation',
-              }]
-            : []),
-          ...(index === phrasePairs.length - 1
-            ? [{
-                text: `ブロック全体の読み方は、${block.translationGuide} 文法上の注意は、${block.note}`,
-                label: 'ブロック全体の解説',
-                lang: 'ja-JP',
-                style: 'explanation',
-              }]
-            : []),
-        ],
-      }
-    })
-    playSpeechItems(items, {
-      title: 'ブロック解説',
-      rate: settings.ttsRate,
-      voiceURI: settings.ttsVoiceURI,
-      japaneseVoiceURI: settings.ttsJapaneseVoiceURI,
-      autoAdvance: true,
-    })
-  }
-
   const speakReviewedPhrasePair = (phraseItem, phraseIndex) => {
     const phrases = sentenceAnalysis?.meaningPhraseSequence ?? [phraseItem]
-    const items = phrases.map((item) => {
-      const grammar = item.grammar ?? item.explanation
+    const explanationTexts = readingPhraseExplanationTexts({
+      meaningPhraseSequence: phrases,
+    })
+    const items = phrases.map((item, index) => {
+      const grammar = explanationTexts[index]
       return {
         label: item.displayEn ?? item.en,
         segments: [
@@ -296,6 +251,11 @@ export function ReaderScreen() {
   const level = getLevel(passage.level)
   const sentence = activeIdx != null ? passage.sentences[activeIdx] : null
   const sentenceAnalysis = activeIdx != null ? sentenceAnalyses[activeIdx] : null
+  const visiblePhraseExplanations = readingPhraseExplanationTexts(sentenceAnalysis)
+  const visibleBlockExplanations = readingBlockExplanationTexts(
+    sentenceAnalysis,
+    visiblePhraseExplanations,
+  )
 
   const openSentence = (i) => {
     dismissSpeechPlayer()
@@ -566,11 +526,11 @@ export function ReaderScreen() {
               </div>
             )}
 
-            {/* 括弧付き構文と文全体の流れ */}
+            {/* 節・句の区分と文全体の流れ */}
             <section className="border-y border-brand-100 bg-white py-3">
               <div className="mb-2 flex items-center gap-1.5 text-brand-600">
                 <Lightbulb size={16} />
-                <span className="text-[11px] font-extrabold uppercase tracking-wide">構文の見取り図</span>
+                <span className="text-[11px] font-extrabold uppercase tracking-wide">長文読解</span>
               </div>
               <div className="mb-2 flex flex-wrap gap-2 text-[11px] font-bold text-ink/55">
                 <span><b className="text-sky-700">( )</b> は節（S+Vを含む）</span>
@@ -595,9 +555,6 @@ export function ReaderScreen() {
               className="border-y border-emerald-100 bg-emerald-50/40 py-3"
               data-reading-phrase-method={sentenceAnalysis.phraseMethod}
             >
-                <p className="mb-3 text-xs font-bold leading-relaxed text-emerald-950/65">
-                  英文を発音できて意味が通るまとまりに区切ります。S・V・O・C・Mはフレーズ内の構造を確かめる注釈です。
-                </p>
                 <div className="space-y-2" aria-label="英文と対応する日本語">
                   {sentenceAnalysis.meaningPhraseSequence.map((phraseItem, phraseIndex) => {
                     return (
@@ -634,135 +591,68 @@ export function ReaderScreen() {
                             </p>
                           </div>
                         </div>
-                        <p className="mt-2 border-l-2 border-sky-300 bg-sky-50/70 px-2 py-1.5 text-xs font-bold leading-relaxed text-ink/65">
-                          文法・読み方：{phraseItem.grammar ?? phraseItem.explanation}
-                        </p>
+                        {visiblePhraseExplanations[phraseIndex] && (
+                          <p className="mt-2 border-l-2 border-sky-300 bg-sky-50/70 px-2 py-1.5 text-xs font-bold leading-relaxed text-ink/65">
+                            読み方のポイント：{visiblePhraseExplanations[phraseIndex]}
+                          </p>
+                        )}
                       </article>
                     )
                   })}
                 </div>
             </section>
 
-            {/* 節・句・文法ブロックごとの解説 */}
-            <section>
-              <div className="mb-2 flex items-center justify-between gap-2">
-                <div className="flex items-center gap-1.5 text-brand-600">
-                  <BookOpen size={16} />
-                  <span className="text-[11px] font-extrabold uppercase tracking-wide">
-                    {sentenceAnalysis.phraseExplanationGuide
-                      ? '構造を確かめる文法ブロック解説'
-                      : '節・句・文法ブロック解説'}
-                  </span>
-                </div>
-                <span className="text-[10px] font-bold text-ink/40">
-                  音声は英語 → 日本語 → 読み方・文法
+            {/* 上段の意味フレーズを再掲せず、節・句ごとの固有情報だけを示す。 */}
+            <section data-reading-grammar-explanations>
+              <div className="mb-2 flex items-center gap-1.5 text-brand-600">
+                <BookOpen size={16} />
+                <span className="text-[11px] font-extrabold uppercase tracking-wide">
+                  文法解説
                 </span>
               </div>
               <div className="space-y-2">
-                {sentenceAnalysis.blocks.map((block, index) => (
-                  <article key={block.id} className="border border-brand-100 bg-white p-3">
-                    <div className="flex items-start gap-2">
-                      {learnerPhrasePairsForBlock(block).length > 0 ? (
-                        <button
-                          onClick={() => speakBlockPair(block)}
-                          aria-label={`ブロック${index + 1}を英語フレーズ、対応する日本語、講師解説の順で再生`}
-                          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-100 text-brand-700 active:bg-brand-200"
-                        >
-                          <SpeakerWave size={17} />
-                        </button>
-                      ) : (
-                        <span
-                          aria-hidden="true"
-                          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-ink/5 text-ink/30"
-                        >
-                          <BookOpen size={17} />
+                {sentenceAnalysis.blocks.map((block, index) => {
+                  const readingExplanation = visibleBlockExplanations[index * 2]
+                  const grammarExplanation = visibleBlockExplanations[index * 2 + 1]
+                  return (
+                    <article key={block.id} className="border border-brand-100 bg-white p-3">
+                      <div className="flex flex-wrap items-center gap-1 text-[10px] font-extrabold">
+                        <span className="bg-brand-50 px-1.5 py-0.5 text-brand-700">
+                          {index + 1}. {block.label}
                         </span>
-                      )}
-                      <div className="min-w-0 flex-1">
-                        <div className="flex flex-wrap items-center gap-1 text-[10px] font-extrabold">
-                          <span className="bg-brand-50 px-1.5 py-0.5 text-brand-700">
-                            {index + 1}. {block.label}
+                        <span className={cx(
+                          'border px-1.5 py-0.5',
+                          ROLE_STYLE[block.role] ?? 'border-brand-200 bg-brand-50 text-brand-800',
+                        )}>
+                          {block.role ? `文中の働き ${block.role}` : '主節'}
+                        </span>
+                        {blockFlowParts(block).length > 0 && (
+                          <span className="bg-ink/5 px-1.5 py-0.5 text-ink/60">
+                            内部の順：{flowPattern(blockFlowParts(block))}
                           </span>
-                          <span className={cx(
-                            'border px-1.5 py-0.5',
-                            ROLE_STYLE[block.role] ?? 'border-brand-200 bg-brand-50 text-brand-800',
-                          )}>
-                            {block.role ? `文中の働き ${block.role}` : '主節'}
-                          </span>
-                          {blockFlowParts(block).length > 0 && (
-                            <span className="bg-ink/5 px-1.5 py-0.5 text-ink/60">
-                              内部の順：{flowPattern(blockFlowParts(block))}
-                            </span>
-                          )}
-                        </div>
-                        <p lang="en" className="mt-1 text-xs font-bold leading-relaxed text-ink/55">
-                          {block.displayEn}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="mt-2 space-y-1.5" aria-label="英語と対応する日本語">
-                        {learnerPhrasePairsForBlock(block).map((pair, phraseIndex) => (
-                        <div
-                          key={`${block.id}-${phraseIndex}`}
-                          className="grid grid-cols-[1.5rem_minmax(0,1fr)] gap-2 border border-brand-100 bg-brand-50/60 px-2 py-2"
-                        >
-                          <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white text-[10px] font-black text-brand-600">
-                            {phraseIndex + 1}
-                          </span>
-                          <div className="min-w-0">
-                            <div
-                              className="mb-1 flex flex-wrap gap-1"
-                              data-translation-role-flow
-                              aria-label={`${pair.roleHeading}の順`}
-                            >
-                              {pair.roleParts.map((part) => (
-                                <span
-                                  key={`${part.role}-${part.en}`}
-                                  className={cx(
-                                    'max-w-full border px-1.5 py-0.5 text-[10px] font-extrabold leading-relaxed',
-                                    ROLE_STYLE[part.role] ?? 'border-brand-200 bg-brand-50 text-brand-800',
-                                  )}
-                                >
-                                  {part.code} {part.en}
-                                </span>
-                              ))}
-                            </div>
-                            <p lang="en" className="font-bold leading-relaxed text-ink">
-                              {pair.displayEn ?? pair.en}
-                            </p>
-                            {pair.structureEn && (
-                              <p className="mt-0.5 text-[10px] font-bold text-ink/45">
-                                音声では原文どおり「{pair.spokenEn}」と発音
-                              </p>
-                            )}
-                            <p className="mt-0.5 text-sm font-bold leading-relaxed text-brand-700">
-                              {pair.ja}
-                            </p>
-                            <p className="mt-1 text-[10px] font-bold leading-relaxed text-ink/50">
-                              {pair.grammar ?? pair.explanation ?? pair.roleNote}
-                            </p>
-                          </div>
-                        </div>
-                        ))}
-                        {learnerPhrasePairsForBlock(block).length === 0 && (
-                          <p className="border border-brand-100 bg-brand-50/60 px-2 py-2 text-xs font-bold leading-relaxed text-ink/55">
-                            この部分は、前後を含む上段の意味フレーズにまとめています。ここでは文法構造だけを確認します。
-                          </p>
                         )}
-                    </div>
-                    {blockFlowParts(block).length > 1 && (
-                      <div className="mt-2">
-                        <SvocFlow parts={blockFlowParts(block)} />
                       </div>
-                    )}
-                    <p className="mt-2 border-l-2 border-sky-300 bg-sky-50/70 px-2 py-1.5 text-xs font-bold leading-relaxed text-sky-900/75">
-                      読み方：{block.translationGuide}
-                    </p>
-                    <p className="mt-2 border-l-2 border-amber-300 bg-amber-50/70 px-2 py-1.5 text-xs font-bold leading-relaxed text-ink/65">
-                      文法上の注意：{block.note}
-                    </p>
-                  </article>
-                ))}
+                      <p lang="en" className="mt-1 text-xs font-bold leading-relaxed text-ink/55">
+                        {block.displayEn}
+                      </p>
+                      {blockFlowParts(block).length > 1 && (
+                        <div className="mt-2">
+                          <SvocFlow parts={blockFlowParts(block)} />
+                        </div>
+                      )}
+                      {readingExplanation && (
+                        <p className="mt-2 border-l-2 border-sky-300 bg-sky-50/70 px-2 py-1.5 text-xs font-bold leading-relaxed text-sky-900/75">
+                          読み方：{readingExplanation}
+                        </p>
+                      )}
+                      {grammarExplanation && (
+                        <p className="mt-2 border-l-2 border-amber-300 bg-amber-50/70 px-2 py-1.5 text-xs font-bold leading-relaxed text-ink/65">
+                          文法上の注意：{grammarExplanation}
+                        </p>
+                      )}
+                    </article>
+                  )
+                })}
               </div>
             </section>
 

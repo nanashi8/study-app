@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { buildLearningPowerProfile } from '../lib/learningPower.js'
-import { Button, Card, ProgressBar, ProgressRing, cx } from './ui.jsx'
+import { Button, Card, cx } from './ui.jsx'
 
 const DIAGNOSTIC_SKILL_META = {
   vocab: { emoji: '📖', label: '英単語' },
@@ -9,508 +9,497 @@ const DIAGNOSTIC_SKILL_META = {
   reading: { emoji: '📚', label: '長文読解' },
 }
 
+const SCIENCE_REFERENCES = [
+  {
+    id: 'retrieval',
+    label: '想起練習',
+    practice: '答えを見る前に、自力で一度思い出す。',
+    citation: 'Roediger & Karpicke (2006)',
+    href: 'https://doi.org/10.1111/j.1467-9280.2006.01693.x',
+  },
+  {
+    id: 'spacing',
+    label: '分散学習',
+    practice: '同じ項目を一度に詰め込まず、間隔を空けて再学習する。',
+    citation: 'Cepeda et al. (2006)',
+    href: 'https://doi.org/10.1037/0033-2909.132.3.354',
+  },
+  {
+    id: 'implementation',
+    label: '実行意図',
+    practice: '「いつ・どこで・何をするか」を、もし〜なら〜する形式で決める。',
+    citation: 'Gollwitzer (1999)',
+    href: 'https://doi.org/10.1037/0003-066X.54.7.493',
+  },
+]
+
 const asPercent = (value) =>
   value == null ? '—' : `${Math.round(value * 100)}%`
 
 const formatCount = (value) =>
   new Intl.NumberFormat('ja-JP', { maximumFractionDigits: 1 }).format(value ?? 0)
 
-function readinessLabel(readiness) {
-  if (readiness === 'stable') return '分析精度：安定'
-  if (readiness === 'growing') return '分析精度：成長中'
-  if (readiness === 'starting') return '分析精度：初期'
-  return '分析データを収集中'
-}
-
-function powerReadinessLabel(readiness) {
-  if (readiness === 'stable') return '信頼度：安定'
-  if (readiness === 'growing') return '信頼度：成長中'
-  if (readiness === 'starting') return '信頼度：初期'
-  return 'まだ計測前'
-}
-
-function hourColor(stat) {
-  if (!stat.scored) return '#e2e8f0'
-  const accuracy = stat.accuracy ?? 0
-  if (accuracy >= 0.85) return '#10b981'
-  if (accuracy >= 0.7) return '#22c55e'
-  if (accuracy >= 0.55) return '#f59e0b'
-  return '#fb7185'
-}
-
-function clockGradient(hourly) {
-  const stops = []
-  for (const stat of hourly) {
-    const start = stat.hour * 15
-    const end = start + 15
-    stops.push(`#f8fafc ${start}deg ${start + 1.2}deg`)
-    stops.push(`${hourColor(stat)} ${start + 1.2}deg ${end - 1.2}deg`)
-    stops.push(`#f8fafc ${end - 1.2}deg ${end}deg`)
-  }
-  return `conic-gradient(${stops.join(',')})`
-}
-
-function formatBestWindow(window) {
-  if (!window) return null
-  const start = String(window.start).padStart(2, '0')
-  const end = String(window.end).padStart(2, '0')
-  const crossesMidnight = window.end <= window.start
-  return `${start}:00〜${crossesMidnight ? '翌' : ''}${end}:00`
-}
-
-function Metric({ label, value, note, tone = 'brand' }) {
-  const tones = {
-    brand: 'bg-brand-50 text-brand-700',
-    emerald: 'bg-emerald-50 text-emerald-700',
-    amber: 'bg-amber-50 text-amber-700',
-  }
-  return (
-    <div className={cx('rounded-2xl p-3 text-center', tones[tone])}>
-      <p className="text-[10px] font-extrabold opacity-60">{label}</p>
-      <p className="mt-0.5 font-display text-xl font-extrabold">{value}</p>
-      <p className="mt-0.5 text-[9px] font-bold opacity-55">{note}</p>
-    </div>
-  )
-}
-
-function formatDiagnosticDate(value) {
+const formatDiagnosticDate = (value) => {
   const date = new Date(value)
   if (Number.isNaN(date.getTime())) return '実施日不明'
   return new Intl.DateTimeFormat('ja-JP', {
     year: 'numeric',
-    month: 'numeric',
-    day: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
   }).format(date)
+}
+
+const formatWindow = (window) => {
+  if (!window) return null
+  const start = String(window.start).padStart(2, '0')
+  const end = String(window.end).padStart(2, '0')
+  return `${start}:00〜${window.end <= window.start ? '翌' : ''}${end}:00`
+}
+
+const confidenceLabel = (confidence) => {
+  if (confidence === 'stable') return '安定'
+  if (confidence === 'growing') return '更新中'
+  if (confidence === 'starting') return '初期'
+  return '未判定'
+}
+
+const readinessLabel = (readiness) => {
+  if (readiness === 'stable') return '十分'
+  if (readiness === 'growing') return '増加中'
+  if (readiness === 'starting') return '少数'
+  return '未収集'
+}
+
+const gradeFor = (score) => {
+  if (score == null) return '—'
+  if (score >= 85) return 'A'
+  if (score >= 70) return 'B'
+  if (score >= 55) return 'C'
+  return 'D'
+}
+
+const gradeClass = (grade) => ({
+  A: 'bg-emerald-50 text-emerald-800',
+  B: 'bg-sky-50 text-sky-800',
+  C: 'bg-amber-50 text-amber-800',
+  D: 'bg-rose-50 text-rose-800',
+}[grade] ?? 'bg-slate-100 text-slate-500')
+
+function ReportSection({ number, title, note, children, className = '' }) {
+  return (
+    <Card className={cx('overflow-hidden rounded-xl border-slate-300 shadow-none', className)}>
+      <div className="flex items-start gap-3 border-b border-slate-300 bg-slate-100 px-3 py-2.5">
+        <span className="grid h-6 w-6 shrink-0 place-items-center rounded-sm bg-slate-800 text-[10px] font-extrabold text-white">
+          {number}
+        </span>
+        <div className="min-w-0 flex-1">
+          <h2 className="font-display text-base font-extrabold text-slate-950">{title}</h2>
+          {note && <p className="mt-0.5 text-[10px] font-bold leading-relaxed text-slate-500">{note}</p>}
+        </div>
+      </div>
+      {children}
+    </Card>
+  )
+}
+
+function ReportHeader({ profile, analysis }) {
+  return (
+    <header
+      className="overflow-hidden rounded-xl border-2 border-slate-700 bg-white"
+      data-learning-analysis-report
+    >
+      <div className="flex items-start justify-between gap-3 border-b border-slate-300 bg-slate-800 px-4 py-3 text-white">
+        <div>
+          <p className="text-[10px] font-extrabold tracking-[0.2em] text-slate-300">ACADEMIC PERFORMANCE RECORD</p>
+          <h1 className="mt-0.5 font-display text-xl font-extrabold">学習成績分析票</h1>
+        </div>
+        <div className="border border-slate-500 px-2 py-1 text-right">
+          <p className="text-[9px] font-bold text-slate-300">分析信頼度</p>
+          <p className="text-xs font-extrabold">{confidenceLabel(profile.confidence)}</p>
+        </div>
+      </div>
+      <dl className="grid grid-cols-2 divide-x divide-y divide-slate-300 text-xs sm:grid-cols-4">
+        <div className="p-3">
+          <dt className="text-[10px] font-extrabold text-slate-500">総合参考値</dt>
+          <dd className="mt-0.5 font-display text-xl font-extrabold tabular-nums text-slate-950">
+            {profile.score ?? '—'}<span className="ml-1 text-[10px] text-slate-500">/ 100</span>
+          </dd>
+        </div>
+        <div className="p-3">
+          <dt className="text-[10px] font-extrabold text-slate-500">採点済み標本</dt>
+          <dd className="mt-0.5 font-display text-xl font-extrabold tabular-nums text-slate-950">{formatCount(analysis.scored)}</dd>
+        </div>
+        <div className="p-3">
+          <dt className="text-[10px] font-extrabold text-slate-500">学習済み項目</dt>
+          <dd className="mt-0.5 font-display text-xl font-extrabold tabular-nums text-slate-950">{formatCount(analysis.learnedItems)}</dd>
+        </div>
+        <div className="p-3">
+          <dt className="text-[10px] font-extrabold text-slate-500">データ充足</dt>
+          <dd className="mt-1 text-sm font-extrabold text-slate-800">{readinessLabel(analysis.trackingReadiness)}</dd>
+        </div>
+      </dl>
+    </header>
+  )
+}
+
+function SummaryTable({ profile, analysis, dueCount }) {
+  const rows = [
+    ['想起正答率', asPercent(analysis.retentionRate), `${analysis.correct}/${analysis.scored || 0}回答`, '採点済み回答で再現できた割合'],
+    ['定着段階指数', `${analysis.memoryScore}/100`, `${analysis.learnedItems}項目`, 'SRSの反復段階から算出した参考値'],
+    ['長期段階', `${analysis.stages.longPct}%`, `${analysis.stages.long}項目`, 'SRS BOX 4以上の構成比'],
+    ['復習待ち', `${dueCount}項目`, dueCount ? '対応が必要' : '滞留なし', '期限到来済み英単語の件数'],
+    ['活動日', `${profile.habit.activeDays28}/28日`, `直近7日 ${profile.habit.activeDays7}日`, '回答を1件以上記録した日'],
+    ['記録日平均', analysis.averageInputsPerActiveDay == null ? '—' : `${formatCount(analysis.averageInputsPerActiveDay)}回`, `${analysis.activeDays}記録日`, '活動日だけを分母にした平均'],
+    ['推奨時間帯', formatWindow(analysis.bestWindow) ?? '19:00〜22:00（仮）', analysis.bestWindow ? `${analysis.bestWindow.scored}回答` : '標本不足', '3時間帯で5回答以上のとき個別推定'],
+  ]
+
+  return (
+    <ReportSection number="01" title="総合所見" note="観測値、標本数、推定の根拠を分けて記載">
+      <div className="overflow-x-auto">
+        <table className="w-full min-w-[35rem] border-collapse text-xs" data-analysis-summary-table>
+          <thead>
+            <tr className="border-b border-slate-300 bg-white text-left text-[10px] font-extrabold text-slate-500">
+              <th className="px-3 py-2">評価項目</th>
+              <th className="px-3 py-2">現在値</th>
+              <th className="px-3 py-2">標本・状態</th>
+              <th className="px-3 py-2">定義</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map(([label, value, evidence, definition]) => (
+              <tr key={label} className="border-b border-slate-200 last:border-0">
+                <th className="px-3 py-2 text-left font-extrabold text-slate-800">{label}</th>
+                <td className="px-3 py-2 font-extrabold tabular-nums text-slate-950">{value}</td>
+                <td className="px-3 py-2 font-bold text-slate-600">{evidence}</td>
+                <td className="px-3 py-2 font-bold text-slate-500">{definition}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </ReportSection>
+  )
 }
 
 function DiagnosticSnapshot({ diagnostic, onOpen }) {
   if (!diagnostic) {
     return (
-      <Card className="p-4" data-diagnostic-status>
-        <p className="text-[10px] font-extrabold tracking-[0.14em] text-brand-500">
-          LEARNING DIAGNOSTIC
-        </p>
-        <h2 className="mt-1 font-display text-lg font-extrabold text-ink">学習診断の現在地</h2>
-        <p className="mt-1 text-[11px] font-bold leading-relaxed text-ink/45">
-          まだ診断結果がありません。28問で英語4分野の得意と復習優先を確認できます。
-        </p>
-        <Button full className="mt-3" variant="secondary" onClick={onOpen}>
-          学習診断を受ける
-        </Button>
-      </Card>
+      <ReportSection number="02" title="最新の学習診断" note="英語4分野・28問の統一診断" className="p-0">
+        <div className="p-4" data-diagnostic-status>
+          <p className="text-sm font-extrabold text-slate-900">診断結果：未実施</p>
+          <p className="mt-1 text-xs font-bold leading-relaxed text-slate-500">
+            まだ診断結果がありません。分野間を同じ条件で比較するには、28問の診断を実施してください。
+          </p>
+          <Button full className="mt-3" variant="secondary" onClick={onOpen}>学習診断を受ける</Button>
+        </div>
+      </ReportSection>
     )
   }
 
-  const skillResults = Array.isArray(diagnostic.skillResults)
-    ? diagnostic.skillResults
-    : []
-  const strength = skillResults.find(
-    (skill) => skill.id === diagnostic.strengthSkillId,
-  )
-  const priority = skillResults.find(
-    (skill) => skill.id === diagnostic.prioritySkillId,
-  )
-  const strengthMeta = DIAGNOSTIC_SKILL_META[strength?.id]
-  const priorityMeta = DIAGNOSTIC_SKILL_META[priority?.id]
+  const skillResults = Array.isArray(diagnostic.skillResults) ? diagnostic.skillResults : []
+  const strength = skillResults.find((skill) => skill.id === diagnostic.strengthSkillId)
+  const priority = skillResults.find((skill) => skill.id === diagnostic.prioritySkillId)
   const total = Number(diagnostic.total) || 0
   const score = Number(diagnostic.score) || 0
   const accuracy = Number.isFinite(diagnostic.accuracy)
     ? diagnostic.accuracy
-    : total
-      ? score / total
-      : 0
+    : total ? score / total : 0
 
   return (
-    <Card className="overflow-hidden" data-diagnostic-status>
-      <div className="bg-gradient-to-br from-indigo-600 via-violet-600 to-fuchsia-600 p-4 text-white">
-        <div className="flex items-start justify-between gap-3">
-          <div>
-            <p className="text-[10px] font-extrabold tracking-[0.14em] text-white/55">
-              LATEST DIAGNOSTIC
-            </p>
-            <h2 className="mt-1 font-display text-lg font-extrabold">最新の学習診断</h2>
-          </div>
-          <span className="rounded-full bg-white/15 px-2.5 py-1 text-[10px] font-extrabold text-white/75">
-            {formatDiagnosticDate(diagnostic.completedAt)}
-          </span>
-        </div>
-
-        <div className="mt-3 grid grid-cols-3 gap-2">
-          <div className="rounded-2xl bg-white/10 px-2 py-3 text-center">
-            <p className="text-[9px] font-bold text-white/55">推定偏差値</p>
-            <p className="font-display text-2xl font-extrabold">{diagnostic.deviation ?? '—'}</p>
-          </div>
-          <div className="rounded-2xl bg-white/10 px-2 py-3 text-center">
-            <p className="text-[9px] font-bold text-white/55">正答率</p>
-            <p className="font-display text-2xl font-extrabold">{Math.round(accuracy * 100)}%</p>
-            <p className="text-[8px] font-bold text-white/45">{score}/{total}問</p>
-          </div>
-          <div className="rounded-2xl bg-white/10 px-2 py-3 text-center">
-            <p className="text-[9px] font-bold text-white/55">英検目安</p>
-            <p className="font-display text-lg font-extrabold leading-7">
-              {diagnostic.estimatedLevel?.label ?? '—'}
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <div className="p-4">
-        <div className="grid grid-cols-2 gap-2">
-          <div className="rounded-2xl bg-emerald-50 p-3">
-            <p className="text-[9px] font-extrabold text-emerald-600">今回の得意</p>
-            <p className="mt-1 text-sm font-extrabold text-emerald-900">
-              {strengthMeta ? `${strengthMeta.emoji} ${strengthMeta.label}` : '— 判定中'}
-            </p>
-            <p className="mt-0.5 text-[10px] font-bold text-emerald-700/65">
-              {strength ? `${strength.correct}/${strength.total}問` : '結果を確認してください'}
-            </p>
-          </div>
-          <div className="rounded-2xl bg-amber-50 p-3">
-            <p className="text-[9px] font-extrabold text-amber-600">復習優先</p>
-            <p className="mt-1 text-sm font-extrabold text-amber-900">
-              {priorityMeta ? `${priorityMeta.emoji} ${priorityMeta.label}` : '🎉 明確な弱点なし'}
-            </p>
-            <p className="mt-0.5 text-[10px] font-bold text-amber-700/65">
-              {priority ? `${priority.correct}/${priority.total}問` : '次は総合演習へ'}
-            </p>
-          </div>
-        </div>
-        <p className="mt-2 text-[9px] font-bold leading-relaxed text-ink/35">
-          最新28問の一部を表示。偏差値と級はアプリ内モデルによる推定です。
-        </p>
-        <Button full className="mt-3" variant="secondary" onClick={onOpen}>
-          学習診断の4分野を見る
-        </Button>
-      </div>
-    </Card>
-  )
-}
-
-function LearningPowerProfile({ profile }) {
-  const { recommendation } = profile
-
-  return (
-    <Card className="overflow-hidden">
-      <div className="bg-gradient-to-br from-indigo-600 via-violet-600 to-fuchsia-600 p-4 text-white">
-        <div className="flex items-start gap-3">
-          <ProgressRing
-            value={(profile.score ?? 0) / 100}
-            size={82}
-            stroke={8}
-            color="#ffffff"
-            track="rgba(255,255,255,0.2)"
-          >
-            <span className="font-display text-2xl font-extrabold leading-none">
-              {profile.score ?? '—'}
-            </span>
-            <span className="mt-0.5 text-[8px] font-extrabold text-white/60">参考値 / 100</span>
-          </ProgressRing>
-
-          <div className="min-w-0 flex-1">
-            <div className="flex flex-wrap items-center gap-1.5">
-              <p className="text-[9px] font-extrabold tracking-[0.16em] text-white/55">
-                LEARNING POWER
-              </p>
-              <span className="rounded-full bg-white/15 px-2 py-0.5 text-[9px] font-extrabold text-white/80">
-                {powerReadinessLabel(profile.confidence)}
-              </span>
-            </div>
-            <h2 className="mt-1 font-display text-lg font-extrabold">学習脳力プロフィール</h2>
-            <p className="mt-1 text-[10px] font-bold leading-relaxed text-white/65">
-              テスト結果と学習習慣から、伸ばし方を選ぶための現在値を推定
-            </p>
-          </div>
-        </div>
-
-        <div className="mt-4 grid grid-cols-2 gap-2">
-          {profile.dimensions.map((item) => (
-            <div
-              key={item.id}
-              className="min-w-0 rounded-2xl bg-white/10 p-3 ring-1 ring-inset ring-white/10"
-            >
-              <div className="flex items-baseline justify-between gap-1">
-                <p className="truncate text-[10px] font-extrabold text-white/70">{item.label}</p>
-                <p className="font-display text-lg font-extrabold">
-                  {item.score ?? '—'}
-                </p>
-              </div>
-              <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-white/15">
-                <div
-                  className="h-full rounded-full bg-white/85"
-                  style={{ width: `${item.score ?? 0}%` }}
-                />
-              </div>
-              <p className="mt-1.5 truncate text-[8px] font-bold text-white/50">
-                {item.evidence}
-              </p>
+    <ReportSection number="02" title="最新の学習診断" note={`実施日 ${formatDiagnosticDate(diagnostic.completedAt)}`}>
+      <div data-diagnostic-status>
+        <dl className="grid grid-cols-2 divide-x divide-y divide-slate-200 border-b border-slate-300 text-xs sm:grid-cols-4">
+          {[
+            ['得点', `${score}/${total}`],
+            ['正答率', `${Math.round(accuracy * 100)}%`],
+            ['推定偏差値', diagnostic.deviation ?? '—'],
+            ['英検目安', diagnostic.estimatedLevel?.label ?? '—'],
+          ].map(([label, value]) => (
+            <div key={label} className="p-3 text-center">
+              <dt className="text-[10px] font-extrabold text-slate-500">{label}</dt>
+              <dd className="mt-0.5 font-display text-lg font-extrabold tabular-nums text-slate-950">{value}</dd>
             </div>
           ))}
-        </div>
-
-        <div className="mt-3 rounded-2xl bg-slate-950/20 p-3 ring-1 ring-inset ring-white/10">
-          <div className="flex items-center justify-between gap-2">
-            <p className="text-[9px] font-extrabold tracking-wider text-amber-200">今の活かし方</p>
-            <span className="rounded-full bg-amber-300/15 px-2 py-0.5 text-[9px] font-extrabold text-amber-100">
-              {recommendation.intensity}
-            </span>
-          </div>
-          <p className="mt-1 text-sm font-extrabold">{recommendation.title}</p>
-          <p className="mt-1 text-[9px] font-bold leading-relaxed text-white/55">
-            {recommendation.reason}
-          </p>
+        </dl>
+        <table className="w-full border-collapse text-xs">
+          <tbody>
+            <tr className="border-b border-slate-200">
+              <th className="w-28 bg-emerald-50 px-3 py-2 text-left font-extrabold text-emerald-900">今回の得意</th>
+              <td className="px-3 py-2 font-bold text-slate-700">
+                {strength ? `${DIAGNOSTIC_SKILL_META[strength.id]?.emoji ?? ''} ${DIAGNOSTIC_SKILL_META[strength.id]?.label ?? strength.id}（${strength.correct}/${strength.total}問）` : '判定中'}
+              </td>
+            </tr>
+            <tr>
+              <th className="w-28 bg-amber-50 px-3 py-2 text-left font-extrabold text-amber-900">復習優先</th>
+              <td className="px-3 py-2 font-bold text-slate-700">
+                {priority ? `${DIAGNOSTIC_SKILL_META[priority.id]?.emoji ?? ''} ${DIAGNOSTIC_SKILL_META[priority.id]?.label ?? priority.id}（${priority.correct}/${priority.total}問）` : '明確な弱点なし'}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div className="p-3">
+          <p className="text-[10px] font-bold leading-relaxed text-slate-500">偏差値と級はアプリ内問題による参考推定で、公式試験結果ではありません。</p>
+          <Button full className="mt-2" variant="secondary" onClick={onOpen}>学習診断の4分野を見る</Button>
         </div>
       </div>
-    </Card>
+    </ReportSection>
   )
 }
 
-function RetentionFlow({ analysis }) {
-  const retention = asPercent(analysis.retentionRate)
-  const forgetting = asPercent(analysis.forgettingRate)
+function DimensionTable({ profile }) {
+  return (
+    <ReportSection number="03" title="評定表" note="4軸の現在値。A〜Dは固定能力ではなく、現時点の履歴区分">
+      <div className="overflow-x-auto">
+        <table className="w-full min-w-[34rem] border-collapse text-xs" data-dimension-grade-table>
+          <thead>
+            <tr className="border-b border-slate-300 text-left text-[10px] font-extrabold text-slate-500">
+              <th className="px-3 py-2">評価領域</th>
+              <th className="px-3 py-2 text-center">評定</th>
+              <th className="px-3 py-2 text-right">参考値</th>
+              <th className="px-3 py-2">測定根拠</th>
+              <th className="px-3 py-2">留意点</th>
+            </tr>
+          </thead>
+          <tbody>
+            {profile.dimensions.map((item) => {
+              const grade = gradeFor(item.score)
+              return (
+                <tr key={item.id} className="border-b border-slate-200 last:border-0">
+                  <th className="px-3 py-2 text-left font-extrabold text-slate-800">{item.label}</th>
+                  <td className="px-3 py-2 text-center">
+                    <span className={cx('inline-grid h-7 w-7 place-items-center rounded-sm font-display text-sm font-extrabold', gradeClass(grade))}>{grade}</span>
+                  </td>
+                  <td className="px-3 py-2 text-right font-extrabold tabular-nums text-slate-950">{item.score ?? '—'}</td>
+                  <td className="px-3 py-2 font-bold text-slate-600">{item.evidence}</td>
+                  <td className="px-3 py-2 font-bold text-slate-500">{item.note}</td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
+    </ReportSection>
+  )
+}
+
+function RetentionDistribution({ analysis }) {
+  const stages = [
+    { id: 'long', label: '長期段階', count: analysis.stages.long, pct: analysis.stages.longPct, color: '#047857', criterion: 'SRS BOX 4以上' },
+    { id: 'short', label: '短期段階', count: analysis.stages.short, pct: analysis.stages.shortPct, color: '#475569', criterion: 'SRS BOX 1〜3' },
+    { id: 'fragile', label: '要再学習', count: analysis.stages.fragile, pct: analysis.stages.fragilePct, color: '#b45309', criterion: 'SRS BOX 0' },
+  ]
 
   return (
-    <Card className="overflow-hidden">
-      <div className="bg-gradient-to-br from-slate-900 via-indigo-950 to-violet-950 p-4 text-white">
-        <div className="flex items-center justify-between gap-2">
-          <div>
-            <p className="text-[10px] font-extrabold tracking-[0.16em] text-white/45">
-              INPUT → MEMORY → OUTPUT
-            </p>
-            <h2 className="mt-1 font-display text-lg font-extrabold">記憶の定着フロー</h2>
-          </div>
-          <span className="rounded-full bg-white/10 px-2.5 py-1 text-[10px] font-extrabold text-white/70">
-            {readinessLabel(analysis.trackingReadiness)}
-          </span>
-        </div>
-
-        <div className="mt-4 grid grid-cols-[1fr_auto_1.2fr_auto_1fr] items-center gap-1">
-          <div className="rounded-2xl bg-sky-400/15 px-2 py-3 text-center ring-1 ring-inset ring-sky-300/20">
-            <p className="text-[9px] font-extrabold text-sky-200">INPUT</p>
-            <p className="font-display text-2xl font-extrabold">{formatCount(analysis.inputs)}</p>
-            <p className="text-[9px] font-bold text-white/50">学習・回答</p>
-          </div>
-          <span className="text-lg font-extrabold text-white/25">›</span>
-          <div className="rounded-2xl bg-violet-400/15 px-2 py-3 text-center ring-1 ring-inset ring-violet-300/20">
-            <p className="text-[9px] font-extrabold text-violet-200">MEMORY</p>
-            <p className="font-display text-2xl font-extrabold">{analysis.memoryScore}</p>
-            <p className="text-[9px] font-bold text-white/50">定着推定 / 100</p>
-          </div>
-          <span className="text-lg font-extrabold text-white/25">›</span>
-          <div className="rounded-2xl bg-rose-400/15 px-2 py-3 text-center ring-1 ring-inset ring-rose-300/20">
-            <p className="text-[9px] font-extrabold text-rose-200">OUTPUT</p>
-            <p className="font-display text-2xl font-extrabold">{forgetting}</p>
-            <p className="text-[9px] font-bold text-white/50">忘却・未想起</p>
-          </div>
-        </div>
-
-        <div className="mt-3 flex items-center justify-between rounded-xl bg-white/5 px-3 py-2 text-[10px] font-bold text-white/55">
-          <span>想起できた割合</span>
-          <span className="font-display text-sm font-extrabold text-emerald-300">{retention}</span>
+    <ReportSection number="04" title="記憶段階構成" note="項目数の内訳は比較に有効なため、構成比を帯グラフで併記">
+      <div className="p-3">
+        <div className="flex h-5 overflow-hidden border border-slate-300 bg-slate-100" aria-label="記憶段階の構成比">
+          {analysis.learnedItems > 0 && stages.map((stage) => (
+            <span key={stage.id} style={{ width: `${stage.pct}%`, backgroundColor: stage.color }} />
+          ))}
         </div>
       </div>
-    </Card>
+      <table className="w-full border-collapse text-xs">
+        <thead>
+          <tr className="border-y border-slate-300 bg-slate-50 text-left text-[10px] font-extrabold text-slate-500">
+            <th className="px-3 py-2">段階</th>
+            <th className="px-3 py-2 text-right">項目数</th>
+            <th className="px-3 py-2 text-right">構成比</th>
+            <th className="px-3 py-2">判定基準</th>
+          </tr>
+        </thead>
+        <tbody>
+          {stages.map((stage) => (
+            <tr key={stage.id} className="border-b border-slate-200 last:border-0">
+              <th className="px-3 py-2 text-left font-extrabold text-slate-800">
+                <span className="mr-2 inline-block h-2.5 w-2.5" style={{ backgroundColor: stage.color }} />{stage.label}
+              </th>
+              <td className="px-3 py-2 text-right font-bold tabular-nums">{stage.count}</td>
+              <td className="px-3 py-2 text-right font-extrabold tabular-nums">{stage.pct}%</td>
+              <td className="px-3 py-2 font-bold text-slate-500">{stage.criterion}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </ReportSection>
   )
 }
 
-function MemoryBalance({ analysis }) {
-  const { stages } = analysis
-  const total = Math.max(1, analysis.learnedItems)
-  const longEnd = (stages.long / total) * 100
-  const shortEnd = longEnd + (stages.short / total) * 100
-  const donut = analysis.learnedItems
-    ? `conic-gradient(#10b981 0 ${longEnd}%, #6366f1 ${longEnd}% ${shortEnd}%, #f59e0b ${shortEnd}% 100%)`
-    : 'conic-gradient(#e2e8f0 0 100%)'
-
+function SkillTable({ analysis }) {
   return (
-    <Card className="p-4">
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <h2 className="font-display text-base font-extrabold text-ink">短期記憶・長期記憶</h2>
-          <p className="mt-0.5 text-[10px] font-bold text-ink/40">
-            反復間隔の段階から推定・学習済み{analysis.learnedItems}項目
-          </p>
+    <ReportSection number="05" title="分野別成績" note="最低3回答以上を得意・弱点判定に使用">
+      {analysis.skills.length ? (
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[31rem] border-collapse text-xs" data-skill-analysis-table>
+            <thead>
+              <tr className="border-b border-slate-300 text-left text-[10px] font-extrabold text-slate-500">
+                <th className="px-3 py-2">分野</th>
+                <th className="px-3 py-2 text-right">回答</th>
+                <th className="px-3 py-2 text-right">正答</th>
+                <th className="px-3 py-2 text-right">正答率</th>
+                <th className="w-36 px-3 py-2">比較図</th>
+              </tr>
+            </thead>
+            <tbody>
+              {analysis.skills.map((skill) => (
+                <tr key={skill.id} className="border-b border-slate-200 last:border-0">
+                  <th className="px-3 py-2 text-left font-extrabold text-slate-800">{skill.emoji} {skill.label}</th>
+                  <td className="px-3 py-2 text-right font-bold tabular-nums">{skill.scored}</td>
+                  <td className="px-3 py-2 text-right font-bold tabular-nums">{skill.correct}</td>
+                  <td className="px-3 py-2 text-right font-extrabold tabular-nums">{asPercent(skill.accuracy)}</td>
+                  <td className="px-3 py-2">
+                    <div className="h-2 overflow-hidden border border-slate-200 bg-slate-100">
+                      <span className="block h-full" style={{ width: `${Math.round((skill.accuracy ?? 0) * 100)}%`, backgroundColor: skill.color }} />
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
-        <div
-          className="relative flex h-20 w-20 shrink-0 items-center justify-center rounded-full"
-          style={{ background: donut }}
-          aria-label={`長期記憶${stages.longPct}%、短期記憶${stages.shortPct}%`}
-        >
-          <div className="flex h-12 w-12 flex-col items-center justify-center rounded-full bg-white">
-            <span className="font-display text-lg font-extrabold text-ink">{analysis.memoryScore}</span>
-            <span className="text-[8px] font-bold text-ink/35">定着度</span>
-          </div>
-        </div>
-      </div>
-
-      <div className="mt-3 grid grid-cols-3 gap-2">
-        <Metric label="長期記憶" value={`${stages.longPct}%`} note={`${stages.long}項目`} tone="emerald" />
-        <Metric label="短期記憶" value={`${stages.shortPct}%`} note={`${stages.short}項目`} />
-        <Metric label="要再学習" value={`${stages.fragilePct}%`} note={`${stages.fragile}項目`} tone="amber" />
-      </div>
-
-      <div className="mt-4 grid grid-cols-2 gap-2">
-        <div className="rounded-2xl bg-paper p-3">
-          <p className="text-[10px] font-extrabold text-ink/40">学習頻度</p>
-          <p className="mt-1 font-display text-lg font-extrabold text-ink">
-            {analysis.averageInputsPerActiveDay == null
-              ? '計測中'
-              : `1日 ${formatCount(analysis.averageInputsPerActiveDay)}回`}
-          </p>
-          <p className="text-[9px] font-bold text-ink/35">記録日の平均</p>
-        </div>
-        <div className="rounded-2xl bg-paper p-3">
-          <p className="text-[10px] font-extrabold text-ink/40">長期記憶まで</p>
-          <p className="mt-1 font-display text-lg font-extrabold text-ink">
-            {analysis.repetitionsToLongTerm == null
-              ? '計測中'
-              : `平均 ${formatCount(analysis.repetitionsToLongTerm)}回`}
-          </p>
-          <p className="text-[9px] font-bold text-ink/35">長期段階の項目から推定</p>
-        </div>
-      </div>
-    </Card>
+      ) : (
+        <p className="p-4 text-center text-xs font-bold text-slate-500">採点済み回答が増えると分野別成績を表示します。</p>
+      )}
+    </ReportSection>
   )
 }
 
-function ForgettingCurve({ analysis }) {
+function IntervalAnalysis({ analysis }) {
   const hasIntervals = analysis.intervals.some((interval) => interval.scored > 0)
   return (
-    <Card className="p-4">
-      <h2 className="font-display text-base font-extrabold text-ink">反復間隔と想起率</h2>
-      <p className="mt-0.5 text-[10px] font-bold text-ink/40">
-        前回学習からの時間別に「思い出せた割合」を集計
-      </p>
-
+    <ReportSection number="06" title="復習間隔別・想起率" note="同じ教材を時間を空けて解いた回答だけを集計">
       {hasIntervals ? (
-        <div className="mt-4 space-y-3">
+        <div className="space-y-3 p-4" data-interval-recall-chart>
           {analysis.intervals.map((interval) => (
-            <div key={interval.id}>
-              <div className="mb-1 flex items-center gap-2 text-[10px] font-bold">
-                <span className="w-20 text-ink/55">{interval.label}</span>
-                <span className="ml-auto text-ink/35">{formatCount(interval.scored)}回答</span>
-                <span className="w-10 text-right font-extrabold text-brand-700">
-                  {asPercent(interval.accuracy)}
-                </span>
+            <div key={interval.id} className="grid grid-cols-[5.5rem_1fr_3.4rem] items-center gap-2 text-[10px] font-bold">
+              <span className="text-slate-600">{interval.label}</span>
+              <div className="h-4 overflow-hidden border border-slate-200 bg-slate-100">
+                <span
+                  className="block h-full bg-slate-700"
+                  style={{ width: `${Math.round((interval.accuracy ?? 0) * 100)}%` }}
+                />
               </div>
-              <ProgressBar
-                value={interval.accuracy ?? 0}
-                color={(interval.accuracy ?? 0) >= 0.7 ? '#10b981' : '#f59e0b'}
-              />
+              <span className="text-right tabular-nums text-slate-700">{asPercent(interval.accuracy)} / n={interval.scored}</span>
             </div>
           ))}
         </div>
       ) : (
-        <div className="mt-4 rounded-2xl border border-dashed border-brand-200 bg-brand-50/60 p-4 text-center">
-          <p className="text-sm font-extrabold text-brand-700">忘却カーブを計測中</p>
-          <p className="mt-1 text-[10px] font-bold leading-relaxed text-ink/45">
-            同じ教材を時間を空けて2回以上学習すると、間隔ごとの想起率が表示されます。
-          </p>
-        </div>
-      )}
-    </Card>
-  )
-}
-
-function SkillProfile({ analysis }) {
-  return (
-    <Card className="p-4">
-      <h2 className="font-display text-base font-extrabold text-ink">得意・不得意の傾向</h2>
-      <p className="mt-0.5 text-[10px] font-bold text-ink/40">分野別の採点済み回答から比較</p>
-
-      {(analysis.strength || analysis.weakness) && (
-        <div className="mt-3 grid grid-cols-2 gap-2">
-          <div className="rounded-2xl bg-emerald-50 p-3">
-            <p className="text-[9px] font-extrabold text-emerald-600">得意分野</p>
-            <p className="mt-1 text-sm font-extrabold text-emerald-900">
-              {analysis.strength?.emoji} {analysis.strength?.label ?? '計測中'}
-            </p>
-            <p className="mt-0.5 font-display text-lg font-extrabold text-emerald-700">
-              {asPercent(analysis.strength?.accuracy)}
-            </p>
-          </div>
-          <div className="rounded-2xl bg-amber-50 p-3">
-            <p className="text-[9px] font-extrabold text-amber-600">伸びしろ</p>
-            <p className="mt-1 text-sm font-extrabold text-amber-950">
-              {analysis.weakness?.emoji} {analysis.weakness?.label ?? '計測中'}
-            </p>
-            <p className="mt-0.5 font-display text-lg font-extrabold text-amber-700">
-              {asPercent(analysis.weakness?.accuracy)}
-            </p>
-          </div>
-        </div>
-      )}
-
-      {analysis.skills.length ? (
-        <div className="mt-4 space-y-3">
-          {analysis.skills.map((skill) => (
-            <div key={skill.id}>
-              <div className="mb-1 flex items-center gap-2 text-[10px] font-bold">
-                <span>{skill.emoji}</span>
-                <span className="text-ink/60">{skill.label}</span>
-                <span className="ml-auto text-ink/35">{formatCount(skill.scored)}回答</span>
-                <span className="w-10 text-right font-extrabold text-ink/65">
-                  {asPercent(skill.accuracy)}
-                </span>
-              </div>
-              <ProgressBar value={skill.accuracy ?? 0} color={skill.color} />
-            </div>
-          ))}
-        </div>
-      ) : (
-        <p className="mt-4 rounded-2xl bg-paper p-4 text-center text-xs font-bold text-ink/40">
-          採点済みの学習が増えると、分野別傾向を表示します。
+        <p className="p-4 text-xs font-bold leading-relaxed text-slate-500">
+          間隔別データは未収集です。同じ教材を時間を空けて2回以上学習すると表示します。
         </p>
       )}
-    </Card>
+    </ReportSection>
   )
 }
 
-function EfficiencyClock({ analysis }) {
-  const gradient = clockGradient(analysis.hourly)
-  const bestLabel = formatBestWindow(analysis.bestWindow)
-  const bestAccuracy = analysis.bestWindow
-    ? analysis.bestWindow.correct / analysis.bestWindow.scored
-    : null
+function hourCellClass(stat) {
+  if (!stat.scored) return 'bg-slate-100 text-slate-400'
+  if (stat.accuracy >= 0.8) return 'bg-emerald-100 text-emerald-950'
+  if (stat.accuracy >= 0.6) return 'bg-amber-100 text-amber-950'
+  return 'bg-rose-100 text-rose-950'
+}
+
+function HourlyMatrix({ analysis }) {
+  return (
+    <ReportSection number="07" title="時間帯別成績" note="各時刻の正答率と標本数。5回答未満は推奨時間帯の判定に不使用">
+      <div className="grid grid-cols-6 gap-px bg-slate-300 p-px" data-hourly-analysis-matrix>
+        {analysis.hourly.map((stat) => (
+          <div key={stat.hour} className={cx('min-h-14 p-1.5 text-center', hourCellClass(stat))}>
+            <p className="text-[9px] font-extrabold tabular-nums">{String(stat.hour).padStart(2, '0')}時</p>
+            <p className="mt-0.5 text-xs font-extrabold tabular-nums">{stat.scored ? asPercent(stat.accuracy) : '—'}</p>
+            <p className="text-[8px] font-bold opacity-60">n={stat.scored}</p>
+          </div>
+        ))}
+      </div>
+    </ReportSection>
+  )
+}
+
+function AdviceReport({ profile, analysis, dueCount, onNavigate }) {
+  const recommendation = profile.recommendation
+  const scheduledWindow = formatWindow(analysis.bestWindow) ?? '19:00〜19:20（仮）'
+  const successCriterion = recommendation.id === 'measure'
+    ? '診断28問を完了する'
+    : dueCount > 0
+      ? `復習待ちを${Math.min(dueCount, 20)}項目進める`
+      : '10問を解き、正誤を記録する'
+  const encouragement = profile.confidence === 'empty'
+    ? '最初の10回答が分析の出発点です。小さく始めても、記録が次の教材選びを具体化します。'
+    : analysis.retentionRate != null && analysis.retentionRate >= 0.8
+      ? '想起できた割合は安定しています。今の方法を維持し、弱点分野へ少しずつ負荷を移す段階です。'
+      : dueCount > 0
+        ? '復習待ちは失敗の印ではなく、思い出す練習を入れる時期を示す作業票です。今日の一部を処理すれば前進です。'
+        : '記録が増えるたびに推定は更新されます。結果を能力の固定評価ではなく、次の一手を選ぶ材料として使ってください。'
 
   return (
-    <Card className="p-4">
-      <h2 className="font-display text-base font-extrabold text-ink">24時間・学習効率時計</h2>
-      <p className="mt-0.5 text-[10px] font-bold text-ink/40">
-        時刻別の正答率を平滑化して、集中しやすい3時間帯を推定
-      </p>
-
-      <div className="mx-auto mt-5 w-full max-w-[260px] px-5">
-        <div className="relative aspect-square">
-          <div
-            className="absolute inset-0 rounded-full shadow-inner"
-            style={{ background: gradient }}
-            aria-label="24時間の時刻別学習効率"
-          />
-          <div className="absolute inset-[23%] flex flex-col items-center justify-center rounded-full bg-white text-center shadow-card">
-            <span className="text-[9px] font-extrabold text-ink/35">おすすめ時間帯</span>
-            <span className="mt-1 font-display text-base font-extrabold text-brand-700">
-              {bestLabel ?? '計測中'}
-            </span>
-            <span className="mt-0.5 text-[9px] font-bold text-ink/40">
-              {bestAccuracy == null
-                ? '各時間帯5回答で判定'
-                : `想起率 ${asPercent(bestAccuracy)}`}
-            </span>
+    <ReportSection number="08" title="学習処方・次の行動" note="現在の結果と進捗から、実行可能な一手へ変換">
+      <div className="p-4">
+        <div className="border-l-4 border-slate-800 bg-slate-50 p-3">
+          <div className="flex items-center justify-between gap-2">
+            <p className="text-[10px] font-extrabold tracking-[0.12em] text-slate-500">優先度：{recommendation.intensity}</p>
+            <span className="border border-slate-300 bg-white px-2 py-0.5 text-[10px] font-extrabold text-slate-600">個別提案</span>
           </div>
-          <span className="absolute left-1/2 top-[-18px] -translate-x-1/2 text-[10px] font-extrabold text-ink/45">0時</span>
-          <span className="absolute right-[-24px] top-1/2 -translate-y-1/2 text-[10px] font-extrabold text-ink/45">6時</span>
-          <span className="absolute bottom-[-18px] left-1/2 -translate-x-1/2 text-[10px] font-extrabold text-ink/45">12時</span>
-          <span className="absolute left-[-29px] top-1/2 -translate-y-1/2 text-[10px] font-extrabold text-ink/45">18時</span>
+          <h3 className="mt-1 font-display text-lg font-extrabold text-slate-950">{recommendation.title}</h3>
+          <p className="mt-1 text-xs font-bold leading-relaxed text-slate-600">{recommendation.reason}</p>
         </div>
-      </div>
 
-      <div className="mt-6 flex items-center justify-center gap-3 text-[9px] font-bold text-ink/40">
-        <span className="flex items-center gap-1"><i className="h-2.5 w-2.5 rounded-full bg-emerald-500" />高効率</span>
-        <span className="flex items-center gap-1"><i className="h-2.5 w-2.5 rounded-full bg-amber-400" />中間</span>
-        <span className="flex items-center gap-1"><i className="h-2.5 w-2.5 rounded-full bg-rose-400" />要調整</span>
-        <span className="flex items-center gap-1"><i className="h-2.5 w-2.5 rounded-full bg-slate-200" />未計測</span>
+        <table className="mt-3 w-full border-collapse text-xs" data-action-plan-table>
+          <tbody>
+            {[
+              ['実施内容', recommendation.actionLabel],
+              ['実施時刻', scheduledWindow],
+              ['成功基準', successCriterion],
+              ['実施方法', '答えを見る前に想起し、誤答は間隔を空けて再確認'],
+              ['次回確認', '実施後の正答率・復習待ち件数で再判定'],
+            ].map(([label, value]) => (
+              <tr key={label} className="border-b border-slate-200 last:border-0">
+                <th className="w-24 bg-slate-100 px-3 py-2 text-left font-extrabold text-slate-700">{label}</th>
+                <td className="px-3 py-2 font-bold leading-relaxed text-slate-700">{value}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        <p className="mt-3 border border-emerald-200 bg-emerald-50 px-3 py-2.5 text-xs font-extrabold leading-relaxed text-emerald-900">
+          {encouragement}
+        </p>
+
+        {recommendation.screen && (
+          <Button
+            full
+            className="mt-3"
+            onClick={() => onNavigate?.(recommendation.screen, recommendation.params ?? {})}
+          >
+            {recommendation.actionLabel}
+          </Button>
+        )}
+
+        <details className="mt-3 border border-slate-300 bg-white" data-scientific-basis>
+          <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between px-3 text-xs font-extrabold text-slate-700">
+            <span>助言の科学的根拠と限界</span>
+            <span className="text-slate-400">3原則</span>
+          </summary>
+          <div className="space-y-3 border-t border-slate-200 p-3">
+            {SCIENCE_REFERENCES.map((reference) => (
+              <div key={reference.id}>
+                <p className="text-xs font-extrabold text-slate-800">{reference.label}</p>
+                <p className="mt-0.5 text-[10px] font-bold leading-relaxed text-slate-600">{reference.practice}</p>
+                <a
+                  href={reference.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-0.5 inline-block text-[10px] font-extrabold text-sky-700 underline"
+                >
+                  {reference.citation}
+                </a>
+              </div>
+            ))}
+            <p className="border-t border-slate-200 pt-2 text-[10px] font-bold leading-relaxed text-slate-500">
+              文献は一般的な学習原則の根拠です。このアプリ内の個人別推定は観察履歴に基づき、因果効果や医学的状態を証明するものではありません。
+            </p>
+          </div>
+        </details>
       </div>
-    </Card>
+    </ReportSection>
   )
 }
 
@@ -527,6 +516,7 @@ export function LearningAnalyticsPanel({
   stats,
   dueCount,
   onOpenDiagnostic,
+  onNavigate,
 }) {
   const profile = useMemo(
     () => buildLearningPowerProfile({
@@ -561,30 +551,20 @@ export function LearningAnalyticsPanel({
   const analysis = profile.analysis
 
   return (
-    <section className="space-y-4">
-      <div className="px-1">
-        <p className="text-[10px] font-extrabold tracking-[0.14em] text-brand-500">LEARNING ANALYTICS</p>
-        <h2 className="font-display text-xl font-extrabold text-ink">学習脳力と記憶の分析</h2>
-        <p className="mt-1 text-[11px] font-bold leading-relaxed text-ink/45">
-          テスト結果・回答・復習間隔・学習時刻から、現在の学び方を推定します。
-        </p>
-      </div>
+    <section className="space-y-4" aria-label="学習成績の詳細分析">
+      <ReportHeader profile={profile} analysis={analysis} />
+      <SummaryTable profile={profile} analysis={analysis} dueCount={dueCount} />
+      <DiagnosticSnapshot diagnostic={profile.diagnostic} onOpen={onOpenDiagnostic} />
+      <DimensionTable profile={profile} />
+      <RetentionDistribution analysis={analysis} />
+      <SkillTable analysis={analysis} />
+      <IntervalAnalysis analysis={analysis} />
+      <HourlyMatrix analysis={analysis} />
+      <AdviceReport profile={profile} analysis={analysis} dueCount={dueCount} onNavigate={onNavigate} />
 
-      <DiagnosticSnapshot
-        diagnostic={profile.diagnostic}
-        onOpen={onOpenDiagnostic}
-      />
-      <LearningPowerProfile profile={profile} />
-      <RetentionFlow analysis={analysis} />
-      <MemoryBalance analysis={analysis} />
-      <ForgettingCurve analysis={analysis} />
-      <SkillProfile analysis={analysis} />
-      <EfficiencyClock analysis={analysis} />
-
-      <p className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-[10px] font-bold leading-relaxed text-slate-500">
-        学習脳力は固定された才能やIQではなく、学習履歴に基づく変化する参考値です。
-        脳波・医療検査による測定ではありません。
-        時刻別分析と忘却曲線は、今後の回答が増えるほど個人の傾向に近づきます。
+      <p className="border border-slate-300 bg-slate-100 px-3 py-2.5 text-[10px] font-bold leading-relaxed text-slate-600">
+        総合参考値と評定は、固定された才能やIQではなく、学習履歴に基づいて変化する参考値です。
+        脳波・医療検査・公式試験による測定ではありません。標本数が少ない区分は、今後の回答で大きく変動します。
       </p>
     </section>
   )

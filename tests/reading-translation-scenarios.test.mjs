@@ -9,6 +9,10 @@ import {
   READING_MODIFIER_PHRASE_WORD_LIMIT,
   analyzeReadingSentence,
 } from '../src/lib/reading-grammar.js'
+import {
+  readingBlockExplanationTexts,
+  readingPhraseExplanationTexts,
+} from '../src/lib/explanationDedup.js'
 
 const normalizeEnglish = (value = '') => value
   .replace(/\s+([,.;:!?])/g, '$1')
@@ -298,7 +302,7 @@ test('長文画面は文全体の意味フレーズを英語→対応する日�
     'japanesePhraseSpeechText(chunk.ja)',
     automaticEnglish,
   )
-  const automaticExplanation = source.indexOf('text: chunk.explanation', automaticJapanese)
+  const automaticExplanation = source.indexOf('text: chunk.learnerExplanation', automaticJapanese)
   assert.ok(
     automaticStart >= 0 &&
     automaticEnglish > automaticStart &&
@@ -307,13 +311,13 @@ test('長文画面は文全体の意味フレーズを英語→対応する日�
     '自動再生が英語フレーズ→対応する日本語→必要な解説の順ではない',
   )
 
-  const manualStart = source.indexOf('const speakBlockPair')
-  const manualEnglish = source.indexOf('text: pair.spokenEn ?? pair.en', manualStart)
+  const manualStart = source.indexOf('const speakReviewedPhrasePair')
+  const manualEnglish = source.indexOf('text: item.spokenEn ?? item.en', manualStart)
   const manualJapanese = source.indexOf(
-    'japanesePhraseSpeechText(pair.ja)',
+    'japanesePhraseSpeechText(item.ja)',
     manualEnglish,
   )
-  const manualExplanationSpeech = source.indexOf('text: explanation', manualJapanese)
+  const manualExplanationSpeech = source.indexOf('text: grammar', manualJapanese)
   assert.ok(
     manualStart >= 0 &&
     manualEnglish > manualStart &&
@@ -321,32 +325,47 @@ test('長文画面は文全体の意味フレーズを英語→対応する日�
     manualExplanationSpeech > manualJapanese,
     '個別再生が英語フレーズ→対応する日本語→読解・文法の順ではない',
   )
-  assert.match(source, /ブロック全体の読み方は、\$\{block\.translationGuide\}/)
-
-  assert.match(source, /learnerPhrasePairsForBlock\(block\)/)
-  assert.match(source, /block\?\.meaningPhrasePairs \?\? block\?\.phrasePairs/)
-  assert.match(source, /phrasePairs\.map/)
+  assert.doesNotMatch(source, /speakBlockPair|learnerPhrasePairsForBlock/)
   assert.match(source, /analysis\.meaningPhraseSequence\.map/)
   assert.match(source, /sentenceAnalysis\.meaningPhraseSequence\.map/)
-  assert.match(source, /pair\.spokenEn \?\? pair\.en/)
-  assert.match(source, /pair\.displayEn \?\? pair\.en/)
-  assert.match(source, /pair\.grammar \?\? pair\.explanation \?\? pair\.roleNote/)
   assert.match(source, /data-reading-phrase-method=\{sentenceAnalysis\.phraseMethod\}/)
   assert.match(source, /text:\s*item\.spokenEn \?\? item\.en/)
   assert.match(source, /japanesePhraseSpeechText\(item\.ja\)/)
-  assert.match(source, /data-translation-role-flow/)
-  assert.match(source, /pair\.roleNote/)
   assert.match(source, /<SpeakerWave size=\{14\} \/> 講師音声/)
   assert.doesNotMatch(source, /フレーズ直訳・講師音声/)
   assert.match(source, /文全体を自然な日本語に整えると/)
   assert.doesNotMatch(source, /前からの直訳：\{pair\.ja\}/)
   assert.doesNotMatch(source, /フレーズ訳：\{phraseItem\.ja\}/)
   assert.doesNotMatch(source, /前から読むフレーズ解説/)
-  assert.match(source, /英文を発音できて意味が通るまとまりに区切ります/)
-  assert.match(source, /S・V・O・C・Mはフレーズ内の構造を確かめる注釈です/)
-  assert.match(source, /前後を含む上段の意味フレーズにまとめています/)
-  assert.match(source, /\{pair\.ja\}/)
-  assert.match(source, /読み方：\{block\.translationGuide\}/)
-  assert.match(source, /文法上の注意：\{block\.note\}/)
+  assert.match(source, />長文読解</)
+  assert.match(source, /文法解説/)
+  assert.doesNotMatch(source, /英文を発音できて意味が通るまとまりに区切ります/)
+  assert.doesNotMatch(source, /S・V・O・C・Mはフレーズ内の構造を確かめる注釈です/)
+  assert.match(source, /読み方：\{readingExplanation\}/)
+  assert.match(source, /文法上の注意：\{grammarExplanation\}/)
   assert.match(source, /label:\s*'読み方・文法上の注意'/)
+})
+
+test('長文363文は上段と文法解説で同一説明を二重表示しない', () => {
+  let sentenceCount = 0
+  let phraseCount = 0
+  for (const passage of PASSAGES) {
+    for (const sentence of passage.sentences) {
+      sentenceCount += 1
+      const analysis = analyzeReadingSentence(sentence)
+      const phraseTexts = readingPhraseExplanationTexts(analysis)
+      const blockTexts = readingBlockExplanationTexts(analysis, phraseTexts)
+      const visible = [...phraseTexts, ...blockTexts]
+        .map((text) => text.replace(/\s+/g, ' ').trim())
+        .filter(Boolean)
+      phraseCount += analysis.meaningPhraseSequence.length
+      assert.equal(
+        new Set(visible).size,
+        visible.length,
+        `${passage.id}: ${sentence.en}`,
+      )
+    }
+  }
+  assert.equal(sentenceCount, 363)
+  assert.equal(phraseCount, 2290)
 })

@@ -14,7 +14,7 @@ import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
 import { Button, ProgressBar, IconButton, Chip, cx } from '../components/ui.jsx'
-import { Close, Check, ArrowRight } from '../components/Icons.jsx'
+import { ArrowRight, Bookmark, BookmarkFilled, Check, Close } from '../components/Icons.jsx'
 import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { buildGrammarInstructorExplanation } from '../lib/instructorExplanations.js'
 
@@ -34,6 +34,8 @@ export function GrammarQuizScreen() {
   const navigate = useStore((s) => s.navigate)
   const back = useStore((s) => s.back)
   const review = useStore((s) => s.review)
+  const toggleNotebookItem = useStore((s) => s.toggleNotebookItem)
+  const learningNotebook = useStore((s) => s.learningNotebook)
   const color = params.levelColor ?? '#6366f1'
 
   const xpAtStart = useRef(useStore.getState().stats.xp)
@@ -82,6 +84,7 @@ export function GrammarQuizScreen() {
     ? buildGrammarInstructorExplanation(item, selected, selectedGuidance)
     : null
   const longSentenceTranslation = longSentenceTranslationFor(item)
+  const saved = learningNotebook?.entries?.[`grammar:${item.id}`]?.saved === true
 
   const finish = () => {
     const xpGained = useStore.getState().stats.xp - xpAtStart.current
@@ -129,6 +132,14 @@ export function GrammarQuizScreen() {
       <div className="flex items-center gap-3 px-3 py-3">
         <IconButton onClick={back} aria-label="やめる"><Close size={22} /></IconButton>
         <div className="flex-1"><ProgressBar value={i / deck.length} color={color} /></div>
+        <IconButton
+          onClick={() => toggleNotebookItem('grammar', item.id)}
+          aria-label={saved ? `${item.topic}の問題をマイ学習ノートから外す` : `${item.topic}の問題をマイ学習ノートへ保存`}
+          aria-pressed={saved}
+          className={saved ? 'text-amber-600' : 'text-ink/30'}
+        >
+          {saved ? <BookmarkFilled size={20} /> : <Bookmark size={20} />}
+        </IconButton>
         <SpeechSettingsButton compact />
         <span className="w-12 text-right text-sm font-extrabold text-ink/50">{i + 1}/{deck.length}</span>
       </div>
@@ -195,10 +206,7 @@ export function GrammarQuizScreen() {
               className="mt-3"
             />
             <div className="mt-3 border-t border-brand-100 pt-3" data-grammar-choice-guidance>
-              <p className="font-display text-sm font-extrabold text-ink/70">選択肢の使い分け</p>
-              <p className="mt-1 text-xs font-bold leading-relaxed text-ink/45">
-                誤答も、別の場面で使う形なのか、英語では使わない形なのかを確認しよう。
-              </p>
+              <p className="font-display text-sm font-extrabold text-ink/70">選択肢解説</p>
               <div className="mt-2 space-y-2">
                 {choiceGuides.map(({ choice, guidance }) => {
                   const chosenWrong = selected === choice
@@ -221,16 +229,11 @@ export function GrammarQuizScreen() {
                         <span className="font-display text-sm font-extrabold text-ink">
                           {choice}
                         </span>
-                        <span
-                          className={cx(
-                            'rounded-full px-2 py-0.5 text-[10px] font-extrabold',
-                            usable
-                              ? 'bg-brand-100 text-brand-700'
-                              : 'bg-rose-100 text-rose-700',
-                          )}
-                        >
-                          {usable ? '別の場面で使う' : 'この形は使わない'}
-                        </span>
+                        {!usable && (
+                          <span className="rounded-full bg-rose-100 px-2 py-0.5 text-[10px] font-extrabold text-rose-700">
+                            この形は使わない
+                          </span>
+                        )}
                         {chosenWrong && (
                           <span className="rounded-full bg-rose-500 px-2 py-0.5 text-[10px] font-extrabold text-white">
                             あなたの回答

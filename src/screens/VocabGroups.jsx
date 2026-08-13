@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import {
   ALL_WORDS,
+  VOCAB_FIELD_GROUPS,
   VOCAB_FIELDS,
   VOCAB_POS,
   wordsByField,
@@ -18,47 +19,6 @@ const MODES = [
   { id: 'pos', short: '品詞別', emoji: '🔤' },
 ]
 
-const FIELD_EMOJI = {
-  一般: '🌐',
-  '動作・行為': '🏃',
-  '性質・状態': '🎨',
-  '様子・程度': '📊',
-  機能語: '🧩',
-  '時間・数量': '⏱️',
-  心理: '💭',
-  '家族・人': '👥',
-  '食・生活': '🏠',
-  料理: '🍳',
-  自然: '🌿',
-  気象: '🌦️',
-  環境: '🌏',
-  科学: '🔬',
-  医学: '🩺',
-  技術: '💻',
-  測定: '📐',
-  学問: '🎓',
-  教育: '🏫',
-  言語: '💬',
-  文学: '📖',
-  歴史: '🏛️',
-  地理: '🗺️',
-  社会: '🤝',
-  経済: '📈',
-  ビジネス: '💼',
-  政治: '🏢',
-  法律: '⚖️',
-  軍事: '🛡️',
-  宗教: '🕊️',
-  交通: '🚆',
-  農業: '🌾',
-  建築: '🏗️',
-  メディア: '📰',
-  スポーツ: '⚽',
-  芸術: '🖼️',
-  音楽: '🎵',
-  副詞: '⚡',
-}
-
 const POS_META = {
   名: { emoji: '🧱', desc: '人・もの・場所・考え', color: '#0ea5e9' },
   動: { emoji: '🏃', desc: '動作・状態・変化', color: '#6366f1' },
@@ -68,8 +28,6 @@ const POS_META = {
   接: { emoji: '🔗', desc: '語・句・文をつなぐ', color: '#ec4899' },
   代: { emoji: '👤', desc: '名詞の代わりをする語', color: '#14b8a6' },
 }
-
-const FIELD_COLORS = ['#6366f1', '#0ea5e9', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899']
 
 function GroupCard({ label, detail, icon, color, words, srs, onStudy, onQuiz }) {
   const progress = wordProgress(words, srs)
@@ -138,15 +96,15 @@ export function VocabGroupsScreen() {
 
   const groups =
     mode === 'field'
-      ? VOCAB_FIELDS.map((field, index) => ({
-          id: field,
-          label: field,
-          detail: null,
-          icon: FIELD_EMOJI[field] ?? '📚',
-          color: FIELD_COLORS[index % FIELD_COLORS.length],
-          words: wordsByField(field),
-          source: { type: 'field', field },
-          title: `分野：${field}`,
+      ? VOCAB_FIELD_GROUPS.map((field) => ({
+          id: field.id,
+          label: field.label,
+          detail: field.description,
+          icon: field.emoji,
+          color: field.color,
+          words: wordsByField(field.id),
+          source: { type: 'field', field: field.id },
+          title: `分野：${field.label}`,
         }))
       : mode === 'pos'
         ? VOCAB_POS.map(({ id, label }) => ({
@@ -240,7 +198,9 @@ export function VocabGroupsScreen() {
                 </h2>
               </div>
               <p className="mt-1 text-xs font-bold leading-relaxed text-brand-800/65">
-                各分類の全単語から、復習どきと未学習を優先して10語ずつ出題します。
+                {mode === 'field'
+                  ? '細かな分類を10の学習テーマにまとめました。復習どきと未学習を優先して10語ずつ出題します。'
+                  : '各品詞の全単語から、復習どきと未学習を優先して10語ずつ出題します。'}
               </p>
             </div>
 

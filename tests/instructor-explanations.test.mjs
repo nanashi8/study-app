@@ -61,7 +61,7 @@ const assertExplanation = (value, label) => {
   assert.equal(
     isCompleteInstructorExplanation(value),
     true,
-    `${label} に「正解・根拠・誤答・次の解法」のいずれかがありません: ${JSON.stringify(value)}`,
+    `${label} に「正解・根拠・消去法・考え方」のいずれかがありません: ${JSON.stringify(value)}`,
   )
   for (const key of ['answer', 'evidence', 'trap', 'strategy']) {
     assert.ok(value[key].length >= 20, `${label}.${key} が短すぎます: ${value[key]}`)
@@ -743,4 +743,15 @@ test('採点を伴う全問題画面が共通の講師解説を表示する', as
     const source = await readFile(new URL(`../src/screens/${screen}`, import.meta.url), 'utf8')
     assert.match(source, /InstructorExplanation/, `${screen} に共通講師解説がありません`)
   }
+})
+
+test('共通解説の表示名と各フィールドの意味契約を一致させる', async () => {
+  const source = await readFile(
+    new URL('../src/components/InstructorExplanation.jsx', import.meta.url),
+    'utf8',
+  )
+  assert.match(source, /key: 'evidence', label: '根拠'/)
+  assert.match(source, /key: 'trap', label: '消去法'/)
+  assert.match(source, /key: 'strategy', label: '考え方'/)
+  assert.doesNotMatch(source, /根拠を一本化|誤答を切る|次も解ける型/)
 })

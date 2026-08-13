@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useStore } from '../store/useStore.js'
-import { getWord, neighborWords } from '../data/vocab.js'
+import { getWord, neighborWords, vocabFieldFor } from '../data/vocab.js'
 import { getLevel } from '../data/levels.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { SpeakButton } from '../components/SpeakButton.jsx'
@@ -147,7 +147,7 @@ export function WordDetailScreen() {
               <Chip color={level.color}>英検{level.label}</Chip>
               {word.field && (
                 <span className="rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-bold text-emerald-600 ring-1 ring-emerald-100">
-                  {word.field}
+                  {vocabFieldFor(word)}
                 </span>
               )}
             </div>

@@ -155,13 +155,17 @@ test('日をまたぐ得意時間帯を判定し、日本語表示にする', ()
   assert.equal(formatWindow(window), '23:00〜翌02:00')
 })
 
-test('画面では推定値をIQや固定能力と区別し、ホーム推薦に利用する', () => {
+test('画面では推定値をIQや固定能力と区別し、統一メニューの推薦に利用する', () => {
   const analyticsSource = readFileSync(
     new URL('../src/components/LearningAnalytics.jsx', import.meta.url),
     'utf8',
   )
-  const homeSource = readFileSync(
-    new URL('../src/screens/Home.jsx', import.meta.url),
+  const menuSource = readFileSync(
+    new URL('../src/components/SpeechSettings.jsx', import.meta.url),
+    'utf8',
+  )
+  const advisorSource = readFileSync(
+    new URL('../src/components/LearningAdvisor.jsx', import.meta.url),
     'utf8',
   )
 
@@ -172,8 +176,12 @@ test('画面では推定値をIQや固定能力と区別し、ホーム推薦に
   assert.match(analyticsSource, /今回の得意/)
   assert.match(analyticsSource, /復習優先/)
   assert.match(analyticsSource, /profile\.diagnostic/)
-  assert.match(homeSource, /learningPower\.recommendation/)
-  assert.match(homeSource, /navigate\(recommendation\.screen, recommendation\.params\)/)
+  assert.match(menuSource, /buildLearningPowerProfile/)
+  assert.match(menuSource, /<LearningAdvisorSummary/)
+  assert.match(menuSource, /<LearningAdvisorPanel/)
+  assert.match(advisorSource, /profile\.recommendation/)
+  assert.match(advisorSource, /次に進む学習/)
+  assert.match(advisorSource, /固定された能力やIQ/)
 })
 
 test('単語暗記の結果だけは、同じ出題元の次の学習へ進む表示にする', () => {

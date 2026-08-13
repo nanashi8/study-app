@@ -12,16 +12,16 @@ async function jsxFiles(directory) {
   return nested.flat()
 }
 
-test('公開中の全58ルートは共通の可読性レイヤーと簡潔な共通ヘッダーを通る', async () => {
+test('公開中の全59ルートは共通の可読性レイヤー・上部戻る・下部ナビを通る', async () => {
   const [app, shell] = await Promise.all([
     readFile(new URL('../src/App.jsx', import.meta.url), 'utf8'),
     readFile(new URL('../src/components/AppShell.jsx', import.meta.url), 'utf8'),
   ])
-  const screenMap = app.slice(app.indexOf('const SCREENS = {'), app.indexOf('// ボトムナビ'))
+  const screenMap = app.slice(app.indexOf('const SCREENS = {'), app.indexOf('// 下部ナビ'))
   const routeCount = (screenMap.match(/^  [A-Za-z][A-Za-z0-9]*:/gm) ?? []).length
 
-  assert.equal(routeCount, 58)
-  assert.match(app, /<AppShell nav=/)
+  assert.equal(routeCount, 59)
+  assert.match(app, /<AppShell nav=\{<BottomNav \/>\}>/)
   assert.match(shell, /study-app-surface/)
   assert.match(shell, /study-app-content/)
   assert.match(shell, /min-h-16/)
@@ -56,9 +56,10 @@ test('画面・共通部品の6〜11px指定は全件を共通拡大規則で受
   assert.match(css, /font-size: 0\.9375rem/)
 })
 
-test('共通カード・ボタン・下部ナビは装飾を減らし文字優先にする', async () => {
-  const [ui, nav, css] = await Promise.all([
+test('共通カード・ボタン・統一下部メニューは装飾を抑えて文字を優先する', async () => {
+  const [ui, shell, bottom, css] = await Promise.all([
     readFile(new URL('../src/components/ui.jsx', import.meta.url), 'utf8'),
+    readFile(new URL('../src/components/AppShell.jsx', import.meta.url), 'utf8'),
     readFile(new URL('../src/components/BottomNav.jsx', import.meta.url), 'utf8'),
     readFile(new URL('../src/index.css', import.meta.url), 'utf8'),
   ])
@@ -66,34 +67,29 @@ test('共通カード・ボタン・下部ナビは装飾を減らし文字優�
   assert.match(ui, /'bg-brand-600 text-white shadow-sm active:bg-brand-700'/)
   assert.match(ui, /rounded-2xl border border-slate-200\/70 bg-white/)
   assert.doesNotMatch(ui.slice(ui.indexOf('const VARIANTS'), ui.indexOf('const SIZES')), /bg-gradient-to-b/)
-  assert.match(nav, /bg-white pb-/)
-  assert.match(nav, /text-xs/)
-  assert.doesNotMatch(nav, /scale-110/)
+  assert.match(shell, /data-global-menu-bar/)
+  assert.match(shell, /data-global-back-button/)
+  assert.match(bottom, /data-global-bottom-nav/)
+  assert.match(bottom, /min-h-14/)
+  assert.match(shell, /text-xs/)
+  assert.doesNotMatch(shell, /scale-110/)
   assert.match(css, /--shadow-card: 0 2px 8px -5px/)
 })
 
 test('英語ホームは学習選択を直接表示し、終了したゲーム導線を出さない', async () => {
   const home = await readFile(new URL('../src/screens/Home.jsx', import.meta.url), 'utf8')
   const primaryModes = home.match(/const PRIMARY_LEARNING_MODES = \[([\s\S]*?)\n\]/)?.[1] ?? ''
-  const extraModes = home.match(/const EXTRA_LEARNING_MODES = \[([\s\S]*?)\n\]/)?.[1] ?? ''
-  const primaryGroupIndex = home.indexOf('data-home-mode-group="primary"')
-  const supportGroupIndex = home.indexOf('data-home-mode-group="support"')
 
   assert.deepEqual(
     [...primaryModes.matchAll(/id: '([^']+)'/g)].map((match) => match[1]),
-    ['vocab', 'quiz', 'reading', 'phrases', 'grammar', 'listening'],
-  )
-  assert.deepEqual(
-    [...extraModes.matchAll(/id: '([^']+)'/g)].map((match) => match[1]),
-    ['literature', 'writing', 'roots', 'dictation', 'saved-vocab', 'saved-grammar'],
+    ['vocab', 'reading', 'phrases', 'grammar', 'listening'],
   )
   assert.match(home, /data-home-learning-menu/)
   assert.match(home, /PRIMARY_LEARNING_MODES\.map/)
-  assert.match(home, /EXTRA_LEARNING_MODES\.map/)
-  assert.match(home, /home-learning-more/)
-  assert.match(home, /学習を選ぶ/)
-  assert.match(home, /aria-label="スタディアプリへ戻る"/)
-  assert.ok(primaryGroupIndex >= 0 && primaryGroupIndex < supportGroupIndex)
+  assert.match(home, /英語の主要学習/)
+  assert.match(home, /下部の「メニュー」にまとめています/)
+  assert.doesNotMatch(home, /EXTRA_LEARNING_MODES|data-home-recommendation|data-home-mode-group="support"/)
+  assert.doesNotMatch(home, /screen: 'diagnostic'|screen: 'myList'|screen: 'myGrammar'/)
   assert.doesNotMatch(home, /data-home-mode-group="game"|afterSchoolChronicle|englishMap|AFTER_SCHOOL_CHRONICLE/)
   assert.doesNotMatch(home, /home-title-screen|data-home-title-action|learningMenuOpen|つづきから/)
   assert.doesNotMatch(home, /recommendation\.reason|recommendation\.timing|ProgressRing|きょうの語源/)

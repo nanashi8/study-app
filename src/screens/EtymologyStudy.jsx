@@ -17,7 +17,7 @@ import {
 import { EtymologyFormula, EtymologyHistoryTrail } from '../components/WordBits.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { Button, IconButton, ProgressBar } from '../components/ui.jsx'
-import { ArrowRight, Check, Close } from '../components/Icons.jsx'
+import { ArrowRight, Bookmark, BookmarkFilled, Check, Close } from '../components/Icons.jsx'
 
 const wordsFor = (pack) => pack.studyIds.map(getWord).filter(Boolean)
 
@@ -179,6 +179,8 @@ export function EtymologyStudyScreen() {
   const params = useStore((state) => state.params)
   const back = useStore((state) => state.back)
   const reviewEtymology = useStore((state) => state.reviewEtymology)
+  const toggleNotebookItem = useStore((state) => state.toggleNotebookItem)
+  const learningNotebook = useStore((state) => state.learningNotebook)
   const srsAtStart = useRef(useStore.getState().etymologySrs)
   const [deck] = useState(() =>
     buildEtymologyDeck(ETYMOLOGY_PACKS, srsAtStart.current, {
@@ -232,6 +234,7 @@ export function EtymologyStudyScreen() {
   const words = wordsFor(pack)
   const mode = ETYMOLOGY_MODE_META[pack.mode]
   const beforeStatus = etymologyKnowledgeStatus(srsAtStart.current[pack.id])
+  const saved = learningNotebook?.entries?.[`etymology:${pack.id}`]?.saved === true
 
   const answer = (remembered) => {
     reviewEtymology(pack.id, remembered ? 'remembered' : 'forgot')
@@ -255,6 +258,14 @@ export function EtymologyStudyScreen() {
         <div className="flex-1">
           <ProgressBar value={index / deck.length} color="#7c3aed" />
         </div>
+        <IconButton
+          onClick={() => toggleNotebookItem('etymology', pack.id)}
+          aria-label={saved ? `${pack.title}をマイ学習ノートから外す` : `${pack.title}をマイ学習ノートへ保存`}
+          aria-pressed={saved}
+          className={saved ? 'text-amber-600' : 'text-ink/30'}
+        >
+          {saved ? <BookmarkFilled size={20} /> : <Bookmark size={20} />}
+        </IconButton>
         <SpeechSettingsButton compact />
         <span className="w-12 text-right text-sm font-extrabold text-ink/50">
           {index + 1}/{deck.length}

@@ -18,8 +18,8 @@ import {
   ETYMOLOGY_STATUS_META,
 } from '../lib/etymologyProgress.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
-import { Button, Card, ProgressRing, cx } from '../components/ui.jsx'
-import { ArrowRight, Check, Sparkles } from '../components/Icons.jsx'
+import { Button, Card, ProgressBar, cx } from '../components/ui.jsx'
+import { ArrowRight, Sparkles } from '../components/Icons.jsx'
 
 const PAGE_SIZE = 24
 const MODES = ['formula', 'root', 'family', 'origin']
@@ -54,10 +54,15 @@ const countForStatus = (progress, status) =>
 // 全語を語源データの確度に応じた4経路へ分け、各「語源知識」を単語とは別に追跡する。
 export function RootsScreen() {
   const rootRef = useRef(null)
+  const params = useStore((state) => state.params)
   const navigate = useStore((state) => state.navigate)
   const etymologySrs = useStore((state) => state.etymologySrs)
-  const [mode, setMode] = useState('formula')
-  const [status, setStatus] = useState('all')
+  const [mode, setMode] = useState(
+    MODES.includes(params.mode) ? params.mode : 'formula',
+  )
+  const [status, setStatus] = useState(
+    STATUSES.includes(params.status) ? params.status : 'all',
+  )
   const [originFormation, setOriginFormation] = useState('all')
   const [originSource, setOriginSource] = useState('all')
   const [visible, setVisible] = useState(PAGE_SIZE)
@@ -154,176 +159,92 @@ export function RootsScreen() {
         subtitle={`${ETYMOLOGY_SUMMARY.total.toLocaleString()}語 → ${ETYMOLOGY_SUMMARY.packs.toLocaleString()}項目`}
       />
 
-      <div className="px-4">
-        <Card className="overflow-hidden">
-          <div className="bg-gradient-to-br from-brand-600 via-violet-600 to-fuchsia-600 p-5 text-white">
-            <div className="flex items-center gap-4">
-              <div className="min-w-0 flex-1">
-                <p className="text-[11px] font-extrabold uppercase tracking-wide text-white/70">
-                  Etymology knowledge progress
-                </p>
-                <h1 className="mt-1 font-display text-xl font-extrabold leading-snug">
-                  単語の習得とは別に、
-                  <br />語源そのものを反復学習
-                </h1>
-              </div>
-              <ProgressRing
-                value={overall.ratio}
-                size={76}
-                stroke={8}
-                color="#ffffff"
-                track="rgba(255,255,255,0.22)"
-              >
-                <span className="text-sm font-extrabold">
-                  {Math.round(overall.ratio * 100)}%
-                </span>
-              </ProgressRing>
+      <div className="space-y-4 px-4">
+        <section
+          className="overflow-hidden rounded-2xl border border-slate-300 bg-white"
+          aria-label="語源知識の進捗概要"
+          data-etymology-dashboard
+        >
+          <div className="flex items-end justify-between gap-3 border-b border-slate-200 px-4 py-3">
+            <div>
+              <p className="text-[10px] font-extrabold tracking-[0.12em] text-slate-500">語源知識・全体</p>
+              <p className="mt-0.5 font-display text-xl font-extrabold text-slate-900">
+                {overall.mastered.toLocaleString()} / {overall.total.toLocaleString()} 項目を習得
+              </p>
             </div>
-          </div>
-          <div className="space-y-3 p-4">
-            <p className="text-sm font-bold leading-relaxed text-ink/60">
-              部品の式・共有語根・語族・成り立ちと変化を、それぞれ1つの語源カードとして記録します。
-              「覚えた／まだ」の結果から次の復習日も決まります。
+            <p className="font-display text-2xl font-extrabold tabular-nums text-violet-700">
+              {Math.round(overall.ratio * 100)}%
             </p>
-            <div className="grid grid-cols-2 gap-2">
-              {[
-                ['習得', overall.mastered, 'text-emerald-700 bg-emerald-50'],
-                ['学習中', overall.learning, 'text-amber-700 bg-amber-50'],
-                ['未着手', overall.unstarted, 'text-slate-600 bg-slate-50'],
-                ['復習待ち', overall.due, 'text-rose-700 bg-rose-50'],
-              ].map(([label, value, style]) => (
-                <div key={label} className={cx('rounded-xl px-3 py-2', style)}>
-                  <p className="font-display text-lg font-extrabold">{value.toLocaleString()}</p>
-                  <p className="text-[10px] font-extrabold">{label}</p>
-                </div>
-              ))}
-            </div>
-            <div className="flex items-center justify-between rounded-xl bg-brand-50 px-3 py-2 text-xs font-extrabold text-brand-700">
-              <span className="inline-flex items-center gap-1">
-                <Check size={14} /> 全語の分類完了
-              </span>
-              <span>
-                {ETYMOLOGY_SUMMARY.covered.toLocaleString()}/
-                {ETYMOLOGY_SUMMARY.total.toLocaleString()}語
-              </span>
-            </div>
           </div>
-        </Card>
-
-        <div className="mt-4 grid grid-cols-2 gap-2">
-          {MODES.map((id) => {
-            const item = ETYMOLOGY_MODE_META[id]
-            const selected = id === mode
-            const progress = modeStats[id]
-            return (
-              <button
-                key={id}
-                type="button"
-                aria-pressed={selected}
-                onClick={() => selectMode(id)}
-                className={cx(
-                  'rounded-2xl p-3 text-left ring-1 transition active:scale-[0.98]',
-                  selected
-                    ? 'bg-brand-600 text-white ring-brand-600 shadow-card'
-                    : 'bg-white text-ink ring-brand-100',
-                )}
-              >
-                <div className="flex items-center gap-2">
-                  <span className="text-2xl">{item.emoji}</span>
-                  <div className="min-w-0">
-                    <div className="font-display text-sm font-extrabold">{item.label}</div>
-                    <div className={cx(
-                      'text-[10px] font-extrabold',
-                      selected ? 'text-white/70' : 'text-ink/40',
-                    )}>
-                      {progress.total.toLocaleString()}項目・
-                      {ETYMOLOGY_SUMMARY.counts[id].toLocaleString()}語
-                    </div>
-                    <div className={cx(
-                      'mt-0.5 text-[10px] font-extrabold',
-                      selected ? 'text-white/80' : 'text-brand-500/80',
-                    )}>
-                      習得 {progress.mastered}・未着手 {progress.unstarted}
-                    </div>
-                  </div>
-                </div>
-              </button>
-            )
-          })}
-        </div>
-
-        <div className="mb-2 mt-5 px-1">
-          <div className="flex items-center gap-2">
-            <span className="text-xl">{meta.emoji}</span>
-            <h2 className="font-display text-base font-extrabold text-ink/80">
-              {meta.label}
-            </h2>
+          <div className="px-4 pt-3">
+            <ProgressBar value={overall.ratio} color="#7c3aed" />
           </div>
-          <p className="mt-1 text-xs font-bold leading-relaxed text-ink/45">
-            {meta.description}
-            {mode === 'origin' && ' 形成法と言語層を混ぜず、同じ3軸の語だけを1束にします。'}
-          </p>
-        </div>
-
-        {mode === 'origin' && (
-          <Card className="mb-3 space-y-2.5 p-3">
-            <div className="flex items-center justify-between gap-2">
-              <div>
-                <p className="text-xs font-extrabold text-ink/70">形成法と言語層で絞る</p>
-                <p className="text-[10px] font-bold text-ink/40">
-                  各束の中では意味分野も統一
-                </p>
+          <div className="grid grid-cols-4 divide-x divide-slate-200 px-2 py-3 text-center">
+            {[
+              ['未着手', overall.unstarted],
+              ['学習中', overall.learning],
+              ['習得', overall.mastered],
+              ['復習待ち', overall.due],
+            ].map(([label, value]) => (
+              <div key={label} className="min-w-0 px-1">
+                <p className="font-display text-base font-extrabold tabular-nums text-slate-900">{value.toLocaleString()}</p>
+                <p className="truncate text-[9px] font-extrabold text-slate-500">{label}</p>
               </div>
-              <span className="shrink-0 rounded-full bg-brand-50 px-2 py-1 text-[10px] font-extrabold text-brand-600">
-                {axisPacks.length}/{modePacks.length}項目
-              </span>
-            </div>
-            <div className="grid grid-cols-2 gap-2">
-              <label className="min-w-0">
-                <span className="mb-1 block text-[10px] font-extrabold text-ink/45">
-                  英語への入り方
-                </span>
-                <select
-                  value={originFormation}
-                  onChange={(event) => {
-                    setOriginFormation(event.target.value)
-                    setVisible(PAGE_SIZE)
-                  }}
-                  className="w-full rounded-xl bg-slate-50 px-2 py-2 text-xs font-extrabold text-ink ring-1 ring-slate-200 outline-none focus:ring-2 focus:ring-brand-300"
-                >
-                  <option value="all">すべての成り立ち</option>
-                  {formationOptions.map((item) => (
-                    <option key={item.id} value={item.id}>
-                      {item.label}（{item.count}語）
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label className="min-w-0">
-                <span className="mb-1 block text-[10px] font-extrabold text-ink/45">
-                  記載の出発言語
-                </span>
-                <select
-                  value={originSource}
-                  onChange={(event) => {
-                    setOriginSource(event.target.value)
-                    setVisible(PAGE_SIZE)
-                  }}
-                  className="w-full rounded-xl bg-slate-50 px-2 py-2 text-xs font-extrabold text-ink ring-1 ring-slate-200 outline-none focus:ring-2 focus:ring-brand-300"
-                >
-                  <option value="all">すべての言語層</option>
-                  {sourceOptions.map((item) => (
-                    <option key={item.id} value={item.id}>
-                      {item.label}（{item.count}語）
-                    </option>
-                  ))}
-                </select>
-              </label>
-            </div>
-          </Card>
-        )}
+            ))}
+          </div>
+          <details className="border-t border-slate-200">
+            <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between px-4 text-xs font-extrabold text-slate-600">
+              <span>収録範囲と集計基準</span>
+              <span>{ETYMOLOGY_SUMMARY.covered.toLocaleString()}/{ETYMOLOGY_SUMMARY.total.toLocaleString()}語</span>
+            </summary>
+            <p className="border-t border-slate-100 px-4 py-3 text-xs font-bold leading-relaxed text-slate-600">
+              全{ETYMOLOGY_SUMMARY.total.toLocaleString()}語を、部品の式・共有語根・語族・成り立ちと変化の
+              {ETYMOLOGY_SUMMARY.packs.toLocaleString()}項目に整理しています。語源知識の復習記録は、単語のSRSとは分けて保存します。
+            </p>
+          </details>
+        </section>
 
-        <div className="flex flex-wrap gap-2" aria-label="語源知識の進捗で絞り込む">
+        <section aria-labelledby="etymology-mode-heading">
+          <div className="mb-2 px-1">
+            <h2 id="etymology-mode-heading" className="font-display text-base font-extrabold text-slate-900">学び方を選ぶ</h2>
+            <p className="text-xs font-bold text-slate-500">4つの整理法を一度に混ぜず、1種類ずつ確認します。</p>
+          </div>
+          <div className="no-scrollbar flex gap-2 overflow-x-auto pb-1" role="tablist" aria-label="語源の学び方">
+            {MODES.map((id) => {
+              const item = ETYMOLOGY_MODE_META[id]
+              const selected = id === mode
+              const progress = modeStats[id]
+              return (
+                <button
+                  key={id}
+                  type="button"
+                  role="tab"
+                  aria-selected={selected}
+                  onClick={() => selectMode(id)}
+                  className={cx(
+                    'min-h-14 w-[8.4rem] shrink-0 rounded-xl border px-3 py-2 text-left transition-colors',
+                    selected
+                      ? 'border-violet-700 bg-violet-700 text-white'
+                      : 'border-slate-200 bg-white text-slate-700',
+                  )}
+                >
+                  <span className="block text-xs font-extrabold">{item.emoji} {item.label}</span>
+                  <span className={cx('mt-0.5 block text-[10px] font-bold', selected ? 'text-white/70' : 'text-slate-500')}>
+                    {progress.mastered}/{progress.total} 習得
+                  </span>
+                </button>
+              )
+            })}
+          </div>
+          <p className="mt-2 rounded-xl bg-slate-100 px-3 py-2 text-xs font-bold leading-relaxed text-slate-600">
+            <span className="font-extrabold text-slate-900">{meta.emoji} {meta.label}：</span>
+            {meta.description}
+            {mode === 'origin' && ' 形成法・出発言語・意味分野の3軸が同じ語だけを束ねます。'}
+          </p>
+        </section>
+
+        <section aria-label="表示する進捗状態">
+          <div className="no-scrollbar flex gap-2 overflow-x-auto pb-1" aria-label="語源知識の進捗で絞り込む">
           {STATUSES.map((id) => {
             const selected = status === id
             const count = countForStatus(current, id)
@@ -334,7 +255,7 @@ export function RootsScreen() {
                 aria-pressed={selected}
                 onClick={() => selectStatus(id)}
                 className={cx(
-                  'rounded-full px-3 py-1.5 text-[11px] font-extrabold ring-1 transition',
+                  'min-h-10 shrink-0 rounded-full px-3 text-[11px] font-extrabold ring-1 transition',
                   selected
                     ? 'bg-violet-600 text-white ring-violet-600'
                     : 'bg-white text-ink/55 ring-brand-100',
@@ -344,9 +265,56 @@ export function RootsScreen() {
               </button>
             )
           })}
-        </div>
+          </div>
+        </section>
 
-        <div className="my-3">
+        {mode === 'origin' && (
+          <details
+            className="overflow-hidden rounded-2xl border border-slate-200 bg-white"
+            data-etymology-filters
+          >
+            <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between px-4 text-xs font-extrabold text-slate-700">
+              <span>成り立ち・出発言語でさらに絞る</span>
+              <span className="text-slate-400">{axisPacks.length}/{modePacks.length}項目</span>
+            </summary>
+            <div className="grid grid-cols-1 gap-3 border-t border-slate-100 p-3 sm:grid-cols-2">
+              <label className="min-w-0">
+                <span className="mb-1 block text-[10px] font-extrabold text-slate-500">英語への入り方</span>
+                <select
+                  value={originFormation}
+                  onChange={(event) => {
+                    setOriginFormation(event.target.value)
+                    setVisible(PAGE_SIZE)
+                  }}
+                  className="min-h-11 w-full rounded-xl bg-slate-50 px-3 text-xs font-extrabold text-slate-800 ring-1 ring-slate-200 outline-none focus:ring-2 focus:ring-violet-300"
+                >
+                  <option value="all">すべての成り立ち</option>
+                  {formationOptions.map((item) => (
+                    <option key={item.id} value={item.id}>{item.label}（{item.count}語）</option>
+                  ))}
+                </select>
+              </label>
+              <label className="min-w-0">
+                <span className="mb-1 block text-[10px] font-extrabold text-slate-500">記載上の出発言語</span>
+                <select
+                  value={originSource}
+                  onChange={(event) => {
+                    setOriginSource(event.target.value)
+                    setVisible(PAGE_SIZE)
+                  }}
+                  className="min-h-11 w-full rounded-xl bg-slate-50 px-3 text-xs font-extrabold text-slate-800 ring-1 ring-slate-200 outline-none focus:ring-2 focus:ring-violet-300"
+                >
+                  <option value="all">すべての言語層</option>
+                  {sourceOptions.map((item) => (
+                    <option key={item.id} value={item.id}>{item.label}（{item.count}語）</option>
+                  ))}
+                </select>
+              </label>
+            </div>
+          </details>
+        )}
+
+        <div>
           <Button
             full
             onClick={startStudy}
@@ -376,10 +344,9 @@ export function RootsScreen() {
                   onClick={() => navigate('etymologyPack', { packId: pack.id })}
                   className="w-full text-left transition active:scale-[0.99]"
                 >
-                  <Card className="flex items-center gap-3 p-3.5">
-                    <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-brand-50 text-2xl">
-                      {pack.emoji}
-                    </span>
+                  <Card className="p-3.5">
+                    <div className="flex items-start gap-3">
+                    <span className="mt-0.5 text-xl" aria-hidden="true">{pack.emoji}</span>
                     <div className="min-w-0 flex-1">
                       <div className="flex min-w-0 items-center gap-1.5">
                         <h3 className="min-w-0 flex-1 line-clamp-2 font-display text-base font-extrabold leading-tight text-ink">
@@ -404,12 +371,11 @@ export function RootsScreen() {
                         {examples.map((word) => word.word).join(' ・ ')}
                       </p>
                     </div>
-                    <ProgressRing value={ratio} size={42} stroke={6} color={visual.ring}>
-                      <span className="text-[9px] font-extrabold text-ink/65">
-                        {Math.round(ratio * 100)}%
-                      </span>
-                    </ProgressRing>
-                    <span className="text-brand-300"><ArrowRight size={17} /></span>
+                    <span className="mt-3 text-brand-300"><ArrowRight size={17} /></span>
+                    </div>
+                    <div className="mt-2 h-1 overflow-hidden rounded-full bg-slate-100" aria-label={`反復進捗${Math.round(ratio * 100)}%`}>
+                      <span className="block h-full rounded-full" style={{ width: `${Math.round(ratio * 100)}%`, backgroundColor: visual.ring }} />
+                    </div>
                   </Card>
                 </button>
               )

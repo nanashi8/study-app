@@ -42,7 +42,7 @@ export function SettingsScreen() {
         <Card className="p-4">
           <h2 className="mb-2 font-display text-base font-extrabold text-ink/80">データ</h2>
           <p className="mb-3 text-xs font-bold text-ink/50">
-            進捗のバックアップ・復元は「記録」タブの進捗コードから行えます。
+            進捗のバックアップ・復元は、統一メニューの「学習記録・バックアップ」から行えます。
           </p>
           <Button variant="danger" size="sm" onClick={() => setConfirmReset(true)}>
             <Refresh size={16} /> 進捗をリセット
@@ -55,7 +55,7 @@ export function SettingsScreen() {
       <Sheet open={confirmReset} onClose={() => setConfirmReset(false)} title="進捗をリセットしますか？">
         <div className="space-y-3">
           <p className="text-sm font-bold text-ink/60">
-            学習履歴・XP・マイ単語がすべて消えます。元に戻せません。残しておきたい場合は、先に「記録」タブで進捗コードを発行してください。
+            学習履歴・XP・診断・分析・保存リストがすべて消えます。音声などの設定は残ります。元に戻せないため、先に統一メニューから進捗コードを保存してください。
           </p>
           <Button
             full

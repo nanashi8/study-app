@@ -111,13 +111,13 @@ test('同じ英文で誤答も成立していた既存2問を一意にする', (
   assert.ok(concessionQuestion.choices.includes('Although tired'))
 })
 
-test('英文法画面は答え合わせ後に全誤答の使い分けを表示する', async () => {
+test('英文法画面は答え合わせ後に全誤答の選択肢解説を表示する', async () => {
   const source = await readFile(
     new URL('../src/screens/GrammarQuiz.jsx', import.meta.url),
     'utf8',
   )
-  assert.match(source, /選択肢の使い分け/)
-  assert.match(source, /別の場面で使う/)
+  assert.match(source, /選択肢解説/)
+  assert.doesNotMatch(source, /選択肢の使い分け|別の場面で使う/)
   assert.match(source, /この形は使わない/)
   assert.match(source, /data-grammar-choice-guide/)
 })

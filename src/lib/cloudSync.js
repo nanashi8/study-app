@@ -35,6 +35,7 @@ import {
 } from './storyAlbum.js'
 import { normalizeVocabHistory } from './vocabHistory.js'
 import { normalizeDragonVeinProgress } from './dragonVein.js'
+import { normalizeLearningNotebook } from './learningNotebook.js'
 
 const node = (uid) => ref(db, `students/${uid}`)
 
@@ -61,6 +62,10 @@ export function progressStateFromCloud(data = {}, current = useStore.getState())
     myList: data.myList ?? [],
     vocabHistory: normalizeVocabHistory(data.vocabHistory ?? current.vocabHistory),
     myGrammarList: data.myGrammarList ?? [],
+    // 古いクラウド保存にこの項目が無い場合、端末側で作ったノートを消さない。
+    learningNotebook: normalizeLearningNotebook(
+      data.learningNotebook ?? current.learningNotebook,
+    ),
     writingProgress: data.writingProgress ?? {},
     kotenWordList: data.kotenWordList ?? [],
     kotenGrammarList: data.kotenGrammarList ?? [],

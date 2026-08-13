@@ -57,6 +57,18 @@ import {
   recordDragonVeinResult,
 } from '../lib/dragonVein.js'
 import { learnerDestination } from '../lib/learnerVisibility.js'
+import {
+  createLearningNotebook,
+  createNotebookSet as createNotebookSetState,
+  deleteNotebookSet as deleteNotebookSetState,
+  moveNotebookSetItem as moveNotebookSetItemState,
+  normalizeLearningNotebook,
+  recordNotebookSetLaunch as recordNotebookSetLaunchState,
+  setNotebookItemSaved,
+  setNotebookSetItem as setNotebookSetItemState,
+  updateNotebookItem as updateNotebookItemState,
+  updateNotebookSet as updateNotebookSetState,
+} from '../lib/learningNotebook.js'
 
 // ── 学習ロジックの定数 ──────────────────────────────────────────────
 // Leitner 式の間隔反復。box が上がるほど次に出る間隔（日数）が伸びる。
@@ -140,6 +152,7 @@ const initialLearning = () => ({
   myList: [], // [wordId]
   vocabHistory: [], // 最近検索・参照・マイ単語登録した英単語ID（新しい順）
   myGrammarList: [], // [writingGrammarId] 英作文で保存した文法カード
+  learningNotebook: createLearningNotebook(), // 8分野のメモ・タグ・自作問題集
   writingProgress: {}, // exerciseId -> { completed, lastText, lastMode, lastDay, bestWords, grammarIds }
   kotenWordList: [], // [古文単語id] 登録単語
   kotenGrammarList: [], // [古典文法id] 登録文法
@@ -238,6 +251,7 @@ export function migratePersistedState(persistedState) {
   state.portalOrder = normalizeOrder(state.portalOrder)
   state.portalHidden = normalizeHidden(state.portalHidden)
   state.vocabHistory = normalizeVocabHistory(state.vocabHistory)
+  state.learningNotebook = normalizeLearningNotebook(state.learningNotebook)
   state.battleStars = normalizeBattleStars(state.battleStars)
   state.battleXpSpent = normalizeBattleXpSpent(
     state.battleXpSpent,
@@ -291,6 +305,7 @@ export function progressStateFromPayload(payload = {}) {
     myList: payload.myList ?? [],
     vocabHistory: normalizeVocabHistory(payload.vocabHistory),
     myGrammarList: payload.myGrammarList ?? [],
+    learningNotebook: normalizeLearningNotebook(payload.learningNotebook),
     writingProgress: payload.writingProgress ?? {},
     kotenWordList: payload.kotenWordList ?? [],
     kotenGrammarList: payload.kotenGrammarList ?? [],
@@ -337,8 +352,15 @@ export const useStore = create(
       params: {},
       stack: [],
       speechSettingsOpen: false,
-      openSpeechSettings: () => set({ speechSettingsOpen: true }),
-      closeSpeechSettings: () => set({ speechSettingsOpen: false }),
+      speechSettingsRequest: 'menu',
+      openSpeechSettings: (request = 'menu') => set({
+        speechSettingsOpen: true,
+        speechSettingsRequest: request,
+      }),
+      closeSpeechSettings: () => set({
+        speechSettingsOpen: false,
+        speechSettingsRequest: 'menu',
+      }),
       navigate: (screen, params = {}) =>
         set((st) => {
           const destination = learnerDestination(screen, params)
@@ -352,7 +374,26 @@ export const useStore = create(
         }),
       back: () =>
         set((st) => {
+          // 旧画面の互換用戻り先は学習ホームのまま保つ。
           if (!st.stack.length) return { screen: 'home', params: {} }
+          const prev = st.stack[st.stack.length - 1]
+          const destination = learnerDestination(prev.screen, prev.params)
+          return {
+            ...destination,
+            stack: destination.screen === 'home' && prev.screen !== 'home'
+              ? []
+              : st.stack.slice(0, -1),
+          }
+        }),
+      // AppShell の共通「戻る」。通常は履歴を一つ戻し、直接開いた
+      // トップ階層ではスタディアプリの入口へ戻す。
+      globalBack: () =>
+        set((st) => {
+          if (!st.stack.length) {
+            return st.screen === 'portal'
+              ? {}
+              : { screen: 'portal', params: {}, stack: [] }
+          }
           const prev = st.stack[st.stack.length - 1]
           const destination = learnerDestination(prev.screen, prev.params)
           return {
@@ -365,6 +406,7 @@ export const useStore = create(
       returnToAfterSchoolChronicle: () =>
         set({ screen: 'home', params: {}, stack: [] }),
       goHome: () => set({ screen: 'home', params: {}, stack: [] }),
+      goPortal: () => set({ screen: 'portal', params: {}, stack: [] }),
 
       // ── クイズの一時退避（永続化しない） ──
       // 「語源をくわしく見る」等で一旦クイズ画面を離れて戻るとき、解答済みの
@@ -558,6 +600,12 @@ export const useStore = create(
             myList: saved
               ? st.myList.filter((id) => id !== wordId)
               : [...st.myList, wordId],
+            learningNotebook: setNotebookItemSaved(
+              st.learningNotebook,
+              'vocab',
+              wordId,
+              !saved,
+            ),
             // 登録した単語は、詳細画面以外から保存しても辞書履歴へ出す。
             vocabHistory: saved
               ? st.vocabHistory
@@ -593,6 +641,109 @@ export const useStore = create(
             ...st.myGrammarList,
             ...ids.filter((id) => !st.myGrammarList.includes(id)),
           ],
+        })),
+
+      // 8分野共通のノート保存。既存の英単語・古典リストは互換経路として
+      // 同時更新し、旧画面・旧保存データ・既存SRSをそのまま利用できるようにする。
+      toggleNotebookItem: (domain, itemId) =>
+        set((st) => {
+          const legacyField = {
+            vocab: 'myList',
+            kotenVocab: 'kotenWordList',
+            kotenGrammar: 'kotenGrammarList',
+            kotenCulture: 'kotenCultureList',
+          }[domain]
+          const legacySaved = legacyField && st[legacyField].includes(itemId)
+          const ref = `${domain}:${itemId}`
+          const saved = legacySaved || st.learningNotebook?.entries?.[ref]?.saved === true
+          const next = {
+            learningNotebook: setNotebookItemSaved(
+              st.learningNotebook,
+              domain,
+              itemId,
+              !saved,
+            ),
+          }
+          if (legacyField) {
+            next[legacyField] = saved
+              ? st[legacyField].filter((id) => id !== itemId)
+              : [...st[legacyField], itemId]
+          }
+          if (domain === 'vocab' && !saved) {
+            next.vocabHistory = prependVocabHistory(st.vocabHistory, [itemId])
+          }
+          return next
+        }),
+
+      updateNotebookItem: (domain, itemId, patch) =>
+        set((st) => {
+          const legacyField = {
+            vocab: 'myList',
+            kotenVocab: 'kotenWordList',
+            kotenGrammar: 'kotenGrammarList',
+            kotenCulture: 'kotenCultureList',
+          }[domain]
+          const next = {
+            learningNotebook: updateNotebookItemState(
+              st.learningNotebook,
+              domain,
+              itemId,
+              patch,
+            ),
+          }
+          if (legacyField && !st[legacyField].includes(itemId)) {
+            next[legacyField] = [...st[legacyField], itemId]
+          }
+          if (domain === 'vocab') {
+            next.vocabHistory = prependVocabHistory(st.vocabHistory, [itemId])
+          }
+          return next
+        }),
+
+      createNotebookSet: (title, description = '') => {
+        let setId = null
+        set((st) => {
+          const result = createNotebookSetState(st.learningNotebook, title, { description })
+          setId = result.setId
+          return { learningNotebook: result.notebook }
+        })
+        return setId
+      },
+
+      updateNotebookSet: (setId, patch) =>
+        set((st) => ({
+          learningNotebook: updateNotebookSetState(st.learningNotebook, setId, patch),
+        })),
+
+      deleteNotebookSet: (setId) =>
+        set((st) => ({
+          learningNotebook: deleteNotebookSetState(st.learningNotebook, setId),
+        })),
+
+      setNotebookSetItem: (setId, domain, itemId, included) =>
+        set((st) => ({
+          learningNotebook: setNotebookSetItemState(
+            st.learningNotebook,
+            setId,
+            domain,
+            itemId,
+            included,
+          ),
+        })),
+
+      moveNotebookSetItem: (setId, ref, direction) =>
+        set((st) => ({
+          learningNotebook: moveNotebookSetItemState(
+            st.learningNotebook,
+            setId,
+            ref,
+            direction,
+          ),
+        })),
+
+      recordNotebookSetLaunch: (session) =>
+        set((st) => ({
+          learningNotebook: recordNotebookSetLaunchState(st.learningNotebook, session),
         })),
 
       // 完成作文は級別の再挑戦状況として保存する。全文は各課題の最新1本だけを保持。
@@ -642,11 +793,20 @@ export const useStore = create(
         }),
 
       toggleKotenWordList: (wordId) =>
-        set((st) => ({
-          kotenWordList: st.kotenWordList.includes(wordId)
-            ? st.kotenWordList.filter((id) => id !== wordId)
-            : [...st.kotenWordList, wordId],
-        })),
+        set((st) => {
+          const saved = st.kotenWordList.includes(wordId)
+          return {
+            kotenWordList: saved
+              ? st.kotenWordList.filter((id) => id !== wordId)
+              : [...st.kotenWordList, wordId],
+            learningNotebook: setNotebookItemSaved(
+              st.learningNotebook,
+              'kotenVocab',
+              wordId,
+              !saved,
+            ),
+          }
+        }),
 
       addManyToKotenWordList: (ids) =>
         set((st) => ({
@@ -657,11 +817,20 @@ export const useStore = create(
         })),
 
       toggleKotenGrammarList: (grammarId) =>
-        set((st) => ({
-          kotenGrammarList: st.kotenGrammarList.includes(grammarId)
-            ? st.kotenGrammarList.filter((id) => id !== grammarId)
-            : [...st.kotenGrammarList, grammarId],
-        })),
+        set((st) => {
+          const saved = st.kotenGrammarList.includes(grammarId)
+          return {
+            kotenGrammarList: saved
+              ? st.kotenGrammarList.filter((id) => id !== grammarId)
+              : [...st.kotenGrammarList, grammarId],
+            learningNotebook: setNotebookItemSaved(
+              st.learningNotebook,
+              'kotenGrammar',
+              grammarId,
+              !saved,
+            ),
+          }
+        }),
 
       addManyToKotenGrammarList: (ids) =>
         set((st) => ({
@@ -672,11 +841,20 @@ export const useStore = create(
         })),
 
       toggleKotenCultureList: (cultureId) =>
-        set((st) => ({
-          kotenCultureList: st.kotenCultureList.includes(cultureId)
-            ? st.kotenCultureList.filter((id) => id !== cultureId)
-            : [...st.kotenCultureList, cultureId],
-        })),
+        set((st) => {
+          const saved = st.kotenCultureList.includes(cultureId)
+          return {
+            kotenCultureList: saved
+              ? st.kotenCultureList.filter((id) => id !== cultureId)
+              : [...st.kotenCultureList, cultureId],
+            learningNotebook: setNotebookItemSaved(
+              st.learningNotebook,
+              'kotenCulture',
+              cultureId,
+              !saved,
+            ),
+          }
+        }),
 
       addManyToKotenCultureList: (ids) =>
         set((st) => ({
@@ -1016,7 +1194,38 @@ export const useStore = create(
       // 並び順・表示を初期状態に戻す。
       resetPortal: () => set({ portalOrder: [...DEFAULT_CONTENT_ORDER], portalHidden: [] }),
 
-      resetProgress: () => set(initialLearning()),
+      // 学習全体を消さずに、管理画面から特定の記録だけ整理する。
+      // 永続フィールドは増やさず、既存の進捗コード・クラウド同期契約を保つ。
+      clearLearningData: (scope) => set(() => {
+        if (scope === 'analytics') {
+          return { learningAnalytics: createLearningAnalytics(), skillStats: {} }
+        }
+        if (scope === 'diagnostic') {
+          return { diagnosticHistory: [], diagnosticAttempt: 0 }
+        }
+        if (scope === 'saved') {
+          return {
+            myList: [],
+            myGrammarList: [],
+            learningNotebook: createLearningNotebook(),
+            kotenWordList: [],
+            kotenGrammarList: [],
+            kotenCultureList: [],
+          }
+        }
+        if (scope === 'vocabHistory') return { vocabHistory: [] }
+        return {}
+      }),
+
+      // 学習状況だけを初期化する。音声・カード設定と、メインメニューの
+      // 並び／表示は端末の使い方なので保持する。
+      resetProgress: () => set((st) => ({
+        ...initialLearning(),
+        quizSession: null,
+        settings: st.settings,
+        portalOrder: st.portalOrder,
+        portalHidden: st.portalHidden,
+      })),
 
       // ── 進捗コード ──
       exportCode: () => encodeProgress(get()),
@@ -1028,7 +1237,7 @@ export const useStore = create(
     }),
     {
       name: 'eigo-quest',
-      version: 5,
+      version: 6,
       migrate: migratePersistedState,
       // ナビゲーション系は保存しない。
       partialize: selectProgressState,

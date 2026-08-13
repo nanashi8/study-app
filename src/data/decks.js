@@ -13,7 +13,12 @@
 // 進捗の保存粒度：
 //   端末内は従来どおり語単位SRS（精密な復習）。持ち運ぶのはデッキ達成度
 //   だけ。deckId は安定キーなので、コードはデッキIDをキーに保存できる。
-import { ALL_WORDS, wordsByLevel } from './vocab.js'
+import {
+  ALL_WORDS,
+  VOCAB_FIELD_GROUPS,
+  vocabFieldGroupFor,
+  wordsByLevel,
+} from './vocab.js'
 import { LEVELS } from './levels.js'
 
 // デッキ構成のバージョン。チャンクサイズや合流規則を変えたら上げる。
@@ -129,6 +134,61 @@ export const DECK_TOC = LEVELS.map((l) => {
     size: chapters.reduce((n, c) => n + c.size, 0),
   }
 }).filter((x) => x.size > 0)
+
+// 現行の学習画面用目次。旧 DECKS/DECK_TOC は進捗コード内の並びとIDを
+// 保つため変更せず、画面では同じ単語を10の学習分野へ束ね直して見せる。
+function learningChaptersOf(levelId) {
+  const byGroup = new Map(VOCAB_FIELD_GROUPS.map((group) => [group.id, []]))
+  for (const word of wordsByLevel(levelId)) {
+    const group = vocabFieldGroupFor(word)
+    if (group) byGroup.get(group.id).push(word)
+  }
+  return VOCAB_FIELD_GROUPS
+    .map((group) => ({ group, words: byGroup.get(group.id).slice().sort(byId) }))
+    .filter(({ words }) => words.length)
+}
+
+function learningDecksOfChapter(levelId, group, words) {
+  const total = chunkCount(words.length)
+  const base = Math.floor(words.length / total)
+  const extra = words.length % total
+  const decks = []
+  let offset = 0
+  for (let part = 1; part <= total; part++) {
+    const size = base + (part <= extra ? 1 : 0)
+    const slice = words.slice(offset, offset + size)
+    offset += size
+    decks.push({
+      id: `learning|${levelId}|${group.id}|${part}`,
+      levelId,
+      field: group.label,
+      fieldId: group.id,
+      part,
+      partCount: total,
+      title: total > 1 ? `${group.label} ${part}` : group.label,
+      wordIds: slice.map((word) => word.id),
+      size: slice.length,
+    })
+  }
+  return decks
+}
+
+export const LEARNING_DECK_TOC = LEVELS.map((level) => {
+  const chapters = learningChaptersOf(level.id).map(({ group, words }) => ({
+    field: group.label,
+    fieldId: group.id,
+    emoji: group.emoji,
+    description: group.description,
+    decks: learningDecksOfChapter(level.id, group, words),
+    size: words.length,
+  }))
+  return {
+    level,
+    chapters,
+    deckCount: chapters.reduce((count, chapter) => count + chapter.decks.length, 0),
+    size: chapters.reduce((count, chapter) => count + chapter.size, 0),
+  }
+}).filter(({ size }) => size > 0)
 
 // デッキの達成度（0〜1）。SRSのbox≥4を「習得」とみなす（progressと同基準）。
 export function deckMastery(deck, srs = {}) {

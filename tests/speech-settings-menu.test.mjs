@@ -5,22 +5,37 @@ import { readFileSync, readdirSync } from 'node:fs'
 const read = (path) =>
   readFileSync(new URL(path, import.meta.url), 'utf8')
 
-test('一つの共通メニューを全画面から開き、その中の設定へ進む', () => {
+test('下部の一つの共通メニューを全画面から開き、その中の設定へ進む', () => {
   const app = read('../src/App.jsx')
   const header = read('../src/components/AppShell.jsx')
+  const bottom = read('../src/components/BottomNav.jsx')
+  const sheet = read('../src/components/Sheet.jsx')
   const settings = read('../src/components/SpeechSettings.jsx')
-  const bottomNav = read('../src/components/BottomNav.jsx')
-  const screenDirectory = new URL('../src/screens/', import.meta.url)
-  const missing = readdirSync(screenDirectory)
-    .filter((filename) => filename.endsWith('.jsx'))
-    .filter((filename) => {
-      const source = read(`../src/screens/${filename}`)
-      return !/ScreenHeader|LevelPicker|SpeechSettingsButton|SettingsMenuPanel/.test(source)
-    })
+  const css = read('../src/index.css')
 
   assert.match(app, /<SpeechSettingsSheet \/>/)
-  assert.match(header, /<SpeechSettingsButton inverse=\{inverse\} \/>/)
-  assert.match(settings, /title=\{view === 'settings' \? '設定' : 'メニュー'\}/)
+  assert.match(app, /import \{ BottomNav \}/)
+  assert.match(app, /<AppShell nav=\{<BottomNav \/>\}>/)
+  assert.match(header, /data-global-menu-bar/)
+  assert.match(header, /study-app-global-menu-bar relative z-\[60\]/)
+  assert.match(sheet, /fixed inset-0 z-50/)
+  assert.match(header, /data-global-back-button/)
+  assert.match(header, /<ChevronLeft size=\{19\} \/> 戻る/)
+  assert.doesNotMatch(header, /SpeechSettingsButton|統一メニュー/)
+  assert.match(bottom, /data-global-bottom-nav/)
+  assert.match(bottom, /aria-label="統一下部メニュー"/)
+  assert.deepEqual(
+    [...bottom.matchAll(/key: '([^']+)', label: '([^']+)'/g)].map(([, key, label]) => [key, label]),
+    [
+      ['home', 'ホーム'],
+      ['learning', 'マイ学習'],
+      ['records', '記録'],
+      ['menu', 'メニュー'],
+    ],
+  )
+  assert.match(settings, /const sheetTitles = \{/)
+  assert.match(settings, /menu: '統一メニュー'/)
+  assert.match(css, /\.study-app-content \[data-settings-menu-trigger\]/)
   assert.match(settings, /data-app-menu-panel/)
   assert.match(settings, /data-menu-settings-entry/)
   assert.doesNotMatch(settings, /data-menu-extras|screen: 'storyAlbum'|screen: 'afterSchoolChronicle'|GameSettingsPanel|龍脈/)
@@ -29,10 +44,69 @@ test('一つの共通メニューを全画面から開き、その中の設定�
   assert.match(settings, /data-settings-menu-trigger/)
   assert.match(settings, /<Menu /)
   assert.match(settings, /data-speech-settings-trigger/)
-  assert.match(bottomNav, /label: 'メニュー'/)
-  assert.match(bottomNav, /openSpeechSettings\(\)/)
-  assert.doesNotMatch(bottomNav, /label: '設定', screen: 'settings'/)
-  assert.deepEqual(missing, [])
+})
+
+test('学習途中からメインメニューへ戻る前にQRまたはコードで保存できる', () => {
+  const header = read('../src/components/AppShell.jsx')
+  const bottom = read('../src/components/BottomNav.jsx')
+  const settings = read('../src/components/SpeechSettings.jsx')
+  const backup = read('../src/components/ProgressBackup.jsx')
+  const policy = read('../src/lib/navigationPolicy.js')
+  const progress = read('../src/lib/progressCode.js')
+
+  assert.match(settings, /requiresProgressSaveConfirmation\(currentScreen, screen\)/)
+  assert.match(header, /requiresProgressSaveConfirmation\(screen, '__back__'\)/)
+  assert.match(header, /openSpeechSettings\('back'\)/)
+  assert.match(bottom, /requiresProgressSaveConfirmation\(screen, target\)/)
+  assert.match(bottom, /openSpeechSettings\(\{ type: 'navigate', screen: target, params: \{\} \}\)/)
+  assert.match(settings, /data-progress-save-confirmation/)
+  assert.match(settings, /途中の進捗を保存しますか？/)
+  assert.match(settings, /<ProgressBackupPanel/)
+  assert.match(settings, /continueLabel=\{`保存を終えて\$\{pendingLabel\}へ`\}/)
+  assert.match(settings, /goPortal\(\)/)
+  assert.match(policy, /targetScreen !== currentScreen/)
+  for (const screen of ['vocabStudy', 'vocabQuiz', 'reader', 'grammarQuiz', 'mathSolve', 'diagnostic']) {
+    assert.match(policy, new RegExp(`'${screen}'`))
+  }
+  assert.match(backup, /QRCodeCanvas/)
+  assert.match(backup, /コードをコピー/)
+  assert.match(backup, /useStore\(useShallow\(selectProgressState\)\)/)
+  assert.match(progress, /export const PERSISTED_PROGRESS_FIELDS/)
+})
+
+test('全教材・学習アドバイザー・定着分析・管理機能を統一メニューへ集約する', () => {
+  const app = read('../src/App.jsx')
+  const menu = read('../src/components/SpeechSettings.jsx')
+  const advisor = read('../src/components/LearningAdvisor.jsx')
+  const home = read('../src/screens/Home.jsx')
+  const portal = read('../src/screens/Portal.jsx')
+
+  assert.match(advisor, /data-menu-learning-overview/)
+  assert.match(advisor, /data-menu-advisor-entry/)
+  assert.match(advisor, /data-menu-retention-entry/)
+  assert.match(menu, /<LearningAnalyticsPanel/)
+  assert.match(advisor, /data-advisor-weakness/)
+  assert.match(advisor, /data-advisor-next-unit/)
+  for (const screen of [
+    'portal', 'mathMap', 'vocabSearch', 'kotenList', 'literatureLibrary',
+    'home', 'vocabLevels', 'readingList', 'phrases', 'grammar', 'listening',
+    'diagnostic', 'writing', 'dictation', 'roots', 'vocabCamera', 'wordRequests',
+    'myLearning', 'myList', 'myGrammar', 'kotenSaved', 'progress',
+  ]) {
+    assert.match(menu, new RegExp(`screen: '${screen}'`))
+  }
+  assert.match(menu, /data-menu-settings-entry/)
+  assert.match(menu, /data-menu-account-entry/)
+  assert.match(menu, /data-menu-reset-entry/)
+  assert.match(menu, /data-menu-reset-confirmation/)
+  assert.match(menu, /data-data-management-panel/)
+  for (const scope of ['analytics', 'diagnostic', 'saved', 'vocabHistory']) {
+    assert.match(menu, new RegExp(`id: '${scope}'`))
+  }
+  assert.match(menu, /resetProgress\(\)/)
+  assert.match(app, /BottomNav/)
+  assert.doesNotMatch(home, /EXTRA_LEARNING_MODES|screen: 'diagnostic'|screen: 'myList'|screen: 'myGrammar'/)
+  assert.doesNotMatch(portal, /useAuth|navigate\('login'\)/)
 })
 
 test('共通メニューから保存される学習・音声・コンテンツ設定を変更できる', () => {
@@ -141,9 +215,11 @@ test('音声設定シートの開閉状態は学習データとは別の一時�
   const progressCode = read('../src/lib/progressCode.js')
 
   assert.match(store, /speechSettingsOpen:\s*false/)
-  assert.match(store, /openSpeechSettings:\s*\(\) => set\(\{ speechSettingsOpen: true \}\)/)
-  assert.match(store, /closeSpeechSettings:\s*\(\) => set\(\{ speechSettingsOpen: false \}\)/)
+  assert.match(store, /speechSettingsRequest:\s*'menu'/)
+  assert.match(store, /openSpeechSettings:\s*\(request = 'menu'\) => set/)
+  assert.match(store, /closeSpeechSettings:\s*\(\) => set/)
   assert.doesNotMatch(progressCode, /['"]speechSettingsOpen['"]/)
+  assert.doesNotMatch(progressCode, /['"]speechSettingsRequest['"]/)
 })
 
 test('リスニングとディクテーションも共通速度を級別速度へ掛け合わせる', () => {

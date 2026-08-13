@@ -5231,6 +5231,12 @@ button { -webkit-tap-highlight-color: transparent; }
   font-size: 16px;
   line-height: 1.5;
 }
+
+/* 共通メニューはAppShell上部の一か所だけを表示する。各画面に残る互換用
+   トリガーは非表示にし、同じ画面へ二重のメニューボタンを出さない。 */
+.study-app-content [data-settings-menu-trigger] {
+  display: none;
+}
 .study-app-content :where(p, li, dd) {
   text-wrap: pretty;
 }

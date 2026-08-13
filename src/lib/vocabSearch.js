@@ -1,3 +1,5 @@
+import { vocabFieldFor } from '../data/vocab.js'
+
 const normalize = (value = '') =>
   value
     .toLowerCase()
@@ -30,6 +32,7 @@ export function vocabSearchText(word) {
   return normalize([
     word.meaning,
     ...(word.meanings ?? []),
+    vocabFieldFor(word),
     word.field,
     word.usage,
     word.example?.en,

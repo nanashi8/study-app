@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useShallow } from 'zustand/react/shallow'
-import { QRCodeCanvas } from 'qrcode.react'
 import jsQR from 'jsqr'
 import { useStore } from '../store/useStore.js'
 import { LEVELS } from '../data/levels.js'
@@ -13,30 +12,47 @@ import { etymologyProgress } from '../lib/etymologyProgress.js'
 import { levelProgress, overallProgress } from '../lib/session.js'
 import {
   decodeProgress,
-  encodeProgress,
   selectProgressState,
   summarizePayload,
 } from '../lib/progressCode.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { LearningAnalyticsPanel } from '../components/LearningAnalytics.jsx'
+import { ProgressBackupPanel } from '../components/ProgressBackup.jsx'
 import { Sheet } from '../components/Sheet.jsx'
-import { Card, Button, ProgressBar } from '../components/ui.jsx'
-import { Star, Flame, Trophy, Download, Upload, Check, Share } from '../components/Icons.jsx'
+import { Card, Button } from '../components/ui.jsx'
+import { Upload } from '../components/Icons.jsx'
 
-// 画像ファイルを共有できる端末（主にスマホ）なら共有シート経由でアルバムに保存できる。
-const CAN_SHARE_IMG = typeof navigator !== 'undefined' && !!navigator.canShare
-
-// QRコードに収まる上限の目安（バイト/英数字混在で安全側）。これを超えたら
-// QR化はあきらめてコード文字列のコピーに誘導する。
-const QR_MAX = 2800
-
-function Stat({ icon, value, label, color }) {
+function RecordSummary({ stats, progress, analytics }) {
+  const accuracy = stats.answered
+    ? `${Math.round((stats.correct / stats.answered) * 100)}%`
+    : '—'
   return (
-    <Card className="flex flex-1 flex-col items-center gap-1 p-3">
-      <span style={{ color }}>{icon}</span>
-      <span className="font-display text-xl font-extrabold text-ink">{value}</span>
-      <span className="text-[11px] font-bold text-ink/45">{label}</span>
-    </Card>
+    <section className="overflow-hidden rounded-xl border-2 border-slate-700 bg-white" aria-label="学習記録票の基本情報">
+      <div className="flex items-center justify-between gap-3 border-b border-slate-300 bg-slate-800 px-4 py-3 text-white">
+        <div>
+          <p className="text-[10px] font-extrabold tracking-[0.18em] text-slate-300">STUDENT LEARNING RECORD</p>
+          <h2 className="font-display text-lg font-extrabold">学習記録票</h2>
+        </div>
+        <span className="border border-slate-500 px-2 py-1 text-[10px] font-extrabold">端末集計</span>
+      </div>
+      <table className="w-full border-collapse text-xs" data-progress-record-summary>
+        <tbody>
+          {[
+            ['累計XP', stats.xp.toLocaleString(), '連続学習', `${stats.streak}日`],
+            ['累計回答', stats.answered.toLocaleString(), '累計正答率', accuracy],
+            ['英単語習得', `${progress.mastered}/${progress.total}`, '英単語復習待ち', `${progress.due}語`],
+            ['分析入力', `${analytics?.inputs ?? 0}件`, '本日の回答', `${stats.todayCount}件`],
+          ].map(([leftLabel, leftValue, rightLabel, rightValue]) => (
+            <tr key={leftLabel} className="border-b border-slate-200 last:border-0">
+              <th className="w-[24%] bg-slate-100 px-2 py-2 text-left font-extrabold text-slate-600">{leftLabel}</th>
+              <td className="w-[26%] px-2 py-2 text-right font-extrabold tabular-nums text-slate-950">{leftValue}</td>
+              <th className="w-[24%] bg-slate-100 px-2 py-2 text-left font-extrabold text-slate-600">{rightLabel}</th>
+              <td className="w-[26%] px-2 py-2 text-right font-extrabold tabular-nums text-slate-950">{rightValue}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </section>
   )
 }
 
@@ -66,21 +82,10 @@ export function ProgressScreen() {
     ),
     [full.etymologySrs],
   )
-  const code = useMemo(() => encodeProgress(full), [full])
-  // QRはアプリURL＋コード。別端末でカメラ読み取り→アプリが開いて復元確認が出る。
-  const shareUrl = useMemo(
-    () => `${location.origin}${location.pathname}#code=${code}`,
-    [code],
-  )
-
-  const [copied, setCopied] = useState(false)
-  const [saved, setSaved] = useState(false)
   const [input, setInput] = useState('')
   const [error, setError] = useState('')
   const [preview, setPreview] = useState(null) // {summary} 確認シート
-  const qrWrap = useRef(null)
   const fileInput = useRef(null)
-  const qrFits = shareUrl.length <= QR_MAX
   const summarize = (payload) => summarizePayload(payload, (id) => !!getWord(id))
 
   // 保存したQR画像を選んで読み込む。画像をcanvasに描いてjsQRでデコード→
@@ -116,54 +121,6 @@ export function ProgressScreen() {
       setPreview({ summary: summarize(payload) })
     } catch {
       setError('画像の読み込みに失敗しました。')
-    }
-  }
-
-  // QRを画像（PNG）として保存。端末の「写真／ファイル」に残せば、機種変更や
-  // 別端末でカメラ読み取り→続きから復元できる。
-  // スマホ（特にiOS）は a.download だとアルバムに入らないため、対応端末では
-  // Web Share API でファイル共有→「画像を保存」でカメラロールに入れられる。
-  // 非対応端末（主にPCブラウザ）は従来どおりダウンロードにフォールバック。
-  const saveQr = async () => {
-    const canvas = qrWrap.current?.querySelector('canvas')
-    if (!canvas) return
-    const blob = await new Promise((res) => canvas.toBlob(res, 'image/png'))
-    if (!blob) return
-    const file = new File([blob], 'eigo-quest-progress-qr.png', { type: 'image/png' })
-    // 画像ファイルを共有できる端末なら共有シートを開く（「画像を保存」でアルバムへ）。
-    if (navigator.canShare?.({ files: [file] })) {
-      try {
-        await navigator.share({
-          files: [file],
-          title: 'えいごクエストの学習記録',
-          text: 'この画像（QRコード）をカメラで読み取ると続きから復元できます。',
-        })
-        setSaved(true)
-        setTimeout(() => setSaved(false), 1800)
-        return
-      } catch {
-        // ユーザーがキャンセル→何もしない（ダウンロードに落とさない）。
-        return
-      }
-    }
-    // フォールバック：PNGをダウンロード（PCのダウンロードフォルダ等）。
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = 'eigo-quest-progress-qr.png'
-    a.click()
-    URL.revokeObjectURL(url)
-    setSaved(true)
-    setTimeout(() => setSaved(false), 1800)
-  }
-
-  const copy = async () => {
-    try {
-      await navigator.clipboard.writeText(code)
-      setCopied(true)
-      setTimeout(() => setCopied(false), 1800)
-    } catch {
-      setError('コピーに失敗しました。コードを長押しで選択してコピーしてください。')
     }
   }
 
@@ -211,12 +168,7 @@ export function ProgressScreen() {
       <ScreenHeader title="学習の記録" />
 
       <div className="space-y-5 px-4">
-        {/* 統計 */}
-        <div className="flex gap-3">
-          <Stat icon={<Star size={22} />} value={stats.xp} label="XP" color="#f59e0b" />
-          <Stat icon={<Flame size={22} />} value={`${stats.streak}日`} label="連続" color="#f43f5e" />
-          <Stat icon={<Trophy size={22} />} value={prog.mastered} label="習得" color="#6366f1" />
-        </div>
+        <RecordSummary stats={stats} progress={prog} analytics={full.learningAnalytics} />
 
         <LearningAnalyticsPanel
           learningAnalytics={full.learningAnalytics}
@@ -231,112 +183,88 @@ export function ProgressScreen() {
           stats={stats}
           dueCount={prog.due}
           onOpenDiagnostic={() => navigate('diagnostic')}
+          onNavigate={(screen, params) => navigate(screen, params)}
         />
 
         {/* 級別の進捗 */}
-        <Card className="p-4">
-          <h2 className="mb-3 font-display text-base font-extrabold text-ink/80">級ごとの進捗</h2>
-          <div className="space-y-2.5">
-            {LEVELS.map((l) => {
-              const p = levelProgress(l.id, srs)
-              return (
-                <div key={l.id}>
-                  <div className="mb-1 flex justify-between text-xs font-bold">
-                    <span className="text-ink/70">
-                      {l.emoji} {l.label}
-                    </span>
-                    <span className="text-ink/40">
-                      {p.mastered}/{p.total}
-                    </span>
-                  </div>
-                  <ProgressBar value={p.total ? p.mastered / p.total : 0} color={l.color} />
-                </div>
-              )
-            })}
+        <Card className="overflow-hidden rounded-xl border-slate-300 p-0 shadow-none">
+          <div className="border-b border-slate-300 bg-slate-100 px-3 py-2.5">
+            <h2 className="font-display text-base font-extrabold text-slate-950">英検級別・履修状況表</h2>
+            <p className="text-[10px] font-bold text-slate-500">英単語SRSを級別に集計</p>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[28rem] border-collapse text-xs" data-level-progress-table>
+              <thead>
+                <tr className="border-b border-slate-300 text-left text-[10px] font-extrabold text-slate-500">
+                  <th className="px-3 py-2">級</th>
+                  <th className="px-3 py-2 text-right">学習済</th>
+                  <th className="px-3 py-2 text-right">習得</th>
+                  <th className="px-3 py-2 text-right">復習待ち</th>
+                  <th className="px-3 py-2 text-right">習得率</th>
+                </tr>
+              </thead>
+              <tbody>
+                {LEVELS.map((level) => {
+                  const progress = levelProgress(level.id, srs)
+                  return (
+                    <tr key={level.id} className="border-b border-slate-200 last:border-0">
+                      <th className="px-3 py-2 text-left font-extrabold text-slate-800">{level.emoji} {level.label}</th>
+                      <td className="px-3 py-2 text-right font-bold tabular-nums">{progress.seen}/{progress.total}</td>
+                      <td className="px-3 py-2 text-right font-bold tabular-nums">{progress.mastered}</td>
+                      <td className="px-3 py-2 text-right font-bold tabular-nums">{progress.due}</td>
+                      <td className="px-3 py-2 text-right font-extrabold tabular-nums">{progress.total ? Math.round((progress.mastered / progress.total) * 100) : 0}%</td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
           </div>
         </Card>
 
         {/* 語源知識は単語SRSとは分け、部品式・語根・語族ごとの進み具合を示す。 */}
-        <Card className="p-4">
-          <div className="mb-3 flex items-start justify-between gap-3">
+        <Card className="overflow-hidden rounded-xl border-slate-300 p-0 shadow-none">
+          <div className="flex items-start justify-between gap-3 border-b border-slate-300 bg-slate-100 px-3 py-2.5">
             <div>
-              <h2 className="font-display text-base font-extrabold text-ink/80">語源知識の進捗</h2>
-              <p className="mt-0.5 text-[11px] font-bold text-ink/45">
-                学習済み {etymology.started}/{etymology.total}項目・復習待ち {etymology.due}
-              </p>
+              <h2 className="font-display text-base font-extrabold text-slate-950">語源知識・履修状況表</h2>
+              <p className="text-[10px] font-bold text-slate-500">単語SRSとは別集計・全{etymology.total}項目</p>
             </div>
-            <span className="rounded-full bg-violet-50 px-2.5 py-1 text-xs font-extrabold text-violet-700">
-              習得 {etymology.mastered}
-            </span>
+            <span className="border border-slate-300 bg-white px-2 py-1 text-[10px] font-extrabold text-slate-700">復習待ち {etymology.due}</span>
           </div>
-          <div className="space-y-2.5">
-            {Object.entries(ETYMOLOGY_MODE_META).map(([mode, meta]) => {
-              const progress = etymologyByMode[mode]
-              return (
-                <div key={mode}>
-                  <div className="mb-1 flex justify-between text-xs font-bold">
-                    <span className="text-ink/70">{meta.emoji} {meta.label}</span>
-                    <span className="text-ink/40">
-                      {progress.mastered}/{progress.total}
-                    </span>
-                  </div>
-                  <ProgressBar value={progress.ratio} color="#7c3aed" />
-                </div>
-              )
-            })}
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[28rem] border-collapse text-xs" data-etymology-progress-table>
+              <thead>
+                <tr className="border-b border-slate-300 text-left text-[10px] font-extrabold text-slate-500">
+                  <th className="px-3 py-2">分類</th>
+                  <th className="px-3 py-2 text-right">学習済</th>
+                  <th className="px-3 py-2 text-right">習得</th>
+                  <th className="px-3 py-2 text-right">復習待ち</th>
+                  <th className="px-3 py-2 text-right">習得率</th>
+                </tr>
+              </thead>
+              <tbody>
+                {Object.entries(ETYMOLOGY_MODE_META).map(([mode, meta]) => {
+                  const progress = etymologyByMode[mode]
+                  return (
+                    <tr key={mode} className="border-b border-slate-200 last:border-0">
+                      <th className="px-3 py-2 text-left font-extrabold text-slate-800">{meta.emoji} {meta.label}</th>
+                      <td className="px-3 py-2 text-right font-bold tabular-nums">{progress.started}/{progress.total}</td>
+                      <td className="px-3 py-2 text-right font-bold tabular-nums">{progress.mastered}</td>
+                      <td className="px-3 py-2 text-right font-bold tabular-nums">{progress.due}</td>
+                      <td className="px-3 py-2 text-right font-extrabold tabular-nums">{Math.round(progress.ratio * 100)}%</td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
           </div>
-          <Button full className="mt-4" variant="secondary" onClick={() => navigate('roots')}>
-            未着手・学習中・習得で分類して見る
-          </Button>
+          <div className="border-t border-slate-200 p-3">
+            <Button full variant="secondary" onClick={() => navigate('roots')}>語源知識マップで詳しく見る</Button>
+          </div>
         </Card>
 
         {/* 進捗コード：発行 */}
         <Card className="p-4">
-          <div className="mb-1 flex items-center gap-2 text-brand-600">
-            <Download size={18} />
-            <h2 className="font-display text-base font-extrabold">進捗コードを発行</h2>
-          </div>
-          <p className="mb-3 text-xs font-bold text-ink/50">
-            ログインしなくても、これを保存しておけば別の端末や次回にそのまま続きから再開できます。
-          </p>
-
-          {/* QRコード：画像で保存→カメラで読み取って復元できる */}
-          {qrFits ? (
-            <div className="flex flex-col items-center gap-2 rounded-2xl bg-white p-4 ring-1 ring-brand-100">
-              <div ref={qrWrap} className="rounded-xl bg-white p-2">
-                <QRCodeCanvas value={shareUrl} size={180} level="L" includeMargin marginSize={2} />
-              </div>
-              <Button className="mt-1" variant={saved ? 'success' : 'secondary'} onClick={saveQr}>
-                {saved ? (
-                  <><Check size={18} /> 保存しました</>
-                ) : CAN_SHARE_IMG ? (
-                  <><Share size={18} /> 画像をアルバムに保存</>
-                ) : (
-                  <><Download size={18} /> QRコードを画像で保存</>
-                )}
-              </Button>
-              <p className="text-center text-[11px] font-bold text-ink/40">
-                {CAN_SHARE_IMG
-                  ? '共有メニューの「画像を保存」でカメラロールに残せます。'
-                  : '画像を「写真／ファイル」に保存しておけば、'}
-                <br />別端末でカメラで読み取る→アプリが開いて続きから復元できます。
-              </p>
-            </div>
-          ) : (
-            <p className="rounded-2xl bg-amber-50 p-3 text-center text-xs font-bold text-amber-700 ring-1 ring-amber-100">
-              進捗が大きいためQRコードにできません。<br />下の「コードをコピー」で保存してください。
-            </p>
-          )}
-
-          <textarea
-            readOnly
-            value={code}
-            onFocus={(e) => e.target.select()}
-            className="mt-3 h-24 w-full resize-none rounded-2xl bg-paper p-3 font-mono text-xs text-ink/70 ring-1 ring-brand-100"
-          />
-          <Button full className="mt-2" variant={copied ? 'success' : 'primary'} onClick={copy}>
-            {copied ? <><Check size={18} /> コピーしました</> : 'コードをコピー'}
-          </Button>
+          <ProgressBackupPanel progressState={full} />
         </Card>
 
         {/* 進捗コード：読込 */}
@@ -404,8 +332,8 @@ export function ProgressScreen() {
                 <div className="text-[11px] font-bold text-ink/50">XP</div>
               </div>
               <div className="rounded-2xl bg-hint-soft p-3 text-center">
-                <div className="font-display text-2xl font-extrabold text-amber-700">{preview.summary.myList}</div>
-                <div className="text-[11px] font-bold text-ink/50">マイ単語</div>
+                <div className="font-display text-2xl font-extrabold text-amber-700">{preview.summary.notebookSaved}</div>
+                <div className="text-[11px] font-bold text-ink/50">マイノート（問題集 {preview.summary.notebookSets}冊）</div>
               </div>
               <div className="rounded-2xl bg-violet-50 p-3 text-center">
                 <div className="font-display text-2xl font-extrabold text-violet-700">{preview.summary.myGrammar}</div>

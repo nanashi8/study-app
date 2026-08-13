@@ -15,6 +15,7 @@ import {
 } from '../src/data/long-sentence-translations.js'
 import { LONG_MANUAL_REVIEW_LEDGER } from '../src/data/reading-phrase-review-ledger.js'
 import { LONG_SENTENCE_ROLE_EXPECTATIONS } from '../src/data/long-sentence-role-expectations.js'
+import { longSentenceExplanationTexts } from '../src/lib/explanationDedup.js'
 
 const normalizeEnglish = (value = '') => value.replace(/\s+/g, ' ').trim()
 
@@ -139,7 +140,7 @@ test('長い一文の自然訳と英語順の対応訳は、一覧詳細・学�
   assert.match(component, /前からは、/)
   assert.match(component, /英語、対応する日本語、文法解説の順で再生/)
   assert.match(component, /roleParts/)
-  assert.match(component, /roleNote/)
+  assert.match(component, /longSentenceExplanationTexts/)
   assert.match(component, /読み方：/)
 
   for (const path of [
@@ -153,6 +154,25 @@ test('長い一文の自然訳と英語順の対応訳は、一覧詳細・学�
     assert.match(source, /<LongSentenceTranslation/)
     assert.match(source, /自然な和訳/)
   }
+})
+
+test('長い一文33件は同一の文法説明を画面と音声で繰り返さない', () => {
+  let stepCount = 0
+  for (const [id, guide] of Object.entries(LONG_SENTENCE_TRANSLATIONS)) {
+    const steps = guide.meaningSteps?.length ? guide.meaningSteps : guide.steps
+    const sourceTexts = steps
+      .flatMap((step) => [step.note, step.roleNote])
+      .map((text) => String(text ?? '').replace(/\s+/g, ' ').trim())
+      .filter(Boolean)
+    const visibleTexts = longSentenceExplanationTexts(steps)
+      .map((text) => String(text ?? '').replace(/\s+/g, ' ').trim())
+      .filter(Boolean)
+    stepCount += steps.length
+    assert.equal(new Set(visibleTexts).size, visibleTexts.length, id)
+    assert.deepEqual(new Set(visibleTexts), new Set(sourceTexts), id)
+  }
+  assert.equal(Object.keys(LONG_SENTENCE_TRANSLATIONS).length, 33)
+  assert.equal(stepCount, 103)
 })
 
 test('33文は明示台帳一致時だけ最終監査確認済みになる', () => {
