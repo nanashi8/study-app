@@ -23,6 +23,9 @@ export const IN_PROGRESS_SCREENS = Object.freeze(new Set([
   'kotenGrammarQuiz',
   'kotenCultureStudy',
   'kotenCultureQuiz',
+  'kanbunStudy',
+  'kanbunQuiz',
+  'kanbunKundokuQuiz',
 ]))
 
 export function requiresProgressSaveConfirmation(currentScreen, targetScreen) {

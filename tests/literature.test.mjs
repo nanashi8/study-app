@@ -300,6 +300,7 @@ test('画面導線・連続TTS・通常長文の分離集計を実装してい�
   )
   const contents = readFileSync(new URL('../src/data/contents.js', import.meta.url), 'utf8')
   const koten = readFileSync(new URL('../src/screens/KotenList.jsx', import.meta.url), 'utf8')
+  const kanbun = readFileSync(new URL('../src/screens/KanbunHome.jsx', import.meta.url), 'utf8')
   const map = readFileSync(new URL('../src/screens/EnglishMap.jsx', import.meta.url), 'utf8')
   const store = readFileSync(new URL('../src/store/useStore.js', import.meta.url), 'utf8')
 
@@ -315,7 +316,8 @@ test('画面導線・連続TTS・通常長文の分離集計を実装してい�
   assert.match(library, /title="名作に親しむ"/)
   assert.match(library, /id: 'kanbun'/)
   assert.match(contents, /title: '名作に親しむ'/)
-  assert.match(koten, /kind: 'kanbun'/)
+  assert.doesNotMatch(koten, /kind: 'kanbun'/)
+  assert.match(kanbun, /kind: 'kanbun'/)
   assert.match(map, /PASSAGE_IDS\.has\(id\)/)
   assert.match(store, /learningAnalytics:\s*recordLearningEvent/)
 })

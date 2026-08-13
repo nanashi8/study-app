@@ -1,6 +1,20 @@
-const ANALYTICS_VERSION = 1
+const ANALYTICS_VERSION = 2
 const LONG_TERM_BOX = 4
 const MAX_TRACKED_DAYS = 90
+
+export const LEARNING_ACTIVITY_MODES = Object.freeze({
+  memory: { label: '暗記', description: 'カードで「覚えた／まだ」を判定した記録' },
+  test: { label: 'テスト', description: '問題を解いて正誤を採点した記録' },
+  practice: { label: '演習', description: '採点を伴わない読解・作文などの記録' },
+})
+
+export const MEMORY_PASS_BUCKETS = Object.freeze([
+  { id: '1', label: '1周' },
+  { id: '2', label: '2周' },
+  { id: '3', label: '3周' },
+  { id: '4-5', label: '4〜5周' },
+  { id: '6+', label: '6周以上' },
+])
 
 const INTERVAL_BUCKETS = [
   { id: 'under1h', label: '1時間未満', maxHours: 1 },
@@ -24,6 +38,10 @@ export const LEARNING_SKILLS = {
   koten_grammar: { label: '古典文法', emoji: '🪶', color: '#d97706' },
   koten_culture: { label: '古典常識', emoji: '🏯', color: '#7c3aed' },
   koten_reading: { label: '古典読解', emoji: '🏯', color: '#b45309' },
+  kanbun_vocab: { label: '漢語', emoji: '📖', color: '#0f766e' },
+  kanbun_grammar: { label: '漢文法', emoji: '🧭', color: '#be123c' },
+  kanbun_culture: { label: '漢文常識', emoji: '🏛️', color: '#7c3aed' },
+  kanbun_kundoku: { label: '返り点・訓読', emoji: '🔁', color: '#0369a1' },
   math: { label: '数学', emoji: '📐', color: '#7c3aed' },
 }
 
@@ -37,6 +55,8 @@ const clamp = (value, min, max) => Math.max(min, Math.min(max, value))
 
 const emptyAggregate = () => ({ inputs: 0, scored: 0, correct: 0 })
 
+const emptyModeAggregate = () => ({ ...emptyAggregate(), hours: {} })
+
 export function createLearningAnalytics() {
   return {
     version: ANALYTICS_VERSION,
@@ -47,6 +67,12 @@ export function createLearningAnalytics() {
     intervals: {},
     skills: {},
     days: {},
+    modes: {
+      memory: emptyModeAggregate(),
+      test: emptyModeAggregate(),
+      practice: emptyModeAggregate(),
+    },
+    memoryCohorts: { hours: {}, passes: {} },
     longTerm: { items: 0, repetitions: 0 },
   }
 }
@@ -58,6 +84,18 @@ function normalizeAggregate(value) {
     scored,
     correct: clamp(nonNegative(value?.correct), 0, scored),
   }
+}
+
+function normalizeModeAggregate(value) {
+  const aggregate = normalizeAggregate(value)
+  const hours = {}
+  for (const [key, hourAggregate] of Object.entries(value?.hours ?? {})) {
+    const hour = Number(key)
+    if (Number.isInteger(hour) && hour >= 0 && hour <= 23) {
+      hours[hour] = normalizeAggregate(hourAggregate)
+    }
+  }
+  return { ...aggregate, hours }
 }
 
 export function normalizeLearningAnalytics(value) {
@@ -91,6 +129,30 @@ export function normalizeLearningAnalytics(value) {
     }
   }
 
+
+  const modes = Object.fromEntries(
+    Object.keys(LEARNING_ACTIVITY_MODES).map((mode) => [
+      mode,
+      normalizeModeAggregate(value.modes?.[mode]),
+    ]),
+  )
+
+  const cohortHours = {}
+  for (const [key, aggregate] of Object.entries(value.memoryCohorts?.hours ?? {})) {
+    const hour = Number(key)
+    if (Number.isInteger(hour) && hour >= 0 && hour <= 23) {
+      cohortHours[hour] = normalizeAggregate(aggregate)
+    }
+  }
+  const cohortPasses = {}
+  for (const bucket of MEMORY_PASS_BUCKETS) {
+    if (value.memoryCohorts?.passes?.[bucket.id]) {
+      cohortPasses[bucket.id] = normalizeAggregate(
+        value.memoryCohorts.passes[bucket.id],
+      )
+    }
+  }
+
   return {
     version: ANALYTICS_VERSION,
     inputs: nonNegative(value.inputs),
@@ -100,11 +162,26 @@ export function normalizeLearningAnalytics(value) {
     intervals,
     skills,
     days,
+    modes,
+    memoryCohorts: { hours: cohortHours, passes: cohortPasses },
     longTerm: {
       items: nonNegative(value.longTerm?.items),
       repetitions: nonNegative(value.longTerm?.repetitions),
     },
   }
+}
+
+function memoryPassBucketFor(passes) {
+  const count = Math.floor(nonNegative(passes))
+  if (count <= 0) return null
+  if (count <= 3) return String(count)
+  if (count <= 5) return '4-5'
+  return '6+'
+}
+
+function activityModeFor(event, scored) {
+  if (Object.hasOwn(LEARNING_ACTIVITY_MODES, event?.activity)) return event.activity
+  return scored > 0 ? 'test' : 'practice'
 }
 
 function localDateKey(timestamp) {
@@ -140,6 +217,7 @@ export function recordLearningEvent(current, event, timestamp = Date.now()) {
   const hour = new Date(at).getHours()
   const day = localDateKey(at)
   const skill = event?.skill || 'other'
+  const activity = activityModeFor(event, scored)
 
   analytics.inputs += inputs
   analytics.scored += scored
@@ -147,6 +225,34 @@ export function recordLearningEvent(current, event, timestamp = Date.now()) {
   analytics.hours[hour] = addAggregate(analytics.hours[hour], { inputs, scored, correct })
   analytics.skills[skill] = addAggregate(analytics.skills[skill], { inputs, scored, correct })
   analytics.days[day] = addAggregate(analytics.days[day], { inputs, scored, correct })
+  const mode = analytics.modes[activity] ?? emptyModeAggregate()
+  const nextMode = addAggregate(mode, { inputs, scored, correct })
+  analytics.modes[activity] = {
+    ...nextMode,
+    hours: {
+      ...mode.hours,
+      [hour]: addAggregate(mode.hours?.[hour], { inputs, scored, correct }),
+    },
+  }
+
+  // テスト結果を、その項目を最後に暗記した時刻と暗記周回数へ帰属させる。
+  // 問題文・回答内容は保存せず、条件別の正誤件数だけを保持する。
+  if (activity === 'test' && scored > 0) {
+    const memoryHour = Number(event?.memoryHour)
+    if (Number.isInteger(memoryHour) && memoryHour >= 0 && memoryHour <= 23) {
+      analytics.memoryCohorts.hours[memoryHour] = addAggregate(
+        analytics.memoryCohorts.hours[memoryHour],
+        { inputs, scored, correct },
+      )
+    }
+    const passBucket = memoryPassBucketFor(event?.memoryPasses)
+    if (passBucket) {
+      analytics.memoryCohorts.passes[passBucket] = addAggregate(
+        analytics.memoryCohorts.passes[passBucket],
+        { inputs, scored, correct },
+      )
+    }
+  }
 
   const bucket = intervalBucketFor(event?.gapHours)
   if (bucket && scored > 0) {
@@ -207,6 +313,28 @@ function hourStatsFrom(analytics) {
       ? (aggregate.correct + 2) / (aggregate.scored + 4)
       : null
     return { hour, ...aggregate, accuracy, efficiency }
+  })
+}
+
+function cohortHourStatsFrom(analytics) {
+  return Array.from({ length: 24 }, (_, hour) => {
+    const aggregate = normalizeAggregate(analytics.memoryCohorts?.hours?.[hour])
+    return {
+      hour,
+      ...aggregate,
+      accuracy: aggregate.scored ? aggregate.correct / aggregate.scored : null,
+    }
+  })
+}
+
+function passStatsFrom(analytics) {
+  return MEMORY_PASS_BUCKETS.map((bucket) => {
+    const aggregate = normalizeAggregate(analytics.memoryCohorts?.passes?.[bucket.id])
+    return {
+      ...bucket,
+      ...aggregate,
+      accuracy: aggregate.scored ? aggregate.correct / aggregate.scored : null,
+    }
   })
 }
 
@@ -287,6 +415,10 @@ export function analyzeLearning({
   const forgotten = Math.max(0, scored - correct)
   const activeDays = Object.values(analytics.days).filter((day) => day.inputs > 0)
   const hourly = hourStatsFrom(analytics)
+  const memoryHourly = hourStatsFrom({ hours: analytics.modes.memory.hours })
+  const testHourly = hourStatsFrom({ hours: analytics.modes.test.hours })
+  const memoryCohortHourly = cohortHourStatsFrom(analytics)
+  const memoryPasses = passStatsFrom(analytics)
   const bestWindow = bestThreeHourWindow(hourly)
   const skills = skillResultsFrom(analytics, skillStats)
   const rankedSkills = skills
@@ -338,6 +470,15 @@ export function analyzeLearning({
       : null,
     repetitionsToLongTerm,
     hourly,
+    activity: {
+      memory: normalizeModeAggregate(analytics.modes.memory),
+      test: normalizeModeAggregate(analytics.modes.test),
+      practice: normalizeModeAggregate(analytics.modes.practice),
+    },
+    memoryHourly,
+    testHourly,
+    memoryCohortHourly,
+    memoryPasses,
     bestWindow,
     intervals,
     skills,

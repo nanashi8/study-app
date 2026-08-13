@@ -121,7 +121,7 @@ const actualMenuGroups = APP_MENU_GROUPS.map((group) => group.id)
 if (actualMenuGroups.join(',') !== expectedMenuGroups.join(',')) {
   errors.push(`統一メニューの分類が不一致: ${actualMenuGroups.join(',')}`)
 }
-if (APP_MENU_ITEMS.length !== 25) errors.push(`統一メニューが全25項目ではない: ${APP_MENU_ITEMS.length}`)
+if (APP_MENU_ITEMS.length !== 27) errors.push(`統一メニューが全27項目ではない: ${APP_MENU_ITEMS.length}`)
 if (new Set(APP_MENU_SCREEN_DESTINATIONS).size !== APP_MENU_SCREEN_DESTINATIONS.length) {
   errors.push('統一メニューに重複した画面入口がある')
 }
@@ -153,7 +153,7 @@ if (resetGroupIds.join(',') !== ALL_PROGRESS_RESET_GROUP_IDS.join(',')) {
 if (PROGRESS_RESET_GROUPS.length !== 6) {
   errors.push(`履歴リセットが6分類ではない: ${PROGRESS_RESET_GROUPS.length}`)
 }
-if (RESETTABLE_PROGRESS_FIELDS.length !== 36 || RESET_PRESERVED_PROGRESS_FIELDS.length !== 3) {
+if (RESETTABLE_PROGRESS_FIELDS.length !== 43 || RESET_PRESERVED_PROGRESS_FIELDS.length !== 3) {
   errors.push(`履歴リセットの対象数が不一致: 対象${RESETTABLE_PROGRESS_FIELDS.length}・保持${RESET_PRESERVED_PROGRESS_FIELDS.length}`)
 }
 if (new Set(coveredProgressFields).size !== coveredProgressFields.length) {

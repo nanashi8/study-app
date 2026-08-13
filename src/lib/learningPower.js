@@ -79,6 +79,29 @@ const SKILL_ROUTES = {
     label: '古典読解',
     actionLabel: '古典読解へ',
   },
+  kanbun_vocab: {
+    screen: 'kanbunCatalog',
+    params: { domain: 'vocab' },
+    label: '漢語',
+    actionLabel: '漢語へ',
+  },
+  kanbun_grammar: {
+    screen: 'kanbunCatalog',
+    params: { domain: 'grammar' },
+    label: '漢文法',
+    actionLabel: '漢文法へ',
+  },
+  kanbun_culture: {
+    screen: 'kanbunCatalog',
+    params: { domain: 'culture' },
+    label: '漢文常識',
+    actionLabel: '漢文常識へ',
+  },
+  kanbun_kundoku: {
+    screen: 'kanbunKundoku',
+    label: '返り点・訓読',
+    actionLabel: '返り点ドリルへ',
+  },
 }
 
 const clamp = (value, min = 0, max = 100) =>

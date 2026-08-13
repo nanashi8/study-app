@@ -1,0 +1,236 @@
+import { useMemo, useState } from 'react'
+import { useStore } from '../store/useStore.js'
+import { KANBUN_VOCAB_CATEGORIES } from '../data/kanbun-vocab.js'
+import { KANBUN_GRAMMAR_CATEGORIES } from '../data/kanbun-grammar.js'
+import { KANBUN_CULTURE_CATEGORIES } from '../data/kanbun-culture.js'
+import {
+  KANBUN_COLLECTIONS,
+  kanbunDomainMeta,
+  kanbunSearchText,
+} from '../data/kanbun-content.js'
+import { KANBUN_LEVELS, KANBUN_LEVEL_BY_ID } from '../data/kanbun-meta.js'
+import { kanbunDueItems, kanbunProgress } from '../lib/kanbunProgress.js'
+import { Button, Card, Chip, IconButton, ProgressRing } from '../components/ui.jsx'
+import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
+import {
+  Book,
+  Bookmark,
+  BookmarkFilled,
+  Cards,
+  ChevronLeft,
+  Refresh,
+  Search,
+} from '../components/Icons.jsx'
+
+const CATEGORY_MAP = {
+  vocab: KANBUN_VOCAB_CATEGORIES,
+  grammar: KANBUN_GRAMMAR_CATEGORIES,
+  culture: KANBUN_CULTURE_CATEGORIES,
+}
+
+export function KanbunCatalogScreen() {
+  const params = useStore((state) => state.params)
+  const navigate = useStore((state) => state.navigate)
+  const domain = KANBUN_COLLECTIONS[params.domain] ? params.domain : 'vocab'
+  const meta = kanbunDomainMeta(domain)
+  const collection = KANBUN_COLLECTIONS[domain]
+  const categories = CATEGORY_MAP[domain]
+  const srs = useStore((state) => state[meta.srsField])
+  const savedIds = useStore((state) => state[meta.listField])
+  const toggleSaved = useStore((state) => state.toggleKanbunList)
+  const [level, setLevel] = useState('all')
+  const [category, setCategory] = useState('all')
+  const [query, setQuery] = useState('')
+
+  const filtered = useMemo(() => {
+    const normalized = query.trim().toLowerCase()
+    return collection.filter((item) =>
+      (level === 'all' || item.level === level)
+      && (category === 'all' || item.category === category)
+      && (!normalized || kanbunSearchText(item).includes(normalized)))
+  }, [category, collection, level, query])
+  const totalProgress = kanbunProgress(collection, srs)
+  const dueItems = kanbunDueItems(collection, srs)
+
+  const study = (items, title) => navigate('kanbunStudy', {
+    domain,
+    ids: items.map((item) => item.id),
+    title,
+  })
+  const quiz = (items, title) => navigate('kanbunQuiz', {
+    domain,
+    ids: items.map((item) => item.id),
+    title,
+  })
+
+  return (
+    <div className="pb-8">
+      <header className="rounded-b-[2.5rem] bg-gradient-to-br from-rose-950 via-red-900 to-orange-800 px-5 pb-7 pt-[calc(env(safe-area-inset-top)+1.25rem)] text-white">
+        <div className="mb-3 flex items-center justify-between">
+          <button
+            type="button"
+            onClick={() => navigate('kanbunHome')}
+            className="flex items-center gap-1 rounded-full bg-white/15 py-1 pl-1.5 pr-2.5 text-[11px] font-extrabold text-white/90"
+          >
+            <ChevronLeft size={14} /> 漢文アプリ
+          </button>
+          <SpeechSettingsButton compact inverse />
+        </div>
+        <p className="text-xs font-bold text-white/70">中学入門〜最難関大学</p>
+        <h1 className="font-display text-2xl font-extrabold">{meta.emoji} {meta.label}</h1>
+        <p className="mt-1 text-sm font-bold text-white/80">{meta.description}</p>
+        <div className="mt-4 grid grid-cols-[auto_1fr] items-center gap-4 rounded-2xl bg-white/12 p-3.5">
+          <ProgressRing value={totalProgress.ratio} size={62} stroke={7} color="#ffffff">
+            <span className="text-xs font-extrabold text-white">{Math.round(totalProgress.ratio * 100)}%</span>
+          </ProgressRing>
+          <div>
+            <p className="font-display text-base font-extrabold">全{collection.length}{meta.itemLabel}</p>
+            <p className="mt-1 text-[11px] font-bold text-white/65">
+              習得 {totalProgress.mastered}・学習中 {totalProgress.learning}・登録 {savedIds.length}
+            </p>
+          </div>
+        </div>
+      </header>
+
+      <main className="space-y-5 px-4 pt-5">
+        <section className="grid grid-cols-2 gap-3">
+          <button
+            type="button"
+            onClick={() => study(collection, `${meta.label}・全範囲`)}
+            className="rounded-3xl bg-gradient-to-br from-rose-700 to-red-900 p-4 text-left text-white shadow-card active:scale-[0.98]"
+          >
+            <Book size={23} />
+            <span className="mt-3 block font-display text-lg font-extrabold">覚える</span>
+            <span className="mt-1 block text-[11px] font-bold text-white/70">答えを隠して想起する</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => quiz(collection, `${meta.label}・全範囲テスト`)}
+            className="rounded-3xl bg-gradient-to-br from-slate-950 to-violet-950 p-4 text-left text-white shadow-card active:scale-[0.98]"
+          >
+            <Cards size={23} />
+            <span className="mt-3 block font-display text-lg font-extrabold">テスト</span>
+            <span className="mt-1 block text-[11px] font-bold text-white/65">根拠・誤答理由まで確認</span>
+          </button>
+        </section>
+
+        <div className="grid grid-cols-2 gap-3">
+          <Button
+            variant="secondary"
+            disabled={!dueItems.length}
+            onClick={() => study(dueItems, `${meta.label}・復習待ち`)}
+          >
+            <Refresh size={16} /> 復習 {dueItems.length}
+          </Button>
+          <Button
+            variant="secondary"
+            disabled={!savedIds.length}
+            onClick={() => study(savedIds.map((id) => collection.find((item) => item.id === id)).filter(Boolean), `登録${meta.label}`)}
+          >
+            <BookmarkFilled size={16} /> 登録 {savedIds.length}
+          </Button>
+        </div>
+
+        <section>
+          <h2 className="px-1 font-display text-lg font-extrabold text-ink">到達レベルから選ぶ</h2>
+          <div className="mt-2 flex gap-2 overflow-x-auto pb-1">
+            <button
+              type="button"
+              onClick={() => setLevel('all')}
+              className={`shrink-0 rounded-full px-3 py-2 text-xs font-extrabold ${level === 'all' ? 'bg-rose-800 text-white' : 'bg-white text-ink/55'}`}
+            >
+              全レベル
+            </button>
+            {KANBUN_LEVELS.map((item) => (
+              <button
+                type="button"
+                key={item.id}
+                onClick={() => setLevel(item.id)}
+                className={`shrink-0 rounded-full px-3 py-2 text-xs font-extrabold ${level === item.id ? 'bg-rose-800 text-white' : 'bg-white text-ink/55'}`}
+              >
+                {item.shortLabel}
+              </button>
+            ))}
+          </div>
+        </section>
+
+        <section>
+          <h2 className="px-1 font-display text-lg font-extrabold text-ink">分野から選ぶ</h2>
+          <div className="mt-2 flex gap-2 overflow-x-auto pb-1">
+            <button
+              type="button"
+              onClick={() => setCategory('all')}
+              className={`shrink-0 rounded-full px-3 py-2 text-xs font-extrabold ${category === 'all' ? 'bg-slate-900 text-white' : 'bg-white text-ink/55'}`}
+            >
+              全分野
+            </button>
+            {categories.map((item) => (
+              <button
+                type="button"
+                key={item.id}
+                onClick={() => setCategory(item.id)}
+                className={`shrink-0 rounded-full px-3 py-2 text-xs font-extrabold ${category === item.id ? 'bg-slate-900 text-white' : 'bg-white text-ink/55'}`}
+              >
+                {item.emoji} {item.label}
+              </button>
+            ))}
+          </div>
+        </section>
+
+        <label className="flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-3 py-2.5 shadow-sm">
+          <Search size={18} className="shrink-0 text-ink/35" />
+          <input
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder={`${meta.label}を検索`}
+            className="min-w-0 flex-1 bg-transparent text-sm font-bold text-ink outline-none"
+          />
+        </label>
+
+        <div className="flex items-end justify-between px-1">
+          <div>
+            <h2 className="font-display text-lg font-extrabold text-ink">教材一覧</h2>
+            <p className="text-xs font-bold text-ink/40">該当 {filtered.length}{meta.itemLabel}</p>
+          </div>
+          <div className="flex gap-2">
+            <Button size="sm" disabled={!filtered.length} onClick={() => study(filtered, '絞り込み範囲')}>覚える</Button>
+            <Button size="sm" variant="secondary" disabled={!filtered.length} onClick={() => quiz(filtered, '絞り込みテスト')}>テスト</Button>
+          </div>
+        </div>
+
+        <div className="space-y-2.5">
+          {filtered.map((item) => {
+            const saved = savedIds.includes(item.id)
+            const levelMeta = KANBUN_LEVEL_BY_ID[item.level]
+            const categoryMeta = categories.find((entry) => entry.id === item.category)
+            return (
+              <Card key={item.id} className="p-4">
+                <div className="flex items-start gap-3">
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap gap-2">
+                      <Chip color={levelMeta?.color}>{levelMeta?.shortLabel}</Chip>
+                      <Chip color={categoryMeta?.color}>{categoryMeta?.label}</Chip>
+                    </div>
+                    <h3 className="mt-2 font-display text-base font-extrabold leading-relaxed text-ink">{item.title}</h3>
+                    {item.reading && <p className="text-[11px] font-bold text-rose-700">読み：{item.reading}</p>}
+                    {item.pattern && <p className="text-[11px] font-bold text-rose-700">形：{item.pattern}</p>}
+                    <p className="mt-1 text-sm font-extrabold leading-relaxed text-ink/70">{item.answer}</p>
+                    <p className="mt-1 text-xs font-bold leading-relaxed text-ink/45">{item.clue}</p>
+                  </div>
+                  <IconButton
+                    onClick={() => toggleSaved(domain, item.id)}
+                    aria-label={saved ? `${item.title}を登録から外す` : `${item.title}を登録する`}
+                    aria-pressed={saved}
+                    className={saved ? 'text-amber-600' : 'text-ink/25'}
+                  >
+                    {saved ? <BookmarkFilled size={20} /> : <Bookmark size={20} />}
+                  </IconButton>
+                </div>
+              </Card>
+            )
+          })}
+        </div>
+      </main>
+    </div>
+  )
+}

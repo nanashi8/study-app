@@ -46,10 +46,19 @@ export const CONTENTS = [
   {
     id: 'koten-quest',
     title: '古典アプリ',
-    subtitle: '古典単語・文法・常識を短文で身につける',
+    subtitle: '古典単語・古典文法・古典常識を暗記・テスト',
     emoji: '📜',
     color: '#d97706',
     screen: 'kotenList',
+    status: 'available',
+  },
+  {
+    id: 'kanbun-quest',
+    title: '漢文アプリ',
+    subtitle: '漢語・漢文法・漢文常識と返り点を暗記・テスト',
+    emoji: '📕',
+    color: '#be123c',
+    screen: 'kanbunHome',
     status: 'available',
   },
   {

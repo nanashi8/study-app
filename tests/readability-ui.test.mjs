@@ -12,7 +12,7 @@ async function jsxFiles(directory) {
   return nested.flat()
 }
 
-test('公開中の全59ルートは共通の可読性レイヤー・上部戻る・上部メニューを通る', async () => {
+test('公開中の全66ルートは共通の可読性レイヤー・上部戻る・上部メニューを通る', async () => {
   const [app, shell] = await Promise.all([
     readFile(new URL('../src/App.jsx', import.meta.url), 'utf8'),
     readFile(new URL('../src/components/AppShell.jsx', import.meta.url), 'utf8'),
@@ -20,7 +20,7 @@ test('公開中の全59ルートは共通の可読性レイヤー・上部戻る
   const screenMap = app.slice(app.indexOf('const SCREENS = {'), app.indexOf('// 全公開画面'))
   const routeCount = (screenMap.match(/^  [A-Za-z][A-Za-z0-9]*:/gm) ?? []).length
 
-  assert.equal(routeCount, 59)
+  assert.equal(routeCount, 66)
   assert.match(app, /<AppShell>/)
   assert.doesNotMatch(app, /BottomNav|nav=\{/)
   assert.match(shell, /study-app-surface/)

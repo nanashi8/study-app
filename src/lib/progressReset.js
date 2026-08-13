@@ -13,7 +13,7 @@ export const PROGRESS_RESET_GROUPS = Object.freeze([
   resetGroup(
     'review',
     '復習段階・習熟度',
-    '英単語・語源・古典のSRSと復習予定',
+    '英単語・語源・古典・漢文のSRSと復習予定',
     [
       'srs',
       'etymologySrs',
@@ -21,6 +21,10 @@ export const PROGRESS_RESET_GROUPS = Object.freeze([
       'kotenGrammarSrs',
       'kotenCultureSrs',
       'kotenInterpretationSrs',
+      'kanbunVocabSrs',
+      'kanbunGrammarSrs',
+      'kanbunCultureSrs',
+      'kanbunKundokuSrs',
     ],
   ),
   resetGroup(
@@ -46,7 +50,7 @@ export const PROGRESS_RESET_GROUPS = Object.freeze([
   resetGroup(
     'saved',
     '保存した教材・ノート',
-    'マイ単語、マイ文法、学習ノート、古典の登録項目',
+    'マイ単語、マイ文法、学習ノート、古典・漢文の登録項目',
     [
       'myList',
       'myGrammarList',
@@ -54,6 +58,9 @@ export const PROGRESS_RESET_GROUPS = Object.freeze([
       'kotenWordList',
       'kotenGrammarList',
       'kotenCultureList',
+      'kanbunVocabList',
+      'kanbunGrammarList',
+      'kanbunCultureList',
     ],
   ),
   resetGroup(

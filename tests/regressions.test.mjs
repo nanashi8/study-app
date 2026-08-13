@@ -8,6 +8,7 @@ import {
   localDayIndexAt,
   migratePersistedState,
   progressStateFromPayload,
+  normalizeOrder,
   todayIndex,
   useStore,
 } from '../src/store/useStore.js'
@@ -83,6 +84,23 @@ const entry = (due = todayIndex()) => ({
   wrong: 1,
   due,
   last: due,
+})
+
+test('旧ポータル順では既存配置を保ち、新しい漢文アプリを古典の直後へ補う', () => {
+  const legacyOrder = [
+    'eigo-quest',
+    'math-quest',
+    'eigo-dict',
+    'koten-quest',
+    'other-subjects',
+    'literature-listening',
+  ]
+  const normalized = normalizeOrder(legacyOrder)
+  assert.equal(normalized.indexOf('kanbun-quest'), normalized.indexOf('koten-quest') + 1)
+  assert.deepEqual(
+    normalized.filter((id) => id !== 'kanbun-quest'),
+    legacyOrder,
+  )
 })
 
 test('現地日付は日本時間の午前0時で切り替わる', () => {
@@ -272,6 +290,13 @@ test('学習記録の全永続項目は端末保存・画面発行・クラウ�
   const portable = selectProgressState({
     ...state,
     vocabHistory: ['read', 'access'],
+    kanbunVocabSrs: { kv001: entry(21) },
+    kanbunGrammarSrs: { kgw001: entry(22) },
+    kanbunCultureSrs: { kcw001: entry(23) },
+    kanbunKundokuSrs: { kk001: entry(24) },
+    kanbunVocabList: ['kv001'],
+    kanbunGrammarList: ['kgw001'],
+    kanbunCultureList: ['kcw001'],
     battleStars: 123,
     battleXpSpent: 50,
     battleStoryStep: 5,
@@ -282,6 +307,26 @@ test('学習記録の全永続項目は端末保存・画面発行・クラウ�
   assert.equal(restored.battleStars, 123)
   assert.equal(restored.battleXpSpent, 50)
   assert.equal(restored.battleStoryStep, 5)
+  assert.deepEqual(restored.kanbunVocabSrs, portable.kanbunVocabSrs)
+  assert.deepEqual(restored.kanbunGrammarSrs, portable.kanbunGrammarSrs)
+  assert.deepEqual(restored.kanbunCultureSrs, portable.kanbunCultureSrs)
+  assert.deepEqual(restored.kanbunKundokuSrs, portable.kanbunKundokuSrs)
+  assert.deepEqual(restored.kanbunVocabList, ['kv001'])
+  assert.deepEqual(restored.kanbunGrammarList, ['kgw001'])
+  assert.deepEqual(restored.kanbunCultureList, ['kcw001'])
+
+  const restoredFromCloud = progressStateFromCloud(portable, state)
+  for (const field of [
+    'kanbunVocabSrs',
+    'kanbunGrammarSrs',
+    'kanbunCultureSrs',
+    'kanbunKundokuSrs',
+    'kanbunVocabList',
+    'kanbunGrammarList',
+    'kanbunCultureList',
+  ]) {
+    assert.deepEqual(restoredFromCloud[field], portable[field], field)
+  }
 
   const progressSource = readFileSync(
     new URL('../src/screens/Progress.jsx', import.meta.url),
@@ -295,7 +340,7 @@ test('学習記録の全永続項目は端末保存・画面発行・クラウ�
   assert.match(storeSource, /partialize:\s*selectProgressState/)
 })
 
-test('履歴リセットの6分類は全39永続項目を漏れなく一度だけ扱う', () => {
+test('履歴リセットの6分類は全46永続項目を漏れなく一度だけ扱う', () => {
   const groupIds = PROGRESS_RESET_GROUPS.map((group) => group.id)
   const combinedFields = [
     ...RESETTABLE_PROGRESS_FIELDS,
@@ -304,8 +349,8 @@ test('履歴リセットの6分類は全39永続項目を漏れなく一度だ�
 
   assert.deepEqual(groupIds, ALL_PROGRESS_RESET_GROUP_IDS)
   assert.equal(new Set(groupIds).size, groupIds.length, '分類IDを重複させない')
-  assert.equal(PERSISTED_PROGRESS_FIELDS.length, 39)
-  assert.equal(RESETTABLE_PROGRESS_FIELDS.length, 36)
+  assert.equal(PERSISTED_PROGRESS_FIELDS.length, 46)
+  assert.equal(RESETTABLE_PROGRESS_FIELDS.length, 43)
   assert.equal(RESET_PRESERVED_PROGRESS_FIELDS.length, 3)
   assert.equal(new Set(combinedFields).size, combinedFields.length, '保存項目を二重分類しない')
   assert.deepEqual(
@@ -523,7 +568,7 @@ test('進捗コードは廃止済みデータを再保存せず、旧コード�
     new URL('../src/store/useStore.js', import.meta.url),
     'utf8',
   )
-  assert.match(storeSource, /version: 7/)
+  assert.match(storeSource, /version: 8/)
   assert.match(storeSource, /migrate: migratePersistedState/)
   assert.throws(() => decodeProgress(encodeProgress({ ...base, srs: [] })), /srs/)
   assert.throws(
