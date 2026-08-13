@@ -13,6 +13,12 @@ const compatibilityFiles = new Set([
   'src/store/useStore.js',
 ])
 
+// 全保存項目を分類する台帳では、この旧フィールド名の列挙だけを許す。
+// ファイル全体を互換扱いにしないことで、説明文や処理へのXP再混入は検出する。
+const compatibilityOnlyLines = new Map([
+  ['src/lib/progressReset.js', [/^\s*'battleXpSpent',\s*$/u]],
+])
+
 const retiredRuntimePattern = /\bXP\b|\bxp\b|battleXp|xpGained|xpAtStart|totalXp|heroProgress|xpToNext|BATTLE_XP|itemXpBonus|xpBonus|exchangeXp|放課後XP|経験値|冒険者LV|累計XP/u
 
 async function sourceFiles(directory) {
@@ -42,7 +48,10 @@ export async function auditXpRetirement() {
     const source = await readFile(file, 'utf8')
     source.split('\n').forEach((line, index) => {
       if (!retiredRuntimePattern.test(line)) return
-      if (compatibilityFiles.has(projectPath)) {
+      const compatibilityLine = compatibilityOnlyLines
+        .get(projectPath)
+        ?.some((pattern) => pattern.test(line))
+      if (compatibilityFiles.has(projectPath) || compatibilityLine) {
         compatibilityReferences.push(`${projectPath}:${index + 1}`)
       } else {
         failures.push(`${projectPath}:${index + 1} にXP関連の実行参照が残っています。`)

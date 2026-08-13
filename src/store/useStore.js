@@ -71,6 +71,12 @@ import {
   updateNotebookItem as updateNotebookItemState,
   updateNotebookSet as updateNotebookSetState,
 } from '../lib/learningNotebook.js'
+import {
+  ALL_PROGRESS_RESET_GROUP_IDS,
+  RESET_PRESERVED_PROGRESS_FIELDS,
+  RESETTABLE_PROGRESS_FIELDS,
+  progressResetFieldsForGroups,
+} from '../lib/progressReset.js'
 
 // ── 学習ロジックの定数 ──────────────────────────────────────────────
 // Leitner 式の間隔反復。box が上がるほど次に出る間隔（日数）が伸びる。
@@ -144,7 +150,7 @@ export function normalizeSettings(settings) {
   )
 }
 
-const initialLearning = () => ({
+export const createInitialLearningState = () => ({
   srs: {}, // wordId -> { box, correct, wrong, due, last }
   etymologySrs: {}, // etymologyPackId -> { box, correct, wrong, due, last }
   kotenSrs: {}, // 古文単語の wordId -> { box, ... }（英単語と別管理。idが衝突しないよう分離）
@@ -185,6 +191,25 @@ const initialLearning = () => ({
   stats: freshStats(),
   settings: { ...DEFAULT_SETTINGS },
 })
+
+export { RESET_PRESERVED_PROGRESS_FIELDS }
+
+// 全選択・部分選択リセットの単一実行口。
+// 対象項目は progressReset.js で保存契約と全件照合してから初期値へ戻す。
+export function resetProgressState(
+  current = {},
+  groupIds = ALL_PROGRESS_RESET_GROUP_IDS,
+) {
+  const fields = progressResetFieldsForGroups(groupIds)
+  if (!fields.length) return {}
+  const fresh = createInitialLearningState()
+  return {
+    ...Object.fromEntries(fields.map((field) => [field, fresh[field]])),
+    ...(fields.length === RESETTABLE_PROGRESS_FIELDS.length
+      ? { quizSession: null }
+      : {}),
+  }
+}
 
 function applyReview(srs, stats, wordId, result, timestamp = Date.now()) {
   const def = RESULTS[result] ?? RESULTS.unknown
@@ -413,7 +438,7 @@ export const useStore = create(
       clearQuizSession: () => set({ quizSession: null }),
 
       // ── 学習state（永続化する） ──
-      ...initialLearning(),
+      ...createInitialLearningState(),
 
       review: (wordId, result, skillHint = null) =>
         set((st) => {
@@ -1173,38 +1198,10 @@ export const useStore = create(
       // 並び順・表示を初期状態に戻す。
       resetPortal: () => set({ portalOrder: [...DEFAULT_CONTENT_ORDER], portalHidden: [] }),
 
-      // 学習全体を消さずに、管理画面から特定の記録だけ整理する。
-      // 永続フィールドは増やさず、既存の進捗コード・クラウド同期契約を保つ。
-      clearLearningData: (scope) => set(() => {
-        if (scope === 'analytics') {
-          return { learningAnalytics: createLearningAnalytics(), skillStats: {} }
-        }
-        if (scope === 'diagnostic') {
-          return { diagnosticHistory: [], diagnosticAttempt: 0 }
-        }
-        if (scope === 'saved') {
-          return {
-            myList: [],
-            myGrammarList: [],
-            learningNotebook: createLearningNotebook(),
-            kotenWordList: [],
-            kotenGrammarList: [],
-            kotenCultureList: [],
-          }
-        }
-        if (scope === 'vocabHistory') return { vocabHistory: [] }
-        return {}
-      }),
-
       // 学習状況だけを初期化する。音声・カード設定と、メインメニューの
       // 並び／表示は端末の使い方なので保持する。
-      resetProgress: () => set((st) => ({
-        ...initialLearning(),
-        quizSession: null,
-        settings: st.settings,
-        portalOrder: st.portalOrder,
-        portalHidden: st.portalHidden,
-      })),
+      resetProgress: (groupIds = ALL_PROGRESS_RESET_GROUP_IDS) =>
+        set((state) => resetProgressState(state, groupIds)),
 
       // ── 進捗コード ──
       exportCode: () => encodeProgress(get()),

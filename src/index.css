@@ -5352,9 +5352,31 @@ button { -webkit-tap-highlight-color: transparent; }
   .home-title-actions > button {
     min-height: 3rem;
   }
+
+  /* 低い画面でも、共通メニューの4分類を最初に見渡せる密度にする。 */
+  [data-app-menu-panel] > :not(:last-child) {
+    margin-block-end: 0.5rem;
+  }
+  [data-menu-advisor-meta] {
+    display: none;
+  }
+  [data-menu-advisor-entry],
+  [data-menu-retention-entry],
+  [data-menu-group-entry] {
+    min-height: 3rem;
+    padding: 0.25rem 0.75rem;
+  }
+  [data-menu-group-entry] > span:first-child {
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 0.75rem;
+  }
 }
 
 @media (max-width: 350px) {
+  [data-menu-advisor-meta] {
+    display: none;
+  }
   .after-school-screen-title {
     overflow: visible;
     font-size: 1rem;

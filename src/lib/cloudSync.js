@@ -136,6 +136,21 @@ export async function push(uid, email) {
   await set(node(uid), { email: email ?? null, updatedAt: serverTimestamp(), ...slice })
 }
 
+// リセットだけは遅延自動保存を待たない。直後に再読み込みされても古いクラウド
+// 履歴が端末へ戻らないよう、ログイン中は選択反映後の全状態をその場で書き込む。
+// writeCloud は回帰テストで通信なしに順序を検証するための差し替え口。
+export async function resetProgressEverywhere(user, groupIds, writeCloud = push) {
+  // 旧テスト・内部呼出しの `(user, writeCloud)` 形式も保つ。
+  if (typeof groupIds === 'function') {
+    writeCloud = groupIds
+    groupIds = undefined
+  }
+  useStore.getState().resetProgress(groupIds)
+  if (!user?.uid) return { scope: 'device' }
+  await writeCloud(user.uid, user.email)
+  return { scope: 'device-and-cloud' }
+}
+
 // useStore の変更を購読し、デバウンスしてクラウドへ自動保存する。
 // 返り値を呼ぶと購読解除（ログアウト時に使う）。
 export function startAutoSave(uid, email, delay = 1500) {

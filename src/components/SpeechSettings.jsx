@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { useStore } from '../store/useStore.js'
 import { useAuth } from '../store/useAuth.js'
@@ -22,6 +22,7 @@ import {
   BookOpen,
   Bookmark,
   Chart,
+  Check,
   ChevronLeft,
   ChevronRight,
   Gear,
@@ -41,7 +42,6 @@ import {
 import { PortalSettingsPanel } from './PortalSettings.jsx'
 import { ProgressBackupPanel } from './ProgressBackup.jsx'
 import { requiresProgressSaveConfirmation } from '../lib/navigationPolicy.js'
-import { notebookStoredSavedCount } from '../lib/learningNotebook.js'
 import { overallProgress } from '../lib/session.js'
 import { buildLearningPowerProfile } from '../lib/learningPower.js'
 import { LearningAnalyticsPanel } from './LearningAnalytics.jsx'
@@ -49,6 +49,16 @@ import {
   LearningAdvisorPanel,
   LearningAdvisorSummary,
 } from './LearningAdvisor.jsx'
+import {
+  APP_MENU_GROUPS,
+  appMenuGroupById,
+} from '../lib/appMenu.js'
+import { resetProgressEverywhere } from '../lib/cloudSync.js'
+import {
+  ALL_PROGRESS_RESET_GROUP_IDS,
+  PROGRESS_RESET_GROUPS,
+  normalizeProgressResetGroupIds,
+} from '../lib/progressReset.js'
 
 const VOICE_GROUPS = [
   { quality: 'high', label: '高品質音声' },
@@ -358,91 +368,6 @@ function LearningSettingsPanel() {
   )
 }
 
-function DataManagementPanel() {
-  const clearLearningData = useStore((state) => state.clearLearningData)
-  const data = useStore(useShallow((state) => ({
-    analyticsScored: state.learningAnalytics?.scored ?? 0,
-    skillCount: Object.keys(state.skillStats ?? {}).length,
-    diagnostics: state.diagnosticHistory?.length ?? 0,
-    saved: notebookStoredSavedCount(state) + (state.myGrammarList?.length ?? 0),
-    vocabHistory: state.vocabHistory?.length ?? 0,
-  })))
-  const [confirmScope, setConfirmScope] = useState(null)
-  const actions = [
-    {
-      id: 'analytics',
-      label: '分析集計を消去',
-      count: `${data.analyticsScored}回答・${data.skillCount}分野`,
-      desc: '時刻・間隔・分野別の集計を初期化。SRSと保存項目は残します。',
-    },
-    {
-      id: 'diagnostic',
-      label: '診断履歴を消去',
-      count: `${data.diagnostics}件`,
-      desc: '過去の診断結果と受験回数を初期化。通常の学習履歴は残します。',
-    },
-    {
-      id: 'saved',
-      label: '保存リストを空にする',
-      count: `${data.saved}項目`,
-      desc: '8分野のノート、メモ、タグ、自作問題集と旧登録リストを空にします。学習進捗は残します。',
-    },
-    {
-      id: 'vocabHistory',
-      label: '辞書の参照履歴を消去',
-      count: `${data.vocabHistory}語`,
-      desc: '検索・参照した英単語の履歴だけを空にします。マイ単語は残します。',
-    },
-  ]
-  const pending = actions.find((action) => action.id === confirmScope)
-
-  if (pending) {
-    return (
-      <div className="space-y-3 py-3" data-data-clear-confirmation={pending.id}>
-        <div className="border border-rose-200 bg-rose-50 p-3">
-          <p className="text-sm font-extrabold text-rose-900">{pending.label}</p>
-          <p className="mt-1 text-xs font-bold leading-relaxed text-rose-800/80">{pending.desc}</p>
-          <p className="mt-2 text-[10px] font-extrabold text-rose-700">対象：{pending.count}・元に戻せません</p>
-        </div>
-        <Button
-          full
-          variant="danger"
-          onClick={() => {
-            clearLearningData(pending.id)
-            setConfirmScope(null)
-          }}
-        >
-          消去を実行する
-        </Button>
-        <Button full variant="ghost" onClick={() => setConfirmScope(null)}>キャンセル</Button>
-      </div>
-    )
-  }
-
-  return (
-    <div className="divide-y divide-slate-100" data-data-management-panel>
-      {actions.map((action) => (
-        <button
-          key={action.id}
-          type="button"
-          onClick={() => setConfirmScope(action.id)}
-          className="flex min-h-16 w-full items-center gap-3 py-2.5 text-left"
-          data-clear-learning-scope={action.id}
-        >
-          <span className="min-w-0 flex-1">
-            <strong className="block text-sm font-extrabold text-slate-800">{action.label}</strong>
-            <span className="mt-0.5 block text-[10px] font-bold leading-relaxed text-slate-500">{action.desc}</span>
-          </span>
-          <span className="shrink-0 border border-slate-300 bg-slate-50 px-2 py-1 text-[10px] font-extrabold text-slate-600">{action.count}</span>
-        </button>
-      ))}
-      <p className="py-3 text-[10px] font-bold leading-relaxed text-slate-500">
-        全進捗の初期化はメニュー最下部の「学習状況をリセット」から行います。実行前にQR・コードを保存できます。
-      </p>
-    </div>
-  )
-}
-
 function SettingsSection({ title, desc, children, defaultOpen = false }) {
   return (
     <details
@@ -493,269 +418,180 @@ export function SettingsMenuPanel({ heading = true }) {
         >
           <PortalSettingsPanel />
         </SettingsSection>
-        <SettingsSection
-          title="データ・履歴管理"
-          desc="分析、診断、保存リスト、辞書履歴を個別に消去"
-        >
-          <DataManagementPanel />
-        </SettingsSection>
       </div>
     </section>
   )
 }
 
-const APP_MENU_DESTINATIONS = [
-  {
-    screen: 'portal',
-    label: 'ホーム',
-    desc: '全教科・辞書・名作の入口',
-    Icon: Home,
-  },
-  {
-    screen: 'mathMap',
-    label: '数学アプリ',
-    desc: '単元マップと理解度',
-    Icon: MathRoot,
-  },
-  {
-    screen: 'vocabSearch',
-    label: '英和辞書',
-    desc: '意味・語法・語源・履歴',
-    Icon: Search,
-  },
-  {
-    screen: 'kotenList',
-    label: '古典アプリ',
-    desc: '古典単語・文法・常識・短文',
-    Icon: Book,
-  },
-  {
-    screen: 'literatureLibrary',
-    label: '名作に親しむ',
-    desc: '英語・古典・漢文の朗読',
-    Icon: BookOpen,
-  },
-]
+const MENU_GROUP_ICONS = {
+  learn: BookOpen,
+  tools: Sparkles,
+  records: Bookmark,
+  manage: Gear,
+}
 
-const ENGLISH_MENU_DESTINATIONS = [
-  {
-    screen: 'home',
-    label: '英語の主要学習',
-    desc: '単語・長文・熟語・文法・リスニング',
-    Icon: BookOpen,
-  },
-  {
-    screen: 'vocabLevels',
-    label: '英単語',
-    desc: '級別・分野別・品詞別に学習',
-    Icon: Book,
-  },
-  {
-    screen: 'readingList',
-    label: '長文読解',
-    desc: '前から読む訳・文法・設問',
-    Icon: BookOpen,
-  },
-  {
-    screen: 'phrases',
-    label: '熟語・構文',
-    desc: '全1,500項目を検索・復習',
-    Icon: Sparkles,
-  },
-  {
-    screen: 'grammar',
-    label: '英文法',
-    desc: '級別問題と体系解説',
-    Icon: Lightbulb,
-  },
-  {
-    screen: 'listening',
-    label: 'リスニング',
-    desc: '級別形式・本文確認・復習',
-    Icon: Headphones,
-  },
-]
+const MENU_ITEM_ICONS = {
+  portal: Home,
+  mathMap: MathRoot,
+  vocabSearch: Search,
+  kotenList: Book,
+  literatureLibrary: BookOpen,
+  home: BookOpen,
+  vocabLevels: Book,
+  readingList: BookOpen,
+  phrases: Sparkles,
+  grammar: Lightbulb,
+  listening: Headphones,
+  diagnostic: Trophy,
+  writing: Book,
+  dictation: Keyboard,
+  roots: Link,
+  vocabCamera: Search,
+  wordRequests: Link,
+  myList: Bookmark,
+  myLearning: Bookmark,
+  myGrammar: Lightbulb,
+  kotenSaved: Book,
+  progress: Chart,
+  settings: Gear,
+  account: Home,
+  reset: Refresh,
+}
 
-const LEARNING_TOOL_DESTINATIONS = [
-  {
-    screen: 'diagnostic',
-    label: '学習診断',
-    desc: '28問で得意・弱点と現在地を確認',
-    Icon: Trophy,
-  },
-  {
-    screen: 'writing',
-    label: '英作文',
-    desc: '書いて使える知識にする',
-    Icon: Book,
-  },
-  {
-    screen: 'dictation',
-    label: 'ディクテーション',
-    desc: '聞き取りとつづりを結びつける',
-    Icon: Keyboard,
-  },
-  {
-    screen: 'roots',
-    label: '語源学習',
-    desc: '単語を部品と語族で整理する',
-    Icon: Link,
-  },
-  {
-    screen: 'vocabCamera',
-    label: '教科書から単語追加',
-    desc: '写真OCRで辞書照合・保存',
-    Icon: Search,
-  },
-  {
-    screen: 'wordRequests',
-    label: '未登録語リクエスト管理',
-    desc: '辞書にない候補の確認',
-    Icon: Link,
-  },
-]
-
-const PERSONAL_TOOL_DESTINATIONS = [
-  {
-    screen: 'myList',
-    label: 'マイ学習ノート',
-    desc: '8分野のメモ・問題集・履歴',
-    Icon: Bookmark,
-  },
-  {
-    screen: 'myLearning',
-    label: '全学習索引',
-    desc: '長文・英作文・数学を含む学習済み項目',
-    Icon: Bookmark,
-  },
-  {
-    screen: 'myGrammar',
-    label: 'マイ文法',
-    desc: '保存した文法を復習',
-    Icon: Lightbulb,
-  },
-  {
-    screen: 'kotenSaved',
-    label: '古典の登録リスト',
-    desc: '古典単語・文法・常識を管理',
-    Icon: Book,
-  },
-  {
-    screen: 'progress',
-    label: '学習記録・バックアップ',
-    desc: '成績、級別進捗、QR・コードを確認',
-    Icon: Chart,
-  },
-]
-
-function MenuDestinationList({ items, onNavigate, tone = 'brand' }) {
+function MenuDestinationList({
+  items,
+  onNavigate,
+  onAction,
+  account,
+  authStatus,
+  tone = 'brand',
+}) {
   const colors = tone === 'violet'
     ? 'bg-violet-50 text-violet-600'
     : 'bg-brand-50 text-brand-600'
   return (
-    <div className="divide-y divide-slate-100 overflow-hidden rounded-2xl border border-slate-200/80 bg-white">
-      {items.map(({ screen, params, label, desc, Icon }) => (
-        <button
-          key={screen}
-          type="button"
-          onClick={() => onNavigate?.(screen, params ?? {})}
-          className="flex min-h-14 w-full items-center gap-3 px-4 py-2 text-left active:bg-brand-50"
-          data-menu-destination={screen}
-        >
-          <span className={`grid h-9 w-9 shrink-0 place-items-center rounded-xl ${colors}`}>
-            <Icon size={19} />
-          </span>
-          <span className="min-w-0 flex-1">
-            <strong className="block text-sm font-extrabold text-ink">{label}</strong>
-            <span className="block text-xs font-bold leading-snug text-ink/45">{desc}</span>
-          </span>
-          <ChevronRight size={18} className="shrink-0 text-ink/25" />
-        </button>
-      ))}
+    <div className="divide-y divide-slate-100 overflow-hidden rounded-xl border border-slate-200 bg-white">
+      {items.map((item) => {
+        const key = item.kind === 'screen' ? item.screen : item.action
+        const Icon = MENU_ITEM_ICONS[key] ?? Book
+        const isAccount = item.action === 'account'
+        const label = isAccount
+          ? account ? 'アカウント' : 'ログイン・保存'
+          : item.label
+        const description = isAccount
+          ? account?.email ?? (authStatus === 'out' ? '任意でクラウド保存' : 'ゲストで端末保存中')
+          : item.description
+        const danger = item.tone === 'danger'
+        return (
+          <button
+            key={`${item.kind}-${key}`}
+            type="button"
+            onClick={() => (
+              item.kind === 'screen'
+                ? onNavigate?.(item.screen, item.params ?? {})
+                : onAction?.(item.action)
+            )}
+            className={cx(
+              'flex min-h-12 w-full items-center gap-2.5 px-3 py-2 text-left',
+              danger ? 'active:bg-rose-50' : 'active:bg-brand-50',
+            )}
+            data-menu-destination={item.kind === 'screen' ? item.screen : undefined}
+            data-menu-action={item.kind === 'action' ? item.action : undefined}
+            data-menu-settings-entry={item.action === 'settings' ? '' : undefined}
+            data-menu-account-entry={item.action === 'account' ? '' : undefined}
+            data-menu-reset-entry={item.action === 'reset' ? '' : undefined}
+          >
+            <span className={cx(
+              'grid h-8 w-8 shrink-0 place-items-center rounded-lg',
+              danger ? 'bg-rose-50 text-rose-600' : colors,
+            )}
+            >
+              <Icon size={17} />
+            </span>
+            <span className="min-w-0 flex-1">
+              <strong className={cx('block text-sm font-extrabold leading-tight', danger ? 'text-rose-700' : 'text-ink')}>
+                {label}
+              </strong>
+              <span className={cx(
+                'mt-0.5 block text-[11px] font-bold leading-snug',
+                danger ? 'text-rose-600/70' : 'text-ink/45',
+              )}
+              >
+                {description}
+              </span>
+            </span>
+            <ChevronRight size={18} className={cx('shrink-0', danger ? 'text-rose-300' : 'text-ink/25')} />
+          </button>
+        )
+      })}
     </div>
   )
 }
 
 export function AppMenuPanel({
   profile,
-  account,
-  authStatus,
-  onNavigate,
   onOpenAdvisor,
   onOpenAnalysis,
-  onOpenSettings,
-  onOpenAccount,
-  onOpenReset,
+  onOpenGroup,
 }) {
   return (
-    <section className="space-y-4" aria-label="アプリメニュー" data-app-menu-panel>
-      <p className="text-xs font-bold leading-relaxed text-ink/50">
-        教材、検索、保存、分析、設定、データ管理の入口を機能別に集約しています。
-      </p>
-
+    <section className="space-y-3" aria-label="アプリメニュー" data-app-menu-panel>
       <LearningAdvisorSummary
         profile={profile}
         onOpenAdvisor={onOpenAdvisor}
         onOpenAnalysis={onOpenAnalysis}
       />
 
-      <section aria-label="教科と辞書">
-        <h2 className="mb-2 px-1 font-display text-sm font-extrabold text-ink/65">教科・辞書・名作</h2>
-        <MenuDestinationList items={APP_MENU_DESTINATIONS} onNavigate={onNavigate} />
-      </section>
-
-      <section aria-label="英語学習" data-menu-english-tools>
-        <h2 className="mb-2 px-1 font-display text-sm font-extrabold text-ink/65">英語学習</h2>
-        <MenuDestinationList items={ENGLISH_MENU_DESTINATIONS} onNavigate={onNavigate} />
-      </section>
-
-      <section aria-label="発展学習と診断" data-menu-support-tools>
-        <h2 className="mb-2 px-1 font-display text-sm font-extrabold text-ink/65">発展学習・診断</h2>
-        <MenuDestinationList items={LEARNING_TOOL_DESTINATIONS} onNavigate={onNavigate} tone="violet" />
-      </section>
-
-      <section aria-label="保存と記録" data-menu-personal-tools>
-        <h2 className="mb-2 px-1 font-display text-sm font-extrabold text-ink/65">保存した学習・記録</h2>
-        <MenuDestinationList items={PERSONAL_TOOL_DESTINATIONS} onNavigate={onNavigate} />
-      </section>
-
-      <div className="grid grid-cols-2 gap-2.5">
-        <button
-          type="button"
-          onClick={onOpenSettings}
-          data-menu-settings-entry
-          className="flex min-h-16 items-center gap-2 rounded-2xl bg-brand-600 px-3 text-left text-white active:bg-brand-700"
-        >
-          <Gear size={20} className="shrink-0" />
-          <span>
-            <strong className="block text-sm font-extrabold">設定</strong>
-            <span className="block text-xs font-bold text-white/65">学習・音声・表示</span>
-          </span>
-        </button>
-        <button
-          type="button"
-          onClick={onOpenAccount}
-          data-menu-account-entry
-          className="flex min-h-16 items-center gap-2 rounded-2xl border border-slate-200 bg-white px-3 text-left text-ink active:bg-slate-50"
-        >
-          <Home size={20} className="shrink-0 text-brand-600" />
-          <span className="min-w-0">
-            <strong className="block text-sm font-extrabold">{account ? 'アカウント' : 'ログイン'}</strong>
-            <span className="block truncate text-xs font-bold text-ink/45">
-              {account?.email ?? (authStatus === 'out' ? '任意でクラウド保存' : 'ゲストで利用中')}
-            </span>
-          </span>
-        </button>
-      </div>
-
-      <button
-        type="button"
-        onClick={onOpenReset}
-        className="flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl border border-rose-200 bg-rose-50 px-4 text-sm font-extrabold text-rose-700 active:bg-rose-100"
-        data-menu-reset-entry
+      <nav
+        className="divide-y divide-slate-100 overflow-hidden rounded-xl border border-slate-200 bg-white"
+        aria-label="メニューの分類"
+        data-menu-group-list
       >
-        <Refresh size={18} /> 学習状況をリセット
-      </button>
+        {APP_MENU_GROUPS.map((menuGroup) => {
+          const Icon = MENU_GROUP_ICONS[menuGroup.id] ?? Menu
+          return (
+            <button
+              key={menuGroup.id}
+              type="button"
+              onClick={() => onOpenGroup?.(menuGroup.id)}
+              className="flex min-h-12 w-full items-center gap-2.5 px-3 py-2 text-left active:bg-brand-50"
+              data-menu-group-entry={menuGroup.id}
+            >
+              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-brand-50 text-brand-600">
+                <Icon size={19} />
+              </span>
+              <strong className="min-w-0 flex-1 text-sm font-extrabold text-ink">{menuGroup.label}</strong>
+              <ChevronRight size={18} className="shrink-0 text-ink/25" />
+            </button>
+          )
+        })}
+      </nav>
+    </section>
+  )
+}
+
+function AppMenuGroupPanel({
+  menuGroup,
+  account,
+  authStatus,
+  onNavigate,
+  onAction,
+}) {
+  return (
+    <section className="space-y-3" aria-label={menuGroup.label} data-menu-group-panel={menuGroup.id}>
+      {menuGroup.sections.map((menuSection) => (
+        <section key={menuSection.id} aria-label={menuSection.label}>
+          <h2 className="mb-2 px-1 font-display text-sm font-extrabold text-ink/65">{menuSection.label}</h2>
+          <MenuDestinationList
+            items={menuSection.items}
+            onNavigate={onNavigate}
+            onAction={onAction}
+            account={account}
+            authStatus={authStatus}
+            tone={menuGroup.id === 'tools' ? 'violet' : 'brand'}
+          />
+        </section>
+      ))}
     </section>
   )
 }
@@ -803,26 +639,142 @@ function MenuBackButton({ onClick }) {
   )
 }
 
-function ResetProgressPanel({ onBackup, onReset, onCancel }) {
+function ResetProgressPanel({
+  selectedGroupIds,
+  onSelectionChange,
+  onBackup,
+  onReset,
+  onCancel,
+  busy = false,
+}) {
+  const selectAllRef = useRef(null)
+  const selected = new Set(normalizeProgressResetGroupIds(selectedGroupIds))
+  const allSelected = selected.size === PROGRESS_RESET_GROUPS.length
+  const someSelected = selected.size > 0
+
+  useEffect(() => {
+    if (selectAllRef.current) {
+      selectAllRef.current.indeterminate = someSelected && !allSelected
+    }
+  }, [allSelected, someSelected])
+
+  const toggleGroup = (groupId) => {
+    const next = new Set(selected)
+    if (next.has(groupId)) next.delete(groupId)
+    else next.add(groupId)
+    onSelectionChange(normalizeProgressResetGroupIds([...next]))
+  }
+
   return (
     <section className="space-y-3" data-menu-reset-confirmation>
-      <div className="rounded-2xl border border-rose-200 bg-rose-50 p-4">
-        <h2 className="font-display text-lg font-extrabold text-rose-800">学習状況を最初からにします</h2>
-        <p className="mt-2 text-sm font-bold leading-relaxed text-rose-700/80">
-          正誤・復習段階・診断・分析・保存リストなど、すべての学習履歴が消えます。
-          ログイン中は、初期化した状態がクラウドにも保存されます。
-        </p>
+      <p className="text-xs font-bold leading-relaxed text-slate-600">
+        ブラウザの履歴削除と同じように、すべて、または必要な項目だけを選べます。
+      </p>
+
+      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white" data-reset-selection-list>
+        <label className="flex min-h-12 cursor-pointer items-center gap-3 border-b border-slate-200 bg-slate-50 px-3 py-2">
+          <input
+            ref={selectAllRef}
+            type="checkbox"
+            checked={allSelected}
+            onChange={() => onSelectionChange(
+              allSelected ? [] : [...ALL_PROGRESS_RESET_GROUP_IDS],
+            )}
+            className="h-5 w-5 shrink-0 accent-brand-600"
+            data-reset-select-all
+          />
+          <span className="text-sm font-extrabold text-slate-800">すべて選択</span>
+          <span className="ml-auto text-[11px] font-bold text-slate-500">
+            {selected.size}/{PROGRESS_RESET_GROUPS.length}
+          </span>
+        </label>
+
+        <div className="divide-y divide-slate-100">
+          {PROGRESS_RESET_GROUPS.map((group) => (
+            <label
+              key={group.id}
+              className="flex min-h-14 cursor-pointer items-start gap-3 px-3 py-2.5"
+              data-reset-group={group.id}
+            >
+              <input
+                type="checkbox"
+                checked={selected.has(group.id)}
+                onChange={() => toggleGroup(group.id)}
+                className="mt-0.5 h-5 w-5 shrink-0 accent-brand-600"
+                aria-label={`${group.label}を選択`}
+              />
+              <span className="min-w-0 flex-1">
+                <strong className="block text-sm font-extrabold text-slate-800">{group.label}</strong>
+                <span className="mt-0.5 block text-[11px] font-bold leading-snug text-slate-500">
+                  {group.description}
+                </span>
+              </span>
+            </label>
+          ))}
+        </div>
       </div>
-      <p className="rounded-2xl bg-emerald-50 px-3 py-2.5 text-xs font-bold leading-relaxed text-emerald-800">
-        音声・カード設定と、メインメニューの並び順・表示設定は残ります。
+
+      <p className="rounded-xl bg-emerald-50 px-3 py-2.5 text-xs font-bold leading-relaxed text-emerald-800" data-reset-preserved-data>
+        音声・カード設定と、メインメニューの並び順・表示設定は選択にかかわらず残ります。
       </p>
       <Button full variant="secondary" onClick={onBackup}>
         リセット前にQR・コードを保存
       </Button>
-      <Button full variant="danger" onClick={onReset}>
-        <Refresh size={18} /> 学習状況をリセットする
+      <Button full variant="danger" onClick={onReset} disabled={busy || !someSelected}>
+        <Refresh size={18} /> {busy
+          ? 'リセットしています…'
+          : someSelected
+            ? `選択した${selected.size}項目をリセット`
+            : 'リセットする項目を選んでください'}
       </Button>
-      <Button full variant="ghost" onClick={onCancel}>キャンセル</Button>
+      <Button full variant="ghost" onClick={onCancel} disabled={busy}>キャンセル</Button>
+    </section>
+  )
+}
+
+function ResetCompletePanel({ status, resetGroupIds, onRetry, onHome, onMenu }) {
+  const syncing = status === 'syncing'
+  const cloudError = status === 'cloud-error'
+  const resetGroups = PROGRESS_RESET_GROUPS.filter((group) => resetGroupIds.includes(group.id))
+  const resetAll = resetGroups.length === PROGRESS_RESET_GROUPS.length
+  return (
+    <section className="space-y-4" data-menu-reset-complete>
+      <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-emerald-900">
+        <div className="flex items-center gap-2">
+          <span className="grid h-10 w-10 place-items-center rounded-full bg-emerald-500 text-white">
+            <Check size={22} />
+          </span>
+          <h2 className="font-display text-lg font-extrabold">
+            {resetAll ? 'すべての学習履歴をリセットしました' : '選択した学習履歴をリセットしました'}
+          </h2>
+        </div>
+        <ul className="mt-3 space-y-1 text-xs font-bold text-emerald-800/80" data-reset-completed-groups>
+          {resetGroups.map((group) => <li key={group.id}>・{group.label}</li>)}
+        </ul>
+      </div>
+
+      {syncing ? (
+        <p className="rounded-xl bg-brand-50 px-3 py-2.5 text-xs font-bold text-brand-700" role="status">
+          端末への保存は完了しました。クラウドへ反映しています…
+        </p>
+      ) : cloudError ? (
+        <div className="space-y-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2.5">
+          <p className="text-xs font-bold leading-relaxed text-amber-800" role="alert">
+            端末の履歴は消去済みですが、クラウド保存を確認できませんでした。古い履歴が戻らないよう、通信を確認して再試行してください。
+          </p>
+          <Button full size="sm" variant="hint" onClick={onRetry}>クラウド保存を再試行</Button>
+        </div>
+      ) : (
+        <p className="rounded-xl bg-slate-100 px-3 py-2.5 text-xs font-bold leading-relaxed text-slate-600" role="status">
+          {status === 'device-and-cloud'
+            ? 'この端末とクラウドの初期化を確認しました。'
+            : 'この端末の初期化を確認しました。'}
+          音声・カード設定とメニュー配置は保持されています。
+        </p>
+      )}
+
+      <Button full onClick={onHome} disabled={syncing || cloudError}>教科を選ぶホームへ</Button>
+      <Button full variant="ghost" onClick={onMenu} disabled={syncing}>メニューへ戻る</Button>
     </section>
   )
 }
@@ -868,7 +820,6 @@ export function SpeechSettingsSheet() {
   const navigate = useStore((state) => state.navigate)
   const globalBack = useStore((state) => state.globalBack)
   const goPortal = useStore((state) => state.goPortal)
-  const resetProgress = useStore((state) => state.resetProgress)
   const currentScreen = useStore((state) => state.screen)
   const learningState = useStore(useShallow((state) => ({
     srs: state.srs,
@@ -887,6 +838,10 @@ export function SpeechSettingsSheet() {
   const signOutNow = useAuth((state) => state.signOutNow)
   const [view, setView] = useState('menu')
   const [pendingNavigation, setPendingNavigation] = useState(null)
+  const [resetStatus, setResetStatus] = useState('idle')
+  const [resetGroupIds, setResetGroupIds] = useState([
+    ...ALL_PROGRESS_RESET_GROUP_IDS,
+  ])
 
   const dueCount = overallProgress(learningState.srs).due
   const profile = useMemo(
@@ -912,6 +867,8 @@ export function SpeechSettingsSheet() {
     if (!open) {
       setView('menu')
       setPendingNavigation(null)
+      setResetStatus('idle')
+      setResetGroupIds([...ALL_PROGRESS_RESET_GROUP_IDS])
       return
     }
     if (menuRequest === 'back') {
@@ -931,6 +888,8 @@ export function SpeechSettingsSheet() {
 
   const close = () => {
     setView('menu')
+    setResetStatus('idle')
+    setResetGroupIds([...ALL_PROGRESS_RESET_GROUP_IDS])
     dismissSpeechPlayer()
     closeSpeechSettings()
   }
@@ -950,10 +909,28 @@ export function SpeechSettingsSheet() {
     }
     performNavigation(destination)
   }
-  const confirmReset = () => {
-    resetProgress()
-    close()
-    goPortal()
+  const confirmReset = async () => {
+    const selectedGroups = normalizeProgressResetGroupIds(resetGroupIds)
+    if (resetStatus === 'syncing' || !selectedGroups.length) return
+    setResetGroupIds(selectedGroups)
+    setResetStatus('syncing')
+    setView('reset-complete')
+    try {
+      const result = await resetProgressEverywhere(account, selectedGroups)
+      setResetStatus(result.scope)
+    } catch {
+      setResetStatus('cloud-error')
+    }
+  }
+  const retryResetCloudSave = async () => {
+    if (!account || resetStatus === 'syncing') return
+    setResetStatus('syncing')
+    try {
+      const result = await resetProgressEverywhere(account, resetGroupIds)
+      setResetStatus(result.scope)
+    } catch {
+      setResetStatus('cloud-error')
+    }
   }
   const signOutAndClose = async () => {
     await signOutNow()
@@ -967,22 +944,39 @@ export function SpeechSettingsSheet() {
       ? 'メインメニュー'
       : '選んだ画面'
 
+  const activeMenuGroup = view.startsWith('group-')
+    ? appMenuGroupById(view.slice('group-'.length))
+    : null
+
   const sheetTitles = {
     menu: '統一メニュー',
     settings: '設定',
     advisor: '学習アドバイザー',
     analytics: '定着・学習効率の分析',
-    reset: '学習状況のリセット',
+    reset: '学習履歴のリセット',
+    'reset-complete': 'リセット完了',
     'backup-reset': 'リセット前のバックアップ',
     account: account ? 'アカウント' : 'ログイン・保存',
     'save-progress': '途中の進捗を保存しますか？',
   }
+  const sheetTitle = activeMenuGroup?.label ?? sheetTitles[view] ?? '統一メニュー'
 
   return (
-    <Sheet open={open} onClose={close} title={sheetTitles[view] ?? '統一メニュー'} maxH="92vh">
-      {view === 'settings' ? (
+    <Sheet open={open} onClose={close} title={sheetTitle} maxH="92vh">
+      {activeMenuGroup ? (
         <>
           <MenuBackButton onClick={() => setView('menu')} />
+          <AppMenuGroupPanel
+            menuGroup={activeMenuGroup}
+            account={account}
+            authStatus={authStatus}
+            onNavigate={openScreen}
+            onAction={(action) => setView(action)}
+          />
+        </>
+      ) : view === 'settings' ? (
+        <>
+          <MenuBackButton onClick={() => setView('group-manage')} />
           <SettingsMenuPanel heading={false} />
         </>
       ) : view === 'advisor' ? (
@@ -1015,13 +1009,27 @@ export function SpeechSettingsSheet() {
         </>
       ) : view === 'reset' ? (
         <>
-          <MenuBackButton onClick={() => setView('menu')} />
+          <MenuBackButton onClick={() => setView('group-manage')} />
           <ResetProgressPanel
+            selectedGroupIds={resetGroupIds}
+            onSelectionChange={setResetGroupIds}
             onBackup={() => setView('backup-reset')}
             onReset={confirmReset}
-            onCancel={() => setView('menu')}
+            onCancel={() => setView('group-manage')}
+            busy={resetStatus === 'syncing'}
           />
         </>
+      ) : view === 'reset-complete' ? (
+        <ResetCompletePanel
+          status={resetStatus}
+          resetGroupIds={resetGroupIds}
+          onRetry={retryResetCloudSave}
+          onHome={() => {
+            close()
+            goPortal()
+          }}
+          onMenu={() => setView('menu')}
+        />
       ) : view === 'backup-reset' ? (
         <>
           <MenuBackButton onClick={() => setView('reset')} />
@@ -1032,7 +1040,7 @@ export function SpeechSettingsSheet() {
         </>
       ) : view === 'account' ? (
         <>
-          <MenuBackButton onClick={() => setView('menu')} />
+          <MenuBackButton onClick={() => setView('group-manage')} />
           <AccountPanel
             account={account}
             authStatus={authStatus}
@@ -1059,14 +1067,9 @@ export function SpeechSettingsSheet() {
       ) : (
         <AppMenuPanel
           profile={profile}
-          account={account}
-          authStatus={authStatus}
-          onNavigate={openScreen}
           onOpenAdvisor={() => setView('advisor')}
           onOpenAnalysis={() => setView('analytics')}
-          onOpenSettings={() => setView('settings')}
-          onOpenAccount={() => setView('account')}
-          onOpenReset={() => setView('reset')}
+          onOpenGroup={(groupId) => setView(`group-${groupId}`)}
         />
       )}
     </Sheet>
