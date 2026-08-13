@@ -1,9 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { useStore } from '../store/useStore.js'
 import { ProgressRing, ProgressBar, Button, Card } from '../components/ui.jsx'
-import { Star, Flame, Refresh, Home, Bookmark, ArrowRight } from '../components/Icons.jsx'
-import { heroProgress } from '../lib/rpg.js'
-import { HeroPortrait } from '../components/HeroPortrait.jsx'
+import { Flame, Refresh, Home, Bookmark, ArrowRight } from '../components/Icons.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { DragonVeinCipherStage } from '../components/DragonVeinCipherStage.jsx'
 import {
@@ -50,7 +48,6 @@ export function SessionResultScreen() {
   const navigate = useStore((state) => state.navigate)
   const goHome = useStore((state) => state.goHome)
   const streak = useStore((state) => state.stats.streak)
-  const totalXp = useStore((state) => state.stats.xp)
   const selectedStudentId = useStore((state) => state.battleStudentId)
   const dragonVeinProgress = useStore((state) => state.dragonVeinProgress)
   const recordSkillResult = useStore((state) => state.recordSkillResult)
@@ -61,7 +58,6 @@ export function SessionResultScreen() {
     total = 0,
     correct = 0,
     wrong = 0,
-    xpGained = 0,
     reviewIds = [],
     source,
     engine = 'word',
@@ -75,10 +71,6 @@ export function SessionResultScreen() {
   const nodeStatus = isDragonVein ? dragonVeinNodeStatus(dragonVeinProgress, node.id) : null
   const track = nodeStatus?.[restorationKind]
   const recorded = useRef(false)
-
-  const heroBefore = heroProgress(Math.max(0, totalXp - xpGained))
-  const heroAfter = heroProgress(totalXp)
-  const leveledUp = heroAfter.level > heroBefore.level
 
   useEffect(() => {
     if (recorded.current || !total) return
@@ -94,7 +86,7 @@ export function SessionResultScreen() {
         answered: total,
       })
     }
-    // 設問ごとのSRS・XPは各クイズ画面で確定済み。ここでは累計だけを一度記録する。
+    // 設問ごとのSRSは各クイズ画面で確定済み。ここでは累計だけを一度記録する。
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -203,7 +195,7 @@ export function SessionResultScreen() {
           <div className="mt-3 grid grid-cols-3 gap-2">
             <Card className="p-3"><b className="block text-xl text-ink">{percent}%</b><small className="font-bold text-ink/45">{correct}/{total} 正解</small></Card>
             <Card className="p-3"><b className="block text-xl text-violet-600">+{correct}</b><small className="font-bold text-ink/45">復元断片</small></Card>
-            <Card className="p-3"><b className="block text-xl text-amber-600">+{xpGained}</b><small className="font-bold text-ink/45">調査XP</small></Card>
+            <Card className="p-3"><b className="block text-xl text-amber-600">{wrong}</b><small className="font-bold text-ink/45">復習対象</small></Card>
           </div>
 
           <Card className="mt-3 p-4 text-left">
@@ -211,7 +203,7 @@ export function SessionResultScreen() {
               <>
                 <p className="text-xs font-black tracking-wider text-emerald-600">日常の歪みを修復</p>
                 <h2 className="mt-1 font-display text-lg font-extrabold text-ink">{source?.distortionTitle ?? '街の違和感を記録した'}</h2>
-                <p className="mt-1 text-sm font-bold leading-relaxed text-ink/55">この調査XPは五芒星の主要龍脈へ挑む力になる。</p>
+                <p className="mt-1 text-sm font-bold leading-relaxed text-ink/55">正誤と復習候補を学習記録へ反映しました。</p>
               </>
             ) : (
               <>
@@ -227,7 +219,6 @@ export function SessionResultScreen() {
             )}
           </Card>
 
-          <LevelCard before={heroBefore} after={heroAfter} xpGained={xpGained} />
           <div className="mt-3 space-y-2.5">
             <Button full onClick={() => navigate('afterSchoolChronicle', { menuSectionId: 'restoration' })}>
               龍脈調査へ戻る <ArrowRight size={18} />
@@ -243,7 +234,7 @@ export function SessionResultScreen() {
 
   return (
     <div className="relative flex min-h-full flex-col items-center gap-5 overflow-x-hidden px-6 pb-8 pt-8 text-center">
-      {(percent >= 80 || leveledUp) && <Confetti />}
+      {percent >= 80 && <Confetti />}
       <div className="absolute right-3 top-[calc(env(safe-area-inset-top)+0.75rem)] z-20"><SpeechSettingsButton compact /></div>
       <div className="text-6xl animate-float">{message.emoji}</div>
       <h1 className="font-display text-2xl font-extrabold text-ink">{message.text}</h1>
@@ -253,10 +244,9 @@ export function SessionResultScreen() {
         <span className="text-xs font-bold text-ink/45">{correct}/{total} 正解</span>
       </ProgressRing>
       <div className="flex w-full max-w-xs gap-3">
-        <Card className="flex flex-1 flex-col items-center gap-1 p-3"><span className="text-hint"><Star size={22} /></span><span className="font-display text-xl font-extrabold text-ink">+{xpGained}</span><span className="text-[11px] font-bold text-ink/45">獲得XP</span></Card>
+        <Card className="flex flex-1 flex-col items-center gap-1 p-3"><span className="text-brand-500"><Bookmark size={22} /></span><span className="font-display text-xl font-extrabold text-ink">{wrong}</span><span className="text-[11px] font-bold text-ink/45">復習対象</span></Card>
         <Card className="flex flex-1 flex-col items-center gap-1 p-3"><span className="text-rose-500"><Flame size={22} /></span><span className="font-display text-xl font-extrabold text-ink">{streak}</span><span className="text-[11px] font-bold text-ink/45">連続日数</span></Card>
       </div>
-      <LevelCard before={heroBefore} after={heroAfter} xpGained={xpGained} />
       <div className="mt-2 w-full max-w-xs space-y-2.5">
         {params.continueTo?.screen && <Button full onClick={() => navigate(params.continueTo.screen, params.continueTo.params ?? {})}>{params.continueTo.label ?? '次へ'} <ArrowRight size={18} /></Button>}
         {wrong > 0 && <Button full variant="primary" onClick={reviewWrong}>{isMemoryCheck ? <><Refresh size={18} /> 「まだ」の{wrong}{reviewUnit}をもう一度確認する</> : <><Bookmark size={18} /> まちがい {wrong}{reviewUnit}を復習</>}</Button>}
@@ -264,22 +254,5 @@ export function SessionResultScreen() {
         <Button full variant="ghost" onClick={goHome}><Home size={18} /> ホームへ</Button>
       </div>
     </div>
-  )
-}
-
-function LevelCard({ before, after, xpGained }) {
-  const leveledUp = after.level > before.level
-  return (
-    <Card className={`mt-3 w-full max-w-xl p-3.5 ${leveledUp ? 'bg-gradient-to-br from-amber-50 to-violet-50 ring-2 ring-amber-300' : ''}`}>
-      <div className="flex items-center gap-3">
-        <HeroPortrait level={after.level} title={after.title} className="h-12 w-12" />
-        <div className="min-w-0 flex-1 text-left">
-          <div className="flex items-center justify-between gap-2"><span className="font-display font-extrabold text-ink">{leveledUp ? `調査LEVEL UP! ${before.level} → ${after.level}` : `調査レベル ${after.level}`}</span><span className="text-[10px] font-extrabold text-brand-500">+{xpGained} XP</span></div>
-          <p className="truncate text-[11px] font-bold text-ink/50">{after.title.name}</p>
-          <ProgressBar value={after.progress} color={leveledUp ? 'linear-gradient(90deg,#fbbf24,#8b5cf6)' : '#6366f1'} className="mt-1.5 h-2" />
-          <div className="mt-1 flex justify-between text-[9px] font-bold text-ink/40"><span>{after.totalXp.toLocaleString()} XP</span><span>{after.isMax ? 'MAX LEVEL' : `次まで ${after.xpToNext} XP`}</span></div>
-        </div>
-      </div>
-    </Card>
   )
 }

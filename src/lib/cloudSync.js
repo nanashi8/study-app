@@ -15,9 +15,12 @@ import {
 import { buildPayload } from './progressCode.js'
 import {
   battleThemeById,
-  normalizeBattleXpSpent,
   normalizeBattleStars,
 } from './battleThemes.js'
+import {
+  normalizeLegacyStats,
+  normalizeLegacyXp,
+} from './legacyProgress.js'
 import { normalizeBattleStudentId } from './battleCast.js'
 import { normalizeBattleTraitInvestments } from './battleTraits.js'
 import {
@@ -43,7 +46,7 @@ const node = (uid) => ref(db, `students/${uid}`)
 // ネットワークなしの回帰テストでも、全項目が戻る契約を検査できるようにする。
 export function progressStateFromCloud(data = {}, current = useStore.getState()) {
   const battleStars = normalizeBattleStars(data.battleStars)
-  const stats = { ...current.stats, ...(data.stats ?? {}) }
+  const stats = normalizeLegacyStats({ ...current.stats, ...(data.stats ?? {}) })
   const battleStudentId = normalizeBattleStudentId(data.battleStudentId)
   const afterSchoolBonds = normalizeAfterSchoolBonds(data.afterSchoolBonds)
   const unlockedBattleStudentIds = normalizeUnlockedBattleStudentIds(
@@ -92,7 +95,7 @@ export function progressStateFromCloud(data = {}, current = useStore.getState())
         ? data.battleRelicLevel
         : null,
     battleStars,
-    battleXpSpent: normalizeBattleXpSpent(data.battleXpSpent, stats.xp),
+    battleXpSpent: normalizeLegacyXp(data.battleXpSpent),
     battleThemeId: battleThemeById(data.battleThemeId, battleStars).id,
     battleStudentId,
     battleTraitInvestments: normalizeBattleTraitInvestments(

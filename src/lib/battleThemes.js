@@ -2,8 +2,6 @@ import { publicAssetUrl } from './publicAssetUrl.js'
 
 export const BATTLE_STAR_PER_CORRECT = 10
 export const MAX_BATTLE_STARS = 9_999_999
-export const BATTLE_XP_PER_EXCHANGE = 50
-export const BATTLE_STARS_PER_EXCHANGE = 25
 
 export const BATTLE_BARRIER_MAP_IMAGE = publicAssetUrl('/assets/battle/world/dragon-vein-district.webp')
 
@@ -432,54 +430,6 @@ export function normalizeBattleStars(value) {
   const stars = Number(value)
   if (!Number.isFinite(stars)) return 0
   return Math.max(0, Math.min(MAX_BATTLE_STARS, Math.floor(stars)))
-}
-
-function normalizeTotalXp(value) {
-  const xp = Number(value)
-  if (!Number.isFinite(xp)) return 0
-  return Math.max(0, Math.min(Number.MAX_SAFE_INTEGER, Math.floor(xp)))
-}
-
-// LV判定には累計XPを残したまま、ゲームへ変換済みのXPだけを台帳で管理する。
-// totalXp を上限にすることで、古い保存値や壊れた同期値から二重交換が起きない。
-export function normalizeBattleXpSpent(value, totalXp = Number.MAX_SAFE_INTEGER) {
-  const spent = Number(value)
-  const safeTotalXp = normalizeTotalXp(totalXp)
-  if (!Number.isFinite(spent)) return 0
-  return Math.max(0, Math.min(safeTotalXp, Math.floor(spent)))
-}
-
-// 未変換XPを固定レートでまとめて放課後スターへ変換する見積もり。
-// 端数XPは次回へ持ち越し、スター上限を超える交換は行わない。
-export function battleXpExchange(totalXp, spentXp, battleStars) {
-  const safeTotalXp = normalizeTotalXp(totalXp)
-  const safeSpentXp = normalizeBattleXpSpent(spentXp, safeTotalXp)
-  const safeBattleStars = normalizeBattleStars(battleStars)
-  const availableXp = safeTotalXp - safeSpentXp
-  const exchangesByXp = Math.floor(availableXp / BATTLE_XP_PER_EXCHANGE)
-  const exchangesByCapacity = Math.floor(
-    (MAX_BATTLE_STARS - safeBattleStars) / BATTLE_STARS_PER_EXCHANGE,
-  )
-  const exchanges = Math.max(0, Math.min(exchangesByXp, exchangesByCapacity))
-  const xpCost = exchanges * BATTLE_XP_PER_EXCHANGE
-  const starsGained = exchanges * BATTLE_STARS_PER_EXCHANGE
-
-  return {
-    totalXp: safeTotalXp,
-    spentXp: safeSpentXp,
-    availableXp,
-    availableAfter: availableXp - xpCost,
-    exchanges,
-    xpCost,
-    starsGained,
-    canExchange: exchanges > 0,
-    starCapacityReached: exchangesByCapacity === 0,
-    xpUntilNext: exchanges > 0
-      ? 0
-      : Math.max(0, BATTLE_XP_PER_EXCHANGE - availableXp),
-    nextSpentXp: safeSpentXp + xpCost,
-    nextBattleStars: safeBattleStars + starsGained,
-  }
 }
 
 export function battleStarsEarned(correct) {

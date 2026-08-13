@@ -28,7 +28,6 @@ export function PhraseStudyScreen() {
   // 暗記モード：ONなら毎カード最初から意味・成り立ちを開いて見せる（単語学習と共通）。
   const revealAll = settings.revealAnswers
 
-  const xpAtStart = useRef(useStore.getState().stats.xp)
   const [deck] = useState(() =>
     buildPhraseDeck(params.source ?? { type: 'phrase', kind: 'idiom' }, {
       srs: useStore.getState().srs,
@@ -70,7 +69,6 @@ export function PhraseStudyScreen() {
   }
 
   const finish = () => {
-    const xpGained = useStore.getState().stats.xp - xpAtStart.current
     navigate('sessionResult', {
       title: params.title ?? '熟語・構文',
       mode: 'study',
@@ -78,7 +76,6 @@ export function PhraseStudyScreen() {
       total: deck.length,
       correct: results.current.remembered,
       wrong: results.current.forgot,
-      xpGained,
       reviewIds: results.current.forgotIds,
       source: params.source,
       size: params.size,

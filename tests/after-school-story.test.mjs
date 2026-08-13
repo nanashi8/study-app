@@ -181,7 +181,7 @@ test('任意のルート一覧は3候補を提示し、同行者を先頭にし�
   assert.equal(seenAlternatives.size, 9)
 })
 
-test('声掛けは全て報酬を得て、性格一致・絆LV・思い出アイテムで伸びる', () => {
+test('声掛けは絆報酬を得て、性格一致で絆が伸びる', () => {
   const profile = AFTER_SCHOOL_BRANCHES.find((item) => item.studentId === 'mio')
   const preferred = profile.choices.find((choice) => choice.styleId === profile.preferredStyleId)
   const other = profile.choices.find((choice) => choice.styleId !== profile.preferredStyleId)
@@ -190,7 +190,8 @@ test('声掛けは全て報酬を得て、性格一致・絆LV・思い出アイ
 
   assert.equal(matched.bondPointsGained, 2)
   assert.equal(unmatched.bondPointsGained, 1)
-  assert.ok(matched.xpGained > unmatched.xpGained)
+  assert.equal('xpGained' in matched, false)
+  assert.equal('itemXpBonus' in matched, false)
 
   const skillUnlock = resolveAfterSchoolReward({
     bonds: { mio: { points: 2, visits: 1 } },
@@ -211,9 +212,9 @@ test('声掛けは全て報酬を得て、性格一致・絆LV・思い出アイ
     branchId: profile.id,
     choiceId: other.id,
   })
-  assert.equal(withItem.itemXpBonus, profile.item.xpBonus)
-  assert.equal(withItem.xpGained, 6 + 3 * 2 + profile.item.xpBonus)
-  assert.ok(withItem.xpGained > itemUnlock.xpGained)
+  assert.equal(withItem.bondPointsGained, 1)
+  assert.equal('xpGained' in withItem, false)
+  assert.equal('itemXpBonus' in withItem, false)
 })
 
 test('関係特技は実HP・実ダメージだけに作用し、正答数と決着条件を変えない', () => {
@@ -287,7 +288,7 @@ test('放課後報酬は一度だけ原子的に確定し、正答・SRS・分�
     const after = useStore.getState()
     assert.equal(reward.unlockedSkill.id, profile.skill.id)
     assert.equal(after.battleStoryStep, 41)
-    assert.equal(after.stats.xp, 100 + reward.xpGained)
+    assert.equal(after.stats.xp, 100)
     assert.equal(after.stats.answered, 12)
     assert.equal(after.stats.correct, 9)
     assert.strictEqual(after.srs, srs)
@@ -297,13 +298,13 @@ test('放課後報酬は一度だけ原子的に確定し、正答・SRS・分�
       branchId: profile.id,
       choiceId: preferred.id,
     }), null)
-    assert.equal(useStore.getState().stats.xp, 100 + reward.xpGained)
+    assert.equal(useStore.getState().stats.xp, 100)
   } finally {
     useStore.setState(original, true)
   }
 })
 
-test('任意の日常を見送っても物語だけを一度進め、学習・絆・XPを変えない', () => {
+test('任意の日常を見送っても物語だけを一度進め、学習・絆を変えない', () => {
   const original = useStore.getState()
   const stats = { ...original.stats, xp: 321, answered: 12, correct: 9 }
   const bonds = { mio: { points: 4, visits: 2 } }

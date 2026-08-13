@@ -194,7 +194,7 @@ test('出会い完了は仲間解放・イベント保存・絆報酬を原子�
     assert.equal(reward.unlockedCompanion, 'ren')
     assert.deepEqual(after.unlockedBattleStudentIds, ['mio', 'ren'])
     assert.equal(after.storyKeyVisualAlbum.events[0].branchId, renRoute.id)
-    assert.equal(after.stats.xp, 100 + reward.xpGained)
+    assert.equal(after.stats.xp, 100)
     assert.equal(after.stats.answered, 12)
     assert.equal(after.stats.correct, 9)
     assert.strictEqual(after.srs, srs)

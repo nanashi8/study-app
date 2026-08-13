@@ -1,12 +1,11 @@
-// 学習XPを、下がらない「冒険者LV 1〜99」へ変換する純ロジック。
-// 英検級に応じて上下する適応難易度（adaptive.js）とは別軸にすることで、
-// 苦手な問題で敵ランクが下がっても、これまでの努力は失われない。
+// 旧ゲーム表現の静的なレベル別データ。
+// 現在の学習評価・難易度・解放条件には接続しない。
 import { battleThemeById } from './battleThemes.js'
 import { battleTeacherAffinity } from './battleCast.js'
 
 export const MAX_HERO_LEVEL = 99
 
-// 冒険者LVごとの「挑戦できる英検ランク」の解放表。
+// 指定レベルごとの「挑戦できる英検ランク」の解放表。
 // 適応難易度はこの上限の内側だけで上下する。これにより、保存済みの engPos や
 // 高い診断結果があっても、低LVの冒険者がいきなり1級と戦うことはない。
 export const ENEMY_RANK_UNLOCKS = [
@@ -34,26 +33,6 @@ export function capEnemyPositionForHeroLevel(position, level) {
 export function nextEnemyRankUnlockForHeroLevel(level) {
   const safeLevel = Math.max(1, Math.min(MAX_HERO_LEVEL, Math.floor(level) || 1))
   return ENEMY_RANK_UNLOCKS.find((unlock) => unlock.level > safeLevel) ?? null
-}
-
-// 序盤は6問正解ほどでLVが上がり、後半は少しずつ腰を据えて育てる曲線。
-// LV99到達は24,120XP。既存のXP（正解10 / 誤答3など）をそのまま使える。
-export function xpNeededForNextLevel(level) {
-  const safeLevel = Math.max(1, Math.min(MAX_HERO_LEVEL - 1, Math.floor(level) || 1))
-  return 60 + Math.floor((safeLevel - 1) / 5) * 20
-}
-
-const LEVEL_START_XP = [0, 0]
-for (let level = 2; level <= MAX_HERO_LEVEL; level += 1) {
-  LEVEL_START_XP[level] =
-    LEVEL_START_XP[level - 1] + xpNeededForNextLevel(level - 1)
-}
-
-export const MAX_LEVEL_XP = LEVEL_START_XP[MAX_HERO_LEVEL]
-
-export function xpAtLevel(level) {
-  const safeLevel = Math.max(1, Math.min(MAX_HERO_LEVEL, Math.floor(level) || 1))
-  return LEVEL_START_XP[safeLevel]
 }
 
 const TITLES = [
@@ -1011,38 +990,6 @@ export function heroBattleStats(level = 1) {
   }
 }
 
-export function heroProgress(totalXp = 0) {
-  const xp = Math.max(0, Math.floor(Number(totalXp) || 0))
-  let level = 1
-  while (level < MAX_HERO_LEVEL && xp >= LEVEL_START_XP[level + 1]) level += 1
-
-  const isMax = level === MAX_HERO_LEVEL
-  const levelStartXp = LEVEL_START_XP[level]
-  const nextLevelXp = isMax ? levelStartXp : LEVEL_START_XP[level + 1]
-  const intoLevel = isMax ? 0 : xp - levelStartXp
-  const needed = isMax ? 0 : nextLevelXp - levelStartXp
-
-  return {
-    level,
-    totalXp: xp,
-    levelStartXp,
-    nextLevelXp,
-    intoLevel,
-    needed,
-    xpToNext: isMax ? 0 : Math.max(0, nextLevelXp - xp),
-    progress: isMax ? 1 : intoLevel / needed,
-    isMax,
-    title: titleForLevel(level),
-    chapter: chapterForLevel(level),
-    relics: relicsForLevel(level),
-    equipment: heroEquipmentForLevel(level),
-    battleStats: heroBattleStats(level),
-    nextRelic: nextRelicForLevel(level),
-    enemyRankCap: maxEnemyRankIndexForHeroLevel(level),
-    nextEnemyRankUnlock: nextEnemyRankUnlockForHeroLevel(level),
-  }
-}
-
 export const BATTLE_QUESTS = [
   {
     id: 'scout',
@@ -1078,7 +1025,7 @@ export function featuredQuestId(day = 0) {
   return BATTLE_QUESTS[positiveMod(Math.floor(day) || 0, BATTLE_QUESTS.length)].id
 }
 
-// バトル中の正答率・XP・SRSは変えず、解答順に応じた遊び方だけを変える作戦。
+// バトル中の正答率・SRSは変えず、解答順に応じた遊び方だけを変える作戦。
 // 生徒が得意な戦い方を選べる一方、学習評価そのものは常に同じ基準に保つ。
 export const BATTLE_TACTICS = [
   {

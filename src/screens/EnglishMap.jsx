@@ -7,7 +7,6 @@ import {
   schoolLifeVisualById,
 } from '../data/school-life-visuals.js'
 import { suggestStartPosition } from '../lib/session.js'
-import { heroProgress } from '../lib/rpg.js'
 import {
   BATTLE_BARRIER_CENTER,
   BATTLE_BARRIER_MAP_IMAGE,
@@ -112,7 +111,7 @@ const CHRONICLE_ICON_COMPONENTS = {
 
 const CHRONICLE_MENU_SECTIONS = Object.freeze([
   { id: 'restoration', label: '修復', description: '五地点と日常の歪みを解読する', icon: 'challenge' },
-  { id: 'growth', label: '調査', description: 'XPと龍脈印を確認する', icon: 'trait' },
+  { id: 'growth', label: '記録', description: '修復した断片と日常記録を確認する', icon: 'trait' },
   { id: 'friends', label: '協力者', description: '生徒たちとの調査記録', icon: 'journal' },
   { id: 'school', label: '学園', description: '龍脈図と先生の記憶を調べる', icon: 'faculty' },
 ])
@@ -177,8 +176,6 @@ export function EnglishMapScreen() {
   const navigate = useStore((s) => s.navigate)
   const skillStats = useStore((s) => s.skillStats)
   const readingsDone = useStore((s) => s.readingsDone)
-  const stats = useStore((s) => s.stats)
-  const hero = heroProgress(stats.xp)
 
   const infos = SKILLS.map((skill) => ({
     skill,
@@ -196,10 +193,7 @@ export function EnglishMapScreen() {
       />
 
       <div className="space-y-4 px-4">
-        <ChroniclePortalCard
-          hero={hero}
-          onOpen={() => navigate('afterSchoolChronicle')}
-        />
+        <ChroniclePortalCard onOpen={() => navigate('afterSchoolChronicle')} />
         <TrainingBoard navigate={navigate} weak={weak} infos={infos} />
       </div>
     </div>
@@ -209,13 +203,11 @@ export function EnglishMapScreen() {
 export function AfterSchoolChronicleScreen() {
   const navigate = useStore((s) => s.navigate)
   const params = useStore((s) => s.params)
-  const stats = useStore((s) => s.stats)
   const battleStudentId = useStore((s) => s.battleStudentId)
   const afterSchoolBonds = useStore((s) => s.afterSchoolBonds)
   const unlockedBattleStudentIds = useStore((s) => s.unlockedBattleStudentIds)
   const battleStoryStep = useStore((s) => s.battleStoryStep)
   const dragonVeinProgress = useStore((s) => s.dragonVeinProgress)
-  const hero = heroProgress(stats.xp)
   const battleStudent = battleStudentById(battleStudentId)
   const day = todayIndex()
   const [menuSectionId, setMenuSectionId] = useState(() => (
@@ -302,8 +294,8 @@ export function AfterSchoolChronicleScreen() {
           <div className="after-school-console-bezel">
             <div className="after-school-console-status" aria-hidden="true">
               <span>{menuSection.label}</span>
-              <span>調査LV {hero.level}</span>
-              <span>調査XP {stats.xp.toLocaleString()}</span>
+              <span>学習記録</span>
+              <span>復元 {dragonVeinSummary(dragonVeinProgress).restored}</span>
             </div>
 
             <div
@@ -325,20 +317,13 @@ export function AfterSchoolChronicleScreen() {
               )}
 
               {menuSection.id === 'growth' && (
-                <>
-                  <InvestigationExperienceCard
-                    totalXp={stats.xp}
-                    hero={hero}
-                    progress={dragonVeinProgress}
-                  />
-                  <ChronicleDrawer
-                    icon="chapter"
-                    title="調査の記録"
-                    description="五地点の正常化と次の目標"
-                  >
-                    <DragonVeinProgressSummary progress={dragonVeinProgress} />
-                  </ChronicleDrawer>
-                </>
+                <ChronicleDrawer
+                  icon="chapter"
+                  title="調査の記録"
+                  description="五地点の正常化と次の目標"
+                >
+                  <DragonVeinProgressSummary progress={dragonVeinProgress} />
+                </ChronicleDrawer>
               )}
 
               {menuSection.id === 'friends' && (
@@ -477,7 +462,7 @@ function DailyDistortionCard({ distortion, progress, onStart }) {
       </div>
       <p className="mt-2 text-[10px] font-bold leading-relaxed text-ink/55">{distortion.summary}</p>
       <div className="mt-3 flex items-center justify-between gap-3 rounded-2xl bg-white/80 p-3 ring-1 ring-emerald-100">
-        <div><b className="block text-xs text-ink">日常修復 {progress?.daily?.repairs ?? 0}件</b><small className="font-bold text-ink/40">経験値を蓄えて五芒星へ挑む</small></div>
+        <div><b className="block text-xs text-ink">日常修復 {progress?.daily?.repairs ?? 0}件</b><small className="font-bold text-ink/40">日常の修復記録を五芒星へつなぐ</small></div>
         <button type="button" onClick={onStart} className="min-h-10 shrink-0 rounded-xl bg-emerald-600 px-3 text-[10px] font-extrabold text-white active:scale-95">調査する</button>
       </div>
     </section>
@@ -547,7 +532,7 @@ function DragonVeinProgressSummary({ progress }) {
   )
 }
 
-function ChroniclePortalCard({ hero, onOpen }) {
+function ChroniclePortalCard({ onOpen }) {
   return (
     <button
       type="button"
@@ -562,7 +547,7 @@ function ChroniclePortalCard({ hero, onOpen }) {
             alt="放課後の昇降口で、4人の高校生が校内図を囲んで次の課題ルートを相談している"
           />
           <span className="after-school-portal-screen-label">
-            LV{hero.level} · {hero.chapter.name}
+            英語の修復記録
           </span>
         </span>
       </span>
@@ -660,46 +645,6 @@ function TrainingBoard({ navigate, weak, infos }) {
   )
 }
 
-function InvestigationExperienceCard({ totalXp, hero, progress }) {
-  const summary = dragonVeinSummary(progress)
-  return (
-    <section className="overflow-hidden rounded-3xl border-2 border-amber-200 bg-gradient-to-br from-amber-50 via-white to-violet-50 p-4 shadow-card">
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <p className="text-[9px] font-extrabold tracking-[0.12em] text-amber-600">INVESTIGATION EXPERIENCE</p>
-          <h2 className="mt-0.5 font-display text-base font-extrabold text-ink">日常調査で積み上げた経験</h2>
-        </div>
-        <span className="shrink-0 rounded-full bg-amber-100 px-2.5 py-1 text-[10px] font-extrabold text-amber-800">
-          調査LV {hero.level}
-        </span>
-      </div>
-      <p className="mt-2 text-[10px] font-bold leading-relaxed text-ink/50">
-        通常の英語学習と日常の歪みを解くたびにXPが増えます。XPを消費せず、そのまま五芒星の調査へ挑めます。
-      </p>
-      <div className="mt-3 grid grid-cols-3 gap-2 text-center">
-        <div className="rounded-2xl bg-white p-2.5 ring-1 ring-amber-100">
-          <b className="block text-lg text-amber-700">{totalXp.toLocaleString()}</b>
-          <small className="text-[8px] font-bold text-ink/40">累計XP</small>
-        </div>
-        <div className="rounded-2xl bg-white p-2.5 ring-1 ring-emerald-100">
-          <b className="block text-lg text-emerald-700">{progress?.daily?.repairs ?? 0}</b>
-          <small className="text-[8px] font-bold text-ink/40">日常修復</small>
-        </div>
-        <div className="rounded-2xl bg-white p-2.5 ring-1 ring-violet-100">
-          <b className="block text-lg text-violet-700">{summary.restored}</b>
-          <small className="text-[8px] font-bold text-ink/40">主要断片</small>
-        </div>
-      </div>
-      <div className="mt-3 flex items-center gap-3">
-        <span className="text-[9px] font-extrabold text-ink/45">{hero.isMax ? '最高調査LV' : `次のLVまで ${hero.xpToNext} XP`}</span>
-        <ProgressBar value={hero.progress} color="#f59e0b" className="flex-1" />
-      </div>
-      <p className="mt-2 text-[9px] font-bold leading-relaxed text-ink/40">
-        正答率・SRS・診断は通常どおり記録し、物語表示が学習評価を変えることはありません。
-      </p>
-    </section>
-  )
-}
 function StoryArcTimeline({ storyStep }) {
   const current = afterSchoolStoryArcForStep(storyStep)
   const currentIndex = AFTER_SCHOOL_STORY_ARCS.findIndex((arc) => arc.id === current.id)
@@ -1687,7 +1632,7 @@ function TeacherSchoolLife({ student }) {
         )}
 
         <p className="mt-2 text-center text-[8px] font-bold leading-relaxed text-ink/35">
-          ここで選ぶ点数は物語上の架空成績です。実際の正答率・XP・SRS・診断結果は変わりません。
+          ここで選ぶ点数は物語上の架空成績です。実際の正答率・SRS・診断結果は変わりません。
         </p>
       </div>
     </section>

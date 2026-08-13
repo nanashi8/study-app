@@ -10,7 +10,7 @@ export function GameSettingsPanel() {
       </div>
 
       <p className="mt-3 rounded-xl bg-slate-50 px-3 py-2 text-xs font-bold leading-relaxed text-ink/45">
-        龍脈調査の表示は、正答率・SRS・診断・経験値の判定を変更しません。
+        龍脈調査の表示は、正答率・SRS・診断の判定を変更しません。
       </p>
     </section>
   )

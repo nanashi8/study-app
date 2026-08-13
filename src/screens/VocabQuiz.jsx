@@ -68,7 +68,6 @@ export function VocabQuizScreen() {
   })
   useEffect(() => clearQuizSession(), [clearQuizSession])
 
-  const xpAtStart = useRef(restore ? restore.xpAtStart : useStore.getState().stats.xp)
   const sessionId = useRef(restore?.sessionId ?? newSessionId())
   const [deck] = useState(() => (
     restore?.deck
@@ -125,7 +124,6 @@ export function VocabQuizScreen() {
     : null
 
   const finish = () => {
-    const xpGained = useStore.getState().stats.xp - xpAtStart.current
     navigate('sessionResult', {
       title: params.title ?? (isDragonVein ? '龍脈の単語解読' : 'クイズ'),
       mode: 'quiz',
@@ -133,7 +131,6 @@ export function VocabQuizScreen() {
       total: deck.length,
       correct: results.current.correct,
       wrong: results.current.wrong + results.current.unknown,
-      xpGained,
       reviewIds: results.current.wrongIds,
       source,
       size: params.size,
@@ -187,7 +184,6 @@ export function VocabQuizScreen() {
         // 旧版の退避セッションを読める期間は同じ値も残す。
         battleLog: [...results.current.answerLog],
       },
-      xpAtStart: xpAtStart.current,
     })
     navigate('wordDetail', { id: word.id })
   }

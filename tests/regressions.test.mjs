@@ -390,7 +390,7 @@ test('進捗コードは廃止済みデータを再保存せず、旧コード�
     new URL('../src/store/useStore.js', import.meta.url),
     'utf8',
   )
-  assert.match(storeSource, /version: 6/)
+  assert.match(storeSource, /version: 7/)
   assert.match(storeSource, /migrate: migratePersistedState/)
   assert.throws(() => decodeProgress(encodeProgress({ ...base, srs: [] })), /srs/)
   assert.throws(
@@ -401,9 +401,13 @@ test('進捗コードは廃止済みデータを再保存せず、旧コード�
     () => decodeProgress(encodeProgress({ ...base, battleStars: -1 })),
     /battleStars/,
   )
-  assert.throws(
-    () => decodeProgress(encodeProgress({ ...base, battleXpSpent: 501 })),
-    /battleXpSpent/,
+  assert.equal(
+    decodeProgress(encodeProgress({ ...base, battleXpSpent: 501 })).battleXpSpent,
+    501,
+  )
+  assert.equal(
+    decodeProgress(encodeProgress({ ...base, battleXpSpent: -1 })).battleXpSpent,
+    0,
   )
   assert.throws(
     () => decodeProgress(encodeProgress({ ...base, battleThemeId: 'locked-room' })),
@@ -441,7 +445,7 @@ test('進捗コードは廃止済みデータを再保存せず、旧コード�
   assert.equal(useStore.getState().battleStoryStep, 0)
 })
 
-test('星彩ポイント配分は累計XPと放課後スターを減らさず保存される', () => {
+test('星彩ポイント配分は旧互換値と放課後スターを減らさず保存される', () => {
   const previous = useStore.getState()
   useStore.setState({
     stats: { ...previous.stats, xp: 500 },
@@ -464,23 +468,23 @@ test('星彩ポイント配分は累計XPと放課後スターを減らさず保
   assert.deepEqual(useStore.getState().battleTraitInvestments, {})
 })
 
-test('XP変換は累計XPとLV用の値を減らさず、交換済み分だけを記録する', () => {
+test('旧XP互換値は不活性で、交換操作を公開しない', () => {
   const previous = useStore.getState()
-  useStore.setState({
-    stats: { ...previous.stats, xp: 289 },
-    battleXpSpent: 40,
-    battleStars: 100,
-  })
+  try {
+    useStore.setState({
+      stats: { ...previous.stats, xp: 289 },
+      battleXpSpent: 40,
+      battleStars: 100,
+    })
 
-  useStore.getState().exchangeXpForBattleStars()
-  assert.equal(useStore.getState().stats.xp, 289)
-  assert.equal(useStore.getState().battleXpSpent, 240)
-  assert.equal(useStore.getState().battleStars, 200)
-
-  useStore.getState().exchangeXpForBattleStars()
-  assert.equal(useStore.getState().stats.xp, 289)
-  assert.equal(useStore.getState().battleXpSpent, 240)
-  assert.equal(useStore.getState().battleStars, 200)
+    assert.equal(useStore.getState().exchangeXpForBattleStars, undefined)
+    const restored = decodeProgress(useStore.getState().exportCode())
+    assert.equal(restored.stats.xp, 289)
+    assert.equal(restored.battleXpSpent, 40)
+    assert.equal(restored.battleStars, 100)
+  } finally {
+    useStore.setState(previous, true)
+  }
 })
 
 test('古典短文は単語・文法・常識を備え、登録先をすべて解決できる', () => {

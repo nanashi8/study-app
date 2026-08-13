@@ -55,7 +55,7 @@ export function SettingsScreen() {
       <Sheet open={confirmReset} onClose={() => setConfirmReset(false)} title="進捗をリセットしますか？">
         <div className="space-y-3">
           <p className="text-sm font-bold text-ink/60">
-            学習履歴・XP・診断・分析・保存リストがすべて消えます。音声などの設定は残ります。元に戻せないため、先に統一メニューから進捗コードを保存してください。
+            学習履歴・診断・分析・保存リストがすべて消えます。音声などの設定は残ります。元に戻せないため、先に統一メニューから進捗コードを保存してください。
           </p>
           <Button
             full
