@@ -15,36 +15,28 @@ import {
 const read = (path) =>
   readFileSync(new URL(path, import.meta.url), 'utf8')
 
-test('下部の一つの共通メニューを全画面から開き、その中の設定へ進む', () => {
+test('上部の一つの共通メニューを全画面から開き、その中の設定へ進む', () => {
   const app = read('../src/App.jsx')
   const header = read('../src/components/AppShell.jsx')
-  const bottom = read('../src/components/BottomNav.jsx')
   const sheet = read('../src/components/Sheet.jsx')
   const settings = read('../src/components/SpeechSettings.jsx')
   const css = read('../src/index.css')
 
   assert.match(app, /<SpeechSettingsSheet \/>/)
-  assert.match(app, /import \{ BottomNav \}/)
-  assert.match(app, /<AppShell nav=\{<BottomNav \/>\}>/)
+  assert.match(app, /<AppShell>/)
+  assert.doesNotMatch(app, /BottomNav|nav=\{/)
   assert.match(header, /data-global-menu-bar/)
   assert.match(header, /study-app-global-menu-bar relative z-\[60\]/)
   assert.match(sheet, /fixed inset-0 z-50/)
   assert.match(sheet, /data-sheet-scroll-area/)
-  assert.match(sheet, /pb-\[calc\(5rem\+env\(safe-area-inset-bottom\)\)\]/)
+  assert.match(sheet, /pb-\[calc\(1\.5rem\+env\(safe-area-inset-bottom\)\)\]/)
   assert.match(header, /data-global-back-button/)
   assert.match(header, /<ChevronLeft size=\{19\} \/> 戻る/)
-  assert.doesNotMatch(header, /SpeechSettingsButton|統一メニュー/)
-  assert.match(bottom, /data-global-bottom-nav/)
-  assert.match(bottom, /aria-label="統一下部メニュー"/)
-  assert.deepEqual(
-    [...bottom.matchAll(/key: '([^']+)', label: '([^']+)'/g)].map(([, key, label]) => [key, label]),
-    [
-      ['home', 'ホーム'],
-      ['learning', 'マイ学習'],
-      ['records', '記録'],
-      ['menu', 'メニュー'],
-    ],
-  )
+  assert.match(header, /data-global-menu-button/)
+  assert.match(header, /aria-label="統一メニューを開く"/)
+  assert.match(header, /<Menu size=\{18\} \/> メニュー/)
+  assert.match(header, /onClick=\{\(\) => openSpeechSettings\(\)\}/)
+  assert.doesNotMatch(header, /SpeechSettingsButton|data-global-bottom-nav/)
   assert.match(settings, /const sheetTitles = \{/)
   assert.match(settings, /menu: '統一メニュー'/)
   assert.match(css, /\.study-app-content \[data-settings-menu-trigger\]/)
@@ -60,7 +52,6 @@ test('下部の一つの共通メニューを全画面から開き、その中�
 
 test('学習途中からメインメニューへ戻る前にQRまたはコードで保存できる', () => {
   const header = read('../src/components/AppShell.jsx')
-  const bottom = read('../src/components/BottomNav.jsx')
   const settings = read('../src/components/SpeechSettings.jsx')
   const backup = read('../src/components/ProgressBackup.jsx')
   const policy = read('../src/lib/navigationPolicy.js')
@@ -69,8 +60,7 @@ test('学習途中からメインメニューへ戻る前にQRまたはコード
   assert.match(settings, /requiresProgressSaveConfirmation\(currentScreen, screen\)/)
   assert.match(header, /requiresProgressSaveConfirmation\(screen, '__back__'\)/)
   assert.match(header, /openSpeechSettings\('back'\)/)
-  assert.match(bottom, /requiresProgressSaveConfirmation\(screen, target\)/)
-  assert.match(bottom, /openSpeechSettings\(\{ type: 'navigate', screen: target, params: \{\} \}\)/)
+  assert.match(header, /disabled=\{!canGoBack \|\| menuOpen\}/)
   assert.match(settings, /data-progress-save-confirmation/)
   assert.match(settings, /途中の進捗を保存しますか？/)
   assert.match(settings, /<ProgressBackupPanel/)
@@ -139,7 +129,7 @@ test('全教材・学習アドバイザー・定着分析・管理機能を統�
   assert.match(menu, /resetProgressEverywhere\(account, selectedGroups\)/)
   assert.match(menu, /data-menu-reset-complete/)
   assert.match(menu, /学習履歴をリセットしました/)
-  assert.match(app, /BottomNav/)
+  assert.doesNotMatch(app, /BottomNav|nav=\{/)
   assert.doesNotMatch(home, /EXTRA_LEARNING_MODES|screen: 'diagnostic'|screen: 'myList'|screen: 'myGrammar'/)
   assert.doesNotMatch(portal, /useAuth|navigate\('login'\)/)
 })

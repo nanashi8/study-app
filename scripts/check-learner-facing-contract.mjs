@@ -73,8 +73,8 @@ const [
   grammarQuizSource,
   homeSource,
   readerSource,
+  appSource,
   shellSource,
-  bottomNavSource,
   menuSource,
   learningAdvisorSource,
   progressBackupSource,
@@ -84,8 +84,8 @@ const [
   readProjectFile('src/screens/GrammarQuiz.jsx'),
   readProjectFile('src/screens/Home.jsx'),
   readProjectFile('src/screens/Reader.jsx'),
+  readProjectFile('src/App.jsx'),
   readProjectFile('src/components/AppShell.jsx'),
-  readProjectFile('src/components/BottomNav.jsx'),
   readProjectFile('src/components/SpeechSettings.jsx'),
   readProjectFile('src/components/LearningAdvisor.jsx'),
   readProjectFile('src/components/ProgressBackup.jsx'),
@@ -104,12 +104,11 @@ if (/learnerPhrasePairsForBlock|speakBlockPair/.test(readerSource)) {
   errors.push('Reader下段が上段の意味フレーズを再表示・再生している')
 }
 if (!shellSource.includes('data-global-back-button')) errors.push('AppShell上部に共通の戻る操作がない')
-if (!bottomNavSource.includes('data-global-bottom-nav')) errors.push('AppShell下部に統一ナビがない')
-for (const label of ['ホーム', 'マイ学習', '記録', 'メニュー']) {
-  if (!bottomNavSource.includes(`label: '${label}'`)) errors.push(`統一下部ナビに「${label}」がない`)
-}
-if (!bottomNavSource.includes('requiresProgressSaveConfirmation')) {
-  errors.push('統一下部ナビが途中離脱の保存確認を使っていない')
+if (!shellSource.includes('data-global-menu-button')) errors.push('AppShell上部に統一メニュー入口がない')
+if (!shellSource.includes('aria-label="統一メニューを開く"')) errors.push('上部メニューボタンの名前がない')
+if (!shellSource.includes('openSpeechSettings()')) errors.push('上部メニューボタンが統一メニューを開かない')
+if (shellSource.includes('data-global-bottom-nav') || appSource.includes('BottomNav')) {
+  errors.push('廃止した統一下部ナビが残っている')
 }
 if (!menuSource.includes('data-progress-save-confirmation')) errors.push('途中離脱の保存確認がない')
 if (!menuSource.includes('requiresProgressSaveConfirmation')) errors.push('保存確認の画面判定がない')

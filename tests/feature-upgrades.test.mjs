@@ -76,22 +76,18 @@ test('記録は定義・標本数・評定・図表・個別助言・科学的�
   assert.match(progress, /onNavigate=\{\(screen, params\) => navigate\(screen, params\)\}/)
 })
 
-test('統一下部ナビとマイ学習は4入口・全教材種類・既存の出題ソースを接続する', () => {
+test('統一上部メニューとマイ学習は全教材種類・既存の出題ソースを接続する', () => {
   const app = read('../src/App.jsx')
-  const bottom = read('../src/components/BottomNav.jsx')
+  const header = read('../src/components/AppShell.jsx')
   const learning = read('../src/screens/MyLearning.jsx')
 
-  assert.deepEqual(
-    [...bottom.matchAll(/key: '([^']+)', label: '([^']+)'/g)].map(([, key, label]) => [key, label]),
-    [
-      ['home', 'ホーム'],
-      ['learning', 'マイ学習'],
-      ['records', '記録'],
-      ['menu', 'メニュー'],
-    ],
-  )
   assert.match(app, /myLearning: MyLearningScreen/)
-  assert.match(app, /<AppShell nav=\{<BottomNav \/>\}>/)
+  assert.match(app, /<AppShell>/)
+  assert.doesNotMatch(app, /BottomNav|nav=\{/)
+  assert.match(header, /data-global-menu-button/)
+  assert.match(header, /aria-label="統一メニューを開く"/)
+  assert.ok(APP_MENU_SCREEN_DESTINATIONS.includes('myLearning'))
+  assert.ok(APP_MENU_SCREEN_DESTINATIONS.includes('progress'))
   assert.match(learning, /data-my-learning-screen/)
   assert.match(learning, /data-my-learning-english-categories/)
   for (const label of ['英単語', '熟語・構文', '英文法', 'リスニング', 'ディクテーション', '語源知識', '古典学習']) {
@@ -100,13 +96,12 @@ test('統一下部ナビとマイ学習は4入口・全教材種類・既存の�
   for (const type of ['phraseList', 'grammarList', 'listeningList', 'dictationList']) {
     assert.match(learning, new RegExp(`type: '${type}'`))
   }
-  assert.match(bottom, /requiresProgressSaveConfirmation\(screen, target\)/)
 })
 
 test('統一メニューの全教材・個人機能は公開ルートに存在し、履歴消去は一つの選択画面へ集約する', () => {
   const app = read('../src/App.jsx')
   const menu = read('../src/components/SpeechSettings.jsx')
-  const screenMap = blockBetween(app, 'const SCREENS = {', '// 下部ナビ')
+  const screenMap = blockBetween(app, 'const SCREENS = {', '// 全公開画面')
   const publicScreens = new Set(
     [...screenMap.matchAll(/^  ([A-Za-z][A-Za-z0-9]*):/gm)].map((match) => match[1]),
   )
