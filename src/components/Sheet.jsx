@@ -34,7 +34,7 @@ export function Sheet({ open, onClose, title, children, maxH = '85vh' }) {
           </div>
         )}
         <div
-          className="overflow-y-auto overflow-x-hidden px-5 pb-[calc(5rem+env(safe-area-inset-bottom))]"
+          className="overflow-y-auto overflow-x-hidden px-5 pb-[calc(1.5rem+env(safe-area-inset-bottom))]"
           style={{ maxHeight: `calc(${maxH} - 4rem)` }}
           data-sheet-scroll-area
         >

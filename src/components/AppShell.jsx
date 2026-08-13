@@ -1,19 +1,20 @@
 import { useStore } from '../store/useStore.js'
 import { requiresProgressSaveConfirmation } from '../lib/navigationPolicy.js'
 import { IconButton, cx } from './ui.jsx'
-import { ChevronLeft } from './Icons.jsx'
+import { ChevronLeft, Menu } from './Icons.jsx'
 import { GlobalSpeechConsole } from './SpeechConsole.jsx'
 
 // アプリ外枠。スマホは全幅、PCでは中央に「スマホ幅」のアプリを表示。
-// 戻る操作は上部、ホーム・マイ学習・記録・メニューは下部ナビに一度だけ置く。
-export function AppShell({ children, nav, showGlobalMenu = true }) {
+// 戻る操作と統一メニュー入口は、全公開画面で共通の上部バーに一度だけ置く。
+export function AppShell({ children, showGlobalMenu = true }) {
   const screen = useStore((state) => state.screen)
   const stackLength = useStore((state) => state.stack.length)
   const globalBack = useStore((state) => state.globalBack)
   const openSpeechSettings = useStore((state) => state.openSpeechSettings)
+  const menuOpen = useStore((state) => state.speechSettingsOpen)
   const canGoBack = screen !== 'portal' || stackLength > 0
   const goBack = () => {
-    if (!canGoBack) return
+    if (!canGoBack || menuOpen) return
     if (requiresProgressSaveConfirmation(screen, '__back__')) {
       openSpeechSettings('back')
       return
@@ -33,7 +34,7 @@ export function AppShell({ children, nav, showGlobalMenu = true }) {
               <button
                 type="button"
                 onClick={goBack}
-                disabled={!canGoBack}
+                disabled={!canGoBack || menuOpen}
                 aria-label="戻る"
                 data-global-back-button
                 className="inline-flex h-11 shrink-0 items-center gap-0.5 rounded-full px-2.5 text-sm font-extrabold text-brand-700 active:bg-brand-50 disabled:text-ink/25 disabled:active:bg-transparent"
@@ -43,7 +44,17 @@ export function AppShell({ children, nav, showGlobalMenu = true }) {
               <span className="min-w-0 flex-1 truncate text-center text-xs font-extrabold tracking-wide text-ink/45">
                 スタディアプリ
               </span>
-              <span className="w-[4.75rem] shrink-0" aria-hidden="true" />
+              <button
+                type="button"
+                onClick={() => openSpeechSettings()}
+                disabled={menuOpen}
+                aria-label="統一メニューを開く"
+                aria-expanded={menuOpen}
+                data-global-menu-button
+                className="inline-flex h-11 shrink-0 items-center gap-1 rounded-full px-2.5 text-sm font-extrabold text-brand-700 active:bg-brand-50 disabled:text-brand-300 disabled:active:bg-transparent"
+              >
+                <Menu size={18} /> メニュー
+              </button>
             </div>
           </div>
         )}
@@ -51,7 +62,6 @@ export function AppShell({ children, nav, showGlobalMenu = true }) {
           {children}
         </main>
         <GlobalSpeechConsole />
-        {nav}
       </div>
     </div>
   )

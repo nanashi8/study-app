@@ -4,7 +4,6 @@ import { useAuth } from './store/useAuth.js'
 import { pullOrInit, startAutoSave } from './lib/cloudSync.js'
 import { LoginScreen } from './screens/Login.jsx'
 import { AppShell } from './components/AppShell.jsx'
-import { BottomNav } from './components/BottomNav.jsx'
 import { SpeechSettingsSheet } from './components/SpeechSettings.jsx'
 import { PortalScreen } from './screens/Portal.jsx'
 import { learnerDestination } from './lib/learnerVisibility.js'
@@ -173,7 +172,7 @@ const SCREENS = {
   kotenSaved: KotenSavedScreen,
 }
 
-// 下部ナビは全公開画面で共通。途中学習からの移動は保存確認を経由する。
+// 全公開画面はAppShell上部の戻る・統一メニュー入口を共有する。
 
 // 学習アプリ本体（ログイン済みのときだけ表示）。
 function MainApp() {
@@ -183,7 +182,7 @@ function MainApp() {
   const Screen = SCREENS[destination.screen] ?? HomeScreen
   return (
     <>
-      <AppShell nav={<BottomNav />}>
+      <AppShell>
         <Suspense fallback={<ScreenLoader />}>
           <Screen />
         </Suspense>

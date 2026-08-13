@@ -61,7 +61,7 @@ function LearningMenu({ navigate }) {
           </div>
         </section>
         <p className="rounded-2xl bg-white px-4 py-3 text-sm font-bold leading-relaxed text-ink/50 shadow-sm">
-          学習アドバイザー、診断、発展学習、保存リスト、記録は、下部の「メニュー」にまとめています。
+          学習アドバイザー、診断、発展学習、保存リスト、記録は、上部の「メニュー」にまとめています。
         </p>
       </div>
     </div>
