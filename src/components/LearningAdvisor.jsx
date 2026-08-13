@@ -13,12 +13,6 @@ function percent(value) {
   return value == null ? '計測中' : `${Math.round(value * 100)}%`
 }
 
-function compactWindow(window) {
-  if (!window) return null
-  const crossesMidnight = window.end <= window.start
-  return `${window.start}〜${crossesMidnight ? '翌' : ''}${window.end}時`
-}
-
 function learningWeakness(profile) {
   const diagnosticSkillId = profile?.diagnostic?.prioritySkillId
   const diagnosticRoute = SKILL_ROUTES[diagnosticSkillId]
@@ -48,80 +42,45 @@ function learningWeakness(profile) {
   }
 }
 
-function RetentionSnapshot({ profile }) {
-  const analysis = profile.analysis
-  const bestWindow = compactWindow(analysis.bestWindow)
-  return (
-    <div className="mt-3 grid grid-cols-3 gap-2" data-menu-retention-snapshot>
-      <div className="rounded-xl bg-white/10 px-2 py-2 text-center">
-        <span className="block text-[10px] font-bold text-white/60">定着推定</span>
-        <strong className="font-display text-lg font-extrabold">
-          {analysis.learnedItems || analysis.scored ? analysis.memoryScore : '—'}
-        </strong>
-      </div>
-      <div className="rounded-xl bg-white/10 px-2 py-2 text-center">
-        <span className="block text-[10px] font-bold text-white/60">長期段階</span>
-        <strong className="font-display text-lg font-extrabold">
-          {analysis.learnedItems ? `${analysis.stages.longPct}%` : '—'}
-        </strong>
-      </div>
-      <div className="rounded-xl bg-white/10 px-2 py-2 text-center">
-        <span className="block text-[10px] font-bold text-white/60">得意時間</span>
-        <strong className="block truncate font-display text-sm font-extrabold">
-          {bestWindow ?? '計測中'}
-        </strong>
-      </div>
-    </div>
-  )
-}
-
 export function LearningAdvisorSummary({ profile, onOpenAdvisor, onOpenAnalysis }) {
   const weakness = learningWeakness(profile)
   const recommendation = profile.recommendation
 
   return (
-    <section className="space-y-2.5" aria-label="学習状況の要約" data-menu-learning-overview>
+    <section
+      className="divide-y divide-slate-100 overflow-hidden rounded-xl border border-slate-200 bg-white"
+      aria-label="学習状況の要約"
+      data-menu-learning-overview
+    >
       <button
         type="button"
         onClick={onOpenAdvisor}
-        className="w-full rounded-2xl bg-gradient-to-br from-indigo-600 via-violet-600 to-fuchsia-600 p-4 text-left text-white shadow-lg shadow-violet-200/60 active:scale-[0.99]"
+        className="flex min-h-14 w-full items-center gap-2.5 px-3 py-2 text-left active:bg-violet-50"
         data-menu-advisor-entry
       >
-        <span className="flex items-start gap-3">
-          <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-white/15 text-center">
-            <strong className="font-display text-xl font-extrabold leading-none">
-              {profile.score ?? '—'}
-            </strong>
-            <span className="sr-only">100点中</span>
-          </span>
-          <span className="min-w-0 flex-1">
-            <span className="flex items-center gap-1.5 text-xs font-extrabold text-white/75">
-              <Sparkles size={16} /> 学習アドバイザー
-            </span>
-            <strong className="mt-1 block font-display text-base font-extrabold">
-              次：{recommendation.actionLabel}
-            </strong>
-            <span className="mt-1 block text-xs font-bold text-white/70">
-              弱点：{weakness.label}
-            </span>
-          </span>
-          <ArrowRight size={19} className="mt-1 shrink-0 text-white/60" />
+        <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-violet-50 text-violet-700">
+          <Sparkles size={18} />
         </span>
+        <span className="min-w-0 flex-1">
+          <span className="block text-[11px] font-extrabold text-violet-700">今日のおすすめ</span>
+          <strong className="block truncate text-sm font-extrabold text-ink">{recommendation.actionLabel}</strong>
+        </span>
+        <ArrowRight size={17} className="shrink-0 text-violet-300" />
       </button>
-
       <button
         type="button"
         onClick={onOpenAnalysis}
-        className="w-full rounded-2xl bg-slate-900 p-4 text-left text-white active:bg-slate-800"
+        className="flex min-h-12 w-full items-center gap-2.5 px-3 py-2 text-left active:bg-slate-50"
         data-menu-retention-entry
       >
-        <span className="flex items-center justify-between gap-3">
-          <span className="flex items-center gap-2 font-display text-sm font-extrabold">
-            <Chart size={18} /> 定着・学習効率を分析
-          </span>
-          <ArrowRight size={18} className="shrink-0 text-white/45" />
+        <span className="grid h-8 w-9 shrink-0 place-items-center text-slate-500">
+          <Chart size={17} />
         </span>
-        <RetentionSnapshot profile={profile} />
+        <span className="min-w-0 flex-1 text-sm font-extrabold text-slate-700">学習分析</span>
+        <span className="truncate text-[11px] font-bold text-slate-400" data-menu-advisor-meta>
+          弱点：{weakness.label}・{profile.score ?? '—'}/100
+        </span>
+        <ArrowRight size={17} className="shrink-0 text-slate-300" />
       </button>
     </section>
   )

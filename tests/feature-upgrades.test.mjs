@@ -4,8 +4,11 @@ import { readFileSync } from 'node:fs'
 
 import { PHRASES } from '../src/data/phrases.js'
 import { LISTENING_ITEMS } from '../src/data/listening.js'
-import { createLearningAnalytics } from '../src/lib/learningAnalytics.js'
-import { useStore } from '../src/store/useStore.js'
+import {
+  APP_MENU_ACTIONS,
+  APP_MENU_ITEMS,
+  APP_MENU_SCREEN_DESTINATIONS,
+} from '../src/lib/appMenu.js'
 
 const read = (path) => readFileSync(new URL(path, import.meta.url), 'utf8')
 
@@ -100,90 +103,24 @@ test('統一下部ナビとマイ学習は4入口・全教材種類・既存の�
   assert.match(bottom, /requiresProgressSaveConfirmation\(screen, target\)/)
 })
 
-test('統一メニューの全教材・個人機能は公開ルートに存在し、設定から個別消去できる', () => {
+test('統一メニューの全教材・個人機能は公開ルートに存在し、履歴消去は一つの選択画面へ集約する', () => {
   const app = read('../src/App.jsx')
   const menu = read('../src/components/SpeechSettings.jsx')
   const screenMap = blockBetween(app, 'const SCREENS = {', '// 下部ナビ')
   const publicScreens = new Set(
     [...screenMap.matchAll(/^  ([A-Za-z][A-Za-z0-9]*):/gm)].map((match) => match[1]),
   )
-  const destinations = [
-    ['const APP_MENU_DESTINATIONS', 'const ENGLISH_MENU_DESTINATIONS'],
-    ['const ENGLISH_MENU_DESTINATIONS', 'const LEARNING_TOOL_DESTINATIONS'],
-    ['const LEARNING_TOOL_DESTINATIONS', 'const PERSONAL_TOOL_DESTINATIONS'],
-    ['const PERSONAL_TOOL_DESTINATIONS', 'function MenuDestinationList'],
-  ].flatMap(([start, end]) =>
-    [...blockBetween(menu, start, end).matchAll(/screen: '([^']+)'/g)].map((match) => match[1]),
-  )
 
   assert.equal(publicScreens.size, 59)
-  assert.equal(destinations.length, 22)
-  assert.deepEqual(destinations.filter((screen) => !publicScreens.has(screen)), [])
-  assert.equal(new Set(destinations).size, destinations.length)
-  assert.match(menu, /data-data-management-panel/)
-  for (const scope of ['analytics', 'diagnostic', 'saved', 'vocabHistory']) {
-    assert.match(menu, new RegExp(`data-clear-learning-scope=\\{action\.id\\}|id: '${scope}'`))
-  }
-})
-
-test('個別消去は指定データだけを消し、SRS・設定・全体進捗を保持する', () => {
-  const before = useStore.getState()
-  const restore = {
-    learningAnalytics: before.learningAnalytics,
-    skillStats: before.skillStats,
-    diagnosticHistory: before.diagnosticHistory,
-    diagnosticAttempt: before.diagnosticAttempt,
-    myList: before.myList,
-    myGrammarList: before.myGrammarList,
-    kotenWordList: before.kotenWordList,
-    kotenGrammarList: before.kotenGrammarList,
-    kotenCultureList: before.kotenCultureList,
-    vocabHistory: before.vocabHistory,
-    srs: before.srs,
-    stats: before.stats,
-    settings: before.settings,
-    portalOrder: before.portalOrder,
-  }
-
-  try {
-    const analytics = { ...createLearningAnalytics(), inputs: 7, scored: 5 }
-    const sentinel = {
-      srs: { keep: { box: 2, correct: 2, wrong: 0, due: 999, last: 1 } },
-      stats: { xp: 321, streak: 2, day: 1, todayCount: 3, answered: 4, correct: 3 },
-      settings: { ...before.settings, dailyGoal: 50 },
-      portalOrder: [...before.portalOrder].reverse(),
-    }
-    useStore.setState({
-      learningAnalytics: analytics,
-      skillStats: { vocab: { answered: 5, correct: 4 } },
-      diagnosticHistory: [{ id: 'diagnostic-result' }],
-      diagnosticAttempt: 4,
-      myList: ['word'],
-      myGrammarList: ['grammar'],
-      kotenWordList: ['koten-word'],
-      kotenGrammarList: ['koten-grammar'],
-      kotenCultureList: ['koten-culture'],
-      vocabHistory: ['history'],
-      ...sentinel,
-    })
-
-    useStore.getState().clearLearningData('analytics')
-    assert.equal(useStore.getState().learningAnalytics.scored, 0)
-    assert.deepEqual(useStore.getState().skillStats, {})
-
-    useStore.getState().clearLearningData('diagnostic')
-    assert.deepEqual(useStore.getState().diagnosticHistory, [])
-    assert.equal(useStore.getState().diagnosticAttempt, 0)
-
-    useStore.getState().clearLearningData('saved')
-    for (const key of ['myList', 'myGrammarList', 'kotenWordList', 'kotenGrammarList', 'kotenCultureList']) {
-      assert.deepEqual(useStore.getState()[key], [])
-    }
-
-    useStore.getState().clearLearningData('vocabHistory')
-    assert.deepEqual(useStore.getState().vocabHistory, [])
-    for (const key of Object.keys(sentinel)) assert.deepEqual(useStore.getState()[key], sentinel[key])
-  } finally {
-    useStore.setState(restore)
-  }
+  assert.equal(APP_MENU_ITEMS.length, 25)
+  assert.equal(APP_MENU_SCREEN_DESTINATIONS.length, 22)
+  assert.deepEqual(
+    APP_MENU_SCREEN_DESTINATIONS.filter((screen) => !publicScreens.has(screen)),
+    [],
+  )
+  assert.equal(new Set(APP_MENU_SCREEN_DESTINATIONS).size, APP_MENU_SCREEN_DESTINATIONS.length)
+  assert.deepEqual(APP_MENU_ACTIONS, ['settings', 'account', 'reset'])
+  assert.match(menu, /data-reset-select-all/)
+  assert.match(menu, /data-reset-group=\{group\.id\}/)
+  assert.doesNotMatch(menu, /DataManagementPanel|data-data-management-panel|clearLearningData/)
 })

@@ -12,6 +12,18 @@ import {
 } from '../src/lib/explanationDedup.js'
 import { analyzeReadingSentence } from '../src/lib/reading-grammar.js'
 import { buildGrammarInstructorExplanation } from '../src/lib/instructorExplanations.js'
+import {
+  APP_MENU_GROUPS,
+  APP_MENU_ITEMS,
+  APP_MENU_SCREEN_DESTINATIONS,
+} from '../src/lib/appMenu.js'
+import { PERSISTED_PROGRESS_FIELDS } from '../src/lib/progressCode.js'
+import {
+  ALL_PROGRESS_RESET_GROUP_IDS,
+  PROGRESS_RESET_GROUPS,
+  RESET_PRESERVED_PROGRESS_FIELDS,
+  RESETTABLE_PROGRESS_FIELDS,
+} from '../src/lib/progressReset.js'
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const sourceRoot = path.join(projectRoot, 'src')
@@ -64,7 +76,9 @@ const [
   shellSource,
   bottomNavSource,
   menuSource,
+  learningAdvisorSource,
   progressBackupSource,
+  storeSource,
 ] = await Promise.all([
   readProjectFile('src/components/InstructorExplanation.jsx'),
   readProjectFile('src/screens/GrammarQuiz.jsx'),
@@ -73,7 +87,9 @@ const [
   readProjectFile('src/components/AppShell.jsx'),
   readProjectFile('src/components/BottomNav.jsx'),
   readProjectFile('src/components/SpeechSettings.jsx'),
+  readProjectFile('src/components/LearningAdvisor.jsx'),
   readProjectFile('src/components/ProgressBackup.jsx'),
+  readProjectFile('src/store/useStore.js'),
 ])
 
 for (const label of ['根拠', '消去法', '考え方']) {
@@ -100,6 +116,64 @@ if (!menuSource.includes('requiresProgressSaveConfirmation')) errors.push('保�
 if (!progressBackupSource.includes('selectProgressState')) errors.push('QR／コードが共通永続スライスを使っていない')
 if (!progressBackupSource.includes('QRCodeCanvas')) errors.push('QR出力がない')
 if (!progressBackupSource.includes('コードをコピー')) errors.push('進捗コード出力がない')
+
+const expectedMenuGroups = ['learn', 'tools', 'records', 'manage']
+const actualMenuGroups = APP_MENU_GROUPS.map((group) => group.id)
+if (actualMenuGroups.join(',') !== expectedMenuGroups.join(',')) {
+  errors.push(`統一メニューの分類が不一致: ${actualMenuGroups.join(',')}`)
+}
+if (APP_MENU_ITEMS.length !== 25) errors.push(`統一メニューが全25項目ではない: ${APP_MENU_ITEMS.length}`)
+if (new Set(APP_MENU_SCREEN_DESTINATIONS).size !== APP_MENU_SCREEN_DESTINATIONS.length) {
+  errors.push('統一メニューに重複した画面入口がある')
+}
+if (!menuSource.includes('data-menu-group-list')) errors.push('簡潔な統一メニューにdata-menu-group-listがない')
+if (!learningAdvisorSource.includes('data-menu-learning-overview')) {
+  errors.push('簡潔な統一メニューにdata-menu-learning-overviewがない')
+}
+for (const obsolete of [
+  'data-menu-group-count',
+  'data-menu-hub-intro',
+  'data-menu-hub-footer',
+  'DataManagementPanel',
+  'data-data-management-panel',
+]) {
+  if (menuSource.includes(obsolete)) errors.push(`統一メニューに廃止した重複・補足UI「${obsolete}」がある`)
+}
+if (storeSource.includes('clearLearningData')) {
+  errors.push('履歴リセットと重複する旧clearLearningData処理がある')
+}
+
+const resetGroupIds = PROGRESS_RESET_GROUPS.map((group) => group.id)
+const coveredProgressFields = [
+  ...RESETTABLE_PROGRESS_FIELDS,
+  ...RESET_PRESERVED_PROGRESS_FIELDS,
+]
+if (resetGroupIds.join(',') !== ALL_PROGRESS_RESET_GROUP_IDS.join(',')) {
+  errors.push('履歴リセットの表示順と分類ID契約が不一致')
+}
+if (PROGRESS_RESET_GROUPS.length !== 6) {
+  errors.push(`履歴リセットが6分類ではない: ${PROGRESS_RESET_GROUPS.length}`)
+}
+if (RESETTABLE_PROGRESS_FIELDS.length !== 36 || RESET_PRESERVED_PROGRESS_FIELDS.length !== 3) {
+  errors.push(`履歴リセットの対象数が不一致: 対象${RESETTABLE_PROGRESS_FIELDS.length}・保持${RESET_PRESERVED_PROGRESS_FIELDS.length}`)
+}
+if (new Set(coveredProgressFields).size !== coveredProgressFields.length) {
+  errors.push('履歴リセットの保存項目が二重分類されている')
+}
+if (
+  [...coveredProgressFields].sort().join(',')
+  !== [...PERSISTED_PROGRESS_FIELDS].sort().join(',')
+) {
+  errors.push('全保存項目がリセット対象または保持対象へ一意に分類されていない')
+}
+for (const marker of [
+  'data-reset-select-all',
+  'data-reset-selection-list',
+  'data-reset-group={group.id}',
+  'data-reset-preserved-data',
+]) {
+  if (!menuSource.includes(marker)) errors.push(`履歴リセット画面に${marker}がない`)
+}
 
 let sentenceCount = 0
 let phraseCount = 0
@@ -163,5 +237,5 @@ if (errors.length) {
 }
 
 console.log(
-  `学習者向け品質契約: 違反0 / 長文${PASSAGES.length}本・${sentenceCount}文・${phraseCount}フレーズ・${blockCount}ブロック / 長い一文${longSentenceCount}件・${longStepCount}フレーズ / 文法${GRAMMAR.length}問・誤答${grammarChoicePaths}経路`,
+  `学習者向け品質契約: 違反0 / 統一メニュー${APP_MENU_ITEMS.length}項目 / 履歴リセット${PROGRESS_RESET_GROUPS.length}分類・保存${PERSISTED_PROGRESS_FIELDS.length}項目 / 長文${PASSAGES.length}本・${sentenceCount}文・${phraseCount}フレーズ・${blockCount}ブロック / 長い一文${longSentenceCount}件・${longStepCount}フレーズ / 文法${GRAMMAR.length}問・誤答${grammarChoicePaths}経路`,
 )

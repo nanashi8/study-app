@@ -4,13 +4,24 @@ import { readFileSync } from 'node:fs'
 import LZString from 'lz-string'
 
 import {
+  createInitialLearningState,
   localDayIndexAt,
   migratePersistedState,
   progressStateFromPayload,
   todayIndex,
   useStore,
 } from '../src/store/useStore.js'
-import { progressStateFromCloud } from '../src/lib/cloudSync.js'
+import {
+  progressStateFromCloud,
+  resetProgressEverywhere,
+} from '../src/lib/cloudSync.js'
+import {
+  ALL_PROGRESS_RESET_GROUP_IDS,
+  PROGRESS_RESET_GROUPS,
+  RESET_PRESERVED_PROGRESS_FIELDS,
+  RESETTABLE_PROGRESS_FIELDS,
+  progressResetFieldsForGroups,
+} from '../src/lib/progressReset.js'
 import { buildDeck, buildPhraseDeck, overallProgress } from '../src/lib/session.js'
 import { ALL_WORDS, getWord } from '../src/data/vocab.js'
 import { PHONETIC_OVERRIDES } from '../src/data/phonetic-overrides.js'
@@ -284,37 +295,159 @@ test('学習記録の全永続項目は端末保存・画面発行・クラウ�
   assert.match(storeSource, /partialize:\s*selectProgressState/)
 })
 
-test('学習状況のリセットは全学習履歴を消し、端末設定とメニュー配置を保つ', () => {
+test('履歴リセットの6分類は全39永続項目を漏れなく一度だけ扱う', () => {
+  const groupIds = PROGRESS_RESET_GROUPS.map((group) => group.id)
+  const combinedFields = [
+    ...RESETTABLE_PROGRESS_FIELDS,
+    ...RESET_PRESERVED_PROGRESS_FIELDS,
+  ]
+
+  assert.deepEqual(groupIds, ALL_PROGRESS_RESET_GROUP_IDS)
+  assert.equal(new Set(groupIds).size, groupIds.length, '分類IDを重複させない')
+  assert.equal(PERSISTED_PROGRESS_FIELDS.length, 39)
+  assert.equal(RESETTABLE_PROGRESS_FIELDS.length, 36)
+  assert.equal(RESET_PRESERVED_PROGRESS_FIELDS.length, 3)
+  assert.equal(new Set(combinedFields).size, combinedFields.length, '保存項目を二重分類しない')
+  assert.deepEqual(
+    [...combinedFields].sort(),
+    [...PERSISTED_PROGRESS_FIELDS].sort(),
+    '全保存項目をリセット対象または保持対象のどちらか一方へ分類する',
+  )
+  assert.deepEqual(
+    progressResetFieldsForGroups(['dictionary', 'dictionary', 'unknown']),
+    ['vocabHistory'],
+    '重複・未知の選択肢を実行対象へ混ぜない',
+  )
+})
+
+test('部分リセットは選択分類だけを初期化し、他の保存項目と進行中セッションを保つ', () => {
   const original = useStore.getState()
+  const fresh = createInitialLearningState()
+  const selectedGroups = ['dictionary', 'results']
+  const selectedFields = new Set(progressResetFieldsForGroups(selectedGroups))
+  const quizSession = { ids: ['keep-current-session'], index: 2 }
+  const dirtyProgress = Object.fromEntries(PERSISTED_PROGRESS_FIELDS.map((field) => {
+    const initial = fresh[field]
+    if (Array.isArray(initial)) return [field, [`keep-${field}`]]
+    if (initial === null) return [field, `keep-${field}`]
+    if (typeof initial === 'number') return [field, initial + 123]
+    if (typeof initial === 'string') return [field, `keep-${field}`]
+    if (typeof initial === 'boolean') return [field, !initial]
+    return [field, { keepField: field }]
+  }))
+
+  try {
+    useStore.setState({ ...dirtyProgress, quizSession })
+    useStore.getState().resetProgress(selectedGroups)
+    const reset = useStore.getState()
+
+    for (const field of PERSISTED_PROGRESS_FIELDS) {
+      assert.deepEqual(
+        reset[field],
+        selectedFields.has(field) ? fresh[field] : dirtyProgress[field],
+        `${field} は選択状態どおりに扱う`,
+      )
+    }
+    assert.deepEqual(reset.quizSession, quizSession)
+  } finally {
+    useStore.setState(original, true)
+  }
+})
+
+test('全選択リセットは全永続項目を監査し、端末設定とメニュー配置だけを保つ', () => {
+  const original = useStore.getState()
+  const fresh = createInitialLearningState()
   const settings = { ...original.settings, dailyGoal: 50, ttsRate: 1.1 }
   const portalOrder = [...original.portalOrder].reverse()
   const portalHidden = portalOrder.slice(0, 1)
+  const preserved = new Set(RESET_PRESERVED_PROGRESS_FIELDS)
+
+  assert.deepEqual(
+    [...PERSISTED_PROGRESS_FIELDS].sort(),
+    Object.keys(fresh).sort(),
+    '初期状態は全永続項目を過不足なく定義する',
+  )
+
+  const dirtyProgress = Object.fromEntries(PERSISTED_PROGRESS_FIELDS.map((field) => {
+    if (field === 'settings') return [field, settings]
+    if (field === 'portalOrder') return [field, portalOrder]
+    if (field === 'portalHidden') return [field, portalHidden]
+    const initial = fresh[field]
+    if (Array.isArray(initial)) return [field, ['reset-sentinel']]
+    if (initial === null) return [field, 123]
+    if (typeof initial === 'number') return [field, 123]
+    if (typeof initial === 'string') return [field, 'reset-sentinel']
+    return [field, { resetSentinel: true }]
+  }))
 
   try {
     useStore.setState({
-      srs: { resetWord: entry() },
-      etymologySrs: { resetRoot: entry() },
-      myList: ['resetWord'],
-      diagnosticHistory: [{ id: 'reset-diagnostic' }],
-      learningAnalytics: { ...original.learningAnalytics, inputs: 12, scored: 12, correct: 8 },
-      stats: { ...original.stats, xp: 321, answered: 12, correct: 8 },
-      settings,
-      portalOrder,
-      portalHidden,
+      ...dirtyProgress,
+      quizSession: { ids: ['reset-sentinel'] },
     })
 
     useStore.getState().resetProgress()
     const reset = useStore.getState()
 
-    assert.deepEqual(reset.srs, {})
-    assert.deepEqual(reset.etymologySrs, {})
-    assert.deepEqual(reset.myList, [])
-    assert.deepEqual(reset.diagnosticHistory, [])
-    assert.equal(reset.learningAnalytics.inputs, 0)
-    assert.equal(reset.stats.xp, 0)
-    assert.deepEqual(reset.settings, settings)
-    assert.deepEqual(reset.portalOrder, portalOrder)
-    assert.deepEqual(reset.portalHidden, portalHidden)
+    for (const field of PERSISTED_PROGRESS_FIELDS) {
+      assert.deepEqual(
+        reset[field],
+        preserved.has(field) ? dirtyProgress[field] : fresh[field],
+        `${field} のリセット契約`,
+      )
+    }
+    assert.equal(reset.quizSession, null)
+  } finally {
+    useStore.setState(original, true)
+  }
+})
+
+test('ログイン中の部分リセットは非選択データを保った全状態を即時保存する', async () => {
+  const original = useStore.getState()
+  const writes = []
+  const keptSrs = { keepWord: entry(12) }
+  const keptList = ['keepWord']
+  try {
+    useStore.setState({
+      srs: keptSrs,
+      myList: keptList,
+      vocabHistory: ['clearWord'],
+    })
+    const result = await resetProgressEverywhere(
+      { uid: 'student-partial', email: 'partial@example.test' },
+      ['dictionary'],
+      async (uid, email) => {
+        writes.push({ uid, email, progress: selectProgressState(useStore.getState()) })
+      },
+    )
+
+    assert.deepEqual(result, { scope: 'device-and-cloud' })
+    assert.equal(writes.length, 1)
+    assert.deepEqual(writes[0].progress.vocabHistory, [])
+    assert.deepEqual(writes[0].progress.srs, keptSrs)
+    assert.deepEqual(writes[0].progress.myList, keptList)
+  } finally {
+    useStore.setState(original, true)
+  }
+})
+
+test('ログイン中のリセットは端末状態を先に初期化し、遅延せずクラウドへ保存する', async () => {
+  const original = useStore.getState()
+  const writes = []
+  try {
+    useStore.setState({ srs: { resetWord: entry() }, myList: ['resetWord'] })
+    const result = await resetProgressEverywhere(
+      { uid: 'student-1', email: 'student@example.test' },
+      async (uid, email) => {
+        writes.push({ uid, email, progress: selectProgressState(useStore.getState()) })
+      },
+    )
+
+    assert.deepEqual(result, { scope: 'device-and-cloud' })
+    assert.equal(writes.length, 1)
+    assert.equal(writes[0].uid, 'student-1')
+    assert.deepEqual(writes[0].progress.srs, {})
+    assert.deepEqual(writes[0].progress.myList, [])
   } finally {
     useStore.setState(original, true)
   }
