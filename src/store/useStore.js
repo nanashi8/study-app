@@ -9,6 +9,7 @@ import { battleProgression, clampPos } from '../lib/adaptive.js'
 import {
   createLearningAnalytics,
   learningSkillForItem,
+  normalizeLearningAnalytics,
   recordLearningEvent,
   recordLearningEvents,
 } from '../lib/learningAnalytics.js'
@@ -106,14 +107,22 @@ export function localDayIndexAt(
 
 const today = () => localDayIndexAt()
 
-// 保存済みのポータル並び順を正規化：既知のidだけ残し、未登場の新コンテンツは
-// 既定の位置（末尾寄り）で補う。データ追加後も保存値が壊れないようにする。
+// 保存済みのポータル並び順を正規化：既知のidだけ残し、未登場の新コンテンツを補う。
+// 古典／漢文の分離追加時は、既存項目どうしの順序を変えず漢文だけを古典の直後へ置く。
 export function normalizeOrder(order) {
   const known = new Set(DEFAULT_CONTENT_ORDER)
   const seen = new Set()
   const kept = (Array.isArray(order) ? order : []).filter((id) => known.has(id) && !seen.has(id) && seen.add(id))
   const missing = DEFAULT_CONTENT_ORDER.filter((id) => !seen.has(id))
-  return [...kept, ...missing]
+  const normalized = [...kept]
+  for (const id of missing) {
+    if (id === 'kanbun-quest' && normalized.includes('koten-quest')) {
+      normalized.splice(normalized.indexOf('koten-quest') + 1, 0, id)
+    } else {
+      normalized.push(id)
+    }
+  }
+  return normalized
 }
 
 export function normalizeHidden(hidden) {
@@ -157,6 +166,10 @@ export const createInitialLearningState = () => ({
   kotenGrammarSrs: {}, // 古典文法の grammarId -> { box, ... }
   kotenCultureSrs: {}, // 古典常識の cultureId -> { box, ... }
   kotenInterpretationSrs: {}, // 古典短文の questionId -> { box, ... }
+  kanbunVocabSrs: {}, // 漢語の itemId -> { box, ... }
+  kanbunGrammarSrs: {}, // 漢文法の itemId -> { box, ... }
+  kanbunCultureSrs: {}, // 漢文常識の itemId -> { box, ... }
+  kanbunKundokuSrs: {}, // 返り点・訓読ドリルの exerciseId -> { box, ... }
   myList: [], // [wordId]
   vocabHistory: [], // 最近検索・参照・マイ単語登録した英単語ID（新しい順）
   myGrammarList: [], // [writingGrammarId] 英作文で保存した文法カード
@@ -165,6 +178,9 @@ export const createInitialLearningState = () => ({
   kotenWordList: [], // [古文単語id] 登録単語
   kotenGrammarList: [], // [古典文法id] 登録文法
   kotenCultureList: [], // [古典常識id] 登録常識
+  kanbunVocabList: [], // [漢語id] 登録語
+  kanbunGrammarList: [], // [漢文法id] 登録文法
+  kanbunCultureList: [], // [漢文常識id] 登録常識
   readingsDone: [], // [passageId | literatureId] 読了した長文・名作朗読
   mathDone: [], // [problemId] クリアした数学問題
   mathMastery: {}, // unitId -> 最高正答率(0-100) ＝ 理解度
@@ -215,17 +231,64 @@ function applyReview(srs, stats, wordId, result, timestamp = Date.now()) {
   const def = RESULTS[result] ?? RESULTS.unknown
   const day = localDayIndexAt(timestamp)
   const prev = srs[wordId] ?? { box: 0, correct: 0, wrong: 0, due: day, last: null }
+  const activity = result === 'remembered' || result === 'forgot' ? 'memory' : 'test'
+  const remembered = result === 'correct' || result === 'remembered'
+  const memory = {
+    passes: Math.max(0, Number(prev.memory?.passes) || 0),
+    remembered: Math.max(0, Number(prev.memory?.remembered) || 0),
+    forgot: Math.max(0, Number(prev.memory?.forgot) || 0),
+    lastAt: Number.isFinite(prev.memory?.lastAt) ? prev.memory.lastAt : null,
+    lastHour: Number.isInteger(prev.memory?.lastHour) ? prev.memory.lastHour : null,
+    lastJudgment: ['remembered', 'forgot'].includes(prev.memory?.lastJudgment)
+      ? prev.memory.lastJudgment
+      : null,
+  }
+  const test = {
+    attempts: Math.max(0, Number(prev.test?.attempts) || 0),
+    correct: Math.max(0, Number(prev.test?.correct) || 0),
+    wrong: Math.max(0, Number(prev.test?.wrong) || 0),
+    unknown: Math.max(0, Number(prev.test?.unknown) || 0),
+    lastAt: Number.isFinite(prev.test?.lastAt) ? prev.test.lastAt : null,
+    lastResult: ['correct', 'wrong', 'unknown'].includes(prev.test?.lastResult)
+      ? prev.test.lastResult
+      : null,
+  }
   let box
   if (def.box === 'reset') box = 0
-  else box = Math.max(0, Math.min(MAX_BOX, prev.box + def.box))
+  else box = Math.max(0, Math.min(MAX_BOX, (Number(prev.box) || 0) + def.box))
+
+  const nextMemory = activity === 'memory'
+    ? {
+        passes: memory.passes + 1,
+        remembered: memory.remembered + (remembered ? 1 : 0),
+        forgot: memory.forgot + (remembered ? 0 : 1),
+        lastAt: timestamp,
+        lastHour: new Date(timestamp).getHours(),
+        lastJudgment: remembered ? 'remembered' : 'forgot',
+      }
+    : memory
+  const nextTest = activity === 'test'
+    ? {
+        attempts: test.attempts + 1,
+        correct: test.correct + (result === 'correct' ? 1 : 0),
+        wrong: test.wrong + (result === 'wrong' ? 1 : 0),
+        unknown: test.unknown + (result === 'unknown' ? 1 : 0),
+        lastAt: timestamp,
+        lastResult: ['correct', 'wrong', 'unknown'].includes(result) ? result : 'unknown',
+      }
+    : test
 
   const next = {
+    ...prev,
     box,
-    correct: prev.correct + (result === 'correct' || result === 'remembered' ? 1 : 0),
-    wrong: prev.wrong + (result === 'wrong' || result === 'unknown' || result === 'forgot' ? 1 : 0),
+    correct: Math.max(0, Number(prev.correct) || 0) + (remembered ? 1 : 0),
+    wrong: Math.max(0, Number(prev.wrong) || 0) + (remembered ? 0 : 1),
     due: day + INTERVALS[box],
     last: day,
     lastAt: timestamp,
+    firstAt: Number.isFinite(prev.firstAt) ? prev.firstAt : timestamp,
+    memory: nextMemory,
+    test: nextTest,
   }
 
   // ── stats / streak / 今日のカウント ──
@@ -237,7 +300,7 @@ function applyReview(srs, stats, wordId, result, timestamp = Date.now()) {
   }
   s.todayCount += 1
   s.answered += 1
-  if (result === 'correct' || result === 'remembered') s.correct += 1
+  if (remembered) s.correct += 1
   return {
     srs: { ...srs, [wordId]: next },
     stats: s,
@@ -248,6 +311,10 @@ function applyReview(srs, stats, wordId, result, timestamp = Date.now()) {
         ? Math.max(0, (timestamp - prev.lastAt) / 3600000)
         : null,
       repetitions: next.correct + next.wrong,
+      itemId: wordId,
+      activity,
+      memoryPasses: nextMemory.passes,
+      memoryHour: nextMemory.lastHour,
     },
   }
 }
@@ -276,6 +343,7 @@ export function migratePersistedState(persistedState) {
   state.portalHidden = normalizeHidden(state.portalHidden)
   state.vocabHistory = normalizeVocabHistory(state.vocabHistory)
   state.learningNotebook = normalizeLearningNotebook(state.learningNotebook)
+  state.learningAnalytics = normalizeLearningAnalytics(state.learningAnalytics)
   state.stats = { ...freshStats(), ...normalizeLegacyStats(state.stats) }
   state.battleStars = normalizeBattleStars(state.battleStars)
   state.battleXpSpent = normalizeLegacyXp(state.battleXpSpent)
@@ -324,6 +392,10 @@ export function progressStateFromPayload(payload = {}) {
     kotenGrammarSrs: payload.kotenGrammarSrs ?? {},
     kotenCultureSrs: payload.kotenCultureSrs ?? {},
     kotenInterpretationSrs: payload.kotenInterpretationSrs ?? {},
+    kanbunVocabSrs: payload.kanbunVocabSrs ?? {},
+    kanbunGrammarSrs: payload.kanbunGrammarSrs ?? {},
+    kanbunCultureSrs: payload.kanbunCultureSrs ?? {},
+    kanbunKundokuSrs: payload.kanbunKundokuSrs ?? {},
     myList: payload.myList ?? [],
     vocabHistory: normalizeVocabHistory(payload.vocabHistory),
     myGrammarList: payload.myGrammarList ?? [],
@@ -332,11 +404,14 @@ export function progressStateFromPayload(payload = {}) {
     kotenWordList: payload.kotenWordList ?? [],
     kotenGrammarList: payload.kotenGrammarList ?? [],
     kotenCultureList: payload.kotenCultureList ?? [],
+    kanbunVocabList: payload.kanbunVocabList ?? [],
+    kanbunGrammarList: payload.kanbunGrammarList ?? [],
+    kanbunCultureList: payload.kanbunCultureList ?? [],
     readingsDone: payload.readingsDone ?? [],
     mathDone: payload.mathDone ?? [],
     mathMastery: payload.mathMastery ?? {},
     skillStats: payload.skillStats ?? {},
-    learningAnalytics: payload.learningAnalytics ?? createLearningAnalytics(),
+    learningAnalytics: normalizeLearningAnalytics(payload.learningAnalytics),
     diagnosticHistory: payload.diagnosticHistory ?? [],
     diagnosticAttempt: payload.diagnosticAttempt ?? 0,
     diagnosticSeed: payload.diagnosticSeed ?? null,
@@ -601,6 +676,68 @@ export const useStore = create(
                 inputs: 1,
                 scored: 1,
                 correct: result === 'correct' || result === 'remembered' ? 1 : 0,
+                ...reviewMeta,
+              },
+              timestamp,
+            ),
+          }
+        }),
+
+      // 漢文の三主分野は保存領域を分離し、同じ間隔反復ロジックで暗記とテストをつなぐ。
+      reviewKanbun: (domain, itemId, result) =>
+        set((st) => {
+          const config = {
+            vocab: { field: 'kanbunVocabSrs', skill: 'kanbun_vocab' },
+            grammar: { field: 'kanbunGrammarSrs', skill: 'kanbun_grammar' },
+            culture: { field: 'kanbunCultureSrs', skill: 'kanbun_culture' },
+          }[domain]
+          if (!config || !itemId) return {}
+          const timestamp = Date.now()
+          const { srs, stats, reviewMeta } = applyReview(
+            st[config.field],
+            st.stats,
+            itemId,
+            result,
+            timestamp,
+          )
+          return {
+            [config.field]: srs,
+            stats,
+            learningAnalytics: recordLearningEvent(
+              st.learningAnalytics,
+              {
+                skill: config.skill,
+                inputs: 1,
+                scored: 1,
+                correct: result === 'correct' || result === 'remembered' ? 1 : 0,
+                ...reviewMeta,
+              },
+              timestamp,
+            ),
+          }
+        }),
+
+      reviewKanbunKundoku: (exerciseId, result) =>
+        set((st) => {
+          if (!exerciseId) return {}
+          const timestamp = Date.now()
+          const { srs, stats, reviewMeta } = applyReview(
+            st.kanbunKundokuSrs,
+            st.stats,
+            exerciseId,
+            result,
+            timestamp,
+          )
+          return {
+            kanbunKundokuSrs: srs,
+            stats,
+            learningAnalytics: recordLearningEvent(
+              st.learningAnalytics,
+              {
+                skill: 'kanbun_kundoku',
+                inputs: 1,
+                scored: 1,
+                correct: result === 'correct' ? 1 : 0,
                 ...reviewMeta,
               },
               timestamp,
@@ -885,6 +1022,38 @@ export const useStore = create(
             ...ids.filter((id) => !st.kotenCultureList.includes(id)),
           ],
         })),
+
+      toggleKanbunList: (domain, itemId) =>
+        set((st) => {
+          const field = {
+            vocab: 'kanbunVocabList',
+            grammar: 'kanbunGrammarList',
+            culture: 'kanbunCultureList',
+          }[domain]
+          if (!field || !itemId) return {}
+          const saved = st[field].includes(itemId)
+          return {
+            [field]: saved
+              ? st[field].filter((id) => id !== itemId)
+              : [...st[field], itemId],
+          }
+        }),
+
+      addManyToKanbunList: (domain, ids) =>
+        set((st) => {
+          const field = {
+            vocab: 'kanbunVocabList',
+            grammar: 'kanbunGrammarList',
+            culture: 'kanbunCultureList',
+          }[domain]
+          if (!field || !Array.isArray(ids)) return {}
+          return {
+            [field]: [
+              ...st[field],
+              ...ids.filter((id) => !st[field].includes(id)),
+            ],
+          }
+        }),
 
       markReadingDone: (id) =>
         set((st) =>
@@ -1213,7 +1382,7 @@ export const useStore = create(
     }),
     {
       name: 'eigo-quest',
-      version: 7,
+      version: 8,
       migrate: migratePersistedState,
       // ナビゲーション系は保存しない。
       partialize: selectProgressState,

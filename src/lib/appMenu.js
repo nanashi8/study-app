@@ -36,6 +36,7 @@ export const APP_MENU_GROUPS = Object.freeze([
       screenItem('mathMap', '数学アプリ', '単元マップと理解度'),
       screenItem('vocabSearch', '英和辞書', '意味・語法・語源・参照履歴'),
       screenItem('kotenList', '古典アプリ', '古典単語・文法・常識・短文'),
+      screenItem('kanbunHome', '漢文アプリ', '漢語・漢文法・漢文常識・返り点'),
       screenItem('literatureLibrary', '名作に親しむ', '英語・古典・漢文の朗読'),
     ]),
     section('english', '英語', [
@@ -65,6 +66,7 @@ export const APP_MENU_GROUPS = Object.freeze([
       screenItem('myLearning', '全学習索引', '学習済み項目を分野横断で確認'),
       screenItem('myGrammar', 'マイ文法', '保存した文法を復習'),
       screenItem('kotenSaved', '古典の登録リスト', '古典単語・文法・常識を管理'),
+      screenItem('kanbunSaved', '漢文の登録リスト', '漢語・漢文法・漢文常識を管理'),
       screenItem('progress', '学習記録・バックアップ', '成績、級別進捗、QR・コード'),
     ]),
   ]),

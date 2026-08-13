@@ -109,6 +109,16 @@ const KotenCultureQuizScreen = lazyScreen(
   'KotenCultureQuizScreen',
 )
 const KotenSavedScreen = lazyScreen(() => import('./screens/KotenSaved.jsx'), 'KotenSavedScreen')
+const KanbunHomeScreen = lazyScreen(() => import('./screens/KanbunHome.jsx'), 'KanbunHomeScreen')
+const KanbunCatalogScreen = lazyScreen(() => import('./screens/KanbunCatalog.jsx'), 'KanbunCatalogScreen')
+const KanbunStudyScreen = lazyScreen(() => import('./screens/KanbunStudy.jsx'), 'KanbunStudyScreen')
+const KanbunQuizScreen = lazyScreen(() => import('./screens/KanbunQuiz.jsx'), 'KanbunQuizScreen')
+const KanbunKundokuScreen = lazyScreen(() => import('./screens/KanbunKundoku.jsx'), 'KanbunKundokuScreen')
+const KanbunKundokuQuizScreen = lazyScreen(
+  () => import('./screens/KanbunKundokuQuiz.jsx'),
+  'KanbunKundokuQuizScreen',
+)
+const KanbunSavedScreen = lazyScreen(() => import('./screens/KanbunSaved.jsx'), 'KanbunSavedScreen')
 
 const SCREENS = {
   portal: PortalScreen,
@@ -170,6 +180,13 @@ const SCREENS = {
   kotenCultureStudy: KotenCultureStudyScreen,
   kotenCultureQuiz: KotenCultureQuizScreen,
   kotenSaved: KotenSavedScreen,
+  kanbunHome: KanbunHomeScreen,
+  kanbunCatalog: KanbunCatalogScreen,
+  kanbunStudy: KanbunStudyScreen,
+  kanbunQuiz: KanbunQuizScreen,
+  kanbunKundoku: KanbunKundokuScreen,
+  kanbunKundokuQuiz: KanbunKundokuQuizScreen,
+  kanbunSaved: KanbunSavedScreen,
 }
 
 // 全公開画面はAppShell上部の戻る・統一メニュー入口を共有する。

@@ -84,12 +84,19 @@ export function MyLearningScreen() {
     kotenGrammarSrs: current.kotenGrammarSrs,
     kotenCultureSrs: current.kotenCultureSrs,
     kotenInterpretationSrs: current.kotenInterpretationSrs,
+    kanbunVocabSrs: current.kanbunVocabSrs,
+    kanbunGrammarSrs: current.kanbunGrammarSrs,
+    kanbunCultureSrs: current.kanbunCultureSrs,
+    kanbunKundokuSrs: current.kanbunKundokuSrs,
     myList: current.myList,
     myGrammarList: current.myGrammarList,
     learningNotebook: current.learningNotebook,
     kotenWordList: current.kotenWordList,
     kotenGrammarList: current.kotenGrammarList,
     kotenCultureList: current.kotenCultureList,
+    kanbunVocabList: current.kanbunVocabList,
+    kanbunGrammarList: current.kanbunGrammarList,
+    kanbunCultureList: current.kanbunCultureList,
     vocabHistory: current.vocabHistory,
     readingsDone: current.readingsDone,
     writingProgress: current.writingProgress,
@@ -114,12 +121,20 @@ export function MyLearningScreen() {
   const savedKoten = state.kotenWordList.length
     + state.kotenGrammarList.length
     + state.kotenCultureList.length
+  const kanbunLearned = Object.keys(state.kanbunVocabSrs).length
+    + Object.keys(state.kanbunGrammarSrs).length
+    + Object.keys(state.kanbunCultureSrs).length
+    + Object.keys(state.kanbunKundokuSrs).length
+  const savedKanbun = state.kanbunVocabList.length
+    + state.kanbunGrammarList.length
+    + state.kanbunCultureList.length
   const savedNotebook = notebookStoredSavedCount(state)
   const writingCompleted = Object.values(state.writingProgress)
     .filter((entry) => (entry?.completed ?? 0) > 0).length
   const learnedTotal = Object.values(english).reduce((sum, item) => sum + item.ids.length, 0)
     + etymologyIds.length
     + kotenLearned
+    + kanbunLearned
     + state.readingsDone.length
     + writingCompleted
     + state.mathDone.length
@@ -213,6 +228,16 @@ export function MyLearningScreen() {
               action="一覧"
             />
             <CategoryCard
+              label="漢文の登録"
+              note="漢語・漢文法・漢文常識"
+              count={savedKanbun}
+              unit="項目"
+              Icon={BookOpen}
+              tone="bg-rose-50 text-rose-800"
+              onOpen={() => navigate('kanbunSaved')}
+              action="一覧"
+            />
+            <CategoryCard
               label="辞書の参照履歴"
               note="検索・参照・登録した英単語"
               count={state.vocabHistory.length}
@@ -269,6 +294,7 @@ export function MyLearningScreen() {
             <CategoryCard label="英作文" note="完成した演習" count={writingCompleted} unit="題" Icon={Cards} tone="bg-pink-50 text-pink-700" onOpen={() => navigate('writing')} action="書く" />
             <CategoryCard label="数学" note="解答済み問題" count={state.mathDone.length} unit="問" Icon={MathRoot} tone="bg-indigo-50 text-indigo-700" onOpen={() => navigate('mathMap')} action="数学" />
             <CategoryCard label="古典学習" note="単語・文法・常識・読解" count={kotenLearned} unit="項目" Icon={Book} tone="bg-orange-50 text-orange-700" onOpen={() => navigate('kotenList')} action="古典" />
+            <CategoryCard label="漢文学習" note="漢語・文法・常識・返り点" count={kanbunLearned} unit="項目" Icon={BookOpen} tone="bg-rose-50 text-rose-800" onOpen={() => navigate('kanbunHome')} action="漢文" />
           </div>
         </section>
 

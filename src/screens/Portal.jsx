@@ -7,7 +7,7 @@ function ContentTile({ content, onOpen }) {
   const coming = content.status === 'coming'
   return (
     <button
-      onClick={coming ? undefined : onOpen}
+      onClick={coming ? undefined : (event) => onOpen(event)}
       disabled={coming}
       className="relative flex w-full items-center gap-3 rounded-2xl border border-slate-200/70 bg-white p-4 text-left shadow-card active:bg-brand-50 disabled:opacity-60"
     >
@@ -46,6 +46,12 @@ export function PortalScreen() {
     .filter(Boolean)
   const isHidden = (id) => portalHidden.includes(id)
   const visible = ordered.filter((c) => !isHidden(c.id))
+  const openContent = (event, content) => {
+    // 小さい画面で下方の教科を選んでも、遷移先は必ず見出しから始める。
+    const scrollArea = event.currentTarget.closest('.study-app-content')
+    if (scrollArea) scrollArea.scrollTop = 0
+    navigate(content.screen)
+  }
 
   return (
     <div className="min-h-full bg-paper">
@@ -64,7 +70,7 @@ export function PortalScreen() {
             <ContentTile
               key={content.id}
               content={content}
-              onOpen={() => navigate(content.screen)}
+              onOpen={(event) => openContent(event, content)}
             />
           ))
         )}

@@ -63,6 +63,13 @@ test('記録は定義・標本数・評定・図表・個別助言・科学的�
     'data-hourly-analysis-matrix',
     'data-action-plan-table',
     'data-scientific-basis',
+    'data-activity-progress-split',
+    'data-learning-gradebook',
+    'data-forgetting-curve-analysis',
+    'data-24-hour-effect-clock',
+    'data-memory-pass-effect',
+    'data-personalized-prescriptions',
+    'data-random-study-wisdom',
   ]) {
     assert.match(analytics, new RegExp(marker))
   }
@@ -90,7 +97,7 @@ test('統一上部メニューとマイ学習は全教材種類・既存の出�
   assert.ok(APP_MENU_SCREEN_DESTINATIONS.includes('progress'))
   assert.match(learning, /data-my-learning-screen/)
   assert.match(learning, /data-my-learning-english-categories/)
-  for (const label of ['英単語', '熟語・構文', '英文法', 'リスニング', 'ディクテーション', '語源知識', '古典学習']) {
+  for (const label of ['英単語', '熟語・構文', '英文法', 'リスニング', 'ディクテーション', '語源知識', '古典学習', '漢文学習']) {
     assert.match(learning, new RegExp(label))
   }
   for (const type of ['phraseList', 'grammarList', 'listeningList', 'dictationList']) {
@@ -106,9 +113,9 @@ test('統一メニューの全教材・個人機能は公開ルートに存在�
     [...screenMap.matchAll(/^  ([A-Za-z][A-Za-z0-9]*):/gm)].map((match) => match[1]),
   )
 
-  assert.equal(publicScreens.size, 59)
-  assert.equal(APP_MENU_ITEMS.length, 25)
-  assert.equal(APP_MENU_SCREEN_DESTINATIONS.length, 22)
+  assert.equal(publicScreens.size, 66)
+  assert.equal(APP_MENU_ITEMS.length, 27)
+  assert.equal(APP_MENU_SCREEN_DESTINATIONS.length, 24)
   assert.deepEqual(
     APP_MENU_SCREEN_DESTINATIONS.filter((screen) => !publicScreens.has(screen)),
     [],

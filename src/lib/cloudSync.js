@@ -39,6 +39,7 @@ import {
 import { normalizeVocabHistory } from './vocabHistory.js'
 import { normalizeDragonVeinProgress } from './dragonVein.js'
 import { normalizeLearningNotebook } from './learningNotebook.js'
+import { normalizeLearningAnalytics } from './learningAnalytics.js'
 
 const node = (uid) => ref(db, `students/${uid}`)
 
@@ -62,6 +63,10 @@ export function progressStateFromCloud(data = {}, current = useStore.getState())
     kotenGrammarSrs: data.kotenGrammarSrs ?? {},
     kotenCultureSrs: data.kotenCultureSrs ?? {},
     kotenInterpretationSrs: data.kotenInterpretationSrs ?? {},
+    kanbunVocabSrs: data.kanbunVocabSrs ?? {},
+    kanbunGrammarSrs: data.kanbunGrammarSrs ?? {},
+    kanbunCultureSrs: data.kanbunCultureSrs ?? {},
+    kanbunKundokuSrs: data.kanbunKundokuSrs ?? {},
     myList: data.myList ?? [],
     vocabHistory: normalizeVocabHistory(data.vocabHistory ?? current.vocabHistory),
     myGrammarList: data.myGrammarList ?? [],
@@ -73,11 +78,16 @@ export function progressStateFromCloud(data = {}, current = useStore.getState())
     kotenWordList: data.kotenWordList ?? [],
     kotenGrammarList: data.kotenGrammarList ?? [],
     kotenCultureList: data.kotenCultureList ?? [],
+    kanbunVocabList: data.kanbunVocabList ?? [],
+    kanbunGrammarList: data.kanbunGrammarList ?? [],
+    kanbunCultureList: data.kanbunCultureList ?? [],
     readingsDone: data.readingsDone ?? [],
     mathDone: data.mathDone ?? [],
     mathMastery: data.mathMastery ?? {},
     skillStats: data.skillStats ?? {},
-    learningAnalytics: data.learningAnalytics ?? current.learningAnalytics,
+    learningAnalytics: normalizeLearningAnalytics(
+      data.learningAnalytics ?? current.learningAnalytics,
+    ),
     diagnosticHistory: data.diagnosticHistory ?? [],
     diagnosticAttempt: Number.isSafeInteger(data.diagnosticAttempt) && data.diagnosticAttempt >= 0
       ? data.diagnosticAttempt

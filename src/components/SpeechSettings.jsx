@@ -435,6 +435,7 @@ const MENU_ITEM_ICONS = {
   mathMap: MathRoot,
   vocabSearch: Search,
   kotenList: Book,
+  kanbunHome: BookOpen,
   literatureLibrary: BookOpen,
   home: BookOpen,
   vocabLevels: Book,
@@ -452,6 +453,7 @@ const MENU_ITEM_ICONS = {
   myLearning: Bookmark,
   myGrammar: Lightbulb,
   kotenSaved: Book,
+  kanbunSaved: BookOpen,
   progress: Chart,
   settings: Gear,
   account: Home,
@@ -828,6 +830,10 @@ export function SpeechSettingsSheet() {
     kotenGrammarSrs: state.kotenGrammarSrs,
     kotenCultureSrs: state.kotenCultureSrs,
     kotenInterpretationSrs: state.kotenInterpretationSrs,
+    kanbunVocabSrs: state.kanbunVocabSrs,
+    kanbunGrammarSrs: state.kanbunGrammarSrs,
+    kanbunCultureSrs: state.kanbunCultureSrs,
+    kanbunKundokuSrs: state.kanbunKundokuSrs,
     skillStats: state.skillStats,
     learningAnalytics: state.learningAnalytics,
     diagnosticHistory: state.diagnosticHistory,
@@ -854,6 +860,10 @@ export function SpeechSettingsSheet() {
         learningState.kotenGrammarSrs,
         learningState.kotenCultureSrs,
         learningState.kotenInterpretationSrs,
+        learningState.kanbunVocabSrs,
+        learningState.kanbunGrammarSrs,
+        learningState.kanbunCultureSrs,
+        learningState.kanbunKundokuSrs,
       ],
       skillStats: learningState.skillStats,
       diagnosticHistory: learningState.diagnosticHistory,
@@ -999,6 +1009,10 @@ export function SpeechSettingsSheet() {
             kotenGrammarSrs={learningState.kotenGrammarSrs}
             kotenCultureSrs={learningState.kotenCultureSrs}
             kotenInterpretationSrs={learningState.kotenInterpretationSrs}
+            kanbunVocabSrs={learningState.kanbunVocabSrs}
+            kanbunGrammarSrs={learningState.kanbunGrammarSrs}
+            kanbunCultureSrs={learningState.kanbunCultureSrs}
+            kanbunKundokuSrs={learningState.kanbunKundokuSrs}
             skillStats={learningState.skillStats}
             diagnosticHistory={learningState.diagnosticHistory}
             stats={learningState.stats}

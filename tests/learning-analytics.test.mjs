@@ -8,6 +8,11 @@ import {
   learningSkillForItem,
   recordLearningEvent,
 } from '../src/lib/learningAnalytics.js'
+import {
+  buildLearningAnalyticsReport,
+  forgettingCurveForRows,
+  learningLaunchFor,
+} from '../src/lib/learningAnalyticsReport.js'
 import { decodeProgress, encodeProgress } from '../src/lib/progressCode.js'
 import { useStore } from '../src/store/useStore.js'
 
@@ -93,6 +98,59 @@ test('定着分析は短期・長期の割合、得意不得意、効率の高�
   assert.equal(analysis.forgettingRate, 0.25)
 })
 
+test('暗記とテストを分離し、暗記時刻・周回数へ後続テスト成績を帰属する', () => {
+  let analytics = createLearningAnalytics()
+  analytics = recordLearningEvent(
+    analytics,
+    {
+      skill: 'vocab',
+      activity: 'memory',
+      inputs: 1,
+      scored: 1,
+      correct: 1,
+      memoryHour: 8,
+      memoryPasses: 1,
+    },
+    atHour(8),
+  )
+  analytics = recordLearningEvent(
+    analytics,
+    {
+      skill: 'vocab',
+      activity: 'test',
+      inputs: 1,
+      scored: 1,
+      correct: 1,
+      memoryHour: 8,
+      memoryPasses: 1,
+    },
+    atHour(18),
+  )
+  analytics = recordLearningEvent(
+    analytics,
+    {
+      skill: 'vocab',
+      activity: 'test',
+      inputs: 1,
+      scored: 1,
+      correct: 0,
+      memoryHour: 21,
+      memoryPasses: 4,
+    },
+    atHour(22),
+  )
+
+  const analysis = analyzeLearning({ learningAnalytics: analytics })
+  assert.equal(analysis.activity.memory.scored, 1)
+  assert.equal(analysis.activity.memory.correct, 1)
+  assert.equal(analysis.activity.test.scored, 2)
+  assert.equal(analysis.activity.test.correct, 1)
+  assert.equal(analysis.memoryCohortHourly[8].accuracy, 1)
+  assert.equal(analysis.memoryCohortHourly[21].accuracy, 0)
+  assert.equal(analysis.memoryPasses.find((item) => item.id === '1').accuracy, 1)
+  assert.equal(analysis.memoryPasses.find((item) => item.id === '4-5').accuracy, 0)
+})
+
 test('既存SRSだけでも初期推定し、時刻分析は未計測として扱う', () => {
   const analysis = analyzeLearning({
     learningAnalytics: null,
@@ -157,7 +215,106 @@ test('通常の復習操作はSRSと時刻分析を同時に一度だけ更新�
   assert.equal(state.learningAnalytics.intervals.under1h.scored, 1)
 })
 
-test('全13分野の学習操作が対応する記録へ漏れなく反映される', () => {
+test('項目ごとに暗記周回・自己判定・テスト成績を保持する', () => {
+  useStore.setState({
+    srs: {},
+    stats: { xp: 0, streak: 0, day: null, todayCount: 0, answered: 0, correct: 0 },
+    learningAnalytics: createLearningAnalytics(),
+  })
+
+  useStore.getState().review('tracked-item', 'remembered', 'vocab')
+  useStore.getState().review('tracked-item', 'forgot', 'vocab')
+  useStore.getState().review('tracked-item', 'correct', 'vocab')
+  useStore.getState().review('tracked-item', 'unknown', 'vocab')
+  const state = useStore.getState()
+  const entry = state.srs['tracked-item']
+
+  assert.deepEqual(
+    {
+      passes: entry.memory.passes,
+      remembered: entry.memory.remembered,
+      forgot: entry.memory.forgot,
+      lastJudgment: entry.memory.lastJudgment,
+    },
+    { passes: 2, remembered: 1, forgot: 1, lastJudgment: 'forgot' },
+  )
+  assert.deepEqual(
+    {
+      attempts: entry.test.attempts,
+      correct: entry.test.correct,
+      wrong: entry.test.wrong,
+      unknown: entry.test.unknown,
+      lastResult: entry.test.lastResult,
+    },
+    { attempts: 2, correct: 1, wrong: 0, unknown: 1, lastResult: 'unknown' },
+  )
+  assert.ok(Number.isFinite(entry.firstAt))
+  assert.equal(state.learningAnalytics.modes.memory.scored, 2)
+  assert.equal(state.learningAnalytics.modes.test.scored, 2)
+  assert.equal(
+    state.learningAnalytics.memoryCohorts.passes['2'].scored,
+    2,
+  )
+})
+
+test('科目・種類・分野・項目の成績表、忘却曲線、学習導線を全階層で作る', () => {
+  const now = new Date(2026, 6, 28, 18, 0, 0, 0).getTime()
+  const state = {
+    srs: {
+      idm_get_up: {
+        box: 2,
+        correct: 3,
+        wrong: 1,
+        due: 0,
+        lastAt: now - 2 * 86400000,
+        memory: { passes: 3, remembered: 2, forgot: 1, lastAt: now - 3 * 86400000, lastHour: 8, lastJudgment: 'remembered' },
+        test: { attempts: 1, correct: 1, wrong: 0, unknown: 0, lastAt: now - 2 * 86400000, lastResult: 'correct' },
+      },
+      dict_5_01: {
+        box: 0,
+        correct: 0,
+        wrong: 3,
+        due: 0,
+        lastAt: now - 86400000,
+        memory: { passes: 0, remembered: 0, forgot: 0, lastAt: null, lastHour: null, lastJudgment: null },
+        test: { attempts: 3, correct: 0, wrong: 3, unknown: 0, lastAt: now - 86400000, lastResult: 'wrong' },
+      },
+    },
+    etymologySrs: {},
+    kotenSrs: {},
+    kotenGrammarSrs: {},
+    kotenCultureSrs: {},
+    kotenInterpretationSrs: {},
+    mathMastery: { pn: 82 },
+  }
+  const analytics = recordLearningEvent(
+    createLearningAnalytics(),
+    { skill: 'usage', activity: 'test', inputs: 4, scored: 4, correct: 3 },
+    now,
+  )
+  const analysis = analyzeLearning({ learningAnalytics: analytics, srsStores: [state.srs] })
+  const report = buildLearningAnalyticsReport(state, analysis, now)
+
+  assert.ok(report.groups.subject.some((group) => group.id === 'english'))
+  assert.ok(report.groups.subject.some((group) => group.id === 'math'))
+  assert.ok(report.groups.type.some((group) => group.id === 'phrases'))
+  assert.ok(report.groups.field.some((group) => group.id.startsWith('dictation:')))
+  assert.ok(report.groups.item.some((group) => group.id === 'phrases:idm_get_up'))
+  const phrase = report.itemRows.find((row) => row.id === 'idm_get_up')
+  assert.equal(phrase.memoryAttempts, 3)
+  assert.equal(phrase.testAccuracy, 1)
+  assert.equal(phrase.lastJudgment, '覚えた')
+  assert.ok(phrase.predictedRetention > 0 && phrase.predictedRetention < 1)
+  const curve = forgettingCurveForRows([phrase])
+  assert.ok(curve[0].retention > curve.at(-1).retention)
+  assert.deepEqual(
+    learningLaunchFor('phrases', ['idm_get_up'], 'memory').screen,
+    'phraseStudy',
+  )
+  assert.ok(report.prescriptions.some((item) => item.angle === '分野' || item.angle === '種類'))
+})
+
+test('全17分野の学習操作が対応する記録へ漏れなく反映される', () => {
   const original = useStore.getState()
   useStore.setState({
     srs: {},
@@ -166,6 +323,10 @@ test('全13分野の学習操作が対応する記録へ漏れなく反映され
     kotenGrammarSrs: {},
     kotenCultureSrs: {},
     kotenInterpretationSrs: {},
+    kanbunVocabSrs: {},
+    kanbunGrammarSrs: {},
+    kanbunCultureSrs: {},
+    kanbunKundokuSrs: {},
     writingProgress: {},
     mathMastery: {},
     skillStats: {},
@@ -184,6 +345,10 @@ test('全13分野の学習操作が対応する記録へ漏れなく反映され
     useStore.getState().reviewKotenGrammar('audit-koten-grammar', 'remembered')
     useStore.getState().reviewKotenCulture('audit-koten-culture', 'remembered')
     useStore.getState().reviewKotenInterpretation('audit-koten-reading', 'correct')
+    useStore.getState().reviewKanbun('vocab', 'audit-kanbun-vocab', 'remembered')
+    useStore.getState().reviewKanbun('grammar', 'audit-kanbun-grammar', 'remembered')
+    useStore.getState().reviewKanbun('culture', 'audit-kanbun-culture', 'remembered')
+    useStore.getState().reviewKanbunKundoku('audit-kanbun-kundoku', 'correct')
     useStore.getState().recordSkillResult('reading', 3, 4)
     useStore.getState().recordWritingCompletion({
       exerciseId: 'audit-writing',
@@ -205,6 +370,10 @@ test('全13分野の学習操作が対応する記録へ漏れなく反映され
     assert.equal(state.kotenGrammarSrs['audit-koten-grammar'].box, 1)
     assert.equal(state.kotenCultureSrs['audit-koten-culture'].box, 1)
     assert.equal(state.kotenInterpretationSrs['audit-koten-reading'].box, 1)
+    assert.equal(state.kanbunVocabSrs['audit-kanbun-vocab'].box, 1)
+    assert.equal(state.kanbunGrammarSrs['audit-kanbun-grammar'].box, 1)
+    assert.equal(state.kanbunCultureSrs['audit-kanbun-culture'].box, 1)
+    assert.equal(state.kanbunKundokuSrs['audit-kanbun-kundoku'].box, 1)
     assert.equal(state.skillStats.reading.answered, 4)
     assert.equal(state.writingProgress['audit-writing'].completed, 1)
     assert.equal(state.mathMastery['audit-math'], 80)

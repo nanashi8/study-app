@@ -171,6 +171,7 @@ export function ProgressScreen() {
         <RecordSummary stats={stats} progress={prog} analytics={full.learningAnalytics} />
 
         <LearningAnalyticsPanel
+          progressState={full}
           learningAnalytics={full.learningAnalytics}
           srs={srs}
           etymologySrs={full.etymologySrs}
@@ -178,6 +179,10 @@ export function ProgressScreen() {
           kotenGrammarSrs={full.kotenGrammarSrs}
           kotenCultureSrs={full.kotenCultureSrs}
           kotenInterpretationSrs={full.kotenInterpretationSrs}
+          kanbunVocabSrs={full.kanbunVocabSrs}
+          kanbunGrammarSrs={full.kanbunGrammarSrs}
+          kanbunCultureSrs={full.kanbunCultureSrs}
+          kanbunKundokuSrs={full.kanbunKundokuSrs}
           skillStats={full.skillStats}
           diagnosticHistory={full.diagnosticHistory}
           stats={stats}
