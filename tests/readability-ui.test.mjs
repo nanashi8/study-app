@@ -149,7 +149,7 @@ test('終了したゲーム実装は互換用に保持しても、公開ルー�
       .map(([, id, label]) => [id, label]),
     [
       ['restoration', '修復'],
-      ['growth', '調査'],
+      ['growth', '記録'],
       ['friends', '協力者'],
       ['school', '学園'],
     ],
@@ -162,7 +162,8 @@ test('終了したゲーム実装は互換用に保持しても、公開ルー�
   assert.match(screen, /data-game-menu-panel=\{menuSection\.id\}/)
   assert.match(screen, /menuSection\.id === 'restoration'[\s\S]*<DragonVeinRestorationBoard/)
   assert.doesNotMatch(screen, /ChronicleHero/)
-  assert.match(screen, /menuSection\.id === 'growth'[\s\S]*<InvestigationExperienceCard[\s\S]*<DragonVeinProgressSummary/)
+  assert.match(screen, /menuSection\.id === 'growth'[\s\S]*<DragonVeinProgressSummary/)
+  assert.doesNotMatch(screen, /InvestigationExperienceCard|\bXP\b|heroProgress/)
   assert.match(screen, /menuSection\.id === 'friends'[\s\S]*<AfterSchoolBondBoard[\s\S]*<BattleCastRoster/)
   assert.match(screen, /menuSection\.id === 'school'[\s\S]*<StoryArcTimeline[\s\S]*<SchoolBarrierMap[\s\S]*<SchoolLifeAlbum[\s\S]*<TeacherSchoolLife/)
   assert.match(screen, /title="調査の記録"/)

@@ -161,7 +161,7 @@ function RouteHub({
                 ? `${profile.skill.emoji} 特技まであと${Math.max(0, 3 - bond.points)}`
                 : !bond.itemUnlocked
                   ? `${profile.item.emoji} アイテムまであと${Math.max(0, 8 - bond.points)}`
-                  : `${profile.item.emoji} XPボーナスあり`
+                  : `${profile.item.emoji} 思い出アイテムを所持`
               return (
                 <button
                   key={profile.id}
@@ -213,7 +213,7 @@ function RouteHub({
         </section>
 
         <p className="rounded-2xl border border-white/10 bg-white/[0.05] px-3 py-2.5 text-[9px] font-bold leading-relaxed text-white/50">
-          日常イベントは任意です。選ぶと絆とXPを得られ、性格に合う言葉では絆が少し多く伸びます。
+          日常イベントは任意です。選ぶと絆と思い出が記録され、性格に合う言葉では絆が少し多く伸びます。
         </p>
         <Button full variant="secondary" onClick={onSkip}>
           日常イベントを見ず、次の調査へ <ArrowRight size={18} />
@@ -481,7 +481,7 @@ export function AfterSchoolInterludeScreen() {
                     <span className="text-[9px] font-extrabold text-cyan-100">{bond.student.name}の返事 · {battleEmotionById(selectedChoice.emotionId).emoji}</span>
                     <p className="mt-1 text-xs font-extrabold leading-relaxed">{selectedChoice.reply}</p>
                     <p className="mt-1.5 text-[9px] font-extrabold text-amber-200">
-                      受取予定：+{rewardPreview?.xpGained ?? 0} XP · 絆+{rewardPreview?.bondPointsGained ?? 0}
+                      受取予定：絆+{rewardPreview?.bondPointsGained ?? 0}
                       {rewardPreview?.styleMatched ? ' · 性格ボーナス' : ''}
                     </p>
                   </div>
@@ -494,18 +494,13 @@ export function AfterSchoolInterludeScreen() {
             <div className="mt-4 rounded-2xl border border-amber-200/35 bg-gradient-to-br from-amber-300/20 via-pink-300/10 to-cyan-300/15 p-3.5" role="status" aria-live="polite">
               <p className="text-[9px] font-extrabold tracking-[0.15em] text-amber-200">AFTER SCHOOL REWARD</p>
               <h3 className="mt-1 font-display text-base font-extrabold">放課後の思い出が力になった</h3>
-              <div className="mt-3 grid grid-cols-2 gap-2">
-                <span className="rounded-xl bg-slate-950/40 px-3 py-2 text-center">
-                  <strong className="block text-lg font-extrabold text-amber-100">+{reward.xpGained}</strong>
-                  <span className="text-[8px] font-bold text-white/50">冒険者XP</span>
-                </span>
+              <div className="mt-3 grid gap-2">
                 <span className="rounded-xl bg-slate-950/40 px-3 py-2 text-center">
                   <strong className="block text-lg font-extrabold text-cyan-100">+{reward.bondPointsGained}</strong>
                   <span className="text-[8px] font-bold text-white/50">{bond.student.name}との絆</span>
                 </span>
               </div>
               {reward.styleMatched && <p className="mt-2 text-[9px] font-extrabold text-pink-100">🤝 性格に合う声掛けで絆ボーナス</p>}
-              {reward.itemXpBonus > 0 && <p className="mt-1 text-[9px] font-extrabold text-amber-100">{profile.item.emoji} {profile.item.name}の効果：XP +{reward.itemXpBonus}</p>}
               {reward.unlockedSkill && (
                 <div className="mt-2 rounded-xl border border-cyan-200/20 bg-cyan-300/10 px-3 py-2">
                   <p className="text-[8px] font-extrabold text-cyan-200">NEW BATTLE SKILL</p>
@@ -527,7 +522,7 @@ export function AfterSchoolInterludeScreen() {
                   <p className="mt-0.5 text-[9px] font-bold text-white/55">この出会いはアルバムから振り返れ、次の相手が分かった後の作戦会議で同行者に選べます。</p>
                 </div>
               )}
-              <p className="mt-2 text-[8px] font-bold leading-relaxed text-white/40">放課後XPは冒険者LVへ加算されます。学習の正答率・SRS・診断結果は変わりません。</p>
+              <p className="mt-2 text-[8px] font-bold leading-relaxed text-white/40">放課後の選択は絆と思い出に記録されます。学習の正答率・SRS・診断結果は変わりません。</p>
             </div>
           )}
         </section>

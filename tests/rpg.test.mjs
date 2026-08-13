@@ -10,7 +10,6 @@ import {
   BATTLE_TACTICS,
   CHAPTERS,
   MAX_HERO_LEVEL,
-  MAX_LEVEL_XP,
   MOB_PROFILES,
   RELICS,
   SCHOOL_TEACHERS,
@@ -27,7 +26,6 @@ import {
   featuredQuestId,
   heroBattleStats,
   heroEquipmentForLevel,
-  heroProgress,
   maxEnemyRankIndexForHeroLevel,
   mobProfile,
   nextEnemyRankUnlockForHeroLevel,
@@ -35,8 +33,6 @@ import {
   relicBattleAbility,
   resolveBattleState,
   teacherBattleResultLine,
-  xpAtLevel,
-  xpNeededForNextLevel,
 } from '../src/lib/rpg.js'
 import {
   BATTLE_BARRIER_CENTER,
@@ -47,12 +43,9 @@ import {
   BATTLE_BARRIER_WINDOW_LIGHTS,
   BATTLE_STAR_PER_CORRECT,
   BATTLE_STAGE_BACKGROUNDS,
-  BATTLE_STARS_PER_EXCHANGE,
   BATTLE_THEMES,
-  BATTLE_XP_PER_EXCHANGE,
   battleBarrierLocationById,
   battleStageForEncounter,
-  battleXpExchange,
   battleStarsEarned,
   battleThemeById,
   newlyUnlockedBattleThemes,
@@ -245,40 +238,6 @@ test('学校を中央核として街の五地点が五芒星の龍脈を構成�
   assert.match(mapSource, /dragon-vein-district|BATTLE_BARRIER_MAP_IMAGE/)
   assert.doesNotMatch(mapSource, /BATTLE_BARRIER_WINDOW_LIGHTS\.map|BATTLE_BARRIER_TRAFFIC_LIGHTS\.map|animateMotion/)
 })
-test('未変換の学習XPを一度だけ放課後スターへまとめて変換する', () => {
-  assert.equal(BATTLE_XP_PER_EXCHANGE, 50)
-  assert.equal(BATTLE_STARS_PER_EXCHANGE, 25)
-
-  const exchange = battleXpExchange(289, 40, 100)
-  assert.deepEqual(
-    {
-      availableXp: exchange.availableXp,
-      exchanges: exchange.exchanges,
-      xpCost: exchange.xpCost,
-      starsGained: exchange.starsGained,
-      availableAfter: exchange.availableAfter,
-      nextSpentXp: exchange.nextSpentXp,
-      nextBattleStars: exchange.nextBattleStars,
-    },
-    {
-      availableXp: 249,
-      exchanges: 4,
-      xpCost: 200,
-      starsGained: 100,
-      availableAfter: 49,
-      nextSpentXp: 240,
-      nextBattleStars: 200,
-    },
-  )
-  assert.equal(exchange.canExchange, true)
-
-  const remainder = battleXpExchange(289, exchange.nextSpentXp, exchange.nextBattleStars)
-  assert.equal(remainder.canExchange, false)
-  assert.equal(remainder.xpUntilNext, 1)
-  assert.equal(battleXpExchange(100, 999, 0).availableXp, 0)
-  assert.equal(battleXpExchange(500, 0, 9_999_990).starCapacityReached, true)
-})
-
 test('五つの星彩パラメータは全10人に固有の初期形と発現色を与える', () => {
   assert.equal(BATTLE_TRAITS.length, 5)
   assert.equal(new Set(BATTLE_TRAITS.map((trait) => trait.id)).size, 5)
@@ -995,35 +954,7 @@ test('先生の担当教科との相性は実ダメージだけを支援し、�
   assert.equal(perfect.enemyDefeated, true)
 })
 
-test('冒険者LVはXPとともに1〜99まで単調に上がる', () => {
-  assert.equal(heroProgress(-100).level, 1)
-  assert.equal(heroProgress(0).level, 1)
-  assert.equal(heroProgress(MAX_LEVEL_XP).level, MAX_HERO_LEVEL)
-  assert.equal(heroProgress(MAX_LEVEL_XP + 999999).level, MAX_HERO_LEVEL)
-  assert.equal(heroProgress(MAX_LEVEL_XP).isMax, true)
-
-  let previous = 1
-  for (let xp = 0; xp <= MAX_LEVEL_XP; xp += 7) {
-    const current = heroProgress(xp)
-    assert.ok(current.level >= previous)
-    assert.ok(current.level >= 1 && current.level <= MAX_HERO_LEVEL)
-    assert.ok(current.progress >= 0 && current.progress <= 1)
-    previous = current.level
-  }
-})
-
-test('各LVの境界と次LVまでのXPが一致する', () => {
-  for (let level = 1; level < MAX_HERO_LEVEL; level += 1) {
-    const start = xpAtLevel(level)
-    const next = xpAtLevel(level + 1)
-    assert.equal(next - start, xpNeededForNextLevel(level), `LV${level}`)
-    assert.equal(heroProgress(start).level, level)
-    assert.equal(heroProgress(next - 1).level, level)
-    assert.equal(heroProgress(next).level, level + 1)
-  }
-})
-
-test('レベルアップと戦利品でHP・攻撃・防御が成長する', () => {
+test('指定レベルと戦利品でHP・攻撃・防御が決まる', () => {
   let previous = heroBattleStats(1)
   assert.ok(previous.bonus.maxHp > 0)
 
@@ -1039,10 +970,6 @@ test('レベルアップと戦利品でHP・攻撃・防御が成長する', () 
   assert.equal(heroBattleStats(5).bonus.attack, 2)
   assert.equal(heroBattleStats(89).bonus.defense, 18)
   assert.equal(heroBattleStats(90).bonus.defense, 26)
-  assert.deepEqual(
-    heroProgress(xpAtLevel(50)).battleStats,
-    heroBattleStats(50),
-  )
 })
 
 test('獲得した学校アイテムに合わせて主人公の装備外見が変わる', () => {
@@ -1311,7 +1238,7 @@ test('龍脈解読中は記憶断片カードと4つの回答をコンパクト�
   assert.match(source, /<Button full size=\{isDragonVein \? 'md' : 'lg'\}/)
   assert.doesNotMatch(source, /choiceGlyphs|unknownGlyph|battle-command-choice/)
 })
-test('龍脈進捗は正解結果とXPを分離し、全保存経路へつながる', () => {
+test('龍脈進捗は正解結果を記録し、全保存経路へつながる', () => {
   const quizSource = readFileSync(
     new URL('../src/screens/VocabQuiz.jsx', import.meta.url),
     'utf8',
@@ -1336,7 +1263,7 @@ test('龍脈進捗は正解結果とXPを分離し、全保存経路へつなが
   assert.doesNotMatch(quizSource, /addBattleStars|BATTLE_STAR_PER_CORRECT/)
   assert.match(resultSource, /recordDragonVeinSession/)
   assert.match(resultSource, /復元断片/)
-  assert.match(resultSource, /調査XP/)
+  assert.doesNotMatch(resultSource, /\bXP\b|xpGained|xpAtStart/)
   for (const source of [storeSource, progressSource, cloudSource]) {
     assert.match(source, /dragonVeinProgress/)
   }

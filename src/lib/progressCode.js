@@ -34,6 +34,11 @@ import {
   normalizeLearningNotebook,
   notebookStoredSavedCount,
 } from './learningNotebook.js'
+import {
+  isValidLegacyXp,
+  normalizeLegacyStats,
+  normalizeLegacyXp,
+} from './legacyProgress.js'
 
 const CODE_VERSION = 1
 const PREFIX = 'EQ1-' // EigoQuest v1。先頭でアプリ/バージョンを判別する。
@@ -105,6 +110,8 @@ export function buildPayload(state = {}) {
     ),
     storyKeyVisualAlbum: normalizeStoryKeyVisualAlbum(state.storyKeyVisualAlbum),
     dragonVeinProgress: normalizeDragonVeinProgress(state.dragonVeinProgress),
+    stats: normalizeLegacyStats(state.stats),
+    battleXpSpent: normalizeLegacyXp(state.battleXpSpent),
   }
 }
 
@@ -210,15 +217,17 @@ export function decodeProgress(code) {
   if (
     'battleXpSpent' in payload
     && (
-      !Number.isSafeInteger(payload.battleXpSpent)
-      || payload.battleXpSpent < 0
-      || (
-        Number.isFinite(payload.stats?.xp)
-        && payload.battleXpSpent > Math.max(0, Math.floor(payload.stats.xp))
-      )
+      !isValidLegacyXp(payload.battleXpSpent)
     )
   ) {
     throw new Error('コードの battleXpSpent が不正です。')
+  }
+  if (
+    'stats' in payload
+    && 'xp' in payload.stats
+    && !isValidLegacyXp(payload.stats.xp)
+  ) {
+    throw new Error('コードの stats.xp が不正です。')
   }
   if (
     'battleThemeId' in payload
@@ -325,10 +334,8 @@ export function summarizePayload(payload, isWordId = () => true) {
     writing: Object.values(payload.writingProgress ?? {}).filter(
       (item) => (item?.completed ?? 0) > 0,
     ).length,
-    xp: payload.stats?.xp ?? 0,
     streak: payload.stats?.streak ?? 0,
     battleStars: payload.battleStars ?? 0,
-    battleXpSpent: payload.battleXpSpent ?? 0,
     battleTraitPoints: battleTraitPointsSpent(payload.battleTraitInvestments),
     battleStoryStep: payload.battleStoryStep ?? 0,
     unlockedBattleStudents: (payload.unlockedBattleStudentIds ?? []).length,

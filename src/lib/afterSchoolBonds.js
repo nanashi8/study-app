@@ -45,7 +45,7 @@ export const AFTER_SCHOOL_BRANCHES = Object.freeze([
     openingEmotionId: 'worried',
     opening: '「みんなの声を邪魔してないかな。もう少し小さく歌った方がいい？」',
     skill: { id: 'mio-harmony-care', name: 'ハーモニーケア', emoji: '🎼', kind: 'heal', every: 3, healPercent: 4, description: '3正解ごとにHPを4%回復' },
-    item: { id: 'mio-tuning-charm', name: '音叉チャーム', emoji: '🎵', xpBonus: 2, description: 'ミオとの放課後XPが毎回+2' },
+    item: { id: 'mio-tuning-charm', name: '音叉チャーム', emoji: '🎵', description: 'ミオとの放課後を思い出す記念品' },
     choices: [
       { id: 'mio-empathy', styleId: 'empathy', label: '「浮いて聞こえると不安になるよね」', reply: '「うん。不安って言えたら、音を消すより合わせ方を探したくなった」', emotionId: 'relieved' },
       { id: 'mio-idea', styleId: 'idea', label: '「一人ずつの録音を重ねて聞こう」', reply: '「どこでずれたか分かれば直せそう。みんなにも相談してみるね」', emotionId: 'focused' },
@@ -60,7 +60,7 @@ export const AFTER_SCHOOL_BRANCHES = Object.freeze([
     openingEmotionId: 'thinking',
     opening: '「どれも誰かが頑張った案だ。外すものを決めるのが一番難しい」',
     skill: { id: 'ren-sketch-break', name: '下書きブレイク', emoji: '✏️', kind: 'power', every: 4, bonusPercent: 12, description: '4正解ごとに追加ダメージ12%' },
-    item: { id: 'ren-layout-card', name: '展示レイアウトカード', emoji: '🖼️', xpBonus: 2, description: 'レンとの放課後XPが毎回+2' },
+    item: { id: 'ren-layout-card', name: '展示レイアウトカード', emoji: '🖼️', description: 'レンとの放課後を思い出す記念品' },
     choices: [
       { id: 'ren-empathy', styleId: 'empathy', label: '「誰かの案を外すのは苦しいよね」', reply: '「分かってくれるだけで助かる。雑に決めたくない理由を話せそうだ」', emotionId: 'relieved' },
       { id: 'ren-idea', styleId: 'idea', label: '「入口・中央・出口の三役に分けよう」', reply: '「役割で分ければ、捨てずに見せ方を変えられる。まず床へ並べてみる」', emotionId: 'focused' },
@@ -75,7 +75,7 @@ export const AFTER_SCHOOL_BRANCHES = Object.freeze([
     openingEmotionId: 'exhausted',
     opening: '「単語は分かるのに、文全体がつながらない。読み方から間違ってるのかな」',
     skill: { id: 'haru-foresight-guard', name: '先読みガード', emoji: '📘', kind: 'guard', reductionPercent: 30, description: '最初の反撃ダメージを30%軽減' },
-    item: { id: 'haru-margin-bookmark', name: '余白のしおり', emoji: '🔖', xpBonus: 2, description: 'ハルとの放課後XPが毎回+2' },
+    item: { id: 'haru-margin-bookmark', name: '余白のしおり', emoji: '🔖', description: 'ハルとの放課後を思い出す記念品' },
     choices: [
       { id: 'haru-empathy', styleId: 'empathy', label: '「分かる単語が多いほど焦るよね」', reply: '「そうなんだ。できるはずって思うほど苦しかった。少し呼吸を戻すよ」', emotionId: 'relieved' },
       { id: 'haru-idea', styleId: 'idea', label: '「主語と動詞だけ先に囲もう」', reply: '「骨組みからなら追えそうだ。修飾はあとで戻して読んでみる」', emotionId: 'focused' },
@@ -90,7 +90,7 @@ export const AFTER_SCHOOL_BRANCHES = Object.freeze([
     openingEmotionId: 'sad',
     opening: '「動かなかったらゼロ点かな。でも、変な音がした理由だけは気になるんだ」',
     skill: { id: 'akari-retry-lab', name: 'リトライ実験', emoji: '🧪', kind: 'power', every: 4, bonusPercent: 14, description: '4正解ごとに追加ダメージ14%' },
-    item: { id: 'akari-prototype-tag', name: '試作品タグ', emoji: '🏷️', xpBonus: 2, description: 'アカリとの放課後XPが毎回+2' },
+    item: { id: 'akari-prototype-tag', name: '試作品タグ', emoji: '🏷️', description: 'アカリとの放課後を思い出す記念品' },
     choices: [
       { id: 'akari-empathy', styleId: 'empathy', label: '「動くと思っていた分、悔しいよね」', reply: '「うん、悔しかった！　それを認めたら次に調べたいことも見えてきた」', emotionId: 'relieved' },
       { id: 'akari-idea', styleId: 'idea', label: '「変な音がした瞬間を記録しよう」', reply: '「失敗じゃなくて観測結果だね。条件を一つずつ書き戻してみる」', emotionId: 'focused' },
@@ -105,7 +105,7 @@ export const AFTER_SCHOOL_BRANCHES = Object.freeze([
     openingEmotionId: 'worried',
     opening: '「俺は早くできるけど、同じ速さをみんなに求めたら駄目だよな」',
     skill: { id: 'kaito-last-spurt', name: 'ラストスパート', emoji: '👟', kind: 'power', every: 4, bonusPercent: 16, description: '4正解ごとに追加ダメージ16%' },
-    item: { id: 'kaito-pace-band', name: 'ペースバンド', emoji: '🎽', xpBonus: 2, description: 'カイトとの放課後XPが毎回+2' },
+    item: { id: 'kaito-pace-band', name: 'ペースバンド', emoji: '🎽', description: 'カイトとの放課後を思い出す記念品' },
     choices: [
       { id: 'kaito-empathy', styleId: 'empathy', label: '「引っぱりたいほど焦ることもあるよね」', reply: '「そうか、俺も焦ってたんだ。まずそこを後輩に話してみる」', emotionId: 'relieved' },
       { id: 'kaito-idea', styleId: 'idea', label: '「次は全員の目標ペースを聞こう」', reply: '「俺の基準だけじゃ駄目だな。一本ごとに確認する時間を入れるよ」', emotionId: 'focused' },
@@ -120,7 +120,7 @@ export const AFTER_SCHOOL_BRANCHES = Object.freeze([
     openingEmotionId: 'exhausted',
     opening: '「分担表は完成した。でも私の欄だけ、まだ仕事が多いな」',
     skill: { id: 'rei-calm-command', name: '冷静指揮', emoji: '📋', kind: 'guard', reductionPercent: 35, description: '最初の反撃ダメージを35%軽減' },
-    item: { id: 'rei-shared-planner', name: '共有プランナー', emoji: '🗓️', xpBonus: 2, description: 'レイとの放課後XPが毎回+2' },
+    item: { id: 'rei-shared-planner', name: '共有プランナー', emoji: '🗓️', description: 'レイとの放課後を思い出す記念品' },
     choices: [
       { id: 'rei-empathy', styleId: 'empathy', label: '「頼られる人ほど頼みにくいよね」', reply: '「その通りかもしれない。弱みではなく、役割の相談だと思えば言えそうだ」', emotionId: 'relieved' },
       { id: 'rei-idea', styleId: 'idea', label: '「十五分単位で渡せる仕事を分けよう」', reply: '「小さく切れば頼む相手も選べる。表をもう一列増やしてみる」', emotionId: 'focused' },
@@ -135,7 +135,7 @@ export const AFTER_SCHOOL_BRANCHES = Object.freeze([
     openingEmotionId: 'embarrassed',
     opening: '「笑ってもらうつもりだったのに、言葉って相手で全然違うね」',
     skill: { id: 'nao-language-bridge', name: 'ことばの架け橋', emoji: '🌍', kind: 'heal', every: 3, healPercent: 5, description: '3正解ごとにHPを5%回復' },
-    item: { id: 'nao-phrase-card', name: 'ことば交換カード', emoji: '💬', xpBonus: 2, description: 'ナオとの放課後XPが毎回+2' },
+    item: { id: 'nao-phrase-card', name: 'ことば交換カード', emoji: '💬', description: 'ナオとの放課後を思い出す記念品' },
     choices: [
       { id: 'nao-empathy', styleId: 'empathy', label: '「伝えたい気持ちほど空回りするよね」', reply: '「分かるって言ってくれると救われる。次は相手の反応を待って話すよ」', emotionId: 'relieved' },
       { id: 'nao-idea', styleId: 'idea', label: '「短い言葉と例で言い直してみよう」', reply: '「言い直すのは負けじゃないね。伝わる形を探すのも交流だ」', emotionId: 'curious' },
@@ -150,7 +150,7 @@ export const AFTER_SCHOOL_BRANCHES = Object.freeze([
     openingEmotionId: 'worried',
     opening: '「危ない動きだった。だが、あの言い方で伝わったのは怖さだけかもしれない」',
     skill: { id: 'tsubaki-flash-guard', name: '一閃の守り', emoji: '⚔️', kind: 'guard', reductionPercent: 40, description: '最初の反撃ダメージを40%軽減' },
-    item: { id: 'tsubaki-knot-charm', name: '稽古紐の結び守り', emoji: '🎗️', xpBonus: 2, description: 'ツバキとの放課後XPが毎回+2' },
+    item: { id: 'tsubaki-knot-charm', name: '稽古紐の結び守り', emoji: '🎗️', description: 'ツバキとの放課後を思い出す記念品' },
     choices: [
       { id: 'tsubaki-empathy', styleId: 'empathy', label: '「守りたかったから強くなったんだね」', reply: '「意図まで見てくれて感謝する。だからこそ、言葉も整えたい」', emotionId: 'relieved' },
       { id: 'tsubaki-idea', styleId: 'idea', label: '「危険だった点と期待を分けて伝えよう」', reply: '「叱責と助言を混ぜていたな。順番を決めれば誤解を減らせそうだ」', emotionId: 'focused' },
@@ -165,7 +165,7 @@ export const AFTER_SCHOOL_BRANCHES = Object.freeze([
     openingEmotionId: 'focused',
     opening: '「入力は合ってるはず。でも毎回ここだけずれる。原因が見えないのが嫌だな」',
     skill: { id: 'noa-quick-patch', name: 'クイックパッチ', emoji: '💻', kind: 'power', every: 4, bonusPercent: 13, description: '4正解ごとに追加ダメージ13%' },
-    item: { id: 'noa-debug-token', name: 'デバッグトークン', emoji: '🪙', xpBonus: 2, description: 'ノアとの放課後XPが毎回+2' },
+    item: { id: 'noa-debug-token', name: 'デバッグトークン', emoji: '🪙', description: 'ノアとの放課後を思い出す記念品' },
     choices: [
       { id: 'noa-empathy', styleId: 'empathy', label: '「原因が分からない失敗は悔しいよね」', reply: '「うん。できない自分より、分からない状態に焦ってたみたい」', emotionId: 'relieved' },
       { id: 'noa-idea', styleId: 'idea', label: '「最後の四拍だけ速度を落として見よう」', reply: '「切り分けだね。目線か指か、ずれる場所をログみたいに確かめる」', emotionId: 'curious' },
@@ -180,7 +180,7 @@ export const AFTER_SCHOOL_BRANCHES = Object.freeze([
     openingEmotionId: 'sad',
     opening: '「最後まで書けないなら、ここまでの時間も無駄だったのかな」',
     skill: { id: 'yuu-story-breath', name: '物語の余白', emoji: '🖋️', kind: 'heal', every: 3, healPercent: 6, description: '3正解ごとにHPを6%回復' },
-    item: { id: 'yuu-ending-note', name: '結末待ちのメモ', emoji: '📝', xpBonus: 2, description: 'ユウとの放課後XPが毎回+2' },
+    item: { id: 'yuu-ending-note', name: '結末待ちのメモ', emoji: '📝', description: 'ユウとの放課後を思い出す記念品' },
     choices: [
       { id: 'yuu-empathy', styleId: 'empathy', label: '「大切に書いた分、終われないのが苦しいね」', reply: '「うん。書けない悔しさごと、ここまで大事にしてた証拠なのかも」', emotionId: 'relieved' },
       { id: 'yuu-idea', styleId: 'idea', label: '「結末を三行だけ仮置きしよう」', reply: '「完成じゃなく仮置きなら書けそう。そこから本当の終わりを探してみる」', emotionId: 'focused' },
@@ -362,9 +362,6 @@ export function resolveAfterSchoolReward({ bonds, branchId, choiceId } = {}) {
     MAX_AFTER_SCHOOL_BOND_POINTS,
   )
   const nextLevel = afterSchoolBondLevel(nextPoints)
-  const itemXpBonus = current.itemUnlocked ? profile.item.xpBonus : 0
-  const xpGained = 6 + current.level.level * 2 + (styleMatched ? 3 : 0) + itemXpBonus
-
   return {
     branchId: profile.id,
     choiceId: choice.id,
@@ -372,8 +369,6 @@ export function resolveAfterSchoolReward({ bonds, branchId, choiceId } = {}) {
     styleId: choice.styleId,
     styleMatched,
     bondPointsGained,
-    xpGained,
-    itemXpBonus,
     previousLevel: current.level,
     nextLevel,
     nextBondEntry: {

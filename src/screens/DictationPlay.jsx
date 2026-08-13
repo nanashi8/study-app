@@ -35,7 +35,6 @@ export function DictationPlayScreen() {
   const settings = useStore((s) => s.settings)
 
   const source = params.source ?? { type: 'level', levelId: '5' }
-  const xpAtStart = useRef(useStore.getState().stats.xp)
   const [deck] = useState(() =>
     buildDictationDeck(source, {
       size: source.type === 'dictationList' ? 0 : 8,
@@ -109,7 +108,6 @@ export function DictationPlayScreen() {
   }
 
   const finish = () => {
-    const xpGained = useStore.getState().stats.xp - xpAtStart.current
     navigate('sessionResult', {
       title: params.title ?? `英検${profile.label}`,
       mode: 'quiz',
@@ -118,7 +116,6 @@ export function DictationPlayScreen() {
       total: deck.length,
       correct: results.current.correct,
       wrong: results.current.wrong,
-      xpGained,
       reviewIds: results.current.wrongIds,
       source,
     })

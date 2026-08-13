@@ -49,7 +49,6 @@ export function PhraseQuizScreen() {
   const source = params.source ?? { type: 'phrase', kind: 'idiom' }
   const isDragonVein = isDragonVeinSource(source)
 
-  const xpAtStart = useRef(useStore.getState().stats.xp)
   const sessionId = useRef(newSessionId())
   const [deck] = useState(() => buildPhraseDeck(source, {
     srs: useStore.getState().srs,
@@ -90,7 +89,6 @@ export function PhraseQuizScreen() {
   const saved = learningNotebook?.entries?.[`phrases:${item.id}`]?.saved === true
 
   const finish = () => {
-    const xpGained = useStore.getState().stats.xp - xpAtStart.current
     navigate('sessionResult', {
       title: params.title ?? (isDragonVein ? '龍脈の熟語・構文解読' : '熟語・構文'),
       mode: 'quiz',
@@ -98,7 +96,6 @@ export function PhraseQuizScreen() {
       total: deck.length,
       correct: results.current.correct,
       wrong: results.current.wrong + results.current.unknown,
-      xpGained,
       reviewIds: results.current.wrongIds,
       source,
       size: params.size,

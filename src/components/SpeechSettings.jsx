@@ -373,7 +373,7 @@ function DataManagementPanel() {
       id: 'analytics',
       label: '分析集計を消去',
       count: `${data.analyticsScored}回答・${data.skillCount}分野`,
-      desc: '時刻・間隔・分野別の集計を初期化。SRS、XP、保存項目は残します。',
+      desc: '時刻・間隔・分野別の集計を初期化。SRSと保存項目は残します。',
     },
     {
       id: 'diagnostic',
@@ -809,7 +809,7 @@ function ResetProgressPanel({ onBackup, onReset, onCancel }) {
       <div className="rounded-2xl border border-rose-200 bg-rose-50 p-4">
         <h2 className="font-display text-lg font-extrabold text-rose-800">学習状況を最初からにします</h2>
         <p className="mt-2 text-sm font-bold leading-relaxed text-rose-700/80">
-          正誤・復習段階・XP・診断・分析・保存リストなど、すべての学習履歴が消えます。
+          正誤・復習段階・診断・分析・保存リストなど、すべての学習履歴が消えます。
           ログイン中は、初期化した状態がクラウドにも保存されます。
         </p>
       </div>

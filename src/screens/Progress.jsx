@@ -38,7 +38,7 @@ function RecordSummary({ stats, progress, analytics }) {
       <table className="w-full border-collapse text-xs" data-progress-record-summary>
         <tbody>
           {[
-            ['累計XP', stats.xp.toLocaleString(), '連続学習', `${stats.streak}日`],
+            ['英単語学習済み', `${progress.seen}/${progress.total}`, '連続学習', `${stats.streak}日`],
             ['累計回答', stats.answered.toLocaleString(), '累計正答率', accuracy],
             ['英単語習得', `${progress.mastered}/${progress.total}`, '英単語復習待ち', `${progress.due}語`],
             ['分析入力', `${analytics?.inputs ?? 0}件`, '本日の回答', `${stats.todayCount}件`],
@@ -328,8 +328,8 @@ export function ProgressScreen() {
                 <div className="text-[11px] font-bold text-ink/50">習得した語源</div>
               </div>
               <div className="rounded-2xl bg-hint-soft p-3 text-center">
-                <div className="font-display text-2xl font-extrabold text-amber-700">{preview.summary.xp}</div>
-                <div className="text-[11px] font-bold text-ink/50">XP</div>
+                <div className="font-display text-2xl font-extrabold text-amber-700">{preview.summary.streak}</div>
+                <div className="text-[11px] font-bold text-ink/50">連続学習（日）</div>
               </div>
               <div className="rounded-2xl bg-hint-soft p-3 text-center">
                 <div className="font-display text-2xl font-extrabold text-amber-700">{preview.summary.notebookSaved}</div>

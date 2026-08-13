@@ -6,7 +6,7 @@ import {
 import { normalizeBattleStars } from './battleThemes.js'
 
 // 放課後スターは演出解放の累計値として残したまま、100個ごとに
-// 人物育成へ配分できる「星彩ポイント」を1点生む。学習XPや正答率は変えない。
+// 人物育成へ配分できる「星彩ポイント」を1点生む。学習の正答率は変えない。
 export const BATTLE_TRAIT_POINT_STARS = 100
 export const MAX_BATTLE_TRAIT_LEVEL = 5
 

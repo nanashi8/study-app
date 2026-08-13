@@ -15,11 +15,13 @@ import {
 import { DEFAULT_CONTENT_ORDER } from '../data/contents.js'
 import {
   BATTLE_THEMES,
-  battleXpExchange,
   battleThemeById,
-  normalizeBattleXpSpent,
   normalizeBattleStars,
 } from '../lib/battleThemes.js'
+import {
+  normalizeLegacyStats,
+  normalizeLegacyXp,
+} from '../lib/legacyProgress.js'
 import {
   DEFAULT_BATTLE_STUDENT_ID,
   normalizeBattleStudentId,
@@ -75,13 +77,13 @@ import {
 const INTERVALS = [0, 1, 2, 4, 7, 15, 30]
 const MAX_BOX = INTERVALS.length - 1
 
-// 回答結果ごとの box 変化と獲得XP。
+// 回答結果ごとの box 変化。学習評価はSRSと正誤記録だけで扱う。
 const RESULTS = {
-  correct: { box: +1, xp: 10 }, // クイズ正解
-  wrong: { box: -1, xp: 3 }, // クイズ誤答
-  unknown: { box: 'reset', xp: 2 }, // 「わからない」
-  remembered: { box: +1, xp: 6 }, // カードで「覚えた」
-  forgot: { box: 'reset', xp: 2 }, // カードで「まだ」
+  correct: { box: +1 }, // クイズ正解
+  wrong: { box: -1 }, // クイズ誤答
+  unknown: { box: 'reset' }, // 「わからない」
+  remembered: { box: +1 }, // カードで「覚えた」
+  forgot: { box: 'reset' }, // カードで「まだ」
 }
 
 const DAY_MS = 86400000
@@ -167,8 +169,8 @@ const initialLearning = () => ({
   diagnosticSeed: null, // 端末ごとの問題候補の並びを再現する符号なし32bit整数
   engPos: null, // 適応バトルの現在ポジション(0=5級…6=1級, 小数可)。null=未配置（初回に推定）
   battleRelicLevel: null, // バトルへ持ち込む取得済み戦利品の解放LV。nullは最新を自動選択
-  battleStars: 0, // バトル正解やXP変換で貯まる、演出スキン解放専用の放課後スター
-  battleXpSpent: 0, // 放課後スターへ一度だけ変換済みの累計XP
+  battleStars: 0, // 旧ゲーム表示との保存互換用スター
+  battleXpSpent: 0, // 旧保存データとの往復だけに残す不活性な互換値
   battleThemeId: BATTLE_THEMES[0].id,
   battleStudentId: DEFAULT_BATTLE_STUDENT_ID, // 放課後と魔法の言葉へ同行するクラスメイト
   battleTraitInvestments: {}, // 生徒id -> 五つの星彩パラメータへ配分したポイント
@@ -211,8 +213,6 @@ function applyReview(srs, stats, wordId, result, timestamp = Date.now()) {
   s.todayCount += 1
   s.answered += 1
   if (result === 'correct' || result === 'remembered') s.correct += 1
-  s.xp += def.xp
-
   return {
     srs: { ...srs, [wordId]: next },
     stats: s,
@@ -227,8 +227,8 @@ function applyReview(srs, stats, wordId, result, timestamp = Date.now()) {
   }
 }
 
-// 英作文1本の完成を、今日の学習回数・連続日数・XPへ反映する。
-function awardWriting(stats, xp = 20, timestamp = Date.now()) {
+// 英作文1本の完成を、今日の学習回数・連続日数へ反映する。
+function awardWriting(stats, timestamp = Date.now()) {
   const day = localDayIndexAt(timestamp)
   const next = { ...stats }
   if (next.day !== day) {
@@ -239,7 +239,6 @@ function awardWriting(stats, xp = 20, timestamp = Date.now()) {
   next.todayCount += 1
   next.answered += 1
   next.correct += 1
-  next.xp += xp
   return next
 }
 
@@ -252,11 +251,9 @@ export function migratePersistedState(persistedState) {
   state.portalHidden = normalizeHidden(state.portalHidden)
   state.vocabHistory = normalizeVocabHistory(state.vocabHistory)
   state.learningNotebook = normalizeLearningNotebook(state.learningNotebook)
+  state.stats = { ...freshStats(), ...normalizeLegacyStats(state.stats) }
   state.battleStars = normalizeBattleStars(state.battleStars)
-  state.battleXpSpent = normalizeBattleXpSpent(
-    state.battleXpSpent,
-    state.stats?.xp,
-  )
+  state.battleXpSpent = normalizeLegacyXp(state.battleXpSpent)
   state.battleThemeId = battleThemeById(
     state.battleThemeId,
     state.battleStars,
@@ -287,7 +284,7 @@ export function migratePersistedState(persistedState) {
 // importCode 内へ項目を散らさず、永続項目一覧との全件照合を可能にする。
 export function progressStateFromPayload(payload = {}) {
   const battleStars = normalizeBattleStars(payload.battleStars)
-  const stats = { ...freshStats(), ...(payload.stats ?? {}) }
+  const stats = { ...freshStats(), ...normalizeLegacyStats(payload.stats) }
   const battleStudentId = normalizeBattleStudentId(payload.battleStudentId)
   const unlockedBattleStudentIds = normalizeUnlockedBattleStudentIds(
     Array.isArray(payload.unlockedBattleStudentIds)
@@ -321,7 +318,7 @@ export function progressStateFromPayload(payload = {}) {
     engPos: payload.engPos ?? null,
     battleRelicLevel: payload.battleRelicLevel ?? null,
     battleStars,
-    battleXpSpent: normalizeBattleXpSpent(payload.battleXpSpent, stats.xp),
+    battleXpSpent: normalizeLegacyXp(payload.battleXpSpent),
     battleThemeId: battleThemeById(payload.battleThemeId, battleStars).id,
     battleStudentId,
     battleTraitInvestments: normalizeBattleTraitInvestments(
@@ -783,7 +780,7 @@ export const useStore = create(
                 lastDay: day,
               },
             },
-            stats: awardWriting(st.stats, 20, timestamp),
+            stats: awardWriting(st.stats, timestamp),
             learningAnalytics: recordLearningEvent(
               st.learningAnalytics,
               { skill: 'writing', inputs: 1, scored: 0, correct: 0 },
@@ -1004,19 +1001,6 @@ export const useStore = create(
             normalizeBattleStars(st.battleStars) + normalizeBattleStars(amount),
           ),
         })),
-      exchangeXpForBattleStars: () =>
-        set((st) => {
-          const exchange = battleXpExchange(
-            st.stats?.xp,
-            st.battleXpSpent,
-            st.battleStars,
-          )
-          if (!exchange.canExchange) return {}
-          return {
-            battleXpSpent: exchange.nextSpentXp,
-            battleStars: exchange.nextBattleStars,
-          }
-        }),
       setBattleThemeId: (themeId) =>
         set((st) => {
           const theme = battleThemeById(themeId, st.battleStars)
@@ -1062,7 +1046,7 @@ export const useStore = create(
       completeAfterSchoolRoute: ({ step, branchId, choiceId } = {}) => {
         const st = get()
         const currentStep = normalizeBattleStoryStep(st.battleStoryStep)
-        // 表示時のstepと保存中のstepが一致するときだけ、XPと絆を一括確定する。
+        // 表示時のstepと保存中のstepが一致するときだけ、絆と物語を一括確定する。
         // 戻る・再読込・連打でも同じ放課後報酬を二重受取できない。
         if (normalizeBattleStoryStep(step) !== currentStep) return null
         const bonds = normalizeAfterSchoolBonds(st.afterSchoolBonds)
@@ -1092,11 +1076,6 @@ export const useStore = create(
             { branchId, storyStep: currentStep },
           ),
           battleStoryStep: normalizeBattleStoryStep(currentStep + 1),
-          // 放課後XPは冒険者LVへ加えるが、正答数・SRS・診断結果には混ぜない。
-          stats: {
-            ...st.stats,
-            xp: Math.max(0, Math.floor(Number(st.stats?.xp) || 0)) + reward.xpGained,
-          },
         })
         return granted
       },
@@ -1110,7 +1089,7 @@ export const useStore = create(
       markBattleStorySeen: (day) =>
         set({ battleStoryLastDay: normalizeBattleStoryLastDay(day) }),
       // バトルの正答率(0-1)で生徒のポジションを上下させる。
-      // fromPos / maxPos を渡すと、冒険者LVで解放済みの範囲内だけを移動する。
+      // fromPos / maxPos を渡すと、指定された解放範囲内だけを移動する。
       recordBattle: (accuracy, fromPos = null, maxPos = null) =>
         set((st) => {
           const start = Number.isFinite(fromPos) ? fromPos : st.engPos ?? 0
@@ -1237,7 +1216,7 @@ export const useStore = create(
     }),
     {
       name: 'eigo-quest',
-      version: 6,
+      version: 7,
       migrate: migratePersistedState,
       // ナビゲーション系は保存しない。
       partialize: selectProgressState,

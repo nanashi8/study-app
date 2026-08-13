@@ -29,7 +29,7 @@ export const AFTER_SCHOOL_STORY_ARCS = Object.freeze([
     title: '日常に生じる小さな歪み', shortTitle: '日常の歪み',
     summary: '授業、通学、食堂、部活、ニュースなどに英語のない違和感が日々現れる。',
     investigation: 'その日に見つかった単語や言い回しを10問の暗号として解く。',
-    discovery: '小さな歪みを直すたびに調査XPが蓄積し、主要龍脈のノイズが弱まる。',
+    discovery: '小さな歪みの修復記録が増えるたびに、主要龍脈のノイズが弱まる。',
     nextLead: '歪みの向きを地図へ重ねると、学校が中心にあると分かる。',
   },
   {

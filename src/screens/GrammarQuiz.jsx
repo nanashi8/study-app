@@ -38,7 +38,6 @@ export function GrammarQuizScreen() {
   const learningNotebook = useStore((s) => s.learningNotebook)
   const color = params.levelColor ?? '#6366f1'
 
-  const xpAtStart = useRef(useStore.getState().stats.xp)
   const [deck] = useState(() =>
     buildGrammarDeck(
       params.source ?? { type: 'grammar', level: '5' },
@@ -87,7 +86,6 @@ export function GrammarQuizScreen() {
   const saved = learningNotebook?.entries?.[`grammar:${item.id}`]?.saved === true
 
   const finish = () => {
-    const xpGained = useStore.getState().stats.xp - xpAtStart.current
     navigate('sessionResult', {
       title: params.title ?? '文法',
       mode: 'quiz',
@@ -96,7 +94,6 @@ export function GrammarQuizScreen() {
       total: deck.length,
       correct: results.current.correct,
       wrong: results.current.wrong + results.current.unknown,
-      xpGained,
       reviewIds: results.current.wrongIds,
       source: params.source,
     })

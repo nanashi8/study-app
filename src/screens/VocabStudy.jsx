@@ -23,7 +23,6 @@ export function VocabStudyScreen() {
   const revealAll = settings.revealAnswers
 
   const srsAtStart = useRef(useStore.getState().srs)
-  const xpAtStart = useRef(useStore.getState().stats.xp)
   const [deck] = useState(() =>
     buildDeck(params.source ?? { type: 'due' }, {
       srs: srsAtStart.current,
@@ -69,14 +68,12 @@ export function VocabStudyScreen() {
   }
 
   const finish = () => {
-    const xpGained = useStore.getState().stats.xp - xpAtStart.current
     navigate('sessionResult', {
       title: params.title ?? '単語学習',
       mode: 'study',
       total: deck.length,
       correct: results.current.remembered,
       wrong: results.current.forgot,
-      xpGained,
       reviewIds: results.current.forgotIds,
       source: params.source,
       size: params.size,

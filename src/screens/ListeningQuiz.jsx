@@ -54,7 +54,6 @@ export function ListeningQuizScreen() {
   const learningNotebook = useStore((s) => s.learningNotebook)
 
   const source = params.source ?? { type: 'level', levelId: '5' }
-  const xpAtStart = useRef(useStore.getState().stats.xp)
   const [deck] = useState(() =>
     buildListeningDeck(source, {
       size: source.type === 'listeningList' ? 0 : 10,
@@ -155,7 +154,6 @@ export function ListeningQuizScreen() {
 
   const finish = () => {
     stopListeningAudio()
-    const xpGained = useStore.getState().stats.xp - xpAtStart.current
     navigate('sessionResult', {
       title: params.title ?? `英検${profile.label}`,
       mode: 'quiz',
@@ -164,7 +162,6 @@ export function ListeningQuizScreen() {
       total: deck.length,
       correct: results.current.correct,
       wrong: results.current.wrong + results.current.unknown,
-      xpGained,
       reviewIds: results.current.wrongIds,
       source,
     })
