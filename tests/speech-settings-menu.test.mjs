@@ -3,6 +3,7 @@ import assert from 'node:assert/strict'
 import { readFileSync, readdirSync } from 'node:fs'
 import {
   APP_MENU_ACTIONS,
+  APP_MENU_DIRECT_ITEMS,
   APP_MENU_GROUPS,
   APP_MENU_ITEMS,
   APP_MENU_SCREEN_DESTINATIONS,
@@ -50,7 +51,7 @@ test('上部の一つの共通メニューを全画面から開き、その中�
   assert.match(settings, /data-speech-settings-trigger/)
 })
 
-test('学習途中からメインメニューへ戻る前にQRまたはコードで保存できる', () => {
+test('学習途中に戻るボタンを押したら進捗破棄を確認し、メニュー移動では保存できる', () => {
   const header = read('../src/components/AppShell.jsx')
   const settings = read('../src/components/SpeechSettings.jsx')
   const backup = read('../src/components/ProgressBackup.jsx')
@@ -62,6 +63,10 @@ test('学習途中からメインメニューへ戻る前にQRまたはコード
   assert.match(header, /openSpeechSettings\('back'\)/)
   assert.match(header, /disabled=\{!canGoBack \|\| menuOpen\}/)
   assert.match(settings, /data-progress-save-confirmation/)
+  assert.match(settings, /data-progress-discard-confirmation/)
+  assert.match(settings, /途中で戻るボタンを押した場合は、進捗は破棄されます。戻りますか？/)
+  assert.match(settings, />\s*戻る\s*</)
+  assert.match(settings, />\s*続ける\s*</)
   assert.match(settings, /途中の進捗を保存しますか？/)
   assert.match(settings, /<ProgressBackupPanel/)
   assert.match(settings, /continueLabel=\{`保存を終えて\$\{pendingLabel\}へ`\}/)
@@ -90,11 +95,16 @@ test('全教材・学習アドバイザー・定着分析・管理機能を統�
   assert.match(advisor, /data-advisor-weakness/)
   assert.match(advisor, /data-advisor-next-unit/)
   const expectedScreens = [
-    'portal', 'mathMap', 'vocabSearch', 'kotenList', 'kanbunHome', 'literatureLibrary',
+    'vocabSearch', 'writing', 'roots',
+    'portal', 'mathMap', 'kotenList', 'kanbunHome', 'literatureLibrary',
     'home', 'vocabLevels', 'readingList', 'phrases', 'grammar', 'listening',
-    'diagnostic', 'writing', 'dictation', 'roots', 'vocabCamera', 'wordRequests',
+    'diagnostic', 'dictation', 'vocabCamera', 'wordRequests',
     'myList', 'myLearning', 'myGrammar', 'kotenSaved', 'kanbunSaved', 'progress',
   ]
+  assert.deepEqual(
+    APP_MENU_DIRECT_ITEMS.map(({ screen, label }) => [screen, label]),
+    [['vocabSearch', '英和辞書'], ['writing', '英作文'], ['roots', '語源学習']],
+  )
   assert.deepEqual(APP_MENU_GROUPS.map(({ id, label }) => [id, label]), [
     ['learn', '教材を選ぶ'],
     ['tools', '学習ツール'],
@@ -103,13 +113,14 @@ test('全教材・学習アドバイザー・定着分析・管理機能を統�
   ])
   assert.deepEqual(
     APP_MENU_GROUPS.map((group) => group.sections.flatMap((section) => section.items).length),
-    [12, 6, 6, 3],
+    [11, 4, 6, 3],
   )
   assert.equal(APP_MENU_ITEMS.length, 27)
   assert.deepEqual(APP_MENU_SCREEN_DESTINATIONS, expectedScreens)
   assert.deepEqual(APP_MENU_ACTIONS, ['settings', 'account', 'reset'])
   assert.equal(new Set(APP_MENU_SCREEN_DESTINATIONS).size, expectedScreens.length)
   assert.match(menu, /data-menu-group-list/)
+  assert.match(menu, /data-menu-direct-list/)
   assert.match(menu, /data-menu-group-entry/)
   assert.match(menu, /data-menu-group-panel/)
   assert.match(menu, /data-menu-settings-entry/)

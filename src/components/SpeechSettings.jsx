@@ -50,6 +50,7 @@ import {
   LearningAdvisorSummary,
 } from './LearningAdvisor.jsx'
 import {
+  APP_MENU_DIRECT_ITEMS,
   APP_MENU_GROUPS,
   appMenuGroupById,
 } from '../lib/appMenu.js'
@@ -532,12 +533,21 @@ function MenuDestinationList({
 
 export function AppMenuPanel({
   profile,
+  onNavigate,
   onOpenAdvisor,
   onOpenAnalysis,
   onOpenGroup,
 }) {
   return (
     <section className="space-y-3" aria-label="アプリメニュー" data-app-menu-panel>
+      <nav aria-label="すぐに開く教材" data-menu-direct-list>
+        <MenuDestinationList
+          items={APP_MENU_DIRECT_ITEMS}
+          onNavigate={onNavigate}
+          tone="violet"
+        />
+      </nav>
+
       <LearningAdvisorSummary
         profile={profile}
         onOpenAdvisor={onOpenAdvisor}
@@ -967,7 +977,9 @@ export function SpeechSettingsSheet() {
     'reset-complete': 'リセット完了',
     'backup-reset': 'リセット前のバックアップ',
     account: account ? 'アカウント' : 'ログイン・保存',
-    'save-progress': '途中の進捗を保存しますか？',
+    'save-progress': pendingNavigation?.type === 'back'
+      ? '戻りますか？'
+      : '途中の進捗を保存しますか？',
   }
   const sheetTitle = activeMenuGroup?.label ?? sheetTitles[view] ?? '統一メニュー'
 
@@ -1064,23 +1076,42 @@ export function SpeechSettingsSheet() {
         </>
       ) : view === 'save-progress' ? (
         <div data-progress-save-confirmation>
-          <p className="mb-3 rounded-2xl bg-emerald-50 px-3 py-2.5 text-xs font-bold leading-relaxed text-emerald-800">
-            回答ボタンを押した分まで、この端末には自動保存されています。別端末でも再開する場合は、下のQR画像かコードを保存してから{pendingLabel}へ進んでください。
-          </p>
-          <ProgressBackupPanel
-            onContinue={() => performNavigation(pendingNavigation)}
-            continueLabel={`保存を終えて${pendingLabel}へ`}
-          />
-          <Button full className="mt-2" variant="ghost" onClick={() => performNavigation(pendingNavigation)}>
-            この端末の自動保存だけで{pendingLabel}へ
-          </Button>
-          <Button full className="mt-1" variant="ghost" onClick={close}>
-            戻らず学習を続ける
-          </Button>
+          {pendingNavigation?.type === 'back' ? (
+            <div data-progress-discard-confirmation>
+              <p className="mb-3 rounded-2xl bg-rose-50 px-3 py-2.5 text-xs font-bold leading-relaxed text-rose-800">
+                途中で戻るボタンを押した場合は、進捗は破棄されます。戻りますか？
+              </p>
+              <div className="grid gap-2">
+                <Button full onClick={() => performNavigation(pendingNavigation)}>
+                  戻る
+                </Button>
+                <Button full variant="ghost" onClick={close}>
+                  続ける
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <>
+              <p className="mb-3 rounded-2xl bg-emerald-50 px-3 py-2.5 text-xs font-bold leading-relaxed text-emerald-800">
+                回答ボタンを押した分まで、この端末には自動保存されています。別端末でも再開する場合は、下のQR画像かコードを保存してから{pendingLabel}へ進んでください。
+              </p>
+              <ProgressBackupPanel
+                onContinue={() => performNavigation(pendingNavigation)}
+                continueLabel={`保存を終えて${pendingLabel}へ`}
+              />
+              <Button full className="mt-2" variant="ghost" onClick={() => performNavigation(pendingNavigation)}>
+                この端末の自動保存だけで{pendingLabel}へ
+              </Button>
+              <Button full className="mt-1" variant="ghost" onClick={close}>
+                戻らず学習を続ける
+              </Button>
+            </>
+          )}
         </div>
       ) : (
         <AppMenuPanel
           profile={profile}
+          onNavigate={openScreen}
           onOpenAdvisor={() => setView('advisor')}
           onOpenAnalysis={() => setView('analytics')}
           onOpenGroup={(groupId) => setView(`group-${groupId}`)}
