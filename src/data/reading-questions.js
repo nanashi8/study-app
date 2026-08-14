@@ -1,9 +1,11 @@
 // 長文ごとの内容理解問題。
 // answer は choices の文字列と完全一致させ、表示時は正解位置を安定的に分散する。
 import { EXAM_READING_QUESTIONS } from './reading-questions-exam.js'
+import { EXPANDED_READING_QUESTIONS } from './reading-expansion-questions.js'
 
 export const READING_QUESTIONS = {
   ...EXAM_READING_QUESTIONS,
+  ...EXPANDED_READING_QUESTIONS,
   p_5_lost_notebook: [
     {
       q: 'How does Rina go to school every morning?',

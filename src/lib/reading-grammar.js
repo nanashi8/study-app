@@ -22,6 +22,7 @@ import {
 import { parseStructureMarkers } from './structure-markers.js'
 import { buildMeaningPhraseSequence } from './meaning-phrases.js'
 import { readingMeaningPhraseOverridesFor } from '../data/reading-meaning-phrase-overrides.js'
+import { readingExpectedMainPattern } from '../data/reading-grammar-expectations.js'
 
 export const READING_CORE_PHRASE_WORD_LIMIT = 5
 export const READING_MODIFIER_PHRASE_WORD_LIMIT = 7
@@ -1970,7 +1971,7 @@ function buildPhrasePairs(
   jaSegments,
   sentenceGloss,
   manualEnSegments,
-  { kind = 'core', blockRole = null, svoc = null } = {},
+  { kind = 'core', blockRole = null, svoc = null, preserveSegments = false } = {},
 ) {
   const enSegments = Array.isArray(manualEnSegments)
     ? manualEnSegments
@@ -2037,6 +2038,26 @@ function buildPhrasePairs(
       roleNote: translationRoleExplanation(roles, ja, scope),
     })
   })
+  // 追加長文の監修済み語順プランは、英日を隣接させた単位そのものが教材です。
+  // 自動SVOC分割でその境界を再分割すると、訳が隣の語へ移るため、監修境界を優先します。
+  if (preserveSegments) {
+    return Object.freeze(sourcePairs.map((pair, index) => {
+      const roles = Object.freeze([pair.role])
+      const roleNote =
+        `${translationRoleExplanation(roles, pair.ja, pair.scope)} ` +
+        '本文を確認して固定した意味単位です。'
+      return Object.freeze({
+        ...pair,
+        roles,
+        roleHeading: translationRoleHeading(roles, pair.scope),
+        roleNote,
+        sourceJa: pair.ja,
+        sourceIndex: index,
+        preserveBoundary: true,
+      })
+    }))
+  }
+
   const atomicPairs = sourcePairs.flatMap((pair, index) =>
     expandRolePhrasePair(pair, index, sentenceGloss))
   return mergeReviewedRolePhrasePairs(atomicPairs, sentenceGloss)
@@ -3083,6 +3104,8 @@ function mergeSentenceBoundaryPhraseSequence(phrases, sentenceGloss) {
     const rightKey = words(right?.en ?? '').map(normalizeToken).join(' ')
     const bindAcrossBoundary =
       right &&
+      !left.preserveBoundary &&
+      !right.preserveBoundary &&
       BOUND_PREPOSITION_PARTS.has(leftKey) &&
       (
         ['what', 'which', 'who', 'being', 'losing'].includes(rightKey.split(' ')[0]) ||
@@ -3240,6 +3263,30 @@ const INFINITIVE_CONTEXT_OVERRIDES = new Map([
     'No collection of measures eliminates judgment, but plural indicators make it harder for one narrow target to dominate behavior.|||to dominate',
     'to dominate は for one narrow target を意味上の主語に取り、make it harder の「何が難しいか」を示す不定詞です。',
   ],
+  [
+    'It also teaches students to choose when a device helps and when it interrupts.|||to choose',
+    'to choose は teach O to do の不定詞で、目的語studentsが、機器が役立つ時と邪魔になる時を見分ける動作を示します。',
+  ],
+  [
+    'The goal is not simply to remove phones, but to build habits that protect attention.|||to build habits that',
+    'to build は is の後ろでto removeと対比される主格補語です。目標を実行する主体が、集中を守る習慣を築くことを表します。',
+  ],
+  [
+    'A repair did not need to look perfect; it needed to make the item safe and useful.|||to make',
+    'to make は needed の内容を示す不定詞で、修理を行う人がthe itemをsafe and usefulの状態にする関係を作ります。',
+  ],
+  [
+    'Calls to reduce night lighting often meet an immediate objection about safety.|||to reduce night lighting',
+    'to reduce は名詞Callsの内容を後ろから示し、「夜間照明を減らすよう求める声」という名詞句を作ります。',
+  ],
+  [
+    'Employees save more for retirement when enrollment is automatic but can be canceled than when they must complete a form to join.|||to join',
+    'to join はcomplete a formの目的を示し、従業員が加入するために書類を完成させる関係を作ります。',
+  ],
+  [
+    'Formally, customers retain a choice; practically, friction has been distributed to protect one side.|||to protect one side',
+    'to protect はhas been distributedの目的を示し、制度を設計する側が一方を守るために手間を配分したことを表します。',
+  ],
 ])
 
 const INFINITIVE_BINDING_OVERRIDES = new Map([
@@ -3307,6 +3354,12 @@ const INFINITIVE_BINDING_OVERRIDES = new Map([
   ['A school may devote more time to easily tested skills while neglecting discussion, curiosity, or students whose improvement is unlikely to change its ranking.|||to change', { type: 'adjective-complement', governor: 'unlikely', semanticSubject: 'improvement' }],
   ['Critics sometimes conclude that quantification itself is the problem and that experienced professionals should simply be trusted to exercise judgment.|||to exercise', { type: 'passive-verb-complement', governor: 'should simply be trusted', semanticSubject: 'experienced professionals' }],
   ['No collection of measures eliminates judgment, but plural indicators make it harder for one narrow target to dominate behavior.|||to dominate', { type: 'anticipatory-object-content', governor: 'make it harder', semanticSubject: 'one narrow target' }],
+  ['It also teaches students to choose when a device helps and when it interrupts.|||to choose', { type: 'object-to-infinitive', governor: 'teaches', semanticSubject: 'students' }],
+  ['The goal is not simply to remove phones, but to build habits that protect attention.|||to build habits that', { type: 'parallel-subject-complement', governor: 'is / The goal', semanticSubject: '目標を実行する主体' }],
+  ['A repair did not need to look perfect; it needed to make the item safe and useful.|||to make', { type: 'verb-complement', governor: 'needed', semanticSubject: '修理を行う主体' }],
+  ['Calls to reduce night lighting often meet an immediate objection about safety.|||to reduce night lighting', { type: 'noun-modifier', governor: 'Calls', semanticSubject: '夜間照明の削減を求める主体' }],
+  ['Employees save more for retirement when enrollment is automatic but can be canceled than when they must complete a form to join.|||to join', { type: 'purpose', governor: 'complete a form', semanticSubject: 'they / Employees' }],
+  ['Formally, customers retain a choice; practically, friction has been distributed to protect one side.|||to protect one side', { type: 'purpose', governor: 'has been distributed', semanticSubject: '制度を設計する主体' }],
 ])
 
 function nearestAntecedent(phrases, index) {
@@ -4252,6 +4305,10 @@ const ING_CONTEXT_OVERRIDES = new Map([
     'Those who design indicators should therefore be answerable for their consequences, including the administrative labor they create.|||including',
     { type: 'additive-participle-marker', governor: 'their consequences', semanticSubject: '追加される例 the administrative labor', note: 'including は consequences の具体例を追加する分詞・前置詞的な標識です。動名詞でも、for の目的語でもありません。' },
   ],
+  [
+    'Officials first need a map of current lighting, including ownership, energy use, brightness, direction, and hours of operation.|||including ownership energy use',
+    { type: 'additive-participle-marker', governor: 'a map of current lighting', semanticSubject: '地図に追加される照明情報', note: 'including はcurrent lightingの地図に必要な項目を列挙する追加標識です。主節の新しい動作ではなく、ownership以下をmapの具体的内容として加えます。' },
+  ],
 ])
 
 function ingGrammarCue(phrases, index, sentenceEn) {
@@ -4261,7 +4318,8 @@ function ingGrammarCue(phrases, index, sentenceEn) {
   const ingWord = tokens.find((token) => VERBAL_ING_FORMS.has(token))
   if (!ingWord) return null
   if (
-    /^(?:working hours|tea drinking|the building|a warning label|warning messages|more demanding)$/.test(key) ||
+    /\bworking hours\b/.test(key) ||
+    /^(?:tea drinking|the building|a warning label|warning messages|more demanding)$/.test(key) ||
     /\b(?:clear training|genuine learning|both learning and democratic accountability)\b/.test(key) ||
     /(?:apartment building)$/.test(key) ||
     REDUCED_RELATIVE_CONTEXTS.has(`${sentenceEn}|||${key}`)
@@ -5043,6 +5101,26 @@ const COORDINATION_CONTEXT_OVERRIDES = new Map([
       note: 'or は the number of が共通して数える二項、documents (that are) preserved と people (who are) reached を並列します。people は新しい節の主語ではなく、両方とも省略された受動の関係詞節で限定されています。',
     },
   ],
+  [
+    'They understood the English but sometimes missed a turn shown only by a street name.|||1',
+    {
+      type: 'coordinated-predicates',
+      left: 'understood the English',
+      right: 'sometimes missed a turn shown only by a street name',
+      governor: 'They',
+      note: 'but は主語Theyを共有する二つの述語、understood the Englishとsometimes missed ...を対比します。sometimesは二つ目の述語missedにかかります。',
+    },
+  ],
+  [
+    'Protecting the night is therefore not a return to the past but a more disciplined use of modern light.|||1',
+    {
+      type: 'complement-contrast',
+      left: 'not a return to the past',
+      right: 'a more disciplined use of modern light',
+      governor: 'is therefore',
+      note: 'but はis thereforeの二つの補語候補を対比し、夜を守ることは過去への回帰ではなく、現代の光をより節度をもって使うことだと示します。',
+    },
+  ],
 ])
 
 function coordinationOccurrence(phrases, index) {
@@ -5624,7 +5702,7 @@ function projectPhraseGroupsToSourceBlocks(blocks, phrases) {
       if (candidateOverlap > currentOverlap) target = span
     }
     // 確定フレーズが旧境界をまたぐ場合、前ブロックに既に内容があれば
-    // 後ブロックへ置く。これで1,042ブロックを空にせず、重複もさせない。
+    // 後ブロックへ置く。これで全ブロックを空にせず、重複もさせない。
     if (overlapping.length > 1 && groups[overlapping[0].index].length > 0) {
       target = overlapping.at(-1)
     }
@@ -5755,6 +5833,12 @@ function projectedTeachingBlocks(blocks, phrases, sentenceEn) {
   }))
 }
 
+// 監修シナリオを本文と同じ境界で作るための読み取り専用API。
+// 公開するのは句読点を外した照合キーだけで、解析・文型判定は変更しない。
+export function readingBlockEnglish(sentence) {
+  return Object.freeze(splitEnglish(sentence).map((unit) => bare(unit.text)))
+}
+
 export function analyzeReadingSentence(sentence) {
   const split = splitEnglish(sentence)
   const japanese = alignJapanese(split, sentence)
@@ -5789,6 +5873,7 @@ export function analyzeReadingSentence(sentence) {
         kind: classification.kind,
         blockRole: classification.role,
         svoc,
+        preserveSegments: hasTeachingBlock && teachingBlock.reviewedSegments === true,
       },
     )
     return {
@@ -5815,7 +5900,8 @@ export function analyzeReadingSentence(sentence) {
     }
   })
 
-  const mainPattern = mainClausePattern(blocks)
+  const inferredMainPattern = mainClausePattern(blocks)
+  const mainPattern = readingExpectedMainPattern(sentence.reviewId) ?? inferredMainPattern
   const mainCoreIndex = blocks.findIndex(
     (block) => block.kind === 'core' && block.svoc.pattern.includes('V'),
   )

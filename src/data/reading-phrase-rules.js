@@ -1,4 +1,4 @@
-// 全363文で再利用する、英語順の意味・発音フレーズの機械可読な方法台帳。
+// 全567文で再利用する、英語順の意味・発音フレーズの機械可読な方法台帳。
 // confirmed は、本文別監査・回帰監査まで通した現行基準を表す。
 
 const rule = ({ id, status = 'confirmed', appliesTo, example, decision, caution = '' }) =>

@@ -3,6 +3,7 @@
 // 日本語は他の役割の意味を先取りせず、必要なら括弧で係り先を受け直す。
 
 import { READING_CONNECTOR_CLOSURE_CORRECTIONS } from './reading-connector-closure-reviews.js'
+import { EXPANDED_READING_PHRASE_CORRECTIONS } from './reading-expansion-phrase-corrections.js'
 
 const correction = (match, parts, note, occurrence = 1) => Object.freeze({
   match: Object.freeze(match),
@@ -3392,6 +3393,7 @@ export const READING_PHRASE_CORRECTIONS = Object.freeze(Object.fromEntries(
     ...Object.keys(CLOSURE_READING_PHRASE_CORRECTIONS),
     ...Object.keys(ADJACENT_JA_READING_PHRASE_CORRECTIONS),
     ...Object.keys(READING_CONNECTOR_CLOSURE_CORRECTIONS),
+    ...Object.keys(EXPANDED_READING_PHRASE_CORRECTIONS),
   ])].map((sentence) => [
     sentence,
     Object.freeze([
@@ -3400,6 +3402,7 @@ export const READING_PHRASE_CORRECTIONS = Object.freeze(Object.fromEntries(
       ...(CLOSURE_READING_PHRASE_CORRECTIONS[sentence] ?? []),
       ...(ADJACENT_JA_READING_PHRASE_CORRECTIONS[sentence] ?? []),
       ...(READING_CONNECTOR_CLOSURE_CORRECTIONS[sentence] ?? []),
+      ...(EXPANDED_READING_PHRASE_CORRECTIONS[sentence] ?? []),
     ]),
   ]),
 ))

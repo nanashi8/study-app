@@ -1,4 +1,4 @@
-// 全363文へ適用する「意味・発音のまとまり」基準の機械可読な回帰例。
+// 全567文へ適用する「意味・発音のまとまり」基準の機械可読な回帰例。
 // SVOCMはフレーズ境界ではなく、各フレーズ内部の構造注釈として保持する。
 // displayEn に補う (to) などは構造表示専用で、spokenEn には入れない。
 
@@ -203,5 +203,5 @@ export function getReadingPhraseExplanation(sentence) {
   return READING_PHRASE_EXPLANATIONS_BY_SENTENCE[english] ?? null
 }
 
-// 全363文の本文別判断は台帳化済み。真に未解決の意味境界が見つかった時だけ追加する。
+// 全567文の本文別判断は台帳化済み。真に未解決の意味境界が見つかった時だけ追加する。
 export const READING_PHRASE_OPEN_QUESTIONS = Object.freeze([])

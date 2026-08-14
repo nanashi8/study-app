@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import { getPassage } from '../data/passages.js'
 import { getReadingQuestions } from '../data/reading-questions.js'
+import { readingRuleForQuestion } from '../data/reading-rules.js'
 import { getWord } from '../data/vocab.js'
 import { getLevel } from '../data/levels.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
@@ -9,6 +10,7 @@ import { SpeakButton } from '../components/SpeakButton.jsx'
 import { PosBadge } from '../components/WordBits.jsx'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
+import { ReadingRuleCard } from '../components/ReadingRuleCard.jsx'
 import { Card, Button, Chip, IconButton, cx } from '../components/ui.jsx'
 import { Book, Cards, Bookmark, BookmarkFilled, Check, ArrowRight } from '../components/Icons.jsx'
 import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
@@ -109,11 +111,17 @@ export function ReadingSummaryScreen() {
                   />
                 </div>
                 {checked && (
-                  <InstructorExplanation
-                    explanation={buildReadingInstructorExplanation(q, answers[qi])}
-                    className="mt-3"
-                    compact
-                  />
+                  <>
+                    <InstructorExplanation
+                      explanation={buildReadingInstructorExplanation(q, answers[qi])}
+                      className="mt-3"
+                      compact
+                    />
+                    <div className="mt-2">
+                      <p className="mb-1 text-[11px] font-extrabold text-sky-700">この設問で使う読解ルール</p>
+                      <ReadingRuleCard rule={readingRuleForQuestion(q.q)} compact />
+                    </div>
+                  </>
                 )}
               </fieldset>
             ))}

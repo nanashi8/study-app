@@ -2134,8 +2134,8 @@ export function auditPhraseExplanations() {
   const confirmedRuleCount = READING_PHRASE_RULES
     .filter((item) => item.status === 'confirmed').length
   const complete =
-    PASSAGES.length === 16 &&
-    readingSentences.length === 363 &&
+    PASSAGES.length === 24 &&
+    readingSentences.length === 567 &&
     longTargets.length === 33 &&
     PUBLIC_DOMAIN_LITERATURE.length === 9 &&
     literatureSceneCount === 59 &&

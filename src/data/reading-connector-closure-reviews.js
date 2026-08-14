@@ -285,6 +285,31 @@ export const READING_CONNECTOR_CLOSURE_REVIEWS = Object.freeze([
     'When', 'among others', 'M', 'ほかの証拠源と並ぶ（規律ある一つの証拠源であり続けるとき）',
     binding('time-clause', 'When', 'measurement can support', 'it remains one disciplined source of evidence among others'),
   ),
+  review(
+    'If it rains, we visit the science museum instead.',
+    'If', 'instead', 'M', '代わりに（雨が降る場合は、科学博物館を訪れます）',
+    binding('condition-clause', 'If', 'we visit the science museum instead', 'it rains'),
+  ),
+  review(
+    'The survey asked whether an exchanged item replaced a planned purchase, since that choice could reduce new production.',
+    'since', 'new production', 'O', '新たな生産を（その選択なら減らせるからです）',
+    binding('reason-clause', 'since', 'asked whether an exchanged item replaced a planned purchase', 'that choice could reduce new production'),
+  ),
+  review(
+    'People often describe choice as if it begins only when a person consciously compares several options.',
+    'when', 'several options', 'O', '複数の選択肢を（人が意識的に比較するときだけ、選択が始まるかのように）',
+    binding('hypothetical-time-clause', 'as if / when', 'often describe choice', 'it begins only when a person consciously compares several options'),
+  ),
+  review(
+    'Architecture is not merely a metaphor, because every digital screen, form, cafeteria, and public procedure must arrange alternatives somehow.',
+    'because', 'somehow', 'M', '何らかの方法で（選択肢を配置しなければならないからです）',
+    binding('reason-clause', 'because', 'Architecture is not merely a metaphor', 'every digital screen, form, cafeteria, and public procedure must arrange alternatives somehow'),
+  ),
+  review(
+    'When the first map was ready, families tested it on a rainy afternoon.',
+    'When', 'ready', 'C', '完成した状態（になったとき）',
+    binding('time-clause', 'When', 'families tested it on a rainy afternoon', 'the first map was ready'),
+  ),
 ])
 
 const noChange = (sentence, connector, occurrence, reason) => Object.freeze({
@@ -295,7 +320,7 @@ const noChange = (sentence, connector, occurrence, reason) => Object.freeze({
   status: 'confirmed',
 })
 
-// 全102候補のうち、既存の節末ですでに関係が完成しているもの、または
+// 全121候補のうち、既存の節末ですでに関係が完成しているもの、または
 // 「一方」のように日本語の独立したつなぎだけで明確なもの。
 export const READING_CONNECTOR_NO_BACK_REFERENCE_REVIEWS = Object.freeze([
   noChange('She likes English because her teacher uses many pictures.', 'because', 1, 'already-complete'),
@@ -347,6 +372,20 @@ export const READING_CONNECTOR_NO_BACK_REFERENCE_REVIEWS = Object.freeze([
   noChange('If measurement increases surveillance below but accountability does not increase above, the system may weaken rather than strengthen legitimacy.', 'If', 1, 'already-complete'),
   noChange('Institutions can strengthen trust by publicly stating that limit because this prevents precision from being mistaken for certainty.', 'because', 1, 'already-complete'),
   noChange('Metrics are most valuable when they create questions rather than close them.', 'when', 1, 'already-complete'),
+  noChange('Families suggested marking places where people could wait safely if the rain grew stronger.', 'if', 1, 'already-complete'),
+  noChange('Because streets and buildings change, the class will check every route again each spring.', 'Because', 1, 'already-complete'),
+  noChange('They tested the walking times twice because busy summer streets could slow a group.', 'because', 1, 'already-complete'),
+  noChange('The school revealed the comparison group only after the four-week trial ended.', 'after', 1, 'already-complete'),
+  noChange('Some felt anxious because they regularly received health messages from home.', 'because', 1, 'already-complete'),
+  noChange('If an assignment was unclear, students became distracted even without a phone nearby.', 'If', 1, 'already-complete'),
+  noChange('Because water is collected and used again, some systems use far less water than field farming.', 'Because', 1, 'already-complete'),
+  noChange('The technology is most valuable when its limits are measured as carefully as its promises.', 'when', 1, 'already-complete'),
+  noChange('The trial should also record complaints and near misses, since average comfort may hide risks faced by a small group.', 'since', 1, 'already-complete'),
+  noChange('People often describe choice as if it begins only when a person consciously compares several options.', 'as', 1, 'standalone-link'),
+  noChange('People often describe choice as if it begins only when a person consciously compares several options.', 'if', 1, 'standalone-link'),
+  noChange('In practice, decisions are also shaped by which option appears first, which action requires effort, and what happens when someone does nothing.', 'when', 1, 'already-complete'),
+  noChange('Employees save more for retirement when enrollment is automatic but can be canceled than when they must complete a form to join.', 'when', 1, 'already-complete'),
+  noChange('Households may use less electricity when bills compare their use with that of similar homes.', 'when', 1, 'already-complete'),
 ])
 
 const directCorrection = (sentence, target, role, ja, note) => Object.freeze({

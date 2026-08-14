@@ -171,12 +171,12 @@ test('全長文・全文・全ブロックに講師監修の語順訳シナリ�
     phrasePairCount,
   )
   assert.ok(explicitSequenceCount > blockCount / 2, '大半のブロックで前へ進む意味単位が明示されていない')
-  assert.equal(PASSAGES.length, 16, '全16長文を対象にする')
-  assert.equal(sentenceCount, 363, '全363文を対象にする')
-  assert.equal(blockCount, 1042, '全1,042文法ブロックを対象にする')
-  assert.equal(phrasePairCount, 3238, '全3,238ブロック内役割単位を英語フレーズと直訳の組にする')
-  assert.equal(meaningPhraseCount, 2290, '全2,290件の学習者向け意味フレーズを対象にする')
-  assert.equal(meaningMultiRoleCount, 775, 'SVOCMを内部に複数含む775件も一つの意味フレーズとして保つ')
+  assert.equal(PASSAGES.length, 24, '全24長文を対象にする')
+  assert.equal(sentenceCount, 567, '全567文を対象にする')
+  assert.equal(blockCount, 1546, '全1,546文法ブロックを対象にする')
+  assert.equal(phrasePairCount, 4446, '全4,446ブロック内役割単位を英語フレーズと直訳の組にする')
+  assert.equal(meaningPhraseCount, 3246, '全3,246件の学習者向け意味フレーズを対象にする')
+  assert.equal(meaningMultiRoleCount, 1243, 'SVOCMを内部に複数含む1,243件も一つの意味フレーズとして保つ')
 })
 
 test('基準例は英語の語順どおり、動作・行き先・手段・時を丁寧に読める', () => {
@@ -346,7 +346,7 @@ test('長文画面は文全体の意味フレーズを英語→対応する日�
   assert.match(source, /label:\s*'読み方・文法上の注意'/)
 })
 
-test('長文363文は上段と文法解説で同一説明を二重表示しない', () => {
+test('長文567文は上段と文法解説で同一説明を二重表示しない', () => {
   let sentenceCount = 0
   let phraseCount = 0
   for (const passage of PASSAGES) {
@@ -366,6 +366,6 @@ test('長文363文は上段と文法解説で同一説明を二重表示しな�
       )
     }
   }
-  assert.equal(sentenceCount, 363)
-  assert.equal(phraseCount, 2290)
+  assert.equal(sentenceCount, 567)
+  assert.equal(phraseCount, 3246)
 })

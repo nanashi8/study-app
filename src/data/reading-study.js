@@ -2,6 +2,7 @@ import { getPhrase } from './phrases.js'
 import { resolvePassageWord } from './passage-gloss.js'
 import { PASSAGE_DICTIONARY_WORD_IDS } from './reading-words.js'
 import { EXAM_READING_STUDY } from './reading-study-exam.js'
+import { EXPANDED_READING_STUDY } from './reading-expansion-study.js'
 import { getWord } from './vocab.js'
 
 // 本文固有の表現。kind は既存の熟語カードエンジンと共通で、
@@ -21,6 +22,7 @@ const expression = (id, level, phrase, meaning, en, ja, note, kind = 'idiom') =>
 
 export const READING_STUDY = {
   ...EXAM_READING_STUDY,
+  ...EXPANDED_READING_STUDY,
   p_5_lost_notebook: {
     phraseIds: [],
     expressions: [
