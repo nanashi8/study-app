@@ -86,7 +86,7 @@ const entry = (due = todayIndex()) => ({
   last: due,
 })
 
-test('旧ポータル順では既存配置を保ち、新しい漢文アプリを古典の直後へ補う', () => {
+test('旧ポータルの独立辞書を英語アプリ内へ移し、主要6コンテンツ順へ移行する', () => {
   const legacyOrder = [
     'eigo-quest',
     'math-quest',
@@ -96,11 +96,14 @@ test('旧ポータル順では既存配置を保ち、新しい漢文アプリ�
     'literature-listening',
   ]
   const normalized = normalizeOrder(legacyOrder)
-  assert.equal(normalized.indexOf('kanbun-quest'), normalized.indexOf('koten-quest') + 1)
-  assert.deepEqual(
-    normalized.filter((id) => id !== 'kanbun-quest'),
-    legacyOrder,
-  )
+  assert.deepEqual(normalized, [
+    'eigo-quest',
+    'koten-quest',
+    'kanbun-quest',
+    'literature-listening',
+    'math-quest',
+    'other-subjects',
+  ])
 })
 
 test('現地日付は日本時間の午前0時で切り替わる', () => {

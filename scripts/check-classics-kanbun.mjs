@@ -25,6 +25,7 @@ import {
   isCorrectKanbunKundokuOrder,
 } from '../src/data/kanbun-kundoku.js'
 import { KANBUN_LEVELS } from '../src/data/kanbun-meta.js'
+import { parseKanbunMarkedText } from '../src/lib/kanbun-marks.js'
 import { CONTENTS } from '../src/data/contents.js'
 import { APP_MENU_SCREEN_DESTINATIONS } from '../src/lib/appMenu.js'
 import { PERSISTED_PROGRESS_FIELDS } from '../src/lib/progressCode.js'
@@ -100,11 +101,17 @@ const grammarText = KANBUN_GRAMMAR.map((item) => Object.values(item).join(' ')).
 for (const term of ['白文', '訓読', '書き下し', 'レ点', '一二点', '上下点', '甲乙', '天地人', '再読文字', '使役', '受身', '反語', '比較']) {
   assert.ok(grammarText.includes(term), `漢文法に「${term}」がありません`)
 }
+let kanbunReturnMarkCount = 0
 for (const exercise of KANBUN_KUNDOKU_EXERCISES) {
   assert.equal(isCorrectKanbunKundokuOrder(exercise, exercise.order), true, exercise.id)
   assert.equal(new Set(exercise.order).size, exercise.tokens.length, exercise.id)
   assert.ok(exercise.kakikudashi && exercise.translation && exercise.clue && exercise.pitfall, exercise.id)
+  const parsed = parseKanbunMarkedText(exercise.marked)
+  assert.deepEqual(parsed.errors, [], `${exercise.id}: 返り点の親字対応が不正`)
+  assert.equal(parsed.units.map((unit) => unit.sourceText).join(''), exercise.marked, exercise.id)
+  kanbunReturnMarkCount += parsed.returnMarkCount
 }
+assert.equal(kanbunReturnMarkCount, 113, '返り点40題の点数が監査基準と不一致です')
 
 const kotenTile = CONTENTS.find((content) => content.id === 'koten-quest')
 const kanbunTile = CONTENTS.find((content) => content.id === 'kanbun-quest')
@@ -116,6 +123,11 @@ for (const screen of ['kotenList', 'kanbunHome', 'kanbunSaved']) {
 }
 
 const appSource = readFileSync(new URL('../src/App.jsx', import.meta.url), 'utf8')
+const kundokuSource = readFileSync(new URL('../src/screens/KanbunKundoku.jsx', import.meta.url), 'utf8')
+const kundokuQuizSource = readFileSync(new URL('../src/screens/KanbunKundokuQuiz.jsx', import.meta.url), 'utf8')
+assert.match(kundokuSource, /KanbunMarkedText/, '返り点ドリルに構造化表示がありません')
+assert.match(kundokuQuizSource, /KanbunMarkedText/, '返り点テストに構造化表示がありません')
+assert.doesNotMatch(kundokuQuizSource, /\{exercise\.marked\}<\/p>/, '旧式の返り点文字列表示が残っています')
 for (const screen of [
   'kanbunHome',
   'kanbunCatalog',
@@ -143,5 +155,5 @@ for (const field of kanbunProgressFields) {
 
 console.log('古典・漢文全件監査: PASS')
 console.log('  古典: 暗記430項目 / 4択548問相当 / 短文読解36問 / 5段階')
-console.log('  漢文: 暗記302項目 / 自動4択302問 / 返り点・訓読40題 / 5段階')
+console.log(`  漢文: 暗記302項目 / 自動4択302問 / 返り点・訓読40題・返り点${kanbunReturnMarkCount}個を親字へ固定 / 5段階`)
 console.log(`  保存契約: 漢文7項目 / 全${PERSISTED_PROGRESS_FIELDS.length}永続項目`)
