@@ -108,20 +108,18 @@ export function localDayIndexAt(
 const today = () => localDayIndexAt()
 
 // 保存済みのポータル並び順を正規化：既知のidだけ残し、未登場の新コンテンツを補う。
-// 古典／漢文の分離追加時は、既存項目どうしの順序を変えず漢文だけを古典の直後へ置く。
+// 旧ポータルに独立していた英和辞書は英語アプリ内へ移したため、その旧IDを含む保存値は
+// 新しい主要6コンテンツの学習順へ一度だけ移行する。移行後のユーザー並べ替えは保持する。
 export function normalizeOrder(order) {
+  if (Array.isArray(order) && order.includes('eigo-dict')) {
+    return [...DEFAULT_CONTENT_ORDER]
+  }
   const known = new Set(DEFAULT_CONTENT_ORDER)
   const seen = new Set()
   const kept = (Array.isArray(order) ? order : []).filter((id) => known.has(id) && !seen.has(id) && seen.add(id))
   const missing = DEFAULT_CONTENT_ORDER.filter((id) => !seen.has(id))
   const normalized = [...kept]
-  for (const id of missing) {
-    if (id === 'kanbun-quest' && normalized.includes('koten-quest')) {
-      normalized.splice(normalized.indexOf('koten-quest') + 1, 0, id)
-    } else {
-      normalized.push(id)
-    }
-  }
+  normalized.push(...missing)
   return normalized
 }
 

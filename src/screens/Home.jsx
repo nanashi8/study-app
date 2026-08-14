@@ -5,11 +5,13 @@ import {
   BookOpen,
   Headphones,
   Lightbulb,
+  Search,
   Sparkles,
 } from '../components/Icons.jsx'
 
 const PRIMARY_LEARNING_MODES = [
   { id: 'vocab', label: '単語', Icon: Book, color: '#6366f1', screen: 'vocabLevels' },
+  { id: 'dictionary', label: '英和辞書', Icon: Search, color: '#0ea5e9', screen: 'vocabSearch' },
   { id: 'reading', label: '長文', Icon: BookOpen, color: '#10b981', screen: 'readingList' },
   { id: 'phrases', label: '熟語・構文', Icon: Sparkles, color: '#8b5cf6', screen: 'phrases' },
   { id: 'grammar', label: '文法', Icon: Lightbulb, color: '#f59e0b', screen: 'grammar' },

@@ -83,7 +83,7 @@ test('英語ホームは学習選択を直接表示し、終了したゲーム�
 
   assert.deepEqual(
     [...primaryModes.matchAll(/id: '([^']+)'/g)].map((match) => match[1]),
-    ['vocab', 'reading', 'phrases', 'grammar', 'listening'],
+    ['vocab', 'dictionary', 'reading', 'phrases', 'grammar', 'listening'],
   )
   assert.match(home, /data-home-learning-menu/)
   assert.match(home, /PRIMARY_LEARNING_MODES\.map/)

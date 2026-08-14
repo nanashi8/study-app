@@ -2,7 +2,6 @@ import { useState, useMemo, useEffect } from 'react'
 import { useStore } from '../store/useStore.js'
 import { getPassage } from '../data/passages.js'
 import { getLevel } from '../data/levels.js'
-import { tokenize } from '../lib/text.js'
 import { resolvePassageWord } from '../data/passage-gloss.js'
 import {
   analyzePassageParagraphs,
@@ -22,6 +21,7 @@ import { Close, SpeakerWave, ArrowRight, Lightbulb, Link, Bookmark, BookmarkFill
 import { cx } from '../components/ui.jsx'
 import { translationRoleMeta } from '../lib/translation-roles.js'
 import { StructureDiagram } from '../components/StructureDiagram.js'
+import { ReadingRoleSentence } from '../components/ReadingRoleSentence.js'
 import { ReadingRuleCard } from '../components/ReadingRuleCard.jsx'
 import {
   readingBlockExplanationTexts,
@@ -456,37 +456,25 @@ export function ReaderScreen() {
       <Sheet open={activeIdx != null} onClose={closeSentence} title="一文の構文解説" maxH="88vh">
         {sentence && sentenceAnalysis && (
           <div className="space-y-4">
-            {/* 英文（単語タップ可） */}
-            <div className="rounded-2xl bg-brand-50 p-4">
+            {/* 構文ラベルを原文へ直接対応させた英文（単語タップ可） */}
+            <div className="rounded-2xl bg-brand-50 p-4" data-reading-role-card="direct-labels">
               <div className="mb-2 flex items-center justify-between">
-                <span className="text-[11px] font-extrabold uppercase tracking-wide text-brand-400">英文</span>
+                <span className="text-[11px] font-extrabold tracking-wide text-brand-500">
+                  英文・構文ラベル付き
+                </span>
                 <SpeakButton text={sentence.en} size="sm" />
               </div>
-              <p className="text-lg leading-relaxed text-ink">
-                {tokenize(sentence.en).map((tok, k) => {
-                  if (tok.space) return ' '
-                  if (!tok.word) return <span key={k}>{tok.pre}</span>
-                  // 重要語（語彙データにある語）は下線で示す。機能語も意味は出る。
-                  const known = !!resolvePassageWord(tok.key, sentence.gloss)?.id
-                  return (
-                    <span key={k}>
-                      {tok.pre}
-                      <button
-                        onClick={() => tapToken(tok)}
-                        className={cx(
-                          'rounded transition-colors active:bg-brand-200',
-                          known
-                            ? 'font-bold text-brand-700 underline decoration-brand-300 decoration-2 underline-offset-2'
-                            : 'text-ink underline decoration-dotted decoration-ink/20 underline-offset-2',
-                          activeWord?.word === tok.word && 'bg-brand-200',
-                        )}
-                      >
-                        {tok.word}
-                      </button>
-                      {tok.post}
-                    </span>
-                  )
-                })}
+              <ReadingRoleSentence
+                sentence={sentence.en}
+                parts={sentenceFlowParts(sentenceAnalysis)}
+                activeWord={activeWord?.word}
+                isKnownWord={(token) => Boolean(
+                  resolvePassageWord(token.key, sentence.gloss)?.id,
+                )}
+                onWordClick={tapToken}
+              />
+              <p className="mt-2 text-[10px] font-bold leading-relaxed text-ink/55">
+                ラベルと同じ色の線が、その役割の範囲です。青い太字は重要語で、どの単語もタップできます。
               </p>
             </div>
 

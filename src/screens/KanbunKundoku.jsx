@@ -6,6 +6,7 @@ import {
 import { kanbunDueItems, kanbunProgress } from '../lib/kanbunProgress.js'
 import { Button, Card, ProgressRing } from '../components/ui.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
+import { KanbunMarkedText } from '../components/KanbunMarkedText.js'
 import { Book, Cards, ChevronLeft, Refresh } from '../components/Icons.jsx'
 
 export function KanbunKundokuScreen() {
@@ -78,6 +79,7 @@ export function KanbunKundokuScreen() {
               </ol>
             </div>
           </div>
+          <KanbunMarkedText marked="使二人読一レ書" className="mt-4 rounded-2xl bg-slate-50 px-3 py-3" />
         </Card>
 
         <section>
@@ -118,7 +120,7 @@ export function KanbunKundokuScreen() {
         <section className="rounded-2xl bg-sky-50 p-4">
           <p className="text-xs font-extrabold text-sky-900">表記について</p>
           <p className="mt-1 text-[11px] font-bold leading-relaxed text-sky-900/65">
-            このドリルではスマートフォンで位置関係を明瞭にするため、返り点を「読レ書」「学二於師一」のように親字の直後へ表示します。実際の縦書きでは返り点は漢字の左下に付きます。
+            返り点は親字と一体のまとまりとして、その字の左下に小さく表示します。画面幅で折り返しても、レ点・一二点・上下点・甲乙点・天地人点が親字から離れません。
           </p>
         </section>
       </main>

@@ -7,6 +7,7 @@ import {
 } from '../data/kanbun-kundoku.js'
 import { Button, Chip, cx, IconButton, ProgressBar } from '../components/ui.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
+import { KanbunMarkedText } from '../components/KanbunMarkedText.js'
 import { Check, Close, Lightbulb, Refresh } from '../components/Icons.jsx'
 
 const SESSION_SIZE = 10
@@ -127,7 +128,7 @@ export function KanbunKundokuQuizScreen() {
           </div>
           <p className="mt-4 text-xs font-extrabold text-ink/50">返り点に従い、読む順に漢字をタップ</p>
           <div className="mt-3 rounded-2xl bg-gradient-to-br from-slate-950 to-rose-950 px-4 py-6 text-center text-white">
-            <p className="font-serif text-2xl font-extrabold tracking-[0.12em]">{exercise.marked}</p>
+            <KanbunMarkedText marked={exercise.marked} inverse />
           </div>
 
           <div className="mt-5">
