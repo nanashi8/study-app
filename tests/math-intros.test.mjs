@@ -87,6 +87,7 @@ test('数学45単元のすべてに動的な視覚導入がある', () => {
 
 test('全単元の図はすべての操作値でSVGとして描画できる', async () => {
   const vite = await createServer({
+    configFile: false,
     appType: 'custom',
     logLevel: 'silent',
     server: { middlewareMode: true },
@@ -145,6 +146,7 @@ test('全単元の図はすべての操作値でSVGとして描画できる', as
 
 test('手順式の視覚教材は数式と図を同じ段階で表示する', async () => {
   const vite = await createServer({
+    configFile: false,
     appType: 'custom',
     logLevel: 'silent',
     server: { middlewareMode: true },
@@ -212,6 +214,7 @@ test('手順式の視覚教材は数式と図を同じ段階で表示する', as
 
 test('方向・座標・回転・縮尺の図は操作値と数学的意味を一致させる', async () => {
   const vite = await createServer({
+    configFile: false,
     appType: 'custom',
     logLevel: 'silent',
     server: { middlewareMode: true },
@@ -283,6 +286,7 @@ test('方向・座標・回転・縮尺の図は操作値と数学的意味を�
 
 test('視覚教材の操作UIは値の位置・大きな操作対象・選択状態を明示する', async () => {
   const vite = await createServer({
+    configFile: false,
     appType: 'custom',
     logLevel: 'silent',
     server: { middlewareMode: true },
