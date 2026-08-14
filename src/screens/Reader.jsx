@@ -8,6 +8,7 @@ import {
   analyzePassageParagraphs,
   analyzeReadingSentence,
 } from '../lib/reading-grammar.js'
+import { readingRulesForSentence } from '../data/reading-rules.js'
 import {
   dismissSpeechPlayer,
   playSpeechItems,
@@ -21,6 +22,7 @@ import { Close, SpeakerWave, ArrowRight, Lightbulb, Link, Bookmark, BookmarkFill
 import { cx } from '../components/ui.jsx'
 import { translationRoleMeta } from '../lib/translation-roles.js'
 import { StructureDiagram } from '../components/StructureDiagram.js'
+import { ReadingRuleCard } from '../components/ReadingRuleCard.jsx'
 import {
   readingBlockExplanationTexts,
   readingPhraseExplanationTexts,
@@ -256,6 +258,7 @@ export function ReaderScreen() {
     sentenceAnalysis,
     visiblePhraseExplanations,
   )
+  const visibleSentenceRules = readingRulesForSentence(sentence)
 
   const openSentence = (i) => {
     dismissSpeechPlayer()
@@ -305,6 +308,12 @@ export function ReaderScreen() {
           className="flex items-center gap-1 rounded-full bg-brand-100 px-3 py-1.5 text-xs font-extrabold text-brand-700"
         >
           <BookOpen size={14} /> 重要語・表現
+        </button>
+        <button
+          onClick={() => navigate('readingRules')}
+          className="flex items-center gap-1 rounded-full bg-sky-50 px-3 py-1.5 text-xs font-extrabold text-sky-700"
+        >
+          <Lightbulb size={14} /> 読解ルール
         </button>
         <button
           onClick={() => setShowJa((v) => !v)}
@@ -550,7 +559,38 @@ export function ReaderScreen() {
               </div>
             </section>
 
-            {/* 文法ブロックから独立した、全363文共通の発音・意味フレーズ列 */}
+            <section
+              className="rounded-2xl border border-sky-100 bg-sky-50/50 p-3"
+              data-reading-rules-for-sentence={sentence.reviewId}
+            >
+              <div className="flex items-center justify-between gap-2">
+                <div>
+                  <div className="text-[11px] font-extrabold uppercase tracking-wide text-sky-600">
+                    この文で使う読解ルール
+                  </div>
+                  <p className="mt-0.5 text-xs font-bold text-ink/50">
+                    文中の合図から選んだ{visibleSentenceRules.length}件
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    closeSentence()
+                    navigate('readingRules')
+                  }}
+                  className="shrink-0 rounded-full bg-white px-2.5 py-1.5 text-[11px] font-extrabold text-sky-700"
+                >
+                  全30件
+                </button>
+              </div>
+              <div className="mt-2 space-y-2">
+                {visibleSentenceRules.map((rule) => (
+                  <ReadingRuleCard key={rule.id} rule={rule} compact />
+                ))}
+              </div>
+            </section>
+
+            {/* 文法ブロックから独立した、全長文共通の発音・意味フレーズ列 */}
             <section
               className="border-y border-emerald-100 bg-emerald-50/40 py-3"
               data-reading-phrase-method={sentenceAnalysis.phraseMethod}

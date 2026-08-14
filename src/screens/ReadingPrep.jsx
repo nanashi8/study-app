@@ -3,8 +3,10 @@ import { useStore } from '../store/useStore.js'
 import { getPassage } from '../data/passages.js'
 import { getLevel } from '../data/levels.js'
 import { getReadingStudy, passageWordCount } from '../data/reading-study.js'
+import { readingRulesForPassage } from '../data/reading-rules.js'
 import { phraseSpeechText } from '../lib/phrase-speech.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
+import { ReadingRuleCard } from '../components/ReadingRuleCard.jsx'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { PosBadge } from '../components/WordBits.jsx'
 import { Button, Card, Chip, IconButton, ProgressBar, cx } from '../components/ui.jsx'
@@ -42,6 +44,7 @@ export function ReadingPrepScreen() {
 
   const level = getLevel(passage.level)
   const { words, phrases } = getReadingStudy(passage)
+  const passageRules = readingRulesForPassage(passage)
   const wordIds = words.map((word) => word.id)
   const itemIds = [...wordIds, ...phrases.map((item) => item.id)]
   const studied = itemIds.filter((id) => srs[id]).length
@@ -77,7 +80,7 @@ export function ReadingPrepScreen() {
         title="読解の準備"
         subtitle={passage.titleJa}
         color={level.color}
-        right={<Chip color={level.color}>英検{level.label}</Chip>}
+        right={<Chip color={level.color}>{passage.examTypes.join('・')}</Chip>}
       />
 
       <div className="flex-1 overflow-y-auto px-4 pb-4">
@@ -112,6 +115,32 @@ export function ReadingPrepScreen() {
           <div className="mt-2 flex flex-wrap gap-2">
             {passage.examFocus.map((focus) => (
               <Chip key={focus} color={level.color}>{focus}</Chip>
+            ))}
+          </div>
+        </Card>
+
+        <Card className="mb-4 p-4" data-reading-rules-for-passage={passage.id}>
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <div className="text-xs font-extrabold text-ink/45">この本文で使う</div>
+              <div className="mt-0.5 font-display text-lg font-extrabold text-ink">
+                読解ルール {passageRules.length}件
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => navigate('readingRules')}
+              className="shrink-0 rounded-full bg-brand-100 px-3 py-1.5 text-xs font-extrabold text-brand-700"
+            >
+              全30件
+            </button>
+          </div>
+          <p className="mt-1 text-xs font-bold leading-relaxed text-ink/50">
+            本文の構成と言葉から選んだルールです。読む前に二つ、迷った文で一つ開けば十分です。
+          </p>
+          <div className="mt-3 space-y-2">
+            {passageRules.map((rule) => (
+              <ReadingRuleCard key={rule.id} rule={rule} compact />
             ))}
           </div>
         </Card>

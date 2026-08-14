@@ -3,6 +3,7 @@
 
 import { PASSAGES } from './passages.js'
 import { splitMeanings } from './compact.js'
+import { EXPANDED_READING_WORD_DEFINITIONS } from './reading-expansion-word-definitions.js'
 
 const passageExample = (surface) => {
   const key = surface.toLowerCase()
@@ -200,6 +201,7 @@ const PASSAGE_DICTIONARY_WORDS = [
   { id: 'adaptive', pos: '形', level: '1', meaning: '適応できる・状況対応型の', field: '性質・状態' },
   { id: 'answerable', pos: '形', level: '1', meaning: '説明責任を負う・責任がある', field: '社会' },
   { id: 'contestable', pos: '形', level: '1', meaning: '異議を唱えられる・議論の余地がある', field: '社会' },
+  ...EXPANDED_READING_WORD_DEFINITIONS,
 ].map(makePassageWord)
 
 export const PASSAGE_DICTIONARY_WORD_IDS = Object.freeze(

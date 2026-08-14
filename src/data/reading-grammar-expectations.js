@@ -8,11 +8,13 @@
 // - tell/show/teach/give + 人 + 物・節はSVOO。
 
 import { EXAM_READING_GRAMMAR_EXPECTATIONS } from './reading-grammar-expectations-exam.js'
+import { EXPANDED_READING_GRAMMAR_EXPECTATIONS } from './reading-expansion-grammar-expectations.js'
 
 const patterns = (source) => Object.freeze(source.trim().split(/\s+/))
 
 export const READING_GRAMMAR_EXPECTATIONS = Object.freeze({
   ...EXAM_READING_GRAMMAR_EXPECTATIONS,
+  ...EXPANDED_READING_GRAMMAR_EXPECTATIONS,
   p_5_lost_notebook: patterns(`
     SVC SV SVO SVO SVO SV SVO SVO SVC
   `),
@@ -43,3 +45,11 @@ export const READING_GRAMMAR_EXPECTATIONS = Object.freeze({
     SVO SV SVO SVO SV SVC SVO
   `),
 })
+
+export function readingExpectedMainPattern(reviewId = '') {
+  const separator = reviewId.lastIndexOf('#')
+  if (separator < 1) return null
+  const passageId = reviewId.slice(0, separator)
+  const sentenceIndex = Number(reviewId.slice(separator + 1)) - 1
+  return READING_GRAMMAR_EXPECTATIONS[passageId]?.[sentenceIndex] ?? null
+}

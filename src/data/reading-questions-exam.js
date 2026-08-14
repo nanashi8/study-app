@@ -128,7 +128,7 @@ export const EXAM_READING_QUESTIONS = {
         'The school closed its cooking room.',
       ],
       answer: 'Leftover food fell by almost half.',
-      explain: '1か月後、食べ残しはほぼ半減しました。',
+      explain: '1か月後、食べ残しはほぼ半減したと本文にあります。',
     },
     {
       q: 'What lesson did the students learn?',

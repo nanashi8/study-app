@@ -40,6 +40,7 @@ const VocabCameraScreen = lazyScreen(() => import('./screens/VocabCamera.jsx'), 
 const ProgressScreen = lazyScreen(() => import('./screens/Progress.jsx'), 'ProgressScreen')
 const SettingsScreen = lazyScreen(() => import('./screens/Settings.jsx'), 'SettingsScreen')
 const ReadingListScreen = lazyScreen(() => import('./screens/ReadingList.jsx'), 'ReadingListScreen')
+const ReadingRulesScreen = lazyScreen(() => import('./screens/ReadingRules.jsx'), 'ReadingRulesScreen')
 const ReadingPrepScreen = lazyScreen(() => import('./screens/ReadingPrep.jsx'), 'ReadingPrepScreen')
 const ReaderScreen = lazyScreen(() => import('./screens/Reader.jsx'), 'ReaderScreen')
 const ReadingSummaryScreen = lazyScreen(() => import('./screens/ReadingSummary.jsx'), 'ReadingSummaryScreen')
@@ -141,6 +142,7 @@ const SCREENS = {
   progress: ProgressScreen,
   settings: SettingsScreen,
   readingList: ReadingListScreen,
+  readingRules: ReadingRulesScreen,
   readingPrep: ReadingPrepScreen,
   reader: ReaderScreen,
   readingSummary: ReadingSummaryScreen,

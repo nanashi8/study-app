@@ -877,32 +877,32 @@ if (readingTranslationSequenceCount <= readingTranslationBlockCount / 2) {
   )
 }
 if (
-  PASSAGES.length !== 16 ||
-  readingTranslationSentenceCount !== 363 ||
-  readingTranslationBlockCount !== 1042 ||
-  readingPhrasePairCount !== 3238 ||
-  readingPhraseSequenceCount !== 3238 ||
-  readingMeaningPhraseCount !== 2290 ||
-  readingMeaningMultiRoleCount !== 775
+  PASSAGES.length !== 24 ||
+  readingTranslationSentenceCount !== 567 ||
+  readingTranslationBlockCount !== 1546 ||
+  readingPhrasePairCount !== 4446 ||
+  readingPhraseSequenceCount !== 4446 ||
+  readingMeaningPhraseCount !== 3246 ||
+  readingMeaningMultiRoleCount !== 1243
 ) {
   errors.push(
     `長文フレーズ監査: ${PASSAGES.length}長文・${readingTranslationSentenceCount}文・` +
     `${readingTranslationBlockCount}ブロック・${readingMeaningPhraseCount}意味フレーズ` +
     `（複数役割${readingMeaningMultiRoleCount}件）・${readingPhrasePairCount}ブロック内内部SVOCM単位・` +
     `${readingPhraseSequenceCount}文全体内部SVOCM単位` +
-    '（現行全件は16長文・363文・1,042ブロック・2,290意味フレーズ・3,238内部SVOCM単位）',
+    '（現行全件は24長文・567文・1,546ブロック・3,246意味フレーズ・4,446内部SVOCM単位）',
   )
 }
 if (
-  Object.keys(READING_MANUAL_REVIEW_LEDGER).length !== 363 ||
-  readingManualReviewSentenceCount !== 363 ||
+  Object.keys(READING_MANUAL_REVIEW_LEDGER).length !== 567 ||
+  readingManualReviewSentenceCount !== 567 ||
   PASSAGES.some((passage) =>
     READING_MANUAL_BLOCK_FINGERPRINTS[passage.id]?.length !== passage.sentences.length)
 ) {
   errors.push(
-    `長文の手動レビュー台帳: ${readingManualReviewSentenceCount}/363文照合、` +
-    `${Object.keys(READING_MANUAL_REVIEW_LEDGER).length}/363 ID登録、` +
-    `${Object.values(READING_MANUAL_BLOCK_FINGERPRINTS).reduce((sum, items) => sum + items.length, 0)}/363 ブロック構造fingerprint`,
+    `長文の手動レビュー台帳: ${readingManualReviewSentenceCount}/567文照合、` +
+    `${Object.keys(READING_MANUAL_REVIEW_LEDGER).length}/567 ID登録、` +
+    `${Object.values(READING_MANUAL_BLOCK_FINGERPRINTS).reduce((sum, items) => sum + items.length, 0)}/567 ブロック構造fingerprint`,
   )
 }
 if (readingReviewedPhraseSentenceCount !== READING_PHRASE_EXPLANATIONS.length) {

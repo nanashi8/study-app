@@ -25,13 +25,13 @@ import { phraseSpeechText } from '../src/lib/phrase-speech.js'
 
 const EXPECTED_LEVELS = ['5', '4', '3', 'pre2', 'pre2plus', '2', 'pre1', '1']
 
-test('長文は全8区分に2題ずつ、異なる厳選テーマを収録する', () => {
+test('長文は全8区分に3題ずつ、異なる厳選テーマを収録する', () => {
   assert.deepEqual(READING_LEVELS.map((level) => level.id), EXPECTED_LEVELS)
-  assert.equal(PASSAGES.length, EXPECTED_LEVELS.length * 2)
+  assert.equal(PASSAGES.length, EXPECTED_LEVELS.length * 3)
   for (const level of EXPECTED_LEVELS) {
     assert.equal(
       PASSAGES.filter((passage) => passage.level === level).length,
-      2,
+      3,
       `英検${level}級`,
     )
   }

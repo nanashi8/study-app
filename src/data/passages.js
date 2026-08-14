@@ -6,6 +6,7 @@
 // 論説調の説明文にし、級が上がるほど語数と文構造を段階的に重くしている。
 
 import { EXAM_PASSAGES } from './passages-exam.js'
+import { EXPANDED_PASSAGES } from './reading-expansion-passages.js'
 import { READING_TRANSLATION_SCENARIOS } from './reading-translation-scenarios.js'
 import { reviewSourceFingerprint } from './reading-phrase-review-ledger.js'
 
@@ -380,13 +381,42 @@ const CORE_PASSAGE_META = {
   },
 }
 
+const EXAM_TYPES_BY_LEVEL = Object.freeze({
+  5: ['英検'],
+  4: ['高校受験', '英検'],
+  3: ['高校受験', '英検'],
+  pre2: ['高校受験', '英検'],
+  pre2plus: ['大学受験', '英検'],
+  2: ['大学受験', '英検'],
+  pre1: ['大学受験', '英検'],
+  1: ['大学受験', '英検'],
+})
+
+const EXAM_LABEL_BY_LEVEL = Object.freeze({
+  5: '英検5級',
+  4: '高校受験・英検4級',
+  3: '高校受験・英検3級',
+  pre2: '高校受験上位・英検準2級',
+  pre2plus: '大学受験基礎・英検準2級プラス',
+  2: '大学受験・英検2級',
+  pre1: '大学受験・英検準1級',
+  1: '大学受験難関・英検1級',
+})
+
+const passageWithExamMeta = (passage) => ({
+  ...passage,
+  examTypes: passage.examTypes ?? EXAM_TYPES_BY_LEVEL[passage.level],
+  examLabel: passage.examLabel ?? EXAM_LABEL_BY_LEVEL[passage.level],
+})
+
 export const PASSAGES = [
   ...CORE_PASSAGES.map((passage) => ({
     ...passage,
     ...CORE_PASSAGE_META[passage.id],
   })),
   ...EXAM_PASSAGES,
-]
+  ...EXPANDED_PASSAGES,
+].map(passageWithExamMeta)
 
 const PROPER_NAME_GLOSSES = [
   { test: /\bRina\b/, words: { rina: 'リナ（人名）' } },

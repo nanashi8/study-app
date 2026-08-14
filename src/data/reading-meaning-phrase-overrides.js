@@ -380,6 +380,50 @@ export const READING_MEANING_PHRASE_OVERRIDES = Object.freeze({
       ),
     ),
   }),
+
+  'The goal is not simply to remove phones, but to build habits that protect attention.': sentence({
+    'The goal': item(
+      '目標は',
+      'not simply A, but Bという長い対照述部を見通しやすくするため、主語を先に確定し、次の述部へ送ります。',
+      { boundaryAfter: 'is not simply' },
+    ),
+    'is not simply': item(
+      '単に〜ではありません',
+      'not simplyで一つ目の候補を否定する構えを作り、to remove phonesを次の意味単位として待ちます。',
+      { boundaryAfter: 'to remove phones' },
+    ),
+  }),
+
+  'People often describe choice as if it begins only when a person consciously compares several options.': sentence({
+    it: item(
+      'それが',
+      'as if節の主語itを先に確定し、onlyの焦点とwhen節を含む述部begins onlyへつなぎます。',
+      { boundaryAfter: 'begins only' },
+    ),
+  }),
+
+  'People should be told that a default was chosen deliberately and should understand how to select another option.': sentence({
+    'should understand': item(
+      '理解できるようにすべきです',
+      '述語should understandを確定してから、理解内容となるhow＋不定詞へ進む意図的な節境界です。',
+      { boundaryAfter: 'how to select another option' },
+    ),
+  }),
+
+  'An alternative is not meaningful if it is difficult to find, requires expert knowledge, or carries a punishment unrelated to the policy goal.': sentence({
+    'to find,': item(
+      '見つけるのが難しいなら',
+      'コンマで一つ目の条件is difficult to findが閉じ、次の並列条件requires expert knowledgeへ切り替わります。',
+      { boundaryAfter: 'requires expert knowledge' },
+    ),
+  }),
+
+  'A scheduled review can also reveal whether people have learned to avoid or exploit the original design.': sentence({
+    'to avoid or exploit the original design': item(
+      '元の設計を避けたり、逆に利用したりする方法を',
+      'to avoidとor exploitはtoを共有する並列不定詞で、共通目的語the original designまでを一息で読みます。',
+    ),
+  }),
 })
 
 export function readingMeaningPhraseOverridesFor(sentenceEnglish) {
