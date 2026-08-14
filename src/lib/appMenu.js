@@ -27,14 +27,19 @@ const group = (id, label, description, sections) => Object.freeze({
 })
 
 // 共通メニューの情報設計を一か所に集約する。
-// 最初の画面には4分類だけを出し、全項目は分類を開いてから表示する。
+// 英和辞書・英作文・語源学習は最初の画面から直接開き、残りの項目は4分類にまとめる。
 // 画面IDは保存済み履歴・戻る履歴との互換性のため変更しない。
+export const APP_MENU_DIRECT_ITEMS = Object.freeze([
+  screenItem('vocabSearch', '英和辞書', '意味・語法・語源・参照履歴'),
+  screenItem('writing', '英作文', '書いて使える知識にする'),
+  screenItem('roots', '語源学習', '部品・同じ語根・ことばの歴史で理解する'),
+])
+
 export const APP_MENU_GROUPS = Object.freeze([
   group('learn', '教材を選ぶ', '教科・教材', [
     section('subjects', '教科・辞書・名作', [
       screenItem('portal', '教科を選ぶホーム', '全教科・辞書・名作の入口'),
       screenItem('mathMap', '数学アプリ', '単元マップと理解度'),
-      screenItem('vocabSearch', '英和辞書', '意味・語法・語源・参照履歴'),
       screenItem('kotenList', '古典アプリ', '古典単語・文法・常識・短文'),
       screenItem('kanbunHome', '漢文アプリ', '漢語・漢文法・漢文常識・返り点'),
       screenItem('literatureLibrary', '名作に親しむ', '英語・古典・漢文の朗読'),
@@ -51,9 +56,7 @@ export const APP_MENU_GROUPS = Object.freeze([
   group('tools', '学習ツール', '診断・練習', [
     section('practice', '診断・発展学習', [
       screenItem('diagnostic', '学習診断', '28問で得意・弱点と現在地を確認'),
-      screenItem('writing', '英作文', '書いて使える知識にする'),
       screenItem('dictation', 'ディクテーション', '聞き取りとつづりを結びつける'),
-      screenItem('roots', '語源学習', '単語を部品と語族で整理する'),
     ]),
     section('dictionary-tools', '辞書の補助機能', [
       screenItem('vocabCamera', '教科書から単語追加', '写真OCRで辞書照合・保存'),
@@ -80,8 +83,11 @@ export const APP_MENU_GROUPS = Object.freeze([
 ])
 
 export const APP_MENU_ITEMS = Object.freeze(
-  APP_MENU_GROUPS.flatMap((menuGroup) =>
-    menuGroup.sections.flatMap((menuSection) => menuSection.items)),
+  [
+    ...APP_MENU_DIRECT_ITEMS,
+    ...APP_MENU_GROUPS.flatMap((menuGroup) =>
+      menuGroup.sections.flatMap((menuSection) => menuSection.items)),
+  ],
 )
 
 export const APP_MENU_SCREEN_DESTINATIONS = Object.freeze(

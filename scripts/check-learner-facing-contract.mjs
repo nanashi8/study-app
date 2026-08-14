@@ -13,6 +13,7 @@ import {
 import { analyzeReadingSentence } from '../src/lib/reading-grammar.js'
 import { buildGrammarInstructorExplanation } from '../src/lib/instructorExplanations.js'
 import {
+  APP_MENU_DIRECT_ITEMS,
   APP_MENU_GROUPS,
   APP_MENU_ITEMS,
   APP_MENU_SCREEN_DESTINATIONS,
@@ -111,6 +112,8 @@ if (shellSource.includes('data-global-bottom-nav') || appSource.includes('Bottom
   errors.push('廃止した統一下部ナビが残っている')
 }
 if (!menuSource.includes('data-progress-save-confirmation')) errors.push('途中離脱の保存確認がない')
+if (!menuSource.includes('data-progress-discard-confirmation')) errors.push('途中の戻る操作に進捗破棄確認がない')
+if (!menuSource.includes('進捗は破棄されます')) errors.push('途中の戻る操作で進捗破棄メッセージがない')
 if (!menuSource.includes('requiresProgressSaveConfirmation')) errors.push('保存確認の画面判定がない')
 if (!progressBackupSource.includes('selectProgressState')) errors.push('QR／コードが共通永続スライスを使っていない')
 if (!progressBackupSource.includes('QRCodeCanvas')) errors.push('QR出力がない')
@@ -121,11 +124,16 @@ const actualMenuGroups = APP_MENU_GROUPS.map((group) => group.id)
 if (actualMenuGroups.join(',') !== expectedMenuGroups.join(',')) {
   errors.push(`統一メニューの分類が不一致: ${actualMenuGroups.join(',')}`)
 }
+const actualDirectMenuScreens = APP_MENU_DIRECT_ITEMS.map((item) => item.screen)
+if (actualDirectMenuScreens.join(',') !== 'vocabSearch,writing,roots') {
+  errors.push(`統一メニュー直下の教材が不一致: ${actualDirectMenuScreens.join(',')}`)
+}
 if (APP_MENU_ITEMS.length !== 27) errors.push(`統一メニューが全27項目ではない: ${APP_MENU_ITEMS.length}`)
 if (new Set(APP_MENU_SCREEN_DESTINATIONS).size !== APP_MENU_SCREEN_DESTINATIONS.length) {
   errors.push('統一メニューに重複した画面入口がある')
 }
 if (!menuSource.includes('data-menu-group-list')) errors.push('簡潔な統一メニューにdata-menu-group-listがない')
+if (!menuSource.includes('data-menu-direct-list')) errors.push('統一メニュー直下に英和辞書・英作文・語源学習の入口がない')
 if (!learningAdvisorSource.includes('data-menu-learning-overview')) {
   errors.push('簡潔な統一メニューにdata-menu-learning-overviewがない')
 }
