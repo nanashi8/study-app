@@ -7,7 +7,7 @@
 //     word    … 正規化した見出し語（小文字・トリム）。集計キー
 //     q       … 実際に入力された語（表示の参考）
 //     ts      … サーバ時刻
-//     source  … dictionary-search / camera-ocr（任意・流入元の確認用）
+//     source  … dictionary-search / camera-ocr（流入元の確認用）
 import { ref, push, update, serverTimestamp } from 'firebase/database'
 import { db, isFirebaseConfigured } from './firebase.js'
 

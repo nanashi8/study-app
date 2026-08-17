@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
 import test from 'node:test'
 
 import { isSensitivePath, scanText } from '../scripts/audit-public-secrets.mjs'
@@ -19,11 +20,24 @@ test('公開禁止の鍵・トークン・個人メールを値なしの検出�
   assert.equal(findings.every((finding) => !('value' in finding)), true)
 })
 
-test('例示値と所定のFirebase Web APIキーは秘密情報扱いしない', () => {
+test('例示値と正確なFirebase Web APIキーだけを秘密情報扱いしない', () => {
+  const firebaseConfig = readFileSync(new URL('../src/lib/firebaseConfig.js', import.meta.url), 'utf8')
+  const expectedKey = firebaseConfig.match(/apiKey:\s*["'](AIza[0-9A-Za-z_-]{35})["']/)?.[1]
+  assert.ok(expectedKey)
+
   assert.deepEqual(scanText('tests/example.js', 'student@example.com'), [])
-  assert.deepEqual(
-    scanText('src/lib/firebaseConfig.js', `apiKey: "${'AIza' + 'A'.repeat(35)}"`),
-    [],
+  assert.deepEqual(scanText('src/lib/firebaseConfig.js', `apiKey: "${expectedKey}"`), [])
+  assert.deepEqual(scanText('dist/assets/app.js', `apiKey: "${expectedKey}"`), [])
+
+  const unexpectedKey = 'AIza' + (expectedKey.endsWith('A') ? 'B' : 'A').repeat(35)
+  assert.equal(
+    scanText('dist/assets/app.js', `apiKey: "${unexpectedKey}"`).some(({ rule }) => rule === 'google-api-key'),
+    true,
+  )
+  assert.equal(
+    scanText('dist/assets/app.js', `const leaked = "${'ghp_' + 'A'.repeat(36)}"`)
+      .some(({ rule }) => rule === 'github-token'),
+    true,
   )
 })
 
