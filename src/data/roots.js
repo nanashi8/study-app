@@ -1,8 +1,10 @@
+import { REFERENCE_ROOTS } from './etymology-reference-roots.js'
+
 // 語根（ごこん）インデックス。
 // 単語データの parts[].root がここの id を指す。これで「語源つながり」を辿れる。
 // origin は史実に基づく簡潔な語源。emoji は学習画面のアイコン。
 
-export const ROOTS = [
+export const LEARNING_ROOTS = [
   { id: 'port',   form: 'port',          meaning: '運ぶ',          origin: 'ラテン語 portāre「運ぶ」',          emoji: '🚚' },
   { id: 'dict',   form: 'dict / dic',    meaning: '言う・示す',     origin: 'ラテン語 dīcere「言う」',           emoji: '🗣️' },
   { id: 'spect',  form: 'spect / spic',  meaning: '見る',          origin: 'ラテン語 specere「見る」',          emoji: '👀' },
@@ -114,5 +116,7 @@ export const ROOTS = [
   { id: 'vad',    form: 'vad / vas',     meaning: '行く・進む',      origin: 'ラテン語 vādere「行く」',           emoji: '🚶' },
   { id: 'veri',   form: 'veri',          meaning: '真実',          origin: 'ラテン語 vērus「真の」',            emoji: '✅' },
 ]
+
+export const ROOTS = [...LEARNING_ROOTS, ...REFERENCE_ROOTS]
 
 export const ROOTS_BY_ID = Object.fromEntries(ROOTS.map((r) => [r.id, r]))

@@ -1,9 +1,11 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { useStore } from '../store/useStore.js'
 import { ProgressRing, ProgressBar, Button, Card } from '../components/ui.jsx'
 import { Flame, Refresh, Home, Bookmark, ArrowRight } from '../components/Icons.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
+import { VocabCompletionReport } from '../components/VocabCompletionReport.jsx'
 import { DragonVeinCipherStage } from '../components/DragonVeinCipherStage.jsx'
+import { buildVocabCompletionReport } from '../lib/learningAnalyticsReport.js'
 import {
   DRAGON_VEIN_TARGET,
   dragonVeinMainComplete,
@@ -46,8 +48,14 @@ function Confetti() {
 export function SessionResultScreen() {
   const params = useStore((state) => state.params)
   const navigate = useStore((state) => state.navigate)
+  const returnTo = useStore((state) => state.returnTo)
   const goHome = useStore((state) => state.goHome)
-  const streak = useStore((state) => state.stats.streak)
+  const stats = useStore((state) => state.stats)
+  const settings = useStore((state) => state.settings)
+  const srs = useStore((state) => state.srs)
+  const learningAnalytics = useStore((state) => state.learningAnalytics)
+  const skillStats = useStore((state) => state.skillStats)
+  const streak = stats.streak
   const selectedStudentId = useStore((state) => state.battleStudentId)
   const dragonVeinProgress = useStore((state) => state.dragonVeinProgress)
   const recordSkillResult = useStore((state) => state.recordSkillResult)
@@ -71,6 +79,48 @@ export function SessionResultScreen() {
   const nodeStatus = isDragonVein ? dragonVeinNodeStatus(dragonVeinProgress, node.id) : null
   const track = nodeStatus?.[restorationKind]
   const recorded = useRef(false)
+  const reportNow = useRef(
+    Number.isFinite(params.vocabSession?.completedAt)
+      ? params.vocabSession.completedAt
+      : Date.now(),
+  ).current
+
+  const isPhrase = engine === 'phrase'
+  const isGrammar = engine === 'grammar'
+  const isDictation = engine === 'dictation' || params.replayScreen === 'dictationPlay'
+  const isListening = engine === 'listening' || params.replayScreen === 'listeningQuiz'
+  const isVocabStudy = mode === 'study' && engine === 'word'
+  const isVocabResult = engine === 'word' || engine === 'vocab'
+  const isMemoryCheck = mode === 'study' && (engine === 'word' || engine === 'phrase')
+  const reviewUnit = isGrammar || isDictation || isListening ? '問' : isPhrase ? '項目' : '語'
+  const vocabSessionIds = params.vocabSession?.wordIds ?? []
+  const vocabReviewIds = reviewIds.length ? reviewIds : vocabSessionIds
+  const vocabCompletion = useMemo(() => {
+    if (!isVocabStudy || !params.vocabSession?.wordIds?.length) return null
+    return buildVocabCompletionReport({
+      srs,
+      learningAnalytics,
+      skillStats,
+      wordIds: params.vocabSession.wordIds,
+      reviewIds,
+      beforeBoxes: params.vocabSession.beforeBoxes,
+      correct,
+      wrong,
+      dailyGoal: settings.dailyGoal,
+      now: reportNow,
+    })
+  }, [
+    correct,
+    isVocabStudy,
+    learningAnalytics,
+    params.vocabSession,
+    reportNow,
+    reviewIds,
+    settings.dailyGoal,
+    skillStats,
+    srs,
+    wrong,
+  ])
 
   useEffect(() => {
     if (recorded.current || !total) return
@@ -98,14 +148,6 @@ export function SessionResultScreen() {
         ? { emoji: '🔎', text: isDragonVein ? '違和感の正体が見えてきた' : 'いい調子！', color: '#6366f1' }
         : { emoji: '💡', text: isDragonVein ? '手掛かりは残った。先生と整理しよう' : 'ここから伸びる！', color: '#0ea5e9' }
 
-  const isPhrase = engine === 'phrase'
-  const isGrammar = engine === 'grammar'
-  const isDictation = engine === 'dictation' || params.replayScreen === 'dictationPlay'
-  const isListening = engine === 'listening' || params.replayScreen === 'listeningQuiz'
-  const isVocabStudy = mode === 'study' && engine === 'word'
-  const isMemoryCheck = mode === 'study' && (engine === 'word' || engine === 'phrase')
-  const reviewUnit = isGrammar || isDictation || isListening ? '問' : isPhrase ? '項目' : '語'
-
   const replay = () => {
     const target = params.replayScreen
       ?? (isPhrase
@@ -119,6 +161,7 @@ export function SessionResultScreen() {
       replayScreen: params.replayScreen,
       size: params.size,
       continueTo: params.continueTo,
+      returnTo: params.returnTo,
     })
   }
 
@@ -159,13 +202,38 @@ export function SessionResultScreen() {
                 continueTo: params.continueTo,
               })
             : navigate('vocabStudy', {
-                source: { type: 'mylist', ids: reviewIds },
-                title: 'まちがい復習',
+                source: { type: 'mylist', ids: vocabReviewIds },
+                title: '復習',
                 mode: 'study',
-                size: reviewIds.length,
+                size: vocabReviewIds.length,
                 continueTo: params.continueTo,
+                returnTo: params.returnTo,
               })
   )
+
+  const continueVocab = () => {
+    if (params.continueTo?.screen) {
+      navigate(params.continueTo.screen, params.continueTo.params ?? {})
+      return
+    }
+    replay()
+  }
+
+  const returnFromVocab = () => {
+    if (params.returnTo?.screen) {
+      returnTo(params.returnTo.screen, params.returnTo.params ?? {})
+      return
+    }
+    if (source?.type === 'field') {
+      returnTo('vocabGroups')
+      return
+    }
+    if (source?.type === 'levelField') {
+      returnTo('vocabDecks', { levelId: source.levelId })
+      return
+    }
+    returnTo('vocabLevels')
+  }
 
   if (isDragonVein) {
     const expressionStreak = accuracy >= 0.9 ? 5 : accuracy >= 0.7 ? 3 : 0
@@ -232,6 +300,24 @@ export function SessionResultScreen() {
     )
   }
 
+  if (vocabCompletion) {
+    return (
+      <div className="relative min-h-full overflow-x-hidden bg-slate-50 px-3 pb-8 pt-3">
+        {percent >= 80 && <Confetti />}
+        <div className="relative z-20 mb-2 flex justify-end"><SpeechSettingsButton compact /></div>
+        <VocabCompletionReport
+          report={vocabCompletion}
+          title={title}
+          streak={stats.streak}
+          onReviewNow={reviewWrong}
+          onContinue={continueVocab}
+          onBack={returnFromVocab}
+          onWord={(id) => navigate('wordDetail', { id })}
+        />
+      </div>
+    )
+  }
+
   return (
     <div className="relative flex min-h-full flex-col items-center gap-5 overflow-x-hidden px-6 pb-8 pt-8 text-center">
       {percent >= 80 && <Confetti />}
@@ -248,10 +334,20 @@ export function SessionResultScreen() {
         <Card className="flex flex-1 flex-col items-center gap-1 p-3"><span className="text-rose-500"><Flame size={22} /></span><span className="font-display text-xl font-extrabold text-ink">{streak}</span><span className="text-[11px] font-bold text-ink/45">連続日数</span></Card>
       </div>
       <div className="mt-2 w-full max-w-xs space-y-2.5">
-        {params.continueTo?.screen && <Button full onClick={() => navigate(params.continueTo.screen, params.continueTo.params ?? {})}>{params.continueTo.label ?? '次へ'} <ArrowRight size={18} /></Button>}
-        {wrong > 0 && <Button full variant="primary" onClick={reviewWrong}>{isMemoryCheck ? <><Refresh size={18} /> 「まだ」の{wrong}{reviewUnit}をもう一度確認する</> : <><Bookmark size={18} /> まちがい {wrong}{reviewUnit}を復習</>}</Button>}
-        <Button full variant="secondary" onClick={replay}>{isVocabStudy ? <ArrowRight size={18} /> : <Refresh size={18} />}{isVocabStudy ? '次に進む' : 'もう一度'}</Button>
-        <Button full variant="ghost" onClick={goHome}><Home size={18} /> ホームへ</Button>
+        {isVocabResult ? (
+          <>
+            <Button full onClick={reviewWrong}><Refresh size={18} /> 復習する</Button>
+            <Button full variant="secondary" onClick={continueVocab}>次へ進む <ArrowRight size={18} /></Button>
+            <Button full variant="ghost" onClick={returnFromVocab}>戻る</Button>
+          </>
+        ) : (
+          <>
+            {params.continueTo?.screen && <Button full onClick={() => navigate(params.continueTo.screen, params.continueTo.params ?? {})}>{params.continueTo.label ?? '次へ'} <ArrowRight size={18} /></Button>}
+            {wrong > 0 && <Button full variant="primary" onClick={reviewWrong}>{isMemoryCheck ? <><Refresh size={18} /> 「まだ」の{wrong}{reviewUnit}をもう一度確認する</> : <><Bookmark size={18} /> まちがい {wrong}{reviewUnit}を復習</>}</Button>}
+            <Button full variant="secondary" onClick={replay}><Refresh size={18} /> もう一度</Button>
+            <Button full variant="ghost" onClick={goHome}><Home size={18} /> ホームへ</Button>
+          </>
+        )}
       </div>
     </div>
   )

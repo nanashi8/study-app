@@ -3,8 +3,7 @@ import assert from 'node:assert/strict'
 import { readFileSync, readdirSync } from 'node:fs'
 import {
   APP_MENU_ACTIONS,
-  APP_MENU_DIRECT_ITEMS,
-  APP_MENU_GROUPS,
+  APP_MENU_SECTIONS,
   APP_MENU_ITEMS,
   APP_MENU_SCREEN_DESTINATIONS,
 } from '../src/lib/appMenu.js'
@@ -28,18 +27,18 @@ test('上部の一つの共通メニューを全画面から開き、その中�
   assert.doesNotMatch(app, /BottomNav|nav=\{/)
   assert.match(header, /data-global-menu-bar/)
   assert.match(header, /study-app-global-menu-bar relative z-\[60\]/)
-  assert.match(sheet, /fixed inset-0 z-50/)
+  assert.match(sheet, /fixed inset-0 z-\[70\]/)
   assert.match(sheet, /data-sheet-scroll-area/)
   assert.match(sheet, /pb-\[calc\(1\.5rem\+env\(safe-area-inset-bottom\)\)\]/)
   assert.match(header, /data-global-back-button/)
   assert.match(header, /<ChevronLeft size=\{19\} \/> 戻る/)
   assert.match(header, /data-global-menu-button/)
-  assert.match(header, /aria-label="統一メニューを開く"/)
+  assert.match(header, /aria-label="メニューを開く"/)
   assert.match(header, /<Menu size=\{18\} \/> メニュー/)
   assert.match(header, /onClick=\{\(\) => openSpeechSettings\(\)\}/)
   assert.doesNotMatch(header, /SpeechSettingsButton|data-global-bottom-nav/)
   assert.match(settings, /const sheetTitles = \{/)
-  assert.match(settings, /menu: '統一メニュー'/)
+  assert.match(settings, /menu: 'メニュー'/)
   assert.match(css, /\.study-app-content \[data-settings-menu-trigger\]/)
   assert.match(settings, /data-app-menu-panel/)
   assert.match(settings, /data-menu-settings-entry/)
@@ -81,53 +80,48 @@ test('学習途中に戻るボタンを押したら進捗破棄を確認し、�
   assert.match(progress, /export const PERSISTED_PROGRESS_FIELDS/)
 })
 
-test('全教材・学習アドバイザー・定着分析・管理機能を統一メニューへ集約する', () => {
+test('全教材・学習アドバイザー・定着分析・管理機能を一段のメニューへ整理する', () => {
   const app = read('../src/App.jsx')
   const menu = read('../src/components/SpeechSettings.jsx')
   const advisor = read('../src/components/LearningAdvisor.jsx')
   const home = read('../src/screens/Home.jsx')
   const portal = read('../src/screens/Portal.jsx')
 
-  assert.match(advisor, /data-menu-learning-overview/)
-  assert.match(advisor, /data-menu-advisor-entry/)
-  assert.match(advisor, /data-menu-retention-entry/)
+  assert.match(menu, /data-menu-advisor-entry/)
+  assert.match(menu, /data-menu-retention-entry/)
   assert.match(menu, /<LearningAnalyticsPanel/)
   assert.match(advisor, /data-advisor-weakness/)
   assert.match(advisor, /data-advisor-next-unit/)
   const expectedScreens = [
-    'vocabSearch', 'writing', 'roots',
-    'portal', 'mathMap', 'kotenList', 'kanbunHome', 'literatureLibrary',
-    'home', 'vocabLevels', 'readingList', 'phrases', 'grammar', 'listening',
+    'portal', 'home', 'mathMap', 'kotenList', 'kanbunHome', 'literatureLibrary',
+    'vocabLevels', 'vocabSearch', 'writing', 'roots', 'readingList', 'phrases', 'grammar', 'listening',
     'diagnostic', 'dictation', 'vocabCamera', 'wordRequests',
     'myList', 'myLearning', 'myGrammar', 'kotenSaved', 'kanbunSaved', 'progress',
   ]
-  assert.deepEqual(
-    APP_MENU_DIRECT_ITEMS.map(({ screen, label }) => [screen, label]),
-    [['vocabSearch', '英和辞書'], ['writing', '英作文'], ['roots', '語源学習']],
-  )
-  assert.deepEqual(APP_MENU_GROUPS.map(({ id, label }) => [id, label]), [
-    ['learn', '教材を選ぶ'],
-    ['tools', '学習ツール'],
+  assert.deepEqual(APP_MENU_SECTIONS.map(({ id, label }) => [id, label]), [
+    ['apps', 'スタディアプリ'],
+    ['english', '英語の学習'],
+    ['support', '学習サポート'],
     ['records', '保存・記録'],
-    ['manage', '設定・データ'],
+    ['settings', '設定・アカウント'],
   ])
   assert.deepEqual(
-    APP_MENU_GROUPS.map((group) => group.sections.flatMap((section) => section.items).length),
-    [11, 4, 6, 3],
+    APP_MENU_SECTIONS.map((section) => section.items.length),
+    [6, 8, 6, 6, 3],
   )
-  assert.equal(APP_MENU_ITEMS.length, 27)
+  assert.equal(APP_MENU_ITEMS.length, 29)
   assert.deepEqual(APP_MENU_SCREEN_DESTINATIONS, expectedScreens)
-  assert.deepEqual(APP_MENU_ACTIONS, ['settings', 'account', 'reset'])
+  assert.deepEqual(APP_MENU_ACTIONS, ['advisor', 'analytics', 'settings', 'account', 'reset'])
   assert.equal(new Set(APP_MENU_SCREEN_DESTINATIONS).size, expectedScreens.length)
-  assert.match(menu, /data-menu-group-list/)
-  assert.match(menu, /data-menu-direct-list/)
-  assert.match(menu, /data-menu-group-entry/)
-  assert.match(menu, /data-menu-group-panel/)
+  assert.equal(APP_MENU_ITEMS.find((item) => item.screen === 'portal')?.label, 'スタディアプリ ホーム')
+  assert.match(menu, /data-menu-section-list/)
+  assert.match(menu, /data-menu-section=\{menuSection\.id\}/)
+  assert.match(menu, /data-menu-item/)
   assert.match(menu, /data-menu-settings-entry/)
   assert.match(menu, /data-menu-account-entry/)
   assert.match(menu, /data-menu-reset-entry/)
   assert.match(menu, /data-menu-reset-confirmation/)
-  assert.doesNotMatch(menu, /data-menu-group-count|data-menu-hub-intro|data-menu-hub-footer/)
+  assert.doesNotMatch(menu, /data-menu-group-list|data-menu-direct-list|data-menu-group-entry|data-menu-group-panel|AppMenuGroupPanel|appMenuGroupById/)
   assert.doesNotMatch(menu, /DataManagementPanel|data-data-management-panel|data-clear-learning-scope/)
   assert.match(menu, /data-reset-selection-list/)
   assert.match(menu, /data-reset-select-all/)
@@ -303,6 +297,7 @@ test('読み上げを持つ全25 UIモジュールが共通プレイヤー経由
 
   assert.equal(speechUi.length, 25)
   assert.equal(screenCount, 21)
+  assert.ok(speechUi.some(({ path }) => path === 'screens/EtymologyQuiz.jsx'))
   assert.ok(speechUi.some(({ path }) => path === 'screens/Reader.jsx'))
   assert.ok(speechUi.some(({ path }) => path === 'screens/LiteratureReader.jsx'))
   assert.ok(speechUi.some(({ path }) => path === 'screens/ListeningQuiz.jsx'))

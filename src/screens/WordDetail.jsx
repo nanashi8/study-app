@@ -1,6 +1,6 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useStore } from '../store/useStore.js'
-import { getWord, neighborWords, vocabFieldFor } from '../data/vocab.js'
+import { getWord, neighborWords, rootIdsForWord, vocabFieldFor } from '../data/vocab.js'
 import { getLevel } from '../data/levels.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { SpeakButton } from '../components/SpeakButton.jsx'
@@ -87,6 +87,7 @@ function NeighborList({ word, navigate }) {
 }
 
 export function WordDetailScreen() {
+  const screenRef = useRef(null)
   const id = useStore((s) => s.params.id)
   const navigate = useStore((s) => s.navigate)
   const myList = useStore((s) => s.myList)
@@ -98,6 +99,10 @@ export function WordDetailScreen() {
   useEffect(() => {
     if (word) recordVocabHistory(word.id)
   }, [recordVocabHistory, word])
+
+  useEffect(() => {
+    screenRef.current?.closest('.study-app-content')?.scrollTo({ top: 0 })
+  }, [word?.id])
 
   if (!word) {
     return (
@@ -113,7 +118,7 @@ export function WordDetailScreen() {
   const progress = summarizeSrsItems([word], entry ? { [word.id]: entry } : {})
 
   return (
-    <div className="pb-28">
+    <div ref={screenRef} className="pb-28">
       <ScreenHeader
         title={word.word}
         color={level.color}
@@ -223,7 +228,7 @@ export function WordDetailScreen() {
         {/* 語源（ある単語のみ） */}
         {word.etymology && (
           <Card className="p-4">
-            <div className="mb-3 text-[11px] font-extrabold uppercase tracking-wide text-brand-400">語源で覚える</div>
+            <div className="mb-3 text-sm font-extrabold text-brand-600">語源で覚える</div>
             <EtymologyBlock
               word={word}
               onRoot={(rootId) => navigate('rootDetail', { rootId })}
@@ -236,13 +241,17 @@ export function WordDetailScreen() {
         )}
 
         {/* 語源つながり */}
-        {word.roots?.length > 0 && (
+        {rootIdsForWord(word).length > 0 && (
           <Card className="p-4">
             <div className="mb-3 flex items-center gap-1.5 text-brand-600">
               <Link size={16} />
               <span className="text-[11px] font-extrabold uppercase tracking-wide">この語源から増やせる単語</span>
             </div>
-            <RelatedWords word={word} onPick={(wid) => navigate('wordDetail', { id: wid })} />
+            <RelatedWords
+              word={word}
+              onPick={(wid) => navigate('wordDetail', { id: wid })}
+              onRoot={(rootId) => navigate('rootDetail', { rootId })}
+            />
           </Card>
         )}
 

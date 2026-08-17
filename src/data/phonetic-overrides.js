@@ -15,4 +15,17 @@ export const PHONETIC_OVERRIDES = {
   advocate: '/ˈædvəˌkeɪt/',
   attribute: '/əˈtɹɪbjut/',
   survey: '/ˈsɝˌveɪ/',  // 名詞「調査」
+  barrier_free: '/ˈbæɹiɚ fɹi/',
+  passer_by: '/ˌpæsɚˈbaɪ/',
+  subtropical: '/ˌsʌbˈtɹɑpɪkəl/',
+  exportation: '/ˌɛkspɔɹˈteɪʃən/',
+  biennially: '/baɪˈɛniəli/',
+  prophesy: '/ˈpɹɑfəˌsaɪ/',
+  sirloin: '/ˈsɝˌlɔɪn/',
+  entreat: '/ɛnˈtɹit/',
+  acquirement: '/əˈkwaɪɚmənt/',
+  monocycle: '/ˈmɑnəˌsaɪkəl/',
+  detestable: '/dɪˈtɛstəbəl/',
+  subnormal: '/ˌsʌbˈnɔɹməl/',
+  habituate: '/həˈbɪtʃuˌeɪt/',
 }

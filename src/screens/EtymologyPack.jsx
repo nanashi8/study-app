@@ -35,7 +35,7 @@ export function EtymologyPackScreen() {
   if (!pack) {
     return (
       <div ref={rootRef}>
-        <ScreenHeader title="語源の濃縮パック" />
+        <ScreenHeader title="語源カード" />
         <div className="p-8 text-center font-bold text-ink/50">
           学習パックが見つかりませんでした。
         </div>
@@ -62,6 +62,12 @@ export function EtymologyPackScreen() {
       size: 1,
     })
 
+  const quizKnowledge = () =>
+    navigate('etymologyQuiz', {
+      packIds: [pack.id],
+      size: 1,
+    })
+
   const study = () =>
     navigate('vocabStudy', {
       source: { type: 'deck', ids: pack.studyIds },
@@ -79,7 +85,7 @@ export function EtymologyPackScreen() {
 
   return (
     <div ref={rootRef} className="pb-6">
-      <ScreenHeader title="語源の濃縮パック" />
+      <ScreenHeader title="語源カード" />
 
       <div className="space-y-4 px-4">
         <Card className="overflow-hidden">
@@ -89,7 +95,7 @@ export function EtymologyPackScreen() {
                 {pack.emoji}
               </span>
               <div className="min-w-0 flex-1">
-                <p className="text-[11px] font-extrabold uppercase tracking-wide text-white/65">
+                <p className="text-xs font-extrabold text-white/75">
                   {mode.label}
                 </p>
                 <h1 className="font-display text-lg font-extrabold leading-tight">
@@ -111,16 +117,16 @@ export function EtymologyPackScreen() {
             {pack.mode === 'origin' && (
               <div className="grid grid-cols-3 gap-1.5">
                 {[
-                  ['成り立ち', formation?.emoji, formation?.short],
-                  ['出発言語', source?.emoji, source?.short],
-                  ['意味分野', domain?.emoji, pack.fieldLabel ?? domain?.label],
+                  ['作られ方', formation?.emoji, formation?.short],
+                  ['もとの言語', source?.emoji, source?.short],
+                  ['今の分野', domain?.emoji, pack.fieldLabel ?? domain?.label],
                 ].map(([label, emoji, value]) => (
                   <div
                     key={label}
                     className="min-w-0 rounded-xl bg-slate-50 px-2 py-2 text-center ring-1 ring-slate-100"
                   >
-                    <p className="text-[9px] font-extrabold text-ink/35">{label}</p>
-                    <p className="mt-0.5 truncate text-[10px] font-extrabold text-ink/70">
+                    <p className="text-xs font-extrabold text-ink/45">{label}</p>
+                    <p className="mt-1 text-xs font-extrabold leading-snug text-ink/75">
                       {emoji} {value}
                     </p>
                   </div>
@@ -131,9 +137,14 @@ export function EtymologyPackScreen() {
               <p className="mb-2 text-xs font-extrabold text-violet-800">この語源カード</p>
               <LearningStatusBars progress={packProgress} compact />
             </div>
-            <Button full onClick={studyKnowledge}>
-              <Sparkles size={18} /> この語源をカードで覚える
-            </Button>
+            <div className="grid grid-cols-2 gap-2" data-etymology-pack-actions>
+              <Button full onClick={studyKnowledge}>
+                <Sparkles size={18} /> 覚える
+              </Button>
+              <Button full variant="secondary" onClick={quizKnowledge}>
+                <Cards size={18} /> 確認問題
+              </Button>
+            </div>
             <div className="rounded-xl bg-brand-50 px-3 py-3">
               <p className="mb-2 text-xs font-extrabold text-brand-700">
                 関連英単語 {progressWords.length}語・この画面 {words.length}語
@@ -154,7 +165,7 @@ export function EtymologyPackScreen() {
                 onClick={() => navigate('rootDetail', { rootId: pack.rootId })}
                 className="flex w-full items-center justify-center gap-1.5 rounded-xl bg-violet-50 py-2 text-xs font-extrabold text-violet-700 ring-1 ring-violet-100 active:bg-violet-100"
               >
-                🌳 この語根の全単語へ広げる
+                🌳 同じ語根の全単語を見る
                 <ArrowRight size={14} />
               </button>
             )}
@@ -165,14 +176,14 @@ export function EtymologyPackScreen() {
           <div className="mb-2 px-1">
             <h2 className="font-display text-base font-extrabold text-ink/80">
               {pack.mode === 'formula'
-                ? '意味の式を比べる'
+                ? '部品の意味を比べる'
                 : pack.mode === 'origin'
-                  ? '出発点から現在義をたどる'
-                  : '1つの束で見比べる'}
+                  ? 'もとの形から今の意味をたどる'
+                  : '仲間を見比べる'}
             </h2>
             <p className="mt-0.5 text-xs font-bold text-ink/45">
               {pack.mode === 'origin'
-                ? '共通軸を確認し、語ごとの意味の橋は混同せずに覚えます。'
+                ? '作られ方やもとの言語を確認し、1語ずつ変化をたどります。'
                 : '足がかりの語も含め、一度に8語以内に絞っています。'}
             </p>
           </div>
@@ -198,17 +209,17 @@ export function EtymologyPackScreen() {
                         </span>
                         <Chip color={level.color}>{level.label}</Chip>
                         {(isAnchor || isSupport) && (
-                          <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-[9px] font-extrabold text-emerald-700 ring-1 ring-emerald-100">
-                            足がかり
+                          <span className="rounded-full bg-emerald-50 px-2 py-1 text-xs font-extrabold text-emerald-700 ring-1 ring-emerald-100">
+                            見本の語
                           </span>
                         )}
                         {learningStatus === 'learned' && (
-                          <span className="inline-flex items-center gap-0.5 text-[10px] font-extrabold text-emerald-600">
+                          <span className="inline-flex items-center gap-0.5 text-xs font-extrabold text-emerald-600">
                             <Check size={13} /> 学習済
                           </span>
                         )}
                         {learningStatus === 'reviewing' && (
-                          <span className="text-[10px] font-extrabold text-amber-600">復習中</span>
+                          <span className="text-xs font-extrabold text-amber-600">復習中</span>
                         )}
                       </div>
                       <p className="truncate text-xs font-bold text-ink/55">{word.meaning}</p>
@@ -225,7 +236,7 @@ export function EtymologyPackScreen() {
                       <EtymologyHistoryTrail word={word} compact />
                     </div>
                   ) : (
-                    <p className="mt-2 line-clamp-3 pl-8 text-xs font-bold leading-relaxed text-ink/50">
+                    <p className="mt-2 pl-8 text-xs font-bold leading-relaxed text-ink/60">
                       {word.etymology?.note}
                     </p>
                   )}

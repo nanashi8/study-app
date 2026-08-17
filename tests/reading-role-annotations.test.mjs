@@ -67,7 +67,7 @@ test('全24長文・全567文の最上段英文へSVOCM等の役割を欠落な�
   }])
 })
 
-test('役割ラベルは英文の一番上で意味と線の範囲を直接示す', () => {
+test('役割ラベルは対応する下線の下にSVOCMを表示する', () => {
   const sentence = PASSAGES[0].sentences[0]
   const parts = readingSentenceRoleParts(analyzeReadingSentence(sentence))
   const html = renderToStaticMarkup(ReadingRoleSentence({ sentence: sentence.en, parts }))
@@ -79,4 +79,5 @@ test('役割ラベルは英文の一番上で意味と線の範囲を直接示�
   assert.match(html, />V 動詞</)
   assert.match(html, />C 補語</)
   assert.match(html, /border-b-\[3px\]/)
+  assert.ok(html.indexOf('border-b-[3px]') < html.indexOf('>S 主語<'))
 })

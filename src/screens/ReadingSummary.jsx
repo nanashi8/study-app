@@ -1,20 +1,13 @@
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import { getPassage } from '../data/passages.js'
-import { getReadingQuestions } from '../data/reading-questions.js'
-import { readingRuleForQuestion } from '../data/reading-rules.js'
 import { getWord } from '../data/vocab.js'
 import { getLevel } from '../data/levels.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { PosBadge } from '../components/WordBits.jsx'
-import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
-import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
-import { ReadingRuleCard } from '../components/ReadingRuleCard.jsx'
-import { Card, Button, Chip, IconButton, cx } from '../components/ui.jsx'
+import { Card, Button, Chip, IconButton } from '../components/ui.jsx'
 import { Book, Cards, Bookmark, BookmarkFilled, Check, ArrowRight } from '../components/Icons.jsx'
-import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
-import { buildReadingInstructorExplanation } from '../lib/instructorExplanations.js'
 
 export function ReadingSummaryScreen() {
   const passageId = useStore((s) => s.params.passageId)
@@ -22,15 +15,9 @@ export function ReadingSummaryScreen() {
   const myList = useStore((s) => s.myList)
   const toggleMyList = useStore((s) => s.toggleMyList)
   const addManyToMyList = useStore((s) => s.addManyToMyList)
-  const markReadingDone = useStore((s) => s.markReadingDone)
-  const recordSkillResult = useStore((s) => s.recordSkillResult)
-  const recordContentQuizResult = useStore((s) => s.recordContentQuizResult)
 
   const passage = getPassage(passageId)
   const [savedAll, setSavedAll] = useState(false)
-  const [answers, setAnswers] = useState({})
-  const [checked, setChecked] = useState(false)
-  const recorded = useRef(false)
 
   if (!passage) {
     return (
@@ -44,105 +31,12 @@ export function ReadingSummaryScreen() {
   const words = passage.vocab.map(getWord).filter(Boolean)
   const ids = words.map((w) => w.id)
   const allSaved = ids.every((id) => myList.includes(id))
-  const questions = getReadingQuestions(passageId)
-  const answeredAll = questions.length > 0 && questions.every((_, i) => answers[i])
-  const correct = questions.filter((q, i) => answers[i] === q.answer).length
-
-  const checkReading = () => {
-    if (!answeredAll) return
-    setChecked(true)
-    if (!recorded.current) {
-      recorded.current = true
-      markReadingDone(passageId)
-      recordContentQuizResult('reading', passageId, correct, questions.length)
-      recordSkillResult('reading', correct, questions.length)
-    }
-  }
 
   return (
     <div className="pb-6">
-      <ScreenHeader title="長文のまとめ" subtitle={passage.titleJa} />
+      <ScreenHeader title="長文の単語まとめ" subtitle={passage.titleJa} />
 
       <div className="space-y-4 px-4">
-        <Card className="p-4">
-          <div className="text-center">
-            <div className="text-3xl">🧠</div>
-            <h2 className="mt-1 font-display text-lg font-extrabold text-ink">読解チェック</h2>
-            <p className="text-xs font-bold text-ink/50">本文の内容に合う答えを選ぼう</p>
-          </div>
-
-          <div className="mt-4 space-y-5">
-            {questions.map((q, qi) => (
-              <fieldset key={q.q}>
-                <legend className="mb-2 text-sm font-extrabold leading-relaxed text-ink">
-                  {qi + 1}. {q.q}
-                </legend>
-                <div className="space-y-2">
-                  {q.choices.map((choice) => {
-                    const selected = answers[qi] === choice
-                    const isCorrect = choice === q.answer
-                    const tone = checked
-                      ? isCorrect
-                        ? 'border-emerald-400 bg-correct-soft text-emerald-800'
-                        : selected
-                          ? 'border-rose-400 bg-wrong-soft text-rose-800'
-                          : 'border-transparent bg-paper text-ink/35'
-                      : selected
-                        ? 'border-brand-400 bg-brand-50 text-brand-800'
-                        : 'border-brand-100 bg-white text-ink'
-                    return (
-                      <button
-                        key={choice}
-                        type="button"
-                        disabled={checked}
-                        onClick={() => setAnswers((prev) => ({ ...prev, [qi]: choice }))}
-                        className={cx(
-                          'w-full rounded-xl border-2 px-3 py-2.5 text-left text-sm font-bold transition-colors',
-                          tone,
-                        )}
-                      >
-                        {choice}
-                      </button>
-                    )
-                  })}
-                  <UnknownChoiceButton
-                    selected={answers[qi] === UNKNOWN_CHOICE_ID}
-                    disabled={checked}
-                    onClick={() => setAnswers((prev) => ({ ...prev, [qi]: UNKNOWN_CHOICE_ID }))}
-                    className="rounded-xl py-2.5"
-                  />
-                </div>
-                {checked && (
-                  <>
-                    <InstructorExplanation
-                      explanation={buildReadingInstructorExplanation(q, answers[qi])}
-                      className="mt-3"
-                      compact
-                    />
-                    <div className="mt-2">
-                      <p className="mb-1 text-[11px] font-extrabold text-sky-700">この設問で使う読解ルール</p>
-                      <ReadingRuleCard rule={readingRuleForQuestion(q.q)} compact />
-                    </div>
-                  </>
-                )}
-              </fieldset>
-            ))}
-          </div>
-
-          {checked ? (
-            <div className="mt-4 rounded-2xl bg-brand-50 p-3 text-center">
-              <div className="font-display text-lg font-extrabold text-brand-700">
-                {correct}/{questions.length}問 正解
-              </div>
-              <div className="text-xs font-bold text-brand-600/70">読了として記録しました</div>
-            </div>
-          ) : (
-            <Button full className="mt-4" disabled={!answeredAll} onClick={checkReading}>
-              <Check size={16} /> 答え合わせ
-            </Button>
-          )}
-        </Card>
-
         <Card className="p-4 text-center">
           <div className="text-4xl">🎯</div>
           <h2 className="mt-1 font-display text-lg font-extrabold text-ink">この長文に出てきた単語</h2>

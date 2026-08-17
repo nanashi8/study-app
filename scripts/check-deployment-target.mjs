@@ -40,11 +40,12 @@ if (await fileExists(fromRoot('.openai', 'hosting.json'))) {
   failures.push('.openai/hosting.json が存在します。旧Sites設定を削除してください。')
 }
 
-const [workflow, html, viteConfig, packageJsonText] = await Promise.all([
+const [workflow, html, viteConfig, packageJsonText, manifestText] = await Promise.all([
   readProjectFile('.github/workflows/deploy.yml'),
   readProjectFile('index.html'),
   readProjectFile('vite.config.js'),
   readProjectFile('package.json'),
+  readProjectFile('public/site.webmanifest'),
 ])
 
 const requiredIconFiles = [
@@ -105,6 +106,17 @@ for (const requiredIconMetadata of [
   }
 }
 
+for (const requiredStandaloneMetadata of [
+  '<meta name="mobile-web-app-capable" content="yes" />',
+  '<meta name="apple-mobile-web-app-capable" content="yes" />',
+  '<meta name="apple-mobile-web-app-status-bar-style" content="default" />',
+  '<meta name="apple-mobile-web-app-title" content="スタディアプリ" />',
+]) {
+  if (!html.includes(requiredStandaloneMetadata)) {
+    failures.push(`index.html にスタンドアロン起動指定がありません: ${requiredStandaloneMetadata}`)
+  }
+}
+
 // `/assets/...` はGitHub Pagesのドメイン直下へ解決され、/study-app/ を失う。
 // publicAssetUrl() を必須にして、ゲーム画像の一括404を公開前に止める。
 for (const sourceFile of await sourceFilesUnder(fromRoot('src'))) {
@@ -125,6 +137,18 @@ try {
   }
 } catch (error) {
   failures.push(`package.json を解析できません: ${error.message}`)
+}
+
+try {
+  const manifest = JSON.parse(manifestText)
+  if (manifest.display !== 'standalone') {
+    failures.push('site.webmanifest のdisplayは standalone にしてください。')
+  }
+  if (manifest.start_url !== './' || manifest.scope !== './') {
+    failures.push('site.webmanifest のstart_urlとscopeはGitHub Pages配下を保つ ./ にしてください。')
+  }
+} catch (error) {
+  failures.push(`public/site.webmanifest を解析できません: ${error.message}`)
 }
 
 if (failures.length > 0) {

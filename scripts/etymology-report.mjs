@@ -8,6 +8,8 @@ import {
   ETYMOLOGY_SOURCE_META,
   ETYMOLOGY_SUMMARY,
   ROOTS,
+  etymologyLearningGuideFor,
+  rootIdsForWord,
 } from '../src/data/vocab.js'
 
 const ROOT_IDS = new Set(ROOTS.map((r) => r.id))
@@ -21,7 +23,9 @@ const noteCounts = new Map()
 const counts = {
   total: ALL_WORDS.length,
   explained: 0,
+  guided: 0,
   structured: 0,
+  referenceLinked: 0,
   directFormula: 0,
   sameRoot: 0,
   wordFamily: 0,
@@ -33,11 +37,12 @@ for (const word of ALL_WORDS) {
   const note = etymology?.note?.trim() ?? ''
   const parts = etymology?.parts ?? []
   const hasFormula = parts.some((p) => p.kind === 'root' && p.root)
-  const hasRoot = word.roots?.length > 0
+  const hasRoot = rootIdsForWord(word).length > 0
   const hasFamily = word.family?.length > 0 || word.derivatives?.length > 0
 
   if (note) counts.explained++
   if (parts.length) counts.structured++
+  if (word.referenceRoots?.length) counts.referenceLinked++
 
   // 1語を必ず1つの「最も強い語彙拡張経路」に分類する。
   if (hasFormula) counts.directFormula++
@@ -50,6 +55,36 @@ for (const word of ALL_WORDS) {
 
   if (!etymology) hardProblems.push(`${word.word}: etymology が無い`)
   if (!note) hardProblems.push(`${word.word}: 意味変化説明(note)が無い`)
+  const guide = etymologyLearningGuideFor(word)
+  let guideComplete = true
+  if (!guide.formationLabel || !guide.formationText) {
+    guideComplete = false
+    hardProblems.push(`${word.word}: 中高生向けの作られ方説明が無い`)
+  }
+  if (!guide.sourceLabel || !guide.sourceText) {
+    guideComplete = false
+    hardProblems.push(`${word.word}: 中高生向けのもとの形・言語説明が無い`)
+  }
+  if (!guide.storyLabel || !guide.storySteps.length || guide.storySteps.some((step) => !step.trim())) {
+    guideComplete = false
+    hardProblems.push(`${word.word}: 中高生向けの意味変化説明が無い`)
+  }
+  if (!guide.currentMeaning) {
+    guideComplete = false
+    hardProblems.push(`${word.word}: 中高生向けの今の意味が無い`)
+  }
+  for (const value of [
+    guide.formationLabel,
+    guide.formationText,
+    guide.sourceLabel,
+    guide.storyLabel,
+  ]) {
+    if (/現在義|共通軸|記載上の出発言語|濃縮パック/.test(value)) {
+      guideComplete = false
+      hardProblems.push(`${word.word}: 学習者向け説明に専門的な表示語が残る (${value})`)
+    }
+  }
+  if (guideComplete) counts.guided++
   if (!word.compression) hardProblems.push(`${word.word}: 濃縮ルートが無い`)
   else if (!PACK_IDS.has(word.compression.packId)) {
     hardProblems.push(`${word.word}: 濃縮パック参照先が不明 (${word.compression.packId})`)
@@ -67,7 +102,7 @@ for (const word of ALL_WORDS) {
 
 const rootUse = ROOTS.map((root) => ({
   root,
-  words: ALL_WORDS.filter((word) => word.roots.includes(root.id)),
+  words: ALL_WORDS.filter((word) => rootIdsForWord(word).includes(root.id)),
 }))
 const unusedRoots = rootUse.filter(({ words }) => words.length === 0).map(({ root }) => root.id)
 const duplicateNotes = [...noteCounts.entries()]
@@ -84,6 +119,15 @@ for (const pack of originPacks) {
     }
   }
 }
+for (const pack of ETYMOLOGY_PACKS) {
+  const learnerText = [pack.title, pack.subtitle, pack.description, pack.caution].join(' ')
+  if (/undefined|（\s*）|\(\s*\)/.test(learnerText)) {
+    hardProblems.push(`${pack.id}: 学習者向けカード文言が不完全 (${pack.title})`)
+  }
+  if (pack.title.length > 45) {
+    hardProblems.push(`${pack.id}: 学習者向けカード名が長すぎる (${pack.title.length}字)`)
+  }
+}
 
 const pct = (value) => `${(value / counts.total * 100).toFixed(1)}%`
 const printAxis = (meta, countsByKey) => {
@@ -96,7 +140,9 @@ const printAxis = (meta, countsByKey) => {
 console.log(`\n語源学習・全件監査: ${counts.total}語`)
 console.log('─'.repeat(56))
 console.log(`説明あり                    ${String(counts.explained).padStart(5)}語  ${pct(counts.explained)}`)
+console.log(`中高生向け4段階ガイド       ${String(counts.guided).padStart(5)}語  ${pct(counts.guided)}`)
 console.log(`構造化パーツあり            ${String(counts.structured).padStart(5)}語  ${pct(counts.structured)}`)
+console.log(`補助語根で関連語を拡張       ${String(counts.referenceLinked).padStart(5)}語  ${pct(counts.referenceLinked)}`)
 console.log('\n語彙を増やす主経路（重複なし）')
 console.log(`  意味の式で組み立てる      ${String(counts.directFormula).padStart(5)}語  ${pct(counts.directFormula)}`)
 console.log(`  同じ語根へ広げる          ${String(counts.sameRoot).padStart(5)}語  ${pct(counts.sameRoot)}`)

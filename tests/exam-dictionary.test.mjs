@@ -14,6 +14,7 @@ import {
   PHRASE_TARGET_TOTALS,
 } from '../src/data/phrase-curriculum.js'
 import { EXAM_GRAMMAR_LESSONS } from '../src/data/grammar-lessons-exam.js'
+import { ETYMOLOGY_COMPLETION_WORDS } from '../src/data/words-etymology-completion.js'
 import { ALL_WORDS, getWord } from '../src/data/vocab.js'
 import { PHRASES } from '../src/data/phrases.js'
 import { GRAMMAR_LESSONS } from '../src/data/grammar-lessons.js'
@@ -28,10 +29,11 @@ test('入試・英検向けの新規見出し語139語は既存辞書へ一意�
   assert.equal(EXAM_WORDS.length, 139)
   assert.equal(EXAM_WORD_IDS.size, EXAM_WORDS.length)
   assert.equal(new Set(ALL_WORDS.map((word) => word.id)).size, ALL_WORDS.length)
+  const examBlockEnd = ALL_WORDS.length - ETYMOLOGY_COMPLETION_WORDS.length
   assert.deepEqual(
-    ALL_WORDS.slice(-EXAM_WORDS.length).map((word) => word.id),
+    ALL_WORDS.slice(examBlockEnd - EXAM_WORDS.length, examBlockEnd).map((word) => word.id),
     EXAM_WORDS.map((word) => word.id),
-    '既存見出し語の順序を変えず、新規語だけを末尾へ追加する',
+    '既存見出し語の順序を変えず、語源補完語だけを後置する',
   )
 
   for (const word of EXAM_WORDS) {

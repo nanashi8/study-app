@@ -36,7 +36,7 @@ import {
 import { progressStateFromCloud } from '../src/lib/cloudSync.js'
 import { progressStateFromPayload, useStore } from '../src/store/useStore.js'
 
-test('マイ学習ノートは指定8分野・全16119項目を安定IDで解決する', () => {
+test('マイ学習ノートは指定8分野・全16428項目を安定IDで解決する', () => {
   assert.deepEqual(NOTEBOOK_DOMAIN_IDS, [
     'vocab',
     'phrases',
@@ -48,16 +48,16 @@ test('マイ学習ノートは指定8分野・全16119項目を安定IDで解決
     'kotenCulture',
   ])
   assert.deepEqual(NOTEBOOK_CATALOG_COUNTS, {
-    vocab: 8211,
+    vocab: 8426,
     phrases: 1500,
     grammar: 3140,
     listening: 160,
-    etymology: 2678,
+    etymology: 2772,
     kotenVocab: 300,
     kotenGrammar: 74,
     kotenCulture: 56,
   })
-  assert.equal(NOTEBOOK_TOTAL_ITEMS, 16119)
+  assert.equal(NOTEBOOK_TOTAL_ITEMS, 16428)
 
   for (const [domain, count] of Object.entries(NOTEBOOK_CATALOG_COUNTS)) {
     assert.ok(count > 0, domain)

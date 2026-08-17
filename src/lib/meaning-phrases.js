@@ -805,8 +805,9 @@ export function buildMeaningPhraseSequence(items, {
 } = {}) {
   if (!Array.isArray(items) || !items.length) return Object.freeze([])
   const expandedItems = expandMeaningSplits(items, overrides)
-  if (Array.isArray(explicitGroups) && explicitGroups.length) {
-    const groups = collectExplicitMeaningGroups(expandedItems, explicitGroups)
+  const reviewedGroups = explicitGroups ?? overrides?.groups
+  if (Array.isArray(reviewedGroups) && reviewedGroups.length) {
+    const groups = collectExplicitMeaningGroups(expandedItems, reviewedGroups)
     return Object.freeze(groups.map(({ group, definition }, index) =>
       buildMeaningPhrase(group, index, {
         [spokenEnglish(group)]: definition,

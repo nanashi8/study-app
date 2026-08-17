@@ -10,70 +10,70 @@
 
 export const ETYMOLOGY_FORMATION_META = {
   inherited: {
-    label: '受け継いだ語',
-    short: '継承',
+    label: '昔の英語から受け継いだ語',
+    short: '受け継いだ語',
     emoji: '🌱',
-    description: '古英語・中英語から形や意味を変えながら受け継がれた語です。',
+    description: '昔の英語から、つづりや発音、意味を少しずつ変えながら残った語です。',
   },
   borrowing: {
-    label: '借用して入った語',
-    short: '借用',
+    label: 'ほかの言語から入った語',
+    short: '外から入った語',
     emoji: '🧭',
-    description: 'ほかの言語の語が英語へ入り、発音や意味を変えた語です。',
+    description: 'ほかの言語のことばが英語に入り、英語らしい形や意味に変わった語です。',
   },
   construction: {
-    label: '部品を組み立てた語',
-    short: '組立',
+    label: '部品を組み合わせた語',
+    short: '組み合わせた語',
     emoji: '🧱',
-    description: '複合・接辞・結合形など、記載された部品の足し算でできた語です。',
+    description: '2つ以上のことばや、前後につく部品を組み合わせてできた語です。',
   },
   shortening: {
     label: '短くしてできた語',
-    short: '短縮',
+    short: '短くした語',
     emoji: '✂️',
-    description: '長い語や語句を切り縮めたり、頭文字にしたりしてできた語です。',
+    description: '長いことばを短くしたり、頭文字をつないだりしてできた語です。',
   },
   blend: {
     label: '混ぜ合わせた語',
-    short: '混成',
+    short: '混ぜた語',
     emoji: '🧪',
-    description: '2語の一部分ずつを重ね合わせて作った混成語です。',
+    description: '2つのことばの一部分ずつを取り出し、1語に混ぜてできた語です。',
   },
   reshaped: {
-    label: '形を作り替えた語',
-    short: '変形',
+    label: 'もとの形を変えた語',
+    short: '形を変えた語',
     emoji: '🪄',
-    description: '変形・逆成・品詞転換など、既存の形を作り替えた語です。',
+    description: 'すでにあったことばの形や使い方を変えてできた語です。',
   },
   name: {
     label: '名前から一般語へ',
-    short: '名前',
+    short: '名前からできた語',
     emoji: '📍',
-    description: '人名・地名・神話名などの固有名が一般的な語になったものです。',
+    description: '人や場所などの名前が、広く使われる一般的なことばになったものです。',
   },
   sound: {
     label: '音を写した語',
-    short: '音',
+    short: '音からできた語',
     emoji: '🔊',
-    description: '実際の音や声の響きをまねて作られた語です。',
+    description: '実際の音や声の響きをまねてできた語です。',
   },
   coinage: {
-    label: '意図して作られた語',
-    short: '造語',
+    label: '新しく作られた語',
+    short: '新しく作った語',
     emoji: '✨',
-    description: '作者や学者などが、名付けるために意図して作った語です。',
+    description: '新しいものや考え方に名前をつけるため、新しく作られた語です。',
   },
   semanticShift: {
     label: '意味が移ってできた語',
-    short: '意味変化',
+    short: '意味が変わった語',
     emoji: '💡',
-    description: '既存の像や用法が比喩・拡張によって現在の意味へ移った語です。',
+    description: 'もとの使い方がたとえなどに広がり、今の意味になった語です。',
   },
   uncertain: {
-    label: '由来を断定しない語',
-    short: '未詳',
+    label: '由来がはっきりしない語',
+    short: '由来が未詳の語',
     emoji: '🪨',
-    description: '由来が不確か、または収録説明だけでは形成法を断定できない語です。',
+    description: '由来が不確かなので、分かっている範囲だけを手がかりにする語です。',
   },
 }
 
@@ -82,55 +82,55 @@ export const ETYMOLOGY_SOURCE_META = {
     label: '古英語',
     short: '古英語',
     emoji: '🏡',
-    description: '英語の最も古い記録層を出発点に含みます。',
+    description: '今の英語より前に使われていた古英語が、もとの手がかりです。',
   },
   englishHistory: {
     label: '英語内の変化',
-    short: '英語史',
+    short: '英語の中で変化',
     emoji: '🕰️',
-    description: '中英語以後の英語内の形・意味の変化をたどります。',
+    description: '英語の中で、つづりや意味が変わった道すじをたどります。',
   },
   norse: {
     label: '古ノルド・北欧語系',
     short: '北欧語系',
     emoji: '⛵',
-    description: '古ノルド語や北欧の言語層を出発点に含みます。',
+    description: '古ノルド語など、北欧で使われたことばがもとの手がかりです。',
   },
   french: {
     label: 'フランス語系',
-    short: '仏語系',
+    short: 'フランス語系',
     emoji: '🏰',
-    description: '古フランス語を含むフランス語の層を出発点に含みます。',
+    description: '古フランス語を含むフランス語が、もとの手がかりです。',
   },
   latin: {
     label: 'ラテン語系',
-    short: '羅語系',
+    short: 'ラテン語系',
     emoji: '🏛️',
-    description: 'ラテン語の語形・意味を出発点に含みます。',
+    description: 'ラテン語の形や意味が、もとの手がかりです。',
   },
   greek: {
     label: 'ギリシャ語系',
-    short: '希語系',
+    short: 'ギリシャ語系',
     emoji: '🏺',
-    description: 'ギリシャ語の語形・意味を出発点に含みます。',
+    description: 'ギリシャ語の形や意味が、もとの手がかりです。',
   },
   germanic: {
     label: 'ゲルマン諸語',
     short: 'ゲルマン',
     emoji: '🌲',
-    description: 'ドイツ語・オランダ語などのゲルマン諸語の層を含みます。',
+    description: 'ドイツ語やオランダ語などのことばが、もとの手がかりです。',
   },
   world: {
     label: 'その他の言語',
     short: '世界の言語',
     emoji: '🌍',
-    description: '欧州古典語以外を含む、世界各地の言語を出発点にします。',
+    description: '世界各地で使われることばが、もとの手がかりです。',
   },
   unknown: {
-    label: '言語経路なし・未詳',
-    short: '経路未詳',
+    label: 'もとの言語は未詳',
+    short: 'もとの言語は未詳',
     emoji: '🗺️',
-    description: '収録説明に出発言語が無いか、言語経路が確定していません。',
+    description: 'もとの言語が分からないため、分かっている由来だけを確認します。',
   },
 }
 
@@ -279,5 +279,30 @@ export function etymologyHistoryFor(word) {
     note,
     arrowSteps: arrowSteps.length > 1 ? arrowSteps : [],
     currentMeaning: word?.meanings?.slice(0, 2).join('・') || word?.meaning || '',
+  }
+}
+
+/**
+ * 収録済みの史実メモを変えず、中高生が読む順にそろえた説明。
+ * 全語で「作られ方 → もとの情報 → 変化 → 今の意味」を同じ形で返す。
+ */
+export function etymologyLearningGuideFor(word) {
+  const history = etymologyHistoryFor(word)
+  const formation = ETYMOLOGY_FORMATION_META[history.formationKey]
+  const source = ETYMOLOGY_SOURCE_META[history.sourceKey]
+  const storySteps = history.arrowSteps.length > 1
+    ? history.arrowSteps
+    : [history.note || history.sourceText].filter(Boolean)
+
+  return {
+    formationLabel: formation.label,
+    formationEmoji: formation.emoji,
+    formationText: formation.description,
+    sourceLabel: source.label,
+    sourceEmoji: source.emoji,
+    sourceText: history.sourceText,
+    storyLabel: storySteps.length > 1 ? '意味の変化' : '由来の記録',
+    storySteps,
+    currentMeaning: history.currentMeaning,
   }
 }

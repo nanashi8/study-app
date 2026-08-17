@@ -54,10 +54,10 @@ const guides = [
   guide(
     'meaning-basic-svc',
     'Rina is a junior high school student.',
-    '主語の名詞句と、be動詞＋補語で完成する述部に分けます。',
+    '読解では主節のS＋Vを先に確保し、補語Cを次に足します。文法上のSVC境界は内部ラベルで区別します。',
     [
-      phrase('Rina', 'S', 'リナは'),
-      phrase('is a junior high school student', ['V', 'C'], '一人の中学生です'),
+      phrase('Rina is', ['S', 'V'], 'リナは〜です（内容は次へ）'),
+      phrase('a junior high school student', 'C', '一人の中学生'),
     ],
   ),
   guide(

@@ -13,7 +13,7 @@ import { Search, Close, ArrowRight, BookmarkFilled } from '../components/Icons.j
 
 // 見つからなかったときの案内＋「この単語をリクエスト」ボタン。
 // query が変わると state がリセットされるよう、呼び出し側で key={query} を付ける。
-function NoResults({ query, user, onSeeList }) {
+function NoResults({ query, user, onSeeList, onLogin }) {
   const [phase, setPhase] = useState('idle') // idle | sending | done | error
   const send = async () => {
     setPhase('sending')
@@ -34,21 +34,34 @@ function NoResults({ query, user, onSeeList }) {
         </p>
       ) : (
         <>
-          <p className="mt-1 text-sm font-bold text-ink/40">
-            この単語を辞書に追加してほしいときはリクエストできます。
-          </p>
-          <div className="mt-4">
-            <Button onClick={send} disabled={phase === 'sending'}>
-              📩 {phase === 'sending' ? '送信中…' : 'この単語をリクエスト'}
-            </Button>
-          </div>
+          {user ? (
+            <>
+              <p className="mt-1 text-sm font-bold text-ink/40">
+                この単語を辞書に追加してほしいときはリクエストできます。
+              </p>
+              <div className="mt-4">
+                <Button onClick={send} disabled={phase === 'sending'}>
+                  📩 {phase === 'sending' ? '送信中…' : 'この単語をリクエスト'}
+                </Button>
+              </div>
+            </>
+          ) : (
+            <>
+              <p className="mt-2 text-sm font-bold text-ink/45">
+                公開投稿の悪用を防ぐため、リクエスト送信にはログインが必要です。
+              </p>
+              <div className="mt-4">
+                <Button onClick={onLogin}>ログイン画面へ</Button>
+              </div>
+            </>
+          )}
           {phase === 'error' && (
             <p className="mt-2 text-xs font-bold text-rose-500">送信できませんでした。通信環境を確認してください。</p>
           )}
         </>
       )}
       <button onClick={onSeeList} className="mt-5 text-xs font-extrabold text-brand-500 underline underline-offset-2">
-        みんなのリクエスト一覧を見る
+        リクエストの公開範囲を確認
       </button>
     </div>
   )
@@ -196,7 +209,13 @@ export function VocabSearchScreen() {
             </div>
           )
         ) : shown.length === 0 ? (
-          <NoResults key={query} query={query} user={user} onSeeList={() => navigate('wordRequests')} />
+          <NoResults
+            key={query}
+            query={query}
+            user={user}
+            onSeeList={() => navigate('wordRequests')}
+            onLogin={() => navigate('login')}
+          />
         ) : (
           <div className="space-y-2">
             {shown.map((word) => (

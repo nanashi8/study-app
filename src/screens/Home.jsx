@@ -4,18 +4,22 @@ import {
   Book,
   BookOpen,
   Headphones,
+  Keyboard,
   Lightbulb,
   Search,
+  Scroll,
   Sparkles,
 } from '../components/Icons.jsx'
 
 const PRIMARY_LEARNING_MODES = [
   { id: 'vocab', label: '単語', Icon: Book, color: '#6366f1', screen: 'vocabLevels' },
-  { id: 'dictionary', label: '英和辞書', Icon: Search, color: '#0ea5e9', screen: 'vocabSearch' },
-  { id: 'reading', label: '長文', Icon: BookOpen, color: '#10b981', screen: 'readingList' },
   { id: 'phrases', label: '熟語・構文', Icon: Sparkles, color: '#8b5cf6', screen: 'phrases' },
   { id: 'grammar', label: '文法', Icon: Lightbulb, color: '#f59e0b', screen: 'grammar' },
   { id: 'listening', label: 'リスニング', Icon: Headphones, color: '#0284c7', screen: 'listening' },
+  { id: 'dictation', label: 'ディクテーション', Icon: Keyboard, color: '#14b8a6', screen: 'dictation' },
+  { id: 'reading', label: '長文', Icon: BookOpen, color: '#10b981', screen: 'readingList' },
+  { id: 'writing', label: '英作文', Icon: Scroll, color: '#e11d48', screen: 'writing' },
+  { id: 'dictionary', label: '英和辞書', Icon: Search, color: '#0ea5e9', screen: 'vocabSearch' },
 ]
 
 function LearningModeButton({ mode, onOpen }) {
@@ -49,13 +53,13 @@ function LearningMenu({ navigate }) {
       <header className="sticky top-0 z-20 min-h-16 border-b border-slate-200/80 bg-white/95 px-4 py-2.5 backdrop-blur">
         <div className="min-w-0">
           <p className="text-xs font-extrabold tracking-[0.14em] text-brand-500">SELECT MODE</p>
-          <h1 className="font-display text-xl font-extrabold text-ink">英語の主要学習</h1>
+          <h1 className="font-display text-xl font-extrabold text-ink">英語アプリ</h1>
         </div>
       </header>
 
       <div className="space-y-4 px-4 pt-4">
         <section>
-          <h2 className="mb-2 px-1 font-display text-sm font-extrabold text-ink/65">学ぶ分野を選ぶ</h2>
+          <h2 className="mb-2 px-1 font-display text-sm font-extrabold text-ink/65">コンテンツを選ぶ</h2>
           <div className="grid grid-cols-2 gap-2.5" data-home-mode-group="primary">
             {PRIMARY_LEARNING_MODES.map((mode) => (
               <LearningModeButton key={mode.id} mode={mode} onOpen={open} />

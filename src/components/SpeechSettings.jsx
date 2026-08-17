@@ -47,12 +47,9 @@ import { buildLearningPowerProfile } from '../lib/learningPower.js'
 import { LearningAnalyticsPanel } from './LearningAnalytics.jsx'
 import {
   LearningAdvisorPanel,
-  LearningAdvisorSummary,
 } from './LearningAdvisor.jsx'
 import {
-  APP_MENU_DIRECT_ITEMS,
-  APP_MENU_GROUPS,
-  appMenuGroupById,
+  APP_MENU_SECTIONS,
 } from '../lib/appMenu.js'
 import { resetProgressEverywhere } from '../lib/cloudSync.js'
 import {
@@ -395,7 +392,7 @@ export function SettingsMenuPanel({ heading = true }) {
         <div className="pt-3">
           <h2 className="font-display text-lg font-extrabold text-ink">設定</h2>
           <p className="mt-1 text-xs font-bold leading-relaxed text-ink/50">
-            保存される学習・音声・コンテンツ設定は、メニュー内のここに集約しています。
+            保存される学習・音声・表示設定を、ここで変更できます。
           </p>
         </div>
       )}
@@ -414,21 +411,14 @@ export function SettingsMenuPanel({ heading = true }) {
           <SpeechSettingsPanel heading={false} />
         </SettingsSection>
         <SettingsSection
-          title="コンテンツメニュー"
-          desc="トップメニューの並び順と表示・非表示"
+          title="ホームの表示"
+          desc="スタディアプリ ホームの並び順と表示・非表示"
         >
           <PortalSettingsPanel />
         </SettingsSection>
       </div>
     </section>
   )
-}
-
-const MENU_GROUP_ICONS = {
-  learn: BookOpen,
-  tools: Sparkles,
-  records: Bookmark,
-  manage: Gear,
 }
 
 const MENU_ITEM_ICONS = {
@@ -456,6 +446,8 @@ const MENU_ITEM_ICONS = {
   kotenSaved: Book,
   kanbunSaved: BookOpen,
   progress: Chart,
+  advisor: Sparkles,
+  analytics: Chart,
   settings: Gear,
   account: Home,
   reset: Refresh,
@@ -503,6 +495,9 @@ function MenuDestinationList({
             data-menu-settings-entry={item.action === 'settings' ? '' : undefined}
             data-menu-account-entry={item.action === 'account' ? '' : undefined}
             data-menu-reset-entry={item.action === 'reset' ? '' : undefined}
+            data-menu-advisor-entry={item.action === 'advisor' ? '' : undefined}
+            data-menu-retention-entry={item.action === 'analytics' ? '' : undefined}
+            data-menu-item
           >
             <span className={cx(
               'grid h-8 w-8 shrink-0 place-items-center rounded-lg',
@@ -532,78 +527,33 @@ function MenuDestinationList({
 }
 
 export function AppMenuPanel({
-  profile,
-  onNavigate,
-  onOpenAdvisor,
-  onOpenAnalysis,
-  onOpenGroup,
-}) {
-  return (
-    <section className="space-y-3" aria-label="アプリメニュー" data-app-menu-panel>
-      <nav aria-label="すぐに開く教材" data-menu-direct-list>
-        <MenuDestinationList
-          items={APP_MENU_DIRECT_ITEMS}
-          onNavigate={onNavigate}
-          tone="violet"
-        />
-      </nav>
-
-      <LearningAdvisorSummary
-        profile={profile}
-        onOpenAdvisor={onOpenAdvisor}
-        onOpenAnalysis={onOpenAnalysis}
-      />
-
-      <nav
-        className="divide-y divide-slate-100 overflow-hidden rounded-xl border border-slate-200 bg-white"
-        aria-label="メニューの分類"
-        data-menu-group-list
-      >
-        {APP_MENU_GROUPS.map((menuGroup) => {
-          const Icon = MENU_GROUP_ICONS[menuGroup.id] ?? Menu
-          return (
-            <button
-              key={menuGroup.id}
-              type="button"
-              onClick={() => onOpenGroup?.(menuGroup.id)}
-              className="flex min-h-12 w-full items-center gap-2.5 px-3 py-2 text-left active:bg-brand-50"
-              data-menu-group-entry={menuGroup.id}
-            >
-              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-brand-50 text-brand-600">
-                <Icon size={19} />
-              </span>
-              <strong className="min-w-0 flex-1 text-sm font-extrabold text-ink">{menuGroup.label}</strong>
-              <ChevronRight size={18} className="shrink-0 text-ink/25" />
-            </button>
-          )
-        })}
-      </nav>
-    </section>
-  )
-}
-
-function AppMenuGroupPanel({
-  menuGroup,
   account,
   authStatus,
   onNavigate,
   onAction,
 }) {
   return (
-    <section className="space-y-3" aria-label={menuGroup.label} data-menu-group-panel={menuGroup.id}>
-      {menuGroup.sections.map((menuSection) => (
-        <section key={menuSection.id} aria-label={menuSection.label}>
-          <h2 className="mb-2 px-1 font-display text-sm font-extrabold text-ink/65">{menuSection.label}</h2>
-          <MenuDestinationList
-            items={menuSection.items}
-            onNavigate={onNavigate}
-            onAction={onAction}
-            account={account}
-            authStatus={authStatus}
-            tone={menuGroup.id === 'tools' ? 'violet' : 'brand'}
-          />
-        </section>
-      ))}
+    <section aria-label="メニュー" data-app-menu-panel>
+      <nav className="space-y-4" aria-label="メニュー項目" data-menu-section-list>
+        {APP_MENU_SECTIONS.map((menuSection) => (
+          <section key={menuSection.id} aria-labelledby={`menu-section-${menuSection.id}`} data-menu-section={menuSection.id}>
+            <h2
+              id={`menu-section-${menuSection.id}`}
+              className="mb-2 px-1 font-display text-sm font-extrabold text-ink/65"
+            >
+              {menuSection.label}
+            </h2>
+            <MenuDestinationList
+              items={menuSection.items}
+              onNavigate={onNavigate}
+              onAction={onAction}
+              account={account}
+              authStatus={authStatus}
+              tone={menuSection.id === 'english' || menuSection.id === 'support' ? 'violet' : 'brand'}
+            />
+          </section>
+        ))}
+      </nav>
     </section>
   )
 }
@@ -727,7 +677,7 @@ function ResetProgressPanel({
       </div>
 
       <p className="rounded-xl bg-emerald-50 px-3 py-2.5 text-xs font-bold leading-relaxed text-emerald-800" data-reset-preserved-data>
-        音声・カード設定と、メインメニューの並び順・表示設定は選択にかかわらず残ります。
+        音声・カード設定と、スタディアプリ ホームの表示設定は選択にかかわらず残ります。
       </p>
       <Button full variant="secondary" onClick={onBackup}>
         リセット前にQR・コードを保存
@@ -781,11 +731,11 @@ function ResetCompletePanel({ status, resetGroupIds, onRetry, onHome, onMenu }) 
           {status === 'device-and-cloud'
             ? 'この端末とクラウドの初期化を確認しました。'
             : 'この端末の初期化を確認しました。'}
-          音声・カード設定とメニュー配置は保持されています。
+          音声・カード設定とホームの表示設定は保持されています。
         </p>
       )}
 
-      <Button full onClick={onHome} disabled={syncing || cloudError}>教科を選ぶホームへ</Button>
+      <Button full onClick={onHome} disabled={syncing || cloudError}>スタディアプリ ホームへ</Button>
       <Button full variant="ghost" onClick={onMenu} disabled={syncing}>メニューへ戻る</Button>
     </section>
   )
@@ -961,15 +911,11 @@ export function SpeechSettingsSheet() {
   const pendingLabel = pendingNavigation?.type === 'back'
     ? '前の画面'
     : pendingNavigation?.screen === 'portal'
-      ? 'メインメニュー'
+      ? 'スタディアプリ ホーム'
       : '選んだ画面'
 
-  const activeMenuGroup = view.startsWith('group-')
-    ? appMenuGroupById(view.slice('group-'.length))
-    : null
-
   const sheetTitles = {
-    menu: '統一メニュー',
+    menu: 'メニュー',
     settings: '設定',
     advisor: '学習アドバイザー',
     analytics: '定着・学習効率の分析',
@@ -981,24 +927,13 @@ export function SpeechSettingsSheet() {
       ? '戻りますか？'
       : '途中の進捗を保存しますか？',
   }
-  const sheetTitle = activeMenuGroup?.label ?? sheetTitles[view] ?? '統一メニュー'
+  const sheetTitle = sheetTitles[view] ?? 'メニュー'
 
   return (
     <Sheet open={open} onClose={close} title={sheetTitle} maxH="92vh">
-      {activeMenuGroup ? (
+      {view === 'settings' ? (
         <>
           <MenuBackButton onClick={() => setView('menu')} />
-          <AppMenuGroupPanel
-            menuGroup={activeMenuGroup}
-            account={account}
-            authStatus={authStatus}
-            onNavigate={openScreen}
-            onAction={(action) => setView(action)}
-          />
-        </>
-      ) : view === 'settings' ? (
-        <>
-          <MenuBackButton onClick={() => setView('group-manage')} />
           <SettingsMenuPanel heading={false} />
         </>
       ) : view === 'advisor' ? (
@@ -1035,13 +970,13 @@ export function SpeechSettingsSheet() {
         </>
       ) : view === 'reset' ? (
         <>
-          <MenuBackButton onClick={() => setView('group-manage')} />
+          <MenuBackButton onClick={() => setView('menu')} />
           <ResetProgressPanel
             selectedGroupIds={resetGroupIds}
             onSelectionChange={setResetGroupIds}
             onBackup={() => setView('backup-reset')}
             onReset={confirmReset}
-            onCancel={() => setView('group-manage')}
+            onCancel={() => setView('menu')}
             busy={resetStatus === 'syncing'}
           />
         </>
@@ -1066,7 +1001,7 @@ export function SpeechSettingsSheet() {
         </>
       ) : view === 'account' ? (
         <>
-          <MenuBackButton onClick={() => setView('group-manage')} />
+          <MenuBackButton onClick={() => setView('menu')} />
           <AccountPanel
             account={account}
             authStatus={authStatus}
@@ -1110,11 +1045,10 @@ export function SpeechSettingsSheet() {
         </div>
       ) : (
         <AppMenuPanel
-          profile={profile}
+          account={account}
+          authStatus={authStatus}
           onNavigate={openScreen}
-          onOpenAdvisor={() => setView('advisor')}
-          onOpenAnalysis={() => setView('analytics')}
-          onOpenGroup={(groupId) => setView(`group-${groupId}`)}
+          onAction={(action) => setView(action)}
         />
       )}
     </Sheet>
@@ -1122,6 +1056,6 @@ export function SpeechSettingsSheet() {
 }
 
 // 既存画面の import 名は互換性のため保ち、
-// 新しい画面からは共通メニューとして参照できる別名も公開する。
+// 新しい画面からはメニューとして参照できる別名も公開する。
 export const SettingsMenuButton = SpeechSettingsButton
 export const SettingsMenuSheet = SpeechSettingsSheet

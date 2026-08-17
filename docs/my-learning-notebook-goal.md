@@ -35,7 +35,7 @@
 - 補助索引: `myLearning`
 - 直接保存: `vocabStudy` / `vocabQuiz` / `wordDetail`、`phraseStudy` / `phraseQuiz`、`grammarQuiz`、`listeningQuiz`、`etymologyStudy`、古典単語・文法・常識の各学習/クイズ
 - 学習記録・復元確認: `progress`
-- 共通入口: 下部「マイ学習」、統一メニュー「マイ学習ノート」
+- 共通入口: 下部「マイ学習」、メニュー「マイ学習ノート」
 
 ## 互換性契約
 

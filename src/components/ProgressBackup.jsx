@@ -16,7 +16,7 @@ const CAN_SHARE_IMAGE =
 export function ProgressBackupPanel({
   progressState,
   onContinue,
-  continueLabel = 'メインメニューへ戻る',
+  continueLabel = 'スタディアプリ ホームへ戻る',
 }) {
   const storedProgress = useStore(useShallow(selectProgressState))
   const full = progressState ?? storedProgress

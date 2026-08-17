@@ -11,11 +11,21 @@ import {
   ETYMOLOGY_SUMMARY,
   ROOTS,
   getEtymologyPack,
+  etymologyLearningGuideFor,
+  relatedByEtymology,
+  rootIdsForWord,
+  wordsByRoot,
 } from '../src/data/vocab.js'
-import { buildEtymologyCompression } from '../src/data/etymology-compression.js'
+import {
+  REFERENCE_ROOT_LINK_COUNT,
+  REFERENCE_ROOT_WORDS,
+  REFERENCE_ROOTS,
+} from '../src/data/etymology-reference-roots.js'
+import { ETYMOLOGY_COMPLETION_WORDS } from '../src/data/words-etymology-completion.js'
 import { wordsForSource } from '../src/lib/session.js'
 
 const compact = (value = '') => value.toLowerCase().replace(/[^a-z0-9]+/g, '')
+const completionWordIds = new Set(ETYMOLOGY_COMPLETION_WORDS.map((word) => word.id))
 const byHead = new Map()
 const byId = new Map(ALL_WORDS.map((word) => [word.id, word]))
 for (const word of ALL_WORDS) {
@@ -59,7 +69,8 @@ test('全英単語が4つの語源濃縮ルートへ重複なく入る', () => {
 test('濃縮ルートは語源データの強さを越えて推測しない', () => {
   for (const word of ALL_WORDS) {
     const formula = (word.etymology?.parts?.length ?? 0) >= 2
-    const relations = familyRelationIds(word)
+    const relations = new Set([...familyRelationIds(word)].filter((id) =>
+      completionWordIds.has(id) === completionWordIds.has(word.id)))
     const mode = word.compression.mode
 
     if (formula) {
@@ -168,19 +179,153 @@ test('代表語を形成法と言語層の別軸へ分類し、旧来の無関�
   assert.notEqual(word('comic').compression.packId, word('box').compression.packId)
 })
 
-test('同じ全語データから濃縮パックを決定的に再生成できる', () => {
-  const rebuilt = buildEtymologyCompression(ALL_WORDS, ROOTS)
-  assert.deepEqual(rebuilt.summary, ETYMOLOGY_SUMMARY)
+test('既存語源パックを固定し、補完語だけを名前空間へ分離する', () => {
+  const legacyWords = ALL_WORDS.filter((word) => !completionWordIds.has(word.id))
+  const completionWords = ALL_WORDS.filter((word) => completionWordIds.has(word.id))
+  const legacyPacks = ETYMOLOGY_PACKS.filter((pack) => !pack.id.startsWith('completion:'))
+  const completionPacks = ETYMOLOGY_PACKS.filter((pack) => pack.id.startsWith('completion:'))
+
+  assert.equal(legacyWords.length, 8211)
+  assert.equal(legacyPacks.length, 2678)
+  assert.equal(completionWords.length, 215)
+  assert.ok(completionPacks.length > 0)
+  assert.ok(legacyWords.every((word) => !word.compression.packId.startsWith('completion:')))
+  assert.ok(completionWords.every((word) => word.compression.packId.startsWith('completion:')))
   assert.deepEqual(
-    rebuilt.packs.map((pack) => ({
-      id: pack.id,
-      coverageIds: pack.coverageIds,
-      studyIds: pack.studyIds,
-    })),
-    ETYMOLOGY_PACKS.map((pack) => ({
-      id: pack.id,
-      coverageIds: pack.coverageIds,
-      studyIds: pack.studyIds,
-    })),
+    new Set(completionPacks.flatMap((pack) => pack.coverageIds)),
+    completionWordIds,
   )
+})
+
+test('全英単語に中高生向けの4段階語源ガイドを表示できる', () => {
+  for (const word of ALL_WORDS) {
+    const guide = etymologyLearningGuideFor(word)
+    assert.ok(guide.formationLabel, `${word.id}: 作られ方ラベル`)
+    assert.ok(guide.formationText, `${word.id}: 作られ方説明`)
+    assert.ok(guide.sourceLabel, `${word.id}: もとの言語ラベル`)
+    assert.ok(guide.sourceText, `${word.id}: もとの形・言語`)
+    assert.ok(guide.storyLabel, `${word.id}: 変化ラベル`)
+    assert.ok(guide.storySteps.length, `${word.id}: 由来の記録`)
+    assert.ok(guide.storySteps.every((step) => step.trim()), `${word.id}: 空の変化段階`)
+    assert.ok(guide.currentMeaning, `${word.id}: 今の意味`)
+    assert.doesNotMatch(
+      [guide.formationLabel, guide.formationText, guide.sourceLabel, guide.storyLabel].join(' '),
+      /現在義|共通軸|記載上の出発言語|濃縮パック/,
+      word.id,
+    )
+  }
+})
+
+test('全語源カードの見出しは不完全な表示を出さず短く読める', () => {
+  for (const pack of ETYMOLOGY_PACKS) {
+    const learnerText = [pack.title, pack.subtitle, pack.description, pack.caution].join(' ')
+    assert.doesNotMatch(learnerText, /undefined|（\s*）|\(\s*\)/, pack.id)
+    assert.ok(pack.title.length <= 45, `${pack.id}: ${pack.title.length}字`)
+  }
+})
+
+test('補助語根は既存語だけを明示的につなぎ、語源カードIDの分類へ混ぜない', () => {
+  const rootIds = new Set(ROOTS.map((root) => root.id))
+  const referenceRootIds = new Set(REFERENCE_ROOTS.map((root) => root.id))
+  assert.equal(referenceRootIds.size, REFERENCE_ROOTS.length)
+  assert.ok([...referenceRootIds].every((rootId) => rootIds.has(rootId)))
+
+  let links = 0
+  for (const [rootId, heads] of Object.entries(REFERENCE_ROOT_WORDS)) {
+    assert.ok(rootIds.has(rootId), rootId)
+    assert.equal(new Set(heads).size, heads.length, `${rootId}: 同じ単語が重複`)
+    for (const head of heads) {
+      const word = byHead.get(head)
+      assert.ok(word, `${rootId}: 未収録語 ${head}`)
+      assert.ok(word.referenceRoots.includes(rootId), `${head}: ${rootId}`)
+      assert.ok(rootIdsForWord(word).includes(rootId), `${head}: 統合語根 ${rootId}`)
+      assert.ok(wordsByRoot(rootId).some((item) => item.id === word.id), `${rootId}: ${head}`)
+      links++
+    }
+  }
+  assert.equal(links, REFERENCE_ROOT_LINK_COUNT)
+
+  // referenceRoots を足しても、保存互換の分類元 roots は書き換えない。
+  const administer = byHead.get('administer')
+  assert.deepEqual(administer.roots, [])
+  assert.ok(administer.referenceRoots.includes('mini'))
+  assert.notEqual(administer.compression.mode, 'root')
+})
+
+test('追加した補助語根は既存8,211語の内容と関連語へ適用される', () => {
+  const legacyWords = ALL_WORDS.filter((word) => !completionWordIds.has(word.id))
+  const applied = legacyWords.filter((word) => word.referenceRoots.length > 0)
+  assert.equal(applied.length, 461)
+  assert.equal(
+    applied.reduce((sum, word) => sum + word.referenceRoots.length, 0),
+    462,
+  )
+
+  for (const word of applied) {
+    for (const rootId of word.referenceRoots) {
+      assert.ok(rootIdsForWord(word).includes(rootId), `${word.id}: ${rootId}`)
+      assert.ok(wordsByRoot(rootId).some((candidate) => candidate.id === word.id), `${word.id}: root page`)
+      assert.ok(
+        relatedByEtymology(word).some((relation) => relation.via === rootId),
+        `${word.id}: related ${rootId}`,
+      )
+    }
+  }
+})
+
+test('補完語の語族は既存語との境界を越えて109組すべて双方向につながる', () => {
+  const directed = new Set()
+  const pairIds = new Set()
+  const legacyWords = new Set()
+  const completionWords = new Set()
+
+  for (const word of ALL_WORDS) {
+    for (const family of word.family ?? []) {
+      const related = byHead.get(family.w.toLowerCase()) ?? byHead.get(compact(family.w))
+      if (!related || completionWordIds.has(word.id) === completionWordIds.has(related.id)) continue
+      directed.add(`${word.id}>${related.id}`)
+      pairIds.add([word.id, related.id].sort().join('|'))
+      if (completionWordIds.has(word.id)) completionWords.add(word.id)
+      else legacyWords.add(word.id)
+    }
+  }
+
+  assert.equal(pairIds.size, 109)
+  assert.equal(directed.size, 218)
+  assert.equal(legacyWords.size, 103)
+  assert.equal(completionWords.size, 105)
+  for (const pairId of pairIds) {
+    const [left, right] = pairId.split('|')
+    assert.ok(directed.has(`${left}>${right}`), pairId)
+    assert.ok(directed.has(`${right}>${left}`), pairId)
+  }
+
+  assert.deepEqual(
+    new Set([...familyRelationIds(byHead.get('capital'))].filter((id) => completionWordIds.has(id))),
+    new Set(['capitalism', 'capitalist', 'capitalize']),
+  )
+  assert.ok(familyRelationIds(byHead.get('adjust')).has('adjustable'))
+  assert.ok(familyRelationIds(byHead.get('predict')).has('prediction'))
+  assert.ok(familyRelationIds(byHead.get('secure')).has('security'))
+})
+
+test('補助語根は同じ綴りの別語源を混ぜない', () => {
+  const excludes = [
+    ['imminent', 'mini'],
+    ['money', 'mon'],
+    ['curse', 'curr'],
+    ['passion', 'pass'],
+    ['test', 'testis'],
+    ['recover', 'cover'],
+    ['incident', 'cide'],
+  ]
+  for (const [head, rootId] of excludes) {
+    const word = byHead.get(head)
+    assert.ok(word, head)
+    assert.ok(!word.referenceRoots.includes(rootId), `${head} を ${rootId} へ誤接続`)
+  }
+
+  assert.ok(byHead.get('supply').referenceRoots.includes('plere'))
+  assert.ok(!rootIdsForWord(byHead.get('supply')).includes('plic'))
+  assert.ok(rootIdsForWord(byHead.get('duplicate')).includes('plic'))
 })

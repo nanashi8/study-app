@@ -5,7 +5,7 @@ import { pickDistractors, shuffle } from '../data/vocab.js'
 import { quizMeaning } from '../data/compact.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
-import { PosBadge } from '../components/WordBits.jsx'
+import { EtymologyBlock, PosBadge } from '../components/WordBits.jsx'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
 import { DragonVeinCipherStage } from '../components/DragonVeinCipherStage.jsx'
@@ -73,11 +73,7 @@ export function VocabQuizScreen() {
     restore?.deck
     ?? buildDeck(source, {
       srs: useStore.getState().srs,
-      size: params.size ?? (
-        ['level', 'battle', 'dragonVein', 'all', 'field', 'pos'].includes(source.type)
-          ? SESSION_SIZE
-          : 20
-      ),
+      size: params.size ?? SESSION_SIZE,
     })
   ))
   const [index, setIndex] = useState(restore?.i ?? 0)
@@ -127,15 +123,21 @@ export function VocabQuizScreen() {
     navigate('sessionResult', {
       title: params.title ?? (isDragonVein ? '龍脈の単語解読' : 'クイズ'),
       mode: 'quiz',
-      engine: 'vocab',
+      engine: 'word',
       total: deck.length,
       correct: results.current.correct,
       wrong: results.current.wrong + results.current.unknown,
       reviewIds: results.current.wrongIds,
       source,
       size: params.size,
+      continueTo: params.continueTo,
+      returnTo: params.returnTo,
       sessionId: sessionId.current,
       answerLog: [...results.current.answerLog],
+      vocabSession: {
+        wordIds: deck.map((item) => item.id),
+        completedAt: Date.now(),
+      },
     })
   }
 
@@ -309,8 +311,14 @@ export function VocabQuizScreen() {
               </div>
             </div>
             <InstructorExplanation explanation={instructorExplanation} className="mt-3" />
+            {word.etymology && (
+              <div className="mt-3 rounded-2xl bg-slate-50 p-3 text-left ring-1 ring-slate-200">
+                <p className="mb-2 text-sm font-extrabold text-brand-700">語源で覚える</p>
+                <EtymologyBlock word={word} />
+              </div>
+            )}
             <button onClick={saveBeforeDetail} className="mt-2 inline-flex items-center gap-1 text-sm font-extrabold text-brand-600">
-              語源をくわしく見る <ArrowRight size={15} />
+              辞書ページで関連語も見る <ArrowRight size={15} />
             </button>
           </div>
         )}

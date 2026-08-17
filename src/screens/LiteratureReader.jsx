@@ -799,7 +799,7 @@ export function LiteratureReaderScreen() {
             <div className="rounded-2xl bg-brand-50 p-4" data-reading-role-card="direct-labels">
               <div className="mb-2 flex items-center justify-between gap-2">
                 <span className="text-[11px] font-extrabold tracking-wide text-brand-500">
-                  英文・構文ラベル付き
+                  文の要素
                 </span>
                 <SpeakButton text={currentScene.original} size="sm" />
               </div>
@@ -875,7 +875,7 @@ export function LiteratureReaderScreen() {
             </section>
 
             <section className="rounded-2xl border border-sky-100 bg-sky-50/50 p-3" data-literature-sentence-rules>
-              <h3 className="text-xs font-extrabold text-sky-700">この文で使う読解ルール</h3>
+              <h3 className="text-xs font-extrabold text-sky-700">読解ルール</h3>
               <div className="mt-2 space-y-2">
                 {sentenceRules.map((rule) => (
                   <ReadingRuleCard key={rule.id} rule={rule} compact />

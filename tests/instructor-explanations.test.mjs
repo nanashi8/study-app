@@ -734,13 +734,16 @@ test('採点を伴う全問題画面が共通の講師解説を表示する', as
     'ListeningQuiz.jsx',
     'MathSolve.jsx',
     'PhraseQuiz.jsx',
-    'ReadingSummary.jsx',
+    'components/ReadingComprehensionCheck.jsx',
     'VocabQuiz.jsx',
     'WritingPlay.jsx',
   ]
 
   for (const screen of screens) {
-    const source = await readFile(new URL(`../src/screens/${screen}`, import.meta.url), 'utf8')
+    const source = await readFile(
+      new URL(screen.includes('/') ? `../src/${screen}` : `../src/screens/${screen}`, import.meta.url),
+      'utf8',
+    )
     assert.match(source, /InstructorExplanation/, `${screen} に共通講師解説がありません`)
   }
 })

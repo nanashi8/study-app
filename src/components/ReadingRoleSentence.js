@@ -85,13 +85,13 @@ export function ReadingRoleSentence({
       },
       createElement(
         'span',
-        { className: 'rounded-full bg-rose-100 px-1.5 py-0.5 text-[9px] font-black leading-none text-rose-800' },
-        'V 省略',
+        { className: 'border-b-[3px] border-dashed border-rose-400 pb-0.5 text-xs font-bold text-rose-800' },
+        verbOmissionNote,
       ),
       createElement(
         'span',
-        { className: 'mt-1 border-b-[3px] border-dashed border-rose-400 pb-0.5 text-xs font-bold text-rose-800' },
-        verbOmissionNote,
+        { className: 'mt-1 rounded-full bg-rose-100 px-1.5 py-0.5 text-[9px] font-black leading-none text-rose-800' },
+        'V 省略',
       ),
     ))
   }
@@ -106,13 +106,13 @@ export function ReadingRoleSentence({
       },
       createElement(
         'span',
-        { className: 'rounded-full bg-emerald-100 px-1.5 py-0.5 text-[9px] font-black leading-none text-emerald-800' },
-        'S 主語',
+        { className: 'border-b-[3px] border-dashed border-emerald-400 pb-0.5 text-xs font-bold text-emerald-800' },
+        '(you は省略)',
       ),
       createElement(
         'span',
-        { className: 'mt-1 border-b-[3px] border-dashed border-emerald-400 pb-0.5 text-xs font-bold text-emerald-800' },
-        '(you は省略)',
+        { className: 'mt-1 rounded-full bg-emerald-100 px-1.5 py-0.5 text-[9px] font-black leading-none text-emerald-800' },
+        'S 主語',
       ),
     ))
   }
@@ -132,23 +132,23 @@ export function ReadingRoleSentence({
       createElement(
         'span',
         {
-          className: classes(
-            'rounded-full px-1.5 py-0.5 text-[9px] font-black leading-none',
-            ROLE_LABEL_CLASS[segment.role] ?? 'bg-brand-100 text-brand-800',
-          ),
-        },
-        meta.code === '接続' ? meta.code : `${meta.code} ${meta.label}`,
-      ),
-      createElement(
-        'span',
-        {
           lang: 'en',
           className: classes(
-            'mt-1 max-w-full border-b-[3px] pb-0.5 text-lg leading-relaxed',
+            'max-w-full border-b-[3px] pb-0.5 text-lg leading-relaxed',
             ROLE_LINE_CLASS[segment.role] ?? 'border-brand-400',
           ),
         },
         ...renderRoleText(segment, { activeWord, isKnownWord, onWordClick }),
+      ),
+      createElement(
+        'span',
+        {
+          className: classes(
+            'mt-1 rounded-full px-1.5 py-0.5 text-[9px] font-black leading-none',
+            ROLE_LABEL_CLASS[segment.role] ?? 'bg-brand-100 text-brand-800',
+          ),
+        },
+        meta.code === '接続' ? meta.code : `${meta.code} ${meta.label}`,
       ),
     ))
   }

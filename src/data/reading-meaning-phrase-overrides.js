@@ -19,10 +19,18 @@ export const READING_MEANING_PHRASE_OVERRIDES = Object.freeze({
   }),
 
   'Rina is a junior high school student.': sentence({
-    'is a junior high school student': item(
-      '一人の中学生です',
-      'is と補語 a junior high school student を一つの述部として読みます。SVCの分析は内部注釈で確認します。',
-    ),
+    groups: Object.freeze([
+      Object.freeze({
+        en: 'Rina is',
+        ja: 'リナは〜です（内容は次へ）',
+        grammar: '読解では主節のS＋Vを先に確保します。文法上はRinaがS、isがVで、補語Cの内容は次のまとまりです。',
+      }),
+      Object.freeze({
+        en: 'a junior high school student',
+        ja: '一人の中学生',
+        grammar: '文法上は主語Rinaの内容を説明する補語Cです。前のisへ戻して「リナは中学生です」と完成させます。',
+      }),
+    ]),
   }),
 
   'Many families come early because the room is not very large.': sentence({

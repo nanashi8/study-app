@@ -71,6 +71,8 @@ export function wordsForSource(source = {}) {
       return wordsByPos(source.pos)
     case 'level':
       return wordsByLevel(source.levelId)
+    case 'levelField':
+      return wordsByField(source.field).filter((word) => word.level === source.levelId)
     case 'battle':
       return battlePool(source.levelIndex ?? enemyLevelIndex(source.pos ?? 0))
     case 'dragonVein':

@@ -7,6 +7,7 @@ import { UNKNOWN_CHOICE_ID } from '../src/lib/quizChoices.js'
 
 const MULTIPLE_CHOICE_SCREENS = [
   'Diagnostic.jsx',
+  'EtymologyQuiz.jsx',
   'GrammarQuiz.jsx',
   'KotenCultureQuiz.jsx',
   'KotenGrammarQuiz.jsx',
@@ -15,7 +16,6 @@ const MULTIPLE_CHOICE_SCREENS = [
   'ListeningQuiz.jsx',
   'MathSolve.jsx',
   'PhraseQuiz.jsx',
-  'ReadingSummary.jsx',
   'VocabQuiz.jsx',
 ]
 
@@ -27,6 +27,11 @@ test('すべての正誤付き選択問題に「わからない」回答があ�
     )
     assert.match(source, /<UnknownChoiceButton\b/, filename)
   }
+  const readingCheck = readFileSync(
+    new URL('../src/components/ReadingComprehensionCheck.jsx', import.meta.url),
+    'utf8',
+  )
+  assert.match(readingCheck, /<UnknownChoiceButton\b/, 'ReadingComprehensionCheck.jsx')
 })
 
 test('「わからない」の内部IDは教材の単語IDと衝突しない', () => {

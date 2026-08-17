@@ -12,7 +12,7 @@ async function jsxFiles(directory) {
   return nested.flat()
 }
 
-test('公開中の全67ルートは共通の可読性レイヤー・上部戻る・上部メニューを通る', async () => {
+test('公開中の全68ルートは共通の可読性レイヤー・上部戻る・上部メニューを通る', async () => {
   const [app, shell] = await Promise.all([
     readFile(new URL('../src/App.jsx', import.meta.url), 'utf8'),
     readFile(new URL('../src/components/AppShell.jsx', import.meta.url), 'utf8'),
@@ -20,7 +20,7 @@ test('公開中の全67ルートは共通の可読性レイヤー・上部戻る
   const screenMap = app.slice(app.indexOf('const SCREENS = {'), app.indexOf('// 全公開画面'))
   const routeCount = (screenMap.match(/^  [A-Za-z][A-Za-z0-9]*:/gm) ?? []).length
 
-  assert.equal(routeCount, 67)
+  assert.equal(routeCount, 68)
   assert.match(app, /<AppShell>/)
   assert.doesNotMatch(app, /BottomNav|nav=\{/)
   assert.match(shell, /study-app-surface/)
@@ -57,7 +57,7 @@ test('画面・共通部品の6〜11px指定は全件を共通拡大規則で受
   assert.match(css, /font-size: 0\.9375rem/)
 })
 
-test('共通カード・ボタン・統一上部メニューは装飾を抑えて文字を優先する', async () => {
+test('共通カード・ボタン・上部メニューは装飾を抑えて文字を優先する', async () => {
   const [ui, shell, css] = await Promise.all([
     readFile(new URL('../src/components/ui.jsx', import.meta.url), 'utf8'),
     readFile(new URL('../src/components/AppShell.jsx', import.meta.url), 'utf8'),
@@ -70,7 +70,7 @@ test('共通カード・ボタン・統一上部メニューは装飾を抑え�
   assert.match(shell, /data-global-menu-bar/)
   assert.match(shell, /data-global-back-button/)
   assert.match(shell, /data-global-menu-button/)
-  assert.match(shell, /aria-label="統一メニューを開く"/)
+  assert.match(shell, /aria-label="メニューを開く"/)
   assert.doesNotMatch(shell, /data-global-bottom-nav/)
   assert.match(shell, /text-xs/)
   assert.doesNotMatch(shell, /scale-110/)
@@ -83,12 +83,21 @@ test('英語ホームは学習選択を直接表示し、終了したゲーム�
 
   assert.deepEqual(
     [...primaryModes.matchAll(/id: '([^']+)'/g)].map((match) => match[1]),
-    ['vocab', 'dictionary', 'reading', 'phrases', 'grammar', 'listening'],
+    ['vocab', 'phrases', 'grammar', 'listening', 'dictation', 'reading', 'writing', 'dictionary'],
   )
   assert.match(home, /data-home-learning-menu/)
   assert.match(home, /PRIMARY_LEARNING_MODES\.map/)
-  assert.match(home, /英語の主要学習/)
+  assert.match(home, /英語アプリ/)
+  assert.match(home, /コンテンツを選ぶ/)
+  const orderedLabels = ['単語', '熟語・構文', '文法', 'リスニング', 'ディクテーション', '長文', '英作文', '英和辞書']
+  let lastIndex = -1
+  for (const label of orderedLabels) {
+    const index = home.indexOf(`label: '${label}'`)
+    assert.ok(index > lastIndex, `${label}が指定順ではありません`)
+    lastIndex = index
+  }
   assert.match(home, /上部の「メニュー」にまとめています/)
+  assert.doesNotMatch(home, /data-home-etymology-check|語源と英単語/)
   assert.doesNotMatch(home, /EXTRA_LEARNING_MODES|data-home-recommendation|data-home-mode-group="support"/)
   assert.doesNotMatch(home, /screen: 'diagnostic'|screen: 'myList'|screen: 'myGrammar'/)
   assert.doesNotMatch(home, /data-home-mode-group="game"|afterSchoolChronicle|englishMap|AFTER_SCHOOL_CHRONICLE/)

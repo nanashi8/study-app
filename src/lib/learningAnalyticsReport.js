@@ -30,7 +30,7 @@ import { KANBUN_CULTURE_CATEGORIES, getKanbunCulture } from '../data/kanbun-cult
 import { KANBUN_LEVEL_BY_ID } from '../data/kanbun-meta.js'
 import { getKanbunKundokuExercise } from '../data/kanbun-kundoku.js'
 import { unitById } from '../data/math.js'
-import { learningSkillForItem } from './learningAnalytics.js'
+import { analyzeLearning, learningSkillForItem } from './learningAnalytics.js'
 
 const DAY_MS = 86400000
 const MIN_PREDICTION = 0.08
@@ -551,6 +551,127 @@ export function forgettingCurveForRows(rows) {
         )))
       : null,
   }))
+}
+
+/**
+ * 英単語の暗記サイクル終了時に必要な情報だけを、既存SRSと分析モデルから作る。
+ * 新しい保存形式は増やさず、今回の開始時段階は一時的な画面パラメータだけで比較する。
+ */
+export function buildVocabCompletionReport({
+  srs = {},
+  learningAnalytics = null,
+  skillStats = {},
+  wordIds = [],
+  reviewIds = [],
+  beforeBoxes = {},
+  correct = 0,
+  wrong = 0,
+  dailyGoal = 20,
+  now = Date.now(),
+} = {}) {
+  const uniqueIds = [...new Set(Array.isArray(wordIds) ? wordIds : [])]
+    .filter((id) => Boolean(getWord(id)))
+  const reviewSet = new Set(
+    (Array.isArray(reviewIds) ? reviewIds : []).filter((id) => uniqueIds.includes(id)),
+  )
+  const analysis = analyzeLearning({
+    learningAnalytics,
+    srsStores: [srs],
+    skillStats,
+  })
+  const rows = uniqueIds.map((id) => {
+    const word = getWord(id)
+    return itemRow('vocab', descriptor('vocab', word, id), srs[id], analysis, now)
+  })
+  const today = localDayIndex(now)
+  const dueInDays = (row) => Number.isFinite(row.entry?.due)
+    ? Math.max(0, Math.floor(row.entry.due - today))
+    : 0
+  const beforeBoxFor = (id) => {
+    if (!isRecord(beforeBoxes) || !Object.hasOwn(beforeBoxes, id)) return null
+    const value = beforeBoxes[id]
+    return Number.isFinite(value) ? clamp(Math.floor(value), 0, 6) : null
+  }
+
+  const todayRows = Object.entries(isRecord(srs) ? srs : {}).flatMap(([id, entry]) => {
+    if (!getWord(id) || !Number.isFinite(entry?.memory?.lastAt)) return []
+    return localDayIndex(entry.memory.lastAt) === today ? [{ id, entry }] : []
+  })
+  const goal = Number.isFinite(Number(dailyGoal)) && Number(dailyGoal) > 0
+    ? Math.floor(Number(dailyGoal))
+    : 20
+  const todayUniqueWords = todayRows.length
+  const advancedCount = rows.filter((row) => {
+    const before = beforeBoxFor(row.id)
+    return row.box > (before ?? 0)
+  }).length
+  const newCount = rows.filter((row) => beforeBoxFor(row.id) == null).length
+  const newlyMasteredCount = rows.filter((row) => {
+    const before = beforeBoxFor(row.id)
+    return row.box >= 4 && (before == null || before < 4)
+  }).length
+
+  const priorityRows = [...rows].sort((a, b) => {
+    const aRank = reviewSet.has(a.id) ? 0 : a.due ? 1 : a.box < 4 ? 2 : 3
+    const bRank = reviewSet.has(b.id) ? 0 : b.due ? 1 : b.box < 4 ? 2 : 3
+    if (aRank !== bRank) return aRank - bRank
+    const retentionDifference = a.predictedRetention - b.predictedRetention
+    if (Math.abs(retentionDifference) > 0.0001) return retentionDifference
+    return dueInDays(a) - dueInDays(b) || a.title.localeCompare(b.title, 'en')
+  })
+  const priorityItems = priorityRows.slice(0, 5).map((row) => ({
+    id: row.id,
+    word: row.title,
+    meaning: row.subtitle,
+    box: row.box,
+    predictedRetention: row.predictedRetention,
+    dueInDays: dueInDays(row),
+    needsReviewNow: reviewSet.has(row.id) || row.due,
+    reason: reviewSet.has(row.id)
+      ? '今回「まだ」'
+      : row.due
+        ? '復習期限'
+        : row.box < 4
+          ? `長期定着まであと${4 - row.box}段階`
+          : '維持段階',
+  }))
+  const schedule = [
+    { id: 'now', label: '今日', count: rows.filter((row) => dueInDays(row) === 0).length },
+    { id: 'tomorrow', label: '明日', count: rows.filter((row) => dueInDays(row) === 1).length },
+    { id: 'soon', label: '2〜3日後', count: rows.filter((row) => [2, 3].includes(dueInDays(row))).length },
+    { id: 'later', label: '4日後以降', count: rows.filter((row) => dueInDays(row) >= 4).length },
+  ]
+
+  return {
+    completedAt: now,
+    session: {
+      wordIds: uniqueIds,
+      total: uniqueIds.length,
+      remembered: Math.max(0, Number(correct) || 0),
+      forgot: Math.max(0, Number(wrong) || 0),
+      newCount,
+      advancedCount,
+      newlyMasteredCount,
+      longTermCount: rows.filter((row) => row.box >= 4).length,
+      reviewNowCount: reviewSet.size,
+    },
+    today: {
+      uniqueWords: todayUniqueWords,
+      newWords: todayRows.filter(({ entry }) => (
+        Number.isFinite(entry.firstAt) && localDayIndex(entry.firstAt) === today
+      )).length,
+      rememberedLatest: todayRows.filter(({ entry }) => entry.memory?.lastJudgment === 'remembered').length,
+      needsReviewLatest: todayRows.filter(({ entry }) => entry.memory?.lastJudgment === 'forgot').length,
+      goal,
+      goalRate: clamp(todayUniqueWords / goal, 0, 1),
+      goalReached: todayUniqueWords >= goal,
+    },
+    priorityItems,
+    hiddenPriorityCount: Math.max(0, rows.length - priorityItems.length),
+    schedule,
+    nextReviewInDays: rows.length ? Math.min(...rows.map(dueInDays)) : null,
+    curve: forgettingCurveForRows(rows),
+  }
 }
 
 export function learningLaunchFor(domain, ids = [], mode = 'test', title = '') {

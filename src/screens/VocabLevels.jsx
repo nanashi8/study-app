@@ -1,6 +1,6 @@
 import { useStore } from '../store/useStore.js'
 import { LEVELS } from '../data/levels.js'
-import { ALL_WORDS, VOCAB_FIELDS, VOCAB_POS, wordsByLevel } from '../data/vocab.js'
+import { ALL_WORDS, VOCAB_FIELDS, wordsByLevel } from '../data/vocab.js'
 import {
   levelProgress,
   overallProgress,
@@ -11,7 +11,7 @@ import { ScreenHeader } from '../components/AppShell.jsx'
 import { Card, Button, Chip, IconButton } from '../components/ui.jsx'
 import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
 import { summarizeSrsItems } from '../lib/contentProgress.js'
-import { Refresh, Bookmark, Book, Cards, Search, Lightbulb, ArrowRight, Sparkles, Check } from '../components/Icons.jsx'
+import { Refresh, Bookmark, Book, Cards, Search, Lightbulb, ArrowRight, Sparkles, Check, Link } from '../components/Icons.jsx'
 
 // 下の級（前提）が弱点なら「先に固めよう」と案内するバナー。
 function WeakFoundationBanner({ srs, onReview }) {
@@ -42,7 +42,7 @@ function WeakFoundationBanner({ srs, onReview }) {
   )
 }
 
-function LevelCard({ level, srs, onStudy, onQuiz, onDecks }) {
+function LevelCard({ level, srs, onStudy, onQuiz, onFields }) {
   const p = levelProgress(level.id, srs)
   const status = summarizeSrsItems(wordsByLevel(level.id), srs)
   return (
@@ -88,48 +88,40 @@ function LevelCard({ level, srs, onStudy, onQuiz, onDecks }) {
         </Button>
       </div>
       <button
-        onClick={onDecks}
+        onClick={onFields}
         disabled={!p.total}
-        aria-label={`英検${level.label}の目次・デッキを選ぶ`}
+        aria-label={`英検${level.label}の10分野を選ぶ`}
         className="mt-2 flex w-full items-center justify-center gap-1.5 rounded-xl bg-paper py-2 text-xs font-extrabold text-brand-600 active:scale-[0.98] transition-transform disabled:opacity-50"
       >
-        <Sparkles size={15} /> 目次・デッキでえらぶ
+        <Sparkles size={15} /> 10分野で選ぶ
         <ArrowRight size={15} />
       </button>
     </Card>
   )
 }
 
-function AllVocabChooser({ onChoose }) {
-  const choices = [
-    { mode: 'random', emoji: '🎲', label: '標準ランダム' },
-    { mode: 'field', emoji: '🗂️', label: '分野別' },
-    { mode: 'pos', emoji: '🔤', label: '品詞別' },
-  ]
+function FieldChooser({ onChoose }) {
   return (
-    <Card className="overflow-hidden">
+    <button
+      type="button"
+      onClick={onChoose}
+      className="block w-full overflow-hidden rounded-2xl bg-white text-left shadow-card active:bg-brand-50"
+      data-vocab-ten-field-entry
+    >
       <div className="bg-gradient-to-r from-brand-500 to-violet-500 p-4 text-white">
         <div className="flex items-center gap-2">
           <Sparkles size={18} />
-          <h2 className="font-display text-lg font-extrabold">全語彙から学ぶ</h2>
+          <h2 className="font-display text-lg font-extrabold">10分野から学ぶ</h2>
         </div>
         <p className="mt-1 text-xs font-bold text-white/80">
-          全{ALL_WORDS.length.toLocaleString('ja-JP')}語・{VOCAB_FIELDS.length}分野・{VOCAB_POS.length}品詞
+          全{ALL_WORDS.length.toLocaleString('ja-JP')}語を{VOCAB_FIELDS.length}分野に整理
         </p>
       </div>
-      <div className="grid grid-cols-3 gap-2 p-3">
-        {choices.map((choice) => (
-          <button
-            key={choice.mode}
-            onClick={() => onChoose(choice.mode)}
-            className="flex min-h-16 flex-col items-center justify-center gap-1 rounded-2xl bg-brand-50 px-1 py-2 text-center text-[11px] font-extrabold text-brand-700 transition-transform active:scale-[0.97] active:bg-brand-100"
-          >
-            <span className="text-xl">{choice.emoji}</span>
-            {choice.label}
-          </button>
-        ))}
+      <div className="flex items-center justify-between gap-3 p-4">
+        <p className="text-xs font-bold leading-relaxed text-ink/55">基本・日常から自然・環境まで、目的の分野を直接選べます。</p>
+        <ArrowRight size={20} className="shrink-0 text-brand-500" />
       </div>
-    </Card>
+    </button>
   )
 }
 
@@ -149,8 +141,8 @@ export function VocabLevelsScreen() {
   return (
     <div className="pb-6">
       <ScreenHeader
-        title="単語を学ぶ"
-        subtitle="級を選んでね"
+        title="単語"
+        subtitle="10分野または英検級を選ぶ"
         right={
           <IconButton onClick={() => navigate('vocabSearch')} aria-label="単語をさがす">
             <Search size={22} />
@@ -210,7 +202,23 @@ export function VocabLevelsScreen() {
           </button>
         </div>
 
-        <AllVocabChooser onChoose={(mode) => navigate('vocabGroups', { mode })} />
+        <FieldChooser onChoose={() => navigate('vocabGroups')} />
+
+        <button
+          type="button"
+          onClick={() => navigate('roots')}
+          className="flex min-h-14 w-full items-center gap-3 rounded-2xl border border-violet-200 bg-violet-50 px-4 py-3 text-left shadow-sm active:bg-violet-100"
+          data-vocab-etymology-entry
+        >
+          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-violet-600 text-white">
+            <Link size={18} />
+          </span>
+          <span className="min-w-0 flex-1">
+            <strong className="block text-sm font-extrabold text-violet-900">語源から学ぶ</strong>
+            <span className="mt-0.5 block text-xs font-bold text-violet-700">語源の確認問題と関連語</span>
+          </span>
+          <ArrowRight size={17} className="shrink-0 text-violet-400" />
+        </button>
 
         {LEVELS.map((level) => (
           <LevelCard
@@ -219,7 +227,7 @@ export function VocabLevelsScreen() {
             srs={srs}
             onStudy={() => study(level.id, level.label)}
             onQuiz={() => quiz(level.id, level.label)}
-            onDecks={() => navigate('vocabDecks', { levelId: level.id })}
+            onFields={() => navigate('vocabDecks', { levelId: level.id })}
           />
         ))}
       </div>

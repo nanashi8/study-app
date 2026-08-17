@@ -40,6 +40,7 @@ const expected = [
 
 const detailDisplays = [
   'src/components/LevelPicker.jsx',
+  'src/components/VocabCompletionReport.jsx',
   'src/screens/Diagnostic.jsx',
   'src/screens/EtymologyPack.jsx',
   'src/screens/KanbunHome.jsx',
@@ -87,7 +88,7 @@ for (const file of detailDisplays) {
 }
 
 for (const [file, marker] of [
-  ['src/screens/ReadingSummary.jsx', "recordContentQuizResult('reading', passageId"],
+  ['src/components/ReadingComprehensionCheck.jsx', "recordContentQuizResult('reading', passageId"],
   ['src/screens/LiteratureReader.jsx', "'literature',"],
   ['src/screens/MathSolve.jsx', "recordContentQuizResult('math', p.id"],
 ]) {

@@ -119,7 +119,7 @@ assert.equal(kotenTile?.screen, 'kotenList')
 assert.equal(kanbunTile?.screen, 'kanbunHome')
 assert.notEqual(kotenTile.screen, kanbunTile.screen)
 for (const screen of ['kotenList', 'kanbunHome', 'kanbunSaved']) {
-  assert.ok(APP_MENU_SCREEN_DESTINATIONS.includes(screen), `${screen}: 統一メニュー未接続`)
+  assert.ok(APP_MENU_SCREEN_DESTINATIONS.includes(screen), `${screen}: メニュー未接続`)
 }
 
 const appSource = readFileSync(new URL('../src/App.jsx', import.meta.url), 'utf8')

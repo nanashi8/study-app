@@ -19,28 +19,32 @@ export const ETYMOLOGY_PACK_SIZE = 8
 
 export const ETYMOLOGY_MODE_META = {
   formula: {
-    label: '部品の式',
-    short: '式',
+    label: '部品で分ける',
+    short: '部品',
     emoji: '🧩',
-    description: '接頭辞・語根・接尾辞を足し、意味を組み立てます。',
+    description: '単語を小さな部品に分け、左から意味を足します。',
+    tip: '色のついた部品を順に見て、単語全体の意味を予想してみよう。',
   },
   root: {
-    label: '共有語根',
+    label: '同じ語根',
     short: '語根',
     emoji: '🌳',
-    description: '同じ意味の核を持つ語を、ひと束で覚えます。',
+    description: '同じ語根（意味の中心になる部品）を持つ単語を比べます。',
+    tip: '語根の意味を1つ覚えると、初めて見る単語の意味も予想しやすくなります。',
   },
   family: {
-    label: '語族',
-    short: '語族',
+    label: '語の家族',
+    short: '家族',
     emoji: '🔗',
-    description: '基語と派生形を往復し、綴りと意味をまとめます。',
+    description: 'もとの単語と、そこから形が変わった単語を一緒に覚えます。',
+    tip: 'つづりの同じ部分と、意味がどう広がったかを見比べよう。',
   },
   origin: {
-    label: '成り立ち・変化',
-    short: '履歴',
+    label: 'ことばの歴史',
+    short: '歴史',
     emoji: '🧭',
-    description: '同根でない語は、成り立ち・出発言語・意味分野を分けて整理します。',
+    description: 'どの言語から来て、どう今の意味になったかをたどります。',
+    tip: '同じ語根の仲間ではないので、1語ずつ変化の道すじを確かめよう。',
   },
 }
 
@@ -315,17 +319,17 @@ export function buildEtymologyCompression(words, roots) {
       const root = bucket.rootId ? rootsById.get(bucket.rootId) : null
       const part = bucket.part
       const title = root
-        ? `${root.form} の意味の式`
+        ? `${root.form}（${root.meaning}）を使う単語`
         : part
-          ? `${part.kind === 'prefix' ? `${part.t}-` : `-${part.t}`} を使う意味の式`
-          : 'パーツで組み立てる'
+          ? `${part.kind === 'prefix' ? `${part.t}-` : `-${part.t}`}${part.gloss ? `（${part.gloss}）` : ''}を使う単語`
+          : '部品に分けて覚える単語'
       registerPack({
         id: `formula:${safeKeySegment(groupKey)}:${safeKeySegment(coverageIds[0])}`,
         mode: 'formula',
         title,
-        subtitle: '前から足して意味を予想',
+        subtitle: '部品の意味を左から足してみよう',
         description: ETYMOLOGY_MODE_META.formula.description,
-        caution: '',
+        caution: '部品の意味は手がかりです。今の意味とぴったり同じにならない語もあります。',
         emoji: ETYMOLOGY_MODE_META.formula.emoji,
         rootId: bucket.rootId,
         coverageIds,
@@ -343,8 +347,8 @@ export function buildEtymologyCompression(words, roots) {
     registerPack({
       id: `root:${safeKeySegment(rootId)}`,
       mode: 'root',
-      title: `${root?.form ?? rootId}＝${root?.meaning ?? '意味の核'}`,
-      subtitle: `${coverageIds.length}語を1つの核で整理`,
+      title: `${root?.form ?? rootId}＝${root?.meaning ?? '意味の中心'} の仲間`,
+      subtitle: `同じ語根を持つ${coverageIds.length}語`,
       description: ETYMOLOGY_MODE_META.root.description,
       caution: '',
       emoji: root?.emoji ?? ETYMOLOGY_MODE_META.root.emoji,
@@ -371,8 +375,8 @@ export function buildEtymologyCompression(words, roots) {
       registerPack({
         id: `family:${safeKeySegment(anchorId)}:${safeKeySegment(coverageIds[0])}`,
         mode: 'family',
-        title: `${anchor.word} を核にまとめる`,
-        subtitle: '基語・派生形を1セットに',
+        title: `${anchor.word} から広がる語`,
+        subtitle: 'もとの語と形の変化を比べよう',
         description: ETYMOLOGY_MODE_META.family.description,
         caution: '',
         emoji: ETYMOLOGY_MODE_META.family.emoji,
@@ -400,18 +404,16 @@ export function buildEtymologyCompression(words, roots) {
         : fields.length === 1
           ? fields[0]
           : domain.label
+      const topicLabel = fieldLabel.endsWith('語') ? fieldLabel : `${fieldLabel}のことば`
       const sharedLabel = `${formation.label}・${source.label}・${fieldLabel}`
       registerPack({
         id: `origin:${safeKeySegment(groupKey)}:${safeKeySegment(coverageIds[0])}`,
         mode: 'origin',
-        title: `${formation.short}｜${source.label}・${fieldLabel}`,
-        subtitle: `共通軸：${sharedLabel}（${levelSpan(group)}）`,
-        description:
-          `「英語への入り方」「由来記述の出発言語」「現在の意味分野」が一致する語だけをまとめました。` +
-          `${formation.description}${source.description}`,
+        title: topicLabel,
+        subtitle: `${source.label}・${formation.short}（${levelSpan(group)}）`,
+        description: `${formation.description}${source.description}`,
         caution:
-          `同じ語根とは限りません。共通点は「${sharedLabel}」です。` +
-          '各語の出発点から現在義までを個別にたどります。',
+          '同じ語根の仲間ではありません。共通点は、作られ方・もとの言語・今の意味の分野です。',
         emoji: formation.emoji,
         formationKey: bucket.formationKey,
         sourceKey: bucket.sourceKey,
