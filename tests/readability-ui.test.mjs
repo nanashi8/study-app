@@ -89,6 +89,8 @@ test('英語ホームは学習選択を直接表示し、終了したゲーム�
   assert.match(home, /PRIMARY_LEARNING_MODES\.map/)
   assert.match(home, /英語アプリ/)
   assert.match(home, /コンテンツを選ぶ/)
+  assert.match(home, /grid grid-cols-1 gap-2\.5 sm:grid-cols-2/)
+  assert.doesNotMatch(home, /flex-1 truncate font-display/)
   const orderedLabels = ['単語', '熟語・構文', '文法', 'リスニング', 'ディクテーション', '長文', '英作文', '英和辞書']
   let lastIndex = -1
   for (const label of orderedLabels) {
