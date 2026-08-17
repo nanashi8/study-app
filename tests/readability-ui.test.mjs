@@ -83,7 +83,7 @@ test('英語ホームは学習選択を直接表示し、終了したゲーム�
 
   assert.deepEqual(
     [...primaryModes.matchAll(/id: '([^']+)'/g)].map((match) => match[1]),
-    ['vocab', 'phrases', 'grammar', 'listening', 'dictation', 'reading', 'writing', 'dictionary'],
+    ['vocab', 'phrases', 'grammar', 'listening', 'dictation', 'reading', 'writing', 'dictionary', 'etymology'],
   )
   assert.match(home, /data-home-learning-menu/)
   assert.match(home, /PRIMARY_LEARNING_MODES\.map/)
@@ -91,7 +91,7 @@ test('英語ホームは学習選択を直接表示し、終了したゲーム�
   assert.match(home, /コンテンツを選ぶ/)
   assert.match(home, /grid grid-cols-1 gap-2\.5 sm:grid-cols-2/)
   assert.doesNotMatch(home, /flex-1 truncate font-display/)
-  const orderedLabels = ['単語', '熟語・構文', '文法', 'リスニング', 'ディクテーション', '長文', '英作文', '英和辞書']
+  const orderedLabels = ['単語', '熟語・構文', '文法', 'リスニング', 'ディクテーション', '長文', '英作文', '英和辞書', '語源']
   let lastIndex = -1
   for (const label of orderedLabels) {
     const index = home.indexOf(`label: '${label}'`)
@@ -99,6 +99,8 @@ test('英語ホームは学習選択を直接表示し、終了したゲーム�
     lastIndex = index
   }
   assert.match(home, /上部の「メニュー」にまとめています/)
+  assert.match(home, /id: 'etymology', label: '語源'/)
+  assert.match(home, /screen: 'roots'/)
   assert.doesNotMatch(home, /data-home-etymology-check|語源と英単語/)
   assert.doesNotMatch(home, /EXTRA_LEARNING_MODES|data-home-recommendation|data-home-mode-group="support"/)
   assert.doesNotMatch(home, /screen: 'diagnostic'|screen: 'myList'|screen: 'myGrammar'/)

@@ -1,13 +1,14 @@
 import { useEffect, useRef } from 'react'
 import { useStore } from '../store/useStore.js'
 import {
-  ETYMOLOGY_DOMAIN_META,
-  ETYMOLOGY_FORMATION_META,
   ETYMOLOGY_MODE_META,
-  ETYMOLOGY_SOURCE_META,
   getEtymologyPack,
   getWord,
 } from '../data/vocab.js'
+import {
+  cleanEtymologyMeaningText,
+  etymologyMeaningGuideFor,
+} from '../lib/etymologyMeaning.js'
 import { getLevel } from '../data/levels.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import {
@@ -44,11 +45,7 @@ export function EtymologyPackScreen() {
   }
 
   const mode = ETYMOLOGY_MODE_META[pack.mode]
-  const formation = pack.formationKey
-    ? ETYMOLOGY_FORMATION_META[pack.formationKey]
-    : null
-  const source = pack.sourceKey ? ETYMOLOGY_SOURCE_META[pack.sourceKey] : null
-  const domain = pack.domainKey ? ETYMOLOGY_DOMAIN_META[pack.domainKey] : null
+  const meaningGuide = etymologyMeaningGuideFor(pack)
   const displayTitle = pack.title.replace(/(準?[0-9])級/g, '$1\u2060級')
   const coverage = new Set(pack.coverageIds)
   const words = pack.studyIds.map(getWord).filter(Boolean)
@@ -114,35 +111,22 @@ export function EtymologyPackScreen() {
                 {pack.caution}
               </p>
             )}
-            {pack.mode === 'origin' && (
-              <div className="grid grid-cols-3 gap-1.5">
-                {[
-                  ['作られ方', formation?.emoji, formation?.short],
-                  ['もとの言語', source?.emoji, source?.short],
-                  ['今の分野', domain?.emoji, pack.fieldLabel ?? domain?.label],
-                ].map(([label, emoji, value]) => (
-                  <div
-                    key={label}
-                    className="min-w-0 rounded-xl bg-slate-50 px-2 py-2 text-center ring-1 ring-slate-100"
-                  >
-                    <p className="text-xs font-extrabold text-ink/45">{label}</p>
-                    <p className="mt-1 text-xs font-extrabold leading-snug text-ink/75">
-                      {emoji} {value}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            )}
+            <div className="rounded-2xl bg-emerald-50 px-4 py-3 ring-1 ring-emerald-100">
+              <p className="text-xs font-extrabold text-emerald-700">このカードでつなぐ形と意味</p>
+              <p className="mt-1 break-words font-display text-sm font-extrabold leading-relaxed text-ink">
+                {meaningGuide.statement}
+              </p>
+            </div>
             <div className="rounded-xl bg-violet-50 px-3 py-3">
               <p className="mb-2 text-xs font-extrabold text-violet-800">この語源カード</p>
               <LearningStatusBars progress={packProgress} compact />
             </div>
             <div className="grid grid-cols-2 gap-2" data-etymology-pack-actions>
               <Button full onClick={studyKnowledge}>
-                <Sparkles size={18} /> 覚える
+                <Sparkles size={18} /> 意味を見て学ぶ
               </Button>
               <Button full variant="secondary" onClick={quizKnowledge}>
-                <Cards size={18} /> 確認問題
+                <Cards size={18} /> 2択で確認
               </Button>
             </div>
             <div className="rounded-xl bg-brand-50 px-3 py-3">
@@ -178,12 +162,12 @@ export function EtymologyPackScreen() {
               {pack.mode === 'formula'
                 ? '部品の意味を比べる'
                 : pack.mode === 'origin'
-                  ? 'もとの形から今の意味をたどる'
+                  ? '形から今の意味をたどる'
                   : '仲間を見比べる'}
             </h2>
             <p className="mt-0.5 text-xs font-bold text-ink/45">
               {pack.mode === 'origin'
-                ? '作られ方やもとの言語を確認し、1語ずつ変化をたどります。'
+                ? '形が表す意味を前からつないで、今の意味を確かめます。'
                 : '足がかりの語も含め、一度に8語以内に絞っています。'}
             </p>
           </div>
@@ -237,7 +221,7 @@ export function EtymologyPackScreen() {
                     </div>
                   ) : (
                     <p className="mt-2 pl-8 text-xs font-bold leading-relaxed text-ink/60">
-                      {word.etymology?.note}
+                      {cleanEtymologyMeaningText(word.etymology?.note)}
                     </p>
                   )}
                 </button>

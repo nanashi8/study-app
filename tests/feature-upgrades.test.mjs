@@ -40,7 +40,7 @@ test('熟語・構文は全1,500項目を級別内訳まで表示する', () => 
   assert.match(phrases, /PHRASE_COUNTS\.syntax/)
 })
 
-test('語源画面は平易な4分類・状態・任意の詳細絞り込みを先に示す', () => {
+test('語源画面は形と意味の3段階学習・4分類・2択確認へ整理する', () => {
   const roots = read('../src/screens/Roots.jsx')
   const modeData = read('../src/data/etymology-compression.js')
   const history = read('../src/data/etymology-history.js')
@@ -48,18 +48,24 @@ test('語源画面は平易な4分類・状態・任意の詳細絞り込みを�
   const quiz = read('../src/screens/EtymologyQuiz.jsx')
   const pack = read('../src/screens/EtymologyPack.jsx')
   const wordBits = read('../src/components/WordBits.jsx')
+  const knowledge = read('../src/components/EtymologyKnowledge.jsx')
 
+  assert.match(roots, /data-etymology-intro/)
+  assert.match(roots, /形を見る/)
+  assert.match(roots, /意味をつなぐ/)
+  assert.match(roots, /2択で確認/)
   assert.match(roots, /data-etymology-dashboard/)
   assert.match(roots, /role="tablist" aria-label="語源の学び方"/)
   assert.match(roots, /grid grid-cols-2 gap-2/)
   assert.match(roots, /aria-label="語源カードの進み具合で絞り込む"/)
-  assert.match(roots, /<details[\s\S]*data-etymology-filters/)
+  assert.match(roots, /data-etymology-card-browser/)
+  assert.doesNotMatch(roots, /data-etymology-filters|originSource|もとの言語/)
   for (const label of ['部品で分ける', '同じ語根', '語の家族', 'ことばの歴史']) {
     assert.match(modeData, new RegExp(label))
   }
   assert.match(history, /etymologyLearningGuideFor/)
-  assert.match(wordBits, /もとの形・言語/)
   assert.match(wordBits, /作られ方/)
+  assert.match(wordBits, /形と意味のつながり/)
   assert.match(wordBits, /今の意味/)
   assert.match(wordBits, /data-reference-root-summary/)
   assert.match(wordBits, /同じ由来をたどれる語根/)
@@ -67,10 +73,14 @@ test('語源画面は平易な4分類・状態・任意の詳細絞り込みを�
   assert.match(roots, /data-etymology-actions/)
   assert.match(pack, /data-etymology-pack-actions/)
   assert.match(quiz, /data-etymology-quiz/)
-  assert.match(quiz, /1\/2　.*語源/)
-  assert.match(quiz, /2\/2　英単語/)
+  assert.match(quiz, /正しい形と意味/)
+  assert.match(quiz, /2択で確認する/)
+  assert.match(knowledge, /data-etymology-learning-flow/)
+  assert.match(knowledge, /語の形を見る/)
+  assert.match(knowledge, /関連語で確かめる/)
+  assert.doesNotMatch(`${roots}\n${study}\n${quiz}\n${pack}\n${wordBits}\n${knowledge}`, /もとの形・言語|もとの言語|どの言語から/)
   assert.doesNotMatch(`${roots}\n${study}\n${pack}\n${wordBits}`, /現在義|共通軸|記載上の出発言語|濃縮パック/)
-  assert.equal((study.match(/答えと説明を見る/g) ?? []).length, 1)
+  assert.equal((study.match(/答えと説明を見る/g) ?? []).length, 0)
 })
 
 test('単語クイズは解答直後に語源を表示し、詳細遷移を必須にしない', () => {

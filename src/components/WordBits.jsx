@@ -2,12 +2,15 @@
 import {
   ETYMOLOGY_FORMATION_META,
   ETYMOLOGY_MODE_META,
-  ETYMOLOGY_SOURCE_META,
   etymologyLearningGuideFor,
   getEtymologyPack,
   getRoot,
   relatedByEtymology,
 } from '../data/vocab.js'
+import {
+  cleanEtymologyMeaningText,
+  learnerEtymologyStepsFor,
+} from '../lib/etymologyMeaning.js'
 import { Lightbulb, ArrowRight } from './Icons.jsx'
 import { cx } from './ui.jsx'
 
@@ -116,12 +119,10 @@ export function EtymologyParts({ parts = [], onRoot }) {
   )
 }
 
-/**
- * 同じ語根でない語の履歴を「作られ方 / もとの形と言語 / 意味の変化 / 今の意味」に分ける。
- * 言語名と作られ方を別バッジにし、由来説明の矢印は順序を保って表示する。
- */
+/** 同じ語根でない語も、言語分類ではなく「形と意味の変化」に絞って見せる。 */
 export function EtymologyHistoryTrail({ word, compact = false }) {
   const guide = etymologyLearningGuideFor(word)
+  const storySteps = learnerEtymologyStepsFor(word)
 
   return (
     <div className={cx(
@@ -132,33 +133,22 @@ export function EtymologyHistoryTrail({ word, compact = false }) {
         <span className="rounded-full bg-violet-100 px-2.5 py-1 text-xs font-extrabold text-violet-700">
           {guide.formationEmoji} {guide.formationLabel}
         </span>
-        <span className="rounded-full bg-sky-100 px-2.5 py-1 text-xs font-extrabold text-sky-700">
-          {guide.sourceEmoji} {guide.sourceLabel}
-        </span>
       </div>
 
       {!compact && (
-        <div className="grid gap-2">
-          <div className="flex gap-2">
-            <span className="w-24 shrink-0 text-xs font-extrabold text-ink/45">もとの形・言語</span>
-            <span className="text-sm font-bold leading-relaxed text-ink/70">
-              {guide.sourceText}
-            </span>
-          </div>
-          <div className="flex gap-2">
-            <span className="w-24 shrink-0 text-xs font-extrabold text-ink/45">作られ方</span>
-            <span className="text-sm font-bold leading-relaxed text-ink/70">
-              {guide.formationText}
-            </span>
-          </div>
+        <div className="flex gap-2">
+          <span className="w-20 shrink-0 text-xs font-extrabold text-ink/45">作られ方</span>
+          <span className="text-sm font-bold leading-relaxed text-ink/70">
+            {guide.formationText}
+          </span>
         </div>
       )}
 
       <div className="space-y-1.5">
-        <p className="text-xs font-extrabold text-ink/45">{guide.storyLabel}</p>
-        {guide.storySteps.length > 1 ? (
+        <p className="text-xs font-extrabold text-ink/45">形と意味のつながり</p>
+        {storySteps.length > 1 ? (
           <div className="flex flex-wrap items-center gap-1">
-            {guide.storySteps.map((step, index) => (
+            {storySteps.map((step, index) => (
               <span key={`${step}-${index}`} className="contents">
                 <span className={cx(
                   'rounded-lg bg-white font-bold leading-relaxed text-ink/70 ring-1 ring-slate-200',
@@ -166,7 +156,7 @@ export function EtymologyHistoryTrail({ word, compact = false }) {
                 )}>
                   {step}
                 </span>
-                {index < guide.storySteps.length - 1 && (
+                {index < storySteps.length - 1 && (
                   <span className="text-sm font-black text-brand-400">→</span>
                 )}
               </span>
@@ -177,7 +167,7 @@ export function EtymologyHistoryTrail({ word, compact = false }) {
             'font-bold leading-relaxed text-ink/70',
             compact ? 'text-xs' : 'text-sm',
           )}>
-            {guide.storySteps[0]}
+            {storySteps[0]}
           </p>
         )}
       </div>
@@ -241,7 +231,6 @@ export function EtymologyBlock({ word, onRoot, onPack }) {
   const formation = profile?.formationKey
     ? ETYMOLOGY_FORMATION_META[profile.formationKey]
     : null
-  const source = profile?.sourceKey ? ETYMOLOGY_SOURCE_META[profile.sourceKey] : null
   const compressionBody = profile && pack && (
     <>
       <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white text-xl shadow-sm">
@@ -253,7 +242,7 @@ export function EtymologyBlock({ word, onRoot, onPack }) {
         </span>
         <span className="block text-sm font-extrabold leading-snug text-brand-700">
           {profile.mode === 'origin'
-            ? `${mode.label}・${formation?.short ?? '由来を確認'}・${source?.label ?? ''}`
+            ? `${mode.label}・${formation?.short ?? '意味の変化を確認'}`
             : `${mode.label}・${profile.size > 1 ? `${profile.size}語を一緒に` : 'この1語を部品で確認'}`}
         </span>
       </span>
@@ -300,11 +289,15 @@ export function EtymologyBlock({ word, onRoot, onPack }) {
           <span className="mt-0.5 shrink-0 text-hint">
             <Lightbulb size={18} />
           </span>
-          <p className="text-sm font-bold leading-relaxed text-amber-900/90">{ety.note}</p>
+          <p className="text-sm font-bold leading-relaxed text-amber-900/90">
+            {cleanEtymologyMeaningText(ety.note)}
+          </p>
         </div>
       )}
       {profile?.mode !== 'origin' && ety.origin && (
-        <p className="px-1 text-xs font-bold text-ink/50">もとのことば：{ety.origin}</p>
+        <p className="px-1 text-xs font-bold text-ink/50">
+          意味の出発点：{cleanEtymologyMeaningText(ety.origin)}
+        </p>
       )}
     </div>
   )

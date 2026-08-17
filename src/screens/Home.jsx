@@ -9,6 +9,7 @@ import {
   Search,
   Scroll,
   Sparkles,
+  Sprout,
 } from '../components/Icons.jsx'
 
 const PRIMARY_LEARNING_MODES = [
@@ -20,6 +21,7 @@ const PRIMARY_LEARNING_MODES = [
   { id: 'reading', label: '長文', Icon: BookOpen, color: '#10b981', screen: 'readingList' },
   { id: 'writing', label: '英作文', Icon: Scroll, color: '#e11d48', screen: 'writing' },
   { id: 'dictionary', label: '英和辞書', Icon: Search, color: '#0ea5e9', screen: 'vocabSearch' },
+  { id: 'etymology', label: '語源', Icon: Sprout, color: '#7c3aed', screen: 'roots' },
 ]
 
 function LearningModeButton({ mode, onOpen }) {

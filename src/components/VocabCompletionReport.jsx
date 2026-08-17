@@ -112,12 +112,12 @@ export function VocabCompletionReport({
   return (
     <section
       className="mx-auto w-full max-w-xl space-y-3.5"
-      aria-label="英単語の暗記サイクル完了レポート"
+      aria-label="英単語の学習完了レポート"
       data-vocab-completion-report
     >
       <header className="overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-600 via-brand-600 to-sky-500 p-4 text-left text-white shadow-lg">
-        <p className="text-[10px] font-extrabold tracking-[0.2em] text-white/70">MEMORY CYCLE COMPLETE</p>
-        <h1 className="mt-1 font-display text-2xl font-extrabold">暗記サイクル完了</h1>
+        <p className="text-[10px] font-extrabold tracking-[0.2em] text-white/70">LEARNING COMPLETE</p>
+        <h1 className="mt-1 font-display text-2xl font-extrabold">学習完了</h1>
         <p className="mt-0.5 truncate text-xs font-bold text-white/75">{title}</p>
         <div className="mt-4 grid grid-cols-3 gap-2">
           <StatCell value={`${session.remembered}語`} label="覚えた判定" tone="text-emerald-700" />

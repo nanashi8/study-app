@@ -4,7 +4,7 @@ import { readFile } from 'node:fs/promises'
 
 import { CONTENTS, DEFAULT_CONTENT_ORDER } from '../src/data/contents.js'
 
-test('主要コンテンツは指定6分類順で、英和辞書を独立タイルにしない', async () => {
+test('主要コンテンツは指定順を保ち、英語アプリから英和辞書と語源へ直接進める', async () => {
   assert.deepEqual(DEFAULT_CONTENT_ORDER, [
     'eigo-quest',
     'koten-quest',
@@ -28,9 +28,10 @@ test('主要コンテンツは指定6分類順で、英和辞書を独立タイ�
   assert.match(homeSource, /id: 'dictionary', label: '英和辞書'/)
   assert.match(homeSource, /screen: 'vocabSearch'/)
   assert.doesNotMatch(homeSource, /data-home-etymology-check/)
+  assert.match(homeSource, /id: 'etymology', label: '語源'/)
+  assert.match(homeSource, /screen: 'roots'/)
   assert.match(vocabLevelsSource, /data-vocab-etymology-entry/)
   assert.ok(vocabLevelsSource.includes("navigate('roots')"))
-  assert.equal(homeSource.includes("open('roots')"), false)
 })
 
 test('英語名作画面は準備・構文・読解ルール・根拠付き設問・完了ゲートを備える', async () => {
