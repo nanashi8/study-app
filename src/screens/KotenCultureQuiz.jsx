@@ -22,9 +22,11 @@ import {
   Close,
 } from '../components/Icons.jsx'
 import { buildKotenCultureInstructorExplanation } from '../lib/instructorExplanations.js'
+import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 
-const SESSION_SIZE = 12
 const MASTER_BOX = 4
+
+const ALL_QUESTIONS = 9999 // 在庫数を数えるための十分大きな上限
 
 export function KotenCultureQuizScreen() {
   const params = useStore((state) => state.params)
@@ -34,8 +36,11 @@ export function KotenCultureQuizScreen() {
   const savedIds = useStore((state) => state.kotenCultureList)
   const addSaved = useStore((state) => state.addManyToKotenCultureList)
 
+  // 在庫を数えて、選べる問題数の上限を実態に合わせる。
+  const [poolSize] = useState(() => pickKotenCultureQuestions(params.ids, { size: ALL_QUESTIONS }).length)
+  const sessionSize = useSessionSize(poolSize || Infinity)
   const [deck, setDeck] = useState(() =>
-    pickKotenCultureQuestions(params.ids, { size: params.size ?? SESSION_SIZE }),
+    pickKotenCultureQuestions(params.ids, { size: params.size ?? sessionSize }),
   )
   const [index, setIndex] = useState(0)
   const [selected, setSelected] = useState(null)
@@ -70,7 +75,7 @@ export function KotenCultureQuizScreen() {
   }
 
   const restart = (ids = params.ids) => {
-    setDeck(pickKotenCultureQuestions(ids, { size: params.size ?? SESSION_SIZE }))
+    setDeck(pickKotenCultureQuestions(ids, { size: deck.length || sessionSize }))
     setIndex(0)
     setSelected(null)
     setCorrectCount(0)
@@ -188,9 +193,22 @@ export function KotenCultureQuizScreen() {
             </p>
           </div>
           <SpeechSettingsButton compact />
-          <span className="w-12 text-right text-sm font-extrabold text-ink/50">
-            {index + 1}/{deck.length}
-          </span>
+          <SessionCounter
+            index={index}
+            total={deck.length}
+            max={poolSize}
+            onResize={(size) => {
+              setDeck(pickKotenCultureQuestions(params.ids, { size }))
+              setIndex(0)
+              setSelected(null)
+              setCorrectCount(0)
+              setUnknownCount(0)
+              setBoxUp(0)
+              setNewlyMastered(0)
+              setWeakIds([])
+              setDone(false)
+            }}
+          />
         </div>
       </div>
 

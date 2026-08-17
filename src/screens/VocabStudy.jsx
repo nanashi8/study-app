@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
-import { buildDeck, recordStudyAnswer, SESSION_SIZE } from '../lib/session.js'
+import { buildDeck, recordStudyAnswer } from '../lib/session.js'
 import { playSpeechItems } from '../lib/speech-player.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
@@ -8,6 +8,7 @@ import { EtymologyBlock } from '../components/WordBits.jsx'
 import { PosBadge } from '../components/WordBits.jsx'
 import { Button, ProgressBar, IconButton } from '../components/ui.jsx'
 import { Close, Bookmark, BookmarkFilled, ArrowRight, Lightbulb } from '../components/Icons.jsx'
+import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 
 export function VocabStudyScreen() {
   const params = useStore((s) => s.params)
@@ -22,12 +23,12 @@ export function VocabStudyScreen() {
   const revealAll = settings.revealAnswers
 
   const srsAtStart = useRef(useStore.getState().srs)
-  const [deck] = useState(() =>
-    buildDeck(params.source ?? { type: 'due' }, {
-      srs: srsAtStart.current,
-      size: params.size ?? SESSION_SIZE,
-    }),
-  )
+  const sessionSize = useSessionSize()
+  // size=0 は「絞り込みなし」。在庫数を数えて、問題数の選択肢を実態に合わせる。
+  const buildFor = (size) =>
+    buildDeck(params.source ?? { type: 'due' }, { srs: srsAtStart.current, size })
+  const [poolSize] = useState(() => buildFor(0).length)
+  const [deck, setDeck] = useState(() => buildFor(params.size ?? sessionSize))
 
   const [i, setI] = useState(0)
   const [flipped, setFlipped] = useState(revealAll)
@@ -121,9 +122,17 @@ export function VocabStudyScreen() {
           <ProgressBar value={(i) / deck.length} />
         </div>
         <SpeechSettingsButton compact />
-        <span className="w-12 text-right text-sm font-extrabold text-ink/50">
-          {i + 1}/{deck.length}
-        </span>
+        <SessionCounter
+          index={i}
+          total={deck.length}
+          max={poolSize}
+          onResize={(size) => {
+            setDeck(buildFor(size))
+            setI(0)
+            setFlipped(revealAll)
+            results.current = { remembered: 0, forgot: 0, forgotIds: [] }
+          }}
+        />
       </div>
 
       {/* カード */}

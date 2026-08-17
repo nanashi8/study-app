@@ -2,6 +2,11 @@ const ANALYTICS_VERSION = 2
 const LONG_TERM_BOX = 4
 const MAX_TRACKED_DAYS = 90
 
+// 学習時間は「回答と回答の間隔」から推定する。
+// 5分を超える間隔は離席とみなして加算せず、単発の回答には最小クレジットだけ与える。
+export const STUDY_GAP_LIMIT_MS = 5 * 60 * 1000
+export const STUDY_MIN_CREDIT_MS = 20 * 1000
+
 export const LEARNING_ACTIVITY_MODES = Object.freeze({
   memory: { label: '暗記', description: 'カードで「覚えた／まだ」を判定した記録' },
   test: { label: 'テスト', description: '問題を解いて正誤を採点した記録' },
@@ -67,6 +72,7 @@ export function createLearningAnalytics() {
     intervals: {},
     skills: {},
     days: {},
+    lastEventAt: null,
     modes: {
       memory: emptyModeAggregate(),
       test: emptyModeAggregate(),
@@ -83,6 +89,20 @@ function normalizeAggregate(value) {
     inputs: nonNegative(value?.inputs),
     scored,
     correct: clamp(nonNegative(value?.correct), 0, scored),
+    ms: nonNegative(value?.ms),
+  }
+}
+
+// 時間帯ごとの集計には「その時刻に学習した日数」を持たせ、学習リズムの規則性を測る。
+function normalizeHourAggregate(value) {
+  const aggregate = normalizeAggregate(value)
+  const lastDay = typeof value?.lastDay === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value.lastDay)
+    ? value.lastDay
+    : null
+  return {
+    ...aggregate,
+    days: Math.max(nonNegative(value?.days), lastDay ? 1 : 0),
+    lastDay,
   }
 }
 
@@ -106,7 +126,7 @@ export function normalizeLearningAnalytics(value) {
   for (const [key, aggregate] of Object.entries(value.hours ?? {})) {
     const hour = Number(key)
     if (Number.isInteger(hour) && hour >= 0 && hour <= 23) {
-      hours[hour] = normalizeAggregate(aggregate)
+      hours[hour] = normalizeHourAggregate(aggregate)
     }
   }
 
@@ -163,6 +183,7 @@ export function normalizeLearningAnalytics(value) {
     skills,
     days,
     modes,
+    lastEventAt: Number.isFinite(Number(value.lastEventAt)) ? Number(value.lastEventAt) : null,
     memoryCohorts: { hours: cohortHours, passes: cohortPasses },
     longTerm: {
       items: nonNegative(value.longTerm?.items),
@@ -192,12 +213,24 @@ function localDateKey(timestamp) {
   return `${year}-${month}-${day}`
 }
 
-function addAggregate(current, { inputs, scored, correct }) {
+function addAggregate(current, { inputs, scored, correct, ms = 0 }) {
   const previous = normalizeAggregate(current)
   return {
     inputs: previous.inputs + inputs,
     scored: previous.scored + scored,
     correct: previous.correct + correct,
+    ms: previous.ms + nonNegative(ms),
+  }
+}
+
+// 時間帯の集計に、その時刻へ新しい学習日が加わったかどうかも反映する。
+function addHourAggregate(current, delta, day) {
+  const previous = normalizeHourAggregate(current)
+  const isNewDay = Boolean(day) && previous.lastDay !== day
+  return {
+    ...addAggregate(previous, delta),
+    days: previous.days + (isNewDay ? 1 : 0),
+    lastDay: day ?? previous.lastDay,
   }
 }
 
@@ -218,13 +251,22 @@ export function recordLearningEvent(current, event, timestamp = Date.now()) {
   const day = localDateKey(at)
   const skill = event?.skill || 'other'
   const activity = activityModeFor(event, scored)
+  // 直前の回答からの間隔を、そのまま学習時間として積む（離席とみなす長い間隔は除外）。
+  const sinceLast = Number.isFinite(analytics.lastEventAt) ? at - analytics.lastEventAt : null
+  // 同一タイムスタンプでまとめて記録される一括保存は、二重計上しない。
+  const ms = sinceLast === 0
+    ? 0
+    : sinceLast != null && sinceLast > 0 && sinceLast <= STUDY_GAP_LIMIT_MS
+      ? sinceLast
+      : STUDY_MIN_CREDIT_MS
 
   analytics.inputs += inputs
   analytics.scored += scored
   analytics.correct += correct
-  analytics.hours[hour] = addAggregate(analytics.hours[hour], { inputs, scored, correct })
-  analytics.skills[skill] = addAggregate(analytics.skills[skill], { inputs, scored, correct })
-  analytics.days[day] = addAggregate(analytics.days[day], { inputs, scored, correct })
+  analytics.lastEventAt = at
+  analytics.hours[hour] = addHourAggregate(analytics.hours[hour], { inputs, scored, correct, ms }, day)
+  analytics.skills[skill] = addAggregate(analytics.skills[skill], { inputs, scored, correct, ms })
+  analytics.days[day] = addAggregate(analytics.days[day], { inputs, scored, correct, ms })
   const mode = analytics.modes[activity] ?? emptyModeAggregate()
   const nextMode = addAggregate(mode, { inputs, scored, correct })
   analytics.modes[activity] = {
@@ -302,6 +344,66 @@ function collectSrsEntries(stores) {
 
 function percentage(count, total) {
   return total ? Math.round((count / total) * 100) : 0
+}
+
+function localDateKeysBack(now, count) {
+  const cursor = new Date(now)
+  cursor.setHours(12, 0, 0, 0)
+  return Array.from({ length: count }, (_, offset) => {
+    const date = new Date(cursor)
+    date.setDate(cursor.getDate() - offset)
+    return localDateKey(date.getTime())
+  })
+}
+
+// 「1日の学習時間」は、回答間隔から積んだ実時間を暦日で平均する。
+// 学習しなかった日を分母から外さないため、直近7日・28日の暦日で割る。
+function studyTimeFrom(analytics, now) {
+  const keys28 = localDateKeysBack(now, 28)
+  const msFor = (key) => nonNegative(analytics.days?.[key]?.ms)
+  const sum = (keys) => keys.reduce((total, key) => total + msFor(key), 0)
+  const ms7 = sum(keys28.slice(0, 7))
+  const ms28 = sum(keys28)
+  const totalMs = Object.values(analytics.days ?? {}).reduce(
+    (total, day) => total + nonNegative(day?.ms),
+    0,
+  )
+  const activeDays7 = keys28.slice(0, 7).filter((key) => msFor(key) > 0).length
+  const activeDays28 = keys28.filter((key) => msFor(key) > 0).length
+  return {
+    todayMs: msFor(keys28[0]),
+    ms7,
+    ms28,
+    totalMs,
+    activeDays7,
+    activeDays28,
+    // 暦日平均（学習しなかった日も含む）と、学習した日だけの平均を並べて示す。
+    dailyAverageMs7: ms7 / 7,
+    dailyAverageMs28: ms28 / 28,
+    activeDayAverageMs: activeDays28 ? ms28 / activeDays28 : null,
+    recentDays: keys28.map((key) => ({ key, ms: msFor(key) })).reverse(),
+    hasEvidence: totalMs > 0,
+  }
+}
+
+// 学習リズム＝「同じ時刻に学習を繰り返せているか」。
+// 時間帯ごとの学習日数を、学習した日数で割った定着率で測る。
+function rhythmFrom(hourlyTime, activeDays) {
+  const ranked = [...hourlyTime].sort((a, b) => b.days - a.days || b.ms - a.ms)
+  const peak = ranked[0] ?? null
+  const core = ranked.filter((stat) => stat.days > 0).slice(0, 3)
+  const coreDays = core.reduce((sum, stat) => sum + stat.days, 0)
+  const regularity = activeDays && core.length
+    ? Math.min(1, coreDays / (activeDays * core.length))
+    : null
+  return {
+    peakHour: peak && peak.days > 0 ? peak.hour : null,
+    peakDays: peak?.days ?? 0,
+    coreHours: core.map((stat) => stat.hour).sort((a, b) => a - b),
+    activeDays,
+    regularity,
+    score: regularity == null ? null : Math.round(regularity * 100),
+  }
 }
 
 function hourStatsFrom(analytics) {
@@ -388,6 +490,7 @@ export function analyzeLearning({
   learningAnalytics,
   srsStores = [],
   skillStats = {},
+  now = Date.now(),
 } = {}) {
   const analytics = normalizeLearningAnalytics(learningAnalytics)
   const entries = collectSrsEntries(srsStores)
@@ -420,6 +523,18 @@ export function analyzeLearning({
   const memoryCohortHourly = cohortHourStatsFrom(analytics)
   const memoryPasses = passStatsFrom(analytics)
   const bestWindow = bestThreeHourWindow(hourly)
+  const studyTime = studyTimeFrom(analytics, now)
+  const hourlyTime = Array.from({ length: 24 }, (_, hour) => {
+    const aggregate = normalizeHourAggregate(analytics.hours[hour])
+    return {
+      hour,
+      ms: aggregate.ms,
+      inputs: aggregate.inputs,
+      days: aggregate.days,
+      share: studyTime.totalMs ? aggregate.ms / studyTime.totalMs : 0,
+    }
+  })
+  const rhythm = rhythmFrom(hourlyTime, studyTime.activeDays28)
   const skills = skillResultsFrom(analytics, skillStats)
   const rankedSkills = skills
     .filter((skill) => skill.scored >= 3)
@@ -468,6 +583,9 @@ export function analyzeLearning({
     averageInputsPerActiveDay: activeDays.length
       ? activeDays.reduce((sum, day) => sum + day.inputs, 0) / activeDays.length
       : null,
+    studyTime,
+    hourlyTime,
+    rhythm,
     repetitionsToLongTerm,
     hourly,
     activity: {

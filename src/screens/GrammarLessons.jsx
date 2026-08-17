@@ -99,7 +99,7 @@ export function GrammarLessonsScreen() {
       </div>
 
       {/* 解説ウィンドウ */}
-      <Sheet open={lesson != null} onClose={() => setOpenId(null)} title={lesson?.title} maxH="90vh">
+      <Sheet open={lesson != null} onClose={() => setOpenId(null)} title={lesson?.title} maxH="90svh">
         {lesson && (
           <div className="space-y-4">
             <div className="flex items-center gap-2">

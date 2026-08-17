@@ -71,6 +71,8 @@ const RATE_PRESETS = [
 ]
 
 const DAILY_GOALS = [10, 20, 30, 50]
+// 1回の学習・クイズで出す問題数（学習中は進捗表示のタップでも変えられる）
+const SESSION_SIZES = [5, 10, 15, 20]
 
 function SettingRow({ title, desc, children, stacked = false }) {
   return (
@@ -336,6 +338,30 @@ function LearningSettingsPanel() {
             on={settings.revealAnswers === true}
             onChange={(value) => setSetting('revealAnswers', value)}
           />
+        </SettingRow>
+        <SettingRow
+          title="1回の問題数"
+          desc={`現在 ${settings.sessionSize ?? 10}問・学習中は「1/10」の表示をタップしても変更できます`}
+          stacked
+        >
+          <div className="grid grid-cols-4 gap-2">
+            {SESSION_SIZES.map((size) => (
+              <button
+                key={size}
+                type="button"
+                onClick={() => setSetting('sessionSize', size)}
+                aria-pressed={settings.sessionSize === size}
+                className={cx(
+                  'min-h-11 rounded-xl text-sm font-extrabold transition-colors',
+                  settings.sessionSize === size
+                    ? 'bg-brand-500 text-white'
+                    : 'bg-brand-50 text-brand-700',
+                )}
+              >
+                {size}問
+              </button>
+            ))}
+          </div>
         </SettingRow>
         <SettingRow
           title="1日の目標"
@@ -670,6 +696,15 @@ function ResetProgressPanel({
                 <span className="mt-0.5 block text-[11px] font-bold leading-snug text-slate-500">
                   {group.description}
                 </span>
+                {group.implies.length > 0 && (
+                  <span className="mt-1 block text-[10px] font-bold leading-snug text-amber-700">
+                    ※ この履歴から作られる「
+                    {group.implies
+                      .map((id) => PROGRESS_RESET_GROUPS.find((item) => item.id === id)?.label ?? id)
+                      .join('・')}
+                    」も一緒にリセットします（数値の食い違いを防ぐため）
+                  </span>
+                )}
               </span>
             </label>
           ))}

@@ -1,7 +1,6 @@
 import { useStore } from '../store/useStore.js'
 import { getLevel } from '../data/levels.js'
 import { LEARNING_FIELD_TOC } from '../data/decks.js'
-import { SESSION_SIZE } from '../lib/session.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
 import { Card, Button, Chip } from '../components/ui.jsx'
@@ -54,7 +53,6 @@ export function VocabDecksScreen() {
 
   const open = (field, quiz = false) => navigate(quiz ? 'vocabQuiz' : 'vocabStudy', {
     source: { type: 'levelField', levelId, field: field.fieldId },
-    size: SESSION_SIZE,
     title: `英検${level.label}・${field.field}`,
     ...(quiz ? {} : { mode: 'study' }),
     returnTo: { screen: 'vocabDecks', params: { levelId } },

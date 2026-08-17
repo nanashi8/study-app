@@ -83,6 +83,9 @@ test('単語の公開画面は10分野を直接示し、旧20語デッキを表�
   assert.match(levelFields, /data-vocab-level-fields/)
   assert.doesNotMatch(`${levels}\n${fields}\n${levelFields}`, /20語|デッキでえらぶ|目次・デッキ/)
   assert.doesNotMatch(`${fields}\n${levelFields}`, /<Button[^>]*size="sm"/)
-  assert.match(study, /size: params\.size \?\? SESSION_SIZE/)
-  assert.match(quiz, /size: params\.size \?\? SESSION_SIZE/)
+  // 1回の問題数は、進捗表示のタップで変えられる共通設定から決める。
+  assert.match(study, /buildFor\(params\.size \?\? sessionSize\)/)
+  assert.match(quiz, /buildFor\(params\.size \?\? sessionSize\)/)
+  assert.match(study, /<SessionCounter/)
+  assert.match(quiz, /<SessionCounter/)
 })

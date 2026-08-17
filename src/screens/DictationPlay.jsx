@@ -18,6 +18,7 @@ import { Button, Chip, ProgressBar, IconButton, cx } from '../components/ui.jsx'
 import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { Close, ArrowRight, SpeakerWave, Check } from '../components/Icons.jsx'
+import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 
 const clampRate = (rate) => Math.max(0.55, Math.min(1.25, rate))
 
@@ -35,11 +36,13 @@ export function DictationPlayScreen() {
   const settings = useStore((s) => s.settings)
 
   const source = params.source ?? { type: 'level', levelId: '5' }
-  const [deck] = useState(() =>
-    buildDictationDeck(source, {
-      size: source.type === 'dictationList' ? 0 : 8,
-    }),
-  )
+  // size=0 は「絞り込みなし」。登録リストは全問、それ以外は設定した問題数で出す。
+  const buildFor = (size) => buildDictationDeck(source, { size })
+  const sessionSize = useSessionSize()
+  const [poolSize] = useState(() => buildFor(0).length)
+  const [deck, setDeck] = useState(() => (
+    source.type === 'dictationList' ? buildFor(0) : buildFor(params.size ?? sessionSize)
+  ))
   const [i, setI] = useState(0)
   const [wordBank, setWordBank] = useState(() => buildWordBank(deck[0]))
   const [answerTokens, setAnswerTokens] = useState([])
@@ -178,7 +181,23 @@ export function DictationPlayScreen() {
         <IconButton onClick={back} aria-label="やめる"><Close size={22} /></IconButton>
         <div className="flex-1"><ProgressBar value={i / deck.length} color="#14b8a6" /></div>
         <SpeechSettingsButton compact />
-        <span className="w-12 text-right text-sm font-extrabold text-ink/50">{i + 1}/{deck.length}</span>
+        <SessionCounter
+          index={i}
+          total={deck.length}
+          max={poolSize}
+          onResize={(size) => {
+            const next = buildFor(size)
+            setDeck(next)
+            setI(0)
+            setWordBank(buildWordBank(next[0]))
+            setAnswerTokens([])
+            setWrongSelections(0)
+            setResult(null)
+            setNormalPlays(0)
+            setSlowPlays(0)
+            results.current = { correct: 0, wrong: 0, wrongIds: [] }
+          }}
+        />
       </div>
 
       <div className="flex-1 overflow-y-auto px-4 pb-4">

@@ -9,6 +9,7 @@ import {
 import { KANBUN_LEVEL_BY_ID } from '../data/kanbun-meta.js'
 import { Button, Chip, IconButton, ProgressBar } from '../components/ui.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
+import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 import {
   ArrowRight,
   Bookmark,
@@ -66,7 +67,14 @@ export function KanbunStudyScreen() {
   const meta = kanbunDomainMeta(domain)
   const savedIds = useStore((state) => state[meta.listField])
   const revealAll = useStore((state) => state.settings.revealAnswers)
-  const [deck, setDeck] = useState(() => shuffleKanbun(kanbunItems(domain, params.ids)))
+  // size を指定しないときは設定した問題数まで絞る。
+  const buildFor = (ids, size) => {
+    const items = shuffleKanbun(kanbunItems(domain, ids))
+    return size > 0 ? items.slice(0, size) : items
+  }
+  const [poolSize] = useState(() => kanbunItems(domain, params.ids).length)
+  const sessionSize = useSessionSize(poolSize || Infinity)
+  const [deck, setDeck] = useState(() => buildFor(params.ids, params.size ?? sessionSize))
   const [index, setIndex] = useState(0)
   const [revealed, setRevealed] = useState(revealAll)
   const [remembered, setRemembered] = useState(0)
@@ -85,7 +93,7 @@ export function KanbunStudyScreen() {
   }
 
   const restart = (ids = params.ids) => {
-    setDeck(shuffleKanbun(kanbunItems(domain, ids)))
+    setDeck(buildFor(ids, deck.length))
     setIndex(0)
     setRevealed(revealAll)
     setRemembered(0)
@@ -146,7 +154,20 @@ export function KanbunStudyScreen() {
             <p className="mt-1 truncate text-[10px] font-extrabold text-ink/40">{params.title ?? `${meta.label}を覚える`}</p>
           </div>
           <SpeechSettingsButton compact />
-          <span className="w-12 text-right text-sm font-extrabold text-ink/50">{index + 1}/{deck.length}</span>
+          <SessionCounter
+            index={index}
+            total={deck.length}
+            max={poolSize}
+            label="項目"
+            onResize={(size) => {
+              setDeck(buildFor(params.ids, size))
+              setIndex(0)
+              setRevealed(revealAll)
+              setRemembered(0)
+              setForgottenIds([])
+              setDone(false)
+            }}
+          />
         </div>
       </div>
 

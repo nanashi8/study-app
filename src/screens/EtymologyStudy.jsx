@@ -15,6 +15,7 @@ import {
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { Button, IconButton, ProgressBar } from '../components/ui.jsx'
 import { Bookmark, BookmarkFilled, Check, Close } from '../components/Icons.jsx'
+import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 
 const LEARNING_STATUS_LABEL = {
   learned: '学習済',
@@ -30,14 +31,17 @@ export function EtymologyStudyScreen() {
   const toggleNotebookItem = useStore((state) => state.toggleNotebookItem)
   const learningNotebook = useStore((state) => state.learningNotebook)
   const srsAtStart = useRef(useStore.getState().etymologySrs)
-  const [deck] = useState(() =>
+  // 語源カードは1回20枚が上限。実際に出せる枚数を数えて選択肢に反映する。
+  const buildFor = (size) =>
     buildEtymologyDeck(ETYMOLOGY_PACKS, srsAtStart.current, {
       mode: params.mode ?? 'all',
       status: params.status ?? 'priority',
       packIds: params.packIds,
-      size: params.size,
-    }),
-  )
+      size,
+    })
+  const sessionSize = useSessionSize(20)
+  const [poolSize] = useState(() => buildFor(20).length)
+  const [deck, setDeck] = useState(() => buildFor(params.size ?? sessionSize))
   const [index, setIndex] = useState(0)
   const [done, setDone] = useState(false)
   const results = useRef({ remembered: 0, forgot: 0 })
@@ -113,9 +117,18 @@ export function EtymologyStudyScreen() {
           {saved ? <BookmarkFilled size={20} /> : <Bookmark size={20} />}
         </IconButton>
         <SpeechSettingsButton compact />
-        <span className="w-12 text-right text-sm font-extrabold text-ink/50">
-          {index + 1}/{deck.length}
-        </span>
+        <SessionCounter
+          index={index}
+          total={deck.length}
+          max={poolSize}
+          label="カード"
+          onResize={(size) => {
+            setDeck(buildFor(size))
+            setIndex(0)
+            setDone(false)
+            results.current = { remembered: 0, forgot: 0 }
+          }}
+        />
       </div>
 
       <div className="flex-1 overflow-y-auto px-4 pb-4">

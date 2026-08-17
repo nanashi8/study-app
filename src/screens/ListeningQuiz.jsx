@@ -25,6 +25,7 @@ import {
   SpeakerWave,
 } from '../components/Icons.jsx'
 import { buildListeningInstructorExplanation } from '../lib/instructorExplanations.js'
+import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 
 const PROMPTS = Object.freeze({
   response: '最後の発話に対する、最も自然な応答を選んでください。',
@@ -54,11 +55,13 @@ export function ListeningQuizScreen() {
   const learningNotebook = useStore((s) => s.learningNotebook)
 
   const source = params.source ?? { type: 'level', levelId: '5' }
-  const [deck] = useState(() =>
-    buildListeningDeck(source, {
-      size: source.type === 'listeningList' ? 0 : 10,
-    }),
-  )
+  // size=0 は「絞り込みなし」。登録リストは全問、それ以外は設定した問題数で出す。
+  const buildFor = (size) => buildListeningDeck(source, { size })
+  const sessionSize = useSessionSize()
+  const [poolSize] = useState(() => buildFor(0).length)
+  const [deck, setDeck] = useState(() => (
+    source.type === 'listeningList' ? buildFor(0) : buildFor(params.size ?? sessionSize)
+  ))
   const [i, setI] = useState(0)
   const [selected, setSelected] = useState(null)
   const [playsUsed, setPlaysUsed] = useState(0)
@@ -221,9 +224,20 @@ export function ListeningQuizScreen() {
           {saved ? <BookmarkFilled size={20} /> : <Bookmark size={20} />}
         </IconButton>
         <SpeechSettingsButton compact />
-        <span className="w-12 text-right text-sm font-extrabold text-ink/50">
-          {i + 1}/{deck.length}
-        </span>
+        <SessionCounter
+          index={i}
+          total={deck.length}
+          max={poolSize}
+          onResize={(size) => {
+            setDeck(buildFor(size))
+            setI(0)
+            setSelected(null)
+            setPlaysUsed(0)
+            setPracticePlays(0)
+            setShowTranscript(false)
+            results.current = { correct: 0, wrong: 0, unknown: 0, wrongIds: [] }
+          }}
+        />
       </div>
 
       <div className="flex-1 overflow-y-auto px-4 pb-4">

@@ -6,6 +6,7 @@ import {
 } from '../data/koten-grammar.js'
 import { Button, Chip, ProgressBar, IconButton } from '../components/ui.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
+import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 import {
   ArrowRight,
   Bookmark,
@@ -25,9 +26,11 @@ function shuffle(items) {
   return result
 }
 
-function buildDeck(ids) {
+// size=0 は「絞り込みなし」。
+function buildDeck(ids, size = SESSION_SIZE) {
   const unique = [...new Set(ids ?? [])]
-  return shuffle(unique.map(getKotenGrammar).filter(Boolean)).slice(0, SESSION_SIZE)
+  const items = shuffle(unique.map(getKotenGrammar).filter(Boolean))
+  return size > 0 ? items.slice(0, size) : items
 }
 
 export function KotenGrammarStudyScreen() {
@@ -39,7 +42,9 @@ export function KotenGrammarStudyScreen() {
   const settings = useStore((state) => state.settings)
   const revealAll = settings.revealAnswers
 
-  const [deck, setDeck] = useState(() => buildDeck(params.ids))
+  const [poolSize] = useState(() => buildDeck(params.ids, 0).length)
+  const sessionSize = useSessionSize(poolSize || Infinity)
+  const [deck, setDeck] = useState(() => buildDeck(params.ids, params.size ?? sessionSize))
   const [index, setIndex] = useState(0)
   const [flipped, setFlipped] = useState(revealAll)
   const [done, setDone] = useState(false)
@@ -62,7 +67,7 @@ export function KotenGrammarStudyScreen() {
   }
 
   const restart = () => {
-    setDeck(buildDeck(params.ids))
+    setDeck(buildDeck(params.ids, deck.length))
     setIndex(0)
     setFlipped(revealAll)
     setDone(false)
@@ -111,9 +116,19 @@ export function KotenGrammarStudyScreen() {
             </p>
           </div>
           <SpeechSettingsButton compact />
-          <span className="w-12 text-right text-sm font-extrabold text-ink/50">
-            {index + 1}/{deck.length}
-          </span>
+          <SessionCounter
+            index={index}
+            total={deck.length}
+            max={poolSize}
+            label="項目"
+            onResize={(size) => {
+              setDeck(buildDeck(params.ids, size))
+              setIndex(0)
+              setFlipped(revealAll)
+              setDone(false)
+              setRemembered(0)
+            }}
+          />
         </div>
       </div>
 

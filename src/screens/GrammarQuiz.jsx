@@ -17,6 +17,7 @@ import { Button, ProgressBar, IconButton, Chip, cx } from '../components/ui.jsx'
 import { ArrowRight, Bookmark, BookmarkFilled, Check, Close } from '../components/Icons.jsx'
 import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { buildGrammarInstructorExplanation } from '../lib/instructorExplanations.js'
+import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 
 // 空所 ___ を下線つきの空欄として表示。
 function renderQuestion(q) {
@@ -38,12 +39,15 @@ export function GrammarQuizScreen() {
   const learningNotebook = useStore((s) => s.learningNotebook)
   const color = params.levelColor ?? '#6366f1'
 
-  const [deck] = useState(() =>
+  // size=0 は「絞り込みなし」。在庫数から、選べる問題数の上限を決める。
+  const buildFor = (size) =>
     buildGrammarDeck(
       params.source ?? { type: 'grammar', level: '5' },
-      { srs: useStore.getState().srs, day: todayIndex() },
-    ),
-  )
+      { srs: useStore.getState().srs, day: todayIndex(), size },
+    )
+  const sessionSize = useSessionSize()
+  const [poolSize] = useState(() => buildFor(0).length)
+  const [deck, setDeck] = useState(() => buildFor(params.size ?? sessionSize))
   const [i, setI] = useState(0)
   const [selected, setSelected] = useState(null)
   const results = useRef({ correct: 0, wrong: 0, unknown: 0, wrongIds: [] })
@@ -138,7 +142,17 @@ export function GrammarQuizScreen() {
           {saved ? <BookmarkFilled size={20} /> : <Bookmark size={20} />}
         </IconButton>
         <SpeechSettingsButton compact />
-        <span className="w-12 text-right text-sm font-extrabold text-ink/50">{i + 1}/{deck.length}</span>
+        <SessionCounter
+          index={i}
+          total={deck.length}
+          max={poolSize}
+          onResize={(size) => {
+            setDeck(buildFor(size))
+            setI(0)
+            setSelected(null)
+            results.current = { correct: 0, wrong: 0, unknown: 0, wrongIds: [] }
+          }}
+        />
       </div>
 
       <div className="flex-1 overflow-y-auto px-4 pb-4">

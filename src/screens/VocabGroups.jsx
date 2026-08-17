@@ -4,7 +4,7 @@ import {
   VOCAB_FIELD_GROUPS,
   wordsByField,
 } from '../data/vocab.js'
-import { SESSION_SIZE, wordProgress } from '../lib/session.js'
+import { wordProgress } from '../lib/session.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { Book, Cards, Refresh } from '../components/Icons.jsx'
 import { Button, Card, Chip } from '../components/ui.jsx'
@@ -65,7 +65,6 @@ export function VocabGroupsScreen() {
   const start = ({ field, quiz = false }) => navigate(quiz ? 'vocabQuiz' : 'vocabStudy', {
     source: { type: 'field', field: field.id },
     title: `分野：${field.label}`,
-    size: SESSION_SIZE,
     ...(quiz ? {} : { mode: 'study' }),
     returnTo: { screen: 'vocabGroups' },
   })
