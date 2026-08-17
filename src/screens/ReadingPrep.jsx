@@ -3,7 +3,7 @@ import { useStore } from '../store/useStore.js'
 import { getPassage } from '../data/passages.js'
 import { getLevel } from '../data/levels.js'
 import { getReadingStudy, passageWordCount } from '../data/reading-study.js'
-import { readingRulesForPassage } from '../data/reading-rules.js'
+import { readingApproachForPassage, readingRulesForPassage } from '../data/reading-rules.js'
 import { phraseSpeechText } from '../lib/phrase-speech.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { ReadingRuleCard } from '../components/ReadingRuleCard.jsx'
@@ -46,6 +46,7 @@ export function ReadingPrepScreen() {
 
   const level = getLevel(passage.level)
   const { words, phrases } = getReadingStudy(passage)
+  const passageApproach = readingApproachForPassage(passage)
   const passageRules = readingRulesForPassage(passage)
   const wordIds = words.map((word) => word.id)
   const itemIds = [...wordIds, ...phrases.map((item) => item.id)]
@@ -108,7 +109,10 @@ export function ReadingPrepScreen() {
           </div>
         </section>
 
-        <Card className="mb-4 p-4">
+        <Card
+          className="mb-4 p-4"
+          data-reading-approach-for-passage={passage.id}
+        >
           <div className="text-xs font-extrabold text-ink/45">厳選テーマ</div>
           <div className="mt-1 font-display text-base font-extrabold text-ink">
             {passage.theme}
@@ -119,6 +123,28 @@ export function ReadingPrepScreen() {
               <Chip key={focus} color={level.color}>{focus}</Chip>
             ))}
           </div>
+
+          {passageApproach && (
+            <div className="mt-4 border-t border-brand-100 pt-4">
+              <div className="text-xs font-extrabold text-brand-600">このテーマの読み方</div>
+              <h2 className="mt-1 font-display text-base font-extrabold leading-snug text-ink">
+                {passageApproach.title}
+              </h2>
+              <p className="mt-1.5 text-xs font-bold leading-relaxed text-ink/55">
+                {passageApproach.summary}
+              </p>
+              <ol className="mt-3 grid gap-2 sm:grid-cols-3">
+                {passageApproach.steps.map((step, index) => (
+                  <li key={step} className="flex gap-2 rounded-xl bg-brand-50 px-3 py-2.5">
+                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-600 text-[10px] font-black text-white">
+                      {index + 1}
+                    </span>
+                    <span className="text-xs font-extrabold leading-relaxed text-ink/70">{step}</span>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          )}
         </Card>
 
         <Card className="mb-4 p-4" data-reading-rules-for-passage={passage.id}>
@@ -138,7 +164,7 @@ export function ReadingPrepScreen() {
             </button>
           </div>
           <p className="mt-1 text-xs font-bold leading-relaxed text-ink/50">
-            本文の構成と言葉から選んだルールです。読む前に二つ、迷った文で一つ開けば十分です。
+            上のテーマ別三手と本文の構成から選んだルールです。必要なものだけ開いて確認できます。
           </p>
           <div className="mt-3 space-y-2">
             {passageRules.map((rule) => (
