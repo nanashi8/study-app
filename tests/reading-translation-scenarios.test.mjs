@@ -341,8 +341,8 @@ test('長文画面は文全体の意味フレーズを英語→対応する日�
   assert.match(source, /文法解説/)
   assert.doesNotMatch(source, /英文を発音できて意味が通るまとまりに区切ります/)
   assert.doesNotMatch(source, /S・V・O・C・Mはフレーズ内の構造を確かめる注釈です/)
-  assert.match(source, /読み方：\{readingExplanation\}/)
-  assert.match(source, /文法上の注意：\{grammarExplanation\}/)
+  assert.match(source, /読み進め方：\{readingExplanation\}/)
+  assert.match(source, /文法の決まり：\{grammarExplanation\}/)
   assert.match(source, /label:\s*'読み方・文法上の注意'/)
 })
 
@@ -368,4 +368,40 @@ test('長文567文は上段と文法解説で同一説明を二重表示しな�
   }
   assert.equal(sentenceCount, 567)
   assert.equal(phraseCount, 3246)
+})
+
+test('長文1546ブロックは読解手順と文法説明を役割分担し、意味の重複も抑える', () => {
+  const bigrams = (value) => {
+    const normalized = String(value ?? '')
+      .replace(/[\s、。・「」（）()／→：:=A-Za-z0-9＋+\-]/g, '')
+    return new Set(Array.from(
+      { length: Math.max(0, normalized.length - 1) },
+      (_, index) => normalized.slice(index, index + 2),
+    ))
+  }
+  const overlap = (left, right) => {
+    const a = bigrams(left)
+    const b = bigrams(right)
+    const shared = [...a].filter((value) => b.has(value)).length
+    return shared / Math.max(1, Math.min(a.size, b.size))
+  }
+
+  let blockCount = 0
+  for (const passage of PASSAGES) {
+    for (const sentence of passage.sentences) {
+      const analysis = analyzeReadingSentence(sentence)
+      const displayed = readingBlockExplanationTexts(
+        analysis,
+        readingPhraseExplanationTexts(analysis),
+      )
+      for (const [index] of analysis.blocks.entries()) {
+        blockCount += 1
+        assert.ok(
+          overlap(displayed[index * 2], displayed[index * 2 + 1]) < 0.5,
+          `${passage.id}: ${sentence.en}`,
+        )
+      }
+    }
+  }
+  assert.equal(blockCount, 1546)
 })

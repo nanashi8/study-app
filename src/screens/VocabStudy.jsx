@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import { buildDeck, recordStudyAnswer, SESSION_SIZE } from '../lib/session.js'
-import { relatedByEtymology } from '../data/vocab.js'
 import { playSpeechItems } from '../lib/speech-player.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
@@ -26,9 +25,7 @@ export function VocabStudyScreen() {
   const [deck] = useState(() =>
     buildDeck(params.source ?? { type: 'due' }, {
       srs: srsAtStart.current,
-      size:
-        params.size ??
-        (['level', 'all', 'field', 'pos'].includes(params.source?.type) ? SESSION_SIZE : 20),
+      size: params.size ?? SESSION_SIZE,
     }),
   )
 
@@ -68,6 +65,7 @@ export function VocabStudyScreen() {
   }
 
   const finish = () => {
+    const completedAt = Date.now()
     navigate('sessionResult', {
       title: params.title ?? '単語学習',
       mode: 'study',
@@ -78,6 +76,19 @@ export function VocabStudyScreen() {
       source: params.source,
       size: params.size,
       continueTo: params.continueTo,
+      returnTo: params.returnTo,
+      vocabSession: {
+        wordIds: deck.map((item) => item.id),
+        beforeBoxes: Object.fromEntries(
+          deck.map((item) => [
+            item.id,
+            Number.isFinite(srsAtStart.current[item.id]?.box)
+              ? srsAtStart.current[item.id].box
+              : null,
+          ]),
+        ),
+        completedAt,
+      },
     })
   }
 
@@ -91,7 +102,6 @@ export function VocabStudyScreen() {
     }
   }
 
-  const relatedCount = relatedByEtymology(word).length
   const saved = myList.includes(word.id)
   const wordSpeechItems = [
     { text: word.word, label: word.word, style: 'word' },
@@ -163,7 +173,7 @@ export function VocabStudyScreen() {
             <div className="mt-5 space-y-4 animate-slide-up">
               {/* 意味 */}
               <div className="rounded-2xl bg-brand-50 p-4">
-                <div className="text-[11px] font-extrabold uppercase tracking-wide text-brand-400">意味</div>
+                <div className="text-xs font-extrabold text-brand-500">意味</div>
                 <div className="mt-0.5 font-display text-xl font-extrabold text-ink">
                   {word.meanings.join('・')}
                 </div>
@@ -193,7 +203,7 @@ export function VocabStudyScreen() {
                 <div className="rounded-2xl bg-white p-4 ring-1 ring-brand-100">
                   <div className="mb-2 flex items-center gap-1.5 text-brand-600">
                     <Lightbulb size={16} />
-                    <span className="text-[11px] font-extrabold uppercase tracking-wide">語源</span>
+                    <span className="text-xs font-extrabold">語源</span>
                   </div>
                   <EtymologyBlock
                     word={word}
@@ -206,7 +216,7 @@ export function VocabStudyScreen() {
                 onClick={() => navigate('wordDetail', { id: word.id })}
                 className="flex w-full items-center justify-center gap-1.5 rounded-2xl bg-brand-100 py-3 text-sm font-extrabold text-brand-700 active:bg-brand-200"
               >
-                くわしく見る{relatedCount > 0 && `（語源でつながる単語 ${relatedCount}）`}
+                辞書ページで関連語も見る
                 <ArrowRight size={16} />
               </button>
             </div>

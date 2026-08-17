@@ -460,12 +460,15 @@ const sourceChecks = [
   ['PhraseQuiz.jsx', [/\breview\(/, /UnknownChoiceButton/, /buildPhraseInstructorExplanation/, /InstructorExplanation/]],
   ['ListeningQuiz.jsx', [/\breview\(/, /UnknownChoiceButton/, /item\.questionJa/, /buildListeningInstructorExplanation/]],
   ['DictationPlay.jsx', [/\breview\(/, /positionResults/, /item\.ja/, /buildDictationInstructorExplanation/]],
-  ['ReadingSummary.jsx', [/markReadingDone\(/, /recordSkillResult\(/, /UnknownChoiceButton/, /buildReadingInstructorExplanation/]],
+  ['components/ReadingComprehensionCheck.jsx', [/markReadingDone\(/, /recordSkillResult\(/, /UnknownChoiceButton/, /buildReadingInstructorExplanation/]],
   ['WritingPlay.jsx', [/recordWritingCompletion\(/, /writingTokenPositionResults/, /buildWritingInstructorExplanation/, /toggleMyGrammar/]],
   ['Diagnostic.jsx', [/recordDiagnosticResult\(/, /data-diagnostic-explanation/, /buildDiagnosticInstructorExplanation/, /question\.review/]],
 ]
 for (const [filename, patterns] of sourceChecks) {
-  const source = readFileSync(`${ROOT}/src/screens/${filename}`, 'utf8')
+  const source = readFileSync(
+    filename.includes('/') ? `${ROOT}/src/${filename}` : `${ROOT}/src/screens/${filename}`,
+    'utf8',
+  )
   for (const pattern of patterns) {
     assert(pattern.test(source), `習熟導線 ${filename}: ${pattern} がない`)
   }

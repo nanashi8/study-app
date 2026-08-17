@@ -143,7 +143,8 @@ import { WORDS_IMPORTED } from './words-imported.js'
 import { READING_WORDS } from './reading-words.js'
 import { PHONETICS } from './phonetics.js'
 import { PHONETIC_OVERRIDES } from './phonetic-overrides.js'
-import { ROOTS, ROOTS_BY_ID } from './roots.js'
+import { LEARNING_ROOTS, ROOTS, ROOTS_BY_ID } from './roots.js'
+import { referenceRootIdsForWord } from './etymology-reference-roots.js'
 import { LEVEL_OVERRIDE } from './levels-override.js'
 import { buildRootMatchers, autoRootIds } from './derive-roots.js'
 import {
@@ -156,12 +157,14 @@ import {
   ETYMOLOGY_FORMATION_META,
   ETYMOLOGY_SOURCE_META,
   etymologyHistoryFor,
+  etymologyLearningGuideFor,
 } from './etymology-history.js'
 import { quizMeaningKey, splitMeanings } from './compact.js'
 import { EXAM_WORDS, USAGE_GUIDES_BY_WORD } from './exam-lexicon.js'
+import { ETYMOLOGY_COMPLETION_WORDS } from './words-etymology-completion.js'
 
 // 語根オートリンクの検出器（精度重視・形態素分解＋除外リスト）。
-const ROOT_MATCHERS = buildRootMatchers(ROOTS)
+const ROOT_MATCHERS = buildRootMatchers(LEARNING_ROOTS)
 
 // 各単語に root id 配列を付与する。
 //  1) 手書きの etymology.parts[].root（最優先・最も正確）
@@ -187,6 +190,9 @@ const normalize = (w) => {
     ...w,
     level,
     roots,
+    // 辞書で関連語を広げる補助リンク。語源カードの分類には使わず、
+    // 既存packIdとetymologySrsを変えない。
+    referenceRoots: referenceRootIdsForWord(w.word),
     meanings,
     meaning,
     phonetic,
@@ -205,7 +211,8 @@ const CURATED = [
   ...WORDS_MORE6, ...WORDS_MORE7, ...WORDS_MORE8, ...WORDS_MORE9, ...WORDS_MORE10, ...WORDS_MORE11, ...WORDS_MORE12, ...WORDS_MORE13, ...WORDS_MORE14, ...WORDS_MORE15, ...WORDS_MORE16, ...WORDS_MORE17, ...WORDS_MORE18, ...WORDS_MORE19, ...WORDS_MORE20, ...WORDS_MORE21, ...WORDS_MORE22, ...WORDS_MORE23, ...WORDS_MORE24, ...WORDS_MORE25, ...WORDS_MORE26, ...WORDS_MORE27, ...WORDS_MORE28, ...WORDS_MORE29, ...WORDS_MORE30, ...WORDS_MORE31, ...WORDS_MORE32, ...WORDS_MORE33, ...WORDS_MORE34, ...WORDS_MORE35, ...WORDS_MORE36, ...WORDS_MORE37, ...WORDS_MORE38, ...WORDS_MORE39, ...WORDS_MORE40, ...WORDS_MORE41, ...WORDS_MORE42, ...WORDS_MORE43, ...WORDS_MORE44, ...WORDS_MORE45, ...WORDS_MORE46, ...WORDS_MORE47, ...WORDS_MORE48, ...WORDS_MORE49, ...WORDS_MORE50, ...WORDS_MORE51, ...WORDS_MORE52, ...WORDS_MORE53, ...WORDS_MORE54, ...WORDS_MORE55, ...WORDS_MORE56, ...WORDS_MORE57, ...WORDS_MORE58, ...WORDS_MORE59, ...WORDS_MORE60, ...WORDS_MORE61, ...WORDS_MORE62, ...WORDS_MORE63, ...WORDS_MORE64, ...WORDS_MORE65, ...WORDS_MORE66, ...WORDS_MORE67, ...WORDS_MORE68, ...WORDS_MORE69, ...WORDS_MORE70, ...WORDS_MORE71, ...WORDS_MORE72, ...WORDS_MORE73, ...WORDS_MORE74, ...WORDS_MORE75, ...WORDS_MORE76, ...WORDS_MORE77, ...WORDS_MORE78, ...WORDS_MORE79, ...WORDS_MORE80, ...WORDS_MORE81, ...WORDS_MORE82, ...WORDS_MORE83, ...WORDS_MORE84, ...WORDS_MORE85, ...WORDS_MORE86, ...WORDS_MORE87, ...WORDS_MORE88, ...WORDS_MORE89, ...WORDS_MORE90, ...WORDS_MORE91, ...WORDS_MORE92, ...WORDS_MORE93, ...WORDS_MORE94, ...WORDS_MORE95, ...WORDS_MORE96, ...WORDS_MORE97, ...WORDS_MORE98, ...WORDS_MORE99, ...WORDS_MORE100, ...WORDS_MORE101, ...WORDS_MORE102, ...WORDS_MORE103, ...WORDS_MORE104, ...WORDS_MORE105, ...WORDS_MORE106, ...WORDS_MORE107, ...WORDS_MORE108, ...WORDS_MORE109, ...WORDS_MORE110, ...WORDS_MORE111, ...WORDS_MORE112, ...WORDS_MORE113, ...WORDS_MORE114, ...WORDS_MORE115, ...WORDS_MORE116, ...WORDS_MORE117, ...WORDS_MORE118, ...WORDS_MORE119, ...WORDS_MORE120, ...WORDS_MORE121, ...WORDS_MORE122, ...WORDS_MORE123, ...WORDS_MORE124, ...WORDS_MORE125, ...WORDS_MORE126, ...WORDS_MORE127, ...WORDS_MORE128, ...WORDS_MORE129, ...WORDS_MORE130, ...WORDS_MORE131, ...WORDS_MORE132, ...WORDS_MORE133, ...WORDS_MORE134, ...WORDS_MORE135, ...WORDS_MORE136, ...WORDS_MORE137, ...WORDS_MORE138, ...WORDS_MORE139,
   ...READING_WORDS,
 ]
-const seenIds = new Set([...CURATED, ...EXAM_WORDS].map((w) => w.id))
+const completionIds = new Set(ETYMOLOGY_COMPLETION_WORDS.map((word) => word.id))
+const seenIds = new Set([...CURATED, ...EXAM_WORDS, ...ETYMOLOGY_COMPLETION_WORDS].map((w) => w.id))
 // 取り込みツールが重複判定に使う（手作業 curated を優先）。
 export const CURATED_IDS = seenIds
 const importedUnique = WORDS_IMPORTED.filter((w) => w.id && !seenIds.has(w.id))
@@ -295,13 +302,183 @@ const deriveFamilies = (words) => {
   return words
 }
 
+// 既存語と補完語は、語源カードIDを守るため別々に圧縮する。一方、辞書で見せる
+// 語族は境界を越えて双方向につなぐ必要があるため、圧縮後の表示データだけへ追加する。
+// 語源説明が名指しした基語・同源語と、安全な派生/複合だけを採用する。
+const applyCompletionFamilyBridges = (words) => {
+  const byHead = new Map(words.map((word) => [word.word.toLowerCase(), word]))
+  const byId = new Map(words.map((word) => [word.id, word]))
+  const links = new Map()
+  const add = (leftHead, rightHead) => {
+    const left = byHead.get(leftHead.toLowerCase())
+    const right = byHead.get(rightHead.toLowerCase())
+    if (!left || !right || left.id === right.id) return
+    if (completionIds.has(left.id) === completionIds.has(right.id)) return
+    if (!links.has(left.id)) links.set(left.id, new Set())
+    links.get(left.id).add(right.id)
+  }
+  const pair = (leftHead, rightHead) => {
+    add(leftHead, rightHead)
+    add(rightHead, leftHead)
+  }
+
+  for (const word of words) {
+    const head = word.word.toLowerCase()
+    const note = word.etymology?.note || word.etymology?.origin || ''
+    let baseHead = null
+    for (const match of note.matchAll(/([A-Za-z][A-Za-z'’-]{2,})\(([^)]+)\)/g)) {
+      const candidate = match[1].toLowerCase().replace(/[^a-z]/g, '')
+      if (
+        candidate.length < 4 ||
+        FAM_PREFIX.has(candidate) ||
+        FAM_STOP.has(candidate) ||
+        candidate === head
+      ) continue
+      const related =
+        (head.startsWith(candidate.slice(0, 4)) && head.length > candidate.length) ||
+        head.includes(candidate)
+      if (
+        related &&
+        byHead.has(candidate) &&
+        (!baseHead || candidate.length > baseHead.length)
+      ) baseHead = candidate
+    }
+    if (baseHead) pair(head, baseHead)
+
+    for (const match of note.matchAll(SAME_ORIGIN_RE)) {
+      const relatedHead = match[1].toLowerCase().replace(/[^a-z]/g, '')
+      if (byHead.has(relatedHead)) pair(head, relatedHead)
+    }
+    for (const family of word.family) {
+      const relatedHead = family.w.toLowerCase()
+      if (byHead.has(relatedHead)) pair(head, relatedHead)
+    }
+  }
+
+  for (const head of byHead.keys()) {
+    for (const suffix of FAM_SUFFIX) {
+      if (!head.endsWith(suffix) || head.length - suffix.length < 4) continue
+      const stem = head.slice(0, -suffix.length)
+      for (const candidate of [stem, stem + 'e', stem.replace(/i$/, 'y')]) {
+        if (byHead.has(candidate)) {
+          pair(candidate, head)
+          break
+        }
+      }
+    }
+    for (const tail of FAM_TAIL) {
+      if (!head.endsWith(tail) || head.length - tail.length < 3) continue
+      const candidate = head.slice(0, -tail.length)
+      if (byHead.has(candidate)) pair(candidate, head)
+    }
+  }
+
+  return words.map((word) => {
+    const relatedIds = links.get(word.id)
+    if (!relatedIds?.size) return word
+    const currentIds = new Set(
+      word.family
+        .map((family) => byHead.get(family.w.toLowerCase())?.id)
+        .filter(Boolean),
+    )
+    const additions = [...relatedIds]
+      .filter((id) => !currentIds.has(id))
+      .map((id) => {
+        const related = byId.get(id)
+        return { w: related.word, m: related.meanings.slice(0, 2).join('・') }
+      })
+    return additions.length
+      ? { ...word, family: [...word.family, ...additions] }
+      : word
+  })
+}
+
 // 既存の並び（curated → imported）を保ち、追加語は末尾へ置く。
 // SRS は id 基準だが、既存の辞書順以外のデッキ再現性にも配慮する。
-const NORMALIZED_WORDS = deriveFamilies([...CURATED, ...importedUnique, ...EXAM_WORDS].map(normalize))
+const LEGACY_NORMALIZED_WORDS = deriveFamilies(
+  [...CURATED, ...importedUnique, ...EXAM_WORDS].map(normalize),
+)
+const COMPLETION_NORMALIZED_WORDS = deriveFamilies(ETYMOLOGY_COMPLETION_WORDS.map(normalize))
 
-// 全語を「部品の式 / 共有語根 / 語族 / 成り立ち・変化」のいずれか1経路へ割り当てる。
-// 語源の確度が違う経路を混同せず、既存SRSへ渡せる最大8語の学習パックも同時に作る。
-const ETYMOLOGY_INDEX = buildEtymologyCompression(NORMALIZED_WORDS, ROOTS)
+// 既存8,211語だけで従来どおり圧縮してから、不足語を別集合として圧縮する。
+// 新語が既存パックの並び・anchor・packIdを変えないための保存互換境界。
+const LEGACY_ETYMOLOGY_INDEX = buildEtymologyCompression(LEGACY_NORMALIZED_WORDS, LEARNING_ROOTS)
+const rawCompletionIndex = buildEtymologyCompression(COMPLETION_NORMALIZED_WORDS, LEARNING_ROOTS)
+
+const COMPLETION_PACK_PREFIX = 'completion:'
+const completionPackId = (id) => `${COMPLETION_PACK_PREFIX}${id}`
+const COMPLETION_ETYMOLOGY_INDEX = {
+  ...rawCompletionIndex,
+  words: rawCompletionIndex.words.map((word) => ({
+    ...word,
+    compression: {
+      ...word.compression,
+      packId: completionPackId(word.compression.packId),
+    },
+  })),
+  packs: rawCompletionIndex.packs.map((pack) => ({
+    ...pack,
+    id: completionPackId(pack.id),
+  })),
+}
+
+const sumCounts = (left, right) => Object.fromEntries(
+  [...new Set([...Object.keys(left), ...Object.keys(right)])]
+    .map((key) => [key, (left[key] ?? 0) + (right[key] ?? 0)]),
+)
+const mergedPacks = [
+  ...LEGACY_ETYMOLOGY_INDEX.packs,
+  ...COMPLETION_ETYMOLOGY_INDEX.packs,
+]
+if (new Set(mergedPacks.map((pack) => pack.id)).size !== mergedPacks.length) {
+  throw new Error('既存語と語源補完語のpackIdが衝突しています。')
+}
+
+const ETYMOLOGY_INDEX = {
+  words: applyCompletionFamilyBridges([
+    ...LEGACY_ETYMOLOGY_INDEX.words.map((word) => ({
+      ...word,
+      // 独立見出しになった派生語は、旧カード計算には残してpackIdを守りつつ、
+      // 公開データでは「派生語メタ」との二重計上を解消する。
+      derivatives: word.derivatives.filter((item) =>
+        !completionIds.has(item.w.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, ''))),
+    })),
+    ...COMPLETION_ETYMOLOGY_INDEX.words,
+  ]),
+  packs: mergedPacks,
+  packsById: Object.fromEntries(mergedPacks.map((pack) => [pack.id, pack])),
+  summary: {
+    total: LEGACY_ETYMOLOGY_INDEX.summary.total + COMPLETION_ETYMOLOGY_INDEX.summary.total,
+    covered: LEGACY_ETYMOLOGY_INDEX.summary.covered + COMPLETION_ETYMOLOGY_INDEX.summary.covered,
+    counts: sumCounts(
+      LEGACY_ETYMOLOGY_INDEX.summary.counts,
+      COMPLETION_ETYMOLOGY_INDEX.summary.counts,
+    ),
+    packCounts: sumCounts(
+      LEGACY_ETYMOLOGY_INDEX.summary.packCounts,
+      COMPLETION_ETYMOLOGY_INDEX.summary.packCounts,
+    ),
+    packs: mergedPacks.length,
+    origin: {
+      formationCounts: sumCounts(
+        LEGACY_ETYMOLOGY_INDEX.summary.origin.formationCounts,
+        COMPLETION_ETYMOLOGY_INDEX.summary.origin.formationCounts,
+      ),
+      sourceCounts: sumCounts(
+        LEGACY_ETYMOLOGY_INDEX.summary.origin.sourceCounts,
+        COMPLETION_ETYMOLOGY_INDEX.summary.origin.sourceCounts,
+      ),
+      domainCounts: sumCounts(
+        LEGACY_ETYMOLOGY_INDEX.summary.origin.domainCounts,
+        COMPLETION_ETYMOLOGY_INDEX.summary.origin.domainCounts,
+      ),
+      packs: LEGACY_ETYMOLOGY_INDEX.summary.origin.packs + COMPLETION_ETYMOLOGY_INDEX.summary.origin.packs,
+      singletonPacks:
+        LEGACY_ETYMOLOGY_INDEX.summary.origin.singletonPacks +
+        COMPLETION_ETYMOLOGY_INDEX.summary.origin.singletonPacks,
+    },
+  },
+}
 
 export const ALL_WORDS = ETYMOLOGY_INDEX.words
 export const ETYMOLOGY_PACKS = ETYMOLOGY_INDEX.packs
@@ -314,6 +491,7 @@ export {
   ETYMOLOGY_MODE_META,
   ETYMOLOGY_SOURCE_META,
   etymologyHistoryFor,
+  etymologyLearningGuideFor,
 }
 
 export const WORDS_BY_ID = Object.fromEntries(ALL_WORDS.map((w) => [w.id, w]))
@@ -496,16 +674,22 @@ export const wordsByField = (field) => {
 
 export const wordsByPos = (pos) => WORDS_BY_POS.get(pos) ?? []
 
+// 保存互換の学習語根と、辞書表示だけに使う補助語根を合わせて返す。
+export const rootIdsForWord = (word) => [
+  ...new Set([...(word?.roots ?? []), ...(word?.referenceRoots ?? [])]),
+]
+
 // 指定の語根を含む単語たち
 export const wordsByRoot = (rootId) =>
-  ALL_WORDS.filter((w) => w.roots.includes(rootId))
+  ALL_WORDS.filter((word) => rootIdsForWord(word).includes(rootId))
 
 // 語源つながり：同じ語根を共有する他の単語（自分は除く）
 export const relatedByEtymology = (word) => {
-  if (!word?.roots?.length) return []
+  const rootIds = rootIdsForWord(word)
+  if (!rootIds.length) return []
   const seen = new Set([word.id])
   const out = []
-  for (const rootId of word.roots) {
+  for (const rootId of rootIds) {
     for (const w of wordsByRoot(rootId)) {
       if (!seen.has(w.id)) {
         seen.add(w.id)

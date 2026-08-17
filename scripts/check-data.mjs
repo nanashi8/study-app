@@ -150,6 +150,8 @@ const ROOT_IDS = new Set(ROOTS.map((r) => r.id))
 const errors = []
 const ids = new Set()
 
+if (ROOT_IDS.size !== ROOTS.length) errors.push('語根idに重複あり')
+
 // ── 単語：id, word, pos, level, meaning, meanings, example(en/ja), etymology, phonetic(IPA) ──
 for (const w of ALL_WORDS) {
   const at = w.id || w.word || '?'
@@ -183,6 +185,13 @@ for (const w of ALL_WORDS) {
     }
   }
   if (!w.phonetic) errors.push(`${at}: 発音記号(IPA) 無し → npm run phonetics`)
+  const referenceRoots = w.referenceRoots ?? []
+  if (new Set(referenceRoots).size !== referenceRoots.length) {
+    errors.push(`${at}: 補助語根に重複あり`)
+  }
+  for (const rootId of referenceRoots) {
+    if (!ROOT_IDS.has(rootId)) errors.push(`${at}: 補助語根の参照先が不明 (${rootId})`)
+  }
 }
 
 // ── 全語源濃縮：全語が正確に1経路へ入り、パックは既存SRSで扱えるか ──

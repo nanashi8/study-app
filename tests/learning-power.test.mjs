@@ -155,7 +155,7 @@ test('日をまたぐ得意時間帯を判定し、日本語表示にする', ()
   assert.equal(formatWindow(window), '23:00〜翌02:00')
 })
 
-test('画面では推定値をIQや固定能力と区別し、統一メニューの推薦に利用する', () => {
+test('画面では推定値をIQや固定能力と区別し、メニューの推薦に利用する', () => {
   const analyticsSource = readFileSync(
     new URL('../src/components/LearningAnalytics.jsx', import.meta.url),
     'utf8',
@@ -177,20 +177,29 @@ test('画面では推定値をIQや固定能力と区別し、統一メニュー
   assert.match(analyticsSource, /復習優先/)
   assert.match(analyticsSource, /profile\.diagnostic/)
   assert.match(menuSource, /buildLearningPowerProfile/)
-  assert.match(menuSource, /<LearningAdvisorSummary/)
+  assert.match(menuSource, /data-menu-advisor-entry/)
   assert.match(menuSource, /<LearningAdvisorPanel/)
   assert.match(advisorSource, /profile\.recommendation/)
   assert.match(advisorSource, /次に進む学習/)
   assert.match(advisorSource, /固定された能力やIQ/)
 })
 
-test('単語暗記の結果だけは、同じ出題元の次の学習へ進む表示にする', () => {
+test('単語の学習・テスト結果は、復習・次へ・戻るの3導線にそろえる', () => {
   const resultSource = readFileSync(
     new URL('../src/screens/SessionResult.jsx', import.meta.url),
     'utf8',
   )
+  const reportSource = readFileSync(
+    new URL('../src/components/VocabCompletionReport.jsx', import.meta.url),
+    'utf8',
+  )
 
   assert.match(resultSource, /isVocabStudy = mode === 'study' && engine === 'word'/)
-  assert.match(resultSource, /isVocabStudy \? '次に進む' : 'もう一度'/)
-  assert.match(resultSource, /isVocabStudy \? <ArrowRight/)
+  assert.match(resultSource, /isVocabResult = engine === 'word' \|\| engine === 'vocab'/)
+  for (const source of [resultSource, reportSource]) {
+    assert.match(source, /復習する/)
+    assert.match(source, /次へ進む/)
+    assert.match(source, /戻る/)
+  }
+  assert.doesNotMatch(reportSource, /今回の\{session\.total\}語を腕試し|詳細な記録|ホーム/)
 })

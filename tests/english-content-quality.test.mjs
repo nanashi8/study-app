@@ -109,13 +109,13 @@ test('主要クイズは正答後に英文・和訳・学習ポイントを表�
     'PhraseQuiz.jsx': [/item\.example\.en/, /item\.example\.ja/, /buildPhraseInstructorExplanation/],
     'ListeningQuiz.jsx': [/item\.questionJa/, /buildListeningInstructorExplanation/],
     'DictationPlay.jsx': [/item\.text/, /item\.ja/, /buildDictationInstructorExplanation/],
-    'ReadingSummary.jsx': [/buildReadingInstructorExplanation/, /UnknownChoiceButton/],
+    'components/ReadingComprehensionCheck.jsx': [/buildReadingInstructorExplanation/, /UnknownChoiceButton/],
     'Diagnostic.jsx': [/question\.review/, /question\.passageJa/, /buildDiagnosticInstructorExplanation/],
   }
 
   for (const [filename, patterns] of Object.entries(checks)) {
     const source = readFileSync(
-      new URL(`../src/screens/${filename}`, import.meta.url),
+      new URL(filename.includes('/') ? `../src/${filename}` : `../src/screens/${filename}`, import.meta.url),
       'utf8',
     )
     for (const pattern of patterns) assert.match(source, pattern, filename)

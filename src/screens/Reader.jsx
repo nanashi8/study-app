@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo, useEffect, useRef } from 'react'
 import { useStore } from '../store/useStore.js'
 import { getPassage } from '../data/passages.js'
 import { getLevel } from '../data/levels.js'
@@ -23,6 +23,7 @@ import { translationRoleMeta } from '../lib/translation-roles.js'
 import { StructureDiagram } from '../components/StructureDiagram.js'
 import { ReadingRoleSentence } from '../components/ReadingRoleSentence.js'
 import { ReadingRuleCard } from '../components/ReadingRuleCard.jsx'
+import { ReadingComprehensionCheck } from '../components/ReadingComprehensionCheck.jsx'
 import {
   readingBlockExplanationTexts,
   readingPhraseExplanationTexts,
@@ -100,6 +101,8 @@ export function ReaderScreen() {
   const [showParagraphGuide, setShowParagraphGuide] = useState(false)
   const [activeIdx, setActiveIdx] = useState(null) // 詳細ウィンドウ対象の文
   const [activeWord, setActiveWord] = useState(null)
+  const [readingChecked, setReadingChecked] = useState(false)
+  const readingCheckRef = useRef(null)
 
   const sentenceAnalyses = useMemo(
     () => passage?.sentences.map((item) => analyzeReadingSentence(item)) ?? [],
@@ -443,12 +446,28 @@ export function ReaderScreen() {
         <p className="mt-3 px-1 text-center text-xs font-bold text-ink/40">
           一文をタップすると、英語と対応する日本語、SVOCM、文法上の注意を確認できます。
         </p>
+        <div ref={readingCheckRef} className="mt-4 scroll-mt-3">
+          <ReadingComprehensionCheck
+            passageId={passageId}
+            onStatusChange={setReadingChecked}
+          />
+        </div>
       </div>
 
       {/* フッター */}
       <div className="shrink-0 border-t border-brand-100 bg-white/90 p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] backdrop-blur">
-        <Button full size="lg" onClick={() => navigate('readingSummary', { passageId })}>
-          読解チェック・単語まとめ <ArrowRight size={18} />
+        <Button
+          full
+          size="lg"
+          onClick={() => {
+            if (readingChecked) {
+              navigate('readingSummary', { passageId })
+              return
+            }
+            readingCheckRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+          }}
+        >
+          {readingChecked ? '単語まとめへ' : '読解チェックへ'} <ArrowRight size={18} />
         </Button>
       </div>
 
@@ -460,7 +479,7 @@ export function ReaderScreen() {
             <div className="rounded-2xl bg-brand-50 p-4" data-reading-role-card="direct-labels">
               <div className="mb-2 flex items-center justify-between">
                 <span className="text-[11px] font-extrabold tracking-wide text-brand-500">
-                  英文・構文ラベル付き
+                  文の要素
                 </span>
                 <SpeakButton text={sentence.en} size="sm" />
               </div>
@@ -474,7 +493,7 @@ export function ReaderScreen() {
                 onWordClick={tapToken}
               />
               <p className="mt-2 text-[10px] font-bold leading-relaxed text-ink/55">
-                ラベルと同じ色の線が、その役割の範囲です。青い太字は重要語で、どの単語もタップできます。
+                下線の下にあるS・V・O・C・Mが、その役割の範囲です。青い太字は重要語で、どの単語もタップできます。
               </p>
             </div>
 
@@ -554,7 +573,7 @@ export function ReaderScreen() {
               <div className="flex items-center justify-between gap-2">
                 <div>
                   <div className="text-[11px] font-extrabold uppercase tracking-wide text-sky-600">
-                    この文で使う読解ルール
+                    読解ルール
                   </div>
                   <p className="mt-0.5 text-xs font-bold text-ink/50">
                     文中の合図から選んだ{visibleSentenceRules.length}件
@@ -621,7 +640,7 @@ export function ReaderScreen() {
                         </div>
                         {visiblePhraseExplanations[phraseIndex] && (
                           <p className="mt-2 border-l-2 border-sky-300 bg-sky-50/70 px-2 py-1.5 text-xs font-bold leading-relaxed text-ink/65">
-                            読み方のポイント：{visiblePhraseExplanations[phraseIndex]}
+                          フレーズ内の文法：{visiblePhraseExplanations[phraseIndex]}
                           </p>
                         )}
                       </article>
@@ -670,12 +689,12 @@ export function ReaderScreen() {
                       )}
                       {readingExplanation && (
                         <p className="mt-2 border-l-2 border-sky-300 bg-sky-50/70 px-2 py-1.5 text-xs font-bold leading-relaxed text-sky-900/75">
-                          読み方：{readingExplanation}
+                          読み進め方：{readingExplanation}
                         </p>
                       )}
                       {grammarExplanation && (
                         <p className="mt-2 border-l-2 border-amber-300 bg-amber-50/70 px-2 py-1.5 text-xs font-bold leading-relaxed text-ink/65">
-                          文法上の注意：{grammarExplanation}
+                          文法の決まり：{grammarExplanation}
                         </p>
                       )}
                     </article>

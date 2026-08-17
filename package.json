@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "test": "node --test --test-concurrency=1 tests/*.test.mjs",
-    "check": "npm run check:deployment && npm run check:learner-contract && node scripts/check-data.mjs && node scripts/english-content-audit.mjs && npm run audit:classics-kanbun && npm run audit:notebook && npm run audit:analytics && npm run audit:phrases && npm run audit:xp-retirement && npm run audit:content-progress",
+    "check": "npm run audit:secrets && npm run audit:public-data && npm run check:deployment && npm run check:learner-contract && node scripts/check-data.mjs && node scripts/english-content-audit.mjs && npm run audit:classics-kanbun && npm run audit:notebook && npm run audit:analytics && npm run audit:phrases && npm run audit:xp-retirement && npm run audit:content-progress",
     "check:deployment": "node scripts/check-deployment-target.mjs",
     "check:learner-contract": "node scripts/check-learner-facing-contract.mjs",
     "audit:english": "node scripts/english-content-audit.mjs",
@@ -14,6 +14,8 @@
     "audit:notebook": "node scripts/check-learning-notebook.mjs",
     "audit:analytics": "node scripts/check-learning-analytics.mjs",
     "audit:content-progress": "node scripts/check-content-progress.mjs",
+    "audit:public-data": "node scripts/check-public-data-security.mjs",
+    "audit:secrets": "node scripts/audit-public-secrets.mjs",
     "audit:phrases": "node scripts/audit-phrase-explanations.mjs",
     "audit:xp-retirement": "node scripts/check-xp-retirement.mjs",
     "prebuild": "npm run check",

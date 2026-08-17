@@ -73,8 +73,8 @@ test('SVOCMを機械的に分断せず、発音できて意味が通るまとま
     bySentence['Rina is a junior high school student.'].phrases
       .map(({ en, roles, ja }) => ({ en, roles, ja })),
     [
-      { en: 'Rina', roles: ['S'], ja: 'リナは' },
-      { en: 'is a junior high school student', roles: ['V', 'C'], ja: '一人の中学生です' },
+      { en: 'Rina is', roles: ['S', 'V'], ja: 'リナは〜です（内容は次へ）' },
+      { en: 'a junior high school student', roles: ['C'], ja: '一人の中学生' },
     ],
   )
 

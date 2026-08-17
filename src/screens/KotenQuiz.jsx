@@ -86,7 +86,7 @@ export function KotenQuizScreen() {
           <p className="font-display text-2xl font-extrabold text-ink">{correctCount} / {deck.length} 正解</p>
           <p className="mt-1 text-sm font-bold text-ink/55">正答率 {pct}%</p>
         </div>
-        {/* 今回の進み具合（習得は box を4まで上げると到達） */}
+        {/* 今回のSRS段階。自己判定の「学習済」とは別の反復指標。 */}
         <div className="grid w-full max-w-xs grid-cols-2 gap-3">
           <div className="rounded-2xl bg-amber-50 p-3">
             <div className="font-display text-2xl font-extrabold text-amber-700">+{boxUp}</div>
@@ -94,12 +94,12 @@ export function KotenQuizScreen() {
           </div>
           <div className="rounded-2xl bg-emerald-50 p-3">
             <div className="font-display text-2xl font-extrabold text-emerald-700">+{newlyMastered}</div>
-            <div className="text-[11px] font-bold text-ink/55">新たに習得した語</div>
+            <div className="text-[11px] font-bold text-ink/55">SRS段階4に到達</div>
           </div>
         </div>
         {newlyMastered === 0 && boxUp > 0 && (
           <p className="-mt-1 max-w-xs text-xs font-bold text-ink/45">
-            正解した語はレベルが上がりました。あと数回くり返すと「習得」になります。
+            正解した語はSRS段階が上がりました。自己判定の「学習済」とは別に記録します。
           </p>
         )}
         <div className="grid w-full max-w-xs grid-cols-2 gap-3">
@@ -115,7 +115,7 @@ export function KotenQuizScreen() {
   const choose = (optId) => {
     if (answered) return
     setSelected(optId)
-    // 反映前の box を読み、正解で box+1 する前後を比べて「上がった/習得した」を数える。
+    // 反映前の box を読み、正解で box+1 する前後を比べてSRS段階の変化を数える。
     const prevBox = useStore.getState().kotenSrs[word.id]?.box ?? 0
     if (optId === UNKNOWN_CHOICE_ID) {
       reviewKoten(word.id, 'unknown')

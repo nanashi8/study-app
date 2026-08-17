@@ -5232,7 +5232,7 @@ button { -webkit-tap-highlight-color: transparent; }
   line-height: 1.5;
 }
 
-/* 共通メニューはAppShell上部の一か所だけを表示する。各画面に残る互換用
+/* メニューはAppShell上部の一か所だけを表示する。各画面に残る互換用
    トリガーは非表示にし、同じ画面へ二重のメニューボタンを出さない。 */
 .study-app-content [data-settings-menu-trigger] {
   display: none;
@@ -5353,30 +5353,14 @@ button { -webkit-tap-highlight-color: transparent; }
     min-height: 3rem;
   }
 
-  /* 低い画面でも、共通メニューの4分類を最初に見渡せる密度にする。 */
-  [data-app-menu-panel] > :not(:last-child) {
-    margin-block-end: 0.5rem;
-  }
-  [data-menu-advisor-meta] {
-    display: none;
-  }
-  [data-menu-advisor-entry],
-  [data-menu-retention-entry],
-  [data-menu-group-entry] {
+  /* 低い画面でも、メニュー項目を無理なくスクロールできる密度にする。 */
+  [data-menu-item] {
     min-height: 3rem;
     padding: 0.25rem 0.75rem;
-  }
-  [data-menu-group-entry] > span:first-child {
-    width: 2.25rem;
-    height: 2.25rem;
-    border-radius: 0.75rem;
   }
 }
 
 @media (max-width: 350px) {
-  [data-menu-advisor-meta] {
-    display: none;
-  }
   .after-school-screen-title {
     overflow: visible;
     font-size: 1rem;

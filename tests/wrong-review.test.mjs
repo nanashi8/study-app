@@ -48,14 +48,14 @@ test('各結果画面には全デッキではなく誤答IDだけを渡す', () 
   }
 })
 
-test('「まだ／覚えた」の自己評価後は復習ではなくもう一度の確認と表示する', () => {
+test('単語の自己評価後も結果画面の復習導線を「復習する」に統一する', () => {
   const source = readFileSync(
     new URL('../src/screens/SessionResult.jsx', import.meta.url),
     'utf8',
   )
 
-  assert.match(source, /isMemoryCheck = mode === 'study'/)
-  assert.match(source, /「まだ」の\{wrong\}\{reviewUnit\}をもう一度確認する/)
-  assert.match(source, /title: isMemoryCheck \? 'もう一度確認' : 'まちがい復習'/)
-  assert.match(source, /まちがい \{wrong\}\{reviewUnit\}を復習/)
+  assert.match(source, /isVocabResult = engine === 'word' \|\| engine === 'vocab'/)
+  assert.match(source, /vocabReviewIds = reviewIds\.length \? reviewIds : vocabSessionIds/)
+  assert.match(source, /title: '復習'/)
+  assert.match(source, /復習する/)
 })

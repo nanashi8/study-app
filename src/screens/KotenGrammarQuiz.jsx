@@ -135,7 +135,7 @@ export function KotenGrammarQuizScreen() {
             </div>
             <div className="rounded-2xl bg-emerald-50 p-3">
               <p className="font-display text-2xl font-extrabold text-emerald-700">+{newlyMastered}</p>
-              <p className="text-[11px] font-bold text-ink/50">新たに習得</p>
+              <p className="text-[11px] font-bold text-ink/50">SRS段階4に到達</p>
             </div>
           </div>
 

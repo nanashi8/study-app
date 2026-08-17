@@ -204,7 +204,7 @@ test('SRS外クイズ結果は端末・進捗コード・クラウド・リセ�
 
 test('長文・名作・数学の採点画面は教材別の直近クイズ結果を書き込む', () => {
   const writers = [
-    ['../src/screens/ReadingSummary.jsx', /recordContentQuizResult\('reading', passageId/],
+    ['../src/components/ReadingComprehensionCheck.jsx', /recordContentQuizResult\('reading', passageId/],
     ['../src/screens/LiteratureReader.jsx', /recordContentQuizResult\(\s*'literature'/],
     ['../src/screens/MathSolve.jsx', /recordContentQuizResult\('math', p\.id/],
   ]
@@ -249,6 +249,7 @@ test('共通バーは指定の6ラベル・6区分・3色ずつを一元定義�
   assert.match(progress, /\[word-break:keep-all\]/)
 
   for (const file of [
+    '../src/components/VocabCompletionReport.jsx',
     '../src/screens/Diagnostic.jsx',
     '../src/screens/EtymologyPack.jsx',
     '../src/screens/ReadingPrep.jsx',

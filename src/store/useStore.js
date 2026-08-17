@@ -474,6 +474,23 @@ export const useStore = create(
             stack: [...st.stack, { screen: st.screen, params: st.params }].slice(-20),
           }
         }),
+      // 完了画面から選択画面へ戻るとき、終了済みの学習・結果画面を履歴へ残さない。
+      // 同じ画面が履歴にあれば、その直前までを復元する。
+      returnTo: (screen, params = {}) =>
+        set((st) => {
+          const destination = learnerDestination(screen, params)
+          let targetIndex = -1
+          for (let index = st.stack.length - 1; index >= 0; index--) {
+            if (st.stack[index].screen === destination.screen) {
+              targetIndex = index
+              break
+            }
+          }
+          return {
+            ...destination,
+            stack: targetIndex >= 0 ? st.stack.slice(0, targetIndex) : [],
+          }
+        }),
       back: () =>
         set((st) => {
           // 旧画面の互換用戻り先は学習ホームのまま保つ。
@@ -1382,7 +1399,7 @@ export const useStore = create(
       // 並び順・表示を初期状態に戻す。
       resetPortal: () => set({ portalOrder: [...DEFAULT_CONTENT_ORDER], portalHidden: [] }),
 
-      // 学習状況だけを初期化する。音声・カード設定と、メインメニューの
+      // 学習状況だけを初期化する。音声・カード設定と、スタディアプリ ホームの
       // 並び／表示は端末の使い方なので保持する。
       resetProgress: (groupIds = ALL_PROGRESS_RESET_GROUP_IDS) =>
         set((state) => resetProgressState(state, groupIds)),

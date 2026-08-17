@@ -29,7 +29,7 @@ function ContentSettingRow({
       <div className="min-w-0 flex-1">
         <p className="truncate text-xs font-extrabold text-ink">{content.title}</p>
         <p className="truncate text-[10px] font-bold text-ink/45">
-          {hidden ? 'メニューで非表示' : 'メニューに表示'}
+          {hidden ? 'ホームで非表示' : 'ホームに表示'}
         </p>
       </div>
       <button
@@ -78,9 +78,9 @@ export function PortalSettingsPanel() {
     .filter(Boolean)
 
   return (
-    <section aria-label="コンテンツメニュー設定">
+    <section aria-label="ホームの表示設定">
       <p className="text-xs font-bold leading-relaxed text-ink/50">
-        トップメニューの並び順と表示・非表示を、ここでまとめて変更します。
+        スタディアプリ ホームの並び順と表示・非表示を、ここで変更します。
       </p>
       <div className="mt-3 space-y-2">
         {ordered.map((content, index) => (

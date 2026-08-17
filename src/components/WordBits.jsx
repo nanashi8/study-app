@@ -3,7 +3,7 @@ import {
   ETYMOLOGY_FORMATION_META,
   ETYMOLOGY_MODE_META,
   ETYMOLOGY_SOURCE_META,
-  etymologyHistoryFor,
+  etymologyLearningGuideFor,
   getEtymologyPack,
   getRoot,
   relatedByEtymology,
@@ -30,10 +30,10 @@ export function PosBadge({ pos, className = '' }) {
 
 // 語源パーツの色分け（接頭辞/語根/接尾辞/語幹）。
 const KIND_STYLE = {
-  prefix: { bg: 'bg-amber-100', text: 'text-amber-700', label: '接頭辞' },
-  root: { bg: 'bg-brand-100', text: 'text-brand-700', label: '語根' },
-  suffix: { bg: 'bg-slate-100', text: 'text-slate-600', label: '接尾辞' },
-  stem: { bg: 'bg-emerald-100', text: 'text-emerald-700', label: '語幹' },
+  prefix: { bg: 'bg-amber-100', text: 'text-amber-700', label: '接頭辞（前）' },
+  root: { bg: 'bg-brand-100', text: 'text-brand-700', label: '語根（中心）' },
+  suffix: { bg: 'bg-slate-100', text: 'text-slate-600', label: '接尾辞（後ろ）' },
+  stem: { bg: 'bg-emerald-100', text: 'text-emerald-700', label: '語幹（もと）' },
 }
 
 /** 指定した語根が、単語の語源パーツとして明示的に分解されているか。 */
@@ -66,7 +66,7 @@ export function EtymologyFormula({ word, rootId, compact = false }) {
                 {p.t}
               </span>
               {p.gloss && (
-                <span className={cx('font-bold opacity-75', compact ? 'text-[10px]' : 'text-[11px]')}>
+                <span className="text-xs font-bold opacity-75">
                   {p.gloss}
                 </span>
               )}
@@ -78,7 +78,7 @@ export function EtymologyFormula({ word, rootId, compact = false }) {
       <span className="text-xs font-black text-brand-300">→</span>
       <span className={cx(
         'rounded-lg bg-white px-2 py-1 font-extrabold text-ink ring-1 ring-brand-100',
-        compact ? 'text-[11px]' : 'text-xs',
+        compact ? 'text-xs' : 'text-sm',
       )}>
         {word.meanings?.slice(0, 2).join('・') || word.meaning}
       </span>
@@ -105,8 +105,8 @@ export function EtymologyParts({ parts = [], onRoot }) {
               )}
             >
               <span className="font-display text-base font-extrabold leading-none">{p.t}</span>
-              {p.gloss && <span className="mt-1 text-[11px] font-bold opacity-80">{p.gloss}</span>}
-              <span className="mt-0.5 text-[9px] font-bold uppercase opacity-50">{st.label}</span>
+              {p.gloss && <span className="mt-1 text-xs font-bold opacity-80">{p.gloss}</span>}
+              <span className="mt-0.5 text-xs font-bold opacity-60">{st.label}</span>
             </button>
             {i < parts.length - 1 && <span className="text-lg font-black text-ink/30">+</span>}
           </div>
@@ -117,13 +117,11 @@ export function EtymologyParts({ parts = [], onRoot }) {
 }
 
 /**
- * 同根関係を持たない語の履歴を「形成法 / 出発言語 / 意味の橋 / 現在義」に分ける。
- * 言語名と形成法を別バッジにし、由来説明の矢印は順序を保って表示する。
+ * 同じ語根でない語の履歴を「作られ方 / もとの形と言語 / 意味の変化 / 今の意味」に分ける。
+ * 言語名と作られ方を別バッジにし、由来説明の矢印は順序を保って表示する。
  */
 export function EtymologyHistoryTrail({ word, compact = false }) {
-  const history = etymologyHistoryFor(word)
-  const formation = ETYMOLOGY_FORMATION_META[history.formationKey]
-  const source = ETYMOLOGY_SOURCE_META[history.sourceKey]
+  const guide = etymologyLearningGuideFor(word)
 
   return (
     <div className={cx(
@@ -131,56 +129,103 @@ export function EtymologyHistoryTrail({ word, compact = false }) {
       compact ? 'space-y-1.5 p-2.5' : 'space-y-2.5 p-3',
     )}>
       <div className="flex flex-wrap gap-1.5">
-        <span className="rounded-full bg-violet-100 px-2 py-0.5 text-[10px] font-extrabold text-violet-700">
-          {formation.emoji} {formation.label}
+        <span className="rounded-full bg-violet-100 px-2.5 py-1 text-xs font-extrabold text-violet-700">
+          {guide.formationEmoji} {guide.formationLabel}
         </span>
-        <span className="rounded-full bg-sky-100 px-2 py-0.5 text-[10px] font-extrabold text-sky-700">
-          {source.emoji} {source.label}
+        <span className="rounded-full bg-sky-100 px-2.5 py-1 text-xs font-extrabold text-sky-700">
+          {guide.sourceEmoji} {guide.sourceLabel}
         </span>
       </div>
 
       {!compact && (
-        <div className="flex gap-2">
-          <span className="shrink-0 text-[10px] font-extrabold text-ink/40">出発点</span>
-          <span className="text-xs font-bold leading-relaxed text-ink/65">
-            {history.sourceText}
-          </span>
+        <div className="grid gap-2">
+          <div className="flex gap-2">
+            <span className="w-24 shrink-0 text-xs font-extrabold text-ink/45">もとの形・言語</span>
+            <span className="text-sm font-bold leading-relaxed text-ink/70">
+              {guide.sourceText}
+            </span>
+          </div>
+          <div className="flex gap-2">
+            <span className="w-24 shrink-0 text-xs font-extrabold text-ink/45">作られ方</span>
+            <span className="text-sm font-bold leading-relaxed text-ink/70">
+              {guide.formationText}
+            </span>
+          </div>
         </div>
       )}
 
-      {history.arrowSteps.length > 1 ? (
-        <div className="flex flex-wrap items-center gap-1">
-          {history.arrowSteps.map((step, index) => (
-            <span key={`${step}-${index}`} className="contents">
-              <span className={cx(
-                'rounded-lg bg-white font-bold leading-relaxed text-ink/65 ring-1 ring-slate-200',
-                compact ? 'px-1.5 py-1 text-[10px]' : 'px-2 py-1 text-xs',
-              )}>
-                {step}
+      <div className="space-y-1.5">
+        <p className="text-xs font-extrabold text-ink/45">{guide.storyLabel}</p>
+        {guide.storySteps.length > 1 ? (
+          <div className="flex flex-wrap items-center gap-1">
+            {guide.storySteps.map((step, index) => (
+              <span key={`${step}-${index}`} className="contents">
+                <span className={cx(
+                  'rounded-lg bg-white font-bold leading-relaxed text-ink/70 ring-1 ring-slate-200',
+                  compact ? 'px-2 py-1 text-xs' : 'px-2.5 py-1.5 text-sm',
+                )}>
+                  {step}
+                </span>
+                {index < guide.storySteps.length - 1 && (
+                  <span className="text-sm font-black text-brand-400">→</span>
+                )}
               </span>
-              {index < history.arrowSteps.length - 1 && (
-                <span className="text-xs font-black text-brand-300">→</span>
-              )}
-            </span>
-          ))}
-        </div>
-      ) : (
-        <p className={cx(
-          'font-bold leading-relaxed text-ink/60',
-          compact ? 'line-clamp-3 text-[11px]' : 'text-sm',
-        )}>
-          {history.note}
-        </p>
-      )}
+            ))}
+          </div>
+        ) : (
+          <p className={cx(
+            'font-bold leading-relaxed text-ink/70',
+            compact ? 'text-xs' : 'text-sm',
+          )}>
+            {guide.storySteps[0]}
+          </p>
+        )}
+      </div>
 
       <div className="flex items-start gap-2 border-t border-slate-200/70 pt-1.5">
-        <span className="shrink-0 text-[10px] font-extrabold text-brand-500">現在義</span>
+        <span className="shrink-0 text-xs font-extrabold text-brand-600">今の意味</span>
         <span className={cx(
           'font-extrabold text-ink',
-          compact ? 'text-[11px]' : 'text-sm',
+          compact ? 'text-xs' : 'text-sm',
         )}>
-          {history.currentMeaning}
+          {guide.currentMeaning}
         </span>
+      </div>
+    </div>
+  )
+}
+
+/** 全件再監査で確認した補助語根を、通常の暗記・クイズにも直接表示する。 */
+export function ReferenceRootSummary({ word, onRoot }) {
+  const classifiedRoots = new Set(word?.roots ?? [])
+  const roots = [...new Set(word?.referenceRoots ?? [])]
+    .filter((rootId) => !classifiedRoots.has(rootId))
+    .map((rootId) => getRoot(rootId))
+    .filter(Boolean)
+  if (!roots.length) return null
+
+  return (
+    <div
+      data-reference-root-summary
+      className="rounded-2xl bg-sky-50 p-3 ring-1 ring-sky-100"
+    >
+      <p className="text-xs font-extrabold text-sky-700">同じ由来をたどれる語根</p>
+      <div className="mt-2 grid gap-1.5">
+        {roots.map((root) => (
+          <button
+            key={root.id}
+            type="button"
+            disabled={!onRoot}
+            onClick={() => onRoot?.(root.id)}
+            aria-label={`${root.form}（${root.meaning}）の語根を開く`}
+            className="flex min-h-11 w-full items-center gap-2 rounded-xl bg-white px-3 py-2 text-left ring-1 ring-sky-100 active:bg-sky-100 disabled:cursor-default"
+          >
+            <span className="text-lg" aria-hidden="true">{root.emoji}</span>
+            <span className="font-display text-sm font-extrabold text-sky-800">{root.form}</span>
+            <span className="min-w-0 flex-1 text-xs font-bold text-ink/60">＝{root.meaning}</span>
+            {onRoot && <ArrowRight size={15} className="shrink-0 text-sky-500" />}
+          </button>
+        ))}
       </div>
     </div>
   )
@@ -203,13 +248,13 @@ export function EtymologyBlock({ word, onRoot, onPack }) {
         {mode.emoji}
       </span>
       <span className="min-w-0 flex-1 text-left">
-        <span className="block text-[10px] font-extrabold uppercase tracking-wide text-brand-400">
-          この語の濃縮ルート
+        <span className="block text-xs font-extrabold text-brand-500">
+          この単語の学び方
         </span>
-        <span className="block truncate text-sm font-extrabold text-brand-700">
+        <span className="block text-sm font-extrabold leading-snug text-brand-700">
           {profile.mode === 'origin'
-            ? `${formation?.short ?? mode.label}・${source?.label ?? '由来を確認'}`
-            : `${mode.label}・${profile.size > 1 ? `${profile.size}語を1束で` : '1語を部品へ圧縮'}`}
+            ? `${mode.label}・${formation?.short ?? '由来を確認'}・${source?.label ?? ''}`
+            : `${mode.label}・${profile.size > 1 ? `${profile.size}語を一緒に` : 'この1語を部品で確認'}`}
         </span>
       </span>
       {onPack && <ArrowRight size={17} className="shrink-0 text-brand-400" />}
@@ -232,15 +277,16 @@ export function EtymologyBlock({ word, onRoot, onPack }) {
           </div>
         )
       )}
+      <ReferenceRootSummary word={word} onRoot={onRoot} />
       {ety.parts?.length > 0 && (
         <div className="space-y-2">
-          <p className="px-1 text-[11px] font-extrabold text-ink/45">
+          <p className="px-1 text-xs font-extrabold text-ink/50">
             パーツの意味を前から足してみよう
           </p>
           <EtymologyParts parts={ety.parts} onRoot={onRoot} />
           <div className="flex flex-wrap items-center gap-2 rounded-xl bg-brand-50 px-3 py-2">
             <span className="text-xs font-black text-brand-400">→</span>
-            <span className="text-[11px] font-bold text-ink/45">現在の意味</span>
+            <span className="text-xs font-bold text-ink/50">今の意味</span>
             <span className="font-extrabold text-ink">
               {word.meanings?.slice(0, 2).join('・') || word.meaning}
             </span>
@@ -258,14 +304,14 @@ export function EtymologyBlock({ word, onRoot, onPack }) {
         </div>
       )}
       {profile?.mode !== 'origin' && ety.origin && (
-        <p className="px-1 text-xs font-bold text-ink/45">語源：{ety.origin}</p>
+        <p className="px-1 text-xs font-bold text-ink/50">もとのことば：{ety.origin}</p>
       )}
     </div>
   )
 }
 
 /** 語源でつながる単語（同じ語根を持つ語）。タップで詳細へ。 */
-export function RelatedWords({ word, onPick }) {
+export function RelatedWords({ word, onPick, onRoot }) {
   const related = relatedByEtymology(word)
   if (!related.length) return null
   // 語根ごとにまとめる
@@ -282,13 +328,20 @@ export function RelatedWords({ word, onPick }) {
         )
         return (
           <div key={rootId}>
-            <div className="mb-1.5 flex items-center gap-1.5 px-1">
+            <button
+              type="button"
+              disabled={!onRoot}
+              onClick={() => onRoot?.(rootId)}
+              className="mb-1.5 flex min-h-11 w-full items-center gap-1.5 rounded-xl px-2 text-left active:bg-brand-50 disabled:cursor-default"
+              aria-label={`${root?.form ?? rootId} の語根ページを開く`}
+            >
               <span className="text-base">{root?.emoji}</span>
               <span className="font-display text-sm font-extrabold text-brand-700">
                 {root?.form}
               </span>
-              <span className="text-xs font-bold text-ink/45">＝{root?.meaning}</span>
-            </div>
+              <span className="min-w-0 flex-1 text-xs font-bold text-ink/45">＝{root?.meaning}</span>
+              {onRoot && <ArrowRight size={16} className="shrink-0 text-brand-400" />}
+            </button>
             <div className="flex flex-col gap-1.5">
               {ordered.map((w) => (
                 <button
@@ -314,7 +367,7 @@ export function RelatedWords({ word, onPick }) {
                     </div>
                   ) : (
                     w.etymology?.note && (
-                      <p className="mt-1.5 line-clamp-2 pl-8 text-[11px] font-bold leading-relaxed text-ink/45">
+                      <p className="mt-1.5 pl-8 text-xs font-bold leading-relaxed text-ink/55">
                         {w.etymology.note}
                       </p>
                     )

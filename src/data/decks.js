@@ -136,7 +136,7 @@ export const DECK_TOC = LEVELS.map((l) => {
 }).filter((x) => x.size > 0)
 
 // 現行の学習画面用目次。旧 DECKS/DECK_TOC は進捗コード内の並びとIDを
-// 保つため変更せず、画面では同じ単語を10の学習分野へ束ね直して見せる。
+// 保つため変更せず、画面では20語チャンクを使わず10の学習分野だけを見せる。
 function learningChaptersOf(levelId) {
   const byGroup = new Map(VOCAB_FIELD_GROUPS.map((group) => [group.id, []]))
   for (const word of wordsByLevel(levelId)) {
@@ -148,44 +148,19 @@ function learningChaptersOf(levelId) {
     .filter(({ words }) => words.length)
 }
 
-function learningDecksOfChapter(levelId, group, words) {
-  const total = chunkCount(words.length)
-  const base = Math.floor(words.length / total)
-  const extra = words.length % total
-  const decks = []
-  let offset = 0
-  for (let part = 1; part <= total; part++) {
-    const size = base + (part <= extra ? 1 : 0)
-    const slice = words.slice(offset, offset + size)
-    offset += size
-    decks.push({
-      id: `learning|${levelId}|${group.id}|${part}`,
-      levelId,
-      field: group.label,
-      fieldId: group.id,
-      part,
-      partCount: total,
-      title: total > 1 ? `${group.label} ${part}` : group.label,
-      wordIds: slice.map((word) => word.id),
-      size: slice.length,
-    })
-  }
-  return decks
-}
-
-export const LEARNING_DECK_TOC = LEVELS.map((level) => {
+export const LEARNING_FIELD_TOC = LEVELS.map((level) => {
   const chapters = learningChaptersOf(level.id).map(({ group, words }) => ({
     field: group.label,
     fieldId: group.id,
     emoji: group.emoji,
+    color: group.color,
     description: group.description,
-    decks: learningDecksOfChapter(level.id, group, words),
+    wordIds: words.map((word) => word.id),
     size: words.length,
   }))
   return {
     level,
     chapters,
-    deckCount: chapters.reduce((count, chapter) => count + chapter.decks.length, 0),
     size: chapters.reduce((count, chapter) => count + chapter.size, 0),
   }
 }).filter(({ size }) => size > 0)

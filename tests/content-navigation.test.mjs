@@ -24,8 +24,13 @@ test('主要コンテンツは指定6分類順で、英和辞書を独立タイ�
   assert.equal(CONTENTS.some((item) => item.id === 'eigo-dict'), false)
 
   const homeSource = await readFile(new URL('../src/screens/Home.jsx', import.meta.url), 'utf8')
+  const vocabLevelsSource = await readFile(new URL('../src/screens/VocabLevels.jsx', import.meta.url), 'utf8')
   assert.match(homeSource, /id: 'dictionary', label: '英和辞書'/)
   assert.match(homeSource, /screen: 'vocabSearch'/)
+  assert.doesNotMatch(homeSource, /data-home-etymology-check/)
+  assert.match(vocabLevelsSource, /data-vocab-etymology-entry/)
+  assert.ok(vocabLevelsSource.includes("navigate('roots')"))
+  assert.equal(homeSource.includes("open('roots')"), false)
 })
 
 test('英語名作画面は準備・構文・読解ルール・根拠付き設問・完了ゲートを備える', async () => {

@@ -72,6 +72,7 @@ async function prepareImageForOcr(file) {
 
 export function VocabCameraScreen() {
   const back = useStore((state) => state.back)
+  const navigate = useStore((state) => state.navigate)
   const myList = useStore((state) => state.myList)
   const addManyToMyList = useStore((state) => state.addManyToMyList)
   const user = useAuth((state) => state.user)
@@ -109,7 +110,7 @@ export function VocabCameraScreen() {
     const saved = new Set(myList)
     setSummary(next)
     setSelected(new Set(next.candidates.filter((item) => !saved.has(item.id)).map((item) => item.id)))
-    setSelectedRequests(new Set(next.unmatched.map((item) => item.token)))
+    setSelectedRequests(user ? new Set(next.unmatched.map((item) => item.token)) : new Set())
     setRequestedWords(new Set())
     setRequestedCount(0)
     setRequestError('')
@@ -228,7 +229,7 @@ export function VocabCameraScreen() {
   }
 
   const toggleRequest = (token) => {
-    if (requestedWords.has(token)) return
+    if (!user || requestedWords.has(token)) return
     setSelectedRequests((current) => {
       const next = new Set(current)
       if (next.has(token)) next.delete(token)
@@ -238,7 +239,7 @@ export function VocabCameraScreen() {
   }
 
   const sendRequests = async () => {
-    if (!summary || !selectedRequests.size || requesting) return
+    if (!user || !summary || !selectedRequests.size || requesting) return
     const items = summary.unmatched.filter((item) => selectedRequests.has(item.token))
     if (!items.length) return
     setRequesting(true)
@@ -529,8 +530,10 @@ export function VocabCameraScreen() {
                         辞書にない単語
                       </h2>
                       <p className="mt-0.5 text-xs font-bold leading-relaxed text-ink/50">
-                        選んだ語だけを辞書登録リクエストへ送ります。
-                        写真や教科書の本文は送信しません。誤読や人名は選択から外してください。
+                        {user
+                          ? '選んだ語だけを辞書登録リクエストへ送ります。'
+                          : '公開投稿の悪用を防ぐため、送信にはログインが必要です。'}
+                        写真や教科書の本文、メールアドレスは送信しません。誤読や人名は選択から外してください。
                       </p>
                     </div>
                   </div>
@@ -542,6 +545,7 @@ export function VocabCameraScreen() {
                     <div className="flex gap-1">
                       <button
                         type="button"
+                        disabled={!user}
                         onClick={() => setSelectedRequests(new Set(
                           summary.unmatched
                             .filter((item) => !requestedWords.has(item.token))
@@ -553,6 +557,7 @@ export function VocabCameraScreen() {
                       </button>
                       <button
                         type="button"
+                        disabled={!user}
                         onClick={() => setSelectedRequests(new Set())}
                         className="rounded-xl px-2.5 py-2 text-xs font-extrabold text-ink/45 active:bg-ink/5"
                       >
@@ -578,7 +583,7 @@ export function VocabCameraScreen() {
                           <input
                             type="checkbox"
                             checked={sent || selectedRequests.has(item.token)}
-                            disabled={sent}
+                            disabled={sent || !user}
                             onChange={() => toggleRequest(item.token)}
                             className="h-4 w-4 shrink-0 accent-sky-600"
                           />
@@ -610,11 +615,16 @@ export function VocabCameraScreen() {
                       {requestError}
                     </p>
                   )}
+                  {!user && (
+                    <Button full className="mt-3" onClick={() => navigate('login')}>
+                      ログイン画面へ
+                    </Button>
+                  )}
                   <Button
                     full
                     className="mt-3"
                     variant="secondary"
-                    disabled={!selectedRequests.size || requesting}
+                    disabled={!user || !selectedRequests.size || requesting}
                     onClick={sendRequests}
                   >
                     📩 {requesting

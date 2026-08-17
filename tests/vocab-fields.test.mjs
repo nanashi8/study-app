@@ -1,5 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
 
 import {
   ALL_WORDS,
@@ -12,7 +13,7 @@ import {
 import {
   DECKS,
   DECK_VERSION,
-  LEARNING_DECK_TOC,
+  LEARNING_FIELD_TOC,
 } from '../src/data/decks.js'
 import { wordsForSource } from '../src/lib/session.js'
 
@@ -49,21 +50,39 @@ test('新10分野の出題と旧41細分類のsource互換を両立する', () =
   assert.ok(wordsByField('civics-history').length > legacyLaw.length)
 })
 
-test('級別目次も最大10分野で全単語を一度ずつ扱い、旧デッキ列は維持する', () => {
+test('級別目次も20語チャンクを作らず、最大10分野で全単語を一度ずつ扱う', () => {
   assert.equal(DECK_VERSION, 1)
   assert.ok(DECKS.every((deck) => !deck.id.startsWith('learning|')))
 
-  for (const toc of LEARNING_DECK_TOC) {
+  for (const toc of LEARNING_FIELD_TOC) {
     assert.ok(toc.chapters.length > 0 && toc.chapters.length <= 10, toc.level.id)
     assert.ok(toc.chapters.every((chapter) => VOCAB_FIELDS.includes(chapter.field)))
     assert.equal(new Set(toc.chapters.map((chapter) => chapter.fieldId)).size, toc.chapters.length)
+    assert.ok(toc.chapters.every((chapter) => !('decks' in chapter)), toc.level.id)
 
     const expectedIds = wordsByLevel(toc.level.id).map((word) => word.id)
-    const actualIds = toc.chapters.flatMap((chapter) =>
-      chapter.decks.flatMap((deck) => deck.wordIds),
-    )
+    const actualIds = toc.chapters.flatMap((chapter) => chapter.wordIds)
     assert.equal(actualIds.length, expectedIds.length, toc.level.id)
     assert.deepEqual(new Set(actualIds), new Set(expectedIds), toc.level.id)
     assert.equal(new Set(actualIds).size, actualIds.length, toc.level.id)
   }
+})
+
+test('単語の公開画面は10分野を直接示し、旧20語デッキを表示しない', () => {
+  const levels = readFileSync(new URL('../src/screens/VocabLevels.jsx', import.meta.url), 'utf8')
+  const fields = readFileSync(new URL('../src/screens/VocabGroups.jsx', import.meta.url), 'utf8')
+  const levelFields = readFileSync(new URL('../src/screens/VocabDecks.jsx', import.meta.url), 'utf8')
+  const study = readFileSync(new URL('../src/screens/VocabStudy.jsx', import.meta.url), 'utf8')
+  const quiz = readFileSync(new URL('../src/screens/VocabQuiz.jsx', import.meta.url), 'utf8')
+
+  assert.match(levels, /10分野から学ぶ/)
+  assert.match(levels, /10分野で選ぶ/)
+  assert.match(levels, /data-vocab-etymology-entry/)
+  assert.match(levels, /語源から学ぶ/)
+  assert.match(fields, /data-vocab-field-catalog/)
+  assert.match(levelFields, /data-vocab-level-fields/)
+  assert.doesNotMatch(`${levels}\n${fields}\n${levelFields}`, /20語|デッキでえらぶ|目次・デッキ/)
+  assert.doesNotMatch(`${fields}\n${levelFields}`, /<Button[^>]*size="sm"/)
+  assert.match(study, /size: params\.size \?\? SESSION_SIZE/)
+  assert.match(quiz, /size: params\.size \?\? SESSION_SIZE/)
 })

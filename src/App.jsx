@@ -30,6 +30,10 @@ const EtymologyStudyScreen = lazyScreen(
   () => import('./screens/EtymologyStudy.jsx'),
   'EtymologyStudyScreen',
 )
+const EtymologyQuizScreen = lazyScreen(
+  () => import('./screens/EtymologyQuiz.jsx'),
+  'EtymologyQuizScreen',
+)
 const RootsScreen = lazyScreen(() => import('./screens/Roots.jsx'), 'RootsScreen')
 const MyListScreen = lazyScreen(() => import('./screens/MyList.jsx'), 'MyListScreen')
 const MyLearningScreen = lazyScreen(
@@ -135,6 +139,7 @@ const SCREENS = {
   rootDetail: RootDetailScreen,
   etymologyPack: EtymologyPackScreen,
   etymologyStudy: EtymologyStudyScreen,
+  etymologyQuiz: EtymologyQuizScreen,
   roots: RootsScreen,
   myLearning: MyLearningScreen,
   myList: MyListScreen,
@@ -191,7 +196,7 @@ const SCREENS = {
   kanbunSaved: KanbunSavedScreen,
 }
 
-// 全公開画面はAppShell上部の戻る・統一メニュー入口を共有する。
+// 全公開画面はAppShell上部の戻る・メニュー入口を共有する。
 
 // 学習アプリ本体（ログイン済みのときだけ表示）。
 function MainApp() {

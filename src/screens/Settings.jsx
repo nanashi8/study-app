@@ -31,7 +31,7 @@ export function SettingsScreen() {
         <SettingsMenuPanel />
 
         <p className="rounded-2xl bg-slate-100 px-4 py-3 text-xs font-bold leading-relaxed text-slate-600">
-          バックアップと全学習履歴のリセットは、画面下の「メニュー」→「設定・データ」に集約しています。
+          バックアップと学習履歴のリセットは、画面上部の「メニュー」から直接開けます。
         </p>
 
         <p className="pt-2 text-center text-xs font-bold text-ink/30">英語アプリ v0.1 ・ 英検5級〜1級</p>

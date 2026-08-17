@@ -5,7 +5,7 @@ import { ChevronLeft, Menu } from './Icons.jsx'
 import { GlobalSpeechConsole } from './SpeechConsole.jsx'
 
 // アプリ外枠。スマホは全幅、PCでは中央に「スマホ幅」のアプリを表示。
-// 戻る操作と統一メニュー入口は、全公開画面で共通の上部バーに一度だけ置く。
+// 戻る操作とメニュー入口は、全公開画面で共通の上部バーに一度だけ置く。
 export function AppShell({ children, showGlobalMenu = true }) {
   const screen = useStore((state) => state.screen)
   const stackLength = useStore((state) => state.stack.length)
@@ -48,7 +48,7 @@ export function AppShell({ children, showGlobalMenu = true }) {
                 type="button"
                 onClick={() => openSpeechSettings()}
                 disabled={menuOpen}
-                aria-label="統一メニューを開く"
+                aria-label="メニューを開く"
                 aria-expanded={menuOpen}
                 data-global-menu-button
                 className="inline-flex h-11 shrink-0 items-center gap-1 rounded-full px-2.5 text-sm font-extrabold text-brand-700 active:bg-brand-50 disabled:text-brand-300 disabled:active:bg-transparent"

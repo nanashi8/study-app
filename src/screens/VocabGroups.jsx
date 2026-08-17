@@ -1,73 +1,53 @@
-import { useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import {
   ALL_WORDS,
   VOCAB_FIELD_GROUPS,
-  VOCAB_FIELDS,
-  VOCAB_POS,
   wordsByField,
-  wordsByPos,
 } from '../data/vocab.js'
-import { SESSION_SIZE, overallProgress, wordProgress } from '../lib/session.js'
+import { SESSION_SIZE, wordProgress } from '../lib/session.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
-import { Book, Cards, Refresh, Sparkles } from '../components/Icons.jsx'
-import { Button, Card, Chip, cx } from '../components/ui.jsx'
+import { Book, Cards, Refresh } from '../components/Icons.jsx'
+import { Button, Card, Chip } from '../components/ui.jsx'
 import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
 import { summarizeSrsItems } from '../lib/contentProgress.js'
 
-const MODES = [
-  { id: 'random', short: 'ランダム', emoji: '🎲' },
-  { id: 'field', short: '分野別', emoji: '🗂️' },
-  { id: 'pos', short: '品詞別', emoji: '🔤' },
-]
-
-const POS_META = {
-  名: { emoji: '🧱', desc: '人・もの・場所・考え', color: '#0ea5e9' },
-  動: { emoji: '🏃', desc: '動作・状態・変化', color: '#6366f1' },
-  形: { emoji: '🎨', desc: '人やものの性質・状態', color: '#f59e0b' },
-  副: { emoji: '⚡', desc: '動作や性質の様子・程度', color: '#10b981' },
-  前: { emoji: '🧭', desc: '位置・時間・方向などの関係', color: '#8b5cf6' },
-  接: { emoji: '🔗', desc: '語・句・文をつなぐ', color: '#ec4899' },
-  代: { emoji: '👤', desc: '名詞の代わりをする語', color: '#14b8a6' },
-}
-
-function GroupCard({ label, detail, icon, color, words, srs, onStudy, onQuiz }) {
+function FieldCard({ field, words, srs, onStudy, onQuiz }) {
   const progress = wordProgress(words, srs)
   const status = summarizeSrsItems(words, srs)
   return (
-    <Card className="p-4">
-      <div className="flex items-center gap-3">
+    <Card className="p-4" data-vocab-field={field.id}>
+      <div className="flex items-start gap-3">
         <span
-          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl text-xl"
-          style={{ backgroundColor: `${color}1f` }}
+          className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl text-xl"
+          style={{ backgroundColor: `${field.color}1f` }}
+          aria-hidden="true"
         >
-          {icon}
+          {field.emoji}
         </span>
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
-            <h3 className="font-display font-extrabold text-ink">{label}</h3>
-            <Chip color={color}>{progress.total.toLocaleString('ja-JP')}語</Chip>
+            <h2 className="font-display font-extrabold text-ink">{field.label}</h2>
+            <Chip color={field.color}>{progress.total.toLocaleString('ja-JP')}語</Chip>
           </div>
-          {detail && <p className="mt-0.5 text-[11px] font-bold text-ink/50">{detail}</p>}
+          <p className="mt-0.5 text-xs font-bold leading-relaxed text-ink/50">{field.description}</p>
         </div>
       </div>
 
       <LearningStatusBars progress={status} className="mt-3" compact />
       <p className="mt-1.5 text-right text-[10px] font-bold text-ink/45">
-        {progress.due > 0 ? `今日の復習 ${progress.due}` : '10語ずつ学習'}
+        {progress.due > 0 ? `今日の復習 ${progress.due}語` : '1回10語'}
       </p>
 
       <div className="mt-3 grid grid-cols-2 gap-2">
-        <Button size="sm" onClick={onStudy} aria-label={`${label}の単語を覚える`}>
-          <Book size={16} /> 覚える
+        <Button onClick={onStudy} aria-label={`${field.label}の単語を学習する`}>
+          <Book size={16} /> 学習する
         </Button>
         <Button
-          size="sm"
           variant="secondary"
           onClick={onQuiz}
-          aria-label={`${label}の単語クイズ`}
+          aria-label={`${field.label}の単語をテストする`}
         >
-          <Cards size={16} /> クイズ
+          <Cards size={16} /> テストする
         </Button>
       </div>
     </Card>
@@ -75,150 +55,53 @@ function GroupCard({ label, detail, icon, color, words, srs, onStudy, onQuiz }) 
 }
 
 export function VocabGroupsScreen() {
-  const navigate = useStore((s) => s.navigate)
-  const srs = useStore((s) => s.srs)
-  const initialMode = useStore((s) => s.params.mode)
-  const [mode, setMode] = useState(MODES.some((item) => item.id === initialMode) ? initialMode : 'random')
-  const total = overallProgress(srs)
-  const totalStatus = summarizeSrsItems(ALL_WORDS, srs)
+  const navigate = useStore((state) => state.navigate)
+  const srs = useStore((state) => state.srs)
+  const fields = VOCAB_FIELD_GROUPS.map((field) => ({
+    field,
+    words: wordsByField(field.id),
+  }))
 
-  const start = ({ source, title, quiz = false }) =>
-    navigate(quiz ? 'vocabQuiz' : 'vocabStudy', {
-      source,
-      title,
-      size: SESSION_SIZE,
-      ...(quiz ? {} : { mode: 'study' }),
-    })
-
-  const startRandom = (quiz = false) =>
-    start({ source: { type: 'all' }, title: '全語彙ランダム', quiz })
-
-  const groups =
-    mode === 'field'
-      ? VOCAB_FIELD_GROUPS.map((field) => ({
-          id: field.id,
-          label: field.label,
-          detail: field.description,
-          icon: field.emoji,
-          color: field.color,
-          words: wordsByField(field.id),
-          source: { type: 'field', field: field.id },
-          title: `分野：${field.label}`,
-        }))
-      : mode === 'pos'
-        ? VOCAB_POS.map(({ id, label }) => ({
-            id,
-            label,
-            detail: POS_META[id]?.desc,
-            icon: POS_META[id]?.emoji ?? '🔤',
-            color: POS_META[id]?.color ?? '#6366f1',
-            words: wordsByPos(id),
-            source: { type: 'pos', pos: id },
-            title: `品詞：${label}`,
-          }))
-        : []
+  const start = ({ field, quiz = false }) => navigate(quiz ? 'vocabQuiz' : 'vocabStudy', {
+    source: { type: 'field', field: field.id },
+    title: `分野：${field.label}`,
+    size: SESSION_SIZE,
+    ...(quiz ? {} : { mode: 'study' }),
+    returnTo: { screen: 'vocabGroups' },
+  })
 
   return (
-    <div className="pb-6">
+    <div className="pb-6" data-vocab-field-catalog>
       <ScreenHeader
-        title="全語彙から学ぶ"
-        subtitle={`${ALL_WORDS.length.toLocaleString('ja-JP')}語をランダム・分野・品詞で選べます`}
+        title="単語・10分野"
+        subtitle={`${ALL_WORDS.length.toLocaleString('ja-JP')}語を10分野に整理`}
       />
 
-      <div className="space-y-4 px-4">
-        <div className="grid grid-cols-3 gap-2" role="tablist" aria-label="全語彙の学び方">
-          {MODES.map((item) => {
-            const active = mode === item.id
-            return (
-              <button
-                key={item.id}
-                type="button"
-                role="tab"
-                aria-selected={active}
-                onClick={() => setMode(item.id)}
-                className={cx(
-                  'flex min-h-16 flex-col items-center justify-center gap-1 rounded-2xl px-1 py-2 text-xs font-extrabold transition-all',
-                  active
-                    ? 'bg-brand-500 text-white shadow-pop'
-                    : 'bg-white text-ink/55 shadow-sm active:bg-brand-50',
-                )}
-              >
-                <span className="text-xl">{item.emoji}</span>
-                {item.short}
-              </button>
-            )
-          })}
+      <div className="space-y-3 px-4">
+        <div className="rounded-2xl bg-brand-100/70 px-4 py-3">
+          <h1 className="font-display font-extrabold text-brand-800">10分野から選ぶ</h1>
+          <p className="mt-1 text-xs font-bold leading-relaxed text-brand-800/65">
+            細かな分類を学びやすい10分野にまとめました。各分野から、復習どきと未学習を優先して10語ずつ出します。
+          </p>
         </div>
 
-        {mode === 'random' ? (
-          <Card className="overflow-hidden">
-            <div className="bg-gradient-to-br from-brand-500 via-brand-500 to-violet-500 p-5 text-white">
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <div className="flex items-center gap-2 text-white/80">
-                    <Sparkles size={17} />
-                    <span className="text-xs font-extrabold">標準の学び方</span>
-                  </div>
-                  <h2 className="mt-1 font-display text-xl font-extrabold">🎲 全語彙ランダム</h2>
-                  <p className="mt-1 text-xs font-bold leading-relaxed text-white/80">
-                    全{ALL_WORDS.length.toLocaleString('ja-JP')}語から、復習どきと未学習を優先して10語ずつ選びます。
-                  </p>
-                </div>
-                <Chip className="shrink-0 bg-white/20 text-white">取り組み {totalStatus.activeIds.length}</Chip>
-              </div>
-            </div>
-            <div className="border-b border-slate-100 bg-white p-4">
-              <LearningStatusBars progress={totalStatus} compact />
-              {total.due > 0 && <p className="mt-1.5 text-right text-[10px] font-extrabold text-amber-700">今日の復習 {total.due}語</p>}
-            </div>
-            <div className="grid grid-cols-2 gap-2 p-4">
-              <Button onClick={() => startRandom(false)}>
-                <Book size={17} /> 覚える
-              </Button>
-              <Button variant="secondary" onClick={() => startRandom(true)}>
-                <Cards size={17} /> クイズ
-              </Button>
-            </div>
-          </Card>
-        ) : (
-          <>
-            <div className="rounded-2xl bg-brand-100/70 px-4 py-3">
-              <div className="flex items-center gap-2 text-brand-700">
-                <span className="text-lg">{mode === 'field' ? '🗂️' : '🔤'}</span>
-                <h2 className="font-display font-extrabold">
-                  {mode === 'field' ? `${VOCAB_FIELDS.length}分野から選ぶ` : `${VOCAB_POS.length}品詞から選ぶ`}
-                </h2>
-              </div>
-              <p className="mt-1 text-xs font-bold leading-relaxed text-brand-800/65">
-                {mode === 'field'
-                  ? '細かな分類を10の学習テーマにまとめました。復習どきと未学習を優先して10語ずつ出題します。'
-                  : '各品詞の全単語から、復習どきと未学習を優先して10語ずつ出題します。'}
-              </p>
-            </div>
+        {fields.map(({ field, words }) => (
+          <FieldCard
+            key={field.id}
+            field={field}
+            words={words}
+            srs={srs}
+            onStudy={() => start({ field })}
+            onQuiz={() => start({ field, quiz: true })}
+          />
+        ))}
 
-            <div className="space-y-3">
-              {groups.map((group) => (
-                <GroupCard
-                  key={group.id}
-                  {...group}
-                  srs={srs}
-                  onStudy={() => start({ source: group.source, title: group.title })}
-                  onQuiz={() => start({ source: group.source, title: group.title, quiz: true })}
-                />
-              ))}
-            </div>
-
-            <div className="flex items-start gap-2 rounded-2xl bg-white/70 px-4 py-3 text-xs font-bold leading-relaxed text-ink/50">
-              <span className="mt-0.5 text-brand-500"><Refresh size={16} /></span>
-              <p>
-                {mode === 'field'
-                  ? `全${VOCAB_FIELDS.length}分野の合計で${ALL_WORDS.length.toLocaleString('ja-JP')}語を網羅しています。`
-                  : `全${VOCAB_POS.length}品詞の合計で${ALL_WORDS.length.toLocaleString('ja-JP')}語を網羅しています。`}
-                繰り返すと未学習語を優先し、全語彙へ進めます。
-              </p>
-            </div>
-          </>
-        )}
+        <div className="flex items-start gap-2 rounded-2xl bg-white/70 px-4 py-3 text-xs font-bold leading-relaxed text-ink/50">
+          <span className="mt-0.5 text-brand-500"><Refresh size={16} /></span>
+          <p>
+            10分野の合計で全{ALL_WORDS.length.toLocaleString('ja-JP')}語を重複なく扱います。繰り返すと未学習語を優先し、分野の全語へ進みます。
+          </p>
+        </div>
       </div>
     </div>
   )
