@@ -24,6 +24,7 @@ export function ReadingSummaryScreen() {
   const addManyToMyList = useStore((s) => s.addManyToMyList)
   const markReadingDone = useStore((s) => s.markReadingDone)
   const recordSkillResult = useStore((s) => s.recordSkillResult)
+  const recordContentQuizResult = useStore((s) => s.recordContentQuizResult)
 
   const passage = getPassage(passageId)
   const [savedAll, setSavedAll] = useState(false)
@@ -53,6 +54,7 @@ export function ReadingSummaryScreen() {
     if (!recorded.current) {
       recorded.current = true
       markReadingDone(passageId)
+      recordContentQuizResult('reading', passageId, correct, questions.length)
       recordSkillResult('reading', correct, questions.length)
     }
   }

@@ -9,7 +9,9 @@ import { ScreenHeader } from '../components/AppShell.jsx'
 import { ReadingRuleCard } from '../components/ReadingRuleCard.jsx'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { PosBadge } from '../components/WordBits.jsx'
-import { Button, Card, Chip, IconButton, ProgressBar, cx } from '../components/ui.jsx'
+import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
+import { Button, Card, Chip, IconButton, cx } from '../components/ui.jsx'
+import { learningStatusForSrsEntry, summarizeSrsItems } from '../lib/contentProgress.js'
 import {
   ArrowRight,
   BookOpen,
@@ -47,7 +49,7 @@ export function ReadingPrepScreen() {
   const passageRules = readingRulesForPassage(passage)
   const wordIds = words.map((word) => word.id)
   const itemIds = [...wordIds, ...phrases.map((item) => item.id)]
-  const studied = itemIds.filter((id) => srs[id]).length
+  const prepProgress = summarizeSrsItems(itemIds, srs)
   const allSaved = wordIds.length > 0 && wordIds.every((id) => myList.includes(id))
   const continueTo = {
     screen: 'readingPrep',
@@ -150,18 +152,12 @@ export function ReadingPrepScreen() {
             <div>
               <div className="text-xs font-extrabold text-ink/45">事前学習</div>
               <div className="mt-0.5 font-display text-lg font-extrabold text-ink">
-                {studied}/{itemIds.length} 項目を学習済み
+                必須語彙・熟語の状態
               </div>
             </div>
-            <span className="text-sm font-extrabold" style={{ color: level.color }}>
-              {itemIds.length ? Math.round((studied / itemIds.length) * 100) : 0}%
-            </span>
+            <span className="text-sm font-extrabold text-ink/45">全{prepProgress.total}項目</span>
           </div>
-          <ProgressBar
-            className="mt-3"
-            value={itemIds.length ? studied / itemIds.length : 0}
-            color={level.color}
-          />
+          <LearningStatusBars progress={prepProgress} className="mt-3" />
           <div className="mt-4 grid grid-cols-2 gap-2">
             <Button onClick={studyWords} disabled={!words.length}>
               <Cards size={17} /> 必須語カード
@@ -212,7 +208,7 @@ export function ReadingPrepScreen() {
             <div className="mt-3 space-y-2">
               {words.map((word) => {
                 const saved = myList.includes(word.id)
-                const learned = Boolean(srs[word.id])
+                const learningStatus = learningStatusForSrsEntry(srs[word.id])
                 return (
                   <div
                     key={word.id}
@@ -226,7 +222,10 @@ export function ReadingPrepScreen() {
                       <div className="flex min-w-0 items-center gap-2">
                         <PosBadge pos={word.pos} />
                         <span className="truncate font-display font-extrabold text-ink">{word.word}</span>
-                        {learned && <Check size={15} className="shrink-0 text-emerald-500" />}
+                        {learningStatus === 'learned' && <Check size={15} className="shrink-0 text-emerald-500" />}
+                        {learningStatus === 'reviewing' && (
+                          <span className="shrink-0 text-[9px] font-extrabold text-amber-600">復習中</span>
+                        )}
                       </div>
                       <div className="mt-0.5 truncate text-xs font-bold text-ink/55">{word.meaning}</div>
                     </button>
@@ -245,7 +244,7 @@ export function ReadingPrepScreen() {
         ) : (
           <section className="mt-3 space-y-2">
             {phrases.map((item) => {
-              const learned = Boolean(srs[item.id])
+              const learningStatus = learningStatusForSrsEntry(srs[item.id])
               const category = phraseLabel(item)
               return (
                 <div key={item.id} className="rounded-2xl bg-white p-3 shadow-sm">
@@ -255,7 +254,10 @@ export function ReadingPrepScreen() {
                       <div className="flex flex-wrap items-center gap-2">
                         <span className="font-display font-extrabold text-ink">{item.phrase}</span>
                         <Chip color={category === '表現' ? '#0ea5e9' : '#8b5cf6'}>{category}</Chip>
-                        {learned && <Check size={15} className="text-emerald-500" />}
+                        {learningStatus === 'learned' && <Check size={15} className="text-emerald-500" />}
+                        {learningStatus === 'reviewing' && (
+                          <span className="text-[9px] font-extrabold text-amber-600">復習中</span>
+                        )}
                       </div>
                       <p className="mt-0.5 text-sm font-bold text-ink/60">{item.meaning}</p>
                       <p className="mt-1 text-xs font-bold leading-relaxed text-ink/40">{item.example.en}</p>

@@ -3,16 +3,18 @@ import {
   KANBUN_KUNDOKU_EXERCISES,
   KANBUN_KUNDOKU_LEVELS,
 } from '../data/kanbun-kundoku.js'
-import { kanbunDueItems, kanbunProgress } from '../lib/kanbunProgress.js'
-import { Button, Card, ProgressRing } from '../components/ui.jsx'
+import { kanbunDueItems } from '../lib/kanbunProgress.js'
+import { Button, Card } from '../components/ui.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { KanbunMarkedText } from '../components/KanbunMarkedText.js'
+import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
+import { summarizeSrsItems } from '../lib/contentProgress.js'
 import { Book, Cards, ChevronLeft, Refresh } from '../components/Icons.jsx'
 
 export function KanbunKundokuScreen() {
   const navigate = useStore((state) => state.navigate)
   const srs = useStore((state) => state.kanbunKundokuSrs)
-  const total = kanbunProgress(KANBUN_KUNDOKU_EXERCISES, srs)
+  const totalStatus = summarizeSrsItems(KANBUN_KUNDOKU_EXERCISES, srs)
   const due = kanbunDueItems(KANBUN_KUNDOKU_EXERCISES, srs)
 
   return (
@@ -31,18 +33,20 @@ export function KanbunKundokuScreen() {
         <p className="text-xs font-bold text-white/70">読む順を指で組み立てる</p>
         <h1 className="font-display text-2xl font-extrabold">返り点・訓読ドリル</h1>
         <p className="mt-1 text-sm font-bold text-white/80">点の名前を暗記するだけでなく、実際の語順を完成させる</p>
-        <div className="mt-4 grid grid-cols-[auto_1fr] items-center gap-4 rounded-2xl bg-white/12 p-3.5">
-          <ProgressRing value={total.ratio} size={62} stroke={7} color="#ffffff">
-            <span className="text-xs font-extrabold text-white">{Math.round(total.ratio * 100)}%</span>
-          </ProgressRing>
+        <div className="mt-4 rounded-2xl bg-white/12 p-3.5">
           <div>
             <p className="font-display text-base font-extrabold">全{KANBUN_KUNDOKU_EXERCISES.length}題・5段階</p>
-            <p className="mt-1 text-[11px] font-bold text-white/65">習得 {total.mastered}・学習中 {total.learning}・復習待ち {total.due}</p>
+            <p className="mt-1 text-[11px] font-bold text-white/65">
+              学習済 {totalStatus.learning.learned}・復習中 {totalStatus.learning.reviewing}・未学習 {totalStatus.learning.unlearned}・今日の復習 {due.length}
+            </p>
           </div>
         </div>
       </header>
 
       <main className="space-y-5 px-4 pt-5">
+        <Card className="p-4" data-kanbun-kundoku-status>
+          <LearningStatusBars progress={totalStatus} compact />
+        </Card>
         <section className="grid grid-cols-2 gap-3">
           <button
             type="button"
@@ -56,7 +60,7 @@ export function KanbunKundokuScreen() {
           <button
             type="button"
             disabled={!due.length}
-            onClick={() => navigate('kanbunKundokuQuiz', { ids: due.map((item) => item.id), title: '返り点・復習待ち' })}
+            onClick={() => navigate('kanbunKundokuQuiz', { ids: due.map((item) => item.id), title: '返り点・今日の復習' })}
             className="rounded-3xl bg-gradient-to-br from-amber-500 to-orange-700 p-4 text-left text-white shadow-card active:scale-[0.98] disabled:opacity-45"
           >
             <Refresh size={23} />
@@ -90,19 +94,17 @@ export function KanbunKundokuScreen() {
           <div className="mt-3 space-y-3">
             {KANBUN_KUNDOKU_LEVELS.map((level) => {
               const items = KANBUN_KUNDOKU_EXERCISES.filter((item) => item.level === level.id)
-              const progress = kanbunProgress(items, srs)
+              const progress = summarizeSrsItems(items, srs)
               return (
                 <Card key={level.id} className="p-4">
                   <div className="flex items-center gap-3">
                     <span className="flex h-11 w-11 items-center justify-center rounded-2xl text-xl" style={{ backgroundColor: `${level.color}18`, color: level.color }}>↩</span>
                     <div className="min-w-0 flex-1">
                       <h3 className="font-display text-base font-extrabold text-ink">{level.label}</h3>
-                      <p className="text-[11px] font-bold text-ink/45">{items.length}題・習得 {progress.mastered}</p>
+                      <p className="text-[11px] font-bold text-ink/45">全{items.length}題</p>
                     </div>
-                    <ProgressRing value={progress.ratio} size={45} stroke={6} color={level.color}>
-                      <span className="text-[10px] font-extrabold text-ink/60">{Math.round(progress.ratio * 100)}%</span>
-                    </ProgressRing>
                   </div>
+                  <LearningStatusBars progress={progress} className="mt-3" compact />
                   <Button
                     full
                     size="sm"

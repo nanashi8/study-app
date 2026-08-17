@@ -1,24 +1,24 @@
 import { useStore } from '../store/useStore.js'
 import { getLevel } from '../data/levels.js'
-import { LEARNING_DECK_TOC, deckMastery } from '../data/decks.js'
+import { LEARNING_DECK_TOC } from '../data/decks.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
-import { Card, ProgressRing, Button, Chip } from '../components/ui.jsx'
+import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
+import { Card, Button, Chip } from '../components/ui.jsx'
+import { summarizeSrsItems } from '../lib/contentProgress.js'
 import { Book, Cards } from '../components/Icons.jsx'
 
-// 1デッキのカード。達成度リング＋「覚える」「クイズ」。
-function DeckCard({ deck, srs, color, onStudy, onQuiz }) {
-  const m = deckMastery(deck, srs)
+// 1デッキのカード。自己判定と直近クイズを混ぜずに表示する。
+function DeckCard({ deck, srs, onStudy, onQuiz }) {
+  const progress = summarizeSrsItems(deck.wordIds, srs)
   return (
     <Card className="p-3.5">
       <div className="flex items-center gap-3">
-        <ProgressRing value={m} size={44} stroke={5} color={color}>
-          <span className="text-[10px] font-extrabold text-ink/70">{Math.round(m * 100)}%</span>
-        </ProgressRing>
         <div className="min-w-0 flex-1">
           <div className="font-display text-sm font-extrabold text-ink">{deck.title}</div>
-          <div className="text-[11px] font-bold text-ink/45">{deck.size}語</div>
+          <div className="text-[11px] font-bold text-ink/45">全{progress.total}語</div>
         </div>
       </div>
+      <LearningStatusBars progress={progress} className="mt-3" compact />
       <div className="mt-2.5 grid grid-cols-2 gap-2">
         <Button variant="primary" size="sm" onClick={onStudy}>
           <Book size={15} /> 覚える
@@ -80,7 +80,6 @@ export function VocabDecksScreen() {
                   key={deck.id}
                   deck={deck}
                   srs={srs}
-                  color={level.color}
                   onStudy={() => study(deck)}
                   onQuiz={() => quiz(deck)}
                 />

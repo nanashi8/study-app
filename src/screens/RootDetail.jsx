@@ -3,10 +3,11 @@ import { getRoot, wordsByRoot } from '../data/vocab.js'
 import { getLevel } from '../data/levels.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { EtymologyFormula, hasRootBreakdown, PosBadge } from '../components/WordBits.jsx'
-import { Card, Button, Chip, ProgressRing } from '../components/ui.jsx'
+import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
+import { Card, Button, Chip } from '../components/ui.jsx'
+import { learningStatusForSrsEntry, summarizeSrsItems } from '../lib/contentProgress.js'
 import { ArrowRight, Book, Cards, Sparkles, Check } from '../components/Icons.jsx'
 
-const MASTER_BOX = 4
 const LEARN_BATCH = 8
 const LEVEL_RANK = { '5': 0, '4': 1, '3': 2, pre2: 3, '2': 4, pre1: 5, '1': 6 }
 
@@ -26,19 +27,18 @@ export function RootDetailScreen() {
     )
   }
 
-  // 「足がかり（既に習得した語）」と「これから増やせる語（未習得）」に分ける。
-  const boxOf = (w) => srs[w.id]?.box ?? 0
-  const known = words.filter((w) => boxOf(w) >= MASTER_BOX)
-  const toGain = words.filter((w) => boxOf(w) < MASTER_BOX)
+  // 直近の自己判定で、学習済みと復習中・未学習を分ける。
+  const statusOf = (word) => learningStatusForSrsEntry(srs[word.id])
+  const known = words.filter((word) => statusOf(word) === 'learned')
+  const toGain = words.filter((word) => statusOf(word) !== 'learned')
   const total = words.length
-  const pts = words.reduce((a, w) => a + Math.min(boxOf(w), MASTER_BOX), 0)
-  const ratio = total ? pts / (total * MASTER_BOX) : 0
+  const rootProgress = summarizeSrsItems(words, srs)
 
   // 同じ語源でも、意味をパーツから直接組み立てられる語と、
   // 歴史的には同源だが意味が広がった語を分けて見せる。
   const orderForReading = (list) =>
     [...list].sort((a, b) => {
-      const knownDiff = Number(boxOf(b) >= MASTER_BOX) - Number(boxOf(a) >= MASTER_BOX)
+      const knownDiff = Number(statusOf(b) === 'learned') - Number(statusOf(a) === 'learned')
       if (knownDiff) return knownDiff
       const levelDiff = (LEVEL_RANK[a.level] ?? 99) - (LEVEL_RANK[b.level] ?? 99)
       return levelDiff || a.word.localeCompare(b.word, 'en')
@@ -46,9 +46,9 @@ export function RootDetailScreen() {
   const buildable = orderForReading(words.filter((w) => hasRootBreakdown(w, rootId)))
   const historical = orderForReading(words.filter((w) => !hasRootBreakdown(w, rootId)))
 
-  // 一度に多すぎない8語。学習中の語を先にし、その後は「意味の式」がある易しい語から。
+  // 一度に多すぎない8語。復習中の語を先にし、その後は「意味の式」がある易しい語から。
   const nextBatch = [...toGain].sort((a, b) => {
-    const learningDiff = Number(boxOf(b) > 0) - Number(boxOf(a) > 0)
+    const learningDiff = Number(statusOf(b) === 'reviewing') - Number(statusOf(a) === 'reviewing')
     if (learningDiff) return learningDiff
     const buildableDiff = Number(hasRootBreakdown(b, rootId)) - Number(hasRootBreakdown(a, rootId))
     if (buildableDiff) return buildableDiff
@@ -68,8 +68,7 @@ export function RootDetailScreen() {
 
   const WordRow = ({ w, build }) => {
     const level = getLevel(w.level)
-    const box = boxOf(w)
-    const mastered = box >= MASTER_BOX
+    const learningStatus = statusOf(w)
     return (
       <button
         onClick={() => navigate('wordDetail', { id: w.id })}
@@ -81,13 +80,13 @@ export function RootDetailScreen() {
             <div className="flex flex-wrap items-center gap-2">
               <span className="font-display text-lg font-extrabold text-ink">{w.word}</span>
               <Chip color={level.color}>{level.label}</Chip>
-              {mastered && (
-                <span className="inline-flex items-center gap-0.5 text-[10px] font-extrabold text-emerald-600">
-                  <Check size={13} /> 習得
+              {learningStatus === 'learned' && (
+                <span className="inline-flex items-center gap-0.5 text-xs font-extrabold text-emerald-600">
+                  <Check size={13} /> 学習済
                 </span>
               )}
-              {!mastered && box > 0 && (
-                <span className="text-[10px] font-extrabold text-brand-500">学習中</span>
+              {learningStatus === 'reviewing' && (
+                <span className="text-xs font-extrabold text-amber-600">復習中</span>
               )}
             </div>
             {!build && <div className="truncate text-xs font-bold text-ink/55">{w.meaning}</div>}
@@ -114,7 +113,7 @@ export function RootDetailScreen() {
 
   return (
     <div className="pb-6">
-      <ScreenHeader title="語源でひろげる" />
+      <ScreenHeader title="同じ語根の単語" />
 
       <div className="px-4">
         {/* 語根ヒーロー */}
@@ -124,22 +123,20 @@ export function RootDetailScreen() {
               <span className="text-5xl">{root.emoji}</span>
               <div className="min-w-0 flex-1">
                 <h1 className="font-display text-3xl font-extrabold">{root.form}</h1>
-                <p className="text-xs font-bold text-white/65">意味の核</p>
+                <p className="text-xs font-bold text-white/75">語根（意味の中心）</p>
                 <p className="text-base font-extrabold text-white">＝{root.meaning}</p>
               </div>
-              <ProgressRing value={ratio} size={56} stroke={7} color="#ffffff" track="rgba(255,255,255,0.25)">
-                <span className="text-[11px] font-extrabold">{Math.round(ratio * 100)}%</span>
-              </ProgressRing>
             </div>
           </div>
           <div className="p-4">
-            <p className="text-sm font-bold text-ink/60">語源：{root.origin}</p>
+            <p className="text-sm font-bold text-ink/60">もとのことば：{root.origin}</p>
             <p className="mt-2 rounded-xl bg-brand-50 px-3 py-2 text-xs font-bold leading-relaxed text-brand-700">
-              まず「{root.meaning}」を固定し、接頭辞・接尾辞の意味を足して単語を予想します。
+              まず「{root.form}＝{root.meaning}」を覚え、前後につく部品の意味を足して単語を予想します。
             </p>
             <p className="mt-1 text-xs font-extrabold text-brand-600">
-              同語源 {total}語 ・ 習得 {known.length}・あと {toGain.length}語
+              同じ語根 {total}語 ・ 学習済 {known.length}語・あと {toGain.length}語
             </p>
+            <LearningStatusBars progress={rootProgress} className="mt-3" compact />
             {toGain.length > 0 ? (
               <div className="mt-3 grid grid-cols-2 gap-2">
                 <Button onClick={grow}>
@@ -152,7 +149,7 @@ export function RootDetailScreen() {
             ) : (
               <div className="mt-3 grid grid-cols-2 gap-2">
                 <div className="flex items-center justify-center rounded-2xl bg-emerald-50 py-2.5 text-sm font-extrabold text-emerald-700">
-                  🎉 全部習得！
+                  🎉 全部学習済！
                 </div>
                 <Button variant="secondary" disabled={total < 3} onClick={quiz}>
                   <Cards size={18} /> クイズ
@@ -198,11 +195,11 @@ export function RootDetailScreen() {
               <div className="flex items-center gap-1.5">
                 <Sparkles size={16} className="text-brand-500" />
                 <h2 className="font-display text-base font-extrabold text-ink/80">
-                  パーツを足して意味を組み立てる
+                  部品の意味を足して考える
                 </h2>
               </div>
               <p className="mt-1 text-xs font-bold leading-relaxed text-ink/45">
-                接頭辞・語根・接尾辞の「意味の式」を比べます（{buildable.length}語）。
+                前・中心・後ろの部品を順に見て、今の意味につなげます（{buildable.length}語）。
               </p>
             </div>
             <div className="space-y-2">
@@ -218,11 +215,11 @@ export function RootDetailScreen() {
               <div className="flex items-center gap-1.5">
                 <Book size={16} className="text-violet-500" />
                 <h2 className="font-display text-base font-extrabold text-ink/80">
-                  由来の説明から広げる仲間
+                  歴史をたどって覚える仲間
                 </h2>
               </div>
               <p className="mt-1 text-xs font-bold leading-relaxed text-ink/45">
-                表記の変化や意味の広がりを、短い由来ストーリーでつなぎます（{historical.length}語）。
+                もとの形と意味の変化を、1語ずつ確かめます（{historical.length}語）。
               </p>
             </div>
             <div className="space-y-2">

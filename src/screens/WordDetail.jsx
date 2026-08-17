@@ -6,22 +6,11 @@ import { ScreenHeader } from '../components/AppShell.jsx'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { EtymologyBlock, RelatedWords, PosBadge } from '../components/WordBits.jsx'
 import { UsageGuideCards } from '../components/UsageGuideCards.jsx'
+import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
 import { Card, Button, Chip, IconButton } from '../components/ui.jsx'
-import { Bookmark, BookmarkFilled, StarFilled, Star, Link, Lightbulb, ArrowRight } from '../components/Icons.jsx'
-import { MAX_BOX } from '../store/useStore.js'
+import { Bookmark, BookmarkFilled, Link, Lightbulb, ArrowRight } from '../components/Icons.jsx'
+import { summarizeSrsItems } from '../lib/contentProgress.js'
 import { cx } from '../components/ui.jsx'
-
-function Mastery({ box = 0 }) {
-  return (
-    <div className="flex items-center gap-0.5">
-      {Array.from({ length: MAX_BOX }).map((_, i) => (
-        <span key={i} className={i < box ? 'text-hint' : 'text-ink/15'}>
-          {i < box ? <StarFilled size={14} /> : <Star size={14} />}
-        </span>
-      ))}
-    </div>
-  )
-}
 
 const toId = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '')
 
@@ -121,6 +110,7 @@ export function WordDetailScreen() {
 
   const level = getLevel(word.level)
   const saved = myList.includes(word.id)
+  const progress = summarizeSrsItems([word], entry ? { [word.id]: entry } : {})
 
   return (
     <div className="pb-28">
@@ -151,7 +141,6 @@ export function WordDetailScreen() {
                 </span>
               )}
             </div>
-            {entry && <Mastery box={entry.box} />}
           </div>
           <div className="mt-3 flex items-end gap-3">
             <h1 className="font-display text-4xl font-extrabold tracking-tight text-ink">{word.word}</h1>
@@ -161,6 +150,7 @@ export function WordDetailScreen() {
           <div className="mt-3 rounded-2xl bg-brand-50 p-3">
             <div className="font-display text-xl font-extrabold text-ink">{word.meanings.join('・')}</div>
           </div>
+          <LearningStatusBars progress={progress} className="mt-4" compact />
         </Card>
 
         {/* 例文 */}

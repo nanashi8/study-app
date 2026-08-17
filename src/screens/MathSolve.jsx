@@ -26,6 +26,7 @@ export function MathSolveScreen() {
   const back = useStore((s) => s.back)
   const markMathDone = useStore((s) => s.markMathDone)
   const setMathMastery = useStore((s) => s.setMathMastery)
+  const recordContentQuizResult = useStore((s) => s.recordContentQuizResult)
   const unit = unitById(params.unitId)
   const problems = problemsForUnit(params.unitId)
 
@@ -37,6 +38,7 @@ export function MathSolveScreen() {
   const [fillResult, setFillResult] = useState(null) // { perBlank, correct } | null
   const [lines, setLines] = useState([]) // 積み上がっていく式
   const [score, setScore] = useState({ correct: 0, total: 0 })
+  const [problemScore, setProblemScore] = useState({ correct: 0, total: 0 })
   const [finished, setFinished] = useState(false)
 
   const p = problems[pIndex]
@@ -84,7 +86,8 @@ export function MathSolveScreen() {
 
   function reset() {
     setPIndex(0); setPhase('recall'); setSi(0); setSel(null)
-    setPlaced([]); setFillResult(null); setLines([]); setScore({ correct: 0, total: 0 }); setFinished(false)
+    setPlaced([]); setFillResult(null); setLines([]); setScore({ correct: 0, total: 0 })
+    setProblemScore({ correct: 0, total: 0 }); setFinished(false)
   }
 
   const quiz = phase === 'recall' ? p.recall?.quiz : null
@@ -101,7 +104,9 @@ export function MathSolveScreen() {
   const chooseOption = (idx) => {
     if (sel !== null) return
     setSel(idx)
-    setScore((s) => ({ correct: s.correct + (idx === choiceQ.answer ? 1 : 0), total: s.total + 1 }))
+    const correct = idx === choiceQ.answer
+    setScore((s) => ({ correct: s.correct + (correct ? 1 : 0), total: s.total + 1 }))
+    setProblemScore((s) => ({ correct: s.correct + (correct ? 1 : 0), total: s.total + 1 }))
     if (phase === 'steps' && step.math) setLines((ls) => [...ls, step.math])
   }
 
@@ -126,6 +131,7 @@ export function MathSolveScreen() {
     const correct = perBlank.length === f.blanks.length && perBlank.every(Boolean)
     setFillResult({ perBlank, correct })
     setScore((s) => ({ correct: s.correct + (correct ? 1 : 0), total: s.total + 1 }))
+    setProblemScore((s) => ({ correct: s.correct + (correct ? 1 : 0), total: s.total + 1 }))
     setLines((ls) => [...ls, resolveFill(f, f.blanks)]) // 正しい式を積み上げる
   }
 
@@ -133,7 +139,11 @@ export function MathSolveScreen() {
     setSel(null); setPlaced([]); setFillResult(null)
     if (phase === 'recall') { setPhase('steps'); setSi(0); return }
     if (si + 1 < p.steps.length) { setSi(si + 1) }
-    else { markMathDone(p.id); setPhase('solved') }
+    else {
+      markMathDone(p.id)
+      recordContentQuizResult('math', p.id, problemScore.correct, problemScore.total)
+      setPhase('solved')
+    }
   }
 
   const nextProblem = () => {
@@ -145,6 +155,7 @@ export function MathSolveScreen() {
     }
     setPIndex(pIndex + 1); setPhase('recall'); setSi(0)
     setSel(null); setPlaced([]); setFillResult(null); setLines([])
+    setProblemScore({ correct: 0, total: 0 })
   }
 
   // フッターの状態。

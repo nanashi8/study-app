@@ -11,7 +11,9 @@ import {
 import { SESSION_SIZE, overallProgress, wordProgress } from '../lib/session.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { Book, Cards, Refresh, Sparkles } from '../components/Icons.jsx'
-import { Button, Card, Chip, ProgressBar, cx } from '../components/ui.jsx'
+import { Button, Card, Chip, cx } from '../components/ui.jsx'
+import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
+import { summarizeSrsItems } from '../lib/contentProgress.js'
 
 const MODES = [
   { id: 'random', short: 'ランダム', emoji: '🎲' },
@@ -31,6 +33,7 @@ const POS_META = {
 
 function GroupCard({ label, detail, icon, color, words, srs, onStudy, onQuiz }) {
   const progress = wordProgress(words, srs)
+  const status = summarizeSrsItems(words, srs)
   return (
     <Card className="p-4">
       <div className="flex items-center gap-3">
@@ -49,15 +52,10 @@ function GroupCard({ label, detail, icon, color, words, srs, onStudy, onQuiz }) 
         </div>
       </div>
 
-      <ProgressBar
-        className="mt-3"
-        value={progress.total ? progress.mastered / progress.total : 0}
-        color={color}
-      />
-      <div className="mt-1.5 flex justify-between text-[11px] font-bold text-ink/45">
-        <span>習得 {progress.mastered} ・ 学習済 {progress.seen}</span>
-        <span>{progress.due > 0 ? `復習どき ${progress.due}` : '10語ずつ'}</span>
-      </div>
+      <LearningStatusBars progress={status} className="mt-3" compact />
+      <p className="mt-1.5 text-right text-[10px] font-bold text-ink/45">
+        {progress.due > 0 ? `今日の復習 ${progress.due}` : '10語ずつ学習'}
+      </p>
 
       <div className="mt-3 grid grid-cols-2 gap-2">
         <Button size="sm" onClick={onStudy} aria-label={`${label}の単語を覚える`}>
@@ -82,6 +80,7 @@ export function VocabGroupsScreen() {
   const initialMode = useStore((s) => s.params.mode)
   const [mode, setMode] = useState(MODES.some((item) => item.id === initialMode) ? initialMode : 'random')
   const total = overallProgress(srs)
+  const totalStatus = summarizeSrsItems(ALL_WORDS, srs)
 
   const start = ({ source, title, quiz = false }) =>
     navigate(quiz ? 'vocabQuiz' : 'vocabStudy', {
@@ -165,19 +164,12 @@ export function VocabGroupsScreen() {
                     全{ALL_WORDS.length.toLocaleString('ja-JP')}語から、復習どきと未学習を優先して10語ずつ選びます。
                   </p>
                 </div>
-                <Chip className="shrink-0 bg-white/20 text-white">
-                  習得 {total.mastered}
-                </Chip>
+                <Chip className="shrink-0 bg-white/20 text-white">取り組み {totalStatus.activeIds.length}</Chip>
               </div>
-              <ProgressBar
-                className="mt-4 bg-white/20"
-                value={total.total ? total.mastered / total.total : 0}
-                color="#ffffff"
-              />
-              <div className="mt-1.5 flex justify-between text-[11px] font-bold text-white/70">
-                <span>学習済 {total.seen}語</span>
-                <span>{total.due > 0 ? `復習どき ${total.due}語` : `全 ${total.total.toLocaleString('ja-JP')}語`}</span>
-              </div>
+            </div>
+            <div className="border-b border-slate-100 bg-white p-4">
+              <LearningStatusBars progress={totalStatus} compact />
+              {total.due > 0 && <p className="mt-1.5 text-right text-[10px] font-extrabold text-amber-700">今日の復習 {total.due}語</p>}
             </div>
             <div className="grid grid-cols-2 gap-2 p-4">
               <Button onClick={() => startRandom(false)}>

@@ -12,9 +12,10 @@ import {
   Chip,
   cx,
   IconButton,
-  ProgressRing,
 } from '../components/ui.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
+import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
+import { summarizeSrsItems } from '../lib/contentProgress.js'
 import {
   ArrowRight,
   Book,
@@ -28,28 +29,8 @@ import {
   Search,
 } from '../components/Icons.jsx'
 
-const MASTER_BOX = 4
-
-function grammarProgress(items, srs) {
-  let mastered = 0
-  let learning = 0
-  let points = 0
-  for (const item of items) {
-    const box = srs[item.id]?.box ?? 0
-    if (box >= MASTER_BOX) mastered++
-    else if (box > 0) learning++
-    points += Math.min(box, MASTER_BOX)
-  }
-  return {
-    mastered,
-    learning,
-    total: items.length,
-    ratio: items.length ? points / (items.length * MASTER_BOX) : 0,
-  }
-}
-
 function CategoryCard({ meta, items, srs, questionCount, onStudy, onQuiz }) {
-  const progress = grammarProgress(items, srs)
+  const status = summarizeSrsItems(items, srs)
   return (
     <Card className="p-4">
       <div className="flex items-center gap-3">
@@ -64,16 +45,9 @@ function CategoryCard({ meta, items, srs, questionCount, onStudy, onQuiz }) {
           <p className="mt-0.5 text-[11px] font-bold text-ink/45">
             {items.length}項目・{questionCount}問
           </p>
-          <p className="mt-0.5 text-[10px] font-bold text-ink/35">
-            習得 {progress.mastered}・学習中 {progress.learning}
-          </p>
         </div>
-        <ProgressRing value={progress.ratio} size={48} stroke={6} color={meta.color}>
-          <span className="text-[10px] font-extrabold text-ink/65">
-            {Math.round(progress.ratio * 100)}%
-          </span>
-        </ProgressRing>
       </div>
+      <LearningStatusBars progress={status} className="mt-3" compact />
       <div className="mt-3 grid grid-cols-2 gap-2">
         <Button size="sm" onClick={onStudy}>
           <Book size={16} /> 覚える
@@ -95,7 +69,7 @@ export function KotenGrammarScreen() {
   const [query, setQuery] = useState('')
   const [openId, setOpenId] = useState(null)
 
-  const totalProgress = grammarProgress(KOTEN_GRAMMAR, grammarSrs)
+  const totalStatus = summarizeSrsItems(KOTEN_GRAMMAR, grammarSrs)
   const dueItems = KOTEN_GRAMMAR.filter(
     (item) => grammarSrs[item.id] && isDue(grammarSrs[item.id]),
   )
@@ -144,24 +118,22 @@ export function KotenGrammarScreen() {
           覚える → 文中で見抜く → くり返して定着
         </p>
 
-        <div className="mt-4 grid grid-cols-[auto_1fr] items-center gap-4 rounded-2xl bg-white/15 p-3.5">
-          <ProgressRing value={totalProgress.ratio} size={64} stroke={7} color="#ffffff">
-            <span className="font-display text-sm font-extrabold text-white">
-              {Math.round(totalProgress.ratio * 100)}%
-            </span>
-          </ProgressRing>
+        <div className="mt-4 rounded-2xl bg-white/15 p-3.5">
           <div>
             <p className="font-display text-lg font-extrabold">
               全{KOTEN_GRAMMAR.length}項目・{KOTEN_GRAMMAR_QUESTIONS.length}問
             </p>
             <p className="mt-0.5 text-xs font-bold text-white/70">
-              習得 {totalProgress.mastered}・学習中 {totalProgress.learning}・登録 {savedItems.length}
+              学習済 {totalStatus.learning.learned}・復習中 {totalStatus.learning.reviewing}・未学習 {totalStatus.learning.unlearned}・登録 {savedItems.length}
             </p>
           </div>
         </div>
       </div>
 
       <div className="space-y-5 px-4 pt-5">
+        <Card className="p-4" data-koten-grammar-status>
+          <LearningStatusBars progress={totalStatus} compact />
+        </Card>
         <section>
           <div className="mb-2 px-1">
             <p className="text-[10px] font-extrabold tracking-[0.14em] text-amber-600">LEARN → CHALLENGE</p>

@@ -7,7 +7,9 @@ import {
   writingExercisesByLevel,
 } from '../data/writing.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
-import { Card, Chip, ProgressBar, cx } from '../components/ui.jsx'
+import { Card, Chip, cx } from '../components/ui.jsx'
+import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
+import { summarizeCompletionItems } from '../lib/contentProgress.js'
 import {
   ArrowRight,
   Bookmark,
@@ -48,6 +50,13 @@ export function WritingScreen() {
   const completed = exercises.filter(
     (item) => (writingProgress[item.id]?.completed ?? 0) > 0,
   ).length
+  const status = summarizeCompletionItems({
+    items: exercises,
+    completedIds: exercises.flatMap((item) => (
+      (writingProgress[item.id]?.completed ?? 0) > 0 ? [item.id] : []
+    )),
+    quizDomain: 'writing',
+  })
 
   return (
     <div className="pb-8">
@@ -196,15 +205,8 @@ export function WritingScreen() {
                   </Chip>
                 ))}
               </div>
-              <div className="mt-3 flex items-center gap-3">
-                <ProgressBar
-                  value={exercises.length ? completed / exercises.length : 0}
-                  color={meta.color}
-                />
-                <span className="shrink-0 text-[11px] font-bold text-ink/45">
-                  {profile.target}
-                </span>
-              </div>
+              <LearningStatusBars progress={status} className="mt-3" compact />
+              <p className="mt-2 text-[10px] font-bold text-ink/45">{profile.target}・独立クイズは未回答として表示</p>
             </div>
           </Card>
         </section>

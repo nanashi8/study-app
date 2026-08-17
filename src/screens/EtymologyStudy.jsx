@@ -11,9 +11,8 @@ import {
 } from '../data/vocab.js'
 import {
   buildEtymologyDeck,
-  etymologyKnowledgeStatus,
-  ETYMOLOGY_STATUS_META,
 } from '../lib/etymologyProgress.js'
+import { learningStatusForSrsEntry } from '../lib/contentProgress.js'
 import { EtymologyFormula, EtymologyHistoryTrail } from '../components/WordBits.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { Button, IconButton, ProgressBar } from '../components/ui.jsx'
@@ -233,7 +232,7 @@ export function EtymologyStudyScreen() {
 
   const words = wordsFor(pack)
   const mode = ETYMOLOGY_MODE_META[pack.mode]
-  const beforeStatus = etymologyKnowledgeStatus(srsAtStart.current[pack.id])
+  const beforeStatus = learningStatusForSrsEntry(srsAtStart.current[pack.id])
   const saved = learningNotebook?.entries?.[`etymology:${pack.id}`]?.saved === true
 
   const answer = (remembered) => {
@@ -279,7 +278,7 @@ export function EtymologyStudyScreen() {
               <span>{mode.emoji}</span>{mode.label}
             </span>
             <span className="text-[10px] font-extrabold text-ink/40">
-              開始時：{ETYMOLOGY_STATUS_META[beforeStatus].label}
+              開始時：{{ learned: '学習済', reviewing: '復習中', unlearned: '未学習' }[beforeStatus]}
             </span>
           </div>
 

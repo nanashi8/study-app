@@ -10,7 +10,9 @@ import {
   KOTEN_CURRICULUM_BY_ID,
   KOTEN_CURRICULUM_LEVELS,
 } from '../data/koten-curriculum.js'
-import { Card, ProgressRing, Button, Chip } from '../components/ui.jsx'
+import { Card, Button, Chip } from '../components/ui.jsx'
+import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
+import { summarizeSrsItems } from '../lib/contentProgress.js'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import {
   Book,
@@ -23,23 +25,8 @@ import {
   Headphones,
 } from '../components/Icons.jsx'
 
-// box>=4 を「習得」、box1〜3 を「学習中」とみなす（英単語と同基準）。
-// 進み具合のリングは box 加重（1問正解=box+1 ごとに動く）。MAX=4 で満点。
-const MASTER_BOX = 4
-function kotenProgress(words, srs) {
-  let mastered = 0, learning = 0, pts = 0
-  for (const w of words) {
-    const box = srs[w.id]?.box ?? 0
-    if (box >= MASTER_BOX) mastered++
-    else if (box >= 1) learning++
-    pts += Math.min(box, MASTER_BOX)
-  }
-  const total = words.length
-  return { mastered, learning, total, ratio: total ? pts / (total * MASTER_BOX) : 0 }
-}
-
 function CategoryCard({ cat, words, srs, onStudy, onQuiz }) {
-  const { mastered, learning, ratio } = kotenProgress(words, srs)
+  const status = summarizeSrsItems(words, srs)
   return (
     <Card className="p-4">
       <div className="flex items-center gap-3">
@@ -51,14 +38,10 @@ function CategoryCard({ cat, words, srs, onStudy, onQuiz }) {
         </span>
         <div className="min-w-0 flex-1">
           <h3 className="font-display text-lg font-extrabold text-ink">{cat.label}</h3>
-          <p className="text-xs font-bold text-ink/50">
-            習得 {mastered}・学習中 {learning} / {words.length}語
-          </p>
+          <p className="text-xs font-bold text-ink/50">全{words.length}語</p>
         </div>
-        <ProgressRing value={ratio} size={48} stroke={6} color={cat.color}>
-          <span className="text-[11px] font-extrabold text-ink/70">{Math.round(ratio * 100)}%</span>
-        </ProgressRing>
       </div>
+      <LearningStatusBars progress={status} className="mt-3" compact />
       <div className="mt-3 grid grid-cols-2 gap-2">
         <Button variant="primary" size="sm" onClick={onStudy}>
           <Book size={16} /> 覚える
@@ -74,6 +57,8 @@ function CategoryCard({ cat, words, srs, onStudy, onQuiz }) {
 export function KotenListScreen() {
   const navigate = useStore((s) => s.navigate)
   const kotenSrs = useStore((s) => s.kotenSrs)
+  const grammarSrs = useStore((s) => s.kotenGrammarSrs)
+  const cultureSrs = useStore((s) => s.kotenCultureSrs)
   const interpretationSrs = useStore((s) => s.kotenInterpretationSrs)
   const savedWords = useStore((s) => s.kotenWordList)
   const savedGrammar = useStore((s) => s.kotenGrammarList)
@@ -81,10 +66,10 @@ export function KotenListScreen() {
   const [curriculumLevel, setCurriculumLevel] = useState('middle')
 
   const dueWords = KOTEN_WORDS.filter((w) => kotenSrs[w.id] && isDue(kotenSrs[w.id]))
-  const total = kotenProgress(KOTEN_WORDS, kotenSrs)
-  const triedInterpretations = KOTEN_INTERPRETATIONS.filter(
-    (item) => (interpretationSrs[item.id]?.box ?? 0) > 0,
-  ).length
+  const totalStatus = summarizeSrsItems(KOTEN_WORDS, kotenSrs)
+  const grammarStatus = summarizeSrsItems(KOTEN_GRAMMAR, grammarSrs)
+  const cultureStatus = summarizeSrsItems(KOTEN_CULTURE, cultureSrs)
+  const interpretationStatus = summarizeSrsItems(KOTEN_INTERPRETATIONS, interpretationSrs)
 
   const study = (ids, title) => navigate('kotenStudy', { ids, title })
   const quiz = (ids, title) => navigate('kotenQuiz', { ids, title })
@@ -122,12 +107,10 @@ export function KotenListScreen() {
             <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-orange-100 text-2xl">📖</span>
             <div className="min-w-0 flex-1">
               <h3 className="font-display text-lg font-extrabold text-ink">古典単語</h3>
-              <p className="text-[11px] font-bold text-ink/50">全{KOTEN_WORDS.length}語・習得 {total.mastered}・学習中 {total.learning}</p>
+              <p className="text-[11px] font-bold text-ink/50">全{KOTEN_WORDS.length}語</p>
             </div>
-            <ProgressRing value={total.ratio} size={48} stroke={6} color="#d97706">
-              <span className="text-[10px] font-extrabold text-amber-800">{Math.round(total.ratio * 100)}%</span>
-            </ProgressRing>
           </div>
+          <LearningStatusBars progress={totalStatus} className="mt-3" compact />
           <div className="mt-3 grid grid-cols-2 gap-2">
             <Button size="sm" onClick={() => study(KOTEN_WORDS.map((word) => word.id), '古典単語・全範囲')}><Book size={16} /> 覚える</Button>
             <Button variant="secondary" size="sm" onClick={() => quiz(KOTEN_WORDS.map((word) => word.id), '古典単語・全範囲')}><Cards size={16} /> テスト</Button>
@@ -143,6 +126,7 @@ export function KotenListScreen() {
             </span>
             <ArrowRight size={19} className="text-purple-600" />
           </button>
+          <LearningStatusBars progress={grammarStatus} className="mt-3" compact />
         </Card>
 
         <Card className="p-4">
@@ -154,6 +138,7 @@ export function KotenListScreen() {
             </span>
             <ArrowRight size={19} className="text-fuchsia-600" />
           </button>
+          <LearningStatusBars progress={cultureStatus} className="mt-3" compact />
         </Card>
 
         <div className="px-1 pt-3">
@@ -254,11 +239,11 @@ export function KotenListScreen() {
               <p className="mt-1 text-xs font-bold leading-relaxed text-white/70">
                 答え合わせで、古典単語・古典文法・古典常識を一度につなぐ
               </p>
-              <p className="mt-2 text-[11px] font-extrabold text-amber-200">
-                挑戦 {triedInterpretations} / {KOTEN_INTERPRETATIONS.length}問
-              </p>
             </div>
             <ArrowRight size={22} className="mt-3 shrink-0 text-amber-300 transition-transform group-active:translate-x-1" />
+          </div>
+          <div className="mt-3 rounded-2xl bg-white p-3 text-ink">
+            <LearningStatusBars progress={interpretationStatus} compact />
           </div>
         </button>
 
@@ -282,7 +267,7 @@ export function KotenListScreen() {
           <div>
             <h2 className="font-display text-lg font-extrabold text-ink">古典単語</h2>
             <p className="text-xs font-bold text-ink/45">
-              全{KOTEN_WORDS.length}語・習得 {total.mastered}・学習中 {total.learning}語
+              全{KOTEN_WORDS.length}語・学習済 {totalStatus.learning.learned}・復習中 {totalStatus.learning.reviewing}語
             </p>
           </div>
         </div>
