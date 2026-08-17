@@ -89,6 +89,19 @@ const formatWindow = (window) => {
   return `${start}:00〜${window.end <= window.start ? '翌' : ''}${end}:00`
 }
 
+const formatDuration = (ms) => {
+  const minutes = Math.round(nonNegativeMs(ms) / 60000)
+  if (minutes < 1) return nonNegativeMs(ms) > 0 ? '1分未満' : '0分'
+  if (minutes < 60) return `${minutes}分`
+  const hours = Math.floor(minutes / 60)
+  const rest = minutes % 60
+  return rest ? `${hours}時間${rest}分` : `${hours}時間`
+}
+
+function nonNegativeMs(value) {
+  return Number.isFinite(Number(value)) ? Math.max(0, Number(value)) : 0
+}
+
 const confidenceLabel = (confidence) => {
   if (confidence === 'stable') return '安定'
   if (confidence === 'growing') return '更新中'
@@ -193,9 +206,22 @@ function SummaryTable({ profile, analysis, dueCount }) {
     ['定着段階指数', `${analysis.memoryScore}/100`, `${analysis.learnedItems}項目`, 'SRSの反復段階から算出した参考値'],
     ['長期段階', `${analysis.stages.longPct}%`, `${analysis.stages.long}項目`, 'SRS BOX 4以上の構成比'],
     ['英単語・今日の復習', `${dueCount}項目`, dueCount ? '対応が必要' : '滞留なし', '期限到来済み英単語の件数'],
-    ['活動日', `${profile.habit.activeDays28}/28日`, `直近7日 ${profile.habit.activeDays7}日`, '回答を1件以上記録した日'],
-    ['記録日平均', analysis.averageInputsPerActiveDay == null ? '—' : `${formatCount(analysis.averageInputsPerActiveDay)}回`, `${analysis.activeDays}記録日`, '活動日だけを分母にした平均'],
-    ['推奨時間帯', formatWindow(analysis.bestWindow) ?? '19:00〜22:00（仮）', analysis.bestWindow ? `${analysis.bestWindow.scored}回答` : '標本不足', '3時間帯で5回答以上のとき個別推定'],
+    [
+      '一日の学習時間',
+      analysis.studyTime.hasEvidence ? formatDuration(analysis.studyTime.dailyAverageMs7) : '—',
+      analysis.studyTime.hasEvidence
+        ? `今日 ${formatDuration(analysis.studyTime.todayMs)}・直近7日で${analysis.studyTime.activeDays7}日`
+        : '学習時間を計測中',
+      '直近7日の合計を7日で割った1日あたりの学習時間',
+    ],
+    [
+      '学習リズム',
+      analysis.rhythm.peakHour == null ? '—' : `${analysis.rhythm.peakHour}時台が中心`,
+      analysis.rhythm.score == null
+        ? '学習した時刻を収集中'
+        : `規則性 ${analysis.rhythm.score}%・${analysis.rhythm.activeDays}日を集計`,
+      'よく学習する3つの時間帯を、どれだけ繰り返せているか',
+    ],
   ]
 
   return (
@@ -222,6 +248,135 @@ function SummaryTable({ profile, analysis, dueCount }) {
           </tbody>
         </table>
       </div>
+    </ReportSection>
+  )
+}
+
+const CLOCK_CENTER = 100
+const CLOCK_INNER = 30
+const CLOCK_OUTER = 78
+
+const clockPoint = (hour, radius) => {
+  // 0時を真上に置き、時計回りに1時間15度ずつ進める。
+  const angle = (hour / 24) * Math.PI * 2 - Math.PI / 2
+  return {
+    x: CLOCK_CENTER + Math.cos(angle) * radius,
+    y: CLOCK_CENTER + Math.sin(angle) * radius,
+  }
+}
+
+// 1時間＝15度の扇形。値が大きいほど外側へ伸びる24時間の円グラフ。
+const clockSector = (hour, radius) => {
+  const start = clockPoint(hour, CLOCK_INNER)
+  const startOuter = clockPoint(hour, radius)
+  const endOuter = clockPoint(hour + 1, radius)
+  const end = clockPoint(hour + 1, CLOCK_INNER)
+  return [
+    `M ${start.x} ${start.y}`,
+    `L ${startOuter.x} ${startOuter.y}`,
+    `A ${radius} ${radius} 0 0 1 ${endOuter.x} ${endOuter.y}`,
+    `L ${end.x} ${end.y}`,
+    `A ${CLOCK_INNER} ${CLOCK_INNER} 0 0 0 ${start.x} ${start.y}`,
+    'Z',
+  ].join(' ')
+}
+
+function HourWheel({ hours, valueOf, color, caption, headline, sub, tooltip, testId }) {
+  const max = hours.reduce((peak, stat) => Math.max(peak, valueOf(stat)), 0)
+  return (
+    <figure className="m-0" data-hour-wheel={testId}>
+      <svg viewBox="0 0 200 200" className="mx-auto block h-auto w-full max-w-[15rem]" role="img" aria-label={caption}>
+        <circle cx={CLOCK_CENTER} cy={CLOCK_CENTER} r={CLOCK_OUTER} fill="#f8fafc" stroke="#e2e8f0" />
+        <circle cx={CLOCK_CENTER} cy={CLOCK_CENTER} r={(CLOCK_INNER + CLOCK_OUTER) / 2} fill="none" stroke="#e2e8f0" strokeDasharray="2 3" />
+        {hours.map((stat) => {
+          const value = valueOf(stat)
+          const ratio = max ? value / max : 0
+          const radius = CLOCK_INNER + 2 + ratio * (CLOCK_OUTER - CLOCK_INNER - 2)
+          return (
+            <path
+              key={stat.hour}
+              d={clockSector(stat.hour, value > 0 ? radius : CLOCK_INNER + 1)}
+              fill={value > 0 ? color : '#e2e8f0'}
+              fillOpacity={value > 0 ? 0.35 + ratio * 0.65 : 1}
+              stroke="white"
+              strokeWidth="0.6"
+            >
+              <title>{tooltip(stat)}</title>
+            </path>
+          )
+        })}
+        {[0, 6, 12, 18].map((hour) => {
+          const point = clockPoint(hour + 0.5, CLOCK_OUTER + 12)
+          return (
+            <text key={hour} x={point.x} y={point.y + 3} textAnchor="middle" fontSize="9" fontWeight="800" fill="#64748b">
+              {hour}時
+            </text>
+          )
+        })}
+        <circle cx={CLOCK_CENTER} cy={CLOCK_CENTER} r={CLOCK_INNER} fill="white" stroke="#cbd5e1" />
+        <text x={CLOCK_CENTER} y={CLOCK_CENTER - 1} textAnchor="middle" fontSize="13" fontWeight="900" fill="#0f172a">{headline}</text>
+        <text x={CLOCK_CENTER} y={CLOCK_CENTER + 11} textAnchor="middle" fontSize="7" fontWeight="700" fill="#94a3b8">{sub}</text>
+      </svg>
+      <figcaption className="mt-1 text-center text-[10px] font-bold text-slate-500">{caption}</figcaption>
+    </figure>
+  )
+}
+
+function StudyRhythmSection({ analysis }) {
+  const { studyTime, hourlyTime, rhythm } = analysis
+  const peakByTime = [...hourlyTime].sort((a, b) => b.ms - a.ms)[0] ?? null
+  const rhythmLabel = rhythm.coreHours.length
+    ? rhythm.coreHours.map((hour) => `${hour}時`).join('・')
+    : '計測中'
+  return (
+    <ReportSection number="05" title="学習時間と時間帯" note="実際に学習した時刻を24時間の円グラフで表示。目安ではなく記録そのもの">
+      <dl className="grid grid-cols-2 divide-x divide-y divide-slate-200 border-b border-slate-300 text-center text-xs sm:grid-cols-4" data-study-time-summary>
+        {[
+          ['今日の学習時間', formatDuration(studyTime.todayMs), true],
+          ['1日あたり（7日平均）', formatDuration(studyTime.dailyAverageMs7), false],
+          ['直近7日の合計', formatDuration(studyTime.ms7), false],
+          ['累計', formatDuration(studyTime.totalMs), false],
+        ].map(([label, value, primary]) => (
+          <div key={label} className={cx('p-3', primary && 'bg-indigo-50')}>
+            <dt className={cx('text-[10px] font-extrabold', primary ? 'text-indigo-700' : 'text-slate-500')}>{label}</dt>
+            <dd className={cx(
+              'mt-0.5 font-display font-extrabold tabular-nums',
+              primary ? 'text-lg text-indigo-950' : 'text-base text-slate-950',
+            )}>{value}</dd>
+          </div>
+        ))}
+      </dl>
+      <div className="grid gap-4 p-3 sm:grid-cols-2">
+        <HourWheel
+          testId="study-hours"
+          hours={hourlyTime}
+          valueOf={(stat) => stat.ms}
+          color="#4f46e5"
+          headline={peakByTime && peakByTime.ms ? `${peakByTime.hour}時台` : '—'}
+          sub={peakByTime && peakByTime.ms ? `最長 ${formatDuration(peakByTime.ms)}` : '学習すると記録されます'}
+          caption="学習した時間帯（扇の長さ＝その時刻の学習時間）"
+          tooltip={(stat) => `${stat.hour}時台：${formatDuration(stat.ms)}・${stat.days}日`}
+        />
+        <HourWheel
+          testId="study-rhythm"
+          hours={hourlyTime}
+          valueOf={(stat) => stat.days}
+          color="#0f766e"
+          headline={rhythm.score == null ? '—' : `${rhythm.score}%`}
+          sub={rhythm.score == null ? '学習した時刻を収集中' : `${rhythm.activeDays}日を集計`}
+          caption={`学習リズム（扇の長さ＝その時刻に学習した日数）／中心の時間帯 ${rhythmLabel}`}
+          tooltip={(stat) => `${stat.hour}時台：${stat.days}日に学習`}
+        />
+      </div>
+      {!studyTime.hasEvidence && (
+        <p className="border-t border-slate-200 px-3 py-2.5 text-center text-[11px] font-bold text-slate-500">
+          学習を始めると、学習した時刻と1日の学習時間をこの円グラフに記録します。
+        </p>
+      )}
+      <p className="border-t border-slate-200 bg-slate-50 px-3 py-2 text-[10px] font-bold leading-relaxed text-slate-500">
+        学習時間は回答と回答の間隔から推定します（5分を超える間隔は離席として除外）。
+        学習リズムは、よく学習する3つの時間帯を学習日のうち何日繰り返せたかで表します。
+      </p>
     </ReportSection>
   )
 }
@@ -437,7 +592,7 @@ function Gradebook({ report, onNavigate }) {
   }
 
   return (
-    <ReportSection number="05" title="科目・種類・分野・項目別 成績表" note="評定、暗記、テスト、定着予測を同じ条件で比較し、その行から学習を開始">
+    <ReportSection number="06" title="科目・種類・分野・項目別 成績表" note="評定、暗記、テスト、定着予測を同じ条件で比較し、その行から学習を開始">
       <div data-learning-gradebook>
         <div className="flex gap-1 overflow-x-auto border-b border-slate-300 bg-slate-50 p-2" role="tablist" aria-label="成績表の集計単位">
           {Object.entries(gradeDimensionMeta).map(([id, meta]) => (
@@ -566,7 +721,7 @@ function ForgettingCurve({ report, analysis }) {
   const observed = (analysis.intervals ?? []).filter((item) => item.scored > 0)
 
   return (
-    <ReportSection number="06" title="忘却曲線・定着予測" note="科目・種類・分野・項目を選択。現在のSRS、経過時間、本人のテスト傾向から予測">
+    <ReportSection number="07" title="忘却曲線・定着予測" note="科目・種類・分野・項目を選択。現在のSRS、経過時間、本人のテスト傾向から予測">
       <div className="p-3" data-forgetting-curve-analysis>
         <div className="grid grid-cols-4 gap-1">
           {Object.entries(gradeDimensionMeta).map(([id, meta]) => (
@@ -681,7 +836,7 @@ function MemoryEffectAnalysis({ analysis }) {
   const cohortSamples = analysis.memoryCohortHourly.reduce((sum, stat) => sum + stat.scored, 0)
   const passSamples = analysis.memoryPasses.reduce((sum, stat) => sum + stat.scored, 0)
   return (
-    <ReportSection number="07" title="暗記時刻・周回数とテスト成績" note="暗記した条件を、同じ項目の後続テストへ結び付けて比較">
+    <ReportSection number="08" title="暗記時刻・周回数とテスト成績" note="暗記した条件を、同じ項目の後続テストへ結び付けて比較">
       <div className="grid gap-3 p-3 lg:grid-cols-2">
         <div className="border border-slate-300 bg-white p-2">
           <h3 className="px-2 pt-1 text-xs font-extrabold text-slate-800">24時間計</h3>
@@ -727,7 +882,7 @@ function RetentionDistribution({ analysis }) {
   ]
 
   return (
-    <ReportSection number="08" title="記憶段階構成" note="項目数の内訳は比較に有効なため、構成比を帯グラフで併記">
+    <ReportSection number="09" title="記憶段階構成" note="項目数の内訳は比較に有効なため、構成比を帯グラフで併記">
       <div className="p-3">
         <div className="flex h-5 overflow-hidden border border-slate-300 bg-slate-100" aria-label="記憶段階の構成比">
           {analysis.learnedItems > 0 && stages.map((stage) => (
@@ -763,7 +918,7 @@ function RetentionDistribution({ analysis }) {
 
 function SkillTable({ analysis }) {
   return (
-    <ReportSection number="09" title="学習種類別・累計記録" note="暗記の自己判定とテスト回答を合算。最低3記録以上を得意・弱点判定に使用">
+    <ReportSection number="10" title="学習種類別・累計記録" note="暗記の自己判定とテスト回答を合算。最低3記録以上を得意・弱点判定に使用">
       {analysis.skills.length ? (
         <div className="overflow-x-auto">
           <table className="w-full min-w-[31rem] border-collapse text-xs" data-skill-analysis-table>
@@ -803,7 +958,7 @@ function SkillTable({ analysis }) {
 function IntervalAnalysis({ analysis }) {
   const hasIntervals = analysis.intervals.some((interval) => interval.scored > 0)
   return (
-    <ReportSection number="10" title="復習間隔別・想起率" note="同じ教材を時間を空けて解いた回答だけを集計">
+    <ReportSection number="11" title="復習間隔別・想起率" note="同じ教材を時間を空けて解いた回答だけを集計">
       {hasIntervals ? (
         <div className="space-y-3 p-4" data-interval-recall-chart>
           {analysis.intervals.map((interval) => (
@@ -837,7 +992,7 @@ function hourCellClass(stat) {
 
 function HourlyMatrix({ analysis }) {
   return (
-    <ReportSection number="11" title="学習した時刻別の達成率" note="暗記の自己判定とテスト回答を合算した実施時刻。暗記時刻の後続テスト効果は07で分離し、5記録未満は推薦に不使用">
+    <ReportSection number="12" title="学習した時刻別の達成率" note="暗記の自己判定とテスト回答を合算した実施時刻。暗記時刻の後続テスト効果は08で分離し、5記録未満は推薦に不使用">
       <div className="grid grid-cols-6 gap-px bg-slate-300 p-px" data-hourly-analysis-matrix>
         {analysis.hourly.map((stat) => (
           <div key={stat.hour} className={cx('min-h-14 p-1.5 text-center', hourCellClass(stat))}>
@@ -853,7 +1008,9 @@ function HourlyMatrix({ analysis }) {
 
 function AdviceReport({ profile, analysis, dueCount, report, onNavigate }) {
   const recommendation = profile.recommendation
-  const scheduledWindow = formatWindow(analysis.bestWindow) ?? '19:00〜19:20（仮）'
+  const scheduledWindow = analysis.rhythm.peakHour != null
+    ? `${String(analysis.rhythm.peakHour).padStart(2, '0')}:00台（いつも学習している時間帯）`
+    : formatWindow(analysis.bestWindow) ?? '19:00〜19:20（仮）'
   const successCriterion = recommendation.id === 'measure'
     ? '診断28問を完了する'
     : dueCount > 0
@@ -868,7 +1025,7 @@ function AdviceReport({ profile, analysis, dueCount, report, onNavigate }) {
         : '記録が増えるたびに推定は更新されます。結果を能力の固定評価ではなく、次の一手を選ぶ材料として使ってください。'
 
   return (
-    <ReportSection number="12" title="多角的な学習処方箋" note="科目・種類・分野・項目・時間帯・周回数・自己判定・活動量から優先順位を作成">
+    <ReportSection number="13" title="多角的な学習処方箋" note="科目・種類・分野・項目・時間帯・周回数・自己判定・活動量から優先順位を作成">
       <div className="p-4">
         <div className="border-l-4 border-slate-800 bg-slate-50 p-3">
           <div className="flex items-center justify-between gap-2">
@@ -979,7 +1136,7 @@ function StudyWisdomFooter() {
   const quote = STUDY_QUOTES[seed % STUDY_QUOTES.length]
   const reference = SCIENCE_REFERENCES[Math.floor(seed / STUDY_QUOTES.length) % SCIENCE_REFERENCES.length]
   return (
-    <ReportSection number="13" title="学びの言葉と科学的根拠" note="表示ごとに原典確認済みの言葉と学習原則をランダムに選択">
+    <ReportSection number="14" title="学びの言葉と科学的根拠" note="表示ごとに原典確認済みの言葉と学習原則をランダムに選択">
       <div className="p-4" data-random-study-wisdom>
         <blockquote className="border-l-4 border-slate-800 bg-slate-50 p-3">
           <p className="font-display text-base font-extrabold leading-relaxed text-slate-950">「{quote.text}」</p>
@@ -1107,6 +1264,7 @@ export function LearningAnalyticsPanel({
       <DiagnosticSnapshot diagnostic={profile.diagnostic} onOpen={onOpenDiagnostic} />
       <DimensionTable profile={profile} />
       <ActivitySplit analysis={analysis} report={report} />
+      <StudyRhythmSection analysis={analysis} />
       <Gradebook report={report} onNavigate={onNavigate} />
       <ForgettingCurve report={report} analysis={analysis} />
       <MemoryEffectAnalysis analysis={analysis} />

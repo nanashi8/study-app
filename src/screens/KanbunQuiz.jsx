@@ -11,6 +11,7 @@ import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { Button, Chip, cx, IconButton, ProgressBar } from '../components/ui.jsx'
+import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 import {
   ArrowRight,
   Book,
@@ -21,7 +22,7 @@ import {
   Lightbulb,
 } from '../components/Icons.jsx'
 
-const SESSION_SIZE = 12
+const ALL_QUESTIONS = 9999 // 在庫数を数えるための十分大きな上限
 
 function ChoiceExplanation({ question, selected }) {
   const selectedItemId = selected?.split(':')[1]
@@ -66,7 +67,9 @@ export function KanbunQuizScreen() {
   const domain = KANBUN_COLLECTIONS[params.domain] ? params.domain : 'vocab'
   const meta = kanbunDomainMeta(domain)
   const savedIds = useStore((state) => state[meta.listField])
-  const [deck, setDeck] = useState(() => pickKanbunQuestions(domain, params.ids, { size: params.size ?? SESSION_SIZE }))
+  const [poolSize] = useState(() => pickKanbunQuestions(domain, params.ids, { size: ALL_QUESTIONS }).length)
+  const sessionSize = useSessionSize(poolSize || Infinity)
+  const [deck, setDeck] = useState(() => pickKanbunQuestions(domain, params.ids, { size: params.size ?? sessionSize }))
   const [index, setIndex] = useState(0)
   const [selected, setSelected] = useState(null)
   const [correctCount, setCorrectCount] = useState(0)
@@ -87,7 +90,7 @@ export function KanbunQuizScreen() {
   }
 
   const restart = (ids = params.ids) => {
-    setDeck(pickKanbunQuestions(domain, ids, { size: params.size ?? SESSION_SIZE }))
+    setDeck(pickKanbunQuestions(domain, ids, { size: deck.length || sessionSize }))
     setIndex(0)
     setSelected(null)
     setCorrectCount(0)
@@ -163,7 +166,20 @@ export function KanbunQuizScreen() {
             <p className="mt-1 truncate text-[10px] font-extrabold text-ink/40">{params.title ?? `${meta.label}テスト`}</p>
           </div>
           <SpeechSettingsButton compact />
-          <span className="w-12 text-right text-sm font-extrabold text-ink/50">{index + 1}/{deck.length}</span>
+          <SessionCounter
+            index={index}
+            total={deck.length}
+            max={poolSize}
+            onResize={(size) => {
+              setDeck(pickKanbunQuestions(domain, params.ids, { size }))
+              setIndex(0)
+              setSelected(null)
+              setCorrectCount(0)
+              setUnknownCount(0)
+              setWeakIds([])
+              setDone(false)
+            }}
+          />
         </div>
       </div>
 

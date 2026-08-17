@@ -9,15 +9,18 @@ import { Button, Chip, cx, IconButton, ProgressBar } from '../components/ui.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { KanbunMarkedText } from '../components/KanbunMarkedText.js'
 import { Check, Close, Lightbulb, Refresh } from '../components/Icons.jsx'
+import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 
-const SESSION_SIZE = 10
+const ALL_EXERCISES = 9999 // 在庫数を数えるための十分大きな上限
 
 export function KanbunKundokuQuizScreen() {
   const params = useStore((state) => state.params)
   const back = useStore((state) => state.back)
   const navigate = useStore((state) => state.navigate)
   const review = useStore((state) => state.reviewKanbunKundoku)
-  const [deck, setDeck] = useState(() => pickKanbunKundokuExercises(params.ids, { size: params.size ?? SESSION_SIZE }))
+  const [poolSize] = useState(() => pickKanbunKundokuExercises(params.ids, { size: ALL_EXERCISES }).length)
+  const sessionSize = useSessionSize(poolSize || Infinity)
+  const [deck, setDeck] = useState(() => pickKanbunKundokuExercises(params.ids, { size: params.size ?? sessionSize }))
   const [index, setIndex] = useState(0)
   const [selectedIds, setSelectedIds] = useState([])
   const [answered, setAnswered] = useState(false)
@@ -68,7 +71,7 @@ export function KanbunKundokuQuizScreen() {
     }
   }
   const restart = (ids = params.ids) => {
-    setDeck(pickKanbunKundokuExercises(ids, { size: params.size ?? SESSION_SIZE }))
+    setDeck(pickKanbunKundokuExercises(ids, { size: deck.length || sessionSize }))
     setIndex(0)
     setSelectedIds([])
     setAnswered(false)
@@ -116,7 +119,20 @@ export function KanbunKundokuQuizScreen() {
             <p className="mt-1 truncate text-[10px] font-extrabold text-ink/40">{params.title ?? '返り点・訓読ドリル'}</p>
           </div>
           <SpeechSettingsButton compact />
-          <span className="w-12 text-right text-sm font-extrabold text-ink/50">{index + 1}/{deck.length}</span>
+          <SessionCounter
+            index={index}
+            total={deck.length}
+            max={poolSize}
+            onResize={(size) => {
+              setDeck(pickKanbunKundokuExercises(params.ids, { size }))
+              setIndex(0)
+              setSelectedIds([])
+              setAnswered(false)
+              setCorrectCount(0)
+              setWeakIds([])
+              setDone(false)
+            }}
+          />
         </div>
       </div>
 

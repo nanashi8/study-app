@@ -23,8 +23,8 @@ export function AppShell({ children, showGlobalMenu = true }) {
   }
 
   return (
-    <div className="study-app-viewport flex min-h-[100dvh] w-full justify-center bg-brand-50">
-      <div className="study-app-surface relative flex h-[100dvh] w-full max-w-md flex-col overflow-hidden bg-paper shadow-lg sm:rounded-none">
+    <div className="study-app-viewport flex min-h-[100svh] w-full justify-center bg-brand-50">
+      <div className="study-app-surface relative flex h-[100svh] w-full max-w-md flex-col overflow-hidden bg-paper shadow-lg sm:rounded-none">
         {showGlobalMenu && (
           <div
             className="study-app-global-menu-bar relative z-[60] shrink-0 border-b border-slate-200/80 bg-white px-3 pb-2 pt-[calc(env(safe-area-inset-top)+0.5rem)]"

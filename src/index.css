@@ -5224,6 +5224,21 @@ button { -webkit-tap-highlight-color: transparent; }
   &::-webkit-scrollbar { display: none; }
 }
 
+/* ---- Viewport height / browser chrome -------------------------------------
+   モバイルのアドレスバーは表示・非表示で高さが変わる。アプリ外枠は
+   svh（バーが出ている状態の高さ）を基準にして、上下がバーへ隠れないようにする。
+   :where() で詰めているのは、svh対応ブラウザではユーティリティ側を優先させるため。 */
+:where(.study-app-viewport) {
+  min-height: 100vh;
+}
+:where(.study-app-surface) {
+  height: 100vh;
+}
+/* ホームバー・ジェスチャ領域のぶんだけ、最下段の操作が隠れないよう余白を足す。 */
+.study-app-content {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
 /* ---- App-wide readability -------------------------------------------------
    The app has 62 routes and many compact information labels. Keep their
    hierarchy, but do not let supporting copy fall back to 6–11px on phones. */

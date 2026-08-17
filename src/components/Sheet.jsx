@@ -3,7 +3,7 @@ import { IconButton } from './ui.jsx'
 import { Close } from './Icons.jsx'
 
 /** 下から出るボトムシート。アプリ幅(max-w-md)に揃えて中央寄せ表示。 */
-export function Sheet({ open, onClose, title, children, maxH = '85vh' }) {
+export function Sheet({ open, onClose, title, children, maxH = '85svh' }) {
   useEffect(() => {
     if (!open) return
     const onKey = (e) => e.key === 'Escape' && onClose?.()

@@ -20,6 +20,7 @@ import {
 } from '../components/Icons.jsx'
 import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { buildKotenInterpretationInstructorExplanation } from '../lib/instructorExplanations.js'
+import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 
 function shuffle(items) {
   const result = [...items]
@@ -30,8 +31,10 @@ function shuffle(items) {
   return result
 }
 
-function buildDeck(ids) {
-  return shuffle((ids ?? []).map(getKotenInterpretation).filter(Boolean)).slice(0, 12)
+// size=0 は「絞り込みなし」。
+function buildDeck(ids, size = 12) {
+  const items = shuffle((ids ?? []).map(getKotenInterpretation).filter(Boolean))
+  return size > 0 ? items.slice(0, size) : items
 }
 
 function SaveButton({ saved, onClick, label }) {
@@ -62,7 +65,9 @@ export function KotenInterpretationQuizScreen() {
   const toggleGrammar = useStore((state) => state.toggleKotenGrammarList)
 
   const [run, setRun] = useState(0)
-  const [deck, setDeck] = useState(() => buildDeck(params.ids))
+  const [poolSize] = useState(() => buildDeck(params.ids, 0).length)
+  const sessionSize = useSessionSize(poolSize || Infinity)
+  const [deck, setDeck] = useState(() => buildDeck(params.ids, params.size ?? sessionSize))
   const [index, setIndex] = useState(0)
   const [selected, setSelected] = useState(null)
   const [correct, setCorrect] = useState(0)
@@ -76,7 +81,7 @@ export function KotenInterpretationQuizScreen() {
   const restart = () => {
     const nextRun = run + 1
     setRun(nextRun)
-    setDeck(buildDeck(params.ids))
+    setDeck(buildDeck(params.ids, deck.length))
     setIndex(0)
     setSelected(null)
     setCorrect(0)
@@ -146,9 +151,19 @@ export function KotenInterpretationQuizScreen() {
           <ProgressBar value={index / deck.length} color="#d97706" />
         </div>
         <SpeechSettingsButton compact />
-        <span className="w-12 text-right text-sm font-extrabold text-ink/50">
-          {index + 1}/{deck.length}
-        </span>
+        <SessionCounter
+          index={index}
+          total={deck.length}
+          max={poolSize}
+          onResize={(size) => {
+            setRun((current) => current + 1)
+            setDeck(buildDeck(params.ids, size))
+            setIndex(0)
+            setSelected(null)
+            setCorrect(0)
+            setDone(false)
+          }}
+        />
       </div>
 
       <div className="flex-1 overflow-y-auto px-4 pb-5">

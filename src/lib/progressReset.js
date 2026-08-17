@@ -1,10 +1,12 @@
 import { PERSISTED_PROGRESS_FIELDS } from './progressCode.js'
 
-const resetGroup = (id, label, description, fields) => Object.freeze({
+const resetGroup = (id, label, description, fields, implies = []) => Object.freeze({
   id,
   label,
   description,
   fields: Object.freeze(fields),
+  // この分類を消したとき、同じ履歴から作られていて数字が残ってしまう分類。
+  implies: Object.freeze(implies),
 })
 
 // 学習履歴のリセット画面で選べる分類。
@@ -26,12 +28,15 @@ export const PROGRESS_RESET_GROUPS = Object.freeze([
       'kanbunCultureSrs',
       'kanbunKundokuSrs',
     ],
+    // 復習段階を消すと、そこから作られる成績・分析だけが残って数字が合わなくなる。
+    ['results'],
   ),
   resetGroup(
     'completion',
     '学習済み・達成記録',
     '英作文、長文、数学の完了・理解度',
     ['writingProgress', 'readingsDone', 'mathDone', 'mathMastery'],
+    ['results'],
   ),
   resetGroup(
     'results',
@@ -125,8 +130,24 @@ if (duplicateFields.length || missingFields.length || unknownFields.length) {
   )
 }
 
+const groupById = new Map(PROGRESS_RESET_GROUPS.map((group) => [group.id, group]))
+
+// 選んだ分類の派生先まで広げる。
+// 例：復習段階を消したのに成績分析の数値だけ残る、という食い違いを防ぐ。
+export function expandProgressResetGroupIds(groupIds = []) {
+  const expanded = new Set()
+  const queue = [...(Array.isArray(groupIds) ? groupIds : [])]
+  while (queue.length) {
+    const id = queue.shift()
+    if (!groupById.has(id) || expanded.has(id)) continue
+    expanded.add(id)
+    queue.push(...groupById.get(id).implies)
+  }
+  return expanded
+}
+
 export function normalizeProgressResetGroupIds(groupIds = ALL_PROGRESS_RESET_GROUP_IDS) {
-  const requested = new Set(Array.isArray(groupIds) ? groupIds : [])
+  const requested = expandProgressResetGroupIds(groupIds)
   return ALL_PROGRESS_RESET_GROUP_IDS.filter((id) => requested.has(id))
 }
 

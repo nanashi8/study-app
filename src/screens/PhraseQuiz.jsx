@@ -17,6 +17,7 @@ import { cx } from '../components/ui.jsx'
 import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { buildPhraseInstructorExplanation } from '../lib/instructorExplanations.js'
 import { isDragonVeinSource } from '../lib/dragonVein.js'
+import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 
 const newSessionId = () => (
   globalThis.crypto?.randomUUID?.()
@@ -50,10 +51,11 @@ export function PhraseQuizScreen() {
   const isDragonVein = isDragonVeinSource(source)
 
   const sessionId = useRef(newSessionId())
-  const [deck] = useState(() => buildPhraseDeck(source, {
-    srs: useStore.getState().srs,
-    size: params.size ?? 10,
-  }))
+  // size=0 は「絞り込みなし」。在庫数から、選べる問題数の上限を決める。
+  const buildFor = (size) => buildPhraseDeck(source, { srs: useStore.getState().srs, size })
+  const sessionSize = useSessionSize()
+  const [poolSize] = useState(() => buildFor(0).length)
+  const [deck, setDeck] = useState(() => buildFor(params.size ?? sessionSize))
   const [index, setIndex] = useState(0)
   const [selected, setSelected] = useState(null)
   const results = useRef({ correct: 0, wrong: 0, unknown: 0, wrongIds: [], answerLog: [] })
@@ -156,7 +158,17 @@ export function PhraseQuizScreen() {
           {saved ? <BookmarkFilled size={20} /> : <Bookmark size={20} />}
         </IconButton>
         <SpeechSettingsButton compact />
-        <span className="w-14 text-right text-sm font-extrabold text-ink/50">{index + 1}/{deck.length}</span>
+        <SessionCounter
+          index={index}
+          total={deck.length}
+          max={poolSize}
+          onResize={(size) => {
+            setDeck(buildFor(size))
+            setIndex(0)
+            setSelected(null)
+            results.current = { correct: 0, wrong: 0, unknown: 0, wrongIds: [], answerLog: [] }
+          }}
+        />
       </div>
 
       <div className="flex-1 overflow-y-auto px-3 pb-4">

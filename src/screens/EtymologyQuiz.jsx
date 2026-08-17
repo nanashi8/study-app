@@ -15,6 +15,7 @@ import { SpeakButton } from '../components/SpeakButton.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { Button, IconButton, ProgressBar, cx } from '../components/ui.jsx'
 import { ArrowRight, Check, Close } from '../components/Icons.jsx'
+import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 
 const freshResults = () => ({
   correct: 0,
@@ -61,14 +62,17 @@ export function EtymologyQuizScreen() {
   const reviewEtymology = useStore((state) => state.reviewEtymology)
   const scrollRef = useRef(null)
   const initialEtymologySrs = useRef(useStore.getState().etymologySrs)
-  const [deck, setDeck] = useState(() =>
+  // 語源クイズは1回20問が上限。実際に出せる問題数を数えて選択肢に反映する。
+  const buildFor = (size) =>
     buildEtymologyDeck(ETYMOLOGY_PACKS, initialEtymologySrs.current, {
       mode: params.mode ?? 'all',
       status: params.status ?? 'priority',
       packIds: params.packIds,
-      size: params.size,
-    }),
-  )
+      size,
+    })
+  const sessionSize = useSessionSize(20)
+  const [poolSize] = useState(() => buildFor(20).length)
+  const [deck, setDeck] = useState(() => buildFor(params.size ?? sessionSize))
   const [index, setIndex] = useState(0)
   const [studied, setStudied] = useState(false)
   const [selected, setSelected] = useState(null)
@@ -185,9 +189,19 @@ export function EtymologyQuizScreen() {
             <ProgressBar value={progress} color="#7c3aed" />
           </div>
           <SpeechSettingsButton compact />
-          <span className="w-12 text-right text-sm font-extrabold text-ink/50">
-            {index + 1}/{deck.length}
-          </span>
+          <SessionCounter
+            index={index}
+            total={deck.length}
+            max={poolSize}
+            onResize={(size) => {
+              setDeck(buildFor(size))
+              setIndex(0)
+              setStudied(false)
+              setSelected(null)
+              setDone(false)
+              results.current = freshResults()
+            }}
+          />
         </div>
       </div>
 

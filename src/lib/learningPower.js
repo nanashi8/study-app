@@ -384,7 +384,7 @@ export function buildLearningPowerProfile({
   now = Date.now(),
 } = {}) {
   const analytics = normalizeLearningAnalytics(learningAnalytics)
-  const analysis = analyzeLearning({ learningAnalytics, srsStores, skillStats })
+  const analysis = analyzeLearning({ learningAnalytics, srsStores, skillStats, now })
   const diagnostic = latestValidDiagnostic(diagnosticHistory)
   const habit = habitStats(analytics, stats, now)
   const trackedSkillAnswers = scoredTotal(analysis.skills)
@@ -406,11 +406,9 @@ export function buildLearningPowerProfile({
         ) / trackedSkillAnswers * 100
       : null
 
-  const rhythmScore = analysis.bestWindow
-    ? analysis.bestWindow.correct / analysis.bestWindow.scored * 100
-    : null
+  // 学習リズムは正答率ではなく、同じ時刻に学習を繰り返せているかで測る。
+  const rhythmScore = analysis.rhythm.score
   const intervalAnswers = scoredTotal(analysis.intervals)
-  const bestWindowLabel = formatWindow(analysis.bestWindow)
 
   const dimensions = [
     dimension({
@@ -451,10 +449,10 @@ export function buildLearningPowerProfile({
       id: 'rhythm',
       label: '学習リズム',
       score: rhythmScore,
-      evidence: bestWindowLabel
-        ? `${bestWindowLabel}・${analysis.bestWindow.scored}回答`
-        : '時間帯ごとに5回答以上で推定',
-      note: '正答しやすい時間帯の安定度',
+      evidence: analysis.rhythm.peakHour == null
+        ? '学習した時刻を収集中'
+        : `${analysis.rhythm.peakHour}時台・${analysis.rhythm.activeDays}日中${analysis.rhythm.peakDays}日`,
+      note: '同じ時間帯に学習を繰り返せている割合',
       color: '#f59e0b',
     }),
   ]

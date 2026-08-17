@@ -16,6 +16,7 @@ import {
 import { cx } from '../components/ui.jsx'
 import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { buildKotenWordInstructorExplanation } from '../lib/instructorExplanations.js'
+import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 
 function shuffle(arr) {
   const a = [...arr]
@@ -26,10 +27,10 @@ function shuffle(arr) {
   return a
 }
 
-// クイズは最大20問。渡された id 群からシャッフルして作る。
-function buildQuizDeck(ids, seed) { // eslint-disable-line no-unused-vars
+// 渡された id 群からシャッフルして作る（既定は設定した問題数）。
+function buildQuizDeck(ids, seed, size = 20) { // eslint-disable-line no-unused-vars
   const words = (ids ?? []).map(getKoten).filter(Boolean)
-  return shuffle(words).slice(0, 20)
+  return size > 0 ? shuffle(words).slice(0, size) : shuffle(words)
 }
 
 export function KotenQuizScreen() {
@@ -40,7 +41,9 @@ export function KotenQuizScreen() {
   const toggleKotenWordList = useStore((s) => s.toggleKotenWordList)
 
   const [seed, setSeed] = useState(0)
-  const [deck, setDeck] = useState(() => buildQuizDeck(params.ids, 0))
+  const poolSize = (params.ids ?? []).length
+  const sessionSize = useSessionSize(poolSize || Infinity)
+  const [deck, setDeck] = useState(() => buildQuizDeck(params.ids, 0, params.size ?? sessionSize))
   const [i, setI] = useState(0)
   const [selected, setSelected] = useState(null)
   const [correctCount, setCorrectCount] = useState(0)
@@ -68,7 +71,7 @@ export function KotenQuizScreen() {
   const restart = () => {
     const next = seed + 1
     setSeed(next)
-    setDeck(buildQuizDeck(params.ids, next))
+    setDeck(buildQuizDeck(params.ids, next, deck.length))
     setI(0)
     setSelected(null)
     setCorrectCount(0)
@@ -159,9 +162,20 @@ export function KotenQuizScreen() {
           <ProgressBar value={i / deck.length} color="#f59e0b" />
         </div>
         <SpeechSettingsButton compact />
-        <span className="w-12 text-right text-sm font-extrabold text-ink/50">
-          {i + 1}/{deck.length}
-        </span>
+        <SessionCounter
+          index={i}
+          total={deck.length}
+          max={poolSize}
+          onResize={(size) => {
+            setDeck(buildQuizDeck(params.ids, seed + 1, size))
+            setI(0)
+            setSelected(null)
+            setCorrectCount(0)
+            setBoxUp(0)
+            setNewlyMastered(0)
+            setDone(false)
+          }}
+        />
       </div>
 
       <div className="flex-1 overflow-y-auto px-4 pb-4">

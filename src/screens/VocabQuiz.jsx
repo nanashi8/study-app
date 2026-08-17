@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
-import { buildDeck, SESSION_SIZE } from '../lib/session.js'
+import { buildDeck } from '../lib/session.js'
 import { pickDistractors, shuffle } from '../data/vocab.js'
 import { quizMeaning } from '../data/compact.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
@@ -15,6 +15,7 @@ import { cx } from '../components/ui.jsx'
 import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { buildVocabInstructorExplanation } from '../lib/instructorExplanations.js'
 import { isDragonVeinSource } from '../lib/dragonVein.js'
+import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 
 const sessionKey = (params) => (
   `vocab|${JSON.stringify(params.source ?? { type: 'due' })}|${params.title ?? ''}|${params.size ?? ''}`
@@ -69,12 +70,12 @@ export function VocabQuizScreen() {
   useEffect(() => clearQuizSession(), [clearQuizSession])
 
   const sessionId = useRef(restore?.sessionId ?? newSessionId())
-  const [deck] = useState(() => (
-    restore?.deck
-    ?? buildDeck(source, {
-      srs: useStore.getState().srs,
-      size: params.size ?? SESSION_SIZE,
-    })
+  const sessionSize = useSessionSize()
+  // size=0 は「絞り込みなし」。在庫数から、選べる問題数の上限を決める。
+  const buildFor = (size) => buildDeck(source, { srs: useStore.getState().srs, size })
+  const [poolSize] = useState(() => buildFor(0).length)
+  const [deck, setDeck] = useState(() => (
+    restore?.deck ?? buildFor(params.size ?? sessionSize)
   ))
   const [index, setIndex] = useState(restore?.i ?? 0)
   const [selected, setSelected] = useState(() => (
@@ -209,9 +210,17 @@ export function VocabQuizScreen() {
             <ProgressBar value={index / deck.length} color={isDragonVein ? '#8b5cf6' : '#0ea5e9'} />
           </div>
           <SpeechSettingsButton compact />
-          <span className="w-14 text-right text-sm font-extrabold text-ink/50">
-            {index + 1}/{deck.length}
-          </span>
+          <SessionCounter
+            index={index}
+            total={deck.length}
+            max={poolSize}
+            onResize={(size) => {
+              setDeck(buildFor(size))
+              setIndex(0)
+              setSelected(null)
+              results.current = { correct: 0, wrong: 0, unknown: 0, wrongIds: [], answerLog: [] }
+            }}
+          />
         </div>
       </div>
 

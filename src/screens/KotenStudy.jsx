@@ -4,6 +4,7 @@ import { getKoten } from '../data/koten.js'
 import { Button, ProgressBar, IconButton } from '../components/ui.jsx'
 import { KotenText, KotenWord } from '../components/KotenFurigana.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
+import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 import {
   Bookmark,
   BookmarkFilled,
@@ -13,14 +14,15 @@ import {
 } from '../components/Icons.jsx'
 
 // 渡された id 配列から学習デッキを作る（1回だけシャッフル）。
-function buildKotenDeck(ids, seed) {
+function buildKotenDeck(ids, seed, size = 0) {
   const words = (ids ?? []).map(getKoten).filter(Boolean)
   // seed を変えるたびに並べ替え（「もう一度」用）。Math.random でよい。
   for (let i = words.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1))
     ;[words[i], words[j]] = [words[j], words[i]]
   }
-  return words
+  // size=0 は「絞り込みなし」。
+  return size > 0 ? words.slice(0, size) : words
 }
 
 export function KotenStudyScreen() {
@@ -33,7 +35,9 @@ export function KotenStudyScreen() {
   const revealAll = settings.revealAnswers
 
   const [seed, setSeed] = useState(0)
-  const [deck, setDeck] = useState(() => buildKotenDeck(params.ids, 0))
+  const poolSize = (params.ids ?? []).length
+  const sessionSize = useSessionSize(poolSize || Infinity)
+  const [deck, setDeck] = useState(() => buildKotenDeck(params.ids, 0, params.size ?? sessionSize))
   const [i, setI] = useState(0)
   const [flipped, setFlipped] = useState(revealAll)
   const [done, setDone] = useState(false)
@@ -55,7 +59,7 @@ export function KotenStudyScreen() {
   const restart = () => {
     const next = seed + 1
     setSeed(next)
-    setDeck(buildKotenDeck(params.ids, next))
+    setDeck(buildKotenDeck(params.ids, next, deck.length))
     setI(0)
     setFlipped(revealAll)
     setDone(false)
@@ -101,9 +105,19 @@ export function KotenStudyScreen() {
           <ProgressBar value={i / deck.length} color="#f59e0b" />
         </div>
         <SpeechSettingsButton compact />
-        <span className="w-12 text-right text-sm font-extrabold text-ink/50">
-          {i + 1}/{deck.length}
-        </span>
+        <SessionCounter
+          index={i}
+          total={deck.length}
+          max={poolSize}
+          label="語"
+          onResize={(size) => {
+            setDeck(buildKotenDeck(params.ids, seed + 1, size))
+            setI(0)
+            setFlipped(revealAll)
+            setDone(false)
+            setRemembered(0)
+          }}
+        />
       </div>
 
       {/* カード */}

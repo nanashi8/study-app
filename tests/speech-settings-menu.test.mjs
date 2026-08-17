@@ -159,12 +159,14 @@ test('共通メニューから保存される学習・音声・コンテンツ�
     'showPhonetic',
     'autoSpeak',
     'dailyGoal',
+    'sessionSize',
     'revealAnswers',
   ])
 
   assert.match(source, /data-settings-central-panel/)
   assert.match(source, /setSetting\('revealAnswers'/)
   assert.match(source, /setSetting\('dailyGoal'/)
+  assert.match(source, /setSetting\('sessionSize'/)
   assert.match(source, /title="読み上げの速さ"/)
   assert.match(source, /setSetting\('ttsRate'/)
   assert.match(source, /setSetting\('ttsVoiceURI'/)
@@ -197,6 +199,7 @@ test('永続設定の変更処理は共通メニューへ集約し、廃止し�
       'components/SpeechSettings.jsx',
       'components/SpeechConsole.jsx',
       'components/GameSettings.jsx',
+      'components/SessionSize.jsx',
     ]],
     ['setBattleRelicLevel', ['components/GameSettings.jsx']],
     ['setBattleThemeId', ['components/GameSettings.jsx']],

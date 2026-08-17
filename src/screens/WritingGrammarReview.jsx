@@ -5,6 +5,7 @@ import { getWritingGrammar } from '../data/writing.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { Button, Chip, IconButton, ProgressBar } from '../components/ui.jsx'
+import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 import {
   ArrowRight,
   Check,
@@ -19,7 +20,8 @@ export function WritingGrammarReviewScreen() {
   const myGrammarList = useStore((s) => s.myGrammarList)
   const srs = useStore((s) => s.srs)
   const review = useStore((s) => s.review)
-  const [deck] = useState(() => {
+  // 復習どきのカードを優先し、なければ保存カード全体から出す。size=0 は「絞り込みなし」。
+  const buildFor = (size) => {
     const items = useStore
       .getState()
       .myGrammarList.map(getWritingGrammar)
@@ -27,8 +29,12 @@ export function WritingGrammarReviewScreen() {
     const due = items.filter((item) =>
       isDue(useStore.getState().srs[item.id]),
     )
-    return due.length ? due : items
-  })
+    const pool = due.length ? due : items
+    return size > 0 ? pool.slice(0, size) : pool
+  }
+  const [poolSize] = useState(() => buildFor(0).length)
+  const sessionSize = useSessionSize(poolSize || Infinity)
+  const [deck, setDeck] = useState(() => buildFor(sessionSize))
   const [index, setIndex] = useState(0)
   const [revealed, setRevealed] = useState(false)
   const [results, setResults] = useState({ remembered: 0, forgot: 0 })
@@ -130,9 +136,18 @@ export function WritingGrammarReviewScreen() {
           color={level.color}
         />
         <SpeechSettingsButton compact />
-        <span className="w-12 text-right text-sm font-extrabold text-ink/45">
-          {index + 1}/{deck.length}
-        </span>
+        <SessionCounter
+          index={index}
+          total={deck.length}
+          max={poolSize}
+          label="カード"
+          onResize={(size) => {
+            setDeck(buildFor(size))
+            setIndex(0)
+            setRevealed(false)
+            setResults({ remembered: 0, forgot: 0 })
+          }}
+        />
       </header>
 
       <main className="flex flex-1 flex-col px-4 pb-4">

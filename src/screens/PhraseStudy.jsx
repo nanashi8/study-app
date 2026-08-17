@@ -10,6 +10,7 @@ import { LongSentenceTranslation } from '../components/LongSentenceTranslation.j
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { Button, ProgressBar, IconButton, Chip } from '../components/ui.jsx'
 import { ArrowRight, Bookmark, BookmarkFilled, Close, Lightbulb, Link } from '../components/Icons.jsx'
+import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 
 const itemKind = (p) =>
   p.category === 'expression' ? { label: '表現', color: '#0ea5e9' }
@@ -28,12 +29,15 @@ export function PhraseStudyScreen() {
   // 暗記モード：ONなら毎カード最初から意味・成り立ちを開いて見せる（単語学習と共通）。
   const revealAll = settings.revealAnswers
 
-  const [deck] = useState(() =>
+  // size=0 は「絞り込みなし」。在庫数から、選べる問題数の上限を決める。
+  const buildFor = (size) =>
     buildPhraseDeck(params.source ?? { type: 'phrase', kind: 'idiom' }, {
       srs: useStore.getState().srs,
-      size: params.size ?? 10,
-    }),
-  )
+      size,
+    })
+  const sessionSize = useSessionSize()
+  const [poolSize] = useState(() => buildFor(0).length)
+  const [deck, setDeck] = useState(() => buildFor(params.size ?? sessionSize))
   const [i, setI] = useState(0)
   const [flipped, setFlipped] = useState(revealAll)
   const results = useRef({ remembered: 0, forgot: 0, forgotIds: [] })
@@ -120,7 +124,17 @@ export function PhraseStudyScreen() {
           {saved ? <BookmarkFilled size={20} /> : <Bookmark size={20} />}
         </IconButton>
         <SpeechSettingsButton compact />
-        <span className="w-12 text-right text-sm font-extrabold text-ink/50">{i + 1}/{deck.length}</span>
+        <SessionCounter
+          index={i}
+          total={deck.length}
+          max={poolSize}
+          onResize={(size) => {
+            setDeck(buildFor(size))
+            setI(0)
+            setFlipped(revealAll)
+            results.current = { remembered: 0, forgot: 0, forgotIds: [] }
+          }}
+        />
       </div>
 
       <div className="flex-1 overflow-y-auto px-4 pb-4">

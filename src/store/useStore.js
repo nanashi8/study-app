@@ -148,6 +148,7 @@ const DEFAULT_SETTINGS = {
   showPhonetic: true,
   autoSpeak: true,
   dailyGoal: 20,
+  sessionSize: 10, // 1回の学習・クイズで出す問題数（進捗表示のタップで変更）
   revealAnswers: false, // 覚える/復習/マイ単語で、タップせず最初から意味・語源を表示する
 }
 
