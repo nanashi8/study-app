@@ -40,6 +40,7 @@ export const PROGRESS_RESET_GROUPS = Object.freeze([
     [
       'skillStats',
       'learningAnalytics',
+      'contentQuizResults',
       'diagnosticHistory',
       'diagnosticAttempt',
       'diagnosticSeed',

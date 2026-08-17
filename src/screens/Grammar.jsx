@@ -4,7 +4,9 @@ import { LEVELS, getLevel } from '../data/levels.js'
 import { GRAMMAR, grammarByLevel, grammarByTopic, topicsForLevel } from '../data/grammar.js'
 import { todayIndex } from '../store/useStore.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
-import { Card, Button, Chip, ProgressBar, cx } from '../components/ui.jsx'
+import { Card, Button, Chip, cx } from '../components/ui.jsx'
+import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
+import { summarizeSrsItems } from '../lib/contentProgress.js'
 import { Cards, ArrowRight, Refresh } from '../components/Icons.jsx'
 
 const lessonStageForLevel = (level) => {
@@ -15,16 +17,14 @@ const lessonStageForLevel = (level) => {
   return '高校発展'
 }
 
-// その級・トピックの習得状況（box>=4 を習得とみなす。単語・熟語と同じ基準）。
-function progressOf(items, srs) {
-  let mastered = 0
+// 復習期限は3区分の学習状態とは別の予定として数える。
+function dueProgressOf(items, srs) {
   let due = 0
   const day = todayIndex()
   for (const g of items) {
-    if ((srs[g.id]?.box ?? 0) >= 4) mastered++
     if (srs[g.id]?.due <= day) due++
   }
-  return { total: items.length, mastered, due }
+  return { total: items.length, due }
 }
 
 export function GrammarScreen() {
@@ -40,8 +40,9 @@ export function GrammarScreen() {
   const meta = getLevel(level)
   const topics = topicsForLevel(level)
   const levelItems = grammarByLevel(level)
-  const lp = progressOf(levelItems, srs)
-  const allProgress = progressOf(GRAMMAR, srs)
+  const lp = dueProgressOf(levelItems, srs)
+  const levelStatus = summarizeSrsItems(levelItems, srs)
+  const allProgress = dueProgressOf(GRAMMAR, srs)
 
   const quizLevel = () =>
     navigate('grammarQuiz', { source: { type: 'grammar', level }, title: `${meta.label} 文法`, levelColor: meta.color })
@@ -115,9 +116,9 @@ export function GrammarScreen() {
               <div className="font-display text-lg font-extrabold text-ink">{meta.emoji} {meta.label} 文法</div>
               <div className="text-xs font-bold text-ink/50">{meta.sub}・全{lp.total}問・{topics.length}単元</div>
             </div>
-            <div className="text-right text-xs font-bold text-ink/45">習得 {lp.mastered}/{lp.total}</div>
+            <div className="text-right text-xs font-bold text-ink/45">全{lp.total}問</div>
           </div>
-          <ProgressBar className="mt-3" value={lp.total ? lp.mastered / lp.total : 0} color={meta.color} />
+          <LearningStatusBars progress={levelStatus} className="mt-3" compact />
           <Button className="mt-3" full onClick={quizLevel}><Cards size={16} /> この級をまとめてクイズ</Button>
         </Card>
 
@@ -126,7 +127,8 @@ export function GrammarScreen() {
         <div className="space-y-2">
           {topics.map((topic) => {
             const items = grammarByTopic(level, topic)
-            const tp = progressOf(items, srs)
+            const tp = dueProgressOf(items, srs)
+            const topicStatus = summarizeSrsItems(items, srs)
             return (
               <button
                 key={topic}
@@ -138,7 +140,7 @@ export function GrammarScreen() {
                     <span className="font-display font-extrabold text-ink">{topic}</span>
                     <Chip color={meta.color}>{tp.total}問</Chip>
                   </div>
-                  <ProgressBar className="mt-2" value={tp.total ? tp.mastered / tp.total : 0} color={meta.color} />
+                  <LearningStatusBars progress={topicStatus} className="mt-2" compact />
                 </div>
                 <span className="text-brand-400"><ArrowRight size={20} /></span>
               </button>

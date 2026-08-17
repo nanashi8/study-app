@@ -7,7 +7,9 @@ import {
   literatureWordCount,
 } from '../data/public-domain-literature.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
-import { Card, Chip, ProgressBar, cx } from '../components/ui.jsx'
+import { Card, Chip, cx } from '../components/ui.jsx'
+import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
+import { summarizeCompletionItems } from '../lib/contentProgress.js'
 import { ArrowRight, Check, Headphones, Link } from '../components/Icons.jsx'
 
 const FILTERS = [
@@ -20,6 +22,7 @@ const FILTERS = [
 export function LiteratureLibraryScreen() {
   const navigate = useStore((state) => state.navigate)
   const readingsDone = useStore((state) => state.readingsDone)
+  const contentQuizResults = useStore((state) => state.contentQuizResults)
   const initialKind = useStore((state) => state.params.kind)
   const [filter, setFilter] = useState(() =>
     ['english', 'classical', 'kanbun'].includes(initialKind) ? initialKind : 'all',
@@ -31,6 +34,12 @@ export function LiteratureLibraryScreen() {
       : PUBLIC_DOMAIN_LITERATURE.filter((work) => work.kind === filter)
   const done = literatureCompletionCount(readingsDone, filter === 'all' ? null : filter)
   const total = works.length
+  const overallStatus = summarizeCompletionItems({
+    items: PUBLIC_DOMAIN_LITERATURE,
+    completedIds: readingsDone,
+    quizResults: contentQuizResults,
+    quizDomain: 'literature',
+  })
 
   return (
     <div className="pb-7">
@@ -64,19 +73,17 @@ export function LiteratureLibraryScreen() {
                 <span>読了</span>
                 <span>{literatureCompletionCount(readingsDone)}/{PUBLIC_DOMAIN_LITERATURE.length}作品</span>
               </div>
-              <ProgressBar
-                value={
-                  PUBLIC_DOMAIN_LITERATURE.length
-                    ? literatureCompletionCount(readingsDone) / PUBLIC_DOMAIN_LITERATURE.length
-                    : 0
-                }
-                className="mt-1.5 h-2 bg-white/15"
-                color="linear-gradient(90deg,#5eead4,#34d399)"
-              />
             </div>
             <Headphones size={22} className="text-teal-200" />
           </div>
         </section>
+
+        <Card className="p-4" data-literature-status>
+          <LearningStatusBars progress={overallStatus} compact />
+          <p className="mt-2 text-[10px] font-bold leading-relaxed text-ink/45">
+            英語名作の読解チェックは正誤を記録します。独立クイズのない古典・漢文名作は未回答です。
+          </p>
+        </Card>
 
         <Card className="p-4">
           <div className="flex items-start gap-3">

@@ -81,6 +81,7 @@ export function LiteratureReaderScreen() {
   const settings = useStore((state) => state.settings)
   const readingsDone = useStore((state) => state.readingsDone)
   const markLiteratureDone = useStore((state) => state.markLiteratureDone)
+  const recordContentQuizResult = useStore((state) => state.recordContentQuizResult)
   const myList = useStore((state) => state.myList)
   const addManyToMyList = useStore((state) => state.addManyToMyList)
   const toggleMyList = useStore((state) => state.toggleMyList)
@@ -180,6 +181,9 @@ export function LiteratureReaderScreen() {
   const readingQuestions = isEnglish ? getLiteratureReadingQuestions(work.id) : []
   const answeredQuestionCount = readingQuestions.filter((item) => questionAnswers[item.id] != null).length
   const allQuestionsAnswered = answeredQuestionCount === readingQuestions.length
+  const correctQuestionCount = readingQuestions.filter(
+    (item) => questionAnswers[item.id] === item.answer,
+  ).length
   const passageRules = isEnglish
     ? readingRulesForPassage({
         sentences: work.scenes.map((scene, index) => ({
@@ -289,6 +293,22 @@ export function LiteratureReaderScreen() {
         ? { ...answers, [questionId]: choiceIndex }
         : answers
     ))
+  }
+
+  const completeWork = () => {
+    if (isEnglish && allQuestionsAnswered && readingQuestions.length) {
+      recordContentQuizResult(
+        'literature',
+        work.id,
+        correctQuestionCount,
+        readingQuestions.length,
+      )
+    }
+    markLiteratureDone(
+      work.id,
+      isEnglish ? 'reading' : 'koten_reading',
+      work.scenes.length,
+    )
   }
 
   return (
@@ -755,13 +775,7 @@ export function LiteratureReaderScreen() {
           full
           variant={completed ? 'soft' : 'secondary'}
           disabled={isEnglish && !completed && !allQuestionsAnswered}
-          onClick={() =>
-            markLiteratureDone(
-              work.id,
-              isEnglish ? 'reading' : 'koten_reading',
-              work.scenes.length,
-            )
-          }
+          onClick={completeWork}
         >
           <Check size={17} /> {completed
             ? '読了として記録済み'

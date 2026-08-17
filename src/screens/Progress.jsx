@@ -7,9 +7,15 @@ import {
   ETYMOLOGY_MODE_META,
   ETYMOLOGY_PACKS,
   getWord,
+  wordsByLevel,
 } from '../data/vocab.js'
 import { etymologyProgress } from '../lib/etymologyProgress.js'
-import { levelProgress, overallProgress } from '../lib/session.js'
+import { overallProgress } from '../lib/session.js'
+import {
+  LEARNING_CONTENT_GROUPS,
+  buildLearningContentProgress,
+} from '../lib/learningContentProgress.js'
+import { summarizeSrsItems } from '../lib/contentProgress.js'
 import {
   decodeProgress,
   selectProgressState,
@@ -20,12 +26,19 @@ import { LearningAnalyticsPanel } from '../components/LearningAnalytics.jsx'
 import { ProgressBackupPanel } from '../components/ProgressBackup.jsx'
 import { Sheet } from '../components/Sheet.jsx'
 import { Card, Button } from '../components/ui.jsx'
+import {
+  LearningStatusBars,
+  StatusDistributionBar,
+} from '../components/LearningStatusBars.jsx'
 import { Upload } from '../components/Icons.jsx'
 
 function RecordSummary({ stats, progress, analytics }) {
   const accuracy = stats.answered
     ? `${Math.round((stats.correct / stats.answered) * 100)}%`
     : '—'
+  const learning = progress?.learning ?? {}
+  const quiz = progress?.quiz ?? {}
+  const total = progress?.total ?? 0
   return (
     <section className="overflow-hidden rounded-xl border-2 border-slate-700 bg-white" aria-label="学習記録票の基本情報">
       <div className="flex items-center justify-between gap-3 border-b border-slate-300 bg-slate-800 px-4 py-3 text-white">
@@ -33,26 +46,65 @@ function RecordSummary({ stats, progress, analytics }) {
           <p className="text-[10px] font-extrabold tracking-[0.18em] text-slate-300">STUDENT LEARNING RECORD</p>
           <h2 className="font-display text-lg font-extrabold">学習記録票</h2>
         </div>
-        <span className="border border-slate-500 px-2 py-1 text-[10px] font-extrabold">端末集計</span>
+        <span className="whitespace-nowrap border border-slate-500 px-2 py-1 text-[10px] font-extrabold">端末集計</span>
       </div>
-      <table className="w-full border-collapse text-xs" data-progress-record-summary>
+      <table className="w-full table-fixed border-collapse text-[10px] sm:text-xs" data-progress-record-summary>
         <tbody>
           {[
-            ['英単語学習済み', `${progress.seen}/${progress.total}`, '連続学習', `${stats.streak}日`],
+            ['英単語 学習済', `${learning.learned ?? 0}/${total}`, '英単語 復習中', `${learning.reviewing ?? 0}/${total}`],
+            ['英単語 未学習', `${learning.unlearned ?? 0}/${total}`, 'クイズ 正解', `${quiz.correct ?? 0}/${total}`],
+            ['クイズ 不正解', `${quiz.incorrect ?? 0}/${total}`, 'クイズ 未回答', `${quiz.unanswered ?? 0}/${total}`],
             ['累計回答', stats.answered.toLocaleString(), '累計正答率', accuracy],
-            ['英単語習得', `${progress.mastered}/${progress.total}`, '英単語復習待ち', `${progress.due}語`],
-            ['分析入力', `${analytics?.inputs ?? 0}件`, '本日の回答', `${stats.todayCount}件`],
+            ['分析入力', `${analytics?.inputs ?? 0}件`, '連続学習', `${stats.streak}日`],
           ].map(([leftLabel, leftValue, rightLabel, rightValue]) => (
             <tr key={leftLabel} className="border-b border-slate-200 last:border-0">
-              <th className="w-[24%] bg-slate-100 px-2 py-2 text-left font-extrabold text-slate-600">{leftLabel}</th>
-              <td className="w-[26%] px-2 py-2 text-right font-extrabold tabular-nums text-slate-950">{leftValue}</td>
-              <th className="w-[24%] bg-slate-100 px-2 py-2 text-left font-extrabold text-slate-600">{rightLabel}</th>
-              <td className="w-[26%] px-2 py-2 text-right font-extrabold tabular-nums text-slate-950">{rightValue}</td>
+              <th className="w-[24%] bg-slate-100 px-1 py-2 text-left font-extrabold text-slate-600 [word-break:keep-all] sm:px-2">{leftLabel}</th>
+              <td className="w-[26%] px-1 py-2 text-right font-extrabold tracking-tight tabular-nums text-slate-950 sm:px-2">{leftValue}</td>
+              <th className="w-[24%] bg-slate-100 px-1 py-2 text-left font-extrabold text-slate-600 [word-break:keep-all] sm:px-2">{rightLabel}</th>
+              <td className="w-[26%] px-1 py-2 text-right font-extrabold tracking-tight tabular-nums text-slate-950 sm:px-2">{rightValue}</td>
             </tr>
           ))}
         </tbody>
       </table>
     </section>
+  )
+}
+
+function AllContentStatus({ contents, onOpen }) {
+  return (
+    <Card className="overflow-hidden rounded-xl border-slate-300 p-0 shadow-none" data-all-content-status>
+      <div className="border-b border-slate-300 bg-slate-100 px-3 py-2.5">
+        <h2 className="font-display text-base font-extrabold text-slate-950">全教材・3区分進捗表</h2>
+        <p className="text-[10px] font-bold text-slate-500">学習の自己判定とクイズの直近結果を別々に集計</p>
+      </div>
+      <div className="divide-y divide-slate-200">
+        {LEARNING_CONTENT_GROUPS.map((group) => (
+          <section key={group.id} className="p-3" aria-labelledby={`record-group-${group.id}`}>
+            <h3 id={`record-group-${group.id}`} className="mb-2 text-xs font-extrabold text-slate-700">{group.label}</h3>
+            <div className="space-y-3">
+              {contents.filter((content) => content.group === group.id).map((content) => (
+                <div key={content.id} className="rounded-xl border border-slate-200 bg-white p-3" data-record-content={content.id}>
+                  <div className="mb-2 flex items-center justify-between gap-2">
+                    <div>
+                      <p className="text-xs font-extrabold text-slate-900">{content.label}</p>
+                      <p className="text-[9px] font-bold text-slate-400">全{content.progress.total.toLocaleString('ja-JP')}{content.unit}</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => onOpen(content)}
+                      className="min-h-9 rounded-lg border border-slate-300 px-2 text-[10px] font-extrabold text-slate-700 active:bg-slate-50"
+                    >
+                      開く
+                    </button>
+                  </div>
+                  <LearningStatusBars progress={content.progress} compact />
+                </div>
+              ))}
+            </div>
+          </section>
+        ))}
+      </div>
+    </Card>
   )
 }
 
@@ -70,18 +122,7 @@ export function ProgressScreen() {
     () => etymologyProgress(ETYMOLOGY_PACKS, full.etymologySrs),
     [full.etymologySrs],
   )
-  const etymologyByMode = useMemo(
-    () => Object.fromEntries(
-      Object.keys(ETYMOLOGY_MODE_META).map((mode) => [
-        mode,
-        etymologyProgress(
-          ETYMOLOGY_PACKS.filter((pack) => pack.mode === mode),
-          full.etymologySrs,
-        ),
-      ]),
-    ),
-    [full.etymologySrs],
-  )
+  const contentProgress = useMemo(() => buildLearningContentProgress(full), [full])
   const [input, setInput] = useState('')
   const [error, setError] = useState('')
   const [preview, setPreview] = useState(null) // {summary} 確認シート
@@ -146,6 +187,14 @@ export function ProgressScreen() {
     }
   }
 
+  const openContent = (content) => {
+    if (content.id.startsWith('kanbun-') && content.id !== 'kanbun-kundoku') {
+      navigate(content.screen, { domain: content.id.replace('kanbun-', '') })
+      return
+    }
+    navigate(content.screen)
+  }
+
   // QRのURL（#code=...）で開かれたら、そのコードを読み込んで復元確認を出す。
   // 勝手に上書きしないよう、必ずプレビュー→本人の確認を挟む。
   useEffect(() => {
@@ -168,7 +217,11 @@ export function ProgressScreen() {
       <ScreenHeader title="学習の記録" />
 
       <div className="space-y-5 px-4">
-        <RecordSummary stats={stats} progress={prog} analytics={full.learningAnalytics} />
+        <RecordSummary
+          stats={stats}
+          progress={contentProgress.find((content) => content.id === 'vocab')?.progress}
+          analytics={full.learningAnalytics}
+        />
 
         <LearningAnalyticsPanel
           progressState={full}
@@ -191,38 +244,25 @@ export function ProgressScreen() {
           onNavigate={(screen, params) => navigate(screen, params)}
         />
 
+        <AllContentStatus contents={contentProgress} onOpen={openContent} />
+
         {/* 級別の進捗 */}
         <Card className="overflow-hidden rounded-xl border-slate-300 p-0 shadow-none">
           <div className="border-b border-slate-300 bg-slate-100 px-3 py-2.5">
             <h2 className="font-display text-base font-extrabold text-slate-950">英検級別・履修状況表</h2>
             <p className="text-[10px] font-bold text-slate-500">英単語SRSを級別に集計</p>
           </div>
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[28rem] border-collapse text-xs" data-level-progress-table>
-              <thead>
-                <tr className="border-b border-slate-300 text-left text-[10px] font-extrabold text-slate-500">
-                  <th className="px-3 py-2">級</th>
-                  <th className="px-3 py-2 text-right">学習済</th>
-                  <th className="px-3 py-2 text-right">習得</th>
-                  <th className="px-3 py-2 text-right">復習待ち</th>
-                  <th className="px-3 py-2 text-right">習得率</th>
-                </tr>
-              </thead>
-              <tbody>
-                {LEVELS.map((level) => {
-                  const progress = levelProgress(level.id, srs)
-                  return (
-                    <tr key={level.id} className="border-b border-slate-200 last:border-0">
-                      <th className="px-3 py-2 text-left font-extrabold text-slate-800">{level.emoji} {level.label}</th>
-                      <td className="px-3 py-2 text-right font-bold tabular-nums">{progress.seen}/{progress.total}</td>
-                      <td className="px-3 py-2 text-right font-bold tabular-nums">{progress.mastered}</td>
-                      <td className="px-3 py-2 text-right font-bold tabular-nums">{progress.due}</td>
-                      <td className="px-3 py-2 text-right font-extrabold tabular-nums">{progress.total ? Math.round((progress.mastered / progress.total) * 100) : 0}%</td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
+          <div className="divide-y divide-slate-200" data-level-progress-table>
+            {LEVELS.map((level) => {
+              const progress = summarizeSrsItems(wordsByLevel(level.id), srs)
+              return (
+                <div key={level.id} className="space-y-2.5 p-3">
+                  <h3 className="text-xs font-extrabold text-slate-800">{level.emoji} {level.label}</h3>
+                  <StatusDistributionBar kind="learning" counts={progress.learning} compact />
+                  <StatusDistributionBar kind="quiz" counts={progress.quiz} compact />
+                </div>
+              )
+            })}
           </div>
         </Card>
 
@@ -233,37 +273,25 @@ export function ProgressScreen() {
               <h2 className="font-display text-base font-extrabold text-slate-950">語源知識・履修状況表</h2>
               <p className="text-[10px] font-bold text-slate-500">単語SRSとは別集計・全{etymology.total}項目</p>
             </div>
-            <span className="border border-slate-300 bg-white px-2 py-1 text-[10px] font-extrabold text-slate-700">復習待ち {etymology.due}</span>
+            <span className="border border-slate-300 bg-white px-2 py-1 text-[10px] font-extrabold text-slate-700">今日の復習 {etymology.due}</span>
           </div>
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[28rem] border-collapse text-xs" data-etymology-progress-table>
-              <thead>
-                <tr className="border-b border-slate-300 text-left text-[10px] font-extrabold text-slate-500">
-                  <th className="px-3 py-2">分類</th>
-                  <th className="px-3 py-2 text-right">学習済</th>
-                  <th className="px-3 py-2 text-right">習得</th>
-                  <th className="px-3 py-2 text-right">復習待ち</th>
-                  <th className="px-3 py-2 text-right">習得率</th>
-                </tr>
-              </thead>
-              <tbody>
-                {Object.entries(ETYMOLOGY_MODE_META).map(([mode, meta]) => {
-                  const progress = etymologyByMode[mode]
-                  return (
-                    <tr key={mode} className="border-b border-slate-200 last:border-0">
-                      <th className="px-3 py-2 text-left font-extrabold text-slate-800">{meta.emoji} {meta.label}</th>
-                      <td className="px-3 py-2 text-right font-bold tabular-nums">{progress.started}/{progress.total}</td>
-                      <td className="px-3 py-2 text-right font-bold tabular-nums">{progress.mastered}</td>
-                      <td className="px-3 py-2 text-right font-bold tabular-nums">{progress.due}</td>
-                      <td className="px-3 py-2 text-right font-extrabold tabular-nums">{Math.round(progress.ratio * 100)}%</td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
+          <div className="divide-y divide-slate-200" data-etymology-progress-table>
+            {Object.entries(ETYMOLOGY_MODE_META).map(([mode, meta]) => {
+              const progress = summarizeSrsItems(
+                ETYMOLOGY_PACKS.filter((pack) => pack.mode === mode),
+                full.etymologySrs,
+              )
+              return (
+                <div key={mode} className="space-y-2.5 p-3">
+                  <h3 className="text-xs font-extrabold text-slate-800">{meta.emoji} {meta.label}</h3>
+                  <StatusDistributionBar kind="learning" counts={progress.learning} compact />
+                  <StatusDistributionBar kind="quiz" counts={progress.quiz} compact />
+                </div>
+              )
+            })}
           </div>
           <div className="border-t border-slate-200 p-3">
-            <Button full variant="secondary" onClick={() => navigate('roots')}>語源知識マップで詳しく見る</Button>
+            <Button full variant="secondary" onClick={() => navigate('roots')}>語源カードの進み具合を見る</Button>
           </div>
         </Card>
 
@@ -318,19 +346,19 @@ export function ProgressScreen() {
             <div className="grid grid-cols-2 gap-3">
               <div className="rounded-2xl bg-brand-50 p-3 text-center">
                 <div className="font-display text-2xl font-extrabold text-brand-700">{preview.summary.words}</div>
-                <div className="text-[11px] font-bold text-ink/50">学習済みの単語</div>
+                <div className="text-[11px] font-bold text-ink/50">旧履歴がある単語</div>
               </div>
               <div className="rounded-2xl bg-brand-50 p-3 text-center">
                 <div className="font-display text-2xl font-extrabold text-brand-700">{preview.summary.mastered}</div>
-                <div className="text-[11px] font-bold text-ink/50">習得した単語</div>
+                <div className="text-[11px] font-bold text-ink/50">旧SRS段階4以上の単語</div>
               </div>
               <div className="rounded-2xl bg-violet-50 p-3 text-center">
                 <div className="font-display text-2xl font-extrabold text-violet-700">{preview.summary.etymologyStarted}</div>
-                <div className="text-[11px] font-bold text-ink/50">学習済みの語源</div>
+                <div className="text-[11px] font-bold text-ink/50">旧履歴がある語源</div>
               </div>
               <div className="rounded-2xl bg-violet-50 p-3 text-center">
                 <div className="font-display text-2xl font-extrabold text-violet-700">{preview.summary.etymologyMastered}</div>
-                <div className="text-[11px] font-bold text-ink/50">習得した語源</div>
+                <div className="text-[11px] font-bold text-ink/50">旧SRS段階4以上の語源</div>
               </div>
               <div className="rounded-2xl bg-hint-soft p-3 text-center">
                 <div className="font-display text-2xl font-extrabold text-amber-700">{preview.summary.streak}</div>

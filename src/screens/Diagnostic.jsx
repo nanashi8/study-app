@@ -18,6 +18,7 @@ import { ScreenHeader } from '../components/AppShell.jsx'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
+import { StatusDistributionBar } from '../components/LearningStatusBars.jsx'
 import { Button, Card, Chip, IconButton, ProgressBar, ProgressRing, cx } from '../components/ui.jsx'
 import { ArrowRight, Check, Close, Sparkles, Target, Trophy } from '../components/Icons.jsx'
 import { buildDiagnosticInstructorExplanation } from '../lib/instructorExplanations.js'
@@ -254,10 +255,18 @@ function PerformanceReport({ result, guidance }) {
                     {skill.correct}/{skill.total}問
                   </span>
                 </div>
-                <ProgressBar value={skill.accuracy} color={meta?.color ?? '#6366f1'} />
-                {(skill.unknown > 0 || skill.incorrect > 0) && (
+                <StatusDistributionBar
+                  kind="quiz"
+                  counts={{
+                    correct: skill.correct,
+                    incorrect: skill.incorrect + skill.unknown,
+                    unanswered: Math.max(0, skill.total - skill.correct - skill.incorrect - skill.unknown),
+                  }}
+                  compact
+                />
+                {skill.unknown > 0 && (
                   <p className="mt-1 text-right text-[9px] font-bold text-ink/35">
-                    不正解 {skill.incorrect}・わからない {skill.unknown}
+                    不正解のうち「わからない」{skill.unknown}問
                   </p>
                 )}
               </div>

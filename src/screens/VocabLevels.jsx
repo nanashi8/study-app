@@ -1,6 +1,6 @@
 import { useStore } from '../store/useStore.js'
 import { LEVELS } from '../data/levels.js'
-import { ALL_WORDS, VOCAB_FIELDS, VOCAB_POS } from '../data/vocab.js'
+import { ALL_WORDS, VOCAB_FIELDS, VOCAB_POS, wordsByLevel } from '../data/vocab.js'
 import {
   levelProgress,
   overallProgress,
@@ -8,7 +8,9 @@ import {
   weakFoundationLevel,
 } from '../lib/session.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
-import { Card, ProgressRing, ProgressBar, Button, Chip, IconButton } from '../components/ui.jsx'
+import { Card, Button, Chip, IconButton } from '../components/ui.jsx'
+import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
+import { summarizeSrsItems } from '../lib/contentProgress.js'
 import { Refresh, Bookmark, Book, Cards, Search, Lightbulb, ArrowRight, Sparkles, Check } from '../components/Icons.jsx'
 
 // 下の級（前提）が弱点なら「先に固めよう」と案内するバナー。
@@ -16,6 +18,7 @@ function WeakFoundationBanner({ srs, onReview }) {
   const weak = weakFoundationLevel(srs)
   if (!weak) return null
   const { level, progress, reason } = weak
+  const status = summarizeSrsItems(wordsByLevel(level.id), srs)
   return (
     <button
       onClick={() => onReview(level)}
@@ -31,7 +34,7 @@ function WeakFoundationBanner({ srs, onReview }) {
         <div className="text-[11px] font-bold text-amber-800/75">
           {reason === 'due'
             ? `復習が ${progress.due} 語たまっています。土台の級です`
-            : `習得 ${progress.mastered}/${progress.total} 語。上の級の土台になります`}
+            : `学習済 ${status.learning.learned}/${status.total} 語。上の級の土台になります`}
         </div>
       </div>
       <span className="text-amber-700"><ArrowRight size={20} /></span>
@@ -41,7 +44,7 @@ function WeakFoundationBanner({ srs, onReview }) {
 
 function LevelCard({ level, srs, onStudy, onQuiz, onDecks }) {
   const p = levelProgress(level.id, srs)
-  const masteredPct = p.total ? p.mastered / p.total : 0
+  const status = summarizeSrsItems(wordsByLevel(level.id), srs)
   return (
     <Card className="p-4">
       <div className="flex items-center gap-3">
@@ -58,18 +61,11 @@ function LevelCard({ level, srs, onStudy, onQuiz, onDecks }) {
           </div>
           <p className="text-xs font-bold text-ink/50">{level.sub}</p>
         </div>
-        <ProgressRing value={masteredPct} size={52} stroke={6} color={level.color}>
-          <span className="text-[11px] font-extrabold text-ink/70">{Math.round(masteredPct * 100)}%</span>
-        </ProgressRing>
+        <span className="shrink-0 text-xs font-extrabold tabular-nums text-ink/45">全{p.total}語</span>
       </div>
 
-      <div className="mt-3">
-        <ProgressBar value={p.total ? p.seen / p.total : 0} color={level.color} />
-        <div className="mt-1.5 flex justify-between text-[11px] font-bold text-ink/45">
-          <span>習得 {p.mastered} ・ 学習済 {p.seen}</span>
-          <span>全 {p.total} 語{p.due > 0 && ` ・ 復習 ${p.due}`}</span>
-        </div>
-      </div>
+      <LearningStatusBars progress={status} className="mt-3" compact />
+      {p.due > 0 && <p className="mt-1.5 text-right text-[10px] font-extrabold text-amber-700">今日の復習 {p.due}語</p>}
 
       <div className="mt-3 grid grid-cols-2 gap-2">
         <Button

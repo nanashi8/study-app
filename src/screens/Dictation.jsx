@@ -1,9 +1,11 @@
 import { useStore } from '../store/useStore.js'
-import { DICTATION_PROFILES, dictationByLevel } from '../data/dictation.js'
+import { DICTATION_ITEMS, DICTATION_PROFILES, dictationByLevel } from '../data/dictation.js'
 import { LevelPicker } from '../components/LevelPicker.jsx'
+import { summarizeSrsItems } from '../lib/contentProgress.js'
 
 export function DictationScreen() {
   const navigate = useStore((s) => s.navigate)
+  const srs = useStore((s) => s.srs)
   return (
     <LevelPicker
       title="ディクテーション"
@@ -13,6 +15,10 @@ export function DictationScreen() {
       countFor={(levelId) => dictationByLevel(levelId).length}
       countUnit="問"
       detailFor={(levelId) => DICTATION_PROFILES[levelId]?.target}
+      statusFor={(levelId) => summarizeSrsItems(
+        DICTATION_ITEMS.filter((item) => item.level === levelId),
+        srs,
+      )}
       onPick={(levelId, label) => navigate('dictationPlay', { source: { type: 'level', levelId }, title: `英検${label}` })}
     />
   )

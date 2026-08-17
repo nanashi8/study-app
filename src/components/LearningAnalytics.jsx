@@ -192,7 +192,7 @@ function SummaryTable({ profile, analysis, dueCount }) {
     ['テスト想起率', asPercent(testRecallRate), testRecallEvidence, analysis.activity.test.scored ? '採点テストで再現できた割合' : '旧履歴は暗記・テストの区別なし'],
     ['定着段階指数', `${analysis.memoryScore}/100`, `${analysis.learnedItems}項目`, 'SRSの反復段階から算出した参考値'],
     ['長期段階', `${analysis.stages.longPct}%`, `${analysis.stages.long}項目`, 'SRS BOX 4以上の構成比'],
-    ['英単語・復習待ち', `${dueCount}項目`, dueCount ? '対応が必要' : '滞留なし', '期限到来済み英単語の件数'],
+    ['英単語・今日の復習', `${dueCount}項目`, dueCount ? '対応が必要' : '滞留なし', '期限到来済み英単語の件数'],
     ['活動日', `${profile.habit.activeDays28}/28日`, `直近7日 ${profile.habit.activeDays7}日`, '回答を1件以上記録した日'],
     ['記録日平均', analysis.averageInputsPerActiveDay == null ? '—' : `${formatCount(analysis.averageInputsPerActiveDay)}回`, `${analysis.activeDays}記録日`, '活動日だけを分母にした平均'],
     ['推奨時間帯', formatWindow(analysis.bestWindow) ?? '19:00〜22:00（仮）', analysis.bestWindow ? `${analysis.bestWindow.scored}回答` : '標本不足', '3時間帯で5回答以上のとき個別推定'],
@@ -857,14 +857,14 @@ function AdviceReport({ profile, analysis, dueCount, report, onNavigate }) {
   const successCriterion = recommendation.id === 'measure'
     ? '診断28問を完了する'
     : dueCount > 0
-      ? `復習待ちを${Math.min(dueCount, 20)}項目進める`
+      ? `今日の復習を${Math.min(dueCount, 20)}項目進める`
       : '10問を解き、正誤を記録する'
   const encouragement = profile.confidence === 'empty'
     ? '最初の10回答が分析の出発点です。小さく始めても、記録が次の教材選びを具体化します。'
     : analysis.retentionRate != null && analysis.retentionRate >= 0.8
       ? '想起できた割合は安定しています。今の方法を維持し、弱点分野へ少しずつ負荷を移す段階です。'
       : dueCount > 0
-        ? '復習待ちは失敗の印ではなく、思い出す練習を入れる時期を示す作業票です。今日の一部を処理すれば前進です。'
+        ? '今日の復習は失敗の印ではなく、思い出す練習を入れる時期を示す作業票です。今日の一部を処理すれば前進です。'
         : '記録が増えるたびに推定は更新されます。結果を能力の固定評価ではなく、次の一手を選ぶ材料として使ってください。'
 
   return (
@@ -886,7 +886,7 @@ function AdviceReport({ profile, analysis, dueCount, report, onNavigate }) {
               ['実施時刻', scheduledWindow],
               ['成功基準', successCriterion],
               ['実施方法', '答えを見る前に想起し、誤答は間隔を空けて再確認'],
-              ['次回確認', '実施後の正答率・復習待ち件数で再判定'],
+              ['次回確認', '実施後の正答率・今日の復習件数で再判定'],
             ].map(([label, value]) => (
               <tr key={label} className="border-b border-slate-200 last:border-0">
                 <th className="w-24 bg-slate-100 px-3 py-2 text-left font-extrabold text-slate-700">{label}</th>

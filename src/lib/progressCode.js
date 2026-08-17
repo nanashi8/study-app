@@ -39,6 +39,7 @@ import {
   normalizeLegacyStats,
   normalizeLegacyXp,
 } from './legacyProgress.js'
+import { normalizeContentQuizResults } from './contentProgress.js'
 
 const CODE_VERSION = 1
 const PREFIX = 'EQ1-' // EigoQuest v1。先頭でアプリ/バージョンを判別する。
@@ -72,6 +73,7 @@ export const PERSISTED_PROGRESS_FIELDS = Object.freeze([
   'readingsDone',
   'mathDone',
   'mathMastery',
+  'contentQuizResults',
   'skillStats',
   'learningAnalytics',
   'diagnosticHistory',
@@ -106,11 +108,16 @@ export function selectProgressState(state = {}) {
 // importCode / pullOrInit が読む全フィールドを網羅し、QR/コードで端末を
 // 移っても古文・並び順まで丸ごと「続きから」復元できるようにする。
 export function buildPayload(state = {}) {
+  const contentQuizResults = normalizeContentQuizResults(state.contentQuizResults)
   return {
     v: CODE_VERSION,
     ...selectProgressState(state),
     vocabHistory: normalizeVocabHistory(state.vocabHistory),
     learningNotebook: normalizeLearningNotebook(state.learningNotebook),
+    // 空の集計を進捗コードへ入れず、QR化に必要な容量を保つ。
+    contentQuizResults: Object.keys(contentQuizResults).length
+      ? contentQuizResults
+      : undefined,
     afterSchoolBonds: normalizeAfterSchoolBonds(state.afterSchoolBonds),
     unlockedBattleStudentIds: normalizeUnlockedBattleStudentIds(
       state.unlockedBattleStudentIds,
@@ -166,6 +173,7 @@ export function decodeProgress(code) {
     'kanbunCultureSrs',
     'kanbunKundokuSrs',
     'mathMastery',
+    'contentQuizResults',
     'skillStats',
     'learningAnalytics',
     'writingProgress',

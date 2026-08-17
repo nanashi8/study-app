@@ -7,34 +7,16 @@ import {
   kotenInterpretationsByLevel,
   pickKotenInterpretationIds,
 } from '../data/koten-interpretations.js'
-import { Button, Card, Chip, ProgressRing } from '../components/ui.jsx'
+import { Button, Card, Chip } from '../components/ui.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { ArrowRight, Cards, ChevronLeft, Refresh } from '../components/Icons.jsx'
-
-const MASTER_BOX = 4
-
-function progressOf(items, srs) {
-  let mastered = 0
-  let tried = 0
-  let points = 0
-  for (const item of items) {
-    const box = srs[item.id]?.box ?? 0
-    if (box > 0) tried++
-    if (box >= MASTER_BOX) mastered++
-    points += Math.min(box, MASTER_BOX)
-  }
-  return {
-    total: items.length,
-    mastered,
-    tried,
-    ratio: items.length ? points / (items.length * MASTER_BOX) : 0,
-  }
-}
+import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
+import { summarizeSrsItems } from '../lib/contentProgress.js'
 
 export function KotenInterpretationListScreen() {
   const navigate = useStore((state) => state.navigate)
   const srs = useStore((state) => state.kotenInterpretationSrs)
-  const overall = progressOf(KOTEN_INTERPRETATIONS, srs)
+  const overallStatus = summarizeSrsItems(KOTEN_INTERPRETATIONS, srs)
   const due = KOTEN_INTERPRETATIONS.filter((item) => srs[item.id] && isDue(srs[item.id]))
 
   const start = (items, title) =>
@@ -60,20 +42,20 @@ export function KotenInterpretationListScreen() {
         <p className="mt-1 max-w-sm text-sm font-bold leading-relaxed text-white/85">
           一文ずつ訳し、答えの根拠を3つの視点でつなげます。
         </p>
-        <div className="mt-4 flex items-center gap-3 rounded-2xl bg-white/15 p-3 backdrop-blur">
-          <ProgressRing value={overall.ratio} size={52} stroke={6} color="#fff" track="#ffffff33">
-            <span className="text-[11px] font-extrabold">{Math.round(overall.ratio * 100)}%</span>
-          </ProgressRing>
+        <div className="mt-4 rounded-2xl bg-white/15 p-3 backdrop-blur">
           <div>
-            <div className="font-display font-extrabold">全{overall.total}問</div>
+            <div className="font-display font-extrabold">全{overallStatus.total}問</div>
             <div className="text-xs font-bold text-white/75">
-              挑戦 {overall.tried}問・習得 {overall.mastered}問
+              学習済 {overallStatus.learning.learned}・復習中 {overallStatus.learning.reviewing}・未学習 {overallStatus.learning.unlearned}
             </div>
           </div>
         </div>
       </div>
 
       <div className="space-y-4 px-4 pt-5">
+        <Card className="p-4" data-koten-interpretation-status>
+          <LearningStatusBars progress={overallStatus} compact />
+        </Card>
         <div className="grid grid-cols-2 gap-3">
           <button
             disabled={!due.length}
@@ -126,7 +108,7 @@ export function KotenInterpretationListScreen() {
           <div className="space-y-3">
             {KOTEN_INTERPRETATION_LEVELS.map((level) => {
               const items = kotenInterpretationsByLevel(level.id)
-              const progress = progressOf(items, srs)
+              const status = summarizeSrsItems(items, srs)
               return (
                 <Card key={level.id} className="p-4">
                   <div className="flex items-center gap-3">
@@ -142,16 +124,9 @@ export function KotenInterpretationListScreen() {
                         <Chip color={level.color}>{items.length}問</Chip>
                       </div>
                       <p className="mt-0.5 text-xs font-bold text-ink/50">{level.subtitle}</p>
-                      <p className="mt-1 text-[11px] font-bold text-ink/40">
-                        挑戦 {progress.tried}・習得 {progress.mastered}
-                      </p>
                     </div>
-                    <ProgressRing value={progress.ratio} size={48} stroke={6} color={level.color}>
-                      <span className="text-[10px] font-extrabold text-ink/65">
-                        {Math.round(progress.ratio * 100)}%
-                      </span>
-                    </ProgressRing>
                   </div>
+                  <LearningStatusBars progress={status} className="mt-3" compact />
                   <Button
                     full
                     size="sm"

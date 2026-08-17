@@ -2,10 +2,12 @@ import { useStore } from '../store/useStore.js'
 import {
   LISTENING_PROFILES,
   LISTENING_TYPE_META,
+  LISTENING_ITEMS,
   listeningByLevel,
 } from '../data/listening.js'
 import { READING_LEVELS } from '../data/levels.js'
 import { LevelPicker } from '../components/LevelPicker.jsx'
+import { summarizeSrsItems } from '../lib/contentProgress.js'
 
 const profileDetail = (levelId) => {
   const profile = LISTENING_PROFILES[levelId]
@@ -24,6 +26,7 @@ const profileDetail = (levelId) => {
 
 export function ListeningScreen() {
   const navigate = useStore((s) => s.navigate)
+  const srs = useStore((s) => s.srs)
 
   return (
     <LevelPicker
@@ -35,6 +38,10 @@ export function ListeningScreen() {
       countFor={(levelId) => listeningByLevel(levelId).length}
       countUnit="問"
       detailFor={profileDetail}
+      statusFor={(levelId) => summarizeSrsItems(
+        LISTENING_ITEMS.filter((item) => item.level === levelId),
+        srs,
+      )}
       onPick={(levelId, label) =>
         navigate('listeningQuiz', {
           source: { type: 'level', levelId },

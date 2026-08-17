@@ -40,6 +40,7 @@ import { normalizeVocabHistory } from './vocabHistory.js'
 import { normalizeDragonVeinProgress } from './dragonVein.js'
 import { normalizeLearningNotebook } from './learningNotebook.js'
 import { normalizeLearningAnalytics } from './learningAnalytics.js'
+import { normalizeContentQuizResults } from './contentProgress.js'
 
 const node = (uid) => ref(db, `students/${uid}`)
 
@@ -84,6 +85,7 @@ export function progressStateFromCloud(data = {}, current = useStore.getState())
     readingsDone: data.readingsDone ?? [],
     mathDone: data.mathDone ?? [],
     mathMastery: data.mathMastery ?? {},
+    contentQuizResults: normalizeContentQuizResults(data.contentQuizResults),
     skillStats: data.skillStats ?? {},
     learningAnalytics: normalizeLearningAnalytics(
       data.learningAnalytics ?? current.learningAnalytics,

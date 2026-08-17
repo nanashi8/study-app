@@ -5,6 +5,8 @@ import { getReadingStudy, passageWordCount } from '../data/reading-study.js'
 import { READING_RULE_PHASES } from '../data/reading-rules.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { Card, Chip } from '../components/ui.jsx'
+import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
+import { summarizeCompletionItems } from '../lib/contentProgress.js'
 import { Check, ArrowRight, Book } from '../components/Icons.jsx'
 
 const levelOrder = Object.fromEntries(READING_LEVELS.map((l, i) => [l.id, i]))
@@ -13,6 +15,13 @@ const sorted = [...PASSAGES].sort((a, b) => levelOrder[a.level] - levelOrder[b.l
 export function ReadingListScreen() {
   const navigate = useStore((s) => s.navigate)
   const readingsDone = useStore((s) => s.readingsDone)
+  const contentQuizResults = useStore((s) => s.contentQuizResults)
+  const status = summarizeCompletionItems({
+    items: PASSAGES,
+    completedIds: readingsDone,
+    quizResults: contentQuizResults,
+    quizDomain: 'reading',
+  })
 
   return (
     <div className="pb-6">
@@ -45,6 +54,11 @@ export function ReadingListScreen() {
               ))}
             </ol>
           </button>
+        </Card>
+
+        <Card className="p-4" data-reading-status>
+          <LearningStatusBars progress={status} compact />
+          <p className="mt-2 text-[10px] font-bold text-ink/45">読了と読解チェックの直近結果を、全{PASSAGES.length}題で集計</p>
         </Card>
 
         {sorted.map((p) => {

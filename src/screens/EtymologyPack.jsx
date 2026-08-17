@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { useStore, todayIndex } from '../store/useStore.js'
+import { useStore } from '../store/useStore.js'
 import {
   ETYMOLOGY_DOMAIN_META,
   ETYMOLOGY_FORMATION_META,
@@ -8,12 +8,6 @@ import {
   getEtymologyPack,
   getWord,
 } from '../data/vocab.js'
-import {
-  etymologyKnowledgeStatus,
-  isEtymologyDue,
-  ETYMOLOGY_MASTER_BOX,
-  ETYMOLOGY_STATUS_META,
-} from '../lib/etymologyProgress.js'
 import { getLevel } from '../data/levels.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import {
@@ -21,17 +15,10 @@ import {
   EtymologyHistoryTrail,
   PosBadge,
 } from '../components/WordBits.jsx'
-import { Button, Card, Chip, ProgressRing, cx } from '../components/ui.jsx'
+import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
+import { Button, Card, Chip } from '../components/ui.jsx'
+import { learningStatusForSrsEntry, summarizeSrsItems } from '../lib/contentProgress.js'
 import { ArrowRight, Cards, Check, Sparkles } from '../components/Icons.jsx'
-
-const WORD_MASTER_BOX = 4
-
-const STATUS_CLASS = {
-  unstarted: 'bg-slate-100 text-slate-600',
-  learning: 'bg-amber-50 text-amber-700',
-  mastered: 'bg-emerald-50 text-emerald-700',
-  due: 'bg-rose-50 text-rose-700',
-}
 
 export function EtymologyPackScreen() {
   const rootRef = useRef(null)
@@ -66,21 +53,8 @@ export function EtymologyPackScreen() {
   const coverage = new Set(pack.coverageIds)
   const words = pack.studyIds.map(getWord).filter(Boolean)
   const progressWords = pack.coverageIds.map(getWord).filter(Boolean)
-  const mastered = progressWords.filter(
-    (word) => (srs[word.id]?.box ?? 0) >= WORD_MASTER_BOX,
-  ).length
-  const points = progressWords.reduce(
-    (sum, word) => sum + Math.min(srs[word.id]?.box ?? 0, WORD_MASTER_BOX),
-    0,
-  )
-  const wordRatio = progressWords.length
-    ? points / (progressWords.length * WORD_MASTER_BOX)
-    : 0
-  const etymologyEntry = etymologySrs[pack.id]
-  const baseStatus = etymologyKnowledgeStatus(etymologyEntry)
-  const knowledgeStatus = isEtymologyDue(etymologyEntry, todayIndex()) ? 'due' : baseStatus
-  const knowledgeRatio = Math.min(etymologyEntry?.box ?? 0, ETYMOLOGY_MASTER_BOX)
-    / ETYMOLOGY_MASTER_BOX
+  const packProgress = summarizeSrsItems([pack], etymologySrs)
+  const wordProgress = summarizeSrsItems(progressWords, srs)
 
   const studyKnowledge = () =>
     navigate('etymologyStudy', {
@@ -123,17 +97,6 @@ export function EtymologyPackScreen() {
                 </h1>
                 <p className="mt-1 text-xs font-bold text-white/75">{pack.subtitle}</p>
               </div>
-              <ProgressRing
-                value={knowledgeRatio}
-                size={54}
-                stroke={7}
-                color="#ffffff"
-                track="rgba(255,255,255,0.25)"
-              >
-                <span className="text-[10px] font-extrabold">
-                  {Math.round(knowledgeRatio * 100)}%
-                </span>
-              </ProgressRing>
             </div>
           </div>
           <div className="space-y-3 p-4">
@@ -164,35 +127,18 @@ export function EtymologyPackScreen() {
                 ))}
               </div>
             )}
-            <div className="flex items-center justify-between rounded-xl bg-violet-50 px-3 py-2">
-              <div>
-                <p className="text-[10px] font-extrabold text-violet-500">語源知識の進捗</p>
-                <p className="text-xs font-extrabold text-violet-800">
-                  反復レベル {Math.min(etymologyEntry?.box ?? 0, ETYMOLOGY_MASTER_BOX)}/
-                  {ETYMOLOGY_MASTER_BOX}
-                </p>
-              </div>
-              <span className={cx(
-                'rounded-full px-2.5 py-1 text-[10px] font-extrabold',
-                STATUS_CLASS[knowledgeStatus],
-              )}>
-                {knowledgeStatus === 'due'
-                  ? '復習待ち'
-                  : ETYMOLOGY_STATUS_META[knowledgeStatus].label}
-              </span>
+            <div className="rounded-xl bg-violet-50 px-3 py-3">
+              <p className="mb-2 text-xs font-extrabold text-violet-800">この語源カード</p>
+              <LearningStatusBars progress={packProgress} compact />
             </div>
             <Button full onClick={studyKnowledge}>
               <Sparkles size={18} /> この語源をカードで覚える
             </Button>
-            <div className="flex items-center justify-between text-xs font-extrabold text-brand-600">
-              <span>関連 {progressWords.length}語・表示 {words.length}語</span>
-              <span>単語習得 {mastered}/{progressWords.length}</span>
-            </div>
-            <div className="h-1.5 overflow-hidden rounded-full bg-brand-100">
-              <div
-                className="h-full rounded-full bg-brand-500 transition-[width]"
-                style={{ width: `${Math.round(wordRatio * 100)}%` }}
-              />
+            <div className="rounded-xl bg-brand-50 px-3 py-3">
+              <p className="mb-2 text-xs font-extrabold text-brand-700">
+                関連英単語 {progressWords.length}語・この画面 {words.length}語
+              </p>
+              <LearningStatusBars progress={wordProgress} compact />
             </div>
             <div className="grid grid-cols-2 gap-2">
               <Button variant="secondary" onClick={study}>
@@ -234,7 +180,7 @@ export function EtymologyPackScreen() {
           <div className="space-y-2">
             {words.map((word) => {
               const level = getLevel(word.level)
-              const box = srs[word.id]?.box ?? 0
+              const learningStatus = learningStatusForSrsEntry(srs[word.id])
               const isAnchor = word.id === pack.anchorId
               const isSupport = !coverage.has(word.id)
               return (
@@ -256,10 +202,13 @@ export function EtymologyPackScreen() {
                             足がかり
                           </span>
                         )}
-                        {box >= WORD_MASTER_BOX && (
+                        {learningStatus === 'learned' && (
                           <span className="inline-flex items-center gap-0.5 text-[10px] font-extrabold text-emerald-600">
-                            <Check size={13} /> 習得
+                            <Check size={13} /> 学習済
                           </span>
+                        )}
+                        {learningStatus === 'reviewing' && (
+                          <span className="text-[10px] font-extrabold text-amber-600">復習中</span>
                         )}
                       </div>
                       <p className="truncate text-xs font-bold text-ink/55">{word.meaning}</p>

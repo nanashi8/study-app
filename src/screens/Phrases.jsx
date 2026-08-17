@@ -1,15 +1,16 @@
 import { useEffect, useState } from 'react'
-import { useStore } from '../store/useStore.js'
+import { todayIndex, useStore } from '../store/useStore.js'
 import { PHRASE_KINDS, phrasesByKind } from '../data/phrases.js'
 import { longSentenceTranslationFor } from '../data/long-sentence-translations.js'
 import { LEVELS, getLevel } from '../data/levels.js'
-import { phraseKindProgress } from '../lib/session.js'
 import { phraseSpeechText } from '../lib/phrase-speech.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { Sheet } from '../components/Sheet.jsx'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { LongSentenceTranslation } from '../components/LongSentenceTranslation.jsx'
-import { Card, Button, Chip, ProgressBar } from '../components/ui.jsx'
+import { Card, Button, Chip } from '../components/ui.jsx'
+import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
+import { summarizeSrsItems } from '../lib/contentProgress.js'
 import { Book, Cards, Lightbulb, Link, Refresh, Search } from '../components/Icons.jsx'
 import { cx } from '../components/ui.jsx'
 
@@ -38,7 +39,6 @@ export function PhrasesScreen() {
   const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE_ITEMS)
 
   const meta = PHRASE_KINDS.find((k) => k.id === kind)
-  const prog = phraseKindProgress(kind, srs)
   const normalizedQuery = query.trim().toLowerCase()
   const items = [...phrasesByKind(kind)]
     .filter((item) => levelFilter === 'all' || item.level === levelFilter)
@@ -66,6 +66,8 @@ export function PhrasesScreen() {
     : `${getLevel(levelFilter).label} ${meta.label}`
   const visibleItems = items.slice(0, visibleCount)
   const detailTranslation = longSentenceTranslationFor(detail)
+  const status = summarizeSrsItems(items, srs)
+  const due = items.filter((item) => srs[item.id]?.due <= todayIndex()).length
 
   useEffect(() => {
     setVisibleCount(INITIAL_VISIBLE_ITEMS)
@@ -203,20 +205,18 @@ export function PhrasesScreen() {
               <div className="font-display text-lg font-extrabold text-ink">
                 {meta.emoji} {meta.label}
               </div>
-              <div className="text-xs font-bold text-ink/50">{meta.desc}・全{prog.total}項目</div>
+              <div className="text-xs font-bold text-ink/50">{meta.desc}・表示対象{items.length}項目</div>
             </div>
-            <div className="text-right text-xs font-bold text-ink/45">
-              習得 {prog.mastered}/{prog.total}
-            </div>
+            <div className="text-right text-xs font-bold text-ink/45">全{items.length}項目</div>
           </div>
-          <ProgressBar className="mt-3" value={prog.total ? prog.mastered / prog.total : 0} color={meta.color} />
+          <LearningStatusBars progress={status} className="mt-3" compact />
           <div className="mt-3 grid grid-cols-2 gap-2">
             <Button onClick={study} disabled={!items.length}><Book size={16} /> 覚える</Button>
             <Button variant="secondary" onClick={quiz} disabled={!items.length}><Cards size={16} /> クイズ</Button>
           </div>
-          {prog.due > 0 && (
+          {due > 0 && (
             <Button full variant="hint" className="mt-2" onClick={reviewDue}>
-              <Refresh size={16} /> 復習どき {prog.due}項目
+              <Refresh size={16} /> 今日の復習 {due}項目
             </Button>
           )}
         </Card>

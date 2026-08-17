@@ -40,14 +40,14 @@ test('熟語・構文は全1,500項目を級別内訳まで表示する', () => 
   assert.match(phrases, /PHRASE_COUNTS\.syntax/)
 })
 
-test('語源画面は概要・学び方・状態を先に示し、詳細軸は折りたたむ', () => {
+test('語源画面は学習・クイズの3区分と状態絞り込みを先に示す', () => {
   const roots = read('../src/screens/Roots.jsx')
 
   assert.match(roots, /data-etymology-dashboard/)
   assert.match(roots, /role="tablist" aria-label="語源の学び方"/)
-  assert.match(roots, /aria-label="語源知識の進捗で絞り込む"/)
+  assert.match(roots, /aria-label="語源カードの進み具合で絞り込む"/)
   assert.match(roots, /<details[\s\S]*data-etymology-filters/)
-  assert.match(roots, /4つの整理法を一度に混ぜず、1種類ずつ確認します/)
+  assert.match(roots, /<LearningStatusBars progress=\{overallStatus\}/)
 })
 
 test('記録は定義・標本数・評定・図表・個別助言・科学的限界を一つの分析票にする', () => {
@@ -96,12 +96,14 @@ test('統一上部メニューとマイ学習は全教材種類・既存の出�
   assert.ok(APP_MENU_SCREEN_DESTINATIONS.includes('myLearning'))
   assert.ok(APP_MENU_SCREEN_DESTINATIONS.includes('progress'))
   assert.match(learning, /data-my-learning-screen/)
-  assert.match(learning, /data-my-learning-english-categories/)
-  for (const label of ['英単語', '熟語・構文', '英文法', 'リスニング', 'ディクテーション', '語源知識', '古典学習', '漢文学習']) {
-    assert.match(learning, new RegExp(label))
+  assert.match(learning, /data-learning-content-group=\{group\.id\}/)
+  assert.match(learning, /data-learning-content=\{content\.id\}/)
+  const learningCatalog = read('../src/lib/learningContentProgress.js')
+  for (const label of ['英単語', '熟語・構文', '英文法', 'リスニング', 'ディクテーション', '語源知識', '古典単語', '漢語']) {
+    assert.match(`${learning}\n${learningCatalog}`, new RegExp(label))
   }
-  for (const type of ['phraseList', 'grammarList', 'listeningList', 'dictationList']) {
-    assert.match(learning, new RegExp(`type: '${type}'`))
+  for (const screen of ['vocabLevels', 'phrases', 'grammar', 'listening', 'dictation', 'roots']) {
+    assert.match(learningCatalog, new RegExp(`'${screen}'`))
   }
 })
 

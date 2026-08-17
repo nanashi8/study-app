@@ -78,6 +78,10 @@ import {
   RESETTABLE_PROGRESS_FIELDS,
   progressResetFieldsForGroups,
 } from '../lib/progressReset.js'
+import {
+  normalizeContentQuizResults,
+  recordContentQuizResult as recordContentQuizResultState,
+} from '../lib/contentProgress.js'
 
 // ── 学習ロジックの定数 ──────────────────────────────────────────────
 // Leitner 式の間隔反復。box が上がるほど次に出る間隔（日数）が伸びる。
@@ -182,6 +186,7 @@ export const createInitialLearningState = () => ({
   readingsDone: [], // [passageId | literatureId] 読了した長文・名作朗読
   mathDone: [], // [problemId] クリアした数学問題
   mathMastery: {}, // unitId -> 最高正答率(0-100) ＝ 理解度
+  contentQuizResults: {}, // SRS外教材の教材ID別・直近クイズ結果
   skillStats: {}, // skill -> { answered, correct, sessions, lastDay } ＝ スキル別テスト結果
   learningAnalytics: createLearningAnalytics(), // 時刻・反復間隔・正誤の匿名集計
   diagnosticHistory: [], // 学習診断の新しい順の結果（最大5件）
@@ -342,6 +347,7 @@ export function migratePersistedState(persistedState) {
   state.vocabHistory = normalizeVocabHistory(state.vocabHistory)
   state.learningNotebook = normalizeLearningNotebook(state.learningNotebook)
   state.learningAnalytics = normalizeLearningAnalytics(state.learningAnalytics)
+  state.contentQuizResults = normalizeContentQuizResults(state.contentQuizResults)
   state.stats = { ...freshStats(), ...normalizeLegacyStats(state.stats) }
   state.battleStars = normalizeBattleStars(state.battleStars)
   state.battleXpSpent = normalizeLegacyXp(state.battleXpSpent)
@@ -408,6 +414,7 @@ export function progressStateFromPayload(payload = {}) {
     readingsDone: payload.readingsDone ?? [],
     mathDone: payload.mathDone ?? [],
     mathMastery: payload.mathMastery ?? {},
+    contentQuizResults: normalizeContentQuizResults(payload.contentQuizResults),
     skillStats: payload.skillStats ?? {},
     learningAnalytics: normalizeLearningAnalytics(payload.learningAnalytics),
     diagnosticHistory: payload.diagnosticHistory ?? [],
@@ -1111,6 +1118,16 @@ export const useStore = create(
                 }),
           }
         }),
+
+      // SRSを使わない長文・名作・数学も、教材ごとの直近正誤を保存する。
+      // 分野別累計とは分け、未回答の母数と直近結果を正確に表示する。
+      recordContentQuizResult: (domain, itemId, correct, total) =>
+        set((st) => ({
+          contentQuizResults: recordContentQuizResultState(
+            st.contentQuizResults,
+            { domain, itemId, correct, total },
+          ),
+        })),
 
       // 開始時点で回数を進める。中断したテストも消費済みにすることで、
       // やり直した直後に同じ問題が再表示されないようにする。

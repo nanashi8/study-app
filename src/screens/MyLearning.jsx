@@ -1,14 +1,15 @@
 import { useMemo } from 'react'
 import { useShallow } from 'zustand/react/shallow'
-import { useStore, todayIndex } from '../store/useStore.js'
-import { ALL_WORDS } from '../data/vocab.js'
-import { PHRASES } from '../data/phrases.js'
-import { GRAMMAR } from '../data/grammar.js'
-import { LISTENING_ITEMS } from '../data/listening.js'
-import { DICTATION_ITEMS } from '../data/dictation.js'
+import { useStore } from '../store/useStore.js'
 import { notebookStoredSavedCount } from '../lib/learningNotebook.js'
+import { selectProgressState } from '../lib/progressCode.js'
+import {
+  LEARNING_CONTENT_GROUPS,
+  buildLearningContentProgress,
+} from '../lib/learningContentProgress.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { Button, Card } from '../components/ui.jsx'
+import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
 import {
   ArrowRight,
   Book,
@@ -25,24 +26,26 @@ import {
   Sparkles,
 } from '../components/Icons.jsx'
 
-const ITEM_IDS = Object.freeze({
-  vocab: new Set(ALL_WORDS.map((item) => item.id)),
-  usage: new Set(PHRASES.map((item) => item.id)),
-  grammar: new Set(GRAMMAR.map((item) => item.id)),
-  listening: new Set(LISTENING_ITEMS.map((item) => item.id)),
-  dictation: new Set(DICTATION_ITEMS.map((item) => item.id)),
+const CONTENT_META = Object.freeze({
+  vocab: { Icon: Book, tone: 'text-indigo-700 bg-indigo-50' },
+  usage: { Icon: Sparkles, tone: 'text-violet-700 bg-violet-50' },
+  grammar: { Icon: Lightbulb, tone: 'text-amber-700 bg-amber-50' },
+  listening: { Icon: Headphones, tone: 'text-sky-700 bg-sky-50' },
+  dictation: { Icon: Keyboard, tone: 'text-teal-700 bg-teal-50' },
+  etymology: { Icon: Link, tone: 'text-fuchsia-700 bg-fuchsia-50' },
+  reading: { Icon: BookOpen, tone: 'text-emerald-700 bg-emerald-50' },
+  writing: { Icon: Cards, tone: 'text-pink-700 bg-pink-50' },
+  'koten-vocab': { Icon: Book, tone: 'text-orange-700 bg-orange-50' },
+  'koten-grammar': { Icon: Lightbulb, tone: 'text-orange-700 bg-orange-50' },
+  'koten-culture': { Icon: BookOpen, tone: 'text-amber-800 bg-amber-50' },
+  'koten-reading': { Icon: BookOpen, tone: 'text-orange-800 bg-orange-50' },
+  'kanbun-vocab': { Icon: Book, tone: 'text-rose-800 bg-rose-50' },
+  'kanbun-grammar': { Icon: Lightbulb, tone: 'text-rose-800 bg-rose-50' },
+  'kanbun-culture': { Icon: BookOpen, tone: 'text-rose-800 bg-rose-50' },
+  'kanbun-kundoku': { Icon: Cards, tone: 'text-red-800 bg-red-50' },
+  literature: { Icon: BookOpen, tone: 'text-teal-700 bg-teal-50' },
+  math: { Icon: MathRoot, tone: 'text-indigo-700 bg-indigo-50' },
 })
-
-const ENGLISH_CATEGORY_META = Object.freeze({
-  vocab: { label: '英単語', unit: '語', Icon: Book, tone: 'text-indigo-700 bg-indigo-50' },
-  usage: { label: '熟語・構文', unit: '項目', Icon: Sparkles, tone: 'text-violet-700 bg-violet-50' },
-  grammar: { label: '英文法', unit: '問', Icon: Lightbulb, tone: 'text-amber-700 bg-amber-50' },
-  listening: { label: 'リスニング', unit: '問', Icon: Headphones, tone: 'text-sky-700 bg-sky-50' },
-  dictation: { label: 'ディクテーション', unit: '問', Icon: Keyboard, tone: 'text-teal-700 bg-teal-50' },
-})
-
-const dueCountFor = (ids, srs, day) =>
-  ids.reduce((count, id) => count + (srs[id]?.due <= day ? 1 : 0), 0)
 
 function CategoryCard({ label, note, count, unit, due, Icon, tone, onOpen, action = '開く' }) {
   return (
@@ -58,15 +61,17 @@ function CategoryCard({ label, note, count, unit, due, Icon, tone, onOpen, actio
       </div>
       <div className="mt-3 flex items-end justify-between gap-2 border-t border-slate-200 pt-2">
         <div>
-          <span className="font-display text-xl font-extrabold tabular-nums text-slate-950">{count.toLocaleString()}</span>
-          <span className="ml-1 text-[10px] font-bold text-slate-500">{unit}</span>
-          {due > 0 && <p className="text-[9px] font-extrabold text-rose-700">復習待ち {due}</p>}
+          <span className="inline-flex items-baseline whitespace-nowrap">
+            <span className="font-display text-xl font-extrabold tabular-nums text-slate-950">{count.toLocaleString()}</span>
+            <span className="ml-1 text-[10px] font-bold text-slate-500">{unit}</span>
+          </span>
+          {due > 0 && <p className="text-[9px] font-extrabold text-rose-700">今日の復習 {due}</p>}
         </div>
         <button
           type="button"
           onClick={onOpen}
           disabled={!onOpen}
-          className="inline-flex min-h-10 items-center gap-1 rounded-lg bg-slate-800 px-2.5 text-[10px] font-extrabold text-white disabled:bg-slate-100 disabled:text-slate-400"
+          className="inline-flex min-h-10 shrink-0 items-center gap-1 whitespace-nowrap rounded-lg bg-slate-800 px-2.5 text-[10px] font-extrabold text-white disabled:bg-slate-100 disabled:text-slate-400"
         >
           {action}<ArrowRight size={13} />
         </button>
@@ -75,107 +80,74 @@ function CategoryCard({ label, note, count, unit, due, Icon, tone, onOpen, actio
   )
 }
 
+function LearningCategoryCard({ content, onOpen }) {
+  const meta = CONTENT_META[content.id] ?? CONTENT_META.reading
+  const { Icon } = meta
+  const engaged = content.progress.activeIds.length
+  return (
+    <Card
+      className="rounded-xl border-slate-300 p-3 shadow-none"
+      data-learning-content={content.id}
+    >
+      <div className="flex items-start gap-2.5">
+        <span className={`grid h-9 w-9 shrink-0 place-items-center rounded-lg ${meta.tone}`}>
+          <Icon size={18} />
+        </span>
+        <div className="min-w-0 flex-1">
+          <div className="flex items-start justify-between gap-2">
+            <h3 className="text-sm font-extrabold text-slate-900">{content.label}</h3>
+            <span className="shrink-0 text-[10px] font-extrabold tabular-nums text-slate-500">
+              全{content.progress.total.toLocaleString('ja-JP')}{content.unit}
+            </span>
+          </div>
+          <p className="text-[10px] font-bold leading-relaxed text-slate-500">
+            取り組み {engaged.toLocaleString('ja-JP')}{content.unit}
+            {content.due > 0 && `・今日の復習 ${content.due}`}
+          </p>
+        </div>
+      </div>
+
+      <LearningStatusBars progress={content.progress} className="mt-3" compact />
+
+      <button
+        type="button"
+        onClick={onOpen}
+        className="mt-3 inline-flex min-h-10 w-full items-center justify-center gap-1 rounded-lg bg-slate-800 px-3 text-[11px] font-extrabold text-white active:bg-slate-700"
+      >
+        この教材を開く <ArrowRight size={13} />
+      </button>
+    </Card>
+  )
+}
+
 export function MyLearningScreen() {
   const navigate = useStore((state) => state.navigate)
-  const state = useStore(useShallow((current) => ({
-    srs: current.srs,
-    etymologySrs: current.etymologySrs,
-    kotenSrs: current.kotenSrs,
-    kotenGrammarSrs: current.kotenGrammarSrs,
-    kotenCultureSrs: current.kotenCultureSrs,
-    kotenInterpretationSrs: current.kotenInterpretationSrs,
-    kanbunVocabSrs: current.kanbunVocabSrs,
-    kanbunGrammarSrs: current.kanbunGrammarSrs,
-    kanbunCultureSrs: current.kanbunCultureSrs,
-    kanbunKundokuSrs: current.kanbunKundokuSrs,
-    myList: current.myList,
-    myGrammarList: current.myGrammarList,
-    learningNotebook: current.learningNotebook,
-    kotenWordList: current.kotenWordList,
-    kotenGrammarList: current.kotenGrammarList,
-    kotenCultureList: current.kotenCultureList,
-    kanbunVocabList: current.kanbunVocabList,
-    kanbunGrammarList: current.kanbunGrammarList,
-    kanbunCultureList: current.kanbunCultureList,
-    vocabHistory: current.vocabHistory,
-    readingsDone: current.readingsDone,
-    writingProgress: current.writingProgress,
-    mathDone: current.mathDone,
-  })))
-  const day = todayIndex()
-
-  const english = useMemo(() => {
-    const srsIds = Object.keys(state.srs)
-    return Object.fromEntries(Object.entries(ITEM_IDS).map(([id, knownIds]) => {
-      const ids = srsIds.filter((itemId) => knownIds.has(itemId))
-      return [id, { ids, due: dueCountFor(ids, state.srs, day) }]
-    }))
-  }, [state.srs, day])
-
-  const etymologyIds = Object.keys(state.etymologySrs)
-  const etymologyDue = dueCountFor(etymologyIds, state.etymologySrs, day)
-  const kotenLearned = Object.keys(state.kotenSrs).length
-    + Object.keys(state.kotenGrammarSrs).length
-    + Object.keys(state.kotenCultureSrs).length
-    + Object.keys(state.kotenInterpretationSrs).length
+  const state = useStore(useShallow(selectProgressState))
+  const contentRows = useMemo(() => buildLearningContentProgress(state), [state])
+  const curriculumTotal = contentRows.reduce((sum, content) => sum + content.progress.total, 0)
+  const engagedTotal = contentRows.reduce(
+    (sum, content) => sum + content.progress.activeIds.length,
+    0,
+  )
   const savedKoten = state.kotenWordList.length
     + state.kotenGrammarList.length
     + state.kotenCultureList.length
-  const kanbunLearned = Object.keys(state.kanbunVocabSrs).length
-    + Object.keys(state.kanbunGrammarSrs).length
-    + Object.keys(state.kanbunCultureSrs).length
-    + Object.keys(state.kanbunKundokuSrs).length
   const savedKanbun = state.kanbunVocabList.length
     + state.kanbunGrammarList.length
     + state.kanbunCultureList.length
   const savedNotebook = notebookStoredSavedCount(state)
-  const writingCompleted = Object.values(state.writingProgress)
-    .filter((entry) => (entry?.completed ?? 0) > 0).length
-  const learnedTotal = Object.values(english).reduce((sum, item) => sum + item.ids.length, 0)
-    + etymologyIds.length
-    + kotenLearned
-    + kanbunLearned
-    + state.readingsDone.length
-    + writingCompleted
-    + state.mathDone.length
 
-  const openEnglishReview = (id, ids) => {
-    if (!ids.length) return
-    if (id === 'vocab') {
-      navigate('vocabStudy', {
-        source: { type: 'deck', ids },
-        title: '学習済み英単語',
-        mode: 'study',
-      })
-    } else if (id === 'usage') {
-      navigate('phraseStudy', {
-        source: { type: 'phraseList', ids },
-        title: '学習済み熟語・構文',
-        mode: 'study',
-        engine: 'phrase',
-      })
-    } else if (id === 'grammar') {
-      navigate('grammarQuiz', {
-        source: { type: 'grammarList', ids },
-        title: '学習済み英文法',
-      })
-    } else if (id === 'listening') {
-      navigate('listeningQuiz', {
-        source: { type: 'listeningList', ids },
-        title: '学習済みリスニング',
-        engine: 'listening',
-      })
-    } else if (id === 'dictation') {
-      navigate('dictationPlay', {
-        source: { type: 'dictationList', ids },
-        title: '学習済みディクテーション',
-      })
+  const openContent = (content) => {
+    if (content.id.startsWith('kanbun-') && content.id !== 'kanbun-kundoku') {
+      navigate(content.screen, { domain: content.id.replace('kanbun-', '') })
+      return
     }
+    navigate(content.screen)
   }
 
   return (
     <div className="pb-6" data-my-learning-screen>
-      <ScreenHeader title="マイ学習" subtitle="保存・学習済み項目を種類別に再利用" />
+      <ScreenHeader title="マイ学習" subtitle="全教材の学習状態とクイズ結果" />
 
       <div className="space-y-5 px-4">
         <section className="overflow-hidden rounded-xl border-2 border-slate-700 bg-white">
@@ -183,11 +155,13 @@ export function MyLearningScreen() {
             <p className="text-[10px] font-extrabold tracking-[0.16em] text-slate-300">PERSONAL LEARNING INDEX</p>
             <div className="mt-0.5 flex items-end justify-between gap-3">
               <h2 className="font-display text-lg font-extrabold">あなたの学習索引</h2>
-              <p className="font-display text-2xl font-extrabold tabular-nums">{learnedTotal.toLocaleString()}</p>
+              <p className="text-right font-display text-lg font-extrabold tabular-nums">
+                {engagedTotal.toLocaleString()}<small className="text-[10px] text-slate-300"> / {curriculumTotal.toLocaleString()}</small>
+              </p>
             </div>
           </div>
           <p className="px-4 py-3 text-xs font-bold leading-relaxed text-slate-600">
-            「マイ単語」だけでなく、実際に解いた英単語・熟語・構文・文法・音声問題と、他教科の履歴を種類別に呼び出せます。
+            学習は「覚えた／まだ」、クイズは直近の「正解／不正解」を別々に集計します。灰色は、その学習方法ではまだ取り組んでいない項目です。
           </p>
         </section>
 
@@ -250,53 +224,28 @@ export function MyLearningScreen() {
           </div>
         </section>
 
-        <section aria-labelledby="studied-english-heading">
-          <div className="mb-2 px-1">
-            <h2 id="studied-english-heading" className="font-display text-base font-extrabold text-slate-900">学習した英語項目</h2>
-            <p className="text-[10px] font-bold text-slate-500">正誤・覚えた／まだを記録した項目を再出題</p>
-          </div>
-          <div className="grid grid-cols-2 gap-2.5" data-my-learning-english-categories>
-            {Object.entries(ENGLISH_CATEGORY_META).map(([id, meta]) => {
-              const category = english[id]
-              return (
-                <CategoryCard
-                  key={id}
-                  {...meta}
-                  note="学習履歴から再出題"
-                  count={category.ids.length}
-                  due={category.due}
-                  onOpen={category.ids.length ? () => openEnglishReview(id, category.ids) : null}
-                  action="復習"
-                />
-              )
-            })}
-            <CategoryCard
-              label="語源知識"
-              note="部品・語根・語族・成り立ち"
-              count={etymologyIds.length}
-              unit="項目"
-              due={etymologyDue}
-              Icon={Link}
-              tone="bg-fuchsia-50 text-fuchsia-700"
-              onOpen={() => navigate('roots', { status: etymologyDue ? 'due' : 'all' })}
-              action="語源"
-            />
-          </div>
-        </section>
-
-        <section aria-labelledby="other-learning-heading">
-          <div className="mb-2 px-1">
-            <h2 id="other-learning-heading" className="font-display text-base font-extrabold text-slate-900">読了・演習・他教科</h2>
-            <p className="text-[10px] font-bold text-slate-500">完了履歴から元の学習画面へ戻る</p>
-          </div>
-          <div className="grid grid-cols-2 gap-2.5">
-            <CategoryCard label="長文・名作" note="読了した教材" count={state.readingsDone.length} unit="件" Icon={BookOpen} tone="bg-emerald-50 text-emerald-700" onOpen={() => navigate('readingList')} action="読む" />
-            <CategoryCard label="英作文" note="完成した演習" count={writingCompleted} unit="題" Icon={Cards} tone="bg-pink-50 text-pink-700" onOpen={() => navigate('writing')} action="書く" />
-            <CategoryCard label="数学" note="解答済み問題" count={state.mathDone.length} unit="問" Icon={MathRoot} tone="bg-indigo-50 text-indigo-700" onOpen={() => navigate('mathMap')} action="数学" />
-            <CategoryCard label="古典学習" note="単語・文法・常識・読解" count={kotenLearned} unit="項目" Icon={Book} tone="bg-orange-50 text-orange-700" onOpen={() => navigate('kotenList')} action="古典" />
-            <CategoryCard label="漢文学習" note="漢語・文法・常識・返り点" count={kanbunLearned} unit="項目" Icon={BookOpen} tone="bg-rose-50 text-rose-800" onOpen={() => navigate('kanbunHome')} action="漢文" />
-          </div>
-        </section>
+        {LEARNING_CONTENT_GROUPS.map((group) => {
+          const contents = contentRows.filter((content) => content.group === group.id)
+          return (
+            <section key={group.id} aria-labelledby={`learning-group-${group.id}`} data-learning-content-group={group.id}>
+              <div className="mb-2 px-1">
+                <h2 id={`learning-group-${group.id}`} className="font-display text-base font-extrabold text-slate-900">
+                  {group.label}の学習状況
+                </h2>
+                <p className="text-[10px] font-bold text-slate-500">各棒の3区分は重ならず、必ず全教材数になります</p>
+              </div>
+              <div className="grid gap-3 sm:grid-cols-2">
+                {contents.map((content) => (
+                  <LearningCategoryCard
+                    key={content.id}
+                    content={content}
+                    onOpen={() => openContent(content)}
+                  />
+                ))}
+              </div>
+            </section>
+          )
+        })}
 
         <Button full variant="secondary" onClick={() => navigate('progress')}>
           <Chart size={17} /> 成績分析票と全進捗を見る

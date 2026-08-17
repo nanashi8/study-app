@@ -1,11 +1,15 @@
 import { useStore } from '../store/useStore.js'
 import {
-  MATH_UNITS, strandsWithUnits, unitCount, unitDoneCount, prereqOf, unitById,
+  MATH_PROBLEMS, MATH_UNITS, strandsWithUnits, unitCount, unitDoneCount, prereqOf, unitById,
   weakPrereqs, reviewSuggestions,
 } from '../data/math.js'
-import { ProgressRing, Chip, cx } from '../components/ui.jsx'
+import { Card, ProgressRing, Chip, cx } from '../components/ui.jsx'
+import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { Check, ArrowRight, Link as LinkIcon, Lightbulb, ChevronLeft } from '../components/Icons.jsx'
+import { summarizeCompletionItems } from '../lib/contentProgress.js'
+
+const MATH_ITEMS = Object.freeze(Object.values(MATH_PROBLEMS).flat())
 
 // 単元1つの理解度をまとめる。
 //  status: 'done'(全クリア) | 'progress'(一部) | 'new'(未着手) | 'soon'(準備中)
@@ -25,7 +29,14 @@ export function MathMapScreen() {
   const navigate = useStore((s) => s.navigate)
   const mathDone = useStore((s) => s.mathDone)
   const mathMastery = useStore((s) => s.mathMastery)
+  const contentQuizResults = useStore((s) => s.contentQuizResults)
   const strands = strandsWithUnits()
+  const mathProgress = summarizeCompletionItems({
+    items: MATH_ITEMS,
+    completedIds: mathDone,
+    quizResults: contentQuizResults,
+    quizDomain: 'math',
+  })
 
   // 全体サマリー
   let totalDone = 0, totalProblems = 0, mastered = 0, masterySum = 0, masteryN = 0
@@ -63,6 +74,19 @@ export function MathMapScreen() {
           <Stat label="クリア問題" value={`${totalDone}`} sub={`/ ${totalProblems}`} />
           <Stat label="平均正答率" value={`${avgMastery}`} sub="%" />
         </div>
+      </div>
+
+      <div className="px-4 pt-4">
+        <Card className="p-4" data-content-status="math">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <p className="text-[10px] font-extrabold text-ink/40">全数学問題</p>
+              <h2 className="font-display text-base font-extrabold text-ink">学習とクイズの内訳</h2>
+            </div>
+            <span className="text-xs font-extrabold text-ink/45">全{mathProgress.total}問</span>
+          </div>
+          <LearningStatusBars progress={mathProgress} className="mt-3" />
+        </Card>
       </div>
 
       {/* 弱点ナビ：土台の単元が弱いと上でつまずく */}
@@ -199,7 +223,7 @@ function UnitNode({ unit, color, last, state, mathDone, mathMastery, onOpen, onO
               {status === 'soon' ? (
                 '準備中'
               ) : status === 'new' ? (
-                `全${total}問・未着手`
+                `全${total}問・未学習`
               ) : (
                 <span>
                   動かして復習 ・ {done}/{total}問クリア

@@ -9,9 +9,11 @@ import {
   kanbunSearchText,
 } from '../data/kanbun-content.js'
 import { KANBUN_LEVELS, KANBUN_LEVEL_BY_ID } from '../data/kanbun-meta.js'
-import { kanbunDueItems, kanbunProgress } from '../lib/kanbunProgress.js'
-import { Button, Card, Chip, IconButton, ProgressRing } from '../components/ui.jsx'
+import { kanbunDueItems } from '../lib/kanbunProgress.js'
+import { Button, Card, Chip, IconButton } from '../components/ui.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
+import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
+import { summarizeSrsItems } from '../lib/contentProgress.js'
 import {
   Book,
   Bookmark,
@@ -49,7 +51,7 @@ export function KanbunCatalogScreen() {
       && (category === 'all' || item.category === category)
       && (!normalized || kanbunSearchText(item).includes(normalized)))
   }, [category, collection, level, query])
-  const totalProgress = kanbunProgress(collection, srs)
+  const totalStatus = summarizeSrsItems(collection, srs)
   const dueItems = kanbunDueItems(collection, srs)
 
   const study = (items, title) => navigate('kanbunStudy', {
@@ -79,20 +81,20 @@ export function KanbunCatalogScreen() {
         <p className="text-xs font-bold text-white/70">中学入門〜最難関大学</p>
         <h1 className="font-display text-2xl font-extrabold">{meta.emoji} {meta.label}</h1>
         <p className="mt-1 text-sm font-bold text-white/80">{meta.description}</p>
-        <div className="mt-4 grid grid-cols-[auto_1fr] items-center gap-4 rounded-2xl bg-white/12 p-3.5">
-          <ProgressRing value={totalProgress.ratio} size={62} stroke={7} color="#ffffff">
-            <span className="text-xs font-extrabold text-white">{Math.round(totalProgress.ratio * 100)}%</span>
-          </ProgressRing>
+        <div className="mt-4 rounded-2xl bg-white/12 p-3.5">
           <div>
             <p className="font-display text-base font-extrabold">全{collection.length}{meta.itemLabel}</p>
             <p className="mt-1 text-[11px] font-bold text-white/65">
-              習得 {totalProgress.mastered}・学習中 {totalProgress.learning}・登録 {savedIds.length}
+              学習済 {totalStatus.learning.learned}・復習中 {totalStatus.learning.reviewing}・未学習 {totalStatus.learning.unlearned}・登録 {savedIds.length}
             </p>
           </div>
         </div>
       </header>
 
       <main className="space-y-5 px-4 pt-5">
+        <Card className="p-4" data-kanbun-catalog-status={domain}>
+          <LearningStatusBars progress={totalStatus} compact />
+        </Card>
         <section className="grid grid-cols-2 gap-3">
           <button
             type="button"
@@ -118,7 +120,7 @@ export function KanbunCatalogScreen() {
           <Button
             variant="secondary"
             disabled={!dueItems.length}
-            onClick={() => study(dueItems, `${meta.label}・復習待ち`)}
+            onClick={() => study(dueItems, `${meta.label}・今日の復習`)}
           >
             <Refresh size={16} /> 復習 {dueItems.length}
           </Button>
