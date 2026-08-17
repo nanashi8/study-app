@@ -10,7 +10,6 @@ import {
 import { learningStatusForSrsEntry } from '../lib/contentProgress.js'
 import {
   EtymologyKnowledgeAnswer,
-  EtymologyKnowledgePrompt,
   wordsForEtymologyPack,
 } from '../components/EtymologyKnowledge.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
@@ -40,7 +39,6 @@ export function EtymologyStudyScreen() {
     }),
   )
   const [index, setIndex] = useState(0)
-  const [revealed, setRevealed] = useState(false)
   const [done, setDone] = useState(false)
   const results = useRef({ remembered: 0, forgot: 0 })
   const pack = deck[index]
@@ -67,13 +65,13 @@ export function EtymologyStudyScreen() {
           <Check size={42} />
         </span>
         <div>
-          <p className="font-display text-2xl font-extrabold text-ink">語源カードを完了</p>
+          <p className="font-display text-2xl font-extrabold text-ink">語源の学習完了</p>
           <p className="mt-1 text-sm font-bold text-ink/50">
             覚えた {results.current.remembered}・もう一度 {results.current.forgot}
           </p>
         </div>
         <p className="rounded-2xl bg-brand-50 px-4 py-3 text-xs font-bold leading-relaxed text-brand-700">
-          結果は単語の暗記とは別の「語源カード」として保存しました。次に見直す日も自動で決まります。
+          結果は英単語の暗記記録とは分けて、語源の学習記録に保存しました。
         </p>
         <Button full size="lg" onClick={back}>語源カードへ戻る</Button>
       </div>
@@ -95,7 +93,6 @@ export function EtymologyStudyScreen() {
       return
     }
     setIndex((current) => current + 1)
-    setRevealed(false)
   }
 
   return (
@@ -132,33 +129,24 @@ export function EtymologyStudyScreen() {
             </span>
           </div>
 
-          {!revealed ? (
-            <div className="mt-7">
-              <EtymologyKnowledgePrompt pack={pack} words={words} />
-            </div>
-          ) : (
-            <div className="mt-5 animate-slide-up">
-              <EtymologyKnowledgeAnswer pack={pack} words={words} />
-            </div>
-          )}
+          <p className="mt-4 rounded-xl bg-violet-50 px-3 py-2 text-center text-xs font-extrabold leading-relaxed text-violet-700">
+            形を見る → 意味をつなぐ → 関連語で確かめる
+          </p>
+          <div className="mt-5">
+            <EtymologyKnowledgeAnswer pack={pack} words={words} />
+          </div>
         </div>
       </div>
 
       <div className="shrink-0 border-t border-brand-100 bg-white/90 p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] backdrop-blur">
-        {!revealed ? (
-          <Button full size="lg" onClick={() => setRevealed(true)}>
-            答えと説明を見る
+        <div className="grid grid-cols-2 gap-3">
+          <Button variant="danger" size="lg" onClick={() => answer(false)}>
+            もう一度
           </Button>
-        ) : (
-          <div className="grid grid-cols-2 gap-3">
-            <Button variant="danger" size="lg" onClick={() => answer(false)}>
-              まだ不安 🤔
-            </Button>
-            <Button variant="success" size="lg" onClick={() => answer(true)}>
-              覚えた 👍
-            </Button>
-          </div>
-        )}
+          <Button variant="success" size="lg" onClick={() => answer(true)}>
+            覚えた
+          </Button>
+        </div>
       </div>
     </div>
   )

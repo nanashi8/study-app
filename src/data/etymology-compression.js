@@ -43,8 +43,8 @@ export const ETYMOLOGY_MODE_META = {
     label: 'ことばの歴史',
     short: '歴史',
     emoji: '🧭',
-    description: 'どの言語から来て、どう今の意味になったかをたどります。',
-    tip: '同じ語根の仲間ではないので、1語ずつ変化の道すじを確かめよう。',
+    description: 'もとの形が表す意味から、今の意味までをたどります。',
+    tip: '言語名ではなく、1語ずつ形と意味のつながりを確かめよう。',
   },
 }
 
@@ -410,10 +410,10 @@ export function buildEtymologyCompression(words, roots) {
         id: `origin:${safeKeySegment(groupKey)}:${safeKeySegment(coverageIds[0])}`,
         mode: 'origin',
         title: topicLabel,
-        subtitle: `${source.label}・${formation.short}（${levelSpan(group)}）`,
-        description: `${formation.description}${source.description}`,
+        subtitle: `${formation.short}・${fieldLabel}（${levelSpan(group)}）`,
+        description: formation.description,
         caution:
-          '同じ語根の仲間ではありません。共通点は、作られ方・もとの言語・今の意味の分野です。',
+          '同じ語根の仲間ではありません。共通点は、作られ方と今の意味の分野です。',
         emoji: formation.emoji,
         formationKey: bucket.formationKey,
         sourceKey: bucket.sourceKey,

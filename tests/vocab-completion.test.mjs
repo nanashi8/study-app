@@ -159,6 +159,8 @@ test('暗記完了画面は全単語暗記入口の合流点だけで詳細レ�
   ]) {
     assert.match(report, new RegExp(contract))
   }
+  assert.match(report, />学習完了</)
+  assert.doesNotMatch(report, /暗記サイクル完了|MEMORY CYCLE COMPLETE/)
   for (const heading of ['今日の成果', '定着させる語句', '今回の忘却曲線', '次の暗記サイクル']) {
     assert.match(report, new RegExp(heading))
   }

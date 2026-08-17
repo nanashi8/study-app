@@ -18,6 +18,7 @@ import {
   ETYMOLOGY_PACKS,
   etymologyLearningGuideFor,
 } from '../src/data/vocab.js'
+import { buildAllEtymologyQuizQuestions } from '../src/lib/etymologyQuiz.js'
 import {
   APP_MENU_SECTIONS,
   APP_MENU_ITEMS,
@@ -86,7 +87,9 @@ const [
   storeSource,
   rootsSource,
   etymologyStudySource,
+  etymologyQuizSource,
   etymologyPackSource,
+  etymologyKnowledgeSource,
   wordBitsSource,
   vocabStudySource,
   vocabQuizSource,
@@ -102,7 +105,9 @@ const [
   readProjectFile('src/store/useStore.js'),
   readProjectFile('src/screens/Roots.jsx'),
   readProjectFile('src/screens/EtymologyStudy.jsx'),
+  readProjectFile('src/screens/EtymologyQuiz.jsx'),
   readProjectFile('src/screens/EtymologyPack.jsx'),
+  readProjectFile('src/components/EtymologyKnowledge.jsx'),
   readProjectFile('src/components/WordBits.jsx'),
   readProjectFile('src/screens/VocabStudy.jsx'),
   readProjectFile('src/screens/VocabQuiz.jsx'),
@@ -114,6 +119,9 @@ for (const label of ['根拠', '消去法', '考え方']) {
 if (!grammarQuizSource.includes('選択肢解説')) errors.push('英文法画面に「選択肢解説」がない')
 if (/id: 'quiz'/.test(homeSource)) errors.push('英語ホームに重複したクイズ入口がある')
 if (!homeSource.includes("id: 'vocab'")) errors.push('英語ホームの単語入口がない')
+if (!homeSource.includes("id: 'etymology'") || !homeSource.includes("screen: 'roots'")) {
+  errors.push('英語ホームから語源へ直接進めない')
+}
 if (!readerSource.includes('長文読解')) errors.push('Readerに「長文読解」がない')
 if (!readerSource.includes('文法解説')) errors.push('Readerに「文法解説」がない')
 if (/learnerPhrasePairsForBlock|speakBlockPair/.test(readerSource)) {
@@ -139,8 +147,17 @@ const actualEtymologyModes = Object.values(ETYMOLOGY_MODE_META).map((item) => it
 if (actualEtymologyModes.join(',') !== expectedEtymologyModes.join(',')) {
   errors.push(`語源の4分類が平易な表示契約と不一致: ${actualEtymologyModes.join(',')}`)
 }
-for (const obsolete of ['現在義', '共通軸', '記載上の出発言語', '濃縮パック']) {
-  if (`${rootsSource}\n${etymologyStudySource}\n${etymologyPackSource}\n${wordBitsSource}`.includes(obsolete)) {
+const learnerEtymologySources = `${rootsSource}\n${etymologyStudySource}\n${etymologyQuizSource}\n${etymologyPackSource}\n${etymologyKnowledgeSource}\n${wordBitsSource}`
+for (const obsolete of [
+  '現在義',
+  '共通軸',
+  '記載上の出発言語',
+  '濃縮パック',
+  'もとの形・言語',
+  'もとの言語',
+  'どの言語から',
+]) {
+  if (learnerEtymologySources.includes(obsolete)) {
     errors.push(`語源の学習者向け画面に専門的な表示語「${obsolete}」が残る`)
   }
 }
@@ -153,8 +170,24 @@ if (!vocabStudySource.includes('<EtymologyBlock')) {
 if (/語源をくわしく見る|くわしく見る/.test(`${vocabQuizSource}\n${vocabStudySource}`)) {
   errors.push('単語の語源本文が「くわしく見る」操作を必須にしている')
 }
-if ((etymologyStudySource.match(/答えと説明を見る/g) ?? []).length !== 1) {
-  errors.push('語源カードに「答えと説明を見る」が重複している')
+if (etymologyStudySource.includes('答えと説明を見る')) {
+  errors.push('語源の学習内容が追加操作の後ろに隠れている')
+}
+if (!etymologyKnowledgeSource.includes('data-etymology-learning-flow')) {
+  errors.push('語源学習が「形・意味・関連語」の流れになっていない')
+}
+const etymologyQuestions = buildAllEtymologyQuizQuestions()
+if (etymologyQuestions.length !== ETYMOLOGY_PACKS.length) {
+  errors.push(`語源2択の全件数が不一致: ${etymologyQuestions.length}/${ETYMOLOGY_PACKS.length}`)
+}
+for (const question of etymologyQuestions) {
+  const labels = question.knowledge.options.map((option) => option.label)
+  if (labels.join(',') !== '正しい,正しくない') {
+    errors.push(`語源 ${question.packId}: 正誤2択ではない`)
+  }
+  if (/何語|もとの言語|どの言語/.test(`${question.knowledge.prompt} ${question.knowledge.statement}`)) {
+    errors.push(`語源 ${question.packId}: 由来言語を答えさせている`)
+  }
 }
 for (const word of ALL_WORDS) {
   const guide = etymologyLearningGuideFor(word)
