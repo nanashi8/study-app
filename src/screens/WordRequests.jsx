@@ -17,7 +17,7 @@ export function WordRequestsScreen() {
             辞書にない単語は、ログイン後に検索画面や教科書読み取り画面から送れます。
           </p>
           <p className="mt-3 text-xs font-bold leading-relaxed text-ink/40">
-            送信するのは選んだ英単語と送信時刻だけです。メールアドレスや写真、教科書本文は送りません。
+            送信するのは選んだ英単語・送信時刻・検索または読み取りの区分です。メールアドレスや写真、教科書本文は送りません。
           </p>
         </Card>
       </div>

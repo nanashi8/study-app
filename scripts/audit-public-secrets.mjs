@@ -7,6 +7,14 @@ import { spawnSync } from 'node:child_process'
 
 const ROOT = resolve(fileURLToPath(new URL('..', import.meta.url)))
 const MAX_TEXT_BYTES = 25 * 1024 * 1024
+const HISTORY_BATCH_BYTES = 32 * 1024 * 1024
+const FIREBASE_CONFIG_SOURCE = readFileSync(resolve(ROOT, 'src/lib/firebaseConfig.js'), 'utf8')
+const EXPECTED_FIREBASE_WEB_API_KEY = FIREBASE_CONFIG_SOURCE.match(
+  /apiKey:\s*["'](AIza[0-9A-Za-z_-]{35})["']/,
+)?.[1]
+if (!EXPECTED_FIREBASE_WEB_API_KEY) {
+  throw new Error('Expected Firebase Web API key was not found in src/lib/firebaseConfig.js')
+}
 const SKIP_DIRS = new Set([
   '.git',
   '.vite',
@@ -23,7 +31,6 @@ const BINARY_EXTENSIONS = new Set([
   '.mp4', '.ogg', '.otf', '.pdf', '.png', '.tar', '.tgz', '.ttf', '.wav',
   '.webm', '.webp', '.woff', '.woff2', '.zip',
 ])
-
 const SECRET_RULES = [
   {
     id: 'private-key',
@@ -135,6 +142,14 @@ function isAllowedMatch(ruleId, filePath, match) {
   const normalized = normalizePath(filePath)
   const value = match[1] ?? match[0]
 
+  // Minified application/data bundles routinely contain fields such as
+  // `password: "パスワード"` or dependency parser labels. Current source is
+  // already checked for broad literal assignments; compiled output retains the
+  // high-confidence provider/key/URL rules without this noisy heuristic.
+  if (ruleId === 'literal-credential' && normalized.startsWith('dist/')) {
+    return true
+  }
+
   if (ruleId === 'email-address') {
     const local = match[1]?.toLowerCase()
     const domain = match[2]?.toLowerCase()
@@ -143,13 +158,13 @@ function isAllowedMatch(ruleId, filePath, match) {
       || /^(?:no-?reply)$/.test(local)
   }
 
-  // Firebase Web configuration is shipped to every browser by design. It is an
-  // identifier, not a server credential; API restrictions and Database Rules
-  // remain the actual security boundary.
+  // Firebase Web configuration is shipped to every browser by design. Allow
+  // only the exact reviewed identifier, and only in its source or compiled
+  // public-build location.
   if (
     (ruleId === 'google-api-key' || ruleId === 'literal-credential')
-    && normalized === 'src/lib/firebaseConfig.js'
-    && value.startsWith('AIza')
+    && value === EXPECTED_FIREBASE_WEB_API_KEY
+    && (normalized === 'src/lib/firebaseConfig.js' || normalized.startsWith('dist/'))
   ) {
     return true
   }
@@ -256,7 +271,8 @@ function embeddedMetadata(buffer, filePath) {
     }
   }
 
-  return payloads.map(printableMetadata).filter(Boolean).join('\n')
+  const metadata = payloads.map(printableMetadata).filter(Boolean).join('\n')
+  return metadata
 }
 
 function walkCurrentTree(directory = ROOT) {
@@ -272,16 +288,19 @@ function walkCurrentTree(directory = ROOT) {
   return files
 }
 
-function scanCurrentTree() {
+function scanDirectory(directory, { publicBuild = false } = {}) {
   const findings = []
   let binaryFiles = 0
   let scannedFiles = 0
   let oversizedFiles = 0
 
-  for (const absolutePath of walkCurrentTree()) {
+  for (const absolutePath of walkCurrentTree(directory)) {
     const filePath = normalizePath(relative(ROOT, absolutePath))
     if (isSensitivePath(filePath)) {
       findings.push({ file: filePath, line: 1, rule: 'sensitive-filename' })
+    }
+    if (publicBuild && filePath.endsWith('.map')) {
+      findings.push({ file: filePath, line: 1, rule: 'public-source-map' })
     }
 
     const size = statSync(absolutePath).size
@@ -300,6 +319,10 @@ function scanCurrentTree() {
   }
 
   return { binaryFiles, findings, oversizedFiles, scannedFiles }
+}
+
+function scanCurrentTree() {
+  return scanDirectory(ROOT)
 }
 
 function runGit(args, options = {}) {
@@ -405,22 +428,30 @@ function scanHistory(ref) {
       oversizedFiles += 1
       return false
     }
-    if (BINARY_EXTENSIONS.has(extname(entry.file).toLowerCase())) {
-      binaryFiles += 1
-      return false
-    }
     return true
   })
 
-  const chunkSize = 250
-  for (let index = 0; index < entries.length; index += chunkSize) {
-    const chunk = entries.slice(index, index + chunkSize)
+  const chunks = []
+  let chunk = []
+  let chunkBytes = 0
+  for (const entry of entries) {
+    if (chunk.length && (chunk.length >= 250 || chunkBytes + entry.size > HISTORY_BATCH_BYTES)) {
+      chunks.push(chunk)
+      chunk = []
+      chunkBytes = 0
+    }
+    chunk.push(entry)
+    chunkBytes += entry.size
+  }
+  if (chunk.length) chunks.push(chunk)
+
+  for (const historyChunk of chunks) {
     const buffer = runGit(['cat-file', '--batch'], {
       encoding: 'buffer',
-      input: Buffer.from(`${chunk.map(({ object }) => object).join('\n')}\n`),
+      input: Buffer.from(`${historyChunk.map(({ object }) => object).join('\n')}\n`),
       maxBuffer: 256 * 1024 * 1024,
     })
-    for (const { entry, buffer: blob } of parseBatch(buffer, chunk)) {
+    for (const { entry, buffer: blob } of parseBatch(buffer, historyChunk)) {
       if (looksBinary(blob, entry.file)) {
         binaryFiles += 1
         findings.push(...scanText(entry.file, embeddedMetadata(blob, entry.file)))
@@ -447,7 +478,7 @@ function deduplicate(findings) {
 function printResult(label, result) {
   const findings = deduplicate(result.findings)
   console.log(
-    `${label}: text_records_scanned=${result.scannedFiles} binary_metadata_scanned=${result.binaryFiles} oversized_skipped=${result.oversizedFiles} findings=${findings.length}`,
+    `${label}: text_records_scanned=${result.scannedFiles} binary_files_inspected=${result.binaryFiles} oversized_skipped=${result.oversizedFiles} findings=${findings.length}`,
   )
   for (const finding of findings) {
     console.error(`${finding.rule}: ${finding.file}:${finding.line}`)
@@ -461,8 +492,27 @@ function main(argv = process.argv.slice(2)) {
     process.exitCode = printResult(`history(${ref})`, scanHistory(ref)) ? 1 : 0
     return
   }
+  if (argv[0] === '--directory' && argv.length === 2) {
+    const directory = resolve(ROOT, argv[1])
+    const directoryName = normalizePath(relative(ROOT, directory))
+    if (!directoryName || directoryName.startsWith('../') || directoryName === '..') {
+      console.error('audit directory must be inside the repository')
+      process.exitCode = 2
+      return
+    }
+    if (!statSync(directory).isDirectory()) {
+      console.error(`audit directory is not a directory: ${directoryName}`)
+      process.exitCode = 2
+      return
+    }
+    process.exitCode = printResult(
+      `directory(${directoryName})`,
+      scanDirectory(directory, { publicBuild: directoryName === 'dist' }),
+    ) ? 1 : 0
+    return
+  }
   if (argv.length) {
-    console.error('Usage: node scripts/audit-public-secrets.mjs [--history <git-ref>]')
+    console.error('Usage: node scripts/audit-public-secrets.mjs [--history <git-ref> | --directory <path>]')
     process.exitCode = 2
     return
   }
