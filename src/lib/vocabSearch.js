@@ -59,3 +59,33 @@ export function vocabMatchRank(word, rawQuery) {
   if (vocabSearchText(word).includes(query)) return 4
   return -1
 }
+
+// ── 熟語・構文（PHRASES）の検索 ─────────────────────────────
+// 単語と同じく「見出し一致 → 意味 → 例文・成り立ち・注意」の順で並べる。
+export function phraseSearchText(phrase) {
+  return normalize([
+    phrase.meaning,
+    ...(phrase.meanings ?? []),
+    phrase.example?.en,
+    phrase.example?.ja,
+    phrase.origin,
+    phrase.note,
+  ].filter(Boolean).join(' '))
+}
+
+export function phraseMatchRank(phrase, rawQuery) {
+  const query = normalize(rawQuery)
+  if (!query) return -1
+
+  // 「〜」「to do」などの記号は打ちにくいので、比較用に緩めた形も見る。
+  const head = normalize(phrase.phrase)
+  const loose = head.replace(/[~〜…]/g, ' ').replace(/\s+/g, ' ').trim()
+  if (head === query || loose === query) return 0
+  if (head.startsWith(query) || loose.startsWith(query)) return 1
+  if (head.includes(query) || loose.includes(query)) return 2
+
+  const meanings = normalize([phrase.meaning, ...(phrase.meanings ?? [])].join(' '))
+  if (meanings.includes(query)) return 3
+  if (phraseSearchText(phrase).includes(query)) return 4
+  return -1
+}
