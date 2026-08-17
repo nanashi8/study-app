@@ -25,11 +25,11 @@ export function ReadingRulesScreen() {
               <Chip color="#fde68a">実戦補強10</Chip>
             </div>
             <h1 className="mt-3 font-display text-xl font-extrabold">
-              一文を訳す前に、文章の道筋をつかむ
+              テーマと文章の型に合わせて、道筋をつかむ
             </h1>
             <p className="mt-2 text-sm font-bold leading-relaxed text-white/85">
               公式の丸暗記ではなく、本文で合図を見つけ、三手以内で判断し、誤読を点検する教材です。
-              迷ったときは同じ五段階へ戻れます。
+              物語・案内・説明・論説で注目点を変え、迷ったときは同じ五段階へ戻れます。
             </p>
           </div>
 
@@ -66,7 +66,7 @@ export function ReadingRulesScreen() {
           <h2 className="font-display text-base font-extrabold text-ink">効率のよい使い方</h2>
           <ol className="mt-3 grid gap-2 sm:grid-cols-3">
             {[
-              ['読む前', '題名と段落を見て、使いそうなルールを2つだけ選ぶ。'],
+              ['読む前', '題名・形式・テーマを見て、その文章で追うものを2〜3点決める。'],
               ['読む途中', '論理語や長い文で止まり、該当ルールの三手を使う。'],
               ['答えた後', '本文の根拠と選択肢の強さを照合し、誤読を修復する。'],
             ].map(([label, text], index) => (
