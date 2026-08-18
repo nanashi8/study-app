@@ -244,7 +244,7 @@ export function ReaderScreen() {
   if (!passage) {
     return (
       <div className="relative flex h-full flex-col items-center justify-center gap-3 p-8 text-center">
-        <div className="absolute right-3 top-[calc(env(safe-area-inset-top)+0.75rem)]">
+        <div className="absolute right-3 top-3">
           <SpeechSettingsButton compact />
         </div>
         <p className="font-bold text-ink/50">長文が見つかりませんでした。</p>
@@ -455,7 +455,7 @@ export function ReaderScreen() {
       </div>
 
       {/* フッター */}
-      <div className="shrink-0 border-t border-brand-100 bg-white/90 p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] backdrop-blur">
+      <div className="shrink-0 border-t border-brand-100 bg-white/90 p-4 pb-4 backdrop-blur">
         <Button
           full
           size="lg"

@@ -12,7 +12,7 @@ import {
 } from '../data/koten-curriculum.js'
 import { Card, Button, Chip } from '../components/ui.jsx'
 import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
-import { summarizeSrsItems } from '../lib/contentProgress.js'
+import { summarizeSrsItems, summarizeSrsItemsWithQuestions } from '../lib/contentProgress.js'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import {
   Book,
@@ -41,7 +41,7 @@ function CategoryCard({ cat, words, srs, onStudy, onQuiz }) {
           <p className="text-xs font-bold text-ink/50">全{words.length}語</p>
         </div>
       </div>
-      <LearningStatusBars progress={status} className="mt-3" compact />
+      <LearningStatusBars progress={status} className="mt-3" compact units={{ learning: '語', quiz: '問' }} />
       <div className="mt-3 grid grid-cols-2 gap-2">
         <Button variant="primary" size="sm" onClick={onStudy}>
           <Book size={16} /> 覚える
@@ -67,8 +67,21 @@ export function KotenListScreen() {
 
   const dueWords = KOTEN_WORDS.filter((w) => kotenSrs[w.id] && isDue(kotenSrs[w.id]))
   const totalStatus = summarizeSrsItems(KOTEN_WORDS, kotenSrs)
-  const grammarStatus = summarizeSrsItems(KOTEN_GRAMMAR, grammarSrs)
-  const cultureStatus = summarizeSrsItems(KOTEN_CULTURE, cultureSrs)
+  const quizResults = useStore((s) => s.contentQuizResults)
+  const grammarStatus = summarizeSrsItemsWithQuestions({
+    items: KOTEN_GRAMMAR,
+    srs: grammarSrs,
+    questions: KOTEN_GRAMMAR_QUESTIONS,
+    quizResults,
+    quizDomain: 'koten-grammar',
+  })
+  const cultureStatus = summarizeSrsItemsWithQuestions({
+    items: KOTEN_CULTURE,
+    srs: cultureSrs,
+    questions: KOTEN_CULTURE_QUESTIONS,
+    quizResults,
+    quizDomain: 'koten-culture',
+  })
   const interpretationStatus = summarizeSrsItems(KOTEN_INTERPRETATIONS, interpretationSrs)
 
   const study = (ids, title) => navigate('kotenStudy', { ids, title })
@@ -78,7 +91,7 @@ export function KotenListScreen() {
   return (
     <div className="pb-6">
       {/* ヒーロー */}
-      <div className="rounded-b-[2.5rem] bg-gradient-to-br from-amber-500 via-orange-500 to-amber-700 px-5 pb-7 pt-[calc(env(safe-area-inset-top)+1.25rem)] text-white">
+      <div className="rounded-b-[2.5rem] bg-gradient-to-br from-amber-500 via-orange-500 to-amber-700 px-5 pb-7 pt-5 text-white">
         <div className="mb-3 flex items-center justify-between">
           <button
             onClick={() => navigate('portal')}
@@ -107,10 +120,10 @@ export function KotenListScreen() {
             <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-orange-100 text-2xl">📖</span>
             <div className="min-w-0 flex-1">
               <h3 className="font-display text-lg font-extrabold text-ink">古典単語</h3>
-              <p className="text-[11px] font-bold text-ink/50">全{KOTEN_WORDS.length}語</p>
+              <p className="text-[11px] font-bold text-ink/50">全{KOTEN_WORDS.length}語・全{KOTEN_WORDS.length}問</p>
             </div>
           </div>
-          <LearningStatusBars progress={totalStatus} className="mt-3" compact />
+          <LearningStatusBars progress={totalStatus} className="mt-3" compact units={{ learning: '語', quiz: '問' }} />
           <div className="mt-3 grid grid-cols-2 gap-2">
             <Button size="sm" onClick={() => study(KOTEN_WORDS.map((word) => word.id), '古典単語・全範囲')}><Book size={16} /> 覚える</Button>
             <Button variant="secondary" size="sm" onClick={() => quiz(KOTEN_WORDS.map((word) => word.id), '古典単語・全範囲')}><Cards size={16} /> テスト</Button>
@@ -122,11 +135,11 @@ export function KotenListScreen() {
             <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-purple-100 text-purple-700"><BookOpen size={22} /></span>
             <span className="min-w-0 flex-1">
               <span className="block font-display text-lg font-extrabold text-ink">古典文法</span>
-              <span className="block text-[11px] font-bold text-ink/50">{KOTEN_GRAMMAR.length}項目・{KOTEN_GRAMMAR_QUESTIONS.length}問</span>
+              <span className="block text-[11px] font-bold text-ink/50">全{KOTEN_GRAMMAR.length}項目・全{KOTEN_GRAMMAR_QUESTIONS.length}問</span>
             </span>
             <ArrowRight size={19} className="text-purple-600" />
           </button>
-          <LearningStatusBars progress={grammarStatus} className="mt-3" compact />
+          <LearningStatusBars progress={grammarStatus} className="mt-3" compact units={{ learning: '項目', quiz: '問' }} />
         </Card>
 
         <Card className="p-4">
@@ -134,11 +147,11 @@ export function KotenListScreen() {
             <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-fuchsia-100 text-2xl">🏯</span>
             <span className="min-w-0 flex-1">
               <span className="block font-display text-lg font-extrabold text-ink">古典常識</span>
-              <span className="block text-[11px] font-bold text-ink/50">{KOTEN_CULTURE.length}テーマ・{KOTEN_CULTURE_QUESTIONS.length}問</span>
+              <span className="block text-[11px] font-bold text-ink/50">全{KOTEN_CULTURE.length}テーマ・全{KOTEN_CULTURE_QUESTIONS.length}問</span>
             </span>
             <ArrowRight size={19} className="text-fuchsia-600" />
           </button>
-          <LearningStatusBars progress={cultureStatus} className="mt-3" compact />
+          <LearningStatusBars progress={cultureStatus} className="mt-3" compact units={{ learning: 'テーマ', quiz: '問' }} />
         </Card>
 
         <div className="px-1 pt-3">
@@ -243,7 +256,7 @@ export function KotenListScreen() {
             <ArrowRight size={22} className="mt-3 shrink-0 text-amber-300 transition-transform group-active:translate-x-1" />
           </div>
           <div className="mt-3 rounded-2xl bg-white p-3 text-ink">
-            <LearningStatusBars progress={interpretationStatus} compact />
+            <LearningStatusBars progress={interpretationStatus} compact units={{ learning: '問', quiz: '問' }} />
           </div>
         </button>
 

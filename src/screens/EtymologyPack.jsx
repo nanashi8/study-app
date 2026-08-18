@@ -119,7 +119,7 @@ export function EtymologyPackScreen() {
             </div>
             <div className="rounded-xl bg-violet-50 px-3 py-3">
               <p className="mb-2 text-xs font-extrabold text-violet-800">この語源カード</p>
-              <LearningStatusBars progress={packProgress} compact />
+              <LearningStatusBars progress={packProgress} compact units={{ learning: '項目', quiz: '問' }} />
             </div>
             <div className="grid grid-cols-2 gap-2" data-etymology-pack-actions>
               <Button full onClick={studyKnowledge}>
@@ -133,7 +133,7 @@ export function EtymologyPackScreen() {
               <p className="mb-2 text-xs font-extrabold text-brand-700">
                 関連英単語 {progressWords.length}語・この画面 {words.length}語
               </p>
-              <LearningStatusBars progress={wordProgress} compact />
+              <LearningStatusBars progress={wordProgress} compact units={{ learning: '語', quiz: '問' }} />
             </div>
             <div className="grid grid-cols-2 gap-2">
               <Button variant="secondary" onClick={study}>

@@ -7,6 +7,7 @@ import {
 } from '../data/koten-culture.js'
 import { Button, Chip, ProgressBar, IconButton } from '../components/ui.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
+import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
 import {
   ArrowRight,
   Bookmark,
@@ -118,6 +119,7 @@ export function KotenCultureStudyScreen() {
               {params.title ?? '古典常識を覚える'}
             </p>
           </div>
+          <RevealAnswersToggle label="答え" onChange={(on) => on && setFlipped(true)} />
           <SpeechSettingsButton compact />
           <SessionCounter
             index={index}
@@ -210,7 +212,7 @@ export function KotenCultureStudyScreen() {
         </div>
       </div>
 
-      <div className="shrink-0 border-t border-violet-100 bg-white/90 p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] backdrop-blur">
+      <div className="shrink-0 border-t border-violet-100 bg-white/90 p-4 pb-4 backdrop-blur">
         {!flipped ? (
           <Button full size="lg" onClick={() => setFlipped(true)}>
             答えを見る

@@ -27,7 +27,7 @@ export function KotenInterpretationListScreen() {
 
   return (
     <div className="pb-7">
-      <div className="rounded-b-[2.5rem] bg-gradient-to-br from-orange-500 via-amber-500 to-yellow-500 px-5 pb-7 pt-[calc(env(safe-area-inset-top)+1.25rem)] text-white">
+      <div className="rounded-b-[2.5rem] bg-gradient-to-br from-orange-500 via-amber-500 to-yellow-500 px-5 pb-7 pt-5 text-white">
         <div className="mb-3 flex items-center justify-between">
           <button
             onClick={() => navigate('kotenList')}
@@ -54,7 +54,7 @@ export function KotenInterpretationListScreen() {
 
       <div className="space-y-4 px-4 pt-5">
         <Card className="p-4" data-koten-interpretation-status>
-          <LearningStatusBars progress={overallStatus} compact />
+          <LearningStatusBars progress={overallStatus} compact units={{ learning: '問', quiz: '問' }} />
         </Card>
         <div className="grid grid-cols-2 gap-3">
           <button
@@ -126,7 +126,7 @@ export function KotenInterpretationListScreen() {
                       <p className="mt-0.5 text-xs font-bold text-ink/50">{level.subtitle}</p>
                     </div>
                   </div>
-                  <LearningStatusBars progress={status} className="mt-3" compact />
+                  <LearningStatusBars progress={status} className="mt-3" compact units={{ learning: '問', quiz: '問' }} />
                   <Button
                     full
                     size="sm"

@@ -205,7 +205,7 @@ export function WritingScreen() {
                   </Chip>
                 ))}
               </div>
-              <LearningStatusBars progress={status} className="mt-3" compact />
+              <LearningStatusBars progress={status} className="mt-3" compact units={{ learning: '題', quiz: '題' }} />
               <p className="mt-2 text-[10px] font-bold text-ink/45">{profile.target}・独立クイズは未回答として表示</p>
             </div>
           </Card>

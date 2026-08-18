@@ -134,10 +134,11 @@ export function VocabCompletionReport({
               kind="learning"
               counts={{ learned: session.remembered, reviewing: session.forgot, unlearned: 0 }}
               compact
+              unit="語"
             />
           </div>
           <p className="mt-1.5 text-[10px] font-bold leading-relaxed text-white/70">
-            「覚えた」は自己判定です。定着は、時間を空けた次回の想起とクイズで確認します。
+            「覚えた」は自分で押した判定です。ほんとうに身についたかは、時間を空けてもう一度思い出せるかとクイズで確かめます。
           </p>
         </div>
       </header>
@@ -257,7 +258,7 @@ export function VocabCompletionReport({
           </dl>
         </div>
         <p className="mt-2 text-[10px] font-bold leading-relaxed text-ink/45">
-          SRS段階・経過時間・これまでの回答傾向から作る参考予測で、記憶を直接測った値ではありません。回答のたびに更新されます。
+          復習の段階・経過時間・これまでの回答の傾向から作る目安で、記憶そのものを測った値ではありません。回答のたびに更新されます。
         </p>
       </Card>
 

@@ -427,7 +427,7 @@ export function DictationPlayScreen() {
         )}
       </div>
 
-      <div className="shrink-0 border-t border-brand-100 bg-white/90 p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] backdrop-blur">
+      <div className="shrink-0 border-t border-brand-100 bg-white/90 p-4 pb-4 backdrop-blur">
         {!result ? (
           <Button full size="lg" disabled={!sentenceComplete} onClick={check}>
             {sentenceComplete

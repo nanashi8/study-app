@@ -48,7 +48,7 @@ export function KotenSavedScreen() {
 
   return (
     <div className="pb-7">
-      <div className="rounded-b-[2.5rem] bg-gradient-to-br from-amber-600 via-orange-500 to-yellow-500 px-5 pb-6 pt-[calc(env(safe-area-inset-top)+1.25rem)] text-white">
+      <div className="rounded-b-[2.5rem] bg-gradient-to-br from-amber-600 via-orange-500 to-yellow-500 px-5 pb-6 pt-5 text-white">
         <div className="mb-3 flex items-center justify-between">
           <button
             onClick={() => navigate('kotenList')}

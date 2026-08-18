@@ -72,7 +72,7 @@ export function LevelPicker({
                 </div>
                 <ArrowRight size={20} className="shrink-0 text-brand-400" />
               </div>
-              {status && <LearningStatusBars progress={status} className="mt-3" compact />}
+              {status && <LearningStatusBars progress={status} className="mt-3" compact units={{ learning: '語', quiz: '問' }} />}
             </button>
           )
         })}

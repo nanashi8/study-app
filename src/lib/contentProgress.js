@@ -76,6 +76,41 @@ export function summarizeSrsItems(items = [], srs = {}) {
   return { ...summary, activeIds }
 }
 
+// 出題単位でクイズ結果を数える。1項目に複数問ある教材（古典文法・古典常識）で
+// 「全74」ではなく「全136問」と表示できるよう、母数を問題そのものに合わせる。
+export function summarizeQuizItems({ items = [], quizResults = {}, quizDomain } = {}) {
+  const ids = uniqueItemIds(items)
+  const normalized = normalizeContentQuizResults(quizResults)
+  const counts = { correct: 0, incorrect: 0, unanswered: 0 }
+  const answeredIds = []
+
+  for (const id of ids) {
+    const result = normalized[contentQuizKey(quizDomain, id)]?.lastResult
+    const status = result === 'correct'
+      ? 'correct'
+      : result === 'wrong'
+        ? 'incorrect'
+        : 'unanswered'
+    counts[status] += 1
+    if (status !== 'unanswered') answeredIds.push(id)
+  }
+
+  return { total: ids.length, counts, answeredIds }
+}
+
+// 学習は項目単位、クイズは出題単位で数える教材のまとめ。
+export function summarizeSrsItemsWithQuestions({
+  items = [],
+  srs = {},
+  questions = [],
+  quizResults = {},
+  quizDomain,
+} = {}) {
+  const base = summarizeSrsItems(items, srs)
+  const quiz = summarizeQuizItems({ items: questions, quizResults, quizDomain })
+  return { ...base, quiz: quiz.counts, quizTotal: quiz.total }
+}
+
 export function contentQuizKey(domain, itemId) {
   const safeDomain = String(domain ?? '').trim()
   const safeItemId = String(itemId ?? '').trim()

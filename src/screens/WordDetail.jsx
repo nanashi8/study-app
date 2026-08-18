@@ -155,7 +155,7 @@ export function WordDetailScreen() {
           <div className="mt-3 rounded-2xl bg-brand-50 p-3">
             <div className="font-display text-xl font-extrabold text-ink">{word.meanings.join('・')}</div>
           </div>
-          <LearningStatusBars progress={progress} className="mt-4" compact />
+          <LearningStatusBars progress={progress} className="mt-4" compact units={{ learning: '語', quiz: '問' }} />
         </Card>
 
         {/* 例文 */}
@@ -260,7 +260,7 @@ export function WordDetailScreen() {
       </div>
 
       {/* 保存ボタン（固定） */}
-      <div className="fixed inset-x-0 bottom-0 z-30 mx-auto max-w-md border-t border-brand-100 bg-white/95 p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] backdrop-blur">
+      <div className="fixed inset-x-0 bottom-0 z-30 mx-auto max-w-md border-t border-brand-100 bg-white/95 p-4 pb-[calc(1rem+var(--app-safe-bottom))] backdrop-blur">
         <Button full variant={saved ? 'soft' : 'primary'} onClick={() => toggleMyList(word.id)}>
           {saved ? <BookmarkFilled size={18} /> : <Bookmark size={18} />}
           {saved ? 'マイ単語に保存済み（タップで解除）' : 'マイ単語リストに保存'}

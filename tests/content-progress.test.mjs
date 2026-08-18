@@ -18,6 +18,8 @@ import {
   LEARNING_CONTENT_GROUPS,
   buildLearningContentProgress,
 } from '../src/lib/learningContentProgress.js'
+import { KOTEN_GRAMMAR_QUESTIONS } from '../src/data/koten-grammar-questions.js'
+import { KOTEN_CULTURE_QUESTIONS } from '../src/data/koten-culture.js'
 import {
   PERSISTED_PROGRESS_FIELDS,
   buildPayload,
@@ -174,10 +176,46 @@ test('全18教材の母集団は重複なく、空状態でも両方の3区分�
     assert.equal(row.progress.learning.unlearned, row.progress.total, `${row.id}: 初期未学習`)
     assert.equal(row.progress.quiz.correct, 0, `${row.id}: 初期正解`)
     assert.equal(row.progress.quiz.incorrect, 0, `${row.id}: 初期不正解`)
-    assert.equal(row.progress.quiz.unanswered, row.progress.total, `${row.id}: 初期未回答`)
+    assert.equal(row.progress.quiz.unanswered, row.progress.quizTotal, `${row.id}: 初期未回答`)
     assert.equal(statusTotal(row.progress.learning, LEARNING_STATUS_KEYS), row.progress.total)
-    assert.equal(statusTotal(row.progress.quiz, QUIZ_STATUS_KEYS), row.progress.total)
+    assert.equal(statusTotal(row.progress.quiz, QUIZ_STATUS_KEYS), row.progress.quizTotal)
   }
+})
+
+test('1項目に複数問ある教材は、クイズだけ出題数を母数にする', () => {
+  const rows = buildLearningContentProgress(createInitialLearningState())
+  const byId = Object.fromEntries(rows.map((row) => [row.id, row]))
+
+  assert.equal(byId['koten-grammar'].progress.total, 74)
+  assert.equal(byId['koten-grammar'].progress.quizTotal, KOTEN_GRAMMAR_QUESTIONS.length)
+  assert.equal(byId['koten-grammar'].progress.quizTotal, 136)
+  assert.equal(byId['koten-culture'].progress.total, 56)
+  assert.equal(byId['koten-culture'].progress.quizTotal, KOTEN_CULTURE_QUESTIONS.length)
+  assert.equal(byId['koten-culture'].progress.quizTotal, 112)
+  assert.equal(byId['koten-vocab'].progress.quizTotal, 300)
+
+  // 数え方が違う分、単位まで揃えて表示できるようにしておく。
+  assert.equal(byId['koten-grammar'].unit, '項目')
+  assert.equal(byId['koten-grammar'].quizUnit, '問')
+  assert.equal(byId['koten-culture'].unit, 'テーマ')
+  assert.equal(byId['koten-culture'].quizUnit, '問')
+  assert.equal(byId['koten-vocab'].unit, '語')
+  assert.equal(byId['koten-vocab'].quizUnit, '問')
+
+  // 出題1問に答えると、その1問だけが「正解」へ動く。
+  const answered = buildLearningContentProgress({
+    ...createInitialLearningState(),
+    contentQuizResults: recordContentQuizResult({}, {
+      domain: 'koten-grammar',
+      itemId: KOTEN_GRAMMAR_QUESTIONS[0].id,
+      correct: 1,
+      total: 1,
+    }),
+  })
+  const grammar = answered.find((row) => row.id === 'koten-grammar')
+  assert.equal(grammar.progress.quiz.correct, 1)
+  assert.equal(grammar.progress.quiz.unanswered, 135)
+  assert.equal(grammar.progress.learning.unlearned, 74)
 })
 
 test('SRS外クイズ結果は端末・進捗コード・クラウド・リセット契約を往復する', () => {

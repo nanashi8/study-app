@@ -295,10 +295,10 @@ export const READING_RULES = freeze([
     'comparison-pairs',
     'logic',
     'standard',
-    '比較は比べる二者と基準をそろえる',
+    '比べる相手と基準をそろえる',
     '比較級・as・thanを見たら、何と何をどの点で比べているか書き出す。',
     'more、less、-er、than、as ... as、the more',
-    ['比較される二者を決める', '比較する尺度を探す', '省略された共通部分を補う'],
+    ['何と何を比べているか決める', '比べる尺度を探す', '省略された共通部分を補う'],
     'The longer route was safer than the shorter one.',
     '長い道順は短い道順より安全だった。',
     'than以下に語が省略されることがある。表面の隣り合う語だけを比べない。',
@@ -464,9 +464,9 @@ const makePassageApproach = (title, summary, steps, ruleIds) => Object.freeze({
 // テーマの論じ方、設問焦点に合わせて「何を追うか」と中核ルールを定める。
 export const PASSAGE_READING_APPROACHES = Object.freeze({
   p_5_lost_notebook: makePassageApproach(
-    '人物・持ち物・転機を時系列で追う',
-    '身近な物語では、人物ごとの持ち物と行動を結び、出来事が動いた理由を確かめる。',
-    ['登場人物と持ち物を対応させる', 'first・then・afterで出来事を並べる', '結末から行動の理由を本文へ戻す'],
+    '人物・出来事・転機を時系列で追う',
+    '身近な物語では、人物ごとの状況と行動を結び、出来事が動いた理由を確かめる。',
+    ['登場人物と関わる物・場所を対応させる', 'first・then・afterで出来事を並べる', '結末から行動の理由を本文へ戻す'],
     ['genre-prediction', 'svoc-core', 'relative-clause', 'logic-connectors', 'reference-chain', 'evidence-backtrack'],
   ),
   p_4_library_event: makePassageApproach(
@@ -476,38 +476,38 @@ export const PASSAGE_READING_APPROACHES = Object.freeze({
     ['purpose-first', 'noun-boundary', 'postmodifier', 'logic-connectors', 'evidence-backtrack', 'reference-chain'],
   ),
   p_3_school_garden: makePassageApproach(
-    '菜園の課題・行動・変化を因果で結ぶ',
+    '課題・行動・変化を因果で結ぶ',
     '活動報告は、困り事に対して誰が何をし、その結果どう変わったかを段落ごとに追う。',
-    ['最初の課題を段落冒頭から一言で置く', '生徒と地域の行動を分けて並べる', '結果と学びを原因へ矢印で戻す'],
+    ['最初の課題を段落冒頭から一言で置く', '担い手ごとに行動を分けて並べる', '結果と学びを原因へ矢印で戻す'],
     ['paragraph-map', 'main-clause-skeleton', 'ing-ed-role', 'cause-result', 'evidence-backtrack', 'repair-monitor'],
   ),
   p_pre2_museum_volunteers: makePassageApproach(
     '具体例を「誰へのどんな利点か」へ戻す',
-    'ボランティア活動の説明では、個々の仕事を列挙で終わらせず、来館者・生徒・施設への利点にまとめる。',
-    ['仕事の具体例と担当する人を拾う', '利点の受け手を三者に分ける', '例を束ねて本文全体の要旨を作る'],
+    '活動の説明文では、仕事の列挙で終わらせず、その利点を受け取る相手ごとにまとめ直す。',
+    ['仕事の具体例と担当する人を拾う', '利点を受け取る相手ごとに分ける', '例を束ねて本文全体の要旨を作る'],
     ['paragraph-map', 'parallel-shape', 'relative-clause', 'example-restatement', 'evidence-backtrack', 'unknown-word-context'],
   ),
   p_pre2plus_repair_cafes: makePassageApproach(
     '仕組み・効果・限界を別の列で読む',
     '持続可能性の説明文では、活動の仕組み、確認できた効果、地域だけでは解けない限界を混ぜない。',
-    ['修理の手順と担い手を整理する', '効果を本文の具体例で確かめる', 'but以降の限界から結論の範囲を決める'],
+    ['活動の手順と担い手を整理する', '効果を本文の具体例で確かめる', 'but以降の限界から結論の範囲を決める'],
     ['genre-prediction', 'finite-verb-check', 'passive-active', 'contrast-concession', 'author-stance', 'evidence-backtrack'],
   ),
   p_2_quiet_technology: makePassageApproach(
     '技術ごとに機能・利点・懸念を対にする',
-    '技術論では、便利さの例だけを拾わず、各技術が誰に働き、どんな懸念や条件を伴うかを比較する。',
+    '技術の論説文では、便利さの例だけを拾わず、各技術が誰に働き、どんな懸念や条件を伴うかを比較する。',
     ['具体例ごとに機能を短く書く', '利点と懸念を同じ技術の左右に置く', '最後の提案がどこまで強いか確かめる'],
     ['reading-mode', 'punctuation-map', 'that-diagnosis', 'contrast-concession', 'author-stance', 'distractor-strength'],
   ),
   p_pre1_resilient_cities: makePassageApproach(
     '気候対策を効果・費用・公平性で比較する',
-    '都市政策の文章では、一つの対策を万能視せず、地域条件と負担の分配まで含めて条件付き結論を読む。',
+    '都市政策の論説文では、一つの対策を万能視せず、地域条件と負担の分配まで含めて条件付き結論を読む。',
     ['対策ごとの効果と条件を並べる', '誰が利益と負担を受けるかを追う', '比較の基準から結論の条件を確認する'],
     ['paragraph-map', 'parallel-shape', 'wh-clause', 'comparison-pairs', 'author-stance', 'distractor-strength'],
   ),
   p_1_collective_memory: makePassageApproach(
     '抽象概念を制度・事例・反論で具体化する',
-    '評論文では「集合的記憶」の定義を固定し、制度の例、異論、筆者の応答が定義をどう深めるか追う。',
+    '評論文では中心概念の定義を先に固定し、制度の例・異論・筆者の応答が定義をどう深めるか追う。',
     ['中心概念の言い換えを集める', '他者の見解と筆者の応答を分ける', '最終段落で主張の範囲を言い直す'],
     ['reading-mode', 'main-clause-skeleton', 'that-diagnosis', 'contrast-concession', 'author-stance', 'unknown-word-context'],
   ),
@@ -532,7 +532,7 @@ export const PASSAGE_READING_APPROACHES = Object.freeze({
   p_pre2_later_school_start: makePassageApproach(
     '賛成根拠・反対意見・筆者の結論を分ける',
     '教育制度の論説文では、利点だけでなく反対側の課題と応答を追い、筆者の結論を強めすぎずに読む。',
-    ['始業時刻を遅らせる根拠を集める', '反対意見とその応答を対にする', '最後の結論が提案か断定かを確かめる'],
+    ['提案に賛成する根拠を集める', '反対意見とその応答を対にする', '最後の結論が提案か断定かを確かめる'],
     ['genre-prediction', 'main-clause-skeleton', 'that-diagnosis', 'contrast-concession', 'author-stance', 'evidence-backtrack'],
   ),
   p_pre2plus_city_bird_count: makePassageApproach(
@@ -543,7 +543,7 @@ export const PASSAGE_READING_APPROACHES = Object.freeze({
   ),
   p_2_online_health_claims: makePassageApproach(
     '情報源・証拠・因果の三段階で疑う',
-    '健康情報は結論から信じず、誰が述べたか、どんな証拠か、相関を因果へ広げていないかを点検する。',
+    '健康情報の記事は結論から信じず、誰が述べたか、どんな証拠か、相関を因果へ広げていないかを点検する。',
     ['発信者と元の情報源を探す', '比較条件と不足する証拠を確認する', 'mayをmustへ強めた選択肢を外す'],
     ['reading-mode', 'finite-verb-check', 'wh-clause', 'cause-result', 'author-stance', 'distractor-strength'],
   ),
@@ -560,9 +560,9 @@ export const PASSAGE_READING_APPROACHES = Object.freeze({
     ['reading-mode', 'main-clause-skeleton', 'that-diagnosis', 'example-restatement', 'author-stance', 'unknown-word-context'],
   ),
   p_5_weather_field_trip: makePassageApproach(
-    '晴天案・雨天案を条件ごとに切り替える',
-    '予定変更の文章では、二つの予定を混ぜず、ifの条件、時刻、持ち物をそれぞれの案へ結び付ける。',
-    ['晴天と雨天の予定を二列にする', '時刻と持ち物を正しい列へ置く', 'ifの条件から実際の行動を選ぶ'],
+    '二つの案を条件ごとに切り替える',
+    '予定変更の案内では、複数の予定を混ぜず、ifの条件・時刻・持ち物をそれぞれの案へ結び付ける。',
+    ['条件ごとの予定を列に分ける', '時刻と持ち物を正しい列へ置く', 'ifの条件から実際の行動を選ぶ'],
     ['purpose-first', 'finite-verb-check', 'infinitive-role', 'logic-connectors', 'evidence-backtrack', 'repair-monitor'],
   ),
   p_4_emergency_map: makePassageApproach(
@@ -573,7 +573,7 @@ export const PASSAGE_READING_APPROACHES = Object.freeze({
   ),
   p_3_multilingual_town_guide: makePassageApproach(
     '調査・試作・利用者テストの改善循環を追う',
-    '地域ガイド作りでは、作り手の意図だけでなく、旅行者の困り事がどの修正へ反映されたかを読む。',
+    '地域づくりの活動報告では、作り手の意図だけでなく、旅行者の困り事がどの修正へ反映されたかを読む。',
     ['活動を調査・試作・テストに分ける', '利用者の声と修正点を対にする', '最後の学びを具体的な変更へ戻す'],
     ['paragraph-map', 'parallel-shape', 'wh-clause', 'cause-result', 'reference-chain', 'evidence-backtrack'],
   ),
@@ -596,7 +596,7 @@ export const PASSAGE_READING_APPROACHES = Object.freeze({
     ['genre-prediction', 'parallel-shape', 'relative-clause', 'comparison-pairs', 'author-stance', 'distractor-strength'],
   ),
   p_pre1_dark_sky_policy: makePassageApproach(
-    '環境・安全・経済の利害を三者で調整する',
+    '環境・安全・経済の利害を立場ごとに調整する',
     '環境政策の論説文では、一方の正しさに寄せず、利害関係者の反論と段階的な政策案を追う。',
     ['立場ごとの利益と懸念を分ける', '反論に対する応答を対応させる', '段階的な政策の条件と評価法を確認する'],
     ['reading-mode', 'insertion', 'wh-clause', 'contrast-concession', 'author-stance', 'evidence-backtrack'],

@@ -290,7 +290,7 @@ export function EtymologyQuizScreen() {
         </div>
       </div>
 
-      <div className="shrink-0 border-t border-brand-100 bg-white/95 p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] backdrop-blur">
+      <div className="shrink-0 border-t border-brand-100 bg-white/95 p-3 pb-3 backdrop-blur">
         {!studied ? (
           <Button full size="lg" onClick={() => setStudied(true)}>
             2択で確認する <ArrowRight size={18} />

@@ -331,7 +331,7 @@ function LearningSettingsPanel() {
       <div className="divide-y divide-brand-50">
         <SettingRow
           title="答えを開いたまま見せる"
-          desc="覚える・復習・マイ単語で、意味や語源を最初から表示"
+          desc="英単語・古文単語・熟語・文法・古典常識・漢文のカードで、意味や答えを最初から表示。カード画面の「意味」「答え」ボタンでも切り替えられます"
         >
           <Toggle
             label="答えを開いたまま見せる"

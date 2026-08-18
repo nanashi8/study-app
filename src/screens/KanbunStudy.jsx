@@ -9,6 +9,8 @@ import {
 import { KANBUN_LEVEL_BY_ID } from '../data/kanbun-meta.js'
 import { Button, Chip, IconButton, ProgressBar } from '../components/ui.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
+import { KanbunText, KanbunHeadword } from '../components/KanbunFurigana.jsx'
+import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 import {
   ArrowRight,
@@ -22,35 +24,35 @@ function AnswerDetails({ domain, item }) {
   return (
     <div className="mt-6 space-y-3 animate-slide-up">
       <div className="rounded-2xl bg-rose-50 p-4">
-        <p className="text-[10px] font-extrabold tracking-wide text-rose-700">中心の答え</p>
+        <p className="text-[10px] font-extrabold tracking-wide text-rose-700">答え</p>
         <p className="mt-1 font-display text-lg font-extrabold leading-relaxed text-ink">{item.answer}</p>
       </div>
 
       <div className="rounded-2xl bg-slate-50 p-4">
-        <p className="text-[10px] font-extrabold tracking-wide text-slate-500">細かな理解</p>
+        <p className="text-[10px] font-extrabold tracking-wide text-slate-500">くわしい説明</p>
         <p className="mt-1 text-sm font-bold leading-relaxed text-ink/70">{item.detail}</p>
       </div>
 
       <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4">
         <div className="flex items-center gap-1.5 text-amber-700">
           <Lightbulb size={16} />
-          <span className="text-[10px] font-extrabold tracking-wide">見抜く手掛かり</span>
+          <span className="text-[10px] font-extrabold tracking-wide">見分けるヒント</span>
         </div>
         <p className="mt-1.5 text-sm font-bold leading-relaxed text-amber-950/75">{item.clue}</p>
       </div>
 
       {(item.original || item.scene) && (
         <div className="rounded-2xl bg-gradient-to-br from-slate-950 to-rose-950 p-4 text-white">
-          <p className="text-[10px] font-extrabold text-rose-200">{domain === 'culture' ? '本文への適用場面' : '用例'}</p>
+          <p className="text-[10px] font-extrabold text-rose-200">{domain === 'culture' ? '本文で使う場面' : '用例'}</p>
           <p className="mt-2 font-serif text-lg font-bold leading-[1.8]">{item.original || item.scene}</p>
-          {item.kakikudashi && <p className="mt-2 text-sm font-bold leading-relaxed text-white/80">{item.kakikudashi}</p>}
+          {item.kakikudashi && <p className="mt-2 text-sm font-bold leading-relaxed text-white/80"><KanbunText>{item.kakikudashi}</KanbunText></p>}
           {item.translation && <p className="mt-1 text-xs font-bold leading-relaxed text-white/60">{item.translation}</p>}
           {item.application && <p className="mt-2 text-xs font-bold leading-relaxed text-white/70">{item.application}</p>}
         </div>
       )}
 
       <div className="rounded-2xl border border-rose-200 bg-white p-4">
-        <p className="text-[10px] font-extrabold tracking-wide text-rose-600">ここでの誤り</p>
+        <p className="text-[10px] font-extrabold tracking-wide text-rose-600">まちがえやすい点</p>
         <p className="mt-1 text-sm font-bold leading-relaxed text-ink/65">{item.pitfall}</p>
       </div>
     </div>
@@ -153,6 +155,7 @@ export function KanbunStudyScreen() {
             <ProgressBar value={index / deck.length} color="#be123c" />
             <p className="mt-1 truncate text-[10px] font-extrabold text-ink/40">{params.title ?? `${meta.label}を覚える`}</p>
           </div>
+          <RevealAnswersToggle label="答え" onChange={(on) => on && setRevealed(true)} />
           <SpeechSettingsButton compact />
           <SessionCounter
             index={index}
@@ -194,8 +197,11 @@ export function KanbunStudyScreen() {
 
           <div className="mt-5 text-center">
             <p className="text-[10px] font-extrabold tracking-[0.16em] text-rose-600">KANBUN MEMORY</p>
-            <h1 className="mt-2 font-display text-2xl font-extrabold leading-snug text-ink">{item.title}</h1>
-            {item.reading && <p className="mt-1 text-sm font-extrabold text-rose-700">{item.reading}</p>}
+            <h1 className="mt-2 font-display text-2xl font-extrabold leading-snug text-ink"><KanbunHeadword item={item} /></h1>
+            {/* 見出しのルビと同じ読みしかないときは、下の読み行を重ねて出さない。 */}
+            {item.reading && item.reading.includes('・') && (
+              <p className="mt-1 text-sm font-extrabold text-rose-700">{item.reading}</p>
+            )}
             {item.pattern && <p className="mt-2 rounded-xl bg-slate-100 px-3 py-2 font-mono text-sm font-extrabold text-slate-800">{item.pattern}</p>}
             <p className="mt-3 text-sm font-bold leading-relaxed text-ink/45">{item.front}</p>
           </div>
@@ -209,7 +215,7 @@ export function KanbunStudyScreen() {
         </article>
       </div>
 
-      <div className="shrink-0 border-t border-rose-100 bg-white/90 p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] backdrop-blur">
+      <div className="shrink-0 border-t border-rose-100 bg-white/90 p-4 pb-4 backdrop-blur">
         {!revealed ? (
           <Button full size="lg" onClick={() => setRevealed(true)}>答えを見る</Button>
         ) : (

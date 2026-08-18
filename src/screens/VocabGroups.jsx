@@ -33,7 +33,7 @@ function FieldCard({ field, words, srs, onStudy, onQuiz }) {
         </div>
       </div>
 
-      <LearningStatusBars progress={status} className="mt-3" compact />
+      <LearningStatusBars progress={status} className="mt-3" compact units={{ learning: '語', quiz: '問' }} />
       <p className="mt-1.5 text-right text-[10px] font-bold text-ink/45">
         {progress.due > 0 ? `今日の復習 ${progress.due}語` : '1回10語'}
       </p>

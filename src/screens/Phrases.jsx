@@ -209,7 +209,7 @@ export function PhrasesScreen() {
             </div>
             <div className="text-right text-xs font-bold text-ink/45">全{items.length}項目</div>
           </div>
-          <LearningStatusBars progress={status} className="mt-3" compact />
+          <LearningStatusBars progress={status} className="mt-3" compact units={{ learning: '項目', quiz: '問' }} />
           <div className="mt-3 grid grid-cols-2 gap-2">
             <Button onClick={study} disabled={!items.length}><Book size={16} /> 覚える</Button>
             <Button variant="secondary" onClick={quiz} disabled={!items.length}><Cards size={16} /> クイズ</Button>

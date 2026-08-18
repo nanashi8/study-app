@@ -15,7 +15,7 @@ import {
 } from '../components/ui.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
-import { summarizeSrsItems } from '../lib/contentProgress.js'
+import { summarizeSrsItemsWithQuestions } from '../lib/contentProgress.js'
 import {
   ArrowRight,
   Book,
@@ -29,8 +29,14 @@ import {
   Search,
 } from '../components/Icons.jsx'
 
-function CategoryCard({ meta, items, srs, questionCount, onStudy, onQuiz }) {
-  const status = summarizeSrsItems(items, srs)
+function CategoryCard({ meta, items, srs, questions, quizResults, onStudy, onQuiz }) {
+  const status = summarizeSrsItemsWithQuestions({
+    items,
+    srs,
+    questions,
+    quizResults,
+    quizDomain: 'koten-grammar',
+  })
   return (
     <Card className="p-4">
       <div className="flex items-center gap-3">
@@ -43,11 +49,11 @@ function CategoryCard({ meta, items, srs, questionCount, onStudy, onQuiz }) {
         <div className="min-w-0 flex-1">
           <h3 className="font-display text-base font-extrabold text-ink">{meta.label}</h3>
           <p className="mt-0.5 text-[11px] font-bold text-ink/45">
-            {items.length}項目・{questionCount}問
+            {items.length}項目・{questions.length}問
           </p>
         </div>
       </div>
-      <LearningStatusBars progress={status} className="mt-3" compact />
+      <LearningStatusBars progress={status} className="mt-3" compact units={{ learning: '項目', quiz: '問' }} />
       <div className="mt-3 grid grid-cols-2 gap-2">
         <Button size="sm" onClick={onStudy}>
           <Book size={16} /> 覚える
@@ -69,7 +75,14 @@ export function KotenGrammarScreen() {
   const [query, setQuery] = useState('')
   const [openId, setOpenId] = useState(null)
 
-  const totalStatus = summarizeSrsItems(KOTEN_GRAMMAR, grammarSrs)
+  const quizResults = useStore((state) => state.contentQuizResults)
+  const totalStatus = summarizeSrsItemsWithQuestions({
+    items: KOTEN_GRAMMAR,
+    srs: grammarSrs,
+    questions: KOTEN_GRAMMAR_QUESTIONS,
+    quizResults,
+    quizDomain: 'koten-grammar',
+  })
   const dueItems = KOTEN_GRAMMAR.filter(
     (item) => grammarSrs[item.id] && isDue(grammarSrs[item.id]),
   )
@@ -102,7 +115,7 @@ export function KotenGrammarScreen() {
 
   return (
     <div className="pb-8">
-      <div className="rounded-b-[2.5rem] bg-gradient-to-br from-amber-700 via-orange-600 to-yellow-500 px-5 pb-7 pt-[calc(env(safe-area-inset-top)+1.25rem)] text-white">
+      <div className="rounded-b-[2.5rem] bg-gradient-to-br from-amber-700 via-orange-600 to-yellow-500 px-5 pb-7 pt-5 text-white">
         <div className="mb-3 flex items-center justify-between">
           <button
             onClick={() => navigate('kotenList')}
@@ -121,7 +134,7 @@ export function KotenGrammarScreen() {
         <div className="mt-4 rounded-2xl bg-white/15 p-3.5">
           <div>
             <p className="font-display text-lg font-extrabold">
-              全{KOTEN_GRAMMAR.length}項目・{KOTEN_GRAMMAR_QUESTIONS.length}問
+              全{KOTEN_GRAMMAR.length}項目・全{KOTEN_GRAMMAR_QUESTIONS.length}問
             </p>
             <p className="mt-0.5 text-xs font-bold text-white/70">
               学習済 {totalStatus.learning.learned}・復習中 {totalStatus.learning.reviewing}・未学習 {totalStatus.learning.unlearned}・登録 {savedItems.length}
@@ -132,7 +145,7 @@ export function KotenGrammarScreen() {
 
       <div className="space-y-5 px-4 pt-5">
         <Card className="p-4" data-koten-grammar-status>
-          <LearningStatusBars progress={totalStatus} compact />
+          <LearningStatusBars progress={totalStatus} compact units={{ learning: '項目', quiz: '問' }} />
         </Card>
         <section>
           <div className="mb-2 px-1">
@@ -149,7 +162,7 @@ export function KotenGrammarScreen() {
               </span>
               <span className="mt-3 block font-display text-lg font-extrabold">覚える</span>
               <span className="mt-1 block text-[11px] font-bold leading-relaxed text-white/75">
-                意味・接続・活用をカードで想起
+                意味・接続・活用をカードで思い出す
               </span>
             </button>
             <button
@@ -207,16 +220,17 @@ export function KotenGrammarScreen() {
           <div className="space-y-3">
             {KOTEN_GRAMMAR_CATEGORIES.map((meta) => {
               const categoryItems = kotenGrammarByCategory(meta.id)
-              const questionCount = KOTEN_GRAMMAR_QUESTIONS.filter(
+              const categoryQuestions = KOTEN_GRAMMAR_QUESTIONS.filter(
                 (question) => question.category === meta.id,
-              ).length
+              )
               return (
                 <CategoryCard
                   key={meta.id}
                   meta={meta}
                   items={categoryItems}
                   srs={grammarSrs}
-                  questionCount={questionCount}
+                  questions={categoryQuestions}
+                  quizResults={quizResults}
                   onStudy={() => study(categoryItems, `${meta.label}を覚える`)}
                   onQuiz={() => quiz(categoryItems, `${meta.label}・受験型腕試し`)}
                 />

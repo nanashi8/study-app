@@ -26,6 +26,7 @@ import {
 } from '../src/data/kanbun-kundoku.js'
 import { KANBUN_LEVELS } from '../src/data/kanbun-meta.js'
 import { parseKanbunMarkedText } from '../src/lib/kanbun-marks.js'
+import { uncoveredKanbunKanji } from '../src/lib/kanbunFurigana.js'
 import { CONTENTS } from '../src/data/contents.js'
 import { APP_MENU_SCREEN_DESTINATIONS } from '../src/lib/appMenu.js'
 import { PERSISTED_PROGRESS_FIELDS } from '../src/lib/progressCode.js'
@@ -153,7 +154,48 @@ for (const field of kanbunProgressFields) {
   assert.ok(PERSISTED_PROGRESS_FIELDS.includes(field), `${field}: 保存契約にありません`)
 }
 
+// ── ふりがな（ルビ）───────────────────────────────────────────
+// 漢文そのもの（見出し語・書き下し文）は、読める漢字が一つも残らないようにする。
+// 現代語の解説文は漢文用の読みを当てると誤読になるため、ここでは対象にしない。
+const furiganaMisses = []
+for (const item of [...KANBUN_VOCAB, ...KANBUN_GRAMMAR, ...KANBUN_CULTURE]) {
+  const headwordReading = item.reading ? [[item.title, String(item.reading).split('・')[0]]] : []
+  for (const [field, text, extra] of [
+    ['title', item.title, headwordReading],
+    ['kakikudashi', item.kakikudashi, []],
+    ['example.kakikudashi', item.example?.kakikudashi, []],
+  ]) {
+    if (!text) continue
+    const missing = uncoveredKanbunKanji(text, extra)
+    if (missing.length) furiganaMisses.push(`${item.id}.${field}: ${[...new Set(missing)].join('')}`)
+  }
+  // 白文には読み仮名を直接振れないので、必ず書き下し文と対にする。
+  if (item.original) {
+    assert.ok(item.kakikudashi, `${item.id}: 白文に対応する書き下し文がありません`)
+  }
+}
+for (const exercise of KANBUN_KUNDOKU_EXERCISES) {
+  const missing = uncoveredKanbunKanji(exercise.kakikudashi ?? '')
+  if (missing.length) furiganaMisses.push(`${exercise.id}.kakikudashi: ${[...new Set(missing)].join('')}`)
+}
+assert.deepEqual(furiganaMisses, [], `ふりがなの振り漏れ: ${furiganaMisses.slice(0, 12).join(' / ')}`)
+
+// 表示側も、見出し語と書き下し文は共通のルビ部品を通す。
+for (const [file, needles] of [
+  ['src/screens/KanbunStudy.jsx', ['KanbunHeadword', '<KanbunText>{item.kakikudashi}']],
+  ['src/screens/KanbunQuiz.jsx', ['<KanbunText>{question.kakikudashi}']],
+  ['src/screens/KanbunCatalog.jsx', ['KanbunHeadword']],
+  ['src/screens/KanbunSaved.jsx', ['KanbunHeadword']],
+  ['src/screens/KanbunKundokuQuiz.jsx', ['<KanbunText>{exercise.kakikudashi}']],
+]) {
+  const source = readFileSync(new URL(`../${file}`, import.meta.url), 'utf8')
+  for (const needle of needles) {
+    assert.ok(source.includes(needle), `${file}: ${needle} のルビ表示がありません`)
+  }
+}
+
 console.log('古典・漢文全件監査: PASS')
 console.log('  古典: 暗記430項目 / 4択548問相当 / 短文読解36問 / 5段階')
 console.log(`  漢文: 暗記302項目 / 自動4択302問 / 返り点・訓読40題・返り点${kanbunReturnMarkCount}個を親字へ固定 / 5段階`)
 console.log(`  保存契約: 漢文7項目 / 全${PERSISTED_PROGRESS_FIELDS.length}永続項目`)
+console.log('  ふりがな: 見出し語・書き下し文の振り漏れ0 / 白文は書き下し文と必ず対')

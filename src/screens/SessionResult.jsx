@@ -243,7 +243,7 @@ export function SessionResultScreen() {
     return (
       <div className="dragon-vein-result-screen relative min-h-full overflow-x-hidden px-3 pb-8 pt-3 text-center">
         {percent >= 80 && <Confetti />}
-        <div className="absolute right-3 top-[calc(env(safe-area-inset-top)+0.75rem)] z-20"><SpeechSettingsButton compact /></div>
+        <div className="absolute right-3 top-3 z-20"><SpeechSettingsButton compact /></div>
         <section className="mx-auto w-full max-w-xl" data-testid="dragon-vein-result" aria-label={`${node.name}の龍脈修復結果`}>
           <header className="mb-2 text-left">
             <p className="text-xs font-black tracking-[0.18em] text-violet-600">RESTORATION REPORT</p>
@@ -321,7 +321,7 @@ export function SessionResultScreen() {
   return (
     <div className="relative flex min-h-full flex-col items-center gap-5 overflow-x-hidden px-6 pb-8 pt-8 text-center">
       {percent >= 80 && <Confetti />}
-      <div className="absolute right-3 top-[calc(env(safe-area-inset-top)+0.75rem)] z-20"><SpeechSettingsButton compact /></div>
+      <div className="absolute right-3 top-3 z-20"><SpeechSettingsButton compact /></div>
       <div className="text-6xl animate-float">{message.emoji}</div>
       <h1 className="font-display text-2xl font-extrabold text-ink">{message.text}</h1>
       <p className="-mt-3 text-sm font-bold text-ink/45">{title}・{mode === 'quiz' ? 'クイズ' : '暗記'}</p>

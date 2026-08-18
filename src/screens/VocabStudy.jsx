@@ -4,6 +4,7 @@ import { buildDeck, recordStudyAnswer } from '../lib/session.js'
 import { playSpeechItems } from '../lib/speech-player.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
+import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
 import { EtymologyBlock } from '../components/WordBits.jsx'
 import { PosBadge } from '../components/WordBits.jsx'
 import { Button, ProgressBar, IconButton } from '../components/ui.jsx'
@@ -121,6 +122,7 @@ export function VocabStudyScreen() {
         <div className="flex-1">
           <ProgressBar value={(i) / deck.length} />
         </div>
+        <RevealAnswersToggle label="意味" onChange={(on) => on && setFlipped(true)} />
         <SpeechSettingsButton compact />
         <SessionCounter
           index={i}
@@ -234,7 +236,7 @@ export function VocabStudyScreen() {
       </div>
 
       {/* フッター操作 */}
-      <div className="shrink-0 border-t border-brand-100 bg-white/90 p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] backdrop-blur">
+      <div className="shrink-0 border-t border-brand-100 bg-white/90 p-4 pb-4 backdrop-blur">
         {!flipped ? (
           <Button full size="lg" onClick={() => setFlipped(true)}>
             答えを見る

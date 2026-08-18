@@ -710,7 +710,7 @@ export function MyListScreen() {
             <div className="mt-1 flex items-end justify-between gap-3">
               <div>
                 <p className="font-display text-lg font-extrabold">保存・メモ・問題集・学習記録</p>
-                <p className="mt-0.5 text-[10px] font-bold text-slate-300">旧マイ単語と古典の登録内容もそのまま統合</p>
+                <p className="mt-0.5 text-[10px] font-bold text-slate-300">これまでのマイ単語と古典の登録もそのまま引き継ぎ</p>
               </div>
               <p className="font-display text-3xl font-extrabold tabular-nums">{savedRefs.length.toLocaleString()}</p>
             </div>

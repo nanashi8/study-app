@@ -8,6 +8,7 @@ import { phraseSpeechText } from '../lib/phrase-speech.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { LongSentenceTranslation } from '../components/LongSentenceTranslation.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
+import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
 import { Button, ProgressBar, IconButton, Chip } from '../components/ui.jsx'
 import { ArrowRight, Bookmark, BookmarkFilled, Close, Lightbulb, Link } from '../components/Icons.jsx'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
@@ -123,6 +124,7 @@ export function PhraseStudyScreen() {
         >
           {saved ? <BookmarkFilled size={20} /> : <Bookmark size={20} />}
         </IconButton>
+        <RevealAnswersToggle label="意味" onChange={(on) => on && setFlipped(true)} />
         <SpeechSettingsButton compact />
         <SessionCounter
           index={i}
@@ -209,7 +211,7 @@ export function PhraseStudyScreen() {
         </div>
       </div>
 
-      <div className="shrink-0 border-t border-brand-100 bg-white/90 p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] backdrop-blur">
+      <div className="shrink-0 border-t border-brand-100 bg-white/90 p-4 pb-4 backdrop-blur">
         {!flipped ? (
           <Button full size="lg" onClick={() => setFlipped(true)}>意味・成り立ちを見る</Button>
         ) : (

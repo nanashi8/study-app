@@ -30,7 +30,7 @@ export function MathIntroScreen() {
   if (!unit || !intro) {
     return (
       <div className="relative flex min-h-full flex-col items-center justify-center gap-4 p-8 text-center">
-        <div className="absolute right-3 top-[calc(env(safe-area-inset-top)+0.75rem)]">
+        <div className="absolute right-3 top-3">
           <SpeechSettingsButton compact />
         </div>
         <div className="text-5xl">🧭</div>
@@ -58,7 +58,7 @@ export function MathIntroScreen() {
   return (
     <div className="flex min-h-full flex-col">
       <div
-        className="relative overflow-hidden px-4 pb-5 pt-[calc(env(safe-area-inset-top)+0.5rem)] text-white"
+        className="relative overflow-hidden px-4 pb-5 pt-2 text-white"
         style={{ background: `linear-gradient(145deg, ${accent}, #312e81)` }}
       >
         <div className="pointer-events-none absolute -right-12 -top-16 h-44 w-44 rounded-full bg-white/10" />
@@ -173,7 +173,7 @@ export function MathIntroScreen() {
         </div>
       </div>
 
-      <div className="fixed inset-x-0 bottom-0 z-20 mx-auto w-full max-w-md border-t border-violet-100 bg-white/95 p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] backdrop-blur">
+      <div className="fixed inset-x-0 bottom-0 z-20 mx-auto w-full max-w-md border-t border-violet-100 bg-white/95 p-4 pb-[calc(1rem+var(--app-safe-bottom))] backdrop-blur">
         <Button
           full
           size="lg"

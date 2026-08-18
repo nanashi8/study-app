@@ -18,7 +18,7 @@ const DIAGNOSTIC_SKILL_META = {
 const SCIENCE_REFERENCES = [
   {
     id: 'retrieval',
-    label: '想起練習',
+    label: '思い出す練習',
     practice: '答えを見る前に、自力で一度思い出す。',
     citation: 'Roediger & Karpicke (2006)',
     href: 'https://doi.org/10.1111/j.1467-9280.2006.01693.x',
@@ -202,9 +202,9 @@ function SummaryTable({ profile, analysis, dueCount }) {
       ? `${analysis.correct}/${analysis.scored}旧履歴`
       : 'テスト未実施'
   const rows = [
-    ['テスト想起率', asPercent(testRecallRate), testRecallEvidence, analysis.activity.test.scored ? '採点テストで再現できた割合' : '旧履歴は暗記・テストの区別なし'],
-    ['定着段階指数', `${analysis.memoryScore}/100`, `${analysis.learnedItems}項目`, 'SRSの反復段階から算出した参考値'],
-    ['長期段階', `${analysis.stages.longPct}%`, `${analysis.stages.long}項目`, 'SRS BOX 4以上の構成比'],
+    ['テストで思い出せた割合', asPercent(testRecallRate), testRecallEvidence, analysis.activity.test.scored ? '採点テストでもう一度答えられた割合' : '旧履歴は暗記・テストの区別なし'],
+    ['覚え具合の指数', `${analysis.memoryScore}/100`, `${analysis.learnedItems}項目`, 'くり返し復習の段階から出した目安'],
+    ['長く覚えている段階', `${analysis.stages.longPct}%`, `${analysis.stages.long}項目`, '復習の段階4以上の割合'],
     ['英単語・今日の復習', `${dueCount}項目`, dueCount ? '対応が必要' : '滞留なし', '期限到来済み英単語の件数'],
     [
       '一日の学習時間',
@@ -662,7 +662,7 @@ function Gradebook({ report, onNavigate }) {
                       </dl>
                       {dimension === 'item' && group.weakest && (
                         <p className="mt-2 text-[10px] font-bold leading-relaxed text-slate-500">
-                          周回 {group.weakest.memoryAttempts}回・直近暗記判定 {group.weakest.lastJudgment}・SRS段階 {group.weakest.box}/6
+                          周回 {group.weakest.memoryAttempts}回・直近暗記判定 {group.weakest.lastJudgment}・復習の段階 {group.weakest.box}/6
                           {group.weakest.legacyAttempts ? `・旧履歴 ${group.weakest.legacyAttempts}回` : ''}
                         </p>
                       )}
@@ -721,7 +721,7 @@ function ForgettingCurve({ report, analysis }) {
   const observed = (analysis.intervals ?? []).filter((item) => item.scored > 0)
 
   return (
-    <ReportSection number="07" title="忘却曲線・定着予測" note="科目・種類・分野・項目を選択。現在のSRS、経過時間、本人のテスト傾向から予測">
+    <ReportSection number="07" title="忘却曲線・定着予測" note="科目・種類・分野・項目を選択。今の復習の段階、経過時間、本人のテストの傾向から予測">
       <div className="p-3" data-forgetting-curve-analysis>
         <div className="grid grid-cols-4 gap-1">
           {Object.entries(gradeDimensionMeta).map(([id, meta]) => (
@@ -789,7 +789,7 @@ function ForgettingCurve({ report, analysis }) {
           <p className="mt-3 border border-slate-200 bg-slate-50 p-4 text-center text-xs font-bold text-slate-500">この区分には予測できる暗記項目がありません。</p>
         )}
         <p className="mt-2 text-[9px] font-bold leading-relaxed text-slate-500">
-          曲線は医療的な記憶測定ではなく、SRS段階を半減期モデルで近似した参考予測です。実測の間隔別データは{observed.length ? `${observed.length}区分` : 'まだありません'}。回答のたびに更新します。
+          曲線は医療的な記憶測定ではなく、復習の段階をもとに、忘れ方の目安を計算した参考値です。実測の間隔別データは{observed.length ? `${observed.length}区分` : 'まだありません'}。回答のたびに更新します。
         </p>
       </div>
     </ReportSection>
@@ -876,9 +876,9 @@ function MemoryEffectAnalysis({ analysis }) {
 
 function RetentionDistribution({ analysis }) {
   const stages = [
-    { id: 'long', label: '長期段階', count: analysis.stages.long, pct: analysis.stages.longPct, color: '#047857', criterion: 'SRS BOX 4以上' },
-    { id: 'short', label: '短期段階', count: analysis.stages.short, pct: analysis.stages.shortPct, color: '#475569', criterion: 'SRS BOX 1〜3' },
-    { id: 'fragile', label: '要再学習', count: analysis.stages.fragile, pct: analysis.stages.fragilePct, color: '#b45309', criterion: 'SRS BOX 0' },
+    { id: 'long', label: '長く覚えている段階', count: analysis.stages.long, pct: analysis.stages.longPct, color: '#047857', criterion: '復習の段階4以上' },
+    { id: 'short', label: 'まだ短い段階', count: analysis.stages.short, pct: analysis.stages.shortPct, color: '#475569', criterion: '復習の段階1〜3' },
+    { id: 'fragile', label: '要再学習', count: analysis.stages.fragile, pct: analysis.stages.fragilePct, color: '#b45309', criterion: '復習の段階0' },
   ]
 
   return (
@@ -958,7 +958,7 @@ function SkillTable({ analysis }) {
 function IntervalAnalysis({ analysis }) {
   const hasIntervals = analysis.intervals.some((interval) => interval.scored > 0)
   return (
-    <ReportSection number="11" title="復習間隔別・想起率" note="同じ教材を時間を空けて解いた回答だけを集計">
+    <ReportSection number="11" title="復習の間隔ごとに思い出せた割合" note="同じ教材を時間を空けて解いた回答だけを集計">
       {hasIntervals ? (
         <div className="space-y-3 p-4" data-interval-recall-chart>
           {analysis.intervals.map((interval) => (
@@ -1019,7 +1019,7 @@ function AdviceReport({ profile, analysis, dueCount, report, onNavigate }) {
   const encouragement = profile.confidence === 'empty'
     ? '最初の10回答が分析の出発点です。小さく始めても、記録が次の教材選びを具体化します。'
     : analysis.retentionRate != null && analysis.retentionRate >= 0.8
-      ? '想起できた割合は安定しています。今の方法を維持し、弱点分野へ少しずつ負荷を移す段階です。'
+      ? '思い出せた割合は安定しています。今の方法を維持し、弱点分野へ少しずつ負荷を移す段階です。'
       : dueCount > 0
         ? '今日の復習は失敗の印ではなく、思い出す練習を入れる時期を示す作業票です。今日の一部を処理すれば前進です。'
         : '記録が増えるたびに推定は更新されます。結果を能力の固定評価ではなく、次の一手を選ぶ材料として使ってください。'
@@ -1042,7 +1042,7 @@ function AdviceReport({ profile, analysis, dueCount, report, onNavigate }) {
               ['実施内容', recommendation.actionLabel],
               ['実施時刻', scheduledWindow],
               ['成功基準', successCriterion],
-              ['実施方法', '答えを見る前に想起し、誤答は間隔を空けて再確認'],
+              ['実施方法', '答えを見る前に思い出し、まちがえた分は間隔を空けてもう一度確認'],
               ['次回確認', '実施後の正答率・今日の復習件数で再判定'],
             ].map(([label, value]) => (
               <tr key={label} className="border-b border-slate-200 last:border-0">

@@ -36,6 +36,7 @@ export function KotenGrammarQuizScreen() {
   const reviewGrammar = useStore((state) => state.reviewKotenGrammar)
   const savedIds = useStore((state) => state.kotenGrammarList)
   const addSaved = useStore((state) => state.addManyToKotenGrammarList)
+  const recordQuizResult = useStore((state) => state.recordContentQuizResult)
 
   // 在庫を数えて、選べる問題数の上限を実態に合わせる。
   const [poolSize] = useState(() => pickKotenGrammarQuestions(params.ids, { size: ALL_QUESTIONS }).length)
@@ -90,6 +91,8 @@ export function KotenGrammarQuizScreen() {
   const choose = (choice) => {
     if (selected !== null || !primary) return
     setSelected(choice)
+    // クイズの進み具合は「全136問」に対して数えるので、問題そのものの結果も残す。
+    recordQuizResult('koten-grammar', question.id, choice === question.answer ? 1 : 0, 1)
     const previousBox = useStore.getState().kotenGrammarSrs[primary.id]?.box ?? 0
     if (choice === UNKNOWN_CHOICE_ID) {
       reviewGrammar(primary.id, 'unknown')
@@ -136,11 +139,11 @@ export function KotenGrammarQuizScreen() {
           <div className="grid w-full grid-cols-2 gap-3">
             <div className="rounded-2xl bg-amber-50 p-3">
               <p className="font-display text-2xl font-extrabold text-amber-700">+{boxUp}</p>
-              <p className="text-[11px] font-bold text-ink/50">定着段階アップ</p>
+              <p className="text-[11px] font-bold text-ink/50">復習の段階が上がった</p>
             </div>
             <div className="rounded-2xl bg-emerald-50 p-3">
               <p className="font-display text-2xl font-extrabold text-emerald-700">+{newlyMastered}</p>
-              <p className="text-[11px] font-bold text-ink/50">SRS段階4に到達</p>
+              <p className="text-[11px] font-bold text-ink/50">よく覚えた段階に到達</p>
             </div>
           </div>
 
@@ -334,7 +337,7 @@ export function KotenGrammarQuizScreen() {
         )}
       </div>
 
-      <div className="shrink-0 border-t border-amber-100 bg-white/90 p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] backdrop-blur">
+      <div className="shrink-0 border-t border-amber-100 bg-white/90 p-4 pb-4 backdrop-blur">
         <Button full size="lg" disabled={!answered} onClick={next}>
           {index + 1 >= deck.length ? '結果を見る' : '次の問題へ'} <ArrowRight size={18} />
         </Button>

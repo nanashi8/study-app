@@ -183,7 +183,7 @@ export function ReadingPrepScreen() {
             </div>
             <span className="text-sm font-extrabold text-ink/45">全{prepProgress.total}項目</span>
           </div>
-          <LearningStatusBars progress={prepProgress} className="mt-3" />
+          <LearningStatusBars progress={prepProgress} className="mt-3" units={{ learning: '項目', quiz: '問' }} />
           <div className="mt-4 grid grid-cols-2 gap-2">
             <Button onClick={studyWords} disabled={!words.length}>
               <Cards size={17} /> 必須語カード
@@ -296,7 +296,7 @@ export function ReadingPrepScreen() {
         )}
       </div>
 
-      <div className="shrink-0 border-t border-brand-100 bg-white/90 p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] backdrop-blur">
+      <div className="shrink-0 border-t border-brand-100 bg-white/90 p-4 pb-4 backdrop-blur">
         <Button full size="lg" onClick={() => navigate('reader', { passageId })}>
           本文を読む <ArrowRight size={18} />
         </Button>

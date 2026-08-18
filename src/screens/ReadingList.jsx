@@ -57,7 +57,7 @@ export function ReadingListScreen() {
         </Card>
 
         <Card className="p-4" data-reading-status>
-          <LearningStatusBars progress={status} compact />
+          <LearningStatusBars progress={status} compact units={{ learning: '本', quiz: '本' }} />
           <p className="mt-2 text-[10px] font-bold text-ink/45">読了と読解チェックの直近結果を、全{PASSAGES.length}題で集計</p>
         </Card>
 
