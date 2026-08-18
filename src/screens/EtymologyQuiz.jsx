@@ -6,6 +6,7 @@ import {
   getWord,
 } from '../data/vocab.js'
 import { buildEtymologyDeck } from '../lib/etymologyProgress.js'
+import { growDeck } from '../lib/session.js'
 import { buildEtymologyQuizQuestion } from '../lib/etymologyQuiz.js'
 import {
   EtymologyKnowledgeAnswer,
@@ -193,13 +194,17 @@ export function EtymologyQuizScreen() {
             index={index}
             total={deck.length}
             max={poolSize}
-            onResize={(size) => {
-              setDeck(buildFor(size))
-              setIndex(0)
-              setStudied(false)
-              setSelected(null)
-              setDone(false)
-              results.current = freshResults()
+            onResize={(size, { discard }) => {
+              if (discard) {
+                setDeck(buildFor(size))
+                setIndex(0)
+                setStudied(false)
+                setSelected(null)
+                setDone(false)
+                results.current = freshResults()
+              } else {
+                setDeck((current) => growDeck(current, index + 1, buildFor(size), size))
+              }
             }}
           />
         </div>

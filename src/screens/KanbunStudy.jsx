@@ -12,6 +12,7 @@ import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { KanbunText, KanbunHeadword } from '../components/KanbunFurigana.jsx'
 import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
+import { growDeck } from '../lib/session.js'
 import {
   ArrowRight,
   Bookmark,
@@ -162,13 +163,17 @@ export function KanbunStudyScreen() {
             total={deck.length}
             max={poolSize}
             label="項目"
-            onResize={(size) => {
-              setDeck(buildFor(params.ids, size))
-              setIndex(0)
-              setRevealed(revealAll)
-              setRemembered(0)
-              setForgottenIds([])
-              setDone(false)
+            onResize={(size, { discard }) => {
+              if (discard) {
+                setDeck(buildFor(params.ids, size))
+                setIndex(0)
+                setRevealed(revealAll)
+                setRemembered(0)
+                setForgottenIds([])
+                setDone(false)
+              } else {
+                setDeck((current) => growDeck(current, index + 1, buildFor(params.ids, size), size))
+              }
             }}
           />
         </div>

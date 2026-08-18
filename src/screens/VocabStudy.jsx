@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
-import { buildDeck, recordStudyAnswer } from '../lib/session.js'
+import { buildDeck, growDeck, recordStudyAnswer } from '../lib/session.js'
 import { phraseGroupsForWord } from '../lib/wordPhrases.js'
 import { playSpeechItems } from '../lib/speech-player.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
@@ -131,11 +131,15 @@ export function VocabStudyScreen() {
           index={i}
           total={deck.length}
           max={poolSize}
-          onResize={(size) => {
-            setDeck(buildFor(size))
-            setI(0)
-            setFlipped(revealAll)
-            results.current = { remembered: 0, forgot: 0, forgotIds: [] }
+          onResize={(size, { discard }) => {
+            if (discard) {
+              setDeck(buildFor(size))
+              setI(0)
+              setFlipped(revealAll)
+              results.current = { remembered: 0, forgot: 0, forgotIds: [] }
+            } else {
+              setDeck((current) => growDeck(current, i + 1, buildFor(size), size))
+            }
           }}
         />
       </div>

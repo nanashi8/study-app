@@ -14,6 +14,7 @@ import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { Button, Chip, cx, ProgressBar, IconButton } from '../components/ui.jsx'
+import { growDeck } from '../lib/session.js'
 import {
   ArrowRight,
   Book,
@@ -201,16 +202,25 @@ export function KotenGrammarQuizScreen() {
             index={index}
             total={deck.length}
             max={poolSize}
-            onResize={(size) => {
-              setDeck(pickKotenGrammarQuestions(params.ids, { size }))
-              setIndex(0)
-              setSelected(null)
-              setCorrectCount(0)
-              setUnknownCount(0)
-              setBoxUp(0)
-              setNewlyMastered(0)
-              setWeakIds([])
-              setDone(false)
+            onResize={(size, { discard }) => {
+              if (discard) {
+                setDeck(pickKotenGrammarQuestions(params.ids, { size }))
+                setIndex(0)
+                setSelected(null)
+                setCorrectCount(0)
+                setUnknownCount(0)
+                setBoxUp(0)
+                setNewlyMastered(0)
+                setWeakIds([])
+                setDone(false)
+              } else {
+                setDeck((current) => growDeck(
+                  current,
+                  index + 1,
+                  pickKotenGrammarQuestions(params.ids, { size }),
+                  size,
+                ))
+              }
             }}
           />
         </div>

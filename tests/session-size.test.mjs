@@ -32,7 +32,7 @@ test('「全部」を選ぶと、その教材の在庫すべてで組み直す',
   const sizes = read('src/components/SessionSize.jsx')
   // 保存は0（全部）。画面ごとの在庫数へ読み替えてから使う。
   assert.match(sizes, /if \(size === SESSION_SIZE_ALL\) return max/)
-  assert.match(sizes, /onResize\?\.\(size === SESSION_SIZE_ALL \? \(pool \?\? SESSION_SIZE_ALL\) : size\)/)
+  assert.match(sizes, /const resolvedSize = size === SESSION_SIZE_ALL \? \(pool \?\? SESSION_SIZE_ALL\) : size/)
   // 在庫数を数えてから設定を読む（あとに読むと「全部」が10に潰れる）
   for (const name of ['VocabStudy', 'VocabQuiz', 'PhraseStudy', 'PhraseQuiz', 'DictationPlay', 'GrammarQuiz', 'ListeningQuiz', 'EtymologyStudy', 'EtymologyQuiz']) {
     const source = read(`src/screens/${name}.jsx`)
@@ -78,5 +78,33 @@ test('語源カードも20枚を超えて出せる（1回の問題数の上限�
   assert.ok(all.length > 200, `全部でも${all.length}枚しか出ない`)
   for (const path of ['src/screens/EtymologyStudy.jsx', 'src/screens/EtymologyQuiz.jsx']) {
     assert.doesNotMatch(read(path), /useSessionSize\(20\)/, `${path} に20の固定上限が残る`)
+  }
+})
+
+test('問題数を増やす／進捗以上を選ぶと、進捗を保ったまま出題を追加する', () => {
+  const sizes = read('src/components/SessionSize.jsx')
+  // 進捗（index）以下に減らすときだけ破棄扱いにする。
+  assert.match(sizes, /discard: resolvedSize <= index/)
+  // 進捗より少ない値を選んだときは即決せず、確認してから破棄する。
+  assert.match(sizes, /if \(index > 0 && resolvedSize <= index\)/)
+  assert.match(sizes, /setPendingDiscard\(\{ rawSize: size, resolvedSize \}\)/)
+  assert.match(sizes, /破棄して変更する/)
+
+  const session = read('src/lib/session.js')
+  assert.match(session, /export function growDeck\(existingDeck, keepCount, freshDeck, targetSize\)/)
+})
+
+test('問題数を変える画面はすべて、破棄フラグに応じて進捗を保つか破棄するかを分けている', () => {
+  const screens = readdirSync(new URL('../src/screens', import.meta.url))
+    .filter((name) => name.endsWith('.jsx'))
+    .map((name) => `src/screens/${name}`)
+    .filter((path) => read(path).includes('<SessionCounter'))
+
+  for (const path of screens) {
+    const source = read(path)
+    const handler = /onResize=\{\(size, \{ discard \}\) => \{[\s\S]*?\n {8,12}\}\}/.exec(source)?.[0]
+    assert.ok(handler, `${path} の onResize が (size, { discard }) を受け取っていない`)
+    assert.match(handler, /if \(discard\)/, `${path} が discard で分岐していない`)
+    assert.match(handler, /growDeck\(/, `${path} が進捗を保つ growDeck を呼んでいない`)
   }
 })

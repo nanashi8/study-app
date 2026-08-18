@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
-import { buildDeck } from '../lib/session.js'
+import { buildDeck, growDeck } from '../lib/session.js'
 import { pickDistractors, shuffle } from '../data/vocab.js'
 import { quizMeaning } from '../data/compact.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
@@ -214,11 +214,15 @@ export function VocabQuizScreen() {
             index={index}
             total={deck.length}
             max={poolSize}
-            onResize={(size) => {
-              setDeck(buildFor(size))
-              setIndex(0)
-              setSelected(null)
-              results.current = { correct: 0, wrong: 0, unknown: 0, wrongIds: [], answerLog: [] }
+            onResize={(size, { discard }) => {
+              if (discard) {
+                setDeck(buildFor(size))
+                setIndex(0)
+                setSelected(null)
+                results.current = { correct: 0, wrong: 0, unknown: 0, wrongIds: [], answerLog: [] }
+              } else {
+                setDeck((current) => growDeck(current, index + 1, buildFor(size), size))
+              }
             }}
           />
         </div>

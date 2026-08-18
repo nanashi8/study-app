@@ -11,6 +11,7 @@ import { KanbunText } from '../components/KanbunFurigana.jsx'
 import { KanbunMarkedText } from '../components/KanbunMarkedText.js'
 import { Check, Close, Lightbulb, Refresh } from '../components/Icons.jsx'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
+import { growDeck } from '../lib/session.js'
 
 const ALL_EXERCISES = 9999 // 在庫数を数えるための十分大きな上限
 
@@ -124,14 +125,23 @@ export function KanbunKundokuQuizScreen() {
             index={index}
             total={deck.length}
             max={poolSize}
-            onResize={(size) => {
-              setDeck(pickKanbunKundokuExercises(params.ids, { size }))
-              setIndex(0)
-              setSelectedIds([])
-              setAnswered(false)
-              setCorrectCount(0)
-              setWeakIds([])
-              setDone(false)
+            onResize={(size, { discard }) => {
+              if (discard) {
+                setDeck(pickKanbunKundokuExercises(params.ids, { size }))
+                setIndex(0)
+                setSelectedIds([])
+                setAnswered(false)
+                setCorrectCount(0)
+                setWeakIds([])
+                setDone(false)
+              } else {
+                setDeck((current) => growDeck(
+                  current,
+                  index + 1,
+                  pickKanbunKundokuExercises(params.ids, { size }),
+                  size,
+                ))
+              }
             }}
           />
         </div>

@@ -7,6 +7,7 @@ import {
 } from '../data/grammar.js'
 import { longSentenceTranslationFor } from '../data/long-sentence-translations.js'
 import { buildGrammarDeck } from '../lib/grammarDeck.js'
+import { growDeck } from '../lib/session.js'
 import { todayIndex } from '../store/useStore.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { LongSentenceTranslation } from '../components/LongSentenceTranslation.jsx'
@@ -146,11 +147,15 @@ export function GrammarQuizScreen() {
           index={i}
           total={deck.length}
           max={poolSize}
-          onResize={(size) => {
-            setDeck(buildFor(size))
-            setI(0)
-            setSelected(null)
-            results.current = { correct: 0, wrong: 0, unknown: 0, wrongIds: [] }
+          onResize={(size, { discard }) => {
+            if (discard) {
+              setDeck(buildFor(size))
+              setI(0)
+              setSelected(null)
+              results.current = { correct: 0, wrong: 0, unknown: 0, wrongIds: [] }
+            } else {
+              setDeck((current) => growDeck(current, i + 1, buildFor(size), size))
+            }
           }}
         />
       </div>

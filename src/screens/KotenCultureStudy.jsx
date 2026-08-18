@@ -17,6 +17,7 @@ import {
 } from '../components/Icons.jsx'
 import { KotenText } from '../components/KotenFurigana.jsx'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
+import { growDeck } from '../lib/session.js'
 
 const SESSION_SIZE = 20
 
@@ -126,12 +127,16 @@ export function KotenCultureStudyScreen() {
             total={deck.length}
             max={poolSize}
             label="項目"
-            onResize={(size) => {
-              setDeck(buildDeck(params.ids, size))
-              setIndex(0)
-              setFlipped(revealAll)
-              setDone(false)
-              setRemembered(0)
+            onResize={(size, { discard }) => {
+              if (discard) {
+                setDeck(buildDeck(params.ids, size))
+                setIndex(0)
+                setFlipped(revealAll)
+                setDone(false)
+                setRemembered(0)
+              } else {
+                setDeck((current) => growDeck(current, index + 1, buildDeck(params.ids, size), size))
+              }
             }}
           />
         </div>

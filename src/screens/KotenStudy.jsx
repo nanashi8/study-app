@@ -6,6 +6,7 @@ import { KotenText, KotenWord } from '../components/KotenFurigana.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
+import { growDeck } from '../lib/session.js'
 import {
   Bookmark,
   BookmarkFilled,
@@ -112,12 +113,16 @@ export function KotenStudyScreen() {
           total={deck.length}
           max={poolSize}
           label="語"
-          onResize={(size) => {
-            setDeck(buildKotenDeck(params.ids, seed + 1, size))
-            setI(0)
-            setFlipped(revealAll)
-            setDone(false)
-            setRemembered(0)
+          onResize={(size, { discard }) => {
+            if (discard) {
+              setDeck(buildKotenDeck(params.ids, seed + 1, size))
+              setI(0)
+              setFlipped(revealAll)
+              setDone(false)
+              setRemembered(0)
+            } else {
+              setDeck((current) => growDeck(current, i + 1, buildKotenDeck(params.ids, seed + 1, size), size))
+            }
           }}
         />
       </div>
