@@ -80,7 +80,8 @@ test('語源画面は形と意味の3段階学習・4分類・2択確認へ整�
   assert.match(knowledge, /関連語で確かめる/)
   assert.doesNotMatch(`${roots}\n${study}\n${quiz}\n${pack}\n${wordBits}\n${knowledge}`, /もとの形・言語|もとの言語|どの言語から/)
   assert.doesNotMatch(`${roots}\n${study}\n${pack}\n${wordBits}`, /現在義|共通軸|記載上の出発言語|濃縮パック/)
-  assert.equal((study.match(/答えと説明を見る/g) ?? []).length, 0)
+  // 語源カードも他の暗記カードと同じで、答えを開いてから「まだ／覚えた」で答える。
+  assert.equal((study.match(/答えと説明を見る/g) ?? []).length, 1)
 })
 
 test('単語クイズは解答直後に語源を表示し、詳細遷移を必須にしない', () => {

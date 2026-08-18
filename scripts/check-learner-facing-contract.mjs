@@ -191,8 +191,18 @@ if (!vocabStudySource.includes('<EtymologyBlock')) {
 if (/語源をくわしく見る|くわしく見る/.test(`${vocabQuizSource}\n${vocabStudySource}`)) {
   errors.push('単語の語源本文が「くわしく見る」操作を必須にしている')
 }
-if (etymologyStudySource.includes('答えと説明を見る')) {
-  errors.push('語源の学習内容が追加操作の後ろに隠れている')
+// 語源カードも他の暗記カードと同じ作り＝答えを開いてから「まだ／覚えた」で答える。
+// 開くのを毎回タップさせないための切り替えは、画面上に必ず置く。
+if (!etymologyStudySource.includes('答えと説明を見る')) {
+  errors.push('語源カードに答えを開く操作がない')
+}
+if (!etymologyStudySource.includes('RevealAnswersToggle')) {
+  errors.push('語源カードに答えの表示・非表示の切り替えがない')
+}
+for (const label of ['まだ', '覚えた']) {
+  if (!etymologyStudySource.includes(label)) {
+    errors.push(`語源カードに「${label}」のボタンがない`)
+  }
 }
 if (!etymologyKnowledgeSource.includes('data-etymology-learning-flow')) {
   errors.push('語源学習が「形・意味・関連語」の流れになっていない')
