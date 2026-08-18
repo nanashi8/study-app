@@ -57,8 +57,8 @@ export function ListeningQuizScreen() {
   const source = params.source ?? { type: 'level', levelId: '5' }
   // size=0 は「絞り込みなし」。登録リストは全問、それ以外は設定した問題数で出す。
   const buildFor = (size) => buildListeningDeck(source, { size })
-  const sessionSize = useSessionSize()
   const [poolSize] = useState(() => buildFor(0).length)
+  const sessionSize = useSessionSize(poolSize || Infinity)
   const [deck, setDeck] = useState(() => (
     source.type === 'listeningList' ? buildFor(0) : buildFor(params.size ?? sessionSize)
   ))

@@ -7,6 +7,7 @@ import {
   schoolLifeVisualById,
 } from '../data/school-life-visuals.js'
 import { suggestStartPosition } from '../lib/session.js'
+import { SESSION_SIZE_ALL, SESSION_SIZE_OPTIONS } from '../components/SessionSize.jsx'
 import {
   BATTLE_BARRIER_CENTER,
   BATTLE_BARRIER_MAP_IMAGE,
@@ -500,14 +501,29 @@ function DragonVeinNodeCard({ node, status, extraUnlocked, onLaunch }) {
               <div key={kind} className="rounded-2xl bg-slate-50 p-2.5">
                 <div className="flex items-center justify-between text-[9px] font-extrabold text-ink"><span>{label}</span><span>{track.correct}/{DRAGON_VEIN_TARGET}</span></div>
                 <ProgressBar value={track.correct / DRAGON_VEIN_TARGET} color={node.accent} className="mt-1.5 h-1.5" />
-                <button type="button" onClick={() => onLaunch(node, kind, size)} className="mt-2 min-h-9 w-full rounded-xl text-[9px] font-extrabold text-white active:scale-95" style={{ backgroundColor: node.accent }}>{track.correct >= DRAGON_VEIN_TARGET ? '再調査' : `${size}問を解読`}</button>
+                <button type="button" onClick={() => onLaunch(node, kind, size)} className="mt-2 min-h-9 w-full rounded-xl text-[9px] font-extrabold text-white active:scale-95" style={{ backgroundColor: node.accent }}>{track.correct >= DRAGON_VEIN_TARGET ? '再調査' : size === SESSION_SIZE_ALL ? '全部を解読' : `${size}問を解読`}</button>
               </div>
             ))}
           </div>
-          <div className="mt-2 flex items-center justify-between gap-2">
+          <div className="mt-2">
             <span className="text-[9px] font-bold text-ink/45">一度に解く問題数</span>
-            <div className="flex gap-1">
-              {[10, 20, 100].map((value) => <button key={value} type="button" aria-pressed={size === value} onClick={() => setSize(value)} className={cx('min-h-8 rounded-lg px-2.5 text-[9px] font-extrabold', size === value ? 'bg-slate-900 text-white' : 'bg-slate-100 text-ink/55')}>{value}</button>)}
+            {/* 学習・クイズ画面の「1回の問題数」と同じ並び（全部＝在庫すべて）。 */}
+            <div className="mt-1 flex flex-wrap gap-1">
+              {[...SESSION_SIZE_OPTIONS, SESSION_SIZE_ALL].map((value) => (
+                <button
+                  key={value}
+                  type="button"
+                  aria-pressed={size === value}
+                  aria-label={value === SESSION_SIZE_ALL ? '一度に解く問題数を全部にする' : `一度に解く問題数を${value}問にする`}
+                  onClick={() => setSize(value)}
+                  className={cx(
+                    'min-h-8 rounded-lg px-2.5 text-[9px] font-extrabold',
+                    size === value ? 'bg-slate-900 text-white' : 'bg-slate-100 text-ink/55',
+                  )}
+                >
+                  {value === SESSION_SIZE_ALL ? '全部' : value}
+                </button>
+              ))}
             </div>
           </div>
         </div>

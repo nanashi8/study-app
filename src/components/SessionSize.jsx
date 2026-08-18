@@ -5,11 +5,16 @@ import { Sheet } from './Sheet.jsx'
 import { Button, cx } from './ui.jsx'
 
 // 1回に出す数の選択肢。教材の在庫がこれより少ないときは、その数を「全部」として足す。
-const SIZE_OPTIONS = [5, 10, 20, 30, 50, 100, 200]
+// 学習マップの「一度に解く問題数」も同じ並びを使うので、ここが唯一の出どころ。
+export const SESSION_SIZE_OPTIONS = [5, 10, 20, 30, 50, 100, 200]
 
-/** 設定値を、その教材で実際に出せる問題数の範囲へ収める。 */
+// 「全部」を表す値。デッキ作成側は size が 0 なら在庫すべてを出す。
+export const SESSION_SIZE_ALL = 0
+
+/** 設定値を、その教材で実際に出せる問題数の範囲へ収める。「全部」はその教材の在庫数になる。 */
 export function normalizeSessionSize(value, max = Infinity) {
   const size = Math.floor(Number(value))
+  if (size === SESSION_SIZE_ALL) return max
   if (!Number.isFinite(size) || size < 1) return Math.min(SESSION_SIZE, max)
   return Math.max(1, Math.min(size, max))
 }
@@ -36,16 +41,21 @@ export function SessionCounter({
   const setSetting = useStore((state) => state.setSetting)
   const stored = useStore((state) => state.settings.sessionSize)
   const pool = Number.isFinite(Number(max)) ? Math.max(1, Math.floor(Number(max))) : null
-  const options = [...new Set([
-    ...SIZE_OPTIONS.filter((size) => !pool || size < pool),
-    ...(pool ? [pool] : []),
-  ])].sort((a, b) => a - b)
-  const current = normalizeSessionSize(stored, pool ?? Infinity)
+  // 在庫より多い選択肢は出さず、最後に「全部」を置く。
+  const options = [
+    ...SESSION_SIZE_OPTIONS.filter((size) => !pool || size < pool),
+    SESSION_SIZE_ALL,
+  ]
+  const storedSize = Math.floor(Number(stored))
+  // 「全部」は0で保存する。以前の設定で在庫数ちょうどが入っている場合も全部として扱う。
+  const showsAll = storedSize === SESSION_SIZE_ALL || (pool != null && storedSize >= pool)
+  const current = showsAll ? SESSION_SIZE_ALL : normalizeSessionSize(stored, pool ?? Infinity)
 
   const choose = (size) => {
     setSetting('sessionSize', size)
     setOpen(false)
-    onResize?.(size)
+    // 教材ごとの在庫数で組み直す（全部＝その教材の在庫すべて）。
+    onResize?.(size === SESSION_SIZE_ALL ? (pool ?? SESSION_SIZE_ALL) : size)
   }
 
   return (
@@ -83,7 +93,7 @@ export function SessionCounter({
                     : 'bg-white text-ink ring-brand-100 active:bg-brand-50',
                 )}
               >
-                {pool && size === pool ? '全部' : `${size}問`}
+                {size === SESSION_SIZE_ALL ? '全部' : `${size}問`}
               </button>
             ))}
           </div>

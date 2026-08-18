@@ -9,15 +9,53 @@ const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf
 
 test('選べる問題数は 5・10・20・30・50・100・200 と「全部」', () => {
   const source = read('src/components/SessionSize.jsx')
-  const options = /const SIZE_OPTIONS = \[([^\]]+)\]/.exec(source)?.[1]
+  const options = /SESSION_SIZE_OPTIONS = \[([^\]]+)\]/.exec(source)?.[1]
   assert.ok(options, '選択肢の一覧が見つからない')
   assert.deepEqual(
     options.split(',').map((value) => Number(value.trim())),
     [5, 10, 20, 30, 50, 100, 200],
   )
-  // 在庫がちょうど出し切れる数は「全部」として並べる。
-  assert.match(source, /size === pool \? '全部'/)
-  assert.match(source, /\.\.\.\(pool \? \[pool\] : \[\]\)/)
+  // 並びの最後は必ず「全部」。
+  assert.match(source, /size === SESSION_SIZE_ALL \? '全部'/)
+  assert.match(source, /SESSION_SIZE_OPTIONS\.filter\(\(size\) => !pool \|\| size < pool\),\s*\n\s*SESSION_SIZE_ALL,/)
+})
+
+test('設定メニューの「1回の問題数」も同じ並びを使う', () => {
+  const panel = read('src/components/SpeechSettings.jsx')
+  assert.match(panel, /import \{ SESSION_SIZE_ALL, SESSION_SIZE_OPTIONS \}/)
+  assert.match(panel, /const SESSION_SIZES = \[\.\.\.SESSION_SIZE_OPTIONS, SESSION_SIZE_ALL\]/)
+  assert.doesNotMatch(panel, /\[5, 10, 15, 20\]/)
+  assert.match(panel, /SESSION_SIZE_ALL \? '全部'/)
+})
+
+test('「全部」を選ぶと、その教材の在庫すべてで組み直す', () => {
+  const sizes = read('src/components/SessionSize.jsx')
+  // 保存は0（全部）。画面ごとの在庫数へ読み替えてから使う。
+  assert.match(sizes, /if \(size === SESSION_SIZE_ALL\) return max/)
+  assert.match(sizes, /onResize\?\.\(size === SESSION_SIZE_ALL \? \(pool \?\? SESSION_SIZE_ALL\) : size\)/)
+  // 在庫数を数えてから設定を読む（あとに読むと「全部」が10に潰れる）
+  for (const name of ['VocabStudy', 'VocabQuiz', 'PhraseStudy', 'PhraseQuiz', 'DictationPlay', 'GrammarQuiz', 'ListeningQuiz', 'EtymologyStudy', 'EtymologyQuiz']) {
+    const source = read(`src/screens/${name}.jsx`)
+    assert.doesNotMatch(source, /useSessionSize\(\)/, `${name} が在庫数を渡していない`)
+    assert.ok(
+      source.indexOf('const [poolSize]') < source.indexOf('useSessionSize('),
+      `${name} は在庫数を数えてから設定を読む`,
+    )
+  }
+})
+
+test('学習マップの「一度に解く問題数」も同じ並びを使う', () => {
+  const map = read('src/screens/EnglishMap.jsx')
+  assert.match(map, /import \{ SESSION_SIZE_ALL, SESSION_SIZE_OPTIONS \}/)
+  assert.match(map, /\[\.\.\.SESSION_SIZE_OPTIONS, SESSION_SIZE_ALL\]/)
+  assert.match(map, /一度に解く問題数/)
+  assert.match(map, /'全部を解読'/)
+  assert.doesNotMatch(map, /\[10, 20, 100\]/)
+  // 「全部」は0で渡し、デッキ作成側が在庫すべてを出す。
+  const sizes = read('src/components/SessionSize.jsx')
+  assert.match(sizes, /export const SESSION_SIZE_ALL = 0/)
+  const session = read('src/lib/session.js')
+  assert.ok(session.includes('return size ? pool.slice(0, size) : pool'))
 })
 
 test('問題数を選ぶ画面は、教材の在庫数を渡している（渡さないと「全部」が出ない）', () => {

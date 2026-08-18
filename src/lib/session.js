@@ -187,7 +187,7 @@ export function buildPhraseDeck(source, { srs = {}, size = SESSION_SIZE } = {}) 
     if (ra !== rb) return ra - rb
     return (srs[a.id]?.box ?? 0) - (srs[b.id]?.box ?? 0)
   })
-  if (source.type === 'dragonVeinPhrase' && size && pool.length > 0 && pool.length < size) {
+  if (source.type === 'dragonVeinPhrase' && Number.isFinite(size) && size && pool.length > 0 && pool.length < size) {
     const original = [...pool]
     while (pool.length < size) pool.push(original[pool.length % original.length])
   }

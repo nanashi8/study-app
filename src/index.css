@@ -5232,6 +5232,14 @@ button { -webkit-tap-highlight-color: transparent; }
   --app-safe-top: env(safe-area-inset-top, 0px);
   --app-safe-bottom: env(safe-area-inset-bottom, 0px);
 }
+/* ホーム画面アイコンから開いた表示（standalone）は時刻・電波の下まで描かれる。
+   safeArea.js が実測して確定値を書き込むが、それが動くまでの一瞬や、
+   万一動かなかったときに「戻る」「メニュー」が時刻へ潜らないよう最低限を確保する。 */
+@media (display-mode: standalone), (display-mode: fullscreen), (display-mode: minimal-ui) {
+  :root {
+    --app-safe-top: max(env(safe-area-inset-top, 0px), 20px);
+  }
+}
 
 /* ---- Viewport height / browser chrome -------------------------------------
    モバイルのアドレスバーは表示・非表示で高さが変わる。アプリ外枠は

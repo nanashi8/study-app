@@ -346,7 +346,7 @@ test('終了した龍脈台帳は公開ルートから外しても保存互換�
   assert.match(map, /data-testid="dragon-vein-restoration-board"/)
   assert.match(map, /DailyDistortionCard/)
   assert.match(map, /DRAGON_VEIN_NODES\.map/)
-  assert.match(map, /\[10, 20, 100\]/)
+  assert.match(map, /\[\.\.\.SESSION_SIZE_OPTIONS, SESSION_SIZE_ALL\]/)
   assert.match(novel, /data-light-novel-scene/)
   assert.match(novel, /次のページ/)
   assert.match(novel, /前のページ/)

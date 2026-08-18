@@ -24,11 +24,11 @@ export function VocabStudyScreen() {
   const revealAll = settings.revealAnswers
 
   const srsAtStart = useRef(useStore.getState().srs)
-  const sessionSize = useSessionSize()
   // size=0 は「絞り込みなし」。在庫数を数えて、問題数の選択肢を実態に合わせる。
   const buildFor = (size) =>
     buildDeck(params.source ?? { type: 'due' }, { srs: srsAtStart.current, size })
   const [poolSize] = useState(() => buildFor(0).length)
+  const sessionSize = useSessionSize(poolSize || Infinity)
   const [deck, setDeck] = useState(() => buildFor(params.size ?? sessionSize))
 
   const [i, setI] = useState(0)
