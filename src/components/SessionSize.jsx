@@ -4,7 +4,8 @@ import { SESSION_SIZE } from '../lib/session.js'
 import { Sheet } from './Sheet.jsx'
 import { Button, cx } from './ui.jsx'
 
-const SIZE_OPTIONS = [5, 10, 15, 20, 30, 50]
+// 1回に出す数の選択肢。教材の在庫がこれより少ないときは、その数を「全部」として足す。
+const SIZE_OPTIONS = [5, 10, 20, 30, 50, 100, 200]
 
 /** 設定値を、その教材で実際に出せる問題数の範囲へ収める。 */
 export function normalizeSessionSize(value, max = Infinity) {
@@ -82,7 +83,7 @@ export function SessionCounter({
                     : 'bg-white text-ink ring-brand-100 active:bg-brand-50',
                 )}
               >
-                {pool && size === pool ? `全${size}問` : `${size}問`}
+                {pool && size === pool ? '全部' : `${size}問`}
               </button>
             ))}
           </div>

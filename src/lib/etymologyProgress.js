@@ -111,6 +111,6 @@ export function buildEtymologyDeck(
     .map((pack, index) => ({ pack, index }))
     .sort((a, b) => comparePriority(a, b, etymologySrs, day))
     .map(({ pack }) => pack)
-  const limit = Math.max(1, Math.min(20, Math.floor(Number(size) || ETYMOLOGY_SESSION_SIZE)))
+  const limit = Math.max(1, Math.floor(Number(size) || ETYMOLOGY_SESSION_SIZE))
   return ordered.slice(0, limit)
 }
