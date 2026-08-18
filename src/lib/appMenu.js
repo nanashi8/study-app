@@ -33,7 +33,7 @@ export const APP_MENU_SECTIONS = Object.freeze([
   ]),
   section('english', '英語の学習', [
     screenItem('vocabLevels', '英単語', '級別・分野別・品詞別に学習'),
-    screenItem('vocabSearch', '英和辞書', '意味・語法・語源・参照履歴'),
+    screenItem('vocabSearch', '英和辞書', '単語・熟語・構文をABC順に引く'),
     screenItem('writing', '英作文', '書いて使える知識にする'),
     screenItem('roots', '語源学習', '語源の確認問題と関連英単語を一緒に学ぶ'),
     screenItem('readingList', '長文読解', '前から読む訳・文法・設問'),
