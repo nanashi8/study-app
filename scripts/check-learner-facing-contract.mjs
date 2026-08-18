@@ -394,6 +394,18 @@ for (const rule of READING_RULES) {
   }
 }
 
+// ── 暗記カードは、どの教科でも同じように意味・答えを開ける ────────────
+// 「タップして…を見る」を出す画面は、必ず画面上の切り替えも持たせる。
+for (const file of files) {
+  const source = await readFile(file, 'utf8')
+  const relative = path.relative(projectRoot, file)
+  // カード裏面の案内（「タップして◯◯を見る」）だけを対象にする。
+  if (!/タップして[^「」]{0,12}(?:意味|答え)[^「」]{0,12}を見る/.test(source)) continue
+  if (!source.includes('RevealAnswersToggle')) {
+    errors.push(`${relative}: 「タップして見る」の切り替えが画面上にない`)
+  }
+}
+
 if (PASSAGES.length < 24 || sentenceCount < 567) errors.push('長文の全対象数が基準を下回る')
 if (longSentenceCount < 33) errors.push('長い一文の全対象数が基準を下回る')
 if (GRAMMAR.length !== 3140 || grammarChoicePaths !== 9420) errors.push('英文法の全対象数が契約と不一致')
