@@ -17,6 +17,7 @@ import {
 } from '../lib/speech-player.js'
 import { Sheet } from './Sheet.jsx'
 import { SESSION_SIZE_ALL, SESSION_SIZE_OPTIONS } from './SessionSize.jsx'
+import { isAppHomeScreen } from '../lib/appHome.js'
 import { Button, cx } from './ui.jsx'
 import {
   Book,
@@ -819,6 +820,7 @@ export function SpeechSettingsSheet() {
   const navigate = useStore((state) => state.navigate)
   const globalBack = useStore((state) => state.globalBack)
   const goPortal = useStore((state) => state.goPortal)
+  const goHomeScreen = useStore((state) => state.goHomeScreen)
   const currentScreen = useStore((state) => state.screen)
   const learningState = useStore(useShallow((state) => ({
     srs: state.srs,
@@ -905,6 +907,7 @@ export function SpeechSettingsSheet() {
     close()
     if (destination.type === 'back') globalBack()
     else if (destination.screen === 'portal') goPortal()
+    else if (isAppHomeScreen(destination.screen)) goHomeScreen(destination.screen)
     else navigate(destination.screen, destination.params ?? {})
   }
   const openScreen = (screen, params = {}) => {

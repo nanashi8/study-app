@@ -27,6 +27,7 @@ function unitState(u, mathDone, mathMastery) {
 
 export function MathMapScreen() {
   const navigate = useStore((s) => s.navigate)
+  const goPortal = useStore((s) => s.goPortal)
   const mathDone = useStore((s) => s.mathDone)
   const mathMastery = useStore((s) => s.mathMastery)
   const contentQuizResults = useStore((s) => s.contentQuizResults)
@@ -58,7 +59,7 @@ export function MathMapScreen() {
       <div className="rounded-b-[2.5rem] bg-gradient-to-br from-violet-500 via-violet-600 to-indigo-700 px-5 pb-6 pt-5 text-white">
         <div className="mb-3 flex items-center justify-between">
           <button
-            onClick={() => navigate('portal')}
+            onClick={() => goPortal()}
             className="flex items-center gap-1 rounded-full bg-white/15 py-1 pl-1.5 pr-2.5 text-[11px] font-extrabold text-white/90 active:scale-95 transition-transform"
           >
             <ChevronLeft size={14} /> スタディアプリ

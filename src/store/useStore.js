@@ -60,6 +60,7 @@ import {
   recordDragonVeinResult,
 } from '../lib/dragonVein.js'
 import { learnerDestination } from '../lib/learnerVisibility.js'
+import { appHomeForScreen, fallbackDestination } from '../lib/appHome.js'
 import {
   createLearningNotebook,
   createNotebookSet as createNotebookSetState,
@@ -494,8 +495,12 @@ export const useStore = create(
         }),
       back: () =>
         set((st) => {
-          // 旧画面の互換用戻り先は学習ホームのまま保つ。
-          if (!st.stack.length) return { screen: 'home', params: {} }
+          // 履歴なしで開いた画面は、そのアプリのホームへ戻す
+          // （英語なら英語アプリ、古典なら古典アプリ）。
+          if (!st.stack.length) {
+            const destination = fallbackDestination(st.screen)
+            return destination ? { screen: destination, params: {}, stack: [] } : {}
+          }
           const prev = st.stack[st.stack.length - 1]
           const destination = learnerDestination(prev.screen, prev.params)
           return {
@@ -510,9 +515,9 @@ export const useStore = create(
       globalBack: () =>
         set((st) => {
           if (!st.stack.length) {
-            return st.screen === 'portal'
-              ? {}
-              : { screen: 'portal', params: {}, stack: [] }
+            // 画面内の「やめる」と同じ戻り先にそろえる。
+            const destination = fallbackDestination(st.screen)
+            return destination ? { screen: destination, params: {}, stack: [] } : {}
           }
           const prev = st.stack[st.stack.length - 1]
           const destination = learnerDestination(prev.screen, prev.params)
@@ -526,6 +531,11 @@ export const useStore = create(
       returnToAfterSchoolChronicle: () =>
         set({ screen: 'home', params: {}, stack: [] }),
       goHome: () => set({ screen: 'home', params: {}, stack: [] }),
+      // いま見ている画面のアプリのホームへ。上部バーの「◯◯アプリ」から使う。
+      goAppHome: () =>
+        set((st) => ({ screen: appHomeForScreen(st.screen).screen, params: {}, stack: [] })),
+      // 各アプリのホームへ直接移動する（履歴は初期化）。
+      goHomeScreen: (screen) => set({ screen, params: {}, stack: [] }),
       goPortal: () => set({ screen: 'portal', params: {}, stack: [] }),
 
       // ── クイズの一時退避（永続化しない） ──
