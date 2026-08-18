@@ -40,6 +40,7 @@ function MainItem({ emoji, title, description, count, unit, status, onOpen }) {
 
 export function KanbunHomeScreen() {
   const navigate = useStore((state) => state.navigate)
+  const goPortal = useStore((state) => state.goPortal)
   const vocabSrs = useStore((state) => state.kanbunVocabSrs)
   const grammarSrs = useStore((state) => state.kanbunGrammarSrs)
   const cultureSrs = useStore((state) => state.kanbunCultureSrs)
@@ -61,7 +62,7 @@ export function KanbunHomeScreen() {
         <div className="mb-3 flex items-center justify-between">
           <button
             type="button"
-            onClick={() => navigate('portal')}
+            onClick={() => goPortal()}
             className="flex items-center gap-1 rounded-full bg-white/15 py-1 pl-1.5 pr-2.5 text-[11px] font-extrabold text-white/90 active:scale-95"
           >
             <ChevronLeft size={14} /> スタディアプリ

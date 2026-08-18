@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import { buildDeck, recordStudyAnswer } from '../lib/session.js'
+import { phraseGroupsForWord } from '../lib/wordPhrases.js'
 import { playSpeechItems } from '../lib/speech-player.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
@@ -36,6 +37,8 @@ export function VocabStudyScreen() {
   const results = useRef({ remembered: 0, forgot: 0, forgotIds: [] })
 
   const word = deck[i]
+  // その語を含む熟語・構文は全部見せる（数を絞ると使い方が抜ける）。
+  const relatedPhrases = useMemo(() => phraseGroupsForWord(word), [word?.id])
 
   // カードが変わるたび自動で読み上げ
   useEffect(() => {
@@ -220,6 +223,37 @@ export function VocabStudyScreen() {
                     word={word}
                     onRoot={(rootId) => navigate('rootDetail', { rootId })}
                   />
+                </div>
+              )}
+
+              {relatedPhrases.all.length > 0 && (
+                <div className="rounded-2xl bg-white p-4 ring-1 ring-sky-100" data-word-phrases>
+                  <div className="flex items-baseline justify-between gap-2">
+                    <span className="text-xs font-extrabold text-sky-700">
+                      {word.word} を含む熟語・構文
+                    </span>
+                    <span className="text-[11px] font-bold text-ink/40">
+                      全{relatedPhrases.all.length}項目
+                    </span>
+                  </div>
+                  <ul className="mt-2 space-y-1.5">
+                    {relatedPhrases.all.map((phrase) => (
+                      <li key={phrase.id} className="flex items-start gap-2">
+                        <span
+                          className="mt-0.5 shrink-0 rounded-md px-1.5 py-0.5 text-[10px] font-extrabold text-white"
+                          style={{ backgroundColor: phrase.kind === 'syntax' ? '#8b5cf6' : '#0ea5e9' }}
+                        >
+                          {phrase.kind === 'syntax' ? '構文' : '熟語'}
+                        </span>
+                        <div className="min-w-0 flex-1">
+                          <p className="font-display text-sm font-extrabold leading-snug text-ink">
+                            {phrase.phrase}
+                          </p>
+                          <p className="text-xs font-bold leading-relaxed text-ink/55">{phrase.meaning}</p>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               )}
 

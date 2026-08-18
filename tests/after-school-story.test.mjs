@@ -384,8 +384,9 @@ test('現在の放課後場面は保存済み進行順を保ち、旧戻り操�
     useStore.getState().returnToAfterSchoolChronicle()
     assert.equal(useStore.getState().screen, 'home')
     assert.deepEqual(useStore.getState().stack, [])
+    // 履歴が無いホームからの戻るは、共通バーと同じくスタディアプリの入口へ。
     useStore.getState().back()
-    assert.equal(useStore.getState().screen, 'home')
+    assert.equal(useStore.getState().screen, 'portal')
   } finally {
     useStore.setState(original, true)
   }

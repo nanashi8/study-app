@@ -1,5 +1,6 @@
 import { useStore } from '../store/useStore.js'
 import { requiresProgressSaveConfirmation } from '../lib/navigationPolicy.js'
+import { appHomeForScreen, isAppHomeScreen } from '../lib/appHome.js'
 import { IconButton, cx } from './ui.jsx'
 import { ChevronLeft, Menu } from './Icons.jsx'
 import { GlobalSpeechConsole } from './SpeechConsole.jsx'
@@ -11,6 +12,8 @@ export function AppShell({ children, showGlobalMenu = true }) {
   const stackLength = useStore((state) => state.stack.length)
   const globalBack = useStore((state) => state.globalBack)
   const openSpeechSettings = useStore((state) => state.openSpeechSettings)
+  const goAppHome = useStore((state) => state.goAppHome)
+  const goPortal = useStore((state) => state.goPortal)
   const menuOpen = useStore((state) => state.speechSettingsOpen)
   const canGoBack = screen !== 'portal' || stackLength > 0
   const goBack = () => {
@@ -20,6 +23,22 @@ export function AppShell({ children, showGlobalMenu = true }) {
       return
     }
     globalBack()
+  }
+
+  // 中央は「いまいるアプリのホームへ」。アプリのホームにいるときは入口へ戻す。
+  // どの画面からでも一度で自分のアプリへ帰れるようにするための共通導線。
+  const home = appHomeForScreen(screen)
+  const atHome = isAppHomeScreen(screen)
+  const homeLabel = atHome ? 'スタディアプリ' : home.label
+  const goHomeFromBar = () => {
+    if (menuOpen || screen === 'portal') return
+    if (requiresProgressSaveConfirmation(screen, home.screen)) {
+      // 確認のあとも行き先が変わらないよう、移動先ごと預ける。
+      openSpeechSettings({ type: 'navigate', screen: atHome ? 'portal' : home.screen })
+      return
+    }
+    if (atHome) goPortal()
+    else goAppHome()
   }
 
   return (
@@ -41,9 +60,16 @@ export function AppShell({ children, showGlobalMenu = true }) {
               >
                 <ChevronLeft size={19} /> 戻る
               </button>
-              <span className="min-w-0 flex-1 truncate text-center text-xs font-extrabold tracking-wide text-ink/45">
-                スタディアプリ
-              </span>
+              <button
+                type="button"
+                onClick={goHomeFromBar}
+                disabled={menuOpen || screen === 'portal'}
+                aria-label={atHome ? 'スタディアプリの入口へ' : `${home.label}のホームへ`}
+                data-global-home-button
+                className="min-w-0 flex-1 truncate rounded-full px-2 py-1 text-center text-xs font-extrabold tracking-wide text-brand-700 active:bg-brand-50 disabled:text-ink/45 disabled:active:bg-transparent"
+              >
+                {homeLabel}
+              </button>
               <button
                 type="button"
                 onClick={() => openSpeechSettings()}

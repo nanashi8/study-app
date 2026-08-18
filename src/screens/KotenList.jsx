@@ -56,6 +56,7 @@ function CategoryCard({ cat, words, srs, onStudy, onQuiz }) {
 
 export function KotenListScreen() {
   const navigate = useStore((s) => s.navigate)
+  const goPortal = useStore((s) => s.goPortal)
   const kotenSrs = useStore((s) => s.kotenSrs)
   const grammarSrs = useStore((s) => s.kotenGrammarSrs)
   const cultureSrs = useStore((s) => s.kotenCultureSrs)
@@ -94,7 +95,7 @@ export function KotenListScreen() {
       <div className="rounded-b-[2.5rem] bg-gradient-to-br from-amber-500 via-orange-500 to-amber-700 px-5 pb-7 pt-5 text-white">
         <div className="mb-3 flex items-center justify-between">
           <button
-            onClick={() => navigate('portal')}
+            onClick={() => goPortal()}
             className="flex items-center gap-1 rounded-full bg-white/15 py-1 pl-1.5 pr-2.5 text-[11px] font-extrabold text-white/90 active:scale-95 transition-transform"
           >
             <ChevronLeft size={14} /> スタディアプリ

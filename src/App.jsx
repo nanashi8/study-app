@@ -270,8 +270,9 @@ export default function App() {
       if (!alive) return
       stop = startAutoSave(user.uid, user.email)
       // ゲストからログインした直後はログイン画面に居るので、ポータルへ戻す。
+      // navigate だとログイン画面が履歴に残り、戻るでログイン画面に出てしまう。
       const st = useStore.getState()
-      if (st.screen === 'login') st.navigate('portal')
+      if (st.screen === 'login') st.goPortal()
       setSynced(true)
     })
     return () => {
