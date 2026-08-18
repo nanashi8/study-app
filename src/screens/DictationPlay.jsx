@@ -14,6 +14,7 @@ import {
   playSpeechItems,
 } from '../lib/speech-player.js'
 import { buildDictationInstructorExplanation } from '../lib/instructorExplanations.js'
+import { growDeck } from '../lib/session.js'
 import { Button, Chip, ProgressBar, IconButton, cx } from '../components/ui.jsx'
 import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
@@ -185,17 +186,21 @@ export function DictationPlayScreen() {
           index={i}
           total={deck.length}
           max={poolSize}
-          onResize={(size) => {
-            const next = buildFor(size)
-            setDeck(next)
-            setI(0)
-            setWordBank(buildWordBank(next[0]))
-            setAnswerTokens([])
-            setWrongSelections(0)
-            setResult(null)
-            setNormalPlays(0)
-            setSlowPlays(0)
-            results.current = { correct: 0, wrong: 0, wrongIds: [] }
+          onResize={(size, { discard }) => {
+            if (discard) {
+              const next = buildFor(size)
+              setDeck(next)
+              setI(0)
+              setWordBank(buildWordBank(next[0]))
+              setAnswerTokens([])
+              setWrongSelections(0)
+              setResult(null)
+              setNormalPlays(0)
+              setSlowPlays(0)
+              results.current = { correct: 0, wrong: 0, wrongIds: [] }
+            } else {
+              setDeck((current) => growDeck(current, i + 1, buildFor(size), size))
+            }
           }}
         />
       </div>

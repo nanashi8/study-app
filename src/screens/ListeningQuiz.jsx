@@ -14,6 +14,7 @@ import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { Button, Chip, ProgressBar, IconButton, cx } from '../components/ui.jsx'
+import { growDeck } from '../lib/session.js'
 import {
   ArrowRight,
   Bookmark,
@@ -228,14 +229,18 @@ export function ListeningQuizScreen() {
           index={i}
           total={deck.length}
           max={poolSize}
-          onResize={(size) => {
-            setDeck(buildFor(size))
-            setI(0)
-            setSelected(null)
-            setPlaysUsed(0)
-            setPracticePlays(0)
-            setShowTranscript(false)
-            results.current = { correct: 0, wrong: 0, unknown: 0, wrongIds: [] }
+          onResize={(size, { discard }) => {
+            if (discard) {
+              setDeck(buildFor(size))
+              setI(0)
+              setSelected(null)
+              setPlaysUsed(0)
+              setPracticePlays(0)
+              setShowTranscript(false)
+              results.current = { correct: 0, wrong: 0, unknown: 0, wrongIds: [] }
+            } else {
+              setDeck((current) => growDeck(current, i + 1, buildFor(size), size))
+            }
           }}
         />
       </div>

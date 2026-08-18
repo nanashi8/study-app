@@ -6,6 +6,7 @@ import { SpeakButton } from '../components/SpeakButton.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { Button, Chip, IconButton, ProgressBar } from '../components/ui.jsx'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
+import { growDeck } from '../lib/session.js'
 import {
   ArrowRight,
   Check,
@@ -141,11 +142,15 @@ export function WritingGrammarReviewScreen() {
           total={deck.length}
           max={poolSize}
           label="カード"
-          onResize={(size) => {
-            setDeck(buildFor(size))
-            setIndex(0)
-            setRevealed(false)
-            setResults({ remembered: 0, forgot: 0 })
+          onResize={(size, { discard }) => {
+            if (discard) {
+              setDeck(buildFor(size))
+              setIndex(0)
+              setRevealed(false)
+              setResults({ remembered: 0, forgot: 0 })
+            } else {
+              setDeck((current) => growDeck(current, index + 1, buildFor(size), size))
+            }
           }}
         />
       </header>

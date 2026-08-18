@@ -17,6 +17,7 @@ import { cx } from '../components/ui.jsx'
 import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { buildKotenWordInstructorExplanation } from '../lib/instructorExplanations.js'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
+import { growDeck } from '../lib/session.js'
 
 function shuffle(arr) {
   const a = [...arr]
@@ -166,14 +167,18 @@ export function KotenQuizScreen() {
           index={i}
           total={deck.length}
           max={poolSize}
-          onResize={(size) => {
-            setDeck(buildQuizDeck(params.ids, seed + 1, size))
-            setI(0)
-            setSelected(null)
-            setCorrectCount(0)
-            setBoxUp(0)
-            setNewlyMastered(0)
-            setDone(false)
+          onResize={(size, { discard }) => {
+            if (discard) {
+              setDeck(buildQuizDeck(params.ids, seed + 1, size))
+              setI(0)
+              setSelected(null)
+              setCorrectCount(0)
+              setBoxUp(0)
+              setNewlyMastered(0)
+              setDone(false)
+            } else {
+              setDeck((current) => growDeck(current, i + 1, buildQuizDeck(params.ids, seed + 1, size), size))
+            }
           }}
         />
       </div>

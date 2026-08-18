@@ -13,6 +13,7 @@ import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { KanbunText } from '../components/KanbunFurigana.jsx'
 import { Button, Chip, cx, IconButton, ProgressBar } from '../components/ui.jsx'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
+import { growDeck } from '../lib/session.js'
 import {
   ArrowRight,
   Book,
@@ -171,14 +172,23 @@ export function KanbunQuizScreen() {
             index={index}
             total={deck.length}
             max={poolSize}
-            onResize={(size) => {
-              setDeck(pickKanbunQuestions(domain, params.ids, { size }))
-              setIndex(0)
-              setSelected(null)
-              setCorrectCount(0)
-              setUnknownCount(0)
-              setWeakIds([])
-              setDone(false)
+            onResize={(size, { discard }) => {
+              if (discard) {
+                setDeck(pickKanbunQuestions(domain, params.ids, { size }))
+                setIndex(0)
+                setSelected(null)
+                setCorrectCount(0)
+                setUnknownCount(0)
+                setWeakIds([])
+                setDone(false)
+              } else {
+                setDeck((current) => growDeck(
+                  current,
+                  index + 1,
+                  pickKanbunQuestions(domain, params.ids, { size }),
+                  size,
+                ))
+              }
             }}
           />
         </div>

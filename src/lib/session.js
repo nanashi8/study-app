@@ -117,6 +117,17 @@ export function buildDeck(source, { srs = {}, size = SESSION_SIZE } = {}) {
   return size ? pool.slice(0, size) : pool
 }
 
+/**
+ * 途中で問題数を増やすとき、いま解いた分（既存デッキの先頭 keepCount 件）は
+ * そのまま残し、足りない分だけ新しいデッキから重複しないよう補って埋める。
+ */
+export function growDeck(existingDeck, keepCount, freshDeck, targetSize) {
+  const kept = existingDeck.slice(0, Math.min(keepCount, existingDeck.length))
+  const keptIds = new Set(kept.map((item) => item.id))
+  const fresh = freshDeck.filter((item) => !keptIds.has(item.id))
+  return [...kept, ...fresh].slice(0, targetSize)
+}
+
 /** 級ごとの進捗集計（既習・習得・期限切れ件数）。 */
 export function levelProgress(levelId, srs) {
   return wordProgress(wordsByLevel(levelId), srs)

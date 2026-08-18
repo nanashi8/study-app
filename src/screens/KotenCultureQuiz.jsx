@@ -13,6 +13,7 @@ import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
 import { KotenText } from '../components/KotenFurigana.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { Button, Chip, cx, ProgressBar, IconButton } from '../components/ui.jsx'
+import { growDeck } from '../lib/session.js'
 import {
   ArrowRight,
   Book,
@@ -200,16 +201,25 @@ export function KotenCultureQuizScreen() {
             index={index}
             total={deck.length}
             max={poolSize}
-            onResize={(size) => {
-              setDeck(pickKotenCultureQuestions(params.ids, { size }))
-              setIndex(0)
-              setSelected(null)
-              setCorrectCount(0)
-              setUnknownCount(0)
-              setBoxUp(0)
-              setNewlyMastered(0)
-              setWeakIds([])
-              setDone(false)
+            onResize={(size, { discard }) => {
+              if (discard) {
+                setDeck(pickKotenCultureQuestions(params.ids, { size }))
+                setIndex(0)
+                setSelected(null)
+                setCorrectCount(0)
+                setUnknownCount(0)
+                setBoxUp(0)
+                setNewlyMastered(0)
+                setWeakIds([])
+                setDone(false)
+              } else {
+                setDeck((current) => growDeck(
+                  current,
+                  index + 1,
+                  pickKotenCultureQuestions(params.ids, { size }),
+                  size,
+                ))
+              }
             }}
           />
         </div>

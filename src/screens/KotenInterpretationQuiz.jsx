@@ -18,6 +18,7 @@ import {
   Check,
   Close,
 } from '../components/Icons.jsx'
+import { growDeck } from '../lib/session.js'
 import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { buildKotenInterpretationInstructorExplanation } from '../lib/instructorExplanations.js'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
@@ -155,13 +156,17 @@ export function KotenInterpretationQuizScreen() {
           index={index}
           total={deck.length}
           max={poolSize}
-          onResize={(size) => {
-            setRun((current) => current + 1)
-            setDeck(buildDeck(params.ids, size))
-            setIndex(0)
-            setSelected(null)
-            setCorrect(0)
-            setDone(false)
+          onResize={(size, { discard }) => {
+            if (discard) {
+              setRun((current) => current + 1)
+              setDeck(buildDeck(params.ids, size))
+              setIndex(0)
+              setSelected(null)
+              setCorrect(0)
+              setDone(false)
+            } else {
+              setDeck((current) => growDeck(current, index + 1, buildDeck(params.ids, size), size))
+            }
           }}
         />
       </div>

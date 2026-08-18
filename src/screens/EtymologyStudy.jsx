@@ -8,6 +8,7 @@ import {
   buildEtymologyDeck,
 } from '../lib/etymologyProgress.js'
 import { learningStatusForSrsEntry } from '../lib/contentProgress.js'
+import { growDeck } from '../lib/session.js'
 import {
   EtymologyKnowledgeAnswer,
   EtymologyKnowledgePrompt,
@@ -130,12 +131,16 @@ export function EtymologyStudyScreen() {
           total={deck.length}
           max={poolSize}
           label="カード"
-          onResize={(size) => {
-            setDeck(buildFor(size))
-            setIndex(0)
-            setRevealed(revealAll)
-            setDone(false)
-            results.current = { remembered: 0, forgot: 0 }
+          onResize={(size, { discard }) => {
+            if (discard) {
+              setDeck(buildFor(size))
+              setIndex(0)
+              setRevealed(revealAll)
+              setDone(false)
+              results.current = { remembered: 0, forgot: 0 }
+            } else {
+              setDeck((current) => growDeck(current, index + 1, buildFor(size), size))
+            }
           }}
         />
       </div>

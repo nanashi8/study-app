@@ -38,6 +38,8 @@ export function SessionCounter({
   label = '問題',
 }) {
   const [open, setOpen] = useState(false)
+  // 減らすと今の進捗が失われる変更（解決済みの目標数）。null なら選択肢一覧を表示中。
+  const [pendingDiscard, setPendingDiscard] = useState(null)
   const setSetting = useStore((state) => state.setSetting)
   const stored = useStore((state) => state.settings.sessionSize)
   const pool = Number.isFinite(Number(max)) ? Math.max(1, Math.floor(Number(max))) : null
@@ -51,11 +53,27 @@ export function SessionCounter({
   const showsAll = storedSize === SESSION_SIZE_ALL || (pool != null && storedSize >= pool)
   const current = showsAll ? SESSION_SIZE_ALL : normalizeSessionSize(stored, pool ?? Infinity)
 
-  const choose = (size) => {
-    setSetting('sessionSize', size)
+  const closeSheet = () => {
     setOpen(false)
+    setPendingDiscard(null)
+  }
+
+  const apply = (rawSize, resolvedSize) => {
+    setSetting('sessionSize', rawSize)
+    closeSheet()
+    // 進捗（index）より少なくする変更だけ、いまの学習・回答を破棄する。
+    onResize?.(resolvedSize, { discard: resolvedSize <= index })
+  }
+
+  const choose = (size) => {
     // 教材ごとの在庫数で組み直す（全部＝その教材の在庫すべて）。
-    onResize?.(size === SESSION_SIZE_ALL ? (pool ?? SESSION_SIZE_ALL) : size)
+    const resolvedSize = size === SESSION_SIZE_ALL ? (pool ?? SESSION_SIZE_ALL) : size
+    // 進捗より少なくすると今の学習・回答が破棄されるので、確認してから変更する。
+    if (index > 0 && resolvedSize <= index) {
+      setPendingDiscard({ rawSize: size, resolvedSize })
+      return
+    }
+    apply(size, resolvedSize)
   }
 
   return (
@@ -73,37 +91,60 @@ export function SessionCounter({
         {Math.min(index + 1, total)}/{total}
       </button>
 
-      <Sheet open={open} onClose={() => setOpen(false)} title={`1回の${label}数`}>
-        <div className="space-y-4 pb-2">
-          <p className="text-xs font-bold leading-relaxed text-ink/50">
-            1セッションで出す{label}数を選べます。選ぶと、いまのセッションをその{label}数で作り直します。
-            設定はすべての学習・クイズに引き継がれます。
-          </p>
-          <div className="grid grid-cols-3 gap-2" data-session-size-options>
-            {options.map((size) => (
-              <button
-                key={size}
-                type="button"
-                onClick={() => choose(size)}
-                aria-pressed={size === current}
-                className={cx(
-                  'min-h-12 rounded-2xl text-sm font-extrabold ring-1 transition',
-                  size === current
-                    ? 'bg-brand-500 text-white ring-brand-500'
-                    : 'bg-white text-ink ring-brand-100 active:bg-brand-50',
-                )}
-              >
-                {size === SESSION_SIZE_ALL ? '全部' : `${size}問`}
-              </button>
-            ))}
-          </div>
-          {pool != null && (
-            <p className="text-[11px] font-bold text-ink/40">
-              この教材で出題できるのは全{pool}{label}です。
+      <Sheet open={open} onClose={closeSheet} title={`1回の${label}数`}>
+        {pendingDiscard ? (
+          <div className="space-y-4 pb-2" data-session-size-discard-warning>
+            <p className="text-xs font-bold leading-relaxed text-rose-600">
+              いま{Math.min(index + 1, total)}/{total}
+              {label}まで進んでいます。{pendingDiscard.resolvedSize}
+              {label}に変更すると、ここまでの学習・回答は破棄されます。
             </p>
-          )}
-          <Button full variant="ghost" onClick={() => setOpen(false)}>閉じる</Button>
-        </div>
+            <div className="flex gap-2">
+              <Button full variant="ghost" onClick={() => setPendingDiscard(null)}>
+                やめる
+              </Button>
+              <Button
+                full
+                variant="danger"
+                onClick={() => apply(pendingDiscard.rawSize, pendingDiscard.resolvedSize)}
+              >
+                破棄して変更する
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-4 pb-2">
+            <p className="text-xs font-bold leading-relaxed text-ink/50">
+              1セッションで出す{label}数を選べます。いまの進捗より多い数を選べば続きから、
+              少ない数を選ぶとここまでの学習・回答は破棄されます。
+              設定はすべての学習・クイズに引き継がれます。
+            </p>
+            <div className="grid grid-cols-3 gap-2" data-session-size-options>
+              {options.map((size) => (
+                <button
+                  key={size}
+                  type="button"
+                  onClick={() => choose(size)}
+                  aria-pressed={size === current}
+                  className={cx(
+                    'min-h-12 rounded-2xl text-sm font-extrabold ring-1 transition',
+                    size === current
+                      ? 'bg-brand-500 text-white ring-brand-500'
+                      : 'bg-white text-ink ring-brand-100 active:bg-brand-50',
+                  )}
+                >
+                  {size === SESSION_SIZE_ALL ? '全部' : `${size}問`}
+                </button>
+              ))}
+            </div>
+            {pool != null && (
+              <p className="text-[11px] font-bold text-ink/40">
+                この教材で出題できるのは全{pool}{label}です。
+              </p>
+            )}
+            <Button full variant="ghost" onClick={closeSheet}>閉じる</Button>
+          </div>
+        )}
       </Sheet>
     </>
   )
