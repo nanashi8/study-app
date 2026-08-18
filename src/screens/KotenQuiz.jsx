@@ -89,7 +89,7 @@ export function KotenQuizScreen() {
           <p className="font-display text-2xl font-extrabold text-ink">{correctCount} / {deck.length} 正解</p>
           <p className="mt-1 text-sm font-bold text-ink/55">正答率 {pct}%</p>
         </div>
-        {/* 今回のSRS段階。自己判定の「学習済」とは別の反復指標。 */}
+        {/* 今回の間隔復習の段階。自己判定の「学習済」とは別の反復指標。 */}
         <div className="grid w-full max-w-xs grid-cols-2 gap-3">
           <div className="rounded-2xl bg-amber-50 p-3">
             <div className="font-display text-2xl font-extrabold text-amber-700">+{boxUp}</div>
@@ -97,12 +97,12 @@ export function KotenQuizScreen() {
           </div>
           <div className="rounded-2xl bg-emerald-50 p-3">
             <div className="font-display text-2xl font-extrabold text-emerald-700">+{newlyMastered}</div>
-            <div className="text-[11px] font-bold text-ink/55">SRS段階4に到達</div>
+            <div className="text-[11px] font-bold text-ink/55">よく覚えた段階に到達</div>
           </div>
         </div>
         {newlyMastered === 0 && boxUp > 0 && (
           <p className="-mt-1 max-w-xs text-xs font-bold text-ink/45">
-            正解した語はSRS段階が上がりました。自己判定の「学習済」とは別に記録します。
+            正解した語は復習の段階が上がりました。自分で押す「覚えた」とは別に記録します。
           </p>
         )}
         <div className="grid w-full max-w-xs grid-cols-2 gap-3">
@@ -118,7 +118,7 @@ export function KotenQuizScreen() {
   const choose = (optId) => {
     if (answered) return
     setSelected(optId)
-    // 反映前の box を読み、正解で box+1 する前後を比べてSRS段階の変化を数える。
+    // 反映前の box を読み、正解で box+1 する前後を比べて間隔復習の段階の変化を数える。
     const prevBox = useStore.getState().kotenSrs[word.id]?.box ?? 0
     if (optId === UNKNOWN_CHOICE_ID) {
       reviewKoten(word.id, 'unknown')
@@ -263,7 +263,7 @@ export function KotenQuizScreen() {
         )}
       </div>
 
-      <div className="shrink-0 border-t border-amber-100 bg-white/90 p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] backdrop-blur">
+      <div className="shrink-0 border-t border-amber-100 bg-white/90 p-4 pb-4 backdrop-blur">
         <Button full size="lg" disabled={!answered} onClick={next}>
           {i + 1 >= deck.length ? '結果を見る' : '次へ'} <ArrowRight size={18} />
         </Button>

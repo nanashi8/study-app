@@ -87,7 +87,11 @@ function AllContentStatus({ contents, onOpen }) {
                   <div className="mb-2 flex items-center justify-between gap-2">
                     <div>
                       <p className="text-xs font-extrabold text-slate-900">{content.label}</p>
-                      <p className="text-[9px] font-bold text-slate-400">全{content.progress.total.toLocaleString('ja-JP')}{content.unit}</p>
+                      <p className="text-[9px] font-bold text-slate-400">
+                        全{content.progress.total.toLocaleString('ja-JP')}{content.unit}
+                        {content.progress.quizTotal !== content.progress.total
+                          && `・${content.progress.quizTotal.toLocaleString('ja-JP')}${content.quizUnit}`}
+                      </p>
                     </div>
                     <button
                       type="button"
@@ -97,7 +101,11 @@ function AllContentStatus({ contents, onOpen }) {
                       開く
                     </button>
                   </div>
-                  <LearningStatusBars progress={content.progress} compact />
+                  <LearningStatusBars
+                    progress={content.progress}
+                    compact
+                    units={{ learning: content.unit, quiz: content.quizUnit }}
+                  />
                 </div>
               ))}
             </div>
@@ -250,7 +258,7 @@ export function ProgressScreen() {
         <Card className="overflow-hidden rounded-xl border-slate-300 p-0 shadow-none">
           <div className="border-b border-slate-300 bg-slate-100 px-3 py-2.5">
             <h2 className="font-display text-base font-extrabold text-slate-950">英検級別・履修状況表</h2>
-            <p className="text-[10px] font-bold text-slate-500">英単語SRSを級別に集計</p>
+            <p className="text-[10px] font-bold text-slate-500">英単語の復習の進み具合を級別に集計</p>
           </div>
           <div className="divide-y divide-slate-200" data-level-progress-table>
             {LEVELS.map((level) => {
@@ -258,8 +266,8 @@ export function ProgressScreen() {
               return (
                 <div key={level.id} className="space-y-2.5 p-3">
                   <h3 className="text-xs font-extrabold text-slate-800">{level.emoji} {level.label}</h3>
-                  <StatusDistributionBar kind="learning" counts={progress.learning} compact />
-                  <StatusDistributionBar kind="quiz" counts={progress.quiz} compact />
+                  <StatusDistributionBar kind="learning" counts={progress.learning} compact unit="語" />
+                  <StatusDistributionBar kind="quiz" counts={progress.quiz} compact unit="問" />
                 </div>
               )
             })}
@@ -271,7 +279,7 @@ export function ProgressScreen() {
           <div className="flex items-start justify-between gap-3 border-b border-slate-300 bg-slate-100 px-3 py-2.5">
             <div>
               <h2 className="font-display text-base font-extrabold text-slate-950">語源知識・履修状況表</h2>
-              <p className="text-[10px] font-bold text-slate-500">単語SRSとは別集計・全{etymology.total}項目</p>
+              <p className="text-[10px] font-bold text-slate-500">英単語とは別に集計・全{etymology.total}項目</p>
             </div>
             <span className="border border-slate-300 bg-white px-2 py-1 text-[10px] font-extrabold text-slate-700">今日の復習 {etymology.due}</span>
           </div>
@@ -284,8 +292,8 @@ export function ProgressScreen() {
               return (
                 <div key={mode} className="space-y-2.5 p-3">
                   <h3 className="text-xs font-extrabold text-slate-800">{meta.emoji} {meta.label}</h3>
-                  <StatusDistributionBar kind="learning" counts={progress.learning} compact />
-                  <StatusDistributionBar kind="quiz" counts={progress.quiz} compact />
+                  <StatusDistributionBar kind="learning" counts={progress.learning} compact unit="項目" />
+                  <StatusDistributionBar kind="quiz" counts={progress.quiz} compact unit="問" />
                 </div>
               )
             })}
@@ -350,7 +358,7 @@ export function ProgressScreen() {
               </div>
               <div className="rounded-2xl bg-brand-50 p-3 text-center">
                 <div className="font-display text-2xl font-extrabold text-brand-700">{preview.summary.mastered}</div>
-                <div className="text-[11px] font-bold text-ink/50">旧SRS段階4以上の単語</div>
+                <div className="text-[11px] font-bold text-ink/50">復習の段階4以上まで進んだ単語</div>
               </div>
               <div className="rounded-2xl bg-violet-50 p-3 text-center">
                 <div className="font-display text-2xl font-extrabold text-violet-700">{preview.summary.etymologyStarted}</div>
@@ -358,7 +366,7 @@ export function ProgressScreen() {
               </div>
               <div className="rounded-2xl bg-violet-50 p-3 text-center">
                 <div className="font-display text-2xl font-extrabold text-violet-700">{preview.summary.etymologyMastered}</div>
-                <div className="text-[11px] font-bold text-ink/50">旧SRS段階4以上の語源</div>
+                <div className="text-[11px] font-bold text-ink/50">復習の段階4以上まで進んだ語源</div>
               </div>
               <div className="rounded-2xl bg-hint-soft p-3 text-center">
                 <div className="font-display text-2xl font-extrabold text-amber-700">{preview.summary.streak}</div>

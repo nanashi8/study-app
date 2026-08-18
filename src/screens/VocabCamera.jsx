@@ -1,10 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
-import { useAuth } from '../store/useAuth.js'
 import { ALL_WORDS } from '../data/vocab.js'
 import { getLevel } from '../data/levels.js'
 import { matchOcrTextToWords, normalizeOcrToken } from '../lib/vocabOcr.js'
-import { requestWords } from '../lib/wordRequests.js'
+import { requestWords, WORD_REQUEST_TOTAL_LIMIT } from '../lib/wordRequests.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { Button, Card, Chip, ProgressBar } from '../components/ui.jsx'
 import { Check, Close, Refresh, Sparkles, Upload } from '../components/Icons.jsx'
@@ -72,10 +71,8 @@ async function prepareImageForOcr(file) {
 
 export function VocabCameraScreen() {
   const back = useStore((state) => state.back)
-  const navigate = useStore((state) => state.navigate)
   const myList = useStore((state) => state.myList)
   const addManyToMyList = useStore((state) => state.addManyToMyList)
-  const user = useAuth((state) => state.user)
   const cameraInput = useRef(null)
   const photoInput = useRef(null)
   const previewUrlRef = useRef('')
@@ -110,7 +107,7 @@ export function VocabCameraScreen() {
     const saved = new Set(myList)
     setSummary(next)
     setSelected(new Set(next.candidates.filter((item) => !saved.has(item.id)).map((item) => item.id)))
-    setSelectedRequests(user ? new Set(next.unmatched.map((item) => item.token)) : new Set())
+    setSelectedRequests(new Set(next.unmatched.map((item) => item.token)))
     setRequestedWords(new Set())
     setRequestedCount(0)
     setRequestError('')
@@ -229,7 +226,7 @@ export function VocabCameraScreen() {
   }
 
   const toggleRequest = (token) => {
-    if (!user || requestedWords.has(token)) return
+    if (requestedWords.has(token)) return
     setSelectedRequests((current) => {
       const next = new Set(current)
       if (next.has(token)) next.delete(token)
@@ -239,19 +236,26 @@ export function VocabCameraScreen() {
   }
 
   const sendRequests = async () => {
-    if (!user || !summary || !selectedRequests.size || requesting) return
+    if (!summary || !selectedRequests.size || requesting) return
     const items = summary.unmatched.filter((item) => selectedRequests.has(item.token))
     if (!items.length) return
     setRequesting(true)
     setRequestError('')
     try {
-      const result = await requestWords(items.map((item) => item.q), user, {
-        source: 'camera-ocr',
-      })
-      if (result.sent !== items.length) throw new Error('request count mismatch')
-      setRequestedWords((current) => new Set([...current, ...items.map((item) => item.token)]))
-      setSelectedRequests(new Set())
-      setRequestedCount(result.sent)
+      const result = await requestWords(items.map((item) => item.q), { source: 'camera-ocr' })
+      const accepted = result.sent + result.already
+      if (accepted > 0) {
+        setRequestedWords((current) => new Set([...current, ...items.map((item) => item.token)]))
+        setSelectedRequests(new Set())
+        setRequestedCount(accepted)
+      }
+      if (result.status === 'limit') {
+        setRequestError('今日ぶんのリクエスト上限に達しました。残りは明日また送れます。')
+      } else if (result.status === 'full') {
+        setRequestError(`リクエストは全体で${WORD_REQUEST_TOTAL_LIMIT}語まで受け付けます。今はいっぱいなので、残りは辞書へ追加され次第送れます。`)
+      } else if (accepted === 0) {
+        setRequestError('送信できませんでした。通信環境を確認して、もう一度お試しください。')
+      }
     } catch (reason) {
       console.warn('camera OCR word requests failed', reason)
       setRequestError('送信できませんでした。通信環境を確認して、もう一度お試しください。')
@@ -530,9 +534,7 @@ export function VocabCameraScreen() {
                         辞書にない単語
                       </h2>
                       <p className="mt-0.5 text-xs font-bold leading-relaxed text-ink/50">
-                        {user
-                          ? '選んだ語だけを辞書登録リクエストへ送ります。'
-                          : '公開投稿の悪用を防ぐため、送信にはログインが必要です。'}
+                        選んだ語だけを辞書登録リクエストへ送ります。ログインは要りません。
                         写真や教科書の本文、メールアドレスは送信しません。誤読や人名は選択から外してください。
                       </p>
                     </div>
@@ -545,7 +547,6 @@ export function VocabCameraScreen() {
                     <div className="flex gap-1">
                       <button
                         type="button"
-                        disabled={!user}
                         onClick={() => setSelectedRequests(new Set(
                           summary.unmatched
                             .filter((item) => !requestedWords.has(item.token))
@@ -557,7 +558,6 @@ export function VocabCameraScreen() {
                       </button>
                       <button
                         type="button"
-                        disabled={!user}
                         onClick={() => setSelectedRequests(new Set())}
                         className="rounded-xl px-2.5 py-2 text-xs font-extrabold text-ink/45 active:bg-ink/5"
                       >
@@ -583,7 +583,7 @@ export function VocabCameraScreen() {
                           <input
                             type="checkbox"
                             checked={sent || selectedRequests.has(item.token)}
-                            disabled={sent || !user}
+                            disabled={sent}
                             onChange={() => toggleRequest(item.token)}
                             className="h-4 w-4 shrink-0 accent-sky-600"
                           />
@@ -615,16 +615,11 @@ export function VocabCameraScreen() {
                       {requestError}
                     </p>
                   )}
-                  {!user && (
-                    <Button full className="mt-3" onClick={() => navigate('login')}>
-                      ログイン画面へ
-                    </Button>
-                  )}
                   <Button
                     full
                     className="mt-3"
                     variant="secondary"
-                    disabled={!user || !selectedRequests.size || requesting}
+                    disabled={!selectedRequests.size || requesting}
                     onClick={sendRequests}
                   >
                     📩 {requesting

@@ -28,7 +28,7 @@ function FieldCard({ field, level, srs, onStudy, onQuiz }) {
           <p className="mt-0.5 text-xs font-bold leading-relaxed text-ink/50">{field.description}</p>
         </div>
       </div>
-      <LearningStatusBars progress={progress} className="mt-3" compact />
+      <LearningStatusBars progress={progress} className="mt-3" compact units={{ learning: '語', quiz: '問' }} />
       <p className="mt-1.5 text-right text-[10px] font-bold text-ink/45">1回10語</p>
       <div className="mt-3 grid grid-cols-2 gap-2">
         <Button variant="primary" onClick={onStudy}>

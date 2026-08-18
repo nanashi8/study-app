@@ -118,7 +118,7 @@ export function GrammarScreen() {
             </div>
             <div className="text-right text-xs font-bold text-ink/45">全{lp.total}問</div>
           </div>
-          <LearningStatusBars progress={levelStatus} className="mt-3" compact />
+          <LearningStatusBars progress={levelStatus} className="mt-3" compact units={{ learning: '問', quiz: '問' }} />
           <Button className="mt-3" full onClick={quizLevel}><Cards size={16} /> この級をまとめてクイズ</Button>
         </Card>
 
@@ -140,7 +140,7 @@ export function GrammarScreen() {
                     <span className="font-display font-extrabold text-ink">{topic}</span>
                     <Chip color={meta.color}>{tp.total}問</Chip>
                   </div>
-                  <LearningStatusBars progress={topicStatus} className="mt-2" compact />
+                  <LearningStatusBars progress={topicStatus} className="mt-2" compact units={{ learning: '問', quiz: '問' }} />
                 </div>
                 <span className="text-brand-400"><ArrowRight size={20} /></span>
               </button>

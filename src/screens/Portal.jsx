@@ -55,7 +55,7 @@ export function PortalScreen() {
 
   return (
     <div className="min-h-full bg-paper">
-      <div className="px-4 pb-4 pt-[calc(env(safe-area-inset-top)+1.5rem)]">
+      <div className="px-4 pb-4 pt-6">
         <h1 className="whitespace-nowrap font-display text-2xl font-extrabold text-ink">スタディアプリ</h1>
         <p className="mt-2 text-sm font-bold text-ink/55">学びたい主要コンテンツを選んでください。</p>
       </div>

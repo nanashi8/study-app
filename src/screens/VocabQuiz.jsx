@@ -333,7 +333,7 @@ export function VocabQuizScreen() {
         )}
       </div>
 
-      <div className="shrink-0 border-t border-brand-100 bg-white/90 p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] backdrop-blur">
+      <div className="shrink-0 border-t border-brand-100 bg-white/90 p-3 pb-3 backdrop-blur">
         <Button full size={isDragonVein ? 'md' : 'lg'} disabled={!answered} onClick={next}>
           {index + 1 >= deck.length
             ? isDragonVein ? '修復結果を確認' : '結果を見る'

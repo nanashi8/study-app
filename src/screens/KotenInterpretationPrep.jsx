@@ -325,7 +325,7 @@ export function KotenInterpretationPrepScreen() {
         )}
       </div>
 
-      <div className="shrink-0 border-t border-amber-100 bg-white/90 p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] backdrop-blur">
+      <div className="shrink-0 border-t border-amber-100 bg-white/90 p-4 pb-4 backdrop-blur">
         <Button
           full
           size="lg"

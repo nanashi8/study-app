@@ -29,16 +29,17 @@ export function StatusDistributionBar({
   className = '',
   compact = false,
   showLegend = true,
+  unit = '',
 }) {
   const { keys, meta, title } = statusScheme(kind)
   const total = statusTotal(counts, keys)
-  const aria = `${title}: ${keys.map((key) => `${meta[key].label} ${counts?.[key] ?? 0}`).join('、')}`
+  const aria = `${title}: 全${total}${unit}中 ${keys.map((key) => `${meta[key].label} ${counts?.[key] ?? 0}`).join('、')}`
 
   return (
     <div className={cx('min-w-0', className)} data-status-distribution={kind}>
       <div className="mb-1 flex items-center justify-between gap-2 text-[10px] font-extrabold text-slate-600">
         <span>{title}</span>
-        <span className="tabular-nums text-slate-400">全{total.toLocaleString('ja-JP')}</span>
+        <span className="tabular-nums text-slate-400">全{total.toLocaleString('ja-JP')}{unit}</span>
       </div>
       <div
         role="img"
@@ -78,11 +79,27 @@ export function StatusDistributionBar({
   )
 }
 
-export function LearningStatusBars({ progress, className = '', compact = false }) {
+// units で「全74項目」「全136問」のように、学習とクイズそれぞれの数え方を示す。
+export function LearningStatusBars({
+  progress,
+  className = '',
+  compact = false,
+  units = {},
+}) {
   return (
     <div className={cx('space-y-2.5', className)} data-learning-status-bars>
-      <StatusDistributionBar kind="learning" counts={progress?.learning} compact={compact} />
-      <StatusDistributionBar kind="quiz" counts={progress?.quiz} compact={compact} />
+      <StatusDistributionBar
+        kind="learning"
+        counts={progress?.learning}
+        compact={compact}
+        unit={units.learning ?? ''}
+      />
+      <StatusDistributionBar
+        kind="quiz"
+        counts={progress?.quiz}
+        compact={compact}
+        unit={units.quiz ?? ''}
+      />
     </div>
   )
 }

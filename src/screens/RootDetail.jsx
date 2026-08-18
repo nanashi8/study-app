@@ -136,7 +136,7 @@ export function RootDetailScreen() {
             <p className="mt-1 text-xs font-extrabold text-brand-600">
               同じ語根 {total}語 ・ 学習済 {known.length}語・あと {toGain.length}語
             </p>
-            <LearningStatusBars progress={rootProgress} className="mt-3" compact />
+            <LearningStatusBars progress={rootProgress} className="mt-3" compact units={{ learning: '語', quiz: '問' }} />
             {toGain.length > 0 ? (
               <div className="mt-3 grid grid-cols-2 gap-2">
                 <Button onClick={grow}>

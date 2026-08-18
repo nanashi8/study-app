@@ -17,7 +17,7 @@ import {
 } from '../components/ui.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
-import { summarizeSrsItems } from '../lib/contentProgress.js'
+import { summarizeSrsItemsWithQuestions } from '../lib/contentProgress.js'
 import { KotenText } from '../components/KotenFurigana.jsx'
 import { kotenTextForSearch } from '../lib/kotenFurigana.js'
 import {
@@ -33,8 +33,14 @@ import {
   Search,
 } from '../components/Icons.jsx'
 
-function CategoryCard({ meta, items, srs, questionCount, onStudy, onQuiz }) {
-  const status = summarizeSrsItems(items, srs)
+function CategoryCard({ meta, items, srs, questions, quizResults, onStudy, onQuiz }) {
+  const status = summarizeSrsItemsWithQuestions({
+    items,
+    srs,
+    questions,
+    quizResults,
+    quizDomain: 'koten-culture',
+  })
   return (
     <Card className="p-4">
       <div className="flex items-center gap-3">
@@ -47,11 +53,11 @@ function CategoryCard({ meta, items, srs, questionCount, onStudy, onQuiz }) {
         <div className="min-w-0 flex-1">
           <h3 className="font-display text-base font-extrabold text-ink">{meta.label}</h3>
           <p className="mt-0.5 text-[11px] font-bold text-ink/45">
-            {items.length}テーマ・{questionCount}問
+            {items.length}テーマ・{questions.length}問
           </p>
         </div>
       </div>
-      <LearningStatusBars progress={status} className="mt-3" compact />
+      <LearningStatusBars progress={status} className="mt-3" compact units={{ learning: 'テーマ', quiz: '問' }} />
       <p className="mt-2 text-[11px] font-bold leading-relaxed text-ink/45">{meta.subtitle}</p>
       <div className="mt-3 grid grid-cols-2 gap-2">
         <Button size="sm" onClick={onStudy}>
@@ -74,7 +80,14 @@ export function KotenCultureScreen() {
   const [query, setQuery] = useState('')
   const [openId, setOpenId] = useState(null)
 
-  const totalStatus = summarizeSrsItems(KOTEN_CULTURE, cultureSrs)
+  const quizResults = useStore((state) => state.contentQuizResults)
+  const totalStatus = summarizeSrsItemsWithQuestions({
+    items: KOTEN_CULTURE,
+    srs: cultureSrs,
+    questions: KOTEN_CULTURE_QUESTIONS,
+    quizResults,
+    quizDomain: 'koten-culture',
+  })
   const dueItems = KOTEN_CULTURE.filter(
     (item) => cultureSrs[item.id] && isDue(cultureSrs[item.id]),
   )
@@ -115,7 +128,7 @@ export function KotenCultureScreen() {
 
   return (
     <div className="pb-8">
-      <div className="rounded-b-[2.5rem] bg-gradient-to-br from-violet-800 via-purple-700 to-fuchsia-600 px-5 pb-7 pt-[calc(env(safe-area-inset-top)+1.25rem)] text-white">
+      <div className="rounded-b-[2.5rem] bg-gradient-to-br from-violet-800 via-purple-700 to-fuchsia-600 px-5 pb-7 pt-5 text-white">
         <div className="mb-3 flex items-center justify-between">
           <button
             onClick={() => navigate('kotenList')}
@@ -134,7 +147,7 @@ export function KotenCultureScreen() {
         <div className="mt-4 rounded-2xl bg-white/15 p-3.5">
           <div>
             <p className="font-display text-lg font-extrabold">
-              全{KOTEN_CULTURE.length}テーマ・{KOTEN_CULTURE_QUESTIONS.length}問
+              全{KOTEN_CULTURE.length}テーマ・全{KOTEN_CULTURE_QUESTIONS.length}問
             </p>
             <p className="mt-0.5 text-xs font-bold text-white/70">
               学習済 {totalStatus.learning.learned}・復習中 {totalStatus.learning.reviewing}・未学習 {totalStatus.learning.unlearned}・登録 {savedItems.length}
@@ -145,7 +158,7 @@ export function KotenCultureScreen() {
 
       <div className="space-y-5 px-4 pt-5">
         <Card className="p-4" data-koten-culture-status>
-          <LearningStatusBars progress={totalStatus} compact />
+          <LearningStatusBars progress={totalStatus} compact units={{ learning: 'テーマ', quiz: '問' }} />
         </Card>
         <section>
           <div className="mb-2 px-1">
@@ -162,7 +175,7 @@ export function KotenCultureScreen() {
               </span>
               <span className="mt-3 block font-display text-lg font-extrabold">覚える</span>
               <span className="mt-1 block text-[11px] font-bold leading-relaxed text-white/75">
-                用語・背景・本文の手掛かりを想起
+                用語・背景・本文の手掛かりを思い出す
               </span>
             </button>
             <button
@@ -220,16 +233,17 @@ export function KotenCultureScreen() {
           <div className="space-y-3">
             {KOTEN_CULTURE_CATEGORIES.map((meta) => {
               const categoryItems = kotenCultureByCategory(meta.id)
-              const questionCount = KOTEN_CULTURE_QUESTIONS.filter(
+              const categoryQuestions = KOTEN_CULTURE_QUESTIONS.filter(
                 (question) => question.category === meta.id,
-              ).length
+              )
               return (
                 <CategoryCard
                   key={meta.id}
                   meta={meta}
                   items={categoryItems}
                   srs={cultureSrs}
-                  questionCount={questionCount}
+                  questions={categoryQuestions}
+                  quizResults={quizResults}
                   onStudy={() => study(categoryItems, `${meta.label}を覚える`)}
                   onQuiz={() => quiz(categoryItems, `${meta.label}・入試型腕試し`)}
                 />

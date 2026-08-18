@@ -10,6 +10,7 @@ import { KANBUN_LEVEL_BY_ID } from '../data/kanbun-meta.js'
 import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
+import { KanbunText } from '../components/KanbunFurigana.jsx'
 import { Button, Chip, cx, IconButton, ProgressBar } from '../components/ui.jsx'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 import {
@@ -32,26 +33,26 @@ function ChoiceExplanation({ question, selected }) {
   return (
     <div className="mt-3 space-y-2.5">
       <div className="rounded-xl bg-emerald-50 p-3">
-        <p className="text-[10px] font-extrabold text-emerald-700">正解と決定的な手掛かり</p>
+        <p className="text-[10px] font-extrabold text-emerald-700">正解と決め手</p>
         <p className="mt-1 text-sm font-extrabold leading-relaxed text-emerald-950">{question.answer}</p>
         <p className="mt-1 text-xs font-bold leading-relaxed text-emerald-900/70">{question.clue}</p>
       </div>
       {!correct && (
         <div className="rounded-xl bg-rose-50 p-3">
-          <p className="text-[10px] font-extrabold text-rose-700">{unknown ? 'わからない時の切り方' : '選んだ答えがここで違う理由'}</p>
+          <p className="text-[10px] font-extrabold text-rose-700">{unknown ? 'わからないときの考え方' : 'その答えが違う理由'}</p>
           <p className="mt-1 text-xs font-bold leading-relaxed text-rose-950/70">
             {unknown
-              ? `まず「${question.clue}」を探し、形・主語・比較対象のどれが問われているか一つに絞る。`
+              ? `まず「${question.clue}」を探し、形・主語・くらべる相手のどれを聞かれているかを一つに決める。`
               : `「${selectedItem?.answer ?? 'その選択肢'}」は「${selectedItem?.title ?? '別項目'}」の説明。ここでは「${getKanbunItem(question.domain, question.itemId)?.title}」に固有の手掛かりと一致しない。`}
           </p>
         </div>
       )}
       <div className="rounded-xl border border-slate-200 bg-white p-3">
-        <p className="text-[10px] font-extrabold text-slate-500">再利用できる見抜き方</p>
+        <p className="text-[10px] font-extrabold text-slate-500">次に出たときの見分け方</p>
         <p className="mt-1 text-xs font-bold leading-relaxed text-ink/65">{question.detail}</p>
       </div>
       <div className="rounded-xl border border-amber-200 bg-amber-50 p-3">
-        <p className="text-[10px] font-extrabold text-amber-700">取り違え注意</p>
+        <p className="text-[10px] font-extrabold text-amber-700">まちがえやすい点</p>
         <p className="mt-1 text-xs font-bold leading-relaxed text-amber-950/70">{question.pitfall}</p>
       </div>
     </div>
@@ -203,7 +204,7 @@ export function KanbunQuizScreen() {
           {question.passage && (
             <div className="mt-4 rounded-2xl bg-gradient-to-br from-slate-950 to-rose-950 p-4 text-white">
               <p className="font-serif text-lg font-bold leading-[1.9]">{question.passage}</p>
-              {question.kakikudashi && <p className="mt-2 text-xs font-bold leading-relaxed text-white/60">{question.kakikudashi}</p>}
+              {question.kakikudashi && <p className="mt-2 text-xs font-bold leading-relaxed text-white/60"><KanbunText>{question.kakikudashi}</KanbunText></p>}
             </div>
           )}
           <p className="mt-4 text-sm font-extrabold leading-relaxed text-ink/75">{question.prompt}</p>
@@ -271,7 +272,7 @@ export function KanbunQuizScreen() {
         )}
       </div>
 
-      <div className="shrink-0 border-t border-rose-100 bg-white/90 p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] backdrop-blur">
+      <div className="shrink-0 border-t border-rose-100 bg-white/90 p-4 pb-4 backdrop-blur">
         <Button full size="lg" disabled={!answered} onClick={next}>
           {index + 1 >= deck.length ? '結果を見る' : '次の問題へ'}
         </Button>

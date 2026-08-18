@@ -29,7 +29,7 @@ test('上部の一つの共通メニューを全画面から開き、その中�
   assert.match(header, /study-app-global-menu-bar relative z-\[60\]/)
   assert.match(sheet, /fixed inset-0 z-\[70\]/)
   assert.match(sheet, /data-sheet-scroll-area/)
-  assert.match(sheet, /pb-\[calc\(1\.5rem\+env\(safe-area-inset-bottom\)\)\]/)
+  assert.match(sheet, /pb-\[calc\(1\.5rem\+var\(--app-safe-bottom\)\)\]/)
   assert.match(header, /data-global-back-button/)
   assert.match(header, /<ChevronLeft size=\{19\} \/> 戻る/)
   assert.match(header, /data-global-menu-button/)
@@ -200,6 +200,8 @@ test('永続設定の変更処理は共通メニューへ集約し、廃止し�
       'components/SpeechConsole.jsx',
       'components/GameSettings.jsx',
       'components/SessionSize.jsx',
+      // 問題数と同じく、カード画面から共通設定を切り替える共通部品。
+      'components/RevealAnswers.jsx',
     ]],
     ['setBattleRelicLevel', ['components/GameSettings.jsx']],
     ['setBattleThemeId', ['components/GameSettings.jsx']],

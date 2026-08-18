@@ -15,7 +15,7 @@ export function MathUnitsScreen() {
   return (
     <div className="pb-6">
       {/* ヒーロー */}
-      <div className="rounded-b-[2.5rem] bg-gradient-to-br from-violet-500 via-violet-600 to-indigo-700 px-5 pb-7 pt-[calc(env(safe-area-inset-top)+1.25rem)] text-white">
+      <div className="rounded-b-[2.5rem] bg-gradient-to-br from-violet-500 via-violet-600 to-indigo-700 px-5 pb-7 pt-5 text-white">
         <div className="mb-3 flex items-center justify-between">
           <button
             onClick={back}

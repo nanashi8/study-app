@@ -6,6 +6,7 @@ import {
 } from '../data/koten-grammar.js'
 import { Button, Chip, ProgressBar, IconButton } from '../components/ui.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
+import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 import {
   ArrowRight,
@@ -115,6 +116,7 @@ export function KotenGrammarStudyScreen() {
               {params.title ?? '古典文法を覚える'}
             </p>
           </div>
+          <RevealAnswersToggle label="答え" onChange={(on) => on && setFlipped(true)} />
           <SpeechSettingsButton compact />
           <SessionCounter
             index={index}
@@ -193,7 +195,7 @@ export function KotenGrammarStudyScreen() {
               <div className="rounded-2xl border border-amber-100 bg-white p-4">
                 <div className="mb-1.5 flex items-center gap-1.5 text-amber-700">
                   <Lightbulb size={16} />
-                  <span className="text-[10px] font-extrabold tracking-wide">入試の見抜き方</span>
+                  <span className="text-[10px] font-extrabold tracking-wide">入試での見分け方</span>
                 </div>
                 <p className="text-sm font-bold leading-relaxed text-ink/65">{item.summary}</p>
               </div>
@@ -208,7 +210,7 @@ export function KotenGrammarStudyScreen() {
         </div>
       </div>
 
-      <div className="shrink-0 border-t border-amber-100 bg-white/90 p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] backdrop-blur">
+      <div className="shrink-0 border-t border-amber-100 bg-white/90 p-4 pb-4 backdrop-blur">
         {!flipped ? (
           <Button full size="lg" onClick={() => setFlipped(true)}>
             答えを見る

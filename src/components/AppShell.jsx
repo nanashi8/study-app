@@ -27,7 +27,7 @@ export function AppShell({ children, showGlobalMenu = true }) {
       <div className="study-app-surface relative flex h-[100svh] w-full max-w-md flex-col overflow-hidden bg-paper shadow-lg sm:rounded-none">
         {showGlobalMenu && (
           <div
-            className="study-app-global-menu-bar relative z-[60] shrink-0 border-b border-slate-200/80 bg-white px-3 pb-2 pt-[calc(env(safe-area-inset-top)+0.5rem)]"
+            className="study-app-global-menu-bar relative z-[60] shrink-0 border-b border-slate-200/80 bg-white px-3 pb-2 pt-[calc(var(--app-safe-top)+0.5rem)]"
             data-global-menu-bar
           >
             <div className="flex min-h-11 items-center gap-2">

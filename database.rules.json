@@ -1,9 +1,10 @@
 // えいごクエスト Realtime Database セキュリティルール。
 // main に push すると .github/workflows/firebase-rules.yml が自動デプロイ（手動貼り付け不要）。
 // ・生徒は自分のデータ(students/自分のUID)だけ読み書き可。他人のは不可。
-// ・辞書リクエスト(wordRequests)は公開一覧にしない。認証済み利用者だけが、
-//   メール等の個人情報を含まない定型データを新規追加できる。
+// ・辞書リクエスト(wordRequests)は公開一覧にしない。ログインは求めず、
+//   《見出し語そのものがキー＝同じ語は1件だけ》と《全体の受付上限2000語》で守る。
 // ・既存エントリの変更・削除、未知のフィールド、長すぎる値は拒否する。
+// ・上限カウンタ(wordRequestQuota/used)は整数1つだけ。+1ずつしか動かせない。
 {
   "rules": {
     "students": {
@@ -14,9 +15,9 @@
     },
     "wordRequests": {
       ".read": false,
-      "$id": {
-        ".write": "auth != null && !data.exists() && newData.exists()",
-        ".validate": "newData.hasChildren(['word','q','ts','source'])",
+      "$word": {
+        ".write": "!data.exists() && newData.exists() && (!root.child('wordRequestQuota/used').exists() || root.child('wordRequestQuota/used').val() < 2000)",
+        ".validate": "newData.hasChildren(['word','q','ts','source']) && newData.child('word').val() === $word",
         "word": {
           ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 64 && newData.val().matches(/^[a-z]+([-'][a-z]+)*$/)"
         },
@@ -32,6 +33,16 @@
         "$other": {
           ".validate": false
         }
+      }
+    },
+    "wordRequestQuota": {
+      ".read": true,
+      "used": {
+        ".write": "newData.isNumber() && ((!data.exists() && newData.val() === 1) || (data.exists() && data.val() < 2000 && newData.val() === data.val() + 1))",
+        ".validate": "newData.isNumber() && newData.val() >= 1 && newData.val() <= 2000"
+      },
+      "$other": {
+        ".validate": false
       }
     }
   }

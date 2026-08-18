@@ -4,6 +4,7 @@ import { getKoten } from '../data/koten.js'
 import { Button, ProgressBar, IconButton } from '../components/ui.jsx'
 import { KotenText, KotenWord } from '../components/KotenFurigana.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
+import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 import {
   Bookmark,
@@ -104,6 +105,7 @@ export function KotenStudyScreen() {
         <div className="flex-1">
           <ProgressBar value={i / deck.length} color="#f59e0b" />
         </div>
+        <RevealAnswersToggle label="意味" onChange={(on) => on && setFlipped(true)} />
         <SpeechSettingsButton compact />
         <SessionCounter
           index={i}
@@ -195,7 +197,7 @@ export function KotenStudyScreen() {
       </div>
 
       {/* フッター操作 */}
-      <div className="shrink-0 border-t border-amber-100 bg-white/90 p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] backdrop-blur">
+      <div className="shrink-0 border-t border-amber-100 bg-white/90 p-4 pb-4 backdrop-blur">
         {!flipped ? (
           <Button full size="lg" onClick={() => setFlipped(true)}>
             意味を見る

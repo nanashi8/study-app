@@ -33,7 +33,7 @@ function MainItem({ emoji, title, description, count, unit, status, onOpen }) {
         </span>
         <ArrowRight size={18} className="shrink-0 text-rose-600" />
       </span>
-      <LearningStatusBars progress={status} className="mt-3" compact />
+      <LearningStatusBars progress={status} className="mt-3" compact units={{ learning: unit, quiz: '問' }} />
     </button>
   )
 }
@@ -57,7 +57,7 @@ export function KanbunHomeScreen() {
 
   return (
     <div className="pb-8">
-      <header className="rounded-b-[2.5rem] bg-gradient-to-br from-rose-950 via-red-900 to-orange-800 px-5 pb-7 pt-[calc(env(safe-area-inset-top)+1.25rem)] text-white">
+      <header className="rounded-b-[2.5rem] bg-gradient-to-br from-rose-950 via-red-900 to-orange-800 px-5 pb-7 pt-5 text-white">
         <div className="mb-3 flex items-center justify-between">
           <button
             type="button"

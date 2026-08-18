@@ -1,9 +1,12 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useStore } from '../store/useStore.js'
-import { useAuth } from '../store/useAuth.js'
 import { getWord } from '../data/vocab.js'
 import { getLevel } from '../data/levels.js'
-import { requestWord } from '../lib/wordRequests.js'
+import {
+  requestWord,
+  WORD_REQUEST_DEVICE_DAILY_LIMIT,
+  WORD_REQUEST_TOTAL_LIMIT,
+} from '../lib/wordRequests.js'
 import { normalizeVocabQuery } from '../lib/vocabSearch.js'
 import {
   DICTIONARY_COUNTS,
@@ -15,60 +18,71 @@ import {
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { PosBadge } from '../components/WordBits.jsx'
-import { Chip, IconButton, Button } from '../components/ui.jsx'
+import { Chip, IconButton } from '../components/ui.jsx'
 import { Search, Close, ArrowRight, BookmarkFilled } from '../components/Icons.jsx'
 
-// 見つからなかったときの案内＋「この単語をリクエスト」ボタン。
+// 見つからなかったときの案内。ボタンを押さなくても、その場で自動リクエストする。
 // query が変わると state がリセットされるよう、呼び出し側で key={query} を付ける。
-function NoResults({ query, user, onSeeList, onLogin }) {
-  const [phase, setPhase] = useState('idle') // idle | sending | done | error
-  const send = async () => {
-    setPhase('sending')
-    try {
-      const ok = await requestWord(query, user)
-      setPhase(ok ? 'done' : 'error')
-    } catch {
-      setPhase('error')
+//
+// 入力の途中（例: goa → goab → goabr）まで送ると、打ちかけの語で受付枠が
+// 埋まってしまう。入力が止まってから送るために、少し待ってから1回だけ送る。
+const AUTO_REQUEST_DELAY_MS = 1500
+
+const REQUEST_MESSAGE = {
+  waiting: { tone: 'text-ink/35', text: '入力が終わると、辞書への追加を自動でリクエストします。' },
+  sending: { tone: 'text-ink/45', text: '辞書への追加をリクエストしています…' },
+  sent: { tone: 'text-emerald-600', text: 'リクエストを受け付けました📩 追加されるまで少しお待ちください。' },
+  already: { tone: 'text-emerald-600', text: 'この単語はすでにリクエスト済みです📩 追加をお待ちください。' },
+  full: {
+    tone: 'text-amber-600',
+    text: `リクエストは全体で${WORD_REQUEST_TOTAL_LIMIT}語まで受け付けます。今はいっぱいなので、追加され次第また送れます。`,
+  },
+  limit: {
+    tone: 'text-amber-600',
+    text: `自動リクエストは1台につき1日${WORD_REQUEST_DEVICE_DAILY_LIMIT}語までです。続きは明日また受け付けます。`,
+  },
+  invalid: { tone: 'text-ink/45', text: '英単語の形ではないため、リクエストは送っていません。' },
+  offline: { tone: 'text-rose-500', text: 'いまは送信できませんでした。通信状態が戻るともう一度試せます。' },
+}
+
+function NoResults({ query, onSeeList }) {
+  const [phase, setPhase] = useState('waiting')
+
+  useEffect(() => {
+    let alive = true
+    setPhase('waiting')
+    // 打ちかけの語を送らないよう、入力が止まってから送る。
+    // 検索語が変わるとこの要素ごと作り直されるので、待ち時間も数え直す。
+    const timer = setTimeout(() => {
+      if (!alive) return
+      setPhase('sending')
+      requestWord(query, { source: 'dictionary-search' })
+        .then((result) => {
+          if (alive) setPhase(result.status)
+        })
+        .catch(() => {
+          if (alive) setPhase('offline')
+        })
+    }, AUTO_REQUEST_DELAY_MS)
+    return () => {
+      alive = false
+      clearTimeout(timer)
     }
-  }
+  }, [query])
+
+  const message = REQUEST_MESSAGE[phase] ?? REQUEST_MESSAGE.offline
   return (
-    <div className="px-6 py-12 text-center">
+    <div className="px-6 py-12 text-center" data-dictionary-no-results>
       <div className="text-4xl">🔍</div>
       <p className="mt-3 font-extrabold text-ink/70">「{query}」は辞書にありません</p>
-      {phase === 'done' ? (
-        <p className="mt-3 text-sm font-bold text-emerald-600">
-          リクエストを送りました📩<br />追加されるまで少しお待ちください。
-        </p>
-      ) : (
-        <>
-          {user ? (
-            <>
-              <p className="mt-1 text-sm font-bold text-ink/40">
-                この語・熟語を辞書に追加してほしいときはリクエストできます。
-              </p>
-              <div className="mt-4">
-                <Button onClick={send} disabled={phase === 'sending'}>
-                  📩 {phase === 'sending' ? '送信中…' : 'この単語をリクエスト'}
-                </Button>
-              </div>
-            </>
-          ) : (
-            <>
-              <p className="mt-2 text-sm font-bold text-ink/45">
-                公開投稿の悪用を防ぐため、リクエスト送信にはログインが必要です。
-              </p>
-              <div className="mt-4">
-                <Button onClick={onLogin}>ログイン画面へ</Button>
-              </div>
-            </>
-          )}
-          {phase === 'error' && (
-            <p className="mt-2 text-xs font-bold text-rose-500">送信できませんでした。通信環境を確認してください。</p>
-          )}
-        </>
-      )}
+      <p className="mt-1 text-sm font-bold text-ink/40">
+        辞書にない語は、ボタンを押さなくても自動で追加リクエストします。
+      </p>
+      <p className={`mt-3 text-sm font-bold leading-relaxed ${message.tone}`} role="status">
+        {message.text}
+      </p>
       <button onClick={onSeeList} className="mt-5 text-xs font-extrabold text-brand-500 underline underline-offset-2">
-        リクエストの公開範囲を確認
+        リクエストの受付方法を見る
       </button>
     </div>
   )
@@ -207,7 +221,6 @@ export function VocabSearchScreen() {
   const vocabHistory = useStore((s) => s.vocabHistory)
   const clearVocabHistory = useStore((s) => s.clearVocabHistory)
   const myList = useStore((s) => s.myList)
-  const user = useAuth((s) => s.user)
   const learningNotebook = useStore((s) => s.learningNotebook)
   const toggleNotebookItem = useStore((s) => s.toggleNotebookItem)
   const [q, setQ] = useState('')
@@ -418,13 +431,11 @@ export function VocabSearchScreen() {
               </div>
             )}
             {listed.length === 0 ? (
-              query ? (
+              query && pool.length === 0 ? (
                 <NoResults
                   key={query}
                   query={query}
-                  user={user}
                   onSeeList={() => navigate('wordRequests')}
-                  onLogin={() => navigate('login')}
                 />
               ) : (
                 <p className="px-6 py-12 text-center text-sm font-bold text-ink/40">

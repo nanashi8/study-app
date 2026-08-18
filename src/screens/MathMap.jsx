@@ -55,7 +55,7 @@ export function MathMapScreen() {
   return (
     <div className="pb-6">
       {/* ヒーロー＋サマリー */}
-      <div className="rounded-b-[2.5rem] bg-gradient-to-br from-violet-500 via-violet-600 to-indigo-700 px-5 pb-6 pt-[calc(env(safe-area-inset-top)+1.25rem)] text-white">
+      <div className="rounded-b-[2.5rem] bg-gradient-to-br from-violet-500 via-violet-600 to-indigo-700 px-5 pb-6 pt-5 text-white">
         <div className="mb-3 flex items-center justify-between">
           <button
             onClick={() => navigate('portal')}
@@ -85,7 +85,7 @@ export function MathMapScreen() {
             </div>
             <span className="text-xs font-extrabold text-ink/45">全{mathProgress.total}問</span>
           </div>
-          <LearningStatusBars progress={mathProgress} className="mt-3" />
+          <LearningStatusBars progress={mathProgress} className="mt-3" units={{ learning: '問', quiz: '問' }} />
         </Card>
       </div>
 

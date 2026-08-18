@@ -263,6 +263,7 @@ function PerformanceReport({ result, guidance }) {
                     unanswered: Math.max(0, skill.total - skill.correct - skill.incorrect - skill.unknown),
                   }}
                   compact
+                  unit="問"
                 />
                 {skill.unknown > 0 && (
                   <p className="mt-1 text-right text-[9px] font-bold text-ink/35">
@@ -368,7 +369,7 @@ function StudyPlan({ guidance, onOpen }) {
       <div className="p-4">
         <div className="rounded-2xl bg-sky-50 p-3">
           <div className="flex flex-wrap items-center gap-2">
-            <p className="text-[10px] font-extrabold text-sky-700">この時刻にした根拠</p>
+            <p className="text-[10px] font-extrabold text-sky-700">この時間になった理由</p>
             <span className="rounded-full bg-white px-2 py-0.5 text-[9px] font-extrabold text-sky-700">
               {time.personalized ? '学習履歴から推定' : '仮の時間'}
               {time.provisional ? '・暫定' : ''}
@@ -635,7 +636,7 @@ function TestQuestion({ questions, index, answers, onSelect, onNext, onCancel })
         </div>
       </div>
 
-      <div className="sticky bottom-0 shrink-0 border-t border-brand-100 bg-white/90 p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] backdrop-blur">
+      <div className="sticky bottom-0 shrink-0 border-t border-brand-100 bg-white/90 p-4 pb-4 backdrop-blur">
         <Button full size="lg" disabled={selected == null} onClick={onNext}>
           {last ? '診断結果を見る' : '次の問題へ'} <ArrowRight size={18} />
         </Button>
@@ -825,7 +826,7 @@ function Result({
           </div>
           <div className="mt-4 grid grid-cols-2 gap-2">
             <div className="rounded-2xl bg-white/10 p-3 text-center">
-              <p className="text-[10px] font-bold text-white/60">モデル上の推定幅</p>
+              <p className="text-[10px] font-bold text-white/60">推定のはば（目安）</p>
               <p className="font-display text-lg font-extrabold">{result.deviationLow}〜{result.deviationHigh}</p>
             </div>
             <div className="rounded-2xl bg-white/10 p-3 text-center">

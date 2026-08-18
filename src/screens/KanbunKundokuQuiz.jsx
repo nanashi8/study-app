@@ -7,6 +7,7 @@ import {
 } from '../data/kanbun-kundoku.js'
 import { Button, Chip, cx, IconButton, ProgressBar } from '../components/ui.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
+import { KanbunText } from '../components/KanbunFurigana.jsx'
 import { KanbunMarkedText } from '../components/KanbunMarkedText.js'
 import { Check, Close, Lightbulb, Refresh } from '../components/Icons.jsx'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
@@ -211,7 +212,7 @@ export function KanbunKundokuQuizScreen() {
             )}
             <div className="mt-3 rounded-xl bg-slate-50 p-3">
               <p className="text-[10px] font-extrabold text-slate-500">書き下し文</p>
-              <p className="mt-1 font-serif text-base font-bold leading-relaxed text-ink">{exercise.kakikudashi}</p>
+              <p className="mt-1 font-serif text-base font-bold leading-relaxed text-ink"><KanbunText>{exercise.kakikudashi}</KanbunText></p>
               <p className="mt-1 text-xs font-bold leading-relaxed text-ink/50">{exercise.translation}</p>
             </div>
             <div className="mt-3 rounded-xl border border-amber-200 bg-amber-50 p-3">
@@ -226,7 +227,7 @@ export function KanbunKundokuQuizScreen() {
         )}
       </div>
 
-      <div className="shrink-0 border-t border-rose-100 bg-white/90 p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] backdrop-blur">
+      <div className="shrink-0 border-t border-rose-100 bg-white/90 p-4 pb-4 backdrop-blur">
         <Button
           full
           size="lg"

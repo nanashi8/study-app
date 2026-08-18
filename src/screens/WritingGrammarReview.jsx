@@ -55,7 +55,7 @@ export function WritingGrammarReviewScreen() {
   if (!deck.length) {
     return (
       <div className="relative flex min-h-full flex-col items-center justify-center gap-4 px-8 text-center">
-        <div className="absolute right-3 top-[calc(env(safe-area-inset-top)+0.75rem)]">
+        <div className="absolute right-3 top-3">
           <SpeechSettingsButton compact />
         </div>
         <div className="text-5xl">🧩</div>
@@ -69,8 +69,8 @@ export function WritingGrammarReviewScreen() {
 
   if (finished) {
     return (
-      <div className="relative flex min-h-full flex-col bg-gradient-to-b from-violet-700 to-brand-900 px-5 pb-10 pt-[calc(env(safe-area-inset-top)+2rem)] text-white">
-        <div className="absolute right-3 top-[calc(env(safe-area-inset-top)+0.75rem)]">
+      <div className="relative flex min-h-full flex-col bg-gradient-to-b from-violet-700 to-brand-900 px-5 pb-10 pt-8 text-white">
+        <div className="absolute right-3 top-3">
           <SpeechSettingsButton compact inverse />
         </div>
         <div className="flex flex-1 flex-col items-center justify-center text-center">
@@ -126,7 +126,7 @@ export function WritingGrammarReviewScreen() {
 
   return (
     <div className="flex min-h-full flex-col bg-paper">
-      <header className="flex items-center gap-3 px-3 pb-3 pt-[calc(env(safe-area-inset-top)+0.5rem)]">
+      <header className="flex items-center gap-3 px-3 pb-3 pt-2">
         <IconButton onClick={back} aria-label="復習を終わる">
           <Close size={21} />
         </IconButton>
@@ -208,7 +208,7 @@ export function WritingGrammarReviewScreen() {
         </div>
       </main>
 
-      <div className="border-t border-brand-100 bg-white/92 p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] backdrop-blur">
+      <div className="border-t border-brand-100 bg-white/92 p-4 pb-4 backdrop-blur">
         {!revealed ? (
           <Button full size="lg" onClick={() => setRevealed(true)}>
             <Eye size={18} /> 解説を見る

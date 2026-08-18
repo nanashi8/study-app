@@ -5224,6 +5224,15 @@ button { -webkit-tap-highlight-color: transparent; }
   &::-webkit-scrollbar { display: none; }
 }
 
+/* ---- Safe area ------------------------------------------------------------
+   画面のふち（iPhoneの時刻表示・ホームバー）に隠れないための余白。
+   アプリ側は常にこの変数を使い、実測が0のまま画面いっぱいに描かれる
+   ホーム画面アプリでは src/lib/safeArea.js が不足分だけ上書きする。 */
+:root {
+  --app-safe-top: env(safe-area-inset-top, 0px);
+  --app-safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
 /* ---- Viewport height / browser chrome -------------------------------------
    モバイルのアドレスバーは表示・非表示で高さが変わる。アプリ外枠は
    svh（バーが出ている状態の高さ）を基準にして、上下がバーへ隠れないようにする。
@@ -5236,7 +5245,7 @@ button { -webkit-tap-highlight-color: transparent; }
 }
 /* ホームバー・ジェスチャ領域のぶんだけ、最下段の操作が隠れないよう余白を足す。 */
 .study-app-content {
-  padding-bottom: env(safe-area-inset-bottom);
+  padding-bottom: var(--app-safe-bottom);
 }
 
 /* ---- App-wide readability -------------------------------------------------

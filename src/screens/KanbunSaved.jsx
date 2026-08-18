@@ -7,6 +7,7 @@ import {
 import { KANBUN_LEVEL_BY_ID } from '../data/kanbun-meta.js'
 import { Button, Card, Chip, cx, EmptyState, IconButton } from '../components/ui.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
+import { KanbunHeadword } from '../components/KanbunFurigana.jsx'
 import { Book, BookmarkFilled, Cards, ChevronLeft } from '../components/Icons.jsx'
 
 const DOMAINS = ['vocab', 'grammar', 'culture']
@@ -25,7 +26,7 @@ export function KanbunSavedScreen() {
 
   return (
     <div className="pb-8">
-      <header className="rounded-b-[2.5rem] bg-gradient-to-br from-amber-700 via-rose-800 to-red-950 px-5 pb-6 pt-[calc(env(safe-area-inset-top)+1.25rem)] text-white">
+      <header className="rounded-b-[2.5rem] bg-gradient-to-br from-amber-700 via-rose-800 to-red-950 px-5 pb-6 pt-5 text-white">
         <div className="mb-3 flex items-center justify-between">
           <button
             type="button"
@@ -87,7 +88,7 @@ export function KanbunSavedScreen() {
                         <Chip color={KANBUN_LEVEL_BY_ID[item.level]?.color}>{KANBUN_LEVEL_BY_ID[item.level]?.shortLabel}</Chip>
                         {item.reading && <Chip color="#be123c">{item.reading}</Chip>}
                       </div>
-                      <h2 className="mt-2 font-display text-base font-extrabold leading-relaxed text-ink">{item.title}</h2>
+                      <h2 className="mt-2 font-display text-base font-extrabold leading-relaxed text-ink"><KanbunHeadword item={item} /></h2>
                       {item.pattern && <p className="mt-1 font-mono text-xs font-extrabold text-rose-800">{item.pattern}</p>}
                       <p className="mt-1 text-xs font-bold leading-relaxed text-ink/55">{item.answer}</p>
                       <p className="mt-1 text-[11px] font-bold leading-relaxed text-ink/40">{item.clue}</p>

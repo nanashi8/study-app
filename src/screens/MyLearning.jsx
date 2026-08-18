@@ -98,6 +98,8 @@ function LearningCategoryCard({ content, onOpen }) {
             <h3 className="text-sm font-extrabold text-slate-900">{content.label}</h3>
             <span className="shrink-0 text-[10px] font-extrabold tabular-nums text-slate-500">
               全{content.progress.total.toLocaleString('ja-JP')}{content.unit}
+              {content.progress.quizTotal !== content.progress.total
+                && `・${content.progress.quizTotal.toLocaleString('ja-JP')}${content.quizUnit}`}
             </span>
           </div>
           <p className="text-[10px] font-bold leading-relaxed text-slate-500">
@@ -107,7 +109,12 @@ function LearningCategoryCard({ content, onOpen }) {
         </div>
       </div>
 
-      <LearningStatusBars progress={content.progress} className="mt-3" compact />
+      <LearningStatusBars
+        progress={content.progress}
+        className="mt-3"
+        compact
+        units={{ learning: content.unit, quiz: content.quizUnit }}
+      />
 
       <button
         type="button"
@@ -232,7 +239,7 @@ export function MyLearningScreen() {
                 <h2 id={`learning-group-${group.id}`} className="font-display text-base font-extrabold text-slate-900">
                   {group.label}の学習状況
                 </h2>
-                <p className="text-[10px] font-bold text-slate-500">各棒の3区分は重ならず、必ず全教材数になります</p>
+                <p className="text-[10px] font-bold text-slate-500">各棒の3区分は重ならず、学習は項目数、クイズは問題数の合計になります</p>
               </div>
               <div className="grid gap-3 sm:grid-cols-2">
                 {contents.map((content) => (

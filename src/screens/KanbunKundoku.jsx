@@ -19,7 +19,7 @@ export function KanbunKundokuScreen() {
 
   return (
     <div className="pb-8">
-      <header className="rounded-b-[2.5rem] bg-gradient-to-br from-slate-950 via-rose-950 to-red-900 px-5 pb-7 pt-[calc(env(safe-area-inset-top)+1.25rem)] text-white">
+      <header className="rounded-b-[2.5rem] bg-gradient-to-br from-slate-950 via-rose-950 to-red-900 px-5 pb-7 pt-5 text-white">
         <div className="mb-3 flex items-center justify-between">
           <button
             type="button"
@@ -45,7 +45,7 @@ export function KanbunKundokuScreen() {
 
       <main className="space-y-5 px-4 pt-5">
         <Card className="p-4" data-kanbun-kundoku-status>
-          <LearningStatusBars progress={totalStatus} compact />
+          <LearningStatusBars progress={totalStatus} compact units={{ learning: '題', quiz: '問' }} />
         </Card>
         <section className="grid grid-cols-2 gap-3">
           <button
@@ -73,7 +73,7 @@ export function KanbunKundokuScreen() {
           <div className="flex gap-3">
             <Book size={21} className="mt-0.5 shrink-0 text-rose-700" />
             <div>
-              <h2 className="font-display text-base font-extrabold text-ink">返る順の原則</h2>
+              <h2 className="font-display text-base font-extrabold text-ink">返って読む順のきまり</h2>
               <ol className="mt-2 space-y-1.5 text-xs font-bold leading-relaxed text-ink/60">
                 <li>1. レ点：すぐ下の一字を先に読む</li>
                 <li>2. 一二点：一点を読んで二点へ返る</li>
@@ -104,7 +104,7 @@ export function KanbunKundokuScreen() {
                       <p className="text-[11px] font-bold text-ink/45">全{items.length}題</p>
                     </div>
                   </div>
-                  <LearningStatusBars progress={progress} className="mt-3" compact />
+                  <LearningStatusBars progress={progress} className="mt-3" compact units={{ learning: '題', quiz: '問' }} />
                   <Button
                     full
                     size="sm"

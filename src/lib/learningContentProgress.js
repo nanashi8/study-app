@@ -7,7 +7,8 @@ import { PASSAGES } from '../data/passages.js'
 import { WRITING_EXERCISES } from '../data/writing.js'
 import { KOTEN_WORDS } from '../data/koten.js'
 import { KOTEN_GRAMMAR } from '../data/koten-grammar.js'
-import { KOTEN_CULTURE } from '../data/koten-culture.js'
+import { KOTEN_GRAMMAR_QUESTIONS } from '../data/koten-grammar-questions.js'
+import { KOTEN_CULTURE, KOTEN_CULTURE_QUESTIONS } from '../data/koten-culture.js'
 import { KOTEN_INTERPRETATIONS } from '../data/koten-interpretations.js'
 import { KANBUN_VOCAB } from '../data/kanbun-vocab.js'
 import { KANBUN_GRAMMAR } from '../data/kanbun-grammar.js'
@@ -17,6 +18,7 @@ import { PUBLIC_DOMAIN_LITERATURE } from '../data/public-domain-literature.js'
 import { MATH_PROBLEMS } from '../data/math.js'
 import {
   summarizeCompletionItems,
+  summarizeQuizItems,
   summarizeSrsItems,
 } from './contentProgress.js'
 
@@ -27,15 +29,20 @@ const localDayIndexAt = (timestamp = Date.now()) => {
   return Math.floor((timestamp - date.getTimezoneOffset() * 60000) / 86400000)
 }
 
-const srsContent = (id, group, label, unit, screen, items, store) => Object.freeze({
+// quiz は「クイズの母数」。1項目に複数問ある教材では questions と domain を渡し、
+// 学習は項目単位・クイズは出題単位という別々の数え方で表示する。
+const srsContent = (id, group, label, unit, screen, items, store, quiz = {}) => Object.freeze({
   id,
   group,
   label,
   unit,
+  quizUnit: quiz.unit ?? '問',
   screen,
   kind: 'srs',
   items,
   store,
+  quizItems: quiz.questions ?? null,
+  quizDomain: quiz.domain ?? null,
 })
 
 const completionContent = (
@@ -52,10 +59,12 @@ const completionContent = (
   group,
   label,
   unit,
+  quizUnit: unit,
   screen,
   kind: 'completion',
   items,
   completedIds,
+  quizItems: null,
   quizDomain,
 })
 
@@ -95,8 +104,14 @@ export const LEARNING_CONTENTS = Object.freeze([
     )),
   ),
   srsContent('koten-vocab', 'classics', '古典単語', '語', 'kotenList', KOTEN_WORDS, 'kotenSrs'),
-  srsContent('koten-grammar', 'classics', '古典文法', '項目', 'kotenGrammar', KOTEN_GRAMMAR, 'kotenGrammarSrs'),
-  srsContent('koten-culture', 'classics', '古典常識', '項目', 'kotenCulture', KOTEN_CULTURE, 'kotenCultureSrs'),
+  srsContent(
+    'koten-grammar', 'classics', '古典文法', '項目', 'kotenGrammar', KOTEN_GRAMMAR, 'kotenGrammarSrs',
+    { questions: KOTEN_GRAMMAR_QUESTIONS, domain: 'koten-grammar' },
+  ),
+  srsContent(
+    'koten-culture', 'classics', '古典常識', 'テーマ', 'kotenCulture', KOTEN_CULTURE, 'kotenCultureSrs',
+    { questions: KOTEN_CULTURE_QUESTIONS, domain: 'koten-culture' },
+  ),
   srsContent('koten-reading', 'classics', '古典短文', '問', 'kotenInterpretationList', KOTEN_INTERPRETATIONS, 'kotenInterpretationSrs'),
   srsContent('kanbun-vocab', 'kanbun', '漢語', '語', 'kanbunCatalog', KANBUN_VOCAB, 'kanbunVocabSrs'),
   srsContent('kanbun-grammar', 'kanbun', '漢文法', '項目', 'kanbunCatalog', KANBUN_GRAMMAR, 'kanbunGrammarSrs'),
@@ -125,7 +140,7 @@ export const LEARNING_CONTENTS = Object.freeze([
 export function buildLearningContentProgress(state = {}) {
   const today = localDayIndexAt()
   return LEARNING_CONTENTS.map((content) => {
-    const progress = content.kind === 'srs'
+    const base = content.kind === 'srs'
       ? summarizeSrsItems(content.items, state[content.store])
       : summarizeCompletionItems({
           items: content.items,
@@ -133,6 +148,17 @@ export function buildLearningContentProgress(state = {}) {
           quizResults: state.contentQuizResults,
           quizDomain: content.quizDomain,
         })
+    // 出題が項目数と違う教材は、クイズだけ出題単位で数え直す。
+    const questionQuiz = content.quizItems
+      ? summarizeQuizItems({
+          items: content.quizItems,
+          quizResults: state.contentQuizResults,
+          quizDomain: content.quizDomain,
+        })
+      : null
+    const progress = questionQuiz
+      ? { ...base, quiz: questionQuiz.counts, quizTotal: questionQuiz.total }
+      : { ...base, quizTotal: base.total }
     const due = content.kind === 'srs'
       ? content.items.reduce((count, item) => (
           state[content.store]?.[item.id]?.due <= today

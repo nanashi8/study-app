@@ -209,7 +209,7 @@ export function RootsScreen() {
             <span className="text-xs text-slate-500">今日の復習 {overall.due.toLocaleString()}枚</span>
           </summary>
           <div className="space-y-3 border-t border-slate-100 p-4">
-            <LearningStatusBars progress={overallStatus} compact />
+            <LearningStatusBars progress={overallStatus} compact units={{ learning: '項目', quiz: '問' }} />
             <p className="text-xs font-bold leading-relaxed text-slate-500">
               全{overall.total.toLocaleString()}枚。語源の記録は、英単語の暗記記録とは分けて保存します。
             </p>
@@ -290,7 +290,7 @@ export function RootsScreen() {
                           </div>
                           <span className="mt-3 text-brand-300"><ArrowRight size={17} /></span>
                         </div>
-                        <LearningStatusBars progress={cardProgress} className="mt-3" compact />
+                        <LearningStatusBars progress={cardProgress} className="mt-3" compact units={{ learning: '項目', quiz: '問' }} />
                       </Card>
                     </button>
                   )

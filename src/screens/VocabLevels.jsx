@@ -64,7 +64,7 @@ function LevelCard({ level, srs, onStudy, onQuiz, onFields }) {
         <span className="shrink-0 text-xs font-extrabold tabular-nums text-ink/45">全{p.total}語</span>
       </div>
 
-      <LearningStatusBars progress={status} className="mt-3" compact />
+      <LearningStatusBars progress={status} className="mt-3" compact units={{ learning: '語', quiz: '問' }} />
       {p.due > 0 && <p className="mt-1.5 text-right text-[10px] font-extrabold text-amber-700">今日の復習 {p.due}語</p>}
 
       <div className="mt-3 grid grid-cols-2 gap-2">
@@ -144,7 +144,7 @@ export function VocabLevelsScreen() {
         title="単語"
         subtitle="10分野または英検級を選ぶ"
         right={
-          <IconButton onClick={() => navigate('vocabSearch')} aria-label="単語をさがす">
+          <IconButton onClick={() => navigate('vocabSearch')} aria-label="英和辞書">
             <Search size={22} />
           </IconButton>
         }

@@ -167,7 +167,7 @@ function CharacterRevealDialog({
           </button>
         </div>
 
-        <div className="min-h-0 flex-1 overflow-y-auto px-4 pb-[calc(env(safe-area-inset-bottom)+1rem)] pt-3">
+        <div className="min-h-0 flex-1 overflow-y-auto px-4 pb-4 pt-3">
           <p className="text-[10px] font-bold leading-relaxed text-white/70">
             {scene.discovery}
           </p>
@@ -590,7 +590,7 @@ function CharacterTalkConversation({ talkStudents }) {
         subtitle={`採点なしの日常会話・質問${CHARACTER_DAILY_QUESTIONS.length}種＋相談${CHARACTER_GRIEVANCE_COUNT}種`}
       />
 
-      <div className="flex min-h-0 flex-1 flex-col gap-2 px-3 pb-[calc(env(safe-area-inset-bottom)+0.75rem)]">
+      <div className="flex min-h-0 flex-1 flex-col gap-2 px-3 pb-3">
         <section className="character-talk-cast shrink-0 overflow-hidden rounded-3xl bg-slate-950 px-3 py-2.5 text-white shadow-card">
           <div className="flex items-center gap-3">
             <div className="flex shrink-0 -space-x-3">

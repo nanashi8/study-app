@@ -6,6 +6,10 @@ import { GRAMMAR, grammarChoiceGuidanceFor } from '../src/data/grammar.js'
 import { LONG_SENTENCE_TRANSLATIONS } from '../src/data/long-sentence-translations.js'
 import { PASSAGES } from '../src/data/passages.js'
 import {
+  READING_RULES,
+  readingApproachForPassage,
+} from '../src/data/reading-rules.js'
+import {
   longSentenceExplanationTexts,
   readingBlockExplanationTexts,
   readingPhraseExplanationTexts,
@@ -63,6 +67,23 @@ const forbiddenRuntimeCopy = [
   '節・句・文法ブロック解説',
   '英文を発音できて意味が通るまとまりに区切ります。',
   'S・V・O・C・Mはフレーズ内の構造を確かめる注釈です。',
+  // 中高生に伝わらない言い回し・開発者向け用語は画面へ出さない。
+  '再利用できる見抜き方',
+  'わからない時の切り方',
+  '正解と決定的な手掛かり',
+  '取り違え注意',
+  '中心の答え',
+  '細かな理解',
+  '見抜く手掛かり',
+  'ここでの誤り',
+  '本文への適用場面',
+  '入試の見抜き方',
+  '定着段階アップ',
+  'SRS段階',
+  'SRS BOX',
+  'カードで想起',
+  '手掛かりを想起',
+  '答えを隠して想起',
 ]
 
 const files = await sourceFiles(sourceRoot)
@@ -326,6 +347,49 @@ for (const item of GRAMMAR) {
     }
     if (!normalize(explanation.trap).includes(normalize(item.explain))) {
       errors.push(`文法 ${item.id}: 消去法がこの問題の根拠を含まない`)
+    }
+  }
+}
+
+// ── テーマ別の読み方が、項目の種類と深さに合っているか ────────────────
+// 「このテーマの読み方」は、その種類の文章に何度でも使える手順でなければならない。
+// 本文にいくつ出てきたかという中身は手順ではないので書かない。
+const READING_TEXT_KINDS = [
+  '物語', '案内', '告知', '説明文', '論説文', '評論', '報告', '記事', 'お知らせ', '手紙',
+]
+const CONTENT_COUNT = /[一二三四五六七八九十](?:者|つに分け|人に分け|種類に分け)/
+const STEP_ACTION = /(る|す|く|つ|ぶ|む|う|ぐ|ぬ)$/
+
+for (const passage of PASSAGES) {
+  const approach = readingApproachForPassage(passage)
+  if (!approach) {
+    errors.push(`長文 ${passage.id}: テーマ別の読み方がない`)
+    continue
+  }
+  if (!READING_TEXT_KINDS.some((kind) => approach.summary.includes(kind))) {
+    errors.push(`長文 ${passage.id}: 読み方の説明が、どんな種類の文章の話か示していない`)
+  }
+  for (const text of [approach.title, approach.summary, ...approach.steps]) {
+    if (CONTENT_COUNT.test(text)) {
+      errors.push(`長文 ${passage.id}: 読み方に本文の中身の個数「${text}」が入っている`)
+    }
+  }
+  for (const step of approach.steps) {
+    if (!STEP_ACTION.test(step)) {
+      errors.push(`長文 ${passage.id}: 手順「${step}」が動作で終わっていない`)
+    }
+  }
+}
+
+// 読解ルールも、段階（見通す→根拠で答える）ごとに手順が3つそろっていること。
+for (const rule of READING_RULES) {
+  if (rule.steps.length !== 3) errors.push(`読解ルール ${rule.id}: 手順が3つでない`)
+  for (const step of rule.steps) {
+    if (!STEP_ACTION.test(step)) {
+      errors.push(`読解ルール ${rule.id}: 手順「${step}」が動作で終わっていない`)
+    }
+    if (CONTENT_COUNT.test(step)) {
+      errors.push(`読解ルール ${rule.id}: 手順に本文の中身の個数が入っている`)
     }
   }
 }

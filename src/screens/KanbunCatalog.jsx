@@ -12,6 +12,7 @@ import { KANBUN_LEVELS, KANBUN_LEVEL_BY_ID } from '../data/kanbun-meta.js'
 import { kanbunDueItems } from '../lib/kanbunProgress.js'
 import { Button, Card, Chip, IconButton } from '../components/ui.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
+import { KanbunHeadword } from '../components/KanbunFurigana.jsx'
 import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
 import { summarizeSrsItems } from '../lib/contentProgress.js'
 import {
@@ -67,7 +68,7 @@ export function KanbunCatalogScreen() {
 
   return (
     <div className="pb-8">
-      <header className="rounded-b-[2.5rem] bg-gradient-to-br from-rose-950 via-red-900 to-orange-800 px-5 pb-7 pt-[calc(env(safe-area-inset-top)+1.25rem)] text-white">
+      <header className="rounded-b-[2.5rem] bg-gradient-to-br from-rose-950 via-red-900 to-orange-800 px-5 pb-7 pt-5 text-white">
         <div className="mb-3 flex items-center justify-between">
           <button
             type="button"
@@ -93,7 +94,7 @@ export function KanbunCatalogScreen() {
 
       <main className="space-y-5 px-4 pt-5">
         <Card className="p-4" data-kanbun-catalog-status={domain}>
-          <LearningStatusBars progress={totalStatus} compact />
+          <LearningStatusBars progress={totalStatus} compact units={{ learning: meta.itemLabel, quiz: '問' }} />
         </Card>
         <section className="grid grid-cols-2 gap-3">
           <button
@@ -103,7 +104,7 @@ export function KanbunCatalogScreen() {
           >
             <Book size={23} />
             <span className="mt-3 block font-display text-lg font-extrabold">覚える</span>
-            <span className="mt-1 block text-[11px] font-bold text-white/70">答えを隠して想起する</span>
+            <span className="mt-1 block text-[11px] font-bold text-white/70">答えを隠して思い出す</span>
           </button>
           <button
             type="button"
@@ -112,7 +113,7 @@ export function KanbunCatalogScreen() {
           >
             <Cards size={23} />
             <span className="mt-3 block font-display text-lg font-extrabold">テスト</span>
-            <span className="mt-1 block text-[11px] font-bold text-white/65">根拠・誤答理由まで確認</span>
+            <span className="mt-1 block text-[11px] font-bold text-white/65">正解の根拠と、ちがう理由まで確認</span>
           </button>
         </section>
 
@@ -213,7 +214,7 @@ export function KanbunCatalogScreen() {
                       <Chip color={levelMeta?.color}>{levelMeta?.shortLabel}</Chip>
                       <Chip color={categoryMeta?.color}>{categoryMeta?.label}</Chip>
                     </div>
-                    <h3 className="mt-2 font-display text-base font-extrabold leading-relaxed text-ink">{item.title}</h3>
+                    <h3 className="mt-2 font-display text-base font-extrabold leading-relaxed text-ink"><KanbunHeadword item={item} /></h3>
                     {item.reading && <p className="text-[11px] font-bold text-rose-700">読み：{item.reading}</p>}
                     {item.pattern && <p className="text-[11px] font-bold text-rose-700">形：{item.pattern}</p>}
                     <p className="mt-1 text-sm font-extrabold leading-relaxed text-ink/70">{item.answer}</p>

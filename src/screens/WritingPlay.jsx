@@ -48,7 +48,7 @@ import { buildWritingInstructorExplanation } from '../lib/instructorExplanations
 function MissingWriting({ onBack }) {
   return (
     <div className="relative flex min-h-full flex-col items-center justify-center gap-4 px-8 text-center">
-      <div className="absolute right-3 top-[calc(env(safe-area-inset-top)+0.75rem)]">
+      <div className="absolute right-3 top-3">
         <SpeechSettingsButton compact />
       </div>
       <div className="text-5xl">🧭</div>
@@ -138,7 +138,7 @@ function WritingUnitBriefing({
 }) {
   return (
     <div className="flex min-h-full flex-col bg-paper">
-      <header className="sticky top-0 z-20 border-b border-brand-100 bg-white/92 px-3 pb-3 pt-[calc(env(safe-area-inset-top)+0.5rem)] backdrop-blur">
+      <header className="sticky top-0 z-20 border-b border-brand-100 bg-white/92 px-3 pb-3 pt-2 backdrop-blur">
         <div className="flex items-center gap-2">
           <IconButton onClick={onBack} aria-label="単元一覧へ戻る">
             <Close size={21} />
@@ -269,7 +269,7 @@ function WritingUnitBriefing({
         </section>
       </main>
 
-      <div className="fixed inset-x-0 bottom-0 z-30 mx-auto w-full max-w-md border-t border-brand-100 bg-white/94 p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] backdrop-blur">
+      <div className="fixed inset-x-0 bottom-0 z-30 mx-auto w-full max-w-md border-t border-brand-100 bg-white/94 p-4 pb-[calc(1rem+var(--app-safe-bottom))] backdrop-blur">
         <Button full size="lg" onClick={onStart}>
           {resume ? '作文の続きへ戻る' : '知識を使って始める'}
           <ArrowRight size={18} />
@@ -460,7 +460,7 @@ export function WritingPlayScreen() {
 
     return (
       <div className="min-h-full bg-gradient-to-b from-indigo-950 via-brand-800 to-paper">
-        <div className="px-4 pb-10 pt-[calc(env(safe-area-inset-top)+0.75rem)]">
+        <div className="px-4 pb-10 pt-3">
           <div className="flex items-center justify-between text-white">
             <IconButton
               onClick={() => navigate('writing')}
@@ -673,7 +673,7 @@ export function WritingPlayScreen() {
 
   return (
     <div className="flex min-h-full flex-col bg-paper">
-      <header className="sticky top-0 z-20 border-b border-brand-100 bg-white/92 px-3 pb-3 pt-[calc(env(safe-area-inset-top)+0.5rem)] backdrop-blur">
+      <header className="sticky top-0 z-20 border-b border-brand-100 bg-white/92 px-3 pb-3 pt-2 backdrop-blur">
         <div className="flex items-center gap-2">
           <IconButton onClick={back} aria-label="やめる">
             <Close size={21} />
@@ -1112,7 +1112,7 @@ export function WritingPlayScreen() {
         )}
       </main>
 
-      <div className="fixed inset-x-0 bottom-0 z-30 mx-auto w-full max-w-md border-t border-brand-100 bg-white/94 p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] backdrop-blur">
+      <div className="fixed inset-x-0 bottom-0 z-30 mx-auto w-full max-w-md border-t border-brand-100 bg-white/94 p-4 pb-[calc(1rem+var(--app-safe-bottom))] backdrop-blur">
         <Button
           full
           size="lg"
