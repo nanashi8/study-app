@@ -7,11 +7,14 @@ import { AppShell } from './components/AppShell.jsx'
 import { SpeechSettingsSheet } from './components/SpeechSettings.jsx'
 import { PortalScreen } from './screens/Portal.jsx'
 import { learnerDestination } from './lib/learnerVisibility.js'
+import { ErrorBoundary } from './components/ErrorBoundary.jsx'
+import { importWithRetry } from './lib/appRecovery.js'
 
 // ポータル初期表示で全語彙・数式・QR読取などを一括取得しないよう、各画面を遅延読込する。
 // named export の画面を React.lazy が要求する default export へ変換する小さなアダプタ。
+// 画面チャンクの取得は1回だけ再試行する（通信の一瞬の失敗で真っ白にしない）。
 const lazyScreen = (loader, name) =>
-  lazy(() => loader().then((module) => ({ default: module[name] })))
+  lazy(() => importWithRetry(loader).then((module) => ({ default: module[name] })))
 
 const HomeScreen = lazyScreen(() => import('./screens/Home.jsx'), 'HomeScreen')
 const VocabLevelsScreen = lazyScreen(() => import('./screens/VocabLevels.jsx'), 'VocabLevelsScreen')
@@ -207,9 +210,15 @@ function MainApp() {
   return (
     <>
       <AppShell>
-        <Suspense fallback={<ScreenLoader />}>
-          <Screen />
-        </Suspense>
+        {/* 画面ごとに境界を張り、1画面の失敗でアプリ全体が消えないようにする。 */}
+        <ErrorBoundary
+          resetKey={destination.screen}
+          onHome={() => useStore.getState().goPortal()}
+        >
+          <Suspense fallback={<ScreenLoader />}>
+            <Screen />
+          </Suspense>
+        </ErrorBoundary>
       </AppShell>
       <SpeechSettingsSheet />
     </>
