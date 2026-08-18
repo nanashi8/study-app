@@ -36,7 +36,7 @@ export function EtymologyStudyScreen() {
   const toggleNotebookItem = useStore((state) => state.toggleNotebookItem)
   const learningNotebook = useStore((state) => state.learningNotebook)
   const srsAtStart = useRef(useStore.getState().etymologySrs)
-  // 語源カードは1回20枚が上限。実際に出せる枚数を数えて選択肢に反映する。
+  // 実際に出せる枚数を数えて、1回の枚数の選択肢に反映する。
   const buildFor = (size) =>
     buildEtymologyDeck(ETYMOLOGY_PACKS, srsAtStart.current, {
       mode: params.mode ?? 'all',
@@ -44,8 +44,8 @@ export function EtymologyStudyScreen() {
       packIds: params.packIds,
       size,
     })
-  const sessionSize = useSessionSize(20)
-  const [poolSize] = useState(() => buildFor(20).length)
+  const [poolSize] = useState(() => buildFor(Infinity).length)
+  const sessionSize = useSessionSize(poolSize || Infinity)
   const [deck, setDeck] = useState(() => buildFor(params.size ?? sessionSize))
   const [index, setIndex] = useState(0)
   const [revealed, setRevealed] = useState(revealAll)

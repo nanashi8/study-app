@@ -62,7 +62,7 @@ export function EtymologyQuizScreen() {
   const reviewEtymology = useStore((state) => state.reviewEtymology)
   const scrollRef = useRef(null)
   const initialEtymologySrs = useRef(useStore.getState().etymologySrs)
-  // 語源クイズは1回20問が上限。実際に出せる問題数を数えて選択肢に反映する。
+  // 実際に出せる問題数を数えて、1回の問題数の選択肢に反映する。
   const buildFor = (size) =>
     buildEtymologyDeck(ETYMOLOGY_PACKS, initialEtymologySrs.current, {
       mode: params.mode ?? 'all',
@@ -70,8 +70,8 @@ export function EtymologyQuizScreen() {
       packIds: params.packIds,
       size,
     })
-  const sessionSize = useSessionSize(20)
-  const [poolSize] = useState(() => buildFor(20).length)
+  const [poolSize] = useState(() => buildFor(Infinity).length)
+  const sessionSize = useSessionSize(poolSize || Infinity)
   const [deck, setDeck] = useState(() => buildFor(params.size ?? sessionSize))
   const [index, setIndex] = useState(0)
   const [studied, setStudied] = useState(false)
