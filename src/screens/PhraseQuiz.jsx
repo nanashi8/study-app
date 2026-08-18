@@ -53,8 +53,8 @@ export function PhraseQuizScreen() {
   const sessionId = useRef(newSessionId())
   // size=0 は「絞り込みなし」。在庫数から、選べる問題数の上限を決める。
   const buildFor = (size) => buildPhraseDeck(source, { srs: useStore.getState().srs, size })
-  const sessionSize = useSessionSize()
   const [poolSize] = useState(() => buildFor(0).length)
+  const sessionSize = useSessionSize(poolSize || Infinity)
   const [deck, setDeck] = useState(() => buildFor(params.size ?? sessionSize))
   const [index, setIndex] = useState(0)
   const [selected, setSelected] = useState(null)

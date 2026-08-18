@@ -4,7 +4,8 @@
 // 0 のまま返る端末・OS があり、上部の「戻る」「メニュー」が時刻に隠れてしまう。
 //
 // そこで CSS からは常に var(--app-safe-top) / var(--app-safe-bottom) を使い、
-// 実測が 0 なのに画面いっぱいを占めているときだけ、ここで不足分を補う。
+// 画面の高さと実測値を突き合わせて、足りないぶんをここで補って書き込む。
+// この JS が動く前でも隠れないよう、CSS 側にも最低限の保険を置いてある。
 export const SAFE_AREA_TOP_VAR = '--app-safe-top'
 export const SAFE_AREA_BOTTOM_VAR = '--app-safe-bottom'
 
@@ -20,7 +21,9 @@ export function statusBarFallback({ screenWidth = 0, screenHeight = 0 } = {}) {
   return longSide / shortSide >= 1.9 ? NOTCHED_STATUS_BAR : PLAIN_STATUS_BAR
 }
 
-// 上のふち幅を決める。実測できていればそれをそのまま使う。
+// 上のふち幅を決める。
+// 実測（env）が正しく返る端末はそれをそのまま使う。ホーム画面アプリでは
+// 0 を返したり、時刻表示より小さい値を返す端末があるので、そのときだけ補う。
 export function resolveSafeAreaTop({
   measuredTop = 0,
   standalone = false,
@@ -29,15 +32,18 @@ export function resolveSafeAreaTop({
   screenWidth = 0,
   screenHeight = 0,
 } = {}) {
-  if (measuredTop > 0) return measuredTop
   // ブラウザのアドレスバーがある表示では、時刻表示の下に潜り込むことはない。
-  if (!standalone) return 0
+  if (!standalone) return measuredTop
   // 横向きの iPhone は時刻表示自体が消えるので、余白を足すと逆に間延びする。
-  if (viewportWidth > viewportHeight) return 0
-  // 画面の高さぶんまるごと使えている＝時刻表示の下まで描いている状態。
-  const coversScreen = screenHeight > 0 && viewportHeight >= screenHeight - 2
-  if (!coversScreen) return 0
-  return statusBarFallback({ screenWidth, screenHeight })
+  if (viewportWidth > viewportHeight) return measuredTop
+  // 画面の大きさが分からないときは判断材料がないので、実測を信じる。
+  if (!screenHeight || !viewportHeight) return measuredTop
+  // iOS が時刻表示ぶんを先に差し引いてくれている場合は、こちらで足さない。
+  // 差が時刻表示1本ぶんに満たないなら「画面いっぱいに描いている」とみなす。
+  // （文字サイズ設定などで数pxずれる端末があるため、ぴったり一致は求めない）
+  const reserved = screenHeight - viewportHeight
+  if (reserved >= PLAIN_STATUS_BAR) return measuredTop
+  return Math.max(measuredTop, statusBarFallback({ screenWidth, screenHeight }))
 }
 
 function measureEnvInsets(doc) {
@@ -85,26 +91,39 @@ export function syncSafeArea(view = globalThis) {
     screenWidth: view.screen?.width ?? 0,
     screenHeight: view.screen?.height ?? 0,
   })
+  // 決めた値は常に書き込む。CSS 側はこの JS が動くまでの保険として
+  // ホーム画面アプリに最低限の余白を持たせてあるので、こちらが確定値で上書きする。
   const root = doc.documentElement
-  if (top > measured.top) root.style.setProperty(SAFE_AREA_TOP_VAR, `${Math.round(top)}px`)
-  else root.style.removeProperty(SAFE_AREA_TOP_VAR)
+  root.style.setProperty(SAFE_AREA_TOP_VAR, `${Math.round(top)}px`)
   return { measured, top }
 }
 
 export function startSafeAreaSync(view = globalThis) {
   if (!view?.document) return () => {}
+  const doc = view.document
   const run = () => syncSafeArea(view)
   run()
   // 画面の向き・表示モードが変わると、時刻表示の扱いも変わる。
   view.addEventListener('resize', run)
   view.addEventListener('orientationchange', run)
   view.visualViewport?.addEventListener('resize', run)
-  // 起動直後はまだ最終的な大きさが決まっていないことがあるので、一度だけ測り直す。
-  const timer = view.setTimeout(run, 400)
+  // ホーム画面アプリは他のアプリから戻ったときに再表示されるだけで、
+  // resize が来ないことがある。復帰のたびに測り直して余白を合わせ直す。
+  view.addEventListener('pageshow', run)
+  doc.addEventListener('visibilitychange', run)
+  // 起動直後はまだ最終的な大きさが決まっていないことがある。
+  // 1フレーム後・0.4秒後・1.2秒後に測り直して、確定した値へ追従する。
+  const timers = [
+    view.setTimeout(run, 0),
+    view.setTimeout(run, 400),
+    view.setTimeout(run, 1200),
+  ]
   return () => {
-    view.clearTimeout(timer)
+    timers.forEach((timer) => view.clearTimeout(timer))
     view.removeEventListener('resize', run)
     view.removeEventListener('orientationchange', run)
     view.visualViewport?.removeEventListener('resize', run)
+    view.removeEventListener('pageshow', run)
+    doc.removeEventListener('visibilitychange', run)
   }
 }

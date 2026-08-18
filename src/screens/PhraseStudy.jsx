@@ -36,8 +36,8 @@ export function PhraseStudyScreen() {
       srs: useStore.getState().srs,
       size,
     })
-  const sessionSize = useSessionSize()
   const [poolSize] = useState(() => buildFor(0).length)
+  const sessionSize = useSessionSize(poolSize || Infinity)
   const [deck, setDeck] = useState(() => buildFor(params.size ?? sessionSize))
   const [i, setI] = useState(0)
   const [flipped, setFlipped] = useState(revealAll)

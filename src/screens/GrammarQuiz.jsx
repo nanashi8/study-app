@@ -45,8 +45,8 @@ export function GrammarQuizScreen() {
       params.source ?? { type: 'grammar', level: '5' },
       { srs: useStore.getState().srs, day: todayIndex(), size },
     )
-  const sessionSize = useSessionSize()
   const [poolSize] = useState(() => buildFor(0).length)
+  const sessionSize = useSessionSize(poolSize || Infinity)
   const [deck, setDeck] = useState(() => buildFor(params.size ?? sessionSize))
   const [i, setI] = useState(0)
   const [selected, setSelected] = useState(null)

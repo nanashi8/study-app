@@ -13,7 +13,7 @@ test('龍脈調査入口は世界の異変・日常調査・五地点の進捗�
   assert.match(source, /DRAGON_VEIN_NODES\.map/)
   assert.match(source, /単語100語・熟語と構文100題/)
   assert.match(source, /1級EXTRA/)
-  assert.match(source, /\[10, 20, 100\]/)
+  assert.match(source, /\[\.\.\.SESSION_SIZE_OPTIONS, SESSION_SIZE_ALL\]/)
   assert.doesNotMatch(source.slice(
     source.indexOf('export function AfterSchoolChronicleScreen'),
     source.indexOf('function ChroniclePortalCard'),

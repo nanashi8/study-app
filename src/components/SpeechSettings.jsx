@@ -16,6 +16,7 @@ import {
   playSpeechItems,
 } from '../lib/speech-player.js'
 import { Sheet } from './Sheet.jsx'
+import { SESSION_SIZE_ALL, SESSION_SIZE_OPTIONS } from './SessionSize.jsx'
 import { Button, cx } from './ui.jsx'
 import {
   Book,
@@ -71,8 +72,9 @@ const RATE_PRESETS = [
 ]
 
 const DAILY_GOALS = [10, 20, 30, 50]
-// 1回の学習・クイズで出す問題数（学習中は進捗表示のタップでも変えられる）
-const SESSION_SIZES = [5, 10, 15, 20]
+// 1回の学習・クイズで出す問題数（学習中は進捗表示のタップでも変えられる）。
+// 並びは学習画面の選択肢と同じものを使う。「全部」はその教材の在庫すべて。
+const SESSION_SIZES = [...SESSION_SIZE_OPTIONS, SESSION_SIZE_ALL]
 
 function SettingRow({ title, desc, children, stacked = false }) {
   return (
@@ -341,7 +343,7 @@ function LearningSettingsPanel() {
         </SettingRow>
         <SettingRow
           title="1回の問題数"
-          desc={`現在 ${settings.sessionSize ?? 10}問・学習中は「1/10」の表示をタップしても変更できます`}
+          desc={`現在 ${settings.sessionSize === SESSION_SIZE_ALL ? '全部' : `${settings.sessionSize ?? 10}問`}・学習中は「1/10」の表示をタップしても変更できます`}
           stacked
         >
           <div className="grid grid-cols-4 gap-2">
@@ -358,7 +360,7 @@ function LearningSettingsPanel() {
                     : 'bg-brand-50 text-brand-700',
                 )}
               >
-                {size}問
+                {size === SESSION_SIZE_ALL ? '全部' : `${size}問`}
               </button>
             ))}
           </div>

@@ -70,10 +70,10 @@ export function VocabQuizScreen() {
   useEffect(() => clearQuizSession(), [clearQuizSession])
 
   const sessionId = useRef(restore?.sessionId ?? newSessionId())
-  const sessionSize = useSessionSize()
   // size=0 は「絞り込みなし」。在庫数から、選べる問題数の上限を決める。
   const buildFor = (size) => buildDeck(source, { srs: useStore.getState().srs, size })
   const [poolSize] = useState(() => buildFor(0).length)
+  const sessionSize = useSessionSize(poolSize || Infinity)
   const [deck, setDeck] = useState(() => (
     restore?.deck ?? buildFor(params.size ?? sessionSize)
   ))

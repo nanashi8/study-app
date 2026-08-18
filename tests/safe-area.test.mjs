@@ -7,6 +7,7 @@ import {
   SAFE_AREA_TOP_VAR,
   resolveSafeAreaTop,
   statusBarFallback,
+  syncSafeArea,
 } from '../src/lib/safeArea.js'
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8')
@@ -66,6 +67,95 @@ test('アドレスバーがある表示や横向きでは、余分な余白を�
   }), 0)
 })
 
+test('数pxのずれや小さすぎる実測値でも、時刻表示ぶんを確保する', () => {
+  // 画面の高さとほぼ同じだが数pxずれる端末（文字サイズ設定など）。
+  // 「ぴったり一致」しか認めないと余白が付かず、戻る・メニューが時刻に潜っていた。
+  assert.equal(resolveSafeAreaTop({
+    measuredTop: 0,
+    standalone: true,
+    viewportWidth: 393,
+    viewportHeight: 844,
+    screenWidth: 393,
+    screenHeight: 852,
+  }), 59)
+
+  // 実測が時刻表示より小さい値で返る端末は、不足ぶんまで引き上げる。
+  assert.equal(resolveSafeAreaTop({
+    measuredTop: 20,
+    standalone: true,
+    viewportWidth: 393,
+    viewportHeight: 852,
+    screenWidth: 393,
+    screenHeight: 852,
+  }), 59)
+
+  // 逆に実測のほうが大きいときは、その値を尊重する（勝手に縮めない）。
+  assert.equal(resolveSafeAreaTop({
+    measuredTop: 62,
+    standalone: true,
+    viewportWidth: 393,
+    viewportHeight: 852,
+    screenWidth: 393,
+    screenHeight: 852,
+  }), 62)
+})
+
+test('JSが動く前でも、ホーム画面アプリには最低限の上の余白がある', () => {
+  const css = read('src/index.css')
+  assert.match(css, /@media \(display-mode: standalone\)[^{]*\{\s*:root\s*\{\s*--app-safe-top:\s*max\(env\(safe-area-inset-top, 0px\), 20px\)/)
+
+  // 確定値は JS が常に書き込む（保険のCSSを上書きできるようにする）。
+  const lib = read('src/lib/safeArea.js')
+  assert.match(lib, /root\.style\.setProperty\(SAFE_AREA_TOP_VAR/)
+  assert.doesNotMatch(lib, /removeProperty\(SAFE_AREA_TOP_VAR/)
+
+  // 他アプリから戻ったときも測り直す。
+  assert.match(lib, /addEventListener\('pageshow'/)
+  assert.match(lib, /addEventListener\('visibilitychange'/)
+})
+
+// ホーム画面アプリの iPhone を模した最小の window/document。
+function fakeView({ envTop = 0, standalone = true, innerHeight = 852, screenHeight = 852 }) {
+  const properties = new Map()
+  const documentElement = {
+    style: {
+      setProperty: (name, value) => properties.set(name, value),
+      removeProperty: (name) => properties.delete(name),
+    },
+  }
+  const view = {
+    innerWidth: 393,
+    innerHeight,
+    screen: { width: 393, height: screenHeight },
+    navigator: { standalone },
+    matchMedia: () => ({ matches: false }),
+    document: {
+      documentElement,
+      body: { appendChild() {}, },
+      createElement: () => ({ setAttribute() {}, style: {}, remove() {} }),
+      defaultView: null,
+    },
+  }
+  view.document.defaultView = {
+    getComputedStyle: () => ({ paddingTop: `${envTop}px`, paddingBottom: '0px' }),
+  }
+  return { view, properties }
+}
+
+test('実測が0のホーム画面アプリでは、上の余白を確定値で書き込む', () => {
+  const { view, properties } = fakeView({ envTop: 0 })
+  const result = syncSafeArea(view)
+  assert.equal(result.top, 59)
+  assert.equal(properties.get(SAFE_AREA_TOP_VAR), '59px')
+})
+
+test('iOSが時刻表示ぶんを確保している場合は、余白を足さない', () => {
+  const { view, properties } = fakeView({ envTop: 0, innerHeight: 793 })
+  const result = syncSafeArea(view)
+  assert.equal(result.top, 0)
+  assert.equal(properties.get(SAFE_AREA_TOP_VAR), '0px')
+})
+
 test('ふちの余白は共通変数だけで組み立て、上下それぞれ一か所が受け持つ', () => {
   assert.equal(SAFE_AREA_TOP_VAR, '--app-safe-top')
   assert.equal(SAFE_AREA_BOTTOM_VAR, '--app-safe-bottom')
@@ -99,7 +189,7 @@ test('画面側は env(safe-area-inset-*) を直接使わない', () => {
   ]) {
     const source = read(path)
     // 変数の定義そのもの（:root）だけは env(...) を使う。
-    const withoutRoot = source.replace(/--app-safe-(top|bottom):\s*env\([^)]*\)/g, '')
+    const withoutRoot = source.replace(/--app-safe-(top|bottom):[^;]*;/g, '')
     if (withoutRoot.includes('env(safe-area-inset')) offenders.push(path)
   }
   assert.deepEqual(offenders, [])
