@@ -10,9 +10,11 @@ import {
 import { learningStatusForSrsEntry } from '../lib/contentProgress.js'
 import {
   EtymologyKnowledgeAnswer,
+  EtymologyKnowledgePrompt,
   wordsForEtymologyPack,
 } from '../components/EtymologyKnowledge.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
+import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
 import { Button, IconButton, ProgressBar } from '../components/ui.jsx'
 import { Bookmark, BookmarkFilled, Check, Close } from '../components/Icons.jsx'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
@@ -28,6 +30,9 @@ export function EtymologyStudyScreen() {
   const params = useStore((state) => state.params)
   const back = useStore((state) => state.back)
   const reviewEtymology = useStore((state) => state.reviewEtymology)
+  const settings = useStore((state) => state.settings)
+  // 暗記モード：ONなら毎カード、タップせず最初から答えと説明を開いて見せる。
+  const revealAll = settings.revealAnswers
   const toggleNotebookItem = useStore((state) => state.toggleNotebookItem)
   const learningNotebook = useStore((state) => state.learningNotebook)
   const srsAtStart = useRef(useStore.getState().etymologySrs)
@@ -43,6 +48,7 @@ export function EtymologyStudyScreen() {
   const [poolSize] = useState(() => buildFor(20).length)
   const [deck, setDeck] = useState(() => buildFor(params.size ?? sessionSize))
   const [index, setIndex] = useState(0)
+  const [revealed, setRevealed] = useState(revealAll)
   const [done, setDone] = useState(false)
   const results = useRef({ remembered: 0, forgot: 0 })
   const pack = deck[index]
@@ -97,6 +103,7 @@ export function EtymologyStudyScreen() {
       return
     }
     setIndex((current) => current + 1)
+    setRevealed(revealAll)
   }
 
   return (
@@ -116,6 +123,7 @@ export function EtymologyStudyScreen() {
         >
           {saved ? <BookmarkFilled size={20} /> : <Bookmark size={20} />}
         </IconButton>
+        <RevealAnswersToggle label="答え" onChange={(on) => on && setRevealed(true)} />
         <SpeechSettingsButton compact />
         <SessionCounter
           index={index}
@@ -125,6 +133,7 @@ export function EtymologyStudyScreen() {
           onResize={(size) => {
             setDeck(buildFor(size))
             setIndex(0)
+            setRevealed(revealAll)
             setDone(false)
             results.current = { remembered: 0, forgot: 0 }
           }}
@@ -145,21 +154,33 @@ export function EtymologyStudyScreen() {
           <p className="mt-4 rounded-xl bg-violet-50 px-3 py-2 text-center text-xs font-extrabold leading-relaxed text-violet-700">
             形を見る → 意味をつなぐ → 関連語で確かめる
           </p>
-          <div className="mt-5">
-            <EtymologyKnowledgeAnswer pack={pack} words={words} />
-          </div>
+          {!revealed ? (
+            <div className="mt-7">
+              <EtymologyKnowledgePrompt pack={pack} />
+            </div>
+          ) : (
+            <div className="mt-5 animate-slide-up">
+              <EtymologyKnowledgeAnswer pack={pack} words={words} />
+            </div>
+          )}
         </div>
       </div>
 
       <div className="shrink-0 border-t border-brand-100 bg-white/90 p-4 pb-4 backdrop-blur">
-        <div className="grid grid-cols-2 gap-3">
-          <Button variant="danger" size="lg" onClick={() => answer(false)}>
-            もう一度
+        {!revealed ? (
+          <Button full size="lg" onClick={() => setRevealed(true)}>
+            答えと説明を見る
           </Button>
-          <Button variant="success" size="lg" onClick={() => answer(true)}>
-            覚えた
-          </Button>
-        </div>
+        ) : (
+          <div className="grid grid-cols-2 gap-3">
+            <Button variant="danger" size="lg" onClick={() => answer(false)}>
+              まだ🤔
+            </Button>
+            <Button variant="success" size="lg" onClick={() => answer(true)}>
+              覚えた👍
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   )
