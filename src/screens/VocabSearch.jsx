@@ -1,11 +1,17 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import { useAuth } from '../store/useAuth.js'
-import { ALL_WORDS, SORTED_WORDS, getWord } from '../data/vocab.js'
-import { PHRASES } from '../data/phrases.js'
+import { getWord } from '../data/vocab.js'
 import { getLevel } from '../data/levels.js'
 import { requestWord } from '../lib/wordRequests.js'
-import { normalizeVocabQuery, vocabMatchRank, phraseMatchRank } from '../lib/vocabSearch.js'
+import { normalizeVocabQuery } from '../lib/vocabSearch.js'
+import {
+  DICTIONARY_COUNTS,
+  DICTIONARY_INITIALS,
+  DICTIONARY_TYPE_META,
+  dictionaryByInitial,
+  searchDictionary,
+} from '../lib/dictionary.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { PosBadge } from '../components/WordBits.jsx'
@@ -68,7 +74,21 @@ function NoResults({ query, user, onSeeList, onLogin }) {
   )
 }
 
-const CAP = 80
+// 一度に並べる見出しの数。続きは「もっと見る」で足していく。
+const PAGE = 60
+
+// 単語・熟語・構文のどれなのかを、同じ位置・同じ形で示す。
+function KindBadge({ type }) {
+  const meta = DICTIONARY_TYPE_META[type] ?? DICTIONARY_TYPE_META.word
+  return (
+    <span
+      className="shrink-0 rounded-lg px-1.5 py-0.5 text-[10px] font-extrabold text-white"
+      style={{ backgroundColor: meta.color }}
+    >
+      {meta.label}
+    </span>
+  )
+}
 
 function WordRow({ word, saved = false, onOpen }) {
   const level = getLevel(word.level)
@@ -76,7 +96,7 @@ function WordRow({ word, saved = false, onOpen }) {
     <div className="flex items-center gap-2 rounded-2xl bg-white p-2.5 shadow-sm">
       <SpeakButton text={word.word} size="sm" />
       <button onClick={onOpen} className="flex min-w-0 flex-1 items-center gap-2 text-left">
-        <PosBadge pos={word.pos} />
+        <KindBadge type="word" />
         <div className="min-w-0 flex-1">
           <div className="flex min-w-0 items-center gap-2">
             <span className="truncate font-display font-extrabold text-ink">{word.word}</span>
@@ -87,7 +107,10 @@ function WordRow({ word, saved = false, onOpen }) {
               </span>
             )}
           </div>
-          <div className="truncate text-xs font-bold text-ink/55">{word.meaning}</div>
+          <div className="flex min-w-0 items-center gap-1.5">
+            <PosBadge pos={word.pos} className="h-5 min-w-5 px-1 text-[10px]" />
+            <span className="truncate text-xs font-bold text-ink/55">{word.meaning}</span>
+          </div>
         </div>
         <span className="text-brand-300"><ArrowRight size={16} /></span>
       </button>
@@ -95,29 +118,17 @@ function WordRow({ word, saved = false, onOpen }) {
   )
 }
 
-
-const PHRASE_KIND_LABEL = {
-  idiom: { label: '熟語', color: '#0ea5e9' },
-  syntax: { label: '構文', color: '#8b5cf6' },
-}
-
 // 熟語・構文はその場で開いて意味・例文・成り立ちまで読める（単語詳細に当たる表示）。
 function PhraseRow({ phrase, saved = false, onToggleSave, onStudy }) {
   const [open, setOpen] = useState(false)
   const level = getLevel(phrase.level)
-  const kind = PHRASE_KIND_LABEL[phrase.kind] ?? PHRASE_KIND_LABEL.idiom
   const meanings = phrase.meanings?.length ? phrase.meanings : [phrase.meaning]
   return (
     <div className="rounded-2xl bg-white p-2.5 shadow-sm">
       <div className="flex items-center gap-2">
         <SpeakButton text={phrase.phrase} size="sm" />
         <button onClick={() => setOpen(!open)} className="flex min-w-0 flex-1 items-center gap-2 text-left">
-          <span
-            className="shrink-0 rounded-lg px-1.5 py-0.5 text-[10px] font-extrabold text-white"
-            style={{ backgroundColor: kind.color }}
-          >
-            {kind.label}
-          </span>
+          <KindBadge type={phrase.kind} />
           <div className="min-w-0 flex-1">
             <div className="flex min-w-0 items-center gap-2">
               <span className="truncate font-display font-extrabold text-ink">{phrase.phrase}</span>
@@ -187,7 +198,8 @@ function PhraseRow({ phrase, saved = false, onToggleSave, onStudy }) {
 const TABS = [
   { id: 'all', label: 'すべて' },
   { id: 'word', label: '単語' },
-  { id: 'phrase', label: '熟語・構文' },
+  { id: 'idiom', label: '熟語' },
+  { id: 'syntax', label: '構文' },
 ]
 
 export function VocabSearchScreen() {
@@ -199,34 +211,38 @@ export function VocabSearchScreen() {
   const learningNotebook = useStore((s) => s.learningNotebook)
   const toggleNotebookItem = useStore((s) => s.toggleNotebookItem)
   const [q, setQ] = useState('')
-  const [tab, setTab] = useState('all')
+  const [type, setType] = useState('all')
+  const [letter, setLetter] = useState(null)
+  const [shown, setShown] = useState(PAGE)
 
   const query = normalizeVocabQuery(q)
-  const wordResults = useMemo(() => {
-    if (!query) return []
-    const hits = []
-    for (const w of SORTED_WORDS) {
-      const rank = vocabMatchRank(w, query)
-      if (rank >= 0) hits.push({ w, rank })
-    }
-    // 一致ランク順、同ランク内は辞書順（SORTED_WORDS の順）を維持。
-    hits.sort((a, b) => a.rank - b.rank)
-    return hits.map((h) => h.w)
-  }, [query])
-  // 熟語・構文も同じ検索欄から引ける（見出し・意味・例文・成り立ち・注意が対象）。
-  const phraseResults = useMemo(() => {
-    if (!query) return []
-    const hits = []
-    for (const p of PHRASES) {
-      const rank = phraseMatchRank(p, query)
-      if (rank >= 0) hits.push({ p, rank })
-    }
-    hits.sort((a, b) => a.rank - b.rank)
-    return hits.map((h) => h.p)
-  }, [query])
-  const totalCount = wordResults.length + phraseResults.length
-  const shownWords = tab === 'phrase' ? [] : wordResults.slice(0, CAP)
-  const shownPhrases = tab === 'word' ? [] : phraseResults.slice(0, CAP)
+
+  // 単語・熟語・構文を1本にまとめた見出しの並び。
+  // 検索中は一致の強い順、頭文字から引くときは辞書と同じABC順。
+  const matched = useMemo(() => searchDictionary(query), [query])
+  const browsed = useMemo(() => (letter ? dictionaryByInitial(letter) : []), [letter])
+  const pool = query ? matched : browsed
+  const counts = useMemo(() => {
+    const tally = { all: pool.length, word: 0, idiom: 0, syntax: 0 }
+    for (const entry of pool) tally[entry.type] += 1
+    return tally
+  }, [pool])
+  const listed = useMemo(
+    () => (type === 'all' ? pool : pool.filter((entry) => entry.type === type)),
+    [pool, type],
+  )
+
+  // 検索語・絞り込み・頭文字が変わったら、表示件数は先頭に戻す。
+  useEffect(() => {
+    setShown(PAGE)
+  }, [query, type, letter])
+
+  // ABC一覧へ戻ったときは種類の絞り込みも解く。
+  // 絞り込んだままだと、頭文字に出ている件数と開いた中身が食い違う。
+  useEffect(() => {
+    if (!query && !letter) setType('all')
+  }, [query, letter])
+
   const historyWords = useMemo(
     () => vocabHistory.map(getWord).filter(Boolean),
     [vocabHistory],
@@ -241,11 +257,31 @@ export function VocabSearchScreen() {
       title: phrase.kind === 'syntax' ? '構文' : '熟語',
     })
 
+  const renderEntry = (entry) =>
+    entry.type === 'word' ? (
+      <WordRow
+        key={entry.id}
+        word={entry.word}
+        saved={savedIds.has(entry.word.id)}
+        onOpen={() => openWord(entry.word)}
+      />
+    ) : (
+      <PhraseRow
+        key={entry.id}
+        phrase={entry.phrase}
+        saved={learningNotebook?.entries?.[`phrases:${entry.phrase.id}`]?.saved === true}
+        onToggleSave={() => toggleNotebookItem('phrases', entry.phrase.id)}
+        onStudy={() => studyPhrase(entry.phrase)}
+      />
+    )
+
+  const showList = Boolean(query) || Boolean(letter)
+
   return (
     <div className="flex h-full flex-col">
       <ScreenHeader
-        title="単語をさがす"
-        subtitle={`単語${ALL_WORDS.length}語＋熟語・構文${PHRASES.length}項目から検索`}
+        title="英和辞書"
+        subtitle={`単語${DICTIONARY_COUNTS.word}・熟語${DICTIONARY_COUNTS.idiom}・構文${DICTIONARY_COUNTS.syntax}をABC順に収録`}
         right={
           <button
             onClick={() => navigate('wordRequests')}
@@ -263,7 +299,7 @@ export function VocabSearchScreen() {
           <input
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            placeholder="単語・熟語・構文・意味で検索（例: affect, look at, 影響）"
+            placeholder="単語・熟語・構文・意味で検索（例: go, go ahead, 影響）"
             autoCapitalize="off"
             autoCorrect="off"
             className="h-12 flex-1 bg-transparent font-bold text-ink outline-none placeholder:font-normal placeholder:text-ink/30"
@@ -275,28 +311,27 @@ export function VocabSearchScreen() {
           )}
         </div>
 
-        {query && (
+        {showList && (
           <>
             <div className="mt-2 flex gap-1.5">
               {TABS.map((t) => (
                 <button
                   key={t.id}
-                  onClick={() => setTab(t.id)}
+                  onClick={() => setType(t.id)}
                   className={`rounded-full px-3 py-1.5 text-xs font-extrabold ${
-                    tab === t.id
+                    type === t.id
                       ? 'bg-brand-500 text-white'
                       : 'bg-white text-ink/50 ring-1 ring-brand-100'
                   }`}
                 >
-                  {t.label}
-                  {t.id === 'word' && ` ${wordResults.length}`}
-                  {t.id === 'phrase' && ` ${phraseResults.length}`}
+                  {t.label} {counts[t.id]}
                 </button>
               ))}
             </div>
             <p className="mt-2 px-1 text-xs font-bold text-ink/40">
-              単語{wordResults.length}件・熟語構文{phraseResults.length}件
-              {(wordResults.length > CAP || phraseResults.length > CAP) && `（各上位${CAP}件を表示）`}
+              {query
+                ? `「${q.trim()}」に一致する${listed.length}件を、単語・熟語・構文まとめてABC順に表示`
+                : `${letter}で始まる${listed.length}件を、単語・熟語・構文まとめてABC順に表示`}
             </p>
           </>
         )}
@@ -304,84 +339,112 @@ export function VocabSearchScreen() {
 
       {/* 結果リスト */}
       <div className="no-scrollbar mt-1 flex-1 overflow-y-auto px-4 pb-4">
-        {!query ? (
-          historyWords.length > 0 ? (
-            <section className="pb-2 pt-3">
-              <div className="mb-3 flex items-start justify-between gap-3 px-1">
-                <div>
-                  <h2 className="font-display text-base font-extrabold text-ink/80">
-                    検索・参照履歴
-                  </h2>
-                  <p className="mt-0.5 text-xs font-bold leading-relaxed text-ink/40">
-                    検索、語源・長文での参照、マイ単語への追加を新しい順に表示
-                  </p>
-                </div>
-                <button
-                  onClick={clearVocabHistory}
-                  className="shrink-0 rounded-full px-2.5 py-1.5 text-xs font-extrabold text-rose-500 ring-1 ring-rose-100 active:bg-rose-50"
-                >
-                  全削除
-                </button>
+        {!showList ? (
+          <>
+            <section className="pb-1 pt-3">
+              <div className="px-1">
+                <h2 className="font-display text-base font-extrabold text-ink/80">ABCから引く</h2>
+                <p className="mt-0.5 text-xs font-bold leading-relaxed text-ink/40">
+                  単語も熟語も構文も、紙の辞書と同じ並び（go → go abroad → go ahead）で見られます
+                </p>
               </div>
-              <div className="space-y-2">
-                {historyWords.map((word) => (
-                  <WordRow
-                    key={word.id}
-                    word={word}
-                    saved={savedIds.has(word.id)}
-                    onOpen={() => openWord(word)}
-                  />
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                {DICTIONARY_INITIALS.map(({ letter: initial, count }) => (
+                  <button
+                    key={initial}
+                    onClick={() => setLetter(initial)}
+                    className="min-w-11 rounded-xl bg-white px-2 py-1.5 text-center shadow-sm ring-1 ring-brand-100 active:bg-brand-50"
+                  >
+                    <span className="block font-display text-sm font-extrabold text-ink">{initial}</span>
+                    <span className="block text-[10px] font-bold text-ink/35">{count}</span>
+                  </button>
                 ))}
               </div>
             </section>
-          ) : (
-            <div className="px-6 py-16 text-center">
-              <div className="text-4xl">📖</div>
-              <p className="mt-3 font-extrabold text-ink/70">調べたい単語を入力</p>
-              <p className="mt-1 text-sm font-bold text-ink/40">
-                単語も熟語・構文も、日本語・例文・使い分けから引けます
-              </p>
-              <p className="mt-1 text-xs font-bold text-ink/30">
-                検索・参照した単語や、マイ単語に追加した語はここに残ります
-              </p>
-            </div>
-          )
-        ) : totalCount === 0 ? (
-          <NoResults
-            key={query}
-            query={query}
-            user={user}
-            onSeeList={() => navigate('wordRequests')}
-            onLogin={() => navigate('login')}
-          />
+
+            {historyWords.length > 0 ? (
+              <section className="pb-2 pt-5">
+                <div className="mb-3 flex items-start justify-between gap-3 px-1">
+                  <div>
+                    <h2 className="font-display text-base font-extrabold text-ink/80">
+                      検索・参照履歴
+                    </h2>
+                    <p className="mt-0.5 text-xs font-bold leading-relaxed text-ink/40">
+                      検索、参照を新しい順に表示
+                    </p>
+                  </div>
+                  <button
+                    onClick={clearVocabHistory}
+                    className="shrink-0 rounded-full px-2.5 py-1.5 text-xs font-extrabold text-rose-500 ring-1 ring-rose-100 active:bg-rose-50"
+                  >
+                    全削除
+                  </button>
+                </div>
+                <div className="space-y-2">
+                  {historyWords.map((word) => (
+                    <WordRow
+                      key={word.id}
+                      word={word}
+                      saved={savedIds.has(word.id)}
+                      onOpen={() => openWord(word)}
+                    />
+                  ))}
+                </div>
+              </section>
+            ) : (
+              <div className="px-6 py-10 text-center">
+                <div className="text-4xl">📖</div>
+                <p className="mt-3 font-extrabold text-ink/70">調べたい語を入力</p>
+                <p className="mt-1 text-sm font-bold text-ink/40">
+                  単語も熟語・構文も、日本語・例文・使い分けから引けます
+                </p>
+                <p className="mt-1 text-xs font-bold text-ink/30">
+                  検索・参照した単語や、マイ単語に追加した語はここに残ります
+                </p>
+              </div>
+            )}
+          </>
         ) : (
-          <div className="space-y-2">
-            {shownWords.map((word) => (
-              <WordRow
-                key={word.id}
-                word={word}
-                saved={savedIds.has(word.id)}
-                onOpen={() => openWord(word)}
-              />
-            ))}
-            {shownPhrases.length > 0 && shownWords.length > 0 && (
-              <p className="px-1 pt-2 text-xs font-extrabold text-ink/40">熟語・構文</p>
+          <>
+            {letter && !query && (
+              <div className="flex items-center justify-between gap-3 px-1 pb-2 pt-3">
+                <h2 className="font-display text-lg font-extrabold text-ink/80">{letter}</h2>
+                <button
+                  onClick={() => setLetter(null)}
+                  className="rounded-full px-2.5 py-1.5 text-xs font-extrabold text-ink/50 ring-1 ring-brand-100 active:bg-brand-50"
+                >
+                  ABC一覧へ戻る
+                </button>
+              </div>
             )}
-            {shownPhrases.map((phrase) => (
-              <PhraseRow
-                key={phrase.id}
-                phrase={phrase}
-                saved={learningNotebook?.entries?.[`phrases:${phrase.id}`]?.saved === true}
-                onToggleSave={() => toggleNotebookItem('phrases', phrase.id)}
-                onStudy={() => studyPhrase(phrase)}
-              />
-            ))}
-            {shownWords.length === 0 && shownPhrases.length === 0 && (
-              <p className="px-6 py-12 text-center text-sm font-bold text-ink/40">
-                この絞り込みでは見つかりませんでした
-              </p>
+            {listed.length === 0 ? (
+              query ? (
+                <NoResults
+                  key={query}
+                  query={query}
+                  user={user}
+                  onSeeList={() => navigate('wordRequests')}
+                  onLogin={() => navigate('login')}
+                />
+              ) : (
+                <p className="px-6 py-12 text-center text-sm font-bold text-ink/40">
+                  この絞り込みでは見つかりませんでした
+                </p>
+              )
+            ) : (
+              <div className="space-y-2">
+                {listed.slice(0, shown).map(renderEntry)}
+                {listed.length > shown && (
+                  <button
+                    onClick={() => setShown(shown + PAGE)}
+                    className="w-full rounded-2xl bg-white py-3 text-sm font-extrabold text-brand-500 shadow-sm ring-1 ring-brand-100 active:bg-brand-50"
+                  >
+                    続きを表示（残り{listed.length - shown}件）
+                  </button>
+                )}
+              </div>
             )}
-          </div>
+          </>
         )}
       </div>
     </div>

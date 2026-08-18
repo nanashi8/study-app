@@ -28,8 +28,20 @@ function usageGuideText(guides = []) {
   ]).filter(Boolean).join(' ')
 }
 
+// 検索は1文字打つたびに全見出し（単語＋熟語・構文で約1万件）を走査する。
+// 例文や語源までつないだ検索用テキストは語ごとに一度だけ作って使い回す。
+const SEARCH_TEXT_CACHE = new WeakMap()
+
+const cachedSearchText = (item, build) => {
+  const cached = SEARCH_TEXT_CACHE.get(item)
+  if (cached !== undefined) return cached
+  const text = build()
+  SEARCH_TEXT_CACHE.set(item, text)
+  return text
+}
+
 export function vocabSearchText(word) {
-  return normalize([
+  return cachedSearchText(word, () => normalize([
     word.meaning,
     ...(word.meanings ?? []),
     vocabFieldFor(word),
@@ -41,7 +53,7 @@ export function vocabSearchText(word) {
     ...(word.antonyms ?? []).flatMap((item) => [item.w, item.m]),
     ...(word.family ?? []).flatMap((item) => [item.w, item.m]),
     usageGuideText(word.usageGuides),
-  ].filter(Boolean).join(' '))
+  ].filter(Boolean).join(' ')))
 }
 
 // 小さいほど上位。見出し語一致を守りつつ、語法・例文・使い分けも検索対象にする。
@@ -63,14 +75,14 @@ export function vocabMatchRank(word, rawQuery) {
 // ── 熟語・構文（PHRASES）の検索 ─────────────────────────────
 // 単語と同じく「見出し一致 → 意味 → 例文・成り立ち・注意」の順で並べる。
 export function phraseSearchText(phrase) {
-  return normalize([
+  return cachedSearchText(phrase, () => normalize([
     phrase.meaning,
     ...(phrase.meanings ?? []),
     phrase.example?.en,
     phrase.example?.ja,
     phrase.origin,
     phrase.note,
-  ].filter(Boolean).join(' '))
+  ].filter(Boolean).join(' ')))
 }
 
 export function phraseMatchRank(phrase, rawQuery) {
