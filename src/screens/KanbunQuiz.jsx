@@ -146,7 +146,7 @@ export function KanbunQuizScreen() {
           )}
           <div className="grid w-full grid-cols-2 gap-3">
             <Button variant="secondary" onClick={() => restart(weakIds.length ? weakIds : params.ids)}>もう一度</Button>
-            <Button onClick={() => navigate('kanbunCatalog', { domain })}>{meta.label}へ戻る</Button>
+            <Button onClick={back}>{meta.label}へ戻る</Button>
           </div>
         </div>
       </div>
