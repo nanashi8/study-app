@@ -163,7 +163,7 @@ test('メニューの全教材・個人機能は公開ルートに存在し、�
     [...screenMap.matchAll(/^  ([A-Za-z][A-Za-z0-9]*):/gm)].map((match) => match[1]),
   )
 
-  assert.equal(publicScreens.size, 68)
+  assert.equal(publicScreens.size, 69)
   assert.equal(APP_MENU_ITEMS.length, 29)
   assert.equal(APP_MENU_SCREEN_DESTINATIONS.length, 24)
   assert.deepEqual(
