@@ -18,7 +18,6 @@ const ALL_EXERCISES = 9999 // 在庫数を数えるための十分大きな上�
 export function KanbunKundokuQuizScreen() {
   const params = useStore((state) => state.params)
   const back = useStore((state) => state.back)
-  const navigate = useStore((state) => state.navigate)
   const review = useStore((state) => state.reviewKanbunKundoku)
   const [poolSize] = useState(() => pickKanbunKundokuExercises(params.ids, { size: ALL_EXERCISES }).length)
   const sessionSize = useSessionSize(poolSize || Infinity)
@@ -104,7 +103,7 @@ export function KanbunKundokuQuizScreen() {
           )}
           <div className="grid w-full grid-cols-2 gap-3">
             <Button variant="secondary" onClick={() => restart()}>もう一度</Button>
-            <Button onClick={() => navigate('kanbunKundoku')}>返り点へ戻る</Button>
+            <Button onClick={back}>返り点へ戻る</Button>
           </div>
         </div>
       </div>

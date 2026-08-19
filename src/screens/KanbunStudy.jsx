@@ -63,7 +63,6 @@ function AnswerDetails({ domain, item }) {
 export function KanbunStudyScreen() {
   const params = useStore((state) => state.params)
   const back = useStore((state) => state.back)
-  const navigate = useStore((state) => state.navigate)
   const review = useStore((state) => state.reviewKanbun)
   const toggleSaved = useStore((state) => state.toggleKanbunList)
   const domain = KANBUN_COLLECTIONS[params.domain] ? params.domain : 'vocab'
@@ -137,7 +136,7 @@ export function KanbunStudyScreen() {
           )}
           <div className="grid w-full grid-cols-2 gap-3">
             <Button variant="secondary" onClick={() => restart()}>全てもう一度</Button>
-            <Button onClick={() => navigate('kanbunCatalog', { domain })}>{meta.label}へ戻る</Button>
+            <Button onClick={back}>{meta.label}へ戻る</Button>
           </div>
         </div>
       </div>
