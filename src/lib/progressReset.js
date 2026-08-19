@@ -50,6 +50,7 @@ export const PROGRESS_RESET_GROUPS = Object.freeze([
       'diagnosticAttempt',
       'diagnosticSeed',
       'engPos',
+      'grammarStrandPos',
       'stats',
     ],
   ),

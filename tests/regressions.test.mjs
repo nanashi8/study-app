@@ -343,7 +343,7 @@ test('学習記録の全永続項目は端末保存・画面発行・クラウ�
   assert.match(storeSource, /partialize:\s*selectProgressState/)
 })
 
-test('履歴リセットの6分類は全47永続項目を漏れなく一度だけ扱う', () => {
+test('履歴リセットの6分類は全48永続項目を漏れなく一度だけ扱う', () => {
   const groupIds = PROGRESS_RESET_GROUPS.map((group) => group.id)
   const combinedFields = [
     ...RESETTABLE_PROGRESS_FIELDS,
@@ -352,8 +352,8 @@ test('履歴リセットの6分類は全47永続項目を漏れなく一度だ�
 
   assert.deepEqual(groupIds, ALL_PROGRESS_RESET_GROUP_IDS)
   assert.equal(new Set(groupIds).size, groupIds.length, '分類IDを重複させない')
-  assert.equal(PERSISTED_PROGRESS_FIELDS.length, 47)
-  assert.equal(RESETTABLE_PROGRESS_FIELDS.length, 44)
+  assert.equal(PERSISTED_PROGRESS_FIELDS.length, 48)
+  assert.equal(RESETTABLE_PROGRESS_FIELDS.length, 45)
   assert.equal(RESET_PRESERVED_PROGRESS_FIELDS.length, 3)
   assert.equal(new Set(combinedFields).size, combinedFields.length, '保存項目を二重分類しない')
   assert.deepEqual(

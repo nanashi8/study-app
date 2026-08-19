@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import {
+  GRAMMAR,
   getGrammar,
   grammarByLevel,
   grammarByTopic,
@@ -122,27 +123,19 @@ test('候補抽出は級・単元・指定IDを正確に保つ', () => {
   )
 })
 
-test('既存手作り・生成・入試型にまたがる同じ文法判断も1問に束ねる', () => {
+test('既存手作り・生成にまたがる同じ文法判断は、問う箇所を持たない側で1問に束ねる', () => {
+  // examFocus を持たない手作り・生成問題どうしは、級や作られ方が違っても
+  // 同じ文法判断を問うものとして1問に束ねる。
   const equivalentGroups = [
-    ['gr_5_pron_1', 'gr_auto_5_pronoun_001', 'gr_exam_eiken_5_pronoun_form_001'],
-    ['gr_5_neg_1', 'gr_exam_eiken_5_present_negative_001'],
-    ['gr_4_comp_6', 'gr_exam_eiken_4_equal_comparison_001'],
-    ['gr_4_have_to_1', 'gr_exam_eiken_4_have_to_001'],
-    ['gr_3_perf_6', 'gr_exam_eiken_3_perfect_question_001'],
-    ['gr_pre2_ger_5', 'gr_auto_4_used_to_001', 'gr_exam_eiken_pre2_used_to_contrast_001'],
-    ['gr_1_subj_1', 'gr_auto_1_mandative_001', 'gr_exam_university_pre1_mandative_001'],
-    ['gr_1_invc_1', 'gr_exam_university_1_not_until_inversion_001'],
-    ['gr_more_pre1_conc_01', 'gr_exam_university_pre1_concession_as_001'],
+    ['gr_5_pron_1', 'gr_auto_5_pronoun_001'],
+    ['gr_pre2_ger_5', 'gr_auto_4_used_to_001'],
+    ['gr_1_subj_1', 'gr_auto_1_mandative_001'],
   ]
 
   for (const ids of equivalentGroups) {
     const items = ids.map(getGrammar)
     assert.ok(items.every(Boolean), ids.join(', '))
-    assert.equal(
-      new Set(items.map(grammarVariationKey)).size,
-      1,
-      ids.join(', '),
-    )
+    assert.equal(new Set(items.map(grammarVariationKey)).size, 1, ids.join(', '))
   }
 
   const ids = equivalentGroups.flat()
@@ -152,4 +145,39 @@ test('既存手作り・生成・入試型にまたがる同じ文法判断も1�
   )
   assert.equal(deck.length, equivalentGroups.length)
   assertNoRepeatedVariation(deck, '級をまたぐ保存リスト')
+})
+
+test('入試型は問う箇所が同じなら束ね、違えば別問題として出す', () => {
+  const familyPattern = 'exam:eiken:5_pronoun_form'
+  const family = GRAMMAR.filter((item) => item.pattern === familyPattern)
+  assert.equal(family.length, 10)
+
+  // 同じ examFocus は語句差し替えなので1問に束ねる。
+  const byFocus = new Map()
+  for (const item of family) {
+    byFocus.set(item.examFocus, [...(byFocus.get(item.examFocus) ?? []), item])
+  }
+  for (const [focus, items] of byFocus) {
+    assert.equal(new Set(items.map(grammarVariationKey)).size, 1, `${focus} は1問に束ねる`)
+  }
+
+  // 問う箇所が違えば別問題。型ごと1問に潰さない。
+  assert.equal(new Set(family.map(grammarVariationKey)).size, byFocus.size)
+  assert.ok(byFocus.size >= 4, '入試型は1つの型で4種類以上の問う箇所を持つ')
+})
+
+test('在庫のある単元は、在庫に見合った問数を実際に出題できる', () => {
+  // 「46問」と表示しながら1問しか出ない、といった在庫と出題数の乖離を防ぐ。
+  for (const level of LEVELS) {
+    for (const topic of topicsForLevel(level)) {
+      const stock = grammarByTopic(level, topic).length
+      const deck = buildGrammarDeck(
+        { type: 'grammar', level, topic },
+        { srs: {}, size: 10, day: 0, rng: seededRng(5) },
+      )
+      const at = `英検${level}級「${topic}」(在庫${stock}問)`
+      assert.ok(deck.length >= Math.min(4, stock), `${at}: ${deck.length}問しか出ない`)
+      assertNoRepeatedVariation(deck, at)
+    }
+  }
 })
