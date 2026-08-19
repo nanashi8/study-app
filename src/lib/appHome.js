@@ -46,7 +46,7 @@ export const APP_HOMES = [
       'etymologyQuiz', 'roots', 'myList', 'vocabCamera', 'readingList', 'readingRules',
       'readingPrep', 'reader', 'readingSummary', 'phrases', 'phraseStudy', 'phraseQuiz',
       'listening', 'listeningQuiz', 'dictation', 'dictationPlay', 'vocabSearch',
-      'wordRequests', 'grammar', 'grammarQuiz', 'grammarLessons', 'writing', 'writingPlay',
+      'wordRequests', 'grammar', 'grammarQuiz', 'grammarLessons', 'grammarStrands', 'writing', 'writingPlay',
       'myGrammar', 'writingGrammarReview', 'diagnostic',
     ],
   },
