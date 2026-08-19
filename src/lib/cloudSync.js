@@ -100,6 +100,7 @@ export function progressStateFromCloud(data = {}, current = useStore.getState())
       ? data.diagnosticSeed
       : null,
     engPos: data.engPos ?? null,
+    grammarStrandPos: data.grammarStrandPos ?? {},
     battleRelicLevel:
       Number.isSafeInteger(data.battleRelicLevel)
       && data.battleRelicLevel >= 1

@@ -289,7 +289,7 @@ if (resetGroupIds.join(',') !== ALL_PROGRESS_RESET_GROUP_IDS.join(',')) {
 if (PROGRESS_RESET_GROUPS.length !== 6) {
   errors.push(`履歴リセットが6分類ではない: ${PROGRESS_RESET_GROUPS.length}`)
 }
-if (RESETTABLE_PROGRESS_FIELDS.length !== 44 || RESET_PRESERVED_PROGRESS_FIELDS.length !== 3) {
+if (RESETTABLE_PROGRESS_FIELDS.length !== 45 || RESET_PRESERVED_PROGRESS_FIELDS.length !== 3) {
   errors.push(`履歴リセットの対象数が不一致: 対象${RESETTABLE_PROGRESS_FIELDS.length}・保持${RESET_PRESERVED_PROGRESS_FIELDS.length}`)
 }
 if (new Set(coveredProgressFields).size !== coveredProgressFields.length) {

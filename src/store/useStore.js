@@ -6,6 +6,12 @@ import {
   selectProgressState,
 } from '../lib/progressCode.js'
 import { battleProgression, clampPos } from '../lib/adaptive.js'
+import { getGrammarStrand, grammarStrandLevels } from '../data/grammar-strands.js'
+import {
+  clampStrandPos,
+  nextStrandPosition,
+  resolveStrandPosition,
+} from '../lib/grammarStrand.js'
 import {
   createLearningAnalytics,
   learningSkillForItem,
@@ -195,6 +201,9 @@ export const createInitialLearningState = () => ({
   diagnosticAttempt: 0, // 学習診断を開始した回数。問題候補を重複なしで順送りする
   diagnosticSeed: null, // 端末ごとの問題候補の並びを再現する符号なし32bit整数
   engPos: null, // 適応バトルの現在ポジション(0=5級…6=1級, 小数可)。null=未配置（初回に推定）
+  // 文法の系統ごとの現在地。{ 系統id: その系統の級配列の添字(小数可) }。
+  // 未登録の系統は成績から推定するので、ここには実際に解いた系統だけが載る。
+  grammarStrandPos: {},
   battleRelicLevel: null, // バトルへ持ち込む取得済み戦利品の解放LV。nullは最新を自動選択
   battleStars: 0, // 旧ゲーム表示との保存互換用スター
   battleXpSpent: 0, // 旧保存データとの往復だけに残す不活性な互換値
@@ -423,6 +432,7 @@ export function progressStateFromPayload(payload = {}) {
     diagnosticAttempt: payload.diagnosticAttempt ?? 0,
     diagnosticSeed: payload.diagnosticSeed ?? null,
     engPos: payload.engPos ?? null,
+    grammarStrandPos: payload.grammarStrandPos ?? {},
     battleRelicLevel: payload.battleRelicLevel ?? null,
     battleStars,
     battleXpSpent: normalizeLegacyXp(payload.battleXpSpent),
@@ -1225,6 +1235,34 @@ export const useStore = create(
       // ── 適応バトル（学習マップ）：ポジション＝立ち位置、敵LV＝出題級 ──
       // 明示的にポジションを設定（初回配置や復元時）。
       setEngPos: (pos) => set({ engPos: clampPos(pos) }),
+
+      // ── 文法の系統：級をまたぐ単元ごとに現在地を持つ ──
+      // セッションの正答率で現在地を上下させ、次に開いたときの級へ反映する。
+      // 系統や級が不正なときは何も変えない（保存が壊れて学習が止まるのを防ぐ）。
+      advanceGrammarStrand: (strandId, accuracy) =>
+        set((st) => {
+          const strand = getGrammarStrand(strandId)
+          if (!strand || !Number.isFinite(accuracy)) return {}
+          const current = resolveStrandPosition(strand, st.srs, st.grammarStrandPos?.[strandId])
+          const next = nextStrandPosition(strand, current, accuracy)
+          return {
+            grammarStrandPos: { ...st.grammarStrandPos, [strandId]: next },
+          }
+        }),
+
+      // 学習者が段を選び直したときに現在地を合わせる。
+      setGrammarStrandPos: (strandId, pos) =>
+        set((st) => {
+          const strand = getGrammarStrand(strandId)
+          if (!strand || !Number.isFinite(pos)) return {}
+          const stageCount = grammarStrandLevels(strand).length
+          return {
+            grammarStrandPos: {
+              ...st.grammarStrandPos,
+              [strandId]: clampStrandPos(pos, stageCount),
+            },
+          }
+        }),
       setBattleRelicLevel: (level) =>
         set({
           battleRelicLevel:

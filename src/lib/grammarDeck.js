@@ -5,16 +5,27 @@ import {
   grammarPatternGroup,
   grammarByTopic,
 } from '../data/grammar.js'
+import { getGrammarStrand, grammarStrandQuestions } from '../data/grammar-strands.js'
 import { shuffle } from '../data/vocab.js'
 
 export const GRAMMAR_SESSION_SIZE = 10
 
 // pattern / variationGroup は、語句だけを差し替えた同一の出題型を表す。
 // 型が未指定の手作り問題だけを固有問題として扱い、既存IDとの互換性を保つ。
+//
+// ただし入試型(gr_exam_*)は1つの型の中で examFocus＝「その問題で問う箇所」が
+// 4種類以上あることを check-data が保証しており、語句差し替えではなく別々の
+// 文法判断を問う。型ごと1問に潰すと、在庫46問の5級「代名詞」がクイズでは
+// 1問で終わるなど、単元の在庫が出題数に反映されなくなる。
+// そこで examFocus を持つ問題は「型＋問う箇所」までそろって初めて同型とみなす。
+// examFocus が同じ問題どうしは従来どおり1問に束ねる。
 export function grammarVariationKey(item) {
   if (!item) return ''
   const patternGroup = grammarPatternGroup(item)
-  return patternGroup ? `pattern:${patternGroup}` : `item:${item.id}`
+  if (!patternGroup) return `item:${item.id}`
+  return item.examFocus
+    ? `pattern:${patternGroup}#${item.examFocus}`
+    : `pattern:${patternGroup}`
 }
 
 export function grammarCandidates(source = {}) {
@@ -22,6 +33,13 @@ export function grammarCandidates(source = {}) {
     return (source.ids ?? []).map(getGrammar).filter(Boolean)
   }
   if (source.type === 'grammarDue') return GRAMMAR
+  // 系統は級をまたぐが、1回の出題は現在地の級だけに絞る。
+  // 級を混ぜると「いまどの段にいるか」が学習者から見えなくなるため。
+  if (source.type === 'grammarStrand') {
+    const strand = getGrammarStrand(source.strandId)
+    if (!strand) return []
+    return grammarStrandQuestions(strand, source.level ?? null)
+  }
   if (source.topic) return grammarByTopic(source.level, source.topic)
   return grammarByLevel(source.level)
 }

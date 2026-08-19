@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import { LEVELS, getLevel } from '../data/levels.js'
 import { GRAMMAR, grammarByLevel, grammarByTopic, topicsForLevel } from '../data/grammar.js'
+import { GRAMMAR_STRANDS } from '../data/grammar-strands.js'
 import { todayIndex } from '../store/useStore.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { Card, Button, Chip, cx } from '../components/ui.jsx'
@@ -79,7 +80,7 @@ export function GrammarScreen() {
         {/* 文法解説（中学・高校カリキュラム順に読む） */}
         <button
           onClick={() => navigate('grammarLessons', { stage: lessonStageForLevel(level) })}
-          className="mb-4 flex w-full items-center gap-3 rounded-2xl bg-gradient-to-r from-brand-500 to-brand-400 p-4 text-left text-white shadow-pop transition-transform active:scale-[0.99]"
+          className="mb-3 flex w-full items-center gap-3 rounded-2xl bg-gradient-to-r from-brand-500 to-brand-400 p-4 text-left text-white shadow-pop transition-transform active:scale-[0.99]"
         >
           <span className="text-2xl">📖</span>
           <div className="min-w-0 flex-1">
@@ -88,6 +89,23 @@ export function GrammarScreen() {
           </div>
           <ArrowRight size={20} />
         </button>
+
+        {/* 単元から学ぶ（級をまたいで1つの文法を、成績に合う級で練習する） */}
+        <button
+          onClick={() => navigate('grammarStrands')}
+          className="mb-4 flex w-full items-center gap-3 rounded-2xl bg-white p-4 text-left shadow-sm ring-1 ring-brand-100 transition-transform active:scale-[0.99]"
+        >
+          <span className="text-2xl">🎯</span>
+          <div className="min-w-0 flex-1">
+            <div className="font-display font-extrabold text-ink">単元から学ぶ</div>
+            <div className="text-xs font-bold text-ink/55">
+              比較・仮定法など{GRAMMAR_STRANDS.length}系統を級またぎで。正答率に応じて級が上下します
+            </div>
+          </div>
+          <span className="text-brand-400"><ArrowRight size={20} /></span>
+        </button>
+
+        <h2 className="mb-2 px-1 font-display text-base font-extrabold text-ink/80">級から選ぶ</h2>
 
         {/* 級タブ */}
         <div className="flex gap-2 overflow-x-auto pb-1">

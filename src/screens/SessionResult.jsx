@@ -60,6 +60,7 @@ export function SessionResultScreen() {
   const dragonVeinProgress = useStore((state) => state.dragonVeinProgress)
   const recordSkillResult = useStore((state) => state.recordSkillResult)
   const recordDragonVeinSession = useStore((state) => state.recordDragonVeinSession)
+  const advanceGrammarStrand = useStore((state) => state.advanceGrammarStrand)
   const {
     title = '学習',
     mode = 'study',
@@ -135,6 +136,10 @@ export function SessionResultScreen() {
         correct,
         answered: total,
       })
+    }
+    // 系統クイズは正答率で次回の級（現在地）を上下させる。
+    if (source?.type === 'grammarStrand' && source.strandId) {
+      advanceGrammarStrand(source.strandId, accuracy)
     }
     // 設問ごとのSRSは各クイズ画面で確定済み。ここでは累計だけを一度記録する。
     // eslint-disable-next-line react-hooks/exhaustive-deps

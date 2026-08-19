@@ -80,6 +80,7 @@ export const PERSISTED_PROGRESS_FIELDS = Object.freeze([
   'diagnosticAttempt',
   'diagnosticSeed',
   'engPos',
+  'grammarStrandPos',
   'battleRelicLevel',
   'battleStars',
   'battleXpSpent',
@@ -214,6 +215,16 @@ export function decodeProgress(code) {
   }
   if ('engPos' in payload && payload.engPos !== null && !Number.isFinite(payload.engPos)) {
     throw new Error('コードの engPos が不正です。')
+  }
+  if ('grammarStrandPos' in payload && payload.grammarStrandPos != null) {
+    const positions = payload.grammarStrandPos
+    if (
+      typeof positions !== 'object'
+      || Array.isArray(positions)
+      || Object.values(positions).some((value) => !Number.isFinite(value))
+    ) {
+      throw new Error('コードの grammarStrandPos が不正です。')
+    }
   }
   if (
     'battleRelicLevel' in payload
