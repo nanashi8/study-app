@@ -1063,7 +1063,6 @@ const LONG_CLOSURE_EXPECTATIONS = new Map([
   ['curr_syn_gr_auto_pre1_be_to_002|||by the deadline', { ja: 'その期限までにその提案を修正するためには', binding: { type: 'condition-clause', opener: 'If', governor: 'it needs more resources', clause: 'the committee is to revise the proposal by the deadline' } }],
   ['curr_syn_gr_auto_pre1_conditional_inversion_002|||more carefully', { ja: 'もっと慎重にその提案を修正していたなら', binding: { type: 'inverted-condition-clause', opener: 'Had', governor: 'the outcome would have differed', clause: 'the committee had revised the proposal more carefully' } }],
   ['curr_syn_gr_auto_pre1_ellipsis_002|||after consultation', { ja: '協議のあとで、その結果をもう一度検証するでしょう', binding: { type: 'predicate-completion', opener: 'will verify', governor: 'the research team', clause: 'the research team will verify the results again after consultation' } }],
-  ['curr_syn_gr_auto_pre1_only_inversion_002|||the results', { ja: 'その結果を検証しました', binding: { type: 'inverted-predicate-completion', opener: 'Only after the final review', governor: 'did / verify', clause: 'the research team did verify the results' } }],
 ])
 
 function independentLongBindingExpectationIssue(id, part) {

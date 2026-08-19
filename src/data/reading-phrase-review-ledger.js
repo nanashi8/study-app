@@ -178,7 +178,7 @@ export const LONG_MANUAL_REVIEW_LEDGER = Object.freeze(Object.fromEntries([
   reviewedLong('curr_syn_gr_auto_pre1_comparison_002', '75356b2d', 'b77a3ea7'),
   reviewedLong('curr_syn_gr_auto_pre1_conditional_inversion_002', '2f8ac8fa', '8ae63a4b'),
   reviewedLong('curr_syn_gr_auto_pre1_ellipsis_002', '2ff92c95', '05de00fa'),
-  reviewedLong('curr_syn_gr_auto_pre1_only_inversion_002', 'f8f1c8a0', 'eccb69f4'),
+  reviewedLong('curr_syn_gr_exam_eiken_2_past_perfect_progressive_2_001', 'b8c1a1c9', '78900e0b'),
 ].map((entry) => [entry.id, entry])))
 
 export function longManualReviewEvidence(id, sourceEnglish, phrases) {

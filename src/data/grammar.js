@@ -473,17 +473,17 @@ export const samePatternExamplesFor = (item, limit = 2) => {
     }))
 }
 
-// 3,140問を級間でほぼ均等化した収録目標。
+// 手薄だった単元（命令文・指示語・付加疑問など）を厚くした収録目標。
 export const GRAMMAR_LEVEL_TARGETS = Object.freeze({
-  5: 449,
-  4: 449,
-  3: 449,
-  pre2: 449,
-  2: 448,
-  pre1: 448,
+  5: 489,
+  4: 469,
+  3: 499,
+  pre2: 519,
+  2: 538,
+  pre1: 488,
   1: 448,
 })
 
 // 単元別クイズと「同じ形の例」2文を成立させるため、各級・各単元に最低3問置く。
 export const GRAMMAR_TOPIC_MINIMUM = 3
-export const GRAMMAR_TOTAL_TARGET = 3140
+export const GRAMMAR_TOTAL_TARGET = 3450

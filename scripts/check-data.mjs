@@ -483,13 +483,13 @@ for (const id of Object.keys(LONG_SENTENCE_TRANSLATIONS)) {
 if (
   longSentenceTargetIds.size !== 33 ||
   longSentenceTranslationCount !== longSentenceTargetIds.size ||
-  longSentenceMeaningStepCount !== 103 ||
+  longSentenceMeaningStepCount !== 104 ||
   Object.keys(LONG_SENTENCE_TRANSLATIONS).length !== longSentenceTargetIds.size
 ) {
   errors.push(
     `長い一文フレーズ監査: ${longSentenceTranslationCount}/${longSentenceTargetIds.size}文・` +
     `${longSentenceMeaningStepCount}意味フレーズ・${longSentenceTranslationStepCount}内部SVOCM単位` +
-    '（現行の全対象は33文・103意味フレーズ）',
+    '（現行の全対象は33文・104意味フレーズ）',
   )
 }
 

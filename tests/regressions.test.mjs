@@ -159,7 +159,7 @@ test('全ての文法問題は正解を入れると完成文を含む', () => {
   }
 })
 
-test('英文法は全7級にほぼ均等な3140問があり、重複のない4択を備える', () => {
+test('英文法は全7級に収録目標どおりの問数があり、重複のない4択を備える', () => {
   assert.equal(GRAMMAR.length, GRAMMAR_TOTAL_TARGET)
   for (const [level, target] of Object.entries(GRAMMAR_LEVEL_TARGETS)) {
     assert.equal(grammarByLevel(level).length, target, level)
