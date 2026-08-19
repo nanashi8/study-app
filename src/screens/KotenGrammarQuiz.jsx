@@ -33,7 +33,6 @@ const ALL_QUESTIONS = 9999 // 在庫数を数えるための十分大きな上�
 export function KotenGrammarQuizScreen() {
   const params = useStore((state) => state.params)
   const navigate = useStore((state) => state.navigate)
-  const back = useStore((state) => state.back)
   const reviewGrammar = useStore((state) => state.reviewKotenGrammar)
   const savedIds = useStore((state) => state.kotenGrammarList)
   const addSaved = useStore((state) => state.addManyToKotenGrammarList)
@@ -67,12 +66,15 @@ export function KotenGrammarQuizScreen() {
   const allSaved = relatedGrammar.length > 0
     && relatedGrammar.every((item) => savedIds.includes(item.id))
 
+  // コンテンツ画面の「戻る」は履歴でなく、古典文法の内容選択画面へ。
+  const backToKotenGrammar = () => navigate('kotenGrammar')
+
   if (!deck.length) {
     return (
       <div className="flex h-full flex-col items-center justify-center gap-4 p-8 text-center">
         <div className="text-5xl">📝</div>
         <p className="font-display text-lg font-extrabold text-ink">出題できる文法問題がありません</p>
-        <Button onClick={back}>もどる</Button>
+        <Button onClick={backToKotenGrammar}>もどる</Button>
       </div>
     )
   }
@@ -173,7 +175,7 @@ export function KotenGrammarQuizScreen() {
             <Button variant="secondary" onClick={() => restart(weakIds.length ? weakIds : params.ids)}>
               もう一度
             </Button>
-            <Button onClick={back}>文法へ戻る</Button>
+            <Button onClick={backToKotenGrammar}>文法へ戻る</Button>
           </div>
         </div>
       </div>
@@ -188,7 +190,7 @@ export function KotenGrammarQuizScreen() {
     <div className="flex h-full flex-col">
       <div className="border-b border-amber-100 bg-white/90 px-3 py-3 backdrop-blur">
         <div className="flex items-center gap-3">
-          <IconButton onClick={back} aria-label="腕試しをやめる">
+          <IconButton onClick={backToKotenGrammar} aria-label="腕試しをやめる">
             <Close size={22} />
           </IconButton>
           <div className="min-w-0 flex-1">

@@ -15,7 +15,6 @@ import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 export function VocabStudyScreen() {
   const params = useStore((s) => s.params)
   const navigate = useStore((s) => s.navigate)
-  const back = useStore((s) => s.back)
   const review = useStore((s) => s.review)
   const settings = useStore((s) => s.settings)
   const myList = useStore((s) => s.myList)
@@ -23,6 +22,25 @@ export function VocabStudyScreen() {
 
   // 暗記モード：ONなら毎カード、タップせず最初から意味・語源を開いて見せる。
   const revealAll = settings.revealAnswers
+
+  const source = params.source ?? { type: 'due' }
+
+  // コンテンツ画面の「戻る」は履歴でなく、単語の種類を選ぶ画面（元の階層）へ。
+  const backToVocabParent = () => {
+    if (params.returnTo?.screen) {
+      navigate(params.returnTo.screen, params.returnTo.params ?? {})
+      return
+    }
+    if (source?.type === 'field') {
+      navigate('vocabGroups')
+      return
+    }
+    if (source?.type === 'levelField') {
+      navigate('vocabDecks', { levelId: source.levelId })
+      return
+    }
+    navigate('vocabLevels')
+  }
 
   const srsAtStart = useRef(useStore.getState().srs)
   // size=0 は「絞り込みなし」。在庫数を数えて、問題数の選択肢を実態に合わせる。
@@ -64,7 +82,7 @@ export function VocabStudyScreen() {
         <div className="text-5xl">🌳</div>
         <p className="font-display text-lg font-extrabold text-ink">学習できる単語がありません</p>
         <p className="text-sm font-bold text-ink/50">この条件では対象の単語が見つかりませんでした。</p>
-        <Button onClick={back}>もどる</Button>
+        <Button onClick={backToVocabParent}>もどる</Button>
       </div>
     )
   }
@@ -119,7 +137,7 @@ export function VocabStudyScreen() {
     <div className="flex h-full flex-col">
       {/* ヘッダー（進捗） */}
       <div className="flex items-center gap-3 px-3 py-3">
-        <IconButton onClick={back} aria-label="やめる">
+        <IconButton onClick={backToVocabParent} aria-label="やめる">
           <Close size={22} />
         </IconButton>
         <div className="flex-1">

@@ -70,7 +70,7 @@ async function prepareImageForOcr(file) {
 }
 
 export function VocabCameraScreen() {
-  const back = useStore((state) => state.back)
+  const navigate = useStore((state) => state.navigate)
   const myList = useStore((state) => state.myList)
   const addManyToMyList = useStore((state) => state.addManyToMyList)
   const cameraInput = useRef(null)
@@ -647,7 +647,7 @@ export function VocabCameraScreen() {
                 </p>
               </div>
             </div>
-            <Button full className="mt-3" variant="success" onClick={back}>
+            <Button full className="mt-3" variant="success" onClick={() => navigate('myList')}>
               マイ単語を見る
             </Button>
           </Card>

@@ -49,7 +49,6 @@ const clampRate = (rate) => Math.max(0.55, Math.min(1.25, rate))
 export function ListeningQuizScreen() {
   const params = useStore((s) => s.params)
   const navigate = useStore((s) => s.navigate)
-  const back = useStore((s) => s.back)
   const review = useStore((s) => s.review)
   const settings = useStore((s) => s.settings)
   const toggleNotebookItem = useStore((s) => s.toggleNotebookItem)
@@ -146,12 +145,15 @@ export function ListeningQuizScreen() {
     // リスニングは準備前に始まらないよう、自動再生せず明示的な操作を待つ。
   }, [i, item?.id])
 
+  // コンテンツ画面の「戻る」は履歴でなく、リスニングの内容選択画面へ。
+  const backToListening = () => navigate('listening')
+
   if (!deck.length) {
     return (
       <div className="flex h-full flex-col items-center justify-center gap-4 p-8 text-center">
         <div className="text-5xl">🎧</div>
         <p className="font-display text-lg font-extrabold text-ink">出題できる問題がありません</p>
-        <Button onClick={back}>もどる</Button>
+        <Button onClick={backToListening}>もどる</Button>
       </div>
     )
   }
@@ -206,7 +208,7 @@ export function ListeningQuizScreen() {
 
   const quit = () => {
     stopListeningAudio()
-    back()
+    backToListening()
   }
 
   return (

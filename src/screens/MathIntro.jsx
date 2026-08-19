@@ -18,7 +18,6 @@ const defaultsFor = (intro) =>
 
 export function MathIntroScreen() {
   const params = useStore((state) => state.params)
-  const back = useStore((state) => state.back)
   const navigate = useStore((state) => state.navigate)
   const unit = unitById(params.unitId)
   const intro = introForUnit(params.unitId)
@@ -26,6 +25,9 @@ export function MathIntroScreen() {
   const defaults = useMemo(() => defaultsFor(intro), [intro])
   const [session, setSession] = useState(() => ({ unitId: params.unitId, values: defaults }))
   const values = session.unitId === params.unitId ? session.values : defaults
+
+  // コンテンツ画面の「戻る」は履歴でなく、単元の選択画面へ。
+  const backToMathUnits = () => navigate('mathUnits')
 
   if (!unit || !intro) {
     return (
@@ -35,7 +37,7 @@ export function MathIntroScreen() {
         </div>
         <div className="text-5xl">🧭</div>
         <p className="font-display text-lg font-extrabold text-ink">この単元の導入は準備中です</p>
-        <Button onClick={back}>もどる</Button>
+        <Button onClick={backToMathUnits}>もどる</Button>
       </div>
     )
   }
@@ -66,7 +68,7 @@ export function MathIntroScreen() {
 
         <div className="relative flex items-center gap-2">
           <IconButton
-            onClick={back}
+            onClick={backToMathUnits}
             aria-label="単元一覧へ戻る"
             className="-ml-2 text-white active:bg-white/15"
           >
