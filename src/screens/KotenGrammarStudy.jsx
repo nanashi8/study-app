@@ -37,7 +37,7 @@ function buildDeck(ids, size = SESSION_SIZE) {
 
 export function KotenGrammarStudyScreen() {
   const params = useStore((state) => state.params)
-  const back = useStore((state) => state.back)
+  const navigate = useStore((state) => state.navigate)
   const reviewGrammar = useStore((state) => state.reviewKotenGrammar)
   const savedIds = useStore((state) => state.kotenGrammarList)
   const toggleSaved = useStore((state) => state.toggleKotenGrammarList)
@@ -58,12 +58,15 @@ export function KotenGrammarStudyScreen() {
     : null
   const saved = item ? savedIds.includes(item.id) : false
 
+  // コンテンツ画面の「戻る」は履歴でなく、古典文法の内容選択画面へ。
+  const backToKotenGrammar = () => navigate('kotenGrammar')
+
   if (!deck.length) {
     return (
       <div className="flex h-full flex-col items-center justify-center gap-4 p-8 text-center">
         <div className="text-5xl">🧩</div>
         <p className="font-display text-lg font-extrabold text-ink">学習できる文法がありません</p>
-        <Button onClick={back}>もどる</Button>
+        <Button onClick={backToKotenGrammar}>もどる</Button>
       </div>
     )
   }
@@ -98,7 +101,7 @@ export function KotenGrammarStudyScreen() {
         </div>
         <div className="grid w-full max-w-xs grid-cols-2 gap-3">
           <Button variant="secondary" onClick={restart}>もう一度</Button>
-          <Button onClick={back}>文法へ戻る</Button>
+          <Button onClick={backToKotenGrammar}>文法へ戻る</Button>
         </div>
       </div>
     )
@@ -108,7 +111,7 @@ export function KotenGrammarStudyScreen() {
     <div className="flex h-full flex-col">
       <div className="border-b border-amber-100 bg-white/90 px-3 py-3 backdrop-blur">
         <div className="flex items-center gap-3">
-          <IconButton onClick={back} aria-label="学習をやめる">
+          <IconButton onClick={backToKotenGrammar} aria-label="学習をやめる">
             <Close size={22} />
           </IconButton>
           <div className="min-w-0 flex-1">

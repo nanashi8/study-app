@@ -55,13 +55,29 @@ function streaksFromLog(log = []) {
 export function VocabQuizScreen() {
   const params = useStore((state) => state.params)
   const navigate = useStore((state) => state.navigate)
-  const back = useStore((state) => state.back)
   const review = useStore((state) => state.review)
   const saveQuizSession = useStore((state) => state.saveQuizSession)
   const clearQuizSession = useStore((state) => state.clearQuizSession)
   const selectedStudentId = useStore((state) => state.battleStudentId)
   const source = params.source ?? { type: 'due' }
   const isDragonVein = isDragonVeinSource(source)
+
+  // コンテンツ画面の「戻る」は履歴でなく、単語の種類を選ぶ画面（元の階層）へ。
+  const backToVocabParent = () => {
+    if (params.returnTo?.screen) {
+      navigate(params.returnTo.screen, params.returnTo.params ?? {})
+      return
+    }
+    if (source?.type === 'field') {
+      navigate('vocabGroups')
+      return
+    }
+    if (source?.type === 'levelField') {
+      navigate('vocabDecks', { levelId: source.levelId })
+      return
+    }
+    navigate('vocabLevels')
+  }
 
   const [restore] = useState(() => {
     const saved = useStore.getState().quizSession
@@ -103,7 +119,7 @@ export function VocabQuizScreen() {
       <div className="flex h-full flex-col items-center justify-center gap-4 p-8 text-center">
         <div className="text-5xl">🧩</div>
         <p className="font-display text-lg font-extrabold text-ink">出題できる単語がありません</p>
-        <Button onClick={back}>もどる</Button>
+        <Button onClick={backToVocabParent}>もどる</Button>
       </div>
     )
   }
@@ -203,7 +219,7 @@ export function VocabQuizScreen() {
     <div className={cx('flex h-full flex-col', isDragonVein && 'dragon-vein-quiz-screen')}>
       <div className="border-b border-brand-100 bg-white/90 px-3 py-3 backdrop-blur">
         <div className="flex items-center gap-3">
-          <IconButton onClick={back} aria-label={isDragonVein ? '解読を中断' : 'やめる'}>
+          <IconButton onClick={backToVocabParent} aria-label={isDragonVein ? '解読を中断' : 'やめる'}>
             <Close size={22} />
           </IconButton>
           <div className="flex-1">

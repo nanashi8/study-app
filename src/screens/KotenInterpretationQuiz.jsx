@@ -58,7 +58,6 @@ function SaveButton({ saved, onClick, label }) {
 export function KotenInterpretationQuizScreen() {
   const params = useStore((state) => state.params)
   const navigate = useStore((state) => state.navigate)
-  const back = useStore((state) => state.back)
   const review = useStore((state) => state.reviewKotenInterpretation)
   const wordList = useStore((state) => state.kotenWordList)
   const grammarList = useStore((state) => state.kotenGrammarList)
@@ -79,6 +78,9 @@ export function KotenInterpretationQuizScreen() {
   const answered = selected !== null
   const isCorrect = answered && selected === item?.answer
 
+  // コンテンツ画面の「戻る」は履歴でなく、短文解釈の内容選択画面へ。
+  const backToKotenInterpretationList = () => navigate('kotenInterpretationList')
+
   const restart = () => {
     const nextRun = run + 1
     setRun(nextRun)
@@ -94,7 +96,7 @@ export function KotenInterpretationQuizScreen() {
       <div className="flex h-full flex-col items-center justify-center gap-4 p-8 text-center">
         <div className="text-5xl">📜</div>
         <p className="font-display text-lg font-extrabold text-ink">出題できる短文がありません</p>
-        <Button onClick={back}>もどる</Button>
+        <Button onClick={backToKotenInterpretationList}>もどる</Button>
       </div>
     )
   }
@@ -115,7 +117,7 @@ export function KotenInterpretationQuizScreen() {
         </p>
         <div className="grid w-full max-w-xs grid-cols-2 gap-3">
           <Button variant="secondary" onClick={restart}>もう一度</Button>
-          <Button onClick={back}>もどる</Button>
+          <Button onClick={backToKotenInterpretationList}>もどる</Button>
         </div>
       </div>
     )
@@ -145,7 +147,7 @@ export function KotenInterpretationQuizScreen() {
   return (
     <div className="flex h-full flex-col">
       <div className="flex items-center gap-3 px-3 py-3">
-        <IconButton onClick={back} aria-label="短文解釈をやめる">
+        <IconButton onClick={backToKotenInterpretationList} aria-label="短文解釈をやめる">
           <Close size={22} />
         </IconButton>
         <div className="flex-1">

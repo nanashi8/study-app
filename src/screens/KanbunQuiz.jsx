@@ -62,7 +62,6 @@ function ChoiceExplanation({ question, selected }) {
 
 export function KanbunQuizScreen() {
   const params = useStore((state) => state.params)
-  const back = useStore((state) => state.back)
   const navigate = useStore((state) => state.navigate)
   const review = useStore((state) => state.reviewKanbun)
   const addSaved = useStore((state) => state.addManyToKanbunList)
@@ -81,12 +80,15 @@ export function KanbunQuizScreen() {
   const question = deck[index]
   const item = question ? getKanbunItem(domain, question.itemId) : null
 
+  // コンテンツ画面の「戻る」は履歴でなく、この分野の内容選択画面へ。
+  const backToKanbunCatalog = () => navigate('kanbunCatalog', { domain })
+
   if (!question || !item) {
     return (
       <div className="flex h-full flex-col items-center justify-center gap-4 p-8 text-center">
         <div className="text-5xl">📝</div>
         <p className="font-display text-lg font-extrabold text-ink">出題できる問題がありません</p>
-        <Button onClick={back}>もどる</Button>
+        <Button onClick={backToKanbunCatalog}>もどる</Button>
       </div>
     )
   }
@@ -146,7 +148,7 @@ export function KanbunQuizScreen() {
           )}
           <div className="grid w-full grid-cols-2 gap-3">
             <Button variant="secondary" onClick={() => restart(weakIds.length ? weakIds : params.ids)}>もう一度</Button>
-            <Button onClick={back}>{meta.label}へ戻る</Button>
+            <Button onClick={backToKanbunCatalog}>{meta.label}へ戻る</Button>
           </div>
         </div>
       </div>
@@ -162,7 +164,7 @@ export function KanbunQuizScreen() {
     <div className="flex h-full flex-col">
       <div className="border-b border-rose-100 bg-white/90 px-3 py-3 backdrop-blur">
         <div className="flex items-center gap-3">
-          <IconButton onClick={back} aria-label="テストをやめる"><Close size={22} /></IconButton>
+          <IconButton onClick={backToKanbunCatalog} aria-label="テストをやめる"><Close size={22} /></IconButton>
           <div className="min-w-0 flex-1">
             <ProgressBar value={index / deck.length} color="#be123c" />
             <p className="mt-1 truncate text-[10px] font-extrabold text-ink/40">{params.title ?? `${meta.label}テスト`}</p>

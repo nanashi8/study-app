@@ -29,7 +29,7 @@ const LEARNING_STATUS_LABEL = {
 export function EtymologyStudyScreen() {
   const rootRef = useRef(null)
   const params = useStore((state) => state.params)
-  const back = useStore((state) => state.back)
+  const navigate = useStore((state) => state.navigate)
   const reviewEtymology = useStore((state) => state.reviewEtymology)
   const settings = useStore((state) => state.settings)
   // 暗記モード：ONなら毎カード、タップせず最初から答えと説明を開いて見せる。
@@ -54,6 +54,13 @@ export function EtymologyStudyScreen() {
   const results = useRef({ remembered: 0, forgot: 0 })
   const pack = deck[index]
 
+  // コンテンツ画面の「戻る」は履歴でなく、語源カードの種類を選ぶ画面へ。
+  const backToEtymologyParent = () => (
+    params.packIds?.length === 1
+      ? navigate('etymologyPack', { packId: params.packIds[0] })
+      : navigate('roots')
+  )
+
   useEffect(() => {
     rootRef.current?.closest('main')?.scrollTo({ top: 0, behavior: 'auto' })
   }, [index])
@@ -64,7 +71,7 @@ export function EtymologyStudyScreen() {
         <div className="text-5xl">🧩</div>
         <p className="font-display text-lg font-extrabold text-ink">この条件の語源カードはありません</p>
         <p className="text-sm font-bold text-ink/50">別の分類や進捗状態を選んでください。</p>
-        <Button onClick={back}>もどる</Button>
+        <Button onClick={backToEtymologyParent}>もどる</Button>
       </div>
     )
   }
@@ -84,7 +91,7 @@ export function EtymologyStudyScreen() {
         <p className="rounded-2xl bg-brand-50 px-4 py-3 text-xs font-bold leading-relaxed text-brand-700">
           結果は英単語の暗記記録とは分けて、語源の学習記録に保存しました。
         </p>
-        <Button full size="lg" onClick={back}>語源カードへ戻る</Button>
+        <Button full size="lg" onClick={backToEtymologyParent}>語源カードへ戻る</Button>
       </div>
     )
   }
@@ -110,7 +117,7 @@ export function EtymologyStudyScreen() {
   return (
     <div ref={rootRef} className="flex h-full flex-col">
       <div className="flex shrink-0 items-center gap-3 px-3 py-3">
-        <IconButton onClick={back} aria-label="語源カードをやめる">
+        <IconButton onClick={backToEtymologyParent} aria-label="語源カードをやめる">
           <Close size={22} />
         </IconButton>
         <div className="flex-1">

@@ -59,7 +59,7 @@ function QuizChoices({ options, answerId, selected, onChoose }) {
 
 export function EtymologyQuizScreen() {
   const params = useStore((state) => state.params)
-  const back = useStore((state) => state.back)
+  const navigate = useStore((state) => state.navigate)
   const reviewEtymology = useStore((state) => state.reviewEtymology)
   const scrollRef = useRef(null)
   const initialEtymologySrs = useRef(useStore.getState().etymologySrs)
@@ -80,6 +80,13 @@ export function EtymologyQuizScreen() {
   const [done, setDone] = useState(false)
   const results = useRef(freshResults())
   const pack = deck[index]
+
+  // コンテンツ画面の「戻る」は履歴でなく、語源カードの種類を選ぶ画面へ。
+  const backToEtymologyParent = () => (
+    params.packIds?.length === 1
+      ? navigate('etymologyPack', { packId: params.packIds[0] })
+      : navigate('roots')
+  )
   const question = useMemo(
     () => pack ? buildEtymologyQuizQuestion(pack) : null,
     [pack?.id],
@@ -95,7 +102,7 @@ export function EtymologyQuizScreen() {
         <div className="text-5xl">🧩</div>
         <p className="font-display text-lg font-extrabold text-ink">確認できる語源カードがありません</p>
         <p className="text-sm font-bold text-ink/50">別の学び方や進み具合を選んでください。</p>
-        <Button onClick={back}>戻る</Button>
+        <Button onClick={backToEtymologyParent}>戻る</Button>
       </div>
     )
   }
@@ -142,7 +149,7 @@ export function EtymologyQuizScreen() {
                 復習する（{missedCount}枚）
               </Button>
             )}
-            <Button full size="lg" variant="secondary" onClick={back}>語源へ戻る</Button>
+            <Button full size="lg" variant="secondary" onClick={backToEtymologyParent}>語源へ戻る</Button>
           </div>
         </div>
       </div>
@@ -183,7 +190,7 @@ export function EtymologyQuizScreen() {
     <div className="flex h-full flex-col" data-etymology-quiz>
       <div className="shrink-0 border-b border-brand-100 bg-white/95 px-3 py-3 backdrop-blur">
         <div className="flex items-center gap-3">
-          <IconButton onClick={back} aria-label="語源の確認をやめる">
+          <IconButton onClick={backToEtymologyParent} aria-label="語源の確認をやめる">
             <Close size={22} />
           </IconButton>
           <div className="flex-1">

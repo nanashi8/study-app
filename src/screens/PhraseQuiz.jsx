@@ -42,7 +42,6 @@ function streaksFromLog(log) {
 export function PhraseQuizScreen() {
   const params = useStore((state) => state.params)
   const navigate = useStore((state) => state.navigate)
-  const back = useStore((state) => state.back)
   const review = useStore((state) => state.review)
   const toggleNotebookItem = useStore((state) => state.toggleNotebookItem)
   const learningNotebook = useStore((state) => state.learningNotebook)
@@ -66,12 +65,15 @@ export function PhraseQuizScreen() {
     return shuffle([item, ...pickPhraseDistractors(item, 2)])
   }, [item?.id]) // eslint-disable-line react-hooks/exhaustive-deps
 
+  // コンテンツ画面の「戻る」は履歴でなく、熟語・構文の内容選択画面へ。
+  const backToPhrases = () => navigate('phrases')
+
   if (!deck.length) {
     return (
       <div className="flex h-full flex-col items-center justify-center gap-4 p-8 text-center">
         <div className="text-5xl">🧩</div>
         <p className="font-display text-lg font-extrabold text-ink">出題できる項目がありません</p>
-        <Button onClick={back}>もどる</Button>
+        <Button onClick={backToPhrases}>もどる</Button>
       </div>
     )
   }
@@ -147,7 +149,7 @@ export function PhraseQuizScreen() {
   return (
     <div className={cx('flex h-full flex-col', isDragonVein && 'dragon-vein-quiz-screen')}>
       <div className="flex items-center gap-3 border-b border-brand-100 bg-white/90 px-3 py-3 backdrop-blur">
-        <IconButton onClick={back} aria-label={isDragonVein ? '解読を中断' : 'やめる'}><Close size={22} /></IconButton>
+        <IconButton onClick={backToPhrases} aria-label={isDragonVein ? '解読を中断' : 'やめる'}><Close size={22} /></IconButton>
         <div className="flex-1"><ProgressBar value={index / deck.length} color={isDragonVein ? '#8b5cf6' : '#0ea5e9'} /></div>
         <IconButton
           onClick={() => toggleNotebookItem('phrases', item.id)}
