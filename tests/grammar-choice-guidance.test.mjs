@@ -7,7 +7,7 @@ import {
   grammarChoiceGuidanceFor,
 } from '../src/data/grammar.js'
 
-test('英文法3140問の誤答9420件すべてに、具体的な使う場面または不使用理由がある', () => {
+test('英文法3450問の誤答10350件すべてに、具体的な使う場面または不使用理由がある', () => {
   let distractorCount = 0
   let validCount = 0
   let invalidCount = 0
@@ -45,8 +45,8 @@ test('英文法3140問の誤答9420件すべてに、具体的な使う場面ま
     }
   }
 
-  assert.equal(GRAMMAR.length, 3_140)
-  assert.equal(distractorCount, 9_420)
+  assert.equal(GRAMMAR.length, 3_450)
+  assert.equal(distractorCount, 10_350)
   assert.ok(validCount > 0)
   assert.ok(invalidCount > 0)
   assert.ok(sources.get('grammar-corpus') > 0)

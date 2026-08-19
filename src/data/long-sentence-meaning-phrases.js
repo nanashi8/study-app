@@ -176,9 +176,10 @@ export const LONG_SENTENCE_MEANING_PHRASES = Object.freeze({
     m('the research team will verify the results', '研究チームはその結果を検証するでしょう'),
     m('again after consultation.', '協議のあとでもう一度（検証するでしょう）'),
   ),
-  curr_syn_gr_auto_pre1_only_inversion_002: groups(
-    m('Only after the final review', '最終確認を終えて初めて'),
-    m('did the research team verify the results.', '研究チームはその結果を検証しました'),
+  curr_syn_gr_exam_eiken_2_past_perfect_progressive_2_001: groups(
+    m('My mother had been cooking dinner', '母はずっと夕食を作っていました'),
+    m('for over an hour', '1時間以上'),
+    m('when the guests arrived early.', '客たちが早く到着したとき'),
   ),
 })
 

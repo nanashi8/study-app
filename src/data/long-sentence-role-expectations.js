@@ -33,5 +33,5 @@ export const LONG_SENTENCE_ROLE_EXPECTATIONS = Object.freeze({
   curr_syn_gr_auto_pre1_comparison_002: Object.freeze([['The proposal', 'S'], ['is', 'V'], ['not so much', 'LINK'], ['expensive', 'C'], ['as', 'LINK'], ['impractical', 'C'], ['under current conditions.', 'M']]),
   curr_syn_gr_auto_pre1_conditional_inversion_002: Object.freeze([['Had', 'V'], ['the committee', 'S'], ['revised', 'V'], ['the proposal', 'O'], ['more carefully,', 'M'], ['the outcome', 'S'], ['would have differed.', 'V']]),
   curr_syn_gr_auto_pre1_ellipsis_002: Object.freeze([['If', 'LINK'], ['necessary,', 'C'], ['the research team', 'S'], ['will verify', 'V'], ['the results', 'O'], ['again', 'M'], ['after consultation.', 'M']]),
-  curr_syn_gr_auto_pre1_only_inversion_002: Object.freeze([['Only after the final review', 'M'], ['did', 'V'], ['the research team', 'S'], ['verify', 'V'], ['the results.', 'O']]),
+  curr_syn_gr_exam_eiken_2_past_perfect_progressive_2_001: Object.freeze([['My mother', 'S'], ['had been cooking', 'V'], ['dinner', 'O'], ['for over an hour', 'M'], ['when the guests arrived early.', 'M']]),
 })

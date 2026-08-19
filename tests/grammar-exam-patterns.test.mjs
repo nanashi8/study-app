@@ -23,6 +23,37 @@ const EXPECTED_PATTERNS = [
   'exam:university:pre1_concession_as',
   'exam:university:1_not_until_inversion',
   'exam:university:1_degree_adverb',
+  'exam:eiken:5_imperative_1',
+  'exam:eiken:5_demonstrative_1',
+  'exam:eiken:5_demonstrative_2',
+  'exam:eiken:5_imperative_2',
+  'exam:eiken:4_pronoun_usage_1',
+  'exam:eiken:4_pronoun_usage_2',
+  'exam:eiken:3_tag_question_1',
+  'exam:eiken:3_tag_question_2',
+  'exam:eiken:3_preposition_1',
+  'exam:eiken:3_preposition_2',
+  'exam:eiken:3_verb_complement_2',
+  'exam:eiken:pre2_conjunction_1',
+  'exam:eiken:pre2_conjunction_2',
+  'exam:eiken:pre2_pronoun_usage_1',
+  'exam:eiken:pre2_pronoun_usage_2',
+  'exam:eiken:pre2_preposition_1',
+  'exam:eiken:pre2_preposition_2',
+  'exam:eiken:pre2_used_to_contrast_2',
+  'exam:eiken:2_emphasis_1',
+  'exam:eiken:2_emphasis_2',
+  'exam:eiken:2_past_perfect_progressive_1',
+  'exam:eiken:2_past_perfect_progressive_2',
+  'exam:eiken:2_comparison_advanced_1',
+  'exam:eiken:2_comparison_advanced_2',
+  'exam:eiken:2_conjunction_advanced_1',
+  'exam:eiken:2_conjunction_advanced_2',
+  'exam:eiken:2_modal_obligation_2',
+  'exam:university:pre1_noun_clause_1',
+  'exam:university:pre1_noun_clause_2',
+  'exam:university:pre1_compound_relative_1',
+  'exam:university:pre1_compound_relative_2',
 ]
 
 const countBy = (items, select) =>
@@ -34,10 +65,10 @@ const countBy = (items, select) =>
     }, new Map())].sort(([a], [b]) => a.localeCompare(b)),
   )
 
-test('入試調査から追加した14出題型を各10問、全級に均等収録する', () => {
-  assert.equal(GRAMMAR_EXAM_PATTERN_COUNT, 14)
-  assert.equal(GRAMMAR_EXAM_QUESTION_COUNT, 140)
-  assert.equal(GRAMMAR_EXAM_PATTERN_FAMILIES.length, 14)
+test('入試調査から追加した45出題型を各10問、単元の手薄な級ほど厚めに収録する', () => {
+  assert.equal(GRAMMAR_EXAM_PATTERN_COUNT, 45)
+  assert.equal(GRAMMAR_EXAM_QUESTION_COUNT, 450)
+  assert.equal(GRAMMAR_EXAM_PATTERN_FAMILIES.length, 45)
   assert.ok(GRAMMAR_EXAM_PATTERN_FAMILIES.every((family) => family.length === 10))
   assert.deepEqual(
     GRAMMAR_EXAM_PATTERN_FAMILIES.map((family) => family[0].pattern),
@@ -45,11 +76,11 @@ test('入試調査から追加した14出題型を各10問、全級に均等収�
   )
   assert.deepEqual(
     countBy(GRAMMAR_EXAM_PATTERNS, (item) => item.level),
-    { 1: 20, 2: 20, 3: 20, 4: 20, 5: 20, pre1: 20, pre2: 20 },
+    { 1: 20, 2: 110, 3: 70, 4: 40, 5: 60, pre1: 60, pre2: 90 },
   )
   assert.deepEqual(
     countBy(GRAMMAR_EXAM_PATTERNS, (item) => item.examSource),
-    { common: 10, eiken: 80, university: 50 },
+    { common: 10, eiken: 350, university: 90 },
   )
   for (const family of GRAMMAR_EXAM_PATTERN_FAMILIES) {
     const focusCounts = countBy(family, (item) => item.examFocus)
@@ -87,7 +118,7 @@ test('入試型問題は独立した英文・和訳・4択・解説を備え、�
   }
 })
 
-test('既存IDの順序を変えず、入試型140問を文法コーパス末尾へ追加する', () => {
+test('既存IDの順序を変えず、入試型450問を文法コーパス末尾へ追加する', () => {
   assert.deepEqual(
     GRAMMAR.slice(-GRAMMAR_EXAM_QUESTION_COUNT).map((item) => item.id),
     GRAMMAR_EXAM_PATTERNS.map((item) => item.id),

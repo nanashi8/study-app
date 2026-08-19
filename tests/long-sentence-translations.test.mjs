@@ -33,7 +33,7 @@ test('独立した長い構文33文すべてに、意味・発音フレーズと
   assert.equal(
     Object.values(LONG_SENTENCE_TRANSLATIONS)
       .reduce((sum, item) => sum + item.meaningSteps.length, 0),
-    103,
+    104,
     '全33文の学習者向け意味フレーズを全件固定する',
   )
   assert.deepEqual(
@@ -172,7 +172,7 @@ test('長い一文33件は同一の文法説明を画面と音声で繰り返さ
     assert.deepEqual(new Set(visibleTexts), new Set(sourceTexts), id)
   }
   assert.equal(Object.keys(LONG_SENTENCE_TRANSLATIONS).length, 33)
-  assert.equal(stepCount, 103)
+  assert.equal(stepCount, 104)
 })
 
 test('33文は明示台帳一致時だけ最終監査確認済みになる', () => {

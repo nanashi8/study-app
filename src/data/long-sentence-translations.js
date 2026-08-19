@@ -594,18 +594,13 @@ const RAW_LONG_SENTENCE_TRANSLATIONS = Object.freeze({
       closureBinding: { type: 'predicate-completion', opener: 'will verify', governor: 'the research team', clause: 'the research team will verify the results again after consultation' },
     }),
   ),
-  curr_syn_gr_auto_pre1_only_inversion_002: guide(
-    '限定Mを先に置き、倒置された助動詞V→S→本動詞V→Oの英語順を保ちます。',
-    step('M', 'Only after the final review', '最終確認を終えて初めて', 'Only + after の五語を、時を限定する一つのMとして読みます。この限定Mが文頭に出たため後ろが倒置します。', '', {
-      specialGrammar: ['focus'],
-      focusBinding: { type: 'fronted-only-triggering-inversion', scope: 'after the final review', governor: 'did the research team verify' },
-    }),
-    step('V', 'did', '過去のこととして（続きは次へ）', '倒置で主語より前へ出た過去の助動詞です。verify の意味は先取りしません。'),
-    step('S', 'the research team', '研究チームは', '倒置された主節の主語です。'),
-    step('V', 'verify', '検証しました（何をかは次へ）', '倒置された主節の本動詞で、動作をここで一度だけ示します。'),
-    step('O', 'the results.', 'その結果を検証しました', 'verify の対象まで読んで、倒置された主節の動作を完成します。', '', {
-      closureBinding: { type: 'inverted-predicate-completion', opener: 'Only after the final review', governor: 'did / verify', clause: 'the research team did verify the results' },
-    }),
+  curr_syn_gr_exam_eiken_2_past_perfect_progressive_2_001: guide(
+    '過去完了進行形 had been＋ing の主節をS→V→Oの順に読み、二つのM（期間・基準時）を後ろへ足します。',
+    step('S', 'My mother', '私の母は', '文全体の主語です。'),
+    step('V', 'had been cooking', 'ずっと料理していました（対象は次へ）', '過去完了進行形 had been＋ing で、過去のある時点まで継続していた動作を表します。'),
+    step('O', 'dinner', '夕食を', 'cooking の対象です。'),
+    step('M', 'for over an hour', '1時間以上', '継続した時間の長さを表す修飾語です。'),
+    step('M', 'when the guests arrived early.', '客たちが早く到着したとき', '動作が続いていた基準となる過去の時点を示す時の副詞節です。'),
   ),
 })
 

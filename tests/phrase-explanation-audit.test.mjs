@@ -72,7 +72,7 @@ test('全長文・長い一文・文学の意味フレーズと内部SVOCMを監
   })
   assert.equal(audit.longSentences.sentenceCount, 33)
   assert.equal(audit.longSentences.phraseCount, 236)
-  assert.equal(audit.longSentences.meaningPhraseCount, 103)
+  assert.equal(audit.longSentences.meaningPhraseCount, 104)
   assert.equal(audit.longSentences.meaningMultiRoleCount, 65)
   assert.equal(audit.literature.workCount, 9)
   assert.equal(audit.literature.sceneCount, 59)

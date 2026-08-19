@@ -418,7 +418,7 @@ for (const file of files) {
 
 if (PASSAGES.length < 24 || sentenceCount < 567) errors.push('長文の全対象数が基準を下回る')
 if (longSentenceCount < 33) errors.push('長い一文の全対象数が基準を下回る')
-if (GRAMMAR.length !== 3140 || grammarChoicePaths !== 9420) errors.push('英文法の全対象数が契約と不一致')
+if (GRAMMAR.length !== 3450 || grammarChoicePaths !== 10350) errors.push('英文法の全対象数が契約と不一致')
 
 if (errors.length) {
   console.error(`学習者向け品質契約: ${errors.length}件の違反`)
