@@ -24,6 +24,7 @@ import {
 } from '../components/Icons.jsx'
 import { buildKotenCultureInstructorExplanation } from '../lib/instructorExplanations.js'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
+import { MAX_SRS_BOX } from '../lib/srs.js'
 
 const MASTER_BOX = 4
 
@@ -103,7 +104,7 @@ export function KotenCultureQuizScreen() {
     } else if (choice === question.answer) {
       reviewCulture(primary.id, 'correct')
       setCorrectCount((count) => count + 1)
-      const nextBox = Math.min(6, previousBox + 1)
+      const nextBox = Math.min(MAX_SRS_BOX, previousBox + 1)
       if (nextBox > previousBox) setBoxUp((count) => count + 1)
       if (previousBox < MASTER_BOX && nextBox >= MASTER_BOX) {
         setNewlyMastered((count) => count + 1)

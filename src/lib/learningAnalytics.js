@@ -1,6 +1,23 @@
+import {
+  LONG_TERM_SRS_BOX,
+  MAX_SRS_BOX,
+} from './srs.js'
+
 const ANALYTICS_VERSION = 2
-const LONG_TERM_BOX = 4
+const LONG_TERM_BOX = LONG_TERM_SRS_BOX
 const MAX_TRACKED_DAYS = 90
+const MEMORY_WEIGHTS = Object.freeze([
+  0.22,
+  0.42,
+  0.58,
+  0.7,
+  0.82,
+  0.91,
+  0.96,
+  0.975,
+  0.985,
+  0.99,
+])
 
 // 学習時間は「回答と回答の間隔」から推定する。
 // 5分を超える間隔は離席とみなして加算せず、単発の回答には最小クレジットだけ与える。
@@ -501,11 +518,11 @@ export function analyzeLearning({
   let lifetimeWrong = 0
 
   for (const entry of entries) {
-    const box = clamp(Math.floor(nonNegative(entry.box)), 0, 6)
+    const box = clamp(Math.floor(nonNegative(entry.box)), 0, MAX_SRS_BOX)
     if (box === 0) stages.fragile += 1
     else if (box < LONG_TERM_BOX) stages.short += 1
     else stages.long += 1
-    weightedMemory += [0.22, 0.42, 0.58, 0.7, 0.82, 0.91, 0.96][box]
+    weightedMemory += MEMORY_WEIGHTS[box]
     lifetimeCorrect += nonNegative(entry.correct)
     lifetimeWrong += nonNegative(entry.wrong)
     lifetimeReviews += nonNegative(entry.correct) + nonNegative(entry.wrong)

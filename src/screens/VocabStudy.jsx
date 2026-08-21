@@ -11,6 +11,11 @@ import { PosBadge } from '../components/WordBits.jsx'
 import { Button, ProgressBar, IconButton } from '../components/ui.jsx'
 import { Close, Bookmark, BookmarkFilled, ArrowRight, Lightbulb } from '../components/Icons.jsx'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
+import { VocabReviewHistory } from '../components/VocabReviewHistory.jsx'
+
+const sessionKey = (params) => (
+  `vocab-study|${JSON.stringify(params.source ?? { type: 'due' })}|${params.title ?? ''}|${params.size ?? ''}`
+)
 
 export function VocabStudyScreen() {
   const params = useStore((s) => s.params)
@@ -19,6 +24,8 @@ export function VocabStudyScreen() {
   const settings = useStore((s) => s.settings)
   const myList = useStore((s) => s.myList)
   const toggleMyList = useStore((s) => s.toggleMyList)
+  const saveQuizSession = useStore((s) => s.saveQuizSession)
+  const clearQuizSession = useStore((s) => s.clearQuizSession)
 
   // 暗記モード：ONなら毎カード、タップせず最初から意味・語源を開いて見せる。
   const revealAll = settings.revealAnswers
@@ -42,19 +49,42 @@ export function VocabStudyScreen() {
     navigate('vocabLevels')
   }
 
+  const [restore] = useState(() => {
+    const saved = useStore.getState().quizSession
+    return saved && saved.key === sessionKey(params) ? saved : null
+  })
+  useEffect(() => clearQuizSession(), [clearQuizSession])
+
   const srsAtStart = useRef(useStore.getState().srs)
   // size=0 は「絞り込みなし」。在庫数を数えて、問題数の選択肢を実態に合わせる。
   const buildFor = (size) =>
-    buildDeck(params.source ?? { type: 'due' }, { srs: srsAtStart.current, size })
+    buildDeck(source, { srs: srsAtStart.current, size })
   const [poolSize] = useState(() => buildFor(0).length)
   const sessionSize = useSessionSize(poolSize || Infinity)
-  const [deck, setDeck] = useState(() => buildFor(params.size ?? sessionSize))
+  const [deck, setDeck] = useState(() => (
+    restore?.deck ?? buildFor(params.size ?? sessionSize)
+  ))
 
-  const [i, setI] = useState(0)
-  const [flipped, setFlipped] = useState(revealAll)
-  const results = useRef({ remembered: 0, forgot: 0, forgotIds: [] })
+  const [i, setI] = useState(restore?.i ?? 0)
+  const [flipped, setFlipped] = useState(restore?.flipped ?? revealAll)
+  const results = useRef(restore
+    ? {
+        ...restore.results,
+        forgotIds: [...(restore.results?.forgotIds ?? [])],
+      }
+    : { remembered: 0, forgot: 0, forgotIds: [] })
+  const beforeBoxesAtStart = useRef(
+    restore?.beforeBoxes
+    ?? Object.fromEntries(deck.map((item) => [
+      item.id,
+      Number.isFinite(srsAtStart.current[item.id]?.box)
+        ? srsAtStart.current[item.id].box
+        : null,
+    ])),
+  )
 
   const word = deck[i]
+  const entry = useStore((state) => (word ? state.srs[word.id] : null))
   // その語を含む熟語・構文は全部見せる（数を絞ると使い方が抜ける）。
   const relatedPhrases = useMemo(() => phraseGroupsForWord(word), [word?.id])
 
@@ -105,9 +135,11 @@ export function VocabStudyScreen() {
         beforeBoxes: Object.fromEntries(
           deck.map((item) => [
             item.id,
-            Number.isFinite(srsAtStart.current[item.id]?.box)
-              ? srsAtStart.current[item.id].box
-              : null,
+            Object.hasOwn(beforeBoxesAtStart.current, item.id)
+              ? beforeBoxesAtStart.current[item.id]
+              : Number.isFinite(srsAtStart.current[item.id]?.box)
+                ? srsAtStart.current[item.id].box
+                : null,
           ]),
         ),
         completedAt,
@@ -133,6 +165,21 @@ export function VocabStudyScreen() {
       : []),
   ]
 
+  const saveBeforeReference = (screen, referenceParams) => {
+    saveQuizSession({
+      key: sessionKey(params),
+      deck,
+      i,
+      flipped,
+      beforeBoxes: { ...beforeBoxesAtStart.current },
+      results: {
+        ...results.current,
+        forgotIds: [...results.current.forgotIds],
+      },
+    })
+    navigate(screen, referenceParams)
+  }
+
   return (
     <div className="flex h-full flex-col">
       {/* ヘッダー（進捗） */}
@@ -151,12 +198,29 @@ export function VocabStudyScreen() {
           max={poolSize}
           onResize={(size, { discard }) => {
             if (discard) {
-              setDeck(buildFor(size))
+              const nextDeck = buildFor(size)
+              setDeck(nextDeck)
               setI(0)
               setFlipped(revealAll)
               results.current = { remembered: 0, forgot: 0, forgotIds: [] }
+              beforeBoxesAtStart.current = Object.fromEntries(nextDeck.map((item) => [
+                item.id,
+                Number.isFinite(srsAtStart.current[item.id]?.box)
+                  ? srsAtStart.current[item.id].box
+                  : null,
+              ]))
             } else {
-              setDeck((current) => growDeck(current, i + 1, buildFor(size), size))
+              setDeck((current) => {
+                const nextDeck = growDeck(current, i + 1, buildFor(size), size)
+                for (const item of nextDeck) {
+                  if (!Object.hasOwn(beforeBoxesAtStart.current, item.id)) {
+                    beforeBoxesAtStart.current[item.id] = Number.isFinite(srsAtStart.current[item.id]?.box)
+                      ? srsAtStart.current[item.id].box
+                      : null
+                  }
+                }
+                return nextDeck
+              })
             }
           }}
         />
@@ -198,6 +262,7 @@ export function VocabStudyScreen() {
                 size="lg"
               />
             </div>
+            <VocabReviewHistory entry={entry} className="mt-2" />
           </div>
 
           {!flipped ? (
@@ -243,7 +308,7 @@ export function VocabStudyScreen() {
                   </div>
                   <EtymologyBlock
                     word={word}
-                    onRoot={(rootId) => navigate('rootDetail', { rootId })}
+                    onRoot={(rootId) => saveBeforeReference('rootDetail', { rootId })}
                   />
                 </div>
               )}
@@ -280,7 +345,7 @@ export function VocabStudyScreen() {
               )}
 
               <button
-                onClick={() => navigate('wordDetail', { id: word.id })}
+                onClick={() => saveBeforeReference('wordDetail', { id: word.id })}
                 className="flex w-full items-center justify-center gap-1.5 rounded-2xl bg-brand-100 py-3 text-sm font-extrabold text-brand-700 active:bg-brand-200"
               >
                 辞書ページで関連語も見る

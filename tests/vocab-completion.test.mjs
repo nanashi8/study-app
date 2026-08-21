@@ -124,6 +124,15 @@ test('暗記完了レポートは今回・今日・定着対象・復習予定�
     Object.fromEntries(report.schedule.map((item) => [item.id, item.count])),
     { now: 1, tomorrow: 1, soon: 0, later: 1 },
   )
+  assert.deepEqual(
+    Object.fromEntries(report.schedule.map((item) => [item.id, item.ids])),
+    {
+      now: [forgot.id],
+      tomorrow: [first.id],
+      soon: [],
+      later: [mastered.id],
+    },
+  )
   assert.equal(report.nextReviewInDays, 0)
   assert.ok(report.curve[0].retention > report.curve.at(-1).retention)
 })
@@ -167,5 +176,9 @@ test('暗記完了画面は全単語暗記入口の合流点だけで詳細レ�
   for (const action of ['復習する', '次へ進む', '戻る']) {
     assert.match(report, new RegExp(action))
   }
+  assert.match(report, /data-vocab-review-schedule/)
+  assert.match(report, /期限前の枠もタップ/)
+  assert.match(report, /30→60→90→180日/)
+  assert.match(result, /onReviewSchedule=\{reviewVocabSchedule\}/)
   assert.equal(PERSISTED_PROGRESS_FIELDS.includes('vocabSession'), false)
 })

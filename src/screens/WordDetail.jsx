@@ -11,6 +11,7 @@ import { Card, Button, Chip, IconButton } from '../components/ui.jsx'
 import { Bookmark, BookmarkFilled, Link, Lightbulb, ArrowRight } from '../components/Icons.jsx'
 import { summarizeSrsItems } from '../lib/contentProgress.js'
 import { cx } from '../components/ui.jsx'
+import { VocabReviewHistory } from '../components/VocabReviewHistory.jsx'
 
 const toId = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '')
 
@@ -156,6 +157,7 @@ export function WordDetailScreen() {
             <div className="font-display text-xl font-extrabold text-ink">{word.meanings.join('・')}</div>
           </div>
           <LearningStatusBars progress={progress} className="mt-4" compact units={{ learning: '語', quiz: '問' }} />
+          <VocabReviewHistory entry={entry} className="mt-3 justify-start" />
         </Card>
 
         {/* 例文 */}

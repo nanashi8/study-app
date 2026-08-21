@@ -18,6 +18,7 @@ import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { buildKotenWordInstructorExplanation } from '../lib/instructorExplanations.js'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 import { growDeck } from '../lib/session.js'
+import { MAX_SRS_BOX } from '../lib/srs.js'
 
 function shuffle(arr) {
   const a = [...arr]
@@ -126,7 +127,7 @@ export function KotenQuizScreen() {
     } else if (optId === word.id) {
       reviewKoten(word.id, 'correct')
       setCorrectCount((n) => n + 1)
-      const newBox = Math.min(6, prevBox + 1)
+      const newBox = Math.min(MAX_SRS_BOX, prevBox + 1)
       if (newBox > prevBox) setBoxUp((n) => n + 1)
       if (prevBox < 4 && newBox >= 4) setNewlyMastered((n) => n + 1)
     } else {
