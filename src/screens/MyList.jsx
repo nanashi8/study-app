@@ -37,6 +37,7 @@ import {
   Plus,
   Search,
 } from '../components/Icons.jsx'
+import { MAINTENANCE_SRS_BOX } from '../lib/srs.js'
 
 const PAGE_SIZE = 40
 const SESSION_LIMITS = Object.freeze({
@@ -87,6 +88,9 @@ function LearningStatus({ progress }) {
   }
   if (progress.due) {
     return <span className="text-[10px] font-extrabold text-rose-700">復習どき</span>
+  }
+  if (progress.box >= MAINTENANCE_SRS_BOX) {
+    return <span className="text-[10px] font-extrabold text-indigo-700">維持復習・段階 {progress.box}</span>
   }
   if (progress.box >= 4) {
     return <span className="text-[10px] font-extrabold text-emerald-700">定着段階 {progress.box}</span>

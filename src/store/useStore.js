@@ -89,11 +89,19 @@ import {
   normalizeContentQuizResults,
   recordContentQuizResult as recordContentQuizResultState,
 } from '../lib/contentProgress.js'
+import {
+  appendReviewMark,
+  reviewMarksForEntry,
+} from '../lib/reviewHistory.js'
+import {
+  MAX_SRS_BOX,
+  SRS_INTERVAL_DAYS,
+} from '../lib/srs.js'
 
 // ── 学習ロジックの定数 ──────────────────────────────────────────────
-// Leitner 式の間隔反復。box が上がるほど次に出る間隔（日数）が伸びる。
-const INTERVALS = [0, 1, 2, 4, 7, 15, 30]
-const MAX_BOX = INTERVALS.length - 1
+// Leitner 式の間隔反復。十分に定着した後は60・90・180日の維持復習へ進む。
+const INTERVALS = SRS_INTERVAL_DAYS
+const MAX_BOX = MAX_SRS_BOX
 
 // 回答結果ごとの box 変化。学習評価はSRSと正誤記録だけで扱う。
 const RESULTS = {
@@ -247,6 +255,7 @@ function applyReview(srs, stats, wordId, result, timestamp = Date.now()) {
   const prev = srs[wordId] ?? { box: 0, correct: 0, wrong: 0, due: day, last: null }
   const activity = result === 'remembered' || result === 'forgot' ? 'memory' : 'test'
   const remembered = result === 'correct' || result === 'remembered'
+  const previousMarks = reviewMarksForEntry(prev)
   const memory = {
     passes: Math.max(0, Number(prev.memory?.passes) || 0),
     remembered: Math.max(0, Number(prev.memory?.remembered) || 0),
@@ -256,6 +265,7 @@ function applyReview(srs, stats, wordId, result, timestamp = Date.now()) {
     lastJudgment: ['remembered', 'forgot'].includes(prev.memory?.lastJudgment)
       ? prev.memory.lastJudgment
       : null,
+    marks: previousMarks.memory,
   }
   const test = {
     attempts: Math.max(0, Number(prev.test?.attempts) || 0),
@@ -266,6 +276,7 @@ function applyReview(srs, stats, wordId, result, timestamp = Date.now()) {
     lastResult: ['correct', 'wrong', 'unknown'].includes(prev.test?.lastResult)
       ? prev.test.lastResult
       : null,
+    marks: previousMarks.test,
   }
   let box
   if (def.box === 'reset') box = 0
@@ -279,6 +290,7 @@ function applyReview(srs, stats, wordId, result, timestamp = Date.now()) {
         lastAt: timestamp,
         lastHour: new Date(timestamp).getHours(),
         lastJudgment: remembered ? 'remembered' : 'forgot',
+        marks: appendReviewMark(memory.marks, remembered),
       }
     : memory
   const nextTest = activity === 'test'
@@ -289,6 +301,7 @@ function applyReview(srs, stats, wordId, result, timestamp = Date.now()) {
         unknown: test.unknown + (result === 'unknown' ? 1 : 0),
         lastAt: timestamp,
         lastResult: ['correct', 'wrong', 'unknown'].includes(result) ? result : 'unknown',
+        marks: appendReviewMark(test.marks, result === 'correct'),
       }
     : test
 
@@ -548,9 +561,9 @@ export const useStore = create(
       goHomeScreen: (screen) => set({ screen, params: {}, stack: [] }),
       goPortal: () => set({ screen: 'portal', params: {}, stack: [] }),
 
-      // ── クイズの一時退避（永続化しない） ──
-      // 「語源をくわしく見る」等で一旦クイズ画面を離れて戻るとき、解答済みの
-      // 状態を失わないよう deck・進行位置・結果をここへ退避→復元する。
+      // ── 進行中の単語学習／クイズの一時退避（永続化しない） ──
+      // 辞書・語源などの参考画面を開いて戻るとき、deck・進行位置・結果を
+      // 失わないようここへ退避→復元する。旧保存契約のフィールド名はそのまま使う。
       quizSession: null,
       saveQuizSession: (session) => set({ quizSession: session }),
       clearQuizSession: () => set({ quizSession: null }),

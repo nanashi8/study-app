@@ -6,6 +6,7 @@ import {
   forgettingCurveForRows,
   launchForGradeGroup,
 } from '../lib/learningAnalyticsReport.js'
+import { MAX_SRS_BOX } from '../lib/srs.js'
 import { Button, Card, cx } from './ui.jsx'
 
 const DIAGNOSTIC_SKILL_META = {
@@ -662,7 +663,7 @@ function Gradebook({ report, onNavigate }) {
                       </dl>
                       {dimension === 'item' && group.weakest && (
                         <p className="mt-2 text-[10px] font-bold leading-relaxed text-slate-500">
-                          周回 {group.weakest.memoryAttempts}回・直近暗記判定 {group.weakest.lastJudgment}・復習の段階 {group.weakest.box}/6
+                          周回 {group.weakest.memoryAttempts}回・直近暗記判定 {group.weakest.lastJudgment}・復習の段階 {group.weakest.box}/{MAX_SRS_BOX}
                           {group.weakest.legacyAttempts ? `・旧履歴 ${group.weakest.legacyAttempts}回` : ''}
                         </p>
                       )}

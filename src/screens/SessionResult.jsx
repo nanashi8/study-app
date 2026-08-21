@@ -224,6 +224,20 @@ export function SessionResultScreen() {
     replay()
   }
 
+  const reviewVocabSchedule = (scheduleItem) => {
+    const ids = Array.isArray(scheduleItem?.ids) ? scheduleItem.ids : []
+    if (!ids.length) return
+    navigate('vocabStudy', {
+      source: { type: 'mylist', ids },
+      title: scheduleItem.id === 'now'
+        ? '今日の復習'
+        : `${scheduleItem.label}の先取り復習`,
+      mode: 'study',
+      size: ids.length,
+      returnTo: params.returnTo,
+    })
+  }
+
   const returnFromVocab = () => {
     if (params.returnTo?.screen) {
       returnTo(params.returnTo.screen, params.returnTo.params ?? {})
@@ -318,6 +332,7 @@ export function SessionResultScreen() {
           onContinue={continueVocab}
           onBack={returnFromVocab}
           onWord={(id) => navigate('wordDetail', { id })}
+          onReviewSchedule={reviewVocabSchedule}
         />
       </div>
     )

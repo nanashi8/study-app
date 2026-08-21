@@ -16,6 +16,7 @@ import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { buildVocabInstructorExplanation } from '../lib/instructorExplanations.js'
 import { isDragonVeinSource } from '../lib/dragonVein.js'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
+import { VocabReviewHistory } from '../components/VocabReviewHistory.jsx'
 
 const sessionKey = (params) => (
   `vocab|${JSON.stringify(params.source ?? { type: 'due' })}|${params.title ?? ''}|${params.size ?? ''}`
@@ -108,6 +109,7 @@ export function VocabQuizScreen() {
   )
 
   const word = deck[index]
+  const entry = useStore((state) => (word ? state.srs[word.id] : null))
   const options = useMemo(() => {
     if (!word) return []
     if (restore?.i === index && restore.options?.length) return restore.options
@@ -277,6 +279,7 @@ export function VocabQuizScreen() {
           <p className="mt-2 text-sm font-extrabold text-ink/55">
             {isDragonVein ? 'この記憶断片が指す意味は？' : 'この単語の意味は？'}
           </p>
+          <VocabReviewHistory entry={entry} className="mt-2" />
         </div>
 
         <div className={cx(

@@ -30,7 +30,7 @@ import {
 
 const now = new Date(2026, 7, 13, 18, 0, 0, 0).getTime()
 const entry = (index) => ({
-  box: index % 7,
+  box: index % 10,
   correct: 3,
   wrong: 1,
   due: 0,

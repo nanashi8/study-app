@@ -25,7 +25,13 @@ test('カード画面に答えを開いたままにする切り替えがある',
     assert.match(source, /<RevealAnswersToggle/, `${path} にトグルが置かれていない`)
     // 設定がONなら最初から開いた状態で始まり、次のカードでも開いたままにする
     assert.match(source, /settings\.revealAnswers|state\.settings\.revealAnswers/, `${path} が設定を見ていない`)
-    assert.match(source, /useState\(revealAll\)/, `${path} が最初から開いた状態で始まらない`)
+    assert.match(
+      source,
+      path.endsWith('VocabStudy.jsx')
+        ? /useState\(restore\?\.flipped \?\? revealAll\)/
+        : /useState\(revealAll\)/,
+      `${path} が最初から開いた状態で始まらない`,
+    )
   }
 })
 

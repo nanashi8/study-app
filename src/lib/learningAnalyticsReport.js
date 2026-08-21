@@ -31,11 +31,17 @@ import { KANBUN_LEVEL_BY_ID } from '../data/kanbun-meta.js'
 import { getKanbunKundokuExercise } from '../data/kanbun-kundoku.js'
 import { unitById } from '../data/math.js'
 import { analyzeLearning, learningSkillForItem } from './learningAnalytics.js'
+import {
+  LONG_TERM_SRS_BOX,
+  MAX_SRS_BOX,
+} from './srs.js'
 
 const DAY_MS = 86400000
 const MIN_PREDICTION = 0.08
-const HALF_LIFE_DAYS = [0.4, 1.2, 2.6, 5.5, 11, 24, 50]
+const HALF_LIFE_DAYS = [0.4, 1.2, 2.6, 5.5, 11, 24, 50, 100, 180, 365]
 const CURVE_DAYS = [0, 1, 3, 7, 14, 30]
+// 既存0〜6段階の成績点を変えず、維持復習の差は半減期モデルで反映する。
+const GRADE_STAGE_CAP = 6
 
 const clamp = (value, min, max) => Math.max(min, Math.min(max, value))
 const count = (value) => Math.max(0, Number(value) || 0)
@@ -242,7 +248,7 @@ function startRecallFor(entry) {
 }
 
 function retentionModel(entry, analysis, now) {
-  const box = clamp(Math.floor(count(entry.box)), 0, 6)
+  const box = clamp(Math.floor(count(entry.box)), 0, MAX_SRS_BOX)
   const testAttempts = count(entry.test?.attempts)
   const testAccuracy = testAttempts ? count(entry.test?.correct) / testAttempts : null
   const memoryPasses = count(entry.memory?.passes)
@@ -304,11 +310,11 @@ function itemRow(domain, item, entry, analysis, now, overrides = {}) {
   const model = retentionModel(source, analysis, now)
   const testAccuracy = testAttempts ? testCorrect / testAttempts : null
   const overallAccuracy = overallAttempts ? overallCorrect / overallAttempts : null
-  const box = clamp(Math.floor(count(source.box)), 0, 6)
+  const box = clamp(Math.floor(count(source.box)), 0, MAX_SRS_BOX)
   const accuracyForGrade = testAccuracy ?? overallAccuracy
   const gradeScore = accuracyForGrade == null
     ? Math.round(model.current * 100)
-    : Math.round((accuracyForGrade * 0.55 + model.current * 0.35 + (box / 6) * 0.1) * 100)
+    : Math.round((accuracyForGrade * 0.55 + model.current * 0.35 + (Math.min(box, GRADE_STAGE_CAP) / GRADE_STAGE_CAP) * 0.1) * 100)
   const due = Number.isFinite(source.due) && source.due <= localDayIndex(now)
   const lastJudgment = memory?.lastJudgment === 'remembered'
     ? '覚えた'
@@ -324,7 +330,7 @@ function itemRow(domain, item, entry, analysis, now, overrides = {}) {
         : 'starting'
   const status = due || model.current < 0.55
     ? 'review'
-    : model.current >= 0.8 && box >= 4
+    : model.current >= 0.8 && box >= LONG_TERM_SRS_BOX
       ? 'stable'
       : 'building'
 
@@ -590,7 +596,7 @@ export function buildVocabCompletionReport({
   const beforeBoxFor = (id) => {
     if (!isRecord(beforeBoxes) || !Object.hasOwn(beforeBoxes, id)) return null
     const value = beforeBoxes[id]
-    return Number.isFinite(value) ? clamp(Math.floor(value), 0, 6) : null
+    return Number.isFinite(value) ? clamp(Math.floor(value), 0, MAX_SRS_BOX) : null
   }
 
   const todayRows = Object.entries(isRecord(srs) ? srs : {}).flatMap(([id, entry]) => {
@@ -608,12 +614,12 @@ export function buildVocabCompletionReport({
   const newCount = rows.filter((row) => beforeBoxFor(row.id) == null).length
   const newlyMasteredCount = rows.filter((row) => {
     const before = beforeBoxFor(row.id)
-    return row.box >= 4 && (before == null || before < 4)
+    return row.box >= LONG_TERM_SRS_BOX && (before == null || before < LONG_TERM_SRS_BOX)
   }).length
 
   const priorityRows = [...rows].sort((a, b) => {
-    const aRank = reviewSet.has(a.id) ? 0 : a.due ? 1 : a.box < 4 ? 2 : 3
-    const bRank = reviewSet.has(b.id) ? 0 : b.due ? 1 : b.box < 4 ? 2 : 3
+    const aRank = reviewSet.has(a.id) ? 0 : a.due ? 1 : a.box < LONG_TERM_SRS_BOX ? 2 : 3
+    const bRank = reviewSet.has(b.id) ? 0 : b.due ? 1 : b.box < LONG_TERM_SRS_BOX ? 2 : 3
     if (aRank !== bRank) return aRank - bRank
     const retentionDifference = a.predictedRetention - b.predictedRetention
     if (Math.abs(retentionDifference) > 0.0001) return retentionDifference
@@ -631,16 +637,19 @@ export function buildVocabCompletionReport({
       ? '今回「まだ」'
       : row.due
         ? '復習期限'
-        : row.box < 4
-          ? `長期定着まであと${4 - row.box}段階`
+        : row.box < LONG_TERM_SRS_BOX
+          ? `長期定着まであと${LONG_TERM_SRS_BOX - row.box}段階`
           : '維持段階',
   }))
   const schedule = [
-    { id: 'now', label: '今日', count: rows.filter((row) => dueInDays(row) === 0).length },
-    { id: 'tomorrow', label: '明日', count: rows.filter((row) => dueInDays(row) === 1).length },
-    { id: 'soon', label: '2〜3日後', count: rows.filter((row) => [2, 3].includes(dueInDays(row))).length },
-    { id: 'later', label: '4日後以降', count: rows.filter((row) => dueInDays(row) >= 4).length },
-  ]
+    { id: 'now', label: '今日', matches: (days) => days === 0 },
+    { id: 'tomorrow', label: '明日', matches: (days) => days === 1 },
+    { id: 'soon', label: '2〜3日後', matches: (days) => [2, 3].includes(days) },
+    { id: 'later', label: '4日後以降', matches: (days) => days >= 4 },
+  ].map(({ matches, ...item }) => {
+    const ids = rows.filter((row) => matches(dueInDays(row))).map((row) => row.id)
+    return { ...item, count: ids.length, ids }
+  })
 
   return {
     completedAt: now,
@@ -652,7 +661,7 @@ export function buildVocabCompletionReport({
       newCount,
       advancedCount,
       newlyMasteredCount,
-      longTermCount: rows.filter((row) => row.box >= 4).length,
+      longTermCount: rows.filter((row) => row.box >= LONG_TERM_SRS_BOX).length,
       reviewNowCount: reviewSet.size,
     },
     today: {

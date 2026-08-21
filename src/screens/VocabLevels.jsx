@@ -3,6 +3,7 @@ import { LEVELS } from '../data/levels.js'
 import { ALL_WORDS, VOCAB_FIELDS, wordsByLevel } from '../data/vocab.js'
 import {
   levelProgress,
+  nextVocabularyReviewInDays,
   overallProgress,
   reviewActionState,
   weakFoundationLevel,
@@ -132,6 +133,22 @@ export function VocabLevelsScreen() {
   const prog = overallProgress(srs)
   const reviewState = reviewActionState(prog)
   const reviewComplete = reviewState === 'complete'
+  const canReview = prog.seen > 0
+  const nextReviewInDays = nextVocabularyReviewInDays(srs)
+  const reviewLabel = reviewState === 'due'
+    ? '今日の復習'
+    : reviewComplete
+      ? '先取り復習'
+      : '復習'
+  const reviewTiming = reviewState === 'due'
+    ? `${prog.due}語が期限`
+    : reviewComplete
+      ? nextReviewInDays === 1
+        ? '次の期限は明日'
+        : Number.isFinite(nextReviewInDays)
+          ? `次の期限まであと${nextReviewInDays}日`
+          : '学習済み語を確認'
+      : '学習後に表示'
 
   const study = (levelId, label) =>
     navigate('vocabStudy', { source: { type: 'level', levelId }, title: `英検${label}`, mode: 'study' })
@@ -161,9 +178,13 @@ export function VocabLevelsScreen() {
         {/* 復習・マイ単語のショートカット */}
         <div className="grid grid-cols-2 gap-3">
           <button
-            disabled={!prog.due}
-            onClick={() => navigate('vocabStudy', { source: { type: 'due' }, title: '復習', mode: 'study' })}
-            aria-label={reviewComplete ? '復習完了。次の復習待ち' : `復習 ${prog.due}語`}
+            disabled={!canReview}
+            onClick={() => navigate('vocabStudy', {
+              source: { type: reviewState === 'due' ? 'due' : 'review' },
+              title: reviewState === 'due' ? '今日の復習' : '先取り復習',
+              mode: 'study',
+            })}
+            aria-label={`${reviewLabel}。${reviewTiming}`}
             data-review-state={reviewState}
             className={`flex items-center gap-2 rounded-2xl p-3 text-left transition-transform active:scale-[0.98] disabled:cursor-default ${
               reviewComplete ? 'bg-emerald-50' : 'bg-hint-soft disabled:opacity-50'
@@ -178,10 +199,10 @@ export function VocabLevelsScreen() {
             </span>
             <div>
               <div className={`text-sm font-extrabold ${reviewComplete ? 'text-emerald-900' : 'text-amber-900'}`}>
-                {reviewComplete ? '復習完了' : '復習'}
+                {reviewLabel}
               </div>
               <div className={`text-[11px] font-bold ${reviewComplete ? 'text-emerald-700/70' : 'text-amber-800/70'}`}>
-                {reviewComplete ? '次の復習待ち' : `${prog.due}語`}
+                {reviewTiming}
               </div>
             </div>
           </button>

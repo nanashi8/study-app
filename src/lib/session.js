@@ -85,6 +85,8 @@ export function wordsForSource(source = {}) {
       return (source.ids ?? []).map(getWord).filter(Boolean)
     case 'due':
       return ALL_WORDS
+    case 'review':
+      return ALL_WORDS
     case 'custom':
       return source.words ?? []
     default:
@@ -106,7 +108,16 @@ export function buildDeck(source, { srs = {}, size = SESSION_SIZE } = {}) {
   if (source.type === 'due') {
     pool = pool.filter((w) => srs[w.id] && srs[w.id].due <= day)
   }
+  if (source.type === 'review') {
+    // 期限前でも学習済みの語だけを復習できる。
+    // 未着手語を「先取り復習」に混ぜない。
+    pool = pool.filter((w) => Number.isFinite(srs[w.id]?.due))
+  }
   pool.sort((a, b) => {
+    if (source.type === 'review') {
+      const dueDifference = srs[a.id].due - srs[b.id].due
+      if (dueDifference !== 0) return dueDifference
+    }
     const ra = rank(a, srs, day)
     const rb = rank(b, srs, day)
     if (ra !== rb) return ra - rb
@@ -277,4 +288,15 @@ export function overallProgress(srs) {
     if (entry.due <= day) due++
   }
   return { seen, mastered, due, total: ALL_WORDS.length }
+}
+
+/** 学習済み英単語のうち、最も近い次回復習までの日数。 */
+export function nextVocabularyReviewInDays(srs = {}, day = todayIndex()) {
+  let nextDue = null
+  for (const word of ALL_WORDS) {
+    const due = srs[word.id]?.due
+    if (!Number.isFinite(due)) continue
+    nextDue = nextDue == null ? due : Math.min(nextDue, due)
+  }
+  return nextDue == null ? null : Math.max(0, Math.floor(nextDue - day))
 }

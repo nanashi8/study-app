@@ -8,6 +8,7 @@ import {
   Refresh,
   Target,
 } from './Icons.jsx'
+import { srsStageLabel } from '../lib/srs.js'
 
 const asPercent = (value) => (
   Number.isFinite(value) ? `${Math.round(value * 100)}%` : '—'
@@ -17,12 +18,6 @@ const dueLabel = (days) => {
   if (days <= 0) return '今日もう一度'
   if (days === 1) return '明日'
   return `${days}日後`
-}
-
-const stageLabel = (box) => {
-  if (box >= 4) return '長期定着'
-  if (box >= 2) return '短期定着'
-  return '土台づくり'
 }
 
 function CurveChart({ curve = [] }) {
@@ -101,6 +96,7 @@ export function VocabCompletionReport({
   onContinue,
   onBack,
   onWord,
+  onReviewSchedule = () => {},
 }) {
   const { session, today, priorityItems, schedule, curve } = report
   const judged = session.remembered + session.forgot
@@ -215,7 +211,7 @@ export function VocabCompletionReport({
                 </div>
                 <p className="mt-0.5 truncate text-xs font-bold text-ink/50">{item.meaning}</p>
                 <p className="mt-1 text-[10px] font-extrabold text-indigo-600">
-                  {stageLabel(item.box)}・次回 {dueLabel(item.dueInDays)}
+                  {srsStageLabel(item.box)}・次回 {dueLabel(item.dueInDays)}
                 </p>
               </div>
               <div className="shrink-0 text-right">
@@ -290,12 +286,26 @@ export function VocabCompletionReport({
               <b className="text-sm font-extrabold text-ink">期限が来たら思い出す</b>
               <div className="mt-2 grid grid-cols-4 gap-1.5">
                 {schedule.map((item) => (
-                  <div key={item.id} className="rounded-lg bg-white px-1 py-2 text-center">
+                  <button
+                    key={item.id}
+                    type="button"
+                    disabled={!item.count}
+                    onClick={() => onReviewSchedule(item)}
+                    className="min-h-14 rounded-lg bg-white px-1 py-2 text-center ring-1 ring-indigo-100 active:bg-indigo-50 disabled:cursor-default disabled:opacity-45"
+                    aria-label={`${item.label}の${item.count}語を${item.id === 'now' ? '復習' : '先取り復習'}`}
+                    data-vocab-review-schedule={item.id}
+                  >
                     <span className="block text-[9px] font-bold text-ink/40">{item.label}</span>
                     <b className="mt-0.5 block text-sm font-extrabold tabular-nums text-indigo-700">{item.count}語</b>
-                  </div>
+                  </button>
                 ))}
               </div>
+              <p className="mt-2 text-[10px] font-bold leading-relaxed text-indigo-700/70">
+                期限前の枠もタップすると、復習を先取りできます。結果は次の期限と定着予測へ反映されます。
+              </p>
+              <p className="mt-1 text-[10px] font-bold leading-relaxed text-indigo-700/70" data-maintenance-review-policy>
+                長期定着後は30→60→90→180日と間隔を広げ、以後は180日ごとに維持確認します。
+              </p>
             </div>
           </li>
           <li className="flex gap-3 rounded-2xl bg-emerald-50 p-3">
