@@ -58,6 +58,9 @@ const emotionIds = new Set(BATTLE_EMOTION_STATES.map((emotion) => emotion.id))
 const intentIds = new Set(CHARACTER_TALK_INTENTS.map((intent) => intent.id))
 const topicIds = new Set(CHARACTER_TALK_TOPICS.map((topic) => topic.id))
 
+const isSubsetOf = (subset, superset) =>
+  [...subset].every((value) => superset.has(value))
+
 function distinctPlayerId(speakerId, companionId) {
   return BATTLE_STUDENTS.find(
     (student) => student.id !== speakerId && student.id !== companionId,
@@ -115,7 +118,7 @@ test('10人×15話題の性格別会話データが全分岐を持つ', () => {
     'study-routine',
     'homework',
   ])
-  assert.equal(addedEverydayTopicIds.isSubsetOf(topicIds), true)
+  assert.equal(isSubsetOf(addedEverydayTopicIds, topicIds), true)
 
   for (const topic of CHARACTER_TALK_TOPICS) {
     assert.ok(topic.label && topic.emoji, topic.id)
@@ -132,7 +135,7 @@ test('10人×15話題の性格別会話データが全分岐を持つ', () => {
     const persona = CHARACTER_TALK_PERSONAS[student.id]
     assert.ok(persona.motto, student.id)
     assert.equal(persona.arrivals.length, 3, `${student.id}: arrivals`)
-    assert.equal(topicIds.isSubsetOf(new Set(Object.keys(persona.topics))), true, `${student.id}: topics`)
+    assert.equal(isSubsetOf(topicIds, new Set(Object.keys(persona.topics))), true, `${student.id}: topics`)
     for (const intentId of intentIds) {
       assert.equal(persona.responses[intentId].length, 3, `${student.id}/${intentId}: replies`)
       assert.equal(persona.reactions[intentId].length, 2, `${student.id}/${intentId}: banter`)
