@@ -126,6 +126,8 @@ import {
   PUBLIC_DOMAIN_LITERATURE,
   literatureWordCount,
 } from '../src/data/public-domain-literature.js'
+import { buildLiteratureVocabulary } from '../src/data/literature-vocabulary.js'
+import { getKanbunVocab } from '../src/data/kanbun-vocab.js'
 import {
   getLiteratureReadingGuide,
   getLiteratureReadingQuestions,
@@ -1488,6 +1490,9 @@ let literatureSceneCount = 0
 let literatureNarrationSegmentCount = 0
 let englishLiteratureSyntaxSceneCount = 0
 let englishLiteratureQuestionCount = 0
+let literatureVocabularyOccurrenceCount = 0
+let literatureVocabularyCoveredCount = 0
+let literatureVocabularyCardCount = 0
 for (const work of PUBLIC_DOMAIN_LITERATURE) {
   const at = `名作朗読 ${work.id ?? '(id無し)'}`
   if (!work.id || literatureIds.has(work.id)) errors.push(`${at}: id 無し/重複`)
@@ -1505,6 +1510,27 @@ for (const work of PUBLIC_DOMAIN_LITERATURE) {
     errors.push(`${at}: 出典URL/名称/確認日が不足`)
   }
   if ((work.scenes?.length ?? 0) < 5) errors.push(`${at}: 場面が5件未満`)
+
+  const vocabulary = buildLiteratureVocabulary(work)
+  literatureVocabularyOccurrenceCount += vocabulary.totalOccurrences
+  literatureVocabularyCoveredCount += vocabulary.coveredOccurrences
+  literatureVocabularyCardCount += vocabulary.entries.length
+  if (!vocabulary.entries.length) errors.push(`${at}: 本文語彙カードが空`)
+  if (vocabulary.missingOccurrences.length > 0) {
+    errors.push(`${at}: 本文語彙に未対応あり (${vocabulary.missingOccurrences.length}件)`)
+  }
+  if (vocabulary.coveredOccurrences !== vocabulary.totalOccurrences) {
+    errors.push(`${at}: 本文語彙の全件照合が未完了 (${vocabulary.coveredOccurrences}/${vocabulary.totalOccurrences})`)
+  }
+  if (new Set(vocabulary.entries.map((entry) => entry.id)).size !== vocabulary.entries.length) {
+    errors.push(`${at}: 本文語彙カードIDが重複`)
+  }
+  for (const entry of vocabulary.entries) {
+    if (!entry.id || !entry.word?.trim() || !entry.meanings?.length) {
+      errors.push(`${at}: 本文語彙カードのID/見出し/意味が不足`)
+      break
+    }
+  }
 
   for (const [index, item] of (work.scenes ?? []).entries()) {
     const sceneAt = `${at} 場面${index + 1}`
@@ -1614,6 +1640,21 @@ for (const work of PUBLIC_DOMAIN_LITERATURE) {
   if (new Set(work.kotenWordIds ?? []).size !== (work.kotenWordIds ?? []).length) {
     errors.push(`${at}: 共通古典単語IDが重複`)
   }
+  for (const id of new Set(work.kanbunVocabIds ?? [])) {
+    if (!getKanbunVocab(id)) errors.push(`${at}: 共通漢文語彙 ${id} が無い`)
+  }
+  if (new Set(work.kanbunVocabIds ?? []).size !== (work.kanbunVocabIds ?? []).length) {
+    errors.push(`${at}: 共通漢文語彙IDが重複`)
+  }
+  if (work.kind === 'english' && !(work.wordIds?.length > 0)) {
+    errors.push(`${at}: 本文から解決した共通英単語が空`)
+  }
+  if (work.kind === 'classical' && !(work.kotenWordIds?.length > 0)) {
+    errors.push(`${at}: 本文の共通古典単語が空`)
+  }
+  if (work.kind === 'kanbun' && !(work.kanbunVocabIds?.length > 0)) {
+    errors.push(`${at}: 本文の共通漢文語彙が空`)
+  }
   for (const id of new Set(work.grammarIds ?? [])) {
     if (!getKotenGrammar(id)) errors.push(`${at}: 共通古典文法 ${id} が無い`)
   }
@@ -1639,6 +1680,15 @@ for (const work of PUBLIC_DOMAIN_LITERATURE) {
 }
 if (englishLiteratureSyntaxSceneCount !== 44 || englishLiteratureQuestionCount !== 18) {
   errors.push(`英語名作の長文型構成が全件ではない (構文${englishLiteratureSyntaxSceneCount}/44場面・設問${englishLiteratureQuestionCount}/18問)`)
+}
+if (
+  literatureVocabularyOccurrenceCount !== 1395 ||
+  literatureVocabularyCoveredCount !== 1395 ||
+  literatureVocabularyCardCount !== 944
+) {
+  errors.push(
+    `名作本文語彙の全件数が不一致 (照合${literatureVocabularyCoveredCount}/${literatureVocabularyOccurrenceCount}・カード${literatureVocabularyCardCount}/944)`,
+  )
 }
 for (const kind of ['english', 'classical', 'kanbun']) {
   const count = PUBLIC_DOMAIN_LITERATURE.filter((work) => work.kind === kind).length
@@ -1748,4 +1798,4 @@ if (errors.length) {
   process.exit(1)
 }
 
-console.log(`✅ データ検証OK: ${ALL_WORDS.length}英単語 / ${EXAM_USAGE_GUIDES.length}使い分けガイド / ${PHRASES.length}熟語・構文（長い一文${longSentenceTranslationCount}文・${longSentenceMeaningStepCount}意味フレーズ・${longSentenceTranslationStepCount}内部SVOCM単位） / ${GRAMMAR.length}英文法 / ${GRAMMAR_LESSONS.length}文法解説 / ${PASSAGES.length}長文（${readingTranslationSentenceCount}文・${readingTranslationBlockCount}語順訳ブロック・${readingMeaningPhraseCount}意味フレーズ・${readingPhrasePairCount}ブロック内内部SVOCM単位・手動本文台帳${readingManualReviewSentenceCount}文・回帰例${readingReviewedPhraseSentenceCount}文） / ${PUBLIC_DOMAIN_LITERATURE.length}名作朗読（${literatureSceneCount}場面・${literatureNarrationSegmentCount}区切り・英語構文${englishLiteratureSyntaxSceneCount}場面・英語読解${englishLiteratureQuestionCount}問） / ${DICTATION_ITEMS.length}ディクテーション / ${LISTENING_ITEMS.length}リスニング / ${KOTEN_WORDS.length}古典単語 / ${KOTEN_GRAMMAR.length}古典文法 / ${KOTEN_GRAMMAR_QUESTIONS.length}古典文法問題 / ${KOTEN_CULTURE.length}古典常識 / ${KOTEN_CULTURE_QUESTIONS.length}古典常識問題 / ${KOTEN_INTERPRETATIONS.length}古典短文 — 全て必須項目を満たす`)
+console.log(`✅ データ検証OK: ${ALL_WORDS.length}英単語 / ${EXAM_USAGE_GUIDES.length}使い分けガイド / ${PHRASES.length}熟語・構文（長い一文${longSentenceTranslationCount}文・${longSentenceMeaningStepCount}意味フレーズ・${longSentenceTranslationStepCount}内部SVOCM単位） / ${GRAMMAR.length}英文法 / ${GRAMMAR_LESSONS.length}文法解説 / ${PASSAGES.length}長文（${readingTranslationSentenceCount}文・${readingTranslationBlockCount}語順訳ブロック・${readingMeaningPhraseCount}意味フレーズ・${readingPhrasePairCount}ブロック内内部SVOCM単位・手動本文台帳${readingManualReviewSentenceCount}文・回帰例${readingReviewedPhraseSentenceCount}文） / ${PUBLIC_DOMAIN_LITERATURE.length}名作朗読（${literatureSceneCount}場面・${literatureNarrationSegmentCount}区切り・本文語彙${literatureVocabularyCoveredCount}/${literatureVocabularyOccurrenceCount}・カード${literatureVocabularyCardCount}件・英語構文${englishLiteratureSyntaxSceneCount}場面・英語読解${englishLiteratureQuestionCount}問） / ${DICTATION_ITEMS.length}ディクテーション / ${LISTENING_ITEMS.length}リスニング / ${KOTEN_WORDS.length}古典単語 / ${KOTEN_GRAMMAR.length}古典文法 / ${KOTEN_GRAMMAR_QUESTIONS.length}古典文法問題 / ${KOTEN_CULTURE.length}古典常識 / ${KOTEN_CULTURE_QUESTIONS.length}古典常識問題 / ${KOTEN_INTERPRETATIONS.length}古典短文 — 全て必須項目を満たす`)

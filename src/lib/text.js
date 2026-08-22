@@ -12,11 +12,25 @@ export function tokenize(sentence) {
       out.push({ space: true })
       continue
     }
-    const m = chunk.match(/^([^A-Za-z0-9'’-]*)([A-Za-z0-9'’-]+)?([^A-Za-z0-9'’-]*)$/)
-    if (m && m[2]) {
-      out.push({ pre: m[1] || '', word: m[2], post: m[3] || '', key: normalizeToken(m[2]) })
-    } else {
+    // 空白のないダッシュ・疑問符の両側も別々の語として拾う。
+    // 例: reefs—commerce / see?—Posted / way—in
+    // アポストロフィと通常のハイフンは語の一部として保つ。
+    const matches = [...chunk.matchAll(/[A-Za-z0-9]+(?:['’][A-Za-z0-9]+)*(?:-[A-Za-z0-9]+(?:['’][A-Za-z0-9]+)*)*/g)]
+    if (!matches.length) {
       out.push({ pre: chunk, word: '', post: '', key: '' })
+      continue
+    }
+    for (const [index, match] of matches.entries()) {
+      const word = match[0]
+      const start = match.index ?? 0
+      const end = start + word.length
+      const nextStart = matches[index + 1]?.index ?? chunk.length
+      out.push({
+        pre: index === 0 ? chunk.slice(0, start) : '',
+        word,
+        post: chunk.slice(end, nextStart),
+        key: normalizeToken(word),
+      })
     }
   }
   return out
