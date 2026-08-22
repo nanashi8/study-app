@@ -1,4 +1,4 @@
-import test from 'node:test'
+import test, { after, before } from 'node:test'
 import assert from 'node:assert/strict'
 import React from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
@@ -38,6 +38,27 @@ const valueSetsFor = (intro) => intro.controls.reduce((sets, control) => {
   return sets.flatMap((values) =>
     choices.map((choice) => ({ ...values, [control.id]: choice })))
 }, [{}])
+
+let vite
+let MathVisual
+let VisualControl
+
+before(async () => {
+  vite = await createServer({
+    configFile: false,
+    appType: 'custom',
+    logLevel: 'silent',
+    server: { middlewareMode: true },
+  })
+  const mathModule = await vite.ssrLoadModule('/src/components/MathVisual.jsx')
+  const introModule = await vite.ssrLoadModule('/src/screens/MathIntro.jsx')
+  MathVisual = mathModule.MathVisual
+  VisualControl = introModule.VisualControl
+})
+
+after(async () => {
+  await vite?.close()
+})
 
 test('数学45単元のすべてに動的な視覚導入がある', () => {
   const unitIds = MATH_UNITS.map((unit) => unit.id)
@@ -85,143 +106,108 @@ test('数学45単元のすべてに動的な視覚導入がある', () => {
   }
 })
 
-test('全単元の図はすべての操作値でSVGとして描画できる', async () => {
-  const vite = await createServer({
-    configFile: false,
-    appType: 'custom',
-    logLevel: 'silent',
-    server: { middlewareMode: true },
-  })
+test('全単元の図はすべての操作値でSVGとして描画できる', () => {
+  for (const unit of MATH_UNITS) {
+    const intro = MATH_INTROS[unit.id]
+    const valueSets = valueSetsFor(intro)
 
-  try {
-    const { MathVisual } = await vite.ssrLoadModule('/src/components/MathVisual.jsx')
+    for (const values of valueSets) {
+      const stateLabel = `${unit.id} ${JSON.stringify(values)}`
+      const formula = intro.formula(values)
+      const insight = intro.insight(values)
+      assert.ok(formula?.trim(), `${stateLabel}: formula`)
+      assert.ok(insight?.trim(), `${stateLabel}: insight`)
+      assert.doesNotMatch(formula, /NaN|undefined|\+\-/, `${stateLabel}: valid formula`)
+      assert.doesNotMatch(insight, /NaN|undefined/, `${stateLabel}: valid insight`)
 
-    for (const unit of MATH_UNITS) {
-      const intro = MATH_INTROS[unit.id]
-      const valueSets = valueSetsFor(intro)
-
-      for (const values of valueSets) {
-        const stateLabel = `${unit.id} ${JSON.stringify(values)}`
-        const formula = intro.formula(values)
-        const insight = intro.insight(values)
-        assert.ok(formula?.trim(), `${stateLabel}: formula`)
-        assert.ok(insight?.trim(), `${stateLabel}: insight`)
-        assert.doesNotMatch(formula, /NaN|undefined|\+\-/, `${stateLabel}: valid formula`)
-        assert.doesNotMatch(insight, /NaN|undefined/, `${stateLabel}: valid insight`)
-
-        const markup = renderToStaticMarkup(
-          React.createElement(MathVisual, {
-            intro,
-            values,
-            unit,
-            label: `${unit.title}の図`,
-          }),
-        )
-        assert.match(markup, /^<svg /, `${stateLabel}: svg root`)
-        assert.doesNotMatch(markup, /NaN|undefined/, `${stateLabel}: finite markup`)
-        assert.match(markup, /role="img"/, `${stateLabel}: accessible image`)
-
-        for (const match of markup.matchAll(/<text\b[^>]*\bfill="(#[0-9a-f]{6})"[^>]*>/gi)) {
-          const color = match[1]
-          assert.ok(
-            contrastRatio(color, '#ffffff') >= 4.5,
-            `${stateLabel}: text ${color} must reach 4.5:1`,
-          )
-        }
-
-        for (const match of markup.matchAll(/\bstroke="(#[0-9a-f]{6})"/gi)) {
-          const color = match[1].toLowerCase()
-          if (['#ffffff', '#e7e5f3'].includes(color)) continue
-          assert.ok(
-            contrastRatio(color, '#ffffff') >= 3,
-            `${stateLabel}: meaningful stroke ${color} must reach 3:1`,
-          )
-        }
-      }
-    }
-  } finally {
-    await vite.close()
-  }
-})
-
-test('手順式の視覚教材は数式と図を同じ段階で表示する', async () => {
-  const vite = await createServer({
-    configFile: false,
-    appType: 'custom',
-    logLevel: 'silent',
-    server: { middlewareMode: true },
-  })
-
-  try {
-    const { MathVisual } = await vite.ssrLoadModule('/src/components/MathVisual.jsx')
-
-    const balanceIntro = MATH_INTROS.eq1
-    const balanceUnit = MATH_UNITS.find((candidate) => candidate.id === 'eq1')
-    const balanceSteps = [
-      ['2x + 3', '>9<', '2x+3=9'],
-      ['>2x<', '>6<', '2x=6'],
-      ['>x<', '>3<', 'x=3'],
-    ]
-    for (const [step, [left, right, formula]] of balanceSteps.entries()) {
-      const markup = renderToStaticMarkup(
-        React.createElement(MathVisual, {
-          intro: balanceIntro,
-          values: { step },
-          unit: balanceUnit,
-          label: '一次方程式の図',
-        }),
-      )
-      assert.ok(markup.includes(left), `eq1 step ${step}: ${left}`)
-      assert.ok(markup.includes(right), `eq1 step ${step}: ${right}`)
-      assert.equal(balanceIntro.formula({ step }), formula)
-    }
-
-    const intro = MATH_INTROS.intA
-    const unit = MATH_UNITS.find((candidate) => candidate.id === 'intA')
-    const expected = [
-      ['1071 と 462 から開始', '大きい数を小さい数で割る'],
-      ['1071 を 462 で割る', '462 × 2', '余り 147', '次は (462, 147)'],
-      ['462 を 147 で割る', '147 × 3', '余り 21', '次は (147, 21)'],
-      ['147 を 21 で割る', '21 × 7', '余り 0', '最大公約数 = 21'],
-    ]
-    assert.equal(
-      intro.formula({ step: 3 }),
-      '\\begin{aligned}147&=21\\times7+0\\\\\\therefore\\ \\gcd(1071,462)&=21\\end{aligned}',
-    )
-
-    for (const [step, fragments] of expected.entries()) {
       const markup = renderToStaticMarkup(
         React.createElement(MathVisual, {
           intro,
-          values: { step },
+          values,
           unit,
-          label: '整数の性質の図',
+          label: `${unit.title}の図`,
         }),
       )
+      assert.match(markup, /^<svg /, `${stateLabel}: svg root`)
+      assert.doesNotMatch(markup, /NaN|undefined/, `${stateLabel}: finite markup`)
+      assert.match(markup, /role="img"/, `${stateLabel}: accessible image`)
 
-      for (const fragment of fragments) {
-        assert.ok(markup.includes(fragment), `step ${step}: ${fragment}`)
+      for (const match of markup.matchAll(/<text\b[^>]*\bfill="(#[0-9a-f]{6})"[^>]*>/gi)) {
+        const color = match[1]
+        assert.ok(
+          contrastRatio(color, '#ffffff') >= 4.5,
+          `${stateLabel}: text ${color} must reach 4.5:1`,
+        )
       }
-      if (step < 3) {
-        assert.ok(!markup.includes('最大公約数 = 21'), `step ${step}: 結果を先に表示しない`)
+
+      for (const match of markup.matchAll(/\bstroke="(#[0-9a-f]{6})"/gi)) {
+        const color = match[1].toLowerCase()
+        if (['#ffffff', '#e7e5f3'].includes(color)) continue
+        assert.ok(
+          contrastRatio(color, '#ffffff') >= 3,
+          `${stateLabel}: meaningful stroke ${color} must reach 3:1`,
+        )
       }
-      assert.ok(!markup.includes('gcd = 21'), `step ${step}: 引数のないgcdを表示しない`)
     }
-  } finally {
-    await vite.close()
   }
 })
 
-test('方向・座標・回転・縮尺の図は操作値と数学的意味を一致させる', async () => {
-  const vite = await createServer({
-    configFile: false,
-    appType: 'custom',
-    logLevel: 'silent',
-    server: { middlewareMode: true },
-  })
+test('手順式の視覚教材は数式と図を同じ段階で表示する', () => {
+  const balanceIntro = MATH_INTROS.eq1
+  const balanceUnit = MATH_UNITS.find((candidate) => candidate.id === 'eq1')
+  const balanceSteps = [
+    ['2x + 3', '>9<', '2x+3=9'],
+    ['>2x<', '>6<', '2x=6'],
+    ['>x<', '>3<', 'x=3'],
+  ]
+  for (const [step, [left, right, formula]] of balanceSteps.entries()) {
+    const markup = renderToStaticMarkup(
+      React.createElement(MathVisual, {
+        intro: balanceIntro,
+        values: { step },
+        unit: balanceUnit,
+        label: '一次方程式の図',
+      }),
+    )
+    assert.ok(markup.includes(left), `eq1 step ${step}: ${left}`)
+    assert.ok(markup.includes(right), `eq1 step ${step}: ${right}`)
+    assert.equal(balanceIntro.formula({ step }), formula)
+  }
 
-  try {
-    const { MathVisual } = await vite.ssrLoadModule('/src/components/MathVisual.jsx')
+  const intro = MATH_INTROS.intA
+  const unit = MATH_UNITS.find((candidate) => candidate.id === 'intA')
+  const expected = [
+    ['1071 と 462 から開始', '大きい数を小さい数で割る'],
+    ['1071 を 462 で割る', '462 × 2', '余り 147', '次は (462, 147)'],
+    ['462 を 147 で割る', '147 × 3', '余り 21', '次は (147, 21)'],
+    ['147 を 21 で割る', '21 × 7', '余り 0', '最大公約数 = 21'],
+  ]
+  assert.equal(
+    intro.formula({ step: 3 }),
+    '\\begin{aligned}147&=21\\times7+0\\\\\\therefore\\ \\gcd(1071,462)&=21\\end{aligned}',
+  )
+
+  for (const [step, fragments] of expected.entries()) {
+    const markup = renderToStaticMarkup(
+      React.createElement(MathVisual, {
+        intro,
+        values: { step },
+        unit,
+        label: '整数の性質の図',
+      }),
+    )
+
+    for (const fragment of fragments) {
+      assert.ok(markup.includes(fragment), `step ${step}: ${fragment}`)
+    }
+    if (step < 3) {
+      assert.ok(!markup.includes('最大公約数 = 21'), `step ${step}: 結果を先に表示しない`)
+    }
+    assert.ok(!markup.includes('gcd = 21'), `step ${step}: 引数のないgcdを表示しない`)
+  }
+})
+
+test('方向・座標・回転・縮尺の図は操作値と数学的意味を一致させる', () => {
     const renderUnit = (unitId, values) => {
       const unit = MATH_UNITS.find((candidate) => candidate.id === unitId)
       return renderToStaticMarkup(
@@ -279,21 +265,9 @@ test('方向・座標・回転・縮尺の図は操作値と数学的意味を�
     assert.match(MATH_INTROS.prob.formula({ favorable: 1 }), /\\approx0\.17/)
     assert.match(MATH_INTROS.plane1.formula({ theta: 30 }), /\\approx0\.08/)
     assert.equal(MATH_INTROS.integ.formula({ b: 0.5 }), '\\int_0^{0.5}x\\,dx=0.125')
-  } finally {
-    await vite.close()
-  }
 })
 
-test('視覚教材の操作UIは値の位置・大きな操作対象・選択状態を明示する', async () => {
-  const vite = await createServer({
-    configFile: false,
-    appType: 'custom',
-    logLevel: 'silent',
-    server: { middlewareMode: true },
-  })
-
-  try {
-    const { VisualControl } = await vite.ssrLoadModule('/src/screens/MathIntro.jsx')
+test('視覚教材の操作UIは値の位置・大きな操作対象・選択状態を明示する', () => {
     const rangeControl = MATH_INTROS.pn.controls[0]
 
     assert.equal(rangeProgress(rangeControl, rangeControl.min), 0)
@@ -333,7 +307,4 @@ test('視覚教材の操作UIは値の位置・大きな操作対象・選択状
     assert.match(optionsMarkup, /min-h-12/)
     assert.match(optionsMarkup, /十分条件/)
     assert.match(optionsMarkup, /必要条件/)
-  } finally {
-    await vite.close()
-  }
 })

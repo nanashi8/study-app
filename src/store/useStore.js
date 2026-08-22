@@ -124,7 +124,7 @@ export function localDayIndexAt(
   return Math.floor((timestamp - timezoneOffsetMinutes * 60000) / DAY_MS)
 }
 
-const today = () => localDayIndexAt()
+const today = (timestamp = Date.now()) => localDayIndexAt(timestamp)
 
 // 保存済みのポータル並び順を正規化：既知のidだけ残し、未登場の新コンテンツを補う。
 // 旧ポータルに独立していた英和辞書は英語アプリ内へ移したため、その旧IDを含む保存値は
