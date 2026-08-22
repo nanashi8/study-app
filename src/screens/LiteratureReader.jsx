@@ -9,7 +9,10 @@ import {
   getLiteratureReadingQuestions,
 } from '../data/literature-reading.js'
 import { readingRulesForPassage, readingRulesForSentence } from '../data/reading-rules.js'
-import { resolvePassageWord } from '../data/passage-gloss.js'
+import {
+  buildLiteratureVocabulary,
+  resolveLiteratureEnglishWord,
+} from '../data/literature-vocabulary.js'
 import {
   buildLiteratureNarration,
   literatureNarrationSegments,
@@ -26,6 +29,7 @@ import { SpeakButton } from '../components/SpeakButton.jsx'
 import { ReadingRoleSentence } from '../components/ReadingRoleSentence.js'
 import { ReadingRuleCard } from '../components/ReadingRuleCard.jsx'
 import { LiteratureSceneNavigator } from '../components/LiteratureSceneNavigator.jsx'
+import { LiteratureVocabularySheet } from '../components/LiteratureVocabularySheet.jsx'
 import { Button, Card, Chip, ProgressBar, cx } from '../components/ui.jsx'
 import { translationRoleMeta } from '../lib/translation-roles.js'
 import {
@@ -91,14 +95,18 @@ export function LiteratureReaderScreen() {
   const kotenGrammarList = useStore((state) => state.kotenGrammarList)
   const addManyToKotenWordList = useStore((state) => state.addManyToKotenWordList)
   const addManyToKotenGrammarList = useStore((state) => state.addManyToKotenGrammarList)
+  const kanbunVocabList = useStore((state) => state.kanbunVocabList)
+  const addManyToKanbunList = useStore((state) => state.addManyToKanbunList)
 
   const work = getLiteratureWork(workId)
   const steps = useMemo(() => buildLiteratureNarration(work), [work])
+  const vocabulary = useMemo(() => buildLiteratureVocabulary(work), [work])
   const [sceneIndex, setSceneIndex] = useState(0)
   const [segmentIndex, setSegmentIndex] = useState(0)
   const [phase, setPhase] = useState('original')
   const [playbackStatus, setPlaybackStatus] = useState('stopped')
   const [syntaxOpen, setSyntaxOpen] = useState(false)
+  const [vocabularyOpen, setVocabularyOpen] = useState(false)
   const [activeWord, setActiveWord] = useState(null)
   const [questionAnswers, setQuestionAnswers] = useState({})
 
@@ -140,6 +148,7 @@ export function LiteratureReaderScreen() {
     setPhase('original')
     setPlaybackStatus('stopped')
     setSyntaxOpen(false)
+    setVocabularyOpen(false)
     setActiveWord(null)
     setQuestionAnswers({})
     return dismissSpeechPlayer
@@ -173,9 +182,17 @@ export function LiteratureReaderScreen() {
   )
   const playing = playbackStatus === 'playing'
   const playbackActive = playing || playbackStatus === 'paused'
-  const learnedIds = work.kind === 'english' ? myList : kotenWordList
-  const savedWordCount = (work.kind === 'english' ? work.wordIds : work.kotenWordIds)
-    .filter((id) => learnedIds.includes(id)).length
+  const learnedIds = work.kind === 'english'
+    ? myList
+    : work.kind === 'classical'
+      ? kotenWordList
+      : kanbunVocabList
+  const sharedWordIds = work.kind === 'english'
+    ? work.wordIds
+    : work.kind === 'classical'
+      ? work.kotenWordIds
+      : work.kanbunVocabIds
+  const savedWordCount = sharedWordIds.filter((id) => learnedIds.includes(id)).length
   const savedGrammarCount = work.grammarIds.filter((id) => kotenGrammarList.includes(id)).length
   const isEnglish = work.kind === 'english'
   const readingGuide = isEnglish ? getLiteratureReadingGuide(work.id, sceneIndex) : null
@@ -253,23 +270,41 @@ export function LiteratureReaderScreen() {
 
   const openStudy = () => {
     stopPlayback()
+    setVocabularyOpen(false)
     if (work.kind === 'english') {
       navigate('vocabStudy', {
-        source: { type: 'mylist', ids: work.wordIds },
-        title: `${work.titleJa}・重要語`,
+        source: { type: 'deck', ids: sharedWordIds },
+        title: `${work.titleJa}・本文の共通単語`,
         mode: 'study',
+        returnTo: { screen: 'literatureReader', params: { workId: work.id } },
       })
       return
     }
-    navigate('kotenStudy', {
-      ids: work.kotenWordIds,
-      title: `${work.titleJa}・古典単語`,
+    if (work.kind === 'classical') {
+      navigate('kotenStudy', {
+        ids: sharedWordIds,
+        title: `${work.titleJa}・古典単語`,
+        returnTo: { screen: 'literatureReader', params: { workId: work.id } },
+      })
+      return
+    }
+    navigate('kanbunStudy', {
+      domain: 'vocab',
+      ids: sharedWordIds,
+      title: `${work.titleJa}・漢文語彙`,
+      returnTo: { screen: 'literatureReader', params: { workId: work.id } },
     })
   }
 
   const saveWords = () => {
-    if (work.kind === 'english') addManyToMyList(work.wordIds)
-    else addManyToKotenWordList(work.kotenWordIds)
+    if (work.kind === 'english') addManyToMyList(sharedWordIds)
+    else if (work.kind === 'classical') addManyToKotenWordList(sharedWordIds)
+    else addManyToKanbunList('vocab', sharedWordIds)
+  }
+
+  const openVocabulary = () => {
+    stopPlayback()
+    setVocabularyOpen(true)
   }
 
   const openSyntax = () => {
@@ -279,7 +314,10 @@ export function LiteratureReaderScreen() {
   }
 
   const tapWord = (token) => {
-    const meaning = resolvePassageWord(token.key)
+    const meaning = resolveLiteratureEnglishWord(token.key, {
+      workId: work.id,
+      sceneIndex,
+    })
     if (meaning?.id) recordVocabHistory(meaning.id)
     setActiveWord({
       word: token.word,
@@ -353,8 +391,11 @@ export function LiteratureReaderScreen() {
           </p>
         </section>
 
-        {isEnglish && (
-          <Card className="border-2 border-sky-100 p-4" data-literature-reading-preparation>
+        <Card
+          className="border-2 border-sky-100 p-4"
+          data-literature-reading-preparation
+          data-literature-vocabulary-preparation={work.id}
+        >
             <div className="flex items-start justify-between gap-3">
               <div>
                 <p className="text-[10px] font-extrabold tracking-[0.14em] text-sky-600">BEFORE READING</p>
@@ -363,7 +404,11 @@ export function LiteratureReaderScreen() {
               <Chip color="#0284c7">{work.level}</Chip>
             </div>
             <p className="mt-2 text-sm font-bold leading-relaxed text-ink/65">
-              先に「何を追うか」を決め、本文では英語順のまとまりを保ちます。読みどころ：{work.focus}
+              {isEnglish
+                ? '本文に出る語を先に確認し、英語順のまとまりを保って読みます。'
+                : work.kind === 'classical'
+                  ? '古典単語と本文の意味区切りを先に確認してから、古文と現代語訳を往復します。'
+                  : '漢文語彙と本文の意味区切りを先に確認してから、原文・書き下し・現代語訳をつなぎます。'}
             </p>
             <div className="mt-3 grid grid-cols-3 gap-2 text-center">
               <div className="rounded-xl bg-sky-50 px-2 py-2">
@@ -371,36 +416,47 @@ export function LiteratureReaderScreen() {
                 <span className="text-[10px] font-bold text-ink/45">場面</span>
               </div>
               <div className="rounded-xl bg-violet-50 px-2 py-2">
-                <span className="block text-lg font-extrabold text-violet-800">{work.wordIds.length}</span>
-                <span className="text-[10px] font-bold text-ink/45">重要語</span>
+                <span className="block text-lg font-extrabold text-violet-800">
+                  {vocabulary.coveredOccurrences}
+                </span>
+                <span className="text-[10px] font-bold text-ink/45">
+                  本文{vocabulary.coverageUnitLabel}
+                </span>
               </div>
               <div className="rounded-xl bg-emerald-50 px-2 py-2">
-                <span className="block text-lg font-extrabold text-emerald-800">{readingQuestions.length}</span>
-                <span className="text-[10px] font-bold text-ink/45">読解問題</span>
+                <span className="block text-lg font-extrabold text-emerald-800">
+                  {vocabulary.missingOccurrences.length}
+                </span>
+                <span className="text-[10px] font-bold text-ink/45">未対応</span>
               </div>
             </div>
+            <p className="mt-3 rounded-xl bg-emerald-50 px-3 py-2 text-xs font-extrabold leading-relaxed text-emerald-800">
+              全{vocabulary.entries.length}カード。本文との照合は未対応0件です。
+            </p>
             <div className="mt-3 grid grid-cols-2 gap-2">
-              <Button size="sm" onClick={openStudy}>
-                <Book size={16} /> 重要語を確認
+              <Button size="sm" onClick={openVocabulary} data-literature-vocabulary-open>
+                <Book size={16} /> 本文語彙を予習
               </Button>
               <Button
                 size="sm"
-                variant={savedWordCount === work.wordIds.length ? 'soft' : 'hint'}
+                variant={savedWordCount === sharedWordIds.length ? 'soft' : 'hint'}
                 onClick={saveWords}
+                disabled={!sharedWordIds.length}
               >
-                <Bookmark size={16} /> 保存 {savedWordCount}/{work.wordIds.length}
+                <Bookmark size={16} /> 保存 {savedWordCount}/{sharedWordIds.length}
               </Button>
             </div>
-            <div className="mt-3 rounded-2xl bg-sky-50/60 p-3" data-literature-passage-rules>
-              <p className="text-xs font-extrabold text-sky-800">この作品で先に使う読解ルール</p>
-              <div className="mt-2 space-y-2">
-                {passageRules.map((rule) => (
-                  <ReadingRuleCard key={rule.id} rule={rule} compact />
-                ))}
+            {isEnglish && (
+              <div className="mt-3 rounded-2xl bg-sky-50/60 p-3" data-literature-passage-rules>
+                <p className="text-xs font-extrabold text-sky-800">この作品で先に使う読解ルール</p>
+                <div className="mt-2 space-y-2">
+                  {passageRules.map((rule) => (
+                    <ReadingRuleCard key={rule.id} rule={rule} compact />
+                  ))}
+                </div>
               </div>
-            </div>
-          </Card>
-        )}
+            )}
+        </Card>
 
         {!ttsSupported && (
           <Card className="border-2 border-amber-200 bg-amber-50 p-4">
@@ -670,35 +726,12 @@ export function LiteratureReaderScreen() {
           </Card>
         )}
 
-        {!isEnglish && <Card className="p-4">
-          <h2 className="font-display text-base font-extrabold text-ink">この作品から覚える</h2>
+        {!isEnglish && work.grammarIds.length > 0 && <Card className="p-4">
+          <h2 className="font-display text-base font-extrabold text-ink">文法も一緒に固める</h2>
           <p className="mt-1 text-xs font-bold leading-relaxed text-ink/50">
-            朗読で出会った語を、いつもの暗記カード・登録リストで復習できます。
+            本文語彙の予習とあわせて、この作品に出る古典文法を復習できます。
           </p>
-
-          {(work.kind === 'english' ? work.wordIds : work.kotenWordIds).length > 0 && (
             <div className="mt-3 grid grid-cols-2 gap-2">
-              <Button size="sm" onClick={openStudy}>
-                <Book size={16} /> 単語カード
-              </Button>
-              <Button
-                size="sm"
-                variant={
-                  savedWordCount ===
-                  (work.kind === 'english' ? work.wordIds : work.kotenWordIds).length
-                    ? 'soft'
-                    : 'hint'
-                }
-                onClick={saveWords}
-              >
-                <Bookmark size={16} /> {savedWordCount}/
-                {(work.kind === 'english' ? work.wordIds : work.kotenWordIds).length}
-              </Button>
-            </div>
-          )}
-
-          {work.grammarIds.length > 0 && (
-            <div className="mt-2 grid grid-cols-2 gap-2">
               <Button
                 size="sm"
                 variant="secondary"
@@ -720,7 +753,6 @@ export function LiteratureReaderScreen() {
                 <Bookmark size={16} /> {savedGrammarCount}/{work.grammarIds.length}
               </Button>
             </div>
-          )}
         </Card>}
 
         <Card className="p-4">
@@ -769,6 +801,14 @@ export function LiteratureReaderScreen() {
         </Button>
       </div>
 
+      <LiteratureVocabularySheet
+        open={vocabularyOpen}
+        onClose={() => setVocabularyOpen(false)}
+        work={work}
+        vocabulary={vocabulary}
+        onOpenSharedStudy={openStudy}
+      />
+
       {isEnglish && readingGuide && (
         <Sheet
           open={syntaxOpen}
@@ -791,7 +831,10 @@ export function LiteratureReaderScreen() {
                 sentence={currentScene.original}
                 parts={readingGuide.parts}
                 activeWord={activeWord?.word}
-                isKnownWord={(token) => Boolean(resolvePassageWord(token.key)?.id)}
+                isKnownWord={(token) => Boolean(resolveLiteratureEnglishWord(token.key, {
+                  workId: work.id,
+                  sceneIndex,
+                })?.ja)}
                 onWordClick={tapWord}
                 allowVerbOmission={readingGuide.allowVerbOmission}
                 verbOmissionNote={readingGuide.note}

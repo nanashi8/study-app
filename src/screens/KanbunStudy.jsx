@@ -85,7 +85,13 @@ export function KanbunStudyScreen() {
   const item = deck[index]
 
   // コンテンツ画面の「戻る」は履歴でなく、この分野の内容選択画面へ。
-  const backToKanbunCatalog = () => navigate('kanbunCatalog', { domain })
+  const backToKanbunCatalog = () => {
+    if (params.returnTo?.screen) {
+      navigate(params.returnTo.screen, params.returnTo.params ?? {})
+      return
+    }
+    navigate('kanbunCatalog', { domain })
+  }
 
   if (!deck.length || !item) {
     return (

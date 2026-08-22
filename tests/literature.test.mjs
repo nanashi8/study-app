@@ -49,7 +49,7 @@ test('英語名作は追加した長い3作品から原文語数の多い順に�
       'lit_en_tale_two_cities_times',
     ],
   )
-  assert.deepEqual(works.map(literatureWordCount), [282, 268, 248, 164, 141, 134])
+  assert.deepEqual(works.map(literatureWordCount), [288, 268, 249, 164, 141, 134])
   assert.ok(works.every((work, index) => (
     index === 0 || literatureWordCount(works[index - 1]) >= literatureWordCount(work)
   )))

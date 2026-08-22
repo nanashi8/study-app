@@ -5,6 +5,8 @@
 // 既存の長文・古典IDとは別名前空間にして、保存済み進捗との衝突を避ける。
 
 import { LITERATURE_NARRATION_SEGMENTS } from './literature-narration-segments.js'
+import { englishLiteratureWordIds } from './literature-vocabulary.js'
+import { tokenize } from '../lib/text.js'
 
 const scene = (original, translation, guide, speech = null) =>
   Object.freeze({ original, translation, guide, speech })
@@ -522,7 +524,21 @@ const BASE_PUBLIC_DOMAIN_LITERATURE = Object.freeze([
     blurb: '春夏秋冬の「いちばん心ひかれる時」を、光・音・動きで描く名文。',
     focus: '四季ごとの時間帯と、をかし・あはれの違いを味わう',
     wordIds: [],
-    kotenWordIds: ['k272', 'k002', 'k001', 'k090', 'k026'],
+    kotenWordIds: [
+      'k272',
+      'k060',
+      'k055',
+      'k185',
+      'k186',
+      'k002',
+      'k001',
+      'k235',
+      'k090',
+      'k145',
+      'k026',
+      'k244',
+      'k249',
+    ],
     grammarIds: ['kg_adjective', 'kg_perfect_tari', 'kg_conj_te'],
     rights: classicalRights('平安時代'),
     source: source(
@@ -585,7 +601,19 @@ const BASE_PUBLIC_DOMAIN_LITERATURE = Object.freeze([
     blurb: '念願の参詣を果たしたつもりで、肝心の本殿を見ずに帰った法師の話。',
     focus: '行動の順序と、最後の教訓「先達」の意味をつかむ',
     wordIds: [],
-    kotenWordIds: ['k007', 'k171', 'k043', 'k106'],
+    kotenWordIds: [
+      'k007',
+      'k071',
+      'k171',
+      'k179',
+      'k084',
+      'k088',
+      'k043',
+      'k106',
+      'k023',
+      'k236',
+      'k174',
+    ],
     grammarIds: [
       'kg_neg_zu',
       'kg_past_keri',
@@ -648,7 +676,19 @@ const BASE_PUBLIC_DOMAIN_LITERATURE = Object.freeze([
     blurb: '流れ続ける川と消えては生まれる泡から、人と住まいの無常を考える冒頭。',
     focus: '比喩の対応を一つずつ確かめ、無常観を言葉で説明する',
     wordIds: [],
-    kotenWordIds: ['k098', 'k099', 'k237', 'k089', 'k091'],
+    kotenWordIds: [
+      'k098',
+      'k099',
+      'k300',
+      'k035',
+      'k233',
+      'k089',
+      'k091',
+      'k237',
+      'k297',
+      'k246',
+      'k234',
+    ],
     grammarIds: [
       'kg_neg_zu',
       'kg_conj_te',
@@ -730,6 +770,22 @@ const BASE_PUBLIC_DOMAIN_LITERATURE = Object.freeze([
     focus: '反語や対句の形を耳でつかみ、孔子のいう「学び」を考える',
     wordIds: [],
     kotenWordIds: [],
+    kanbunVocabIds: [
+      'kv001',
+      'kv002',
+      'kv007',
+      'kv008',
+      'kv009',
+      'kv010',
+      'kv017',
+      'kv019',
+      'kv032',
+      'kv034',
+      'kv035',
+      'kv062',
+      'kv071',
+      'kv095',
+    ],
     grammarIds: [],
     rights: kanbunRights('中国・先秦'),
     source: source(
@@ -787,6 +843,21 @@ const BASE_PUBLIC_DOMAIN_LITERATURE = Object.freeze([
     focus: '「五十歩百歩」のたとえと、孟子が王へ返した批判をつなげる',
     wordIds: [],
     kotenWordIds: [],
+    kanbunVocabIds: [
+      'kv002',
+      'kv007',
+      'kv018',
+      'kv019',
+      'kv030',
+      'kv034',
+      'kv042',
+      'kv061',
+      'kv064',
+      'kv073',
+      'kv077',
+      'kv095',
+      'kv118',
+    ],
     grammarIds: [],
     rights: kanbunRights('中国・戦国時代'),
     source: source(
@@ -850,6 +921,16 @@ const BASE_PUBLIC_DOMAIN_LITERATURE = Object.freeze([
     focus: '商人の二つの主張を整理し、なぜ同時には成り立たないのか説明する',
     wordIds: [],
     kotenWordIds: [],
+    kanbunVocabIds: [
+      'kv001',
+      'kv002',
+      'kv017',
+      'kv018',
+      'kv019',
+      'kv020',
+      'kv091',
+      'kv097',
+    ],
     grammarIds: [],
     rights: kanbunRights('中国・戦国時代'),
     source: source(
@@ -899,9 +980,10 @@ const BASE_PUBLIC_DOMAIN_LITERATURE = Object.freeze([
 ])
 
 export const PUBLIC_DOMAIN_LITERATURE = Object.freeze(
-  BASE_PUBLIC_DOMAIN_LITERATURE.map((work) =>
-    Object.freeze({
+  BASE_PUBLIC_DOMAIN_LITERATURE.map((work) => {
+    const workWithSegments = {
       ...work,
+      kanbunVocabIds: work.kanbunVocabIds ?? [],
       scenes: Object.freeze(
         work.scenes.map((item, sceneIndex) =>
           Object.freeze({
@@ -911,8 +993,16 @@ export const PUBLIC_DOMAIN_LITERATURE = Object.freeze(
           }),
         ),
       ),
-    }),
-  ),
+    }
+    return Object.freeze({
+      ...workWithSegments,
+      // 英語は手入力の「重要語」ではなく、本文の全出現語から解決した
+      // 共通辞書IDをその作品のデッキとする。辞書外語は作品専用カードで扱う。
+      wordIds: work.kind === 'english'
+        ? Object.freeze(englishLiteratureWordIds(workWithSegments))
+        : work.wordIds,
+    })
+  }),
 )
 
 const WORKS_BY_ID = new Map(PUBLIC_DOMAIN_LITERATURE.map((work) => [work.id, work]))
@@ -931,8 +1021,5 @@ export const literatureCompletionCount = (readingsDone, kind = null) => {
 
 export const literatureWordCount = (work) =>
   (work?.scenes ?? [])
-    .map((item) => item.original)
-    .join(' ')
-    .trim()
-    .split(/\s+/)
-    .filter(Boolean).length
+    .flatMap((item) => tokenize(item.original))
+    .filter((token) => token.word).length
