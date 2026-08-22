@@ -2136,9 +2136,9 @@ export function auditPhraseExplanations() {
     PASSAGES.length === 24 &&
     readingSentences.length === 567 &&
     longTargets.length === 33 &&
-    PUBLIC_DOMAIN_LITERATURE.length === 9 &&
-    literatureSceneCount === 59 &&
-    literatureSegmentCount === 257 &&
+    PUBLIC_DOMAIN_LITERATURE.length === 12 &&
+    literatureSceneCount === 80 &&
+    literatureSegmentCount === 447 &&
     readingMeaningMultiRoleCount > 0 &&
     longMeaningMultiRoleCount > 0 &&
     confirmedRuleCount === READING_PHRASE_RULES.length &&

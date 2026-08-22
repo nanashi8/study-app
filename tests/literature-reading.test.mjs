@@ -9,10 +9,10 @@ import {
 } from '../src/data/literature-reading.js'
 import { buildReadingRoleAnnotation } from '../src/lib/reading-role-annotations.js'
 
-test('英語名作3作品23場面は原文を変えない手作業SVOCM解説を全場面に持つ', () => {
+test('英語名作6作品44場面は原文を変えない手作業SVOCM解説を全場面に持つ', () => {
   const works = literatureByKind('english')
-  assert.equal(works.length, 3)
-  assert.equal(works.reduce((count, work) => count + work.scenes.length, 0), 23)
+  assert.equal(works.length, 6)
+  assert.equal(works.reduce((count, work) => count + work.scenes.length, 0), 44)
   assert.deepEqual(
     Object.keys(LITERATURE_READING_GUIDES).sort(),
     works.map((work) => work.id).sort(),

@@ -20,11 +20,11 @@ import { japanesePhraseSpeechText } from '../src/lib/phrase-speech.js'
 import { createLearningAnalytics } from '../src/lib/learningAnalytics.js'
 import { useStore } from '../src/store/useStore.js'
 
-test('名作に親しむは英語3作品・古典3作品・漢文3作品を一意IDで収録する', () => {
-  assert.equal(literatureByKind('english').length, 3)
+test('名作に親しむは英語6作品・古典3作品・漢文3作品を一意IDで収録する', () => {
+  assert.equal(literatureByKind('english').length, 6)
   assert.equal(literatureByKind('classical').length, 3)
   assert.equal(literatureByKind('kanbun').length, 3)
-  assert.equal(PUBLIC_DOMAIN_LITERATURE.length, 9)
+  assert.equal(PUBLIC_DOMAIN_LITERATURE.length, 12)
   assert.equal(
     new Set(PUBLIC_DOMAIN_LITERATURE.map((work) => work.id)).size,
     PUBLIC_DOMAIN_LITERATURE.length,
@@ -39,7 +39,23 @@ test('名作に親しむは英語3作品・古典3作品・漢文3作品を一�
   }
 })
 
-test('全59場面が原文・訳・解説と、間で区切った一対一の朗読データを持つ', () => {
+test('英語名作は追加した長い3作品から原文語数の多い順に並ぶ', () => {
+  const works = literatureByKind('english')
+  assert.deepEqual(
+    works.slice(0, 3).map((work) => work.id),
+    [
+      'lit_en_moby_dick_water_gazers',
+      'lit_en_pride_prejudice_netherfield',
+      'lit_en_tale_two_cities_times',
+    ],
+  )
+  assert.deepEqual(works.map(literatureWordCount), [282, 268, 248, 164, 141, 134])
+  assert.ok(works.every((work, index) => (
+    index === 0 || literatureWordCount(works[index - 1]) >= literatureWordCount(work)
+  )))
+})
+
+test('全80場面が原文・訳・解説と、間で区切った一対一の朗読データを持つ', () => {
   let sceneCount = 0
   let segmentCount = 0
   for (const work of PUBLIC_DOMAIN_LITERATURE) {
@@ -76,8 +92,8 @@ test('全59場面が原文・訳・解説と、間で区切った一対一の朗
       assert.ok(literatureWordCount(work) >= 130, `${work.id}: 長文語数`)
     }
   }
-  assert.equal(sceneCount, 59)
-  assert.equal(segmentCount, 257)
+  assert.equal(sceneCount, 80)
+  assert.equal(segmentCount, 447)
 })
 
 test('朗読順は全作品・全区切りで必ず原文→対応する日本語になる', () => {
@@ -303,6 +319,10 @@ test('画面導線・連続TTS・通常長文の分離集計を実装してい�
   const kanbun = readFileSync(new URL('../src/screens/KanbunHome.jsx', import.meta.url), 'utf8')
   const map = readFileSync(new URL('../src/screens/EnglishMap.jsx', import.meta.url), 'utf8')
   const store = readFileSync(new URL('../src/store/useStore.js', import.meta.url), 'utf8')
+  const sceneNavigator = readFileSync(
+    new URL('../src/components/LiteratureSceneNavigator.jsx', import.meta.url),
+    'utf8',
+  )
 
   assert.match(app, /literatureLibrary:\s*LiteratureLibraryScreen/)
   assert.match(app, /literatureReader:\s*LiteratureReaderScreen/)
@@ -313,6 +333,16 @@ test('画面導線・連続TTS・通常長文の分離集計を実装してい�
   assert.doesNotMatch(reader, /前からの直訳|フレーズ訳|区切りの直訳/)
   assert.match(reader, /書き下し（朗読）/)
   assert.match(reader, /markLiteratureDone\(/)
+  assert.match(reader, /<LiteratureSceneNavigator/)
+  assert.doesNotMatch(reader, /grid grid-cols-4 gap-2/)
+  assert.match(sceneNavigator, /data-literature-scene-navigation/)
+  assert.match(sceneNavigator, /aria-label="前の場面へ"/)
+  assert.match(sceneNavigator, /aria-label="次の場面へ"/)
+  assert.match(sceneNavigator, /aria-live="polite"/)
+  assert.match(sceneNavigator, /role="group"/)
+  assert.doesNotMatch(sceneNavigator, /role="listitem"/)
+  assert.match(sceneNavigator, /min-h-11 min-w-11/)
+  assert.match(sceneNavigator, /addEventListener\('resize', handleResize\)/)
   assert.match(library, /title="名作に親しむ"/)
   assert.match(library, /id: 'kanbun'/)
   assert.match(contents, /title: '名作に親しむ'/)

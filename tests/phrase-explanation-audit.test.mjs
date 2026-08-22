@@ -74,10 +74,10 @@ test('全長文・長い一文・文学の意味フレーズと内部SVOCMを監
   assert.equal(audit.longSentences.phraseCount, 236)
   assert.equal(audit.longSentences.meaningPhraseCount, 104)
   assert.equal(audit.longSentences.meaningMultiRoleCount, 65)
-  assert.equal(audit.literature.workCount, 9)
-  assert.equal(audit.literature.sceneCount, 59)
-  assert.equal(audit.literature.segmentCount, 257)
-  assert.equal(audit.literature.englishSegmentCount, 106)
+  assert.equal(audit.literature.workCount, 12)
+  assert.equal(audit.literature.sceneCount, 80)
+  assert.equal(audit.literature.segmentCount, 447)
+  assert.equal(audit.literature.englishSegmentCount, 296)
 
   for (const issueName of substantiveReadingIssueNames) {
     assert.equal(audit.reading.issues[issueName].length, 0, `長文: ${issueName}`)

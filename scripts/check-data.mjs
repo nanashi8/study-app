@@ -1637,8 +1637,8 @@ for (const work of PUBLIC_DOMAIN_LITERATURE) {
     }
   }
 }
-if (englishLiteratureSyntaxSceneCount !== 23 || englishLiteratureQuestionCount !== 9) {
-  errors.push(`英語名作の長文型構成が全件ではない (構文${englishLiteratureSyntaxSceneCount}/23場面・設問${englishLiteratureQuestionCount}/9問)`)
+if (englishLiteratureSyntaxSceneCount !== 44 || englishLiteratureQuestionCount !== 18) {
+  errors.push(`英語名作の長文型構成が全件ではない (構文${englishLiteratureSyntaxSceneCount}/44場面・設問${englishLiteratureQuestionCount}/18問)`)
 }
 for (const kind of ['english', 'classical', 'kanbun']) {
   const count = PUBLIC_DOMAIN_LITERATURE.filter((work) => work.kind === kind).length
