@@ -25,6 +25,7 @@ import { Sheet } from '../components/Sheet.jsx'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { ReadingRoleSentence } from '../components/ReadingRoleSentence.js'
 import { ReadingRuleCard } from '../components/ReadingRuleCard.jsx'
+import { LiteratureSceneNavigator } from '../components/LiteratureSceneNavigator.jsx'
 import { Button, Card, Chip, ProgressBar, cx } from '../components/ui.jsx'
 import { translationRoleMeta } from '../lib/translation-roles.js'
 import {
@@ -412,18 +413,23 @@ export function LiteratureReaderScreen() {
           </Card>
         )}
 
+        <LiteratureSceneNavigator
+          current={sceneIndex}
+          total={work.scenes.length}
+          onChange={moveToScene}
+          color={meta.color}
+          completed={completed}
+        />
+
         <Card className="overflow-hidden">
           <div className="border-b border-ink/5 p-4">
             <div className="flex items-center justify-between gap-3">
               <div>
                 <p className="text-[11px] font-extrabold uppercase tracking-wide text-ink/40">
-                  Scene {sceneIndex + 1}
+                  この場面を一息ずつ
                 </p>
                 <h2 className="font-display text-base font-extrabold text-ink">
-                  {sceneIndex + 1} / {work.scenes.length} 場面
-                  <span className="ml-2 text-xs text-ink/40">
-                    区切り {segmentIndex + 1} / {currentSegments.length}
-                  </span>
+                  区切り {segmentIndex + 1} / {currentSegments.length}
                 </h2>
               </div>
               <Chip color={phase === 'original' ? meta.color : '#d97706'}>
@@ -598,28 +604,6 @@ export function LiteratureReaderScreen() {
             </div>
           </div>
         </Card>
-
-        <div className="grid grid-cols-4 gap-2">
-          {work.scenes.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => moveToScene(index)}
-              aria-label={`${index + 1}場面へ移動`}
-              aria-current={sceneIndex === index ? 'step' : undefined}
-              className={cx(
-                'min-h-10 rounded-xl text-xs font-extrabold transition-colors',
-                sceneIndex === index
-                  ? 'text-white'
-                  : readingsDone.includes(work.id)
-                    ? 'bg-emerald-50 text-emerald-700'
-                    : 'bg-white text-ink/45 shadow-sm',
-              )}
-              style={sceneIndex === index ? { backgroundColor: meta.color } : undefined}
-            >
-              {index + 1}
-            </button>
-          ))}
-        </div>
 
         {isEnglish && (
           <Card className="border-2 border-emerald-100 p-4" data-literature-reading-check>
