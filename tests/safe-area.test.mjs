@@ -208,3 +208,18 @@ test('画面いっぱいに固定する操作バーだけは、下のふち余�
     }
   }
 })
+
+test('単語カードの判定ボタンはiPhone Safariの下部UIより上へ退避する', () => {
+  const css = read('src/index.css')
+  const study = read('src/screens/VocabStudy.jsx')
+
+  assert.match(css, /--app-ios-browser-bottom-clearance:\s*0px/)
+  assert.match(css, /@supports \(-webkit-touch-callout:\s*none\)/)
+  assert.match(css, /@media \(display-mode:\s*browser\) and \(hover:\s*none\) and \(pointer:\s*coarse\) and \(max-width:\s*48rem\)/)
+  assert.match(css, /--app-ios-browser-bottom-clearance:\s*5\.5rem/)
+  assert.match(css, /\.vocab-study-actions\s*\{[^}]*padding-bottom:\s*calc\(1rem \+ max\([^}]*var\(--app-safe-bottom\)[^}]*var\(--app-ios-browser-bottom-clearance\)/s)
+
+  assert.match(study, /className="vocab-study-actions[^\"]*"/)
+  assert.match(study, /data-vocab-study-actions/)
+  assert.doesNotMatch(study, /vocab-study-actions[^\n]*\bpb-4\b/)
+})
