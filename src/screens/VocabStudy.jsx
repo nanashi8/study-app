@@ -357,7 +357,10 @@ export function VocabStudyScreen() {
       </div>
 
       {/* フッター操作 */}
-      <div className="shrink-0 border-t border-brand-100 bg-white/90 p-4 pb-4 backdrop-blur">
+      <div
+        className="vocab-study-actions shrink-0 border-t border-brand-100 bg-white/90 p-4 backdrop-blur"
+        data-vocab-study-actions
+      >
         {!flipped ? (
           <Button full size="lg" onClick={() => setFlipped(true)}>
             答えを見る

@@ -5231,6 +5231,18 @@ button { -webkit-tap-highlight-color: transparent; }
 :root {
   --app-safe-top: env(safe-area-inset-top, 0px);
   --app-safe-bottom: env(safe-area-inset-bottom, 0px);
+  --app-ios-browser-bottom-clearance: 0px;
+}
+/* iOS Safari は、画面遷移などで下部ツールバーが自動的に広がった瞬間だけ
+   safe-area-inset-bottom / viewport の更新が遅れ、最下段の操作を覆うことがある。
+   ホーム画面アプリにはブラウザUIがないため、通常タブのiPhone相当だけ
+   ツールバー最大時の退避幅をあらかじめ確保する。 */
+@supports (-webkit-touch-callout: none) {
+  @media (display-mode: browser) and (hover: none) and (pointer: coarse) and (max-width: 48rem) {
+    :root {
+      --app-ios-browser-bottom-clearance: 5.5rem;
+    }
+  }
 }
 /* ホーム画面アイコンから開いた表示（standalone）は時刻・電波の下まで描かれる。
    safeArea.js が実測して確定値を書き込むが、それが動くまでの一瞬や、
@@ -5254,6 +5266,14 @@ button { -webkit-tap-highlight-color: transparent; }
 /* ホームバー・ジェスチャ領域のぶんだけ、最下段の操作が隠れないよう余白を足す。 */
 .study-app-content {
   padding-bottom: var(--app-safe-bottom);
+}
+
+/* 単語カードの判定は学習を進める必須操作なので、Safariの下部UIより上に置く。 */
+.vocab-study-actions {
+  padding-bottom: calc(1rem + max(
+    var(--app-safe-bottom),
+    var(--app-ios-browser-bottom-clearance)
+  ));
 }
 
 /* ---- App-wide readability -------------------------------------------------
