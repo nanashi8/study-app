@@ -16,17 +16,16 @@ import {
   EtymologyHistoryTrail,
   PosBadge,
 } from '../components/WordBits.jsx'
-import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
+import { StatusDistributionBar } from '../components/LearningStatusBars.jsx'
 import { Button, Card, Chip } from '../components/ui.jsx'
 import { learningStatusForSrsEntry, summarizeSrsItems } from '../lib/contentProgress.js'
-import { ArrowRight, Cards, Check, Sparkles } from '../components/Icons.jsx'
+import { ArrowRight, Book, Check } from '../components/Icons.jsx'
 
 export function EtymologyPackScreen() {
   const rootRef = useRef(null)
   const packId = useStore((state) => state.params.packId)
   const navigate = useStore((state) => state.navigate)
   const srs = useStore((state) => state.srs)
-  const etymologySrs = useStore((state) => state.etymologySrs)
   const pack = getEtymologyPack(packId)
 
   useEffect(() => {
@@ -49,21 +48,21 @@ export function EtymologyPackScreen() {
   const displayTitle = pack.title.replace(/(準?[0-9])級/g, '$1\u2060級')
   const coverage = new Set(pack.coverageIds)
   const words = pack.studyIds.map(getWord).filter(Boolean)
-  const progressWords = pack.coverageIds.map(getWord).filter(Boolean)
-  const packProgress = summarizeSrsItems([pack], etymologySrs)
-  const wordProgress = summarizeSrsItems(progressWords, srs)
-
-  const studyKnowledge = () =>
-    navigate('etymologyStudy', {
-      packIds: [pack.id],
-      size: 1,
-    })
-
-  const quizKnowledge = () =>
-    navigate('etymologyQuiz', {
-      packIds: [pack.id],
-      size: 1,
-    })
+  const wordProgress = summarizeSrsItems(words, srs)
+  const wordListHeading = pack.mode === 'formula'
+    ? '部品の意味を比べる'
+    : pack.mode === 'root'
+      ? '同じ語根の語を見比べる'
+      : pack.mode === 'origin'
+        ? '形から今の意味をたどる'
+        : '1語ずつ形と由来を確かめる'
+  const wordListGuide = pack.mode === 'formula'
+    ? '共通する部品があるときだけ、その形と意味を比べます。'
+    : pack.mode === 'root'
+      ? '同じ語根を持つことが確認できた語だけを並べています。'
+      : pack.mode === 'origin'
+        ? '形が表す意味を前からつないで、今の意味を確かめます。'
+        : '学習量をまとめたセットです。語どうしの関係は示していません。'
 
   const study = () =>
     navigate('vocabStudy', {
@@ -71,13 +70,7 @@ export function EtymologyPackScreen() {
       title: pack.title,
       mode: 'study',
       size: pack.studyIds.length,
-    })
-
-  const quiz = () =>
-    navigate('vocabQuiz', {
-      source: { type: 'deck', ids: pack.studyIds },
-      title: pack.title,
-      size: pack.studyIds.length,
+      returnTo: { screen: 'etymologyPack', params: { packId: pack.id } },
     })
 
   return (
@@ -117,30 +110,15 @@ export function EtymologyPackScreen() {
                 {meaningGuide.statement}
               </p>
             </div>
-            <div className="rounded-xl bg-violet-50 px-3 py-3">
-              <p className="mb-2 text-xs font-extrabold text-violet-800">この語源カード</p>
-              <LearningStatusBars progress={packProgress} compact units={{ learning: '項目', quiz: '問' }} />
-            </div>
-            <div className="grid grid-cols-2 gap-2" data-etymology-pack-actions>
-              <Button full onClick={studyKnowledge}>
-                <Sparkles size={18} /> 意味を見て学ぶ
-              </Button>
-              <Button full variant="secondary" onClick={quizKnowledge}>
-                <Cards size={18} /> 2択で確認
-              </Button>
-            </div>
             <div className="rounded-xl bg-brand-50 px-3 py-3">
               <p className="mb-2 text-xs font-extrabold text-brand-700">
-                関連英単語 {progressWords.length}語・この画面 {words.length}語
+                このカードの英単語 {words.length}語
               </p>
-              <LearningStatusBars progress={wordProgress} compact units={{ learning: '語', quiz: '問' }} />
+              <StatusDistributionBar kind="learning" counts={wordProgress.learning} compact unit="語" />
             </div>
-            <div className="grid grid-cols-2 gap-2">
-              <Button variant="secondary" onClick={study}>
-                <Sparkles size={18} /> 単語カード
-              </Button>
-              <Button variant="secondary" onClick={quiz}>
-                <Cards size={18} /> 単語クイズ
+            <div data-etymology-pack-actions>
+              <Button full onClick={study} data-etymology-word-study-action>
+                <Book size={18} /> 単語を覚える
               </Button>
             </div>
             {pack.rootId && (
@@ -159,16 +137,10 @@ export function EtymologyPackScreen() {
         <div>
           <div className="mb-2 px-1">
             <h2 className="font-display text-base font-extrabold text-ink/80">
-              {pack.mode === 'formula'
-                ? '部品の意味を比べる'
-                : pack.mode === 'origin'
-                  ? '形から今の意味をたどる'
-                  : '仲間を見比べる'}
+              {wordListHeading}
             </h2>
             <p className="mt-0.5 text-xs font-bold text-ink/45">
-              {pack.mode === 'origin'
-                ? '形が表す意味を前からつないで、今の意味を確かめます。'
-                : '足がかりの語も含め、一度に8語以内に絞っています。'}
+              {wordListGuide}
             </p>
           </div>
 
@@ -211,11 +183,13 @@ export function EtymologyPackScreen() {
                     <span className="text-brand-300"><ArrowRight size={17} /></span>
                   </div>
 
-                  {pack.mode === 'formula' ? (
+                  {pack.mode === 'formula' || (
+                    pack.mode === 'family' && (word.etymology?.parts?.length ?? 0) >= 2
+                  ) ? (
                     <div className="mt-2.5 pl-8">
                       <EtymologyFormula word={word} compact />
                     </div>
-                  ) : pack.mode === 'origin' ? (
+                  ) : pack.mode === 'origin' || pack.mode === 'family' ? (
                     <div className="mt-2.5 pl-8">
                       <EtymologyHistoryTrail word={word} compact />
                     </div>

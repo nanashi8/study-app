@@ -2,8 +2,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync, readdirSync } from 'node:fs'
-import { buildEtymologyDeck } from '../src/lib/etymologyProgress.js'
-import { ETYMOLOGY_PACKS } from '../src/data/vocab.js'
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8')
 
@@ -34,7 +32,7 @@ test('「全部」を選ぶと、その教材の在庫すべてで組み直す',
   assert.match(sizes, /if \(size === SESSION_SIZE_ALL\) return max/)
   assert.match(sizes, /const resolvedSize = size === SESSION_SIZE_ALL \? \(pool \?\? SESSION_SIZE_ALL\) : size/)
   // 在庫数を数えてから設定を読む（あとに読むと「全部」が10に潰れる）
-  for (const name of ['VocabStudy', 'VocabQuiz', 'PhraseStudy', 'PhraseQuiz', 'DictationPlay', 'GrammarQuiz', 'ListeningQuiz', 'EtymologyStudy', 'EtymologyQuiz']) {
+  for (const name of ['VocabStudy', 'VocabQuiz', 'PhraseStudy', 'PhraseQuiz', 'DictationPlay', 'GrammarQuiz', 'ListeningQuiz']) {
     const source = read(`src/screens/${name}.jsx`)
     assert.doesNotMatch(source, /useSessionSize\(\)/, `${name} が在庫数を渡していない`)
     assert.ok(
@@ -64,20 +62,10 @@ test('問題数を選ぶ画面は、教材の在庫数を渡している（渡�
     .map((name) => `src/screens/${name}`)
     .filter((path) => read(path).includes('<SessionCounter'))
 
-  assert.ok(screens.length >= 20, `対象画面が少なすぎる（${screens.length}）`)
+  assert.ok(screens.length >= 18, `対象画面が少なすぎる（${screens.length}）`)
   for (const path of screens) {
     const counter = /<SessionCounter[\s\S]*?\/>/.exec(read(path))?.[0] ?? ''
     assert.match(counter, /max=\{/, `${path} が在庫数を渡していない`)
-  }
-})
-
-test('語源カードも20枚を超えて出せる（1回の問題数の上限をそろえる）', () => {
-  assert.equal(buildEtymologyDeck(ETYMOLOGY_PACKS, {}, { size: 30 }).length, 30)
-  assert.equal(buildEtymologyDeck(ETYMOLOGY_PACKS, {}, { size: 200 }).length, 200)
-  const all = buildEtymologyDeck(ETYMOLOGY_PACKS, {}, { size: Infinity })
-  assert.ok(all.length > 200, `全部でも${all.length}枚しか出ない`)
-  for (const path of ['src/screens/EtymologyStudy.jsx', 'src/screens/EtymologyQuiz.jsx']) {
-    assert.doesNotMatch(read(path), /useSessionSize\(20\)/, `${path} に20の固定上限が残る`)
   }
 })
 

@@ -29,14 +29,6 @@ const EtymologyPackScreen = lazyScreen(
   () => import('./screens/EtymologyPack.jsx'),
   'EtymologyPackScreen',
 )
-const EtymologyStudyScreen = lazyScreen(
-  () => import('./screens/EtymologyStudy.jsx'),
-  'EtymologyStudyScreen',
-)
-const EtymologyQuizScreen = lazyScreen(
-  () => import('./screens/EtymologyQuiz.jsx'),
-  'EtymologyQuizScreen',
-)
 const RootsScreen = lazyScreen(() => import('./screens/Roots.jsx'), 'RootsScreen')
 const MyListScreen = lazyScreen(() => import('./screens/MyList.jsx'), 'MyListScreen')
 const MyLearningScreen = lazyScreen(
@@ -142,8 +134,6 @@ const SCREENS = {
   wordDetail: WordDetailScreen,
   rootDetail: RootDetailScreen,
   etymologyPack: EtymologyPackScreen,
-  etymologyStudy: EtymologyStudyScreen,
-  etymologyQuiz: EtymologyQuizScreen,
   roots: RootsScreen,
   myLearning: MyLearningScreen,
   myList: MyListScreen,

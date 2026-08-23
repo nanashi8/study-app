@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { readFileSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 
 import { PHRASES } from '../src/data/phrases.js'
 import { LISTENING_ITEMS } from '../src/data/listening.js'
@@ -40,20 +40,24 @@ test('熟語・構文は全1,500項目を級別内訳まで表示する', () => 
   assert.match(phrases, /PHRASE_COUNTS\.syntax/)
 })
 
-test('語源画面は形と意味の3段階学習・4分類・2択確認へ整理する', () => {
+test('語源の全公開入口は通常の単語暗記だけを使い、専用暗記・2択実装を持たない', () => {
   const roots = read('../src/screens/Roots.jsx')
   const modeData = read('../src/data/etymology-compression.js')
   const history = read('../src/data/etymology-history.js')
-  const study = read('../src/screens/EtymologyStudy.jsx')
-  const quiz = read('../src/screens/EtymologyQuiz.jsx')
   const pack = read('../src/screens/EtymologyPack.jsx')
+  const rootDetail = read('../src/screens/RootDetail.jsx')
+  const vocabLevels = read('../src/screens/VocabLevels.jsx')
+  const notebook = read('../src/screens/MyList.jsx')
+  const appMenu = read('../src/lib/appMenu.js')
+  const analytics = read('../src/lib/learningAnalyticsReport.js')
+  const learningContent = read('../src/lib/learningContentProgress.js')
+  const app = read('../src/App.jsx')
   const wordBits = read('../src/components/WordBits.jsx')
-  const knowledge = read('../src/components/EtymologyKnowledge.jsx')
 
   assert.match(roots, /data-etymology-intro/)
   assert.match(roots, /形を見る/)
   assert.match(roots, /意味をつなぐ/)
-  assert.match(roots, /2択で確認/)
+  assert.match(roots, /単語を覚える/)
   assert.match(roots, /data-etymology-dashboard/)
   assert.match(roots, /role="tablist" aria-label="語源の学び方"/)
   assert.match(roots, /grid grid-cols-2 gap-2/)
@@ -69,19 +73,35 @@ test('語源画面は形と意味の3段階学習・4分類・2択確認へ整�
   assert.match(wordBits, /今の意味/)
   assert.match(wordBits, /data-reference-root-summary/)
   assert.match(wordBits, /同じ由来をたどれる語根/)
-  assert.match(roots, /navigate\('etymologyQuiz'/)
   assert.match(roots, /data-etymology-actions/)
   assert.match(pack, /data-etymology-pack-actions/)
-  assert.match(quiz, /data-etymology-quiz/)
-  assert.match(quiz, /正しい形と意味/)
-  assert.match(quiz, /2択で確認する/)
-  assert.match(knowledge, /data-etymology-learning-flow/)
-  assert.match(knowledge, /語の形を見る/)
-  assert.match(knowledge, /関連語で確かめる/)
-  assert.doesNotMatch(`${roots}\n${study}\n${quiz}\n${pack}\n${wordBits}\n${knowledge}`, /もとの形・言語|もとの言語|どの言語から/)
-  assert.doesNotMatch(`${roots}\n${study}\n${pack}\n${wordBits}`, /現在義|共通軸|記載上の出発言語|濃縮パック/)
-  // 語源カードも他の暗記カードと同じで、答えを開いてから「まだ／覚えた」で答える。
-  assert.equal((study.match(/答えと説明を見る/g) ?? []).length, 1)
+  const activeEtymology = `${roots}\n${pack}\n${rootDetail}`
+  assert.equal((activeEtymology.match(/data-etymology-word-study-action/g) ?? []).length, 3)
+  assert.equal((activeEtymology.match(/navigate\('vocabStudy'/g) ?? []).length, 3)
+  assert.doesNotMatch(activeEtymology, /navigate\('(?:etymologyStudy|etymologyQuiz|vocabQuiz)'/)
+  assert.doesNotMatch(activeEtymology, /2択|単語クイズ|意味を見て学ぶ/)
+  assert.match(vocabLevels, /語源から関連英単語を覚える/)
+  assert.match(appMenu, /語源から関連英単語を一緒に覚える/)
+  assert.doesNotMatch(`${vocabLevels}\n${appMenu}`, /語源の確認問題|2択/)
+  assert.match(notebook, /domain\.id === 'etymology' \? \([\s\S]*単語を覚える/)
+  assert.match(notebook, /getEtymologyPack\(id\)\?\.studyIds/)
+  const notebookEtymology = blockBetween(notebook, "} else if (domainId === 'etymology') {", "} else if (domainId === 'kotenVocab') {")
+  assert.match(notebookEtymology, /navigate\('vocabStudy'/)
+  assert.doesNotMatch(notebookEtymology, /navigate\('(?:etymologyStudy|etymologyQuiz|vocabQuiz)'/)
+  assert.doesNotMatch(app, /etymologyStudy:\s|etymologyQuiz:\s|EtymologyStudyScreen|EtymologyQuizScreen/)
+  assert.match(analytics, /domain === 'etymology'[\s\S]*screen: 'vocabStudy'/)
+  assert.doesNotMatch(analytics, /screen: ['"]etymology(?:Study|Quiz)['"]/)
+  assert.match(learningContent, /'語源から覚える'[\s\S]*enabled: false/)
+  assert.doesNotMatch(`${activeEtymology}\n${wordBits}`, /もとの形・言語|もとの言語|どの言語から/)
+  assert.doesNotMatch(`${activeEtymology}\n${wordBits}`, /現在義|共通軸|記載上の出発言語|濃縮パック/)
+  for (const retired of [
+    '../src/screens/EtymologyStudy.jsx',
+    '../src/screens/EtymologyQuiz.jsx',
+    '../src/components/EtymologyKnowledge.jsx',
+    '../src/lib/etymologyQuiz.js',
+  ]) {
+    assert.equal(existsSync(new URL(retired, import.meta.url)), false, retired)
+  }
 })
 
 test('単語クイズは解答直後に語源を表示し、詳細遷移を必須にしない', () => {
@@ -127,7 +147,7 @@ test('記録は定義・標本数・評定・図表・個別助言・科学的�
   assert.match(analytics, /10\.1037\/0003-066X\.54\.7\.493/)
   assert.match(progress, /data-progress-record-summary/)
   assert.match(progress, /data-level-progress-table/)
-  assert.match(progress, /data-etymology-progress-table/)
+  assert.doesNotMatch(progress, /data-etymology-progress-table/)
   assert.match(progress, /onNavigate=\{\(screen, params\) => navigate\(screen, params\)\}/)
 })
 
@@ -147,7 +167,7 @@ test('上部メニューとマイ学習は全教材種類・既存の出題ソ�
   assert.match(learning, /data-my-learning-screen/)
   assert.match(learning, /data-learning-content-group={group\.id}/)
   assert.match(learning, /data-learning-content={content\.id}/)
-  for (const label of ['英単語', '熟語・構文', '英文法', 'リスニング', 'ディクテーション', '語源知識', '古典単語', '漢語']) {
+  for (const label of ['英単語', '熟語・構文', '英文法', 'リスニング', 'ディクテーション', '語源から覚える', '古典単語', '漢語']) {
     assert.match(`${learning}\n${learningCatalog}`, new RegExp(label))
   }
   for (const screen of ['vocabLevels', 'phrases', 'grammar', 'listening', 'dictation', 'roots']) {
@@ -163,7 +183,7 @@ test('メニューの全教材・個人機能は公開ルートに存在し、�
     [...screenMap.matchAll(/^  ([A-Za-z][A-Za-z0-9]*):/gm)].map((match) => match[1]),
   )
 
-  assert.equal(publicScreens.size, 69)
+  assert.equal(publicScreens.size, 67)
   assert.equal(APP_MENU_ITEMS.length, 29)
   assert.equal(APP_MENU_SCREEN_DESTINATIONS.length, 24)
   assert.deepEqual(

@@ -236,7 +236,7 @@ export function VocabLevelsScreen() {
           </span>
           <span className="min-w-0 flex-1">
             <strong className="block text-sm font-extrabold text-violet-900">語源から学ぶ</strong>
-            <span className="mt-0.5 block text-xs font-bold text-violet-700">語源の確認問題と関連語</span>
+            <span className="mt-0.5 block text-xs font-bold text-violet-700">語源から関連英単語を覚える</span>
           </span>
           <ArrowRight size={17} className="shrink-0 text-violet-400" />
         </button>

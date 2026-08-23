@@ -22,7 +22,6 @@ import {
   ETYMOLOGY_PACKS,
   etymologyLearningGuideFor,
 } from '../src/data/vocab.js'
-import { buildAllEtymologyQuizQuestions } from '../src/lib/etymologyQuiz.js'
 import {
   APP_MENU_SECTIONS,
   APP_MENU_ITEMS,
@@ -84,9 +83,21 @@ const forbiddenRuntimeCopy = [
   'カードで想起',
   '手掛かりを想起',
   '答えを隠して想起',
+  '2択で確認',
+  '語源の確認問題',
 ]
 
 const files = await sourceFiles(sourceRoot)
+for (const retired of [
+  'src/screens/EtymologyStudy.jsx',
+  'src/screens/EtymologyQuiz.jsx',
+  'src/components/EtymologyKnowledge.jsx',
+  'src/lib/etymologyQuiz.js',
+]) {
+  if (files.some((file) => path.relative(projectRoot, file) === retired)) {
+    errors.push(`${retired}: 廃止した語源専用画面または2択実装が残る`)
+  }
+}
 for (const file of files) {
   const source = await readFile(file, 'utf8')
   const relative = path.relative(projectRoot, file)
@@ -107,10 +118,11 @@ const [
   progressBackupSource,
   storeSource,
   rootsSource,
-  etymologyStudySource,
-  etymologyQuizSource,
   etymologyPackSource,
-  etymologyKnowledgeSource,
+  rootDetailSource,
+  myListSource,
+  analyticsReportSource,
+  learningContentSource,
   wordBitsSource,
   vocabStudySource,
   vocabQuizSource,
@@ -125,10 +137,11 @@ const [
   readProjectFile('src/components/ProgressBackup.jsx'),
   readProjectFile('src/store/useStore.js'),
   readProjectFile('src/screens/Roots.jsx'),
-  readProjectFile('src/screens/EtymologyStudy.jsx'),
-  readProjectFile('src/screens/EtymologyQuiz.jsx'),
   readProjectFile('src/screens/EtymologyPack.jsx'),
-  readProjectFile('src/components/EtymologyKnowledge.jsx'),
+  readProjectFile('src/screens/RootDetail.jsx'),
+  readProjectFile('src/screens/MyList.jsx'),
+  readProjectFile('src/lib/learningAnalyticsReport.js'),
+  readProjectFile('src/lib/learningContentProgress.js'),
   readProjectFile('src/components/WordBits.jsx'),
   readProjectFile('src/screens/VocabStudy.jsx'),
   readProjectFile('src/screens/VocabQuiz.jsx'),
@@ -168,7 +181,7 @@ const actualEtymologyModes = Object.values(ETYMOLOGY_MODE_META).map((item) => it
 if (actualEtymologyModes.join(',') !== expectedEtymologyModes.join(',')) {
   errors.push(`語源の4分類が平易な表示契約と不一致: ${actualEtymologyModes.join(',')}`)
 }
-const learnerEtymologySources = `${rootsSource}\n${etymologyStudySource}\n${etymologyQuizSource}\n${etymologyPackSource}\n${etymologyKnowledgeSource}\n${wordBitsSource}`
+const learnerEtymologySources = `${rootsSource}\n${etymologyPackSource}\n${rootDetailSource}\n${wordBitsSource}`
 for (const obsolete of [
   '現在義',
   '共通軸',
@@ -191,34 +204,45 @@ if (!vocabStudySource.includes('<EtymologyBlock')) {
 if (/語源をくわしく見る|くわしく見る/.test(`${vocabQuizSource}\n${vocabStudySource}`)) {
   errors.push('単語の語源本文が「くわしく見る」操作を必須にしている')
 }
-// 語源カードも他の暗記カードと同じ作り＝答えを開いてから「まだ／覚えた」で答える。
-// 開くのを毎回タップさせないための切り替えは、画面上に必ず置く。
-if (!etymologyStudySource.includes('答えと説明を見る')) {
-  errors.push('語源カードに答えを開く操作がない')
-}
-if (!etymologyStudySource.includes('RevealAnswersToggle')) {
-  errors.push('語源カードに答えの表示・非表示の切り替えがない')
-}
-for (const label of ['まだ', '覚えた']) {
-  if (!etymologyStudySource.includes(label)) {
-    errors.push(`語源カードに「${label}」のボタンがない`)
+for (const [name, source] of [
+  ['語源トップ', rootsSource],
+  ['語源カード', etymologyPackSource],
+  ['同じ語根', rootDetailSource],
+]) {
+  if (!source.includes('data-etymology-word-study-action')) {
+    errors.push(`${name}から単語の「覚える」へ進めない`)
+  }
+  if (!source.includes("navigate('vocabStudy'")) {
+    errors.push(`${name}が通常の単語暗記画面を使っていない`)
+  }
+  if (/navigate\('(?:etymologyStudy|etymologyQuiz|vocabQuiz)'|単語クイズ/.test(source)) {
+    errors.push(`${name}に廃止した語源専用画面またはクイズの導線が残る`)
   }
 }
-if (!etymologyKnowledgeSource.includes('data-etymology-learning-flow')) {
-  errors.push('語源学習が「形・意味・関連語」の流れになっていない')
+if (!rootsSource.includes('英単語の「覚える」と共通です')) {
+  errors.push('語源トップが通常の単語暗記と記録を共有することを説明していない')
 }
-const etymologyQuestions = buildAllEtymologyQuizQuestions()
-if (etymologyQuestions.length !== ETYMOLOGY_PACKS.length) {
-  errors.push(`語源2択の全件数が不一致: ${etymologyQuestions.length}/${ETYMOLOGY_PACKS.length}`)
+if (/etymologyStudy:\s|etymologyQuiz:\s|EtymologyStudyScreen|EtymologyQuizScreen/.test(appSource)) {
+  errors.push('廃止した語源専用画面が公開ルートに残る')
 }
-for (const question of etymologyQuestions) {
-  const labels = question.knowledge.options.map((option) => option.label)
-  if (labels.join(',') !== '正しい,正しくない') {
-    errors.push(`語源 ${question.packId}: 正誤2択ではない`)
-  }
-  if (/何語|もとの言語|どの言語/.test(`${question.knowledge.prompt} ${question.knowledge.statement}`)) {
-    errors.push(`語源 ${question.packId}: 由来言語を答えさせている`)
-  }
+if (
+  !myListSource.includes('単語を覚える')
+  || !myListSource.includes("navigate('vocabStudy'")
+  || /navigate\('(?:etymologyStudy|etymologyQuiz)'/.test(myListSource)
+) {
+  errors.push('マイ学習ノートの語源項目が通常の単語暗記だけになっていない')
+}
+if (
+  !analyticsReportSource.includes("screen: 'vocabStudy'")
+  || /screen: ['"]etymology(?:Study|Quiz)['"]/.test(analyticsReportSource)
+) {
+  errors.push('学習分析の語源導線が通常の単語暗記だけになっていない')
+}
+if (
+  !learningContentSource.includes("'語源から覚える'")
+  || !learningContentSource.includes('enabled: false')
+) {
+  errors.push('教材ごとの記録で語源専用クイズを非表示にしていない')
 }
 for (const word of ALL_WORDS) {
   const guide = etymologyLearningGuideFor(word)

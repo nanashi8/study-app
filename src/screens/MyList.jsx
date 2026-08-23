@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { useStore, todayIndex } from '../store/useStore.js'
+import { getEtymologyPack } from '../data/vocab.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { Button, Card, Chip, EmptyState } from '../components/ui.jsx'
@@ -312,7 +313,15 @@ function ProblemSetCard({
                   <span className="min-w-0 flex-1 text-[11px] font-extrabold text-slate-700">
                     {domain.label} {items.length}{domain.unit}
                   </span>
-                  {STUDY_DOMAINS.has(domain.id) && (
+                  {domain.id === 'etymology' ? (
+                    <button
+                      type="button"
+                      onClick={() => onStart(domain.id, items, set, 'study')}
+                      className="min-h-9 rounded-md bg-brand-600 px-2 text-[9px] font-extrabold text-white"
+                    >
+                      単語を覚える
+                    </button>
+                  ) : STUDY_DOMAINS.has(domain.id) && (
                     <button
                       type="button"
                       onClick={() => onStart(domain.id, items, set, 'study')}
@@ -321,13 +330,15 @@ function ProblemSetCard({
                       カード
                     </button>
                   )}
-                  <button
-                    type="button"
-                    onClick={() => onStart(domain.id, items, set, 'quiz')}
-                    className="min-h-9 rounded-md bg-slate-800 px-2 text-[9px] font-extrabold text-white"
-                  >
-                    {domain.id === 'etymology' ? '確認' : '問題'}
-                  </button>
+                  {domain.id !== 'etymology' && (
+                    <button
+                      type="button"
+                      onClick={() => onStart(domain.id, items, set, 'quiz')}
+                      className="min-h-9 rounded-md bg-slate-800 px-2 text-[9px] font-extrabold text-white"
+                    >
+                      問題
+                    </button>
+                  )}
                 </div>
               )
             })}
@@ -631,7 +642,9 @@ export function MyListScreen() {
     const ids = items.map((item) => item.id)
     if (!ids.length) return
     const meta = NOTEBOOK_DOMAIN_BY_ID[domainId]
-    const mode = requestedMode === 'study' && STUDY_DOMAINS.has(domainId) ? 'study' : 'quiz'
+    const mode = domainId === 'etymology'
+      ? 'study'
+      : requestedMode === 'study' && STUDY_DOMAINS.has(domainId) ? 'study' : 'quiz'
     const title = set?.title ?? `${meta.label}・マイノート`
     if (set) {
       recordNotebookSetLaunch({
@@ -667,12 +680,19 @@ export function MyListScreen() {
         engine: 'listening',
       })
     } else if (domainId === 'etymology') {
-      navigate('etymologyStudy', {
-        mode: 'all',
-        status: 'all',
-        packIds: ids,
-        size: ids.length,
-        title,
+      const wordIds = [...new Set(ids.flatMap(
+        (id) => getEtymologyPack(id)?.studyIds ?? [],
+      ))]
+      if (!wordIds.length) {
+        navigate('roots')
+        return
+      }
+      navigate('vocabStudy', {
+        source: { type: 'deck', ids: wordIds },
+        title: `${title}の単語`,
+        mode: 'study',
+        size: Math.min(SESSION_LIMITS.etymology, wordIds.length),
+        returnTo: { screen: 'myList', params: {} },
       })
     } else if (domainId === 'kotenVocab') {
       navigate(mode === 'study' ? 'kotenStudy' : 'kotenQuiz', { ids, title })

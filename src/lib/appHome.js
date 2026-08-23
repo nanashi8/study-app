@@ -42,8 +42,8 @@ export const APP_HOMES = [
     label: '英語アプリ',
     screens: [
       'home', 'vocabLevels', 'vocabGroups', 'vocabDecks', 'vocabStudy', 'vocabQuiz',
-      'sessionResult', 'wordDetail', 'rootDetail', 'etymologyPack', 'etymologyStudy',
-      'etymologyQuiz', 'roots', 'myList', 'vocabCamera', 'readingList', 'readingRules',
+      'sessionResult', 'wordDetail', 'rootDetail', 'etymologyPack', 'roots', 'myList',
+      'vocabCamera', 'readingList', 'readingRules',
       'readingPrep', 'reader', 'readingSummary', 'phrases', 'phraseStudy', 'phraseQuiz',
       'listening', 'listeningQuiz', 'dictation', 'dictationPlay', 'vocabSearch',
       'wordRequests', 'grammar', 'grammarQuiz', 'grammarLessons', 'grammarStrands', 'writing', 'writingPlay',

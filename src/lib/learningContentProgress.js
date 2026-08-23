@@ -1,4 +1,4 @@
-import { ALL_WORDS, ETYMOLOGY_PACKS } from '../data/vocab.js'
+import { ALL_WORDS } from '../data/vocab.js'
 import { PHRASES } from '../data/phrases.js'
 import { GRAMMAR } from '../data/grammar.js'
 import { LISTENING_ITEMS } from '../data/listening.js'
@@ -43,6 +43,7 @@ const srsContent = (id, group, label, unit, screen, items, store, quiz = {}) => 
   store,
   quizItems: quiz.questions ?? null,
   quizDomain: quiz.domain ?? null,
+  hasQuiz: quiz.enabled !== false,
 })
 
 const completionContent = (
@@ -66,6 +67,7 @@ const completionContent = (
   completedIds,
   quizItems: null,
   quizDomain,
+  hasQuiz: true,
 })
 
 export const LEARNING_CONTENT_GROUPS = Object.freeze([
@@ -82,7 +84,11 @@ export const LEARNING_CONTENTS = Object.freeze([
   srsContent('grammar', 'english', '英文法', '問', 'grammar', GRAMMAR, 'srs'),
   srsContent('listening', 'english', 'リスニング', '問', 'listening', LISTENING_ITEMS, 'srs'),
   srsContent('dictation', 'english', 'ディクテーション', '問', 'dictation', DICTATION_ITEMS, 'srs'),
-  srsContent('etymology', 'english', '語源知識', '項目', 'roots', ETYMOLOGY_PACKS, 'etymologySrs'),
+  // 語源は独立した暗記・クイズ教材ではなく、英単語を覚えるための入口。
+  // 学習結果は通常の単語SRSを共有し、語源専用クイズは表示しない。
+  srsContent('etymology', 'english', '語源から覚える', '語', 'roots', ALL_WORDS, 'srs', {
+    enabled: false,
+  }),
   completionContent(
     'reading',
     'english',
@@ -156,9 +162,15 @@ export function buildLearningContentProgress(state = {}) {
           quizDomain: content.quizDomain,
         })
       : null
-    const progress = questionQuiz
-      ? { ...base, quiz: questionQuiz.counts, quizTotal: questionQuiz.total }
-      : { ...base, quizTotal: base.total }
+    const progress = !content.hasQuiz
+      ? {
+          ...base,
+          quiz: { correct: 0, incorrect: 0, unanswered: 0 },
+          quizTotal: 0,
+        }
+      : questionQuiz
+        ? { ...base, quiz: questionQuiz.counts, quizTotal: questionQuiz.total }
+        : { ...base, quizTotal: base.total }
     const due = content.kind === 'srs'
       ? content.items.reduce((count, item) => (
           state[content.store]?.[item.id]?.due <= today

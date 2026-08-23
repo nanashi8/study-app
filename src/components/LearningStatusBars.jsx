@@ -85,6 +85,7 @@ export function LearningStatusBars({
   className = '',
   compact = false,
   units = {},
+  showQuiz = true,
 }) {
   return (
     <div className={cx('space-y-2.5', className)} data-learning-status-bars>
@@ -94,12 +95,14 @@ export function LearningStatusBars({
         compact={compact}
         unit={units.learning ?? ''}
       />
-      <StatusDistributionBar
-        kind="quiz"
-        counts={progress?.quiz}
-        compact={compact}
-        unit={units.quiz ?? ''}
-      />
+      {showQuiz && (
+        <StatusDistributionBar
+          kind="quiz"
+          counts={progress?.quiz}
+          compact={compact}
+          unit={units.quiz ?? ''}
+        />
+      )}
     </div>
   )
 }

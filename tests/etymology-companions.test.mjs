@@ -2,7 +2,6 @@
 // カードに1語しか載っていなくても、必ず理由つきの関連語が並ぶこと。
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { readFileSync } from 'node:fs'
 import { ALL_WORDS, ETYMOLOGY_PACKS } from '../src/data/vocab.js'
 import {
   COMPANION_LIMIT,
@@ -11,7 +10,6 @@ import {
   suffixFormation,
 } from '../src/lib/etymologyCompanions.js'
 
-const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8')
 const wordNamed = (name) => ALL_WORDS.find((word) => word.word === name)
 
 test('どの語源カードにも関連語が1語以上つく', () => {
@@ -77,11 +75,4 @@ test('同じ語根の語が最優先で並ぶ', () => {
   if (companions.some((item) => item.reason.startsWith('同じ語根'))) {
     assert.ok(companions[0].reason.startsWith('同じ語根'), '語根の仲間が先頭に来ていない')
   }
-})
-
-test('語源カードの画面に一緒に覚えられる語の欄がある', () => {
-  const source = read('src/components/EtymologyKnowledge.jsx')
-  assert.match(source, /etymologyCompanions/)
-  assert.match(source, /data-etymology-companions/)
-  assert.match(source, /一緒に覚えられる語/)
 })
