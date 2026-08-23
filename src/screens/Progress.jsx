@@ -4,12 +4,9 @@ import jsQR from 'jsqr'
 import { useStore } from '../store/useStore.js'
 import { LEVELS } from '../data/levels.js'
 import {
-  ETYMOLOGY_MODE_META,
-  ETYMOLOGY_PACKS,
   getWord,
   wordsByLevel,
 } from '../data/vocab.js'
-import { etymologyProgress } from '../lib/etymologyProgress.js'
 import { overallProgress } from '../lib/session.js'
 import {
   LEARNING_CONTENT_GROUPS,
@@ -89,7 +86,7 @@ function AllContentStatus({ contents, onOpen }) {
                       <p className="text-xs font-extrabold text-slate-900">{content.label}</p>
                       <p className="text-[9px] font-bold text-slate-400">
                         全{content.progress.total.toLocaleString('ja-JP')}{content.unit}
-                        {content.progress.quizTotal !== content.progress.total
+                        {content.hasQuiz && content.progress.quizTotal !== content.progress.total
                           && `・${content.progress.quizTotal.toLocaleString('ja-JP')}${content.quizUnit}`}
                       </p>
                     </div>
@@ -104,6 +101,7 @@ function AllContentStatus({ contents, onOpen }) {
                   <LearningStatusBars
                     progress={content.progress}
                     compact
+                    showQuiz={content.hasQuiz}
                     units={{ learning: content.unit, quiz: content.quizUnit }}
                   />
                 </div>
@@ -126,10 +124,6 @@ export function ProgressScreen() {
   const importCode = useStore((s) => s.importCode)
 
   const prog = overallProgress(srs)
-  const etymology = useMemo(
-    () => etymologyProgress(ETYMOLOGY_PACKS, full.etymologySrs),
-    [full.etymologySrs],
-  )
   const contentProgress = useMemo(() => buildLearningContentProgress(full), [full])
   const [input, setInput] = useState('')
   const [error, setError] = useState('')
@@ -271,35 +265,6 @@ export function ProgressScreen() {
                 </div>
               )
             })}
-          </div>
-        </Card>
-
-        {/* 語源知識は単語SRSとは分け、部品式・語根・語族ごとの進み具合を示す。 */}
-        <Card className="overflow-hidden rounded-xl border-slate-300 p-0 shadow-none">
-          <div className="flex items-start justify-between gap-3 border-b border-slate-300 bg-slate-100 px-3 py-2.5">
-            <div>
-              <h2 className="font-display text-base font-extrabold text-slate-950">語源知識・履修状況表</h2>
-              <p className="text-[10px] font-bold text-slate-500">英単語とは別に集計・全{etymology.total}項目</p>
-            </div>
-            <span className="border border-slate-300 bg-white px-2 py-1 text-[10px] font-extrabold text-slate-700">今日の復習 {etymology.due}</span>
-          </div>
-          <div className="divide-y divide-slate-200" data-etymology-progress-table>
-            {Object.entries(ETYMOLOGY_MODE_META).map(([mode, meta]) => {
-              const progress = summarizeSrsItems(
-                ETYMOLOGY_PACKS.filter((pack) => pack.mode === mode),
-                full.etymologySrs,
-              )
-              return (
-                <div key={mode} className="space-y-2.5 p-3">
-                  <h3 className="text-xs font-extrabold text-slate-800">{meta.emoji} {meta.label}</h3>
-                  <StatusDistributionBar kind="learning" counts={progress.learning} compact unit="項目" />
-                  <StatusDistributionBar kind="quiz" counts={progress.quiz} compact unit="問" />
-                </div>
-              )
-            })}
-          </div>
-          <div className="border-t border-slate-200 p-3">
-            <Button full variant="secondary" onClick={() => navigate('roots')}>語源カードの進み具合を見る</Button>
           </div>
         </Card>
 

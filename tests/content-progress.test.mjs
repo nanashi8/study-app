@@ -180,6 +180,11 @@ test('全18教材の母集団は重複なく、空状態でも両方の3区分�
     assert.equal(statusTotal(row.progress.learning, LEARNING_STATUS_KEYS), row.progress.total)
     assert.equal(statusTotal(row.progress.quiz, QUIZ_STATUS_KEYS), row.progress.quizTotal)
   }
+  const etymology = rows.find((row) => row.id === 'etymology')
+  assert.equal(etymology.label, '語源から覚える')
+  assert.equal(etymology.store, 'srs')
+  assert.equal(etymology.hasQuiz, false)
+  assert.equal(etymology.progress.quizTotal, 0)
 })
 
 test('1項目に複数問ある教材は、クイズだけ出題数を母数にする', () => {
@@ -275,6 +280,7 @@ test('共通バーは指定の6ラベル・6区分・3色ずつを一元定義�
     assert.match(source, new RegExp(color))
   }
   assert.match(source, /data-status-segment=\{key\}/)
+  assert.match(source, /showQuiz = true/)
 
   const myLearning = readFileSync(new URL('../src/screens/MyLearning.jsx', import.meta.url), 'utf8')
   const progress = readFileSync(new URL('../src/screens/Progress.jsx', import.meta.url), 'utf8')
@@ -285,6 +291,8 @@ test('共通バーは指定の6ラベル・6区分・3色ずつを一元定義�
   assert.match(progress, /buildLearningContentProgress/)
   assert.match(progress, /table-fixed border-collapse/)
   assert.match(progress, /\[word-break:keep-all\]/)
+  assert.match(myLearning, /showQuiz=\{content\.hasQuiz\}/)
+  assert.match(progress, /showQuiz=\{content\.hasQuiz\}/)
 
   for (const file of [
     '../src/components/VocabCompletionReport.jsx',

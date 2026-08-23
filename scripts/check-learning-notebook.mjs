@@ -125,10 +125,29 @@ for (const marker of [
 }
 for (const route of [
   'vocabStudy', 'vocabQuiz', 'phraseStudy', 'phraseQuiz', 'grammarQuiz',
-  'listeningQuiz', 'etymologyStudy', 'kotenStudy', 'kotenQuiz',
+  'listeningQuiz', 'kotenStudy', 'kotenQuiz',
   'kotenGrammarStudy', 'kotenGrammarQuiz', 'kotenCultureStudy', 'kotenCultureQuiz',
 ]) {
   if (!screen.includes(`'${route}'`)) fail(`統合画面から学習経路 ${route} へ接続していません`)
+}
+const etymologyLaunch = screen.slice(
+  screen.indexOf("} else if (domainId === 'etymology') {"),
+  screen.indexOf("} else if (domainId === 'kotenVocab') {"),
+)
+if (!etymologyLaunch.includes("navigate('vocabStudy'")) {
+  fail('語源ノートが単語の「覚える」へ接続していません')
+}
+if (/etymologyStudy|etymologyQuiz|vocabQuiz/.test(etymologyLaunch)) {
+  fail('語源ノートに廃止した専用学習またはクイズへの接続が残っています')
+}
+if (!screen.includes("domain.id === 'etymology' ? (") || !screen.includes('単語を覚える')) {
+  fail('語源の自作問題集に単語の「覚える」だけを表示する契約がありません')
+}
+if (/domain\.id === 'etymology' \? '確認'/.test(screen)) {
+  fail('語源の自作問題集に廃止した確認ボタンが残っています')
+}
+if (!screen.includes("const mode = domainId === 'etymology'\n      ? 'study'")) {
+  fail('語源ノートの起動記録が単語学習に固定されていません')
 }
 
 const store = read('../src/store/useStore.js')
@@ -154,7 +173,6 @@ const directSaveScreens = {
   phrases: ['PhraseStudy.jsx', 'PhraseQuiz.jsx'],
   grammar: ['GrammarQuiz.jsx'],
   listening: ['ListeningQuiz.jsx'],
-  etymology: ['EtymologyStudy.jsx'],
 }
 for (const [domain, files] of Object.entries(directSaveScreens)) {
   for (const file of files) {

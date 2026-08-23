@@ -126,7 +126,7 @@ line('単語→熟語の結び付き(延べ)', phraseLinkTotal)
 line(`最多の語（${widest.word}）`, widest.count)
 line('画面数', routedScreens.length)
 line('アプリのホーム', APP_HOMES.length)
-console.log(`語源カードの帰り先: ${appHomeForScreen('etymologyStudy').label}`)
+console.log(`語源カードの帰り先: ${appHomeForScreen('etymologyPack').label}`)
 
 if (errors.length) {
   console.error(`\n学習のつながり監査: ${errors.length}件の違反`)

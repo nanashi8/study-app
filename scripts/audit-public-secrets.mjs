@@ -278,9 +278,10 @@ function embeddedMetadata(buffer, filePath) {
 function walkCurrentTree(directory = ROOT) {
   const files = []
   for (const entry of readdirSync(directory, { withFileTypes: true })) {
+    if (SKIP_DIRS.has(entry.name)) continue
     if (entry.isSymbolicLink()) continue
     if (entry.isDirectory()) {
-      if (!SKIP_DIRS.has(entry.name)) files.push(...walkCurrentTree(join(directory, entry.name)))
+      files.push(...walkCurrentTree(join(directory, entry.name)))
       continue
     }
     if (entry.isFile()) files.push(join(directory, entry.name))

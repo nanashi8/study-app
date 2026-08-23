@@ -3,10 +3,10 @@ import { getRoot, wordsByRoot } from '../data/vocab.js'
 import { getLevel } from '../data/levels.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { EtymologyFormula, hasRootBreakdown, PosBadge } from '../components/WordBits.jsx'
-import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
+import { StatusDistributionBar } from '../components/LearningStatusBars.jsx'
 import { Card, Button, Chip } from '../components/ui.jsx'
 import { learningStatusForSrsEntry, summarizeSrsItems } from '../lib/contentProgress.js'
-import { ArrowRight, Book, Cards, Sparkles, Check } from '../components/Icons.jsx'
+import { ArrowRight, Book, Sparkles, Check } from '../components/Icons.jsx'
 
 const LEARN_BATCH = 8
 const LEVEL_RANK = { '5': 0, '4': 1, '3': 2, pre2: 3, '2': 4, pre1: 5, '1': 6 }
@@ -54,17 +54,17 @@ export function RootDetailScreen() {
     if (buildableDiff) return buildableDiff
     return (LEVEL_RANK[a.level] ?? 99) - (LEVEL_RANK[b.level] ?? 99)
   }).slice(0, LEARN_BATCH)
+  const studyBatch = nextBatch.length ? nextBatch : words
 
   // 次の小さなまとまりだけを学習。deck ソースで対象語だけ出題する。
   const grow = () =>
     navigate('vocabStudy', {
-      source: { type: 'deck', ids: nextBatch.map((w) => w.id) },
+      source: { type: 'deck', ids: studyBatch.map((word) => word.id) },
       title: `${root.form} から広げる`,
       mode: 'study',
-      size: nextBatch.length,
+      size: Math.min(LEARN_BATCH, studyBatch.length),
+      returnTo: { screen: 'rootDetail', params: { rootId } },
     })
-  const quiz = () =>
-    navigate('vocabQuiz', { source: { type: 'root', rootId }, title: `語源 ${root.form}` })
 
   const WordRow = ({ w, build }) => {
     const level = getLevel(w.level)
@@ -136,26 +136,17 @@ export function RootDetailScreen() {
             <p className="mt-1 text-xs font-extrabold text-brand-600">
               同じ語根 {total}語 ・ 学習済 {known.length}語・あと {toGain.length}語
             </p>
-            <LearningStatusBars progress={rootProgress} className="mt-3" compact units={{ learning: '語', quiz: '問' }} />
-            {toGain.length > 0 ? (
-              <div className="mt-3 grid grid-cols-2 gap-2">
-                <Button onClick={grow}>
-                  <Sparkles size={18} /> 次の{nextBatch.length}語
-                </Button>
-                <Button variant="secondary" disabled={total < 3} onClick={quiz}>
-                  <Cards size={18} /> クイズ
-                </Button>
-              </div>
-            ) : (
-              <div className="mt-3 grid grid-cols-2 gap-2">
+            <StatusDistributionBar kind="learning" counts={rootProgress.learning} className="mt-3" compact unit="語" />
+            <div className="mt-3 space-y-2">
+              {toGain.length === 0 && (
                 <div className="flex items-center justify-center rounded-2xl bg-emerald-50 py-2.5 text-sm font-extrabold text-emerald-700">
                   🎉 全部学習済！
                 </div>
-                <Button variant="secondary" disabled={total < 3} onClick={quiz}>
-                  <Cards size={18} /> クイズ
-                </Button>
-              </div>
-            )}
+              )}
+              <Button full onClick={grow} data-etymology-word-study-action>
+                <Book size={18} /> 単語を覚える
+              </Button>
+            </div>
           </div>
         </Card>
 

@@ -715,11 +715,21 @@ export function learningLaunchFor(domain, ids = [], mode = 'test', title = '') {
   if (domain === 'dictation') return {
     screen: 'dictationPlay', params: { source: { type: 'dictationList', ids: uniqueIds }, title: title || '分析から復習', engine: 'dictation' },
   }
-  if (domain === 'etymology') return {
-    screen: uniqueIds.length ? 'etymologyStudy' : 'roots',
-    params: uniqueIds.length
-      ? { mode: 'all', status: 'all', packIds: uniqueIds, size: uniqueIds.length, title: title || '分析から暗記' }
-      : {},
+  if (domain === 'etymology') {
+    const wordIds = [...new Set(uniqueIds.flatMap(
+      (id) => getEtymologyPack(id)?.studyIds ?? [],
+    ))]
+    if (!wordIds.length) return { screen: 'roots', params: {} }
+    return {
+      screen: 'vocabStudy',
+      params: {
+        source: { type: 'deck', ids: wordIds },
+        title: title || '語源から単語を覚える',
+        mode: 'study',
+        size: Math.min(20, wordIds.length),
+        returnTo: { screen: 'roots', params: {} },
+      },
+    }
   }
   if (domain === 'kotenVocab') return {
     screen: mode === 'memory' ? 'kotenStudy' : 'kotenQuiz', params: { ids: uniqueIds, title: title || '分析から学習' },

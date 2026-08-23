@@ -98,7 +98,7 @@ function LearningCategoryCard({ content, onOpen }) {
             <h3 className="text-sm font-extrabold text-slate-900">{content.label}</h3>
             <span className="shrink-0 text-[10px] font-extrabold tabular-nums text-slate-500">
               全{content.progress.total.toLocaleString('ja-JP')}{content.unit}
-              {content.progress.quizTotal !== content.progress.total
+              {content.hasQuiz && content.progress.quizTotal !== content.progress.total
                 && `・${content.progress.quizTotal.toLocaleString('ja-JP')}${content.quizUnit}`}
             </span>
           </div>
@@ -113,6 +113,7 @@ function LearningCategoryCard({ content, onOpen }) {
         progress={content.progress}
         className="mt-3"
         compact
+        showQuiz={content.hasQuiz}
         units={{ learning: content.unit, quiz: content.quizUnit }}
       />
 

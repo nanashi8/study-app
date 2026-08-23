@@ -10,6 +10,10 @@ import {
   fallbackDestination,
   isAppHomeScreen,
 } from '../src/lib/appHome.js'
+import {
+  RETIRED_ETYMOLOGY_SCREENS,
+  learnerDestination,
+} from '../src/lib/learnerVisibility.js'
 import { useStore } from '../src/store/useStore.js'
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8')
@@ -56,7 +60,7 @@ test('どの画面からも、行き止まりにならない戻り先がある',
 
 test('アプリの中の画面は、そのアプリのホームへ帰る', () => {
   assert.equal(appHomeForScreen('roots').screen, 'home')
-  assert.equal(appHomeForScreen('etymologyStudy').label, '英語アプリ')
+  assert.equal(appHomeForScreen('etymologyPack').label, '英語アプリ')
   assert.equal(appHomeForScreen('kotenQuiz').screen, 'kotenList')
   assert.equal(appHomeForScreen('kanbunStudy').screen, 'kanbunHome')
   assert.equal(appHomeForScreen('mathSolve').screen, 'mathMap')
@@ -73,7 +77,7 @@ test('履歴が無い画面の戻るは、そのアプリのホームへ行く',
   const original = useStore.getState()
   try {
     for (const [screen, expected] of [
-      ['etymologyStudy', 'home'],
+      ['etymologyPack', 'home'],
       ['roots', 'home'],
       ['kotenQuiz', 'kotenList'],
       ['kanbunStudy', 'kanbunHome'],
@@ -93,11 +97,21 @@ test('履歴が無い画面の戻るは、そのアプリのホームへ行く',
   }
 })
 
+test('廃止した語源専用暗記・2択画面は語源トップへ戻す', () => {
+  assert.deepEqual(RETIRED_ETYMOLOGY_SCREENS, ['etymologyStudy', 'etymologyQuiz'])
+  for (const screen of RETIRED_ETYMOLOGY_SCREENS) {
+    assert.deepEqual(learnerDestination(screen, { packIds: ['legacy'] }), {
+      screen: 'roots',
+      params: {},
+    })
+  }
+})
+
 test('アプリのホームへ移る操作は履歴を残さない', () => {
   const original = useStore.getState()
   try {
     useStore.setState({
-      screen: 'etymologyStudy',
+      screen: 'etymologyPack',
       params: {},
       stack: [{ screen: 'home', params: {} }, { screen: 'roots', params: {} }],
     })

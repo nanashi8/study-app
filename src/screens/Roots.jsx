@@ -6,16 +6,12 @@ import {
   ETYMOLOGY_SUMMARY,
   getWord,
 } from '../data/vocab.js'
-import {
-  etymologyProgress,
-  isEtymologyDue,
-  ETYMOLOGY_SESSION_SIZE,
-} from '../lib/etymologyProgress.js'
+import { SESSION_SIZE } from '../lib/session.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { Button, Card, cx } from '../components/ui.jsx'
-import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
+import { StatusDistributionBar } from '../components/LearningStatusBars.jsx'
 import { learningStatusForSrsEntry, summarizeSrsItems } from '../lib/contentProgress.js'
-import { ArrowRight, Cards, Sparkles } from '../components/Icons.jsx'
+import { ArrowRight, Book } from '../components/Icons.jsx'
 
 const PAGE_SIZE = 24
 const MODES = ['formula', 'root', 'family', 'origin']
@@ -28,18 +24,22 @@ const STATUS_STYLE = {
   learned: { label: '学習済', short: '学習済', pill: 'bg-emerald-50 text-emerald-700' },
   due: { label: '今日の復習', short: '今日の復習', pill: 'bg-rose-50 text-rose-700' },
 }
-
 const countForStatus = (summary, due, status) => {
   if (status === 'all') return summary.total
   if (status === 'due') return due
   return summary.learning[status]
 }
 
+const uniqueWordsForPacks = (packs) => {
+  const ids = [...new Set(packs.flatMap((pack) => pack.coverageIds))]
+  return ids.map(getWord).filter(Boolean)
+}
+
 export function RootsScreen() {
   const rootRef = useRef(null)
   const params = useStore((state) => state.params)
   const navigate = useStore((state) => state.navigate)
-  const etymologySrs = useStore((state) => state.etymologySrs)
+  const srs = useStore((state) => state.srs)
   const [mode, setMode] = useState(MODES.includes(params.mode) ? params.mode : 'formula')
   const [status, setStatus] = useState(STATUSES.includes(params.status) ? params.status : 'all')
   const [visible, setVisible] = useState(PAGE_SIZE)
@@ -54,38 +54,46 @@ export function RootsScreen() {
     () => ETYMOLOGY_PACKS.filter((pack) => pack.mode === mode),
     [mode],
   )
-  const overall = useMemo(
-    () => etymologyProgress(ETYMOLOGY_PACKS, etymologySrs, day),
-    [etymologySrs, day],
-  )
+  const allWords = useMemo(() => uniqueWordsForPacks(ETYMOLOGY_PACKS), [])
+  const modeWords = useMemo(() => uniqueWordsForPacks(modePacks), [modePacks])
   const overallStatus = useMemo(
-    () => summarizeSrsItems(ETYMOLOGY_PACKS, etymologySrs),
-    [etymologySrs],
+    () => summarizeSrsItems(allWords, srs),
+    [allWords, srs],
   )
   const modeStats = useMemo(
     () => Object.fromEntries(MODES.map((id) => {
-      const items = ETYMOLOGY_PACKS.filter((pack) => pack.mode === id)
-      return [id, summarizeSrsItems(items, etymologySrs)]
+      const words = uniqueWordsForPacks(ETYMOLOGY_PACKS.filter((pack) => pack.mode === id))
+      return [id, summarizeSrsItems(words, srs)]
     })),
-    [etymologySrs],
+    [srs],
   )
   const currentStatus = useMemo(
-    () => summarizeSrsItems(modePacks, etymologySrs),
-    [modePacks, etymologySrs],
+    () => summarizeSrsItems(modeWords, srs),
+    [modeWords, srs],
   )
   const currentDue = useMemo(
-    () => modePacks.filter((pack) => isEtymologyDue(etymologySrs[pack.id], day)).length,
-    [modePacks, etymologySrs, day],
+    () => modeWords.filter((word) => Number.isFinite(srs[word.id]?.due) && srs[word.id].due <= day).length,
+    [modeWords, srs, day],
   )
   const packs = useMemo(
     () => modePacks.filter((pack) => {
-      const entry = etymologySrs[pack.id]
-      if (status === 'all') return true
-      if (status === 'due') return isEtymologyDue(entry, day)
-      return learningStatusForSrsEntry(entry) === status
+      if (status === 'all') return pack.coverageIds.length > 0
+      return pack.coverageIds.some((id) => {
+        const entry = srs[id]
+        if (status === 'due') return Number.isFinite(entry?.due) && entry.due <= day
+        return learningStatusForSrsEntry(entry) === status
+      })
     }),
-    [modePacks, etymologySrs, status, day],
+    [modePacks, srs, status, day],
   )
+  const sessionWordIds = useMemo(() => [
+    ...new Set(packs.flatMap((pack) => pack.coverageIds.filter((id) => {
+      const entry = srs[id]
+      if (status === 'all') return true
+      if (status === 'due') return Number.isFinite(entry?.due) && entry.due <= day
+      return learningStatusForSrsEntry(entry) === status
+    }))),
+  ], [packs, srs, status, day])
 
   const selectMode = (next) => {
     setMode(next)
@@ -98,12 +106,13 @@ export function RootsScreen() {
     setVisible(PAGE_SIZE)
   }
 
-  const sessionParams = {
-    mode,
-    status: status === 'all' ? 'priority' : 'all',
-    packIds: packs.map((pack) => pack.id),
-    size: ETYMOLOGY_SESSION_SIZE,
-  }
+  const studyWords = () => navigate('vocabStudy', {
+    source: { type: 'deck', ids: sessionWordIds },
+    title: `語源・${meta.label}`,
+    mode: 'study',
+    size: Math.min(SESSION_SIZE, sessionWordIds.length),
+    returnTo: { screen: 'roots', params: { mode, status } },
+  })
 
   return (
     <div ref={rootRef} className="pb-6">
@@ -125,11 +134,11 @@ export function RootsScreen() {
           <p className="mt-1 text-sm font-bold leading-relaxed text-white/80">
             言語名の暗記ではなく、英単語を作る形と意味を学びます。
           </p>
-          <ol className="mt-4 grid grid-cols-3 gap-2" aria-label="語源学習の3ステップ">
+          <ol className="mt-4 grid grid-cols-3 gap-2" aria-label="語源から単語を覚える3ステップ">
             {[
               ['1', '形を見る'],
               ['2', '意味をつなぐ'],
-              ['3', '2択で確認'],
+              ['3', '単語を覚える'],
             ].map(([number, label]) => (
               <li key={number} className="rounded-2xl bg-white/12 px-2 py-2.5 text-center">
                 <span className="mx-auto grid h-6 w-6 place-items-center rounded-full bg-white text-xs font-extrabold text-violet-700">{number}</span>
@@ -165,7 +174,7 @@ export function RootsScreen() {
                 >
                   <span className="block text-xs font-extrabold leading-snug">{item.emoji} {item.label}</span>
                   <span className={cx('mt-1 block text-xs font-bold', selected ? 'text-white/80' : 'text-slate-500')}>
-                    {progress.total.toLocaleString()}枚
+                    {progress.total.toLocaleString()}語
                   </span>
                 </button>
               )
@@ -179,25 +188,16 @@ export function RootsScreen() {
 
         <section className="rounded-2xl bg-white p-3 ring-1 ring-slate-200" data-etymology-actions>
           <p className="mb-3 text-center text-xs font-extrabold text-slate-500">
-            {meta.label}から、おすすめ{Math.min(ETYMOLOGY_SESSION_SIZE, packs.length)}枚
+            {meta.label}から、おすすめ{Math.min(SESSION_SIZE, sessionWordIds.length)}語
           </p>
-          <div className="grid grid-cols-2 gap-2">
-            <Button
-              full
-              onClick={() => navigate('etymologyStudy', sessionParams)}
-              disabled={packs.length === 0}
-            >
-              <Sparkles size={18} /> 意味を見て学ぶ
-            </Button>
-            <Button
-              full
-              variant="secondary"
-              onClick={() => navigate('etymologyQuiz', sessionParams)}
-              disabled={packs.length === 0}
-            >
-              <Cards size={18} /> 2択で確認
-            </Button>
-          </div>
+          <Button
+            full
+            onClick={studyWords}
+            disabled={sessionWordIds.length === 0}
+            data-etymology-word-study-action
+          >
+            <Book size={18} /> 単語を覚える
+          </Button>
         </section>
 
         <details
@@ -206,12 +206,12 @@ export function RootsScreen() {
         >
           <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 px-4 text-sm font-extrabold text-slate-700">
             <span>学習記録を見る</span>
-            <span className="text-xs text-slate-500">今日の復習 {overall.due.toLocaleString()}枚</span>
+            <span className="text-xs text-slate-500">取り組み {overallStatus.activeIds.length.toLocaleString()}語</span>
           </summary>
           <div className="space-y-3 border-t border-slate-100 p-4">
-            <LearningStatusBars progress={overallStatus} compact units={{ learning: '項目', quiz: '問' }} />
+            <StatusDistributionBar kind="learning" counts={overallStatus.learning} compact unit="語" />
             <p className="text-xs font-bold leading-relaxed text-slate-500">
-              全{overall.total.toLocaleString()}枚。語源の記録は、英単語の暗記記録とは分けて保存します。
+              全{overallStatus.total.toLocaleString()}語。ここでの記録は、英単語の「覚える」と共通です。
             </p>
           </div>
         </details>
@@ -254,11 +254,11 @@ export function RootsScreen() {
             {packs.length ? (
               <div className="space-y-2.5">
                 {packs.slice(0, visible).map((pack) => {
-                  const entry = etymologySrs[pack.id]
-                  const learningStatus = learningStatusForSrsEntry(entry)
-                  const visual = STATUS_STYLE[learningStatus]
-                  const cardProgress = summarizeSrsItems([pack], etymologySrs)
-                  const dueNow = isEtymologyDue(entry, day)
+                  const cardWords = pack.coverageIds.map(getWord).filter(Boolean)
+                  const cardProgress = summarizeSrsItems(cardWords, srs)
+                  const dueCount = cardWords.filter(
+                    (word) => Number.isFinite(srs[word.id]?.due) && srs[word.id].due <= day,
+                  ).length
                   const examples = pack.studyIds.map(getWord).filter(Boolean).slice(0, 3)
                   return (
                     <button
@@ -275,12 +275,9 @@ export function RootsScreen() {
                               <h3 className="min-w-0 flex-1 line-clamp-2 font-display text-base font-extrabold leading-tight text-ink">
                                 {pack.title}
                               </h3>
-                              <span className={cx('shrink-0 rounded-full px-2 py-1 text-xs font-extrabold', visual.pill)}>
-                                {visual.label}
-                              </span>
-                              {dueNow && (
+                              {dueCount > 0 && (
                                 <span className="shrink-0 rounded-full bg-rose-50 px-2 py-1 text-xs font-extrabold text-rose-700">
-                                  今日の復習
+                                  復習 {dueCount}語
                                 </span>
                               )}
                             </div>
@@ -290,7 +287,7 @@ export function RootsScreen() {
                           </div>
                           <span className="mt-3 text-brand-300"><ArrowRight size={17} /></span>
                         </div>
-                        <LearningStatusBars progress={cardProgress} className="mt-3" compact units={{ learning: '項目', quiz: '問' }} />
+                        <StatusDistributionBar kind="learning" counts={cardProgress.learning} className="mt-3" compact unit="語" />
                       </Card>
                     </button>
                   )

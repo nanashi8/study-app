@@ -11,7 +11,6 @@ const CARD_SCREENS = [
   'src/screens/KotenCultureStudy.jsx',
   'src/screens/PhraseStudy.jsx',
   'src/screens/KanbunStudy.jsx',
-  'src/screens/EtymologyStudy.jsx',
 ]
 
 test('カード画面に答えを開いたままにする切り替えがある', () => {
