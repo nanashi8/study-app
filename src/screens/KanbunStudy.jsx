@@ -62,7 +62,7 @@ function AnswerDetails({ domain, item }) {
 
 export function KanbunStudyScreen() {
   const params = useStore((state) => state.params)
-  const navigate = useStore((state) => state.navigate)
+  const returnTo = useStore((state) => state.returnTo)
   const review = useStore((state) => state.reviewKanbun)
   const toggleSaved = useStore((state) => state.toggleKanbunList)
   const domain = KANBUN_COLLECTIONS[params.domain] ? params.domain : 'vocab'
@@ -87,10 +87,10 @@ export function KanbunStudyScreen() {
   // コンテンツ画面の「戻る」は履歴でなく、この分野の内容選択画面へ。
   const backToKanbunCatalog = () => {
     if (params.returnTo?.screen) {
-      navigate(params.returnTo.screen, params.returnTo.params ?? {})
+      returnTo(params.returnTo.screen, params.returnTo.params ?? {})
       return
     }
-    navigate('kanbunCatalog', { domain })
+    returnTo('kanbunCatalog', { domain })
   }
 
   if (!deck.length || !item) {

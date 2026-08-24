@@ -8,6 +8,8 @@
 // この JS が動く前でも隠れないよう、CSS 側にも最低限の保険を置いてある。
 export const SAFE_AREA_TOP_VAR = '--app-safe-top'
 export const SAFE_AREA_BOTTOM_VAR = '--app-safe-bottom'
+export const VISUAL_VIEWPORT_HEIGHT_VAR = '--app-visual-viewport-height'
+export const VISUAL_VIEWPORT_TOP_VAR = '--app-visual-viewport-top'
 
 // 時刻表示（ステータスバー）の高さ。ノッチ・Dynamic Island のある機種は高い。
 const NOTCHED_STATUS_BAR = 59
@@ -95,7 +97,13 @@ export function syncSafeArea(view = globalThis) {
   // ホーム画面アプリに最低限の余白を持たせてあるので、こちらが確定値で上書きする。
   const root = doc.documentElement
   root.style.setProperty(SAFE_AREA_TOP_VAR, `${Math.round(top)}px`)
-  return { measured, top }
+  const viewportHeight = Number(view.visualViewport?.height) || Number(view.innerHeight) || 0
+  const viewportTop = Number(view.visualViewport?.offsetTop) || 0
+  if (viewportHeight > 0) {
+    root.style.setProperty(VISUAL_VIEWPORT_HEIGHT_VAR, `${Math.round(viewportHeight)}px`)
+  }
+  root.style.setProperty(VISUAL_VIEWPORT_TOP_VAR, `${Math.max(0, Math.round(viewportTop))}px`)
+  return { measured, top, viewportHeight, viewportTop }
 }
 
 export function startSafeAreaSync(view = globalThis) {
@@ -107,6 +115,7 @@ export function startSafeAreaSync(view = globalThis) {
   view.addEventListener('resize', run)
   view.addEventListener('orientationchange', run)
   view.visualViewport?.addEventListener('resize', run)
+  view.visualViewport?.addEventListener('scroll', run)
   // ホーム画面アプリは他のアプリから戻ったときに再表示されるだけで、
   // resize が来ないことがある。復帰のたびに測り直して余白を合わせ直す。
   view.addEventListener('pageshow', run)
@@ -123,6 +132,7 @@ export function startSafeAreaSync(view = globalThis) {
     view.removeEventListener('resize', run)
     view.removeEventListener('orientationchange', run)
     view.visualViewport?.removeEventListener('resize', run)
+    view.visualViewport?.removeEventListener('scroll', run)
     view.removeEventListener('pageshow', run)
     doc.removeEventListener('visibilitychange', run)
   }

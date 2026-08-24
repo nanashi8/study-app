@@ -63,6 +63,7 @@ function ChoiceExplanation({ question, selected }) {
 export function KanbunQuizScreen() {
   const params = useStore((state) => state.params)
   const navigate = useStore((state) => state.navigate)
+  const returnTo = useStore((state) => state.returnTo)
   const review = useStore((state) => state.reviewKanbun)
   const addSaved = useStore((state) => state.addManyToKanbunList)
   const domain = KANBUN_COLLECTIONS[params.domain] ? params.domain : 'vocab'
@@ -81,7 +82,7 @@ export function KanbunQuizScreen() {
   const item = question ? getKanbunItem(domain, question.itemId) : null
 
   // コンテンツ画面の「戻る」は履歴でなく、この分野の内容選択画面へ。
-  const backToKanbunCatalog = () => navigate('kanbunCatalog', { domain })
+  const backToKanbunCatalog = () => returnTo('kanbunCatalog', { domain })
 
   if (!question || !item) {
     return (

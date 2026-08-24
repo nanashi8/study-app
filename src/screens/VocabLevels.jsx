@@ -151,9 +151,9 @@ export function VocabLevelsScreen() {
       : '学習後に表示'
 
   const study = (levelId, label) =>
-    navigate('vocabStudy', { source: { type: 'level', levelId }, title: `英検${label}`, mode: 'study' })
+    navigate('vocabStudy', { source: { type: 'level', levelId }, title: `英検${label}`, mode: 'study', returnTo: { screen: 'vocabLevels' } })
   const quiz = (levelId, label) =>
-    navigate('vocabQuiz', { source: { type: 'level', levelId }, title: `英検${label}` })
+    navigate('vocabQuiz', { source: { type: 'level', levelId }, title: `英検${label}`, returnTo: { screen: 'vocabLevels' } })
 
   return (
     <div className="pb-6">
@@ -183,6 +183,7 @@ export function VocabLevelsScreen() {
               source: { type: reviewState === 'due' ? 'due' : 'review' },
               title: reviewState === 'due' ? '今日の復習' : '先取り復習',
               mode: 'study',
+              returnTo: { screen: 'vocabLevels' },
             })}
             aria-label={`${reviewLabel}。${reviewTiming}`}
             data-review-state={reviewState}
@@ -209,7 +210,7 @@ export function VocabLevelsScreen() {
           <button
             disabled={!myList.length}
             onClick={() =>
-              navigate('vocabStudy', { source: { type: 'mylist', ids: myList }, title: 'マイ単語', mode: 'study' })
+              navigate('vocabStudy', { source: { type: 'mylist', ids: myList }, title: 'マイ単語', mode: 'study', returnTo: { screen: 'vocabLevels' } })
             }
             className="flex items-center gap-2 rounded-2xl bg-brand-100 p-3 text-left active:scale-[0.98] transition-transform disabled:opacity-50"
           >
@@ -222,6 +223,13 @@ export function VocabLevelsScreen() {
             </div>
           </button>
         </div>
+
+        <p
+          className="rounded-2xl bg-white/70 px-4 py-3 text-xs font-bold leading-relaxed text-ink/55"
+          data-vocab-session-policy
+        >
+          通常の10語は、復習を最大6語にして、新しい語・別の語も4語以上混ぜます（対象語がある場合）。今日「まだ」にした語は「今日の復習」では確認でき、通常学習には翌日から戻ります。
+        </p>
 
         <FieldChooser onChoose={() => navigate('vocabGroups')} />
 

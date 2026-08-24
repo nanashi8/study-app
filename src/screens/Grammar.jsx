@@ -46,9 +46,9 @@ export function GrammarScreen() {
   const allProgress = dueProgressOf(GRAMMAR, srs)
 
   const quizLevel = () =>
-    navigate('grammarQuiz', { source: { type: 'grammar', level }, title: `${meta.label} 文法`, levelColor: meta.color })
+    navigate('grammarQuiz', { source: { type: 'grammar', level }, title: `${meta.label} 文法`, levelColor: meta.color, returnTo: { screen: 'grammar' } })
   const quizTopic = (topic) =>
-    navigate('grammarQuiz', { source: { type: 'grammar', level, topic }, title: topic, levelColor: meta.color })
+    navigate('grammarQuiz', { source: { type: 'grammar', level, topic }, title: topic, levelColor: meta.color, returnTo: { screen: 'grammar' } })
 
   return (
     <div className="pb-6">
@@ -62,6 +62,7 @@ export function GrammarScreen() {
                 source: { type: 'grammarDue' },
                 title: '文法の復習',
                 levelColor: '#f59e0b',
+                returnTo: { screen: 'grammar' },
               })
             }
             className="mb-4 flex w-full items-center gap-3 rounded-2xl bg-hint-soft p-3.5 text-left text-amber-900 transition-transform active:scale-[0.99]"

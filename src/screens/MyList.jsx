@@ -662,6 +662,7 @@ export function MyListScreen() {
         title,
         mode,
         size: ids.length,
+        returnTo: { screen: 'myList', params: {} },
       })
     } else if (domainId === 'phrases') {
       navigate(mode === 'study' ? 'phraseStudy' : 'phraseQuiz', {
@@ -670,14 +671,16 @@ export function MyListScreen() {
         mode,
         engine: 'phrase',
         size: ids.length,
+        returnTo: { screen: 'myList', params: {} },
       })
     } else if (domainId === 'grammar') {
-      navigate('grammarQuiz', { source: { type: 'grammarList', ids }, title })
+      navigate('grammarQuiz', { source: { type: 'grammarList', ids }, title, returnTo: { screen: 'myList', params: {} } })
     } else if (domainId === 'listening') {
       navigate('listeningQuiz', {
         source: { type: 'listeningList', ids },
         title,
         engine: 'listening',
+        returnTo: { screen: 'myList', params: {} },
       })
     } else if (domainId === 'etymology') {
       const wordIds = [...new Set(ids.flatMap(

@@ -19,7 +19,7 @@ export function DictationScreen() {
         DICTATION_ITEMS.filter((item) => item.level === levelId),
         srs,
       )}
-      onPick={(levelId, label) => navigate('dictationPlay', { source: { type: 'level', levelId }, title: `英検${label}` })}
+      onPick={(levelId, label) => navigate('dictationPlay', { source: { type: 'level', levelId }, title: `英検${label}`, returnTo: { screen: 'dictation' } })}
     />
   )
 }

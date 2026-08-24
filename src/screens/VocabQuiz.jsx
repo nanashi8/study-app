@@ -56,6 +56,7 @@ function streaksFromLog(log = []) {
 export function VocabQuizScreen() {
   const params = useStore((state) => state.params)
   const navigate = useStore((state) => state.navigate)
+  const returnTo = useStore((state) => state.returnTo)
   const review = useStore((state) => state.review)
   const saveQuizSession = useStore((state) => state.saveQuizSession)
   const clearQuizSession = useStore((state) => state.clearQuizSession)
@@ -66,18 +67,18 @@ export function VocabQuizScreen() {
   // コンテンツ画面の「戻る」は履歴でなく、単語の種類を選ぶ画面（元の階層）へ。
   const backToVocabParent = () => {
     if (params.returnTo?.screen) {
-      navigate(params.returnTo.screen, params.returnTo.params ?? {})
+      returnTo(params.returnTo.screen, params.returnTo.params ?? {})
       return
     }
     if (source?.type === 'field') {
-      navigate('vocabGroups')
+      returnTo('vocabGroups')
       return
     }
     if (source?.type === 'levelField') {
-      navigate('vocabDecks', { levelId: source.levelId })
+      returnTo('vocabDecks', { levelId: source.levelId })
       return
     }
-    navigate('vocabLevels')
+    returnTo('vocabLevels')
   }
 
   const [restore] = useState(() => {
@@ -88,7 +89,11 @@ export function VocabQuizScreen() {
 
   const sessionId = useRef(restore?.sessionId ?? newSessionId())
   // size=0 は「絞り込みなし」。在庫数から、選べる問題数の上限を決める。
-  const buildFor = (size) => buildDeck(source, { srs: useStore.getState().srs, size })
+  const buildFor = (size) => buildDeck(source, {
+    srs: useStore.getState().srs,
+    size,
+    purpose: 'quiz',
+  })
   const [poolSize] = useState(() => buildFor(0).length)
   const sessionSize = useSessionSize(poolSize || Infinity)
   const [deck, setDeck] = useState(() => (

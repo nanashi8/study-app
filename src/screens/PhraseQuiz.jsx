@@ -42,6 +42,7 @@ function streaksFromLog(log) {
 export function PhraseQuizScreen() {
   const params = useStore((state) => state.params)
   const navigate = useStore((state) => state.navigate)
+  const returnTo = useStore((state) => state.returnTo)
   const review = useStore((state) => state.review)
   const toggleNotebookItem = useStore((state) => state.toggleNotebookItem)
   const learningNotebook = useStore((state) => state.learningNotebook)
@@ -66,7 +67,7 @@ export function PhraseQuizScreen() {
   }, [item?.id]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // コンテンツ画面の「戻る」は履歴でなく、熟語・構文の内容選択画面へ。
-  const backToPhrases = () => navigate('phrases')
+  const backToPhrases = () => returnTo('phrases')
 
   if (!deck.length) {
     return (
@@ -105,6 +106,8 @@ export function PhraseQuizScreen() {
       size: params.size,
       sessionId: sessionId.current,
       answerLog: [...results.current.answerLog],
+      continueTo: params.continueTo,
+      returnTo: params.returnTo,
     })
   }
 

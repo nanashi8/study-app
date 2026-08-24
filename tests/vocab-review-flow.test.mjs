@@ -2,8 +2,9 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 
-import { ALL_WORDS } from '../src/data/vocab.js'
+import { ALL_WORDS, wordsByLevel } from '../src/data/vocab.js'
 import {
+  AUTOMATIC_VOCAB_REVIEW_SHARE,
   buildDeck,
   nextVocabularyReviewInDays,
 } from '../src/lib/session.js'
@@ -127,6 +128,73 @@ test('期限未到来でも学習済み語だけを次回日が近い順に先�
     [later.id]: srs[later.id],
     [sooner.id]: srs[sooner.id],
   }, day), 2)
+})
+
+test('当日「まだ」・誤答の語は通常セッションに連投せず、明示復習と翌日には戻る', () => {
+  const now = new Date(2026, 7, 24, 12, 0, 0, 0).getTime()
+  const day = todayIndex(now)
+  const words = wordsByLevel('5')
+  const failedWords = words.slice(0, 10)
+  const failedIds = new Set(failedWords.map((word) => word.id))
+  const srs = Object.fromEntries(failedWords.map((word, index) => [word.id, {
+    box: 0,
+    due: day,
+    last: day,
+    lastAt: now + index,
+    memory: index % 2 === 0
+      ? { lastAt: now + index, lastJudgment: 'forgot' }
+      : undefined,
+    test: index % 2 === 1
+      ? { lastAt: now + index, lastResult: 'wrong' }
+      : undefined,
+  }]))
+
+  const sameDay = buildDeck(
+    { type: 'level', levelId: '5' },
+    { srs, size: 10, purpose: 'study', day },
+  )
+  assert.equal(sameDay.filter((word) => failedIds.has(word.id)).length, 0)
+
+  const explicitReview = buildDeck({ type: 'due' }, { srs, size: 0, day })
+  assert.equal(explicitReview.filter((word) => failedIds.has(word.id)).length, 10)
+
+  const nextDay = buildDeck(
+    { type: 'level', levelId: '5' },
+    { srs, size: 10, purpose: 'study', day: day + 1 },
+  )
+  assert.equal(nextDay.filter((word) => failedIds.has(word.id)).length, 6)
+  assert.equal(nextDay.filter((word) => !failedIds.has(word.id)).length, 4)
+})
+
+test('通常の学習・クイズは復習を最大60%にし、新しい語・別の語を40%確保する', () => {
+  assert.equal(AUTOMATIC_VOCAB_REVIEW_SHARE, 0.6)
+  const day = todayIndex()
+  const words = wordsByLevel('4')
+  const dueWords = words.slice(0, 24)
+  const dueIds = new Set(dueWords.map((word) => word.id))
+  const srs = Object.fromEntries(dueWords.map((word) => [word.id, {
+    box: 1,
+    due: day,
+    last: day - 2,
+  }]))
+
+  for (const purpose of ['study', 'quiz']) {
+    const deck = buildDeck(
+      { type: 'level', levelId: '4' },
+      { srs, size: 10, purpose, day },
+    )
+    assert.equal(deck.length, 10)
+    assert.equal(deck.filter((word) => dueIds.has(word.id)).length, 6, purpose)
+    assert.equal(deck.filter((word) => !dueIds.has(word.id)).length, 4, purpose)
+  }
+
+  const study = readFileSync(new URL('../src/screens/VocabStudy.jsx', import.meta.url), 'utf8')
+  const quiz = readFileSync(new URL('../src/screens/VocabQuiz.jsx', import.meta.url), 'utf8')
+  const levels = readFileSync(new URL('../src/screens/VocabLevels.jsx', import.meta.url), 'utf8')
+  assert.match(study, /purpose: 'study'/)
+  assert.match(quiz, /purpose: 'quiz'/)
+  assert.match(levels, /data-vocab-session-policy/)
+  assert.match(levels, /復習を最大6語/)
 })
 
 test('単語学習とクイズは参考画面を往復しても同じ問題・解答状態を復元する', () => {

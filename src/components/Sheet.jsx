@@ -3,7 +3,13 @@ import { IconButton } from './ui.jsx'
 import { Close } from './Icons.jsx'
 
 /** 下から出るボトムシート。アプリ幅(max-w-md)に揃えて中央寄せ表示。 */
-export function Sheet({ open, onClose, title, children, maxH = '85svh' }) {
+export function Sheet({
+  open,
+  onClose,
+  title,
+  children,
+  maxH = 'min(85svh, calc(var(--app-visual-viewport-height) - 0.5rem))',
+}) {
   useEffect(() => {
     if (!open) return
     const onKey = (e) => e.key === 'Escape' && onClose?.()
@@ -13,7 +19,7 @@ export function Sheet({ open, onClose, title, children, maxH = '85svh' }) {
 
   if (!open) return null
   return (
-    <div className="fixed inset-0 z-[70] flex items-end justify-center" data-sheet-layer>
+    <div className="app-viewport-overlay fixed inset-x-0 z-[70] flex items-end justify-center" data-sheet-layer>
       <div
         className="absolute inset-0 bg-ink/40 backdrop-blur-[2px]"
         onClick={onClose}
@@ -38,7 +44,7 @@ export function Sheet({ open, onClose, title, children, maxH = '85svh' }) {
           </div>
         )}
         <div
-          className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden px-5 pb-[calc(1.5rem+var(--app-safe-bottom))]"
+          className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden px-5 pb-[calc(1.5rem+var(--app-bottom-clearance))]"
           data-sheet-scroll-area
         >
           {children}

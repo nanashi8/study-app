@@ -122,6 +122,8 @@ export function DictationPlayScreen() {
       wrong: results.current.wrong,
       reviewIds: results.current.wrongIds,
       source,
+      continueTo: params.continueTo,
+      returnTo: params.returnTo,
     })
   }
 

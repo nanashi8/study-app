@@ -97,6 +97,7 @@ import {
   MAX_SRS_BOX,
   SRS_INTERVAL_DAYS,
 } from '../lib/srs.js'
+import { completedSessionDestination } from '../lib/navigationPolicy.js'
 
 // ── 学習ロジックの定数 ──────────────────────────────────────────────
 // Leitner 式の間隔反復。十分に定着した後は60・90・180日の維持復習へ進む。
@@ -175,6 +176,21 @@ export function normalizeSettings(settings) {
       Object.hasOwn(source, key) ? source[key] : fallback,
     ]),
   )
+}
+
+function returnNavigationState(st, screen, params = {}) {
+  const destination = learnerDestination(screen, params)
+  let targetIndex = -1
+  for (let index = st.stack.length - 1; index >= 0; index--) {
+    if (st.stack[index].screen === destination.screen) {
+      targetIndex = index
+      break
+    }
+  }
+  return {
+    ...destination,
+    stack: targetIndex >= 0 ? st.stack.slice(0, targetIndex) : [],
+  }
 }
 
 export const createInitialLearningState = () => ({
@@ -502,22 +518,18 @@ export const useStore = create(
       // 完了画面から選択画面へ戻るとき、終了済みの学習・結果画面を履歴へ残さない。
       // 同じ画面が履歴にあれば、その直前までを復元する。
       returnTo: (screen, params = {}) =>
+        set((st) => returnNavigationState(st, screen, params)),
+      exitSessionResult: () =>
         set((st) => {
-          const destination = learnerDestination(screen, params)
-          let targetIndex = -1
-          for (let index = st.stack.length - 1; index >= 0; index--) {
-            if (st.stack[index].screen === destination.screen) {
-              targetIndex = index
-              break
-            }
-          }
-          return {
-            ...destination,
-            stack: targetIndex >= 0 ? st.stack.slice(0, targetIndex) : [],
-          }
+          const destination = completedSessionDestination(st.params)
+          return returnNavigationState(st, destination.screen, destination.params)
         }),
       back: () =>
         set((st) => {
+          if (st.screen === 'sessionResult') {
+            const destination = completedSessionDestination(st.params)
+            return returnNavigationState(st, destination.screen, destination.params)
+          }
           // 履歴なしで開いた画面は、そのアプリのホームへ戻す
           // （英語なら英語アプリ、古典なら古典アプリ）。
           if (!st.stack.length) {
@@ -537,6 +549,10 @@ export const useStore = create(
       // トップ階層ではスタディアプリの入口へ戻す。
       globalBack: () =>
         set((st) => {
+          if (st.screen === 'sessionResult') {
+            const destination = completedSessionDestination(st.params)
+            return returnNavigationState(st, destination.screen, destination.params)
+          }
           if (!st.stack.length) {
             // 画面内の「やめる」と同じ戻り先にそろえる。
             const destination = fallbackDestination(st.screen)

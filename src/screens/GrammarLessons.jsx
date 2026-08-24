@@ -40,6 +40,7 @@ export function GrammarLessonsScreen() {
       source: { type: 'grammar', level: lesson.level, topic: lesson.topic },
       title: lesson.topic,
       levelColor: meta.color,
+      returnTo: { screen: 'grammarLessons' },
     })
   }
 

@@ -268,6 +268,7 @@ export function VocabSearchScreen() {
       source: { type: 'phraseList', ids: [phrase.id] },
       size: 1,
       title: phrase.kind === 'syntax' ? '構文' : '熟語',
+      returnTo: { screen: 'vocabSearch' },
     })
 
   const renderEntry = (entry) =>

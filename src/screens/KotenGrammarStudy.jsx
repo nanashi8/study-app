@@ -37,7 +37,7 @@ function buildDeck(ids, size = SESSION_SIZE) {
 
 export function KotenGrammarStudyScreen() {
   const params = useStore((state) => state.params)
-  const navigate = useStore((state) => state.navigate)
+  const returnTo = useStore((state) => state.returnTo)
   const reviewGrammar = useStore((state) => state.reviewKotenGrammar)
   const savedIds = useStore((state) => state.kotenGrammarList)
   const toggleSaved = useStore((state) => state.toggleKotenGrammarList)
@@ -59,7 +59,7 @@ export function KotenGrammarStudyScreen() {
   const saved = item ? savedIds.includes(item.id) : false
 
   // コンテンツ画面の「戻る」は履歴でなく、古典文法の内容選択画面へ。
-  const backToKotenGrammar = () => navigate('kotenGrammar')
+  const backToKotenGrammar = () => returnTo('kotenGrammar')
 
   if (!deck.length) {
     return (

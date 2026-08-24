@@ -49,6 +49,7 @@ const clampRate = (rate) => Math.max(0.55, Math.min(1.25, rate))
 export function ListeningQuizScreen() {
   const params = useStore((s) => s.params)
   const navigate = useStore((s) => s.navigate)
+  const returnTo = useStore((s) => s.returnTo)
   const review = useStore((s) => s.review)
   const settings = useStore((s) => s.settings)
   const toggleNotebookItem = useStore((s) => s.toggleNotebookItem)
@@ -146,7 +147,7 @@ export function ListeningQuizScreen() {
   }, [i, item?.id])
 
   // コンテンツ画面の「戻る」は履歴でなく、リスニングの内容選択画面へ。
-  const backToListening = () => navigate('listening')
+  const backToListening = () => returnTo('listening')
 
   if (!deck.length) {
     return (
@@ -170,6 +171,8 @@ export function ListeningQuizScreen() {
       wrong: results.current.wrong + results.current.unknown,
       reviewIds: results.current.wrongIds,
       source,
+      continueTo: params.continueTo,
+      returnTo: params.returnTo,
     })
   }
 

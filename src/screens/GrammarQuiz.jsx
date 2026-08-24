@@ -101,6 +101,8 @@ export function GrammarQuizScreen() {
       wrong: results.current.wrong + results.current.unknown,
       reviewIds: results.current.wrongIds,
       source: params.source,
+      continueTo: params.continueTo,
+      returnTo: params.returnTo,
     })
   }
 

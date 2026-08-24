@@ -174,6 +174,7 @@ export function GrammarStrandsScreen() {
       source: { type: 'grammarStrand', strandId: overview.strand.id, level: target },
       title: `${overview.strand.name}・${meta.label}`,
       levelColor: meta.color,
+      returnTo: { screen: 'grammarStrands' },
     })
   }
 
