@@ -22,6 +22,8 @@ import { StatusDistributionBar } from '../components/LearningStatusBars.jsx'
 import { Button, Card, Chip, IconButton, ProgressBar, ProgressRing, cx } from '../components/ui.jsx'
 import { ArrowRight, Check, Close, Sparkles, Target, Trophy } from '../components/Icons.jsx'
 import { buildDiagnosticInstructorExplanation } from '../lib/instructorExplanations.js'
+import { getGrammar } from '../data/grammar.js'
+import { GrammarChoiceExplanations } from '../components/GrammarChoiceExplanations.jsx'
 
 const LEVEL_BY_ID = Object.fromEntries(DIAGNOSTIC_LEVELS.map((level) => [level.id, level]))
 const SKILL_BY_ID = Object.fromEntries(DIAGNOSTIC_SKILLS.map((skill) => [skill.id, skill]))
@@ -602,6 +604,16 @@ function TestQuestion({ questions, index, answers, onSelect, onNext, onCancel })
         <h1 className="px-1 font-display text-xl font-extrabold leading-relaxed text-ink">
           {item.prompt}
         </h1>
+        {item.promptJa && item.meaningCueRequired && (
+          <div
+            className="mt-3 rounded-2xl bg-brand-50 px-3 py-2.5"
+            data-diagnostic-grammar-meaning
+            data-grammar-meaning-required="true"
+          >
+            <p className="text-[10px] font-extrabold tracking-wide text-brand-500">判断に必要な意味</p>
+            <p className="mt-0.5 text-sm font-bold leading-relaxed text-ink/70">{item.promptJa}</p>
+          </div>
+        )}
 
         <div className="mt-5 space-y-2.5">
           {item.choices.map((choice, choiceIndex) => {
@@ -672,6 +684,9 @@ function AnswerReview({ questions, answers }) {
       <div className="mt-4 space-y-3">
         {reviewItems.map((review) => {
           const { question } = review
+          const grammarItem = question.skill === 'grammar' && question.sourceId?.startsWith('grammar:')
+            ? getGrammar(question.sourceId.slice('grammar:'.length))
+            : null
           const skill = SKILL_BY_ID[question.skill]
           const level = LEVEL_BY_ID[question.level]
           const selectedLabel = review.isUnknown
@@ -768,6 +783,15 @@ function AnswerReview({ questions, answers }) {
                   compact
                 />
               </div>
+              {grammarItem && (
+                <GrammarChoiceExplanations
+                  item={grammarItem}
+                  choices={question.choices}
+                  selected={review.selectedAnswer}
+                  className="mt-2"
+                  compact
+                />
+              )}
             </article>
           )
         })}

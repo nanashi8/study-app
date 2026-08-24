@@ -10,7 +10,9 @@ import { quizMeaning, quizMeaningKey } from '../src/data/compact.js'
 import {
   GRAMMAR,
   grammarChoiceGuidanceFor,
+  grammarChoiceUsageFor,
 } from '../src/data/grammar.js'
+import { grammarChoiceExplanationFor } from '../src/lib/grammarQuestionExplanations.js'
 import { PHRASES } from '../src/data/phrases.js'
 import { pickPhraseDistractors } from '../src/lib/session.js'
 import {
@@ -91,21 +93,26 @@ test('診断の全基準問題・読解バンク・生成3フォームは解説�
   }
 })
 
-test('全英文法の誤答9420件は使える場面または不成立理由を日本語で説明する', () => {
+test('全英文法の13,800選択肢は正答理由または誤答の使える場面・不成立理由を日本語で説明する', () => {
+  let count = 0
   for (const item of GRAMMAR) {
     for (const choice of item.choices) {
-      if (choice === item.answer) continue
-      const guidance = grammarChoiceGuidanceFor(item, choice)
-      assert.ok(['valid', 'invalid'].includes(guidance?.status), `${item.id}: ${choice}`)
-      assert.match(guidance.summary, /[\u3040-\u30ff\u3400-\u9fff]/, `${item.id}: ${choice}`)
+      const usage = grammarChoiceUsageFor(item, choice)
+      const reason = grammarChoiceExplanationFor(item, choice)
+      assert.ok(['valid', 'invalid'].includes(usage?.status), `${item.id}: ${choice}`)
+      assert.match(usage.summary, /[\u3040-\u30ff\u3400-\u9fff]/, `${item.id}: ${choice}`)
+      assert.match(reason, /[\u3040-\u30ff\u3400-\u9fff]/, `${item.id}: ${choice}`)
+      if (choice !== item.answer) assert.ok(grammarChoiceGuidanceFor(item, choice))
+      count += 1
     }
   }
+  assert.equal(count, 13_800)
 })
 
 test('主要クイズは正答後に英文・和訳・学習ポイントを表示する', () => {
   const checks = {
     'VocabQuiz.jsx': [/word\.example\.en/, /word\.example\.ja/, /buildVocabInstructorExplanation/],
-    'GrammarQuiz.jsx': [/item\.sentence\.en/, /item\.sentence\.ja/, /buildGrammarInstructorExplanation/, /data-grammar-choice-guidance/, /patternExamples/],
+    'GrammarQuiz.jsx': [/item\.sentence\.en/, /item\.sentence\.ja/, /buildGrammarInstructorExplanation/, /GrammarChoiceExplanations/, /patternExamples/],
     'PhraseQuiz.jsx': [/item\.example\.en/, /item\.example\.ja/, /buildPhraseInstructorExplanation/],
     'ListeningQuiz.jsx': [/item\.questionJa/, /buildListeningInstructorExplanation/],
     'DictationPlay.jsx': [/item\.text/, /item\.ja/, /buildDictationInstructorExplanation/],
@@ -120,4 +127,11 @@ test('主要クイズは正答後に英文・和訳・学習ポイントを表�
     )
     for (const pattern of patterns) assert.match(source, pattern, filename)
   }
+
+  const grammarChoicesSource = readFileSync(
+    new URL('../src/components/GrammarChoiceExplanations.jsx', import.meta.url),
+    'utf8',
+  )
+  assert.match(grammarChoicesSource, /data-grammar-choice-guidance/)
+  assert.match(grammarChoicesSource, /data-choice-correct/)
 })

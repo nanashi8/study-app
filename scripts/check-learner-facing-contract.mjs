@@ -110,6 +110,7 @@ const readProjectFile = (relative) => readFile(path.join(projectRoot, relative),
 const [
   instructorSource,
   grammarQuizSource,
+  grammarChoiceExplanationsSource,
   homeSource,
   readerSource,
   appSource,
@@ -129,6 +130,7 @@ const [
 ] = await Promise.all([
   readProjectFile('src/components/InstructorExplanation.jsx'),
   readProjectFile('src/screens/GrammarQuiz.jsx'),
+  readProjectFile('src/components/GrammarChoiceExplanations.jsx'),
   readProjectFile('src/screens/Home.jsx'),
   readProjectFile('src/screens/Reader.jsx'),
   readProjectFile('src/App.jsx'),
@@ -150,7 +152,10 @@ const [
 for (const label of ['根拠', '消去法', '考え方']) {
   if (!instructorSource.includes(`label: '${label}'`)) errors.push(`共通解説に「${label}」がない`)
 }
-if (!grammarQuizSource.includes('選択肢解説')) errors.push('英文法画面に「選択肢解説」がない')
+if (!grammarQuizSource.includes('GrammarChoiceExplanations')) errors.push('英文法画面に4択解説部品がない')
+if (!grammarChoiceExplanationsSource.includes('選択肢解説（4択すべて）')) {
+  errors.push('英文法画面に正解を含む4択すべての解説がない')
+}
 if (/id: 'quiz'/.test(homeSource)) errors.push('英語ホームに重複したクイズ入口がある')
 if (!homeSource.includes("id: 'vocab'")) errors.push('英語ホームの単語入口がない')
 if (!homeSource.includes("id: 'etymology'") || !homeSource.includes("screen: 'roots'")) {

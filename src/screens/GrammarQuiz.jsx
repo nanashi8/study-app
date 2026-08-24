@@ -14,10 +14,12 @@ import { LongSentenceTranslation } from '../components/LongSentenceTranslation.j
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
+import { GrammarChoiceExplanations } from '../components/GrammarChoiceExplanations.jsx'
 import { Button, ProgressBar, IconButton, Chip, cx } from '../components/ui.jsx'
 import { ArrowRight, Bookmark, BookmarkFilled, Check, Close } from '../components/Icons.jsx'
 import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { buildGrammarInstructorExplanation } from '../lib/instructorExplanations.js'
+import { grammarQuestionNeedsMeaningCue } from '../lib/grammarQuestionExplanations.js'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 
 // 空所 ___ を下線つきの空欄として表示。
@@ -59,35 +61,24 @@ export function GrammarQuizScreen() {
     () => samePatternExamplesFor(item),
     [item?.id], // eslint-disable-line react-hooks/exhaustive-deps
   )
-  const choiceGuides = useMemo(
-    () => item
-      ? options
-          .filter((choice) => choice !== item.answer)
-          .map((choice) => ({
-            choice,
-            guidance: grammarChoiceGuidanceFor(item, choice),
-          }))
-      : [],
-    [item?.id, options], // eslint-disable-line react-hooks/exhaustive-deps
-  )
-
   if (!deck.length) {
     return (
       <div className="flex h-full flex-col items-center justify-center gap-4 p-8 text-center">
         <div className="text-5xl">📝</div>
         <p className="font-display text-lg font-extrabold text-ink">出題できる問題がありません</p>
-        <Button onClick={back}>もどる</Button>
+        <Button onClick={back}>戻る</Button>
       </div>
     )
   }
 
   const answered = selected !== null
   const isCorrectPick = answered && selected === item.answer
-  const selectedGuidance = choiceGuides.find(({ choice }) => choice === selected)?.guidance
+  const selectedGuidance = grammarChoiceGuidanceFor(item, selected)
   const instructorExplanation = answered
     ? buildGrammarInstructorExplanation(item, selected, selectedGuidance)
     : null
   const longSentenceTranslation = longSentenceTranslationFor(item)
+  const needsMeaningCue = grammarQuestionNeedsMeaningCue(item)
   const saved = learningNotebook?.entries?.[`grammar:${item.id}`]?.saved === true
 
   const finish = () => {
@@ -168,7 +159,21 @@ export function GrammarQuizScreen() {
           <h2 className="mt-3 font-display text-2xl font-extrabold leading-relaxed text-ink">
             {renderQuestion(item.q)}
           </h2>
-          <p className="mt-3 text-sm font-extrabold text-ink/55">空所に入るのは？</p>
+          {needsMeaningCue && (
+            <div
+              className="mt-3 rounded-xl bg-brand-50 px-3 py-2.5 text-left"
+              data-grammar-target-meaning
+              data-grammar-meaning-required="true"
+            >
+              <p className="text-[10px] font-extrabold tracking-wide text-brand-500">判断に必要な意味</p>
+              <p className="mt-0.5 text-sm font-bold leading-relaxed text-ink/70">
+                {item.sentence.ja}
+              </p>
+            </div>
+          )}
+          <p className="mt-3 text-sm font-extrabold text-ink/55">
+            {needsMeaningCue ? '英文と意味の両方に合うのは？' : '空所に入る正しい形は？'}
+          </p>
         </div>
 
         <div className="mt-4 space-y-2.5">
@@ -223,61 +228,12 @@ export function GrammarQuizScreen() {
               explanation={instructorExplanation}
               className="mt-3"
             />
-            <div className="mt-3 border-t border-brand-100 pt-3" data-grammar-choice-guidance>
-              <p className="font-display text-sm font-extrabold text-ink/70">選択肢解説</p>
-              <div className="mt-2 space-y-2">
-                {choiceGuides.map(({ choice, guidance }) => {
-                  const chosenWrong = selected === choice
-                  const usable = guidance?.status === 'valid'
-                  const example = guidance?.example?.en ?? guidance?.pattern
-                  return (
-                    <div
-                      key={choice}
-                      data-grammar-choice-guide={choice}
-                      data-choice-status={guidance?.status}
-                      className={cx(
-                        'rounded-xl border p-3',
-                        usable
-                          ? 'border-brand-100 bg-brand-50/55'
-                          : 'border-rose-100 bg-rose-50/65',
-                        chosenWrong && 'ring-2 ring-rose-300',
-                      )}
-                    >
-                      <div className="flex flex-wrap items-center gap-1.5">
-                        <span className="font-display text-sm font-extrabold text-ink">
-                          {choice}
-                        </span>
-                        {!usable && (
-                          <span className="rounded-full bg-rose-100 px-2 py-0.5 text-[10px] font-extrabold text-rose-700">
-                            この形は使わない
-                          </span>
-                        )}
-                        {chosenWrong && (
-                          <span className="rounded-full bg-rose-500 px-2 py-0.5 text-[10px] font-extrabold text-white">
-                            あなたの回答
-                          </span>
-                        )}
-                      </div>
-                      <p className="mt-1.5 text-xs font-bold leading-relaxed text-ink/65">
-                        {guidance?.summary}
-                      </p>
-                      {example && (
-                        <div className="mt-1.5 rounded-lg bg-white/80 px-2.5 py-2">
-                          <p className="text-xs font-extrabold leading-relaxed text-ink">
-                            例・型：{example}
-                          </p>
-                          {guidance?.example?.ja && (
-                            <p className="mt-0.5 text-[11px] font-bold leading-relaxed text-ink/45">
-                              {guidance.example.ja}
-                            </p>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  )
-                })}
-              </div>
-            </div>
+            <GrammarChoiceExplanations
+              item={item}
+              choices={options}
+              selected={selected}
+              className="mt-3"
+            />
             <div className="mt-3 border-t border-brand-100 pt-3">
               <p className="font-display text-sm font-extrabold text-ink/70">同じ形の例</p>
               <div className="mt-2 space-y-2">

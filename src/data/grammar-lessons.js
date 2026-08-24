@@ -8,10 +8,10 @@
 //   level  : 対応する英検級（クイズ接続・色分け用）
 //   topic  : grammar.js の topic と一致させるとクイズへ飛べる
 //   summary: 一言まとめ
-//   form   : 形（語順・公式）。任意
+//   form   : 形（語順・公式）
 //   points : 押さえるポイント（配列）
 //   examples: 例文 [{en, ja}]
-//   pitfalls: つまずきやすい点（任意・配列）
+//   pitfalls: つまずきやすい点（配列）
 import { EXAM_GRAMMAR_LESSONS } from './grammar-lessons-exam.js'
 
 export const GRAMMAR_STAGES = ['中1', '中2', '中3', '高校基礎', '高校発展']
@@ -84,6 +84,7 @@ const CORE_GRAMMAR_LESSONS = [
     level: '5',
     topic: '名詞の複数形',
     summary: '数えられる名詞が2つ以上のときは複数形にする。',
+    form: '2以上の数 / many / some + 数えられる名詞の複数形（-s / -es など）',
     points: [
       '基本は s（book → books）。',
       's, x, ch, sh, o で終わる語は es（box → boxes、bus → buses）。',
@@ -93,6 +94,7 @@ const CORE_GRAMMAR_LESSONS = [
       { en: 'I have three boxes.', ja: '私は箱を3つ持っています。' },
       { en: 'There are many animals in the zoo.', ja: '動物園にはたくさんの動物がいます。' },
     ],
+    pitfalls: ['a / an / one の後ろは単数形。water や information など数えられない名詞には、ふつう複数形の s を付けない。'],
   },
   {
     id: 'gl_j1_pron',
@@ -110,6 +112,7 @@ const CORE_GRAMMAR_LESSONS = [
       { en: 'This is Ken. I know him.', ja: 'こちらはケンです。私は彼を知っています。' },
       { en: 'This bag is mine.', ja: 'このかばんは私のものです。' },
     ],
+    pitfalls: ['名詞の前は所有格（my bag）、名詞を置かず「私のもの」と言うなら所有代名詞（mine）。動詞や前置詞の後ろは目的格にする。'],
   },
   {
     id: 'gl_j1_wh',
@@ -128,6 +131,7 @@ const CORE_GRAMMAR_LESSONS = [
       { en: 'When is your birthday?', ja: 'あなたの誕生日はいつですか。' },
       { en: 'Where do you live?', ja: 'あなたはどこに住んでいますか。' },
     ],
+    pitfalls: ['疑問詞そのものが主語なら do/does を置かない（Who came here?）。主語でなければ疑問詞の後ろを疑問文の語順にする。'],
   },
   {
     id: 'gl_j1_prep',
@@ -136,6 +140,7 @@ const CORE_GRAMMAR_LESSONS = [
     level: '5',
     topic: '前置詞',
     summary: '名詞の前に置いて、場所・時・方向などの関係を表す。',
+    form: '時刻 at + 時刻 ／ 日・曜日 on + 日 ／ 月・年 in + 月・年 ／ 前置詞 + 名詞',
     points: [
       '時刻は at（at seven）、曜日・日付は on（on Monday）、月・年・季節は in（in May）。',
       '場所は in（中）、on（接して上）、under（下）、by/near（そば）など。',
@@ -144,6 +149,7 @@ const CORE_GRAMMAR_LESSONS = [
       { en: 'I get up at seven.', ja: '私は7時に起きます。' },
       { en: 'The cat is under the table.', ja: '猫はテーブルの下にいます。' },
     ],
+    pitfalls: ['日本語の「に」だけで前置詞を決めず、時刻・日・広い期間、または中・接触・下などの関係を見分ける。'],
   },
   {
     id: 'gl_j1_can',
@@ -162,6 +168,7 @@ const CORE_GRAMMAR_LESSONS = [
       { en: 'She can swim very well.', ja: '彼女はとても上手に泳げます。' },
       { en: 'Can you help me?', ja: '手伝ってくれますか。' },
     ],
+    pitfalls: ['can の直後に to や動詞の s を置かない（×can to swim / ×can swims → ○can swim）。'],
   },
   {
     id: 'gl_j1_prog',
@@ -180,6 +187,7 @@ const CORE_GRAMMAR_LESSONS = [
       { en: 'He is watching TV now.', ja: '彼は今テレビを見ています。' },
       { en: 'They are running in the park.', ja: '彼らは公園で走っています。' },
     ],
+    pitfalls: ['動詞ingだけでは進行形にならず、主語に合う be動詞が必要（×He watching → ○He is watching）。'],
   },
   {
     id: 'gl_j1_imp',
@@ -188,15 +196,25 @@ const CORE_GRAMMAR_LESSONS = [
     level: '5',
     topic: '命令文',
     summary: '相手に指示・依頼するとき、主語を省いて動詞の原形で始める。',
-    form: '動詞の原形 〜. ／ Don’t + 動詞の原形 〜. ／ Let’s + 動詞の原形 〜.',
+    form: '動詞の原形 / Be 〜. ／ Don’t / Never / Always + 動詞の原形 〜. ／ Please + 動詞の原形 〜. ／ Let’s (not) + 動詞の原形 〜.',
     points: [
-      'be動詞の命令文は Be で始める（Be quiet.）。',
-      '否定の命令は Don’t 〜（Don’t run.）。',
-      'Let’s 〜 で「〜しましょう」と誘う。please を付けると丁寧。',
+      '命令文は主語 you を書かず、一般動詞の原形で始める。be動詞なら原形の Be で始める（Be quiet.）。',
+      'Don’t＋動詞の原形は「〜しないで」という一般的な禁止。Never＋動詞の原形は「決して〜するな」と一度もしてはいけない強い禁止を表す。',
+      'Always＋動詞の原形は「いつも必ず〜しなさい」という習慣的な指示。Please＋動詞の原形は「〜してください」という丁寧な依頼。',
+      'Let’s＋動詞の原形は話し手も含めて「〜しましょう」。否定は Let’s not＋動詞の原形で「〜するのはやめましょう」。',
+      '空所問題では日本語まで読み、「しないで」なら Don’t、「決して〜するな」なら Never、「いつも必ず」なら Always を選び分ける。',
     ],
     examples: [
       { en: 'Be quiet, please.', ja: '静かにしてください。' },
+      { en: 'Don’t touch this switch.', ja: 'このスイッチに触らないでください。' },
+      { en: 'Never give up on your dream.', ja: '夢を決してあきらめるな。' },
+      { en: 'Always wear your seat belt.', ja: 'いつも必ずシートベルトを着けなさい。' },
       { en: 'Let’s play soccer.', ja: 'サッカーをしましょう。' },
+      { en: 'Let’s not waste time.', ja: '時間をむだにするのはやめましょう。' },
+    ],
+    pitfalls: [
+      'Never 自体に否定の意味があるため don’t を重ねない（×Never don’t give up）。Never の直後は動詞の原形（○Never give up）。',
+      'Don’t は相手への禁止、Let’s not は話し手自身も含む提案なので、日本語の主語と意図を確かめる。',
     ],
   },
 
@@ -236,6 +254,7 @@ const CORE_GRAMMAR_LESSONS = [
       { en: 'I was watching TV at nine.', ja: '私は9時にテレビを見ていました。' },
       { en: 'She was cooking when I came home.', ja: '私が帰宅したとき彼女は料理をしていた。' },
     ],
+    pitfalls: ['過去形の動詞と混ぜず、〈was/were＋動詞ing〉を一組で使う（×was watched TV → ○was watching TV）。'],
   },
   {
     id: 'gl_j2_future',
@@ -254,6 +273,7 @@ const CORE_GRAMMAR_LESSONS = [
       { en: 'It will rain tomorrow.', ja: '明日は雨が降るでしょう。' },
       { en: 'I am going to study tonight.', ja: '私は今夜勉強するつもりです。' },
     ],
+    pitfalls: ['will の直後は動詞の原形。be going to では主語に合う am/is/are を省かない。'],
   },
   {
     id: 'gl_j2_modal',
@@ -262,6 +282,7 @@ const CORE_GRAMMAR_LESSONS = [
     level: '4',
     topic: '助動詞',
     summary: '動詞に意味を加える語。あとの動詞は必ず原形。',
+    form: '主語 + must/should/may + 動詞の原形 〜. ／ 主語 + have/has to + 動詞の原形 〜.',
     points: [
       'must「〜しなければならない」、should「〜すべきだ」、may「〜してもよい・かもしれない」。',
       'have to も「〜しなければならない」。否定の don’t have to は「〜しなくてよい」。',
@@ -271,6 +292,7 @@ const CORE_GRAMMAR_LESSONS = [
       { en: 'You must finish your homework first.', ja: 'まず宿題を終えなければならない。' },
       { en: 'You should see a doctor.', ja: '医者に診てもらうべきです。' },
     ],
+    pitfalls: ['must not は「してはいけない」、don’t have to は「する必要はない」。禁止と不要を取り違えない。'],
   },
   {
     id: 'gl_j2_inf',
@@ -289,6 +311,7 @@ const CORE_GRAMMAR_LESSONS = [
       { en: 'I want to be a doctor.', ja: '私は医者になりたい。' },
       { en: 'I have a lot of work to do.', ja: '私にはやるべき仕事がたくさんある。' },
     ],
+    pitfalls: ['不定詞の to の直後は動詞の原形（×to went / ×to studying → ○to go / ○to study）。'],
   },
   {
     id: 'gl_j2_ger',
@@ -297,6 +320,7 @@ const CORE_GRAMMAR_LESSONS = [
     level: '4',
     topic: '動名詞',
     summary: '動詞ingが名詞の働きをして「〜すること」を表す。',
+    form: '動詞-ing（主語・目的語・補語、または前置詞の目的語として使う）',
     points: [
       'enjoy / finish / stop / practice などの後ろは動名詞（to不定詞は不可）。',
       'want / hope / decide などの後ろは to不定詞。',
@@ -325,6 +349,7 @@ const CORE_GRAMMAR_LESSONS = [
       { en: 'Tom is taller than Ken.', ja: 'トムはケンより背が高い。' },
       { en: 'This is the most interesting book of the three.', ja: 'これは3冊の中で一番面白い本です。' },
     ],
+    pitfalls: ['比較級は than、最上級には原則 the を付ける。more taller のように -er と more を重ねない。'],
   },
   {
     id: 'gl_j2_conj',
@@ -333,6 +358,7 @@ const CORE_GRAMMAR_LESSONS = [
     level: '4',
     topic: '接続詞',
     summary: '2つの文をつないで理由・条件・時などの関係を表す。',
+    form: '主節 + when/because/if/that + 主語 + 動詞 〜（従属節は前に置くこともある）',
     points: [
       'when（〜のとき）、because（〜だから）、if（もし〜なら）、that（〜ということ）。',
       'when / if の中の文では、未来のことでも現在形で表す。',
@@ -342,6 +368,7 @@ const CORE_GRAMMAR_LESSONS = [
       { en: 'Call me when you arrive.', ja: '着いたら電話してください。' },
       { en: 'I was happy because I passed the test.', ja: '試験に受かったので私はうれしかった。' },
     ],
+    pitfalls: ['未来の条件・時を表す if/when 節では will を使わず現在形にする（○If it rains tomorrow, ...）。'],
   },
   {
     id: 'gl_j2_there',
@@ -360,6 +387,7 @@ const CORE_GRAMMAR_LESSONS = [
       { en: 'There are many books on the desk.', ja: '机の上にたくさんの本があります。' },
       { en: 'There is a cat under the chair.', ja: 'いすの下に猫が1匹います。' },
     ],
+    pitfalls: ['is/are は there ではなく直後の名詞の数に合わせる。特定の物を主語にするなら The book is ... の普通の語順を使う。'],
   },
 
   // ───────────────────── 中3（英検3級）─────────────────────
@@ -399,6 +427,7 @@ const CORE_GRAMMAR_LESSONS = [
       { en: 'This book is read by many people.', ja: 'この本は多くの人に読まれています。' },
       { en: 'The room was cleaned yesterday.', ja: 'その部屋は昨日掃除された。' },
     ],
+    pitfalls: ['受動態には主語に合う be動詞が必要。自動詞だけの表現は原則として受動態にできない。'],
   },
   {
     id: 'gl_j3_rel',
@@ -417,6 +446,7 @@ const CORE_GRAMMAR_LESSONS = [
       { en: 'I have a friend who lives in Canada.', ja: '私にはカナダに住む友達がいます。' },
       { en: 'This is the book which I bought yesterday.', ja: 'これは私が昨日買った本です。' },
     ],
+    pitfalls: ['主格の関係代名詞は省略できない。先行詞が人か物か、後ろの文で主語と目的語のどちらが欠けているかを確認する。'],
   },
   {
     id: 'gl_j3_indq',
@@ -443,6 +473,7 @@ const CORE_GRAMMAR_LESSONS = [
     level: '3',
     topic: '不定詞応用',
     summary: 'It is ... to do や〈want＋人＋to do〉など、不定詞の発展的な使い方。',
+    form: 'It is + 形容詞 (+ for 人) + to do. ／ want/ask/tell + 人 + to do.',
     points: [
       'It is ... (for 人) to do.「（人が）〜することは…だ」の形式主語 it。',
       '〈want / ask / tell + 人 + to do〉「人に〜してほしい／頼む／言う」。',
@@ -452,6 +483,7 @@ const CORE_GRAMMAR_LESSONS = [
       { en: 'It is important to study English every day.', ja: '毎日英語を勉強することは大切だ。' },
       { en: 'I want you to help me.', ja: 'あなたに手伝ってほしい。' },
     ],
+    pitfalls: ['want/ask/tell の後ろで「人に〜してほしい」と言うときは、人を抜かず〈人＋to do〉の順にする。'],
   },
   {
     id: 'gl_j3_svoo',
@@ -460,6 +492,7 @@ const CORE_GRAMMAR_LESSONS = [
     level: '3',
     topic: '文型(SVOO/SVOC)',
     summary: '動詞のあとに目的語が2つ（SVOO）や、目的語＋補語（SVOC）が続く形。',
+    form: 'S + V + 人(O1) + 物(O2). ／ S + V + O + 名詞/形容詞(C).',
     points: [
       'SVOO：give / show / teach など〈動詞＋人＋物〉「人に物を〜する」。',
       'SVOC：make / call / keep など〈動詞＋O＋C〉「OをCにする／と呼ぶ」。Cは名詞か形容詞。',
@@ -469,6 +502,7 @@ const CORE_GRAMMAR_LESSONS = [
       { en: 'He gave me a present.', ja: '彼は私にプレゼントをくれた。' },
       { en: 'The news made me happy.', ja: 'その知らせは私を幸せにした。' },
     ],
+    pitfalls: ['SVOO の書き換えは動詞により to と for を使い分ける（give a pen to me / buy a pen for me）。SVOC の C は O の説明になる。'],
   },
   {
     id: 'gl_j3_part',
@@ -477,6 +511,7 @@ const CORE_GRAMMAR_LESSONS = [
     level: '3',
     topic: '分詞',
     summary: '現在分詞(ing)・過去分詞(ed)が形容詞のように名詞を修飾する。',
+    form: '動詞-ing + 名詞 / 過去分詞 + 名詞 ／ 名詞 + 分詞を含む2語以上のかたまり',
     points: [
       '現在分詞「〜している」（the running boy / the boy running there）。',
       '過去分詞「〜された」（a broken window / a language spoken in Canada）。',
@@ -486,6 +521,7 @@ const CORE_GRAMMAR_LESSONS = [
       { en: 'The boy running over there is my brother.', ja: 'あそこで走っている少年は私の弟です。' },
       { en: 'This is a picture taken by my father.', ja: 'これは父が撮った写真です。' },
     ],
+    pitfalls: ['修飾される名詞が動作を「する」なら -ing、「される」なら過去分詞。2語以上の修飾語句を名詞の前に置かない。'],
   },
 
   // ───────────────────── 高校基礎（英検準2・2級）─────────────────────
@@ -505,6 +541,7 @@ const CORE_GRAMMAR_LESSONS = [
       { en: 'This is the house where she lives.', ja: 'ここは彼女が住んでいる家です。' },
       { en: 'I remember the day when we met.', ja: '私は私たちが出会った日を覚えています。' },
     ],
+    pitfalls: ['関係副詞の後ろは主語・目的語がそろった完全な文。how と the way は重ねない（the way she did it / how she did it）。'],
   },
   {
     id: 'gl_h1_pastperf',
@@ -522,6 +559,7 @@ const CORE_GRAMMAR_LESSONS = [
       { en: 'The train had already left when I got to the station.', ja: '私が駅に着いたとき、電車はすでに出ていた。' },
       { en: 'She had never seen snow before she came to Japan.', ja: '彼女は来日前に雪を見たことがなかった。' },
     ],
+    pitfalls: ['過去の出来事が1つだけなら通常は過去形。過去の基準時よりさらに前だと示す必要があるときに had＋過去分詞を使う。'],
   },
   {
     id: 'gl_h1_causative',
@@ -559,6 +597,7 @@ const CORE_GRAMMAR_LESSONS = [
       { en: 'If I had more time, I would travel abroad.', ja: 'もっと時間があれば海外旅行をするのに。' },
       { en: 'I wish I could speak French.', ja: 'フランス語が話せたらいいのに。' },
     ],
+    pitfalls: ['形は過去形でも、表すのは現在の事実に反する仮定。if節に would を置かず、主節に would/could/might＋原形を置く。'],
   },
   {
     id: 'gl_h1_participle',
@@ -577,6 +616,7 @@ const CORE_GRAMMAR_LESSONS = [
       { en: 'Walking in the park, I met an old friend.', ja: '公園を歩いていると、旧友に会った。' },
       { en: 'Tired from work, he went to bed early.', ja: '仕事で疲れていたので、彼は早く寝た。' },
     ],
+    pitfalls: ['分詞構文の意味上の主語は原則として主節の主語と同じ。ずれると「誰がしたか」が不自然になる。'],
   },
 
   // ───────────────────── 高校発展（英検準1・1級）─────────────────────
@@ -596,6 +636,7 @@ const CORE_GRAMMAR_LESSONS = [
       { en: 'If I had studied harder, I would have passed the exam.', ja: 'もっと勉強していたら試験に受かっていたのに。' },
       { en: 'If you had told me, I could have helped you.', ja: '言ってくれていたら、助けられたのに。' },
     ],
+    pitfalls: ['過去の反実仮想では if節を〈had＋過去分詞〉、主節を〈would have＋過去分詞〉にし、if節に would have を置かない。'],
   },
   {
     id: 'gl_h2_inversion',
@@ -604,6 +645,7 @@ const CORE_GRAMMAR_LESSONS = [
     level: '2',
     topic: '倒置',
     summary: '否定の副詞などを文頭に出すと、その後ろが疑問文の語順になる。',
+    form: '否定・限定表現 + 助動詞/be動詞 + 主語 + 動詞 〜. ／ Had/Were/Should + 主語 〜（if省略）',
     points: [
       'Never / Little / Hardly / Not only などを文頭に → 〈助動詞＋主語〉の倒置。',
       'Only + 副詞句が文頭でも倒置。仮定法では If を省いて Had/Were で倒置できる。',
@@ -612,6 +654,7 @@ const CORE_GRAMMAR_LESSONS = [
       { en: 'Never have I seen such a beautiful view.', ja: 'こんなに美しい景色は見たことがない。' },
       { en: 'Had I known it, I would have come.', ja: 'それを知っていたら、来ていたのに。' },
     ],
+    pitfalls: ['否定語を文頭に出したら〈助動詞＋主語〉にする（×Never I have seen → ○Never have I seen）。通常位置なら倒置しない。'],
   },
   {
     id: 'gl_h2_emphasis',
@@ -629,6 +672,7 @@ const CORE_GRAMMAR_LESSONS = [
       { en: 'It was Tom that broke the window.', ja: '窓を割ったのはトムだった。' },
       { en: 'It is here that we first met.', ja: '私たちが初めて会ったのはここだ。' },
     ],
+    pitfalls: ['that節に必要な要素が残っているかを確認する。It と that を外して元の一文に戻せなければ、形式主語構文など別の形を疑う。'],
   },
 ]
 

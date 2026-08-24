@@ -1,4 +1,10 @@
 import { UNKNOWN_CHOICE_ID } from './quizChoices.js'
+import {
+  grammarChoiceMismatchExplanationFor,
+  grammarCorrectChoiceExplanationFor,
+  grammarExamFocusExplanationFor,
+  grammarQuestionExplanationFor,
+} from './grammarQuestionExplanations.js'
 
 const POS_GUIDE = Object.freeze({
   動: '動作・状態を表す動詞',
@@ -388,18 +394,19 @@ export function buildPhraseInstructorExplanation(item, selectedItem) {
 }
 
 export function buildGrammarInstructorExplanation(item, selected, selectedGuidance) {
-  const completed = clean(item?.sentence?.en)
+  const decisive = grammarExamFocusExplanationFor(item) || clean(item?.explain)
+  const fullExplanation = grammarQuestionExplanationFor(item)
   return explanation({
-    answer: `正解は${quote(item?.answer)}。完成文は${quote(completed)}となり、${quote(item?.sentence?.ja)}という意味になる。`,
-    evidence: `${clean(item?.explain)} 空所の前後だけでなく、文全体の主語・時制・構造がこの形を要求している。`,
+    answer: grammarCorrectChoiceExplanationFor(item),
+    evidence: fullExplanation,
     trap: selectionTrap({
       selected,
       correct: item?.answer,
       wrong: (picked) => selectedGuidance?.summary
-        ? `${quote(picked)}はここでは不適切。この文の決め手は ${clean(item?.explain)} なお、${clean(selectedGuidance.summary)}`
-        : `${quote(picked)}を入れると、${quote(item?.topic)}の条件と完成文の構造が一致しない。この文の決め手は ${clean(item?.explain)} 正解を入れた文全体で比較する。`,
-      unknown: `迷ったときは選択肢を眺め続けず、空所が担う役割を先に言葉にする。この問題では${clean(item?.explain)}`,
-      correctAnswer: `正解できた場合も、答えの語だけでなく${quote(item?.topic)}という判断条件を言える状態にしておく。`,
+        ? `${grammarChoiceMismatchExplanationFor(item, picked)} 基礎規則は ${clean(item?.explain)} なお、別の文では ${clean(selectedGuidance.summary)}`
+        : `${grammarChoiceMismatchExplanationFor(item, picked)} 基礎規則は ${clean(item?.explain)} 正解を入れた文全体で比較する。`,
+      unknown: `迷ったときは選択肢を眺め続けず、目標の意味と空所の役割を先に言葉にする。${fullExplanation}`,
+      correctAnswer: `正解できた場合も、答えの語だけでなく、この文の決め手を説明できるか確認する。${decisive}`,
     }),
     strategy: grammarStrategy(item),
   })

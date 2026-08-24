@@ -5,6 +5,10 @@ import {
   diagnosticDifficulty,
 } from '../data/diagnostic.js'
 import { GRAMMAR } from '../data/grammar.js'
+import {
+  grammarQuestionExplanationFor,
+  grammarQuestionNeedsMeaningCue,
+} from './grammarQuestionExplanations.js'
 import { PHRASES } from '../data/phrases.js'
 import { pickDistractors, wordsByLevel } from '../data/vocab.js'
 import { pickPhraseDistractors } from './session.js'
@@ -74,6 +78,8 @@ function baseQuestion({
   skill,
   level,
   prompt,
+  promptJa,
+  meaningCueRequired,
   choices,
   answer,
   explain,
@@ -89,6 +95,8 @@ function baseQuestion({
     difficulty: diagnosticDifficulty(level, skill),
     ...(passage ? { passage } : {}),
     ...(passageJa ? { passageJa } : {}),
+    ...(promptJa ? { promptJa } : {}),
+    ...(typeof meaningCueRequired === 'boolean' ? { meaningCueRequired } : {}),
     ...(review ? { review } : {}),
     prompt,
     choices,
@@ -153,9 +161,11 @@ function grammarQuestion(level, attemptNumber, seed) {
     skill: 'grammar',
     level,
     prompt: item.q,
+    promptJa: item.sentence.ja,
+    meaningCueRequired: grammarQuestionNeedsMeaningCue(item),
     choices: shuffledChoices(item.choices, seed, sourceId, attemptNumber),
     answer: item.answer,
-    explain: item.explain,
+    explain: grammarQuestionExplanationFor(item),
     review: item.sentence,
   })
 }

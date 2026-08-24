@@ -37,6 +37,30 @@ const valid = (summary, extra = {}) => guide('valid', summary, extra)
 const invalid = (summary, extra = {}) => guide('invalid', summary, extra)
 
 const SPECIAL_GUIDES = Object.freeze({
+  no: valid(
+    'no＋名詞で「一つも〜ない」と数量を否定するか、No. と単独で「いいえ」と答えるときに使います。命令文で動詞の直前に単独では置きません。',
+    { pattern: 'There is no problem. / No, I do not.' },
+  ),
+  not: valid(
+    'be動詞・助動詞の後ろや、否定する語句の直前に置きます。ふつうの否定命令は Not だけで始めず、Don’t＋動詞の原形を使います。',
+    { pattern: 'She is not busy. / Do not run.' },
+  ),
+  never: valid(
+    '「一度も〜ない・決して〜ない」を表す副詞です。強い否定命令では〈Never＋動詞の原形〉で文頭に置きます。',
+    { pattern: 'Never give up.' },
+  ),
+  "don't": valid(
+    '一般動詞の現在の否定、または「〜しないで」という否定命令に使い、後ろには動詞の原形を置きます。',
+    { pattern: "Don't open the door." },
+  ),
+  always: valid(
+    '「いつも」を表す頻度副詞です。命令文の先頭では〈Always＋動詞の原形〉で「いつも必ず〜しなさい」と指示します。',
+    { pattern: 'Always check the door.' },
+  ),
+  please: valid(
+    '命令文の先頭または文末に置き、「〜してください」と依頼を丁寧にするときに使います。',
+    { pattern: 'Please sit down. / Sit down, please.' },
+  ),
   'am not': valid(
     'be動詞の否定で、主語が I のときに使います。一般動詞や can の否定には使いません。',
     { pattern: 'I am not busy.' },
