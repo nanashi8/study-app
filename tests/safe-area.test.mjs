@@ -5,6 +5,8 @@ import { readFileSync } from 'node:fs'
 import {
   SAFE_AREA_BOTTOM_VAR,
   SAFE_AREA_TOP_VAR,
+  VISUAL_VIEWPORT_HEIGHT_VAR,
+  VISUAL_VIEWPORT_TOP_VAR,
   resolveSafeAreaTop,
   statusBarFallback,
   syncSafeArea,
@@ -156,6 +158,32 @@ test('iOSが時刻表示ぶんを確保している場合は、余白を足さ�
   assert.equal(properties.get(SAFE_AREA_TOP_VAR), '0px')
 })
 
+test('ブラウザの見えている範囲を実測し、メニューを上下のコントロール内へ固定する', () => {
+  const { view, properties } = fakeView({ envTop: 0, innerHeight: 720 })
+  view.visualViewport = {
+    height: 640,
+    offsetTop: 48,
+  }
+  const result = syncSafeArea(view)
+  assert.equal(result.viewportHeight, 640)
+  assert.equal(result.viewportTop, 48)
+  assert.equal(properties.get(VISUAL_VIEWPORT_HEIGHT_VAR), '640px')
+  assert.equal(properties.get(VISUAL_VIEWPORT_TOP_VAR), '48px')
+
+  const css = read('src/index.css')
+  const shell = read('src/components/AppShell.jsx')
+  const sheet = read('src/components/Sheet.jsx')
+  const menu = read('src/components/SpeechSettings.jsx')
+  const safeArea = read('src/lib/safeArea.js')
+  assert.match(css, /:where\(\.study-app-surface\)\s*\{\s*height:\s*var\(--app-visual-viewport-height, 100svh\)/)
+  assert.doesNotMatch(shell, /(?:min-)?h-\[100svh\]/)
+  assert.match(css, /\.app-viewport-overlay\s*\{[^}]*top:\s*var\(--app-visual-viewport-top[^}]*height:\s*var\(--app-visual-viewport-height/s)
+  assert.match(sheet, /app-viewport-overlay fixed inset-x-0/)
+  assert.match(menu, /maxH="calc\(var\(--app-visual-viewport-height\) - 0\.5rem\)"/)
+  assert.match(safeArea, /visualViewport\?\.addEventListener\('scroll'/)
+  assert.match(safeArea, /visualViewport\?\.removeEventListener\('scroll'/)
+})
+
 test('ふちの余白は共通変数だけで組み立て、上下それぞれ一か所が受け持つ', () => {
   assert.equal(SAFE_AREA_TOP_VAR, '--app-safe-top')
   assert.equal(SAFE_AREA_BOTTOM_VAR, '--app-safe-bottom')
@@ -163,11 +191,13 @@ test('ふちの余白は共通変数だけで組み立て、上下それぞれ�
   const css = read('src/index.css')
   assert.match(css, /--app-safe-top:\s*env\(safe-area-inset-top, 0px\)/)
   assert.match(css, /--app-safe-bottom:\s*env\(safe-area-inset-bottom, 0px\)/)
-  assert.match(css, /\.study-app-content\s*\{\s*padding-bottom:\s*var\(--app-safe-bottom\)/)
+  assert.match(css, /--app-bottom-clearance:\s*max\([^;]*var\(--app-safe-bottom\)[^;]*var\(--app-ios-browser-bottom-clearance\)/s)
+  assert.match(css, /\.study-app-bottom-clearance\s*\{\s*height:\s*var\(--app-bottom-clearance\)/)
 
-  // 上のふちは共通の上部バーだけが確保する（画面ごとの二重余白を作らない）。
+  // 上は共通バー、下はflex末尾の共通退避領域が一度だけ受け持つ。
   const shell = read('src/components/AppShell.jsx')
   assert.match(shell, /pt-\[calc\(var\(--app-safe-top\)\+0\.5rem\)\]/)
+  assert.match(shell, /<GlobalSpeechConsole \/>[\s\S]*data-app-bottom-clearance/)
 
   // 起動時に実測して補正を始める。
   assert.match(read('src/main.jsx'), /startSafeAreaSync\(\)/)
@@ -212,14 +242,15 @@ test('画面いっぱいに固定する操作バーだけは、下のふち余�
 test('単語カードの判定ボタンはiPhone Safariの下部UIより上へ退避する', () => {
   const css = read('src/index.css')
   const study = read('src/screens/VocabStudy.jsx')
+  const shell = read('src/components/AppShell.jsx')
 
   assert.match(css, /--app-ios-browser-bottom-clearance:\s*0px/)
   assert.match(css, /@supports \(-webkit-touch-callout:\s*none\)/)
   assert.match(css, /@media \(display-mode:\s*browser\) and \(hover:\s*none\) and \(pointer:\s*coarse\) and \(max-width:\s*48rem\)/)
   assert.match(css, /--app-ios-browser-bottom-clearance:\s*5\.5rem/)
-  assert.match(css, /\.vocab-study-actions\s*\{[^}]*padding-bottom:\s*calc\(1rem \+ max\([^}]*var\(--app-safe-bottom\)[^}]*var\(--app-ios-browser-bottom-clearance\)/s)
+  assert.match(css, /--app-bottom-clearance:\s*max\([^;]*var\(--app-safe-bottom\)[^;]*var\(--app-ios-browser-bottom-clearance\)/s)
 
   assert.match(study, /className="vocab-study-actions[^\"]*"/)
   assert.match(study, /data-vocab-study-actions/)
-  assert.doesNotMatch(study, /vocab-study-actions[^\n]*\bpb-4\b/)
+  assert.match(shell, /data-app-bottom-clearance/)
 })

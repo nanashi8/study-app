@@ -17,7 +17,7 @@ const ALL_EXERCISES = 9999 // 在庫数を数えるための十分大きな上�
 
 export function KanbunKundokuQuizScreen() {
   const params = useStore((state) => state.params)
-  const navigate = useStore((state) => state.navigate)
+  const returnTo = useStore((state) => state.returnTo)
   const review = useStore((state) => state.reviewKanbunKundoku)
   const [poolSize] = useState(() => pickKanbunKundokuExercises(params.ids, { size: ALL_EXERCISES }).length)
   const sessionSize = useSessionSize(poolSize || Infinity)
@@ -37,7 +37,7 @@ export function KanbunKundokuQuizScreen() {
   )
 
   // コンテンツ画面の「戻る」は履歴でなく、返り点の内容選択画面へ。
-  const backToKanbunKundoku = () => navigate('kanbunKundoku')
+  const backToKanbunKundoku = () => returnTo('kanbunKundoku')
 
   if (!exercise) {
     return (

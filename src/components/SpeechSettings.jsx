@@ -970,7 +970,12 @@ export function SpeechSettingsSheet() {
   const sheetTitle = sheetTitles[view] ?? 'メニュー'
 
   return (
-    <Sheet open={open} onClose={close} title={sheetTitle} maxH="92vh">
+    <Sheet
+      open={open}
+      onClose={close}
+      title={sheetTitle}
+      maxH="calc(var(--app-visual-viewport-height) - 0.5rem)"
+    >
       {view === 'settings' ? (
         <>
           <MenuBackButton onClick={() => setView('menu')} />

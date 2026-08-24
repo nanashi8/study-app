@@ -5271,6 +5271,12 @@ button { -webkit-tap-highlight-color: transparent; }
   --app-safe-top: env(safe-area-inset-top, 0px);
   --app-safe-bottom: env(safe-area-inset-bottom, 0px);
   --app-ios-browser-bottom-clearance: 0px;
+  --app-visual-viewport-height: 100svh;
+  --app-visual-viewport-top: 0px;
+  --app-bottom-clearance: max(
+    var(--app-safe-bottom),
+    var(--app-ios-browser-bottom-clearance)
+  );
 }
 /* iOS Safari は、画面遷移などで下部ツールバーが自動的に広がった瞬間だけ
    safe-area-inset-bottom / viewport の更新が遅れ、最下段の操作を覆うことがある。
@@ -5294,25 +5300,23 @@ button { -webkit-tap-highlight-color: transparent; }
 
 /* ---- Viewport height / browser chrome -------------------------------------
    モバイルのアドレスバーは表示・非表示で高さが変わる。アプリ外枠は
-   svh（バーが出ている状態の高さ）を基準にして、上下がバーへ隠れないようにする。
-   :where() で詰めているのは、svh対応ブラウザではユーティリティ側を優先させるため。 */
+   visualViewport の実測高を基準にして、上下がバーへ隠れないようにする。
+   JSが動く前や visualViewport 非対応ブラウザでは 100svh へ戻す。 */
 :where(.study-app-viewport) {
-  min-height: 100vh;
+  min-height: var(--app-visual-viewport-height, 100svh);
 }
 :where(.study-app-surface) {
-  height: 100vh;
+  height: var(--app-visual-viewport-height, 100svh);
 }
-/* ホームバー・ジェスチャ領域のぶんだけ、最下段の操作が隠れないよう余白を足す。 */
-.study-app-content {
-  padding-bottom: var(--app-safe-bottom);
+/* fixedシートは一部ブラウザでlayout viewportへ固定されるため、現在見えている
+   visual viewportの上端と高さへ明示的に合わせる。 */
+.app-viewport-overlay {
+  top: var(--app-visual-viewport-top, 0px);
+  height: var(--app-visual-viewport-height, 100svh);
 }
-
-/* 単語カードの判定は学習を進める必須操作なので、Safariの下部UIより上に置く。 */
-.vocab-study-actions {
-  padding-bottom: calc(1rem + max(
-    var(--app-safe-bottom),
-    var(--app-ios-browser-bottom-clearance)
-  ));
+/* AppShellのflex末尾で、通常画面の全操作をホームバー・Safari下部UIより上へ置く。 */
+.study-app-bottom-clearance {
+  height: var(--app-bottom-clearance);
 }
 
 /* ---- App-wide readability -------------------------------------------------

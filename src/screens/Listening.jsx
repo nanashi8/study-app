@@ -47,6 +47,7 @@ export function ListeningScreen() {
           source: { type: 'level', levelId },
           title: `英検${label}`,
           engine: 'listening',
+          returnTo: { screen: 'listening' },
         })
       }
     />

@@ -34,6 +34,7 @@ const ALL_QUESTIONS = 9999 // 在庫数を数えるための十分大きな上�
 export function KotenGrammarQuizScreen() {
   const params = useStore((state) => state.params)
   const navigate = useStore((state) => state.navigate)
+  const returnTo = useStore((state) => state.returnTo)
   const reviewGrammar = useStore((state) => state.reviewKotenGrammar)
   const savedIds = useStore((state) => state.kotenGrammarList)
   const addSaved = useStore((state) => state.addManyToKotenGrammarList)
@@ -68,7 +69,7 @@ export function KotenGrammarQuizScreen() {
     && relatedGrammar.every((item) => savedIds.includes(item.id))
 
   // コンテンツ画面の「戻る」は履歴でなく、古典文法の内容選択画面へ。
-  const backToKotenGrammar = () => navigate('kotenGrammar')
+  const backToKotenGrammar = () => returnTo('kotenGrammar')
 
   if (!deck.length) {
     return (

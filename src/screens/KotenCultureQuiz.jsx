@@ -33,6 +33,7 @@ const ALL_QUESTIONS = 9999 // 在庫数を数えるための十分大きな上�
 export function KotenCultureQuizScreen() {
   const params = useStore((state) => state.params)
   const navigate = useStore((state) => state.navigate)
+  const returnTo = useStore((state) => state.returnTo)
   const reviewCulture = useStore((state) => state.reviewKotenCulture)
   const savedIds = useStore((state) => state.kotenCultureList)
   const addSaved = useStore((state) => state.addManyToKotenCultureList)
@@ -67,7 +68,7 @@ export function KotenCultureQuizScreen() {
     && relatedCulture.every((item) => savedIds.includes(item.id))
 
   // コンテンツ画面の「戻る」は履歴でなく、古典常識の内容選択画面へ。
-  const backToKotenCulture = () => navigate('kotenCulture')
+  const backToKotenCulture = () => returnTo('kotenCulture')
 
   if (!deck.length) {
     return (

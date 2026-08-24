@@ -73,14 +73,15 @@ export function PhrasesScreen() {
     setVisibleCount(INITIAL_VISIBLE_ITEMS)
   }, [kind, levelFilter, normalizedQuery])
 
-  const study = () => navigate('phraseStudy', { source: selectedSource, title: selectedTitle, mode: 'study', engine: 'phrase' })
-  const quiz = () => navigate('phraseQuiz', { source: selectedSource, title: selectedTitle, engine: 'phrase' })
+  const study = () => navigate('phraseStudy', { source: selectedSource, title: selectedTitle, mode: 'study', engine: 'phrase', returnTo: { screen: 'phrases' } })
+  const quiz = () => navigate('phraseQuiz', { source: selectedSource, title: selectedTitle, engine: 'phrase', returnTo: { screen: 'phrases' } })
   const reviewDue = () =>
     navigate('phraseStudy', {
       source: { type: 'phraseDue', kind },
       title: `${meta.label}の復習`,
       mode: 'study',
       engine: 'phrase',
+      returnTo: { screen: 'phrases' },
     })
 
   return (

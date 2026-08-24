@@ -20,6 +20,7 @@ const sessionKey = (params) => (
 export function VocabStudyScreen() {
   const params = useStore((s) => s.params)
   const navigate = useStore((s) => s.navigate)
+  const returnTo = useStore((s) => s.returnTo)
   const review = useStore((s) => s.review)
   const settings = useStore((s) => s.settings)
   const myList = useStore((s) => s.myList)
@@ -35,18 +36,18 @@ export function VocabStudyScreen() {
   // コンテンツ画面の「戻る」は履歴でなく、単語の種類を選ぶ画面（元の階層）へ。
   const backToVocabParent = () => {
     if (params.returnTo?.screen) {
-      navigate(params.returnTo.screen, params.returnTo.params ?? {})
+      returnTo(params.returnTo.screen, params.returnTo.params ?? {})
       return
     }
     if (source?.type === 'field') {
-      navigate('vocabGroups')
+      returnTo('vocabGroups')
       return
     }
     if (source?.type === 'levelField') {
-      navigate('vocabDecks', { levelId: source.levelId })
+      returnTo('vocabDecks', { levelId: source.levelId })
       return
     }
-    navigate('vocabLevels')
+    returnTo('vocabLevels')
   }
 
   const [restore] = useState(() => {
@@ -58,7 +59,7 @@ export function VocabStudyScreen() {
   const srsAtStart = useRef(useStore.getState().srs)
   // size=0 は「絞り込みなし」。在庫数を数えて、問題数の選択肢を実態に合わせる。
   const buildFor = (size) =>
-    buildDeck(source, { srs: srsAtStart.current, size })
+    buildDeck(source, { srs: srsAtStart.current, size, purpose: 'study' })
   const [poolSize] = useState(() => buildFor(0).length)
   const sessionSize = useSessionSize(poolSize || Infinity)
   const [deck, setDeck] = useState(() => (

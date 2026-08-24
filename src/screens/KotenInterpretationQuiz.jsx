@@ -58,6 +58,7 @@ function SaveButton({ saved, onClick, label }) {
 export function KotenInterpretationQuizScreen() {
   const params = useStore((state) => state.params)
   const navigate = useStore((state) => state.navigate)
+  const returnTo = useStore((state) => state.returnTo)
   const review = useStore((state) => state.reviewKotenInterpretation)
   const wordList = useStore((state) => state.kotenWordList)
   const grammarList = useStore((state) => state.kotenGrammarList)
@@ -79,7 +80,7 @@ export function KotenInterpretationQuizScreen() {
   const isCorrect = answered && selected === item?.answer
 
   // コンテンツ画面の「戻る」は履歴でなく、短文解釈の内容選択画面へ。
-  const backToKotenInterpretationList = () => navigate('kotenInterpretationList')
+  const backToKotenInterpretationList = () => returnTo('kotenInterpretationList')
 
   const restart = () => {
     const nextRun = run + 1

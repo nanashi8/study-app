@@ -48,7 +48,7 @@ function Confetti() {
 export function SessionResultScreen() {
   const params = useStore((state) => state.params)
   const navigate = useStore((state) => state.navigate)
-  const returnTo = useStore((state) => state.returnTo)
+  const exitSessionResult = useStore((state) => state.exitSessionResult)
   const goHome = useStore((state) => state.goHome)
   const stats = useStore((state) => state.stats)
   const settings = useStore((state) => state.settings)
@@ -178,6 +178,8 @@ export function SessionResultScreen() {
           mode: 'quiz',
           engine: 'listening',
           replayScreen: 'listeningQuiz',
+          continueTo: params.continueTo,
+          returnTo: params.returnTo,
         })
       : isDictation
         ? navigate('dictationPlay', {
@@ -186,6 +188,8 @@ export function SessionResultScreen() {
             mode: 'quiz',
             engine: 'dictation',
             replayScreen: 'dictationPlay',
+            continueTo: params.continueTo,
+            returnTo: params.returnTo,
           })
         : isGrammar
           ? navigate('grammarQuiz', {
@@ -194,6 +198,8 @@ export function SessionResultScreen() {
               mode: 'quiz',
               engine: 'grammar',
               replayScreen: 'grammarQuiz',
+              continueTo: params.continueTo,
+              returnTo: params.returnTo,
             })
           : isPhrase
             ? navigate('phraseStudy', {
@@ -205,6 +211,7 @@ export function SessionResultScreen() {
                 engine: 'phrase',
                 size: reviewIds.length,
                 continueTo: params.continueTo,
+                returnTo: params.returnTo,
               })
             : navigate('vocabStudy', {
                 source: { type: 'mylist', ids: vocabReviewIds },
@@ -239,19 +246,7 @@ export function SessionResultScreen() {
   }
 
   const returnFromVocab = () => {
-    if (params.returnTo?.screen) {
-      returnTo(params.returnTo.screen, params.returnTo.params ?? {})
-      return
-    }
-    if (source?.type === 'field') {
-      returnTo('vocabGroups')
-      return
-    }
-    if (source?.type === 'levelField') {
-      returnTo('vocabDecks', { levelId: source.levelId })
-      return
-    }
-    returnTo('vocabLevels')
+    exitSessionResult()
   }
 
   if (isDragonVein) {
@@ -365,7 +360,7 @@ export function SessionResultScreen() {
             {params.continueTo?.screen && <Button full onClick={() => navigate(params.continueTo.screen, params.continueTo.params ?? {})}>{params.continueTo.label ?? '次へ'} <ArrowRight size={18} /></Button>}
             {wrong > 0 && <Button full variant="primary" onClick={reviewWrong}>{isMemoryCheck ? <><Refresh size={18} /> 「まだ」の{wrong}{reviewUnit}をもう一度確認する</> : <><Bookmark size={18} /> まちがい {wrong}{reviewUnit}を復習</>}</Button>}
             <Button full variant="secondary" onClick={replay}><Refresh size={18} /> もう一度</Button>
-            <Button full variant="ghost" onClick={goHome}><Home size={18} /> ホームへ</Button>
+            <Button full variant="ghost" onClick={exitSessionResult}><Home size={18} /> 学習メニューへ戻る</Button>
           </>
         )}
       </div>

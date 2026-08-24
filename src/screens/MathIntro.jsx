@@ -19,6 +19,7 @@ const defaultsFor = (intro) =>
 export function MathIntroScreen() {
   const params = useStore((state) => state.params)
   const navigate = useStore((state) => state.navigate)
+  const returnTo = useStore((state) => state.returnTo)
   const unit = unitById(params.unitId)
   const intro = introForUnit(params.unitId)
   const problemCount = problemsForUnit(params.unitId).length
@@ -27,7 +28,7 @@ export function MathIntroScreen() {
   const values = session.unitId === params.unitId ? session.values : defaults
 
   // コンテンツ画面の「戻る」は履歴でなく、単元の選択画面へ。
-  const backToMathUnits = () => navigate('mathUnits')
+  const backToMathUnits = () => returnTo('mathUnits')
 
   if (!unit || !intro) {
     return (

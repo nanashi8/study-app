@@ -1,5 +1,5 @@
 // 学習セッションの「デッキ」を組む。
-// 出題優先度：① 復習期限が来た既習語 → ② 未習語 → ③ まだ期限前の語。
+// 通常セッションは復習を優先しつつ、新しい語・別の語も必ず混ぜる。
 import {
   ALL_WORDS,
   wordsByField,
@@ -101,9 +101,98 @@ function rank(word, srs, day) {
   return 2 // まだ期限前
 }
 
+const AUTOMATIC_VOCAB_SOURCES = new Set([
+  'all',
+  'field',
+  'pos',
+  'level',
+  'levelField',
+])
+
+// 通常の10語セッションでは復習語を最大6語にし、残りを新しい語・
+// 別のクイズ語へ回す。片方の在庫が足りない場合だけ、もう片方で補う。
+export const AUTOMATIC_VOCAB_REVIEW_SHARE = 0.6
+
+function localDayForTimestamp(timestamp) {
+  if (!Number.isFinite(timestamp)) return null
+  return todayIndex(timestamp)
+}
+
+function latestOutcome(entry) {
+  const memoryAt = Number(entry?.memory?.lastAt) || 0
+  const testAt = Number(entry?.test?.lastAt) || 0
+  if (memoryAt >= testAt && memoryAt > 0) return entry.memory?.lastJudgment ?? null
+  if (testAt > 0) return entry.test?.lastResult ?? null
+  return null
+}
+
+function failedToday(entry, day) {
+  if (!entry) return false
+  const outcome = latestOutcome(entry)
+  const failed = ['forgot', 'wrong', 'unknown'].includes(outcome)
+  if (!failed) return false
+  const reviewedDay = Number.isFinite(entry.lastAt)
+    ? localDayForTimestamp(entry.lastAt)
+    : entry.last
+  return reviewedDay === day
+}
+
+function interleaveGroups(first, second) {
+  const result = []
+  const length = Math.max(first.length, second.length)
+  for (let index = 0; index < length; index++) {
+    if (first[index]) result.push(first[index])
+    if (second[index]) result.push(second[index])
+  }
+  return result
+}
+
+function balancedAutomaticDeck(pool, srs, day, size, purpose) {
+  const targetSize = Math.min(size, pool.length)
+  if (!targetSize) return []
+
+  const priority = pool.filter((word) => (
+    Number.isFinite(srs[word.id]?.due) && srs[word.id].due <= day
+  ))
+  const unlearned = pool.filter((word) => !Number.isFinite(srs[word.id]?.due))
+  const waiting = pool.filter((word) => (
+    Number.isFinite(srs[word.id]?.due) && srs[word.id].due > day
+  ))
+  const variety = purpose === 'quiz'
+    ? interleaveGroups(waiting, unlearned)
+    : interleaveGroups(unlearned, waiting)
+
+  let priorityCount = Math.min(
+    priority.length,
+    Math.ceil(targetSize * AUTOMATIC_VOCAB_REVIEW_SHARE),
+  )
+  let varietyCount = Math.min(variety.length, targetSize - priorityCount)
+  let remaining = targetSize - priorityCount - varietyCount
+  if (remaining > 0) {
+    const extraPriority = Math.min(remaining, priority.length - priorityCount)
+    priorityCount += extraPriority
+    remaining -= extraPriority
+  }
+  if (remaining > 0) {
+    varietyCount += Math.min(remaining, variety.length - varietyCount)
+  }
+
+  return interleaveGroups(
+    priority.slice(0, priorityCount),
+    variety.slice(0, varietyCount),
+  )
+}
+
 /** source からセッション用の単語配列を作る。 */
-export function buildDeck(source, { srs = {}, size = SESSION_SIZE } = {}) {
-  const day = todayIndex()
+export function buildDeck(
+  source,
+  {
+    srs = {},
+    size = SESSION_SIZE,
+    purpose = 'study',
+    day = todayIndex(),
+  } = {},
+) {
   let pool = shuffle(wordsForSource(source))
   if (source.type === 'due') {
     pool = pool.filter((w) => srs[w.id] && srs[w.id].due <= day)
@@ -112,6 +201,11 @@ export function buildDeck(source, { srs = {}, size = SESSION_SIZE } = {}) {
     // 期限前でも学習済みの語だけを復習できる。
     // 未着手語を「先取り復習」に混ぜない。
     pool = pool.filter((w) => Number.isFinite(srs[w.id]?.due))
+  }
+  if (AUTOMATIC_VOCAB_SOURCES.has(source.type)) {
+    // 「まだ」・誤答の直後は、明示的な「今日の復習」では確認できるが、
+    // 通常学習には同日に自動再投入しない。翌日には再び候補へ戻る。
+    pool = pool.filter((word) => !failedToday(srs[word.id], day))
   }
   pool.sort((a, b) => {
     if (source.type === 'review') {
@@ -125,6 +219,9 @@ export function buildDeck(source, { srs = {}, size = SESSION_SIZE } = {}) {
     const bb = srs[b.id]?.box ?? 0
     return ba - bb // box が低い（苦手）ほど先
   })
+  if (size && AUTOMATIC_VOCAB_SOURCES.has(source.type)) {
+    pool = balancedAutomaticDeck(pool, srs, day, size, purpose)
+  }
   return size ? pool.slice(0, size) : pool
 }
 

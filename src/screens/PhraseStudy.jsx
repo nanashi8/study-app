@@ -85,6 +85,7 @@ export function PhraseStudyScreen() {
       source: params.source,
       size: params.size,
       continueTo: params.continueTo,
+      returnTo: params.returnTo,
     })
   }
 

@@ -65,6 +65,7 @@ export function ReadingPrepScreen() {
       title: `${passage.titleJa}・必須語彙`,
       mode: 'study',
       continueTo,
+      returnTo: { screen: 'readingPrep', params: { passageId } },
     })
 
   const studyPhrases = () =>
@@ -75,6 +76,7 @@ export function ReadingPrepScreen() {
       mode: 'study',
       engine: 'phrase',
       continueTo,
+      returnTo: { screen: 'readingPrep', params: { passageId } },
     })
 
   return (

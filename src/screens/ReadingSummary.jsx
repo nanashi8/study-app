@@ -42,10 +42,10 @@ export function ReadingSummaryScreen() {
           <h2 className="mt-1 font-display text-lg font-extrabold text-ink">この長文に出てきた単語</h2>
           <p className="text-sm font-bold text-ink/50">{words.length}語をまとめて覚えよう</p>
           <div className="mt-3 grid grid-cols-2 gap-2">
-            <Button onClick={() => navigate('vocabStudy', { source: { type: 'mylist', ids }, title: passage.title, mode: 'study' })}>
+            <Button onClick={() => navigate('vocabStudy', { source: { type: 'mylist', ids }, title: passage.title, mode: 'study', returnTo: { screen: 'readingSummary', params: { passageId } } })}>
               <Book size={16} /> 覚える
             </Button>
-            <Button variant="secondary" onClick={() => navigate('vocabQuiz', { source: { type: 'mylist', ids }, title: passage.title })}>
+            <Button variant="secondary" onClick={() => navigate('vocabQuiz', { source: { type: 'mylist', ids }, title: passage.title, returnTo: { screen: 'readingSummary', params: { passageId } } })}>
               <Cards size={16} /> クイズ
             </Button>
           </div>
