@@ -4,7 +4,8 @@ import { readFileSync } from 'node:fs'
 
 import { ALL_WORDS, wordsByLevel } from '../src/data/vocab.js'
 import {
-  AUTOMATIC_VOCAB_REVIEW_SHARE,
+  AUTOMATIC_VOCAB_MIX_PROFILES,
+  automaticVocabSessionPlan,
   buildDeck,
   nextVocabularyReviewInDays,
 } from '../src/lib/session.js'
@@ -130,7 +131,7 @@ test('期限未到来でも学習済み語だけを次回日が近い順に先�
   }, day), 2)
 })
 
-test('当日「まだ」・誤答の語は通常セッションに連投せず、明示復習と翌日には戻る', () => {
+test('当日「まだ」・誤答の語も適応枠で再登場し、新しい語を残す', () => {
   const now = new Date(2026, 7, 24, 12, 0, 0, 0).getTime()
   const day = todayIndex(now)
   const words = wordsByLevel('5')
@@ -153,7 +154,16 @@ test('当日「まだ」・誤答の語は通常セッションに連投せず�
     { type: 'level', levelId: '5' },
     { srs, size: 10, purpose: 'study', day },
   )
-  assert.equal(sameDay.filter((word) => failedIds.has(word.id)).length, 0)
+  const sameDayPlan = automaticVocabSessionPlan(words, {
+    srs,
+    size: 10,
+    purpose: 'study',
+    day,
+  })
+  assert.equal(sameDayPlan.profile, 'support')
+  assert.equal(sameDayPlan.failedSameDayCount, 10)
+  assert.equal(sameDay.filter((word) => failedIds.has(word.id)).length, 7)
+  assert.equal(sameDay.filter((word) => !failedIds.has(word.id)).length, 3)
 
   const explicitReview = buildDeck({ type: 'due' }, { srs, size: 0, day })
   assert.equal(explicitReview.filter((word) => failedIds.has(word.id)).length, 10)
@@ -162,30 +172,55 @@ test('当日「まだ」・誤答の語は通常セッションに連投せず�
     { type: 'level', levelId: '5' },
     { srs, size: 10, purpose: 'study', day: day + 1 },
   )
-  assert.equal(nextDay.filter((word) => failedIds.has(word.id)).length, 6)
-  assert.equal(nextDay.filter((word) => !failedIds.has(word.id)).length, 4)
+  assert.equal(nextDay.filter((word) => failedIds.has(word.id)).length, 7)
+  assert.equal(nextDay.filter((word) => !failedIds.has(word.id)).length, 3)
 })
 
-test('通常の学習・クイズは復習を最大60%にし、新しい語・別の語を40%確保する', () => {
-  assert.equal(AUTOMATIC_VOCAB_REVIEW_SHARE, 0.6)
+test('通常の学習・クイズは復習負荷に応じて新しい語・別の語を30〜60%に変える', () => {
+  assert.deepEqual(AUTOMATIC_VOCAB_MIX_PROFILES, {
+    expansion: { freshShare: 0.6 },
+    balanced: { freshShare: 0.4 },
+    support: { freshShare: 0.3 },
+  })
   const day = todayIndex()
   const words = wordsByLevel('4')
-  const dueWords = words.slice(0, 24)
-  const dueIds = new Set(dueWords.map((word) => word.id))
-  const srs = Object.fromEntries(dueWords.map((word) => [word.id, {
-    box: 1,
-    due: day,
-    last: day - 2,
-  }]))
+  const cases = [
+    { dueCount: 4, profile: 'expansion', reviewCount: 4, varietyCount: 6 },
+    { dueCount: 8, profile: 'balanced', reviewCount: 6, varietyCount: 4 },
+    { dueCount: 24, profile: 'support', reviewCount: 7, varietyCount: 3 },
+  ]
 
-  for (const purpose of ['study', 'quiz']) {
-    const deck = buildDeck(
-      { type: 'level', levelId: '4' },
-      { srs, size: 10, purpose, day },
-    )
-    assert.equal(deck.length, 10)
-    assert.equal(deck.filter((word) => dueIds.has(word.id)).length, 6, purpose)
-    assert.equal(deck.filter((word) => !dueIds.has(word.id)).length, 4, purpose)
+  for (const expected of cases) {
+    const dueWords = words.slice(0, expected.dueCount)
+    const dueIds = new Set(dueWords.map((word) => word.id))
+    const srs = Object.fromEntries(dueWords.map((word) => [word.id, {
+      box: 1,
+      due: day,
+      last: day - 2,
+    }]))
+    for (const purpose of ['study', 'quiz']) {
+      const plan = automaticVocabSessionPlan(words, { srs, size: 10, purpose, day })
+      const deck = buildDeck(
+        { type: 'level', levelId: '4' },
+        { srs, size: 10, purpose, day },
+      )
+      assert.equal(plan.profile, expected.profile, `${purpose}:${expected.dueCount}`)
+      assert.equal(plan.reviewCount, expected.reviewCount, `${purpose}:plan-review`)
+      assert.equal(plan.varietyCount, expected.varietyCount, `${purpose}:plan-variety`)
+      assert.equal(deck.length, 10)
+      assert.equal(
+        deck.filter((word) => dueIds.has(word.id)).length,
+        expected.reviewCount,
+        `${purpose}:${expected.dueCount}`,
+      )
+      assert.equal(
+        deck.filter((word) => !dueIds.has(word.id)).length,
+        expected.varietyCount,
+        `${purpose}:${expected.dueCount}`,
+      )
+      const mixPattern = deck.map((word) => dueIds.has(word.id) ? 'R' : 'N').join('')
+      assert.doesNotMatch(mixPattern, /RRR/, `${purpose}:${mixPattern}`)
+    }
   }
 
   const study = readFileSync(new URL('../src/screens/VocabStudy.jsx', import.meta.url), 'utf8')
@@ -194,7 +229,8 @@ test('通常の学習・クイズは復習を最大60%にし、新しい語・�
   assert.match(study, /purpose: 'study'/)
   assert.match(quiz, /purpose: 'quiz'/)
   assert.match(levels, /data-vocab-session-policy/)
-  assert.match(levels, /復習を最大6語/)
+  assert.match(levels, /新しい語・別の語を約30〜60%/)
+  assert.match(levels, /「まだ」も同日の次のセッションから候補に戻し/)
 })
 
 test('単語学習とクイズは参考画面を往復しても同じ問題・解答状態を復元する', () => {

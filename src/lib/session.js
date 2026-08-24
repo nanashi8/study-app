@@ -109,9 +109,17 @@ const AUTOMATIC_VOCAB_SOURCES = new Set([
   'levelField',
 ])
 
-// 通常の10語セッションでは復習語を最大6語にし、残りを新しい語・
-// 別のクイズ語へ回す。片方の在庫が足りない場合だけ、もう片方で補う。
-export const AUTOMATIC_VOCAB_REVIEW_SHARE = 0.6
+// 通常セッションの新しい語・別の語の割合は固定しない。
+// 復習の滞留量と直近の失敗率に応じて、広げる → 両立 → 定着優先へ移る。
+// 数値はプロダクト上の説明可能な初期値で、学習科学上の普遍的な比率ではない。
+export const AUTOMATIC_VOCAB_MIX_PROFILES = Object.freeze({
+  expansion: Object.freeze({ freshShare: 0.6 }),
+  balanced: Object.freeze({ freshShare: 0.4 }),
+  support: Object.freeze({ freshShare: 0.3 }),
+})
+
+const RECENT_PERFORMANCE_DAYS = 7
+const RECENT_PERFORMANCE_SAMPLE_SIZE = 10
 
 function localDayForTimestamp(timestamp) {
   if (!Number.isFinite(timestamp)) return null
@@ -137,6 +145,26 @@ function failedToday(entry, day) {
   return reviewedDay === day
 }
 
+function recentPerformance(pool, srs, day, sampleSize) {
+  const recent = pool
+    .map((word) => ({ entry: srs[word.id], outcome: latestOutcome(srs[word.id]) }))
+    .filter(({ entry, outcome }) => {
+      if (!outcome || !Number.isFinite(entry?.lastAt)) return false
+      const reviewedDay = localDayForTimestamp(entry.lastAt)
+      return reviewedDay >= day - (RECENT_PERFORMANCE_DAYS - 1) && reviewedDay <= day
+    })
+    .sort((a, b) => b.entry.lastAt - a.entry.lastAt)
+    .slice(0, sampleSize)
+  const failures = recent.filter(({ outcome }) => (
+    ['forgot', 'wrong', 'unknown'].includes(outcome)
+  )).length
+  return {
+    attempts: recent.length,
+    failures,
+    failureRate: recent.length ? failures / recent.length : 0,
+  }
+}
+
 function interleaveGroups(first, second) {
   const result = []
   const length = Math.max(first.length, second.length)
@@ -147,39 +175,131 @@ function interleaveGroups(first, second) {
   return result
 }
 
-function balancedAutomaticDeck(pool, srs, day, size, purpose) {
-  const targetSize = Math.min(size, pool.length)
-  if (!targetSize) return []
+// 7:3 や 6:4 でも片方が末尾に固まらないよう、比率を保って分散する。
+function interleaveProportionally(first, second) {
+  if (!first.length) return [...second]
+  if (!second.length) return [...first]
+  const result = []
+  let firstIndex = 0
+  let secondIndex = 0
+  while (firstIndex < first.length || secondIndex < second.length) {
+    if (firstIndex >= first.length) {
+      result.push(second[secondIndex++])
+    } else if (secondIndex >= second.length) {
+      result.push(first[firstIndex++])
+    } else if (firstIndex / first.length <= secondIndex / second.length) {
+      result.push(first[firstIndex++])
+    } else {
+      result.push(second[secondIndex++])
+    }
+  }
+  return result
+}
 
-  const priority = pool.filter((word) => (
+function automaticVocabularyBuckets(pool, srs, day, purpose) {
+  const due = pool.filter((word) => (
     Number.isFinite(srs[word.id]?.due) && srs[word.id].due <= day
   ))
+  const failedSameDay = due.filter((word) => failedToday(srs[word.id], day))
+  const failedSameDayIds = new Set(failedSameDay.map((word) => word.id))
+  const spacedDue = due.filter((word) => !failedSameDayIds.has(word.id))
+  // 同日失敗語と、間隔を空けた期限語を両方扱う。一方だけならそのまま使う。
+  const review = interleaveGroups(failedSameDay, spacedDue)
   const unlearned = pool.filter((word) => !Number.isFinite(srs[word.id]?.due))
   const waiting = pool.filter((word) => (
     Number.isFinite(srs[word.id]?.due) && srs[word.id].due > day
   ))
+  // 暗記は未学習語を先に、クイズは学習済みの別の語を先にする。
+  // 期限前の安定語は、優先側の在庫が足りないときだけ補充に使う。
   const variety = purpose === 'quiz'
-    ? interleaveGroups(waiting, unlearned)
-    : interleaveGroups(unlearned, waiting)
+    ? [...waiting, ...unlearned]
+    : [...unlearned, ...waiting]
+  return { due, failedSameDay, review, unlearned, waiting, variety }
+}
 
-  let priorityCount = Math.min(
-    priority.length,
-    Math.ceil(targetSize * AUTOMATIC_VOCAB_REVIEW_SHARE),
+/**
+ * 通常の単語セッションの配分を説明可能な形で返す。
+ * - 復習が軽い: 新しい語・別の語 60%
+ * - 復習が中程度: 40%
+ * - 復習滞留または直近失敗が多い: 30%
+ * 在庫不足時は、残った側から自動で補う。
+ */
+export function automaticVocabSessionPlan(
+  pool,
+  {
+    srs = {},
+    day = todayIndex(),
+    size = SESSION_SIZE,
+    purpose = 'study',
+  } = {},
+) {
+  const targetSize = Math.min(size, pool.length)
+  if (!targetSize) {
+    return {
+      profile: 'expansion',
+      freshShare: AUTOMATIC_VOCAB_MIX_PROFILES.expansion.freshShare,
+      targetSize: 0,
+      reviewCount: 0,
+      varietyCount: 0,
+      dueCount: 0,
+      failedSameDayCount: 0,
+      recentAttempts: 0,
+      recentFailureRate: 0,
+    }
+  }
+
+  const buckets = automaticVocabularyBuckets(pool, srs, day, purpose)
+  const recent = recentPerformance(
+    pool,
+    srs,
+    day,
+    Math.min(RECENT_PERFORMANCE_SAMPLE_SIZE, Math.max(4, targetSize)),
   )
-  let varietyCount = Math.min(variety.length, targetSize - priorityCount)
-  let remaining = targetSize - priorityCount - varietyCount
+  const reliableRecentRate = recent.attempts >= 4
+  const duePressure = buckets.due.length / targetSize
+  const profile = (
+    duePressure >= 1.5 || (reliableRecentRate && recent.failureRate >= 0.5)
+  )
+    ? 'support'
+    : duePressure >= 0.5 || (reliableRecentRate && recent.failureRate >= 0.25)
+      ? 'balanced'
+      : 'expansion'
+  const freshShare = AUTOMATIC_VOCAB_MIX_PROFILES[profile].freshShare
+  const desiredVarietyCount = buckets.review.length
+    ? Math.max(1, Math.round(targetSize * freshShare))
+    : targetSize
+  let varietyCount = Math.min(buckets.variety.length, desiredVarietyCount)
+  let reviewCount = Math.min(buckets.review.length, targetSize - varietyCount)
+  let remaining = targetSize - reviewCount - varietyCount
   if (remaining > 0) {
-    const extraPriority = Math.min(remaining, priority.length - priorityCount)
-    priorityCount += extraPriority
-    remaining -= extraPriority
+    const extraVariety = Math.min(remaining, buckets.variety.length - varietyCount)
+    varietyCount += extraVariety
+    remaining -= extraVariety
   }
   if (remaining > 0) {
-    varietyCount += Math.min(remaining, variety.length - varietyCount)
+    reviewCount += Math.min(remaining, buckets.review.length - reviewCount)
   }
 
-  return interleaveGroups(
-    priority.slice(0, priorityCount),
-    variety.slice(0, varietyCount),
+  return {
+    profile,
+    freshShare,
+    targetSize,
+    reviewCount,
+    varietyCount,
+    dueCount: buckets.due.length,
+    failedSameDayCount: buckets.failedSameDay.length,
+    recentAttempts: recent.attempts,
+    recentFailureRate: recent.failureRate,
+  }
+}
+
+function balancedAutomaticDeck(pool, srs, day, size, purpose) {
+  const buckets = automaticVocabularyBuckets(pool, srs, day, purpose)
+  const plan = automaticVocabSessionPlan(pool, { srs, day, size, purpose })
+
+  return interleaveProportionally(
+    buckets.review.slice(0, plan.reviewCount),
+    buckets.variety.slice(0, plan.varietyCount),
   )
 }
 
@@ -201,11 +321,6 @@ export function buildDeck(
     // 期限前でも学習済みの語だけを復習できる。
     // 未着手語を「先取り復習」に混ぜない。
     pool = pool.filter((w) => Number.isFinite(srs[w.id]?.due))
-  }
-  if (AUTOMATIC_VOCAB_SOURCES.has(source.type)) {
-    // 「まだ」・誤答の直後は、明示的な「今日の復習」では確認できるが、
-    // 通常学習には同日に自動再投入しない。翌日には再び候補へ戻る。
-    pool = pool.filter((word) => !failedToday(srs[word.id], day))
   }
   pool.sort((a, b) => {
     if (source.type === 'review') {

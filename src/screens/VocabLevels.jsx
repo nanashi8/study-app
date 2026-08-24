@@ -228,7 +228,7 @@ export function VocabLevelsScreen() {
           className="rounded-2xl bg-white/70 px-4 py-3 text-xs font-bold leading-relaxed text-ink/55"
           data-vocab-session-policy
         >
-          通常の10語は、復習を最大6語にして、新しい語・別の語も4語以上混ぜます（対象語がある場合）。今日「まだ」にした語は「今日の復習」では確認でき、通常学習には翌日から戻ります。
+          通常セッションは固定配分ではありません。直近の「まだ」・誤答と今日の復習量に合わせ、新しい語・別の語を約30〜60%に調整します（対象語がある場合）。「まだ」も同日の次のセッションから候補に戻し、期限語と新しい語の間に分散します。
         </p>
 
         <FieldChooser onChoose={() => navigate('vocabGroups')} />
