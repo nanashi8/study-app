@@ -450,6 +450,24 @@ const grammarChoiceGuidance = createGrammarChoiceGuidance(GRAMMAR)
 export const grammarChoiceGuidanceFor = (item, choice) =>
   grammarChoiceGuidance(item, choice)
 
+// 正答を含む4択すべての「その形をどう使うか」を返す。
+// 既存の誤答APIは後方互換のため正答に null を返す契約を維持する。
+export const grammarChoiceUsageFor = (item, choice) => {
+  if (!item || choice == null) return null
+  const guidance = choice === item.answer
+    ? grammarChoiceGuidance({ ...item, answer: '__correct_choice__' }, choice)
+    : grammarChoiceGuidance(item, choice)
+  if (choice === item.answer && (!guidance || guidance.status === 'unresolved')) {
+    return {
+      status: 'valid',
+      summary: `${item.explain} この問題では「${choice}」を入れた「${item.sentence.en}」が、その規則を満たす完成文です。`,
+      pattern: item.sentence.en,
+      source: 'correct-answer-rule',
+    }
+  }
+  return guidance
+}
+
 // 解説欄に出す「同じ形の例」。同じ級・単元の検証済み完成文から、現在の問題を除いて返す。
 export const samePatternExamplesFor = (item, limit = 2) => {
   if (!item || limit <= 0) return []

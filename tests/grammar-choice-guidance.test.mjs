@@ -5,6 +5,7 @@ import {
   GRAMMAR,
   getGrammar,
   grammarChoiceGuidanceFor,
+  grammarChoiceUsageFor,
 } from '../src/data/grammar.js'
 
 test('英文法3450問の誤答10350件すべてに、具体的な使う場面または不使用理由がある', () => {
@@ -111,13 +112,23 @@ test('同じ英文で誤答も成立していた既存2問を一意にする', (
   assert.ok(concessionQuestion.choices.includes('Although tired'))
 })
 
-test('英文法画面は答え合わせ後に全誤答の選択肢解説を表示する', async () => {
-  const source = await readFile(
-    new URL('../src/screens/GrammarQuiz.jsx', import.meta.url),
-    'utf8',
-  )
-  assert.match(source, /選択肢解説/)
-  assert.doesNotMatch(source, /選択肢の使い分け|別の場面で使う/)
-  assert.match(source, /この形は使わない/)
-  assert.match(source, /data-grammar-choice-guide/)
+test('英文法画面は答え合わせ後に正解を含む4択すべての根拠を表示する', async () => {
+  const [screenSource, explanationsSource] = await Promise.all([
+    readFile(new URL('../src/screens/GrammarQuiz.jsx', import.meta.url), 'utf8'),
+    readFile(new URL('../src/components/GrammarChoiceExplanations.jsx', import.meta.url), 'utf8'),
+  ])
+  assert.match(screenSource, /<GrammarChoiceExplanations/)
+  assert.match(screenSource, /data-grammar-target-meaning/)
+  assert.match(explanationsSource, /選択肢解説（4択すべて）/)
+  assert.doesNotMatch(explanationsSource, /選択肢の使い分け|別の場面で使う/)
+  assert.match(explanationsSource, /この形は使わない/)
+  assert.match(explanationsSource, /data-grammar-choice-guide/)
+  assert.match(explanationsSource, /data-choice-correct/)
+  assert.match(explanationsSource, /この文で正しい理由：/)
+  assert.match(explanationsSource, /この文では：/)
+  assert.match(explanationsSource, /この形の使い方：/)
+
+  for (const item of GRAMMAR) {
+    assert.equal(grammarChoiceUsageFor(item, item.answer)?.status, 'valid', item.id)
+  }
 })
