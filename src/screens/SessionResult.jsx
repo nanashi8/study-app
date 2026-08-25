@@ -6,6 +6,7 @@ import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { VocabCompletionReport } from '../components/VocabCompletionReport.jsx'
 import { DragonVeinCipherStage } from '../components/DragonVeinCipherStage.jsx'
 import { buildVocabCompletionReport } from '../lib/learningAnalyticsReport.js'
+import { vocabularySessionContinuation } from '../lib/vocabSessionProgress.js'
 import {
   DRAGON_VEIN_TARGET,
   dragonVeinMainComplete,
@@ -96,19 +97,21 @@ export function SessionResultScreen() {
   const reviewUnit = isGrammar || isDictation || isListening ? '問' : isPhrase ? '項目' : '語'
   const vocabSessionIds = params.vocabSession?.wordIds ?? []
   const vocabReviewIds = reviewIds.length ? reviewIds : vocabSessionIds
-  const vocabNextAfterReview = params.continueTo?.screen
-    ? params.continueTo
-    : {
-        screen: 'vocabStudy',
-        params: {
-          source,
-          title,
-          mode: 'study',
-          engine: 'word',
-          size: params.size,
-          returnTo: params.returnTo,
-        },
+  const vocabContinuation = useMemo(() => (
+    isVocabResult
+      ? vocabularySessionContinuation(params, {
+          srs,
+          storedSize: settings.sessionSize,
+          now: reportNow,
+        })
+      : null
+  ), [isVocabResult, params, reportNow, settings.sessionSize, srs])
+  const vocabNextAfterReview = vocabContinuation
+    ? {
+        ...vocabContinuation.destination,
+        label: vocabContinuation.label,
       }
+    : params.continueTo
   const vocabCompletion = useMemo(() => {
     if (!isVocabStudy || !params.vocabSession?.wordIds?.length) return null
     return buildVocabCompletionReport({
@@ -237,11 +240,15 @@ export function SessionResultScreen() {
   )
 
   const continueVocab = () => {
-    if (params.continueTo?.screen) {
-      navigate(params.continueTo.screen, params.continueTo.params ?? {})
+    if (!vocabContinuation) return
+    if (vocabContinuation.exhausted) {
+      exitSessionResult()
       return
     }
-    replay()
+    navigate(
+      vocabContinuation.destination.screen,
+      vocabContinuation.destination.params ?? {},
+    )
   }
 
   const reviewVocabSchedule = (scheduleItem) => {
@@ -338,6 +345,7 @@ export function SessionResultScreen() {
           streak={stats.streak}
           onReviewNow={reviewWrong}
           onContinue={continueVocab}
+          continueLabel={vocabContinuation.label}
           onBack={returnFromVocab}
           onWord={(id) => navigate('wordDetail', { id })}
           onReviewSchedule={reviewVocabSchedule}
@@ -365,7 +373,7 @@ export function SessionResultScreen() {
         {isVocabResult ? (
           <>
             <Button full onClick={reviewWrong}><Refresh size={18} /> 復習する</Button>
-            <Button full variant="secondary" onClick={continueVocab}>次へ進む <ArrowRight size={18} /></Button>
+            <Button full variant="secondary" onClick={continueVocab}>{vocabContinuation.label} <ArrowRight size={18} /></Button>
             <Button full variant="ghost" onClick={returnFromVocab}>戻る</Button>
           </>
         ) : (

@@ -94,6 +94,7 @@ export function VocabQuizScreen() {
     srs: useStore.getState().srs,
     size,
     purpose: 'quiz',
+    cycleIds: params.vocabCycleIds,
   })
   const [poolSize] = useState(() => buildFor(0).length)
   const sessionSize = useSessionSize(poolSize || Infinity)
@@ -160,6 +161,7 @@ export function VocabQuizScreen() {
       sessionId: sessionId.current,
       answerLog: [...results.current.answerLog],
       vocabSession: {
+        cycleIds: params.vocabCycleIds,
         wordIds: deck.map((item) => item.id),
         completedAt: Date.now(),
       },

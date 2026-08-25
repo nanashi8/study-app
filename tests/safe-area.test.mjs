@@ -293,7 +293,7 @@ test('下端に接する操作欄21実装・追従欄2件・読み上げ欄を�
 
   const result = read('src/screens/SessionResult.jsx')
   assert.match(result, /復習する/)
-  assert.match(result, /次へ進む/)
+  assert.match(result, /vocabContinuation\.label/)
   const vocabCompletion = read('src/components/VocabCompletionReport.jsx')
   assert.match(vocabCompletion, /data-vocab-completion-actions/)
   assert.match(vocabCompletion, /app-fixed-bottom-actions fixed inset-x-0/)
