@@ -124,6 +124,10 @@ const AUTOMATIC_VOCAB_SOURCES = new Set([
   'levelField',
 ])
 
+export function isAutomaticVocabularySource(source = {}) {
+  return AUTOMATIC_VOCAB_SOURCES.has(source.type)
+}
+
 // 通常セッションの新しい語・別の語の割合は固定しない。
 // 復習の滞留量と直近の失敗率に応じて、広げる → 両立 → 定着優先へ移る。
 // 数値はプロダクト上の説明可能な初期値で、学習科学上の普遍的な比率ではない。
@@ -308,14 +312,38 @@ export function automaticVocabSessionPlan(
   }
 }
 
-function balancedAutomaticDeck(pool, srs, day, size, purpose) {
+function unseenFirst(items, cycleIds) {
+  if (!cycleIds.size) return items
+  return [
+    ...items.filter((item) => !cycleIds.has(item.id)),
+    ...items.filter((item) => cycleIds.has(item.id)),
+  ]
+}
+
+function balancedAutomaticDeck(pool, srs, day, size, purpose, completedIds = []) {
   const buckets = automaticVocabularyBuckets(pool, srs, day, purpose)
   const plan = automaticVocabSessionPlan(pool, { srs, day, size, purpose })
+  const cycleIds = new Set(Array.isArray(completedIds) ? completedIds : [])
+  const orderedReview = unseenFirst(buckets.review, cycleIds)
+  const availableVariety = cycleIds.size
+    ? buckets.variety.filter((item) => !cycleIds.has(item.id))
+    : buckets.variety
+  const selectedReview = orderedReview.slice(0, plan.reviewCount)
+  const selectedVariety = availableVariety.slice(0, plan.varietyCount)
+  let remaining = plan.targetSize - selectedReview.length - selectedVariety.length
 
-  return interleaveProportionally(
-    buckets.review.slice(0, plan.reviewCount),
-    buckets.variety.slice(0, plan.varietyCount),
-  )
+  // 未出の別語が足りない場合だけ、復習が必要な語で設定数へ近づける。
+  // 期限前の安定語や単なる既出語を、数合わせのために繰り返すことはしない。
+  if (remaining > 0) {
+    const selectedReviewIds = new Set(selectedReview.map((item) => item.id))
+    const extraReview = orderedReview
+      .filter((item) => !selectedReviewIds.has(item.id))
+      .slice(0, remaining)
+    selectedReview.push(...extraReview)
+    remaining -= extraReview.length
+  }
+
+  return interleaveProportionally(selectedReview, selectedVariety)
 }
 
 /** source からセッション用の単語配列を作る。 */
@@ -325,6 +353,8 @@ export function buildDeck(
     srs = {},
     size = SESSION_SIZE,
     purpose = 'study',
+    excludeIds = [],
+    cycleIds = [],
     now = Date.now(),
     day = todayIndex(now),
   } = {},
@@ -335,6 +365,19 @@ export function buildDeck(
   let pool = preserveSourceOrder
     ? wordsForSource(source)
     : shuffle(wordsForSource(source))
+  // 「次へ進む」で連続セッションを作るときは、同じ周回ですでに終えた語を
+  // 候補から外す。明示的な「復習する」は別の source で起動するため、
+  // 苦手語を意図して学び直す動線までは抑止しない。
+  const excluded = new Set(Array.isArray(excludeIds) ? excludeIds : [])
+  if (excluded.size) {
+    pool = pool.filter((word) => !excluded.has(word.id))
+  }
+  // 通常学習は学習状況に応じて既出の苦手語も必要数だけ戻す。それ以外の
+  // 明示セットは、同じ周回の未出語を一巡してから終了する。
+  const completed = new Set(Array.isArray(cycleIds) ? cycleIds : [])
+  if (completed.size && !isAutomaticVocabularySource(source)) {
+    pool = pool.filter((word) => !completed.has(word.id))
+  }
   if (source.type === 'due') {
     pool = pool.filter((word) => (
       vocabularyReviewMetrics(srs[word.id], { now, day }).needsReview
@@ -347,7 +390,7 @@ export function buildDeck(
       vocabularyReviewMetrics(srs[word.id], { now, day }).learningStatus !== 'unlearned'
     ))
   }
-  if (purpose === 'study' && AUTOMATIC_VOCAB_SOURCES.has(source.type)) {
+  if (purpose === 'study' && isAutomaticVocabularySource(source)) {
     pool = pool.filter((word) => (
       vocabularyReviewMetrics(srs[word.id], { now, day }).shouldAutoAppear
     ))
@@ -369,8 +412,8 @@ export function buildDeck(
       return ba - bb // box が低い（苦手）ほど先
     })
   }
-  if (size && AUTOMATIC_VOCAB_SOURCES.has(source.type)) {
-    pool = balancedAutomaticDeck(pool, srs, day, size, purpose)
+  if (size && isAutomaticVocabularySource(source)) {
+    pool = balancedAutomaticDeck(pool, srs, day, size, purpose, cycleIds)
   }
   return size ? pool.slice(0, size) : pool
 }

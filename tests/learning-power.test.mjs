@@ -201,7 +201,7 @@ test('学習記録の横長表は狭い画面で縦並びのカードへ切り�
   assert.equal((analyticsSource.match(/className="hidden overflow-x-auto sm:block"/g) ?? []).length, 3)
 })
 
-test('単語の学習・テスト結果は、復習・次へ・戻るの3導線にそろえる', () => {
+test('単語の学習・テスト結果は、復習・次セットまたは終了・戻るの3導線にそろえる', () => {
   const resultSource = readFileSync(
     new URL('../src/screens/SessionResult.jsx', import.meta.url),
     'utf8',
@@ -217,7 +217,8 @@ test('単語の学習・テスト結果は、復習・次へ・戻るの3導線�
     assert.match(source, /復習する/)
     assert.match(source, /戻る/)
   }
-  assert.match(resultSource, /次へ進む/)
+  assert.match(resultSource, /vocabContinuation\.label/)
+  assert.match(reportSource, /\{continueLabel\}/)
   assert.match(reportSource, /次の学習へ/)
   assert.doesNotMatch(reportSource, /今回の\{session\.total\}語を腕試し|詳細な記録|ホーム/)
 })

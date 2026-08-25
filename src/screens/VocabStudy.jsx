@@ -61,7 +61,12 @@ export function VocabStudyScreen() {
   const srsAtStart = useRef(useStore.getState().srs)
   // size=0 は「絞り込みなし」。在庫数を数えて、問題数の選択肢を実態に合わせる。
   const buildFor = (size) =>
-    buildDeck(source, { srs: srsAtStart.current, size, purpose: 'study' })
+    buildDeck(source, {
+      srs: srsAtStart.current,
+      size,
+      purpose: 'study',
+      cycleIds: params.vocabCycleIds,
+    })
   const [poolSize] = useState(() => buildFor(0).length)
   const sessionSize = useSessionSize(poolSize || Infinity)
   const [deck, setDeck] = useState(() => (
@@ -127,11 +132,12 @@ export function VocabStudyScreen() {
       correct: results.current.remembered,
       wrong: results.current.forgot,
       reviewIds: results.current.forgotIds,
-      source: params.source,
+      source,
       size: params.size,
       continueTo: params.continueTo,
       returnTo: params.returnTo,
       vocabSession: {
+        cycleIds: params.vocabCycleIds,
         wordIds: deck.map((item) => item.id),
         beforeBoxes: Object.fromEntries(
           deck.map((item) => [

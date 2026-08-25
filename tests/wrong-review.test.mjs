@@ -56,8 +56,8 @@ test('単語の自己評価後も結果画面の復習導線を「復習する�
 
   assert.match(source, /isVocabResult = engine === 'word' \|\| engine === 'vocab'/)
   assert.match(source, /vocabReviewIds = reviewIds\.length \? reviewIds : vocabSessionIds/)
-  assert.match(source, /vocabNextAfterReview = params\.continueTo\?\.screen/)
-  assert.match(source, /source,[\s\S]{0,120}title,[\s\S]{0,120}mode: 'study',[\s\S]{0,120}engine: 'word'/)
+  assert.match(source, /vocabularySessionContinuation\(params/)
+  assert.match(source, /vocabNextAfterReview = vocabContinuation[\s\S]{0,160}\.\.\.vocabContinuation\.destination/)
   assert.match(source, /size: vocabReviewIds\.length,[\s\S]{0,80}continueTo: vocabNextAfterReview/)
   assert.match(source, /title: '復習'/)
   assert.match(source, /復習する/)

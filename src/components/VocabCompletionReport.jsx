@@ -29,6 +29,7 @@ export function VocabCompletionReport({
   onBack,
   onWord,
   onReviewSchedule = () => {},
+  continueLabel = '次へ進む',
 }) {
   const { session, today, priorityItems, schedule } = report
 
@@ -218,7 +219,7 @@ export function VocabCompletionReport({
             onClick={onContinue}
             data-vocab-fixed-continue
           >
-            次へ進む <ArrowRight size={17} />
+            {continueLabel} <ArrowRight size={17} />
           </Button>
         </div>
         <button
