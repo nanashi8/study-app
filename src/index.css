@@ -5441,7 +5441,20 @@ button { -webkit-tap-highlight-color: transparent; }
     linear-gradient(180deg, #0f172a, #020617);
 }
 
+.learning-catalog-tools-toggle {
+  display: none;
+}
+
 @media (max-height: 640px) {
+  /* 全教材一覧は短い画面でも、操作できる一覧行と開始欄を先に確保する。
+     検索・並び替え・まとめて選択は同じ場所の開閉ボタンから使える。 */
+  .learning-catalog-tools-toggle {
+    display: flex;
+  }
+  .learning-catalog-tools-collapsible {
+    display: none;
+  }
+
   .home-title-art {
     min-height: 12.5rem;
   }
