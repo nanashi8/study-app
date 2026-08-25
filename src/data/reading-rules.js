@@ -1,3 +1,5 @@
+import { EXTENDED_PASSAGE_READING_APPROACHES } from './reading-extended-approaches.js'
+
 // 読解100.xlsxを出発点に、断定しすぎる「公式」ではなく、
 // 実際の本文で再現できる判断手順として再設計した長文読解ルール。
 // origin: reference-reframed は引用内容を統合・言い換えたもの、
@@ -607,10 +609,60 @@ export const PASSAGE_READING_APPROACHES = Object.freeze({
     ['抽象概念を具体例で定義する', '効果への反論と倫理への反論を分ける', '許される介入の条件を最終段落で確かめる'],
     ['genre-prediction', 'punctuation-map', 'that-diagnosis', 'negation-scope', 'author-stance', 'unknown-word-context'],
   ),
+  p_5_hot_summer_school: makePassageApproach(
+    '道具と働きを対にして暑さ対策を追う',
+    '身近な時事の説明文では、導入した物・場所と、それが何をするのかを一組にして確かめる。',
+    ['取り入れた物とその働きを対にする', '比較級とifの条件を分けて読む', '最後の評価を本文の工夫へ戻す'],
+    ['purpose-first', 'svoc-core', 'infinitive-role', 'cause-result', 'evidence-backtrack', 'reference-chain'],
+  ),
+  p_4_school_solar_roof: makePassageApproach(
+    '数値の上下を原因の候補と突き合わせる',
+    '設備の説明文では、数値が動いた時期と、思い込みではなく本文が挙げる原因を対応させる。',
+    ['設備の目的と作る量を分けて置く', '数値が下がった時期と原因を結ぶ', '限界を述べる段落で主張の範囲を決める'],
+    ['purpose-first', 'main-clause-skeleton', 'postmodifier', 'cause-result', 'reference-chain', 'repair-monitor'],
+  ),
+  p_3_ai_class_rules: makePassageApproach(
+    '賛否と実験結果からルールの根拠をたどる',
+    '新技術の報告文では、誰の意見か、何が確かめられたか、その結果どの規則ができたかを分けて読む。',
+    ['賛成と心配の意見を人ごとに分ける', '実験で分かったことだけを抜き出す', '規則の各項目を実験結果へ戻す'],
+    ['genre-prediction', 'noun-boundary', 'that-diagnosis', 'logic-connectors', 'evidence-backtrack', 'unknown-word-context'],
+  ),
+  p_pre2_crowded_town_tourism: makePassageApproach(
+    '利点と負担を住民と来訪者で分けて読む',
+    '地域の時事記事では、同じ変化が誰に利益をもたらし、誰に負担を残すのかを立場ごとに整理する。',
+    ['歓迎した理由と困った理由を並べる', '調査した数値と対策を対応させる', '賛否が残る点を最終段落で確認する'],
+    ['paragraph-map', 'insertion', 'relative-clause', 'comparison-pairs', 'author-stance', 'reference-chain'],
+  ),
+  p_pre2plus_rural_bus_future: makePassageApproach(
+    '調査結果から設計へ進む流れを追う',
+    '地域交通の説明文では、困り事の列挙で終わらせず、調査で分かった事実がどの仕組みを生んだかを追う。',
+    ['原因が重なっている点を先にまとめる', '調査で分かった移動の特徴を抜き出す', '二つの試みを費用と課題で比べる'],
+    ['genre-prediction', 'punctuation-map', 'wh-clause', 'cause-result', 'example-restatement', 'distractor-strength'],
+  ),
+  p_2_space_debris: makePassageApproach(
+    '連鎖する因果と共有資源の問題を分ける',
+    '科学の論説文では、技術的にできることと、誰も単独では解決できない仕組みの問題を混ぜずに読む。',
+    ['衝突が次の衝突を生む流れを図にする', '提案ごとに効果と限界を書き分ける', '技術と政治のどちらの話かを見分ける'],
+    ['reading-mode', 'parallel-shape', 'postmodifier', 'negation-scope', 'author-stance', 'evidence-backtrack'],
+  ),
+  p_pre1_ai_and_work: makePassageApproach(
+    '職業ではなく作業の単位で変化を測る',
+    '労働の論説文では、職業が消えるかではなく、どの作業が置き換わり、利益が誰に届くかを追う。',
+    ['職業と作業の区別を先に固定する', '歴史的な例と但し書きを対にする', '分配を決める要因を最終段落で確認する'],
+    ['paragraph-map', 'main-clause-skeleton', 'passive-active', 'contrast-concession', 'unknown-word-context', 'distractor-strength'],
+  ),
+  p_1_synthetic_media_trust: makePassageApproach(
+    '対策ごとに効果・副作用・負担を並べる',
+    '評論文では、対策を良し悪しで裁かず、それぞれが何を守り、何を新たに壊すのかを同じ表で比べる。',
+    ['中心概念の定義と限定を先に取る', '対策ごとに効果と副作用を対にする', '負担を負う側が誰かを最後に確かめる'],
+    ['reading-mode', 'insertion', 'that-diagnosis', 'comparison-pairs', 'author-stance', 'repair-monitor'],
+  ),
 })
 
 export function readingApproachForPassage(passage) {
-  return PASSAGE_READING_APPROACHES[passage?.id] || null
+  return PASSAGE_READING_APPROACHES[passage?.id] ||
+    EXTENDED_PASSAGE_READING_APPROACHES[passage?.id] ||
+    null
 }
 
 const FALLBACK_PASSAGE_RULE_IDS = freeze([

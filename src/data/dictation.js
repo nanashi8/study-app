@@ -284,6 +284,8 @@ export function buildDictationDeck(
     source.type === 'dictationList'
       ? (source.ids ?? []).map(getDictation).filter(Boolean)
       : dictationByLevel(source.levelId ?? '5')
-  const deck = shuffled(candidates, rng)
+  const deck = source.type === 'dictationList' && source.preserveOrder
+    ? candidates
+    : shuffled(candidates, rng)
   return size ? deck.slice(0, size) : deck
 }

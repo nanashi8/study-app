@@ -303,7 +303,7 @@ export const getKanbunKundokuExercise = (id) => KANBUN_KUNDOKU_BY_ID[id]
 
 export function pickKanbunKundokuExercises(
   ids,
-  { size = 10, rng = Math.random } = {},
+  { size = 10, rng = Math.random, preserveOrder = false } = {},
 ) {
   const requested = Array.isArray(ids) && ids.length
     ? new Set(ids)
@@ -311,7 +311,12 @@ export function pickKanbunKundokuExercises(
   const candidates = KANBUN_KUNDOKU_EXERCISES.filter(
     (item) => !requested || requested.has(item.id),
   )
-  const shuffled = [...candidates]
+  const shuffled = preserveOrder && Array.isArray(ids)
+    ? ids.map((id) => candidates.find((item) => item.id === id)).filter(Boolean)
+    : [...candidates]
+  if (preserveOrder) {
+    return shuffled.slice(0, Math.min(Math.max(0, Number(size) || 10), shuffled.length))
+  }
   for (let index = shuffled.length - 1; index > 0; index -= 1) {
     const target = Math.floor(rng() * (index + 1))
     ;[shuffled[index], shuffled[target]] = [shuffled[target], shuffled[index]]

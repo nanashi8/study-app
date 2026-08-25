@@ -29,9 +29,9 @@ test('入試・英検向けの新規見出し語139語は既存辞書へ一意�
   assert.equal(EXAM_WORDS.length, 139)
   assert.equal(EXAM_WORD_IDS.size, EXAM_WORDS.length)
   assert.equal(new Set(ALL_WORDS.map((word) => word.id)).size, ALL_WORDS.length)
-  const examBlockEnd = ALL_WORDS.length - ETYMOLOGY_COMPLETION_WORDS.length
+  const examBlockStart = ALL_WORDS.findIndex((word) => word.id === EXAM_WORDS[0].id)
   assert.deepEqual(
-    ALL_WORDS.slice(examBlockEnd - EXAM_WORDS.length, examBlockEnd).map((word) => word.id),
+    ALL_WORDS.slice(examBlockStart, examBlockStart + EXAM_WORDS.length).map((word) => word.id),
     EXAM_WORDS.map((word) => word.id),
     '既存見出し語の順序を変えず、語源補完語だけを後置する',
   )
@@ -83,7 +83,7 @@ test('辞書検索は見出し語・意味に加えて語法と推奨表現も�
   assert.equal(vocabMatchRank(getWord('say'), '検索不能な文字列'), -1)
 })
 
-test('熟語1,150・構文350の全1,500項目を級別目標どおり収録する', () => {
+test('熟語1,754・構文350の全2,104項目を級別目標どおり収録する', () => {
   assert.equal(EXAM_PHRASES.length, 144)
   assert.equal(CURRICULUM_IDIOMS.length, 978)
   assert.equal(PHRASES.length, PHRASE_TARGET_TOTALS.all)
@@ -183,7 +183,7 @@ test('新規熟語は分類・使用例を持ち、構文は既存文法問題�
   }
 })
 
-test('高校文法解説は43単元となり、追加35単元は同論点クイズへ接続する', () => {
+test('高校文法解説は43単元となり、追加35単元は同論点テストへ接続する', () => {
   assert.equal(EXAM_GRAMMAR_LESSONS.length, 35)
   assert.equal(GRAMMAR_LESSONS.length, 69)
   assert.deepEqual(

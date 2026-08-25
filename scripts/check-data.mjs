@@ -7,10 +7,10 @@ import {
   ETYMOLOGY_DOMAIN_META,
   ETYMOLOGY_FIELD_TO_DOMAIN,
   ETYMOLOGY_FORMATION_META,
+  ETYMOLOGY_LEGACY_PACKS,
+  ETYMOLOGY_LEGACY_SUMMARY,
   ETYMOLOGY_MODE_META,
-  ETYMOLOGY_PACKS,
   ETYMOLOGY_SOURCE_META,
-  ETYMOLOGY_SUMMARY,
   ROOTS,
   VOCAB_FIELD_GROUPS,
   VOCAB_FIELDS,
@@ -21,6 +21,13 @@ import {
   wordsByPos,
 } from '../src/data/vocab.js'
 import { PHRASES, getPhrase } from '../src/data/phrases.js'
+import {
+  MANUAL_SYNTAX_FAMILY,
+  SYNTAX_FAMILY_GUIDES,
+  SYNTAX_ITEM_FAMILY_OVERRIDES,
+  SYNTAX_TOPIC_FAMILY,
+  syntaxFamilyFor,
+} from '../src/data/syntax-families.js'
 import {
   LONG_SENTENCE_TRANSLATIONS,
   LONG_SENTENCE_CORE_WORD_LIMIT,
@@ -62,6 +69,7 @@ import {
   READING_MODIFIER_PHRASE_WORD_LIMIT,
   analyzeReadingSentence,
 } from '../src/lib/reading-grammar.js'
+import { auditReadingRoleQuality } from '../src/lib/reading-role-quality.js'
 import {
   READING_QUESTION_COUNTS,
   getReadingQuestions,
@@ -72,8 +80,14 @@ import {
   GRAMMAR_TOPIC_MINIMUM,
   GRAMMAR_TOTAL_TARGET,
   grammarChoiceGuidanceFor,
+  grammarChoiceUsageFor,
   grammarByTopic,
 } from '../src/data/grammar.js'
+import {
+  grammarAnswerEvidenceFor,
+  grammarChoiceDecisionFor,
+  grammarChoiceExplanationFor,
+} from '../src/lib/grammarQuestionExplanations.js'
 import { GRAMMAR_LESSONS } from '../src/data/grammar-lessons.js'
 import { EXAM_GRAMMAR_LESSONS } from '../src/data/grammar-lessons-exam.js'
 import {
@@ -196,11 +210,12 @@ for (const w of ALL_WORDS) {
   }
 }
 
-// ── 全語源濃縮：全語が正確に1経路へ入り、パックは既存SRSで扱えるか ──
+// ── 保存互換用の旧濃縮：全語が正確に1経路へ入り、復元可能か ──
+// 公開可否は、この後に必ず走る check-etymology-learning-quality.mjs が別に判定する。
 const etymologyModes = new Set(Object.keys(ETYMOLOGY_MODE_META))
 const etymologyPackIds = new Set()
 const compressedIds = []
-for (const pack of ETYMOLOGY_PACKS) {
+for (const pack of ETYMOLOGY_LEGACY_PACKS) {
   if (!pack.id) errors.push('語源濃縮パック: id 無し')
   else if (etymologyPackIds.has(pack.id)) errors.push(`語源濃縮パックid重複: ${pack.id}`)
   etymologyPackIds.add(pack.id)
@@ -216,11 +231,17 @@ for (const pack of ETYMOLOGY_PACKS) {
     errors.push(`語源濃縮パック ${pack.id}: 学習カードに重複`)
   }
   if (pack.mode === 'origin') {
-    if (!pack.caution?.includes('同じ語根')) {
-      errors.push(`語源濃縮パック ${pack.id}: 非同根である注意書き無し`)
+    if (pack.studyIds.length > 1 && !pack.caution?.includes('学習量をまとめたセット')) {
+      errors.push(`語源濃縮パック ${pack.id}: 学習用の組分けである説明無し`)
     }
-    if (!pack.caution?.includes('共通点')) {
-      errors.push(`語源濃縮パック ${pack.id}: 束の共通軸説明無し`)
+    if (pack.studyIds.length > 1 && !pack.caution?.includes('関連語という意味ではありません')) {
+      errors.push(`語源濃縮パック ${pack.id}: 関連語の組ではない注意書き無し`)
+    }
+    if (pack.studyIds.length === 1 && pack.caution?.includes('語どうし')) {
+      errors.push(`語源濃縮パック ${pack.id}: 1語カードに複数語向けの注意書き`)
+    }
+    if (pack.groupClaim !== 'study-batch') {
+      errors.push(`語源濃縮パック ${pack.id}: 由来カードを関連語の組として扱っている`)
     }
     if (!ETYMOLOGY_FORMATIONS.has(pack.formationKey)) {
       errors.push(`語源濃縮パック ${pack.id}: formationKey が不正 (${pack.formationKey})`)
@@ -233,6 +254,16 @@ for (const pack of ETYMOLOGY_PACKS) {
     }
     if (pack.domainKey === 'core' && pack.wordClasses?.length !== 1) {
       errors.push(`語源濃縮パック ${pack.id}: 基礎・日常の品詞群が混在`)
+    }
+  } else if (pack.mode === 'family') {
+    if (pack.groupClaim !== 'study-batch') {
+      errors.push(`語源濃縮パック ${pack.id}: 形と由来カードを関連語の組として扱っている`)
+    }
+    if (pack.studyIds.length > 1 && !pack.caution?.includes('関連語という意味ではありません')) {
+      errors.push(`語源濃縮パック ${pack.id}: 関連語の組ではない注意書き無し`)
+    }
+    if (pack.studyIds.length === 1 && pack.caution?.includes('語どうし')) {
+      errors.push(`語源濃縮パック ${pack.id}: 1語カードに複数語向けの注意書き`)
     }
   }
   for (const id of [...(pack.coverageIds ?? []), ...(pack.studyIds ?? [])]) {
@@ -270,11 +301,11 @@ if (new Set(compressedIds).size !== ALL_WORDS.length) {
   errors.push(`語源濃縮に重複または未収録あり (一意${new Set(compressedIds).size}/${ALL_WORDS.length})`)
 }
 if (
-  ETYMOLOGY_SUMMARY.total !== ALL_WORDS.length ||
-  ETYMOLOGY_SUMMARY.covered !== ALL_WORDS.length
+  ETYMOLOGY_LEGACY_SUMMARY.total !== ALL_WORDS.length ||
+  ETYMOLOGY_LEGACY_SUMMARY.covered !== ALL_WORDS.length
 ) {
   errors.push(
-    `語源濃縮サマリー不一致 (${ETYMOLOGY_SUMMARY.covered}/${ETYMOLOGY_SUMMARY.total}, 全語${ALL_WORDS.length})`,
+    `保存互換用の旧語源濃縮サマリー不一致 (${ETYMOLOGY_LEGACY_SUMMARY.covered}/${ETYMOLOGY_LEGACY_SUMMARY.total}, 全語${ALL_WORDS.length})`,
   )
 }
 
@@ -412,6 +443,9 @@ for (const p of PHRASES) {
   if (!p.origin?.trim() || !p.note?.trim()) {
     errors.push(`熟語/構文 ${at}: 成り立ち・語法注意が不足`)
   }
+  if (p.kind === 'syntax' && !syntaxFamilyFor(p)) {
+    errors.push(`構文 ${at}: 仲間で比較する構文ファミリーが未分類 (${p.sourceTopic ?? '手動項目'})`)
+  }
   if (isLongSyntaxSentence(p)) {
     longSentenceTargetIds.add(p.id)
     const translation = longSentenceTranslationFor(p)
@@ -474,6 +508,89 @@ for (const p of PHRASES) {
         errors.push(`長い一文 ${at}: 意味・発音フレーズまたは対応する日本語が不正`)
       }
     }
+  }
+}
+
+const syntaxCards = PHRASES.filter((phrase) => phrase.kind === 'syntax')
+const grammarByIdForSyntax = new Map(GRAMMAR.map((item) => [item.id, item]))
+const usedSyntaxFamilyIds = new Set(syntaxCards.map((phrase) => syntaxFamilyFor(phrase)?.id))
+const generatedSyntaxCards = syntaxCards.filter((phrase) => phrase.category === 'grammar-example')
+const manualSyntaxCards = syntaxCards.filter((phrase) => phrase.category !== 'grammar-example')
+
+if (
+  syntaxCards.length !== 350 ||
+  generatedSyntaxCards.length !== 309 ||
+  manualSyntaxCards.length !== 41 ||
+  SYNTAX_FAMILY_GUIDES.length !== 33 ||
+  usedSyntaxFamilyIds.size !== SYNTAX_FAMILY_GUIDES.length ||
+  Object.keys(MANUAL_SYNTAX_FAMILY).length !== manualSyntaxCards.length
+) {
+  errors.push(
+    `構文ファミリー全件監査: 全${syntaxCards.length}/350・生成${generatedSyntaxCards.length}/309・` +
+    `手動${manualSyntaxCards.length}/41・使用ファミリー${usedSyntaxFamilyIds.size}/${SYNTAX_FAMILY_GUIDES.length}`,
+  )
+}
+
+for (const phrase of generatedSyntaxCards) {
+  const source = grammarByIdForSyntax.get(phrase.sourceGrammarId)
+  if (!source || phrase.sourceTopic !== source.topic || !SYNTAX_TOPIC_FAMILY[phrase.sourceTopic]) {
+    errors.push(`構文 ${phrase.id}: 元の文法論点または構文ファミリーとの接続が不正`)
+  }
+}
+for (const [id, familyId] of Object.entries(SYNTAX_ITEM_FAMILY_OVERRIDES)) {
+  const phrase = syntaxCards.find((item) => item.id === id)
+  if (!phrase || syntaxFamilyFor(phrase)?.id !== familyId) {
+    errors.push(`構文 ${id}: 広すぎる元論点から適切な比較ファミリーへ補正できていない`)
+  }
+}
+
+for (const guide of SYNTAX_FAMILY_GUIDES) {
+  if (
+    !guide.title?.trim() ||
+    (guide.summary?.length ?? 0) < 35 ||
+    (guide.decision?.length ?? 0) < 30 ||
+    (guide.examTip?.length ?? 0) < 30 ||
+    !Array.isArray(guide.patterns) ||
+    guide.patterns.length < 2 ||
+    guide.patterns.some((pattern) =>
+      !pattern.form?.trim() ||
+      !pattern.meaning?.trim() ||
+      !pattern.example?.trim() ||
+      !pattern.ja?.trim() ||
+      !/[A-Za-z]/.test(pattern.example) ||
+      !/[ぁ-んァ-ヶ一-龠]/.test(pattern.ja)) ||
+    !Array.isArray(guide.pitfalls) ||
+    guide.pitfalls.length < 2 ||
+    guide.pitfalls.some((pitfall) => (pitfall?.length ?? 0) < 12)
+  ) {
+    errors.push(`構文ファミリー ${guide.id}: 比較表・見分け方・例文・入試注意が不足`)
+  }
+}
+
+const causativeFamily = SYNTAX_FAMILY_GUIDES.find((guide) => guide.id === 'causative-perception')
+const causativeAuditText = causativeFamily
+  ? [
+      causativeFamily.summary,
+      causativeFamily.decision,
+      causativeFamily.examTip,
+      ...causativeFamily.patterns.flatMap((pattern) => [pattern.form, pattern.meaning]),
+      ...causativeFamily.pitfalls,
+    ].join(' ')
+  : ''
+for (const required of [
+  'make + O + do',
+  'let + O + do',
+  'have + O + do',
+  'get + O + to do',
+  'have/get + O + done',
+  'help + O + (to) do',
+  'see/hear/watch/feel/notice + O + do',
+  'be made + to do',
+  'O is allowed to do',
+  '被害',
+]) {
+  if (!causativeAuditText.includes(required)) {
+    errors.push(`使役・知覚ファミリー: 必須比較「${required}」が不足`)
   }
 }
 
@@ -541,7 +658,7 @@ for (const id of phraseIds) {
   }
 }
 
-// ── 高校文法解説：全追加単元が同じ論点の既存クイズへ接続するか ──
+// ── 高校文法解説：全追加単元が同じ論点の既存テストへ接続するか ──
 const grammarLessonIds = new Set()
 for (const lesson of GRAMMAR_LESSONS) {
   if (!lesson.id || grammarLessonIds.has(lesson.id)) {
@@ -560,7 +677,7 @@ for (const lesson of EXAM_GRAMMAR_LESSONS) {
     errors.push(`高校文法解説 ${lesson.id}: 例文が2文未満`)
   }
   if (!grammarByTopic(lesson.level, lesson.topic).length) {
-    errors.push(`高校文法解説 ${lesson.id}: ${lesson.level}/${lesson.topic} のクイズ接続先が無い`)
+    errors.push(`高校文法解説 ${lesson.id}: ${lesson.level}/${lesson.topic} のテスト接続先が無い`)
   }
   for (const [index, item] of (lesson.preferred ?? []).entries()) {
     if (!item?.avoid || !item?.use || !item?.reason) {
@@ -892,32 +1009,36 @@ if (readingTranslationSequenceCount <= readingTranslationBlockCount / 2) {
     `${readingTranslationBlockCount}件`,
   )
 }
+const readingRoleQualityReport = auditReadingRoleQuality(PASSAGES, analyzeReadingSentence)
+for (const error of readingRoleQualityReport.errors) {
+  errors.push(`長文の下線役割・only品質GATE: ${error}`)
+}
 if (
-  PASSAGES.length !== 24 ||
-  readingTranslationSentenceCount !== 567 ||
-  readingTranslationBlockCount !== 1546 ||
-  readingPhrasePairCount !== 4446 ||
-  readingPhraseSequenceCount !== 4446 ||
-  readingMeaningPhraseCount !== 3246 ||
-  readingMeaningMultiRoleCount !== 1243
+  PASSAGES.length !== 32 ||
+  readingTranslationSentenceCount !== 794 ||
+  readingTranslationBlockCount !== 2062 ||
+  readingPhrasePairCount !== 5925 ||
+  readingPhraseSequenceCount !== 5925 ||
+  readingMeaningPhraseCount !== 4329 ||
+  readingMeaningMultiRoleCount !== 1668
 ) {
   errors.push(
     `長文フレーズ監査: ${PASSAGES.length}長文・${readingTranslationSentenceCount}文・` +
     `${readingTranslationBlockCount}ブロック・${readingMeaningPhraseCount}意味フレーズ` +
     `（複数役割${readingMeaningMultiRoleCount}件）・${readingPhrasePairCount}ブロック内内部SVOCM単位・` +
     `${readingPhraseSequenceCount}文全体内部SVOCM単位` +
-    '（現行全件は24長文・567文・1,546ブロック・3,246意味フレーズ・4,446内部SVOCM単位）',
+    '（現行全件は32長文・794文・2,062ブロック・4,329意味フレーズ・5,925内部SVOCM単位）',
   )
 }
 if (
-  Object.keys(READING_MANUAL_REVIEW_LEDGER).length !== 567 ||
-  readingManualReviewSentenceCount !== 567 ||
+  Object.keys(READING_MANUAL_REVIEW_LEDGER).length !== 794 ||
+  readingManualReviewSentenceCount !== 794 ||
   PASSAGES.some((passage) =>
     READING_MANUAL_BLOCK_FINGERPRINTS[passage.id]?.length !== passage.sentences.length)
 ) {
   errors.push(
-    `長文の手動レビュー台帳: ${readingManualReviewSentenceCount}/567文照合、` +
-    `${Object.keys(READING_MANUAL_REVIEW_LEDGER).length}/567 ID登録、` +
+    `長文の手動レビュー台帳: ${readingManualReviewSentenceCount}/794文照合、` +
+    `${Object.keys(READING_MANUAL_REVIEW_LEDGER).length}/794 ID登録、` +
     `${Object.values(READING_MANUAL_BLOCK_FINGERPRINTS).reduce((sum, items) => sum + items.length, 0)}/567 ブロック構造fingerprint`,
   )
 }
@@ -939,6 +1060,7 @@ const grammarPrompts = new Set()
 const grammarSentences = new Set()
 let grammarDistractorGuidanceCount = 0
 let grammarInvalidChoiceCount = 0
+let grammarAllChoiceEvidenceCount = 0
 const normalizeGrammarChoice = (text) =>
   (text ?? '').trim().toLowerCase().replace(/[’]/g, "'").replace(/\s+/g, ' ')
 const grammarAnswerForms = new Set(GRAMMAR.map((item) => normalizeGrammarChoice(item.answer)))
@@ -969,6 +1091,26 @@ for (const g of GRAMMAR) {
   }
   if (!g.choices?.includes(g.answer)) errors.push(`${at}: answer が choices に無い (${g.answer})`)
   if (!g.sentence?.en || !g.sentence?.ja || !g.explain) errors.push(`${at}: sentence(en/ja) または explain 不足`)
+  const evidence = grammarAnswerEvidenceFor(g)
+  const visiblePrompt = g.q?.replace('___', '［空所］')
+  const decisions = g.choices?.map((choice) => grammarChoiceDecisionFor(g, choice)) ?? []
+  if (decisions.filter((decision) => decision?.isCorrect).length !== 1) {
+    errors.push(`${at}: 4択の正答判定が一意ではない`)
+  }
+  for (const choice of g.choices ?? []) {
+    grammarAllChoiceEvidenceCount += 1
+    const usage = grammarChoiceUsageFor(g, choice)
+    const reason = grammarChoiceExplanationFor(g, choice)
+    if (!usage || !['valid', 'invalid'].includes(usage.status) || !usage.summary?.trim()) {
+      errors.push(`${at}: 選択肢「${choice}」の使い方が未解決`)
+    }
+    if (!reason?.includes(visiblePrompt) || !reason.includes(evidence?.rule) || !reason.includes(g.answer)) {
+      errors.push(`${at}: 選択肢「${choice}」に問題文・規則・正答比較の根拠が不足`)
+    }
+    if (choice === g.answer && (usage?.status !== 'valid' || !reason.includes(g.sentence?.en))) {
+      errors.push(`${at}: 正答「${choice}」の根拠または完成文が不足`)
+    }
+  }
   for (const choice of g.choices?.filter((candidate) => candidate !== g.answer) ?? []) {
     grammarDistractorGuidanceCount += 1
     const guidance = grammarChoiceGuidanceFor(g, choice)
@@ -1030,6 +1172,12 @@ if (grammarDistractorGuidanceCount !== GRAMMAR.length * 3) {
   errors.push(
     `文法 誤答使い分けガイド: ${grammarDistractorGuidanceCount}件` +
       `（4択全問なら${GRAMMAR.length * 3}件必要）`,
+  )
+}
+if (grammarAllChoiceEvidenceCount !== GRAMMAR.length * 4) {
+  errors.push(
+    `文法 正解を含む選択肢別根拠: ${grammarAllChoiceEvidenceCount}件` +
+      `（4択全問なら${GRAMMAR.length * 4}件必要）`,
   )
 }
 if (grammarInvalidChoiceCount === 0) {
@@ -1684,10 +1832,10 @@ if (englishLiteratureSyntaxSceneCount !== 44 || englishLiteratureQuestionCount !
 if (
   literatureVocabularyOccurrenceCount !== 1395 ||
   literatureVocabularyCoveredCount !== 1395 ||
-  literatureVocabularyCardCount !== 944
+  literatureVocabularyCardCount !== 945
 ) {
   errors.push(
-    `名作本文語彙の全件数が不一致 (照合${literatureVocabularyCoveredCount}/${literatureVocabularyOccurrenceCount}・カード${literatureVocabularyCardCount}/944)`,
+    `名作本文語彙の全件数が不一致 (照合${literatureVocabularyCoveredCount}/${literatureVocabularyOccurrenceCount}・カード${literatureVocabularyCardCount}/945)`,
   )
 }
 for (const kind of ['english', 'classical', 'kanbun']) {
@@ -1748,6 +1896,10 @@ function auditEnglish(label, text, { complete = false } = {}) {
 
 for (const word of ALL_WORDS) auditEnglish(`単語 ${word.id} 例文`, word.example?.en)
 for (const phrase of PHRASES) auditEnglish(`熟語 ${phrase.id} 例文`, phrase.example?.en)
+for (const guide of SYNTAX_FAMILY_GUIDES) {
+  guide.patterns.forEach((pattern, index) =>
+    auditEnglish(`構文ファミリー ${guide.id} 例文${index + 1}`, pattern.example))
+}
 for (const guide of EXAM_USAGE_GUIDES) {
   for (const [index, choice] of guide.choices.entries()) {
     auditEnglish(`使い分け ${guide.id} 例文${index + 1}`, choice.example, { complete: true })
@@ -1798,4 +1950,4 @@ if (errors.length) {
   process.exit(1)
 }
 
-console.log(`✅ データ検証OK: ${ALL_WORDS.length}英単語 / ${EXAM_USAGE_GUIDES.length}使い分けガイド / ${PHRASES.length}熟語・構文（長い一文${longSentenceTranslationCount}文・${longSentenceMeaningStepCount}意味フレーズ・${longSentenceTranslationStepCount}内部SVOCM単位） / ${GRAMMAR.length}英文法 / ${GRAMMAR_LESSONS.length}文法解説 / ${PASSAGES.length}長文（${readingTranslationSentenceCount}文・${readingTranslationBlockCount}語順訳ブロック・${readingMeaningPhraseCount}意味フレーズ・${readingPhrasePairCount}ブロック内内部SVOCM単位・手動本文台帳${readingManualReviewSentenceCount}文・回帰例${readingReviewedPhraseSentenceCount}文） / ${PUBLIC_DOMAIN_LITERATURE.length}名作朗読（${literatureSceneCount}場面・${literatureNarrationSegmentCount}区切り・本文語彙${literatureVocabularyCoveredCount}/${literatureVocabularyOccurrenceCount}・カード${literatureVocabularyCardCount}件・英語構文${englishLiteratureSyntaxSceneCount}場面・英語読解${englishLiteratureQuestionCount}問） / ${DICTATION_ITEMS.length}ディクテーション / ${LISTENING_ITEMS.length}リスニング / ${KOTEN_WORDS.length}古典単語 / ${KOTEN_GRAMMAR.length}古典文法 / ${KOTEN_GRAMMAR_QUESTIONS.length}古典文法問題 / ${KOTEN_CULTURE.length}古典常識 / ${KOTEN_CULTURE_QUESTIONS.length}古典常識問題 / ${KOTEN_INTERPRETATIONS.length}古典短文 — 全て必須項目を満たす`)
+console.log(`✅ データ検証OK: ${ALL_WORDS.length}英単語 / ${EXAM_USAGE_GUIDES.length}使い分けガイド / ${PHRASES.length}熟語・構文（構文${syntaxCards.length}件・${SYNTAX_FAMILY_GUIDES.length}ファミリー、長い一文${longSentenceTranslationCount}文・${longSentenceMeaningStepCount}意味フレーズ・${longSentenceTranslationStepCount}内部SVOCM単位） / ${GRAMMAR.length}英文法 / ${GRAMMAR_LESSONS.length}文法解説 / ${PASSAGES.length}長文（${readingTranslationSentenceCount}文・${readingTranslationBlockCount}語順訳ブロック・${readingMeaningPhraseCount}意味フレーズ・${readingPhrasePairCount}ブロック内内部SVOCM単位・手動本文台帳${readingManualReviewSentenceCount}文・回帰例${readingReviewedPhraseSentenceCount}文） / ${PUBLIC_DOMAIN_LITERATURE.length}名作朗読（${literatureSceneCount}場面・${literatureNarrationSegmentCount}区切り・本文語彙${literatureVocabularyCoveredCount}/${literatureVocabularyOccurrenceCount}・カード${literatureVocabularyCardCount}件・英語構文${englishLiteratureSyntaxSceneCount}場面・英語読解${englishLiteratureQuestionCount}問） / ${DICTATION_ITEMS.length}ディクテーション / ${LISTENING_ITEMS.length}リスニング / ${KOTEN_WORDS.length}古典単語 / ${KOTEN_GRAMMAR.length}古典文法 / ${KOTEN_GRAMMAR_QUESTIONS.length}古典文法問題 / ${KOTEN_CULTURE.length}古典常識 / ${KOTEN_CULTURE_QUESTIONS.length}古典常識問題 / ${KOTEN_INTERPRETATIONS.length}古典短文 — 全て必須項目を満たす`)

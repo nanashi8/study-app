@@ -38,7 +38,7 @@ export const DIAGNOSTIC_SKILLS = [
     emoji: '💡',
     color: '#f59e0b',
     screen: 'grammar',
-    advice: '文法・構文のルールを例文で確認してから、答えを隠して単元クイズに進みましょう。',
+    advice: '文法・構文のルールを例文で確認してから、答えを隠して単元テストに進みましょう。',
   },
   {
     id: 'usage',

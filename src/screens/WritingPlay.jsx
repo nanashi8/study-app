@@ -145,7 +145,7 @@ function WritingUnitBriefing({
           </IconButton>
           <div className="min-w-0 flex-1">
             <p className="text-[10px] font-extrabold tracking-wide text-brand-500">
-              UNIT KNOWLEDGE
+              この単元で使う知識
             </p>
             <p className="truncate font-display text-sm font-extrabold text-ink">
               {exercise.emoji} {exercise.title}
@@ -269,7 +269,7 @@ function WritingUnitBriefing({
         </section>
       </main>
 
-      <div className="fixed inset-x-0 bottom-0 z-30 mx-auto w-full max-w-md border-t border-brand-100 bg-white/94 p-4 pb-[calc(1rem+var(--app-safe-bottom))] backdrop-blur">
+      <div className="app-fixed-bottom-actions fixed inset-x-0 z-30 mx-auto w-full max-w-md border-t border-brand-100 bg-white/94 p-4 backdrop-blur">
         <Button full size="lg" onClick={onStart}>
           {resume ? '作文の続きへ戻る' : '知識を使って始める'}
           <ArrowRight size={18} />
@@ -287,6 +287,7 @@ function WritingUnitBriefing({
 export function WritingPlayScreen() {
   const params = useStore((s) => s.params)
   const back = useStore((s) => s.back)
+  const returnTo = useStore((s) => s.returnTo)
   const navigate = useStore((s) => s.navigate)
   const recordWritingCompletion = useStore((s) => s.recordWritingCompletion)
   const addManyToMyList = useStore((s) => s.addManyToMyList)
@@ -304,7 +305,15 @@ export function WritingPlayScreen() {
   const [wordBank, setWordBank] = useState([])
   const [answerTokens, setAnswerTokens] = useState([])
 
-  if (!exercise) return <MissingWriting onBack={back} />
+  const leave = () => {
+    if (params.returnTo?.screen) {
+      returnTo(params.returnTo.screen, params.returnTo.params ?? {})
+      return
+    }
+    back()
+  }
+
+  if (!exercise) return <MissingWriting onBack={leave} />
 
   const level = getLevel(exercise.level)
 
@@ -314,7 +323,7 @@ export function WritingPlayScreen() {
         exercise={exercise}
         level={level}
         mode={mode}
-        onBack={back}
+        onBack={leave}
         onStart={() => setStarted(true)}
         resume={trail.length > 0 || Boolean(selected)}
       />
@@ -463,7 +472,7 @@ export function WritingPlayScreen() {
         <div className="px-4 pb-10 pt-3">
           <div className="flex items-center justify-between text-white">
             <IconButton
-              onClick={() => navigate('writing')}
+              onClick={leave}
               className="text-white active:bg-white/10"
               aria-label="お題へ戻る"
             >
@@ -479,9 +488,7 @@ export function WritingPlayScreen() {
             <div className="mx-auto flex h-20 w-20 animate-pop-in items-center justify-center rounded-[1.7rem] bg-emerald-400 text-4xl shadow-[0_18px_45px_-15px_rgba(52,211,153,0.8)]">
               ✓
             </div>
-            <p className="mt-4 text-xs font-extrabold tracking-[0.18em] text-cyan-200">
-              WORD ORDER COMPLETE
-            </p>
+            <p className="mt-4 text-xs font-extrabold text-cyan-200">英作文の結果</p>
             <h1 className="mt-1 font-display text-3xl font-extrabold">
               伝わる英文が完成！
             </h1>
@@ -494,9 +501,7 @@ export function WritingPlayScreen() {
             <div className="border-b border-brand-100 bg-slate-50 p-4">
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <p className="text-[11px] font-extrabold tracking-wide text-ink/40">
-                    YOUR COMPOSITION
-                  </p>
+                  <p className="text-[11px] font-extrabold text-ink/45">完成した英文</p>
                   <h2 className="font-display text-lg font-extrabold text-ink">
                     {exercise.title}
                   </h2>
@@ -524,7 +529,7 @@ export function WritingPlayScreen() {
 
           <Card className="mt-4 p-4">
             <p className="font-display text-base font-extrabold text-ink">
-              この単元の到達チェック
+              この単元の仕上げチェック
             </p>
             <p className="mt-0.5 text-xs font-bold text-ink/45">
               文の役割を順に満たし、必要な型を作文で使いました
@@ -645,7 +650,7 @@ export function WritingPlayScreen() {
             <Button variant="secondary" onClick={reset}>
               <Refresh size={17} /> もう一度
             </Button>
-            <Button onClick={() => navigate('writing')}>
+            <Button onClick={leave}>
               別のお題 <ArrowRight size={17} />
             </Button>
           </div>
@@ -675,7 +680,7 @@ export function WritingPlayScreen() {
     <div className="flex min-h-full flex-col bg-paper">
       <header className="sticky top-0 z-20 border-b border-brand-100 bg-white/92 px-3 pb-3 pt-2 backdrop-blur">
         <div className="flex items-center gap-2">
-          <IconButton onClick={back} aria-label="やめる">
+          <IconButton onClick={leave} aria-label="やめる">
             <Close size={21} />
           </IconButton>
           <div className="min-w-0 flex-1">
@@ -732,7 +737,7 @@ export function WritingPlayScreen() {
         <section className="rounded-[1.75rem] bg-gradient-to-br from-slate-950 via-indigo-950 to-brand-800 p-4 text-white shadow-card">
           <div className="flex items-center justify-between gap-3">
             <p className="text-[10px] font-extrabold tracking-[0.16em] text-cyan-200">
-              YOUR COMPOSITION
+              完成した英文
             </p>
             <div className="flex items-center gap-2">
               <span className="text-[10px] font-extrabold text-white/50">
@@ -818,7 +823,7 @@ export function WritingPlayScreen() {
               </span>
               <div className="min-w-0 flex-1">
                 <p className="text-[11px] font-extrabold text-cyan-700">
-                  {selected ? 'この文で使う知識' : 'この段階の基本ルート'}
+                  {selected ? 'この文で使う知識' : 'この場面で使う基本表現'}
                 </p>
                 <p className="mt-0.5 text-xs font-bold leading-relaxed text-cyan-950/75">
                   {currentStep.guide}
@@ -1069,7 +1074,7 @@ export function WritingPlayScreen() {
                 </span>
                 <div className="min-w-0 flex-1">
                   <p className="text-[10px] font-extrabold tracking-[0.12em] text-amber-700">
-                    WHY THIS WORKS
+                    この英文になる理由
                   </p>
                   <h2 className="truncate font-display text-base font-extrabold text-ink">
                     {selectedGrammar.title}
@@ -1112,7 +1117,7 @@ export function WritingPlayScreen() {
         )}
       </main>
 
-      <div className="fixed inset-x-0 bottom-0 z-30 mx-auto w-full max-w-md border-t border-brand-100 bg-white/94 p-4 pb-[calc(1rem+var(--app-safe-bottom))] backdrop-blur">
+      <div className="app-fixed-bottom-actions fixed inset-x-0 z-30 mx-auto w-full max-w-md border-t border-brand-100 bg-white/94 p-4 backdrop-blur">
         <Button
           full
           size="lg"

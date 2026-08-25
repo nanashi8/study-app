@@ -17,7 +17,7 @@ const RAW = [
   ['confer', '動', '1', '授与する・相談する', 'A degree was conferred on him.', '彼に学位が授与された。', 'ラテン com+ferre(運ぶ)→ fer と同源。', { syn: [{ w: 'grant', m: '授ける' }, { w: 'consult', m: '相談する' }], field: '動作・行為' }],
   ['grant', '動', 'pre1', '与える・認める・助成金(名)', 'They granted him permission.', '彼らは彼に許可を与えた。', '古フランス granter(同意する)。', { syn: [{ w: 'give', m: '与える' }, { w: 'award', m: '授与する' }], ant: [{ w: 'deny', m: '拒む' }], field: '動作・行為' }],
   // 変換・修正の動詞
-  ['adjust', '動', 'pre2', '調整する・順応する', 'Adjust the volume, please.', '音量を調整して。', 'ラテン ad+juxta(近くに)→ just と同系。', { syn: [{ w: 'adapt', m: '適応する' }, { w: 'modify', m: '修正する' }], field: '動作・行為' }],
+  ['adjust', '動', 'pre2', '調整する・順応する', 'Adjust the volume, please.', '音量を調整して。', '後期ラテン語 adiuxtare（近くへ寄せる）から。juxta は「近くに」で、just（公正な）と同じ語根ではない。', { syn: [{ w: 'adapt', m: '適応する' }, { w: 'modify', m: '修正する' }], field: '動作・行為' }],
   ['revive', '動', '1', '生き返らせる・復活させる', 'They revived an old tradition.', '彼らは古い伝統を復活させた。', 'ラテン re+vivere(生きる)→ vivid と同系。', { syn: [{ w: 'restore', m: '回復させる' }, { w: 'renew', m: '一新する' }], field: '動作・行為' }],
   ['amend', '動', '1', '修正する・改正する', 'They amended the law.', '彼らは法律を改正した。', 'ラテン emendare(誤りを正す)→ mend と同系。', { syn: [{ w: 'revise', m: '改訂する' }, { w: 'correct', m: '正す' }], field: '法律' }],
   ['rectify', '動', '1', '是正する・正す', 'We must rectify the error.', '私たちはその誤りを正さねば。', 'ラテン rectus(正しい)+facere(する)→ correct と同系。', { syn: [{ w: 'correct', m: '直す' }, { w: 'fix', m: '修正する' }], field: '動作・行為' }],

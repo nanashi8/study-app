@@ -92,13 +92,11 @@ export function LoginScreen() {
 export function UnconfiguredScreen() {
   return (
     <div className="flex min-h-full flex-col items-center justify-center px-6 py-10 text-center">
-      <div className="text-5xl">🔧</div>
-      <h1 className="mt-3 font-display text-xl font-extrabold text-ink">セットアップ未完了</h1>
+      <div className="text-5xl">☁️</div>
+      <h1 className="mt-3 font-display text-xl font-extrabold text-ink">クラウド保存を使えません</h1>
       <p className="mt-2 max-w-xs text-sm font-bold text-ink/60">
-        Firebase の接続設定がまだです。
-        <br />
-        <code className="text-brand-700">src/lib/firebaseConfig.js</code> に
-        コンソールの設定を貼り付けてください。
+        この端末では、ログインして学習記録を保存する準備が終わっていません。
+        端末への保存は、そのまま使えます。
       </p>
     </div>
   )

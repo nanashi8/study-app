@@ -49,8 +49,6 @@ export function KotenCultureQuizScreen() {
   const [selected, setSelected] = useState(null)
   const [correctCount, setCorrectCount] = useState(0)
   const [unknownCount, setUnknownCount] = useState(0)
-  const [boxUp, setBoxUp] = useState(0)
-  const [newlyMastered, setNewlyMastered] = useState(0)
   const [weakIds, setWeakIds] = useState([])
   const [done, setDone] = useState(false)
 
@@ -75,7 +73,7 @@ export function KotenCultureQuizScreen() {
       <div className="flex h-full flex-col items-center justify-center gap-4 p-8 text-center">
         <div className="text-5xl">🏯</div>
         <p className="font-display text-lg font-extrabold text-ink">出題できる古典常識問題がありません</p>
-        <Button onClick={backToKotenCulture}>もどる</Button>
+        <Button onClick={backToKotenCulture}>戻る</Button>
       </div>
     )
   }
@@ -86,8 +84,6 @@ export function KotenCultureQuizScreen() {
     setSelected(null)
     setCorrectCount(0)
     setUnknownCount(0)
-    setBoxUp(0)
-    setNewlyMastered(0)
     setWeakIds([])
     setDone(false)
   }
@@ -95,9 +91,8 @@ export function KotenCultureQuizScreen() {
   const choose = (choice) => {
     if (selected !== null || !primary) return
     setSelected(choice)
-    // クイズの進み具合は「全112問」に対して数えるので、問題そのものの結果も残す。
+    // テストの進み具合は「全112問」に対して数えるので、問題そのものの結果も残す。
     recordQuizResult('koten-culture', question.id, choice === question.answer ? 1 : 0, 1)
-    const previousBox = useStore.getState().kotenCultureSrs[primary.id]?.box ?? 0
     if (choice === UNKNOWN_CHOICE_ID) {
       reviewCulture(primary.id, 'unknown')
       setUnknownCount((count) => count + 1)
@@ -131,24 +126,13 @@ export function KotenCultureQuizScreen() {
         <div className="m-auto flex w-full max-w-sm flex-col items-center gap-5 py-5">
           <div className="text-6xl">{percentage >= 80 ? '🏆' : percentage >= 50 ? '🪭' : '📚'}</div>
           <div>
-            <p className="text-[11px] font-extrabold tracking-[0.16em] text-violet-600">CULTURE CHALLENGE</p>
+            <p className="text-xs font-extrabold text-violet-700">古典常識の結果</p>
             <p className="mt-1 font-display text-2xl font-extrabold text-ink">
               {correctCount} / {deck.length} 正解
             </p>
             <p className="mt-1 text-sm font-bold text-ink/50">
               正答率 {percentage}%{unknownCount > 0 && `・わからない ${unknownCount}問`}
             </p>
-          </div>
-
-          <div className="grid w-full grid-cols-2 gap-3">
-            <div className="rounded-2xl bg-violet-50 p-3">
-              <p className="font-display text-2xl font-extrabold text-violet-700">+{boxUp}</p>
-              <p className="text-[11px] font-bold text-ink/50">復習の段階が上がった</p>
-            </div>
-            <div className="rounded-2xl bg-emerald-50 p-3">
-              <p className="font-display text-2xl font-extrabold text-emerald-700">+{newlyMastered}</p>
-              <p className="text-[11px] font-bold text-ink/50">よく覚えた段階に到達</p>
-            </div>
           </div>
 
           {weakIds.length > 0 && (
@@ -212,8 +196,6 @@ export function KotenCultureQuizScreen() {
                 setSelected(null)
                 setCorrectCount(0)
                 setUnknownCount(0)
-                setBoxUp(0)
-                setNewlyMastered(0)
                 setWeakIds([])
                 setDone(false)
               } else {

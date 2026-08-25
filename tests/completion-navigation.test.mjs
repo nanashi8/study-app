@@ -158,7 +158,18 @@ test('主要な全起動元は学習・クイズへ安全な親画面を渡す',
   ]
 
   for (const [path, screen, minimum] of expectations) {
-    const matches = read(path).match(new RegExp(`returnTo:\\s*\\{\\s*screen:\\s*'${screen}'`, 'g')) ?? []
+    const source = read(path)
+    const matches = path === 'src/screens/Phrases.jsx'
+      ? source.match(/returnTo:\s*returnTarget/g) ?? []
+      : path === 'src/screens/Grammar.jsx'
+        ? source.match(/(?:returnTo[,}]|returnTo\s*)/g) ?? []
+        : source.match(new RegExp(`returnTo:\\s*\\{\\s*screen:\\s*'${screen}'`, 'g')) ?? []
+    if (path === 'src/screens/Phrases.jsx') {
+      assert.match(source, /const returnTarget = \{\s*screen: 'phrases'/)
+    }
+    if (path === 'src/screens/Grammar.jsx') {
+      assert.match(source, /const returnTo = \{ screen: 'grammar'/)
+    }
     assert.ok(matches.length >= minimum, `${path}: ${screen}への戻り先 ${matches.length}/${minimum}`)
   }
 })

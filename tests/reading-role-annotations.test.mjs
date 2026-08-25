@@ -9,9 +9,19 @@ import {
   READING_ROLE_CODES,
   readingSentenceRoleParts,
 } from '../src/lib/reading-role-annotations.js'
+import {
+  CHOICE_ONLY_EXPECTED_ROLE_PARTS,
+  READING_FOCUS_ROLE_EXPECTED_CORRECTION_COUNT,
+  READING_FOCUS_ROLE_EXPECTED_COUNTS,
+  READING_FOCUS_ROLE_EXPECTED_OCCURRENCE_COUNT,
+  READING_FOCUS_ROLE_EXPECTED_REVIEW_FINGERPRINT_COUNT,
+  READING_FOCUS_ROLE_EXPECTED_SENTENCE_COUNT,
+  READING_ONLY_ROLE_REVIEWS,
+  auditReadingRoleQuality,
+} from '../src/lib/reading-role-quality.js'
 import { analyzeReadingSentence } from '../src/lib/reading-grammar.js'
 
-test('全24長文・全567文の最上段英文へSVOCM等の役割を欠落なく直接対応させる', () => {
+test('全32長文・全794文の最上段英文へSVOCM等の役割を欠落なく直接対応させる', () => {
   const allowedRoles = new Set(READING_ROLE_CODES)
   const impliedSubjects = []
   let sentenceCount = 0
@@ -56,10 +66,10 @@ test('全24長文・全567文の最上段英文へSVOCM等の役割を欠落な�
     }
   }
 
-  assert.equal(PASSAGES.length, 24)
-  assert.equal(sentenceCount, 567)
-  assert.equal(roleSegmentCount, 4784)
-  assert.equal(renderedRoleSegmentCount, 4784)
+  assert.equal(PASSAGES.length, 32)
+  assert.equal(sentenceCount, 794)
+  assert.equal(roleSegmentCount, 6433)
+  assert.equal(renderedRoleSegmentCount, 6433)
   assert.deepEqual(impliedSubjects, [{
     passageId: 'p_5_school_open_day',
     sentenceIndex: 5,
@@ -80,4 +90,23 @@ test('役割ラベルは対応する下線の下にSVOCMを表示する', () => 
   assert.match(html, />C 補語</)
   assert.match(html, /border-b-\[3px\]/)
   assert.ok(html.indexOf('border-b-[3px]') < html.indexOf('>S 主語<'))
+})
+
+test('全169個の焦点語・74訂正と指摘文の全14役割・関連解説を人手正解表でGATEする', () => {
+  const report = auditReadingRoleQuality(PASSAGES, analyzeReadingSentence)
+
+  assert.deepEqual(report.errors, [])
+  assert.equal(report.passageCount, 32)
+  assert.equal(report.sentenceCount, 794)
+  assert.equal(report.onlyOccurrenceCount, 23)
+  assert.equal(report.reviewedOnlyOccurrenceCount, 23)
+  assert.equal(report.focusOccurrenceCount, READING_FOCUS_ROLE_EXPECTED_OCCURRENCE_COUNT)
+  assert.equal(report.reviewedFocusOccurrenceCount, READING_FOCUS_ROLE_EXPECTED_OCCURRENCE_COUNT)
+  assert.equal(report.focusCorrectionCount, READING_FOCUS_ROLE_EXPECTED_CORRECTION_COUNT)
+  assert.equal(report.appliedFocusCorrectionCount, READING_FOCUS_ROLE_EXPECTED_CORRECTION_COUNT)
+  assert.equal(report.focusSentenceCount, READING_FOCUS_ROLE_EXPECTED_SENTENCE_COUNT)
+  assert.equal(report.focusReviewFingerprintCount, READING_FOCUS_ROLE_EXPECTED_REVIEW_FINGERPRINT_COUNT)
+  assert.deepEqual(report.focusCounts, READING_FOCUS_ROLE_EXPECTED_COUNTS)
+  assert.equal(READING_ONLY_ROLE_REVIEWS.length, 23)
+  assert.equal(CHOICE_ONLY_EXPECTED_ROLE_PARTS.length, 14)
 })

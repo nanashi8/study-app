@@ -282,7 +282,7 @@ const STUDY_ACTIONS = {
     recall:
       '同じ10語を答えを隠して再テストし、思い出せなかった語だけマイ単語で復習します。',
     transfer:
-      '覚えた語を含む例文を読み、意味を文の中でも取り出せるか確かめます。',
+      '覚えた語を含む例文を読み、文の中でも意味を思い出せるか確かめます。',
   },
   grammar: {
     routeLabel: '文法・構文レッスン',
@@ -292,7 +292,7 @@ const STUDY_ACTIONS = {
     recall:
       '例文の一部を隠して構文を組み立て直し、同じ単元の確認問題を解きます。',
     transfer:
-      '別の例文でも同じルールを使えるか、単元クイズで確かめます。',
+      '別の例文でも同じルールを使えるか、単元テストで確かめます。',
   },
   usage: {
     routeLabel: '熟語・語法',
@@ -302,7 +302,7 @@ const STUDY_ACTIONS = {
     recall:
       '同じ熟語を例文の空所で再テストし、前置詞や語順まで言えるか確かめます。',
     transfer:
-      '似た熟語を混ぜたクイズで、文脈に合う表現を選び分けます。',
+      '似た熟語を混ぜたテストで、文脈に合う表現を選び分けます。',
   },
   reading: {
     routeLabel: '級別長文',
@@ -370,7 +370,7 @@ function timeRecommendation(analysis) {
       ? stable
         ? `時刻別の採点済み回答を比べ、この時間帯の成績が最も安定しています（${bestWindow.scored}回答）。`
         : `今ある時刻別記録では、この時間帯の成績が最も高い傾向です（${bestWindow.scored}回答）。まだ暫定なので、学習が増えると更新します。`
-      : '時刻別データがまだ足りないため、続けやすい19:00を仮設定しました。各時間帯の回答が増えると個別の時間へ更新します。',
+      : '時間帯ごとの記録がまだ少ないため、続けやすい19:00を仮に選びました。回答が増えると、あなたに合う時間へ更新します。',
   }
 }
 
@@ -379,19 +379,18 @@ function memoryEvidence(analysis) {
     return {
       available: false,
       text:
-        '定着段階のデータはまだ少ないため、今回は診断の正誤を主な根拠にしています。',
+        '単語などの復習記録がまだ少ないため、今回は診断の正解と不正解を主な理由にしています。',
     }
   }
   const fragile = Number(analysis.stages?.fragile) || 0
   return {
     available: true,
     text:
-      `学習済み${analysis.learnedItems}項目の定着推定は${analysis.memoryScore}/100で、`
-      + `要再学習は${fragile}項目です。`,
+      `学習済み${analysis.learnedItems}項目のうち、これまでの正解と不正解から、もう一度確認する項目を${fragile}件選びました。`,
   }
 }
 
-// 診断の正誤、SRS定着段階、時刻別集計を、根拠付きの次回計画へまとめる。
+// 診断の正誤、復習記録、時刻別集計を、根拠付きの次回計画へまとめる。
 // 質問文や本人の回答そのものは保存せず、結果画面を開いている間だけ利用する。
 export function buildDiagnosticGuidance({
   result,
@@ -467,7 +466,7 @@ export function buildDiagnosticGuidance({
         kind: 'stretch',
         skillId: null,
         screen: 'vocabLevels',
-        routeLabel: '級別英単語クイズ',
+        routeLabel: '級別英単語テスト',
         targetLevelId: result.estimatedLevel?.id,
         targetLevelLabel: result.estimatedLevel?.label,
         title: `英検${result.estimatedLevel?.label}目安の総合演習`,
@@ -478,7 +477,7 @@ export function buildDiagnosticGuidance({
         reason:
           '同じ問題の見直しより、現在地に合う別問題で再現できるか確かめると、実力として定着しているか判断できます。',
         firstAction:
-          '推定級の英単語クイズを解き、今回とは別の語でも同じ正答率を保てるか確かめます。',
+          '推定級の英単語テストを解き、今回とは別の語でも同じ正答率を保てるか確かめます。',
         duration: 15,
       }
 
@@ -525,7 +524,7 @@ export function buildDiagnosticGuidance({
         offsetDays: 7,
         at: scheduledAt(baseDate, 7, time.startHour),
         label: '7日後',
-        title: '4分野ミックスで定着確認',
+        title: '4分野を混ぜてもう一度確認',
         task:
           '単語・文法構文・熟語・長文を混ぜて解き、正答率が上がったか次の診断前に確認します。',
         duration: 15,

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import { buildDeck, growDeck } from '../lib/session.js'
-import { pickDistractors, shuffle } from '../data/vocab.js'
+import { etymologyCardsForWord, pickDistractors, shuffle } from '../data/vocab.js'
 import { quizMeaning } from '../data/compact.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
@@ -89,6 +89,7 @@ export function VocabQuizScreen() {
 
   const sessionId = useRef(restore?.sessionId ?? newSessionId())
   // size=0 は「絞り込みなし」。在庫数から、選べる問題数の上限を決める。
+  // テストは学習待ちの自動抽出ではなく、利用者が選んだ級・分野そのものを出題する。
   const buildFor = (size) => buildDeck(source, {
     srs: useStore.getState().srs,
     size,
@@ -126,7 +127,7 @@ export function VocabQuizScreen() {
       <div className="flex h-full flex-col items-center justify-center gap-4 p-8 text-center">
         <div className="text-5xl">🧩</div>
         <p className="font-display text-lg font-extrabold text-ink">出題できる単語がありません</p>
-        <Button onClick={backToVocabParent}>もどる</Button>
+        <Button onClick={backToVocabParent}>戻る</Button>
       </div>
     )
   }
@@ -145,7 +146,7 @@ export function VocabQuizScreen() {
 
   const finish = () => {
     navigate('sessionResult', {
-      title: params.title ?? (isDragonVein ? '龍脈の単語解読' : 'クイズ'),
+      title: params.title ?? (isDragonVein ? '龍脈の単語解読' : 'テスト'),
       mode: 'quiz',
       engine: 'word',
       total: deck.length,
@@ -348,9 +349,9 @@ export function VocabQuizScreen() {
               </div>
             </div>
             <InstructorExplanation explanation={instructorExplanation} className="mt-3" />
-            {word.etymology && (
+            {etymologyCardsForWord(word).length > 0 && (
               <div className="mt-3 rounded-2xl bg-slate-50 p-3 text-left ring-1 ring-slate-200">
-                <p className="mb-2 text-sm font-extrabold text-brand-700">語源で覚える</p>
+                <p className="mb-2 text-sm font-extrabold text-brand-700">確認済み語源カード</p>
                 <EtymologyBlock word={word} />
               </div>
             )}

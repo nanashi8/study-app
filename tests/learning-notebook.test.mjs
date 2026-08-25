@@ -29,14 +29,19 @@ import {
 } from '../src/lib/learningNotebookCatalog.js'
 import {
   PERSISTED_PROGRESS_FIELDS,
+  buildPayload,
   decodeProgress,
   encodeProgress,
   selectProgressState,
 } from '../src/lib/progressCode.js'
 import { progressStateFromCloud } from '../src/lib/cloudSync.js'
 import { progressStateFromPayload, useStore } from '../src/store/useStore.js'
+import {
+  learningContentPlanEntry,
+  updateLearningContentPlan,
+} from '../src/lib/learningContentPlan.js'
 
-test('マイ学習ノートは指定8分野・全16738項目を安定IDで解決する', () => {
+test('マイ学習ノートは指定8分野・全15,227項目を安定IDで解決する', () => {
   assert.deepEqual(NOTEBOOK_DOMAIN_IDS, [
     'vocab',
     'phrases',
@@ -48,16 +53,16 @@ test('マイ学習ノートは指定8分野・全16738項目を安定IDで解決
     'kotenCulture',
   ])
   assert.deepEqual(NOTEBOOK_CATALOG_COUNTS, {
-    vocab: 8426,
-    phrases: 1500,
-    grammar: 3450,
+    vocab: 8869,
+    phrases: 2104,
+    grammar: 3555,
     listening: 160,
-    etymology: 2772,
+    etymology: 109,
     kotenVocab: 300,
     kotenGrammar: 74,
     kotenCulture: 56,
   })
-  assert.equal(NOTEBOOK_TOTAL_ITEMS, 16738)
+  assert.equal(NOTEBOOK_TOTAL_ITEMS, 15227)
 
   for (const [domain, count] of Object.entries(NOTEBOOK_CATALOG_COUNTS)) {
     assert.ok(count > 0, domain)
@@ -66,8 +71,8 @@ test('マイ学習ノートは指定8分野・全16738項目を安定IDで解決
     assert.ok(results.every((item) => resolveNotebookItem(item.ref)?.id === item.id), domain)
   }
   assert.equal(
-    resolveNotebookItem('etymology:formula:root-fer:different')?.id,
-    'formula:root-fer:different',
+    resolveNotebookItem('etymology:root:port')?.id,
+    'root:port',
   )
 })
 
@@ -254,6 +259,88 @@ test('統合ノートは旧保存配列と同期し、端末・進捗コード�
 
     useStore.getState().toggleMyList('book')
     assert.equal(isNotebookItemSaved(useStore.getState(), 'vocab', 'book'), false)
+  } finally {
+    useStore.setState(before)
+  }
+})
+
+test('全教材の学習項目・非表示・優先度は保存、コード、クラウド、分類リセットを同じ契約で通る', () => {
+  const before = selectProgressState(useStore.getState())
+  try {
+    const emptyPayload = buildPayload({
+      ...before,
+      learningNotebook: createLearningNotebook(),
+    })
+    assert.equal('contentPlan' in emptyPayload.learningNotebook, false)
+    assert.deepEqual(
+      progressStateFromPayload(emptyPayload).learningNotebook.contentPlan.entries,
+      {},
+    )
+
+    let contentPlan = updateLearningContentPlan(
+      undefined,
+      'usage',
+      'idm_get_up',
+      'register',
+      100,
+    )
+    contentPlan = updateLearningContentPlan(
+      contentPlan,
+      'usage',
+      'idm_get_up',
+      'raise-priority',
+      200,
+    )
+    contentPlan = updateLearningContentPlan(
+      contentPlan,
+      'math',
+      'math-linear-001',
+      'hide',
+      300,
+    )
+    useStore.setState({
+      ...before,
+      learningNotebook: { ...createLearningNotebook(), contentPlan },
+    })
+    useStore.getState().updateLearningContentPlanItem(
+      'usage',
+      'idm_get_up',
+      'raise-priority',
+    )
+
+    const current = useStore.getState()
+    assert.equal(
+      learningContentPlanEntry(
+        current.learningNotebook.contentPlan,
+        'usage',
+        'idm_get_up',
+      ).priority,
+      2,
+    )
+    assert.equal(
+      learningContentPlanEntry(
+        current.learningNotebook.contentPlan,
+        'math',
+        'math-linear-001',
+      ).hidden,
+      true,
+    )
+
+    const decoded = decodeProgress(encodeProgress(current))
+    assert.equal(decoded.learningNotebook.contentPlan.entries['usage:idm_get_up'].priority, 2)
+    assert.equal(
+      progressStateFromPayload(decoded)
+        .learningNotebook.contentPlan.entries['math:math-linear-001'].hidden,
+      true,
+    )
+    assert.equal(
+      progressStateFromCloud(decoded, before)
+        .learningNotebook.contentPlan.entries['usage:idm_get_up'].registered,
+      true,
+    )
+
+    useStore.getState().resetProgress(['saved'])
+    assert.deepEqual(useStore.getState().learningNotebook.contentPlan.entries, {})
   } finally {
     useStore.setState(before)
   }

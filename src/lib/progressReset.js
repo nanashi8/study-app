@@ -14,8 +14,8 @@ const resetGroup = (id, label, description, fields, implies = []) => Object.free
 export const PROGRESS_RESET_GROUPS = Object.freeze([
   resetGroup(
     'review',
-    '復習段階・習熟度',
-    '英単語・語源・古典・漢文のSRSと復習予定',
+    '復習の記録と予定',
+    '英単語・語源・古典・漢文の復習記録と予定',
     [
       'srs',
       'etymologySrs',
@@ -28,20 +28,20 @@ export const PROGRESS_RESET_GROUPS = Object.freeze([
       'kanbunCultureSrs',
       'kanbunKundokuSrs',
     ],
-    // 復習段階を消すと、そこから作られる成績・分析だけが残って数字が合わなくなる。
+    // 復習記録を消すと、そこから作られる成績・分析だけが残って数字が合わなくなる。
     ['results'],
   ),
   resetGroup(
     'completion',
-    '学習済み・達成記録',
+    '学習を終えた記録',
     '英作文、長文、数学の完了・理解度',
     ['writingProgress', 'readingsDone', 'mathDone', 'mathMastery'],
     ['results'],
   ),
   resetGroup(
     'results',
-    '診断・成績・分析',
-    '正答数、診断結果、分野・時間帯の分析',
+    '診断・テスト結果',
+    '正答数、診断結果、分野別・時間帯別の記録',
     [
       'skillStats',
       'learningAnalytics',
@@ -57,7 +57,7 @@ export const PROGRESS_RESET_GROUPS = Object.freeze([
   resetGroup(
     'saved',
     '保存した教材・ノート',
-    'マイ単語、マイ文法、学習ノート、古典・漢文の登録項目',
+    'マイ単語、マイ文法、学習ノート、全教材の学習項目・非表示、古典・漢文の登録項目',
     [
       'myList',
       'myGrammarList',
@@ -79,7 +79,7 @@ export const PROGRESS_RESET_GROUPS = Object.freeze([
   resetGroup(
     'legacy',
     '以前のバージョンの記録',
-    '旧バージョンから引き継いだ進行・表示互換データ',
+    '以前のバージョンで使っていた、現在の学習画面には出ない記録',
     [
       'battleRelicLevel',
       'battleStars',
@@ -134,7 +134,7 @@ if (duplicateFields.length || missingFields.length || unknownFields.length) {
 const groupById = new Map(PROGRESS_RESET_GROUPS.map((group) => [group.id, group]))
 
 // 選んだ分類の派生先まで広げる。
-// 例：復習段階を消したのに成績分析の数値だけ残る、という食い違いを防ぐ。
+// 例：復習記録を消したのに成績分析の数値だけ残る、という食い違いを防ぐ。
 export function expandProgressResetGroupIds(groupIds = []) {
   const expanded = new Set()
   const queue = [...(Array.isArray(groupIds) ? groupIds : [])]

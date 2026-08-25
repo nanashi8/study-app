@@ -29,7 +29,7 @@ export function GrammarLessonsScreen() {
   const lessons = lessonsByStage(stage)
   const lesson = lessons.find((l) => l.id === openId) || null
   const lessonLevel = lesson ? getLevel(lesson.level) : null
-  // この単元に対応するクイズがあるか
+  // この単元に対応するテストがあるか
   const quizCount = lesson ? grammarByTopic(lesson.level, lesson.topic).length : 0
 
   const startQuiz = () => {
@@ -200,10 +200,10 @@ export function GrammarLessonsScreen() {
               </div>
             )}
 
-            {/* クイズへ */}
+            {/* テストへ */}
             {quizCount > 0 && (
               <Button full size="lg" onClick={startQuiz}>
-                <Cards size={18} /> この単元を4択クイズで練習（{quizCount}問）
+                <Cards size={18} /> この単元を4択テストで練習（{quizCount}問）
               </Button>
             )}
           </div>

@@ -6,6 +6,7 @@ import { KotenText, KotenWord } from '../components/KotenFurigana.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
+import { CardStudyFooter, CardSwipeRegion } from '../components/CardStudyControls.jsx'
 import { growDeck } from '../lib/session.js'
 import {
   Bookmark,
@@ -16,12 +17,14 @@ import {
 } from '../components/Icons.jsx'
 
 // 渡された id 配列から学習デッキを作る（1回だけシャッフル）。
-function buildKotenDeck(ids, seed, size = 0) {
+function buildKotenDeck(ids, seed, size = 0, preserveOrder = false) {
   const words = (ids ?? []).map(getKoten).filter(Boolean)
-  // seed を変えるたびに並べ替え（「もう一度」用）。Math.random でよい。
-  for (let i = words.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1))
-    ;[words[i], words[j]] = [words[j], words[i]]
+  if (!preserveOrder) {
+    // seed を変えるたびに並べ替え（「もう一度」用）。Math.random でよい。
+    for (let i = words.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1))
+      ;[words[i], words[j]] = [words[j], words[i]]
+    }
   }
   // size=0 は「絞り込みなし」。
   return size > 0 ? words.slice(0, size) : words
@@ -39,7 +42,7 @@ export function KotenStudyScreen() {
   const [seed, setSeed] = useState(0)
   const poolSize = (params.ids ?? []).length
   const sessionSize = useSessionSize(poolSize || Infinity)
-  const [deck, setDeck] = useState(() => buildKotenDeck(params.ids, 0, params.size ?? sessionSize))
+  const [deck, setDeck] = useState(() => buildKotenDeck(params.ids, 0, params.size ?? sessionSize, params.preserveOrder))
   const [i, setI] = useState(0)
   const [flipped, setFlipped] = useState(revealAll)
   const [done, setDone] = useState(false)
@@ -53,7 +56,7 @@ export function KotenStudyScreen() {
       <div className="flex h-full flex-col items-center justify-center gap-4 p-8 text-center">
         <div className="text-5xl">📜</div>
         <p className="font-display text-lg font-extrabold text-ink">学習できる語がありません</p>
-        <Button onClick={back}>もどる</Button>
+        <Button onClick={back}>戻る</Button>
       </div>
     )
   }
@@ -61,7 +64,7 @@ export function KotenStudyScreen() {
   const restart = () => {
     const next = seed + 1
     setSeed(next)
-    setDeck(buildKotenDeck(params.ids, next, deck.length))
+    setDeck(buildKotenDeck(params.ids, next, deck.length, params.preserveOrder))
     setI(0)
     setFlipped(revealAll)
     setDone(false)
@@ -78,6 +81,11 @@ export function KotenStudyScreen() {
     }
   }
 
+  const moveToCard = (nextIndex) => {
+    setI(nextIndex)
+    setFlipped(revealAll)
+  }
+
   if (done) {
     return (
       <div className="flex h-full flex-col items-center justify-center gap-5 p-8 text-center">
@@ -90,7 +98,7 @@ export function KotenStudyScreen() {
         </div>
         <div className="grid w-full max-w-xs grid-cols-2 gap-3">
           <Button variant="secondary" onClick={restart}>もう一度</Button>
-          <Button onClick={back}>もどる</Button>
+          <Button onClick={back}>戻る</Button>
         </div>
       </div>
     )
@@ -106,7 +114,7 @@ export function KotenStudyScreen() {
         <div className="flex-1">
           <ProgressBar value={i / deck.length} color="#f59e0b" />
         </div>
-        <RevealAnswersToggle label="意味" onChange={(on) => on && setFlipped(true)} />
+        <RevealAnswersToggle label="意味" onChange={(on) => setFlipped(on)} />
         <SpeechSettingsButton compact />
         <SessionCounter
           index={i}
@@ -115,20 +123,25 @@ export function KotenStudyScreen() {
           label="語"
           onResize={(size, { discard }) => {
             if (discard) {
-              setDeck(buildKotenDeck(params.ids, seed + 1, size))
+              setDeck(buildKotenDeck(params.ids, seed + 1, size, params.preserveOrder))
               setI(0)
               setFlipped(revealAll)
               setDone(false)
               setRemembered(0)
             } else {
-              setDeck((current) => growDeck(current, i + 1, buildKotenDeck(params.ids, seed + 1, size), size))
+              setDeck((current) => growDeck(current, i + 1, buildKotenDeck(params.ids, seed + 1, size, params.preserveOrder), size))
             }
           }}
         />
       </div>
 
       {/* カード */}
-      <div className="flex-1 overflow-y-auto px-4 pb-4">
+      <CardSwipeRegion
+        index={i}
+        total={deck.length}
+        onIndexChange={moveToCard}
+        className="flex-1 overflow-y-auto px-4 pb-4"
+      >
         <div
           key={word.id}
           onClick={() => !flipped && setFlipped(true)}
@@ -199,16 +212,16 @@ export function KotenStudyScreen() {
             </div>
           )}
         </div>
-      </div>
+      </CardSwipeRegion>
 
       {/* フッター操作 */}
-      <div className="shrink-0 border-t border-amber-100 bg-white/90 p-4 pb-4 backdrop-blur">
+      <CardStudyFooter className="border-amber-100">
         {!flipped ? (
           <Button full size="lg" onClick={() => setFlipped(true)}>
             意味を見る
           </Button>
         ) : (
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-2">
             <Button variant="danger" size="lg" onClick={() => answer(false)}>
               まだ🤔
             </Button>
@@ -217,7 +230,7 @@ export function KotenStudyScreen() {
             </Button>
           </div>
         )}
-      </div>
+      </CardStudyFooter>
     </div>
   )
 }

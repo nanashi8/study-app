@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { useStore } from '../store/useStore.js'
-import { getWord, neighborWords, rootIdsForWord, vocabFieldFor } from '../data/vocab.js'
+import { etymologyCardsForWord, getWord, neighborWords, vocabFieldFor } from '../data/vocab.js'
 import { getLevel } from '../data/levels.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { SpeakButton } from '../components/SpeakButton.jsx'
@@ -9,7 +9,7 @@ import { UsageGuideCards } from '../components/UsageGuideCards.jsx'
 import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
 import { Card, Button, Chip, IconButton } from '../components/ui.jsx'
 import { Bookmark, BookmarkFilled, Link, Lightbulb, ArrowRight } from '../components/Icons.jsx'
-import { summarizeSrsItems } from '../lib/contentProgress.js'
+import { summarizeVocabularySrsItems } from '../lib/vocabScheduler.js'
 import { cx } from '../components/ui.jsx'
 import { VocabReviewHistory } from '../components/VocabReviewHistory.jsx'
 
@@ -20,7 +20,6 @@ const TONES = {
   syn: 'bg-brand-50 text-brand-700 ring-brand-100',
   ant: 'bg-rose-50 text-rose-600 ring-rose-100',
   der: 'bg-emerald-50 text-emerald-700 ring-emerald-100',
-  fam: 'bg-violet-50 text-violet-700 ring-violet-100',
 }
 function RefChips({ items, tone, navigate }) {
   const cls = TONES[tone] ?? TONES.syn
@@ -116,7 +115,8 @@ export function WordDetailScreen() {
 
   const level = getLevel(word.level)
   const saved = myList.includes(word.id)
-  const progress = summarizeSrsItems([word], entry ? { [word.id]: entry } : {})
+  const progress = summarizeVocabularySrsItems([word], entry ? { [word.id]: entry } : {})
+  const etymologyCards = etymologyCardsForWord(word)
 
   return (
     <div ref={screenRef} className="pb-28">
@@ -198,52 +198,38 @@ export function WordDetailScreen() {
         {/* 入試・英検で混同しやすい語の比較と推奨表現 */}
         <UsageGuideCards guides={word.usageGuides} />
 
-        {/* 語族（基語＋関連形） */}
-        {word.family?.length > 0 && (
-          <Card className="p-4">
-            <div className="mb-1.5 flex items-center gap-1.5 text-violet-500">
-              <Link size={16} />
-              <span className="text-[11px] font-extrabold uppercase tracking-wide">語族（同じ語根の仲間）</span>
-            </div>
-            <RefChips items={word.family} tone="fam" navigate={navigate} />
-          </Card>
-        )}
-
         {/* 類義語・反対語 */}
         {(word.synonyms?.length > 0 || word.antonyms?.length > 0) && (
           <Card className="space-y-3 p-4">
             {word.synonyms?.length > 0 && (
               <div>
-                <div className="mb-1.5 text-[11px] font-extrabold uppercase tracking-wide text-brand-400">類義語・同義語</div>
+                <div className="mb-1.5 text-xs font-extrabold uppercase tracking-wide text-brand-400">意味が近い語</div>
                 <RefChips items={word.synonyms} tone="syn" navigate={navigate} />
               </div>
             )}
             {word.antonyms?.length > 0 && (
               <div>
-                <div className="mb-1.5 text-[11px] font-extrabold uppercase tracking-wide text-rose-400">反対語</div>
+                <div className="mb-1.5 text-xs font-extrabold uppercase tracking-wide text-rose-400">反対・対照の語</div>
                 <RefChips items={word.antonyms} tone="ant" navigate={navigate} />
               </div>
             )}
           </Card>
         )}
 
-        {/* 語源（ある単語のみ） */}
-        {word.etymology && (
+        {/* 手動監査済みの語源カードがある単語だけに表示する。 */}
+        {etymologyCards.length > 0 && (
           <Card className="p-4">
-            <div className="mb-3 text-sm font-extrabold text-brand-600">語源で覚える</div>
+            <div className="mb-3 text-sm font-extrabold text-brand-600">確認済み語源カード</div>
             <EtymologyBlock
               word={word}
               onRoot={(rootId) => navigate('rootDetail', { rootId })}
-              onPack={(packId, compression) =>
-                compression.mode === 'root'
-                  ? navigate('rootDetail', { rootId: compression.rootId })
-                  : navigate('etymologyPack', { packId })}
+              onPack={(packId) => navigate('etymologyPack', { packId })}
             />
           </Card>
         )}
 
-        {/* 語源つながり */}
-        {rootIdsForWord(word).length > 0 && (
+        {/* 監査済みカードに明記された関連語だけを表示する。 */}
+        {etymologyCards.length > 0 && (
           <Card className="p-4">
             <div className="mb-3 flex items-center gap-1.5 text-brand-600">
               <Link size={16} />
@@ -262,7 +248,7 @@ export function WordDetailScreen() {
       </div>
 
       {/* 保存ボタン（固定） */}
-      <div className="fixed inset-x-0 bottom-0 z-30 mx-auto max-w-md border-t border-brand-100 bg-white/95 p-4 pb-[calc(1rem+var(--app-safe-bottom))] backdrop-blur">
+      <div className="app-fixed-bottom-actions fixed inset-x-0 z-30 mx-auto max-w-md border-t border-brand-100 bg-white/95 p-4 backdrop-blur">
         <Button full variant={saved ? 'soft' : 'primary'} onClick={() => toggleMyList(word.id)}>
           {saved ? <BookmarkFilled size={18} /> : <Bookmark size={18} />}
           {saved ? 'マイ単語に保存済み（タップで解除）' : 'マイ単語リストに保存'}

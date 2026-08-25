@@ -7,6 +7,7 @@ import {
 import { PASSAGES } from '../data/passages.js'
 import { PHRASES } from '../data/phrases.js'
 import { READING_PHRASE_CORRECTIONS } from '../data/reading-phrase-corrections.js'
+import { READING_FOCUS_ROLE_CORRECTIONS } from '../data/reading-focus-role-corrections.js'
 import {
   READING_CONNECTOR_CLOSURE_REVIEWS,
   READING_CONNECTOR_NO_BACK_REFERENCE_REVIEWS,
@@ -88,6 +89,33 @@ const CONNECTOR_CLOSURE_CANDIDATES = new Set([
 const connectorReviewKey = (sentence, connector, occurrence = 1) =>
   `${sentence}|||${phraseKey(connector)}|||${occurrence}`
 
+const focusAuxiliaryReviewKey = (sentence, left, right) =>
+  `${sentence}|||${phraseKey(left)}|||${phraseKey(right)}`
+
+const REVIEWED_FOCUS_AUXILIARY_SPLITS = new Set()
+for (const [sentence, decisions] of Object.entries(READING_FOCUS_ROLE_CORRECTIONS)) {
+  for (const decision of decisions) {
+    for (let left = 0; left < decision.parts.length; left++) {
+      if (decision.parts[left].role !== 'V') continue
+      for (let right = left + 2; right <= Math.min(left + 3, decision.parts.length - 1); right++) {
+        if (decision.parts[right].role !== 'V') continue
+        if (!decision.parts.slice(left + 1, right).every((part) => part.role === 'M')) continue
+        REVIEWED_FOCUS_AUXILIARY_SPLITS.add(focusAuxiliaryReviewKey(
+          sentence,
+          decision.parts[left].en,
+          decision.parts[right].en,
+        ))
+      }
+    }
+  }
+}
+// not simply A, but B のAは、copula isと不定詞補語の間に焦点Mが入る。
+REVIEWED_FOCUS_AUXILIARY_SPLITS.add(focusAuxiliaryReviewKey(
+  'The goal is not simply to remove phones, but to build habits that protect attention.',
+  'is',
+  'to remove phones',
+))
+
 const connectorBackReferenceReviewKeys = new Set(
   READING_CONNECTOR_CLOSURE_REVIEWS.map((item) =>
     connectorReviewKey(item.sentence, item.connector, item.occurrence ?? 1)),
@@ -121,7 +149,7 @@ function auxiliaryOnlyPhrase(value = '') {
     (token === 'to' && index > 0 && ['have', 'has', 'had', 'ought', 'used'].includes(meaningful[index - 1])))
 }
 
-function splitAuxiliaryIssue(parts, index) {
+function splitAuxiliaryIssue(parts, index, sentence = '') {
   const current = parts[index]
   if (!rolesOf(current).includes('V') || !auxiliaryOnlyPhrase(current.en)) return null
   let nextIndex = index + 1
@@ -133,6 +161,9 @@ function splitAuxiliaryIssue(parts, index) {
   ) nextIndex++
   const next = parts[nextIndex]
   if (!next || !rolesOf(next).includes('V')) return null
+  if (REVIEWED_FOCUS_AUXILIARY_SPLITS.has(
+    focusAuxiliaryReviewKey(sentence, current.en, next.en),
+  )) return null
   // 倒置では助動詞Vと本動詞Vの間に主語Sが来る。この正しい節境界は除外する。
   if (parts.slice(index + 1, nextIndex).some((part) => rolesOf(part).includes('S'))) return null
   const localExplanation = parts.slice(index, nextIndex + 1)
@@ -413,7 +444,7 @@ const STRUCTURAL_DISPLAY_TARGETS = new Map([
   ['When a decision involves serious health risks, online reading should support, not replace, advice from a qualified professional.|||replace', '(should) replace'],
   ['Once rewards or penalties depend heavily on the score, people have an incentive to optimize the proxy rather than pursue the underlying mission.|||pursue', '(to) pursue'],
   ['If measurement increases surveillance below but accountability does not increase above, the system may weaken rather than strengthen legitimacy.|||strengthen', '(may) strengthen'],
-  ['The alternative is not to abandon moderation, but to combine it with accessible evidence, independent review, and explanations that users can examine rather than merely obey.|||rather than merely obey', 'rather than (can) merely obey'],
+  ['The alternative is not to abandon moderation, but to combine it with accessible evidence, independent review, and explanations that users can examine rather than merely obey.|||obey', '(can) obey'],
 ])
 
 // 生成規則とは独立した回帰期待値。値が「存在する」だけではなく、本文ごとに
@@ -706,7 +737,7 @@ const READING_SEQUENCE_EXPECTATIONS = new Map([
   ]],
   ['Judgment can remain informed and humane, but it can also become inconsistent, biased, and difficult for outsiders to challenge.', [
     ['Judgment', 'S'], ['can remain', 'V'], ['informed and humane', 'C'], ['but', 'LINK'],
-    ['it', 'S'], ['can also become', 'V'], ['inconsistent,', 'C'], ['biased', 'C'],
+    ['it', 'S'], ['can', 'V'], ['also', 'M'], ['become', 'V'], ['inconsistent,', 'C'], ['biased', 'C'],
     ['and', 'LINK'], ['difficult', 'C'], ['for outsiders', 'M'], ['to challenge', 'V'],
   ]],
   ['Without records, leaders may celebrate a program’s intentions while ignoring evidence that it repeatedly fails particular communities.', [
@@ -727,7 +758,7 @@ const READING_SEQUENCE_EXPECTATIONS = new Map([
     ['The alternative', 'S'], ['is not', 'V'], ['to abandon', 'C'], ['moderation', 'O'],
     ['but', 'LINK'], ['to combine', 'C'], ['it', 'O'], ['with accessible evidence, independent review,', 'M'],
     ['and', 'LINK'], ['explanations', 'M'], ['that', 'O'], ['users', 'S'],
-    ['can examine', 'V'], ['rather than merely obey', 'M'],
+    ['can examine', 'V'], ['rather than', 'LINK'], ['merely', 'M'], ['obey', 'V'],
   ]],
 ])
 
@@ -1724,7 +1755,7 @@ export function auditPhraseExplanations() {
         ) {
           readingIssues.invalidJapaneseFallbacks.push(ref())
         }
-        const auxiliaryIssue = splitAuxiliaryIssue(analysis.phraseSequence, phraseIndex)
+        const auxiliaryIssue = splitAuxiliaryIssue(analysis.phraseSequence, phraseIndex, sentence.en)
         if (auxiliaryIssue) {
           readingIssues.splitAuxiliaryVerb.push(ref({ nextPhrase: auxiliaryIssue.nextPhrase }))
         }
@@ -2133,8 +2164,8 @@ export function auditPhraseExplanations() {
   const confirmedRuleCount = READING_PHRASE_RULES
     .filter((item) => item.status === 'confirmed').length
   const complete =
-    PASSAGES.length === 24 &&
-    readingSentences.length === 567 &&
+    PASSAGES.length === 32 &&
+    readingSentences.length === 794 &&
     longTargets.length === 33 &&
     PUBLIC_DOMAIN_LITERATURE.length === 12 &&
     literatureSceneCount === 80 &&

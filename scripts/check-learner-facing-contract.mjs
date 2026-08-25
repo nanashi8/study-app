@@ -2,7 +2,11 @@ import { readdir, readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { GRAMMAR, grammarChoiceGuidanceFor } from '../src/data/grammar.js'
+import {
+  GRAMMAR,
+  grammarChoiceGuidanceFor,
+  grammarChoiceUsageFor,
+} from '../src/data/grammar.js'
 import { LONG_SENTENCE_TRANSLATIONS } from '../src/data/long-sentence-translations.js'
 import { PASSAGES } from '../src/data/passages.js'
 import {
@@ -16,10 +20,12 @@ import {
 } from '../src/lib/explanationDedup.js'
 import { analyzeReadingSentence } from '../src/lib/reading-grammar.js'
 import { buildGrammarInstructorExplanation } from '../src/lib/instructorExplanations.js'
+import { grammarChoiceExplanationFor } from '../src/lib/grammarQuestionExplanations.js'
 import {
   ALL_WORDS,
   ETYMOLOGY_MODE_META,
   ETYMOLOGY_PACKS,
+  etymologyCardsForWord,
   etymologyLearningGuideFor,
 } from '../src/data/vocab.js'
 import {
@@ -106,6 +112,55 @@ for (const file of files) {
   }
 }
 
+// 公開画面と、そこへ製品用語を渡す共通モジュールでは、操作名を
+// 「暗記」「テスト」に統一する。教材本文で通常の動詞として使う
+// 「覚える」や、英単語 quiz 自体を扱う語義データはこの対象に含めない。
+const learnerUiRoots = [
+  path.join(sourceRoot, 'components'),
+  path.join(sourceRoot, 'screens'),
+]
+const learnerTerminologyProviders = [
+  'src/data/diagnostic.js',
+  'src/data/etymology-compression.js',
+  'src/data/kanbun-meta.js',
+  'src/lib/appMenu.js',
+  'src/lib/diagnostic.js',
+  'src/lib/learningAnalyticsReport.js',
+  'src/lib/learningPower.js',
+  'src/lib/rpg.js',
+].map((relative) => path.join(projectRoot, relative))
+const learnerTerminologyFiles = [
+  ...files.filter((file) => learnerUiRoots.some((root) => file.startsWith(`${root}${path.sep}`))),
+  ...learnerTerminologyProviders,
+]
+for (const file of learnerTerminologyFiles) {
+  const source = await readFile(file, 'utf8')
+  const relative = path.relative(projectRoot, file)
+  for (const match of source.matchAll(/覚える/g)) {
+    errors.push(`${relative}: 製品用語「${match[0]}」を「暗記」へ統一できていない`)
+  }
+}
+
+// 「クイズ」は公開実装全体で「テスト」に統一する。ただし、英単語 quiz の
+// 語義や英文の忠実な和訳として必要な4表記だけは教材本文として保持する。
+const allowedCurriculumQuizCopy = new Map([
+  ['src/data/grammar-exam-patterns.js', ['クイズで一番多く正解した人は誰でも']],
+  ['src/data/words-curriculum-1900-q-z.js', ['小テスト・クイズ']],
+  ['src/data/words-etymology-completion.js', ['そのクイズは映画の雑学知識を試す']],
+  ['src/data/writing.js', ['対話型クイズは学習者の弱点を特定できます']],
+])
+for (const file of files) {
+  const relative = path.relative(projectRoot, file)
+  let source = await readFile(file, 'utf8')
+  for (const allowed of allowedCurriculumQuizCopy.get(relative) ?? []) {
+    if (!source.includes(allowed)) errors.push(`${relative}: 教材上必要な「${allowed}」が見つからない`)
+    source = source.replace(allowed, '')
+  }
+  for (const match of source.matchAll(/クイズ/g)) {
+    errors.push(`${relative}: 製品用語「${match[0]}」を「テスト」へ統一できていない`)
+  }
+}
+
 const readProjectFile = (relative) => readFile(path.join(projectRoot, relative), 'utf8')
 const [
   instructorSource,
@@ -181,7 +236,7 @@ if (!progressBackupSource.includes('selectProgressState')) errors.push('QR／コ
 if (!progressBackupSource.includes('QRCodeCanvas')) errors.push('QR出力がない')
 if (!progressBackupSource.includes('コードをコピー')) errors.push('進捗コード出力がない')
 
-const expectedEtymologyModes = ['部品で分ける', '同じ語根', '語の家族', 'ことばの歴史']
+const expectedEtymologyModes = ['部品で分ける', '同じ語根', '形と由来', 'ことばの歴史']
 const actualEtymologyModes = Object.values(ETYMOLOGY_MODE_META).map((item) => item.label)
 if (actualEtymologyModes.join(',') !== expectedEtymologyModes.join(',')) {
   errors.push(`語源の4分類が平易な表示契約と不一致: ${actualEtymologyModes.join(',')}`)
@@ -201,10 +256,14 @@ for (const obsolete of [
   }
 }
 if (!vocabQuizSource.includes('<EtymologyBlock word={word} />')) {
-  errors.push('単語クイズの解答直後に語源本文がない')
+  errors.push('単語テストの解答直後に語源本文がない')
 }
 if (!vocabStudySource.includes('<EtymologyBlock')) {
   errors.push('単語カードの答えに語源本文がない')
+}
+if (!vocabQuizSource.includes('etymologyCardsForWord(word).length') ||
+    !vocabStudySource.includes('etymologyCardsForWord(word).length')) {
+  errors.push('単語の暗記・テストが確認済みカードの有無で語源表示を制限していない')
 }
 if (/語源をくわしく見る|くわしく見る/.test(`${vocabQuizSource}\n${vocabStudySource}`)) {
   errors.push('単語の語源本文が「くわしく見る」操作を必須にしている')
@@ -215,23 +274,23 @@ for (const [name, source] of [
   ['同じ語根', rootDetailSource],
 ]) {
   if (!source.includes('data-etymology-word-study-action')) {
-    errors.push(`${name}から単語の「覚える」へ進めない`)
+    errors.push(`${name}から単語の「暗記」へ進めない`)
   }
   if (!source.includes("navigate('vocabStudy'")) {
     errors.push(`${name}が通常の単語暗記画面を使っていない`)
   }
   if (/navigate\('(?:etymologyStudy|etymologyQuiz|vocabQuiz)'|単語クイズ/.test(source)) {
-    errors.push(`${name}に廃止した語源専用画面またはクイズの導線が残る`)
+    errors.push(`${name}に廃止した語源専用画面またはテストの導線が残る`)
   }
 }
-if (!rootsSource.includes('英単語の「覚える」と共通です')) {
+if (!rootsSource.includes('英単語の「暗記」と共通です')) {
   errors.push('語源トップが通常の単語暗記と記録を共有することを説明していない')
 }
 if (/etymologyStudy:\s|etymologyQuiz:\s|EtymologyStudyScreen|EtymologyQuizScreen/.test(appSource)) {
   errors.push('廃止した語源専用画面が公開ルートに残る')
 }
 if (
-  !myListSource.includes('単語を覚える')
+  !myListSource.includes('単語を暗記')
   || !myListSource.includes("navigate('vocabStudy'")
   || /navigate\('(?:etymologyStudy|etymologyQuiz)'/.test(myListSource)
 ) {
@@ -244,10 +303,10 @@ if (
   errors.push('学習分析の語源導線が通常の単語暗記だけになっていない')
 }
 if (
-  !learningContentSource.includes("'語源から覚える'")
+  !learningContentSource.includes("'語源から暗記'")
   || !learningContentSource.includes('enabled: false')
 ) {
-  errors.push('教材ごとの記録で語源専用クイズを非表示にしていない')
+  errors.push('教材ごとの記録で語源専用テストを非表示にしていない')
 }
 for (const word of ALL_WORDS) {
   const guide = etymologyLearningGuideFor(word)
@@ -265,6 +324,12 @@ for (const pack of ETYMOLOGY_PACKS) {
   const learnerText = [pack.title, pack.subtitle, pack.description, pack.caution].join(' ')
   if (/undefined|（\s*）|\(\s*\)/.test(learnerText) || pack.title.length > 45) {
     errors.push(`語源カード ${pack.id}: 見出しが不完全または長すぎる`)
+  }
+  if (pack.mode !== 'root' || pack.groupClaim !== 'manual-reviewed-root') {
+    errors.push(`語源カード ${pack.id}: 手動監査済み語根カードではない`)
+  }
+  if (!pack.evidence?.reviewedAt || !pack.evidence?.fingerprint || !pack.evidence?.sources?.length) {
+    errors.push(`語源カード ${pack.id}: 確認日・内容固定hash・出典がそろっていない`)
   }
 }
 
@@ -368,6 +433,7 @@ for (const [id, guide] of Object.entries(LONG_SENTENCE_TRANSLATIONS)) {
 }
 
 let grammarChoicePaths = 0
+let grammarWrongChoicePaths = 0
 for (const item of GRAMMAR) {
   const base = buildGrammarInstructorExplanation(item)
   if (!normalize(base.evidence).includes(normalize(item.explain))) {
@@ -377,8 +443,17 @@ for (const item of GRAMMAR) {
     errors.push(`文法 ${item.id}: 考え方が独立した手順になっていない`)
   }
   for (const choice of item.choices) {
-    if (choice === item.answer) continue
     grammarChoicePaths += 1
+    const choiceReason = grammarChoiceExplanationFor(item, choice)
+    const usage = grammarChoiceUsageFor(item, choice)
+    if (!normalize(choiceReason).includes(normalize(choice)) || !normalize(choiceReason).includes(normalize(item.answer))) {
+      errors.push(`文法 ${item.id}: 選択肢「${choice}」の根拠が選択肢と正答を比較しない`)
+    }
+    if (!usage?.summary || usage.status === 'unresolved') {
+      errors.push(`文法 ${item.id}: 選択肢「${choice}」の使い方が未解決`)
+    }
+    if (choice === item.answer) continue
+    grammarWrongChoicePaths += 1
     const guidance = grammarChoiceGuidanceFor(item, choice)
     const explanation = buildGrammarInstructorExplanation(item, choice, guidance)
     if (!normalize(explanation.trap).includes(normalize(choice))) {
@@ -447,7 +522,9 @@ for (const file of files) {
 
 if (PASSAGES.length < 24 || sentenceCount < 567) errors.push('長文の全対象数が基準を下回る')
 if (longSentenceCount < 33) errors.push('長い一文の全対象数が基準を下回る')
-if (GRAMMAR.length !== 3450 || grammarChoicePaths !== 10350) errors.push('英文法の全対象数が契約と不一致')
+if (GRAMMAR.length !== 3450 || grammarChoicePaths !== 13800 || grammarWrongChoicePaths !== 10350) {
+  errors.push('英文法の全対象数が契約と不一致')
+}
 
 if (errors.length) {
   console.error(`学習者向け品質契約: ${errors.length}件の違反`)
@@ -456,5 +533,5 @@ if (errors.length) {
 }
 
 console.log(
-  `学習者向け品質契約: 違反0 / 語源${ALL_WORDS.length}語・${ETYMOLOGY_PACKS.length}カード / メニュー${APP_MENU_ITEMS.length}項目 / 履歴リセット${PROGRESS_RESET_GROUPS.length}分類・保存${PERSISTED_PROGRESS_FIELDS.length}項目 / 長文${PASSAGES.length}本・${sentenceCount}文・${phraseCount}フレーズ・${blockCount}ブロック / 長い一文${longSentenceCount}件・${longStepCount}フレーズ / 文法${GRAMMAR.length}問・誤答${grammarChoicePaths}経路`,
+  `学習者向け品質契約: 違反0 / 用語監査${learnerTerminologyFiles.length}ファイル / 語源${ALL_WORDS.length}語・${ETYMOLOGY_PACKS.length}カード / メニュー${APP_MENU_ITEMS.length}項目 / 履歴リセット${PROGRESS_RESET_GROUPS.length}分類・保存${PERSISTED_PROGRESS_FIELDS.length}項目 / 長文${PASSAGES.length}本・${sentenceCount}文・${phraseCount}フレーズ・${blockCount}ブロック / 長い一文${longSentenceCount}件・${longStepCount}フレーズ / 文法${GRAMMAR.length}問・4択根拠${grammarChoicePaths}件（誤答${grammarWrongChoicePaths}件）`,
 )

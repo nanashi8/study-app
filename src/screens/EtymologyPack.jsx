@@ -1,25 +1,20 @@
 import { useEffect, useRef } from 'react'
 import { useStore } from '../store/useStore.js'
-import {
-  ETYMOLOGY_MODE_META,
-  getEtymologyPack,
-  getWord,
-} from '../data/vocab.js'
-import {
-  cleanEtymologyMeaningText,
-  etymologyMeaningGuideFor,
-} from '../lib/etymologyMeaning.js'
-import { getLevel } from '../data/levels.js'
+import { getEtymologyPack, getWord } from '../data/vocab.js'
+import { etymologyWordCardReviewState } from '../lib/etymologyProgress.js'
+import { summarizeVocabularySrsItems } from '../lib/vocabScheduler.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
-import {
-  EtymologyFormula,
-  EtymologyHistoryTrail,
-  PosBadge,
-} from '../components/WordBits.jsx'
+import { PosBadge } from '../components/WordBits.jsx'
 import { StatusDistributionBar } from '../components/LearningStatusBars.jsx'
-import { Button, Card, Chip } from '../components/ui.jsx'
-import { learningStatusForSrsEntry, summarizeSrsItems } from '../lib/contentProgress.js'
+import { Button, Card } from '../components/ui.jsx'
 import { ArrowRight, Book, Check } from '../components/Icons.jsx'
+
+const statusLabel = (state) => {
+  if (state.due) return '今日復習'
+  if (state.status === 'mastered') return '学習済み'
+  if (state.status === 'learning') return '学習中'
+  return '未学習'
+}
 
 export function EtymologyPackScreen() {
   const rootRef = useRef(null)
@@ -37,41 +32,24 @@ export function EtymologyPackScreen() {
       <div ref={rootRef}>
         <ScreenHeader title="語源カード" />
         <div className="p-8 text-center font-bold text-ink/50">
-          学習パックが見つかりませんでした。
+          公開できる確認済みカードが見つかりませんでした。
         </div>
       </div>
     )
   }
 
-  const mode = ETYMOLOGY_MODE_META[pack.mode]
-  const meaningGuide = etymologyMeaningGuideFor(pack)
-  const displayTitle = pack.title.replace(/(準?[0-9])級/g, '$1\u2060級')
-  const coverage = new Set(pack.coverageIds)
   const words = pack.studyIds.map(getWord).filter(Boolean)
-  const wordProgress = summarizeSrsItems(words, srs)
-  const wordListHeading = pack.mode === 'formula'
-    ? '部品の意味を比べる'
-    : pack.mode === 'root'
-      ? '同じ語根の語を見比べる'
-      : pack.mode === 'origin'
-        ? '形から今の意味をたどる'
-        : '1語ずつ形と由来を確かめる'
-  const wordListGuide = pack.mode === 'formula'
-    ? '共通する部品があるときだけ、その形と意味を比べます。'
-    : pack.mode === 'root'
-      ? '同じ語根を持つことが確認できた語だけを並べています。'
-      : pack.mode === 'origin'
-        ? '形が表す意味を前からつないで、今の意味を確かめます。'
-        : '学習量をまとめたセットです。語どうしの関係は示していません。'
+  const examples = pack.exampleIds.map(getWord).filter(Boolean)
+  const wordProgress = summarizeVocabularySrsItems(words, srs)
+  const cardState = etymologyWordCardReviewState(pack, srs)
 
-  const study = () =>
-    navigate('vocabStudy', {
-      source: { type: 'deck', ids: pack.studyIds },
-      title: pack.title,
-      mode: 'study',
-      size: pack.studyIds.length,
-      returnTo: { screen: 'etymologyPack', params: { packId: pack.id } },
-    })
+  const studyWords = () => navigate('vocabStudy', {
+    source: { type: 'deck', ids: pack.studyIds, preserveOrder: true },
+    title: `${pack.rootForm}（${pack.rootMeaning}）に紐づく単語`,
+    mode: 'study',
+    size: Math.min(20, pack.studyIds.length),
+    returnTo: { screen: 'etymologyPack', params: { packId: pack.id } },
+  })
 
   return (
     <div ref={rootRef} className="pb-6">
@@ -79,130 +57,122 @@ export function EtymologyPackScreen() {
 
       <div className="space-y-4 px-4">
         <Card className="overflow-hidden">
-          <div className="bg-gradient-to-br from-brand-600 to-violet-700 p-5 text-white">
-            <div className="flex items-center gap-3">
-              <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white/15 text-3xl">
+          <div className="bg-gradient-to-br from-violet-700 to-indigo-700 p-5 text-white">
+            <div className="flex items-start gap-3">
+              <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white/15 text-3xl" aria-hidden="true">
                 {pack.emoji}
               </span>
               <div className="min-w-0 flex-1">
-                <p className="text-xs font-extrabold text-white/75">
-                  {mode.label}
-                </p>
-                <h1 className="font-display text-lg font-extrabold leading-tight">
-                  {displayTitle}
-                </h1>
-                <p className="mt-1 text-xs font-bold text-white/75">{pack.subtitle}</p>
+                <div className="flex items-center justify-between gap-2">
+                  <p className="text-xs font-extrabold text-white/75">確認済み語源カード</p>
+                  <span className="rounded-full bg-white/15 px-2 py-1 text-xs font-extrabold">{statusLabel(cardState)}</span>
+                </div>
+                <h1 className="mt-1 font-display text-2xl font-extrabold leading-tight">{pack.rootForm}</h1>
+                <p className="mt-1 font-display text-lg font-extrabold text-white/90">＝ {pack.rootMeaning}</p>
               </div>
             </div>
           </div>
+
           <div className="space-y-3 p-4">
-            <p className="text-sm font-bold leading-relaxed text-ink/60">
-              {pack.description}
-            </p>
-            {pack.caution && (
-              <p className="rounded-xl bg-amber-50 px-3 py-2 text-xs font-extrabold leading-relaxed text-amber-800 ring-1 ring-amber-100">
-                {pack.caution}
-              </p>
-            )}
             <div className="rounded-2xl bg-emerald-50 px-4 py-3 ring-1 ring-emerald-100">
-              <p className="text-xs font-extrabold text-emerald-700">このカードでつなぐ形と意味</p>
-              <p className="mt-1 break-words font-display text-sm font-extrabold leading-relaxed text-ink">
-                {meaningGuide.statement}
-              </p>
+              <p className="text-xs font-extrabold text-emerald-700">意味の出発点</p>
+              <p className="mt-1 font-display text-base font-extrabold leading-relaxed text-ink">{pack.rootOrigin}</p>
             </div>
-            <div className="rounded-xl bg-brand-50 px-3 py-3">
-              <p className="mb-2 text-xs font-extrabold text-brand-700">
-                このカードの英単語 {words.length}語
-              </p>
-              <StatusDistributionBar kind="learning" counts={wordProgress.learning} compact unit="語" />
-            </div>
-            <div data-etymology-pack-actions>
-              <Button full onClick={study} data-etymology-word-study-action>
-                <Book size={18} /> 単語を覚える
-              </Button>
-            </div>
-            {pack.rootId && (
-              <button
-                type="button"
-                onClick={() => navigate('rootDetail', { rootId: pack.rootId })}
-                className="flex w-full items-center justify-center gap-1.5 rounded-xl bg-violet-50 py-2 text-xs font-extrabold text-violet-700 ring-1 ring-violet-100 active:bg-violet-100"
-              >
-                🌳 同じ語根の全単語を見る
-                <ArrowRight size={14} />
-              </button>
-            )}
+            <p className="text-sm font-bold leading-relaxed text-ink/60">
+              「{pack.rootForm} ＝ {pack.rootMeaning}」を手がかりに、紐づく英単語を覚えます。
+            </p>
+            <p className="rounded-xl bg-amber-50 px-3 py-2 text-xs font-extrabold leading-relaxed text-amber-800 ring-1 ring-amber-100">
+              {pack.caution}
+            </p>
           </div>
         </Card>
 
-        <div>
-          <div className="mb-2 px-1">
-            <h2 className="font-display text-base font-extrabold text-ink/80">
-              {wordListHeading}
-            </h2>
-            <p className="mt-0.5 text-xs font-bold text-ink/45">
-              {wordListGuide}
+        <section className="rounded-2xl bg-white p-3 ring-1 ring-slate-200" data-etymology-pack-actions>
+          <p className="mb-2 text-center text-xs font-extrabold text-violet-700">
+            このカードに紐づく{words.length}語を通常の単語カードで学習
+          </p>
+          <Button full onClick={studyWords} data-etymology-word-study-action>
+            <Book size={18} /> 紐づく単語を暗記
+          </Button>
+        </section>
+
+        <section className="rounded-2xl bg-white p-4 ring-1 ring-slate-200" aria-labelledby="etymology-examples-heading">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <h2 id="etymology-examples-heading" className="font-display text-base font-extrabold text-ink">この形を使う例</h2>
+              <p className="text-xs font-bold text-ink/50">意味を思い出す手がかりとして確認</p>
+            </div>
+            <span className="text-xs font-extrabold text-violet-700">{words.length}語</span>
+          </div>
+          <div className="mt-3 grid gap-2 sm:grid-cols-2">
+            {examples.map((word) => (
+              <div key={word.id} className="rounded-xl bg-violet-50 px-3 py-2 ring-1 ring-violet-100">
+                <div className="flex items-baseline gap-2">
+                  <span className="font-display text-base font-extrabold text-ink">{word.word}</span>
+                  <PosBadge pos={word.pos} />
+                </div>
+                <p className="mt-0.5 text-xs font-bold leading-relaxed text-ink/55">
+                  {word.meanings?.[0] ?? word.meaning}
+                </p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <details className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
+          <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 px-4 text-sm font-extrabold text-slate-700">
+            <span>紐づく単語と学習状況</span>
+            <span className="text-xs text-slate-500">{words.length}語</span>
+          </summary>
+          <div className="space-y-3 border-t border-slate-100 p-4">
+            <StatusDistributionBar kind="learning" counts={wordProgress.learning} compact unit="語" />
+            <ul className="grid gap-2 sm:grid-cols-2">
+              {words.map((word) => (
+                <li key={word.id} className="flex min-w-0 items-baseline gap-2 rounded-xl bg-slate-50 px-3 py-2">
+                  <span className="font-display text-sm font-extrabold text-ink">{word.word}</span>
+                  <span className="min-w-0 flex-1 text-xs font-bold text-ink/50">
+                    {word.meanings?.[0] ?? word.meaning}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </details>
+
+        <details className="overflow-hidden rounded-2xl border border-slate-200 bg-white" data-etymology-evidence>
+          <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 px-4 text-sm font-extrabold text-slate-700">
+            <span className="flex items-center gap-2"><Check size={17} /> 確認記録と出典</span>
+            <span className="text-xs text-slate-500">{pack.evidence.reviewedAt}</span>
+          </summary>
+          <div className="space-y-2 border-t border-slate-100 p-4">
+            <p className="text-xs font-bold leading-relaxed text-slate-500">
+              語根の説明と紐づく全単語を人が確認し、内容が変わったときは監査で検知します。
             </p>
+            <ul className="space-y-1.5">
+              {pack.evidence.sources.map((item) => (
+                <li key={`${item.source}:${item.head}`}>
+                  <a
+                    href={item.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex min-h-10 items-center gap-1.5 text-xs font-extrabold text-violet-700 underline decoration-violet-200 underline-offset-2"
+                  >
+                    {item.source}「{item.head}」
+                    <ArrowRight size={13} />
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
+        </details>
 
-          <div className="space-y-2">
-            {words.map((word) => {
-              const level = getLevel(word.level)
-              const learningStatus = learningStatusForSrsEntry(srs[word.id])
-              const isAnchor = word.id === pack.anchorId
-              const isSupport = !coverage.has(word.id)
-              return (
-                <button
-                  key={word.id}
-                  onClick={() => navigate('wordDetail', { id: word.id })}
-                  className="w-full rounded-2xl bg-white p-3 text-left shadow-sm active:bg-brand-50"
-                >
-                  <div className="flex items-center gap-2">
-                    <PosBadge pos={word.pos} />
-                    <div className="min-w-0 flex-1">
-                      <div className="flex flex-wrap items-center gap-1.5">
-                        <span className="font-display text-lg font-extrabold text-ink">
-                          {word.word}
-                        </span>
-                        <Chip color={level.color}>{level.label}</Chip>
-                        {(isAnchor || isSupport) && (
-                          <span className="rounded-full bg-emerald-50 px-2 py-1 text-xs font-extrabold text-emerald-700 ring-1 ring-emerald-100">
-                            見本の語
-                          </span>
-                        )}
-                        {learningStatus === 'learned' && (
-                          <span className="inline-flex items-center gap-0.5 text-xs font-extrabold text-emerald-600">
-                            <Check size={13} /> 学習済
-                          </span>
-                        )}
-                        {learningStatus === 'reviewing' && (
-                          <span className="text-xs font-extrabold text-amber-600">復習中</span>
-                        )}
-                      </div>
-                      <p className="truncate text-xs font-bold text-ink/55">{word.meaning}</p>
-                    </div>
-                    <span className="text-brand-300"><ArrowRight size={17} /></span>
-                  </div>
-
-                  {pack.mode === 'formula' || (
-                    pack.mode === 'family' && (word.etymology?.parts?.length ?? 0) >= 2
-                  ) ? (
-                    <div className="mt-2.5 pl-8">
-                      <EtymologyFormula word={word} compact />
-                    </div>
-                  ) : pack.mode === 'origin' || pack.mode === 'family' ? (
-                    <div className="mt-2.5 pl-8">
-                      <EtymologyHistoryTrail word={word} compact />
-                    </div>
-                  ) : (
-                    <p className="mt-2 pl-8 text-xs font-bold leading-relaxed text-ink/60">
-                      {cleanEtymologyMeaningText(word.etymology?.note)}
-                    </p>
-                  )}
-                </button>
-              )
-            })}
-          </div>
-        </div>
+        <button
+          type="button"
+          onClick={() => navigate('rootDetail', { rootId: pack.rootId })}
+          className="flex min-h-11 w-full items-center justify-center gap-1.5 rounded-xl bg-violet-50 px-3 text-xs font-extrabold text-violet-700 ring-1 ring-violet-100 active:bg-violet-100"
+        >
+          この語根の一覧を見る <ArrowRight size={14} />
+        </button>
       </div>
     </div>
   )

@@ -127,14 +127,38 @@ test('アプリのホームへ移る操作は履歴を残さない', () => {
   }
 })
 
-test('共通バーに、いまのアプリのホームへ行くボタンがある', () => {
+test('共通バーのアプリ名は保存画面を開かず、いまのアプリのホームへ直接戻る', () => {
   const shell = read('src/components/AppShell.jsx')
   assert.match(shell, /data-global-home-button/)
   assert.match(shell, /appHomeForScreen/)
   assert.match(shell, /goAppHome/)
-  // 学習中は確認をはさみ、確認後も同じ行き先へ進む
-  assert.match(shell, /requiresProgressSaveConfirmation\(screen, home\.screen\)/)
-  assert.match(shell, /openSpeechSettings\(\{ type: 'navigate'/)
+  const handlerStart = shell.indexOf('const goHomeFromBar')
+  const handlerEnd = shell.indexOf('\n\n  return', handlerStart)
+  const handler = shell.slice(handlerStart, handlerEnd)
+  assert.match(handler, /if \(atHome\) goPortal\(\)/)
+  assert.match(handler, /else goAppHome\(\)/)
+  assert.doesNotMatch(handler, /requiresProgressSaveConfirmation|openSpeechSettings/)
+})
+
+test('漢文の暗記・テスト中も上部の「漢文アプリ」から直接ホームへ戻れる', () => {
+  const original = useStore.getState()
+  try {
+    for (const screen of ['kanbunStudy', 'kanbunQuiz', 'kanbunKundokuQuiz']) {
+      useStore.setState({
+        screen,
+        params: { id: 'in-progress' },
+        stack: [{ screen: 'kanbunHome', params: {} }],
+        speechSettingsOpen: false,
+      })
+      assert.equal(appHomeForScreen(screen).label, '漢文アプリ')
+      useStore.getState().goAppHome()
+      assert.equal(useStore.getState().screen, 'kanbunHome', screen)
+      assert.deepEqual(useStore.getState().stack, [], screen)
+      assert.equal(useStore.getState().speechSettingsOpen, false, screen)
+    }
+  } finally {
+    useStore.setState(original, true)
+  }
 })
 
 test('入口へ移るときは履歴を積まない', () => {

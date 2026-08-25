@@ -147,14 +147,16 @@ export function ListeningQuizScreen() {
   }, [i, item?.id])
 
   // コンテンツ画面の「戻る」は履歴でなく、リスニングの内容選択画面へ。
-  const backToListening = () => returnTo('listening')
+  const backToListening = () => params.returnTo?.screen
+    ? returnTo(params.returnTo.screen, params.returnTo.params ?? {})
+    : returnTo('listening')
 
   if (!deck.length) {
     return (
       <div className="flex h-full flex-col items-center justify-center gap-4 p-8 text-center">
         <div className="text-5xl">🎧</div>
         <p className="font-display text-lg font-extrabold text-ink">出題できる問題がありません</p>
-        <Button onClick={backToListening}>もどる</Button>
+        <Button onClick={backToListening}>戻る</Button>
       </div>
     )
   }

@@ -448,6 +448,13 @@ function isShortInternalModifier(item) {
     !/^(?:at|by|for|from|in|into|of|on|to|under|with|without)\b/.test(key)
 }
 
+function isPredicateFocusModifier(item) {
+  if (!item) return false
+  return primaryRole(item) === 'M' &&
+    /^(?:also|always|even|fully|merely|never|not always|not merely|not simply|often|only|simply)$/u
+      .test(normalizedEnglish(item.en))
+}
+
 function collectMeaningGroups(items, wordLimit, separations = []) {
   const separationKeys = new Set(separations.map((value) => normalizedEnglish(value)))
   const mustSeparate = (left, right) =>
@@ -533,6 +540,37 @@ function collectMeaningGroups(items, wordLimit, separations = []) {
     }
 
     if (role === 'V') {
+      const focusModifier = items[index + 1]
+      const focusedVerb = items[index + 2]
+      const auxiliaryWithFocus =
+        /^(?:am|are|be|can|cannot|could|had|has|have|is|may|might|must|shall|should|was|were|will|would)$/u
+          .test(currentKey) &&
+        isPredicateFocusModifier(focusModifier) &&
+        primaryRole(focusedVerb) === 'V'
+      if (auxiliaryWithFocus) {
+        const candidate = [current]
+        let cursor = index + 1
+        while (
+          isPredicateFocusModifier(items[cursor]) &&
+          primaryRole(items[cursor + 1]) === 'V' &&
+          englishWords(spokenEnglish([...candidate, items[cursor], items[cursor + 1]])).length <= wordLimit
+        ) {
+          candidate.push(items[cursor], items[cursor + 1])
+          cursor += 2
+        }
+        while (
+          ARGUMENT_ROLES.has(primaryRole(items[cursor])) &&
+          !isRelativeBoundary(items[cursor]) &&
+          englishWords(spokenEnglish([...candidate, items[cursor]])).length <= wordLimit
+        ) {
+          candidate.push(items[cursor])
+          cursor++
+        }
+        groups.push(candidate)
+        index = cursor
+        continue
+      }
+
       const controlledSubject = items[index + 1]
       const controlledVerb = items[index + 2]
       const controlledBinding = controlledVerb?.infinitiveBinding

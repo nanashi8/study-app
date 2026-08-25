@@ -1,7 +1,11 @@
 // 8分野を横断する「マイ学習ノート」の保存形式。
 // 教材本文は既存データを正本とし、ここには安定ID・ユーザーのメモ・問題集だけを保存する。
+import {
+  createLearningContentPlan,
+  normalizeLearningContentPlan,
+} from './learningContentPlan.js'
 
-export const NOTEBOOK_SCHEMA_VERSION = 1
+export const NOTEBOOK_SCHEMA_VERSION = 2
 
 export const NOTEBOOK_DOMAIN_IDS = Object.freeze([
   'vocab',
@@ -136,6 +140,7 @@ export function createLearningNotebook() {
     entries: {},
     sets: [],
     sessions: [],
+    contentPlan: createLearningContentPlan(),
   }
 }
 
@@ -170,7 +175,18 @@ export function normalizeLearningNotebook(value) {
     entries,
     sets,
     sessions,
+    contentPlan: normalizeLearningContentPlan(source.contentPlan),
   }
+}
+
+// 進捗コードでは、未使用の管理データを省いてQR化に必要な容量を守る。
+// 読込時は normalizeLearningNotebook() が空の contentPlan を補うため、
+// 旧コードとの互換性と端末保存時の扱いは変わらない。
+export function compactLearningNotebook(value) {
+  const notebook = normalizeLearningNotebook(value)
+  if (Object.keys(notebook.contentPlan.entries).length > 0) return notebook
+  const { contentPlan: _unusedContentPlan, ...compact } = notebook
+  return compact
 }
 
 export function notebookEntryFor(notebook, domain, itemId) {

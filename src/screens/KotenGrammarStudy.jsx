@@ -8,6 +8,7 @@ import { Button, Chip, ProgressBar, IconButton } from '../components/ui.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
+import { CardStudyFooter, CardSwipeRegion } from '../components/CardStudyControls.jsx'
 import { growDeck } from '../lib/session.js'
 import {
   ArrowRight,
@@ -29,9 +30,10 @@ function shuffle(items) {
 }
 
 // size=0 は「絞り込みなし」。
-function buildDeck(ids, size = SESSION_SIZE) {
+function buildDeck(ids, size = SESSION_SIZE, preserveOrder = false) {
   const unique = [...new Set(ids ?? [])]
-  const items = shuffle(unique.map(getKotenGrammar).filter(Boolean))
+  const selected = unique.map(getKotenGrammar).filter(Boolean)
+  const items = preserveOrder ? selected : shuffle(selected)
   return size > 0 ? items.slice(0, size) : items
 }
 
@@ -44,9 +46,9 @@ export function KotenGrammarStudyScreen() {
   const settings = useStore((state) => state.settings)
   const revealAll = settings.revealAnswers
 
-  const [poolSize] = useState(() => buildDeck(params.ids, 0).length)
+  const [poolSize] = useState(() => buildDeck(params.ids, 0, params.preserveOrder).length)
   const sessionSize = useSessionSize(poolSize || Infinity)
-  const [deck, setDeck] = useState(() => buildDeck(params.ids, params.size ?? sessionSize))
+  const [deck, setDeck] = useState(() => buildDeck(params.ids, params.size ?? sessionSize, params.preserveOrder))
   const [index, setIndex] = useState(0)
   const [flipped, setFlipped] = useState(revealAll)
   const [done, setDone] = useState(false)
@@ -59,20 +61,22 @@ export function KotenGrammarStudyScreen() {
   const saved = item ? savedIds.includes(item.id) : false
 
   // コンテンツ画面の「戻る」は履歴でなく、古典文法の内容選択画面へ。
-  const backToKotenGrammar = () => returnTo('kotenGrammar')
+  const backToKotenGrammar = () => params.returnTo?.screen
+    ? returnTo(params.returnTo.screen, params.returnTo.params ?? {})
+    : returnTo('kotenGrammar')
 
   if (!deck.length) {
     return (
       <div className="flex h-full flex-col items-center justify-center gap-4 p-8 text-center">
         <div className="text-5xl">🧩</div>
         <p className="font-display text-lg font-extrabold text-ink">学習できる文法がありません</p>
-        <Button onClick={backToKotenGrammar}>もどる</Button>
+        <Button onClick={backToKotenGrammar}>戻る</Button>
       </div>
     )
   }
 
   const restart = () => {
-    setDeck(buildDeck(params.ids, deck.length))
+    setDeck(buildDeck(params.ids, deck.length, params.preserveOrder))
     setIndex(0)
     setFlipped(revealAll)
     setDone(false)
@@ -87,6 +91,11 @@ export function KotenGrammarStudyScreen() {
       setIndex((current) => current + 1)
       setFlipped(revealAll)
     }
+  }
+
+  const moveToCard = (nextIndex) => {
+    setIndex(nextIndex)
+    setFlipped(revealAll)
   }
 
   if (done) {
@@ -117,10 +126,10 @@ export function KotenGrammarStudyScreen() {
           <div className="min-w-0 flex-1">
             <ProgressBar value={index / deck.length} color="#d97706" />
             <p className="mt-1 truncate text-[10px] font-extrabold text-ink/40">
-              {params.title ?? '古典文法を覚える'}
+              {params.title ?? '古典文法を暗記'}
             </p>
           </div>
-          <RevealAnswersToggle label="答え" onChange={(on) => on && setFlipped(true)} />
+          <RevealAnswersToggle label="答え" onChange={(on) => setFlipped(on)} />
           <SpeechSettingsButton compact />
           <SessionCounter
             index={index}
@@ -129,20 +138,25 @@ export function KotenGrammarStudyScreen() {
             label="項目"
             onResize={(size, { discard }) => {
               if (discard) {
-                setDeck(buildDeck(params.ids, size))
+                setDeck(buildDeck(params.ids, size, params.preserveOrder))
                 setIndex(0)
                 setFlipped(revealAll)
                 setDone(false)
                 setRemembered(0)
               } else {
-                setDeck((current) => growDeck(current, index + 1, buildDeck(params.ids, size), size))
+                setDeck((current) => growDeck(current, index + 1, buildDeck(params.ids, size, params.preserveOrder), size))
               }
             }}
           />
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto px-4 pb-4 pt-3">
+      <CardSwipeRegion
+        index={index}
+        total={deck.length}
+        onIndexChange={moveToCard}
+        className="flex-1 overflow-y-auto px-4 pb-4 pt-3"
+      >
         <div
           key={item.id}
           onClick={() => !flipped && setFlipped(true)}
@@ -164,7 +178,7 @@ export function KotenGrammarStudyScreen() {
           </div>
 
           <div className="mt-5 text-center">
-            <p className="text-[11px] font-extrabold tracking-[0.16em] text-amber-600">CLASSICAL GRAMMAR</p>
+            <p className="text-[11px] font-extrabold text-amber-600">古典文法</p>
             <h1 className="mt-2 font-display text-2xl font-extrabold leading-snug text-ink">
               {item.title}
             </h1>
@@ -216,15 +230,15 @@ export function KotenGrammarStudyScreen() {
             </div>
           )}
         </div>
-      </div>
+      </CardSwipeRegion>
 
-      <div className="shrink-0 border-t border-amber-100 bg-white/90 p-4 pb-4 backdrop-blur">
+      <CardStudyFooter className="border-amber-100">
         {!flipped ? (
           <Button full size="lg" onClick={() => setFlipped(true)}>
             答えを見る
           </Button>
         ) : (
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-2">
             <Button variant="danger" size="lg" onClick={() => answer(false)}>
               まだ🤔
             </Button>
@@ -233,7 +247,7 @@ export function KotenGrammarStudyScreen() {
             </Button>
           </div>
         )}
-      </div>
+      </CardStudyFooter>
     </div>
   )
 }

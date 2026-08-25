@@ -3,7 +3,6 @@ import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 
 import { ALL_WORDS } from '../src/data/vocab.js'
-import { buildVocabCompletionReport } from '../src/lib/learningAnalyticsReport.js'
 import { progressStateFromCloud } from '../src/lib/cloudSync.js'
 import { decodeProgress, encodeProgress } from '../src/lib/progressCode.js'
 import {
@@ -14,6 +13,7 @@ import {
   srsStageLabel,
 } from '../src/lib/srs.js'
 import { todayIndex, useStore } from '../src/store/useStore.js'
+import { vocabularyReviewMetrics } from '../src/lib/vocabScheduler.js'
 
 const DAY_MS = 86400000
 
@@ -29,10 +29,11 @@ test('長期定着後は30→60→90→180日の維持復習へ進み、完全�
   const originalNow = Date.now
   const timestamp = new Date(2026, 7, 21, 12, 0, 0, 0).getTime()
   const day = todayIndex(timestamp)
+  let currentTimestamp = timestamp
   const word = ALL_WORDS[0]
 
   try {
-    Date.now = () => timestamp
+    Date.now = () => currentTimestamp
     useStore.setState({
       srs: {
         [word.id]: {
@@ -47,24 +48,27 @@ test('長期定着後は30→60→90→180日の維持復習へ進み、完全�
     })
 
     for (const [expectedBox, expectedDays] of [[7, 60], [8, 90], [9, 180], [9, 180]]) {
+      const reviewDay = todayIndex(currentTimestamp)
       useStore.getState().review(word.id, 'correct', 'vocab')
       const entry = useStore.getState().srs[word.id]
       assert.equal(entry.box, expectedBox)
-      assert.equal(entry.due, day + expectedDays)
+      assert.equal(entry.due, reviewDay + expectedDays)
+      currentTimestamp += expectedDays * DAY_MS
     }
 
+    const wrongDay = todayIndex(currentTimestamp)
     useStore.getState().review(word.id, 'wrong', 'vocab')
     assert.equal(useStore.getState().srs[word.id].box, 8)
-    assert.equal(useStore.getState().srs[word.id].due, day + 90)
+    assert.equal(useStore.getState().srs[word.id].due, wrongDay + 90)
 
     useStore.setState({
       srs: {
-        [word.id]: { ...useStore.getState().srs[word.id], box: 9, due: day + 180 },
+        [word.id]: { ...useStore.getState().srs[word.id], box: 9, due: wrongDay + 180 },
       },
     })
     useStore.getState().review(word.id, 'forgot', 'vocab')
     assert.equal(useStore.getState().srs[word.id].box, 0)
-    assert.equal(useStore.getState().srs[word.id].due, day)
+    assert.equal(useStore.getState().srs[word.id].due, wrongDay)
   } finally {
     Date.now = originalNow
     useStore.setState(original, true)
@@ -154,16 +158,17 @@ test('維持復習へ進むほど30日後の定着予測は水平に近づき、
     memory: { passes: 8, remembered: 8, forgot: 0, lastJudgment: 'remembered' },
     test: { attempts: 5, correct: 5, wrong: 0, unknown: 0, lastResult: 'correct' },
   })
-  const retentionAt30 = (box) => buildVocabCompletionReport({
-    srs: { [word.id]: row(box) },
-    wordIds: [word.id],
-    now,
-  }).curve.find((point) => point.day === 30).retention
+  const retentionAt30 = (box) => vocabularyReviewMetrics(
+    row(box),
+    { now: now + 30 * DAY_MS, day: todayIndex(now) + 30 },
+  ).retention
 
   assert.ok(retentionAt30(9) > retentionAt30(6))
+  const analyticsModel = readFileSync(new URL('../src/lib/learningAnalyticsReport.js', import.meta.url), 'utf8')
   const analyticsUi = readFileSync(new URL('../src/components/LearningAnalytics.jsx', import.meta.url), 'utf8')
   const completionUi = readFileSync(new URL('../src/components/VocabCompletionReport.jsx', import.meta.url), 'utf8')
-  assert.match(analyticsUi, /\{MAX_SRS_BOX\}/)
+  assert.match(analyticsModel, /MAX_SRS_BOX/)
+  assert.doesNotMatch(analyticsUi, /\{MAX_SRS_BOX\}/)
   assert.match(completionUi, /data-maintenance-review-policy/)
   assert.match(completionUi, /30→60→90→180日/)
 })

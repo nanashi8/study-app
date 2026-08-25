@@ -357,7 +357,7 @@ export function buildListeningDeck(
 ) {
   if (source.type === 'listeningList') {
     const reviewItems = (source.ids ?? []).map(getListeningItem).filter(Boolean)
-    const deck = shuffled(reviewItems, rng)
+    const deck = source.preserveOrder ? reviewItems : shuffled(reviewItems, rng)
     return size ? deck.slice(0, size) : deck
   }
 

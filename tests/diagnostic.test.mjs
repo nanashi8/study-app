@@ -75,6 +75,11 @@ test('診断問題は連続3回すべて入れ替わり、同じ回は再現で�
       assert.equal(new Set(question.choices).size, 4, question.id)
       assert.ok(question.choices.includes(question.answer), question.id)
       assert.ok(question.sourceId, question.id)
+      if (question.skill === 'grammar') {
+        assert.ok(question.promptJa, `${question.id}: 文法問題の目標の意味がありません`)
+        assert.match(question.explain, /空所は「.+」に決まる/)
+        assert.ok(question.explain.includes(question.answer), question.id)
+      }
     }
     for (const skill of DIAGNOSTIC_SKILLS) {
       assert.equal(questions.filter((question) => question.skill === skill.id).length, 7)
@@ -216,7 +221,7 @@ test('おすすめは最初の弱点級、診断根拠、個人の時間帯、�
   )
 })
 
-test('時刻別の実績が足りない場合は19時を暫定提案し、測定と断定しない', () => {
+test('時間帯ごとの記録が足りない場合は19時を仮に選び、個人向けと断定しない', () => {
   const result = scoreDiagnostic(allCorrect(), {
     completedAt: '2026-07-29T12:00:00.000Z',
   })
@@ -235,11 +240,11 @@ test('時刻別の実績が足りない場合は19時を暫定提案し、測定
 
   assert.equal(guidance.recommendation.kind, 'stretch')
   assert.equal(guidance.recommendation.screen, 'vocabLevels')
-  assert.equal(guidance.recommendation.routeLabel, '級別英単語クイズ')
+  assert.equal(guidance.recommendation.routeLabel, '級別英単語テスト')
   assert.equal(guidance.time.startHour, 19)
   assert.equal(guidance.time.personalized, false)
   assert.equal(guidance.time.provisional, true)
-  assert.match(guidance.time.evidence, /仮設定/)
+  assert.match(guidance.time.evidence, /仮に選びました/)
   assert.equal(guidance.memory.available, false)
 })
 
@@ -283,7 +288,9 @@ test('診断結果は成績表、根拠付きおすすめ、次回計画を答�
   assert.match(source, /なぜ、これがおすすめ？/)
   assert.match(source, /data-diagnostic-study-plan/)
   assert.match(source, /次回は、ここから/)
-  assert.match(source, /脳波や医療検査による「脳力」の測定ではありません/)
+  assert.match(source, /この予定は、これまでの回答から選んだ目安です/)
+  assert.match(source, /公式試験や医療検査の結果ではありません/)
+  assert.doesNotMatch(source, /覚え具合|回答履歴からの推定|脳力|まだ判定できません/)
   assert.ok(
     source.indexOf('<PerformanceReport') < source.indexOf('<AnswerReview'),
     '成績と次回計画を全28問の答え合わせより先に読める',

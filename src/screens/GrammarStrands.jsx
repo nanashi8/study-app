@@ -101,7 +101,7 @@ function StrandCard({ overview, onStart, onPickLevel }) {
           ) : weakest ? (
             <>
               <b className="text-rose-700">{getLevel(weakest.level).label}（{percent(weakest.accuracy)}）</b>
-              に苦手が残っていますが、直近の成績にあわせて
+              に苦手が残っていますが、最近の成績にあわせて
               <b className="text-ink">{currentMeta.label}</b>を練習します。
             </>
           ) : (
@@ -165,7 +165,7 @@ export function GrammarStrandsScreen() {
   const start = (overview, level = null) => {
     const target = level ?? overview.currentLevel
     const meta = getLevel(target)
-    // 級を選び直したときは、その段を現在地として覚える。
+    // 級を選び直したときは、その段を現在地として保持する。
     if (level) {
       const index = overview.levels.indexOf(level)
       if (index >= 0) setGrammarStrandPos(overview.strand.id, index)

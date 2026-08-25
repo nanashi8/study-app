@@ -10,6 +10,7 @@
 import { EXAM_PHRASES } from './phrases-exam.js'
 import { PHRASE_LEVEL_TARGETS } from './phrase-curriculum.js'
 import { CURRICULUM_IDIOMS } from './phrases-bank.js'
+import { CURRICULUM_1900_IDIOMS } from './phrases-curriculum-1900.js'
 import { buildGrammarSyntaxPhrases } from './phrases-grammar.js'
 
 const CORE_PHRASES = [
@@ -385,7 +386,12 @@ const CORE_PHRASES = [
     note: 'It is not until ~ that … の強調構文が頻出。' },
 ]
 
-const PHRASES_BEFORE_GRAMMAR = [...CORE_PHRASES, ...EXAM_PHRASES, ...CURRICULUM_IDIOMS]
+const PHRASES_BEFORE_GRAMMAR = [
+  ...CORE_PHRASES,
+  ...EXAM_PHRASES,
+  ...CURRICULUM_IDIOMS,
+  ...CURRICULUM_1900_IDIOMS,
+]
 
 const syntaxNeedsByLevel = Object.fromEntries(
   Object.entries(PHRASE_LEVEL_TARGETS).map(([level, target]) => [

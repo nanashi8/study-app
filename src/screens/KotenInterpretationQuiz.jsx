@@ -33,8 +33,9 @@ function shuffle(items) {
 }
 
 // size=0 は「絞り込みなし」。
-function buildDeck(ids, size = 12) {
-  const items = shuffle((ids ?? []).map(getKotenInterpretation).filter(Boolean))
+function buildDeck(ids, size = 12, preserveOrder = false) {
+  const selected = (ids ?? []).map(getKotenInterpretation).filter(Boolean)
+  const items = preserveOrder ? selected : shuffle(selected)
   return size > 0 ? items.slice(0, size) : items
 }
 
@@ -66,9 +67,9 @@ export function KotenInterpretationQuizScreen() {
   const toggleGrammar = useStore((state) => state.toggleKotenGrammarList)
 
   const [run, setRun] = useState(0)
-  const [poolSize] = useState(() => buildDeck(params.ids, 0).length)
+  const [poolSize] = useState(() => buildDeck(params.ids, 0, params.preserveOrder).length)
   const sessionSize = useSessionSize(poolSize || Infinity)
-  const [deck, setDeck] = useState(() => buildDeck(params.ids, params.size ?? sessionSize))
+  const [deck, setDeck] = useState(() => buildDeck(params.ids, params.size ?? sessionSize, params.preserveOrder))
   const [index, setIndex] = useState(0)
   const [selected, setSelected] = useState(null)
   const [correct, setCorrect] = useState(0)
@@ -80,12 +81,14 @@ export function KotenInterpretationQuizScreen() {
   const isCorrect = answered && selected === item?.answer
 
   // コンテンツ画面の「戻る」は履歴でなく、短文解釈の内容選択画面へ。
-  const backToKotenInterpretationList = () => returnTo('kotenInterpretationList')
+  const backToKotenInterpretationList = () => params.returnTo?.screen
+    ? returnTo(params.returnTo.screen, params.returnTo.params ?? {})
+    : returnTo('kotenInterpretationList')
 
   const restart = () => {
     const nextRun = run + 1
     setRun(nextRun)
-    setDeck(buildDeck(params.ids, deck.length))
+    setDeck(buildDeck(params.ids, deck.length, params.preserveOrder))
     setIndex(0)
     setSelected(null)
     setCorrect(0)
@@ -97,7 +100,7 @@ export function KotenInterpretationQuizScreen() {
       <div className="flex h-full flex-col items-center justify-center gap-4 p-8 text-center">
         <div className="text-5xl">📜</div>
         <p className="font-display text-lg font-extrabold text-ink">出題できる短文がありません</p>
-        <Button onClick={backToKotenInterpretationList}>もどる</Button>
+        <Button onClick={backToKotenInterpretationList}>戻る</Button>
       </div>
     )
   }
@@ -118,7 +121,7 @@ export function KotenInterpretationQuizScreen() {
         </p>
         <div className="grid w-full max-w-xs grid-cols-2 gap-3">
           <Button variant="secondary" onClick={restart}>もう一度</Button>
-          <Button onClick={backToKotenInterpretationList}>もどる</Button>
+          <Button onClick={backToKotenInterpretationList}>戻る</Button>
         </div>
       </div>
     )
@@ -162,13 +165,13 @@ export function KotenInterpretationQuizScreen() {
           onResize={(size, { discard }) => {
             if (discard) {
               setRun((current) => current + 1)
-              setDeck(buildDeck(params.ids, size))
+              setDeck(buildDeck(params.ids, size, params.preserveOrder))
               setIndex(0)
               setSelected(null)
               setCorrect(0)
               setDone(false)
             } else {
-              setDeck((current) => growDeck(current, index + 1, buildDeck(params.ids, size), size))
+              setDeck((current) => growDeck(current, index + 1, buildDeck(params.ids, size, params.preserveOrder), size))
             }
           }}
         />

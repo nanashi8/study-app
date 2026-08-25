@@ -12,7 +12,7 @@ test('龍脈調査入口は世界の異変・日常調査・五地点の進捗�
   assert.match(source, /DailyDistortionCard/)
   assert.match(source, /DRAGON_VEIN_NODES\.map/)
   assert.match(source, /単語100語・熟語と構文100題/)
-  assert.match(source, /1級EXTRA/)
+  assert.match(source, /1級の追加ステージ/)
   assert.match(source, /\[\.\.\.SESSION_SIZE_OPTIONS, SESSION_SIZE_ALL\]/)
   assert.doesNotMatch(source.slice(
     source.indexOf('export function AfterSchoolChronicleScreen'),
@@ -62,7 +62,7 @@ test('単語・熟語・結果画面が解答状況と連続正解を表情へ�
   }
   assert.match(result, /data-testid="dragon-vein-result"/)
   assert.match(result, /expressionStreak = accuracy >= 0\.9 \? 5/)
-  assert.match(result, /記憶の文脈が鮮明に戻った/)
+  assert.match(result, /龍脈の絡みがほどけていく/)
   assert.match(result, /復元断片/)
   assert.doesNotMatch(result, /battle-result-console|enemyDefeated|対戦結果|撃破/)
 })

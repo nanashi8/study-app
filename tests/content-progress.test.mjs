@@ -58,7 +58,7 @@ const expectedContentIds = [
   'math',
 ]
 
-test('暗記とクイズは同じ項目でも独立した3区分として集計する', () => {
+test('暗記とテストは同じ項目でも独立した3区分として集計する', () => {
   const items = ['remembered-wrong', 'forgot-correct', 'quiz-only', 'untouched', 'legacy-long', 'legacy-short']
   const srs = {
     'remembered-wrong': {
@@ -98,7 +98,7 @@ test('暗記とクイズは同じ項目でも独立した3区分として集計�
   assert.equal(quizStatusForSrsEntry(srs['legacy-long']), 'unanswered')
 })
 
-test('実ストアでも後のクイズが学習判定を、後の自己判定がクイズ結果を上書きしない', () => {
+test('実ストアでも後のテストが学習判定を、後の自己判定がテスト結果を上書きしない', () => {
   const original = useStore.getState()
   const fresh = createInitialLearningState()
   try {
@@ -123,7 +123,7 @@ test('実ストアでも後のクイズが学習判定を、後の自己判定�
   }
 })
 
-test('SRS外教材は完了状態と直近クイズ結果を独立して保存・集計する', () => {
+test('SRS外教材は完了状態と直近テスト結果を独立して保存・集計する', () => {
   let quizResults = recordContentQuizResult({}, {
     domain: 'reading',
     itemId: 'passage-a',
@@ -181,13 +181,13 @@ test('全18教材の母集団は重複なく、空状態でも両方の3区分�
     assert.equal(statusTotal(row.progress.quiz, QUIZ_STATUS_KEYS), row.progress.quizTotal)
   }
   const etymology = rows.find((row) => row.id === 'etymology')
-  assert.equal(etymology.label, '語源から覚える')
+  assert.equal(etymology.label, '語源から暗記')
   assert.equal(etymology.store, 'srs')
   assert.equal(etymology.hasQuiz, false)
   assert.equal(etymology.progress.quizTotal, 0)
 })
 
-test('1項目に複数問ある教材は、クイズだけ出題数を母数にする', () => {
+test('1項目に複数問ある教材は、テストだけ出題数を母数にする', () => {
   const rows = buildLearningContentProgress(createInitialLearningState())
   const byId = Object.fromEntries(rows.map((row) => [row.id, row]))
 
@@ -223,7 +223,7 @@ test('1項目に複数問ある教材は、クイズだけ出題数を母数に�
   assert.equal(grammar.progress.learning.unlearned, 74)
 })
 
-test('SRS外クイズ結果は端末・進捗コード・クラウド・リセット契約を往復する', () => {
+test('SRS外テスト結果は端末・進捗コード・クラウド・リセット契約を往復する', () => {
   const fresh = createInitialLearningState()
   const contentQuizResults = recordContentQuizResult({}, {
     domain: 'math',
@@ -245,7 +245,7 @@ test('SRS外クイズ結果は端末・進捗コード・クラウド・リセ�
   assert.deepEqual(progressStateFromCloud(decoded, fresh).contentQuizResults, contentQuizResults)
 })
 
-test('長文・名作・数学の採点画面は教材別の直近クイズ結果を書き込む', () => {
+test('長文・名作・数学の採点画面は教材別の直近テスト結果を書き込む', () => {
   const writers = [
     ['../src/components/ReadingComprehensionCheck.jsx', /recordContentQuizResult\('reading', passageId/],
     ['../src/screens/LiteratureReader.jsx', /recordContentQuizResult\(\s*'literature'/],
@@ -281,12 +281,18 @@ test('共通バーは指定の6ラベル・6区分・3色ずつを一元定義�
   }
   assert.match(source, /data-status-segment=\{key\}/)
   assert.match(source, /showQuiz = true/)
+  assert.match(source, /export function LearningStatusLegend/)
+  assert.match(source, /data-learning-status-legend/)
 
   const myLearning = readFileSync(new URL('../src/screens/MyLearning.jsx', import.meta.url), 'utf8')
   const progress = readFileSync(new URL('../src/screens/Progress.jsx', import.meta.url), 'utf8')
   assert.match(myLearning, /LEARNING_CONTENT_GROUPS\.map/)
   assert.match(myLearning, /buildLearningContentProgress/)
-  assert.match(myLearning, /shrink-0 items-center gap-1 whitespace-nowrap/)
+  assert.match(myLearning, /data-learning-record-summary/)
+  assert.match(myLearning, /<LearningStatusLegend/)
+  assert.match(myLearning, /showLegend=\{false\}/)
+  assert.match(myLearning, /暗記・テストの記録/)
+  assert.doesNotMatch(myLearning, /PERSONAL LEARNING INDEX|保存した項目/)
   assert.match(progress, /data-all-content-status/)
   assert.match(progress, /buildLearningContentProgress/)
   assert.match(progress, /table-fixed border-collapse/)
@@ -295,7 +301,6 @@ test('共通バーは指定の6ラベル・6区分・3色ずつを一元定義�
   assert.match(progress, /showQuiz=\{content\.hasQuiz\}/)
 
   for (const file of [
-    '../src/components/VocabCompletionReport.jsx',
     '../src/screens/Diagnostic.jsx',
     '../src/screens/EtymologyPack.jsx',
     '../src/screens/ReadingPrep.jsx',

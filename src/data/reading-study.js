@@ -3,6 +3,8 @@ import { resolvePassageWord } from './passage-gloss.js'
 import { PASSAGE_DICTIONARY_WORD_IDS } from './reading-words.js'
 import { EXAM_READING_STUDY } from './reading-study-exam.js'
 import { EXPANDED_READING_STUDY } from './reading-expansion-study.js'
+import { CURRENT_AFFAIRS_READING_STUDY } from './reading-current-affairs-study.js'
+import { EXTENDED_READING_STUDY } from './reading-extended-study.js'
 import { getWord } from './vocab.js'
 
 // 本文固有の表現。kind は既存の熟語カードエンジンと共通で、
@@ -23,6 +25,8 @@ const expression = (id, level, phrase, meaning, en, ja, note, kind = 'idiom') =>
 export const READING_STUDY = {
   ...EXAM_READING_STUDY,
   ...EXPANDED_READING_STUDY,
+  ...CURRENT_AFFAIRS_READING_STUDY,
+  ...EXTENDED_READING_STUDY,
   p_5_lost_notebook: {
     phraseIds: [],
     expressions: [
@@ -497,6 +501,7 @@ export function getReadingStudy(passage) {
 }
 
 export function passageWordCount(passage) {
+  if (passage?.extended && Number.isInteger(passage.actualWords)) return passage.actualWords
   const text = (passage?.sentences ?? []).map((sentence) => sentence.en).join(' ')
   return text.match(/[A-Za-z0-9]+(?:['’-][A-Za-z0-9]+)*/g)?.length ?? 0
 }

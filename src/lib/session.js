@@ -10,10 +10,12 @@ import {
   shuffle,
 } from '../data/vocab.js'
 import { phrasesByKind, phrasesByLevel, getPhrase } from '../data/phrases.js'
+import { relatedIdiomForms } from '../data/idiom-form-families.js'
 import { quizMeaningKey } from '../data/compact.js'
 import { LEVELS } from '../data/levels.js'
 import { LEVEL_ORDER, enemyLevelIndex, clampPos } from './adaptive.js'
 import { todayIndex } from '../store/useStore.js'
+import { vocabularyReviewMetrics } from './vocabScheduler.js'
 
 export const SESSION_SIZE = 10
 
@@ -94,11 +96,24 @@ export function wordsForSource(source = {}) {
   }
 }
 
-function rank(word, srs, day) {
+function legacyRank(word, srs, day) {
   const e = srs[word.id]
   if (!e) return 1 // 未習
   if (e.due <= day) return 0 // 復習どき
-  return 2 // まだ期限前
+  return 2 // まだ復習日前
+}
+
+// 旧来の固定配分を参照する保存済みテストとの互換値。実際の通常セッションは
+// 下の適応プロファイルで新しい語・別の語を30〜60%に調整する。
+export const AUTOMATIC_VOCAB_REVIEW_SHARE = 0.6
+
+function vocabularyRank(word, srs, now, day) {
+  const metrics = vocabularyReviewMetrics(srs[word.id], { now, day })
+  if (metrics.needsReview && metrics.learningStatus === 'reviewing') return 0
+  if (metrics.needsReview) return 1
+  if (metrics.learningStatus === 'unlearned') return 2
+  if (metrics.learningStatus === 'reviewing') return 3
+  return 4
 }
 
 const AUTOMATIC_VOCAB_SOURCES = new Set([
@@ -209,7 +224,7 @@ function automaticVocabularyBuckets(pool, srs, day, purpose) {
   const waiting = pool.filter((word) => (
     Number.isFinite(srs[word.id]?.due) && srs[word.id].due > day
   ))
-  // 暗記は未学習語を先に、クイズは学習済みの別の語を先にする。
+  // 暗記は未学習語を先に、テストは学習済みの別の語を先にする。
   // 期限前の安定語は、優先側の在庫が足りないときだけ補充に使う。
   const variety = purpose === 'quiz'
     ? [...waiting, ...unlearned]
@@ -310,30 +325,50 @@ export function buildDeck(
     srs = {},
     size = SESSION_SIZE,
     purpose = 'study',
-    day = todayIndex(),
+    now = Date.now(),
+    day = todayIndex(now),
   } = {},
 ) {
-  let pool = shuffle(wordsForSource(source))
+  // 一覧で明示的に選んだ語は、学習者が並べ替えた順をそのまま使う。
+  // 通常の級・分野学習はこれまでどおりシャッフルと復習優先順位を適用する。
+  const preserveSourceOrder = source.type === 'deck' && source.preserveOrder === true
+  let pool = preserveSourceOrder
+    ? wordsForSource(source)
+    : shuffle(wordsForSource(source))
   if (source.type === 'due') {
-    pool = pool.filter((w) => srs[w.id] && srs[w.id].due <= day)
+    pool = pool.filter((word) => (
+      vocabularyReviewMetrics(srs[word.id], { now, day }).needsReview
+    ))
   }
   if (source.type === 'review') {
-    // 期限前でも学習済みの語だけを復習できる。
+    // 復習日前でも学習済みの語だけを確認できる。
     // 未着手語を「先取り復習」に混ぜない。
-    pool = pool.filter((w) => Number.isFinite(srs[w.id]?.due))
+    pool = pool.filter((word) => (
+      vocabularyReviewMetrics(srs[word.id], { now, day }).learningStatus !== 'unlearned'
+    ))
   }
-  pool.sort((a, b) => {
-    if (source.type === 'review') {
-      const dueDifference = srs[a.id].due - srs[b.id].due
-      if (dueDifference !== 0) return dueDifference
-    }
-    const ra = rank(a, srs, day)
-    const rb = rank(b, srs, day)
-    if (ra !== rb) return ra - rb
-    const ba = srs[a.id]?.box ?? 0
-    const bb = srs[b.id]?.box ?? 0
-    return ba - bb // box が低い（苦手）ほど先
-  })
+  if (purpose === 'study' && AUTOMATIC_VOCAB_SOURCES.has(source.type)) {
+    pool = pool.filter((word) => (
+      vocabularyReviewMetrics(srs[word.id], { now, day }).shouldAutoAppear
+    ))
+  }
+  if (!preserveSourceOrder) {
+    pool.sort((a, b) => {
+      if (source.type === 'review') {
+        const dueDifference = (srs[a.id]?.due ?? Infinity) - (srs[b.id]?.due ?? Infinity)
+        if (dueDifference !== 0) return dueDifference
+      }
+      const ra = vocabularyRank(a, srs, now, day)
+      const rb = vocabularyRank(b, srs, now, day)
+      if (ra !== rb) return ra - rb
+      const aScore = vocabularyReviewMetrics(srs[a.id], { now, day }).score
+      const bScore = vocabularyReviewMetrics(srs[b.id], { now, day }).score
+      if (aScore !== bScore) return aScore - bScore
+      const ba = srs[a.id]?.box ?? 0
+      const bb = srs[b.id]?.box ?? 0
+      return ba - bb // box が低い（苦手）ほど先
+    })
+  }
   if (size && AUTOMATIC_VOCAB_SOURCES.has(source.type)) {
     pool = balancedAutomaticDeck(pool, srs, day, size, purpose)
   }
@@ -358,18 +393,22 @@ export function levelProgress(levelId, srs) {
 
 /** 任意の単語集合について、既習・習得・復習どき件数を集計する。 */
 export function wordProgress(words, srs = {}) {
-  const day = todayIndex()
+  const now = Date.now()
+  const day = todayIndex(now)
   let seen = 0
   let mastered = 0
   let due = 0
+  let ready = 0
   for (const w of words) {
     const e = srs[w.id]
-    if (!e) continue
+    const metrics = vocabularyReviewMetrics(e, { now, day })
+    if (metrics.shouldAutoAppear) ready++
+    if (metrics.learningStatus === 'unlearned') continue
     seen++
-    if (e.box >= 4) mastered++
-    if (e.due <= day) due++
+    if (e?.box >= 4) mastered++
+    if (metrics.needsReview) due++
   }
-  return { total: words.length, seen, mastered, due }
+  return { total: words.length, seen, mastered, due, ready }
 }
 
 // ── 弱点ナビ：下の級（＝前提）が足を引っ張っていないか検知する ──
@@ -411,13 +450,17 @@ function phraseCandidates(source) {
 
 export function buildPhraseDeck(source, { srs = {}, size = SESSION_SIZE } = {}) {
   const day = todayIndex()
-  let pool = shuffle(phraseCandidates(source))
+  let pool = phraseCandidates(source)
+  if (source.type === 'phraseList' && source.preserveOrder) {
+    return size ? pool.slice(0, size) : pool
+  }
+  pool = shuffle(pool)
   if (source.type === 'phraseDue') {
     pool = pool.filter((p) => srs[p.id] && srs[p.id].due <= day)
   }
   pool.sort((a, b) => {
-    const ra = rank(a, srs, day)
-    const rb = rank(b, srs, day)
+    const ra = legacyRank(a, srs, day)
+    const rb = legacyRank(b, srs, day)
     if (ra !== rb) return ra - rb
     return (srs[a.id]?.box ?? 0) - (srs[b.id]?.box ?? 0)
   })
@@ -431,6 +474,7 @@ export function buildPhraseDeck(source, { srs = {}, size = SESSION_SIZE } = {}) 
 export function pickPhraseDistractors(phrase, count, rng = Math.random) {
   const candidates = phrasesByKind(phrase.kind).filter((item) => item.id !== phrase.id)
   const tiers = [
+    phrase.kind === 'idiom' ? relatedIdiomForms(phrase, 12) : [],
     candidates.filter((item) =>
       item.level === phrase.level && item.category === phrase.category),
     candidates.filter((item) => item.level === phrase.level),
@@ -486,7 +530,8 @@ export function suggestStartPosition(srs) {
 
 /** 全体の習得数・期限切れ数。 */
 export function overallProgress(srs) {
-  const day = todayIndex()
+  const now = Date.now()
+  const day = todayIndex(now)
   // 文法・熟語も同じ SRS 名前空間を使うため、英単語だけを明示的に数える。
   // Object.keys(srs) を数えるとホームの「N語」と単語復習デッキが食い違う。
   let mastered = 0
@@ -494,10 +539,11 @@ export function overallProgress(srs) {
   let seen = 0
   for (const word of ALL_WORDS) {
     const entry = srs[word.id]
-    if (!entry) continue
+    const metrics = vocabularyReviewMetrics(entry, { now, day })
+    if (metrics.learningStatus === 'unlearned') continue
     seen++
-    if (entry.box >= 4) mastered++
-    if (entry.due <= day) due++
+    if (entry?.box >= 4) mastered++
+    if (metrics.needsReview) due++
   }
   return { seen, mastered, due, total: ALL_WORDS.length }
 }

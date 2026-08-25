@@ -3,8 +3,11 @@ import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 
 import { ALL_WORDS, wordsByLevel } from '../src/data/vocab.js'
+import { LEVELS } from '../src/data/levels.js'
+import { LEARNING_FIELD_TOC } from '../src/data/decks.js'
 import {
   AUTOMATIC_VOCAB_MIX_PROFILES,
+  AUTOMATIC_VOCAB_REVIEW_SHARE,
   automaticVocabSessionPlan,
   buildDeck,
   nextVocabularyReviewInDays,
@@ -14,12 +17,15 @@ import {
   appendReviewMark,
   reviewMarksForEntry,
 } from '../src/lib/reviewHistory.js'
-import { buildVocabCompletionReport } from '../src/lib/learningAnalyticsReport.js'
+import {
+  summarizeVocabularySrsItems,
+  vocabularyReviewMetrics,
+} from '../src/lib/vocabScheduler.js'
 import { progressStateFromCloud } from '../src/lib/cloudSync.js'
 import { decodeProgress, encodeProgress } from '../src/lib/progressCode.js'
 import { INTERVALS, todayIndex, useStore } from '../src/store/useStore.js'
 
-test('学習とクイズの判定は語彙ごとに期限を伸縮し、直近の○×を分けて残す', () => {
+test('語彙ごとの正解履歴と経過時間で期限を伸縮し、同日連打では段階を上げない', () => {
   const original = useStore.getState()
   const originalNow = Date.now
   const timestamp = new Date(2026, 7, 21, 12, 0, 0, 0).getTime()
@@ -34,55 +40,62 @@ test('学習とクイズの判定は語彙ごとに期限を伸縮し、直近�
           box: 2,
           correct: 1,
           wrong: 0,
-          due: day + INTERVALS[2],
-          last: day - 1,
-          lastAt: timestamp - 86400000,
+          due: day,
+          last: day - 2,
+          lastAt: timestamp - 2 * 86400000,
         },
       },
     })
-    const beforeCurve = buildVocabCompletionReport({
-      srs: useStore.getState().srs,
-      wordIds: [word.id],
-      now: timestamp,
-    }).curve.at(-1).retention
+    const beforeRetention = vocabularyReviewMetrics(
+      useStore.getState().srs[word.id],
+      { now: timestamp, day },
+    ).retention
+    const beforeScore = vocabularyReviewMetrics(
+      useStore.getState().srs[word.id],
+      { now: timestamp, day },
+    ).score
 
     useStore.getState().review(word.id, 'remembered', 'vocab')
     let entry = useStore.getState().srs[word.id]
     assert.equal(entry.box, 3)
-    assert.equal(entry.due, day + INTERVALS[3])
+    assert.ok(entry.due >= day + INTERVALS[3])
     assert.deepEqual(reviewMarksForEntry(entry), { memory: [1], test: [] })
-    const afterCurve = buildVocabCompletionReport({
-      srs: useStore.getState().srs,
-      learningAnalytics: useStore.getState().learningAnalytics,
-      wordIds: [word.id],
-      now: timestamp,
-    }).curve.at(-1).retention
-    assert.ok(afterCurve > beforeCurve, '先取りの「覚えた」は7日後の定着予測へ反映する')
+    const firstDue = entry.due
+    const firstScore = vocabularyReviewMetrics(entry, { now: timestamp, day }).score
+    const afterRetention = vocabularyReviewMetrics(entry, { now: timestamp, day }).retention
+    assert.ok(afterRetention > beforeRetention, '復習日に「覚えた」と答えると次回計算へ反映する')
+    assert.ok(firstScore > beforeScore, '期限到来後に思い出せた語の定着スコアが上がる')
+
+    // 同じ日に続けて押しても、時間を空けた想起とは扱わない。
+    useStore.getState().review(word.id, 'remembered', 'vocab')
+    entry = useStore.getState().srs[word.id]
+    assert.equal(entry.box, 3)
+    assert.equal(entry.due, firstDue)
 
     useStore.getState().review(word.id, 'correct', 'vocab')
     entry = useStore.getState().srs[word.id]
-    assert.equal(entry.box, 4)
-    assert.equal(entry.due, day + INTERVALS[4])
+    assert.equal(entry.box, 3)
+    assert.equal(entry.due, firstDue)
 
     useStore.getState().review(word.id, 'wrong', 'vocab')
     entry = useStore.getState().srs[word.id]
-    assert.equal(entry.box, 3)
-    assert.equal(entry.due, day + INTERVALS[3])
+    assert.equal(entry.box, 2)
+    assert.equal(entry.due, day + 1)
 
     useStore.getState().review(word.id, 'forgot', 'vocab')
     entry = useStore.getState().srs[word.id]
     assert.equal(entry.box, 0)
     assert.equal(entry.due, day)
     assert.deepEqual(reviewMarksForEntry(entry), {
-      memory: [1, 0],
+      memory: [1, 1, 0],
       test: [1, 0],
     })
 
     const decoded = decodeProgress(encodeProgress(useStore.getState()))
-    assert.deepEqual(decoded.srs[word.id].memory.marks, [1, 0])
+    assert.deepEqual(decoded.srs[word.id].memory.marks, [1, 1, 0])
     assert.deepEqual(decoded.srs[word.id].test.marks, [1, 0])
     const cloud = progressStateFromCloud({ srs: decoded.srs }, useStore.getState())
-    assert.deepEqual(cloud.srs[word.id].memory.marks, [1, 0])
+    assert.deepEqual(cloud.srs[word.id].memory.marks, [1, 1, 0])
     assert.deepEqual(cloud.srs[word.id].test.marks, [1, 0])
   } finally {
     Date.now = originalNow
@@ -90,7 +103,7 @@ test('学習とクイズの判定は語彙ごとに期限を伸縮し、直近�
   }
 })
 
-test('○×履歴は学習とクイズそれぞれ直近5回に制限する', () => {
+test('○×履歴は暗記とテストそれぞれ直近5回に制限する', () => {
   let marks = []
   for (const successful of [true, false, true, true, false, false, true]) {
     marks = appendReviewMark(marks, successful)
@@ -131,58 +144,14 @@ test('期限未到来でも学習済み語だけを次回日が近い順に先�
   }, day), 2)
 })
 
-test('当日「まだ」・誤答の語も適応枠で再登場し、新しい語を残す', () => {
-  const now = new Date(2026, 7, 24, 12, 0, 0, 0).getTime()
-  const day = todayIndex(now)
-  const words = wordsByLevel('5')
-  const failedWords = words.slice(0, 10)
-  const failedIds = new Set(failedWords.map((word) => word.id))
-  const srs = Object.fromEntries(failedWords.map((word, index) => [word.id, {
-    box: 0,
-    due: day,
-    last: day,
-    lastAt: now + index,
-    memory: index % 2 === 0
-      ? { lastAt: now + index, lastJudgment: 'forgot' }
-      : undefined,
-    test: index % 2 === 1
-      ? { lastAt: now + index, lastResult: 'wrong' }
-      : undefined,
-  }]))
-
-  const sameDay = buildDeck(
-    { type: 'level', levelId: '5' },
-    { srs, size: 10, purpose: 'study', day },
-  )
-  const sameDayPlan = automaticVocabSessionPlan(words, {
-    srs,
-    size: 10,
-    purpose: 'study',
-    day,
-  })
-  assert.equal(sameDayPlan.profile, 'support')
-  assert.equal(sameDayPlan.failedSameDayCount, 10)
-  assert.equal(sameDay.filter((word) => failedIds.has(word.id)).length, 7)
-  assert.equal(sameDay.filter((word) => !failedIds.has(word.id)).length, 3)
-
-  const explicitReview = buildDeck({ type: 'due' }, { srs, size: 0, day })
-  assert.equal(explicitReview.filter((word) => failedIds.has(word.id)).length, 10)
-
-  const nextDay = buildDeck(
-    { type: 'level', levelId: '5' },
-    { srs, size: 10, purpose: 'study', day: day + 1 },
-  )
-  assert.equal(nextDay.filter((word) => failedIds.has(word.id)).length, 7)
-  assert.equal(nextDay.filter((word) => !failedIds.has(word.id)).length, 3)
-})
-
-test('通常の学習・クイズは復習負荷に応じて新しい語・別の語を30〜60%に変える', () => {
+test('通常の暗記・テストは復習負荷に応じて新しい語・別の語を30〜60%に変える', () => {
   assert.deepEqual(AUTOMATIC_VOCAB_MIX_PROFILES, {
     expansion: { freshShare: 0.6 },
     balanced: { freshShare: 0.4 },
     support: { freshShare: 0.3 },
   })
-  const day = todayIndex()
+  const now = new Date(2026, 7, 24, 12, 0, 0, 0).getTime()
+  const day = todayIndex(now)
   const words = wordsByLevel('4')
   const cases = [
     { dueCount: 4, profile: 'expansion', reviewCount: 4, varietyCount: 6 },
@@ -197,43 +166,199 @@ test('通常の学習・クイズは復習負荷に応じて新しい語・別�
       box: 1,
       due: day,
       last: day - 2,
+      lastAt: now - 2 * 86_400_000,
     }]))
     for (const purpose of ['study', 'quiz']) {
       const plan = automaticVocabSessionPlan(words, { srs, size: 10, purpose, day })
       const deck = buildDeck(
         { type: 'level', levelId: '4' },
-        { srs, size: 10, purpose, day },
+        { srs, size: 10, purpose, now, day },
       )
       assert.equal(plan.profile, expected.profile, `${purpose}:${expected.dueCount}`)
       assert.equal(plan.reviewCount, expected.reviewCount, `${purpose}:plan-review`)
       assert.equal(plan.varietyCount, expected.varietyCount, `${purpose}:plan-variety`)
-      assert.equal(deck.length, 10)
-      assert.equal(
-        deck.filter((word) => dueIds.has(word.id)).length,
-        expected.reviewCount,
-        `${purpose}:${expected.dueCount}`,
+      assert.equal(deck.filter((word) => dueIds.has(word.id)).length, expected.reviewCount)
+      assert.equal(deck.filter((word) => !dueIds.has(word.id)).length, expected.varietyCount)
+      assert.doesNotMatch(
+        deck.map((word) => dueIds.has(word.id) ? 'R' : 'N').join(''),
+        /RRR/,
       )
-      assert.equal(
-        deck.filter((word) => !dueIds.has(word.id)).length,
-        expected.varietyCount,
-        `${purpose}:${expected.dueCount}`,
-      )
-      const mixPattern = deck.map((word) => dueIds.has(word.id) ? 'R' : 'N').join('')
-      assert.doesNotMatch(mixPattern, /RRR/, `${purpose}:${mixPattern}`)
     }
   }
-
-  const study = readFileSync(new URL('../src/screens/VocabStudy.jsx', import.meta.url), 'utf8')
-  const quiz = readFileSync(new URL('../src/screens/VocabQuiz.jsx', import.meta.url), 'utf8')
-  const levels = readFileSync(new URL('../src/screens/VocabLevels.jsx', import.meta.url), 'utf8')
-  assert.match(study, /purpose: 'study'/)
-  assert.match(quiz, /purpose: 'quiz'/)
-  assert.match(levels, /data-vocab-session-policy/)
-  assert.match(levels, /新しい語・別の語を約30〜60%/)
-  assert.match(levels, /「まだ」も同日の次のセッションから候補に戻し/)
 })
 
-test('単語学習とクイズは参考画面を往復しても同じ問題・解答状態を復元する', () => {
+test('英単語の棒グラフの復習中は、画面に表示する復習対象件数と一致する', () => {
+  const now = new Date(2026, 7, 24, 12, 0, 0, 0).getTime()
+  const day = todayIndex(now)
+  const [forgot, scheduled, waiting, unlearned] = ALL_WORDS.slice(0, 4)
+  const remembered = (due) => ({
+    box: 4,
+    due,
+    last: day - 7,
+    lastAt: now - 7 * 86400000,
+    memory: {
+      passes: 4,
+      remembered: 4,
+      forgot: 0,
+      lastAt: now - 7 * 86400000,
+      lastJudgment: 'remembered',
+      marks: [1, 1, 1, 1],
+    },
+  })
+  const srs = {
+    [forgot.id]: {
+      box: 0,
+      due: day,
+      last: day - 1,
+      lastAt: now - 86400000,
+      memory: {
+        passes: 1,
+        remembered: 0,
+        forgot: 1,
+        lastAt: now - 86400000,
+        lastJudgment: 'forgot',
+        marks: [0],
+      },
+    },
+    [scheduled.id]: remembered(day),
+    [waiting.id]: remembered(day + 15),
+  }
+
+  const summary = summarizeVocabularySrsItems(
+    [forgot, scheduled, waiting, unlearned],
+    srs,
+    { now, day },
+  )
+
+  assert.deepEqual(summary.learning, { learned: 1, reviewing: 2, unlearned: 1 })
+  assert.equal(summary.due, 2)
+  assert.equal(summary.learning.reviewing, summary.due)
+})
+
+test('全級の暗記は復習中を先頭にし、未学習が無ければ待機中の定着語を自動補充しない', () => {
+  const now = new Date(2026, 7, 21, 12, 0, 0, 0).getTime()
+  const day = todayIndex(now)
+  const stableEntry = () => ({
+    box: 5,
+    correct: 8,
+    wrong: 0,
+    due: day + 15,
+    last: day,
+    lastAt: now,
+    memory: {
+      passes: 5,
+      remembered: 5,
+      forgot: 0,
+      lastAt: now,
+      lastJudgment: 'remembered',
+      marks: [1, 1, 1, 1, 1],
+    },
+  })
+  const reviewingEntry = () => ({
+    box: 2,
+    correct: 2,
+    wrong: 2,
+    due: day,
+    last: day - 2,
+    lastAt: now - 2 * 86400000,
+    memory: {
+      passes: 2,
+      remembered: 1,
+      forgot: 1,
+      lastAt: now - 2 * 86400000,
+      lastJudgment: 'forgot',
+      marks: [1, 0],
+    },
+  })
+
+  for (const level of LEVELS) {
+    const words = wordsByLevel(level.id)
+    assert.ok(words.length >= 3, `英検${level.label}の監査母数`)
+    const [reviewing, unlearned, stable] = words
+    const srs = Object.fromEntries(
+      words.filter((word) => word.id !== unlearned.id).map((word) => [word.id, stableEntry()]),
+    )
+    srs[reviewing.id] = reviewingEntry()
+
+    assert.deepEqual(
+      buildDeck(
+        { type: 'level', levelId: level.id },
+        { srs, size: 0, purpose: 'study', now, day },
+      ).map((word) => word.id),
+      [reviewing.id, unlearned.id],
+      `英検${level.label}は復習中→未学習の順`,
+    )
+
+    srs[unlearned.id] = stableEntry()
+    assert.deepEqual(
+      buildDeck(
+        { type: 'level', levelId: level.id },
+        { srs, size: 0, purpose: 'study', now, day },
+      ).map((word) => word.id),
+      [reviewing.id],
+      `英検${level.label}は復習中だけを出す`,
+    )
+
+    srs[reviewing.id] = stableEntry()
+    assert.equal(
+      buildDeck(
+        { type: 'level', levelId: level.id },
+        { srs, size: 0, purpose: 'study', now, day },
+      ).length,
+      0,
+      `英検${level.label}は全語が期限前なら自動再出現なし`,
+    )
+    assert.deepEqual(
+      buildDeck(
+        { type: 'deck', ids: [stable.id] },
+        { srs, size: 0, purpose: 'study', now, day },
+      ).map((word) => word.id),
+      [stable.id],
+      `英検${level.label}も任意選択なら期限前に確認できる`,
+    )
+  }
+
+  let auditedLevelFields = 0
+  for (const levelToc of LEARNING_FIELD_TOC) {
+    for (const field of levelToc.chapters) {
+      auditedLevelFields++
+      assert.ok(field.wordIds.length >= 2, `英検${levelToc.level.label}・${field.field}の監査母数`)
+      const [reviewingId, unlearnedId] = field.wordIds
+      const srs = Object.fromEntries(
+        field.wordIds
+          .filter((id) => id !== unlearnedId)
+          .map((id) => [id, stableEntry()]),
+      )
+      srs[reviewingId] = reviewingEntry()
+      const source = {
+        type: 'levelField',
+        levelId: levelToc.level.id,
+        field: field.fieldId,
+      }
+
+      assert.deepEqual(
+        buildDeck(source, { srs, size: 0, purpose: 'study', now, day }).map((word) => word.id),
+        [reviewingId, unlearnedId],
+        `英検${levelToc.level.label}・${field.field}も復習中→未学習の順`,
+      )
+      srs[unlearnedId] = stableEntry()
+      assert.deepEqual(
+        buildDeck(source, { srs, size: 0, purpose: 'study', now, day }).map((word) => word.id),
+        [reviewingId],
+        `英検${levelToc.level.label}・${field.field}は復習中だけを出す`,
+      )
+      srs[reviewingId] = stableEntry()
+      assert.equal(
+        buildDeck(source, { srs, size: 0, purpose: 'study', now, day }).length,
+        0,
+        `英検${levelToc.level.label}・${field.field}は期限前なら自動再出現なし`,
+      )
+    }
+  }
+  assert.equal(auditedLevelFields, 69, '収録語がある全69級別分野を監査する')
+})
+
+test('単語暗記とテストは参考画面を往復しても同じ問題・解答状態を復元する', () => {
   const study = readFileSync(new URL('../src/screens/VocabStudy.jsx', import.meta.url), 'utf8')
   const quiz = readFileSync(new URL('../src/screens/VocabQuiz.jsx', import.meta.url), 'utf8')
   const detail = readFileSync(new URL('../src/screens/WordDetail.jsx', import.meta.url), 'utf8')
@@ -242,6 +367,7 @@ test('単語学習とクイズは参考画面を往復しても同じ問題・�
   assert.match(study, /restore\?\.deck \?\? buildFor/)
   assert.match(study, /restore\?\.i \?\? 0/)
   assert.match(study, /restore\?\.flipped \?\? revealAll/)
+  assert.match(study, /purpose: 'study'/)
   assert.match(study, /saveBeforeReference\('rootDetail'/)
   assert.match(study, /saveBeforeReference\('wordDetail'/)
   assert.match(quiz, /restore\?\.deck \?\? buildFor/)
@@ -250,6 +376,87 @@ test('単語学習とクイズは参考画面を往復しても同じ問題・�
     assert.match(source, /VocabReviewHistory/)
   }
   assert.match(history, /data-vocab-review-history/)
+  assert.match(history, /data-vocab-review-status/)
+  assert.doesNotMatch(history, /data-vocab-memory-score|覚え具合/)
   assert.match(history, /label="学習"/)
-  assert.match(history, /label="クイズ"/)
+  assert.match(history, /label="テスト"/)
+})
+
+test('「まだ」は同日中の通常学習を占有せず、翌日は支援配分の7対3で混ざる', () => {
+  assert.equal(AUTOMATIC_VOCAB_REVIEW_SHARE, 0.6)
+  const now = new Date(2026, 7, 24, 12, 0, 0, 0).getTime()
+  const day = todayIndex(now)
+  const words = wordsByLevel('3')
+  assert.ok(words.length >= 30, '英検3級の監査母数')
+  const failed = words.slice(0, 10)
+  const unseen = words.slice(10, 30)
+  const unseenIds = new Set(unseen.map((word) => word.id))
+  const failedIds = new Set(failed.map((word) => word.id))
+  const stableEntry = {
+    box: 5,
+    correct: 8,
+    wrong: 0,
+    due: day + 15,
+    last: day,
+    lastAt: now,
+    memory: { passes: 5, remembered: 5, forgot: 0, lastAt: now, lastJudgment: 'remembered', marks: [1, 1, 1, 1, 1] },
+  }
+  const srs = Object.fromEntries(words.map((word) => [word.id, stableEntry]))
+  for (const word of unseen) delete srs[word.id]
+  for (const word of failed) {
+    srs[word.id] = {
+      box: 0,
+      correct: 0,
+      wrong: 2,
+      due: day,
+      last: day,
+      lastAt: now,
+      memory: { passes: 2, remembered: 0, forgot: 2, lastAt: now, lastJudgment: 'forgot', marks: [0, 0] },
+    }
+  }
+
+  for (const word of failed) {
+    const metrics = vocabularyReviewMetrics(srs[word.id], { now, day })
+    assert.equal(metrics.needsReview, true)
+    assert.equal(metrics.coolingDown, true)
+    assert.equal(metrics.shouldAutoAppear, false)
+  }
+  const sameDay = buildDeck(
+    { type: 'level', levelId: '3' },
+    { srs, size: 10, purpose: 'study', now, day },
+  )
+  assert.equal(sameDay.length, 10)
+  assert.equal(sameDay.every((word) => unseenIds.has(word.id)), true)
+
+  const nextDayNow = now + 86_400_000
+  const nextDay = buildDeck(
+    { type: 'level', levelId: '3' },
+    { srs, size: 10, purpose: 'study', now: nextDayNow, day: day + 1 },
+  )
+  assert.equal(nextDay.filter((word) => failedIds.has(word.id)).length, 7)
+  assert.equal(nextDay.filter((word) => unseenIds.has(word.id)).length, 3)
+})
+
+test('通常テストも苦手語だけで埋めず、支援配分でも10語中3語を別の語にする', () => {
+  const now = new Date(2026, 7, 24, 12, 0, 0, 0).getTime()
+  const day = todayIndex(now)
+  const words = wordsByLevel('pre2')
+  assert.ok(words.length >= 20, '英検準2級の監査母数')
+  const failedIds = new Set(words.slice(0, 10).map((word) => word.id))
+  const srs = Object.fromEntries(words.slice(0, 10).map((word) => [word.id, {
+    box: 0,
+    wrong: 2,
+    due: day,
+    last: day - 1,
+    lastAt: now - 86_400_000,
+    test: { attempts: 2, correct: 0, wrong: 2, lastAt: now - 86_400_000, lastResult: 'wrong', marks: [0, 0] },
+  }]))
+
+  const deck = buildDeck(
+    { type: 'level', levelId: 'pre2' },
+    { srs, size: 10, purpose: 'quiz', now, day },
+  )
+  assert.equal(deck.length, 10)
+  assert.equal(deck.filter((word) => failedIds.has(word.id)).length, 7)
+  assert.equal(new Set(deck.map((word) => word.id)).size, 10)
 })

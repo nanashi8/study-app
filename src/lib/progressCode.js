@@ -31,6 +31,7 @@ import {
   normalizeDragonVeinProgress,
 } from './dragonVein.js'
 import {
+  compactLearningNotebook,
   normalizeLearningNotebook,
   notebookStoredSavedCount,
 } from './learningNotebook.js'
@@ -114,7 +115,7 @@ export function buildPayload(state = {}) {
     v: CODE_VERSION,
     ...selectProgressState(state),
     vocabHistory: normalizeVocabHistory(state.vocabHistory),
-    learningNotebook: normalizeLearningNotebook(state.learningNotebook),
+    learningNotebook: compactLearningNotebook(state.learningNotebook),
     // 空の集計を進捗コードへ入れず、QR化に必要な容量を保つ。
     contentQuizResults: Object.keys(contentQuizResults).length
       ? contentQuizResults

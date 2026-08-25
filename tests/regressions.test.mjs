@@ -215,17 +215,18 @@ test('全ての文法問題は同じ級・単元の完成例を2文表示でき�
   }
 })
 
-test('長文の原形推定は uses/used と主要な語尾変化を誤認しない', () => {
+test('長文の原形推定は活用形を戻し、独立見出し used は文脈語義を保つ', () => {
   const expected = {
     uses: 'use',
-    used: 'use',
+    used: 'used',
     studied: 'study',
     tried: 'try',
     running: 'run',
     planned: 'plan',
   }
   for (const [surface, id] of Object.entries(expected)) {
-    assert.ok(lemmaCandidates(surface).includes(id), surface)
+    if (surface !== 'used') assert.ok(lemmaCandidates(surface).includes(id), surface)
+    else assert.ok(lemmaCandidates(surface).includes('use'), surface)
     assert.equal(resolvePassageWord(surface, {})?.id, id, surface)
   }
 })
@@ -571,7 +572,7 @@ test('進捗コードは廃止済みデータを再保存せず、旧コード�
     new URL('../src/store/useStore.js', import.meta.url),
     'utf8',
   )
-  assert.match(storeSource, /version: 8/)
+  assert.match(storeSource, /version: 9/)
   assert.match(storeSource, /migrate: migratePersistedState/)
   assert.throws(() => decodeProgress(encodeProgress({ ...base, srs: [] })), /srs/)
   assert.throws(

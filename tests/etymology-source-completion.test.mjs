@@ -2,7 +2,7 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import {
   ALL_WORDS,
-  ETYMOLOGY_PACKS,
+  ETYMOLOGY_LEGACY_PACKS as ETYMOLOGY_PACKS,
   getRoot,
   rootIdsForWord,
 } from '../src/data/vocab.js'
@@ -14,7 +14,7 @@ const liveById = new Map(ALL_WORDS.map((word) => [word.id, word]))
 test('語源差分監査で不足した215語を独立見出しとして収録する', () => {
   assert.equal(ETYMOLOGY_COMPLETION_WORDS.length, 215)
   assert.equal(completionIds.size, 215)
-  assert.equal(ALL_WORDS.length, 8426)
+  assert.equal(ALL_WORDS.length, 8869)
 
   for (const sourceWord of ETYMOLOGY_COMPLETION_WORDS) {
     const liveWord = liveById.get(sourceWord.id)
@@ -92,11 +92,14 @@ test('年と座るの代表語根を補い、確実な同根語だけを結ぶ',
   }
 })
 
-test('旧2,678パックと補完パックのID空間が交わらない', () => {
-  const legacy = ETYMOLOGY_PACKS.filter((pack) => !pack.id.startsWith('completion:'))
+test('既存語源2,688パック・語源補完・1900補完のID空間が交わらない', () => {
+  const legacy = ETYMOLOGY_PACKS.filter((pack) =>
+    !pack.id.startsWith('completion:') && !pack.id.startsWith('curriculum-1900:'))
   const completion = ETYMOLOGY_PACKS.filter((pack) => pack.id.startsWith('completion:'))
-  assert.equal(legacy.length, 2678)
+  const curriculum1900 = ETYMOLOGY_PACKS.filter((pack) => pack.id.startsWith('curriculum-1900:'))
+  assert.equal(legacy.length, 2688)
   assert.ok(completion.length > 0)
+  assert.ok(curriculum1900.length > 0)
   assert.equal(new Set(ETYMOLOGY_PACKS.map((pack) => pack.id)).size, ETYMOLOGY_PACKS.length)
   assert.deepEqual(
     new Set(completion.flatMap((pack) => pack.coverageIds)),

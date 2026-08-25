@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { ALL_WORDS, ETYMOLOGY_PACKS } from '../src/data/vocab.js'
 import { PHRASES } from '../src/data/phrases.js'
-import { GRAMMAR } from '../src/data/grammar.js'
+import { GRAMMAR_PRACTICE } from '../src/data/grammar.js'
 import { LISTENING_ITEMS } from '../src/data/listening.js'
 import { KOTEN_WORDS } from '../src/data/koten.js'
 import { KOTEN_GRAMMAR } from '../src/data/koten-grammar.js'
@@ -35,7 +35,7 @@ const fail = (message) => errors.push(message)
 const sources = {
   vocab: ALL_WORDS,
   phrases: PHRASES,
-  grammar: GRAMMAR,
+  grammar: GRAMMAR_PRACTICE,
   listening: LISTENING_ITEMS,
   etymology: ETYMOLOGY_PACKS,
   kotenVocab: KOTEN_WORDS,
@@ -135,13 +135,13 @@ const etymologyLaunch = screen.slice(
   screen.indexOf("} else if (domainId === 'kotenVocab') {"),
 )
 if (!etymologyLaunch.includes("navigate('vocabStudy'")) {
-  fail('語源ノートが単語の「覚える」へ接続していません')
+  fail('語源ノートが単語の「暗記」へ接続していません')
 }
 if (/etymologyStudy|etymologyQuiz|vocabQuiz/.test(etymologyLaunch)) {
-  fail('語源ノートに廃止した専用学習またはクイズへの接続が残っています')
+  fail('語源ノートに廃止した専用学習またはテストへの接続が残っています')
 }
-if (!screen.includes("domain.id === 'etymology' ? (") || !screen.includes('単語を覚える')) {
-  fail('語源の自作問題集に単語の「覚える」だけを表示する契約がありません')
+if (!screen.includes("domain.id === 'etymology' ? (") || !screen.includes('単語を暗記')) {
+  fail('語源の自作問題集に単語の「暗記」だけを表示する契約がありません')
 }
 if (/domain\.id === 'etymology' \? '確認'/.test(screen)) {
   fail('語源の自作問題集に廃止した確認ボタンが残っています')

@@ -79,6 +79,7 @@ import {
   updateNotebookItem as updateNotebookItemState,
   updateNotebookSet as updateNotebookSetState,
 } from '../lib/learningNotebook.js'
+import { updateLearningContentPlan } from '../lib/learningContentPlan.js'
 import {
   ALL_PROGRESS_RESET_GROUP_IDS,
   RESET_PRESERVED_PROGRESS_FIELDS,
@@ -97,6 +98,7 @@ import {
   MAX_SRS_BOX,
   SRS_INTERVAL_DAYS,
 } from '../lib/srs.js'
+import { scheduleVocabularyReview } from '../lib/vocabScheduler.js'
 import { completedSessionDestination } from '../lib/navigationPolicy.js'
 
 // ── 学習ロジックの定数 ──────────────────────────────────────────────
@@ -106,8 +108,8 @@ const MAX_BOX = MAX_SRS_BOX
 
 // 回答結果ごとの box 変化。学習評価はSRSと正誤記録だけで扱う。
 const RESULTS = {
-  correct: { box: +1 }, // クイズ正解
-  wrong: { box: -1 }, // クイズ誤答
+  correct: { box: +1 }, // テスト正解
+  wrong: { box: -1 }, // テスト誤答
   unknown: { box: 'reset' }, // 「わからない」
   remembered: { box: +1 }, // カードで「覚えた」
   forgot: { box: 'reset' }, // カードで「まだ」
@@ -164,8 +166,8 @@ const DEFAULT_SETTINGS = {
   showPhonetic: true,
   autoSpeak: true,
   dailyGoal: 20,
-  sessionSize: 10, // 1回の学習・クイズで出す問題数（進捗表示のタップで変更）
-  revealAnswers: false, // 覚える/復習/マイ単語で、タップせず最初から意味・語源を表示する
+  sessionSize: 10, // 1回の暗記・テストで出す問題数（進捗表示のタップで変更）
+  revealAnswers: false, // 暗記/復習/マイ単語で、タップせず最初から意味・語源を表示する
 }
 
 export function normalizeSettings(settings) {
@@ -195,7 +197,7 @@ function returnNavigationState(st, screen, params = {}) {
 
 export const createInitialLearningState = () => ({
   srs: {}, // wordId -> { box, correct, wrong, due, last }
-  etymologySrs: {}, // etymologyPackId -> { box, correct, wrong, due, last }
+  etymologySrs: {}, // 旧語源専用SRS。既存の保存・同期データを読み戻す互換用。
   kotenSrs: {}, // 古文単語の wordId -> { box, ... }（英単語と別管理。idが衝突しないよう分離）
   kotenGrammarSrs: {}, // 古典文法の grammarId -> { box, ... }
   kotenCultureSrs: {}, // 古典常識の cultureId -> { box, ... }
@@ -218,7 +220,7 @@ export const createInitialLearningState = () => ({
   readingsDone: [], // [passageId | literatureId] 読了した長文・名作朗読
   mathDone: [], // [problemId] クリアした数学問題
   mathMastery: {}, // unitId -> 最高正答率(0-100) ＝ 理解度
-  contentQuizResults: {}, // SRS外教材の教材ID別・直近クイズ結果
+  contentQuizResults: {}, // SRS外教材の教材ID別・直近テスト結果
   skillStats: {}, // skill -> { answered, correct, sessions, lastDay } ＝ スキル別テスト結果
   learningAnalytics: createLearningAnalytics(), // 時刻・反復間隔・正誤の匿名集計
   diagnosticHistory: [], // 学習診断の新しい順の結果（最大5件）
@@ -265,7 +267,14 @@ export function resetProgressState(
   }
 }
 
-function applyReview(srs, stats, wordId, result, timestamp = Date.now()) {
+function applyReview(
+  srs,
+  stats,
+  wordId,
+  result,
+  timestamp = Date.now(),
+  { adaptiveVocabulary = false } = {},
+) {
   const def = RESULTS[result] ?? RESULTS.unknown
   const day = localDayIndexAt(timestamp)
   const prev = srs[wordId] ?? { box: 0, correct: 0, wrong: 0, due: day, last: null }
@@ -321,17 +330,31 @@ function applyReview(srs, stats, wordId, result, timestamp = Date.now()) {
       }
     : test
 
-  const next = {
+  const updatedEntry = {
     ...prev,
     box,
     correct: Math.max(0, Number(prev.correct) || 0) + (remembered ? 1 : 0),
     wrong: Math.max(0, Number(prev.wrong) || 0) + (remembered ? 0 : 1),
-    due: day + INTERVALS[box],
     last: day,
     lastAt: timestamp,
     firstAt: Number.isFinite(prev.firstAt) ? prev.firstAt : timestamp,
     memory: nextMemory,
     test: nextTest,
+  }
+  const adaptiveSchedule = adaptiveVocabulary
+    ? scheduleVocabularyReview({
+        previousEntry: prev,
+        updatedEntry,
+        result,
+        timestamp,
+        day,
+      })
+    : null
+  if (adaptiveSchedule) box = adaptiveSchedule.box
+  const next = {
+    ...updatedEntry,
+    box,
+    due: adaptiveSchedule?.due ?? day + INTERVALS[box],
   }
 
   // ── stats / streak / 今日のカウント ──
@@ -515,6 +538,9 @@ export const useStore = create(
             stack: [...st.stack, { screen: st.screen, params: st.params }].slice(-20),
           }
         }),
+      // 同じ画面内の一覧条件だけを更新する。履歴は増やさず、次の画面から
+      // 戻ったときに現在選んでいる教材の一覧へ正しく復元できるようにする。
+      replaceParams: (params = {}) => set({ params }),
       // 完了画面から選択画面へ戻るとき、終了済みの学習・結果画面を履歴へ残さない。
       // 同じ画面が履歴にあれば、その直前までを復元する。
       returnTo: (screen, params = {}) =>
@@ -529,6 +555,13 @@ export const useStore = create(
           if (st.screen === 'sessionResult') {
             const destination = completedSessionDestination(st.params)
             return returnNavigationState(st, destination.screen, destination.params)
+          }
+          if (st.params?.returnTo?.screen) {
+            return returnNavigationState(
+              st,
+              st.params.returnTo.screen,
+              st.params.returnTo.params ?? {},
+            )
           }
           // 履歴なしで開いた画面は、そのアプリのホームへ戻す
           // （英語なら英語アプリ、古典なら古典アプリ）。
@@ -552,6 +585,13 @@ export const useStore = create(
           if (st.screen === 'sessionResult') {
             const destination = completedSessionDestination(st.params)
             return returnNavigationState(st, destination.screen, destination.params)
+          }
+          if (st.params?.returnTo?.screen) {
+            return returnNavigationState(
+              st,
+              st.params.returnTo.screen,
+              st.params.returnTo.params ?? {},
+            )
           }
           if (!st.stack.length) {
             // 画面内の「やめる」と同じ戻り先にそろえる。
@@ -577,7 +617,7 @@ export const useStore = create(
       goHomeScreen: (screen) => set({ screen, params: {}, stack: [] }),
       goPortal: () => set({ screen: 'portal', params: {}, stack: [] }),
 
-      // ── 進行中の単語学習／クイズの一時退避（永続化しない） ──
+      // ── 進行中の単語暗記／テストの一時退避（永続化しない） ──
       // 辞書・語源などの参考画面を開いて戻るとき、deck・進行位置・結果を
       // 失わないようここへ退避→復元する。旧保存契約のフィールド名はそのまま使う。
       quizSession: null,
@@ -596,6 +636,7 @@ export const useStore = create(
             wordId,
             result,
             timestamp,
+            { adaptiveVocabulary: skillHint === 'vocab' },
           )
           const remembered = result === 'correct' || result === 'remembered'
           return {
@@ -615,7 +656,8 @@ export const useStore = create(
           }
         }),
 
-      // 語源知識は単語の正誤と分け、濃縮パックそのものを1つの暗記項目として反復する。
+      // 旧版の語源専用SRSを読み戻すために残す互換操作。現行の学習者向け画面は
+      // vocabStudy だけを使い、語源から覚えた結果も単語SRSへ記録する。
       reviewEtymology: (packId, result) =>
         set((st) => {
           const timestamp = Date.now()
@@ -671,7 +713,7 @@ export const useStore = create(
           }
         }),
 
-      // 古典文法も「覚える→腕試し」を同じLeitner間隔でつなぐ。
+      // 古典文法も「暗記→腕試し」を同じLeitner間隔でつなぐ。
       reviewKotenGrammar: (grammarId, result) =>
         set((st) => {
           const timestamp = Date.now()
@@ -930,6 +972,19 @@ export const useStore = create(
           }
           return next
         }),
+
+      updateLearningContentPlanItem: (contentId, itemId, action) =>
+        set((st) => ({
+          learningNotebook: {
+            ...st.learningNotebook,
+            contentPlan: updateLearningContentPlan(
+              st.learningNotebook?.contentPlan,
+              contentId,
+              itemId,
+              action,
+            ),
+          },
+        })),
 
       createNotebookSet: (title, description = '') => {
         let setId = null
@@ -1492,7 +1547,7 @@ export const useStore = create(
     }),
     {
       name: 'eigo-quest',
-      version: 8,
+      version: 9,
       migrate: migratePersistedState,
       // ナビゲーション系は保存しない。
       partialize: selectProgressState,

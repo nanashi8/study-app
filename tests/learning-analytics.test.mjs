@@ -14,6 +14,7 @@ import {
   learningLaunchFor,
 } from '../src/lib/learningAnalyticsReport.js'
 import { decodeProgress, encodeProgress } from '../src/lib/progressCode.js'
+import { ETYMOLOGY_PACKS } from '../src/data/vocab.js'
 import { useStore } from '../src/store/useStore.js'
 
 const atHour = (hour) => new Date(2026, 6, 28, hour, 0, 0, 0).getTime()
@@ -311,6 +312,11 @@ test('科目・種類・分野・項目の成績表、忘却曲線、学習導�
     learningLaunchFor('phrases', ['idm_get_up'], 'memory').screen,
     'phraseStudy',
   )
+  const etymologyPack = ETYMOLOGY_PACKS[0]
+  const etymologyLaunch = learningLaunchFor('etymology', [etymologyPack.id], 'memory')
+  assert.equal(etymologyLaunch.screen, 'vocabStudy')
+  assert.deepEqual(etymologyLaunch.params.source.ids, etymologyPack.studyIds)
+  assert.equal(etymologyLaunch.params.source.type, 'deck')
   assert.ok(report.prescriptions.some((item) => item.angle === '分野' || item.angle === '種類'))
 })
 
@@ -382,7 +388,7 @@ test('全17分野の学習操作が対応する記録へ漏れなく反映され
   }
 })
 
-test('クイズ結果の分野別累計は設問履歴と二重集計せず、読解結果は集計する', () => {
+test('テスト結果の分野別累計は設問履歴と二重集計せず、読解結果は集計する', () => {
   useStore.setState({
     skillStats: {},
     learningAnalytics: createLearningAnalytics(),

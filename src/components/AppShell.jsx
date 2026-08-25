@@ -32,11 +32,8 @@ export function AppShell({ children, showGlobalMenu = true }) {
   const homeLabel = atHome ? 'スタディアプリ' : home.label
   const goHomeFromBar = () => {
     if (menuOpen || screen === 'portal') return
-    if (requiresProgressSaveConfirmation(screen, home.screen)) {
-      // 確認のあとも行き先が変わらないよう、移動先ごと預ける。
-      openSpeechSettings({ type: 'navigate', screen: atHome ? 'portal' : home.screen })
-      return
-    }
+    // 中央タイトルは現在のアプリへ戻る近道。回答済みの記録は自動保存されるため、
+    // QR／コードの保存画面を誤って開かず、アプリホームへ直接移動する。
     if (atHome) goPortal()
     else goAppHome()
   }

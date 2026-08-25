@@ -1,78 +1,82 @@
-// 語源カードの「一緒に覚えられる語」の回帰テスト。
-// カードに1語しか載っていなくても、必ず理由つきの関連語が並ぶこと。
+// 公開語源は、手動監査済みカードと明示リンクだけを合格条件にする。
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { ALL_WORDS, ETYMOLOGY_PACKS } from '../src/data/vocab.js'
+import { readFileSync } from 'node:fs'
+
 import {
-  COMPANION_LIMIT,
-  etymologyCompanions,
-  prefixFormation,
-  suffixFormation,
-} from '../src/lib/etymologyCompanions.js'
+  ALL_WORDS,
+  ETYMOLOGY_LEGACY_PACKS,
+  ETYMOLOGY_PACKS,
+  etymologyCardsForWord,
+  getWord,
+} from '../src/data/vocab.js'
+import {
+  ETYMOLOGY_QUALITY_TARGETS,
+  auditEtymologyLearningQuality,
+} from '../scripts/check-etymology-learning-quality.mjs'
 
-const wordNamed = (name) => ALL_WORDS.find((word) => word.word === name)
+const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8')
 
-test('どの語源カードにも関連語が1語以上つく', () => {
-  const empty = ETYMOLOGY_PACKS.filter((pack) => etymologyCompanions(pack).length === 0)
-  assert.deepEqual(empty.map((pack) => pack.title), [], '関連語が空のカードがある')
+test('全8,869語を走査し、109カード・781語だけを確認済み教材として公開する', () => {
+  const report = auditEtymologyLearningQuality()
+  assert.deepEqual(report.errors, [])
+  assert.equal(ALL_WORDS.length, ETYMOLOGY_QUALITY_TARGETS.rawWords)
+  assert.equal(ETYMOLOGY_PACKS.length, ETYMOLOGY_QUALITY_TARGETS.publicCards)
+  assert.equal(report.publicWords, ETYMOLOGY_QUALITY_TARGETS.publicWords)
+  assert.equal(report.publicLinks, ETYMOLOGY_QUALITY_TARGETS.publicLinks)
+  assert.equal(report.quarantinedWords, ETYMOLOGY_QUALITY_TARGETS.quarantinedWords)
+  assert.equal(ETYMOLOGY_LEGACY_PACKS.length, ETYMOLOGY_QUALITY_TARGETS.retiredLegacyPacks)
 })
 
-test('関連語は1枚あたり十分な数が出て、上限も守る', () => {
-  const counts = ETYMOLOGY_PACKS.map((pack) => etymologyCompanions(pack).length)
-  const average = counts.reduce((sum, count) => sum + count, 0) / counts.length
-  assert.ok(average > 8, `平均${average.toFixed(1)}語では少ない`)
-  assert.ok(Math.max(...counts) <= COMPANION_LIMIT)
-  // 1語しか載っていないカードでも、抱き合わせで覚える語が並ぶ
-  const single = ETYMOLOGY_PACKS.filter((pack) => pack.studyIds.length === 1)
-  assert.ok(single.length > 0)
-  for (const pack of single) assert.ok(etymologyCompanions(pack).length >= 1, pack.title)
-})
+test('公開カードの全リンクは明示され、出典・確認日・内容固定hashを持つ', () => {
+  for (const card of ETYMOLOGY_PACKS) {
+    assert.equal(card.mode, 'root', card.id)
+    assert.equal(card.groupClaim, 'manual-reviewed-root', card.id)
+    assert.ok(card.evidence.reviewedAt, card.id)
+    assert.equal(card.evidence.reviewedBy, 'manual-etymology-audit', card.id)
+    assert.match(card.evidence.fingerprint, /^[a-f0-9]{64}$/, card.id)
+    assert.equal(card.evidence.sources.length, card.evidence.sourceHeads.length * 2, card.id)
+    assert.deepEqual(card.studyIds, card.coverageIds, card.id)
+    assert.equal(new Set(card.coverageIds).size, card.coverageIds.length, card.id)
 
-test('関連語はカードの語と重ならず、必ず理由が付く', () => {
-  for (const pack of ETYMOLOGY_PACKS.slice(0, 400)) {
-    const studyIds = new Set(pack.studyIds)
-    const ids = new Set()
-    for (const item of etymologyCompanions(pack)) {
-      assert.ok(!studyIds.has(item.word.id), `${pack.title}: カードの語が関連語にも出ている`)
-      assert.ok(!ids.has(item.word.id), `${pack.title}: 同じ語が二重に出ている`)
-      assert.ok(item.reason && item.reason.length > 1, `${pack.title}: 理由が無い`)
-      ids.add(item.word.id)
+    for (const wordId of card.coverageIds) {
+      const word = getWord(wordId)
+      assert.ok(word, `${card.id}: ${wordId}`)
+      const explicit = (word.etymology?.parts ?? []).some((part) => part.root === card.rootId)
+        || (word.referenceRoots ?? []).includes(card.rootId)
+      assert.ok(explicit, `${card.id}: ${word.word}`)
+      assert.ok(etymologyCardsForWord(word).some((item) => item.id === card.id), word.id)
     }
   }
 })
 
-test('作り方の見分けは、つづりが偶然そろっただけの語を拾わない', () => {
-  // もとの語と品詞が合うものだけを「作り方」と認める
-  for (const [name, base, affix] of [
-    ['teacher', 'teach', '-er'],
-    ['writer', 'write', '-er'],
-    ['happiness', 'happy', '-ness'],
-    ['happily', 'happy', '-ly'],
-    ['careful', 'care', '-ful'],
-    ['unhappy', 'happy', 'un-'],
-  ]) {
-    const word = wordNamed(name)
-    if (!word) continue
-    const formation = suffixFormation(word) ?? prefixFormation(word)
-    assert.ok(formation, `${name} の作り方を見つけられない`)
-    assert.equal(formation.base.word, base, name)
-    assert.equal(formation.affix, affix, name)
-  }
-
-  // butter＝but＋er、mother＝moth＋er のような偶然は認めない
-  for (const name of ['butter', 'father', 'mother', 'number', 'later', 'petty']) {
-    const word = wordNamed(name)
-    if (!word) continue
-    const formation = suffixFormation(word) ?? prefixFormation(word)
-    assert.equal(formation, null, `${name} を作り方として拾っている`)
-  }
+test('he と既知の誤接続を公開カードへ戻さない', () => {
+  assert.deepEqual(etymologyCardsForWord('he'), [])
+  assert.ok(!etymologyCardsForWord('compose').some((card) => card.rootId === 'pos'))
+  assert.ok(!etymologyCardsForWord('adjust').some((card) => card.rootId === 'jud'))
+  assert.ok(etymologyCardsForWord('print').some((card) => card.rootId === 'press'))
+  assert.ok(!etymologyCardsForWord('print').some((card) => card.rootId === 'prim'))
 })
 
-test('同じ語根の語が最優先で並ぶ', () => {
-  const pack = ETYMOLOGY_PACKS.find((item) => item.rootId && item.studyIds.length <= 4)
-  assert.ok(pack)
-  const companions = etymologyCompanions(pack)
-  if (companions.some((item) => item.reason.startsWith('同じ語根'))) {
-    assert.ok(companions[0].reason.startsWith('同じ語根'), '語根の仲間が先頭に来ていない')
-  }
+test('公開画面は通常の単語暗記へ進み、廃止した語源専用画面を持たない', () => {
+  const roots = read('src/screens/Roots.jsx')
+  const pack = read('src/screens/EtymologyPack.jsx')
+  const rootDetail = read('src/screens/RootDetail.jsx')
+  const wordBits = read('src/components/WordBits.jsx')
+  const app = read('src/App.jsx')
+  const visibility = read('src/lib/learnerVisibility.js')
+  const learnerSource = `${roots}\n${pack}\n${rootDetail}\n${wordBits}`
+
+  assert.equal((learnerSource.match(/data-etymology-word-study-action/g) ?? []).length, 3)
+  assert.equal((learnerSource.match(/navigate\('vocabStudy'/g) ?? []).length, 3)
+  assert.doesNotMatch(learnerSource, /navigate\('(?:etymologyStudy|etymologyQuiz|vocabQuiz)'/)
+  assert.doesNotMatch(app, /etymologyStudy:\s|etymologyQuiz:\s|EtymologyStudyScreen|EtymologyQuizScreen/)
+  assert.match(visibility, /'etymologyStudy'/)
+  assert.match(visibility, /'etymologyQuiz'/)
+
+  const block = wordBits.slice(
+    wordBits.indexOf('export function EtymologyBlock'),
+    wordBits.indexOf('/** 語源でつながる単語'),
+  )
+  assert.match(block, /etymologyCardsForWord/)
 })

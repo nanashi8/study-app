@@ -1,4 +1,7 @@
 import { vocabFieldFor } from '../data/vocab.js'
+import { syntaxFamilySearchText } from '../data/syntax-families.js'
+import { idiomFormSearchText } from '../data/idiom-form-families.js'
+import { curriculum1900PhraseAliasesFor } from '../data/curriculum-1900-resolutions.js'
 
 const normalize = (value = '') =>
   value
@@ -82,6 +85,10 @@ export function phraseSearchText(phrase) {
     phrase.example?.ja,
     phrase.origin,
     phrase.note,
+    ...(phrase.aliases ?? []),
+    ...curriculum1900PhraseAliasesFor(phrase.phrase),
+    phrase.kind === 'syntax' ? syntaxFamilySearchText(phrase) : '',
+    phrase.kind === 'idiom' ? idiomFormSearchText(phrase) : '',
   ].filter(Boolean).join(' ')))
 }
 
@@ -92,9 +99,11 @@ export function phraseMatchRank(phrase, rawQuery) {
   // 「〜」「to do」などの記号は打ちにくいので、比較用に緩めた形も見る。
   const head = normalize(phrase.phrase)
   const loose = head.replace(/[~〜…]/g, ' ').replace(/\s+/g, ' ').trim()
-  if (head === query || loose === query) return 0
-  if (head.startsWith(query) || loose.startsWith(query)) return 1
-  if (head.includes(query) || loose.includes(query)) return 2
+  const aliases = [...(phrase.aliases ?? []), ...curriculum1900PhraseAliasesFor(phrase.phrase)]
+    .map((alias) => normalize(alias))
+  if (head === query || loose === query || aliases.includes(query)) return 0
+  if (head.startsWith(query) || loose.startsWith(query) || aliases.some((alias) => alias.startsWith(query))) return 1
+  if (head.includes(query) || loose.includes(query) || aliases.some((alias) => alias.includes(query))) return 2
 
   const meanings = normalize([phrase.meaning, ...(phrase.meanings ?? [])].join(' '))
   if (meanings.includes(query)) return 3

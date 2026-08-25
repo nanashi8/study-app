@@ -113,7 +113,7 @@ export function KotenSavedScreen() {
                       })
                     }
                   >
-                    <Book size={16} /> 覚える
+                    <Book size={16} /> 暗記
                   </Button>
                   <Button
                     variant="secondary"
@@ -124,7 +124,7 @@ export function KotenSavedScreen() {
                       })
                     }
                   >
-                    <Cards size={16} /> クイズ
+                    <Cards size={16} /> テスト
                   </Button>
                 </div>
 
@@ -174,7 +174,7 @@ export function KotenSavedScreen() {
                       })
                     }
                   >
-                    <Book size={16} /> 覚える
+                    <Book size={16} /> 暗記
                   </Button>
                   <Button
                     variant="secondary"
@@ -280,7 +280,7 @@ export function KotenSavedScreen() {
                       })
                     }
                   >
-                    <Book size={16} /> 覚える
+                    <Book size={16} /> 暗記
                   </Button>
                   <Button
                     variant="secondary"

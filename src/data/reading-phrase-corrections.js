@@ -4,6 +4,8 @@
 
 import { READING_CONNECTOR_CLOSURE_CORRECTIONS } from './reading-connector-closure-reviews.js'
 import { EXPANDED_READING_PHRASE_CORRECTIONS } from './reading-expansion-phrase-corrections.js'
+import { CURRENT_AFFAIRS_READING_PHRASE_CORRECTIONS } from './reading-current-affairs-phrase-corrections.js'
+import { READING_FOCUS_ROLE_CORRECTIONS } from './reading-focus-role-corrections.js'
 
 const correction = (match, parts, note, occurrence = 1) => Object.freeze({
   match: Object.freeze(match),
@@ -142,12 +144,10 @@ const BASE_READING_PHRASE_CORRECTIONS = Object.freeze({
     correction(['visitors'], [
       { role: 'O', en: 'visitors', ja: '来館者を' },
     ], 'visitors は families と並列された主節 help の目的語Oです。'),
-    correction(['are not'], [
+    correction(['are not used', 'to museums'], [
       { role: 'V', en: 'are not', ja: '〜ではありません（状態は次へ）' },
-    ], 'are not が否定のbe動詞Vで、used の意味は後ろの補語へ残します。'),
-    correction(['used to museums'], [
       { role: 'C', en: 'used to museums', ja: '博物館に慣れた状態' },
-    ], 'be used to ... で「〜に慣れている」。全体が visitors の状態Cです。'),
+    ], 'be used to ... で「〜に慣れている」。are not が否定のbe動詞Vで、used to museums 全体が visitors の状態Cです。'),
   ]),
   'This approach is more useful than giving visitors information that may be incorrect.': Object.freeze([
     correction(['than giving'], [
@@ -952,8 +952,9 @@ const BASE_READING_PHRASE_CORRECTIONS = Object.freeze({
   ]),
   'Training provides only limited value in rural areas with weak mobile service or during payment system failures after serious natural disasters and emergencies.': Object.freeze([
     correction(['only', 'limited value'], [
-      { role: 'O', en: 'only limited value', ja: '限られた価値しか' },
-    ], 'only と呼応し、provides の目的語Oを限定して取ります。'),
+      { role: 'M', en: 'only', ja: '〜だけ（内容は次へ）' },
+      { role: 'O', en: 'limited value', ja: '限られた価値しか' },
+    ], 'onlyは提供される量・程度を限定するMで、providesの目的語Oはlimited valueです。'),
   ]),
   'Nor should inclusion mean forcing everyone into a system simply because institutions find it efficient.': Object.freeze([
     correction(['Nor'], [
@@ -1110,8 +1111,10 @@ const BASE_READING_PHRASE_CORRECTIONS = Object.freeze({
       { role: 'LINK', en: 'that', ja: '〜ということを（内容は次へ）' },
     ], '二つ目の that も conclude の内容節を導きます。', 2),
     correction(['should simply', 'be trusted'], [
-      { role: 'V', en: 'should simply be trusted', ja: 'ただ信頼されるべきだと' },
-    ], '助動詞・副詞・受動態の本動詞を一つのVとして読みます。'),
+      { role: 'V', en: 'should', ja: '〜すべきだと（動作は次へ）' },
+      { role: 'M', en: 'simply', ja: '単純に' },
+      { role: 'V', en: 'be trusted', ja: '信頼される' },
+    ], 'shouldとbe trustedが受動態のVを作り、その間のsimplyは信頼の仕方を限定する副詞Mです。'),
     correction(['to exercise'], [
       { role: 'V', en: 'to exercise', ja: '行使するように' },
     ], 'be trusted to do の to exercise は、専門家が行うことを信任される動作Vです。'),
@@ -1252,7 +1255,7 @@ const BASE_READING_PHRASE_CORRECTIONS = Object.freeze({
       { role: 'LINK', en: 'not only', ja: '一つ目だけでなく' },
       { role: 'M', en: 'for false reports', ja: '虚偽の報告を対象に' },
       { role: 'LINK', en: 'but also', ja: 'さらに二つ目として' },
-    ], 'not only・for句・but also を接続と対象Mの役割単位へ分けます。'),
+    ], 'not onlyはbut alsoと呼応し、「虚偽報告だけでなく、見落とされた課題なども」という対象の対照を作ります。接続とfor句Mを役割単位へ分けます。'),
     correction(['groups that'], [
       { role: 'M', en: 'groups', ja: '集団も' },
       { role: 'S', en: 'that', ja: 'そしてその集団が' },
@@ -1287,8 +1290,12 @@ const BASE_READING_PHRASE_CORRECTIONS = Object.freeze({
   ]),
   'A mature culture of evaluation recognizes that important purposes cannot always be fully quantified.': Object.freeze([
     correction(['cannot always', 'be fully quantified'], [
-      { role: 'V', en: 'cannot always be fully quantified', ja: '必ずしも完全には数量化できないと' },
-    ], '助動詞の否定から受動態の本動詞までを一つのVとして読みます。'),
+      { role: 'V', en: 'cannot', ja: '〜できません（頻度は次へ）' },
+      { role: 'M', en: 'always', ja: 'いつでも' },
+      { role: 'V', en: 'be', ja: '〜される' },
+      { role: 'M', en: 'fully', ja: '完全に' },
+      { role: 'V', en: 'quantified', ja: '数量化されるとは限りません' },
+    ], 'cannot・be・quantifiedが受動態のVを作り、alwaysは頻度M、fullyは程度Mとしてそれぞれ係ります。'),
   ]),
   'The inability to assign a clean number is not evidence that a value is unreal; it is a warning that judgment must remain visible and contestable.': Object.freeze([
     correction(['must remain'], [
@@ -3143,8 +3150,9 @@ const ADJACENT_JA_READING_PHRASE_CORRECTIONS = Object.freeze({
   ]),
   'This civic dimension explains why collective memory cannot be measured only by the number of documents preserved or people reached.': Object.freeze([
     correction(['cannot be measured only'], [
-      { role: 'V', en: 'cannot be measured only', ja: '測ることはできません（基準は次へ）' },
-    ], 'why間接疑問を測定基準より前で閉じません。'),
+      { role: 'V', en: 'cannot be measured', ja: '測ることはできません（基準は次へ）' },
+      { role: 'M', en: 'only', ja: '〜だけによって（基準は次へ）' },
+    ], 'cannot be measuredが受動態の述語Vです。onlyは直後のby句だけに測定基準を限定するMで、why間接疑問は節末まで続きます。'),
     correction(['reached'], [
       {
         role: 'M', en: 'reached',
@@ -3338,7 +3346,7 @@ const ADJACENT_JA_READING_PHRASE_CORRECTIONS = Object.freeze({
         wordLimit: 9,
         closureBinding: closure('content-clause', 'that', 'The broader lesson is', 'innovation should be judged by the range of people who can use it, not only by the speed of its average transaction'),
       },
-    ], '評価基準の対照末で受動述語を完成し、主格補語that節を閉じます。'),
+    ], 'not onlyは「平均速度だけではなく」という狭い基準の否定です。既出の「利用できる人々の範囲」という広い基準と対照させ、節末で受動述語と主格補語that節を閉じます。'),
   ]),
   'Graduation rates may be considered alongside student surveys, samples of actual work, and information about what graduates can do later.': Object.freeze([
     correction(['can do'], [
@@ -3394,17 +3402,28 @@ export const READING_PHRASE_CORRECTIONS = Object.freeze(Object.fromEntries(
     ...Object.keys(ADJACENT_JA_READING_PHRASE_CORRECTIONS),
     ...Object.keys(READING_CONNECTOR_CLOSURE_CORRECTIONS),
     ...Object.keys(EXPANDED_READING_PHRASE_CORRECTIONS),
-  ])].map((sentence) => [
-    sentence,
-    Object.freeze([
+    ...Object.keys(CURRENT_AFFAIRS_READING_PHRASE_CORRECTIONS),
+    ...Object.keys(READING_FOCUS_ROLE_CORRECTIONS),
+  ])].map((sentence) => {
+    const focusCorrections = READING_FOCUS_ROLE_CORRECTIONS[sentence] ?? []
+    const focusMatchKeys = new Set(focusCorrections.map((decision) =>
+      JSON.stringify(decision.match.map((value) => value.trim().toLowerCase()))))
+    const earlierCorrections = [
       ...(BASE_READING_PHRASE_CORRECTIONS[sentence] ?? []),
       ...(ADDITIONAL_READING_PHRASE_CORRECTIONS[sentence] ?? []),
       ...(CLOSURE_READING_PHRASE_CORRECTIONS[sentence] ?? []),
       ...(ADJACENT_JA_READING_PHRASE_CORRECTIONS[sentence] ?? []),
       ...(READING_CONNECTOR_CLOSURE_CORRECTIONS[sentence] ?? []),
       ...(EXPANDED_READING_PHRASE_CORRECTIONS[sentence] ?? []),
-    ]),
-  ]),
+      ...(CURRENT_AFFAIRS_READING_PHRASE_CORRECTIONS[sentence] ?? []),
+    ].filter((decision) => !focusMatchKeys.has(
+      JSON.stringify(decision.match.map((value) => value.trim().toLowerCase())),
+    ))
+    return [
+      sentence,
+      Object.freeze([...earlierCorrections, ...focusCorrections]),
+    ]
+  }),
 ))
 
 // 後置修飾だけを切り出したとき、日本語が「〜の」で途切れないための受け直し。

@@ -7,6 +7,8 @@ import { phraseSpeechText } from '../lib/phrase-speech.js'
 import { longSentenceTranslationFor } from '../data/long-sentence-translations.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { LongSentenceTranslation } from '../components/LongSentenceTranslation.jsx'
+import { SyntaxFamilyGuide } from '../components/SyntaxFamilyGuide.jsx'
+import { IdiomFormGuide } from '../components/IdiomFormGuide.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
@@ -67,14 +69,16 @@ export function PhraseQuizScreen() {
   }, [item?.id]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // コンテンツ画面の「戻る」は履歴でなく、熟語・構文の内容選択画面へ。
-  const backToPhrases = () => returnTo('phrases')
+  const backToPhrases = () => params.returnTo
+    ? returnTo(params.returnTo.screen, params.returnTo.params ?? {})
+    : returnTo('phrases')
 
   if (!deck.length) {
     return (
       <div className="flex h-full flex-col items-center justify-center gap-4 p-8 text-center">
         <div className="text-5xl">🧩</div>
         <p className="font-display text-lg font-extrabold text-ink">出題できる項目がありません</p>
-        <Button onClick={backToPhrases}>もどる</Button>
+        <Button onClick={backToPhrases}>戻る</Button>
       </div>
     )
   }
@@ -269,6 +273,12 @@ export function PhraseQuizScreen() {
             </div>
             <LongSentenceTranslation guide={longSentenceTranslation} className="mt-3" />
             <InstructorExplanation explanation={instructorExplanation} className="mt-3" />
+            <SyntaxFamilyGuide item={item} className="mt-3 text-left" />
+            <IdiomFormGuide item={item}
+              familyId={params.idiomFormFamilyId}
+              returnTo={params.returnTo}
+              className="mt-3 text-left"
+            />
           </div>
         )}
       </div>

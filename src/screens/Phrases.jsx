@@ -1,6 +1,20 @@
 import { useEffect, useState } from 'react'
 import { todayIndex, useStore } from '../store/useStore.js'
 import { PHRASE_KINDS, phrasesByKind } from '../data/phrases.js'
+import {
+  SYNTAX_FAMILY_GUIDES,
+  syntaxFamilyFor,
+  syntaxFamilySearchText,
+} from '../data/syntax-families.js'
+import {
+  FEATURED_IDIOM_FORM_FAMILY_IDS,
+  IDIOM_FORM_FAMILIES,
+  IDIOM_FORM_FAMILY_SECTIONS,
+  idiomBelongsToFormFamily,
+  idiomFormFamilyById,
+  idiomFormSearchText,
+} from '../data/idiom-form-families.js'
+import { curriculum1900PhraseAliasesFor } from '../data/curriculum-1900-resolutions.js'
 import { longSentenceTranslationFor } from '../data/long-sentence-translations.js'
 import { LEVELS, getLevel } from '../data/levels.js'
 import { phraseSpeechText } from '../lib/phrase-speech.js'
@@ -8,6 +22,8 @@ import { ScreenHeader } from '../components/AppShell.jsx'
 import { Sheet } from '../components/Sheet.jsx'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { LongSentenceTranslation } from '../components/LongSentenceTranslation.jsx'
+import { SyntaxFamilyGuide } from '../components/SyntaxFamilyGuide.jsx'
+import { IdiomFormGuide } from '../components/IdiomFormGuide.jsx'
 import { Card, Button, Chip } from '../components/ui.jsx'
 import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
 import { summarizeSrsItems } from '../lib/contentProgress.js'
@@ -27,21 +43,38 @@ const PHRASE_LEVEL_COUNTS = Object.freeze(Object.fromEntries(
     return [level.id, Object.freeze({ idiom, syntax, total: idiom + syntax })]
   }),
 ))
+const SYNTAX_FAMILY_OPTIONS = Object.freeze(
+  SYNTAX_FAMILY_GUIDES.map((guide) => ({
+    ...guide,
+    count: phrasesByKind('syntax').filter((item) => syntaxFamilyFor(item)?.id === guide.id).length,
+  })).filter((guide) => guide.count > 0),
+)
+const IDIOM_FORM_OPTIONS = IDIOM_FORM_FAMILIES
+const FEATURED_IDIOM_FORM_OPTIONS = Object.freeze(
+  FEATURED_IDIOM_FORM_FAMILY_IDS.map(idiomFormFamilyById).filter(Boolean),
+)
 
 export function PhrasesScreen() {
   const navigate = useStore((s) => s.navigate)
   const srs = useStore((s) => s.srs)
-  const initialKind = useStore((s) => s.params.kind) ?? 'idiom'
+  const screenParams = useStore((s) => s.params)
+  const initialKind = screenParams.kind ?? 'idiom'
   const [kind, setKind] = useState(initialKind)
   const [detail, setDetail] = useState(null)
-  const [query, setQuery] = useState('')
-  const [levelFilter, setLevelFilter] = useState('all')
+  const [query, setQuery] = useState(screenParams.query ?? '')
+  const [levelFilter, setLevelFilter] = useState(screenParams.levelFilter ?? 'all')
+  const [familyFilter, setFamilyFilter] = useState(screenParams.familyFilter ?? 'all')
   const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE_ITEMS)
 
   const meta = PHRASE_KINDS.find((k) => k.id === kind)
   const normalizedQuery = query.trim().toLowerCase()
   const items = [...phrasesByKind(kind)]
     .filter((item) => levelFilter === 'all' || item.level === levelFilter)
+    .filter((item) => familyFilter === 'all' || (
+      kind === 'syntax'
+        ? syntaxFamilyFor(item)?.id === familyFilter
+        : idiomBelongsToFormFamily(item, familyFilter)
+    ))
     .filter((item) => {
       if (!normalizedQuery) return true
       return [
@@ -50,43 +83,76 @@ export function PhrasesScreen() {
         item.note,
         item.example?.en,
         item.example?.ja,
+        syntaxFamilySearchText(item),
+        idiomFormSearchText(item),
+        ...(item.aliases ?? []),
+        ...curriculum1900PhraseAliasesFor(item.phrase),
       ].filter(Boolean).join(' ').toLowerCase().includes(normalizedQuery)
     })
     .sort((a, b) => levelOrder[a.level] - levelOrder[b.level])
 
-  const selectedSource = normalizedQuery
+  const selectedFamily = familyFilter === 'all'
+    ? null
+    : kind === 'syntax'
+      ? SYNTAX_FAMILY_OPTIONS.find((guide) => guide.id === familyFilter) ?? null
+      : idiomFormFamilyById(familyFilter)
+  const selectedSource = normalizedQuery || familyFilter !== 'all'
     ? { type: 'phraseList', ids: items.map((item) => item.id) }
     : {
         type: 'phrase',
         kind,
         ...(levelFilter === 'all' ? {} : { levelId: levelFilter }),
       }
-  const selectedTitle = levelFilter === 'all'
-    ? meta.label
-    : `${getLevel(levelFilter).label} ${meta.label}`
+  const selectedTitle = [
+    levelFilter === 'all' ? null : getLevel(levelFilter).label,
+    selectedFamily?.title,
+    meta.label,
+  ].filter(Boolean).join(' ')
   const visibleItems = items.slice(0, visibleCount)
   const detailTranslation = longSentenceTranslationFor(detail)
   const status = summarizeSrsItems(items, srs)
-  const due = items.filter((item) => srs[item.id]?.due <= todayIndex()).length
+  const dueItems = items.filter((item) => srs[item.id]?.due <= todayIndex())
+  const due = dueItems.length
 
   useEffect(() => {
     setVisibleCount(INITIAL_VISIBLE_ITEMS)
-  }, [kind, levelFilter, normalizedQuery])
+  }, [kind, levelFilter, familyFilter, normalizedQuery])
 
-  const study = () => navigate('phraseStudy', { source: selectedSource, title: selectedTitle, mode: 'study', engine: 'phrase', returnTo: { screen: 'phrases' } })
-  const quiz = () => navigate('phraseQuiz', { source: selectedSource, title: selectedTitle, engine: 'phrase', returnTo: { screen: 'phrases' } })
+  const returnTarget = {
+    screen: 'phrases',
+    params: { kind, levelFilter, familyFilter, query },
+  }
+  const selectedFormParams = kind === 'idiom' && familyFilter !== 'all'
+    ? { idiomFormFamilyId: familyFilter }
+    : {}
+  const study = () => navigate('phraseStudy', {
+    source: selectedSource,
+    title: selectedTitle,
+    mode: 'study',
+    engine: 'phrase',
+    ...selectedFormParams,
+    returnTo: returnTarget,
+  })
+  const quiz = () => navigate('phraseQuiz', {
+    source: selectedSource,
+    title: selectedTitle,
+    engine: 'phrase',
+    ...selectedFormParams,
+    returnTo: returnTarget,
+  })
   const reviewDue = () =>
     navigate('phraseStudy', {
-      source: { type: 'phraseDue', kind },
-      title: `${meta.label}の復習`,
+      source: { type: 'phraseList', ids: dueItems.map((item) => item.id) },
+      title: `${selectedTitle}の復習`,
       mode: 'study',
       engine: 'phrase',
-      returnTo: { screen: 'phrases' },
+      ...selectedFormParams,
+      returnTo: returnTarget,
     })
 
   return (
     <div className="pb-6">
-      <ScreenHeader title="熟語・構文" subtitle="3択＋わからないで覚える" />
+      <ScreenHeader title="熟語・構文" subtitle="3択＋わからないで暗記" />
 
       <div className="px-4">
         {/* 種類切替 */}
@@ -96,7 +162,10 @@ export function PhrasesScreen() {
             return (
               <button
                 key={k.id}
-                onClick={() => setKind(k.id)}
+                onClick={() => {
+                  setKind(k.id)
+                  setFamilyFilter('all')
+                }}
                 className={cx(
                   'flex items-center justify-center gap-2 rounded-2xl py-3 font-display font-extrabold transition-all',
                   on ? 'text-white shadow-pop' : 'bg-white text-ink/60',
@@ -197,6 +266,89 @@ export function PhrasesScreen() {
               </button>
             ))}
           </div>
+          {kind === 'syntax' && (
+            <div
+              className="rounded-2xl bg-violet-50 p-3 ring-1 ring-violet-100"
+              data-syntax-family-filter
+            >
+              <label className="block text-[11px] font-extrabold text-violet-700" htmlFor="syntax-family-filter">
+                構文を仲間でまとめて学ぶ
+              </label>
+              <select
+                id="syntax-family-filter"
+                value={familyFilter}
+                onChange={(event) => setFamilyFilter(event.target.value)}
+                className="mt-1.5 h-11 w-full rounded-xl border border-violet-200 bg-white px-3 text-sm font-bold text-ink outline-none focus:border-violet-400"
+              >
+                <option value="all">全ファミリー（{SYNTAX_FAMILY_OPTIONS.length}組・{PHRASE_COUNTS.syntax}構文）</option>
+                {SYNTAX_FAMILY_OPTIONS.map((guide) => (
+                  <option key={guide.id} value={guide.id}>
+                    {guide.title}（{guide.count}構文）
+                  </option>
+                ))}
+              </select>
+              <p className="mt-2 text-xs font-bold leading-relaxed text-violet-900/70">
+                {selectedFamily
+                  ? selectedFamily.summary
+                  : '似た形を比較しながら覚えます。各カードにも、同じ仲間の形・意味差・入試の見分け方をまとめて表示します。'}
+              </p>
+            </div>
+          )}
+          {kind === 'idiom' && (
+            <div
+              className="rounded-2xl bg-sky-50 p-3 ring-1 ring-sky-100"
+              data-idiom-form-filter
+            >
+              <label className="block text-[11px] font-extrabold text-sky-700" htmlFor="idiom-form-filter">
+                熟語を同じ形でまとめて学ぶ
+              </label>
+              <div className="mt-2 grid grid-cols-2 gap-2" data-idiom-featured-forms>
+                {FEATURED_IDIOM_FORM_OPTIONS.map((guide) => {
+                  const selected = familyFilter === guide.id
+                  return (
+                    <button
+                      key={guide.id}
+                      type="button"
+                      onClick={() => setFamilyFilter(guide.id)}
+                      aria-pressed={selected}
+                      data-idiom-featured-form={guide.id}
+                      className={cx(
+                        'flex min-h-11 items-center justify-between gap-2 rounded-xl px-3 text-left text-xs font-extrabold ring-1 transition-colors',
+                        selected
+                          ? 'bg-sky-600 text-white ring-sky-600'
+                          : 'bg-white text-sky-900 ring-sky-200',
+                      )}
+                    >
+                      <span className="font-display">{guide.title}</span>
+                      <span className={selected ? 'text-white/75' : 'text-sky-600/70'}>{guide.count}件</span>
+                    </button>
+                  )
+                })}
+              </div>
+              <select
+                id="idiom-form-filter"
+                value={familyFilter}
+                onChange={(event) => setFamilyFilter(event.target.value)}
+                className="mt-1.5 h-11 w-full rounded-xl border border-sky-200 bg-white px-3 text-sm font-bold text-ink outline-none focus:border-sky-400"
+              >
+                <option value="all">すべての熟語（{PHRASE_COUNTS.idiom}件）</option>
+                {IDIOM_FORM_FAMILY_SECTIONS.map((section) => (
+                  <optgroup key={section.id} label={section.label}>
+                    {section.families.map((guide) => (
+                      <option key={guide.id} value={guide.id}>
+                        {guide.title}（{guide.count}件）
+                      </option>
+                    ))}
+                  </optgroup>
+                ))}
+              </select>
+              <p className="mt-2 text-xs font-bold leading-relaxed text-sky-900/70">
+                {selectedFamily
+                  ? selectedFamily.summary
+                  : `「〜 up」「〜 at」「〜 with」「be 〜 at」など、${IDIOM_FORM_OPTIONS.length}組から形を選び、意味の違いを比べられます。`}
+              </p>
+            </div>
+          )}
         </div>
 
         {/* 進捗＋学習ボタン */}
@@ -212,8 +364,8 @@ export function PhrasesScreen() {
           </div>
           <LearningStatusBars progress={status} className="mt-3" compact units={{ learning: '項目', quiz: '問' }} />
           <div className="mt-3 grid grid-cols-2 gap-2">
-            <Button onClick={study} disabled={!items.length}><Book size={16} /> 覚える</Button>
-            <Button variant="secondary" onClick={quiz} disabled={!items.length}><Cards size={16} /> クイズ</Button>
+            <Button onClick={study} disabled={!items.length}><Book size={16} /> 暗記</Button>
+            <Button variant="secondary" onClick={quiz} disabled={!items.length}><Cards size={16} /> テスト</Button>
           </div>
           {due > 0 && (
             <Button full variant="hint" className="mt-2" onClick={reviewDue}>
@@ -294,7 +446,9 @@ export function PhrasesScreen() {
               <div className="rounded-2xl bg-violet-50 p-3 ring-1 ring-violet-100">
                 <div className="mb-1 flex items-center gap-1.5 text-violet-600">
                   <Link size={16} />
-                  <span className="text-[11px] font-extrabold uppercase tracking-wide">成り立ち</span>
+                  <span className="text-[11px] font-extrabold uppercase tracking-wide">
+                    {detail.kind === 'syntax' ? 'この文のポイント' : '成り立ち'}
+                  </span>
                 </div>
                 <p className="text-sm font-bold leading-relaxed text-violet-900/90">{detail.origin}</p>
               </div>
@@ -305,6 +459,11 @@ export function PhrasesScreen() {
                 <p className="text-sm font-bold leading-relaxed text-amber-900/90">{detail.note}</p>
               </div>
             )}
+            <SyntaxFamilyGuide item={detail} />
+            <IdiomFormGuide item={detail}
+              familyId={kind === 'idiom' && familyFilter !== 'all' ? familyFilter : null}
+              returnTo={returnTarget}
+            />
           </div>
         )}
       </Sheet>

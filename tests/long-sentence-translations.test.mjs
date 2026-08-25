@@ -120,7 +120,7 @@ test('独立した長い構文33文すべてに、意味・発音フレーズと
   }
 })
 
-test('長い一文の自然訳と英語順の対応訳は、一覧詳細・学習・クイズで共通表示する', () => {
+test('長い一文の自然訳と英語順の対応訳は、一覧詳細・暗記・テストで共通表示する', () => {
   const component = readFileSync(
     new URL('../src/components/LongSentenceTranslation.jsx', import.meta.url),
     'utf8',

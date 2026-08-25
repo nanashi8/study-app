@@ -82,7 +82,7 @@ export function MathMapScreen() {
           <div className="flex items-start justify-between gap-3">
             <div>
               <p className="text-[10px] font-extrabold text-ink/40">全数学問題</p>
-              <h2 className="font-display text-base font-extrabold text-ink">学習とクイズの内訳</h2>
+              <h2 className="font-display text-base font-extrabold text-ink">暗記とテストの内訳</h2>
             </div>
             <span className="text-xs font-extrabold text-ink/45">全{mathProgress.total}問</span>
           </div>

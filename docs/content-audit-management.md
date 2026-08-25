@@ -37,4 +37,4 @@ npm run audit:content-ledger
 
 台帳の`result: "pass"`は、`auditGates`と各カテゴリの`auditGateIds`に明記された観点が全件合格したことを表す。監査していない観点まで合格したとは扱わない。
 
-問題別の一般解説と、4択それぞれの根拠は別々に数える。今回の英文法は全4択の根拠を監査対象にする。他教材に選択肢別解説がない場合、`generalRationaleCount`は増えても`choiceSpecificRationaleCount`は0のまま残るため、管理画面上の数字で区別できる。
+問題別の一般解説と、各選択肢の根拠は別々に数える。英文法は全13,800択、英語長文は全560択の根拠を監査対象にする。他教材に選択肢別解説がない場合、`generalRationaleCount`は増えても`choiceSpecificRationaleCount`は0のまま残るため、管理画面上の数字で区別できる。

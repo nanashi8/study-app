@@ -1,6 +1,6 @@
-import { ALL_WORDS, ETYMOLOGY_MODE_META, ETYMOLOGY_PACKS } from '../data/vocab.js'
+import { ALL_WORDS, ETYMOLOGY_PACKS } from '../data/vocab.js'
 import { PHRASES } from '../data/phrases.js'
-import { GRAMMAR } from '../data/grammar.js'
+import { GRAMMAR_PRACTICE } from '../data/grammar.js'
 import { LISTENING_ITEMS } from '../data/listening.js'
 import { KOTEN_CATEGORIES, KOTEN_WORDS } from '../data/koten.js'
 import { KOTEN_GRAMMAR, KOTEN_GRAMMAR_CATEGORIES } from '../data/koten-grammar.js'
@@ -10,6 +10,7 @@ import {
   notebookRef,
   parseNotebookRef,
 } from './learningNotebook.js'
+import { grammarQuestionExplanationFor } from './grammarQuestionExplanations.js'
 
 export const NOTEBOOK_DOMAINS = Object.freeze([
   { id: 'vocab', label: '英単語', unit: '語', emoji: '📘', color: '#4f46e5' },
@@ -73,10 +74,10 @@ const CATALOG = Object.freeze({
   vocab: adapt('vocab', ALL_WORDS, (item) => ({
     title: item.word,
     subtitle: item.meaning,
-    detail: item.example?.en ?? item.etymology?.note ?? '',
+    detail: item.example?.en ?? '',
     category: compact([item.pos, item.field]).join('・'),
     level: item.level ? `英検${item.level}級` : '',
-    search: [item.meanings, item.example?.ja, item.phonetic, item.etymology?.origin],
+    search: [item.meanings, item.example?.ja, item.phonetic],
   })),
   phrases: adapt('phrases', PHRASES, (item) => ({
     title: item.phrase,
@@ -86,10 +87,12 @@ const CATALOG = Object.freeze({
     level: item.level ? `英検${item.level}級` : '',
     search: [item.meanings, item.example?.ja, item.origin, item.note],
   })),
-  grammar: adapt('grammar', GRAMMAR, (item) => ({
+  grammar: adapt('grammar', GRAMMAR_PRACTICE, (item) => ({
     title: item.sentence?.en ?? item.q,
     subtitle: `${item.topic}｜答え：${item.answer}`,
-    detail: item.explain,
+    detail: item.questionType === 'word-order'
+      ? item.explain
+      : grammarQuestionExplanationFor(item),
     category: item.topic,
     level: item.level ? `英検${item.level}級` : '',
     search: [item.q, item.choices, item.sentence?.ja],
@@ -108,8 +111,8 @@ const CATALOG = Object.freeze({
       title: item.title,
       subtitle: item.description,
       detail: words.slice(0, 7).join('・'),
-      category: ETYMOLOGY_MODE_META[item.mode]?.label ?? item.mode,
-      level: item.rootId ? `語根 ${item.rootId}` : '',
+      category: '確認済み語根',
+      level: item.rootId ? `語源カード ${item.rootForm}` : '',
       search: [item.caution, item.subtitle, words],
     }
   }),

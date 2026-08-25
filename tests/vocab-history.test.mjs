@@ -1,5 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
 
 import { decodeProgress } from '../src/lib/progressCode.js'
 import {
@@ -74,4 +75,17 @@ test('辞書履歴は端末保存・進捗コード向けに正規化して往�
   } finally {
     useStore.setState({ vocabHistory: before.vocabHistory })
   }
+})
+
+test('検索・参照履歴の各単語からマイ単語へ追加・解除できる', () => {
+  const source = readFileSync(
+    new URL('../src/screens/VocabSearch.jsx', import.meta.url),
+    'utf8',
+  )
+
+  assert.match(source, /const toggleMyList = useStore/)
+  assert.match(source, /onToggleSave=\{\(\) => toggleMyList\(word\.id\)\}/)
+  assert.match(source, /マイ単語に追加/)
+  assert.match(source, /マイ単語から外す/)
+  assert.match(source, /追加済み/)
 })

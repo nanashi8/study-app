@@ -52,11 +52,11 @@ function ConsoleButton({ label, disabled, onClick, children, primary = false }) 
   )
 }
 
-/** 全読み上げ導線で共有する、6操作固定の再生コンソール。 */
+/** 全読み上げ導線で共有する、6操作固定の再生パネル。 */
 export function SpeechConsole({ state, onRateChange }) {
   return (
     <section
-      aria-label="読み上げコンソール"
+      aria-label="読み上げ再生パネル"
       data-speech-console
       className="border-t border-brand-100 bg-white/98 px-2 py-1.5 shadow-[0_-10px_30px_-22px_rgba(15,23,42,0.6)] backdrop-blur"
     >

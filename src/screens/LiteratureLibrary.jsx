@@ -81,7 +81,7 @@ export function LiteratureLibraryScreen() {
         <Card className="p-4" data-literature-status>
           <LearningStatusBars progress={overallStatus} compact units={{ learning: '作品', quiz: '作品' }} />
           <p className="mt-2 text-[10px] font-bold leading-relaxed text-ink/45">
-            英語名作の読解チェックは正誤を記録します。独立クイズのない古典・漢文名作は未回答です。
+            英語名作の読解チェックは正誤を記録します。独立テストのない古典・漢文名作は未回答です。
           </p>
         </Card>
 

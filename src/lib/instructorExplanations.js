@@ -1,4 +1,6 @@
 import { UNKNOWN_CHOICE_ID } from './quizChoices.js'
+import { syntaxFamilyFor } from '../data/syntax-families.js'
+import { etymologyCardsForWord } from '../data/vocab.js'
 import {
   grammarChoiceMismatchExplanationFor,
   grammarCorrectChoiceExplanationFor,
@@ -80,7 +82,7 @@ const grammarStrategy = (source = '') => {
     return '主語・目的語と動作の関係が「する側」か「される側」かを決め、原形・現在分詞・過去分詞を選び分ける。'
   }
   if (!topic && /進行形|完了形|時制|時を表す副詞節|過去のある時/.test(details)) {
-    return 'まず時を示す語と出来事の前後関係を拾い、基準時を現在・過去・未来のどこに置くか決める。最後に主語と動詞の形を照合する。'
+    return 'まず時を示す語と出来事の前後関係を拾い、基準時を現在・過去・未来のどこに置くか決める。最後に主語と動詞の形が合うか確かめる。'
   }
   if (!topic && /比較級|最上級|原級|倍数/.test(details)) {
     return '比較する対象の数と、原級・比較級・最上級の合図を先に探す。than、as、of / in まで一まとまりで確認する。'
@@ -92,7 +94,7 @@ const grammarStrategy = (source = '') => {
     return '空所の前後が語・句・節のどれかを判定し、同じ文法上の役割どうしを結ぶ。節なら主語と動詞がそろうか、因果・逆接・譲歩のどの論理関係かまで確認する。'
   }
   if (!topic && /関係詞|関係代名詞|\bwhich\b/i.test(details)) {
-    return '空所の後ろが完全文か不完全文かを見て、空所が節をつなぐだけか、節内の主語・目的語を兼ねるかを判定する。先行詞の有無と、人・物・場所・時の区別まで照合する。'
+    return '空所の後ろが完全文か不完全文かを見て、空所が節をつなぐだけか、節内の主語・目的語を兼ねるかを判定する。先行詞の有無と、人・物・場所・時の区別が合うか確かめる。'
   }
   if (/used to\s*\/\s*be used to/.test(value)) {
     return 'used to の後ろが動詞原形なら「以前は〜した」、be used to の to が前置詞なら後ろは名詞・動名詞で「〜に慣れている」。to の品詞と直後の形を対で見る。'
@@ -125,7 +127,7 @@ const grammarStrategy = (source = '') => {
     return '修飾語をいったん外して主語・動詞・目的語・補語の骨格を取る。動詞が要求する文型と、各要素が同一関係か動作の対象かを確認してから語形を選ぶ。'
   }
   if (/関係|複合関係詞|whatever|連鎖関係詞|前置詞\+関係代名詞/.test(value)) {
-    return '空所の後ろが完全文か不完全文かを見て、空所が節をつなぐだけか、節内の主語・目的語を兼ねるかを判定する。先行詞の有無と、人・物・場所・時の区別まで照合する。'
+    return '空所の後ろが完全文か不完全文かを見て、空所が節をつなぐだけか、節内の主語・目的語を兼ねるかを判定する。先行詞の有無と、人・物・場所・時の区別が合うか確かめる。'
   }
   if (/接続|名詞節|譲歩|相関/.test(value)) {
     return '空所の前後が語・句・節のどれかを判定し、同じ文法上の役割どうしを結ぶ。節なら主語と動詞がそろうか、因果・逆接・譲歩のどの論理関係かまで確認する。'
@@ -134,7 +136,7 @@ const grammarStrategy = (source = '') => {
     return 'まず主語の人称と単数・複数を確定し、次に時制を決める。その二条件から動詞の形を一つに絞り、完成文を音読して主語と動詞の一致を確認する。'
   }
   if (/名詞の複数形|冠詞|限定詞|数量表現|限定詞・数量|指示語/.test(value)) {
-    return '空所の後ろの名詞が数えられるか、単数か複数か、話し手と聞き手の間で特定済みかを順に確認する。数量語・冠詞・指示語と名詞の形を一組で照合する。'
+    return '空所の後ろの名詞が数えられるか、単数か複数か、話し手と聞き手の間で特定済みかを順に確認する。数量語・冠詞・指示語と名詞の形が合うか確かめる。'
   }
   if (/再帰代名詞|代名詞/.test(value)) {
     return '代名詞が指す名詞を先に特定し、人称・単数複数・主格／目的格／所有格を決める。主語と目的語が同一人物なら再帰代名詞になるかも確認する。'
@@ -149,7 +151,7 @@ const grammarStrategy = (source = '') => {
     return '事実なのか、可能性・義務・反実仮想なのかを先に判定する。助動詞の後ろは原形、仮定法は条件節と帰結節の時制を対で確認する。'
   }
   if (/時制|完了|進行|過去形|未来表現|過去の習慣|used to|話法/.test(value)) {
-    return 'まず時を示す語と出来事の前後関係を拾い、基準時を現在・過去・未来のどこに置くか決める。最後に主語と動詞の形を照合する。'
+    return 'まず時を示す語と出来事の前後関係を拾い、基準時を現在・過去・未来のどこに置くか決める。最後に主語と動詞の形が合うか確かめる。'
   }
   if (/比較/.test(value)) {
     return '比較する対象の数と、原級・比較級・最上級の合図を先に探す。than、as、of / in まで一まとまりで確認する。'
@@ -157,7 +159,7 @@ const grammarStrategy = (source = '') => {
   if (/受動|分詞|使役|知覚/.test(value)) {
     return '主語・目的語と動作の関係が「する側」か「される側」かを決め、原形・現在分詞・過去分詞を選び分ける。'
   }
-  return `まず完成文で必要な意味と品詞を言葉にし、選択肢の語形・語順・結び付きを一つずつ照合する。この問題では${stripTerminal(
+  return `まず完成文で必要な意味と品詞を言葉にし、選択肢の語形・語順・結び付きを一つずつ比べる。この問題では${stripTerminal(
     typeof source === 'object' ? source?.explain : source,
   )}を最終判断の軸にする。`
 }
@@ -174,7 +176,7 @@ const readingStrategy = (question = '') => {
     return '主旨・筆者意見は一文だけで決めず、導入の問題提起、本文の対比、結論の主張が共通して向かう内容を選ぶ。強すぎる断定は切る。'
   }
   if (/where|when|who|what/.test(value)) {
-    return '疑問詞が求める情報の種類を固定し、固有名詞・時・場所・動作の周辺を本文から探す。見つけた一文を選択肢の言い換えと照合する。'
+    return '疑問詞が求める情報の種類を決め、固有名詞・時・場所・動作の周辺を本文から探す。見つけた一文と、選択肢の言い換えを比べる。'
   }
   return '設問のキーワードを本文に戻し、根拠の一文を指で示せる選択肢だけを残す。本文にない常識や印象は足さない。'
 }
@@ -260,7 +262,7 @@ const listeningStrategy = (item = {}) => {
     item?.type === 'response'
     && ['quantity', 'comparison', 'duration', 'time', 'place', 'selection', 'reason', 'method'].includes(kind)
   ) {
-    return `最後の発話の疑問詞から、答えるべき情報を${quote(listeningFocus(item))}に固定する。その種類に答えていない選択肢を先に外し、代名詞・時制・会話の自然さまで照合する。`
+    return `最後の発話の疑問詞から、答えるべき情報を${quote(listeningFocus(item))}に決める。その種類に答えていない選択肢を先に外し、代名詞・時制・会話の自然さまで確かめる。`
   }
   if (kind === 'quantity') {
     return 'How many / How much が問う数量を先に特定し、放送中の数字を役割付きでメモする。一部の数字だけを選ばず、必要なら合計・差・残りを計算して単位まで合わせる。'
@@ -302,7 +304,7 @@ const listeningStrategy = (item = {}) => {
     return '条件・弱点・懸念は、主張本体ではなく but / however / only / if の後に置かれやすい。何ができるかと、どこからは言えないかを対にして選ぶ。'
   }
   if (kind === 'change-effect') {
-    return '変化・結果は before / after、予想 / 実際、原因 / 結果を二列でメモする。設問が変化そのものと結果のどちらを問うかを最後に照合する。'
+    return '変化・結果は before / after、予想 / 実際、原因 / 結果を二列でメモする。設問が変化そのものと結果のどちらを問うかを最後に確かめる。'
   }
   if (kind === 'contrast') {
     return '対比される二項を左右に分け、それぞれの長所・短所を対応させる。片方だけの細部ではなく、両者を結ぶ相違点や原則を答える。'
@@ -311,7 +313,7 @@ const listeningStrategy = (item = {}) => {
     return '会話中の案を候補として並べ、却下理由と but / so / then の後に残る最終案を追う。最初の提案や一人だけの意見を合意事項と取り違えない。'
   }
   if (kind === 'detail') {
-    return '設問の主語と動詞を先に囲み、放送中の同じ人物・物事の周辺だけを集中して取る。選択肢は単語一致でなく、誰が何をしたかという関係まで照合する。'
+    return '設問の主語と動詞を先に囲み、放送中の同じ人物・物事の周辺だけを集中して聞く。選択肢は単語だけで決めず、誰が何をしたかまで確かめる。'
   }
   if (kind === 'yes-no-response' || kind === 'request-response' || kind === 'suggestion-response' || kind === 'response') {
     return '最後の発話が質問・依頼・提案・感想のどれかを判定し、代名詞・時制・肯定否定を合わせる。意味だけでなく、次の発話として自然に続く返答を選ぶ。'
@@ -342,7 +344,7 @@ const classicalGrammarStrategy = (question = {}) => {
     return '敬語は語形だけでなく、誰から誰への敬意かを人物関係で決める。主体を高める尊敬、受け手を高める謙譲、聞き手への丁寧を分ける。'
   }
   if (/識別|活用|conjugation/.test(`${question.category} ${question.format}`)) {
-    return '傍線部を単独暗記で決めず、直前・直後の語が要求する活用形と、文中での働きを同時に照合する。'
+    return '傍線部だけで決めず、直前・直後の語が求める活用形と、文中での働きを同時に確かめる。'
   }
   return '傍線部の直前直後を見て、接続・活用・文中の意味を順に確定する。最後に現代語訳へ入れて文脈が通るか検算する。'
 }
@@ -360,17 +362,21 @@ export function buildVocabInstructorExplanation(word, selectedWord) {
     ? list(selectedWord.meanings) || clean(selectedWord.meaning)
     : ''
   const role = POS_GUIDE[word?.pos] ?? `${clean(word?.pos)}としての働き`
+  const reviewedCard = etymologyCardsForWord(word)[0]
+  const recallCue = reviewedCard
+    ? `確認済み語源カード「${reviewedCard.rootForm}＝${reviewedCard.rootMeaning}」も補助にする`
+    : '品詞と例文を手掛かりに、基本の意味を言い直す'
   return explanation({
-    answer: `${quote(word?.word)}の核となる意味は${quote(meanings)}。まずこの中心義を正解として押さえる。`,
+    answer: `${quote(word?.word)}の中心となる意味は${quote(meanings)}。まずこの基本の意味を正解として押さえる。`,
     evidence: `用例 ${quote(word?.example?.en)} では、${quote(word?.word)}が${role}として働く。日本語では${quote(word?.example?.ja)}となるため、意味を文脈の中で確定できる。`,
     trap: selectionTrap({
       selected: selectedWord,
       correct: word?.meaning,
-      wrong: () => `${quote(selectedMeaning)}は${quote(selectedWord?.word)}側の意味。日本語だけの印象で選ばず、問われた綴り${quote(word?.word)}と一対一で照合する。`,
-      unknown: `意味が出てこないときは、品詞${quote(word?.pos)}と例文の位置から働きを先に絞る。空欄のままにせず、中心義${quote(meanings)}へ戻す。`,
+      wrong: () => `${quote(selectedMeaning)}は${quote(selectedWord?.word)}側の意味。日本語だけの印象で選ばず、問われた綴り${quote(word?.word)}と正しい意味を一対一で結び付ける。`,
+      unknown: `意味が出てこないときは、品詞${quote(word?.pos)}と例文の位置から働きを先に絞る。空欄のままにせず、基本の意味${quote(meanings)}へ戻す。`,
       correctAnswer: `意味を一語訳だけで固定せず、${quote(word?.word)}が${role}として使われることまで確認すると、別の文脈でも崩れにくい。`,
     }),
-    strategy: `次からは「品詞 → 中心義 → 例文」の順で再生する。記憶の手掛かりは ${clean(word?.etymology?.note)}。`,
+    strategy: `次からは「品詞 → 基本の意味 → 例文」の順で思い出す。${recallCue}。`,
   })
 }
 
@@ -379,6 +385,28 @@ export function buildPhraseInstructorExplanation(item, selectedItem) {
   const selectedMeaning = selectedItem
     ? list(selectedItem.meanings) || clean(selectedItem.meaning)
     : ''
+
+  if (item?.kind === 'syntax') {
+    const guide = syntaxFamilyFor(item)
+    const familyTitle = guide?.title ?? '同じ働きをする構文'
+    const familySummary = stripTerminal(guide?.summary) || '似た構文を一語ずつでなく、共通点と相違点でまとめて理解します'
+    const decision = stripTerminal(guide?.decision)
+    const point = stripTerminal(item?.origin)
+
+    return explanation({
+      answer: `${quote(item?.phrase)}は${quote(meanings)}を表す文。このカードは【${familyTitle}】に属し、語順と後ろに続く動詞・節の形まで一緒に捉える。`,
+      evidence: `${point}。例文 ${quote(item?.example?.en)} は${quote(item?.example?.ja)}となる。${decision}。この判断手順を当てはめると、文の形と意味が一致する。`,
+      trap: selectionTrap({
+        selected: selectedItem,
+        correct: item?.meaning,
+        wrong: () => `${quote(selectedMeaning)}は${quote(selectedItem?.phrase)}が表す意味。日本語訳の印象だけで選ばず、英文の語順と、空所の前後が要求する形を比べる。このカード固有の決め手は次の通り。${point}。`,
+        unknown: `迷ったら、${decision}。続いて、このカード固有の決め手を確認する。${point}。正解は${quote(meanings)}。`,
+        correctAnswer: `正解できた場合も、【${familyTitle}】のどの型かを、語順と動詞・節の形を挙げて説明できるか確認する。`,
+      }),
+      strategy: `${familySummary}。同じ仲間の構文を「形・意味・例文」で横に並べ、何が同じで何が違うかを説明してから次へ進む。`,
+    })
+  }
+
   return explanation({
     answer: `${quote(item?.phrase)}は、まとまりで${quote(meanings)}。語をばらばらに直訳せず、ひとかたまりの表現として取る。`,
     evidence: `${clean(item?.origin)} 例文 ${quote(item?.example?.en)} は${quote(item?.example?.ja)}となり、この意味が文脈でも確認できる。`,
@@ -394,6 +422,19 @@ export function buildPhraseInstructorExplanation(item, selectedItem) {
 }
 
 export function buildGrammarInstructorExplanation(item, selected, selectedGuidance) {
+  if (item?.questionType === 'word-order') {
+    const picked = chosenText(selected)
+    return explanation({
+      answer: `正しい語順は${quote(item?.sentence?.en)}。日本語では${quote(item?.sentence?.ja)}。`,
+      evidence: `${clean(item?.explain)} 英文では、主語と動詞の骨格を先に置き、目的語・補語・修飾語をそれぞれの結び付きのまま続ける。`,
+      trap: isUnknown(selected)
+        ? `分からないときは、まず動詞を探し、その動作をする主語を左に置く。次に${clean(item?.explain)}`
+        : picked === clean(item?.answer)
+          ? `正解できても、単語を暗記した順ではなく、どの語がどの語に結び付くかを説明する。${clean(item?.explain)}`
+          : `並べた文${quote(picked)}では、正しい文${quote(item?.answer)}の語の結び付きと一致しない。${clean(item?.explain)}`,
+      strategy: '日本語の語順から一語ずつ置かず、「主語 + 動詞」を最初に作る。次に動詞が必要とする目的語・補語を置き、時・場所・理由などの説明を最後に加える。',
+    })
+  }
   const decisive = grammarExamFocusExplanationFor(item) || clean(item?.explain)
   const fullExplanation = grammarQuestionExplanationFor(item)
   return explanation({
@@ -414,18 +455,48 @@ export function buildGrammarInstructorExplanation(item, selected, selectedGuidan
 
 export function buildReadingInstructorExplanation(question, selected) {
   const basis = stripTerminal(question?.explain)
+  const questionJa = clean(question?.questionJa)
+  const answerJa = clean(question?.answerJa ?? question?.choiceTranslations?.[question?.answer])
+  const answerTranslation = answerJa ? `（${answerJa}）` : ''
   return explanation({
-    answer: `正解は${quote(question?.answer)}。設問が求める情報に対し、本文と同じ内容を過不足なく言い換えている。`,
-    evidence: `${basis}。この本文上の事実を、設問が求める形に言い換えれば正解へ到達する。`,
+    answer: `${questionJa ? `設問の和訳は${quote(questionJa)}。` : ''}正解は${quote(question?.answer)}${answerTranslation}。設問が求める情報に対し、本文と同じ内容を過不足なく言い換えている。`,
+    evidence: `${basis}。${answerJa ? `したがって、本文の答えは${quote(answerJa)}となる。` : ''}この本文上の事実を、設問が求める形に言い換えれば正解へ到達する。`,
     trap: selectionTrap({
       selected,
       correct: question?.answer,
-      wrong: (picked) => `${quote(picked)}を選ぶには本文中に同内容の根拠が必要だが、この問題の決め手は「${basis}」である。本文にない補足や、別箇所の語だけが一致する選択肢は切る。`,
-      unknown: `分からないときは全文を読み直す前に、設問の疑問詞と名詞を本文へ戻す。この問題の根拠は「${basis}」である。`,
-      correctAnswer: '正解できても、選択肢の表現ではなく本文のどの一文が根拠かを指せるか確認する。',
+      wrong: (picked) => {
+        const pickedJa = clean(question?.choiceTranslations?.[picked])
+        return `${quote(picked)}${pickedJa ? `は${quote(pickedJa)}という意味。` : 'を選ぶには、'}この設問で本文が示す答えは${answerJa ? quote(answerJa) : quote(question?.answer)}であり、決め手は「${basis}」である。別箇所の語だけが一致しても、この設問への答えにならない選択肢は切る。`
+      },
+      unknown: `分からないときは全文を読み直す前に、${questionJa ? `設問の和訳${quote(questionJa)}を確認し、` : ''}疑問詞と名詞を本文へ戻す。この問題の根拠は「${basis}」である。`,
+      correctAnswer: `正解できても、${answerJa ? `英語と和訳${quote(answerJa)}を対応させ、` : ''}本文のどの一文が根拠かを指せるか確認する。`,
     }),
     strategy: readingStrategy(question?.q ?? question?.prompt),
   })
+}
+
+export function buildReadingChoiceExplanations(question) {
+  const basis = stripTerminal(question?.explain)
+  const answerJa = clean(question?.answerJa ?? question?.choiceTranslations?.[question?.answer])
+
+  return {
+    question: {
+      en: clean(question?.q ?? question?.prompt),
+      ja: clean(question?.questionJa),
+    },
+    choices: (question?.choices ?? []).map((choice) => {
+      const ja = clean(question?.choiceTranslations?.[choice])
+      const correct = choice === question?.answer
+      return {
+        en: clean(choice),
+        ja,
+        correct,
+        explanation: correct
+          ? `${basis}。この内容が設問に直接答えている。`
+          : `${quote(ja || choice)}という内容だが、この設問で本文が示す答えは${quote(answerJa || question?.answer)}である。${basis}。したがって、この選択肢はこの設問への答えにはならない。`,
+      }
+    }),
+  }
 }
 
 export function buildListeningInstructorExplanation(item, selectedChoice) {
@@ -464,16 +535,16 @@ export function buildKotenWordInstructorExplanation(word, selectedWord) {
     ? `用例${quote(word.example.ja)}は${quote(word.example.gendai)}。`
     : ''
   return explanation({
-    answer: `${quote(word?.word)}の中心義は${quote(meanings)}。品詞は${quote(word?.pos)}である。`,
-    evidence: `${clean(word?.note)} 品詞と、人物・物事に向けられた評価の方向を合わせると、この中心義に決まる。${example}`,
+    answer: `${quote(word?.word)}の中心となる意味は${quote(meanings)}。品詞は${quote(word?.pos)}である。`,
+    evidence: `${clean(word?.note)} 品詞と、人物・物事に向けられた評価の方向を合わせると、この意味に決まる。${example}`,
     trap: selectionTrap({
       selected: selectedWord,
       correct: word?.meaning,
-      wrong: () => `${quote(selectedMeaning)}は${quote(selectedWord?.word)}側の意味。現代語の見た目や音だけでなく、古語の品詞と中心義を照合する。この語の判別点は ${clean(word?.note)}`,
+      wrong: () => `${quote(selectedMeaning)}は${quote(selectedWord?.word)}側の意味。現代語の見た目や音だけでなく、古語の品詞と中心の意味を確かめる。この語の見分け方は ${clean(word?.note)}`,
       unknown: `意味が出ないときは、品詞${quote(word?.pos)}と語の感情・評価の向きを先に思い出す。正解は${quote(meanings)}。`,
-      correctAnswer: '正解できても、現代語と同じ意味だと思い込まず、古文特有の中心義と文脈での広がりを確認する。',
+      correctAnswer: '正解できても、現代語と同じ意味だと思い込まず、古文特有の基本の意味と文脈での広がりを確認する。',
     }),
-    strategy: `古典単語は「中心義 → 文脈での派生義 → 用例」の順で覚える。まず ${clean(word?.note)}`,
+    strategy: `古典単語は「基本の意味 → 文脈で広がった意味 → 用例」の順で覚える。まず ${clean(word?.note)}`,
   })
 }
 
@@ -499,7 +570,7 @@ export function buildKotenCultureInstructorExplanation(question, selected, relat
     trap: selectionTrap({
       selected,
       correct: question?.answer,
-      wrong: (picked) => `${quote(picked)}は本文の時代背景・身分関係・場面のいずれかと合わない。この問題の決め手は ${clean(question?.explanation)} 用語だけでなく、誰がどこで何をしているかを照合する。`,
+      wrong: (picked) => `${quote(picked)}は本文の時代背景・身分関係・場面のいずれかと合わない。この問題の決め手は ${clean(question?.explanation)} 用語だけでなく、誰がどこで何をしているかを確かめる。`,
       unknown: `分からないときは固有語を「人物・場所・制度・年中行事」のどれかに分類する。そこから本文での役割へ戻す。`,
       correctAnswer: `正解できても、知識を本文の因果へ変換できるか確認する。${clean(related?.examTip)}`,
     }),
@@ -532,7 +603,7 @@ export function buildDiagnosticInstructorExplanation(question, selected) {
       ? grammarStrategy(question)
       : question?.skill === 'usage'
       ? '熟語・語法は一語ずつ直訳せず、前置詞まで含む形と、例文での使われ方を一まとまりで確認する。'
-      : '単語は綴りと品詞を確認し、中心義を例文の中で再生する。日本語の選択肢だけを見比べない。'
+      : '単語は綴りと品詞を確認し、基本の意味を例文の中で思い出す。日本語の選択肢だけを見比べない。'
   const skillLabel = DIAGNOSTIC_SKILL_LABEL[question?.skill] ?? '基礎力'
   return explanation({
     answer: `正解は${quote(question?.answer)}。この一問では${quote(skillLabel)}の基礎となる判断を確認している。`,

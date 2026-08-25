@@ -34,8 +34,11 @@ export function KotenInterpretationPrepScreen() {
   const [openGrammarId, setOpenGrammarId] = useState(null)
 
   const items = useMemo(
-    () => (params.ids ?? []).slice(0, 12).map(getKotenInterpretation).filter(Boolean),
-    [params.ids],
+    () => (params.ids ?? [])
+      .slice(0, params.size > 0 ? params.size : 12)
+      .map(getKotenInterpretation)
+      .filter(Boolean),
+    [params.ids, params.size],
   )
   const words = useMemo(
     () => uniqueById(items.flatMap((item) => item.wordIds.map(getKoten))),
@@ -305,7 +308,7 @@ export function KotenInterpretationPrepScreen() {
               variant="secondary"
               onClick={() => navigate('kotenCulture')}
             >
-              <Book size={17} /> 古典常識を体系的に覚える
+              <Book size={17} /> 古典常識を体系的に暗記
             </Button>
             {cultureItems.map((item) => (
               <div key={`${item.id}:${item.title}`} className="rounded-2xl bg-white p-4 shadow-sm">
@@ -333,6 +336,9 @@ export function KotenInterpretationPrepScreen() {
             navigate('kotenInterpretationQuiz', {
               ids: items.map((item) => item.id),
               title: params.title,
+              size: items.length,
+              preserveOrder: params.preserveOrder,
+              returnTo: params.returnTo,
             })
           }
         >

@@ -38,7 +38,7 @@ const memoryEntry = ({ box, due, now, firstAt, judgment }) => ({
   },
 })
 
-test('暗記完了レポートは今回・今日・定着対象・復習予定・忘却曲線を同じSRSから作る', () => {
+test('暗記完了レポートは今回と今日の答え・復習予定を同じSRSから作る', () => {
   const now = new Date(2026, 7, 14, 18, 0, 0, 0).getTime()
   const today = dayIndex(now)
   const [first, forgot, mastered] = ALL_WORDS.slice(0, 3)
@@ -78,11 +78,6 @@ test('暗記完了レポートは今回・今日・定着対象・復習予定�
     srs,
     wordIds: [first.id, forgot.id, mastered.id],
     reviewIds: [forgot.id],
-    beforeBoxes: {
-      [first.id]: null,
-      [forgot.id]: 2,
-      [mastered.id]: 3,
-    },
     correct: 2,
     wrong: 1,
     dailyGoal: 5,
@@ -94,18 +89,12 @@ test('暗記完了レポートは今回・今日・定着対象・復習予定�
       total: report.session.total,
       remembered: report.session.remembered,
       forgot: report.session.forgot,
-      newCount: report.session.newCount,
-      advancedCount: report.session.advancedCount,
-      newlyMasteredCount: report.session.newlyMasteredCount,
       reviewNowCount: report.session.reviewNowCount,
     },
     {
       total: 3,
       remembered: 2,
       forgot: 1,
-      newCount: 1,
-      advancedCount: 2,
-      newlyMasteredCount: 1,
       reviewNowCount: 1,
     },
   )
@@ -122,19 +111,23 @@ test('暗記完了レポートは今回・今日・定着対象・復習予定�
   assert.equal(report.priorityItems[0].needsReviewNow, true)
   assert.deepEqual(
     Object.fromEntries(report.schedule.map((item) => [item.id, item.count])),
-    { now: 1, tomorrow: 1, soon: 0, later: 1 },
+    { 'day-0': 1, 'day-1': 1, 'day-7': 1 },
   )
   assert.deepEqual(
     Object.fromEntries(report.schedule.map((item) => [item.id, item.ids])),
     {
-      now: [forgot.id],
-      tomorrow: [first.id],
-      soon: [],
-      later: [mastered.id],
+      'day-0': [forgot.id],
+      'day-1': [first.id],
+      'day-7': [mastered.id],
     },
   )
-  assert.equal(report.nextReviewInDays, 0)
-  assert.ok(report.curve[0].retention > report.curve.at(-1).retention)
+  assert.deepEqual(report.schedule.map((item) => item.label), ['今日', '明日', '7日後'])
+  assert.equal('curve' in report, false)
+  assert.equal(report.session.advancedCount, 2)
+  assert.equal(report.session.newlyMasteredCount, 1)
+  assert.equal(report.session.longTermCount, 1)
+  assert.equal('score' in report.priorityItems[0], false)
+  assert.equal('predictedRetention' in report.priorityItems[0], false)
 })
 
 test('暗記完了画面は全単語暗記入口の合流点だけで詳細レポートを表示する', () => {
@@ -153,32 +146,47 @@ test('暗記完了画面は全単語暗記入口の合流点だけで詳細レ�
 
   assert.match(study, /vocabSession:\s*\{/)
   assert.match(study, /wordIds:\s*deck\.map\(\(item\) => item\.id\)/)
-  assert.match(study, /beforeBoxes:\s*Object\.fromEntries/)
+  assert.match(study, /beforeBoxes/)
+  assert.match(result, /beforeBoxes: params\.vocabSession\.beforeBoxes/)
   assert.match(result, /isVocabStudy.*params\.vocabSession/s)
   assert.match(result, /buildVocabCompletionReport/)
   assert.match(result, /source:\s*\{ type: 'mylist', ids: vocabReviewIds \}/)
   assert.match(result, /if \(isDragonVein\)[\s\S]*if \(vocabCompletion\)/)
+  const vocabResultBranch = result.slice(result.indexOf('if (vocabCompletion)'), result.indexOf("return (\n    <div className=\"relative flex", result.indexOf('if (vocabCompletion)')))
+  assert.doesNotMatch(vocabResultBranch, /<Confetti/)
 
   for (const contract of [
     'data-vocab-completion-report',
     'data-vocab-completion-today',
     'data-vocab-completion-priority',
-    'data-vocab-forgetting-curve',
     'data-vocab-next-cycle',
   ]) {
     assert.match(report, new RegExp(contract))
   }
-  assert.match(report, />学習完了</)
+  assert.match(report, /英単語の学習結果/)
+  assert.match(report, /今日、\{today\.uniqueWords\}語に取り組みました/)
   assert.doesNotMatch(report, /暗記サイクル完了|MEMORY CYCLE COMPLETE/)
-  for (const heading of ['今日の成果', '定着させる語句', '今回の忘却曲線', '次の暗記サイクル']) {
+  for (const heading of ['今日の成果', '次にすること', 'このあとの復習予定', '今回学んだ語']) {
     assert.match(report, new RegExp(heading))
   }
-  for (const action of ['復習する', '次へ進む', '戻る']) {
+  for (const action of ['復習する', '次へ進む', '単語一覧へ戻る']) {
     assert.match(report, new RegExp(action))
   }
   assert.match(report, /data-vocab-review-schedule/)
-  assert.match(report, /期限前の枠もタップ/)
   assert.match(report, /30→60→90→180日/)
+  assert.match(report, /今日、\{today\.uniqueWords\}語に取り組みました/)
+  assert.match(report, /同じ語に何度か答えた場合は、今日最後の答えで分けています/)
+  assert.match(report, /次の復習：\{dueLabel\(item\.dueInDays\)\}/)
+  assert.match(report, /app-fixed-bottom-actions fixed inset-x-0/)
+  assert.match(report, /data-vocab-fixed-review/)
+  assert.match(report, /data-vocab-fixed-continue/)
+  assert.match(report, /data-vocab-review-schedule/)
+  assert.match(report, /予定日は、これまでの答えに合わせて変わります/)
+  assert.match(report, /答えを見る前に、もう一度意味を思い出しましょう/)
+  assert.doesNotMatch(report, /最新が|復習の段階|覚え具合|忘れやすさの予測|先取り復習|パーフェクト級/)
+  assert.doesNotMatch(report, /data-vocab-memory-progress|data-vocab-long-review-stage|data-vocab-forgetting-curve/)
+  assert.doesNotMatch(report, /4日後以降/)
   assert.match(result, /onReviewSchedule=\{reviewVocabSchedule\}/)
+  assert.match(result, /reviewVocabSchedule[\s\S]*continueTo: vocabNextAfterReview/)
   assert.equal(PERSISTED_PROGRESS_FIELDS.includes('vocabSession'), false)
 })

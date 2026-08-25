@@ -83,9 +83,7 @@ export function WritingScreen() {
         <section className="overflow-hidden rounded-[2rem] bg-gradient-to-br from-slate-950 via-indigo-950 to-brand-800 p-5 text-white shadow-pop">
           <div className="flex items-start justify-between gap-3">
             <div>
-              <p className="text-[11px] font-extrabold tracking-[0.18em] text-cyan-200">
-                BUILD YOUR ENGLISH
-              </p>
+              <p className="text-[11px] font-extrabold text-cyan-200">英文を組み立てる</p>
               <h2 className="mt-1 font-display text-2xl font-extrabold leading-tight">
                 必要な型が先にわかる。
                 <br />
@@ -206,7 +204,7 @@ export function WritingScreen() {
                 ))}
               </div>
               <LearningStatusBars progress={status} className="mt-3" compact units={{ learning: '題', quiz: '題' }} />
-              <p className="mt-2 text-[10px] font-bold text-ink/45">{profile.target}・独立クイズは未回答として表示</p>
+              <p className="mt-2 text-[10px] font-bold text-ink/45">{profile.target}・独立テストは未回答として表示</p>
             </div>
           </Card>
         </section>

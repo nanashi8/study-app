@@ -1,185 +1,86 @@
 #!/usr/bin/env node
-// 全収録語の語源学習監査。
-// 「語源が存在するか」だけでなく、語彙を横に増やす手掛かりがどの経路であるかを全件分類する。
+// 語源教材の全母数レポート。
+// 生データ・保存互換アーカイブ・公開カードを混同せず、それぞれの件数を表示する。
 import {
   ALL_WORDS,
-  ETYMOLOGY_FORMATION_META,
+  ETYMOLOGY_LEGACY_PACKS,
+  ETYMOLOGY_LEGACY_SUMMARY,
   ETYMOLOGY_PACKS,
-  ETYMOLOGY_SOURCE_META,
   ETYMOLOGY_SUMMARY,
-  ROOTS,
-  etymologyLearningGuideFor,
-  rootIdsForWord,
+  etymologyCardsForWord,
+  getWord,
 } from '../src/data/vocab.js'
 
-const ROOT_IDS = new Set(ROOTS.map((r) => r.id))
-const PACK_IDS = new Set(ETYMOLOGY_PACKS.map((pack) => pack.id))
-const KINDS = new Set(['prefix', 'root', 'suffix', 'stem'])
-const hardProblems = []
-const shortStoryOnly = []
-const placeholderWords = []
-const noteCounts = new Map()
-
-const counts = {
+const raw = {
   total: ALL_WORDS.length,
-  explained: 0,
-  guided: 0,
-  structured: 0,
-  referenceLinked: 0,
-  directFormula: 0,
-  sameRoot: 0,
-  wordFamily: 0,
-  storyOnly: 0,
+  notes: ALL_WORDS.filter((word) => word.etymology?.note?.trim()).length,
+  origins: ALL_WORDS.filter((word) => word.etymology?.origin?.trim()).length,
+  structured: ALL_WORDS.filter((word) => word.etymology?.parts?.length).length,
+  referenceLinked: ALL_WORDS.filter((word) => word.referenceRoots?.length).length,
 }
 
-for (const word of ALL_WORDS) {
-  const etymology = word.etymology
-  const note = etymology?.note?.trim() ?? ''
-  const parts = etymology?.parts ?? []
-  const hasFormula = parts.some((p) => p.kind === 'root' && p.root)
-  const hasRoot = rootIdsForWord(word).length > 0
-  const hasFamily = word.family?.length > 0 || word.derivatives?.length > 0
+const publicWordIds = new Set(ETYMOLOGY_PACKS.flatMap((card) => card.coverageIds))
+const publicLinks = ETYMOLOGY_PACKS.reduce((sum, card) => sum + card.coverageIds.length, 0)
+const sourceLinks = ETYMOLOGY_PACKS.reduce((sum, card) => sum + card.evidence.sources.length, 0)
+const problems = []
 
-  if (note) counts.explained++
-  if (parts.length) counts.structured++
-  if (word.referenceRoots?.length) counts.referenceLinked++
-
-  // 1語を必ず1つの「最も強い語彙拡張経路」に分類する。
-  if (hasFormula) counts.directFormula++
-  else if (hasRoot) counts.sameRoot++
-  else if (hasFamily) counts.wordFamily++
-  else {
-    counts.storyOnly++
-    if (note.length < 20) shortStoryOnly.push({ word: word.word, note })
+for (const card of ETYMOLOGY_PACKS) {
+  if (card.mode !== 'root' || card.groupClaim !== 'manual-reviewed-root') {
+    problems.push(`${card.id}: 手動監査済み語根カードではない`)
   }
-
-  if (!etymology) hardProblems.push(`${word.word}: etymology が無い`)
-  if (!note) hardProblems.push(`${word.word}: 意味変化説明(note)が無い`)
-  const guide = etymologyLearningGuideFor(word)
-  let guideComplete = true
-  if (!guide.formationLabel || !guide.formationText) {
-    guideComplete = false
-    hardProblems.push(`${word.word}: 中高生向けの作られ方説明が無い`)
+  if (!card.rootForm || !card.rootMeaning || !card.rootOrigin) {
+    problems.push(`${card.id}: 語根の形・意味・出発点が不足`)
   }
-  if (!guide.sourceLabel || !guide.sourceText) {
-    guideComplete = false
-    hardProblems.push(`${word.word}: 中高生向けのもとの形・言語説明が無い`)
+  if (!card.coverageIds.length) problems.push(`${card.id}: 紐づく確認済み単語が空`)
+  if (new Set(card.coverageIds).size !== card.coverageIds.length) {
+    problems.push(`${card.id}: 紐づく単語が重複`)
   }
-  if (!guide.storyLabel || !guide.storySteps.length || guide.storySteps.some((step) => !step.trim())) {
-    guideComplete = false
-    hardProblems.push(`${word.word}: 中高生向けの意味変化説明が無い`)
-  }
-  if (!guide.currentMeaning) {
-    guideComplete = false
-    hardProblems.push(`${word.word}: 中高生向けの今の意味が無い`)
-  }
-  for (const value of [
-    guide.formationLabel,
-    guide.formationText,
-    guide.sourceLabel,
-    guide.storyLabel,
-  ]) {
-    if (/現在義|共通軸|記載上の出発言語|濃縮パック/.test(value)) {
-      guideComplete = false
-      hardProblems.push(`${word.word}: 学習者向け説明に専門的な表示語が残る (${value})`)
-    }
-  }
-  if (guideComplete) counts.guided++
-  if (!word.compression) hardProblems.push(`${word.word}: 濃縮ルートが無い`)
-  else if (!PACK_IDS.has(word.compression.packId)) {
-    hardProblems.push(`${word.word}: 濃縮パック参照先が不明 (${word.compression.packId})`)
-  }
-  for (const [i, part] of parts.entries()) {
-    if (!part?.t?.trim()) hardProblems.push(`${word.word}: parts[${i}] の綴り(t)が空`)
-    if (!KINDS.has(part?.kind)) hardProblems.push(`${word.word}: parts[${i}] のkindが不正`)
-    if (part?.root && !ROOT_IDS.has(part.root)) {
-      hardProblems.push(`${word.word}: parts[${i}] のroot=${part.root}が未定義`)
-    }
-  }
-  if (/TODO|TBD|要確認|unknown/i.test(note)) placeholderWords.push(word.word)
-  if (note) noteCounts.set(note, (noteCounts.get(note) ?? 0) + 1)
-}
-
-const rootUse = ROOTS.map((root) => ({
-  root,
-  words: ALL_WORDS.filter((word) => rootIdsForWord(word).includes(root.id)),
-}))
-const unusedRoots = rootUse.filter(({ words }) => words.length === 0).map(({ root }) => root.id)
-const duplicateNotes = [...noteCounts.entries()]
-  .filter(([, count]) => count > 1)
-  .sort((a, b) => b[1] - a[1])
-const wordsById = new Map(ALL_WORDS.map((word) => [word.id, word]))
-const originPacks = ETYMOLOGY_PACKS.filter((pack) => pack.mode === 'origin')
-for (const pack of originPacks) {
-  const packedWords = pack.coverageIds.map((id) => wordsById.get(id)).filter(Boolean)
-  for (const axis of ['formationKey', 'sourceKey', 'domainKey']) {
-    const values = new Set(packedWords.map((word) => word.compression?.[axis]))
-    if (values.size !== 1 || !values.has(pack[axis])) {
-      hardProblems.push(`${pack.id}: ${axis} が同じ束の中で不一致`)
-    }
-  }
-}
-for (const pack of ETYMOLOGY_PACKS) {
-  const learnerText = [pack.title, pack.subtitle, pack.description, pack.caution].join(' ')
-  if (/undefined|（\s*）|\(\s*\)/.test(learnerText)) {
-    hardProblems.push(`${pack.id}: 学習者向けカード文言が不完全 (${pack.title})`)
-  }
-  if (pack.title.length > 45) {
-    hardProblems.push(`${pack.id}: 学習者向けカード名が長すぎる (${pack.title.length}字)`)
+  for (const wordId of card.coverageIds) {
+    if (!getWord(wordId)) problems.push(`${card.id}: 不明な単語ID ${wordId}`)
   }
 }
 
-const pct = (value) => `${(value / counts.total * 100).toFixed(1)}%`
-const printAxis = (meta, countsByKey) => {
-  for (const [key, item] of Object.entries(meta)) {
-    const count = countsByKey[key] ?? 0
-    if (count) console.log(`  ${item.label.padEnd(18)} ${String(count).padStart(5)}語`)
-  }
+if (ETYMOLOGY_LEGACY_SUMMARY.total !== ALL_WORDS.length) {
+  problems.push(`保存互換アーカイブの全語数が不一致: ${ETYMOLOGY_LEGACY_SUMMARY.total}/${ALL_WORDS.length}`)
+}
+if (
+  ETYMOLOGY_SUMMARY.cards !== ETYMOLOGY_PACKS.length ||
+  ETYMOLOGY_SUMMARY.total !== publicWordIds.size ||
+  ETYMOLOGY_SUMMARY.links !== publicLinks
+) {
+  problems.push('公開カードのサマリーが実データと一致しない')
+}
+if (etymologyCardsForWord('he').length) problems.push('he が確認済み語源カードへ混入')
+
+const line = (label, value, unit = '') => {
+  console.log(`${label.padEnd(34)} ${String(value).padStart(8)}${unit}`)
 }
 
-console.log(`\n語源学習・全件監査: ${counts.total}語`)
-console.log('─'.repeat(56))
-console.log(`説明あり                    ${String(counts.explained).padStart(5)}語  ${pct(counts.explained)}`)
-console.log(`中高生向け4段階ガイド       ${String(counts.guided).padStart(5)}語  ${pct(counts.guided)}`)
-console.log(`構造化パーツあり            ${String(counts.structured).padStart(5)}語  ${pct(counts.structured)}`)
-console.log(`補助語根で関連語を拡張       ${String(counts.referenceLinked).padStart(5)}語  ${pct(counts.referenceLinked)}`)
-console.log('\n語彙を増やす主経路（重複なし）')
-console.log(`  意味の式で組み立てる      ${String(counts.directFormula).padStart(5)}語  ${pct(counts.directFormula)}`)
-console.log(`  同じ語根へ広げる          ${String(counts.sameRoot).padStart(5)}語  ${pct(counts.sameRoot)}`)
-console.log(`  語族・派生語へ広げる      ${String(counts.wordFamily).padStart(5)}語  ${pct(counts.wordFamily)}`)
-console.log(`  由来ストーリー単独        ${String(counts.storyOnly).padStart(5)}語  ${pct(counts.storyOnly)}`)
-console.log('\n全語の濃縮ルート（重複なし）')
-console.log(`  部品の式                  ${String(ETYMOLOGY_SUMMARY.counts.formula).padStart(5)}語  ${pct(ETYMOLOGY_SUMMARY.counts.formula)}`)
-console.log(`  共有語根                  ${String(ETYMOLOGY_SUMMARY.counts.root).padStart(5)}語  ${pct(ETYMOLOGY_SUMMARY.counts.root)}`)
-console.log(`  語族                      ${String(ETYMOLOGY_SUMMARY.counts.family).padStart(5)}語  ${pct(ETYMOLOGY_SUMMARY.counts.family)}`)
-console.log(`  成り立ち・変化            ${String(ETYMOLOGY_SUMMARY.counts.origin).padStart(5)}語  ${pct(ETYMOLOGY_SUMMARY.counts.origin)}`)
-console.log(`  経路あり                  ${String(ETYMOLOGY_SUMMARY.covered).padStart(5)}語  ${pct(ETYMOLOGY_SUMMARY.covered)}`)
-console.log(`  学習パック                ${String(ETYMOLOGY_SUMMARY.packs).padStart(5)}束`)
-console.log('\n成り立ち・変化の内訳（形成法と言語層は別集計）')
-console.log('  [英語への入り方・作られ方]')
-printAxis(ETYMOLOGY_FORMATION_META, ETYMOLOGY_SUMMARY.origin.formationCounts)
-console.log('  [由来記述の出発言語]')
-printAxis(ETYMOLOGY_SOURCE_META, ETYMOLOGY_SUMMARY.origin.sourceCounts)
-console.log(
-  `  3軸がそろったパック       ${String(ETYMOLOGY_SUMMARY.origin.packs).padStart(5)}束` +
-  `（1語だけ ${ETYMOLOGY_SUMMARY.origin.singletonPacks}束）`,
-)
-console.log('\n改善候補')
-console.log(`  短いストーリー単独(<20字) ${shortStoryOnly.length}語`)
-console.log(`  仮置き文言                 ${placeholderWords.length}語`)
-console.log(`  重複する説明文             ${duplicateNotes.length}種類`)
-console.log(`  収録語に未接続の語根       ${unusedRoots.length}個${unusedRoots.length ? ` (${unusedRoots.join(', ')})` : ''}`)
+console.log('\n語源教材・全母数レポート')
+console.log('='.repeat(56))
+console.log('[生データ走査]')
+line('全語源レコード', raw.total, '語')
+line('自由記述noteあり', raw.notes, '語')
+line('自由記述originあり', raw.origins, '語')
+line('構造化partsあり', raw.structured, '語')
+line('補助語根リンクあり', raw.referenceLinked, '語')
 
-if (shortStoryOnly.length) {
-  console.log('\n短いストーリー単独の先頭20件')
-  for (const item of shortStoryOnly.slice(0, 20)) console.log(`  - ${item.word}: ${item.note}`)
-}
+console.log('\n[学習者へ公開する教材]')
+line('手動監査済み語源カード', ETYMOLOGY_PACKS.length, '枚')
+line('確認済みの紐づく単語（一意）', publicWordIds.size, '語')
+line('カード→単語リンク（延べ）', publicLinks, '件')
+line('照合先URL', sourceLinks, '件')
+line('未承認のため表示しない自由記述', ETYMOLOGY_SUMMARY.quarantinedWords, '語')
+line('he に紐づく公開カード', etymologyCardsForWord('he').length, '枚')
 
-if (hardProblems.length) {
-  console.error(`\n❌ 構造上の問題 ${hardProblems.length}件`)
-  for (const problem of hardProblems.slice(0, 40)) console.error(`  - ${problem}`)
-  if (hardProblems.length > 40) console.error(`  … 他 ${hardProblems.length - 40}件`)
+console.log('\n[保存互換アーカイブ・非公開]')
+line('旧学習パック', ETYMOLOGY_LEGACY_PACKS.length, '束')
+line('旧割当を保持する単語', ETYMOLOGY_LEGACY_SUMMARY.total, '語')
+
+if (problems.length) {
+  console.error(`\n❌ 語源教材レポート: ${problems.length}件の構造違反`)
+  for (const problem of problems) console.error(`- ${problem}`)
   process.exit(1)
 }
 
-console.log('\n✅ 全語を走査し、語源データの構造上の問題はありません。\n')
+console.log('\n✅ 生データ、非公開アーカイブ、公開カードの母数を分離して確認しました。\n')

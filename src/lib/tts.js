@@ -224,7 +224,7 @@ function normalizedSpeechText(text) {
     .trim()
 }
 
-// 画面では引用・補足の境界を見せる一方、講師音声では「かぎかっこ」や
+// 画面では引用・補足の境界を見せる一方、解説向け音声では「かぎかっこ」や
 // 「かっこ」と読ませない。囲まれた本文は学習内容なので削らず、記号だけ除く。
 function explanationSpeechText(text, style) {
   if (style !== 'translation' && style !== 'explanation') return text

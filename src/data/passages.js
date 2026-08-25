@@ -7,6 +7,8 @@
 
 import { EXAM_PASSAGES } from './passages-exam.js'
 import { EXPANDED_PASSAGES } from './reading-expansion-passages.js'
+import { CURRENT_AFFAIRS_PASSAGES } from './reading-current-affairs-passages.js'
+import { EXTENDED_PASSAGES } from './reading-extended-passages.js'
 import { READING_TRANSLATION_SCENARIOS } from './reading-translation-scenarios.js'
 import { reviewSourceFingerprint } from './reading-phrase-review-ledger.js'
 
@@ -416,6 +418,7 @@ export const PASSAGES = [
   })),
   ...EXAM_PASSAGES,
   ...EXPANDED_PASSAGES,
+  ...CURRENT_AFFAIRS_PASSAGES,
 ].map(passageWithExamMeta)
 
 const PROPER_NAME_GLOSSES = [
@@ -450,6 +453,11 @@ for (const passage of PASSAGES) {
   }
 }
 
-export const PASSAGES_BY_ID = Object.fromEntries(PASSAGES.map((p) => [p.id, p]))
+// PASSAGES は一文ごとのSVOCM監査を行う受験長文32本。
+// EXTENDED_PASSAGES は節送りで読む語彙強化用の多読教材。
+// 学習画面のカタログと保存IDは ALL_PASSAGES を正とする。
+export const ALL_PASSAGES = Object.freeze([...PASSAGES, ...EXTENDED_PASSAGES])
+
+export const PASSAGES_BY_ID = Object.fromEntries(ALL_PASSAGES.map((p) => [p.id, p]))
 export const getPassage = (id) => PASSAGES_BY_ID[id]
-export const passagesByLevel = (levelId) => PASSAGES.filter((p) => p.level === levelId)
+export const passagesByLevel = (levelId) => ALL_PASSAGES.filter((p) => p.level === levelId)

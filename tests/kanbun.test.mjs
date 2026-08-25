@@ -174,7 +174,7 @@ test('トップメニューは古典と漢文を別アプリとして公開し�
   for (const label of ['漢語', '漢文法', '漢文常識', '返り点・訓読']) {
     assert.match(home, new RegExp(label), label)
   }
-  assert.match(catalog, /覚える/)
+  assert.match(catalog, /暗記/)
   assert.match(catalog, /テスト/)
   assert.match(study, /覚えた/)
   assert.match(study, /まだ/)

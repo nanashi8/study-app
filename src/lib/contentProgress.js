@@ -33,11 +33,11 @@ export function learningStatusForSrsEntry(entry) {
   if (judgment === 'remembered') return 'learned'
   if (judgment === 'forgot') return 'reviewing'
 
-  // 現行形式で memory があるのに自己判定が無い項目は、クイズだけを解いた項目。
-  // クイズ結果を暗記済みへ混ぜず、学習側では未学習のままにする。
+  // 現行形式で memory があるのに自己判定が無い項目は、テストだけを解いた項目。
+  // テスト結果を暗記済みへ混ぜず、学習側では未学習のままにする。
   if (isRecord(entry.memory)) return 'unlearned'
 
-  // 旧版SRSは暗記とクイズの内訳を持たない。既存履歴を消えたように見せないため、
+  // 旧版SRSは暗記とテストの内訳を持たない。既存履歴を消えたように見せないため、
   // 長期箱だけを学習済、それ以外の既習項目を復習中として互換表示する。
   return nonNegativeInteger(entry.box) >= 4 ? 'learned' : 'reviewing'
 }
@@ -46,7 +46,7 @@ export function quizStatusForSrsEntry(entry) {
   const result = entry?.test?.lastResult
   if (result === 'correct') return 'correct'
   if (result === 'wrong' || result === 'unknown') return 'incorrect'
-  // 旧版の top-level correct/wrong は暗記判定とクイズが混在するため推測しない。
+  // 旧版の top-level correct/wrong は暗記判定とテストが混在するため推測しない。
   return 'unanswered'
 }
 
@@ -76,7 +76,7 @@ export function summarizeSrsItems(items = [], srs = {}) {
   return { ...summary, activeIds }
 }
 
-// 出題単位でクイズ結果を数える。1項目に複数問ある教材（古典文法・古典常識）で
+// 出題単位でテスト結果を数える。1項目に複数問ある教材（古典文法・古典常識）で
 // 「全74」ではなく「全136問」と表示できるよう、母数を問題そのものに合わせる。
 export function summarizeQuizItems({ items = [], quizResults = {}, quizDomain } = {}) {
   const ids = uniqueItemIds(items)
@@ -98,7 +98,7 @@ export function summarizeQuizItems({ items = [], quizResults = {}, quizDomain } 
   return { total: ids.length, counts, answeredIds }
 }
 
-// 学習は項目単位、クイズは出題単位で数える教材のまとめ。
+// 暗記は項目単位、テストは出題単位で数える教材のまとめ。
 export function summarizeSrsItemsWithQuestions({
   items = [],
   srs = {},

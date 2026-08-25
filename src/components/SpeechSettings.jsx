@@ -73,7 +73,7 @@ const RATE_PRESETS = [
 ]
 
 const DAILY_GOALS = [10, 20, 30, 50]
-// 1回の学習・クイズで出す問題数（学習中は進捗表示のタップでも変えられる）。
+// 1回の暗記・テストで出す問題数（学習中は進捗表示のタップでも変えられる）。
 // 並びは学習画面の選択肢と同じものを使う。「全部」はその教材の在庫すべて。
 const SESSION_SIZES = [...SESSION_SIZE_OPTIONS, SESSION_SIZE_ALL]
 
@@ -958,7 +958,7 @@ export function SpeechSettingsSheet() {
     menu: 'メニュー',
     settings: '設定',
     advisor: '学習アドバイザー',
-    analytics: '定着・学習効率の分析',
+    analytics: '学習記録とおすすめ',
     reset: '学習履歴のリセット',
     'reset-complete': 'リセット完了',
     'backup-reset': 'リセット前のバックアップ',

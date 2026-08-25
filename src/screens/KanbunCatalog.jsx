@@ -103,7 +103,7 @@ export function KanbunCatalogScreen() {
             className="rounded-3xl bg-gradient-to-br from-rose-700 to-red-900 p-4 text-left text-white shadow-card active:scale-[0.98]"
           >
             <Book size={23} />
-            <span className="mt-3 block font-display text-lg font-extrabold">覚える</span>
+            <span className="mt-3 block font-display text-lg font-extrabold">暗記</span>
             <span className="mt-1 block text-[11px] font-bold text-white/70">答えを隠して思い出す</span>
           </button>
           <button
@@ -135,7 +135,7 @@ export function KanbunCatalogScreen() {
         </div>
 
         <section>
-          <h2 className="px-1 font-display text-lg font-extrabold text-ink">到達レベルから選ぶ</h2>
+          <h2 className="px-1 font-display text-lg font-extrabold text-ink">学年・難しさから選ぶ</h2>
           <div className="mt-2 flex gap-2 overflow-x-auto pb-1">
             <button
               type="button"
@@ -196,7 +196,7 @@ export function KanbunCatalogScreen() {
             <p className="text-xs font-bold text-ink/40">該当 {filtered.length}{meta.itemLabel}</p>
           </div>
           <div className="flex gap-2">
-            <Button size="sm" disabled={!filtered.length} onClick={() => study(filtered, '絞り込み範囲')}>覚える</Button>
+            <Button size="sm" disabled={!filtered.length} onClick={() => study(filtered, '絞り込み範囲')}>暗記</Button>
             <Button size="sm" variant="secondary" disabled={!filtered.length} onClick={() => quiz(filtered, '絞り込みテスト')}>テスト</Button>
           </div>
         </div>

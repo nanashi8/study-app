@@ -522,7 +522,7 @@ export function AfterSchoolInterludeScreen() {
                   <p className="mt-0.5 text-[9px] font-bold text-white/55">この出会いはアルバムから振り返れ、次の相手が分かった後の作戦会議で同行者に選べます。</p>
                 </div>
               )}
-              <p className="mt-2 text-[8px] font-bold leading-relaxed text-white/40">放課後の選択は絆と思い出に記録されます。学習の正答率・SRS・診断結果は変わりません。</p>
+              <p className="mt-2 text-[8px] font-bold leading-relaxed text-white/40">放課後の選択は絆と思い出に記録されます。学習の正答率・復習記録・診断結果は変わりません。</p>
             </div>
           )}
         </section>

@@ -24,11 +24,17 @@ import {
 export function MathSolveScreen() {
   const params = useStore((s) => s.params)
   const back = useStore((s) => s.back)
+  const returnTo = useStore((s) => s.returnTo)
   const markMathDone = useStore((s) => s.markMathDone)
   const setMathMastery = useStore((s) => s.setMathMastery)
   const recordContentQuizResult = useStore((s) => s.recordContentQuizResult)
   const unit = unitById(params.unitId)
-  const problems = problemsForUnit(params.unitId)
+  const unitProblems = problemsForUnit(params.unitId)
+  const problems = Array.isArray(params.problemIds) && params.problemIds.length
+    ? params.problemIds
+        .map((id) => unitProblems.find((problem) => problem.id === id))
+        .filter(Boolean)
+    : unitProblems
 
   const [pIndex, setPIndex] = useState(0)
   const [phase, setPhase] = useState('recall') // 'recall' | 'steps' | 'solved'
@@ -43,6 +49,13 @@ export function MathSolveScreen() {
 
   const p = problems[pIndex]
   const step = phase === 'steps' ? p?.steps[si] : null
+  const leave = () => {
+    if (params.returnTo?.screen) {
+      returnTo(params.returnTo.screen, params.returnTo.params ?? {})
+      return
+    }
+    back()
+  }
 
   // 穴埋め用タイル（ステップごとにシャッフル固定）。
   const bank = useMemo(
@@ -55,7 +68,7 @@ export function MathSolveScreen() {
       <div className="flex h-full flex-col items-center justify-center gap-4 p-8 text-center">
         <div className="text-5xl">🧮</div>
         <p className="font-display text-lg font-extrabold text-ink">この単元はまだ準備中です</p>
-        <Button onClick={back}>もどる</Button>
+        <Button onClick={leave}>戻る</Button>
       </div>
     )
   }
@@ -67,7 +80,7 @@ export function MathSolveScreen() {
         <div className="text-6xl">{pct >= 80 ? '🏆' : pct >= 50 ? '✨' : '💪'}</div>
         <div>
           <p className="font-display text-2xl font-extrabold text-ink">おつかれさま！</p>
-          <p className="mt-1 font-bold text-ink/55">{unit?.title} 全{problems.length}問クリア</p>
+          <p className="mt-1 font-bold text-ink/55">{params.title ?? unit?.title} 全{problems.length}問クリア</p>
         </div>
         <div className="flex items-center gap-2 rounded-2xl bg-white px-5 py-3 shadow-card">
           <Target size={20} className="text-violet-500" />
@@ -78,7 +91,7 @@ export function MathSolveScreen() {
         </div>
         <div className="flex w-full max-w-xs flex-col gap-2.5">
           <Button full variant="secondary" onClick={reset}>もう一度</Button>
-          <Button full onClick={back}>単元一覧へ <ArrowRight size={18} /></Button>
+          <Button full onClick={leave}>単元一覧へ <ArrowRight size={18} /></Button>
         </div>
       </div>
     )
@@ -149,7 +162,7 @@ export function MathSolveScreen() {
   const nextProblem = () => {
     if (pIndex + 1 >= problems.length) {
       const pct = score.total ? (score.correct / score.total) * 100 : 0
-      if (params.unitId) setMathMastery(params.unitId, pct)
+      if (params.unitId && !params.problemIds?.length) setMathMastery(params.unitId, pct)
       setFinished(true)
       return
     }
@@ -177,7 +190,7 @@ export function MathSolveScreen() {
   return (
     <div className="flex h-full flex-col">
       <div className="flex items-center gap-3 px-3 py-3">
-        <IconButton onClick={back} aria-label="やめる"><Close size={22} /></IconButton>
+        <IconButton onClick={leave} aria-label="やめる"><Close size={22} /></IconButton>
         <div className="flex-1"><ProgressBar value={pIndex / problems.length} color="#8b5cf6" /></div>
         <SpeechSettingsButton compact />
         <span className="w-12 text-right text-sm font-extrabold text-ink/50">{pIndex + 1}/{problems.length}</span>

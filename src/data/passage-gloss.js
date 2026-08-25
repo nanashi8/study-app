@@ -52,6 +52,11 @@ export const PASSAGE_IRREGULAR_FORMS = {
   wore: { lemma: 'wear', ja: '着た・身につけた' },
   lit: { lemma: 'light', ja: '照らされた・明るい状態の' },
   worn: { lemma: 'wear', ja: 'すり減った・使い古された' },
+  bought: { lemma: 'buy', ja: '買った' },
+  came: { lemma: 'come', ja: '来た・やって来た' },
+  fell: { lemma: 'fall', ja: '減った・落ちた' },
+  ran: { lemma: 'run', ja: '走らせた・運行した' },
+  wrote: { lemma: 'write', ja: '書いた' },
 }
 
 // 透明な派生語は「語族=1辞書項目」の方針に従い、既存の基本語へ接続する。
@@ -150,6 +155,28 @@ export const PASSAGE_FORM_ALIASES = {
   meaningful: { id: 'meaning', ja: '意味のある・実質的な' },
   redefine: { id: 'define', ja: '再定義する' },
   statistical: { id: 'statistical', ja: '統計上の・統計的な' },
+  steadily: { id: 'steady', ja: '着実に・一定して' },
+  sunlight: { id: 'sun', ja: '日光・日差し' },
+  detector: { id: 'detect', ja: '検出器・検出プログラム' },
+  detectors: { id: 'detect', ja: '検出器（複数）' },
+  inconvenient: { id: 'convenient', ja: '都合の悪い・不都合な' },
+  programmers: { id: 'program', ja: 'プログラムを書く人たち' },
+  proposal: { id: 'propose', ja: '提案' },
+  proposals: { id: 'propose', ja: '提案（複数）' },
+  proven: { id: 'prove', ja: '実証された・証明された' },
+  realistic: { id: 'real', ja: '写実的な・現実に近い' },
+  rebuild: { id: 'build', ja: '立て直す・再建する' },
+  reproducible: { id: 'reproduce', ja: '再現できる' },
+  retraining: { id: 'train', ja: '再訓練・学び直し' },
+  savings: { id: 'save', ja: '貯蓄・節約分' },
+  spoken: { id: 'speak', ja: '話される・口頭の' },
+  stressful: { id: 'stress', ja: '負担の大きい・気の張る' },
+  telephone: { id: 'phone', ja: '電話・電話回線' },
+  unlabeled: { id: 'label', ja: '表示のない・ラベルのない' },
+  unverified: { id: 'verify', ja: '未検証の・確かめられていない' },
+  untested: { id: 'test', ja: '未検証の・試されていない' },
+  whenever: { id: 'when', ja: '〜するときはいつでも' },
+  wooden: { id: 'wood', ja: '木造の・木製の' },
 }
 
 // 原形の候補を緩く生成（最初に語彙データと一致したものを採用）。

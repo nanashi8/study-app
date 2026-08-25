@@ -9,11 +9,11 @@ import { ScreenHeader } from '../components/AppShell.jsx'
 import { Book, Cards, Refresh } from '../components/Icons.jsx'
 import { Button, Card, Chip } from '../components/ui.jsx'
 import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
-import { summarizeSrsItems } from '../lib/contentProgress.js'
+import { summarizeVocabularySrsItems } from '../lib/vocabScheduler.js'
 
 function FieldCard({ field, words, srs, onStudy, onQuiz }) {
   const progress = wordProgress(words, srs)
-  const status = summarizeSrsItems(words, srs)
+  const status = summarizeVocabularySrsItems(words, srs)
   return (
     <Card className="p-4" data-vocab-field={field.id}>
       <div className="flex items-start gap-3">
@@ -35,12 +35,22 @@ function FieldCard({ field, words, srs, onStudy, onQuiz }) {
 
       <LearningStatusBars progress={status} className="mt-3" compact units={{ learning: '語', quiz: '問' }} />
       <p className="mt-1.5 text-right text-[10px] font-bold text-ink/45">
-        {progress.due > 0 ? `今日の復習 ${progress.due}語` : '1回10語'}
+        {progress.due > 0
+          ? `復習が必要 ${progress.due}語`
+          : progress.ready > 0
+            ? `次に学ぶ ${progress.ready}語・1回10語`
+            : '次の復習日まで待つ'}
       </p>
 
       <div className="mt-3 grid grid-cols-2 gap-2">
-        <Button onClick={onStudy} aria-label={`${field.label}の単語を学習する`}>
-          <Book size={16} /> 学習する
+        <Button
+          onClick={onStudy}
+          disabled={!progress.ready}
+          aria-label={progress.ready
+            ? `${field.label}の復習または未学習 ${progress.ready}語を学習する`
+            : `${field.label}は次の復習日まで待つ`}
+        >
+          <Book size={16} /> {progress.ready ? '学習する' : '次回待ち'}
         </Button>
         <Button
           variant="secondary"
@@ -80,7 +90,7 @@ export function VocabGroupsScreen() {
         <div className="rounded-2xl bg-brand-100/70 px-4 py-3">
           <h1 className="font-display font-extrabold text-brand-800">10分野から選ぶ</h1>
           <p className="mt-1 text-xs font-bold leading-relaxed text-brand-800/65">
-            細かな分類を学びやすい10分野にまとめました。各分野から、復習どきと未学習を優先して10語ずつ出します。
+            細かな分類を学びやすい10分野にまとめました。復習日を迎えた語、未学習語の順に10語ずつ出し、まだ復習日でない語は自動では繰り返しません。
           </p>
         </div>
 
@@ -98,7 +108,7 @@ export function VocabGroupsScreen() {
         <div className="flex items-start gap-2 rounded-2xl bg-white/70 px-4 py-3 text-xs font-bold leading-relaxed text-ink/50">
           <span className="mt-0.5 text-brand-500"><Refresh size={16} /></span>
           <p>
-            10分野の合計で全{ALL_WORDS.length.toLocaleString('ja-JP')}語を重複なく扱います。繰り返すと未学習語を優先し、分野の全語へ進みます。
+            10分野の合計で全{ALL_WORDS.length.toLocaleString('ja-JP')}語を重複なく扱います。復習日前の語をもう一度見たいときは、単語画面の「学習済みの語を確認」やマイ単語から選べます。
           </p>
         </div>
       </div>

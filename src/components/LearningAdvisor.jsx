@@ -1,16 +1,9 @@
 import { SKILL_ROUTES } from '../lib/learningPower.js'
 import { ArrowRight, Chart, Sparkles, Target } from './Icons.jsx'
-import { Button, Card, ProgressBar } from './ui.jsx'
-
-function confidenceLabel(confidence) {
-  if (confidence === 'stable') return '分析精度：安定'
-  if (confidence === 'growing') return '分析精度：成長中'
-  if (confidence === 'starting') return '分析精度：初期'
-  return 'データを収集中'
-}
+import { Button, Card } from './ui.jsx'
 
 function percent(value) {
-  return value == null ? '計測中' : `${Math.round(value * 100)}%`
+  return value == null ? '記録なし' : `${Math.round(value * 100)}%`
 }
 
 function learningWeakness(profile) {
@@ -24,7 +17,7 @@ function learningWeakness(profile) {
       label: diagnosticRoute.label,
       detail: diagnosticResult?.total
         ? `診断 ${diagnosticResult.correct}/${diagnosticResult.total}問正解`
-        : '最新の学習診断から判定',
+        : '最後の学習診断をもとにしています',
     }
   }
 
@@ -37,8 +30,8 @@ function learningWeakness(profile) {
   }
 
   return {
-    label: '計測中',
-    detail: '診断や採点済み学習が増えると表示します',
+    label: '記録なし',
+    detail: '診断やテストに答えると表示します',
   }
 }
 
@@ -76,9 +69,9 @@ export function LearningAdvisorSummary({ profile, onOpenAdvisor, onOpenAnalysis 
         <span className="grid h-8 w-9 shrink-0 place-items-center text-slate-500">
           <Chart size={17} />
         </span>
-        <span className="min-w-0 flex-1 text-sm font-extrabold text-slate-700">学習分析</span>
+        <span className="min-w-0 flex-1 text-sm font-extrabold text-slate-700">学習記録</span>
         <span className="truncate text-[11px] font-bold text-slate-400" data-menu-advisor-meta>
-          弱点：{weakness.label}・{profile.score ?? '—'}/100
+          復習：{weakness.label}・回答{profile.analysis.scored}回
         </span>
         <ArrowRight size={17} className="shrink-0 text-slate-300" />
       </button>
@@ -97,13 +90,13 @@ export function LearningAdvisorPanel({ profile, onStart, onOpenAnalysis }) {
         <div className="bg-gradient-to-br from-indigo-600 via-violet-600 to-fuchsia-600 p-4 text-white">
           <div className="flex items-start justify-between gap-3">
             <div>
-              <p className="text-xs font-extrabold tracking-wide text-white/60">現在の学習プロフィール</p>
+              <p className="text-xs font-extrabold tracking-wide text-white/60">これまでの学習記録</p>
               <p className="mt-1 font-display text-3xl font-extrabold">
-                {profile.score ?? '—'}<span className="ml-1 text-sm text-white/55">/ 100</span>
+                {profile.analysis.scored}<span className="ml-1 text-sm text-white/55">回答</span>
               </p>
             </div>
             <span className="rounded-full bg-white/15 px-2.5 py-1 text-xs font-extrabold text-white/80">
-              {confidenceLabel(profile.confidence)}
+              最近7日間で{profile.habit.activeDays7}日
             </span>
           </div>
           <div className="mt-4 grid grid-cols-2 gap-2">
@@ -111,14 +104,8 @@ export function LearningAdvisorPanel({ profile, onStart, onOpenAnalysis }) {
               <div key={dimension.id} className="rounded-2xl bg-white/10 p-3">
                 <div className="flex items-center justify-between gap-2">
                   <span className="truncate text-xs font-extrabold text-white/75">{dimension.label}</span>
-                  <strong className="font-display text-lg font-extrabold">{dimension.score ?? '—'}</strong>
                 </div>
-                <ProgressBar
-                  value={(dimension.score ?? 0) / 100}
-                  color="#ffffff"
-                  className="mt-1.5 h-1.5 bg-white/15"
-                />
-                <p className="mt-1.5 truncate text-[10px] font-bold text-white/55">{dimension.evidence}</p>
+                <p className="mt-1.5 text-[10px] font-bold leading-relaxed text-white/70">{dimension.evidence}</p>
               </div>
             ))}
           </div>
@@ -129,14 +116,14 @@ export function LearningAdvisorPanel({ profile, onStart, onOpenAnalysis }) {
         <Card className="p-3" data-advisor-strength>
           <p className="text-xs font-extrabold text-emerald-600">得意</p>
           <p className="mt-1 font-display text-base font-extrabold text-ink">
-            {strength?.label ?? '計測中'}
+            {strength?.label ?? '記録なし'}
           </p>
           <p className="mt-1 text-xs font-bold leading-relaxed text-ink/45">
-            {strength ? `${strength.scored}回答・正答率${percent(strength.accuracy)}` : '採点済み学習を収集中'}
+            {strength ? `${strength.scored}回答・正答率 ${percent(strength.accuracy)}` : 'テストに答えると表示します'}
           </p>
         </Card>
         <Card className="p-3" data-advisor-weakness>
-          <p className="text-xs font-extrabold text-amber-600">優先して伸ばす</p>
+          <p className="text-xs font-extrabold text-amber-600">先に復習</p>
           <p className="mt-1 font-display text-base font-extrabold text-ink">{weakness.label}</p>
           <p className="mt-1 text-xs font-bold leading-relaxed text-ink/45">{weakness.detail}</p>
         </Card>
@@ -150,7 +137,7 @@ export function LearningAdvisorPanel({ profile, onStart, onOpenAnalysis }) {
         <p className="mt-2 font-display text-xl font-extrabold text-ink">{recommendation.title}</p>
         <p className="mt-2 text-sm font-bold leading-relaxed text-ink/55">{recommendation.reason}</p>
         <p className="mt-2 rounded-xl bg-violet-50 px-3 py-2 text-xs font-extrabold text-violet-700">
-          目安：{recommendation.timing}
+          おすすめの時間：{recommendation.timing}
         </p>
         <Button
           full
@@ -162,11 +149,11 @@ export function LearningAdvisorPanel({ profile, onStart, onOpenAnalysis }) {
       </Card>
 
       <Button full variant="secondary" onClick={onOpenAnalysis}>
-        <Chart size={18} /> 定着と学習効率を詳しく見る
+        <Chart size={18} /> 学習記録とおすすめを詳しく見る
       </Button>
 
       <p className="rounded-2xl bg-slate-100 px-3 py-2.5 text-xs font-bold leading-relaxed text-slate-500">
-        このプロフィールは、診断・正誤・復習間隔・学習時刻から作る変化する目安です。
+        このまとめは、診断結果・正解と不正解・次の復習日・学習した時刻から、次にする学習を選んでいます。
         固定された能力やIQ、医療的な測定ではありません。
       </p>
     </section>

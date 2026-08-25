@@ -23,7 +23,7 @@ import { tokenize } from '../src/lib/text.js'
 const here = new URL('../', import.meta.url)
 const source = (path) => readFileSync(new URL(path, here), 'utf8')
 
-test('全12作品・全80場面の本文語彙が未対応0件で予習カードになる', () => {
+test('全12作品・全80場面の本文語彙が未対応0件で全945枚の予習カードになる', () => {
   let sceneCount = 0
   let occurrenceCount = 0
   let coveredCount = 0
@@ -63,10 +63,10 @@ test('全12作品・全80場面の本文語彙が未対応0件で予習カード
   assert.equal(sceneCount, 80)
   assert.equal(occurrenceCount, 1395)
   assert.equal(coveredCount, 1395)
-  assert.equal(cardCount, 944)
+  assert.equal(cardCount, 945)
 })
 
-test('英語6作品は本文1,244語・出現形738種を全件解決し、共通辞書603語へ接続する', () => {
+test('英語6作品は本文1,244語・出現形738種を全件解決し、共通辞書622語へ接続する', () => {
   let tokenCount = 0
   let uniqueFormCount = 0
   let sharedCardCount = 0
@@ -98,10 +98,10 @@ test('英語6作品は本文1,244語・出現形738種を全件解決し、共�
 
   assert.equal(tokenCount, 1244)
   assert.equal(uniqueFormCount, 738)
-  assert.equal(sharedCardCount, 603)
+  assert.equal(sharedCardCount, 622)
   assert.deepEqual(
     [...unresolvedKeys].sort(),
-    Object.keys(LITERATURE_ENGLISH_GLOSS).sort(),
+    Object.keys(LITERATURE_ENGLISH_GLOSS).filter((key) => !resolvePassageWord(key)).sort(),
     '共通辞書外の出現形は作品用語義で過不足なく補う',
   )
 })
@@ -205,7 +205,7 @@ test('全作品の読む前に共通予習導線があり、一覧・検索・�
   assert.match(sheet, /data-literature-vocabulary-sheet/)
   assert.match(sheet, /data-literature-vocabulary-missing/)
   assert.match(sheet, /本文語彙を検索/)
-  assert.match(sheet, /カードで覚える/)
+  assert.match(sheet, /カードで暗記/)
   assert.match(sheet, /RevealAnswersToggle/)
   assert.match(sheet, /reviewKoten\(entry\.id, result\)/)
   assert.match(sheet, /reviewKanbun\('vocab', entry\.id, result\)/)

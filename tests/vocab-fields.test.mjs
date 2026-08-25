@@ -79,6 +79,7 @@ test('単語の公開画面は10分野を直接示し、旧20語デッキを表�
   assert.match(levels, /10分野で選ぶ/)
   assert.match(levels, /data-vocab-etymology-entry/)
   assert.match(levels, /語源から学ぶ/)
+  assert.match(levels, /語源から関連英単語を暗記/)
   assert.match(fields, /data-vocab-field-catalog/)
   assert.match(levelFields, /data-vocab-level-fields/)
   assert.doesNotMatch(`${levels}\n${fields}\n${levelFields}`, /20語|デッキでえらぶ|目次・デッキ/)

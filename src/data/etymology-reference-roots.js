@@ -3,8 +3,8 @@
 //
 // 重要:
 // - 綴りの部分一致では誤語源が混ざるため、単語は下の許可リストで明示する。
-// - referenceRoots は辞書の関連語表示専用。既存の語源カードIDとSRSを守るため、
-//   etymology-compression.js の分類には使わない。
+// - referenceRoots は、手動監査台帳に載った語根だけ公開語源カードと辞書表示に使う。
+//   保存互換用の旧カードIDを守るため、etymology-compression.js の旧分類には使わない。
 
 export const REFERENCE_ROOTS = [
   { id: 'mini', form: 'minu / mini / minor', meaning: '小さい・少ない', origin: 'ラテン語 minuere / minor「小さくする・より小さい」', emoji: '🔎' },
@@ -12,7 +12,8 @@ export const REFERENCE_ROOTS = [
   { id: 'punct', form: 'point / punct', meaning: '刺す・点', origin: 'ラテン語 pungere / punctum「刺す・刺した点」', emoji: '📍' },
   { id: 'cura', form: 'cur / cure', meaning: '世話・注意', origin: 'ラテン語 cūra「世話・注意」', emoji: '🫶' },
   { id: 'curr', form: 'cur / curr / curs', meaning: '走る・流れる', origin: 'ラテン語 currere「走る」', emoji: '🏃' },
-  { id: 'serv', form: 'serv', meaning: '守る・仕える', origin: 'ラテン語 servāre / servīre「守る・仕える」', emoji: '🛡️' },
+  { id: 'serv', form: 'serv', meaning: '守る・保つ', origin: 'ラテン語 servāre「守る・保つ」', emoji: '🛡️' },
+  { id: 'servire', form: 'serv', meaning: '仕える', origin: 'ラテン語 servīre「仕える」', emoji: '🤝' },
   { id: 'fend', form: 'fend / fens', meaning: '打つ・防ぐ', origin: 'ラテン語 fendere「打つ」', emoji: '🥊' },
   { id: 'cresc', form: 'cresc / creas', meaning: '育つ・増える', origin: 'ラテン語 crēscere「育つ」', emoji: '📈' },
   { id: 'pet', form: 'pet / petit', meaning: '求める・向かう', origin: 'ラテン語 petere「求める・向かう」', emoji: '🎯' },
@@ -69,7 +70,8 @@ export const REFERENCE_ROOT_WORDS = {
   punct: ['appoint', 'appointed', 'appointment', 'point', 'punctual', 'punctuality', 'compunction', 'punctilious'],
   cura: ['accurate', 'accuracy', 'accurately', 'inaccuracy', 'inaccurate', 'cure', 'curious', 'procure', 'secure', 'security', 'sure', 'reassure'],
   curr: ['occur', 'occurrence', 'current', 'currently', 'currency', 'curriculum', 'cursor', 'precursor', 'cursory', 'recurrence', 'recurrent', 'discursive', 'concurrent', 'course', 'excursion', 'recourse'],
-  serv: ['observe', 'observant', 'observation', 'observer', 'observance', 'serve', 'server', 'service', 'servicing', 'servant', 'servile', 'servitude', 'conserve', 'conservation', 'conservationist', 'conservative', 'preserve', 'preservation', 'reserve', 'reservation', 'reserved', 'deserve'],
+  serv: ['observe', 'observant', 'observation', 'observer', 'observance', 'conserve', 'conservation', 'conservationist', 'conservative', 'preserve', 'preservation', 'reserve', 'reservation', 'reserved'],
+  servire: ['serve', 'server', 'service', 'servicing', 'servant', 'servile', 'servitude', 'deserve'],
   fend: ['offend', 'offender', 'offense', 'offensive', 'defend', 'defendant', 'defense', 'defensive', 'defenseless'],
   cresc: ['concrete', 'increase', 'increased', 'increasingly', 'decrease', 'decreased'],
   pet: ['compete', 'competent', 'competence', 'competition', 'competitive', 'competitor', 'appetite', 'impetus', 'impetuous', 'petition', 'repeat'],

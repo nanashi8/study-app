@@ -103,6 +103,20 @@ test('構文も同じ検索欄・同じ並びから引ける', () => {
   assert.ok(searchDictionary('〜するために').some((entry) => entry.type === 'syntax'))
 })
 
+test('構文ファミリー名と比較解説から同じ仲間をまとめて引ける', () => {
+  const results = searchDictionary('使役', { type: 'syntax' })
+  const ids = new Set(results.map((entry) => entry.phrase.id))
+  for (const id of [
+    'curr_syn_gr_auto_pre2_causative_have_001',
+    'curr_syn_gr_auto_3_bare_infinitive_001',
+    'curr_syn_gr_auto_2_causative_get_001',
+  ]) {
+    assert.ok(ids.has(id), id)
+  }
+  assert.equal(results.length, 7)
+  assert.equal(searchDictionary('O がその動作をする側', { type: 'syntax' }).length, 7)
+})
+
 test('種類での絞り込みは並びを変えずに単語・熟語・構文を選び出す', () => {
   const all = searchDictionary('go')
   for (const type of ['word', 'idiom', 'syntax']) {
@@ -136,11 +150,16 @@ test('並べ替えキーは記号を無視し、語の切れ目を英字より�
   assert.equal(dictionaryInitial('~ing form'), 'I')
 })
 
-test('検索画面は単語・熟語・構文を1本のABC順で出している', () => {
+test('検索画面はABC一覧を出さず、単語・熟語・構文を同じ検索欄から引ける', () => {
   const src = readFileSync(new URL('../src/screens/VocabSearch.jsx', import.meta.url), 'utf8')
+  const menu = readFileSync(new URL('../src/lib/appMenu.js', import.meta.url), 'utf8')
   assert.ok(src.includes('searchDictionary'))
-  assert.ok(src.includes('dictionaryByInitial'))
   assert.ok(src.includes("from '../lib/dictionary.js'"))
-  assert.ok(src.includes('ABC順'))
+  assert.ok(!src.includes('dictionaryByInitial'))
+  assert.ok(!src.includes('DICTIONARY_INITIALS'))
+  assert.ok(!src.includes('ABCから引く'))
+  assert.ok(!src.includes('ABC一覧へ戻る'))
+  assert.ok(!menu.includes('ABC順に引く'))
+  assert.ok(menu.includes("screenItem('vocabSearch', '英和辞書', '単語・熟語・構文を検索')"))
   for (const label of ['単語', '熟語', '構文']) assert.ok(src.includes(label))
 })

@@ -78,9 +78,7 @@ export function WritingGrammarReviewScreen() {
           <div className="flex h-24 w-24 items-center justify-center rounded-[2rem] bg-white/15 text-5xl shadow-pop">
             🧠
           </div>
-          <p className="mt-5 text-xs font-extrabold tracking-[0.2em] text-violet-200">
-            REVIEW COMPLETE
-          </p>
+          <p className="mt-5 text-xs font-extrabold text-violet-200">復習の結果</p>
           <h1 className="mt-1 font-display text-3xl font-extrabold">
             文法の型を復習しました
           </h1>
@@ -191,7 +189,7 @@ export function WritingGrammarReviewScreen() {
             <div className="mt-5 animate-slide-up">
               <div className="rounded-2xl bg-amber-50 p-4">
                 <p className="text-[10px] font-extrabold tracking-wider text-amber-600">
-                  POINT
+                  ポイント
                 </p>
                 <p className="mt-1 text-sm font-bold leading-relaxed text-amber-950/80">
                   {item.explanation}

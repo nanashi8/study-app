@@ -168,6 +168,26 @@ export const EXPANDED_READING_PHRASE_CORRECTIONS = freeze({
     ], 'within which は前置詞＋関係代名詞で、先行詞the environmentを受け「その環境の中で」と読みます。'),
   ]),
   'People often describe choice as if it begins only when a person consciously compares several options.': freeze([
+    correction(['as'], [
+      { role: 'LINK', en: 'as', ja: 'まるで（ifと一組で）' },
+    ], 'as は単独の目的格補語Cではありません。直後のifと一組でas ifを作り、describeの様子を示す副詞節Mを導きます。'),
+    correction(['if'], [
+      { role: 'LINK', en: 'if', ja: '〜かのように（節の中身は次へ）' },
+    ], 'このifは独立した条件節の入口ではなく、直前のasと一組の接続表現as ifです。'),
+    correction(['begins only'], [
+      { role: 'V', en: 'begins', ja: '始まります' },
+      {
+        role: 'M',
+        en: 'only',
+        ja: '〜のときだけ（時の節は次へ）',
+        focusBinding: {
+          type: 'focus-clause',
+          marker: 'only',
+          target: 'when a person consciously compares several options',
+          governor: 'begins',
+        },
+      },
+    ], 'beginsだけが述語Vです。onlyは直後のwhen節全体に焦点を当て、始まる時を「そのときだけ」に限定するMです。'),
     correction(['several options'], [
       {
         role: 'O',
@@ -215,6 +235,48 @@ export const EXPANDED_READING_PHRASE_CORRECTIONS = freeze({
     correction(['sometimes'], [
       { role: 'M', en: 'sometimes', ja: 'ときどき' },
     ], 'sometimes は頻度を表すため「ときどき」と取ります。'),
+    correction(['shown only'], [
+      {
+        role: 'M',
+        en: 'shown',
+        ja: '示された（曲がり角を）',
+        reducedRelativeBinding: {
+          type: 'reduced-passive-relative',
+          governor: 'a turn',
+          semanticSubject: 'a turn',
+        },
+      },
+      {
+        role: 'M',
+        en: 'only',
+        ja: '〜だけによって（手段は次へ）',
+        focusBinding: {
+          type: 'focus-prepositional-phrase',
+          marker: 'only',
+          target: 'by a street name',
+          governor: 'shown',
+        },
+      },
+    ], 'shownはa turnを後ろから説明する省略受動のMです。onlyもMで、直後のby a street nameだけに表示手段を限定します。'),
+  ]),
+  'The organizers reported successful exchanges and waste they could not process; they did not publish only a cheerful total.': freeze([
+    correction(['only a cheerful total'], [
+      { role: 'M', en: 'only', ja: '〜だけを（対象は次へ）' },
+      { role: 'O', en: 'a cheerful total', ja: '明るい合計値だけを' },
+    ], 'onlyはpublishの目的語a cheerful totalだけに範囲を限定するMです。目的語Oそのものはa cheerful totalです。'),
+  ]),
+  'However, a policy should not protect only places where darkness can be sold as an experience.': freeze([
+    correction(['should not protect only places'], [
+      { role: 'V', en: 'should not protect', ja: '守るべきではありません' },
+      { role: 'M', en: 'only', ja: '〜だけを（対象は次へ）' },
+      { role: 'O', en: 'places', ja: '場所を' },
+    ], 'should not protectが述語V、placesが目的語Oです。onlyはplacesだけに保護対象を限定するMで、Vの一部ではありません。'),
+  ]),
+  'Collecting such data creates its own privacy risks, so evaluation must use only what is necessary and protect it carefully.': freeze([
+    correction(['must use only'], [
+      { role: 'V', en: 'must use', ja: '使わなければなりません（対象は次へ）' },
+      { role: 'M', en: 'only', ja: '必要なものだけを' },
+    ], 'must useが述語Vです。onlyは後ろのwhat is necessary全体だけに利用範囲を限定するMです。'),
   ]),
   'Scheduled reviews also make failure informative rather than allowing an ineffective design to survive through habit.': freeze([
     correction(['informative'], [
