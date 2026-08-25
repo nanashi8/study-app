@@ -260,6 +260,7 @@ export function LearningContentCatalog({ initialContentId, initialCatalogView })
   const [visible, setVisible] = useState(CATALOG_PAGE_SIZE)
   const [selectedIds, setSelectedIds] = useState(() => new Set())
   const [swipeMessage, setSwipeMessage] = useState('')
+  const [toolsOpen, setToolsOpen] = useState(false)
   const [now] = useState(() => Date.now())
   const content = LEARNING_CONTENTS.find((item) => item.id === contentId) ?? LEARNING_CONTENTS[0]
   const action = LEARNING_CONTENT_CATALOG_ACTIONS[content.id]
@@ -292,6 +293,7 @@ export function LearningContentCatalog({ initialContentId, initialCatalogView })
     setSelectedIds(new Set())
     setSort('weight')
     setDirection(LEARNING_CONTENT_CATALOG_DEFAULT_DIRECTIONS.weight)
+    setToolsOpen(false)
   }
 
   const chooseCatalogView = (nextView) => {
@@ -300,6 +302,7 @@ export function LearningContentCatalog({ initialContentId, initialCatalogView })
     replaceParams({ view: 'catalog', contentId, catalogView: nextView })
     setQuery('')
     setSelectedIds(new Set())
+    setToolsOpen(false)
   }
 
   const chooseSort = (nextSort) => {
@@ -431,77 +434,93 @@ export function LearningContentCatalog({ initialContentId, initialCatalogView })
           ))}
         </div>
 
-        <label className="flex min-h-11 items-center gap-2 rounded-xl border border-slate-300 bg-white px-3">
-          <Search size={17} className="shrink-0 text-ink/35" />
-          <span className="sr-only">{content.label}を検索</span>
-          <input
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder={`${content.label}を検索`}
-            className="min-w-0 flex-1 bg-transparent text-sm font-bold text-ink outline-none"
-            data-learning-catalog-search
-          />
-        </label>
-
-        <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-2">
-          <label className="min-w-0">
-            <span className="sr-only">一覧の並び替え</span>
-            <select
-              value={sort}
-              onChange={(event) => chooseSort(event.target.value)}
-              aria-label="一覧の並び替え"
-              className="h-11 w-full min-w-0 rounded-xl border border-slate-300 bg-white px-3 text-sm font-extrabold text-ink"
-              data-learning-catalog-sort
-            >
-              {LEARNING_CONTENT_CATALOG_SORT_OPTIONS.map((option) => (
-                <option key={option.id} value={option.id}>{option.label}</option>
-              ))}
-            </select>
-          </label>
-          <button
-            type="button"
-            onClick={() => setDirection((current) => current === 'asc' ? 'desc' : 'asc')}
-            className="min-h-11 rounded-xl border border-slate-300 bg-white px-3 text-xs font-extrabold text-brand-700 active:bg-brand-50"
-            aria-label={`並び順を変更。現在は${directionLabel(sort, direction)}`}
-            data-learning-catalog-direction={direction}
-          >
-            {directionLabel(sort, direction)}
-          </button>
-        </div>
-        <p className="text-[11px] font-bold leading-relaxed text-ink/50">
-          先に復習する順は、復習日・学習とテストの結果・前回からの日数で決まります。
-        </p>
-        <p
-          className="rounded-xl bg-slate-50 px-3 py-2 text-[11px] font-extrabold leading-relaxed text-ink/65"
-          data-learning-catalog-swipe-guide
+        <button
+          type="button"
+          onClick={() => setToolsOpen((current) => !current)}
+          aria-expanded={toolsOpen}
+          className="learning-catalog-tools-toggle min-h-11 w-full items-center justify-between rounded-xl border border-slate-300 bg-white px-3 text-sm font-extrabold text-brand-700 active:bg-brand-50"
+          data-learning-catalog-tools-toggle
         >
-          右にスワイプ：{swipeMeta.rightLabel}　左にスワイプ：{swipeMeta.leftLabel}（タップは今から学ぶ項目の選択）
-        </p>
+          <span>検索・並び替え・まとめて選ぶ</span>
+          <span aria-hidden="true">{toolsOpen ? '−' : '＋'}</span>
+        </button>
 
-        {action.selection === 'many' ? (
-          <div className="grid grid-cols-2 gap-2">
+        <div
+          className={cx('space-y-2.5', !toolsOpen && 'learning-catalog-tools-collapsible')}
+          data-learning-catalog-tools
+        >
+          <label className="flex min-h-11 items-center gap-2 rounded-xl border border-slate-300 bg-white px-3">
+            <Search size={17} className="shrink-0 text-ink/35" />
+            <span className="sr-only">{content.label}を検索</span>
+            <input
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder={`${content.label}を検索`}
+              className="min-w-0 flex-1 bg-transparent text-sm font-bold text-ink outline-none"
+              data-learning-catalog-search
+            />
+          </label>
+
+          <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-2">
+            <label className="min-w-0">
+              <span className="sr-only">一覧の並び替え</span>
+              <select
+                value={sort}
+                onChange={(event) => chooseSort(event.target.value)}
+                aria-label="一覧の並び替え"
+                className="h-11 w-full min-w-0 rounded-xl border border-slate-300 bg-white px-3 text-sm font-extrabold text-ink"
+                data-learning-catalog-sort
+              >
+                {LEARNING_CONTENT_CATALOG_SORT_OPTIONS.map((option) => (
+                  <option key={option.id} value={option.id}>{option.label}</option>
+                ))}
+              </select>
+            </label>
             <button
               type="button"
-              disabled={!dueRows.length}
-              onClick={() => selectRows(dueRows)}
-              className="min-h-11 rounded-xl bg-amber-50 px-2 text-xs font-extrabold text-amber-800 active:bg-amber-100 disabled:opacity-45"
+              onClick={() => setDirection((current) => current === 'asc' ? 'desc' : 'asc')}
+              className="min-h-11 rounded-xl border border-slate-300 bg-white px-3 text-xs font-extrabold text-brand-700 active:bg-brand-50"
+              aria-label={`並び順を変更。現在は${directionLabel(sort, direction)}`}
+              data-learning-catalog-direction={direction}
             >
-              復習どき {dueRows.length.toLocaleString('ja-JP')}{content.unit}を選ぶ
-            </button>
-            <button
-              type="button"
-              disabled={!visibleRows.length}
-              onClick={() => selectRows(visibleRows)}
-              className="min-h-11 rounded-xl bg-brand-50 px-2 text-xs font-extrabold text-brand-700 active:bg-brand-100 disabled:opacity-45"
-            >
-              表示中の{visibleRows.length.toLocaleString('ja-JP')}{content.unit}を選ぶ
+              {directionLabel(sort, direction)}
             </button>
           </div>
-        ) : (
-          <p className="rounded-xl bg-brand-50 px-3 py-2 text-xs font-extrabold text-brand-800">
-            この教材は1件ずつ学びます。開く項目を1つ選んでください。
+          <p className="text-[11px] font-bold leading-relaxed text-ink/50">
+            先に復習する順は、復習日・学習とテストの結果・前回からの日数で決まります。
           </p>
-        )}
+          <p
+            className="rounded-xl bg-slate-50 px-3 py-2 text-[11px] font-extrabold leading-relaxed text-ink/65"
+            data-learning-catalog-swipe-guide
+          >
+            右にスワイプ：{swipeMeta.rightLabel}　左にスワイプ：{swipeMeta.leftLabel}（タップは今から学ぶ項目の選択）
+          </p>
+
+          {action.selection === 'many' ? (
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                disabled={!dueRows.length}
+                onClick={() => selectRows(dueRows)}
+                className="min-h-11 rounded-xl bg-amber-50 px-2 text-xs font-extrabold text-amber-800 active:bg-amber-100 disabled:opacity-45"
+              >
+                復習どき {dueRows.length.toLocaleString('ja-JP')}{content.unit}を選ぶ
+              </button>
+              <button
+                type="button"
+                disabled={!visibleRows.length}
+                onClick={() => selectRows(visibleRows)}
+                className="min-h-11 rounded-xl bg-brand-50 px-2 text-xs font-extrabold text-brand-700 active:bg-brand-100 disabled:opacity-45"
+              >
+                表示中の{visibleRows.length.toLocaleString('ja-JP')}{content.unit}を選ぶ
+              </button>
+            </div>
+          ) : (
+            <p className="rounded-xl bg-brand-50 px-3 py-2 text-xs font-extrabold text-brand-800">
+              この教材は1件ずつ学びます。開く項目を1つ選んでください。
+            </p>
+          )}
+        </div>
       </div>
 
       <div className="min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto px-3 py-3" data-learning-catalog-list>

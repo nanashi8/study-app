@@ -287,6 +287,7 @@ test('マイ学習から全教材一覧を開き、検索・選択・開始を�
   const catalog = readFileSync(new URL('../src/components/LearningContentCatalog.jsx', import.meta.url), 'utf8')
   const catalogLib = readFileSync(new URL('../src/lib/learningContentCatalog.js', import.meta.url), 'utf8')
   const store = readFileSync(new URL('../src/store/useStore.js', import.meta.url), 'utf8')
+  const css = readFileSync(new URL('../src/index.css', import.meta.url), 'utf8')
 
   assert.match(myLearning, /data-learning-content-catalog-entry=\{content\.id\}/)
   assert.match(myLearning, /一覧から学ぶ/)
@@ -297,6 +298,9 @@ test('マイ学習から全教材一覧を開き、検索・選択・開始を�
   assert.match(catalog, /data-learning-catalog-sort/)
   assert.match(catalog, /data-learning-catalog-start/)
   assert.match(catalog, /data-learning-catalog-swipe-guide/)
+  assert.match(catalog, /data-learning-catalog-tools-toggle/)
+  assert.match(catalog, /aria-expanded=\{toolsOpen\}/)
+  assert.match(catalog, /learning-catalog-tools-collapsible/)
   assert.match(catalog, /data-learning-catalog-view=\{viewId\}/)
   assert.match(catalog, /all: \{/)
   assert.match(catalog, /registered: \{/)
@@ -318,6 +322,7 @@ test('マイ学習から全教材一覧を開き、検索・選択・開始を�
   assert.match(catalogLib, /先に復習する順/)
   assert.match(catalogLib, /最終学習日/)
   assert.match(catalogLib, /最終テスト日/)
+  assert.match(css, /@media \(max-height: 640px\)[\s\S]*\.learning-catalog-tools-collapsible\s*\{\s*display:\s*none/s)
   assert.equal(PERSISTED_PROGRESS_FIELDS.some((field) => /catalog|selected/i.test(field)), false)
 })
 
