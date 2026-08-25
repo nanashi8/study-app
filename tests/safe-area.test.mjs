@@ -1,6 +1,8 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { readFileSync } from 'node:fs'
+import { readFileSync, readdirSync } from 'node:fs'
+import { join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 
 import {
   SAFE_AREA_BOTTOM_VAR,
@@ -13,6 +15,27 @@ import {
 } from '../src/lib/safeArea.js'
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8')
+const repoRoot = fileURLToPath(new URL('../', import.meta.url))
+
+function sourceFilesUnder(relativeDir) {
+  const files = []
+  const visit = (absoluteDir) => {
+    for (const entry of readdirSync(absoluteDir, { withFileTypes: true })) {
+      const absolutePath = join(absoluteDir, entry.name)
+      if (entry.isDirectory()) visit(absolutePath)
+      else if (/\.(?:jsx|js)$/.test(entry.name)) {
+        files.push({
+          path: absolutePath.slice(repoRoot.length),
+          source: readFileSync(absolutePath, 'utf8'),
+        })
+      }
+    }
+  }
+  visit(join(repoRoot, relativeDir))
+  return files
+}
+
+const sourceFiles = sourceFilesUnder('src')
 
 test('セーフエリアの実測値があるときは、そのまま使う', () => {
   assert.equal(resolveSafeAreaTop({ measuredTop: 59, standalone: true }), 59)
@@ -182,6 +205,7 @@ test('ブラウザの見えている範囲を実測し、メニューを上下�
   assert.match(menu, /maxH="calc\(var\(--app-visual-viewport-height\) - 0\.5rem\)"/)
   assert.match(safeArea, /visualViewport\?\.addEventListener\('scroll'/)
   assert.match(safeArea, /visualViewport\?\.removeEventListener\('scroll'/)
+  assert.doesNotMatch(menu, /maxH="92vh"/)
 })
 
 test('ふちの余白は共通変数だけで組み立て、上下それぞれ一か所が受け持つ', () => {
@@ -225,17 +249,68 @@ test('画面側は env(safe-area-inset-*) を直接使わない', () => {
   assert.deepEqual(offenders, [])
 })
 
-test('画面いっぱいに固定する操作バーだけは、下のふち余白を自分で持つ', () => {
-  for (const path of [
-    'src/screens/WordDetail.jsx',
-    'src/screens/WritingPlay.jsx',
-    'src/screens/MathIntro.jsx',
-  ]) {
-    const source = read(path)
-    for (const line of source.split('\n')) {
-      if (!line.includes('fixed inset-x-0 bottom-0')) continue
-      assert.match(line, /var\(--app-safe-bottom\)/, `${path}: 固定バーに下のふち余白がありません`)
-    }
+test('viewportへ固定する操作バー5件はSafari退避を自分で受け持つ', () => {
+  const fixedBars = sourceFiles.flatMap(({ path, source }) => (
+    source.split('\n')
+      .filter((line) => line.includes('fixed inset-x-0') && !line.includes('app-viewport-overlay'))
+      .map((line) => ({ path, line }))
+  ))
+
+  assert.equal(fixedBars.length, 5, '固定下端バーの全件数が変わったら監査対象を更新してください')
+  for (const { path, line } of fixedBars) {
+    assert.match(line, /app-fixed-bottom-actions/, `${path}: 固定バーに共通Safari退避がありません`)
+    assert.doesNotMatch(line, /\bbottom-0\b/, `${path}: bottom-0が共通offsetを上書きします`)
+  }
+
+  const css = read('src/index.css')
+  assert.match(css, /\.app-fixed-bottom-actions\s*\{[^}]*bottom:\s*var\(--app-ios-browser-bottom-clearance\)[^}]*padding-bottom:\s*calc\(1rem \+ var\(--app-safe-bottom\)\)/s)
+})
+
+test('下端に接する操作欄21実装・追従欄2件・読み上げ欄を共通退避領域が守る', () => {
+  const footerImplementations = sourceFiles.flatMap(({ path, source }) => (
+    source.split('\n')
+      .filter((line) => line.includes('shrink-0') && line.includes('border-t'))
+      .map((line) => ({ path, line }))
+  ))
+  const stickyBottomControls = sourceFiles.flatMap(({ path, source }) => (
+    source.split('\n')
+      .filter((line) => /\bsticky\b[^\n]*\bbottom-/.test(line))
+      .map((line) => ({ path, line }))
+  ))
+  const cardFooterUses = sourceFiles.reduce(
+    (count, { source }) => count + (source.match(/<CardStudyFooter\b/g)?.length ?? 0),
+    0,
+  )
+
+  assert.equal(footerImplementations.length, 21)
+  assert.equal(cardFooterUses, 6)
+  assert.equal(stickyBottomControls.length, 2)
+  assert.match(read('src/components/SpeechConsole.jsx'), /data-speech-console/)
+
+  const shell = read('src/components/AppShell.jsx')
+  assert.match(shell, /study-app-content[^\n]*flex-1/)
+  assert.match(shell, /<GlobalSpeechConsole \/>[\s\S]*study-app-bottom-clearance/)
+
+  const result = read('src/screens/SessionResult.jsx')
+  assert.match(result, /復習する/)
+  assert.match(result, /次へ進む/)
+  const vocabCompletion = read('src/components/VocabCompletionReport.jsx')
+  assert.match(vocabCompletion, /data-vocab-completion-actions/)
+  assert.match(vocabCompletion, /app-fixed-bottom-actions fixed inset-x-0/)
+})
+
+test('下端固定オーバーレイ2件のスクロール末尾もSafari退避を持つ', () => {
+  const bottomOverlays = sourceFiles.flatMap(({ path, source }) => (
+    source.split('\n')
+      .filter((line) => line.includes('items-end') && (
+        line.includes('fixed inset-0') || line.includes('app-viewport-overlay')
+      ))
+      .map(() => ({ path, source }))
+  ))
+
+  assert.equal(bottomOverlays.length, 2, '下端固定オーバーレイの全件数が変わったら監査対象を更新してください')
+  for (const { path, source } of bottomOverlays) {
+    assert.match(source, /var\(--app-bottom-clearance\)/, `${path}: オーバーレイ末尾にSafari退避がありません`)
   }
 })
 

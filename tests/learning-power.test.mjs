@@ -155,7 +155,7 @@ test('日をまたぐ得意時間帯を判定し、日本語表示にする', ()
   assert.equal(formatWindow(window), '23:00〜翌02:00')
 })
 
-test('画面では推定値をIQや固定能力と区別し、メニューの推薦に利用する', () => {
+test('画面の目安をIQや固定能力と区別し、メニューのおすすめに利用する', () => {
   const analyticsSource = readFileSync(
     new URL('../src/components/LearningAnalytics.jsx', import.meta.url),
     'utf8',
@@ -169,12 +169,13 @@ test('画面では推定値をIQや固定能力と区別し、メニューの推
     'utf8',
   )
 
-  assert.match(analyticsSource, /固定された才能やIQではなく/)
+  assert.match(analyticsSource, /才能やIQを示すものではありません/)
   assert.match(analyticsSource, /diagnosticHistory/)
   assert.match(analyticsSource, /data-diagnostic-status/)
-  assert.match(analyticsSource, /最新の学習診断/)
-  assert.match(analyticsSource, /今回の得意/)
-  assert.match(analyticsSource, /復習優先/)
+  assert.match(analyticsSource, /最近受けた学習診断/)
+  assert.match(analyticsSource, /今回よくできた分野/)
+  assert.match(analyticsSource, /先に復習/)
+  assert.doesNotMatch(analyticsSource, /最新の学習診断|今回の得意|復習優先|profile\.score|dimension\.score/)
   assert.match(analyticsSource, /profile\.diagnostic/)
   assert.match(menuSource, /buildLearningPowerProfile/)
   assert.match(menuSource, /data-menu-advisor-entry/)
@@ -182,6 +183,22 @@ test('画面では推定値をIQや固定能力と区別し、メニューの推
   assert.match(advisorSource, /profile\.recommendation/)
   assert.match(advisorSource, /次に進む学習/)
   assert.match(advisorSource, /固定された能力やIQ/)
+})
+
+test('学習記録の横長表は狭い画面で縦並びのカードへ切り替える', () => {
+  const analyticsSource = readFileSync(
+    new URL('../src/components/LearningAnalytics.jsx', import.meta.url),
+    'utf8',
+  )
+
+  for (const marker of [
+    'data-analysis-summary-cards',
+    'data-dimension-grade-cards',
+    'data-skill-analysis-cards',
+  ]) {
+    assert.match(analyticsSource, new RegExp(`sm:hidden" ${marker}`))
+  }
+  assert.equal((analyticsSource.match(/className="hidden overflow-x-auto sm:block"/g) ?? []).length, 3)
 })
 
 test('単語の学習・テスト結果は、復習・次へ・戻るの3導線にそろえる', () => {
@@ -198,8 +215,9 @@ test('単語の学習・テスト結果は、復習・次へ・戻るの3導線�
   assert.match(resultSource, /isVocabResult = engine === 'word' \|\| engine === 'vocab'/)
   for (const source of [resultSource, reportSource]) {
     assert.match(source, /復習する/)
-    assert.match(source, /次へ進む/)
     assert.match(source, /戻る/)
   }
+  assert.match(resultSource, /次へ進む/)
+  assert.match(reportSource, /次の学習へ/)
   assert.doesNotMatch(reportSource, /今回の\{session\.total\}語を腕試し|詳細な記録|ホーム/)
 })

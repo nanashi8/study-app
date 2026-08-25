@@ -171,7 +171,7 @@ export function LiteratureVocabularySheet({
               </div>
               <p className="mt-3 text-xs font-bold leading-relaxed text-sky-950/65">
                 {work?.kind === 'english'
-                  ? `本文${vocabulary.totalOccurrences}語を全件照合し、${vocabulary.uniqueForms}出現形を見出し語にまとめています。活用形・固有名詞も省いていません。`
+                  ? `本文${vocabulary.totalOccurrences}語をすべて確認し、${vocabulary.uniqueForms}出現形を見出し語にまとめています。活用形・固有名詞も省いていません。`
                   : `共通単語${vocabulary.sharedEntries.length}件と、本文全体を覆う${vocabulary.contextEntries.length}個の意味区切りを学べます。`}
               </p>
               <p className="mt-2 inline-flex items-center gap-1 text-xs font-extrabold text-emerald-700">
@@ -181,7 +181,7 @@ export function LiteratureVocabularySheet({
 
             <div className="grid grid-cols-2 gap-2">
               <Button onClick={startCards} disabled={!filteredEntries.length}>
-                <Book size={16} /> カードで覚える
+                <Book size={16} /> カードで暗記
               </Button>
               <Button
                 variant="secondary"

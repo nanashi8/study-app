@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-08-24T07:41:46.685Z",
+  "auditedAt": "2026-08-25T14:01:31.700Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -8,17 +8,19 @@
   "scope": {
     "sourceOfTruth": "src/lib/learningContentProgress.js#LEARNING_CONTENTS",
     "categoryCount": 18,
-    "learningItemCount": 23234,
-    "quizItemCount": 23352,
-    "storedAndGeneratedQuestionPathCount": 4129,
-    "storedAndGeneratedChoicePathCount": 16484,
-    "overallContentSha256": "f7dcd8e0dca708da1ab5e628d752971871df5118e66f75584debe3098e01f2fa"
+    "learningItemCount": 16081,
+    "quizItemCount": 16090,
+    "storedAndGeneratedQuestionPathCount": 4180,
+    "storedAndGeneratedChoicePathCount": 16688,
+    "overallContentSha256": "c578907bf18f192ffb6314871336ffa78a6a33056e5885b4fbd2c146ccd7e690"
   },
   "completionCriteria": [
     "全18教材カテゴリのID・母数・重複・内容ハッシュが一致する",
     "全問題バンクで選択肢が重複せず、正答が一つだけ存在し、問題別解説がある",
-    "共通講師解説を使う全選択式問題の正解・全誤答・わからない62,922経路に回答別指導がある",
+    "共通講師解説を使う全選択式問題の正解・全誤答・わからない67,365経路に回答別指導がある",
     "英文法は全3,450問・全13,800選択肢に問題文固有の根拠を持つ",
+    "長文32本・794文・140問・560選択肢の和訳と選択肢別解説が原文順に対応する",
+    "語彙強化長文4本は約1,000・2,000・3,000・4,000語、全9,860語を辞書解決し、内容16問と並び替え・文法・語法各4問を持ち、既存8,869語の本文カバー率40%以上を保つ",
     "意味判断が必要な文法問題だけ解答前に和訳を表示する",
     "カテゴリ別に登録した全品質ゲート、全テスト、ビルド、差分検査が成功する"
   ],
@@ -43,12 +45,12 @@
       "coverage": "出題・答え合わせ・保存・復習・画面契約の回帰テスト"
     },
     "learnerCopy": {
-      "command": "npm run check:learner-contract",
-      "coverage": "共通の学習者向け表示契約と、教材本文を担当する各教材ゲート"
+      "command": "npm run audit:japanese",
+      "coverage": "学習者向けUI文言の全件監査（教材本文そのものは各教材ゲート）"
     },
     "routesAndProgress": {
       "command": "npm run audit:content-progress && npm run audit:links",
-      "coverage": "全18教材の公開導線、母数、学習・クイズ記録、参照リンク"
+      "coverage": "全18教材の公開導線、母数、暗記・テスト記録、参照リンク"
     },
     "english": {
       "command": "npm run audit:english",
@@ -58,9 +60,33 @@
       "command": "npm run audit:grammar-explanations",
       "coverage": "文法3,450問、13,800選択肢、答えの一意性、根拠、和訳要否、全回答経路"
     },
+    "readingTranslations": {
+      "command": "npm run audit:reading-translations",
+      "coverage": "長文32本・794文・140問・560選択肢の和訳、正答、選択肢別解説、原文対応"
+    },
+    "extendedReading": {
+      "command": "npm run audit:extended-reading",
+      "coverage": "語彙強化長文4本・9,860語・1,542文・重点1,484語・内容16問・並び替え4問・文法4問・語法4問・全9,860語の辞書解決・語彙カバー率"
+    },
+    "questionFormats": {
+      "command": "npm run audit:question-formats",
+      "coverage": "時事長文8本の4分野配分・既存語彙・読解ルール・追加24問と、文法追加105問の3形式・7級配分・全回答経路"
+    },
     "phrases": {
       "command": "npm run audit:phrases",
       "coverage": "熟語・構文の問題別解説、構文ファミリー、誤答生成"
+    },
+    "idiomForms": {
+      "command": "npm run audit:idiom-forms",
+      "coverage": "全1,754熟語の同形分類、比較相手、〜 up・〜 at・〜 with・be 〜 at の全件抽出"
+    },
+    "curriculum1900": {
+      "command": "npm run audit:curriculum-1900",
+      "coverage": "英単語・熟語の全収録目標、重複、割当、固定監査ハッシュ"
+    },
+    "etymology": {
+      "command": "npm run audit:etymology-quality",
+      "coverage": "語源の根拠境界、形成、意味変化、学習表示、全収録語との接続"
     },
     "classicsKanbun": {
       "command": "npm run audit:classics-kanbun",
@@ -76,27 +102,50 @@
     }
   },
   "auditImplementation": {
-    "sha256": "13ede8cdab97d867b300540c15abb700b0fedcbde40f4e56c8df53522e335533",
+    "sha256": "0744e7ba9c13e42759ce7fb5f5277200475720a49be4f5d3548b984d108e41af",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
       "scripts/check-data.mjs",
       "scripts/english-content-audit.mjs",
       "scripts/audit-grammar-explanations.mjs",
+      "scripts/audit-reading-translations.mjs",
+      "scripts/audit-extended-reading.mjs",
       "scripts/audit-phrase-explanations.mjs",
+      "scripts/check-idiom-form-families.mjs",
+      "scripts/audit-curriculum-1900.mjs",
+      "scripts/check-etymology-learning-quality.mjs",
       "scripts/check-classics-kanbun.mjs",
       "scripts/check-content-progress.mjs",
       "scripts/check-learning-links.mjs",
+      "scripts/audit-learner-japanese.mjs",
       "src/lib/grammarQuestionExplanations.js",
       "src/lib/grammarChoiceGuidance.js",
+      "src/lib/reading-translation-audit.js",
+      "src/lib/extendedReadingAudit.js",
+      "src/lib/instructorExplanations.js",
+      "src/data/reading-question-translations.js",
+      "src/data/reading-question-translations-core.js",
+      "src/data/reading-question-translations-exam.js",
+      "src/data/reading-question-translations-expansion.js",
+      "src/data/reading-question-translations-current-affairs.js",
       "src/components/GrammarChoiceExplanations.jsx",
+      "src/components/ReadingChoiceExplanations.jsx",
+      "src/components/ReadingComprehensionCheck.jsx",
+      "src/components/ExtendedReader.jsx",
+      "src/components/IdiomFormGuide.jsx",
+      "src/data/idiom-form-families.js",
       "src/screens/GrammarQuiz.jsx",
+      "src/screens/Phrases.jsx",
+      "src/screens/PhraseStudy.jsx",
+      "src/screens/PhraseQuiz.jsx",
       "src/screens/Diagnostic.jsx",
       "tests/after-school-story.test.mjs",
       "tests/app-navigation.test.mjs",
       "tests/app-recovery.test.mjs",
       "tests/battle-cinematic-visuals.test.mjs",
       "tests/battle-standing-visuals.test.mjs",
+      "tests/card-study-controls.test.mjs",
       "tests/character-talk.test.mjs",
       "tests/character-visual-continuity.test.mjs",
       "tests/companion-story-album.test.mjs",
@@ -104,16 +153,19 @@
       "tests/content-audit-ledger.test.mjs",
       "tests/content-navigation.test.mjs",
       "tests/content-progress.test.mjs",
+      "tests/curriculum-1900-coverage.test.mjs",
       "tests/diagnostic.test.mjs",
       "tests/dictation-cards.test.mjs",
       "tests/dragon-vein.test.mjs",
       "tests/english-content-quality.test.mjs",
       "tests/english-font.test.mjs",
+      "tests/english-question-formats.test.mjs",
       "tests/etymology-companions.test.mjs",
       "tests/etymology-compression.test.mjs",
       "tests/etymology-progress.test.mjs",
       "tests/etymology-source-completion.test.mjs",
       "tests/exam-dictionary.test.mjs",
+      "tests/extended-reading.test.mjs",
       "tests/feature-upgrades.test.mjs",
       "tests/game-retirement.test.mjs",
       "tests/grammar-choice-guidance.test.mjs",
@@ -121,6 +173,7 @@
       "tests/grammar-exam-patterns.test.mjs",
       "tests/grammar-explanation-completeness.test.mjs",
       "tests/grammar-strand.test.mjs",
+      "tests/idiom-form-families.test.mjs",
       "tests/instructor-explanations.test.mjs",
       "tests/kanbun-mark-rendering.test.mjs",
       "tests/kanbun.test.mjs",
@@ -128,9 +181,12 @@
       "tests/koten-curriculum.test.mjs",
       "tests/koten-grammar.test.mjs",
       "tests/koten.test.mjs",
+      "tests/learner-japanese-audit.test.mjs",
       "tests/learning-analytics.test.mjs",
+      "tests/learning-content-catalog.test.mjs",
       "tests/learning-notebook.test.mjs",
       "tests/learning-power.test.mjs",
+      "tests/listening-speaker-voices.test.mjs",
       "tests/literature-reading.test.mjs",
       "tests/literature-vocabulary.test.mjs",
       "tests/literature.test.mjs",
@@ -145,6 +201,7 @@
       "tests/readability-ui.test.mjs",
       "tests/reading-layout-contract.test.mjs",
       "tests/reading-phrase-explanations.test.mjs",
+      "tests/reading-question-translations.test.mjs",
       "tests/reading-regressions.test.mjs",
       "tests/reading-role-annotations.test.mjs",
       "tests/reading-rules-and-expansion.test.mjs",
@@ -158,9 +215,11 @@
       "tests/session-size.test.mjs",
       "tests/speech-settings-menu.test.mjs",
       "tests/srs-maintenance-review.test.mjs",
+      "tests/syntax-families.test.mjs",
       "tests/teacher-school-life.test.mjs",
       "tests/tts-quality.test.mjs",
       "tests/unknown-choice.test.mjs",
+      "tests/vocab-catalog.test.mjs",
       "tests/vocab-completion.test.mjs",
       "tests/vocab-fields.test.mjs",
       "tests/vocab-history.test.mjs",
@@ -182,18 +241,20 @@
       "label": "英単語",
       "learningUnit": "語",
       "quizUnit": "問",
-      "learningItemCount": 8426,
-      "quizItemCount": 8426,
-      "learningIdOrderSha256": "233cdd607819a08c54725b17ee5a8aaaadccb712a94782a9ff8a4300473d2730",
-      "quizIdOrderSha256": "233cdd607819a08c54725b17ee5a8aaaadccb712a94782a9ff8a4300473d2730",
-      "contentSha256": "b32687a4ea938be9eae8c496f8041302ca1bf0e6050b0abdb17772a33c5f4dfc",
+      "learningItemCount": 8869,
+      "quizItemCount": 8869,
+      "learningIdOrderSha256": "eacdc13651c4be346eae62a81a077b85dbabba12a8b7820bc711daa5ad0be0ff",
+      "quizIdOrderSha256": "eacdc13651c4be346eae62a81a077b85dbabba12a8b7820bc711daa5ad0be0ff",
+      "contentSha256": "1d6a5e8399db7fb7fdea2f330656973431611a42b50ddb4918df23d90b10edee",
       "auditGateIds": [
         "inventory",
         "coreData",
         "behavior",
         "learnerCopy",
         "routesAndProgress",
-        "english"
+        "english",
+        "curriculum1900",
+        "etymology"
       ],
       "result": "pass",
       "failureCount": 0,
@@ -205,11 +266,11 @@
       "label": "熟語・構文",
       "learningUnit": "項目",
       "quizUnit": "問",
-      "learningItemCount": 1500,
-      "quizItemCount": 1500,
-      "learningIdOrderSha256": "103d81f85172a94d528947c53e02b8d9e9b041f359122fc25c2f6f652dfa7e69",
-      "quizIdOrderSha256": "103d81f85172a94d528947c53e02b8d9e9b041f359122fc25c2f6f652dfa7e69",
-      "contentSha256": "0f721e695a2e75e31c230fda53518ca58296f8ceb6c1e650cd7854d975a94f53",
+      "learningItemCount": 2104,
+      "quizItemCount": 2104,
+      "learningIdOrderSha256": "4de63b70fc6c4292e7a4921b2f862b540fc01b067911694285a0de29cf44ca51",
+      "quizIdOrderSha256": "4de63b70fc6c4292e7a4921b2f862b540fc01b067911694285a0de29cf44ca51",
+      "contentSha256": "187eba6446507f4c0a687e484a15a6e1a7562a9ed93bb50f35c5b2585c60bf77",
       "auditGateIds": [
         "inventory",
         "coreData",
@@ -217,7 +278,9 @@
         "learnerCopy",
         "routesAndProgress",
         "english",
-        "phrases"
+        "phrases",
+        "idiomForms",
+        "curriculum1900"
       ],
       "result": "pass",
       "failureCount": 0,
@@ -229,11 +292,11 @@
       "label": "英文法",
       "learningUnit": "問",
       "quizUnit": "問",
-      "learningItemCount": 3450,
-      "quizItemCount": 3450,
-      "learningIdOrderSha256": "afa4ad313be6661cd1173d203317787c869c039f93ac65567de4a0257d5e931e",
-      "quizIdOrderSha256": "afa4ad313be6661cd1173d203317787c869c039f93ac65567de4a0257d5e931e",
-      "contentSha256": "f2925ae9046c423bd192c44d092a0ef48d3c98ab6e9d9c7d2b1716cc062be308",
+      "learningItemCount": 3555,
+      "quizItemCount": 3555,
+      "learningIdOrderSha256": "7a85cde2891a803140edc98a66788612056c218c346ce1af2acc8d0b1b1fdb83",
+      "quizIdOrderSha256": "7a85cde2891a803140edc98a66788612056c218c346ce1af2acc8d0b1b1fdb83",
+      "contentSha256": "b183ffdaf17f3396985b8088ec79ec86c717a891e2c5f69cbce541a5cd04f2e1",
       "auditGateIds": [
         "inventory",
         "coreData",
@@ -241,7 +304,8 @@
         "learnerCopy",
         "routesAndProgress",
         "english",
-        "grammar"
+        "grammar",
+        "questionFormats"
       ],
       "result": "pass",
       "failureCount": 0,
@@ -296,21 +360,21 @@
     {
       "id": "etymology",
       "group": "english",
-      "label": "語源から覚える",
-      "learningUnit": "語",
+      "label": "語源から暗記",
+      "learningUnit": "カード",
       "quizUnit": "問",
-      "learningItemCount": 8426,
-      "quizItemCount": 8426,
-      "learningIdOrderSha256": "233cdd607819a08c54725b17ee5a8aaaadccb712a94782a9ff8a4300473d2730",
-      "quizIdOrderSha256": "233cdd607819a08c54725b17ee5a8aaaadccb712a94782a9ff8a4300473d2730",
-      "contentSha256": "b32687a4ea938be9eae8c496f8041302ca1bf0e6050b0abdb17772a33c5f4dfc",
+      "learningItemCount": 109,
+      "quizItemCount": 0,
+      "learningIdOrderSha256": "c2c37fdd8bea0eefe8005ab1ff71ce4d96a64354f722b9afa65570c75c961ffb",
+      "quizIdOrderSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "contentSha256": "9a8d78c899c39acfe0299dbd25220f2149df7e17aa7cd46689f57c74c0dea005",
       "auditGateIds": [
         "inventory",
         "coreData",
         "behavior",
         "learnerCopy",
         "routesAndProgress",
-        "english"
+        "etymology"
       ],
       "result": "pass",
       "failureCount": 0,
@@ -322,18 +386,21 @@
       "label": "英語長文",
       "learningUnit": "本",
       "quizUnit": "本",
-      "learningItemCount": 24,
-      "quizItemCount": 24,
-      "learningIdOrderSha256": "2d70d86f9e00424ab165057f8f5634e2e3408ad1a3242e6b06114a3cdef67fa0",
-      "quizIdOrderSha256": "2d70d86f9e00424ab165057f8f5634e2e3408ad1a3242e6b06114a3cdef67fa0",
-      "contentSha256": "60f75f0ec9532e6794a4b62767f9fcd61c8940e6e4cfcc48ee66003b4669d3ca",
+      "learningItemCount": 36,
+      "quizItemCount": 36,
+      "learningIdOrderSha256": "b77501066696a4fef412522a619bd3b3c3005beac5dcf307a234b850f55dd3ef",
+      "quizIdOrderSha256": "b77501066696a4fef412522a619bd3b3c3005beac5dcf307a234b850f55dd3ef",
+      "contentSha256": "909c5f4ac924fdfd45b7a532bd159374165e624cdcb5d4d5fa20d5ec5c375401",
       "auditGateIds": [
         "inventory",
         "coreData",
         "behavior",
         "learnerCopy",
         "routesAndProgress",
-        "english"
+        "english",
+        "readingTranslations",
+        "extendedReading",
+        "questionFormats"
       ],
       "result": "pass",
       "failureCount": 0,
@@ -556,7 +623,7 @@
       "quizItemCount": 12,
       "learningIdOrderSha256": "70a5ff32a814dd8e6ca40a77736c291f531329ade8b38e80d527cf30e6defbc9",
       "quizIdOrderSha256": "70a5ff32a814dd8e6ca40a77736c291f531329ade8b38e80d527cf30e6defbc9",
-      "contentSha256": "f89f420ef1dafd279278c1fff50a0b1581ebdef789e83db2fc8503ce88451522",
+      "contentSha256": "7373b8b32c7b5c959f5777e898f3906f3159dba15cd8d8f89c042ec6373e135f",
       "auditGateIds": [
         "inventory",
         "coreData",
@@ -609,11 +676,23 @@
     {
       "id": "reading",
       "label": "英語長文内容理解",
-      "questionCount": 105,
-      "choiceCount": 420,
-      "generalRationaleCount": 105,
-      "choiceSpecificRationaleCount": 0,
-      "questionSetSha256": "89b17029242e4add7ce3d39a47fc9cd8cbdea53dfd1813f0924e7767738a75c0",
+      "questionCount": 140,
+      "choiceCount": 560,
+      "generalRationaleCount": 140,
+      "choiceSpecificRationaleCount": 560,
+      "questionSetSha256": "ddf8907c6de3251e766d7a72f79ca14a7b838c50bc30350d60b05dcbcbcda2b3",
+      "result": "pass",
+      "failureCount": 0,
+      "failures": []
+    },
+    {
+      "id": "extended-reading",
+      "label": "語彙強化長文内容理解",
+      "questionCount": 16,
+      "choiceCount": 64,
+      "generalRationaleCount": 16,
+      "choiceSpecificRationaleCount": 64,
+      "questionSetSha256": "343e58fb45c789bea0dd071f1ba26051c036b87362a658b96e19b1c69115d904",
       "result": "pass",
       "failureCount": 0,
       "failures": []
@@ -697,7 +776,7 @@
       "choiceCount": 336,
       "generalRationaleCount": 84,
       "choiceSpecificRationaleCount": 0,
-      "questionSetSha256": "a739c64d8018e4e09634b4c95b03d45d056e691aef4442a8493c76239bb03fa1",
+      "questionSetSha256": "0c56d538ffe3cf09a04a3074c09c43d544428980419da853e791d551d4b166ac",
       "result": "pass",
       "failureCount": 0,
       "failures": []
@@ -706,27 +785,27 @@
   "instructorAnswerPaths": {
     "coverageTest": "tests/instructor-explanations.test.mjs",
     "requirement": "共通講師解説を使う全選択式問題の正解・全誤答・わからないに、正解、問題固有の根拠、回答別の指導、次に使える考え方を返す",
-    "questionCount": 14636,
-    "displayedChoiceCount": 48286,
-    "unknownPathCount": 14636,
-    "answerPathCount": 62922,
+    "questionCount": 15734,
+    "displayedChoiceCount": 51631,
+    "unknownPathCount": 15734,
+    "answerPathCount": 67365,
     "result": "pass",
     "families": [
       {
         "id": "vocab",
         "label": "英単語",
-        "questionCount": 8426,
-        "displayedChoiceCount": 25278,
-        "unknownPathCount": 8426,
-        "answerPathCount": 33704
+        "questionCount": 8869,
+        "displayedChoiceCount": 26607,
+        "unknownPathCount": 8869,
+        "answerPathCount": 35476
       },
       {
         "id": "phrases",
         "label": "熟語・構文",
-        "questionCount": 1500,
-        "displayedChoiceCount": 4500,
-        "unknownPathCount": 1500,
-        "answerPathCount": 6000
+        "questionCount": 2104,
+        "displayedChoiceCount": 6312,
+        "unknownPathCount": 2104,
+        "answerPathCount": 8416
       },
       {
         "id": "grammar",
@@ -779,10 +858,10 @@
       {
         "id": "reading",
         "label": "英語長文内容理解",
-        "questionCount": 105,
-        "displayedChoiceCount": 420,
-        "unknownPathCount": 105,
-        "answerPathCount": 525
+        "questionCount": 156,
+        "displayedChoiceCount": 624,
+        "unknownPathCount": 156,
+        "answerPathCount": 780
       },
       {
         "id": "diagnostic",
@@ -802,6 +881,106 @@
       }
     ]
   },
+  "extendedReadingDetail": {
+    "passageCount": 4,
+    "catalogPassageCount": 36,
+    "targetWords": [
+      1000,
+      2000,
+      3000,
+      4000
+    ],
+    "actualWords": [
+      985,
+      1973,
+      2959,
+      3943
+    ],
+    "totalWords": 9860,
+    "sentenceCount": 1542,
+    "targetVocabularyCount": 1484,
+    "baselineCoveredVocabulary": 1863,
+    "baselineCoveragePercent": 21.01,
+    "combinedCoveredVocabulary": 3717,
+    "combinedCoveragePercent": 41.91,
+    "coverageGain": 1854,
+    "dictionarySize": 8869,
+    "extendedTokenCount": 9860,
+    "resolvedExtendedTokenCount": 9860,
+    "unresolvedExtendedTokenCount": 0,
+    "contentQuestionCount": 16,
+    "practiceQuestionCount": 12,
+    "practiceTypeCounts": {
+      "word-order": 4,
+      "grammar": 4,
+      "usage": 4
+    },
+    "coverageByLevel": {
+      "1": {
+        "total": 1004,
+        "before": 30,
+        "beforePercent": 2.99,
+        "after": 73,
+        "afterPercent": 7.27,
+        "gain": 43
+      },
+      "2": {
+        "total": 1561,
+        "before": 250,
+        "beforePercent": 16.02,
+        "after": 641,
+        "afterPercent": 41.06,
+        "gain": 391
+      },
+      "3": {
+        "total": 1101,
+        "before": 307,
+        "beforePercent": 27.88,
+        "after": 591,
+        "afterPercent": 53.68,
+        "gain": 284
+      },
+      "4": {
+        "total": 740,
+        "before": 339,
+        "beforePercent": 45.81,
+        "after": 552,
+        "afterPercent": 74.59,
+        "gain": 213
+      },
+      "5": {
+        "total": 616,
+        "before": 341,
+        "beforePercent": 55.36,
+        "after": 477,
+        "afterPercent": 77.44,
+        "gain": 136
+      },
+      "pre2": {
+        "total": 1327,
+        "before": 389,
+        "beforePercent": 29.31,
+        "after": 719,
+        "afterPercent": 54.18,
+        "gain": 330
+      },
+      "pre1": {
+        "total": 2520,
+        "before": 207,
+        "beforePercent": 8.21,
+        "after": 664,
+        "afterPercent": 26.35,
+        "gain": 457
+      }
+    },
+    "domains": [
+      "政治・法・経済",
+      "海外文化・社会・歴史",
+      "環境・科学・医療・政策",
+      "社会総合・経済・心理・科学技術"
+    ],
+    "contentSha256": "eb808cb6024580673c6c0306bdb399d5ef81d77e77367a5c15bc1960b87941ba"
+  },
   "grammarDetail": {
     "sourceQuestionCount": 3450,
     "generatedQuestionCount": 2500,
@@ -817,5 +996,5 @@
     "choiceUsageFailureCount": 0,
     "imperativeOpenerCollisionCount": 0
   },
-  "coverageNote": "合格は各カテゴリに列挙した機械監査の範囲を示す。選択肢別根拠は英文法で全択監査し、他教材は questionBanks の generalRationaleCount と choiceSpecificRationaleCount を分けて記録する。"
+  "coverageNote": "合格は各カテゴリに列挙した機械監査の範囲を示す。選択肢別根拠は英文法13,800択、既存英語長文560択、語彙強化長文64択で全択監査し、他教材は questionBanks の generalRationaleCount と choiceSpecificRationaleCount を分けて記録する。"
 }

@@ -9,12 +9,14 @@
 
 import { EXAM_READING_GRAMMAR_EXPECTATIONS } from './reading-grammar-expectations-exam.js'
 import { EXPANDED_READING_GRAMMAR_EXPECTATIONS } from './reading-expansion-grammar-expectations.js'
+import { CURRENT_AFFAIRS_READING_GRAMMAR_EXPECTATIONS } from './reading-current-affairs-grammar-expectations.js'
 
 const patterns = (source) => Object.freeze(source.trim().split(/\s+/))
 
 export const READING_GRAMMAR_EXPECTATIONS = Object.freeze({
   ...EXAM_READING_GRAMMAR_EXPECTATIONS,
   ...EXPANDED_READING_GRAMMAR_EXPECTATIONS,
+  ...CURRENT_AFFAIRS_READING_GRAMMAR_EXPECTATIONS,
   p_5_lost_notebook: patterns(`
     SVC SV SVO SVO SVO SV SVO SVO SVC
   `),

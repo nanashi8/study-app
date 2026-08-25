@@ -21,7 +21,8 @@ import {
 import { LISTENING_ITEMS } from '../src/data/listening.js'
 import { MATH_PROBLEMS } from '../src/data/math.js'
 import { PHRASES } from '../src/data/phrases.js'
-import { READING_QUESTIONS } from '../src/data/reading-questions.js'
+import { ALL_PASSAGES } from '../src/data/passages.js'
+import { getReadingQuestions } from '../src/data/reading-questions.js'
 import {
   ALL_WORDS,
   pickDistractors,
@@ -157,6 +158,9 @@ const diagnosticQuestions = [
   })),
 ]
 
+const allReadingQuestions = ALL_PASSAGES.flatMap((passage) =>
+  getReadingQuestions(passage.id))
+
 test('全教材の全設問から問題固有の予備校講師型4段解説を生成できる', () => {
   let units = 0
   for (const word of ALL_WORDS) {
@@ -242,7 +246,7 @@ test('全教材の全設問から問題固有の予備校講師型4段解説を�
     units += 1
   }
 
-  for (const question of Object.values(READING_QUESTIONS).flat()) {
+  for (const question of allReadingQuestions) {
     const value = buildReadingInstructorExplanation(question)
     assertExplanation(value, `reading:${question.q}`)
     assertContains(value.answer, question.answer, `reading:${question.q}.answer`)
@@ -475,7 +479,7 @@ test('全選択式問題の正答・全誤答・「わからない」に回答�
     })
   }
 
-  for (const question of Object.values(READING_QUESTIONS).flat()) {
+  for (const question of allReadingQuestions) {
     paths += assertChoiceFamily({
       label: `reading:${question.q}`,
       cases: choiceCases(question.choices, question.answer),
@@ -562,7 +566,7 @@ const grammarStrategyExpectation = (topic) => {
   return null
 }
 
-test('英文法3,140問は全単元で対応する再現可能な解法を示す', () => {
+test('英文法3,450問は全単元で対応する再現可能な解法を示す', () => {
   const topics = new Set()
   for (const item of GRAMMAR) {
     topics.add(item.topic)
@@ -587,7 +591,7 @@ test('英文法3,140問は全単元で対応する再現可能な解法を示す
   assert.ok(topics.size >= 100, `監査した文法単元数が不足しています: ${topics.size}`)
 
   const recognizedDiagnosticStrategy =
-    /主語の人称|疑問文全体|基準時|する側|反実仮想|通常語順|比較する対象|to不定詞と動名詞|完全文か不完全文|形式目的語|語・句・節|主語・動詞・目的語・補語|命令・感嘆・願望|この問題では/
+    /主語の人称|疑問文全体|基準時|する側|反実仮想|通常語順|比較する対象|to不定詞と動名詞|完全文か不完全文|形式目的語|語・句・節|主語・動詞・目的語・補語|命令・感嘆・願望|数えられるか|代名詞が指す名詞|位置・方向・時・手段|この問題では/
   for (const question of diagnosticQuestions.filter(({ skill }) => skill === 'grammar')) {
     const strategy = buildDiagnosticInstructorExplanation(question).strategy
     assert.match(

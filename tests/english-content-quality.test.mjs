@@ -23,7 +23,7 @@ import { buildDiagnosticQuestions } from '../src/lib/diagnosticQuestions.js'
 
 const fixedRandom = () => 0.314159
 
-test('全語彙は通常クイズ・診断に必要な4語義が一意で、誤答も同じ品詞から選ぶ', () => {
+test('全語彙は通常テスト・診断に必要な4語義が一意で、誤答も同じ品詞から選ぶ', () => {
   for (const word of ALL_WORDS) {
     const distractors = pickDistractors(word, 3, fixedRandom)
     const choices = [word, ...distractors]
@@ -35,7 +35,7 @@ test('全語彙は通常クイズ・診断に必要な4語義が一意で、誤�
   }
 })
 
-test('全熟語・構文は通常クイズ・診断に必要な4語義が一意で、同じ種別から選ぶ', () => {
+test('全熟語・構文は通常テスト・診断に必要な4語義が一意で、同じ種別から選ぶ', () => {
   for (const item of PHRASES) {
     const distractors = pickPhraseDistractors(item, 3, fixedRandom)
     const choices = [item, ...distractors]
@@ -109,7 +109,7 @@ test('全英文法の13,800選択肢は正答理由または誤答の使える�
   assert.equal(count, 13_800)
 })
 
-test('主要クイズは正答後に英文・和訳・学習ポイントを表示する', () => {
+test('主要テストは正答後に英文・和訳・学習ポイントを表示する', () => {
   const checks = {
     'VocabQuiz.jsx': [/word\.example\.en/, /word\.example\.ja/, /buildVocabInstructorExplanation/],
     'GrammarQuiz.jsx': [/item\.sentence\.en/, /item\.sentence\.ja/, /buildGrammarInstructorExplanation/, /GrammarChoiceExplanations/, /patternExamples/],

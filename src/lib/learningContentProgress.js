@@ -1,9 +1,9 @@
-import { ALL_WORDS } from '../data/vocab.js'
+import { ALL_WORDS, ETYMOLOGY_PACKS } from '../data/vocab.js'
 import { PHRASES } from '../data/phrases.js'
-import { GRAMMAR } from '../data/grammar.js'
+import { GRAMMAR_PRACTICE } from '../data/grammar.js'
 import { LISTENING_ITEMS } from '../data/listening.js'
 import { DICTATION_ITEMS } from '../data/dictation.js'
-import { PASSAGES } from '../data/passages.js'
+import { ALL_PASSAGES } from '../data/passages.js'
 import { WRITING_EXERCISES } from '../data/writing.js'
 import { KOTEN_WORDS } from '../data/koten.js'
 import { KOTEN_GRAMMAR } from '../data/koten-grammar.js'
@@ -21,6 +21,8 @@ import {
   summarizeQuizItems,
   summarizeSrsItems,
 } from './contentProgress.js'
+import { summarizeVocabularySrsItems } from './vocabScheduler.js'
+import { etymologyWordProgress } from './etymologyProgress.js'
 
 const MATH_ITEMS = Object.freeze(Object.values(MATH_PROBLEMS).flat())
 
@@ -29,8 +31,8 @@ const localDayIndexAt = (timestamp = Date.now()) => {
   return Math.floor((timestamp - date.getTimezoneOffset() * 60000) / 86400000)
 }
 
-// quiz は「クイズの母数」。1項目に複数問ある教材では questions と domain を渡し、
-// 学習は項目単位・クイズは出題単位という別々の数え方で表示する。
+// quiz は「テストの母数」。1項目に複数問ある教材では questions と domain を渡し、
+// 暗記は項目単位・テストは出題単位という別々の数え方で表示する。
 const srsContent = (id, group, label, unit, screen, items, store, quiz = {}) => Object.freeze({
   id,
   group,
@@ -81,12 +83,12 @@ export const LEARNING_CONTENT_GROUPS = Object.freeze([
 export const LEARNING_CONTENTS = Object.freeze([
   srsContent('vocab', 'english', '英単語', '語', 'vocabLevels', ALL_WORDS, 'srs'),
   srsContent('usage', 'english', '熟語・構文', '項目', 'phrases', PHRASES, 'srs'),
-  srsContent('grammar', 'english', '英文法', '問', 'grammar', GRAMMAR, 'srs'),
+  srsContent('grammar', 'english', '英文法', '問', 'grammar', GRAMMAR_PRACTICE, 'srs'),
   srsContent('listening', 'english', 'リスニング', '問', 'listening', LISTENING_ITEMS, 'srs'),
   srsContent('dictation', 'english', 'ディクテーション', '問', 'dictation', DICTATION_ITEMS, 'srs'),
-  // 語源は独立した暗記・クイズ教材ではなく、英単語を覚えるための入口。
-  // 学習結果は通常の単語SRSを共有し、語源専用クイズは表示しない。
-  srsContent('etymology', 'english', '語源から覚える', '語', 'roots', ALL_WORDS, 'srs', {
+  // 語源は手動確認済みカードを一覧単位とし、学習結果はカードに紐づく通常の
+  // 英単語SRSから集計する。語源専用の暗記・テスト画面は表示しない。
+  srsContent('etymology', 'english', '語源から暗記', 'カード', 'roots', ETYMOLOGY_PACKS, 'srs', {
     enabled: false,
   }),
   completionContent(
@@ -95,7 +97,7 @@ export const LEARNING_CONTENTS = Object.freeze([
     '英語長文',
     '本',
     'readingList',
-    PASSAGES,
+    ALL_PASSAGES,
     (state) => state.readingsDone,
   ),
   completionContent(
@@ -147,14 +149,31 @@ export function buildLearningContentProgress(state = {}) {
   const today = localDayIndexAt()
   return LEARNING_CONTENTS.map((content) => {
     const base = content.kind === 'srs'
-      ? summarizeSrsItems(content.items, state[content.store])
+      ? content.id === 'etymology'
+        ? (() => {
+            const progress = etymologyWordProgress(content.items, state.srs, { day: today })
+            return {
+              total: progress.total,
+              learning: {
+                learned: progress.mastered,
+                reviewing: progress.learning,
+                unlearned: progress.unstarted,
+              },
+              quiz: { correct: 0, incorrect: 0, unanswered: 0 },
+              activeIds: progress.activeIds,
+              due: progress.due,
+            }
+          })()
+        : content.id === 'vocab'
+        ? summarizeVocabularySrsItems(content.items, state[content.store])
+        : summarizeSrsItems(content.items, state[content.store])
       : summarizeCompletionItems({
           items: content.items,
           completedIds: content.completedIds(state) ?? [],
           quizResults: state.contentQuizResults,
           quizDomain: content.quizDomain,
         })
-    // 出題が項目数と違う教材は、クイズだけ出題単位で数え直す。
+    // 出題が項目数と違う教材は、テストだけ出題単位で数え直す。
     const questionQuiz = content.quizItems
       ? summarizeQuizItems({
           items: content.quizItems,
@@ -172,11 +191,15 @@ export function buildLearningContentProgress(state = {}) {
         ? { ...base, quiz: questionQuiz.counts, quizTotal: questionQuiz.total }
         : { ...base, quizTotal: base.total }
     const due = content.kind === 'srs'
-      ? content.items.reduce((count, item) => (
-          state[content.store]?.[item.id]?.due <= today
-            ? count + 1
-            : count
-        ), 0)
+      ? content.id === 'etymology'
+        ? base.due
+        : content.id === 'vocab'
+        ? base.due
+        : content.items.reduce((count, item) => (
+            state[content.store]?.[item.id]?.due <= today
+              ? count + 1
+              : count
+          ), 0)
       : 0
     return { ...content, progress, due }
   })

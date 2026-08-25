@@ -1,4 +1,9 @@
 import { reviewMarksForEntry } from '../lib/reviewHistory.js'
+import {
+  formatVocabularyDueDays,
+  formatVocabularyElapsedDays,
+  vocabularyReviewMetrics,
+} from '../lib/vocabScheduler.js'
 import { cx } from './ui.jsx'
 
 function MarkRow({ label, marks }) {
@@ -26,15 +31,39 @@ function MarkRow({ label, marks }) {
 
 export function VocabReviewHistory({ entry, className = '' }) {
   const marks = reviewMarksForEntry(entry)
-  if (!marks.memory.length && !marks.test.length) return null
+  if (!entry) return null
+  const metrics = vocabularyReviewMetrics(entry)
+  const status = metrics.learningStatus === 'unlearned'
+    ? '未学習'
+    : metrics.needsReview || metrics.learningStatus === 'reviewing'
+      ? '復習中'
+      : '学習済'
+  const tone = status === '復習中'
+    ? 'bg-amber-50 text-amber-800'
+    : status === '学習済'
+      ? 'bg-emerald-50 text-emerald-800'
+      : 'bg-slate-50 text-slate-600'
 
   return (
     <div
-      className={cx('flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1', className)}
+      className={cx('flex flex-col items-center gap-1.5', className)}
       data-vocab-review-history
     >
-      <MarkRow label="学習" marks={marks.memory} />
-      <MarkRow label="クイズ" marks={marks.test} />
+      <div
+        className={cx('flex flex-wrap items-center justify-center gap-x-2 rounded-full px-2.5 py-1 text-[10px] font-extrabold', tone)}
+        data-vocab-review-status={metrics.learningStatus}
+        aria-label={`${status}。${formatVocabularyElapsedDays(metrics.elapsedDays)}。${formatVocabularyDueDays(metrics.daysUntilDue)}`}
+      >
+        <span>{status}</span>
+        <span>{formatVocabularyElapsedDays(metrics.elapsedDays)}</span>
+        <span>{formatVocabularyDueDays(metrics.daysUntilDue)}</span>
+      </div>
+      {(marks.memory.length > 0 || marks.test.length > 0) && (
+        <div className="flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1">
+          <MarkRow label="学習" marks={marks.memory} />
+          <MarkRow label="テスト" marks={marks.test} />
+        </div>
+      )}
     </div>
   )
 }

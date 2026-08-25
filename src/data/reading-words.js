@@ -4,6 +4,112 @@
 import { PASSAGES } from './passages.js'
 import { splitMeanings } from './compact.js'
 import { EXPANDED_READING_WORD_DEFINITIONS } from './reading-expansion-word-definitions.js'
+import { CURRENT_AFFAIRS_READING_WORD_DEFINITIONS } from './reading-current-affairs-word-definitions.js'
+
+// 自動語根リンクと同じ根拠を画面でも説明できるよう、長文追加語のうち
+// 語根カードへ入る語だけは、確認済みの由来を個別に持たせる。
+const PASSAGE_ETYMOLOGY_OVERRIDES = Object.freeze({
+  program: {
+    parts: [{ t: 'gram', kind: 'root', gloss: '書かれたもの', root: 'graph' }],
+    note: 'ギリシャ語 programma「書かれた公示」は、pro（前に）＋ graphein（書く）から。そこから「予定を書いたもの」や「番組」を表すようになった。',
+    origin: 'ギリシャ語 programma',
+  },
+  visitor: {
+    parts: [{ t: 'vis', kind: 'root', gloss: '見る', root: 'vis' }],
+    note: 'visit（訪れる）＋ -or（人）。visit はラテン語 visitare「見に行く」にさかのぼり、「訪れる人」を表す。',
+    origin: 'ラテン語 visitare',
+  },
+  sense: {
+    parts: [{ t: 'sens', kind: 'root', gloss: '感じる', root: 'sens' }],
+    note: 'ラテン語 sensus「感覚・知覚」から。sentire「感じる」の名詞形で、五感や判断する力を表す。',
+    origin: 'ラテン語 sensus',
+  },
+  media: {
+    parts: [{ t: 'medi', kind: 'root', gloss: '中間', root: 'medi' }],
+    note: 'ラテン語 medium「中間にあるもの」の複数形。情報を送り手と受け手の間で伝えるもの、という意味へ広がった。',
+    origin: 'ラテン語 medium',
+  },
+  video: {
+    parts: [{ t: 'vid', kind: 'root', gloss: '見る', root: 'vis' }],
+    note: 'ラテン語 video「私は見る」から。映像を見せる技術や、その映像自体を表す語になった。',
+    origin: 'ラテン語 video',
+  },
+  attendance: {
+    parts: [{ t: 'tend', kind: 'root', gloss: '伸ばす・向ける', root: 'tend' }],
+    note: 'attend（出席する・注意を向ける）＋ -ance（こと・状態）。attend はラテン語 attendere「心を向ける」にさかのぼる。',
+    origin: 'ラテン語 attendere',
+  },
+  transportation: {
+    parts: [{ t: 'port', kind: 'root', gloss: '運ぶ', root: 'port' }],
+    note: 'transport（向こうへ運ぶ）＋ -ation（こと・結果）。trans（越えて）＋ラテン語 portare（運ぶ）が意味の中心。',
+    origin: 'ラテン語 transportare',
+  },
+  facility: {
+    parts: [{ t: 'fac', kind: 'root', gloss: '作る・なす', root: 'fact' }],
+    note: 'ラテン語 facilitas「容易さ」から。facilis「行いやすい」を経て、物事を行いやすくする設備・施設の意味へ広がった。',
+    origin: 'ラテン語 facilitas',
+  },
+  metric: {
+    parts: [{ t: 'metr', kind: 'root', gloss: '測る・尺度', root: 'meter' }],
+    note: 'ギリシャ語 metron「尺度・測るもの」から。測定の基準や、数値で表す指標を意味する。',
+    origin: 'ギリシャ語 metron',
+  },
+  funding: {
+    parts: [{ t: 'fund', kind: 'root', gloss: '底・基礎', root: 'fund' }],
+    note: 'fund（資金）＋ -ing（行為）。fund はラテン語 fundus「底・基礎」から、事業を支える資金のまとまりを表すようになった。',
+    origin: 'ラテン語 fundus',
+  },
+  contestable: {
+    parts: [{ t: 'test', kind: 'root', gloss: '証人・証言する', root: 'testis' }],
+    note: 'contest（異議を唱える）＋ -able（できる）。contest はラテン語 contestari「証人をともに呼ぶ・争う」にさかのぼる。',
+    origin: 'ラテン語 contestari',
+  },
+  tourism: {
+    parts: [{ t: 'tour', kind: 'root', gloss: '回る', root: 'turn' }],
+    note: 'tour（各地を巡ること）＋ -ism（活動・仕組み）。tour は「回る」を表す語から発達した。',
+    origin: 'フランス語 tour',
+  },
+  print: {
+    parts: [{ t: 'print', kind: 'root', gloss: '押して跡をつける', root: 'press' }],
+    note: '古フランス語 preinte「押して付けた跡」から。もとはラテン語 premere「押す」で、紙に文字や絵を押して写す意味へ広がった。',
+    origin: '古フランス語 preinte',
+  },
+  assignment: {
+    parts: [{ t: 'sign', kind: 'root', gloss: 'しるし', root: 'sign' }],
+    note: 'assign（割り当てる）＋ -ment（こと・結果）。assign はラテン語 assignare「しるしを付けて割り当てる」にさかのぼる。',
+    origin: 'ラテン語 assignare',
+  },
+  disposal: {
+    parts: [{ t: 'pos', kind: 'root', gloss: '置く', root: 'pos' }],
+    note: 'dispose（配置する・処分する）＋ -al（こと）。dispose はラテン語 disponere「別々に置く」にさかのぼる。',
+    origin: 'ラテン語 disponere',
+  },
+  closet: {
+    parts: [{ t: 'clos', kind: 'root', gloss: '閉じる・囲う', root: 'clud' }],
+    note: '古フランス語 closet「小さな囲われた場所」から。clos「閉じた場所」の小さい形で、戸棚や衣類収納の意味になった。',
+    origin: '古フランス語 closet',
+  },
+  construction: {
+    parts: [{ t: 'struct', kind: 'root', gloss: '建てる・積む', root: 'struct' }],
+    note: 'construct（組み立てる）＋ -ion（こと・結果）。ラテン語 construere「材料を一緒に積み上げる」にさかのぼる。',
+    origin: 'ラテン語 construere',
+  },
+  subscription: {
+    parts: [{ t: 'script', kind: 'root', gloss: '書く', root: 'script' }],
+    note: 'subscribe（署名する・定期購読する）＋ -tion（こと）。ラテン語 subscribere「下に名前を書く」にさかのぼる。',
+    origin: 'ラテン語 subscribere',
+  },
+  prefecture: {
+    parts: [{ t: 'fect', kind: 'root', gloss: '作る・なす', root: 'fact' }],
+    note: 'ラテン語 praefectura「長官の職・管轄」から。praeficere「人を長として置く」に由来し、日本の行政区分「県」に当てられた。',
+    origin: 'ラテン語 praefectura',
+  },
+  provenance: {
+    parts: [{ t: 'ven', kind: 'root', gloss: '来る', root: 'vent' }],
+    note: 'フランス語 provenance「来たところ・出所」から。provenir はラテン語 provenire「前へ出て来る」にさかのぼる。',
+    origin: 'フランス語 provenance',
+  },
+})
 
 const passageExample = (surface) => {
   const key = surface.toLowerCase()
@@ -37,9 +143,9 @@ const makePassageWord = ({
   meanings: splitMeanings(meaning),
   ...(phonetic ? { phonetic } : {}),
   example: example ?? passageExample(surface),
-  etymology: {
+  etymology: PASSAGE_ETYMOLOGY_OVERRIDES[id] ?? {
     parts: [{ t: word, kind: 'stem', gloss: splitMeanings(meaning)[0] }],
-    note: `この項目では ${word} 全体を語幹として扱う。長文中では「${meaning}」の意味で用いられる。`,
+    note: `確かな語源分解を収録していないため、${word} は推測で分けず、1語のまとまりとして覚える。`,
   },
   field,
 })
@@ -202,6 +308,7 @@ const PASSAGE_DICTIONARY_WORDS = [
   { id: 'answerable', pos: '形', level: '1', meaning: '説明責任を負う・責任がある', field: '社会' },
   { id: 'contestable', pos: '形', level: '1', meaning: '異議を唱えられる・議論の余地がある', field: '社会' },
   ...EXPANDED_READING_WORD_DEFINITIONS,
+  ...CURRENT_AFFAIRS_READING_WORD_DEFINITIONS,
 ].map(makePassageWord)
 
 export const PASSAGE_DICTIONARY_WORD_IDS = Object.freeze(

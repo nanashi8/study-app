@@ -1,3 +1,5 @@
+import { vocabularyReviewMetrics } from './vocabScheduler.js'
+
 export const ETYMOLOGY_MASTER_BOX = 4
 export const ETYMOLOGY_SESSION_SIZE = 10
 
@@ -14,6 +16,100 @@ const localDay = () =>
 
 const boxOf = (entry) =>
   Math.max(0, Math.floor(Number(entry?.box) || 0))
+
+const finiteMaximum = (values) => {
+  const finite = values.filter(Number.isFinite)
+  return finite.length ? Math.max(...finite) : null
+}
+
+/**
+ * 現行の語源カードは、カード専用の成績ではなく、紐づく英単語の暗記記録で
+ * 進み具合を示す。旧 etymologySrs は保存互換のため残すが、新しい画面では使わない。
+ */
+export function etymologyWordCardReviewState(
+  pack,
+  wordSrs = {},
+  options = {},
+) {
+  const ids = [...new Set(pack?.studyIds ?? pack?.coverageIds ?? [])]
+  const entries = ids.map((id) => wordSrs?.[id])
+  const metrics = entries.map((entry) => vocabularyReviewMetrics(entry, options))
+  const learningRecorded = metrics.some((item) => item.learningStatus !== 'unlearned')
+  const testRecorded = entries.some((entry) => Number(entry?.test?.attempts) > 0)
+  const needsReview = metrics.some((item) => item.needsReview)
+  const failed = entries.some((entry) => (
+    entry?.memory?.lastJudgment === 'forgot'
+    || entry?.test?.lastResult === 'wrong'
+    || entry?.test?.lastResult === 'unknown'
+  ))
+  const allLearned = ids.length > 0
+    && metrics.every((item) => item.learningStatus !== 'unlearned' && !item.needsReview)
+  const status = !learningRecorded && !testRecorded
+    ? 'unstarted'
+    : allLearned
+      ? 'mastered'
+      : 'learning'
+  const lowestScore = metrics.length
+    ? Math.min(...metrics.map((item) => item.score))
+    : 0
+
+  return {
+    status,
+    started: learningRecorded || testRecorded,
+    due: needsReview,
+    memoryAt: finiteMaximum(entries.map((entry) => entry?.memory?.lastAt)),
+    testAt: finiteMaximum(entries.map((entry) => entry?.test?.lastAt)),
+    learningRecorded,
+    testRecorded,
+    needsReview,
+    priority: failed
+      ? 'retry'
+      : needsReview
+        ? 'due'
+        : learningRecorded || testRecorded
+          ? 'waiting'
+          : 'unlearned',
+    weight: learningRecorded || testRecorded
+      ? 20 + (needsReview ? 200 : 0) + (failed ? 100 : 0) + (100 - lowestScore)
+      : 0,
+  }
+}
+
+export function etymologyWordProgress(packs = [], wordSrs = {}, options = {}) {
+  const result = {
+    total: packs.length,
+    started: 0,
+    unstarted: 0,
+    learning: 0,
+    mastered: 0,
+    due: 0,
+    activeIds: [],
+  }
+
+  for (const pack of packs) {
+    const state = etymologyWordCardReviewState(pack, wordSrs, options)
+    result[state.status] += 1
+    if (state.started) {
+      result.started += 1
+      result.activeIds.push(pack.id)
+    }
+    if (state.due) result.due += 1
+  }
+
+  return result
+}
+
+export function filterEtymologyWordCards(
+  packs = [],
+  wordSrs = {},
+  { status = 'all', ...options } = {},
+) {
+  if (status === 'all' || status === 'priority') return [...packs]
+  return packs.filter((pack) => {
+    const state = etymologyWordCardReviewState(pack, wordSrs, options)
+    return status === 'due' ? state.due : state.status === status
+  })
+}
 
 export function etymologyKnowledgeStatus(entry) {
   if (!entry) return 'unstarted'
@@ -98,6 +194,7 @@ export function buildEtymologyDeck(
     status = 'priority',
     day = localDay(),
     packIds,
+    preserveOrder = false,
     size = ETYMOLOGY_SESSION_SIZE,
   } = {},
 ) {
@@ -107,10 +204,12 @@ export function buildEtymologyDeck(
     day,
     packIds,
   })
-  const ordered = filtered
-    .map((pack, index) => ({ pack, index }))
-    .sort((a, b) => comparePriority(a, b, etymologySrs, day))
-    .map(({ pack }) => pack)
+  const ordered = preserveOrder && Array.isArray(packIds)
+    ? packIds.map((id) => filtered.find((pack) => pack.id === id)).filter(Boolean)
+    : filtered
+        .map((pack, index) => ({ pack, index }))
+        .sort((a, b) => comparePriority(a, b, etymologySrs, day))
+        .map(({ pack }) => pack)
   const limit = Math.max(1, Math.floor(Number(size) || ETYMOLOGY_SESSION_SIZE))
   return ordered.slice(0, limit)
 }

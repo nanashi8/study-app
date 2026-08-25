@@ -228,7 +228,7 @@ test('日本語の鉤括弧を次の発話へ保ち、文の途中へ余計な�
   )
 })
 
-test('講師音声は引用符・括弧を発音用テキストから除き、中の説明は残す', () => {
+test('解説向け音声は引用符・括弧を発音用テキストから除き、中の説明は残す', () => {
   const translation = createNaturalSpeechPlan(
     '前からは、「彼は（昨日）来た」と取ります。',
     { lang: 'ja-JP', style: 'translation' },
@@ -351,7 +351,7 @@ test('複数文の発話を順に再生し、途中停止後は古い連鎖を�
   }
 })
 
-test('共通コンソールは同じ位置から一時停止を再開し、フレーズ前後・停止・速度を制御する', () => {
+test('共通の再生パネルは同じ位置から一時停止を再開し、フレーズ前後・停止・速度を制御する', () => {
   const previousWindow = globalThis.window
   const PreviousUtterance = globalThis.SpeechSynthesisUtterance
   const queued = []

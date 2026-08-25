@@ -2,10 +2,14 @@
 // answer は choices の文字列と完全一致させ、表示時は正解位置を安定的に分散する。
 import { EXAM_READING_QUESTIONS } from './reading-questions-exam.js'
 import { EXPANDED_READING_QUESTIONS } from './reading-expansion-questions.js'
+import { CURRENT_AFFAIRS_READING_QUESTIONS } from './reading-current-affairs-questions.js'
+import { EXTENDED_READING_QUESTIONS } from './reading-extended-questions.js'
+import { enrichReadingQuestionWithJapanese } from './reading-question-translations.js'
 
-export const READING_QUESTIONS = {
+const RAW_READING_QUESTIONS = {
   ...EXAM_READING_QUESTIONS,
   ...EXPANDED_READING_QUESTIONS,
+  ...CURRENT_AFFAIRS_READING_QUESTIONS,
   p_5_lost_notebook: [
     {
       q: 'How does Rina go to school every morning?',
@@ -401,6 +405,14 @@ export const READING_QUESTIONS = {
   ],
 }
 
+export const READING_QUESTIONS = Object.freeze(Object.fromEntries(
+  Object.entries(RAW_READING_QUESTIONS).map(([passageId, questions]) => [
+    passageId,
+    Object.freeze(questions.map((question, questionIndex) =>
+      enrichReadingQuestionWithJapanese(passageId, question, questionIndex))),
+  ]),
+))
+
 export const READING_QUESTION_COUNTS = Object.freeze({
   5: 3,
   4: 5,
@@ -426,7 +438,7 @@ const arrangeChoices = (choices, seedText) => {
 }
 
 export const getReadingQuestions = (passageId) =>
-  (READING_QUESTIONS[passageId] ?? []).map((question) => ({
+  (READING_QUESTIONS[passageId] ?? EXTENDED_READING_QUESTIONS[passageId] ?? []).map((question) => ({
     ...question,
     choices: arrangeChoices(question.choices, `${passageId}:${question.q}`),
   }))

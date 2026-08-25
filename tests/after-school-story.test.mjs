@@ -339,7 +339,7 @@ test('終了した龍脈台帳は公開ルートから外しても保存互換�
   assert.doesNotMatch(app, /afterSchoolChronicle: AfterSchoolChronicleScreen/)
   assert.match(visibility, /'afterSchoolChronicle'/)
   assert.match(result, /data-testid="dragon-vein-result"/)
-  assert.match(result, /記憶の文脈が鮮明に戻った/)
+  assert.match(result, /龍脈の絡みがほどけていく/)
   assert.match(result, /navigate\('afterSchoolChronicle', \{ menuSectionId: 'restoration' \}\)/)
   assert.doesNotMatch(result, /enemy|Enemy|HP|ATK|DEF|damage|攻撃|撃破/)
   assert.match(map, /afterSchoolPrologue/)

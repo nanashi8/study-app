@@ -10,16 +10,15 @@ import {
 import { normalizeVocabQuery } from '../lib/vocabSearch.js'
 import {
   DICTIONARY_COUNTS,
-  DICTIONARY_INITIALS,
   DICTIONARY_TYPE_META,
-  dictionaryByInitial,
   searchDictionary,
 } from '../lib/dictionary.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { SpeakButton } from '../components/SpeakButton.jsx'
+import { SyntaxFamilyGuide } from '../components/SyntaxFamilyGuide.jsx'
 import { PosBadge } from '../components/WordBits.jsx'
 import { Chip, IconButton } from '../components/ui.jsx'
-import { Search, Close, ArrowRight, BookmarkFilled } from '../components/Icons.jsx'
+import { Search, Close, ArrowRight, Bookmark, BookmarkFilled } from '../components/Icons.jsx'
 
 // 見つからなかったときの案内。ボタンを押さなくても、その場で自動リクエストする。
 // query が変わると state がリセットされるよう、呼び出し側で key={query} を付ける。
@@ -104,7 +103,7 @@ function KindBadge({ type }) {
   )
 }
 
-function WordRow({ word, saved = false, onOpen }) {
+function WordRow({ word, saved = false, onOpen, onToggleSave }) {
   const level = getLevel(word.level)
   return (
     <div className="flex items-center gap-2 rounded-2xl bg-white p-2.5 shadow-sm">
@@ -115,7 +114,7 @@ function WordRow({ word, saved = false, onOpen }) {
           <div className="flex min-w-0 items-center gap-2">
             <span className="truncate font-display font-extrabold text-ink">{word.word}</span>
             <Chip color={level.color}>{level.label}</Chip>
-            {saved && (
+            {saved && !onToggleSave && (
               <span className="inline-flex shrink-0 items-center gap-0.5 text-[10px] font-extrabold text-amber-600">
                 <BookmarkFilled size={13} /> マイ単語
               </span>
@@ -128,11 +127,26 @@ function WordRow({ word, saved = false, onOpen }) {
         </div>
         <span className="text-brand-300"><ArrowRight size={16} /></span>
       </button>
+      {onToggleSave && (
+        <button
+          type="button"
+          onClick={onToggleSave}
+          aria-label={saved ? `${word.word}をマイ単語から外す` : `${word.word}をマイ単語に追加`}
+          className={`inline-flex min-h-12 shrink-0 items-center gap-1 rounded-xl px-2 text-[10px] font-extrabold ring-1 active:scale-[0.98] ${
+            saved
+              ? 'bg-amber-50 text-amber-700 ring-amber-200'
+              : 'bg-white text-brand-600 ring-brand-200'
+          }`}
+        >
+          {saved ? <BookmarkFilled size={14} /> : <Bookmark size={14} />}
+          {saved ? '追加済み' : '追加'}
+        </button>
+      )}
     </div>
   )
 }
 
-// 熟語・構文はその場で開いて意味・例文・成り立ちまで読める（単語詳細に当たる表示）。
+// 熟語・構文はその場で開いて意味・例文・解説まで読める（単語詳細に当たる表示）。
 function PhraseRow({ phrase, saved = false, onToggleSave, onStudy }) {
   const [open, setOpen] = useState(false)
   const level = getLevel(phrase.level)
@@ -179,7 +193,9 @@ function PhraseRow({ phrase, saved = false, onToggleSave, onStudy }) {
           )}
           {phrase.origin && (
             <div>
-              <p className="text-[11px] font-extrabold text-ink/40">成り立ち</p>
+              <p className="text-[11px] font-extrabold text-ink/40">
+                {phrase.kind === 'syntax' ? 'この文のポイント' : '成り立ち'}
+              </p>
               <p className="text-xs font-bold leading-relaxed text-ink/70">{phrase.origin}</p>
             </div>
           )}
@@ -189,6 +205,7 @@ function PhraseRow({ phrase, saved = false, onToggleSave, onStudy }) {
               <p className="text-xs font-bold leading-relaxed text-ink/70">{phrase.note}</p>
             </div>
           )}
+          <SyntaxFamilyGuide item={phrase} />
           <div className="flex flex-wrap gap-2 pt-1">
             <button
               onClick={onStudy}
@@ -221,20 +238,18 @@ export function VocabSearchScreen() {
   const vocabHistory = useStore((s) => s.vocabHistory)
   const clearVocabHistory = useStore((s) => s.clearVocabHistory)
   const myList = useStore((s) => s.myList)
+  const toggleMyList = useStore((s) => s.toggleMyList)
   const learningNotebook = useStore((s) => s.learningNotebook)
   const toggleNotebookItem = useStore((s) => s.toggleNotebookItem)
   const [q, setQ] = useState('')
   const [type, setType] = useState('all')
-  const [letter, setLetter] = useState(null)
   const [shown, setShown] = useState(PAGE)
 
   const query = normalizeVocabQuery(q)
 
-  // 単語・熟語・構文を1本にまとめた見出しの並び。
-  // 検索中は一致の強い順、頭文字から引くときは辞書と同じABC順。
+  // 単語・熟語・構文を1本にまとめ、一致の強い順に検索する。
   const matched = useMemo(() => searchDictionary(query), [query])
-  const browsed = useMemo(() => (letter ? dictionaryByInitial(letter) : []), [letter])
-  const pool = query ? matched : browsed
+  const pool = query ? matched : []
   const counts = useMemo(() => {
     const tally = { all: pool.length, word: 0, idiom: 0, syntax: 0 }
     for (const entry of pool) tally[entry.type] += 1
@@ -245,16 +260,15 @@ export function VocabSearchScreen() {
     [pool, type],
   )
 
-  // 検索語・絞り込み・頭文字が変わったら、表示件数は先頭に戻す。
+  // 検索語・絞り込みが変わったら、表示件数は先頭に戻す。
   useEffect(() => {
     setShown(PAGE)
-  }, [query, type, letter])
+  }, [query, type])
 
-  // ABC一覧へ戻ったときは種類の絞り込みも解く。
-  // 絞り込んだままだと、頭文字に出ている件数と開いた中身が食い違う。
+  // 検索を消したときは種類の絞り込みも解く。
   useEffect(() => {
-    if (!query && !letter) setType('all')
-  }, [query, letter])
+    if (!query) setType('all')
+  }, [query])
 
   const historyWords = useMemo(
     () => vocabHistory.map(getWord).filter(Boolean),
@@ -289,13 +303,13 @@ export function VocabSearchScreen() {
       />
     )
 
-  const showList = Boolean(query) || Boolean(letter)
+  const showList = Boolean(query)
 
   return (
     <div className="flex h-full flex-col">
       <ScreenHeader
         title="英和辞書"
-        subtitle={`単語${DICTIONARY_COUNTS.word}・熟語${DICTIONARY_COUNTS.idiom}・構文${DICTIONARY_COUNTS.syntax}をABC順に収録`}
+        subtitle={`単語${DICTIONARY_COUNTS.word}・熟語${DICTIONARY_COUNTS.idiom}・構文${DICTIONARY_COUNTS.syntax}を収録`}
         right={
           <button
             onClick={() => navigate('wordRequests')}
@@ -344,8 +358,8 @@ export function VocabSearchScreen() {
             </div>
             <p className="mt-2 px-1 text-xs font-bold text-ink/40">
               {query
-                ? `「${q.trim()}」に一致する${listed.length}件を、単語・熟語・構文まとめてABC順に表示`
-                : `${letter}で始まる${listed.length}件を、単語・熟語・構文まとめてABC順に表示`}
+                ? `「${q.trim()}」に一致する${listed.length}件を、単語・熟語・構文まとめて表示`
+                : ''}
             </p>
           </>
         )}
@@ -355,29 +369,8 @@ export function VocabSearchScreen() {
       <div className="no-scrollbar mt-1 flex-1 overflow-y-auto px-4 pb-4">
         {!showList ? (
           <>
-            <section className="pb-1 pt-3">
-              <div className="px-1">
-                <h2 className="font-display text-base font-extrabold text-ink/80">ABCから引く</h2>
-                <p className="mt-0.5 text-xs font-bold leading-relaxed text-ink/40">
-                  単語も熟語も構文も、紙の辞書と同じ並び（go → go abroad → go ahead）で見られます
-                </p>
-              </div>
-              <div className="mt-2 flex flex-wrap gap-1.5">
-                {DICTIONARY_INITIALS.map(({ letter: initial, count }) => (
-                  <button
-                    key={initial}
-                    onClick={() => setLetter(initial)}
-                    className="min-w-11 rounded-xl bg-white px-2 py-1.5 text-center shadow-sm ring-1 ring-brand-100 active:bg-brand-50"
-                  >
-                    <span className="block font-display text-sm font-extrabold text-ink">{initial}</span>
-                    <span className="block text-[10px] font-bold text-ink/35">{count}</span>
-                  </button>
-                ))}
-              </div>
-            </section>
-
             {historyWords.length > 0 ? (
-              <section className="pb-2 pt-5">
+              <section className="pb-2 pt-3">
                 <div className="mb-3 flex items-start justify-between gap-3 px-1">
                   <div>
                     <h2 className="font-display text-base font-extrabold text-ink/80">
@@ -401,6 +394,7 @@ export function VocabSearchScreen() {
                       word={word}
                       saved={savedIds.has(word.id)}
                       onOpen={() => openWord(word)}
+                      onToggleSave={() => toggleMyList(word.id)}
                     />
                   ))}
                 </div>
@@ -420,17 +414,6 @@ export function VocabSearchScreen() {
           </>
         ) : (
           <>
-            {letter && !query && (
-              <div className="flex items-center justify-between gap-3 px-1 pb-2 pt-3">
-                <h2 className="font-display text-lg font-extrabold text-ink/80">{letter}</h2>
-                <button
-                  onClick={() => setLetter(null)}
-                  className="rounded-full px-2.5 py-1.5 text-xs font-extrabold text-ink/50 ring-1 ring-brand-100 active:bg-brand-50"
-                >
-                  ABC一覧へ戻る
-                </button>
-              </div>
-            )}
             {listed.length === 0 ? (
               query && pool.length === 0 ? (
                 <NoResults

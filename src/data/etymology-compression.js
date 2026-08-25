@@ -30,21 +30,21 @@ export const ETYMOLOGY_MODE_META = {
     short: '語根',
     emoji: '🌳',
     description: '同じ語根（意味の中心になる部品）を持つ単語を比べます。',
-    tip: '語根の意味を1つ覚えると、初めて見る単語の意味も予想しやすくなります。',
+    tip: '語根の意味を1つ暗記すると、初めて見る単語の意味も予想しやすくなります。',
   },
   family: {
-    label: '語の家族',
-    short: '家族',
+    label: '形と由来',
+    short: '形と由来',
     emoji: '🔗',
-    description: 'もとの単語と、そこから形が変わった単語を一緒に覚えます。',
-    tip: 'つづりの同じ部分と、意味がどう広がったかを見比べよう。',
+    description: 'それぞれの語の形と、もとの意味から今の意味までを1語ずつ確かめます。',
+    tip: '1回に学ぶ量をまとめただけのセットです。語どうしの関係は表していません。1語ずつ形と意味を確かめます。',
   },
   origin: {
     label: 'ことばの歴史',
     short: '歴史',
     emoji: '🧭',
     description: 'もとの形が表す意味から、今の意味までをたどります。',
-    tip: '言語名ではなく、1語ずつ形と意味のつながりを確かめよう。',
+    tip: '1回に学ぶ量をまとめただけのセットです。語どうしの関係は表していません。1語ずつ形と意味を確かめます。',
   },
 }
 
@@ -180,7 +180,7 @@ function primaryRootId(word, rootUse) {
 
 function formulaGroup(word, rootUse) {
   const rootId = word.roots.length ? primaryRootId(word, rootUse) : null
-  if (rootId) return { key: `root-${rootId}`, rootId }
+  if (rootId) return { key: `root-${rootId}`, rootId, groupClaim: 'shared-root' }
 
   const reusable = formulaParts(word)
     .filter((part) => ['prefix', 'suffix'].includes(part.kind) && compactHead(part.t).length > 0)
@@ -193,9 +193,10 @@ function formulaGroup(word, rootUse) {
     return {
       key: `${reusable.kind}-${compactHead(reusable.t)}-${reusable.gloss ?? ''}`,
       part: reusable,
+      groupClaim: reusable.gloss?.trim() ? 'shared-part' : 'individual',
     }
   }
-  return { key: `parts-${word.level}` }
+  return { key: `parts-${word.level}`, groupClaim: 'individual' }
 }
 
 function anchorScore(target, candidate, relationDegree) {
@@ -322,7 +323,7 @@ export function buildEtymologyCompression(words, roots) {
         ? `${root.form}（${root.meaning}）を使う単語`
         : part
           ? `${part.kind === 'prefix' ? `${part.t}-` : `-${part.t}`}${part.gloss ? `（${part.gloss}）` : ''}を使う単語`
-          : '部品に分けて覚える単語'
+          : '部品に分けて暗記する単語'
       registerPack({
         id: `formula:${safeKeySegment(groupKey)}:${safeKeySegment(coverageIds[0])}`,
         mode: 'formula',
@@ -331,6 +332,7 @@ export function buildEtymologyCompression(words, roots) {
         description: ETYMOLOGY_MODE_META.formula.description,
         caution: '部品の意味は手がかりです。今の意味とぴったり同じにならない語もあります。',
         emoji: ETYMOLOGY_MODE_META.formula.emoji,
+        groupClaim: bucket.groupClaim,
         rootId: bucket.rootId,
         coverageIds,
         studyIds: coverageIds,
@@ -344,14 +346,16 @@ export function buildEtymologyCompression(words, roots) {
       .map((id) => byId.get(id))
       .sort(wordSort)
       .map((word) => word.id)
+    const rootLabel = `${root?.form ?? rootId}＝${root?.meaning ?? '意味の中心'}`
     registerPack({
       id: `root:${safeKeySegment(rootId)}`,
       mode: 'root',
-      title: `${root?.form ?? rootId}＝${root?.meaning ?? '意味の中心'} の仲間`,
-      subtitle: `同じ語根を持つ${coverageIds.length}語`,
+      title: coverageIds.length === 1 ? `${rootLabel} をもつ語` : `${rootLabel} の仲間`,
+      subtitle: coverageIds.length === 1 ? '語根と単語全体の意味を比べよう' : `同じ語根を持つ${coverageIds.length}語`,
       description: ETYMOLOGY_MODE_META.root.description,
       caution: '',
       emoji: root?.emoji ?? ETYMOLOGY_MODE_META.root.emoji,
+      groupClaim: 'shared-root',
       rootId,
       coverageIds,
       studyIds: coverageIds.slice(0, ETYMOLOGY_PACK_SIZE),
@@ -363,23 +367,24 @@ export function buildEtymologyCompression(words, roots) {
     const sorted = bucket.ids.map((id) => byId.get(id)).sort(wordSort)
     for (const group of chunks(sorted, ETYMOLOGY_PACK_SIZE - 1)) {
       const coverageIds = group.map((word) => word.id)
-      const supportIds = unique(
-        coverageIds.flatMap((id) => relations.get(id) ?? []),
-      )
-        .map((id) => byId.get(id))
-        .filter(Boolean)
-        .sort(wordSort)
-        .map((word) => word.id)
-      const studyIds = unique([anchorId, ...coverageIds, ...supportIds])
+      // packIdとcoverageは保存互換のため維持する。カード外の支援語まで連鎖させると、
+      // artwork 経由で work と art を同じ組にするような誤解を生むため追加しない。
+      const studyIds = unique([anchorId, ...coverageIds])
         .slice(0, ETYMOLOGY_PACK_SIZE)
+      const title = studyIds.length === 1
+        ? `${anchor.word} の形と由来`
+        : `${anchor.word} ほか${studyIds.length - 1}語の形と由来`
       registerPack({
         id: `family:${safeKeySegment(anchorId)}:${safeKeySegment(coverageIds[0])}`,
         mode: 'family',
-        title: `${anchor.word} から広がる語`,
-        subtitle: 'もとの語と形の変化を比べよう',
+        title,
+        subtitle: '1語ずつ形と由来を確かめる',
         description: ETYMOLOGY_MODE_META.family.description,
-        caution: '',
+        caution: studyIds.length === 1
+          ? 'このカードでは、この語の形ともとの意味を確かめます。'
+          : `このカードは${studyIds.length}語分の学習量をまとめたセットです。語どうしが同じ語根の仲間や関連語という意味ではありません。`,
         emoji: ETYMOLOGY_MODE_META.family.emoji,
+        groupClaim: 'study-batch',
         anchorId,
         coverageIds,
         studyIds,
@@ -404,17 +409,22 @@ export function buildEtymologyCompression(words, roots) {
         : fields.length === 1
           ? fields[0]
           : domain.label
-      const topicLabel = fieldLabel.endsWith('語') ? fieldLabel : `${fieldLabel}のことば`
       const sharedLabel = `${formation.label}・${source.label}・${fieldLabel}`
+      const firstWord = group[0]
+      const title = group.length === 1
+        ? `${firstWord.word} のことばの歴史`
+        : `${firstWord.word} ほか${group.length - 1}語のことばの歴史`
       registerPack({
         id: `origin:${safeKeySegment(groupKey)}:${safeKeySegment(coverageIds[0])}`,
         mode: 'origin',
-        title: topicLabel,
-        subtitle: `${formation.short}・${fieldLabel}（${levelSpan(group)}）`,
-        description: formation.description,
-        caution:
-          '同じ語根の仲間ではありません。共通点は、作られ方と今の意味の分野です。',
+        title,
+        subtitle: `1語ずつ由来を確かめる（${levelSpan(group)}）`,
+        description: ETYMOLOGY_MODE_META.origin.description,
+        caution: group.length === 1
+          ? 'このカードでは、この語のもとの形から今の意味までを確かめます。'
+          : `このカードは${group.length}語分の学習量をまとめたセットです。語どうしが同じ語根の仲間や関連語という意味ではありません。`,
         emoji: formation.emoji,
+        groupClaim: 'study-batch',
         formationKey: bucket.formationKey,
         sourceKey: bucket.sourceKey,
         domainKey: bucket.domainKey,

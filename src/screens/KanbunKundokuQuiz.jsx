@@ -19,9 +19,9 @@ export function KanbunKundokuQuizScreen() {
   const params = useStore((state) => state.params)
   const returnTo = useStore((state) => state.returnTo)
   const review = useStore((state) => state.reviewKanbunKundoku)
-  const [poolSize] = useState(() => pickKanbunKundokuExercises(params.ids, { size: ALL_EXERCISES }).length)
+  const [poolSize] = useState(() => pickKanbunKundokuExercises(params.ids, { size: ALL_EXERCISES, preserveOrder: params.preserveOrder }).length)
   const sessionSize = useSessionSize(poolSize || Infinity)
-  const [deck, setDeck] = useState(() => pickKanbunKundokuExercises(params.ids, { size: params.size ?? sessionSize }))
+  const [deck, setDeck] = useState(() => pickKanbunKundokuExercises(params.ids, { size: params.size ?? sessionSize, preserveOrder: params.preserveOrder }))
   const [index, setIndex] = useState(0)
   const [selectedIds, setSelectedIds] = useState([])
   const [answered, setAnswered] = useState(false)
@@ -37,14 +37,16 @@ export function KanbunKundokuQuizScreen() {
   )
 
   // コンテンツ画面の「戻る」は履歴でなく、返り点の内容選択画面へ。
-  const backToKanbunKundoku = () => returnTo('kanbunKundoku')
+  const backToKanbunKundoku = () => params.returnTo?.screen
+    ? returnTo(params.returnTo.screen, params.returnTo.params ?? {})
+    : returnTo('kanbunKundoku')
 
   if (!exercise) {
     return (
       <div className="flex h-full flex-col items-center justify-center gap-4 p-8 text-center">
         <div className="text-5xl">↩️</div>
         <p className="font-display text-lg font-extrabold text-ink">出題できる返り点問題がありません</p>
-        <Button onClick={backToKanbunKundoku}>もどる</Button>
+        <Button onClick={backToKanbunKundoku}>戻る</Button>
       </div>
     )
   }
@@ -75,7 +77,7 @@ export function KanbunKundokuQuizScreen() {
     }
   }
   const restart = (ids = params.ids) => {
-    setDeck(pickKanbunKundokuExercises(ids, { size: deck.length || sessionSize }))
+    setDeck(pickKanbunKundokuExercises(ids, { size: deck.length || sessionSize, preserveOrder: params.preserveOrder }))
     setIndex(0)
     setSelectedIds([])
     setAnswered(false)
@@ -91,7 +93,7 @@ export function KanbunKundokuQuizScreen() {
         <div className="m-auto flex w-full max-w-sm flex-col items-center gap-5 py-5">
           <div className="text-6xl">{percentage >= 80 ? '🏆' : '↩️'}</div>
           <div>
-            <p className="text-[10px] font-extrabold tracking-[0.16em] text-rose-700">KUNDOKU ORDER</p>
+            <p className="text-xs font-extrabold text-rose-700">返り点の結果</p>
             <p className="mt-1 font-display text-2xl font-extrabold text-ink">{correctCount} / {deck.length} 正解</p>
             <p className="mt-1 text-sm font-bold text-ink/50">返り点の読む順・正答率 {percentage}%</p>
           </div>
@@ -129,7 +131,7 @@ export function KanbunKundokuQuizScreen() {
             max={poolSize}
             onResize={(size, { discard }) => {
               if (discard) {
-                setDeck(pickKanbunKundokuExercises(params.ids, { size }))
+                setDeck(pickKanbunKundokuExercises(params.ids, { size, preserveOrder: params.preserveOrder }))
                 setIndex(0)
                 setSelectedIds([])
                 setAnswered(false)
@@ -140,7 +142,7 @@ export function KanbunKundokuQuizScreen() {
                 setDeck((current) => growDeck(
                   current,
                   index + 1,
-                  pickKanbunKundokuExercises(params.ids, { size }),
+                  pickKanbunKundokuExercises(params.ids, { size, preserveOrder: params.preserveOrder }),
                   size,
                 ))
               }

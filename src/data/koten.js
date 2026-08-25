@@ -462,7 +462,7 @@ export const KOTEN_TOC = KOTEN_CATEGORIES.map((c) => ({
   words: kotenByCategory(c.id),
 })).filter((t) => t.words.length > 0)
 
-// クイズの誤答選択肢：まず同カテゴリの別語、足りなければ全体から補う。
+// テストの誤答選択肢：まず同カテゴリの別語、足りなければ全体から補う。
 export function pickKotenDistractors(word, count, rng = Math.random) {
   const same = kotenByCategory(word.category).filter((w) => w.id !== word.id)
   const others = KOTEN_WORDS.filter((w) => w.id !== word.id && w.category !== word.category)

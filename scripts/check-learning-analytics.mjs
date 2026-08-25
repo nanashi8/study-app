@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs'
 
 import { ALL_WORDS, ETYMOLOGY_PACKS } from '../src/data/vocab.js'
 import { PHRASES } from '../src/data/phrases.js'
-import { GRAMMAR } from '../src/data/grammar.js'
+import { GRAMMAR_PRACTICE } from '../src/data/grammar.js'
 import { LISTENING_ITEMS } from '../src/data/listening.js'
 import { DICTATION_ITEMS } from '../src/data/dictation.js'
 import { KOTEN_WORDS } from '../src/data/koten.js'
@@ -59,7 +59,7 @@ const asStore = (items, offset = 0) => Object.fromEntries(
   items.map((item, index) => [item.id, entry(index + offset)]),
 )
 
-const sharedCollections = [ALL_WORDS, PHRASES, GRAMMAR, LISTENING_ITEMS, DICTATION_ITEMS]
+const sharedCollections = [ALL_WORDS, PHRASES, GRAMMAR_PRACTICE, LISTENING_ITEMS, DICTATION_ITEMS]
 const sharedIds = sharedCollections.flatMap((items) => items.map((item) => item.id))
 assert.equal(
   new Set(sharedIds).size,
@@ -132,7 +132,7 @@ const report = buildLearningAnalyticsReport(state, analysis, now)
 const expectedByDomain = {
   vocab: ALL_WORDS.length,
   phrases: PHRASES.length,
-  grammar: GRAMMAR.length,
+  grammar: GRAMMAR_PRACTICE.length,
   listening: LISTENING_ITEMS.length,
   dictation: DICTATION_ITEMS.length,
   etymology: ETYMOLOGY_PACKS.length,
@@ -230,7 +230,6 @@ const progressSource = readFileSync(new URL('../src/screens/Progress.jsx', impor
 for (const marker of [
   'data-activity-progress-split',
   'data-learning-gradebook',
-  'data-forgetting-curve-analysis',
   'data-24-hour-effect-clock',
   'data-memory-pass-effect',
   'data-personalized-prescriptions',
@@ -238,6 +237,11 @@ for (const marker of [
 ]) {
   assert.match(componentSource, new RegExp(marker), `${marker}: 分析UIがありません`)
 }
+assert.doesNotMatch(
+  componentSource,
+  /data-forgetting-curve-analysis|忘却曲線|復習の段階|記憶段階|覚えている見込み|profile\.score|dimension\.score|group\.grade/,
+  '内部の予測値・段階・総合点を学習者向けUIへ表示しています',
+)
 for (const field of ['activity', 'memoryPasses', 'memoryHour', 'firstAt', 'lastJudgment']) {
   assert.match(storeSource, new RegExp(field), `${field}: 項目別記録契約がありません`)
 }

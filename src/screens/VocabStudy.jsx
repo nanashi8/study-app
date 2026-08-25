@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
+import { etymologyCardsForWord } from '../data/vocab.js'
 import { buildDeck, growDeck, recordStudyAnswer } from '../lib/session.js'
 import { phraseGroupsForWord } from '../lib/wordPhrases.js'
 import { playSpeechItems } from '../lib/speech-player.js'
@@ -12,6 +13,7 @@ import { Button, ProgressBar, IconButton } from '../components/ui.jsx'
 import { Close, Bookmark, BookmarkFilled, ArrowRight, Lightbulb } from '../components/Icons.jsx'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 import { VocabReviewHistory } from '../components/VocabReviewHistory.jsx'
+import { CardStudyFooter, CardSwipeRegion } from '../components/CardStudyControls.jsx'
 
 const sessionKey = (params) => (
   `vocab-study|${JSON.stringify(params.source ?? { type: 'due' })}|${params.title ?? ''}|${params.size ?? ''}`
@@ -65,7 +67,6 @@ export function VocabStudyScreen() {
   const [deck, setDeck] = useState(() => (
     restore?.deck ?? buildFor(params.size ?? sessionSize)
   ))
-
   const [i, setI] = useState(restore?.i ?? 0)
   const [flipped, setFlipped] = useState(restore?.flipped ?? revealAll)
   const results = useRef(restore
@@ -83,7 +84,6 @@ export function VocabStudyScreen() {
         : null,
     ])),
   )
-
   const word = deck[i]
   const entry = useStore((state) => (word ? state.srs[word.id] : null))
   // その語を含む熟語・構文は全部見せる（数を絞ると使い方が抜ける）。
@@ -113,7 +113,7 @@ export function VocabStudyScreen() {
         <div className="text-5xl">🌳</div>
         <p className="font-display text-lg font-extrabold text-ink">学習できる単語がありません</p>
         <p className="text-sm font-bold text-ink/50">この条件では対象の単語が見つかりませんでした。</p>
-        <Button onClick={backToVocabParent}>もどる</Button>
+        <Button onClick={backToVocabParent}>戻る</Button>
       </div>
     )
   }
@@ -158,6 +158,11 @@ export function VocabStudyScreen() {
     }
   }
 
+  const moveToCard = (nextIndex) => {
+    setI(nextIndex)
+    setFlipped(revealAll)
+  }
+
   const saved = myList.includes(word.id)
   const wordSpeechItems = [
     { text: word.word, label: word.word, style: 'word' },
@@ -191,7 +196,7 @@ export function VocabStudyScreen() {
         <div className="flex-1">
           <ProgressBar value={(i) / deck.length} />
         </div>
-        <RevealAnswersToggle label="意味" onChange={(on) => on && setFlipped(true)} />
+        <RevealAnswersToggle label="意味" onChange={(on) => setFlipped(on)} />
         <SpeechSettingsButton compact />
         <SessionCounter
           index={i}
@@ -228,7 +233,12 @@ export function VocabStudyScreen() {
       </div>
 
       {/* カード */}
-      <div className="flex-1 overflow-y-auto px-4 pb-4">
+      <CardSwipeRegion
+        index={i}
+        total={deck.length}
+        onIndexChange={moveToCard}
+        className="flex-1 overflow-y-auto px-4 pb-4"
+      >
         <div
           key={word.id}
           onClick={() => !flipped && setFlipped(true)}
@@ -300,8 +310,8 @@ export function VocabStudyScreen() {
                 </div>
               )}
 
-              {/* 語源（ある単語のみ） */}
-              {word.etymology && (
+              {/* 手動監査済みの語源カードがある単語だけに表示する。 */}
+              {etymologyCardsForWord(word).length > 0 && (
                 <div className="rounded-2xl bg-white p-4 ring-1 ring-brand-100">
                   <div className="mb-2 flex items-center gap-1.5 text-brand-600">
                     <Lightbulb size={16} />
@@ -355,19 +365,16 @@ export function VocabStudyScreen() {
             </div>
           )}
         </div>
-      </div>
+      </CardSwipeRegion>
 
       {/* フッター操作 */}
-      <div
-        className="vocab-study-actions shrink-0 border-t border-brand-100 bg-white/90 p-4 backdrop-blur"
-        data-vocab-study-actions
-      >
+      <CardStudyFooter className="vocab-study-actions border-brand-100" data-vocab-study-actions>
         {!flipped ? (
           <Button full size="lg" onClick={() => setFlipped(true)}>
             答えを見る
           </Button>
         ) : (
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-2">
             <Button variant="danger" size="lg" onClick={() => answer(false)}>
               まだ🤔
             </Button>
@@ -376,7 +383,7 @@ export function VocabStudyScreen() {
             </Button>
           </div>
         )}
-      </div>
+      </CardStudyFooter>
     </div>
   )
 }

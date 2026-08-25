@@ -10,7 +10,7 @@ import {
   grammarQuestionNeedsMeaningCue,
 } from './grammarQuestionExplanations.js'
 import { PHRASES } from '../data/phrases.js'
-import { pickDistractors, wordsByLevel } from '../data/vocab.js'
+import { etymologyCardsForWord, pickDistractors, wordsByLevel } from '../data/vocab.js'
 import { pickPhraseDistractors } from './session.js'
 
 // 端末ごとの seed と受験回数から同じ問題列を再現できるようにする。
@@ -124,6 +124,7 @@ function vocabQuestion(level, attemptNumber, seed) {
   if (choices.length !== 4) {
     throw new Error(`単語診断の選択肢を4件作れません: ${word.id}`)
   }
+  const reviewedCard = etymologyCardsForWord(word)[0]
   return baseQuestion({
     id: `diag-v-${word.id}`,
     sourceId,
@@ -134,7 +135,9 @@ function vocabQuestion(level, attemptNumber, seed) {
     answer: word.meaning,
     explain: [
       `${word.word} は「${word.meaning}」という意味です。`,
-      word.etymology?.note,
+      reviewedCard
+        ? `確認済み語源カードでは ${reviewedCard.rootForm} を「${reviewedCard.rootMeaning}」として学びます。`
+        : null,
     ].filter(Boolean).join(' '),
     review: word.example,
   })

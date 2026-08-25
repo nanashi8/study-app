@@ -48,7 +48,7 @@ function formatCompletedAt(value) {
 
 function formatStudyDate(value) {
   const date = new Date(value)
-  if (Number.isNaN(date.getTime())) return '日付を計算中'
+  if (Number.isNaN(date.getTime())) return '実施日不明'
   return new Intl.DateTimeFormat('ja-JP', {
     month: 'numeric',
     day: 'numeric',
@@ -69,8 +69,8 @@ function EstimateNotice() {
   return (
     <div className="rounded-2xl border border-amber-200 bg-amber-50 p-3 text-[11px] font-bold leading-relaxed text-amber-900/75">
       <span className="font-extrabold text-amber-800">偏差値について：</span>
-      英検級別に設定した問題難易度と4択の偶然正答率から求める、アプリ内のモデル推定値です。
-      全国受験者の実測分布による模試偏差値や、英検の合否を保証する値ではありません。
+      英検級別の問題の難しさと、4択で偶然正解する確率から、このアプリが計算した目安です。
+      全国の受験者と比べた模試偏差値ではなく、英検の合否を保証する値でもありません。
     </div>
   )
 }
@@ -113,26 +113,24 @@ function PerformanceReport({ result, guidance }) {
   )[0]
   const weakestMeta = weakest ? SKILL_BY_ID[weakest.id] : null
   const strengthLabel = strength?.status === 'strength'
-    ? '今回の得意'
+    ? '今回よくできた分野'
     : strength?.correct > 0
       ? '比較的できた分野'
-      : '今回の得意'
+      : '今回よくできた分野'
   const strengthName = strength?.correct > 0
     ? `${strength.emoji} ${strength.label}`
-    : '— まだ判定できません'
+    : '— 今回は正解なし'
   const strengthScore = strength?.correct > 0
     ? `${strength.correct}/${strength.total}問`
-    : '正解データなし'
+    : 'まだ正解の記録がありません'
 
   return (
     <Card className="overflow-hidden" data-diagnostic-performance-report>
       <div className="bg-gradient-to-br from-slate-900 via-indigo-950 to-violet-950 p-4 text-white">
-        <p className="text-[10px] font-extrabold tracking-[0.16em] text-white/45">
-          YOUR SCORE REPORT
-        </p>
+        <p className="text-[10px] font-extrabold text-white/55">今回の結果</p>
         <h2 className="mt-1 font-display text-xl font-extrabold">あなたの成績表</h2>
         <p className="mt-1 text-[11px] font-bold leading-relaxed text-white/60">
-          4分野と7級を交差させて、できた所と次に直す所を見える化しました。
+          4分野と7級を組み合わせ、できた所と次に直す所が分かるようにしました。
         </p>
 
         <div className="mt-4 grid grid-cols-2 gap-2">
@@ -147,7 +145,7 @@ function PerformanceReport({ result, guidance }) {
           </div>
           <div className="rounded-2xl bg-amber-400/15 p-3 ring-1 ring-inset ring-amber-300/20">
             <p className="text-[9px] font-extrabold text-amber-200">
-              {recommendation.kind === 'foundation' ? '最優先の伸びしろ' : '次の挑戦'}
+              {recommendation.kind === 'foundation' ? '最初に復習する分野' : '次の挑戦'}
             </p>
             <p className="mt-1 text-sm font-extrabold">
               {recommendation.kind === 'foundation'
@@ -157,7 +155,7 @@ function PerformanceReport({ result, guidance }) {
             <p className="mt-0.5 font-display text-lg font-extrabold text-amber-200">
               {recommendation.kind === 'foundation' && weakest
                 ? `${weakest.correct}/${weakest.total}問`
-                : 'さらに上へ'}
+                : '別の問題へ'}
             </p>
           </div>
         </div>
@@ -233,7 +231,7 @@ function PerformanceReport({ result, guidance }) {
           <span className="text-amber-700">？ わからない</span>
         </div>
         <p className="mt-2 rounded-xl bg-sky-50 px-3 py-2 text-[9px] font-bold leading-relaxed text-sky-800/65">
-          各マスは今回の1問、分野別は各7問、級別は各4問のスナップショットです。
+          各マスは今回の1問、分野別は各7問、級別は各4問の結果です。
           1マスだけで実力を断定せず、下の答え合わせと一緒に確認してください。
         </p>
 
@@ -348,9 +346,7 @@ function StudyPlan({ guidance, onOpen }) {
   return (
     <Card className="overflow-hidden" data-diagnostic-study-plan>
       <div className="bg-gradient-to-br from-sky-600 to-indigo-600 p-4 text-white">
-        <p className="text-[10px] font-extrabold tracking-[0.14em] text-white/55">
-          NEXT STUDY PLAN
-        </p>
+        <p className="text-[10px] font-extrabold text-white/65">次の学習プラン</p>
         <h2 className="mt-1 font-display text-xl font-extrabold">次回は、ここから</h2>
         <div className="mt-3 rounded-2xl bg-white/12 p-3 ring-1 ring-inset ring-white/15">
           <div className="flex items-baseline justify-between gap-2">
@@ -373,8 +369,8 @@ function StudyPlan({ guidance, onOpen }) {
           <div className="flex flex-wrap items-center gap-2">
             <p className="text-[10px] font-extrabold text-sky-700">この時間になった理由</p>
             <span className="rounded-full bg-white px-2 py-0.5 text-[9px] font-extrabold text-sky-700">
-              {time.personalized ? '学習履歴から推定' : '仮の時間'}
-              {time.provisional ? '・暫定' : ''}
+              {time.personalized ? '学習記録をもとに選択' : '仮の時間'}
+              {time.provisional ? '・仮' : ''}
             </span>
           </div>
           <p className="mt-1.5 text-xs font-bold leading-relaxed text-sky-950/65">
@@ -386,7 +382,7 @@ function StudyPlan({ guidance, onOpen }) {
         </div>
 
         <div className="mt-3 rounded-2xl bg-violet-50 p-3">
-          <p className="text-[10px] font-extrabold text-violet-700">記憶の定着データ</p>
+          <p className="text-[10px] font-extrabold text-violet-700">これまでの復習記録</p>
           <p className="mt-1.5 text-xs font-bold leading-relaxed text-violet-950/65">
             {memory.text}
           </p>
@@ -426,7 +422,7 @@ function StudyPlan({ guidance, onOpen }) {
         <p className="mt-2 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-[10px] font-bold leading-relaxed text-slate-500">
           答えを読み直すだけでなく、いったん隠して思い出す練習をします。
           翌日→3日後→7日後と少しずつ間隔を空け、今後の学習履歴に合わせて予定を更新します。
-          これは回答履歴からの推定で、脳波や医療検査による「脳力」の測定ではありません。
+          この予定は、これまでの回答から選んだ目安です。公式試験や医療検査の結果ではありません。
         </p>
 
         <Button full className="mt-3" onClick={() => onOpen(next.screen)}>
@@ -449,7 +445,7 @@ function LatestResultCard({ result, history }) {
           <div>
             <p className="text-[11px] font-extrabold text-white/65">前回の診断</p>
             <div className="mt-1 flex items-end gap-2">
-              <span className="text-sm font-bold text-white/75">推定偏差値</span>
+              <span className="text-sm font-bold text-white/75">偏差値の目安</span>
               <span className="font-display text-4xl font-extrabold leading-none">{result.deviation}</span>
               {delta !== null && delta !== 0 && (
                 <span className={cx(
@@ -497,7 +493,7 @@ function Intro({ history, onStart }) {
         <div className="overflow-hidden rounded-[2rem] bg-gradient-to-br from-indigo-600 via-violet-600 to-fuchsia-600 p-5 text-white shadow-card">
           <div className="flex items-center gap-2 text-white/80">
             <Target size={20} />
-            <span className="text-xs font-extrabold tracking-wide">ENGLISH DIAGNOSTIC</span>
+            <span className="text-xs font-extrabold">英語の学習診断</span>
           </div>
           <h1 className="mt-3 font-display text-2xl font-extrabold leading-tight">
             いまの実力と、<br />次に伸ばす力がわかる
@@ -551,7 +547,7 @@ function Intro({ history, onStart }) {
               {history.slice(1, 5).map((item) => (
                 <div key={item.id} className="flex items-center rounded-2xl bg-white px-4 py-3 shadow-card">
                   <span className="text-xs font-bold text-ink/45">{formatCompletedAt(item.completedAt)}</span>
-                  <span className="ml-auto text-xs font-bold text-ink/45">推定偏差値</span>
+                  <span className="ml-auto text-xs font-bold text-ink/45">偏差値の目安</span>
                   <span className="ml-2 font-display text-lg font-extrabold text-brand-700">{item.deviation}</span>
                 </div>
               ))}
@@ -596,7 +592,7 @@ function TestQuestion({ questions, index, answers, onSelect, onNext, onCancel })
       <div className="flex-1 px-4 pb-6 pt-4">
         {item.passage && (
           <div className="mb-4 rounded-3xl bg-white p-4 shadow-card">
-            <p className="mb-2 text-[10px] font-extrabold tracking-wider text-brand-500">READING</p>
+            <p className="mb-2 text-[10px] font-extrabold text-brand-500">長文読解</p>
             <p className="text-sm font-bold leading-7 text-ink/75">{item.passage}</p>
           </div>
         )}
@@ -820,7 +816,7 @@ function Result({
         <div className="rounded-[2rem] bg-gradient-to-br from-indigo-600 via-violet-600 to-fuchsia-600 p-5 text-white shadow-card">
           <div className="flex items-center justify-center gap-2 text-amber-300">
             <Trophy size={20} />
-            <span className="text-xs font-extrabold tracking-wide">DIAGNOSTIC RESULT</span>
+            <span className="text-xs font-extrabold">診断結果</span>
           </div>
           <div className="mt-4 flex items-center justify-center gap-5">
             <ProgressRing
@@ -830,7 +826,7 @@ function Result({
               color="#ffffff"
               track="rgba(255,255,255,0.18)"
             >
-              <span className="text-[10px] font-extrabold text-white/65">推定偏差値</span>
+              <span className="text-[10px] font-extrabold text-white/65">偏差値の目安</span>
               <span className="font-display text-4xl font-extrabold leading-none">{result.deviation}</span>
             </ProgressRing>
             <div>
@@ -850,11 +846,11 @@ function Result({
           </div>
           <div className="mt-4 grid grid-cols-2 gap-2">
             <div className="rounded-2xl bg-white/10 p-3 text-center">
-              <p className="text-[10px] font-bold text-white/60">推定のはば（目安）</p>
+              <p className="text-[10px] font-bold text-white/60">偏差値の幅（目安）</p>
               <p className="font-display text-lg font-extrabold">{result.deviationLow}〜{result.deviationHigh}</p>
             </div>
             <div className="rounded-2xl bg-white/10 p-3 text-center">
-              <p className="text-[10px] font-bold text-white/60">英検レベル目安</p>
+              <p className="text-[10px] font-bold text-white/60">英検級の目安</p>
               <p className="font-display text-lg font-extrabold">{result.estimatedLevel.label}</p>
             </div>
           </div>

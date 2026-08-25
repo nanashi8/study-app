@@ -49,16 +49,14 @@ export function MyGrammarScreen() {
           <>
             <Card className="overflow-hidden bg-gradient-to-br from-violet-600 to-brand-700 text-white">
               <div className="p-4">
-                <p className="text-[11px] font-extrabold tracking-[0.16em] text-violet-200">
-                  SPACED REVIEW
-                </p>
+                <p className="text-xs font-extrabold text-violet-100">今日の復習</p>
                 <div className="mt-1 flex items-end justify-between gap-3">
                   <div>
                     <h2 className="font-display text-xl font-extrabold">
                       使った文法を、自分の型へ
                     </h2>
                     <p className="mt-1 text-xs font-bold leading-relaxed text-white/70">
-                      説明を思い出してから例文を開き、覚え具合に合わせて次の復習日を調整します。
+                      説明を思い出してから例文を開き、これまでの答えに合わせて次の復習日を調整します。
                     </p>
                   </div>
                   <span className="font-display text-3xl font-extrabold text-white/90">
@@ -96,7 +94,7 @@ export function MyGrammarScreen() {
                             </Chip>
                             {entry && (
                               <span className="text-[10px] font-extrabold text-ink/38">
-                                復習BOX {entry.box}
+                                {isDue(entry) ? '復習どき' : '次の復習日を待つ'}
                               </span>
                             )}
                           </div>

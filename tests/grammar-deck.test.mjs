@@ -54,7 +54,7 @@ test('全級・多数の並び順で、語句差し替えだけの同型は1セ�
   }
 })
 
-test('単元別クイズは同型で10問に水増しせず、異なる出題型だけを選ぶ', () => {
+test('単元別テストは同型で10問に水増しせず、異なる出題型だけを選ぶ', () => {
   for (const level of LEVELS) {
     for (const topic of topicsForLevel(level)) {
       const source = { type: 'grammar', level, topic }

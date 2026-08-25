@@ -7,11 +7,14 @@ import { playSpeechItems } from '../lib/speech-player.js'
 import { phraseSpeechText } from '../lib/phrase-speech.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { LongSentenceTranslation } from '../components/LongSentenceTranslation.jsx'
+import { SyntaxFamilyGuide } from '../components/SyntaxFamilyGuide.jsx'
+import { IdiomFormGuide } from '../components/IdiomFormGuide.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
 import { Button, ProgressBar, IconButton, Chip } from '../components/ui.jsx'
 import { ArrowRight, Bookmark, BookmarkFilled, Close, Lightbulb, Link } from '../components/Icons.jsx'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
+import { CardStudyFooter, CardSwipeRegion } from '../components/CardStudyControls.jsx'
 
 const itemKind = (p) =>
   p.category === 'expression' ? { label: '表現', color: '#0ea5e9' }
@@ -22,12 +25,13 @@ export function PhraseStudyScreen() {
   const params = useStore((s) => s.params)
   const navigate = useStore((s) => s.navigate)
   const back = useStore((s) => s.back)
+  const returnTo = useStore((s) => s.returnTo)
   const review = useStore((s) => s.review)
   const settings = useStore((s) => s.settings)
   const toggleNotebookItem = useStore((s) => s.toggleNotebookItem)
   const learningNotebook = useStore((s) => s.learningNotebook)
 
-  // 暗記モード：ONなら毎カード最初から意味・成り立ちを開いて見せる（単語学習と共通）。
+  // 暗記モード：ONなら毎カード最初から意味・解説を開いて見せる（単語学習と共通）。
   const revealAll = settings.revealAnswers
 
   // size=0 は「絞り込みなし」。在庫数から、選べる問題数の上限を決める。
@@ -43,6 +47,9 @@ export function PhraseStudyScreen() {
   const [flipped, setFlipped] = useState(revealAll)
   const results = useRef({ remembered: 0, forgot: 0, forgotIds: [] })
   const item = deck[i]
+  const leave = () => params.returnTo
+    ? returnTo(params.returnTo.screen, params.returnTo.params ?? {})
+    : back()
 
   useEffect(() => {
     if (item && settings.autoSpeak) {
@@ -68,7 +75,7 @@ export function PhraseStudyScreen() {
       <div className="flex h-full flex-col items-center justify-center gap-4 p-8 text-center">
         <div className="text-5xl">🧩</div>
         <p className="font-display text-lg font-extrabold text-ink">対象の項目がありません</p>
-        <Button onClick={back}>もどる</Button>
+        <Button onClick={leave}>戻る</Button>
       </div>
     )
   }
@@ -99,6 +106,11 @@ export function PhraseStudyScreen() {
     }
   }
 
+  const moveToCard = (nextIndex) => {
+    setI(nextIndex)
+    setFlipped(revealAll)
+  }
+
   const level = getLevel(item.level)
   const kind = itemKind(item)
   const longSentenceTranslation = longSentenceTranslationFor(item)
@@ -115,7 +127,7 @@ export function PhraseStudyScreen() {
   return (
     <div className="flex h-full flex-col">
       <div className="flex items-center gap-3 px-3 py-3">
-        <IconButton onClick={back} aria-label="やめる"><Close size={22} /></IconButton>
+        <IconButton onClick={leave} aria-label="やめる"><Close size={22} /></IconButton>
         <div className="flex-1"><ProgressBar value={i / deck.length} color="#8b5cf6" /></div>
         <IconButton
           onClick={() => toggleNotebookItem('phrases', item.id)}
@@ -125,7 +137,7 @@ export function PhraseStudyScreen() {
         >
           {saved ? <BookmarkFilled size={20} /> : <Bookmark size={20} />}
         </IconButton>
-        <RevealAnswersToggle label="意味" onChange={(on) => on && setFlipped(true)} />
+        <RevealAnswersToggle label="意味" onChange={(on) => setFlipped(on)} />
         <SpeechSettingsButton compact />
         <SessionCounter
           index={i}
@@ -144,7 +156,12 @@ export function PhraseStudyScreen() {
         />
       </div>
 
-      <div className="flex-1 overflow-y-auto px-4 pb-4">
+      <CardSwipeRegion
+        index={i}
+        total={deck.length}
+        onIndexChange={moveToCard}
+        className="flex-1 overflow-y-auto px-4 pb-4"
+      >
         <div key={item.id} onClick={() => setFlipped((f) => !f)} className="animate-pop-in rounded-[2rem] bg-white p-6 shadow-card">
           <div className="flex justify-between">
             <Chip color={level.color}>英検{level.label}</Chip>
@@ -165,7 +182,9 @@ export function PhraseStudyScreen() {
 
           {!flipped ? (
             <div className="mt-6 flex flex-col items-center gap-2 rounded-2xl border-2 border-dashed border-brand-200 py-8 text-brand-400">
-              <span className="text-sm font-extrabold">タップして意味と成り立ちを見る</span>
+              <span className="text-sm font-extrabold">
+                タップして{item.kind === 'syntax' ? '意味とポイント' : '意味と成り立ち'}を見る
+              </span>
               <ArrowRight size={20} className="rotate-90" />
             </div>
           ) : (
@@ -180,7 +199,9 @@ export function PhraseStudyScreen() {
                 <div className="rounded-2xl bg-violet-50 p-4 ring-1 ring-violet-100">
                   <div className="mb-1.5 flex items-center gap-1.5 text-violet-600">
                     <Link size={16} />
-                    <span className="text-[11px] font-extrabold uppercase tracking-wide">成り立ち</span>
+                    <span className="text-[11px] font-extrabold uppercase tracking-wide">
+                      {item.kind === 'syntax' ? 'この文のポイント' : '成り立ち'}
+                    </span>
                   </div>
                   <p className="text-sm font-bold leading-relaxed text-violet-900/90">{item.origin}</p>
                 </div>
@@ -211,21 +232,28 @@ export function PhraseStudyScreen() {
                   <p className="text-sm font-bold leading-relaxed text-amber-900/90">{item.note}</p>
                 </div>
               )}
+              <SyntaxFamilyGuide item={item} />
+              <IdiomFormGuide item={item}
+                familyId={params.idiomFormFamilyId}
+                returnTo={params.returnTo}
+              />
             </div>
           )}
         </div>
-      </div>
+      </CardSwipeRegion>
 
-      <div className="shrink-0 border-t border-brand-100 bg-white/90 p-4 pb-4 backdrop-blur">
+      <CardStudyFooter className="border-brand-100">
         {!flipped ? (
-          <Button full size="lg" onClick={() => setFlipped(true)}>意味・成り立ちを見る</Button>
+          <Button full size="lg" onClick={() => setFlipped(true)}>
+            {item.kind === 'syntax' ? '意味・ポイントを見る' : '意味・成り立ちを見る'}
+          </Button>
         ) : (
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-2">
             <Button variant="danger" size="lg" onClick={() => answer(false)}>まだ🤔</Button>
             <Button variant="success" size="lg" onClick={() => answer(true)}>覚えた👍</Button>
           </div>
         )}
-      </div>
+      </CardStudyFooter>
     </div>
   )
 }

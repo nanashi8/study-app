@@ -3859,6 +3859,7 @@ function prepositionWhGrammarCue(phrases, index) {
 function negativeFocusGrammarCue(phrases, index, sentenceEn) {
   const phrase = phrases[index]
   const key = reviewedPhraseKey(phrase.en)
+  const previous = phrases[index - 1]
   const next = phrases[index + 1]
   if (key === 'even') {
     return {
@@ -3878,10 +3879,71 @@ function negativeFocusGrammarCue(phrases, index, sentenceEn) {
       note: `${phrase.en} は後ろのS→Vから成る時の節全体を「〜のときでさえ」と焦点化する入口です。`,
     }
   }
+  if (key.startsWith('even ')) {
+    return {
+      kind: 'audited-focus',
+      note: `${phrase.en} の even は、この修飾句全体を「その場合でさえ・〜にも」と予想外の範囲まで広げる副詞Mです。`,
+    }
+  }
   if (key === 'only') {
     return {
       kind: 'focus',
       note: `only は直後の ${next?.en ?? '語句'}（${next?.role ?? '次の要素'}）だけに範囲を限定します。限定の意味を後続フレーズで重ねません。`,
+    }
+  }
+  if (key.startsWith('not only')) {
+    return {
+      kind: 'audited-focus',
+      note: `${phrase.en} の only は一つ目の範囲を示し、後ろの but also と呼応して「それだけでなく」と追加する焦点表現です。`,
+    }
+  }
+  if (/(?:^| )also(?: |$)/.test(key)) {
+    if (key.startsWith('but also')) {
+      return {
+        kind: 'audited-focus',
+        note: `${phrase.en} の also は前の not only または前項にもう一つの内容を加える焦点副詞Mです。but は対照・追加の合図で、also をS・V・O・Cへ含めません。`,
+      }
+    }
+    return {
+      kind: 'audited-focus',
+      note: `also は ${next?.en ?? previous?.en ?? '前後の動作・内容'} に「さらに・〜も」という内容を加える副詞Mです。S・V・O・Cの一部にはしません。`,
+    }
+  }
+  if (key === 'how often') {
+    return {
+      kind: 'embedded-question',
+      note: `how often は「どのくらい頻繁に」と頻度を問う間接疑問の入口です。後ろの ${next?.en ?? 'S→V'} を、前の動詞が受ける内容としてまとめます。`,
+    }
+  }
+  if (/(?:^| )(?:often|always|never)(?: |$)/.test(key)) {
+    const focusWord = key.match(/\b(often|always|never)\b/)?.[1] ?? key
+    const frequencyTarget = next?.role === 'V' || next?.role === 'C'
+      ? next.en
+      : previous?.role === 'V'
+        ? previous.en
+        : '前後の動作・状態'
+    const meaning = focusWord === 'often'
+      ? 'よく・しばしば'
+      : focusWord === 'always'
+        ? 'いつも・常に'
+        : '一度も〜ない・決して〜ない'
+    return {
+      kind: 'audited-focus',
+      note: `${focusWord} は ${frequencyTarget} の頻度を「${meaning}」と示す副詞Mです。S・V・O・Cの一部にはしません。`,
+    }
+  }
+  if (/(?:^| )(?:simply|merely)(?: |$)/.test(key)) {
+    const focusWord = key.match(/\b(simply|merely)\b/)?.[1] ?? key
+    const target = next?.en ?? previous?.en ?? '前後の動作・内容'
+    return {
+      kind: 'audited-focus',
+      note: `${focusWord} は ${target} の範囲を「単に・ただ」と限定する副詞Mです。S・V・O・Cの一部にはしません。`,
+    }
+  }
+  if (/(?:^| )consciously(?: |$)/.test(key)) {
+    return {
+      kind: 'audited-focus',
+      note: `consciously は ${next?.en ?? previous?.en ?? '前後の動作'} の仕方を「意識して」と示す副詞Mです。S・V・O・Cの一部にはしません。`,
     }
   }
   if (key === 'no longer') {
@@ -4485,7 +4547,7 @@ const STRUCTURAL_DISPLAY_CONTEXTS = new Map([
   ['When a decision involves serious health risks, online reading should support, not replace, advice from a qualified professional.|||replace', { displayEn: '(should) replace', sharedMarker: 'should', note: 'replace は should support と助動詞shouldを共有する対照側の述語です。構造表示だけ (should) を補い、音声は replace のままです。' }],
   ['Once rewards or penalties depend heavily on the score, people have an incentive to optimize the proxy rather than pursue the underlying mission.|||pursue', { displayEn: '(to) pursue', sharedMarker: 'to', note: 'pursue は to optimize と共有toを持つ rather than 側の不定詞動作です。構造表示だけ (to) を補い、音声は pursue のままです。' }],
   ['If measurement increases surveillance below but accountability does not increase above, the system may weaken rather than strengthen legitimacy.|||strengthen', { displayEn: '(may) strengthen', sharedMarker: 'may', note: 'strengthen は may weaken と助動詞mayを共有する rather than 側の述語です。構造表示だけ (may) を補い、音声は strengthen のままです。' }],
-  ['The alternative is not to abandon moderation, but to combine it with accessible evidence, independent review, and explanations that users can examine rather than merely obey.|||rather than merely obey', { displayEn: 'rather than (can) merely obey', sharedMarker: 'can', note: 'obey は can examine と助動詞canを共有する rather than 側の述語です。構造表示だけ (can) を補い、音声は原文どおり rather than merely obey のままです。' }],
+  ['The alternative is not to abandon moderation, but to combine it with accessible evidence, independent review, and explanations that users can examine rather than merely obey.|||obey', { displayEn: '(can) obey', sharedMarker: 'can', note: 'obey は can examine と助動詞canを共有する rather than 側の述語です。構造表示だけ (can) を補い、音声は原文どおり obey のままです。' }],
 ])
 
 function structuralDisplayGrammarCue(phrase, sentenceEn) {
@@ -4502,6 +4564,46 @@ function structuralDisplayGrammarCue(phrase, sentenceEn) {
 }
 
 const COORDINATION_CONTEXT_OVERRIDES = new Map([
+  [
+    'Some companies used to run several routes, but today they cannot fill even one bus.|||1',
+    {
+      type: 'clause-coordination',
+      left: 'Some companies used to run several routes',
+      right: 'today they cannot fill even one bus',
+      governor: '過去と現在を対比する文と文の接続',
+      note: 'but は過去の状況を述べる節を閉じ、today から始まる現在の節を対比します。run の目的語を追加する接続ではありません。',
+    },
+  ],
+  [
+    'The village office received complaints, but simply restoring the old timetable was too expensive.|||1',
+    {
+      type: 'clause-coordination',
+      left: 'The village office received complaints',
+      right: 'simply restoring the old timetable was too expensive',
+      governor: '苦情と費用を対比する文と文の接続',
+      note: 'but は received complaints の節を閉じ、動名詞主語 simply restoring ... から始まる新しい節を対比します。',
+    },
+  ],
+  [
+    'A hospital doctor reads images, but also explains results, weighs uncertainty, and decides what to do next.|||1',
+    {
+      type: 'compound-predicate',
+      left: 'reads images',
+      right: 'also explains results / weighs uncertainty / decides what to do next',
+      governor: 'A hospital doctor',
+      note: 'but は主語 A hospital doctor を共有したまま述語を並べ、読む仕事に説明・考量・判断を加えます。新しい主語は現れません。',
+    },
+  ],
+  [
+    'Their accuracy falls sharply when a file is compressed, cropped, or recorded again from a screen.|||1',
+    {
+      type: 'passive-participle-list',
+      left: 'compressed / cropped',
+      right: 'recorded again from a screen',
+      governor: 'is',
+      note: 'or は受動態 is が支配する過去分詞の列の最後の項を加えます。when節の中だけで並び、主節へは移りません。',
+    },
+  ],
   [
     'Citizen science is valuable not because volunteers replace professionals, but because the two groups contribute different strengths.|||1',
     {
@@ -5444,6 +5546,14 @@ function applyContextualGrammarNotes(phrases, sentenceEn) {
     // 本文別訂正には、支配語・先行詞・並列関係まで読んだ項目固有noteがある。
     // 汎用推定文を重ねず、監査用のcue種別だけを付与する。
     if (phrase.source !== 'corpus-review' && strippedExisting.length >= 20) {
+      const auditedFocusNotes = cues
+        .filter((cue) => ['audited-focus', 'focus', 'focus-clause'].includes(cue.kind))
+        .map((cue) => cue.note)
+      const focusAlreadyCovered = /\b(?:also|always|even|merely|never|often|only|simply|consciously)\b/i.test(strippedExisting) &&
+        /(?:副詞M|焦点|頻度|限定|呼応|加算|意外|予想外|意識して)/u.test(strippedExisting)
+      const supplementedExplanation = auditedFocusNotes.length && !focusAlreadyCovered
+        ? `${strippedExisting} ${auditedFocusNotes.join(' ')} ${phrase.roleNote}`.trim()
+        : phrase.explanation
       const reviewedKinds = []
       if (/関係(?:代名詞|副詞|限定詞)|先行詞/.test(strippedExisting)) reviewedKinds.push('relative')
       if (/間接疑問|疑問詞|程度を(?:尋ね|示す)|問いの対象/.test(strippedExisting)) {
@@ -5458,6 +5568,8 @@ function applyContextualGrammarNotes(phrases, sentenceEn) {
       }
       return Object.freeze({
         ...phrase,
+        grammarNote: supplementedExplanation,
+        explanation: supplementedExplanation,
         ...(prepositionBinding ? { prepositionBinding } : {}),
         ...(coordinationBinding ? { coordinationBinding } : {}),
         ...(zeroRelativeBinding ? { zeroRelativeBinding } : {}),
@@ -5555,7 +5667,7 @@ function correctedSentencePhrase(originals, part, correctionNote, partIndex) {
     status: 'review-needed',
     label: '本文別SVOCM確認',
     kind: 'sentence-reviewed-phrase',
-    readingGuide: '本文の構造と意味を照合し、英語順の役割単位で読みます。',
+    readingGuide: '本文の構造と意味を確かめ、英語の順に役割ごとに読みます。',
     grammarNote,
     explanation: grammarNote,
   })
@@ -5834,7 +5946,7 @@ function projectedTeachingBlocks(blocks, phrases, sentenceEn) {
 }
 
 // 監修シナリオを本文と同じ境界で作るための読み取り専用API。
-// 公開するのは句読点を外した照合キーだけで、解析・文型判定は変更しない。
+// 公開するのは句読点を外した比較用キーだけで、解析・文型判定は変更しない。
 export function readingBlockEnglish(sentence) {
   return Object.freeze(splitEnglish(sentence).map((unit) => bare(unit.text)))
 }

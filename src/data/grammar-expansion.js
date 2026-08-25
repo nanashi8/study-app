@@ -149,7 +149,7 @@ export const GRAMMAR_EXPANSION = [
   ['gr_more_1_emph_01', '1', '強調・倒置', '___ the committee objects to is not the cost but the lack of evidence.', ['What', 'That', 'Which', 'It'], 'What', 'What S V is ... の疑似分裂文で、焦点となる内容を後ろに示す。', '委員会が反対しているのは費用ではなく、証拠の不足です。'],
   ['gr_more_1_emph_02', '1', '強調・倒置', 'It was the lack of transparency ___ provoked public anger.', ['that', 'what', 'why', 'where'], 'that', 'It was ... that の強調構文で、主語 the lack of transparency を焦点化している。', '世論の怒りを引き起こしたのは、透明性の欠如でした。'],
 
-  // ───────── 単元別クイズを最低3問にする深掘りセット ─────────
+  // ───────── 単元別テストを最低3問にする深掘りセット ─────────
   ['gr_depth_5_art_01', '5', '冠詞', 'My brother is ___ engineer.', ['an', 'a', 'the', 'some'], 'an', 'engineer は母音の音で始まる単数名詞なので、不定冠詞 an を使う。', '私の兄（弟）は技術者です。'],
   ['gr_depth_5_demo_01', '5', '指示語', '___ is my pencil here.', ['This', 'These', 'Those', 'They'], 'This', '話し手の近くにある単数の物を指すときは This を使う。', 'ここにあるこれは私の鉛筆です。'],
   ['gr_depth_5_demo_02', '5', '指示語', '___ flowers over there are beautiful.', ['Those', 'That', 'This', 'It'], 'Those', '離れた所にある複数の物を指すときは Those を使う。', '向こうにあるあの花々はきれいです。'],

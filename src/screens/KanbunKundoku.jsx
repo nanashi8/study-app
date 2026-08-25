@@ -65,7 +65,7 @@ export function KanbunKundokuScreen() {
           >
             <Refresh size={23} />
             <span className="mt-3 block font-display text-lg font-extrabold">復習</span>
-            <span className="mt-1 block text-[11px] font-bold text-white/70">期限到来 {due.length}題</span>
+            <span className="mt-1 block text-[11px] font-bold text-white/70">今日の復習 {due.length}題</span>
           </button>
         </section>
 
@@ -88,7 +88,7 @@ export function KanbunKundokuScreen() {
 
         <section>
           <div className="px-1">
-            <p className="text-[10px] font-extrabold tracking-[0.14em] text-rose-700">LEVEL MAP</p>
+            <p className="text-[10px] font-extrabold text-rose-700">難しさ別の練習</p>
             <h2 className="font-display text-lg font-extrabold text-ink">段階別に練習する</h2>
           </div>
           <div className="mt-3 space-y-3">

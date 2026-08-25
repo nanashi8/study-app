@@ -643,7 +643,7 @@ export function VocabCameraScreen() {
                   {addedCount}語を追加しました
                 </p>
                 <p className="text-xs font-bold text-emerald-700/70">
-                  いつものマイ単語学習とクイズで復習できます。
+                  いつものマイ単語暗記とテストで復習できます。
                 </p>
               </div>
             </div>

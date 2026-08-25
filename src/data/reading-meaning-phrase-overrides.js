@@ -18,6 +18,31 @@ export const READING_MEANING_PHRASE_OVERRIDES = Object.freeze({
     ),
   }),
 
+  'Some students thought the panels were broken, but the weather was the real reason.': sentence({
+    groups: Object.freeze([
+      Object.freeze({
+        en: 'Some students thought',
+        ja: '一部の生徒は〜と思いました（内容は次へ）',
+        grammar: 'Some students が主節のS、thought がVです。何を思ったのかは、次の内容節で確かめます。',
+      }),
+      Object.freeze({
+        en: 'the panels were broken',
+        ja: 'パネルが壊れていると',
+        grammar: 'thought の目的内容となる節です。the panels がS、were がV、broken が状態を示すCです。',
+      }),
+      Object.freeze({
+        en: 'but',
+        ja: 'しかし',
+        grammar: 'but は、前の生徒の考えと、後ろの本当の理由を対比します。',
+      }),
+      Object.freeze({
+        en: 'the weather was the real reason',
+        ja: '天気が本当の理由でした',
+        grammar: 'the weather がS、was がV、the real reason が主語の内容を説明するCです。',
+      }),
+    ]),
+  }),
+
   'Rina is a junior high school student.': sentence({
     groups: Object.freeze([
       Object.freeze({
@@ -405,8 +430,8 @@ export const READING_MEANING_PHRASE_OVERRIDES = Object.freeze({
   'People often describe choice as if it begins only when a person consciously compares several options.': sentence({
     it: item(
       'それが',
-      'as if節の主語itを先に確定し、onlyの焦点とwhen節を含む述部begins onlyへつなぎます。',
-      { boundaryAfter: 'begins only' },
+      'as if節の主語itを先に確定し、述語Vのbeginsへつなぎます。続くonlyはMで、直後のwhen節全体だけに範囲を限定します。',
+      { boundaryAfter: 'begins' },
     ),
   }),
 

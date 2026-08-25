@@ -310,6 +310,31 @@ export const READING_CONNECTOR_CLOSURE_REVIEWS = Object.freeze([
     'When', 'ready', 'C', '完成した状態（になったとき）',
     binding('time-clause', 'When', 'families tested it on a rainy afternoon', 'the first map was ready'),
   ),
+  review(
+    'A company that spends money on careful design gains no direct advantage if others ignore the risk.',
+    'if', 'the risk', 'O', 'その危険を（無視するなら、慎重な設計に費用をかけても直接の利益は得られません）',
+    binding('condition-clause', 'if', 'gains no direct advantage', 'others ignore the risk'),
+  ),
+  review(
+    'Glare from a poorly aimed lamp can reduce visibility even while increasing brightness.',
+    'while', 'brightness', 'O', '明るさを（増しながらでさえ）',
+    binding('contrast-clause', 'even while', 'can reduce visibility', 'increasing brightness'),
+  ),
+  review(
+    'Diners may select healthier food more often when it is easy to see and reach, even though less healthy choices remain available.',
+    'even though', 'available', 'C', '利用できる状態（であるにもかかわらず）',
+    binding('concessive-clause', 'even though', 'may select healthier food more often', 'less healthy choices remain available'),
+  ),
+  review(
+    'The village then tested a small bus that comes only when someone books it.',
+    'when', 'it', 'O', 'そのバスを（予約したときだけ来る）',
+    binding('focused-time-clause', 'only when', 'comes', 'someone books it'),
+  ),
+  review(
+    'They also require monitoring because new buildings, new technologies, and changing travel patterns can alter local needs.',
+    'because', 'local needs', 'O', '地域の必要を（変え得るため、監視も必要です）',
+    binding('reason-clause', 'because', 'They also require monitoring', 'new buildings, new technologies, and changing travel patterns can alter local needs'),
+  ),
 ])
 
 const noChange = (sentence, connector, occurrence, reason) => Object.freeze({
@@ -320,7 +345,7 @@ const noChange = (sentence, connector, occurrence, reason) => Object.freeze({
   status: 'confirmed',
 })
 
-// 全121候補のうち、既存の節末ですでに関係が完成しているもの、または
+// 全144候補のうち、既存の節末ですでに関係が完成しているもの、または
 // 「一方」のように日本語の独立したつなぎだけで明確なもの。
 export const READING_CONNECTOR_NO_BACK_REFERENCE_REVIEWS = Object.freeze([
   noChange('She likes English because her teacher uses many pictures.', 'because', 1, 'already-complete'),
@@ -348,6 +373,7 @@ export const READING_CONNECTOR_NO_BACK_REFERENCE_REVIEWS = Object.freeze([
   noChange('A public consultation may reproduce existing inequalities if organized groups can speak more loudly than communities with less time, money, or trust in institutions.', 'if', 1, 'already-complete'),
   noChange('Two historians may accept the same evidence yet assign different significance to it because they ask different questions.', 'because', 1, 'already-complete'),
   noChange('If every account of the past is dismissed as merely political, citizens lose the capacity to distinguish careful revision from deliberate distortion.', 'If', 1, 'already-complete'),
+  noChange('If every account of the past is dismissed as merely political, citizens lose the capacity to distinguish careful revision from deliberate distortion.', 'as', 1, 'standalone-link'),
   noChange('Digital platforms intensify this risk because they reward speed, emotional certainty, and loyalty to a group more readily than patient investigation.', 'because', 1, 'already-complete'),
   noChange('It also requires citizens who are willing to read beyond headlines, tolerate uncertainty, and revise their views when stronger evidence appears.', 'when', 1, 'already-complete'),
   noChange('If that practice declines, even perfect archives will not prevent societies from losing their ability to learn from what they once knew.', 'If', 1, 'already-complete'),
@@ -386,6 +412,23 @@ export const READING_CONNECTOR_NO_BACK_REFERENCE_REVIEWS = Object.freeze([
   noChange('In practice, decisions are also shaped by which option appears first, which action requires effort, and what happens when someone does nothing.', 'when', 1, 'already-complete'),
   noChange('Employees save more for retirement when enrollment is automatic but can be canceled than when they must complete a form to join.', 'when', 1, 'already-complete'),
   noChange('Households may use less electricity when bills compare their use with that of similar homes.', 'when', 1, 'already-complete'),
+  noChange('If the number is too high, we do not run outside.', 'If', 1, 'already-complete'),
+  noChange('Families came to the gym because the lights there were still on.', 'because', 1, 'already-complete'),
+  noChange('Shops and restaurants welcomed the change because many young families had left the town.', 'because', 1, 'already-complete'),
+  noChange('Some visitors entered private gardens because the path to the shrine was not clearly marked.', 'because', 1, 'already-complete'),
+  noChange('Some shop owners disagreed because they feared that fewer buses would mean fewer customers.', 'because', 1, 'already-complete'),
+  noChange('An elderly resident had to change three appointments because no bus reached the clinic.', 'because', 1, 'already-complete'),
+  noChange('Because the vehicle is smaller, the cost for each trip dropped by about a third.', 'Because', 1, 'already-complete'),
+  noChange('Others could not use the app because the mobile signal was weak in the mountains.', 'because', 1, 'already-complete'),
+  noChange('Neither approach can succeed if no one is willing to drive.', 'if', 1, 'already-complete'),
+  noChange('If this process continues, certain orbits could become too dangerous to use.', 'If', 1, 'already-complete'),
+  noChange('Yet enforcement remains weak, because no authority can inspect every launch.', 'because', 1, 'already-complete'),
+  noChange('If productivity rises but wages do not, the benefit reaches owners rather than workers.', 'If', 1, 'already-complete'),
+  noChange('Evaluation is as important as ambition, since untested programs consume budgets that could support proven ones.', 'since', 1, 'already-complete'),
+  noChange('Once audiences know that anything can be faked, genuine evidence can be dismissed at will.', 'Once', 1, 'already-complete'),
+  noChange('It requires no technical skill, because doubt itself has become extremely cheap to manufacture.', 'because', 1, 'already-complete'),
+  noChange('The contest is asymmetric, since one success is enough for an attacker while a verifier needs consistent reliability.', 'since', 1, 'already-complete'),
+  noChange('The contest is asymmetric, since one success is enough for an attacker while a verifier needs consistent reliability.', 'while', 1, 'standalone-link'),
 ])
 
 const directCorrection = (sentence, target, role, ja, note) => Object.freeze({

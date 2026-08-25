@@ -1480,6 +1480,14 @@ export function createGrammarChoiceGuidance(allItems) {
     if (!item || choice == null || choice === item.answer) return null
     const normalized = normalizeChoice(choice)
 
+    const itemGuide = item.choiceGuidance?.[choice]
+    if (itemGuide) {
+      return valid(itemGuide, {
+        pattern: choice,
+        source: 'item-choice-guide',
+      })
+    }
+
     const special = SPECIAL_GUIDES[normalized]
     if (special) return { ...special, source: special.source ?? 'special-rule' }
 

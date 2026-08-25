@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useStore, todayIndex } from '../store/useStore.js'
-import { PASSAGES } from '../data/passages.js'
+import { ALL_PASSAGES } from '../data/passages.js'
 import {
   SCHOOL_LIFE_VISUAL_CATEGORIES,
   SCHOOL_LIFE_VISUALS,
@@ -84,7 +84,7 @@ import {
 const MIN_ATTEMPTS = 10
 const READING_MIN_ATTEMPTS = 4
 const WEAK_ACC = 0.7
-const PASSAGE_IDS = new Set(PASSAGES.map((passage) => passage.id))
+const PASSAGE_IDS = new Set(ALL_PASSAGES.map((passage) => passage.id))
 
 const SKILLS = [
   { id: 'vocab', label: '単語', emoji: '📖', color: '#6366f1', screen: 'vocabLevels', kind: 'acc' },
@@ -135,7 +135,7 @@ function ChronicleIcon({ kind, size = 20, className = '' }) {
 
 function skillInfo(skill, skillStats, readingsDone) {
   if (skill.kind === 'reading') {
-    const total = PASSAGES.length
+    const total = ALL_PASSAGES.length
     // 「名作に親しむ」も同じ readingsDone へ保存するため、英検長文だけを数える。
     const read = new Set(readingsDone.filter((id) => PASSAGE_IDS.has(id))).size
     const s = skillStats.reading
@@ -321,7 +321,7 @@ export function AfterSchoolChronicleScreen() {
                 <ChronicleDrawer
                   icon="chapter"
                   title="調査の記録"
-                  description="五地点の正常化と次の目標"
+                  description="五地点の調査結果と次の目標"
                 >
                   <DragonVeinProgressSummary progress={dragonVeinProgress} />
                 </ChronicleDrawer>
@@ -367,7 +367,7 @@ export function AfterSchoolChronicleScreen() {
                   <ChronicleDrawer
                     icon="faculty"
                     title="先生の記憶を聞く"
-                    description="担当分野に残る英語の違和感を調査"
+                    description="担当分野で起きた英語の問題を調べる"
                   >
                     <TeacherSchoolLife student={battleStudent} />
                   </ChronicleDrawer>
@@ -426,7 +426,7 @@ function DragonVeinRestorationBoard({ progress, student, day, onDaily, onLaunch 
           <div className="mt-3 flex items-center gap-3">
             <img src={battleStudentPortrait(student.id, 'thinking')} alt={`${student.name}が龍脈について考えている表情`} className="h-12 w-12 rounded-xl bg-slate-900 object-cover [image-rendering:pixelated]" />
             <div className="min-w-0 flex-1">
-              <div className="flex items-center justify-between text-[10px] font-extrabold"><span>主要五地点</span><span>{summary.completeNodes}/{summary.totalNodes} 正常化</span></div>
+              <div className="flex items-center justify-between text-[10px] font-extrabold"><span>主要五地点</span><span>{summary.completeNodes}/{summary.totalNodes} 調査完了</span></div>
               <ProgressBar value={summary.restored / summary.target} color="linear-gradient(90deg,#22d3ee,#a78bfa,#fbbf24)" className="mt-1.5" />
               <p className="mt-1 text-[8px] font-bold text-white/45">復元 {summary.restored}/{summary.target} 断片</p>
             </div>
@@ -487,10 +487,10 @@ function DragonVeinNodeCard({ node, status, extraUnlocked, onLaunch }) {
           <div className="flex items-center gap-2"><h3 className="font-display text-sm font-extrabold text-ink">{node.name}</h3><span className="rounded-full px-2 py-0.5 text-[8px] font-extrabold" style={{ backgroundColor: `${node.accent}18`, color: node.accent }}>{node.levelLabel}</span></div>
           <p className="mt-0.5 truncate text-[9px] font-bold text-ink/45">協力：{node.guideName} · {node.guideRole}</p>
         </div>
-        {status.complete && <span className="text-xl" aria-label="正常化済み">✨</span>}
+        {status.complete && <span className="text-xl" aria-label="龍脈の修復完了">✨</span>}
       </div>
       {locked ? (
-        <p className="border-t border-slate-100 px-4 py-3 text-[10px] font-bold leading-relaxed text-ink/50">五つの主要地点で単語と熟語・構文を各100正解すると、1級の記憶層が開く。</p>
+        <p className="border-t border-slate-100 px-4 py-3 text-[10px] font-bold leading-relaxed text-ink/50">五つの主要地点で単語と熟語・構文を各100問正解すると、1級の記憶層が開きます。</p>
       ) : (
         <div className="border-t border-slate-100 p-3">
           <div className="grid grid-cols-2 gap-2">
@@ -507,7 +507,7 @@ function DragonVeinNodeCard({ node, status, extraUnlocked, onLaunch }) {
           </div>
           <div className="mt-2">
             <span className="text-[9px] font-bold text-ink/45">一度に解く問題数</span>
-            {/* 学習・クイズ画面の「1回の問題数」と同じ並び（全部＝在庫すべて）。 */}
+            {/* 暗記・テスト画面の「1回の問題数」と同じ並び（全部＝在庫すべて）。 */}
             <div className="mt-1 flex flex-wrap gap-1">
               {[...SESSION_SIZE_OPTIONS, SESSION_SIZE_ALL].map((value) => (
                 <button
@@ -537,13 +537,13 @@ function DragonVeinProgressSummary({ progress }) {
   return (
     <section className="rounded-3xl bg-slate-950 p-4 text-white shadow-card">
       <p className="text-[9px] font-extrabold tracking-[0.18em] text-cyan-300">DRAGON VEIN LEDGER</p>
-      <h2 className="font-display text-base font-extrabold">世界正常化までの記録</h2>
+      <h2 className="font-display text-base font-extrabold">世界の記憶を戻す記録</h2>
       <div className="mt-3 grid grid-cols-3 gap-2 text-center">
-        <div className="rounded-2xl bg-white/10 p-2"><b className="block text-lg">{summary.completeNodes}/5</b><small className="text-[8px] font-bold text-white/50">正常化地点</small></div>
+        <div className="rounded-2xl bg-white/10 p-2"><b className="block text-lg">{summary.completeNodes}/5</b><small className="text-[8px] font-bold text-white/50">修復した地点</small></div>
         <div className="rounded-2xl bg-white/10 p-2"><b className="block text-lg">{summary.restored}</b><small className="text-[8px] font-bold text-white/50">復元断片</small></div>
         <div className="rounded-2xl bg-white/10 p-2"><b className="block text-lg">{progress?.daily?.repairs ?? 0}</b><small className="text-[8px] font-bold text-white/50">日常修復</small></div>
       </div>
-      <p className="mt-3 text-[9px] font-bold leading-relaxed text-white/55">主要五地点の合計目標は1,000断片。すべて正常化すると世界の英語記憶が戻り、1級EXTRAが解放される。</p>
+      <p className="mt-3 text-[9px] font-bold leading-relaxed text-white/55">主要五地点の合計目標は1,000断片です。すべての地点を修復すると世界の英語記憶が戻り、1級の追加ステージが開きます。</p>
     </section>
   )
 }
@@ -643,7 +643,7 @@ function TrainingBoard({ navigate, weak, infos }) {
         </div>
       ) : (
         <div className="mb-3 rounded-2xl bg-correct-soft p-3.5 text-center text-sm font-bold text-emerald-700">
-          大きな弱点なし。伸ばしたい分野を選ぼう 💪
+          大きく苦手な分野はありません。伸ばしたい分野を選びましょう 💪
         </div>
       )}
 
@@ -981,7 +981,7 @@ function SchoolBarrierMap({ progress }) {
         </div>
         <span className="shrink-0 text-[8px] font-extrabold tracking-[0.12em] text-emerald-300">
           {selectedLocation.id === BATTLE_BARRIER_CENTER.id
-            ? `${dragonVeinSummary(progress).completeNodes}/5 正常化`
+            ? `${dragonVeinSummary(progress).completeNodes}/5 調査完了`
             : `${dragonVeinNodeStatus(progress, selectedLocation.id).restored}/${DRAGON_VEIN_TARGET * 2}`}
         </span>
       </div>
@@ -1648,7 +1648,7 @@ function TeacherSchoolLife({ student }) {
         )}
 
         <p className="mt-2 text-center text-[8px] font-bold leading-relaxed text-ink/35">
-          ここで選ぶ点数は物語上の架空成績です。実際の正答率・SRS・診断結果は変わりません。
+          ここで選ぶ点数は物語上の架空成績です。実際の正答率・復習記録・診断結果は変わりません。
         </p>
       </div>
     </section>
@@ -1783,7 +1783,7 @@ function BattleCastRoster({
 
         <details className="battle-cast-details mt-2 rounded-2xl border border-slate-200 bg-slate-50">
           <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between px-3 text-xs font-extrabold text-ink">
-            <span>🏫 先生・地域協力者アーカイブ</span>
+            <span>🏫 先生・地域協力者の一覧</span>
             <span className="text-[9px] text-ink/40">5陣営 · 50人</span>
           </summary>
           <div className="space-y-4 border-t border-slate-200 p-3">

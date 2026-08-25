@@ -94,11 +94,11 @@ function LearningStatus({ progress }) {
     return <span className="text-[10px] font-extrabold text-indigo-700">維持復習・段階 {progress.box}</span>
   }
   if (progress.box >= 4) {
-    return <span className="text-[10px] font-extrabold text-emerald-700">定着段階 {progress.box}</span>
+    return <span className="text-[10px] font-extrabold text-emerald-700">次の復習日を待つ</span>
   }
   return (
     <span className="text-[10px] font-extrabold text-slate-500">
-      学習 {progress.attempts}回・段階 {progress.box}
+      学習 {progress.attempts}回
     </span>
   )
 }
@@ -319,7 +319,7 @@ function ProblemSetCard({
                       onClick={() => onStart(domain.id, items, set, 'study')}
                       className="min-h-9 rounded-md bg-brand-600 px-2 text-[9px] font-extrabold text-white"
                     >
-                      単語を覚える
+                      単語を暗記
                     </button>
                   ) : STUDY_DOMAINS.has(domain.id) && (
                     <button
@@ -464,7 +464,7 @@ function HistoryPanel({ state, day, onOpenProgress, onOpenDictionary }) {
       <section className="grid grid-cols-3 gap-2">
         {[
           ['学習済み', summary.studied, '項目'],
-          ['回答・判定', summary.attempts, '回'],
+          ['回答', summary.attempts, '回'],
           ['復習どき', summary.due, '項目'],
         ].map(([label, value, unit]) => (
           <div key={label} className="rounded-xl border border-slate-300 bg-white p-3 text-center">
@@ -477,7 +477,7 @@ function HistoryPanel({ state, day, onOpenProgress, onOpenDictionary }) {
       <section>
         <div className="mb-2 px-1">
           <h2 className="font-display text-base font-extrabold text-slate-950">8分野の記録</h2>
-          <p className="text-[10px] font-bold text-slate-500">正誤・覚えた／まだから自動集計</p>
+          <p className="text-[10px] font-bold text-slate-500">正解・不正解と「覚えた／まだ」をまとめて表示</p>
         </div>
         <div className="grid grid-cols-2 gap-2">
           {NOTEBOOK_DOMAINS.map((domain) => {
@@ -489,7 +489,7 @@ function HistoryPanel({ state, day, onOpenProgress, onOpenDictionary }) {
                   <span className="text-[11px] font-extrabold text-slate-800">{domain.label}</span>
                 </div>
                 <p className="mt-1 font-display text-lg font-extrabold text-slate-950">{item.studied.toLocaleString()}<span className="ml-1 text-[9px] text-slate-500">項目</span></p>
-                <p className="text-[9px] font-bold text-slate-500">判定 {item.attempts.toLocaleString()}回・復習 {item.due}</p>
+                <p className="text-[9px] font-bold text-slate-500">回答 {item.attempts.toLocaleString()}回・今日の復習 {item.due}</p>
               </div>
             )
           })}
@@ -523,7 +523,7 @@ function HistoryPanel({ state, day, onOpenProgress, onOpenDictionary }) {
       <section>
         <div className="mb-2 px-1">
           <h2 className="font-display text-base font-extrabold text-slate-950">最近学習した項目</h2>
-          <p className="text-[10px] font-bold text-slate-500">新しい判定順・最大80項目</p>
+          <p className="text-[10px] font-bold text-slate-500">最近答えた順・最大80項目</p>
         </div>
         {recent.length ? (
           <div className="space-y-1.5">
@@ -554,7 +554,7 @@ function HistoryPanel({ state, day, onOpenProgress, onOpenDictionary }) {
 
       <div className="grid grid-cols-2 gap-2">
         <Button variant="secondary" size="sm" onClick={onOpenDictionary}><Search size={15} /> 辞書履歴</Button>
-        <Button variant="secondary" size="sm" onClick={onOpenProgress}><Chart size={15} /> 全進捗</Button>
+        <Button variant="secondary" size="sm" onClick={onOpenProgress}><Chart size={15} /> すべての記録</Button>
       </div>
     </div>
   )
@@ -733,7 +733,7 @@ export function MyListScreen() {
       <div className="space-y-4 px-3.5">
         <section className="overflow-hidden rounded-xl border-2 border-slate-700 bg-white" data-learning-notebook-summary>
           <div className="bg-slate-800 px-4 py-3 text-white">
-            <p className="text-[9px] font-extrabold tracking-[0.16em] text-slate-300">PERSONAL NOTEBOOK & WORKBOOK</p>
+            <p className="text-[9px] font-extrabold text-slate-300">自分の学習ノート</p>
             <div className="mt-1 flex items-end justify-between gap-3">
               <div>
                 <p className="font-display text-lg font-extrabold">保存・メモ・問題集・学習記録</p>
@@ -954,7 +954,7 @@ export function MyListScreen() {
             )}
 
             <p className="rounded-xl bg-slate-100 px-3 py-3 text-[10px] font-bold leading-relaxed text-slate-600">
-              1冊に最大{NOTEBOOK_LIMITS.itemsPerSet}項目、最大{NOTEBOOK_LIMITS.sets}冊。1回の学習は分野に応じて10〜20項目を、復習期限・未学習・定着段階の順で優先します。
+              1冊に最大{NOTEBOOK_LIMITS.itemsPerSet}項目、最大{NOTEBOOK_LIMITS.sets}冊。1回の学習では分野に応じて10〜20項目を選び、復習日を迎えた項目と未学習の項目から先に出します。
             </p>
           </div>
         )}
@@ -975,7 +975,7 @@ export function MyListScreen() {
         >
           <span className="grid h-9 w-9 place-items-center rounded-lg bg-slate-100 text-slate-700"><Chart size={17} /></span>
           <span className="min-w-0 flex-1">
-            <span className="block text-xs font-extrabold text-slate-800">全教科のマイ学習索引</span>
+            <span className="block text-xs font-extrabold text-slate-800">教材ごとの学習記録</span>
             <span className="block text-[10px] font-bold text-slate-500">長文・英作文・数学を含む学習済み項目</span>
           </span>
           <ArrowRight size={17} className="text-slate-400" />

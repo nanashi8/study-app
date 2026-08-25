@@ -17,10 +17,52 @@ export const QUIZ_STATUS_META = Object.freeze({
   unanswered: { label: '未回答', color: '#cbd5e1' },
 })
 
+function LegendGroup({ title, items }) {
+  return (
+    <div className="rounded-xl border border-slate-200 bg-white p-3">
+      <b className="text-xs font-extrabold text-slate-900">{title}</b>
+      <div className="mt-2 grid grid-cols-3 gap-2">
+        {items.map(({ label, color, note }) => (
+          <div key={label} className="min-w-0">
+            <span className="flex items-center gap-1 text-[10px] font-extrabold text-slate-700">
+              <i className="h-2.5 w-2.5 shrink-0 rounded-sm" style={{ backgroundColor: color }} />
+              {label}
+            </span>
+            <span className="mt-0.5 block text-[9px] font-bold leading-snug text-slate-500">{note}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+export function LearningStatusLegend({ className = '' }) {
+  return (
+    <div className={cx('grid gap-2', className)} data-learning-status-legend>
+      <LegendGroup
+        title="暗記"
+        items={[
+          { ...LEARNING_STATUS_META.learned, note: '「覚えた」' },
+          { ...LEARNING_STATUS_META.reviewing, note: '「まだ」' },
+          { ...LEARNING_STATUS_META.unlearned, note: 'まだ学習していない' },
+        ]}
+      />
+      <LegendGroup
+        title="テスト"
+        items={[
+          { ...QUIZ_STATUS_META.correct, note: '最後は正解' },
+          { ...QUIZ_STATUS_META.incorrect, note: '最後は不正解' },
+          { ...QUIZ_STATUS_META.unanswered, note: 'まだ答えていない' },
+        ]}
+      />
+    </div>
+  )
+}
+
 function statusScheme(kind) {
   return kind === 'quiz'
-    ? { keys: QUIZ_STATUS_KEYS, meta: QUIZ_STATUS_META, title: 'クイズ' }
-    : { keys: LEARNING_STATUS_KEYS, meta: LEARNING_STATUS_META, title: '学習' }
+    ? { keys: QUIZ_STATUS_KEYS, meta: QUIZ_STATUS_META, title: 'テスト' }
+    : { keys: LEARNING_STATUS_KEYS, meta: LEARNING_STATUS_META, title: '暗記' }
 }
 
 export function StatusDistributionBar({
@@ -79,13 +121,14 @@ export function StatusDistributionBar({
   )
 }
 
-// units で「全74項目」「全136問」のように、学習とクイズそれぞれの数え方を示す。
+// units で「全74項目」「全136問」のように、暗記とテストそれぞれの数え方を示す。
 export function LearningStatusBars({
   progress,
   className = '',
   compact = false,
   units = {},
   showQuiz = true,
+  showLegend = true,
 }) {
   return (
     <div className={cx('space-y-2.5', className)} data-learning-status-bars>
@@ -93,6 +136,7 @@ export function LearningStatusBars({
         kind="learning"
         counts={progress?.learning}
         compact={compact}
+        showLegend={showLegend}
         unit={units.learning ?? ''}
       />
       {showQuiz && (
@@ -100,6 +144,7 @@ export function LearningStatusBars({
           kind="quiz"
           counts={progress?.quiz}
           compact={compact}
+          showLegend={showLegend}
           unit={units.quiz ?? ''}
         />
       )}

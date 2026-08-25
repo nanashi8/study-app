@@ -10,6 +10,35 @@ const block = ({ label, kind, role, scope = '', note }) => Object.freeze({
 })
 
 export const READING_BLOCK_STRUCTURE_OVERRIDES = Object.freeze({
+  'People often describe choice as if it begins only when a person consciously compares several options.': Object.freeze([
+    block({
+      label: '主節・文の骨格',
+      kind: 'core',
+      role: null,
+      note: 'People がS、often がM、describe がV、choice がOです。主節はSVOで、後ろのas if節はdescribeの様子を添えるMです。',
+    }),
+    block({
+      label: 'as if副詞節の入口（as）',
+      kind: 'clause',
+      role: 'M',
+      scope: 'as if節内',
+      note: 'as は単独の目的格補語Cではありません。直後のifと一組でas ifを作り、「まるで〜かのように」という様態の副詞節Mを導きます。',
+    }),
+    block({
+      label: 'as if副詞節（if以下）',
+      kind: 'clause',
+      role: 'M',
+      scope: 'as if節内',
+      note: 'if はここでは独立した条件節の入口ではなく、直前のasと一組です。itがS、beginsがV、onlyが後続のwhen節を限定するMです。',
+    }),
+    block({
+      label: 'onlyが限定するwhen時節',
+      kind: 'clause',
+      role: 'M',
+      scope: 'when節内',
+      note: 'when以下はbeginsの時を示す副詞節Mです。onlyはこのwhen節全体に焦点を当て、「そのときにだけ始まる」と範囲を限定します。',
+    }),
+  ]),
   'This evidence makes it easier to improve a design or decide that a simpler solution would work better.': Object.freeze([
     block({
       label: '主節・文の骨格',
@@ -103,6 +132,8 @@ export const READING_BLOCK_STRUCTURE_OVERRIDES = Object.freeze({
 // 下段カードの分割境界をそのまま括弧へすると、同じ節が二つに見えたり、
 // than が融合関係詞節の内側に見えたりするため、直接確認済みの三文を固定する。
 export const READING_SENTENCE_STRUCTURE_OVERRIDES = Object.freeze({
+  'People often describe choice as if it begins only when a person consciously compares several options.':
+    'People often describe choice (as if it begins only when a person consciously compares several options)',
   'This evidence makes it easier to improve a design or decide that a simpler solution would work better.':
     'This evidence makes it easier <to improve a design or decide (that a simpler solution would work better)>',
   'The integrity of public memory is then shaped less by what is available than by what is repeatedly presented as relevant.':

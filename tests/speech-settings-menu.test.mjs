@@ -266,14 +266,14 @@ test('リスニングとディクテーションも共通速度を級別速度�
   assert.match(dictation, /const userRateScale = \(settings\.ttsRate \?\? 0\.9\) \/ 0\.9/)
 })
 
-test('全画面共通の読み上げコンソールに6操作を一つずつ備える', () => {
+test('全画面共通の読み上げ再生パネルに6操作を一つずつ備える', () => {
   const shell = read('../src/components/AppShell.jsx')
   const consoleSource = read('../src/components/SpeechConsole.jsx')
   const player = read('../src/lib/speech-player.js')
   const speakButton = read('../src/components/SpeakButton.jsx')
 
   assert.match(shell, /<GlobalSpeechConsole \/>/)
-  assert.match(consoleSource, /aria-label="読み上げコンソール"/)
+  assert.match(consoleSource, /aria-label="読み上げ再生パネル"/)
   for (const label of ['再生', '一時停止', '前へ', '次へ', '停止', '速度']) {
     assert.match(consoleSource, new RegExp(`(?:label=|<span>)"?${label}`), label)
   }
@@ -286,7 +286,7 @@ test('全画面共通の読み上げコンソールに6操作を一つずつ備�
   assert.match(speakButton, /visibleSpeechButtons/)
 })
 
-test('読み上げを持つ全25 UIモジュールが共通プレイヤー経由になる', () => {
+test('読み上げを持つ全26 UIモジュールが共通プレイヤー経由になる', () => {
   const files = ['components', 'screens'].flatMap((directory) =>
     readdirSync(new URL(`../src/${directory}/`, import.meta.url))
       .filter((filename) => filename.endsWith('.jsx'))
@@ -300,7 +300,7 @@ test('読み上げを持つ全25 UIモジュールが共通プレイヤー経由
   )
   const screenCount = speechUi.filter(({ path }) => path.startsWith('screens/')).length
 
-  assert.equal(speechUi.length, 25)
+  assert.equal(speechUi.length, 26)
   assert.equal(screenCount, 20)
   assert.ok(speechUi.some(({ path }) => path === 'components/LiteratureVocabularySheet.jsx'))
   assert.ok(speechUi.some(({ path }) => path === 'screens/Reader.jsx'))

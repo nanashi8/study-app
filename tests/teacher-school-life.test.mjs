@@ -194,7 +194,7 @@ test('放課後と魔法の言葉から先生の日常会話を操作でき、�
   assert.match(source, /teacherRemedialSubjectChoices/)
   assert.match(source, /🏃 逃げる！/u)
   assert.match(source, /📘 補習を受ける/u)
-  assert.match(source, /実際の正答率・SRS・診断結果は変わりません/u)
+  assert.match(source, /実際の正答率・復習記録・診断結果は変わりません/u)
 })
 
 test('先生専用ビジュアルを学校生活と龍脈の共同解読で利用する', () => {

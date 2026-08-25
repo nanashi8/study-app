@@ -10,8 +10,10 @@ import { Card, Button, Chip, IconButton } from '../components/ui.jsx'
 import { Book, Cards, Bookmark, BookmarkFilled, Check, ArrowRight } from '../components/Icons.jsx'
 
 export function ReadingSummaryScreen() {
-  const passageId = useStore((s) => s.params.passageId)
+  const params = useStore((s) => s.params)
+  const passageId = params.passageId
   const navigate = useStore((s) => s.navigate)
+  const returnTo = useStore((s) => s.returnTo)
   const myList = useStore((s) => s.myList)
   const toggleMyList = useStore((s) => s.toggleMyList)
   const addManyToMyList = useStore((s) => s.addManyToMyList)
@@ -43,10 +45,10 @@ export function ReadingSummaryScreen() {
           <p className="text-sm font-bold text-ink/50">{words.length}語をまとめて覚えよう</p>
           <div className="mt-3 grid grid-cols-2 gap-2">
             <Button onClick={() => navigate('vocabStudy', { source: { type: 'mylist', ids }, title: passage.title, mode: 'study', returnTo: { screen: 'readingSummary', params: { passageId } } })}>
-              <Book size={16} /> 覚える
+              <Book size={16} /> 暗記
             </Button>
             <Button variant="secondary" onClick={() => navigate('vocabQuiz', { source: { type: 'mylist', ids }, title: passage.title, returnTo: { screen: 'readingSummary', params: { passageId } } })}>
-              <Cards size={16} /> クイズ
+              <Cards size={16} /> テスト
             </Button>
           </div>
           <Button
@@ -89,9 +91,18 @@ export function ReadingSummaryScreen() {
           })}
         </div>
 
-        <Button full variant="ghost" onClick={() => navigate('reader', { passageId })}>
+        <Button full variant="ghost" onClick={() => navigate('reader', { passageId, returnTo: params.returnTo })}>
           もう一度読む
         </Button>
+        {params.returnTo?.screen && (
+          <Button
+            full
+            variant="secondary"
+            onClick={() => returnTo(params.returnTo.screen, params.returnTo.params ?? {})}
+          >
+            教材一覧へ戻る
+          </Button>
+        )}
       </div>
     </div>
   )

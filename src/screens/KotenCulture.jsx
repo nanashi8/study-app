@@ -61,7 +61,7 @@ function CategoryCard({ meta, items, srs, questions, quizResults, onStudy, onQui
       <p className="mt-2 text-[11px] font-bold leading-relaxed text-ink/45">{meta.subtitle}</p>
       <div className="mt-3 grid grid-cols-2 gap-2">
         <Button size="sm" onClick={onStudy}>
-          <Book size={16} /> 覚える
+          <Book size={16} /> 暗記
         </Button>
         <Button variant="secondary" size="sm" onClick={onQuiz}>
           <Cards size={16} /> 腕試し
@@ -141,7 +141,7 @@ export function KotenCultureScreen() {
         <p className="text-xs font-bold text-white/70">大学受験・古文の背景知識</p>
         <h1 className="font-display text-2xl font-extrabold tracking-wide">古典常識</h1>
         <p className="mt-1 text-sm font-bold text-white/80">
-          覚える → 本文の行動理由を見抜く → 読解につなぐ
+          暗記 → 本文の行動理由を見抜く → 読解につなぐ
         </p>
 
         <div className="mt-4 rounded-2xl bg-white/15 p-3.5">
@@ -173,7 +173,7 @@ export function KotenCultureScreen() {
               <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/15">
                 <Book size={23} />
               </span>
-              <span className="mt-3 block font-display text-lg font-extrabold">覚える</span>
+              <span className="mt-3 block font-display text-lg font-extrabold">暗記</span>
               <span className="mt-1 block text-[11px] font-bold leading-relaxed text-white/75">
                 用語・背景・本文の手掛かりを思い出す
               </span>
@@ -225,7 +225,7 @@ export function KotenCultureScreen() {
         <section>
           <div className="mb-2 flex items-end justify-between px-1">
             <div>
-              <p className="text-[10px] font-extrabold tracking-[0.14em] text-violet-600">COURSE</p>
+              <p className="text-[10px] font-extrabold text-violet-600">コース</p>
               <h2 className="font-display text-lg font-extrabold text-ink">分野から学ぶ</h2>
             </div>
             <span className="text-[10px] font-bold text-ink/35">{KOTEN_CULTURE_CATEGORIES.length}分野</span>
@@ -244,7 +244,7 @@ export function KotenCultureScreen() {
                   srs={cultureSrs}
                   questions={categoryQuestions}
                   quizResults={quizResults}
-                  onStudy={() => study(categoryItems, `${meta.label}を覚える`)}
+                  onStudy={() => study(categoryItems, `${meta.label}を暗記`)}
                   onQuiz={() => quiz(categoryItems, `${meta.label}・入試型腕試し`)}
                 />
               )
@@ -255,7 +255,7 @@ export function KotenCultureScreen() {
         <section>
           <div className="mb-2 flex items-end justify-between px-1">
             <div>
-              <p className="text-[10px] font-extrabold tracking-[0.14em] text-violet-600">REFERENCE</p>
+              <p className="text-[10px] font-extrabold text-violet-600">参考</p>
               <h2 className="font-display text-lg font-extrabold text-ink">古典常識事典</h2>
             </div>
             <button
@@ -382,7 +382,7 @@ export function KotenCultureScreen() {
                       )}
                       <div className="grid grid-cols-2 gap-2">
                         <Button size="sm" onClick={() => study([item], item.title)}>
-                          <Book size={15} /> 覚える
+                          <Book size={15} /> 暗記
                         </Button>
                         <Button variant="secondary" size="sm" onClick={() => quiz([item], item.title)}>
                           <Cards size={15} /> 腕試し

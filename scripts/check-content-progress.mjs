@@ -40,7 +40,6 @@ const expected = [
 
 const detailDisplays = [
   'src/components/LevelPicker.jsx',
-  'src/components/VocabCompletionReport.jsx',
   'src/screens/Diagnostic.jsx',
   'src/screens/EtymologyPack.jsx',
   'src/screens/KanbunHome.jsx',
@@ -78,7 +77,7 @@ for (const row of rows) {
     assert.ok(row.quizUnit, `${row.id}: クイズ側の単位がありません`)
     const quizIds = row.quizItems.map((item) => item?.id).filter(Boolean)
     assert.equal(new Set(quizIds).size, quizIds.length, `${row.id}: 出題IDが重複しています`)
-    assert.equal(row.progress.quizTotal, quizIds.length, `${row.id}: クイズ母数が出題数と違います`)
+    assert.equal(row.progress.quizTotal, quizIds.length, `${row.id}: テスト母数が出題数と違います`)
     assert.ok(row.quizDomain, `${row.id}: 出題単位の集計に domain がありません`)
   } else {
     assert.equal(statusTotal(row.progress.quiz, QUIZ_STATUS_KEYS), row.progress.quizTotal)
@@ -88,13 +87,13 @@ for (const row of rows) {
   }
 }
 
-// 出題単位で数える教材は、その画面のクイズ結果保存とセットで成立する。
+// 出題単位で数える教材は、その画面のテスト結果保存とセットで成立する。
 for (const [file, marker] of [
   ['src/screens/KotenGrammarQuiz.jsx', "recordQuizResult('koten-grammar', question.id"],
   ['src/screens/KotenCultureQuiz.jsx', "recordQuizResult('koten-culture', question.id"],
 ]) {
   const source = readFileSync(new URL(`../${file}`, import.meta.url), 'utf8')
-  assert.ok(source.includes(marker), `${file}: 出題単位のクイズ結果保存がありません`)
+  assert.ok(source.includes(marker), `${file}: 出題単位のテスト結果保存がありません`)
 }
 
 for (const [id, file] of expected) {
@@ -121,7 +120,7 @@ for (const [file, marker] of [
   ['src/screens/MathSolve.jsx', "recordContentQuizResult('math', p.id"],
 ]) {
   const source = readFileSync(new URL(`../${file}`, import.meta.url), 'utf8')
-  assert.ok(source.includes(marker), `${file}: 教材別クイズ結果の保存がありません`)
+  assert.ok(source.includes(marker), `${file}: 教材別テスト結果の保存がありません`)
 }
 
 for (const file of ['src/screens/MyLearning.jsx', 'src/screens/Progress.jsx']) {
@@ -130,6 +129,11 @@ for (const file of ['src/screens/MyLearning.jsx', 'src/screens/Progress.jsx']) {
   assert.ok(source.includes('LearningStatusBars'), `${file}: 共通3色バーを使っていません`)
   assert.ok(source.includes('showQuiz={content.hasQuiz}'), `${file}: 語源のクイズ表示を隠せません`)
 }
+
+const myLearningSource = readFileSync(new URL('../src/screens/MyLearning.jsx', import.meta.url), 'utf8')
+assert.ok(myLearningSource.includes('LearningStatusLegend'), '暗記・テストの記録に共通の見方がありません')
+assert.ok(myLearningSource.includes('showLegend={false}'), '教材カードごとの重複した見方が残っています')
+assert.ok(myLearningSource.includes('data-learning-record-summary'), '暗記・テストの記録に全体まとめがありません')
 
 // どの画面でも「全300語」「全136問」のように数え方を示す。単位なしの棒は作らない。
 const barCallSites = /<(LearningStatusBars|StatusDistributionBar)\b((?:[^<>]|\n)*?)\/>/g
@@ -179,5 +183,5 @@ console.log(`  主画面: ${new Set(expected.map(([, file]) => file)).size}画�
 console.log(`  詳細表示: ${detailDisplays.length}画面・共通部品 / 共通3色表示あり`)
 console.log('  学習: 学習済・復習中・未学習 / 各カテゴリで母数一致')
 console.log('  単位: 全画面の進捗バーに数え方を表示（単位なし0件）')
-console.log(`  クイズ: 正解・不正解・未回答 / 出題 ${quizTotal.toLocaleString('ja-JP')}問・各カテゴリで母数一致`)
-console.log(`  保存: ${PERSISTED_PROGRESS_FIELDS.length}項目 / 新規クイズ結果の往復・リセット対象を確認`)
+console.log(`  テスト: 正解・不正解・未回答 / 出題 ${quizTotal.toLocaleString('ja-JP')}問・各カテゴリで母数一致`)
+console.log(`  保存: ${PERSISTED_PROGRESS_FIELDS.length}項目 / 新規テスト結果の往復・リセット対象を確認`)

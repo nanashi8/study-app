@@ -72,7 +72,7 @@ export function KanbunSavedScreen() {
           <>
             <div className="mt-4 grid grid-cols-2 gap-3">
               <Button onClick={() => navigate('kanbunStudy', { domain, ids: items.map((item) => item.id), title: `登録${meta.label}` })}>
-                <Book size={16} /> 覚える
+                <Book size={16} /> 暗記
               </Button>
               <Button variant="secondary" onClick={() => navigate('kanbunQuiz', { domain, ids: items.map((item) => item.id), title: `登録${meta.label}テスト`, size: items.length })}>
                 <Cards size={16} /> テスト

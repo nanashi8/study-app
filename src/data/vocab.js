@@ -162,6 +162,11 @@ import {
 import { quizMeaningKey, splitMeanings } from './compact.js'
 import { EXAM_WORDS, USAGE_GUIDES_BY_WORD } from './exam-lexicon.js'
 import { ETYMOLOGY_COMPLETION_WORDS } from './words-etymology-completion.js'
+import { CURRICULUM_1900_WORDS } from './words-curriculum-1900.js'
+import {
+  buildReviewedEtymologyCards,
+  summarizeReviewedEtymologyCards,
+} from './etymology-reviewed-cards.js'
 
 // 語根オートリンクの検出器（精度重視・形態素分解＋除外リスト）。
 const ROOT_MATCHERS = buildRootMatchers(LEARNING_ROOTS)
@@ -212,13 +217,22 @@ const CURATED = [
   ...READING_WORDS,
 ]
 const completionIds = new Set(ETYMOLOGY_COMPLETION_WORDS.map((word) => word.id))
-const seenIds = new Set([...CURATED, ...EXAM_WORDS, ...ETYMOLOGY_COMPLETION_WORDS].map((w) => w.id))
+const curriculum1900Ids = new Set(CURRICULUM_1900_WORDS.map((word) => word.id))
+const supplementalIds = new Set([...completionIds, ...curriculum1900Ids])
+const seenIds = new Set([
+  ...CURATED,
+  ...EXAM_WORDS,
+  ...ETYMOLOGY_COMPLETION_WORDS,
+  ...CURRICULUM_1900_WORDS,
+].map((w) => w.id))
 // 取り込みツールが重複判定に使う（手作業 curated を優先）。
 export const CURATED_IDS = seenIds
 const importedUnique = WORDS_IMPORTED.filter((w) => w.id && !seenIds.has(w.id))
 
-// 語族(fam)の自動拡充（可逆・高精度）。見出し語どうしを「同じ語族」としてリンクする。
-// 4経路の安全リンクを張り、各語の family を最大 FAM_MAX 件まで関連見出し語で補う。
+// 旧family索引の自動拡充（packId保存互換のため維持）。
+// ここには語形・複合語・明記された由来の複数経路が混ざるため、学習者向け画面で
+// 一律に「同じ語根・語族」とは表示せず、辞書画面にもこの自動一覧は出さない。
+// 4経路のリンクを張り、各語の family を最大 FAM_MAX 件まで関連見出し語で補う。
 //   (1) 手書き語源リンクの双方向化：語源が「base(意味)+ -suffix」等で基語を名指しし、その基語が
 //       見出し語なら 派生語⇔基語 を相互リンク（例: knowledge⇔know, happiness⇔happy）。
 //   (2) 語源説明が見出し語を「同源・同系・同根」と明記していれば、その組を双方向化。
@@ -302,9 +316,9 @@ const deriveFamilies = (words) => {
   return words
 }
 
-// 既存語と補完語は、語源カードIDを守るため別々に圧縮する。一方、辞書で見せる
-// 語族は境界を越えて双方向につなぐ必要があるため、圧縮後の表示データだけへ追加する。
-// 語源説明が名指しした基語・同源語と、安全な派生/複合だけを採用する。
+// 既存語と補完語は、語源カードIDを守るため別々に圧縮する。旧family索引だけは
+// 境界を越えて双方向につなぐ必要があるため、圧縮後の内部データへ追加する。
+// この自動追加分は辞書の「関連する語」には表示しない。
 const applyCompletionFamilyBridges = (words) => {
   const byHead = new Map(words.map((word) => [word.word.toLowerCase(), word]))
   const byId = new Map(words.map((word) => [word.id, word]))
@@ -313,7 +327,12 @@ const applyCompletionFamilyBridges = (words) => {
     const left = byHead.get(leftHead.toLowerCase())
     const right = byHead.get(rightHead.toLowerCase())
     if (!left || !right || left.id === right.id) return
-    if (completionIds.has(left.id) === completionIds.has(right.id)) return
+    const sourceGroup = (id) => completionIds.has(id)
+      ? 'completion'
+      : curriculum1900Ids.has(id)
+        ? 'curriculum-1900'
+        : 'legacy'
+    if (sourceGroup(left.id) === sourceGroup(right.id)) return
     if (!links.has(left.id)) links.set(left.id, new Set())
     links.get(left.id).add(right.id)
   }
@@ -399,11 +418,16 @@ const LEGACY_NORMALIZED_WORDS = deriveFamilies(
   [...CURATED, ...importedUnique, ...EXAM_WORDS].map(normalize),
 )
 const COMPLETION_NORMALIZED_WORDS = deriveFamilies(ETYMOLOGY_COMPLETION_WORDS.map(normalize))
+const CURRICULUM_1900_NORMALIZED_WORDS = deriveFamilies(CURRICULUM_1900_WORDS.map(normalize))
 
 // 既存8,211語だけで従来どおり圧縮してから、不足語を別集合として圧縮する。
 // 新語が既存パックの並び・anchor・packIdを変えないための保存互換境界。
 const LEGACY_ETYMOLOGY_INDEX = buildEtymologyCompression(LEGACY_NORMALIZED_WORDS, LEARNING_ROOTS)
 const rawCompletionIndex = buildEtymologyCompression(COMPLETION_NORMALIZED_WORDS, LEARNING_ROOTS)
+const rawCurriculum1900Index = buildEtymologyCompression(
+  CURRICULUM_1900_NORMALIZED_WORDS,
+  LEARNING_ROOTS,
+)
 
 const COMPLETION_PACK_PREFIX = 'completion:'
 const completionPackId = (id) => `${COMPLETION_PACK_PREFIX}${id}`
@@ -422,6 +446,23 @@ const COMPLETION_ETYMOLOGY_INDEX = {
   })),
 }
 
+const CURRICULUM_1900_PACK_PREFIX = 'curriculum-1900:'
+const curriculum1900PackId = (id) => `${CURRICULUM_1900_PACK_PREFIX}${id}`
+const CURRICULUM_1900_ETYMOLOGY_INDEX = {
+  ...rawCurriculum1900Index,
+  words: rawCurriculum1900Index.words.map((word) => ({
+    ...word,
+    compression: {
+      ...word.compression,
+      packId: curriculum1900PackId(word.compression.packId),
+    },
+  })),
+  packs: rawCurriculum1900Index.packs.map((pack) => ({
+    ...pack,
+    id: curriculum1900PackId(pack.id),
+  })),
+}
+
 const sumCounts = (left, right) => Object.fromEntries(
   [...new Set([...Object.keys(left), ...Object.keys(right)])]
     .map((key) => [key, (left[key] ?? 0) + (right[key] ?? 0)]),
@@ -429,9 +470,10 @@ const sumCounts = (left, right) => Object.fromEntries(
 const mergedPacks = [
   ...LEGACY_ETYMOLOGY_INDEX.packs,
   ...COMPLETION_ETYMOLOGY_INDEX.packs,
+  ...CURRICULUM_1900_ETYMOLOGY_INDEX.packs,
 ]
 if (new Set(mergedPacks.map((pack) => pack.id)).size !== mergedPacks.length) {
-  throw new Error('既存語と語源補完語のpackIdが衝突しています。')
+  throw new Error('既存語と補完語のpackIdが衝突しています。')
 }
 
 const ETYMOLOGY_INDEX = {
@@ -441,49 +483,95 @@ const ETYMOLOGY_INDEX = {
       // 独立見出しになった派生語は、旧カード計算には残してpackIdを守りつつ、
       // 公開データでは「派生語メタ」との二重計上を解消する。
       derivatives: word.derivatives.filter((item) =>
-        !completionIds.has(item.w.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, ''))),
+        !supplementalIds.has(item.w.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, ''))),
     })),
     ...COMPLETION_ETYMOLOGY_INDEX.words,
+    ...CURRICULUM_1900_ETYMOLOGY_INDEX.words,
   ]),
   packs: mergedPacks,
   packsById: Object.fromEntries(mergedPacks.map((pack) => [pack.id, pack])),
   summary: {
-    total: LEGACY_ETYMOLOGY_INDEX.summary.total + COMPLETION_ETYMOLOGY_INDEX.summary.total,
-    covered: LEGACY_ETYMOLOGY_INDEX.summary.covered + COMPLETION_ETYMOLOGY_INDEX.summary.covered,
+    total:
+      LEGACY_ETYMOLOGY_INDEX.summary.total +
+      COMPLETION_ETYMOLOGY_INDEX.summary.total +
+      CURRICULUM_1900_ETYMOLOGY_INDEX.summary.total,
+    covered:
+      LEGACY_ETYMOLOGY_INDEX.summary.covered +
+      COMPLETION_ETYMOLOGY_INDEX.summary.covered +
+      CURRICULUM_1900_ETYMOLOGY_INDEX.summary.covered,
     counts: sumCounts(
-      LEGACY_ETYMOLOGY_INDEX.summary.counts,
-      COMPLETION_ETYMOLOGY_INDEX.summary.counts,
+      sumCounts(
+        LEGACY_ETYMOLOGY_INDEX.summary.counts,
+        COMPLETION_ETYMOLOGY_INDEX.summary.counts,
+      ),
+      CURRICULUM_1900_ETYMOLOGY_INDEX.summary.counts,
     ),
     packCounts: sumCounts(
-      LEGACY_ETYMOLOGY_INDEX.summary.packCounts,
-      COMPLETION_ETYMOLOGY_INDEX.summary.packCounts,
+      sumCounts(
+        LEGACY_ETYMOLOGY_INDEX.summary.packCounts,
+        COMPLETION_ETYMOLOGY_INDEX.summary.packCounts,
+      ),
+      CURRICULUM_1900_ETYMOLOGY_INDEX.summary.packCounts,
     ),
     packs: mergedPacks.length,
     origin: {
       formationCounts: sumCounts(
-        LEGACY_ETYMOLOGY_INDEX.summary.origin.formationCounts,
-        COMPLETION_ETYMOLOGY_INDEX.summary.origin.formationCounts,
+        sumCounts(
+          LEGACY_ETYMOLOGY_INDEX.summary.origin.formationCounts,
+          COMPLETION_ETYMOLOGY_INDEX.summary.origin.formationCounts,
+        ),
+        CURRICULUM_1900_ETYMOLOGY_INDEX.summary.origin.formationCounts,
       ),
       sourceCounts: sumCounts(
-        LEGACY_ETYMOLOGY_INDEX.summary.origin.sourceCounts,
-        COMPLETION_ETYMOLOGY_INDEX.summary.origin.sourceCounts,
+        sumCounts(
+          LEGACY_ETYMOLOGY_INDEX.summary.origin.sourceCounts,
+          COMPLETION_ETYMOLOGY_INDEX.summary.origin.sourceCounts,
+        ),
+        CURRICULUM_1900_ETYMOLOGY_INDEX.summary.origin.sourceCounts,
       ),
       domainCounts: sumCounts(
-        LEGACY_ETYMOLOGY_INDEX.summary.origin.domainCounts,
-        COMPLETION_ETYMOLOGY_INDEX.summary.origin.domainCounts,
+        sumCounts(
+          LEGACY_ETYMOLOGY_INDEX.summary.origin.domainCounts,
+          COMPLETION_ETYMOLOGY_INDEX.summary.origin.domainCounts,
+        ),
+        CURRICULUM_1900_ETYMOLOGY_INDEX.summary.origin.domainCounts,
       ),
-      packs: LEGACY_ETYMOLOGY_INDEX.summary.origin.packs + COMPLETION_ETYMOLOGY_INDEX.summary.origin.packs,
+      packs:
+        LEGACY_ETYMOLOGY_INDEX.summary.origin.packs +
+        COMPLETION_ETYMOLOGY_INDEX.summary.origin.packs +
+        CURRICULUM_1900_ETYMOLOGY_INDEX.summary.origin.packs,
       singletonPacks:
         LEGACY_ETYMOLOGY_INDEX.summary.origin.singletonPacks +
-        COMPLETION_ETYMOLOGY_INDEX.summary.origin.singletonPacks,
+        COMPLETION_ETYMOLOGY_INDEX.summary.origin.singletonPacks +
+        CURRICULUM_1900_ETYMOLOGY_INDEX.summary.origin.singletonPacks,
     },
   },
 }
 
 export const ALL_WORDS = ETYMOLOGY_INDEX.words
-export const ETYMOLOGY_PACKS = ETYMOLOGY_INDEX.packs
-export const ETYMOLOGY_SUMMARY = ETYMOLOGY_INDEX.summary
-export const getEtymologyPack = (id) => ETYMOLOGY_INDEX.packsById[id]
+// 旧2,933パックと全語のcompression割当は、保存データの復元と監査用に保持する。
+// 学習者へ公開するのは、手動監査台帳を通った語根カードだけ。
+export const ETYMOLOGY_LEGACY_PACKS = ETYMOLOGY_INDEX.packs
+export const ETYMOLOGY_LEGACY_SUMMARY = ETYMOLOGY_INDEX.summary
+export const ETYMOLOGY_PACKS = buildReviewedEtymologyCards(ALL_WORDS, ROOTS)
+export const ETYMOLOGY_SUMMARY = summarizeReviewedEtymologyCards(
+  ETYMOLOGY_PACKS,
+  ALL_WORDS.length,
+  ETYMOLOGY_LEGACY_PACKS.length,
+)
+const ETYMOLOGY_PACKS_BY_ID = Object.fromEntries(
+  ETYMOLOGY_PACKS.map((pack) => [pack.id, pack]),
+)
+const ETYMOLOGY_PACKS_BY_WORD_ID = new Map()
+for (const pack of ETYMOLOGY_PACKS) {
+  for (const wordId of pack.coverageIds) {
+    if (!ETYMOLOGY_PACKS_BY_WORD_ID.has(wordId)) ETYMOLOGY_PACKS_BY_WORD_ID.set(wordId, [])
+    ETYMOLOGY_PACKS_BY_WORD_ID.get(wordId).push(pack)
+  }
+}
+export const getEtymologyPack = (id) => ETYMOLOGY_PACKS_BY_ID[id]
+export const etymologyCardsForWord = (wordOrId) =>
+  ETYMOLOGY_PACKS_BY_WORD_ID.get(typeof wordOrId === 'string' ? wordOrId : wordOrId?.id) ?? []
 export {
   ETYMOLOGY_DOMAIN_META,
   ETYMOLOGY_FIELD_TO_DOMAIN,
@@ -702,7 +790,7 @@ export const relatedByEtymology = (word) => {
 
 export const getRoot = (id) => ROOTS_BY_ID[id]
 
-// クイズの誤答選択肢を作る。同じ級・品詞・分野を優先して、
+// テストの誤答選択肢を作る。同じ級・品詞・分野を優先して、
 // 単なる品詞当てでは正解できない、学習価値のある選択肢にする。
 // rng は 0〜1 を返す関数（テスト/再現性のため差し替え可能）。
 export function pickDistractors(word, count, rng = Math.random) {

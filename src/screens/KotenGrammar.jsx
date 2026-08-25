@@ -56,7 +56,7 @@ function CategoryCard({ meta, items, srs, questions, quizResults, onStudy, onQui
       <LearningStatusBars progress={status} className="mt-3" compact units={{ learning: '項目', quiz: '問' }} />
       <div className="mt-3 grid grid-cols-2 gap-2">
         <Button size="sm" onClick={onStudy}>
-          <Book size={16} /> 覚える
+          <Book size={16} /> 暗記
         </Button>
         <Button variant="secondary" size="sm" onClick={onQuiz}>
           <Cards size={16} /> 腕試し
@@ -128,7 +128,7 @@ export function KotenGrammarScreen() {
         <p className="text-xs font-bold text-white/70">大学受験・古文文法</p>
         <h1 className="font-display text-2xl font-extrabold tracking-wide">古典文法</h1>
         <p className="mt-1 text-sm font-bold text-white/80">
-          覚える → 文中で見抜く → くり返して定着
+          暗記 → 文中で見抜く → 日を空けてもう一度確認
         </p>
 
         <div className="mt-4 rounded-2xl bg-white/15 p-3.5">
@@ -160,7 +160,7 @@ export function KotenGrammarScreen() {
               <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/15">
                 <Book size={23} />
               </span>
-              <span className="mt-3 block font-display text-lg font-extrabold">覚える</span>
+              <span className="mt-3 block font-display text-lg font-extrabold">暗記</span>
               <span className="mt-1 block text-[11px] font-bold leading-relaxed text-white/75">
                 意味・接続・活用をカードで思い出す
               </span>
@@ -212,7 +212,7 @@ export function KotenGrammarScreen() {
         <section>
           <div className="mb-2 flex items-end justify-between px-1">
             <div>
-              <p className="text-[10px] font-extrabold tracking-[0.14em] text-amber-600">COURSE</p>
+              <p className="text-[10px] font-extrabold text-amber-600">コース</p>
               <h2 className="font-display text-lg font-extrabold text-ink">分野から学ぶ</h2>
             </div>
             <span className="text-[10px] font-bold text-ink/35">{KOTEN_GRAMMAR_CATEGORIES.length}分野</span>
@@ -231,7 +231,7 @@ export function KotenGrammarScreen() {
                   srs={grammarSrs}
                   questions={categoryQuestions}
                   quizResults={quizResults}
-                  onStudy={() => study(categoryItems, `${meta.label}を覚える`)}
+                  onStudy={() => study(categoryItems, `${meta.label}を暗記`)}
                   onQuiz={() => quiz(categoryItems, `${meta.label}・受験型腕試し`)}
                 />
               )
@@ -242,7 +242,7 @@ export function KotenGrammarScreen() {
         <section>
           <div className="mb-2 flex items-end justify-between px-1">
             <div>
-              <p className="text-[10px] font-extrabold tracking-[0.14em] text-amber-600">REFERENCE</p>
+              <p className="text-[10px] font-extrabold text-amber-600">参考</p>
               <h2 className="font-display text-lg font-extrabold text-ink">文法辞典</h2>
             </div>
             <button
@@ -345,7 +345,7 @@ export function KotenGrammarScreen() {
                       </div>
                       <div className="grid grid-cols-2 gap-2">
                         <Button size="sm" onClick={() => study([item], item.title)}>
-                          <Book size={15} /> 覚える
+                          <Book size={15} /> 暗記
                         </Button>
                         <Button variant="secondary" size="sm" onClick={() => quiz([item], item.title)}>
                           <Cards size={15} /> 腕試し

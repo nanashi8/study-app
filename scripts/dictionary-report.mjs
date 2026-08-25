@@ -35,7 +35,7 @@ line('構文', PHRASES.filter((phrase) => phrase.kind === 'syntax').length)
 line('今回の級別熟語補充', CURRICULUM_IDIOMS.length)
 line('今回の文法連動構文補充', PHRASES.filter((phrase) => phrase.category === 'grammar-example').length)
 line('既存の入試熟語補充', EXAM_PHRASES.length)
-line('英文法クイズ', GRAMMAR.length)
+line('英文法テスト', GRAMMAR.length)
 line('文法解説（全単元）', GRAMMAR_LESSONS.length)
 line('今回の高校文法補充', EXAM_GRAMMAR_LESSONS.length)
 

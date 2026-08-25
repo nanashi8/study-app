@@ -1,7 +1,7 @@
 // ── 語根オートリンク（精度重視）─────────────────────────────────────
 // スペルの素朴な部分一致ではなく「(既知の接頭辞)＋語根」で形態素分解できる
 // 語だけに語根を付ける。さらに、同じ綴りでも語源が別系統の語は除外リストで落とす。
-// これにより「語源で覚える」に出る派生語が誤っていない状態を保つ。
+// これにより「語源で暗記」に出る派生語が誤っていない状態を保つ。
 //
 // 使い方: autoRootIds('transport') -> ['port']
 // vocab.js の正規化後、手書き(etymology.parts由来)の roots とマージして使う。
@@ -31,13 +31,19 @@ const STEM_OVERRIDE = {
 // 同じ綴りでも語源が別系統で、語根に含めてはいけない語（語根id -> 除外語）。
 const DENY = {
   duct: ['duck'],
-  vent: ['vendor','venom','seven','venal','venality','venerate','veneration','venerable','revenge','vengeance','vengeful','venal'],
+  vent: [
+    'vendor','venom','seven','seventeen','seventh','seventy','venal','venality',
+    'venerate','veneration','venerable','revenge','vengeance','vengeful',
+  ],
   port: ['portray','portrait','portion','proportion','proportional','portend','portent','portentous','portly','opportunity','opportune'],
   spect: ['spice'],
-  pos: ['ponder','ponderous','pond','postulate','possess','possession','repose','post','poster','postcard','possible'],
+  pos: [
+    'ponder','ponderous','pond','postulate','possess','possession','repose',
+    'post','poster','postcard','post office','possible','impossible','pose',
+  ],
   fer: ['ferocious','ferociously','fervent','fervor','fervently','fervid','effervescent','inferior','inferiority','interfere'],
   cept: ['capital','capitalism','capitalist','capitalize','captain','cape','capricious','capitulate','recapitulate','recap'],
-  miss: ['mitigate','enmity','miss','missing'],
+  miss: ['mitigate','mitigation','enmity','miss','missing'],
   vis: ['divide','dividend','division','divisible','viscous','devise'],
   tain: ['taint','tainted','attain'],
   fact: ['fiction','fictional','fickle','face','facade','superficial','efface','facetious','facile','interface','preface'],
@@ -54,12 +60,15 @@ const DENY = {
   // 追加バッチ（ラテン/ギリシャ）の除外
   spir: ['spiral','spire'],
   val: ['valley','valve','interval'],
-  rect: ['regret','regrettable','regrettably','regard','regarding','regardless','register','registration','registered'],
+  rect: [
+    'regret','regrettable','regrettably','regard','regarding','regardless',
+    'disregard','regain','register','registration','registered',
+  ],
   fin: ['fin','finger','fingerprint','find','finding','findings'],
   fund: ['found','confound','confounded','refund'],
-  sens: ['present','presently','absent'],
+  sens: ['present','presently','presentation','absent'],
   sci: ['discipline','disciplinary','disciplined','disciple','scissors','rescind','scintilla','scintillating'],
-  flu: ['fluster','flustered','flummox','flummoxed'],
+  flu: ['fluster','flustered','flummox','flummoxed','flush'],
   crat: ['crate','crater'],
   // 追加バッチ2の除外
   claim: ['clamber'],
@@ -71,8 +80,12 @@ const DENY = {
   mand: ['mendacious','mendacity','mend'],
   medi: ['medicine','medical','medication','medicinal','medic'],
   nat: ['senator','senate','senatorial'],
-  prob: ['provoke','provide','provision','provisional','provincial','provocation','province','provident','providence','problem','problematic','improve','improvement','improvisation','improvise'],
-  jud: ['adjustable'],
+  prob: [
+    'provoke','provide','provision','provisional','provincial','provocation',
+    'province','provident','providence','problem','problematic','improve',
+    'improvement','improvisation','improvise','provenance','proverb','opprobrium',
+  ],
+  jud: ['adjust','adjustment','adjustable'],
   quer: ['querulous'],
   tact: ['protagonist','antagonist','antagonism','antagonize','tactics','tactician','tag','tangle'],
   terr: ['terror','terrible','terribly','terrify','terrifying','terrified','deterrent','terrific','terrorist','terrorism','terrorize','interrupt','interruption'],
@@ -83,7 +96,8 @@ const DENY = {
   vers: ['covert','covertly'],
   press: ['empress'],
   tend: ['tender'],
-  prim: ['prim'],
+  prim: ['prim','print'],
+  meter: ['metropolitan'],
 }
 
 // roots(配列) を受け取り、検出設定 [{id, stems, deny:Set}] を作る。

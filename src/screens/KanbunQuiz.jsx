@@ -89,7 +89,7 @@ export function KanbunQuizScreen() {
       <div className="flex h-full flex-col items-center justify-center gap-4 p-8 text-center">
         <div className="text-5xl">📝</div>
         <p className="font-display text-lg font-extrabold text-ink">出題できる問題がありません</p>
-        <Button onClick={backToKanbunCatalog}>もどる</Button>
+        <Button onClick={backToKanbunCatalog}>戻る</Button>
       </div>
     )
   }
@@ -132,7 +132,7 @@ export function KanbunQuizScreen() {
         <div className="m-auto flex w-full max-w-sm flex-col items-center gap-5 py-5">
           <div className="text-6xl">{percentage >= 80 ? '🏆' : percentage >= 50 ? '📕' : '🧭'}</div>
           <div>
-            <p className="text-[10px] font-extrabold tracking-[0.16em] text-rose-700">KANBUN TEST</p>
+            <p className="text-xs font-extrabold text-rose-700">{meta.label}の結果</p>
             <p className="mt-1 font-display text-2xl font-extrabold text-ink">{correctCount} / {deck.length} 正解</p>
             <p className="mt-1 text-sm font-bold text-ink/50">正答率 {percentage}%{unknownCount ? `・わからない ${unknownCount}問` : ''}</p>
           </div>
@@ -271,7 +271,7 @@ export function KanbunQuizScreen() {
             <div className="flex items-center gap-2">
               <Lightbulb size={19} className={correctPick ? 'text-emerald-600' : 'text-rose-600'} />
               <p className={cx('font-display text-lg font-extrabold', correctPick ? 'text-emerald-700' : 'text-rose-700')}>
-                {correctPick ? '正解。根拠を固定しよう' : selected === UNKNOWN_CHOICE_ID ? '答えと手掛かりを確認' : 'この違いを覚え直そう'}
+                {correctPick ? '正解の理由を確認しよう' : selected === UNKNOWN_CHOICE_ID ? '答えと手掛かりを確認' : 'この違いを覚え直そう'}
               </p>
             </div>
             <ChoiceExplanation question={question} selected={selected} />

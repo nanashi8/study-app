@@ -398,7 +398,7 @@ export function LiteratureReaderScreen() {
         >
             <div className="flex items-start justify-between gap-3">
               <div>
-                <p className="text-[10px] font-extrabold tracking-[0.14em] text-sky-600">BEFORE READING</p>
+                <p className="text-[10px] font-extrabold text-sky-600">読む前に</p>
                 <h2 className="font-display text-lg font-extrabold text-ink">読む前の準備</h2>
               </div>
               <Chip color="#0284c7">{work.level}</Chip>
@@ -431,7 +431,7 @@ export function LiteratureReaderScreen() {
               </div>
             </div>
             <p className="mt-3 rounded-xl bg-emerald-50 px-3 py-2 text-xs font-extrabold leading-relaxed text-emerald-800">
-              全{vocabulary.entries.length}カード。本文との照合は未対応0件です。
+              全{vocabulary.entries.length}カード。本文と比べて確認し、未対応は0件です。
             </p>
             <div className="mt-3 grid grid-cols-2 gap-2">
               <Button size="sm" onClick={openVocabulary} data-literature-vocabulary-open>
@@ -543,10 +543,10 @@ export function LiteratureReaderScreen() {
               onClick={() => startPlayback(currentNarrationIndex)}
             >
               <SpeakerWave size={17} />
-              {playbackActive ? '共通コンソールで操作中' : 'ここから交互再生'}
+              {playbackActive ? '下の再生パネルで操作中' : 'ここから交互再生'}
             </Button>
             <p className="text-center text-[10px] font-bold text-ink/35">
-              再生後は下の共通コンソールで、前後のフレーズ・停止・速度を操作できます。
+              再生後は下の再生パネルで、前後のフレーズ・停止・速度を操作できます。
             </p>
 
             <section className="space-y-2" aria-label="間で区切った交互朗読">
@@ -665,7 +665,7 @@ export function LiteratureReaderScreen() {
           <Card className="border-2 border-emerald-100 p-4" data-literature-reading-check>
             <div className="flex items-start justify-between gap-3">
               <div>
-                <p className="text-[10px] font-extrabold tracking-[0.14em] text-emerald-600">READING CHECK</p>
+                <p className="text-[10px] font-extrabold text-emerald-600">読解チェック</p>
                 <h2 className="font-display text-lg font-extrabold text-ink">読解チェック</h2>
               </div>
               <Chip color="#059669">{answeredQuestionCount}/{readingQuestions.length} 回答</Chip>

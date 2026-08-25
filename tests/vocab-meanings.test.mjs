@@ -14,7 +14,7 @@ test('括弧内の中黒は語義の区切りにしない', () => {
   ])
 })
 
-test('単語の意味とクイズ用語義は全件で括弧が対応する', () => {
+test('単語の意味とテスト用語義は全件で括弧が対応する', () => {
   for (const word of ALL_WORDS) {
     assert.ok(hasBalancedParentheses(word.meaning), `${word.id}: ${word.meaning}`)
     assert.equal(word.meanings.join('・'), word.meaning, word.id)

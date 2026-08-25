@@ -1,6 +1,10 @@
 import { GRAMMAR_EXPANSION } from './grammar-expansion.js'
 import { GENERATED_GRAMMAR } from './grammar-generated.js'
 import { GRAMMAR_EXAM_PATTERNS } from './grammar-exam-patterns.js'
+import {
+  GRAMMAR_FORMAT_EXPANSION,
+  grammarQuestionType,
+} from './grammar-format-expansion.js'
 import { createGrammarChoiceGuidance } from '../lib/grammarChoiceGuidance.js'
 
 // 既存の手作り問題にも、生成問題・入試型問題と同じ文法判断を問うものがある。
@@ -439,12 +443,27 @@ export const GRAMMAR = [
 
 export const grammarByLevel = (level) => GRAMMAR.filter((g) => g.level === level)
 export const grammarByTopic = (level, topic) => GRAMMAR.filter((g) => g.level === level && g.topic === topic)
-export const getGrammar = (id) => GRAMMAR.find((g) => g.id === id)
 export const topicsForLevel = (level) => [...new Set(grammarByLevel(level).map((g) => g.topic))]
+
+// 既存3,450問は教材・説明監査の母数として維持し、形式拡充105問を
+// 実際の文法テスト在庫へ加える。既存IDのSRS履歴と各種固定件数を壊さない。
+export const GRAMMAR_PRACTICE = Object.freeze([...GRAMMAR, ...GRAMMAR_FORMAT_EXPANSION])
+export const grammarPracticeByLevel = (level, questionType = 'mixed') =>
+  GRAMMAR_PRACTICE.filter((item) =>
+    item.level === level
+    && (questionType === 'mixed' || grammarQuestionType(item) === questionType))
+export const grammarPracticeByTopic = (level, topic, questionType = 'mixed') =>
+  grammarPracticeByLevel(level, questionType).filter((item) => item.topic === topic)
+export const grammarPracticeTopicsForLevel = (level, questionType = 'mixed') => [
+  ...new Set(grammarPracticeByLevel(level, questionType).map((item) => item.topic)),
+]
+export const getGrammar = (id) => GRAMMAR_PRACTICE.find((g) => g.id === id)
 export const grammarPatternGroup = (item) =>
   item?.variationGroup ?? item?.pattern ?? null
 
-const grammarChoiceGuidance = createGrammarChoiceGuidance(GRAMMAR)
+const grammarChoiceGuidance = createGrammarChoiceGuidance(
+  GRAMMAR_PRACTICE.filter((item) => grammarQuestionType(item) !== 'word-order'),
+)
 
 // 各選択肢がこの問題の条件に合わない理由と、その形が成立する条件を全問で補う。
 export const grammarChoiceGuidanceFor = (item, choice) =>
@@ -473,14 +492,14 @@ export const samePatternExamplesFor = (item, limit = 2) => {
   if (!item || limit <= 0) return []
   const patternGroup = grammarPatternGroup(item)
   const patternMatches = patternGroup
-    ? GRAMMAR.filter((candidate) =>
+    ? GRAMMAR_PRACTICE.filter((candidate) =>
         candidate.level === item.level
         && candidate.topic === item.topic
         && grammarPatternGroup(candidate) === patternGroup)
     : []
   const candidates = patternMatches.length > limit
     ? patternMatches
-    : grammarByTopic(item.level, item.topic)
+    : grammarPracticeByTopic(item.level, item.topic)
   return candidates
     .filter((candidate) => candidate.id !== item.id)
     .slice(0, limit)
@@ -502,6 +521,6 @@ export const GRAMMAR_LEVEL_TARGETS = Object.freeze({
   1: 448,
 })
 
-// 単元別クイズと「同じ形の例」2文を成立させるため、各級・各単元に最低3問置く。
+// 単元別テストと「同じ形の例」2文を成立させるため、各級・各単元に最低3問置く。
 export const GRAMMAR_TOPIC_MINIMUM = 3
 export const GRAMMAR_TOTAL_TARGET = 3450

@@ -35,6 +35,7 @@ import {
   LONG_TERM_SRS_BOX,
   MAX_SRS_BOX,
 } from './srs.js'
+import { vocabularyReviewMetrics } from './vocabScheduler.js'
 
 const DAY_MS = 86400000
 const MIN_PREDICTION = 0.08
@@ -437,7 +438,7 @@ function supplementalRows(state, analysis, now, srsRows) {
       typeLabel: meta.label,
       color: meta.color,
       title: `${meta.label}・累計`,
-      subtitle: '項目別IDを持たないセッション集計',
+      subtitle: '以前のアプリで、まとめて記録した学習結果',
       field: '全体',
       level: '',
       entry: {},
@@ -560,8 +561,8 @@ export function forgettingCurveForRows(rows) {
 }
 
 /**
- * 英単語の暗記サイクル終了時に必要な情報だけを、既存SRSと分析モデルから作る。
- * 新しい保存形式は増やさず、今回の開始時段階は一時的な画面パラメータだけで比較する。
+ * 英単語の暗記終了時に、今回の答えと次の復習日だけを保存済みの復習記録から作る。
+ * 内部の段階・予測値・復習間隔の変化は、学習者向けの成果として返さない。
  */
 export function buildVocabCompletionReport({
   srs = {},
@@ -585,11 +586,21 @@ export function buildVocabCompletionReport({
     srsStores: [srs],
     skillStats,
   })
+  const today = localDayIndex(now)
   const rows = uniqueIds.map((id) => {
     const word = getWord(id)
-    return itemRow('vocab', descriptor('vocab', word, id), srs[id], analysis, now)
+    const row = itemRow('vocab', descriptor('vocab', word, id), srs[id], analysis, now)
+    const metrics = vocabularyReviewMetrics(srs[id], { now, day: today })
+    return {
+      ...row,
+      due: metrics.needsReview,
+      predictedRetention: metrics.retention,
+      halfLifeDays: metrics.halfLifeDays,
+      elapsedDays: metrics.elapsedDays,
+      vocabularyScore: metrics.score,
+      reviewReason: metrics.reason,
+    }
   })
-  const today = localDayIndex(now)
   const dueInDays = (row) => Number.isFinite(row.entry?.due)
     ? Math.max(0, Math.floor(row.entry.due - today))
     : 0
@@ -621,35 +632,45 @@ export function buildVocabCompletionReport({
     const aRank = reviewSet.has(a.id) ? 0 : a.due ? 1 : a.box < LONG_TERM_SRS_BOX ? 2 : 3
     const bRank = reviewSet.has(b.id) ? 0 : b.due ? 1 : b.box < LONG_TERM_SRS_BOX ? 2 : 3
     if (aRank !== bRank) return aRank - bRank
+    if (a.vocabularyScore !== b.vocabularyScore) return a.vocabularyScore - b.vocabularyScore
     const retentionDifference = a.predictedRetention - b.predictedRetention
     if (Math.abs(retentionDifference) > 0.0001) return retentionDifference
     return dueInDays(a) - dueInDays(b) || a.title.localeCompare(b.title, 'en')
   })
-  const priorityItems = priorityRows.slice(0, 5).map((row) => ({
-    id: row.id,
-    word: row.title,
-    meaning: row.subtitle,
-    box: row.box,
-    predictedRetention: row.predictedRetention,
-    dueInDays: dueInDays(row),
-    needsReviewNow: reviewSet.has(row.id) || row.due,
-    reason: reviewSet.has(row.id)
-      ? '今回「まだ」'
-      : row.due
-        ? '復習期限'
-        : row.box < LONG_TERM_SRS_BOX
-          ? `長期定着まであと${LONG_TERM_SRS_BOX - row.box}段階`
-          : '維持段階',
-  }))
-  const schedule = [
-    { id: 'now', label: '今日', matches: (days) => days === 0 },
-    { id: 'tomorrow', label: '明日', matches: (days) => days === 1 },
-    { id: 'soon', label: '2〜3日後', matches: (days) => [2, 3].includes(days) },
-    { id: 'later', label: '4日後以降', matches: (days) => days >= 4 },
-  ].map(({ matches, ...item }) => {
-    const ids = rows.filter((row) => matches(dueInDays(row))).map((row) => row.id)
-    return { ...item, count: ids.length, ids }
+  const priorityItems = priorityRows.slice(0, 5).map((row) => {
+    const spacedPracticeCount = Math.max(0, LONG_TERM_SRS_BOX - row.box)
+    return {
+      id: row.id,
+      word: row.title,
+      meaning: row.subtitle,
+      dueInDays: dueInDays(row),
+      needsReviewNow: reviewSet.has(row.id) || row.due,
+      reason: reviewSet.has(row.id)
+        ? '今回「まだ」'
+        : row.due
+          ? '今日復習する'
+          : spacedPracticeCount > 0
+            ? `あと${spacedPracticeCount}回、日を空けて練習`
+            : '間を空けて復習',
+    }
   })
+  // 「4日後以降」へまとめず、語彙ごとの実際の期限日数で直接分ける。
+  const scheduleByDay = new Map()
+  for (const row of rows) {
+    const days = dueInDays(row)
+    const ids = scheduleByDay.get(days) ?? []
+    ids.push(row.id)
+    scheduleByDay.set(days, ids)
+  }
+  const schedule = [...scheduleByDay.entries()]
+    .sort(([a], [b]) => a - b)
+    .map(([days, ids]) => ({
+      id: `day-${days}`,
+      days,
+      label: days === 0 ? '今日' : days === 1 ? '明日' : `${days}日後`,
+      count: ids.length,
+      ids,
+    }))
 
   return {
     completedAt: now,
@@ -678,8 +699,6 @@ export function buildVocabCompletionReport({
     priorityItems,
     hiddenPriorityCount: Math.max(0, rows.length - priorityItems.length),
     schedule,
-    nextReviewInDays: rows.length ? Math.min(...rows.map(dueInDays)) : null,
-    curve: forgettingCurveForRows(rows),
   }
 }
 
@@ -691,7 +710,7 @@ export function learningLaunchFor(domain, ids = [], mode = 'test', title = '') {
       source: uniqueIds.length
         ? { type: 'mylist', ids: uniqueIds }
         : { type: 'level', levelId: '5' },
-      title: title || '分析から学習',
+      title: title || '学習記録から選んだ内容',
       size: uniqueIds.length || 10,
     },
   }
@@ -701,19 +720,19 @@ export function learningLaunchFor(domain, ids = [], mode = 'test', title = '') {
       source: uniqueIds.length
         ? { type: 'phraseList', ids: uniqueIds }
         : { type: 'phrase', kind: 'idiom' },
-      title: title || '分析から学習',
+      title: title || '学習記録から選んだ内容',
       size: uniqueIds.length || 10,
       engine: 'phrase',
     },
   }
   if (domain === 'grammar') return {
-    screen: 'grammarQuiz', params: { source: { type: 'grammarList', ids: uniqueIds }, title: title || '分析から復習' },
+    screen: 'grammarQuiz', params: { source: { type: 'grammarList', ids: uniqueIds }, title: title || '学習記録から選んだ復習' },
   }
   if (domain === 'listening') return {
-    screen: 'listeningQuiz', params: { source: { type: 'listeningList', ids: uniqueIds }, title: title || '分析から復習', engine: 'listening' },
+    screen: 'listeningQuiz', params: { source: { type: 'listeningList', ids: uniqueIds }, title: title || '学習記録から選んだ復習', engine: 'listening' },
   }
   if (domain === 'dictation') return {
-    screen: 'dictationPlay', params: { source: { type: 'dictationList', ids: uniqueIds }, title: title || '分析から復習', engine: 'dictation' },
+    screen: 'dictationPlay', params: { source: { type: 'dictationList', ids: uniqueIds }, title: title || '学習記録から選んだ復習', engine: 'dictation' },
   }
   if (domain === 'etymology') {
     const wordIds = [...new Set(uniqueIds.flatMap(
@@ -724,7 +743,7 @@ export function learningLaunchFor(domain, ids = [], mode = 'test', title = '') {
       screen: 'vocabStudy',
       params: {
         source: { type: 'deck', ids: wordIds },
-        title: title || '語源から単語を覚える',
+        title: title || '語源から単語を暗記',
         mode: 'study',
         size: Math.min(20, wordIds.length),
         returnTo: { screen: 'roots', params: {} },
@@ -732,16 +751,16 @@ export function learningLaunchFor(domain, ids = [], mode = 'test', title = '') {
     }
   }
   if (domain === 'kotenVocab') return {
-    screen: mode === 'memory' ? 'kotenStudy' : 'kotenQuiz', params: { ids: uniqueIds, title: title || '分析から学習' },
+    screen: mode === 'memory' ? 'kotenStudy' : 'kotenQuiz', params: { ids: uniqueIds, title: title || '学習記録から選んだ内容' },
   }
   if (domain === 'kotenGrammar') return {
-    screen: mode === 'memory' ? 'kotenGrammarStudy' : 'kotenGrammarQuiz', params: { ids: uniqueIds, title: title || '分析から学習', size: uniqueIds.length },
+    screen: mode === 'memory' ? 'kotenGrammarStudy' : 'kotenGrammarQuiz', params: { ids: uniqueIds, title: title || '学習記録から選んだ内容', size: uniqueIds.length },
   }
   if (domain === 'kotenCulture') return {
-    screen: mode === 'memory' ? 'kotenCultureStudy' : 'kotenCultureQuiz', params: { ids: uniqueIds, title: title || '分析から学習', size: uniqueIds.length },
+    screen: mode === 'memory' ? 'kotenCultureStudy' : 'kotenCultureQuiz', params: { ids: uniqueIds, title: title || '学習記録から選んだ内容', size: uniqueIds.length },
   }
   if (domain === 'kotenReading') return {
-    screen: 'kotenInterpretationPrep', params: { ids: uniqueIds, title: title || '分析から古典読解' },
+    screen: 'kotenInterpretationPrep', params: { ids: uniqueIds, title: title || '学習記録から選んだ古典読解' },
   }
   if (domain === 'kanbunVocab' || domain === 'kanbunGrammar' || domain === 'kanbunCulture') {
     const kanbunDomain = domain === 'kanbunVocab'
@@ -751,12 +770,12 @@ export function learningLaunchFor(domain, ids = [], mode = 'test', title = '') {
         : 'culture'
     return {
       screen: mode === 'memory' ? 'kanbunStudy' : 'kanbunQuiz',
-      params: { domain: kanbunDomain, ids: uniqueIds, title: title || '分析から漢文学習', size: uniqueIds.length },
+      params: { domain: kanbunDomain, ids: uniqueIds, title: title || '学習記録から選んだ漢文学習', size: uniqueIds.length },
     }
   }
   if (domain === 'kanbunKundoku') return {
     screen: 'kanbunKundokuQuiz',
-    params: { ids: uniqueIds, title: title || '分析から返り点復習', size: uniqueIds.length },
+    params: { ids: uniqueIds, title: title || '学習記録から選んだ返り点復習', size: uniqueIds.length },
   }
   if (domain === 'math') return {
     screen: uniqueIds[0] && unitById(uniqueIds[0]) ? 'mathIntro' : 'mathMap',
@@ -814,59 +833,59 @@ function buildPrescriptions(report, analysis) {
   const bestPass = bestMeasured(analysis.memoryPasses)
 
   if (!items.length && !(analysis.scored > 0)) push({
-    id: 'measure', priority: 1, angle: '測定', scope: '全体',
+    id: 'measure', priority: 1, angle: '最初の記録', scope: '全体',
     title: 'まず暗記10項目と確認テストを記録',
     evidence: '項目別の学習履歴がまだありません。',
-    action: '英単語を10語暗記し、同じ10語をテストして基準値を作ります。',
-    launch: learningLaunchFor('vocab', [], 'memory', '最初の測定'),
+    action: '英単語を10語覚え、同じ10語をテストして、次から比べられる記録を作ります。',
+    launch: learningLaunchFor('vocab', [], 'memory', '最初の学習'),
   })
   if (due.length) push({
     id: 'due', priority: 1, angle: '忘却', scope: `${due.length}項目`,
-    title: '期限を迎えた項目から想起',
-    evidence: `定着予測またはSRS期限で、${due.length}項目が復習時期です。`,
-    action: '答えを見る前に思い出し、1回の上限を20項目にして処理します。',
+    title: '復習日を迎えた項目から思い出す',
+    evidence: `${due.length}項目が復習日を迎えています。`,
+    action: '答えを見る前に思い出し、1回20項目まで復習します。',
     launch: launchForGradeGroup(groupRows(due, 'type')[0], 'memory'),
   })
   if (memoryOnly.length) push({
     id: 'memory-only', priority: 1, angle: '暗記→テスト', scope: `${memoryOnly.length}項目`,
-    title: '暗記判定をテストで照合',
-    evidence: `暗記済みで採点テストがまだない項目が${memoryOnly.length}件あります。`,
-    action: '表示を見ずに答えるテストで、自己判定と実際の想起を照合します。',
+    title: '「覚えた」語をテストで確かめる',
+    evidence: `「覚えた／まだ」には答えたものの、テストをしていない項目が${memoryOnly.length}件あります。`,
+    action: '答えを隠したテストで、本当に思い出せるか確かめます。',
     launch: launchForGradeGroup(groupRows(memoryOnly, 'type')[0], 'test'),
   })
   if (overconfident.length) push({
-    id: 'overconfidence', priority: 1, angle: '自己判定', scope: `${overconfident.length}項目`,
-    title: '「覚えた」を無答えテストで再確認',
-    evidence: `自己判定75%以上に対し、テスト60%未満の項目が${overconfident.length}件あります。`,
+    id: 'overconfidence', priority: 1, angle: '覚えた／まだ', scope: `${overconfident.length}項目`,
+    title: '「覚えた」語を答えを隠して確認',
+    evidence: `「覚えた」の割合は75%以上ですが、テストの正答率が60%未満の項目が${overconfident.length}件あります。`,
     action: '意味を隠した状態で答えてから、誤答だけを短く再暗記します。',
     launch: launchForGradeGroup(groupRows(overconfident, 'type')[0], 'test'),
   })
   if (underconfident.length) push({
-    id: 'underconfidence', priority: 3, angle: '自己判定', scope: `${underconfident.length}項目`,
-    title: '正解できる項目は間隔を広げる',
-    evidence: `自己判定50%未満でも、テスト80%以上の項目が${underconfident.length}件あります。`,
-    action: '同日反復を減らし、翌日以降の想起へ移して学習時間を節約します。',
+    id: 'underconfidence', priority: 3, angle: '覚えた／まだ', scope: `${underconfident.length}項目`,
+    title: '正解できる項目は翌日以降に確認',
+    evidence: `「覚えた」の割合は50%未満でも、テストの正答率が80%以上の項目が${underconfident.length}件あります。`,
+    action: '同じ日に繰り返す回数を減らし、翌日以降に思い出す練習へ移します。',
     launch: launchForGradeGroup(groupRows(underconfident, 'type')[0], 'test'),
   })
   if (weakSubject) push({
     id: `subject:${weakSubject.id}`, priority: 1, angle: '科目', scope: weakSubject.label,
-    title: `${weakSubject.label}の最弱分野から立て直す`,
-    evidence: `科目内の採点・旧履歴${weakSubject.evidenceAttempts}回で再現率${Math.round(weakSubject.evidenceAccuracy * 100)}%です。`,
+    title: `${weakSubject.label}で最も苦手な分野から復習`,
+    evidence: `この科目では${weakSubject.evidenceAttempts}回分の記録があり、正解率は${Math.round(weakSubject.evidenceAccuracy * 100)}%です。`,
     action: '科目全体を一度にやり直さず、成績表で最も弱い種類の最大12項目に絞ります。',
     launch: launchForGradeGroup(weakSubject, 'memory'),
   })
   if (weakField) push({
     id: `field:${weakField.id}`, priority: 1, angle: '分野', scope: weakField.label,
-    title: `${weakField.label}を小単位で補強`,
-    evidence: `採点・旧履歴${weakField.evidenceAttempts}回で再現率${Math.round(weakField.evidenceAccuracy * 100)}%です。`,
+    title: `${weakField.label}を少ない項目ずつ復習`,
+    evidence: `${weakField.evidenceAttempts}回分の記録があり、正解率は${Math.round(weakField.evidenceAccuracy * 100)}%です。`,
     action: '弱い項目を最大12件に絞り、暗記可能なら暗記後にテストします。',
     launch: launchForGradeGroup(weakField, 'memory'),
   })
   if (weakType) push({
     id: `type:${weakType.id}`, priority: 2, angle: '種類', scope: weakType.label,
     title: `${weakType.label}の基礎を優先`,
-    evidence: `種類別の採点・旧履歴で再現率${Math.round(weakType.evidenceAccuracy * 100)}%です。`,
-    action: '1セッションだけ取り組み、終了後に同じ成績表で改善を確認します。',
+    evidence: `この種類の問題で、正解率は${Math.round(weakType.evidenceAccuracy * 100)}%です。`,
+    action: 'まず1回だけ取り組み、終わったら同じ成績表で変化を確認します。',
     launch: launchForGradeGroup(weakType, 'test'),
   })
   if (
@@ -875,37 +894,37 @@ function buildPrescriptions(report, analysis) {
     && bestMemoryHour.accuracy - worstMemoryHour.accuracy >= 0.15
   ) push({
     id: 'time-effect', priority: 2, angle: '時間帯', scope: `${bestMemoryHour.hour}時台`,
-    title: `${bestMemoryHour.hour}時台に新規暗記を寄せる`,
-    evidence: `その時間に暗記した語句の後続テストは${Math.round(bestMemoryHour.accuracy * 100)}%（n=${bestMemoryHour.scored}）で、最低時間帯より15ポイント以上高い結果です。`,
+    title: `新しい暗記は${bestMemoryHour.hour}時台に行う`,
+    evidence: `その時間に暗記した語句を後でテストすると、${bestMemoryHour.scored}回答中${Math.round(bestMemoryHour.accuracy * 100)}%正解で、最も低い時間帯より15ポイント以上高い結果です。`,
     action: '新規暗記は得意時刻、復習は都合のよい時刻に分け、2週間後に再比較します。',
     launch: learningLaunchFor('vocab', [], 'memory', '得意時間の暗記'),
   })
   if (bestPass) push({
-    id: 'pass-effect', priority: 2, angle: '周回数', scope: bestPass.label,
-    title: `${bestPass.label}を暗記の比較基準にする`,
-    evidence: `${bestPass.label}後のテストが${Math.round(bestPass.accuracy * 100)}%（n=${bestPass.scored}）で、現在もっとも高い観測値です。`,
-    action: '全項目を同じ回数に固定せず、正答できた項目は間隔を広げ、弱い項目だけ追加します。',
-    launch: learningLaunchFor('vocab', [], 'memory', '周回数を調整'),
+    id: 'pass-effect', priority: 2, angle: '暗記回数', scope: bestPass.label,
+    title: `${bestPass.label}を暗記回数の目安にする`,
+    evidence: `${bestPass.label}後のテストは${bestPass.scored}回答中${Math.round(bestPass.accuracy * 100)}%正解で、今の記録では最も高い結果です。`,
+    action: '全項目を同じ回数にせず、正解できた項目は翌日以降に確認し、弱い項目だけ回数を増やします。',
+    launch: learningLaunchFor('vocab', [], 'memory', '暗記回数を調整'),
   })
   if ((analysis.activeDays ?? 0) > 0 && (analysis.averageInputsPerActiveDay ?? 0) > 35) push({
     id: 'session-load', priority: 3, angle: '活動量', scope: '学習日',
     title: '一日の学習を2回に分散',
-    evidence: `記録日の平均入力が${Math.round(analysis.averageInputsPerActiveDay)}回です。`,
-    action: '同じ総量でも朝夕など2回に分け、翌日の想起率で比較します。',
+    evidence: `学習した日の回答数は、平均${Math.round(analysis.averageInputsPerActiveDay)}回です。`,
+    action: '同じ量でも朝夕など2回に分け、翌日に思い出せた割合を比べます。',
     launch: null,
   })
   if (!bestMemoryHour && analysis.activity?.memory?.scored > 0) push({
     id: 'hour-sample', priority: 3, angle: '時間帯', scope: '24時間計',
-    title: '暗記時刻ごとに後続テストを5回集める',
-    evidence: '暗記時刻と後日のテストを結ぶ標本が、時間帯ごとに5件未満です。',
+    title: '暗記した時間帯ごとにテスト記録を5件集める',
+    evidence: '暗記した時刻と後日のテストを結ぶ記録が、時間帯ごとに5件未満です。',
     action: '朝・昼・夜の2〜3条件で同程度の項目を暗記し、後で同じ方法でテストします。',
     launch: null,
   })
   if (strongType) push({
-    id: `maintain:${strongType.id}`, priority: 3, angle: '得意維持', scope: strongType.label,
-    title: `${strongType.label}は間隔を広げて維持`,
-    evidence: `採点・旧履歴${strongType.evidenceAttempts}回で再現率${Math.round(strongType.evidenceAccuracy * 100)}%です。`,
-    action: '同日反復を増やさず、期限到来時の短い確認だけにして弱点へ時間を移します。',
+    id: `maintain:${strongType.id}`, priority: 3, angle: '得意な種類', scope: strongType.label,
+    title: `${strongType.label}は復習日に短く確認`,
+    evidence: `${strongType.evidenceAttempts}回分の記録があり、正解率は${Math.round(strongType.evidenceAccuracy * 100)}%です。`,
+    action: '同じ日に繰り返す回数を増やさず、復習日に短く確認して、苦手な分野へ時間を使います。',
     launch: launchForGradeGroup(strongType, 'test'),
   })
 

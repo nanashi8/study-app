@@ -3,7 +3,7 @@ import { GRAMMAR } from './grammar.js'
 const normalizeHead = (value = '') => value.trim().toLowerCase()
 
 const grammarFormation = (item) =>
-  `文法問題「${item.q}」の空所に「${item.answer}」を置くと完成する${item.topic}の構文。${item.explain}`
+  `この文の学習ポイントは「${item.topic}」です。問題文「${item.q}」の空所には「${item.answer}」が入ります。${item.explain}`
 
 const groupedByPattern = (items) => {
   const groups = new Map()
@@ -69,6 +69,7 @@ export function buildGrammarSyntaxPhrases({ needsByLevel, excludedHeads = [] }) 
         origin: grammarFormation(item),
         note: item.explain,
         category: 'grammar-example',
+        sourceTopic: item.topic,
         sourcePattern: item.variationGroup ?? item.pattern ?? `${item.level}:${item.topic}`,
         sourceGrammarId: item.id,
         curriculumSupplement: true,

@@ -8,6 +8,8 @@ export function Sheet({
   onClose,
   title,
   children,
+  footer = null,
+  scrollAreaRef = null,
   maxH = 'min(85svh, calc(var(--app-visual-viewport-height) - 0.5rem))',
 }) {
   useEffect(() => {
@@ -44,11 +46,20 @@ export function Sheet({
           </div>
         )}
         <div
+          ref={scrollAreaRef}
           className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden px-5 pb-[calc(1.5rem+var(--app-bottom-clearance))]"
           data-sheet-scroll-area
         >
           {children}
         </div>
+        {footer && (
+          <div
+            className="shrink-0 border-t border-brand-100 bg-paper px-5 pt-3 pb-[calc(0.75rem+var(--app-bottom-clearance))]"
+            data-sheet-footer
+          >
+            {footer}
+          </div>
+        )}
       </div>
     </div>
   )

@@ -84,15 +84,15 @@ export function KanbunHomeScreen() {
 
       <main className="space-y-3 px-4 pt-5">
         <div className="px-1">
-          <p className="text-[10px] font-extrabold tracking-[0.14em] text-rose-700">MAIN ITEMS</p>
+          <p className="text-[10px] font-extrabold text-rose-700">主な教材</p>
           <h2 className="font-display text-xl font-extrabold text-ink">三つのメインアイテム</h2>
-          <p className="mt-1 text-xs font-bold text-ink/45">英語と同じく、覚える・テスト・登録・復習を一続きにします。</p>
+          <p className="mt-1 text-xs font-bold text-ink/45">英語と同じく、暗記・テスト・登録・復習を一続きにします。</p>
         </div>
 
         <MainItem
           emoji="📖"
           title="漢語"
-          description="重要漢字・熟語・虚字を、訓読と用例で覚える"
+          description="重要漢字・熟語・虚字を、訓読と用例で暗記"
           count={KANBUN_VOCAB.length}
           unit="語"
           status={vocabStatus}
@@ -163,7 +163,7 @@ export function KanbunHomeScreen() {
                 <span>→</span>
                 <span className="inline-flex items-center gap-1"><Cards size={13} /> テスト</span>
                 <span>→</span>
-                <span>間隔復習</span>
+                <span>日を空けて復習</span>
               </div>
             </div>
           </div>

@@ -17,7 +17,7 @@ const SKILL_ROUTES = {
     screen: 'vocabLevels',
     params: { intent: 'quiz' },
     label: '英単語',
-    actionLabel: '単語クイズへ',
+    actionLabel: '単語テストへ',
   },
   etymology: {
     screen: 'roots',
@@ -184,11 +184,11 @@ function latestValidDiagnostic(history) {
 }
 
 function dimensionLevel(score) {
-  if (score == null) return '計測中'
-  if (score >= 80) return '大きな強み'
+  if (score == null) return '記録なし'
+  if (score >= 80) return 'とても得意'
   if (score >= 65) return '順調'
-  if (score >= 50) return '育成中'
-  return '伸びしろ'
+  if (score >= 50) return '練習中'
+  return 'まず復習'
 }
 
 function dimension({ id, label, score, evidence, note, color }) {
@@ -285,7 +285,7 @@ function recommendationFor({
       id: 'focus',
       intensity: '集中',
       title: `集中タイムに${skillRoute.label}を伸ばす`,
-      reason: `正答履歴では${skillRoute.label}が優先分野です。得意な時間帯に、少し難しい課題へ取り組みましょう。`,
+      reason: `これまでの正答率から、${skillRoute.label}を先に選びました。よく学ぶ時間帯に、少し難しい課題へ取り組みましょう。`,
       timing: `いまは得意時間帯（${bestWindowLabel}）`,
       screen: skillRoute.screen,
       params: skillRoute.params ?? {},
@@ -298,7 +298,7 @@ function recommendationFor({
       id: 'habit',
       intensity: '短時間',
       title: '5分だけ学習をつなぐ',
-      reason: `直近7日の学習は${habit.activeDays7}日です。量を増やす前に、短い学習を続けてリズムを作りましょう。`,
+      reason: `最近7日間で学習したのは${habit.activeDays7}日です。量を増やす前に、短い学習を続けてリズムを作りましょう。`,
       timing: bestWindowLabel ? `集中学習は ${bestWindowLabel}` : '今日できる時間に5分',
       screen: 'vocabLevels',
       params: {},
@@ -311,7 +311,7 @@ function recommendationFor({
       id: 'review',
       intensity: '復習',
       title: '復習を終えてから次へ',
-      reason: `${dueCount}語の復習を先に終えると、新しい学習を定着させやすくなります。`,
+      reason: `${dueCount}語を先に復習すると、新しく学ぶ内容もあとで思い出しやすくなります。`,
       timing: isBestTime ? 'いま始めどき' : '5〜10分から',
       screen: 'vocabStudy',
       params: { source: { type: 'due' }, title: '復習', mode: 'study' },
@@ -322,9 +322,9 @@ function recommendationFor({
   if (diagnosticAge != null && diagnosticAge >= 30) {
     return {
       id: 'remeasure',
-      intensity: '再測定',
+      intensity: 'もう一度診断',
       title: '伸びを診断テストで確かめる',
-      reason: `前回診断から${diagnosticAge}日たちました。今の実力に更新して、次の優先分野を選び直しましょう。`,
+      reason: `前回診断から${diagnosticAge}日たちました。もう一度答えて、次に復習する分野を選び直しましょう。`,
       timing: '復習待ちがない今がおすすめ',
       screen: 'diagnostic',
       params: {},
@@ -336,7 +336,7 @@ function recommendationFor({
     return {
       id: 'challenge',
       intensity: '応用',
-      title: '定着した知識を長文で使う',
+      title: '覚えた知識を長文で使う',
       reason: '記憶と問題対応が安定しています。覚えた知識を組み合わせる課題へ進みましょう。',
       timing: bestWindowLabel ? `おすすめ時間帯 ${bestWindowLabel}` : '15分を目安に',
       screen: 'readingList',
@@ -349,7 +349,7 @@ function recommendationFor({
     return {
       id: 'weakness',
       intensity: '重点',
-      title: `${skillRoute.label}を次の伸びしろに`,
+      title: `${skillRoute.label}から復習`,
       reason: `テストと学習履歴から、いま最も伸ばしやすい分野として${skillRoute.label}を選びました。`,
       timing: bestWindowLabel
         ? `${bestWindowLabel}なら集中課題におすすめ`
@@ -363,12 +363,12 @@ function recommendationFor({
   return {
     id: 'practice',
     intensity: '基礎',
-    title: '単語クイズで測りながら伸ばす',
-    reason: '採点済みの回答が増えるほど、記憶・弱点・得意時間帯の推定が個人の傾向に近づきます。',
+    title: '単語テストで測りながら伸ばす',
+    reason: '採点された回答が増えるほど、覚えやすい内容・苦手な内容・学びやすい時間を見つけやすくなります。',
     timing: '10問から',
     screen: 'vocabLevels',
     params: { intent: 'quiz' },
-    actionLabel: '単語クイズへ',
+    actionLabel: '単語テストへ',
   }
 }
 
@@ -413,44 +413,44 @@ export function buildLearningPowerProfile({
   const dimensions = [
     dimension({
       id: 'memory',
-      label: '記憶の定着',
+      label: '暗記カードの回答',
       score: memoryScore,
       evidence: analysis.learnedItems
         ? `${analysis.learnedItems}項目・${analysis.scored}回答`
         : analysis.scored
           ? `${analysis.scored}回答`
-          : '復習データを収集中',
-      note: '正誤・反復段階・時間間隔から推定',
+          : '復習すると表示します',
+      note: '「覚えた／まだ」と答えた項目数と回数',
       color: '#8b5cf6',
     }),
     dimension({
       id: 'testing',
-      label: '問題対応',
+      label: 'テストの結果',
       score: testingScore,
       evidence: diagnostic
         ? `診断${diagnostic.total}問・偏差値${diagnostic.deviation}`
         : trackedSkillAnswers
           ? `${analysis.skills.length}分野・${trackedSkillAnswers}回答`
-          : '診断・クイズ結果を収集中',
+          : '診断やテストに答えると表示します',
       note: '教科テストへの対応であり、IQではありません',
       color: '#0ea5e9',
     }),
     dimension({
       id: 'consistency',
-      label: '継続習慣',
+      label: '学習した日',
       score: habit.score,
       evidence: habit.hasEvidence
-        ? `直近7日 ${habit.activeDays7}日・連続${habit.streak}日`
-        : '学習日を収集中',
+        ? `最近7日間で${habit.activeDays7}日・連続${habit.streak}日`
+        : '学習を始めると表示します',
       note: '短時間でも学習した日を評価',
       color: '#10b981',
     }),
     dimension({
       id: 'rhythm',
-      label: '学習リズム',
+      label: 'よく学ぶ時間',
       score: rhythmScore,
       evidence: analysis.rhythm.peakHour == null
-        ? '学習した時刻を収集中'
+        ? '学習した時刻の記録がありません'
         : `${analysis.rhythm.peakHour}時台・${analysis.rhythm.activeDays}日中${analysis.rhythm.peakDays}日`,
       note: '同じ時間帯に学習を繰り返せている割合',
       color: '#f59e0b',

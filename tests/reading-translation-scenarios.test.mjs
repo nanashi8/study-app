@@ -171,12 +171,12 @@ test('全長文・全文・全ブロックに講師監修の語順訳シナリ�
     phrasePairCount,
   )
   assert.ok(explicitSequenceCount > blockCount / 2, '大半のブロックで前へ進む意味単位が明示されていない')
-  assert.equal(PASSAGES.length, 24, '全24長文を対象にする')
-  assert.equal(sentenceCount, 567, '全567文を対象にする')
-  assert.equal(blockCount, 1546, '全1,546文法ブロックを対象にする')
-  assert.equal(phrasePairCount, 4446, '全4,446ブロック内役割単位を英語フレーズと直訳の組にする')
-  assert.equal(meaningPhraseCount, 3246, '全3,246件の学習者向け意味フレーズを対象にする')
-  assert.equal(meaningMultiRoleCount, 1243, 'SVOCMを内部に複数含む1,243件も一つの意味フレーズとして保つ')
+  assert.equal(PASSAGES.length, 32, '全32長文を対象にする')
+  assert.equal(sentenceCount, 794, '全794文を対象にする')
+  assert.equal(blockCount, 2062, '全2,062文法ブロックを対象にする')
+  assert.equal(phrasePairCount, 5925, '全5,925ブロック内役割単位を英語フレーズと直訳の組にする')
+  assert.equal(meaningPhraseCount, 4329, '全4,329件の学習者向け意味フレーズを対象にする')
+  assert.equal(meaningMultiRoleCount, 1668, 'SVOCMを内部に複数含む1,668件も一つの意味フレーズとして保つ')
 })
 
 test('基準例は英語の語順どおり、動作・行き先・手段・時を丁寧に読める', () => {
@@ -288,7 +288,7 @@ test('日本語の自然語順へ戻りやすい目的語・比較・理由も�
   ])
 })
 
-test('長文画面は文全体の意味フレーズを英語→対応する日本語→必要な解説の順で再生する', () => {
+test('長文画面は意味フレーズの表示を保ち、講師音声機能を提供しない', () => {
   const source = readFileSync(
     new URL('../src/screens/Reader.jsx', import.meta.url),
     'utf8',
@@ -296,44 +296,20 @@ test('長文画面は文全体の意味フレーズを英語→対応する日�
   assert.match(source, /<StructureDiagram tokens=\{sentenceAnalysis\.structureTokens\} \/>/)
   assert.doesNotMatch(source, /sentenceAnalysis\.blocks\.map\(\(block\) =>/)
 
-  const automaticStart = source.indexOf('const chunkSpeechItems')
-  const automaticEnglish = source.indexOf('text: chunk.en', automaticStart)
-  const automaticJapanese = source.indexOf(
-    'japanesePhraseSpeechText(chunk.ja)',
-    automaticEnglish,
-  )
-  const automaticExplanation = source.indexOf('text: chunk.learnerExplanation', automaticJapanese)
-  assert.ok(
-    automaticStart >= 0 &&
-    automaticEnglish > automaticStart &&
-    automaticJapanese > automaticEnglish &&
-    automaticExplanation > automaticJapanese,
-    '自動再生が英語フレーズ→対応する日本語→必要な解説の順ではない',
-  )
-
-  const manualStart = source.indexOf('const speakReviewedPhrasePair')
-  const manualEnglish = source.indexOf('text: item.spokenEn ?? item.en', manualStart)
-  const manualJapanese = source.indexOf(
-    'japanesePhraseSpeechText(item.ja)',
-    manualEnglish,
-  )
-  const manualExplanationSpeech = source.indexOf('text: grammar', manualJapanese)
-  assert.ok(
-    manualStart >= 0 &&
-    manualEnglish > manualStart &&
-    manualJapanese > manualEnglish &&
-    manualExplanationSpeech > manualJapanese,
-    '個別再生が英語フレーズ→対応する日本語→読解・文法の順ではない',
-  )
   assert.doesNotMatch(source, /speakBlockPair|learnerPhrasePairsForBlock/)
-  assert.match(source, /analysis\.meaningPhraseSequence\.map/)
   assert.match(source, /sentenceAnalysis\.meaningPhraseSequence\.map/)
   assert.match(source, /data-reading-phrase-method=\{sentenceAnalysis\.phraseMethod\}/)
-  assert.match(source, /text:\s*item\.spokenEn \?\? item\.en/)
-  assert.match(source, /japanesePhraseSpeechText\(item\.ja\)/)
-  assert.match(source, /<SpeakerWave size=\{14\} \/> 講師音声/)
-  assert.doesNotMatch(source, /フレーズ直訳・講師音声/)
-  assert.match(source, /文全体を自然な日本語に整えると/)
+  assert.match(source, /\{phraseItem\.displayEn\}/)
+  assert.match(source, /\{phraseItem\.ja\}/)
+  assert.match(source, /フレーズ内の文法：\{visiblePhraseExplanations\[phraseIndex\]\}/)
+  assert.match(source, /title:\s*'長文・全文'/)
+  assert.match(source, /<SpeakerWave size=\{14\} \/> 全文を読み上げ/)
+  assert.match(source, /<SpeakButton text=\{sentence\.en\} size="sm" \/>/)
+  assert.doesNotMatch(
+    source,
+    /講師音声|chunkSpeechItems|playChunks|speakReviewedPhrasePair|japanesePhraseSpeechText/,
+  )
+  assert.doesNotMatch(source, /英語、対応する日本語、文法解説の順で再生/)
   assert.doesNotMatch(source, /前からの直訳：\{pair\.ja\}/)
   assert.doesNotMatch(source, /フレーズ訳：\{phraseItem\.ja\}/)
   assert.doesNotMatch(source, /前から読むフレーズ解説/)
@@ -343,10 +319,9 @@ test('長文画面は文全体の意味フレーズを英語→対応する日�
   assert.doesNotMatch(source, /S・V・O・C・Mはフレーズ内の構造を確かめる注釈です/)
   assert.match(source, /読み進め方：\{readingExplanation\}/)
   assert.match(source, /文法の決まり：\{grammarExplanation\}/)
-  assert.match(source, /label:\s*'読み方・文法上の注意'/)
 })
 
-test('長文567文は上段と文法解説で同一説明を二重表示しない', () => {
+test('長文794文は上段と文法解説で同一説明を二重表示しない', () => {
   let sentenceCount = 0
   let phraseCount = 0
   for (const passage of PASSAGES) {
@@ -366,11 +341,11 @@ test('長文567文は上段と文法解説で同一説明を二重表示しな�
       )
     }
   }
-  assert.equal(sentenceCount, 567)
-  assert.equal(phraseCount, 3246)
+  assert.equal(sentenceCount, 794)
+  assert.equal(phraseCount, 4329)
 })
 
-test('長文1546ブロックは読解手順と文法説明を役割分担し、意味の重複も抑える', () => {
+test('長文2062ブロックは読解手順と文法説明を役割分担し、意味の重複も抑える', () => {
   const bigrams = (value) => {
     const normalized = String(value ?? '')
       .replace(/[\s、。・「」（）()／→：:=A-Za-z0-9＋+\-]/g, '')
@@ -403,5 +378,5 @@ test('長文1546ブロックは読解手順と文法説明を役割分担し、�
       }
     }
   }
-  assert.equal(blockCount, 1546)
+  assert.equal(blockCount, 2062)
 })

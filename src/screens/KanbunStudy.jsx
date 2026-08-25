@@ -13,6 +13,7 @@ import { KanbunText, KanbunHeadword } from '../components/KanbunFurigana.jsx'
 import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 import { growDeck } from '../lib/session.js'
+import { CardStudyFooter, CardSwipeRegion } from '../components/CardStudyControls.jsx'
 import {
   ArrowRight,
   Bookmark,
@@ -71,7 +72,10 @@ export function KanbunStudyScreen() {
   const revealAll = useStore((state) => state.settings.revealAnswers)
   // size を指定しないときは設定した問題数まで絞る。
   const buildFor = (ids, size) => {
-    const items = shuffleKanbun(kanbunItems(domain, ids))
+    const selected = kanbunItems(domain, ids)
+    const items = params.preserveOrder && Array.isArray(ids)
+      ? ids.map((id) => selected.find((item) => item.id === id)).filter(Boolean)
+      : shuffleKanbun(selected)
     return size > 0 ? items.slice(0, size) : items
   }
   const [poolSize] = useState(() => kanbunItems(domain, params.ids).length)
@@ -98,7 +102,7 @@ export function KanbunStudyScreen() {
       <div className="flex h-full flex-col items-center justify-center gap-4 p-8 text-center">
         <div className="text-5xl">📕</div>
         <p className="font-display text-lg font-extrabold text-ink">学習できる項目がありません</p>
-        <Button onClick={backToKanbunCatalog}>もどる</Button>
+        <Button onClick={backToKanbunCatalog}>戻る</Button>
       </div>
     )
   }
@@ -121,6 +125,11 @@ export function KanbunStudyScreen() {
       setIndex((current) => current + 1)
       setRevealed(revealAll)
     }
+  }
+
+  const moveToCard = (nextIndex) => {
+    setIndex(nextIndex)
+    setRevealed(revealAll)
   }
 
   if (done) {
@@ -162,9 +171,9 @@ export function KanbunStudyScreen() {
           <IconButton onClick={backToKanbunCatalog} aria-label="学習をやめる"><Close size={22} /></IconButton>
           <div className="min-w-0 flex-1">
             <ProgressBar value={index / deck.length} color="#be123c" />
-            <p className="mt-1 truncate text-[10px] font-extrabold text-ink/40">{params.title ?? `${meta.label}を覚える`}</p>
+            <p className="mt-1 truncate text-[10px] font-extrabold text-ink/40">{params.title ?? `${meta.label}を暗記`}</p>
           </div>
-          <RevealAnswersToggle label="答え" onChange={(on) => on && setRevealed(true)} />
+          <RevealAnswersToggle label="答え" onChange={(on) => setRevealed(on)} />
           <SpeechSettingsButton compact />
           <SessionCounter
             index={index}
@@ -187,7 +196,12 @@ export function KanbunStudyScreen() {
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto px-4 pb-4 pt-3">
+      <CardSwipeRegion
+        index={index}
+        total={deck.length}
+        onIndexChange={moveToCard}
+        className="flex-1 overflow-y-auto px-4 pb-4 pt-3"
+      >
         <article
           key={item.id}
           onClick={() => !revealed && setRevealed(true)}
@@ -209,7 +223,7 @@ export function KanbunStudyScreen() {
           </div>
 
           <div className="mt-5 text-center">
-            <p className="text-[10px] font-extrabold tracking-[0.16em] text-rose-600">KANBUN MEMORY</p>
+            <p className="text-[10px] font-extrabold text-rose-600">漢文を暗記</p>
             <h1 className="mt-2 font-display text-2xl font-extrabold leading-snug text-ink"><KanbunHeadword item={item} /></h1>
             {/* 見出しのルビと同じ読みしかないときは、下の読み行を重ねて出さない。 */}
             {item.reading && item.reading.includes('・') && (
@@ -226,18 +240,18 @@ export function KanbunStudyScreen() {
             </div>
           ) : <AnswerDetails domain={domain} item={item} />}
         </article>
-      </div>
+      </CardSwipeRegion>
 
-      <div className="shrink-0 border-t border-rose-100 bg-white/90 p-4 pb-4 backdrop-blur">
+      <CardStudyFooter className="border-rose-100">
         {!revealed ? (
           <Button full size="lg" onClick={() => setRevealed(true)}>答えを見る</Button>
         ) : (
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-2">
             <Button variant="danger" size="lg" onClick={() => answer(false)}>まだ 🤔</Button>
             <Button variant="success" size="lg" onClick={() => answer(true)}>覚えた 👍</Button>
           </div>
         )}
-      </div>
+      </CardStudyFooter>
     </div>
   )
 }

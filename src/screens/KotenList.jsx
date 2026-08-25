@@ -44,10 +44,10 @@ function CategoryCard({ cat, words, srs, onStudy, onQuiz }) {
       <LearningStatusBars progress={status} className="mt-3" compact units={{ learning: '語', quiz: '問' }} />
       <div className="mt-3 grid grid-cols-2 gap-2">
         <Button variant="primary" size="sm" onClick={onStudy}>
-          <Book size={16} /> 覚える
+          <Book size={16} /> 暗記
         </Button>
         <Button variant="secondary" size="sm" onClick={onQuiz}>
-          <Cards size={16} /> クイズ
+          <Cards size={16} /> テスト
         </Button>
       </div>
     </Card>
@@ -111,9 +111,9 @@ export function KotenListScreen() {
 
       <div className="space-y-3 px-4 pt-5">
         <div className="px-1 pb-1">
-          <p className="text-[10px] font-extrabold tracking-[0.14em] text-amber-700">MAIN ITEMS</p>
+          <p className="text-[10px] font-extrabold text-amber-700">主な教材</p>
           <h2 className="font-display text-xl font-extrabold text-ink">三つのメインアイテム</h2>
-          <p className="mt-1 text-xs font-bold text-ink/45">覚える → テスト → 登録 → 間隔復習を一続きにします。</p>
+          <p className="mt-1 text-xs font-bold text-ink/45">暗記 → テスト → 登録 → 日を空けて復習、の順で進めます。</p>
         </div>
 
         <Card className="p-4">
@@ -126,7 +126,7 @@ export function KotenListScreen() {
           </div>
           <LearningStatusBars progress={totalStatus} className="mt-3" compact units={{ learning: '語', quiz: '問' }} />
           <div className="mt-3 grid grid-cols-2 gap-2">
-            <Button size="sm" onClick={() => study(KOTEN_WORDS.map((word) => word.id), '古典単語・全範囲')}><Book size={16} /> 覚える</Button>
+            <Button size="sm" onClick={() => study(KOTEN_WORDS.map((word) => word.id), '古典単語・全範囲')}><Book size={16} /> 暗記</Button>
             <Button variant="secondary" size="sm" onClick={() => quiz(KOTEN_WORDS.map((word) => word.id), '古典単語・全範囲')}><Cards size={16} /> テスト</Button>
           </div>
         </Card>
@@ -156,9 +156,9 @@ export function KotenListScreen() {
         </Card>
 
         <div className="px-1 pt-3">
-          <p className="text-[10px] font-extrabold tracking-[0.14em] text-amber-700">LEVEL COURSES</p>
-          <h2 className="font-display text-lg font-extrabold text-ink">到達段階から選ぶ</h2>
-          <p className="mt-1 text-xs font-bold text-ink/45">各段階で、単語・文法・常識を偏りなく暗記してテストします。</p>
+          <p className="text-[10px] font-extrabold text-amber-700">学年・目標別コース</p>
+          <h2 className="font-display text-lg font-extrabold text-ink">学年・目標から選ぶ</h2>
+          <p className="mt-1 text-xs font-bold text-ink/45">各コースで、単語・文法・常識を偏りなく暗記してテストします。</p>
         </div>
 
         <div className="-mx-4 overflow-x-auto px-4 pb-1">
@@ -217,7 +217,7 @@ export function KotenListScreen() {
         </Card>
 
         <div className="px-1 pt-3">
-          <p className="text-[10px] font-extrabold tracking-[0.14em] text-ink/35">READING & SAVED</p>
+          <p className="text-[10px] font-extrabold text-ink/40">読解と登録リスト</p>
           <h2 className="font-display text-lg font-extrabold text-ink">読解・登録</h2>
         </div>
 

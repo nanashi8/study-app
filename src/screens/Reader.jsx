@@ -12,7 +12,6 @@ import {
   dismissSpeechPlayer,
   playSpeechItems,
 } from '../lib/speech-player.js'
-import { japanesePhraseSpeechText } from '../lib/phrase-speech.js'
 import { Sheet } from '../components/Sheet.jsx'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
@@ -24,6 +23,7 @@ import { StructureDiagram } from '../components/StructureDiagram.js'
 import { ReadingRoleSentence } from '../components/ReadingRoleSentence.js'
 import { ReadingRuleCard } from '../components/ReadingRuleCard.jsx'
 import { ReadingComprehensionCheck } from '../components/ReadingComprehensionCheck.jsx'
+import { ExtendedReader } from '../components/ExtendedReader.jsx'
 import {
   readingBlockExplanationTexts,
   readingPhraseExplanationTexts,
@@ -88,7 +88,8 @@ function flowPattern(parts) {
 }
 
 export function ReaderScreen() {
-  const passageId = useStore((s) => s.params.passageId)
+  const params = useStore((s) => s.params)
+  const passageId = params.passageId
   const navigate = useStore((s) => s.navigate)
   const back = useStore((s) => s.back)
   const settings = useStore((s) => s.settings)
@@ -103,35 +104,21 @@ export function ReaderScreen() {
   const [activeWord, setActiveWord] = useState(null)
   const [readingChecked, setReadingChecked] = useState(false)
   const readingCheckRef = useRef(null)
+  const sentenceSheetScrollRef = useRef(null)
 
   const sentenceAnalyses = useMemo(
-    () => passage?.sentences.map((item) => analyzeReadingSentence(item)) ?? [],
+    () => passage && !passage.extended
+      ? passage.sentences.map((item) => analyzeReadingSentence(item))
+      : [],
     [passage],
   )
   const paragraphGuides = useMemo(
-    () => passage ? analyzePassageParagraphs(passage) : [],
+    () => passage && !passage.extended ? analyzePassageParagraphs(passage) : [],
     [passage],
   )
 
-  // ── 講師音声（文全体の意味フレーズごとに英語→対応する日本語→必要な解説）──
-  const chunks = useMemo(
-    () => sentenceAnalyses.flatMap((analysis, si) => {
-      const explanationTexts = readingPhraseExplanationTexts(analysis)
-      return analysis.meaningPhraseSequence.map((phrase, phraseIndex) => ({
-        ...phrase,
-        en: phrase.spokenEn ?? phrase.en,
-        displayEn: phrase.displayEn ?? phrase.en,
-        learnerExplanation: explanationTexts[phraseIndex],
-        phraseIndex,
-        phraseCount: analysis.meaningPhraseSequence.length,
-        si,
-        isSentenceEnd: phraseIndex === analysis.meaningPhraseSequence.length - 1,
-        sentenceJa: passage?.sentences[si]?.ja ?? '',
-      }))
-    }),
-    [passage, sentenceAnalyses],
-  )
   const paragraphs = useMemo(() => {
+    if (passage?.extended) return []
     const groups = []
     for (const [index, item] of (passage?.sentences ?? []).entries()) {
       if (!groups.length || item.paragraphStart) groups.push([])
@@ -139,107 +126,8 @@ export function ReaderScreen() {
     }
     return groups
   }, [passage])
-  const [playIdx, setPlayIdx] = useState(0) // 現在のチャンク
-  const [playerActive, setPlayerActive] = useState(false)
-
-  const chunkSpeechItems = useMemo(
-    () => chunks.map((chunk) => ({
-      id: chunk.id,
-      label: chunk.displayEn,
-      segments: [
-        {
-          text: chunk.en,
-          label: '英語フレーズ',
-          lang: 'en-US',
-          style: 'narration',
-        },
-        {
-          text: `前からは、「${japanesePhraseSpeechText(chunk.ja)}」と取ります。`,
-          label: '対応する日本語',
-          lang: 'ja-JP',
-          style: 'translation',
-        },
-        ...(chunk.learnerExplanation
-          ? [{
-              text: chunk.learnerExplanation,
-              label: '読み方・文法上の注意',
-              lang: 'ja-JP',
-              style: 'explanation',
-            }]
-          : []),
-        ...(chunk.isSentenceEnd && chunk.sentenceJa
-          ? [{
-              text: `文全体を自然な日本語に整えると、「${chunk.sentenceJa}」です。`,
-              label: '文全体の自然訳',
-              lang: 'ja-JP',
-              style: 'explanation',
-            }]
-          : []),
-      ],
-    })),
-    [chunks],
-  )
-
   // 画面を離れたら必ず止める
   useEffect(() => dismissSpeechPlayer, [])
-
-  // 原文の英語→対応する日本語→必要な解説を、意味フレーズ単位で共通コンソールへ渡す。
-  const playChunks = (index = 0) => {
-    playSpeechItems(chunkSpeechItems, {
-      index,
-      title: '講師音声',
-      rate: settings.ttsRate,
-      voiceURI: settings.ttsVoiceURI,
-      japaneseVoiceURI: settings.ttsJapaneseVoiceURI,
-      autoAdvance: true,
-      onIndexChange: (nextIndex) => setPlayIdx(nextIndex),
-      onStatusChange: (status) => {
-        setPlayerActive(status === 'playing' || status === 'paused')
-      },
-    })
-  }
-
-  const speakReviewedPhrasePair = (phraseItem, phraseIndex) => {
-    const phrases = sentenceAnalysis?.meaningPhraseSequence ?? [phraseItem]
-    const explanationTexts = readingPhraseExplanationTexts({
-      meaningPhraseSequence: phrases,
-    })
-    const items = phrases.map((item, index) => {
-      const grammar = explanationTexts[index]
-      return {
-        label: item.displayEn ?? item.en,
-        segments: [
-          {
-            text: item.spokenEn ?? item.en,
-            label: '英語フレーズ',
-            lang: 'en-US',
-            style: 'narration',
-          },
-          {
-            text: `前からは、「${japanesePhraseSpeechText(item.ja)}」と取ります。`,
-            label: '対応する日本語',
-            lang: 'ja-JP',
-            style: 'translation',
-          },
-          ...(grammar
-            ? [{
-                text: grammar,
-                label: '読み方・文法解説',
-                lang: 'ja-JP',
-                style: 'explanation',
-              }]
-            : []),
-        ],
-      }
-    })
-    playSpeechItems(items, {
-      index: Math.max(0, phraseIndex ?? 0),
-      title: 'フレーズ解説',
-      rate: settings.ttsRate,
-      voiceURI: settings.ttsVoiceURI,
-      japaneseVoiceURI: settings.ttsJapaneseVoiceURI,
-    })
-  }
 
   if (!passage) {
     return (
@@ -248,10 +136,12 @@ export function ReaderScreen() {
           <SpeechSettingsButton compact />
         </div>
         <p className="font-bold text-ink/50">長文が見つかりませんでした。</p>
-        <Button onClick={back}>もどる</Button>
+        <Button onClick={back}>戻る</Button>
       </div>
     )
   }
+
+  if (passage.extended) return <ExtendedReader passage={passage} />
 
   const level = getLevel(passage.level)
   const sentence = activeIdx != null ? passage.sentences[activeIdx] : null
@@ -265,8 +155,8 @@ export function ReaderScreen() {
 
   const openSentence = (i) => {
     dismissSpeechPlayer()
-    setPlayerActive(false)
     setActiveWord(null)
+    if (sentenceSheetScrollRef.current) sentenceSheetScrollRef.current.scrollTop = 0
     setActiveIdx(i)
   }
   const tapToken = (tok) => {
@@ -282,7 +172,6 @@ export function ReaderScreen() {
   }
   const closeSentence = () => {
     dismissSpeechPlayer()
-    setPlayerActive(false)
     setActiveIdx(null)
   }
 
@@ -307,7 +196,7 @@ export function ReaderScreen() {
       {/* 操作バー */}
       <div className="flex flex-wrap items-center gap-2 px-4 py-2">
         <button
-          onClick={() => navigate('readingPrep', { passageId })}
+          onClick={() => navigate('readingPrep', { passageId, returnTo: params.returnTo })}
           className="flex items-center gap-1 rounded-full bg-brand-100 px-3 py-1.5 text-xs font-extrabold text-brand-700"
         >
           <BookOpen size={14} /> 重要語・表現
@@ -358,15 +247,6 @@ export function ReaderScreen() {
         >
           <SpeakerWave size={14} /> 全文を読み上げ
         </button>
-        <button
-          onClick={() => playChunks(0)}
-          className={cx(
-            'flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-extrabold transition-colors',
-            playerActive ? 'bg-brand-500 text-white' : 'bg-brand-100 text-brand-700',
-          )}
-        >
-          <SpeakerWave size={14} /> 講師音声
-        </button>
       </div>
 
       {/* 本文 */}
@@ -403,10 +283,7 @@ export function ReaderScreen() {
                     <span key={index}>
                       <button
                         onClick={() => openSentence(index)}
-                        className={cx(
-                          'rounded-md px-0.5 text-left transition-colors hover:bg-brand-50 active:bg-brand-100',
-                          playerActive && chunks[playIdx]?.si === index && 'bg-amber-200',
-                        )}
+                        className="rounded-md px-0.5 text-left transition-colors hover:bg-brand-50 active:bg-brand-100"
                       >
                         {item.en}
                       </button>{' '}
@@ -461,7 +338,7 @@ export function ReaderScreen() {
           size="lg"
           onClick={() => {
             if (readingChecked) {
-              navigate('readingSummary', { passageId })
+              navigate('readingSummary', { passageId, returnTo: params.returnTo })
               return
             }
             readingCheckRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
@@ -472,7 +349,42 @@ export function ReaderScreen() {
       </div>
 
       {/* 一文の詳細ウィンドウ */}
-      <Sheet open={activeIdx != null} onClose={closeSentence} title="一文の構文解説" maxH="88vh">
+      <Sheet
+        open={activeIdx != null}
+        onClose={closeSentence}
+        title="一文の構文解説"
+        maxH="88vh"
+        scrollAreaRef={sentenceSheetScrollRef}
+        footer={sentence ? (
+          <nav
+            className="flex items-center justify-between gap-2"
+            aria-label="文の移動"
+            data-reading-sentence-navigation
+          >
+            <Button
+              variant="secondary"
+              size="sm"
+              className="min-h-12"
+              disabled={activeIdx === 0}
+              onClick={() => openSentence(activeIdx - 1)}
+            >
+              ← 前の文
+            </Button>
+            <span className="text-xs font-bold text-ink/40" aria-live="polite">
+              {activeIdx + 1}/{passage.sentences.length}
+            </span>
+            <Button
+              variant="secondary"
+              size="sm"
+              className="min-h-12"
+              disabled={activeIdx >= passage.sentences.length - 1}
+              onClick={() => openSentence(activeIdx + 1)}
+            >
+              次の文 →
+            </Button>
+          </nav>
+        ) : null}
+      >
         {sentence && sentenceAnalysis && (
           <div className="space-y-4">
             {/* 構文ラベルを原文へ直接対応させた英文（単語タップ可） */}
@@ -597,56 +509,47 @@ export function ReaderScreen() {
               </div>
             </section>
 
-            {/* 文法ブロックから独立した、全長文共通の発音・意味フレーズ列 */}
+            {/* 文法ブロックから独立した、全長文共通の意味フレーズ列 */}
             <section
               className="border-y border-emerald-100 bg-emerald-50/40 py-3"
               data-reading-phrase-method={sentenceAnalysis.phraseMethod}
             >
-                <div className="space-y-2" aria-label="英文と対応する日本語">
-                  {sentenceAnalysis.meaningPhraseSequence.map((phraseItem, phraseIndex) => {
-                    return (
-                      <article
-                        key={phraseItem.id}
-                        className="border border-emerald-100 bg-white p-3"
-                        data-reading-phrase-status={phraseItem.status}
-                        data-reading-review-state={phraseItem.reviewState}
-                      >
-                        <div className="flex items-start gap-2">
-                          <button
-                            onClick={() => speakReviewedPhrasePair(phraseItem, phraseIndex)}
-                            aria-label={`${phraseItem.en}を英語、対応する日本語、文法解説の順で再生`}
-                            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-700 active:bg-emerald-200"
-                          >
-                            <SpeakerWave size={17} />
-                          </button>
-                          <div className="min-w-0 flex-1">
-                            <div className="mb-1 flex flex-wrap items-center gap-1 text-[10px] font-extrabold">
-                              <span className="border border-emerald-100 bg-emerald-50 px-1.5 py-0.5 text-emerald-800">
-                                {phraseIndex + 1}. {phraseItem.pattern || phraseItem.label || '意味フレーズ'}
-                              </span>
-                            </div>
-                            <p lang="en" className="font-bold leading-relaxed text-ink">
-                              {phraseItem.displayEn}
-                            </p>
-                            {phraseItem.structureEn && (
-                              <p className="mt-0.5 text-[10px] font-bold text-ink/45">
-                                音声では原文どおり「{phraseItem.spokenEn}」と発音
-                              </p>
-                            )}
-                            <p className="mt-1 text-sm font-bold leading-relaxed text-brand-700">
-                              {phraseItem.ja}
-                            </p>
-                          </div>
+              <div className="space-y-2" aria-label="英文と対応する日本語">
+                {sentenceAnalysis.meaningPhraseSequence.map((phraseItem, phraseIndex) => {
+                  return (
+                    <article
+                      key={phraseItem.id}
+                      className="border border-emerald-100 bg-white p-3"
+                      data-reading-phrase-status={phraseItem.status}
+                      data-reading-review-state={phraseItem.reviewState}
+                    >
+                      <div className="min-w-0">
+                        <div className="mb-1 flex flex-wrap items-center gap-1 text-[10px] font-extrabold">
+                          <span className="border border-emerald-100 bg-emerald-50 px-1.5 py-0.5 text-emerald-800">
+                            {phraseIndex + 1}. {phraseItem.pattern || phraseItem.label || '意味フレーズ'}
+                          </span>
                         </div>
-                        {visiblePhraseExplanations[phraseIndex] && (
-                          <p className="mt-2 border-l-2 border-sky-300 bg-sky-50/70 px-2 py-1.5 text-xs font-bold leading-relaxed text-ink/65">
-                          フレーズ内の文法：{visiblePhraseExplanations[phraseIndex]}
+                        <p lang="en" className="font-bold leading-relaxed text-ink">
+                          {phraseItem.displayEn}
+                        </p>
+                        {phraseItem.structureEn && (
+                          <p className="mt-0.5 text-[10px] font-bold text-ink/45">
+                            音声では原文どおり「{phraseItem.spokenEn}」と発音
                           </p>
                         )}
-                      </article>
-                    )
-                  })}
-                </div>
+                        <p className="mt-1 text-sm font-bold leading-relaxed text-brand-700">
+                          {phraseItem.ja}
+                        </p>
+                      </div>
+                      {visiblePhraseExplanations[phraseIndex] && (
+                        <p className="mt-2 border-l-2 border-sky-300 bg-sky-50/70 px-2 py-1.5 text-xs font-bold leading-relaxed text-ink/65">
+                          フレーズ内の文法：{visiblePhraseExplanations[phraseIndex]}
+                        </p>
+                      )}
+                    </article>
+                  )
+                })}
+              </div>
             </section>
 
             {/* 上段の意味フレーズを再掲せず、節・句ごとの固有情報だけを示す。 */}
@@ -709,28 +612,6 @@ export function ReaderScreen() {
               <p className="font-bold leading-relaxed text-amber-900">{sentence.ja}</p>
             </div>
 
-            {/* 文の移動 */}
-            <div className="flex items-center justify-between gap-2 pt-1">
-              <Button
-                variant="secondary"
-                size="sm"
-                disabled={activeIdx === 0}
-                onClick={() => openSentence(activeIdx - 1)}
-              >
-                ← 前の文
-              </Button>
-              <span className="text-xs font-bold text-ink/40">
-                {activeIdx + 1}/{passage.sentences.length}
-              </span>
-              <Button
-                variant="secondary"
-                size="sm"
-                disabled={activeIdx >= passage.sentences.length - 1}
-                onClick={() => openSentence(activeIdx + 1)}
-              >
-                次の文 →
-              </Button>
-            </div>
           </div>
         )}
       </Sheet>

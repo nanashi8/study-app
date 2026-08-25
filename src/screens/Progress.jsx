@@ -13,6 +13,7 @@ import {
   buildLearningContentProgress,
 } from '../lib/learningContentProgress.js'
 import { summarizeSrsItems } from '../lib/contentProgress.js'
+import { summarizeVocabularySrsItems } from '../lib/vocabScheduler.js'
 import {
   decodeProgress,
   selectProgressState,
@@ -40,19 +41,19 @@ function RecordSummary({ stats, progress, analytics }) {
     <section className="overflow-hidden rounded-xl border-2 border-slate-700 bg-white" aria-label="学習記録票の基本情報">
       <div className="flex items-center justify-between gap-3 border-b border-slate-300 bg-slate-800 px-4 py-3 text-white">
         <div>
-          <p className="text-[10px] font-extrabold tracking-[0.18em] text-slate-300">STUDENT LEARNING RECORD</p>
-          <h2 className="font-display text-lg font-extrabold">学習記録票</h2>
+          <p className="text-[10px] font-extrabold text-slate-300">この端末の記録</p>
+          <h2 className="font-display text-lg font-extrabold">学習記録のまとめ</h2>
         </div>
-        <span className="whitespace-nowrap border border-slate-500 px-2 py-1 text-[10px] font-extrabold">端末集計</span>
+        <span className="whitespace-nowrap border border-slate-500 px-2 py-1 text-[10px] font-extrabold">この端末の記録</span>
       </div>
       <table className="w-full table-fixed border-collapse text-[10px] sm:text-xs" data-progress-record-summary>
         <tbody>
           {[
             ['英単語 学習済', `${learning.learned ?? 0}/${total}`, '英単語 復習中', `${learning.reviewing ?? 0}/${total}`],
-            ['英単語 未学習', `${learning.unlearned ?? 0}/${total}`, 'クイズ 正解', `${quiz.correct ?? 0}/${total}`],
-            ['クイズ 不正解', `${quiz.incorrect ?? 0}/${total}`, 'クイズ 未回答', `${quiz.unanswered ?? 0}/${total}`],
+            ['英単語 未学習', `${learning.unlearned ?? 0}/${total}`, 'テスト 正解', `${quiz.correct ?? 0}/${total}`],
+            ['テスト 不正解', `${quiz.incorrect ?? 0}/${total}`, 'テスト 未回答', `${quiz.unanswered ?? 0}/${total}`],
             ['累計回答', stats.answered.toLocaleString(), '累計正答率', accuracy],
-            ['分析入力', `${analytics?.inputs ?? 0}件`, '連続学習', `${stats.streak}日`],
+            ['答えた記録', `${analytics?.inputs ?? 0}件`, '連続学習', `${stats.streak}日`],
           ].map(([leftLabel, leftValue, rightLabel, rightValue]) => (
             <tr key={leftLabel} className="border-b border-slate-200 last:border-0">
               <th className="w-[24%] bg-slate-100 px-1 py-2 text-left font-extrabold text-slate-600 [word-break:keep-all] sm:px-2">{leftLabel}</th>
@@ -71,8 +72,8 @@ function AllContentStatus({ contents, onOpen }) {
   return (
     <Card className="overflow-hidden rounded-xl border-slate-300 p-0 shadow-none" data-all-content-status>
       <div className="border-b border-slate-300 bg-slate-100 px-3 py-2.5">
-        <h2 className="font-display text-base font-extrabold text-slate-950">全教材・3区分進捗表</h2>
-        <p className="text-[10px] font-bold text-slate-500">学習の自己判定とクイズの直近結果を別々に集計</p>
+        <h2 className="font-display text-base font-extrabold text-slate-950">教材ごとの記録</h2>
+        <p className="text-[10px] font-bold text-slate-500">「覚えた／まだ」と、テストで最後に答えた結果を分けて表示</p>
       </div>
       <div className="divide-y divide-slate-200">
         {LEARNING_CONTENT_GROUPS.map((group) => (
@@ -251,12 +252,12 @@ export function ProgressScreen() {
         {/* 級別の進捗 */}
         <Card className="overflow-hidden rounded-xl border-slate-300 p-0 shadow-none">
           <div className="border-b border-slate-300 bg-slate-100 px-3 py-2.5">
-            <h2 className="font-display text-base font-extrabold text-slate-950">英検級別・履修状況表</h2>
-            <p className="text-[10px] font-bold text-slate-500">英単語の復習の進み具合を級別に集計</p>
+            <h2 className="font-display text-base font-extrabold text-slate-950">英検級ごとの学習記録</h2>
+            <p className="text-[10px] font-bold text-slate-500">英単語の復習状況を級別に表示</p>
           </div>
           <div className="divide-y divide-slate-200" data-level-progress-table>
             {LEVELS.map((level) => {
-              const progress = summarizeSrsItems(wordsByLevel(level.id), srs)
+              const progress = summarizeVocabularySrsItems(wordsByLevel(level.id), srs)
               return (
                 <div key={level.id} className="space-y-2.5 p-3">
                   <h3 className="text-xs font-extrabold text-slate-800">{level.emoji} {level.label}</h3>
@@ -319,19 +320,19 @@ export function ProgressScreen() {
             <div className="grid grid-cols-2 gap-3">
               <div className="rounded-2xl bg-brand-50 p-3 text-center">
                 <div className="font-display text-2xl font-extrabold text-brand-700">{preview.summary.words}</div>
-                <div className="text-[11px] font-bold text-ink/50">旧履歴がある単語</div>
+                <div className="text-[11px] font-bold text-ink/50">学習記録がある単語</div>
               </div>
               <div className="rounded-2xl bg-brand-50 p-3 text-center">
                 <div className="font-display text-2xl font-extrabold text-brand-700">{preview.summary.mastered}</div>
-                <div className="text-[11px] font-bold text-ink/50">復習の段階4以上まで進んだ単語</div>
+                <div className="text-[11px] font-bold text-ink/50">復習を重ねた単語</div>
               </div>
               <div className="rounded-2xl bg-violet-50 p-3 text-center">
                 <div className="font-display text-2xl font-extrabold text-violet-700">{preview.summary.etymologyStarted}</div>
-                <div className="text-[11px] font-bold text-ink/50">旧履歴がある語源</div>
+                <div className="text-[11px] font-bold text-ink/50">学習記録がある語源</div>
               </div>
               <div className="rounded-2xl bg-violet-50 p-3 text-center">
                 <div className="font-display text-2xl font-extrabold text-violet-700">{preview.summary.etymologyMastered}</div>
-                <div className="text-[11px] font-bold text-ink/50">復習の段階4以上まで進んだ語源</div>
+                <div className="text-[11px] font-bold text-ink/50">復習を重ねた語源</div>
               </div>
               <div className="rounded-2xl bg-hint-soft p-3 text-center">
                 <div className="font-display text-2xl font-extrabold text-amber-700">{preview.summary.streak}</div>

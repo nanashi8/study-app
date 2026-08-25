@@ -96,6 +96,19 @@ export function SessionResultScreen() {
   const reviewUnit = isGrammar || isDictation || isListening ? '問' : isPhrase ? '項目' : '語'
   const vocabSessionIds = params.vocabSession?.wordIds ?? []
   const vocabReviewIds = reviewIds.length ? reviewIds : vocabSessionIds
+  const vocabNextAfterReview = params.continueTo?.screen
+    ? params.continueTo
+    : {
+        screen: 'vocabStudy',
+        params: {
+          source,
+          title,
+          mode: 'study',
+          engine: 'word',
+          size: params.size,
+          returnTo: params.returnTo,
+        },
+      }
   const vocabCompletion = useMemo(() => {
     if (!isVocabStudy || !params.vocabSession?.wordIds?.length) return null
     return buildVocabCompletionReport({
@@ -103,8 +116,8 @@ export function SessionResultScreen() {
       learningAnalytics,
       skillStats,
       wordIds: params.vocabSession.wordIds,
-      reviewIds,
       beforeBoxes: params.vocabSession.beforeBoxes,
+      reviewIds,
       correct,
       wrong,
       dailyGoal: settings.dailyGoal,
@@ -137,16 +150,16 @@ export function SessionResultScreen() {
         answered: total,
       })
     }
-    // 系統クイズは正答率で次回の級（現在地）を上下させる。
+    // 系統テストは正答率で次回の級（現在地）を上下させる。
     if (source?.type === 'grammarStrand' && source.strandId) {
       advanceGrammarStrand(source.strandId, accuracy)
     }
-    // 設問ごとのSRSは各クイズ画面で確定済み。ここでは累計だけを一度記録する。
+    // 設問ごとのSRSは各テスト画面で確定済み。ここでは累計だけを一度記録する。
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const message = accuracy >= 0.9
-    ? { emoji: '🏆', text: isDragonVein ? '記憶の文脈が鮮明に戻った！' : 'パーフェクト級！', color: '#f59e0b' }
+    ? { emoji: '🏆', text: isDragonVein ? '失われた記憶がはっきり戻った！' : 'すばらしい結果です！', color: '#f59e0b' }
     : accuracy >= 0.7
       ? { emoji: '✨', text: isDragonVein ? '龍脈の絡みがほどけていく' : 'よくできました！', color: '#10b981' }
       : accuracy >= 0.4
@@ -218,7 +231,7 @@ export function SessionResultScreen() {
                 title: '復習',
                 mode: 'study',
                 size: vocabReviewIds.length,
-                continueTo: params.continueTo,
+                continueTo: vocabNextAfterReview,
                 returnTo: params.returnTo,
               })
   )
@@ -236,11 +249,12 @@ export function SessionResultScreen() {
     if (!ids.length) return
     navigate('vocabStudy', {
       source: { type: 'mylist', ids },
-      title: scheduleItem.id === 'now'
+      title: scheduleItem.days === 0 || scheduleItem.id === 'now'
         ? '今日の復習'
-        : `${scheduleItem.label}の先取り復習`,
+        : `${scheduleItem.label}の内容を今練習`,
       mode: 'study',
       size: ids.length,
+      continueTo: vocabNextAfterReview,
       returnTo: params.returnTo,
     })
   }
@@ -294,8 +308,8 @@ export function SessionResultScreen() {
                   <b className="text-2xl text-ink">{track?.correct ?? 0}<small className="text-xs text-ink/40">/{DRAGON_VEIN_TARGET}</small></b>
                 </div>
                 <ProgressBar value={(track?.correct ?? 0) / DRAGON_VEIN_TARGET} color={node.accent} className="mt-3" />
-                <p className="mt-2 text-xs font-bold text-ink/50">単語と熟語・構文がそれぞれ100正解に達すると、この頂点が正常化する。</p>
-                {nodeStatus.complete && <p className="mt-2 font-extrabold text-emerald-600">✨ {node.name}の龍脈は正常化済み</p>}
+                <p className="mt-2 text-xs font-bold text-ink/50">単語と熟語・構文でそれぞれ100問正解すると、この場所の龍脈が元に戻ります。</p>
+                {nodeStatus.complete && <p className="mt-2 font-extrabold text-emerald-600">✨ {node.name}の龍脈を修復しました</p>}
                 {mainComplete && <p className="mt-2 font-extrabold text-fuchsia-600">👑 1級エクストラステージが開いた</p>}
               </>
             )}
@@ -317,7 +331,6 @@ export function SessionResultScreen() {
   if (vocabCompletion) {
     return (
       <div className="relative min-h-full overflow-x-hidden bg-slate-50 px-3 pb-8 pt-3">
-        {percent >= 80 && <Confetti />}
         <div className="relative z-20 mb-2 flex justify-end"><SpeechSettingsButton compact /></div>
         <VocabCompletionReport
           report={vocabCompletion}
@@ -339,7 +352,7 @@ export function SessionResultScreen() {
       <div className="absolute right-3 top-3 z-20"><SpeechSettingsButton compact /></div>
       <div className="text-6xl animate-float">{message.emoji}</div>
       <h1 className="font-display text-2xl font-extrabold text-ink">{message.text}</h1>
-      <p className="-mt-3 text-sm font-bold text-ink/45">{title}・{mode === 'quiz' ? 'クイズ' : '暗記'}</p>
+      <p className="-mt-3 text-sm font-bold text-ink/45">{title}・{mode === 'quiz' ? 'テスト' : '暗記'}</p>
       <ProgressRing value={accuracy} size={150} stroke={14} color={message.color}>
         <span className="font-display text-4xl font-extrabold text-ink">{percent}%</span>
         <span className="text-xs font-bold text-ink/45">{correct}/{total} 正解</span>

@@ -38,7 +38,7 @@ export function MathIntroScreen() {
         </div>
         <div className="text-5xl">🧭</div>
         <p className="font-display text-lg font-extrabold text-ink">この単元の導入は準備中です</p>
-        <Button onClick={backToMathUnits}>もどる</Button>
+        <Button onClick={backToMathUnits}>戻る</Button>
       </div>
     )
   }
@@ -176,7 +176,7 @@ export function MathIntroScreen() {
         </div>
       </div>
 
-      <div className="fixed inset-x-0 bottom-0 z-20 mx-auto w-full max-w-md border-t border-violet-100 bg-white/95 p-4 pb-[calc(1rem+var(--app-safe-bottom))] backdrop-blur">
+      <div className="app-fixed-bottom-actions fixed inset-x-0 z-20 mx-auto w-full max-w-md border-t border-violet-100 bg-white/95 p-4 backdrop-blur">
         <Button
           full
           size="lg"

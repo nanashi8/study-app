@@ -106,7 +106,7 @@ export function DictationPlayScreen() {
       <div className="flex h-full flex-col items-center justify-center gap-4 p-8 text-center">
         <div className="text-5xl">⌨️</div>
         <p className="font-display text-lg font-extrabold text-ink">出題できる英文がありません</p>
-        <Button onClick={back}>もどる</Button>
+        <Button onClick={back}>戻る</Button>
       </div>
     )
   }

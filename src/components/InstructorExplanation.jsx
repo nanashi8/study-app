@@ -32,9 +32,7 @@ export function InstructorExplanation({
           <Lightbulb size={17} />
         </span>
         <div>
-          <p className="text-[10px] font-extrabold tracking-[0.14em] text-amber-700">
-            PROFESSIONAL LESSON
-          </p>
+          <p className="text-[10px] font-extrabold text-amber-700">答えを理解する</p>
           <h3 className="font-display text-sm font-extrabold text-ink">
             徹底解説
           </h3>

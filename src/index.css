@@ -1,9 +1,8 @@
 @import "tailwindcss";
 
 /*
- * English study text uses a book-style serif with deliberately different
- * uppercase/lowercase silhouettes (notably F/f). Only Latin characters are
- * supplied by this webfont, so Japanese keeps the existing rounded gothic.
+ * 英語は参考書・辞書に近いセリフ体を使う。フォントデータをLatin文字だけに
+ * 限定するため、日本語は従来の丸ゴシックのまま変わらない。
  */
 @font-face {
   font-family: "Source Serif 4 English";
@@ -5278,10 +5277,10 @@ button { -webkit-tap-highlight-color: transparent; }
     var(--app-ios-browser-bottom-clearance)
   );
 }
-/* iOS Safari は、画面遷移などで下部ツールバーが自動的に広がった瞬間だけ
+/* iOS Safari は、画面遷移などで下部ツールバーが広がった直後だけ
    safe-area-inset-bottom / viewport の更新が遅れ、最下段の操作を覆うことがある。
-   ホーム画面アプリにはブラウザUIがないため、通常タブのiPhone相当だけ
-   ツールバー最大時の退避幅をあらかじめ確保する。 */
+   ブラウザUIのないホーム画面アプリは除き、通常タブのiPhone相当だけ
+   ツールバー最大時の退避幅を確保する。 */
 @supports (-webkit-touch-callout: none) {
   @media (display-mode: browser) and (hover: none) and (pointer: coarse) and (max-width: 48rem) {
     :root {
@@ -5314,13 +5313,23 @@ button { -webkit-tap-highlight-color: transparent; }
   top: var(--app-visual-viewport-top, 0px);
   height: var(--app-visual-viewport-height, 100svh);
 }
-/* AppShellのflex末尾で、通常画面の全操作をホームバー・Safari下部UIより上へ置く。 */
+/* 通常コンテンツ、全高画面の操作フッター、読み上げパネルをまとめて
+   ホームバー・Safari下部UIより上へ置く。AppShellのflex末尾で受け持つため、
+   各画面に同じ大きな余白を重ねない。 */
 .study-app-bottom-clearance {
   height: var(--app-bottom-clearance);
 }
 
+/* viewportへ直接固定する操作バーはflex末尾の退避領域が効かない。
+   SafariブラウザUIぶんだけバー全体を持ち上げ、端末のsafe areaは
+   バー内のpaddingで確保して、ホーム画面アプリでは背景を画面端までつなぐ。 */
+.app-fixed-bottom-actions {
+  bottom: var(--app-ios-browser-bottom-clearance);
+  padding-bottom: calc(1rem + var(--app-safe-bottom));
+}
+
 /* ---- App-wide readability -------------------------------------------------
-   The app has 62 routes and many compact information labels. Keep their
+   The app has many public routes and compact information labels. Keep their
    hierarchy, but do not let supporting copy fall back to 6–11px on phones. */
 .study-app-surface {
   font-size: 16px;

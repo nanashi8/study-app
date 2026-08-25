@@ -11,15 +11,15 @@ import {
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { Card, Button, Chip, IconButton } from '../components/ui.jsx'
 import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
-import { summarizeSrsItems } from '../lib/contentProgress.js'
-import { Refresh, Bookmark, Book, Cards, Search, Lightbulb, ArrowRight, Sparkles, Check, Link } from '../components/Icons.jsx'
+import { summarizeVocabularySrsItems } from '../lib/vocabScheduler.js'
+import { Refresh, Bookmark, Book, BookOpen, Cards, Search, Lightbulb, ArrowRight, Sparkles, Check, Link } from '../components/Icons.jsx'
 
 // 下の級（前提）が弱点なら「先に固めよう」と案内するバナー。
 function WeakFoundationBanner({ srs, onReview }) {
   const weak = weakFoundationLevel(srs)
   if (!weak) return null
   const { level, progress, reason } = weak
-  const status = summarizeSrsItems(wordsByLevel(level.id), srs)
+  const status = summarizeVocabularySrsItems(wordsByLevel(level.id), srs)
   return (
     <button
       onClick={() => onReview(level)}
@@ -34,8 +34,8 @@ function WeakFoundationBanner({ srs, onReview }) {
         </div>
         <div className="text-[11px] font-bold text-amber-800/75">
           {reason === 'due'
-            ? `復習が ${progress.due} 語たまっています。土台の級です`
-            : `学習済 ${status.learning.learned}/${status.total} 語。上の級の土台になります`}
+            ? `復習する語が${progress.due}語たまっています。まずこの級を固めましょう`
+            : `${status.total}語のうち${status.learning.learned}語を学習済みです。上の級の土台になります`}
         </div>
       </div>
       <span className="text-amber-700"><ArrowRight size={20} /></span>
@@ -43,9 +43,9 @@ function WeakFoundationBanner({ srs, onReview }) {
   )
 }
 
-function LevelCard({ level, srs, onStudy, onQuiz, onFields }) {
+function LevelCard({ level, srs, onStudy, onQuiz, onFields, onCatalog }) {
   const p = levelProgress(level.id, srs)
-  const status = summarizeSrsItems(wordsByLevel(level.id), srs)
+  const status = summarizeVocabularySrsItems(wordsByLevel(level.id), srs)
   return (
     <Card className="p-4">
       <div className="flex items-center gap-3">
@@ -66,37 +66,58 @@ function LevelCard({ level, srs, onStudy, onQuiz, onFields }) {
       </div>
 
       <LearningStatusBars progress={status} className="mt-3" compact units={{ learning: '語', quiz: '問' }} />
-      {p.due > 0 && <p className="mt-1.5 text-right text-[10px] font-extrabold text-amber-700">今日の復習 {p.due}語</p>}
+      <p
+        className={`mt-1.5 text-right text-[10px] font-extrabold ${p.due > 0 ? 'text-amber-700' : 'text-ink/45'}`}
+        data-vocab-study-ready={p.ready}
+      >
+        {p.due > 0
+          ? `復習が必要 ${p.due}語`
+          : p.ready > 0
+            ? `次に学ぶ ${p.ready}語`
+            : '次の復習日まで待つ'}
+      </p>
 
       <div className="mt-3 grid grid-cols-2 gap-2">
         <Button
           variant="primary"
           size="sm"
-          disabled={!p.total}
+          disabled={!p.ready}
           onClick={onStudy}
-          aria-label={`英検${level.label}の単語を覚える`}
+          aria-label={p.ready
+            ? `英検${level.label}の単語を暗記。復習または未学習 ${p.ready}語`
+            : `英検${level.label}は次の復習日まで待つ`}
         >
-          <Book size={16} /> 覚える
+          <Book size={16} /> {p.ready ? '暗記' : '次回待ち'}
         </Button>
         <Button
           variant="secondary"
           size="sm"
           disabled={!p.total}
           onClick={onQuiz}
-          aria-label={`英検${level.label}の単語クイズ`}
+          aria-label={`英検${level.label}の単語テスト`}
         >
-          <Cards size={16} /> クイズ
+          <Cards size={16} /> テスト
         </Button>
       </div>
-      <button
-        onClick={onFields}
-        disabled={!p.total}
-        aria-label={`英検${level.label}の10分野を選ぶ`}
-        className="mt-2 flex w-full items-center justify-center gap-1.5 rounded-xl bg-paper py-2 text-xs font-extrabold text-brand-600 active:scale-[0.98] transition-transform disabled:opacity-50"
-      >
-        <Sparkles size={15} /> 10分野で選ぶ
-        <ArrowRight size={15} />
-      </button>
+      <div className="mt-2 grid grid-cols-2 gap-2">
+        <button
+          onClick={onFields}
+          disabled={!p.total}
+          aria-label={`英検${level.label}の10分野を選ぶ`}
+          className="flex min-h-11 w-full items-center justify-center gap-1.5 rounded-xl bg-paper px-2 text-xs font-extrabold text-brand-600 active:scale-[0.98] transition-transform disabled:opacity-50"
+        >
+          <Sparkles size={15} /> 10分野で選ぶ
+        </button>
+        <button
+          onClick={onCatalog}
+          disabled={!p.total}
+          aria-label={`英検${level.label}の単語一覧から復習する`}
+          className="flex min-h-11 w-full items-center justify-center gap-1.5 rounded-xl bg-brand-50 px-2 text-xs font-extrabold text-brand-700 active:scale-[0.98] transition-transform disabled:opacity-50"
+          data-vocab-catalog-entry={level.id}
+        >
+          <BookOpen size={15} /> 一覧から復習
+        </button>
+      </div>
     </Card>
   )
 }
@@ -138,15 +159,15 @@ export function VocabLevelsScreen() {
   const reviewLabel = reviewState === 'due'
     ? '今日の復習'
     : reviewComplete
-      ? '先取り復習'
+      ? '復習日より前に練習'
       : '復習'
   const reviewTiming = reviewState === 'due'
-    ? `${prog.due}語が期限`
+    ? `${prog.due}語を今日復習`
     : reviewComplete
       ? nextReviewInDays === 1
-        ? '次の期限は明日'
+        ? '次の復習日は明日'
         : Number.isFinite(nextReviewInDays)
-          ? `次の期限まであと${nextReviewInDays}日`
+          ? `次の復習日まであと${nextReviewInDays}日`
           : '学習済み語を確認'
       : '学習後に表示'
 
@@ -181,7 +202,7 @@ export function VocabLevelsScreen() {
             disabled={!canReview}
             onClick={() => navigate('vocabStudy', {
               source: { type: reviewState === 'due' ? 'due' : 'review' },
-              title: reviewState === 'due' ? '今日の復習' : '先取り復習',
+              title: reviewState === 'due' ? '今日の復習' : '復習日より前に練習',
               mode: 'study',
               returnTo: { screen: 'vocabLevels' },
             })}
@@ -244,7 +265,7 @@ export function VocabLevelsScreen() {
           </span>
           <span className="min-w-0 flex-1">
             <strong className="block text-sm font-extrabold text-violet-900">語源から学ぶ</strong>
-            <span className="mt-0.5 block text-xs font-bold text-violet-700">語源から関連英単語を覚える</span>
+            <span className="mt-0.5 block text-xs font-bold text-violet-700">語源から関連英単語を暗記</span>
           </span>
           <ArrowRight size={17} className="shrink-0 text-violet-400" />
         </button>
@@ -256,7 +277,8 @@ export function VocabLevelsScreen() {
             srs={srs}
             onStudy={() => study(level.id, level.label)}
             onQuiz={() => quiz(level.id, level.label)}
-            onFields={() => navigate('vocabDecks', { levelId: level.id })}
+            onFields={() => navigate('vocabDecks', { levelId: level.id, view: 'fields' })}
+            onCatalog={() => navigate('vocabDecks', { levelId: level.id, view: 'list' })}
           />
         ))}
       </div>

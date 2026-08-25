@@ -25,13 +25,13 @@ import { phraseSpeechText } from '../src/lib/phrase-speech.js'
 
 const EXPECTED_LEVELS = ['5', '4', '3', 'pre2', 'pre2plus', '2', 'pre1', '1']
 
-test('長文は全8区分に3題ずつ、異なる厳選テーマを収録する', () => {
+test('長文は全8区分に4題ずつ、異なる厳選テーマを収録する', () => {
   assert.deepEqual(READING_LEVELS.map((level) => level.id), EXPECTED_LEVELS)
-  assert.equal(PASSAGES.length, EXPECTED_LEVELS.length * 3)
+  assert.equal(PASSAGES.length, EXPECTED_LEVELS.length * 4)
   for (const level of EXPECTED_LEVELS) {
     assert.equal(
       PASSAGES.filter((passage) => passage.level === level).length,
-      3,
+      4,
       `英検${level}級`,
     )
   }
@@ -106,7 +106,7 @@ test('全熟語・長文表現の主音声は熟語なら見出し、構文な�
   }
 })
 
-test('熟語の一覧・学習・クイズは共通の主音声判定を使う', () => {
+test('熟語の一覧・暗記・テストは共通の主音声判定を使う', () => {
   for (const filename of ['Phrases.jsx', 'PhraseStudy.jsx', 'PhraseQuiz.jsx', 'ReadingPrep.jsx']) {
     const source = readFileSync(new URL(`../src/screens/${filename}`, import.meta.url), 'utf8')
     assert.match(source, /phraseSpeechText\(/, filename)

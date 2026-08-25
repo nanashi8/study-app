@@ -6,11 +6,10 @@ import {
   ETYMOLOGY_FIELD_TO_DOMAIN,
   ETYMOLOGY_FORMATION_META,
   ETYMOLOGY_MODE_META,
-  ETYMOLOGY_PACKS,
+  ETYMOLOGY_LEGACY_PACKS as ETYMOLOGY_PACKS,
   ETYMOLOGY_SOURCE_META,
-  ETYMOLOGY_SUMMARY,
+  ETYMOLOGY_LEGACY_SUMMARY as ETYMOLOGY_SUMMARY,
   ROOTS,
-  getEtymologyPack,
   etymologyLearningGuideFor,
   relatedByEtymology,
   rootIdsForWord,
@@ -22,12 +21,21 @@ import {
   REFERENCE_ROOTS,
 } from '../src/data/etymology-reference-roots.js'
 import { ETYMOLOGY_COMPLETION_WORDS } from '../src/data/words-etymology-completion.js'
+import { CURRICULUM_1900_WORDS } from '../src/data/words-curriculum-1900.js'
 import { wordsForSource } from '../src/lib/session.js'
 
 const compact = (value = '') => value.toLowerCase().replace(/[^a-z0-9]+/g, '')
 const completionWordIds = new Set(ETYMOLOGY_COMPLETION_WORDS.map((word) => word.id))
+const curriculum1900WordIds = new Set(CURRICULUM_1900_WORDS.map((word) => word.id))
+const sourceGroup = (id) => completionWordIds.has(id)
+  ? 'completion'
+  : curriculum1900WordIds.has(id)
+    ? 'curriculum-1900'
+    : 'legacy'
 const byHead = new Map()
 const byId = new Map(ALL_WORDS.map((word) => [word.id, word]))
+const legacyPackById = new Map(ETYMOLOGY_PACKS.map((pack) => [pack.id, pack]))
+const getEtymologyPack = (packId) => legacyPackById.get(packId)
 for (const word of ALL_WORDS) {
   byHead.set(word.word.toLowerCase(), word)
   if (!byHead.has(compact(word.word))) byHead.set(compact(word.word), word)
@@ -70,7 +78,7 @@ test('濃縮ルートは語源データの強さを越えて推測しない', ()
   for (const word of ALL_WORDS) {
     const formula = (word.etymology?.parts?.length ?? 0) >= 2
     const relations = new Set([...familyRelationIds(word)].filter((id) =>
-      completionWordIds.has(id) === completionWordIds.has(word.id)))
+      sourceGroup(id) === sourceGroup(word.id)))
     const mode = word.compression.mode
 
     if (formula) {
@@ -93,7 +101,7 @@ test('濃縮ルートは語源データの強さを越えて推測しない', ()
   }
 })
 
-test('成り立ち・変化は非同根を明示し、全パックを8語以内で学べる', () => {
+test('由来カードは学習用の組分けだと明示し、全カードを8語以内で学べる', () => {
   const packIds = new Set()
   for (const pack of ETYMOLOGY_PACKS) {
     assert.ok(!packIds.has(pack.id), pack.id)
@@ -103,7 +111,20 @@ test('成り立ち・変化は非同根を明示し、全パックを8語以内�
     assert.ok(pack.studyIds.length > 0 && pack.studyIds.length <= 8, pack.id)
     assert.equal(new Set(pack.studyIds).size, pack.studyIds.length, pack.id)
     assert.ok(pack.studyIds.every((id) => ALL_WORDS.some((word) => word.id === id)), pack.id)
-    if (pack.mode === 'origin') assert.match(pack.caution, /同じ語根/, pack.id)
+    if (pack.mode === 'origin') {
+      assert.equal(pack.groupClaim, 'study-batch', pack.id)
+      if (pack.studyIds.length === 1) assert.doesNotMatch(pack.caution, /語どうし/, pack.id)
+      else {
+        assert.match(pack.caution, /学習量をまとめたセット/, pack.id)
+        assert.match(pack.caution, /関連語という意味ではありません/, pack.id)
+      }
+    }
+    if (pack.mode === 'family') {
+      assert.equal(pack.groupClaim, 'study-batch', pack.id)
+      assert.match(pack.subtitle, /^1語ずつ形と由来を確かめる$/, pack.id)
+      if (pack.studyIds.length === 1) assert.doesNotMatch(pack.caution, /語どうし/, pack.id)
+      else assert.match(pack.caution, /関連語という意味ではありません/, pack.id)
+    }
 
     assert.deepEqual(
       wordsForSource({ type: 'deck', ids: pack.studyIds }).map((word) => word.id),
@@ -113,7 +134,21 @@ test('成り立ち・変化は非同根を明示し、全パックを8語以内�
   }
 })
 
-test('成り立ち・出発言語・意味領域を混ぜず、同じ軸だけで由来パックを作る', () => {
+test('複合語を経由した別の構成語を、同じ学習カードへ連鎖追加しない', () => {
+  const cases = [
+    ['family:work:work', 'art'],
+    ['family:out:out', 'line'],
+    ['family:ship:ship', 'war'],
+    ['family:like:likewise', 'war'],
+  ]
+  for (const [packId, excludedId] of cases) {
+    const pack = getEtymologyPack(packId)
+    assert.ok(pack, packId)
+    assert.ok(!pack.studyIds.includes(excludedId), `${packId}: ${excludedId}`)
+  }
+})
+
+test('由来カードの内部整理軸を混ぜず、画面では関連語の組だと主張しない', () => {
   const originPacks = ETYMOLOGY_PACKS.filter((pack) => pack.mode === 'origin')
   assert.equal(originPacks.length, ETYMOLOGY_SUMMARY.origin.packs)
   assert.equal(
@@ -126,7 +161,10 @@ test('成り立ち・出発言語・意味領域を混ぜず、同じ軸だけ�
     assert.ok(ETYMOLOGY_SOURCE_META[pack.sourceKey], pack.id)
     assert.ok(ETYMOLOGY_DOMAIN_META[pack.domainKey], pack.id)
     assert.ok(pack.sharedLabel, pack.id)
-    assert.match(pack.caution, /共通点/, pack.id)
+    assert.match(pack.subtitle, /^1語ずつ由来を確かめる/, pack.id)
+    if (pack.studyIds.length === 1) assert.doesNotMatch(pack.caution, /語どうし/, pack.id)
+    else assert.match(pack.caution, /関連語という意味ではありません/, pack.id)
+    assert.doesNotMatch(pack.caution, /共通点は|同じ作られ方の語/, pack.id)
     assert.doesNotMatch(pack.title, /意味変化の物語|由来の読み方/, pack.id)
 
     const words = pack.coverageIds.map((id) => byId.get(id))
@@ -179,21 +217,33 @@ test('代表語を形成法と言語層の別軸へ分類し、旧来の無関�
   assert.notEqual(word('comic').compression.packId, word('box').compression.packId)
 })
 
-test('既存語源パックを固定し、補完語だけを名前空間へ分離する', () => {
-  const legacyWords = ALL_WORDS.filter((word) => !completionWordIds.has(word.id))
+test('既存語源パックを固定し、2種の補完語だけを各名前空間へ分離する', () => {
+  const legacyWords = ALL_WORDS.filter((word) => sourceGroup(word.id) === 'legacy')
   const completionWords = ALL_WORDS.filter((word) => completionWordIds.has(word.id))
-  const legacyPacks = ETYMOLOGY_PACKS.filter((pack) => !pack.id.startsWith('completion:'))
+  const curriculum1900Words = ALL_WORDS.filter((word) => curriculum1900WordIds.has(word.id))
+  const legacyPacks = ETYMOLOGY_PACKS.filter((pack) =>
+    !pack.id.startsWith('completion:') && !pack.id.startsWith('curriculum-1900:'))
   const completionPacks = ETYMOLOGY_PACKS.filter((pack) => pack.id.startsWith('completion:'))
+  const curriculum1900Packs = ETYMOLOGY_PACKS.filter((pack) => pack.id.startsWith('curriculum-1900:'))
 
-  assert.equal(legacyWords.length, 8211)
-  assert.equal(legacyPacks.length, 2678)
+  assert.equal(legacyWords.length, 8234)
+  assert.equal(legacyPacks.length, 2688)
   assert.equal(completionWords.length, 215)
+  assert.equal(curriculum1900Words.length, 420)
   assert.ok(completionPacks.length > 0)
-  assert.ok(legacyWords.every((word) => !word.compression.packId.startsWith('completion:')))
+  assert.ok(curriculum1900Packs.length > 0)
+  assert.ok(legacyWords.every((word) =>
+    !word.compression.packId.startsWith('completion:') &&
+    !word.compression.packId.startsWith('curriculum-1900:')))
   assert.ok(completionWords.every((word) => word.compression.packId.startsWith('completion:')))
+  assert.ok(curriculum1900Words.every((word) => word.compression.packId.startsWith('curriculum-1900:')))
   assert.deepEqual(
     new Set(completionPacks.flatMap((pack) => pack.coverageIds)),
     completionWordIds,
+  )
+  assert.deepEqual(
+    new Set(curriculum1900Packs.flatMap((pack) => pack.coverageIds)),
+    curriculum1900WordIds,
   )
 })
 
@@ -252,8 +302,8 @@ test('補助語根は既存語だけを明示的につなぎ、語源カードID
   assert.notEqual(administer.compression.mode, 'root')
 })
 
-test('追加した補助語根は既存8,211語の内容と関連語へ適用される', () => {
-  const legacyWords = ALL_WORDS.filter((word) => !completionWordIds.has(word.id))
+test('追加した補助語根は既存語の内容と関連語へ適用される', () => {
+  const legacyWords = ALL_WORDS.filter((word) => sourceGroup(word.id) === 'legacy')
   const applied = legacyWords.filter((word) => word.referenceRoots.length > 0)
   assert.equal(applied.length, 461)
   assert.equal(
@@ -282,7 +332,8 @@ test('補完語の語族は既存語との境界を越えて109組すべて双�
   for (const word of ALL_WORDS) {
     for (const family of word.family ?? []) {
       const related = byHead.get(family.w.toLowerCase()) ?? byHead.get(compact(family.w))
-      if (!related || completionWordIds.has(word.id) === completionWordIds.has(related.id)) continue
+      if (!related || new Set([sourceGroup(word.id), sourceGroup(related.id)]).size !== 2) continue
+      if (curriculum1900WordIds.has(word.id) || curriculum1900WordIds.has(related.id)) continue
       directed.add(`${word.id}>${related.id}`)
       pairIds.add([word.id, related.id].sort().join('|'))
       if (completionWordIds.has(word.id)) completionWords.add(word.id)

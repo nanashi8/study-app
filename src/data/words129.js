@@ -18,7 +18,7 @@ const RAW = [
   ['obviate', '動', '1', '(必要・危険を)未然に防ぐ・取り除く', 'obviate the need for', '〜の必要をなくす', 'ラテン obviare(立ちふさがる)。', { syn: [{ w: 'preclude', m: '排除する' }, { w: 'avert', m: '回避する' }], ant: [{ w: 'necessitate', m: '必要とする' }], field: '一般' }],
   ['odious', '形', '1', '憎むべき・忌まわしい', 'an odious comparison', '不快な比較', 'ラテン odium(憎しみ)。', { syn: [{ w: 'hateful', m: '憎らしい' }, { w: 'repugnant', m: '嫌悪を催す' }], ant: [{ w: 'agreeable', m: '快い' }], field: '心理' }],
   ['onerous', '形', '1', '重荷となる・厄介な', 'an onerous task', '骨の折れる仕事', 'ラテン onus(重荷)。', { syn: [{ w: 'burdensome', m: '負担の重い' }, { w: 'arduous', m: '困難な' }], ant: [{ w: 'effortless', m: '楽な' }], field: '一般' }],
-  ['opprobrium', '名', '1', '不名誉・非難の的', 'public opprobrium', '世間の非難', 'ラテン ob+probrum(恥)。', { syn: [{ w: 'disgrace', m: '不名誉' }, { w: 'censure', m: '非難' }], ant: [{ w: 'acclaim', m: '称賛' }], field: '社会' }],
+  ['opprobrium', '名', '1', '不名誉・非難の的', 'public opprobrium', '世間の非難', 'ラテン語 opprobrium（非難・不名誉）から。ob（相手に向けて）＋ probrum（恥・非難）で、prove / prob（試す）とは別の語源。', { syn: [{ w: 'disgrace', m: '不名誉' }, { w: 'censure', m: '非難' }], ant: [{ w: 'acclaim', m: '称賛' }], field: '社会' }],
   ['opulent', '形', '1', '豪華な・富裕な', 'an opulent mansion', '豪奢な邸宅', 'ラテン opulentus(富んだ)。', { syn: [{ w: 'luxurious', m: 'ぜいたくな' }, { w: 'lavish', m: '豪勢な' }], ant: [{ w: 'austere', m: '質素な' }], field: '一般' }],
   ['ossify', '動', '1', '硬直化する・骨化する', 'ossified attitudes', '硬直した態度', 'ラテン os(骨)+facere(する)。', { syn: [{ w: 'harden', m: '硬化する' }, { w: 'stiffen', m: 'こわばる' }], ant: [{ w: 'soften', m: '和らぐ' }], field: '社会' }],
   ['ostensible', '形', '1', '表向きの・うわべの', 'the ostensible reason', '表向きの理由', 'ラテン ostendere(示す)。', { syn: [{ w: 'apparent', m: '見かけの' }, { w: 'supposed', m: '名目上の' }], ant: [{ w: 'genuine', m: '本当の' }], field: '一般' }],

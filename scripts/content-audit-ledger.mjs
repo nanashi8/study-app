@@ -9,8 +9,13 @@ import { fileURLToPath } from 'node:url'
 import { GRAMMAR, grammarChoiceUsageFor } from '../src/data/grammar.js'
 import { LISTENING_ITEMS } from '../src/data/listening.js'
 import { MATH_PROBLEMS } from '../src/data/math.js'
-import { PASSAGES } from '../src/data/passages.js'
+import { ALL_PASSAGES, PASSAGES } from '../src/data/passages.js'
 import { PHRASES } from '../src/data/phrases.js'
+import { EXTENDED_PASSAGES } from '../src/data/reading-extended-passages.js'
+import { EXTENDED_PASSAGE_READING_APPROACHES } from '../src/data/reading-extended-approaches.js'
+import { EXTENDED_READING_PRACTICE_QUESTIONS } from '../src/data/reading-extended-practice-questions.js'
+import { EXTENDED_READING_QUESTIONS } from '../src/data/reading-extended-questions.js'
+import { EXTENDED_READING_STUDY } from '../src/data/reading-extended-study.js'
 import { getReadingQuestions } from '../src/data/reading-questions.js'
 import { DIAGNOSTIC_QUESTIONS } from '../src/data/diagnostic.js'
 import { buildDiagnosticQuestions } from '../src/lib/diagnosticQuestions.js'
@@ -28,6 +33,8 @@ import {
   grammarQuestionNeedsMeaningCue,
   isCompleteGrammarQuestionExplanation,
 } from '../src/lib/grammarQuestionExplanations.js'
+import { buildReadingChoiceExplanations } from '../src/lib/instructorExplanations.js'
+import { auditExtendedReadings } from '../src/lib/extendedReadingAudit.js'
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url))
 const LEDGER_PATH = path.join(ROOT, 'docs/audits/content-audit-ledger.json')
@@ -51,12 +58,12 @@ const GATE_CATALOG = Object.freeze({
     coverage: '出題・答え合わせ・保存・復習・画面契約の回帰テスト',
   },
   learnerCopy: {
-    command: 'npm run check:learner-contract',
-    coverage: '共通の学習者向け表示契約と、教材本文を担当する各教材ゲート',
+    command: 'npm run audit:japanese',
+    coverage: '学習者向けUI文言の全件監査（教材本文そのものは各教材ゲート）',
   },
   routesAndProgress: {
     command: 'npm run audit:content-progress && npm run audit:links',
-    coverage: '全18教材の公開導線、母数、学習・クイズ記録、参照リンク',
+    coverage: '全18教材の公開導線、母数、暗記・テスト記録、参照リンク',
   },
   english: {
     command: 'npm run audit:english',
@@ -66,9 +73,33 @@ const GATE_CATALOG = Object.freeze({
     command: 'npm run audit:grammar-explanations',
     coverage: '文法3,450問、13,800選択肢、答えの一意性、根拠、和訳要否、全回答経路',
   },
+  readingTranslations: {
+    command: 'npm run audit:reading-translations',
+    coverage: '長文32本・794文・140問・560選択肢の和訳、正答、選択肢別解説、原文対応',
+  },
+  extendedReading: {
+    command: 'npm run audit:extended-reading',
+    coverage: '語彙強化長文4本・9,860語・1,542文・重点1,484語・内容16問・並び替え4問・文法4問・語法4問・全9,860語の辞書解決・語彙カバー率',
+  },
+  questionFormats: {
+    command: 'npm run audit:question-formats',
+    coverage: '時事長文8本の4分野配分・既存語彙・読解ルール・追加24問と、文法追加105問の3形式・7級配分・全回答経路',
+  },
   phrases: {
     command: 'npm run audit:phrases',
     coverage: '熟語・構文の問題別解説、構文ファミリー、誤答生成',
+  },
+  idiomForms: {
+    command: 'npm run audit:idiom-forms',
+    coverage: '全1,754熟語の同形分類、比較相手、〜 up・〜 at・〜 with・be 〜 at の全件抽出',
+  },
+  curriculum1900: {
+    command: 'npm run audit:curriculum-1900',
+    coverage: '英単語・熟語の全収録目標、重複、割当、固定監査ハッシュ',
+  },
+  etymology: {
+    command: 'npm run audit:etymology-quality',
+    coverage: '語源の根拠境界、形成、意味変化、学習表示、全収録語との接続',
   },
   classicsKanbun: {
     command: 'npm run audit:classics-kanbun',
@@ -86,13 +117,13 @@ const GATE_CATALOG = Object.freeze({
 
 const COMMON_GATES = ['inventory', 'coreData', 'behavior', 'learnerCopy', 'routesAndProgress']
 const CATEGORY_SPECIFIC_GATES = Object.freeze({
-  vocab: ['english'],
-  usage: ['english', 'phrases'],
-  grammar: ['english', 'grammar'],
+  vocab: ['english', 'curriculum1900', 'etymology'],
+  usage: ['english', 'phrases', 'idiomForms', 'curriculum1900'],
+  grammar: ['english', 'grammar', 'questionFormats'],
   listening: ['english'],
   dictation: ['english'],
-  etymology: ['english'],
-  reading: ['english'],
+  etymology: ['etymology'],
+  reading: ['english', 'readingTranslations', 'extendedReading', 'questionFormats'],
   writing: ['english'],
   'koten-vocab': ['classicsKanbun'],
   'koten-grammar': ['classicsKanbun'],
@@ -110,7 +141,7 @@ const itemId = (item, index) => String(item?.id ?? `index:${index}`)
 
 function inventoryFor(content) {
   const learningIds = content.items.map(itemId)
-  const quizItems = content.quizItems ?? content.items
+  const quizItems = content.hasQuiz === false ? [] : content.quizItems ?? content.items
   const quizIds = quizItems.map(itemId)
   const failures = []
   if (learningIds.some((id) => !id || id.startsWith('index:'))) failures.push('学習項目にID欠落')
@@ -192,6 +223,11 @@ function buildQuestionBanks() {
       ...question,
       id: `${passage.id}#${index + 1}`,
     })))
+  const extendedReadingQuestions = EXTENDED_PASSAGES.flatMap((passage) =>
+    getReadingQuestions(passage.id).map((question, index) => ({
+      ...question,
+      id: `${passage.id}#${index + 1}`,
+    })))
   const literatureQuestions = PUBLIC_DOMAIN_LITERATURE.flatMap((work) =>
     getLiteratureReadingQuestions(work.id).map((question) => ({
       ...question,
@@ -224,7 +260,12 @@ function buildQuestionBanks() {
       },
     ),
     stringBank('reading', '英語長文内容理解', readingQuestions, (item) => item.explain, {
+      choiceRationalesFor: (item) => buildReadingChoiceExplanations(item).choices.map((choice) => choice.explanation),
       expectedChoiceCounts: [3, 4],
+    }),
+    stringBank('extended-reading', '語彙強化長文内容理解', extendedReadingQuestions, (item) => item.explain, {
+      choiceRationalesFor: (item) => buildReadingChoiceExplanations(item).choices.map((choice) => choice.explanation),
+      expectedChoiceCounts: [4],
     }),
     auditQuestionBank({
       id: 'listening',
@@ -256,7 +297,7 @@ function buildQuestionBanks() {
 
 function buildInstructorAnswerPathAudit() {
   const readingQuestions = Object.values(
-    PASSAGES.reduce((all, passage) => ({
+    ALL_PASSAGES.reduce((all, passage) => ({
       ...all,
       [passage.id]: getReadingQuestions(passage.id),
     }), {}),
@@ -319,14 +360,36 @@ async function auditImplementationHash() {
     'scripts/check-data.mjs',
     'scripts/english-content-audit.mjs',
     'scripts/audit-grammar-explanations.mjs',
+    'scripts/audit-reading-translations.mjs',
+    'scripts/audit-extended-reading.mjs',
     'scripts/audit-phrase-explanations.mjs',
+    'scripts/check-idiom-form-families.mjs',
+    'scripts/audit-curriculum-1900.mjs',
+    'scripts/check-etymology-learning-quality.mjs',
     'scripts/check-classics-kanbun.mjs',
     'scripts/check-content-progress.mjs',
     'scripts/check-learning-links.mjs',
+    'scripts/audit-learner-japanese.mjs',
     'src/lib/grammarQuestionExplanations.js',
     'src/lib/grammarChoiceGuidance.js',
+    'src/lib/reading-translation-audit.js',
+    'src/lib/extendedReadingAudit.js',
+    'src/lib/instructorExplanations.js',
+    'src/data/reading-question-translations.js',
+    'src/data/reading-question-translations-core.js',
+    'src/data/reading-question-translations-exam.js',
+    'src/data/reading-question-translations-expansion.js',
+    'src/data/reading-question-translations-current-affairs.js',
     'src/components/GrammarChoiceExplanations.jsx',
+    'src/components/ReadingChoiceExplanations.jsx',
+    'src/components/ReadingComprehensionCheck.jsx',
+    'src/components/ExtendedReader.jsx',
+    'src/components/IdiomFormGuide.jsx',
+    'src/data/idiom-form-families.js',
     'src/screens/GrammarQuiz.jsx',
+    'src/screens/Phrases.jsx',
+    'src/screens/PhraseStudy.jsx',
+    'src/screens/PhraseQuiz.jsx',
     'src/screens/Diagnostic.jsx',
     ...testNames,
   ]
@@ -349,9 +412,11 @@ async function buildLedger(auditedAt) {
   const categories = LEARNING_CONTENTS.map(inventoryFor)
   const questionBanks = buildQuestionBanks()
   const instructorAnswerPaths = buildInstructorAnswerPathAudit()
+  const extendedReadingAudit = auditExtendedReadings()
   const failures = [
     ...categories.flatMap((category) => category.failures.map((failure) => `${category.id}: ${failure}`)),
     ...questionBanks.flatMap((bank) => bank.failures.map((failure) => `${bank.id}: ${failure}`)),
+    ...extendedReadingAudit.errors.map((failure) => `extended-reading: ${failure}`),
   ]
   const grammarMeaningCueCount = GRAMMAR.filter(grammarQuestionNeedsMeaningCue).length
   const grammarChoiceUsageFailures = GRAMMAR.flatMap((item) => item.choices.filter((choice) => (
@@ -394,6 +459,8 @@ async function buildLedger(auditedAt) {
       '全問題バンクで選択肢が重複せず、正答が一つだけ存在し、問題別解説がある',
       `共通講師解説を使う全選択式問題の正解・全誤答・わからない${instructorAnswerPaths.answerPathCount.toLocaleString('en-US')}経路に回答別指導がある`,
       '英文法は全3,450問・全13,800選択肢に問題文固有の根拠を持つ',
+      '長文32本・794文・140問・560選択肢の和訳と選択肢別解説が原文順に対応する',
+      '語彙強化長文4本は約1,000・2,000・3,000・4,000語、全9,860語を辞書解決し、内容16問と並び替え・文法・語法各4問を持ち、既存8,869語の本文カバー率40%以上を保つ',
       '意味判断が必要な文法問題だけ解答前に和訳を表示する',
       'カテゴリ別に登録した全品質ゲート、全テスト、ビルド、差分検査が成功する',
     ],
@@ -409,6 +476,16 @@ async function buildLedger(auditedAt) {
     categories,
     questionBanks,
     instructorAnswerPaths,
+    extendedReadingDetail: {
+      ...extendedReadingAudit.metrics,
+      contentSha256: dataHash({
+        passages: EXTENDED_PASSAGES,
+        study: EXTENDED_READING_STUDY,
+        approaches: EXTENDED_PASSAGE_READING_APPROACHES,
+        questions: EXTENDED_READING_QUESTIONS,
+        practiceQuestions: EXTENDED_READING_PRACTICE_QUESTIONS,
+      }),
+    },
     grammarDetail: {
       sourceQuestionCount: GRAMMAR.length,
       generatedQuestionCount: GRAMMAR.filter((item) => item.id.startsWith('gr_auto_')).length,
@@ -426,7 +503,7 @@ async function buildLedger(auditedAt) {
       choiceUsageFailureCount: grammarChoiceUsageFailures.length,
       imperativeOpenerCollisionCount: 0,
     },
-    coverageNote: '合格は各カテゴリに列挙した機械監査の範囲を示す。選択肢別根拠は英文法で全択監査し、他教材は questionBanks の generalRationaleCount と choiceSpecificRationaleCount を分けて記録する。',
+    coverageNote: '合格は各カテゴリに列挙した機械監査の範囲を示す。選択肢別根拠は英文法13,800択、既存英語長文560択、語彙強化長文64択で全択監査し、他教材は questionBanks の generalRationaleCount と choiceSpecificRationaleCount を分けて記録する。',
   }
 }
 

@@ -127,8 +127,12 @@ const formulaWordFor = (pack) =>
     .find((word) => (word?.etymology?.parts?.length ?? 0) >= 2)
   ?? getWord(pack.studyIds[0])
 
-const familyWordFor = (pack) =>
-  getWord(pack.studyIds.find((id) => id !== pack.anchorId) ?? pack.studyIds[0])
+const familyWordFor = (pack) => {
+  const words = pack.studyIds.map(getWord).filter(Boolean)
+  return words.find((word) => (word.etymology?.parts?.length ?? 0) >= 2)
+    ?? words.find((word) => /→|⇒/.test(word.etymology?.note ?? ''))
+    ?? words[0]
+}
 
 export function etymologyTargetWordFor(pack) {
   if (pack.mode === 'formula') return formulaWordFor(pack)
@@ -155,6 +159,7 @@ export function etymologyMeaningGuideFor(pack) {
       meaning,
       statement: `${parts.map(partLabel).join(' ＋ ')} → ${meaning}`,
       explanation: '部品の意味を左から足すと、単語全体の意味を予想できます。',
+      scope: 'verified-group',
     }
   }
 
@@ -168,18 +173,30 @@ export function etymologyMeaningGuideFor(pack) {
       meaning,
       statement: `${rootForm}（${rootMeaning}） → ${targetWord.word}（${meaning}）`,
       explanation: `語根 ${rootForm} の意味を手がかりに、単語全体の意味を考えます。`,
+      scope: 'verified-group',
     }
   }
 
   if (pack.mode === 'family') {
-    const anchor = getWord(pack.anchorId) ?? getWord(pack.studyIds[0])
-    const anchorMeaning = primaryMeaning(anchor)
+    const parts = targetWord.etymology?.parts ?? []
+    if (parts.length >= 2) {
+      return {
+        targetWordId: targetWord.id,
+        headword: targetWord.word,
+        meaning,
+        statement: `${parts.map(partLabel).join(' ＋ ')} → ${meaning}`,
+        explanation: `このセットでは、${targetWord.word} 自身の部品と意味だけを確かめます。`,
+        scope: 'single-word',
+      }
+    }
+    const steps = unique([...learnerEtymologyStepsFor(targetWord), meaning])
     return {
       targetWordId: targetWord.id,
       headword: targetWord.word,
       meaning,
-      statement: `${anchor.word}（${anchorMeaning}） → ${targetWord.word}（${meaning}）`,
-      explanation: 'つづりの共通部分と、意味がどう広がったかを一緒に見ます。',
+      statement: steps.join(' → '),
+      explanation: `このセットでは、${targetWord.word} 自身の形と由来だけを確かめます。`,
+      scope: 'single-word',
     }
   }
 
@@ -190,6 +207,7 @@ export function etymologyMeaningGuideFor(pack) {
     meaning,
     statement: steps.join(' → '),
     explanation: `語の形が表す意味を前からたどると、${targetWord.word} の意味につながります。`,
+    scope: 'single-word',
   }
 }
 

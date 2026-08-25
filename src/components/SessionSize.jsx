@@ -26,7 +26,7 @@ export function useSessionSize(max = Infinity) {
 }
 
 /**
- * 学習・クイズ画面の「1/10」表示。
+ * 暗記・テスト画面の「1/10」表示。
  * タップすると1セッションの問題数を選べる（選ぶと今のセッションを作り直す）。
  */
 export function SessionCounter({
@@ -115,9 +115,9 @@ export function SessionCounter({
         ) : (
           <div className="space-y-4 pb-2">
             <p className="text-xs font-bold leading-relaxed text-ink/50">
-              1セッションで出す{label}数を選べます。いまの進捗より多い数を選べば続きから、
+              1回の学習で出す{label}数を選べます。いまの進み具合より多い数を選べば続きから、
               少ない数を選ぶとここまでの学習・回答は破棄されます。
-              設定はすべての学習・クイズに引き継がれます。
+              設定はすべての暗記・テストに引き継がれます。
             </p>
             <div className="grid grid-cols-3 gap-2" data-session-size-options>
               {options.map((size) => (

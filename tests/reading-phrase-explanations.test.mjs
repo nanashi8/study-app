@@ -25,7 +25,7 @@ const guideBySentence = () => Object.fromEntries(
   READING_PHRASE_EXPLANATIONS.map((guide) => [guide.sentence, guide]),
 )
 
-test('12文の回帰例は全567文と同じ意味・発音フレーズ列へ接続する', () => {
+test('12文の回帰例は全794文と同じ意味・発音フレーズ列へ接続する', () => {
   assert.equal(READING_PHRASE_EXPLANATIONS.length, 12)
 
   for (const guide of READING_PHRASE_EXPLANATIONS) {
@@ -152,9 +152,9 @@ test('方法台帳は確定事項と真の未解決事項だけを区別する',
     item.example && item.proposal && item.alternative && item.reason))
 })
 
-test('接続関係121件を全件判定し、必要な58件だけを括弧で受け直す', () => {
-  assert.equal(READING_CONNECTOR_CLOSURE_REVIEWS.length, 58)
-  assert.equal(READING_CONNECTOR_NO_BACK_REFERENCE_REVIEWS.length, 63)
+test('接続関係144件を全件判定し、必要な63件だけを括弧で受け直す', () => {
+  assert.equal(READING_CONNECTOR_CLOSURE_REVIEWS.length, 63)
+  assert.equal(READING_CONNECTOR_NO_BACK_REFERENCE_REVIEWS.length, 81)
   assert.ok([
     ...READING_CONNECTOR_CLOSURE_REVIEWS,
     ...READING_CONNECTOR_NO_BACK_REFERENCE_REVIEWS,

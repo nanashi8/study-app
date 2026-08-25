@@ -31,11 +31,11 @@ export const LEARNING_ACTIVITY_MODES = Object.freeze({
 })
 
 export const MEMORY_PASS_BUCKETS = Object.freeze([
-  { id: '1', label: '1周' },
-  { id: '2', label: '2周' },
-  { id: '3', label: '3周' },
-  { id: '4-5', label: '4〜5周' },
-  { id: '6+', label: '6周以上' },
+  { id: '1', label: '1回' },
+  { id: '2', label: '2回' },
+  { id: '3', label: '3回' },
+  { id: '4-5', label: '4〜5回' },
+  { id: '6+', label: '6回以上' },
 ])
 
 const INTERVAL_BUCKETS = [
