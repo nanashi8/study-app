@@ -1,3 +1,9 @@
+import { analyzeReadingSentence } from '../lib/reading-grammar.js'
+import {
+  buildReadingRoleAnnotation,
+  readingSentenceRoleParts,
+} from '../lib/reading-role-annotations.js'
+
 const role = (roleCode, text) => Object.freeze({ role: roleCode, text })
 const sceneGuide = (parts, options = {}) => Object.freeze({
   parts: Object.freeze(parts),
@@ -338,19 +344,19 @@ export const LITERATURE_READING_QUESTIONS = Object.freeze({
       'Toward the water.',
       'Toward the northern mountains.',
       'Toward the market counters.',
-    ], 1, '第2場面の the streets take you waterward が、通りが人を水辺へ導くと明示しています。', 1),
+    ], 1, 'the streets take you waterward が、通りが人を水辺へ導くと明示しています。', 1),
     question('moby-q2', 'What do the many different people around the waterfront have in common?', [
       'They are sailors returning from China.',
       'They are selling goods at the warehouses.',
       'They are landsmen whose attention is fixed on the sea.',
       'They are searching for green fields.',
-    ], 2, '第3〜5場面では姿勢や仕事は違っても、all landsmen が ocean reveries に心を奪われています。', 4),
+    ], 2, '姿勢や仕事は違っても、all landsmen が ocean reveries に心を奪われています。', 4),
     question('moby-q3', 'What does the final question suggest about the sea?', [
       'It attracts people with a force compared to magnetism.',
       'It is dangerous because every compass is broken.',
       'It separates people arriving from different directions.',
       'It matters only to those who work on ships.',
-    ], 0, '最終場面は羅針盤の magnetic virtue を持ち出し、海の引力を磁力になぞらえています。', 7),
+    ], 0, '羅針盤の magnetic virtue を持ち出し、海の引力を磁力になぞらえています。', 7),
   ]),
   lit_en_pride_prejudice_netherfield: Object.freeze([
     question('pride-q1', 'Whose assumption is presented as a “truth” in the opening?', [
@@ -358,13 +364,13 @@ export const LITERATURE_READING_QUESTIONS = Object.freeze({
       'The surrounding families’ belief that he should marry one of their daughters.',
       'Mr. Bennet’s plan to rent Netherfield Park.',
       'Mrs. Long’s decision to move north.',
-    ], 1, '第2場面で this truth は surrounding families の心に根づき、男性を娘の相手と見なす考えだと分かります。', 1),
+    ], 1, 'this truth は surrounding families の心に根づき、男性を娘の相手と見なす考えだと分かります。', 1),
     question('pride-q2', 'Why does Mrs. Bennet know so much about the new tenant?', [
       'Mr. Morris wrote directly to her.',
       'Her husband had already visited him.',
       'Mrs. Long had just visited and told her about it.',
       'One of her daughters had rented the house.',
-    ], 2, '第4場面の Mrs. Long has just been here, and she told me all about it が情報源です。', 3),
+    ], 2, 'Mrs. Long has just been here, and she told me all about it が情報源です。', 3),
     question('pride-q3', 'What most clearly reveals Mrs. Bennet’s interest in the news?', [
       'She asks whether the house has a garden.',
       'She repeats that Bingley came from northern England.',
@@ -378,19 +384,19 @@ export const LITERATURE_READING_QUESTIONS = Object.freeze({
       'By pairing opposite descriptions of the same time.',
       'By comparing England with ancient Greece.',
       'By explaining one ruler’s private thoughts.',
-    ], 1, '第1〜3場面では best / worst、wisdom / foolishness など正反対の語を同じ時代へ重ねています。', 0),
+    ], 1, 'best / worst、wisdom / foolishness など正反対の語を同じ時代へ重ねています。', 0),
     question('cities-q2', 'What attitude does the phrase “superlative degree ... only” criticize?', [
       'Refusing to compare the past with the present.',
       'Describing a complex period only in extreme terms.',
       'Using dates instead of seasons.',
       'Trusting every spiritual revelation.',
-    ], 1, '第1場面は good / evil のどちらでも最上級だけで評価する論者を皮肉り、単純な時代像を批判します。', 0),
+    ], 1, 'good / evil のどちらでも最上級だけで評価する論者を皮肉り、単純な時代像を批判します。', 0),
     question('cities-q3', 'What did the rulers of both countries believe?', [
       'That the existing order would remain settled for ever.',
       'That every citizen should move to the capital.',
       'That England and France should share one throne.',
       'That London had already disappeared.',
-    ], 0, '第3場面の things in general were settled for ever が、支配する側の思い込みを示します。', 2),
+    ], 0, 'things in general were settled for ever が、支配する側の思い込みを示します。', 2),
   ]),
   lit_en_alice_rabbit_hole: Object.freeze([
     question('alice-q1', 'Why was Alice becoming tired?', [
@@ -425,7 +431,7 @@ export const LITERATURE_READING_QUESTIONS = Object.freeze({
       'He disliked artistic tastes.',
       'He believed the statue was crying.',
     ], 1, 'fearing lest ... が発言を付け足した理由を表しています。', 4),
-    question('prince-q3', 'What do the speakers have in common in this passage?', [
+    question('prince-q3', 'What do the speakers near the beginning have in common?', [
       'They know how the Prince truly feels.',
       'They judge happiness or value mainly from appearance and their own concerns.',
       'They all want the Prince’s jewels.',
@@ -438,7 +444,7 @@ export const LITERATURE_READING_QUESTIONS = Object.freeze({
       'Eight dollars.',
       'One dollar and eighty-seven cents.',
       'Eighty-seven dollars.',
-    ], 2, '冒頭と第4場面で One dollar and eighty-seven cents が反復されます。', 0),
+    ], 2, 'One dollar and eighty-seven cents の反復が、デラの所持金を強調します。', 0),
     question('magi-q2', 'How had many of the pennies been saved?', [
       'By bargaining at the grocer, vegetable seller, and butcher.',
       'By selling the furnished flat.',
@@ -454,10 +460,78 @@ export const LITERATURE_READING_QUESTIONS = Object.freeze({
   ]),
 })
 
-export function getLiteratureReadingGuide(workId, sceneIndex) {
-  return LITERATURE_READING_GUIDES[workId]?.[sceneIndex] ?? null
+const GENERATED_GUIDE_CACHE = new WeakMap()
+
+export function getLiteratureReadingGuide(workId, sceneIndex, currentScene = null) {
+  if (!currentScene?.original) {
+    return LITERATURE_READING_GUIDES[workId]?.[sceneIndex] ?? null
+  }
+  if (GENERATED_GUIDE_CACHE.has(currentScene)) {
+    return GENERATED_GUIDE_CACHE.get(currentScene)
+  }
+
+  const analyzedParts = (currentScene.narrationSegments?.length
+    ? currentScene.narrationSegments
+    : [currentScene]
+  ).flatMap((segment) => {
+    const analysis = analyzeReadingSentence({
+      en: segment.original,
+      ja: segment.translation,
+    })
+    const parts = readingSentenceRoleParts(analysis)
+    const annotation = buildReadingRoleAnnotation(segment.original, parts, {
+      allowVerbOmission: true,
+    })
+    return annotation.errors.length ? [role('M', segment.original)] : parts
+  })
+  const annotation = buildReadingRoleAnnotation(currentScene.original, analyzedParts, {
+    allowVerbOmission: true,
+  })
+  // 一息の区切りごとに解析し、それでも原文を完全復元できない場合だけ
+  // 原文全体を一つの範囲として保全する。
+  const parts = annotation.errors.length
+    ? Object.freeze([role('M', currentScene.original)])
+    : Object.freeze(analyzedParts)
+  const generated = sceneGuide(parts, {
+    allowVerbOmission: !parts.some((part) => part.role === 'V'),
+    note: currentScene.guide,
+  })
+  GENERATED_GUIDE_CACHE.set(currentScene, generated)
+  return generated
 }
 
-export function getLiteratureReadingQuestions(workId) {
-  return LITERATURE_READING_QUESTIONS[workId] ?? Object.freeze([])
+const LITERATURE_QUESTION_EVIDENCE = Object.freeze({
+  'moby-q1': 'the streets take you waterward',
+  'moby-q2': 'all landsmen',
+  'moby-q3': 'magnetic virtue',
+  'pride-q1': 'surrounding families',
+  'pride-q2': 'Mrs. Long has just been here',
+  'pride-q3': 'What a fine thing for our girls',
+  'cities-q1': 'best of times',
+  'cities-q2': 'superlative degree',
+  'cities-q3': 'settled for ever',
+  'alice-q1': 'pictures or conversations',
+  'alice-q2': 'took a watch out of its waistcoat-pocket',
+  'alice-q3': 'get out again',
+  'prince-q1': 'HIGH above the city',
+  'prince-q2': 'fearing lest people',
+  'prince-q3': 'Mathematical Master frowned',
+  'magi-q1': 'One dollar and eighty-seven cents',
+  'magi-q2': 'bulldozing the grocer',
+  'magi-q3': 'One dollar and eighty-seven cents',
+})
+
+const QUESTION_CACHE = new WeakMap()
+
+export function getLiteratureReadingQuestions(workId, work = null) {
+  const questions = LITERATURE_READING_QUESTIONS[workId] ?? Object.freeze([])
+  if (!work?.scenes?.length) return questions
+  if (QUESTION_CACHE.has(work)) return QUESTION_CACHE.get(work)
+  const resolved = Object.freeze(questions.map((item) => {
+    const evidence = LITERATURE_QUESTION_EVIDENCE[item.id]
+    const evidenceScene = work.scenes.findIndex((scene) => scene.original.includes(evidence))
+    return Object.freeze({ ...item, evidenceScene })
+  }))
+  QUESTION_CACHE.set(work, resolved)
+  return resolved
 }

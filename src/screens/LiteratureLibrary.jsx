@@ -97,6 +97,9 @@ export function LiteratureLibraryScreen() {
               <p className="mt-1 text-xs font-bold leading-relaxed text-ink/55">
                 作品ごとに作者・初出・底本を表示します。訳と解説は本アプリ独自で、朗読は端末の音声合成です。
               </p>
+              <p className="mt-1 text-xs font-bold leading-relaxed text-ink/55">
+                英語の長編は章の全文、短編は作品の全文を収録。古典・漢文も、題名に示した段や故事を最後まで読めます。
+              </p>
               <a
                 href="https://www.bunka.go.jp/seisaku/chosakuken/taisetsu/point/index.html"
                 target="_blank"
@@ -158,6 +161,9 @@ export function LiteratureLibraryScreen() {
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-1.5">
                         <Chip color={meta.color}>{meta.shortLabel}</Chip>
+                        <Chip className="bg-emerald-50 text-emerald-700">
+                          {work.coverage.label}
+                        </Chip>
                         <Chip className="bg-ink/5 text-ink/55">{work.level}</Chip>
                         {completed && (
                           <span className="inline-flex items-center gap-1 text-[11px] font-extrabold text-emerald-600">

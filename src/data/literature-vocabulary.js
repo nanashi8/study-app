@@ -9,6 +9,7 @@ import { getWord } from './vocab.js'
 import { getKoten } from './koten.js'
 import { getKanbunVocab } from './kanbun-vocab.js'
 import { resolvePassageWord } from './passage-gloss.js'
+import { LITERATURE_FULL_TEXT_GLOSS } from './literature-full-text/gloss.js'
 import { tokenize } from '../lib/text.js'
 
 export const LITERATURE_ENGLISH_GLOSS = Object.freeze({
@@ -170,9 +171,9 @@ export const LITERATURE_ENGLISH_CONTEXT_GLOSS = Object.freeze({
     insular: contextGloss('島のような・島にある', null),
     belted: contextGloss('ぐるりと縁取られた・囲まれた'),
     round: contextGloss('ぐるりと・周囲を', null),
-    right: contextGloss('右へ', null),
+    '3:right': contextGloss('右へ', null),
     left: contextGloss('左へ', null),
-    take: contextGloss('（通りが人を）導く'),
+    '3:take': contextGloss('（通りが人を）導く'),
     extreme: contextGloss('いちばん端の'),
     downtown: contextGloss('町のいちばん南の部分', null),
     noble: contextGloss('立派な・堂々とした'),
@@ -198,7 +199,7 @@ export const LITERATURE_ENGLISH_CONTEXT_GLOSS = Object.freeze({
     bound: contextGloss('今にも〜しそうな・〜へ向かう'),
     content: contextGloss('満足させる', null),
     extremest: contextGloss('いちばん端の・最果ての'),
-    just: contextGloss('まさに・ぎりぎり'),
+    '5:just': contextGloss('まさに・ぎりぎり'),
     possibly: contextGloss('できる限り'),
     virtue: contextGloss('磁力・ものを引き付ける働き', null),
     needles: contextGloss('羅針盤の針'),
@@ -209,8 +210,8 @@ export const LITERATURE_ENGLISH_CONTEXT_GLOSS = Object.freeze({
     possession: contextGloss('所有・持っていること'),
     fortune: contextGloss('財産・資産'),
     '1:want': contextGloss('必要として・求めて'),
-    '2:little': contextGloss('ほとんど〜ない'),
-    may: contextGloss('〜であっても・〜かもしれない', null),
+    '1:little': contextGloss('ほとんど〜ない'),
+    '1:may': contextGloss('〜であっても・〜かもしれない', null),
     entering: contextGloss('初めて入って来ること'),
     well: contextGloss('しっかりと・深く', null),
     fixed: contextGloss('固く根付いた'),
@@ -222,7 +223,7 @@ export const LITERATURE_ENGLISH_CONTEXT_GLOSS = Object.freeze({
     last: contextGloss('とうとう・ついに'),
     returned: contextGloss('言い返した・返答した'),
     long: contextGloss('ロング（姓）', null),
-    '5:made': contextGloss('答えをしなかった'),
+    '2:made': contextGloss('答えをしなかった'),
     taken: contextGloss('借りられた・入居者が決まった'),
     cried: contextGloss('叫んだ・声を上げた'),
     impatiently: contextGloss('いらだって・待ちきれずに'),
@@ -232,7 +233,7 @@ export const LITERATURE_ENGLISH_CONTEXT_GLOSS = Object.freeze({
     place: contextGloss('屋敷・その場所'),
     delighted: contextGloss('とても気に入った・喜んだ'),
     agreed: contextGloss('合意した・契約した'),
-    '6:take': contextGloss('入居する・手に入れる'),
+    '3:take': contextGloss('入居する・手に入れる'),
     sure: contextGloss('もちろん（to be sure）'),
     fine: contextGloss('すばらしい・好都合な'),
     thing: contextGloss('こと・好機'),
@@ -254,13 +255,13 @@ export const LITERATURE_ENGLISH_CONTEXT_GLOSS = Object.freeze({
     state: contextGloss('国家・政府'),
     preserves: contextGloss('保護区・特権として囲い込んだ領域', null),
     settled: contextGloss('安定して決着している'),
-    ever: contextGloss('永久に（for ever）'),
-    lord: contextGloss('主・キリスト'),
+    '2:ever': contextGloss('永久に（for ever）'),
+    '3:lord': contextGloss('主・キリスト'),
     conceded: contextGloss('認められていた'),
     favoured: contextGloss('恵まれたとされた'),
     attained: contextGloss('到達した・迎えた'),
     private: contextGloss('一兵卒・兵士', null),
-    life: contextGloss('近衛騎兵隊（Life Guardsの一部）'),
+    '3:life': contextGloss('近衛騎兵隊（Life Guardsの一部）'),
     guards: contextGloss('近衛騎兵隊'),
     appearance: contextGloss('登場・到来'),
     arrangements: contextGloss('手はず・準備'),
@@ -270,12 +271,12 @@ export const LITERATURE_ENGLISH_CONTEXT_GLOSS = Object.freeze({
     beginning: contextGloss('〜し始めている'),
     '1:get': contextGloss('〜になる'),
     tired: contextGloss('うんざりした・飽きた'),
-    by: contextGloss('〜のそばに'),
+    '1:by': contextGloss('〜のそばに'),
     having: contextGloss('〜があること・持つこと'),
     use: contextGloss('役立つこと・用途'),
     remarkable: contextGloss('不思議な・珍しい'),
-    '4:out': contextGloss('普通から外れて'),
-    '4:way': contextGloss('普通・いつものあり方'),
+    '2:out': contextGloss('普通から外れて'),
+    '2:way': contextGloss('普通・いつものあり方'),
     hear: contextGloss('聞く'),
     itself: contextGloss('自分自身に・独りで'),
     dear: contextGloss('たいへんだ・ああ'),
@@ -283,19 +284,19 @@ export const LITERATURE_ENGLISH_CONTEXT_GLOSS = Object.freeze({
     hurried: contextGloss('急いで先へ進んだ'),
     started: contextGloss('ぱっと立ち上がった'),
     burning: contextGloss('好奇心でいっぱいになった'),
-    after: contextGloss('〜を追って'),
-    '6:just': contextGloss('ちょうど間に合って'),
-    '6:see': contextGloss('目にする'),
+    '2:after': contextGloss('〜を追って'),
+    '2:just': contextGloss('ちょうど間に合って'),
+    '2:see': contextGloss('目にする'),
     pop: contextGloss('ぽんと飛び込む'),
-    '7:went': contextGloss('入って行った'),
+    '3:went': contextGloss('入って行った'),
     considering: contextGloss('考えること'),
     world: contextGloss('いったい（強調）'),
-    '7:get': contextGloss('外へ出る'),
+    '3:get': contextGloss('外へ出る'),
   }),
   lit_en_happy_prince_statue: Object.freeze({
     gilded: contextGloss('金箔でおおわれた'),
-    leaves: contextGloss('薄い葉・箔（leafの複数）', 'leaf'),
-    fine: contextGloss('上質な・純度の高い'),
+    '1:leaves': contextGloss('薄い葉・箔（leafの複数）', 'leaf'),
+    '1:fine': contextGloss('上質な・純度の高い'),
     admired: contextGloss('ほめたたえられた'),
     remarked: contextGloss('評した・述べた'),
     wished: contextGloss('〜したがった'),
@@ -303,18 +304,16 @@ export const LITERATURE_ENGLISH_CONTEXT_GLOSS = Object.freeze({
     having: contextGloss('持っていること'),
     tastes: contextGloss('趣味・鑑賞眼'),
     only: contextGloss('ただし・とはいえ'),
-    '5:quite': contextGloss('完全に・まったく'),
+    '1:quite': contextGloss('完全に・まったく'),
     so: contextGloss('それほど・同じくらい'),
     added: contextGloss('付け加えて言った', 'add'),
     fearing: contextGloss('〜を恐れて'),
     lest: contextGloss('〜するといけないので'),
     should: contextGloss('〜するのではないか'),
     like: contextGloss('〜のように', null),
-    '6:crying': contextGloss('欲しがって泣いている'),
+    '2:crying': contextGloss('欲しがって泣いている'),
     dreams: contextGloss('夢にも思う'),
-    '7:crying': contextGloss('欲しがって泣くこと'),
-    '8:quite': contextGloss('心から・まったく'),
-    '8:as': contextGloss('〜しながら・〜するとき'),
+    '2:as': contextGloss('〜しながら・〜するとき'),
   }),
   lit_en_gift_of_magi_opening: Object.freeze({
     saved: contextGloss('貯めた・節約して残した'),
@@ -326,12 +325,11 @@ export const LITERATURE_ENGLISH_CONTEXT_GLOSS = Object.freeze({
     dealing: contextGloss('値切り・取引'),
     implied: contextGloss('暗に示した'),
     clearly: contextGloss('どう見ても・明らかに'),
-    which: contextGloss('このことは・それによって'),
     instigates: contextGloss('考えを呼び起こす'),
     moral: contextGloss('教訓めいた'),
-    reflection: contextGloss('考え・省察'),
-    made: contextGloss('〜からできている'),
-    up: contextGloss('構成して（made up of）'),
+    '1:reflection': contextGloss('考え・省察'),
+    '1:made': contextGloss('〜からできている'),
+    '1:up': contextGloss('構成して（made up of）'),
     predominating: contextGloss('いちばん多くを占めて'),
     mistress: contextGloss('家の女主人'),
     subsiding: contextGloss('泣き方が落ち着いていく'),
@@ -354,11 +352,14 @@ export function resolveLiteratureEnglishWord(key, context = null) {
   const workId = typeof context === 'string' ? context : context?.workId
   const sceneIndex = typeof context === 'object' ? context?.sceneIndex : null
   const workGlosses = workId ? LITERATURE_ENGLISH_CONTEXT_GLOSS[workId] : null
-  const contextual = workGlosses?.[
+  const indexedContextual = workGlosses?.[
     Number.isInteger(sceneIndex) ? `${sceneIndex + 1}:${key}` : ''
-  ] ?? workGlosses?.[key]
+  ]
   const alias = LITERATURE_ENGLISH_FORM_ALIASES[key]
   const shared = resolvePassageWord(key)
+  // 章・短編全文では同じ語が別の意味でも現れる。場面指定の語義は優先し、
+  // 作品共通の補助語義は共通辞書で解決できない語にだけ使う。
+  const contextual = indexedContextual ?? (shared ? null : workGlosses?.[key])
   if (contextual || alias) {
     const hasContextId = contextual
       ? Object.prototype.hasOwnProperty.call(contextual, 'id')
@@ -373,7 +374,7 @@ export function resolveLiteratureEnglishWord(key, context = null) {
     }
   }
   if (shared) return { ...shared, literatureOnly: false }
-  const ja = LITERATURE_ENGLISH_GLOSS[key]
+  const ja = LITERATURE_ENGLISH_GLOSS[key] ?? LITERATURE_FULL_TEXT_GLOSS[key]
   return ja ? { ja, id: null, literatureOnly: true } : null
 }
 

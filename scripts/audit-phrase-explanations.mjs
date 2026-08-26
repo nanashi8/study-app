@@ -97,7 +97,7 @@ const issueRows = [
   ['文学朗読・必須欄欠落', audit.literature.issues.missingFields],
   ['文学朗読・原文復元エラー', audit.literature.issues.reconstructionErrors],
   ['文学朗読・発音原文不一致', audit.literature.issues.spokenMismatches],
-  ['文学朗読・英語フレーズの8語上限超過', audit.literature.issues.overWordLimit],
+  ['文学朗読・英語フレーズの12語上限超過', audit.literature.issues.overWordLimit],
   ['文学朗読・日本語括弧音声不一致', audit.literature.issues.invalidJapaneseSpeech],
 ]
 

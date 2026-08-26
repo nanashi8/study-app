@@ -18,12 +18,13 @@ import {
   buildLiteratureVocabulary,
   resolveLiteratureEnglishWord,
 } from '../src/data/literature-vocabulary.js'
+import { LITERATURE_FULL_TEXT_GLOSS } from '../src/data/literature-full-text/gloss.js'
 import { tokenize } from '../src/lib/text.js'
 
 const here = new URL('../', import.meta.url)
 const source = (path) => readFileSync(new URL(path, here), 'utf8')
 
-test('全12作品・全80場面の本文語彙が未対応0件で全945枚の予習カードになる', () => {
+test('全12作品・全158場面の本文語彙が未対応0件で全3,801枚の予習カードになる', () => {
   let sceneCount = 0
   let occurrenceCount = 0
   let coveredCount = 0
@@ -60,13 +61,13 @@ test('全12作品・全80場面の本文語彙が未対応0件で全945枚の予
     }
   }
 
-  assert.equal(sceneCount, 80)
-  assert.equal(occurrenceCount, 1395)
-  assert.equal(coveredCount, 1395)
-  assert.equal(cardCount, 945)
+  assert.equal(sceneCount, 158)
+  assert.equal(occurrenceCount, 11916)
+  assert.equal(coveredCount, 11916)
+  assert.equal(cardCount, 3801)
 })
 
-test('英語6作品は本文1,244語・出現形738種を全件解決し、共通辞書622語へ接続する', () => {
+test('英語6作品は本文11,765語・出現形3,902種を全件解決し、共通辞書2,880語へ接続する', () => {
   let tokenCount = 0
   let uniqueFormCount = 0
   let sharedCardCount = 0
@@ -96,14 +97,21 @@ test('英語6作品は本文1,244語・出現形738種を全件解決し、共�
     for (const id of work.wordIds) assert.ok(getWord(id), `${work.id}: ${id}`)
   }
 
-  assert.equal(tokenCount, 1244)
-  assert.equal(uniqueFormCount, 738)
-  assert.equal(sharedCardCount, 622)
+  assert.equal(tokenCount, 11765)
+  assert.equal(uniqueFormCount, 3902)
+  assert.equal(sharedCardCount, 2880)
   assert.deepEqual(
     [...unresolvedKeys].sort(),
-    Object.keys(LITERATURE_ENGLISH_GLOSS).filter((key) => !resolvePassageWord(key)).sort(),
+    [...new Set([
+      ...Object.keys(LITERATURE_ENGLISH_GLOSS),
+      ...Object.keys(LITERATURE_FULL_TEXT_GLOSS),
+    ])].filter((key) => !resolvePassageWord(key)).sort(),
     '共通辞書外の出現形は作品用語義で過不足なく補う',
   )
+  for (const [key, meaning] of Object.entries(LITERATURE_FULL_TEXT_GLOSS)) {
+    assert.match(meaning, /[ぁ-んァ-ヶ一-龠]/, `${key}: 日本語語義`)
+    assert.doesNotMatch(meaning, /翻訳エラー|さらに表示|star_border/, key)
+  }
 })
 
 test('空白のない句読点でも語を落とさず、作品文脈の意味と正しい共通語へ結び付ける', () => {
@@ -128,13 +136,13 @@ test('空白のない句読点でも語を落とさず、作品文脈の意味�
   }
 
   const contextCases = [
-    ['lit_en_moby_dick_water_gazers', 3, 'better', 'good', 'もっとよい・もっとよく'],
-    ['lit_en_moby_dick_water_gazers', 1, 'left', null, '左へ'],
-    ['lit_en_pride_prejudice_netherfield', 1, 'may', null, '〜であっても・〜かもしれない'],
-    ['lit_en_tale_two_cities_times', 0, 'best', 'good', '最良の（goodの最上級）'],
-    ['lit_en_happy_prince_statue', 1, 'leaves', 'leaf', '薄い葉・箔（leafの複数）'],
-    ['lit_en_happy_prince_statue', 4, 'added', 'add', '付け加えて言った'],
-    ['lit_en_gift_of_magi_opening', 7, '8', null, '8ドル（金額）'],
+    ['lit_en_moby_dick_water_gazers', 2, 'right', null, '右へ'],
+    ['lit_en_pride_prejudice_netherfield', 0, 'little', 'little', 'ほとんど〜ない'],
+    ['lit_en_tale_two_cities_times', 2, 'lord', 'lord', '主・キリスト'],
+    ['lit_en_alice_rabbit_hole', 1, 'out', 'out', '普通から外れて'],
+    ['lit_en_happy_prince_statue', 0, 'leaves', 'leaf', '薄い葉・箔（leafの複数）'],
+    ['lit_en_gift_of_magi_opening', 0, 'made', 'make', '〜からできている'],
+    ['lit_en_gift_of_magi_opening', 1, '8', null, '8ドル（金額）'],
   ]
   for (const [workId, sceneIndex, key, id, ja] of contextCases) {
     assert.deepEqual(
