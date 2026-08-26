@@ -132,11 +132,27 @@ export function vocabularyCatalogActivityRows(
   srs = {},
   { activity = 'memory', ...options } = {},
 ) {
+  return vocabularyCatalogRecordedRows(
+    vocabularyCatalogRows(words, srs, options),
+    activity,
+  )
+}
+
+export function vocabularyCatalogRecordedRows(rows = [], activity = 'memory') {
   const normalizedActivity = activity === 'test' ? 'test' : 'memory'
-  return vocabularyCatalogRows(words, srs, options).filter((row) => (
+  return (Array.isArray(rows) ? rows : []).filter((row) => (
     normalizedActivity === 'test'
       ? row.testStatus !== 'unanswered'
       : row.memoryStatus !== 'unlearned'
+  ))
+}
+
+export function vocabularyCatalogRemainingRows(rows = [], dismissedIds = []) {
+  const dismissed = dismissedIds instanceof Set
+    ? dismissedIds
+    : new Set(Array.isArray(dismissedIds) ? dismissedIds : [])
+  return (Array.isArray(rows) ? rows : []).filter((row) => (
+    !dismissed.has(row.word?.id ?? row.item?.id ?? row.id)
   ))
 }
 
@@ -147,15 +163,4 @@ export function vocabularyCatalogResultForDirection(activity, direction) {
   if (direction !== 'left' && direction !== 'right') return null
   if (activity === 'test') return direction === 'left' ? 'correct' : 'wrong'
   return direction === 'left' ? 'remembered' : 'forgot'
-}
-
-export function vocabularyCatalogResultMatches(entry, activity, result) {
-  if (activity === 'test') {
-    if (result === 'correct') return entry?.test?.lastResult === 'correct'
-    if (result === 'wrong') {
-      return entry?.test?.lastResult === 'wrong' || entry?.test?.lastResult === 'unknown'
-    }
-    return false
-  }
-  return entry?.memory?.lastJudgment === result
 }

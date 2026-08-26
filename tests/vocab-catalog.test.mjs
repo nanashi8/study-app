@@ -13,9 +13,10 @@ import {
   VOCAB_CATALOG_DEFAULT_DIRECTIONS,
   VOCAB_CATALOG_SORT_OPTIONS,
   vocabularyCatalogActivityRows,
+  vocabularyCatalogRecordedRows,
+  vocabularyCatalogRemainingRows,
   vocabularyCatalogRows,
   vocabularyCatalogResultForDirection,
-  vocabularyCatalogResultMatches,
   vocabularyReviewWeight,
 } from '../src/lib/vocabCatalog.js'
 import { PERSISTED_PROGRESS_FIELDS } from '../src/lib/progressCode.js'
@@ -170,24 +171,39 @@ test('一覧確認は学習した語彙とテストした語彙を混ぜずに�
     new Set(vocabularyCatalogActivityRows(words, srs, { activity: 'test', now, day }).map((row) => row.word.id)),
     new Set([testWord.id, bothWord.id]),
   )
+
+  const rows = vocabularyCatalogRows(words, srs, { now, day })
+  assert.deepEqual(
+    new Set(vocabularyCatalogRecordedRows(rows, 'memory').map((row) => row.word.id)),
+    new Set([memoryWord.id, bothWord.id]),
+  )
 })
 
-test('一覧確認の左右スワイプは学習とテストで指定された扱いへ変える', () => {
+test('一覧確認の左右スワイプは指定された扱いを毎回記録する', () => {
   assert.equal(vocabularyCatalogResultForDirection('memory', 'left'), 'remembered')
   assert.equal(vocabularyCatalogResultForDirection('memory', 'right'), 'forgot')
   assert.equal(vocabularyCatalogResultForDirection('test', 'left'), 'correct')
   assert.equal(vocabularyCatalogResultForDirection('test', 'right'), 'wrong')
   assert.equal(vocabularyCatalogResultForDirection('memory', 'up'), null)
+})
 
-  assert.equal(vocabularyCatalogResultMatches({ memory: { lastJudgment: 'remembered' } }, 'memory', 'remembered'), true)
-  assert.equal(vocabularyCatalogResultMatches({ memory: { lastJudgment: 'forgot' } }, 'memory', 'remembered'), false)
-  assert.equal(vocabularyCatalogResultMatches({ test: { lastResult: 'correct' } }, 'test', 'correct'), true)
-  assert.equal(vocabularyCatalogResultMatches({ test: { lastResult: 'unknown' } }, 'test', 'wrong'), true)
+test('スワイプした語は再表示するまで一覧から一時的に除く', () => {
+  const rows = ALL_WORDS.slice(0, 3).map((word) => ({ id: word.id, word }))
+  const dismissed = new Set([rows[1].word.id])
+  assert.deepEqual(
+    vocabularyCatalogRemainingRows(rows, dismissed).map((row) => row.word.id),
+    [rows[0].word.id, rows[2].word.id],
+  )
+  assert.deepEqual(
+    vocabularyCatalogRemainingRows(rows, new Set()).map((row) => row.word.id),
+    rows.map((row) => row.word.id),
+  )
 })
 
 test('級画面から一覧を開き、記録別の一覧を左右スワイプで更新する', () => {
   const levels = readFileSync(new URL('../src/screens/VocabLevels.jsx', import.meta.url), 'utf8')
   const decks = readFileSync(new URL('../src/screens/VocabDecks.jsx', import.meta.url), 'utf8')
+  const historyRow = readFileSync(new URL('../src/components/VocabularyHistoryRow.jsx', import.meta.url), 'utf8')
   const catalog = readFileSync(new URL('../src/lib/vocabCatalog.js', import.meta.url), 'utf8')
 
   assert.match(levels, /data-vocab-catalog-entry/)
@@ -196,11 +212,15 @@ test('級画面から一覧を開き、記録別の一覧を左右スワイプ�
   assert.match(decks, /data-vocab-catalog=\{level\.id\}/)
   assert.match(decks, /data-vocab-catalog-activity-tab/)
   assert.match(decks, /data-vocab-catalog-sort/)
-  assert.match(decks, /data-vocab-catalog-swipe-row/)
+  assert.match(historyRow, /data-vocab-catalog-swipe-row/)
   assert.match(decks, /data-vocab-catalog-swipe-guide/)
-  assert.match(decks, /左にスワイプ：\{activityMeta\.leftLabel\}/)
-  assert.match(decks, /右にスワイプ：\{activityMeta\.rightLabel\}/)
+  assert.match(decks, /data-vocab-catalog-restore/)
+  assert.match(decks, /スワイプ後は一時的に非表示/)
+  assert.match(historyRow, /左にスワイプで\$\{activityMeta\.leftLabel\}/)
+  assert.match(historyRow, /右にスワイプで\$\{activityMeta\.rightLabel\}/)
   assert.match(decks, /review\(row\.word\.id, result, 'vocab'\)/)
+  assert.match(decks, /next\.add\(row\.word\.id\)/)
+  assert.doesNotMatch(decks, /vocabularyCatalogResultMatches|すでに「/)
   assert.match(catalog, /最終学習日/)
   assert.match(catalog, /最終テスト日/)
   assert.match(`${catalog}\n${decks}`, /確認のおすすめ順/)
