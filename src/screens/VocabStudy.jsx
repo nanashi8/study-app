@@ -9,7 +9,7 @@ import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
 import { EtymologyBlock } from '../components/WordBits.jsx'
 import { PosBadge } from '../components/WordBits.jsx'
-import { Button, ProgressBar, IconButton } from '../components/ui.jsx'
+import { Button, IconButton } from '../components/ui.jsx'
 import { Close, Bookmark, BookmarkFilled, ArrowRight, Lightbulb } from '../components/Icons.jsx'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 import { VocabReviewHistory } from '../components/VocabReviewHistory.jsx'
@@ -211,9 +211,7 @@ export function VocabStudyScreen() {
         <IconButton onClick={backToVocabParent} aria-label="やめる">
           <Close size={22} />
         </IconButton>
-        <div className="flex-1">
-          <ProgressBar value={(i) / deck.length} />
-        </div>
+        <span className="min-w-0 flex-1" aria-hidden="true" />
         <RevealAnswersToggle label="意味" onChange={(on) => setFlipped(on)} />
         <SpeechSettingsButton compact />
         <SessionCounter
@@ -258,6 +256,7 @@ export function VocabStudyScreen() {
         onNext={() => moveToCard(Math.min(deck.length - 1, i + 1))}
         nextDisabled={i + 1 >= deck.length}
         itemLabel="カード"
+        progressColor="var(--color-brand-500)"
       />
 
       {/* カード */}

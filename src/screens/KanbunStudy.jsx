@@ -7,7 +7,7 @@ import {
   shuffleKanbun,
 } from '../data/kanbun-content.js'
 import { KANBUN_LEVEL_BY_ID } from '../data/kanbun-meta.js'
-import { Button, Chip, IconButton, ProgressBar } from '../components/ui.jsx'
+import { Button, Chip, IconButton } from '../components/ui.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { KanbunText, KanbunHeadword } from '../components/KanbunFurigana.jsx'
 import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
@@ -182,8 +182,7 @@ export function KanbunStudyScreen() {
         <div className="flex items-center gap-3">
           <IconButton onClick={backToKanbunCatalog} aria-label="学習をやめる"><Close size={22} /></IconButton>
           <div className="min-w-0 flex-1">
-            <ProgressBar value={index / deck.length} color="#be123c" />
-            <p className="mt-1 truncate text-[10px] font-extrabold text-ink/40">{params.title ?? `${meta.label}を暗記`}</p>
+            <p className="truncate text-[10px] font-extrabold text-ink/40">{params.title ?? `${meta.label}を暗記`}</p>
           </div>
           <RevealAnswersToggle label="答え" onChange={(on) => setRevealed(on)} />
           <SpeechSettingsButton compact />
@@ -216,6 +215,7 @@ export function KanbunStudyScreen() {
         onNext={() => moveToCard(Math.min(deck.length - 1, index + 1))}
         nextDisabled={index + 1 >= deck.length}
         itemLabel="カード"
+        progressColor="#be123c"
       />
 
       <CardSwipeRegion

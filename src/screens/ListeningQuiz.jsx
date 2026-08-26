@@ -13,7 +13,7 @@ import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
-import { Button, Chip, ProgressBar, IconButton, cx } from '../components/ui.jsx'
+import { Button, Chip, IconButton, cx } from '../components/ui.jsx'
 import { growDeck } from '../lib/session.js'
 import {
   ArrowRight,
@@ -231,9 +231,7 @@ export function ListeningQuizScreen() {
     <div className="flex h-full flex-col">
       <div className="flex items-center gap-3 px-3 py-3">
         <IconButton onClick={quit} aria-label="やめる"><Close size={22} /></IconButton>
-        <div className="flex-1">
-          <ProgressBar value={i / deck.length} color="#0ea5e9" />
-        </div>
+        <span className="min-w-0 flex-1" aria-hidden="true" />
         <IconButton
           onClick={() => item && toggleNotebookItem('listening', item.id)}
           aria-label={saved ? `${item?.topic}をマイ学習ノートから外す` : `${item?.topic}をマイ学習ノートへ保存`}
@@ -274,6 +272,7 @@ export function ListeningQuizScreen() {
         nextDisabled={!answered}
         showAutoAdvance
         autoAdvanceSignal={isCorrectPick ? autoAdvanceSignal : null}
+        progressColor="#0ea5e9"
       />
 
       <div className="flex-1 overflow-y-auto px-4 pb-4">

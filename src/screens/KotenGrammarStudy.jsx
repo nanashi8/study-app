@@ -4,7 +4,7 @@ import {
   getKotenGrammar,
   KOTEN_GRAMMAR_CATEGORIES,
 } from '../data/koten-grammar.js'
-import { Button, Chip, ProgressBar, IconButton } from '../components/ui.jsx'
+import { Button, Chip, IconButton } from '../components/ui.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
@@ -136,8 +136,7 @@ export function KotenGrammarStudyScreen() {
             <Close size={22} />
           </IconButton>
           <div className="min-w-0 flex-1">
-            <ProgressBar value={index / deck.length} color="#d97706" />
-            <p className="mt-1 truncate text-[10px] font-extrabold text-ink/40">
+            <p className="truncate text-[10px] font-extrabold text-ink/40">
               {params.title ?? '古典文法を暗記'}
             </p>
           </div>
@@ -171,6 +170,7 @@ export function KotenGrammarStudyScreen() {
         onNext={() => moveToCard(Math.min(deck.length - 1, index + 1))}
         nextDisabled={index + 1 >= deck.length}
         itemLabel="カード"
+        progressColor="#d97706"
       />
 
       <CardSwipeRegion

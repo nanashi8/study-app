@@ -20,7 +20,7 @@ import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
 import { GrammarChoiceExplanations } from '../components/GrammarChoiceExplanations.jsx'
 import { WordOrderExercise } from '../components/WordOrderExercise.jsx'
-import { Button, ProgressBar, IconButton, Chip, cx } from '../components/ui.jsx'
+import { Button, IconButton, Chip, cx } from '../components/ui.jsx'
 import { ArrowRight, Bookmark, BookmarkFilled, Check, Close } from '../components/Icons.jsx'
 import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { buildGrammarInstructorExplanation } from '../lib/instructorExplanations.js'
@@ -153,7 +153,7 @@ export function GrammarQuizScreen() {
     <div className="flex h-full flex-col">
       <div className="flex items-center gap-3 px-3 py-3">
         <IconButton onClick={back} aria-label="やめる"><Close size={22} /></IconButton>
-        <div className="flex-1"><ProgressBar value={i / deck.length} color={color} /></div>
+        <span className="min-w-0 flex-1" aria-hidden="true" />
         <IconButton
           onClick={() => toggleNotebookItem('grammar', item.id)}
           aria-label={saved ? `${item.topic}の問題をマイ学習ノートから外す` : `${item.topic}の問題をマイ学習ノートへ保存`}
@@ -190,6 +190,7 @@ export function GrammarQuizScreen() {
         nextDisabled={!answered}
         showAutoAdvance
         autoAdvanceSignal={isCorrectPick ? autoAdvanceSignal : null}
+        progressColor={color}
       />
 
       <div className="flex-1 overflow-y-auto px-4 pb-4">
