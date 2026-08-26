@@ -71,6 +71,7 @@ function VocabularyCatalog({ level, srs, review, onShowFields }) {
   const [direction, setDirection] = useState(VOCAB_CATALOG_DEFAULT_DIRECTIONS.field)
   const [visible, setVisible] = useState(CATALOG_PAGE_SIZE)
   const [swipeMessage, setSwipeMessage] = useState('')
+  const [sortOpen, setSortOpen] = useState(false)
   const [dismissedByActivity, setDismissedByActivity] = useState(() => ({
     memory: new Set(),
     test: new Set(),
@@ -129,10 +130,13 @@ function VocabularyCatalog({ level, srs, review, onShowFields }) {
     <div className="flex h-full min-h-0 flex-col" data-vocab-catalog={level.id}>
       <ScreenHeader
         title={`英検${level.label}の一覧を確認`}
-        subtitle={`学習 ${memoryRows.length.toLocaleString('ja-JP')}語・テスト ${testRows.length.toLocaleString('ja-JP')}語`}
+        compact
       />
 
-      <div className="shrink-0 space-y-2.5 border-b border-slate-200 bg-white px-3 pb-3 pt-2.5">
+      <div
+        className="shrink-0 space-y-1.5 border-b border-slate-200 bg-white px-3 pb-2 pt-1.5"
+        data-vocab-catalog-compact-controls
+      >
         <LevelViewTabs
           view="list"
           onChange={(nextView) => {
@@ -153,20 +157,58 @@ function VocabularyCatalog({ level, srs, review, onShowFields }) {
                   setSwipeMessage('')
                 }}
                 className={cx(
-                  'min-h-11 rounded-lg px-1 text-[11px] font-extrabold',
+                  'min-h-11 rounded-lg px-1 text-xs font-extrabold',
                   activity === option.id
                     ? 'bg-white text-brand-700 shadow-sm'
                     : 'text-ink/55 active:bg-white/70',
                 )}
+                aria-label={`${option.label} ${count.toLocaleString('ja-JP')}語`}
                 data-vocab-catalog-activity-tab={option.id}
               >
-                <span className="block">{option.label}</span>
-                <span className="tabular-nums">{count.toLocaleString('ja-JP')}語</span>
+                {option.id === 'test' ? 'テスト' : '学習'}
+                <span className="ml-1 tabular-nums">{count.toLocaleString('ja-JP')}語</span>
               </button>
             )
           })}
         </div>
-        <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-2">
+        <div className="grid grid-cols-[minmax(0,1fr)_auto_auto] gap-1.5">
+          <p
+            className="flex min-h-11 min-w-0 items-center justify-center whitespace-nowrap rounded-xl bg-brand-50 px-2 text-[10px] font-extrabold text-brand-800"
+            aria-label={`左スワイプで${activityMeta.leftLabel}、右スワイプで${activityMeta.rightLabel}。スワイプ後は一時的に非表示になります。`}
+            data-vocab-catalog-swipe-guide
+          >
+            <span aria-hidden="true">← {activityMeta.leftLabel}｜{activityMeta.rightLabel} →</span>
+          </p>
+          <button
+            type="button"
+            onClick={() => setSortOpen((current) => !current)}
+            aria-expanded={sortOpen}
+            aria-label={`並び替えを${sortOpen ? '閉じる' : '開く'}`}
+            className="learning-catalog-tools-toggle min-h-11 items-center justify-center gap-1 rounded-xl border border-slate-300 bg-white px-2 text-[10px] font-extrabold text-brand-700 active:bg-brand-50"
+            data-vocab-catalog-tools-toggle
+          >
+            <span className="hidden min-[360px]:inline">並び替え</span>
+            <span className="min-[360px]:hidden">並び</span>
+            <span aria-hidden="true">{sortOpen ? '−' : '＋'}</span>
+          </button>
+          <button
+            type="button"
+            onClick={restoreList}
+            disabled={!dismissedIds.size}
+            className="min-h-11 rounded-xl border border-brand-200 bg-white px-2 text-[10px] font-extrabold text-brand-700 active:bg-brand-50 disabled:text-ink/35"
+            aria-label="一覧を再表示"
+            data-vocab-catalog-restore
+          >
+            一覧を再表示
+          </button>
+        </div>
+        <div
+          className={cx(
+            'grid grid-cols-[minmax(0,1fr)_auto] gap-1.5',
+            !sortOpen && 'learning-catalog-tools-collapsible',
+          )}
+          data-vocab-catalog-tools
+        >
           <label className="min-w-0">
             <span className="sr-only">一覧の並び替え</span>
             <select
@@ -191,22 +233,7 @@ function VocabularyCatalog({ level, srs, review, onShowFields }) {
             {catalogDirectionLabel(sort, direction)}
           </button>
         </div>
-        <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-2">
-          <p className="rounded-xl bg-brand-50 px-3 py-2 text-[11px] font-extrabold leading-relaxed text-brand-800" data-vocab-catalog-swipe-guide>
-            左：{activityMeta.leftLabel}　右：{activityMeta.rightLabel}<br />スワイプ後は一時的に非表示
-          </p>
-          <button
-            type="button"
-            onClick={restoreList}
-            disabled={!dismissedIds.size}
-            className="min-h-11 rounded-xl border border-brand-200 bg-white px-3 text-[11px] font-extrabold text-brand-700 active:bg-brand-50 disabled:text-ink/35"
-            aria-label="一覧を再表示"
-            data-vocab-catalog-restore
-          >
-            一覧を再表示
-          </button>
-        </div>
-        <p className="min-h-4 px-1 text-[11px] font-bold text-ink/55" aria-live="polite" data-vocab-catalog-swipe-message>
+        <p className="sr-only" aria-live="polite" data-vocab-catalog-swipe-message>
           {swipeMessage}
         </p>
       </div>
