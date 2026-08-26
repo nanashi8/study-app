@@ -195,8 +195,10 @@ export function LiteratureReaderScreen() {
   const savedWordCount = sharedWordIds.filter((id) => learnedIds.includes(id)).length
   const savedGrammarCount = work.grammarIds.filter((id) => kotenGrammarList.includes(id)).length
   const isEnglish = work.kind === 'english'
-  const readingGuide = isEnglish ? getLiteratureReadingGuide(work.id, sceneIndex) : null
-  const readingQuestions = isEnglish ? getLiteratureReadingQuestions(work.id) : []
+  const readingGuide = isEnglish
+    ? getLiteratureReadingGuide(work.id, sceneIndex, currentScene)
+    : null
+  const readingQuestions = isEnglish ? getLiteratureReadingQuestions(work.id, work) : []
   const answeredQuestionCount = readingQuestions.filter((item) => questionAnswers[item.id] != null).length
   const allQuestionsAnswered = answeredQuestionCount === readingQuestions.length
   const correctQuestionCount = readingQuestions.filter(
@@ -372,6 +374,7 @@ export function LiteratureReaderScreen() {
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-center gap-1.5">
                 <Chip className="bg-white/12 text-white">{meta.description}</Chip>
+                <Chip className="bg-white/12 text-white">{work.coverage.label}</Chip>
                 {completed && (
                   <span className="inline-flex items-center gap-1 text-[11px] font-extrabold text-emerald-200">
                     <Check size={13} /> 読了

@@ -1,5 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
+import { createHash } from 'node:crypto'
 import { readFileSync } from 'node:fs'
 
 import { getWord } from '../src/data/vocab.js'
@@ -17,6 +18,7 @@ import {
   narrationStepIndex,
 } from '../src/lib/literature.js'
 import { japanesePhraseSpeechText } from '../src/lib/phrase-speech.js'
+import { LITERATURE_TRANSLATION_REVIEW } from '../src/data/literature-full-text/translation-review.js'
 import { createLearningAnalytics } from '../src/lib/learningAnalytics.js'
 import { useStore } from '../src/store/useStore.js'
 
@@ -36,26 +38,30 @@ test('名作に親しむは英語6作品・古典3作品・漢文3作品を一�
     assert.match(work.source.url, /^https:\/\//)
     assert.ok(work.rights.basis.includes('70年'), work.id)
     assert.ok(work.rights.translation.includes('本アプリ独自'), work.id)
+    assert.equal(work.coverage.complete, true, work.id)
+    assert.match(work.coverage.label, /全文/, work.id)
   }
 })
 
-test('英語名作は追加した長い3作品から原文語数の多い順に並ぶ', () => {
+test('英語名作6作品は5,000語以内の章または短編を全文収録する', () => {
   const works = literatureByKind('english')
-  assert.deepEqual(
-    works.slice(0, 3).map((work) => work.id),
-    [
-      'lit_en_moby_dick_water_gazers',
-      'lit_en_pride_prejudice_netherfield',
-      'lit_en_tale_two_cities_times',
-    ],
-  )
-  assert.deepEqual(works.map(literatureWordCount), [288, 268, 249, 164, 141, 134])
-  assert.ok(works.every((work, index) => (
-    index === 0 || literatureWordCount(works[index - 1]) >= literatureWordCount(work)
-  )))
+  assert.deepEqual(works.map((work) => work.coverage.sourceWordCount), [2237, 860, 1015, 2162, 3499, 2071])
+  assert.deepEqual(works.map(literatureWordCount), [2217, 856, 1004, 2143, 3472, 2073])
+  for (const work of works) {
+    const fullText = work.scenes.map((scene) => scene.original).join(' ')
+    assert.ok(work.coverage.sourceWordCount <= 5000, work.id)
+    assert.equal(work.coverage.maxWordTarget, 5000, work.id)
+    assert.ok(fullText.startsWith(work.coverage.startMarker), `${work.id}: start`)
+    assert.ok(fullText.endsWith(work.coverage.endMarker), `${work.id}: end`)
+    assert.equal(
+      createHash('sha256').update(fullText).digest('hex'),
+      work.coverage.sourceSha256,
+      `${work.id}: source hash`,
+    )
+  }
 })
 
-test('全80場面が原文・訳・解説と、間で区切った一対一の朗読データを持つ', () => {
+test('全158場面が原文・訳・解説と、間で区切った一対一の朗読データを持つ', () => {
   let sceneCount = 0
   let segmentCount = 0
   for (const work of PUBLIC_DOMAIN_LITERATURE) {
@@ -92,8 +98,53 @@ test('全80場面が原文・訳・解説と、間で区切った一対一の朗
       assert.ok(literatureWordCount(work) >= 130, `${work.id}: 長文語数`)
     }
   }
-  assert.equal(sceneCount, 80)
-  assert.equal(segmentCount, 447)
+  assert.equal(sceneCount, 158)
+  assert.equal(segmentCount, 1632)
+})
+
+test('英語名作6作品122場面・1,481区切りの全訳レビュー台帳が現在の本文と一致する', () => {
+  const works = literatureByKind('english')
+  const payload = works.map((work) => ({
+    id: work.id,
+    scenes: work.scenes.map((scene) => ({
+      original: scene.original,
+      translation: scene.translation,
+      segments: scene.narrationSegments.map((segment) => [
+        segment.original,
+        segment.translation,
+      ]),
+    })),
+  }))
+  const artifact = /翻訳エラー|star_border|さらに表示|\d{8,}[|｜]|\[SEG|⟦SEG|ZXQ|[<>]|\bnull\b/i
+
+  assert.equal(works.length, LITERATURE_TRANSLATION_REVIEW.englishWorkCount)
+  assert.equal(
+    works.reduce((count, work) => count + work.scenes.length, 0),
+    LITERATURE_TRANSLATION_REVIEW.sceneCount,
+  )
+  assert.equal(
+    works.reduce(
+      (count, work) =>
+        count + work.scenes.reduce(
+          (sceneTotal, scene) => sceneTotal + scene.narrationSegments.length,
+          0,
+        ),
+      0,
+    ),
+    LITERATURE_TRANSLATION_REVIEW.segmentCount,
+  )
+  assert.equal(
+    createHash('sha256').update(JSON.stringify(payload)).digest('hex'),
+    LITERATURE_TRANSLATION_REVIEW.contentSha256,
+  )
+  for (const work of works) {
+    for (const scene of work.scenes) {
+      assert.doesNotMatch(scene.translation, artifact)
+      for (const segment of scene.narrationSegments) {
+        assert.doesNotMatch(segment.translation, artifact)
+      }
+    }
+  }
 })
 
 test('朗読順は全作品・全区切りで必ず原文→対応する日本語になる', () => {
@@ -141,51 +192,48 @@ test('朗読順は全作品・全区切りで必ず原文→対応する日本�
   }
 })
 
-test('接続の受け直しは括弧付きで表示し、括弧内の語だけを日本語音声で読む', () => {
+test('アリスが時計を見て追いかける場面も全文の中で対応訳と音声を保つ', () => {
   const work = getLiteratureWork('lit_en_alice_rabbit_hole')
-  const segments = work.scenes[4].narrationSegments
-  assert.deepEqual(
-    segments.slice(0, 2).map(({ original, translation }) => ({ original, translation })),
-    [
-      { original: 'But when', translation: 'しかし、その時' },
-      {
-        original: 'the Rabbit actually took a watch',
-        translation: 'ウサギが本当に時計を取り出した（時）',
-      },
-    ],
+  const sceneIndex = work.scenes.findIndex((scene) => scene.original.includes('waistcoat-pocket'))
+  const segmentIndex = work.scenes[sceneIndex].narrationSegments.findIndex(
+    (segment) => segment.original.includes('actually took a watch'),
   )
-
+  const segment = work.scenes[sceneIndex].narrationSegments[segmentIndex]
+  assert.equal(segment.translation, 'しかし、実際にウサギがチョッキのポケットから時計を取り出し、')
   const translationStep = buildLiteratureNarration(work).find(
-    (step) =>
-      step.sceneIndex === 4 &&
-      step.segmentIndex === 1 &&
-      step.phase === 'translation',
+    (step) => step.sceneIndex === sceneIndex && step.segmentIndex === segmentIndex && step.phase === 'translation',
   )
   assert.ok(translationStep)
-  assert.equal(translationStep.displayText, 'ウサギが本当に時計を取り出した（時）')
-  assert.equal(translationStep.text, 'ウサギが本当に時計を取り出した時')
+  assert.equal(translationStep.displayText, segment.translation)
+  assert.equal(translationStep.text, japanesePhraseSpeechText(segment.translation))
   assert.doesNotMatch(translationStep.text, /[（）()]/u)
 })
 
-test('指定されたアリスの場面は、実際に間を置く6区切りで英語→対応する日本語になる', () => {
+test('アリスが穴へ飛び込む場面は8区切りで英語→対応する日本語になる', () => {
   const work = getLiteratureWork('lit_en_alice_rabbit_hole')
-  const segments = work.scenes[6].narrationSegments
+  const segments = work.scenes[2].narrationSegments
   assert.deepEqual(
     segments.map((segment) => segment.original),
     [
-      'In another moment',
-      'down went Alice',
-      'after it,',
-      'never once considering how',
-      'in the world',
-      'she was to get out again.',
+      'In another moment down went Alice after it,',
+      'never once considering how in the world she was',
+      'to get out again.',
+      'The rabbit-hole went straight on like a tunnel for some way,',
+      'and then dipped suddenly down,',
+      'so suddenly that Alice had not a moment',
+      'to think about stopping herself',
+      'before she found herself falling down a very deep well.',
     ],
   )
   assert.deepEqual(
     buildLiteratureNarration(work)
-      .filter((step) => step.sceneIndex === 6)
+      .filter((step) => step.sceneIndex === 2)
       .map((step) => step.phase),
     [
+      'original',
+      'translation',
+      'original',
+      'translation',
       'original',
       'translation',
       'original',

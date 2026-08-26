@@ -6,6 +6,11 @@
 
 import { LITERATURE_NARRATION_SEGMENTS } from './literature-narration-segments.js'
 import { englishLiteratureWordIds } from './literature-vocabulary.js'
+import { LITERATURE_FULL_TEXT } from './literature-full-text/index.js'
+import {
+  LITERATURE_SCENE_TRANSLATION_OVERRIDES,
+  LITERATURE_SEGMENT_TRANSLATION_OVERRIDES,
+} from './literature-full-text/translation-review.js'
 import { tokenize } from '../lib/text.js'
 
 const scene = (original, translation, guide, speech = null) =>
@@ -979,19 +984,81 @@ const BASE_PUBLIC_DOMAIN_LITERATURE = Object.freeze([
   }),
 ])
 
+const LITERATURE_SELECTION_COVERAGE = Object.freeze({
+  lit_ja_makura_seasons: Object.freeze({
+    unitType: 'selection',
+    label: '第一段全文',
+    sourceUnit: '第一段',
+    complete: true,
+  }),
+  lit_ja_tsurezure_ishimizu: Object.freeze({
+    unitType: 'selection',
+    label: '第五十二段全文',
+    sourceUnit: '第五十二段',
+    complete: true,
+  }),
+  lit_ja_hojoki_flow: Object.freeze({
+    unitType: 'selection',
+    label: '冒頭選文全文',
+    sourceUnit: '冒頭「ゆく河の流れ」',
+    complete: true,
+  }),
+  lit_zh_lunyu_learning: Object.freeze({
+    unitType: 'selection',
+    label: '五章句全文',
+    sourceUnit: '学びをめぐる五つの章句',
+    complete: true,
+  }),
+  lit_zh_mengzi_fifty_steps: Object.freeze({
+    unitType: 'selection',
+    label: '故事全文',
+    sourceUnit: '「五十歩百歩」の故事',
+    complete: true,
+  }),
+  lit_zh_hanfeizi_contradiction: Object.freeze({
+    unitType: 'selection',
+    label: '故事全文',
+    sourceUnit: '「矛盾」の故事',
+    complete: true,
+  }),
+})
+
 export const PUBLIC_DOMAIN_LITERATURE = Object.freeze(
   BASE_PUBLIC_DOMAIN_LITERATURE.map((work) => {
+    const expanded = LITERATURE_FULL_TEXT[work.id]
+    const sourceScenes = expanded?.scenes ?? work.scenes
     const workWithSegments = {
       ...work,
+      excerpt: expanded?.excerpt ?? work.excerpt,
+      coverage: expanded?.coverage ?? LITERATURE_SELECTION_COVERAGE[work.id],
+      source: expanded
+        ? Object.freeze({ ...work.source, checkedOn: expanded.coverage.checkedOn })
+        : work.source,
       kanbunVocabIds: work.kanbunVocabIds ?? [],
       scenes: Object.freeze(
-        work.scenes.map((item, sceneIndex) =>
-          Object.freeze({
+        sourceScenes.map((item, sceneIndex) => {
+          const segments =
+            item.narrationSegments ??
+            LITERATURE_NARRATION_SEGMENTS[work.id]?.[sceneIndex] ??
+            Object.freeze([])
+          const workOverrides = LITERATURE_SEGMENT_TRANSLATION_OVERRIDES[work.id]
+          return Object.freeze({
             ...item,
-            narrationSegments:
-              LITERATURE_NARRATION_SEGMENTS[work.id]?.[sceneIndex] ?? Object.freeze([]),
-          }),
-        ),
+            translation:
+              LITERATURE_SCENE_TRANSLATION_OVERRIDES[work.id]?.[sceneIndex + 1] ??
+              item.translation,
+            narrationSegments: Object.freeze(
+              segments.map((segment, segmentIndex) =>
+                Object.freeze({
+                  ...segment,
+                  translation:
+                    workOverrides?.[`${sceneIndex + 1}.${segmentIndex + 1}`] ??
+                    segment.translation,
+                }),
+              ),
+            ),
+          })
+        }),
       ),
     }
     return Object.freeze({

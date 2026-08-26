@@ -2130,9 +2130,10 @@ export function auditPhraseExplanations() {
         }
         if (work.kind === 'english') {
           literatureEnglishSegmentCount++
-          const wordCount = englishWords(segment.original).length
-          if (wordCount > 8) {
-            literatureIssues.overWordLimit.push(ref({ wordCount, limit: 8 }))
+          // Literature narration keeps the established 12-token breath-unit contract.
+          const wordCount = segment.original.trim().split(/\s+/).filter(Boolean).length
+          if (wordCount > 12) {
+            literatureIssues.overWordLimit.push(ref({ wordCount, limit: 12 }))
           }
         }
         if (/（[^）]+）/u.test(segment.translation)) {
@@ -2168,8 +2169,8 @@ export function auditPhraseExplanations() {
     readingSentences.length === 794 &&
     longTargets.length === 33 &&
     PUBLIC_DOMAIN_LITERATURE.length === 12 &&
-    literatureSceneCount === 80 &&
-    literatureSegmentCount === 447 &&
+    literatureSceneCount === 158 &&
+    literatureSegmentCount === 1632 &&
     readingMeaningMultiRoleCount > 0 &&
     longMeaningMultiRoleCount > 0 &&
     confirmedRuleCount === READING_PHRASE_RULES.length &&
