@@ -68,6 +68,23 @@ test('共通操作は44px以上で、状態名と読み上げ名を持つ', () =
   assert.match(source, /CORRECT_AUTO_ADVANCE_DELAY_MS = 1400/)
 })
 
+test('単語暗記は終了・前後移動・数字進捗・意味・マイ単語を1本のバーにまとめる', () => {
+  const controls = read('src/components/QuestionSessionControls.jsx')
+  const study = read('src/screens/VocabStudy.jsx')
+
+  assert.match(controls, /leadingAction/)
+  assert.match(controls, /progressControl/)
+  assert.match(controls, /trailingActions/)
+  assert.match(study, /leadingAction=\{/)
+  assert.match(study, /progressControl=\{\(\s*<SessionCounter/)
+  assert.match(study, /trailingActions=\{\(\s*<>/)
+  assert.match(study, /data-vocab-my-list-toggle/)
+  assert.match(study, /<RevealAnswersToggle[\s\S]*toolbar/)
+  assert.equal((study.match(/<SessionCounter/g) ?? []).length, 1)
+  assert.equal((study.match(/<RevealAnswersToggle/g) ?? []).length, 1)
+  assert.equal((study.match(/data-vocab-my-list-toggle/g) ?? []).length, 1)
+})
+
 test('戻って見直した回答を二重計上せず、やり直し時だけ回答履歴を消す', () => {
   for (const path of QUIZ_SCREENS.filter((path) => !path.includes('DictationPlay') && !path.includes('Kundoku'))) {
     const source = read(path)

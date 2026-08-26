@@ -100,6 +100,7 @@ import {
 } from '../lib/srs.js'
 import { scheduleVocabularyReview } from '../lib/vocabScheduler.js'
 import { completedSessionDestination } from '../lib/navigationPolicy.js'
+import { learningContentCatalogReviewCommand } from '../lib/learningContentCatalogReview.js'
 
 // ── 学習ロジックの定数 ──────────────────────────────────────────────
 // Leitner 式の間隔反復。十分に定着した後は60・90・180日の維持復習へ進む。
@@ -859,6 +860,16 @@ export const useStore = create(
             ),
           }
         }),
+
+      // 一覧の連続スワイプも、各教材の暗記・テスト画面と同じ書き込み口を使う。
+      // 新しい進捗領域を作らず、進捗コード・クラウド同期・リセットとの互換を保つ。
+      reviewLearningContent: (contentId, itemId, result) => {
+        const command = learningContentCatalogReviewCommand(contentId, itemId, result)
+        const action = command ? get()[command.action] : null
+        if (typeof action !== 'function') return false
+        action(...command.args)
+        return true
+      },
 
       recordVocabHistory: (wordId) =>
         set((st) => ({
