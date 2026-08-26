@@ -11,20 +11,22 @@ export const VOCABULARY_HISTORY_ACTIVITY_META = Object.freeze({
     rightLabel: 'まだ',
     leftClassName: 'bg-emerald-600',
     rightClassName: 'bg-rose-500',
-    empty: '学習した語彙はまだありません。暗記で判定すると表示されます。',
+    empty: '表示できる語彙はありません。',
   },
   test: {
     leftLabel: '正解',
     rightLabel: '不正解',
     leftClassName: 'bg-emerald-600',
     rightClassName: 'bg-rose-500',
-    empty: 'テストした語彙はまだありません。テストに答えると表示されます。',
+    empty: '表示できる語彙はありません。',
   },
 })
 
 const RESULT_META = Object.freeze({
+  unlearned: { label: '学習前', symbol: '−', className: 'bg-slate-100 text-slate-500' },
   learned: { label: '覚えた', symbol: '✓', className: 'bg-emerald-50 text-emerald-700' },
   reviewing: { label: 'まだ', symbol: '↺', className: 'bg-rose-50 text-rose-700' },
+  unanswered: { label: 'テスト前', symbol: '−', className: 'bg-slate-100 text-slate-500' },
   correct: { label: '正解', symbol: '✓', className: 'bg-emerald-50 text-emerald-700' },
   incorrect: { label: '不正解', symbol: '×', className: 'bg-rose-50 text-rose-700' },
 })
@@ -45,11 +47,11 @@ const rowWord = (row) => row.word ?? row.item ?? {}
 
 const rowResult = (row, activity) => (
   activity === 'test'
-    ? RESULT_META[row.testStatus] ?? RESULT_META.incorrect
-    : RESULT_META[row.memoryStatus] ?? RESULT_META.reviewing
+    ? RESULT_META[row.testStatus] ?? RESULT_META.unanswered
+    : RESULT_META[row.memoryStatus] ?? RESULT_META.unlearned
 )
 
-export function VocabularyHistoryRow({ row, activity, onSwipe }) {
+export function VocabularyHistoryRow({ row, activity, onSwipe, onOpen }) {
   const word = rowWord(row)
   const id = word.id ?? row.id
   const title = word.word ?? row.title
@@ -59,6 +61,7 @@ export function VocabularyHistoryRow({ row, activity, onSwipe }) {
     ?? VOCABULARY_HISTORY_ACTIVITY_META.memory
   const resultMeta = rowResult(row, activity)
   const swipeStartRef = useRef(null)
+  const suppressOpenUntilRef = useRef(0)
   const [swipeOffset, setSwipeOffset] = useState(0)
 
   const resetSwipe = () => {
@@ -108,7 +111,16 @@ export function VocabularyHistoryRow({ row, activity, onSwipe }) {
     })
     if (!direction) return
     event.preventDefault()
+    suppressOpenUntilRef.current = Date.now() + 450
     onSwipe(direction)
+  }
+
+  const openDetails = (event) => {
+    if (Date.now() < suppressOpenUntilRef.current) {
+      event.preventDefault()
+      return
+    }
+    onOpen?.(id)
   }
 
   const handleKeyDown = (event) => {
@@ -131,15 +143,15 @@ export function VocabularyHistoryRow({ row, activity, onSwipe }) {
           ← {activityMeta.leftLabel}
         </span>
       </div>
-      <div
-        role="group"
-        tabIndex={0}
+      <button
+        type="button"
+        onClick={openDetails}
         onPointerDown={startSwipe}
         onPointerMove={previewSwipe}
         onPointerUp={finishSwipe}
         onPointerCancel={resetSwipe}
         onKeyDown={handleKeyDown}
-        aria-label={`${title}、${meaning}、現在は${resultMeta.label}。左にスワイプで${activityMeta.leftLabel}、右にスワイプで${activityMeta.rightLabel}`}
+        aria-label={`${title}、${meaning}、現在は${resultMeta.label}。タップで単語の詳細。左にスワイプで${activityMeta.leftLabel}、右にスワイプで${activityMeta.rightLabel}`}
         className={cx(
           'relative flex min-h-20 w-full touch-pan-y items-start gap-3 rounded-xl border border-slate-200 bg-white px-3 py-3 text-left outline-none transition-[background-color,border-color,box-shadow,transform] focus-visible:border-brand-400 focus-visible:ring-2 focus-visible:ring-brand-200',
           swipeOffset ? 'duration-0' : 'duration-200',
@@ -150,6 +162,7 @@ export function VocabularyHistoryRow({ row, activity, onSwipe }) {
         data-vocab-catalog-activity={activity}
         data-vocab-catalog-status={resultMeta.label}
         data-vocab-catalog-swipe-offset={swipeOffset}
+        data-vocab-catalog-open-word={id}
       >
         <span className={cx('mt-0.5 grid h-11 w-11 shrink-0 place-items-center rounded-xl text-xl font-extrabold', resultMeta.className)} aria-hidden="true">
           {resultMeta.symbol}
@@ -167,6 +180,9 @@ export function VocabularyHistoryRow({ row, activity, onSwipe }) {
             <span className={cx('rounded-full px-2 py-0.5 text-[10px] font-extrabold', resultMeta.className)}>
               {resultMeta.label}
             </span>
+            <span className="ml-auto shrink-0 text-[10px] font-extrabold text-brand-600">
+              詳細 ›
+            </span>
           </span>
           <span className="mt-1 block break-words text-sm font-bold leading-snug text-ink/75">
             {meaning}
@@ -177,7 +193,7 @@ export function VocabularyHistoryRow({ row, activity, onSwipe }) {
             <span>テスト {activityDate(row.testAt, row.testStatus !== 'unanswered')}</span>
           </span>
         </span>
-      </div>
+      </button>
     </div>
   )
 }

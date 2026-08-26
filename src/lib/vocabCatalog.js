@@ -13,8 +13,8 @@ export const VOCAB_CATALOG_SORT_OPTIONS = Object.freeze([
 ])
 
 export const VOCAB_CATALOG_ACTIVITY_OPTIONS = Object.freeze([
-  { id: 'memory', label: '学習した語彙' },
-  { id: 'test', label: 'テストした語彙' },
+  { id: 'memory', label: '学習の一覧' },
+  { id: 'test', label: 'テストの一覧' },
 ])
 
 export const VOCAB_CATALOG_DEFAULT_DIRECTIONS = Object.freeze({
@@ -123,19 +123,16 @@ export function vocabularyCatalogRows(
 }
 
 /**
- * 一覧確認では、級内の未着手語を混ぜず、その操作を一度でも行った語だけを出す。
- * 旧保存の学習記録は従来どおり箱から復元するが、旧形式では暗記とテストを
- * 区別できないため、根拠のないテスト結果は補わない。
+ * 一覧確認では、未記録の語も含めて全語を出す。
+ * activity は呼び出し側の表示文脈として受け取るが、どちらの一覧でも母数は同じ。
+ * 記録済み件数が必要な箇所では vocabularyCatalogRecordedRows を別に使う。
  */
 export function vocabularyCatalogActivityRows(
   words = [],
   srs = {},
-  { activity = 'memory', ...options } = {},
+  options = {},
 ) {
-  return vocabularyCatalogRecordedRows(
-    vocabularyCatalogRows(words, srs, options),
-    activity,
-  )
+  return vocabularyCatalogRows(words, srs, options)
 }
 
 export function vocabularyCatalogRecordedRows(rows = [], activity = 'memory') {

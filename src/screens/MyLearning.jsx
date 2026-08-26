@@ -144,7 +144,7 @@ export function MyLearningScreen() {
         <Card className="rounded-xl border-slate-300 p-4 shadow-none" data-learning-record-summary>
           <h2 className="font-display text-base font-extrabold text-slate-950">この画面の見方</h2>
           <p className="mt-1 text-xs font-bold leading-relaxed text-slate-600">
-            各教材の「一覧を確認」で学習記録を見直せます。英単語は、学習とテストを分けて連続スワイプで扱いを更新できます。
+            各教材の「一覧を確認」で学習記録を見直せます。英単語は学習前・テスト前も含め、連続スワイプでさっと学習できます。
           </p>
           <dl className="mt-3 grid grid-cols-3 divide-x divide-slate-200 rounded-xl bg-slate-50 py-3 text-center">
             {[
