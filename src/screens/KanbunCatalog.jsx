@@ -8,12 +8,13 @@ import {
   kanbunDomainMeta,
   kanbunSearchText,
 } from '../data/kanbun-content.js'
-import { KANBUN_LEVELS, KANBUN_LEVEL_BY_ID } from '../data/kanbun-meta.js'
+import { KANBUN_LEVELS } from '../data/kanbun-meta.js'
 import { kanbunDueItems } from '../lib/kanbunProgress.js'
-import { Button, Card, Chip, IconButton } from '../components/ui.jsx'
+import { Button, Card, IconButton } from '../components/ui.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { KanbunHeadword } from '../components/KanbunFurigana.jsx'
 import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
+import { NormalLearningRecordList } from '../components/NormalLearningRecordList.jsx'
 import { summarizeSrsItems } from '../lib/contentProgress.js'
 import {
   Book,
@@ -31,6 +32,12 @@ const CATEGORY_MAP = {
   culture: KANBUN_CULTURE_CATEGORIES,
 }
 
+const LEARNING_RECORD_CONTENT_IDS = Object.freeze({
+  vocab: 'kanbun-vocab',
+  grammar: 'kanbun-grammar',
+  culture: 'kanbun-culture',
+})
+
 export function KanbunCatalogScreen() {
   const params = useStore((state) => state.params)
   const navigate = useStore((state) => state.navigate)
@@ -38,6 +45,7 @@ export function KanbunCatalogScreen() {
   const meta = kanbunDomainMeta(domain)
   const collection = KANBUN_COLLECTIONS[domain]
   const categories = CATEGORY_MAP[domain]
+  const learningRecordContentId = LEARNING_RECORD_CONTENT_IDS[domain]
   const srs = useStore((state) => state[meta.srsField])
   const savedIds = useStore((state) => state[meta.listField])
   const toggleSaved = useStore((state) => state.toggleKanbunList)
@@ -201,38 +209,34 @@ export function KanbunCatalogScreen() {
           </div>
         </div>
 
-        <div className="space-y-2.5">
-          {filtered.map((item) => {
-            const saved = savedIds.includes(item.id)
-            const levelMeta = KANBUN_LEVEL_BY_ID[item.level]
-            const categoryMeta = categories.find((entry) => entry.id === item.category)
-            return (
-              <Card key={item.id} className="p-4">
-                <div className="flex items-start gap-3">
-                  <div className="min-w-0 flex-1">
-                    <div className="flex flex-wrap gap-2">
-                      <Chip color={levelMeta?.color}>{levelMeta?.shortLabel}</Chip>
-                      <Chip color={categoryMeta?.color}>{categoryMeta?.label}</Chip>
-                    </div>
-                    <h3 className="mt-2 font-display text-base font-extrabold leading-relaxed text-ink"><KanbunHeadword item={item} /></h3>
-                    {item.reading && <p className="text-[11px] font-bold text-rose-700">読み：{item.reading}</p>}
-                    {item.pattern && <p className="text-[11px] font-bold text-rose-700">形：{item.pattern}</p>}
-                    <p className="mt-1 text-sm font-extrabold leading-relaxed text-ink/70">{item.answer}</p>
-                    <p className="mt-1 text-xs font-bold leading-relaxed text-ink/45">{item.clue}</p>
-                  </div>
-                  <IconButton
-                    onClick={() => toggleSaved(domain, item.id)}
-                    aria-label={saved ? `${item.title}を登録から外す` : `${item.title}を登録する`}
-                    aria-pressed={saved}
-                    className={saved ? 'text-amber-600' : 'text-ink/25'}
-                  >
-                    {saved ? <BookmarkFilled size={20} /> : <Bookmark size={20} />}
-                  </IconButton>
-                </div>
-              </Card>
-            )
-          })}
-        </div>
+        <NormalLearningRecordList
+          entryId={learningRecordContentId}
+          contentId={learningRecordContentId}
+          items={filtered}
+          unit={meta.itemLabel}
+          onOpen={(item) => study([item], item.title)}
+          openLabel={`この${meta.itemLabel}を暗記する`}
+          openHint="暗記"
+          emptyMessage={`条件に合う${meta.label}はありません。`}
+          renderAfter={(item) => (
+            <div className="mt-1.5 flex items-start gap-2 rounded-xl bg-white/70 px-3 py-2" data-kanbun-list-note={item.id}>
+              <div className="min-w-0 flex-1">
+                <h3 className="font-display text-sm font-extrabold leading-relaxed text-ink"><KanbunHeadword item={item} /></h3>
+                {item.reading && <p className="text-[11px] font-bold text-rose-700">読み：{item.reading}</p>}
+                {item.pattern && <p className="text-[11px] font-bold text-rose-700">形：{item.pattern}</p>}
+                <p className="mt-1 text-xs font-bold leading-relaxed text-ink/45">{item.clue}</p>
+              </div>
+              <IconButton
+                onClick={() => toggleSaved(domain, item.id)}
+                aria-label={savedIds.includes(item.id) ? `${item.title}を登録から外す` : `${item.title}を登録する`}
+                aria-pressed={savedIds.includes(item.id)}
+                className={savedIds.includes(item.id) ? 'text-amber-600' : 'text-ink/25'}
+              >
+                {savedIds.includes(item.id) ? <BookmarkFilled size={20} /> : <Bookmark size={20} />}
+              </IconButton>
+            </div>
+          )}
+        />
       </main>
     </div>
   )

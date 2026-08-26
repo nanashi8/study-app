@@ -12,6 +12,7 @@ import {
 } from '../data/koten-curriculum.js'
 import { Card, Button, Chip } from '../components/ui.jsx'
 import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
+import { NormalLearningRecordList } from '../components/NormalLearningRecordList.jsx'
 import { summarizeSrsItems, summarizeSrsItemsWithQuestions } from '../lib/contentProgress.js'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import {
@@ -314,6 +315,25 @@ export function KotenListScreen() {
             </div>
           </button>
         </div>
+
+        <section className="space-y-2">
+          <div className="px-1 pt-2">
+            <h2 className="font-display text-lg font-extrabold text-ink">古典単語の一覧</h2>
+            <p className="mt-1 text-xs font-bold text-ink/45">
+              左右にスワイプして、学習とテストの結果を直接記録できます。
+            </p>
+          </div>
+          <NormalLearningRecordList
+            entryId="koten-vocab"
+            contentId="koten-vocab"
+            items={KOTEN_WORDS}
+            unit="語"
+            onOpen={(item) => study([item.id], item.word)}
+            openLabel="この単語を暗記する"
+            openHint="暗記"
+            emptyMessage="表示できる古典単語はありません。"
+          />
+        </section>
 
         {KOTEN_TOC.map(({ category, words }) => (
           <CategoryCard
