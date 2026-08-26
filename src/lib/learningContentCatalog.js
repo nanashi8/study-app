@@ -247,6 +247,8 @@ function srsReviewState(entry, options) {
   return {
     memoryAt: finiteTimestamp(entry?.memory?.lastAt),
     testAt: finiteTimestamp(entry?.test?.lastAt),
+    memoryStatus: learningStatus,
+    testStatus,
     learningRecorded: learningStatus !== 'unlearned',
     testRecorded: testStatus !== 'unanswered',
     needsReview: metrics.needsReview,

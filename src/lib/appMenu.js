@@ -51,7 +51,7 @@ export const APP_MENU_SECTIONS = Object.freeze([
   ]),
   section('records', '保存・記録', [
     screenItem('myList', 'マイ学習ノート', '8分野のメモ・問題集・履歴'),
-    screenItem('myLearning', '暗記・テストの記録', '全18教材の一覧から学び、「覚えた／まだ」と正解・不正解を確認'),
+    screenItem('myLearning', '暗記・テストの記録', '全18教材の一覧を確認し、「覚えた／まだ」と正解・不正解を見直す'),
     screenItem('myGrammar', 'マイ文法', '保存した文法を復習'),
     screenItem('kotenSaved', '古典の登録リスト', '古典単語・文法・常識を管理'),
     screenItem('kanbunSaved', '漢文の登録リスト', '漢語・漢文法・漢文常識を管理'),

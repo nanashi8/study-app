@@ -12,9 +12,19 @@ import {
   learningContentCatalogTotal,
 } from '../lib/learningContentCatalog.js'
 import { learningContentCatalogSwipeAction } from '../lib/learningContentCatalogSwipe.js'
+import {
+  VOCAB_CATALOG_ACTIVITY_OPTIONS,
+  vocabularyCatalogRecordedRows,
+  vocabularyCatalogRemainingRows,
+  vocabularyCatalogResultForDirection,
+} from '../lib/vocabCatalog.js'
 import { ScreenHeader } from './AppShell.jsx'
 import { Button, cx } from './ui.jsx'
 import { BookOpen, Check, Search } from './Icons.jsx'
+import {
+  VOCABULARY_HISTORY_ACTIVITY_META,
+  VocabularyHistoryRow,
+} from './VocabularyHistoryRow.jsx'
 
 const CATALOG_PAGE_SIZE = 80
 
@@ -244,6 +254,7 @@ function CatalogItemRow({
 export function LearningContentCatalog({ initialContentId, initialCatalogView }) {
   const navigate = useStore((state) => state.navigate)
   const replaceParams = useStore((state) => state.replaceParams)
+  const review = useStore((state) => state.review)
   const updateLearningContentPlanItem = useStore((state) => state.updateLearningContentPlanItem)
   const state = useStore(useShallow(selectProgressState))
   const fallbackId = LEARNING_CONTENTS[0]?.id
@@ -259,38 +270,64 @@ export function LearningContentCatalog({ initialContentId, initialCatalogView })
   const [query, setQuery] = useState('')
   const [visible, setVisible] = useState(CATALOG_PAGE_SIZE)
   const [selectedIds, setSelectedIds] = useState(() => new Set())
+  const [vocabActivity, setVocabActivity] = useState('memory')
+  const [dismissedVocabByActivity, setDismissedVocabByActivity] = useState(() => ({
+    memory: new Set(),
+    test: new Set(),
+  }))
   const [swipeMessage, setSwipeMessage] = useState('')
   const [toolsOpen, setToolsOpen] = useState(false)
   const [now] = useState(() => Date.now())
   const content = LEARNING_CONTENTS.find((item) => item.id === contentId) ?? LEARNING_CONTENTS[0]
+  const isVocabulary = content.id === 'vocab'
   const action = LEARNING_CONTENT_CATALOG_ACTIONS[content.id]
   const rows = useMemo(
     () => learningContentCatalogRows(content, state, { sort, direction, now }),
     [content, direction, now, sort, state],
   )
+  const vocabularyMemoryRows = useMemo(
+    () => isVocabulary ? vocabularyCatalogRecordedRows(rows, 'memory') : [],
+    [isVocabulary, rows],
+  )
+  const vocabularyTestRows = useMemo(
+    () => isVocabulary ? vocabularyCatalogRecordedRows(rows, 'test') : [],
+    [isVocabulary, rows],
+  )
   const normalizedQuery = query.trim().toLocaleLowerCase('ja')
   const viewRows = useMemo(() => {
+    if (isVocabulary) {
+      return vocabActivity === 'test' ? vocabularyTestRows : vocabularyMemoryRows
+    }
     if (catalogView === 'registered') return rows.filter((row) => row.registered)
     if (catalogView === 'hidden') return rows.filter((row) => row.hidden)
     return rows.filter((row) => !row.hidden)
-  }, [catalogView, rows])
+  }, [catalogView, isVocabulary, rows, vocabActivity, vocabularyMemoryRows, vocabularyTestRows])
   const filteredRows = useMemo(
     () => normalizedQuery
       ? viewRows.filter((row) => row.searchText.includes(normalizedQuery))
       : viewRows,
     [normalizedQuery, viewRows],
   )
-  const visibleRows = filteredRows.slice(0, visible)
+  const dismissedVocabIds = dismissedVocabByActivity[vocabActivity] ?? new Set()
+  const remainingRows = isVocabulary
+    ? vocabularyCatalogRemainingRows(filteredRows, dismissedVocabIds)
+    : filteredRows
+  const visibleRows = remainingRows.slice(0, visible)
   const dueRows = filteredRows.filter((row) => row.needsReview)
   const selectedRows = rows.filter((row) => selectedIds.has(row.id))
+  const vocabularyActivityMeta = VOCABULARY_HISTORY_ACTIVITY_META[vocabActivity]
+    ?? VOCABULARY_HISTORY_ACTIVITY_META.memory
 
-  useEffect(() => setVisible(CATALOG_PAGE_SIZE), [catalogView, contentId, direction, normalizedQuery, sort])
+  useEffect(() => setVisible(CATALOG_PAGE_SIZE), [catalogView, contentId, direction, normalizedQuery, sort, vocabActivity])
 
   const chooseContent = (nextContentId) => {
     setContentId(nextContentId)
     replaceParams({ view: 'catalog', contentId: nextContentId, catalogView })
     setQuery('')
     setSelectedIds(new Set())
+    setVocabActivity('memory')
+    setDismissedVocabByActivity({ memory: new Set(), test: new Set() })
+    setSwipeMessage('')
     setSort('weight')
     setDirection(LEARNING_CONTENT_CATALOG_DEFAULT_DIRECTIONS.weight)
     setToolsOpen(false)
@@ -328,6 +365,22 @@ export function LearningContentCatalog({ initialContentId, initialCatalogView })
   })
 
   const handleRowSwipe = (row, swipeDirection) => {
+    if (isVocabulary) {
+      const result = vocabularyCatalogResultForDirection(vocabActivity, swipeDirection)
+      if (!result) return
+      const label = swipeDirection === 'left'
+        ? vocabularyActivityMeta.leftLabel
+        : vocabularyActivityMeta.rightLabel
+      review(row.id, result, 'vocab')
+      setDismissedVocabByActivity((current) => {
+        const next = new Set(current[vocabActivity])
+        next.add(row.id)
+        return { ...current, [vocabActivity]: next }
+      })
+      setSwipeMessage(`${row.title}を「${label}」扱いとして記録し、一覧から一時的に隠しました。`)
+      return
+    }
+
     if (catalogView === 'all') {
       if (swipeDirection === 'right') {
         if (row.registered) {
@@ -369,6 +422,15 @@ export function LearningContentCatalog({ initialContentId, initialCatalogView })
     setSwipeMessage('非表示の項目は、右にスワイプすると全一覧へ戻せます。')
   }
 
+  const restoreVocabularyList = () => {
+    setDismissedVocabByActivity((current) => ({
+      ...current,
+      [vocabActivity]: new Set(),
+    }))
+    setVisible(CATALOG_PAGE_SIZE)
+    setSwipeMessage(`${vocabActivity === 'test' ? 'テストした' : '学習した'}語彙を一覧に再表示しました。`)
+  }
+
   const selectRows = (items) => setSelectedIds((current) => {
     const next = new Set(current)
     for (const row of items) next.add(row.id)
@@ -392,8 +454,10 @@ export function LearningContentCatalog({ initialContentId, initialCatalogView })
   return (
     <div className="flex h-full min-h-0 flex-col" data-learning-content-catalog={content.id}>
       <ScreenHeader
-        title="全教材の一覧から学ぶ"
-        subtitle={`18教材・全${total.toLocaleString('ja-JP')}項目`}
+        title="一覧を確認"
+        subtitle={isVocabulary
+          ? `英単語・学習 ${vocabularyMemoryRows.length.toLocaleString('ja-JP')}語・テスト ${vocabularyTestRows.length.toLocaleString('ja-JP')}語`
+          : `18教材・全${total.toLocaleString('ja-JP')}項目`}
       />
 
       <div className="shrink-0 space-y-2.5 border-b border-slate-200 bg-white px-3 pb-3 pt-2.5">
@@ -414,25 +478,57 @@ export function LearningContentCatalog({ initialContentId, initialCatalogView })
           </select>
         </label>
 
-        <div className="grid grid-cols-3 gap-1 rounded-xl bg-slate-100 p-1" aria-label="表示する一覧">
-          {Object.entries(CATALOG_VIEW_META).map(([viewId, viewMeta]) => (
-            <button
-              key={viewId}
-              type="button"
-              onClick={() => chooseCatalogView(viewId)}
-              aria-pressed={catalogView === viewId}
-              className={cx(
-                'min-h-10 rounded-lg px-1 text-[10px] font-extrabold',
-                catalogView === viewId
-                  ? 'bg-white text-brand-700 shadow-sm'
-                  : 'text-ink/55 active:bg-white/70',
-              )}
-              data-learning-catalog-view={viewId}
-            >
-              {viewMeta.label}<span className="ml-0.5 tabular-nums">{viewCounts[viewId].toLocaleString('ja-JP')}</span>
-            </button>
-          ))}
-        </div>
+        {isVocabulary ? (
+          <div className="grid grid-cols-2 gap-1 rounded-xl bg-slate-100 p-1" role="tablist" aria-label="確認する記録">
+            {VOCAB_CATALOG_ACTIVITY_OPTIONS.map((option) => {
+              const count = option.id === 'test'
+                ? vocabularyTestRows.length
+                : vocabularyMemoryRows.length
+              return (
+                <button
+                  key={option.id}
+                  type="button"
+                  role="tab"
+                  aria-selected={vocabActivity === option.id}
+                  onClick={() => {
+                    setVocabActivity(option.id)
+                    setSwipeMessage('')
+                  }}
+                  className={cx(
+                    'min-h-11 rounded-lg px-1 text-[11px] font-extrabold',
+                    vocabActivity === option.id
+                      ? 'bg-white text-brand-700 shadow-sm'
+                      : 'text-ink/55 active:bg-white/70',
+                  )}
+                  data-learning-catalog-vocab-activity-tab={option.id}
+                >
+                  <span className="block">{option.label}</span>
+                  <span className="tabular-nums">{count.toLocaleString('ja-JP')}語</span>
+                </button>
+              )
+            })}
+          </div>
+        ) : (
+          <div className="grid grid-cols-3 gap-1 rounded-xl bg-slate-100 p-1" aria-label="表示する一覧">
+            {Object.entries(CATALOG_VIEW_META).map(([viewId, viewMeta]) => (
+              <button
+                key={viewId}
+                type="button"
+                onClick={() => chooseCatalogView(viewId)}
+                aria-pressed={catalogView === viewId}
+                className={cx(
+                  'min-h-10 rounded-lg px-1 text-[10px] font-extrabold',
+                  catalogView === viewId
+                    ? 'bg-white text-brand-700 shadow-sm'
+                    : 'text-ink/55 active:bg-white/70',
+                )}
+                data-learning-catalog-view={viewId}
+              >
+                {viewMeta.label}<span className="ml-0.5 tabular-nums">{viewCounts[viewId].toLocaleString('ja-JP')}</span>
+              </button>
+            ))}
+          </div>
+        )}
 
         <button
           type="button"
@@ -441,7 +537,7 @@ export function LearningContentCatalog({ initialContentId, initialCatalogView })
           className="learning-catalog-tools-toggle min-h-11 w-full items-center justify-between rounded-xl border border-slate-300 bg-white px-3 text-sm font-extrabold text-brand-700 active:bg-brand-50"
           data-learning-catalog-tools-toggle
         >
-          <span>検索・並び替え・まとめて選ぶ</span>
+          <span>{isVocabulary ? '検索・並び替え' : '検索・並び替え・まとめて選ぶ'}</span>
           <span aria-hidden="true">{toolsOpen ? '−' : '＋'}</span>
         </button>
 
@@ -486,48 +582,89 @@ export function LearningContentCatalog({ initialContentId, initialCatalogView })
               {directionLabel(sort, direction)}
             </button>
           </div>
-          <p
-            className="rounded-xl bg-slate-50 px-3 py-2 text-[11px] font-extrabold leading-relaxed text-ink/65"
-            data-learning-catalog-swipe-guide
-          >
-            右にスワイプ：{swipeMeta.rightLabel}　左にスワイプ：{swipeMeta.leftLabel}（タップは今から学ぶ項目の選択）
-          </p>
+          {!isVocabulary && (
+            <>
+              <p
+                className="rounded-xl bg-slate-50 px-3 py-2 text-[11px] font-extrabold leading-relaxed text-ink/65"
+                data-learning-catalog-swipe-guide
+              >
+                右にスワイプ：{swipeMeta.rightLabel}　左にスワイプ：{swipeMeta.leftLabel}（タップは今から学ぶ項目の選択）
+              </p>
 
-          {action.selection === 'many' ? (
-            <div className="grid grid-cols-2 gap-2">
-              <button
-                type="button"
-                disabled={!dueRows.length}
-                onClick={() => selectRows(dueRows)}
-                className="min-h-11 rounded-xl bg-amber-50 px-2 text-xs font-extrabold text-amber-800 active:bg-amber-100 disabled:opacity-45"
-              >
-                復習どき {dueRows.length.toLocaleString('ja-JP')}{content.unit}を選ぶ
-              </button>
-              <button
-                type="button"
-                disabled={!visibleRows.length}
-                onClick={() => selectRows(visibleRows)}
-                className="min-h-11 rounded-xl bg-brand-50 px-2 text-xs font-extrabold text-brand-700 active:bg-brand-100 disabled:opacity-45"
-              >
-                表示中の{visibleRows.length.toLocaleString('ja-JP')}{content.unit}を選ぶ
-              </button>
-            </div>
-          ) : (
-            <p className="rounded-xl bg-brand-50 px-3 py-2 text-xs font-extrabold text-brand-800">
-              この教材は1件ずつ学びます。開く項目を1つ選んでください。
-            </p>
+              {action.selection === 'many' ? (
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    disabled={!dueRows.length}
+                    onClick={() => selectRows(dueRows)}
+                    className="min-h-11 rounded-xl bg-amber-50 px-2 text-xs font-extrabold text-amber-800 active:bg-amber-100 disabled:opacity-45"
+                  >
+                    復習どき {dueRows.length.toLocaleString('ja-JP')}{content.unit}を選ぶ
+                  </button>
+                  <button
+                    type="button"
+                    disabled={!visibleRows.length}
+                    onClick={() => selectRows(visibleRows)}
+                    className="min-h-11 rounded-xl bg-brand-50 px-2 text-xs font-extrabold text-brand-700 active:bg-brand-100 disabled:opacity-45"
+                  >
+                    表示中の{visibleRows.length.toLocaleString('ja-JP')}{content.unit}を選ぶ
+                  </button>
+                </div>
+              ) : (
+                <p className="rounded-xl bg-brand-50 px-3 py-2 text-xs font-extrabold text-brand-800">
+                  この教材は1件ずつ学びます。開く項目を1つ選んでください。
+                </p>
+              )}
+            </>
           )}
         </div>
+
+        {isVocabulary && (
+          <>
+            <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-2">
+              <p
+                className="rounded-xl bg-brand-50 px-3 py-2 text-[11px] font-extrabold leading-relaxed text-brand-800"
+                data-learning-catalog-swipe-guide
+              >
+                左：{vocabularyActivityMeta.leftLabel}　右：{vocabularyActivityMeta.rightLabel}<br />スワイプ後は一時的に非表示
+              </p>
+              <button
+                type="button"
+                onClick={restoreVocabularyList}
+                disabled={!dismissedVocabIds.size}
+                className="min-h-11 rounded-xl border border-brand-200 bg-white px-3 text-[11px] font-extrabold text-brand-700 active:bg-brand-50 disabled:text-ink/35"
+                aria-label="一覧を再表示"
+                data-learning-catalog-restore
+              >
+                一覧を再表示
+              </button>
+            </div>
+            <p className="min-h-4 px-1 text-[11px] font-bold text-ink/55" aria-live="polite" data-learning-catalog-swipe-message>
+              {swipeMessage}
+            </p>
+          </>
+        )}
       </div>
 
       <div className="min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto px-3 py-3" data-learning-catalog-list>
         <p className="mb-2 px-1 text-xs font-extrabold text-ink/50" aria-live="polite">
-          {normalizedQuery
-            ? `${swipeMeta.label}${viewRows.length.toLocaleString('ja-JP')}${content.unit}から${filteredRows.length.toLocaleString('ja-JP')}${content.unit}が一致・${visibleRows.length.toLocaleString('ja-JP')}${content.unit}を表示`
-            : `全${countLabel}・${swipeMeta.label}${viewRows.length.toLocaleString('ja-JP')}${content.unit}のうち${visibleRows.length.toLocaleString('ja-JP')}${content.unit}を表示`}
+          {isVocabulary
+            ? normalizedQuery
+              ? `${vocabActivity === 'test' ? 'テストした' : '学習した'}全${viewRows.length.toLocaleString('ja-JP')}語から${filteredRows.length.toLocaleString('ja-JP')}語が一致・残り${remainingRows.length.toLocaleString('ja-JP')}語`
+              : `${vocabActivity === 'test' ? 'テストした' : '学習した'}全${viewRows.length.toLocaleString('ja-JP')}語・残り${remainingRows.length.toLocaleString('ja-JP')}語`
+            : normalizedQuery
+              ? `${swipeMeta.label}${viewRows.length.toLocaleString('ja-JP')}${content.unit}から${filteredRows.length.toLocaleString('ja-JP')}${content.unit}が一致・${visibleRows.length.toLocaleString('ja-JP')}${content.unit}を表示`
+              : `全${countLabel}・${swipeMeta.label}${viewRows.length.toLocaleString('ja-JP')}${content.unit}のうち${visibleRows.length.toLocaleString('ja-JP')}${content.unit}を表示`}
         </p>
         <div className="space-y-2">
-          {visibleRows.map((row) => (
+          {visibleRows.map((row) => isVocabulary ? (
+            <VocabularyHistoryRow
+              key={row.id}
+              row={row}
+              activity={vocabActivity}
+              onSwipe={(swipeDirection) => handleRowSwipe(row, swipeDirection)}
+            />
+          ) : (
             <CatalogItemRow
               key={row.id}
               content={content}
@@ -541,28 +678,35 @@ export function LearningContentCatalog({ initialContentId, initialCatalogView })
         </div>
         {!visibleRows.length && (
           <p className="rounded-xl bg-slate-50 px-4 py-8 text-center text-sm font-bold text-ink/50">
-            {normalizedQuery
-              ? 'この検索に合う項目はありません。'
-              : catalogView === 'registered'
-                ? '学習項目はまだありません。全一覧で右にスワイプして追加できます。'
-                : catalogView === 'hidden'
-                  ? '再表示しない設定の項目はありません。'
-                  : '表示できる項目はありません。非表示の一覧から戻せます。'}
+            {isVocabulary
+              ? normalizedQuery && !filteredRows.length
+                ? 'この検索に合う語彙はありません。'
+                : viewRows.length
+                  ? 'この一覧をすべて確認しました。「一覧を再表示」で、同じ語彙をもう一度確認できます。'
+                  : vocabularyActivityMeta.empty
+              : normalizedQuery
+                ? 'この検索に合う項目はありません。'
+                : catalogView === 'registered'
+                  ? '学習項目はまだありません。全一覧で右にスワイプして追加できます。'
+                  : catalogView === 'hidden'
+                    ? '再表示しない設定の項目はありません。'
+                    : '表示できる項目はありません。非表示の一覧から戻せます。'}
           </p>
         )}
-        {visible < filteredRows.length && (
+        {visible < remainingRows.length && (
           <Button
             full
             variant="secondary"
             className="mt-3"
-            onClick={() => setVisible((count) => Math.min(filteredRows.length, count + CATALOG_PAGE_SIZE))}
+            onClick={() => setVisible((count) => Math.min(remainingRows.length, count + CATALOG_PAGE_SIZE))}
           >
-            さらに{Math.min(CATALOG_PAGE_SIZE, filteredRows.length - visible).toLocaleString('ja-JP')}{content.unit}を表示
+            さらに{Math.min(CATALOG_PAGE_SIZE, remainingRows.length - visible).toLocaleString('ja-JP')}{content.unit}を表示
           </Button>
         )}
       </div>
 
-      <div className="shrink-0 border-t border-slate-200 bg-white px-3 py-2.5" data-learning-catalog-actions>
+      {!isVocabulary && (
+        <div className="shrink-0 border-t border-slate-200 bg-white px-3 py-2.5" data-learning-catalog-actions>
         <p className="sr-only" aria-live="polite">{swipeMessage}</p>
         <p className="sr-only" aria-live="polite">
           選択中 {selectedRows.length.toLocaleString('ja-JP')}{content.unit}
@@ -593,7 +737,8 @@ export function LearningContentCatalog({ initialContentId, initialCatalogView })
               : `0${content.unit}`}
           </button>
         </div>
-      </div>
+        </div>
+      )}
     </div>
   )
 }

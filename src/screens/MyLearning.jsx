@@ -100,7 +100,7 @@ function LearningCategoryCard({ content, onOpen, onCatalog }) {
           className="inline-flex min-h-10 items-center justify-center gap-1 rounded-lg bg-slate-800 px-2 text-[11px] font-extrabold text-white active:bg-slate-700"
           data-learning-content-catalog-entry={content.id}
         >
-          一覧から学ぶ <ArrowRight size={13} />
+          一覧を確認 <ArrowRight size={13} />
         </button>
       </div>
     </Card>
@@ -138,13 +138,13 @@ export function MyLearningScreen() {
 
   return (
     <div className="pb-6" data-my-learning-screen>
-      <ScreenHeader title="暗記・テストの記録" subtitle="18教材の一覧から学び、結果も確認" />
+      <ScreenHeader title="暗記・テストの記録" subtitle="18教材の一覧を確認し、結果を見直す" />
 
       <div className="space-y-5 px-4">
         <Card className="rounded-xl border-slate-300 p-4 shadow-none" data-learning-record-summary>
           <h2 className="font-display text-base font-extrabold text-slate-950">この画面の見方</h2>
           <p className="mt-1 text-xs font-bold leading-relaxed text-slate-600">
-            各教材の「一覧から学ぶ」で項目を選べます。ここでは「覚えた／まだ」と、テストで最後に答えた結果を分けて表示します。
+            各教材の「一覧を確認」で学習記録を見直せます。英単語は、学習とテストを分けて連続スワイプで扱いを更新できます。
           </p>
           <dl className="mt-3 grid grid-cols-3 divide-x divide-slate-200 rounded-xl bg-slate-50 py-3 text-center">
             {[
