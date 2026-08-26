@@ -383,9 +383,7 @@ test('結果画面・暗記・テストの全配線が同じ周回IDを引き継
   }
   assert.match(result, /vocabularySessionContinuation\(params/)
   assert.match(result, /continueLabel=\{vocabContinuation\.label\}/)
-  assert.match(levels, /「次へ」では同じ周回でまだ出ていない語を必ず含めます/)
-  assert.match(levels, /直前に「まだ」とした語は同じ日の次セットへ自動で戻さず/)
-  assert.doesNotMatch(levels, /「まだ」も同日の次のセッションから候補に戻し/)
+  assert.doesNotMatch(levels, /data-vocab-session-policy|固定配分|30〜60%|同じ周回|次セット/)
   const continuation = result.slice(
     result.indexOf('const continueVocab'),
     result.indexOf('const reviewVocabSchedule'),

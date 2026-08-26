@@ -486,9 +486,6 @@ export function LearningContentCatalog({ initialContentId, initialCatalogView })
               {directionLabel(sort, direction)}
             </button>
           </div>
-          <p className="text-[11px] font-bold leading-relaxed text-ink/50">
-            先に復習する順は、復習日・学習とテストの結果・前回からの日数で決まります。
-          </p>
           <p
             className="rounded-xl bg-slate-50 px-3 py-2 text-[11px] font-extrabold leading-relaxed text-ink/65"
             data-learning-catalog-swipe-guide

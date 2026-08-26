@@ -288,8 +288,9 @@ test('診断結果は成績表、根拠付きおすすめ、次回計画を答�
   assert.match(source, /なぜ、これがおすすめ？/)
   assert.match(source, /data-diagnostic-study-plan/)
   assert.match(source, /次回は、ここから/)
-  assert.match(source, /この予定は、これまでの回答から選んだ目安です/)
-  assert.match(source, /公式試験や医療検査の結果ではありません/)
+  assert.match(source, /今後の学習履歴に合わせて予定を更新します/)
+  assert.match(source, /公式試験の偏差値や合否ではありません/)
+  assert.doesNotMatch(source, /医療検査/)
   assert.doesNotMatch(source, /覚え具合|回答履歴からの推定|脳力|まだ判定できません/)
   assert.ok(
     source.indexOf('<PerformanceReport') < source.indexOf('<AnswerReview'),

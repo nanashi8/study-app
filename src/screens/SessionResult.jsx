@@ -306,7 +306,7 @@ export function SessionResultScreen() {
               <>
                 <p className="text-xs font-black tracking-wider text-emerald-600">日常の歪みを修復</p>
                 <h2 className="mt-1 font-display text-lg font-extrabold text-ink">{source?.distortionTitle ?? '街の違和感を記録した'}</h2>
-                <p className="mt-1 text-sm font-bold leading-relaxed text-ink/55">正誤と復習候補を学習記録へ反映しました。</p>
+                <p className="mt-1 text-sm font-bold leading-relaxed text-ink/55">今回の正誤を学習記録に保存しました。</p>
               </>
             ) : (
               <>

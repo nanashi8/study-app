@@ -161,6 +161,7 @@ test('共通メニューから保存される学習・音声・コンテンツ�
     'dailyGoal',
     'sessionSize',
     'revealAnswers',
+    'autoAdvanceCorrect',
   ])
 
   assert.match(source, /data-settings-central-panel/)
@@ -202,6 +203,8 @@ test('永続設定の変更処理は共通メニューへ集約し、廃止し�
       'components/SessionSize.jsx',
       // 問題数と同じく、カード画面から共通設定を切り替える共通部品。
       'components/RevealAnswers.jsx',
+      // 正解後の自動送りは、問題画面の上部ですぐ切り替える。
+      'components/QuestionSessionControls.jsx',
     ]],
     ['setBattleRelicLevel', ['components/GameSettings.jsx']],
     ['setBattleThemeId', ['components/GameSettings.jsx']],
@@ -226,7 +229,8 @@ test('永続設定の変更処理は共通メニューへ集約し、廃止し�
   assert.doesNotMatch(read('../src/screens/SessionResult.jsx'), /<BattleCompanionPicker/)
   const gameSettings = read('../src/components/GameSettings.jsx')
   assert.match(gameSettings, /龍脈調査の設定/)
-  assert.match(gameSettings, /対戦・攻撃・HPの演出はありません/)
+  assert.match(gameSettings, /生徒の考え方や表情と、先生からの手掛かりを表示します/)
+  assert.doesNotMatch(gameSettings, /対戦・攻撃・HP/)
   assert.doesNotMatch(gameSettings, /setBattleRelicLevel|setBattleThemeId|raiseBattleTrait|resetBattleStudentTraits|BattleCompanionPicker/)
   assert.doesNotMatch(read('../src/components/SpeechSettings.jsx'), /GameSettingsPanel|龍脈調査/)
 })

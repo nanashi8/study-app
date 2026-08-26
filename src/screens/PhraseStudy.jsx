@@ -15,6 +15,11 @@ import { Button, ProgressBar, IconButton, Chip } from '../components/ui.jsx'
 import { ArrowRight, Bookmark, BookmarkFilled, Close, Lightbulb, Link } from '../components/Icons.jsx'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 import { CardStudyFooter, CardSwipeRegion } from '../components/CardStudyControls.jsx'
+import {
+  nextUnansweredSessionIndex,
+  QuestionSessionControls,
+  useIndexedSessionState,
+} from '../components/QuestionSessionControls.jsx'
 
 const itemKind = (p) =>
   p.category === 'expression' ? { label: '表現', color: '#0ea5e9' }
@@ -45,6 +50,12 @@ export function PhraseStudyScreen() {
   const [deck, setDeck] = useState(() => buildFor(params.size ?? sessionSize))
   const [i, setI] = useState(0)
   const [flipped, setFlipped] = useState(revealAll)
+  const {
+    value: recordedAnswer,
+    setValue: setRecordedAnswer,
+    clear: clearRecordedAnswers,
+    values: recordedAnswers,
+  } = useIndexedSessionState(i)
   const results = useRef({ remembered: 0, forgot: 0, forgotIds: [] })
   const item = deck[i]
   const leave = () => params.returnTo
@@ -97,18 +108,18 @@ export function PhraseStudyScreen() {
   }
 
   const answer = (remembered) => {
+    if (recordedAnswer !== null) return
     review(item.id, remembered ? 'remembered' : 'forgot', 'usage')
     results.current = recordStudyAnswer(results.current, item.id, remembered)
-    if (i + 1 >= deck.length) finish()
-    else {
-      setI(i + 1)
-      setFlipped(revealAll)
-    }
+    const nextAnswers = { ...recordedAnswers, [i]: remembered }
+    setRecordedAnswer(remembered)
+    if (Object.keys(nextAnswers).length >= deck.length) finish()
+    else moveToCard(nextUnansweredSessionIndex(i, deck.length, nextAnswers), nextAnswers)
   }
 
-  const moveToCard = (nextIndex) => {
+  const moveToCard = (nextIndex, answers = recordedAnswers) => {
     setI(nextIndex)
-    setFlipped(revealAll)
+    setFlipped(revealAll || Object.hasOwn(answers, nextIndex))
   }
 
   const level = getLevel(item.level)
@@ -148,6 +159,7 @@ export function PhraseStudyScreen() {
               setDeck(buildFor(size))
               setI(0)
               setFlipped(revealAll)
+              clearRecordedAnswers()
               results.current = { remembered: 0, forgot: 0, forgotIds: [] }
             } else {
               setDeck((current) => growDeck(current, i + 1, buildFor(size), size))
@@ -155,6 +167,15 @@ export function PhraseStudyScreen() {
           }}
         />
       </div>
+
+      <QuestionSessionControls
+        index={i}
+        total={deck.length}
+        onPrevious={() => moveToCard(Math.max(0, i - 1))}
+        onNext={() => moveToCard(Math.min(deck.length - 1, i + 1))}
+        nextDisabled={i + 1 >= deck.length}
+        itemLabel="カード"
+      />
 
       <CardSwipeRegion
         index={i}
@@ -243,7 +264,11 @@ export function PhraseStudyScreen() {
       </CardSwipeRegion>
 
       <CardStudyFooter className="border-brand-100">
-        {!flipped ? (
+        {recordedAnswer !== null ? (
+          <Button full size="lg" variant={recordedAnswer ? 'success' : 'danger'} disabled>
+            {recordedAnswer ? '覚えた' : 'まだ'}（回答済み）
+          </Button>
+        ) : !flipped ? (
           <Button full size="lg" onClick={() => setFlipped(true)}>
             {item.kind === 'syntax' ? '意味・ポイントを見る' : '意味・成り立ちを見る'}
           </Button>

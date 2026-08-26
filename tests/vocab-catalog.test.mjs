@@ -72,7 +72,7 @@ test('級別一覧は全7級・全英単語を重複も欠落もなく含む', (
   assert.equal(new Set(catalogIds).size, ALL_WORDS.length)
 })
 
-test('学習日・テスト日・分野・先に復習する順の4種類で級内を並び替える', () => {
+test('学習日・テスト日・分野・復習のおすすめ順の4種類で級内を並び替える', () => {
   assert.deepEqual(
     VOCAB_CATALOG_SORT_OPTIONS.map((option) => option.id),
     ['weight', 'memoryAt', 'testAt', 'field'],
@@ -159,7 +159,7 @@ test('級画面から一覧を開き、一覧選択だけを一時状態とし�
   assert.match(decks, /data-vocab-catalog-sort/)
   assert.match(catalog, /最終学習日/)
   assert.match(catalog, /最終テスト日/)
-  assert.match(`${catalog}\n${decks}`, /先に復習する順/)
+  assert.match(`${catalog}\n${decks}`, /復習のおすすめ順/)
   assert.match(decks, /source: \{ type: 'deck', ids, preserveOrder: true \}/)
   assert.match(decks, /data-vocab-catalog-start-review/)
   assert.match(decks, /returnTo: \{ screen: 'vocabDecks', params: \{ levelId: level\.id, view: 'list' \} \}/)

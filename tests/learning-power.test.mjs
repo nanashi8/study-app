@@ -169,7 +169,7 @@ test('画面の目安をIQや固定能力と区別し、メニューのおすす
     'utf8',
   )
 
-  assert.match(analyticsSource, /才能やIQを示すものではありません/)
+  assert.match(analyticsSource, /おすすめは学習記録をもとにした目安/)
   assert.match(analyticsSource, /diagnosticHistory/)
   assert.match(analyticsSource, /data-diagnostic-status/)
   assert.match(analyticsSource, /最近受けた学習診断/)
@@ -182,7 +182,7 @@ test('画面の目安をIQや固定能力と区別し、メニューのおすす
   assert.match(menuSource, /<LearningAdvisorPanel/)
   assert.match(advisorSource, /profile\.recommendation/)
   assert.match(advisorSource, /次に進む学習/)
-  assert.match(advisorSource, /固定された能力やIQ/)
+  assert.doesNotMatch(`${analyticsSource}\n${advisorSource}`, /才能やIQ|医療的な測定|医療検査/)
 })
 
 test('学習記録の横長表は狭い画面で縦並びのカードへ切り替える', () => {

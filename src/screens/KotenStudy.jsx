@@ -9,6 +9,11 @@ import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 import { CardStudyFooter, CardSwipeRegion } from '../components/CardStudyControls.jsx'
 import { growDeck } from '../lib/session.js'
 import {
+  nextUnansweredSessionIndex,
+  QuestionSessionControls,
+  useIndexedSessionState,
+} from '../components/QuestionSessionControls.jsx'
+import {
   Bookmark,
   BookmarkFilled,
   Close,
@@ -47,6 +52,12 @@ export function KotenStudyScreen() {
   const [flipped, setFlipped] = useState(revealAll)
   const [done, setDone] = useState(false)
   const [remembered, setRemembered] = useState(0)
+  const {
+    value: recordedAnswer,
+    setValue: setRecordedAnswer,
+    clear: clearRecordedAnswers,
+    values: recordedAnswers,
+  } = useIndexedSessionState(i)
 
   const word = deck[i]
   const saved = word ? kotenWordList.includes(word.id) : false
@@ -69,21 +80,22 @@ export function KotenStudyScreen() {
     setFlipped(revealAll)
     setDone(false)
     setRemembered(0)
+    clearRecordedAnswers()
   }
 
   const answer = (ok) => {
+    if (recordedAnswer !== null) return
     reviewKoten(word.id, ok ? 'remembered' : 'forgot')
     if (ok) setRemembered((n) => n + 1)
-    if (i + 1 >= deck.length) setDone(true)
-    else {
-      setI(i + 1)
-      setFlipped(revealAll)
-    }
+    const nextAnswers = { ...recordedAnswers, [i]: ok }
+    setRecordedAnswer(ok)
+    if (Object.keys(nextAnswers).length >= deck.length) setDone(true)
+    else moveToCard(nextUnansweredSessionIndex(i, deck.length, nextAnswers), nextAnswers)
   }
 
-  const moveToCard = (nextIndex) => {
+  const moveToCard = (nextIndex, answers = recordedAnswers) => {
     setI(nextIndex)
-    setFlipped(revealAll)
+    setFlipped(revealAll || Object.hasOwn(answers, nextIndex))
   }
 
   if (done) {
@@ -128,12 +140,22 @@ export function KotenStudyScreen() {
               setFlipped(revealAll)
               setDone(false)
               setRemembered(0)
+              clearRecordedAnswers()
             } else {
               setDeck((current) => growDeck(current, i + 1, buildKotenDeck(params.ids, seed + 1, size, params.preserveOrder), size))
             }
           }}
         />
       </div>
+
+      <QuestionSessionControls
+        index={i}
+        total={deck.length}
+        onPrevious={() => moveToCard(Math.max(0, i - 1))}
+        onNext={() => moveToCard(Math.min(deck.length - 1, i + 1))}
+        nextDisabled={i + 1 >= deck.length}
+        itemLabel="カード"
+      />
 
       {/* カード */}
       <CardSwipeRegion
@@ -216,7 +238,11 @@ export function KotenStudyScreen() {
 
       {/* フッター操作 */}
       <CardStudyFooter className="border-amber-100">
-        {!flipped ? (
+        {recordedAnswer !== null ? (
+          <Button full size="lg" variant={recordedAnswer ? 'success' : 'danger'} disabled>
+            {recordedAnswer ? '覚えた' : 'まだ'}（回答済み）
+          </Button>
+        ) : !flipped ? (
           <Button full size="lg" onClick={() => setFlipped(true)}>
             意味を見る
           </Button>

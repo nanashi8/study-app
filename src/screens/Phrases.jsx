@@ -152,7 +152,7 @@ export function PhrasesScreen() {
 
   return (
     <div className="pb-6">
-      <ScreenHeader title="熟語・構文" subtitle="3択＋わからないで暗記" />
+      <ScreenHeader title="熟語・構文" subtitle="3択と「わからない」で練習" />
 
       <div className="px-4">
         {/* 種類切替 */}

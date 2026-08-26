@@ -87,13 +87,6 @@ export function VocabGroupsScreen() {
       />
 
       <div className="space-y-3 px-4">
-        <div className="rounded-2xl bg-brand-100/70 px-4 py-3">
-          <h1 className="font-display font-extrabold text-brand-800">10分野から選ぶ</h1>
-          <p className="mt-1 text-xs font-bold leading-relaxed text-brand-800/65">
-            細かな分類を学びやすい10分野にまとめました。復習日を迎えた語、未学習語の順に10語ずつ出し、まだ復習日でない語は自動では繰り返しません。
-          </p>
-        </div>
-
         {fields.map(({ field, words }) => (
           <FieldCard
             key={field.id}
@@ -108,7 +101,7 @@ export function VocabGroupsScreen() {
         <div className="flex items-start gap-2 rounded-2xl bg-white/70 px-4 py-3 text-xs font-bold leading-relaxed text-ink/50">
           <span className="mt-0.5 text-brand-500"><Refresh size={16} /></span>
           <p>
-            10分野の合計で全{ALL_WORDS.length.toLocaleString('ja-JP')}語を重複なく扱います。復習日前の語をもう一度見たいときは、単語画面の「学習済みの語を確認」やマイ単語から選べます。
+            学習済みの語を見直すときは、単語画面の「学習済みの語を確認」かマイ単語から選べます。
           </p>
         </div>
       </div>

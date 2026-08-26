@@ -245,13 +245,6 @@ export function VocabLevelsScreen() {
           </button>
         </div>
 
-        <p
-          className="rounded-2xl bg-white/70 px-4 py-3 text-xs font-bold leading-relaxed text-ink/55"
-          data-vocab-session-policy
-        >
-          通常セッションは固定配分ではありません。基本は、新しい語・別の語が約30〜60%になるよう調整し、直近の「まだ」・誤答、今日の復習量、残り語数に応じて増減します。「次へ」では同じ周回でまだ出ていない語を必ず含めます。暗記で直前に「まだ」とした語は同じ日の次セットへ自動で戻さず、「復習する」を選んだときだけすぐ確認できます。
-        </p>
-
         <FieldChooser onChoose={() => navigate('vocabGroups')} />
 
         <button

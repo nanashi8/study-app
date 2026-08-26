@@ -446,7 +446,7 @@ test('英語と日本語の選択設定が読み上げ画面まで接続され�
 
   assert.match(store, /ttsJapaneseVoiceURI:\s*null/)
   assert.match(settings, /自動（高品質優先）/)
-  assert.match(settings, /低音質は高品質・標準音声が使えない場合だけ使用します/)
+  assert.match(settings, /「自動」は、端末で使える最も高品質な声を選びます/)
   assert.match(settings, /「拡張」「Premium」「Enhanced」/)
   assert.match(reader, /japaneseVoiceURI:\s*settings\.ttsJapaneseVoiceURI/)
   assert.match(literature, /lang:\s*step\.lang/)
@@ -484,5 +484,6 @@ test('全ての直接読み上げ経路が用途別の自然朗読スタイル�
     literature,
     /style:\s*step\.phase === 'original' \? 'narration' : 'translation'/,
   )
-  assert.match(settings, /自然な間・抑揚補正：すべての読み上げで有効/)
+  assert.match(settings, /端末で使える最も高品質な声/)
+  assert.doesNotMatch(settings, /自然な間・抑揚補正：すべての読み上げで有効/)
 })

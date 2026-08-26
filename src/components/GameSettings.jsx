@@ -5,7 +5,7 @@ export function GameSettingsPanel() {
         <p className="text-xs font-extrabold tracking-[0.12em] text-violet-600">DRAGON VEIN RESEARCH</p>
         <h3 className="mt-1 font-display text-sm font-extrabold text-ink">龍脈解読の表示</h3>
         <p className="mt-1 text-xs font-bold leading-relaxed text-ink/50">
-          生徒の思考や表情、先生からの専門的な手掛かりを表示します。対戦・攻撃・HPの演出はありません。
+          生徒の考え方や表情と、先生からの手掛かりを表示します。
         </p>
       </div>
 

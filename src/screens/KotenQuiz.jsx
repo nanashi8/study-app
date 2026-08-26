@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import { getKoten, pickKotenDistractors } from '../data/koten.js'
 import { Button, ProgressBar, IconButton } from '../components/ui.jsx'
@@ -18,7 +18,10 @@ import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { buildKotenWordInstructorExplanation } from '../lib/instructorExplanations.js'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 import { growDeck } from '../lib/session.js'
-import { MAX_SRS_BOX } from '../lib/srs.js'
+import {
+  QuestionSessionControls,
+  useIndexedSessionState,
+} from '../components/QuestionSessionControls.jsx'
 
 function shuffle(arr) {
   const a = [...arr]
@@ -47,7 +50,13 @@ export function KotenQuizScreen() {
   const sessionSize = useSessionSize(poolSize || Infinity)
   const [deck, setDeck] = useState(() => buildQuizDeck(params.ids, 0, params.size ?? sessionSize))
   const [i, setI] = useState(0)
-  const [selected, setSelected] = useState(null)
+  const {
+    value: selected,
+    setValue: setSelected,
+    clear: clearSelections,
+  } = useIndexedSessionState(i)
+  const autoAdvanceSequence = useRef(0)
+  const [autoAdvanceSignal, setAutoAdvanceSignal] = useState(null)
   const [correctCount, setCorrectCount] = useState(0)
   const [done, setDone] = useState(false)
 
@@ -73,7 +82,7 @@ export function KotenQuizScreen() {
     setSeed(next)
     setDeck(buildQuizDeck(params.ids, next, deck.length))
     setI(0)
-    setSelected(null)
+    clearSelections()
     setCorrectCount(0)
     setDone(false)
   }
@@ -110,9 +119,8 @@ export function KotenQuizScreen() {
     } else if (optId === word.id) {
       reviewKoten(word.id, 'correct')
       setCorrectCount((n) => n + 1)
-      const newBox = Math.min(MAX_SRS_BOX, prevBox + 1)
-      if (newBox > prevBox) setBoxUp((n) => n + 1)
-      if (prevBox < 4 && newBox >= 4) setNewlyMastered((n) => n + 1)
+      autoAdvanceSequence.current += 1
+      setAutoAdvanceSignal(autoAdvanceSequence.current)
     } else {
       reviewKoten(word.id, 'wrong')
     }
@@ -122,7 +130,6 @@ export function KotenQuizScreen() {
     if (i + 1 >= deck.length) setDone(true)
     else {
       setI(i + 1)
-      setSelected(null)
     }
   }
 
@@ -155,7 +162,7 @@ export function KotenQuizScreen() {
             if (discard) {
               setDeck(buildQuizDeck(params.ids, seed + 1, size))
               setI(0)
-              setSelected(null)
+              clearSelections()
               setCorrectCount(0)
               setDone(false)
             } else {
@@ -164,6 +171,16 @@ export function KotenQuizScreen() {
           }}
         />
       </div>
+
+      <QuestionSessionControls
+        index={i}
+        total={deck.length}
+        onPrevious={() => setI((current) => Math.max(0, current - 1))}
+        onNext={next}
+        nextDisabled={!answered}
+        showAutoAdvance
+        autoAdvanceSignal={isCorrectPick ? autoAdvanceSignal : null}
+      />
 
       <div className="flex-1 overflow-y-auto px-4 pb-4">
         {/* 出題語 */}

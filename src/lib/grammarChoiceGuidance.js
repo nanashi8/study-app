@@ -1523,7 +1523,7 @@ export function createGrammarChoiceGuidance(allItems) {
 
     return guide(
       'unresolved',
-      `「${choice}」の使う場面を特定できません。教材データに個別ガイドを追加してください。`,
+      `正解を入れた文全体と比べ、「${choice}」では意味や形が合わない箇所を確認しましょう。`,
       { source: 'unresolved' },
     )
   }

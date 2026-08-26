@@ -24,7 +24,7 @@ export function WordRequestsScreen() {
 
   return (
     <div className="flex h-full flex-col">
-      <ScreenHeader title="辞書リクエスト" subtitle="ログイン不要・全体の受付語数で調整" />
+      <ScreenHeader title="辞書リクエスト" subtitle="辞書にない英単語を追加依頼" />
 
       <div className="space-y-4 px-4 pb-6 pt-4">
         <Card className="p-5">

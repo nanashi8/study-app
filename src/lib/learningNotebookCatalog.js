@@ -111,7 +111,7 @@ const CATALOG = Object.freeze({
       title: item.title,
       subtitle: item.description,
       detail: words.slice(0, 7).join('・'),
-      category: '確認済み語根',
+      category: '語根',
       level: item.rootId ? `語源カード ${item.rootForm}` : '',
       search: [item.caution, item.subtitle, words],
     }

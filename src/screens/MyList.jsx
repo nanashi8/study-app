@@ -954,7 +954,7 @@ export function MyListScreen() {
             )}
 
             <p className="rounded-xl bg-slate-100 px-3 py-3 text-[10px] font-bold leading-relaxed text-slate-600">
-              1冊に最大{NOTEBOOK_LIMITS.itemsPerSet}項目、最大{NOTEBOOK_LIMITS.sets}冊。1回の学習では分野に応じて10〜20項目を選び、復習日を迎えた項目と未学習の項目から先に出します。
+              1冊に最大{NOTEBOOK_LIMITS.itemsPerSet}項目、最大{NOTEBOOK_LIMITS.sets}冊。学習を始めると、復習どきと未学習から10〜20項目を出します。
             </p>
           </div>
         )}

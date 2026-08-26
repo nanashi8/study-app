@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import {
   getKotenCulture,
@@ -24,9 +24,10 @@ import {
 } from '../components/Icons.jsx'
 import { buildKotenCultureInstructorExplanation } from '../lib/instructorExplanations.js'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
-import { MAX_SRS_BOX } from '../lib/srs.js'
-
-const MASTER_BOX = 4
+import {
+  QuestionSessionControls,
+  useIndexedSessionState,
+} from '../components/QuestionSessionControls.jsx'
 
 const ALL_QUESTIONS = 9999 // 在庫数を数えるための十分大きな上限
 
@@ -46,7 +47,13 @@ export function KotenCultureQuizScreen() {
     pickKotenCultureQuestions(params.ids, { size: params.size ?? sessionSize }),
   )
   const [index, setIndex] = useState(0)
-  const [selected, setSelected] = useState(null)
+  const {
+    value: selected,
+    setValue: setSelected,
+    clear: clearSelections,
+  } = useIndexedSessionState(index)
+  const autoAdvanceSequence = useRef(0)
+  const [autoAdvanceSignal, setAutoAdvanceSignal] = useState(null)
   const [correctCount, setCorrectCount] = useState(0)
   const [unknownCount, setUnknownCount] = useState(0)
   const [weakIds, setWeakIds] = useState([])
@@ -81,7 +88,7 @@ export function KotenCultureQuizScreen() {
   const restart = (ids = params.ids) => {
     setDeck(pickKotenCultureQuestions(ids, { size: deck.length || sessionSize }))
     setIndex(0)
-    setSelected(null)
+    clearSelections()
     setCorrectCount(0)
     setUnknownCount(0)
     setWeakIds([])
@@ -100,11 +107,8 @@ export function KotenCultureQuizScreen() {
     } else if (choice === question.answer) {
       reviewCulture(primary.id, 'correct')
       setCorrectCount((count) => count + 1)
-      const nextBox = Math.min(MAX_SRS_BOX, previousBox + 1)
-      if (nextBox > previousBox) setBoxUp((count) => count + 1)
-      if (previousBox < MASTER_BOX && nextBox >= MASTER_BOX) {
-        setNewlyMastered((count) => count + 1)
-      }
+      autoAdvanceSequence.current += 1
+      setAutoAdvanceSignal(autoAdvanceSequence.current)
     } else {
       reviewCulture(primary.id, 'wrong')
       setWeakIds((ids) => [...new Set([...ids, ...question.cultureIds])])
@@ -115,7 +119,6 @@ export function KotenCultureQuizScreen() {
     if (index + 1 >= deck.length) setDone(true)
     else {
       setIndex((current) => current + 1)
-      setSelected(null)
     }
   }
 
@@ -193,7 +196,7 @@ export function KotenCultureQuizScreen() {
               if (discard) {
                 setDeck(pickKotenCultureQuestions(params.ids, { size }))
                 setIndex(0)
-                setSelected(null)
+                clearSelections()
                 setCorrectCount(0)
                 setUnknownCount(0)
                 setWeakIds([])
@@ -210,6 +213,16 @@ export function KotenCultureQuizScreen() {
           />
         </div>
       </div>
+
+      <QuestionSessionControls
+        index={index}
+        total={deck.length}
+        onPrevious={() => setIndex((current) => Math.max(0, current - 1))}
+        onNext={next}
+        nextDisabled={!answered}
+        showAutoAdvance
+        autoAdvanceSignal={correctPick ? autoAdvanceSignal : null}
+      />
 
       <div className="flex-1 overflow-y-auto px-4 pb-4">
         <section className="mt-3 rounded-[2rem] bg-white p-5 shadow-card">

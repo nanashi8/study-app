@@ -1367,7 +1367,8 @@ test('廃止した戦闘アイテムと装備効果を現行の調査画面へ�
       /BattleItemBox|school-battle-item-box|useBattleItem|itemUsed|enemyCurrentHp|heroCurrentHp|damageTaken|1バトル1回/u,
     )
   }
-  assert.match(settingsSource, /対戦・攻撃・HPの演出はありません/u)
+  assert.match(settingsSource, /生徒の考え方や表情と、先生からの手掛かりを表示します/u)
+  assert.doesNotMatch(settingsSource, /対戦・攻撃・HP/u)
   assert.match(quizSource, /<DragonVeinCipherStage/u)
   assert.match(resultSource, /復元断片/u)
 })

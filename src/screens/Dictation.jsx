@@ -11,7 +11,7 @@ export function DictationScreen() {
       title="ディクテーション"
       subtitle="音声を聞いて、英文を全文入力"
       accent="#14b8a6"
-      note="この教材は、級別の場面・題材に合わせて、文長・構文・話題を段階化したトレーニングです。大文字・句読点は採点せず、綴りと語順を採点します。"
+      note="級別リスニングを使った練習で、大文字・句読点は採点せず、綴りと語順を採点します。"
       countFor={(levelId) => dictationByLevel(levelId).length}
       countUnit="問"
       detailFor={(levelId) => DICTATION_PROFILES[levelId]?.target}

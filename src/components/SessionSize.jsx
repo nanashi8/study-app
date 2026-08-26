@@ -115,9 +115,8 @@ export function SessionCounter({
         ) : (
           <div className="space-y-4 pb-2">
             <p className="text-xs font-bold leading-relaxed text-ink/50">
-              1回の学習で出す{label}数を選べます。いまの進み具合より多い数を選べば続きから、
-              少ない数を選ぶとここまでの学習・回答は破棄されます。
-              設定はすべての暗記・テストに引き継がれます。
+              この問題数は、すべての暗記・テストに使われます。
+              今の番号より少なくすると、ここまでの学習・回答を破棄します。
             </p>
             <div className="grid grid-cols-3 gap-2" data-session-size-options>
               {options.map((size) => (

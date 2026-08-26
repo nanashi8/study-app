@@ -119,12 +119,6 @@ export function KanbunKundokuScreen() {
           </div>
         </section>
 
-        <section className="rounded-2xl bg-sky-50 p-4">
-          <p className="text-xs font-extrabold text-sky-900">表記について</p>
-          <p className="mt-1 text-[11px] font-bold leading-relaxed text-sky-900/65">
-            返り点は親字と一体のまとまりとして、その字の左下に小さく表示します。画面幅で折り返しても、レ点・一二点・上下点・甲乙点・天地人点が親字から離れません。
-          </p>
-        </section>
       </main>
     </div>
   )

@@ -45,7 +45,7 @@ export function LiteratureLibraryScreen() {
     <div className="pb-7">
       <ScreenHeader
         title="名作に親しむ"
-        subtitle="間で区切る → 一対ずつ意味を確かめる"
+        subtitle="原文と訳を、まとまりごとに聴く"
         color="#0f766e"
       />
 
@@ -81,7 +81,7 @@ export function LiteratureLibraryScreen() {
         <Card className="p-4" data-literature-status>
           <LearningStatusBars progress={overallStatus} compact units={{ learning: '作品', quiz: '作品' }} />
           <p className="mt-2 text-[10px] font-bold leading-relaxed text-ink/45">
-            英語名作の読解チェックは正誤を記録します。独立テストのない古典・漢文名作は未回答です。
+            英語名作は読解チェックの結果、古典・漢文は読了状況を表示します。
           </p>
         </Card>
 

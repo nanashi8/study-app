@@ -578,7 +578,7 @@ export function ReaderScreen() {
                         </span>
                         {blockFlowParts(block).length > 0 && (
                           <span className="bg-ink/5 px-1.5 py-0.5 text-ink/60">
-                            内部の順：{flowPattern(blockFlowParts(block))}
+                            まとまりの順：{flowPattern(blockFlowParts(block))}
                           </span>
                         )}
                       </div>
