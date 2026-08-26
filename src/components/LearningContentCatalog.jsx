@@ -456,27 +456,56 @@ export function LearningContentCatalog({ initialContentId, initialCatalogView })
       <ScreenHeader
         title="一覧を確認"
         subtitle={isVocabulary
-          ? `英単語・学習 ${vocabularyMemoryRows.length.toLocaleString('ja-JP')}語・テスト ${vocabularyTestRows.length.toLocaleString('ja-JP')}語`
+          ? undefined
           : `18教材・全${total.toLocaleString('ja-JP')}項目`}
+        compact={isVocabulary}
       />
 
-      <div className="shrink-0 space-y-2.5 border-b border-slate-200 bg-white px-3 pb-3 pt-2.5">
-        <label className="block">
-          <span className="mb-1 block text-[11px] font-extrabold text-ink/55">教材</span>
-          <select
-            value={content.id}
-            onChange={(event) => chooseContent(event.target.value)}
-            aria-label="一覧に表示する教材"
-            className="h-11 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm font-extrabold text-ink"
-            data-learning-catalog-content-select
-          >
-            {LEARNING_CONTENTS.map((item) => (
-              <option key={item.id} value={item.id}>
-                {item.label}（{item.items.length.toLocaleString('ja-JP')}{item.unit}）
-              </option>
-            ))}
-          </select>
-        </label>
+      <div
+        className={cx(
+          'shrink-0 border-b border-slate-200 bg-white px-3',
+          isVocabulary ? 'space-y-1.5 pb-2 pt-1.5' : 'space-y-2.5 pb-3 pt-2.5',
+        )}
+        data-learning-catalog-compact-controls={isVocabulary || undefined}
+      >
+        <div className={cx(isVocabulary && 'grid grid-cols-[minmax(0,1fr)_auto] items-end gap-1.5')}>
+          <label className="block min-w-0">
+            <span className={cx(
+              isVocabulary
+                ? 'sr-only'
+                : 'mb-1 block text-[11px] font-extrabold text-ink/55',
+            )}>
+              教材
+            </span>
+            <select
+              value={content.id}
+              onChange={(event) => chooseContent(event.target.value)}
+              aria-label="一覧に表示する教材"
+              className="h-11 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm font-extrabold text-ink"
+              data-learning-catalog-content-select
+            >
+              {LEARNING_CONTENTS.map((item) => (
+                <option key={item.id} value={item.id}>
+                  {item.label}（{item.items.length.toLocaleString('ja-JP')}{item.unit}）
+                </option>
+              ))}
+            </select>
+          </label>
+          {isVocabulary && (
+            <button
+              type="button"
+              onClick={() => setToolsOpen((current) => !current)}
+              aria-expanded={toolsOpen}
+              aria-label={`検索・並び替えを${toolsOpen ? '閉じる' : '開く'}`}
+              className="learning-catalog-tools-toggle min-h-11 items-center justify-center gap-1 rounded-xl border border-slate-300 bg-white px-2 text-[10px] font-extrabold text-brand-700 active:bg-brand-50"
+              data-learning-catalog-tools-toggle
+            >
+              <span className="hidden min-[360px]:inline">検索・並び替え</span>
+              <span className="min-[360px]:hidden">検索・並び</span>
+              <span aria-hidden="true">{toolsOpen ? '−' : '＋'}</span>
+            </button>
+          )}
+        </div>
 
         {isVocabulary ? (
           <div className="grid grid-cols-2 gap-1 rounded-xl bg-slate-100 p-1" role="tablist" aria-label="確認する記録">
@@ -495,15 +524,16 @@ export function LearningContentCatalog({ initialContentId, initialCatalogView })
                     setSwipeMessage('')
                   }}
                   className={cx(
-                    'min-h-11 rounded-lg px-1 text-[11px] font-extrabold',
+                    'min-h-11 rounded-lg px-1 text-xs font-extrabold',
                     vocabActivity === option.id
                       ? 'bg-white text-brand-700 shadow-sm'
                       : 'text-ink/55 active:bg-white/70',
                   )}
+                  aria-label={`${option.label} ${count.toLocaleString('ja-JP')}語`}
                   data-learning-catalog-vocab-activity-tab={option.id}
                 >
-                  <span className="block">{option.label}</span>
-                  <span className="tabular-nums">{count.toLocaleString('ja-JP')}語</span>
+                  {option.id === 'test' ? 'テスト' : '学習'}
+                  <span className="ml-1 tabular-nums">{count.toLocaleString('ja-JP')}語</span>
                 </button>
               )
             })}
@@ -530,16 +560,18 @@ export function LearningContentCatalog({ initialContentId, initialCatalogView })
           </div>
         )}
 
-        <button
-          type="button"
-          onClick={() => setToolsOpen((current) => !current)}
-          aria-expanded={toolsOpen}
-          className="learning-catalog-tools-toggle min-h-11 w-full items-center justify-between rounded-xl border border-slate-300 bg-white px-3 text-sm font-extrabold text-brand-700 active:bg-brand-50"
-          data-learning-catalog-tools-toggle
-        >
-          <span>{isVocabulary ? '検索・並び替え' : '検索・並び替え・まとめて選ぶ'}</span>
-          <span aria-hidden="true">{toolsOpen ? '−' : '＋'}</span>
-        </button>
+        {!isVocabulary && (
+          <button
+            type="button"
+            onClick={() => setToolsOpen((current) => !current)}
+            aria-expanded={toolsOpen}
+            className="learning-catalog-tools-toggle min-h-11 w-full items-center justify-between rounded-xl border border-slate-300 bg-white px-3 text-sm font-extrabold text-brand-700 active:bg-brand-50"
+            data-learning-catalog-tools-toggle
+          >
+            <span>検索・並び替え・まとめて選ぶ</span>
+            <span aria-hidden="true">{toolsOpen ? '−' : '＋'}</span>
+          </button>
+        )}
 
         <div
           className={cx('space-y-2.5', !toolsOpen && 'learning-catalog-tools-collapsible')}
@@ -623,23 +655,24 @@ export function LearningContentCatalog({ initialContentId, initialCatalogView })
           <>
             <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-2">
               <p
-                className="rounded-xl bg-brand-50 px-3 py-2 text-[11px] font-extrabold leading-relaxed text-brand-800"
+                className="flex min-h-11 min-w-0 items-center justify-center whitespace-nowrap rounded-xl bg-brand-50 px-2 text-[10px] font-extrabold text-brand-800"
+                aria-label={`左スワイプで${vocabularyActivityMeta.leftLabel}、右スワイプで${vocabularyActivityMeta.rightLabel}。スワイプ後は一時的に非表示になります。`}
                 data-learning-catalog-swipe-guide
               >
-                左：{vocabularyActivityMeta.leftLabel}　右：{vocabularyActivityMeta.rightLabel}<br />スワイプ後は一時的に非表示
+                <span aria-hidden="true">← {vocabularyActivityMeta.leftLabel}｜{vocabularyActivityMeta.rightLabel} →</span>
               </p>
               <button
                 type="button"
                 onClick={restoreVocabularyList}
                 disabled={!dismissedVocabIds.size}
-                className="min-h-11 rounded-xl border border-brand-200 bg-white px-3 text-[11px] font-extrabold text-brand-700 active:bg-brand-50 disabled:text-ink/35"
+                className="min-h-11 rounded-xl border border-brand-200 bg-white px-2 text-[10px] font-extrabold text-brand-700 active:bg-brand-50 disabled:text-ink/35"
                 aria-label="一覧を再表示"
                 data-learning-catalog-restore
               >
                 一覧を再表示
               </button>
             </div>
-            <p className="min-h-4 px-1 text-[11px] font-bold text-ink/55" aria-live="polite" data-learning-catalog-swipe-message>
+            <p className="sr-only" aria-live="polite" data-learning-catalog-swipe-message>
               {swipeMessage}
             </p>
           </>

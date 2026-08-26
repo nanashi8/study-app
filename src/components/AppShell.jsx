@@ -104,6 +104,7 @@ export function ScreenHeader({
   onBack,
   color,
   inverse = false,
+  compact = false,
   showSpeechSettings = false,
   titleClassName = '',
   subtitleClassName = '',
@@ -111,7 +112,8 @@ export function ScreenHeader({
   return (
     <header
       className={cx(
-        'sticky top-0 z-20 flex min-h-16 items-center gap-2 border-b px-3 py-2.5',
+        'sticky top-0 z-20 flex items-center gap-2 border-b',
+        compact ? 'min-h-12 px-3 py-1.5' : 'min-h-16 px-3 py-2.5',
         inverse ? 'border-white/10' : 'border-slate-200/80',
       )}
       style={{
