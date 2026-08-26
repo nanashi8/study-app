@@ -12,6 +12,7 @@ import {
   learningContentCatalogTotal,
 } from '../lib/learningContentCatalog.js'
 import { learningContentCatalogSwipeAction } from '../lib/learningContentCatalogSwipe.js'
+import { learningContentCatalogSupportsReview } from '../lib/learningContentCatalogReview.js'
 import {
   VOCAB_CATALOG_ACTIVITY_OPTIONS,
   vocabularyCatalogRecordedRows,
@@ -22,6 +23,7 @@ import { ScreenHeader } from './AppShell.jsx'
 import { Button, cx } from './ui.jsx'
 import { BookOpen, Check, Search } from './Icons.jsx'
 import {
+  LearningRecordRow,
   VOCABULARY_HISTORY_ACTIVITY_META,
   VocabularyHistoryRow,
 } from './VocabularyHistoryRow.jsx'
@@ -254,7 +256,7 @@ function CatalogItemRow({
 export function LearningContentCatalog({ initialContentId, initialCatalogView }) {
   const navigate = useStore((state) => state.navigate)
   const replaceParams = useStore((state) => state.replaceParams)
-  const review = useStore((state) => state.review)
+  const reviewLearningContent = useStore((state) => state.reviewLearningContent)
   const updateLearningContentPlanItem = useStore((state) => state.updateLearningContentPlanItem)
   const state = useStore(useShallow(selectProgressState))
   const fallbackId = LEARNING_CONTENTS[0]?.id
@@ -270,8 +272,8 @@ export function LearningContentCatalog({ initialContentId, initialCatalogView })
   const [query, setQuery] = useState('')
   const [visible, setVisible] = useState(CATALOG_PAGE_SIZE)
   const [selectedIds, setSelectedIds] = useState(() => new Set())
-  const [vocabActivity, setVocabActivity] = useState('memory')
-  const [dismissedVocabByActivity, setDismissedVocabByActivity] = useState(() => ({
+  const [recordActivity, setRecordActivity] = useState('memory')
+  const [dismissedReviewByActivity, setDismissedReviewByActivity] = useState(() => ({
     memory: new Set(),
     test: new Set(),
   }))
@@ -280,54 +282,55 @@ export function LearningContentCatalog({ initialContentId, initialCatalogView })
   const [now] = useState(() => Date.now())
   const content = LEARNING_CONTENTS.find((item) => item.id === contentId) ?? LEARNING_CONTENTS[0]
   const isVocabulary = content.id === 'vocab'
+  const supportsDirectReview = learningContentCatalogSupportsReview(content.id)
   const action = LEARNING_CONTENT_CATALOG_ACTIONS[content.id]
   const rows = useMemo(
     () => learningContentCatalogRows(content, state, { sort, direction, now }),
     [content, direction, now, sort, state],
   )
-  const vocabularyMemoryRows = useMemo(
-    () => isVocabulary ? vocabularyCatalogRecordedRows(rows, 'memory') : [],
-    [isVocabulary, rows],
+  const recordedMemoryRows = useMemo(
+    () => supportsDirectReview ? vocabularyCatalogRecordedRows(rows, 'memory') : [],
+    [rows, supportsDirectReview],
   )
-  const vocabularyTestRows = useMemo(
-    () => isVocabulary ? vocabularyCatalogRecordedRows(rows, 'test') : [],
-    [isVocabulary, rows],
+  const recordedTestRows = useMemo(
+    () => supportsDirectReview ? vocabularyCatalogRecordedRows(rows, 'test') : [],
+    [rows, supportsDirectReview],
   )
-  const vocabularyRecordedCount = vocabActivity === 'test'
-    ? vocabularyTestRows.length
-    : vocabularyMemoryRows.length
+  const recordedCount = recordActivity === 'test'
+    ? recordedTestRows.length
+    : recordedMemoryRows.length
   const normalizedQuery = query.trim().toLocaleLowerCase('ja')
   const viewRows = useMemo(() => {
-    if (isVocabulary) return rows
+    if (supportsDirectReview) return rows
     if (catalogView === 'registered') return rows.filter((row) => row.registered)
     if (catalogView === 'hidden') return rows.filter((row) => row.hidden)
     return rows.filter((row) => !row.hidden)
-  }, [catalogView, isVocabulary, rows])
+  }, [catalogView, rows, supportsDirectReview])
   const filteredRows = useMemo(
     () => normalizedQuery
       ? viewRows.filter((row) => row.searchText.includes(normalizedQuery))
       : viewRows,
     [normalizedQuery, viewRows],
   )
-  const dismissedVocabIds = dismissedVocabByActivity[vocabActivity] ?? new Set()
-  const remainingRows = isVocabulary
-    ? vocabularyCatalogRemainingRows(filteredRows, dismissedVocabIds)
+  const dismissedReviewIds = dismissedReviewByActivity[recordActivity] ?? new Set()
+  const remainingRows = supportsDirectReview
+    ? vocabularyCatalogRemainingRows(filteredRows, dismissedReviewIds)
     : filteredRows
   const visibleRows = remainingRows.slice(0, visible)
   const dueRows = filteredRows.filter((row) => row.needsReview)
   const selectedRows = rows.filter((row) => selectedIds.has(row.id))
-  const vocabularyActivityMeta = VOCABULARY_HISTORY_ACTIVITY_META[vocabActivity]
+  const recordActivityMeta = VOCABULARY_HISTORY_ACTIVITY_META[recordActivity]
     ?? VOCABULARY_HISTORY_ACTIVITY_META.memory
 
-  useEffect(() => setVisible(CATALOG_PAGE_SIZE), [catalogView, contentId, direction, normalizedQuery, sort, vocabActivity])
+  useEffect(() => setVisible(CATALOG_PAGE_SIZE), [catalogView, contentId, direction, normalizedQuery, recordActivity, sort])
 
   const chooseContent = (nextContentId) => {
     setContentId(nextContentId)
     replaceParams({ view: 'catalog', contentId: nextContentId, catalogView })
     setQuery('')
     setSelectedIds(new Set())
-    setVocabActivity('memory')
-    setDismissedVocabByActivity({ memory: new Set(), test: new Set() })
+    setRecordActivity('memory')
+    setDismissedReviewByActivity({ memory: new Set(), test: new Set() })
     setSwipeMessage('')
     setSort('weight')
     setDirection(LEARNING_CONTENT_CATALOG_DEFAULT_DIRECTIONS.weight)
@@ -366,17 +369,17 @@ export function LearningContentCatalog({ initialContentId, initialCatalogView })
   })
 
   const handleRowSwipe = (row, swipeDirection) => {
-    if (isVocabulary) {
-      const result = vocabularyCatalogResultForDirection(vocabActivity, swipeDirection)
+    if (supportsDirectReview) {
+      const result = vocabularyCatalogResultForDirection(recordActivity, swipeDirection)
       if (!result) return
       const label = swipeDirection === 'left'
-        ? vocabularyActivityMeta.leftLabel
-        : vocabularyActivityMeta.rightLabel
-      review(row.id, result, 'vocab')
-      setDismissedVocabByActivity((current) => {
-        const next = new Set(current[vocabActivity])
+        ? recordActivityMeta.leftLabel
+        : recordActivityMeta.rightLabel
+      if (!reviewLearningContent(content.id, row.id, result)) return
+      setDismissedReviewByActivity((current) => {
+        const next = new Set(current[recordActivity])
         next.add(row.id)
-        return { ...current, [vocabActivity]: next }
+        return { ...current, [recordActivity]: next }
       })
       setSwipeMessage(`${row.title}を「${label}」扱いとして記録し、一覧から一時的に隠しました。`)
       return
@@ -423,13 +426,13 @@ export function LearningContentCatalog({ initialContentId, initialCatalogView })
     setSwipeMessage('非表示の項目は、右にスワイプすると全一覧へ戻せます。')
   }
 
-  const restoreVocabularyList = () => {
-    setDismissedVocabByActivity((current) => ({
+  const restoreReviewList = () => {
+    setDismissedReviewByActivity((current) => ({
       ...current,
-      [vocabActivity]: new Set(),
+      [recordActivity]: new Set(),
     }))
     setVisible(CATALOG_PAGE_SIZE)
-    setSwipeMessage(`${vocabActivity === 'test' ? 'テスト' : '学習'}の一覧を再表示しました。`)
+    setSwipeMessage(`${recordActivity === 'test' ? 'テスト' : '学習'}の一覧を再表示しました。`)
   }
 
   const selectRows = (items) => setSelectedIds((current) => {
@@ -440,6 +443,15 @@ export function LearningContentCatalog({ initialContentId, initialCatalogView })
 
   const startSelected = () => {
     const launch = learningContentCatalogLaunch(content, selectedRows, { catalogView })
+    if (launch) navigate(launch.screen, launch.params)
+  }
+
+  const openRecordRow = (row) => {
+    if (isVocabulary) {
+      navigate('wordDetail', { id: row.id })
+      return
+    }
+    const launch = learningContentCatalogLaunch(content, [row], { catalogView })
     if (launch) navigate(launch.screen, launch.params)
   }
 
@@ -456,23 +468,23 @@ export function LearningContentCatalog({ initialContentId, initialCatalogView })
     <div className="flex h-full min-h-0 flex-col" data-learning-content-catalog={content.id}>
       <ScreenHeader
         title="一覧を確認"
-        subtitle={isVocabulary
+        subtitle={supportsDirectReview
           ? undefined
           : `18教材・全${total.toLocaleString('ja-JP')}項目`}
-        compact={isVocabulary}
+        compact={supportsDirectReview}
       />
 
       <div
         className={cx(
           'shrink-0 border-b border-slate-200 bg-white px-3',
-          isVocabulary ? 'space-y-1.5 pb-2 pt-1.5' : 'space-y-2.5 pb-3 pt-2.5',
+          supportsDirectReview ? 'space-y-1.5 pb-2 pt-1.5' : 'space-y-2.5 pb-3 pt-2.5',
         )}
-        data-learning-catalog-compact-controls={isVocabulary || undefined}
+        data-learning-catalog-compact-controls={supportsDirectReview || undefined}
       >
-        <div className={cx(isVocabulary && 'grid grid-cols-[minmax(0,1fr)_auto] items-end gap-1.5')}>
+        <div className={cx(supportsDirectReview && 'grid grid-cols-[minmax(0,1fr)_auto] items-end gap-1.5')}>
           <label className="block min-w-0">
             <span className={cx(
-              isVocabulary
+              supportsDirectReview
                 ? 'sr-only'
                 : 'mb-1 block text-[11px] font-extrabold text-ink/55',
             )}>
@@ -492,7 +504,7 @@ export function LearningContentCatalog({ initialContentId, initialCatalogView })
               ))}
             </select>
           </label>
-          {isVocabulary && (
+          {supportsDirectReview && (
             <button
               type="button"
               onClick={() => setToolsOpen((current) => !current)}
@@ -508,33 +520,34 @@ export function LearningContentCatalog({ initialContentId, initialCatalogView })
           )}
         </div>
 
-        {isVocabulary ? (
+        {supportsDirectReview ? (
           <div className="grid grid-cols-2 gap-1 rounded-xl bg-slate-100 p-1" role="tablist" aria-label="確認する記録">
             {VOCAB_CATALOG_ACTIVITY_OPTIONS.map((option) => {
               const count = option.id === 'test'
-                ? vocabularyTestRows.length
-                : vocabularyMemoryRows.length
+                ? recordedTestRows.length
+                : recordedMemoryRows.length
               return (
                 <button
                   key={option.id}
                   type="button"
                   role="tab"
-                  aria-selected={vocabActivity === option.id}
+                  aria-selected={recordActivity === option.id}
                   onClick={() => {
-                    setVocabActivity(option.id)
+                    setRecordActivity(option.id)
                     setSwipeMessage('')
                   }}
                   className={cx(
                     'min-h-11 rounded-lg px-1 text-xs font-extrabold',
-                    vocabActivity === option.id
+                    recordActivity === option.id
                       ? 'bg-white text-brand-700 shadow-sm'
                       : 'text-ink/55 active:bg-white/70',
                   )}
-                  aria-label={`${option.label}。済み${count.toLocaleString('ja-JP')}語、全${rows.length.toLocaleString('ja-JP')}語`}
-                  data-learning-catalog-vocab-activity-tab={option.id}
+                  aria-label={`${option.label}。済み${count.toLocaleString('ja-JP')}${content.unit}、全${rows.length.toLocaleString('ja-JP')}${content.unit}`}
+                  data-learning-catalog-activity-tab={option.id}
+                  data-learning-catalog-vocab-activity-tab={isVocabulary ? option.id : undefined}
                 >
                   {option.id === 'test' ? 'テスト' : '学習'}
-                  <span className="ml-1 tabular-nums">{count.toLocaleString('ja-JP')}/{rows.length.toLocaleString('ja-JP')}語</span>
+                  <span className="ml-1 tabular-nums">{count.toLocaleString('ja-JP')}/{rows.length.toLocaleString('ja-JP')}{content.unit}</span>
                 </button>
               )
             })}
@@ -561,7 +574,7 @@ export function LearningContentCatalog({ initialContentId, initialCatalogView })
           </div>
         )}
 
-        {!isVocabulary && (
+        {!supportsDirectReview && (
           <button
             type="button"
             onClick={() => setToolsOpen((current) => !current)}
@@ -615,7 +628,7 @@ export function LearningContentCatalog({ initialContentId, initialCatalogView })
               {directionLabel(sort, direction)}
             </button>
           </div>
-          {!isVocabulary && (
+          {!supportsDirectReview && (
             <>
               <p
                 className="rounded-xl bg-slate-50 px-3 py-2 text-[11px] font-extrabold leading-relaxed text-ink/65"
@@ -652,20 +665,20 @@ export function LearningContentCatalog({ initialContentId, initialCatalogView })
           )}
         </div>
 
-        {isVocabulary && (
+        {supportsDirectReview && (
           <>
             <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-2">
               <p
                 className="flex min-h-11 min-w-0 items-center justify-center whitespace-nowrap rounded-xl bg-brand-50 px-2 text-[10px] font-extrabold text-brand-800"
-                aria-label={`左スワイプで${vocabularyActivityMeta.leftLabel}、右スワイプで${vocabularyActivityMeta.rightLabel}。スワイプ後は一時的に非表示になります。`}
+                aria-label={`左スワイプで${recordActivityMeta.leftLabel}、右スワイプで${recordActivityMeta.rightLabel}。スワイプ後は一時的に非表示になります。`}
                 data-learning-catalog-swipe-guide
               >
-                <span aria-hidden="true">← {vocabularyActivityMeta.leftLabel}｜{vocabularyActivityMeta.rightLabel} →</span>
+                <span aria-hidden="true">← {recordActivityMeta.leftLabel}｜{recordActivityMeta.rightLabel} →</span>
               </p>
               <button
                 type="button"
-                onClick={restoreVocabularyList}
-                disabled={!dismissedVocabIds.size}
+                onClick={restoreReviewList}
+                disabled={!dismissedReviewIds.size}
                 className="min-h-11 rounded-xl border border-brand-200 bg-white px-2 text-[10px] font-extrabold text-brand-700 active:bg-brand-50 disabled:text-ink/35"
                 aria-label="一覧を再表示"
                 data-learning-catalog-restore
@@ -682,22 +695,31 @@ export function LearningContentCatalog({ initialContentId, initialCatalogView })
 
       <div className="min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto px-3 py-3" data-learning-catalog-list>
         <p className="mb-2 px-1 text-xs font-extrabold text-ink/50" aria-live="polite">
-          {isVocabulary
+          {supportsDirectReview
             ? normalizedQuery
-              ? `${vocabActivity === 'test' ? 'テスト済' : '学習済'} ${vocabularyRecordedCount.toLocaleString('ja-JP')}/${viewRows.length.toLocaleString('ja-JP')}語・一致${filteredRows.length.toLocaleString('ja-JP')}語・残り${remainingRows.length.toLocaleString('ja-JP')}語`
-              : `${vocabActivity === 'test' ? 'テスト済' : '学習済'} ${vocabularyRecordedCount.toLocaleString('ja-JP')}/${viewRows.length.toLocaleString('ja-JP')}語・残り${remainingRows.length.toLocaleString('ja-JP')}語`
+              ? `${recordActivity === 'test' ? 'テスト済' : '学習済'} ${recordedCount.toLocaleString('ja-JP')}/${viewRows.length.toLocaleString('ja-JP')}${content.unit}・一致${filteredRows.length.toLocaleString('ja-JP')}${content.unit}・残り${remainingRows.length.toLocaleString('ja-JP')}${content.unit}`
+              : `${recordActivity === 'test' ? 'テスト済' : '学習済'} ${recordedCount.toLocaleString('ja-JP')}/${viewRows.length.toLocaleString('ja-JP')}${content.unit}・残り${remainingRows.length.toLocaleString('ja-JP')}${content.unit}`
             : normalizedQuery
               ? `${swipeMeta.label}${viewRows.length.toLocaleString('ja-JP')}${content.unit}から${filteredRows.length.toLocaleString('ja-JP')}${content.unit}が一致・${visibleRows.length.toLocaleString('ja-JP')}${content.unit}を表示`
               : `全${countLabel}・${swipeMeta.label}${viewRows.length.toLocaleString('ja-JP')}${content.unit}のうち${visibleRows.length.toLocaleString('ja-JP')}${content.unit}を表示`}
         </p>
         <div className="space-y-2">
-          {visibleRows.map((row) => isVocabulary ? (
-            <VocabularyHistoryRow
+          {visibleRows.map((row) => supportsDirectReview ? (
+            isVocabulary ? <VocabularyHistoryRow
               key={row.id}
               row={row}
-              activity={vocabActivity}
+              activity={recordActivity}
               onSwipe={(swipeDirection) => handleRowSwipe(row, swipeDirection)}
-              onOpen={() => navigate('wordDetail', { id: row.id })}
+              onOpen={() => openRecordRow(row)}
+            /> : <LearningRecordRow
+              key={row.id}
+              row={row}
+              activity={recordActivity}
+              onSwipe={(swipeDirection) => handleRowSwipe(row, swipeDirection)}
+              onOpen={() => openRecordRow(row)}
+              openLabel={`この${content.unit}を${action.verb}`}
+              openHint={action.verb}
+              titleLanguage={content.group === 'english' ? 'en' : 'ja'}
             />
           ) : (
             <CatalogItemRow
@@ -713,12 +735,12 @@ export function LearningContentCatalog({ initialContentId, initialCatalogView })
         </div>
         {!visibleRows.length && (
           <p className="rounded-xl bg-slate-50 px-4 py-8 text-center text-sm font-bold text-ink/50">
-            {isVocabulary
+            {supportsDirectReview
               ? normalizedQuery && !filteredRows.length
-                ? 'この検索に合う語彙はありません。'
+                ? `この検索に合う${content.label}はありません。`
                 : viewRows.length
-                  ? 'この一覧をすべて確認しました。「一覧を再表示」で、同じ語彙をもう一度確認できます。'
-                  : vocabularyActivityMeta.empty
+                  ? `この一覧をすべて確認しました。「一覧を再表示」で、同じ${content.label}をもう一度確認できます。`
+                  : recordActivityMeta.empty
               : normalizedQuery
                 ? 'この検索に合う項目はありません。'
                 : catalogView === 'registered'
@@ -740,7 +762,7 @@ export function LearningContentCatalog({ initialContentId, initialCatalogView })
         )}
       </div>
 
-      {!isVocabulary && (
+      {!supportsDirectReview && (
         <div className="shrink-0 border-t border-slate-200 bg-white px-3 py-2.5" data-learning-catalog-actions>
         <p className="sr-only" aria-live="polite">{swipeMessage}</p>
         <p className="sr-only" aria-live="polite">

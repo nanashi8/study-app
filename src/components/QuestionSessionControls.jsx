@@ -52,6 +52,9 @@ export function QuestionSessionControls({
   className = '',
   itemLabel = '問題',
   progressColor = 'var(--color-brand-500)',
+  leadingAction = null,
+  progressControl = null,
+  trailingActions = null,
 }) {
   const autoAdvanceCorrect = useStore(
     (state) => state.settings.autoAdvanceCorrect !== false,
@@ -89,28 +92,38 @@ export function QuestionSessionControls({
 
   const isLast = index + 1 >= total
   const progressValue = total > 0 ? index / total : 0
+  const compact = Boolean(leadingAction || progressControl || trailingActions)
+  const nextLabel = isLast && showAutoAdvance ? '結果' : '次へ'
   const toggleAutoAdvance = () => {
     setSetting('autoAdvanceCorrect', !autoAdvanceCorrect)
   }
 
   return (
     <nav
-      aria-label={`${itemLabel}の移動`}
+      aria-label={`${itemLabel}の${compact ? '操作' : '移動'}`}
       data-question-session-controls
       className={cx(
-        'flex min-h-12 shrink-0 items-center gap-2 border-b border-slate-200/80 bg-white/95 px-3 py-1.5 backdrop-blur',
+        'flex min-h-12 shrink-0 items-center border-b border-slate-200/80 bg-white/95 py-1.5 backdrop-blur',
+        compact ? 'gap-0.5 px-1.5' : 'gap-2 px-3',
         className,
       )}
     >
+      {leadingAction}
+
       <button
         type="button"
         onClick={onPrevious}
         disabled={previousDisabled}
         aria-label={`前の${itemLabel}へ`}
         data-question-previous
-        className="inline-flex min-h-11 min-w-[4.5rem] items-center justify-center gap-0.5 rounded-xl px-2 text-xs font-extrabold text-brand-700 active:bg-brand-50 disabled:text-ink/20 disabled:active:bg-transparent"
+        className={cx(
+          'inline-flex min-h-11 items-center justify-center rounded-xl font-extrabold text-brand-700 active:bg-brand-50 disabled:text-ink/20 disabled:active:bg-transparent',
+          compact
+            ? 'min-w-11 flex-1 flex-col gap-0 px-0.5 text-[10px]'
+            : 'min-w-[4.5rem] gap-0.5 px-2 text-xs',
+        )}
       >
-        <ChevronLeft size={18} /> 前へ
+        <ChevronLeft size={compact ? 16 : 18} /> <span>前へ</span>
       </button>
 
       <div
@@ -146,12 +159,12 @@ export function QuestionSessionControls({
               {pending ? '次へ' : autoAdvanceCorrect ? '自動' : '手動'}
             </span>
           </button>
-        ) : null}
+        ) : progressControl}
         <ProgressBar
           value={progressValue}
           color={progressColor}
           className={cx(
-            showAutoAdvance
+            showAutoAdvance || progressControl
               ? 'pointer-events-none absolute inset-x-2 bottom-1 h-1.5 w-auto'
               : 'h-2.5',
           )}
@@ -164,10 +177,27 @@ export function QuestionSessionControls({
         disabled={nextDisabled}
         aria-label={isLast && showAutoAdvance ? '結果を見る' : `次の${itemLabel}へ`}
         data-question-next
-        className="inline-flex min-h-11 min-w-[4.5rem] items-center justify-center gap-0.5 rounded-xl px-2 text-xs font-extrabold text-brand-700 active:bg-brand-50 disabled:text-ink/20 disabled:active:bg-transparent"
+        className={cx(
+          'inline-flex min-h-11 items-center justify-center rounded-xl font-extrabold text-brand-700 active:bg-brand-50 disabled:text-ink/20 disabled:active:bg-transparent',
+          compact
+            ? 'min-w-11 flex-1 flex-col gap-0 px-0.5 text-[10px]'
+            : 'min-w-[4.5rem] gap-0.5 px-2 text-xs',
+        )}
       >
-        {isLast && showAutoAdvance ? '結果' : '次へ'} <ChevronRight size={18} />
+        {compact ? (
+          <>
+            <ChevronRight size={16} />
+            <span>{nextLabel}</span>
+          </>
+        ) : (
+          <>
+            <span>{nextLabel}</span>
+            <ChevronRight size={18} />
+          </>
+        )}
       </button>
+
+      {trailingActions}
 
       <span className="sr-only" aria-live="polite">
         {pending ? '正解しました。まもなく次へ進みます。' : ''}

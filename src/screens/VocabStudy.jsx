@@ -5,11 +5,10 @@ import { buildDeck, growDeck, recordStudyAnswer } from '../lib/session.js'
 import { phraseGroupsForWord } from '../lib/wordPhrases.js'
 import { playSpeechItems } from '../lib/speech-player.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
-import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
 import { EtymologyBlock } from '../components/WordBits.jsx'
 import { PosBadge } from '../components/WordBits.jsx'
-import { Button, IconButton } from '../components/ui.jsx'
+import { Button, IconButton, cx } from '../components/ui.jsx'
 import { Close, Bookmark, BookmarkFilled, ArrowRight, Lightbulb } from '../components/Icons.jsx'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 import { VocabReviewHistory } from '../components/VocabReviewHistory.jsx'
@@ -206,49 +205,6 @@ export function VocabStudyScreen() {
 
   return (
     <div className="flex h-full flex-col">
-      {/* ヘッダー（進捗） */}
-      <div className="flex items-center gap-3 px-3 py-3">
-        <IconButton onClick={backToVocabParent} aria-label="やめる">
-          <Close size={22} />
-        </IconButton>
-        <span className="min-w-0 flex-1" aria-hidden="true" />
-        <RevealAnswersToggle label="意味" onChange={(on) => setFlipped(on)} />
-        <SpeechSettingsButton compact />
-        <SessionCounter
-          index={i}
-          total={deck.length}
-          max={poolSize}
-          onResize={(size, { discard }) => {
-            if (discard) {
-              const nextDeck = buildFor(size)
-              setDeck(nextDeck)
-              setI(0)
-              setFlipped(revealAll)
-              clearRecordedAnswers()
-              results.current = { remembered: 0, forgot: 0, forgotIds: [] }
-              beforeBoxesAtStart.current = Object.fromEntries(nextDeck.map((item) => [
-                item.id,
-                Number.isFinite(srsAtStart.current[item.id]?.box)
-                  ? srsAtStart.current[item.id].box
-                  : null,
-              ]))
-            } else {
-              setDeck((current) => {
-                const nextDeck = growDeck(current, i + 1, buildFor(size), size)
-                for (const item of nextDeck) {
-                  if (!Object.hasOwn(beforeBoxesAtStart.current, item.id)) {
-                    beforeBoxesAtStart.current[item.id] = Number.isFinite(srsAtStart.current[item.id]?.box)
-                      ? srsAtStart.current[item.id].box
-                      : null
-                  }
-                }
-                return nextDeck
-              })
-            }
-          }}
-        />
-      </div>
-
       <QuestionSessionControls
         index={i}
         total={deck.length}
@@ -257,6 +213,79 @@ export function VocabStudyScreen() {
         nextDisabled={i + 1 >= deck.length}
         itemLabel="カード"
         progressColor="var(--color-brand-500)"
+        leadingAction={(
+          <IconButton
+            onClick={backToVocabParent}
+            aria-label="やめる"
+            className="shrink-0 rounded-xl text-ink/45"
+          >
+            <Close size={19} />
+          </IconButton>
+        )}
+        progressControl={(
+          <SessionCounter
+            index={i}
+            total={deck.length}
+            max={poolSize}
+            label="カード"
+            className="h-11 w-full min-w-0 px-0 text-center text-xs no-underline"
+            onResize={(size, { discard }) => {
+              if (discard) {
+                const nextDeck = buildFor(size)
+                setDeck(nextDeck)
+                setI(0)
+                setFlipped(revealAll)
+                clearRecordedAnswers()
+                results.current = { remembered: 0, forgot: 0, forgotIds: [] }
+                beforeBoxesAtStart.current = Object.fromEntries(nextDeck.map((item) => [
+                  item.id,
+                  Number.isFinite(srsAtStart.current[item.id]?.box)
+                    ? srsAtStart.current[item.id].box
+                    : null,
+                ]))
+              } else {
+                setDeck((current) => {
+                  const nextDeck = growDeck(current, i + 1, buildFor(size), size)
+                  for (const item of nextDeck) {
+                    if (!Object.hasOwn(beforeBoxesAtStart.current, item.id)) {
+                      beforeBoxesAtStart.current[item.id] = Number.isFinite(srsAtStart.current[item.id]?.box)
+                        ? srsAtStart.current[item.id].box
+                        : null
+                    }
+                  }
+                  return nextDeck
+                })
+              }
+            }}
+          />
+        )}
+        trailingActions={(
+          <>
+            <RevealAnswersToggle
+              label="意味"
+              toolbar
+              onChange={(on) => setFlipped(on)}
+            />
+            <button
+              type="button"
+              onClick={() => toggleMyList(word.id)}
+              aria-pressed={saved}
+              aria-label={saved
+                ? `${word.word}をマイ単語から外す`
+                : `${word.word}をマイ単語に追加`}
+              data-vocab-my-list-toggle
+              className={cx(
+                'inline-flex min-h-11 min-w-[3.75rem] shrink-0 flex-col items-center justify-center gap-0 rounded-xl px-1 text-[10px] font-extrabold transition-colors',
+                saved
+                  ? 'bg-hint/15 text-hint ring-1 ring-hint/25'
+                  : 'bg-slate-100 text-ink/45 ring-1 ring-slate-200',
+              )}
+            >
+              {saved ? <BookmarkFilled size={17} /> : <Bookmark size={17} />}
+              <span>マイ単語</span>
+            </button>
+          </>
+        )}
       />
 
       {/* カード */}
@@ -272,18 +301,8 @@ export function VocabStudyScreen() {
           className="animate-pop-in rounded-[2rem] bg-white p-6 shadow-card"
         >
           {/* 表：単語 */}
-          <div className="flex items-start justify-between">
+          <div className="flex items-start">
             <PosBadge pos={word.pos} />
-            <IconButton
-              onClick={(e) => {
-                e.stopPropagation()
-                toggleMyList(word.id)
-              }}
-              className={saved ? 'text-hint' : 'text-ink/30'}
-              aria-label="マイ単語に保存"
-            >
-              {saved ? <BookmarkFilled size={22} /> : <Bookmark size={22} />}
-            </IconButton>
           </div>
 
           <div className="mt-2 flex flex-col items-center text-center">

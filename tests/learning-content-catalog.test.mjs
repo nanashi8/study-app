@@ -2,7 +2,7 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 
-import { createInitialLearningState, todayIndex } from '../src/store/useStore.js'
+import { createInitialLearningState, todayIndex, useStore } from '../src/store/useStore.js'
 import { LEARNING_CONTENTS } from '../src/lib/learningContentProgress.js'
 import {
   LEARNING_CONTENT_CATALOG_ACTIONS,
@@ -20,6 +20,11 @@ import { buildListeningDeck } from '../src/data/listening.js'
 import { buildDictationDeck } from '../src/data/dictation.js'
 import { pickKanbunKundokuExercises } from '../src/data/kanbun-kundoku.js'
 import { learningContentCatalogSwipeAction } from '../src/lib/learningContentCatalogSwipe.js'
+import {
+  LEARNING_CONTENT_CATALOG_REVIEWABLE_IDS,
+  learningContentCatalogReviewCommand,
+  learningContentCatalogSupportsReview,
+} from '../src/lib/learningContentCatalogReview.js'
 import { createLearningNotebook } from '../src/lib/learningNotebook.js'
 import {
   learningContentPlanEntry,
@@ -49,6 +54,17 @@ const EXPECTED_COUNTS = Object.freeze({
 })
 
 const contentById = (id) => LEARNING_CONTENTS.find((content) => content.id === id)
+
+const EXPECTED_REVIEWABLE_CONTENT_IDS = Object.freeze([
+  'vocab',
+  'usage',
+  'koten-vocab',
+  'koten-grammar',
+  'koten-culture',
+  'kanbun-vocab',
+  'kanbun-grammar',
+  'kanbun-culture',
+])
 
 function reviewEntry({ memoryAt, testAt, failed = false, day }) {
   return {
@@ -288,10 +304,72 @@ test('並び替え後の選択順を、英語・語源・漢文の既存デッ�
   )
 })
 
-test('マイ学習の入口を一覧確認へ統一し、英単語だけは連続スワイプで記録する', () => {
+test('英単語と指定8カテゴリの全11,705項目を学習・テストの連続スワイプ対象にする', () => {
+  assert.deepEqual(LEARNING_CONTENT_CATALOG_REVIEWABLE_IDS, EXPECTED_REVIEWABLE_CONTENT_IDS)
+  const contents = EXPECTED_REVIEWABLE_CONTENT_IDS.map(contentById)
+  assert.ok(contents.every(Boolean))
+  assert.equal(contents.reduce((sum, content) => sum + content.items.length, 0), 11_705)
+  assert.equal(contents.slice(1).reduce((sum, content) => sum + content.items.length, 0), 2_836)
+
+  const usageKinds = Object.fromEntries(
+    [...new Set(contentById('usage').items.map((item) => item.kind))]
+      .map((kind) => [kind, contentById('usage').items.filter((item) => item.kind === kind).length]),
+  )
+  assert.deepEqual(usageKinds, { idiom: 1_754, syntax: 350 })
+
+  const state = createInitialLearningState()
+  for (const content of contents) {
+    assert.equal(learningContentCatalogSupportsReview(content.id), true, content.id)
+    const rows = learningContentCatalogRows(content, state)
+    assert.equal(rows.length, content.items.length, content.id)
+    assert.deepEqual(
+      new Set(rows.map((row) => row.id)),
+      new Set(content.items.map((item) => item.id)),
+      `${content.id}: 一覧の欠落`,
+    )
+    for (const row of rows) {
+      assert.ok(['unlearned', 'learned', 'reviewing'].includes(row.memoryStatus), `${content.id}:${row.id}: 学習状態`)
+      assert.ok(['unanswered', 'correct', 'incorrect'].includes(row.testStatus), `${content.id}:${row.id}: テスト状態`)
+      assert.ok(learningContentCatalogReviewCommand(content.id, row.id, 'remembered'), `${content.id}:${row.id}: 学習記録`)
+      assert.ok(learningContentCatalogReviewCommand(content.id, row.id, 'correct'), `${content.id}:${row.id}: テスト記録`)
+    }
+  }
+  assert.equal(learningContentCatalogSupportsReview('grammar'), false)
+  assert.equal(learningContentCatalogReviewCommand('grammar', 'g1', 'correct'), null)
+})
+
+test('一覧スワイプは8教材IDごとの既存SRS書き込み口へ保存する', () => {
+  const storeFields = {
+    vocab: 'srs',
+    usage: 'srs',
+    'koten-vocab': 'kotenSrs',
+    'koten-grammar': 'kotenGrammarSrs',
+    'koten-culture': 'kotenCultureSrs',
+    'kanbun-vocab': 'kanbunVocabSrs',
+    'kanbun-grammar': 'kanbunGrammarSrs',
+    'kanbun-culture': 'kanbunCultureSrs',
+  }
+  for (const field of new Set(Object.values(storeFields))) {
+    assert.ok(PERSISTED_PROGRESS_FIELDS.includes(field), `${field}: 保存・同期契約`)
+  }
+
+  for (const contentId of EXPECTED_REVIEWABLE_CONTENT_IDS) {
+    useStore.setState(createInitialLearningState())
+    const itemId = contentById(contentId).items[0].id
+    assert.equal(useStore.getState().reviewLearningContent(contentId, itemId, 'remembered'), true)
+    assert.equal(useStore.getState()[storeFields[contentId]][itemId].memory.lastJudgment, 'remembered')
+    assert.equal(useStore.getState().reviewLearningContent(contentId, itemId, 'correct'), true)
+    assert.equal(useStore.getState()[storeFields[contentId]][itemId].test.lastResult, 'correct')
+  }
+  assert.equal(useStore.getState().reviewLearningContent('grammar', 'g1', 'correct'), false)
+  useStore.setState(createInitialLearningState())
+})
+
+test('マイ学習の入口を一覧確認へ統一し、英単語と指定8カテゴリを連続スワイプで記録する', () => {
   const myLearning = readFileSync(new URL('../src/screens/MyLearning.jsx', import.meta.url), 'utf8')
   const catalog = readFileSync(new URL('../src/components/LearningContentCatalog.jsx', import.meta.url), 'utf8')
   const vocabularyHistoryRow = readFileSync(new URL('../src/components/VocabularyHistoryRow.jsx', import.meta.url), 'utf8')
+  const catalogReview = readFileSync(new URL('../src/lib/learningContentCatalogReview.js', import.meta.url), 'utf8')
   const appMenu = readFileSync(new URL('../src/lib/appMenu.js', import.meta.url), 'utf8')
   const catalogLib = readFileSync(new URL('../src/lib/learningContentCatalog.js', import.meta.url), 'utf8')
   const store = readFileSync(new URL('../src/store/useStore.js', import.meta.url), 'utf8')
@@ -308,22 +386,24 @@ test('マイ学習の入口を一覧確認へ統一し、英単語だけは連�
   assert.match(catalog, /data-learning-catalog-search/)
   assert.match(catalog, /data-learning-catalog-sort/)
   assert.match(catalog, /data-learning-catalog-start/)
-  assert.match(catalog, /!isVocabulary && \(/)
+  assert.match(catalog, /!supportsDirectReview && \(/)
   assert.match(catalog, /data-learning-catalog-swipe-guide/)
+  assert.match(catalog, /data-learning-catalog-activity-tab/)
   assert.match(catalog, /data-learning-catalog-vocab-activity-tab/)
   assert.match(catalog, /data-learning-catalog-restore/)
   assert.match(catalog, /data-learning-catalog-compact-controls/)
   assert.match(catalog, /VocabularyHistoryRow/)
-  assert.match(catalog, /review\(row\.id, result, 'vocab'\)/)
+  assert.match(catalog, /LearningRecordRow/)
+  assert.match(catalog, /reviewLearningContent\(content\.id, row\.id, result\)/)
   assert.match(catalog, /next\.add\(row\.id\)/)
   assert.match(catalog, /スワイプ後は一時的に非表示/)
   assert.match(vocabularyHistoryRow, /type="button"/)
   assert.match(vocabularyHistoryRow, /onClick=\{openDetails\}/)
   assert.match(vocabularyHistoryRow, /data-vocab-catalog-open-word/)
   assert.doesNotMatch(vocabularyHistoryRow, /aria-pressed|type="checkbox"/)
-  assert.match(catalog, /if \(isVocabulary\) return rows/)
+  assert.match(catalog, /if \(supportsDirectReview\) return rows/)
   assert.match(catalog, /navigate\('wordDetail', \{ id: row\.id \}\)/)
-  assert.match(catalog, /vocabularyRecordedCount/)
+  assert.match(catalog, /recordedCount/)
   assert.match(catalog, /data-learning-catalog-tools-toggle/)
   assert.match(catalog, /aria-expanded=\{toolsOpen\}/)
   assert.match(catalog, /learning-catalog-tools-collapsible/)
@@ -345,7 +425,15 @@ test('マイ学習の入口を一覧確認へ統一し、英単語だけは連�
   assert.match(catalog, /replaceParams\(\{ view: 'catalog', contentId: nextContentId, catalogView \}\)/)
   assert.match(store, /replaceParams: \(params = \{\}\) => set\(\{ params \}\)/)
   assert.match(store, /updateLearningContentPlanItem:/)
+  assert.match(store, /reviewLearningContent:/)
   assert.match(store, /st\.params\?\.returnTo\?\.screen/)
+  assert.match(catalogReview, /usage: Object\.freeze/)
+  assert.match(catalogReview, /'koten-vocab'/)
+  assert.match(catalogReview, /'koten-grammar'/)
+  assert.match(catalogReview, /'koten-culture'/)
+  assert.match(catalogReview, /'kanbun-vocab'/)
+  assert.match(catalogReview, /'kanbun-grammar'/)
+  assert.match(catalogReview, /'kanbun-culture'/)
   assert.match(catalogLib, /復習のおすすめ順/)
   assert.match(catalogLib, /最終学習日/)
   assert.match(catalogLib, /最終テスト日/)
