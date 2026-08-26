@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import { ChevronLeft, ChevronRight } from './Icons.jsx'
-import { cx } from './ui.jsx'
+import { ProgressBar, cx } from './ui.jsx'
 
 export const CORRECT_AUTO_ADVANCE_DELAY_MS = 1400
 
@@ -51,6 +51,7 @@ export function QuestionSessionControls({
   autoAdvanceSignal = null,
   className = '',
   itemLabel = '問題',
+  progressColor = 'var(--color-brand-500)',
 }) {
   const autoAdvanceCorrect = useStore(
     (state) => state.settings.autoAdvanceCorrect !== false,
@@ -87,6 +88,7 @@ export function QuestionSessionControls({
   }, [autoAdvanceCorrect, autoAdvanceSignal, showAutoAdvance])
 
   const isLast = index + 1 >= total
+  const progressValue = total > 0 ? index / total : 0
   const toggleAutoAdvance = () => {
     setSetting('autoAdvanceCorrect', !autoAdvanceCorrect)
   }
@@ -111,37 +113,50 @@ export function QuestionSessionControls({
         <ChevronLeft size={18} /> 前へ
       </button>
 
-      {showAutoAdvance ? (
-        <button
-          type="button"
-          onClick={toggleAutoAdvance}
-          aria-pressed={autoAdvanceCorrect}
-          aria-label={autoAdvanceCorrect
-            ? '正解したら自動で次へ進む設定はオン。タップしてオフにする'
-            : '正解したら自動で次へ進む設定はオフ。タップしてオンにする'}
-          data-correct-auto-advance-toggle
-          data-auto-advance-pending={pending ? 'true' : 'false'}
-          className={cx(
-            'flex min-h-11 min-w-0 flex-1 items-center justify-center gap-1.5 rounded-xl px-2 text-[11px] font-extrabold transition-colors',
-            autoAdvanceCorrect
-              ? 'bg-emerald-50 text-emerald-800 ring-1 ring-emerald-200'
-              : 'bg-slate-100 text-slate-600 ring-1 ring-slate-200',
-          )}
-        >
-          <span className="whitespace-nowrap">正解後</span>
-          <span
-            aria-hidden="true"
+      <div
+        className="relative flex min-h-11 min-w-0 flex-1 items-center"
+        data-question-session-progress
+        data-question-session-progress-value={progressValue}
+      >
+        {showAutoAdvance ? (
+          <button
+            type="button"
+            onClick={toggleAutoAdvance}
+            aria-pressed={autoAdvanceCorrect}
+            aria-label={autoAdvanceCorrect
+              ? '正解したら自動で次へ進む設定はオン。タップしてオフにする'
+              : '正解したら自動で次へ進む設定はオフ。タップしてオンにする'}
+            data-correct-auto-advance-toggle
+            data-auto-advance-pending={pending ? 'true' : 'false'}
             className={cx(
-              'rounded-full px-2 py-1 text-[10px] text-white',
-              autoAdvanceCorrect ? 'bg-emerald-600' : 'bg-slate-500',
+              'flex min-h-11 w-full min-w-0 items-center justify-center gap-1.5 rounded-xl px-2 pb-2 text-[11px] font-extrabold transition-colors',
+              autoAdvanceCorrect
+                ? 'bg-emerald-50 text-emerald-800 ring-1 ring-emerald-200'
+                : 'bg-slate-100 text-slate-600 ring-1 ring-slate-200',
             )}
           >
-            {pending ? '次へ' : autoAdvanceCorrect ? '自動' : '手動'}
-          </span>
-        </button>
-      ) : (
-        <span className="min-w-0 flex-1" aria-hidden="true" />
-      )}
+            <span className="whitespace-nowrap">正解後</span>
+            <span
+              aria-hidden="true"
+              className={cx(
+                'rounded-full px-2 py-1 text-[10px] text-white',
+                autoAdvanceCorrect ? 'bg-emerald-600' : 'bg-slate-500',
+              )}
+            >
+              {pending ? '次へ' : autoAdvanceCorrect ? '自動' : '手動'}
+            </span>
+          </button>
+        ) : null}
+        <ProgressBar
+          value={progressValue}
+          color={progressColor}
+          className={cx(
+            showAutoAdvance
+              ? 'pointer-events-none absolute inset-x-2 bottom-1 h-1.5 w-auto'
+              : 'h-2.5',
+          )}
+        />
+      </div>
 
       <button
         type="button"
@@ -156,6 +171,9 @@ export function QuestionSessionControls({
 
       <span className="sr-only" aria-live="polite">
         {pending ? '正解しました。まもなく次へ進みます。' : ''}
+      </span>
+      <span className="sr-only">
+        {itemLabel} {index + 1}/{total}
       </span>
     </nav>
   )

@@ -15,7 +15,7 @@ import {
 } from '../lib/speech-player.js'
 import { buildDictationInstructorExplanation } from '../lib/instructorExplanations.js'
 import { growDeck } from '../lib/session.js'
-import { Button, Chip, ProgressBar, IconButton, cx } from '../components/ui.jsx'
+import { Button, Chip, IconButton, cx } from '../components/ui.jsx'
 import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { Close, ArrowRight, SpeakerWave, Check } from '../components/Icons.jsx'
@@ -198,7 +198,7 @@ export function DictationPlayScreen() {
     <div className="flex h-full flex-col">
       <div className="flex items-center gap-3 px-3 py-3">
         <IconButton onClick={back} aria-label="やめる"><Close size={22} /></IconButton>
-        <div className="flex-1"><ProgressBar value={i / deck.length} color="#14b8a6" /></div>
+        <span className="min-w-0 flex-1" aria-hidden="true" />
         <SpeechSettingsButton compact />
         <SessionCounter
           index={i}
@@ -233,6 +233,7 @@ export function DictationPlayScreen() {
         showAutoAdvance
         autoAdvanceSignal={result?.passed ? autoAdvanceSignal : null}
         itemLabel="英文"
+        progressColor="#14b8a6"
       />
 
       <div className="flex-1 overflow-y-auto px-4 pb-4">

@@ -13,7 +13,7 @@ import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
-import { Button, Chip, cx, ProgressBar, IconButton } from '../components/ui.jsx'
+import { Button, Chip, cx, IconButton } from '../components/ui.jsx'
 import { growDeck } from '../lib/session.js'
 import {
   ArrowRight,
@@ -183,8 +183,7 @@ export function KotenGrammarQuizScreen() {
             <Close size={22} />
           </IconButton>
           <div className="min-w-0 flex-1">
-            <ProgressBar value={index / deck.length} color="#d97706" />
-            <p className="mt-1 truncate text-[10px] font-extrabold text-ink/40">
+            <p className="truncate text-[10px] font-extrabold text-ink/40">
               {params.title ?? '受験文法・腕試し'}
             </p>
           </div>
@@ -223,6 +222,7 @@ export function KotenGrammarQuizScreen() {
         nextDisabled={!answered}
         showAutoAdvance
         autoAdvanceSignal={correctPick ? autoAdvanceSignal : null}
+        progressColor="#d97706"
       />
 
       <div className="flex-1 overflow-y-auto px-4 pb-4">

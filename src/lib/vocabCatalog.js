@@ -1,11 +1,20 @@
 import { vocabFieldFor } from '../data/vocab.js'
+import {
+  learningStatusForSrsEntry,
+  quizStatusForSrsEntry,
+} from './contentProgress.js'
 import { vocabularyReviewMetrics } from './vocabScheduler.js'
 
 export const VOCAB_CATALOG_SORT_OPTIONS = Object.freeze([
-  { id: 'weight', label: '復習のおすすめ順' },
+  { id: 'weight', label: '確認のおすすめ順' },
   { id: 'memoryAt', label: '最終学習日' },
   { id: 'testAt', label: '最終テスト日' },
   { id: 'field', label: '分野' },
+])
+
+export const VOCAB_CATALOG_ACTIVITY_OPTIONS = Object.freeze([
+  { id: 'memory', label: '学習した語彙' },
+  { id: 'test', label: 'テストした語彙' },
 ])
 
 export const VOCAB_CATALOG_DEFAULT_DIRECTIONS = Object.freeze({
@@ -82,6 +91,8 @@ export function vocabularyCatalogRows(
       field: vocabFieldFor(word),
       memoryAt: activityTimestamp(entry, 'memory'),
       testAt: activityTimestamp(entry, 'test'),
+      memoryStatus: learningStatusForSrsEntry(entry),
+      testStatus: quizStatusForSrsEntry(entry),
       weight: reviewWeightFromMetrics(metrics),
       priority: vocabularyCatalogPriority(metrics),
       metrics,
@@ -109,4 +120,42 @@ export function vocabularyCatalogRows(
       || WORD_COLLATOR.compare(a.word.word, b.word.word)
       || String(a.word.id).localeCompare(String(b.word.id))
   })
+}
+
+/**
+ * 一覧確認では、級内の未着手語を混ぜず、その操作を一度でも行った語だけを出す。
+ * 旧保存の学習記録は従来どおり箱から復元するが、旧形式では暗記とテストを
+ * 区別できないため、根拠のないテスト結果は補わない。
+ */
+export function vocabularyCatalogActivityRows(
+  words = [],
+  srs = {},
+  { activity = 'memory', ...options } = {},
+) {
+  const normalizedActivity = activity === 'test' ? 'test' : 'memory'
+  return vocabularyCatalogRows(words, srs, options).filter((row) => (
+    normalizedActivity === 'test'
+      ? row.testStatus !== 'unanswered'
+      : row.memoryStatus !== 'unlearned'
+  ))
+}
+
+/**
+ * 指を左へ動かす操作は肯定、右へ動かす操作は要再確認として記録する。
+ */
+export function vocabularyCatalogResultForDirection(activity, direction) {
+  if (direction !== 'left' && direction !== 'right') return null
+  if (activity === 'test') return direction === 'left' ? 'correct' : 'wrong'
+  return direction === 'left' ? 'remembered' : 'forgot'
+}
+
+export function vocabularyCatalogResultMatches(entry, activity, result) {
+  if (activity === 'test') {
+    if (result === 'correct') return entry?.test?.lastResult === 'correct'
+    if (result === 'wrong') {
+      return entry?.test?.lastResult === 'wrong' || entry?.test?.lastResult === 'unknown'
+    }
+    return false
+  }
+  return entry?.memory?.lastJudgment === result
 }

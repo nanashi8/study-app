@@ -11,7 +11,7 @@ import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { KanbunText } from '../components/KanbunFurigana.jsx'
-import { Button, Chip, cx, IconButton, ProgressBar } from '../components/ui.jsx'
+import { Button, Chip, cx, IconButton } from '../components/ui.jsx'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 import { growDeck } from '../lib/session.js'
 import {
@@ -178,8 +178,7 @@ export function KanbunQuizScreen() {
         <div className="flex items-center gap-3">
           <IconButton onClick={backToKanbunCatalog} aria-label="テストをやめる"><Close size={22} /></IconButton>
           <div className="min-w-0 flex-1">
-            <ProgressBar value={index / deck.length} color="#be123c" />
-            <p className="mt-1 truncate text-[10px] font-extrabold text-ink/40">{params.title ?? `${meta.label}テスト`}</p>
+            <p className="truncate text-[10px] font-extrabold text-ink/40">{params.title ?? `${meta.label}テスト`}</p>
           </div>
           <SpeechSettingsButton compact />
           <SessionCounter
@@ -216,6 +215,7 @@ export function KanbunQuizScreen() {
         nextDisabled={!answered}
         showAutoAdvance
         autoAdvanceSignal={correctPick ? autoAdvanceSignal : null}
+        progressColor="#be123c"
       />
 
       <div className="flex-1 overflow-y-auto px-4 pb-4">

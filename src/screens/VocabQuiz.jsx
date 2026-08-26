@@ -9,7 +9,7 @@ import { EtymologyBlock, PosBadge } from '../components/WordBits.jsx'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
 import { DragonVeinCipherStage } from '../components/DragonVeinCipherStage.jsx'
-import { Button, ProgressBar, IconButton } from '../components/ui.jsx'
+import { Button, IconButton } from '../components/ui.jsx'
 import { Close, Check, ArrowRight } from '../components/Icons.jsx'
 import { cx } from '../components/ui.jsx'
 import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
@@ -251,9 +251,7 @@ export function VocabQuizScreen() {
           <IconButton onClick={backToVocabParent} aria-label={isDragonVein ? '解読を中断' : 'やめる'}>
             <Close size={22} />
           </IconButton>
-          <div className="flex-1">
-            <ProgressBar value={index / deck.length} color={isDragonVein ? '#8b5cf6' : '#0ea5e9'} />
-          </div>
+          <span className="min-w-0 flex-1" aria-hidden="true" />
           <SpeechSettingsButton compact />
           <SessionCounter
             index={index}
@@ -281,6 +279,7 @@ export function VocabQuizScreen() {
         nextDisabled={!answered}
         showAutoAdvance
         autoAdvanceSignal={isCorrectPick ? autoAdvanceSignal : null}
+        progressColor={isDragonVein ? '#8b5cf6' : '#0ea5e9'}
       />
 
       <div className="flex-1 overflow-y-auto px-3 pb-4">

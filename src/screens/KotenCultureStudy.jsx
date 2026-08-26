@@ -5,7 +5,7 @@ import {
   KOTEN_CULTURE_CATEGORIES,
   KOTEN_CULTURE_LEVELS,
 } from '../data/koten-culture.js'
-import { Button, Chip, ProgressBar, IconButton } from '../components/ui.jsx'
+import { Button, Chip, IconButton } from '../components/ui.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
 import {
@@ -139,8 +139,7 @@ export function KotenCultureStudyScreen() {
             <Close size={22} />
           </IconButton>
           <div className="min-w-0 flex-1">
-            <ProgressBar value={index / deck.length} color="#7c3aed" />
-            <p className="mt-1 truncate text-[10px] font-extrabold text-ink/40">
+            <p className="truncate text-[10px] font-extrabold text-ink/40">
               {params.title ?? '古典常識を暗記'}
             </p>
           </div>
@@ -174,6 +173,7 @@ export function KotenCultureStudyScreen() {
         onNext={() => moveToCard(Math.min(deck.length - 1, index + 1))}
         nextDisabled={index + 1 >= deck.length}
         itemLabel="カード"
+        progressColor="#7c3aed"
       />
 
       <CardSwipeRegion

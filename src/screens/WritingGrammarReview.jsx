@@ -4,7 +4,7 @@ import { getLevel } from '../data/levels.js'
 import { getWritingGrammar } from '../data/writing.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
-import { Button, Chip, IconButton, ProgressBar } from '../components/ui.jsx'
+import { Button, Chip, IconButton } from '../components/ui.jsx'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 import { growDeck } from '../lib/session.js'
 import {
@@ -148,11 +148,7 @@ export function WritingGrammarReviewScreen() {
         <IconButton onClick={back} aria-label="復習を終わる">
           <Close size={21} />
         </IconButton>
-        <ProgressBar
-          className="flex-1"
-          value={index / deck.length}
-          color={level.color}
-        />
+        <span className="min-w-0 flex-1" aria-hidden="true" />
         <SpeechSettingsButton compact />
         <SessionCounter
           index={index}
@@ -180,6 +176,7 @@ export function WritingGrammarReviewScreen() {
         onNext={() => moveToCard(Math.min(deck.length - 1, index + 1))}
         nextDisabled={index + 1 >= deck.length}
         itemLabel="カード"
+        progressColor={level.color}
       />
 
       <main className="flex flex-1 flex-col px-4 pb-4">

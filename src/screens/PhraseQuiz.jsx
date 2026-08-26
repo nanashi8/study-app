@@ -13,7 +13,7 @@ import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
 import { DragonVeinCipherStage } from '../components/DragonVeinCipherStage.jsx'
-import { Button, ProgressBar, IconButton, Chip } from '../components/ui.jsx'
+import { Button, IconButton, Chip } from '../components/ui.jsx'
 import { ArrowRight, Bookmark, BookmarkFilled, Check, Close } from '../components/Icons.jsx'
 import { cx } from '../components/ui.jsx'
 import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
@@ -168,7 +168,7 @@ export function PhraseQuizScreen() {
     <div className={cx('flex h-full flex-col', isDragonVein && 'dragon-vein-quiz-screen')}>
       <div className="flex items-center gap-3 border-b border-brand-100 bg-white/90 px-3 py-3 backdrop-blur">
         <IconButton onClick={backToPhrases} aria-label={isDragonVein ? '解読を中断' : 'やめる'}><Close size={22} /></IconButton>
-        <div className="flex-1"><ProgressBar value={index / deck.length} color={isDragonVein ? '#8b5cf6' : '#0ea5e9'} /></div>
+        <span className="min-w-0 flex-1" aria-hidden="true" />
         <IconButton
           onClick={() => toggleNotebookItem('phrases', item.id)}
           aria-label={saved ? `${item.phrase}をマイ学習ノートから外す` : `${item.phrase}をマイ学習ノートへ保存`}
@@ -203,6 +203,7 @@ export function PhraseQuizScreen() {
         nextDisabled={!answered}
         showAutoAdvance
         autoAdvanceSignal={isCorrectPick ? autoAdvanceSignal : null}
+        progressColor={isDragonVein ? '#8b5cf6' : '#0ea5e9'}
       />
 
       <div className="flex-1 overflow-y-auto px-3 pb-4">

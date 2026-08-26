@@ -266,7 +266,7 @@ test('viewportへ固定する操作バー5件はSafari退避を自分で受け�
   assert.match(css, /\.app-fixed-bottom-actions\s*\{[^}]*bottom:\s*var\(--app-ios-browser-bottom-clearance\)[^}]*padding-bottom:\s*calc\(1rem \+ var\(--app-safe-bottom\)\)/s)
 })
 
-test('下端に接する操作欄21実装・追従欄2件・読み上げ欄を共通退避領域が守る', () => {
+test('下端に接する操作欄20実装・追従欄2件・読み上げ欄を共通退避領域が守る', () => {
   const footerImplementations = sourceFiles.flatMap(({ path, source }) => (
     source.split('\n')
       .filter((line) => line.includes('shrink-0') && line.includes('border-t'))
@@ -282,7 +282,7 @@ test('下端に接する操作欄21実装・追従欄2件・読み上げ欄を�
     0,
   )
 
-  assert.equal(footerImplementations.length, 21)
+  assert.equal(footerImplementations.length, 20)
   assert.equal(cardFooterUses, 6)
   assert.equal(stickyBottomControls.length, 2)
   assert.match(read('src/components/SpeechConsole.jsx'), /data-speech-console/)

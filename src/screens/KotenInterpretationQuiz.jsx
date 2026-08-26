@@ -6,7 +6,7 @@ import {
   getKotenInterpretation,
   KOTEN_INTERPRETATION_FOCUS,
 } from '../data/koten-interpretations.js'
-import { Button, Chip, cx, IconButton, ProgressBar } from '../components/ui.jsx'
+import { Button, Chip, cx, IconButton } from '../components/ui.jsx'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
 import { KotenText, KotenWord } from '../components/KotenFurigana.jsx'
@@ -167,9 +167,7 @@ export function KotenInterpretationQuizScreen() {
         <IconButton onClick={backToKotenInterpretationList} aria-label="短文解釈をやめる">
           <Close size={22} />
         </IconButton>
-        <div className="flex-1">
-          <ProgressBar value={index / deck.length} color="#d97706" />
-        </div>
+        <span className="min-w-0 flex-1" aria-hidden="true" />
         <SpeechSettingsButton compact />
         <SessionCounter
           index={index}
@@ -199,6 +197,7 @@ export function KotenInterpretationQuizScreen() {
         showAutoAdvance
         autoAdvanceSignal={isCorrect ? autoAdvanceSignal : null}
         itemLabel="短文"
+        progressColor="#d97706"
       />
 
       <div className="flex-1 overflow-y-auto px-4 pb-5">

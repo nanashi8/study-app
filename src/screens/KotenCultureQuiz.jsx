@@ -12,7 +12,7 @@ import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
 import { KotenText } from '../components/KotenFurigana.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
-import { Button, Chip, cx, ProgressBar, IconButton } from '../components/ui.jsx'
+import { Button, Chip, cx, IconButton } from '../components/ui.jsx'
 import { growDeck } from '../lib/session.js'
 import {
   ArrowRight,
@@ -182,8 +182,7 @@ export function KotenCultureQuizScreen() {
             <Close size={22} />
           </IconButton>
           <div className="min-w-0 flex-1">
-            <ProgressBar value={index / deck.length} color="#7c3aed" />
-            <p className="mt-1 truncate text-[10px] font-extrabold text-ink/40">
+            <p className="truncate text-[10px] font-extrabold text-ink/40">
               {params.title ?? '古典常識・入試型腕試し'}
             </p>
           </div>
@@ -222,6 +221,7 @@ export function KotenCultureQuizScreen() {
         nextDisabled={!answered}
         showAutoAdvance
         autoAdvanceSignal={correctPick ? autoAdvanceSignal : null}
+        progressColor="#7c3aed"
       />
 
       <div className="flex-1 overflow-y-auto px-4 pb-4">

@@ -28,7 +28,7 @@ const STUDY_SCREENS = [
   'src/screens/WritingGrammarReview.jsx',
 ]
 
-test('問題数を選べる全18画面に、上部の前後移動を表示する', () => {
+test('問題数を選べる全18画面で、前へ・進捗・次へを一つの共通表示にする', () => {
   const allScreens = [...QUIZ_SCREENS, ...STUDY_SCREENS]
   assert.equal(allScreens.length, 18)
   for (const path of allScreens) {
@@ -36,6 +36,8 @@ test('問題数を選べる全18画面に、上部の前後移動を表示する
     assert.match(source, /QuestionSessionControls/, `${path}: 前後移動がない`)
     assert.match(source, /onPrevious=/, `${path}: 前の問題へ戻れない`)
     assert.match(source, /onNext=/, `${path}: 次の問題へ進めない`)
+    assert.match(source, /progressColor=/, `${path}: 共通表示へ進捗色を渡していない`)
+    assert.doesNotMatch(source, /<ProgressBar/, `${path}: 進捗バーが前後移動と分離している`)
   }
 })
 
@@ -56,6 +58,8 @@ test('共通操作は44px以上で、状態名と読み上げ名を持つ', () =
   assert.match(source, /data-question-session-controls/)
   assert.match(source, /data-question-previous/)
   assert.match(source, /data-question-next/)
+  assert.match(source, /data-question-session-progress/)
+  assert.match(source, /<ProgressBar/)
   assert.match(source, /data-correct-auto-advance-toggle/)
   assert.match(source, /min-h-11/g)
   assert.match(source, /前の\$\{itemLabel\}へ/)

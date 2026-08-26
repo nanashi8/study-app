@@ -111,11 +111,11 @@ function LevelCard({ level, srs, onStudy, onQuiz, onFields, onCatalog }) {
         <button
           onClick={onCatalog}
           disabled={!p.total}
-          aria-label={`英検${level.label}の単語一覧から復習する`}
+          aria-label={`英検${level.label}で学習・テストした語彙の一覧を確認する`}
           className="flex min-h-11 w-full items-center justify-center gap-1.5 rounded-xl bg-brand-50 px-2 text-xs font-extrabold text-brand-700 active:scale-[0.98] transition-transform disabled:opacity-50"
           data-vocab-catalog-entry={level.id}
         >
-          <BookOpen size={15} /> 一覧から復習
+          <BookOpen size={15} /> 一覧を確認
         </button>
       </div>
     </Card>

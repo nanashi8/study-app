@@ -1217,8 +1217,14 @@ test('龍脈解読画面は通常進捗と共同解読ビジュアルを一つ�
     new URL('../src/screens/VocabQuiz.jsx', import.meta.url),
     'utf8',
   )
+  const controls = readFileSync(
+    new URL('../src/components/QuestionSessionControls.jsx', import.meta.url),
+    'utf8',
+  )
 
-  assert.match(source, /<ProgressBar value=\{index \/ deck\.length\}/)
+  assert.match(source, /<QuestionSessionControls[\s\S]*progressColor=\{isDragonVein \? '#8b5cf6' : '#0ea5e9'\}/)
+  assert.match(controls, /data-question-session-progress/)
+  assert.match(controls, /<ProgressBar/)
   assert.match(source, /<DragonVeinCipherStage/)
   assert.match(source, /current=\{index \+ 1\}/)
   assert.match(source, /total=\{deck\.length\}/)

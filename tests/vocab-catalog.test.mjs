@@ -8,11 +8,14 @@ import {
   wordsByLevel,
 } from '../src/data/vocab.js'
 import { LEVELS } from '../src/data/levels.js'
-import { buildDeck } from '../src/lib/session.js'
 import {
+  VOCAB_CATALOG_ACTIVITY_OPTIONS,
   VOCAB_CATALOG_DEFAULT_DIRECTIONS,
   VOCAB_CATALOG_SORT_OPTIONS,
+  vocabularyCatalogActivityRows,
   vocabularyCatalogRows,
+  vocabularyCatalogResultForDirection,
+  vocabularyCatalogResultMatches,
   vocabularyReviewWeight,
 } from '../src/lib/vocabCatalog.js'
 import { PERSISTED_PROGRESS_FIELDS } from '../src/lib/progressCode.js'
@@ -72,7 +75,7 @@ test('級別一覧は全7級・全英単語を重複も欠落もなく含む', (
   assert.equal(new Set(catalogIds).size, ALL_WORDS.length)
 })
 
-test('学習日・テスト日・分野・復習のおすすめ順の4種類で級内を並び替える', () => {
+test('学習日・テスト日・分野・確認のおすすめ順の4種類で級内を並び替える', () => {
   assert.deepEqual(
     VOCAB_CATALOG_SORT_OPTIONS.map((option) => option.id),
     ['weight', 'memoryAt', 'testAt', 'field'],
@@ -134,34 +137,73 @@ test('学習日・テスト日・分野・復習のおすすめ順の4種類で�
   assert.deepEqual(ids('field', 'desc'), [...expectedFields].reverse())
 })
 
-test('一覧で選んだ語は並び替え後の順を保ったまま既存の暗記カードへ渡せる', () => {
-  const selected = [ALL_WORDS[17], ALL_WORDS[3], ALL_WORDS[29]]
-  const source = {
-    type: 'deck',
-    ids: selected.map((word) => word.id),
-    preserveOrder: true,
+test('一覧確認は学習した語彙とテストした語彙を混ぜずに抽出する', () => {
+  assert.deepEqual(VOCAB_CATALOG_ACTIVITY_OPTIONS, [
+    { id: 'memory', label: '学習した語彙' },
+    { id: 'test', label: 'テストした語彙' },
+  ])
+
+  const now = new Date(2026, 7, 26, 12, 0, 0, 0).getTime()
+  const day = todayIndex(now)
+  const [memoryWord, testWord, bothWord] = ALL_WORDS.slice(0, 3)
+  const successful = studiedEntry({ now, day, memoryAt: now - DAY_MS, testAt: now })
+  const memoryOnly = {
+    ...successful,
+    test: { attempts: 0, correct: 0, wrong: 0, unknown: 0, lastAt: null, lastResult: null, marks: [] },
+  }
+  const testOnly = {
+    ...successful,
+    memory: { passes: 0, remembered: 0, forgot: 0, lastAt: null, lastJudgment: null, marks: [] },
+  }
+  const words = [memoryWord, testWord, bothWord]
+  const srs = {
+    [memoryWord.id]: memoryOnly,
+    [testWord.id]: testOnly,
+    [bothWord.id]: successful,
   }
 
   assert.deepEqual(
-    buildDeck(source, { size: 0, purpose: 'study' }).map((word) => word.id),
-    source.ids,
+    new Set(vocabularyCatalogActivityRows(words, srs, { activity: 'memory', now, day }).map((row) => row.word.id)),
+    new Set([memoryWord.id, bothWord.id]),
+  )
+  assert.deepEqual(
+    new Set(vocabularyCatalogActivityRows(words, srs, { activity: 'test', now, day }).map((row) => row.word.id)),
+    new Set([testWord.id, bothWord.id]),
   )
 })
 
-test('級画面から一覧を開き、一覧選択だけを一時状態として復習へ渡す', () => {
+test('一覧確認の左右スワイプは学習とテストで指定された扱いへ変える', () => {
+  assert.equal(vocabularyCatalogResultForDirection('memory', 'left'), 'remembered')
+  assert.equal(vocabularyCatalogResultForDirection('memory', 'right'), 'forgot')
+  assert.equal(vocabularyCatalogResultForDirection('test', 'left'), 'correct')
+  assert.equal(vocabularyCatalogResultForDirection('test', 'right'), 'wrong')
+  assert.equal(vocabularyCatalogResultForDirection('memory', 'up'), null)
+
+  assert.equal(vocabularyCatalogResultMatches({ memory: { lastJudgment: 'remembered' } }, 'memory', 'remembered'), true)
+  assert.equal(vocabularyCatalogResultMatches({ memory: { lastJudgment: 'forgot' } }, 'memory', 'remembered'), false)
+  assert.equal(vocabularyCatalogResultMatches({ test: { lastResult: 'correct' } }, 'test', 'correct'), true)
+  assert.equal(vocabularyCatalogResultMatches({ test: { lastResult: 'unknown' } }, 'test', 'wrong'), true)
+})
+
+test('級画面から一覧を開き、記録別の一覧を左右スワイプで更新する', () => {
   const levels = readFileSync(new URL('../src/screens/VocabLevels.jsx', import.meta.url), 'utf8')
   const decks = readFileSync(new URL('../src/screens/VocabDecks.jsx', import.meta.url), 'utf8')
   const catalog = readFileSync(new URL('../src/lib/vocabCatalog.js', import.meta.url), 'utf8')
 
   assert.match(levels, /data-vocab-catalog-entry/)
-  assert.match(levels, /一覧から復習/)
+  assert.match(levels, /一覧を確認/)
+  assert.doesNotMatch(levels, /一覧から復習/)
   assert.match(decks, /data-vocab-catalog=\{level\.id\}/)
+  assert.match(decks, /data-vocab-catalog-activity-tab/)
   assert.match(decks, /data-vocab-catalog-sort/)
+  assert.match(decks, /data-vocab-catalog-swipe-row/)
+  assert.match(decks, /data-vocab-catalog-swipe-guide/)
+  assert.match(decks, /左にスワイプ：\{activityMeta\.leftLabel\}/)
+  assert.match(decks, /右にスワイプ：\{activityMeta\.rightLabel\}/)
+  assert.match(decks, /review\(row\.word\.id, result, 'vocab'\)/)
   assert.match(catalog, /最終学習日/)
   assert.match(catalog, /最終テスト日/)
-  assert.match(`${catalog}\n${decks}`, /復習のおすすめ順/)
-  assert.match(decks, /source: \{ type: 'deck', ids, preserveOrder: true \}/)
-  assert.match(decks, /data-vocab-catalog-start-review/)
-  assert.match(decks, /returnTo: \{ screen: 'vocabDecks', params: \{ levelId: level\.id, view: 'list' \} \}/)
+  assert.match(`${catalog}\n${decks}`, /確認のおすすめ順/)
+  assert.doesNotMatch(decks, /data-vocab-catalog-start-review/)
   assert.equal(PERSISTED_PROGRESS_FIELDS.some((field) => /catalog|selected/i.test(field)), false)
 })

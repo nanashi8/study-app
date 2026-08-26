@@ -11,7 +11,7 @@ import { SyntaxFamilyGuide } from '../components/SyntaxFamilyGuide.jsx'
 import { IdiomFormGuide } from '../components/IdiomFormGuide.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
-import { Button, ProgressBar, IconButton, Chip } from '../components/ui.jsx'
+import { Button, IconButton, Chip } from '../components/ui.jsx'
 import { ArrowRight, Bookmark, BookmarkFilled, Close, Lightbulb, Link } from '../components/Icons.jsx'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 import { CardStudyFooter, CardSwipeRegion } from '../components/CardStudyControls.jsx'
@@ -139,7 +139,7 @@ export function PhraseStudyScreen() {
     <div className="flex h-full flex-col">
       <div className="flex items-center gap-3 px-3 py-3">
         <IconButton onClick={leave} aria-label="やめる"><Close size={22} /></IconButton>
-        <div className="flex-1"><ProgressBar value={i / deck.length} color="#8b5cf6" /></div>
+        <span className="min-w-0 flex-1" aria-hidden="true" />
         <IconButton
           onClick={() => toggleNotebookItem('phrases', item.id)}
           aria-label={saved ? `${item.phrase}をマイ学習ノートから外す` : `${item.phrase}をマイ学習ノートへ保存`}
@@ -175,6 +175,7 @@ export function PhraseStudyScreen() {
         onNext={() => moveToCard(Math.min(deck.length - 1, i + 1))}
         nextDisabled={i + 1 >= deck.length}
         itemLabel="カード"
+        progressColor="#8b5cf6"
       />
 
       <CardSwipeRegion

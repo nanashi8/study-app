@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import { getKoten } from '../data/koten.js'
-import { Button, ProgressBar, IconButton } from '../components/ui.jsx'
+import { Button, IconButton } from '../components/ui.jsx'
 import { KotenText, KotenWord } from '../components/KotenFurigana.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
@@ -123,9 +123,7 @@ export function KotenStudyScreen() {
         <IconButton onClick={back} aria-label="やめる">
           <Close size={22} />
         </IconButton>
-        <div className="flex-1">
-          <ProgressBar value={i / deck.length} color="#f59e0b" />
-        </div>
+        <span className="min-w-0 flex-1" aria-hidden="true" />
         <RevealAnswersToggle label="意味" onChange={(on) => setFlipped(on)} />
         <SpeechSettingsButton compact />
         <SessionCounter
@@ -155,6 +153,7 @@ export function KotenStudyScreen() {
         onNext={() => moveToCard(Math.min(deck.length - 1, i + 1))}
         nextDisabled={i + 1 >= deck.length}
         itemLabel="カード"
+        progressColor="#f59e0b"
       />
 
       {/* カード */}
