@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { todayIndex, useStore } from '../store/useStore.js'
 import { PHRASE_KINDS, phrasesByKind } from '../data/phrases.js'
 import {
@@ -26,15 +26,19 @@ import { SyntaxFamilyGuide } from '../components/SyntaxFamilyGuide.jsx'
 import { IdiomFormGuide } from '../components/IdiomFormGuide.jsx'
 import { Card, Button, Chip } from '../components/ui.jsx'
 import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
+import { NormalLearningRecordList } from '../components/NormalLearningRecordList.jsx'
 import { summarizeSrsItems } from '../lib/contentProgress.js'
 import { Book, Cards, Lightbulb, Link, Refresh, Search } from '../components/Icons.jsx'
 import { cx } from '../components/ui.jsx'
 
 const levelOrder = Object.fromEntries(LEVELS.map((l, i) => [l.id, i]))
-const INITIAL_VISIBLE_ITEMS = 60
 const PHRASE_COUNTS = Object.freeze(Object.fromEntries(
   PHRASE_KINDS.map((item) => [item.id, phrasesByKind(item.id).length]),
 ))
+const PHRASE_RECORD_ENTRY_IDS = Object.freeze({
+  idiom: 'usage-idiom',
+  syntax: 'usage-syntax',
+})
 const PHRASE_TOTAL = Object.values(PHRASE_COUNTS).reduce((sum, count) => sum + count, 0)
 const PHRASE_LEVEL_COUNTS = Object.freeze(Object.fromEntries(
   LEVELS.map((level) => {
@@ -64,7 +68,6 @@ export function PhrasesScreen() {
   const [query, setQuery] = useState(screenParams.query ?? '')
   const [levelFilter, setLevelFilter] = useState(screenParams.levelFilter ?? 'all')
   const [familyFilter, setFamilyFilter] = useState(screenParams.familyFilter ?? 'all')
-  const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE_ITEMS)
 
   const meta = PHRASE_KINDS.find((k) => k.id === kind)
   const normalizedQuery = query.trim().toLowerCase()
@@ -108,15 +111,10 @@ export function PhrasesScreen() {
     selectedFamily?.title,
     meta.label,
   ].filter(Boolean).join(' ')
-  const visibleItems = items.slice(0, visibleCount)
   const detailTranslation = longSentenceTranslationFor(detail)
   const status = summarizeSrsItems(items, srs)
   const dueItems = items.filter((item) => srs[item.id]?.due <= todayIndex())
   const due = dueItems.length
-
-  useEffect(() => {
-    setVisibleCount(INITIAL_VISIBLE_ITEMS)
-  }, [kind, levelFilter, familyFilter, normalizedQuery])
 
   const returnTarget = {
     screen: 'phrases',
@@ -377,41 +375,20 @@ export function PhrasesScreen() {
         {/* 一覧 */}
         <h2 className="mb-2 mt-5 px-1 font-display text-base font-extrabold text-ink/80">
           {meta.label}の一覧
-          <span className="ml-2 text-xs text-ink/35">
-            {Math.min(visibleCount, items.length)}/{items.length}項目を表示
-          </span>
+          <span className="ml-2 text-xs text-ink/35">全{items.length}項目</span>
         </h2>
-        <div className="space-y-2">
-          {visibleItems.map((p) => {
-            const level = getLevel(p.level)
-            return (
-              <div key={p.id} className="flex items-center gap-2 rounded-2xl bg-white p-3 shadow-sm">
-                <SpeakButton text={phraseSpeechText(p)} size="sm" />
-                <button onClick={() => setDetail(p)} className="min-w-0 flex-1 text-left">
-                  <div className="flex items-center gap-2">
-                    <span className="font-display font-extrabold text-ink">{p.phrase}</span>
-                    <Chip color={level.color}>{level.label}</Chip>
-                  </div>
-                  <div className="truncate text-xs font-bold text-ink/55">{p.meaning}</div>
-                </button>
-              </div>
-            )
-          })}
-          {items.length === 0 && (
-            <div className="rounded-2xl bg-white px-4 py-8 text-center text-sm font-bold text-ink/45">
-              条件に合う{meta.label}はありません。
-            </div>
-          )}
-          {visibleItems.length < items.length && (
-            <Button
-              full
-              variant="secondary"
-              onClick={() => setVisibleCount((count) => count + INITIAL_VISIBLE_ITEMS)}
-            >
-              続きを表示（残り {items.length - visibleItems.length}項目）
-            </Button>
-          )}
-        </div>
+        <NormalLearningRecordList
+          entryId={PHRASE_RECORD_ENTRY_IDS[kind]}
+          contentId="usage"
+          items={items}
+          unit="項目"
+          pageSize={60}
+          onOpen={(item) => setDetail(item)}
+          openLabel={`${meta.label}の説明を見る`}
+          openHint="説明"
+          titleLanguage="en"
+          emptyMessage={`条件に合う${meta.label}はありません。`}
+        />
       </div>
 
       {/* 詳細シート */}

@@ -3,7 +3,6 @@ import { isDue, useStore } from '../store/useStore.js'
 import {
   KOTEN_CULTURE,
   KOTEN_CULTURE_CATEGORIES,
-  KOTEN_CULTURE_LEVELS,
   KOTEN_CULTURE_QUESTIONS,
   kotenCultureByCategory,
 } from '../data/koten-culture.js'
@@ -11,12 +10,11 @@ import { pickKotenInterpretationIds } from '../data/koten-interpretations.js'
 import {
   Button,
   Card,
-  Chip,
   cx,
-  IconButton,
 } from '../components/ui.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
+import { NormalLearningRecordList } from '../components/NormalLearningRecordList.jsx'
 import { summarizeSrsItemsWithQuestions } from '../lib/contentProgress.js'
 import { KotenText } from '../components/KotenFurigana.jsx'
 import { kotenTextForSearch } from '../lib/kotenFurigana.js'
@@ -26,9 +24,7 @@ import {
   Bookmark,
   BookmarkFilled,
   Cards,
-  ChevronDown,
   ChevronLeft,
-  ChevronUp,
   Refresh,
   Search,
 } from '../components/Icons.jsx'
@@ -303,104 +299,71 @@ export function KotenCultureScreen() {
           </div>
 
           <p className="mb-2 mt-4 px-1 text-xs font-bold text-ink/45">{items.length}テーマ</p>
-          <div className="space-y-2">
-            {items.map((item) => {
-              const open = openId === item.id
-              const isSaved = saved.includes(item.id)
-              const categoryMeta = KOTEN_CULTURE_CATEGORIES.find(
-                (meta) => meta.id === item.category,
-              )
-              const level = KOTEN_CULTURE_LEVELS[item.level]
-              return (
-                <div key={item.id} className="overflow-hidden rounded-2xl bg-white shadow-sm">
-                  <div className="flex items-center gap-2 p-3">
-                    <button
-                      onClick={() => setOpenId(open ? null : item.id)}
-                      aria-expanded={open}
-                      className="min-w-0 flex-1 text-left"
-                    >
-                      <div className="flex flex-wrap items-center gap-2">
-                        <span className="font-display text-sm font-extrabold leading-relaxed text-ink">
-                          <KotenText>{item.title}</KotenText>
-                        </span>
-                        {categoryMeta && <Chip color={categoryMeta.color}>{categoryMeta.label}</Chip>}
-                        {level && <Chip color={level.color}>{level.label}</Chip>}
-                      </div>
-                      <p className="mt-1 text-xs font-bold leading-relaxed text-ink/55">
-                        <KotenText>{item.core}</KotenText>
-                      </p>
-                    </button>
-                    <IconButton
-                      onClick={() => toggleSaved(item.id)}
-                      aria-label={isSaved ? `${item.title}を登録から外す` : `${item.title}を登録する`}
-                      aria-pressed={isSaved}
-                      className={isSaved ? 'text-violet-600' : 'text-ink/25'}
-                    >
-                      {isSaved ? <BookmarkFilled size={20} /> : <Bookmark size={20} />}
-                    </IconButton>
-                    <button
-                      onClick={() => setOpenId(open ? null : item.id)}
-                      aria-label={open ? '説明を閉じる' : '説明を開く'}
-                      className="flex h-9 w-9 items-center justify-center rounded-full text-ink/35 active:bg-paper"
-                    >
-                      {open ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
-                    </button>
-                  </div>
-
-                  {open && (
-                    <div className="space-y-3 border-t border-violet-100 bg-violet-50/55 p-4 animate-slide-up">
-                      <p className="text-sm font-bold leading-relaxed text-ink/65">
-                        <KotenText>{item.detail}</KotenText>
-                      </p>
-                      <div className="rounded-2xl bg-white p-3">
-                        <p className="text-[10px] font-extrabold tracking-wide text-violet-600">入試の読み方</p>
-                        <p className="mt-1 text-sm font-bold leading-relaxed text-ink/65">
-                          <KotenText>{item.examTip}</KotenText>
-                        </p>
-                      </div>
-                      <div className="rounded-2xl bg-slate-50 p-3">
-                        <p className="font-serif font-bold leading-relaxed text-ink">
-                          <KotenText>{item.scene.text}</KotenText>
-                        </p>
-                        <p className="mt-1 text-xs font-bold leading-relaxed text-ink/45">
-                          <KotenText>{item.scene.note}</KotenText>
-                        </p>
-                      </div>
-                      {item.relatedInterpretationIds.length > 0 && (
-                        <button
-                          onClick={() =>
-                            navigate('kotenInterpretationPrep', {
-                              ids: pickKotenInterpretationIds(item.relatedInterpretationIds),
-                              title: `${item.title}が出る短文`,
-                            })
-                          }
-                          className="flex w-full items-center justify-between rounded-xl bg-amber-100 px-3 py-2.5 text-left text-xs font-extrabold text-amber-800"
-                        >
-                          関連する短文解釈へ
-                          <ArrowRight size={15} />
-                        </button>
-                      )}
-                      <div className="grid grid-cols-2 gap-2">
-                        <Button size="sm" onClick={() => study([item], item.title)}>
-                          <Book size={15} /> 暗記
-                        </Button>
-                        <Button variant="secondary" size="sm" onClick={() => quiz([item], item.title)}>
-                          <Cards size={15} /> 腕試し
-                        </Button>
-                      </div>
-                    </div>
-                  )}
+          <NormalLearningRecordList
+            entryId="koten-culture"
+            contentId="koten-culture"
+            items={items}
+            unit="テーマ"
+            onOpen={(item) => setOpenId((current) => current === item.id ? null : item.id)}
+            openLabel="古典常識の説明を見る"
+            openHint="説明"
+            emptyMessage="一致する古典常識がありません。"
+            renderAfter={(item) => openId === item.id && (
+              <div
+                className="mt-2 space-y-3 rounded-2xl border border-violet-100 bg-violet-50/55 p-4 animate-slide-up"
+                data-koten-culture-detail={item.id}
+              >
+                <button
+                  type="button"
+                  onClick={() => toggleSaved(item.id)}
+                  aria-pressed={saved.includes(item.id)}
+                  className="flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-white px-3 text-xs font-extrabold text-violet-700"
+                >
+                  {saved.includes(item.id) ? <BookmarkFilled size={18} /> : <Bookmark size={18} />}
+                  {saved.includes(item.id) ? '登録から外す' : '登録する'}
+                </button>
+                <p className="text-sm font-bold leading-relaxed text-ink/65">
+                  <KotenText>{item.detail}</KotenText>
+                </p>
+                <div className="rounded-2xl bg-white p-3">
+                  <p className="text-[10px] font-extrabold tracking-wide text-violet-600">入試の読み方</p>
+                  <p className="mt-1 text-sm font-bold leading-relaxed text-ink/65">
+                    <KotenText>{item.examTip}</KotenText>
+                  </p>
                 </div>
-              )
-            })}
-          </div>
-
-          {!items.length && (
-            <div className="rounded-3xl bg-white/60 px-6 py-10 text-center">
-              <div className="text-4xl">🔎</div>
-              <p className="mt-2 font-bold text-ink/70">一致する古典常識がありません</p>
-            </div>
-          )}
+                <div className="rounded-2xl bg-slate-50 p-3">
+                  <p className="font-serif font-bold leading-relaxed text-ink">
+                    <KotenText>{item.scene.text}</KotenText>
+                  </p>
+                  <p className="mt-1 text-xs font-bold leading-relaxed text-ink/45">
+                    <KotenText>{item.scene.note}</KotenText>
+                  </p>
+                </div>
+                {item.relatedInterpretationIds.length > 0 && (
+                  <button
+                    onClick={() =>
+                      navigate('kotenInterpretationPrep', {
+                        ids: pickKotenInterpretationIds(item.relatedInterpretationIds),
+                        title: `${item.title}が出る短文`,
+                      })
+                    }
+                    className="flex w-full items-center justify-between rounded-xl bg-amber-100 px-3 py-2.5 text-left text-xs font-extrabold text-amber-800"
+                  >
+                    関連する短文解釈へ
+                    <ArrowRight size={15} />
+                  </button>
+                )}
+                <div className="grid grid-cols-2 gap-2">
+                  <Button size="sm" onClick={() => study([item], item.title)}>
+                    <Book size={15} /> 暗記
+                  </Button>
+                  <Button variant="secondary" size="sm" onClick={() => quiz([item], item.title)}>
+                    <Cards size={15} /> 腕試し
+                  </Button>
+                </div>
+              </div>
+            )}
+          />
         </section>
       </div>
     </div>
