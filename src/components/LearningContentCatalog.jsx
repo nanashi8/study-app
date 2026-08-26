@@ -293,15 +293,16 @@ export function LearningContentCatalog({ initialContentId, initialCatalogView })
     () => isVocabulary ? vocabularyCatalogRecordedRows(rows, 'test') : [],
     [isVocabulary, rows],
   )
+  const vocabularyRecordedCount = vocabActivity === 'test'
+    ? vocabularyTestRows.length
+    : vocabularyMemoryRows.length
   const normalizedQuery = query.trim().toLocaleLowerCase('ja')
   const viewRows = useMemo(() => {
-    if (isVocabulary) {
-      return vocabActivity === 'test' ? vocabularyTestRows : vocabularyMemoryRows
-    }
+    if (isVocabulary) return rows
     if (catalogView === 'registered') return rows.filter((row) => row.registered)
     if (catalogView === 'hidden') return rows.filter((row) => row.hidden)
     return rows.filter((row) => !row.hidden)
-  }, [catalogView, isVocabulary, rows, vocabActivity, vocabularyMemoryRows, vocabularyTestRows])
+  }, [catalogView, isVocabulary, rows])
   const filteredRows = useMemo(
     () => normalizedQuery
       ? viewRows.filter((row) => row.searchText.includes(normalizedQuery))
@@ -428,7 +429,7 @@ export function LearningContentCatalog({ initialContentId, initialCatalogView })
       [vocabActivity]: new Set(),
     }))
     setVisible(CATALOG_PAGE_SIZE)
-    setSwipeMessage(`${vocabActivity === 'test' ? 'テストした' : '学習した'}語彙を一覧に再表示しました。`)
+    setSwipeMessage(`${vocabActivity === 'test' ? 'テスト' : '学習'}の一覧を再表示しました。`)
   }
 
   const selectRows = (items) => setSelectedIds((current) => {
@@ -529,11 +530,11 @@ export function LearningContentCatalog({ initialContentId, initialCatalogView })
                       ? 'bg-white text-brand-700 shadow-sm'
                       : 'text-ink/55 active:bg-white/70',
                   )}
-                  aria-label={`${option.label} ${count.toLocaleString('ja-JP')}語`}
+                  aria-label={`${option.label}。済み${count.toLocaleString('ja-JP')}語、全${rows.length.toLocaleString('ja-JP')}語`}
                   data-learning-catalog-vocab-activity-tab={option.id}
                 >
                   {option.id === 'test' ? 'テスト' : '学習'}
-                  <span className="ml-1 tabular-nums">{count.toLocaleString('ja-JP')}語</span>
+                  <span className="ml-1 tabular-nums">{count.toLocaleString('ja-JP')}/{rows.length.toLocaleString('ja-JP')}語</span>
                 </button>
               )
             })}
@@ -683,8 +684,8 @@ export function LearningContentCatalog({ initialContentId, initialCatalogView })
         <p className="mb-2 px-1 text-xs font-extrabold text-ink/50" aria-live="polite">
           {isVocabulary
             ? normalizedQuery
-              ? `${vocabActivity === 'test' ? 'テストした' : '学習した'}全${viewRows.length.toLocaleString('ja-JP')}語から${filteredRows.length.toLocaleString('ja-JP')}語が一致・残り${remainingRows.length.toLocaleString('ja-JP')}語`
-              : `${vocabActivity === 'test' ? 'テストした' : '学習した'}全${viewRows.length.toLocaleString('ja-JP')}語・残り${remainingRows.length.toLocaleString('ja-JP')}語`
+              ? `${vocabActivity === 'test' ? 'テスト済' : '学習済'} ${vocabularyRecordedCount.toLocaleString('ja-JP')}/${viewRows.length.toLocaleString('ja-JP')}語・一致${filteredRows.length.toLocaleString('ja-JP')}語・残り${remainingRows.length.toLocaleString('ja-JP')}語`
+              : `${vocabActivity === 'test' ? 'テスト済' : '学習済'} ${vocabularyRecordedCount.toLocaleString('ja-JP')}/${viewRows.length.toLocaleString('ja-JP')}語・残り${remainingRows.length.toLocaleString('ja-JP')}語`
             : normalizedQuery
               ? `${swipeMeta.label}${viewRows.length.toLocaleString('ja-JP')}${content.unit}から${filteredRows.length.toLocaleString('ja-JP')}${content.unit}が一致・${visibleRows.length.toLocaleString('ja-JP')}${content.unit}を表示`
               : `全${countLabel}・${swipeMeta.label}${viewRows.length.toLocaleString('ja-JP')}${content.unit}のうち${visibleRows.length.toLocaleString('ja-JP')}${content.unit}を表示`}
@@ -696,6 +697,7 @@ export function LearningContentCatalog({ initialContentId, initialCatalogView })
               row={row}
               activity={vocabActivity}
               onSwipe={(swipeDirection) => handleRowSwipe(row, swipeDirection)}
+              onOpen={() => navigate('wordDetail', { id: row.id })}
             />
           ) : (
             <CatalogItemRow

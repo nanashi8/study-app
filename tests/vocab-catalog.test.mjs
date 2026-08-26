@@ -138,15 +138,15 @@ test('学習日・テスト日・分野・確認のおすすめ順の4種類で�
   assert.deepEqual(ids('field', 'desc'), [...expectedFields].reverse())
 })
 
-test('一覧確認は学習した語彙とテストした語彙を混ぜずに抽出する', () => {
+test('一覧確認は学習前・テスト前を含む全語を出し、記録済み件数は別に数える', () => {
   assert.deepEqual(VOCAB_CATALOG_ACTIVITY_OPTIONS, [
-    { id: 'memory', label: '学習した語彙' },
-    { id: 'test', label: 'テストした語彙' },
+    { id: 'memory', label: '学習の一覧' },
+    { id: 'test', label: 'テストの一覧' },
   ])
 
   const now = new Date(2026, 7, 26, 12, 0, 0, 0).getTime()
   const day = todayIndex(now)
-  const [memoryWord, testWord, bothWord] = ALL_WORDS.slice(0, 3)
+  const [memoryWord, testWord, bothWord, unrecordedWord] = ALL_WORDS.slice(0, 4)
   const successful = studiedEntry({ now, day, memoryAt: now - DAY_MS, testAt: now })
   const memoryOnly = {
     ...successful,
@@ -156,7 +156,7 @@ test('一覧確認は学習した語彙とテストした語彙を混ぜずに�
     ...successful,
     memory: { passes: 0, remembered: 0, forgot: 0, lastAt: null, lastJudgment: null, marks: [] },
   }
-  const words = [memoryWord, testWord, bothWord]
+  const words = [memoryWord, testWord, bothWord, unrecordedWord]
   const srs = {
     [memoryWord.id]: memoryOnly,
     [testWord.id]: testOnly,
@@ -165,11 +165,11 @@ test('一覧確認は学習した語彙とテストした語彙を混ぜずに�
 
   assert.deepEqual(
     new Set(vocabularyCatalogActivityRows(words, srs, { activity: 'memory', now, day }).map((row) => row.word.id)),
-    new Set([memoryWord.id, bothWord.id]),
+    new Set(words.map((word) => word.id)),
   )
   assert.deepEqual(
     new Set(vocabularyCatalogActivityRows(words, srs, { activity: 'test', now, day }).map((row) => row.word.id)),
-    new Set([testWord.id, bothWord.id]),
+    new Set(words.map((word) => word.id)),
   )
 
   const rows = vocabularyCatalogRows(words, srs, { now, day })
@@ -177,6 +177,13 @@ test('一覧確認は学習した語彙とテストした語彙を混ぜずに�
     new Set(vocabularyCatalogRecordedRows(rows, 'memory').map((row) => row.word.id)),
     new Set([memoryWord.id, bothWord.id]),
   )
+  assert.deepEqual(
+    new Set(vocabularyCatalogRecordedRows(rows, 'test').map((row) => row.word.id)),
+    new Set([testWord.id, bothWord.id]),
+  )
+  const unrecordedRow = rows.find((row) => row.word.id === unrecordedWord.id)
+  assert.equal(unrecordedRow.memoryStatus, 'unlearned')
+  assert.equal(unrecordedRow.testStatus, 'unanswered')
 })
 
 test('一覧確認の左右スワイプは指定された扱いを毎回記録する', () => {
@@ -216,6 +223,12 @@ test('級画面から一覧を開き、記録別の一覧を左右スワイプ�
   assert.match(decks, /data-vocab-catalog-tools-toggle/)
   assert.match(decks, /learning-catalog-tools-collapsible/)
   assert.match(historyRow, /data-vocab-catalog-swipe-row/)
+  assert.match(historyRow, /unlearned: \{ label: '学習前'/)
+  assert.match(historyRow, /unanswered: \{ label: 'テスト前'/)
+  assert.match(historyRow, /type="button"/)
+  assert.match(historyRow, /onClick=\{openDetails\}/)
+  assert.match(historyRow, /suppressOpenUntilRef/)
+  assert.match(historyRow, /data-vocab-catalog-open-word/)
   assert.match(decks, /data-vocab-catalog-swipe-guide/)
   assert.match(decks, /data-vocab-catalog-restore/)
   assert.match(decks, /スワイプ後は一時的に非表示/)
@@ -223,6 +236,8 @@ test('級画面から一覧を開き、記録別の一覧を左右スワイプ�
   assert.match(historyRow, /左にスワイプで\$\{activityMeta\.leftLabel\}/)
   assert.match(historyRow, /右にスワイプで\$\{activityMeta\.rightLabel\}/)
   assert.match(decks, /review\(row\.word\.id, result, 'vocab'\)/)
+  assert.match(decks, /navigate\('wordDetail', \{ id: wordId \}\)/)
+  assert.match(decks, /vocabularyCatalogRecordedRows/)
   assert.match(decks, /next\.add\(row\.word\.id\)/)
   assert.doesNotMatch(decks, /vocabularyCatalogResultMatches|すでに「/)
   assert.match(catalog, /最終学習日/)

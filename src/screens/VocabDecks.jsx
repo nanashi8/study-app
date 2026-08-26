@@ -13,6 +13,7 @@ import {
   VOCAB_CATALOG_DEFAULT_DIRECTIONS,
   VOCAB_CATALOG_SORT_OPTIONS,
   vocabularyCatalogActivityRows,
+  vocabularyCatalogRecordedRows,
   vocabularyCatalogRemainingRows,
   vocabularyCatalogResultForDirection,
 } from '../lib/vocabCatalog.js'
@@ -64,7 +65,7 @@ function LevelViewTabs({ view, onChange }) {
   )
 }
 
-function VocabularyCatalog({ level, srs, review, onShowFields }) {
+function VocabularyCatalog({ level, srs, review, onShowFields, onOpenWord }) {
   const words = useMemo(() => wordsByLevel(level.id), [level.id])
   const [activity, setActivity] = useState('memory')
   const [sort, setSort] = useState('field')
@@ -77,19 +78,21 @@ function VocabularyCatalog({ level, srs, review, onShowFields }) {
     test: new Set(),
   }))
   const [now] = useState(() => Date.now())
-  const memoryRows = useMemo(
+  const rows = useMemo(
     () => vocabularyCatalogActivityRows(words, srs, {
-      activity: 'memory', sort, direction, now,
+      activity, sort, direction, now,
     }),
-    [direction, now, sort, srs, words],
+    [activity, direction, now, sort, srs, words],
   )
-  const testRows = useMemo(
-    () => vocabularyCatalogActivityRows(words, srs, {
-      activity: 'test', sort, direction, now,
-    }),
-    [direction, now, sort, srs, words],
+  const memoryRecordedCount = useMemo(
+    () => vocabularyCatalogRecordedRows(rows, 'memory').length,
+    [rows],
   )
-  const rows = activity === 'test' ? testRows : memoryRows
+  const testRecordedCount = useMemo(
+    () => vocabularyCatalogRecordedRows(rows, 'test').length,
+    [rows],
+  )
+  const recordedCount = activity === 'test' ? testRecordedCount : memoryRecordedCount
   const dismissedIds = dismissedByActivity[activity] ?? new Set()
   const remainingRows = vocabularyCatalogRemainingRows(rows, dismissedIds)
   const visibleRows = remainingRows.slice(0, visible)
@@ -123,7 +126,7 @@ function VocabularyCatalog({ level, srs, review, onShowFields }) {
   const restoreList = () => {
     setDismissedByActivity((current) => ({ ...current, [activity]: new Set() }))
     setVisible(CATALOG_PAGE_SIZE)
-    setSwipeMessage(`${activity === 'test' ? 'テストした' : '学習した'}語彙を一覧に再表示しました。`)
+    setSwipeMessage(`${activity === 'test' ? 'テスト' : '学習'}の一覧を再表示しました。`)
   }
 
   return (
@@ -145,7 +148,7 @@ function VocabularyCatalog({ level, srs, review, onShowFields }) {
         />
         <div className="grid grid-cols-2 gap-1 rounded-xl bg-slate-100 p-1" role="tablist" aria-label="確認する記録">
           {VOCAB_CATALOG_ACTIVITY_OPTIONS.map((option) => {
-            const count = option.id === 'test' ? testRows.length : memoryRows.length
+            const count = option.id === 'test' ? testRecordedCount : memoryRecordedCount
             return (
               <button
                 key={option.id}
@@ -162,11 +165,11 @@ function VocabularyCatalog({ level, srs, review, onShowFields }) {
                     ? 'bg-white text-brand-700 shadow-sm'
                     : 'text-ink/55 active:bg-white/70',
                 )}
-                aria-label={`${option.label} ${count.toLocaleString('ja-JP')}語`}
+                aria-label={`${option.label}。済み${count.toLocaleString('ja-JP')}語、全${rows.length.toLocaleString('ja-JP')}語`}
                 data-vocab-catalog-activity-tab={option.id}
               >
                 {option.id === 'test' ? 'テスト' : '学習'}
-                <span className="ml-1 tabular-nums">{count.toLocaleString('ja-JP')}語</span>
+                <span className="ml-1 tabular-nums">{count.toLocaleString('ja-JP')}/{rows.length.toLocaleString('ja-JP')}語</span>
               </button>
             )
           })}
@@ -240,7 +243,7 @@ function VocabularyCatalog({ level, srs, review, onShowFields }) {
 
       <div className="min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto px-3 py-3" data-vocab-catalog-list>
         <p className="mb-2 px-1 text-xs font-extrabold text-ink/50" aria-live="polite">
-          {activity === 'test' ? 'テストした' : '学習した'}全{rows.length.toLocaleString('ja-JP')}語・残り{remainingRows.length.toLocaleString('ja-JP')}語
+          {activity === 'test' ? 'テスト済' : '学習済'} {recordedCount.toLocaleString('ja-JP')}/{rows.length.toLocaleString('ja-JP')}語・残り{remainingRows.length.toLocaleString('ja-JP')}語
         </p>
         <div className="space-y-2">
           {visibleRows.map((row) => (
@@ -249,6 +252,7 @@ function VocabularyCatalog({ level, srs, review, onShowFields }) {
               row={row}
               activity={activity}
               onSwipe={(swipeDirection) => handleSwipe(row, swipeDirection)}
+              onOpen={() => onOpenWord(row.word.id)}
             />
           ))}
         </div>
@@ -341,6 +345,7 @@ export function VocabDecksScreen() {
         srs={srs}
         review={review}
         onShowFields={() => setView('fields')}
+        onOpenWord={(wordId) => navigate('wordDetail', { id: wordId })}
       />
     )
   }
