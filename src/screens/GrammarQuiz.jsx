@@ -26,6 +26,10 @@ import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { buildGrammarInstructorExplanation } from '../lib/instructorExplanations.js'
 import { grammarQuestionNeedsMeaningCue } from '../lib/grammarQuestionExplanations.js'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
+import {
+  QuestionSessionControls,
+  useIndexedSessionState,
+} from '../components/QuestionSessionControls.jsx'
 
 // 空所 ___ を下線つきの空欄として表示。
 function renderQuestion(q) {
@@ -37,6 +41,8 @@ function renderQuestion(q) {
     </span>
   ))
 }
+
+const EMPTY_ORDER_DRAFT = Object.freeze({ text: '', complete: false })
 
 export function GrammarQuizScreen() {
   const params = useStore((s) => s.params)
@@ -57,8 +63,18 @@ export function GrammarQuizScreen() {
   const sessionSize = useSessionSize(poolSize || Infinity)
   const [deck, setDeck] = useState(() => buildFor(params.size ?? sessionSize))
   const [i, setI] = useState(0)
-  const [selected, setSelected] = useState(null)
-  const [orderDraft, setOrderDraft] = useState({ text: '', complete: false })
+  const {
+    value: selected,
+    setValue: setSelected,
+    clear: clearSelections,
+  } = useIndexedSessionState(i)
+  const autoAdvanceSequence = useRef(0)
+  const [autoAdvanceSignal, setAutoAdvanceSignal] = useState(null)
+  const {
+    value: orderDraft,
+    setValue: setOrderDraft,
+    clear: clearOrderDrafts,
+  } = useIndexedSessionState(i, EMPTY_ORDER_DRAFT)
   const [orderAttempt, setOrderAttempt] = useState(0)
   const results = useRef({ correct: 0, wrong: 0, unknown: 0, wrongIds: [] })
 
@@ -119,6 +135,8 @@ export function GrammarQuizScreen() {
     } else if (opt === item.answer) {
       review(item.id, 'correct', 'grammar')
       results.current.correct++
+      autoAdvanceSequence.current += 1
+      setAutoAdvanceSignal(autoAdvanceSequence.current)
     } else {
       review(item.id, 'wrong', 'grammar')
       results.current.wrong++
@@ -128,11 +146,7 @@ export function GrammarQuizScreen() {
 
   const next = () => {
     if (i + 1 >= deck.length) finish()
-    else {
-      setI(i + 1)
-      setSelected(null)
-      setOrderDraft({ text: '', complete: false })
-    }
+    else setI(i + 1)
   }
 
   return (
@@ -157,8 +171,8 @@ export function GrammarQuizScreen() {
             if (discard) {
               setDeck(buildFor(size))
               setI(0)
-              setSelected(null)
-              setOrderDraft({ text: '', complete: false })
+              clearSelections()
+              clearOrderDrafts()
               setOrderAttempt((value) => value + 1)
               results.current = { correct: 0, wrong: 0, unknown: 0, wrongIds: [] }
             } else {
@@ -167,6 +181,16 @@ export function GrammarQuizScreen() {
           }}
         />
       </div>
+
+      <QuestionSessionControls
+        index={i}
+        total={deck.length}
+        onPrevious={() => setI((current) => Math.max(0, current - 1))}
+        onNext={next}
+        nextDisabled={!answered}
+        showAutoAdvance
+        autoAdvanceSignal={isCorrectPick ? autoAdvanceSignal : null}
+      />
 
       <div className="flex-1 overflow-y-auto px-4 pb-4">
         <div className="mt-2 rounded-[2rem] bg-white p-6 text-center shadow-card">
@@ -203,6 +227,7 @@ export function GrammarQuizScreen() {
               key={`${item.id}:${orderAttempt}`}
               targetText={item.answer}
               seed={`${item.id}:${orderAttempt}`}
+              initialText={orderDraft.text}
               checked={answered}
               onChange={(text, status) => setOrderDraft({ text, complete: status.complete })}
             />

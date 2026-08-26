@@ -167,7 +167,7 @@ export function ReadingPrepScreen() {
             </button>
           </div>
           <p className="mt-1 text-xs font-bold leading-relaxed text-ink/50">
-            上のテーマ別の読み方と本文の構成から選んだルールです。必要なものだけ開いて確認できます。
+            必要なルールだけ開いて確認できます。
           </p>
           <div className="mt-3 space-y-2">
             {passageRules.map((rule) => (

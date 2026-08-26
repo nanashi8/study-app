@@ -212,7 +212,7 @@ function descriptor(domain, item, fallbackId) {
     field: item?.strand ?? '数学全般',
     level: item?.grade ?? '',
   }
-  return { id, catalogResolved: false, title: fallbackId, subtitle: '', field: '分類未確定', level: '' }
+  return { id, catalogResolved: false, title: fallbackId, subtitle: '', field: 'その他', level: '' }
 }
 
 function sharedSrsDescriptor(itemId) {
@@ -449,7 +449,7 @@ function supplementalRows(state, analysis, now, srsRows) {
       memoryRemembered: 0,
       memoryForgot: 0,
       memoryRate: null,
-      lastJudgment: '対象外',
+      lastJudgment: '暗記記録なし',
       testAttempts: skill.scored,
       testCorrect: skill.correct,
       testAccuracy: accuracy,

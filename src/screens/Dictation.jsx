@@ -11,7 +11,7 @@ export function DictationScreen() {
       title="ディクテーション"
       subtitle="音声を聞いて、英文を全文入力"
       accent="#14b8a6"
-      note="英検本試験に書き取り問題はありません。この教材は、公式の級別リスニングの場面・題材・放送回数を基準に、文長・構文・話題を段階化したトレーニングです。大文字・句読点は採点せず、綴りと語順を採点します。"
+      note="英検本試験に書き取り問題はありません。級別リスニングを使った練習で、大文字・句読点は採点せず、綴りと語順を採点します。"
       countFor={(levelId) => dictationByLevel(levelId).length}
       countUnit="問"
       detailFor={(levelId) => DICTATION_PROFILES[levelId]?.target}

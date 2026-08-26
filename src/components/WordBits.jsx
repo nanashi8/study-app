@@ -51,7 +51,7 @@ function ReviewedEtymologyCard({ card, onPack, onRoot, compact = false }) {
           </span>
         )}
         <span className="mt-0.5 block text-xs font-extrabold text-emerald-700">
-          <Check size={12} className="mr-1 inline" />確認済み・紐づく{card.coverageIds.length}語
+          <Check size={12} className="mr-1 inline" />出典つき・関連する{card.coverageIds.length}語
         </span>
       </span>
       {action && <ArrowRight size={17} className="shrink-0 text-violet-400" />}
@@ -99,7 +99,7 @@ export function EtymologyBlock({ word, onRoot, onPack }) {
   return (
     <div className="space-y-2.5" data-reviewed-etymology-cards>
       <p className="px-1 text-xs font-bold leading-relaxed text-slate-500">
-        同じ由来をたどれる語根のうち、出典と単語のつながりを確認したカードだけを表示しています。
+        語根を開くと、同じ由来の単語と出典を確認できます。
       </p>
       {cards.map((card) => (
         <ReviewedEtymologyCard
@@ -139,7 +139,7 @@ export function RelatedWords({ word, onPick, onRoot }) {
               disabled={!onRoot}
               onClick={() => onRoot?.(card.rootId)}
               className="mb-1.5 flex min-h-11 w-full items-center gap-1.5 rounded-xl px-2 text-left active:bg-violet-50 disabled:cursor-default"
-              aria-label={`${card.rootForm}（${card.rootMeaning}）の確認済み語源カードを開く`}
+              aria-label={`${card.rootForm}（${card.rootMeaning}）の出典つき語源カードを開く`}
             >
               <span className="text-base" aria-hidden="true">{root?.emoji ?? card.emoji}</span>
               <span className="font-display text-sm font-extrabold text-violet-700">{card.rootForm}</span>

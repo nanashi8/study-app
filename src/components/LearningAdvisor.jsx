@@ -152,10 +152,6 @@ export function LearningAdvisorPanel({ profile, onStart, onOpenAnalysis }) {
         <Chart size={18} /> 学習記録とおすすめを詳しく見る
       </Button>
 
-      <p className="rounded-2xl bg-slate-100 px-3 py-2.5 text-xs font-bold leading-relaxed text-slate-500">
-        このまとめは、診断結果・正解と不正解・次の復習日・学習した時刻から、次にする学習を選んでいます。
-        固定された能力やIQ、医療的な測定ではありません。
-      </p>
     </section>
   )
 }

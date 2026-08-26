@@ -425,14 +425,11 @@ export function LiteratureReaderScreen() {
               </div>
               <div className="rounded-xl bg-emerald-50 px-2 py-2">
                 <span className="block text-lg font-extrabold text-emerald-800">
-                  {vocabulary.missingOccurrences.length}
+                  {vocabulary.entries.length}
                 </span>
-                <span className="text-[10px] font-bold text-ink/45">未対応</span>
+                <span className="text-[10px] font-bold text-ink/45">予習カード</span>
               </div>
             </div>
-            <p className="mt-3 rounded-xl bg-emerald-50 px-3 py-2 text-xs font-extrabold leading-relaxed text-emerald-800">
-              全{vocabulary.entries.length}カード。本文と比べて確認し、未対応は0件です。
-            </p>
             <div className="mt-3 grid grid-cols-2 gap-2">
               <Button size="sm" onClick={openVocabulary} data-literature-vocabulary-open>
                 <Book size={16} /> 本文語彙を予習

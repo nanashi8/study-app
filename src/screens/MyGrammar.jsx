@@ -56,7 +56,7 @@ export function MyGrammarScreen() {
                       使った文法を、自分の型へ
                     </h2>
                     <p className="mt-1 text-xs font-bold leading-relaxed text-white/70">
-                      説明を思い出してから例文を開き、これまでの答えに合わせて次の復習日を調整します。
+                      まず説明を思い出し、例文を開いて確かめましょう。
                     </p>
                   </div>
                   <span className="font-display text-3xl font-extrabold text-white/90">

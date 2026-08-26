@@ -219,7 +219,7 @@ export function WordDetailScreen() {
         {/* 手動監査済みの語源カードがある単語だけに表示する。 */}
         {etymologyCards.length > 0 && (
           <Card className="p-4">
-            <div className="mb-3 text-sm font-extrabold text-brand-600">確認済み語源カード</div>
+            <div className="mb-3 text-sm font-extrabold text-brand-600">出典つき語源カード</div>
             <EtymologyBlock
               word={word}
               onRoot={(rootId) => navigate('rootDetail', { rootId })}

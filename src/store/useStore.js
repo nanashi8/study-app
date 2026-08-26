@@ -168,6 +168,7 @@ const DEFAULT_SETTINGS = {
   dailyGoal: 20,
   sessionSize: 10, // 1回の暗記・テストで出す問題数（進捗表示のタップで変更）
   revealAnswers: false, // 暗記/復習/マイ単語で、タップせず最初から意味・語源を表示する
+  autoAdvanceCorrect: true, // テストで正解したら、短い確認時間の後に次の問題へ進む
 }
 
 export function normalizeSettings(settings) {

@@ -69,8 +69,7 @@ function EstimateNotice() {
   return (
     <div className="rounded-2xl border border-amber-200 bg-amber-50 p-3 text-[11px] font-bold leading-relaxed text-amber-900/75">
       <span className="font-extrabold text-amber-800">偏差値について：</span>
-      英検級別の問題の難しさと、4択で偶然正解する確率から、このアプリが計算した目安です。
-      全国の受験者と比べた模試偏差値ではなく、英検の合否を保証する値でもありません。
+      このアプリの問題結果から求めた目安で、公式試験の偏差値や合否ではありません。
     </div>
   )
 }
@@ -422,7 +421,6 @@ function StudyPlan({ guidance, onOpen }) {
         <p className="mt-2 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-[10px] font-bold leading-relaxed text-slate-500">
           答えを読み直すだけでなく、いったん隠して思い出す練習をします。
           翌日→3日後→7日後と少しずつ間隔を空け、今後の学習履歴に合わせて予定を更新します。
-          この予定は、これまでの回答から選んだ目安です。公式試験や医療検査の結果ではありません。
         </p>
 
         <Button full className="mt-3" onClick={() => onOpen(next.screen)}>

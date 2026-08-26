@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import {
   KANBUN_KUNDOKU_LEVELS,
@@ -12,6 +12,7 @@ import { KanbunMarkedText } from '../components/KanbunMarkedText.js'
 import { Check, Close, Lightbulb, Refresh } from '../components/Icons.jsx'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 import { growDeck } from '../lib/session.js'
+import { QuestionSessionControls } from '../components/QuestionSessionControls.jsx'
 
 const ALL_EXERCISES = 9999 // 在庫数を数えるための十分大きな上限
 
@@ -28,6 +29,9 @@ export function KanbunKundokuQuizScreen() {
   const [correctCount, setCorrectCount] = useState(0)
   const [weakIds, setWeakIds] = useState([])
   const [done, setDone] = useState(false)
+  const questionStates = useRef({})
+  const autoAdvanceSequence = useRef(0)
+  const [autoAdvanceSignal, setAutoAdvanceSignal] = useState(null)
   const exercise = deck[index]
   const correct = answered && isCorrectKanbunKundokuOrder(exercise, selectedIds)
   const level = KANBUN_KUNDOKU_LEVELS.find((item) => item.id === exercise?.level)
@@ -64,17 +68,24 @@ export function KanbunKundokuQuizScreen() {
     if (answered || selectedIds.length !== exercise.order.length) return
     const isCorrect = isCorrectKanbunKundokuOrder(exercise, selectedIds)
     review(exercise.id, isCorrect ? 'correct' : 'wrong')
-    if (isCorrect) setCorrectCount((count) => count + 1)
+    if (isCorrect) {
+      setCorrectCount((count) => count + 1)
+      autoAdvanceSequence.current += 1
+      setAutoAdvanceSignal(autoAdvanceSequence.current)
+    }
     else setWeakIds((ids) => [...new Set([...ids, exercise.id])])
     setAnswered(true)
   }
+  const moveTo = (nextIndex) => {
+    questionStates.current[index] = { selectedIds, answered }
+    const restored = questionStates.current[nextIndex]
+    setIndex(nextIndex)
+    setSelectedIds(restored?.selectedIds ?? [])
+    setAnswered(restored?.answered ?? false)
+  }
   const next = () => {
     if (index + 1 >= deck.length) setDone(true)
-    else {
-      setIndex((current) => current + 1)
-      setSelectedIds([])
-      setAnswered(false)
-    }
+    else moveTo(index + 1)
   }
   const restart = (ids = params.ids) => {
     setDeck(pickKanbunKundokuExercises(ids, { size: deck.length || sessionSize, preserveOrder: params.preserveOrder }))
@@ -84,6 +95,7 @@ export function KanbunKundokuQuizScreen() {
     setCorrectCount(0)
     setWeakIds([])
     setDone(false)
+    questionStates.current = {}
   }
 
   if (done) {
@@ -138,6 +150,7 @@ export function KanbunKundokuQuizScreen() {
                 setCorrectCount(0)
                 setWeakIds([])
                 setDone(false)
+                questionStates.current = {}
               } else {
                 setDeck((current) => growDeck(
                   current,
@@ -150,6 +163,16 @@ export function KanbunKundokuQuizScreen() {
           />
         </div>
       </div>
+
+      <QuestionSessionControls
+        index={index}
+        total={deck.length}
+        onPrevious={() => moveTo(Math.max(0, index - 1))}
+        onNext={next}
+        nextDisabled={!answered}
+        showAutoAdvance
+        autoAdvanceSignal={correct ? autoAdvanceSignal : null}
+      />
 
       <div className="flex-1 overflow-y-auto px-4 pb-4 pt-3">
         <section className="rounded-[2rem] bg-white p-5 shadow-card">

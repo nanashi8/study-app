@@ -9,7 +9,6 @@ import {
   battleStudentPortrait,
 } from '../lib/battleCast.js'
 import {
-  CHARACTER_TALK_PATTERN_COUNT,
   CHARACTER_TALK_TOPICS,
   characterTalkChoices,
   characterTalkHash,
@@ -20,8 +19,6 @@ import {
 } from '../lib/characterTalk.js'
 import {
   CHARACTER_DAILY_CATEGORIES,
-  CHARACTER_DAILY_PATTERN_COUNT,
-  CHARACTER_DAILY_QUESTIONS,
   characterDailyQuestionById,
   characterDailyQuestionSuggestions,
   createCharacterDailyExchange,
@@ -33,8 +30,6 @@ import {
   characterDailyVisualsByStudent,
 } from '../lib/characterDailyVisuals.js'
 import {
-  CHARACTER_GRIEVANCE_COUNT,
-  CHARACTER_GRIEVANCE_PATTERN_COUNT,
   characterGrievanceChoices,
   characterGrievancePrompt,
   createCharacterGrievanceExchange,
@@ -44,10 +39,6 @@ import { AFTER_SCHOOL_CHRONICLE } from '../lib/afterSchoolStory.js'
 import { unlockedBattleStudents } from '../lib/afterSchoolBonds.js'
 
 const MAX_VISIBLE_MESSAGES = 42
-const CHARACTER_TALK_TOTAL_PATTERN_COUNT = CHARACTER_TALK_PATTERN_COUNT
-  + CHARACTER_DAILY_PATTERN_COUNT
-  + CHARACTER_GRIEVANCE_PATTERN_COUNT
-
 function dailyOutfitForCategory(categoryId) {
   return CHARACTER_DAILY_CATEGORIES.find((category) => category.id === categoryId)?.outfitId
     ?? 'uniform'
@@ -587,7 +578,7 @@ function CharacterTalkConversation({ talkStudents }) {
     <div className="character-talk-shell flex h-full min-h-0 flex-col bg-slate-100">
       <ScreenHeader
         title={`${AFTER_SCHOOL_CHRONICLE.shortTitle}・仲間との会話`}
-        subtitle={`採点なしの日常会話・質問${CHARACTER_DAILY_QUESTIONS.length}種＋相談${CHARACTER_GRIEVANCE_COUNT}種`}
+        subtitle="クラスメイトと話す"
       />
 
       <div className="flex min-h-0 flex-1 flex-col gap-2 px-3 pb-3">
@@ -641,9 +632,6 @@ function CharacterTalkConversation({ talkStudents }) {
                 <span className="rounded-full bg-fuchsia-400/15 px-2 py-0.5 text-[8px] font-extrabold text-fuchsia-100">
                   {topic.emoji} {topic.label}
                 </span>
-                <span className="rounded-full bg-cyan-400/15 px-2 py-0.5 text-[8px] font-extrabold text-cyan-100">
-                  {CHARACTER_TALK_TOTAL_PATTERN_COUNT.toLocaleString()}通り以上
-                </span>
                 {activeOutfitId === 'club' && (
                   <span className="rounded-full bg-amber-400/15 px-2 py-0.5 text-[8px] font-extrabold text-amber-100">
                     🎽 部活動ビジュアル
@@ -660,9 +648,6 @@ function CharacterTalkConversation({ talkStudents }) {
         >
           <summary className="flex min-h-10 cursor-pointer list-none items-center justify-between px-3 py-2 text-[10px] font-extrabold text-slate-600">
             <span>👥 話す相手・話題を変える</span>
-            <span className="text-[8px] text-slate-400">
-              相手{talkStudents.length - 1}人・{CHARACTER_TALK_TOPICS.length}話題・{CHARACTER_DAILY_QUESTIONS.length}質問
-            </span>
           </summary>
           <div className="max-h-[30dvh] space-y-3 overflow-y-auto border-t border-slate-100 px-3 pb-3 pt-2.5">
             <div>
@@ -864,9 +849,6 @@ function CharacterTalkConversation({ talkStudents }) {
                   <p className="text-[8px] font-bold leading-relaxed text-white/80">
                     {activeDailyVisual.interactionCue}。
                   </p>
-                  <p className="mt-1 rounded-lg bg-cyan-300/10 px-2 py-1 text-[7px] font-extrabold leading-relaxed text-cyan-100">
-                    主人公は画面外。手・姿・影・反射を描かず、{speaker.name}の視線と動作でやりとりを表現しています。
-                  </p>
                   <div className="character-talk-selector -mx-0.5 mt-2 flex gap-1.5 overflow-x-auto px-0.5 pb-1" role="group" aria-label={`${speaker.name}の日常場面を選ぶ`}>
                     {dailyVisuals.map((visual) => {
                       const selected = visual.id === activeDailyVisual.id
@@ -1054,9 +1036,6 @@ function CharacterTalkConversation({ talkStudents }) {
             </>
           )}
 
-          <p className="mt-1.5 text-center text-[8px] font-bold text-slate-400">
-            TALK {turn + 1} · 仲間発{CHARACTER_TALK_TOPICS.length}話題＋質問{CHARACTER_DAILY_QUESTIONS.length}種＋愚痴{CHARACTER_GRIEVANCE_COUNT}種
-          </p>
         </section>
       </div>
 

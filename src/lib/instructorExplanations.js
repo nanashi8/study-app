@@ -364,7 +364,7 @@ export function buildVocabInstructorExplanation(word, selectedWord) {
   const role = POS_GUIDE[word?.pos] ?? `${clean(word?.pos)}としての働き`
   const reviewedCard = etymologyCardsForWord(word)[0]
   const recallCue = reviewedCard
-    ? `確認済み語源カード「${reviewedCard.rootForm}＝${reviewedCard.rootMeaning}」も補助にする`
+    ? `語源カード「${reviewedCard.rootForm}＝${reviewedCard.rootMeaning}」も手掛かりにする`
     : '品詞と例文を手掛かりに、基本の意味を言い直す'
   return explanation({
     answer: `${quote(word?.word)}の中心となる意味は${quote(meanings)}。まずこの基本の意味を正解として押さえる。`,

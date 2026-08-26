@@ -22,10 +22,10 @@ export function RootDetailScreen() {
         <ScreenHeader title="語源カード" />
         <div className="space-y-4 px-4 py-8 text-center">
           <p className="font-display text-lg font-extrabold text-ink">
-            公開できる確認済みカードがありません
+            語源カードが見つかりません
           </p>
           <p className="text-sm font-bold leading-relaxed text-ink/50">
-            出典と紐づく単語の確認が終わるまで、未確認の説明は表示しません。
+            語源カード一覧へ戻って、別の語根を選んでください。
           </p>
           <Button onClick={() => navigate('roots')}>語源カード一覧へ</Button>
         </div>
@@ -60,7 +60,7 @@ export function RootDetailScreen() {
             <div className="flex items-center gap-3">
               <span className="text-5xl" aria-hidden="true">{card.emoji}</span>
               <div className="min-w-0 flex-1">
-                <p className="text-xs font-extrabold text-white/75">確認済み語源カード</p>
+                <p className="text-xs font-extrabold text-white/75">出典つき語源カード</p>
                 <h1 className="font-display text-3xl font-extrabold">{card.rootForm}</h1>
                 <p className="text-base font-extrabold text-white/90">＝ {card.rootMeaning}</p>
               </div>
@@ -80,7 +80,7 @@ export function RootDetailScreen() {
 
         <section className="rounded-2xl bg-white p-4 ring-1 ring-slate-200" aria-labelledby="root-examples-heading">
           <h2 id="root-examples-heading" className="font-display text-base font-extrabold text-ink">意味を思い出す例</h2>
-          <p className="mt-1 text-xs font-bold text-ink/50">確認に使った見出し語を含む代表例です。</p>
+          <p className="mt-1 text-xs font-bold text-ink/50">この語根の意味をつかみやすい代表例です。</p>
           <div className="mt-3 grid gap-2 sm:grid-cols-2">
             {examples.map((word) => (
               <button

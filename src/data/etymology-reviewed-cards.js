@@ -69,7 +69,7 @@ export function buildReviewedEtymologyCards(words, roots) {
       id: `root:${rootId}`,
       mode: 'root',
       title: `${root?.form ?? rootId} ＝ ${root?.meaning ?? '意味を確認'}`,
-      subtitle: `確認済みの${coverageIds.length}語で使われる形`,
+      subtitle: `関連する${coverageIds.length}語で使われる形`,
       description: `${root?.origin ?? ''}にさかのぼる語源カードです。`,
       caution: 'このカードに明記した単語だけを結びます。綴りが似ているだけの語は含めません。',
       emoji: root?.emoji ?? '🌱',

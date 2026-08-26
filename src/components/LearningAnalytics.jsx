@@ -315,7 +315,7 @@ function StudyRhythmSection({ analysis }) {
     ? rhythm.coreHours.map((hour) => `${hour}時`).join('・')
     : '記録なし'
   return (
-    <ReportSection number="05" title="学習時間と時間帯" note="実際に学習した時刻を24時間の円グラフで表示。目安ではなく記録そのもの">
+    <ReportSection number="05" title="学習時間と時間帯" note="学習した時刻を24時間の円グラフで表示">
       <dl className="grid grid-cols-2 divide-x divide-y divide-slate-200 border-b border-slate-300 text-center text-xs sm:grid-cols-4" data-study-time-summary>
         {[
           ['今日の学習時間', formatDuration(studyTime.todayMs), true],
@@ -424,7 +424,7 @@ function DiagnosticSnapshot({ diagnostic, onOpen }) {
           </tbody>
         </table>
         <div className="p-3">
-          <p className="text-[10px] font-bold leading-relaxed text-slate-500">偏差値と級は、このアプリの問題結果から計算した目安です。公式試験の結果ではありません。</p>
+          <p className="text-[10px] font-bold leading-relaxed text-slate-500">偏差値と級は、このアプリの問題結果から求めた目安です。</p>
           <Button full className="mt-2" variant="secondary" onClick={onOpen}>学習診断の4分野を見る</Button>
         </div>
       </div>
@@ -526,10 +526,7 @@ function ActivitySplit({ analysis, report }) {
       </dl>
       {legacySamples > 0 && (
         <p className="border-t border-amber-200 bg-amber-50 px-3 py-2 text-[10px] font-bold leading-relaxed text-amber-900">
-          以前の{legacySamples}回答は暗記・テストの区別がないため、一つにまとめて表示しています。
-          {report.totals.legacyAttempts > 0 && legacySamples !== report.totals.legacyAttempts
-            ? ` このうち学習項目が分かる${report.totals.legacyAttempts}回答は、項目別の結果にも含めています。`
-            : ''}
+          以前の{legacySamples}回答は暗記とテストを区別していないため、「以前の記録」にまとめています。
           これからの回答は、暗記とテストを分けて記録します。
         </p>
       )}
@@ -855,7 +852,7 @@ function hourCellClass(stat) {
 
 function HourlyMatrix({ analysis }) {
   return (
-    <ReportSection number="10" title="学習した時刻ごとの結果" note="「覚えた／まだ」とテストに答えた時刻を合計。後で行ったテストとの関係は07で分け、5件未満の時間帯はおすすめに使用しない">
+    <ReportSection number="10" title="学習した時刻ごとの結果" note="回答した時刻ごとの正答率を表示。回答が4件以下の時間帯は、おすすめの時間に使いません">
       <div className="grid grid-cols-6 gap-px bg-slate-300 p-px" data-hourly-analysis-matrix>
         {analysis.hourly.map((stat) => (
           <div key={stat.hour} className={cx('min-h-14 p-1.5 text-center', hourCellClass(stat))}>
@@ -985,7 +982,7 @@ function AdviceReport({ profile, analysis, dueCount, report, onNavigate }) {
               </div>
             ))}
             <p className="border-t border-slate-200 pt-2 text-[10px] font-bold leading-relaxed text-slate-500">
-              文献は一般的な学習方法の根拠です。このアプリの個人別の目安は学習記録をもとにしており、原因と結果や医学的な状態を証明するものではありません。
+              参考文献は、一般的な学習方法を説明するために掲載しています。
             </p>
           </div>
         </details>
@@ -1137,8 +1134,7 @@ export function LearningAnalyticsPanel({
       <StudyWisdomFooter />
 
       <p className="border border-slate-300 bg-slate-100 px-3 py-2.5 text-[10px] font-bold leading-relaxed text-slate-600">
-        この画面のおすすめは、学習記録に合わせて変わる目安です。才能やIQを示すものではありません。
-        医療検査や公式試験の結果でもありません。記録が少ない分野は、今後の回答で大きく変わります。
+        おすすめは学習記録をもとにした目安で、回答が増えると変わります。
       </p>
     </section>
   )

@@ -251,8 +251,8 @@ export function ExtendedReader({ passage }) {
             <span>・ 重点語 {section.targetVocabularyIds.length}語</span>
           </div>
           <p className="mt-2 text-xs font-bold leading-relaxed text-ink/55">
-            最初の主題文で読み方を定め、その後の関連語彙事例を順に読みます。
-            黄色の重点語を押すと、監査済みの意味と音声を確認できます。
+            最初の主題文を読み、関連する語句と例を順に確認します。
+            黄色の重点語を押すと、意味と音声を確認できます。
           </p>
         </section>
 

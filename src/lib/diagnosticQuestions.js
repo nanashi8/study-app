@@ -136,7 +136,7 @@ function vocabQuestion(level, attemptNumber, seed) {
     explain: [
       `${word.word} は「${word.meaning}」という意味です。`,
       reviewedCard
-        ? `確認済み語源カードでは ${reviewedCard.rootForm} を「${reviewedCard.rootMeaning}」として学びます。`
+        ? `語源カードでは ${reviewedCard.rootForm} を「${reviewedCard.rootMeaning}」として学びます。`
         : null,
     ].filter(Boolean).join(' '),
     review: word.example,

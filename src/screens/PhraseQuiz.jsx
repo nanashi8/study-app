@@ -20,6 +20,10 @@ import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { buildPhraseInstructorExplanation } from '../lib/instructorExplanations.js'
 import { isDragonVeinSource } from '../lib/dragonVein.js'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
+import {
+  QuestionSessionControls,
+  useIndexedSessionState,
+} from '../components/QuestionSessionControls.jsx'
 
 const newSessionId = () => (
   globalThis.crypto?.randomUUID?.()
@@ -59,7 +63,13 @@ export function PhraseQuizScreen() {
   const sessionSize = useSessionSize(poolSize || Infinity)
   const [deck, setDeck] = useState(() => buildFor(params.size ?? sessionSize))
   const [index, setIndex] = useState(0)
-  const [selected, setSelected] = useState(null)
+  const {
+    value: selected,
+    setValue: setSelected,
+    clear: clearSelections,
+  } = useIndexedSessionState(index)
+  const autoAdvanceSequence = useRef(0)
+  const [autoAdvanceSignal, setAutoAdvanceSignal] = useState(null)
   const results = useRef({ correct: 0, wrong: 0, unknown: 0, wrongIds: [], answerLog: [] })
 
   const item = deck[index]
@@ -128,6 +138,8 @@ export function PhraseQuizScreen() {
       review(item.id, 'correct', 'usage')
       results.current.correct += 1
       answer = 'correct'
+      autoAdvanceSequence.current += 1
+      setAutoAdvanceSignal(autoAdvanceSequence.current)
     } else {
       review(item.id, 'wrong', 'usage')
       results.current.wrong += 1
@@ -141,7 +153,6 @@ export function PhraseQuizScreen() {
     if (index + 1 >= deck.length) finish()
     else {
       setIndex((current) => current + 1)
-      setSelected(null)
     }
   }
 
@@ -175,7 +186,7 @@ export function PhraseQuizScreen() {
             if (discard) {
               setDeck(buildFor(size))
               setIndex(0)
-              setSelected(null)
+              clearSelections()
               results.current = { correct: 0, wrong: 0, unknown: 0, wrongIds: [], answerLog: [] }
             } else {
               setDeck((current) => growDeck(current, index + 1, buildFor(size), size))
@@ -183,6 +194,16 @@ export function PhraseQuizScreen() {
           }}
         />
       </div>
+
+      <QuestionSessionControls
+        index={index}
+        total={deck.length}
+        onPrevious={() => setIndex((current) => Math.max(0, current - 1))}
+        onNext={next}
+        nextDisabled={!answered}
+        showAutoAdvance
+        autoAdvanceSignal={isCorrectPick ? autoAdvanceSignal : null}
+      />
 
       <div className="flex-1 overflow-y-auto px-3 pb-4">
         {isDragonVein && (

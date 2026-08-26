@@ -71,7 +71,7 @@ export function LongSentenceTranslation({ guide, className = '' }) {
       data-long-sentence-translation
     >
       <p className="text-xs font-bold leading-relaxed text-sky-950/65">
-        英語を発音できて意味が通るまとまりで読み、上から順に意味を足します。SVOCMは各フレーズ内部の構造を示します。
+        英語を発音できて意味が通るまとまりで読み、上から順に意味を足します。SVOCMは各まとまりの文の組み立てを示します。
       </p>
 
       <ol className="mt-3 space-y-2">

@@ -319,7 +319,7 @@ test('マイ学習から全教材一覧を開き、検索・選択・開始を�
   assert.match(store, /replaceParams: \(params = \{\}\) => set\(\{ params \}\)/)
   assert.match(store, /updateLearningContentPlanItem:/)
   assert.match(store, /st\.params\?\.returnTo\?\.screen/)
-  assert.match(catalogLib, /先に復習する順/)
+  assert.match(catalogLib, /復習のおすすめ順/)
   assert.match(catalogLib, /最終学習日/)
   assert.match(catalogLib, /最終テスト日/)
   assert.match(css, /@media \(max-height: 640px\)[\s\S]*\.learning-catalog-tools-collapsible\s*\{\s*display:\s*none/s)

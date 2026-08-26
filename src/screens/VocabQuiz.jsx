@@ -17,6 +17,10 @@ import { buildVocabInstructorExplanation } from '../lib/instructorExplanations.j
 import { isDragonVeinSource } from '../lib/dragonVein.js'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 import { VocabReviewHistory } from '../components/VocabReviewHistory.jsx'
+import {
+  QuestionSessionControls,
+  useIndexedSessionState,
+} from '../components/QuestionSessionControls.jsx'
 
 const sessionKey = (params) => (
   `vocab|${JSON.stringify(params.source ?? { type: 'due' })}|${params.title ?? ''}|${params.size ?? ''}`
@@ -102,9 +106,23 @@ export function VocabQuizScreen() {
     restore?.deck ?? buildFor(params.size ?? sessionSize)
   ))
   const [index, setIndex] = useState(restore?.i ?? 0)
-  const [selected, setSelected] = useState(() => (
-    restore?.selected === 'unknown' ? UNKNOWN_CHOICE_ID : restore?.selected ?? null
-  ))
+  const {
+    value: selected,
+    setValue: setSelected,
+    clear: clearSelections,
+  } = useIndexedSessionState(
+    index,
+    null,
+    restore?.selected == null
+      ? {}
+      : {
+          [restore.i ?? 0]: restore.selected === 'unknown'
+            ? UNKNOWN_CHOICE_ID
+            : restore.selected,
+        },
+  )
+  const autoAdvanceSequence = useRef(0)
+  const [autoAdvanceSignal, setAutoAdvanceSignal] = useState(null)
   const results = useRef(
     restore
       ? {
@@ -181,6 +199,8 @@ export function VocabQuizScreen() {
       review(word.id, 'correct', 'vocab')
       results.current.correct += 1
       answer = 'correct'
+      autoAdvanceSequence.current += 1
+      setAutoAdvanceSignal(autoAdvanceSequence.current)
     } else {
       review(word.id, 'wrong', 'vocab')
       results.current.wrong += 1
@@ -194,7 +214,6 @@ export function VocabQuizScreen() {
     if (index + 1 >= deck.length) finish()
     else {
       setIndex((current) => current + 1)
-      setSelected(null)
     }
   }
 
@@ -244,7 +263,7 @@ export function VocabQuizScreen() {
               if (discard) {
                 setDeck(buildFor(size))
                 setIndex(0)
-                setSelected(null)
+                clearSelections()
                 results.current = { correct: 0, wrong: 0, unknown: 0, wrongIds: [], answerLog: [] }
               } else {
                 setDeck((current) => growDeck(current, index + 1, buildFor(size), size))
@@ -253,6 +272,16 @@ export function VocabQuizScreen() {
           />
         </div>
       </div>
+
+      <QuestionSessionControls
+        index={index}
+        total={deck.length}
+        onPrevious={() => setIndex((current) => Math.max(0, current - 1))}
+        onNext={next}
+        nextDisabled={!answered}
+        showAutoAdvance
+        autoAdvanceSignal={isCorrectPick ? autoAdvanceSignal : null}
+      />
 
       <div className="flex-1 overflow-y-auto px-3 pb-4">
         {isDragonVein && (
@@ -353,7 +382,7 @@ export function VocabQuizScreen() {
             <InstructorExplanation explanation={instructorExplanation} className="mt-3" />
             {etymologyCardsForWord(word).length > 0 && (
               <div className="mt-3 rounded-2xl bg-slate-50 p-3 text-left ring-1 ring-slate-200">
-                <p className="mb-2 text-sm font-extrabold text-brand-700">確認済み語源カード</p>
+                <p className="mb-2 text-sm font-extrabold text-brand-700">出典つき語源カード</p>
                 <EtymologyBlock word={word} />
               </div>
             )}

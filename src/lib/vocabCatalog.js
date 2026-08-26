@@ -2,7 +2,7 @@ import { vocabFieldFor } from '../data/vocab.js'
 import { vocabularyReviewMetrics } from './vocabScheduler.js'
 
 export const VOCAB_CATALOG_SORT_OPTIONS = Object.freeze([
-  { id: 'weight', label: '先に復習する順' },
+  { id: 'weight', label: '復習のおすすめ順' },
   { id: 'memoryAt', label: '最終学習日' },
   { id: 'testAt', label: '最終テスト日' },
   { id: 'field', label: '分野' },

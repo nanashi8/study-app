@@ -193,16 +193,8 @@ export function SpeechSettingsPanel({ heading = true }) {
         </h2>
       )}
       <p className="mt-1 text-xs font-bold leading-relaxed text-ink/50">
-        自動では高品質、標準、低音質の順で選びます。低音質は高品質・標準音声が使えない場合だけ使用します。
+        「自動」は、端末で使える最も高品質な声を選びます。
       </p>
-      <div className="mt-3 rounded-2xl border border-emerald-100 bg-emerald-50 px-3 py-2.5">
-        <p className="text-xs font-extrabold text-emerald-800">
-          自然な間・抑揚補正：すべての読み上げで有効
-        </p>
-        <p className="mt-0.5 text-[11px] font-bold leading-relaxed text-emerald-700/75">
-          単語・例文・長文・名作・直訳・解説・リスニングを判別し、句読点、引用、文・段落の境界に合わせて調整します。
-        </p>
-      </div>
       {!isTTSSupported() && (
         <p className="mt-1 text-xs font-bold text-rose-500">
           この端末/ブラウザは音声合成に対応していないようです。
@@ -334,7 +326,7 @@ function LearningSettingsPanel() {
       <div className="divide-y divide-brand-50">
         <SettingRow
           title="答えを開いたまま見せる"
-          desc="英単語・古文単語・熟語・文法・古典常識・漢文のカードで、意味や答えを最初から表示。カード画面の「意味」「答え」ボタンでも切り替えられます"
+          desc="暗記カードの意味や答えを最初から表示します。カード画面の「意味」「答え」でも切り替えられます"
         >
           <Toggle
             label="答えを開いたまま見せる"

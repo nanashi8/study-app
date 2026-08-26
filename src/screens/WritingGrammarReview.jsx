@@ -8,6 +8,11 @@ import { Button, Chip, IconButton, ProgressBar } from '../components/ui.jsx'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 import { growDeck } from '../lib/session.js'
 import {
+  nextUnansweredSessionIndex,
+  QuestionSessionControls,
+  useIndexedSessionState,
+} from '../components/QuestionSessionControls.jsx'
+import {
   ArrowRight,
   Check,
   Close,
@@ -39,6 +44,12 @@ export function WritingGrammarReviewScreen() {
   const [index, setIndex] = useState(0)
   const [revealed, setRevealed] = useState(false)
   const [results, setResults] = useState({ remembered: 0, forgot: 0 })
+  const {
+    value: recordedAnswer,
+    setValue: setRecordedAnswer,
+    clear: clearRecordedAnswers,
+    values: recordedAnswers,
+  } = useIndexedSessionState(index)
 
   const item = deck[index]
   const level = item ? getLevel(item.level) : null
@@ -113,14 +124,22 @@ export function WritingGrammarReviewScreen() {
   }
 
   const answer = (result) => {
+    if (recordedAnswer !== null) return
     review(item.id, result, 'grammar')
     setResults((current) => ({
       ...current,
       [result === 'remembered' ? 'remembered' : 'forgot']:
         current[result === 'remembered' ? 'remembered' : 'forgot'] + 1,
     }))
-    setIndex((value) => value + 1)
-    setRevealed(false)
+    const nextAnswers = { ...recordedAnswers, [index]: result }
+    setRecordedAnswer(result)
+    if (Object.keys(nextAnswers).length >= deck.length) setIndex(deck.length)
+    else moveToCard(nextUnansweredSessionIndex(index, deck.length, nextAnswers), nextAnswers)
+  }
+
+  const moveToCard = (nextIndex, answers = recordedAnswers) => {
+    setIndex(nextIndex)
+    setRevealed(Object.hasOwn(answers, nextIndex))
   }
 
   return (
@@ -146,12 +165,22 @@ export function WritingGrammarReviewScreen() {
               setIndex(0)
               setRevealed(false)
               setResults({ remembered: 0, forgot: 0 })
+              clearRecordedAnswers()
             } else {
               setDeck((current) => growDeck(current, index + 1, buildFor(size), size))
             }
           }}
         />
       </header>
+
+      <QuestionSessionControls
+        index={index}
+        total={deck.length}
+        onPrevious={() => moveToCard(Math.max(0, index - 1))}
+        onNext={() => moveToCard(Math.min(deck.length - 1, index + 1))}
+        nextDisabled={index + 1 >= deck.length}
+        itemLabel="カード"
+      />
 
       <main className="flex flex-1 flex-col px-4 pb-4">
         <div className="mb-3 text-center">
@@ -212,7 +241,16 @@ export function WritingGrammarReviewScreen() {
       </main>
 
       <div className="border-t border-brand-100 bg-white/92 p-4 pb-4 backdrop-blur">
-        {!revealed ? (
+        {recordedAnswer !== null ? (
+          <Button
+            full
+            size="lg"
+            variant={recordedAnswer === 'remembered' ? 'success' : 'hint'}
+            disabled
+          >
+            {recordedAnswer === 'remembered' ? 'わかった' : 'もう一度'}（回答済み）
+          </Button>
+        ) : !revealed ? (
           <Button full size="lg" onClick={() => setRevealed(true)}>
             <Eye size={18} /> 解説を見る
           </Button>

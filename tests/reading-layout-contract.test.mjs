@@ -51,7 +51,7 @@ test('一文解説は前後移動をスクロール領域の外へ常設し、�
 test('長文一覧では準備を任意にし、各本文へ直接進める', () => {
   const list = read('../src/screens/ReadingList.jsx')
 
-  assert.match(list, /準備は必要に応じて、本文からでも始められます/)
+  assert.match(list, /準備を飛ばして本文からも始められます/)
   assert.match(list, /data-reading-start="prep"/)
   assert.match(list, /準備して読む/)
   assert.match(list, /navigate\('readingPrep', \{ passageId: p\.id \}\)/)

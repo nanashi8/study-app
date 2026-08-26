@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import { getKoten } from '../data/koten.js'
 import { getKotenGrammar } from '../data/koten-grammar.js'
@@ -22,6 +22,10 @@ import { growDeck } from '../lib/session.js'
 import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { buildKotenInterpretationInstructorExplanation } from '../lib/instructorExplanations.js'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
+import {
+  QuestionSessionControls,
+  useIndexedSessionState,
+} from '../components/QuestionSessionControls.jsx'
 
 function shuffle(items) {
   const result = [...items]
@@ -71,7 +75,13 @@ export function KotenInterpretationQuizScreen() {
   const sessionSize = useSessionSize(poolSize || Infinity)
   const [deck, setDeck] = useState(() => buildDeck(params.ids, params.size ?? sessionSize, params.preserveOrder))
   const [index, setIndex] = useState(0)
-  const [selected, setSelected] = useState(null)
+  const {
+    value: selected,
+    setValue: setSelected,
+    clear: clearSelections,
+  } = useIndexedSessionState(index)
+  const autoAdvanceSequence = useRef(0)
+  const [autoAdvanceSignal, setAutoAdvanceSignal] = useState(null)
   const [correct, setCorrect] = useState(0)
   const [done, setDone] = useState(false)
 
@@ -90,7 +100,7 @@ export function KotenInterpretationQuizScreen() {
     setRun(nextRun)
     setDeck(buildDeck(params.ids, deck.length, params.preserveOrder))
     setIndex(0)
-    setSelected(null)
+    clearSelections()
     setCorrect(0)
     setDone(false)
   }
@@ -132,7 +142,11 @@ export function KotenInterpretationQuizScreen() {
     setSelected(choice)
     const ok = choice === item.answer
     review(item.id, choice === UNKNOWN_CHOICE_ID ? 'unknown' : ok ? 'correct' : 'wrong')
-    if (ok) setCorrect((value) => value + 1)
+    if (ok) {
+      setCorrect((value) => value + 1)
+      autoAdvanceSequence.current += 1
+      setAutoAdvanceSignal(autoAdvanceSequence.current)
+    }
   }
 
   const next = () => {
@@ -141,7 +155,6 @@ export function KotenInterpretationQuizScreen() {
       return
     }
     setIndex((value) => value + 1)
-    setSelected(null)
   }
 
   const focus = KOTEN_INTERPRETATION_FOCUS[item.focus]
@@ -167,7 +180,7 @@ export function KotenInterpretationQuizScreen() {
               setRun((current) => current + 1)
               setDeck(buildDeck(params.ids, size, params.preserveOrder))
               setIndex(0)
-              setSelected(null)
+              clearSelections()
               setCorrect(0)
               setDone(false)
             } else {
@@ -176,6 +189,17 @@ export function KotenInterpretationQuizScreen() {
           }}
         />
       </div>
+
+      <QuestionSessionControls
+        index={index}
+        total={deck.length}
+        onPrevious={() => setIndex((current) => Math.max(0, current - 1))}
+        onNext={next}
+        nextDisabled={!answered}
+        showAutoAdvance
+        autoAdvanceSignal={isCorrect ? autoAdvanceSignal : null}
+        itemLabel="短文"
+      />
 
       <div className="flex-1 overflow-y-auto px-4 pb-5">
         <div className="rounded-[2rem] bg-gradient-to-br from-amber-50 to-orange-50 p-5 shadow-card">

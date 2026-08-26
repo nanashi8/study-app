@@ -20,6 +20,7 @@ import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { Close, ArrowRight, SpeakerWave, Check } from '../components/Icons.jsx'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
+import { QuestionSessionControls } from '../components/QuestionSessionControls.jsx'
 
 const clampRate = (rate) => Math.max(0.55, Math.min(1.25, rate))
 
@@ -52,6 +53,9 @@ export function DictationPlayScreen() {
   const [normalPlays, setNormalPlays] = useState(0)
   const [slowPlays, setSlowPlays] = useState(0)
   const results = useRef({ correct: 0, wrong: 0, wrongIds: [] })
+  const questionStates = useRef({})
+  const autoAdvanceSequence = useRef(0)
+  const [autoAdvanceSignal, setAutoAdvanceSignal] = useState(null)
 
   const item = deck[i]
   const profile = DICTATION_PROFILES[item?.level ?? source.levelId] ?? DICTATION_PROFILES['5']
@@ -140,6 +144,8 @@ export function DictationPlayScreen() {
     )
     if (checked.passed) {
       results.current.correct++
+      autoAdvanceSequence.current += 1
+      setAutoAdvanceSignal(autoAdvanceSequence.current)
     } else {
       results.current.wrong++
       results.current.wrongIds.push(item.id)
@@ -162,17 +168,27 @@ export function DictationPlayScreen() {
     setWordBank((items) => [...items, token])
   }
 
+  const moveTo = (nextIndex) => {
+    questionStates.current[i] = {
+      wordBank,
+      answerTokens,
+      wrongSelections,
+      result,
+    }
+    const restored = questionStates.current[nextIndex]
+    setI(nextIndex)
+    setWordBank(restored?.wordBank ?? buildWordBank(deck[nextIndex]))
+    setAnswerTokens(restored?.answerTokens ?? [])
+    setWrongSelections(restored?.wrongSelections ?? 0)
+    setResult(restored?.result ?? null)
+  }
+
   const next = () => {
     if (i + 1 >= deck.length) {
       finish()
       return
     }
-    const nextItem = deck[i + 1]
-    setI((current) => current + 1)
-    setWordBank(buildWordBank(nextItem))
-    setAnswerTokens([])
-    setWrongSelections(0)
-    setResult(null)
+    moveTo(i + 1)
   }
 
   const playGoal =
@@ -199,6 +215,7 @@ export function DictationPlayScreen() {
               setResult(null)
               setNormalPlays(0)
               setSlowPlays(0)
+              questionStates.current = {}
               results.current = { correct: 0, wrong: 0, wrongIds: [] }
             } else {
               setDeck((current) => growDeck(current, i + 1, buildFor(size), size))
@@ -206,6 +223,17 @@ export function DictationPlayScreen() {
           }}
         />
       </div>
+
+      <QuestionSessionControls
+        index={i}
+        total={deck.length}
+        onPrevious={() => moveTo(Math.max(0, i - 1))}
+        onNext={next}
+        nextDisabled={!result}
+        showAutoAdvance
+        autoAdvanceSignal={result?.passed ? autoAdvanceSignal : null}
+        itemLabel="英文"
+      />
 
       <div className="flex-1 overflow-y-auto px-4 pb-4">
         <div className="mb-3 flex flex-wrap items-center gap-2">

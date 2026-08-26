@@ -64,9 +64,9 @@ test('語源の全公開入口は通常の単語暗記だけを使い、専用�
   assert.match(roots, /data-etymology-card-browser/)
   assert.doesNotMatch(roots, /data-etymology-filters|originSource|もとの言語/)
   assert.match(wordBits, /etymologyCardsForWord/)
-  assert.match(wordBits, /確認済み・紐づく/)
+  assert.match(wordBits, /出典つき・関連する/)
   assert.match(wordBits, /data-reference-root-summary/)
-  assert.match(wordBits, /同じ由来をたどれる語根/)
+  assert.match(wordBits, /語根を開くと、同じ由来の単語と出典を確認できます/)
   assert.match(roots, /data-etymology-actions/)
   assert.match(pack, /data-etymology-pack-actions/)
   const activeEtymology = `${roots}\n${pack}\n${rootDetail}`
@@ -136,7 +136,7 @@ test('学習分析は計算方法・記録数・図表・個別助言・値の�
   }
   assert.doesNotMatch(analytics, /data-forgetting-curve-analysis|忘却曲線|記憶段階|復習の段階|覚えている見込み/)
   assert.doesNotMatch(analytics, /profile\.score|dimension\.score|gradeClass\(|group\.grade/)
-  assert.match(analytics, /才能やIQを示すものではありません/)
+  assert.match(analytics, /おすすめは学習記録をもとにした目安/)
   assert.match(analytics, /10\.1111\/j\.1467-9280\.2006\.01693\.x/)
   assert.match(analytics, /10\.1037\/0033-2909\.132\.3\.354/)
   assert.match(analytics, /10\.1037\/0003-066X\.54\.7\.493/)

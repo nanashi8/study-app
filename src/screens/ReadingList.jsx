@@ -31,7 +31,7 @@ export function ReadingListScreen() {
     <div className="pb-6">
       <ScreenHeader
         title="長文を読む"
-        subtitle={`全${ALL_PASSAGES.length}題・準備は必要に応じて、本文からでも始められます`}
+        subtitle={`全${ALL_PASSAGES.length}題。準備を飛ばして本文からも始められます`}
       />
       <div className="space-y-3 px-4">
         <Card className="overflow-hidden border border-brand-200">

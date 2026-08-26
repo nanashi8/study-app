@@ -127,7 +127,7 @@ test('長い一文の自然訳と英語順の対応訳は、一覧詳細・暗�
   )
   assert.doesNotMatch(component, /フレーズで前から直訳/)
   assert.match(component, /英語を発音できて意味が通るまとまり/)
-  assert.match(component, /SVOCMは各フレーズ内部の構造を示します/)
+  assert.match(component, /SVOCMは各まとまりの文の組み立てを示します/)
   assert.match(component, /guide\?\.meaningSteps/)
   assert.match(component, /data-long-sentence-step/)
   assert.match(component, /item\.roleParts\.map/)

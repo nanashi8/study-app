@@ -32,7 +32,7 @@ export function EtymologyPackScreen() {
       <div ref={rootRef}>
         <ScreenHeader title="語源カード" />
         <div className="p-8 text-center font-bold text-ink/50">
-          公開できる確認済みカードが見つかりませんでした。
+          語源カードが見つかりませんでした。
         </div>
       </div>
     )
@@ -64,7 +64,7 @@ export function EtymologyPackScreen() {
               </span>
               <div className="min-w-0 flex-1">
                 <div className="flex items-center justify-between gap-2">
-                  <p className="text-xs font-extrabold text-white/75">確認済み語源カード</p>
+                  <p className="text-xs font-extrabold text-white/75">出典つき語源カード</p>
                   <span className="rounded-full bg-white/15 px-2 py-1 text-xs font-extrabold">{statusLabel(cardState)}</span>
                 </div>
                 <h1 className="mt-1 font-display text-2xl font-extrabold leading-tight">{pack.rootForm}</h1>
@@ -141,12 +141,11 @@ export function EtymologyPackScreen() {
 
         <details className="overflow-hidden rounded-2xl border border-slate-200 bg-white" data-etymology-evidence>
           <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 px-4 text-sm font-extrabold text-slate-700">
-            <span className="flex items-center gap-2"><Check size={17} /> 確認記録と出典</span>
-            <span className="text-xs text-slate-500">{pack.evidence.reviewedAt}</span>
+            <span className="flex items-center gap-2"><Check size={17} /> 出典を確認</span>
           </summary>
           <div className="space-y-2 border-t border-slate-100 p-4">
             <p className="text-xs font-bold leading-relaxed text-slate-500">
-              語根の説明と紐づく全単語を人が確認し、内容が変わったときは監査で検知します。
+              出典を開くと、語根の意味と単語とのつながりを確かめられます。
             </p>
             <ul className="space-y-1.5">
               {pack.evidence.sources.map((item) => (

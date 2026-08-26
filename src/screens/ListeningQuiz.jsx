@@ -27,6 +27,10 @@ import {
 } from '../components/Icons.jsx'
 import { buildListeningInstructorExplanation } from '../lib/instructorExplanations.js'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
+import {
+  QuestionSessionControls,
+  useIndexedSessionState,
+} from '../components/QuestionSessionControls.jsx'
 
 const PROMPTS = Object.freeze({
   response: '最後の発話に対する、最も自然な応答を選んでください。',
@@ -64,7 +68,13 @@ export function ListeningQuizScreen() {
     source.type === 'listeningList' ? buildFor(0) : buildFor(params.size ?? sessionSize)
   ))
   const [i, setI] = useState(0)
-  const [selected, setSelected] = useState(null)
+  const {
+    value: selected,
+    setValue: setSelected,
+    clear: clearSelections,
+  } = useIndexedSessionState(i)
+  const autoAdvanceSequence = useRef(0)
+  const [autoAdvanceSignal, setAutoAdvanceSignal] = useState(null)
   const [playsUsed, setPlaysUsed] = useState(0)
   const [practicePlays, setPracticePlays] = useState(0)
   const [playing, setPlaying] = useState(false)
@@ -141,7 +151,7 @@ export function ListeningQuizScreen() {
     setPracticePlays(0)
     setPlaying(false)
     setActiveSegment(null)
-    setShowTranscript(false)
+    setShowTranscript(selected !== null)
     return stopListeningAudio
     // リスニングは準備前に始まらないよう、自動再生せず明示的な操作を待つ。
   }, [i, item?.id])
@@ -189,6 +199,8 @@ export function ListeningQuizScreen() {
     } else if (choiceId === item.answer) {
       review(item.id, 'correct', 'listening')
       results.current.correct++
+      autoAdvanceSequence.current += 1
+      setAutoAdvanceSignal(autoAdvanceSequence.current)
     } else {
       review(item.id, 'wrong', 'listening')
       results.current.wrong++
@@ -203,7 +215,6 @@ export function ListeningQuizScreen() {
       return
     }
     setI((current) => current + 1)
-    setSelected(null)
     setPlaysUsed(0)
     setPracticePlays(0)
     setPlaying(false)
@@ -240,7 +251,7 @@ export function ListeningQuizScreen() {
             if (discard) {
               setDeck(buildFor(size))
               setI(0)
-              setSelected(null)
+              clearSelections()
               setPlaysUsed(0)
               setPracticePlays(0)
               setShowTranscript(false)
@@ -251,6 +262,19 @@ export function ListeningQuizScreen() {
           }}
         />
       </div>
+
+      <QuestionSessionControls
+        index={i}
+        total={deck.length}
+        onPrevious={() => {
+          stopListeningAudio()
+          setI((current) => Math.max(0, current - 1))
+        }}
+        onNext={next}
+        nextDisabled={!answered}
+        showAutoAdvance
+        autoAdvanceSignal={isCorrectPick ? autoAdvanceSignal : null}
+      />
 
       <div className="flex-1 overflow-y-auto px-4 pb-4">
         <div className="mb-3 flex flex-wrap items-center gap-2">
@@ -315,9 +339,9 @@ export function ListeningQuizScreen() {
               className="mt-3 rounded-xl bg-slate-900/15 px-3 py-2 text-xs font-bold leading-relaxed"
             >
               {playing
-                ? '現在の音声が、解答前に聞ける最後の再生です。終了後は、聞き取れた内容をもとに解答してください。'
-                : '本番形式での再生回数に達しました。これは、試験と同じ放送回数で練習するための設定です。聞き取れた内容をもとに解答してください。'}
-              必要な場合は、下の「放送文を表示」から本文も確認できます。解答後は音声を何度でも聞き直せます。
+                ? 'これが解答前の最後の再生です。'
+                : '解答前の再生回数を使い切りました。'}
+              聞き取れた内容で答えましょう。解答後は何度でも聞き直せます。
             </p>
           )}
           {answered && (

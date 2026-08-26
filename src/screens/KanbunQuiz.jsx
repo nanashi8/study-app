@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import {
   KANBUN_COLLECTIONS,
@@ -14,6 +14,10 @@ import { KanbunText } from '../components/KanbunFurigana.jsx'
 import { Button, Chip, cx, IconButton, ProgressBar } from '../components/ui.jsx'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 import { growDeck } from '../lib/session.js'
+import {
+  QuestionSessionControls,
+  useIndexedSessionState,
+} from '../components/QuestionSessionControls.jsx'
 import {
   ArrowRight,
   Book,
@@ -73,7 +77,13 @@ export function KanbunQuizScreen() {
   const sessionSize = useSessionSize(poolSize || Infinity)
   const [deck, setDeck] = useState(() => pickKanbunQuestions(domain, params.ids, { size: params.size ?? sessionSize }))
   const [index, setIndex] = useState(0)
-  const [selected, setSelected] = useState(null)
+  const {
+    value: selected,
+    setValue: setSelected,
+    clear: clearSelections,
+  } = useIndexedSessionState(index)
+  const autoAdvanceSequence = useRef(0)
+  const [autoAdvanceSignal, setAutoAdvanceSignal] = useState(null)
   const [correctCount, setCorrectCount] = useState(0)
   const [unknownCount, setUnknownCount] = useState(0)
   const [weakIds, setWeakIds] = useState([])
@@ -97,7 +107,7 @@ export function KanbunQuizScreen() {
   const restart = (ids = params.ids) => {
     setDeck(pickKanbunQuestions(domain, ids, { size: deck.length || sessionSize }))
     setIndex(0)
-    setSelected(null)
+    clearSelections()
     setCorrectCount(0)
     setUnknownCount(0)
     setWeakIds([])
@@ -110,6 +120,8 @@ export function KanbunQuizScreen() {
     if (choiceId === question.answerId) {
       review(domain, question.itemId, 'correct')
       setCorrectCount((count) => count + 1)
+      autoAdvanceSequence.current += 1
+      setAutoAdvanceSignal(autoAdvanceSequence.current)
     } else {
       review(domain, question.itemId, choiceId === UNKNOWN_CHOICE_ID ? 'unknown' : 'wrong')
       setWeakIds((ids) => [...new Set([...ids, question.itemId])])
@@ -121,7 +133,6 @@ export function KanbunQuizScreen() {
     if (index + 1 >= deck.length) setDone(true)
     else {
       setIndex((current) => current + 1)
-      setSelected(null)
     }
   }
 
@@ -179,7 +190,7 @@ export function KanbunQuizScreen() {
               if (discard) {
                 setDeck(pickKanbunQuestions(domain, params.ids, { size }))
                 setIndex(0)
-                setSelected(null)
+                clearSelections()
                 setCorrectCount(0)
                 setUnknownCount(0)
                 setWeakIds([])
@@ -196,6 +207,16 @@ export function KanbunQuizScreen() {
           />
         </div>
       </div>
+
+      <QuestionSessionControls
+        index={index}
+        total={deck.length}
+        onPrevious={() => setIndex((current) => Math.max(0, current - 1))}
+        onNext={next}
+        nextDisabled={!answered}
+        showAutoAdvance
+        autoAdvanceSignal={correctPick ? autoAdvanceSignal : null}
+      />
 
       <div className="flex-1 overflow-y-auto px-4 pb-4">
         <section className="mt-3 rounded-[2rem] bg-white p-5 shadow-card">

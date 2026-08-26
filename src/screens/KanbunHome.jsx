@@ -76,17 +76,13 @@ export function KanbunHomeScreen() {
         </p>
         <div className="mt-4 rounded-2xl bg-white/12 p-3.5">
           <p className="font-display text-base font-extrabold">全{total}学習項目</p>
-          <p className="mt-1 text-[11px] font-bold leading-relaxed text-white/65">
-            暗記カードとテストの記録を混ぜずに表示します。
-          </p>
         </div>
       </header>
 
       <main className="space-y-3 px-4 pt-5">
         <div className="px-1">
           <p className="text-[10px] font-extrabold text-rose-700">主な教材</p>
-          <h2 className="font-display text-xl font-extrabold text-ink">三つのメインアイテム</h2>
-          <p className="mt-1 text-xs font-bold text-ink/45">英語と同じく、暗記・テスト・登録・復習を一続きにします。</p>
+          <h2 className="font-display text-xl font-extrabold text-ink">四つの教材から選ぶ</h2>
         </div>
 
         <MainItem

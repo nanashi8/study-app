@@ -90,7 +90,7 @@ export function RootsScreen() {
 
   return (
     <div ref={rootRef} className="pb-6">
-      <ScreenHeader title="語源" subtitle="確認済みの語根から英単語を暗記" />
+      <ScreenHeader title="語源" subtitle="語根から英単語を暗記" />
 
       <div className="space-y-4 px-4">
         <section
@@ -98,12 +98,12 @@ export function RootsScreen() {
           aria-labelledby="etymology-flow-heading"
           data-etymology-intro
         >
-          <p className="text-xs font-extrabold text-white/75">確認済みカードだけを表示</p>
+          <p className="text-xs font-extrabold text-white/75">語根から意味をつなぐ</p>
           <h1 id="etymology-flow-heading" className="mt-1 font-display text-xl font-extrabold">
             形が分かると、意味を思い出せる
           </h1>
           <p className="mt-1 text-sm font-bold leading-relaxed text-white/80">
-            出典と単語のつながりを確認した語根だけを使います。暗記の記録は英単語の「暗記」と共通です。
+            語根の形と意味をつなぎ、関連する英単語をまとめて覚えます。ここでの結果も英単語の学習記録に入ります。
           </p>
           <ol className="mt-4 grid grid-cols-3 gap-2" aria-label="語源から単語を暗記する3ステップ">
             {[
@@ -186,7 +186,7 @@ export function RootsScreen() {
           <div className="mb-2 px-1">
             <h2 id="etymology-card-heading" className="font-display text-base font-extrabold text-slate-900">カードを選ぶ</h2>
             <p className="text-xs font-bold leading-relaxed text-slate-500">
-              語根・意味・紐づく単語を人が確認したカードだけです。
+              語根を選ぶと、意味と関連する単語を確認できます。
             </p>
           </div>
 
@@ -243,8 +243,8 @@ export function RootsScreen() {
         </section>
 
         <p className="px-1 text-xs font-bold leading-relaxed text-slate-400">
-          確認済み{ETYMOLOGY_SUMMARY.cards.toLocaleString()}枚・紐づく{ETYMOLOGY_SUMMARY.total.toLocaleString()}語。
-          未確認の説明は学習画面へ出しません。
+          {ETYMOLOGY_SUMMARY.cards.toLocaleString()}枚・関連する{ETYMOLOGY_SUMMARY.total.toLocaleString()}語。
+          出典は各カードから確認できます。
         </p>
       </div>
     </div>

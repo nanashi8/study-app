@@ -283,7 +283,7 @@ for (const [name, source] of [
     errors.push(`${name}に廃止した語源専用画面またはテストの導線が残る`)
   }
 }
-if (!rootsSource.includes('英単語の「暗記」と共通です')) {
+if (!rootsSource.includes('英単語の学習記録に入ります')) {
   errors.push('語源トップが通常の単語暗記と記録を共有することを説明していない')
 }
 if (/etymologyStudy:\s|etymologyQuiz:\s|EtymologyStudyScreen|EtymologyQuizScreen/.test(appSource)) {

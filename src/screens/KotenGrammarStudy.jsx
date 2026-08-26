@@ -11,6 +11,11 @@ import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 import { CardStudyFooter, CardSwipeRegion } from '../components/CardStudyControls.jsx'
 import { growDeck } from '../lib/session.js'
 import {
+  nextUnansweredSessionIndex,
+  QuestionSessionControls,
+  useIndexedSessionState,
+} from '../components/QuestionSessionControls.jsx'
+import {
   ArrowRight,
   Bookmark,
   BookmarkFilled,
@@ -53,6 +58,12 @@ export function KotenGrammarStudyScreen() {
   const [flipped, setFlipped] = useState(revealAll)
   const [done, setDone] = useState(false)
   const [remembered, setRemembered] = useState(0)
+  const {
+    value: recordedAnswer,
+    setValue: setRecordedAnswer,
+    clear: clearRecordedAnswers,
+    values: recordedAnswers,
+  } = useIndexedSessionState(index)
 
   const item = deck[index]
   const category = item
@@ -81,21 +92,22 @@ export function KotenGrammarStudyScreen() {
     setFlipped(revealAll)
     setDone(false)
     setRemembered(0)
+    clearRecordedAnswers()
   }
 
   const answer = (ok) => {
+    if (recordedAnswer !== null) return
     reviewGrammar(item.id, ok ? 'remembered' : 'forgot')
     if (ok) setRemembered((count) => count + 1)
-    if (index + 1 >= deck.length) setDone(true)
-    else {
-      setIndex((current) => current + 1)
-      setFlipped(revealAll)
-    }
+    const nextAnswers = { ...recordedAnswers, [index]: ok }
+    setRecordedAnswer(ok)
+    if (Object.keys(nextAnswers).length >= deck.length) setDone(true)
+    else moveToCard(nextUnansweredSessionIndex(index, deck.length, nextAnswers), nextAnswers)
   }
 
-  const moveToCard = (nextIndex) => {
+  const moveToCard = (nextIndex, answers = recordedAnswers) => {
     setIndex(nextIndex)
-    setFlipped(revealAll)
+    setFlipped(revealAll || Object.hasOwn(answers, nextIndex))
   }
 
   if (done) {
@@ -143,6 +155,7 @@ export function KotenGrammarStudyScreen() {
                 setFlipped(revealAll)
                 setDone(false)
                 setRemembered(0)
+                clearRecordedAnswers()
               } else {
                 setDeck((current) => growDeck(current, index + 1, buildDeck(params.ids, size, params.preserveOrder), size))
               }
@@ -150,6 +163,15 @@ export function KotenGrammarStudyScreen() {
           />
         </div>
       </div>
+
+      <QuestionSessionControls
+        index={index}
+        total={deck.length}
+        onPrevious={() => moveToCard(Math.max(0, index - 1))}
+        onNext={() => moveToCard(Math.min(deck.length - 1, index + 1))}
+        nextDisabled={index + 1 >= deck.length}
+        itemLabel="カード"
+      />
 
       <CardSwipeRegion
         index={index}
@@ -233,7 +255,11 @@ export function KotenGrammarStudyScreen() {
       </CardSwipeRegion>
 
       <CardStudyFooter className="border-amber-100">
-        {!flipped ? (
+        {recordedAnswer !== null ? (
+          <Button full size="lg" variant={recordedAnswer ? 'success' : 'danger'} disabled>
+            {recordedAnswer ? '覚えた' : 'まだ'}（回答済み）
+          </Button>
+        ) : !flipped ? (
           <Button full size="lg" onClick={() => setFlipped(true)}>
             答えを見る
           </Button>

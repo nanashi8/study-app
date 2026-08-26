@@ -214,9 +214,6 @@ function VocabularyCatalog({ level, srs, navigate, onShowFields }) {
             {catalogDirectionLabel(sort, direction)}
           </button>
         </div>
-        <p className="text-[11px] font-bold leading-relaxed text-ink/50">
-          先に復習する順は、復習日・学習とテストの結果・前回からの日数で自動的に決まります。
-        </p>
         <div className="grid grid-cols-2 gap-2">
           <button
             type="button"

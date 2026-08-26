@@ -15,6 +15,11 @@ import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 import { growDeck } from '../lib/session.js'
 import { CardStudyFooter, CardSwipeRegion } from '../components/CardStudyControls.jsx'
 import {
+  nextUnansweredSessionIndex,
+  QuestionSessionControls,
+  useIndexedSessionState,
+} from '../components/QuestionSessionControls.jsx'
+import {
   ArrowRight,
   Bookmark,
   BookmarkFilled,
@@ -86,6 +91,12 @@ export function KanbunStudyScreen() {
   const [remembered, setRemembered] = useState(0)
   const [forgottenIds, setForgottenIds] = useState([])
   const [done, setDone] = useState(false)
+  const {
+    value: recordedAnswer,
+    setValue: setRecordedAnswer,
+    clear: clearRecordedAnswers,
+    values: recordedAnswers,
+  } = useIndexedSessionState(index)
   const item = deck[index]
 
   // コンテンツ画面の「戻る」は履歴でなく、この分野の内容選択画面へ。
@@ -114,22 +125,23 @@ export function KanbunStudyScreen() {
     setRemembered(0)
     setForgottenIds([])
     setDone(false)
+    clearRecordedAnswers()
   }
 
   const answer = (rememberedNow) => {
+    if (recordedAnswer !== null) return
     review(domain, item.id, rememberedNow ? 'remembered' : 'forgot')
     if (rememberedNow) setRemembered((count) => count + 1)
     else setForgottenIds((ids) => [...new Set([...ids, item.id])])
-    if (index + 1 >= deck.length) setDone(true)
-    else {
-      setIndex((current) => current + 1)
-      setRevealed(revealAll)
-    }
+    const nextAnswers = { ...recordedAnswers, [index]: rememberedNow }
+    setRecordedAnswer(rememberedNow)
+    if (Object.keys(nextAnswers).length >= deck.length) setDone(true)
+    else moveToCard(nextUnansweredSessionIndex(index, deck.length, nextAnswers), nextAnswers)
   }
 
-  const moveToCard = (nextIndex) => {
+  const moveToCard = (nextIndex, answers = recordedAnswers) => {
     setIndex(nextIndex)
-    setRevealed(revealAll)
+    setRevealed(revealAll || Object.hasOwn(answers, nextIndex))
   }
 
   if (done) {
@@ -188,6 +200,7 @@ export function KanbunStudyScreen() {
                 setRemembered(0)
                 setForgottenIds([])
                 setDone(false)
+                clearRecordedAnswers()
               } else {
                 setDeck((current) => growDeck(current, index + 1, buildFor(params.ids, size), size))
               }
@@ -195,6 +208,15 @@ export function KanbunStudyScreen() {
           />
         </div>
       </div>
+
+      <QuestionSessionControls
+        index={index}
+        total={deck.length}
+        onPrevious={() => moveToCard(Math.max(0, index - 1))}
+        onNext={() => moveToCard(Math.min(deck.length - 1, index + 1))}
+        nextDisabled={index + 1 >= deck.length}
+        itemLabel="カード"
+      />
 
       <CardSwipeRegion
         index={index}
@@ -243,7 +265,11 @@ export function KanbunStudyScreen() {
       </CardSwipeRegion>
 
       <CardStudyFooter className="border-rose-100">
-        {!revealed ? (
+        {recordedAnswer !== null ? (
+          <Button full size="lg" variant={recordedAnswer ? 'success' : 'danger'} disabled>
+            {recordedAnswer ? '覚えた' : 'まだ'}（回答済み）
+          </Button>
+        ) : !revealed ? (
           <Button full size="lg" onClick={() => setRevealed(true)}>答えを見る</Button>
         ) : (
           <div className="grid grid-cols-2 gap-2">

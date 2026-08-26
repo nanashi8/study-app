@@ -14,6 +14,11 @@ import { Close, Bookmark, BookmarkFilled, ArrowRight, Lightbulb } from '../compo
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 import { VocabReviewHistory } from '../components/VocabReviewHistory.jsx'
 import { CardStudyFooter, CardSwipeRegion } from '../components/CardStudyControls.jsx'
+import {
+  nextUnansweredSessionIndex,
+  QuestionSessionControls,
+  useIndexedSessionState,
+} from '../components/QuestionSessionControls.jsx'
 
 const sessionKey = (params) => (
   `vocab-study|${JSON.stringify(params.source ?? { type: 'due' })}|${params.title ?? ''}|${params.size ?? ''}`
@@ -74,6 +79,12 @@ export function VocabStudyScreen() {
   ))
   const [i, setI] = useState(restore?.i ?? 0)
   const [flipped, setFlipped] = useState(restore?.flipped ?? revealAll)
+  const {
+    value: recordedAnswer,
+    setValue: setRecordedAnswer,
+    clear: clearRecordedAnswers,
+    values: recordedAnswers,
+  } = useIndexedSessionState(i, null, restore?.ratings ?? {})
   const results = useRef(restore
     ? {
         ...restore.results,
@@ -155,18 +166,18 @@ export function VocabStudyScreen() {
   }
 
   const answer = (remembered) => {
+    if (recordedAnswer !== null) return
     review(word.id, remembered ? 'remembered' : 'forgot', 'vocab')
     results.current = recordStudyAnswer(results.current, word.id, remembered)
-    if (i + 1 >= deck.length) finish()
-    else {
-      setI(i + 1)
-      setFlipped(revealAll)
-    }
+    const nextAnswers = { ...recordedAnswers, [i]: remembered }
+    setRecordedAnswer(remembered)
+    if (Object.keys(nextAnswers).length >= deck.length) finish()
+    else moveToCard(nextUnansweredSessionIndex(i, deck.length, nextAnswers), nextAnswers)
   }
 
-  const moveToCard = (nextIndex) => {
+  const moveToCard = (nextIndex, answers = recordedAnswers) => {
     setI(nextIndex)
-    setFlipped(revealAll)
+    setFlipped(revealAll || Object.hasOwn(answers, nextIndex))
   }
 
   const saved = myList.includes(word.id)
@@ -183,6 +194,7 @@ export function VocabStudyScreen() {
       deck,
       i,
       flipped,
+      ratings: { ...recordedAnswers },
       beforeBoxes: { ...beforeBoxesAtStart.current },
       results: {
         ...results.current,
@@ -214,6 +226,7 @@ export function VocabStudyScreen() {
               setDeck(nextDeck)
               setI(0)
               setFlipped(revealAll)
+              clearRecordedAnswers()
               results.current = { remembered: 0, forgot: 0, forgotIds: [] }
               beforeBoxesAtStart.current = Object.fromEntries(nextDeck.map((item) => [
                 item.id,
@@ -237,6 +250,15 @@ export function VocabStudyScreen() {
           }}
         />
       </div>
+
+      <QuestionSessionControls
+        index={i}
+        total={deck.length}
+        onPrevious={() => moveToCard(Math.max(0, i - 1))}
+        onNext={() => moveToCard(Math.min(deck.length - 1, i + 1))}
+        nextDisabled={i + 1 >= deck.length}
+        itemLabel="カード"
+      />
 
       {/* カード */}
       <CardSwipeRegion
@@ -375,7 +397,11 @@ export function VocabStudyScreen() {
 
       {/* フッター操作 */}
       <CardStudyFooter className="vocab-study-actions border-brand-100" data-vocab-study-actions>
-        {!flipped ? (
+        {recordedAnswer !== null ? (
+          <Button full size="lg" variant={recordedAnswer ? 'success' : 'danger'} disabled>
+            {recordedAnswer ? '覚えた' : 'まだ'}（回答済み）
+          </Button>
+        ) : !flipped ? (
           <Button full size="lg" onClick={() => setFlipped(true)}>
             答えを見る
           </Button>
