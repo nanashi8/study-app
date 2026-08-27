@@ -12,10 +12,12 @@ import {
   VOCAB_CATALOG_ACTIVITY_OPTIONS,
   VOCAB_CATALOG_DEFAULT_DIRECTIONS,
   VOCAB_CATALOG_SORT_OPTIONS,
+  VOCAB_CATALOG_STATUS_FILTER_OPTIONS,
   vocabularyCatalogActivityRows,
   vocabularyCatalogRecordedRows,
   vocabularyCatalogRemainingRows,
   vocabularyCatalogRows,
+  vocabularyCatalogStatusRows,
   vocabularyCatalogResultForDirection,
   vocabularyReviewWeight,
 } from '../src/lib/vocabCatalog.js'
@@ -76,16 +78,15 @@ test('級別一覧は全7級・全英単語を重複も欠落もなく含む', (
   assert.equal(new Set(catalogIds).size, ALL_WORDS.length)
 })
 
-test('学習日・テスト日・分野・確認のおすすめ順の4種類で級内を並び替える', () => {
+test('学習日・テスト日・確認のおすすめ順の3種類で級内を並び替える', () => {
   assert.deepEqual(
     VOCAB_CATALOG_SORT_OPTIONS.map((option) => option.id),
-    ['weight', 'memoryAt', 'testAt', 'field'],
+    ['weight', 'memoryAt', 'testAt'],
   )
   assert.deepEqual(VOCAB_CATALOG_DEFAULT_DIRECTIONS, {
     weight: 'desc',
     memoryAt: 'desc',
     testAt: 'desc',
-    field: 'asc',
   })
 
   const now = new Date(2026, 7, 25, 12, 0, 0, 0).getTime()
@@ -130,12 +131,8 @@ test('学習日・テスト日・分野・確認のおすすめ順の4種類で�
   assert.ok(vocabularyReviewWeight(srs[first.id], { now, day }) > vocabularyReviewWeight(srs[second.id], { now, day }))
   assert.ok(vocabularyReviewWeight(srs[second.id], { now, day }) > vocabularyReviewWeight(undefined, { now, day }))
 
-  const fieldCollator = new Intl.Collator('ja', { sensitivity: 'base', numeric: true })
-  const expectedFields = [...words]
-    .sort((a, b) => fieldCollator.compare(vocabFieldFor(a), vocabFieldFor(b)))
-    .map((word) => word.id)
-  assert.deepEqual(ids('field', 'asc'), expectedFields)
-  assert.deepEqual(ids('field', 'desc'), [...expectedFields].reverse())
+  // 分野は一覧では見分けにくいため並び替えから外す。未知の指定はおすすめ順へ戻す。
+  assert.deepEqual(ids('field', 'asc'), ids('weight', 'asc'))
 })
 
 test('一覧確認は学習前・テスト前を含む全語を出し、記録済み件数は別に数える', () => {
@@ -186,6 +183,31 @@ test('一覧確認は学習前・テスト前を含む全語を出し、記録�
   assert.equal(unrecordedRow.testStatus, 'unanswered')
 })
 
+test('学習前・学習済・テスト前・テスト後の状態で一覧をしぼり込む', () => {
+  assert.deepEqual(VOCAB_CATALOG_STATUS_FILTER_OPTIONS, [
+    { id: 'all', label: 'すべて' },
+    { id: 'memoryUnlearned', label: '学習前' },
+    { id: 'memoryLearned', label: '学習済' },
+    { id: 'testUnanswered', label: 'テスト前' },
+    { id: 'testAnswered', label: 'テスト後' },
+  ])
+
+  const rows = [
+    { word: { id: 'a' }, memoryStatus: 'unlearned', testStatus: 'unanswered' },
+    { word: { id: 'b' }, memoryStatus: 'learned', testStatus: 'unanswered' },
+    { word: { id: 'c' }, memoryStatus: 'reviewing', testStatus: 'correct' },
+    { word: { id: 'd' }, memoryStatus: 'unlearned', testStatus: 'incorrect' },
+  ]
+  const ids = (status) => vocabularyCatalogStatusRows(rows, status).map((row) => row.word.id)
+
+  assert.deepEqual(ids('all'), ['a', 'b', 'c', 'd'])
+  assert.deepEqual(ids('memoryUnlearned'), ['a', 'd'])
+  assert.deepEqual(ids('memoryLearned'), ['b', 'c'])
+  assert.deepEqual(ids('testUnanswered'), ['a', 'b'])
+  assert.deepEqual(ids('testAnswered'), ['c', 'd'])
+  assert.deepEqual(ids('unknown'), ['a', 'b', 'c', 'd'])
+})
+
 test('一覧確認の左右スワイプは指定された扱いを毎回記録する', () => {
   assert.equal(vocabularyCatalogResultForDirection('memory', 'left'), 'remembered')
   assert.equal(vocabularyCatalogResultForDirection('memory', 'right'), 'forgot')
@@ -219,6 +241,9 @@ test('級画面から一覧を開き、記録別の一覧を左右スワイプ�
   assert.match(decks, /data-vocab-catalog=\{level\.id\}/)
   assert.match(decks, /data-vocab-catalog-activity-tab/)
   assert.match(decks, /data-vocab-catalog-sort/)
+  assert.match(decks, /data-vocab-catalog-status-filter/)
+  assert.doesNotMatch(decks, /あ→わ|わ→あ/)
+  assert.doesNotMatch(catalog, /id: 'field'/)
   assert.match(decks, /data-vocab-catalog-compact-controls/)
   assert.match(decks, /data-vocab-catalog-tools-toggle/)
   assert.match(decks, /learning-catalog-tools-collapsible/)

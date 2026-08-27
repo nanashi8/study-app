@@ -9,7 +9,16 @@ export const VOCAB_CATALOG_SORT_OPTIONS = Object.freeze([
   { id: 'weight', label: '確認のおすすめ順' },
   { id: 'memoryAt', label: '最終学習日' },
   { id: 'testAt', label: '最終テスト日' },
-  { id: 'field', label: '分野' },
+])
+
+// 学習・テストの進み具合だけで一覧を絞る。並び替えでは分かりにくい
+// 「まだ手を付けていない語」「もう終えた語」を、状態そのもので選べるようにする。
+export const VOCAB_CATALOG_STATUS_FILTER_OPTIONS = Object.freeze([
+  { id: 'all', label: 'すべて' },
+  { id: 'memoryUnlearned', label: '学習前' },
+  { id: 'memoryLearned', label: '学習済' },
+  { id: 'testUnanswered', label: 'テスト前' },
+  { id: 'testAnswered', label: 'テスト後' },
 ])
 
 export const VOCAB_CATALOG_ACTIVITY_OPTIONS = Object.freeze([
@@ -21,11 +30,9 @@ export const VOCAB_CATALOG_DEFAULT_DIRECTIONS = Object.freeze({
   weight: 'desc',
   memoryAt: 'desc',
   testAt: 'desc',
-  field: 'asc',
 })
 
 const WORD_COLLATOR = new Intl.Collator('en', { sensitivity: 'base', numeric: true })
-const FIELD_COLLATOR = new Intl.Collator('ja', { sensitivity: 'base', numeric: true })
 
 const activityTimestamp = (entry, activity) => (
   Number.isFinite(entry?.[activity]?.lastAt) ? entry[activity].lastAt : null
@@ -107,9 +114,6 @@ export function vocabularyCatalogRows(
         b[normalizedSort],
         normalizedDirection,
       )
-    } else if (normalizedSort === 'field') {
-      compared = FIELD_COLLATOR.compare(a.field, b.field)
-      if (normalizedDirection === 'desc') compared *= -1
     } else {
       compared = normalizedDirection === 'asc'
         ? a.weight - b.weight
@@ -133,6 +137,15 @@ export function vocabularyCatalogActivityRows(
   options = {},
 ) {
   return vocabularyCatalogRows(words, srs, options)
+}
+
+export function vocabularyCatalogStatusRows(rows = [], status = 'all') {
+  const list = Array.isArray(rows) ? rows : []
+  if (status === 'memoryUnlearned') return list.filter((row) => row.memoryStatus === 'unlearned')
+  if (status === 'memoryLearned') return list.filter((row) => row.memoryStatus !== 'unlearned')
+  if (status === 'testUnanswered') return list.filter((row) => row.testStatus === 'unanswered')
+  if (status === 'testAnswered') return list.filter((row) => row.testStatus !== 'unanswered')
+  return list
 }
 
 export function vocabularyCatalogRecordedRows(rows = [], activity = 'memory') {
