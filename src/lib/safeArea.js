@@ -10,6 +10,7 @@ export const SAFE_AREA_TOP_VAR = '--app-safe-top'
 export const SAFE_AREA_BOTTOM_VAR = '--app-safe-bottom'
 export const VISUAL_VIEWPORT_HEIGHT_VAR = '--app-visual-viewport-height'
 export const VISUAL_VIEWPORT_TOP_VAR = '--app-visual-viewport-top'
+export const BROWSER_BOTTOM_CLEARANCE_VAR = '--app-ios-browser-bottom-clearance'
 
 // 時刻表示（ステータスバー）の高さ。ノッチ・Dynamic Island のある機種は高い。
 const NOTCHED_STATUS_BAR = 59
@@ -48,6 +49,27 @@ export function resolveSafeAreaTop({
   return Math.max(measuredTop, statusBarFallback({ screenWidth, screenHeight }))
 }
 
+/**
+ * viewportへ直接固定する操作バーを、下部ブラウザUIより上へ逃がす幅を決める。
+ *
+ * iOS Safari の position:fixed は、いま見えている範囲ではなくレイアウト
+ * ビューポート（ツールバーが縮んだときの大きさ＝100lvh）を基準に置かれる。
+ * ツールバーが出ている間はその下端がバーの裏へ回るため、「レイアウト下端の
+ * うち、いま見えていない高さ」だけ持ち上げる。
+ *
+ * ツールバーが縮んでいるときや、ブラウザUIのないホーム画面アプリ・PCでは
+ * 0になるので、使われない余白は残らない。
+ */
+export function resolveBrowserBottomClearance({
+  viewportHeight = 0,
+  viewportTop = 0,
+  largeViewportHeight = 0,
+} = {}) {
+  if (!(viewportHeight > 0) || !(largeViewportHeight > 0)) return 0
+  const visibleBottom = Math.max(0, viewportTop) + viewportHeight
+  return Math.max(0, largeViewportHeight - visibleBottom)
+}
+
 function measureEnvInsets(doc) {
   const probe = doc.createElement('div')
   probe.setAttribute('aria-hidden', 'true')
@@ -70,6 +92,28 @@ function measureEnvInsets(doc) {
   }
   probe.remove()
   return insets
+}
+
+// レイアウトビューポートの高さ（100lvh＝ブラウザUIが縮んだときの高さ）を実測する。
+// 単位に対応しないブラウザでは高さが読めないため、退避幅を0として扱う。
+function measureLayoutViewportHeight(doc) {
+  const view = doc.defaultView
+  if (!view?.getComputedStyle) return 0
+  const probe = doc.createElement('div')
+  probe.setAttribute('aria-hidden', 'true')
+  probe.style.cssText = [
+    'position:fixed',
+    'top:0',
+    'left:0',
+    'width:0',
+    'visibility:hidden',
+    'pointer-events:none',
+    'height:100lvh',
+  ].join(';')
+  doc.body.appendChild(probe)
+  const height = Number.parseFloat(view.getComputedStyle(probe).height) || 0
+  probe.remove()
+  return height
 }
 
 function isStandalone(view) {
@@ -103,7 +147,13 @@ export function syncSafeArea(view = globalThis) {
     root.style.setProperty(VISUAL_VIEWPORT_HEIGHT_VAR, `${Math.round(viewportHeight)}px`)
   }
   root.style.setProperty(VISUAL_VIEWPORT_TOP_VAR, `${Math.max(0, Math.round(viewportTop))}px`)
-  return { measured, top, viewportHeight, viewportTop }
+  const bottomClearance = resolveBrowserBottomClearance({
+    viewportHeight,
+    viewportTop,
+    largeViewportHeight: measureLayoutViewportHeight(doc),
+  })
+  root.style.setProperty(BROWSER_BOTTOM_CLEARANCE_VAR, `${Math.round(bottomClearance)}px`)
+  return { measured, top, viewportHeight, viewportTop, bottomClearance }
 }
 
 export function startSafeAreaSync(view = globalThis) {

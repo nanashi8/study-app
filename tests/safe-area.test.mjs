@@ -9,6 +9,7 @@ import {
   SAFE_AREA_TOP_VAR,
   VISUAL_VIEWPORT_HEIGHT_VAR,
   VISUAL_VIEWPORT_TOP_VAR,
+  resolveBrowserBottomClearance,
   resolveSafeAreaTop,
   statusBarFallback,
   syncSafeArea,
@@ -208,6 +209,56 @@ test('ブラウザの見えている範囲を実測し、メニューを上下�
   assert.doesNotMatch(menu, /maxH="92vh"/)
 })
 
+test('固定バーの退避幅は下部ブラウザUIが覆う高さだけを実測する', () => {
+  // ツールバーが出ている間は、レイアウト下端がその裏へ回る（＝覆われた高さ）。
+  assert.equal(resolveBrowserBottomClearance({
+    viewportHeight: 640,
+    viewportTop: 0,
+    largeViewportHeight: 724,
+  }), 84)
+  // ツールバーが縮んで全部見えているときは退避しない。
+  assert.equal(resolveBrowserBottomClearance({
+    viewportHeight: 724,
+    viewportTop: 0,
+    largeViewportHeight: 724,
+  }), 0)
+  // 見えている範囲が下へずれているぶんは、覆われた高さから差し引く。
+  assert.equal(resolveBrowserBottomClearance({
+    viewportHeight: 640,
+    viewportTop: 40,
+    largeViewportHeight: 724,
+  }), 44)
+  // ブラウザUIのないホーム画面アプリ・PCは、そもそも退避しない。
+  assert.equal(resolveBrowserBottomClearance({
+    viewportHeight: 900,
+    largeViewportHeight: 900,
+  }), 0)
+  // lvh を測れないブラウザでは退避しない。
+  assert.equal(resolveBrowserBottomClearance({ viewportHeight: 900 }), 0)
+
+  // 実測値はCSS変数へ書き込む。
+  const { view, properties } = fakeView({ envTop: 0, innerHeight: 724 })
+  view.visualViewport = { height: 640, offsetTop: 0 }
+  view.document.defaultView.getComputedStyle = () => ({
+    paddingTop: '0px',
+    paddingBottom: '0px',
+    height: '724px',
+  })
+  const result = syncSafeArea(view)
+  assert.equal(result.bottomClearance, 84)
+  assert.equal(properties.get('--app-ios-browser-bottom-clearance'), '84px')
+})
+
+test('ブラウザで開いても、流し込みの下端に使われない余白を作らない', () => {
+  const css = read('src/index.css')
+  // 流し込みの退避は端末のふちぶんだけ。ブラウザUIぶんを足し込まない。
+  assert.match(css, /--app-bottom-clearance:\s*var\(--app-safe-bottom\)/)
+  assert.doesNotMatch(css, /--app-bottom-clearance:\s*max\(/)
+  assert.doesNotMatch(css, /--app-ios-browser-bottom-clearance:\s*5\.5rem/)
+  // 固定バーだけがブラウザUIぶんの退避を使う。
+  assert.match(css, /\.app-fixed-bottom-actions\s*\{[^}]*bottom:\s*var\(--app-ios-browser-bottom-clearance\)/s)
+})
+
 test('ふちの余白は共通変数だけで組み立て、上下それぞれ一か所が受け持つ', () => {
   assert.equal(SAFE_AREA_TOP_VAR, '--app-safe-top')
   assert.equal(SAFE_AREA_BOTTOM_VAR, '--app-safe-bottom')
@@ -215,7 +266,7 @@ test('ふちの余白は共通変数だけで組み立て、上下それぞれ�
   const css = read('src/index.css')
   assert.match(css, /--app-safe-top:\s*env\(safe-area-inset-top, 0px\)/)
   assert.match(css, /--app-safe-bottom:\s*env\(safe-area-inset-bottom, 0px\)/)
-  assert.match(css, /--app-bottom-clearance:\s*max\([^;]*var\(--app-safe-bottom\)[^;]*var\(--app-ios-browser-bottom-clearance\)/s)
+  assert.match(css, /--app-bottom-clearance:\s*var\(--app-safe-bottom\)/)
   assert.match(css, /\.study-app-bottom-clearance\s*\{\s*height:\s*var\(--app-bottom-clearance\)/)
 
   // 上は共通バー、下はflex末尾の共通退避領域が一度だけ受け持つ。
@@ -320,10 +371,10 @@ test('単語カードの判定ボタンはiPhone Safariの下部UIより上へ�
   const shell = read('src/components/AppShell.jsx')
 
   assert.match(css, /--app-ios-browser-bottom-clearance:\s*0px/)
-  assert.match(css, /@supports \(-webkit-touch-callout:\s*none\)/)
-  assert.match(css, /@media \(display-mode:\s*browser\) and \(hover:\s*none\) and \(pointer:\s*coarse\) and \(max-width:\s*48rem\)/)
-  assert.match(css, /--app-ios-browser-bottom-clearance:\s*5\.5rem/)
-  assert.match(css, /--app-bottom-clearance:\s*max\([^;]*var\(--app-safe-bottom\)[^;]*var\(--app-ios-browser-bottom-clearance\)/s)
+  // 固定幅の退避はやめ、実測値だけを使う（ブラウザで開いたときの余白を残さない）。
+  assert.doesNotMatch(css, /--app-ios-browser-bottom-clearance:\s*5\.5rem/)
+  assert.match(read('src/lib/safeArea.js'), /setProperty\(BROWSER_BOTTOM_CLEARANCE_VAR/)
+  assert.match(css, /--app-bottom-clearance:\s*var\(--app-safe-bottom\)/)
 
   assert.match(study, /className="vocab-study-actions[^\"]*"/)
   assert.match(study, /data-vocab-study-actions/)

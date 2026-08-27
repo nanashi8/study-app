@@ -5272,22 +5272,16 @@ button { -webkit-tap-highlight-color: transparent; }
   --app-ios-browser-bottom-clearance: 0px;
   --app-visual-viewport-height: 100svh;
   --app-visual-viewport-top: 0px;
-  --app-bottom-clearance: max(
-    var(--app-safe-bottom),
-    var(--app-ios-browser-bottom-clearance)
-  );
+  /* 流し込みの下端はアプリ外枠（＝いま見えている範囲）の中に収まるため、
+     端末のふち（ホームバー）ぶんだけ空ければよい。ブラウザUIぶんの固定退避は
+     ここへ足さない。足すと、ブラウザで開いたときだけ画面の下に
+     使われない余白が残ってしまう。 */
+  --app-bottom-clearance: var(--app-safe-bottom);
 }
-/* iOS Safari は、画面遷移などで下部ツールバーが広がった直後だけ
-   safe-area-inset-bottom / viewport の更新が遅れ、最下段の操作を覆うことがある。
-   ブラウザUIのないホーム画面アプリは除き、通常タブのiPhone相当だけ
-   ツールバー最大時の退避幅を確保する。 */
-@supports (-webkit-touch-callout: none) {
-  @media (display-mode: browser) and (hover: none) and (pointer: coarse) and (max-width: 48rem) {
-    :root {
-      --app-ios-browser-bottom-clearance: 5.5rem;
-    }
-  }
-}
+/* viewportへ直接固定する操作バーだけは、レイアウトビューポート（ブラウザUIが
+   縮んだときの大きさ）を基準に置かれるため、下部ブラウザUIの裏へ回りうる。
+   覆われている高さは src/lib/safeArea.js が実測して
+   --app-ios-browser-bottom-clearance へ書き込み、ツールバーが無いときは0になる。 */
 /* ホーム画面アイコンから開いた表示（standalone）は時刻・電波の下まで描かれる。
    safeArea.js が実測して確定値を書き込むが、それが動くまでの一瞬や、
    万一動かなかったときに「戻る」「メニュー」が時刻へ潜らないよう最低限を確保する。 */
