@@ -11,10 +11,14 @@ import {
   Card,
   cx,
 } from '../components/ui.jsx'
+import { ScreenHeader } from '../components/AppShell.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
+import { LearningEntryCard } from '../components/LearningEntryCard.jsx'
+import { LearningViewTabs } from '../components/LearningViewTabs.jsx'
 import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
 import { NormalLearningRecordList } from '../components/NormalLearningRecordList.jsx'
 import { summarizeSrsItemsWithQuestions } from '../lib/contentProgress.js'
+import { scrollScreenToTop } from '../lib/screenScroll.js'
 import {
   ArrowRight,
   Book,
@@ -26,7 +30,7 @@ import {
   Search,
 } from '../components/Icons.jsx'
 
-function CategoryCard({ meta, items, srs, questions, quizResults, onStudy, onQuiz }) {
+function CategoryCard({ meta, items, srs, questions, quizResults, onStudy, onQuiz, onCatalog }) {
   const status = summarizeSrsItemsWithQuestions({
     items,
     srs,
@@ -35,42 +39,36 @@ function CategoryCard({ meta, items, srs, questions, quizResults, onStudy, onQui
     quizDomain: 'koten-grammar',
   })
   return (
-    <Card className="p-4">
-      <div className="flex items-center gap-3">
-        <span
-          className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl text-2xl"
-          style={{ backgroundColor: `${meta.color}20` }}
-        >
-          {meta.emoji}
-        </span>
-        <div className="min-w-0 flex-1">
-          <h3 className="font-display text-base font-extrabold text-ink">{meta.label}</h3>
-          <p className="mt-0.5 text-[11px] font-bold text-ink/45">
-            {items.length}項目・{questions.length}問
-          </p>
-        </div>
-      </div>
-      <LearningStatusBars progress={status} className="mt-3" compact units={{ learning: '項目', quiz: '問' }} />
-      <div className="mt-3 grid grid-cols-2 gap-2">
-        <Button size="sm" onClick={onStudy}>
-          <Book size={16} /> 暗記
-        </Button>
-        <Button variant="secondary" size="sm" onClick={onQuiz}>
-          <Cards size={16} /> 腕試し
-        </Button>
-      </div>
-    </Card>
+    <LearningEntryCard
+      data-koten-grammar-category={meta.id}
+      emoji={meta.emoji}
+      accentColor={meta.color}
+      title={meta.label}
+      countLabel={`${items.length}項目`}
+      subtitle={`${items.length}項目・${questions.length}問`}
+      status={status}
+      units={{ learning: '項目', quiz: '問' }}
+      studyAriaLabel={`${meta.label}の古典文法を暗記`}
+      onStudy={onStudy}
+      quizAriaLabel={`${meta.label}の古典文法をテスト`}
+      onQuiz={onQuiz}
+      catalogLabel="一覧を確認"
+      catalogAriaLabel={`${meta.label}の古典文法を一覧で確認する`}
+      onCatalog={onCatalog}
+    />
   )
 }
 
 export function KotenGrammarScreen() {
   const navigate = useStore((state) => state.navigate)
+  const params = useStore((state) => state.params)
   const grammarSrs = useStore((state) => state.kotenGrammarSrs)
   const saved = useStore((state) => state.kotenGrammarList)
   const toggleSaved = useStore((state) => state.toggleKotenGrammarList)
   const [category, setCategory] = useState('all')
   const [query, setQuery] = useState('')
   const [openId, setOpenId] = useState(null)
+  const [view, setView] = useState(params.view === 'list' ? 'list' : 'home')
 
   const quizResults = useStore((state) => state.contentQuizResults)
   const totalStatus = summarizeSrsItemsWithQuestions({
@@ -109,8 +107,14 @@ export function KotenGrammarScreen() {
       ids: targetItems.map((item) => item.id),
       title,
     })
+  const openCatalog = (categoryId = 'all') => {
+    scrollScreenToTop()
+    setCategory(categoryId)
+    setQuery('')
+    setView('list')
+  }
 
-  return (
+  const homeView = (
     <div className="pb-8">
       <div className="rounded-b-[2.5rem] bg-gradient-to-br from-amber-700 via-orange-600 to-yellow-500 px-5 pb-7 pt-5 text-white">
         <div className="mb-3 flex items-center justify-between">
@@ -163,13 +167,13 @@ export function KotenGrammarScreen() {
               </span>
             </button>
             <button
-              onClick={() => quiz(KOTEN_GRAMMAR, '全範囲・受験型腕試し')}
+              onClick={() => quiz(KOTEN_GRAMMAR, '全範囲・受験型テスト')}
               className="rounded-3xl bg-gradient-to-br from-slate-900 to-violet-900 p-4 text-left text-white shadow-card transition-transform active:scale-[0.98]"
             >
               <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/10">
                 <Cards size={23} />
               </span>
-              <span className="mt-3 block font-display text-lg font-extrabold">腕試し</span>
+              <span className="mt-3 block font-display text-lg font-extrabold">テスト</span>
               <span className="mt-1 block text-[11px] font-bold leading-relaxed text-white/65">
                 識別・活用・敬語を入試型4択で
               </span>
@@ -229,13 +233,46 @@ export function KotenGrammarScreen() {
                   questions={categoryQuestions}
                   quizResults={quizResults}
                   onStudy={() => study(categoryItems, `${meta.label}を暗記`)}
-                  onQuiz={() => quiz(categoryItems, `${meta.label}・受験型腕試し`)}
+                  onQuiz={() => quiz(categoryItems, `${meta.label}・受験型テスト`)}
+                  onCatalog={() => openCatalog(meta.id)}
                 />
               )
             })}
           </div>
         </section>
 
+        <LearningEntryCard
+          data-koten-grammar-catalog-entry
+          emoji="📚"
+          accentColor="#d97706"
+          title="文法辞典"
+          countLabel={`全${KOTEN_GRAMMAR.length}項目`}
+          subtitle="検索して、覚えた項目とまだの項目を見分ける"
+          status={totalStatus}
+          units={{ learning: '項目', quiz: '問' }}
+          studyAriaLabel="古典文法の全範囲を暗記"
+          onStudy={() => study(KOTEN_GRAMMAR, '古典文法・全範囲')}
+          quizAriaLabel="古典文法の全範囲をテスト"
+          onQuiz={() => quiz(KOTEN_GRAMMAR, '全範囲・受験型テスト')}
+          catalogLabel="一覧を確認"
+          catalogAriaLabel="古典文法の全項目を一覧で確認する"
+          onCatalog={() => openCatalog('all')}
+        />
+      </div>
+    </div>
+  )
+
+  const catalogView = (
+    <div className="pb-8" data-koten-grammar-catalog={category}>
+      <ScreenHeader title="古典文法の一覧を確認" compact />
+      <div className="space-y-3 px-4 pt-3">
+        <LearningViewTabs
+          view="list"
+          onChange={setView}
+          learnLabel="学ぶ"
+          listLabel="一覧を確認"
+          label="古典文法の見方"
+        />
         <section>
           <div className="mb-2 flex items-end justify-between px-1">
             <div>
@@ -328,7 +365,7 @@ export function KotenGrammarScreen() {
                     <Book size={15} /> 暗記
                   </Button>
                   <Button variant="secondary" size="sm" onClick={() => quiz([item], item.title)}>
-                    <Cards size={15} /> 腕試し
+                    <Cards size={15} /> テスト
                   </Button>
                 </div>
               </div>
@@ -338,4 +375,6 @@ export function KotenGrammarScreen() {
       </div>
     </div>
   )
+
+  return view === 'list' ? catalogView : homeView
 }

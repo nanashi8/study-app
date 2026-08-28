@@ -11,16 +11,18 @@ import {
 import { KANBUN_LEVELS } from '../data/kanbun-meta.js'
 import { kanbunDueItems } from '../lib/kanbunProgress.js'
 import { Button, Card, IconButton } from '../components/ui.jsx'
+import { ScreenHeader } from '../components/AppShell.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { KanbunHeadword } from '../components/KanbunFurigana.jsx'
+import { LearningEntryCard } from '../components/LearningEntryCard.jsx'
+import { LearningViewTabs } from '../components/LearningViewTabs.jsx'
 import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
 import { NormalLearningRecordList } from '../components/NormalLearningRecordList.jsx'
 import { summarizeSrsItems } from '../lib/contentProgress.js'
+import { scrollScreenToTop } from '../lib/screenScroll.js'
 import {
-  Book,
   Bookmark,
   BookmarkFilled,
-  Cards,
   ChevronLeft,
   Refresh,
   Search,
@@ -49,6 +51,7 @@ export function KanbunCatalogScreen() {
   const srs = useStore((state) => state[meta.srsField])
   const savedIds = useStore((state) => state[meta.listField])
   const toggleSaved = useStore((state) => state.toggleKanbunList)
+  const [view, setView] = useState(params.view === 'list' ? 'list' : 'home')
   const [level, setLevel] = useState('all')
   const [category, setCategory] = useState('all')
   const [query, setQuery] = useState('')
@@ -73,8 +76,15 @@ export function KanbunCatalogScreen() {
     ids: items.map((item) => item.id),
     title,
   })
+  const openCatalog = (categoryId = 'all') => {
+    scrollScreenToTop()
+    setCategory(categoryId)
+    setLevel('all')
+    setQuery('')
+    setView('list')
+  }
 
-  return (
+  const homeView = (
     <div className="pb-8">
       <header className="rounded-b-[2.5rem] bg-gradient-to-br from-rose-950 via-red-900 to-orange-800 px-5 pb-7 pt-5 text-white">
         <div className="mb-3 flex items-center justify-between">
@@ -100,30 +110,33 @@ export function KanbunCatalogScreen() {
         </div>
       </header>
 
-      <main className="space-y-5 px-4 pt-5">
+      <main className="space-y-3 px-4 pt-5">
         <Card className="p-4" data-kanbun-catalog-status={domain}>
           <LearningStatusBars progress={totalStatus} compact units={{ learning: meta.itemLabel, quiz: '問' }} />
         </Card>
-        <section className="grid grid-cols-2 gap-3">
-          <button
-            type="button"
-            onClick={() => study(collection, `${meta.label}・全範囲`)}
-            className="rounded-3xl bg-gradient-to-br from-rose-700 to-red-900 p-4 text-left text-white shadow-card active:scale-[0.98]"
-          >
-            <Book size={23} />
-            <span className="mt-3 block font-display text-lg font-extrabold">暗記</span>
-            <span className="mt-1 block text-[11px] font-bold text-white/70">答えを隠して思い出す</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => quiz(collection, `${meta.label}・全範囲テスト`)}
-            className="rounded-3xl bg-gradient-to-br from-slate-950 to-violet-950 p-4 text-left text-white shadow-card active:scale-[0.98]"
-          >
-            <Cards size={23} />
-            <span className="mt-3 block font-display text-lg font-extrabold">テスト</span>
-            <span className="mt-1 block text-[11px] font-bold text-white/65">正解の根拠と、ちがう理由まで確認</span>
-          </button>
-        </section>
+
+        {/* 全範囲：英単語の級カードと同じ並び */}
+        <LearningEntryCard
+          data-kanbun-catalog-entry={domain}
+          emoji={meta.emoji}
+          accentColor="#be123c"
+          title={`${meta.label}の全範囲`}
+          countLabel={`全${collection.length}${meta.itemLabel}`}
+          subtitle={meta.description}
+          status={totalStatus}
+          units={{ learning: meta.itemLabel, quiz: '問' }}
+          note={dueItems.length > 0
+            ? `復習が必要 ${dueItems.length}${meta.itemLabel}`
+            : '次の復習日まで待つ'}
+          noteTone={dueItems.length > 0 ? 'alert' : 'muted'}
+          studyAriaLabel={`${meta.label}の全範囲を暗記`}
+          onStudy={() => study(collection, `${meta.label}・全範囲`)}
+          quizAriaLabel={`${meta.label}の全範囲をテスト`}
+          onQuiz={() => quiz(collection, `${meta.label}・全範囲テスト`)}
+          catalogLabel="一覧を確認"
+          catalogAriaLabel={`${meta.label}の全項目を一覧で確認する`}
+          onCatalog={() => openCatalog('all')}
+        />
 
         <div className="grid grid-cols-2 gap-3">
           <Button
@@ -142,8 +155,61 @@ export function KanbunCatalogScreen() {
           </Button>
         </div>
 
+        <div className="px-1 pt-2">
+          <p className="text-[10px] font-extrabold text-rose-700">コース</p>
+          <h2 className="font-display text-lg font-extrabold text-ink">分野から学ぶ</h2>
+        </div>
+
+        {categories.map((item) => {
+          const categoryItems = collection.filter((entry) => entry.category === item.id)
+          const categoryDue = kanbunDueItems(categoryItems, srs)
+          return (
+            <LearningEntryCard
+              key={item.id}
+              data-kanbun-category={item.id}
+              emoji={item.emoji}
+              accentColor={item.color}
+              title={item.label}
+              countLabel={`${categoryItems.length}${meta.itemLabel}`}
+              subtitle={item.subtitle}
+              status={summarizeSrsItems(categoryItems, srs)}
+              units={{ learning: meta.itemLabel, quiz: '問' }}
+              note={categoryDue.length > 0
+                ? `復習が必要 ${categoryDue.length}${meta.itemLabel}`
+                : '次の復習日まで待つ'}
+              noteTone={categoryDue.length > 0 ? 'alert' : 'muted'}
+              studyDisabled={!categoryItems.length}
+              studyAriaLabel={`${item.label}を暗記`}
+              onStudy={() => study(categoryItems, `${item.label}を暗記`)}
+              quizDisabled={!categoryItems.length}
+              quizAriaLabel={`${item.label}をテスト`}
+              onQuiz={() => quiz(categoryItems, `${item.label}のテスト`)}
+              catalogLabel="一覧を確認"
+              catalogAriaLabel={`${item.label}を一覧で確認する`}
+              catalogDisabled={!categoryItems.length}
+              onCatalog={() => openCatalog(item.id)}
+            />
+          )
+        })}
+      </main>
+    </div>
+  )
+
+  const catalogView = (
+    <div className="pb-8" data-kanbun-catalog-list={domain}>
+      <ScreenHeader title={`${meta.label}の一覧を確認`} compact />
+
+      <main className="space-y-3 px-4 pt-3">
+        <LearningViewTabs
+          view="list"
+          onChange={setView}
+          learnLabel="学ぶ"
+          listLabel="一覧を確認"
+          label={`${meta.label}の見方`}
+        />
+
         <section>
-          <h2 className="px-1 font-display text-lg font-extrabold text-ink">学年・難しさから選ぶ</h2>
+          <h2 className="px-1 font-display text-sm font-extrabold text-ink">学年・難しさから選ぶ</h2>
           <div className="mt-2 flex gap-2 overflow-x-auto pb-1">
             <button
               type="button"
@@ -166,7 +232,7 @@ export function KanbunCatalogScreen() {
         </section>
 
         <section>
-          <h2 className="px-1 font-display text-lg font-extrabold text-ink">分野から選ぶ</h2>
+          <h2 className="px-1 font-display text-sm font-extrabold text-ink">分野から選ぶ</h2>
           <div className="mt-2 flex gap-2 overflow-x-auto pb-1">
             <button
               type="button"
@@ -240,4 +306,6 @@ export function KanbunCatalogScreen() {
       </main>
     </div>
   )
+
+  return view === 'list' ? catalogView : homeView
 }

@@ -179,12 +179,12 @@ export function KotenGrammarQuizScreen() {
     <div className="flex h-full flex-col">
       <div className="border-b border-amber-100 bg-white/90 px-3 py-3 backdrop-blur">
         <div className="flex items-center gap-3">
-          <IconButton onClick={backToKotenGrammar} aria-label="腕試しをやめる">
+          <IconButton onClick={backToKotenGrammar} aria-label="テストをやめる">
             <Close size={22} />
           </IconButton>
           <div className="min-w-0 flex-1">
             <p className="truncate text-[10px] font-extrabold text-ink/40">
-              {params.title ?? '受験文法・腕試し'}
+              {params.title ?? '受験文法・テスト'}
             </p>
           </div>
           <SpeechSettingsButton compact />

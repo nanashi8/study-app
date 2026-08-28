@@ -309,6 +309,6 @@ test('共通バーは指定の6ラベル・6区分・3色ずつを一元定義�
     '../src/screens/WordDetail.jsx',
   ]) {
     const detail = readFileSync(new URL(file, import.meta.url), 'utf8')
-    assert.match(detail, /LearningStatusBars|StatusDistributionBar/, file)
+    assert.match(detail, /LearningStatusBars|StatusDistributionBar|LearningEntryCard/, file)
   }
 })

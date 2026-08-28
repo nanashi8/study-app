@@ -12,10 +12,14 @@ import {
   Card,
   cx,
 } from '../components/ui.jsx'
+import { ScreenHeader } from '../components/AppShell.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
+import { LearningEntryCard } from '../components/LearningEntryCard.jsx'
+import { LearningViewTabs } from '../components/LearningViewTabs.jsx'
 import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
 import { NormalLearningRecordList } from '../components/NormalLearningRecordList.jsx'
 import { summarizeSrsItemsWithQuestions } from '../lib/contentProgress.js'
+import { scrollScreenToTop } from '../lib/screenScroll.js'
 import { KotenText } from '../components/KotenFurigana.jsx'
 import { kotenTextForSearch } from '../lib/kotenFurigana.js'
 import {
@@ -29,7 +33,7 @@ import {
   Search,
 } from '../components/Icons.jsx'
 
-function CategoryCard({ meta, items, srs, questions, quizResults, onStudy, onQuiz }) {
+function CategoryCard({ meta, items, srs, questions, quizResults, onStudy, onQuiz, onCatalog }) {
   const status = summarizeSrsItemsWithQuestions({
     items,
     srs,
@@ -38,43 +42,36 @@ function CategoryCard({ meta, items, srs, questions, quizResults, onStudy, onQui
     quizDomain: 'koten-culture',
   })
   return (
-    <Card className="p-4">
-      <div className="flex items-center gap-3">
-        <span
-          className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl text-2xl"
-          style={{ backgroundColor: `${meta.color}20` }}
-        >
-          {meta.emoji}
-        </span>
-        <div className="min-w-0 flex-1">
-          <h3 className="font-display text-base font-extrabold text-ink">{meta.label}</h3>
-          <p className="mt-0.5 text-[11px] font-bold text-ink/45">
-            {items.length}テーマ・{questions.length}問
-          </p>
-        </div>
-      </div>
-      <LearningStatusBars progress={status} className="mt-3" compact units={{ learning: 'テーマ', quiz: '問' }} />
-      <p className="mt-2 text-[11px] font-bold leading-relaxed text-ink/45">{meta.subtitle}</p>
-      <div className="mt-3 grid grid-cols-2 gap-2">
-        <Button size="sm" onClick={onStudy}>
-          <Book size={16} /> 暗記
-        </Button>
-        <Button variant="secondary" size="sm" onClick={onQuiz}>
-          <Cards size={16} /> 腕試し
-        </Button>
-      </div>
-    </Card>
+    <LearningEntryCard
+      data-koten-culture-category={meta.id}
+      emoji={meta.emoji}
+      accentColor={meta.color}
+      title={meta.label}
+      countLabel={`${items.length}テーマ`}
+      subtitle={meta.subtitle}
+      status={status}
+      units={{ learning: 'テーマ', quiz: '問' }}
+      studyAriaLabel={`${meta.label}の古典常識を暗記`}
+      onStudy={onStudy}
+      quizAriaLabel={`${meta.label}の古典常識をテスト`}
+      onQuiz={onQuiz}
+      catalogLabel="一覧を確認"
+      catalogAriaLabel={`${meta.label}の古典常識を一覧で確認する`}
+      onCatalog={onCatalog}
+    />
   )
 }
 
 export function KotenCultureScreen() {
   const navigate = useStore((state) => state.navigate)
+  const params = useStore((state) => state.params)
   const cultureSrs = useStore((state) => state.kotenCultureSrs)
   const saved = useStore((state) => state.kotenCultureList)
   const toggleSaved = useStore((state) => state.toggleKotenCultureList)
   const [category, setCategory] = useState('all')
   const [query, setQuery] = useState('')
   const [openId, setOpenId] = useState(null)
+  const [view, setView] = useState(params.view === 'list' ? 'list' : 'home')
 
   const quizResults = useStore((state) => state.contentQuizResults)
   const totalStatus = summarizeSrsItemsWithQuestions({
@@ -121,8 +118,14 @@ export function KotenCultureScreen() {
       ids: targetItems.map((item) => item.id),
       title,
     })
+  const openCatalog = (categoryId = 'all') => {
+    scrollScreenToTop()
+    setCategory(categoryId)
+    setQuery('')
+    setView('list')
+  }
 
-  return (
+  const homeView = (
     <div className="pb-8">
       <div className="rounded-b-[2.5rem] bg-gradient-to-br from-violet-800 via-purple-700 to-fuchsia-600 px-5 pb-7 pt-5 text-white">
         <div className="mb-3 flex items-center justify-between">
@@ -175,13 +178,13 @@ export function KotenCultureScreen() {
               </span>
             </button>
             <button
-              onClick={() => quiz(KOTEN_CULTURE, '全範囲・入試型腕試し')}
+              onClick={() => quiz(KOTEN_CULTURE, '全範囲・入試型テスト')}
               className="rounded-3xl bg-gradient-to-br from-slate-900 to-indigo-950 p-4 text-left text-white shadow-card transition-transform active:scale-[0.98]"
             >
               <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/10">
                 <Cards size={23} />
               </span>
-              <span className="mt-3 block font-display text-lg font-extrabold">腕試し</span>
+              <span className="mt-3 block font-display text-lg font-extrabold">テスト</span>
               <span className="mt-1 block text-[11px] font-bold leading-relaxed text-white/65">
                 本文・人物関係・資料から4択
               </span>
@@ -241,13 +244,46 @@ export function KotenCultureScreen() {
                   questions={categoryQuestions}
                   quizResults={quizResults}
                   onStudy={() => study(categoryItems, `${meta.label}を暗記`)}
-                  onQuiz={() => quiz(categoryItems, `${meta.label}・入試型腕試し`)}
+                  onQuiz={() => quiz(categoryItems, `${meta.label}・入試型テスト`)}
+                  onCatalog={() => openCatalog(meta.id)}
                 />
               )
             })}
           </div>
         </section>
 
+        <LearningEntryCard
+          data-koten-culture-catalog-entry
+          emoji="📚"
+          accentColor="#7c3aed"
+          title="古典常識事典"
+          countLabel={`全${KOTEN_CULTURE.length}テーマ`}
+          subtitle="検索して、覚えたテーマとまだのテーマを見分ける"
+          status={totalStatus}
+          units={{ learning: 'テーマ', quiz: '問' }}
+          studyAriaLabel="古典常識の全範囲を暗記"
+          onStudy={() => study(KOTEN_CULTURE, '古典常識・全範囲')}
+          quizAriaLabel="古典常識の全範囲をテスト"
+          onQuiz={() => quiz(KOTEN_CULTURE, '全範囲・入試型テスト')}
+          catalogLabel="一覧を確認"
+          catalogAriaLabel="古典常識の全項目を一覧で確認する"
+          onCatalog={() => openCatalog('all')}
+        />
+      </div>
+    </div>
+  )
+
+  const catalogView = (
+    <div className="pb-8" data-koten-culture-catalog={category}>
+      <ScreenHeader title="古典常識の一覧を確認" compact />
+      <div className="space-y-3 px-4 pt-3">
+        <LearningViewTabs
+          view="list"
+          onChange={setView}
+          learnLabel="学ぶ"
+          listLabel="一覧を確認"
+          label="古典常識の見方"
+        />
         <section>
           <div className="mb-2 flex items-end justify-between px-1">
             <div>
@@ -358,7 +394,7 @@ export function KotenCultureScreen() {
                     <Book size={15} /> 暗記
                   </Button>
                   <Button variant="secondary" size="sm" onClick={() => quiz([item], item.title)}>
-                    <Cards size={15} /> 腕試し
+                    <Cards size={15} /> テスト
                   </Button>
                 </div>
               </div>
@@ -368,4 +404,6 @@ export function KotenCultureScreen() {
       </div>
     </div>
   )
+
+  return view === 'list' ? catalogView : homeView
 }

@@ -24,11 +24,14 @@ import { SpeakButton } from '../components/SpeakButton.jsx'
 import { LongSentenceTranslation } from '../components/LongSentenceTranslation.jsx'
 import { SyntaxFamilyGuide } from '../components/SyntaxFamilyGuide.jsx'
 import { IdiomFormGuide } from '../components/IdiomFormGuide.jsx'
-import { Card, Button, Chip } from '../components/ui.jsx'
+import { Card, Button, Chip, IconButton } from '../components/ui.jsx'
+import { LearningEntryCard } from '../components/LearningEntryCard.jsx'
+import { LearningViewTabs } from '../components/LearningViewTabs.jsx'
 import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
 import { NormalLearningRecordList } from '../components/NormalLearningRecordList.jsx'
 import { summarizeSrsItems } from '../lib/contentProgress.js'
-import { Book, Cards, Lightbulb, Link, Refresh, Search } from '../components/Icons.jsx'
+import { scrollScreenToTop } from '../lib/screenScroll.js'
+import { ArrowRight, Book, Cards, Lightbulb, Link, Refresh, Search, Sparkles } from '../components/Icons.jsx'
 import { cx } from '../components/ui.jsx'
 
 const levelOrder = Object.fromEntries(LEVELS.map((l, i) => [l.id, i]))
@@ -40,10 +43,20 @@ const PHRASE_RECORD_ENTRY_IDS = Object.freeze({
   syntax: 'usage-syntax',
 })
 const PHRASE_TOTAL = Object.values(PHRASE_COUNTS).reduce((sum, count) => sum + count, 0)
+// 級カードは英単語と同じ並びで出すので、種類×級の集合をあらかじめ固めておく。
+const PHRASE_ITEMS_BY_KIND_LEVEL = Object.freeze(Object.fromEntries(
+  PHRASE_KINDS.map((item) => [
+    item.id,
+    Object.freeze(Object.fromEntries(LEVELS.map((level) => [
+      level.id,
+      Object.freeze(phrasesByKind(item.id).filter((phrase) => phrase.level === level.id)),
+    ]))),
+  ]),
+))
 const PHRASE_LEVEL_COUNTS = Object.freeze(Object.fromEntries(
   LEVELS.map((level) => {
-    const idiom = phrasesByKind('idiom').filter((item) => item.level === level.id).length
-    const syntax = phrasesByKind('syntax').filter((item) => item.level === level.id).length
+    const idiom = PHRASE_ITEMS_BY_KIND_LEVEL.idiom[level.id].length
+    const syntax = PHRASE_ITEMS_BY_KIND_LEVEL.syntax[level.id].length
     return [level.id, Object.freeze({ idiom, syntax, total: idiom + syntax })]
   }),
 ))
@@ -58,20 +71,56 @@ const FEATURED_IDIOM_FORM_OPTIONS = Object.freeze(
   FEATURED_IDIOM_FORM_FAMILY_IDS.map(idiomFormFamilyById).filter(Boolean),
 )
 
+// 「10分野から学ぶ」と同じ役目の入口。熟語は形、構文は仲間でまとめて選ぶ。
+function FormChooser({ meta, onChoose }) {
+  return (
+    <button
+      type="button"
+      onClick={onChoose}
+      className="block w-full overflow-hidden rounded-2xl bg-white text-left shadow-card active:bg-brand-50"
+      data-phrase-form-entry={meta.id}
+    >
+      <div className="bg-gradient-to-r from-brand-500 to-violet-500 p-4 text-white">
+        <div className="flex items-center gap-2">
+          <Sparkles size={18} />
+          <h2 className="font-display text-lg font-extrabold">
+            {meta.id === 'syntax' ? '仲間から学ぶ' : '形から学ぶ'}
+          </h2>
+        </div>
+        <p className="mt-1 text-xs font-bold text-white/80">
+          {meta.id === 'syntax'
+            ? `全${PHRASE_COUNTS.syntax}構文を${SYNTAX_FAMILY_OPTIONS.length}組の仲間に整理`
+            : `全${PHRASE_COUNTS.idiom}熟語を${IDIOM_FORM_OPTIONS.length}組の形に整理`}
+        </p>
+      </div>
+      <div className="flex items-center justify-between gap-3 p-4">
+        <p className="text-xs font-bold leading-relaxed text-ink/55">
+          {meta.id === 'syntax'
+            ? '似た形の構文を並べて、意味の差と入試の見分け方を比べられます。'
+            : '同じ前置詞・同じ動詞の熟語を並べて、意味の差を比べられます。'}
+        </p>
+        <ArrowRight size={20} className="shrink-0 text-brand-500" />
+      </div>
+    </button>
+  )
+}
+
 export function PhrasesScreen() {
   const navigate = useStore((s) => s.navigate)
   const srs = useStore((s) => s.srs)
   const screenParams = useStore((s) => s.params)
   const initialKind = screenParams.kind ?? 'idiom'
   const [kind, setKind] = useState(initialKind)
+  const [view, setView] = useState(screenParams.view === 'list' ? 'list' : 'home')
   const [detail, setDetail] = useState(null)
   const [query, setQuery] = useState(screenParams.query ?? '')
   const [levelFilter, setLevelFilter] = useState(screenParams.levelFilter ?? 'all')
   const [familyFilter, setFamilyFilter] = useState(screenParams.familyFilter ?? 'all')
 
   const meta = PHRASE_KINDS.find((k) => k.id === kind)
+  const kindItems = phrasesByKind(kind)
   const normalizedQuery = query.trim().toLowerCase()
-  const items = [...phrasesByKind(kind)]
+  const items = [...kindItems]
     .filter((item) => levelFilter === 'all' || item.level === levelFilter)
     .filter((item) => familyFilter === 'all' || (
       kind === 'syntax'
@@ -116,10 +165,12 @@ export function PhrasesScreen() {
   const dueItems = items.filter((item) => srs[item.id]?.due <= todayIndex())
   const due = dueItems.length
 
+  // 一覧から始めたときは、終わったあとも一覧へ戻す。
   const returnTarget = {
     screen: 'phrases',
     params: { kind, levelFilter, familyFilter, query },
   }
+  if (view === 'list') returnTarget.params.view = view
   const selectedFormParams = kind === 'idiom' && familyFilter !== 'all'
     ? { idiomFormFamilyId: familyFilter }
     : {}
@@ -148,36 +199,67 @@ export function PhrasesScreen() {
       returnTo: returnTarget,
     })
 
-  return (
-    <div className="pb-6">
-      <ScreenHeader title="熟語・構文" subtitle="3択と「わからない」で練習" />
+  // 入口カード（全範囲・級別）からそのまま暗記・テストを始める。
+  const startScope = ({ levelId, title, asQuiz = false }) =>
+    navigate(asQuiz ? 'phraseQuiz' : 'phraseStudy', {
+      source: { type: 'phrase', kind, ...(levelId ? { levelId } : {}) },
+      title,
+      ...(asQuiz ? {} : { mode: 'study' }),
+      engine: 'phrase',
+      returnTo: returnTarget,
+    })
+  const openCatalog = (levelId = 'all') => {
+    scrollScreenToTop()
+    setLevelFilter(levelId)
+    setFamilyFilter('all')
+    setQuery('')
+    setView('list')
+  }
 
-      <div className="px-4">
+  const kindDueItems = kindItems.filter((item) => srs[item.id]?.due <= todayIndex())
+
+  const kindTabs = (
+    <div className="grid grid-cols-2 gap-2">
+      {PHRASE_KINDS.map((k) => {
+        const on = kind === k.id
+        return (
+          <button
+            key={k.id}
+            onClick={() => {
+              setKind(k.id)
+              setFamilyFilter('all')
+            }}
+            className={cx(
+              'flex items-center justify-center gap-2 rounded-2xl py-3 font-display font-extrabold transition-all',
+              on ? 'text-white shadow-pop' : 'bg-white text-ink/60',
+            )}
+            style={on ? { background: k.color } : undefined}
+          >
+            <span className="text-xl">{k.emoji}</span> {k.label}
+          </button>
+        )
+      })}
+    </div>
+  )
+
+  const homeView = (
+    <>
+      <ScreenHeader
+        title="熟語・構文"
+        subtitle="英検の級と形から選んで練習"
+        right={
+          <IconButton onClick={() => openCatalog('all')} aria-label="熟語・構文を検索">
+            <Search size={22} />
+          </IconButton>
+        }
+      />
+
+      <div className="space-y-3 px-4">
         {/* 種類切替 */}
-        <div className="grid grid-cols-2 gap-2">
-          {PHRASE_KINDS.map((k) => {
-            const on = kind === k.id
-            return (
-              <button
-                key={k.id}
-                onClick={() => {
-                  setKind(k.id)
-                  setFamilyFilter('all')
-                }}
-                className={cx(
-                  'flex items-center justify-center gap-2 rounded-2xl py-3 font-display font-extrabold transition-all',
-                  on ? 'text-white shadow-pop' : 'bg-white text-ink/60',
-                )}
-                style={on ? { background: k.color } : undefined}
-              >
-                <span className="text-xl">{k.emoji}</span> {k.label}
-              </button>
-            )
-          })}
-        </div>
+        {kindTabs}
 
         <section
-          className="mt-3 overflow-hidden rounded-2xl border border-slate-200 bg-white"
+          className="overflow-hidden rounded-2xl border border-slate-200 bg-white"
           aria-label="熟語・構文の収録状況"
           data-phrase-corpus-summary
         >
@@ -227,6 +309,106 @@ export function PhrasesScreen() {
             </div>
           </details>
         </section>
+
+        <FormChooser meta={meta} onChoose={() => openCatalog('all')} />
+
+        {/* 全範囲：英単語の級カードと同じ並び */}
+        <LearningEntryCard
+          data-phrase-entry={`${kind}-all`}
+          emoji={meta.emoji}
+          accentColor={meta.color}
+          title={`${meta.label}の全範囲`}
+          chip={<Chip color={meta.color}>全7級</Chip>}
+          subtitle={meta.desc}
+          countLabel={`全${PHRASE_COUNTS[kind].toLocaleString('ja-JP')}項目`}
+          status={summarizeSrsItems(kindItems, srs)}
+          units={{ learning: '項目', quiz: '問' }}
+          note={kindDueItems.length > 0
+            ? `復習が必要 ${kindDueItems.length}項目`
+            : '次の復習日まで待つ'}
+          noteTone={kindDueItems.length > 0 ? 'alert' : 'muted'}
+          studyAriaLabel={`${meta.label}の全範囲を暗記`}
+          onStudy={() => startScope({ title: `${meta.label}・全範囲` })}
+          quizAriaLabel={`${meta.label}の全範囲をテスト`}
+          onQuiz={() => startScope({ title: `${meta.label}・全範囲`, asQuiz: true })}
+          catalogLabel="一覧を確認"
+          catalogAriaLabel={`${meta.label}の全項目を一覧で確認する`}
+          onCatalog={() => openCatalog('all')}
+        >
+          {kindDueItems.length > 0 && (
+            <Button
+              full
+              variant="hint"
+              className="mt-2"
+              onClick={() => navigate('phraseStudy', {
+                source: { type: 'phraseList', ids: kindDueItems.map((item) => item.id) },
+                title: `${meta.label}・今日の復習`,
+                mode: 'study',
+                engine: 'phrase',
+                returnTo: returnTarget,
+              })}
+            >
+              <Refresh size={16} /> 今日の復習 {kindDueItems.length}項目
+            </Button>
+          )}
+        </LearningEntryCard>
+
+        {/* 級別：英単語と同じカード */}
+        {LEVELS.map((level) => {
+          const levelItems = PHRASE_ITEMS_BY_KIND_LEVEL[kind][level.id]
+          const levelDue = levelItems.filter((item) => srs[item.id]?.due <= todayIndex()).length
+          return (
+            <LearningEntryCard
+              key={level.id}
+              data-phrase-entry={`${kind}-${level.id}`}
+              emoji={level.emoji}
+              accentColor={level.color}
+              title={`英検${level.label}`}
+              chip={<Chip color={level.color}>{level.cefr}</Chip>}
+              subtitle={level.sub}
+              countLabel={`全${levelItems.length}項目`}
+              status={summarizeSrsItems(levelItems, srs)}
+              units={{ learning: '項目', quiz: '問' }}
+              note={levelDue > 0 ? `復習が必要 ${levelDue}項目` : '次の復習日まで待つ'}
+              noteTone={levelDue > 0 ? 'alert' : 'muted'}
+              studyDisabled={!levelItems.length}
+              studyAriaLabel={`英検${level.label}の${meta.label}を暗記`}
+              onStudy={() => startScope({
+                levelId: level.id,
+                title: `英検${level.label} ${meta.label}`,
+              })}
+              quizDisabled={!levelItems.length}
+              quizAriaLabel={`英検${level.label}の${meta.label}をテスト`}
+              onQuiz={() => startScope({
+                levelId: level.id,
+                title: `英検${level.label} ${meta.label}`,
+                asQuiz: true,
+              })}
+              catalogLabel="一覧を確認"
+              catalogAriaLabel={`英検${level.label}の${meta.label}を一覧で確認する`}
+              catalogDisabled={!levelItems.length}
+              onCatalog={() => openCatalog(level.id)}
+            />
+          )
+        })}
+      </div>
+    </>
+  )
+
+  const listView = (
+    <>
+      <ScreenHeader title={`${meta.label}の一覧を確認`} compact />
+
+      <div className="px-4 pt-2">
+        <LearningViewTabs
+          view="list"
+          onChange={(nextView) => setView(nextView)}
+          learnLabel="級から学ぶ"
+          listLabel="一覧を確認"
+          label="熟語・構文の見方"
+        />
+
+        <div className="mt-3">{kindTabs}</div>
 
         {/* 1,000項目以上でも目的の表現へすぐ到達できる検索・級フィルター */}
         <div className="mt-3 space-y-2">
@@ -349,7 +531,7 @@ export function PhrasesScreen() {
           )}
         </div>
 
-        {/* 進捗＋学習ボタン */}
+        {/* 絞り込んだ範囲の進捗＋学習ボタン */}
         <Card className="mt-4 p-4">
           <div className="flex items-center justify-between">
             <div>
@@ -390,6 +572,12 @@ export function PhrasesScreen() {
           emptyMessage={`条件に合う${meta.label}はありません。`}
         />
       </div>
+    </>
+  )
+
+  return (
+    <div className="pb-6">
+      {view === 'list' ? listView : homeView}
 
       {/* 詳細シート */}
       <Sheet open={!!detail} onClose={() => setDetail(null)} title="くわしく">

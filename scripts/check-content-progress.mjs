@@ -96,22 +96,57 @@ for (const [file, marker] of [
   assert.ok(source.includes(marker), `${file}: 出題単位のテスト結果保存がありません`)
 }
 
+// 共通の入口カードは中で3色バーを描くので、直接の呼び出しと同じ扱いにする。
+const showsStatusBars = (source) => source.includes('LearningStatusBars')
+  || source.includes('StatusDistributionBar')
+  || source.includes('LearningEntryCard')
+
 for (const [id, file] of expected) {
   const source = readFileSync(new URL(`../${file}`, import.meta.url), 'utf8')
   assert.ok(
-    source.includes('LearningStatusBars')
-      || source.includes('StatusDistributionBar')
-      || source.includes('statusFor='),
+    showsStatusBars(source) || source.includes('statusFor='),
     `${id}: 主画面 ${file} に共通3色バーがありません`,
   )
 }
 
 for (const file of detailDisplays) {
   const source = readFileSync(new URL(`../${file}`, import.meta.url), 'utf8')
-  assert.ok(
-    source.includes('LearningStatusBars') || source.includes('StatusDistributionBar'),
-    `${file}: 詳細表示に共通3色バーがありません`,
-  )
+  assert.ok(showsStatusBars(source), `${file}: 詳細表示に共通3色バーがありません`)
+}
+
+const entryCardSource = readFileSync(
+  new URL('../src/components/LearningEntryCard.jsx', import.meta.url),
+  'utf8',
+)
+assert.ok(
+  /<LearningStatusBars[\s\S]*?units=\{units\}/.test(entryCardSource),
+  '共通の入口カードが数え方つきの3色バーを描いていません',
+)
+
+// <LearningEntryCard ...> の属性だけを取り出す（属性値の {} 内は入れ子として飛ばす）。
+function jsxCallSites(source, name) {
+  const sites = []
+  const open = `<${name}`
+  let index = source.indexOf(open)
+  while (index !== -1) {
+    let cursor = index + open.length
+    let depth = 0
+    let quote = null
+    while (cursor < source.length) {
+      const character = source[cursor]
+      if (quote) {
+        if (character === quote) quote = null
+      } else if (character === '"' || character === "'" || character === '`') {
+        quote = character
+      } else if (character === '{') depth += 1
+      else if (character === '}') depth -= 1
+      else if (depth === 0 && character === '>') break
+      cursor += 1
+    }
+    sites.push(source.slice(index, cursor + 1))
+    index = source.indexOf(open, cursor)
+  }
+  return sites
 }
 
 for (const [file, marker] of [
@@ -158,6 +193,11 @@ for (const relative of [
   const source = readFileSync(new URL(`../${relative}`, import.meta.url), 'utf8')
   for (const match of source.matchAll(barCallSites)) {
     if (!/units=|unit=/.test(match[2])) unitlessBars.push(`${relative}: ${match[0].slice(0, 60)}`)
+  }
+  for (const site of jsxCallSites(source, 'LearningEntryCard')) {
+    if (/status=/.test(site) && !/units=/.test(site)) {
+      unitlessBars.push(`${relative}: ${site.slice(0, 60)}`)
+    }
   }
 }
 assert.deepEqual(unitlessBars, [], `単位のない進捗バー: ${unitlessBars.join(' / ')}`)
