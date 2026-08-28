@@ -85,10 +85,13 @@ if (/chatgpt\.site/i.test(html)) {
   failures.push('index.html に廃止済みChatGPT Sites URLが残っています。')
 }
 
+if (/og:image|twitter:image|og\.png/i.test(html)) {
+  failures.push('index.html にゲーム風OG画像の指定が残っています。')
+}
+
 for (const requiredMetadata of [
   `<link rel="canonical" href="${canonicalUrl}" />`,
   `<meta property="og:url" content="${canonicalUrl}" />`,
-  `${canonicalUrl}og.png`,
 ]) {
   if (!html.includes(requiredMetadata)) {
     failures.push(`index.html に正式URLの指定がありません: ${requiredMetadata}`)
