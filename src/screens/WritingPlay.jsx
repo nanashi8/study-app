@@ -137,8 +137,8 @@ function WritingUnitBriefing({
   resume = false,
 }) {
   return (
-    <div className="flex min-h-full flex-col bg-paper">
-      <header className="sticky top-0 z-20 border-b border-brand-100 bg-white/92 px-3 pb-3 pt-2 backdrop-blur">
+    <div className="flex h-full flex-col bg-paper">
+      <header className="relative z-20 shrink-0 border-b border-brand-100 bg-white/92 px-3 pb-3 pt-2 backdrop-blur">
         <div className="flex items-center gap-2">
           <IconButton onClick={onBack} aria-label="単元一覧へ戻る">
             <Close size={21} />
@@ -155,7 +155,7 @@ function WritingUnitBriefing({
         </div>
       </header>
 
-      <main className="flex-1 px-4 pb-36 pt-4">
+      <main className="min-h-0 flex-1 overflow-y-auto px-4 pb-4 pt-4">
         <section className="overflow-hidden rounded-[1.8rem] bg-gradient-to-br from-slate-950 via-indigo-950 to-brand-800 p-5 text-white shadow-pop">
           <div className="flex items-start justify-between gap-3">
             <div>
@@ -269,7 +269,7 @@ function WritingUnitBriefing({
         </section>
       </main>
 
-      <div className="app-fixed-bottom-actions fixed inset-x-0 z-30 mx-auto w-full max-w-md border-t border-brand-100 bg-white/94 p-4 backdrop-blur">
+      <div className="shrink-0 border-t border-brand-100 bg-white/94 p-4 backdrop-blur">
         <Button full size="lg" onClick={onStart}>
           {resume ? '作文の続きへ戻る' : '知識を使って始める'}
           <ArrowRight size={18} />
@@ -677,8 +677,8 @@ export function WritingPlayScreen() {
   const nextStep = exercise.steps[stepIndex + 1]
 
   return (
-    <div className="flex min-h-full flex-col bg-paper">
-      <header className="sticky top-0 z-20 border-b border-brand-100 bg-white/92 px-3 pb-3 pt-2 backdrop-blur">
+    <div className="flex h-full flex-col bg-paper">
+      <header className="relative z-20 shrink-0 border-b border-brand-100 bg-white/92 px-3 pb-3 pt-2 backdrop-blur">
         <div className="flex items-center gap-2">
           <IconButton onClick={leave} aria-label="やめる">
             <Close size={21} />
@@ -710,7 +710,7 @@ export function WritingPlayScreen() {
         </div>
       </header>
 
-      <main className="flex-1 px-4 pb-44 pt-4">
+      <main className="min-h-0 flex-1 overflow-y-auto px-4 pb-4 pt-4">
         <section className="mb-3 flex items-start gap-2.5 rounded-2xl bg-white px-3.5 py-3 shadow-sm">
           <span
             className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-sm"
@@ -1117,7 +1117,7 @@ export function WritingPlayScreen() {
         )}
       </main>
 
-      <div className="app-fixed-bottom-actions fixed inset-x-0 z-30 mx-auto w-full max-w-md border-t border-brand-100 bg-white/94 p-4 backdrop-blur">
+      <div className="shrink-0 border-t border-brand-100 bg-white/94 p-4 backdrop-blur">
         <Button
           full
           size="lg"

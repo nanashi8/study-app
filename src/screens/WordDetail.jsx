@@ -101,7 +101,7 @@ export function WordDetailScreen() {
   }, [recordVocabHistory, word])
 
   useEffect(() => {
-    screenRef.current?.closest('.study-app-content')?.scrollTo({ top: 0 })
+    screenRef.current?.scrollTo({ top: 0 })
   }, [word?.id])
 
   if (!word) {
@@ -119,136 +119,138 @@ export function WordDetailScreen() {
   const etymologyCards = etymologyCardsForWord(word)
 
   return (
-    <div ref={screenRef} className="pb-28">
-      <ScreenHeader
-        title={word.word}
-        color={level.color}
-        right={
-          <IconButton
-            onClick={() => toggleMyList(word.id)}
-            className={saved ? 'text-hint' : 'text-ink/30'}
-            aria-label="マイ単語に保存"
-          >
-            {saved ? <BookmarkFilled size={24} /> : <Bookmark size={24} />}
-          </IconButton>
-        }
-      />
+    <div className="flex h-full flex-col">
+      <div ref={screenRef} className="min-h-0 flex-1 overflow-y-auto pb-4">
+        <ScreenHeader
+          title={word.word}
+          color={level.color}
+          right={
+            <IconButton
+              onClick={() => toggleMyList(word.id)}
+              className={saved ? 'text-hint' : 'text-ink/30'}
+              aria-label="マイ単語に保存"
+            >
+              {saved ? <BookmarkFilled size={24} /> : <Bookmark size={24} />}
+            </IconButton>
+          }
+        />
 
-      <div className="space-y-4 px-4">
-        {/* ヒーロー */}
-        <Card className="p-5">
-          <div className="flex items-center justify-between">
-            <div className="flex flex-wrap items-center gap-2">
-              <PosBadge pos={word.pos} />
-              <Chip color={level.color}>英検{level.label}</Chip>
-              {word.field && (
-                <span className="rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-bold text-emerald-600 ring-1 ring-emerald-100">
-                  {vocabFieldFor(word)}
-                </span>
-              )}
-            </div>
-          </div>
-          <div className="mt-3 flex items-end gap-3">
-            <h1 className="font-display text-4xl font-extrabold tracking-tight text-ink">{word.word}</h1>
-            <SpeakButton text={word.word} size="md" className="mb-1" />
-          </div>
-          {word.phonetic && <p className="mt-1 text-sm font-bold text-ink/45">{word.phonetic}</p>}
-          <div className="mt-3 rounded-2xl bg-brand-50 p-3">
-            <div className="font-display text-xl font-extrabold text-ink">{word.meanings.join('・')}</div>
-          </div>
-          <LearningStatusBars progress={progress} className="mt-4" compact units={{ learning: '語', quiz: '問' }} />
-          <VocabReviewHistory entry={entry} className="mt-3 justify-start" />
-        </Card>
-
-        {/* 例文 */}
-        {word.example && (
-          <Card className="p-4">
-            <div className="mb-1 text-[11px] font-extrabold uppercase tracking-wide text-brand-400">例文</div>
-            <div className="flex items-start gap-2">
-              <SpeakButton text={word.example.en} size="sm" />
-              <div className="flex-1">
-                <p className="font-bold text-ink">{word.example.en}</p>
-                <p className="mt-0.5 text-sm font-bold text-ink/55">{word.example.ja}</p>
+        <div className="space-y-4 px-4">
+          {/* ヒーロー */}
+          <Card className="p-5">
+            <div className="flex items-center justify-between">
+              <div className="flex flex-wrap items-center gap-2">
+                <PosBadge pos={word.pos} />
+                <Chip color={level.color}>英検{level.label}</Chip>
+                {word.field && (
+                  <span className="rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-bold text-emerald-600 ring-1 ring-emerald-100">
+                    {vocabFieldFor(word)}
+                  </span>
+                )}
               </div>
             </div>
+            <div className="mt-3 flex items-end gap-3">
+              <h1 className="font-display text-4xl font-extrabold tracking-tight text-ink">{word.word}</h1>
+              <SpeakButton text={word.word} size="md" className="mb-1" />
+            </div>
+            {word.phonetic && <p className="mt-1 text-sm font-bold text-ink/45">{word.phonetic}</p>}
+            <div className="mt-3 rounded-2xl bg-brand-50 p-3">
+              <div className="font-display text-xl font-extrabold text-ink">{word.meanings.join('・')}</div>
+            </div>
+            <LearningStatusBars progress={progress} className="mt-4" compact units={{ learning: '語', quiz: '問' }} />
+            <VocabReviewHistory entry={entry} className="mt-3 justify-start" />
           </Card>
-        )}
 
-        {/* 使い方・使い分け＋派生語 */}
-        {(word.usage || word.derivatives?.length > 0) && (
-          <Card className="space-y-3 p-4">
-            {word.usage && (
-              <div>
-                <div className="mb-2 flex items-center gap-1.5 text-amber-600">
-                  <Lightbulb size={16} />
-                  <span className="text-[11px] font-extrabold uppercase tracking-wide">使い方・使い分け</span>
+          {/* 例文 */}
+          {word.example && (
+            <Card className="p-4">
+              <div className="mb-1 text-[11px] font-extrabold uppercase tracking-wide text-brand-400">例文</div>
+              <div className="flex items-start gap-2">
+                <SpeakButton text={word.example.en} size="sm" />
+                <div className="flex-1">
+                  <p className="font-bold text-ink">{word.example.en}</p>
+                  <p className="mt-0.5 text-sm font-bold text-ink/55">{word.example.ja}</p>
                 </div>
-                <p className="text-sm font-bold leading-relaxed text-amber-900/90">{word.usage}</p>
               </div>
-            )}
-            {word.derivatives?.length > 0 && (
-              <div>
-                <div className="mb-1.5 text-[11px] font-extrabold uppercase tracking-wide text-emerald-500">派生語</div>
-                <RefChips items={word.derivatives} tone="der" navigate={navigate} />
+            </Card>
+          )}
+
+          {/* 使い方・使い分け＋派生語 */}
+          {(word.usage || word.derivatives?.length > 0) && (
+            <Card className="space-y-3 p-4">
+              {word.usage && (
+                <div>
+                  <div className="mb-2 flex items-center gap-1.5 text-amber-600">
+                    <Lightbulb size={16} />
+                    <span className="text-[11px] font-extrabold uppercase tracking-wide">使い方・使い分け</span>
+                  </div>
+                  <p className="text-sm font-bold leading-relaxed text-amber-900/90">{word.usage}</p>
+                </div>
+              )}
+              {word.derivatives?.length > 0 && (
+                <div>
+                  <div className="mb-1.5 text-[11px] font-extrabold uppercase tracking-wide text-emerald-500">派生語</div>
+                  <RefChips items={word.derivatives} tone="der" navigate={navigate} />
+                </div>
+              )}
+            </Card>
+          )}
+
+          {/* 入試・英検で混同しやすい語の比較と推奨表現 */}
+          <UsageGuideCards guides={word.usageGuides} />
+
+          {/* 類義語・反対語 */}
+          {(word.synonyms?.length > 0 || word.antonyms?.length > 0) && (
+            <Card className="space-y-3 p-4">
+              {word.synonyms?.length > 0 && (
+                <div>
+                  <div className="mb-1.5 text-xs font-extrabold uppercase tracking-wide text-brand-400">意味が近い語</div>
+                  <RefChips items={word.synonyms} tone="syn" navigate={navigate} />
+                </div>
+              )}
+              {word.antonyms?.length > 0 && (
+                <div>
+                  <div className="mb-1.5 text-xs font-extrabold uppercase tracking-wide text-rose-400">反対・対照の語</div>
+                  <RefChips items={word.antonyms} tone="ant" navigate={navigate} />
+                </div>
+              )}
+            </Card>
+          )}
+
+          {/* 手動監査済みの語源カードがある単語だけに表示する。 */}
+          {etymologyCards.length > 0 && (
+            <Card className="p-4">
+              <div className="mb-3 text-sm font-extrabold text-brand-600">出典つき語源カード</div>
+              <EtymologyBlock
+                word={word}
+                onRoot={(rootId) => navigate('rootDetail', { rootId })}
+                onPack={(packId) => navigate('etymologyPack', { packId })}
+              />
+            </Card>
+          )}
+
+          {/* 監査済みカードに明記された関連語だけを表示する。 */}
+          {etymologyCards.length > 0 && (
+            <Card className="p-4">
+              <div className="mb-3 flex items-center gap-1.5 text-brand-600">
+                <Link size={16} />
+                <span className="text-[11px] font-extrabold uppercase tracking-wide">この語源から増やせる単語</span>
               </div>
-            )}
-          </Card>
-        )}
+              <RelatedWords
+                word={word}
+                onPick={(wid) => navigate('wordDetail', { id: wid })}
+                onRoot={(rootId) => navigate('rootDetail', { rootId })}
+              />
+            </Card>
+          )}
 
-        {/* 入試・英検で混同しやすい語の比較と推奨表現 */}
-        <UsageGuideCards guides={word.usageGuides} />
-
-        {/* 類義語・反対語 */}
-        {(word.synonyms?.length > 0 || word.antonyms?.length > 0) && (
-          <Card className="space-y-3 p-4">
-            {word.synonyms?.length > 0 && (
-              <div>
-                <div className="mb-1.5 text-xs font-extrabold uppercase tracking-wide text-brand-400">意味が近い語</div>
-                <RefChips items={word.synonyms} tone="syn" navigate={navigate} />
-              </div>
-            )}
-            {word.antonyms?.length > 0 && (
-              <div>
-                <div className="mb-1.5 text-xs font-extrabold uppercase tracking-wide text-rose-400">反対・対照の語</div>
-                <RefChips items={word.antonyms} tone="ant" navigate={navigate} />
-              </div>
-            )}
-          </Card>
-        )}
-
-        {/* 手動監査済みの語源カードがある単語だけに表示する。 */}
-        {etymologyCards.length > 0 && (
-          <Card className="p-4">
-            <div className="mb-3 text-sm font-extrabold text-brand-600">出典つき語源カード</div>
-            <EtymologyBlock
-              word={word}
-              onRoot={(rootId) => navigate('rootDetail', { rootId })}
-              onPack={(packId) => navigate('etymologyPack', { packId })}
-            />
-          </Card>
-        )}
-
-        {/* 監査済みカードに明記された関連語だけを表示する。 */}
-        {etymologyCards.length > 0 && (
-          <Card className="p-4">
-            <div className="mb-3 flex items-center gap-1.5 text-brand-600">
-              <Link size={16} />
-              <span className="text-[11px] font-extrabold uppercase tracking-wide">この語源から増やせる単語</span>
-            </div>
-            <RelatedWords
-              word={word}
-              onPick={(wid) => navigate('wordDetail', { id: wid })}
-              onRoot={(rootId) => navigate('rootDetail', { rootId })}
-            />
-          </Card>
-        )}
-
-        {/* 辞書の前後（隣の見出し語へ） */}
-        <NeighborList word={word} navigate={navigate} />
+          {/* 辞書の前後（隣の見出し語へ） */}
+          <NeighborList word={word} navigate={navigate} />
+        </div>
       </div>
 
-      {/* 保存ボタン（固定） */}
-      <div className="app-fixed-bottom-actions fixed inset-x-0 z-30 mx-auto max-w-md border-t border-brand-100 bg-white/95 p-4 backdrop-blur">
+      {/* 保存ボタン（本文の外に置き、末尾のカードへ重ならないようにする） */}
+      <div className="shrink-0 border-t border-brand-100 bg-white/95 p-4 backdrop-blur">
         <Button full variant={saved ? 'soft' : 'primary'} onClick={() => toggleMyList(word.id)}>
           {saved ? <BookmarkFilled size={18} /> : <Bookmark size={18} />}
           {saved ? 'マイ単語に保存済み（タップで解除）' : 'マイ単語リストに保存'}

@@ -107,7 +107,7 @@ test('単語テストは解答直後に語源を表示し、詳細遷移を必�
   assert.match(quiz, /辞書ページで関連語も見る/)
   assert.match(study, /<EtymologyBlock/)
   assert.match(study, /辞書ページで関連語も見る/)
-  assert.match(detail, /closest\('\.study-app-content'\)\?\.scrollTo\(\{ top: 0 \}\)/)
+  assert.match(detail, /screenRef\.current\?\.scrollTo\(\{ top: 0 \}\)/)
   assert.match(detail, /\[word\?\.id\]/)
   assert.doesNotMatch(`${quiz}\n${study}`, /語源をくわしく見る|くわしく見る/)
 })

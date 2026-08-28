@@ -558,15 +558,21 @@ function Intro({ history, onStart }) {
 }
 
 function TestQuestion({ questions, index, answers, onSelect, onNext, onCancel }) {
+  const bodyRef = useRef(null)
   const item = questions[index]
   const selected = answers[item.id]
   const level = LEVEL_BY_ID[item.level]
   const skill = SKILL_BY_ID[item.skill]
   const last = index === questions.length - 1
 
+  // 問題が変わったら、長文の途中ではなく設問の先頭から読み始められるようにする。
+  useEffect(() => {
+    bodyRef.current?.scrollTo({ top: 0, behavior: 'auto' })
+  }, [index])
+
   return (
-    <div className="flex min-h-full flex-col">
-      <div className="sticky top-0 z-20 bg-white/90 px-3 pb-3 pt-2 backdrop-blur">
+    <div className="flex h-full flex-col">
+      <div className="relative z-20 shrink-0 bg-white/90 px-3 pb-3 pt-2 backdrop-blur">
         <div className="flex items-center gap-3">
           <IconButton onClick={onCancel} aria-label="診断を中断">
             <Close size={22} />
@@ -587,7 +593,7 @@ function TestQuestion({ questions, index, answers, onSelect, onNext, onCancel })
         </div>
       </div>
 
-      <div className="flex-1 px-4 pb-6 pt-4">
+      <div ref={bodyRef} className="min-h-0 flex-1 overflow-y-auto px-4 pb-6 pt-4">
         {item.passage && (
           <div className="mb-4 rounded-3xl bg-white p-4 shadow-card">
             <p className="mb-2 text-[10px] font-extrabold text-brand-500">長文読解</p>
@@ -642,7 +648,7 @@ function TestQuestion({ questions, index, answers, onSelect, onNext, onCancel })
         </div>
       </div>
 
-      <div className="sticky bottom-0 shrink-0 border-t border-brand-100 bg-white/90 p-4 pb-4 backdrop-blur">
+      <div className="shrink-0 border-t border-brand-100 bg-white/90 p-4 backdrop-blur">
         <Button full size="lg" disabled={selected == null} onClick={onNext}>
           {last ? '診断結果を見る' : '次の問題へ'} <ArrowRight size={18} />
         </Button>
@@ -908,10 +914,11 @@ export function DiagnosticScreen() {
     [answers, learningAnalysis, questions, result],
   )
 
-  // AppShell の main がスクロール要素。問題送り・結果切替のたびに先頭へ戻す。
+  // 導入・結果は AppShell の main がスクロール要素。場面が変わるたびに先頭へ戻す。
+  // （テスト中は画面内でスクロールするので、そちらは TestQuestion が受け持つ）
   useEffect(() => {
     rootRef.current?.closest('main')?.scrollTo({ top: 0, behavior: 'auto' })
-  }, [phase, index])
+  }, [phase])
 
   const start = () => {
     const attempt = beginDiagnosticAttempt()
@@ -944,7 +951,7 @@ export function DiagnosticScreen() {
 
   if (phase === 'test') {
     return (
-      <div ref={rootRef} className="min-h-full">
+      <div ref={rootRef} className="h-full">
         <TestQuestion
           questions={questions}
           index={index}
