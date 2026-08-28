@@ -20,7 +20,10 @@ import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { Close, ArrowRight, SpeakerWave, Check } from '../components/Icons.jsx'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
-import { QuestionSessionControls } from '../components/QuestionSessionControls.jsx'
+import {
+  QuestionSessionControls,
+  useUnfinishedSessionRecord,
+} from '../components/QuestionSessionControls.jsx'
 
 const clampRate = (rate) => Math.max(0.55, Math.min(1.25, rate))
 
@@ -56,6 +59,13 @@ export function DictationPlayScreen() {
   const questionStates = useRef({})
   const autoAdvanceSequence = useRef(0)
   const [autoAdvanceSignal, setAutoAdvanceSignal] = useState(null)
+
+  // 途中でやめても、そこまでに答えた分をこの分野の学習記録へ残す。
+  const handOffSession = useUnfinishedSessionRecord({
+    skill: 'dictation',
+    answered: results.current.correct + results.current.wrong,
+    correct: results.current.correct,
+  })
 
   const item = deck[i]
   const profile = DICTATION_PROFILES[item?.level ?? source.levelId] ?? DICTATION_PROFILES['5']
@@ -116,6 +126,7 @@ export function DictationPlayScreen() {
   }
 
   const finish = () => {
+    handOffSession()
     navigate('sessionResult', {
       title: params.title ?? `英検${profile.label}`,
       mode: 'quiz',

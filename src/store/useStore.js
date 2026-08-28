@@ -264,7 +264,7 @@ export function resetProgressState(
   return {
     ...Object.fromEntries(fields.map((field) => [field, fresh[field]])),
     ...(fields.length === RESETTABLE_PROGRESS_FIELDS.length
-      ? { quizSession: null }
+      ? { quizSession: null, interruptedSession: null }
       : {}),
   }
 }
@@ -625,6 +625,23 @@ export const useStore = create(
       quizSession: null,
       saveQuizSession: (session) => set({ quizSession: session }),
       clearQuizSession: () => set({ quizSession: null }),
+
+      // ── 途中でやめたテストの途中経過（永続化しない） ──
+      // 各テスト画面が「その分野・答えた数・正解数」を預け、画面が変わった
+      // ところで一度だけ学習記録へ残す。最後まで進んだ場合と、辞書などを見る
+      // ために続きを退避した場合は画面側が預けを外すので、二重に数えない。
+      interruptedSession: null,
+      keepInterruptedSession: (session) => set({ interruptedSession: session }),
+      commitInterruptedSession: () => {
+        const st = get()
+        const session = st.interruptedSession
+        if (!session || session.screen === st.screen) return
+        set({ interruptedSession: null })
+        if (!session.skill || !(session.answered > 0)) return
+        st.recordSkillResult(session.skill, session.correct, session.answered, {
+          trackLearning: false,
+        })
+      },
 
       // ── 学習state（永続化する） ──
       ...createInitialLearningState(),

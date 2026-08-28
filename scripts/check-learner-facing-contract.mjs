@@ -45,6 +45,15 @@ const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '
 const sourceRoot = path.join(projectRoot, 'src')
 const errors = []
 
+// 途中でやめても、答えた分をその分野の学習記録へ残す共通結果のテスト画面。
+const INTERRUPTED_SESSION_RECORD_SCREENS = [
+  'src/screens/VocabQuiz.jsx',
+  'src/screens/PhraseQuiz.jsx',
+  'src/screens/ListeningQuiz.jsx',
+  'src/screens/DictationPlay.jsx',
+  'src/screens/GrammarQuiz.jsx',
+]
+
 const normalize = (value) => String(value ?? '').replace(/\s+/g, ' ').trim()
 const uniqueNonEmpty = (values) => {
   const normalized = values.map(normalize).filter(Boolean)
@@ -182,6 +191,7 @@ const [
   wordBitsSource,
   vocabStudySource,
   vocabQuizSource,
+  sessionControlsSource,
 ] = await Promise.all([
   readProjectFile('src/components/InstructorExplanation.jsx'),
   readProjectFile('src/screens/GrammarQuiz.jsx'),
@@ -202,6 +212,7 @@ const [
   readProjectFile('src/components/WordBits.jsx'),
   readProjectFile('src/screens/VocabStudy.jsx'),
   readProjectFile('src/screens/VocabQuiz.jsx'),
+  readProjectFile('src/components/QuestionSessionControls.jsx'),
 ])
 
 for (const label of ['根拠', '消去法', '考え方']) {
@@ -229,9 +240,28 @@ if (shellSource.includes('data-global-bottom-nav') || appSource.includes('Bottom
   errors.push('廃止した統一下部ナビが残っている')
 }
 if (!menuSource.includes('data-progress-save-confirmation')) errors.push('途中離脱の保存確認がない')
-if (!menuSource.includes('data-progress-discard-confirmation')) errors.push('途中の戻る操作に進捗破棄確認がない')
-if (!menuSource.includes('進捗は破棄されます')) errors.push('途中の戻る操作で進捗破棄メッセージがない')
+if (menuSource.includes('data-progress-discard-confirmation') || menuSource.includes('進捗は破棄されます')) {
+  errors.push('途中の戻る操作に廃止した進捗破棄の確認が残っている')
+}
+if (shellSource.includes("openSpeechSettings('back')") || shellSource.includes('requiresProgressSaveConfirmation')) {
+  errors.push('途中の戻る操作が確認を挟んでいる')
+}
 if (!menuSource.includes('requiresProgressSaveConfirmation')) errors.push('保存確認の画面判定がない')
+if (!sessionControlsSource.includes('export function useUnfinishedSessionRecord')) {
+  errors.push('途中でやめたテストの記録を残す共通処理がない')
+}
+if (!storeSource.includes('commitInterruptedSession') || !storeSource.includes('keepInterruptedSession')) {
+  errors.push('途中でやめたテストの途中経過を預かる保存口がない')
+}
+if (!appSource.includes('commitInterruptedSession()')) {
+  errors.push('画面が変わったときに途中でやめたテストを記録していない')
+}
+for (const relative of INTERRUPTED_SESSION_RECORD_SCREENS) {
+  const source = await readProjectFile(relative)
+  if (!source.includes('useUnfinishedSessionRecord(')) {
+    errors.push(`${relative}: 途中でやめたときの学習記録を残していない`)
+  }
+}
 if (!progressBackupSource.includes('selectProgressState')) errors.push('QR／コードが共通永続スライスを使っていない')
 if (!progressBackupSource.includes('QRCodeCanvas')) errors.push('QR出力がない')
 if (!progressBackupSource.includes('コードをコピー')) errors.push('進捗コード出力がない')

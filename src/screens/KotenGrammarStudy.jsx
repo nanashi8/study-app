@@ -5,10 +5,9 @@ import {
   KOTEN_GRAMMAR_CATEGORIES,
 } from '../data/koten-grammar.js'
 import { Button, Chip, IconButton } from '../components/ui.jsx'
-import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
-import { CardStudyFooter, CardSwipeRegion } from '../components/CardStudyControls.jsx'
+import { CardSaveToggle, CardStudyFooter, CardSwipeRegion } from '../components/CardStudyControls.jsx'
 import { growDeck } from '../lib/session.js'
 import {
   nextUnansweredSessionIndex,
@@ -17,8 +16,6 @@ import {
 } from '../components/QuestionSessionControls.jsx'
 import {
   ArrowRight,
-  Bookmark,
-  BookmarkFilled,
   Close,
   Lightbulb,
 } from '../components/Icons.jsx'
@@ -130,23 +127,30 @@ export function KotenGrammarStudyScreen() {
 
   return (
     <div className="flex h-full flex-col">
-      <div className="border-b border-amber-100 bg-white/90 px-3 py-3 backdrop-blur">
-        <div className="flex items-center gap-3">
-          <IconButton onClick={backToKotenGrammar} aria-label="学習をやめる">
-            <Close size={22} />
+      <QuestionSessionControls
+        index={index}
+        total={deck.length}
+        onPrevious={() => moveToCard(Math.max(0, index - 1))}
+        onNext={() => moveToCard(Math.min(deck.length - 1, index + 1))}
+        nextDisabled={index + 1 >= deck.length}
+        itemLabel="カード"
+        progressColor="#d97706"
+        leadingAction={(
+          <IconButton
+            onClick={backToKotenGrammar}
+            aria-label="学習をやめる"
+            className="shrink-0 rounded-xl text-ink/45"
+          >
+            <Close size={19} />
           </IconButton>
-          <div className="min-w-0 flex-1">
-            <p className="truncate text-[10px] font-extrabold text-ink/40">
-              {params.title ?? '古典文法を暗記'}
-            </p>
-          </div>
-          <RevealAnswersToggle label="答え" onChange={(on) => setFlipped(on)} />
-          <SpeechSettingsButton compact />
+        )}
+        progressControl={(
           <SessionCounter
             index={index}
             total={deck.length}
             max={poolSize}
             label="項目"
+            className="h-11 w-full min-w-0 px-0 text-center text-xs no-underline"
             onResize={(size, { discard }) => {
               if (discard) {
                 setDeck(buildDeck(params.ids, size, params.preserveOrder))
@@ -160,17 +164,23 @@ export function KotenGrammarStudyScreen() {
               }
             }}
           />
-        </div>
-      </div>
-
-      <QuestionSessionControls
-        index={index}
-        total={deck.length}
-        onPrevious={() => moveToCard(Math.max(0, index - 1))}
-        onNext={() => moveToCard(Math.min(deck.length - 1, index + 1))}
-        nextDisabled={index + 1 >= deck.length}
-        itemLabel="カード"
-        progressColor="#d97706"
+        )}
+        trailingActions={(
+          <>
+            <RevealAnswersToggle
+              label="答え"
+              toolbar
+              onChange={(on) => setFlipped(on)}
+            />
+            <CardSaveToggle
+              saved={saved}
+              onToggle={() => toggleSaved(item.id)}
+              label="登録"
+              savedLabel={`${item.title}を登録文法から外す`}
+              unsavedLabel={`${item.title}を登録文法へ追加`}
+            />
+          </>
+        )}
       />
 
       <CardSwipeRegion
@@ -184,19 +194,8 @@ export function KotenGrammarStudyScreen() {
           onClick={() => !flipped && setFlipped(true)}
           className="animate-pop-in rounded-[2rem] bg-white p-5 shadow-card"
         >
-          <div className="flex items-start justify-between gap-3">
+          <div className="flex items-start">
             {category && <Chip color={category.color}>{category.emoji} {category.label}</Chip>}
-            <IconButton
-              onClick={(event) => {
-                event.stopPropagation()
-                toggleSaved(item.id)
-              }}
-              className={saved ? '-mr-2 -mt-2 text-amber-600' : '-mr-2 -mt-2 text-ink/25'}
-              aria-label={saved ? `${item.title}を登録文法から外す` : `${item.title}を登録文法へ追加`}
-              aria-pressed={saved}
-            >
-              {saved ? <BookmarkFilled size={22} /> : <Bookmark size={22} />}
-            </IconButton>
           </div>
 
           <div className="mt-5 text-center">

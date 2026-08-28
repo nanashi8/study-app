@@ -810,7 +810,6 @@ export function SpeechSettingsSheet() {
   const menuRequest = useStore((state) => state.speechSettingsRequest)
   const closeSpeechSettings = useStore((state) => state.closeSpeechSettings)
   const navigate = useStore((state) => state.navigate)
-  const globalBack = useStore((state) => state.globalBack)
   const goPortal = useStore((state) => state.goPortal)
   const goHomeScreen = useStore((state) => state.goHomeScreen)
   const currentScreen = useStore((state) => state.screen)
@@ -872,10 +871,7 @@ export function SpeechSettingsSheet() {
       setResetGroupIds([...ALL_PROGRESS_RESET_GROUP_IDS])
       return
     }
-    if (menuRequest === 'back') {
-      setPendingNavigation({ type: 'back' })
-      setView('save-progress')
-    } else if (menuRequest?.type === 'navigate' && menuRequest.screen) {
+    if (menuRequest?.type === 'navigate' && menuRequest.screen) {
       setPendingNavigation({
         type: 'screen',
         screen: menuRequest.screen,
@@ -897,8 +893,7 @@ export function SpeechSettingsSheet() {
   const performNavigation = (destination) => {
     if (!destination) return
     close()
-    if (destination.type === 'back') globalBack()
-    else if (destination.screen === 'portal') goPortal()
+    if (destination.screen === 'portal') goPortal()
     else if (isAppHomeScreen(destination.screen)) goHomeScreen(destination.screen)
     else navigate(destination.screen, destination.params ?? {})
   }
@@ -940,11 +935,9 @@ export function SpeechSettingsSheet() {
     goPortal()
   }
 
-  const pendingLabel = pendingNavigation?.type === 'back'
-    ? '前の画面'
-    : pendingNavigation?.screen === 'portal'
-      ? 'スタディアプリ ホーム'
-      : '選んだ画面'
+  const pendingLabel = pendingNavigation?.screen === 'portal'
+    ? 'スタディアプリ ホーム'
+    : '選んだ画面'
 
   const sheetTitles = {
     menu: 'メニュー',
@@ -955,9 +948,7 @@ export function SpeechSettingsSheet() {
     'reset-complete': 'リセット完了',
     'backup-reset': 'リセット前のバックアップ',
     account: account ? 'アカウント' : 'ログイン・保存',
-    'save-progress': pendingNavigation?.type === 'back'
-      ? '戻りますか？'
-      : '途中の進捗を保存しますか？',
+    'save-progress': '途中の進捗を保存しますか？',
   }
   const sheetTitle = sheetTitles[view] ?? 'メニュー'
 
@@ -1048,37 +1039,19 @@ export function SpeechSettingsSheet() {
         </>
       ) : view === 'save-progress' ? (
         <div data-progress-save-confirmation>
-          {pendingNavigation?.type === 'back' ? (
-            <div data-progress-discard-confirmation>
-              <p className="mb-3 rounded-2xl bg-rose-50 px-3 py-2.5 text-xs font-bold leading-relaxed text-rose-800">
-                途中で戻るボタンを押した場合は、進捗は破棄されます。戻りますか？
-              </p>
-              <div className="grid gap-2">
-                <Button full onClick={() => performNavigation(pendingNavigation)}>
-                  戻る
-                </Button>
-                <Button full variant="ghost" onClick={close}>
-                  続ける
-                </Button>
-              </div>
-            </div>
-          ) : (
-            <>
-              <p className="mb-3 rounded-2xl bg-emerald-50 px-3 py-2.5 text-xs font-bold leading-relaxed text-emerald-800">
-                回答ボタンを押した分まで、この端末には自動保存されています。別端末でも再開する場合は、下のQR画像かコードを保存してから{pendingLabel}へ進んでください。
-              </p>
-              <ProgressBackupPanel
-                onContinue={() => performNavigation(pendingNavigation)}
-                continueLabel={`保存を終えて${pendingLabel}へ`}
-              />
-              <Button full className="mt-2" variant="ghost" onClick={() => performNavigation(pendingNavigation)}>
-                この端末の自動保存だけで{pendingLabel}へ
-              </Button>
-              <Button full className="mt-1" variant="ghost" onClick={close}>
-                戻らず学習を続ける
-              </Button>
-            </>
-          )}
+          <p className="mb-3 rounded-2xl bg-emerald-50 px-3 py-2.5 text-xs font-bold leading-relaxed text-emerald-800">
+            回答ボタンを押した分まで、この端末には自動保存されています。別端末でも再開する場合は、下のQR画像かコードを保存してから{pendingLabel}へ進んでください。
+          </p>
+          <ProgressBackupPanel
+            onContinue={() => performNavigation(pendingNavigation)}
+            continueLabel={`保存を終えて${pendingLabel}へ`}
+          />
+          <Button full className="mt-2" variant="ghost" onClick={() => performNavigation(pendingNavigation)}>
+            この端末の自動保存だけで{pendingLabel}へ
+          </Button>
+          <Button full className="mt-1" variant="ghost" onClick={close}>
+            戻らず学習を続ける
+          </Button>
         </div>
       ) : (
         <AppMenuPanel

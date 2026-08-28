@@ -1,5 +1,4 @@
 import { useStore } from '../store/useStore.js'
-import { requiresProgressSaveConfirmation } from '../lib/navigationPolicy.js'
 import { appHomeForScreen, isAppHomeScreen } from '../lib/appHome.js'
 import { IconButton, cx } from './ui.jsx'
 import { ChevronLeft, Menu } from './Icons.jsx'
@@ -16,12 +15,10 @@ export function AppShell({ children, showGlobalMenu = true }) {
   const goPortal = useStore((state) => state.goPortal)
   const menuOpen = useStore((state) => state.speechSettingsOpen)
   const canGoBack = screen !== 'portal' || stackLength > 0
+  // 暗記・テストの途中で戻っても、答えた分はそのまま記録に残るので確認は挟まない。
+  // 途中までの結果は各画面が学習記録へ書き、続きは同じ教材からいつでも始められる。
   const goBack = () => {
     if (!canGoBack || menuOpen) return
-    if (requiresProgressSaveConfirmation(screen, '__back__')) {
-      openSpeechSettings('back')
-      return
-    }
     globalBack()
   }
 

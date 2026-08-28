@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { cardIndexAfterSwipe, cardSwipeDirection } from '../lib/cardSwipe.js'
+import { Bookmark, BookmarkFilled } from './Icons.jsx'
 import { cx } from './ui.jsx'
 
 const INTERACTIVE_TARGETS = [
@@ -100,5 +101,40 @@ export function CardStudyFooter({ className = '', children, ...props }) {
     >
       {children}
     </div>
+  )
+}
+
+/**
+ * カード上部の共通バーへ置く「保存」切替。単語・熟語・古文・古典文法・古典常識・漢文で
+ * 見た目も押す場所も同じにするため、保存先ごとに違うのは名前と読み上げ文だけにする。
+ */
+export function CardSaveToggle({
+  saved,
+  onToggle,
+  label,
+  savedLabel,
+  unsavedLabel,
+  className = '',
+  ...props
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      aria-pressed={saved}
+      aria-label={saved ? savedLabel : unsavedLabel}
+      data-card-save-toggle
+      {...props}
+      className={cx(
+        'inline-flex min-h-11 min-w-[3.75rem] shrink-0 flex-col items-center justify-center gap-0 rounded-xl px-1 text-[10px] font-extrabold transition-colors',
+        saved
+          ? 'bg-hint/15 text-hint ring-1 ring-hint/25'
+          : 'bg-slate-100 text-ink/45 ring-1 ring-slate-200',
+        className,
+      )}
+    >
+      {saved ? <BookmarkFilled size={17} /> : <Bookmark size={17} />}
+      <span>{label}</span>
+    </button>
   )
 }

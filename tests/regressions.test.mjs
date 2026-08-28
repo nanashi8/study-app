@@ -265,6 +265,7 @@ test('学習記録の全永続項目は端末保存・画面発行・クラウ�
     'speechSettingsOpen',
     'speechSettingsRequest',
     'quizSession',
+    'interruptedSession',
   ])
   const stateDataFields = Object.keys(state)
     .filter((field) => typeof state[field] !== 'function' && !transientFields.has(field))

@@ -197,6 +197,11 @@ const SCREENS = {
 function MainApp() {
   const screen = useStore((s) => s.screen)
   const params = useStore((s) => s.params)
+  const commitInterruptedSession = useStore((s) => s.commitInterruptedSession)
+  // 途中でやめたテストも、画面が変わったところで答えた分を学習記録へ残す。
+  useEffect(() => {
+    commitInterruptedSession()
+  }, [screen, commitInterruptedSession])
   const destination = learnerDestination(screen, params)
   const Screen = SCREENS[destination.screen] ?? HomeScreen
   return (

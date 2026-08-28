@@ -23,6 +23,7 @@ import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 import {
   QuestionSessionControls,
   useIndexedSessionState,
+  useUnfinishedSessionRecord,
 } from '../components/QuestionSessionControls.jsx'
 
 const newSessionId = () => (
@@ -72,6 +73,13 @@ export function PhraseQuizScreen() {
   const [autoAdvanceSignal, setAutoAdvanceSignal] = useState(null)
   const results = useRef({ correct: 0, wrong: 0, unknown: 0, wrongIds: [], answerLog: [] })
 
+  // 途中でやめても、そこまでに答えた分をこの分野の学習記録へ残す。
+  const handOffSession = useUnfinishedSessionRecord({
+    skill: 'usage',
+    answered: results.current.correct + results.current.wrong + results.current.unknown,
+    correct: results.current.correct,
+  })
+
   const item = deck[index]
   const options = useMemo(() => {
     if (!item) return []
@@ -108,6 +116,7 @@ export function PhraseQuizScreen() {
   const saved = learningNotebook?.entries?.[`phrases:${item.id}`]?.saved === true
 
   const finish = () => {
+    handOffSession()
     navigate('sessionResult', {
       title: params.title ?? (isDragonVein ? '龍脈の熟語・構文解読' : '熟語・構文'),
       mode: 'quiz',

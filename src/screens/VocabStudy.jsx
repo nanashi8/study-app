@@ -8,11 +8,11 @@ import { SpeakButton } from '../components/SpeakButton.jsx'
 import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
 import { EtymologyBlock } from '../components/WordBits.jsx'
 import { PosBadge } from '../components/WordBits.jsx'
-import { Button, IconButton, cx } from '../components/ui.jsx'
-import { Close, Bookmark, BookmarkFilled, ArrowRight, Lightbulb } from '../components/Icons.jsx'
+import { Button, IconButton } from '../components/ui.jsx'
+import { Close, ArrowRight, Lightbulb } from '../components/Icons.jsx'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 import { VocabReviewHistory } from '../components/VocabReviewHistory.jsx'
-import { CardStudyFooter, CardSwipeRegion } from '../components/CardStudyControls.jsx'
+import { CardSaveToggle, CardStudyFooter, CardSwipeRegion } from '../components/CardStudyControls.jsx'
 import {
   nextUnansweredSessionIndex,
   QuestionSessionControls,
@@ -266,24 +266,14 @@ export function VocabStudyScreen() {
               toolbar
               onChange={(on) => setFlipped(on)}
             />
-            <button
-              type="button"
-              onClick={() => toggleMyList(word.id)}
-              aria-pressed={saved}
-              aria-label={saved
-                ? `${word.word}をマイ単語から外す`
-                : `${word.word}をマイ単語に追加`}
+            <CardSaveToggle
+              saved={saved}
+              onToggle={() => toggleMyList(word.id)}
+              label="マイ単語"
+              savedLabel={`${word.word}をマイ単語から外す`}
+              unsavedLabel={`${word.word}をマイ単語に追加`}
               data-vocab-my-list-toggle
-              className={cx(
-                'inline-flex min-h-11 min-w-[3.75rem] shrink-0 flex-col items-center justify-center gap-0 rounded-xl px-1 text-[10px] font-extrabold transition-colors',
-                saved
-                  ? 'bg-hint/15 text-hint ring-1 ring-hint/25'
-                  : 'bg-slate-100 text-ink/45 ring-1 ring-slate-200',
-              )}
-            >
-              {saved ? <BookmarkFilled size={17} /> : <Bookmark size={17} />}
-              <span>マイ単語</span>
-            </button>
+            />
           </>
         )}
       />
