@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { IconButton } from './ui.jsx'
 import { Close } from './Icons.jsx'
 
@@ -20,7 +21,9 @@ export function Sheet({
   }, [open, onClose])
 
   if (!open) return null
-  return (
+  // 画面側のバー（backdrop-blur などで重なりの文脈を作る要素）の下に潜り込まないよう、
+  // シートは呼び出し位置ではなく body 直下へ描く。
+  const layer = (
     <div className="app-viewport-overlay fixed inset-x-0 z-[70] flex items-end justify-center" data-sheet-layer>
       <div
         className="absolute inset-0 bg-ink/40 backdrop-blur-[2px]"
@@ -63,4 +66,5 @@ export function Sheet({
       </div>
     </div>
   )
+  return typeof document === 'undefined' ? layer : createPortal(layer, document.body)
 }
