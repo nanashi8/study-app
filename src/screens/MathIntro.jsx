@@ -32,7 +32,7 @@ export function MathIntroScreen() {
 
   if (!unit || !intro) {
     return (
-      <div className="relative flex min-h-full flex-col items-center justify-center gap-4 p-8 text-center">
+      <div className="relative flex h-full flex-col items-center justify-center gap-4 p-8 text-center">
         <div className="absolute right-3 top-3">
           <SpeechSettingsButton compact />
         </div>
@@ -59,124 +59,126 @@ export function MathIntroScreen() {
   const insight = intro.insight(values)
 
   return (
-    <div className="flex min-h-full flex-col">
-      <div
-        className="relative overflow-hidden px-4 pb-5 pt-2 text-white"
-        style={{ background: `linear-gradient(145deg, ${accent}, #312e81)` }}
-      >
-        <div className="pointer-events-none absolute -right-12 -top-16 h-44 w-44 rounded-full bg-white/10" />
-        <div className="pointer-events-none absolute -bottom-20 -left-10 h-40 w-40 rounded-full bg-white/10" />
-
-        <div className="relative flex items-center gap-2">
-          <IconButton
-            onClick={backToMathUnits}
-            aria-label="単元一覧へ戻る"
-            className="-ml-2 text-white active:bg-white/15"
-          >
-            <ChevronLeft size={24} />
-          </IconButton>
-          <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-2 text-[11px] font-extrabold text-white">
-              <span>{unit.grade}</span>
-              <span>•</span>
-              <span>{unit.strand}</span>
-            </div>
-            <h1 className="truncate font-display text-xl font-extrabold">{unit.emoji} {unit.title}</h1>
-          </div>
-          <SpeechSettingsButton compact inverse />
-          <span className="rounded-full bg-black/25 px-2.5 py-1 text-[10px] font-extrabold">
-            導入
-          </span>
-        </div>
-
-        <div className="relative mt-4">
-          <div className="mb-2 inline-flex items-center gap-1.5 rounded-full bg-black/25 px-2.5 py-1 text-[11px] font-extrabold text-white">
-            <Sparkles size={13} /> 動かして発見
-          </div>
-          <h2 className="max-w-sm font-display text-xl font-extrabold leading-snug">
-            {intro.question}
-          </h2>
-          <p className="mt-1.5 text-sm font-bold leading-relaxed text-white">
-            {intro.instruction}
-          </p>
-        </div>
-      </div>
-
-      <div className="flex-1 px-4 pb-28 pt-4">
-        <section
-          className="overflow-hidden rounded-[1.75rem] bg-white shadow-card"
-          style={{ '--intro-color': accent }}
-          aria-label={`${unit.title}の動く図`}
+    <div className="flex h-full flex-col">
+      <div className="min-h-0 flex-1 overflow-y-auto">
+        <div
+          className="relative overflow-hidden px-4 pb-5 pt-2 text-white"
+          style={{ background: `linear-gradient(145deg, ${accent}, #312e81)` }}
         >
-          <div className="bg-gradient-to-b from-white to-paper px-2 pb-1 pt-3">
-            <MathVisual
-              intro={intro}
-              values={values}
-              unit={unit}
-              label={`${intro.question}。${intro.instruction}`}
-            />
+          <div className="pointer-events-none absolute -right-12 -top-16 h-44 w-44 rounded-full bg-white/10" />
+          <div className="pointer-events-none absolute -bottom-20 -left-10 h-40 w-40 rounded-full bg-white/10" />
+
+          <div className="relative flex items-center gap-2">
+            <IconButton
+              onClick={backToMathUnits}
+              aria-label="単元一覧へ戻る"
+              className="-ml-2 text-white active:bg-white/15"
+            >
+              <ChevronLeft size={24} />
+            </IconButton>
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-2 text-[11px] font-extrabold text-white">
+                <span>{unit.grade}</span>
+                <span>•</span>
+                <span>{unit.strand}</span>
+              </div>
+              <h1 className="truncate font-display text-xl font-extrabold">{unit.emoji} {unit.title}</h1>
+            </div>
+            <SpeechSettingsButton compact inverse />
+            <span className="rounded-full bg-black/25 px-2.5 py-1 text-[10px] font-extrabold">
+              導入
+            </span>
           </div>
 
-          <div
-            className="border-t-2 border-violet-100 bg-gradient-to-b from-violet-50/80 to-white px-3 pb-4 pt-3"
-            aria-label="図を動かす操作"
+          <div className="relative mt-4">
+            <div className="mb-2 inline-flex items-center gap-1.5 rounded-full bg-black/25 px-2.5 py-1 text-[11px] font-extrabold text-white">
+              <Sparkles size={13} /> 動かして発見
+            </div>
+            <h2 className="max-w-sm font-display text-xl font-extrabold leading-snug">
+              {intro.question}
+            </h2>
+            <p className="mt-1.5 text-sm font-bold leading-relaxed text-white">
+              {intro.instruction}
+            </p>
+          </div>
+        </div>
+
+        <div className="px-4 pb-4 pt-4">
+          <section
+            className="overflow-hidden rounded-[1.75rem] bg-white shadow-card"
+            style={{ '--intro-color': accent }}
+            aria-label={`${unit.title}の動く図`}
           >
-            <div className="mb-3 flex items-center gap-2 px-1">
-              <span
-                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-white text-base font-black shadow-sm"
-                style={{ color: accent }}
-                aria-hidden="true"
-              >
-                ↔
-              </span>
-              <div>
-                <h3 className="text-sm font-extrabold text-ink">図を動かす</h3>
-                <p className="text-[11px] font-bold text-ink/75">値を変えると、上の図へすぐ反映されます</p>
+            <div className="bg-gradient-to-b from-white to-paper px-2 pb-1 pt-3">
+              <MathVisual
+                intro={intro}
+                values={values}
+                unit={unit}
+                label={`${intro.question}。${intro.instruction}`}
+              />
+            </div>
+
+            <div
+              className="border-t-2 border-violet-100 bg-gradient-to-b from-violet-50/80 to-white px-3 pb-4 pt-3"
+              aria-label="図を動かす操作"
+            >
+              <div className="mb-3 flex items-center gap-2 px-1">
+                <span
+                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-white text-base font-black shadow-sm"
+                  style={{ color: accent }}
+                  aria-hidden="true"
+                >
+                  ↔
+                </span>
+                <div>
+                  <h3 className="text-sm font-extrabold text-ink">図を動かす</h3>
+                  <p className="text-[11px] font-bold text-ink/75">値を変えると、上の図へすぐ反映されます</p>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                {intro.controls.map((control) => (
+                  <VisualControl
+                    key={control.id}
+                    control={control}
+                    value={values[control.id]}
+                    color={accent}
+                    onChange={(value) => setValue(control.id, value)}
+                  />
+                ))}
               </div>
             </div>
+          </section>
 
-            <div className="space-y-3">
-              {intro.controls.map((control) => (
-                <VisualControl
-                  key={control.id}
-                  control={control}
-                  value={values[control.id]}
-                  color={accent}
-                  onChange={(value) => setValue(control.id, value)}
-                />
-              ))}
+          <section className="mt-4 rounded-2xl border-2 border-violet-100 bg-white px-4 py-3.5">
+            <div className="flex items-center gap-2">
+              <Eye size={17} className="shrink-0 text-violet-700" />
+              <p className="text-xs font-extrabold tracking-wide text-violet-700">いま図に出ている関係</p>
             </div>
-          </div>
-        </section>
+            <MathBlock tex={formula} className="mt-2 text-ink [&_.katex]:text-[1.2rem]" />
+          </section>
 
-        <section className="mt-4 rounded-2xl border-2 border-violet-100 bg-white px-4 py-3.5">
-          <div className="flex items-center gap-2">
-            <Eye size={17} className="shrink-0 text-violet-700" />
-            <p className="text-xs font-extrabold tracking-wide text-violet-700">いま図に出ている関係</p>
-          </div>
-          <MathBlock tex={formula} className="mt-2 text-ink [&_.katex]:text-[1.2rem]" />
-        </section>
-
-        <section className="mt-3 rounded-2xl bg-hint-soft px-4 py-3.5">
-          <div className="flex items-start gap-2">
-            <Lightbulb size={18} className="mt-0.5 shrink-0 text-amber-600" />
-            <div>
-              <p className="text-xs font-extrabold tracking-wide text-amber-700">変えても残るポイント</p>
-              <p className="mt-1 text-sm font-bold leading-relaxed text-amber-900">
-                <MathText>{insight}</MathText>
-              </p>
+          <section className="mt-3 rounded-2xl bg-hint-soft px-4 py-3.5">
+            <div className="flex items-start gap-2">
+              <Lightbulb size={18} className="mt-0.5 shrink-0 text-amber-600" />
+              <div>
+                <p className="text-xs font-extrabold tracking-wide text-amber-700">変えても残るポイント</p>
+                <p className="mt-1 text-sm font-bold leading-relaxed text-amber-900">
+                  <MathText>{insight}</MathText>
+                </p>
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
 
-        <div className="mt-4 flex items-center justify-center gap-2 text-xs font-bold text-ink/70">
-          <Chip color={accent}>{unit.desc}</Chip>
-          <span>•</span>
-          <span>練習 {problemCount}問</span>
+          <div className="mt-4 flex items-center justify-center gap-2 text-xs font-bold text-ink/70">
+            <Chip color={accent}>{unit.desc}</Chip>
+            <span>•</span>
+            <span>練習 {problemCount}問</span>
+          </div>
         </div>
       </div>
 
-      <div className="app-fixed-bottom-actions fixed inset-x-0 z-20 mx-auto w-full max-w-md border-t border-violet-100 bg-white/95 p-4 backdrop-blur">
+      <div className="shrink-0 border-t border-violet-100 bg-white/95 p-4 backdrop-blur">
         <Button
           full
           size="lg"

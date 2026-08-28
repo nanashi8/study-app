@@ -337,8 +337,8 @@ export function SessionResultScreen() {
 
   if (vocabCompletion) {
     return (
-      <div className="relative min-h-full overflow-x-hidden bg-slate-50 px-3 pb-8 pt-3">
-        <div className="relative z-20 mb-2 flex justify-end"><SpeechSettingsButton compact /></div>
+      <div className="relative flex h-full flex-col overflow-x-hidden bg-slate-50">
+        <div className="relative z-20 flex shrink-0 justify-end px-3 pt-3"><SpeechSettingsButton compact /></div>
         <VocabCompletionReport
           report={vocabCompletion}
           title={title}

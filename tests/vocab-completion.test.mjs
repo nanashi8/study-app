@@ -177,7 +177,7 @@ test('暗記完了画面は全単語暗記入口の合流点だけで詳細レ�
   assert.match(report, /今日、\{today\.uniqueWords\}語に取り組みました/)
   assert.match(report, /同じ語に何度か答えた場合は、今日最後の答えで分けています/)
   assert.match(report, /次の復習：\{dueLabel\(item\.dueInDays\)\}/)
-  assert.match(report, /app-fixed-bottom-actions fixed inset-x-0/)
+  assert.match(report, /shrink-0 border-t border-indigo-100/)
   assert.match(report, /data-vocab-fixed-review/)
   assert.match(report, /data-vocab-fixed-continue/)
   assert.match(report, /data-vocab-review-schedule/)
