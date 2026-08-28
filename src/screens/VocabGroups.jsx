@@ -6,61 +6,42 @@ import {
 } from '../data/vocab.js'
 import { wordProgress } from '../lib/session.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
-import { Book, Cards, Refresh } from '../components/Icons.jsx'
-import { Button, Card, Chip } from '../components/ui.jsx'
-import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
+import { Refresh } from '../components/Icons.jsx'
+import { Chip } from '../components/ui.jsx'
+import { LearningEntryCard } from '../components/LearningEntryCard.jsx'
 import { summarizeVocabularySrsItems } from '../lib/vocabScheduler.js'
 
-function FieldCard({ field, words, srs, onStudy, onQuiz }) {
+function FieldCard({ field, words, srs, onStudy, onQuiz, onCatalog }) {
   const progress = wordProgress(words, srs)
   const status = summarizeVocabularySrsItems(words, srs)
   return (
-    <Card className="p-4" data-vocab-field={field.id}>
-      <div className="flex items-start gap-3">
-        <span
-          className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl text-xl"
-          style={{ backgroundColor: `${field.color}1f` }}
-          aria-hidden="true"
-        >
-          {field.emoji}
-        </span>
-        <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-center gap-2">
-            <h2 className="font-display font-extrabold text-ink">{field.label}</h2>
-            <Chip color={field.color}>{progress.total.toLocaleString('ja-JP')}語</Chip>
-          </div>
-          <p className="mt-0.5 text-xs font-bold leading-relaxed text-ink/50">{field.description}</p>
-        </div>
-      </div>
-
-      <LearningStatusBars progress={status} className="mt-3" compact units={{ learning: '語', quiz: '問' }} />
-      <p className="mt-1.5 text-right text-[10px] font-bold text-ink/45">
-        {progress.due > 0
-          ? `復習が必要 ${progress.due}語`
-          : progress.ready > 0
-            ? `次に学ぶ ${progress.ready}語・1回10語`
-            : '次の復習日まで待つ'}
-      </p>
-
-      <div className="mt-3 grid grid-cols-2 gap-2">
-        <Button
-          onClick={onStudy}
-          disabled={!progress.ready}
-          aria-label={progress.ready
-            ? `${field.label}の復習または未学習 ${progress.ready}語を学習する`
-            : `${field.label}は次の復習日まで待つ`}
-        >
-          <Book size={16} /> {progress.ready ? '学習する' : '次回待ち'}
-        </Button>
-        <Button
-          variant="secondary"
-          onClick={onQuiz}
-          aria-label={`${field.label}の単語をテストする`}
-        >
-          <Cards size={16} /> テストする
-        </Button>
-      </div>
-    </Card>
+    <LearningEntryCard
+      data-vocab-field={field.id}
+      emoji={field.emoji}
+      accentColor={field.color}
+      title={field.label}
+      chip={<Chip color={field.color}>{progress.total.toLocaleString('ja-JP')}語</Chip>}
+      subtitle={field.description}
+      status={status}
+      units={{ learning: '語', quiz: '問' }}
+      note={progress.due > 0
+        ? `復習が必要 ${progress.due}語`
+        : progress.ready > 0
+          ? `次に学ぶ ${progress.ready}語・1回10語`
+          : '次の復習日まで待つ'}
+      noteTone={progress.due > 0 ? 'alert' : 'muted'}
+      studyLabel={progress.ready ? '暗記' : '次回待ち'}
+      studyDisabled={!progress.ready}
+      studyAriaLabel={progress.ready
+        ? `${field.label}の復習または未学習 ${progress.ready}語を暗記`
+        : `${field.label}は次の復習日まで待つ`}
+      onStudy={onStudy}
+      quizAriaLabel={`${field.label}の単語をテスト`}
+      onQuiz={onQuiz}
+      catalogLabel="一覧を確認"
+      catalogAriaLabel={`${field.label}の単語を一覧で確認する`}
+      onCatalog={onCatalog}
+    />
   )
 }
 
@@ -95,13 +76,14 @@ export function VocabGroupsScreen() {
             srs={srs}
             onStudy={() => start({ field })}
             onQuiz={() => start({ field, quiz: true })}
+            onCatalog={() => navigate('vocabDecks', { field: field.id })}
           />
         ))}
 
         <div className="flex items-start gap-2 rounded-2xl bg-white/70 px-4 py-3 text-xs font-bold leading-relaxed text-ink/50">
           <span className="mt-0.5 text-brand-500"><Refresh size={16} /></span>
           <p>
-            学習済みの語を見直すときは、単語画面の「学習済みの語を確認」かマイ単語から選べます。
+            分野ごとの「一覧を確認」から、学習とテストの記録をまとめて見直せます。
           </p>
         </div>
       </div>

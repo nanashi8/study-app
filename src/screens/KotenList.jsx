@@ -11,12 +11,15 @@ import {
   KOTEN_CURRICULUM_LEVELS,
 } from '../data/koten-curriculum.js'
 import { Card, Button, Chip } from '../components/ui.jsx'
+import { ScreenHeader } from '../components/AppShell.jsx'
+import { LearningEntryCard } from '../components/LearningEntryCard.jsx'
+import { LearningViewTabs } from '../components/LearningViewTabs.jsx'
 import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
 import { NormalLearningRecordList } from '../components/NormalLearningRecordList.jsx'
 import { summarizeSrsItems, summarizeSrsItemsWithQuestions } from '../lib/contentProgress.js'
+import { scrollScreenToTop } from '../lib/screenScroll.js'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import {
-  Book,
   BookmarkFilled,
   BookOpen,
   Cards,
@@ -26,32 +29,25 @@ import {
   Headphones,
 } from '../components/Icons.jsx'
 
-function CategoryCard({ cat, words, srs, onStudy, onQuiz }) {
+function CategoryCard({ cat, words, srs, onStudy, onQuiz, onCatalog }) {
   const status = summarizeSrsItems(words, srs)
   return (
-    <Card className="p-4">
-      <div className="flex items-center gap-3">
-        <span
-          className="flex h-12 w-12 items-center justify-center rounded-2xl text-2xl"
-          style={{ backgroundColor: `${cat.color}22` }}
-        >
-          {cat.emoji}
-        </span>
-        <div className="min-w-0 flex-1">
-          <h3 className="font-display text-lg font-extrabold text-ink">{cat.label}</h3>
-          <p className="text-xs font-bold text-ink/50">全{words.length}語</p>
-        </div>
-      </div>
-      <LearningStatusBars progress={status} className="mt-3" compact units={{ learning: '語', quiz: '問' }} />
-      <div className="mt-3 grid grid-cols-2 gap-2">
-        <Button variant="primary" size="sm" onClick={onStudy}>
-          <Book size={16} /> 暗記
-        </Button>
-        <Button variant="secondary" size="sm" onClick={onQuiz}>
-          <Cards size={16} /> テスト
-        </Button>
-      </div>
-    </Card>
+    <LearningEntryCard
+      data-koten-category={cat.id}
+      emoji={cat.emoji}
+      accentColor={cat.color}
+      title={cat.label}
+      countLabel={`全${words.length}語`}
+      status={status}
+      units={{ learning: '語', quiz: '問' }}
+      studyAriaLabel={`${cat.label}の古典単語を暗記`}
+      onStudy={onStudy}
+      quizAriaLabel={`${cat.label}の古典単語をテスト`}
+      onQuiz={onQuiz}
+      catalogLabel="一覧を確認"
+      catalogAriaLabel={`${cat.label}の古典単語を一覧で確認する`}
+      onCatalog={onCatalog}
+    />
   )
 }
 
@@ -66,6 +62,8 @@ export function KotenListScreen() {
   const savedGrammar = useStore((s) => s.kotenGrammarList)
   const savedCulture = useStore((s) => s.kotenCultureList)
   const [curriculumLevel, setCurriculumLevel] = useState('middle')
+  const [view, setView] = useState('home')
+  const [listCategory, setListCategory] = useState('all')
 
   const dueWords = KOTEN_WORDS.filter((w) => kotenSrs[w.id] && isDue(kotenSrs[w.id]))
   const totalStatus = summarizeSrsItems(KOTEN_WORDS, kotenSrs)
@@ -89,6 +87,71 @@ export function KotenListScreen() {
   const study = (ids, title) => navigate('kotenStudy', { ids, title })
   const quiz = (ids, title) => navigate('kotenQuiz', { ids, title })
   const selectedCourse = KOTEN_CURRICULUM_BY_ID[curriculumLevel]
+  const openVocabCatalog = (categoryId = 'all') => {
+    scrollScreenToTop()
+    setListCategory(categoryId)
+    setView('list')
+  }
+  const listEntry = KOTEN_TOC.find(({ category }) => category.id === listCategory)
+  const listWords = listEntry ? listEntry.words : KOTEN_WORDS
+
+  // 「一覧を確認」からは、古典単語の全項目を学習・テスト別に見直す。
+  if (view === 'list') {
+    return (
+      <div className="pb-6" data-koten-vocab-catalog={listCategory}>
+        <ScreenHeader
+          title={`${listEntry ? listEntry.category.label : '古典単語'}の一覧を確認`}
+          compact
+        />
+        <div className="space-y-3 px-4 pt-3">
+          <LearningViewTabs
+            view="list"
+            onChange={setView}
+            learnLabel="学ぶ"
+            listLabel="一覧を確認"
+            label="古典単語の見方"
+          />
+          <div className="no-scrollbar flex gap-1.5 overflow-x-auto pb-1">
+            <button
+              type="button"
+              onClick={() => setListCategory('all')}
+              className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-extrabold ${
+                listCategory === 'all' ? 'bg-amber-700 text-white' : 'bg-white text-ink/50'
+              }`}
+            >
+              すべて {KOTEN_WORDS.length}
+            </button>
+            {KOTEN_TOC.map(({ category, words }) => (
+              <button
+                key={category.id}
+                type="button"
+                onClick={() => setListCategory(category.id)}
+                className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-extrabold ${
+                  listCategory === category.id ? 'text-white' : 'bg-white text-ink/50'
+                }`}
+                style={listCategory === category.id ? { background: category.color } : undefined}
+              >
+                {category.emoji} {category.label} {words.length}
+              </button>
+            ))}
+          </div>
+          <p className="px-1 text-xs font-bold leading-relaxed text-ink/45">
+            左右にスワイプして、学習とテストの結果を直接記録できます。
+          </p>
+          <NormalLearningRecordList
+            entryId="koten-vocab"
+            contentId="koten-vocab"
+            items={listWords}
+            unit="語"
+            onOpen={(item) => study([item.id], item.word)}
+            openLabel="この単語を暗記する"
+            openHint="暗記"
+            emptyMessage="表示できる古典単語はありません。"
+          />
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="pb-6">
@@ -117,44 +180,77 @@ export function KotenListScreen() {
           <p className="mt-1 text-xs font-bold text-ink/45">暗記 → テスト → 登録 → 日を空けて復習、の順で進めます。</p>
         </div>
 
-        <Card className="p-4">
-          <div className="flex items-center gap-3">
-            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-orange-100 text-2xl">📖</span>
-            <div className="min-w-0 flex-1">
-              <h3 className="font-display text-lg font-extrabold text-ink">古典単語</h3>
-              <p className="text-[11px] font-bold text-ink/50">全{KOTEN_WORDS.length}語・全{KOTEN_WORDS.length}問</p>
-            </div>
-          </div>
-          <LearningStatusBars progress={totalStatus} className="mt-3" compact units={{ learning: '語', quiz: '問' }} />
-          <div className="mt-3 grid grid-cols-2 gap-2">
-            <Button size="sm" onClick={() => study(KOTEN_WORDS.map((word) => word.id), '古典単語・全範囲')}><Book size={16} /> 暗記</Button>
-            <Button variant="secondary" size="sm" onClick={() => quiz(KOTEN_WORDS.map((word) => word.id), '古典単語・全範囲')}><Cards size={16} /> テスト</Button>
-          </div>
-        </Card>
+        <LearningEntryCard
+          data-koten-entry="vocab"
+          emoji="📖"
+          accentColor="#f97316"
+          title="古典単語"
+          countLabel={`全${KOTEN_WORDS.length}語`}
+          subtitle={`全${KOTEN_WORDS.length}語・全${KOTEN_WORDS.length}問`}
+          status={totalStatus}
+          units={{ learning: '語', quiz: '問' }}
+          note={dueWords.length > 0 ? `復習が必要 ${dueWords.length}語` : '次の復習日まで待つ'}
+          noteTone={dueWords.length > 0 ? 'alert' : 'muted'}
+          studyAriaLabel="古典単語の全範囲を暗記"
+          onStudy={() => study(KOTEN_WORDS.map((word) => word.id), '古典単語・全範囲')}
+          quizAriaLabel="古典単語の全範囲をテスト"
+          onQuiz={() => quiz(KOTEN_WORDS.map((word) => word.id), '古典単語・全範囲')}
+          catalogLabel="一覧を確認"
+          catalogAriaLabel="古典単語の全項目を一覧で確認する"
+          onCatalog={() => openVocabCatalog('all')}
+        />
 
-        <Card className="p-4">
-          <button type="button" onClick={() => navigate('kotenGrammar')} className="flex w-full items-center gap-3 text-left">
-            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-purple-100 text-purple-700"><BookOpen size={22} /></span>
-            <span className="min-w-0 flex-1">
-              <span className="block font-display text-lg font-extrabold text-ink">古典文法</span>
-              <span className="block text-[11px] font-bold text-ink/50">全{KOTEN_GRAMMAR.length}項目・全{KOTEN_GRAMMAR_QUESTIONS.length}問</span>
-            </span>
-            <ArrowRight size={19} className="text-purple-600" />
-          </button>
-          <LearningStatusBars progress={grammarStatus} className="mt-3" compact units={{ learning: '項目', quiz: '問' }} />
-        </Card>
+        <LearningEntryCard
+          data-koten-entry="grammar"
+          icon={<BookOpen size={22} />}
+          accentColor="#a855f7"
+          title="古典文法"
+          countLabel={`全${KOTEN_GRAMMAR.length}項目`}
+          subtitle={`全${KOTEN_GRAMMAR.length}項目・全${KOTEN_GRAMMAR_QUESTIONS.length}問`}
+          onOpen={() => navigate('kotenGrammar')}
+          openAriaLabel="古典文法の学ぶ画面を開く"
+          status={grammarStatus}
+          units={{ learning: '項目', quiz: '問' }}
+          studyAriaLabel="古典文法の全範囲を暗記"
+          onStudy={() => navigate('kotenGrammarStudy', {
+            ids: KOTEN_GRAMMAR.map((item) => item.id),
+            title: '古典文法・全範囲',
+          })}
+          quizAriaLabel="古典文法の全範囲をテスト"
+          onQuiz={() => navigate('kotenGrammarQuiz', {
+            ids: KOTEN_GRAMMAR.map((item) => item.id),
+            title: '古典文法・全範囲',
+          })}
+          catalogLabel="一覧を確認"
+          catalogAriaLabel="古典文法の全項目を一覧で確認する"
+          onCatalog={() => navigate('kotenGrammar', { view: 'list' })}
+        />
 
-        <Card className="p-4">
-          <button type="button" onClick={() => navigate('kotenCulture')} className="flex w-full items-center gap-3 text-left">
-            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-fuchsia-100 text-2xl">🏯</span>
-            <span className="min-w-0 flex-1">
-              <span className="block font-display text-lg font-extrabold text-ink">古典常識</span>
-              <span className="block text-[11px] font-bold text-ink/50">全{KOTEN_CULTURE.length}テーマ・全{KOTEN_CULTURE_QUESTIONS.length}問</span>
-            </span>
-            <ArrowRight size={19} className="text-fuchsia-600" />
-          </button>
-          <LearningStatusBars progress={cultureStatus} className="mt-3" compact units={{ learning: 'テーマ', quiz: '問' }} />
-        </Card>
+        <LearningEntryCard
+          data-koten-entry="culture"
+          emoji="🏯"
+          accentColor="#d946ef"
+          title="古典常識"
+          countLabel={`全${KOTEN_CULTURE.length}テーマ`}
+          subtitle={`全${KOTEN_CULTURE.length}テーマ・全${KOTEN_CULTURE_QUESTIONS.length}問`}
+          onOpen={() => navigate('kotenCulture')}
+          openAriaLabel="古典常識の学ぶ画面を開く"
+          status={cultureStatus}
+          units={{ learning: 'テーマ', quiz: '問' }}
+          studyAriaLabel="古典常識の全範囲を暗記"
+          onStudy={() => navigate('kotenCultureStudy', {
+            ids: KOTEN_CULTURE.map((item) => item.id),
+            title: '古典常識・全範囲',
+          })}
+          quizAriaLabel="古典常識の全範囲をテスト"
+          onQuiz={() => navigate('kotenCultureQuiz', {
+            ids: KOTEN_CULTURE.map((item) => item.id),
+            title: '古典常識・全範囲',
+          })}
+          catalogLabel="一覧を確認"
+          catalogAriaLabel="古典常識の全項目を一覧で確認する"
+          onCatalog={() => navigate('kotenCulture', { view: 'list' })}
+        />
 
         <div className="px-1 pt-3">
           <p className="text-[10px] font-extrabold text-amber-700">学年・目標別コース</p>
@@ -303,37 +399,18 @@ export function KotenListScreen() {
             </div>
           </button>
           <button
-            onClick={() => quiz(KOTEN_WORDS.map((w) => w.id), '腕だめし')}
+            onClick={() => quiz(KOTEN_WORDS.map((w) => w.id), '古典単語のテスト')}
             className="flex items-center gap-2 rounded-2xl bg-orange-100 p-3 text-left active:scale-[0.98] transition-transform"
           >
             <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-orange-200 text-orange-600">
               <Cards size={20} />
             </span>
             <div>
-              <div className="text-sm font-extrabold text-orange-800">腕だめし</div>
+              <div className="text-sm font-extrabold text-orange-800">テスト</div>
               <div className="text-[11px] font-bold text-orange-700/70">全{KOTEN_WORDS.length}語から</div>
             </div>
           </button>
         </div>
-
-        <section className="space-y-2">
-          <div className="px-1 pt-2">
-            <h2 className="font-display text-lg font-extrabold text-ink">古典単語の一覧</h2>
-            <p className="mt-1 text-xs font-bold text-ink/45">
-              左右にスワイプして、学習とテストの結果を直接記録できます。
-            </p>
-          </div>
-          <NormalLearningRecordList
-            entryId="koten-vocab"
-            contentId="koten-vocab"
-            items={KOTEN_WORDS}
-            unit="語"
-            onOpen={(item) => study([item.id], item.word)}
-            openLabel="この単語を暗記する"
-            openHint="暗記"
-            emptyMessage="表示できる古典単語はありません。"
-          />
-        </section>
 
         {KOTEN_TOC.map(({ category, words }) => (
           <CategoryCard
@@ -343,6 +420,7 @@ export function KotenListScreen() {
             srs={kotenSrs}
             onStudy={() => study(words.map((w) => w.id), category.label)}
             onQuiz={() => quiz(words.map((w) => w.id), category.label)}
+            onCatalog={() => openVocabCatalog(category.id)}
           />
         ))}
       </div>

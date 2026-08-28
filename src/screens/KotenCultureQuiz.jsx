@@ -178,12 +178,12 @@ export function KotenCultureQuizScreen() {
     <div className="flex h-full flex-col">
       <div className="border-b border-violet-100 bg-white/90 px-3 py-3 backdrop-blur">
         <div className="flex items-center gap-3">
-          <IconButton onClick={backToKotenCulture} aria-label="腕試しをやめる">
+          <IconButton onClick={backToKotenCulture} aria-label="テストをやめる">
             <Close size={22} />
           </IconButton>
           <div className="min-w-0 flex-1">
             <p className="truncate text-[10px] font-extrabold text-ink/40">
-              {params.title ?? '古典常識・入試型腕試し'}
+              {params.title ?? '古典常識・入試型テスト'}
             </p>
           </div>
           <SpeechSettingsButton compact />

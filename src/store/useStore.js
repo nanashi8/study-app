@@ -732,7 +732,7 @@ export const useStore = create(
           }
         }),
 
-      // 古典文法も「暗記→腕試し」を同じLeitner間隔でつなぐ。
+      // 古典文法も「暗記→テスト」を同じLeitner間隔でつなぐ。
       reviewKotenGrammar: (grammarId, result) =>
         set((st) => {
           const timestamp = Date.now()

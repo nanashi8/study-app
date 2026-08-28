@@ -4,6 +4,7 @@ import { KANBUN_GRAMMAR } from '../data/kanbun-grammar.js'
 import { KANBUN_CULTURE } from '../data/kanbun-culture.js'
 import { KANBUN_KUNDOKU_EXERCISES } from '../data/kanbun-kundoku.js'
 import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
+import { LearningEntryCard } from '../components/LearningEntryCard.jsx'
 import { summarizeSrsItems } from '../lib/contentProgress.js'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import {
@@ -56,6 +57,52 @@ export function KanbunHomeScreen() {
   const total = KANBUN_VOCAB.length + KANBUN_GRAMMAR.length
     + KANBUN_CULTURE.length + KANBUN_KUNDOKU_EXERCISES.length
 
+  // 英単語の級カードと同じ並びで、暗記・テスト・一覧を確認をそろえる。
+  const MATERIALS = [
+    {
+      domain: 'vocab',
+      emoji: '📖',
+      accent: '#0f766e',
+      title: '漢語',
+      description: '重要漢字・熟語・虚字を、訓読と用例で暗記',
+      items: KANBUN_VOCAB,
+      unit: '語',
+      status: vocabStatus,
+      onOpen: () => navigate('kanbunCatalog', { domain: 'vocab' }),
+      onCatalog: () => navigate('kanbunCatalog', { domain: 'vocab', view: 'list' }),
+    },
+    {
+      domain: 'grammar',
+      emoji: '🧭',
+      accent: '#b45309',
+      title: '漢文法',
+      description: '返り点・再読文字・否定・使役・受身・疑問・比較',
+      items: KANBUN_GRAMMAR,
+      unit: '項目',
+      status: grammarStatus,
+      onOpen: () => navigate('kanbunCatalog', { domain: 'grammar' }),
+      onCatalog: () => navigate('kanbunCatalog', { domain: 'grammar', view: 'list' }),
+    },
+    {
+      domain: 'culture',
+      emoji: '🏯',
+      accent: '#be123c',
+      title: '漢文常識',
+      description: '思想・歴史・制度・漢詩・故事成語を読解へ接続',
+      items: KANBUN_CULTURE,
+      unit: 'テーマ',
+      status: cultureStatus,
+      onOpen: () => navigate('kanbunCatalog', { domain: 'culture' }),
+      onCatalog: () => navigate('kanbunCatalog', { domain: 'culture', view: 'list' }),
+    },
+  ]
+  const startAll = ({ domain, title, items, asQuiz = false }) =>
+    navigate(asQuiz ? 'kanbunQuiz' : 'kanbunStudy', {
+      domain,
+      ids: items.map((item) => item.id),
+      title: asQuiz ? `${title}・全範囲テスト` : `${title}・全範囲`,
+    })
+
   return (
     <div className="pb-8">
       <header className="rounded-b-[2.5rem] bg-gradient-to-br from-rose-950 via-red-900 to-orange-800 px-5 pb-7 pt-5 text-white">
@@ -85,33 +132,28 @@ export function KanbunHomeScreen() {
           <h2 className="font-display text-xl font-extrabold text-ink">四つの教材から選ぶ</h2>
         </div>
 
-        <MainItem
-          emoji="📖"
-          title="漢語"
-          description="重要漢字・熟語・虚字を、訓読と用例で暗記"
-          count={KANBUN_VOCAB.length}
-          unit="語"
-          status={vocabStatus}
-          onOpen={() => navigate('kanbunCatalog', { domain: 'vocab' })}
-        />
-        <MainItem
-          emoji="🧭"
-          title="漢文法"
-          description="返り点・再読文字・否定・使役・受身・疑問・比較"
-          count={KANBUN_GRAMMAR.length}
-          unit="項目"
-          status={grammarStatus}
-          onOpen={() => navigate('kanbunCatalog', { domain: 'grammar' })}
-        />
-        <MainItem
-          emoji="🏛️"
-          title="漢文常識"
-          description="思想・歴史・制度・漢詩・故事成語を読解へ接続"
-          count={KANBUN_CULTURE.length}
-          unit="テーマ"
-          status={cultureStatus}
-          onOpen={() => navigate('kanbunCatalog', { domain: 'culture' })}
-        />
+        {MATERIALS.map((material) => (
+          <LearningEntryCard
+            key={material.domain}
+            data-kanbun-entry={material.domain}
+            emoji={material.emoji}
+            accentColor={material.accent}
+            title={material.title}
+            countLabel={`全${material.items.length}${material.unit}`}
+            subtitle={material.description}
+            onOpen={material.onOpen}
+            openAriaLabel={`${material.title}の学ぶ画面を開く`}
+            status={material.status}
+            units={{ learning: material.unit, quiz: '問' }}
+            studyAriaLabel={`${material.title}の全範囲を暗記`}
+            onStudy={() => startAll({ ...material })}
+            quizAriaLabel={`${material.title}の全範囲をテスト`}
+            onQuiz={() => startAll({ ...material, asQuiz: true })}
+            catalogLabel="一覧を確認"
+            catalogAriaLabel={`${material.title}の全項目を一覧で確認する`}
+            onCatalog={material.onCatalog}
+          />
+        ))}
 
         <MainItem
           emoji="🔁"

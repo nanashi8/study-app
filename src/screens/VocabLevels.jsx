@@ -9,10 +9,10 @@ import {
   weakFoundationLevel,
 } from '../lib/session.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
-import { Card, Button, Chip, IconButton } from '../components/ui.jsx'
-import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
+import { Chip, IconButton } from '../components/ui.jsx'
+import { LearningEntryCard } from '../components/LearningEntryCard.jsx'
 import { summarizeVocabularySrsItems } from '../lib/vocabScheduler.js'
-import { Refresh, Bookmark, Book, BookOpen, Cards, Search, Lightbulb, ArrowRight, Sparkles, Check, Link } from '../components/Icons.jsx'
+import { Refresh, Bookmark, Search, Lightbulb, ArrowRight, Sparkles, Check, Link } from '../components/Icons.jsx'
 
 // 下の級（前提）が弱点なら「先に固めよう」と案内するバナー。
 function WeakFoundationBanner({ srs, onReview }) {
@@ -47,78 +47,42 @@ function LevelCard({ level, srs, onStudy, onQuiz, onFields, onCatalog }) {
   const p = levelProgress(level.id, srs)
   const status = summarizeVocabularySrsItems(wordsByLevel(level.id), srs)
   return (
-    <Card className="p-4">
-      <div className="flex items-center gap-3">
-        <span
-          className="flex h-12 w-12 items-center justify-center rounded-2xl text-2xl"
-          style={{ backgroundColor: `${level.color}22` }}
-        >
-          {level.emoji}
-        </span>
-        <div className="flex-1">
-          <div className="flex items-center gap-2">
-            <h3 className="font-display text-lg font-extrabold text-ink">英検{level.label}</h3>
-            <Chip color={level.color}>{level.cefr}</Chip>
-          </div>
-          <p className="text-xs font-bold text-ink/50">{level.sub}</p>
-        </div>
-        <span className="shrink-0 text-xs font-extrabold tabular-nums text-ink/45">全{p.total}語</span>
-      </div>
-
-      <LearningStatusBars progress={status} className="mt-3" compact units={{ learning: '語', quiz: '問' }} />
-      <p
-        className={`mt-1.5 text-right text-[10px] font-extrabold ${p.due > 0 ? 'text-amber-700' : 'text-ink/45'}`}
-        data-vocab-study-ready={p.ready}
-      >
-        {p.due > 0
-          ? `復習が必要 ${p.due}語`
-          : p.ready > 0
-            ? `次に学ぶ ${p.ready}語`
-            : '次の復習日まで待つ'}
-      </p>
-
-      <div className="mt-3 grid grid-cols-2 gap-2">
-        <Button
-          variant="primary"
-          size="sm"
-          disabled={!p.ready}
-          onClick={onStudy}
-          aria-label={p.ready
-            ? `英検${level.label}の単語を暗記。復習または未学習 ${p.ready}語`
-            : `英検${level.label}は次の復習日まで待つ`}
-        >
-          <Book size={16} /> {p.ready ? '暗記' : '次回待ち'}
-        </Button>
-        <Button
-          variant="secondary"
-          size="sm"
-          disabled={!p.total}
-          onClick={onQuiz}
-          aria-label={`英検${level.label}の単語テスト`}
-        >
-          <Cards size={16} /> テスト
-        </Button>
-      </div>
-      <div className="mt-2 grid grid-cols-2 gap-2">
-        <button
-          onClick={onFields}
-          disabled={!p.total}
-          aria-label={`英検${level.label}の10分野を選ぶ`}
-          className="flex min-h-11 w-full items-center justify-center gap-1.5 rounded-xl bg-paper px-2 text-xs font-extrabold text-brand-600 active:scale-[0.98] transition-transform disabled:opacity-50"
-        >
-          <Sparkles size={15} /> 10分野で選ぶ
-        </button>
-        <button
-          onClick={onCatalog}
-          disabled={!p.total}
-          aria-label={`英検${level.label}の全語彙を一覧で確認する`}
-          className="flex min-h-11 w-full items-center justify-center gap-1.5 rounded-xl bg-brand-50 px-2 text-xs font-extrabold text-brand-700 active:scale-[0.98] transition-transform disabled:opacity-50"
-          data-vocab-catalog-entry={level.id}
-        >
-          <BookOpen size={15} /> 一覧を確認
-        </button>
-      </div>
-    </Card>
+    <LearningEntryCard
+      emoji={level.emoji}
+      accentColor={level.color}
+      title={`英検${level.label}`}
+      chip={<Chip color={level.color}>{level.cefr}</Chip>}
+      subtitle={level.sub}
+      countLabel={`全${p.total}語`}
+      status={status}
+      units={{ learning: '語', quiz: '問' }}
+      note={p.due > 0
+        ? `復習が必要 ${p.due}語`
+        : p.ready > 0
+          ? `次に学ぶ ${p.ready}語`
+          : '次の復習日まで待つ'}
+      noteTone={p.due > 0 ? 'alert' : 'muted'}
+      noteProps={{ 'data-vocab-study-ready': p.ready }}
+      studyLabel={p.ready ? '暗記' : '次回待ち'}
+      studyDisabled={!p.ready}
+      studyAriaLabel={p.ready
+        ? `英検${level.label}の単語を暗記。復習または未学習 ${p.ready}語`
+        : `英検${level.label}は次の復習日まで待つ`}
+      onStudy={onStudy}
+      quizDisabled={!p.total}
+      quizAriaLabel={`英検${level.label}の単語テスト`}
+      onQuiz={onQuiz}
+      browseLabel="10分野で選ぶ"
+      browseIcon={<Sparkles size={15} />}
+      browseAriaLabel={`英検${level.label}の10分野を選ぶ`}
+      browseDisabled={!p.total}
+      onBrowse={onFields}
+      catalogLabel="一覧を確認"
+      catalogAriaLabel={`英検${level.label}の全語彙を一覧で確認する`}
+      catalogDisabled={!p.total}
+      catalogProps={{ 'data-vocab-catalog-entry': level.id }}
+      onCatalog={onCatalog}
+    />
   )
 }
 

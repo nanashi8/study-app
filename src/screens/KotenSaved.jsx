@@ -181,11 +181,11 @@ export function KotenSavedScreen() {
                     onClick={() =>
                       navigate('kotenGrammarQuiz', {
                         ids: grammar.map((item) => item.id),
-                        title: '登録文法・腕試し',
+                        title: '登録文法のテスト',
                       })
                     }
                   >
-                    <Cards size={16} /> 腕試し
+                    <Cards size={16} /> テスト
                   </Button>
                 </div>
 
@@ -267,7 +267,7 @@ export function KotenSavedScreen() {
           <div className="mt-4">
             {!culture.length ? (
               <EmptyState icon="🏯" title="登録した古典常識はまだありません">
-                古典常識の事典や腕試しの答え合わせから、覚え直したいテーマを登録できます。
+                古典常識の事典やテストの答え合わせから、覚え直したいテーマを登録できます。
               </EmptyState>
             ) : (
               <>
@@ -287,11 +287,11 @@ export function KotenSavedScreen() {
                     onClick={() =>
                       navigate('kotenCultureQuiz', {
                         ids: culture.map((item) => item.id),
-                        title: '登録常識・腕試し',
+                        title: '登録常識のテスト',
                       })
                     }
                   >
-                    <Cards size={16} /> 腕試し
+                    <Cards size={16} /> テスト
                   </Button>
                 </div>
 

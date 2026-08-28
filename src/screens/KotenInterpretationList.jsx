@@ -71,14 +71,14 @@ export function KotenInterpretationListScreen() {
             </div>
           </button>
           <button
-            onClick={() => start(KOTEN_INTERPRETATIONS, '短文解釈 腕だめし')}
+            onClick={() => start(KOTEN_INTERPRETATIONS, '短文解釈のテスト')}
             className="flex items-center gap-2 rounded-2xl bg-orange-100 p-3 text-left transition-transform active:scale-[0.98]"
           >
             <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-200 text-orange-700">
               <Cards size={20} />
             </span>
             <div>
-              <div className="text-sm font-extrabold text-orange-900">腕だめし</div>
+              <div className="text-sm font-extrabold text-orange-900">テスト</div>
               <div className="text-[11px] font-bold text-orange-800/70">事前確認して12問</div>
             </div>
           </button>
