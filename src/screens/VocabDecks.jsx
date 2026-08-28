@@ -13,7 +13,10 @@ import {
   VOCAB_CATALOG_DEFAULT_DIRECTIONS,
   VOCAB_CATALOG_SORT_OPTIONS,
   VOCAB_CATALOG_STATUS_FILTER_OPTIONS,
+  VOCAB_CATALOG_FIELD_FILTER_ALL,
   vocabularyCatalogActivityRows,
+  vocabularyCatalogFieldOptions,
+  vocabularyCatalogFieldRows,
   vocabularyCatalogRecordedRows,
   vocabularyCatalogRemainingRows,
   vocabularyCatalogResultForDirection,
@@ -37,6 +40,15 @@ function catalogDirectionLabel(sort, direction) {
 function statusFilterLabel(statusFilter) {
   return VOCAB_CATALOG_STATUS_FILTER_OPTIONS.find((option) => option.id === statusFilter)?.label ?? ''
 }
+
+// 学習の自己判定とテストの結果は別の記録。選択肢もその2群に分けて見せる。
+const MEMORY_STATUS_IDS = ['memoryUnlearned', 'memoryLearned', 'memoryReviewing']
+
+const statusFilterOptionsFor = (group) => VOCAB_CATALOG_STATUS_FILTER_OPTIONS.filter((option) => (
+  group === 'memory'
+    ? MEMORY_STATUS_IDS.includes(option.id)
+    : option.id !== 'all' && !MEMORY_STATUS_IDS.includes(option.id)
+))
 
 function LevelViewTabs({ view, onChange }) {
   return (
@@ -76,6 +88,7 @@ function VocabularyCatalog({ level, srs, review, onShowFields, onOpenWord }) {
   const [sort, setSort] = useState('weight')
   const [direction, setDirection] = useState(VOCAB_CATALOG_DEFAULT_DIRECTIONS.weight)
   const [statusFilter, setStatusFilter] = useState('all')
+  const [fieldFilter, setFieldFilter] = useState(VOCAB_CATALOG_FIELD_FILTER_ALL)
   const [visible, setVisible] = useState(CATALOG_PAGE_SIZE)
   const [swipeMessage, setSwipeMessage] = useState('')
   const [sortOpen, setSortOpen] = useState(false)
@@ -90,29 +103,41 @@ function VocabularyCatalog({ level, srs, review, onShowFields, onOpenWord }) {
     }),
     [activity, direction, now, sort, srs, words],
   )
+  const fieldOptions = useMemo(() => vocabularyCatalogFieldOptions(rows), [rows])
+  const fieldRows = useMemo(
+    () => vocabularyCatalogFieldRows(rows, fieldFilter),
+    [fieldFilter, rows],
+  )
   const memoryRecordedCount = useMemo(
-    () => vocabularyCatalogRecordedRows(rows, 'memory').length,
-    [rows],
+    () => vocabularyCatalogRecordedRows(fieldRows, 'memory').length,
+    [fieldRows],
   )
   const testRecordedCount = useMemo(
-    () => vocabularyCatalogRecordedRows(rows, 'test').length,
-    [rows],
+    () => vocabularyCatalogRecordedRows(fieldRows, 'test').length,
+    [fieldRows],
   )
   const recordedCount = activity === 'test' ? testRecordedCount : memoryRecordedCount
   const filteredRows = useMemo(
-    () => vocabularyCatalogStatusRows(rows, statusFilter),
-    [rows, statusFilter],
+    () => vocabularyCatalogStatusRows(fieldRows, statusFilter),
+    [fieldRows, statusFilter],
   )
+  const fieldFilterLabel = fieldOptions.find((option) => option.id === fieldFilter)?.label
+    ?? 'すべての分野'
   const dismissedIds = dismissedByActivity[activity] ?? new Set()
   const remainingRows = vocabularyCatalogRemainingRows(filteredRows, dismissedIds)
   const visibleRows = remainingRows.slice(0, visible)
   const activityMeta = VOCABULARY_HISTORY_ACTIVITY_META[activity]
     ?? VOCABULARY_HISTORY_ACTIVITY_META.memory
 
-  useEffect(() => setVisible(CATALOG_PAGE_SIZE), [activity, direction, sort, statusFilter])
+  useEffect(
+    () => setVisible(CATALOG_PAGE_SIZE),
+    [activity, direction, fieldFilter, sort, statusFilter],
+  )
   useEffect(() => {
     setDismissedByActivity({ memory: new Set(), test: new Set() })
     setSwipeMessage('')
+    setFieldFilter(VOCAB_CATALOG_FIELD_FILTER_ALL)
+    setStatusFilter('all')
   }, [level.id])
 
   const chooseSort = (nextSort) => {
@@ -175,11 +200,11 @@ function VocabularyCatalog({ level, srs, review, onShowFields, onOpenWord }) {
                     ? 'bg-white text-brand-700 shadow-sm'
                     : 'text-ink/55 active:bg-white/70',
                 )}
-                aria-label={`${option.label}。済み${count.toLocaleString('ja-JP')}語、全${rows.length.toLocaleString('ja-JP')}語`}
+                aria-label={`${option.label}。済み${count.toLocaleString('ja-JP')}語、全${fieldRows.length.toLocaleString('ja-JP')}語`}
                 data-vocab-catalog-activity-tab={option.id}
               >
                 {option.id === 'test' ? 'テスト' : '学習'}
-                <span className="ml-1 tabular-nums">{count.toLocaleString('ja-JP')}/{rows.length.toLocaleString('ja-JP')}語</span>
+                <span className="ml-1 tabular-nums">{count.toLocaleString('ja-JP')}/{fieldRows.length.toLocaleString('ja-JP')}語</span>
               </button>
             )
           })}
@@ -196,12 +221,12 @@ function VocabularyCatalog({ level, srs, review, onShowFields, onOpenWord }) {
             type="button"
             onClick={() => setSortOpen((current) => !current)}
             aria-expanded={sortOpen}
-            aria-label={`並び替えと絞り込みを${sortOpen ? '閉じる' : '開く'}`}
+            aria-label={`しぼり込みと並び替えを${sortOpen ? '閉じる' : '開く'}。現在は${fieldFilterLabel}・${statusFilter === 'all' ? 'すべての状況' : statusFilterLabel(statusFilter)}`}
             className="learning-catalog-tools-toggle min-h-11 items-center justify-center gap-1 rounded-xl border border-slate-300 bg-white px-2 text-[10px] font-extrabold text-brand-700 active:bg-brand-50"
             data-vocab-catalog-tools-toggle
           >
-            <span className="hidden min-[360px]:inline">並び・絞込</span>
-            <span className="min-[360px]:hidden">並び</span>
+            <span className="hidden min-[360px]:inline">しぼり込み・並び</span>
+            <span className="min-[360px]:hidden">絞込</span>
             <span aria-hidden="true">{sortOpen ? '−' : '＋'}</span>
           </button>
           <button
@@ -223,45 +248,72 @@ function VocabularyCatalog({ level, srs, review, onShowFields, onOpenWord }) {
           data-vocab-catalog-tools
         >
           <label className="block min-w-0">
-            <span className="sr-only">状態でしぼり込み</span>
+            <span className="mb-0.5 block px-1 text-[10px] font-extrabold text-ink/50">10分野でしぼり込み</span>
             <select
-              value={statusFilter}
-              onChange={(event) => setStatusFilter(event.target.value)}
-              aria-label="状態でしぼり込み"
+              value={fieldFilter}
+              onChange={(event) => setFieldFilter(event.target.value)}
+              aria-label="10分野でしぼり込み"
               className="h-11 w-full min-w-0 rounded-xl border border-slate-300 bg-white px-3 text-sm font-extrabold text-ink"
-              data-vocab-catalog-status-filter={statusFilter}
+              data-vocab-catalog-field-filter={fieldFilter}
             >
-              {VOCAB_CATALOG_STATUS_FILTER_OPTIONS.map((option) => (
+              {fieldOptions.map((option) => (
                 <option key={option.id} value={option.id}>
-                  {option.id === 'all' ? 'すべての語を表示' : `${option.label}だけ表示`}
+                  {option.id === VOCAB_CATALOG_FIELD_FILTER_ALL
+                    ? `すべての分野（${option.count.toLocaleString('ja-JP')}語）`
+                    : `${option.emoji} ${option.label}（${option.count.toLocaleString('ja-JP')}語）`}
                 </option>
               ))}
             </select>
           </label>
-          <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-1.5">
-            <label className="min-w-0">
-              <span className="sr-only">一覧の並び替え</span>
-              <select
-                value={sort}
-                onChange={(event) => chooseSort(event.target.value)}
-                aria-label="一覧の並び替え"
-                className="h-11 w-full min-w-0 rounded-xl border border-slate-300 bg-white px-3 text-sm font-extrabold text-ink"
-                data-vocab-catalog-sort
-              >
-                {VOCAB_CATALOG_SORT_OPTIONS.map((option) => (
+          <label className="block min-w-0">
+            <span className="mb-0.5 block px-1 text-[10px] font-extrabold text-ink/50">学習状況でしぼり込み</span>
+            <select
+              value={statusFilter}
+              onChange={(event) => setStatusFilter(event.target.value)}
+              aria-label="学習状況でしぼり込み"
+              className="h-11 w-full min-w-0 rounded-xl border border-slate-300 bg-white px-3 text-sm font-extrabold text-ink"
+              data-vocab-catalog-status-filter={statusFilter}
+            >
+              <option value="all">すべての状況を表示</option>
+              <optgroup label="学習の記録">
+                {statusFilterOptionsFor('memory').map((option) => (
                   <option key={option.id} value={option.id}>{option.label}</option>
                 ))}
-              </select>
-            </label>
-            <button
-              type="button"
-              onClick={() => setDirection((current) => (current === 'asc' ? 'desc' : 'asc'))}
-              className="min-h-11 rounded-xl border border-slate-300 bg-white px-3 text-xs font-extrabold text-brand-700 active:bg-brand-50"
-              aria-label={`並び順を変更。現在は${catalogDirectionLabel(sort, direction)}`}
-              data-vocab-catalog-direction={direction}
-            >
-              {catalogDirectionLabel(sort, direction)}
-            </button>
+              </optgroup>
+              <optgroup label="テストの記録">
+                {statusFilterOptionsFor('test').map((option) => (
+                  <option key={option.id} value={option.id}>{option.label}</option>
+                ))}
+              </optgroup>
+            </select>
+          </label>
+          <div className="min-w-0">
+            <span className="mb-0.5 block px-1 text-[10px] font-extrabold text-ink/50">並び替え</span>
+            <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-1.5">
+              <label className="min-w-0">
+                <span className="sr-only">一覧の並び替え</span>
+                <select
+                  value={sort}
+                  onChange={(event) => chooseSort(event.target.value)}
+                  aria-label="一覧の並び替え"
+                  className="h-11 w-full min-w-0 rounded-xl border border-slate-300 bg-white px-3 text-sm font-extrabold text-ink"
+                  data-vocab-catalog-sort
+                >
+                  {VOCAB_CATALOG_SORT_OPTIONS.map((option) => (
+                    <option key={option.id} value={option.id}>{option.label}</option>
+                  ))}
+                </select>
+              </label>
+              <button
+                type="button"
+                onClick={() => setDirection((current) => (current === 'asc' ? 'desc' : 'asc'))}
+                className="min-h-11 rounded-xl border border-slate-300 bg-white px-3 text-xs font-extrabold text-brand-700 active:bg-brand-50"
+                aria-label={`並び順を変更。現在は${catalogDirectionLabel(sort, direction)}`}
+                data-vocab-catalog-direction={direction}
+              >
+                {catalogDirectionLabel(sort, direction)}
+              </button>
+            </div>
           </div>
         </div>
         <p className="sr-only" aria-live="polite" data-vocab-catalog-swipe-message>
@@ -271,8 +323,9 @@ function VocabularyCatalog({ level, srs, review, onShowFields, onOpenWord }) {
 
       <div className="min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto px-3 py-3" data-vocab-catalog-list>
         <p className="mb-2 px-1 text-xs font-extrabold text-ink/50" aria-live="polite">
-          {`${activity === 'test' ? 'テスト済' : '学習済'} ${recordedCount.toLocaleString('ja-JP')}/${rows.length.toLocaleString('ja-JP')}語`}
-          {statusFilter !== 'all' && `・${statusFilterLabel(statusFilter)}${filteredRows.length.toLocaleString('ja-JP')}語`}
+          {fieldFilter !== VOCAB_CATALOG_FIELD_FILTER_ALL && `${fieldFilterLabel}・`}
+          {`${activity === 'test' ? 'テスト済' : '学習済'} ${recordedCount.toLocaleString('ja-JP')}/${fieldRows.length.toLocaleString('ja-JP')}語`}
+          {statusFilter !== 'all' && `・「${statusFilterLabel(statusFilter)}」${filteredRows.length.toLocaleString('ja-JP')}語`}
           {`・残り${remainingRows.length.toLocaleString('ja-JP')}語`}
         </p>
         <div className="space-y-2">
@@ -288,11 +341,11 @@ function VocabularyCatalog({ level, srs, review, onShowFields, onOpenWord }) {
         </div>
         {!visibleRows.length && (
           <p className="rounded-xl bg-slate-50 px-4 py-8 text-center text-sm font-bold leading-relaxed text-ink/50">
-            {!rows.length
+            {!fieldRows.length
               ? activityMeta.empty
               : filteredRows.length
                 ? 'この一覧をすべて確認しました。「一覧を再表示」で、同じ語彙をもう一度確認できます。'
-                : `${statusFilterLabel(statusFilter)}の語はありません。しぼり込みを「すべての語を表示」に戻すと、全語を確認できます。`}
+                : `「${statusFilter === 'all' ? fieldFilterLabel : statusFilterLabel(statusFilter)}」の語はありません。しぼり込みを「すべて」に戻すと、全語を確認できます。`}
           </p>
         )}
         {visible < remainingRows.length && (
