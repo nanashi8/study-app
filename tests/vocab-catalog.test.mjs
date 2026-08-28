@@ -13,7 +13,10 @@ import {
   VOCAB_CATALOG_DEFAULT_DIRECTIONS,
   VOCAB_CATALOG_SORT_OPTIONS,
   VOCAB_CATALOG_STATUS_FILTER_OPTIONS,
+  VOCAB_CATALOG_FIELD_FILTER_ALL,
   vocabularyCatalogActivityRows,
+  vocabularyCatalogFieldOptions,
+  vocabularyCatalogFieldRows,
   vocabularyCatalogRecordedRows,
   vocabularyCatalogRemainingRows,
   vocabularyCatalogRows,
@@ -183,13 +186,15 @@ test('一覧確認は学習前・テスト前を含む全語を出し、記録�
   assert.equal(unrecordedRow.testStatus, 'unanswered')
 })
 
-test('学習前・学習済・テスト前・テスト後の状態で一覧をしぼり込む', () => {
+test('学習前・覚えた・まだ・テスト前・正解・不正解の状態で一覧をしぼり込む', () => {
   assert.deepEqual(VOCAB_CATALOG_STATUS_FILTER_OPTIONS, [
     { id: 'all', label: 'すべて' },
     { id: 'memoryUnlearned', label: '学習前' },
-    { id: 'memoryLearned', label: '学習済' },
+    { id: 'memoryLearned', label: '覚えた' },
+    { id: 'memoryReviewing', label: 'まだ' },
     { id: 'testUnanswered', label: 'テスト前' },
-    { id: 'testAnswered', label: 'テスト後' },
+    { id: 'testCorrect', label: '正解' },
+    { id: 'testIncorrect', label: '不正解' },
   ])
 
   const rows = [
@@ -202,10 +207,45 @@ test('学習前・学習済・テスト前・テスト後の状態で一覧を�
 
   assert.deepEqual(ids('all'), ['a', 'b', 'c', 'd'])
   assert.deepEqual(ids('memoryUnlearned'), ['a', 'd'])
-  assert.deepEqual(ids('memoryLearned'), ['b', 'c'])
+  assert.deepEqual(ids('memoryLearned'), ['b'])
+  assert.deepEqual(ids('memoryReviewing'), ['c'])
   assert.deepEqual(ids('testUnanswered'), ['a', 'b'])
-  assert.deepEqual(ids('testAnswered'), ['c', 'd'])
+  assert.deepEqual(ids('testCorrect'), ['c'])
+  assert.deepEqual(ids('testIncorrect'), ['d'])
   assert.deepEqual(ids('unknown'), ['a', 'b', 'c', 'd'])
+})
+
+test('10分野で一覧をしぼり込み、語のある分野だけを選択肢に出す', () => {
+  const words = wordsByLevel('5')
+  const rows = vocabularyCatalogRows(words, {})
+  const options = vocabularyCatalogFieldOptions(rows)
+
+  assert.equal(options[0].id, VOCAB_CATALOG_FIELD_FILTER_ALL)
+  assert.equal(options[0].count, rows.length)
+  assert.ok(options.length > 1, '級内に分野が1つ以上ある')
+  assert.equal(new Set(options.map((option) => option.id)).size, options.length)
+
+  for (const option of options.slice(1)) {
+    const filtered = vocabularyCatalogFieldRows(rows, option.id)
+    assert.equal(filtered.length, option.count)
+    assert.ok(filtered.length > 0)
+    assert.ok(filtered.every((row) => row.fieldId === option.id))
+    assert.equal(
+      new Set(filtered.map((row) => vocabFieldFor(row.word))).size,
+      1,
+      `${option.label}は1分野の語だけを含む`,
+    )
+  }
+
+  assert.equal(
+    vocabularyCatalogFieldRows(rows, VOCAB_CATALOG_FIELD_FILTER_ALL).length,
+    rows.length,
+  )
+  assert.equal(
+    options.slice(1).reduce((total, option) => total + option.count, 0),
+    rows.length,
+    '全語がいずれかの分野に属する',
+  )
 })
 
 test('一覧確認の左右スワイプは指定された扱いを毎回記録する', () => {
@@ -242,6 +282,10 @@ test('級画面から一覧を開き、記録別の一覧を左右スワイプ�
   assert.match(decks, /data-vocab-catalog-activity-tab/)
   assert.match(decks, /data-vocab-catalog-sort/)
   assert.match(decks, /data-vocab-catalog-status-filter/)
+  assert.match(decks, /data-vocab-catalog-field-filter/)
+  assert.match(decks, /10分野でしぼり込み/)
+  assert.match(decks, /学習状況でしぼり込み/)
+  assert.match(decks, /並び替え/)
   assert.doesNotMatch(decks, /あ→わ|わ→あ/)
   assert.doesNotMatch(catalog, /id: 'field'/)
   assert.match(decks, /data-vocab-catalog-compact-controls/)

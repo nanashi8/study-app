@@ -1,4 +1,4 @@
-import { vocabFieldFor } from '../data/vocab.js'
+import { VOCAB_FIELD_GROUPS, vocabFieldFor, vocabFieldGroupFor } from '../data/vocab.js'
 import {
   learningStatusForSrsEntry,
   quizStatusForSrsEntry,
@@ -12,14 +12,19 @@ export const VOCAB_CATALOG_SORT_OPTIONS = Object.freeze([
 ])
 
 // 学習・テストの進み具合だけで一覧を絞る。並び替えでは分かりにくい
-// 「まだ手を付けていない語」「もう終えた語」を、状態そのもので選べるようにする。
+// 「まだ手を付けていない語」「つまずいた語」を、状態そのもので選べるようにする。
 export const VOCAB_CATALOG_STATUS_FILTER_OPTIONS = Object.freeze([
   { id: 'all', label: 'すべて' },
   { id: 'memoryUnlearned', label: '学習前' },
-  { id: 'memoryLearned', label: '学習済' },
+  { id: 'memoryLearned', label: '覚えた' },
+  { id: 'memoryReviewing', label: 'まだ' },
   { id: 'testUnanswered', label: 'テスト前' },
-  { id: 'testAnswered', label: 'テスト後' },
+  { id: 'testCorrect', label: '正解' },
+  { id: 'testIncorrect', label: '不正解' },
 ])
+
+// 10分野は級をまたいで同じ並び。一覧では、その級に語がある分野だけを選べるようにする。
+export const VOCAB_CATALOG_FIELD_FILTER_ALL = 'all'
 
 export const VOCAB_CATALOG_ACTIVITY_OPTIONS = Object.freeze([
   { id: 'memory', label: '学習の一覧' },
@@ -96,6 +101,7 @@ export function vocabularyCatalogRows(
       word,
       entry,
       field: vocabFieldFor(word),
+      fieldId: vocabFieldGroupFor(word)?.id ?? null,
       memoryAt: activityTimestamp(entry, 'memory'),
       testAt: activityTimestamp(entry, 'test'),
       memoryStatus: learningStatusForSrsEntry(entry),
@@ -142,10 +148,42 @@ export function vocabularyCatalogActivityRows(
 export function vocabularyCatalogStatusRows(rows = [], status = 'all') {
   const list = Array.isArray(rows) ? rows : []
   if (status === 'memoryUnlearned') return list.filter((row) => row.memoryStatus === 'unlearned')
-  if (status === 'memoryLearned') return list.filter((row) => row.memoryStatus !== 'unlearned')
+  if (status === 'memoryLearned') return list.filter((row) => row.memoryStatus === 'learned')
+  if (status === 'memoryReviewing') return list.filter((row) => row.memoryStatus === 'reviewing')
   if (status === 'testUnanswered') return list.filter((row) => row.testStatus === 'unanswered')
-  if (status === 'testAnswered') return list.filter((row) => row.testStatus !== 'unanswered')
+  if (status === 'testCorrect') return list.filter((row) => row.testStatus === 'correct')
+  if (status === 'testIncorrect') return list.filter((row) => row.testStatus === 'incorrect')
   return list
+}
+
+/**
+ * 一覧に出ている語から、選べる分野だけを10分野の並び順で返す。
+ * 語のない分野は選択肢に出さず、学習者が空の一覧に迷い込まないようにする。
+ */
+export function vocabularyCatalogFieldOptions(rows = []) {
+  const list = Array.isArray(rows) ? rows : []
+  const counts = new Map()
+  for (const row of list) {
+    if (!row?.fieldId) continue
+    counts.set(row.fieldId, (counts.get(row.fieldId) ?? 0) + 1)
+  }
+  return [
+    { id: VOCAB_CATALOG_FIELD_FILTER_ALL, label: 'すべての分野', emoji: '📚', count: list.length },
+    ...VOCAB_FIELD_GROUPS
+      .filter((group) => counts.has(group.id))
+      .map((group) => ({
+        id: group.id,
+        label: group.label,
+        emoji: group.emoji,
+        count: counts.get(group.id),
+      })),
+  ]
+}
+
+export function vocabularyCatalogFieldRows(rows = [], fieldId = VOCAB_CATALOG_FIELD_FILTER_ALL) {
+  const list = Array.isArray(rows) ? rows : []
+  if (!fieldId || fieldId === VOCAB_CATALOG_FIELD_FILTER_ALL) return list
+  return list.filter((row) => row.fieldId === fieldId)
 }
 
 export function vocabularyCatalogRecordedRows(rows = [], activity = 'memory') {
