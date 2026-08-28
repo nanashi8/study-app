@@ -9,12 +9,11 @@ import { SpeakButton } from '../components/SpeakButton.jsx'
 import { LongSentenceTranslation } from '../components/LongSentenceTranslation.jsx'
 import { SyntaxFamilyGuide } from '../components/SyntaxFamilyGuide.jsx'
 import { IdiomFormGuide } from '../components/IdiomFormGuide.jsx'
-import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
 import { Button, IconButton, Chip } from '../components/ui.jsx'
-import { ArrowRight, Bookmark, BookmarkFilled, Close, Lightbulb, Link } from '../components/Icons.jsx'
+import { ArrowRight, Close, Lightbulb, Link } from '../components/Icons.jsx'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
-import { CardStudyFooter, CardSwipeRegion } from '../components/CardStudyControls.jsx'
+import { CardSaveToggle, CardStudyFooter, CardSwipeRegion } from '../components/CardStudyControls.jsx'
 import {
   nextUnansweredSessionIndex,
   QuestionSessionControls,
@@ -137,37 +136,6 @@ export function PhraseStudyScreen() {
 
   return (
     <div className="flex h-full flex-col">
-      <div className="flex items-center gap-3 px-3 py-3">
-        <IconButton onClick={leave} aria-label="やめる"><Close size={22} /></IconButton>
-        <span className="min-w-0 flex-1" aria-hidden="true" />
-        <IconButton
-          onClick={() => toggleNotebookItem('phrases', item.id)}
-          aria-label={saved ? `${item.phrase}をマイ学習ノートから外す` : `${item.phrase}をマイ学習ノートへ保存`}
-          aria-pressed={saved}
-          className={saved ? 'text-amber-600' : 'text-ink/30'}
-        >
-          {saved ? <BookmarkFilled size={20} /> : <Bookmark size={20} />}
-        </IconButton>
-        <RevealAnswersToggle label="意味" onChange={(on) => setFlipped(on)} />
-        <SpeechSettingsButton compact />
-        <SessionCounter
-          index={i}
-          total={deck.length}
-          max={poolSize}
-          onResize={(size, { discard }) => {
-            if (discard) {
-              setDeck(buildFor(size))
-              setI(0)
-              setFlipped(revealAll)
-              clearRecordedAnswers()
-              results.current = { remembered: 0, forgot: 0, forgotIds: [] }
-            } else {
-              setDeck((current) => growDeck(current, i + 1, buildFor(size), size))
-            }
-          }}
-        />
-      </div>
-
       <QuestionSessionControls
         index={i}
         total={deck.length}
@@ -176,6 +144,51 @@ export function PhraseStudyScreen() {
         nextDisabled={i + 1 >= deck.length}
         itemLabel="カード"
         progressColor="#8b5cf6"
+        leadingAction={(
+          <IconButton
+            onClick={leave}
+            aria-label="やめる"
+            className="shrink-0 rounded-xl text-ink/45"
+          >
+            <Close size={19} />
+          </IconButton>
+        )}
+        progressControl={(
+          <SessionCounter
+            index={i}
+            total={deck.length}
+            max={poolSize}
+            label="カード"
+            className="h-11 w-full min-w-0 px-0 text-center text-xs no-underline"
+            onResize={(size, { discard }) => {
+              if (discard) {
+                setDeck(buildFor(size))
+                setI(0)
+                setFlipped(revealAll)
+                clearRecordedAnswers()
+                results.current = { remembered: 0, forgot: 0, forgotIds: [] }
+              } else {
+                setDeck((current) => growDeck(current, i + 1, buildFor(size), size))
+              }
+            }}
+          />
+        )}
+        trailingActions={(
+          <>
+            <RevealAnswersToggle
+              label="意味"
+              toolbar
+              onChange={(on) => setFlipped(on)}
+            />
+            <CardSaveToggle
+              saved={saved}
+              onToggle={() => toggleNotebookItem('phrases', item.id)}
+              label="ノート"
+              savedLabel={`${item.phrase}をマイ学習ノートから外す`}
+              unsavedLabel={`${item.phrase}をマイ学習ノートへ保存`}
+            />
+          </>
+        )}
       />
 
       <CardSwipeRegion

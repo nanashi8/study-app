@@ -29,6 +29,7 @@ import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 import {
   QuestionSessionControls,
   useIndexedSessionState,
+  useUnfinishedSessionRecord,
 } from '../components/QuestionSessionControls.jsx'
 
 // 空所 ___ を下線つきの空欄として表示。
@@ -78,6 +79,13 @@ export function GrammarQuizScreen() {
   const [orderAttempt, setOrderAttempt] = useState(0)
   const results = useRef({ correct: 0, wrong: 0, unknown: 0, wrongIds: [] })
 
+  // 途中でやめても、そこまでに答えた分をこの分野の学習記録へ残す。
+  const handOffSession = useUnfinishedSessionRecord({
+    skill: 'grammar',
+    answered: results.current.correct + results.current.wrong + results.current.unknown,
+    correct: results.current.correct,
+  })
+
   const item = deck[i]
   const options = useMemo(() => (item ? shuffle(item.choices ?? []) : []), [item?.id]) // eslint-disable-line react-hooks/exhaustive-deps
   const patternExamples = useMemo(
@@ -110,6 +118,7 @@ export function GrammarQuizScreen() {
   const saved = learningNotebook?.entries?.[`grammar:${item.id}`]?.saved === true
 
   const finish = () => {
+    handOffSession()
     navigate('sessionResult', {
       title: params.title ?? '文法',
       mode: 'quiz',

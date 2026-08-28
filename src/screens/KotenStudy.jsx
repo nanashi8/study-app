@@ -3,10 +3,9 @@ import { useStore } from '../store/useStore.js'
 import { getKoten } from '../data/koten.js'
 import { Button, IconButton } from '../components/ui.jsx'
 import { KotenText, KotenWord } from '../components/KotenFurigana.jsx'
-import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
-import { CardStudyFooter, CardSwipeRegion } from '../components/CardStudyControls.jsx'
+import { CardSaveToggle, CardStudyFooter, CardSwipeRegion } from '../components/CardStudyControls.jsx'
 import { growDeck } from '../lib/session.js'
 import {
   nextUnansweredSessionIndex,
@@ -14,8 +13,6 @@ import {
   useIndexedSessionState,
 } from '../components/QuestionSessionControls.jsx'
 import {
-  Bookmark,
-  BookmarkFilled,
   Close,
   ArrowRight,
   Lightbulb,
@@ -118,34 +115,6 @@ export function KotenStudyScreen() {
 
   return (
     <div className="flex h-full flex-col">
-      {/* ヘッダー（進捗） */}
-      <div className="flex items-center gap-3 px-3 py-3">
-        <IconButton onClick={back} aria-label="やめる">
-          <Close size={22} />
-        </IconButton>
-        <span className="min-w-0 flex-1" aria-hidden="true" />
-        <RevealAnswersToggle label="意味" onChange={(on) => setFlipped(on)} />
-        <SpeechSettingsButton compact />
-        <SessionCounter
-          index={i}
-          total={deck.length}
-          max={poolSize}
-          label="語"
-          onResize={(size, { discard }) => {
-            if (discard) {
-              setDeck(buildKotenDeck(params.ids, seed + 1, size, params.preserveOrder))
-              setI(0)
-              setFlipped(revealAll)
-              setDone(false)
-              setRemembered(0)
-              clearRecordedAnswers()
-            } else {
-              setDeck((current) => growDeck(current, i + 1, buildKotenDeck(params.ids, seed + 1, size, params.preserveOrder), size))
-            }
-          }}
-        />
-      </div>
-
       <QuestionSessionControls
         index={i}
         total={deck.length}
@@ -154,6 +123,52 @@ export function KotenStudyScreen() {
         nextDisabled={i + 1 >= deck.length}
         itemLabel="カード"
         progressColor="#f59e0b"
+        leadingAction={(
+          <IconButton
+            onClick={back}
+            aria-label="やめる"
+            className="shrink-0 rounded-xl text-ink/45"
+          >
+            <Close size={19} />
+          </IconButton>
+        )}
+        progressControl={(
+          <SessionCounter
+            index={i}
+            total={deck.length}
+            max={poolSize}
+            label="語"
+            className="h-11 w-full min-w-0 px-0 text-center text-xs no-underline"
+            onResize={(size, { discard }) => {
+              if (discard) {
+                setDeck(buildKotenDeck(params.ids, seed + 1, size, params.preserveOrder))
+                setI(0)
+                setFlipped(revealAll)
+                setDone(false)
+                setRemembered(0)
+                clearRecordedAnswers()
+              } else {
+                setDeck((current) => growDeck(current, i + 1, buildKotenDeck(params.ids, seed + 1, size, params.preserveOrder), size))
+              }
+            }}
+          />
+        )}
+        trailingActions={(
+          <>
+            <RevealAnswersToggle
+              label="意味"
+              toolbar
+              onChange={(on) => setFlipped(on)}
+            />
+            <CardSaveToggle
+              saved={saved}
+              onToggle={() => toggleKotenWordList(word.id)}
+              label="登録"
+              savedLabel={`${word.word}を登録単語から外す`}
+              unsavedLabel={`${word.word}を登録単語へ追加`}
+            />
+          </>
+        )}
       />
 
       {/* カード */}
@@ -168,21 +183,10 @@ export function KotenStudyScreen() {
           onClick={() => !flipped && setFlipped(true)}
           className="animate-pop-in rounded-[2rem] bg-white p-6 shadow-card"
         >
-          <div className="flex items-start justify-between">
+          <div className="flex items-start">
             <span className="rounded-full bg-amber-100 px-2.5 py-1 text-[11px] font-extrabold text-amber-700">
               {word.pos}
             </span>
-            <IconButton
-              onClick={(event) => {
-                event.stopPropagation()
-                toggleKotenWordList(word.id)
-              }}
-              className={saved ? '-mr-2 -mt-2 text-amber-600' : '-mr-2 -mt-2 text-ink/25'}
-              aria-label={saved ? `${word.word}を登録単語から外す` : `${word.word}を登録単語へ追加`}
-              aria-pressed={saved}
-            >
-              {saved ? <BookmarkFilled size={22} /> : <Bookmark size={22} />}
-            </IconButton>
           </div>
 
           <div className="mt-2 flex flex-col items-center text-center">

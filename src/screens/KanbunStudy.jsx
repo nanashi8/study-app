@@ -8,12 +8,11 @@ import {
 } from '../data/kanbun-content.js'
 import { KANBUN_LEVEL_BY_ID } from '../data/kanbun-meta.js'
 import { Button, Chip, IconButton } from '../components/ui.jsx'
-import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { KanbunText, KanbunHeadword } from '../components/KanbunFurigana.jsx'
 import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 import { growDeck } from '../lib/session.js'
-import { CardStudyFooter, CardSwipeRegion } from '../components/CardStudyControls.jsx'
+import { CardSaveToggle, CardStudyFooter, CardSwipeRegion } from '../components/CardStudyControls.jsx'
 import {
   nextUnansweredSessionIndex,
   QuestionSessionControls,
@@ -21,8 +20,6 @@ import {
 } from '../components/QuestionSessionControls.jsx'
 import {
   ArrowRight,
-  Bookmark,
-  BookmarkFilled,
   Close,
   Lightbulb,
 } from '../components/Icons.jsx'
@@ -178,19 +175,30 @@ export function KanbunStudyScreen() {
 
   return (
     <div className="flex h-full flex-col">
-      <div className="border-b border-rose-100 bg-white/90 px-3 py-3 backdrop-blur">
-        <div className="flex items-center gap-3">
-          <IconButton onClick={backToKanbunCatalog} aria-label="学習をやめる"><Close size={22} /></IconButton>
-          <div className="min-w-0 flex-1">
-            <p className="truncate text-[10px] font-extrabold text-ink/40">{params.title ?? `${meta.label}を暗記`}</p>
-          </div>
-          <RevealAnswersToggle label="答え" onChange={(on) => setRevealed(on)} />
-          <SpeechSettingsButton compact />
+      <QuestionSessionControls
+        index={index}
+        total={deck.length}
+        onPrevious={() => moveToCard(Math.max(0, index - 1))}
+        onNext={() => moveToCard(Math.min(deck.length - 1, index + 1))}
+        nextDisabled={index + 1 >= deck.length}
+        itemLabel="カード"
+        progressColor="#be123c"
+        leadingAction={(
+          <IconButton
+            onClick={backToKanbunCatalog}
+            aria-label="学習をやめる"
+            className="shrink-0 rounded-xl text-ink/45"
+          >
+            <Close size={19} />
+          </IconButton>
+        )}
+        progressControl={(
           <SessionCounter
             index={index}
             total={deck.length}
             max={poolSize}
             label="項目"
+            className="h-11 w-full min-w-0 px-0 text-center text-xs no-underline"
             onResize={(size, { discard }) => {
               if (discard) {
                 setDeck(buildFor(params.ids, size))
@@ -205,17 +213,23 @@ export function KanbunStudyScreen() {
               }
             }}
           />
-        </div>
-      </div>
-
-      <QuestionSessionControls
-        index={index}
-        total={deck.length}
-        onPrevious={() => moveToCard(Math.max(0, index - 1))}
-        onNext={() => moveToCard(Math.min(deck.length - 1, index + 1))}
-        nextDisabled={index + 1 >= deck.length}
-        itemLabel="カード"
-        progressColor="#be123c"
+        )}
+        trailingActions={(
+          <>
+            <RevealAnswersToggle
+              label="答え"
+              toolbar
+              onChange={(on) => setRevealed(on)}
+            />
+            <CardSaveToggle
+              saved={saved}
+              onToggle={() => toggleSaved(domain, item.id)}
+              label="登録"
+              savedLabel={`${item.title}を登録から外す`}
+              unsavedLabel={`${item.title}を登録する`}
+            />
+          </>
+        )}
       />
 
       <CardSwipeRegion
@@ -229,19 +243,9 @@ export function KanbunStudyScreen() {
           onClick={() => !revealed && setRevealed(true)}
           className="animate-pop-in rounded-[2rem] bg-white p-5 shadow-card"
         >
-          <div className="flex items-start justify-between gap-3">
-            <div className="flex flex-wrap gap-2">
-              <Chip color={level?.color}>{level?.label}</Chip>
-              <Chip color={meta.color}>{meta.label}</Chip>
-            </div>
-            <IconButton
-              onClick={(event) => { event.stopPropagation(); toggleSaved(domain, item.id) }}
-              aria-label={saved ? `${item.title}を登録から外す` : `${item.title}を登録する`}
-              aria-pressed={saved}
-              className={saved ? 'text-amber-600' : 'text-ink/25'}
-            >
-              {saved ? <BookmarkFilled size={22} /> : <Bookmark size={22} />}
-            </IconButton>
+          <div className="flex flex-wrap items-start gap-2">
+            <Chip color={level?.color}>{level?.label}</Chip>
+            <Chip color={meta.color}>{meta.label}</Chip>
           </div>
 
           <div className="mt-5 text-center">

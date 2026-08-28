@@ -20,6 +20,7 @@ import { VocabReviewHistory } from '../components/VocabReviewHistory.jsx'
 import {
   QuestionSessionControls,
   useIndexedSessionState,
+  useUnfinishedSessionRecord,
 } from '../components/QuestionSessionControls.jsx'
 
 const sessionKey = (params) => (
@@ -133,6 +134,13 @@ export function VocabQuizScreen() {
       : { correct: 0, wrong: 0, unknown: 0, wrongIds: [], answerLog: [] },
   )
 
+  // 途中でやめても、そこまでに答えた分をこの分野の学習記録へ残す。
+  const handOffSession = useUnfinishedSessionRecord({
+    skill: 'vocab',
+    answered: results.current.correct + results.current.wrong + results.current.unknown,
+    correct: results.current.correct,
+  })
+
   const word = deck[index]
   const entry = useStore((state) => (word ? state.srs[word.id] : null))
   const options = useMemo(() => {
@@ -164,6 +172,7 @@ export function VocabQuizScreen() {
     : null
 
   const finish = () => {
+    handOffSession()
     navigate('sessionResult', {
       title: params.title ?? (isDragonVein ? '龍脈の単語解読' : 'テスト'),
       mode: 'quiz',
@@ -218,6 +227,8 @@ export function VocabQuizScreen() {
   }
 
   const saveBeforeDetail = () => {
+    // 単語の詳細を見て戻る間は続きを退避するので、ここでは記録しない。
+    handOffSession()
     saveQuizSession({
       key: sessionKey(params),
       sessionId: sessionId.current,

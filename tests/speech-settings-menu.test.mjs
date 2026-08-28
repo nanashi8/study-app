@@ -50,7 +50,7 @@ test('上部の一つの共通メニューを全画面から開き、その中�
   assert.match(settings, /data-speech-settings-trigger/)
 })
 
-test('学習途中に戻るボタンを押したら進捗破棄を確認し、メニュー移動では保存できる', () => {
+test('学習途中に戻るボタンを押しても確認を挟まず、メニュー移動では保存できる', () => {
   const header = read('../src/components/AppShell.jsx')
   const settings = read('../src/components/SpeechSettings.jsx')
   const backup = read('../src/components/ProgressBackup.jsx')
@@ -58,14 +58,13 @@ test('学習途中に戻るボタンを押したら進捗破棄を確認し、�
   const progress = read('../src/lib/progressCode.js')
 
   assert.match(settings, /requiresProgressSaveConfirmation\(currentScreen, screen\)/)
-  assert.match(header, /requiresProgressSaveConfirmation\(screen, '__back__'\)/)
-  assert.match(header, /openSpeechSettings\('back'\)/)
+  assert.doesNotMatch(header, /requiresProgressSaveConfirmation/)
+  assert.doesNotMatch(header, /openSpeechSettings\('back'\)/)
+  assert.match(header, /const goBack = \(\) => \{\n    if \(!canGoBack \|\| menuOpen\) return\n    globalBack\(\)\n  \}/)
   assert.match(header, /disabled=\{!canGoBack \|\| menuOpen\}/)
   assert.match(settings, /data-progress-save-confirmation/)
-  assert.match(settings, /data-progress-discard-confirmation/)
-  assert.match(settings, /途中で戻るボタンを押した場合は、進捗は破棄されます。戻りますか？/)
-  assert.match(settings, />\s*戻る\s*</)
-  assert.match(settings, />\s*続ける\s*</)
+  assert.doesNotMatch(settings, /data-progress-discard-confirmation/)
+  assert.doesNotMatch(settings, /進捗は破棄されます/)
   assert.match(settings, /途中の進捗を保存しますか？/)
   assert.match(settings, /<ProgressBackupPanel/)
   assert.match(settings, /continueLabel=\{`保存を終えて\$\{pendingLabel\}へ`\}/)
@@ -78,6 +77,45 @@ test('学習途中に戻るボタンを押したら進捗破棄を確認し、�
   assert.match(backup, /コードをコピー/)
   assert.match(backup, /useStore\(useShallow\(selectProgressState\)\)/)
   assert.match(progress, /export const PERSISTED_PROGRESS_FIELDS/)
+})
+
+test('途中でやめたテストも、答えた分だけを一度その分野の記録へ残す', () => {
+  const controls = read('../src/components/QuestionSessionControls.jsx')
+  const store = read('../src/store/useStore.js')
+  const app = read('../src/App.jsx')
+
+  assert.match(controls, /export function useUnfinishedSessionRecord/)
+  assert.match(controls, /keepInterruptedSession\(\s*\n?\s*skill && answered > 0 \? \{ screen, skill, answered, correct \} : null,/)
+  // 預けは画面を離れるときに一度だけ記録し、同じ画面に居る間は記録しない。
+  assert.match(store, /interruptedSession: null,/)
+  assert.match(store, /keepInterruptedSession: \(session\) => set\(\{ interruptedSession: session \}\)/)
+  assert.match(store, /if \(!session \|\| session\.screen === st\.screen\) return/)
+  assert.match(store, /st\.recordSkillResult\(session\.skill, session\.correct, session\.answered, \{\n\s*trackLearning: false,\n\s*\}\)/)
+  assert.match(app, /useEffect\(\(\) => \{\n    commitInterruptedSession\(\)\n  \}, \[screen, commitInterruptedSession\]\)/)
+  // 進行中の記録は端末保存へ持ち出さず、全リセットのときだけ一緒に消す。
+  assert.doesNotMatch(read('../src/lib/progressCode.js'), /interruptedSession/)
+  assert.match(store, /\{ quizSession: null, interruptedSession: null \}/)
+
+  const screens = [
+    ['../src/screens/VocabQuiz.jsx', 'vocab'],
+    ['../src/screens/PhraseQuiz.jsx', 'usage'],
+    ['../src/screens/ListeningQuiz.jsx', 'listening'],
+    ['../src/screens/DictationPlay.jsx', 'dictation'],
+    ['../src/screens/GrammarQuiz.jsx', 'grammar'],
+  ]
+  assert.equal(screens.length, 5)
+  for (const [relative, skill] of screens) {
+    const source = read(relative)
+    assert.match(source, /const handOffSession = useUnfinishedSessionRecord\(\{/, relative)
+    assert.match(source, new RegExp(`skill: '${skill}'`), relative)
+    // 最後まで進んだときは結果画面が数えるので、この画面では数えない。
+    assert.match(source, /const finish = \(\) => \{\n    handOffSession\(\)/, relative)
+  }
+  // 単語の詳細を見て戻る間は続きを退避するので、そこでも数えない。
+  assert.match(
+    read('../src/screens/VocabQuiz.jsx'),
+    /const saveBeforeDetail = \(\) => \{\n[^}]*handOffSession\(\)/,
+  )
 })
 
 test('全教材・学習アドバイザー・定着分析・管理機能を一段のメニューへ整理する', () => {

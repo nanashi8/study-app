@@ -30,6 +30,7 @@ import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 import {
   QuestionSessionControls,
   useIndexedSessionState,
+  useUnfinishedSessionRecord,
 } from '../components/QuestionSessionControls.jsx'
 
 const PROMPTS = Object.freeze({
@@ -81,6 +82,13 @@ export function ListeningQuizScreen() {
   const [activeSegment, setActiveSegment] = useState(null)
   const [showTranscript, setShowTranscript] = useState(false)
   const results = useRef({ correct: 0, wrong: 0, unknown: 0, wrongIds: [] })
+
+  // 途中でやめても、そこまでに答えた分をこの分野の学習記録へ残す。
+  const handOffSession = useUnfinishedSessionRecord({
+    skill: 'listening',
+    answered: results.current.correct + results.current.wrong + results.current.unknown,
+    correct: results.current.correct,
+  })
 
   const item = deck[i]
   const profile =
@@ -172,6 +180,7 @@ export function ListeningQuizScreen() {
   }
 
   const finish = () => {
+    handOffSession()
     stopListeningAudio()
     navigate('sessionResult', {
       title: params.title ?? `英検${profile.label}`,

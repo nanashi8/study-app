@@ -36,6 +36,25 @@ export function useIndexedSessionState(index, fallback = null, initialValues = {
 }
 
 /**
+ * 途中でテストをやめても、そこまでに答えた分を学習記録へ残す。
+ * 答えた問題数と正解数を持ち回り、画面が変わったところで一度だけ記録する。
+ *
+ * 返り値を呼ぶと、この画面ではもう数えない。最後まで進んだときは結果画面が
+ * 同じ記録を書き、辞書などを開くために続きを退避したときは戻ってから記録する
+ * ので、どちらも二重に数えない。
+ */
+export function useUnfinishedSessionRecord({ skill, answered = 0, correct = 0 }) {
+  const screen = useStore((state) => state.screen)
+  const keepInterruptedSession = useStore((state) => state.keepInterruptedSession)
+  useEffect(() => {
+    keepInterruptedSession(
+      skill && answered > 0 ? { screen, skill, answered, correct } : null,
+    )
+  }, [keepInterruptedSession, screen, skill, answered, correct])
+  return useCallback(() => keepInterruptedSession(null), [keepInterruptedSession])
+}
+
+/**
  * 画面上部に固定される、問題の前後移動と「正解したら自動で次へ」の切替。
  * 自動送りは新しく正解したときの signal だけを一度処理し、戻って見直した
  * 正解済み問題では再発火しない。
