@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-08-28T05:59:50.438Z",
+  "auditedAt": "2026-08-30T21:14:05.636Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -12,7 +12,7 @@
     "quizItemCount": 16090,
     "storedAndGeneratedQuestionPathCount": 4180,
     "storedAndGeneratedChoicePathCount": 16688,
-    "overallContentSha256": "8a76ca46779597c5c4b3fd1b15a67bdca35c648ad6c7830fbf2c354ffb4ea3c7"
+    "overallContentSha256": "afb731f1ef106f0d9347ce85922592b290e8d4a313ba0aa0342a0965dbae07da"
   },
   "completionCriteria": [
     "全18教材カテゴリのID・母数・重複・内容ハッシュが一致する",
@@ -20,6 +20,7 @@
     "共通講師解説を使う全選択式問題の正解・全誤答・わからない67,365経路に回答別指導がある",
     "英文法は全3,450問・全13,800選択肢に問題文固有の根拠を持つ",
     "長文32本・794文・140問・560選択肢の和訳と選択肢別解説が原文順に対応する",
+    "長文32本すべてが並び替え・文法・語法の技能練習を1問ずつ持ち、原文・訳・重点語・読解ルールが本文と一致する",
     "語彙強化長文4本は約1,000・2,000・3,000・4,000語、全9,860語を辞書解決し、内容16問と並び替え・文法・語法各4問を持ち、既存8,869語の本文カバー率40%以上を保つ",
     "意味判断が必要な文法問題だけ解答前に和訳を表示する",
     "カテゴリ別に登録した全品質ゲート、全テスト、ビルド、差分検査が成功する"
@@ -70,7 +71,7 @@
     },
     "questionFormats": {
       "command": "npm run audit:question-formats",
-      "coverage": "時事長文8本の4分野配分・既存語彙・読解ルール・追加24問と、文法追加105問の3形式・7級配分・全回答経路"
+      "coverage": "時事長文8本の4分野配分・既存語彙・読解ルール、長文32本すべての技能練習96問（並び替え・文法・語法を各32問）と、文法追加105問の3形式・7級配分・全回答経路"
     },
     "phrases": {
       "command": "npm run audit:phrases",
@@ -102,7 +103,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "9f9678d773f8c772548070b8f8510541df63672b59a84173f0bed81adaff3e91",
+    "sha256": "a4005607af33eee550294aeebb138d8c86542360213df5aa42dfe990305d1b48",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -209,6 +210,7 @@
       "tests/public-secrets-audit.test.mjs",
       "tests/question-session-controls.test.mjs",
       "tests/readability-ui.test.mjs",
+      "tests/reading-japanese-integrity.test.mjs",
       "tests/reading-layout-contract.test.mjs",
       "tests/reading-phrase-explanations.test.mjs",
       "tests/reading-question-translations.test.mjs",
@@ -402,7 +404,7 @@
       "quizItemCount": 36,
       "learningIdOrderSha256": "b77501066696a4fef412522a619bd3b3c3005beac5dcf307a234b850f55dd3ef",
       "quizIdOrderSha256": "b77501066696a4fef412522a619bd3b3c3005beac5dcf307a234b850f55dd3ef",
-      "contentSha256": "909c5f4ac924fdfd45b7a532bd159374165e624cdcb5d4d5fa20d5ec5c375401",
+      "contentSha256": "de7f97f496c6ecd20494ce27b30d0218898c8abb652e6338f020ca9d1d5020da",
       "auditGateIds": [
         "inventory",
         "coreData",
@@ -704,7 +706,7 @@
       "choiceCount": 64,
       "generalRationaleCount": 16,
       "choiceSpecificRationaleCount": 64,
-      "questionSetSha256": "343e58fb45c789bea0dd071f1ba26051c036b87362a658b96e19b1c69115d904",
+      "questionSetSha256": "15604b3f81e72d80a16299fc1bf547de32f56d273adbba9ad0be205cce9a601b",
       "result": "pass",
       "failureCount": 0,
       "failures": []
@@ -903,22 +905,22 @@
       4000
     ],
     "actualWords": [
-      985,
-      1973,
-      2959,
-      3943
+      987,
+      1977,
+      2956,
+      3940
     ],
     "totalWords": 9860,
-    "sentenceCount": 1542,
+    "sentenceCount": 528,
     "targetVocabularyCount": 1484,
     "baselineCoveredVocabulary": 1863,
     "baselineCoveragePercent": 21.01,
-    "combinedCoveredVocabulary": 3717,
-    "combinedCoveragePercent": 41.91,
-    "coverageGain": 1854,
+    "combinedCoveredVocabulary": 3921,
+    "combinedCoveragePercent": 44.21,
+    "coverageGain": 2058,
     "dictionarySize": 8869,
-    "extendedTokenCount": 9860,
-    "resolvedExtendedTokenCount": 9860,
+    "extendedTokenCount": 18882,
+    "resolvedExtendedTokenCount": 18882,
     "unresolvedExtendedTokenCount": 0,
     "contentQuestionCount": 16,
     "practiceQuestionCount": 12,
@@ -940,49 +942,49 @@
         "total": 1561,
         "before": 250,
         "beforePercent": 16.02,
-        "after": 641,
-        "afterPercent": 41.06,
-        "gain": 391
+        "after": 679,
+        "afterPercent": 43.5,
+        "gain": 429
       },
       "3": {
         "total": 1101,
         "before": 307,
         "beforePercent": 27.88,
-        "after": 591,
-        "afterPercent": 53.68,
-        "gain": 284
+        "after": 633,
+        "afterPercent": 57.49,
+        "gain": 326
       },
       "4": {
         "total": 740,
         "before": 339,
         "beforePercent": 45.81,
-        "after": 552,
-        "afterPercent": 74.59,
-        "gain": 213
+        "after": 571,
+        "afterPercent": 77.16,
+        "gain": 232
       },
       "5": {
         "total": 616,
         "before": 341,
         "beforePercent": 55.36,
-        "after": 477,
-        "afterPercent": 77.44,
-        "gain": 136
+        "after": 486,
+        "afterPercent": 78.9,
+        "gain": 145
       },
       "pre2": {
         "total": 1327,
         "before": 389,
         "beforePercent": 29.31,
-        "after": 719,
-        "afterPercent": 54.18,
-        "gain": 330
+        "after": 766,
+        "afterPercent": 57.72,
+        "gain": 377
       },
       "pre1": {
         "total": 2520,
         "before": 207,
         "beforePercent": 8.21,
-        "after": 664,
-        "afterPercent": 26.35,
-        "gain": 457
+        "after": 713,
+        "afterPercent": 28.29,
+        "gain": 506
       }
     },
     "domains": [
@@ -991,7 +993,7 @@
       "環境・科学・医療・政策",
       "社会総合・経済・心理・科学技術"
     ],
-    "contentSha256": "eb808cb6024580673c6c0306bdb399d5ef81d77e77367a5c15bc1960b87941ba"
+    "contentSha256": "f493eb250d9882184699c7e021d48db8b1857d8017de8e8c7fe1f7a47b57810e"
   },
   "grammarDetail": {
     "sourceQuestionCount": 3450,

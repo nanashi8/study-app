@@ -9,8 +9,11 @@ import { getReadingPracticeQuestions } from '../src/data/reading-current-affairs
 import { getReadingStudy, passageWordCount } from '../src/data/reading-study.js'
 import { readingApproachForPassage } from '../src/data/reading-rules.js'
 import { auditExtendedReadings } from '../src/lib/extendedReadingAudit.js'
+import { READING_TRANSLATION_SCENARIOS } from '../src/data/reading-translation-scenarios.js'
+import { READING_GRAMMAR_EXPECTATIONS } from '../src/data/reading-grammar-expectations.js'
+import { analyzeReadingSentence } from '../src/lib/reading-grammar.js'
 
-const EXPECTED_WORD_COUNTS = [985, 1973, 2959, 3943]
+const EXPECTED_WORD_COUNTS = [987, 1977, 2956, 3940]
 
 test('語彙強化長文4本を、従来の一文構文監査32本と分けてカタログに追加する', () => {
   assert.equal(PASSAGES.length, 32)
@@ -70,8 +73,45 @@ test('節送り画面はモバイル操作、進捗保存、単語連動、読�
   assert.match(source, /if \(!target\) return <span/)
   assert.match(source, /recordVocabHistory/)
   assert.match(source, /toggleMyList/)
+  assert.match(source, /data-extended-reading-vocabulary-cases/)
+  assert.match(source, /この節の重点語ケース/)
   assert.match(source, /ReadingComprehensionCheck/)
   assert.match(source, /readingSummary/)
   assert.match(readerSource, /passage\.extended/)
   assert.match(readerSource, /<ExtendedReader passage=\{passage\}/)
+})
+
+test('散文へ書き直した語彙強化長文は、初期長文と同じ語順訳・5文型・重点語ケースを持つ', () => {
+  const annotated = EXTENDED_PASSAGES.filter((passage) => passage.annotated)
+  assert.ok(annotated.length >= 1, '散文化済みの語彙強化長文が無い')
+  for (const passage of annotated) {
+    assert.equal(passage.extendedFormat, 'themed-long-reading')
+    const scenarios = READING_TRANSLATION_SCENARIOS[passage.id]
+    const patterns = READING_GRAMMAR_EXPECTATIONS[passage.id]
+    assert.equal(scenarios.length, passage.sentences.length, `${passage.id}: 語順訳の文数`)
+    assert.equal(patterns.length, passage.sentences.length, `${passage.id}: 5文型の文数`)
+    for (const [index, sentence] of passage.sentences.entries()) {
+      assert.equal(sentence.reviewId, `${passage.id}#${index + 1}`)
+      assert.equal(sentence.translationScenario, scenarios[index], `${passage.id}: 第${index + 1}文へシナリオ未接続`)
+      assert.ok(!sentence.targetId, `${passage.id}: 散文本文に辞書例文の重点IDが残っている`)
+      const analysis = analyzeReadingSentence(sentence)
+      assert.deepEqual(
+        analysis.blocks.map((block) => block.en),
+        scenarios[index].map((block) => block.en),
+        `${passage.id}: 第${index + 1}文のブロック境界`,
+      )
+      assert.ok(
+        ['SV', 'SVC', 'SVO', 'SVOO', 'SVOC'].includes(analysis.mainPattern),
+        `${passage.id}: 第${index + 1}文の主節文型 (${analysis.mainPattern})`,
+      )
+    }
+    // 共通辞書の監査済み例文は本文から切り離し、節ごとの重点語ケースとして残す。
+    const caseIds = passage.sections.flatMap((section) => section.vocabularyCases.map((item) => item.id))
+    assert.equal(caseIds.length, passage.targetVocabularyCount, `${passage.id}: 重点語ケース数`)
+    assert.deepEqual([...passage.vocab], caseIds, `${passage.id}: 学習カードと重点語ケースの一致`)
+    for (const section of passage.sections) {
+      assert.ok(section.summaryJa, `${passage.id}/${section.id}: 節の読みどころ要約`)
+      assert.ok(section.vocabularyCases.length >= 10, `${passage.id}/${section.id}: 重点語ケース不足`)
+    }
+  }
 })

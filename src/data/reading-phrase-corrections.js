@@ -6,6 +6,7 @@ import { READING_CONNECTOR_CLOSURE_CORRECTIONS } from './reading-connector-closu
 import { EXPANDED_READING_PHRASE_CORRECTIONS } from './reading-expansion-phrase-corrections.js'
 import { CURRENT_AFFAIRS_READING_PHRASE_CORRECTIONS } from './reading-current-affairs-phrase-corrections.js'
 import { READING_FOCUS_ROLE_CORRECTIONS } from './reading-focus-role-corrections.js'
+import { EXTENDED_READING_PHRASE_CORRECTIONS } from './reading-extended-phrase-corrections.js'
 
 const correction = (match, parts, note, occurrence = 1) => Object.freeze({
   match: Object.freeze(match),
@@ -2440,7 +2441,7 @@ const CLOSURE_READING_PHRASE_CORRECTIONS = Object.freeze({
     correction(['seriously'], [
       {
         role: 'M', en: 'seriously',
-        ja: '10代の睡眠についての証拠を真剣に受け止めるべきだ（ということです）',
+        ja: 'その証拠を真剣に受け止めるべきだ（ということです）',
         closureBinding: closure('content-clause', 'that', 'is / It', 'school policies should take evidence about teenage sleep seriously'),
       },
     ], '内容節末で take O seriously を完成し、主格補語となるthat節を閉じます。'),
@@ -3403,6 +3404,7 @@ export const READING_PHRASE_CORRECTIONS = Object.freeze(Object.fromEntries(
     ...Object.keys(READING_CONNECTOR_CLOSURE_CORRECTIONS),
     ...Object.keys(EXPANDED_READING_PHRASE_CORRECTIONS),
     ...Object.keys(CURRENT_AFFAIRS_READING_PHRASE_CORRECTIONS),
+    ...Object.keys(EXTENDED_READING_PHRASE_CORRECTIONS),
     ...Object.keys(READING_FOCUS_ROLE_CORRECTIONS),
   ])].map((sentence) => {
     const focusCorrections = READING_FOCUS_ROLE_CORRECTIONS[sentence] ?? []
@@ -3416,6 +3418,7 @@ export const READING_PHRASE_CORRECTIONS = Object.freeze(Object.fromEntries(
       ...(READING_CONNECTOR_CLOSURE_CORRECTIONS[sentence] ?? []),
       ...(EXPANDED_READING_PHRASE_CORRECTIONS[sentence] ?? []),
       ...(CURRENT_AFFAIRS_READING_PHRASE_CORRECTIONS[sentence] ?? []),
+      ...(EXTENDED_READING_PHRASE_CORRECTIONS[sentence] ?? []),
     ].filter((decision) => !focusMatchKeys.has(
       JSON.stringify(decision.match.map((value) => value.trim().toLowerCase())),
     ))

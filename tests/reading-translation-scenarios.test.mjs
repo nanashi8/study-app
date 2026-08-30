@@ -2,7 +2,7 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 
-import { PASSAGES } from '../src/data/passages.js'
+import { ANNOTATED_PASSAGES, PASSAGES } from '../src/data/passages.js'
 import { READING_TRANSLATION_SCENARIOS } from '../src/data/reading-translation-scenarios.js'
 import {
   READING_CORE_PHRASE_WORD_LIMIT,
@@ -25,7 +25,7 @@ const englishWords = (value = '') =>
 test('全長文・全文・全ブロックに講師監修の語順訳シナリオが対応する', () => {
   assert.deepEqual(
     Object.keys(READING_TRANSLATION_SCENARIOS).sort(),
-    PASSAGES.map((passage) => passage.id).sort(),
+    ANNOTATED_PASSAGES.map((passage) => passage.id).sort(),
     '長文の追加・削除時は語順訳シナリオも同時に更新する',
   )
 
@@ -289,10 +289,16 @@ test('日本語の自然語順へ戻りやすい目的語・比較・理由も�
 })
 
 test('長文画面は意味フレーズの表示を保ち、講師音声機能を提供しない', () => {
-  const source = readFileSync(
+  // 一文の構文詳細は受験長文と語彙強化長文で共通の部品に切り出している。
+  const reader = readFileSync(
     new URL('../src/screens/Reader.jsx', import.meta.url),
     'utf8',
   )
+  const detail = readFileSync(
+    new URL('../src/components/ReadingSentenceDetail.jsx', import.meta.url),
+    'utf8',
+  )
+  const source = `${reader}\n${detail}`
   assert.match(source, /<StructureDiagram tokens=\{sentenceAnalysis\.structureTokens\} \/>/)
   assert.doesNotMatch(source, /sentenceAnalysis\.blocks\.map\(\(block\) =>/)
 

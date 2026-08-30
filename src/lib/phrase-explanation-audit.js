@@ -802,7 +802,7 @@ const READING_CLOSURE_EXPECTATIONS = new Map([
     binding: { type: 'content-clause', opener: 'that', governor: 'report', clause: 'students at these schools sleep longer on ordinary weekdays' },
   }],
   ['It is that school policies should take evidence about teenage sleep seriously.|||seriously', {
-    ja: '10代の睡眠についての証拠を真剣に受け止めるべきだ（ということです）',
+    ja: 'その証拠を真剣に受け止めるべきだ（ということです）',
     binding: { type: 'content-clause', opener: 'that', governor: 'is / It', clause: 'school policies should take evidence about teenage sleep seriously' },
   }],
   ['For example, the records may show that a species is arriving earlier in spring or disappearing from certain neighborhoods.|||from certain neighborhoods', {

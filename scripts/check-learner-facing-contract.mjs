@@ -177,6 +177,7 @@ const [
   grammarChoiceExplanationsSource,
   homeSource,
   readerSource,
+  readingSentenceDetailSource,
   appSource,
   shellSource,
   menuSource,
@@ -198,6 +199,7 @@ const [
   readProjectFile('src/components/GrammarChoiceExplanations.jsx'),
   readProjectFile('src/screens/Home.jsx'),
   readProjectFile('src/screens/Reader.jsx'),
+  readProjectFile('src/components/ReadingSentenceDetail.jsx'),
   readProjectFile('src/App.jsx'),
   readProjectFile('src/components/AppShell.jsx'),
   readProjectFile('src/components/SpeechSettings.jsx'),
@@ -227,9 +229,11 @@ if (!homeSource.includes("id: 'vocab'")) errors.push('英語ホームの単語�
 if (!homeSource.includes("id: 'etymology'") || !homeSource.includes("screen: 'roots'")) {
   errors.push('英語ホームから語源へ直接進めない')
 }
-if (!readerSource.includes('長文読解')) errors.push('Readerに「長文読解」がない')
-if (!readerSource.includes('文法解説')) errors.push('Readerに「文法解説」がない')
-if (/learnerPhrasePairsForBlock|speakBlockPair/.test(readerSource)) {
+// 一文の構文詳細は受験長文と語彙強化長文で共通の部品にまとめている。
+const readerDetailSource = `${readerSource}\n${readingSentenceDetailSource}`
+if (!readerDetailSource.includes('長文読解')) errors.push('Readerに「長文読解」がない')
+if (!readerDetailSource.includes('文法解説')) errors.push('Readerに「文法解説」がない')
+if (/learnerPhrasePairsForBlock|speakBlockPair/.test(readerDetailSource)) {
   errors.push('Reader下段が上段の意味フレーズを再表示・再生している')
 }
 if (!shellSource.includes('data-global-back-button')) errors.push('AppShell上部に共通の戻る操作がない')

@@ -22,13 +22,14 @@ test('読解チェックは長文本体の直下・固定フッターの前に�
 
 test('長文の用語・文要素表示・シート階層を全画面で統一する', () => {
   const reader = read('../src/screens/Reader.jsx')
+  const detail = read('../src/components/ReadingSentenceDetail.jsx')
   const literature = read('../src/screens/LiteratureReader.jsx')
   const sheet = read('../src/components/Sheet.jsx')
-  const combined = `${reader}\n${literature}`
+  const combined = `${reader}\n${detail}\n${literature}`
 
   assert.doesNotMatch(combined, /英文・構文ラベル付き|この文で使う読解ルール/)
-  assert.match(reader, /文の要素/)
-  assert.match(reader, /下線の下にあるS・V・O・C・M/)
+  assert.match(detail, /文の要素/)
+  assert.match(detail, /下線の下にあるS・V・O・C・M/)
   assert.match(combined, /読解ルール/)
   assert.match(sheet, /z-\[70\]/)
   assert.match(sheet, /data-sheet-layer/)
