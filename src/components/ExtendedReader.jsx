@@ -3,8 +3,10 @@ import { useStore } from '../store/useStore.js'
 import { getLevel } from '../data/levels.js'
 import { getWord } from '../data/vocab.js'
 import { resolvePassageWord } from '../data/passage-gloss.js'
+import { analyzeReadingSentence } from '../lib/reading-grammar.js'
 import { dismissSpeechPlayer, playSpeechItems } from '../lib/speech-player.js'
 import { ReadingComprehensionCheck } from './ReadingComprehensionCheck.jsx'
+import { ReadingSentenceDetail } from './ReadingSentenceDetail.jsx'
 import { Sheet } from './Sheet.jsx'
 import { SpeakButton } from './SpeakButton.jsx'
 import { SpeechSettingsButton } from './SpeechSettings.jsx'
@@ -55,14 +57,17 @@ function paragraphGroups(sentences) {
   return groups
 }
 
-function TappableSentence({ sentence, onWord }) {
+function TappableSentence({ sentence, onWord, sectionTargetIds }) {
   const parts = sentence.en.match(TOKEN_PATTERN) ?? [sentence.en]
   return (
     <span className={sentence.source === 'editorial-transition' ? 'font-extrabold text-ink' : ''}>
       {parts.map((part, index) => {
         if (!WORD_PATTERN.test(part)) return <span key={`${index}:${part}`}>{part}</span>
         const resolved = resolvePassageWord(normalizedToken(part), sentence.gloss)
-        const target = Boolean(sentence.targetId && resolved?.id === sentence.targetId)
+        // 散文本文では、その節の重点語が出てきたところを押せるようにする。
+        const target = sentence.targetId
+          ? resolved?.id === sentence.targetId
+          : Boolean(resolved?.id && sectionTargetIds?.has(resolved.id))
         if (!target) return <span key={`${index}:${part}`}>{part}</span>
         return (
           <button
@@ -96,12 +101,26 @@ export function ExtendedReader({ passage }) {
   const [sectionIndex, setSectionIndex] = useState(() => storedSectionIndex(passage))
   const [showJa, setShowJa] = useState(false)
   const [activeWord, setActiveWord] = useState(null)
+  const [activeIdx, setActiveIdx] = useState(null)
   const [readingChecked, setReadingChecked] = useState(false)
   const scrollRef = useRef(null)
   const readingCheckRef = useRef(null)
+  const sentenceSheetScrollRef = useRef(null)
   const level = getLevel(passage.level)
   const section = passage.sections[sectionIndex]
   const paragraphs = useMemo(() => paragraphGroups(section.sentences), [section])
+  const sectionTargetIds = useMemo(
+    () => new Set(section.targetVocabularyIds ?? []),
+    [section],
+  )
+  const vocabularyCases = section.vocabularyCases ?? []
+  // 散文へ書き直した長文は、受験長文と同じ一文タップの構文詳細を出す。
+  const sentenceAnalyses = useMemo(
+    () => (passage.annotated ? passage.sentences.map((item) => analyzeReadingSentence(item)) : []),
+    [passage],
+  )
+  const activeSentence = activeIdx != null ? passage.sentences[activeIdx] : null
+  const activeAnalysis = activeIdx != null ? sentenceAnalyses[activeIdx] : null
   const finalSection = sectionIndex === passage.sections.length - 1
   const progress = (sectionIndex + 1) / passage.sections.length
 
@@ -111,10 +130,33 @@ export function ExtendedReader({ passage }) {
     saveSectionIndex(passage.id, sectionIndex)
   }, [passage.id, sectionIndex])
 
+  const openSentence = (index) => {
+    dismissSpeechPlayer()
+    setActiveWord(null)
+    if (sentenceSheetScrollRef.current) sentenceSheetScrollRef.current.scrollTop = 0
+    setActiveIdx(index)
+  }
+  const closeSentence = () => {
+    dismissSpeechPlayer()
+    setActiveIdx(null)
+  }
+  const tapToken = (token) => {
+    playSpeechItems([{ text: token.word, label: token.word, style: 'word' }], {
+      title: '単語の読み上げ',
+      rate: settings.ttsRate,
+      voiceURI: settings.ttsVoiceURI,
+      japaneseVoiceURI: settings.ttsJapaneseVoiceURI,
+    })
+    const meaning = resolvePassageWord(token.key, activeSentence?.gloss)
+    if (meaning?.id) recordVocabHistory(meaning.id)
+    setActiveWord({ word: token.word, ja: meaning?.ja ?? null, id: meaning?.id ?? null })
+  }
+
   const moveToSection = (nextIndex) => {
     const bounded = Math.max(0, Math.min(passage.sections.length - 1, nextIndex))
     dismissSpeechPlayer()
     setActiveWord(null)
+    setActiveIdx(null)
     setSectionIndex(bounded)
     scrollRef.current?.scrollTo({ top: 0, behavior: 'auto' })
   }
@@ -251,8 +293,9 @@ export function ExtendedReader({ passage }) {
             <span>・ 重点語 {section.targetVocabularyIds.length}語</span>
           </div>
           <p className="mt-2 text-xs font-bold leading-relaxed text-ink/55">
-            最初の主題文を読み、関連する語句と例を順に確認します。
-            黄色の重点語を押すと、意味と音声を確認できます。
+            {passage.annotated
+              ? `${section.summaryJa} 一文をタップすると、英語と対応する日本語、SVOCM、文法上の注意を確認できます。`
+              : '最初の主題文を読み、関連する語句と例を順に確認します。黄色の重点語を押すと、意味と音声を確認できます。'}
           </p>
         </section>
 
@@ -261,13 +304,24 @@ export function ExtendedReader({ passage }) {
             {paragraphs.map((paragraph, paragraphIndex) => (
               <section key={`${section.id}:${paragraphIndex}`} data-extended-reading-paragraph>
                 <p>
-                  {paragraph.map((sentence) => (
+                  {paragraph.map((sentence) => (passage.annotated ? (
+                    <span key={sentence.reviewId}>
+                      <button
+                        type="button"
+                        onClick={() => openSentence(passage.sentences.indexOf(sentence))}
+                        className="rounded-md px-0.5 text-left transition-colors hover:bg-brand-50 active:bg-brand-100"
+                      >
+                        {sentence.en}
+                      </button>{' '}
+                    </span>
+                  ) : (
                     <TappableSentence
                       key={sentence.reviewId}
                       sentence={sentence}
                       onWord={openWord}
+                      sectionTargetIds={sectionTargetIds}
                     />
-                  ))}
+                  )))}
                 </p>
                 {showJa && (
                   <p
@@ -281,6 +335,37 @@ export function ExtendedReader({ passage }) {
             ))}
           </div>
         </article>
+
+        {vocabularyCases.length > 0 && (
+          <section className="mt-3 rounded-3xl border border-amber-100 bg-amber-50/50 p-4" data-extended-reading-vocabulary-cases>
+            <div className="flex items-baseline justify-between gap-2">
+              <h3 className="text-sm font-extrabold text-amber-900">この節の重点語ケース</h3>
+              <span className="shrink-0 text-[11px] font-extrabold text-amber-700">{vocabularyCases.length}語</span>
+            </div>
+            <p className="mt-1 text-[11px] font-bold leading-relaxed text-ink/55">
+              本文を読み終えたら、同じ分野の語を辞書の監査済み例文で確かめます。
+            </p>
+            <ul className="mt-3 space-y-2">
+              {vocabularyCases.map((item) => (
+                <li key={item.id} className="rounded-2xl bg-white p-3">
+                  <div className="flex items-center gap-2">
+                    <SpeakButton text={item.en} size="sm" />
+                    <button
+                      type="button"
+                      onClick={() => openWord(item.word, { id: item.id })}
+                      className="min-w-0 flex-1 text-left"
+                      data-extended-reading-case={item.id}
+                    >
+                      <span lang="en" className="font-display text-base font-extrabold text-ink">{item.word}</span>
+                    </button>
+                  </div>
+                  <p lang="en" className="mt-1 text-sm font-bold leading-relaxed text-ink/75">{item.en}</p>
+                  <p className="mt-0.5 text-xs font-bold leading-relaxed text-ink/55">{item.ja}</p>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
 
         {finalSection && (
           <div ref={readingCheckRef} className="mt-4 scroll-mt-3">
@@ -336,7 +421,52 @@ export function ExtendedReader({ passage }) {
       </footer>
 
       <Sheet
-        open={Boolean(activeWord)}
+        open={activeIdx != null}
+        onClose={closeSentence}
+        title="一文の構文解説"
+        maxH="88vh"
+        scrollAreaRef={sentenceSheetScrollRef}
+        footer={activeSentence ? (
+          <nav
+            className="flex items-center justify-between gap-2"
+            aria-label="文の移動"
+            data-reading-sentence-navigation
+          >
+            <Button
+              variant="secondary"
+              size="sm"
+              className="min-h-12"
+              disabled={activeIdx === 0}
+              onClick={() => openSentence(activeIdx - 1)}
+            >
+              ← 前の文
+            </Button>
+            <span className="text-xs font-bold text-ink/40" aria-live="polite">
+              {activeIdx + 1}/{passage.sentences.length}
+            </span>
+            <Button
+              variant="secondary"
+              size="sm"
+              className="min-h-12"
+              disabled={activeIdx >= passage.sentences.length - 1}
+              onClick={() => openSentence(activeIdx + 1)}
+            >
+              次の文 →
+            </Button>
+          </nav>
+        ) : null}
+      >
+        <ReadingSentenceDetail
+          sentence={activeSentence}
+          sentenceAnalysis={activeAnalysis}
+          activeWord={activeWord}
+          onWordTap={tapToken}
+          onNavigateAway={closeSentence}
+        />
+      </Sheet>
+
+      <Sheet
+        open={Boolean(activeWord) && activeIdx == null}
         onClose={() => setActiveWord(null)}
         title="単語の意味"
       >

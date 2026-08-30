@@ -10,6 +10,8 @@ import {
   GRAMMAR_QUESTION_TYPES,
   grammarQuestionType,
 } from '../data/grammar-format-expansion.js'
+import { PASSAGES } from '../data/passages.js'
+import { CORE_READING_PRACTICE_QUESTIONS } from '../data/reading-core-practice-questions.js'
 import { CURRENT_AFFAIRS_PASSAGES } from '../data/reading-current-affairs-passages.js'
 import {
   ALL_READING_PRACTICE_QUESTIONS,
@@ -50,6 +52,70 @@ const seededRng = (seed) => {
   return () => {
     state = (Math.imul(state, 1664525) + 1013904223) >>> 0
     return state / (2 ** 32)
+  }
+}
+
+// 長文1本ぶんの技能練習問題を、時事長文でも受験長文でも同じ規則で検査する。
+function auditReadingPracticeQuestions(passage, questionsByPassage, addIssue) {
+  const passageQuestions = questionsByPassage[passage.id] ?? []
+  if (passageQuestions.length !== 3) {
+    addIssue('reading-practice-count-per-passage', passage.id, passageQuestions.length)
+  }
+  for (const type of READING_PRACTICE_TYPES) {
+    const count = passageQuestions.filter((question) => question.questionType === type).length
+    if (count !== 1) addIssue('reading-practice-type-per-passage', passage.id, `${type}:${count}`)
+  }
+
+  const sourceJaByEn = new Map(passage.sentences.map((sentence) => [sentence.en, sentence.ja]))
+  const passageVocab = new Set(passage.vocab)
+  for (const question of passageQuestions) {
+    if (sourceJaByEn.get(question.sourceSentence) !== question.sourceJa) {
+      addIssue('reading-practice-source-mismatch', question.id)
+    }
+    if (!READING_RULES_BY_ID[question.readingRuleId]) {
+      addIssue('unresolved-reading-rule', question.id, question.readingRuleId)
+    }
+    if (!hasJapanese(question.questionJa) || !hasJapanese(question.explain)) {
+      addIssue('incomplete-reading-practice-explanation', question.id)
+    }
+    if (!question.vocabIds?.length) addIssue('missing-reading-practice-vocabulary', question.id)
+    for (const vocabId of question.vocabIds ?? []) {
+      if (!getWord(vocabId)) addIssue('unresolved-reading-practice-vocabulary', question.id, vocabId)
+      if (!passageVocab.has(vocabId)) addIssue('unlisted-reading-practice-vocabulary', question.id, vocabId)
+    }
+
+    if (question.questionType === 'word-order') {
+      const tokenCount = writingWordTokens(question.answer).length
+      if (question.choices.length !== 0 || question.answer !== question.sourceSentence) {
+        addIssue('invalid-reading-word-order-answer', question.id)
+      }
+      if (tokenCount < 5 || tokenCount > 16) {
+        addIssue('reading-word-order-length', question.id, tokenCount)
+      }
+      if (isWritingTokenOrderCorrect(
+        shuffledWritingTokens(question.answer, question.id),
+        question.answer,
+      )) addIssue('reading-word-order-starts-solved', question.id)
+      continue
+    }
+
+    if (blankCount(question.q) !== 1 || question.q.replace('___', question.answer) !== question.sourceSentence) {
+      addIssue('reading-choice-does-not-rebuild-source', question.id)
+    }
+    if (question.choices.length !== 4 || new Set(question.choices).size !== 4) {
+      addIssue('invalid-reading-practice-choices', question.id, question.choices.length)
+    }
+    if (question.choices.filter((choice) => choice === question.answer).length !== 1) {
+      addIssue('non-unique-reading-practice-answer', question.id)
+    }
+    for (const choice of question.choices) {
+      if (!hasJapanese(question.choiceTranslations?.[choice])) {
+        addIssue('missing-reading-choice-translation', question.id, choice)
+      }
+      if (!hasJapanese(question.choiceNotes?.[choice])) {
+        addIssue('missing-reading-choice-reason', question.id, choice)
+      }
+    }
   }
 }
 
@@ -114,76 +180,29 @@ export function auditEnglishQuestionFormats() {
       if (!getWord(vocabId)) addIssue('unresolved-reading-vocabulary', passage.id, vocabId)
     }
 
-    const passageQuestions = CURRENT_AFFAIRS_READING_PRACTICE_QUESTIONS[passage.id] ?? []
-    if (passageQuestions.length !== 3) {
-      addIssue('reading-practice-count-per-passage', passage.id, passageQuestions.length)
-    }
-    for (const type of READING_PRACTICE_TYPES) {
-      const count = passageQuestions.filter((question) => question.questionType === type).length
-      if (count !== 1) addIssue('reading-practice-type-per-passage', passage.id, `${type}:${count}`)
-    }
-
-    const sourceJaByEn = new Map(passage.sentences.map((sentence) => [sentence.en, sentence.ja]))
-    const passageVocab = new Set(passage.vocab)
-    for (const question of passageQuestions) {
-      if (sourceJaByEn.get(question.sourceSentence) !== question.sourceJa) {
-        addIssue('reading-practice-source-mismatch', question.id)
-      }
-      if (!READING_RULES_BY_ID[question.readingRuleId]) {
-        addIssue('unresolved-reading-rule', question.id, question.readingRuleId)
-      }
-      if (!hasJapanese(question.questionJa) || !hasJapanese(question.explain)) {
-        addIssue('incomplete-reading-practice-explanation', question.id)
-      }
-      if (!question.vocabIds?.length) addIssue('missing-reading-practice-vocabulary', question.id)
-      for (const vocabId of question.vocabIds ?? []) {
-        if (!getWord(vocabId)) addIssue('unresolved-reading-practice-vocabulary', question.id, vocabId)
-        if (!passageVocab.has(vocabId)) addIssue('unlisted-reading-practice-vocabulary', question.id, vocabId)
-      }
-
-      if (question.questionType === 'word-order') {
-        const tokenCount = writingWordTokens(question.answer).length
-        if (question.choices.length !== 0 || question.answer !== question.sourceSentence) {
-          addIssue('invalid-reading-word-order-answer', question.id)
-        }
-        if (tokenCount < 5 || tokenCount > 16) {
-          addIssue('reading-word-order-length', question.id, tokenCount)
-        }
-        if (isWritingTokenOrderCorrect(
-          shuffledWritingTokens(question.answer, question.id),
-          question.answer,
-        )) addIssue('reading-word-order-starts-solved', question.id)
-        continue
-      }
-
-      if (blankCount(question.q) !== 1 || question.q.replace('___', question.answer) !== question.sourceSentence) {
-        addIssue('reading-choice-does-not-rebuild-source', question.id)
-      }
-      if (question.choices.length !== 4 || new Set(question.choices).size !== 4) {
-        addIssue('invalid-reading-practice-choices', question.id, question.choices.length)
-      }
-      if (question.choices.filter((choice) => choice === question.answer).length !== 1) {
-        addIssue('non-unique-reading-practice-answer', question.id)
-      }
-      for (const choice of question.choices) {
-        if (!hasJapanese(question.choiceTranslations?.[choice])) {
-          addIssue('missing-reading-choice-translation', question.id, choice)
-        }
-        if (!hasJapanese(question.choiceNotes?.[choice])) {
-          addIssue('missing-reading-choice-reason', question.id, choice)
-        }
-      }
-    }
+    auditReadingPracticeQuestions(passage, CURRENT_AFFAIRS_READING_PRACTICE_QUESTIONS, addIssue)
   }
 
   for (const id of Object.keys(CURRENT_AFFAIRS_READING_PRACTICE_QUESTIONS)) {
     if (!passageIdSet.has(id)) addIssue('orphan-reading-practice-passage', id)
   }
-  if (practiceIds.length !== 24) addIssue('reading-practice-total', 'current-affairs', practiceIds.length)
+
+  // 時事長文より前に作った受験長文24本も、同じ3問構成・同じ規則で検査する。
+  const corePassages = PASSAGES.filter((passage) => !passageIdSet.has(passage.id))
+  const corePassageIds = new Set(corePassages.map((passage) => passage.id))
+  for (const passage of corePassages) {
+    auditReadingPracticeQuestions(passage, CORE_READING_PRACTICE_QUESTIONS, addIssue)
+  }
+  for (const id of Object.keys(CORE_READING_PRACTICE_QUESTIONS)) {
+    if (!corePassageIds.has(id)) addIssue('orphan-reading-practice-passage', id)
+  }
+  if (corePassages.length !== 24) addIssue('core-reading-passage-total', 'core', corePassages.length)
+
+  if (practiceIds.length !== 96) addIssue('reading-practice-total', 'current-affairs', practiceIds.length)
   if (new Set(practiceIds).size !== practiceIds.length) addIssue('duplicate-reading-practice-id', 'current-affairs')
   const readingTypeCounts = countBy(ALL_READING_PRACTICE_QUESTIONS, (question) => question.questionType)
   for (const type of READING_PRACTICE_TYPES) {
-    if (readingTypeCounts[type] !== 8) {
+    if (readingTypeCounts[type] !== 32) {
       addIssue('unbalanced-reading-practice-type', type, readingTypeCounts[type] ?? 0)
     }
   }

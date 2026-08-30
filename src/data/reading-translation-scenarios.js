@@ -10,6 +10,7 @@ import { UPPER_READING_TRANSLATION_SCENARIOS } from './reading-translation-scena
 import { ADVANCED_READING_TRANSLATION_SCENARIOS } from './reading-translation-scenarios-advanced.js'
 import { EXPANDED_READING_TRANSLATION_SCENARIOS } from './reading-expansion-translation-scenarios.js'
 import { CURRENT_AFFAIRS_READING_TRANSLATION_SCENARIOS } from './reading-current-affairs-translation-scenarios.js'
+import { EXTENDED_READING_TRANSLATION_SCENARIOS } from './reading-extended-translation-scenarios.js'
 
 const b = (en, orderedJa, tip = '', orderedEn = '') => {
   const jaSegments = Object.freeze(orderedJa.split('／').map((segment) => segment.trim()))
@@ -33,6 +34,7 @@ export const READING_TRANSLATION_SCENARIOS = Object.freeze({
   ...ADVANCED_READING_TRANSLATION_SCENARIOS,
   ...EXPANDED_READING_TRANSLATION_SCENARIOS,
   ...CURRENT_AFFAIRS_READING_TRANSLATION_SCENARIOS,
+  ...EXTENDED_READING_TRANSLATION_SCENARIOS,
   p_5_lost_notebook: passage([
     [
       b('Rina is', 'リナは／〜です（内容は次へ）'),

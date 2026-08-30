@@ -173,7 +173,7 @@ test('読解ルール画面と準備・本文・設問の三地点が接続さ�
   const app = readFileSync(new URL('../src/App.jsx', import.meta.url), 'utf8')
   const list = readFileSync(new URL('../src/screens/ReadingList.jsx', import.meta.url), 'utf8')
   const prep = readFileSync(new URL('../src/screens/ReadingPrep.jsx', import.meta.url), 'utf8')
-  const reader = readFileSync(new URL('../src/screens/Reader.jsx', import.meta.url), 'utf8')
+  const reader = readFileSync(new URL('../src/components/ReadingSentenceDetail.jsx', import.meta.url), 'utf8')
   const readingCheck = readFileSync(new URL('../src/components/ReadingComprehensionCheck.jsx', import.meta.url), 'utf8')
   const rules = readFileSync(new URL('../src/screens/ReadingRules.jsx', import.meta.url), 'utf8')
 

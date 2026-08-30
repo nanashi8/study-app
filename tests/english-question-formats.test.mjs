@@ -18,17 +18,17 @@ import {
 
 const ROOT = new URL('..', import.meta.url)
 
-test('時事長文8本と追加24問は、分野・3形式・読解ルール・既存語彙を全件で満たす', () => {
+test('長文32本と技能練習96問は、分野・3形式・読解ルール・既存語彙を全件で満たす', () => {
   const audit = auditEnglishQuestionFormats()
   assert.equal(audit.complete, true, JSON.stringify(audit.issues.slice(0, 20), null, 2))
   assert.equal(audit.currentAffairsPassageCount, 8)
   assert.deepEqual(Object.values(audit.currentAffairsDomainCounts), [2, 2, 2, 2])
   assert.ok(audit.existingReadingVocabOccurrenceCount / audit.readingVocabOccurrenceCount >= 0.9)
-  assert.equal(audit.readingPracticeQuestionCount, 24)
+  assert.equal(audit.readingPracticeQuestionCount, 96)
   assert.deepEqual(audit.readingPracticeTypeCounts, {
-    grammar: 8,
-    usage: 8,
-    'word-order': 8,
+    grammar: 32,
+    usage: 32,
+    'word-order': 32,
   })
   assert.ok(audit.readingRuleCount >= 10)
 })
@@ -53,7 +53,7 @@ test('並び替えは完成文選択ではなく、全問で直接押せる単�
     ...ALL_READING_PRACTICE_QUESTIONS.filter((item) => item.questionType === 'word-order'),
     ...GRAMMAR_FORMAT_EXPANSION.filter((item) => grammarQuestionType(item) === 'word-order'),
   ]
-  assert.equal(orderItems.length, 43)
+  assert.equal(orderItems.length, 67)
   for (const item of orderItems) {
     const tokens = writingWordTokens(item.answer)
     const shuffled = shuffledWritingTokens(item.answer, item.id)

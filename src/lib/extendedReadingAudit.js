@@ -25,13 +25,25 @@ function resolvedIdsForSentence(sentence) {
   return wordsIn(sentence.en).map((token) =>
     resolvePassageWord(normalizeToken(token), sentence.gloss ?? {})?.id).filter(Boolean)
 }
+// 語彙強化長文の学習素材は「本文の散文」と「節ごとの重点語ケース」の二層。
+// カバレッジはどちらの英文も学習者が読むため、両方を数える。
+function coverageUnits(passage) {
+  const units = [...(passage.sentences ?? [])]
+  for (const section of passage.sections ?? []) {
+    for (const item of section.vocabularyCases ?? []) {
+      units.push({ en: item.en, ja: item.ja, gloss: {} })
+    }
+  }
+  return units
+}
+
 function vocabularyCoverage(passages) {
   const coveredIds = new Set()
   const unresolved = []
   let tokenCount = 0
   let resolvedTokenCount = 0
   for (const passage of passages) {
-    for (const sentence of passage.sentences ?? []) {
+    for (const sentence of coverageUnits(passage)) {
       for (const surface of wordsIn(sentence.en)) {
         tokenCount += 1
         const resolved = resolvePassageWord(normalizeToken(surface), sentence.gloss ?? {})
@@ -92,8 +104,10 @@ export function auditExtendedReadings() {
     const expectedTarget = EXPECTED_TARGETS[passageIndex]
     const minimum = Math.floor(expectedTarget * 0.985)
     const maximum = Math.ceil(expectedTarget * 1.015)
-    if (!passage.extended || passage.extendedFormat !== 'themed-vocabulary-cases') {
-      fail(`${label}: 節送り語彙強化形式の指定がありません`)
+    const annotated = passage.annotated === true
+    const expectedFormat = annotated ? 'themed-long-reading' : 'themed-vocabulary-cases'
+    if (!passage.extended || passage.extendedFormat !== expectedFormat) {
+      fail(`${label}: 語彙強化長文の形式指定がありません`)
     }
     if (passage.targetWords !== expectedTarget) {
       fail(`${label}: 目標語数 ${passage.targetWords} が ${expectedTarget} と一致しません`)
@@ -119,7 +133,14 @@ export function auditExtendedReadings() {
       if (section.sentences.length < 12 || section.targetVocabularyIds.length < 10) {
         fail(`${label}/${section.id}: 節が短すぎます（${section.sentences.length}文・重点${section.targetVocabularyIds.length}語）`)
       }
-      if (section.sentences.filter((sentence) => sentence.source === 'editorial-transition').length !== 2) {
+      if (annotated) {
+        if (!section.summaryJa || !JAPANESE_PATTERN.test(section.summaryJa)) {
+          fail(`${label}/${section.id}: 節の読みどころ要約がありません`)
+        }
+        if (section.sentences.filter((sentence) => sentence.paragraphStart).length < 2) {
+          fail(`${label}/${section.id}: 節の段落が2件未満です`)
+        }
+      } else if (section.sentences.filter((sentence) => sentence.source === 'editorial-transition').length !== 2) {
         fail(`${label}/${section.id}: 主題を接続する編集文は2文必要です`)
       }
       if (!section.sentences[0]?.paragraphStart) {
@@ -137,7 +158,7 @@ export function auditExtendedReadings() {
         if (!sentence.en || !sentence.ja || !JAPANESE_PATTERN.test(sentence.ja)) {
           fail(`${label}/${section.id}: 英文または日本語訳が不足しています`)
         }
-        if (!['editorial-transition', 'shared-vocabulary-example'].includes(sentence.source)) {
+        if (!annotated && !['editorial-transition', 'shared-vocabulary-example'].includes(sentence.source)) {
           fail(`${label}/${section.id}: 本文ソース ${sentence.source} を識別できません`)
         }
         const sentenceKey = sentence.en.toLowerCase().replace(/\s+/g, ' ').trim()
@@ -147,9 +168,9 @@ export function auditExtendedReadings() {
           allSentenceKeys.set(sentenceKey, label)
         }
 
-        if (sentence.source === 'editorial-transition') {
+        if (annotated || sentence.source === 'editorial-transition') {
           if (sentence.targetId || sentence.field) {
-            fail(`${label}/${section.id}: 編集文に辞書例文の重点IDが混入しています`)
+            fail(`${label}/${section.id}: 本文の散文に辞書例文の重点IDが混入しています`)
           }
           continue
         }
@@ -173,6 +194,31 @@ export function auditExtendedReadings() {
         }
         allTargetIds.add(sentence.targetId)
         passageTargetIds.push(sentence.targetId)
+      }
+
+      if (!annotated) continue
+
+      // 重点語ケース＝共通辞書の監査済み例文。本文から切り離しても語彙の根拠は保つ。
+      for (const item of section.vocabularyCases ?? []) {
+        const word = getWord(item.id)
+        if (!word) {
+          fail(`${label}/${section.id}: 重点語ID ${item.id} が辞書にありません`)
+          continue
+        }
+        if (word.example?.en !== item.en || word.example?.ja !== item.ja) {
+          fail(`${label}/${section.id}: ${item.id} の監査済み辞書例文とケースが一致しません`)
+        }
+        if (word.field !== item.field || !section.allowedFields.includes(item.field)) {
+          fail(`${label}/${section.id}: ${item.id} の分野 ${item.field} が節の主題と一致しません`)
+        }
+        if (!resolvedIdsForSentence({ en: item.en, gloss: {} }).includes(item.id)) {
+          fail(`${label}/${section.id}: 重点語 ${item.id} を例文内で辞書解決できません`)
+        }
+        if (allTargetIds.has(item.id)) {
+          fail(`${label}/${section.id}: 重点語 ${item.id} が別の語彙強化長文と重複しています`)
+        }
+        allTargetIds.add(item.id)
+        passageTargetIds.push(item.id)
       }
     }
 

@@ -63,8 +63,8 @@ test('全長文・長い一文・文学の意味フレーズと内部SVOCMを監
   assert.equal(audit.reading.meaningPhraseCount, 4329)
   assert.equal(audit.reading.meaningMultiRoleCount, 1668)
   assert.equal(audit.reading.grammarBlockCount, 2062)
-  assert.equal(audit.reading.correctionDecisionCount, 912)
-  assert.equal(audit.reading.appliedCorrectionCount, 912)
+  assert.equal(audit.reading.correctionDecisionCount, 923)
+  assert.equal(audit.reading.appliedCorrectionCount, 923)
   assert.deepEqual(audit.reading.connectorClosureReview, {
     candidateCount: 144,
     backReferenceCount: 63,

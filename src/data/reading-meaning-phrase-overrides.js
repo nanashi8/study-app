@@ -11,6 +11,34 @@ const sentence = (phrases) => Object.freeze(phrases)
 const split = (...phrases) => Object.freeze({ split: Object.freeze(phrases) })
 
 export const READING_MEANING_PHRASE_OVERRIDES = Object.freeze({
+  'A shared meal is one of the oldest ways in which a household tells a stranger that he is welcome.': sentence({
+    'is one of the oldest ways in': item(
+      '最も古い方法の一つです。その方法の中で',
+      'is がV、one of the oldest ways がCです。in は後ろの which と一組で「その方法の中で」となり、次の節へ渡します。',
+    ),
+  }),
+
+  'Discussing the question well in advance is unpleasant, and it is the only point at which it can be discussed at all.': sentence({
+    'is the only point at': item(
+      '唯一の時点です。その時点でこそ',
+      'is がV、the only point がCです。at は後ろの which と一組で「その時点で」となり、次の節へ渡します。',
+    ),
+  }),
+
+  'It is that school policies should take evidence about teenage sleep seriously.': sentence({
+    'seriously': item(
+      '真剣に受け止めるべきだ、ということです',
+      'seriously は should take の態度を示すMです。文末なので、that 節全体が It の中身だったことをここで受け直します。',
+    ),
+  }),
+
+  'A well-designed default may help people carry out an intention they already have but repeatedly postpone.': sentence({
+    'may help people carry out an intention': item(
+      '人々がある意図を実行するのを助けるかもしれません',
+      'may help がV、people がO、carry out an intention が people の動作を示すCです。help ＋ 人 ＋ 動詞の原形で「人が〜するのを助ける」とまとめて読みます。',
+    ),
+  }),
+
   'She goes to school by bus every morning.': sentence({
     'She goes': item(
       '彼女は行きます',

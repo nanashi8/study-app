@@ -342,10 +342,11 @@ test('読み上げを持つ全26 UIモジュールが共通プレイヤー経由
   )
   const screenCount = speechUi.filter(({ path }) => path.startsWith('screens/')).length
 
-  assert.equal(speechUi.length, 26)
+  assert.equal(speechUi.length, 27)
   assert.equal(screenCount, 20)
   assert.ok(speechUi.some(({ path }) => path === 'components/LiteratureVocabularySheet.jsx'))
   assert.ok(speechUi.some(({ path }) => path === 'screens/Reader.jsx'))
+  assert.ok(speechUi.some(({ path }) => path === 'components/ReadingSentenceDetail.jsx'))
   assert.ok(speechUi.some(({ path }) => path === 'screens/LiteratureReader.jsx'))
   assert.ok(speechUi.some(({ path }) => path === 'screens/ListeningQuiz.jsx'))
   assert.ok(speechUi.some(({ path }) => path === 'screens/DictationPlay.jsx'))

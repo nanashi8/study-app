@@ -435,7 +435,14 @@ const PROPER_NAME_GLOSSES = [
   { test: /\bMaple Junior High\b/, words: { maple: 'メープル（校名の一部）' } },
 ]
 
-for (const passage of PASSAGES) {
+// 一文ごとの構文監査を受ける長文。語彙強化長文のうち散文へ書き直し済みのものも、
+// 初期長文と同じ台帳・語順訳・5文型の対象にする。
+export const ANNOTATED_PASSAGES = Object.freeze([
+  ...PASSAGES,
+  ...EXTENDED_PASSAGES.filter((passage) => passage.annotated),
+])
+
+for (const passage of ANNOTATED_PASSAGES) {
   const translationScenarios = READING_TRANSLATION_SCENARIOS[passage.id] ?? []
   const reviewPassageFingerprint = reviewSourceFingerprint(
     passage.sentences.map((sentence) => sentence.en).join('\n'),
