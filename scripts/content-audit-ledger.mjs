@@ -291,7 +291,10 @@ function buildQuestionBanks() {
       rationaleFor: (item) => item.explanation,
     }),
     stringBank('diagnostic-static', '診断基準問題', DIAGNOSTIC_QUESTIONS, (item) => item.explain),
-    stringBank('diagnostic-generated', '診断生成3フォーム', diagnosticGenerated, (item) => item.explain),
+    // 出題は「3択＋わからない」。教材データは4択のままで、組み立て時に絞る。
+    stringBank('diagnostic-generated', '診断生成3フォーム', diagnosticGenerated, (item) => item.explain, {
+      expectedChoiceCounts: [3],
+    }),
   ]
 }
 

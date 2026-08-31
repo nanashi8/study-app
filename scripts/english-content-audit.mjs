@@ -181,17 +181,17 @@ for (const word of ALL_WORDS) {
       }
     }
   }
-  const diagnosticDistractors = pickDistractors(word, 3, rngFor(word.id, 314159))
+  const diagnosticDistractors = pickDistractors(word, 2, rngFor(word.id, 314159))
   assert(
-    diagnosticDistractors.length === 3,
-    `語彙 ${word.id}: 診断用の誤答選択肢を3件作れない`,
+    diagnosticDistractors.length === 2,
+    `語彙 ${word.id}: 診断用の誤答選択肢を2件作れない`,
   )
   assert(
     diagnosticDistractors.every((candidate) => candidate.pos === word.pos),
     `語彙 ${word.id}: 診断で品詞だけから判別できる誤答を生成`,
   )
   assert(
-    new Set([word, ...diagnosticDistractors].map(quizMeaningKey)).size === 4,
+    new Set([word, ...diagnosticDistractors].map(quizMeaningKey)).size === 3,
     `語彙 ${word.id}: 診断の画面表示上の語義が重複`,
   )
 }
@@ -405,8 +405,9 @@ const diagnosticForms = [1, 2, 3].flatMap((attemptNumber) =>
   buildDiagnosticQuestions({ attemptNumber, seed: 0x1a2b3c4d }))
 for (const item of diagnosticForms) {
   const at = `生成診断 ${item.id}`
-  assert(item.choices?.length === 4, `${at}: 4択ではない`)
-  assert(new Set(item.choices).size === 4, `${at}: 選択肢重複`)
+  // 出題は「3択＋わからない」。教材データは4択のままで、組み立て時に絞る。
+  assert(item.choices?.length === 3, `${at}: 3択ではない`)
+  assert(new Set(item.choices).size === 3, `${at}: 選択肢重複`)
   assert(item.choices?.includes(item.answer), `${at}: 正答が選択肢にない`)
   assert(text(item.explain), `${at}: 解説不足`)
   assert(

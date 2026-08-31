@@ -95,8 +95,8 @@ test('漢語・漢文法・漢文常識の全項目から一意な4択と項目�
       assert.ok(distractors.every((candidate) => candidate.id !== item.id), item.id)
 
       const question = makeKanbunQuestion(domain, item, () => 0.42)
-      assert.equal(question.choices.length, 4, question.id)
-      assert.equal(new Set(question.choices.map((choice) => choice.id)).size, 4, question.id)
+      assert.equal(question.choices.length, 3, question.id)
+      assert.equal(new Set(question.choices.map((choice) => choice.id)).size, 3, question.id)
       assert.ok(question.choices.some((choice) => choice.id === question.answerId), question.id)
       assert.ok(question.clue && question.detail && question.pitfall, question.id)
     }

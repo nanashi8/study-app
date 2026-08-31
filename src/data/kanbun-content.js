@@ -2,6 +2,7 @@ import { KANBUN_CULTURE, getKanbunCulture } from './kanbun-culture.js'
 import { KANBUN_GRAMMAR, getKanbunGrammar } from './kanbun-grammar.js'
 import { KANBUN_VOCAB, getKanbunVocab } from './kanbun-vocab.js'
 import { KANBUN_DOMAIN_META } from './kanbun-meta.js'
+import { QUIZ_CHOICE_COUNT } from '../lib/quizChoices.js'
 
 export const KANBUN_COLLECTIONS = Object.freeze({
   vocab: KANBUN_VOCAB,
@@ -85,7 +86,8 @@ export function pickKanbunDistractors(domain, item, count = 3, rng = Math.random
 const choiceId = (domain, item) => `${domain}:${item.id}`
 
 export function makeKanbunQuestion(domain, item, rng = Math.random) {
-  const distractors = pickKanbunDistractors(domain, item, 3, rng)
+  // 出題は「3択＋わからない」にそろえるため、誤答は2つだけ作る。
+  const distractors = pickKanbunDistractors(domain, item, QUIZ_CHOICE_COUNT - 1, rng)
   const choices = shuffleKanbun([item, ...distractors], rng).map((candidate) => ({
     id: choiceId(domain, candidate),
     label: candidate.answer,

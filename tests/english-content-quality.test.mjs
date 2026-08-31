@@ -66,8 +66,9 @@ test('診断の全基準問題・読解バンク・生成3フォームは解説�
       seed: 0x1a2b3c4d,
     })
     for (const item of questions) {
-      assert.equal(item.choices.length, 4, item.id)
-      assert.equal(new Set(item.choices).size, 4, item.id)
+      // 出題は「3択＋わからない」。
+      assert.equal(item.choices.length, 3, item.id)
+      assert.equal(new Set(item.choices).size, 3, item.id)
       assert.ok(item.choices.includes(item.answer), item.id)
       assert.ok(item.explain, item.id)
       if (item.skill === 'reading') {

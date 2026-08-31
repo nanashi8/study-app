@@ -6,7 +6,7 @@ import {
   READING_PRACTICE_TYPE_META,
 } from '../data/reading-current-affairs-practice-questions.js'
 import { READING_RULES_BY_ID, readingRuleForQuestion } from '../data/reading-rules.js'
-import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
+import { limitQuizChoices, UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { buildReadingInstructorExplanation } from '../lib/instructorExplanations.js'
 import { InstructorExplanation } from './InstructorExplanation.jsx'
 import { ReadingChoiceExplanations } from './ReadingChoiceExplanations.jsx'
@@ -131,6 +131,14 @@ export function ReadingComprehensionCheck({ passageId, onStatusChange }) {
           const questionRule = question.readingRuleId
             ? READING_RULES_BY_ID[question.readingRuleId]
             : readingRuleForQuestion(question.q)
+          // 教材は4択だが、出題は「3択＋わからない」にそろえる。
+          // 解説も出題した選択肢だけを扱うよう、絞ったあとの設問を渡す。
+          const shown = question.choices?.length
+            ? {
+              ...question,
+              choices: limitQuizChoices(question.choices, question.answer, { seed: question.id ?? question.q }),
+            }
+            : question
           return (
           <fieldset key={question.id ?? question.q} data-reading-question-type={question.questionType ?? 'content'}>
             <legend className="mb-2 text-sm font-extrabold leading-relaxed text-ink">
@@ -172,7 +180,7 @@ export function ReadingComprehensionCheck({ passageId, onStatusChange }) {
               </>
             ) : (
             <div className="space-y-2">
-              {question.choices.map((choice) => {
+              {shown.choices.map((choice) => {
                 const selected = answers[questionIndex] === choice
                 const isCorrect = choice === question.answer
                 const tone = checked
@@ -211,7 +219,7 @@ export function ReadingComprehensionCheck({ passageId, onStatusChange }) {
               <>
                 {practiceMeta ? (
                   <ReadingPracticeExplanation
-                    question={question}
+                    question={shown}
                     selectedAnswer={answers[questionIndex]}
                   />
                 ) : (
@@ -222,7 +230,7 @@ export function ReadingComprehensionCheck({ passageId, onStatusChange }) {
                       compact
                     />
                     <ReadingChoiceExplanations
-                      question={question}
+                      question={shown}
                       selectedChoice={answers[questionIndex]}
                     />
                   </>

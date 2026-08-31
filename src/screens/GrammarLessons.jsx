@@ -203,7 +203,7 @@ export function GrammarLessonsScreen() {
             {/* テストへ */}
             {quizCount > 0 && (
               <Button full size="lg" onClick={startQuiz}>
-                <Cards size={18} /> この単元を4択テストで練習（{quizCount}問）
+                <Cards size={18} /> この単元を3択テストで練習（{quizCount}問）
               </Button>
             )}
           </div>

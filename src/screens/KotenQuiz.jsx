@@ -14,7 +14,7 @@ import {
   ArrowRight,
 } from '../components/Icons.jsx'
 import { cx } from '../components/ui.jsx'
-import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
+import { QUIZ_CHOICE_COUNT, UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { buildKotenWordInstructorExplanation } from '../lib/instructorExplanations.js'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 import { growDeck } from '../lib/session.js'
@@ -64,7 +64,8 @@ export function KotenQuizScreen() {
   const saved = word ? kotenWordList.includes(word.id) : false
   const options = useMemo(() => {
     if (!word) return []
-    return shuffle([word, ...pickKotenDistractors(word, 3)])
+    // 「3択＋わからない」にそろえるため、誤答は2つだけ作る。
+    return shuffle([word, ...pickKotenDistractors(word, QUIZ_CHOICE_COUNT - 1)])
   }, [word?.id]) // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!deck.length) {

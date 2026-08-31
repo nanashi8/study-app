@@ -421,7 +421,7 @@ export function buildPhraseInstructorExplanation(item, selectedItem) {
   })
 }
 
-export function buildGrammarInstructorExplanation(item, selected, selectedGuidance) {
+export function buildGrammarInstructorExplanation(item, selected, selectedGuidance, choices = item?.choices ?? []) {
   if (item?.questionType === 'word-order') {
     const picked = chosenText(selected)
     return explanation({
@@ -438,7 +438,7 @@ export function buildGrammarInstructorExplanation(item, selected, selectedGuidan
   const decisive = grammarExamFocusExplanationFor(item) || clean(item?.explain)
   const fullExplanation = grammarQuestionExplanationFor(item)
   return explanation({
-    answer: grammarCorrectChoiceExplanationFor(item),
+    answer: grammarCorrectChoiceExplanationFor(item, choices),
     evidence: fullExplanation,
     trap: selectionTrap({
       selected,

@@ -71,8 +71,9 @@ test('診断問題は連続3回すべて入れ替わり、同じ回は再現で�
     assert.equal(questions.length, 28)
     assert.equal(new Set(questions.map((question) => question.id)).size, 28)
     for (const question of questions) {
-      assert.equal(question.choices.length, 4, question.id)
-      assert.equal(new Set(question.choices).size, 4, question.id)
+      // 出題は「3択＋わからない」。教材データは4択のままで、組み立て時に絞る。
+      assert.equal(question.choices.length, 3, question.id)
+      assert.equal(new Set(question.choices).size, 3, question.id)
       assert.ok(question.choices.includes(question.answer), question.id)
       assert.ok(question.sourceId, question.id)
       if (question.skill === 'grammar') {

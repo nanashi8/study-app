@@ -220,10 +220,11 @@ const [
 for (const label of ['根拠', '消去法', '考え方']) {
   if (!instructorSource.includes(`label: '${label}'`)) errors.push(`共通解説に「${label}」がない`)
 }
-if (!grammarQuizSource.includes('GrammarChoiceExplanations')) errors.push('英文法画面に4択解説部品がない')
-if (!grammarChoiceExplanationsSource.includes('選択肢解説（4択すべて）')) {
-  errors.push('英文法画面に正解を含む4択すべての解説がない')
+if (!grammarQuizSource.includes('GrammarChoiceExplanations')) errors.push('英文法画面に選択肢解説部品がない')
+if (!grammarChoiceExplanationsSource.includes('選択肢解説（3択すべて）')) {
+  errors.push('英文法画面に正解を含む3択すべての解説がない')
 }
+if (!grammarQuizSource.includes('limitQuizChoices')) errors.push('英文法画面が3択に絞っていない')
 if (/id: 'quiz'/.test(homeSource)) errors.push('英語ホームに重複したクイズ入口がある')
 if (!homeSource.includes("id: 'vocab'")) errors.push('英語ホームの単語入口がない')
 if (!homeSource.includes("id: 'etymology'") || !homeSource.includes("screen: 'roots'")) {

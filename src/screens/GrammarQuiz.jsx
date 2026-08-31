@@ -22,7 +22,7 @@ import { GrammarChoiceExplanations } from '../components/GrammarChoiceExplanatio
 import { WordOrderExercise } from '../components/WordOrderExercise.jsx'
 import { Button, IconButton, Chip, cx } from '../components/ui.jsx'
 import { ArrowRight, Bookmark, BookmarkFilled, Check, Close } from '../components/Icons.jsx'
-import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
+import { limitQuizChoices, UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { buildGrammarInstructorExplanation } from '../lib/instructorExplanations.js'
 import { grammarQuestionNeedsMeaningCue } from '../lib/grammarQuestionExplanations.js'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
@@ -87,7 +87,11 @@ export function GrammarQuizScreen() {
   })
 
   const item = deck[i]
-  const options = useMemo(() => (item ? shuffle(item.choices ?? []) : []), [item?.id]) // eslint-disable-line react-hooks/exhaustive-deps
+  // 教材は4択だが、出題は「3択＋わからない」にそろえる。
+  const options = useMemo(
+    () => (item ? shuffle(limitQuizChoices(item.choices ?? [], item.answer, { seed: item.id })) : []),
+    [item?.id], // eslint-disable-line react-hooks/exhaustive-deps
+  )
   const patternExamples = useMemo(
     () => samePatternExamplesFor(item),
     [item?.id], // eslint-disable-line react-hooks/exhaustive-deps
@@ -109,7 +113,7 @@ export function GrammarQuizScreen() {
   const isCorrectPick = answered && selected === item.answer
   const selectedGuidance = orderQuestion ? null : grammarChoiceGuidanceFor(item, selected)
   const instructorExplanation = answered
-    ? buildGrammarInstructorExplanation(item, selected, selectedGuidance)
+    ? buildGrammarInstructorExplanation(item, selected, selectedGuidance, options)
     : null
   const longSentenceTranslation = longSentenceTranslationFor(item)
   const needsMeaningCue = orderQuestion

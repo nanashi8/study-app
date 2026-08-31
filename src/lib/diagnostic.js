@@ -4,7 +4,7 @@ import {
   DIAGNOSTIC_SKILLS,
   DIAGNOSTIC_VERSION,
 } from '../data/diagnostic.js'
-import { UNKNOWN_CHOICE_ID } from './quizChoices.js'
+import { QUIZ_CHOICE_COUNT, UNKNOWN_CHOICE_ID } from './quizChoices.js'
 
 export const UNKNOWN_DIAGNOSTIC_ANSWER = UNKNOWN_CHOICE_ID
 
@@ -15,9 +15,9 @@ const DISCRIMINATION = 1.25
 
 const clamp = (value, min, max) => Math.max(min, Math.min(max, value))
 
-// 4択の偶然正答率を下限に含めた1パラメータ項目反応モデル。
+// 選択肢数から決まる偶然正答率を下限に含めた1パラメータ項目反応モデル。
 // difficulty と theta は診断テスト内だけで使う標準化尺度。
-export function probabilityCorrect(theta, difficulty, choiceCount = 4) {
+export function probabilityCorrect(theta, difficulty, choiceCount = QUIZ_CHOICE_COUNT) {
   const guessing = 1 / Math.max(2, choiceCount)
   const logistic = 1 / (1 + Math.exp(-DISCRIMINATION * (theta - difficulty)))
   return guessing + (1 - guessing) * logistic

@@ -19,7 +19,7 @@ import {
   Close,
 } from '../components/Icons.jsx'
 import { growDeck } from '../lib/session.js'
-import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
+import { limitQuizChoices, UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { buildKotenInterpretationInstructorExplanation } from '../lib/instructorExplanations.js'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 import {
@@ -86,7 +86,11 @@ export function KotenInterpretationQuizScreen() {
   const [done, setDone] = useState(false)
 
   const item = deck[index]
-  const choices = useMemo(() => (item ? shuffle(item.choices) : []), [item?.id, run]) // eslint-disable-line react-hooks/exhaustive-deps
+  // 教材は4択だが、出題は「3択＋わからない」にそろえる。
+  const choices = useMemo(
+    () => (item ? shuffle(limitQuizChoices(item.choices, item.answer, { seed: item.id })) : []),
+    [item?.id, run], // eslint-disable-line react-hooks/exhaustive-deps
+  )
   const answered = selected !== null
   const isCorrect = answered && selected === item?.answer
 
