@@ -77,9 +77,9 @@ test('全選択式教材の正解・全誤答・わからない経路数を教�
   assert.equal(paths.coverageTest, 'tests/instructor-explanations.test.mjs')
   assert.equal(paths.result, 'pass')
   assert.equal(paths.questionCount, 15_734)
-  assert.equal(paths.displayedChoiceCount, 51_631)
+  assert.equal(paths.displayedChoiceCount, 51_547)
   assert.equal(paths.unknownPathCount, 15_734)
-  assert.equal(paths.answerPathCount, 67_365)
+  assert.equal(paths.answerPathCount, 67_281)
   assert.deepEqual(
     paths.families.map(({ id }) => id),
     [

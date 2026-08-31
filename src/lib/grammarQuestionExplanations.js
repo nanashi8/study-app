@@ -537,24 +537,24 @@ export function grammarAnswerEvidenceFor(item) {
       : '',
     baseRule,
     rule,
-    conclusion: `この手掛かりと規則を4択すべてに当てはめると、${quote(item.answer)}だけが完成文${quote(completed)}の形と意味を同時に満たす。したがって、空所は${quote(item.answer)}に決まる。`,
+    conclusion: `この手掛かりと規則を選択肢すべてに当てはめると、${quote(item.answer)}だけが完成文${quote(completed)}の形と意味を同時に満たす。したがって、空所は${quote(item.answer)}に決まる。`,
   }
 }
 
-export function grammarCorrectChoiceExplanationFor(item) {
+// choices には実際に出題した選択肢を渡す。省略時は教材の全選択肢を使う。
+// 画面に出していない誤答を「残りの選択肢」として挙げないためにある。
+export function grammarCorrectChoiceExplanationFor(item, choices = item?.choices ?? []) {
   const evidence = grammarAnswerEvidenceFor(item)
   if (!evidence) return ''
-  const otherChoices = (item?.choices ?? [])
-    .filter((choice) => choice !== item.answer)
-    .map(quote)
-    .join('・')
+  const others = choices.filter((choice) => choice !== item.answer)
+  const otherChoices = others.map(quote).join('・')
   return clean([
     `${quote(item.answer)}が正解。`,
     `英語の手掛かり：${evidence.englishClue}`,
     evidence.meaningClue && `意味の手掛かり：${evidence.meaningClue}`,
     `適用する規則：${evidence.rule}`,
     evidence.conclusion,
-    otherChoices && `残りの3択（${otherChoices}）は、この形・意味・文脈の少なくとも一つを満たさないため、正解は一つに決まる。`,
+    otherChoices && `残りの${others.length}択（${otherChoices}）は、この形・意味・文脈の少なくとも一つを満たさないため、正解は一つに決まる。`,
   ].filter(Boolean).join(' '))
 }
 
@@ -627,9 +627,9 @@ export function grammarChoiceMismatchExplanationFor(item, choice) {
   )
 }
 
-export function grammarChoiceExplanationFor(item, choice) {
+export function grammarChoiceExplanationFor(item, choice, choices = item?.choices ?? []) {
   return choice === item?.answer
-    ? grammarCorrectChoiceExplanationFor(item)
+    ? grammarCorrectChoiceExplanationFor(item, choices)
     : grammarChoiceMismatchExplanationFor(item, choice)
 }
 

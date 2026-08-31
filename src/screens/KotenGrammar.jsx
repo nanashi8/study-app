@@ -175,7 +175,7 @@ export function KotenGrammarScreen() {
               </span>
               <span className="mt-3 block font-display text-lg font-extrabold">テスト</span>
               <span className="mt-1 block text-[11px] font-bold leading-relaxed text-white/65">
-                識別・活用・敬語を入試型4択で
+                識別・活用・敬語を入試型3択で
               </span>
             </button>
           </div>

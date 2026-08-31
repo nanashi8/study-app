@@ -186,7 +186,7 @@ export function KotenCultureScreen() {
               </span>
               <span className="mt-3 block font-display text-lg font-extrabold">テスト</span>
               <span className="mt-1 block text-[11px] font-bold leading-relaxed text-white/65">
-                本文・人物関係・資料から4択
+                本文・人物関係・資料から3択
               </span>
             </button>
           </div>

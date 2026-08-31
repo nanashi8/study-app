@@ -15,9 +15,9 @@ export function GrammarChoiceExplanations({
     <section
       className={cx('border-t border-brand-100 pt-3', className)}
       data-grammar-choice-guidance
-      aria-label="4択すべての根拠"
+      aria-label="3択すべての根拠"
     >
-      <p className="font-display text-sm font-extrabold text-ink/70">選択肢解説（4択すべて）</p>
+      <p className="font-display text-sm font-extrabold text-ink/70">選択肢解説（3択すべて）</p>
       <p className="mt-1 text-[11px] font-bold leading-relaxed text-ink/45">
         正解も誤答も、問題文の手掛かり・意味・規則に当てはめて比べます。
       </p>
@@ -28,7 +28,7 @@ export function GrammarChoiceExplanations({
           const guidance = grammarChoiceUsageFor(item, choice)
           const usable = guidance?.status === 'valid'
           const example = guidance?.example?.en ?? guidance?.pattern
-          const reason = grammarChoiceExplanationFor(item, choice)
+          const reason = grammarChoiceExplanationFor(item, choice, choices)
 
           return (
             <article

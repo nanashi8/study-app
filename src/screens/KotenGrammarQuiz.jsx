@@ -9,7 +9,7 @@ import {
   KOTEN_GRAMMAR_QUESTION_FORMATS,
   pickKotenGrammarQuestions,
 } from '../data/koten-grammar-questions.js'
-import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
+import { limitQuizChoices, UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
@@ -61,6 +61,10 @@ export function KotenGrammarQuizScreen() {
   const [done, setDone] = useState(false)
 
   const question = deck[index]
+  // 教材は4択だが、出題は「3択＋わからない」にそろえる。
+  const choices = question
+    ? limitQuizChoices(question.choices, question.answer, { seed: question.id })
+    : []
   const relatedGrammar = question
     ? question.grammarIds.map(getKotenGrammar).filter(Boolean)
     : []
@@ -250,7 +254,7 @@ export function KotenGrammarQuizScreen() {
         </section>
 
         <div className="mt-4 space-y-2.5">
-          {question.choices.map((choice, choiceIndex) => {
+          {choices.map((choice, choiceIndex) => {
             const correct = choice === question.answer
             const chosen = selected === choice
             let tone = 'idle'

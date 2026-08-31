@@ -112,14 +112,14 @@ test('同じ英文で誤答も成立していた既存2問を一意にする', (
   assert.ok(concessionQuestion.choices.includes('Although tired'))
 })
 
-test('英文法画面は答え合わせ後に正解を含む4択すべての根拠を表示する', async () => {
+test('英文法画面は答え合わせ後に正解を含む出題選択肢すべての根拠を表示する', async () => {
   const [screenSource, explanationsSource] = await Promise.all([
     readFile(new URL('../src/screens/GrammarQuiz.jsx', import.meta.url), 'utf8'),
     readFile(new URL('../src/components/GrammarChoiceExplanations.jsx', import.meta.url), 'utf8'),
   ])
   assert.match(screenSource, /<GrammarChoiceExplanations/)
   assert.match(screenSource, /data-grammar-target-meaning/)
-  assert.match(explanationsSource, /選択肢解説（4択すべて）/)
+  assert.match(explanationsSource, /選択肢解説（3択すべて）/)
   assert.doesNotMatch(explanationsSource, /選択肢の使い分け|別の場面で使う/)
   assert.match(explanationsSource, /この形は使わない/)
   assert.match(explanationsSource, /data-grammar-choice-guide/)

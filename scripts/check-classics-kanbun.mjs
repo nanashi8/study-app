@@ -92,8 +92,8 @@ for (const [domain, collection] of Object.entries(KANBUN_COLLECTIONS)) {
       assert.ok(item[field]?.trim(), `${domain}:${item.id}:${field}`)
     }
     const question = makeKanbunQuestion(domain, item, () => 0.43)
-    assert.equal(question.choices.length, 4, question.id)
-    assert.equal(new Set(question.choices.map((choice) => choice.id)).size, 4, question.id)
+    assert.equal(question.choices.length, 3, question.id)
+    assert.equal(new Set(question.choices.map((choice) => choice.id)).size, 3, question.id)
     assert.ok(question.choices.some((choice) => choice.id === question.answerId), question.id)
   }
 }
@@ -195,7 +195,7 @@ for (const [file, needles] of [
 }
 
 console.log('古典・漢文全件監査: PASS')
-console.log('  古典: 暗記430項目 / 4択548問相当 / 短文読解36問 / 5段階')
-console.log(`  漢文: 暗記302項目 / 自動4択302問 / 返り点・訓読40題・返り点${kanbunReturnMarkCount}個を親字へ固定 / 5段階`)
+console.log('  古典: 暗記430項目 / 選択問題548問相当（出題は3択） / 短文読解36問 / 5段階')
+console.log(`  漢文: 暗記302項目 / 自動生成3択302問 / 返り点・訓読40題・返り点${kanbunReturnMarkCount}個を親字へ固定 / 5段階`)
 console.log(`  保存契約: 漢文7項目 / 全${PERSISTED_PROGRESS_FIELDS.length}永続項目`)
 console.log('  ふりがな: 見出し語・書き下し文の振り漏れ0 / 白文は書き下し文と必ず対')

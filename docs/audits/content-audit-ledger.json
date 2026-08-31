@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-08-30T21:14:05.636Z",
+  "auditedAt": "2026-08-31T09:47:58.438Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -11,13 +11,13 @@
     "learningItemCount": 16081,
     "quizItemCount": 16090,
     "storedAndGeneratedQuestionPathCount": 4180,
-    "storedAndGeneratedChoicePathCount": 16688,
+    "storedAndGeneratedChoicePathCount": 16604,
     "overallContentSha256": "afb731f1ef106f0d9347ce85922592b290e8d4a313ba0aa0342a0965dbae07da"
   },
   "completionCriteria": [
     "全18教材カテゴリのID・母数・重複・内容ハッシュが一致する",
     "全問題バンクで選択肢が重複せず、正答が一つだけ存在し、問題別解説がある",
-    "共通講師解説を使う全選択式問題の正解・全誤答・わからない67,365経路に回答別指導がある",
+    "共通講師解説を使う全選択式問題の正解・全誤答・わからない67,281経路に回答別指導がある",
     "英文法は全3,450問・全13,800選択肢に問題文固有の根拠を持つ",
     "長文32本・794文・140問・560選択肢の和訳と選択肢別解説が原文順に対応する",
     "長文32本すべてが並び替え・文法・語法の技能練習を1問ずつ持ち、原文・訳・重点語・読解ルールが本文と一致する",
@@ -103,7 +103,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "a4005607af33eee550294aeebb138d8c86542360213df5aa42dfe990305d1b48",
+    "sha256": "f2b9871cfd3b7b2f73d10387a8e72c1e05018c46255f7954774f357250421262",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -209,6 +209,7 @@
       "tests/public-data-security.test.mjs",
       "tests/public-secrets-audit.test.mjs",
       "tests/question-session-controls.test.mjs",
+      "tests/quiz-choice-count.test.mjs",
       "tests/readability-ui.test.mjs",
       "tests/reading-japanese-integrity.test.mjs",
       "tests/reading-layout-contract.test.mjs",
@@ -787,10 +788,10 @@
       "id": "diagnostic-generated",
       "label": "診断生成3フォーム",
       "questionCount": 84,
-      "choiceCount": 336,
+      "choiceCount": 252,
       "generalRationaleCount": 84,
       "choiceSpecificRationaleCount": 0,
-      "questionSetSha256": "0c56d538ffe3cf09a04a3074c09c43d544428980419da853e791d551d4b166ac",
+      "questionSetSha256": "b0bd9fcc331a289c7881c77343079b5c8b7ce91f62efb9fda91fe4af1775b950",
       "result": "pass",
       "failureCount": 0,
       "failures": []
@@ -800,9 +801,9 @@
     "coverageTest": "tests/instructor-explanations.test.mjs",
     "requirement": "共通講師解説を使う全選択式問題の正解・全誤答・わからないに、正解、問題固有の根拠、回答別の指導、次に使える考え方を返す",
     "questionCount": 15734,
-    "displayedChoiceCount": 51631,
+    "displayedChoiceCount": 51547,
     "unknownPathCount": 15734,
-    "answerPathCount": 67365,
+    "answerPathCount": 67281,
     "result": "pass",
     "families": [
       {
@@ -881,9 +882,9 @@
         "id": "diagnostic",
         "label": "診断基準問題・生成3フォーム",
         "questionCount": 112,
-        "displayedChoiceCount": 448,
+        "displayedChoiceCount": 364,
         "unknownPathCount": 112,
-        "answerPathCount": 560
+        "answerPathCount": 476
       },
       {
         "id": "math",

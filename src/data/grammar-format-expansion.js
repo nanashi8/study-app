@@ -3,7 +3,7 @@
 
 export const GRAMMAR_QUESTION_TYPE_META = Object.freeze({
   mixed: Object.freeze({ label: '3種類', short: '3種類', description: '選択・並び替え・語法を同じくらいずつ出題' }),
-  choice: Object.freeze({ label: '選択問題', short: '選択', description: '文の形と意味に合う答えを4つから選ぶ' }),
+  choice: Object.freeze({ label: '選択問題', short: '選択', description: '文の形と意味に合う答えを3つから選ぶ' }),
   'word-order': Object.freeze({ label: '並び替え問題', short: '並び替え', description: '単語カードを英文の順に並べる' }),
   usage: Object.freeze({ label: '語法問題', short: '語法', description: '語と語の自然な結び付きを選ぶ' }),
 })

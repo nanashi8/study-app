@@ -23,7 +23,9 @@ import {
   dismissSpeechPlayer,
   playSpeechItems,
 } from '../lib/speech-player.js'
+import { limitQuizChoices, UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
+import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { Sheet } from '../components/Sheet.jsx'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { ReadingRoleSentence } from '../components/ReadingRoleSentence.js'
@@ -678,13 +680,21 @@ export function LiteratureReaderScreen() {
                 const selected = questionAnswers[item.id]
                 const answered = selected != null
                 const correct = selected === item.answer
+                const unknown = selected === UNKNOWN_CHOICE_ID
+                // 教材は4択だが、出題は「3択＋わからない」にそろえる。
+                // answer は添字なので、元の添字を保ったまま表示する分だけ残す。
+                const shownChoices = limitQuizChoices(
+                  item.choices.map((choice, choiceIndex) => ({ choice, choiceIndex })),
+                  (entry) => entry.choiceIndex === item.answer,
+                  { seed: item.id },
+                )
                 return (
                   <section key={item.id} data-literature-question={item.id}>
                     <p lang="en" className="text-sm font-extrabold leading-relaxed text-ink">
                       {questionIndex + 1}. {item.prompt}
                     </p>
                     <div className="mt-2 space-y-2">
-                      {item.choices.map((choice, choiceIndex) => (
+                      {shownChoices.map(({ choice, choiceIndex }, displayIndex) => (
                         <button
                           key={choice}
                           type="button"
@@ -698,10 +708,16 @@ export function LiteratureReaderScreen() {
                             answered && choiceIndex !== item.answer && choiceIndex !== selected && 'border-slate-100 bg-slate-50 text-ink/40',
                           )}
                         >
-                          <span className="shrink-0 font-black">{String.fromCharCode(65 + choiceIndex)}.</span>
+                          <span className="shrink-0 font-black">{String.fromCharCode(65 + displayIndex)}.</span>
                           <span lang="en">{choice}</span>
                         </button>
                       ))}
+                      <UnknownChoiceButton
+                        selected={unknown}
+                        disabled={answered}
+                        onClick={() => answerQuestion(item.id, UNKNOWN_CHOICE_ID)}
+                        className="rounded-xl py-2.5"
+                      />
                     </div>
                     {answered && (
                       <div
@@ -712,7 +728,7 @@ export function LiteratureReaderScreen() {
                         aria-live="polite"
                       >
                         <p className={cx('text-xs font-extrabold', correct ? 'text-emerald-800' : 'text-rose-800')}>
-                          {correct ? '正解。' : 'ここを読み直そう。'} {item.explanation}
+                          {correct ? '正解。' : unknown ? '答えはこちら。' : 'ここを読み直そう。'} {item.explanation}
                         </p>
                         <p lang="en" className="mt-2 border-l-2 border-sky-300 pl-2 text-[11px] font-bold leading-relaxed text-ink/60">
                           根拠 Scene {item.evidenceScene + 1}: {work.scenes[item.evidenceScene].original}

@@ -15,7 +15,7 @@ export function ReadingPracticeExplanation({ question, selectedAnswer }) {
         <BookOpen size={17} className="shrink-0 text-violet-700" />
         <div>
           <p className="text-[10px] font-extrabold text-violet-700">本文の実文で確認</p>
-          <h3 className="text-sm font-extrabold text-ink">選択肢解説（4択すべて）</h3>
+          <h3 className="text-sm font-extrabold text-ink">選択肢解説（3択すべて）</h3>
         </div>
       </div>
 

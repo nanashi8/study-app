@@ -3,6 +3,8 @@
 // 「会話の応答」「会話・文の内容一致」「Real-Life」「インタビュー」等の形式で、
 // 級別の場面・題材・放送回数をそろえた問題。
 
+import { limitQuizChoices } from '../lib/quizChoices.js'
+
 export const LISTENING_TYPE_META = Object.freeze({
   response: Object.freeze({ label: '応答選択', icon: '💬', spokenChoices: true }),
   conversation: Object.freeze({ label: '会話内容', icon: '🗣️', spokenChoices: false }),
@@ -343,9 +345,15 @@ function shuffled(items, rng = Math.random) {
 }
 
 export function shuffledListeningChoices(item, rng = Math.random) {
-  // 音声で Number 1... と読み上げる形式は、表示番号と放送順を一致させる。
+  // 音声で Number 1... と読み上げる形式は放送どおり3件なので、そのまま並べる。
   if (LISTENING_TYPE_META[item?.type]?.spokenChoices) return [...(item?.choices ?? [])]
-  return shuffled(item?.choices ?? [], rng)
+  // 画面に出す形式は4択の教材から「3択＋わからない」に絞る。
+  const choices = limitQuizChoices(
+    item?.choices ?? [],
+    (choice) => choice.id === item?.answer,
+    { seed: item?.id ?? '' },
+  )
+  return shuffled(choices, rng)
 }
 
 export function buildListeningDeck(
