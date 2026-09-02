@@ -26,6 +26,12 @@ import {
   useUnfinishedSessionRecord,
 } from '../components/QuestionSessionControls.jsx'
 
+// 長文の準備で足す固有表現は、暗記カードと同じく「表現」と呼ぶ。
+const itemKind = (item) =>
+  item.category === 'expression' ? { label: '表現', color: '#0ea5e9' }
+  : item.kind === 'syntax' ? { label: '構文', color: '#8b5cf6' }
+  : { label: '熟語', color: '#0ea5e9' }
+
 const newSessionId = () => (
   globalThis.crypto?.randomUUID?.()
   ?? `dragon-phrase-${Date.now()}-${Math.random().toString(36).slice(2)}`
@@ -234,8 +240,8 @@ export function PhraseQuizScreen() {
           'mx-auto mt-3 flex w-full max-w-xl flex-col items-center bg-white text-center shadow-card',
           isDragonVein ? 'rounded-2xl px-4 py-3' : 'rounded-[2rem] p-6',
         )}>
-          <Chip color={item.kind === 'syntax' ? '#8b5cf6' : '#0ea5e9'} className="self-start">
-            {item.kind === 'syntax' ? '構文' : '熟語'}
+          <Chip color={itemKind(item).color} className="self-start">
+            {itemKind(item).label}
           </Chip>
           <div className="mt-2 flex items-center justify-center gap-3">
             <h2 className={cx('font-display font-extrabold tracking-tight text-ink', isDragonVein ? 'text-2xl' : 'text-3xl')}>

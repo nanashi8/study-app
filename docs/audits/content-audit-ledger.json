@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-08-31T09:47:58.438Z",
+  "auditedAt": "2026-09-02T08:45:03.414Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -103,7 +103,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "f2b9871cfd3b7b2f73d10387a8e72c1e05018c46255f7954774f357250421262",
+    "sha256": "0d6e72e5b41317ffb7934e59b8ff34a7eee4d9df626d102936ea67ad9eb0da8d",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -214,6 +214,7 @@
       "tests/reading-japanese-integrity.test.mjs",
       "tests/reading-layout-contract.test.mjs",
       "tests/reading-phrase-explanations.test.mjs",
+      "tests/reading-prep-record-list.test.mjs",
       "tests/reading-question-translations.test.mjs",
       "tests/reading-regressions.test.mjs",
       "tests/reading-role-annotations.test.mjs",

@@ -4,6 +4,8 @@ import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { ALL_PASSAGES } from '../src/data/passages.js'
+import { getReadingStudy } from '../src/data/reading-study.js'
 import { LEARNING_CONTENTS } from '../src/lib/learningContentProgress.js'
 import {
   NORMAL_LEARNING_RECORD_ENTRIES,
@@ -119,9 +121,42 @@ for (const domain of ['vocab', 'grammar', 'culture']) {
   )
 }
 
+// 長文ごとの読解の準備も、通常入口と同じ暗記・テスト・一覧スワイプでそろえる。
+const prep = await readFile(path.join(ROOT, 'src/screens/ReadingPrep.jsx'), 'utf8')
+for (const required of [
+  '<NormalLearningRecordList',
+  'entryId="reading-prep-words"',
+  'entryId="reading-prep-phrases"',
+  'contentId="vocab"',
+  'contentId="usage"',
+  '<LearningEntryCard',
+  '<LearningViewTabs',
+]) {
+  assert.ok(prep.includes(required), `読解の準備に ${required} がありません`)
+}
+let prepWordCount = 0
+let prepPhraseCount = 0
+for (const passage of ALL_PASSAGES) {
+  const study = getReadingStudy(passage)
+  prepWordCount += study.words.length
+  prepPhraseCount += study.phrases.length
+  for (const [contentId, items] of [['vocab', study.words], ['usage', study.phrases]]) {
+    assert.ok(items.length > 0, `${passage.id}: ${contentId} の準備項目がありません`)
+    for (const item of items) {
+      for (const result of EXPECTED_RESULTS) {
+        assert.ok(
+          learningContentCatalogReviewCommand(contentId, item.id, result),
+          `${passage.id}:${item.id}:${result}: SRS書き込み先がありません`,
+        )
+      }
+    }
+  }
+}
+
 console.log('✅ 通常入口の学習・テスト一覧監査に合格しました')
 console.log(`- 入口: ${NORMAL_LEARNING_RECORD_ENTRIES.length}/8`)
 console.log(`- 項目: ${NORMAL_LEARNING_RECORD_TOTAL.toLocaleString('ja-JP')}/2,836`)
+console.log(`- 読解の準備: 長文${ALL_PASSAGES.length}本・必須語彙${prepWordCount.toLocaleString('ja-JP')}語・熟語表現${prepPhraseCount.toLocaleString('ja-JP')}項目`)
 for (const entry of NORMAL_LEARNING_RECORD_ENTRIES) {
   console.log(`- ${entry.label}: ${entry.items.length.toLocaleString('ja-JP')}項目 (${entry.screen})`)
 }

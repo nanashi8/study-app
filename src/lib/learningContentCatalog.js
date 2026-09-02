@@ -98,7 +98,8 @@ function presentationFor(contentId, item) {
     return {
       title: item.phrase,
       subtitle: item.meaning,
-      field: item.kind === 'idiom' ? '熟語' : '構文',
+      // 長文の準備で足す固有表現は、熟語・構文と分けて「表現」と呼ぶ。
+      field: item.category === 'expression' ? '表現' : item.kind === 'idiom' ? '熟語' : '構文',
       level: examLevel(item.level),
     }
   }
