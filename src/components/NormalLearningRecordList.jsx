@@ -54,9 +54,11 @@ export function NormalLearningRecordList({
   const rows = useMemo(() => {
     if (!content) return []
     const itemById = new Map(content.items.map((item) => [item.id, item]))
+    // ID指定は教材の母集団から引く。長文ごとの固有表現のように母集団へ載らない
+    // 項目も、同じ教材のSRSへ同じ形で記録するため、そのまま一覧へ通す。
     const selectedItems = normalizedItems
       .map((item) => typeof item === 'string' ? itemById.get(item) : item)
-      .filter((item) => item?.id && itemById.has(item.id))
+      .filter((item) => item?.id)
     const rowById = new Map(
       learningContentCatalogRows(
         { ...content, items: selectedItems },
