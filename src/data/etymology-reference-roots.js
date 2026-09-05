@@ -6,6 +6,9 @@
 // - referenceRoots は、手動監査台帳に載った語根だけ公開語源カードと辞書表示に使う。
 //   保存互換用の旧カードIDを守るため、etymology-compression.js の旧分類には使わない。
 
+import { AUDITED_MORPHEME_ROOT_WORDS } from './etymology-morpheme-audit.js'
+import { CLASSICAL_ROOT_WORDS } from './etymology-classical-roots.js'
+
 export const REFERENCE_ROOTS = [
   { id: 'mini', form: 'minu / mini / minor', meaning: '小さい・少ない', origin: 'ラテン語 minuere / minor「小さくする・より小さい」', emoji: '🔎' },
   { id: 'mon', form: 'mon / monit', meaning: '注意を向ける・思い出させる', origin: 'ラテン語 monēre「注意させる」', emoji: '🔔' },
@@ -155,17 +158,23 @@ export const REFERENCE_ROOT_WORDS = {
   voc: ['avocation', 'vocation', 'vocational'],
 }
 
+// 手書きの許可リストと、形態素分解の候補を1語ずつ辞書で確かめた台帳を合わせて引く。
+// どちらも「確認済みの明示リンク」で、綴りの自動推測はここへ入れない。
 const REFERENCE_ROOT_IDS_BY_WORD = new Map()
-for (const [rootId, words] of Object.entries(REFERENCE_ROOT_WORDS)) {
-  for (const word of words) {
-    const key = word.toLowerCase()
-    if (!REFERENCE_ROOT_IDS_BY_WORD.has(key)) REFERENCE_ROOT_IDS_BY_WORD.set(key, [])
-    REFERENCE_ROOT_IDS_BY_WORD.get(key).push(rootId)
+for (const source of [REFERENCE_ROOT_WORDS, AUDITED_MORPHEME_ROOT_WORDS, CLASSICAL_ROOT_WORDS]) {
+  for (const [rootId, words] of Object.entries(source)) {
+    for (const word of words) {
+      const key = word.toLowerCase()
+      if (!REFERENCE_ROOT_IDS_BY_WORD.has(key)) REFERENCE_ROOT_IDS_BY_WORD.set(key, [])
+      if (!REFERENCE_ROOT_IDS_BY_WORD.get(key).includes(rootId)) {
+        REFERENCE_ROOT_IDS_BY_WORD.get(key).push(rootId)
+      }
+    }
   }
 }
 
-export const REFERENCE_ROOT_LINK_COUNT = Object.values(REFERENCE_ROOT_WORDS)
-  .reduce((sum, words) => sum + words.length, 0)
+export const REFERENCE_ROOT_LINK_COUNT = [...REFERENCE_ROOT_IDS_BY_WORD.values()]
+  .reduce((sum, rootIds) => sum + rootIds.length, 0)
 
 export function referenceRootIdsForWord(word = '') {
   return REFERENCE_ROOT_IDS_BY_WORD.get(word.toLowerCase()) ?? []

@@ -5,7 +5,7 @@ import { ScreenHeader } from '../components/AppShell.jsx'
 import { PosBadge } from '../components/WordBits.jsx'
 import { StatusDistributionBar } from '../components/LearningStatusBars.jsx'
 import { Button, Card } from '../components/ui.jsx'
-import { ArrowRight, Book, Check } from '../components/Icons.jsx'
+import { ArrowRight, Book, Cards, Check } from '../components/Icons.jsx'
 
 const LEARN_BATCH = 10
 
@@ -42,12 +42,26 @@ export function RootDetailScreen() {
     ...words.filter((word) => vocabularyLearningStatus(srs[word.id]) === 'learned'),
   ].slice(0, LEARN_BATCH)
 
+  const returnTarget = { screen: 'rootDetail', params: { rootId } }
+  const studyRoot = () => navigate('etymologyStudy', {
+    ids: [card.id],
+    title: `${card.rootForm}（${card.rootMeaning}）を暗記`,
+    size: 1,
+    preserveOrder: true,
+    returnTo: returnTarget,
+  })
+  const quizRoot = () => navigate('etymologyQuiz', {
+    ids: [card.id],
+    title: `${card.rootForm}（${card.rootMeaning}）のテスト`,
+    size: 1,
+    returnTo: returnTarget,
+  })
   const studyWords = () => navigate('vocabStudy', {
     source: { type: 'deck', ids: nextWords.map((word) => word.id), preserveOrder: true },
     title: `${card.rootForm}（${card.rootMeaning}）から暗記`,
     mode: 'study',
     size: nextWords.length,
-    returnTo: { screen: 'rootDetail', params: { rootId } },
+    returnTo: returnTarget,
   })
 
   return (
@@ -72,7 +86,15 @@ export function RootDetailScreen() {
               {card.caution}
             </p>
             <StatusDistributionBar kind="learning" counts={wordProgress.learning} compact unit="語" />
-            <Button full onClick={studyWords} disabled={!nextWords.length} data-etymology-word-study-action>
+            <div className="grid grid-cols-2 gap-2">
+              <Button size="sm" onClick={studyRoot} aria-label={`${card.rootForm}を暗記`}>
+                <Book size={16} /> 語根を暗記
+              </Button>
+              <Button size="sm" variant="secondary" onClick={quizRoot} aria-label={`${card.rootForm}をテスト`}>
+                <Cards size={16} /> 語根をテスト
+              </Button>
+            </div>
+            <Button full variant="secondary" onClick={studyWords} disabled={!nextWords.length} data-etymology-word-study-action>
               <Book size={18} /> 次の{nextWords.length}語を暗記
             </Button>
           </div>

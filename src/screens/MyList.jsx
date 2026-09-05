@@ -316,12 +316,13 @@ function ProblemSetCard({
                   {domain.id === 'etymology' ? (
                     <button
                       type="button"
-                      onClick={() => onStart(domain.id, items, set, 'study')}
+                      onClick={() => onStart(domain.id, items, set, 'words')}
                       className="min-h-9 rounded-md bg-brand-600 px-2 text-[9px] font-extrabold text-white"
                     >
                       単語を暗記
                     </button>
-                  ) : STUDY_DOMAINS.has(domain.id) && (
+                  ) : null}
+                  {STUDY_DOMAINS.has(domain.id) && (
                     <button
                       type="button"
                       onClick={() => onStart(domain.id, items, set, 'study')}
@@ -330,15 +331,13 @@ function ProblemSetCard({
                       カード
                     </button>
                   )}
-                  {domain.id !== 'etymology' && (
-                    <button
-                      type="button"
-                      onClick={() => onStart(domain.id, items, set, 'quiz')}
-                      className="min-h-9 rounded-md bg-slate-800 px-2 text-[9px] font-extrabold text-white"
-                    >
-                      問題
-                    </button>
-                  )}
+                  <button
+                    type="button"
+                    onClick={() => onStart(domain.id, items, set, 'quiz')}
+                    className="min-h-9 rounded-md bg-slate-800 px-2 text-[9px] font-extrabold text-white"
+                  >
+                    問題
+                  </button>
                 </div>
               )
             })}
@@ -642,8 +641,9 @@ export function MyListScreen() {
     const ids = items.map((item) => item.id)
     if (!ids.length) return
     const meta = NOTEBOOK_DOMAIN_BY_ID[domainId]
-    const mode = domainId === 'etymology'
-      ? 'study'
+    // 語源は「語根そのもの」と「紐づく英単語」の2通りで学べる。words は後者。
+    const mode = domainId === 'etymology' && requestedMode === 'words'
+      ? 'words'
       : requestedMode === 'study' && STUDY_DOMAINS.has(domainId) ? 'study' : 'quiz'
     const title = set?.title ?? `${meta.label}・マイノート`
     if (set) {
@@ -651,7 +651,7 @@ export function MyListScreen() {
         setId: set.id,
         setTitle: set.title,
         domain: domainId,
-        mode,
+        mode: mode === 'words' ? 'study' : mode,
         count: ids.length,
       })
     }
@@ -683,18 +683,27 @@ export function MyListScreen() {
         returnTo: { screen: 'myList', params: {} },
       })
     } else if (domainId === 'etymology') {
-      const wordIds = [...new Set(ids.flatMap(
-        (id) => getEtymologyPack(id)?.studyIds ?? [],
-      ))]
-      if (!wordIds.length) {
-        navigate('roots')
+      if (mode === 'words') {
+        const wordIds = [...new Set(ids.flatMap(
+          (id) => getEtymologyPack(id)?.studyIds ?? [],
+        ))]
+        if (!wordIds.length) {
+          navigate('roots')
+          return
+        }
+        navigate('vocabStudy', {
+          source: { type: 'deck', ids: wordIds },
+          title: `${title}の単語`,
+          mode: 'study',
+          size: Math.min(SESSION_LIMITS.etymology, wordIds.length),
+          returnTo: { screen: 'myList', params: {} },
+        })
         return
       }
-      navigate('vocabStudy', {
-        source: { type: 'deck', ids: wordIds },
-        title: `${title}の単語`,
-        mode: 'study',
-        size: Math.min(SESSION_LIMITS.etymology, wordIds.length),
+      navigate(mode === 'study' ? 'etymologyStudy' : 'etymologyQuiz', {
+        ids,
+        title,
+        size: Math.min(SESSION_LIMITS.etymology, ids.length),
         returnTo: { screen: 'myList', params: {} },
       })
     } else if (domainId === 'kotenVocab') {

@@ -40,7 +40,7 @@ test('熟語・構文は全2,104項目を級別内訳まで表示する', () => 
   assert.match(phrases, /PHRASE_COUNTS\.syntax/)
 })
 
-test('語源の全公開入口は通常の単語暗記だけを使い、専用暗記・2択実装を持たない', () => {
+test('語源の全公開入口は語根の暗記・テスト・一覧と通常の単語暗記をそろえる', () => {
   const roots = read('../src/screens/Roots.jsx')
   const modeData = read('../src/data/etymology-compression.js')
   const history = read('../src/data/etymology-history.js')
@@ -72,8 +72,14 @@ test('語源の全公開入口は通常の単語暗記だけを使い、専用�
   const activeEtymology = `${roots}\n${pack}\n${rootDetail}`
   assert.equal((activeEtymology.match(/data-etymology-word-study-action/g) ?? []).length, 3)
   assert.equal((activeEtymology.match(/navigate\('vocabStudy'/g) ?? []).length, 3)
-  assert.doesNotMatch(activeEtymology, /navigate\('(?:etymologyStudy|etymologyQuiz|vocabQuiz)'/)
+  assert.doesNotMatch(activeEtymology, /navigate\('vocabQuiz'/)
   assert.doesNotMatch(activeEtymology, /2択|単語クイズ|意味を見て学ぶ/)
+  // 語根そのものも、単語・熟語と同じ「暗記・テスト・一覧を確認」でそろえる。
+  assert.match(roots, /navigate\('etymologyStudy'/)
+  assert.match(roots, /navigate\('etymologyQuiz'/)
+  assert.match(roots, /LearningViewTabs/)
+  assert.match(roots, /NormalLearningRecordList/)
+  assert.match(roots, /data-etymology-entry="all"/)
   assert.match(vocabLevels, /語源から関連英単語を暗記/)
   assert.match(appMenu, /語源から関連英単語を一緒に暗記/)
   assert.doesNotMatch(`${vocabLevels}\n${appMenu}`, /語源の確認問題|2択/)
@@ -81,20 +87,21 @@ test('語源の全公開入口は通常の単語暗記だけを使い、専用�
   assert.match(notebook, /getEtymologyPack\(id\)\?\.studyIds/)
   const notebookEtymology = blockBetween(notebook, "} else if (domainId === 'etymology') {", "} else if (domainId === 'kotenVocab') {")
   assert.match(notebookEtymology, /navigate\('vocabStudy'/)
-  assert.doesNotMatch(notebookEtymology, /navigate\('(?:etymologyStudy|etymologyQuiz|vocabQuiz)'/)
-  assert.doesNotMatch(app, /etymologyStudy:\s|etymologyQuiz:\s|EtymologyStudyScreen|EtymologyQuizScreen/)
-  assert.match(analytics, /domain === 'etymology'[\s\S]*screen: 'vocabStudy'/)
-  assert.doesNotMatch(analytics, /screen: ['"]etymology(?:Study|Quiz)['"]/)
-  assert.match(learningContent, /'語源から暗記'[\s\S]*enabled: false/)
+  assert.doesNotMatch(notebookEtymology, /navigate\('vocabQuiz'/)
+  assert.match(app, /etymologyStudy: EtymologyStudyScreen/)
+  assert.match(app, /etymologyQuiz: EtymologyQuizScreen/)
+  assert.match(analytics, /domain === 'etymology'[\s\S]{0,600}etymologyStudy' : 'etymologyQuiz'/)
+  assert.match(learningContent, /srsContent\('etymology'[\s\S]*'etymologySrs'/)
   assert.doesNotMatch(`${activeEtymology}\n${wordBits}`, /もとの形・言語|もとの言語|どの言語から/)
   assert.doesNotMatch(`${activeEtymology}\n${wordBits}`, /現在義|共通軸|記載上の出発言語|濃縮パック/)
-  for (const retired of [
+  // 廃止したのは2択の正誤問題を出す旧実装だけ。
+  assert.equal(existsSync(new URL('../src/components/EtymologyKnowledge.jsx', import.meta.url)), false)
+  for (const required of [
     '../src/screens/EtymologyStudy.jsx',
     '../src/screens/EtymologyQuiz.jsx',
-    '../src/components/EtymologyKnowledge.jsx',
     '../src/lib/etymologyQuiz.js',
   ]) {
-    assert.equal(existsSync(new URL(retired, import.meta.url)), false, retired)
+    assert.equal(existsSync(new URL(required, import.meta.url)), true, required)
   }
 })
 
@@ -162,7 +169,7 @@ test('上部メニューとマイ学習は全教材種類・既存の出題ソ�
   assert.match(learning, /data-my-learning-screen/)
   assert.match(learning, /data-learning-content-group={group\.id}/)
   assert.match(learning, /data-learning-content={content\.id}/)
-  for (const label of ['英単語', '熟語・構文', '英文法', 'リスニング', 'ディクテーション', '語源から暗記', '古典単語', '漢語']) {
+  for (const label of ['英単語', '熟語・構文', '英文法', 'リスニング', 'ディクテーション', '語源', '古典単語', '漢語']) {
     assert.match(`${learning}\n${learningCatalog}`, new RegExp(label))
   }
   for (const screen of ['vocabLevels', 'phrases', 'grammar', 'listening', 'dictation', 'roots']) {
@@ -178,7 +185,7 @@ test('メニューの全教材・個人機能は公開ルートに存在し、�
     [...screenMap.matchAll(/^  ([A-Za-z][A-Za-z0-9]*):/gm)].map((match) => match[1]),
   )
 
-  assert.equal(publicScreens.size, 67)
+  assert.equal(publicScreens.size, 69)
   assert.equal(APP_MENU_ITEMS.length, 29)
   assert.equal(APP_MENU_SCREEN_DESTINATIONS.length, 24)
   assert.deepEqual(

@@ -103,14 +103,19 @@ const forbiddenRuntimeCopy = [
 ]
 
 const files = await sourceFiles(sourceRoot)
-for (const retired of [
+// 廃止したのは2択の正誤問題を出す旧実装。語源そのものの暗記・テストは公開する。
+for (const retired of ['src/components/EtymologyKnowledge.jsx']) {
+  if (files.some((file) => path.relative(projectRoot, file) === retired)) {
+    errors.push(`${retired}: 廃止した2択実装が残る`)
+  }
+}
+for (const required of [
   'src/screens/EtymologyStudy.jsx',
   'src/screens/EtymologyQuiz.jsx',
-  'src/components/EtymologyKnowledge.jsx',
   'src/lib/etymologyQuiz.js',
 ]) {
-  if (files.some((file) => path.relative(projectRoot, file) === retired)) {
-    errors.push(`${retired}: 廃止した語源専用画面または2択実装が残る`)
+  if (!files.some((file) => path.relative(projectRoot, file) === required)) {
+    errors.push(`${required}: 語源そのものの暗記・テスト実装がない`)
   }
 }
 for (const file of files) {
@@ -314,34 +319,36 @@ for (const [name, source] of [
   if (!source.includes("navigate('vocabStudy'")) {
     errors.push(`${name}が通常の単語暗記画面を使っていない`)
   }
-  if (/navigate\('(?:etymologyStudy|etymologyQuiz|vocabQuiz)'|単語クイズ/.test(source)) {
-    errors.push(`${name}に廃止した語源専用画面またはテストの導線が残る`)
+  if (/単語クイズ/.test(source)) {
+    errors.push(`${name}に廃止した表記「単語クイズ」が残る`)
   }
+}
+// 語源そのものも、単語・熟語と同じ「暗記・テスト・一覧を確認」の3導線をそろえる。
+for (const [label, needle] of [
+  ['暗記', "navigate('etymologyStudy'"],
+  ['テスト', "navigate('etymologyQuiz'"],
+  ['一覧を確認', 'NormalLearningRecordList'],
+]) {
+  if (!rootsSource.includes(needle)) errors.push(`語源トップに語根の「${label}」がない`)
 }
 if (!rootsSource.includes('英単語の学習記録に入ります')) {
   errors.push('語源トップが通常の単語暗記と記録を共有することを説明していない')
 }
-if (/etymologyStudy:\s|etymologyQuiz:\s|EtymologyStudyScreen|EtymologyQuizScreen/.test(appSource)) {
-  errors.push('廃止した語源専用画面が公開ルートに残る')
+if (!/etymologyStudy: EtymologyStudyScreen/.test(appSource)
+  || !/etymologyQuiz: EtymologyQuizScreen/.test(appSource)) {
+  errors.push('語源の暗記・テスト画面が公開ルートにない')
+}
+if (!myListSource.includes('単語を暗記') || !myListSource.includes("navigate('vocabStudy'")) {
+  errors.push('マイ学習ノートの語源項目から通常の単語暗記へ進めない')
+}
+if (!/domain === 'etymology'[\s\S]{0,600}screen: mode === 'memory' \? 'etymologyStudy' : 'etymologyQuiz'/.test(analyticsReportSource)) {
+  errors.push('学習分析の語源導線が語源の暗記・テストへ進まない')
 }
 if (
-  !myListSource.includes('単語を暗記')
-  || !myListSource.includes("navigate('vocabStudy'")
-  || /navigate\('(?:etymologyStudy|etymologyQuiz)'/.test(myListSource)
+  !learningContentSource.includes("srsContent('etymology'")
+  || !learningContentSource.includes("'etymologySrs'")
 ) {
-  errors.push('マイ学習ノートの語源項目が通常の単語暗記だけになっていない')
-}
-if (
-  !analyticsReportSource.includes("screen: 'vocabStudy'")
-  || /screen: ['"]etymology(?:Study|Quiz)['"]/.test(analyticsReportSource)
-) {
-  errors.push('学習分析の語源導線が通常の単語暗記だけになっていない')
-}
-if (
-  !learningContentSource.includes("'語源から暗記'")
-  || !learningContentSource.includes('enabled: false')
-) {
-  errors.push('教材ごとの記録で語源専用テストを非表示にしていない')
+  errors.push('教材ごとの記録で語源が専用の学習記録を持っていない')
 }
 for (const word of ALL_WORDS) {
   const guide = etymologyLearningGuideFor(word)

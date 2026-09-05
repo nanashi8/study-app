@@ -38,7 +38,7 @@ const EXPECTED_COUNTS = Object.freeze({
   grammar: 3555,
   listening: 160,
   dictation: 140,
-  etymology: 109,
+  etymology: 196,
   reading: 36,
   writing: 14,
   'koten-vocab': 300,
@@ -58,6 +58,7 @@ const contentById = (id) => LEARNING_CONTENTS.find((content) => content.id === i
 const EXPECTED_REVIEWABLE_CONTENT_IDS = Object.freeze([
   'vocab',
   'usage',
+  'etymology',
   'koten-vocab',
   'koten-grammar',
   'koten-culture',
@@ -94,9 +95,9 @@ function reviewEntry({ memoryAt, testAt, failed = false, day }) {
   }
 }
 
-test('全18教材・16,081項目を一覧行へ重複も欠落もなく変換する', () => {
+test('全18教材・16,168項目を一覧行へ重複も欠落もなく変換する', () => {
   assert.equal(LEARNING_CONTENTS.length, 18)
-  assert.equal(learningContentCatalogTotal(LEARNING_CONTENTS), 16_081)
+  assert.equal(learningContentCatalogTotal(LEARNING_CONTENTS), 16_168)
   assert.deepEqual(
     Object.fromEntries(LEARNING_CONTENTS.map((content) => [content.id, content.items.length])),
     EXPECTED_COUNTS,
@@ -213,7 +214,7 @@ test('18教材すべてに既存の学習画面への開始契約と一覧への
     grammar: 'grammarQuiz',
     listening: 'listeningQuiz',
     dictation: 'dictationPlay',
-    etymology: 'vocabStudy',
+    etymology: 'etymologyStudy',
     reading: 'readingPrep',
     writing: 'writingPlay',
     'koten-vocab': 'kotenStudy',
@@ -246,9 +247,7 @@ test('18教材すべてに既存の学習画面への開始契約と一覧への
       ?? [launch.params.passageId ?? launch.params.exerciseId ?? launch.params.workId]
     const selectedRows = rows
       .slice(0, action.selection === 'one' ? 1 : rows.length)
-    const expectedIds = content.id === 'etymology'
-      ? [...new Set(selectedRows.flatMap((row) => row.item.studyIds))]
-      : selectedRows.map((row) => row.id)
+    const expectedIds = selectedRows.map((row) => row.id)
     assert.deepEqual(launchedIds, expectedIds, `${content.id}: 選択順`)
   }
 })
@@ -284,9 +283,12 @@ test('並び替え後の選択順を、英語・語源・漢文の既存デッ�
   const etymology = reversed('etymology')
   const etymologyRows = etymology.map((item) => ({ id: item.id, item }))
   const etymologyLaunch = learningContentCatalogLaunch(contentById('etymology'), etymologyRows)
+  assert.equal(etymologyLaunch.params.preserveOrder, true)
+  assert.deepEqual(etymologyLaunch.params.ids, etymology.map((item) => item.id))
+  // 語源カードから紐づく英単語のデッキも、これまでどおり並び順を保つ。
   const etymologyWordIds = [...new Set(etymology.flatMap((item) => item.studyIds))]
   assert.deepEqual(
-    buildDeck(etymologyLaunch.params.source, {
+    buildDeck({ type: 'deck', ids: etymologyWordIds, preserveOrder: true }, {
       srs: state.srs,
       size: etymologyWordIds.length,
       purpose: 'study',
@@ -304,12 +306,12 @@ test('並び替え後の選択順を、英語・語源・漢文の既存デッ�
   )
 })
 
-test('英単語と指定8カテゴリの全11,705項目を学習・テストの連続スワイプ対象にする', () => {
+test('英単語と指定9カテゴリの全11,901項目を学習・テストの連続スワイプ対象にする', () => {
   assert.deepEqual(LEARNING_CONTENT_CATALOG_REVIEWABLE_IDS, EXPECTED_REVIEWABLE_CONTENT_IDS)
   const contents = EXPECTED_REVIEWABLE_CONTENT_IDS.map(contentById)
   assert.ok(contents.every(Boolean))
-  assert.equal(contents.reduce((sum, content) => sum + content.items.length, 0), 11_705)
-  assert.equal(contents.slice(1).reduce((sum, content) => sum + content.items.length, 0), 2_836)
+  assert.equal(contents.reduce((sum, content) => sum + content.items.length, 0), 11_901)
+  assert.equal(contents.slice(1).reduce((sum, content) => sum + content.items.length, 0), 3_032)
 
   const usageKinds = Object.fromEntries(
     [...new Set(contentById('usage').items.map((item) => item.kind))]
@@ -338,10 +340,11 @@ test('英単語と指定8カテゴリの全11,705項目を学習・テストの�
   assert.equal(learningContentCatalogReviewCommand('grammar', 'g1', 'correct'), null)
 })
 
-test('一覧スワイプは8教材IDごとの既存SRS書き込み口へ保存する', () => {
+test('一覧スワイプは9教材IDごとの既存SRS書き込み口へ保存する', () => {
   const storeFields = {
     vocab: 'srs',
     usage: 'srs',
+    etymology: 'etymologySrs',
     'koten-vocab': 'kotenSrs',
     'koten-grammar': 'kotenGrammarSrs',
     'koten-culture': 'kotenCultureSrs',
@@ -365,7 +368,7 @@ test('一覧スワイプは8教材IDごとの既存SRS書き込み口へ保存�
   useStore.setState(createInitialLearningState())
 })
 
-test('マイ学習の入口を一覧確認へ統一し、英単語と指定8カテゴリを連続スワイプで記録する', () => {
+test('マイ学習の入口を一覧確認へ統一し、英単語と指定9カテゴリを連続スワイプで記録する', () => {
   const myLearning = readFileSync(new URL('../src/screens/MyLearning.jsx', import.meta.url), 'utf8')
   const catalog = readFileSync(new URL('../src/components/LearningContentCatalog.jsx', import.meta.url), 'utf8')
   const vocabularyHistoryRow = readFileSync(new URL('../src/components/VocabularyHistoryRow.jsx', import.meta.url), 'utf8')

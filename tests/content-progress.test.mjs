@@ -181,10 +181,10 @@ test('全18教材の母集団は重複なく、空状態でも両方の3区分�
     assert.equal(statusTotal(row.progress.quiz, QUIZ_STATUS_KEYS), row.progress.quizTotal)
   }
   const etymology = rows.find((row) => row.id === 'etymology')
-  assert.equal(etymology.label, '語源から暗記')
-  assert.equal(etymology.store, 'srs')
-  assert.equal(etymology.hasQuiz, false)
-  assert.equal(etymology.progress.quizTotal, 0)
+  assert.equal(etymology.label, '語源')
+  assert.equal(etymology.store, 'etymologySrs')
+  assert.equal(etymology.hasQuiz, true)
+  assert.equal(etymology.progress.quizTotal, etymology.progress.total)
 })
 
 test('1項目に複数問ある教材は、テストだけ出題数を母数にする', () => {

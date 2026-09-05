@@ -23,10 +23,10 @@ const finiteMaximum = (values) => {
 }
 
 /**
- * 現行の語源カードは、カード専用の成績ではなく、紐づく英単語の暗記記録で
- * 進み具合を示す。旧 etymologySrs は保存互換のため残すが、新しい画面では使わない。
+ * 語源カードに紐づく英単語のほうの進み具合。カード自身の暗記・テストは
+ * etymologySrs（etymologyProgress / filterEtymologyPacks）で別に数える。
  */
-export function etymologyWordCardReviewState(
+function etymologyWordCardReviewState(
   pack,
   wordSrs = {},
   options = {},
@@ -97,18 +97,6 @@ export function etymologyWordProgress(packs = [], wordSrs = {}, options = {}) {
   }
 
   return result
-}
-
-export function filterEtymologyWordCards(
-  packs = [],
-  wordSrs = {},
-  { status = 'all', ...options } = {},
-) {
-  if (status === 'all' || status === 'priority') return [...packs]
-  return packs.filter((pack) => {
-    const state = etymologyWordCardReviewState(pack, wordSrs, options)
-    return status === 'due' ? state.due : state.status === status
-  })
 }
 
 export function etymologyKnowledgeStatus(entry) {

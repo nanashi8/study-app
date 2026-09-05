@@ -20,6 +20,11 @@ import {
   REFERENCE_ROOT_WORDS,
   REFERENCE_ROOTS,
 } from '../src/data/etymology-reference-roots.js'
+import { AUDITED_MORPHEME_ROOT_WORDS } from '../src/data/etymology-morpheme-audit.js'
+import {
+  CLASSICAL_ROOTS,
+  CLASSICAL_ROOT_WORDS,
+} from '../src/data/etymology-classical-roots.js'
 import { ETYMOLOGY_COMPLETION_WORDS } from '../src/data/words-etymology-completion.js'
 import { CURRICULUM_1900_WORDS } from '../src/data/words-curriculum-1900.js'
 import { wordsForSource } from '../src/lib/session.js'
@@ -280,20 +285,32 @@ test('補助語根は既存語だけを明示的につなぎ、語源カードID
   assert.equal(referenceRootIds.size, REFERENCE_ROOTS.length)
   assert.ok([...referenceRootIds].every((rootId) => rootIds.has(rootId)))
 
-  let links = 0
-  for (const [rootId, heads] of Object.entries(REFERENCE_ROOT_WORDS)) {
-    assert.ok(rootIds.has(rootId), rootId)
-    assert.equal(new Set(heads).size, heads.length, `${rootId}: 同じ単語が重複`)
-    for (const head of heads) {
-      const word = byHead.get(head)
-      assert.ok(word, `${rootId}: 未収録語 ${head}`)
-      assert.ok(word.referenceRoots.includes(rootId), `${head}: ${rootId}`)
-      assert.ok(rootIdsForWord(word).includes(rootId), `${head}: 統合語根 ${rootId}`)
-      assert.ok(wordsByRoot(rootId).some((item) => item.id === word.id), `${rootId}: ${head}`)
-      links++
+  const classicalRootIds = new Set(CLASSICAL_ROOTS.map((root) => root.id))
+  assert.equal(classicalRootIds.size, CLASSICAL_ROOTS.length)
+  assert.ok([...classicalRootIds].every((rootId) => rootIds.has(rootId)))
+  assert.deepEqual(
+    Object.keys(CLASSICAL_ROOT_WORDS).sort(),
+    [...classicalRootIds].sort(),
+    '追加語根の語リストと語根定義が一致しません',
+  )
+
+  // 手書き許可リスト・形態素監査台帳・追加した古典語根は、どれも明示リンク。
+  const seen = new Set()
+  for (const source of [REFERENCE_ROOT_WORDS, AUDITED_MORPHEME_ROOT_WORDS, CLASSICAL_ROOT_WORDS]) {
+    for (const [rootId, heads] of Object.entries(source)) {
+      assert.ok(rootIds.has(rootId), rootId)
+      assert.equal(new Set(heads).size, heads.length, `${rootId}: 同じ単語が重複`)
+      for (const head of heads) {
+        const word = byHead.get(head)
+        assert.ok(word, `${rootId}: 未収録語 ${head}`)
+        assert.ok(word.referenceRoots.includes(rootId), `${head}: ${rootId}`)
+        assert.ok(rootIdsForWord(word).includes(rootId), `${head}: 統合語根 ${rootId}`)
+        assert.ok(wordsByRoot(rootId).some((item) => item.id === word.id), `${rootId}: ${head}`)
+        seen.add(`${rootId}:${head}`)
+      }
     }
   }
-  assert.equal(links, REFERENCE_ROOT_LINK_COUNT)
+  assert.equal(seen.size, REFERENCE_ROOT_LINK_COUNT)
 
   // referenceRoots を足しても、保存互換の分類元 roots は書き換えない。
   const administer = byHead.get('administer')
@@ -305,20 +322,27 @@ test('補助語根は既存語だけを明示的につなぎ、語源カードID
 test('追加した補助語根は既存語の内容と関連語へ適用される', () => {
   const legacyWords = ALL_WORDS.filter((word) => sourceGroup(word.id) === 'legacy')
   const applied = legacyWords.filter((word) => word.referenceRoots.length > 0)
-  assert.equal(applied.length, 461)
+  assert.equal(applied.length, 1598)
   assert.equal(
     applied.reduce((sum, word) => sum + word.referenceRoots.length, 0),
-    462,
+    1618,
   )
 
   for (const word of applied) {
+    // 語根が複数ある語は、同じ関連語を先に出た語根でまとめる。ここでは
+    // 「どの語根も一覧に載り、関連語を1語以上持つ」ことだけを保証する。
+    const relations = relatedByEtymology(word)
+    const viaRootIds = new Set(relations.map((relation) => relation.via))
+    assert.ok(relations.length > 0, `${word.id}: 関連語なし`)
+    assert.ok(
+      word.referenceRoots.some((rootId) => viaRootIds.has(rootId))
+      || (word.etymology?.parts ?? []).some((part) => viaRootIds.has(part.root)),
+      `${word.id}: 関連語の語根が自分の語根と一致しない`,
+    )
     for (const rootId of word.referenceRoots) {
       assert.ok(rootIdsForWord(word).includes(rootId), `${word.id}: ${rootId}`)
       assert.ok(wordsByRoot(rootId).some((candidate) => candidate.id === word.id), `${word.id}: root page`)
-      assert.ok(
-        relatedByEtymology(word).some((relation) => relation.via === rootId),
-        `${word.id}: related ${rootId}`,
-      )
+      assert.ok(wordsByRoot(rootId).length >= 2, `${word.id}: ${rootId} に関連語がない`)
     }
   }
 })

@@ -15,6 +15,7 @@ import {
 const EXPECTED_COUNTS = Object.freeze({
   'usage-idiom': 1_754,
   'usage-syntax': 350,
+  etymology: 196,
   'koten-vocab': 300,
   'koten-grammar': 74,
   'koten-culture': 56,
@@ -23,9 +24,9 @@ const EXPECTED_COUNTS = Object.freeze({
   'kanbun-culture': 95,
 })
 
-test('指定8カテゴリの通常入口2,836項目を欠落なくスワイプ記録へ接続する', () => {
-  assert.equal(NORMAL_LEARNING_RECORD_ENTRIES.length, 8)
-  assert.equal(NORMAL_LEARNING_RECORD_TOTAL, 2_836)
+test('指定9カテゴリの通常入口3,032項目を欠落なくスワイプ記録へ接続する', () => {
+  assert.equal(NORMAL_LEARNING_RECORD_ENTRIES.length, 9)
+  assert.equal(NORMAL_LEARNING_RECORD_TOTAL, 3_032)
   assert.deepEqual(
     Object.fromEntries(NORMAL_LEARNING_RECORD_ENTRIES.map((entry) => [entry.id, entry.items.length])),
     EXPECTED_COUNTS,
@@ -50,7 +51,7 @@ test('指定8カテゴリの通常入口2,836項目を欠落なくスワイプ�
   }
 })
 
-test('8カテゴリすべての通常画面そのものが共通スワイプ一覧を描画する', () => {
+test('9カテゴリすべての通常画面そのものが共通スワイプ一覧を描画する', () => {
   const sourceFiles = [...new Set(NORMAL_LEARNING_RECORD_ENTRIES.map((entry) => entry.sourceFile))]
   const sourceByFile = new Map(sourceFiles.map((sourceFile) => [
     sourceFile,
@@ -63,6 +64,7 @@ test('8カテゴリすべての通常画面そのものが共通スワイプ一�
     'src/screens/KotenGrammar.jsx',
     'src/screens/KotenList.jsx',
     'src/screens/Phrases.jsx',
+    'src/screens/Roots.jsx',
   ])
   for (const sourceFile of sourceFiles) {
     assert.match(sourceByFile.get(sourceFile), /<NormalLearningRecordList/, sourceFile)

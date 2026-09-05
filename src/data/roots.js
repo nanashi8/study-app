@@ -1,4 +1,5 @@
 import { REFERENCE_ROOTS } from './etymology-reference-roots.js'
+import { CLASSICAL_ROOTS } from './etymology-classical-roots.js'
 
 // 語根（ごこん）インデックス。
 // 単語データの parts[].root がここの id を指す。これで「語源つながり」を辿れる。
@@ -117,6 +118,6 @@ export const LEARNING_ROOTS = [
   { id: 'veri',   form: 'veri',          meaning: '真実',          origin: 'ラテン語 vērus「真の」',            emoji: '✅' },
 ]
 
-export const ROOTS = [...LEARNING_ROOTS, ...REFERENCE_ROOTS]
+export const ROOTS = [...LEARNING_ROOTS, ...REFERENCE_ROOTS, ...CLASSICAL_ROOTS]
 
 export const ROOTS_BY_ID = Object.fromEntries(ROOTS.map((r) => [r.id, r]))

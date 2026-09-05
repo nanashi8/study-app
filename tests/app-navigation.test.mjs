@@ -97,12 +97,12 @@ test('履歴が無い画面の戻るは、そのアプリのホームへ行く',
   }
 })
 
-test('廃止した語源専用暗記・2択画面は語源トップへ戻す', () => {
-  assert.deepEqual(RETIRED_ETYMOLOGY_SCREENS, ['etymologyStudy', 'etymologyQuiz'])
-  for (const screen of RETIRED_ETYMOLOGY_SCREENS) {
-    assert.deepEqual(learnerDestination(screen, { packIds: ['legacy'] }), {
-      screen: 'roots',
-      params: {},
+test('語源そのものの暗記・テストは公開画面としてそのまま開く', () => {
+  assert.deepEqual(RETIRED_ETYMOLOGY_SCREENS, [])
+  for (const screen of ['etymologyStudy', 'etymologyQuiz']) {
+    assert.deepEqual(learnerDestination(screen, { ids: ['root:port'] }), {
+      screen,
+      params: { ids: ['root:port'] },
     })
   }
 })

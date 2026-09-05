@@ -1,18 +1,23 @@
 import { useEffect, useRef } from 'react'
 import { useStore } from '../store/useStore.js'
 import { getEtymologyPack, getWord } from '../data/vocab.js'
-import { etymologyWordCardReviewState } from '../lib/etymologyProgress.js'
+import {
+  etymologyKnowledgeStatus,
+  isEtymologyDue,
+} from '../lib/etymologyProgress.js'
 import { summarizeVocabularySrsItems } from '../lib/vocabScheduler.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { PosBadge } from '../components/WordBits.jsx'
 import { StatusDistributionBar } from '../components/LearningStatusBars.jsx'
 import { Button, Card } from '../components/ui.jsx'
-import { ArrowRight, Book, Check } from '../components/Icons.jsx'
+import { ArrowRight, Book, Cards, Check } from '../components/Icons.jsx'
 
-const statusLabel = (state) => {
-  if (state.due) return '今日復習'
-  if (state.status === 'mastered') return '学習済み'
-  if (state.status === 'learning') return '学習中'
+// このカード自身の暗記・テストの記録（紐づく単語のほうとは別に持つ）。
+const statusLabel = (entry) => {
+  if (isEtymologyDue(entry)) return '今日復習'
+  const status = etymologyKnowledgeStatus(entry)
+  if (status === 'mastered') return '覚えた'
+  if (status === 'learning') return '学習中'
   return '未学習'
 }
 
@@ -21,6 +26,7 @@ export function EtymologyPackScreen() {
   const packId = useStore((state) => state.params.packId)
   const navigate = useStore((state) => state.navigate)
   const srs = useStore((state) => state.srs)
+  const etymologySrs = useStore((state) => state.etymologySrs)
   const pack = getEtymologyPack(packId)
 
   useEffect(() => {
@@ -41,8 +47,22 @@ export function EtymologyPackScreen() {
   const words = pack.studyIds.map(getWord).filter(Boolean)
   const examples = pack.exampleIds.map(getWord).filter(Boolean)
   const wordProgress = summarizeVocabularySrsItems(words, srs)
-  const cardState = etymologyWordCardReviewState(pack, srs)
+  const cardEntry = etymologySrs[pack.id]
 
+  const returnTarget = { screen: 'etymologyPack', params: { packId: pack.id } }
+  const studyRoot = () => navigate('etymologyStudy', {
+    ids: [pack.id],
+    title: `${pack.rootForm}（${pack.rootMeaning}）を暗記`,
+    size: 1,
+    preserveOrder: true,
+    returnTo: returnTarget,
+  })
+  const quizRoot = () => navigate('etymologyQuiz', {
+    ids: [pack.id],
+    title: `${pack.rootForm}（${pack.rootMeaning}）のテスト`,
+    size: 1,
+    returnTo: returnTarget,
+  })
   const studyWords = () => navigate('vocabStudy', {
     source: { type: 'deck', ids: pack.studyIds, preserveOrder: true },
     title: `${pack.rootForm}（${pack.rootMeaning}）に紐づく単語`,
@@ -65,7 +85,7 @@ export function EtymologyPackScreen() {
               <div className="min-w-0 flex-1">
                 <div className="flex items-center justify-between gap-2">
                   <p className="text-xs font-extrabold text-white/75">出典つき語源カード</p>
-                  <span className="rounded-full bg-white/15 px-2 py-1 text-xs font-extrabold">{statusLabel(cardState)}</span>
+                  <span className="rounded-full bg-white/15 px-2 py-1 text-xs font-extrabold">{statusLabel(cardEntry)}</span>
                 </div>
                 <h1 className="mt-1 font-display text-2xl font-extrabold leading-tight">{pack.rootForm}</h1>
                 <p className="mt-1 font-display text-lg font-extrabold text-white/90">＝ {pack.rootMeaning}</p>
@@ -89,9 +109,17 @@ export function EtymologyPackScreen() {
 
         <section className="rounded-2xl bg-white p-3 ring-1 ring-slate-200" data-etymology-pack-actions>
           <p className="mb-2 text-center text-xs font-extrabold text-violet-700">
-            このカードに紐づく{words.length}語を通常の単語カードで学習
+            語根そのものを暗記・テストしてから、紐づく{words.length}語へ広げます
           </p>
-          <Button full onClick={studyWords} data-etymology-word-study-action>
+          <div className="grid grid-cols-2 gap-2">
+            <Button size="sm" onClick={studyRoot} aria-label={`${pack.rootForm}を暗記`}>
+              <Book size={16} /> 語根を暗記
+            </Button>
+            <Button size="sm" variant="secondary" onClick={quizRoot} aria-label={`${pack.rootForm}をテスト`}>
+              <Cards size={16} /> 語根をテスト
+            </Button>
+          </div>
+          <Button full variant="secondary" className="mt-2" onClick={studyWords} data-etymology-word-study-action>
             <Book size={18} /> 紐づく単語を暗記
           </Button>
         </section>

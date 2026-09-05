@@ -22,7 +22,6 @@ import {
   summarizeSrsItems,
 } from './contentProgress.js'
 import { summarizeVocabularySrsItems } from './vocabScheduler.js'
-import { etymologyWordProgress } from './etymologyProgress.js'
 
 const MATH_ITEMS = Object.freeze(Object.values(MATH_PROBLEMS).flat())
 
@@ -86,11 +85,9 @@ export const LEARNING_CONTENTS = Object.freeze([
   srsContent('grammar', 'english', '英文法', '問', 'grammar', GRAMMAR_PRACTICE, 'srs'),
   srsContent('listening', 'english', 'リスニング', '問', 'listening', LISTENING_ITEMS, 'srs'),
   srsContent('dictation', 'english', 'ディクテーション', '問', 'dictation', DICTATION_ITEMS, 'srs'),
-  // 語源は手動確認済みカードを一覧単位とし、学習結果はカードに紐づく通常の
-  // 英単語SRSから集計する。語源専用の暗記・テスト画面は表示しない。
-  srsContent('etymology', 'english', '語源から暗記', 'カード', 'roots', ETYMOLOGY_PACKS, 'srs', {
-    enabled: false,
-  }),
+  // 語源は手動確認済みカードを1件とし、単語・熟語と同じように
+  // 語根そのものを暗記・テストする。記録は語源専用SRSへ入る。
+  srsContent('etymology', 'english', '語源', 'カード', 'roots', ETYMOLOGY_PACKS, 'etymologySrs'),
   completionContent(
     'reading',
     'english',
@@ -149,22 +146,7 @@ export function buildLearningContentProgress(state = {}) {
   const today = localDayIndexAt()
   return LEARNING_CONTENTS.map((content) => {
     const base = content.kind === 'srs'
-      ? content.id === 'etymology'
-        ? (() => {
-            const progress = etymologyWordProgress(content.items, state.srs, { day: today })
-            return {
-              total: progress.total,
-              learning: {
-                learned: progress.mastered,
-                reviewing: progress.learning,
-                unlearned: progress.unstarted,
-              },
-              quiz: { correct: 0, incorrect: 0, unanswered: 0 },
-              activeIds: progress.activeIds,
-              due: progress.due,
-            }
-          })()
-        : content.id === 'vocab'
+      ? content.id === 'vocab'
         ? summarizeVocabularySrsItems(content.items, state[content.store])
         : summarizeSrsItems(content.items, state[content.store])
       : summarizeCompletionItems({
@@ -191,9 +173,7 @@ export function buildLearningContentProgress(state = {}) {
         ? { ...base, quiz: questionQuiz.counts, quizTotal: questionQuiz.total }
         : { ...base, quizTotal: base.total }
     const due = content.kind === 'srs'
-      ? content.id === 'etymology'
-        ? base.due
-        : content.id === 'vocab'
+      ? content.id === 'vocab'
         ? base.due
         : content.items.reduce((count, item) => (
             state[content.store]?.[item.id]?.due <= today
