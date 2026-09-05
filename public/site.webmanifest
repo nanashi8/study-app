@@ -1,7 +1,7 @@
 {
   "name": "スタディアプリ",
   "short_name": "スタディアプリ",
-  "description": "XPでLV1〜99へ育つ、学習バトルアプリ。",
+  "description": "英語・古典・漢文・数学・名作の聴き読みをまとめた学習アプリ。",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
