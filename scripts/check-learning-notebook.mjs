@@ -125,7 +125,7 @@ for (const marker of [
 }
 for (const route of [
   'vocabStudy', 'vocabQuiz', 'phraseStudy', 'phraseQuiz', 'grammarQuiz',
-  'listeningQuiz', 'kotenStudy', 'kotenQuiz',
+  'listeningQuiz', 'etymologyStudy', 'etymologyQuiz', 'kotenStudy', 'kotenQuiz',
   'kotenGrammarStudy', 'kotenGrammarQuiz', 'kotenCultureStudy', 'kotenCultureQuiz',
 ]) {
   if (!screen.includes(`'${route}'`)) fail(`統合画面から学習経路 ${route} へ接続していません`)
@@ -137,17 +137,21 @@ const etymologyLaunch = screen.slice(
 if (!etymologyLaunch.includes("navigate('vocabStudy'")) {
   fail('語源ノートが単語の「暗記」へ接続していません')
 }
-if (/etymologyStudy|etymologyQuiz|vocabQuiz/.test(etymologyLaunch)) {
-  fail('語源ノートに廃止した専用学習またはテストへの接続が残っています')
+// 語源ノートは「語根そのもの」と「紐づく単語」の両方へ進める。
+for (const route of ['etymologyStudy', 'etymologyQuiz']) {
+  if (!etymologyLaunch.includes(`'${route}'`)) fail(`語源ノートが ${route} へ接続していません`)
+}
+if (/vocabQuiz/.test(etymologyLaunch)) {
+  fail('語源ノートに廃止した単語テストへの接続が残っています')
 }
 if (!screen.includes("domain.id === 'etymology' ? (") || !screen.includes('単語を暗記')) {
-  fail('語源の自作問題集に単語の「暗記」だけを表示する契約がありません')
+  fail('語源の自作問題集に単語の「暗記」を表示する契約がありません')
 }
 if (/domain\.id === 'etymology' \? '確認'/.test(screen)) {
   fail('語源の自作問題集に廃止した確認ボタンが残っています')
 }
-if (!screen.includes("const mode = domainId === 'etymology'\n      ? 'study'")) {
-  fail('語源ノートの起動記録が単語学習に固定されていません')
+if (!screen.includes("const mode = domainId === 'etymology' && requestedMode === 'words'")) {
+  fail('語源ノートの起動記録が語根と単語を区別していません')
 }
 
 const store = read('../src/store/useStore.js')

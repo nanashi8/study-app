@@ -18,14 +18,16 @@ import {
   getRoot,
 } from '../src/data/vocab.js'
 import { ETYMOLOGY_CARD_REVIEWS } from '../src/data/etymology-card-reviews.js'
+import { buildAllEtymologyQuizQuestions } from '../src/lib/etymologyQuiz.js'
+import { QUIZ_CHOICE_COUNT } from '../src/lib/quizChoices.js'
 import { etymologyCardReviewMaterial } from '../src/data/etymology-reviewed-cards.js'
 
 export const ETYMOLOGY_QUALITY_TARGETS = Object.freeze({
   rawWords: 8869,
-  publicCards: 109,
-  publicWords: 781,
-  publicLinks: 786,
-  quarantinedWords: 8088,
+  publicCards: 196,
+  publicWords: 1977,
+  publicLinks: 2019,
+  quarantinedWords: 6892,
   retiredLegacyPacks: 2933,
 })
 
@@ -172,6 +174,8 @@ export function auditEtymologyLearningQuality() {
   const publicFiles = [
     'src/screens/Roots.jsx',
     'src/screens/EtymologyPack.jsx',
+    'src/screens/EtymologyStudy.jsx',
+    'src/screens/EtymologyQuiz.jsx',
     'src/screens/RootDetail.jsx',
     'src/components/WordBits.jsx',
     'src/screens/WordDetail.jsx',
@@ -198,23 +202,47 @@ export function auditEtymologyLearningQuality() {
   const packSource = source('src/screens/EtymologyPack.jsx')
   const wordBitsSource = source('src/components/WordBits.jsx')
   const appSource = source('src/App.jsx')
-  const visibilitySource = source('src/lib/learnerVisibility.js')
   if (!rootsSource.includes("navigate('vocabStudy'")) fail('語源トップが通常の単語暗記へ進まない')
   if (!packSource.includes("navigate('vocabStudy'")) fail('カード詳細が通常の単語暗記へ進まない')
-  if (/etymologyStudy:\s|etymologyQuiz:\s|EtymologyStudyScreen|EtymologyQuizScreen/.test(appSource)) {
-    fail('廃止した語源専用暗記・2択画面が公開ルートに残る')
-  }
-  if (!/RETIRED_ETYMOLOGY_SCREENS[\s\S]{0,160}'etymologyStudy'[\s\S]{0,80}'etymologyQuiz'/.test(visibilitySource)) {
-    fail('廃止した語源専用画面IDの保存互換処理がない')
-  }
+  // 語源そのものを暗記・テスト・一覧で学ぶ導線は公開する（単語・熟語と同じ扱い）。
+  if (!rootsSource.includes("navigate('etymologyStudy'")) fail('語源トップに語根の暗記がない')
+  if (!rootsSource.includes("navigate('etymologyQuiz'")) fail('語源トップに語根のテストがない')
+  if (!rootsSource.includes('NormalLearningRecordList')) fail('語源トップに一覧で確認する導線がない')
+  if (!/etymologyStudy: EtymologyStudyScreen/.test(appSource)) fail('語源の暗記画面がルートにない')
+  if (!/etymologyQuiz: EtymologyQuizScreen/.test(appSource)) fail('語源のテスト画面がルートにない')
   for (const relativePath of [
     'src/screens/EtymologyStudy.jsx',
     'src/screens/EtymologyQuiz.jsx',
-    'src/components/EtymologyKnowledge.jsx',
     'src/lib/etymologyQuiz.js',
   ]) {
-    if (existsSync(path.join(projectRoot, relativePath))) {
-      fail(`廃止した語源専用実装が残る: ${relativePath}`)
+    if (!existsSync(path.join(projectRoot, relativePath))) {
+      fail(`語源の暗記・テスト実装がない: ${relativePath}`)
+    }
+  }
+  // 廃止したのは2択の正誤問題。現行のテストは「3択＋わからない」でそろえる。
+  const quizSource = source('src/screens/EtymologyQuiz.jsx')
+  if (!quizSource.includes('UnknownChoiceButton')) fail('語源テストに「わからない」がない')
+  if (/'正しい'|'正しくない'/.test(quizSource)) fail('廃止した2択の正誤問題が残る')
+  for (const question of buildAllEtymologyQuizQuestions()) {
+    const at = `${question.cardId}（${question.formatLabel}）`
+    const labels = question.options.map((option) => option.label)
+    if (labels.length !== QUIZ_CHOICE_COUNT) fail(`${at}: 選択肢が${labels.length}個`)
+    if (new Set(labels).size !== labels.length) fail(`${at}: 同じ表示の選択肢がある`)
+    if (!question.options.some((option) => option.id === question.answerId)) {
+      fail(`${at}: 正解が選択肢にない`)
+    }
+    if (!question.cue || !question.prompt || !question.explanation) fail(`${at}: 出題文が空`)
+    const card = ETYMOLOGY_PACKS.find((item) => item.id === question.cardId)
+    for (const option of question.options) {
+      if (option.id === question.answerId) continue
+      const other = ETYMOLOGY_PACKS.find((item) => item.id === option.id)
+      if (!other) fail(`${at}: 誤答 ${option.id} が確認済みカードでない`)
+      else if (question.exampleWordId && other.coverageIds.includes(question.exampleWordId)) {
+        fail(`${at}: 誤答 ${option.id} にも例語が紐づき、正解が2つある`)
+      }
+    }
+    if (question.exampleWordId && !card.coverageIds.includes(question.exampleWordId)) {
+      fail(`${at}: 例語が確認済みリンク外`)
     }
   }
   const etymologyBlockSource = wordBitsSource.slice(
@@ -227,11 +255,14 @@ export function auditEtymologyLearningQuality() {
   const learnerSurfaceSource = [
     'src/screens/Roots.jsx',
     'src/screens/EtymologyPack.jsx',
+    'src/screens/EtymologyStudy.jsx',
+    'src/screens/EtymologyQuiz.jsx',
     'src/screens/RootDetail.jsx',
     'src/components/WordBits.jsx',
     'src/screens/WordDetail.jsx',
     'src/screens/VocabStudy.jsx',
     'src/screens/VocabQuiz.jsx',
+    'src/lib/etymologyQuiz.js',
     'src/lib/learningNotebookCatalog.js',
     'src/lib/instructorExplanations.js',
     'src/lib/diagnosticQuestions.js',

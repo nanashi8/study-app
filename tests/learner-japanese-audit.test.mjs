@@ -38,11 +38,11 @@ const RESULT_COPY_FORBIDDEN = /最新が[「『]|今回の間隔アップ|長期
 test('学習者向け日本語は画面・部品・自動生成文を全件監査する', async () => {
   const result = await auditLearnerJapanese()
 
-  assert.equal(result.learnerFiles, 225)
-  assert.equal(result.learnerJapaneseEntries, 12420)
-  assert.equal(result.learnerUniqueJapaneseEntries, 9861)
-  assert.equal(result.sourceFiles, 525)
-  assert.equal(result.sourceJapaneseEntries, 111804)
+  assert.equal(result.learnerFiles, 228)
+  assert.equal(result.learnerJapaneseEntries, 12528)
+  assert.equal(result.learnerUniqueJapaneseEntries, 9917)
+  assert.equal(result.sourceFiles, 530)
+  assert.equal(result.sourceJapaneseEntries, 112007)
   assert.equal(result.issues.length, 0)
 })
 

@@ -24,7 +24,6 @@ import {
 } from './contentProgress.js'
 import { vocabularyReviewMetrics } from './vocabScheduler.js'
 import { learningContentPlanEntry } from './learningContentPlan.js'
-import { etymologyWordCardReviewState } from './etymologyProgress.js'
 
 export const LEARNING_CONTENT_CATALOG_SORT_OPTIONS = Object.freeze([
   { id: 'weight', label: '復習のおすすめ順' },
@@ -130,7 +129,7 @@ function presentationFor(contentId, item) {
   if (contentId === 'etymology') {
     return {
       title: item.title,
-      subtitle: item.subtitle || item.description,
+      subtitle: item.rootOrigin || item.subtitle || item.description,
       field: ETYMOLOGY_MODE_META[item.mode]?.label || '語源',
       level: LEVEL_BY_RANK[item.levelRank] || '',
     }
@@ -312,9 +311,7 @@ export function learningContentCatalogRows(
   const rows = content.items.map((item) => {
     const presentation = presentationFor(content.id, item)
     const reviewState = content.kind === 'srs'
-      ? content.id === 'etymology'
-        ? etymologyWordCardReviewState(item, state.srs, metricOptions)
-        : srsReviewState(state[content.store]?.[item.id], metricOptions)
+      ? srsReviewState(state[content.store]?.[item.id], metricOptions)
       : completionReviewState(content, item, state, normalizedQuiz)
     const planEntry = learningContentPlanEntry(
       state.learningNotebook?.contentPlan,
@@ -432,18 +429,9 @@ export function learningContentCatalogLaunch(
     }
   }
   if (content.id === 'etymology') {
-    const wordIds = [...new Set(selectedRows.flatMap(
-      (row) => row.item?.studyIds ?? row.item?.coverageIds ?? [],
-    ))]
-    if (!wordIds.length) return { screen: 'roots', params: { returnTo } }
     return {
-      screen: 'vocabStudy',
-      params: {
-        ...common,
-        size: wordIds.length,
-        mode: 'study',
-        source: { type: 'deck', ids: wordIds, preserveOrder: true },
-      },
+      screen: 'etymologyStudy',
+      params: { ...common, ids, preserveOrder: true },
     }
   }
   if (content.id === 'reading') {

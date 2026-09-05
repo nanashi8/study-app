@@ -8,6 +8,8 @@ export const IN_PROGRESS_SCREENS = Object.freeze(new Set([
   'literatureReader',
   'phraseStudy',
   'phraseQuiz',
+  'etymologyStudy',
+  'etymologyQuiz',
   'listeningQuiz',
   'dictationPlay',
   'mathSolve',

@@ -20,6 +20,7 @@ const ROOT = fileURLToPath(new URL('..', import.meta.url))
 const EXPECTED_COUNTS = Object.freeze({
   'usage-idiom': 1_754,
   'usage-syntax': 350,
+  etymology: 196,
   'koten-vocab': 300,
   'koten-grammar': 74,
   'koten-culture': 56,
@@ -33,9 +34,9 @@ const contentById = new Map(LEARNING_CONTENTS.map((content) => [content.id, cont
 assert.deepEqual(
   NORMAL_LEARNING_RECORD_ENTRIES.map((entry) => entry.id),
   Object.keys(EXPECTED_COUNTS),
-  '通常入口の8一覧が監査台帳と一致しません',
+  '通常入口の9一覧が監査台帳と一致しません',
 )
-assert.equal(NORMAL_LEARNING_RECORD_TOTAL, 2_836, '通常入口の監査母数が変わりました')
+assert.equal(NORMAL_LEARNING_RECORD_TOTAL, 3_032, '通常入口の監査母数が変わりました')
 
 for (const entry of NORMAL_LEARNING_RECORD_ENTRIES) {
   assert.equal(entry.items.length, EXPECTED_COUNTS[entry.id], `${entry.label}: 項目数`)

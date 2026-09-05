@@ -41,7 +41,7 @@ import {
   updateLearningContentPlan,
 } from '../src/lib/learningContentPlan.js'
 
-test('マイ学習ノートは指定8分野・全15,227項目を安定IDで解決する', () => {
+test('マイ学習ノートは指定8分野・全15,314項目を安定IDで解決する', () => {
   assert.deepEqual(NOTEBOOK_DOMAIN_IDS, [
     'vocab',
     'phrases',
@@ -57,12 +57,12 @@ test('マイ学習ノートは指定8分野・全15,227項目を安定IDで解�
     phrases: 2104,
     grammar: 3555,
     listening: 160,
-    etymology: 109,
+    etymology: 196,
     kotenVocab: 300,
     kotenGrammar: 74,
     kotenCulture: 56,
   })
-  assert.equal(NOTEBOOK_TOTAL_ITEMS, 15227)
+  assert.equal(NOTEBOOK_TOTAL_ITEMS, 15314)
 
   for (const [domain, count] of Object.entries(NOTEBOOK_CATALOG_COUNTS)) {
     assert.ok(count > 0, domain)

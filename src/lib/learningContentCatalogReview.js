@@ -1,6 +1,7 @@
 const REVIEWABLE_CONTENT_CONFIG = Object.freeze({
   vocab: Object.freeze({ action: 'review', skill: 'vocab' }),
   usage: Object.freeze({ action: 'review', skill: 'usage' }),
+  etymology: Object.freeze({ action: 'reviewEtymology' }),
   'koten-vocab': Object.freeze({ action: 'reviewKoten' }),
   'koten-grammar': Object.freeze({ action: 'reviewKotenGrammar' }),
   'koten-culture': Object.freeze({ action: 'reviewKotenCulture' }),
@@ -12,7 +13,7 @@ const REVIEWABLE_CONTENT_CONFIG = Object.freeze({
 const REVIEW_RESULTS = new Set(['remembered', 'forgot', 'correct', 'wrong'])
 
 // 熟語と構文は同じ usage 教材にまとまっているため、画面上の対象は
-// 英単語を含む8教材ID、学習者向けの呼び方では英単語＋指定8カテゴリになる。
+// 英単語・語源を含む9教材ID、学習者向けの呼び方では英単語＋指定9カテゴリになる。
 export const LEARNING_CONTENT_CATALOG_REVIEWABLE_IDS = Object.freeze(
   Object.keys(REVIEWABLE_CONTENT_CONFIG),
 )

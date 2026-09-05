@@ -314,9 +314,12 @@ test('科目・種類・分野・項目の成績表、忘却曲線、学習導�
   )
   const etymologyPack = ETYMOLOGY_PACKS[0]
   const etymologyLaunch = learningLaunchFor('etymology', [etymologyPack.id], 'memory')
-  assert.equal(etymologyLaunch.screen, 'vocabStudy')
-  assert.deepEqual(etymologyLaunch.params.source.ids, etymologyPack.studyIds)
-  assert.equal(etymologyLaunch.params.source.type, 'deck')
+  assert.equal(etymologyLaunch.screen, 'etymologyStudy')
+  assert.deepEqual(etymologyLaunch.params.ids, [etymologyPack.id])
+  assert.equal(
+    learningLaunchFor('etymology', [etymologyPack.id], 'test').screen,
+    'etymologyQuiz',
+  )
   assert.ok(report.prescriptions.some((item) => item.angle === '分野' || item.angle === '種類'))
 })
 

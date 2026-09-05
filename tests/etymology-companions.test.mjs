@@ -58,21 +58,22 @@ test('he と既知の誤接続を公開カードへ戻さない', () => {
   assert.ok(!etymologyCardsForWord('print').some((card) => card.rootId === 'prim'))
 })
 
-test('公開画面は通常の単語暗記へ進み、廃止した語源専用画面を持たない', () => {
+test('公開画面は語根の暗記・テストと通常の単語暗記の両方へ進む', () => {
   const roots = read('src/screens/Roots.jsx')
   const pack = read('src/screens/EtymologyPack.jsx')
   const rootDetail = read('src/screens/RootDetail.jsx')
   const wordBits = read('src/components/WordBits.jsx')
   const app = read('src/App.jsx')
-  const visibility = read('src/lib/learnerVisibility.js')
   const learnerSource = `${roots}\n${pack}\n${rootDetail}\n${wordBits}`
 
   assert.equal((learnerSource.match(/data-etymology-word-study-action/g) ?? []).length, 3)
   assert.equal((learnerSource.match(/navigate\('vocabStudy'/g) ?? []).length, 3)
-  assert.doesNotMatch(learnerSource, /navigate\('(?:etymologyStudy|etymologyQuiz|vocabQuiz)'/)
-  assert.doesNotMatch(app, /etymologyStudy:\s|etymologyQuiz:\s|EtymologyStudyScreen|EtymologyQuizScreen/)
-  assert.match(visibility, /'etymologyStudy'/)
-  assert.match(visibility, /'etymologyQuiz'/)
+  assert.doesNotMatch(learnerSource, /navigate\('vocabQuiz'/)
+  assert.match(roots, /navigate\('etymologyStudy'/)
+  assert.match(roots, /navigate\('etymologyQuiz'/)
+  assert.match(roots, /NormalLearningRecordList/)
+  assert.match(app, /etymologyStudy: EtymologyStudyScreen/)
+  assert.match(app, /etymologyQuiz: EtymologyQuizScreen/)
 
   const block = wordBits.slice(
     wordBits.indexOf('export function EtymologyBlock'),

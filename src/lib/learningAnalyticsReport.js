@@ -61,7 +61,7 @@ export const LEARNING_REPORT_DOMAINS = Object.freeze({
   grammar: { label: '英文法', subject: 'english', skill: 'grammar', memory: false, test: true, color: '#d97706' },
   listening: { label: 'リスニング', subject: 'english', skill: 'listening', memory: false, test: true, color: '#0284c7' },
   dictation: { label: 'ディクテーション', subject: 'english', skill: 'dictation', memory: false, test: true, color: '#0f766e' },
-  etymology: { label: '語源知識', subject: 'english', skill: 'etymology', memory: true, test: false, color: '#a21caf' },
+  etymology: { label: '語源知識', subject: 'english', skill: 'etymology', memory: true, test: true, color: '#a21caf' },
   reading: { label: '長文読解', subject: 'english', skill: 'reading', memory: false, test: true, color: '#059669' },
   writing: { label: '英作文', subject: 'english', skill: 'writing', memory: false, test: true, color: '#db2777' },
   kotenVocab: { label: '古典単語', subject: 'koten', skill: 'koten', memory: true, test: true, color: '#c2410c' },
@@ -735,17 +735,15 @@ export function learningLaunchFor(domain, ids = [], mode = 'test', title = '') {
     screen: 'dictationPlay', params: { source: { type: 'dictationList', ids: uniqueIds }, title: title || '学習記録から選んだ復習', engine: 'dictation' },
   }
   if (domain === 'etymology') {
-    const wordIds = [...new Set(uniqueIds.flatMap(
-      (id) => getEtymologyPack(id)?.studyIds ?? [],
-    ))]
-    if (!wordIds.length) return { screen: 'roots', params: {} }
+    // 記録は語源カードそのものなので、暗記・テストも語源カードへ戻す。
+    const cardIds = uniqueIds.filter((id) => getEtymologyPack(id))
+    if (!cardIds.length) return { screen: 'roots', params: {} }
     return {
-      screen: 'vocabStudy',
+      screen: mode === 'memory' ? 'etymologyStudy' : 'etymologyQuiz',
       params: {
-        source: { type: 'deck', ids: wordIds },
-        title: title || '語源から単語を暗記',
-        mode: 'study',
-        size: Math.min(20, wordIds.length),
+        ids: cardIds,
+        title: title || '学習記録から選んだ語源カード',
+        size: Math.min(20, cardIds.length),
         returnTo: { screen: 'roots', params: {} },
       },
     }
