@@ -28,11 +28,11 @@ import { etymologyCardReviewMaterial } from '../src/data/etymology-reviewed-card
 export const ETYMOLOGY_QUALITY_TARGETS = Object.freeze({
   rawWords: 8869,
   publicCards: 283,
-  publicWords: 3285,
-  publicLinks: 5503,
-  quarantinedWords: 5584,
+  publicWords: 3823,
+  publicLinks: 6128,
+  quarantinedWords: 5046,
   retiredLegacyPacks: 2933,
-  wordStories: 38,
+  wordStories: 39,
 })
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')

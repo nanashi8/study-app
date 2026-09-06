@@ -58,5 +58,6 @@ export const ETYMOLOGY_WORD_NOTES = Object.freeze({
   bank: story('イタリア語 banca「両替商の台」から。台の上で金を扱ったことによる。', '51735a6891f9e0301102d88b240326357c1b9747026d7def745283074a123f56'),
   rival: story('ラテン語 rīvālis「同じ川（rīvus）を使う者」から。水をめぐって争う相手のこと。', 'f5f44a15be2e89f604e667b900774cfbb003781fd9beccba816203aa6c791500'),
   gossip: story('古英語 godsibb「名づけ親」から。親しい間柄の話し相手を経て「うわさ話」になった。', '11449887d8c1087bc1f50098ec6dc29c8310913be12d5dffb2817eea62e202f2'),
+  enemy: story('ラテン語 inimīcus「友でない者」から。in-（〜でない）＋ amīcus（友）で、つづりは古フランス語を経て en- になった。', '3f3447a4f441a5e3e288e65bda36414bbed471f308326425e22a596dd3f48d12'),
   robot: story('チェコ語 robota「強制労働」から。1920年の戯曲『R.U.R.』で使われて広まった。', 'f7a37060510450067bae09af6b28da9b3d4058345048095287390b924bbc8404'),
 })
