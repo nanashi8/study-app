@@ -8,6 +8,7 @@
 
 import { AUDITED_MORPHEME_ROOT_WORDS } from './etymology-morpheme-audit.js'
 import { CLASSICAL_ROOT_WORDS } from './etymology-classical-roots.js'
+import { GERMANIC_ROOT_WORDS } from './etymology-germanic-roots.js'
 
 export const REFERENCE_ROOTS = [
   { id: 'mini', form: 'minu / mini / minor', meaning: '小さい・少ない', origin: 'ラテン語 minuere / minor「小さくする・より小さい」', emoji: '🔎' },
@@ -161,7 +162,12 @@ export const REFERENCE_ROOT_WORDS = {
 // 手書きの許可リストと、形態素分解の候補を1語ずつ辞書で確かめた台帳を合わせて引く。
 // どちらも「確認済みの明示リンク」で、綴りの自動推測はここへ入れない。
 const REFERENCE_ROOT_IDS_BY_WORD = new Map()
-for (const source of [REFERENCE_ROOT_WORDS, AUDITED_MORPHEME_ROOT_WORDS, CLASSICAL_ROOT_WORDS]) {
+for (const source of [
+  REFERENCE_ROOT_WORDS,
+  AUDITED_MORPHEME_ROOT_WORDS,
+  CLASSICAL_ROOT_WORDS,
+  GERMANIC_ROOT_WORDS,
+]) {
   for (const [rootId, words] of Object.entries(source)) {
     for (const word of words) {
       const key = word.toLowerCase()

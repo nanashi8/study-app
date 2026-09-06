@@ -138,7 +138,7 @@ export function etymologyProgress(packs = [], etymologySrs = {}, day = localDay(
 export function filterEtymologyPacks(
   packs = [],
   etymologySrs = {},
-  { mode = 'all', status = 'all', day = localDay(), packIds } = {},
+  { mode = 'all', family = 'all', status = 'all', day = localDay(), packIds } = {},
 ) {
   const ids = Array.isArray(packIds) && packIds.length
     ? new Set(packIds)
@@ -147,6 +147,7 @@ export function filterEtymologyPacks(
   return packs.filter((pack) => {
     if (ids && !ids.has(pack.id)) return false
     if (mode !== 'all' && pack.mode !== mode) return false
+    if (family !== 'all' && pack.originFamily !== family) return false
     if (status === 'all' || status === 'priority') return true
     const entry = etymologySrs[pack.id]
     if (status === 'due') return isEtymologyDue(entry, day)

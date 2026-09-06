@@ -168,7 +168,7 @@ test('主要な全起動元は学習・クイズへ安全な親画面を渡す',
       assert.match(source, /const returnTarget = \{\s*screen: 'phrases'/)
     }
     if (path === 'src/screens/Roots.jsx') {
-      assert.match(source, /const returnTarget = \{ screen: 'roots'/)
+      assert.match(source, /const returnTarget = \{\s*screen: 'roots'/)
     }
     if (path === 'src/screens/RootDetail.jsx') {
       assert.match(source, /const returnTarget = \{ screen: 'rootDetail'/)
