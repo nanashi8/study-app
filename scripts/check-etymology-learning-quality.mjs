@@ -27,10 +27,10 @@ import { etymologyCardReviewMaterial } from '../src/data/etymology-reviewed-card
 
 export const ETYMOLOGY_QUALITY_TARGETS = Object.freeze({
   rawWords: 8869,
-  publicCards: 267,
-  publicWords: 2780,
-  publicLinks: 4003,
-  quarantinedWords: 6089,
+  publicCards: 283,
+  publicWords: 3285,
+  publicLinks: 5503,
+  quarantinedWords: 5584,
   retiredLegacyPacks: 2933,
   wordStories: 38,
 })

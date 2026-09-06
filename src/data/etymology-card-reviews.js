@@ -22,6 +22,8 @@ const reviewedGermanic = reviewedOn('2026-09-06')
 const reviewedRelink = reviewedOn('2026-09-06')
 // ラテン語・ギリシャ語の接頭辞カードも同じ再監査バッチ。
 const reviewedPrefix = reviewedOn('2026-09-06')
+// 接尾辞カードは翌日、同じ手順で1語ずつ確かめた。
+const reviewedSuffix = reviewedOn('2026-09-07')
 
 export const ETYMOLOGY_CARD_REVIEWS = Object.freeze({
   port: reviewed(['important', 'report'], 'f27669c208461d2f4021f890b0c5ed9fb0aa684a45af54248bc1be5e3f46b458'),
@@ -295,4 +297,21 @@ export const ETYMOLOGY_CARD_REVIEWS = Object.freeze({
   'pf-dia': reviewedPrefix(['dialogue', 'diameter'], '23b6aef209ee2220a6d0f0d137fa095eddab39aecd2ec48fe93a22ff6f502794'),
   'pf-para': reviewedPrefix(['paragraph', 'parameter'], '37af63d4014d282f1d030960a000bf1b3b748e68f50383ea86cd32353d9e6106'),
   'pf-anti': reviewedPrefix(['antibiotic', 'antipathy'], '7b8acca587f5f6b88ea809a455318ca31caac063f5f85b749982f958b1a3219d'),
+  // ── ラテン語・ギリシャ語の接尾辞 ──
+  'sf-tion': reviewedSuffix(['production', 'question'], '197f1ae937b0ca861c718082267f383614acb276d1212423b50080a49401f723'),
+  'sf-ment': reviewedSuffix(['document', 'movement'], '305d23399c935905edd1620b5d2cb746f04e2ce69a027a622130c067215b7ed7'),
+  'sf-able': reviewedSuffix(['capable', 'visible'], '4cac2882374965c9c1875198140b462c69de6b510d18e8193496913ddc54b6d0'),
+  'sf-ity': reviewedSuffix(['activity', 'equality'], '36b229ca9198d8a61e21c27025c5cc2aa019afecb32ffc0bada6c7c1ff3bb8eb'),
+  'sf-ous': reviewedSuffix(['famous', 'curious'], '856e31ae472d4403d7af33f51e7f18b7f1122cca3ed946d548ee242460a50b06'),
+  'sf-al': reviewedSuffix(['equal', 'national'], '06fbcaa2aeef1ec93c179d228a2ecf5b5f27b36181bf60efbd2c69918dc6817c'),
+  'sf-ive': reviewedSuffix(['native', 'creative'], 'd72837ec60c5c7184e82590995c0b0d96d958937022a6703b4a9c83c45e82b7d'),
+  'sf-ance': reviewedSuffix(['distance', 'science'], 'a3fad48db3e578df23efc9ccf82a132100f65020c8ed0ef9cac497dc8b8777f9'),
+  'sf-ant': reviewedSuffix(['important', 'patient'], '0eca9a0f99aaded52719f9cfa0ba102645a49145dd579512e4a25e5c2e443bb7'),
+  'sf-or': reviewedSuffix(['doctor', 'factor'], 'febdfdfd9fe847aa1aba480c27c910892e1dd116bef514a68f56cdaef6bbd3f7'),
+  'sf-ure': reviewedSuffix(['nature', 'structure'], '554e7ccc94c2bd354acd7ed1eba011bdf463f15f5e4b47eefdc2650a2f7c23ca'),
+  'sf-ary': reviewedSuffix(['dictionary', 'factory'], '204fd632d6b9b5267d6f6b59ad7a221970c0fba38001ff714d93752b90dd680b'),
+  'sf-ize': reviewedSuffix(['realize', 'apologize'], '97e51d82733aaa71f54f786de102f9814ef1795f19db11ef23649b057e31572c'),
+  'sf-ist': reviewedSuffix(['artist', 'scientist'], 'fcfc800d353522a2a9004b11b625ce9c12da1825018ba5fc88b9bd665584570c'),
+  'sf-ism': reviewedSuffix(['optimism', 'criticism'], '04bb870b56ab9551e9fdddd4c20c430c9d94192743e517f1fbe15c9616f192b2'),
+  'sf-ic': reviewedSuffix(['public', 'logic'], 'c9ef31d6ed47714207231779130bbef540ef74b865be27855d3ca251ac3e3eaa'),
 })
