@@ -380,10 +380,10 @@ test('補助語根は既存語だけを明示的につなぎ、語源カードID
 test('追加した補助語根は既存語の内容と関連語へ適用される', () => {
   const legacyWords = ALL_WORDS.filter((word) => sourceGroup(word.id) === 'legacy')
   const applied = legacyWords.filter((word) => word.referenceRoots.length > 0)
-  assert.equal(applied.length, 3013)
+  assert.equal(applied.length, 3526)
   assert.equal(
     applied.reduce((sum, word) => sum + word.referenceRoots.length, 0),
-    4846,
+    5443,
   )
 
   for (const word of applied) {
@@ -555,12 +555,13 @@ test('ラテン語・ギリシャ語の接頭辞カードは同化形と別語�
     const variants = PREFIX_VARIANTS[rootId]
     assert.ok(variants?.length, rootId)
     for (const head of heads) {
+      const matched = variants.filter((variant) => head.startsWith(variant))
+      assert.ok(matched.length, `${rootId}: ${head} はこの接頭辞の形で始まらない`)
+      // 接頭辞そのものと同じ語は入らない（control のように綴りが縮んだ語は許す）。
       assert.ok(
-        variants.some((variant) => head.startsWith(variant)),
-        `${rootId}: ${head} はこの接頭辞の形で始まらない`,
+        matched.some((variant) => head.length > variant.length),
+        `${rootId}: ${head} は接頭辞そのもの`,
       )
-      // 接頭辞は語幹カードで確認済みの複合語から取り出す。語幹だけの語は入らない。
-      assert.ok(head.length > Math.min(...variants.map((variant) => variant.length)) + 2, `${rootId}: ${head}`)
     }
   }
 
@@ -590,7 +591,7 @@ test('ラテン語・ギリシャ語の接頭辞カードは同化形と別語�
 })
 
 test('語の成り立ちは台帳にある語だけを出典つきで出す', () => {
-  assert.equal(ETYMOLOGY_WORD_STORIES.length, 38)
+  assert.equal(ETYMOLOGY_WORD_STORIES.length, 39)
   for (const story of ETYMOLOGY_WORD_STORIES) {
     const word = byHead.get(story.head)
     assert.ok(word, story.head)
@@ -604,6 +605,9 @@ test('語の成り立ちは台帳にある語だけを出典つきで出す', ()
   assert.match(etymologyStoryForWord(byHead.get('suffocation')).note, /faucēs/)
   assert.match(etymologyStoryForWord(byHead.get('panic')).note, /パン/)
   assert.equal(etymologyStoryForWord(byHead.get('important')), null)
+  // 綴りが接頭辞の形と合わない語は、カードではなく台帳が受け持つ。
+  assert.match(etymologyStoryForWord(byHead.get('enemy')).note, /amīcus/)
+  assert.equal(etymologyCardsForWord(byHead.get('enemy')).length, 0)
 })
 
 test('ラテン語・ギリシャ語の接尾辞カードは語尾と別語源の除外を守る', () => {
