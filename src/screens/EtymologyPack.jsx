@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { useStore } from '../store/useStore.js'
 import { getEtymologyPack, getWord } from '../data/vocab.js'
+import { etymologyOriginFamilyMeta } from '../data/etymology-origin-families.js'
 import {
   etymologyKnowledgeStatus,
   isEtymologyDue,
@@ -95,7 +96,12 @@ export function EtymologyPackScreen() {
 
           <div className="space-y-3 p-4">
             <div className="rounded-2xl bg-emerald-50 px-4 py-3 ring-1 ring-emerald-100">
-              <p className="text-xs font-extrabold text-emerald-700">意味の出発点</p>
+              <div className="flex items-center justify-between gap-2">
+                <p className="text-xs font-extrabold text-emerald-700">意味の出発点</p>
+                <span className="rounded-full bg-white px-2 py-0.5 text-[10px] font-extrabold text-emerald-700 ring-1 ring-emerald-200">
+                  {etymologyOriginFamilyMeta(pack.originFamily).emoji} {etymologyOriginFamilyMeta(pack.originFamily).label}
+                </span>
+              </div>
               <p className="mt-1 font-display text-base font-extrabold leading-relaxed text-ink">{pack.rootOrigin}</p>
             </div>
             <p className="text-sm font-bold leading-relaxed text-ink/60">

@@ -2,6 +2,7 @@ import {
   ETYMOLOGY_CARD_REVIEWS,
   ETYMOLOGY_CARD_REVIEW_SCHEMA,
 } from './etymology-card-reviews.js'
+import { etymologyOriginFamily } from './etymology-origin-families.js'
 
 const LEVEL_RANK = { '5': 0, '4': 1, '3': 2, pre2: 3, '2': 4, pre1: 5, '1': 6 }
 
@@ -78,6 +79,8 @@ export function buildReviewedEtymologyCards(words, roots) {
       rootForm: root?.form ?? rootId,
       rootMeaning: root?.meaning ?? '',
       rootOrigin: root?.origin ?? '',
+      // ラテン語系・ギリシャ語系・英語の土着語のどれかを由来文から決める。
+      originFamily: etymologyOriginFamily(root?.origin ?? ''),
       coverageIds,
       studyIds: coverageIds,
       exampleIds,

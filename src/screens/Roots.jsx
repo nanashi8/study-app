@@ -5,6 +5,7 @@ import {
   ETYMOLOGY_SUMMARY,
   getWord,
 } from '../data/vocab.js'
+import { ETYMOLOGY_ORIGIN_FAMILIES } from '../data/etymology-origin-families.js'
 import {
   ETYMOLOGY_STATUS_META,
   etymologyKnowledgeStatus,
@@ -26,6 +27,16 @@ import { ArrowRight, Book, Search } from '../components/Icons.jsx'
 
 const PAGE_SIZE = 24
 const STATUSES = ['all', 'due', 'unstarted', 'learning', 'mastered']
+// 系統（ラテン語系・ギリシャ語系・英語の土着語）でカードを絞る。
+const FAMILIES = ['all', ...ETYMOLOGY_ORIGIN_FAMILIES.map((family) => family.id)]
+const FAMILY_LABEL = {
+  all: 'すべての系統',
+  ...Object.fromEntries(ETYMOLOGY_ORIGIN_FAMILIES.map((family) => [family.id, family.label])),
+}
+const FAMILY_SHORT = {
+  all: '全系統',
+  ...Object.fromEntries(ETYMOLOGY_ORIGIN_FAMILIES.map((family) => [family.id, family.short])),
+}
 
 const statusCount = (progress, status) => {
   if (status === 'all') return progress.total
@@ -55,6 +66,7 @@ const searchText = (card) => [
   card.rootMeaning,
   card.rootOrigin,
   card.title,
+  FAMILY_LABEL[card.originFamily],
 ].filter(Boolean).join(' ').toLocaleLowerCase('ja')
 
 export function RootsScreen() {
@@ -64,7 +76,9 @@ export function RootsScreen() {
   const srs = useStore((state) => state.srs)
   const etymologySrs = useStore((state) => state.etymologySrs)
   const initialStatus = STATUSES.includes(params.status) ? params.status : 'all'
+  const initialFamily = FAMILIES.includes(params.family) ? params.family : 'all'
   const [status, setStatus] = useState(initialStatus)
+  const [family, setFamily] = useState(initialFamily)
   const [view, setView] = useState(params.view === 'list' ? 'list' : 'home')
   const [query, setQuery] = useState(params.query ?? '')
   const [visible, setVisible] = useState(PAGE_SIZE)
@@ -89,19 +103,32 @@ export function RootsScreen() {
   )
 
   const cards = useMemo(() => {
-    const filtered = filterEtymologyPacks(ETYMOLOGY_PACKS, etymologySrs, { status })
+    const filtered = filterEtymologyPacks(ETYMOLOGY_PACKS, etymologySrs, { status, family })
     if (status !== 'all') return filtered
     return [...filtered].sort((left, right) => (
       priorityRank(left, etymologySrs) - priorityRank(right, etymologySrs)
       || left.title.localeCompare(right.title, 'ja')
     ))
-  }, [etymologySrs, status])
+  }, [etymologySrs, family, status])
+
+  // 系統ごとの枚数は進み具合に関係なく出し、絞り込みの前に総量が見えるようにする。
+  const familyCounts = useMemo(() => Object.fromEntries(
+    FAMILIES.map((id) => [
+      id,
+      id === 'all'
+        ? ETYMOLOGY_PACKS.length
+        : ETYMOLOGY_PACKS.filter((card) => card.originFamily === id).length,
+    ]),
+  ), [])
 
   const listCards = useMemo(() => {
     const needle = query.trim().toLocaleLowerCase('ja')
-    if (!needle) return ETYMOLOGY_PACKS
-    return ETYMOLOGY_PACKS.filter((card) => searchText(card).includes(needle))
-  }, [query])
+    const scoped = family === 'all'
+      ? ETYMOLOGY_PACKS
+      : ETYMOLOGY_PACKS.filter((card) => card.originFamily === family)
+    if (!needle) return scoped
+    return scoped.filter((card) => searchText(card).includes(needle))
+  }, [family, query])
 
   const cardIds = useMemo(() => cards.map((card) => card.id), [cards])
   const studyIds = useMemo(
@@ -114,8 +141,25 @@ export function RootsScreen() {
     setVisible(PAGE_SIZE)
   }
 
-  const returnTarget = { screen: 'roots', params: { status, ...(view === 'list' ? { view } : {}) } }
-  const scopeLabel = status === 'all' ? '語源カードの全範囲' : `${ETYMOLOGY_STATUS_META[status].label}の語源カード`
+  const selectFamily = (nextFamily) => {
+    setFamily(nextFamily)
+    setVisible(PAGE_SIZE)
+  }
+
+  const returnTarget = {
+    screen: 'roots',
+    params: {
+      status,
+      ...(family === 'all' ? {} : { family }),
+      ...(view === 'list' ? { view } : {}),
+    },
+  }
+  const statusLabel = status === 'all'
+    ? '語源カードの全範囲'
+    : `${ETYMOLOGY_STATUS_META[status].label}の語源カード`
+  const scopeLabel = family === 'all'
+    ? statusLabel
+    : `${FAMILY_LABEL[family]}の${status === 'all' ? '語源カード' : ETYMOLOGY_STATUS_META[status].label}`
 
   const startStudy = (ids, title) => navigate('etymologyStudy', {
     ids,
@@ -131,7 +175,7 @@ export function RootsScreen() {
   })
   const studyWords = () => navigate('vocabStudy', {
     source: { type: 'deck', ids: studyIds, preserveOrder: true },
-    title: status === 'all' ? '語源から単語を暗記' : `${ETYMOLOGY_STATUS_META[status].label}の単語`,
+    title: `${scopeLabel}に紐づく単語`,
     mode: 'study',
     size: Math.min(SESSION_SIZE, studyIds.length),
     returnTo: returnTarget,
@@ -303,6 +347,30 @@ export function RootsScreen() {
             )
           })}
         </div>
+        <div className="mt-3" aria-label="語源カードを系統で絞り込む">
+          <p className="px-1 text-xs font-extrabold text-slate-500">系統でしぼる</p>
+          <div className="mt-1.5 flex flex-wrap gap-2">
+            {FAMILIES.map((id) => {
+              const selected = family === id
+              return (
+                <button
+                  key={id}
+                  type="button"
+                  aria-pressed={selected}
+                  onClick={() => selectFamily(id)}
+                  className={cx(
+                    'min-h-11 rounded-xl px-3 text-xs font-extrabold ring-1 transition-colors',
+                    selected
+                      ? 'bg-violet-600 text-white ring-violet-600'
+                      : 'bg-white text-slate-600 ring-slate-200',
+                  )}
+                >
+                  {FAMILY_SHORT[id]} {familyCounts[id]}枚
+                </button>
+              )
+            })}
+          </div>
+        </div>
         <p className="mt-3 rounded-xl bg-violet-50 px-3 py-2 text-xs font-bold leading-relaxed text-violet-800">
           紐づく英単語のほうは、{wordProgress.mastered}枚分が学習済み・{wordProgress.due}枚分が今日の復習です。
         </p>
@@ -312,7 +380,8 @@ export function RootsScreen() {
         <div className="mb-2 px-1">
           <h2 id="etymology-card-heading" className="font-display text-base font-extrabold text-slate-900">カードを選ぶ</h2>
           <p className="text-xs font-bold leading-relaxed text-slate-500">
-            語根を選ぶと、意味と関連する単語を確認できます。
+            語根を選ぶと、意味と関連する単語を確認できます。ラテン語系・ギリシャ語系のほか、
+            英語の土着語（be- / -th / grow・grass・green など）もここから学べます。
           </p>
         </div>
 

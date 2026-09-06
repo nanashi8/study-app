@@ -7,6 +7,7 @@ import {
   ETYMOLOGY_FORMATION_META,
   ETYMOLOGY_MODE_META,
   ETYMOLOGY_LEGACY_PACKS as ETYMOLOGY_PACKS,
+  ETYMOLOGY_PACKS as ETYMOLOGY_PUBLIC_PACKS,
   ETYMOLOGY_SOURCE_META,
   ETYMOLOGY_LEGACY_SUMMARY as ETYMOLOGY_SUMMARY,
   ROOTS,
@@ -25,6 +26,11 @@ import {
   CLASSICAL_ROOTS,
   CLASSICAL_ROOT_WORDS,
 } from '../src/data/etymology-classical-roots.js'
+import {
+  GERMANIC_ROOTS,
+  GERMANIC_ROOT_WORDS,
+} from '../src/data/etymology-germanic-roots.js'
+import { etymologyOriginFamily } from '../src/data/etymology-origin-families.js'
 import { ETYMOLOGY_COMPLETION_WORDS } from '../src/data/words-etymology-completion.js'
 import { CURRICULUM_1900_WORDS } from '../src/data/words-curriculum-1900.js'
 import { wordsForSource } from '../src/lib/session.js'
@@ -294,9 +300,24 @@ test('補助語根は既存語だけを明示的につなぎ、語源カードID
     '追加語根の語リストと語根定義が一致しません',
   )
 
-  // 手書き許可リスト・形態素監査台帳・追加した古典語根は、どれも明示リンク。
+  const germanicRootIds = new Set(GERMANIC_ROOTS.map((root) => root.id))
+  assert.equal(germanicRootIds.size, GERMANIC_ROOTS.length)
+  assert.ok([...germanicRootIds].every((rootId) => rootIds.has(rootId)))
+  assert.ok([...germanicRootIds].every((rootId) => rootId.startsWith('ge-')))
+  assert.deepEqual(
+    Object.keys(GERMANIC_ROOT_WORDS).sort(),
+    [...germanicRootIds].sort(),
+    '土着語根の語リストと語根定義が一致しません',
+  )
+
+  // 手書き許可リスト・形態素監査台帳・古典語根・土着語根は、どれも明示リンク。
   const seen = new Set()
-  for (const source of [REFERENCE_ROOT_WORDS, AUDITED_MORPHEME_ROOT_WORDS, CLASSICAL_ROOT_WORDS]) {
+  for (const source of [
+    REFERENCE_ROOT_WORDS,
+    AUDITED_MORPHEME_ROOT_WORDS,
+    CLASSICAL_ROOT_WORDS,
+    GERMANIC_ROOT_WORDS,
+  ]) {
     for (const [rootId, heads] of Object.entries(source)) {
       assert.ok(rootIds.has(rootId), rootId)
       assert.equal(new Set(heads).size, heads.length, `${rootId}: 同じ単語が重複`)
@@ -322,10 +343,10 @@ test('補助語根は既存語だけを明示的につなぎ、語源カードID
 test('追加した補助語根は既存語の内容と関連語へ適用される', () => {
   const legacyWords = ALL_WORDS.filter((word) => sourceGroup(word.id) === 'legacy')
   const applied = legacyWords.filter((word) => word.referenceRoots.length > 0)
-  assert.equal(applied.length, 1598)
+  assert.equal(applied.length, 2184)
   assert.equal(
     applied.reduce((sum, word) => sum + word.referenceRoots.length, 0),
-    1618,
+    2266,
   )
 
   for (const word of applied) {
@@ -403,4 +424,90 @@ test('補助語根は同じ綴りの別語源を混ぜない', () => {
   assert.ok(byHead.get('supply').referenceRoots.includes('plere'))
   assert.ok(!rootIdsForWord(byHead.get('supply')).includes('plic'))
   assert.ok(rootIdsForWord(byHead.get('duplicate')).includes('plic'))
+})
+
+test('英語の土着語カードは接辞の形と別語源の除外を守る', () => {
+  // 接辞カードは「土着の接辞＋借用語幹」の混成語を含むが、綴りの上では必ずその接辞で始まる／終わる。
+  const AFFIX_SHAPES = {
+    'ge-be': /^be/, 'ge-for': /^for/, 'ge-fore': /^for/, 'ge-with': /^with/,
+    'ge-out': /^out/, 'ge-over': /^over/, 'ge-under': /^under/, 'ge-up': /^up/,
+    'ge-mis': /^mis/, 'ge-un': /^un/,
+    'ge-ship': /ship$/, 'ge-hood': /hood$/, 'ge-dom': /dom$/, 'ge-th': /th$/,
+    'ge-en': /en$/, 'ge-ward': /ward$/, 'ge-some': /some$/, 'ge-less': /less$/,
+    'ge-ful': /ful$/, 'ge-ness': /ness$/,
+  }
+  for (const [rootId, shape] of Object.entries(AFFIX_SHAPES)) {
+    for (const head of GERMANIC_ROOT_WORDS[rootId]) {
+      assert.match(head, shape, `${rootId}: ${head}`)
+    }
+  }
+
+  // 語族カードは語そのものが土着。既存の語源メモが借用語を示す語は入れない。
+  const affixIds = new Set(Object.keys(AFFIX_SHAPES))
+  for (const [rootId, heads] of Object.entries(GERMANIC_ROOT_WORDS)) {
+    assert.ok(heads.length >= 2, `${rootId}: 関連語が1語以下`)
+    if (affixIds.has(rootId)) continue
+    for (const head of heads) {
+      const note = byHead.get(head)?.etymology?.note ?? ''
+      assert.doesNotMatch(
+        note,
+        /ラテン|ギリシャ|フランス|イタリア|スペイン|アラビア/,
+        `${rootId}: ${head} は借用語のため語族カードへ入れない`,
+      )
+    }
+  }
+
+  // 綴りが似ているだけの別語源。1件でも混ざると語源そのものの説明が壊れる。
+  const excludes = [
+    ['outrage', 'ge-out'], ['overt', 'ge-over'], ['uproar', 'ge-up'],
+    ['misery', 'ge-mis'], ['miserable', 'ge-mis'], ['missile', 'ge-mis'],
+    ['because', 'ge-be'], ['betray', 'ge-be'],
+    ['forever', 'ge-for'], ['forfeit', 'ge-for'],
+    ['foreign', 'ge-fore'], ['forest', 'ge-fore'], ['wither', 'ge-with'],
+    ['uncle', 'ge-un'], ['until', 'ge-un'], ['unique', 'ge-un'], ['unit', 'ge-un'],
+    ['union', 'ge-un'], ['universe', 'ge-un'], ['understand', 'ge-un'],
+    ['reward', 'ge-ward'], ['award', 'ge-ward'], ['coward', 'ge-ward'], ['ward', 'ge-ward'],
+    ['less', 'ge-less'], ['unless', 'ge-less'], ['nevertheless', 'ge-less'],
+    ['nonetheless', 'ge-less'], ['bless', 'ge-less'],
+    ['harness', 'ge-ness'], ['wistful', 'ge-ful'],
+    ['random', 'ge-dom'], ['seldom', 'ge-dom'],
+    ['warship', 'ge-ship'], ['battleship', 'ge-ship'],
+    ['month', 'ge-th'], ['tenth', 'ge-th'], ['worth', 'ge-th'], ['faith', 'ge-th'],
+  ]
+  for (const [head, rootId] of excludes) {
+    const word = byHead.get(head)
+    assert.ok(word, head)
+    assert.ok(!word.referenceRoots.includes(rootId), `${head} を ${rootId} へ誤接続`)
+  }
+
+  // 土着の接辞・語族は、綴りの自動推測ではなく明示リンクだけでカードへ載る。
+  assert.ok(byHead.get('withstand').referenceRoots.includes('ge-with'))
+  assert.ok(byHead.get('withstand').referenceRoots.includes('ge-stand'))
+  assert.ok(byHead.get('health').referenceRoots.includes('ge-whole'))
+  assert.ok(byHead.get('bless').referenceRoots.includes('ge-blood'))
+  for (const rootId of Object.keys(GERMANIC_ROOT_WORDS)) {
+    assert.ok(wordsByRoot(rootId).length >= 2, rootId)
+  }
+})
+
+test('語源カードの系統は由来文の最初の言語で決まる', () => {
+  assert.equal(etymologyOriginFamily('ラテン語 portāre「運ぶ」'), 'latin')
+  assert.equal(etymologyOriginFamily('ギリシャ語 graphein「書く」'), 'greek')
+  assert.equal(etymologyOriginFamily('古英語 be-「まわりに・すっかり」'), 'germanic')
+  assert.equal(etymologyOriginFamily('古ノルド語 kasta「投げる」'), 'germanic')
+  // 複数の言語に触れる由来文は、最初に出てくる言語をその語根の出どころとみなす。
+  assert.equal(etymologyOriginFamily('古英語 lang / ラテン語 longus「長い」'), 'germanic')
+  assert.equal(etymologyOriginFamily('ラテン語 nōmen / ギリシャ語 onyma「名前」'), 'latin')
+  assert.equal(etymologyOriginFamily('後期ラテン語 carrus「車」'), 'latin')
+
+  const counts = ETYMOLOGY_PUBLIC_PACKS.reduce((totals, card) => ({
+    ...totals,
+    [card.originFamily]: (totals[card.originFamily] ?? 0) + 1,
+  }), {})
+  assert.deepEqual(counts, { latin: 169, greek: 25, germanic: 48 })
+  for (const rootId of Object.keys(GERMANIC_ROOT_WORDS)) {
+    const card = ETYMOLOGY_PUBLIC_PACKS.find((item) => item.rootId === rootId)
+    assert.ok(card, rootId)
+    assert.equal(card.originFamily, 'germanic', rootId)
+  }
 })
