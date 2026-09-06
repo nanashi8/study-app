@@ -235,7 +235,7 @@ export const ETYMOLOGY_CARD_REVIEWS = Object.freeze({
   'ge-ship': reviewedGermanic(['worship', 'friendship'], '2de2b2ca21be4f7fe65ed2caabaad9ffed3e8bd60ab5ea74318574c49cb1c0dd'),
   'ge-hood': reviewedGermanic(['neighborhood', 'falsehood'], 'e8cc5d60327d652448d86b1d3f6369ab3edbff5d5a805e76fcb48272a415fa62'),
   'ge-dom': reviewedGermanic(['wisdom', 'freedom'], '7f968b081b9e17eb6a05fe867cacd9bc68e1866a4bdebefd067d936fbbc880e9'),
-  'ge-th': reviewedGermanic(['strength', 'truth'], '446dd7ae6fedd6b3cd11da1601b36e0eaf5118626fdc2884d4fdb01cb1cfe968'),
+  'ge-th': reviewedGermanic(['strength', 'truth'], '70b9553e7b04742fbe6420421232e33960c9d7560e96d806943edaf64c3e039f'),
   'ge-en': reviewedGermanic(['fasten', 'strengthen'], '763f5eed6c092301ab40f4068b1e0d23f787570e153e7bcfc8c4741caf672f0e'),
   'ge-ward': reviewedGermanic(['toward', 'awkward'], 'e1c82e386d91fd4d40baf6ac9da2dd518f03c7c4099cacab35a88f659ecbaa96'),
   'ge-some': reviewedGermanic(['wholesome', 'winsome'], '1b359b2740da48764a3c74a5b7bfbd3889f18def0ac87f28a227787d56c98d81'),

@@ -49,7 +49,7 @@ export const GERMANIC_ROOTS = Object.freeze([
   Object.freeze({ id: 'ge-ship', form: '-ship', meaning: '状態・身分・技量', origin: '古英語 -scipe「〜である状態」', emoji: '🎖️' }),
   Object.freeze({ id: 'ge-hood', form: '-hood', meaning: '状態・身分', origin: '古英語 hād「身分・状態」', emoji: '🏘️' }),
   Object.freeze({ id: 'ge-dom', form: '-dom', meaning: '状態・領域', origin: '古英語 dōm「判断・定め」', emoji: '👑' }),
-  Object.freeze({ id: 'ge-th', form: '-th', meaning: '（形・動詞から）〜であること', origin: '古英語 -þu「〜であること」', emoji: '📏' }),
+  Object.freeze({ id: 'ge-th', form: '-th', meaning: '形容詞・動詞から名詞をつくる', origin: '古英語 -þu「〜であること」', emoji: '📏' }),
   Object.freeze({ id: 'ge-en', form: '-en', meaning: '〜にする・〜になる', origin: '古英語 -nian「〜にする」', emoji: '🔧' }),
   Object.freeze({ id: 'ge-ward', form: '-ward', meaning: '〜の方へ', origin: '古英語 -weard「〜の方を向いた」', emoji: '🧭' }),
   Object.freeze({ id: 'ge-some', form: '-some', meaning: '〜させる・〜しがちな', origin: '古英語 -sum「〜の性質を持つ」', emoji: '😖' }),
