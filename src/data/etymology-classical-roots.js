@@ -16,6 +16,7 @@ export const CLASSICAL_ROOTS = Object.freeze([
   Object.freeze({ id: 'fus', form: 'fus / fut', meaning: '注ぐ・溶かす', origin: 'ラテン語 fundere / fūsus「注ぐ」', emoji: '🫗' }),
   Object.freeze({ id: 'greg', form: 'greg', meaning: '群れ', origin: 'ラテン語 grex / gregis「群れ」', emoji: '🐑' }),
   Object.freeze({ id: 'her', form: 'her / hes', meaning: 'くっつく', origin: 'ラテン語 haerēre「くっつく」', emoji: '🧲' }),
+  Object.freeze({ id: 'ide', form: 'ide / idea', meaning: '見えるもの・姿・観念', origin: 'ギリシャ語 idea「見えるもの・姿」', emoji: '💭' }),
   Object.freeze({ id: 'junct', form: 'junct / jug / join', meaning: 'つなぐ', origin: 'ラテン語 jungere「結ぶ」', emoji: '🔗' }),
   Object.freeze({ id: 'lex', form: 'leg / legis', meaning: '法', origin: 'ラテン語 lēx / lēgis「法」', emoji: '⚖️' }),
   Object.freeze({ id: 'lingu', form: 'lingu / langu', meaning: '舌・ことば', origin: 'ラテン語 lingua「舌・言語」', emoji: '👅' }),
@@ -71,6 +72,9 @@ export const CLASSICAL_ROOT_WORDS = Object.freeze({
   greg: Object.freeze(['gregarious', 'segregate', 'segregation', 'aggregate', 'egregious']),
   // her / hes ＝ くっつく（ラテン語 haerēre「くっつく」）
   her: Object.freeze(['adhere', 'coherent', 'coherence', 'cohesion', 'inherent', 'hesitate', 'hesitant', 'hesitation']),
+  // ide / idea ＝ 見えるもの・姿・観念（ギリシャ語 idea「見えるもの・姿」）
+  // identity / identify / identical はラテン語 idem「同じ」で別語源のため入れない。
+  ide: Object.freeze(['idea', 'ideal', 'idealism', 'idealistic', 'ideology', 'ideological', 'idol']),
   // junct / jug / join ＝ つなぐ（ラテン語 jungere「結ぶ」）
   junct: Object.freeze(['join', 'joint', 'jointly', 'subjugate', 'juxtapose']),
   // leg / legis ＝ 法（ラテン語 lēx / lēgis「法」）
@@ -118,7 +122,7 @@ export const CLASSICAL_ROOT_WORDS = Object.freeze({
   // techn ＝ 技・わざ（ギリシャ語 tekhnē「技術」）
   techn: Object.freeze(['technique', 'technical', 'technology', 'technician']),
   // trib ＝ 割り当てる・与える（ラテン語 tribuere「分け与える」）
-  trib: Object.freeze(['contribute', 'contribution', 'contributor', 'distribute', 'distribution', 'attribute', 'retribution', 'diatribe']),
+  trib: Object.freeze(['contribute', 'contribution', 'contributor', 'distribute', 'distribution', 'attribute', 'retribution']),
   // urb ＝ 都市（ラテン語 urbs「都市」）
   urb: Object.freeze(['urban', 'urbanization', 'urbanize', 'suburb', 'suburban']),
   // verb ＝ ことば（ラテン語 verbum「ことば」）

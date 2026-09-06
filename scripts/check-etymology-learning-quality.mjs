@@ -14,9 +14,12 @@ import {
   ETYMOLOGY_LEGACY_PACKS,
   ETYMOLOGY_PACKS,
   ETYMOLOGY_SUMMARY,
+  ETYMOLOGY_WORD_STORIES,
   etymologyCardsForWord,
   getRoot,
 } from '../src/data/vocab.js'
+import { ETYMOLOGY_WORD_NOTES } from '../src/data/etymology-word-notes.js'
+import { etymologyWordNoteMaterial } from '../src/data/etymology-word-note-review.js'
 import { ETYMOLOGY_CARD_REVIEWS } from '../src/data/etymology-card-reviews.js'
 import { buildAllEtymologyQuizQuestions } from '../src/lib/etymologyQuiz.js'
 import { QUIZ_CHOICE_COUNT } from '../src/lib/quizChoices.js'
@@ -24,11 +27,12 @@ import { etymologyCardReviewMaterial } from '../src/data/etymology-reviewed-card
 
 export const ETYMOLOGY_QUALITY_TARGETS = Object.freeze({
   rawWords: 8869,
-  publicCards: 242,
-  publicWords: 2581,
-  publicLinks: 2686,
-  quarantinedWords: 6288,
+  publicCards: 267,
+  publicWords: 2780,
+  publicLinks: 4003,
+  quarantinedWords: 6089,
   retiredLegacyPacks: 2933,
+  wordStories: 38,
 })
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
@@ -139,6 +143,32 @@ export function auditEtymologyLearningQuality() {
     }
   }
 
+  // 語根カードでは表せない「語そのものの歴史」も、同じ基準で固定する。
+  const storyHeads = new Set(Object.keys(ETYMOLOGY_WORD_NOTES))
+  if (ETYMOLOGY_WORD_STORIES.length !== ETYMOLOGY_QUALITY_TARGETS.wordStories) {
+    fail(`語の成り立ちの公開数が不一致: ${ETYMOLOGY_WORD_STORIES.length}/${ETYMOLOGY_QUALITY_TARGETS.wordStories}`)
+  }
+  for (const story of ETYMOLOGY_WORD_STORIES) {
+    const at = `${story.id}`
+    storyHeads.delete(story.head)
+    const word = wordsByHead.get(lowerHead(story.head))
+    if (!word) fail(`${at}: 収録していない単語`)
+    if (!story.note?.trim()) fail(`${at}: 説明が空`)
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(story.evidence?.reviewedAt ?? '')) fail(`${at}: 手動確認日がない`)
+    if (story.evidence?.reviewedBy !== 'manual-etymology-audit') fail(`${at}: 手動確認者の記録がない`)
+    if (story.evidence?.sources?.length !== 2) fail(`${at}: 独立した照合先が2件ない`)
+    for (const item of story.evidence?.sources ?? []) {
+      sourceLinks += 1
+      if (!/^https:\/\/(?:www\.etymonline\.com|en\.wiktionary\.org)\//.test(item.url ?? '')) {
+        fail(`${at}: 許可していない出典URL ${item.url ?? '(空)'}`)
+      }
+      if (item.head !== story.head) fail(`${at}: 出典見出し ${item.head} が監査対象外`)
+    }
+    const actual = createHash('sha256').update(etymologyWordNoteMaterial(story)).digest('hex')
+    if (actual !== story.evidence?.fingerprint) fail(`${at}: 説明が手動確認後に変更された`)
+  }
+  if (storyHeads.size) fail(`台帳にあるのに公開していない語: ${[...storyHeads].join(', ')}`)
+
   if (reviewRootIds.size) fail(`台帳にあるのに公開カードがない語根: ${[...reviewRootIds].join(', ')}`)
   if (publicWordIds.size !== ETYMOLOGY_QUALITY_TARGETS.publicWords) {
     fail(`公開確認済み単語数が不一致: ${publicWordIds.size}/${ETYMOLOGY_QUALITY_TARGETS.publicWords}`)
@@ -197,6 +227,9 @@ export function auditEtymologyLearningQuality() {
   }
   if (!publicSource.includes('data-etymology-word-study-action')) {
     fail('確認済みカードに紐づく単語を通常の単語暗記で学ぶ導線がない')
+  }
+  if (!publicSource.includes('data-reviewed-word-story')) {
+    fail('確認済みの「語の成り立ち」を単語画面へ出す導線がない')
   }
   const rootsSource = source('src/screens/Roots.jsx')
   const packSource = source('src/screens/EtymologyPack.jsx')
@@ -276,6 +309,7 @@ export function auditEtymologyLearningQuality() {
 
   return {
     errors,
+    wordStories: ETYMOLOGY_WORD_STORIES.length,
     rawWords: ALL_WORDS.length,
     publicCards: ETYMOLOGY_PACKS.length,
     publicWords: publicWordIds.size,
@@ -294,6 +328,7 @@ export function printEtymologyLearningQuality(report) {
   line('公開する確認済み語源カード', report.publicCards)
   line('公開カードに紐づく確認済み単語', report.publicWords)
   line('確認済みカード→単語リンク（延べ）', report.publicLinks)
+  line('語の成り立ちの公開数', report.wordStories)
   line('照合先URL', report.sourceLinks)
   line('未承認のため公開しない自由記述', report.quarantinedWords)
   line('保存互換だけに残す旧パック', report.retiredLegacyPacks)
