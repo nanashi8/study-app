@@ -33,7 +33,7 @@ const RAW = [
   ['insecure', '形', 'pre1', '不安な・不安定な', 'He felt insecure.', '彼は不安を感じた。', 'in(否定)+secure(安全な)。', { syn: [{ w: 'anxious', m: '不安な' }, { w: 'unstable', m: '不安定な' }], ant: [{ w: 'secure', m: '安定した' }], field: '心理' }],
   ['insignificant', '形', 'pre1', '取るに足らない', 'an insignificant detail', 'ささいな細部', 'in(否定)+significant(重要な)。', { syn: [{ w: 'trivial', m: 'ささいな' }, { w: 'minor', m: '小さな' }], ant: [{ w: 'significant', m: '重要な' }], field: '性質・状態' }],
   ['lasting', '形', 'pre1', '永続する・長続きする', 'a lasting peace', '永続的な平和', 'last(続く)+ -ing。', { syn: [{ w: 'enduring', m: '持続する' }, { w: 'permanent', m: '永続的な' }], ant: [{ w: 'temporary', m: '一時的な' }], field: '性質・状態' }],
-  ['main', '形', '3', '主要な・主な', 'the main reason', '主な理由', 'ラテン magnus(大きい)由来。', { syn: [{ w: 'chief', m: '主要な' }], ant: [{ w: 'minor', m: '副次的な' }], fam: [{ w: 'mainly', m: '主に' }], field: '性質・状態' }],
+  ['main', '形', '3', '主要な・主な', 'the main reason', '主な理由', '古英語 mægen(力・強さ)→「主要な」。ラテン magnus とは別語。', { syn: [{ w: 'chief', m: '主要な' }], ant: [{ w: 'minor', m: '副次的な' }], fam: [{ w: 'mainly', m: '主に' }], field: '性質・状態' }],
   ['mainly', '副', '3', '主に・大部分は', 'It is mainly rural.', 'そこは主に農村だ。', 'main(主な)+ -ly。', { syn: [{ w: 'mostly', m: 'たいてい' }, { w: 'chiefly', m: '主に' }], fam: [{ w: 'main', m: '主要な' }], field: '副詞' }],
   ['manners', '名', 'pre2', '作法・行儀', 'table manners', '食事の作法', 'manner(やり方)の複数。', { syn: [{ w: 'etiquette', m: '礼儀' }, { w: 'courtesy', m: '礼儀正しさ' }], field: '社会' }],
   ['master', '名', '3', '親方・主人・習得する', 'He is a master of chess.', '彼はチェスの名人だ。', 'ラテン magister(長)。', { syn: [{ w: 'expert', m: '熟達者' }], ant: [], field: '一般' }],

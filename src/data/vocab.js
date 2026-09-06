@@ -167,6 +167,7 @@ import {
   buildReviewedEtymologyCards,
   summarizeReviewedEtymologyCards,
 } from './etymology-reviewed-cards.js'
+import { buildReviewedWordNotes } from './etymology-word-note-review.js'
 
 // 語根オートリンクの検出器（精度重視・形態素分解＋除外リスト）。
 const ROOT_MATCHERS = buildRootMatchers(LEARNING_ROOTS)
@@ -569,6 +570,14 @@ for (const pack of ETYMOLOGY_PACKS) {
     ETYMOLOGY_PACKS_BY_WORD_ID.get(wordId).push(pack)
   }
 }
+// 語根カードでは表せない「語そのものの歴史」。台帳にある語だけ返す。
+export const ETYMOLOGY_WORD_STORIES = buildReviewedWordNotes(ALL_WORDS)
+const ETYMOLOGY_WORD_STORIES_BY_ID = new Map(
+  ETYMOLOGY_WORD_STORIES.map((story) => [story.wordId, story]),
+)
+export const etymologyStoryForWord = (wordOrId) =>
+  ETYMOLOGY_WORD_STORIES_BY_ID.get(typeof wordOrId === 'string' ? wordOrId : wordOrId?.id) ?? null
+
 export const getEtymologyPack = (id) => ETYMOLOGY_PACKS_BY_ID[id]
 export const etymologyCardsForWord = (wordOrId) =>
   ETYMOLOGY_PACKS_BY_WORD_ID.get(typeof wordOrId === 'string' ? wordOrId : wordOrId?.id) ?? []

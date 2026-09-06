@@ -1,6 +1,7 @@
 // 単語まわりの再利用パーツ：品詞バッジと、監査済み語源カードへの導線。
 import {
   etymologyCardsForWord,
+  etymologyStoryForWord,
   getRoot,
   getWord,
 } from '../data/vocab.js'
@@ -94,13 +95,23 @@ export function ReferenceRootSummary({ word, onRoot }) {
  */
 export function EtymologyBlock({ word, onRoot, onPack }) {
   const cards = etymologyCardsForWord(word)
-  if (!cards.length) return null
+  // 語根では表せない「語そのものの歴史」は、確認済みの台帳にある語だけ出す。
+  const story = etymologyStoryForWord(word)
+  if (!cards.length && !story) return null
 
   return (
     <div className="space-y-2.5" data-reviewed-etymology-cards>
-      <p className="px-1 text-xs font-bold leading-relaxed text-slate-500">
-        語根を開くと、同じ由来の単語と出典を確認できます。
-      </p>
+      {story && (
+        <div className="rounded-2xl bg-amber-50 px-4 py-3 ring-1 ring-amber-100" data-reviewed-word-story>
+          <p className="text-xs font-extrabold text-amber-700">語の成り立ち</p>
+          <p className="mt-1 text-sm font-bold leading-relaxed text-ink">{story.note}</p>
+        </div>
+      )}
+      {cards.length > 0 && (
+        <p className="px-1 text-xs font-bold leading-relaxed text-slate-500">
+          語根を開くと、同じ由来の単語と出典を確認できます。
+        </p>
+      )}
       {cards.map((card) => (
         <ReviewedEtymologyCard
           key={card.id}

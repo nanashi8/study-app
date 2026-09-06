@@ -8,6 +8,9 @@ import {
   ETYMOLOGY_MODE_META,
   ETYMOLOGY_LEGACY_PACKS as ETYMOLOGY_PACKS,
   ETYMOLOGY_PACKS as ETYMOLOGY_PUBLIC_PACKS,
+  ETYMOLOGY_WORD_STORIES,
+  etymologyCardsForWord,
+  etymologyStoryForWord,
   ETYMOLOGY_SOURCE_META,
   ETYMOLOGY_LEGACY_SUMMARY as ETYMOLOGY_SUMMARY,
   ROOTS,
@@ -31,6 +34,12 @@ import {
   GERMANIC_ROOT_WORDS,
 } from '../src/data/etymology-germanic-roots.js'
 import { etymologyOriginFamily } from '../src/data/etymology-origin-families.js'
+import { AUDITED_LINK_WORDS } from '../src/data/etymology-link-audit.js'
+import {
+  PREFIX_ROOTS,
+  PREFIX_ROOT_WORDS,
+  PREFIX_VARIANTS,
+} from '../src/data/etymology-prefix-roots.js'
 import { ETYMOLOGY_COMPLETION_WORDS } from '../src/data/words-etymology-completion.js'
 import { CURRICULUM_1900_WORDS } from '../src/data/words-curriculum-1900.js'
 import { wordsForSource } from '../src/lib/session.js'
@@ -300,6 +309,16 @@ test('補助語根は既存語だけを明示的につなぎ、語源カードID
     '追加語根の語リストと語根定義が一致しません',
   )
 
+  const prefixRootIds = new Set(PREFIX_ROOTS.map((root) => root.id))
+  assert.equal(prefixRootIds.size, PREFIX_ROOTS.length)
+  assert.ok([...prefixRootIds].every((rootId) => rootIds.has(rootId)))
+  assert.ok([...prefixRootIds].every((rootId) => rootId.startsWith('pf-')))
+  assert.deepEqual(
+    Object.keys(PREFIX_ROOT_WORDS).sort(),
+    [...prefixRootIds].sort(),
+    '接頭辞カードの語リストと語根定義が一致しません',
+  )
+
   const germanicRootIds = new Set(GERMANIC_ROOTS.map((root) => root.id))
   assert.equal(germanicRootIds.size, GERMANIC_ROOTS.length)
   assert.ok([...germanicRootIds].every((rootId) => rootIds.has(rootId)))
@@ -317,6 +336,8 @@ test('補助語根は既存語だけを明示的につなぎ、語源カードID
     AUDITED_MORPHEME_ROOT_WORDS,
     CLASSICAL_ROOT_WORDS,
     GERMANIC_ROOT_WORDS,
+    AUDITED_LINK_WORDS,
+    PREFIX_ROOT_WORDS,
   ]) {
     for (const [rootId, heads] of Object.entries(source)) {
       assert.ok(rootIds.has(rootId), rootId)
@@ -343,10 +364,10 @@ test('補助語根は既存語だけを明示的につなぎ、語源カードID
 test('追加した補助語根は既存語の内容と関連語へ適用される', () => {
   const legacyWords = ALL_WORDS.filter((word) => sourceGroup(word.id) === 'legacy')
   const applied = legacyWords.filter((word) => word.referenceRoots.length > 0)
-  assert.equal(applied.length, 2184)
+  assert.equal(applied.length, 2487)
   assert.equal(
     applied.reduce((sum, word) => sum + word.referenceRoots.length, 0),
-    2266,
+    3473,
   )
 
   for (const word of applied) {
@@ -504,10 +525,67 @@ test('語源カードの系統は由来文の最初の言語で決まる', () =>
     ...totals,
     [card.originFamily]: (totals[card.originFamily] ?? 0) + 1,
   }), {})
-  assert.deepEqual(counts, { latin: 169, greek: 25, germanic: 48 })
+  assert.deepEqual(counts, { latin: 189, greek: 30, germanic: 48 })
   for (const rootId of Object.keys(GERMANIC_ROOT_WORDS)) {
     const card = ETYMOLOGY_PUBLIC_PACKS.find((item) => item.rootId === rootId)
     assert.ok(card, rootId)
     assert.equal(card.originFamily, 'germanic', rootId)
   }
+})
+
+test('ラテン語・ギリシャ語の接頭辞カードは同化形と別語源の除外を守る', () => {
+  for (const [rootId, heads] of Object.entries(PREFIX_ROOT_WORDS)) {
+    assert.ok(heads.length >= 2, `${rootId}: 関連語が1語以下`)
+    const variants = PREFIX_VARIANTS[rootId]
+    assert.ok(variants?.length, rootId)
+    for (const head of heads) {
+      assert.ok(
+        variants.some((variant) => head.startsWith(variant)),
+        `${rootId}: ${head} はこの接頭辞の形で始まらない`,
+      )
+      // 接頭辞は語幹カードで確認済みの複合語から取り出す。語幹だけの語は入らない。
+      assert.ok(head.length > Math.min(...variants.map((variant) => variant.length)) + 2, `${rootId}: ${head}`)
+    }
+  }
+
+  // 綴りが接頭辞に見えるだけの語。1件でも混ざると分解の説明が壊れる。
+  const excludes = [
+    ['republic', 'pf-re'], ['republican', 'pf-re'],
+    ['office', 'pf-ob'], ['officer', 'pf-ob'], ['official', 'pf-ob'],
+    ['diminish', 'pf-dis'], ['alarm', 'pf-ad'],
+    ['empathy', 'pf-in-into'], ['endemic', 'pf-in-into'],
+  ]
+  for (const [head, rootId] of excludes) {
+    assert.ok(!byHead.get(head).referenceRoots.includes(rootId), `${head} を ${rootId} へ誤接続`)
+  }
+
+  // in- は「〜でない」と「中へ」を取り違えない。
+  assert.ok(byHead.get('invisible').referenceRoots.includes('pf-in-not'))
+  assert.ok(!byHead.get('invisible').referenceRoots.includes('pf-in-into'))
+  assert.ok(byHead.get('include').referenceRoots.includes('pf-in-into'))
+  assert.ok(!byHead.get('include').referenceRoots.includes('pf-in-not'))
+
+  // 接頭辞と語幹が両方そろって初めて、語全体を分解して見せられる。
+  const cardIds = (head) => etymologyCardsForWord(byHead.get(head)).map((card) => card.rootId)
+  assert.deepEqual(new Set(cardIds('submit')), new Set(['miss', 'pf-sub']))
+  assert.deepEqual(new Set(cardIds('incapable')), new Set(['cept', 'pf-in-not']))
+  assert.deepEqual(new Set(cardIds('ideology')), new Set(['ide', 'log']))
+  assert.deepEqual(new Set(cardIds('suffocation')), new Set(['pf-sub']))
+})
+
+test('語の成り立ちは台帳にある語だけを出典つきで出す', () => {
+  assert.equal(ETYMOLOGY_WORD_STORIES.length, 38)
+  for (const story of ETYMOLOGY_WORD_STORIES) {
+    const word = byHead.get(story.head)
+    assert.ok(word, story.head)
+    assert.equal(story.wordId, word.id)
+    assert.ok(story.note.length >= 10, story.head)
+    assert.equal(story.evidence.sources.length, 2)
+    assert.equal(etymologyStoryForWord(word)?.note, story.note)
+  }
+  // 語根カードでは表せない語こそ、この台帳が受け持つ。
+  assert.match(etymologyStoryForWord(byHead.get('ideology')).note, /1796年/)
+  assert.match(etymologyStoryForWord(byHead.get('suffocation')).note, /faucēs/)
+  assert.match(etymologyStoryForWord(byHead.get('panic')).note, /パン/)
+  assert.equal(etymologyStoryForWord(byHead.get('important')), null)
 })

@@ -9,6 +9,8 @@
 import { AUDITED_MORPHEME_ROOT_WORDS } from './etymology-morpheme-audit.js'
 import { CLASSICAL_ROOT_WORDS } from './etymology-classical-roots.js'
 import { GERMANIC_ROOT_WORDS } from './etymology-germanic-roots.js'
+import { AUDITED_LINK_WORDS } from './etymology-link-audit.js'
+import { PREFIX_ROOT_WORDS } from './etymology-prefix-roots.js'
 
 export const REFERENCE_ROOTS = [
   { id: 'mini', form: 'minu / mini / minor', meaning: '小さい・少ない', origin: 'ラテン語 minuere / minor「小さくする・より小さい」', emoji: '🔎' },
@@ -167,6 +169,8 @@ for (const source of [
   AUDITED_MORPHEME_ROOT_WORDS,
   CLASSICAL_ROOT_WORDS,
   GERMANIC_ROOT_WORDS,
+  AUDITED_LINK_WORDS,
+  PREFIX_ROOT_WORDS,
 ]) {
   for (const [rootId, words] of Object.entries(source)) {
     for (const word of words) {
