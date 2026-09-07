@@ -32,6 +32,8 @@ export function NormalLearningRecordList({
   openLabel = '説明を見る',
   openHint = '説明',
   titleLanguage = 'ja',
+  // 行の中へ一行だけ足す補足。語源のように、一覧のまま確かめたい情報を返す。
+  noteFor,
   renderAfter,
   emptyMessage,
   className = '',
@@ -175,6 +177,7 @@ export function NormalLearningRecordList({
               openLabel={openLabel}
               openHint={openHint}
               titleLanguage={titleLanguage}
+              note={typeof noteFor === 'function' ? noteFor(row.item, row) : ''}
             />
             {typeof renderAfter === 'function' && renderAfter(row.item, row)}
           </div>

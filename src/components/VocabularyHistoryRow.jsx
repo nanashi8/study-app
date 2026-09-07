@@ -59,6 +59,9 @@ export function LearningRecordRow({
   openLabel = '単語の詳細',
   openHint = '詳細',
   titleLanguage = 'en',
+  // 行の中に一行だけ足せる補足。語源や今回の答えのように、
+  // 一覧のまま「一目で確認」したい情報をここへ入れる。
+  note = '',
 }) {
   const word = rowWord(row)
   const id = word.id ?? row.id
@@ -161,7 +164,7 @@ export function LearningRecordRow({
         onPointerUp={finishSwipe}
         onPointerCancel={resetSwipe}
         onKeyDown={handleKeyDown}
-        aria-label={`${title}、${meaning}、現在は${resultMeta.label}。${canOpen ? `タップで${openLabel}。` : ''}左にスワイプで${activityMeta.leftLabel}、右にスワイプで${activityMeta.rightLabel}`}
+        aria-label={`${title}、${meaning}、${note ? `${note}、` : ''}現在は${resultMeta.label}。${canOpen ? `タップで${openLabel}。` : ''}左にスワイプで${activityMeta.leftLabel}、右にスワイプで${activityMeta.rightLabel}`}
         className={cx(
           'relative flex min-h-20 w-full touch-pan-y items-start gap-3 rounded-xl border border-slate-200 bg-white px-3 py-3 text-left outline-none transition-[background-color,border-color,box-shadow,transform] focus-visible:border-brand-400 focus-visible:ring-2 focus-visible:ring-brand-200',
           swipeOffset ? 'duration-0' : 'duration-200',
@@ -202,6 +205,14 @@ export function LearningRecordRow({
           <span className="mt-1 block break-words text-sm font-bold leading-snug text-ink/75">
             {meaning}
           </span>
+          {note && (
+            <span
+              className="mt-1 block break-words rounded-lg bg-slate-50 px-2 py-1 text-[11px] font-bold leading-relaxed text-ink/60"
+              data-learning-record-note
+            >
+              {note}
+            </span>
+          )}
           <span className="mt-1.5 flex flex-wrap gap-x-3 gap-y-1 text-[11px] font-bold text-ink/45">
             <span>分野 {row.field}</span>
             <span>学習 {activityDate(row.memoryAt, row.memoryStatus !== 'unlearned')}</span>

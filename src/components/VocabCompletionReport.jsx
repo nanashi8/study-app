@@ -1,4 +1,6 @@
+import { useState } from 'react'
 import { Button, Card, ProgressBar } from './ui.jsx'
+import { NormalLearningRecordList } from './NormalLearningRecordList.jsx'
 import {
   ArrowRight,
   Bookmark,
@@ -35,6 +37,14 @@ export function VocabCompletionReport({
   const { session, today, priorityItems, schedule } = report
   // 途中でやめた回。今回の語数は答えた分だけで、残りは次に同じ入口から続けられる。
   const remaining = Math.max(0, Math.floor(Number(remainingCount) || 0))
+  // 一覧で答えを直すたびに記録は変わるが、並びは開いたときのまま保つ。
+  // 直した語が目の前で飛ばないようにするため。
+  const [orderedIds] = useState(() => priorityItems.map((item) => item.id))
+  const itemById = new Map(priorityItems.map((item) => [item.id, item]))
+  const resultNote = (id) => {
+    const item = itemById.get(id)
+    return item ? `${item.reason}・次の復習：${dueLabel(item.dueInDays)}` : ''
+  }
 
   return (
     <section
@@ -165,40 +175,26 @@ export function VocabCompletionReport({
                       ? `「まだ」と答えた${session.reviewNowCount}語から表示します。`
                       : '今回の答えと、次に復習する日を確認できます。'}
                   </p>
+                  <p className="mt-1 text-xs font-bold leading-relaxed text-ink/50">
+                    答えが違っていた語は、左へスワイプで「覚えた」、右へスワイプで「まだ」に直せます。
+                  </p>
                 </div>
               </div>
             </div>
-            <div className="divide-y divide-slate-100">
-              {priorityItems.map((item) => (
-                <button
-                  key={item.id}
-                  type="button"
-                  onClick={() => onWord(item.id)}
-                  className="flex min-h-16 w-full items-center gap-3 px-4 py-3 text-left active:bg-slate-50"
-                  aria-label={`${item.word}の詳細を見る`}
-                  data-vocab-priority-word={item.id}
-                >
-                  <div className="min-w-0 flex-1">
-                    <div className="flex flex-wrap items-center gap-1.5">
-                      <b className="font-display text-base font-extrabold text-ink">{item.word}</b>
-                      <span className={`rounded-full px-2 py-0.5 text-[9px] font-extrabold ${item.needsReviewNow ? 'bg-rose-100 text-rose-700' : 'bg-slate-100 text-slate-600'}`}>
-                        {item.reason}
-                      </span>
-                    </div>
-                    <p className="mt-0.5 truncate text-xs font-bold text-ink/50">{item.meaning}</p>
-                    <p className="mt-1 text-[10px] font-extrabold text-indigo-600">
-                      次の復習：{dueLabel(item.dueInDays)}
-                    </p>
-                  </div>
-                  <ArrowRight size={16} className="shrink-0 text-ink/25" />
-                </button>
-              ))}
+            <div className="p-4">
+              <NormalLearningRecordList
+                entryId="vocab-completion"
+                contentId="vocab"
+                items={orderedIds}
+                unit="語"
+                titleLanguage="en"
+                onOpen={(item) => onWord(item.id)}
+                openLabel="この単語の詳細を見る"
+                openHint="詳細"
+                noteFor={(item) => resultNote(item.id)}
+                emptyMessage="今回学んだ語はありません。"
+              />
             </div>
-            {report.hiddenPriorityCount > 0 && (
-              <p className="border-t border-slate-100 bg-slate-50 px-4 py-2 text-center text-[10px] font-bold text-ink/45">
-                このほか{report.hiddenPriorityCount}語も記録しています
-              </p>
-            )}
           </Card>
         </div>
       </div>
