@@ -72,6 +72,8 @@ export function SessionResultScreen() {
     source,
     engine = 'word',
     sessionId,
+    interrupted = false,
+    plannedTotal = 0,
   } = params
   const accuracy = total ? correct / total : 0
   const percent = Math.round(accuracy * 100)
@@ -342,6 +344,8 @@ export function SessionResultScreen() {
         <VocabCompletionReport
           report={vocabCompletion}
           title={title}
+          // 途中でやめたときは、答えた語数と残りの語数をそのまま示す。
+          remainingCount={interrupted ? Math.max(0, plannedTotal - vocabCompletion.session.total) : 0}
           streak={stats.streak}
           onReviewNow={reviewWrong}
           onContinue={continueVocab}

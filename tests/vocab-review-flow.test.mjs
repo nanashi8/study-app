@@ -11,6 +11,9 @@ import {
   automaticVocabSessionPlan,
   buildDeck,
   nextVocabularyReviewInDays,
+  overallProgress,
+  reviewActionState,
+  wordProgress,
 } from '../src/lib/session.js'
 import {
   REVIEW_MARK_LIMIT,
@@ -187,7 +190,7 @@ test('通常の暗記・テストは復習負荷に応じて新しい語・別�
   }
 })
 
-test('英単語の棒グラフの復習中は、画面に表示する復習対象件数と一致する', () => {
+test('「覚えた」語は復習日が来ても学習済のまま残し、復習件数は別に数える', () => {
   const now = new Date(2026, 7, 24, 12, 0, 0, 0).getTime()
   const day = todayIndex(now)
   const [forgot, scheduled, waiting, unlearned] = ALL_WORDS.slice(0, 4)
@@ -230,9 +233,54 @@ test('英単語の棒グラフの復習中は、画面に表示する復習対�
     { now, day },
   )
 
-  assert.deepEqual(summary.learning, { learned: 1, reviewing: 2, unlearned: 1 })
+  // 棒グラフは凡例どおり暗記の自己判定を示す。復習日が来た scheduled も
+  // 「覚えた」と答えた語なので学習済のまま＝前日の学習が翌日に消えない。
+  assert.deepEqual(summary.learning, { learned: 2, reviewing: 1, unlearned: 1 })
+  // 復習が必要な件数は棒グラフと別枠で、画面の「復習が必要 N語」と一致する。
   assert.equal(summary.due, 2)
-  assert.equal(summary.learning.reviewing, summary.due)
+
+  const originalNow = Date.now
+  try {
+    Date.now = () => now
+    assert.equal(wordProgress([forgot, scheduled, waiting, unlearned], srs).due, summary.due)
+  } finally {
+    Date.now = originalNow
+  }
+})
+
+test('テストだけ解いた日の結果が、翌日の復習件数と復習導線に残る', () => {
+  const original = useStore.getState()
+  const originalNow = Date.now
+  const yesterday = new Date(2026, 7, 24, 20, 0, 0, 0).getTime()
+  const today = yesterday + 86400000
+  const words = wordsByLevel('5').slice(0, 6)
+
+  try {
+    // 前日：暗記を挟まず単語テストだけを解く（3問正解・3問不正解）。
+    Date.now = () => yesterday
+    useStore.setState({ srs: {} })
+    words.forEach((word, index) => {
+      useStore.getState().review(word.id, index < 3 ? 'correct' : 'wrong', 'vocab')
+    })
+
+    Date.now = () => today
+    const srs = useStore.getState().srs
+    const progress = wordProgress(words, srs)
+    assert.equal(progress.seen, 6) // 暗記の自己判定が無くても既習として数える
+    assert.equal(progress.due, 6)
+
+    // 級カードの「復習が必要 N語」と、実際に出せる復習語数が一致する。
+    const deck = buildDeck({ type: 'due' }, { srs, size: 0, now: today, day: todayIndex(today) })
+    assert.equal(deck.filter((word) => words.some((w) => w.id === word.id)).length, progress.due)
+
+    // 復習ショートカットが「今日の復習」として押せる状態になる。
+    const overall = overallProgress(srs)
+    assert.ok(overall.seen > 0)
+    assert.equal(reviewActionState(overall), 'due')
+  } finally {
+    Date.now = originalNow
+    useStore.setState(original, true)
+  }
 })
 
 test('全級の暗記は復習中を先頭にし、未学習が無ければ待機中の定着語を自動補充しない', () => {

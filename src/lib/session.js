@@ -15,7 +15,7 @@ import { quizMeaningKey } from '../data/compact.js'
 import { LEVELS } from '../data/levels.js'
 import { LEVEL_ORDER, enemyLevelIndex, clampPos } from './adaptive.js'
 import { todayIndex } from '../store/useStore.js'
-import { vocabularyReviewMetrics } from './vocabScheduler.js'
+import { hasVocabularyReviewEvidence, vocabularyReviewMetrics } from './vocabScheduler.js'
 
 export const SESSION_SIZE = 10
 
@@ -384,11 +384,9 @@ export function buildDeck(
     ))
   }
   if (source.type === 'review') {
-    // 復習日前でも学習済みの語だけを確認できる。
-    // 未着手語を「先取り復習」に混ぜない。
-    pool = pool.filter((word) => (
-      vocabularyReviewMetrics(srs[word.id], { now, day }).learningStatus !== 'unlearned'
-    ))
+    // 復習日前でも、一度学んだ語だけを確認できる。暗記の自己判定がまだでも
+    // テストを解いた語は含め、まだ触れていない語は「先取り復習」に混ぜない。
+    pool = pool.filter((word) => hasVocabularyReviewEvidence(srs[word.id]))
   }
   if (purpose === 'study' && isAutomaticVocabularySource(source)) {
     pool = pool.filter((word) => (
@@ -434,7 +432,11 @@ export function levelProgress(levelId, srs) {
   return wordProgress(wordsByLevel(levelId), srs)
 }
 
-/** 任意の単語集合について、既習・習得・復習どき件数を集計する。 */
+/**
+ * 任意の単語集合について、既習・習得・復習どき件数を集計する。
+ * 既習と復習どきは暗記の自己判定ではなく学習の痕跡で数える。テストだけ解いた語も
+ * 前日の学習として扱い、翌日の「復習が必要」件数と復習導線から落とさない。
+ */
 export function wordProgress(words, srs = {}) {
   const now = Date.now()
   const day = todayIndex(now)
@@ -446,10 +448,10 @@ export function wordProgress(words, srs = {}) {
     const e = srs[w.id]
     const metrics = vocabularyReviewMetrics(e, { now, day })
     if (metrics.shouldAutoAppear) ready++
-    if (metrics.learningStatus === 'unlearned') continue
+    if (metrics.needsReview) due++
+    if (!hasVocabularyReviewEvidence(e)) continue
     seen++
     if (e?.box >= 4) mastered++
-    if (metrics.needsReview) due++
   }
   return { total: words.length, seen, mastered, due, ready }
 }
@@ -583,10 +585,10 @@ export function overallProgress(srs) {
   for (const word of ALL_WORDS) {
     const entry = srs[word.id]
     const metrics = vocabularyReviewMetrics(entry, { now, day })
-    if (metrics.learningStatus === 'unlearned') continue
+    if (metrics.needsReview) due++
+    if (!hasVocabularyReviewEvidence(entry)) continue
     seen++
     if (entry?.box >= 4) mastered++
-    if (metrics.needsReview) due++
   }
   return { seen, mastered, due, total: ALL_WORDS.length }
 }

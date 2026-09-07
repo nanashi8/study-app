@@ -44,7 +44,9 @@ const latestOutcome = (entry) => {
   return null
 }
 
-const hasReviewEvidence = (entry) => (
+// 暗記の自己判定がまだでも、テストを解いた語は「一度は学んだ語」として扱う。
+// 級別一覧の件数や復習導線が、テストだけの日を未着手と誤認しないための土台。
+export const hasVocabularyReviewEvidence = (entry) => (
   Number.isFinite(entry?.due)
   || Number.isFinite(entry?.lastAt)
   || Number.isFinite(entry?.last)
@@ -98,10 +100,10 @@ export function vocabularyReviewMetrics(
   entry,
   { now = Date.now(), day = localDayIndex(now) } = {},
 ) {
-  const learningStatus = hasReviewEvidence(entry)
+  const learningStatus = hasVocabularyReviewEvidence(entry)
     ? learningStatusForSrsEntry(entry)
     : 'unlearned'
-  if (!entry || !hasReviewEvidence(entry)) {
+  if (!entry || !hasVocabularyReviewEvidence(entry)) {
     return {
       score: 0,
       responseAccuracy: vocabularyResponseAccuracy(entry),
@@ -178,6 +180,8 @@ export function vocabularyReviewMetrics(
   }
 }
 
+// 一覧の並べ替え用。棒グラフの表示（暗記の自己判定）とは別に、
+// 復習が要る語を先頭へ寄せるための優先度として使う。
 export function vocabularyLearningStatus(entry, options) {
   const metrics = vocabularyReviewMetrics(entry, options)
   if (metrics.learningStatus === 'unlearned') return 'unlearned'
@@ -187,9 +191,10 @@ export function vocabularyLearningStatus(entry, options) {
 /**
  * 英単語の棒グラフ用集計。
  *
- * 共通SRSの「復習中」は最後の自己判定だけを見るが、英単語では期限・経過時間・
- * 直近の正誤も含めて復習対象を決めている。画面内で件数が食い違わないよう、
- * 英単語だけは vocabularyReviewMetrics と同じ判定を棒グラフにも使う。
+ * 棒グラフは凡例どおり「暗記でどう答えたか」を示す。「覚えた」と答えた語は
+ * 復習日が来ても学習済のまま残し、前日の学習が翌日に消えたように見せない。
+ * 復習が必要な件数は due（vocabularyReviewMetrics と同じ判定）で別に返し、
+ * カードの注記など専用の場所で伝える。
  */
 export function summarizeVocabularySrsItems(
   items = [],
@@ -209,11 +214,7 @@ export function summarizeVocabularySrsItems(
   for (const id of ids) {
     const entry = srs?.[id]
     const metrics = vocabularyReviewMetrics(entry, { now, day })
-    const learningStatus = metrics.learningStatus === 'unlearned'
-      ? 'unlearned'
-      : metrics.needsReview
-        ? 'reviewing'
-        : 'learned'
+    const learningStatus = metrics.learningStatus
     const quizStatus = quizStatusForSrsEntry(entry)
 
     learning[learningStatus] += 1
@@ -238,7 +239,7 @@ export function scheduleVocabularyReview({
 } = {}) {
   const successful = result === 'correct' || result === 'remembered'
   const previousBox = boxFor(previousEntry)
-  const hadEvidence = hasReviewEvidence(previousEntry)
+  const hadEvidence = hasVocabularyReviewEvidence(previousEntry)
   const elapsedDays = elapsedSinceLastReview(previousEntry, timestamp, day)
   const baseSpacing = Math.max(1, VOCAB_REVIEW_INTERVALS[Math.max(1, previousBox)])
   const enoughSpacing = elapsedDays != null
