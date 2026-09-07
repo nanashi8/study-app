@@ -3,6 +3,7 @@ import { CLASSICAL_ROOTS } from './etymology-classical-roots.js'
 import { GERMANIC_ROOTS } from './etymology-germanic-roots.js'
 import { PREFIX_ROOTS } from './etymology-prefix-roots.js'
 import { SUFFIX_ROOTS } from './etymology-suffix-roots.js'
+import { AUDIT_STEM_ROOTS } from './etymology-audit-stems.js'
 
 // 語根（ごこん）インデックス。
 // 単語データの parts[].root がここの id を指す。これで「語源つながり」を辿れる。
@@ -128,6 +129,7 @@ export const ROOTS = [
   ...GERMANIC_ROOTS,
   ...PREFIX_ROOTS,
   ...SUFFIX_ROOTS,
+  ...AUDIT_STEM_ROOTS,
 ]
 
 export const ROOTS_BY_ID = Object.fromEntries(ROOTS.map((r) => [r.id, r]))
