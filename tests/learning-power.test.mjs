@@ -191,14 +191,18 @@ test('学習記録の横長表は狭い画面で縦並びのカードへ切り�
     'utf8',
   )
 
+  // アプリの外枠は max-w-md 固定なので、ビューポート幅の sm: では判定できない。
+  // 表とカードの切り替えは、置かれた枠の幅を見るコンテナクエリで行う。
+  assert.match(analyticsSource, /'@container overflow-hidden/)
   for (const marker of [
     'data-analysis-summary-cards',
     'data-dimension-grade-cards',
     'data-skill-analysis-cards',
   ]) {
-    assert.match(analyticsSource, new RegExp(`sm:hidden" ${marker}`))
+    assert.match(analyticsSource, new RegExp(`@2xl:hidden" ${marker}`))
   }
-  assert.equal((analyticsSource.match(/className="hidden overflow-x-auto sm:block"/g) ?? []).length, 3)
+  assert.equal((analyticsSource.match(/className="hidden overflow-x-auto @2xl:block"/g) ?? []).length, 3)
+  assert.doesNotMatch(analyticsSource, /sm:hidden|sm:block/)
 })
 
 test('単語の学習・テスト結果は、復習・次セットまたは終了・戻るの3導線にそろえる', () => {

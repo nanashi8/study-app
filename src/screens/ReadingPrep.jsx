@@ -147,9 +147,9 @@ export function ReadingPrepScreen() {
             <p className="mt-1.5 text-xs font-bold leading-relaxed text-ink/55">
               {passageApproach.summary}
             </p>
-            <ol className="mt-3 grid gap-2 sm:grid-cols-3">
+            <ol className="mt-3 grid gap-2">
               {passageApproach.steps.map((step, index) => (
-                <li key={step} className="flex gap-2 rounded-xl bg-brand-50 px-3 py-2.5">
+                <li key={step} className="flex items-center gap-2 rounded-xl bg-brand-50 px-3 py-2.5">
                   <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-600 text-[10px] font-black text-white">
                     {index + 1}
                   </span>

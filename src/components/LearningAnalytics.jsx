@@ -103,7 +103,7 @@ function nonNegativeMs(value) {
 
 function ReportSection({ number, title, note, children, className = '' }) {
   return (
-    <Card className={cx('overflow-hidden rounded-xl border-slate-300 shadow-none', className)}>
+    <Card className={cx('@container overflow-hidden rounded-xl border-slate-300 shadow-none', className)}>
       <div className="flex items-start gap-3 border-b border-slate-300 bg-slate-100 px-3 py-2.5">
         <span className="grid h-6 w-6 shrink-0 place-items-center rounded-sm bg-slate-800 text-[10px] font-extrabold text-white">
           {number}
@@ -134,7 +134,7 @@ function ReportHeader({ profile, analysis, dueCount }) {
           <p className="text-xs font-extrabold">{formatCount(analysis.scored)}回</p>
         </div>
       </div>
-      <dl className="grid grid-cols-2 divide-x divide-y divide-slate-300 text-xs sm:grid-cols-4">
+      <dl className="grid grid-cols-2 divide-x divide-y divide-slate-300 text-xs">
         <div className="p-3">
           <dt className="text-[10px] font-extrabold text-slate-500">今日の復習</dt>
           <dd className="mt-0.5 font-display text-xl font-extrabold tabular-nums text-slate-950">{dueCount}<span className="ml-1 text-[10px] text-slate-500">項目</span></dd>
@@ -192,7 +192,7 @@ function SummaryTable({ analysis, dueCount }) {
 
   return (
     <ReportSection number="01" title="学習のまとめ" note="記録から分かることと、計算のしかたを分けて表示">
-      <div className="divide-y divide-slate-200 sm:hidden" data-analysis-summary-cards>
+      <div className="divide-y divide-slate-200 @2xl:hidden" data-analysis-summary-cards>
         {rows.map(([label, value, evidence, definition]) => (
           <article key={label} className="space-y-2 p-3">
             <div className="flex items-start justify-between gap-3">
@@ -212,7 +212,7 @@ function SummaryTable({ analysis, dueCount }) {
           </article>
         ))}
       </div>
-      <div className="hidden overflow-x-auto sm:block">
+      <div className="hidden overflow-x-auto @2xl:block">
         <table className="w-full min-w-[35rem] border-collapse text-xs" data-analysis-summary-table>
           <thead>
             <tr className="border-b border-slate-300 bg-white text-left text-[10px] font-extrabold text-slate-500">
@@ -316,7 +316,7 @@ function StudyRhythmSection({ analysis }) {
     : '記録なし'
   return (
     <ReportSection number="05" title="学習時間と時間帯" note="学習した時刻を24時間の円グラフで表示">
-      <dl className="grid grid-cols-2 divide-x divide-y divide-slate-200 border-b border-slate-300 text-center text-xs sm:grid-cols-4" data-study-time-summary>
+      <dl className="grid grid-cols-2 divide-x divide-y divide-slate-200 border-b border-slate-300 text-center text-xs" data-study-time-summary>
         {[
           ['今日の学習時間', formatDuration(studyTime.todayMs), true],
           ['1日あたり（7日平均）', formatDuration(studyTime.dailyAverageMs7), false],
@@ -394,7 +394,7 @@ function DiagnosticSnapshot({ diagnostic, onOpen }) {
   return (
     <ReportSection number="02" title="最近受けた学習診断" note={`実施日 ${formatDiagnosticDate(diagnostic.completedAt)}`}>
       <div data-diagnostic-status>
-        <dl className="grid grid-cols-2 divide-x divide-y divide-slate-200 border-b border-slate-300 text-xs sm:grid-cols-4">
+        <dl className="grid grid-cols-2 divide-x divide-y divide-slate-200 border-b border-slate-300 text-xs">
           {[
             ['得点', `${score}/${total}`],
             ['正答率', `${Math.round(accuracy * 100)}%`],
@@ -435,7 +435,7 @@ function DiagnosticSnapshot({ diagnostic, onOpen }) {
 function DimensionTable({ profile }) {
   return (
     <ReportSection number="03" title="4つの学習記録" note="実際の回答数・正答率・学習した日と時刻をそのまま表示">
-      <div className="divide-y divide-slate-200 sm:hidden" data-dimension-grade-cards>
+      <div className="divide-y divide-slate-200 @2xl:hidden" data-dimension-grade-cards>
         {profile.dimensions.map((item) => (
           <article key={item.id} className="space-y-1.5 p-3">
             <h3 className="text-xs font-extrabold text-slate-800">{item.label}</h3>
@@ -444,7 +444,7 @@ function DimensionTable({ profile }) {
           </article>
         ))}
       </div>
-      <div className="hidden overflow-x-auto sm:block">
+      <div className="hidden overflow-x-auto @2xl:block">
         <table className="w-full min-w-[30rem] border-collapse text-xs" data-dimension-grade-table>
           <thead>
             <tr className="border-b border-slate-300 text-left text-[10px] font-extrabold text-slate-500">
@@ -756,7 +756,7 @@ function SkillTable({ analysis }) {
     <ReportSection number="08" title="学習の種類ごとの記録" note="「覚えた／まだ」とテストの回答を合計し、3件以上ある種類だけを得意・苦手の計算に使用">
       {analysis.skills.length ? (
         <>
-          <div className="divide-y divide-slate-200 sm:hidden" data-skill-analysis-cards>
+          <div className="divide-y divide-slate-200 @2xl:hidden" data-skill-analysis-cards>
             {analysis.skills.map((skill) => (
               <article key={skill.id} className="space-y-2 p-3">
                 <div className="flex items-center justify-between gap-3">
@@ -779,7 +779,7 @@ function SkillTable({ analysis }) {
               </article>
             ))}
           </div>
-          <div className="hidden overflow-x-auto sm:block">
+          <div className="hidden overflow-x-auto @2xl:block">
             <table className="w-full min-w-[31rem] border-collapse text-xs" data-skill-analysis-table>
             <thead>
               <tr className="border-b border-slate-300 text-left text-[10px] font-extrabold text-slate-500">

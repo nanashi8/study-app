@@ -41,7 +41,7 @@ export function ReadingRuleDiagram({ diagram, className }) {
       <div
         className={cx(
           branching
-            ? 'grid gap-1.5 sm:grid-cols-2'
+            ? 'grid gap-1.5'
             : 'flex flex-wrap items-center gap-y-1.5',
         )}
       >

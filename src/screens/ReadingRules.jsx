@@ -34,26 +34,26 @@ export function ReadingRulesScreen() {
           </div>
 
           <ol
-            className="grid grid-cols-1 gap-0 border-t border-brand-100 bg-white sm:grid-cols-5"
+            className="grid grid-cols-1 gap-0 border-t border-brand-100 bg-white"
             aria-label="長文読解の五段階"
           >
             {READING_RULE_PHASES.map((phase, index) => (
               <li
                 key={phase.id}
-                className="relative flex items-center gap-3 border-b border-brand-100 px-3 py-3 last:border-b-0 sm:block sm:border-b-0 sm:border-r sm:text-center sm:last:border-r-0"
+                className="relative flex items-center gap-3 border-b border-brand-100 px-3 py-3 last:border-b-0"
               >
                 <span
-                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-base sm:mx-auto"
+                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-base"
                   style={{ backgroundColor: phase.color + '18', color: phase.color }}
                 >
                   {phase.icon}
                 </span>
-                <div className="min-w-0 sm:mt-1.5">
+                <div className="min-w-0">
                   <p className="text-[10px] font-black" style={{ color: phase.color }}>STEP {phase.step}</p>
                   <p className="text-sm font-extrabold text-ink">{phase.label}</p>
                 </div>
                 {index < READING_RULE_PHASES.length - 1 && (
-                  <span className="absolute -bottom-2 left-7 z-10 text-sm font-black text-brand-300 sm:-right-2 sm:bottom-auto sm:left-auto sm:top-7">
+                  <span className="absolute -bottom-2 left-7 z-10 text-sm font-black text-brand-300">
                     ↓
                   </span>
                 )}
@@ -64,7 +64,7 @@ export function ReadingRulesScreen() {
 
         <Card className="p-4">
           <h2 className="font-display text-base font-extrabold text-ink">効率のよい使い方</h2>
-          <ol className="mt-3 grid gap-2 sm:grid-cols-3">
+          <ol className="mt-3 grid gap-2">
             {[
               ['読む前', '題名・文章の種類・テーマを見て、何に注意して読むかを2〜3点決める。'],
               ['読む途中', '接続語や長い文で止まり、その文章に合う読み方を使う。'],

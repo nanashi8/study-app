@@ -190,7 +190,7 @@ export function MyLearningScreen() {
                 </h2>
                 <p className="text-[10px] font-bold text-slate-500">{contents.length}教材の暗記とテスト</p>
               </div>
-              <div className="grid gap-3 sm:grid-cols-2">
+              <div className="grid gap-3">
                 {contents.map((content) => (
                   <LearningCategoryCard
                     key={content.id}
