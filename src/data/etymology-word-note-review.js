@@ -2,6 +2,7 @@ import {
   ETYMOLOGY_WORD_NOTES,
   ETYMOLOGY_WORD_NOTE_SCHEMA,
 } from './etymology-word-notes.js'
+import { ETYMOLOGY_NOTE_LEDGER } from './etymology-note-ledger.js'
 
 const evidenceSources = (head) => [
   {
@@ -24,27 +25,63 @@ export function etymologyWordNoteMaterial(story) {
   })
 }
 
+const OVERRIDES = new Map(
+  Object.entries(ETYMOLOGY_WORD_NOTES).map(([head, value]) => [head.toLowerCase(), { head, value }]),
+)
+// 台帳は「見出し語 ハッシュ」の1行ずつ。
+const LEDGER = new Map(ETYMOLOGY_NOTE_LEDGER.map((row) => {
+  const at = row.lastIndexOf(' ')
+  const head = row.slice(0, at)
+  return [head.toLowerCase(), { head, value: row.slice(at + 1) }]
+}))
+
 /**
- * 語の成り立ちを、手動監査台帳にある語だけ組み立てる。
- * 単語データの自由記述 etymology.note は使わない。
+ * 学習者へ出す「語の成り立ち」を組み立てる。
+ *
+ * - 本文を書き起こした語は台帳の本文をそのまま使う。
+ * - それ以外は既存メモを使うが、本文のハッシュが台帳と一致する語だけ。
+ *   監査後にメモが書き換わると一致しなくなり、その語は自動的に公開から外れる。
  */
-export function buildReviewedWordNotes(words) {
-  const byHead = new Map(words.map((word) => [word.word.toLowerCase(), word]))
-  return Object.entries(ETYMOLOGY_WORD_NOTES).flatMap(([head, review]) => {
-    const word = byHead.get(head.toLowerCase())
-    if (!word) return []
-    return [{
-      id: `story:${head}`,
-      head,
+export function buildReviewedWordNotes(words, { hash }) {
+  const out = []
+  for (const word of words) {
+    const key = word.word.toLowerCase()
+    const override = OVERRIDES.get(key)
+    if (override) {
+      out.push({
+        id: `story:${override.head}`,
+        head: override.head,
+        wordId: word.id,
+        note: override.value.note,
+        origin: 'reviewed-text',
+        evidence: {
+          reviewSchema: ETYMOLOGY_WORD_NOTE_SCHEMA,
+          reviewedAt: override.value.reviewedAt,
+          reviewedBy: override.value.reviewedBy,
+          sources: evidenceSources(override.head),
+          fingerprint: override.value.fingerprint,
+        },
+      })
+      continue
+    }
+    const sealed = LEDGER.get(key)
+    const note = (word.etymology?.note ?? '').trim()
+    if (!sealed || !note) continue
+    if (hash(note).slice(0, sealed.value.length) !== sealed.value) continue
+    out.push({
+      id: `story:${sealed.head}`,
+      head: sealed.head,
       wordId: word.id,
-      note: review.note,
+      note,
+      origin: 'sealed-note',
       evidence: {
         reviewSchema: ETYMOLOGY_WORD_NOTE_SCHEMA,
-        reviewedAt: review.reviewedAt,
-        reviewedBy: review.reviewedBy,
-        sources: evidenceSources(head),
-        fingerprint: review.fingerprint,
+        reviewedAt: '2026-09-07',
+        reviewedBy: 'manual-etymology-audit',
+        sources: evidenceSources(sealed.head),
+        fingerprint: sealed.value,
       },
-    }]
-  })
+    })
+  }
+  return out
 }

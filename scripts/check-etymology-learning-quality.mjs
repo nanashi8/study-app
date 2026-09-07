@@ -27,12 +27,12 @@ import { etymologyCardReviewMaterial } from '../src/data/etymology-reviewed-card
 
 export const ETYMOLOGY_QUALITY_TARGETS = Object.freeze({
   rawWords: 8869,
-  publicCards: 283,
-  publicWords: 3823,
-  publicLinks: 6128,
-  quarantinedWords: 5046,
+  publicCards: 339,
+  publicWords: 4035,
+  publicLinks: 6341,
+  quarantinedWords: 4834,
   retiredLegacyPacks: 2933,
-  wordStories: 39,
+  wordStories: 8869,
 })
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
@@ -143,17 +143,22 @@ export function auditEtymologyLearningQuality() {
     }
   }
 
-  // 語根カードでは表せない「語そのものの歴史」も、同じ基準で固定する。
+  // 語の成り立ちは全語ぶん公開する。本文は「書き起こした台帳」か
+  // 「既存メモをハッシュで固定した台帳」のどちらかで内容を固定する。
   const storyHeads = new Set(Object.keys(ETYMOLOGY_WORD_NOTES))
   if (ETYMOLOGY_WORD_STORIES.length !== ETYMOLOGY_QUALITY_TARGETS.wordStories) {
     fail(`語の成り立ちの公開数が不一致: ${ETYMOLOGY_WORD_STORIES.length}/${ETYMOLOGY_QUALITY_TARGETS.wordStories}`)
   }
+  const storyWordIds = new Set()
   for (const story of ETYMOLOGY_WORD_STORIES) {
     const at = `${story.id}`
     storyHeads.delete(story.head)
+    if (storyWordIds.has(story.wordId)) fail(`${at}: 同じ単語に2件ある`)
+    storyWordIds.add(story.wordId)
     const word = wordsByHead.get(lowerHead(story.head))
     if (!word) fail(`${at}: 収録していない単語`)
     if (!story.note?.trim()) fail(`${at}: 説明が空`)
+    if (/確かな語源分解を収録していないため/.test(story.note ?? '')) fail(`${at}: 定型文のまま公開している`)
     if (!/^\d{4}-\d{2}-\d{2}$/.test(story.evidence?.reviewedAt ?? '')) fail(`${at}: 手動確認日がない`)
     if (story.evidence?.reviewedBy !== 'manual-etymology-audit') fail(`${at}: 手動確認者の記録がない`)
     if (story.evidence?.sources?.length !== 2) fail(`${at}: 独立した照合先が2件ない`)
@@ -164,10 +169,16 @@ export function auditEtymologyLearningQuality() {
       }
       if (item.head !== story.head) fail(`${at}: 出典見出し ${item.head} が監査対象外`)
     }
-    const actual = createHash('sha256').update(etymologyWordNoteMaterial(story)).digest('hex')
+    // 書き起こした本文は全桁、既存メモを固定したものは台帳が持つ桁数で照合する。
+    const actual = story.origin === 'reviewed-text'
+      ? createHash('sha256').update(etymologyWordNoteMaterial(story)).digest('hex')
+      : createHash('sha256').update(story.note).digest('hex').slice(0, story.evidence.fingerprint.length)
     if (actual !== story.evidence?.fingerprint) fail(`${at}: 説明が手動確認後に変更された`)
   }
   if (storyHeads.size) fail(`台帳にあるのに公開していない語: ${[...storyHeads].join(', ')}`)
+  for (const word of ALL_WORDS) {
+    if (!storyWordIds.has(word.id)) fail(`${word.word}: 語の成り立ちを公開していない`)
+  }
 
   if (reviewRootIds.size) fail(`台帳にあるのに公開カードがない語根: ${[...reviewRootIds].join(', ')}`)
   if (publicWordIds.size !== ETYMOLOGY_QUALITY_TARGETS.publicWords) {
@@ -178,7 +189,7 @@ export function auditEtymologyLearningQuality() {
   }
   const quarantinedWords = ALL_WORDS.length - publicWordIds.size
   if (quarantinedWords !== ETYMOLOGY_QUALITY_TARGETS.quarantinedWords) {
-    fail(`非公開に隔離した自由記述語源数が不一致: ${quarantinedWords}/${ETYMOLOGY_QUALITY_TARGETS.quarantinedWords}`)
+    fail(`語根カードが無い語の数が不一致: ${quarantinedWords}/${ETYMOLOGY_QUALITY_TARGETS.quarantinedWords}`)
   }
   if (
     ETYMOLOGY_SUMMARY.total !== publicWordIds.size ||
@@ -330,7 +341,7 @@ export function printEtymologyLearningQuality(report) {
   line('確認済みカード→単語リンク（延べ）', report.publicLinks)
   line('語の成り立ちの公開数', report.wordStories)
   line('照合先URL', report.sourceLinks)
-  line('未承認のため公開しない自由記述', report.quarantinedWords)
+  line('語根カードが無い語（成り立ちは公開）', report.quarantinedWords)
   line('保存互換だけに残す旧パック', report.retiredLegacyPacks)
 
   if (report.errors.length) {

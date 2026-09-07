@@ -168,6 +168,7 @@ import {
   summarizeReviewedEtymologyCards,
 } from './etymology-reviewed-cards.js'
 import { buildReviewedWordNotes } from './etymology-word-note-review.js'
+import { sha256Hex } from '../lib/hash.js'
 
 // 語根オートリンクの検出器（精度重視・形態素分解＋除外リスト）。
 const ROOT_MATCHERS = buildRootMatchers(LEARNING_ROOTS)
@@ -571,7 +572,7 @@ for (const pack of ETYMOLOGY_PACKS) {
   }
 }
 // 語根カードでは表せない「語そのものの歴史」。台帳にある語だけ返す。
-export const ETYMOLOGY_WORD_STORIES = buildReviewedWordNotes(ALL_WORDS)
+export const ETYMOLOGY_WORD_STORIES = buildReviewedWordNotes(ALL_WORDS, { hash: sha256Hex })
 const ETYMOLOGY_WORD_STORIES_BY_ID = new Map(
   ETYMOLOGY_WORD_STORIES.map((story) => [story.wordId, story]),
 )

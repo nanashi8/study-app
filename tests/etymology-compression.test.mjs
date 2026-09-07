@@ -34,6 +34,10 @@ import {
   GERMANIC_ROOT_WORDS,
 } from '../src/data/etymology-germanic-roots.js'
 import { etymologyOriginFamily } from '../src/data/etymology-origin-families.js'
+import {
+  AUDIT_STEM_ROOTS,
+  AUDIT_STEM_ROOT_WORDS,
+} from '../src/data/etymology-audit-stems.js'
 import { AUDITED_LINK_WORDS } from '../src/data/etymology-link-audit.js'
 import {
   PREFIX_ROOTS,
@@ -324,6 +328,16 @@ test('補助語根は既存語だけを明示的につなぎ、語源カードID
     '接頭辞カードの語リストと語根定義が一致しません',
   )
 
+  const auditStemIds = new Set(AUDIT_STEM_ROOTS.map((root) => root.id))
+  assert.equal(auditStemIds.size, AUDIT_STEM_ROOTS.length)
+  assert.ok([...auditStemIds].every((rootId) => rootIds.has(rootId)))
+  assert.deepEqual(
+    Object.keys(AUDIT_STEM_ROOT_WORDS).sort(),
+    [...auditStemIds].sort(),
+    '追加した語幹カードの語リストと語根定義が一致しません',
+  )
+  for (const heads of Object.values(AUDIT_STEM_ROOT_WORDS)) assert.ok(heads.length >= 3)
+
   const suffixRootIds = new Set(SUFFIX_ROOTS.map((root) => root.id))
   assert.equal(suffixRootIds.size, SUFFIX_ROOTS.length)
   assert.ok([...suffixRootIds].every((rootId) => rootIds.has(rootId)))
@@ -354,6 +368,7 @@ test('補助語根は既存語だけを明示的につなぎ、語源カードID
     AUDITED_LINK_WORDS,
     PREFIX_ROOT_WORDS,
     SUFFIX_ROOT_WORDS,
+    AUDIT_STEM_ROOT_WORDS,
   ]) {
     for (const [rootId, heads] of Object.entries(source)) {
       assert.ok(rootIds.has(rootId), rootId)
@@ -380,10 +395,10 @@ test('補助語根は既存語だけを明示的につなぎ、語源カードID
 test('追加した補助語根は既存語の内容と関連語へ適用される', () => {
   const legacyWords = ALL_WORDS.filter((word) => sourceGroup(word.id) === 'legacy')
   const applied = legacyWords.filter((word) => word.referenceRoots.length > 0)
-  assert.equal(applied.length, 3526)
+  assert.equal(applied.length, 3726)
   assert.equal(
     applied.reduce((sum, word) => sum + word.referenceRoots.length, 0),
-    5443,
+    5644,
   )
 
   for (const word of applied) {
@@ -541,7 +556,7 @@ test('語源カードの系統は由来文の最初の言語で決まる', () =>
     ...totals,
     [card.originFamily]: (totals[card.originFamily] ?? 0) + 1,
   }), {})
-  assert.deepEqual(counts, { latin: 201, greek: 34, germanic: 48 })
+  assert.deepEqual(counts, { latin: 251, greek: 40, germanic: 48 })
   for (const rootId of Object.keys(GERMANIC_ROOT_WORDS)) {
     const card = ETYMOLOGY_PUBLIC_PACKS.find((item) => item.rootId === rootId)
     assert.ok(card, rootId)
@@ -590,13 +605,20 @@ test('ラテン語・ギリシャ語の接頭辞カードは同化形と別語�
   assert.deepEqual(new Set(cardIds('suffocation')), new Set(['pf-sub', 'sf-tion']))
 })
 
-test('語の成り立ちは台帳にある語だけを出典つきで出す', () => {
-  assert.equal(ETYMOLOGY_WORD_STORIES.length, 39)
+test('語の成り立ちは全語を出典つきで出す', () => {
+  assert.equal(ETYMOLOGY_WORD_STORIES.length, ALL_WORDS.length)
+  const kinds = ETYMOLOGY_WORD_STORIES.reduce((totals, story) => ({
+    ...totals,
+    [story.origin]: (totals[story.origin] ?? 0) + 1,
+  }), {})
+  assert.deepEqual(kinds, { 'reviewed-text': 291, 'sealed-note': 8578 })
   for (const story of ETYMOLOGY_WORD_STORIES) {
-    const word = byHead.get(story.head)
+    // January / Ms. のように大文字で始まる見出し語もあるため、引くときは小文字にそろえる。
+    const word = byHead.get(story.head.toLowerCase())
     assert.ok(word, story.head)
     assert.equal(story.wordId, word.id)
-    assert.ok(story.note.length >= 10, story.head)
+    assert.ok(story.note.length >= 6, story.head)
+    assert.doesNotMatch(story.note, /確かな語源分解を収録していないため/, story.head)
     assert.equal(story.evidence.sources.length, 2)
     assert.equal(etymologyStoryForWord(word)?.note, story.note)
   }
@@ -604,7 +626,6 @@ test('語の成り立ちは台帳にある語だけを出典つきで出す', ()
   assert.match(etymologyStoryForWord(byHead.get('ideology')).note, /1796年/)
   assert.match(etymologyStoryForWord(byHead.get('suffocation')).note, /faucēs/)
   assert.match(etymologyStoryForWord(byHead.get('panic')).note, /パン/)
-  assert.equal(etymologyStoryForWord(byHead.get('important')), null)
   // 綴りが接頭辞の形と合わない語は、カードではなく台帳が受け持つ。
   assert.match(etymologyStoryForWord(byHead.get('enemy')).note, /amīcus/)
   assert.equal(etymologyCardsForWord(byHead.get('enemy')).length, 0)

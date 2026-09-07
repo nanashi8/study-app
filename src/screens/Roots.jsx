@@ -3,6 +3,7 @@ import { useStore } from '../store/useStore.js'
 import {
   ETYMOLOGY_PACKS,
   ETYMOLOGY_SUMMARY,
+  ETYMOLOGY_WORD_STORIES,
   getWord,
 } from '../data/vocab.js'
 import { ETYMOLOGY_ORIGIN_FAMILIES } from '../data/etymology-origin-families.js'
@@ -199,6 +200,7 @@ export function RootsScreen() {
         </h1>
         <p className="mt-1 text-sm font-bold leading-relaxed text-white/80">
           語根そのものを暗記・テストで覚え、そのまま関連する英単語へ広げます。
+          語根でまとめられない語も、単語画面で1語ずつ成り立ちを読めます。
         </p>
         <ol className="mt-4 grid grid-cols-3 gap-2" aria-label="語源から単語を暗記する3ステップ">
           {[
@@ -222,8 +224,8 @@ export function RootsScreen() {
         <div className="grid grid-cols-3 divide-x divide-slate-200 text-center">
           {[
             ['語源カード', ETYMOLOGY_SUMMARY.cards],
-            ['関連する単語', ETYMOLOGY_SUMMARY.total],
-            ['カード→単語', ETYMOLOGY_SUMMARY.links],
+            ['カードに紐づく単語', ETYMOLOGY_SUMMARY.total],
+            ['成り立ちが読める単語', ETYMOLOGY_WORD_STORIES.length],
           ].map(([label, value]) => (
             <div key={label} className="px-2 py-2.5">
               <p className="text-[10px] font-extrabold text-slate-500">{label}</p>
@@ -437,8 +439,9 @@ export function RootsScreen() {
       </section>
 
       <p className="px-1 text-xs font-bold leading-relaxed text-slate-400">
-        {ETYMOLOGY_SUMMARY.cards.toLocaleString()}枚・関連する{ETYMOLOGY_SUMMARY.total.toLocaleString()}語。
-        出典は各カードから確認できます。
+        {ETYMOLOGY_SUMMARY.cards.toLocaleString()}枚・紐づく{ETYMOLOGY_SUMMARY.total.toLocaleString()}語。
+        カードに載らない語をふくめ{ETYMOLOGY_WORD_STORIES.length.toLocaleString()}語すべての成り立ちを、
+        単語画面から出典つきで読めます。
       </p>
     </>
   )
