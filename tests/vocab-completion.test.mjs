@@ -145,7 +145,10 @@ test('暗記完了画面は全単語暗記入口の合流点だけで詳細レ�
   )
 
   assert.match(study, /vocabSession:\s*\{/)
-  assert.match(study, /wordIds:\s*deck\.map\(\(item\) => item\.id\)/)
+  // 最後まで進んだときも途中でやめたときも、結果に載せるのは答えたカードだけ。
+  assert.match(study, /const wordIds = answeredWordIds\(answers\)/)
+  assert.match(study, /wordIds,/)
+  assert.doesNotMatch(study, /wordIds:\s*deck\.map/)
   assert.match(study, /beforeBoxes/)
   assert.match(result, /beforeBoxes: params\.vocabSession\.beforeBoxes/)
   assert.match(result, /isVocabStudy.*params\.vocabSession/s)

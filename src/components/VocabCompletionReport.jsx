@@ -30,8 +30,11 @@ export function VocabCompletionReport({
   onWord,
   onReviewSchedule = () => {},
   continueLabel = '次へ進む',
+  remainingCount = 0,
 }) {
   const { session, today, priorityItems, schedule } = report
+  // 途中でやめた回。今回の語数は答えた分だけで、残りは次に同じ入口から続けられる。
+  const remaining = Math.max(0, Math.floor(Number(remainingCount) || 0))
 
   return (
     <section
@@ -50,6 +53,14 @@ export function VocabCompletionReport({
                 <p className="text-xs font-extrabold text-white/75">今日の成果</p>
                 <h1 className="mt-1 font-display text-2xl font-extrabold">今日、{today.uniqueWords}語に取り組みました</h1>
                 <p className="mt-1 text-xs font-bold text-white/75">今回：{title}（{session.total}語）</p>
+                {remaining > 0 && (
+                  <p
+                    className="mt-1 text-[11px] font-bold leading-relaxed text-white/75"
+                    data-vocab-completion-interrupted
+                  >
+                    途中でやめたので、答えた{session.total}語だけを記録しました。残り{remaining}語は同じ入口から続けられます。
+                  </p>
+                )}
               </div>
               <span className="shrink-0 rounded-full bg-white/15 px-2.5 py-1 text-[10px] font-extrabold">連続 {streak}日</span>
             </div>

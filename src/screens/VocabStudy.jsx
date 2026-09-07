@@ -133,29 +133,44 @@ export function VocabStudyScreen() {
     )
   }
 
-  const finish = () => {
+  // 結果として送るのは、実際に答えたカードだけ。最後まで進んだときはデッキ全体と
+  // 一致し、途中でやめたときは答えた分だけになるので、結果の語数も次に出す語も
+  // 中断した時点に合う。まだ見ていない語を「学んだ語」に混ぜない。
+  const answeredWordIds = (answers) => (
+    Object.keys(answers)
+      .map(Number)
+      .filter(Number.isInteger)
+      .sort((a, b) => a - b)
+      .map((index) => deck[index]?.id)
+      .filter(Boolean)
+  )
+
+  const finish = (answers = recordedAnswers, { interrupted = false } = {}) => {
     const completedAt = Date.now()
+    const wordIds = answeredWordIds(answers)
     navigate('sessionResult', {
       title: params.title ?? '単語学習',
       mode: 'study',
-      total: deck.length,
+      total: wordIds.length,
       correct: results.current.remembered,
       wrong: results.current.forgot,
       reviewIds: results.current.forgotIds,
       source,
       size: params.size,
+      interrupted,
+      plannedTotal: deck.length,
       continueTo: params.continueTo,
       returnTo: params.returnTo,
       vocabSession: {
         cycleIds: params.vocabCycleIds,
-        wordIds: deck.map((item) => item.id),
+        wordIds,
         beforeBoxes: Object.fromEntries(
-          deck.map((item) => [
-            item.id,
-            Object.hasOwn(beforeBoxesAtStart.current, item.id)
-              ? beforeBoxesAtStart.current[item.id]
-              : Number.isFinite(srsAtStart.current[item.id]?.box)
-                ? srsAtStart.current[item.id].box
+          wordIds.map((id) => [
+            id,
+            Object.hasOwn(beforeBoxesAtStart.current, id)
+              ? beforeBoxesAtStart.current[id]
+              : Number.isFinite(srsAtStart.current[id]?.box)
+                ? srsAtStart.current[id].box
                 : null,
           ]),
         ),
@@ -164,13 +179,24 @@ export function VocabStudyScreen() {
     })
   }
 
+  // 途中でやめる操作。答えは1カードごとに保存済みなので、そのまま結果画面へ進み、
+  // 中断した時点の語数・復習予定・残りを見せる。1語も答えていなければ前の画面へ戻す。
+  const stopSession = () => {
+    // 問題数を減らして answered のカードが外れた場合も含め、今回残せる語がなければ戻す。
+    if (!answeredWordIds(recordedAnswers).length) {
+      backToVocabParent()
+      return
+    }
+    finish(recordedAnswers, { interrupted: true })
+  }
+
   const answer = (remembered) => {
     if (recordedAnswer !== null) return
     review(word.id, remembered ? 'remembered' : 'forgot', 'vocab')
     results.current = recordStudyAnswer(results.current, word.id, remembered)
     const nextAnswers = { ...recordedAnswers, [i]: remembered }
     setRecordedAnswer(remembered)
-    if (Object.keys(nextAnswers).length >= deck.length) finish()
+    if (Object.keys(nextAnswers).length >= deck.length) finish(nextAnswers)
     else moveToCard(nextUnansweredSessionIndex(i, deck.length, nextAnswers), nextAnswers)
   }
 
@@ -215,7 +241,7 @@ export function VocabStudyScreen() {
         progressColor="var(--color-brand-500)"
         leadingAction={(
           <IconButton
-            onClick={backToVocabParent}
+            onClick={stopSession}
             aria-label="やめる"
             className="shrink-0 rounded-xl text-ink/45"
           >

@@ -15,9 +15,11 @@ import { LEVELS } from '../src/data/levels.js'
 import {
   automaticVocabSessionPlan,
   buildDeck,
+  overallProgress,
 } from '../src/lib/session.js'
+import { buildVocabCompletionReport } from '../src/lib/learningAnalyticsReport.js'
 import { vocabularySessionContinuation } from '../src/lib/vocabSessionProgress.js'
-import { todayIndex } from '../src/store/useStore.js'
+import { todayIndex, useStore } from '../src/store/useStore.js'
 
 const sessionSizeSource = readFileSync(
   new URL('../src/components/SessionSize.jsx', import.meta.url),
@@ -367,6 +369,80 @@ test('結果画面は全7問題数設定と「全部」を次セットの実数�
   assert.equal(explicitFive.nextCount, 5, '起動元が明示した5語は保存設定より優先する')
 })
 
+test('今日の復習を途中でやめても、答えた語だけを結果にし、残りは次のセットへ残す', () => {
+  const original = useStore.getState()
+  const originalNow = Date.now
+  const yesterday = new Date(2026, 8, 6, 20, 0, 0, 0).getTime()
+  const today = yesterday + 86400000
+  const day = todayIndex(today)
+  const words = wordsByLevel('5').slice(0, 12)
+  const source = { type: 'due' }
+
+  try {
+    // 前日に12語を「覚えた」で学習し、翌日その全部が復習日を迎える。
+    Date.now = () => yesterday
+    useStore.setState({ srs: {} })
+    for (const word of words) useStore.getState().review(word.id, 'remembered', 'vocab')
+
+    Date.now = () => today
+    assert.equal(overallProgress(useStore.getState().srs).due, 12)
+    const deck = buildDeck(source, {
+      srs: useStore.getState().srs,
+      size: 10,
+      purpose: 'study',
+      now: today,
+      day,
+    })
+    assert.equal(deck.length, 10)
+
+    // 10枚のうち3枚だけ答えて中断する。
+    const answered = deck.slice(0, 3)
+    const unanswered = deck.slice(3)
+    for (const word of answered) useStore.getState().review(word.id, 'remembered', 'vocab')
+    const srs = useStore.getState().srs
+
+    // 答えた分は1カードごとに保存済みなので、画面の「今日の復習 N語」も同じだけ減る。
+    assert.equal(overallProgress(srs).due, 9)
+
+    // 結果に載る語数は、デッキの10語ではなく答えた3語。
+    const report = buildVocabCompletionReport({
+      srs,
+      wordIds: idsOf(answered),
+      correct: answered.length,
+      wrong: 0,
+      now: today,
+    })
+    assert.equal(report.session.total, 3)
+    assert.deepEqual(report.session.wordIds, idsOf(answered))
+
+    // まだ見ていない語を一巡済みにしないので、次のセットへそのまま残る。
+    const continuation = vocabularySessionContinuation({
+      source,
+      title: '今日の復習',
+      mode: 'study',
+      vocabSession: { cycleIds: [], wordIds: idsOf(answered) },
+    }, { srs, storedSize: 10, now: today })
+    assert.equal(continuation.remainingCount, 9)
+    assert.equal(continuation.label, '次の9語へ')
+
+    const nextIds = new Set(idsOf(buildDeck(source, {
+      srs,
+      size: 0,
+      purpose: 'study',
+      cycleIds: idsOf(answered),
+      now: today,
+      day,
+    })))
+    assertDisjoint(answered, [...nextIds].map((id) => ({ id })), '答えた語は次のセットへ出さない')
+    for (const word of unanswered) {
+      assert.ok(nextIds.has(word.id), `${word.id}は中断時に見ていないので次のセットへ残る`)
+    }
+  } finally {
+    Date.now = originalNow
+    useStore.setState(original, true)
+  }
+})
+
 test('結果画面・暗記・テストの全配線が同じ周回IDを引き継ぐ', () => {
   const study = readFileSync(new URL('../src/screens/VocabStudy.jsx', import.meta.url), 'utf8')
   const quiz = readFileSync(new URL('../src/screens/VocabQuiz.jsx', import.meta.url), 'utf8')
@@ -379,8 +455,11 @@ test('結果画面・暗記・テストの全配線が同じ周回IDを引き継
       2,
       'デッキ作成と結果引き継ぎの両方へ周回IDを渡す',
     )
-    assert.match(source, /wordIds: deck\.map/)
   }
+  // テストは最後まで解いてから結果へ進むのでデッキ全体、暗記は途中でやめられるので
+  // 答えたカードだけを一巡済みとして渡す。見ていない語を次セットから外さない。
+  assert.match(quiz, /wordIds: deck\.map/)
+  assert.match(study, /const wordIds = answeredWordIds\(answers\)/)
   assert.match(result, /vocabularySessionContinuation\(params/)
   assert.match(result, /continueLabel=\{vocabContinuation\.label\}/)
   assert.doesNotMatch(levels, /data-vocab-session-policy|固定配分|30〜60%|同じ周回|次セット/)
