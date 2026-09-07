@@ -179,7 +179,11 @@ test('暗記完了画面は全単語暗記入口の合流点だけで詳細レ�
   assert.match(report, /30→60→90→180日/)
   assert.match(report, /今日、\{today\.uniqueWords\}語に取り組みました/)
   assert.match(report, /同じ語に何度か答えた場合は、今日最後の答えで分けています/)
-  assert.match(report, /次の復習：\{dueLabel\(item\.dueInDays\)\}/)
+  // 語ごとの結果は「一覧で確認」と同じスワイプ一覧で、その場で直せる。
+  assert.match(report, /次の復習：\$\{dueLabel\(item\.dueInDays\)\}/)
+  assert.match(report, /<NormalLearningRecordList/)
+  assert.match(report, /contentId="vocab"/)
+  assert.match(report, /左へスワイプで「覚えた」、右へスワイプで「まだ」に直せます/)
   assert.match(report, /shrink-0 border-t border-indigo-100/)
   assert.match(report, /data-vocab-fixed-review/)
   assert.match(report, /data-vocab-fixed-continue/)

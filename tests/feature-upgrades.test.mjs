@@ -64,9 +64,9 @@ test('語源の全公開入口は語根の暗記・テスト・一覧と通常�
   assert.match(roots, /data-etymology-card-browser/)
   assert.doesNotMatch(roots, /data-etymology-filters|originSource|もとの言語/)
   assert.match(wordBits, /etymologyCardsForWord/)
-  assert.match(wordBits, /出典つき・関連する/)
+  assert.match(wordBits, /確認済み・関連する/)
   assert.match(wordBits, /data-reference-root-summary/)
-  assert.match(wordBits, /語根を開くと、同じ由来の単語と出典を確認できます/)
+  assert.match(wordBits, /語根を開くと、同じ由来の単語をまとめて確認できます/)
   assert.match(roots, /data-etymology-actions/)
   assert.match(pack, /data-etymology-pack-actions/)
   const activeEtymology = `${roots}\n${pack}\n${rootDetail}`

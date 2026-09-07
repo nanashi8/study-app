@@ -1,23 +1,18 @@
 import { useEffect, useRef } from 'react'
 import { useStore } from '../store/useStore.js'
-import { etymologyStoryForWord, getEtymologyPack, getWord } from '../data/vocab.js'
+import { getEtymologyPack, getWord } from '../data/vocab.js'
 import { etymologyOriginFamilyMeta } from '../data/etymology-origin-families.js'
+import { etymologyGlanceNote } from '../lib/etymologyGlance.js'
 import {
   etymologyKnowledgeStatus,
   isEtymologyDue,
 } from '../lib/etymologyProgress.js'
 import { summarizeVocabularySrsItems } from '../lib/vocabScheduler.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
-import { PosBadge } from '../components/WordBits.jsx'
+import { NormalLearningRecordList } from '../components/NormalLearningRecordList.jsx'
 import { StatusDistributionBar } from '../components/LearningStatusBars.jsx'
 import { Button, Card } from '../components/ui.jsx'
-import { ArrowRight, Book, Cards, Check } from '../components/Icons.jsx'
-
-// 紐づく語がこの数までなら、カード画面で全語の意味と語源をそのまま出す。
-// 中央値は8語で、8割強のカードがここに収まる。
-const INLINE_DETAIL_LIMIT = 20
-// 超えるカードは先頭だけ。全語は下の折りたたみ一覧が受け持つ。
-const INLINE_DETAIL_LIMIT_HEAD = 8
+import { ArrowRight, Book, Cards } from '../components/Icons.jsx'
 
 // このカード自身の暗記・テストの記録（紐づく単語のほうとは別に持つ）。
 const statusLabel = (entry) => {
@@ -52,11 +47,6 @@ export function EtymologyPackScreen() {
   }
 
   const words = pack.studyIds.map(getWord).filter(Boolean)
-  // 紐づく語が多すぎなければ、この場で単語・意味・語源まで全部確かめられるようにする。
-  // 多いカードは先頭だけを出し、残りは下の一覧に任せる。
-  const shownWords = words.length <= INLINE_DETAIL_LIMIT
-    ? words
-    : words.slice(0, INLINE_DETAIL_LIMIT_HEAD)
   const wordProgress = summarizeVocabularySrsItems(words, srs)
   const cardEntry = etymologySrs[pack.id]
 
@@ -95,7 +85,7 @@ export function EtymologyPackScreen() {
               </span>
               <div className="min-w-0 flex-1">
                 <div className="flex items-center justify-between gap-2">
-                  <p className="text-xs font-extrabold text-white/75">出典つき語源カード</p>
+                  <p className="text-xs font-extrabold text-white/75">語源カード</p>
                   <span className="rounded-full bg-white/15 px-2 py-1 text-xs font-extrabold">{statusLabel(cardEntry)}</span>
                 </div>
                 <h1 className="mt-1 font-display text-2xl font-extrabold leading-tight">{pack.rootForm}</h1>
@@ -140,84 +130,31 @@ export function EtymologyPackScreen() {
           </Button>
         </section>
 
-        <section className="rounded-2xl bg-white p-4 ring-1 ring-slate-200" aria-labelledby="etymology-examples-heading">
-          <div className="flex items-center justify-between gap-3">
-            <div>
-              <h2 id="etymology-examples-heading" className="font-display text-base font-extrabold text-ink">この形を使う語</h2>
-              <p className="text-xs font-bold text-ink/50">
-                {shownWords.length === words.length
-                  ? '単語・意味・語源をここでまとめて確認'
-                  : `多いので先頭${shownWords.length}語。残りは下の一覧で確認`}
+        <section className="rounded-2xl bg-white p-4 ring-1 ring-slate-200" aria-labelledby="etymology-words-heading">
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              <h2 id="etymology-words-heading" className="font-display text-base font-extrabold text-ink">この形を使う語</h2>
+              <p className="mt-1 text-xs font-bold leading-relaxed text-ink/50">
+                単語・意味・語源を一目で確認できます。左右のスワイプで、その場の答えを記録できます。
               </p>
             </div>
-            <span className="text-xs font-extrabold text-violet-700">{words.length}語</span>
+            <span className="shrink-0 text-xs font-extrabold text-violet-700">{words.length}語</span>
           </div>
-          <ul className="mt-3 space-y-2">
-            {shownWords.map((word) => {
-              const story = etymologyStoryForWord(word)
-              return (
-                <li key={word.id} className="rounded-xl bg-violet-50 px-3 py-2.5 ring-1 ring-violet-100">
-                  <div className="flex items-baseline gap-2">
-                    <span className="font-display text-base font-extrabold text-ink">{word.word}</span>
-                    <PosBadge pos={word.pos} />
-                    <span className="min-w-0 flex-1 text-xs font-bold leading-relaxed text-ink/60">
-                      {word.meanings?.[0] ?? word.meaning}
-                    </span>
-                  </div>
-                  {story && (
-                    <p className="mt-1 text-xs font-bold leading-relaxed text-ink/45">{story.note}</p>
-                  )}
-                </li>
-              )
-            })}
-          </ul>
+          <StatusDistributionBar kind="learning" counts={wordProgress.learning} compact unit="語" className="mt-3" />
+          <NormalLearningRecordList
+            className="mt-3"
+            entryId={`etymology-pack:${pack.id}`}
+            contentId="vocab"
+            items={words}
+            unit="語"
+            titleLanguage="en"
+            onOpen={(item) => navigate('wordDetail', { id: item.id })}
+            openLabel="この単語の詳細を見る"
+            openHint="詳細"
+            noteFor={(item) => etymologyGlanceNote(item, pack)}
+            emptyMessage="このカードに紐づく単語はまだありません。"
+          />
         </section>
-
-        <details className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
-          <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 px-4 text-sm font-extrabold text-slate-700">
-            <span>紐づく単語と学習状況</span>
-            <span className="text-xs text-slate-500">{words.length}語</span>
-          </summary>
-          <div className="space-y-3 border-t border-slate-100 p-4">
-            <StatusDistributionBar kind="learning" counts={wordProgress.learning} compact unit="語" />
-            <ul className="grid gap-2 sm:grid-cols-2">
-              {words.map((word) => (
-                <li key={word.id} className="flex min-w-0 items-baseline gap-2 rounded-xl bg-slate-50 px-3 py-2">
-                  <span className="font-display text-sm font-extrabold text-ink">{word.word}</span>
-                  <span className="min-w-0 flex-1 text-xs font-bold text-ink/50">
-                    {word.meanings?.[0] ?? word.meaning}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </details>
-
-        <details className="overflow-hidden rounded-2xl border border-slate-200 bg-white" data-etymology-evidence>
-          <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 px-4 text-sm font-extrabold text-slate-700">
-            <span className="flex items-center gap-2"><Check size={17} /> 出典を確認</span>
-          </summary>
-          <div className="space-y-2 border-t border-slate-100 p-4">
-            <p className="text-xs font-bold leading-relaxed text-slate-500">
-              出典を開くと、語根の意味と単語とのつながりを確かめられます。
-            </p>
-            <ul className="space-y-1.5">
-              {pack.evidence.sources.map((item) => (
-                <li key={`${item.source}:${item.head}`}>
-                  <a
-                    href={item.url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex min-h-10 items-center gap-1.5 text-xs font-extrabold text-violet-700 underline decoration-violet-200 underline-offset-2"
-                  >
-                    {item.source}「{item.head}」
-                    <ArrowRight size={13} />
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </details>
 
         <button
           type="button"

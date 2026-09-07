@@ -227,7 +227,7 @@ export function EtymologyQuizScreen() {
               onClick={() => navigate('etymologyPack', { packId: card.id })}
               className="mt-3 flex min-h-11 w-full items-center justify-center gap-1.5 rounded-xl bg-violet-50 px-3 text-xs font-extrabold text-violet-700 ring-1 ring-violet-100 active:bg-violet-100"
             >
-              このカードの単語と出典を見る <ArrowRight size={14} />
+              このカードの単語を見る <ArrowRight size={14} />
             </button>
           </div>
         )}

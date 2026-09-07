@@ -637,7 +637,8 @@ export function buildVocabCompletionReport({
     if (Math.abs(retentionDifference) > 0.0001) return retentionDifference
     return dueInDays(a) - dueInDays(b) || a.title.localeCompare(b.title, 'en')
   })
-  const priorityItems = priorityRows.slice(0, 5).map((row) => {
+  // 一覧のまま答えを直せるようにするため、今回の語は省略せず優先順のまま返す。
+  const priorityItems = priorityRows.map((row) => {
     const spacedPracticeCount = Math.max(0, LONG_TERM_SRS_BOX - row.box)
     return {
       id: row.id,
@@ -697,7 +698,6 @@ export function buildVocabCompletionReport({
       goalReached: todayUniqueWords >= goal,
     },
     priorityItems,
-    hiddenPriorityCount: Math.max(0, rows.length - priorityItems.length),
     schedule,
   }
 }

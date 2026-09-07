@@ -1,11 +1,12 @@
 import { useStore } from '../store/useStore.js'
 import { getEtymologyPack, getRoot, getWord } from '../data/vocab.js'
+import { etymologyGlanceNote } from '../lib/etymologyGlance.js'
 import { summarizeVocabularySrsItems, vocabularyLearningStatus } from '../lib/vocabScheduler.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
-import { PosBadge } from '../components/WordBits.jsx'
+import { NormalLearningRecordList } from '../components/NormalLearningRecordList.jsx'
 import { StatusDistributionBar } from '../components/LearningStatusBars.jsx'
 import { Button, Card } from '../components/ui.jsx'
-import { ArrowRight, Book, Cards, Check } from '../components/Icons.jsx'
+import { Book, Cards } from '../components/Icons.jsx'
 
 const LEARN_BATCH = 10
 
@@ -34,7 +35,6 @@ export function RootDetailScreen() {
   }
 
   const words = card.studyIds.map(getWord).filter(Boolean)
-  const examples = card.exampleIds.map(getWord).filter(Boolean)
   const wordProgress = summarizeVocabularySrsItems(words, srs)
   const nextWords = [
     ...words.filter((word) => vocabularyLearningStatus(srs[word.id]) === 'reviewing'),
@@ -74,7 +74,7 @@ export function RootDetailScreen() {
             <div className="flex items-center gap-3">
               <span className="text-5xl" aria-hidden="true">{card.emoji}</span>
               <div className="min-w-0 flex-1">
-                <p className="text-xs font-extrabold text-white/75">出典つき語源カード</p>
+                <p className="text-xs font-extrabold text-white/75">語源カード</p>
                 <h1 className="font-display text-3xl font-extrabold">{card.rootForm}</h1>
                 <p className="text-base font-extrabold text-white/90">＝ {card.rootMeaning}</p>
               </div>
@@ -100,70 +100,30 @@ export function RootDetailScreen() {
           </div>
         </Card>
 
-        <section className="rounded-2xl bg-white p-4 ring-1 ring-slate-200" aria-labelledby="root-examples-heading">
-          <h2 id="root-examples-heading" className="font-display text-base font-extrabold text-ink">意味を思い出す例</h2>
-          <p className="mt-1 text-xs font-bold text-ink/50">この語根の意味をつかみやすい代表例です。</p>
-          <div className="mt-3 grid gap-2 sm:grid-cols-2">
-            {examples.map((word) => (
-              <button
-                key={word.id}
-                type="button"
-                onClick={() => navigate('wordDetail', { id: word.id })}
-                className="flex min-h-12 items-center gap-2 rounded-xl bg-violet-50 px-3 py-2 text-left ring-1 ring-violet-100 active:bg-violet-100"
-              >
-                <PosBadge pos={word.pos} />
-                <span className="min-w-0 flex-1">
-                  <span className="block font-display text-sm font-extrabold text-ink">{word.word}</span>
-                  <span className="block truncate text-xs font-bold text-ink/55">{word.meanings?.[0] ?? word.meaning}</span>
-                </span>
-                <ArrowRight size={15} className="shrink-0 text-violet-400" />
-              </button>
-            ))}
+        <section className="rounded-2xl bg-white p-4 ring-1 ring-slate-200" aria-labelledby="root-words-heading">
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              <h2 id="root-words-heading" className="font-display text-base font-extrabold text-ink">同じ語根の単語</h2>
+              <p className="mt-1 text-xs font-bold leading-relaxed text-ink/50">
+                単語・意味・語源を一目で確認できます。左右のスワイプで、その場の答えを記録できます。
+              </p>
+            </div>
+            <span className="shrink-0 text-xs font-extrabold text-violet-700">{words.length}語</span>
           </div>
+          <NormalLearningRecordList
+            className="mt-3"
+            entryId={`root:${rootId}`}
+            contentId="vocab"
+            items={words}
+            unit="語"
+            titleLanguage="en"
+            onOpen={(item) => navigate('wordDetail', { id: item.id })}
+            openLabel="この単語の詳細を見る"
+            openHint="詳細"
+            noteFor={(item) => etymologyGlanceNote(item, card)}
+            emptyMessage="この語根に紐づく単語はまだありません。"
+          />
         </section>
-
-        <details className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
-          <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 px-4 text-sm font-extrabold text-slate-700">
-            <span>紐づく全単語</span>
-            <span className="text-xs text-slate-500">{words.length}語</span>
-          </summary>
-          <ul className="grid gap-2 border-t border-slate-100 p-4 sm:grid-cols-2">
-            {words.map((word) => (
-              <li key={word.id}>
-                <button
-                  type="button"
-                  onClick={() => navigate('wordDetail', { id: word.id })}
-                  className="flex min-h-11 w-full items-center gap-2 rounded-xl bg-slate-50 px-3 py-2 text-left active:bg-violet-50"
-                >
-                  <span className="font-display text-sm font-extrabold text-ink">{word.word}</span>
-                  <span className="min-w-0 flex-1 truncate text-xs font-bold text-ink/50">{word.meanings?.[0] ?? word.meaning}</span>
-                  <ArrowRight size={14} className="shrink-0 text-slate-400" />
-                </button>
-              </li>
-            ))}
-          </ul>
-        </details>
-
-        <details className="overflow-hidden rounded-2xl border border-slate-200 bg-white" data-etymology-evidence>
-          <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 px-4 text-sm font-extrabold text-slate-700">
-            <span className="flex items-center gap-2"><Check size={17} /> 確認記録と出典</span>
-            <span className="text-xs text-slate-500">{card.evidence.reviewedAt}</span>
-          </summary>
-          <ul className="space-y-1.5 border-t border-slate-100 p-4">
-            {card.evidence.sources.map((item) => (
-              <li key={`${item.source}:${item.head}`}>
-                <a
-                  href={item.url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex min-h-10 items-center gap-1.5 text-xs font-extrabold text-violet-700 underline decoration-violet-200 underline-offset-2"
-                >
-                  {item.source}「{item.head}」 <ArrowRight size={13} />
-                </a>
-              </li>
-            ))}
-          </ul>
-        </details>
       </div>
     </div>
   )

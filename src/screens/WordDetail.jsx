@@ -227,7 +227,7 @@ export function WordDetailScreen() {
           {/* 手動監査を通った語源だけを表示する。語根カードが無い語も成り立ちは出す。 */}
           {(etymologyCards.length > 0 || etymologyStory) && (
             <Card className="p-4">
-              <div className="mb-3 text-sm font-extrabold text-brand-600">出典つきの語源</div>
+              <div className="mb-3 text-sm font-extrabold text-brand-600">語の成り立ち</div>
               <EtymologyBlock
                 word={word}
                 onRoot={(rootId) => navigate('rootDetail', { rootId })}

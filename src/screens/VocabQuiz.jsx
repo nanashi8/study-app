@@ -397,7 +397,7 @@ export function VocabQuizScreen() {
             <InstructorExplanation explanation={instructorExplanation} className="mt-3" />
             {(etymologyCardsForWord(word).length > 0 || etymologyStoryForWord(word)) && (
               <div className="mt-3 rounded-2xl bg-slate-50 p-3 text-left ring-1 ring-slate-200">
-                <p className="mb-2 text-sm font-extrabold text-brand-700">出典つきの語源</p>
+                <p className="mb-2 text-sm font-extrabold text-brand-700">語の成り立ち</p>
                 <EtymologyBlock word={word} />
               </div>
             )}

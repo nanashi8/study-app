@@ -441,7 +441,7 @@ export function RootsScreen() {
       <p className="px-1 text-xs font-bold leading-relaxed text-slate-400">
         {ETYMOLOGY_SUMMARY.cards.toLocaleString()}枚・紐づく{ETYMOLOGY_SUMMARY.total.toLocaleString()}語。
         カードに載らない語をふくめ{ETYMOLOGY_WORD_STORIES.length.toLocaleString()}語すべての成り立ちを、
-        単語画面から出典つきで読めます。
+        単語画面から読めます。
       </p>
     </>
   )
