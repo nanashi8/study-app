@@ -1,6 +1,12 @@
 import { useEffect, useRef } from 'react'
 import { useStore } from '../store/useStore.js'
-import { etymologyCardsForWord, getWord, neighborWords, vocabFieldFor } from '../data/vocab.js'
+import {
+  etymologyCardsForWord,
+  etymologyStoryForWord,
+  getWord,
+  neighborWords,
+  vocabFieldFor,
+} from '../data/vocab.js'
 import { getLevel } from '../data/levels.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { SpeakButton } from '../components/SpeakButton.jsx'
@@ -117,6 +123,7 @@ export function WordDetailScreen() {
   const saved = myList.includes(word.id)
   const progress = summarizeVocabularySrsItems([word], entry ? { [word.id]: entry } : {})
   const etymologyCards = etymologyCardsForWord(word)
+  const etymologyStory = etymologyStoryForWord(word)
 
   return (
     <div className="flex h-full flex-col">
@@ -217,10 +224,10 @@ export function WordDetailScreen() {
             </Card>
           )}
 
-          {/* 手動監査済みの語源カードがある単語だけに表示する。 */}
-          {etymologyCards.length > 0 && (
+          {/* 手動監査を通った語源だけを表示する。語根カードが無い語も成り立ちは出す。 */}
+          {(etymologyCards.length > 0 || etymologyStory) && (
             <Card className="p-4">
-              <div className="mb-3 text-sm font-extrabold text-brand-600">出典つき語源カード</div>
+              <div className="mb-3 text-sm font-extrabold text-brand-600">出典つきの語源</div>
               <EtymologyBlock
                 word={word}
                 onRoot={(rootId) => navigate('rootDetail', { rootId })}

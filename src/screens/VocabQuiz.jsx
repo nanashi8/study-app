@@ -1,7 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import { buildDeck, growDeck } from '../lib/session.js'
-import { etymologyCardsForWord, pickDistractors, shuffle } from '../data/vocab.js'
+import {
+  etymologyCardsForWord,
+  etymologyStoryForWord,
+  pickDistractors,
+  shuffle,
+} from '../data/vocab.js'
 import { quizMeaning } from '../data/compact.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
@@ -390,9 +395,9 @@ export function VocabQuizScreen() {
               </div>
             </div>
             <InstructorExplanation explanation={instructorExplanation} className="mt-3" />
-            {etymologyCardsForWord(word).length > 0 && (
+            {(etymologyCardsForWord(word).length > 0 || etymologyStoryForWord(word)) && (
               <div className="mt-3 rounded-2xl bg-slate-50 p-3 text-left ring-1 ring-slate-200">
-                <p className="mb-2 text-sm font-extrabold text-brand-700">出典つき語源カード</p>
+                <p className="mb-2 text-sm font-extrabold text-brand-700">出典つきの語源</p>
                 <EtymologyBlock word={word} />
               </div>
             )}

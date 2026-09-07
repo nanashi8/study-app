@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
-import { etymologyCardsForWord } from '../data/vocab.js'
+import { etymologyCardsForWord, etymologyStoryForWord } from '../data/vocab.js'
 import { buildDeck, growDeck, recordStudyAnswer } from '../lib/session.js'
 import { phraseGroupsForWord } from '../lib/wordPhrases.js'
 import { playSpeechItems } from '../lib/speech-player.js'
@@ -346,8 +346,8 @@ export function VocabStudyScreen() {
                 </div>
               )}
 
-              {/* 手動監査済みの語源カードがある単語だけに表示する。 */}
-              {etymologyCardsForWord(word).length > 0 && (
+              {/* 手動監査を通った語源だけを表示する。語根カードが無い語も成り立ちは出す。 */}
+              {(etymologyCardsForWord(word).length > 0 || etymologyStoryForWord(word)) && (
                 <div className="rounded-2xl bg-white p-4 ring-1 ring-brand-100">
                   <div className="mb-2 flex items-center gap-1.5 text-brand-600">
                     <Lightbulb size={16} />
