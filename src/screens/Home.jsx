@@ -62,7 +62,7 @@ function LearningMenu({ navigate }) {
       <div className="space-y-4 px-4 pt-4">
         <section>
           <h2 className="mb-2 px-1 font-display text-sm font-extrabold text-ink/65">コンテンツを選ぶ</h2>
-          <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2" data-home-mode-group="primary">
+          <div className="grid grid-cols-1 gap-2.5" data-home-mode-group="primary">
             {PRIMARY_LEARNING_MODES.map((mode) => (
               <LearningModeButton key={mode.id} mode={mode} onOpen={open} />
             ))}

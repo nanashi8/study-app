@@ -221,7 +221,7 @@ export function KotenGrammarStudyScreen() {
                   {item.meaning}
                 </p>
               </div>
-              <div className="grid gap-3 sm:grid-cols-2">
+              <div className="grid gap-3">
                 <div className="rounded-2xl bg-sky-50 p-3.5">
                   <p className="text-[10px] font-extrabold tracking-wide text-sky-600">接続</p>
                   <p className="mt-1 text-sm font-extrabold leading-relaxed text-ink/75">

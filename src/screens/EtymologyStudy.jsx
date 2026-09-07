@@ -206,7 +206,7 @@ export function EtymologyStudyScreen() {
 
               <div className="rounded-2xl bg-white p-4 ring-1 ring-violet-100">
                 <div className="text-[11px] font-extrabold uppercase tracking-wide text-violet-500">この形を使う語</div>
-                <ul className="mt-2 grid gap-1.5 sm:grid-cols-2">
+                <ul className="mt-2 grid gap-1.5">
                   {examples.map((word) => (
                     <li key={word.id} className="flex min-w-0 items-baseline gap-2 rounded-xl bg-violet-50/70 px-3 py-1.5">
                       <span className="font-display text-sm font-extrabold text-ink">{word.word}</span>
