@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { useStore } from '../store/useStore.js'
-import { getEtymologyPack, getWord } from '../data/vocab.js'
+import { etymologyStoryForWord, getEtymologyPack, getWord } from '../data/vocab.js'
 import { etymologyOriginFamilyMeta } from '../data/etymology-origin-families.js'
 import {
   etymologyKnowledgeStatus,
@@ -12,6 +12,12 @@ import { PosBadge } from '../components/WordBits.jsx'
 import { StatusDistributionBar } from '../components/LearningStatusBars.jsx'
 import { Button, Card } from '../components/ui.jsx'
 import { ArrowRight, Book, Cards, Check } from '../components/Icons.jsx'
+
+// 紐づく語がこの数までなら、カード画面で全語の意味と語源をそのまま出す。
+// 中央値は8語で、8割強のカードがここに収まる。
+const INLINE_DETAIL_LIMIT = 20
+// 超えるカードは先頭だけ。全語は下の折りたたみ一覧が受け持つ。
+const INLINE_DETAIL_LIMIT_HEAD = 8
 
 // このカード自身の暗記・テストの記録（紐づく単語のほうとは別に持つ）。
 const statusLabel = (entry) => {
@@ -46,7 +52,11 @@ export function EtymologyPackScreen() {
   }
 
   const words = pack.studyIds.map(getWord).filter(Boolean)
-  const examples = pack.exampleIds.map(getWord).filter(Boolean)
+  // 紐づく語が多すぎなければ、この場で単語・意味・語源まで全部確かめられるようにする。
+  // 多いカードは先頭だけを出し、残りは下の一覧に任せる。
+  const shownWords = words.length <= INLINE_DETAIL_LIMIT
+    ? words
+    : words.slice(0, INLINE_DETAIL_LIMIT_HEAD)
   const wordProgress = summarizeVocabularySrsItems(words, srs)
   const cardEntry = etymologySrs[pack.id]
 
@@ -133,24 +143,34 @@ export function EtymologyPackScreen() {
         <section className="rounded-2xl bg-white p-4 ring-1 ring-slate-200" aria-labelledby="etymology-examples-heading">
           <div className="flex items-center justify-between gap-3">
             <div>
-              <h2 id="etymology-examples-heading" className="font-display text-base font-extrabold text-ink">この形を使う例</h2>
-              <p className="text-xs font-bold text-ink/50">意味を思い出す手がかりとして確認</p>
+              <h2 id="etymology-examples-heading" className="font-display text-base font-extrabold text-ink">この形を使う語</h2>
+              <p className="text-xs font-bold text-ink/50">
+                {shownWords.length === words.length
+                  ? '単語・意味・語源をここでまとめて確認'
+                  : `多いので先頭${shownWords.length}語。残りは下の一覧で確認`}
+              </p>
             </div>
             <span className="text-xs font-extrabold text-violet-700">{words.length}語</span>
           </div>
-          <div className="mt-3 grid gap-2 sm:grid-cols-2">
-            {examples.map((word) => (
-              <div key={word.id} className="rounded-xl bg-violet-50 px-3 py-2 ring-1 ring-violet-100">
-                <div className="flex items-baseline gap-2">
-                  <span className="font-display text-base font-extrabold text-ink">{word.word}</span>
-                  <PosBadge pos={word.pos} />
-                </div>
-                <p className="mt-0.5 text-xs font-bold leading-relaxed text-ink/55">
-                  {word.meanings?.[0] ?? word.meaning}
-                </p>
-              </div>
-            ))}
-          </div>
+          <ul className="mt-3 space-y-2">
+            {shownWords.map((word) => {
+              const story = etymologyStoryForWord(word)
+              return (
+                <li key={word.id} className="rounded-xl bg-violet-50 px-3 py-2.5 ring-1 ring-violet-100">
+                  <div className="flex items-baseline gap-2">
+                    <span className="font-display text-base font-extrabold text-ink">{word.word}</span>
+                    <PosBadge pos={word.pos} />
+                    <span className="min-w-0 flex-1 text-xs font-bold leading-relaxed text-ink/60">
+                      {word.meanings?.[0] ?? word.meaning}
+                    </span>
+                  </div>
+                  {story && (
+                    <p className="mt-1 text-xs font-bold leading-relaxed text-ink/45">{story.note}</p>
+                  )}
+                </li>
+              )
+            })}
+          </ul>
         </section>
 
         <details className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
