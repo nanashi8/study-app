@@ -15,10 +15,10 @@ import { analyzeReadingSentence } from '../src/lib/reading-grammar.js'
 
 const EXPECTED_WORD_COUNTS = [987, 1977, 2956, 3940]
 
-test('語彙強化長文4本を、従来の一文構文監査32本と分けてカタログに追加する', () => {
-  assert.equal(PASSAGES.length, 32)
+test('語彙強化長文4本を、従来の一文構文監査38本と分けてカタログに追加する', () => {
+  assert.equal(PASSAGES.length, 38)
   assert.equal(EXTENDED_PASSAGES.length, 4)
-  assert.equal(ALL_PASSAGES.length, 36)
+  assert.equal(ALL_PASSAGES.length, 42)
   assert.deepEqual(EXTENDED_PASSAGES.map((passage) => passage.actualWords), EXPECTED_WORD_COUNTS)
   assert.deepEqual(EXTENDED_PASSAGES.map((passage) => passageWordCount(passage)), EXPECTED_WORD_COUNTS)
   for (const passage of EXTENDED_PASSAGES) {

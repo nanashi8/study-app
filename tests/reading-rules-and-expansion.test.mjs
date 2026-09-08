@@ -60,17 +60,23 @@ test('読解30ルールは五段階・三手・誤読防止・図解を備える
   }
 })
 
-test('全32長文は級別四本・試験テーマ・十分な語数・根拠付き設問を保つ', () => {
-  assert.equal(PASSAGES.length, 32)
+test('全38長文は級別の複数題・試験テーマ・十分な語数・根拠付き設問を保つ', () => {
+  assert.equal(PASSAGES.length, 38)
   assert.equal(EXPANDED_PASSAGES.length, 8)
-  assert.equal(PASSAGES.reduce((total, passage) => total + passage.sentences.length, 0), 794)
+  assert.equal(PASSAGES.reduce((total, passage) => total + passage.sentences.length, 0), 990)
 
+  // 語彙10分野を1本で通す分野長文を、準2級と2級へ3本ずつ追加している。
+  const passagesByLevel = { 5: 4, 4: 4, 3: 4, pre2: 7, pre2plus: 4, 2: 7, pre1: 4, 1: 4 }
   for (const level of Object.keys(minimumWordsByLevel)) {
-    assert.equal(PASSAGES.filter((passage) => passage.level === level).length, 4, `${level}: 四本未満`)
+    assert.equal(
+      PASSAGES.filter((passage) => passage.level === level).length,
+      passagesByLevel[level],
+      `${level}: 級別の収録数が設計と違う`,
+    )
   }
-  assert.equal(PASSAGES.filter((passage) => passage.examTypes.includes('高校受験')).length, 12)
-  assert.equal(PASSAGES.filter((passage) => passage.examTypes.includes('大学受験')).length, 16)
-  assert.equal(PASSAGES.filter((passage) => passage.examTypes.includes('英検')).length, 32)
+  assert.equal(PASSAGES.filter((passage) => passage.examTypes.includes('高校受験')).length, 15)
+  assert.equal(PASSAGES.filter((passage) => passage.examTypes.includes('大学受験')).length, 19)
+  assert.equal(PASSAGES.filter((passage) => passage.examTypes.includes('英検')).length, 38)
 
   for (const passage of PASSAGES) {
     assert.ok(
@@ -145,8 +151,8 @@ test('既存16本を含む全文・全設問へ文脈に合う読解ルールを
     }
   }
 
-  assert.equal(approachTitles.size, PASSAGES.length, '全32長文で読み方の見出しを使い回さない')
-  assert.equal(approachRuleSequences.size, PASSAGES.length, '全32長文で中核ルールの組合せを使い回さない')
+  assert.equal(approachTitles.size, PASSAGES.length, '全38長文で読み方の見出しを使い回さない')
+  assert.equal(approachRuleSequences.size, PASSAGES.length, '全38長文で中核ルールの組合せを使い回さない')
   const rulesSharedByEveryPassage = [...knownRuleIds].filter((id) =>
     recommendedRuleSets.every((ruleSet) => ruleSet.has(id)))
   assert.deepEqual(rulesSharedByEveryPassage, [], '全テーマへ同じルールを固定配布しない')

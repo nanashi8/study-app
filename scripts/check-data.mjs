@@ -1020,32 +1020,32 @@ for (const error of readingRoleQualityReport.errors) {
   errors.push(`長文の下線役割・only品質GATE: ${error}`)
 }
 if (
-  PASSAGES.length !== 32 ||
-  readingTranslationSentenceCount !== 794 ||
-  readingTranslationBlockCount !== 2062 ||
-  readingPhrasePairCount !== 5925 ||
-  readingPhraseSequenceCount !== 5925 ||
-  readingMeaningPhraseCount !== 4329 ||
-  readingMeaningMultiRoleCount !== 1668
+  PASSAGES.length !== 38 ||
+  readingTranslationSentenceCount !== 990 ||
+  readingTranslationBlockCount !== 2420 ||
+  readingPhrasePairCount !== 6876 ||
+  readingPhraseSequenceCount !== 6876 ||
+  readingMeaningPhraseCount !== 5024 ||
+  readingMeaningMultiRoleCount !== 1937
 ) {
   errors.push(
     `長文フレーズ監査: ${PASSAGES.length}長文・${readingTranslationSentenceCount}文・` +
     `${readingTranslationBlockCount}ブロック・${readingMeaningPhraseCount}意味フレーズ` +
     `（複数役割${readingMeaningMultiRoleCount}件）・${readingPhrasePairCount}ブロック内内部SVOCM単位・` +
     `${readingPhraseSequenceCount}文全体内部SVOCM単位` +
-    '（現行全件は32長文・794文・2,062ブロック・4,329意味フレーズ・5,925内部SVOCM単位）',
+    '（現行全件は38長文・990文・2,420ブロック・5,024意味フレーズ・6,876内部SVOCM単位）',
   )
 }
 if (
-  Object.keys(READING_MANUAL_REVIEW_LEDGER).length !== 794 ||
-  readingManualReviewSentenceCount !== 794 ||
+  Object.keys(READING_MANUAL_REVIEW_LEDGER).length !== 990 ||
+  readingManualReviewSentenceCount !== 990 ||
   PASSAGES.some((passage) =>
     READING_MANUAL_BLOCK_FINGERPRINTS[passage.id]?.length !== passage.sentences.length)
 ) {
   errors.push(
-    `長文の手動レビュー台帳: ${readingManualReviewSentenceCount}/794文照合、` +
-    `${Object.keys(READING_MANUAL_REVIEW_LEDGER).length}/794 ID登録、` +
-    `${Object.values(READING_MANUAL_BLOCK_FINGERPRINTS).reduce((sum, items) => sum + items.length, 0)}/567 ブロック構造fingerprint`,
+    `長文の手動レビュー台帳: ${readingManualReviewSentenceCount}/990文照合、` +
+    `${Object.keys(READING_MANUAL_REVIEW_LEDGER).length}/990 ID登録、` +
+    `${Object.values(READING_MANUAL_BLOCK_FINGERPRINTS).reduce((sum, items) => sum + items.length, 0)}/990 ブロック構造fingerprint`,
   )
 }
 if (readingReviewedPhraseSentenceCount !== READING_PHRASE_EXPLANATIONS.length) {

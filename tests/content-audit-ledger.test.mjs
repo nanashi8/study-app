@@ -11,8 +11,8 @@ test('全教材監査台帳は18カテゴリの母数・ゲート・ハッシュ
   assert.equal(ledger.failureCount, 0)
   assert.equal(ledger.scope.categoryCount, 18)
   assert.equal(ledger.categories.length, 18)
-  assert.equal(ledger.scope.learningItemCount, 16_311)
-  assert.equal(ledger.scope.quizItemCount, 16_429)
+  assert.equal(ledger.scope.learningItemCount, 16_317)
+  assert.equal(ledger.scope.quizItemCount, 16_435)
   assert.ok(ledger.scope.overallContentSha256)
   assert.ok(ledger.auditImplementation.sha256)
   for (const category of ledger.categories) {
@@ -33,7 +33,7 @@ test('問題別解説と選択肢別根拠を混同せず、記録済み台帳�
   assert.equal(grammar.choiceCount, 13_800)
   assert.equal(grammar.generalRationaleCount, 3_450)
   assert.equal(grammar.choiceSpecificRationaleCount, 13_800)
-  assert.equal(reading.generalRationaleCount, 140)
+  assert.equal(reading.generalRationaleCount, 167)
   assert.equal(extendedReading.questionCount, 16)
   assert.equal(extendedReading.choiceCount, 64)
   assert.equal(extendedReading.generalRationaleCount, 16)
@@ -42,11 +42,11 @@ test('問題別解説と選択肢別根拠を混同せず、記録済み台帳�
   assert.equal(ledger.extendedReadingDetail.totalWords, 9_860)
   assert.equal(ledger.extendedReadingDetail.sentenceCount, 528)
   assert.equal(ledger.extendedReadingDetail.targetVocabularyCount, 1_484)
-  assert.equal(ledger.extendedReadingDetail.baselineCoveredVocabulary, 1_863)
-  assert.equal(ledger.extendedReadingDetail.baselineCoveragePercent, 21.01)
-  assert.equal(ledger.extendedReadingDetail.combinedCoveredVocabulary, 3_921)
-  assert.equal(ledger.extendedReadingDetail.combinedCoveragePercent, 44.21)
-  assert.equal(ledger.extendedReadingDetail.coverageGain, 2_058)
+  assert.equal(ledger.extendedReadingDetail.baselineCoveredVocabulary, 1_963)
+  assert.equal(ledger.extendedReadingDetail.baselineCoveragePercent, 22.13)
+  assert.equal(ledger.extendedReadingDetail.combinedCoveredVocabulary, 3_956)
+  assert.equal(ledger.extendedReadingDetail.combinedCoveragePercent, 44.6)
+  assert.equal(ledger.extendedReadingDetail.coverageGain, 1_993)
   assert.equal(ledger.extendedReadingDetail.unresolvedExtendedTokenCount, 0)
   assert.deepEqual(ledger.extendedReadingDetail.practiceTypeCounts, {
     'word-order': 4,
@@ -76,10 +76,10 @@ test('全選択式教材の正解・全誤答・わからない経路数を教�
   const paths = ledger.instructorAnswerPaths
   assert.equal(paths.coverageTest, 'tests/instructor-explanations.test.mjs')
   assert.equal(paths.result, 'pass')
-  assert.equal(paths.questionCount, 15_734)
-  assert.equal(paths.displayedChoiceCount, 51_547)
-  assert.equal(paths.unknownPathCount, 15_734)
-  assert.equal(paths.answerPathCount, 67_281)
+  assert.equal(paths.questionCount, 15_761)
+  assert.equal(paths.displayedChoiceCount, 51_655)
+  assert.equal(paths.unknownPathCount, 15_761)
+  assert.equal(paths.answerPathCount, 67_416)
   assert.deepEqual(
     paths.families.map(({ id }) => id),
     [

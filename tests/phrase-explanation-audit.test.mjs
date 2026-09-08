@@ -57,18 +57,18 @@ const substantiveLongIssueNames = [
 
 test('全長文・長い一文・文学の意味フレーズと内部SVOCMを監査する', () => {
   const audit = auditPhraseExplanations()
-  assert.equal(audit.reading.passageCount, 32)
-  assert.equal(audit.reading.sentenceCount, 794)
-  assert.equal(audit.reading.phraseCount, 5925)
-  assert.equal(audit.reading.meaningPhraseCount, 4329)
-  assert.equal(audit.reading.meaningMultiRoleCount, 1668)
-  assert.equal(audit.reading.grammarBlockCount, 2062)
+  assert.equal(audit.reading.passageCount, 38)
+  assert.equal(audit.reading.sentenceCount, 990)
+  assert.equal(audit.reading.phraseCount, 6876)
+  assert.equal(audit.reading.meaningPhraseCount, 5024)
+  assert.equal(audit.reading.meaningMultiRoleCount, 1937)
+  assert.equal(audit.reading.grammarBlockCount, 2420)
   assert.equal(audit.reading.correctionDecisionCount, 923)
   assert.equal(audit.reading.appliedCorrectionCount, 923)
   assert.deepEqual(audit.reading.connectorClosureReview, {
-    candidateCount: 144,
+    candidateCount: 147,
     backReferenceCount: 63,
-    alreadyClearCount: 81,
+    alreadyClearCount: 84,
   })
   assert.equal(audit.longSentences.sentenceCount, 33)
   assert.equal(audit.longSentences.phraseCount, 236)
@@ -96,11 +96,11 @@ test('全規則と全文を監査確認済みにし、台帳外変更は別状�
   assert.equal(audit.rules.total, 17)
   assert.equal(audit.rules.confirmed, 17)
   assert.equal(audit.rules.reviewNeeded, 0)
-  assert.equal(audit.reading.manuallyReviewedSentenceCount, 794)
+  assert.equal(audit.reading.manuallyReviewedSentenceCount, 990)
   assert.equal(audit.longSentences.manuallyReviewedSentenceCount, 33)
-  assert.equal(audit.reading.confirmedSentenceCount, 794)
+  assert.equal(audit.reading.confirmedSentenceCount, 990)
   assert.equal(audit.longSentences.confirmedSentenceCount, 33)
-  assert.equal(audit.reading.confirmedPhraseCount, 5925)
+  assert.equal(audit.reading.confirmedPhraseCount, 6876)
   assert.equal(audit.longSentences.confirmedPhraseCount, 236)
   assert.equal(audit.reading.issues.unreviewedSentences.length, 0)
   assert.equal(audit.longSentences.issues.unreviewedGuides.length, 0)
@@ -117,11 +117,11 @@ test('全規則と全文を監査確認済みにし、台帳外変更は別状�
 })
 
 test('明示台帳外の新規文と、既存文のJA・role・文法ブロック変更はreview-neededへ戻る', () => {
-  assert.equal(Object.keys(READING_MANUAL_REVIEW_LEDGER).length, 794)
+  assert.equal(Object.keys(READING_MANUAL_REVIEW_LEDGER).length, 990)
   assert.equal(
     Object.values(READING_MANUAL_BLOCK_FINGERPRINTS)
       .reduce((total, fingerprints) => total + fingerprints.length, 0),
-    794,
+    990,
   )
   assert.ok(Object.values(READING_MANUAL_REVIEW_LEDGER)
     .every((evidence) => evidence.blockFingerprint))

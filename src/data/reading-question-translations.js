@@ -1,5 +1,6 @@
 import { CORE_READING_QUESTION_TRANSLATIONS } from './reading-question-translations-core.js'
 import { CURRENT_AFFAIRS_READING_QUESTION_TRANSLATIONS } from './reading-question-translations-current-affairs.js'
+import { FIELD_READING_QUESTION_TRANSLATIONS } from './reading-question-translations-fields.js'
 import { EXAM_READING_QUESTION_TRANSLATIONS } from './reading-question-translations-exam.js'
 import { EXPANDED_READING_QUESTION_TRANSLATIONS } from './reading-question-translations-expansion.js'
 
@@ -7,12 +8,19 @@ export const READING_QUESTION_TRANSLATIONS = Object.freeze({
   ...EXAM_READING_QUESTION_TRANSLATIONS,
   ...EXPANDED_READING_QUESTION_TRANSLATIONS,
   ...CURRENT_AFFAIRS_READING_QUESTION_TRANSLATIONS,
+  ...FIELD_READING_QUESTION_TRANSLATIONS,
   ...CORE_READING_QUESTION_TRANSLATIONS,
 })
 
 // 設問・選択肢の英語原文を人手で和訳確認した時点の fingerprint。
 // 原文追加・順序変更・文言変更時に、和訳を再確認せず古い対応を流用させない。
 export const READING_QUESTION_TRANSLATION_REVIEW_LEDGER = Object.freeze({
+  p_pre2_pond_comeback: 'afbf72a1',
+  p_pre2_morning_market: '816eaa8d',
+  p_2_injury_free_practice: '4ad105b1',
+  p_2_factory_museum: 'cb77f0f0',
+  p_pre2_school_radio: 'f0d82af8',
+  p_2_disaster_translators: '3fa9f1bc',
   p_5_school_open_day: 'e17458f9',
   p_4_bicycle_safety: '372f7e7f',
   p_3_lunch_food_waste: 'd42d4048',

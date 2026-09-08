@@ -657,6 +657,42 @@ export const PASSAGE_READING_APPROACHES = Object.freeze({
     ['中心概念の定義と限定を先に取る', '対策ごとに効果と副作用を対にする', '負担を負う側が誰かを最後に確かめる'],
     ['reading-mode', 'insertion', 'that-diagnosis', 'comparison-pairs', 'author-stance', 'repair-monitor'],
   ),
+  p_pre2_pond_comeback: makePassageApproach(
+    '原因の候補を一つずつ消して真の原因を決める',
+    '自然環境の報告文では、見た目の悪さと本当の原因を分け、記録が原因をどう絞ったかを追う。',
+    ['調べた項目と結果を対にする', '除外された原因の根拠を確かめる', '対策が効いた証拠を数値へ戻す'],
+    ['purpose-first', 'main-clause-skeleton', 'that-diagnosis', 'cause-result', 'evidence-backtrack', 'reference-chain'],
+  ),
+  p_pre2_morning_market: makePassageApproach(
+    '見えている良さと、見えない負担を並べて読む',
+    '地域の産業を扱う説明文では、うまくいっている面と、だれかが負っている手間や費用を同じ表に並べる。',
+    ['続いている理由を買い手の側から取る', '決まりと点検の手順を順に並べる', '費用を負う側と結論を結ぶ'],
+    ['paragraph-map', 'noun-boundary', 'that-diagnosis', 'cause-result', 'comparison-pairs', 'evidence-backtrack'],
+  ),
+  p_2_injury_free_practice: makePassageApproach(
+    '体の要因と、申告しやすさの要因を分けて読む',
+    '部活動を扱う報告文では、体に起きたことと、人が申告できるかどうかという別々の要因を混ぜずに追う。',
+    ['記録から見えた要因を順に並べる', '仕組みの説明を体の話へ戻す', '制度の変更と数値の変化を結ぶ'],
+    ['paragraph-map', 'main-clause-skeleton', 'relative-clause', 'cause-result', 'author-stance', 'distractor-strength'],
+  ),
+  p_2_factory_museum: makePassageApproach(
+    '二つの案を費用・収入・残るものの三点で比べる',
+    '保存をめぐる論説文では、どちらが正しいかを急がず、案ごとの費用と収入、そして残る価値を同じ枠で比べる。',
+    ['最初の方針と反対の動きを分ける', '案ごとに費用と収入を対にする', '成果と残る課題を最終段落で確かめる'],
+    ['genre-prediction', 'insertion', 'that-diagnosis', 'contrast-concession', 'author-stance', 'evidence-backtrack'],
+  ),
+  p_pre2_school_radio: makePassageApproach(
+    '聞き手の指摘と、変えた点を一つずつ結ぶ',
+    '校内活動の報告文では、指摘された弱点と、実際に変えた手順が何対何で対応しているかを確かめる。',
+    ['調べて分かった不満を先に取る', '変更点を指摘へ一つずつ返す', '新しい役割と締めの主張を結ぶ'],
+    ['purpose-first', 'svoc-core', 'infinitive-role', 'logic-connectors', 'example-restatement', 'evidence-backtrack'],
+  ),
+  p_2_disaster_translators: makePassageApproach(
+    '届いたことと、伝わったことを分けて読む',
+    '防災を扱う論説文では、情報が届いた事実と、意味が伝わった事実を同じものとして扱わずに追う。',
+    ['失敗の原因を言葉の面から取る', '対策を導入した段階の順に並べる', '残る限界と結論を対応させる'],
+    ['reading-mode', 'noun-boundary', 'relative-clause', 'cause-result', 'negation-scope', 'author-stance'],
+  ),
 })
 
 export function readingApproachForPassage(passage) {

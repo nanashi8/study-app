@@ -8,6 +8,7 @@
 import { EXAM_PASSAGES } from './passages-exam.js'
 import { EXPANDED_PASSAGES } from './reading-expansion-passages.js'
 import { CURRENT_AFFAIRS_PASSAGES } from './reading-current-affairs-passages.js'
+import { FIELD_PASSAGES } from './reading-fields-passages.js'
 import { EXTENDED_PASSAGES } from './reading-extended-passages.js'
 import { READING_TRANSLATION_SCENARIOS } from './reading-translation-scenarios.js'
 import { reviewSourceFingerprint } from './reading-phrase-review-ledger.js'
@@ -419,6 +420,7 @@ export const PASSAGES = [
   ...EXAM_PASSAGES,
   ...EXPANDED_PASSAGES,
   ...CURRENT_AFFAIRS_PASSAGES,
+  ...FIELD_PASSAGES,
 ].map(passageWithExamMeta)
 
 const PROPER_NAME_GLOSSES = [

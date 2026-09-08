@@ -10,6 +10,7 @@ import { UPPER_READING_TRANSLATION_SCENARIOS } from './reading-translation-scena
 import { ADVANCED_READING_TRANSLATION_SCENARIOS } from './reading-translation-scenarios-advanced.js'
 import { EXPANDED_READING_TRANSLATION_SCENARIOS } from './reading-expansion-translation-scenarios.js'
 import { CURRENT_AFFAIRS_READING_TRANSLATION_SCENARIOS } from './reading-current-affairs-translation-scenarios.js'
+import { FIELD_READING_TRANSLATION_SCENARIOS } from './reading-fields-translation-scenarios.js'
 import { EXTENDED_READING_TRANSLATION_SCENARIOS } from './reading-extended-translation-scenarios.js'
 
 const b = (en, orderedJa, tip = '', orderedEn = '') => {
@@ -34,6 +35,7 @@ export const READING_TRANSLATION_SCENARIOS = Object.freeze({
   ...ADVANCED_READING_TRANSLATION_SCENARIOS,
   ...EXPANDED_READING_TRANSLATION_SCENARIOS,
   ...CURRENT_AFFAIRS_READING_TRANSLATION_SCENARIOS,
+  ...FIELD_READING_TRANSLATION_SCENARIOS,
   ...EXTENDED_READING_TRANSLATION_SCENARIOS,
   p_5_lost_notebook: passage([
     [
