@@ -30,6 +30,9 @@ import {
   Target,
 } from '../components/Icons.jsx'
 
+// 単語カードは1問ごとに置き直す。問題を切り替えるたび、この空の並びへ戻す。
+const EMPTY_ARRANGEMENT = { text: '', complete: false, correct: false, wrongPosition: false }
+
 function MissingUnit({ onBack }) {
   return (
     <div className="flex min-h-full flex-col items-center justify-center gap-4 px-8 text-center">
@@ -158,7 +161,7 @@ export function WritingExamScreen() {
   const [typed, setTyped] = useState('')
   const [hintStep, setHintStep] = useState(0)
   const [arranging, setArranging] = useState(mode === 'guide')
-  const [arranged, setArranged] = useState({ text: '', complete: false, correct: false })
+  const [arranged, setArranged] = useState(EMPTY_ARRANGEMENT)
   const [checked, setChecked] = useState(false)
   const [results, setResults] = useState([])
   const [finished, setFinished] = useState(false)
@@ -185,7 +188,7 @@ export function WritingExamScreen() {
     setTyped('')
     setHintStep(0)
     setArranging(mode === 'guide')
-    setArranged({ text: '', complete: false, correct: false })
+    setArranged(EMPTY_ARRANGEMENT)
     setChecked(false)
   }
 
@@ -407,12 +410,13 @@ export function WritingExamScreen() {
         <section className="mt-3">
           {arranging ? (
             <>
-              <div className="mb-2 flex items-center justify-between px-1">
+              {/* 注記は横に置くと375px幅で見出しへ重なるため、下の行へ回す。 */}
+              <div className="mb-2 px-1">
                 <p className="text-[11px] font-extrabold text-ink/48">
                   与えられた語を並べる
                 </p>
                 <p className="text-[10px] font-bold text-ink/35">
-                  置いた語はもう一度押すと戻せます
+                  正しい位置ならすぐ緑。赤いカードは押して戻せます
                 </p>
               </div>
               <WordOrderExercise
@@ -420,6 +424,7 @@ export function WritingExamScreen() {
                 targetText={question.answer}
                 seed={question.id}
                 checked={checked}
+                liveFeedback
                 onChange={(text, state) => setArranged({ text, ...state })}
               />
             </>
@@ -531,7 +536,9 @@ export function WritingExamScreen() {
           {checked
             ? '型と誤りやすい点を読んでから次へ進みます'
             : arranging
-              ? 'すべての語を並べると答え合わせできます'
+              ? arranged.wrongPosition
+                ? '赤いカードを押して戻すと、その場で置き直せます'
+                : 'すべての語を並べると答え合わせできます'
               : '書いたところまでで答え合わせできます'}
         </p>
       </div>

@@ -159,6 +159,30 @@ test('入試型英作文の画面は、答え合わせの前に模範解答を�
   assert.ok(source.includes('showSkeleton && !checked'), '伏せ字ヒントが答え合わせ後も残る')
   assert.ok(
     source.includes('checked={checked}'),
-    '単語カードの正誤表示を答え合わせに結び付けていない',
+    '単語カードの模範解答表示を答え合わせに結び付けていない',
   )
+})
+
+test('級別英作文の単語カードは、テーマ別と同じく置いた瞬間に間違いを知らせる', () => {
+  const examSource = readSource('../src/screens/WritingExam.jsx')
+  const cardSource = readSource('../src/components/WordOrderExercise.jsx')
+  const themeSource = readSource('../src/screens/WritingPlay.jsx')
+
+  // 級別（文法別）でも、最後まで並べてからではなく置いた1語で正誤が出る。
+  assert.ok(examSource.includes('liveFeedback'), '級別英作文が即時の正誤表示を使っていない')
+  assert.ok(cardSource.includes('liveFeedback && !checked'), '答え合わせ後に途中の知らせが重なる')
+  assert.match(cardSource, /role="alert"/)
+
+  // 知らせ方はテーマ別英作文と同じ言い方にそろえる。
+  const wrongNotice = '赤いカードはその位置ではありません'
+  assert.ok(cardSource.includes(wrongNotice), '間違いを知らせるメッセージがない')
+  assert.ok(themeSource.includes(wrongNotice), 'テーマ別英作文の言い方が変わっている')
+
+  // 途中の知らせは色と位置だけで、模範解答そのものは出さない。
+  const notice = cardSource.slice(
+    cardSource.indexOf('{liveFeedback && !checked && ('),
+    cardSource.indexOf('data-word-order-bank'),
+  )
+  assert.ok(notice.length > 0)
+  assert.ok(!notice.includes('targetText'), '答え合わせ前に模範解答を描画している')
 })
