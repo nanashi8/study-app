@@ -21,7 +21,7 @@ import {
 } from '../src/lib/reading-role-quality.js'
 import { analyzeReadingSentence } from '../src/lib/reading-grammar.js'
 
-test('全32長文・全794文の最上段英文へSVOCM等の役割を欠落なく直接対応させる', () => {
+test('全38長文・全990文の最上段英文へSVOCM等の役割を欠落なく直接対応させる', () => {
   const allowedRoles = new Set(READING_ROLE_CODES)
   const impliedSubjects = []
   let sentenceCount = 0
@@ -66,10 +66,10 @@ test('全32長文・全794文の最上段英文へSVOCM等の役割を欠落な�
     }
   }
 
-  assert.equal(PASSAGES.length, 32)
-  assert.equal(sentenceCount, 794)
-  assert.equal(roleSegmentCount, 6433)
-  assert.equal(renderedRoleSegmentCount, 6433)
+  assert.equal(PASSAGES.length, 38)
+  assert.equal(sentenceCount, 990)
+  assert.equal(roleSegmentCount, 7440)
+  assert.equal(renderedRoleSegmentCount, 7440)
   assert.deepEqual(impliedSubjects, [{
     passageId: 'p_5_school_open_day',
     sentenceIndex: 5,
@@ -92,12 +92,12 @@ test('役割ラベルは対応する下線の下にSVOCMを表示する', () => 
   assert.ok(html.indexOf('border-b-[3px]') < html.indexOf('>S 主語<'))
 })
 
-test('全169個の焦点語・74訂正と指摘文の全14役割・関連解説を人手正解表でGATEする', () => {
+test('全174個の焦点語・74訂正と指摘文の全14役割・関連解説を人手正解表でGATEする', () => {
   const report = auditReadingRoleQuality(PASSAGES, analyzeReadingSentence)
 
   assert.deepEqual(report.errors, [])
-  assert.equal(report.passageCount, 32)
-  assert.equal(report.sentenceCount, 794)
+  assert.equal(report.passageCount, 38)
+  assert.equal(report.sentenceCount, 990)
   assert.equal(report.onlyOccurrenceCount, 23)
   assert.equal(report.reviewedOnlyOccurrenceCount, 23)
   assert.equal(report.focusOccurrenceCount, READING_FOCUS_ROLE_EXPECTED_OCCURRENCE_COUNT)

@@ -3,6 +3,7 @@
 import { EXAM_READING_QUESTIONS } from './reading-questions-exam.js'
 import { EXPANDED_READING_QUESTIONS } from './reading-expansion-questions.js'
 import { CURRENT_AFFAIRS_READING_QUESTIONS } from './reading-current-affairs-questions.js'
+import { FIELD_READING_QUESTIONS } from './reading-fields-questions.js'
 import { EXTENDED_READING_QUESTIONS } from './reading-extended-questions.js'
 import { enrichReadingQuestionWithJapanese } from './reading-question-translations.js'
 
@@ -10,6 +11,7 @@ const RAW_READING_QUESTIONS = {
   ...EXAM_READING_QUESTIONS,
   ...EXPANDED_READING_QUESTIONS,
   ...CURRENT_AFFAIRS_READING_QUESTIONS,
+  ...FIELD_READING_QUESTIONS,
   p_5_lost_notebook: [
     {
       q: 'How does Rina go to school every morning?',

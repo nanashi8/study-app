@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-09-07T14:19:42.874Z",
+  "auditedAt": "2026-09-08T01:47:36.283Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -8,16 +8,16 @@
   "scope": {
     "sourceOfTruth": "src/lib/learningContentProgress.js#LEARNING_CONTENTS",
     "categoryCount": 18,
-    "learningItemCount": 16311,
-    "quizItemCount": 16429,
-    "storedAndGeneratedQuestionPathCount": 4180,
-    "storedAndGeneratedChoicePathCount": 16604,
-    "overallContentSha256": "702342089a992d7ae5691901f7fdf587cf89291c0ac1dda5f6eac83c9d39c9dc"
+    "learningItemCount": 16317,
+    "quizItemCount": 16435,
+    "storedAndGeneratedQuestionPathCount": 4207,
+    "storedAndGeneratedChoicePathCount": 16712,
+    "overallContentSha256": "96e3069cf014034a80ef0b09cf099589a4649ea269f25815a1f5a8d37ba04e6e"
   },
   "completionCriteria": [
     "全18教材カテゴリのID・母数・重複・内容ハッシュが一致する",
     "全問題バンクで選択肢が重複せず、正答が一つだけ存在し、問題別解説がある",
-    "共通講師解説を使う全選択式問題の正解・全誤答・わからない67,281経路に回答別指導がある",
+    "共通講師解説を使う全選択式問題の正解・全誤答・わからない67,416経路に回答別指導がある",
     "英文法は全3,450問・全13,800選択肢に問題文固有の根拠を持つ",
     "長文32本・794文・140問・560選択肢の和訳と選択肢別解説が原文順に対応する",
     "長文32本すべてが並び替え・文法・語法の技能練習を1問ずつ持ち、原文・訳・重点語・読解ルールが本文と一致する",
@@ -103,7 +103,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "ba125c61403eafb699a8e76b353ce733114bb5bbeca3723b54e6ee33857cdae4",
+    "sha256": "e95dfe7e3cc373472be59cd5d1b4415fe828dabf027c9bcfc9a609bf65b282e2",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -402,11 +402,11 @@
       "label": "英語長文",
       "learningUnit": "本",
       "quizUnit": "本",
-      "learningItemCount": 36,
-      "quizItemCount": 36,
-      "learningIdOrderSha256": "b77501066696a4fef412522a619bd3b3c3005beac5dcf307a234b850f55dd3ef",
-      "quizIdOrderSha256": "b77501066696a4fef412522a619bd3b3c3005beac5dcf307a234b850f55dd3ef",
-      "contentSha256": "de7f97f496c6ecd20494ce27b30d0218898c8abb652e6338f020ca9d1d5020da",
+      "learningItemCount": 42,
+      "quizItemCount": 42,
+      "learningIdOrderSha256": "5a73640787e6fb7d0e952cc3e4b513903f10cee089c479e8f91d9a8d8bf0215b",
+      "quizIdOrderSha256": "5a73640787e6fb7d0e952cc3e4b513903f10cee089c479e8f91d9a8d8bf0215b",
+      "contentSha256": "5247c27388c02390ef7efa8eb914f0681192059a4e28fbf77e83d05de25746be",
       "auditGateIds": [
         "inventory",
         "coreData",
@@ -692,11 +692,11 @@
     {
       "id": "reading",
       "label": "英語長文内容理解",
-      "questionCount": 140,
-      "choiceCount": 560,
-      "generalRationaleCount": 140,
-      "choiceSpecificRationaleCount": 560,
-      "questionSetSha256": "ddf8907c6de3251e766d7a72f79ca14a7b838c50bc30350d60b05dcbcbcda2b3",
+      "questionCount": 167,
+      "choiceCount": 668,
+      "generalRationaleCount": 167,
+      "choiceSpecificRationaleCount": 668,
+      "questionSetSha256": "68ab5646b0a67dfc98e343d6b059ac554f0515c793534e21a64946532730c192",
       "result": "pass",
       "failureCount": 0,
       "failures": []
@@ -801,10 +801,10 @@
   "instructorAnswerPaths": {
     "coverageTest": "tests/instructor-explanations.test.mjs",
     "requirement": "共通講師解説を使う全選択式問題の正解・全誤答・わからないに、正解、問題固有の根拠、回答別の指導、次に使える考え方を返す",
-    "questionCount": 15734,
-    "displayedChoiceCount": 51547,
-    "unknownPathCount": 15734,
-    "answerPathCount": 67281,
+    "questionCount": 15761,
+    "displayedChoiceCount": 51655,
+    "unknownPathCount": 15761,
+    "answerPathCount": 67416,
     "result": "pass",
     "families": [
       {
@@ -874,10 +874,10 @@
       {
         "id": "reading",
         "label": "英語長文内容理解",
-        "questionCount": 156,
-        "displayedChoiceCount": 624,
-        "unknownPathCount": 156,
-        "answerPathCount": 780
+        "questionCount": 183,
+        "displayedChoiceCount": 732,
+        "unknownPathCount": 183,
+        "answerPathCount": 915
       },
       {
         "id": "diagnostic",
@@ -899,7 +899,7 @@
   },
   "extendedReadingDetail": {
     "passageCount": 4,
-    "catalogPassageCount": 36,
+    "catalogPassageCount": 42,
     "targetWords": [
       1000,
       2000,
@@ -915,11 +915,11 @@
     "totalWords": 9860,
     "sentenceCount": 528,
     "targetVocabularyCount": 1484,
-    "baselineCoveredVocabulary": 1863,
-    "baselineCoveragePercent": 21.01,
-    "combinedCoveredVocabulary": 3921,
-    "combinedCoveragePercent": 44.21,
-    "coverageGain": 2058,
+    "baselineCoveredVocabulary": 1963,
+    "baselineCoveragePercent": 22.13,
+    "combinedCoveredVocabulary": 3956,
+    "combinedCoveragePercent": 44.6,
+    "coverageGain": 1993,
     "dictionarySize": 8869,
     "extendedTokenCount": 18882,
     "resolvedExtendedTokenCount": 18882,
@@ -942,51 +942,51 @@
       },
       "2": {
         "total": 1561,
-        "before": 250,
-        "beforePercent": 16.02,
-        "after": 679,
-        "afterPercent": 43.5,
-        "gain": 429
+        "before": 265,
+        "beforePercent": 16.98,
+        "after": 687,
+        "afterPercent": 44.01,
+        "gain": 422
       },
       "3": {
         "total": 1101,
-        "before": 307,
-        "beforePercent": 27.88,
+        "before": 315,
+        "beforePercent": 28.61,
         "after": 633,
         "afterPercent": 57.49,
-        "gain": 326
+        "gain": 318
       },
       "4": {
         "total": 740,
-        "before": 339,
-        "beforePercent": 45.81,
-        "after": 571,
-        "afterPercent": 77.16,
-        "gain": 232
+        "before": 363,
+        "beforePercent": 49.05,
+        "after": 577,
+        "afterPercent": 77.97,
+        "gain": 214
       },
       "5": {
         "total": 616,
-        "before": 341,
-        "beforePercent": 55.36,
-        "after": 486,
-        "afterPercent": 78.9,
-        "gain": 145
+        "before": 353,
+        "beforePercent": 57.31,
+        "after": 488,
+        "afterPercent": 79.22,
+        "gain": 135
       },
       "pre2": {
         "total": 1327,
-        "before": 389,
-        "beforePercent": 29.31,
-        "after": 766,
-        "afterPercent": 57.72,
-        "gain": 377
+        "before": 423,
+        "beforePercent": 31.88,
+        "after": 782,
+        "afterPercent": 58.93,
+        "gain": 359
       },
       "pre1": {
         "total": 2520,
-        "before": 207,
-        "beforePercent": 8.21,
-        "after": 713,
-        "afterPercent": 28.29,
-        "gain": 506
+        "before": 214,
+        "beforePercent": 8.49,
+        "after": 716,
+        "afterPercent": 28.41,
+        "gain": 502
       }
     },
     "domains": [

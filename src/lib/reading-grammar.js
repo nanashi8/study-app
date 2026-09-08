@@ -3290,6 +3290,7 @@ const INFINITIVE_CONTEXT_OVERRIDES = new Map([
 ])
 
 const INFINITIVE_BINDING_OVERRIDES = new Map([
+  ['The students say that it is much harder to protect a habitat than to damage one.|||to protect a habitat', { type: 'anticipatory-subject-content', governor: 'is much harder', semanticSubject: '生息地を守る人' }],
   ["After the talk, children will work in small groups to build a paper model of the station.|||to build", { type: 'purpose', governor: 'will work', semanticSubject: 'children' }],
   ['The students began to understand how temperature, rain, and insects affected the vegetables.|||to understand', { type: 'verb-complement', governor: 'began', semanticSubject: 'The students' }],
   ['It also gives independent researchers a way to test whether alternative definitions would tell a substantially different story.|||to test', { type: 'noun-modifier', governor: 'a way', semanticSubject: 'independent researchers' }],

@@ -348,6 +348,9 @@ const noChange = (sentence, connector, occurrence, reason) => Object.freeze({
 // 全144候補のうち、既存の節末ですでに関係が完成しているもの、または
 // 「一方」のように日本語の独立したつなぎだけで明確なもの。
 export const READING_CONNECTOR_NO_BACK_REFERENCE_REVIEWS = Object.freeze([
+  noChange('A second factor was heat, because the club practiced at four in the afternoon.', 'because', 1, 'already-complete'),
+  noChange('Results in races improved, although nobody trained more hours.', 'although', 1, 'already-complete'),
+  noChange('If a disaster stops the school bell, the radio room carries the announcement.', 'If', 1, 'already-complete'),
   noChange('She likes English because her teacher uses many pictures.', 'because', 1, 'already-complete'),
   noChange('She is happy because she can use the story in English class.', 'because', 1, 'already-complete'),
   noChange('If it becomes full, the library will put a message on its website.', 'If', 1, 'already-complete'),

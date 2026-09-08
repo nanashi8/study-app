@@ -39,7 +39,7 @@ const EXPECTED_COUNTS = Object.freeze({
   listening: 160,
   dictation: 140,
   etymology: 339,
-  reading: 36,
+  reading: 42,
   writing: 14,
   'koten-vocab': 300,
   'koten-grammar': 74,
@@ -95,9 +95,9 @@ function reviewEntry({ memoryAt, testAt, failed = false, day }) {
   }
 }
 
-test('全18教材・16,311項目を一覧行へ重複も欠落もなく変換する', () => {
+test('全18教材・16,317項目を一覧行へ重複も欠落もなく変換する', () => {
   assert.equal(LEARNING_CONTENTS.length, 18)
-  assert.equal(learningContentCatalogTotal(LEARNING_CONTENTS), 16_311)
+  assert.equal(learningContentCatalogTotal(LEARNING_CONTENTS), 16_317)
   assert.deepEqual(
     Object.fromEntries(LEARNING_CONTENTS.map((content) => [content.id, content.items.length])),
     EXPECTED_COUNTS,

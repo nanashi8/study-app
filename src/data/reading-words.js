@@ -5,6 +5,7 @@ import { PASSAGES } from './passages.js'
 import { splitMeanings } from './compact.js'
 import { EXPANDED_READING_WORD_DEFINITIONS } from './reading-expansion-word-definitions.js'
 import { CURRENT_AFFAIRS_READING_WORD_DEFINITIONS } from './reading-current-affairs-word-definitions.js'
+import { FIELD_READING_WORD_DEFINITIONS } from './reading-fields-word-definitions.js'
 
 // 自動語根リンクと同じ根拠を画面でも説明できるよう、長文追加語のうち
 // 語根カードへ入る語だけは、確認済みの由来を個別に持たせる。
@@ -309,6 +310,7 @@ const PASSAGE_DICTIONARY_WORDS = [
   { id: 'contestable', pos: '形', level: '1', meaning: '異議を唱えられる・議論の余地がある', field: '社会' },
   ...EXPANDED_READING_WORD_DEFINITIONS,
   ...CURRENT_AFFAIRS_READING_WORD_DEFINITIONS,
+  ...FIELD_READING_WORD_DEFINITIONS,
 ].map(makePassageWord)
 
 export const PASSAGE_DICTIONARY_WORD_IDS = Object.freeze(

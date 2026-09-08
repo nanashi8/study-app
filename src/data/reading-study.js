@@ -4,6 +4,7 @@ import { PASSAGE_DICTIONARY_WORD_IDS } from './reading-words.js'
 import { EXAM_READING_STUDY } from './reading-study-exam.js'
 import { EXPANDED_READING_STUDY } from './reading-expansion-study.js'
 import { CURRENT_AFFAIRS_READING_STUDY } from './reading-current-affairs-study.js'
+import { FIELD_READING_STUDY } from './reading-fields-study.js'
 import { EXTENDED_READING_STUDY } from './reading-extended-study.js'
 import { getWord } from './vocab.js'
 
@@ -26,6 +27,7 @@ export const READING_STUDY = {
   ...EXAM_READING_STUDY,
   ...EXPANDED_READING_STUDY,
   ...CURRENT_AFFAIRS_READING_STUDY,
+  ...FIELD_READING_STUDY,
   ...EXTENDED_READING_STUDY,
   p_5_lost_notebook: {
     phraseIds: [],

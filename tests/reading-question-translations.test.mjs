@@ -10,18 +10,18 @@ import {
 } from '../src/lib/instructorExplanations.js'
 import { auditReadingTranslations } from '../src/lib/reading-translation-audit.js'
 
-test('全32長文・794文・140問・560選択肢の和訳解説に欠落と対応ずれがない', () => {
+test('全38長文・990文・167問・668選択肢の和訳解説に欠落と対応ずれがない', () => {
   const audit = auditReadingTranslations()
 
-  assert.equal(audit.passageCount, 32)
-  assert.equal(audit.sentenceCount, 794)
-  assert.equal(audit.sentenceTranslationCount, 794)
-  assert.equal(audit.questionCount, 140)
-  assert.equal(audit.questionTranslationCount, 140)
-  assert.equal(audit.evidenceExplanationCount, 140)
-  assert.equal(audit.choiceCount, 560)
-  assert.equal(audit.choiceTranslationCount, 560)
-  assert.equal(audit.choiceExplanationCount, 560)
+  assert.equal(audit.passageCount, 38)
+  assert.equal(audit.sentenceCount, 990)
+  assert.equal(audit.sentenceTranslationCount, 990)
+  assert.equal(audit.questionCount, 167)
+  assert.equal(audit.questionTranslationCount, 167)
+  assert.equal(audit.evidenceExplanationCount, 167)
+  assert.equal(audit.choiceCount, 668)
+  assert.equal(audit.choiceTranslationCount, 668)
+  assert.equal(audit.choiceExplanationCount, 668)
   assert.deepEqual(audit.issues, [])
   assert.equal(audit.complete, true)
 })
@@ -54,7 +54,7 @@ test('全問題の徹底解説が設問和訳・正解和訳・選んだ選択�
     }
   }
 
-  assert.equal(paths, 560)
+  assert.equal(paths, 668)
 })
 
 test('答え合わせ後の全選択肢解説は英語・和訳・正誤理由を一対一で返す', () => {
@@ -78,7 +78,7 @@ test('答え合わせ後の全選択肢解説は英語・和訳・正誤理由�
     }
   }
 
-  assert.equal(choices, 560)
+  assert.equal(choices, 668)
 })
 
 test('読解チェック画面は答え合わせ後に設問と全選択肢の和訳解説を接続する', () => {

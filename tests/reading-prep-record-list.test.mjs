@@ -12,8 +12,8 @@ const REVIEW_RESULTS = ['remembered', 'forgot', 'correct', 'wrong']
 const contentById = new Map(LEARNING_CONTENTS.map((content) => [content.id, content]))
 const prepSource = readFileSync(new URL('../src/screens/ReadingPrep.jsx', import.meta.url), 'utf8')
 
-test('長文36本の準備は、必須語彙も熟語・表現も既存SRSへ記録できる', () => {
-  assert.equal(ALL_PASSAGES.length, 36)
+test('長文42本の準備は、必須語彙も熟語・表現も既存SRSへ記録できる', () => {
+  assert.equal(ALL_PASSAGES.length, 42)
 
   let words = 0
   let phrases = 0
@@ -37,8 +37,8 @@ test('長文36本の準備は、必須語彙も熟語・表現も既存SRSへ記
       }
     }
   }
-  assert.equal(words, 2_805)
-  assert.equal(phrases, 180)
+  assert.equal(words, 3_045)
+  assert.equal(phrases, 204)
 })
 
 test('長文ごとの固有表現も、教材母集団になくても一覧の行になる', () => {

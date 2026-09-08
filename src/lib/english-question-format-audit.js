@@ -13,6 +13,8 @@ import {
 import { PASSAGES } from '../data/passages.js'
 import { CORE_READING_PRACTICE_QUESTIONS } from '../data/reading-core-practice-questions.js'
 import { CURRENT_AFFAIRS_PASSAGES } from '../data/reading-current-affairs-passages.js'
+import { FIELD_PASSAGES } from '../data/reading-fields-passages.js'
+import { FIELD_READING_PRACTICE_QUESTIONS } from '../data/reading-fields-practice-questions.js'
 import {
   ALL_READING_PRACTICE_QUESTIONS,
   CURRENT_AFFAIRS_READING_PRACTICE_QUESTIONS,
@@ -187,8 +189,19 @@ export function auditEnglishQuestionFormats() {
     if (!passageIdSet.has(id)) addIssue('orphan-reading-practice-passage', id)
   }
 
+  // 語彙10分野を1本の中で通す分野長文も、同じ3問構成・同じ規則で検査する。
+  const fieldPassageIds = new Set(FIELD_PASSAGES.map((passage) => passage.id))
+  for (const passage of FIELD_PASSAGES) {
+    auditReadingPracticeQuestions(passage, FIELD_READING_PRACTICE_QUESTIONS, addIssue)
+  }
+  for (const id of Object.keys(FIELD_READING_PRACTICE_QUESTIONS)) {
+    if (!fieldPassageIds.has(id)) addIssue('orphan-reading-practice-passage', id)
+  }
+
   // 時事長文より前に作った受験長文24本も、同じ3問構成・同じ規則で検査する。
-  const corePassages = PASSAGES.filter((passage) => !passageIdSet.has(passage.id))
+  const corePassages = PASSAGES.filter(
+    (passage) => !passageIdSet.has(passage.id) && !fieldPassageIds.has(passage.id),
+  )
   const corePassageIds = new Set(corePassages.map((passage) => passage.id))
   for (const passage of corePassages) {
     auditReadingPracticeQuestions(passage, CORE_READING_PRACTICE_QUESTIONS, addIssue)
@@ -198,11 +211,11 @@ export function auditEnglishQuestionFormats() {
   }
   if (corePassages.length !== 24) addIssue('core-reading-passage-total', 'core', corePassages.length)
 
-  if (practiceIds.length !== 96) addIssue('reading-practice-total', 'current-affairs', practiceIds.length)
+  if (practiceIds.length !== 114) addIssue('reading-practice-total', 'current-affairs', practiceIds.length)
   if (new Set(practiceIds).size !== practiceIds.length) addIssue('duplicate-reading-practice-id', 'current-affairs')
   const readingTypeCounts = countBy(ALL_READING_PRACTICE_QUESTIONS, (question) => question.questionType)
   for (const type of READING_PRACTICE_TYPES) {
-    if (readingTypeCounts[type] !== 32) {
+    if (readingTypeCounts[type] !== 38) {
       addIssue('unbalanced-reading-practice-type', type, readingTypeCounts[type] ?? 0)
     }
   }

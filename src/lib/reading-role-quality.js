@@ -63,7 +63,7 @@ const FOCUS_EXPLANATION = /(?:限定|だけ|のみ|唯一|一つ目|対照|呼�
 // only と同じ誤分類を起こしやすい焦点・頻度・様態副詞について、
 // 本文全件を手で確認した時点の語別母数と許容される下線境界を固定する。
 export const READING_FOCUS_ROLE_EXPECTED_COUNTS = Object.freeze({
-  also: 74,
+  also: 79,
   always: 5,
   consciously: 1,
   even: 16,
@@ -74,9 +74,9 @@ export const READING_FOCUS_ROLE_EXPECTED_COUNTS = Object.freeze({
   simply: 12,
 })
 
-export const READING_FOCUS_ROLE_EXPECTED_OCCURRENCE_COUNT = 169
+export const READING_FOCUS_ROLE_EXPECTED_OCCURRENCE_COUNT = 174
 export const READING_FOCUS_ROLE_EXPECTED_CORRECTION_COUNT = 74
-export const READING_FOCUS_ROLE_EXPECTED_SENTENCE_COUNT = 153
+export const READING_FOCUS_ROLE_EXPECTED_SENTENCE_COUNT = 158
 export const READING_FOCUS_ROLE_EXPECTED_REVIEW_FINGERPRINT_COUNT = 134
 
 const FOCUS_CARRIER_REVIEWS = Object.freeze({

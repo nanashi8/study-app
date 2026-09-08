@@ -1,4 +1,5 @@
 import { CORE_READING_PRACTICE_QUESTIONS } from './reading-core-practice-questions.js'
+import { FIELD_READING_PRACTICE_QUESTIONS } from './reading-fields-practice-questions.js'
 import { EXTENDED_READING_PRACTICE_QUESTIONS } from './reading-extended-practice-questions.js'
 
 // 追加した時事長文で、内容理解とは別に「語順・文法・語法」を本文の実文で練習する。
@@ -467,11 +468,12 @@ export const CURRENT_AFFAIRS_READING_PRACTICE_QUESTIONS = Object.freeze({
   ]),
 })
 
-// 受験長文24本と時事長文8本は同じ規則で作った技能練習問題を持つ。
+// 受験長文24本・時事長文8本・分野長文は同じ規則で作った技能練習問題を持つ。
 export const READING_PRACTICE_QUESTIONS = Object.freeze(
   Object.fromEntries([
     ...Object.entries(CORE_READING_PRACTICE_QUESTIONS),
     ...Object.entries(CURRENT_AFFAIRS_READING_PRACTICE_QUESTIONS),
+    ...Object.entries(FIELD_READING_PRACTICE_QUESTIONS),
   ]),
 )
 
