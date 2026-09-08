@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-09-08T01:47:36.283Z",
+  "auditedAt": "2026-09-08T04:33:38.303Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -103,7 +103,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "e95dfe7e3cc373472be59cd5d1b4415fe828dabf027c9bcfc9a609bf65b282e2",
+    "sha256": "4faf03cf1bc9364dcf2c2692637846f27f9cbb0f30d6a7dd537301e1aca27d2d",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -245,6 +245,7 @@
       "tests/vocab-session-progression.test.mjs",
       "tests/word-phrases.test.mjs",
       "tests/word-requests.test.mjs",
+      "tests/writing-exam.test.mjs",
       "tests/writing.test.mjs",
       "tests/wrong-review.test.mjs",
       "tests/xp-retirement.test.mjs"
