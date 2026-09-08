@@ -6,6 +6,7 @@ import {
   writingWordTokens,
   writingTokenPositionResults,
 } from '../lib/writing.js'
+import { Check, Close } from './Icons.jsx'
 import { cx } from './ui.jsx'
 
 const initialWordOrderState = (targetText, seed, initialText) => {
@@ -33,28 +34,40 @@ const initialWordOrderState = (targetText, seed, initialText) => {
 
 // 英作文と長文・文法の並び替えで共用する、単語カード式の語順入力。
 // 置いた語をもう一度押すと戻せるため、ドラッグ操作が難しい端末でも完結する。
+// liveFeedback を立てると、テーマ別英作文と同じく置いた瞬間に正誤が出る。
+// 最後まで並べてから全部やり直すのではなく、間違えた1語をその場で直せる。
 export function WordOrderExercise({
   targetText,
   seed = targetText,
   initialText = '',
   checked = false,
   disabled = false,
+  liveFeedback = false,
   onChange,
   className = '',
 }) {
   const [initialState] = useState(() => initialWordOrderState(targetText, seed, initialText))
   const [wordBank, setWordBank] = useState(initialState.wordBank)
   const [answerTokens, setAnswerTokens] = useState(initialState.answerTokens)
-  const totalTokenCount = wordBank.length + answerTokens.length
-  const positionResults = checked
+  const showResults = checked || liveFeedback
+  const positionResults = showResults
     ? writingTokenPositionResults(answerTokens, targetText)
     : []
+  const hasIncorrectPosition = positionResults.some((correct) => !correct)
+  // 答え合わせのあとは正誤カードと模範解答が出るため、途中の知らせは重ねない。
+  const liveTone = liveFeedback && !checked && answerTokens.length > 0
+    ? (hasIncorrectPosition ? 'wrong' : 'right')
+    : null
+  const liveComplete = liveTone === 'right' && wordBank.length === 0
 
-  const report = (tokens) => {
+  const report = (tokens, bank) => {
     const text = buildWritingTokenText(tokens)
     onChange?.(text, {
-      complete: tokens.length === totalTokenCount,
-      correct: isWritingTokenOrderCorrect(tokens, targetText),
+      complete: bank.length === 0,
+      correct: bank.length === 0 && isWritingTokenOrderCorrect(tokens, targetText),
+      wrongPosition: writingTokenPositionResults(tokens, targetText).some(
+        (correct) => !correct,
+      ),
       tokenCount: tokens.length,
     })
   }
@@ -65,26 +78,27 @@ export function WordOrderExercise({
     const nextAnswer = [...answerTokens, token]
     setWordBank(nextBank)
     setAnswerTokens(nextAnswer)
-    const text = buildWritingTokenText(nextAnswer)
-    onChange?.(text, {
-      complete: nextBank.length === 0,
-      correct: nextBank.length === 0 && isWritingTokenOrderCorrect(nextAnswer, targetText),
-      tokenCount: nextAnswer.length,
-    })
+    report(nextAnswer, nextBank)
   }
 
   const returnWord = (token) => {
     if (checked || disabled) return
     const nextAnswer = answerTokens.filter((item) => item.id !== token.id)
+    const nextBank = [...wordBank, token]
     setAnswerTokens(nextAnswer)
-    setWordBank((items) => [...items, token])
-    report(nextAnswer)
+    setWordBank(nextBank)
+    report(nextAnswer, nextBank)
   }
 
   return (
     <div className={className} data-word-order-exercise>
       <div
-        className="min-h-16 rounded-2xl border-2 border-dashed border-brand-200 bg-brand-50/55 p-2.5"
+        className={cx(
+          'min-h-16 rounded-2xl border-2 p-2.5 transition-colors',
+          liveTone === 'wrong' && 'border-rose-300 bg-rose-50',
+          liveTone === 'right' && 'border-emerald-300 bg-emerald-50/60',
+          !liveTone && 'border-dashed border-brand-200 bg-brand-50/55',
+        )}
         data-word-order-answer
         aria-label="並べた語句"
       >
@@ -101,21 +115,63 @@ export function WordOrderExercise({
                 disabled={checked || disabled}
                 onClick={() => returnWord(token)}
                 className={cx(
-                  'min-h-11 rounded-xl border-2 px-3 py-2 font-display text-sm font-extrabold shadow-sm transition-transform active:scale-95',
-                  !checked && 'border-brand-300 bg-white text-brand-800',
-                  checked && positionResults[index]
+                  'inline-flex min-h-11 items-center gap-1.5 rounded-xl border-2 px-3 py-2 font-display text-sm font-extrabold shadow-sm transition-transform active:scale-95',
+                  !showResults && 'border-brand-300 bg-white text-brand-800',
+                  showResults && positionResults[index]
                     && 'border-emerald-400 bg-emerald-50 text-emerald-800',
-                  checked && !positionResults[index]
+                  showResults && !positionResults[index]
                     && 'border-rose-400 bg-rose-50 text-rose-800',
                 )}
-                aria-label={`${index + 1}番目の語 ${token.word}${checked ? '' : ' を戻す'}`}
+                aria-label={`${index + 1}番目の語 ${token.word}${
+                  showResults
+                    ? positionResults[index]
+                      ? '。正しい位置です'
+                      : '。この位置ではありません'
+                    : ''
+                }${checked || disabled ? '' : '。押すと戻せます'}`}
               >
                 {token.word}
+                {liveFeedback && (positionResults[index] ? (
+                  <Check size={14} className="text-emerald-600" aria-hidden="true" />
+                ) : (
+                  <Close size={14} className="text-rose-500" aria-hidden="true" />
+                ))}
               </button>
             ))}
           </div>
         )}
       </div>
+
+      {liveFeedback && !checked && (
+        <>
+          <p className="sr-only" aria-live="polite">
+            {answerTokens.length > 0 &&
+              `${answerTokens.length}番目の${answerTokens.at(-1).word}は、${
+                positionResults.at(-1)
+                  ? '正しい位置です'
+                  : 'この位置ではありません'
+              }`}
+          </p>
+          {hasIncorrectPosition && (
+            <div
+              role="alert"
+              className="mt-2 flex items-center gap-2 rounded-2xl bg-rose-100 px-3 py-2.5 text-xs font-extrabold text-rose-700"
+            >
+              <Close size={16} />
+              赤いカードはその位置ではありません。押して戻そう。
+            </div>
+          )}
+          {liveComplete && (
+            <div
+              role="status"
+              className="mt-2 flex items-center gap-2 rounded-2xl bg-emerald-100 px-3 py-2.5 text-xs font-extrabold text-emerald-700"
+            >
+              <Check size={16} />
+              正しい語順です！ 答え合わせへ進もう。
+            </div>
+          )}
+        </>
+      )}
 
       <div
         className="mt-2 flex min-h-14 flex-wrap gap-2 rounded-2xl bg-white p-2.5 ring-1 ring-brand-100"
