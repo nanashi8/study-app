@@ -38,6 +38,7 @@ import {
   Check,
   ChevronLeft,
   Close,
+  Eye,
   Lightbulb,
   Refresh,
   Sparkles,
@@ -276,8 +277,8 @@ function WritingUnitBriefing({
         </Button>
         <p className="mt-2 text-center text-[10px] font-bold text-ink/35">
           {mode === 'guide'
-            ? 'ヒントあり：型と次の1語を確認しながら進みます'
-            : 'チャレンジ：必要なときだけ型と次の1語を確認できます'}
+            ? 'ヒントあり：型と、次の1語の頭文字を見ながら進みます'
+            : 'チャレンジ：行きづまったときだけ頭文字のヒントを出せます'}
         </p>
       </div>
     </div>
@@ -301,6 +302,8 @@ export function WritingPlayScreen() {
   const [trail, setTrail] = useState([])
   const [selected, setSelected] = useState(null)
   const [showHint, setShowHint] = useState(false)
+  // 「答えの1語」は自分から開いた位置だけ見せる。位置が進むと閉じ直す。
+  const [openedHintKey, setOpenedHintKey] = useState(null)
   const [finished, setFinished] = useState(false)
   const [wordBank, setWordBank] = useState([])
   const [answerTokens, setAnswerTokens] = useState([])
@@ -364,6 +367,10 @@ export function WritingPlayScreen() {
   const nextTokenGuide = selected
     ? writingNextTokenGuide(answerTokens, selected.text)
     : null
+  const hintKey = nextTokenGuide
+    ? `${stepIndex}:${selected.id}:${nextTokenGuide.index}`
+    : null
+  const answerWordOpen = Boolean(hintKey) && openedHintKey === hintKey
 
   const completedResult = finished
     ? writingCompletion(exercise, trail)
@@ -373,6 +380,7 @@ export function WritingPlayScreen() {
     setTrail([])
     setSelected(null)
     setShowHint(false)
+    setOpenedHintKey(null)
     setFinished(false)
     setWordBank([])
     setAnswerTokens([])
@@ -382,6 +390,7 @@ export function WritingPlayScreen() {
     setSelected(null)
     setWordBank([])
     setAnswerTokens([])
+    setOpenedHintKey(null)
   }
 
   const chooseSentence = (option) => {
@@ -423,6 +432,7 @@ export function WritingPlayScreen() {
     if (!trail.length) return
     setTrail((items) => items.slice(0, -1))
     setShowHint(false)
+    setOpenedHintKey(null)
     setFinished(false)
   }
 
@@ -453,6 +463,7 @@ export function WritingPlayScreen() {
     setWordBank([])
     setAnswerTokens([])
     setShowHint(false)
+    setOpenedHintKey(null)
   }
 
   if (finished && completedResult) {
@@ -844,17 +855,32 @@ export function WritingPlayScreen() {
                   </div>
                 )}
                 {selected && nextTokenGuide && (
-                  <div className="mt-2 flex items-center justify-between gap-3 rounded-xl bg-cyan-100 px-3 py-2">
-                    <p className="text-[11px] font-extrabold text-cyan-900">
-                      {nextTokenGuide.correction
-                        ? `${nextTokenGuide.position}語目を直す`
-                        : answerTokens.length
-                          ? '次の1語'
-                          : '文頭'}
+                  <div className="mt-2 rounded-xl bg-cyan-100 px-3 py-2">
+                    <div className="flex items-center justify-between gap-3">
+                      <p className="text-[11px] font-extrabold text-cyan-900">
+                        {nextTokenGuide.correction
+                          ? `${nextTokenGuide.position}語目を直す`
+                          : answerTokens.length
+                            ? '次の1語'
+                            : '文頭'}
+                      </p>
+                      <span className="rounded-lg bg-white px-2.5 py-1 font-mono text-xs font-extrabold text-indigo-900 shadow-sm">
+                        {answerWordOpen ? nextTokenGuide.word : nextTokenGuide.masked}
+                      </span>
+                    </div>
+                    <p className="mt-1 text-[10px] font-bold leading-relaxed text-cyan-900/70">
+                      {answerWordOpen
+                        ? 'ここは答えを開きました。次の1語はもう一度自分で考えよう。'
+                        : `全${nextTokenGuide.letters}文字の語です。頭文字だけを出すので、合う単語カードを探そう。`}
                     </p>
-                    <span className="rounded-lg bg-white px-2.5 py-1 font-mono text-xs font-extrabold text-indigo-900 shadow-sm">
-                      {nextTokenGuide.word}
-                    </span>
+                    {!answerWordOpen && (
+                      <button
+                        onClick={() => setOpenedHintKey(hintKey)}
+                        className="mt-2 inline-flex min-h-9 items-center gap-1.5 rounded-lg bg-white px-2.5 py-1.5 text-[11px] font-extrabold text-cyan-800 shadow-sm active:scale-95"
+                      >
+                        <Eye size={14} /> どうしても分からないので答えを開く
+                      </button>
+                    )}
                   </div>
                 )}
               </div>

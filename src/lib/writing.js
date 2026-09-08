@@ -67,9 +67,29 @@ export function writingTokenPositionResults(tokens = [], targetText = '') {
   )
 }
 
+// ヒントで見せる形。頭文字と記号だけを残し、あとの文字は伏せる。
+// 次の1語をそのまま出すとカードを写すだけで一文が終わってしまうため、
+// 思い出す手掛かりの分だけを渡す。
+export function maskWritingHintWord(word = '') {
+  let firstLetterShown = false
+  return [...String(word)]
+    .map((character) => {
+      if (!/[A-Za-z]/.test(character)) return character
+      if (firstLetterShown) return '_'
+      firstLetterShown = true
+      return character
+    })
+    .join('')
+}
+
+export function writingHintLetterCount(word = '') {
+  return (String(word).match(/[A-Za-z]/g) ?? []).length
+}
+
 // ガイド練習で次に直す／置く1語を返す。途中に誤りがあれば最初の
 // 誤位置を優先し、そこまで正しければ未配置の次位置を案内する。
-// 完成英文を一度に見せず、必要な瞬間だけ足場を出すための情報に絞る。
+// word は自分から開いたときだけ見せる控えの答えで、ふだん画面に出すのは
+// masked（頭文字と文字数）だけにする。
 export function writingNextTokenGuide(tokens = [], targetText = '') {
   const target = writingWordTokens(targetText)
   const positionResults = writingTokenPositionResults(tokens, targetText)
@@ -82,6 +102,8 @@ export function writingNextTokenGuide(tokens = [], targetText = '') {
     index,
     position: index + 1,
     word: expected.word,
+    masked: maskWritingHintWord(expected.word),
+    letters: writingHintLetterCount(expected.word),
     correction: incorrectIndex >= 0,
   }
 }
@@ -164,4 +186,117 @@ export function writingCompletion(exercise, trail = []) {
       met: resolved.length >= Math.ceil(((index + 1) / exercise.rubric.length) * exercise.steps.length),
     })),
   }
+}
+
+// ── 入試型英作文（級別・文法別）の採点 ──────────────────────────────
+// 自分で書いた英文は、大文字小文字・句読点・短縮形の違いで
+// バツにしない。同じ意味に読める形はそろえてから比べる。
+const WRITING_CONTRACTIONS = new Map([
+  ["i'm", 'i am'],
+  ["you're", 'you are'],
+  ["we're", 'we are'],
+  ["they're", 'they are'],
+  ["isn't", 'is not'],
+  ["aren't", 'are not'],
+  ["wasn't", 'was not'],
+  ["weren't", 'were not'],
+  ["don't", 'do not'],
+  ["doesn't", 'does not'],
+  ["didn't", 'did not'],
+  ["can't", 'cannot'],
+  ["won't", 'will not'],
+  ["wouldn't", 'would not'],
+  ["shouldn't", 'should not'],
+  ["couldn't", 'could not'],
+  ["mustn't", 'must not'],
+  ["needn't", 'need not'],
+  ["haven't", 'have not'],
+  ["hasn't", 'has not'],
+  ["hadn't", 'had not'],
+  ["i've", 'i have'],
+  ["you've", 'you have'],
+  ["we've", 'we have'],
+  ["they've", 'they have'],
+  ["i'll", 'i will'],
+  ["you'll", 'you will'],
+  ["he'll", 'he will'],
+  ["she'll", 'she will'],
+  ["it'll", 'it will'],
+  ["we'll", 'we will'],
+  ["they'll", 'they will'],
+  ["let's", 'let us'],
+])
+
+export function normalizeWritingSentence(text = '') {
+  const plain = String(text)
+    .replace(/[\u2018\u2019\u02bc\u0060\u00b4]/g, "'")
+    .toLowerCase()
+    .replace(/[^a-z0-9'\-\s]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+  if (!plain) return ''
+  return plain
+    .split(' ')
+    .flatMap((word) => {
+      const core = word.replace(/^'+|'+$/g, '')
+      if (!core) return []
+      const expanded = WRITING_CONTRACTIONS.get(core)
+      return expanded ? expanded.split(' ') : [core]
+    })
+    .join(' ')
+    .replace(/\bcan not\b/g, 'cannot')
+}
+
+// 書いた英文と模範解答の語を突き合わせ、足りない語と余分な語を返す。
+// 答え合わせのあとにだけ使い、書いている途中には見せない。
+const tokenDifference = (expected, typed) => {
+  const remaining = [...typed]
+  const missing = []
+  for (const word of expected) {
+    const index = remaining.indexOf(word)
+    if (index >= 0) remaining.splice(index, 1)
+    else missing.push(word)
+  }
+  return { missing, extra: remaining }
+}
+
+export function writingSentenceReview(input = '', question = {}) {
+  const answers = [question.answer, ...(question.alt ?? [])].filter(Boolean)
+  const typed = normalizeWritingSentence(input)
+  const fallback = answers[0] ?? ''
+
+  if (!typed) {
+    return { answered: false, correct: false, best: fallback, missing: [], extra: [] }
+  }
+  const matched = answers.find(
+    (answer) => normalizeWritingSentence(answer) === typed,
+  )
+  if (matched) {
+    return { answered: true, correct: true, best: matched, missing: [], extra: [] }
+  }
+
+  let best = fallback
+  let bestDifference = { missing: [], extra: [] }
+  let fewest = Infinity
+  for (const answer of answers) {
+    const difference = tokenDifference(
+      normalizeWritingSentence(answer).split(' ').filter(Boolean),
+      typed.split(' ').filter(Boolean),
+    )
+    const gap = difference.missing.length + difference.extra.length
+    if (gap < fewest) {
+      fewest = gap
+      best = answer
+      bestDifference = difference
+    }
+  }
+  return { answered: true, correct: false, best, ...bestDifference }
+}
+
+// 一文まるごとの伏せ字ヒント。語数と頭文字だけを渡し、
+// 英文そのものは見せない。
+export function maskWritingSentence(text = '') {
+  return writingWordTokens(text)
+    .map((token) => maskWritingHintWord(token.word))
+    .join(' ')
 }

@@ -1,5 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
 
 import {
   WRITING_EXERCISES,
@@ -15,6 +16,8 @@ import {
   buildWritingTokenText,
   buildWritingText,
   isWritingTokenOrderCorrect,
+  maskWritingHintWord,
+  writingHintLetterCount,
   recommendedWritingTrail,
   selectedWritingGrammarIds,
   selectedWritingWordIds,
@@ -210,21 +213,64 @@ test('ヒントありでは最初の誤位置、または次の未配置語を1�
     index: 0,
     position: 1,
     word: 'Last',
+    masked: 'L___',
+    letters: 4,
     correction: false,
   })
   assert.deepEqual(writingNextTokenGuide(ordered.slice(0, 2), text), {
     index: 2,
     position: 3,
     word: 'I',
+    masked: 'I',
+    letters: 1,
     correction: false,
   })
   assert.deepEqual(writingNextTokenGuide([ordered[0], ordered[2]], text), {
     index: 1,
     position: 2,
     word: 'Sunday,',
+    masked: 'S_____,',
+    letters: 6,
     correction: true,
   })
   assert.equal(writingNextTokenGuide(ordered, text), null)
+})
+
+test('ヒントは頭文字と文字数だけを出し、答えの語をそのまま見せない', () => {
+  assert.equal(maskWritingHintWord('went'), 'w___')
+  assert.equal(maskWritingHintWord("don't"), "d__'_")
+  assert.equal(maskWritingHintWord('“Yes,'), '“Y__,')
+  assert.equal(writingHintLetterCount('“Yes,'), 3)
+
+  // 2文字以上の語は、ヒントだけでは書き写せない。
+  for (const exercise of WRITING_EXERCISES) {
+    for (const step of exercise.steps) {
+      for (const option of step.options) {
+        for (const token of writingWordTokens(option.text)) {
+          const masked = maskWritingHintWord(token.word)
+          assert.equal(masked.length, token.word.length, token.word)
+          if (writingHintLetterCount(token.word) > 1) {
+            assert.notEqual(masked, token.word, `${exercise.id}: ${token.word}`)
+            assert.ok(masked.includes('_'), `${exercise.id}: ${token.word}`)
+          }
+        }
+      }
+    }
+  }
+})
+
+test('英作文の画面は、開く操作なしに次の1語の答えを出さない', () => {
+  const source = readFileSync(new URL('../src/screens/WritingPlay.jsx', import.meta.url), 'utf8')
+  assert.ok(source.includes('nextTokenGuide.masked'), '伏せ字のヒントを出していない')
+  assert.ok(
+    source.includes('answerWordOpen ? nextTokenGuide.word : nextTokenGuide.masked'),
+    '答えの1語を、開いたときだけに限っていない',
+  )
+  assert.equal(
+    source.split('nextTokenGuide.word').length - 1,
+    1,
+    '答えの1語を、開く操作の外でも表示している',
+  )
 })
 
 test('全英作文選択肢の語カードを位置ごとに判定できる', () => {

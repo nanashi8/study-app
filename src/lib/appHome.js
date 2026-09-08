@@ -47,7 +47,7 @@ export const APP_HOMES = [
       'vocabCamera', 'readingList', 'readingRules',
       'readingPrep', 'reader', 'readingSummary', 'phrases', 'phraseStudy', 'phraseQuiz',
       'listening', 'listeningQuiz', 'dictation', 'dictationPlay', 'vocabSearch',
-      'wordRequests', 'grammar', 'grammarQuiz', 'grammarLessons', 'grammarStrands', 'writing', 'writingPlay',
+      'wordRequests', 'grammar', 'grammarQuiz', 'grammarLessons', 'grammarStrands', 'writing', 'writingPlay', 'writingExam',
       'myGrammar', 'writingGrammarReview', 'diagnostic',
     ],
   },
