@@ -170,7 +170,7 @@ export const KOTEN_INTERPRETATIONS = [
     wordIds: ['k095'],
     grammarIds: ['kg_conj_ba', 'kg_conjecture_mu'],
     vocabTip: '「やがて」は、ここでは時間を置かず「そのまま・すぐに」。',
-    grammarTip: '話し手自身の動作につく「む」は意志。「夜明けば」は已然形＋ばで、時の経過「明けると」。',
+    grammarTip: '話し手自身の動作につく「む」は意志。「夜明けば」は未然形＋ばで、まだ起きていないことを仮定する「夜が明けたら」。',
     culture: {
       title: '夜明けの出立',
       body: '夜道を避け、明るくなってから出立するのは自然な旅程だった。夜明けは場面転換の合図にもなる。',
@@ -650,7 +650,7 @@ export const KOTEN_INTERPRETATIONS = [
     wordIds: ['k005', 'k119'],
     grammarIds: ['kg_conj_ba', 'kg_conjecture_beshi'],
     vocabTip: '「うし」は「つらい」。「べし」はここでは未来への当然の推量「きっと…にちがいない」。',
-    grammarTip: '「ながらへば」は已然形＋ばで仮定というより、将来そうなった場合を受ける。連体形「べき」が「月」を修飾。',
+    grammarTip: '「ながらへば」は下二段の未然形＋ばで、まだ来ていない先を仮定する「生き長らえるなら」。連体形「べき」が「月」を修飾。',
     culture: {
       title: '月に託す惜別',
       body: '宮廷を離れる境遇で、今夜の月を将来の記憶として詠む。和歌では景物が個人の感情を受け止める。',
@@ -770,7 +770,7 @@ export const KOTEN_INTERPRETATIONS = [
     wordIds: ['k103', 'k115'],
     grammarIds: ['kg_conj_ba'],
     vocabTip: '「よし」は方法・手段。「もがな」は「…があればなあ」という願望。',
-    grammarTip: '「負はば」は四段已然形＋ばで「その名を持つなら」。条件を受けて願望へ進む。',
+    grammarTip: '「負はば」は四段の未然形＋ばで「もしその名を持つなら」という仮定。条件を受けて願望へ進む。',
     culture: {
       title: '歌枕と縁語',
       body: '逢坂山の「逢ふ」、さねかずらの「さ寝」、つるを「繰る」と「来る」を重ね、恋の秘密を植物と地名で表す。',
