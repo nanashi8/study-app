@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-09-09T00:00:45.591Z",
+  "auditedAt": "2026-09-09T01:27:34.798Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -12,7 +12,7 @@
     "quizItemCount": 16435,
     "storedAndGeneratedQuestionPathCount": 4207,
     "storedAndGeneratedChoicePathCount": 16712,
-    "overallContentSha256": "96e3069cf014034a80ef0b09cf099589a4649ea269f25815a1f5a8d37ba04e6e"
+    "overallContentSha256": "03eeb562bc45d582acbfc03c31082d7c4339d1a4eb7d408fac7791949db11054"
   },
   "completionCriteria": [
     "全18教材カテゴリのID・母数・重複・内容ハッシュが一致する",
@@ -103,7 +103,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "c8e04c23ea19e9aedf55d144b4d3694355c8d317658bfe7e80ebebf7e4c1f4a4",
+    "sha256": "5b09ce54e8fddbd254d257bfbbe154795f1f7453e17fc7188dbe2fb0670b1cbd",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -262,7 +262,7 @@
       "quizItemCount": 8869,
       "learningIdOrderSha256": "eacdc13651c4be346eae62a81a077b85dbabba12a8b7820bc711daa5ad0be0ff",
       "quizIdOrderSha256": "eacdc13651c4be346eae62a81a077b85dbabba12a8b7820bc711daa5ad0be0ff",
-      "contentSha256": "ecfc7d5c5682c077a11cb46ac21287a80a8afd13044f7c4543b4d70be040baca",
+      "contentSha256": "84c568cb0ec02f02d0b6108ede91eca938b55da8d96ff9ed06581e0358eb171f",
       "auditGateIds": [
         "inventory",
         "coreData",
@@ -793,7 +793,7 @@
       "choiceCount": 252,
       "generalRationaleCount": 84,
       "choiceSpecificRationaleCount": 0,
-      "questionSetSha256": "b0bd9fcc331a289c7881c77343079b5c8b7ce91f62efb9fda91fe4af1775b950",
+      "questionSetSha256": "28c64be1071efec7cc3645d99c3c7f1edb05c099bcacf2e43a42f53985c355fc",
       "result": "pass",
       "failureCount": 0,
       "failures": []
@@ -950,11 +950,11 @@
         "gain": 422
       },
       "3": {
-        "total": 1101,
-        "before": 315,
-        "beforePercent": 28.61,
-        "after": 633,
-        "afterPercent": 57.49,
+        "total": 1102,
+        "before": 316,
+        "beforePercent": 28.68,
+        "after": 634,
+        "afterPercent": 57.53,
         "gain": 318
       },
       "4": {
@@ -982,11 +982,11 @@
         "gain": 359
       },
       "pre1": {
-        "total": 2520,
-        "before": 214,
-        "beforePercent": 8.49,
-        "after": 716,
-        "afterPercent": 28.41,
+        "total": 2519,
+        "before": 213,
+        "beforePercent": 8.46,
+        "after": 715,
+        "afterPercent": 28.38,
         "gain": 502
       }
     },

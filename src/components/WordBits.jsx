@@ -5,8 +5,9 @@ import {
   getRoot,
   getWord,
 } from '../data/vocab.js'
+import { LEVELS, getLevel } from '../data/levels.js'
 import { ArrowRight, Check } from './Icons.jsx'
-import { cx } from './ui.jsx'
+import { Chip, cx } from './ui.jsx'
 
 const POS_COLORS = {
   動: '#6366f1', 名: '#0ea5e9', 形: '#f59e0b', 副: '#10b981',
@@ -22,6 +23,42 @@ export function PosBadge({ pos, className = '' }) {
     >
       {pos}
     </span>
+  )
+}
+
+// 代表義には入りきらない、その語のほかの意味。品詞と、その意味を習う級を添える。
+// カードの級より上のものは、先に出会う意味と取り違えないよう「この先の級で出てくる」と示す。
+export function OtherSenses({ senses = [], level, className = '' }) {
+  if (!senses.length) return null
+  const baseRank = LEVELS.findIndex((item) => item.id === level)
+  return (
+    <div className={cx('rounded-2xl bg-white p-4 ring-1 ring-amber-100', className)}>
+      <div className="mb-2 text-xs font-extrabold text-amber-700">ほかの意味</div>
+      <ul className="space-y-2">
+        {senses.map((sense) => {
+          const senseLevel = getLevel(sense.level)
+          const ahead = baseRank >= 0 && LEVELS.findIndex((item) => item.id === sense.level) > baseRank
+          return (
+            <li key={`${sense.pos}-${sense.meaning}`} className="rounded-xl bg-amber-50/70 p-2.5">
+              <div className="flex flex-wrap items-center gap-1.5">
+                <PosBadge pos={sense.pos} />
+                <Chip color={senseLevel.color}>英検{senseLevel.label}</Chip>
+                {ahead && (
+                  <span className="text-[11px] font-bold text-ink/45">この先の級で出てくる</span>
+                )}
+              </div>
+              <p className="mt-1.5 font-bold text-ink">{sense.meaning}</p>
+              {sense.example && (
+                <>
+                  <p className="mt-1 text-sm font-bold text-ink/70">{sense.example.en}</p>
+                  <p className="text-xs font-bold text-ink/45">{sense.example.ja}</p>
+                </>
+              )}
+            </li>
+          )
+        })}
+      </ul>
+    </div>
   )
 }
 

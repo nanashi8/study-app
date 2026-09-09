@@ -5,7 +5,7 @@ const RAW = [
   ['offensive', '形', 'pre1', '攻撃的な・無礼な・不快な', 'an offensive remark', '無礼な発言', 'offense(攻撃・違反)+ -ive', { fam: [{ w: 'offense', m: '攻撃' }], syn: [{ w: 'insulting', m: '侮辱的な' }, { w: 'rude', m: '失礼な' }], ant: [{ w: 'defensive', m: '防御の' }], field: '社会' }],
   ['praised', '形', 'pre1', '称賛された・ほめられた', 'a highly praised novel', '高く評価された小説', 'praise(称賛する)+ -d。', { syn: [{ w: 'acclaimed', m: '絶賛された' }, { w: 'celebrated', m: '名高い' }], ant: [{ w: 'criticized', m: '批判された' }], fam: [{ w: 'praise', m: '称賛する' }], field: '一般' }],
   ['set', '名', 'pre1', '一式・組・決まった', 'a chess set', 'チェス一式', '古英語 settan(据える)。', { syn: [{ w: 'collection', m: '一そろい' }, { w: 'kit', m: '道具一式' }], field: '一般' }],
-  ['well', '形', 'pre1', '健康な・元気な・井戸', 'get well soon', '早く元気になって', '古英語 wel(良く)。', { syn: [{ w: 'healthy', m: '健康な' }, { w: 'fit', m: '元気な' }], ant: [{ w: 'ill', m: '病気の' }], field: '医学' }],
+  ['well', '副', '5', '上手に・よく', 'She sings very well.', '彼女はとても歌が上手だ。', '古英語 wel(良く)。', { field: '医学' }],
   ['widening', '名', 'pre1', '拡張・拡大', 'the widening of the gap', '格差の拡大', 'widen(広げる)+ -ing。', { syn: [{ w: 'expansion', m: '拡大' }, { w: 'broadening', m: '拡張' }], ant: [{ w: 'narrowing', m: '狭まり' }], fam: [{ w: 'widen', m: '広げる' }], field: '一般' }],
   ['armament', '名', '1', '軍備・兵器', 'the armament race', '軍拡競争', 'ラテン armare(武装する)→ arm と同系。', { syn: [{ w: 'weaponry', m: '兵器' }, { w: 'arms', m: '武器' }], ant: [{ w: 'disarmament', m: '軍縮' }], fam: [{ w: 'arm', m: '武装させる' }], field: '軍事' }],
   ['brawny', '形', '1', '筋骨たくましい・力強い', 'brawny arms', 'たくましい腕', 'brawn(筋肉)+ -y。', { syn: [{ w: 'muscular', m: '筋肉の' }, { w: 'burly', m: 'がっしりした' }], ant: [{ w: 'frail', m: '虚弱な' }], fam: [{ w: 'brawn', m: '筋力' }], field: '医学' }],

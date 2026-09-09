@@ -56,7 +56,7 @@ const RAW = [
   ['resilience', '名', 'pre1', '回復力・弾力', 'emotional resilience', '精神的な回復力', 'resilient(回復力のある)+ -ce。', { syn: [{ w: 'toughness', m: '打たれ強さ' }], fam: [{ w: 'resilient', m: '回復力のある' }], field: '心理' }],
   ['resolution', '名', 'pre1', '解決・決意・決議', 'a New Year resolution', '新年の決意', 'resolve(決意する)+ -ution。', { syn: [{ w: 'settlement', m: '解決' }], fam: [{ w: 'resolve', m: '解決する' }], field: '一般' }],
   ['riches', '名', 'pre1', '富・財産', 'untold riches', '計り知れない富', 'rich(裕福な)の名詞複数。', { syn: [{ w: 'wealth', m: '富' }, { w: 'fortune', m: '財産' }], ant: [{ w: 'poverty', m: '貧困' }], fam: [{ w: 'rich', m: '裕福な' }], field: '経済' }],
-  ['right', '名', '4', '権利・正しさ', 'human rights', '人権', '古英語 riht(まっすぐな・正しい)。', { syn: [], ant: [{ w: 'wrong', m: '不正' }], field: '社会' }],
+  ['right', '形', '5', '正しい・右の', 'Turn right at the next corner.', '次の角を右に曲がって。', '古英語 riht(まっすぐな・正しい)。', { syn: [], ant: [{ w: 'wrong', m: '間違った' }], field: '社会' }],
   ['separation', '名', 'pre2', '分離・別離', 'the separation of powers', '権力の分立', 'separate(分ける)+ -ation', { fam: [{ w: 'separate', m: '分ける' }], ant: [{ w: 'union', m: '結合' }], field: '一般' }],
   ['servant', '名', '3', '召使い・使用人', 'a public servant', '公務員', 'serve(仕える)+ -ant。', { syn: [{ w: 'attendant', m: '従者' }], ant: [{ w: 'master', m: '主人' }], fam: [{ w: 'serve', m: '仕える' }], field: '社会' }],
   ['show', '動', '5', '見せる・示す・番組', 'Show me the way.', '道を教えて。', '古英語 sceawian(見る)。', { syn: [{ w: 'display', m: '展示する' }, { w: 'reveal', m: '明かす' }], ant: [{ w: 'hide', m: '隠す' }], field: '動作・行為' }],

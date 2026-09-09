@@ -102,7 +102,7 @@ const RAW = [
   ['automatic', '形', 'pre1', '自動の・無意識の', 'an automatic door', '自動ドア', 'ギリシャ automatos(自ら動く)。', { syn: [{ w: 'self-acting', m: '自動の' }], ant: [{ w: 'manual', m: '手動の' }], fam: [{ w: 'automatically', m: '自動的に' }], field: '技術' }],
   ['avoidance', '名', '2', '回避・忌避', 'tax avoidance', '租税回避', 'avoid(避ける)+ -ance', { fam: [{ w: 'avoid', m: '避ける' }], ant: [{ w: 'pursuit', m: '追求' }], field: '一般' }],
   ['awful', '形', 'pre1', 'ひどい・恐ろしい', 'an awful smell', 'ひどい臭い', 'awe(畏怖)+ -ful。', { syn: [{ w: 'terrible', m: '恐ろしい' }, { w: 'dreadful', m: 'ひどい' }], ant: [{ w: 'wonderful', m: '素晴らしい' }], field: '性質・状態' }],
-  ['back', '動', 'pre1', '支持する・後退する', 'They backed the plan.', '彼らはその計画を支持した。', '古英語 bæc(背中)。', { syn: [{ w: 'support', m: '支持する' }, { w: 'endorse', m: '支持する' }], ant: [{ w: 'oppose', m: '反対する' }], field: '動作・行為' }],
+  ['back', '副', '4', '後ろへ・戻って', 'He came back at six.', '彼は6時に戻ってきた。', '古英語 bæc(背中)。', { ant: [{ w: 'forward', m: '前へ' }], field: '動作・行為' }],
 ]
 
 export const WORDS_MORE45 = RAW.map(expandCompact)

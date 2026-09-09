@@ -10,7 +10,7 @@ import {
 import { getLevel } from '../data/levels.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { SpeakButton } from '../components/SpeakButton.jsx'
-import { EtymologyBlock, RelatedWords, PosBadge } from '../components/WordBits.jsx'
+import { EtymologyBlock, OtherSenses, RelatedWords, PosBadge } from '../components/WordBits.jsx'
 import { UsageGuideCards } from '../components/UsageGuideCards.jsx'
 import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
 import { Card, Button, Chip, IconButton } from '../components/ui.jsx'
@@ -202,6 +202,9 @@ export function WordDetailScreen() {
               )}
             </Card>
           )}
+
+          {/* 代表義以外の意味を、品詞と習う級つきで並べる */}
+          <OtherSenses senses={word.otherSenses} level={word.level} />
 
           {/* 入試・英検で混同しやすい語の比較と推奨表現 */}
           <UsageGuideCards guides={word.usageGuides} />
