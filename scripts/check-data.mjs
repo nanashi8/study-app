@@ -161,6 +161,8 @@ import {
   WRITING_GRAMMAR,
 } from '../src/data/writing.js'
 import { hasBalancedParentheses } from '../src/data/compact.js'
+import { HOMOGRAPH_SEPARATE_SENSES } from '../src/data/homographs.js'
+import { KNOWN_DUPLICATE_FORMS, singularCandidates } from '../src/data/duplicate-forms.js'
 import { MATH_PROBLEMS, MATH_UNITS } from '../src/data/math.js'
 import { WRITING_EXAM_QUESTIONS } from '../src/data/writing-exam.js'
 
@@ -176,6 +178,21 @@ const errors = []
 const ids = new Set()
 
 if (ROOT_IDS.size !== ROOTS.length) errors.push('語根idに重複あり')
+
+// 単数形と複数形を別カードで登録すると、同じことを二度覚えさせることになり、
+// 片方の代表義がもう片方の誤答に出て「正解なのに不正解」になりうる。
+// 別見出しを立ててよいのは複数形にその形でしか出ない意味があるときだけ
+// （manners=作法、forces=軍隊、ethics=倫理学 など）。
+// 既にある組は src/data/duplicate-forms.js の台帳に載せてあり、
+// 台帳に無い組が現れたら落とす。逆に、直って重複でなくなった組が台帳に
+// 残り続けるのも落とす（台帳が実態と合わなくなるのを防ぐ）。
+const senseSet = (item) => new Set(
+  (item.meanings ?? [])
+    .map((meaning) => meaning.normalize('NFKC').replace(/[（）()\s]/g, ''))
+    .filter(Boolean),
+)
+const wordById = Object.fromEntries(ALL_WORDS.map((item) => [item.id, item]))
+const duplicateFormsSeen = new Set()
 
 // 例文が見出し語を実際に使っているかの判定。複数語・ハイフン付きの見出しは
 // 記号を空白に均して並びで照合し、1語の見出しは規則変化と下の不規則形で照合する。
@@ -254,6 +271,37 @@ for (const w of ALL_WORDS) {
   if (!w.phonetic) errors.push(`${at}: 発音記号(IPA) 無し → npm run phonetics`)
   // 代表義以外の意味（word-senses.js）。カードと辞書に出すだけで出題には使わないが、
   // 級と品詞を学習者へそのまま見せるので、代表義と同じ厳しさで検証する。
+  // 複数形が単数形と同じことを教えていないか。
+  for (const singular of singularCandidates(w.word)) {
+    const other = wordById[singular]
+    if (!other || other.pos !== w.pos) continue
+    const plural = senseSet(w)
+    const single = senseSet(other)
+    if (!plural.size || !single.size) break
+    const sameThing = [...plural].every((sense) => single.has(sense)) ||
+      [...single].every((sense) => plural.has(sense))
+    const listed = KNOWN_DUPLICATE_FORMS[w.id]
+    if (sameThing) {
+      duplicateFormsSeen.add(w.id)
+      if (!listed) {
+        errors.push(
+          `${at}: 単数形 ${other.word}「${other.meaning}」と同じことを教えている重複登録 → 複数形に固有の意味が無ければ見出しを立てない`,
+        )
+      } else if (listed.singular !== other.id) {
+        errors.push(`${at}: duplicate-forms.js の単数形が ${listed.singular} になっている（実際は ${other.id}）`)
+      }
+    }
+    break
+  }
+  // 由来のちがう別語の意味を代表義の欄へ並べると、語源の説明が片方にしか
+  // 当てはまらず、学習者は誤った由来を教わる。別語は word-senses.js 側へ置く。
+  for (const gloss of HOMOGRAPH_SEPARATE_SENSES[w.id] ?? []) {
+    if (String(w.meaning ?? '').includes(gloss)) {
+      errors.push(
+        `${at}: 代表義の欄に別語の意味「${gloss}」が入っている → word-senses.js へ separateWord: true で移す`,
+      )
+    }
+  }
   // 例文はその語の使い方を見せるためにあるので、見出し語そのものが現れていないと
   // 学習者は何を覚えればよいか分からない（ethnicity の例文に ethnic しか無い等）。
   if (!exampleShowsHeadword(w.word, w.example?.en)) {
@@ -437,6 +485,17 @@ for (const word of ALL_WORDS) {
 
 checkPartition('分野', VOCAB_FIELDS, wordsByField)
 checkPartition('品詞', VOCAB_POS, ({ id }) => wordsByPos(id))
+
+// 直して重複でなくなった組が台帳に残ると、次の重複を素通ししてしまう。
+for (const [pluralId, entry] of Object.entries(KNOWN_DUPLICATE_FORMS)) {
+  if (!wordById[pluralId]) {
+    errors.push(`duplicate-forms.js: ${pluralId} という見出しは無い → 台帳から消す`)
+  } else if (!duplicateFormsSeen.has(pluralId)) {
+    errors.push(
+      `duplicate-forms.js: ${pluralId} は単数形 ${entry.singular} と別の意味になった → 台帳から消す`,
+    )
+  }
+}
 
 // ── 補助項目（類義語/反対語/派生語）と「語族=1エントリ」ルールの強制 ──
 const wordIds = new Set(ALL_WORDS.map((w) => w.id))

@@ -15,7 +15,7 @@ const RAW = [
   ['international', '形', 'pre2', '国際的な', 'an international event', '国際的な行事', 'inter(間)+national(国家の)。', { field: '社会' }],
   ['lay', '動', 'pre2', '横たえる・置く・(卵を)産む', 'lay the book down', '本を置く', '古英語 lecgan(置く)。', { field: '一般' }],
   ['leadership', '名', 'pre2', '指導力・統率', 'strong leadership', '強い指導力', 'leader(指導者)+ -ship。', { field: 'ビジネス' }],
-  ['manner', '名', 'pre2', '方法・態度・(複)行儀', 'good manners', 'よい行儀', 'ラテン manus(手)。', { field: '社会' }],
+  ['manner', '名', 'pre2', '方法・やり方・態度', 'She answered in a friendly manner.', '彼女は親しみやすい態度で答えた。', 'ラテン manus(手)。', { field: '社会' }],
   ['medical', '形', 'pre2', '医学の・医療の', 'medical care', '医療', 'ラテン medicus(医者)。', { field: '医学' }],
   ['midnight', '名', 'pre2', '真夜中・午前0時', 'at midnight', '真夜中に', 'mid(中央)+night(夜)。', { field: '一般' }],
   ['online', '形', 'pre2', 'オンラインの・ネット上で', 'shop online', 'ネットで買い物する', 'on+line(回線)。', { field: '技術' }],
