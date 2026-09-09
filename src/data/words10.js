@@ -64,7 +64,7 @@ const RAW = [
   ["sugar","名","4","砂糖","I take sugar in my coffee.","私はコーヒーに砂糖を入れる。","サンスクリット śarkarā→アラビア語経由→「砂糖」。",{"field":"食・生活"}],
   ["hotel","名","4","ホテル","We stayed at a nice hotel.","私たちはすてきなホテルに泊まった。","ラテン hospitale(客をもてなす所)→「ホテル」。hospital と同源。",{"field":"一般"}],
   ["supermarket","名","4","スーパー","I bought eggs at the supermarket.","私はスーパーで卵を買った。","super(超)+market(市場)→「スーパー」。",{"field":"一般"}],
-  ["bank","名","4","銀行・土手","The bank is near the station.","銀行は駅の近くだ。","イタリア banca(両替商の台)→「銀行」。",{"field":"一般"}],
+  ["bank","名","4","銀行","The bank is near the station.","銀行は駅の近くだ。","イタリア banca(両替商の台)→「銀行」。",{"field":"一般"}],
   ["office","名","4","事務所・会社","My father works in an office.","父は事務所で働いている。","ラテン opus(仕事)+facere(なす)→務め→「事務所」。",{"field":"経済"}],
   ["building","名","4","建物・ビル","That is a tall building.","あれは高いビルだ。","古英語 byldan(建てる)+ing→「建物」。",{"field":"一般"}],
   ["theater","名","4","劇場・映画館","We watched a play at the theater.","私たちは劇場で劇を見た。","ギリシャ theasthai(見る)→見る場所→「劇場」。",{"field":"芸術"}],

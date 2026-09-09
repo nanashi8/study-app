@@ -26,7 +26,7 @@ const RAW = [
   ['prisoner', '名', 'pre1', '囚人・捕虜', 'a political prisoner', '政治犯', 'prison(刑務所)+ -er', { fam: [{ w: 'prison', m: '刑務所' }], syn: [{ w: 'captive', m: '捕虜' }, { w: 'inmate', m: '収監者' }], field: '法律' }],
   ['rookie', '名', 'pre1', '新人・ルーキー', 'a rookie cop', '新米警官', 'recruit(新兵)の変化形。', { syn: [{ w: 'beginner', m: '初心者' }, { w: 'novice', m: '新参者' }], ant: [{ w: 'veteran', m: 'ベテラン' }], field: 'スポーツ' }],
   ['rush', '動', 'pre1', '急ぐ・突進する・殺到', "Don't rush me.", '私をせかさないで。', '古フランス ruser(押し戻す)。', { syn: [{ w: 'hurry', m: '急ぐ' }, { w: 'dash', m: '突進する' }], ant: [{ w: 'dawdle', m: 'のろのろする' }], field: '動作・行為' }],
-  ['scale', '名', 'pre1', '規模・目盛り・うろこ', 'on a large scale', '大規模に', 'ラテン scala(はしご)。', { syn: [{ w: 'extent', m: '範囲' }, { w: 'magnitude', m: '大きさ' }], field: '測定' }],
+  ['scale', '名', 'pre1', '規模・目盛り', 'on a large scale', '大規模に', 'ラテン scala(はしご)。', { syn: [{ w: 'extent', m: '範囲' }, { w: 'magnitude', m: '大きさ' }], field: '測定' }],
   ['selection', '名', 'pre1', '選択・品ぞろえ', 'a wide selection', '豊富な品ぞろえ', 'select(選ぶ)+ -ion。', { syn: [{ w: 'choice', m: '選択' }, { w: 'assortment', m: '取りそろえ' }], fam: [{ w: 'select', m: '選ぶ' }], field: '一般' }],
   ['seller', '名', '4', '売り手・売れる商品', 'a best seller', 'ベストセラー', 'sell(売る)+ -er', { fam: [{ w: 'sell', m: '売る' }], ant: [{ w: 'buyer', m: '買い手' }], field: 'ビジネス' }],
   ['sort', '動', 'pre1', '仕分ける・分類する・種類', 'Sort the mail by date.', '郵便を日付で仕分けて。', '古フランス sorte(種類)。', { syn: [{ w: 'classify', m: '分類する' }, { w: 'arrange', m: '整理する' }], field: '動作・行為' }],

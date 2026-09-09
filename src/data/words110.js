@@ -53,7 +53,7 @@ const RAW = [
   ['plow', '動', '2', '耕す・突き進む・すき', 'plow the field', '畑を耕す', '古英語 ploh(すき)。', { syn: [{ w: 'till', m: '耕す' }, { w: 'cultivate', m: '耕作する' }], field: '農業' }],
   ['plumber', '名', '2', '配管工', 'call a plumber', '配管工を呼ぶ', 'ラテン plumbum(鉛)。', { syn: [{ w: 'fitter', m: '取付工' }], field: '技術' }],
   ['poke', '動', '2', 'つつく・突き出す・突き', 'poke with a stick', '棒でつつく', '中英語 poken(突く)。', { syn: [{ w: 'prod', m: 'つつく' }, { w: 'jab', m: '突く' }], field: '一般' }],
-  ['pole', '名', '3', '棒・柱・極', 'the North Pole', '北極', 'ラテン palus(杭)。', { syn: [{ w: 'post', m: '柱' }, { w: 'rod', m: '棒' }], field: '一般' }],
+  ['pole', '名', '3', '棒・柱', 'They put up a flag pole.', '彼らは旗ざおを立てた。', 'ラテン palus(杭)。', { syn: [{ w: 'post', m: '柱' }, { w: 'rod', m: '棒' }], field: '一般' }],
   ['polish', '動', '2', '磨く・洗練する・つや出し', 'polish the shoes', '靴を磨く', 'ラテン polire(磨く)。', { syn: [{ w: 'shine', m: '光らせる' }, { w: 'buff', m: '磨く' }], ant: [{ w: 'tarnish', m: '曇らせる' }], field: '一般' }],
   ['pond', '名', '3', '池', 'a fish pond', '魚の池', '中英語 ponde(囲った水)→ pound と同系。', { syn: [{ w: 'pool', m: '水たまり' }, { w: 'lake', m: '湖' }], field: '環境' }],
   ['porch', '名', '2', '玄関ポーチ・ベランダ', 'sit on the porch', 'ポーチに座る', 'ラテン porticus(柱廊)。', { syn: [{ w: 'veranda', m: 'ベランダ' }, { w: 'portico', m: '玄関' }], field: '建築' }],

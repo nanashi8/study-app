@@ -52,7 +52,7 @@ const RAW = [
   ["squeeze","動","pre1","絞る・押し込む","Squeeze the lemon.","レモンを絞って。","古英語 cwȳsan(押しつぶす)。",{"syn":[{"w":"press","m":"押す"},{"w":"compress","m":"圧縮する"}],"field":"動作・行為"}],
   ["spill","動","pre2","こぼす・こぼれる","Don't spill the milk.","牛乳をこぼさないで。","古英語 spillan(滅ぼす・無駄にする)。",{"field":"動作・行為"}],
   ["split","動","pre1","割る・分裂する・分担する","They split the bill.","彼らは勘定を割り勘にした。","中オランダ語 splitten「裂く」。",{"syn":[{"w":"divide","m":"分ける"},{"w":"separate","m":"分離する"}],"ant":[{"w":"unite","m":"結合する"}],"field":"動作・行為"}],
-  ["swallow","動","pre2","飲み込む・ツバメ(名)","Swallow the pill with water.","錠剤を水で飲み込んで。","古英語 swelgan「飲み込む」。",{"field":"食・生活"}],
+  ["swallow","動","pre2","飲み込む","Swallow the pill with water.","錠剤を水で飲み込んで。","古英語 swelgan「飲み込む」。",{"field":"食・生活"}],
   ["stare","動","pre2","じっと見つめる","It's rude to stare.","じろじろ見るのは失礼だ。","古英語 starian「見つめる」。",{"syn":[{"w":"gaze","m":"見つめる"},{"w":"glare","m":"にらむ"}],"field":"動作・行為"}],
   ["scream","動","pre2","悲鳴を上げる・叫ぶ","She screamed in fear.","彼女は恐怖で悲鳴を上げた。","中英語 scremen(擬音)。",{"syn":[{"w":"shout","m":"叫ぶ"},{"w":"yell","m":"怒鳴る"}],"ant":[{"w":"whisper","m":"ささやく"}],"field":"動作・行為"}],
   ["wander","動","pre1","さまよう・ぶらつく","They wandered through the city.","彼らは街をぶらついた。","古英語 wandrian→ wind と同系。",{"syn":[{"w":"roam","m":"歩き回る"},{"w":"stroll","m":"散歩する"}],"field":"動作・行為"}],
