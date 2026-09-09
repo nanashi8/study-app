@@ -141,9 +141,9 @@ export const KANBUN_KUNDOKU_EXERCISES = Object.freeze([
   }),
   freezeExercise({
     id: 'kk019', level: 'basic', title: '上下点：外側へ返る',
-    marked: '将下使二民守一レ礼上', tokens: [{ id: 'soon', label: '将' }, { id: 'make', label: '使' }, { id: 'people', label: '民' }, { id: 'keep', label: '守' }, { id: 'ritual', label: '礼' }], order: ['people', 'ritual', 'keep', 'make', 'soon'],
+    marked: '将下使二民守一レ礼上', tokens: [{ id: 'soon1', label: '将①' }, { id: 'make', label: '使' }, { id: 'people', label: '民' }, { id: 'keep', label: '守' }, { id: 'ritual', label: '礼' }, { id: 'soon2', label: '将②' }], order: ['soon1', 'people', 'ritual', 'keep', 'make', 'soon2'],
     kakikudashi: '将に民をして礼を守らしめんとす。', translation: '今にも民衆に礼を守らせようとする。',
-    clue: '礼→守→使の内側を終え、最後に下点の将へ戻る。',
+    clue: '将は再読文字。まず「将に」と読み、礼→守→使の内側を終えてから二度目の「んとす」を読む。',
     pitfall: '上下点を一二点より先に処理しない。',
   }),
   freezeExercise({
@@ -176,7 +176,7 @@ export const KANBUN_KUNDOKU_EXERCISES = Object.freeze([
   }),
   freezeExercise({
     id: 'kk024', level: 'standard', title: '比較と一二点',
-    marked: '青取二之於藍一而青二於藍一', tokens: [{ id: 'blue1', label: '青①' }, { id: 'take', label: '取' }, { id: 'it', label: '之' }, { id: 'from', label: '於' }, { id: 'indigo1', label: '藍①' }, { id: 'but', label: '而' }, { id: 'blue2', label: '青②' }, { id: 'than', label: '於' }, { id: 'indigo2', label: '藍②' }], order: ['blue1', 'indigo1', 'from', 'it', 'take', 'but', 'indigo2', 'than', 'blue2'],
+    marked: '青取二之於藍一而青二於藍一', tokens: [{ id: 'blue1', label: '青①' }, { id: 'take', label: '取' }, { id: 'it', label: '之' }, { id: 'from', label: '於' }, { id: 'indigo1', label: '藍①' }, { id: 'but', label: '而' }, { id: 'blue2', label: '青②' }, { id: 'than', label: '於' }, { id: 'indigo2', label: '藍②' }], order: ['blue1', 'it', 'indigo1', 'from', 'take', 'but', 'indigo2', 'than', 'blue2'],
     kakikudashi: '青は之を藍より取りて、藍より青し。', translation: '青色は藍から取るが、藍より青い。',
     clue: '前の於は起点「より」、後ろの於は比較基準「より」。同じ字の役割を動詞で分ける。',
     pitfall: '二つの藍を同じ位置へ一度だけ置かない。',
