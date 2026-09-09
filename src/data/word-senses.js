@@ -5,6 +5,9 @@
 //   品詞が変わる意味も、同じ品詞でずっと上の級で習う意味も、ここへ置いて並べて見せる。
 // - テストの答えには使わない。出題は今までどおり代表義の先頭だけを見る。
 // - 級は、その意味を実際に習う級を書く。カードの級より上なら「この先の級で出てくる」と示す。
+// - 由来がちがう語がたまたま同じつづりになっているだけなら separateWord: true を立て、
+//   note にどう別なのかを書く。同じ語の意味の枝分かれと混ぜない
+//   （well「上手に」と well「井戸」、lie「うそ」と lie「横たわる」、May「5月」と may「〜かもしれない」）。
 export const WORD_SENSES = Object.freeze({
   please: Object.freeze([
     Object.freeze({
@@ -39,6 +42,8 @@ export const WORD_SENSES = Object.freeze({
       pos: '名',
       level: '3',
       meaning: '井戸',
+      separateWord: true,
+      note: '古英語 wella(泉)から。「上手に」の well(古英語 wel)とは別の語で、つづりが同じになっただけ。',
       example: Object.freeze({ en: 'They dug a deep well.', ja: '彼らは深い井戸を掘った。' }),
     }),
   ]),
@@ -145,6 +150,8 @@ export const WORD_SENSES = Object.freeze({
       pos: '動',
       level: '3',
       meaning: '横たわる・（物が）ある',
+      separateWord: true,
+      note: '古英語 licgan から。「うそをつく」の lie(古英語 lēogan)とは別の語で、活用も lie-lay-lain と変わる。',
       example: Object.freeze({ en: 'The book lies on the desk.', ja: '本が机の上にある。' }),
     }),
   ]),
@@ -216,6 +223,24 @@ export const WORD_SENSES = Object.freeze({
       level: '1',
       meaning: '島の・島に囲まれた',
       example: Object.freeze({ en: 'The insular city lies in the bay.', ja: 'その島の町は湾の中にある。' }),
+    }),
+  ]),
+  may: Object.freeze([
+    Object.freeze({
+      pos: '動',
+      level: '5',
+      meaning: '〜してよい・〜かもしれない',
+      separateWord: true,
+      note: '古英語 magan(〜できる)から。月名の May(ローマ女神 Maia)とは別の語で、つづりが同じになっただけ。can・must と同じ助動詞の仲間。',
+      example: Object.freeze({ en: 'May I use your pen?', ja: 'ペンを使ってもいいですか。' }),
+    }),
+  ]),
+  might: Object.freeze([
+    Object.freeze({
+      pos: '動',
+      level: '3',
+      meaning: '〜かもしれない（may の過去形）',
+      example: Object.freeze({ en: 'It might rain this afternoon.', ja: '午後は雨が降るかもしれない。' }),
     }),
   ]),
 })

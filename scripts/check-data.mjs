@@ -226,6 +226,14 @@ for (const w of ALL_WORDS) {
     if (sense?.example && (!sense.example.en?.trim() || !sense.example.ja?.trim())) {
       errors.push(`${where} の例文(en/ja) が片方だけ`)
     }
+    // 由来がちがう同綴り語は「同じつづりの別の語」として分けて出すため、
+    // なぜ別の語なのかを必ず添える。
+    if (sense?.separateWord && !sense.note?.trim()) {
+      errors.push(`${where} は別の語としているが、どう別かの説明が無い`)
+    }
+    if (!sense?.separateWord && sense?.note !== undefined) {
+      errors.push(`${where} は同じ語なのに別の語の説明を持っている`)
+    }
   }
   const referenceRoots = w.referenceRoots ?? []
   if (new Set(referenceRoots).size !== referenceRoots.length) {
