@@ -160,6 +160,7 @@ import {
   WRITING_GRAMMAR,
 } from '../src/data/writing.js'
 import { hasBalancedParentheses } from '../src/data/compact.js'
+import { MATH_PROBLEMS, MATH_UNITS } from '../src/data/math.js'
 
 const LEVELS = new Set(['5', '4', '3', 'pre2', '2', 'pre1', '1'])
 const READING_LEVELS = new Set(['5', '4', '3', 'pre2', 'pre2plus', '2', 'pre1', '1'])
@@ -1553,6 +1554,67 @@ for (const categoryId of kotenCultureCategories) {
 const kotenLevelIds = new Set(KOTEN_INTERPRETATION_LEVELS.map((item) => item.id))
 const kotenFocusIds = new Set(Object.keys(KOTEN_INTERPRETATION_FOCUS))
 const kotenQuestionIds = new Set()
+// ── 数学クエスト：誘導ステップが「答えられる形」になっているか ──
+// 空所の正解がタイルに無いと、学習者はどれを選んでも不正解になる。
+const mathUnitIds = new Set(MATH_UNITS.map((unit) => unit.id))
+const mathProblemIds = new Set()
+for (const [unitId, problems] of Object.entries(MATH_PROBLEMS)) {
+  if (!mathUnitIds.has(unitId)) errors.push(`数学: 単元 ${unitId} が単元一覧に無い`)
+  for (const problem of problems) {
+    const at = `数学 ${problem.id ?? '(id無し)'}`
+    if (!problem.id || mathProblemIds.has(problem.id)) errors.push(`${at}: id 無し/重複`)
+    mathProblemIds.add(problem.id)
+    // text は日本語の問題文、prompt は中央に置く数式。どちらも任意だが、
+    // 両方無いと画面の「問題」欄が空のまま出る。
+    if (!problem.text?.trim() && !problem.prompt?.trim()) {
+      errors.push(`${at}: 問題文(text)も数式(prompt)も無く、問題欄が空になる`)
+    }
+    if (!String(problem.answer ?? '').trim()) errors.push(`${at}: 最終解答が無い`)
+    if (!String(problem.pitfall ?? '').trim()) errors.push(`${at}: つまずきの注意が無い`)
+
+    const quiz = problem.recall?.quiz
+    if (quiz) {
+      if (!Array.isArray(quiz.choices) || quiz.choices.length < 2) {
+        errors.push(`${at}: 確認クイズの選択肢が2件未満`)
+      } else if (new Set(quiz.choices).size !== quiz.choices.length) {
+        errors.push(`${at}: 確認クイズの選択肢が重複`)
+      }
+      if (!Number.isInteger(quiz.answer) || quiz.answer < 0 || quiz.answer >= (quiz.choices?.length ?? 0)) {
+        errors.push(`${at}: 確認クイズの正解番号が選択肢の範囲外 (${quiz.answer})`)
+      }
+      if (!quiz.why?.trim()) errors.push(`${at}: 確認クイズの解説が無い`)
+    }
+
+    for (const [index, step] of (problem.steps ?? []).entries()) {
+      const where = `${at} 手順${index + 1}`
+      if (!step.note?.trim()) errors.push(`${where}: 解説が無い`)
+      if (step.choices) {
+        if (new Set(step.choices).size !== step.choices.length) errors.push(`${where}: 選択肢が重複`)
+        if (!Number.isInteger(step.answer) || step.answer < 0 || step.answer >= step.choices.length) {
+          errors.push(`${where}: 正解番号が選択肢の範囲外 (${step.answer})`)
+        }
+      }
+      const fill = step.fill
+      if (!fill) continue
+      const squares = (fill.tex?.match(/\\square/g) ?? []).length
+      if (squares !== (fill.blanks?.length ?? 0)) {
+        errors.push(`${where}: 式の□が${squares}個なのに答えが${fill.blanks?.length ?? 0}個`)
+      }
+      if (new Set(fill.tiles ?? []).size !== (fill.tiles?.length ?? 0)) {
+        errors.push(`${where}: タイルが重複 (${(fill.tiles ?? []).join(', ')})`)
+      }
+      for (const blank of fill.blanks ?? []) {
+        if (!(fill.tiles ?? []).includes(blank)) {
+          errors.push(`${where}: 正解「${blank}」がタイルに無く、どれを選んでも不正解になる`)
+        }
+      }
+      if ((fill.tiles ?? []).length <= (fill.blanks ?? []).length) {
+        errors.push(`${where}: 誤答のタイルが無く、選ぶ余地が無い`)
+      }
+    }
+  }
+}
+
 if (KOTEN_INTERPRETATIONS.length < 30) {
   errors.push(`古典短文解釈: 30問未満 (${KOTEN_INTERPRETATIONS.length}問)`)
 }
