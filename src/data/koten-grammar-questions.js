@@ -871,6 +871,19 @@ export const KOTEN_GRAMMAR_CONTEXT_QUESTIONS = [
   ),
 ]
 
+// 誤答が正解の一部を丸ごと含んでいると、どちらを選んでも正しい問題になる。
+// 「連用形接続」を「連用形接続（カ変・サ変には特殊な接続あり）」の誤答に出す等。
+// 記号を落として包含関係を見て、そういう候補は誤答に採らない。
+const overlapKey = (value) => String(value ?? '')
+  .normalize('NFKC')
+  .replace(/[（）()「」、。・\s]/g, '')
+const overlapsAnswer = (correct, candidate) => {
+  const answer = overlapKey(correct)
+  const other = overlapKey(candidate)
+  if (other.length < 2 || answer.length < 2) return false
+  return answer.includes(other) || other.includes(answer)
+}
+
 function distinctDistractors(item, key, index) {
   const correct = item[key]
   const sameCategory = KOTEN_GRAMMAR.filter((candidate) => candidate.category === item.category)
@@ -883,6 +896,7 @@ function distinctDistractors(item, key, index) {
   for (const candidate of ordered) {
     const value = candidate[key]
     if (!value || value === correct || values.includes(value)) continue
+    if (overlapsAnswer(correct, value)) continue
     values.push(value)
     if (values.length === 3) break
   }
