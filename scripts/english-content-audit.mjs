@@ -10,7 +10,7 @@ import {
   ALL_WORDS,
   pickDistractors,
 } from '../src/data/vocab.js'
-import { quizMeaningKey } from '../src/data/compact.js'
+import { quizMeaning, quizMeaningKey } from '../src/data/compact.js'
 import {
   GRAMMAR,
   grammarChoiceGuidanceFor,
@@ -93,6 +93,18 @@ function seededRandom(seed) {
   }
 }
 
+// 語義の包含判定。表記ゆれを潰し、2文字以上の重なりだけを見る。
+const overlapText = (value) => String(value ?? '')
+  .normalize('NFKC')
+  .replace(/[〜~\s（）()・]/g, '')
+const allSenseText = (item) => overlapText(
+  [item.meaning, ...(item.otherSenses ?? []).map((sense) => sense.meaning)].join(''),
+)
+const meaningContains = (outer, inner) => {
+  const needle = overlapText(quizMeaning(inner))
+  return needle.length >= 2 && allSenseText(outer).includes(needle)
+}
+
 function rngFor(id, seed) {
   return seededRandom(hashString(`${seed}:${id}`))
 }
@@ -172,6 +184,14 @@ for (const word of ALL_WORDS) {
       distractors.every((candidate) => candidate.pos === word.pos),
       `語彙 ${word.id}: 品詞だけで判別できる誤答を生成`,
     )
+    // 誤答の意味が正解の意味の中にそのまま入っていると、どちらを選んでも正しくなる。
+    // pickDistractors 側でも弾いているが、判定をここへ独立に書いて二重に守る。
+    for (const candidate of distractors) {
+      assert(
+        !meaningContains(word, candidate) && !meaningContains(candidate, word),
+        `語彙 ${word.id}: 誤答 ${candidate.word}「${quizMeaning(candidate)}」が正解の意味に含まれる`,
+      )
+    }
     if (seed === 17) {
       if (distractors.every((candidate) => candidate.level === word.level)) {
         vocabSameLevelChoiceSets += 1
@@ -294,6 +314,12 @@ for (const item of PHRASES) {
       distractors.every((candidate) => candidate.kind === item.kind),
       `熟語・構文 ${item.id}: 種別だけで判別できる誤答を生成`,
     )
+    for (const candidate of distractors) {
+      assert(
+        !meaningContains(item, candidate) && !meaningContains(candidate, item),
+        `熟語・構文 ${item.id}: 誤答 ${candidate.phrase}「${quizMeaning(candidate)}」が正解の意味に含まれる`,
+      )
+    }
     if (
       seed === 17 &&
       distractors.every((candidate) => candidate.level === item.level)
