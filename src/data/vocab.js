@@ -160,6 +160,7 @@ import {
   etymologyLearningGuideFor,
 } from './etymology-history.js'
 import { quizMeaningKey, splitMeanings } from './compact.js'
+import { WORD_SENSES } from './word-senses.js'
 import { EXAM_WORDS, USAGE_GUIDES_BY_WORD } from './exam-lexicon.js'
 import { ETYMOLOGY_COMPLETION_WORDS } from './words-etymology-completion.js'
 import { CURRICULUM_1900_WORDS } from './words-curriculum-1900.js'
@@ -209,6 +210,8 @@ const normalize = (w) => {
     family: w.family ?? [],
     usage: w.usage ?? '',
     usageGuides: w.usageGuides ?? USAGE_GUIDES_BY_WORD[w.id] ?? [],
+    // 代表義以外の意味。表示専用で、出題は代表義だけを見る。
+    otherSenses: WORD_SENSES[w.id] ?? [],
   }
 }
 

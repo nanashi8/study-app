@@ -31,7 +31,7 @@ export const ETYMOLOGY_QUALITY_TARGETS = Object.freeze({
   publicWords: 4035,
   publicLinks: 6341,
   quarantinedWords: 4834,
-  retiredLegacyPacks: 2933,
+  retiredLegacyPacks: 2934,
   wordStories: 8869,
 })
 

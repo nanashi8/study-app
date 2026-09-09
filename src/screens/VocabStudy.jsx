@@ -8,7 +8,7 @@ import { playSpeechItems } from '../lib/speech-player.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
 import { EtymologyBlock } from '../components/WordBits.jsx'
-import { PosBadge } from '../components/WordBits.jsx'
+import { OtherSenses, PosBadge } from '../components/WordBits.jsx'
 import { Button, Chip, IconButton } from '../components/ui.jsx'
 import { Close, ArrowRight, Lightbulb } from '../components/Icons.jsx'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
@@ -355,6 +355,9 @@ export function VocabStudyScreen() {
                   {word.meanings.join('・')}
                 </div>
               </div>
+
+              {/* 代表義以外の意味。取り違えないよう品詞と習う級を添えて並べる。 */}
+              <OtherSenses senses={word.otherSenses} level={word.level} />
 
               {/* 例文 */}
               {word.example && (

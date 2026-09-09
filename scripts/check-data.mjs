@@ -207,6 +207,26 @@ for (const w of ALL_WORDS) {
     }
   }
   if (!w.phonetic) errors.push(`${at}: 発音記号(IPA) 無し → npm run phonetics`)
+  // 代表義以外の意味（word-senses.js）。カードと辞書に出すだけで出題には使わないが、
+  // 級と品詞を学習者へそのまま見せるので、代表義と同じ厳しさで検証する。
+  const otherSenses = w.otherSenses ?? []
+  const senseKeys = new Set([`${w.pos}|${w.meaning}`])
+  for (const [i, sense] of otherSenses.entries()) {
+    const where = `${at}: ほかの意味[${i}]`
+    if (!POS.has(sense?.pos)) errors.push(`${where} の pos が不正 (${sense?.pos})`)
+    if (!LEVELS.has(sense?.level)) errors.push(`${where} の level が不正 (${sense?.level})`)
+    if (!sense?.meaning?.trim()) errors.push(`${where} の意味 無し`)
+    else if (!hasBalancedParentheses(sense.meaning)) {
+      errors.push(`${where} の意味の括弧が不整合 (${sense.meaning})`)
+    }
+    // 代表義と同じ品詞・同じ意味を二重に並べない。
+    const key = `${sense?.pos}|${sense?.meaning}`
+    if (senseKeys.has(key)) errors.push(`${where} が代表義またはほかの意味と重複 (${key})`)
+    senseKeys.add(key)
+    if (sense?.example && (!sense.example.en?.trim() || !sense.example.ja?.trim())) {
+      errors.push(`${where} の例文(en/ja) が片方だけ`)
+    }
+  }
   const referenceRoots = w.referenceRoots ?? []
   if (new Set(referenceRoots).size !== referenceRoots.length) {
     errors.push(`${at}: 補助語根に重複あり`)
