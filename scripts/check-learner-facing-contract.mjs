@@ -337,6 +337,18 @@ for (const [name, source] of [
     errors.push(`${name}に廃止した表記「単語クイズ」が残る`)
   }
 }
+// カードを1枚開いた画面は、語根1つの暗記・テストではなく紐づく単語の暗記・テストを出す。
+for (const [name, source] of [
+  ['語源カード', etymologyPackSource],
+  ['同じ語根', rootDetailSource],
+]) {
+  if (!source.includes('data-etymology-word-quiz-action') || !source.includes("navigate('vocabQuiz'")) {
+    errors.push(`${name}から紐づく単語の「テスト」へ進めない`)
+  }
+  if (/語根を暗記|語根をテスト/.test(source)) {
+    errors.push(`${name}に語根1つだけの暗記・テストが残る`)
+  }
+}
 // 語源そのものも、単語・熟語と同じ「暗記・テスト・一覧を確認」の3導線をそろえる。
 for (const [label, needle] of [
   ['暗記', "navigate('etymologyStudy'"],

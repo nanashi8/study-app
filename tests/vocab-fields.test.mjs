@@ -68,6 +68,16 @@ test('級別目次も20語チャンクを作らず、最大10分野で全単語�
   }
 })
 
+test('単語カードは左上に英検の級を出す', () => {
+  const study = readFileSync(new URL('../src/screens/VocabStudy.jsx', import.meta.url), 'utf8')
+
+  assert.match(study, /const level = getLevel\(word\.level\)/)
+  assert.match(study, /data-vocab-card-level/)
+  assert.match(study, /<Chip color=\{level\.color\}>英検\{level\.label\}<\/Chip>/)
+  // 級は左、品詞は右。カードを開いた瞬間にどちらも見える。
+  assert.match(study, /<Chip color=\{level\.color\}>英検\{level\.label\}<\/Chip>\s*\n\s*<PosBadge pos=\{word\.pos\} \/>/)
+})
+
 test('単語の公開画面は10分野を直接示し、旧20語デッキを表示しない', () => {
   const levels = readFileSync(new URL('../src/screens/VocabLevels.jsx', import.meta.url), 'utf8')
   const fields = readFileSync(new URL('../src/screens/VocabGroups.jsx', import.meta.url), 'utf8')

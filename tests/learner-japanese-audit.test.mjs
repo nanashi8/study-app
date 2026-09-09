@@ -39,10 +39,10 @@ test('学習者向け日本語は画面・部品・自動生成文を全件監�
   const result = await auditLearnerJapanese()
 
   assert.equal(result.learnerFiles, 231)
-  assert.equal(result.learnerJapaneseEntries, 12622)
-  assert.equal(result.learnerUniqueJapaneseEntries, 9975)
+  assert.equal(result.learnerJapaneseEntries, 12619)
+  assert.equal(result.learnerUniqueJapaneseEntries, 9973)
   assert.equal(result.sourceFiles, 551)
-  assert.equal(result.sourceJapaneseEntries, 114193)
+  assert.equal(result.sourceJapaneseEntries, 114190)
   assert.equal(result.issues.length, 0)
 })
 

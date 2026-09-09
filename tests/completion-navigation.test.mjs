@@ -152,14 +152,19 @@ test('主要な全起動元は学習・クイズへ安全な親画面を渡す',
     ['src/screens/VocabSearch.jsx', 'vocabSearch', 1],
     ['src/screens/MyList.jsx', 'myList', 5],
     ['src/screens/Roots.jsx', 'roots', 3],
-    ['src/screens/RootDetail.jsx', 'rootDetail', 3],
-    ['src/screens/EtymologyPack.jsx', 'etymologyPack', 1],
+    ['src/screens/RootDetail.jsx', 'rootDetail', 2],
+    ['src/screens/EtymologyPack.jsx', 'etymologyPack', 2],
     ['src/screens/LiteratureReader.jsx', 'literatureReader', 1],
   ]
 
   for (const [path, screen, minimum] of expectations) {
     const source = read(path)
-    const matches = ['src/screens/Phrases.jsx', 'src/screens/Roots.jsx', 'src/screens/RootDetail.jsx'].includes(path)
+    const matches = [
+      'src/screens/Phrases.jsx',
+      'src/screens/Roots.jsx',
+      'src/screens/RootDetail.jsx',
+      'src/screens/EtymologyPack.jsx',
+    ].includes(path)
       ? source.match(/returnTo:\s*returnTarget/g) ?? []
       : path === 'src/screens/Grammar.jsx'
         ? source.match(/(?:returnTo[,}]|returnTo\s*)/g) ?? []
@@ -172,6 +177,9 @@ test('主要な全起動元は学習・クイズへ安全な親画面を渡す',
     }
     if (path === 'src/screens/RootDetail.jsx') {
       assert.match(source, /const returnTarget = \{ screen: 'rootDetail'/)
+    }
+    if (path === 'src/screens/EtymologyPack.jsx') {
+      assert.match(source, /const returnTarget = \{ screen: 'etymologyPack'/)
     }
     if (path === 'src/screens/Grammar.jsx') {
       assert.match(source, /const returnTo = \{ screen: 'grammar'/)

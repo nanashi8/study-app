@@ -8,6 +8,7 @@ import {
   isEtymologyDue,
 } from '../lib/etymologyProgress.js'
 import { summarizeVocabularySrsItems } from '../lib/vocabScheduler.js'
+import { SESSION_SIZE } from '../lib/session.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { NormalLearningRecordList } from '../components/NormalLearningRecordList.jsx'
 import { StatusDistributionBar } from '../components/LearningStatusBars.jsx'
@@ -50,26 +51,21 @@ export function EtymologyPackScreen() {
   const wordProgress = summarizeVocabularySrsItems(words, srs)
   const cardEntry = etymologySrs[pack.id]
 
+  // 語根1つだけを覚え直しても身につかないため、このカードからは紐づく単語そのものを、
+  // いつもの単語の暗記・テストで学ぶ。
   const returnTarget = { screen: 'etymologyPack', params: { packId: pack.id } }
-  const studyRoot = () => navigate('etymologyStudy', {
-    ids: [pack.id],
-    title: `${pack.rootForm}（${pack.rootMeaning}）を暗記`,
-    size: 1,
-    preserveOrder: true,
-    returnTo: returnTarget,
-  })
-  const quizRoot = () => navigate('etymologyQuiz', {
-    ids: [pack.id],
-    title: `${pack.rootForm}（${pack.rootMeaning}）のテスト`,
-    size: 1,
-    returnTo: returnTarget,
-  })
   const studyWords = () => navigate('vocabStudy', {
     source: { type: 'deck', ids: pack.studyIds, preserveOrder: true },
     title: `${pack.rootForm}（${pack.rootMeaning}）に紐づく単語`,
     mode: 'study',
-    size: Math.min(20, pack.studyIds.length),
-    returnTo: { screen: 'etymologyPack', params: { packId: pack.id } },
+    size: Math.min(SESSION_SIZE, pack.studyIds.length),
+    returnTo: returnTarget,
+  })
+  const quizWords = () => navigate('vocabQuiz', {
+    source: { type: 'deck', ids: pack.studyIds },
+    title: `${pack.rootForm}（${pack.rootMeaning}）に紐づく単語`,
+    size: Math.min(SESSION_SIZE, pack.studyIds.length),
+    returnTo: returnTarget,
   })
 
   return (
@@ -115,19 +111,29 @@ export function EtymologyPackScreen() {
 
         <section className="rounded-2xl bg-white p-3 ring-1 ring-slate-200" data-etymology-pack-actions>
           <p className="mb-2 text-center text-xs font-extrabold text-violet-700">
-            語根そのものを暗記・テストしてから、紐づく{words.length}語へ広げます
+            このカードに紐づく{words.length}語を、いつもの単語の暗記とテストで覚えます
           </p>
-          <div className="grid grid-cols-2 gap-2">
-            <Button size="sm" onClick={studyRoot} aria-label={`${pack.rootForm}を暗記`}>
-              <Book size={16} /> 語根を暗記
+          <div className="space-y-2">
+            <Button
+              full
+              onClick={studyWords}
+              disabled={!words.length}
+              aria-label={`${pack.rootForm}に紐づく単語を暗記`}
+              data-etymology-word-study-action
+            >
+              <Book size={18} /> 紐づく単語を暗記
             </Button>
-            <Button size="sm" variant="secondary" onClick={quizRoot} aria-label={`${pack.rootForm}をテスト`}>
-              <Cards size={16} /> 語根をテスト
+            <Button
+              full
+              variant="secondary"
+              onClick={quizWords}
+              disabled={!words.length}
+              aria-label={`${pack.rootForm}に紐づく単語をテスト`}
+              data-etymology-word-quiz-action
+            >
+              <Cards size={18} /> 紐づく単語をテスト
             </Button>
           </div>
-          <Button full variant="secondary" className="mt-2" onClick={studyWords} data-etymology-word-study-action>
-            <Book size={18} /> 紐づく単語を暗記
-          </Button>
         </section>
 
         <section className="rounded-2xl bg-white p-4 ring-1 ring-slate-200" aria-labelledby="etymology-words-heading">

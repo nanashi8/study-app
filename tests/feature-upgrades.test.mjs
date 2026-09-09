@@ -72,7 +72,12 @@ test('語源の全公開入口は語根の暗記・テスト・一覧と通常�
   const activeEtymology = `${roots}\n${pack}\n${rootDetail}`
   assert.equal((activeEtymology.match(/data-etymology-word-study-action/g) ?? []).length, 3)
   assert.equal((activeEtymology.match(/navigate\('vocabStudy'/g) ?? []).length, 3)
-  assert.doesNotMatch(activeEtymology, /navigate\('vocabQuiz'/)
+  // カードを1枚開いた画面は、語根1つの暗記・テストではなく紐づく単語の暗記・テストを出す。
+  const openedCard = `${pack}\n${rootDetail}`
+  assert.equal((openedCard.match(/data-etymology-word-quiz-action/g) ?? []).length, 2)
+  assert.equal((openedCard.match(/navigate\('vocabQuiz'/g) ?? []).length, 2)
+  assert.doesNotMatch(openedCard, /語根を暗記|語根をテスト/)
+  assert.doesNotMatch(openedCard, /navigate\('etymologyStudy'|navigate\('etymologyQuiz'/)
   assert.doesNotMatch(activeEtymology, /2択|単語クイズ|意味を見て学ぶ/)
   // 語根そのものも、単語・熟語と同じ「暗記・テスト・一覧を確認」でそろえる。
   assert.match(roots, /navigate\('etymologyStudy'/)
