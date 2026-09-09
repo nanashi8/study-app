@@ -1103,8 +1103,25 @@ const vocabularyHeadwordForms = new Set(
 )
 const normalizeSentence = (text) =>
   (text ?? '').replace(/\s+/g, ' ').replace(/\s+([,.?!])/g, '$1').trim()
+// so...that の that節は主語を指すので、主語と代名詞の性が食い違ってはいけない。
+// 生成テンプレートに代名詞を埋め込むと「Ken was so hungry that she ate ...」が混ざる。
+const MALE_SUBJECTS = /^(Ken|Tom|Mr\.\s\w+|My brother|My father)\b/
+const FEMALE_SUBJECTS = /^(Emi|Mika|Ms\.\s\w+|Mrs\.\s\w+|My sister|My mother)\b/
+const checkSubjectPronoun = (label, sentence) => {
+  if (!sentence || !/\bwas so\b|\bwere so\b/.test(sentence)) return
+  const male = MALE_SUBJECTS.test(sentence)
+  const female = FEMALE_SUBJECTS.test(sentence)
+  if (male && /\bthat (she|her)\b|\b(trusted|helped|called|saw|told) her\b/.test(sentence)) {
+    errors.push(`${label}: 男性の主語を she/her で受けている (${sentence})`)
+  }
+  if (female && /\bthat (he|his)\b|\b(trusted|helped|called|saw|told) him\b/.test(sentence)) {
+    errors.push(`${label}: 女性の主語を he/him で受けている (${sentence})`)
+  }
+}
+
 for (const g of GRAMMAR) {
   const at = `文法 ${g.id ?? '(id無し)'}`
+  checkSubjectPronoun(at, g.sentence?.en)
   if (!g.id || grammarIds.has(g.id)) errors.push(`${at}: id 無し/重複`)
   grammarIds.add(g.id)
   if (!LEVELS.has(g.level)) errors.push(`${at}: level が不正 (${g.level})`)

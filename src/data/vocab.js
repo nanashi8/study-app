@@ -159,7 +159,7 @@ import {
   etymologyHistoryFor,
   etymologyLearningGuideFor,
 } from './etymology-history.js'
-import { quizMeaningKey, splitMeanings } from './compact.js'
+import { quizMeaning, quizMeaningKey, splitMeanings } from './compact.js'
 import { WORD_SENSES } from './word-senses.js'
 import { EXAM_WORDS, USAGE_GUIDES_BY_WORD } from './exam-lexicon.js'
 import { ETYMOLOGY_COMPLETION_WORDS } from './words-etymology-completion.js'
@@ -806,6 +806,24 @@ export const getRoot = (id) => ROOTS_BY_ID[id]
 // テストの誤答選択肢を作る。同じ級・品詞・分野を優先して、
 // 単なる品詞当てでは正解できない、学習価値のある選択肢にする。
 // rng は 0〜1 を返す関数（テスト/再現性のため差し替え可能）。
+// 誤答の意味が正解の意味の中にそのまま入っていると、どちらを選んでも正しい問題になる。
+// 例: revere「崇敬する・あがめる」の誤答に venerate「あがめる」を出してしまう。
+// 表記ゆれを潰した上で包含関係を見て、そういう候補は誤答に採らない。
+const overlapText = (value) => String(value ?? '')
+  .normalize('NFKC')
+  .replace(/[〜~\s（）()・]/g, '')
+const allSensesText = (item) => overlapText(
+  [item.meaning, ...(item.otherSenses ?? []).map((sense) => sense.meaning)].join(''),
+)
+const meaningsOverlap = (word, candidate) => {
+  const answer = quizMeaningKeyText(word)
+  const other = quizMeaningKeyText(candidate)
+  if (answer.length >= 2 && allSensesText(candidate).includes(answer)) return true
+  if (other.length >= 2 && allSensesText(word).includes(other)) return true
+  return false
+}
+const quizMeaningKeyText = (item) => overlapText(quizMeaning(item))
+
 export function pickDistractors(word, count, rng = Math.random) {
   const sameLevel = wordsByLevel(word.level)
   const samePos = wordsByPos(word.pos)
@@ -829,6 +847,7 @@ export function pickDistractors(word, count, rng = Math.random) {
       seenIds.add(candidate.id)
       const meaningKey = quizMeaningKey(candidate)
       if (!meaningKey || usedMeaning.has(meaningKey)) continue
+      if (meaningsOverlap(word, candidate)) continue
       usedMeaning.add(meaningKey)
       picked.push(candidate)
       if (picked.length >= count) return picked
