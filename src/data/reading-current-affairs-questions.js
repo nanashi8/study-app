@@ -109,12 +109,12 @@ export const CURRENT_AFFAIRS_READING_QUESTIONS = Object.freeze({
       explain: '第4文に、いくつかの報告が同じ珍しい表現を使っていることに先生が気づいたとあります。',
     },
     {
-      q: 'Why did the school not ban the tools?',
+      q: 'What did the school do instead of banning the tools?',
       choices: [
         'It asked each class to write its own rules instead.',
-        'It could not check every student’s computer.',
-        'It had already bought the tools for every class.',
-        'It wanted students to finish homework faster.',
+        'It checked every student’s computer.',
+        'It bought the tools for every class.',
+        'It asked students to finish homework faster.',
       ],
       answer: 'It asked each class to write its own rules instead.',
       explain: '第5文と第6文で、完全な禁止は望まず、代わりに各クラスへルール作成を求めたと述べています。',

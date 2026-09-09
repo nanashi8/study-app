@@ -746,6 +746,11 @@ let readingReviewedPhraseSentenceCount = 0
 let readingManualReviewSentenceCount = 0
 const readingPhraseWords = (text) =>
   (text.match(/[A-Za-z]+(?:['’][A-Za-z]+)*/g) ?? []).map((word) => word.toLowerCase())
+// 読解の疑問詞と答えの型をそろえるための語彙。
+const READING_TIME_ANSWER = /\b(monday|tuesday|wednesday|thursday|friday|saturday|sunday|morning|afternoon|evening|night|o.clock|january|february|march|april|may|june|july|august|september|october|november|december|spring|summer|autumn|winter|year|month|week|day|hour|before|after|when|during|at |in |on )/i
+const READING_PLACE_ANSWER = /\b(in|at|on|near|behind|beside|next to|inside|outside|room|hall|gym|garden|center|centre|school|library|museum|park|station|street|door|city|town|home|office|counter|entrance)\b/i
+const READING_AMOUNT_ANSWER = /\b(\d+|one|two|three|four|five|six|seven|eight|nine|ten|half|most|many|few|several|all|none)\b/i
+
 for (const ps of PASSAGES) {
   if (!ps.id || readingPassageIds.has(ps.id)) errors.push(`長文 ${ps.id ?? '(id無し)'}: id 無し/重複`)
   readingPassageIds.add(ps.id)
@@ -1020,6 +1025,16 @@ for (const ps of PASSAGES) {
     if (!q.q || !q.explain) errors.push(`${at}: q/explain 不足`)
     if (!Array.isArray(q.choices) || q.choices.length < 3) errors.push(`${at}: choices は3件以上必要`)
     if (!q.choices?.includes(q.answer)) errors.push(`${at}: answer が choices に無い`)
+    // 疑問詞と答えの型がずれていると、正解を選べても何を問われたのか分からなくなる。
+    if (/^When\b/i.test(q.q) && !READING_TIME_ANSWER.test(q.answer)) {
+      errors.push(`${at}: When で聞いているのに時を答えていない (${q.answer})`)
+    }
+    if (/^Where\b/i.test(q.q) && !READING_PLACE_ANSWER.test(q.answer)) {
+      errors.push(`${at}: Where で聞いているのに場所を答えていない (${q.answer})`)
+    }
+    if (/^How (many|much|long|often)\b/i.test(q.q) && !READING_AMOUNT_ANSWER.test(q.answer)) {
+      errors.push(`${at}: How many/much で聞いているのに数量を答えていない (${q.answer})`)
+    }
     const answerPosition = q.choices?.indexOf(q.answer) ?? -1
     if (answerPosition >= 0) readingAnswerPositionCounts[answerPosition] += 1
   }
