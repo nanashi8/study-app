@@ -176,6 +176,48 @@ const ids = new Set()
 
 if (ROOT_IDS.size !== ROOTS.length) errors.push('語根idに重複あり')
 
+// 例文が見出し語を実際に使っているかの判定。複数語・ハイフン付きの見出しは
+// 記号を空白に均して並びで照合し、1語の見出しは規則変化と下の不規則形で照合する。
+const HEADWORD_IRREGULAR_FORMS = {
+  get: ['got', 'gotten'], find: ['found'], win: ['won'], become: ['became'], pay: ['paid'],
+  overcome: ['overcame'], undergo: ['underwent'], undertake: ['undertook'], withdraw: ['withdrew'],
+  hide: ['hid', 'hidden'], tooth: ['teeth'], uphold: ['upheld'], creep: ['crept'],
+  withhold: ['withheld'], shrink: ['shrank', 'shrunk'], bind: ['bound'], strike: ['struck'],
+  fight: ['fought'], flee: ['fled'], fling: ['flung'], swing: ['swung'], steal: ['stole', 'stolen'],
+}
+const headwordTokens = (value) => String(value ?? '')
+  .toLowerCase()
+  .replace(/[^a-z0-9]+/g, ' ')
+  .trim()
+  .split(' ')
+  .filter(Boolean)
+const headwordForms = (word) => {
+  const base = String(word ?? '').toLowerCase().replace(/[^a-z]/g, '')
+  const set = new Set([base, `${base}s`, `${base}es`, `${base}ed`, `${base}ing`, `${base}d`])
+  if (base.endsWith('e')) set.add(`${base.slice(0, -1)}ing`)
+  if (base.endsWith('y')) {
+    set.add(`${base.slice(0, -1)}ies`)
+    set.add(`${base.slice(0, -1)}ied`)
+  }
+  // 語尾が「母音＋子音」なら、equip→equipped のように子音を重ねる形も認める。
+  if (/[aeiou][^aeiouwxy]$/.test(base)) {
+    set.add(`${base}${base.slice(-1)}ing`)
+    set.add(`${base}${base.slice(-1)}ed`)
+  }
+  for (const form of HEADWORD_IRREGULAR_FORMS[base] ?? []) set.add(form)
+  return set
+}
+const exampleShowsHeadword = (word, example) => {
+  const head = headwordTokens(word)
+  const sentence = headwordTokens(example)
+  if (!head.length || !sentence.length) return false
+  if (head.length > 1) {
+    return sentence.some((_, index) => head.every((token, offset) => sentence[index + offset] === token))
+  }
+  const forms = headwordForms(word)
+  return sentence.some((token) => forms.has(token))
+}
+
 // ── 単語：id, word, pos, level, meaning, meanings, example(en/ja), etymology, phonetic(IPA) ──
 for (const w of ALL_WORDS) {
   const at = w.id || w.word || '?'
@@ -211,6 +253,11 @@ for (const w of ALL_WORDS) {
   if (!w.phonetic) errors.push(`${at}: 発音記号(IPA) 無し → npm run phonetics`)
   // 代表義以外の意味（word-senses.js）。カードと辞書に出すだけで出題には使わないが、
   // 級と品詞を学習者へそのまま見せるので、代表義と同じ厳しさで検証する。
+  // 例文はその語の使い方を見せるためにあるので、見出し語そのものが現れていないと
+  // 学習者は何を覚えればよいか分からない（ethnicity の例文に ethnic しか無い等）。
+  if (!exampleShowsHeadword(w.word, w.example?.en)) {
+    errors.push(`${at}: 例文に見出し語が現れない (${w.example?.en})`)
+  }
   // 先頭語義はテストの答えであり、カードの品詞バッジが指す意味でもある。
   // ここに (名)(動) のような別品詞の注記が付くと、答えと品詞が食い違う。
   if (/[（(](名|動|形|副|前|接|代)[）)]/.test(w.meanings?.[0] ?? '')) {

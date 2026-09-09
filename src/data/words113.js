@@ -52,7 +52,7 @@ const RAW = [
   ['wit', '名', 'pre1', '機知・才知・知恵', 'sharp wit', '鋭い機知', '古英語 wit(知力)。', { syn: [{ w: 'humor', m: 'ユーモア' }, { w: 'intelligence', m: '知性' }], ant: [{ w: 'dullness', m: '鈍さ' }], fam: [{ w: 'witty', m: '機知に富んだ' }], field: '一般' }],
   ['wizard', '名', '2', '魔法使い・名人', 'a computer wizard', 'コンピューターの達人', 'wise(賢い)+ -ard。', { syn: [{ w: 'sorcerer', m: '魔術師' }, { w: 'expert', m: '名人' }], ant: [{ w: 'novice', m: '初心者' }], field: '一般' }],
   ['womb', '名', 'pre1', '子宮・物事を生み出す場', 'in the womb', '胎内で', '古英語 wamb(腹)。', { syn: [{ w: 'uterus', m: '子宮' }], field: '医学' }],
-  ['worm', '名', '3', '虫・ミミズ', 'an earthworm', 'ミミズ', '古英語 wyrm(虫)。', { syn: [{ w: 'maggot', m: 'うじ虫' }, { w: 'larva', m: '幼虫' }], field: '科学' }],
+  ['worm', '名', '3', '虫・ミミズ', 'A worm moved through the wet soil.', 'ミミズが湿った土の中を進んだ。', '古英語 wyrm(虫)。', { syn: [{ w: 'maggot', m: 'うじ虫' }, { w: 'larva', m: '幼虫' }], field: '科学' }],
   ['wrench', '動', 'pre1', 'ねじり取る・ねんざする・スパナ', 'wrench the door open', 'ドアをこじ開ける', '古英語 wrencan(ねじる)。', { syn: [{ w: 'twist', m: 'ねじる' }, { w: 'yank', m: 'ぐいと引く' }], field: '技術' }],
   ['wrinkle', '名', '2', 'しわ・しわになる', 'wrinkles on the face', '顔のしわ', '古英語 gewrinclod(曲がりくねった)。', { syn: [{ w: 'crease', m: '折り目' }, { w: 'fold', m: 'しわ' }], ant: [{ w: 'smooth', m: '滑らかにする' }], field: '一般' }],
   ['wrist', '名', '3', '手首', 'a sprained wrist', 'ねんざした手首', '古英語 wrist(手首)。', { syn: [{ w: 'joint', m: '関節' }], field: '医学' }],
