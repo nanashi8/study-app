@@ -2230,9 +2230,26 @@ for (const item of WRITING_GRAMMAR) {
   auditEnglish(`英作文文法 ${item.id}`, item.example?.en, { complete: true })
 }
 for (const exercise of WRITING_EXERCISES) {
+  const stepIds = new Set()
   for (const step of exercise.steps) {
+    const stepAt = `英作文 ${exercise.id}/${step.id}`
+    if (stepIds.has(step.id)) errors.push(`${stepAt}: 手順idが重複`)
+    stepIds.add(step.id)
+    const optionIds = new Set()
+    const optionTexts = new Set()
+    let recommended = 0
     for (const option of step.options) {
-      auditEnglish(`英作文 ${exercise.id}/${step.id}/${option.id}`, option.text, { complete: true })
+      auditEnglish(`${stepAt}/${option.id}`, option.text, { complete: true })
+      if (optionIds.has(option.id)) errors.push(`${stepAt}: 選択肢idが重複 (${option.id})`)
+      optionIds.add(option.id)
+      if (optionTexts.has(option.text)) errors.push(`${stepAt}: 同じ英文の選択肢が2つある (${option.text})`)
+      optionTexts.add(option.text)
+      if (option.recommended) recommended += 1
+    }
+    // 画面は recommended の1件を「おすすめ」として文法カードとともに示す。
+    // 0件だと助言が消え、2件以上だとどちらを指すか決まらない。
+    if (recommended !== 1) {
+      errors.push(`${stepAt}: おすすめの選択肢が${recommended}件（1件である必要がある）`)
     }
   }
 }
