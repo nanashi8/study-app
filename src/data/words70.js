@@ -43,7 +43,7 @@ const RAW = [
   ['module', '名', 'pre1', '構成単位・モジュール', 'a training module', '研修単位', 'ラテン modulus(小さな尺度)→ mode と同系。', { syn: [{ w: 'unit', m: '単位' }, { w: 'component', m: '構成要素' }], field: '技術' }],
   ['molecular', '形', '1', '分子の', 'molecular structure', '分子構造', 'molecule(分子)+ -ar。', { syn: [{ w: 'atomic', m: '原子の' }], fam: [{ w: 'molecule', m: '分子' }], field: '科学' }],
   ['monarch', '名', 'pre1', '君主・国王', 'a constitutional monarch', '立憲君主', 'ギリシャ monos(単一)+arkhein(支配する)。', { syn: [{ w: 'sovereign', m: '主権者' }, { w: 'king', m: '王' }], ant: [{ w: 'subject', m: '臣民' }], fam: [{ w: 'monarchy', m: '君主制' }], field: '政治' }],
-  ['heckle', '動', '1', 'やじる・野次を飛ばす', 'hecklers in the crowd', '群衆の中の野次る人々', '中英語 hekelen(梳く→いじめる)。', { syn: [{ w: 'jeer', m: 'やじる' }, { w: 'taunt', m: 'なじる' }], ant: [{ w: 'applaud', m: '喝采する' }], fam: [{ w: 'heckling', m: 'やじ' }], field: '社会' }],
+  ['heckle', '動', '1', 'やじる・野次を飛ばす', 'Protesters heckled the speaker.', '抗議者たちが演説者にやじを飛ばした。', '中英語 hekelen(梳く→いじめる)。', { syn: [{ w: 'jeer', m: 'やじる' }, { w: 'taunt', m: 'なじる' }], ant: [{ w: 'applaud', m: '喝采する' }], fam: [{ w: 'heckling', m: 'やじ' }], field: '社会' }],
 ]
 
 export const WORDS_MORE69 = RAW.map(expandCompact)

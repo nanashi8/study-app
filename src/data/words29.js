@@ -36,7 +36,7 @@ const RAW = [
   ['descendant', '名', '1', '子孫', 'They are descendants of samurai.', '彼らは侍の子孫だ。', 'ラテン de+scandere(登る)→下る→ descend と同系。', { ant: [{ w: 'ancestor', m: '祖先' }], field: '社会' }],
   ['household', '名', 'pre1', '世帯・家庭', 'The household has four members.', 'その世帯は4人家族だ。', 'house(家)+hold(保つ)。', { syn: [{ w: 'family', m: '家族' }], field: '社会' }],
   ['tribe', '名', 'pre1', '部族', 'The tribe lives in the forest.', 'その部族は森に住む。', 'ラテン tribus(部族)→ tribe。', { field: '社会' }],
-  ['ethnicity', '名', '1', '民族性・民族', 'The city has great ethnic diversity.', 'その都市は民族的多様性に富む。', 'ギリシャ ethnos(民族)。', { field: '社会' }],
+  ['ethnicity', '名', '1', '民族性・民族', 'Students of many ethnicities study here.', '多くの民族の生徒がここで学んでいる。', 'ギリシャ ethnos(民族)。', { field: '社会' }],
   ['minority', '名', 'pre1', '少数派・少数民族', 'They protect minority rights.', '彼らは少数派の権利を守る。', 'ラテン minor(より小さい)→ minor と同源。', { ant: [{ w: 'majority', m: '多数派' }], field: '社会' }],
   ['immigrant', '名', 'pre1', '(入ってくる)移民', 'Many immigrants settled here.', '多くの移民がここに定住した。', 'ラテン in+migrare(移住する)→ migrate と同系。', { ant: [{ w: 'emigrant', m: '(出ていく)移民' }], field: '社会' }],
   // 上級形容詞

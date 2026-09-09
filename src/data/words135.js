@@ -2,7 +2,7 @@
 import { expandCompact } from './compact.js'
 
 const RAW = [
-  ['abnegation', '名', '1', '自制・(欲望の)放棄', 'selfabnegation', '自己犠牲', 'ラテン abnegare(拒む)。', { syn: [{ w: 'renunciation', m: '放棄' }, { w: 'selfdenial', m: '克己' }], ant: [{ w: 'indulgence', m: '放縦' }], field: '心理' }],
+  ['abnegation', '名', '1', '自制・(欲望の)放棄', 'His abnegation of luxury impressed everyone.', '彼が贅沢を断ったことは皆に感銘を与えた。', 'ラテン abnegare(拒む)。', { syn: [{ w: 'renunciation', m: '放棄' }, { w: 'self-denial', m: '克己' }], ant: [{ w: 'indulgence', m: '放縦' }], field: '心理' }],
   ['acuity', '名', '1', '鋭敏さ・(感覚の)鋭さ', 'mental acuity', '頭の鋭さ', 'ラテン acuere(鋭くする)。', { syn: [{ w: 'sharpness', m: '鋭さ' }, { w: 'keenness', m: '鋭敏さ' }], ant: [{ w: 'dullness', m: '鈍さ' }], field: '心理' }],
   ['amity', '名', '1', '友好・親善', 'amity between nations', '国家間の友好', 'ラテン amicus(友)。', { syn: [{ w: 'friendship', m: '友情' }, { w: 'harmony', m: '和合' }], ant: [{ w: 'enmity', m: '敵意' }], field: '社会' }],
   ['apprise', '動', '1', '知らせる・通知する', 'apprise them of the risk', '彼らに危険を知らせる', 'フランス appris(知らされた)。', { syn: [{ w: 'inform', m: '知らせる' }, { w: 'notify', m: '通知する' }], ant: [{ w: 'conceal', m: '隠す' }], field: '社会' }],
