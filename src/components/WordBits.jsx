@@ -28,36 +28,62 @@ export function PosBadge({ pos, className = '' }) {
 
 // 代表義には入りきらない、その語のほかの意味。品詞と、その意味を習う級を添える。
 // カードの級より上のものは、先に出会う意味と取り違えないよう「この先の級で出てくる」と示す。
+// 由来がちがう語がたまたま同じつづりになっているだけのものは、同じ語の意味の枝分かれと
+// 混ぜず「同じつづりの別の語」として分けて出す（well「上手に」と well「井戸」など）。
+function SenseList({ senses, baseRank }) {
+  return (
+    <ul className="space-y-2">
+      {senses.map((sense) => {
+        const senseLevel = getLevel(sense.level)
+        const ahead = baseRank >= 0 && LEVELS.findIndex((item) => item.id === sense.level) > baseRank
+        return (
+          <li key={`${sense.pos}-${sense.meaning}`} className="rounded-xl bg-amber-50/70 p-2.5">
+            <div className="flex flex-wrap items-center gap-1.5">
+              <PosBadge pos={sense.pos} />
+              <Chip color={senseLevel.color}>英検{senseLevel.label}</Chip>
+              {ahead && (
+                <span className="text-[11px] font-bold text-ink/45">この先の級で出てくる</span>
+              )}
+            </div>
+            <p className="mt-1.5 font-bold text-ink">{sense.meaning}</p>
+            {sense.example && (
+              <>
+                <p className="mt-1 text-sm font-bold text-ink/70">{sense.example.en}</p>
+                <p className="text-xs font-bold text-ink/45">{sense.example.ja}</p>
+              </>
+            )}
+            {sense.note && (
+              <p className="mt-1.5 text-xs font-bold leading-relaxed text-ink/55">{sense.note}</p>
+            )}
+          </li>
+        )
+      })}
+    </ul>
+  )
+}
+
 export function OtherSenses({ senses = [], level, className = '' }) {
   if (!senses.length) return null
   const baseRank = LEVELS.findIndex((item) => item.id === level)
+  const related = senses.filter((sense) => !sense.separateWord)
+  const separate = senses.filter((sense) => sense.separateWord)
   return (
-    <div className={cx('rounded-2xl bg-white p-4 ring-1 ring-amber-100', className)}>
-      <div className="mb-2 text-xs font-extrabold text-amber-700">ほかの意味</div>
-      <ul className="space-y-2">
-        {senses.map((sense) => {
-          const senseLevel = getLevel(sense.level)
-          const ahead = baseRank >= 0 && LEVELS.findIndex((item) => item.id === sense.level) > baseRank
-          return (
-            <li key={`${sense.pos}-${sense.meaning}`} className="rounded-xl bg-amber-50/70 p-2.5">
-              <div className="flex flex-wrap items-center gap-1.5">
-                <PosBadge pos={sense.pos} />
-                <Chip color={senseLevel.color}>英検{senseLevel.label}</Chip>
-                {ahead && (
-                  <span className="text-[11px] font-bold text-ink/45">この先の級で出てくる</span>
-                )}
-              </div>
-              <p className="mt-1.5 font-bold text-ink">{sense.meaning}</p>
-              {sense.example && (
-                <>
-                  <p className="mt-1 text-sm font-bold text-ink/70">{sense.example.en}</p>
-                  <p className="text-xs font-bold text-ink/45">{sense.example.ja}</p>
-                </>
-              )}
-            </li>
-          )
-        })}
-      </ul>
+    <div className={cx('space-y-3', className)}>
+      {related.length > 0 && (
+        <div className="rounded-2xl bg-white p-4 ring-1 ring-amber-100">
+          <div className="mb-2 text-xs font-extrabold text-amber-700">ほかの意味</div>
+          <SenseList senses={related} baseRank={baseRank} />
+        </div>
+      )}
+      {separate.length > 0 && (
+        <div className="rounded-2xl bg-white p-4 ring-1 ring-rose-100">
+          <div className="text-xs font-extrabold text-rose-700">同じつづりの別の語</div>
+          <p className="mb-2 mt-0.5 text-[11px] font-bold leading-relaxed text-ink/50">
+            由来のちがう語が、たまたま同じつづりになっています。上の意味の仲間ではありません。
+          </p>
+          <SenseList senses={separate} baseRank={baseRank} />
+        </div>
+      )}
     </div>
   )
 }
