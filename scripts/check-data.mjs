@@ -1439,6 +1439,22 @@ const kotenGrammarQuestionFormats = new Set(Object.keys(KOTEN_GRAMMAR_QUESTION_F
 if (KOTEN_GRAMMAR_QUESTIONS.length < 120) {
   errors.push(`古典文法問題: 120問未満 (${KOTEN_GRAMMAR_QUESTIONS.length}問)`)
 }
+// ── 古文の条件表現：未然形＋ば（仮定）と已然形＋ば（確定）を取り違えない ──
+// ア段のかな＋ばは、どの活用でも已然形になりえないので機械で判定できる。
+// 「負はば」を「四段已然形＋ば」と説明すると、最頻出の識別を逆に教えてしまう。
+const A_ROW_BEFORE_BA = /([かがさざただなはばぱまやらわ])ば/
+const explainsIzenkei = (text) => /已然形\s*[＋+]\s*ば|已然形＋ば/.test(String(text ?? ''))
+const checkConditionalForm = (label, source, explanation) => {
+  if (!explainsIzenkei(explanation)) return
+  // 説明が名指ししている「〜ば」を本文から拾い、その直前がア段なら未然形。
+  for (const match of String(source ?? '').matchAll(/「([^」]*ば)」/g)) {
+    if (A_ROW_BEFORE_BA.test(match[1])) {
+      errors.push(`${label}: 「${match[1]}」はア段＋ばなので未然形（仮定）だが、已然形と説明している`)
+      return
+    }
+  }
+}
+
 // ── 古文単語：カードに必要なものがそろっているか ──
 // これまで一件も検査が無く、300語のうち107語が例文なしのまま公開されていた。
 const kotenWordIds = new Set()
@@ -1745,6 +1761,7 @@ if (KOTEN_INTERPRETATIONS.length < 30) {
 }
 for (const item of KOTEN_INTERPRETATIONS) {
   const at = `古典短文 ${item.id ?? '(id無し)'}`
+  checkConditionalForm(at, item.grammarTip, item.grammarTip)
   if (!item.id || kotenQuestionIds.has(item.id)) errors.push(`${at}: id 無し/重複`)
   kotenQuestionIds.add(item.id)
   if (!kotenLevelIds.has(item.level)) errors.push(`${at}: level が不正 (${item.level})`)
