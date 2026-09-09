@@ -162,7 +162,7 @@ import {
 } from '../src/data/writing.js'
 import { hasBalancedParentheses } from '../src/data/compact.js'
 import { HOMOGRAPH_SEPARATE_SENSES } from '../src/data/homographs.js'
-import { KNOWN_DUPLICATE_FORMS, singularCandidates } from '../src/data/duplicate-forms.js'
+import { KNOWN_DUPLICATE_FORMS, PLURAL_ONLY_SENSES, singularCandidates } from '../src/data/duplicate-forms.js'
 import { MATH_PROBLEMS, MATH_UNITS } from '../src/data/math.js'
 import { WRITING_EXAM_QUESTIONS } from '../src/data/writing-exam.js'
 
@@ -181,8 +181,11 @@ if (ROOT_IDS.size !== ROOTS.length) errors.push('語根idに重複あり')
 
 // 単数形と複数形を別カードで登録すると、同じことを二度覚えさせることになり、
 // 片方の代表義がもう片方の誤答に出て「正解なのに不正解」になりうる。
-// 別見出しを立ててよいのは複数形にその形でしか出ない意味があるときだけ
-// （manners=作法、forces=軍隊、ethics=倫理学 など）。
+// 別見出しを立ててよいのは複数形にその形でしか出ない意味があるときだけで、
+// それは辞書の判断なので PLURAL_ONLY_SENSES に人が書く。
+// 意味欄の重なり方からは決められない——fee「料金・謝礼」と fees「料金・手数料」は
+// 文字列としては一部しか重ならないが、複数形固有の意味は持っていない。
+// そこで「一つでも意味が重なったら、どちらかの台帳に載っていること」を求める。
 // 既にある組は src/data/duplicate-forms.js の台帳に載せてあり、
 // 台帳に無い組が現れたら落とす。逆に、直って重複でなくなった組が台帳に
 // 残り続けるのも落とす（台帳が実態と合わなくなるのを防ぐ）。
@@ -278,14 +281,14 @@ for (const w of ALL_WORDS) {
     const plural = senseSet(w)
     const single = senseSet(other)
     if (!plural.size || !single.size) break
-    const sameThing = [...plural].every((sense) => single.has(sense)) ||
-      [...single].every((sense) => plural.has(sense))
+    const shared = [...plural].filter((sense) => single.has(sense))
     const listed = KNOWN_DUPLICATE_FORMS[w.id]
-    if (sameThing) {
+    if (shared.length && !PLURAL_ONLY_SENSES[w.id]) {
       duplicateFormsSeen.add(w.id)
       if (!listed) {
         errors.push(
-          `${at}: 単数形 ${other.word}「${other.meaning}」と同じことを教えている重複登録 → 複数形に固有の意味が無ければ見出しを立てない`,
+          `${at}: 単数形 ${other.word}「${other.meaning}」と意味「${shared.join('・')}」が重なる重複登録`
+          + ' → その形でしか出ない意味があるなら duplicate-forms.js の PLURAL_ONLY_SENSES へ書く',
         )
       } else if (listed.singular !== other.id) {
         errors.push(`${at}: duplicate-forms.js の単数形が ${listed.singular} になっている（実際は ${other.id}）`)
@@ -494,6 +497,31 @@ for (const [pluralId, entry] of Object.entries(KNOWN_DUPLICATE_FORMS)) {
     errors.push(
       `duplicate-forms.js: ${pluralId} は単数形 ${entry.singular} と別の意味になった → 台帳から消す`,
     )
+  }
+}
+// その形でしか出ない意味を持つと書いた語が、実際には見出しとして無い状態を残さない。
+for (const pluralId of Object.keys(PLURAL_ONLY_SENSES)) {
+  if (!wordById[pluralId]) {
+    errors.push(`duplicate-forms.js: PLURAL_ONLY_SENSES の ${pluralId} という見出しは無い`)
+  } else if (KNOWN_DUPLICATE_FORMS[pluralId]) {
+    errors.push(`duplicate-forms.js: ${pluralId} が重複台帳と PLURAL_ONLY_SENSES の両方にある`)
+  } else {
+    // 「その形でしか出ない意味がある」と書いた以上、単数形に無い意味を実際に持っていること。
+    // あとから意味欄を書き換えて単数形と同じにしても、免除が効いたままになるのを防ぐ。
+    const pluralWord = wordById[pluralId]
+    const singular = singularCandidates(pluralWord.word)
+      .map((form) => wordById[form])
+      .find((item) => item && item.pos === pluralWord.pos)
+    if (singular) {
+      const single = senseSet(singular)
+      const own = [...senseSet(pluralWord)].filter((sense) => !single.has(sense))
+      if (!own.length) {
+        errors.push(
+          `duplicate-forms.js: ${pluralId} に単数形 ${singular.word} が持たない意味が無い`
+          + ' → PLURAL_ONLY_SENSES から外して重複台帳へ移す',
+        )
+      }
+    }
   }
 }
 
