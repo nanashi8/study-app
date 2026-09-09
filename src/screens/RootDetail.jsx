@@ -42,25 +42,20 @@ export function RootDetailScreen() {
     ...words.filter((word) => vocabularyLearningStatus(srs[word.id]) === 'learned'),
   ].slice(0, LEARN_BATCH)
 
+  // 語根1つだけを覚え直しても身につかないため、この画面からは紐づく単語を、
+  // いつもの単語の暗記・テストで学ぶ。
   const returnTarget = { screen: 'rootDetail', params: { rootId } }
-  const studyRoot = () => navigate('etymologyStudy', {
-    ids: [card.id],
-    title: `${card.rootForm}（${card.rootMeaning}）を暗記`,
-    size: 1,
-    preserveOrder: true,
-    returnTo: returnTarget,
-  })
-  const quizRoot = () => navigate('etymologyQuiz', {
-    ids: [card.id],
-    title: `${card.rootForm}（${card.rootMeaning}）のテスト`,
-    size: 1,
-    returnTo: returnTarget,
-  })
   const studyWords = () => navigate('vocabStudy', {
     source: { type: 'deck', ids: nextWords.map((word) => word.id), preserveOrder: true },
     title: `${card.rootForm}（${card.rootMeaning}）から暗記`,
     mode: 'study',
     size: nextWords.length,
+    returnTo: returnTarget,
+  })
+  const quizWords = () => navigate('vocabQuiz', {
+    source: { type: 'deck', ids: words.map((word) => word.id) },
+    title: `${card.rootForm}（${card.rootMeaning}）のテスト`,
+    size: Math.min(LEARN_BATCH, words.length),
     returnTo: returnTarget,
   })
 
@@ -86,17 +81,30 @@ export function RootDetailScreen() {
               {card.caution}
             </p>
             <StatusDistributionBar kind="learning" counts={wordProgress.learning} compact unit="語" />
-            <div className="grid grid-cols-2 gap-2">
-              <Button size="sm" onClick={studyRoot} aria-label={`${card.rootForm}を暗記`}>
-                <Book size={16} /> 語根を暗記
+            <div className="space-y-2">
+              <Button
+                full
+                onClick={studyWords}
+                disabled={!nextWords.length}
+                aria-label={`${card.rootForm}に紐づく単語を暗記`}
+                data-etymology-word-study-action
+              >
+                <Book size={18} /> 紐づく単語を暗記
               </Button>
-              <Button size="sm" variant="secondary" onClick={quizRoot} aria-label={`${card.rootForm}をテスト`}>
-                <Cards size={16} /> 語根をテスト
+              <Button
+                full
+                variant="secondary"
+                onClick={quizWords}
+                disabled={!words.length}
+                aria-label={`${card.rootForm}に紐づく単語をテスト`}
+                data-etymology-word-quiz-action
+              >
+                <Cards size={18} /> 紐づく単語をテスト
               </Button>
             </div>
-            <Button full variant="secondary" onClick={studyWords} disabled={!nextWords.length} data-etymology-word-study-action>
-              <Book size={18} /> 次の{nextWords.length}語を暗記
-            </Button>
+            <p className="text-center text-xs font-bold text-ink/50">
+              暗記は、まだ覚えていない{nextWords.length}語から始めます。
+            </p>
           </div>
         </Card>
 

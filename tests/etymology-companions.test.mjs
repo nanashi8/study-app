@@ -68,7 +68,11 @@ test('公開画面は語根の暗記・テストと通常の単語暗記の両�
 
   assert.equal((learnerSource.match(/data-etymology-word-study-action/g) ?? []).length, 3)
   assert.equal((learnerSource.match(/navigate\('vocabStudy'/g) ?? []).length, 3)
-  assert.doesNotMatch(learnerSource, /navigate\('vocabQuiz'/)
+  // 1枚だけの語根を暗記・テストしても身につかないため、カード詳細は紐づく単語のテストへ進む。
+  const openedCard = `${pack}\n${rootDetail}`
+  assert.equal((openedCard.match(/navigate\('vocabQuiz'/g) ?? []).length, 2)
+  assert.equal((openedCard.match(/data-etymology-word-quiz-action/g) ?? []).length, 2)
+  assert.doesNotMatch(openedCard, /語根を暗記|語根をテスト/)
   assert.match(roots, /navigate\('etymologyStudy'/)
   assert.match(roots, /navigate\('etymologyQuiz'/)
   assert.match(roots, /NormalLearningRecordList/)

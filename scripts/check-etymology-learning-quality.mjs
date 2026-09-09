@@ -248,6 +248,16 @@ export function auditEtymologyLearningQuality() {
   const appSource = source('src/App.jsx')
   if (!rootsSource.includes("navigate('vocabStudy'")) fail('語源トップが通常の単語暗記へ進まない')
   if (!packSource.includes("navigate('vocabStudy'")) fail('カード詳細が通常の単語暗記へ進まない')
+  // 語根を1枚だけ暗記・テストしても身につかないため、カードを開いた画面は
+  // 紐づく単語の暗記・テストだけを出す。
+  const rootDetailSource = source('src/screens/RootDetail.jsx')
+  for (const [label, screen] of [['カード詳細', packSource], ['同じ語根', rootDetailSource]]) {
+    if (!screen.includes("navigate('vocabQuiz'")) fail(`${label}が紐づく単語のテストへ進まない`)
+    if (!screen.includes('data-etymology-word-quiz-action')) {
+      fail(`${label}に紐づく単語のテストの目印がない`)
+    }
+    if (/語根を暗記|語根をテスト/.test(screen)) fail(`${label}に語根1つだけの暗記・テストが残る`)
+  }
   // 語源そのものを暗記・テスト・一覧で学ぶ導線は公開する（単語・熟語と同じ扱い）。
   if (!rootsSource.includes("navigate('etymologyStudy'")) fail('語源トップに語根の暗記がない')
   if (!rootsSource.includes("navigate('etymologyQuiz'")) fail('語源トップに語根のテストがない')

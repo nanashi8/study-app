@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import { etymologyCardsForWord, etymologyStoryForWord } from '../data/vocab.js'
+import { getLevel } from '../data/levels.js'
 import { buildDeck, growDeck, recordStudyAnswer } from '../lib/session.js'
 import { phraseGroupsForWord } from '../lib/wordPhrases.js'
 import { playSpeechItems } from '../lib/speech-player.js'
@@ -8,7 +9,7 @@ import { SpeakButton } from '../components/SpeakButton.jsx'
 import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
 import { EtymologyBlock } from '../components/WordBits.jsx'
 import { PosBadge } from '../components/WordBits.jsx'
-import { Button, IconButton } from '../components/ui.jsx'
+import { Button, Chip, IconButton } from '../components/ui.jsx'
 import { Close, ArrowRight, Lightbulb } from '../components/Icons.jsx'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 import { VocabReviewHistory } from '../components/VocabReviewHistory.jsx'
@@ -205,6 +206,7 @@ export function VocabStudyScreen() {
     setFlipped(revealAll || Object.hasOwn(answers, nextIndex))
   }
 
+  const level = getLevel(word.level)
   const saved = myList.includes(word.id)
   const wordSpeechItems = [
     { text: word.word, label: word.word, style: 'word' },
@@ -316,8 +318,9 @@ export function VocabStudyScreen() {
           onClick={() => !flipped && setFlipped(true)}
           className="animate-pop-in rounded-[2rem] bg-white p-6 shadow-card"
         >
-          {/* 表：単語 */}
-          <div className="flex items-start">
+          {/* 表：単語（左上に英検の級、右上に品詞） */}
+          <div className="flex items-start justify-between gap-2" data-vocab-card-level>
+            <Chip color={level.color}>英検{level.label}</Chip>
             <PosBadge pos={word.pos} />
           </div>
 
