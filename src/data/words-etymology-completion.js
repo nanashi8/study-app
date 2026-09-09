@@ -179,7 +179,7 @@ const RAW = [
   ['resignation', '名', '2', '辞任・辞表・あきらめ', 'The mayor announced her resignation.', '市長は辞任を発表した。', 'resign(職を手放す)＋-ation。ラテン語 resignare(印を解く・権利を返す)の流れをくむ。', { field: 'ビジネス' }],
   ['returnee', '名', 'pre1', '帰国者・帰還者', 'The school offers language support for returnees.', 'その学校は帰国者向けの言語支援を行っている。', 'return(戻る)＋動作を受ける人を表す -ee。元の国や場所へ戻ってきた人を指す。', { field: '社会' }],
   ['reunion', '名', '2', '再会・同窓会・再結合', 'Our class reunion will be held next month.', '私たちの同窓会は来月開かれる。', 're-(再び)＋union(一つに集まること)から、離れていた人々が再び会うことを表す。', { field: '社会' }],
-  ['scour', '動', 'pre1', '徹底的に捜す・ごしごし洗う', 'Rescue teams scoured the forest for the missing hiker.', '救助隊は行方不明の登山者を求めて森をくまなく捜した。', '「こすり洗う」と「広く捜し回る」は別々の古い語の流れが同じつづりに重なった。', { field: '動作・行為' }],
+  ['scour', '動', 'pre1', '徹底的に捜す', 'Rescue teams scoured the forest for the missing hiker.', '救助隊は行方不明の登山者を求めて森をくまなく捜した。', '「こすり洗う」と「広く捜し回る」は別々の古い語の流れが同じつづりに重なった。', { field: '動作・行為' }],
   ['security', '名', '2', '安全・警備・担保', 'Airport security checked every bag.', '空港の警備がすべての手荷物を検査した。', 'secure(安全な・確保する)＋-ity。危険のない状態から、警備や返済を保証する担保へ広がった。', { field: '社会' }],
   ['signify', '動', 'pre1', '意味する・示す', 'A red light may signify danger.', '赤い光は危険を示すことがある。', 'ラテン語 signum(しるし)＋facere(作る)から、「しるしによって意味を示す」を表す。', { field: 'コミュニケーション' }],
   ['simultaneous', '形', 'pre1', '同時の', 'The two teams made simultaneous announcements.', '二つのチームは同時に発表した。', 'ラテン語 simul(同時に・一緒に)をもとにし、複数の出来事が同じ時に起こることを表す。', { field: '時間・数量' }],

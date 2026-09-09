@@ -4,7 +4,7 @@ import { expandCompact } from './compact.js'
 const RAW = [
   ['probable', '形', 'pre1', 'ありそうな・起こりそうな', 'the probable cause', '考えられる原因', 'ラテン probare(証明する)→ prove と同系。', { syn: [{ w: 'likely', m: 'ありそうな' }, { w: 'plausible', m: 'もっともらしい' }], ant: [{ w: 'improbable', m: 'ありそうにない' }], fam: [{ w: 'probability', m: '確率' }], field: '性質・状態' }],
   ['managerial', '形', 'pre1', '管理職の・経営の', 'managerial skills', '管理能力', 'manager(管理者)+ -ial。', { syn: [{ w: 'administrative', m: '行政の' }, { w: 'executive', m: '経営の' }], fam: [{ w: 'manage', m: '管理する' }], field: 'ビジネス' }],
-  ['post', '名', 'pre1', '柱・郵便・地位・投稿する', 'a lamp post', '街灯柱', 'ラテン postis(柱)。', { syn: [{ w: 'pole', m: '柱' }, { w: 'position', m: '地位' }], field: '一般' }],
+  ['post', '名', 'pre1', '柱', 'a lamp post', '街灯柱', 'ラテン postis(柱)。', { syn: [{ w: 'pole', m: '柱' }], field: '一般' }],
   ['raised', '形', 'pre1', '高くした・上げられた・育てられた', 'a raised platform', '高くした壇', 'raise(上げる)+ -d。', { syn: [{ w: 'elevated', m: '高い' }, { w: 'lifted', m: '持ち上げられた' }], ant: [{ w: 'lowered', m: '下げられた' }], fam: [{ w: 'raise', m: '上げる' }], field: '性質・状態' }],
   ['repellent', '名', 'pre1', '虫よけ・はじくもの', 'insect repellent', '虫よけ', 'repel(はじく)+ -ent。', { syn: [{ w: 'deterrent', m: '抑止剤' }], ant: [{ w: 'attractant', m: '誘引剤' }], fam: [{ w: 'repel', m: 'はじく' }], field: '科学' }],
   ['sequential', '形', '1', '順次の・連続的な', 'in sequential order', '順番に', 'sequence(順序)+ -ial。', { syn: [{ w: 'consecutive', m: '連続した' }, { w: 'successive', m: '引き続く' }], ant: [{ w: 'random', m: '無作為の' }], fam: [{ w: 'sequence', m: '順序' }], field: '技術' }],

@@ -16,7 +16,7 @@ const RAW = [
   ['update', '動', 'pre1', '最新化する・更新する・最新情報', 'update the software', 'ソフトを更新する', 'up(上へ)+date(日付)。', { syn: [{ w: 'renew', m: '一新する' }, { w: 'modernize', m: '近代化する' }], ant: [{ w: 'outdate', m: '時代遅れにする' }], field: '技術' }],
   ['wholesome', '形', '1', '健康によい・健全な', 'wholesome food', '健康によい食べ物', '古英語 hal(健康な)→ whole と同系。', { syn: [{ w: 'nutritious', m: '栄養のある' }, { w: 'healthy', m: '健康的な' }], ant: [{ w: 'unhealthy', m: '不健康な' }], field: '医学' }],
   ['witness', '名', 'pre1', '目撃者・証人・目撃する', 'a key witness', '重要証人', '古英語 witnes(知識・証言)。', { syn: [{ w: 'observer', m: '観察者' }, { w: 'bystander', m: '居合わせた人' }], field: '法律' }],
-  ['race', '動', 'pre1', '競走する・疾走する・人種', 'race to the finish', 'ゴールへ疾走する', '古ノルド ras(突進)。', { syn: [{ w: 'dash', m: '疾走する' }, { w: 'sprint', m: '全力疾走する' }], ant: [{ w: 'crawl', m: 'のろのろ進む' }], field: 'スポーツ' }],
+  ['race', '動', 'pre1', '競走する・疾走する', 'race to the finish', 'ゴールへ疾走する', '古ノルド ras(突進)。', { syn: [{ w: 'dash', m: '疾走する' }, { w: 'sprint', m: '全力疾走する' }], ant: [{ w: 'crawl', m: 'のろのろ進む' }], field: 'スポーツ' }],
   ['racial', '形', 'pre1', '人種の・民族の', 'racial equality', '人種の平等', 'race(人種)+ -ial。', { syn: [{ w: 'ethnic', m: '民族の' }], fam: [{ w: 'race', m: '人種' }], field: '社会' }],
   ['radius', '名', '1', '半径・行動半径', 'within a five-mile radius', '半径5マイル以内', 'ラテン radius(光線・車輪の輻)。', { syn: [{ w: 'range', m: '範囲' }, { w: 'reach', m: '到達範囲' }], ant: [{ w: 'diameter', m: '直径' }], fam: [{ w: 'radial', m: '放射状の' }], field: '科学' }],
   ['ragged', '形', '1', 'ぼろぼろの・ぎざぎざの', 'ragged clothes', 'ぼろ服', 'rag(ぼろ布)+ -ed。', { syn: [{ w: 'tattered', m: 'ぼろぼろの' }, { w: 'frayed', m: 'すり切れた' }], ant: [{ w: 'neat', m: 'きちんとした' }], fam: [{ w: 'rag', m: 'ぼろ布' }], field: '一般' }],

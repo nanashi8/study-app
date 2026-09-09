@@ -133,7 +133,7 @@ wireless	形	2	無線の・ワイヤレスの	The classroom has a wireless netwo
 workforce	名	3	労働力・全従業員	The company expanded its skilled workforce.	その会社は熟練した従業員層を拡大した。	work（仕事）＋force（力・集団）の複合語。	ビジネス
 worthwhile	形	2	価値がある・やりがいのある	The difficult journey was worthwhile.	その困難な旅には価値があった。	worth（価値）＋while（時間）から、「時間を使う価値がある」を表す。	性質・状態
 wrap	動	3	包む・巻く	Wrap the glass carefully in paper.	そのガラスを紙で注意深く包んでください。	中英語 wrappen にさかのぼり、物の周りを覆う動作を表す。	動作・行為
-yen	名	4	円・強い願望	The ticket costs five hundred yen.	その切符は500円する。	通貨の yen は日本語の「円」を英語表記したもの。強い願望の yen は中国語系の別語源。	経済	/ˈjen/
+yen	名	4	円	The ticket costs five hundred yen.	その切符は500円する。	通貨の yen は日本語の「円」を英語表記したもの。強い願望の yen は中国語系の別語源。	経済	/ˈjen/
 yogurt	名	3	ヨーグルト	Plain yogurt goes well with fruit.	プレーンヨーグルトは果物によく合う。	トルコ語 yogurt（発酵させた乳）を英語が取り入れた語。	食・生活
 yours	代	5	あなたのもの・あなたたちのもの	Is this blue pen yours?	この青いペンはあなたのものですか。	your（あなたの）に所有代名詞を作る -s が付いた形。	機能語
 yourself	代	3	あなた自身を・あなた自身で	You can check the answer yourself.	自分で答えを確認できます。	your（あなたの）＋self（自身）の複合語。	機能語

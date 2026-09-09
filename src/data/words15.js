@@ -81,7 +81,7 @@ const RAW = [
   ["grain","名","pre1","穀物・粒","Rice is an important grain.","米は重要な穀物だ。","ラテン granum「粒」。",{"field":"食・生活"}],
   ["grammar","名","3","文法","English grammar can be tricky.","英文法は厄介なことがある。","ギリシャ gramma「文字」→ graph と同系。",{"field":"教育"}],
   ["grass","名","4","草・芝生","Don't walk on the grass.","芝生に入らないで。","古英語 græs→ grow と同源。",{"field":"一般"}],
-  ["grave","名","pre2","墓・重大な(形)","They visited their father’s grave.","彼らは父の墓を訪れた。","古英語 græf「掘った穴」。",{"field":"一般"}],
+  ["grave","名","pre2","墓","They visited their father’s grave.","彼らは父の墓を訪れた。","古英語 græf「掘った穴」。",{"field":"一般"}],
   ["ground","名","3","地面・根拠","The ball hit the ground.","ボールが地面に当たった。","古英語 grund「底」。",{"field":"一般"}],
   ["guard","名","pre2","警備員・見張り","A guard stood at the gate.","警備員が門に立っていた。","古フランス garder「守る」→ regard と同系。",{"field":"一般"}],
   ["guest","名","3","客・ゲスト","We have guests for dinner.","夕食に客が来る。","古ノルド gestr「客」。",{"field":"一般"}],

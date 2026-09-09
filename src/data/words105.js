@@ -16,7 +16,7 @@ const RAW = [
   ['scratch', '動', '3', 'ひっかく・かく・かすり傷', 'scratch the surface', '表面をひっかく', '中英語 scratchen(かく)。', { syn: [{ w: 'scrape', m: 'こする' }, { w: 'claw', m: '爪でかく' }], field: '一般' }],
   ['seal', '動', '3', '密閉する・封印する・印章', 'seal the envelope', '封筒に封をする', 'ラテン sigillum(小さな印)→ sign と同系。', { syn: [{ w: 'close', m: '閉じる' }, { w: 'fasten', m: '留める' }], ant: [{ w: 'open', m: '開ける' }], field: '一般' }],
   ['shift', '動', '2', '移す・転換する・交代', 'shift the focus', '焦点を移す', '古英語 sciftan(分ける)。', { syn: [{ w: 'move', m: '動かす' }, { w: 'transfer', m: '移す' }], ant: [{ w: 'fix', m: '固定する' }], field: '一般' }],
-  ['sole', '形', 'pre1', '唯一の・単独の・足の裏', 'the sole survivor', '唯一の生存者', 'ラテン solus(ひとりの)→ solo と同系。', { syn: [{ w: 'only', m: '唯一の' }, { w: 'single', m: '単独の' }], ant: [{ w: 'multiple', m: '複数の' }], fam: [{ w: 'solely', m: 'もっぱら' }], field: '一般' }],
+  ['sole', '形', 'pre1', '唯一の・単独の', 'the sole survivor', '唯一の生存者', 'ラテン solus(ひとりの)→ solo と同系。', { syn: [{ w: 'only', m: '唯一の' }, { w: 'single', m: '単独の' }], ant: [{ w: 'multiple', m: '複数の' }], fam: [{ w: 'solely', m: 'もっぱら' }], field: '一般' }],
   ['somewhat', '副', '2', 'いくぶん・やや', 'somewhat surprised', 'やや驚いて', 'some(いくらか)+what(何)。', { syn: [{ w: 'slightly', m: 'わずかに' }, { w: 'rather', m: 'かなり' }], ant: [{ w: 'completely', m: '完全に' }], field: '副詞' }],
   ['spatial', '形', '1', '空間の・空間的な', 'spatial awareness', '空間認識', 'ラテン spatium(空間)→ space と同系。', { syn: [{ w: 'dimensional', m: '次元の' }], ant: [{ w: 'temporal', m: '時間の' }], fam: [{ w: 'space', m: '空間' }], field: '科学' }],
   ['sphere', '名', 'pre1', '球・領域・分野', 'the public sphere', '公共圏', 'ギリシャ sphaira(球)。', { syn: [{ w: 'globe', m: '球体' }, { w: 'domain', m: '領域' }], fam: [{ w: 'spherical', m: '球形の' }], field: '科学' }],

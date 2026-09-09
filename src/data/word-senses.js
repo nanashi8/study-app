@@ -194,6 +194,14 @@ export const WORD_SENSES = Object.freeze({
       meaning: '左へ',
       example: Object.freeze({ en: 'Turn left at the bank.', ja: '銀行のところで左へ曲がって。' }),
     }),
+    Object.freeze({
+      pos: '形',
+      level: '4',
+      meaning: '残っている',
+      separateWord: true,
+      note: 'leave(去る・残す)の過去分詞が同じつづりになったもの。方向の left(古英語 lyft)とは別の語。',
+      example: Object.freeze({ en: 'Only two tickets are left.', ja: '切符は2枚しか残っていない。' }),
+    }),
   ]),
   content: Object.freeze([
     Object.freeze({
@@ -241,6 +249,156 @@ export const WORD_SENSES = Object.freeze({
       level: '3',
       meaning: '〜かもしれない（may の過去形）',
       example: Object.freeze({ en: 'It might rain this afternoon.', ja: '午後は雨が降るかもしれない。' }),
+    }),
+  ]),
+  bank: Object.freeze([
+    Object.freeze({
+      pos: '名',
+      level: '4',
+      meaning: '土手・堤',
+      separateWord: true,
+      note: '古ノルド語 banki(土手)から。銀行の bank はイタリア語 banca(両替商の台)を通って入った別の語で、意味のつながりはない。',
+      example: Object.freeze({ en: 'They walked along the river bank.', ja: '彼らは川の土手を歩いた。' }),
+    }),
+  ]),
+  pole: Object.freeze([
+    Object.freeze({
+      pos: '名',
+      level: '3',
+      meaning: '極・極地',
+      separateWord: true,
+      note: 'ギリシャ語 polos(回転の軸)から。棒の pole(ラテン語 palus=杭)とは別の語。',
+      example: Object.freeze({ en: 'Penguins live near the South Pole.', ja: 'ペンギンは南極の近くにすむ。' }),
+    }),
+  ]),
+  race: Object.freeze([
+    Object.freeze({
+      pos: '名',
+      level: 'pre2',
+      meaning: '人種・民族',
+      separateWord: true,
+      note: 'イタリア語 razza(血統)から。競走の race(古ノルド語 ras=突進)とは別の語。',
+      example: Object.freeze({ en: 'People of every race joined the festival.', ja: 'あらゆる人種の人々が祭りに加わった。' }),
+    }),
+  ]),
+  stern: Object.freeze([
+    Object.freeze({
+      pos: '名',
+      level: 'pre1',
+      meaning: '船尾',
+      separateWord: true,
+      note: '古ノルド語 stjorn(舵取り)から。steer(かじを取る)と同じ仲間で、厳格な stern(古英語 styrne)とは別の語。',
+      example: Object.freeze({ en: 'She stood at the stern of the ship.', ja: '彼女は船の船尾に立っていた。' }),
+    }),
+  ]),
+  swallow: Object.freeze([
+    Object.freeze({
+      pos: '名',
+      level: 'pre2',
+      meaning: 'ツバメ',
+      separateWord: true,
+      note: '古英語 swealwe(ツバメ)から。飲み込む swallow(古英語 swelgan)とは別の語。',
+      example: Object.freeze({ en: 'A swallow built a nest under the roof.', ja: 'ツバメが屋根の下に巣を作った。' }),
+    }),
+  ]),
+  grave: Object.freeze([
+    Object.freeze({
+      pos: '形',
+      level: 'pre2',
+      meaning: '重大な・厳粛な',
+      separateWord: true,
+      note: 'ラテン語 gravis(重い)から。gravity(重力)と同じ仲間で、墓の grave(古英語 græf=掘った穴)とは別の語。',
+      example: Object.freeze({ en: 'They faced a grave problem.', ja: '彼らは重大な問題に直面した。' }),
+    }),
+  ]),
+  quarry: Object.freeze([
+    Object.freeze({
+      pos: '名',
+      level: 'pre1',
+      meaning: '獲物・追われるもの',
+      separateWord: true,
+      note: '古フランス語 cuiriee(猟犬に与える獲物)から。採石場の quarry(ラテン語 quadrare=四角に切り出す)とは別の語。',
+      example: Object.freeze({ en: 'The hawk spotted its quarry.', ja: 'タカは獲物を見つけた。' }),
+    }),
+  ]),
+  scale: Object.freeze([
+    Object.freeze({
+      pos: '名',
+      level: 'pre2',
+      meaning: 'うろこ',
+      separateWord: true,
+      note: '「殻・薄い板」を表すゲルマン系の語から。規模の scale(ラテン語 scala=はしご)とは別の語。',
+      example: Object.freeze({ en: 'Fish are covered with small scales.', ja: '魚は小さなうろこに覆われている。' }),
+    }),
+  ]),
+  sole: Object.freeze([
+    Object.freeze({
+      pos: '名',
+      level: 'pre2',
+      meaning: '足の裏・靴底',
+      separateWord: true,
+      note: 'ラテン語 solea(サンダル)から。唯一の sole(ラテン語 solus=ひとりの)とは別の語。',
+      example: Object.freeze({ en: 'The soles of his shoes were worn.', ja: '彼の靴の底はすり減っていた。' }),
+    }),
+  ]),
+  stalk: Object.freeze([
+    Object.freeze({
+      pos: '動',
+      level: '2',
+      meaning: '忍び寄る・つけ回す',
+      separateWord: true,
+      note: '古英語 bestealcian(こっそり歩く)から。steal(盗む)と同じ仲間で、茎の stalk(古英語 stalu=支柱)とは別の語。',
+      example: Object.freeze({ en: 'The cat stalked the bird.', ja: '猫は鳥に忍び寄った。' }),
+    }),
+  ]),
+  post: Object.freeze([
+    Object.freeze({
+      pos: '名',
+      level: '4',
+      meaning: '郵便・地位・投稿する',
+      separateWord: true,
+      note: 'ラテン語 positus(置かれたもの)から。街道に置かれた中継所が郵便に、置かれた持ち場が地位になった。柱の post(ラテン語 postis)とは別の語。',
+      example: Object.freeze({ en: 'I sent the letter by post.', ja: '私はその手紙を郵便で送った。' }),
+    }),
+  ]),
+  ring: Object.freeze([
+    Object.freeze({
+      pos: '動',
+      level: '5',
+      meaning: '鳴る・鳴らす',
+      separateWord: true,
+      note: '古英語 hringan(音を出す)から。指輪・輪の ring(古英語 hring)とは別の語。',
+      example: Object.freeze({ en: 'The bell rings at eight.', ja: 'ベルは8時に鳴る。' }),
+    }),
+  ]),
+  stable: Object.freeze([
+    Object.freeze({
+      pos: '名',
+      level: 'pre2',
+      meaning: '馬小屋・厩舎',
+      separateWord: true,
+      note: 'ラテン語 stabulum(家畜を立たせておく場所)から。安定した stable(ラテン語 stabilis)と同じ「立つ」の語根から出たが、別々に英語へ入った別の語。',
+      example: Object.freeze({ en: 'The horses returned to the stable.', ja: '馬は厩舎へ戻った。' }),
+    }),
+  ]),
+  scour: Object.freeze([
+    Object.freeze({
+      pos: '動',
+      level: 'pre1',
+      meaning: 'ごしごし洗う・磨く',
+      separateWord: true,
+      note: '後期ラテン語 excurare(きれいに洗う)から。捜し回る scour とは別の語で、つづりが同じになった。',
+      example: Object.freeze({ en: 'He scoured the pot until it shone.', ja: '彼は鍋が光るまでごしごし洗った。' }),
+    }),
+  ]),
+  yen: Object.freeze([
+    Object.freeze({
+      pos: '名',
+      level: 'pre1',
+      meaning: '強い願望・あこがれ',
+      separateWord: true,
+      note: '中国語で阿片への渇望を指した語から。通貨の yen(日本語の「円」)とは別の語。',
+      example: Object.freeze({ en: 'She had a yen for travel.', ja: '彼女は旅へのあこがれを抱いていた。' }),
     }),
   ]),
 })

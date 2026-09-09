@@ -98,7 +98,7 @@ const RAW = [
   ['rainy', '形', '5', '雨の・雨降りの', 'a rainy day', '雨の日', 'rain(雨)+ -y。', { field: '気象' }],
   ['snowy', '形', '5', '雪の・雪の降る', 'a snowy morning', '雪の朝', 'snow(雪)+ -y。', { field: '気象' }],
   ['windy', '形', '5', '風の強い', 'a windy day', '風の強い日', 'wind(風)+ -y。', { field: '気象' }],
-  ['ring', '名', '5', '指輪・輪・鳴る', 'a gold ring', '金の指輪', '古英語 hring(輪)。', { field: '一般' }],
+  ['ring', '名', '5', '指輪・輪', 'a gold ring', '金の指輪', '古英語 hring(輪)。', { field: '一般' }],
   ['rose', '名', '5', 'バラ', 'a red rose', '赤いバラ', 'ラテン rosa(バラ)。', { field: '科学' }],
   ['kick', '動', '5', 'ける', 'kick the ball', 'ボールをける', '中英語 kiken(ける)。', { field: 'スポーツ' }],
   ['wake', '動', '5', '目を覚ます・起こす', 'wake up early', '早く目覚める', '古英語 wacian(目覚める)。', { field: '一般' }],

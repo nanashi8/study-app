@@ -46,7 +46,7 @@ Korea	名	5	韓国・朝鮮半島の地域名	Korea has a rich tradition of prin
 landmine	名	pre2	地雷	The team marked the area where a landmine was found.	チームは地雷が見つかった区域に印を付けた。	land（陸地）＋mine（爆発性の仕掛け）の複合語。	軍事
 latest	形	3	最新の・最も遅い	The latest update fixes the problem.	最新の更新でその問題が直る。	late（遅い・最近の）の最上級に当たる形。	時間・数量
 league	名	pre2	連盟・競技リーグ	Our team joined the regional league.	私たちのチームは地域リーグに参加した。	「結び付ける」を表すラテン語 ligare と関係するフランス語 ligue から、同盟・連盟を表す。	スポーツ
-left	形	5	左の・残っている	Turn left at the second traffic light.	2番目の信号で左へ曲がってください。	方向の left は古英語系の語で、leave の過去形 left と同じ綴りだが由来と働きが異なる。	一般
+left	形	5	左の	Turn left at the second traffic light.	2番目の信号で左へ曲がってください。	方向の left は古英語系の語で、leave の過去形 left と同じ綴りだが由来と働きが異なる。	一般
 let	動	4	〜させる・許す	Let me carry that bag for you.	そのかばんを私に運ばせてください。	古英語 laetan（許す・残す）にさかのぼる基本動詞。	動作・行為
 literal	形	2	文字どおりの・逐語的な	The literal meaning is different from the metaphor.	文字どおりの意味はその比喩とは異なる。	ラテン語 littera（文字）から、「文字に即した」を表すようになった。	言語
 living	形	4	生きている・生活の	The forest is a living system.	その森は生きた仕組みだ。	live（生きる）＋-ing から、現在生命を持つものの性質を表す。	自然

@@ -19,7 +19,7 @@ const RAW = [
   ['oasis', '名', '2', 'オアシス・憩いの場', 'a desert oasis', '砂漠のオアシス', 'ギリシャ oasis(肥沃地)。', { syn: [{ w: 'refuge', m: '安息所' }, { w: 'haven', m: '避難所' }], ant: [{ w: 'desert', m: '砂漠' }], field: '地理' }],
   ['pier', '名', '2', '桟橋・埠頭・橋脚', 'walk on the pier', '桟橋を歩く', 'ラテン pera(石積み)。', { syn: [{ w: 'wharf', m: '埠頭' }, { w: 'jetty', m: '突堤' }], field: '交通' }],
   ['pulley', '名', 'pre1', '滑車', 'lift with a pulley', '滑車で持ち上げる', '古フランス polie(滑車)。', { syn: [{ w: 'wheel', m: '車輪' }, { w: 'block', m: '滑車装置' }], field: '技術' }],
-  ['quarry', '名', 'pre1', '採石場・獲物・採掘する', 'a stone quarry', '石切り場', 'ラテン quadrare(四角にする)。', { syn: [{ w: 'mine', m: '鉱山' }, { w: 'prey', m: '獲物' }], field: '技術' }],
+  ['quarry', '名', 'pre1', '採石場', 'a stone quarry', '石切り場', 'ラテン quadrare(四角にする)。', { syn: [{ w: 'mine', m: '鉱山' }], field: '技術' }],
   ['saddle', '名', '2', '鞍・サドル・(負担を)負わせる', 'a leather saddle', '革の鞍', '古英語 sadol(鞍)。', { syn: [{ w: 'seat', m: '座席' }], field: '一般' }],
   ['spire', '名', 'pre1', '尖塔・先端', 'a church spire', '教会の尖塔', '古英語 spir(細い茎)。', { syn: [{ w: 'steeple', m: '尖塔' }, { w: 'peak', m: '頂' }], field: '建築' }],
   ['stove', '名', '3', 'こんろ・ストーブ', 'a gas stove', 'ガスこんろ', '中世低地ドイツ stove(暖房室)。', { syn: [{ w: 'cooker', m: '調理器' }, { w: 'heater', m: '暖房器' }], field: '一般' }],
