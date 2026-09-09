@@ -520,4 +520,115 @@ export const LEVEL_OVERRIDE = {
     'inmate', 'mimic', 'mutiny', 'naval', 'notify', 'oblige', 'ornate', 'outlet', 'output', 'pacify',
     'parity', 'patent', 'pawn', 'quarry', 'quartz', 'query', 'racial', 'refine', 'rookie', 'shrewd',
     'solely', 'spire', 'spouse', 'stark', 'tact', 'taint', 'thatch', 'unruly', 'wages']),
+
+  // ── 2026-09-10 の級点検で直したもの（あとの節が勝つので、上の判断より優先される）──
+  // ① 派生語が基語と同じ級に置かれていた。-ness/-ly/-ful/-less は基語より必ずむずかしい。
+  ...L('pre2', ['endless', 'goodness', 'openly', 'dangerously', 'enjoyment', 'laziness']),
+  ...L('2', ['friendliness', 'likeness', 'openness']),
+  ...L('3', ['useless']),
+  ...L('pre1', ['coldness', 'greenness', 'watchful', 'fruitful', 'hugely', 'lawful', 'orderly']),
+
+  // ② その級より3段以上やさしい英文に、同じ意味で出ていた語。
+  //    例: typhoon は4級長文 "a strong typhoon stopped electricity" に出る。
+  ...L('3', ['typhoon', 'avoid', 'chat', 'collect', 'continue', 'final']),
+  ...L('4', ['artist', 'check', 'cooking']),
+  ...L('pre2', ['advertise', 'neither', 'nor', 'replace', 'translation', 'warn', 'filled', 'craft', 'lowered']),
+
+  // ③ 基語が、そこから派生した語よりむずかしい級に置かれていた。
+  //    例: nation が準1級で national が4級。
+  ...L('3', ['nation', 'rent', 'fair']),
+  ...L('4', ['less']),
+  ...L('2', ['norm']),
+  ...L('pre1', ['opt']),
+  // even は代表義が「平らな・偶数の」だが、5級の英文にも「〜でさえ」で出る一般語。
+  ...L('3', ['even']),
+
+  // ④ 英検1900語の収録リストと級が食い違っていた。リストの級に合わせる。
+  ...L('4', ['mirror', 'prize']),
+  ...L('3', ['wrap', 'further']),
+  ...L('pre2', ['dialogue', 'forever', 'symbol']),
+
+  // ── 級の一括指定を手で読み直した分（2026-09-10）──
+  // 上の 3級 の節は v/w/y/z の語をほぼ丸ごと含んでいて、一語ずつ選んだ跡がない。
+  // 538語を読み直したところ 313 語が中学卒業程度を超えていた。
+  // どれもアプリ自身の3級以下の英文（長文・書き取り・リスニング・熟語）に
+  // 一度も現れないことを確かめたうえで上げている。
+  ...L('pre2', ['absorb', 'abuse', 'alert', 'amuse', 'annoy', 'bind', 'chew', 'civil',
+    'commit', 'cope', 'crawl', 'creep', 'depart', 'detect', 'devote', 'differ', 'drag',
+    'drain', 'drill', 'echo', 'elect', 'empire', 'enable', 'engage', 'ensure', 'entire',
+    'entry', 'envy', 'equip', 'erase', 'expose', 'extent', 'fade', 'fatal', 'fate', 'flip',
+    'frost', 'fully', 'galaxy', 'gear', 'gene', 'genius', 'glow', 'govern', 'grain', 'grant',
+    'grip', 'guilt', 'handy', 'holy', 'horizon', 'horror', 'humid', 'hunger', 'hut', 'idiot',
+    'infect', 'inject', 'injure', 'input', 'insert', 'insult', 'intend', 'jail', 'labor',
+    'latter', 'leap', 'liver', 'logic', 'loosen', 'loyal', 'lung', 'magnet', 'mammal',
+    'manual', 'marble', 'margin', 'marine', 'mass', 'mature', 'mobile', 'modify', 'motive',
+    'obtain', 'occupy', 'odd', 'oppose', 'orbit', 'phase', 'prior', 'pursue', 'random',
+    'remote', 'resign', 'resist', 'resort', 'resume', 'retail', 'retain', 'revise', 'rotate',
+    'rural', 'scar', 'scope', 'screw', 'seldom', 'shaky', 'sin', 'sketch', 'skinny', 'sneak',
+    'soak', 'sob', 'sphere', 'spiral', 'starve', 'steep', 'stormy', 'stroke', 'summit',
+    'swift', 'tackle', 'tease', 'tender', 'terror', 'thus', 'timely', 'toxic', 'trim', 'troop',
+    'tutor', 'undo', 'uneasy', 'uneven', 'unfit', 'unpack', 'unplug', 'unsure', 'urge',
+    'vacuum', 'valid', 'varied', 'vast', 'warmth', 'widen', 'wreck', 'yield']),
+  ...L('pre1', ['boast', 'cease', 'cling', 'combat', 'curse', 'decay', 'deed', 'dread',
+    'drift', 'emerge', 'endure', 'exceed', 'faint', 'fellow', 'fetch', 'fierce', 'flaw',
+    'flee', 'fluid', 'fond', 'forge', 'foster', 'frank', 'frown', 'fury', 'gasp', 'gaze',
+    'glance', 'gossip', 'grasp', 'greed', 'grief', 'grim', 'grin', 'groan', 'halt', 'harsh',
+    'haste', 'haul', 'heap', 'hollow', 'humble', 'hush', 'idle', 'imply', 'impose', 'intact',
+    'keen', 'lag', 'lease', 'limb', 'linger', 'lodge', 'loom', 'lump', 'meadow', 'mercy',
+    'mere', 'merge', 'mighty', 'misery', 'modest', 'moist', 'mold', 'moody', 'moreover',
+    'mortal', 'mound', 'murmur', 'mutual', 'nasty', 'needy', 'noble', 'oath', 'offend', 'omit',
+    'orient', 'peer', 'pierce', 'pillar', 'plague', 'plead', 'pledge', 'preach', 'prey',
+    'probe', 'prompt', 'prone', 'rage', 'rally', 'rattle', 'realm', 'reap', 'relic', 'remedy',
+    'reside', 'ridge', 'sacred', 'scarce', 'scent', 'scheme', 'seize', 'sermon', 'shed',
+    'shove', 'snatch', 'soar', 'sober', 'sole', 'solemn', 'spine', 'spite', 'stale', 'steer',
+    'stoop', 'stride', 'stroll', 'stun', 'sturdy', 'sue', 'superb', 'sway', 'swell', 'temper',
+    'tempt', 'timber', 'timid', 'trait', 'treaty', 'trek', 'trench', 'tusk', 'tyrant',
+    'unjust', 'untidy', 'utter', 'vacant', 'vain', 'vanity', 'vapor', 'vault', 'veil',
+    'vendor', 'venom', 'verbal', 'verify', 'verse', 'vessel', 'vice', 'virtue', 'vital',
+    'vivid', 'void', 'vow', 'voyage', 'wedge', 'wit', 'witty', 'womb', 'woolen', 'worsen',
+    'wrench']),
+  ...L('1', ['liable', 'rite', 'tint', 'zeal']),
+
+  // 4級を読み直した分。基語の級をそのまま引き継いだ派生形と、中2では出ない語。
+  ...L('pre2', ['believable', 'believer', 'lighten', 'importantly', 'toss', 'wander', 'span',
+    'orphan', 'panel', 'issue', 'suffer', 'spoil', 'differently', 'freely', 'kindly', 'mostly',
+    'surely', 'talented', 'goddess', 'warrior', 'riddle', 'joint', 'medium', 'rank', 'honor',
+    'servant', 'ruin', 'stationery', 'swan', 'tense', 'brake', 'awesome', 'yawn']),
+  ...L('pre1', ['agreeable', 'emptiness', 'fullness', 'darken', 'oceanic', 'stillness',
+    'movable', 'readily', 'tame', 'tilt', 'weep', 'pant']),
+  ...L('1', ['uniformity']),
+
+  // 準2級の節にも同じ一括指定の跡（'absorb2' 以降のかたまり）があった。読み直して
+  // 高1では出ない 105 語を上げる。いずれも準2級以下の英文には現れない。
+  ...L('pre1', ['abrupt', 'acute', 'affirm', 'aisle', 'align', 'append', 'ascend', 'aspire',
+    'assert', 'attain', 'betray', 'broker', 'bruise', 'census', 'chunk', 'comrade', 'courtesy',
+    'coward', 'crude', 'deceit', 'decode', 'deduct', 'deport', 'detach', 'devise', 'disarm',
+    'dismay', 'dodge', 'domain', 'dwell', 'earnest', 'edgy', 'eject', 'elude', 'embed',
+    'embody', 'emit', 'enact', 'encode', 'enlist', 'enrage', 'enrich', 'enroll', 'erode',
+    'erupt', 'escort', 'evade', 'evoke', 'exempt', 'exile', 'exotic', 'fluent', 'folly',
+    'fusion', 'gadget', 'gland', 'gloom', 'grove', 'gust', 'haven', 'hazard', 'hectic',
+    'hinge', 'hiss', 'hoist', 'hunch', 'immortal', 'imperial', 'infamous', 'inland', 'inmate',
+    'irritable', 'jolly', 'landmine', 'lush', 'marvel', 'menace', 'millennium', 'mimic',
+    'mislead', 'naval', 'notify', 'oblige', 'pacify', 'parity', 'pawn', 'quarry', 'quartz',
+    'query', 'racial', 'refine', 'rookie', 'shrewd', 'solely', 'spire', 'spouse', 'stark',
+    'tact', 'taint', 'unruly']),
+  ...L('1', ['consul', 'hymn', 'mutiny', 'ornate', 'thatch']),
+
+  // 英検1900語リストが級を挙げている語は、読み直しの結果よりリストを優先する。
+  ...L('pre2', ['aisle', 'census', 'imperial', 'landmine', 'millennium']),
+  ...L('4', ['awesome', 'medium', 'stationery']),
+
+  // 準1級・1級を読み直した分。基本語が高い級に取り残されていた。
+  ...L('3', ['ad', 'root', 'self']),
+  ...L('4', ['eraser', 'gas']),
+  ...L('pre2', ['bug', 'bump', 'bunch', 'cable', 'clap', 'kit', 'log', 'mop', 'plural',
+    'timer']),
+  ...L('2', ['architecture', 'blast', 'boom', 'bully', 'dashboard', 'default', 'era',
+    'insulator', 'jackpot', 'jury', 'metadata', 'metric', 'ratio', 'riot', 'soul',
+    'subscription', 'synthetic']),
+  ...L('pre1', ['accountability', 'algorithmic', 'biodiversity', 'circulatory',
+    'confidentiality', 'conversational', 'deliberation', 'gravitational', 'hence', 'humane',
+    'hymn', 'hypocrisy', 'hysterical', 'legitimacy', 'manipulation', 'monocycle',
+    'multiplicity', 'neutrality', 'nonreligious', 'oversight', 'partisan', 'proxy', 'quantify',
+    'retention', 'subnormal', 'synergy', 'tart', 'theology', 'unconsciousness']),
 }
