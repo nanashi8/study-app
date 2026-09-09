@@ -111,6 +111,7 @@ import {
   listeningSpokenSegments,
 } from '../src/data/listening.js'
 import { KOTEN_WORDS, getKoten } from '../src/data/koten.js'
+import { KANBUN_KUNDOKU_EXERCISES } from '../src/data/kanbun-kundoku.js'
 import {
   KOTEN_GRAMMAR,
   KOTEN_GRAMMAR_CATEGORIES,
@@ -1439,6 +1440,44 @@ const kotenGrammarQuestionFormats = new Set(Object.keys(KOTEN_GRAMMAR_QUESTION_F
 if (KOTEN_GRAMMAR_QUESTIONS.length < 120) {
   errors.push(`古典文法問題: 120問未満 (${KOTEN_GRAMMAR_QUESTIONS.length}問)`)
 }
+// ── 漢文の訓読：読む順が書き下し文と同じ並びになっているか ──
+// 書き下しに現れる漢字は、読む順と同じ相対順序で出るはず。順が食い違うと、
+// 正しく並べたつもりの学習者と書き下し文が矛盾する。
+// 再読文字は①②で二度置くので、二度目は並びの照合から外す。
+for (const exercise of KANBUN_KUNDOKU_EXERCISES) {
+  const at = `漢文訓読 ${exercise.id ?? '(id無し)'}`
+  const labelById = Object.fromEntries(
+    (exercise.tokens ?? []).map((token) => [token.id, String(token.label ?? '')]),
+  )
+  const seen = new Set()
+  const reading = []
+  for (const id of exercise.order ?? []) {
+    const label = (labelById[id] ?? '').replace(/[①②③]/g, '')
+    if (!/^[\u4e00-\u9fff]+$/.test(label) || seen.has(label)) continue
+    seen.add(label)
+    reading.push(label)
+  }
+  const kakikudashi = [...String(exercise.kakikudashi ?? '')].filter((char) =>
+    /[\u4e00-\u9fff]/.test(char))
+  let cursor = 0
+  let matched = 0
+  let expected = 0
+  for (const label of reading) {
+    if (!kakikudashi.includes(label)) continue
+    expected += 1
+    const index = kakikudashi.indexOf(label, cursor)
+    if (index >= 0) {
+      matched += 1
+      cursor = index + 1
+    }
+  }
+  if (matched !== expected) {
+    errors.push(
+      `${at}: 読む順「${reading.join('')}」が書き下し文「${exercise.kakikudashi}」と並びが違う`,
+    )
+  }
+}
+
 // ── 古文の条件表現：未然形＋ば（仮定）と已然形＋ば（確定）を取り違えない ──
 // ア段のかな＋ばは、どの活用でも已然形になりえないので機械で判定できる。
 // 「負はば」を「四段已然形＋ば」と説明すると、最頻出の識別を逆に教えてしまう。
