@@ -334,6 +334,15 @@ export const READER_GLOSS = {
  * @param {object} [sentenceGloss] その文の gloss（{ key: {ja, id} }）
  * @returns {{ja: string, id: (string|null)}|null}
  */
+// 本文をタップしたときは、その場の文脈がどの意味かを決める。単語カードのように
+// 代表義だけへ絞ると「a different kind of loss」の kind が「親切な」になってしまうため、
+// word-senses.js が持つほかの意味も並べて返す。
+const fullMeaning = (word) => (
+  word?.meaning
+    ? [word.meaning, ...(word.otherSenses ?? []).map((sense) => sense.meaning)].join('・')
+    : null
+)
+
 export function resolvePassageWord(key, sentenceGloss) {
   if (!key) return null
   const inline = sentenceGloss?.[key]
@@ -347,10 +356,10 @@ export function resolvePassageWord(key, sentenceGloss) {
   const fb = READER_GLOSS[key]
   const ja =
     inline?.ja ??
-    direct?.meaning ??
+    fullMeaning(direct) ??
     irregular?.ja ??
     (aliasWord ? alias.ja : null) ??
-    word?.meaning ??
+    fullMeaning(word) ??
     fb ??
     null
   const id = inline?.proper ? null : (inline?.id ?? word?.id ?? null)

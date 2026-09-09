@@ -26,7 +26,7 @@ const RAW = [
   ['side', '名', '5', '側・横・面', 'the other side', '反対側', '古英語 side(脇腹)。', { field: '一般' }],
   ['size', '名', '5', '大きさ・サイズ', 'the right size', 'ちょうどよいサイズ', '古フランス sise(定め)。', { field: '測定' }],
   ['song', '名', '5', '歌', 'sing a song', '歌を歌う', '古英語 sang(歌)。', { field: '音楽' }],
-  ['sound', '名', '5', '音・〜に聞こえる', 'a loud sound', '大きな音', 'ラテン sonus(音)。', { field: '科学' }],
+  ['sound', '名', '5', '音・物音', 'a loud sound', '大きな音', 'ラテン sonus(音)。', { field: '科学' }],
   ['space', '名', '5', '宇宙・空間・余地', 'outer space', '宇宙空間', 'ラテン spatium(空間)。', { field: '科学' }],
   ['spoon', '名', '5', 'スプーン・さじ', 'a soup spoon', 'スープスプーン', '古英語 spon(木片)。', { field: '料理' }],
   ['sport', '名', '5', 'スポーツ・運動', 'play sports', 'スポーツをする', '古フランス desport(気晴らし)。', { field: 'スポーツ' }],

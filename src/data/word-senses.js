@@ -86,4 +86,136 @@ export const WORD_SENSES = Object.freeze({
       example: Object.freeze({ en: 'Water is matter in liquid form.', ja: '水は液体の物質だ。' }),
     }),
   ]),
+  project: Object.freeze([
+    Object.freeze({
+      pos: '名',
+      level: 'pre2',
+      meaning: '計画・企画',
+      example: Object.freeze({ en: 'They started a new project.', ja: '彼らは新しい計画を始めた。' }),
+    }),
+  ]),
+  guard: Object.freeze([
+    Object.freeze({
+      pos: '動',
+      level: '4',
+      meaning: '守る・見張る',
+      example: Object.freeze({ en: 'Two dogs guard the house.', ja: '2匹の犬が家を守っている。' }),
+    }),
+  ]),
+  kind: Object.freeze([
+    Object.freeze({
+      pos: '名',
+      level: '4',
+      meaning: '種類',
+      example: Object.freeze({ en: 'What kind of music do you like?', ja: 'どんな種類の音楽が好きですか。' }),
+    }),
+  ]),
+  fine: Object.freeze([
+    Object.freeze({
+      pos: '名',
+      level: 'pre2',
+      meaning: '罰金',
+      example: Object.freeze({ en: 'He paid a fine for parking there.', ja: '彼はそこに駐車した罰金を払った。' }),
+    }),
+  ]),
+  sound: Object.freeze([
+    Object.freeze({
+      pos: '動',
+      level: '4',
+      meaning: '〜に聞こえる・〜のようだ',
+      example: Object.freeze({ en: 'That sounds interesting.', ja: 'それは面白そうですね。' }),
+    }),
+  ]),
+  mind: Object.freeze([
+    Object.freeze({
+      pos: '動',
+      level: '4',
+      meaning: '気にする・いやだと思う',
+      example: Object.freeze({ en: 'Do you mind the noise?', ja: '騒音が気になりますか。' }),
+    }),
+  ]),
+  lie: Object.freeze([
+    Object.freeze({
+      pos: '動',
+      level: '4',
+      meaning: 'うそをつく',
+      example: Object.freeze({ en: 'She lied about her age.', ja: '彼女は年齢について嘘をついた。' }),
+    }),
+    Object.freeze({
+      pos: '動',
+      level: '3',
+      meaning: '横たわる・（物が）ある',
+      example: Object.freeze({ en: 'The book lies on the desk.', ja: '本が机の上にある。' }),
+    }),
+  ]),
+  land: Object.freeze([
+    Object.freeze({
+      pos: '名',
+      level: '4',
+      meaning: '陸地・土地',
+      example: Object.freeze({ en: 'They finally saw land.', ja: '彼らはついに陸地を見た。' }),
+    }),
+  ]),
+  watch: Object.freeze([
+    Object.freeze({
+      pos: '名',
+      level: '5',
+      meaning: '腕時計・懐中時計',
+      example: Object.freeze({ en: 'My watch has stopped.', ja: '私の腕時計が止まった。' }),
+    }),
+  ]),
+  still: Object.freeze([
+    Object.freeze({
+      pos: '副',
+      level: 'pre2',
+      meaning: 'さらに・いっそう',
+      example: Object.freeze({ en: 'This bag is still larger.', ja: 'このかばんはさらに大きい。' }),
+    }),
+  ]),
+  round: Object.freeze([
+    Object.freeze({
+      pos: '副',
+      level: 'pre2',
+      meaning: 'ぐるりと・周りを',
+      example: Object.freeze({ en: 'They looked round the room.', ja: '彼らは部屋をぐるりと見回した。' }),
+    }),
+  ]),
+  left: Object.freeze([
+    Object.freeze({
+      pos: '副',
+      level: '5',
+      meaning: '左へ',
+      example: Object.freeze({ en: 'Turn left at the bank.', ja: '銀行のところで左へ曲がって。' }),
+    }),
+  ]),
+  content: Object.freeze([
+    Object.freeze({
+      pos: '形',
+      level: 'pre1',
+      meaning: '満足して',
+      example: Object.freeze({ en: 'She is content with her life.', ja: '彼女は自分の生活に満足している。' }),
+    }),
+    Object.freeze({
+      pos: '動',
+      level: 'pre1',
+      meaning: '満足させる',
+      example: Object.freeze({ en: 'The gift contented the child.', ja: 'その贈り物は子どもを満足させた。' }),
+    }),
+  ]),
+  private: Object.freeze([
+    Object.freeze({
+      pos: '名',
+      level: 'pre1',
+      meaning: '兵卒・一兵卒',
+      example: Object.freeze({ en: 'He served as a private.', ja: '彼は一兵卒として従軍した。' }),
+    }),
+  ]),
+  insular: Object.freeze([
+    Object.freeze({
+      pos: '形',
+      level: '1',
+      meaning: '島の・島に囲まれた',
+      example: Object.freeze({ en: 'The insular city lies in the bay.', ja: 'その島の町は湾の中にある。' }),
+    }),
+  ]),
 })
