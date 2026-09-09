@@ -43,13 +43,13 @@ export const AUDITED_MORPHEME_ROOT_WORDS = Object.freeze({
   // doc ＝ 教える（ラテン語 docēre「教える」）
   doc: Object.freeze(['docile', 'doctrinal', 'doctrine', 'document']),
   // duc / duct ＝ 導く（ラテン語 dūcere「導く」）
-  duct: Object.freeze(['conducive', 'conductivity', 'conductor', 'deduce', 'deduct', 'deduction', 'induce', 'producer', 'production', 'productive', 'productivity', 'products', 'reduced', 'reduction']),
+  duct: Object.freeze(['conducive', 'conductivity', 'conductor', 'deduce', 'deduct', 'deduction', 'induce', 'producer', 'production', 'productive', 'productivity', 'reduced', 'reduction']),
   // dur ＝ 続く・固い（ラテン語 dūrāre / dūrus「続く・固い」）
   dur: Object.freeze(['durability', 'durable', 'duration', 'during', 'endurance', 'endure', 'enduring', 'obdurate']),
   // equ ＝ 等しい（ラテン語 aequus「等しい」）
   equ: Object.freeze(['adequacy', 'adequate', 'adequately', 'equal', 'equality', 'equally', 'equanimity', 'equation', 'equator', 'equilibrium', 'equitable', 'equity', 'equivalence', 'equivalent', 'equivocal', 'equivocate', 'inequality', 'inequitable', 'inequity', 'unequal']),
   // fac / fect / fic ＝ 作る・なす（ラテン語 facere「作る・なす」）
-  fact: Object.freeze(['affection', 'affectionate', 'defect', 'defective', 'deficiency', 'deficient', 'deficit', 'effective', 'effectively', 'efficacy', 'efficiency', 'efficient', 'efficiently', 'facilitate', 'facilitating', 'facts', 'faculty', 'infect', 'infection', 'infectious', 'office', 'officer', 'official', 'officially', 'proficiency', 'proficient', 'sufficiency', 'sufficiently']),
+  fact: Object.freeze(['affection', 'affectionate', 'defect', 'defective', 'deficiency', 'deficient', 'deficit', 'effective', 'effectively', 'efficacy', 'efficiency', 'efficient', 'efficiently', 'facilitate', 'facilitating', 'faculty', 'infect', 'infection', 'infectious', 'office', 'officer', 'official', 'officially', 'proficiency', 'proficient', 'sufficiency', 'sufficiently']),
   // fer ＝ 運ぶ・もたらす（ラテン語 ferre「運ぶ」）
   fer: Object.freeze(['confer', 'conference', 'defer', 'deference', 'fertile', 'fertilize', 'infer', 'inference', 'preferable', 'preference', 'preferential', 'referee', 'reference', 'suffering']),
   // fid ＝ 信頼（ラテン語 fīdere「信じる」）
@@ -113,7 +113,7 @@ export const AUDITED_MORPHEME_ROOT_WORDS = Object.freeze({
   // nat ＝ 生まれる（ラテン語 nāscī / nātus「生まれる」）
   nat: Object.freeze(['innate', 'international', 'nation', 'national', 'nationalism', 'nationality', 'nationwide', 'native', 'natural']),
   // nounce / nunci ＝ 告げる（ラテン語 nūntiāre「知らせる」）
-  nounce: Object.freeze(['announce', 'announcement', 'announcements', 'denounce', 'denounced', 'denunciation', 'pronounce', 'renounce']),
+  nounce: Object.freeze(['announce', 'announcement', 'denounce', 'denounced', 'denunciation', 'pronounce', 'renounce']),
   // nov ＝ 新しい（ラテン語 novus「新しい」）
   nov: Object.freeze(['innovate', 'innovation', 'innovative', 'innovator', 'novel', 'novelist', 'novice', 'renovate', 'renovation']),
   // numer ＝ 数（ラテン語 numerus「数」）

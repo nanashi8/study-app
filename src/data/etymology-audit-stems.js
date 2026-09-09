@@ -152,7 +152,7 @@ export const AUDIT_STEM_ROOT_WORDS = Object.freeze({
   // grav / griev ＝ 重い
   grav: Object.freeze(['gravity', 'grief', 'grieve']),
   // her / heir ＝ 相続する
-  heres: Object.freeze(['heir', 'heirs', 'heritage']),
+  heres: Object.freeze(['heir', 'heritage', 'inherit', 'inheritance']),
   // virus / virul ＝ 毒
   virus: Object.freeze(['virulence', 'virulent', 'virus']),
   // insul / isl ＝ 島
@@ -174,7 +174,7 @@ export const AUDIT_STEM_ROOT_WORDS = Object.freeze({
   // don / dot ＝ 贈る・与える
   don: Object.freeze(['donate', 'donor', 'pardon']),
   // germ ＝ 芽・生まれ出るもの
-  germ: Object.freeze(['germ', 'germinate', 'germs']),
+  germ: Object.freeze(['germ', 'germinate', 'germane']),
   // rap / rept ＝ つかみ取る・さらう
   rap: Object.freeze(['rapacious', 'rapture', 'surreptitious']),
   // lic / leis ＝ 許される

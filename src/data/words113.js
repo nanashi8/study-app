@@ -14,7 +14,7 @@ const RAW = [
   ['trunk', '名', '2', '幹・(象の)鼻・トランク', 'an elephant’s trunk', '象の鼻', 'ラテン truncus(幹)。', { syn: [{ w: 'stem', m: '幹' }, { w: 'chest', m: '大箱' }], field: '科学' }],
   ['tube', '名', '3', '管・チューブ・地下鉄', 'a test tube', '試験管', 'ラテン tubus(管)。', { syn: [{ w: 'pipe', m: 'パイプ' }, { w: 'cylinder', m: '円筒' }], field: '技術' }],
   ['tug', '動', '2', 'ぐいと引く・引っ張る', 'tug at the rope', '綱をぐいと引く', '中英語 toggen(引く)。', { syn: [{ w: 'pull', m: '引く' }, { w: 'yank', m: 'ぐいと引く' }], ant: [{ w: 'push', m: '押す' }], field: '一般' }],
-  ['tuition', '名', 'pre1', '授業料・指導', 'pay tuition', '授業料を払う', 'ラテン tueri(見守る)→ tutor と同系。', { syn: [{ w: 'fees', m: '学費' }, { w: 'instruction', m: '指導' }], field: '教育' }],
+  ['tuition', '名', 'pre1', '授業料・指導', 'pay tuition', '授業料を払う', 'ラテン tueri(見守る)→ tutor と同系。', { syn: [{ w: 'fee', m: '学費' }, { w: 'instruction', m: '指導' }], field: '教育' }],
   ['tulip', '名', '3', 'チューリップ', 'a field of tulips', 'チューリップ畑', 'トルコ tülbend(ターバン)。', { syn: [{ w: 'flower', m: '花' }, { w: 'bloom', m: '花' }], field: '科学' }],
   ['tuna', '名', '3', 'マグロ・ツナ', 'a can of tuna', 'ツナ缶', 'スペイン atún(マグロ)。', { syn: [{ w: 'fish', m: '魚' }], field: '料理' }],
   ['tunnel', '名', '3', 'トンネル・坑道・掘る', 'a railway tunnel', '鉄道トンネル', '古フランス tonnelle(丸天井)。', { syn: [{ w: 'passage', m: '通路' }, { w: 'underpass', m: '地下道' }], field: '技術' }],

@@ -76,7 +76,7 @@ const RAW = [
   ['arbitration', '名', '1', '仲裁・調停', 'binding arbitration', '拘束力のある仲裁', 'arbitrate(仲裁する)+ -ation', { fam: [{ w: 'arbitrate', m: '仲裁する' }], syn: [{ w: 'mediation', m: '調停' }], field: '法律' }],
   ['ardent', '形', '1', '熱烈な・熱心な', 'an ardent supporter', '熱烈な支持者', 'ラテン ardere(燃える)→ arson と同系。', { syn: [{ w: 'passionate', m: '情熱的な' }, { w: 'fervent', m: '熱烈な' }], ant: [{ w: 'indifferent', m: '無関心な' }], field: '性質・状態' }],
   ['armistice', '名', '1', '休戦・停戦', 'an armistice was signed', '休戦協定が結ばれた', 'ラテン arma(武器)+stitium(停止)。', { syn: [{ w: 'truce', m: '休戦' }, { w: 'ceasefire', m: '停戦' }], ant: [{ w: 'war', m: '戦争' }], field: '軍事' }],
-  ['arms', '名', 'pre1', '兵器・武器', 'the arms trade', '武器取引', 'ラテン arma(武器)。', { syn: [{ w: 'weapons', m: '武器' }, { w: 'armaments', m: '軍備' }], field: '軍事' }],
+  ['arms', '名', 'pre1', '兵器・武器', 'the arms trade', '武器取引', 'ラテン arma(武器)。', { syn: [{ w: 'weapon', m: '武器' }, { w: 'armament', m: '軍備' }], field: '軍事' }],
   ['ascend', '動', 'pre1', '上昇する・登る', 'They ascended the mountain.', '彼らは山を登った。', 'ラテン ad+scandere(登る)→ scan と同系。', { syn: [{ w: 'climb', m: '登る' }, { w: 'rise', m: '上がる' }], ant: [{ w: 'descend', m: '下る' }], fam: [{ w: 'ascent', m: '上昇' }], field: '動作・行為' }],
   ['ascent', '名', 'pre1', '上昇・登り', 'a steep ascent', '急な登り', 'ascend(上昇する)から。', { syn: [{ w: 'climb', m: '登り' }, { w: 'rise', m: '上昇' }], ant: [{ w: 'descent', m: '下降' }], fam: [{ w: 'ascend', m: '上昇する' }], field: '一般' }],
   ['ashamed', '形', 'pre1', '恥じて・恥ずかしく思う', 'He felt ashamed.', '彼は恥ずかしく思った。', 'a(強意)+shame(恥)+ -ed。', { syn: [{ w: 'embarrassed', m: '当惑した' }, { w: 'humiliated', m: '辱められた' }], ant: [{ w: 'proud', m: '誇らしい' }], fam: [{ w: 'shame', m: '恥' }], field: '心理' }],

@@ -207,7 +207,7 @@ export const FIELD_PASSAGES = [
     vocab: [
       'council', 'vote', 'monument',
       'industrial', 'expense', 'debt', 'economy', 'revenue',
-      'organization', 'tour', 'ancestors',
+      'organization', 'tour', 'ancestor',
       'museum', 'workshop',
       'emotion', 'perception',
       'metal', 'chemical', 'machine',

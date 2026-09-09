@@ -27,7 +27,7 @@ const RAW = [
   ['backup', '名', '2', 'バックアップ・予備', 'Make a backup of your files.', 'ファイルのバックアップを取って。', 'back(後ろ)+up。', { syn: [{ w: 'copy', m: '複製' }, { w: 'reserve', m: '予備' }], field: '技術' }],
   ['reboot', '動', '2', '再起動する', 'Try to reboot the computer.', 'コンピュータを再起動してみて。', 're(再び)+boot(起動)。', { syn: [{ w: 'restart', m: '再起動する' }], field: '技術' }],
   // ビジネス
-  ['merchandise', '名', '1', '商品', 'The store sells quality merchandise.', 'その店は良質な商品を売る。', 'ラテン merx(商品)→ market と同系。', { syn: [{ w: 'goods', m: '商品' }, { w: 'products', m: '製品' }], field: 'ビジネス' }],
+  ['merchandise', '名', '1', '商品', 'The store sells quality merchandise.', 'その店は良質な商品を売る。', 'ラテン merx(商品)→ market と同系。', { syn: [{ w: 'goods', m: '商品' }, { w: 'product', m: '製品' }], field: 'ビジネス' }],
   ['inventory', '名', '1', '在庫・目録', 'They counted the inventory.', '彼らは在庫を数えた。', 'ラテン invenire(見つける)→ invent と同系。', { syn: [{ w: 'stock', m: '在庫' }], field: 'ビジネス' }],
   ['warehouse', '名', 'pre1', '倉庫', 'Goods are stored in the warehouse.', '商品は倉庫に保管される。', 'ware(品)+house(家)。', { syn: [{ w: 'storehouse', m: '貯蔵庫' }], field: 'ビジネス' }],
   ['retail', '名', 'pre1', '小売り', 'She works in retail.', '彼女は小売業で働く。', '古フランス retaillier(切り分ける)。', { ant: [{ w: 'wholesale', m: '卸売り' }], field: 'ビジネス' }],

@@ -53,7 +53,7 @@ test('マイ学習ノートは指定8分野・全15,457項目を安定IDで解�
     'kotenCulture',
   ])
   assert.deepEqual(NOTEBOOK_CATALOG_COUNTS, {
-    vocab: 8869,
+    vocab: 8851,
     phrases: 2104,
     grammar: 3555,
     listening: 160,
@@ -62,7 +62,7 @@ test('マイ学習ノートは指定8分野・全15,457項目を安定IDで解�
     kotenGrammar: 74,
     kotenCulture: 56,
   })
-  assert.equal(NOTEBOOK_TOTAL_ITEMS, 15457)
+  assert.equal(NOTEBOOK_TOTAL_ITEMS, 15439)
 
   for (const [domain, count] of Object.entries(NOTEBOOK_CATALOG_COUNTS)) {
     assert.ok(count > 0, domain)
