@@ -83,7 +83,7 @@ const RAW = [
   ["grass","名","4","草・芝生","Don't walk on the grass.","芝生に入らないで。","古英語 græs→ grow と同源。",{"field":"一般"}],
   ["grave","名","pre2","墓・重大な(形)","They visited their father’s grave.","彼らは父の墓を訪れた。","古英語 græf「掘った穴」。",{"field":"一般"}],
   ["ground","名","3","地面・根拠","The ball hit the ground.","ボールが地面に当たった。","古英語 grund「底」。",{"field":"一般"}],
-  ["guard","名","pre2","守る(動)・警備員","A guard stood at the gate.","警備員が門に立っていた。","古フランス garder「守る」→ regard と同系。",{"field":"一般"}],
+  ["guard","名","pre2","警備員・見張り","A guard stood at the gate.","警備員が門に立っていた。","古フランス garder「守る」→ regard と同系。",{"field":"一般"}],
   ["guest","名","3","客・ゲスト","We have guests for dinner.","夕食に客が来る。","古ノルド gestr「客」。",{"field":"一般"}],
   ["guide","名","3","案内・案内する(動)","A guide showed us the city.","ガイドが市内を案内してくれた。","古フランス guider「導く」。",{"field":"一般"}],
   ["habit","名","pre2","習慣・癖","Reading is a good habit.","読書は良い習慣だ。","ラテン habere(持つ)→ exhibit と同系。",{"field":"一般"}],

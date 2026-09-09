@@ -18,7 +18,7 @@ const RAW = [
   ['inability', '名', 'pre1', '無能力・できないこと', 'an inability to focus', '集中できないこと', 'in(否定)+ability(能力)。', { syn: [{ w: 'incapacity', m: '無能力' }], ant: [{ w: 'ability', m: '能力' }], fam: [{ w: 'ability', m: '能力' }], field: '一般' }],
   ['irritate', '動', 'pre1', 'いらいらさせる・刺激する', 'The smoke irritated my eyes.', '煙が目を刺激した。', 'ラテン irritare(怒らせる)。', { syn: [{ w: 'annoy', m: '悩ます' }, { w: 'aggravate', m: '悪化させる' }], ant: [{ w: 'soothe', m: 'なだめる' }], fam: [{ w: 'irritation', m: 'いらだち' }], field: '動作・行為' }],
   ['manual', '形', 'pre1', '手動の・手の・取扱説明書', 'manual labor', '肉体労働', 'ラテン manus(手)→ manage と同系。', { syn: [{ w: 'hand-operated', m: '手動の' }], ant: [{ w: 'automatic', m: '自動の' }], field: '技術' }],
-  ['mind', '動', 'pre1', '気にする・世話する・精神', "Do you mind the noise?", '騒音が気になりますか。', '古英語 gemynd(記憶・精神)。', { syn: [{ w: 'care', m: '気にする' }, { w: 'object', m: '嫌がる' }], field: '心理' }],
+  ['mind', '名', 'pre1', '心・考え・精神', 'He changed his mind.', '彼は考えを変えた。', '古英語 gemynd(記憶・精神)。', { field: '心理' }],
   ['neglect', '動', 'pre1', '怠る・無視する・怠慢', 'He neglected his duties.', '彼は職務を怠った。', 'ラテン neg+legere(選ばない)→ negligent と同系。', { syn: [{ w: 'ignore', m: '無視する' }, { w: 'overlook', m: '見落とす' }], ant: [{ w: 'attend', m: '世話する' }], fam: [{ w: 'negligent', m: '怠慢な' }], field: '動作・行為' }],
   ['orderly', '形', '4', '整然とした・規律正しい', 'an orderly queue', '整然とした列', 'order(秩序)+ -ly', { fam: [{ w: 'order', m: '秩序' }], syn: [{ w: 'tidy', m: '整頓された' }, { w: 'neat', m: 'きちんとした' }], ant: [{ w: 'chaotic', m: '無秩序な' }], field: '性質・状態' }],
   ['partly', '副', 'pre1', '部分的に・一部は', 'It is partly true.', 'それは一部本当だ。', 'part(部分)+ -ly。', { syn: [{ w: 'partially', m: '部分的に' }], ant: [{ w: 'completely', m: '完全に' }], fam: [{ w: 'part', m: '部分' }], field: '副詞' }],

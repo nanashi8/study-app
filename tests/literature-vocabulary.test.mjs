@@ -64,7 +64,7 @@ test('全12作品・全158場面の本文語彙が未対応0件で全3,801枚の
   assert.equal(sceneCount, 158)
   assert.equal(occurrenceCount, 11916)
   assert.equal(coveredCount, 11916)
-  assert.equal(cardCount, 3801)
+  assert.equal(cardCount, 3800)
 })
 
 test('英語6作品は本文11,765語・出現形3,902種を全件解決し、共通辞書2,880語へ接続する', () => {
@@ -136,7 +136,7 @@ test('空白のない句読点でも語を落とさず、作品文脈の意味�
   }
 
   const contextCases = [
-    ['lit_en_moby_dick_water_gazers', 2, 'right', null, '右へ'],
+    ['lit_en_moby_dick_water_gazers', 2, 'right', 'right', '右へ'],
     ['lit_en_pride_prejudice_netherfield', 0, 'little', 'little', 'ほとんど〜ない'],
     ['lit_en_tale_two_cities_times', 2, 'lord', 'lord', '主・キリスト'],
     ['lit_en_alice_rabbit_hole', 1, 'out', 'out', '普通から外れて'],

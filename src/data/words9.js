@@ -42,7 +42,7 @@ const RAW = [
   ["follow","動","3","ついていく・従う","Follow me, please.","私についてきて。","古英語 folgian(ついて行く)→「従う」。",{"ant":[{"w":"lead","m":"導く"}],"field":"動作・行為"}],
   ["guess","動","3","推測する","Guess what happened!","何が起きたか当ててみて！","中英語 gessen(見当をつける)→「推測する」。",{"syn":[{"w":"estimate","m":"推測する"}],"usage":"guess は当て推量、estimate は根拠ある見積もり。","field":"動作・行為"}],
   ["invite","動","3","招待する","She invited me to the party.","彼女は私をパーティーに招いた。","ラテン invitare(招く)→「招待する」。",{"field":"動作・行為"}],
-  ["kind","形","4","親切な・種類","She is kind to everyone.","彼女は誰にでも親切だ。","古英語 gecynde(生まれつき自然な)→思いやりのある→「親切な」。kin と同源。",{"syn":[{"w":"nice","m":"親切な"},{"w":"gentle","m":"優しい"}],"ant":[{"w":"cruel","m":"残酷な"},{"w":"mean","m":"意地悪な"}],"field":"性質・状態"}],
+  ["kind","形","4","親切な・思いやりのある","She is kind to everyone.","彼女は誰にでも親切だ。","古英語 gecynde(生まれつき自然な)→思いやりのある→「親切な」。kin と同源。",{"syn":[{"w":"nice","m":"親切な"},{"w":"gentle","m":"優しい"}],"ant":[{"w":"cruel","m":"残酷な"},{"w":"mean","m":"意地悪な"}],"field":"性質・状態"}],
   ["careful","形","4","注意深い","Be careful with the knife.","ナイフに気をつけて。","care(古英語 caru=心配)+ful→「注意深い」。",{"ant":[{"w":"careless","m":"不注意な"}],"field":"性質・状態"}],
   ["hungry","形","4","空腹の","I am very hungry now.","私は今とても空腹だ。","古英語 hungrig→「空腹の」。",{"field":"自然"}],
   ["thirsty","形","4","のどが渇いた","I am thirsty; let me drink.","のどが渇いた、飲ませて。","古英語 þurstig→「のどが渇いた」。",{"field":"医学"}],
