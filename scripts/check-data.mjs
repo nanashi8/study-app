@@ -1439,8 +1439,55 @@ const kotenGrammarQuestionFormats = new Set(Object.keys(KOTEN_GRAMMAR_QUESTION_F
 if (KOTEN_GRAMMAR_QUESTIONS.length < 120) {
   errors.push(`古典文法問題: 120問未満 (${KOTEN_GRAMMAR_QUESTIONS.length}問)`)
 }
+// ── 古文単語：カードに必要なものがそろっているか ──
+// これまで一件も検査が無く、300語のうち107語が例文なしのまま公開されていた。
+const kotenWordIds = new Set()
+const kotenWordExamples = new Map()
+for (const item of KOTEN_WORDS) {
+  const at = `古文単語 ${item.id ?? '(id無し)'}（${item.word ?? '?'}）`
+  if (!item.id || kotenWordIds.has(item.id)) errors.push(`${at}: id 無し/重複`)
+  kotenWordIds.add(item.id)
+  if (!item.word?.trim()) errors.push(`${at}: 見出し語が無い`)
+  if (!item.pos?.trim()) errors.push(`${at}: 品詞が無い`)
+  if (!item.meanings?.length) errors.push(`${at}: 現代語訳が無い`)
+  if (!item.note?.trim()) errors.push(`${at}: 覚え方の説明が無い`)
+  const example = item.example?.ja?.trim()
+  const gendai = item.example?.gendai?.trim()
+  if (!example || !gendai) {
+    errors.push(`${at}: 用例と現代語訳がそろっていない`)
+    continue
+  }
+  if (example === gendai) errors.push(`${at}: 用例と現代語訳が同じ`)
+  if (/[A-Za-z]/.test(example)) errors.push(`${at}: 用例に英字が混じっている (${example})`)
+  // 同じ用例を別の語で使い回すと、どの語を学んでいるのか分からなくなる。
+  if (kotenWordExamples.has(example)) {
+    errors.push(`${at}: 用例「${example}」が ${kotenWordExamples.get(example)} と重複`)
+  } else {
+    kotenWordExamples.set(example, `${item.id}（${item.word}）`)
+  }
+}
+
+// 誤答が正解の一部を丸ごと含んでいると、どちらを選んでも正しい問題になる。
+// 「連用形接続」を「連用形接続（カ変・サ変には特殊な接続あり）」の誤答に出す等。
+const kotenOverlapKey = (value) => String(value ?? '')
+  .normalize('NFKC')
+  .replace(/[（）()「」、。・\s]/g, '')
+const checkChoiceOverlap = (label, item) => {
+  const answer = kotenOverlapKey(item.answer)
+  if (answer.length < 2) return
+  for (const choice of item.choices ?? []) {
+    if (choice === item.answer) continue
+    const other = kotenOverlapKey(choice)
+    if (other.length < 2) continue
+    if (answer.includes(other) || other.includes(answer)) {
+      errors.push(`${label}: 誤答「${choice}」が正解「${item.answer}」と重なり、どちらも正しくなる`)
+    }
+  }
+}
+
 for (const item of KOTEN_GRAMMAR_QUESTIONS) {
   const at = `古典文法問題 ${item.id ?? '(id無し)'}`
+  checkChoiceOverlap(at, item)
   if (!item.id || kotenGrammarQuestionIds.has(item.id)) errors.push(`${at}: id 無し/重複`)
   kotenGrammarQuestionIds.add(item.id)
   if (!kotenGrammarCategories.has(item.category)) {
