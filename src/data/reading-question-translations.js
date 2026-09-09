@@ -39,7 +39,7 @@ export const READING_QUESTION_TRANSLATION_REVIEW_LEDGER = Object.freeze({
   p_1_choice_architecture: 'da11c5fb',
   p_5_hot_summer_school: '0b2dafa9',
   p_4_school_solar_roof: '9eb20bf8',
-  p_3_ai_class_rules: 'd161b43e',
+  p_3_ai_class_rules: '52d9ecec',
   p_pre2_crowded_town_tourism: 'de98bb97',
   p_pre2plus_rural_bus_future: 'd503becc',
   p_2_space_debris: '16225121',
