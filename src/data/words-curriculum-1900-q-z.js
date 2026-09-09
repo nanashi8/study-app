@@ -20,7 +20,7 @@ restroom	名	4	トイレ・化粧室	The restroom is beside the main entrance.	�
 rhyme	名	2	韻・押韻	The last two lines end in rhyme.	最後の2行は韻を踏んで終わる。	古フランス語 rime を経て、「詩行の末尾で音が対応すること」を表す。	文学
 rid	動	pre2	取り除く・免れさせる	The town plans to rid the river of plastic waste.	町は川からプラスチックごみを取り除く計画だ。	古ノルド語 rythja（取り除く）に由来し、rid A of B の形で使うことが多い。	動作・行為
 robot	名	3	ロボット	The robot sorts packages by size.	そのロボットは荷物を大きさ別に仕分ける。	チェコ語 robota（強制労働）をもとに戯曲で作られ、機械の働き手を表すようになった。	技術
-row	名	4	列・並び・口論	We sat in the front row.	私たちは最前列に座った。	「列」は古英語 raw に由来する。口論を表す row は別系統で発音も /raʊ/ と異なる。	一般
+row	名	4	列・並び	We sat in the front row.	私たちは最前列に座った。	「列」は古英語 raw に由来する。口論を表す row は別系統で発音も /raʊ/ と異なる。	一般
 royal	形	pre2	王室の・王の	The royal palace is open to visitors today.	王宮は今日見学者に公開されている。	ラテン語 rex（王）につながる古フランス語 roial から、「王に関する」を表す。	歴史
 rub	動	2	こする・すり込む	Rub the surface gently with a soft cloth.	柔らかい布で表面を優しくこすってください。	中英語 rubben にさかのぼる語で、摩擦を加える動作を表す。	動作・行為
 rugby	名	4	ラグビー	She joined the school rugby club.	彼女は学校のラグビー部に入った。	競技が発達した英国の Rugby School の地名に由来する。	スポーツ

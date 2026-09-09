@@ -401,4 +401,14 @@ export const WORD_SENSES = Object.freeze({
       example: Object.freeze({ en: 'She had a yen for travel.', ja: '彼女は旅へのあこがれを抱いていた。' }),
     }),
   ]),
+  row: Object.freeze([
+    Object.freeze({
+      pos: '名',
+      level: 'pre1',
+      meaning: '口論・騒ぎ',
+      separateWord: true,
+      note: '「列」の row(古英語 raw)とは別系統の語で、発音も /raʊ/ と異なる。',
+      example: Object.freeze({ en: 'They had a row about money.', ja: '彼らはお金のことで口論した。' }),
+    }),
+  ]),
 })

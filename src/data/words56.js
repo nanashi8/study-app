@@ -14,7 +14,7 @@ const RAW = [
   ['receiver', '名', 'pre2', '受信機・受話器・受け手', 'lift the receiver', '受話器を上げる', 'receive(受け取る)+ -er', { fam: [{ w: 'receive', m: '受け取る' }], syn: [{ w: 'recipient', m: '受領者' }], ant: [{ w: 'sender', m: '送り手' }], field: '技術' }],
   ['revenge', '名', 'pre1', '復讐・仕返し・復讐する', 'seek revenge', '復讐を求める', 're(再)+venge(報復)→ avenge と同系。', { syn: [{ w: 'vengeance', m: '復讐' }, { w: 'retaliation', m: '報復' }], ant: [{ w: 'forgiveness', m: '許し' }], field: '社会' }],
   ['strange', '形', 'pre1', '奇妙な・見知らぬ', 'a strange noise', '奇妙な物音', 'ラテン extraneus(外の)→ external と同系。', { syn: [{ w: 'odd', m: '変な' }, { w: 'unfamiliar', m: 'なじみのない' }], ant: [{ w: 'familiar', m: 'なじみの' }], fam: [{ w: 'stranger', m: '見知らぬ人' }], field: '性質・状態' }],
-  ['troops', '名', 'pre1', '軍隊・部隊', 'deploy troops', '部隊を配備する', 'troop(軍勢)の複数→ フランス troupe。', { syn: [{ w: 'forces', m: '軍' }, { w: 'soldiers', m: '兵士' }], field: '軍事' }],
+  ['troops', '名', 'pre1', '兵士たち・兵力', 'The country sent 500 troops.', 'その国は兵士500人を送った。', 'troop(軍勢)の複数→ フランス troupe。', { syn: [{ w: 'forces', m: '軍' }, { w: 'soldiers', m: '兵士' }], field: '軍事' }],
   ['unknown', '形', 'pre1', '未知の・無名の', 'an unknown artist', '無名の芸術家', 'un(否定)+known(知られた)。', { syn: [{ w: 'unfamiliar', m: 'なじみのない' }, { w: 'obscure', m: '無名の' }], ant: [{ w: 'known', m: '知られた' }], field: '性質・状態' }],
   ['unsuitable', '形', 'pre1', '不適当な・ふさわしくない', 'unsuitable for children', '子供に不向きな', 'un(否定)+suitable(適切な)。', { syn: [{ w: 'inappropriate', m: '不適切な' }, { w: 'unfit', m: '不適格な' }], ant: [{ w: 'suitable', m: '適切な' }], field: '性質・状態' }],
   ['accusations', '名', 'pre1', '告発・非難', 'false accusations', '濡れ衣', 'accusation(告発)の複数。', { syn: [{ w: 'allegations', m: '申し立て' }, { w: 'charges', m: '告訴' }], fam: [{ w: 'accuse', m: '告発する' }], field: '法律' }],
