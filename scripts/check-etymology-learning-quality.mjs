@@ -26,13 +26,13 @@ import { QUIZ_CHOICE_COUNT } from '../src/lib/quizChoices.js'
 import { etymologyCardReviewMaterial } from '../src/data/etymology-reviewed-cards.js'
 
 export const ETYMOLOGY_QUALITY_TARGETS = Object.freeze({
-  rawWords: 8869,
+  rawWords: 8851,
   publicCards: 339,
-  publicWords: 4035,
-  publicLinks: 6341,
-  quarantinedWords: 4834,
-  retiredLegacyPacks: 2934,
-  wordStories: 8869,
+  publicWords: 4026,
+  publicLinks: 6330,
+  quarantinedWords: 4825,
+  retiredLegacyPacks: 2925,
+  wordStories: 8851,
 })
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')

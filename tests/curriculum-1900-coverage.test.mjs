@@ -62,7 +62,7 @@ test('添付3シート4,684行・4,428ユニーク項目をハッシュ監査で
 })
 
 test('不足単語420件・熟語604件は級、独自用例、語源・成り立ちを持つ', () => {
-  assert.equal(ALL_WORDS.length, 8869)
+  assert.equal(ALL_WORDS.length, 8851)
   assert.equal(PHRASES.length, 2104)
   assert.equal(CURRICULUM_1900_WORDS.length, 420)
   assert.equal(CURRICULUM_1900_IDIOMS.length, 604)

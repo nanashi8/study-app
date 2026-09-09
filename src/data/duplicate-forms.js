@@ -13,11 +13,8 @@
 // 文字列としては一部しか重ならないが、複数形固有の意味は持っていない。
 // そこで下の PLURAL_ONLY_SENSES に人が書き、検査はその台帳だけを見る。
 //
-// ここに並ぶのは、その原則ができる前に登録された組。
-// 消すと手動確認済みの語源カード（ETYMOLOGY_PACKS）が参照している見出しが
-// 欠けるため、いまは残したままにしてある。新しく同じ形を足すことは
-// scripts/check-data.mjs が止める。台帳から消えた組は「もう重複ではない」
-// ことを意味するので、直したら必ずここからも消す（検査が両方向を見る）。
+// 検査は両方向を見る。台帳に無い重複を落とし、直って重複でなくなった組が
+// 台帳へ残り続けるのも落とす（台帳が実態から離れて次の重複を素通しするのを防ぐ）。
 // その形でしか出ない意味を持つ複数形。単数形と意味が重なっていても別見出しでよい。
 // 判断は辞書を見て人が書く。ここに無い複数形は、単数形と意味が重なった時点で重複とみなす。
 export const PLURAL_ONLY_SENSES = Object.freeze({
@@ -35,33 +32,20 @@ export const PLURAL_ONLY_SENSES = Object.freeze({
   surroundings: '周辺・環境（単数形を持たない）',
 })
 
+// 単数形と意味の重なる複数形は、いま1組も無い。かつて20組あったが、
+// どれも複数形固有の意味を持たず同じことを二度教えていたので見出しを畳んだ
+// （語源カードは13枚とも単数形を同じ欄に持っていたので、教材は一つも欠けていない）。
+// ここが空のままなら、重複はゼロで通っている。例外を足すときは理由も書く。
 export const KNOWN_DUPLICATE_FORMS = Object.freeze({
-  // 手動確認済みの語源カードが見出しとして参照している（消すと語源カードが壊れる）
-  products: Object.freeze({ singular: 'product', packs: 'root:duct, root:pf-pro' }),
-  armaments: Object.freeze({ singular: 'armament', packs: 'root:arma' }),
-  germs: Object.freeze({ singular: 'germ', packs: 'root:germ' }),
-  microbes: Object.freeze({ singular: 'microbe', packs: 'root:bio' }),
-  allegations: Object.freeze({ singular: 'allegation', packs: 'root:lex, root:pf-ad' }),
-  facts: Object.freeze({ singular: 'fact', packs: 'root:fact' }),
-  announcements: Object.freeze({ singular: 'announcement', packs: 'root:nounce, root:pf-ad' }),
-  descendants: Object.freeze({ singular: 'descendant', packs: 'root:scend, root:pf-de' }),
-  heirs: Object.freeze({ singular: 'heir', packs: 'root:heres' }),
-
-  // 語源カードは参照していないが、収録リスト側がその形を挙げている
-  weapons: Object.freeze({ singular: 'weapon', packs: '' }),
-  accusations: Object.freeze({ singular: 'accusation', packs: '' }),
-  assertions: Object.freeze({ singular: 'assertion', packs: '' }),
-  declarations: Object.freeze({ singular: 'declaration', packs: '' }),
-  ancestors: Object.freeze({ singular: 'ancestor', packs: '' }),
+  // この2組だけは、別の教材がそれぞれの形を名指しで要求している。
+  // 英検1900語の収録リストが挙げているのは複数形（grapes / socks）で、
+  // 見出しを畳むとその語を収録しないことになる。一方で長文
+  // p_ext_3000_shared_watershed は "a hole in my sock" と単数形を使い、
+  // 語彙解決は単数形を複数形カードへ寄せない。どちらも消せない。
   grapes: Object.freeze({ singular: 'grape', packs: '' }),
   socks: Object.freeze({ singular: 'sock', packs: '' }),
-
-  // 意味欄の書き方が違うだけで、複数形固有の意味は持たない組
-  costs: Object.freeze({ singular: 'cost', packs: '' }),
-  fees: Object.freeze({ singular: 'fee', packs: '' }),
-  wages: Object.freeze({ singular: 'wage', packs: '' }),
-  forces: Object.freeze({ singular: 'force', packs: 'root:fort' }),
 })
+
 
 // 不規則な複数形。綴りの規則では単数形へ戻せないので表で持つ。
 export const IRREGULAR_PLURALS = Object.freeze({

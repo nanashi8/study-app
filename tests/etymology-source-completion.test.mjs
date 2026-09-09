@@ -14,7 +14,7 @@ const liveById = new Map(ALL_WORDS.map((word) => [word.id, word]))
 test('語源差分監査で不足した215語を独立見出しとして収録する', () => {
   assert.equal(ETYMOLOGY_COMPLETION_WORDS.length, 215)
   assert.equal(completionIds.size, 215)
-  assert.equal(ALL_WORDS.length, 8869)
+  assert.equal(ALL_WORDS.length, 8851)
 
   for (const sourceWord of ETYMOLOGY_COMPLETION_WORDS) {
     const liveWord = liveById.get(sourceWord.id)
@@ -97,7 +97,7 @@ test('既存語源2,688パック・語源補完・1900補完のID空間が交わ
     !pack.id.startsWith('completion:') && !pack.id.startsWith('curriculum-1900:'))
   const completion = ETYMOLOGY_PACKS.filter((pack) => pack.id.startsWith('completion:'))
   const curriculum1900 = ETYMOLOGY_PACKS.filter((pack) => pack.id.startsWith('curriculum-1900:'))
-  assert.equal(legacy.length, 2689)
+  assert.equal(legacy.length, 2680)
   assert.ok(completion.length > 0)
   assert.ok(curriculum1900.length > 0)
   assert.equal(new Set(ETYMOLOGY_PACKS.map((pack) => pack.id)).size, ETYMOLOGY_PACKS.length)

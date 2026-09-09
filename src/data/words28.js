@@ -3,7 +3,7 @@ import { expandCompact } from './compact.js'
 
 const RAW = [
   // 生物・医学
-  ['bacteria', '名', 'pre1', '細菌・バクテリア', 'Bacteria can cause disease.', '細菌は病気を引き起こしうる。', 'ギリシャ bakterion(小さな杖)。', { syn: [{ w: 'germs', m: '病原菌' }, { w: 'microbes', m: '微生物' }], field: '医学' }],
+  ['bacteria', '名', 'pre1', '細菌・バクテリア', 'Bacteria can cause disease.', '細菌は病気を引き起こしうる。', 'ギリシャ bakterion(小さな杖)。', { syn: [{ w: 'germ', m: '病原菌' }, { w: 'microbe', m: '微生物' }], field: '医学' }],
   ['mammal', '名', 'pre1', '哺乳類', 'Whales are mammals.', 'クジラは哺乳類だ。', 'ラテン mamma(乳房)。', { field: '科学' }],
   ['reptile', '名', 'pre1', '爬虫類', 'Snakes are reptiles.', 'ヘビは爬虫類だ。', 'ラテン repere(這う)。', { field: '科学' }],
   ['predator', '名', 'pre1', '捕食者・肉食動物', 'Lions are top predators.', 'ライオンは頂点捕食者だ。', 'ラテン praedari(略奪する)→ prey と同系。', { ant: [{ w: 'prey', m: '獲物' }], field: '科学' }],

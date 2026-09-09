@@ -52,7 +52,7 @@ const RAW = [
   ['dollar', '名', '5', 'ドル', 'ten dollars', '10ドル', '低地ドイツ daler(銀貨)。', { field: '経済' }],
   ['dress', '名', '5', 'ドレス・服・服を着せる', 'a red dress', '赤いドレス', '古フランス dresser(整える)。', { field: '一般' }],
   ['flag', '名', '5', '旗', 'wave a flag', '旗を振る', '由来不確か(16世紀)。', { field: '一般' }],
-  ['grape', '名', '5', 'ブドウ', 'a bunch of grapes', 'ブドウ一房', '古フランス grape(房)。', { field: '料理' }],
+  ['grape', '名', '5', 'ブドウ', 'She ate one grape at a time.', '彼女はブドウを一粒ずつ食べた。', '古フランス grape(房)。', { field: '料理' }],
   ['kid', '名', '5', '子供・子ヤギ', 'a little kid', '小さな子供', '古ノルド kith(子ヤギ)。', { field: '社会' }],
   ['lady', '名', '5', '女性・婦人', 'a kind lady', '親切な女性', '古英語 hlæfdige(パンをこねる人)。', { field: '社会' }],
   ['lip', '名', '5', '唇', 'red lips', '赤い唇', '古英語 lippa(唇)。', { field: '一般' }],

@@ -255,8 +255,8 @@ test('既存語源パックを固定し、2種の補完語だけを各名前空�
   const completionPacks = ETYMOLOGY_PACKS.filter((pack) => pack.id.startsWith('completion:'))
   const curriculum1900Packs = ETYMOLOGY_PACKS.filter((pack) => pack.id.startsWith('curriculum-1900:'))
 
-  assert.equal(legacyWords.length, 8234)
-  assert.equal(legacyPacks.length, 2689)
+  assert.equal(legacyWords.length, 8216)
+  assert.equal(legacyPacks.length, 2680)
   assert.equal(completionWords.length, 215)
   assert.equal(curriculum1900Words.length, 420)
   assert.ok(completionPacks.length > 0)
@@ -395,10 +395,10 @@ test('補助語根は既存語だけを明示的につなぎ、語源カードID
 test('追加した補助語根は既存語の内容と関連語へ適用される', () => {
   const legacyWords = ALL_WORDS.filter((word) => sourceGroup(word.id) === 'legacy')
   const applied = legacyWords.filter((word) => word.referenceRoots.length > 0)
-  assert.equal(applied.length, 3726)
+  assert.equal(applied.length, 3717)
   assert.equal(
     applied.reduce((sum, word) => sum + word.referenceRoots.length, 0),
-    5644,
+    5633,
   )
 
   for (const word of applied) {
@@ -611,7 +611,7 @@ test('語の成り立ちは全語を出典つきで出す', () => {
     ...totals,
     [story.origin]: (totals[story.origin] ?? 0) + 1,
   }), {})
-  assert.deepEqual(kinds, { 'reviewed-text': 291, 'sealed-note': 8578 })
+  assert.deepEqual(kinds, { 'reviewed-text': 291, 'sealed-note': 8560 })
   for (const story of ETYMOLOGY_WORD_STORIES) {
     // January / Ms. のように大文字で始まる見出し語もあるため、引くときは小文字にそろえる。
     const word = byHead.get(story.head.toLowerCase())

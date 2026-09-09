@@ -32,7 +32,7 @@ const RAW = [
   ['sting', '動', '2', '刺す・ひりひりさせる・針', 'a bee stings', 'ハチが刺す', '古英語 stingan(刺す)。', { syn: [{ w: 'prick', m: 'ちくりと刺す' }, { w: 'bite', m: 'かむ' }], field: '医学' }],
   ['stir', '動', '3', 'かき混ぜる・動かす・かき立てる', 'stir the soup', 'スープをかき混ぜる', '古英語 styrian(動かす)。', { syn: [{ w: 'mix', m: '混ぜる' }, { w: 'arouse', m: 'かき立てる' }], field: '料理' }],
   ['stitch', '動', '2', '縫う・縫い目・(脇腹の)差し込み', 'stitch a wound', '傷を縫う', '古英語 stice(刺すこと)。', { syn: [{ w: 'sew', m: '縫う' }, { w: 'mend', m: '繕う' }], field: '医学' }],
-  ['stocking', '名', '3', 'ストッキング・靴下', 'a pair of stockings', 'ストッキング一足', 'stock(脚部の覆い)+ -ing。', { syn: [{ w: 'sock', m: '靴下' }, { w: 'hose', m: '長靴下' }], field: '一般' }],
+  ['stocking', '名', '3', 'ストッキング・靴下', 'a pair of stockings', 'ストッキング一足', 'stock(脚部の覆い)+ -ing。', { syn: [{ w: 'socks', m: '靴下' }, { w: 'hose', m: '長靴下' }], field: '一般' }],
   ['stool', '名', '3', '腰掛け・スツール', 'sit on a stool', 'スツールに座る', '古英語 stol(椅子)。', { syn: [{ w: 'seat', m: '座席' }, { w: 'bench', m: 'ベンチ' }], field: '一般' }],
   ['stoop', '動', 'pre1', '前かがみになる・身を落とす', 'stoop to pick it up', 'かがんで拾い上げる', '古英語 stupian(かがむ)。', { syn: [{ w: 'bend', m: 'かがむ' }, { w: 'crouch', m: 'しゃがむ' }], ant: [{ w: 'straighten', m: '伸ばす' }], field: '一般' }],
   ['straw', '名', '3', 'わら・ストロー', 'a drinking straw', '飲み物用ストロー', '古英語 streaw(わら)。', { syn: [{ w: 'hay', m: '干し草' }], field: '農業' }],

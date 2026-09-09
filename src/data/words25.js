@@ -12,7 +12,7 @@ const RAW = [
   ['divine', '形', '1', '神の・神聖な', 'They believe in divine power.', '彼らは神の力を信じる。', 'ラテン divus(神)。', { syn: [{ w: 'holy', m: '神聖な' }, { w: 'sacred', m: '神聖な' }], field: '宗教' }],
   ['prophet', '名', '1', '預言者', 'The prophet warned the people.', '預言者は人々に警告した。', 'ギリシャ pro+phanai(前もって語る)。', { field: '宗教' }],
   // 軍事
-  ['army', '名', '3', '軍隊・陸軍', 'He joined the army.', '彼は軍隊に入った。', 'ラテン armata(武装した)→ arm と同源。', { syn: [{ w: 'troops', m: '軍勢' }, { w: 'forces', m: '軍' }], field: '軍事' }],
+  ['army', '名', '3', '軍隊・陸軍', 'He joined the army.', '彼は軍隊に入った。', 'ラテン armata(武装した)→ arm と同源。', { syn: [{ w: 'troops', m: '軍勢' }, { w: 'force', m: '軍' }], field: '軍事' }],
   ['navy', '名', 'pre2', '海軍', 'Her brother is in the navy.', '彼女の兄は海軍にいる。', 'ラテン navis(船)→ naval と同源。', { field: '軍事' }],
   ['soldier', '名', '3', '兵士', 'The soldiers marched on.', '兵士たちは行進し続けた。', 'ラテン solidus(金貨)→給料をもらう兵。', { syn: [{ w: 'warrior', m: '戦士' }], field: '軍事' }],
   ['weapon', '名', 'pre2', '武器', 'They laid down their weapons.', '彼らは武器を捨てた。', '古英語 wǣpen「武器」。', { syn: [{ w: 'arms', m: '兵器' }], field: '軍事' }],

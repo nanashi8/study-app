@@ -35,7 +35,6 @@ const RAW = [
   ['consul', '名', 'pre1', '領事', 'the British consul', '英国領事', 'ラテン consul(執政官)。', { syn: [{ w: 'diplomat', m: '外交官' }], fam: [{ w: 'consulate', m: '領事館' }], field: '政治' }],
   ['contraction', '名', 'pre1', '収縮・短縮', 'muscle contraction', '筋肉の収縮', 'contract(収縮する)+ -ion。', { syn: [{ w: 'shrinkage', m: '縮小' }], ant: [{ w: 'expansion', m: '拡大' }], fam: [{ w: 'contract', m: '収縮する' }], field: '科学' }],
   ['corrosion', '名', 'pre1', '腐食・さび', 'metal corrosion', '金属の腐食', 'corrode(腐食する)+ -sion', { fam: [{ w: 'corrode', m: '腐食する' }], syn: [{ w: 'rust', m: 'さび' }], field: '科学' }],
-  ['costs', '名', 'pre1', '費用・経費', 'cut costs', '経費を削減する', 'cost(費用)の複数。', { syn: [{ w: 'expenses', m: '支出' }, { w: 'charges', m: '料金' }], fam: [{ w: 'cost', m: '費用' }], field: '経済' }],
   ['cultural', '形', 'pre1', '文化的な・教養の', 'cultural heritage', '文化遺産', 'culture(文化)+ -al。', { syn: [{ w: 'ethnic', m: '民族の' }, { w: 'artistic', m: '芸術の' }], fam: [{ w: 'culture', m: '文化' }], field: '社会' }],
   ['current', '形', 'pre1', '現在の・通用している・流れ', 'the current situation', '現状', 'ラテン currere(走る)→ course と同系。', { syn: [{ w: 'present', m: '現在の' }, { w: 'existing', m: '現行の' }], ant: [{ w: 'former', m: '以前の' }], fam: [{ w: 'currently', m: '現在' }], field: '性質・状態' }],
   ['deletion', '名', 'pre1', '削除', 'the deletion of files', 'ファイルの削除', 'delete(削除する)+ -tion', { fam: [{ w: 'delete', m: '削除する' }], ant: [{ w: 'insertion', m: '挿入' }], field: '技術' }],

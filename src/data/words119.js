@@ -64,7 +64,7 @@ const RAW = [
   ['jacket', '名', '5', '上着・ジャケット', 'a warm jacket', '暖かい上着', '古フランス jaquet(短い上着)。', { field: '一般' }],
   ['hat', '名', '5', '(縁のある)帽子', 'a straw hat', '麦わら帽子', '古英語 hætt(帽子)。', { field: '一般' }],
   ['skirt', '名', '5', 'スカート', 'a long skirt', '長いスカート', '古ノルド skyrta(シャツ)。', { field: '一般' }],
-  ['sock', '名', '5', '靴下', 'a pair of socks', '靴下一足', 'ラテン soccus(室内履き)。', { field: '一般' }],
+  ['sock', '名', '5', '靴下', 'There is a hole in my sock.', '靴下に穴があいている。', 'ラテン soccus(室内履き)。', { field: '一般' }],
   ['sweater', '名', '5', 'セーター', 'a wool sweater', '毛糸のセーター', 'sweat(汗)+ -er。', { field: '一般' }],
   ['doll', '名', '5', '人形', 'a cute doll', 'かわいい人形', '女性名 Dorothy の愛称から。', { field: '一般' }],
   ['kite', '名', '5', 'たこ', 'fly a kite', 'たこをあげる', '古英語 cyta(トビ)。', { field: '一般' }],

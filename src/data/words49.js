@@ -28,7 +28,6 @@ const RAW = [
   ['untidy', '形', 'pre1', '乱雑な・だらしない', 'an untidy room', '散らかった部屋', 'un(否定)+tidy(整頓された)。', { syn: [{ w: 'messy', m: '散らかった' }, { w: 'cluttered', m: '雑然とした' }], ant: [{ w: 'tidy', m: '整頓された' }], field: '性質・状態' }],
   ['about', '前', 'pre1', '〜について・約', 'a book about birds', '鳥についての本', '古英語 onbutan(周りに)。', { syn: [{ w: 'concerning', m: '〜に関して' }, { w: 'approximately', m: '約' }], field: '機能語' }],
   ['adjourn', '動', '1', '休会する・延期する', 'They adjourned the meeting.', '彼らは会議を休会にした。', '古フランス ajorner(日を定める)。', { syn: [{ w: 'suspend', m: '中断する' }, { w: 'postpone', m: '延期する' }], ant: [{ w: 'convene', m: '招集する' }], field: '政治' }],
-  ['armaments', '名', '1', '軍備・兵器', 'a buildup of armaments', '軍備増強', 'ラテン armare(武装する)→ arm と同系。', { syn: [{ w: 'weapons', m: '兵器' }, { w: 'arms', m: '武器' }], field: '軍事' }],
   ['atypical', '形', 'pre1', '型破りな・典型的でない', 'atypical symptoms', '非典型的な症状', 'a(否定)+typical(典型的な)。', { syn: [{ w: 'unusual', m: '異常な' }, { w: 'abnormal', m: '異常な' }], ant: [{ w: 'typical', m: '典型的な' }], field: '性質・状態' }],
   ['baffling', '形', 'pre1', '不可解な・当惑させる', 'a baffling mystery', '不可解な謎', 'baffle(困らせる)+ -ing。', { syn: [{ w: 'puzzling', m: '謎めいた' }, { w: 'confusing', m: '紛らわしい' }], ant: [{ w: 'clear', m: '明快な' }], fam: [{ w: 'baffle', m: '困らせる' }], field: '性質・状態' }],
   ['bless', '動', 'pre1', '祝福する・恵む', 'The priest blessed them.', '司祭は彼らを祝福した。', '古英語 bletsian(血で清める)。', { syn: [{ w: 'consecrate', m: '聖別する' }], ant: [{ w: 'curse', m: '呪う' }], fam: [{ w: 'blessing', m: '恵み' }], field: '宗教' }],

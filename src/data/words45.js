@@ -47,7 +47,6 @@ const RAW = [
   ['power', '名', '3', '力・権力・電力', 'the power of nature', '自然の力', '古フランス poeir(できる)。', { syn: [{ w: 'force', m: '力' }, { w: 'authority', m: '権限' }], fam: [{ w: 'powerful', m: '強力な' }], field: '一般' }],
   ['praiseworthy', '形', '1', '称賛すべき・見事な', 'a praiseworthy effort', '称賛に値する努力', 'praise(称賛)+worthy(値する)。', { syn: [{ w: 'commendable', m: '立派な' }, { w: 'admirable', m: '見事な' }], ant: [{ w: 'deplorable', m: 'ひどい' }], field: '性質・状態' }],
   ['previously', '副', 'pre2', '以前に・前に', 'as previously stated', '前述のとおり', 'previous(以前の)+ -ly', { fam: [{ w: 'previous', m: '以前の' }], syn: [{ w: 'formerly', m: 'かつて' }], field: '副詞' }],
-  ['products', '名', '3', '製品・産物', 'dairy products', '乳製品', 'product(製品)の複数。', { syn: [{ w: 'goods', m: '商品' }, { w: 'merchandise', m: '商品' }], fam: [{ w: 'produce', m: '生産する' }], field: 'ビジネス' }],
   ['prolonged', '形', 'pre1', '長引いた・長期の', 'a prolonged illness', '長引く病気', 'prolong(延長する)+ -ed。', { syn: [{ w: 'extended', m: '延長された' }, { w: 'lengthy', m: '長たらしい' }], ant: [{ w: 'brief', m: '短い' }], fam: [{ w: 'prolong', m: '長引かせる' }], field: '性質・状態' }],
   ['readily', '副', '4', 'すぐに・たやすく', 'It is readily available.', 'それは容易に手に入る。', 'ready(準備ができた)+ -ly', { fam: [{ w: 'ready', m: '準備ができた' }], syn: [{ w: 'easily', m: '簡単に' }], field: '副詞' }],
   ['refusal', '名', 'pre1', '拒否・辞退', 'a flat refusal', 'きっぱりとした拒否', 'refuse(拒む)+ -al。', { syn: [{ w: 'rejection', m: '拒絶' }], ant: [{ w: 'acceptance', m: '受諾' }], fam: [{ w: 'refuse', m: '拒む' }], field: '一般' }],

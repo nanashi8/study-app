@@ -19,7 +19,7 @@ const RAW = [
   ['disorder', '名', 'pre1', '無秩序・不調・障害', 'a sleep disorder', '睡眠障害', 'dis(否定)+order(秩序)。', { syn: [{ w: 'chaos', m: '混沌' }, { w: 'ailment', m: '不調' }], ant: [{ w: 'order', m: '秩序' }], field: '医学' }],
   ['division', '名', '3', '分裂・分割・部門', 'the division of labor', '分業', 'divide(分ける)+ -sion。', { syn: [{ w: 'section', m: '部門' }], ant: [{ w: 'union', m: '結合' }], fam: [{ w: 'divide', m: '分ける' }], field: '一般' }],
   ['foe', '名', 'pre1', '敵', 'friend or foe', '味方か敵か', '古英語 fah(敵対する)。', { syn: [{ w: 'enemy', m: '敵' }, { w: 'adversary', m: '対抗者' }], ant: [{ w: 'ally', m: '味方' }], field: '一般' }],
-  ['goods', '名', '3', '商品・品物', 'They sell leather goods.', '彼らは革製品を売る。', 'good(良い物)の複数。', { syn: [{ w: 'merchandise', m: '商品' }, { w: 'products', m: '製品' }], field: 'ビジネス' }],
+  ['goods', '名', '3', '商品・品物', 'They sell leather goods.', '彼らは革製品を売る。', 'good(良い物)の複数。', { syn: [{ w: 'merchandise', m: '商品' }, { w: 'product', m: '製品' }], field: 'ビジネス' }],
   ['honesty', '名', '3', '正直・誠実', 'I value honesty.', '私は正直さを重んじる。', 'honest(正直な)+ -y。', { syn: [{ w: 'integrity', m: '誠実' }, { w: 'sincerity', m: '真心' }], ant: [{ w: 'dishonesty', m: '不正直' }], fam: [{ w: 'honest', m: '正直な' }], field: '心理' }],
   ['illness', '名', '3', '病気', 'He recovered from his illness.', '彼は病気から回復した。', 'ill(病気の)+ -ness。', { syn: [{ w: 'ailment', m: '不調' }], ant: [{ w: 'health', m: '健康' }], fam: [{ w: 'ill', m: '病気の' }], field: '医学' }],
   ['independence', '名', '3', '独立・自立', 'The country gained independence.', 'その国は独立を勝ち取った。', 'in(否定)+depend(頼る)+ -ence。', { syn: [{ w: 'autonomy', m: '自治' }, { w: 'freedom', m: '自由' }], ant: [{ w: 'dependence', m: '依存' }], fam: [{ w: 'independent', m: '独立した' }], field: '政治' }],

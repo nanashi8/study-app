@@ -33,7 +33,6 @@ const RAW = [
   ['understand', '動', 'pre1', '理解する・分かる', 'I understand your point.', '君の言いたいことは分かる。', '古英語 understandan(間に立つ)。', { syn: [{ w: 'grasp', m: '把握する' }, { w: 'comprehend', m: '理解する' }], ant: [{ w: 'misunderstand', m: '誤解する' }], fam: [{ w: 'understanding', m: '理解' }], field: '動作・行為' }],
   ['unpleasant', '形', 'pre1', '不快な・嫌な', 'an unpleasant smell', '不快な臭い', 'un(否定)+pleasant(快い)。', { syn: [{ w: 'disagreeable', m: '不愉快な' }, { w: 'nasty', m: '嫌な' }], ant: [{ w: 'pleasant', m: '快い' }], field: '性質・状態' }],
   ['vile', '形', '1', '下劣な・ひどい', 'a vile insult', '下劣な侮辱', 'ラテン vilis(安価な・卑しい)。', { syn: [{ w: 'despicable', m: '卑劣な' }, { w: 'repulsive', m: '不快な' }], ant: [{ w: 'admirable', m: '立派な' }], field: '性質・状態' }],
-  ['weapons', '名', 'pre1', '武器・兵器', 'nuclear weapons', '核兵器', 'weapon(武器)の複数。', { syn: [{ w: 'arms', m: '武器' }, { w: 'armaments', m: '軍備' }], field: '軍事' }],
   ['whole', '形', 'pre1', '全体の・全部の・全体', 'the whole story', '一部始終', '古英語 hal(健全な)→ heal と同系。', { syn: [{ w: 'entire', m: '全体の' }, { w: 'complete', m: '完全な' }], ant: [{ w: 'partial', m: '部分的な' }], field: '一般' }],
   ['approximately', '副', 'pre1', '約・おおよそ', 'approximately 50 people', '約50人', 'approximate(近似の)+ -ly。', { syn: [{ w: 'roughly', m: 'おおよそ' }, { w: 'about', m: '約' }], ant: [{ w: 'exactly', m: '正確に' }], fam: [{ w: 'approximate', m: '近似の' }], field: '副詞' }],
   ['arc', '動', 'pre1', '弧を描く・円弧', 'The ball arced over the wall.', 'ボールは弧を描いて壁を越えた。', 'ラテン arcus(弓)→ arch と同系。', { syn: [{ w: 'curve', m: '曲がる' }, { w: 'bend', m: '湾曲する' }], field: '科学' }],
