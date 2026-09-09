@@ -116,7 +116,7 @@ const RAW_ITEMS = {
     ['You should bring a jacket because it is cold.', '寒いので上着を持ってくるべきです。', '天気', '会話', '助言・理由'],
     ['I am going to join the science club.', '私は科学部に入る予定です。', '学校', '短文', 'be going to'],
     ['The train left ten minutes before we arrived.', '私たちが着く10分前に電車は出ました。', '交通', '短文', '過去形・before'],
-    ['Nancy bought a present for her younger cousin.', 'ナンシーはいとこの年下の子に贈り物を買いました。', '家族', '短文', '過去形'],
+    ['Nancy bought a present for her younger cousin.', 'ナンシーは年下のいとこに贈り物を買いました。', '家族', '短文', '過去形'],
     ['How many students were absent from class today?', '今日は何人の生徒が授業を欠席しましたか。', '学校', '会話', 'how many'],
     ['I think this restaurant serves the best noodles.', 'この店が一番おいしい麺を出すと思います。', '食事', '会話', '最上級'],
     ['Our teacher showed us pictures from Canada.', '先生は私たちにカナダの写真を見せました。', '海外文化', '短文', '第4文型'],

@@ -1591,6 +1591,10 @@ for (const level of ['5', '4', '3', 'pre2', '2', 'pre1', '1']) {
     if (!normalizedText || dictationTexts.has(normalizedText)) errors.push(`${at}: 英文無し/重複`)
     dictationTexts.add(normalizedText)
     if (!item.ja || !item.topic || !item.kind || !item.focus) errors.push(`${at}: ja/topic/kind/focus 不足`)
+    // 書き取る英文は必ず1文として完結させる。大文字始まり・句点終わりが崩れると、
+    // 学習者は答え合わせのときに自分の書き取りとどこまで比べればよいか分からなくなる。
+    if (item.text && !/^[A-Z]/.test(item.text.trim())) errors.push(`${at}: 英文が大文字で始まらない`)
+    if (item.text && !/[.!?]$/.test(item.text.trim())) errors.push(`${at}: 英文が句点で終わらない`)
     if (
       profile &&
       (item.wordCount < profile.wordRange[0] || item.wordCount > profile.wordRange[1])
