@@ -161,6 +161,7 @@ import {
 } from '../src/data/writing.js'
 import { hasBalancedParentheses } from '../src/data/compact.js'
 import { MATH_PROBLEMS, MATH_UNITS } from '../src/data/math.js'
+import { WRITING_EXAM_QUESTIONS } from '../src/data/writing-exam.js'
 
 const LEVELS = new Set(['5', '4', '3', 'pre2', '2', 'pre1', '1'])
 const READING_LEVELS = new Set(['5', '4', '3', 'pre2', 'pre2plus', '2', 'pre1', '1'])
@@ -1554,6 +1555,36 @@ for (const categoryId of kotenCultureCategories) {
 const kotenLevelIds = new Set(KOTEN_INTERPRETATION_LEVELS.map((item) => item.id))
 const kotenFocusIds = new Set(Object.keys(KOTEN_INTERPRETATION_FOCUS))
 const kotenQuestionIds = new Set()
+// ── 和文英訳：和文の順に訳した正しい英文を不正解にしない ──
+// 採点は模範解答と別解への完全一致なので、和文が従属節から始まるのに
+// 受理できる形がどれも主節から始まっていると、正しく訳した学習者が落ちる。
+const WRITING_JA_LEADS_CLAUSE = /^[^、]*(とき|ので|たら|れば|なら|てから|ながら|けれども|ても)、/
+const WRITING_EN_FRONTED = /^(When|Because|If|After|Before|While|Although|Though|Since|As|However|Whatever|Whenever|Whichever|Whoever|Without|Not\s|[A-Z][a-z]*ing\b|[A-Z][a-z]*ed\b|[A-Z][a-z]+ [a-z]+(ing|ed)\b|[A-Z][a-z]+ as\b)/
+// 英語側で主節が先に来ることが決まっている型は対象外にする。
+const WRITING_EN_FIXED_ORDER = /\bso\b.*\bthat\b|\bsuch\b.*\bthat\b|^So\s+\w+\s+(was|were)\b/i
+// 従属節を持たず副詞句へ畳み込む型（none the less for など）も語順の問題にならない。
+const WRITING_EN_HAS_CLAUSE = /\b(when|because|if|after|before|while|although|though|since|as)\b/i
+const writingExamIds = new Set()
+for (const question of WRITING_EXAM_QUESTIONS) {
+  const at = `和文英訳 ${question.id ?? '(id無し)'}`
+  if (!question.id || writingExamIds.has(question.id)) errors.push(`${at}: id 無し/重複`)
+  writingExamIds.add(question.id)
+  if (!question.ja?.trim()) errors.push(`${at}: 和文が無い`)
+  if (!question.answer?.trim()) errors.push(`${at}: 模範解答が無い`)
+  if (!question.point?.trim()) errors.push(`${at}: 要点が無い`)
+  if (!question.trap?.trim()) errors.push(`${at}: 注意が無い`)
+  if (
+    WRITING_JA_LEADS_CLAUSE.test(question.ja ?? '') &&
+    WRITING_EN_HAS_CLAUSE.test(question.answer ?? '') &&
+    !WRITING_EN_FIXED_ORDER.test(question.answer ?? '') &&
+    ![question.answer, ...(question.alt ?? [])].some((form) => WRITING_EN_FRONTED.test(form ?? ''))
+  ) {
+    errors.push(
+      `${at}: 和文は従属節から始まるのに、受理できる形がどれも主節から始まる → 和文の順に訳した英文を別解に足す (${question.ja})`,
+    )
+  }
+}
+
 // ── 数学クエスト：誘導ステップが「答えられる形」になっているか ──
 // 空所の正解がタイルに無いと、学習者はどれを選んでも不正解になる。
 const mathUnitIds = new Set(MATH_UNITS.map((unit) => unit.id))
