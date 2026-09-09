@@ -885,16 +885,35 @@ const SVOC_EVENTS = [
   ['considered', 'the idea', 'useful', 'その考えを役立つと考えました'],
 ]
 
+// so...that の that節は主語を指すので、代名詞は主語に合わせて差し込む。
+// 埋め込みのままにすると「Ken was so hungry that she ate ...」のように主語と食い違う。
+// {subject} は主格、{object} は目的格に置き換わる。
 const RESULT_ADJECTIVES = [
-  ['tired', 'he could hardly walk', 'ほとんど歩けないほど疲れていました'],
-  ['busy', 'she could not answer the phone', '電話に出られないほど忙しくしていました'],
-  ['cold', 'the lake began to freeze', '湖が凍り始めるほど寒くなりました'],
-  ['excited', 'he could not sleep', '眠れないほど興奮していました'],
-  ['hungry', 'she ate two large meals', 'たっぷり2食分を食べるほど空腹でした'],
+  ['tired', '{subject} could hardly walk', 'ほとんど歩けないほど疲れていました'],
+  ['busy', '{subject} could not answer the phone', '電話に出られないほど忙しくしていました'],
+  ['cold', '{subject} put on two coats', '上着を2枚着るほど寒がっていました'],
+  ['excited', '{subject} could not sleep', '眠れないほど興奮していました'],
+  ['hungry', '{subject} ate two large meals', 'たっぷり2食分を食べるほど空腹でした'],
   ['quiet', 'we could hear the clock', '時計の音が聞こえるほど静かでした'],
-  ['dark', 'we could not see the road', '道が見えないほど暗くなりました'],
-  ['kind', 'everyone trusted her', '皆が彼女を信頼するほど親切でした'],
+  ['nervous', '{subject} could not speak', '話せないほど緊張していました'],
+  ['kind', 'everyone trusted {object}', '皆が信頼するほど親切でした'],
 ]
+
+// 性別が読み取れる主語だけを対にし、それ以外は単数の they で受ける。
+const SUBJECT_PRONOUNS = {
+  Ken: ['he', 'him'],
+  Emi: ['she', 'her'],
+  'My brother': ['he', 'him'],
+  'My sister': ['she', 'her'],
+  'Mr. Sato': ['he', 'him'],
+  'Ms. Brown': ['she', 'her'],
+  'My father': ['he', 'him'],
+  'My mother': ['she', 'her'],
+}
+const fillSubjectPronouns = (template, subject) => {
+  const [nominative, objective] = SUBJECT_PRONOUNS[subject] ?? ['they', 'them']
+  return template.replaceAll('{subject}', nominative).replaceAll('{object}', objective)
+}
 
 const AS_COMPARISON_CASES = [
   ['The new tower is twice as ___ as the old building.', 'tall', ['tall', 'taller', 'tallest', 'more tall'], '新しい塔は古い建物の2倍の高さです。'],
@@ -1063,8 +1082,8 @@ const THREE_FAMILIES = [
     key: '3_so_that', level: '3', topic: 'so...that',
     explain: 'so＋形容詞＋that節で「とても〜なので…」という結果を表す。',
     cases: cross(THIRD_SUBJECTS, RESULT_ADJECTIVES, ['yesterday', 'after the trip']),
-    build: ([[sEn, sJa], [adj, resultEn, jaResult], time]) => ({
-      q: `${sEn} was ___ ${adj} that ${resultEn} ${time}.`,
+    build: ([[sEn, sJa], [adj, resultTemplate, jaResult], time]) => ({
+      q: `${sEn} was ___ ${adj} that ${fillSubjectPronouns(resultTemplate, sEn)} ${time}.`,
       choices: ['so', 'such', 'too', 'enough'], answer: 'so',
       ja: `${sJa}は${time === 'yesterday' ? '昨日' : '旅行後'}、${jaResult}。`,
     }),

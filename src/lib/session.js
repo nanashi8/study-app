@@ -11,7 +11,7 @@ import {
 } from '../data/vocab.js'
 import { phrasesByKind, phrasesByLevel, getPhrase } from '../data/phrases.js'
 import { relatedIdiomForms } from '../data/idiom-form-families.js'
-import { quizMeaningKey } from '../data/compact.js'
+import { quizMeaning, quizMeaningKey } from '../data/compact.js'
 import { LEVELS } from '../data/levels.js'
 import { LEVEL_ORDER, enemyLevelIndex, clampPos } from './adaptive.js'
 import { todayIndex } from '../store/useStore.js'
@@ -516,6 +516,20 @@ export function buildPhraseDeck(source, { srs = {}, size = SESSION_SIZE } = {}) 
   return size ? pool.slice(0, size) : pool
 }
 
+// 単語と同じく、誤答の意味が正解の意味の中にそのまま入っていると
+// どちらを選んでも正しい問題になる（come across「偶然出会う」に
+// run across「〜に偶然出会う」を誤答として出す等）。包含関係で弾く。
+const phraseOverlapText = (value) => String(value ?? '')
+  .normalize('NFKC')
+  .replace(/[〜~\s（）()・]/g, '')
+const phraseMeaningsOverlap = (phrase, candidate) => {
+  const answer = phraseOverlapText(quizMeaning(phrase))
+  const other = phraseOverlapText(quizMeaning(candidate))
+  if (answer.length >= 2 && phraseOverlapText(candidate.meaning).includes(answer)) return true
+  if (other.length >= 2 && phraseOverlapText(phrase.meaning).includes(other)) return true
+  return false
+}
+
 export function pickPhraseDistractors(phrase, count, rng = Math.random) {
   const candidates = phrasesByKind(phrase.kind).filter((item) => item.id !== phrase.id)
   const tiers = [
@@ -535,6 +549,7 @@ export function pickPhraseDistractors(phrase, count, rng = Math.random) {
       seenIds.add(item.id)
       const meaningKey = quizMeaningKey(item)
       if (!meaningKey || used.has(meaningKey)) continue
+      if (phraseMeaningsOverlap(phrase, item)) continue
       used.add(meaningKey)
       picked.push(item)
       if (picked.length >= count) return picked
