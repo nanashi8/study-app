@@ -209,6 +209,11 @@ for (const w of ALL_WORDS) {
   if (!w.phonetic) errors.push(`${at}: 発音記号(IPA) 無し → npm run phonetics`)
   // 代表義以外の意味（word-senses.js）。カードと辞書に出すだけで出題には使わないが、
   // 級と品詞を学習者へそのまま見せるので、代表義と同じ厳しさで検証する。
+  // 先頭語義はテストの答えであり、カードの品詞バッジが指す意味でもある。
+  // ここに (名)(動) のような別品詞の注記が付くと、答えと品詞が食い違う。
+  if (/[（(](名|動|形|副|前|接|代)[）)]/.test(w.meanings?.[0] ?? '')) {
+    errors.push(`${at}: 先頭の語義に別品詞の注記がある (${w.meanings[0]}) → 並び順か pos を直す`)
+  }
   const otherSenses = w.otherSenses ?? []
   const senseKeys = new Set([`${w.pos}|${w.meaning}`])
   for (const [i, sense] of otherSenses.entries()) {
@@ -1118,25 +1123,48 @@ const vocabularyHeadwordForms = new Set(
 )
 const normalizeSentence = (text) =>
   (text ?? '').replace(/\s+/g, ' ').replace(/\s+([,.?!])/g, '$1').trim()
-// so...that の that節は主語を指すので、主語と代名詞の性が食い違ってはいけない。
+// so...that の結果節と、従属節の主語位置に立つ代名詞は、いずれも文の主語を指す。
 // 生成テンプレートに代名詞を埋め込むと「Ken was so hungry that she ate ...」が混ざる。
+// 「Ken sent her a birthday card.」のように別人を指す目的語は対象にしない。
 const MALE_SUBJECTS = /^(Ken|Tom|Mr\.\s\w+|My brother|My father)\b/
 const FEMALE_SUBJECTS = /^(Emi|Mika|Ms\.\s\w+|Mrs\.\s\w+|My sister|My mother)\b/
 const checkSubjectPronoun = (label, sentence) => {
-  if (!sentence || !/\bwas so\b|\bwere so\b/.test(sentence)) return
+  if (!sentence) return
   const male = MALE_SUBJECTS.test(sentence)
   const female = FEMALE_SUBJECTS.test(sentence)
-  if (male && /\bthat (she|her)\b|\b(trusted|helped|called|saw|told) her\b/.test(sentence)) {
-    errors.push(`${label}: 男性の主語を she/her で受けている (${sentence})`)
+  if (!male && !female) return
+  const conflicting = male ? /\b(she|her|hers|herself)\b/ : /\b(he|his|him|himself)\b/
+  const resultClause = sentence.match(/\bso\b[^,]*?\bthat\b(.*)$/i)
+  if (resultClause && conflicting.test(resultClause[1])) {
+    errors.push(`${label}: so...that の結果節が主語と違う性の代名詞を使っている (${sentence})`)
+    return
   }
-  if (female && /\bthat (he|his)\b|\b(trusted|helped|called|saw|told) him\b/.test(sentence)) {
-    errors.push(`${label}: 女性の主語を he/him で受けている (${sentence})`)
+  const clauseSubject = sentence.match(
+    /\b(?:that|because|so|when|while|although|since|and|but)\s+(he|she)\b/i,
+  )
+  if (!clauseSubject) return
+  const pronoun = clauseSubject[1].toLowerCase()
+  if ((male && pronoun === 'she') || (female && pronoun === 'he')) {
+    errors.push(`${label}: 従属節の主語が文の主語と違う性になっている (${sentence})`)
+  }
+}
+
+// 天候を表す形容詞は人を主語にできない。総当たり生成で主語と形容詞を掛け合わせると
+// 「Ken was so dark that ...」のような文が混ざる。
+const WEATHER_ONLY_ADJECTIVES = /\b(dark|cloudy|rainy|snowy|foggy|sunny|windy|stormy|humid|chilly)\b/i
+const PERSONAL_SUBJECT = /^(Ken|Emi|Tom|Mika|Mr\.\s\w+|Ms\.\s\w+|Mrs\.\s\w+|My (brother|sister|father|mother|friend)|Our teacher|The new student|My best friend|The team captain)\b/
+const checkPersonAdjective = (label, sentence) => {
+  if (!sentence || !PERSONAL_SUBJECT.test(sentence)) return
+  const complement = sentence.match(/\b(?:was|were|is|are|looked|seemed|became)\s+(?:so|very|too|quite)?\s*([a-z]+)\b/i)
+  if (complement && WEATHER_ONLY_ADJECTIVES.test(complement[1])) {
+    errors.push(`${label}: 人を主語に天候の形容詞を使っている (${sentence})`)
   }
 }
 
 for (const g of GRAMMAR) {
   const at = `文法 ${g.id ?? '(id無し)'}`
   checkSubjectPronoun(at, g.sentence?.en)
+  checkPersonAdjective(at, g.sentence?.en)
   if (!g.id || grammarIds.has(g.id)) errors.push(`${at}: id 無し/重複`)
   grammarIds.add(g.id)
   if (!LEVELS.has(g.level)) errors.push(`${at}: level が不正 (${g.level})`)
