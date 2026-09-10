@@ -18,7 +18,7 @@ const RAW = [
   ['dissemble', '動', '1', '(本心を)隠す・とぼける', 'dissemble his anger', '怒りを押し隠す', 'ラテン dissimulare(似せない)。', { syn: [{ w: 'feign', m: '装う' }, { w: 'disguise', m: '偽る' }], ant: [{ w: 'reveal', m: '明かす' }], field: '心理' }],
   ['dogmatic', '形', '1', '独断的な・教条的な', 'a dogmatic opinion', '独断的な意見', 'ギリシャ dogma(教義)。', { syn: [{ w: 'opinionated', m: '独善的な' }, { w: 'assertive', m: '断定的な' }], ant: [{ w: 'openminded', m: '柔軟な' }], field: '宗教' }],
   ['dour', '形', '1', '気難しい・陰気な', 'a dour expression', '不機嫌な表情', 'ラテン durus(堅い)。', { syn: [{ w: 'gloomy', m: '陰気な' }, { w: 'stern', m: 'いかめしい' }], ant: [{ w: 'cheerful', m: '陽気な' }], field: '心理' }],
-  ['dupe', '動', '1', 'だます・(動詞)欺く・カモ', 'dupe the investors', '投資家をだます', 'フランス dupe(まぬけ)。', { syn: [{ w: 'deceive', m: '欺く' }, { w: 'trick', m: 'だます' }], ant: [{ w: 'undeceive', m: '迷いをさます' }], field: '社会' }],
+  ['dupe', '動', '1', 'だます・欺く・だまされやすい人', 'dupe the investors', '投資家をだます', 'フランス dupe(まぬけ)。', { syn: [{ w: 'deceive', m: '欺く' }, { w: 'trick', m: 'だます' }], ant: [{ w: 'undeceive', m: '迷いをさます' }], field: '社会' }],
   ['ebullient', '形', '1', '熱狂的な・あふれんばかりの', 'an ebullient mood', '上機嫌', 'ラテン ebullire(沸き立つ)。', { syn: [{ w: 'exuberant', m: '活気あふれる' }, { w: 'effervescent', m: '快活な' }], ant: [{ w: 'gloomy', m: '沈んだ' }], field: '心理' }],
   ['eclectic', '形', '1', '折衷的な・多方面から選んだ', 'an eclectic taste', '折衷的な好み', 'ギリシャ eklektikos(選び取る)。', { syn: [{ w: 'varied', m: '多様な' }, { w: 'diverse', m: '雑多な' }], ant: [{ w: 'uniform', m: '画一的な' }], field: '芸術' }],
   ['efface', '動', '1', '消し去る・目立たなくする', 'efface the memory', '記憶を消し去る', 'フランス effacer(消す)。', { syn: [{ w: 'erase', m: '消す' }, { w: 'obliterate', m: '抹消する' }], ant: [{ w: 'preserve', m: '保存する' }], field: '一般' }],

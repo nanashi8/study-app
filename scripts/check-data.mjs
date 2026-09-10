@@ -315,6 +315,11 @@ for (const w of ALL_WORDS) {
   if (/[（(](名|動|形|副|前|接|代)[）)]/.test(w.meanings?.[0] ?? '')) {
     errors.push(`${at}: 先頭の語義に別品詞の注記がある (${w.meanings[0]}) → 並び順か pos を直す`)
   }
+  // 「(動詞)」のように品詞名をそのまま書いた注記も、語義の一部として読まれてしまう。
+  // 別品詞の意味は word-senses.js が pos つきで持つので、意味欄には書かない。
+  if (/[（(](名詞|動詞|形容詞|副詞|前置詞|接続詞|代名詞|助動詞)[）)]/.test(w.meaning ?? '')) {
+    errors.push(`${at}: 語義に品詞名の注記がある (${w.meaning}) → word-senses.js へ移す`)
+  }
   const otherSenses = w.otherSenses ?? []
   const senseKeys = new Set([`${w.pos}|${w.meaning}`])
   for (const [i, sense] of otherSenses.entries()) {
@@ -1290,6 +1295,17 @@ const checkSubjectPronoun = (label, sentence) => {
 // 「Ken was so dark that ...」のような文が混ざる。
 const WEATHER_ONLY_ADJECTIVES = /\b(dark|cloudy|rainy|snowy|foggy|sunny|windy|stormy|humid|chilly)\b/i
 const PERSONAL_SUBJECT = /^(Ken|Emi|Tom|Mika|Mr\.\s\w+|Ms\.\s\w+|Mrs\.\s\w+|My (brother|sister|father|mother|friend)|Our teacher|The new student|My best friend|The team captain)\b/
+// 人を表す名詞を it で受けない。総当たり生成は「暑い日」の型に職業名を差し込みやすく、
+// It was such an interesting teacher … のような、英語として成り立たない文ができる。
+const PERSON_NOUNS = /\b(artist|engineer|actor|office worker|teacher|doctor|musician|pilot|university student|nurse|student|singer|writer|player|friend|child|boy|girl|man|woman|person|worker|scientist|leader|coach|driver|farmer|dancer)\b/i
+const checkImpersonalIt = (label, sentence) => {
+  if (!sentence) return
+  const head = sentence.match(/^It\s+(?:was|is)\s+(?:such\s+)?(?:an?\s+)?([^.]*?)\s+that\b/i)
+  if (head && PERSON_NOUNS.test(head[1])) {
+    errors.push(`${label}: 人を表す名詞を it で受けている (${sentence})`)
+  }
+}
+
 const checkPersonAdjective = (label, sentence) => {
   if (!sentence || !PERSONAL_SUBJECT.test(sentence)) return
   const complement = sentence.match(/\b(?:was|were|is|are|looked|seemed|became)\s+(?:so|very|too|quite)?\s*([a-z]+)\b/i)
@@ -1302,6 +1318,7 @@ for (const g of GRAMMAR) {
   const at = `文法 ${g.id ?? '(id無し)'}`
   checkSubjectPronoun(at, g.sentence?.en)
   checkPersonAdjective(at, g.sentence?.en)
+  checkImpersonalIt(at, g.sentence?.en)
   if (!g.id || grammarIds.has(g.id)) errors.push(`${at}: id 無し/重複`)
   grammarIds.add(g.id)
   if (!LEVELS.has(g.level)) errors.push(`${at}: level が不正 (${g.level})`)
