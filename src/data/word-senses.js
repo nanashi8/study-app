@@ -411,4 +411,18 @@ export const WORD_SENSES = Object.freeze({
       example: Object.freeze({ en: 'They had a row about money.', ja: '彼らはお金のことで口論した。' }),
     }),
   ]),
+  even: Object.freeze([
+    Object.freeze({
+      pos: '形',
+      level: 'pre2',
+      meaning: '平らな・均一な',
+      example: Object.freeze({ en: 'The table needs an even surface.', ja: 'そのテーブルには平らな面が必要だ。' }),
+    }),
+    Object.freeze({
+      pos: '形',
+      level: 'pre2',
+      meaning: '偶数の・互角の',
+      example: Object.freeze({ en: 'Two and four are even numbers.', ja: '2と4は偶数だ。' }),
+    }),
+  ]),
 })

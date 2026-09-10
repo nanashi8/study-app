@@ -631,4 +631,13 @@ export const LEVEL_OVERRIDE = {
     'hymn', 'hypocrisy', 'hysterical', 'legitimacy', 'manipulation', 'monocycle',
     'multiplicity', 'neutrality', 'nonreligious', 'oversight', 'partisan', 'proxy', 'quantify',
     'retention', 'subnormal', 'synergy', 'tart', 'theology', 'unconsciousness']),
+
+  // カードが上級の語義を教えている語は、級のほうを中身に合わせる。
+  // air は「放送する」、sentence は「判決を下す」、sort/list は動詞の語義を教えており、
+  // それを5級・4級へ下ろすと初級の学習者に上級の意味を出すことになる。
+  // （名詞の air＝空気 / sentence＝文 はカードとして未収録。長文の語順訳台帳が
+  //   これらの品詞に依存しているため、品詞を変えるには長文側の再確認が要る。）
+  ...L('pre1', ['air']),
+  ...L('2', ['sentence']),
+  ...L('pre2', ['sort', 'list']),
 }

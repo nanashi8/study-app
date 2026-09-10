@@ -4,7 +4,7 @@ import { expandCompact } from './compact.js'
 const RAW = [
   ['rigidity', '名', '1', '硬直性・厳格さ', 'the rigidity of the rules', '規則の厳格さ', 'rigid(硬い)+ -ity', { fam: [{ w: 'rigid', m: '硬い' }], syn: [{ w: 'stiffness', m: '硬さ' }, { w: 'inflexibility', m: '融通のきかなさ' }], ant: [{ w: 'flexibility', m: '柔軟性' }], field: '性質・状態' }],
   ['chew', '動', 'pre1', 'かむ・かみ砕く', 'chew your food well', '食べ物をよくかむ', '古英語 ceowan(かむ)。', { syn: [{ w: 'munch', m: 'もぐもぐ食べる' }, { w: 'gnaw', m: 'かじる' }], ant: [{ w: 'swallow', m: '飲み込む' }], field: '一般' }],
-  ['racket', '名', 'pre1', '騒ぎ・不正商売・ラケット', 'make a racket', '大騒ぎする', 'おそらく擬音語(16世紀)。', { syn: [{ w: 'din', m: '騒音' }, { w: 'clamor', m: '喧噪' }], ant: [{ w: 'silence', m: '静寂' }], field: '一般' }],
+  ['racket', '名', 'pre1', 'ラケット', 'She bought a new tennis racket.', '彼女は新しいテニスラケットを買った。', 'おそらく擬音語(16世紀)。', { syn: [{ w: 'din', m: '騒音' }, { w: 'clamor', m: '喧噪' }], ant: [{ w: 'silence', m: '静寂' }], field: '一般' }],
   ['becoming', '形', 'pre1', '似合う・ふさわしい', 'a becoming dress', '似合うドレス', 'become(似合う)+ -ing。', { syn: [{ w: 'flattering', m: '引き立てる' }, { w: 'suitable', m: '適した' }], ant: [{ w: 'unbecoming', m: '似合わない' }], fam: [{ w: 'become', m: '似合う' }], field: '一般' }],
   ['borough', '名', '1', '自治区・行政区', 'a London borough', 'ロンドンの行政区', '古英語 burg(城塞・町)。', { syn: [{ w: 'district', m: '地区' }, { w: 'township', m: '区' }], field: '政治' }],
   ['brains', '名', 'pre1', '知力・頭脳', 'use your brains', '頭を使う', 'brain(脳)の複数。', { syn: [{ w: 'intellect', m: '知性' }, { w: 'wits', m: '知恵' }], ant: [{ w: 'brawn', m: '腕力' }], fam: [{ w: 'brain', m: '脳' }], field: '一般' }],

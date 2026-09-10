@@ -3886,7 +3886,7 @@ export const ETYMOLOGY_NOTE_LEDGER = Object.freeze([
   'emigration bade4729f82e156a',
   'emotional d64d38d04633360d',
   'enlightening 98ae8612ff99cca5',
-  'even 39ebc143c66b3a8b',
+  'even 682556ad63472296',
   'familiarize 45fd136b15486ff4',
   'forgery 86b25379dc898d5a',
   'friendliness ceafcc6c5e898156',

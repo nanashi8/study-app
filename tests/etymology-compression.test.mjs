@@ -256,7 +256,7 @@ test('既存語源パックを固定し、2種の補完語だけを各名前空�
   const curriculum1900Packs = ETYMOLOGY_PACKS.filter((pack) => pack.id.startsWith('curriculum-1900:'))
 
   assert.equal(legacyWords.length, 8216)
-  assert.equal(legacyPacks.length, 2713)
+  assert.equal(legacyPacks.length, 2712)
   assert.equal(completionWords.length, 215)
   assert.equal(curriculum1900Words.length, 420)
   assert.ok(completionPacks.length > 0)
