@@ -592,6 +592,87 @@ export const READING_MEANING_PHRASE_OVERRIDES = Object.freeze({
       }),
     ]),
   }),
+
+  // 並列した主語は一続きで読ませ、述語はそのあとにまとめる。
+  'Housing, work, diet, and the quality of the air together account for far more variation than any treatment ever does.': sentence({
+    groups: Object.freeze([
+      Object.freeze({
+        en: 'Housing, work, diet',
+        ja: '住まいや仕事や食事や',
+        grammar: 'Housing・work・diet は並列した主語Sです。',
+      }),
+      Object.freeze({
+        en: 'and the quality of the air together',
+        ja: 'そして空気の質が合わさって',
+        grammar: 'and が四つ目の主語をつなぎ、together が「合わさって」と述語に係ります。',
+      }),
+      Object.freeze({
+        en: 'account for far more variation than any treatment ever does',
+        ja: 'どんな治療がするよりもはるかに大きな差を説明します',
+        grammar: 'account for が述語Vで、並列した主語すべてを受けます。',
+      }),
+    ]),
+  }),
+
+  'Libraries, places of work, families, and neighbors together carry most of what a resident of a city actually ends up learning.': sentence({
+    groups: Object.freeze([
+      Object.freeze({
+        en: 'Libraries, places of work, families',
+        ja: '図書館や職場や家族や',
+        grammar: 'Libraries・places of work・families は並列した主語Sです。',
+      }),
+      Object.freeze({
+        en: 'and neighbors together',
+        ja: 'そして隣人が合わさって',
+        grammar: 'and が四つ目の主語をつなぎ、together が述語に係ります。',
+      }),
+      Object.freeze({
+        en: 'carry most of',
+        ja: '〜の大半を運びます',
+        grammar: 'carry が述語Vで、most of がOです。何の大半かは次へ渡します。',
+      }),
+      Object.freeze({
+        en: 'what',
+        ja: 'そのもの、つまり',
+        grammar: 'what が名詞節を導き、carry の目的語の中身を示します。',
+      }),
+      Object.freeze({
+        en: 'a resident of a city actually ends up learning',
+        ja: '都市の住民が結局実際に学ぶもの',
+        grammar: 'what 節の中身で、a resident がS、ends up learning がVです。',
+      }),
+    ]),
+  }),
+
+  'Decisions about land, water, pensions, and public buildings all outlast by many years the people who first make and approve them.': sentence({
+    groups: Object.freeze([
+      Object.freeze({
+        en: 'Decisions about land, water, pensions',
+        ja: '土地や水や年金についての決定は',
+        grammar: 'Decisions がSで、about 以下がその範囲を示します。',
+      }),
+      Object.freeze({
+        en: 'and public buildings all',
+        ja: 'そして公共建築についての決定はみな',
+        grammar: 'and が四つ目の範囲をつなぎます。all は主語すべてを受けます。',
+      }),
+      Object.freeze({
+        en: 'outlast by many years the people',
+        ja: '何年も長く残ります、その人々より',
+        grammar: 'outlast が述語Vで、the people がOです。by many years は差を示すMです。',
+      }),
+      Object.freeze({
+        en: 'who first make',
+        ja: 'その人々が最初に下し',
+        grammar: 'who が the people を受ける関係代名詞Sで、make がVです。',
+      }),
+      Object.freeze({
+        en: 'and approve them',
+        ja: 'そして承認する',
+        grammar: 'and が二つ目の述語をつなぎ、approve がV、them がOです。',
+      }),
+    ]),
+  }),
 })
 
 export function readingMeaningPhraseOverridesFor(sentenceEnglish) {
