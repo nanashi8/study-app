@@ -35,7 +35,7 @@ export const EXPANDED_READING_WORD_DEFINITIONS = Object.freeze([
   { id: 'timer', surface: 'timers', pos: '名', level: 'pre1', meaning: 'タイマー・時限装置', field: '技術' },
   { id: 'tourism', pos: '名', level: 'pre1', meaning: '観光事業・観光', field: '社会' },
   { id: 'nothing', pos: '代', level: '4', meaning: '何も〜ない・無', field: '機能語' },
-  { id: 'architecture', pos: '名', level: '1', meaning: '構造設計・建築・仕組み', field: '社会' },
+  { id: 'architecture', pos: '名', level: '1', meaning: '建築・構造・仕組み', field: '社会' },
   { id: 'somehow', pos: '副', level: 'pre2', meaning: '何らかの方法で・どうにかして', field: '副詞' },
   { id: 'diner', surface: 'diners', pos: '名', level: '2', meaning: '食事をする人・食堂の利用者', field: '食・生活' },
   { id: 'setting', surface: 'settings', pos: '名', level: '2', meaning: '状況・環境・設定', field: '一般' },

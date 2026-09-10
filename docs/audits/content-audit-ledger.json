@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-09-10T00:07:55.823Z",
+  "auditedAt": "2026-09-10T00:15:56.733Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -12,7 +12,7 @@
     "quizItemCount": 16417,
     "storedAndGeneratedQuestionPathCount": 4207,
     "storedAndGeneratedChoicePathCount": 16712,
-    "overallContentSha256": "2bf50eb92ee0c650cf59e1b364fe07ca97894280c0a1c1817f361fcbf7361830"
+    "overallContentSha256": "8818b3c645350e2c9e5495d2e24d679dd62f2734c5ff1618345ba8d0f870f182"
   },
   "completionCriteria": [
     "全18教材カテゴリのID・母数・重複・内容ハッシュが一致する",
@@ -262,7 +262,7 @@
       "quizItemCount": 8851,
       "learningIdOrderSha256": "3cbe8d652b4d07a07d777c88a6783b12a1db9670381395996b0fe277439aee31",
       "quizIdOrderSha256": "3cbe8d652b4d07a07d777c88a6783b12a1db9670381395996b0fe277439aee31",
-      "contentSha256": "43c60c2b059170006e0c70ff1cec222250178a64f7f2646c2f134f2ecb4c4f90",
+      "contentSha256": "12b299f6bfaaabc0b0378574b01211e9faeeb05da8ca5b7df79bdc1150a86081",
       "auditGateIds": [
         "inventory",
         "coreData",
