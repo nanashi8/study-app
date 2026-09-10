@@ -283,7 +283,7 @@ test('テストだけ解いた日の結果が、翌日の復習件数と復習�
   }
 })
 
-test('全級の暗記は復習中を先頭にし、未学習が無ければ待機中の定着語を自動補充しない', () => {
+test('全級の暗記は復習中→未学習を先に出し、今日の候補を出し切っても同じ級の定着語で続けられる', () => {
   const now = new Date(2026, 7, 21, 12, 0, 0, 0).getTime()
   const day = todayIndex(now)
   const stableEntry = () => ({
@@ -328,33 +328,31 @@ test('全級の暗記は復習中を先頭にし、未学習が無ければ待�
     )
     srs[reviewing.id] = reviewingEntry()
 
+    const source = { type: 'level', levelId: level.id }
+    const materialSize = buildDeck(source, { srs, size: 0, purpose: 'quiz', now, day }).length
+    const ordered = buildDeck(source, { srs, size: 0, purpose: 'study', now, day })
+      .map((word) => word.id)
+    assert.deepEqual(ordered.slice(0, 2), [reviewing.id, unlearned.id], `英検${level.label}は復習中→未学習の順`)
+    assert.equal(ordered.length, materialSize, `英検${level.label}は今日の候補のあとに定着語を続けて出せる`)
     assert.deepEqual(
-      buildDeck(
-        { type: 'level', levelId: level.id },
-        { srs, size: 0, purpose: 'study', now, day },
-      ).map((word) => word.id),
+      buildDeck(source, { srs, size: 2, purpose: 'study', now, day }).map((word) => word.id),
       [reviewing.id, unlearned.id],
-      `英検${level.label}は復習中→未学習の順`,
+      `英検${level.label}は今日の候補で足りる回に定着語を混ぜない`,
     )
 
     srs[unlearned.id] = stableEntry()
-    assert.deepEqual(
-      buildDeck(
-        { type: 'level', levelId: level.id },
-        { srs, size: 0, purpose: 'study', now, day },
-      ).map((word) => word.id),
-      [reviewing.id],
-      `英検${level.label}は復習中だけを出す`,
+    assert.equal(
+      buildDeck(source, { srs, size: 0, purpose: 'study', now, day })[0].id,
+      reviewing.id,
+      `英検${level.label}は未学習が無くても復習中を先頭に出す`,
     )
 
     srs[reviewing.id] = stableEntry()
+    // 全語が期限前でも「次回待ち」で止めず、同じ級をくり返し暗記できる。
     assert.equal(
-      buildDeck(
-        { type: 'level', levelId: level.id },
-        { srs, size: 0, purpose: 'study', now, day },
-      ).length,
-      0,
-      `英検${level.label}は全語が期限前なら自動再出現なし`,
+      buildDeck(source, { srs, size: 10, purpose: 'study', now, day }).length,
+      Math.min(10, materialSize),
+      `英検${level.label}は全語が期限前でもくり返し暗記できる`,
     )
     assert.deepEqual(
       buildDeck(
@@ -384,22 +382,30 @@ test('全級の暗記は復習中を先頭にし、未学習が無ければ待�
         field: field.fieldId,
       }
 
+      const materialSize = buildDeck(source, { srs, size: 0, purpose: 'quiz', now, day }).length
+      const ordered = buildDeck(source, { srs, size: 0, purpose: 'study', now, day })
+        .map((word) => word.id)
       assert.deepEqual(
-        buildDeck(source, { srs, size: 0, purpose: 'study', now, day }).map((word) => word.id),
+        ordered.slice(0, 2),
         [reviewingId, unlearnedId],
         `英検${levelToc.level.label}・${field.field}も復習中→未学習の順`,
       )
+      assert.equal(
+        ordered.length,
+        materialSize,
+        `英検${levelToc.level.label}・${field.field}も今日の候補のあとに定着語を続けて出せる`,
+      )
       srs[unlearnedId] = stableEntry()
-      assert.deepEqual(
-        buildDeck(source, { srs, size: 0, purpose: 'study', now, day }).map((word) => word.id),
-        [reviewingId],
-        `英検${levelToc.level.label}・${field.field}は復習中だけを出す`,
+      assert.equal(
+        buildDeck(source, { srs, size: 0, purpose: 'study', now, day })[0].id,
+        reviewingId,
+        `英検${levelToc.level.label}・${field.field}は未学習が無くても復習中を先頭に出す`,
       )
       srs[reviewingId] = stableEntry()
       assert.equal(
-        buildDeck(source, { srs, size: 0, purpose: 'study', now, day }).length,
-        0,
-        `英検${levelToc.level.label}・${field.field}は期限前なら自動再出現なし`,
+        buildDeck(source, { srs, size: 10, purpose: 'study', now, day }).length,
+        Math.min(10, materialSize),
+        `英検${levelToc.level.label}・${field.field}は期限前でもくり返し暗記できる`,
       )
     }
   }

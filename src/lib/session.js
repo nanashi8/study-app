@@ -366,26 +366,15 @@ function balancedAutomaticDeck(
   return interleaveProportionally(selectedReview, selectedVariety)
 }
 
-/** source からセッション用の単語配列を作る。 */
-export function buildDeck(
+/**
+ * source と学習状況から、そのセッションで使える語を集める（並べ替えはしない）。
+ * 「1回のカード数」で選べる在庫と、実際に組むデッキで同じ絞り込みを使うための唯一の口。
+ */
+function sessionPool(
   source,
-  {
-    srs = {},
-    size = SESSION_SIZE,
-    purpose = 'study',
-    excludeIds = [],
-    cycleIds = [],
-    freshShareOverride = null,
-    now = Date.now(),
-    day = todayIndex(now),
-  } = {},
+  { srs = {}, purpose = 'study', excludeIds = [], cycleIds = [], now = Date.now(), day = todayIndex(now) } = {},
 ) {
-  // 一覧で明示的に選んだ語は、学習者が並べ替えた順をそのまま使う。
-  // 通常の級・分野学習はこれまでどおりシャッフルと復習優先順位を適用する。
-  const preserveSourceOrder = source.type === 'deck' && source.preserveOrder === true
-  let pool = preserveSourceOrder
-    ? wordsForSource(source)
-    : shuffle(wordsForSource(source))
+  let pool = wordsForSource(source)
   // 「次へ進む」で連続セッションを作るときは、同じ周回ですでに終えた語を
   // 候補から外す。明示的な「復習する」は別の source で起動するため、
   // 苦手語を意図して学び直す動線までは抑止しない。
@@ -409,11 +398,42 @@ export function buildDeck(
     // テストを解いた語は含め、まだ触れていない語は「先取り復習」に混ぜない。
     pool = pool.filter((word) => hasVocabularyReviewEvidence(srs[word.id]))
   }
-  if (purpose === 'study' && isAutomaticVocabularySource(source)) {
-    pool = pool.filter((word) => (
-      vocabularyReviewMetrics(srs[word.id], { now, day }).shouldAutoAppear
-    ))
-  }
+  return pool
+}
+
+// 自動で出す今日の候補（未学習・復習どき）。学習済みで期限前の語と、その日に
+// 「まだ」と答えた語は、今日の候補を出し切ったあとの続きとして後ろに回す。
+const autoAppearing = (pool, srs, now, day) => pool.filter((word) => (
+  vocabularyReviewMetrics(srs[word.id], { now, day }).shouldAutoAppear
+))
+
+/**
+ * 「1回のカード数」で選べる上限＝その教材の在庫。
+ * 今日の候補が少ない日でも、枚数の選択肢が 5〜200 のまま変わらないようにする。
+ */
+export function vocabularyStockCount(source, options = {}) {
+  return sessionPool(source, options).length
+}
+
+/** source からセッション用の単語配列を作る。 */
+export function buildDeck(
+  source,
+  {
+    srs = {},
+    size = SESSION_SIZE,
+    purpose = 'study',
+    excludeIds = [],
+    cycleIds = [],
+    freshShareOverride = null,
+    now = Date.now(),
+    day = todayIndex(now),
+  } = {},
+) {
+  // 一覧で明示的に選んだ語は、学習者が並べ替えた順をそのまま使う。
+  // 通常の級・分野学習はこれまでどおりシャッフルと復習優先順位を適用する。
+  const preserveSourceOrder = source.type === 'deck' && source.preserveOrder === true
+  const stock = sessionPool(source, { srs, purpose, excludeIds, cycleIds, now, day })
+  let pool = preserveSourceOrder ? stock : shuffle(stock)
   if (!preserveSourceOrder) {
     pool.sort((a, b) => {
       if (source.type === 'review') {
@@ -431,12 +451,34 @@ export function buildDeck(
       return ba - bb // box が低い（苦手）ほど先
     })
   }
-  if (size && isAutomaticVocabularySource(source)) {
-    pool = balancedAutomaticDeck(
-      pool, srs, day, size, purpose, cycleIds, freshShareOverride,
+  if (!isAutomaticVocabularySource(source)) return size ? pool.slice(0, size) : pool
+
+  // 通常セッションは「今日の候補」から組む。暗記は、学習済みで期限前の語と
+  // その日に「まだ」と答えた語を、今日の候補があるうちは自動では混ぜない。
+  const candidates = purpose === 'study'
+    ? autoAppearing(pool, srs, now, day)
+    : pool
+  if (!size) {
+    // 数えるとき（結果画面の「次へ進む」など）は、今日の候補のあとに続けて出せる残りも含める。
+    const candidateIds = new Set(candidates.map((word) => word.id))
+    return [...candidates, ...pool.filter((word) => !candidateIds.has(word.id))]
+  }
+
+  const deck = balancedAutomaticDeck(
+    candidates, srs, day, size, purpose, cycleIds, freshShareOverride,
+  )
+  // 今日の候補で足りない分は、同じ教材の残りを苦手な順（「まだ」と答えた語から）に続けて出す。
+  // 今日の候補を学び終えた日も、次の復習日を待たずに暗記をくり返せるようにするため。
+  if (deck.length < size) {
+    const used = new Set([
+      ...deck.map((word) => word.id),
+      ...(Array.isArray(cycleIds) ? cycleIds : []),
+    ])
+    deck.push(
+      ...pool.filter((word) => !used.has(word.id)).slice(0, size - deck.length),
     )
   }
-  return size ? pool.slice(0, size) : pool
+  return deck.slice(0, size)
 }
 
 /**

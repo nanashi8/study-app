@@ -11,8 +11,7 @@ import { limitQuizChoices, UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
 import { KotenText } from '../components/KotenFurigana.jsx'
-import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
-import { Button, Chip, cx, IconButton } from '../components/ui.jsx'
+import { Button, Chip, cx } from '../components/ui.jsx'
 import { growDeck } from '../lib/session.js'
 import {
   ArrowRight,
@@ -180,21 +179,21 @@ export function KotenCultureQuizScreen() {
 
   return (
     <div className="flex h-full flex-col">
-      <div className="border-b border-violet-100 bg-white/90 px-3 py-3 backdrop-blur">
-        <div className="flex items-center gap-3">
-          <IconButton onClick={backToKotenCulture} aria-label="テストをやめる">
-            <Close size={22} />
-          </IconButton>
-          <div className="min-w-0 flex-1">
-            <p className="truncate text-[10px] font-extrabold text-ink/40">
-              {params.title ?? '古典常識・入試型テスト'}
-            </p>
-          </div>
-          <SpeechSettingsButton compact />
+      <QuestionSessionControls
+        index={index}
+        total={deck.length}
+        onPrevious={() => setIndex((current) => Math.max(0, current - 1))}
+        onNext={next}
+        nextDisabled={!answered}
+        showAutoAdvance
+        autoAdvanceSignal={correctPick ? autoAdvanceSignal : null}
+        progressColor="#7c3aed"
+        progressControl={(
           <SessionCounter
             index={index}
             total={deck.length}
             max={poolSize}
+            className="h-11"
             onResize={(size, { discard }) => {
               if (discard) {
                 setDeck(pickKotenCultureQuestions(params.ids, { size }))
@@ -214,18 +213,7 @@ export function KotenCultureQuizScreen() {
               }
             }}
           />
-        </div>
-      </div>
-
-      <QuestionSessionControls
-        index={index}
-        total={deck.length}
-        onPrevious={() => setIndex((current) => Math.max(0, current - 1))}
-        onNext={next}
-        nextDisabled={!answered}
-        showAutoAdvance
-        autoAdvanceSignal={correctPick ? autoAdvanceSignal : null}
-        progressColor="#7c3aed"
+        )}
       />
 
       <div className="flex-1 overflow-y-auto px-4 pb-4">

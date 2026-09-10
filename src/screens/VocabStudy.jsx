@@ -2,7 +2,12 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import { etymologyCardsForWord, etymologyStoryForWord } from '../data/vocab.js'
 import { getLevel } from '../data/levels.js'
-import { buildDeck, growDeck, recordStudyAnswer } from '../lib/session.js'
+import {
+  buildDeck,
+  growDeck,
+  recordStudyAnswer,
+  vocabularyStockCount,
+} from '../lib/session.js'
 import { vocabMixFreshShare } from '../lib/vocabMix.js'
 import { phraseGroupsForWord } from '../lib/wordPhrases.js'
 import { playSpeechItems } from '../lib/speech-player.js'
@@ -10,12 +15,12 @@ import { SpeakButton } from '../components/SpeakButton.jsx'
 import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
 import { EtymologyBlock } from '../components/WordBits.jsx'
 import { OtherSenses, PosBadge } from '../components/WordBits.jsx'
-import { Button, Chip, IconButton } from '../components/ui.jsx'
-import { Cards, Close, ArrowRight, Lightbulb } from '../components/Icons.jsx'
+import { Button, Chip } from '../components/ui.jsx'
+import { ArrowRight, Lightbulb } from '../components/Icons.jsx'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 import { VocabReviewHistory } from '../components/VocabReviewHistory.jsx'
 import { CardSaveToggle, CardStudyFooter, CardSwipeRegion } from '../components/CardStudyControls.jsx'
-import { WordListSheet } from '../components/WordListSheet.jsx'
+import { WordListSheet, useWordInAnyBook } from '../components/WordListSheet.jsx'
 import {
   nextUnansweredSessionIndex,
   QuestionSessionControls,
@@ -32,8 +37,6 @@ export function VocabStudyScreen() {
   const returnTo = useStore((s) => s.returnTo)
   const review = useStore((s) => s.review)
   const settings = useStore((s) => s.settings)
-  const myList = useStore((s) => s.myList)
-  const toggleMyList = useStore((s) => s.toggleMyList)
   const saveQuizSession = useStore((s) => s.saveQuizSession)
   const clearQuizSession = useStore((s) => s.clearQuizSession)
 
@@ -76,7 +79,13 @@ export function VocabStudyScreen() {
       // 出題バランスのバーは、次に組む出題から効かせる（学習中の並びは動かさない）。
       freshShareOverride: vocabMixFreshShare(useStore.getState().settings.vocabMix),
     })
-  const [poolSize] = useState(() => buildFor(0).length)
+  // 「1回のカード数」で選べる上限は、今日の候補ではなく教材の在庫。
+  // 今日ぶんを終えかけた級でも、5〜200枚とすべてを選べる状態を保つ。
+  const [poolSize] = useState(() => vocabularyStockCount(source, {
+    srs: srsAtStart.current,
+    purpose: 'study',
+    cycleIds: params.vocabCycleIds,
+  }))
   const sessionSize = useSessionSize(poolSize || Infinity)
   const [deck, setDeck] = useState(() => (
     restore?.deck ?? buildFor(params.size ?? sessionSize)
@@ -107,6 +116,7 @@ export function VocabStudyScreen() {
   )
   const word = deck[i]
   const entry = useStore((state) => (word ? state.srs[word.id] : null))
+  const inWordBook = useWordInAnyBook(word?.id)
   // その語を含む熟語・構文は全部見せる（数を絞ると使い方が抜ける）。
   const relatedPhrases = useMemo(() => phraseGroupsForWord(word), [word?.id])
 
@@ -139,9 +149,8 @@ export function VocabStudyScreen() {
     )
   }
 
-  // 結果として送るのは、実際に答えたカードだけ。最後まで進んだときはデッキ全体と
-  // 一致し、途中でやめたときは答えた分だけになるので、結果の語数も次に出す語も
-  // 中断した時点に合う。まだ見ていない語を「学んだ語」に混ぜない。
+  // 結果として送るのは、実際に答えたカードだけ。途中で枚数を変えてデッキが
+  // 組み直されても、まだ見ていない語を「学んだ語」に混ぜない。
   const answeredWordIds = (answers) => (
     Object.keys(answers)
       .map(Number)
@@ -151,7 +160,7 @@ export function VocabStudyScreen() {
       .filter(Boolean)
   )
 
-  const finish = (answers = recordedAnswers, { interrupted = false } = {}) => {
+  const finish = (answers = recordedAnswers) => {
     const completedAt = Date.now()
     const wordIds = answeredWordIds(answers)
     navigate('sessionResult', {
@@ -163,8 +172,6 @@ export function VocabStudyScreen() {
       reviewIds: results.current.forgotIds,
       source,
       size: params.size,
-      interrupted,
-      plannedTotal: deck.length,
       continueTo: params.continueTo,
       returnTo: params.returnTo,
       vocabSession: {
@@ -185,17 +192,6 @@ export function VocabStudyScreen() {
     })
   }
 
-  // 途中でやめる操作。答えは1カードごとに保存済みなので、そのまま結果画面へ進み、
-  // 中断した時点の語数・復習予定・残りを見せる。1語も答えていなければ前の画面へ戻す。
-  const stopSession = () => {
-    // 問題数を減らして answered のカードが外れた場合も含め、今回残せる語がなければ戻す。
-    if (!answeredWordIds(recordedAnswers).length) {
-      backToVocabParent()
-      return
-    }
-    finish(recordedAnswers, { interrupted: true })
-  }
-
   const answer = (remembered) => {
     if (recordedAnswer !== null) return
     review(word.id, remembered ? 'remembered' : 'forgot', 'vocab')
@@ -212,7 +208,6 @@ export function VocabStudyScreen() {
   }
 
   const level = getLevel(word.level)
-  const saved = myList.includes(word.id)
   const wordSpeechItems = [
     { text: word.word, label: word.word, style: 'word' },
     ...(word.example
@@ -246,15 +241,6 @@ export function VocabStudyScreen() {
         nextDisabled={i + 1 >= deck.length}
         itemLabel="カード"
         progressColor="var(--color-brand-500)"
-        leadingAction={(
-          <IconButton
-            onClick={stopSession}
-            aria-label="やめる"
-            className="shrink-0 rounded-xl text-ink/45"
-          >
-            <Close size={19} />
-          </IconButton>
-        )}
         progressControl={(
           <SessionCounter
             index={i}
@@ -299,24 +285,17 @@ export function VocabStudyScreen() {
               toolbar
               onChange={(on) => setFlipped(on)}
             />
+            {/* 保存先はマイ単語を含む「単語帳」1つ。押すと入れる冊を選ぶ。 */}
             <CardSaveToggle
-              saved={saved}
-              onToggle={() => toggleMyList(word.id)}
-              label="マイ単語"
-              savedLabel={`${word.word}をマイ単語から外す`}
-              unsavedLabel={`${word.word}をマイ単語に追加`}
-              data-vocab-my-list-toggle
+              saved={inWordBook}
+              onToggle={() => setListSheetOpen(true)}
+              label="単語帳"
+              savedLabel={`${word.word}の単語帳を選ぶ（単語帳に入っています）`}
+              unsavedLabel={`${word.word}を入れる単語帳を選ぶ`}
+              aria-pressed={undefined}
+              aria-haspopup="dialog"
+              data-vocab-word-book-toggle
             />
-            <button
-              type="button"
-              onClick={() => setListSheetOpen(true)}
-              aria-label={`${word.word}を入れるマイ単語帳を選ぶ`}
-              data-vocab-word-list-button
-              className="inline-flex min-h-11 min-w-[3.25rem] shrink-0 flex-col items-center justify-center gap-0 rounded-xl bg-slate-100 px-1 text-[10px] font-extrabold text-ink/60 ring-1 ring-slate-200"
-            >
-              <Cards size={17} />
-              <span>単語帳</span>
-            </button>
           </>
         )}
       />

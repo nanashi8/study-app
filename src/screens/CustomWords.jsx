@@ -8,7 +8,6 @@ import { Button, Card, Chip, EmptyState, cx } from '../components/ui.jsx'
 import {
   Bookmark,
   BookmarkFilled,
-  Cards,
   Check,
   Close,
   Download,
@@ -26,8 +25,6 @@ import {
   customWordsFileText,
   parseCustomWordsFile,
 } from '../lib/customWords.js'
-
-const SESSION_LIMIT = 20
 
 const emptyForm = () => ({
   id: null,
@@ -167,7 +164,7 @@ function WordForm({ form, onChange, onSubmit, onCancel, error }) {
               onChange={(event) => onChange({ ...form, addToMyList: event.target.checked })}
               className="h-4 w-4 accent-brand-600"
             />
-            <span className="text-xs font-extrabold text-ink/70">マイ単語にも入れる</span>
+            <span className="text-xs font-extrabold text-ink/70">単語帳「マイ単語」にも入れる</span>
           </label>
         )}
       </div>
@@ -190,7 +187,7 @@ function WordForm({ form, onChange, onSubmit, onCancel, error }) {
   )
 }
 
-function CustomWordCard({ word, saved, onEdit, onDelete, onToggleMyList, onOpenLists }) {
+function CustomWordCard({ word, inBook, onEdit, onDelete, onOpenLists }) {
   const [confirmDelete, setConfirmDelete] = useState(false)
   const level = getLevel(word.level)
 
@@ -227,25 +224,20 @@ function CustomWordCard({ word, saved, onEdit, onDelete, onToggleMyList, onOpenL
         <SpeakButton text={word.word} size="sm" />
       </div>
 
-      <div className="mt-2.5 grid grid-cols-4 gap-1.5 border-t border-slate-200 pt-2.5">
-        <button
-          type="button"
-          onClick={() => onToggleMyList(word.id)}
-          aria-pressed={saved}
-          className={cx(
-            'flex min-h-10 items-center justify-center gap-1 rounded-lg border px-1 text-[10px] font-extrabold',
-            saved ? 'border-hint/30 bg-hint/10 text-hint' : 'border-slate-300 bg-white text-ink/60',
-          )}
-        >
-          {saved ? <BookmarkFilled size={14} /> : <Bookmark size={14} />}
-          マイ単語
-        </button>
+      <div className="mt-2.5 grid grid-cols-3 gap-1.5 border-t border-slate-200 pt-2.5">
+        {/* 保存先はマイ単語を含む「単語帳」1つ。押すと入れる冊を選ぶ。 */}
         <button
           type="button"
           onClick={() => onOpenLists(word)}
-          className="flex min-h-10 items-center justify-center gap-1 rounded-lg border border-slate-300 bg-white px-1 text-[10px] font-extrabold text-ink/60"
+          aria-haspopup="dialog"
+          data-custom-word-book
+          className={cx(
+            'flex min-h-10 items-center justify-center gap-1 rounded-lg border px-1 text-[10px] font-extrabold',
+            inBook ? 'border-hint/30 bg-hint/10 text-hint' : 'border-slate-300 bg-white text-ink/60',
+          )}
         >
-          <Cards size={14} /> 単語帳
+          {inBook ? <BookmarkFilled size={14} /> : <Bookmark size={14} />}
+          単語帳
         </button>
         <button
           type="button"
@@ -274,9 +266,10 @@ function CustomWordCard({ word, saved, onEdit, onDelete, onToggleMyList, onOpenL
 }
 
 export function CustomWordsScreen() {
-  const { customWords, myList } = useStore(useShallow((state) => ({
+  const { customWords, myList, wordBookSets } = useStore(useShallow((state) => ({
     customWords: state.customWords,
     myList: state.myList,
+    wordBookSets: state.learningNotebook.sets,
   })))
   const saveCustomWord = useStore((state) => state.saveCustomWord)
   const deleteCustomWord = useStore((state) => state.deleteCustomWord)
@@ -292,7 +285,13 @@ export function CustomWordsScreen() {
   const [pending, setPending] = useState(null)
   const fileInput = useRef(null)
 
-  const savedSet = useMemo(() => new Set(myList), [myList])
+  // マイ単語か、名前をつけた単語帳のどれかに入っている語。
+  const bookedIds = useMemo(() => new Set([
+    ...myList,
+    ...wordBookSets.flatMap((set) => set.refs
+      .filter((ref) => ref.startsWith('vocab:'))
+      .map((ref) => ref.slice('vocab:'.length))),
+  ]), [myList, wordBookSets])
   const ids = useMemo(() => customWords.map((word) => word.id), [customWords])
 
   const submit = () => {
@@ -322,11 +321,11 @@ export function CustomWordsScreen() {
 
   const startSession = (screen) => {
     if (!ids.length) return
+    // 枚数はカード上部の「1回のカード数」に任せる。ここで頭打ちにしない。
     navigate(screen, {
-      source: { type: 'mylist', ids: ids.slice(0, SESSION_LIMIT) },
+      source: { type: 'mylist', ids },
       title: '自作単語',
       mode: screen === 'vocabStudy' ? 'study' : 'quiz',
-      size: Math.min(SESSION_LIMIT, ids.length),
       returnTo: { screen: 'customWords', params: {} },
     })
   }
@@ -423,7 +422,7 @@ export function CustomWordsScreen() {
 
             {customWords.length === 0 ? (
               <EmptyState icon="✍️" title="まだ自作単語はありません">
-                辞書に無い語や、授業で出た語をここに登録すると、マイ単語や単語帳と同じように暗記・テスト・復習ができます。
+                辞書に無い語や、授業で出た語をここに登録すると、単語帳に入れて辞書の語と同じように暗記・テスト・復習ができます。
               </EmptyState>
             ) : (
               <ul className="space-y-2">
@@ -431,10 +430,9 @@ export function CustomWordsScreen() {
                   <li key={word.id}>
                     <CustomWordCard
                       word={word}
-                      saved={savedSet.has(word.id)}
+                      inBook={bookedIds.has(word.id)}
                       onEdit={(target) => { setForm(formFromWord(target)); setError('') }}
                       onDelete={deleteCustomWord}
-                      onToggleMyList={toggleMyList}
                       onOpenLists={setListSheetWord}
                     />
                   </li>

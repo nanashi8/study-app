@@ -4,7 +4,7 @@ import { getLevel } from '../data/levels.js'
 import { getWritingGrammar } from '../data/writing.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
-import { Button, Chip, IconButton } from '../components/ui.jsx'
+import { Button, Chip } from '../components/ui.jsx'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 import { growDeck } from '../lib/session.js'
 import {
@@ -15,13 +15,11 @@ import {
 import {
   ArrowRight,
   Check,
-  Close,
   Eye,
   Refresh,
 } from '../components/Icons.jsx'
 
 export function WritingGrammarReviewScreen() {
-  const back = useStore((s) => s.back)
   const navigate = useStore((s) => s.navigate)
   const myGrammarList = useStore((s) => s.myGrammarList)
   const srs = useStore((s) => s.srs)
@@ -144,31 +142,6 @@ export function WritingGrammarReviewScreen() {
 
   return (
     <div className="flex min-h-full flex-col bg-paper">
-      <header className="flex items-center gap-3 px-3 pb-3 pt-2">
-        <IconButton onClick={back} aria-label="復習を終わる">
-          <Close size={21} />
-        </IconButton>
-        <span className="min-w-0 flex-1" aria-hidden="true" />
-        <SpeechSettingsButton compact />
-        <SessionCounter
-          index={index}
-          total={deck.length}
-          max={poolSize}
-          label="カード"
-          onResize={(size, { discard }) => {
-            if (discard) {
-              setDeck(buildFor(size))
-              setIndex(0)
-              setRevealed(false)
-              setResults({ remembered: 0, forgot: 0 })
-              clearRecordedAnswers()
-            } else {
-              setDeck((current) => growDeck(current, index + 1, buildFor(size), size))
-            }
-          }}
-        />
-      </header>
-
       <QuestionSessionControls
         index={index}
         total={deck.length}
@@ -177,6 +150,26 @@ export function WritingGrammarReviewScreen() {
         nextDisabled={index + 1 >= deck.length}
         itemLabel="カード"
         progressColor={level.color}
+        progressControl={(
+          <SessionCounter
+            index={index}
+            total={deck.length}
+            max={poolSize}
+            label="カード"
+            className="h-11"
+            onResize={(size, { discard }) => {
+              if (discard) {
+                setDeck(buildFor(size))
+                setIndex(0)
+                setRevealed(false)
+                setResults({ remembered: 0, forgot: 0 })
+                clearRecordedAnswers()
+              } else {
+                setDeck((current) => growDeck(current, index + 1, buildFor(size), size))
+              }
+            }}
+          />
+        )}
       />
 
       <main className="flex flex-1 flex-col px-4 pb-4">

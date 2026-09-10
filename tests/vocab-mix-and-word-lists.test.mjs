@@ -32,7 +32,7 @@ test('出題バランスの目盛りは自動を既定にし、割合を6段で�
   assert.equal(vocabMixFreshShare('fresh-only'), 1)
   assert.equal(vocabMixIndex('even'), 3)
   assert.equal(vocabMixAtIndex('3'), 'even')
-  assert.equal(describeVocabMix('even'), '10問なら 復習5問 : 未修5問')
+  assert.equal(describeVocabMix('even'), '10問中 復習5・未修5')
   // 知らない保存値・古い保存値は自動へ戻す（配分を勝手に固定しない）。
   assert.equal(normalizeVocabMix('unknown'), 'auto')
   assert.equal(normalizeSettings({ vocabMix: 'nope' }).vocabMix, 'auto')
@@ -96,7 +96,10 @@ test('画面下部の同じ枠で、読み上げと出題バランスを切り�
   assert.match(dock, /if \(!state\.visible && !mixAvailable\) return null/)
   assert.match(mix, /data-vocab-mix-range/)
   assert.match(mix, /setSetting\('vocabMix'/)
-  assert.match(mix, /次に組む出題から反映します/)
+  assert.match(mix, /次の出題から/)
+  // 読み上げ欄と同じ枠を分け合うので、見出し1行＋操作1行の高さから増やさない。
+  assert.match(mix, /data-vocab-mix-console-controls/)
+  assert.doesNotMatch(mix, /<p className="mt-0\.5/)
   // 出す語が決まっている画面（マイ単語・復習など）ではバーを出さない。
   assert.match(mix, /isAutomaticVocabularySource/)
   for (const source of [study, quiz]) {
@@ -104,11 +107,16 @@ test('画面下部の同じ枠で、読み上げと出題バランスを切り�
   }
 })
 
-test('マイ単語帳は既存の問題集を保存先にし、単語側から作って選べる', () => {
+test('マイ単語は単語帳の1冊として扱い、単語帳の保存先は既存の問題集を使う', () => {
   const sheet = read('../src/components/WordListSheet.jsx')
   const study = read('../src/screens/VocabStudy.jsx')
   const detail = read('../src/screens/WordDetail.jsx')
+  const levels = read('../src/screens/VocabLevels.jsx')
 
+  assert.match(sheet, /title="単語帳"/)
+  assert.match(sheet, /MY_WORDS_BOOK_TITLE = 'マイ単語'/)
+  // 先頭の1冊はマイ単語（アプリ全体の保存先 myList をそのまま使う）。
+  assert.match(sheet, /onClick=\{\(\) => toggleMyList\(wordId\)\}/)
   assert.match(sheet, /createNotebookSet/)
   assert.match(sheet, /setNotebookSetItem\(set\.id, DOMAIN, wordId, !included\)/)
   assert.match(sheet, /data-word-list-new-title/)
@@ -118,6 +126,17 @@ test('マイ単語帳は既存の問題集を保存先にし、単語側から�
   for (const source of [study, detail]) {
     assert.match(source, /<WordListSheet/)
     assert.match(source, /wordId=\{word\.id\}/)
+    assert.match(source, /useWordInAnyBook/)
+    // マイ単語だけを直接切り替える2つ目の保存ボタンは置かない。
+    assert.doesNotMatch(source, /toggleMyList/)
   }
-  assert.match(study, /data-vocab-word-list-button/)
+  assert.match(study, /label="単語帳"/)
+  assert.match(detail, /単語帳に入れる/)
+  assert.doesNotMatch(detail, /マイ単語リストに保存|マイ単語帳に入れる/)
+
+  // 単語画面のショートカットは「今日の復習」の右隣で、単語帳を選んで学ぶ。
+  assert.match(levels, /<WordBookStudySheet/)
+  assert.match(levels, /data-vocab-word-books-shortcut/)
+  assert.doesNotMatch(levels, /title: 'マイ単語'/)
+  assert.ok(levels.indexOf('今日の復習') < levels.indexOf('data-vocab-word-books-shortcut'))
 })

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import { getEtymologyPack, getWord } from '../data/vocab.js'
-import { Button, IconButton } from '../components/ui.jsx'
+import { Button } from '../components/ui.jsx'
 import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 import { CardStudyFooter, CardSwipeRegion } from '../components/CardStudyControls.jsx'
@@ -11,7 +11,7 @@ import {
   QuestionSessionControls,
   useIndexedSessionState,
 } from '../components/QuestionSessionControls.jsx'
-import { Close, ArrowRight, Book, Lightbulb } from '../components/Icons.jsx'
+import { ArrowRight, Book, Lightbulb } from '../components/Icons.jsx'
 
 // 語源そのものを暗記するカード。表は語根の形、裏は意味・由来・確認済みの例語。
 // 判定は語源専用の記録（etymologySrs）に入る。紐づく英単語の暗記は別画面。
@@ -122,11 +122,6 @@ export function EtymologyStudyScreen() {
         nextDisabled={index + 1 >= deck.length}
         itemLabel="カード"
         progressColor="#7c3aed"
-        leadingAction={(
-          <IconButton onClick={leave} aria-label="やめる" className="shrink-0 rounded-xl text-ink/45">
-            <Close size={19} />
-          </IconButton>
-        )}
         progressControl={(
           <SessionCounter
             index={index}

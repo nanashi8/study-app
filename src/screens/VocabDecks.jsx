@@ -363,6 +363,12 @@ function VocabularyCatalog({
 function FieldCard({ field, level, srs, onStudy, onQuiz, onCatalog }) {
   const status = summarizeVocabularySrsItems(field.wordIds, srs)
   const progress = wordProgress(field.wordIds.map(getWord).filter(Boolean), srs)
+  // 読み上げ名も同じ注記から作り、見えている案内と食い違わせない。
+  const note = progress.due > 0
+    ? `復習が必要 ${progress.due}語`
+    : progress.ready > 0
+      ? `次に学ぶ ${progress.ready}語・1回10語`
+      : '今日の分は完了・くり返し練習できます'
   return (
     <LearningEntryCard
       data-vocab-level-field={field.fieldId}
@@ -373,17 +379,11 @@ function FieldCard({ field, level, srs, onStudy, onQuiz, onCatalog }) {
       subtitle={field.description}
       status={status}
       units={{ learning: '語', quiz: '問' }}
-      note={progress.due > 0
-        ? `復習が必要 ${progress.due}語`
-        : progress.ready > 0
-          ? `次に学ぶ ${progress.ready}語・1回10語`
-          : '次の復習日まで待つ'}
+      note={note}
       noteTone={progress.due > 0 ? 'alert' : 'muted'}
-      studyLabel={progress.ready ? '暗記' : '次回待ち'}
-      studyDisabled={!progress.ready}
-      studyAriaLabel={progress.ready
-        ? `${field.field}の復習または未学習 ${progress.ready}語を暗記`
-        : `${field.field}は次の復習日まで待つ`}
+      // 今日の候補を学び終えても暗記は止めない。次の復習日を待たずにくり返せる。
+      studyDisabled={!progress.total}
+      studyAriaLabel={`${field.field}を暗記。${note}`}
       onStudy={onStudy}
       quizAriaLabel={`${field.field}の単語をテスト`}
       onQuiz={onQuiz}

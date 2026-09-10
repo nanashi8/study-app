@@ -5,8 +5,7 @@ import {
   isCorrectKanbunKundokuOrder,
   pickKanbunKundokuExercises,
 } from '../data/kanbun-kundoku.js'
-import { Button, Chip, cx, IconButton } from '../components/ui.jsx'
-import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
+import { Button, Chip, cx } from '../components/ui.jsx'
 import { KanbunText } from '../components/KanbunFurigana.jsx'
 import { KanbunMarkedText } from '../components/KanbunMarkedText.js'
 import { Check, Close, Lightbulb, Refresh } from '../components/Icons.jsx'
@@ -129,17 +128,21 @@ export function KanbunKundokuQuizScreen() {
 
   return (
     <div className="flex h-full flex-col">
-      <div className="border-b border-rose-100 bg-white/90 px-3 py-3 backdrop-blur">
-        <div className="flex items-center gap-3">
-          <IconButton onClick={backToKanbunKundoku} aria-label="返り点テストをやめる"><Close size={22} /></IconButton>
-          <div className="min-w-0 flex-1">
-            <p className="truncate text-[10px] font-extrabold text-ink/40">{params.title ?? '返り点・訓読ドリル'}</p>
-          </div>
-          <SpeechSettingsButton compact />
+      <QuestionSessionControls
+        index={index}
+        total={deck.length}
+        onPrevious={() => moveTo(Math.max(0, index - 1))}
+        onNext={next}
+        nextDisabled={!answered}
+        showAutoAdvance
+        autoAdvanceSignal={correct ? autoAdvanceSignal : null}
+        progressColor="#be123c"
+        progressControl={(
           <SessionCounter
             index={index}
             total={deck.length}
             max={poolSize}
+            className="h-11"
             onResize={(size, { discard }) => {
               if (discard) {
                 setDeck(pickKanbunKundokuExercises(params.ids, { size, preserveOrder: params.preserveOrder }))
@@ -160,18 +163,7 @@ export function KanbunKundokuQuizScreen() {
               }
             }}
           />
-        </div>
-      </div>
-
-      <QuestionSessionControls
-        index={index}
-        total={deck.length}
-        onPrevious={() => moveTo(Math.max(0, index - 1))}
-        onNext={next}
-        nextDisabled={!answered}
-        showAutoAdvance
-        autoAdvanceSignal={correct ? autoAdvanceSignal : null}
-        progressColor="#be123c"
+        )}
       />
 
       <div className="flex-1 overflow-y-auto px-4 pb-4 pt-3">

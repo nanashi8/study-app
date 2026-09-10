@@ -186,7 +186,24 @@ export function GlobalSpeechConsole() {
           ))}
         </div>
       )}
-      {showing === 'speech'
+      {state.visible && mixAvailable ? (
+        // 2つの操作を同じマスに重ね、見えていない側は visibility で隠す。
+        // 枠の高さは常に高いほうにそろい、タブを切り替えても下端が上下しない。
+        <div className="grid" data-study-dock-panels>
+          <div
+            className={cx('col-start-1 row-start-1', showing !== 'speech' && 'invisible')}
+            aria-hidden={showing !== 'speech'}
+          >
+            <SpeechConsole state={state} onRateChange={changeRate} />
+          </div>
+          <div
+            className={cx('col-start-1 row-start-1', showing !== 'mix' && 'invisible')}
+            aria-hidden={showing !== 'mix'}
+          >
+            <VocabMixConsole />
+          </div>
+        </div>
+      ) : showing === 'speech'
         ? <SpeechConsole state={state} onRateChange={changeRate} />
         : <VocabMixConsole />}
     </div>

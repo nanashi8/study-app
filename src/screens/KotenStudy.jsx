@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import { getKoten } from '../data/koten.js'
-import { Button, IconButton } from '../components/ui.jsx'
+import { Button } from '../components/ui.jsx'
 import { KotenText, KotenWord } from '../components/KotenFurigana.jsx'
 import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
@@ -13,7 +13,6 @@ import {
   useIndexedSessionState,
 } from '../components/QuestionSessionControls.jsx'
 import {
-  Close,
   ArrowRight,
   Lightbulb,
 } from '../components/Icons.jsx'
@@ -123,15 +122,6 @@ export function KotenStudyScreen() {
         nextDisabled={i + 1 >= deck.length}
         itemLabel="カード"
         progressColor="#f59e0b"
-        leadingAction={(
-          <IconButton
-            onClick={back}
-            aria-label="やめる"
-            className="shrink-0 rounded-xl text-ink/45"
-          >
-            <Close size={19} />
-          </IconButton>
-        )}
         progressControl={(
           <SessionCounter
             index={i}

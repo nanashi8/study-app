@@ -9,7 +9,6 @@ import { SpeakButton } from '../components/SpeakButton.jsx'
 import { LongSentenceTranslation } from '../components/LongSentenceTranslation.jsx'
 import { SyntaxFamilyGuide } from '../components/SyntaxFamilyGuide.jsx'
 import { IdiomFormGuide } from '../components/IdiomFormGuide.jsx'
-import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
 import { DragonVeinCipherStage } from '../components/DragonVeinCipherStage.jsx'
@@ -181,35 +180,6 @@ export function PhraseQuizScreen() {
 
   return (
     <div className={cx('flex h-full flex-col', isDragonVein && 'dragon-vein-quiz-screen')}>
-      <div className="flex items-center gap-3 border-b border-brand-100 bg-white/90 px-3 py-3 backdrop-blur">
-        <IconButton onClick={backToPhrases} aria-label={isDragonVein ? '解読を中断' : 'やめる'}><Close size={22} /></IconButton>
-        <span className="min-w-0 flex-1" aria-hidden="true" />
-        <IconButton
-          onClick={() => toggleNotebookItem('phrases', item.id)}
-          aria-label={saved ? `${item.phrase}をマイ学習ノートから外す` : `${item.phrase}をマイ学習ノートへ保存`}
-          aria-pressed={saved}
-          className={saved ? 'text-amber-600' : 'text-ink/30'}
-        >
-          {saved ? <BookmarkFilled size={20} /> : <Bookmark size={20} />}
-        </IconButton>
-        <SpeechSettingsButton compact />
-        <SessionCounter
-          index={index}
-          total={deck.length}
-          max={poolSize}
-          onResize={(size, { discard }) => {
-            if (discard) {
-              setDeck(buildFor(size))
-              setIndex(0)
-              clearSelections()
-              results.current = { correct: 0, wrong: 0, unknown: 0, wrongIds: [], answerLog: [] }
-            } else {
-              setDeck((current) => growDeck(current, index + 1, buildFor(size), size))
-            }
-          }}
-        />
-      </div>
-
       <QuestionSessionControls
         index={index}
         total={deck.length}
@@ -219,6 +189,34 @@ export function PhraseQuizScreen() {
         showAutoAdvance
         autoAdvanceSignal={isCorrectPick ? autoAdvanceSignal : null}
         progressColor={isDragonVein ? '#8b5cf6' : '#0ea5e9'}
+        progressControl={(
+          <SessionCounter
+            index={index}
+            total={deck.length}
+            max={poolSize}
+            className="h-11"
+            onResize={(size, { discard }) => {
+              if (discard) {
+                setDeck(buildFor(size))
+                setIndex(0)
+                clearSelections()
+                results.current = { correct: 0, wrong: 0, unknown: 0, wrongIds: [], answerLog: [] }
+              } else {
+                setDeck((current) => growDeck(current, index + 1, buildFor(size), size))
+              }
+            }}
+          />
+        )}
+        trailingActions={(
+          <IconButton
+            onClick={() => toggleNotebookItem('phrases', item.id)}
+            aria-label={saved ? `${item.phrase}をマイ学習ノートから外す` : `${item.phrase}をマイ学習ノートへ保存`}
+            aria-pressed={saved}
+            className={cx('shrink-0', saved ? 'text-amber-600' : 'text-ink/30')}
+          >
+            {saved ? <BookmarkFilled size={20} /> : <Bookmark size={20} />}
+          </IconButton>
+        )}
       />
 
       <div className="flex-1 overflow-y-auto px-3 pb-4">
@@ -324,7 +322,7 @@ export function PhraseQuizScreen() {
         <Button full size="lg" disabled={!answered} onClick={next}>
           {index + 1 >= deck.length
             ? isDragonVein ? '修復結果を確認' : '結果を見る'
-            : '次の断片へ'} <ArrowRight size={18} />
+            : isDragonVein ? '次の断片へ' : '次の問題へ'} <ArrowRight size={18} />
         </Button>
       </div>
     </div>

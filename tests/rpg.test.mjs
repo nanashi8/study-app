@@ -1228,7 +1228,9 @@ test('龍脈解読画面は通常進捗と共同解読ビジュアルを一つ�
   assert.match(source, /<DragonVeinCipherStage/)
   assert.match(source, /current=\{index \+ 1\}/)
   assert.match(source, /total=\{deck\.length\}/)
-  assert.match(source, /aria-label=\{isDragonVein \? '解読を中断' : 'やめる'\}/)
+  // 解読の中断は上部の共通「戻る」で行う。数字進捗は共通バーの中に置く。
+  assert.match(source, /progressControl=\{\(\s*<SessionCounter/)
+  assert.doesNotMatch(source, /解読を中断/)
   assert.doesNotMatch(source, /<BattleHud|heroCurrentHp|enemyCurrentHp|data-battle-ui-mode/)
 })
 test('龍脈解読中は記憶断片カードと4つの回答をコンパクト表示する', () => {

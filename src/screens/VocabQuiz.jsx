@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
-import { buildDeck, growDeck } from '../lib/session.js'
+import { buildDeck, growDeck, vocabularyStockCount } from '../lib/session.js'
 import { vocabMixFreshShare } from '../lib/vocabMix.js'
 import {
   etymologyCardsForWord,
@@ -10,12 +10,11 @@ import {
 } from '../data/vocab.js'
 import { quizMeaning } from '../data/compact.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
-import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { EtymologyBlock, PosBadge } from '../components/WordBits.jsx'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
 import { DragonVeinCipherStage } from '../components/DragonVeinCipherStage.jsx'
-import { Button, IconButton } from '../components/ui.jsx'
+import { Button } from '../components/ui.jsx'
 import { Close, Check, ArrowRight } from '../components/Icons.jsx'
 import { cx } from '../components/ui.jsx'
 import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
@@ -109,7 +108,11 @@ export function VocabQuizScreen() {
     // 出題バランスのバーは、次に組む出題から効かせる（解答中の並びは動かさない）。
     freshShareOverride: vocabMixFreshShare(useStore.getState().settings.vocabMix),
   })
-  const [poolSize] = useState(() => buildFor(0).length)
+  const [poolSize] = useState(() => vocabularyStockCount(source, {
+    srs: useStore.getState().srs,
+    purpose: 'quiz',
+    cycleIds: params.vocabCycleIds,
+  }))
   const sessionSize = useSessionSize(poolSize || Infinity)
   const [deck, setDeck] = useState(() => (
     restore?.deck ?? buildFor(params.size ?? sessionSize)
@@ -265,17 +268,21 @@ export function VocabQuizScreen() {
 
   return (
     <div className={cx('flex h-full flex-col', isDragonVein && 'dragon-vein-quiz-screen')}>
-      <div className="border-b border-brand-100 bg-white/90 px-3 py-3 backdrop-blur">
-        <div className="flex items-center gap-3">
-          <IconButton onClick={backToVocabParent} aria-label={isDragonVein ? '解読を中断' : 'やめる'}>
-            <Close size={22} />
-          </IconButton>
-          <span className="min-w-0 flex-1" aria-hidden="true" />
-          <SpeechSettingsButton compact />
+      <QuestionSessionControls
+        index={index}
+        total={deck.length}
+        onPrevious={() => setIndex((current) => Math.max(0, current - 1))}
+        onNext={next}
+        nextDisabled={!answered}
+        showAutoAdvance
+        autoAdvanceSignal={isCorrectPick ? autoAdvanceSignal : null}
+        progressColor={isDragonVein ? '#8b5cf6' : '#0ea5e9'}
+        progressControl={(
           <SessionCounter
             index={index}
             total={deck.length}
             max={poolSize}
+            className="h-11"
             onResize={(size, { discard }) => {
               if (discard) {
                 setDeck(buildFor(size))
@@ -287,18 +294,7 @@ export function VocabQuizScreen() {
               }
             }}
           />
-        </div>
-      </div>
-
-      <QuestionSessionControls
-        index={index}
-        total={deck.length}
-        onPrevious={() => setIndex((current) => Math.max(0, current - 1))}
-        onNext={next}
-        nextDisabled={!answered}
-        showAutoAdvance
-        autoAdvanceSignal={isCorrectPick ? autoAdvanceSignal : null}
-        progressColor={isDragonVein ? '#8b5cf6' : '#0ea5e9'}
+        )}
       />
 
       <div className="flex-1 overflow-y-auto px-3 pb-4">
@@ -415,7 +411,7 @@ export function VocabQuizScreen() {
         <Button full size={isDragonVein ? 'md' : 'lg'} disabled={!answered} onClick={next}>
           {index + 1 >= deck.length
             ? isDragonVein ? '修復結果を確認' : '結果を見る'
-            : '次の断片へ'} <ArrowRight size={18} />
+            : isDragonVein ? '次の断片へ' : '次の問題へ'} <ArrowRight size={18} />
         </Button>
       </div>
     </div>

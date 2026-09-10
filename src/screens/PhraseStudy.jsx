@@ -10,8 +10,8 @@ import { LongSentenceTranslation } from '../components/LongSentenceTranslation.j
 import { SyntaxFamilyGuide } from '../components/SyntaxFamilyGuide.jsx'
 import { IdiomFormGuide } from '../components/IdiomFormGuide.jsx'
 import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
-import { Button, IconButton, Chip } from '../components/ui.jsx'
-import { ArrowRight, Close, Lightbulb, Link } from '../components/Icons.jsx'
+import { Button, Chip } from '../components/ui.jsx'
+import { ArrowRight, Lightbulb, Link } from '../components/Icons.jsx'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 import { CardSaveToggle, CardStudyFooter, CardSwipeRegion } from '../components/CardStudyControls.jsx'
 import {
@@ -144,15 +144,6 @@ export function PhraseStudyScreen() {
         nextDisabled={i + 1 >= deck.length}
         itemLabel="カード"
         progressColor="#8b5cf6"
-        leadingAction={(
-          <IconButton
-            onClick={leave}
-            aria-label="やめる"
-            className="shrink-0 rounded-xl text-ink/45"
-          >
-            <Close size={19} />
-          </IconButton>
-        )}
         progressControl={(
           <SessionCounter
             index={i}

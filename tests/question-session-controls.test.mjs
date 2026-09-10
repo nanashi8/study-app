@@ -68,8 +68,67 @@ test('共通操作は44px以上で、状態名と読み上げ名を持つ', () =
   assert.match(source, /CORRECT_AUTO_ADVANCE_DELAY_MS = 1400/)
 })
 
+// 語源カードの暗記・テストも同じバーを使う（問題数を選べる18画面の母数とは別に数える）。
+const ETYMOLOGY_SCREENS = [
+  'src/screens/EtymologyQuiz.jsx',
+  'src/screens/EtymologyStudy.jsx',
+]
+
+test('暗記・テストの全20画面は上部を1本のバーにまとめ、数字進捗も中に入れ、「×」を置かない', () => {
+  const controls = read('src/components/QuestionSessionControls.jsx')
+  // 途中でやめる操作は上部バーの共通「戻る」が受け持つ。バー側に終了の差し込み口を残さない。
+  assert.doesNotMatch(controls, /leadingAction/)
+
+  const screens = [...QUIZ_SCREENS, ...STUDY_SCREENS, ...ETYMOLOGY_SCREENS]
+  assert.equal(screens.length, 20)
+  for (const path of screens) {
+    const source = read(path)
+    // バーは画面の先頭。上に「×」や「2/10」だけの行を戻さない。
+    assert.match(source, /flex-col[^\n]*>\s*<QuestionSessionControls/, `${path}: 共通バーの上に別の行がある`)
+    assert.equal((source.match(/<QuestionSessionControls/g) ?? []).length, 1, `${path}: バーが1本でない`)
+    assert.equal((source.match(/<SessionCounter/g) ?? []).length, 1, `${path}: 数字進捗が1つでない`)
+    assert.match(source, /progressControl=\{\(\s*<SessionCounter/, `${path}: 数字進捗がバーの中にない`)
+    assert.doesNotMatch(source, /leadingAction=/, `${path}: バーに終了ボタンを差し込んでいる`)
+    assert.doesNotMatch(
+      source,
+      /aria-label=[^\n]*(?:やめる|解読を中断|復習を終わる)/,
+      `${path}: 上部の戻ると同じ働きの「×」が残っている`,
+    )
+  }
+})
+
+test('進み具合はバーの下端に細く示し、自動送りの切替や数字の枠と重ねない', () => {
+  const controls = read('src/components/QuestionSessionControls.jsx')
+  const ui = read('src/components/ui.jsx')
+  // className に高さを重ねても既定の h-2.5 が勝つので、高さは専用の口で差し替える。
+  assert.match(ui, /heightClassName = 'h-2\.5'/)
+  assert.match(ui, /cx\(heightClassName, 'w-full overflow-hidden rounded-full bg-brand-100', className\)/)
+  assert.match(controls, /'relative flex min-h-12 shrink-0 items-center/)
+  assert.match(
+    controls,
+    /<ProgressBar\s+value=\{progressValue\}\s+color=\{progressColor\}\s+heightClassName="h-1"\s+className="pointer-events-none absolute inset-x-0 bottom-0"/,
+  )
+  // 中央は数字進捗と切替を横に並べるだけ。進捗バーを重ねず、枠の中に下余白も作らない。
+  const center = controls.slice(
+    controls.indexOf('data-question-session-progress\n'),
+    controls.indexOf('data-question-next'),
+  )
+  assert.match(center, /\{progressControl\}\s*\{showAutoAdvance && \(/)
+  assert.doesNotMatch(center, /<ProgressBar|absolute|pb-2/)
+  // テストでは前へ・次へを細くして、中央の数字と切替に幅を回す。
+  assert.match(controls, /showAutoAdvance \? 'min-w-12 shrink-0' : 'min-w-11 flex-1'/)
+})
+
+test('テストの次へ進むボタンは「次の問題へ」と書き、龍脈の解読だけ物語の「断片」を使う', () => {
+  for (const path of ['src/screens/VocabQuiz.jsx', 'src/screens/PhraseQuiz.jsx']) {
+    const source = read(path)
+    assert.match(source, /: isDragonVein \? '次の断片へ' : '次の問題へ'\}/, `${path}: 通常のテストに「次の断片へ」が出る`)
+  }
+})
+
 // 英単語・英熟語・古文単語・古典文法・古典常識・漢文の暗記カードは、
-// 終了・前へ・数字進捗・次へ・意味の表示切替・保存を1本のバーへまとめる。
+// 前へ・数字進捗・次へ・意味の表示切替・保存を1本のバーへまとめる。
+// 途中でやめる操作は上部の共通「戻る」に任せ、このバーには「×」を置かない。
 const CARD_STUDY_SCREENS = [
   'src/screens/VocabStudy.jsx',
   'src/screens/PhraseStudy.jsx',
@@ -79,10 +138,10 @@ const CARD_STUDY_SCREENS = [
   'src/screens/KanbunStudy.jsx',
 ]
 
-test('全6暗記カードが終了・前後移動・数字進捗・意味・保存を1本のバーにまとめる', () => {
+test('全6暗記カードが前後移動・数字進捗・意味・保存を1本のバーにまとめる', () => {
   const controls = read('src/components/QuestionSessionControls.jsx')
 
-  assert.match(controls, /leadingAction/)
+  assert.doesNotMatch(controls, /leadingAction/)
   assert.match(controls, /progressControl/)
   assert.match(controls, /trailingActions/)
 
@@ -95,7 +154,7 @@ test('全6暗記カードが終了・前後移動・数字進捗・意味・保�
       /<div className="flex h-full flex-col">\s*<QuestionSessionControls/,
       `${path}: 共通バーの上に別のヘッダー行がある`,
     )
-    assert.match(study, /leadingAction=\{\(\s*<IconButton/, `${path}: 終了がバーの中にない`)
+    assert.doesNotMatch(study, /leadingAction=/, `${path}: 上部の戻ると重なる「×」がバーに残っている`)
     assert.match(study, /progressControl=\{\(\s*<SessionCounter/, `${path}: 数字進捗がバーの中にない`)
     assert.match(study, /trailingActions=\{\(\s*<>/, `${path}: 表示切替と保存がバーの中にない`)
     assert.match(study, /<RevealAnswersToggle[\s\S]*?toolbar/, `${path}: 表示切替がバー用の形でない`)
@@ -110,8 +169,10 @@ test('全6暗記カードが終了・前後移動・数字進捗・意味・保�
   }
 
   const vocab = read('src/screens/VocabStudy.jsx')
-  assert.match(vocab, /data-vocab-my-list-toggle/)
-  assert.equal((vocab.match(/data-vocab-my-list-toggle/g) ?? []).length, 1)
+  // 単語の保存先はマイ単語を含む「単語帳」1つにまとめ、カード上に保存ボタンを2つ並べない。
+  assert.match(vocab, /data-vocab-word-book-toggle/)
+  assert.equal((vocab.match(/data-vocab-word-book-toggle/g) ?? []).length, 1)
+  assert.doesNotMatch(vocab, /data-vocab-my-list-toggle|data-vocab-word-list-button/)
 })
 
 test('保存切替は共通部品で、44px以上・状態名・読み上げ名を持つ', () => {
@@ -126,7 +187,7 @@ test('保存切替は共通部品で、44px以上・状態名・読み上げ名�
 
   // 保存先の名前は画面ごとに違うので、読み上げ名も画面ごとに渡す。
   const labels = {
-    'src/screens/VocabStudy.jsx': ['マイ単語', 'マイ単語から外す'],
+    'src/screens/VocabStudy.jsx': ['単語帳', '入れる単語帳を選ぶ'],
     'src/screens/PhraseStudy.jsx': ['ノート', 'マイ学習ノートへ保存'],
     'src/screens/KotenStudy.jsx': ['登録', '登録単語へ追加'],
     'src/screens/KotenGrammarStudy.jsx': ['登録', '登録文法へ追加'],

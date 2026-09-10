@@ -168,7 +168,8 @@ test('主要な全起動元は学習・クイズへ安全な親画面を渡す',
       ? source.match(/returnTo:\s*returnTarget/g) ?? []
       : path === 'src/screens/Grammar.jsx'
         ? source.match(/(?:returnTo[,}]|returnTo\s*)/g) ?? []
-        : source.match(new RegExp(`returnTo:\\s*\\{\\s*screen:\\s*'${screen}'`, 'g')) ?? []
+        // 画面を開く呼び出し（returnTo: { screen }）と、開く部品へ渡す指定（returnTo={{ screen }}）の両方を数える。
+        : source.match(new RegExp(`returnTo(?::\\s*|=\\{)\\{\\s*screen:\\s*'${screen}'`, 'g')) ?? []
     if (path === 'src/screens/Phrases.jsx') {
       assert.match(source, /const returnTarget = \{\s*screen: 'phrases'/)
     }

@@ -15,9 +15,8 @@ import {
 } from '../lib/speech-player.js'
 import { buildDictationInstructorExplanation } from '../lib/instructorExplanations.js'
 import { growDeck } from '../lib/session.js'
-import { Button, Chip, IconButton, cx } from '../components/ui.jsx'
+import { Button, Chip, cx } from '../components/ui.jsx'
 import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
-import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { Close, ArrowRight, SpeakerWave, Check } from '../components/Icons.jsx'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 import {
@@ -207,34 +206,6 @@ export function DictationPlayScreen() {
 
   return (
     <div className="flex h-full flex-col">
-      <div className="flex items-center gap-3 px-3 py-3">
-        <IconButton onClick={back} aria-label="やめる"><Close size={22} /></IconButton>
-        <span className="min-w-0 flex-1" aria-hidden="true" />
-        <SpeechSettingsButton compact />
-        <SessionCounter
-          index={i}
-          total={deck.length}
-          max={poolSize}
-          onResize={(size, { discard }) => {
-            if (discard) {
-              const next = buildFor(size)
-              setDeck(next)
-              setI(0)
-              setWordBank(buildWordBank(next[0]))
-              setAnswerTokens([])
-              setWrongSelections(0)
-              setResult(null)
-              setNormalPlays(0)
-              setSlowPlays(0)
-              questionStates.current = {}
-              results.current = { correct: 0, wrong: 0, wrongIds: [] }
-            } else {
-              setDeck((current) => growDeck(current, i + 1, buildFor(size), size))
-            }
-          }}
-        />
-      </div>
-
       <QuestionSessionControls
         index={i}
         total={deck.length}
@@ -245,6 +216,31 @@ export function DictationPlayScreen() {
         autoAdvanceSignal={result?.passed ? autoAdvanceSignal : null}
         itemLabel="英文"
         progressColor="#14b8a6"
+        progressControl={(
+          <SessionCounter
+            index={i}
+            total={deck.length}
+            max={poolSize}
+            className="h-11"
+            onResize={(size, { discard }) => {
+              if (discard) {
+                const next = buildFor(size)
+                setDeck(next)
+                setI(0)
+                setWordBank(buildWordBank(next[0]))
+                setAnswerTokens([])
+                setWrongSelections(0)
+                setResult(null)
+                setNormalPlays(0)
+                setSlowPlays(0)
+                questionStates.current = {}
+                results.current = { correct: 0, wrong: 0, wrongIds: [] }
+              } else {
+                setDeck((current) => growDeck(current, i + 1, buildFor(size), size))
+              }
+            }}
+          />
+        )}
       />
 
       <div className="flex-1 overflow-y-auto px-4 pb-4">
