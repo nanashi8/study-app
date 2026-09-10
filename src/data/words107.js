@@ -54,7 +54,7 @@ const RAW = [
   ['draft', '名', 'pre1', '草稿・下書き・徴兵・すきま風', 'a rough draft', '粗い草稿', '古英語 dragan(引く)→ draw と同系。', { syn: [{ w: 'outline', m: '概略' }, { w: 'sketch', m: '下書き' }], ant: [{ w: 'final', m: '完成稿' }], field: '文学' }],
   ['drown', '動', '3', 'おぼれ死ぬ・水浸しにする', 'drown in the river', '川でおぼれる', '中英語 drounen(おぼれる)。', { syn: [{ w: 'submerge', m: '水没させる' }, { w: 'flood', m: '水浸しにする' }], ant: [{ w: 'rescue', m: '救助する' }], field: '一般' }],
   ['dual', '形', 'pre1', '二重の・二者の', 'dual citizenship', '二重国籍', 'ラテン duo(2)→ duo と同系。', { syn: [{ w: 'double', m: '二重の' }, { w: 'twofold', m: '二倍の' }], ant: [{ w: 'single', m: '単一の' }], field: '一般' }],
-  ['dumb', '形', '3', '口のきけない・ばかな', 'a dumb mistake', 'ばかげた間違い', '古英語 dumb(口がきけない)。', { syn: [{ w: 'mute', m: '無言の' }, { w: 'stupid', m: '愚かな' }], ant: [{ w: 'clever', m: '利口な' }], field: '一般' }],
+  ['dumb', '形', '3', 'ばかな・愚かな', 'a dumb mistake', 'ばかげた間違い', '古英語 dumb(口がきけない)。', { syn: [{ w: 'mute', m: '無言の' }, { w: 'stupid', m: '愚かな' }], ant: [{ w: 'clever', m: '利口な' }], field: '一般' }],
   ['dump', '動', '2', '投げ捨てる・どさっと落とす・ごみ捨て場', 'dump the trash', 'ごみを捨てる', '中英語 dompen(落とす)。', { syn: [{ w: 'discard', m: '捨てる' }, { w: 'unload', m: '降ろす' }], ant: [{ w: 'keep', m: '保つ' }], field: '環境' }],
   ['dusk', '名', '2', '夕暮れ・たそがれ', 'at dusk', '夕暮れ時に', '古英語 dox(薄暗い)。', { syn: [{ w: 'twilight', m: 'たそがれ' }, { w: 'sunset', m: '日没' }], ant: [{ w: 'dawn', m: '夜明け' }], field: '一般' }],
   ['dye', '動', '3', '染める・染料', 'dye the fabric', '布を染める', '古英語 deag(色)。', { syn: [{ w: 'tint', m: '染める' }, { w: 'color', m: '着色する' }], ant: [{ w: 'bleach', m: '漂白する' }], field: '芸術' }],

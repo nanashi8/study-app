@@ -17,7 +17,7 @@ const RAW = [
   ['haughty', '形', '1', '横柄な・高慢な', 'a haughty manner', '横柄な態度', '古フランス haut(高い)。', { syn: [{ w: 'arrogant', m: '傲慢な' }, { w: 'disdainful', m: '見下した' }], ant: [{ w: 'humble', m: '謙虚な' }], field: '社会' }],
   ['hectic', '形', 'pre1', 'てんてこ舞いの・あわただしい', 'a hectic schedule', '過密スケジュール', 'ギリシャ hektikos(習慣的な・消耗熱の)。', { syn: [{ w: 'frantic', m: '慌ただしい' }, { w: 'frenzied', m: '熱に浮かされた' }], ant: [{ w: 'leisurely', m: 'ゆったりした' }], field: '一般' }],
   ['jovial', '形', '1', '陽気な・愉快な', 'a jovial host', '陽気な主人', 'ラテン Jovialis(木星の・快活な)。', { syn: [{ w: 'merry', m: '陽気な' }, { w: 'genial', m: '愛想のよい' }], ant: [{ w: 'morose', m: '陰気な' }], field: '心理' }],
-  ['lame', '形', '2', '足が不自由な・説得力に欠ける', 'a lame excuse', '苦しい言い訳', '古英語 lama(不自由な)。', { syn: [{ w: 'crippled', m: '不自由な' }, { w: 'weak', m: '弱い' }], ant: [{ w: 'convincing', m: '説得力のある' }], field: '一般' }],
+  ['lame', '形', '2', '説得力に欠ける・お粗末な', 'a lame excuse', '苦しい言い訳', '古英語 lama(不自由な)。', { syn: [{ w: 'crippled', m: '不自由な' }, { w: 'weak', m: '弱い' }], ant: [{ w: 'convincing', m: '説得力のある' }], field: '一般' }],
   ['meek', '形', '1', 'おとなしい・従順な', 'a meek child', 'おとなしい子', '古ノルド mjukr(柔和な)。', { syn: [{ w: 'docile', m: '従順な' }, { w: 'submissive', m: '服従的な' }], ant: [{ w: 'assertive', m: '自己主張する' }], field: '心理' }],
   ['mellow', '形', '1', '円熟した・まろやかな・穏やかな', 'a mellow wine', 'まろやかなワイン', '中英語 melwe(熟した)。', { syn: [{ w: 'smooth', m: 'なめらかな' }, { w: 'mature', m: '円熟した' }], ant: [{ w: 'harsh', m: 'とげとげしい' }], field: '一般' }],
   ['nosy', '形', '1', '詮索好きな', 'a nosy neighbor', '詮索好きな隣人', 'nose(鼻)+ -y。', { syn: [{ w: 'prying', m: '詮索好きな' }, { w: 'inquisitive', m: '好奇心の強い' }], ant: [{ w: 'discreet', m: '慎重な' }], field: '心理' }],
