@@ -46,7 +46,7 @@ const RAW = [
   // 大きさの形容詞
   ['colossal', '形', '1', '巨大な・とてつもない', 'It was a colossal mistake.', 'それはとてつもない誤りだった。', 'ギリシャ kolossos(巨像)→ Colosseum と同系。', { syn: [{ w: 'huge', m: '巨大な' }, { w: 'enormous', m: '巨大な' }], ant: [{ w: 'tiny', m: 'ごく小さい' }], field: '性質・状態' }],
   ['gigantic', '形', 'pre1', '巨大な', 'They built a gigantic tower.', '彼らは巨大な塔を建てた。', 'giant(巨人)+ -ic→ギリシャ gigas。', { syn: [{ w: 'huge', m: '巨大な' }, { w: 'massive', m: '大きな' }], ant: [{ w: 'minute', m: '微小な' }], field: '性質・状態' }],
-  ['minute', '形', '1', '微小な・詳細な', 'There are minute differences.', 'ごくわずかな違いがある。', 'ラテン minutus(小さくされた)→ minor と同系。', { syn: [{ w: 'tiny', m: '極小の' }, { w: 'detailed', m: '詳細な' }], ant: [{ w: 'huge', m: '巨大な' }], field: '性質・状態' }],
+  ['minute', '名', '1', '分・わずかな時間', 'Wait here for five minutes.', 'ここで5分待ってください。', 'ラテン minutus(小さくされた)→ minor と同系。', { syn: [{ w: 'tiny', m: '極小の' }, { w: 'detailed', m: '詳細な' }], ant: [{ w: 'huge', m: '巨大な' }], field: '性質・状態' }],
   ['spacious', '形', 'pre1', '広々とした', 'The apartment is spacious.', 'そのアパートは広々している。', 'space(空間)+ -ious。', { syn: [{ w: 'roomy', m: '広い' }, { w: 'vast', m: '広大な' }], ant: [{ w: 'cramped', m: '狭苦しい' }], field: '性質・状態' }],
   ['cramped', '形', '1', '狭苦しい・窮屈な', 'We lived in a cramped room.', '私たちは窮屈な部屋に住んだ。', 'cramp(けいれん・締め金)+ -ed。', { syn: [{ w: 'crowded', m: '混んだ' }, { w: 'narrow', m: '狭い' }], ant: [{ w: 'spacious', m: '広々とした' }], field: '性質・状態' }],
   ['petite', '形', '1', '小柄な・きゃしゃな', 'She is petite and graceful.', '彼女は小柄で優雅だ。', 'フランス petit(小さい)→ petty と同系。', { syn: [{ w: 'small', m: '小さい' }, { w: 'tiny', m: '小柄な' }], ant: [{ w: 'tall', m: '背の高い' }], field: '性質・状態' }],

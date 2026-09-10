@@ -78,7 +78,7 @@ const RAW = [
   ['finale', '名', 'pre1', '終結・大詰め', 'a grand finale', '壮大なフィナーレ', 'イタリア finale(最後の)→ final と同系。', { syn: [{ w: 'conclusion', m: '結末' }, { w: 'climax', m: '頂点' }], ant: [{ w: 'opening', m: '冒頭' }], field: '音楽' }],
   ['finding', '名', 'pre1', '発見・調査結果', 'research findings', '研究結果', 'find(見つける)+ -ing。', { syn: [{ w: 'discovery', m: '発見' }, { w: 'result', m: '結果' }], fam: [{ w: 'find', m: '見つける' }], field: '科学' }],
   ['fine', '形', 'pre1', '良い・立派な・細かい', 'fine weather', '快晴', 'ラテン finire(仕上げる)→ finish と同系。', { syn: [{ w: 'excellent', m: '優れた' }, { w: 'delicate', m: '繊細な' }], ant: [{ w: 'coarse', m: '粗い' }], field: '性質・状態' }],
-  ['fire', '動', 'pre1', '解雇する・発砲する・火', 'They fired him.', '彼らは彼を解雇した。', '古英語 fyr(火)。', { syn: [{ w: 'dismiss', m: '解雇する' }, { w: 'shoot', m: '発砲する' }], ant: [{ w: 'hire', m: '雇う' }], field: 'ビジネス' }],
+  ['fire', '名', 'pre1', '火・火事', 'They sat around the fire.', '彼らは火を囲んで座った。', '古英語 fyr(火)。', { syn: [{ w: 'dismiss', m: '解雇する' }, { w: 'shoot', m: '発砲する' }], ant: [{ w: 'hire', m: '雇う' }], field: 'ビジネス' }],
   ['firmly', '副', 'pre2', '断固として・しっかりと', 'He firmly refused.', '彼はきっぱり断った。', 'firm(固い)+ -ly', { fam: [{ w: 'firm', m: '固い' }], syn: [{ w: 'resolutely', m: '断固として' }, { w: 'securely', m: 'しっかりと' }], ant: [{ w: 'loosely', m: '緩く' }], field: '副詞' }],
   ['first', '形', 'pre1', '最初の・第一の', 'the first time', '初めて', '古英語 fyrst(最も前の)→ fore と同系。', { syn: [{ w: 'initial', m: '最初の' }, { w: 'foremost', m: '一番の' }], ant: [{ w: 'last', m: '最後の' }], field: '一般' }],
   ['fitting', '形', 'pre1', '似つかわしい・ふさわしい', 'a fitting tribute', 'ふさわしい賛辞', 'fit(合う)+ -ing。', { syn: [{ w: 'appropriate', m: '適切な' }, { w: 'suitable', m: '適した' }], ant: [{ w: 'inappropriate', m: '不適切な' }], fam: [{ w: 'fit', m: '合う' }], field: '性質・状態' }],

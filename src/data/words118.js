@@ -19,7 +19,7 @@ const RAW = [
   ['deduct', '動', 'pre1', '差し引く・控除する', 'deduct from the salary', '給料から差し引く', 'ラテン de+ducere(導く)→ deduce と同系。', { syn: [{ w: 'subtract', m: '引く' }, { w: 'withhold', m: '差し控える' }], ant: [{ w: 'add', m: '加える' }], fam: [{ w: 'deduction', m: '控除' }], field: '経済' }],
   ['upload', '動', '2', 'アップロードする・転送する', 'upload a file', 'ファイルをアップロードする', 'up(上へ)+load(積む)。', { syn: [{ w: 'transfer', m: '転送する' }, { w: 'post', m: '投稿する' }], ant: [{ w: 'download', m: 'ダウンロードする' }], field: '技術' }],
   ['browse', '動', '2', '拾い読みする・閲覧する・(草を)食べる', 'browse the web', 'ウェブを閲覧する', '古フランス brouster(若芽を食う)。', { syn: [{ w: 'skim', m: '拾い読みする' }, { w: 'surf', m: 'ネットサーフィンする' }], fam: [{ w: 'browser', m: 'ブラウザー' }], field: '技術' }],
-  ['stream', '動', '2', '流れる・配信する・流れ', 'stream a movie', '映画を配信視聴する', '古英語 stream(流れ)。', { syn: [{ w: 'flow', m: '流れる' }, { w: 'broadcast', m: '配信する' }], field: '技術' }],
+  ['stream', '名', '2', '小川・流れ', 'A narrow stream runs behind the school.', '細い小川が学校の裏を流れている。', '古英語 stream(流れ)。', { syn: [{ w: 'flow', m: '流れる' }, { w: 'broadcast', m: '配信する' }], field: '技術' }],
   ['scroll', '動', '2', 'スクロールする・巻物', 'scroll down the page', 'ページを下にスクロールする', '中英語 scrowle(巻物)。', { syn: [{ w: 'roll', m: '巻く' }], field: '技術' }],
   ['hack', '動', '2', '不正侵入する・たたき切る', 'hack the system', 'システムに侵入する', '古英語 haccian(切り刻む)。', { syn: [{ w: 'breach', m: '侵入する' }, { w: 'chop', m: 'たたき切る' }], fam: [{ w: 'hacker', m: 'ハッカー' }], field: '技術' }],
   ['debug', '動', '2', 'バグを取り除く・修正する', 'debug the program', 'プログラムのバグを取る', 'de(除去)+bug(虫・不具合)。', { syn: [{ w: 'fix', m: '修正する' }, { w: 'troubleshoot', m: '不具合を解消する' }], field: '技術' }],
