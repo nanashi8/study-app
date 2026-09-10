@@ -592,10 +592,10 @@ function formsFor(base) {
 }
 
 const MODAL_CASES = [
-  ['must', ['must', 'must to', 'has', 'can to'], '義務を表す must の後ろには動詞原形を置く。', '〜しなければなりません', 'According to the rule,'],
-  ['should', ['should', 'should to', 'had', 'does'], '助言を表す should の後ろには動詞原形を置く。', '〜したほうがよいです', 'For better results,'],
-  ['may', ['may', 'may to', 'is', 'does'], '許可・可能性を表す may の後ろには動詞原形を置く。', '〜してもよいです', 'With permission,'],
-  ['can', ['can', 'can to', 'is', 'does'], '可能を表す can の後ろには動詞原形を置く。', '〜することができます', 'With this support,'],
+  ['must', ['must', 'must to', 'has', 'can to'], '義務を表す must の後ろには動詞原形を置く。', '〜しなければなりません', 'According to the rule,', '規則によれば、'],
+  ['should', ['should', 'should to', 'had', 'does'], '助言を表す should の後ろには動詞原形を置く。', '〜したほうがよいです', 'For better results,', 'よりよい結果のためには、'],
+  ['may', ['may', 'may to', 'is', 'does'], '許可・可能性を表す may の後ろには動詞原形を置く。', '〜してもよいです', 'With permission,', '許可があれば、'],
+  ['can', ['can', 'can to', 'is', 'does'], '可能を表す can の後ろには動詞原形を置く。', '〜することができます', 'With this support,', 'この支えがあれば、'],
 ]
 
 const FOUR_FAMILIES = [
@@ -675,10 +675,12 @@ const FOUR_FAMILIES = [
     key: '4_modal', level: '4', topic: '助動詞',
     explain: '助動詞の後ろには動詞の原形を置く。',
     cases: cross(ACTIONS, MODAL_CASES),
-    build: ([action, [modal, choices, modalExplain, , lead]]) => ({
+    // 英文の頭に置く副詞句は訳にも出す。落とすと、和文だけを読んだ学習者に
+    // 「規則によれば」という条件が見えないまま must を選ばせることになる。
+    build: ([action, [modal, choices, modalExplain, , lead, leadJa]]) => ({
       q: `${lead} you ___ ${action.base} ${action.neutralTail}.`,
       choices, answer: modal, explain: modalExplain,
-      ja: `あなたは${modal === 'must' ? `${action.jaNeutralDict}必要があります` : modal === 'should' ? `${action.jaNeutralDict}ほうがよいです` : modal === 'may' ? `${action.jaNeutralDict}ことが許されています` : `${action.jaNeutralDict}ことができます`}。`,
+      ja: `${leadJa}あなたは${modal === 'must' ? `${action.jaNeutralDict}必要があります` : modal === 'should' ? `${action.jaNeutralDict}ほうがよいです` : modal === 'may' ? `${action.jaNeutralDict}ことが許されています` : `${action.jaNeutralDict}ことができます`}。`,
     }),
   }),
   family({
@@ -1412,10 +1414,12 @@ const PRE2_FAMILIES = [
     key: 'pre2_so_such', level: 'pre2', topic: 'so/such...that',
     explain: 'such＋a/an＋形容詞＋名詞＋that節で程度と結果を表す。',
     cases: cross(LONG_ADJECTIVES, ROLES),
+    // ROLES は人を表す語しかないので、主語は It ではなく人を指す代名詞にする。
+    // It was such an interesting teacher … は人を It で受けており、英語として成り立たない。
     build: ([[adj, , , jaAdj], [roleEn, roleJa]]) => ({
-      q: `It was ___ ${/^[aeiou]/i.test(adj) ? 'an' : 'a'} ${adj} ${roleEn} that everyone listened carefully.`,
+      q: `She was ___ ${/^[aeiou]/i.test(adj) ? 'an' : 'a'} ${adj} ${roleEn} that everyone listened carefully.`,
       choices: ['such', 'so', 'too', 'enough'], answer: 'such',
-      ja: `とても${jaAdj}${roleJa}だったので、皆が注意深く耳を傾けました。`,
+      ja: `彼女はとても${jaAdj}${roleJa}だったので、皆が注意深く耳を傾けました。`,
     }),
   }),
   family({
