@@ -29,7 +29,7 @@ const RAW = [
   ['scale', '名', 'pre1', '規模・目盛り', 'on a large scale', '大規模に', 'ラテン scala(はしご)。', { syn: [{ w: 'extent', m: '範囲' }, { w: 'magnitude', m: '大きさ' }], field: '測定' }],
   ['selection', '名', 'pre1', '選択・品ぞろえ', 'a wide selection', '豊富な品ぞろえ', 'select(選ぶ)+ -ion。', { syn: [{ w: 'choice', m: '選択' }, { w: 'assortment', m: '取りそろえ' }], fam: [{ w: 'select', m: '選ぶ' }], field: '一般' }],
   ['seller', '名', '4', '売り手・売れる商品', 'a best seller', 'ベストセラー', 'sell(売る)+ -er', { fam: [{ w: 'sell', m: '売る' }], ant: [{ w: 'buyer', m: '買い手' }], field: 'ビジネス' }],
-  ['sort', '動', 'pre1', '仕分ける・分類する・種類', 'Sort the mail by date.', '郵便を日付で仕分けて。', '古フランス sorte(種類)。', { syn: [{ w: 'classify', m: '分類する' }, { w: 'arrange', m: '整理する' }], field: '動作・行為' }],
+  ['sort', '名', 'pre1', '種類', 'What sort of music do you like?', 'どんな種類の音楽が好きですか。', '古フランス sorte(種類)。', { syn: [{ w: 'classify', m: '分類する' }, { w: 'arrange', m: '整理する' }], field: '動作・行為' }],
   ['sour', '形', 'pre1', '酸っぱい・不機嫌な', 'a sour lemon', '酸っぱいレモン', '古英語 sur(酸っぱい)。', { syn: [{ w: 'tart', m: '酸味のある' }, { w: 'bitter', m: '苦い' }], ant: [{ w: 'sweet', m: '甘い' }], field: '料理' }],
   ['steady', '形', 'pre1', '安定した・着実な', 'a steady job', '安定した仕事', '古英語 stede(場所)→ stead と同系。', { syn: [{ w: 'stable', m: '安定した' }, { w: 'constant', m: '一定の' }], ant: [{ w: 'shaky', m: 'ぐらつく' }], field: '性質・状態' }],
   ['strike', '動', 'pre1', '打つ・襲う・ストライキ', 'Lightning struck the tree.', '雷が木を直撃した。', '古英語 strican(なでる・打つ)。', { syn: [{ w: 'hit', m: '打つ' }, { w: 'attack', m: '襲う' }], field: '動作・行為' }],

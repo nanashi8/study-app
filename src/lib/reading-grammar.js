@@ -237,11 +237,28 @@ function wordRecord(word) {
   return null
 }
 
+// 1見出し1カードなので、カードの pos はその語の代表的な品詞ひとつだけを表す。
+// 別品詞の意味は word-senses.js が otherSenses として持つ。
+// air / sentence / sort / list は初級で出会う名詞（空気・文・種類・リスト）を
+// カードにしたので pos は名だが、本文では sorted the clothes / must list the source
+// のように動詞でも現れる。この4語は otherSenses の品詞も見て動詞と認める。
+//
+// otherSenses を全語へ広げると、いま出力にある別の弱点が表に出る——
+// has のカード語義が「haveの三人称単数」というメタ表記なので語形メタが訳へ露出し、
+// that が「あれ」と訳され、matter を動詞と認めると語順訳ブロックの粒度が変わる。
+// それぞれ独立に直すべき問題なので、ここでは広げない。
+const VERB_ALSO = new Set(['air', 'sentence', 'sort', 'list'])
+function recordHasPos(record, pos) {
+  if (!record) return false
+  if (record.pos === pos) return true
+  if (!VERB_ALSO.has(normalizeToken(record.word ?? ''))) return false
+  return (record.otherSenses ?? []).some((sense) => sense.pos === pos)
+}
+
 function hasVerbRecord(word) {
   const key = normalizeToken(word)
-  const direct = getWord(toId(key))
-  if (direct?.pos === '動') return true
-  return lemmaCandidates(key).some((candidate) => getWord(toId(candidate))?.pos === '動')
+  if (recordHasPos(getWord(toId(key)), '動')) return true
+  return lemmaCandidates(key).some((candidate) => recordHasPos(getWord(toId(candidate)), '動'))
 }
 
 function lemmaOf(word) {
@@ -249,7 +266,7 @@ function lemmaOf(word) {
   if (IRREGULAR_LEMMAS[key]) return IRREGULAR_LEMMAS[key]
   for (const candidate of lemmaCandidates(key)) {
     const record = getWord(toId(candidate))
-    if (record?.pos === '動') return normalizeToken(record.word)
+    if (recordHasPos(record, '動')) return normalizeToken(record.word)
   }
   const record = wordRecord(key)
   if (record?.word) return normalizeToken(record.word)
