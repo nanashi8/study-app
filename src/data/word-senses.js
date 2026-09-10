@@ -425,4 +425,28 @@ export const WORD_SENSES = Object.freeze({
       example: Object.freeze({ en: 'Two and four are even numbers.', ja: '2と4は偶数だ。' }),
     }),
   ]),
+  air: Object.freeze([
+    Object.freeze({
+      pos: '動', level: 'pre1', meaning: '放送する・（意見を）述べる',
+      example: Object.freeze({ en: 'They aired the program last night.', ja: '彼らは昨夜その番組を放送した。' }),
+    }),
+  ]),
+  sentence: Object.freeze([
+    Object.freeze({
+      pos: '動', level: '2', meaning: '判決を下す・刑を言い渡す',
+      example: Object.freeze({ en: 'The court sentenced him to two years.', ja: '法廷は彼に2年の刑を言い渡した。' }),
+    }),
+  ]),
+  sort: Object.freeze([
+    Object.freeze({
+      pos: '動', level: 'pre2', meaning: '仕分ける・分類する',
+      example: Object.freeze({ en: 'Please sort the mail by date.', ja: '郵便を日付で仕分けてください。' }),
+    }),
+  ]),
+  list: Object.freeze([
+    Object.freeze({
+      pos: '動', level: 'pre2', meaning: '列挙する・一覧にする',
+      example: Object.freeze({ en: 'The report lists every change.', ja: 'その報告書はすべての変更を列挙している。' }),
+    }),
+  ]),
 })

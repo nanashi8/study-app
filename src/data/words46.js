@@ -52,7 +52,7 @@ const RAW = [
   ['agent', '名', 'pre1', '代理人・(作用)因子', 'a travel agent', '旅行代理業者', 'ラテン agere(行う)→ act と同系。', { syn: [{ w: 'representative', m: '代表者' }, { w: 'broker', m: '仲介者' }], field: 'ビジネス' }],
   ['agitated', '形', 'pre1', '動揺した・興奮した', 'He became agitated.', '彼は動揺した。', 'agitate(動揺させる)+ -ed。', { syn: [{ w: 'upset', m: '取り乱した' }, { w: 'flustered', m: 'うろたえた' }], ant: [{ w: 'calm', m: '落ち着いた' }], fam: [{ w: 'agitate', m: '動揺させる' }], field: '心理' }],
   ['agreeable', '形', '4', '快い・気持ちのよい', 'an agreeable climate', '快適な気候', 'agree(同意する)+ -able', { fam: [{ w: 'agree', m: '同意する' }], syn: [{ w: 'pleasant', m: '感じのよい' }], ant: [{ w: 'disagreeable', m: '不快な' }], field: '性質・状態' }],
-  ['air', '動', 'pre1', '放送する・(意見を)述べる', 'They aired the program.', '彼らはその番組を放送した。', '古フランス aire(空気)→公にする。', { syn: [{ w: 'broadcast', m: '放送する' }, { w: 'express', m: '述べる' }], field: 'メディア' }],
+  ['air', '名', 'pre1', '空気・大気', 'Open the window and let in fresh air.', '窓を開けて新鮮な空気を入れて。', '古フランス aire(空気)→公にする。', { syn: [{ w: 'broadcast', m: '放送する' }, { w: 'express', m: '述べる' }], field: 'メディア' }],
   ['alien', '形', 'pre1', '異質な・宇宙人・外国の', 'an alien culture', '異質な文化', 'ラテン alienus(他人の)。', { syn: [{ w: 'foreign', m: '外国の' }, { w: 'unfamiliar', m: 'なじみのない' }], ant: [{ w: 'familiar', m: 'なじみの' }], field: '性質・状態' }],
   ['alienation', '名', '1', '疎外・疎遠', 'a sense of alienation', '疎外感', 'alienate(疎遠にする)+ -ation', { fam: [{ w: 'alienate', m: '疎遠にする' }], syn: [{ w: 'isolation', m: '孤立' }], field: '心理' }],
   ['alike', '形', 'pre1', '似ている・同様に', 'The twins look alike.', '双子はそっくりだ。', 'a(完全に)+like(似た)。', { syn: [{ w: 'similar', m: '似た' }, { w: 'identical', m: 'そっくりの' }], ant: [{ w: 'different', m: '異なる' }], field: '性質・状態' }],

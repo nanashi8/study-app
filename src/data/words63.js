@@ -4,7 +4,7 @@ import { expandCompact } from './compact.js'
 const RAW = [
   ['fairness', '名', 'pre1', '公平・公正', 'a sense of fairness', '公平感', 'fair(公正な)+ -ness', { fam: [{ w: 'fair', m: '公正な' }], syn: [{ w: 'justice', m: '正義' }, { w: 'equity', m: '公正' }], ant: [{ w: 'unfairness', m: '不公平' }], field: '社会' }],
   ['lead', '動', 'pre1', '導く・先頭に立つ・つながる', 'lead the way', '先導する', '古英語 lædan(導く)。', { syn: [{ w: 'guide', m: '案内する' }, { w: 'direct', m: '指揮する' }], ant: [{ w: 'follow', m: '従う' }], fam: [{ w: 'leader', m: '指導者' }], field: '一般' }],
-  ['list', '動', 'pre1', '列挙する・リスト・一覧', 'list the items', '項目を列挙する', '古英語 liste(縁・帯)。', { syn: [{ w: 'enumerate', m: '列挙する' }, { w: 'itemize', m: '項目化する' }], field: '一般' }],
+  ['list', '名', 'pre1', 'リスト・一覧', 'Make a list of things to buy.', '買うものの一覧を作りなさい。', '古英語 liste(縁・帯)。', { syn: [{ w: 'enumerate', m: '列挙する' }, { w: 'itemize', m: '項目化する' }], field: '一般' }],
   ['matter', '名', '3', '事柄・問題', 'What is the matter?', 'どうしたの？', 'ラテン materia(材料)→ material と同系。', { syn: [{ w: 'issue', m: '問題' }, { w: 'problem', m: '問題・課題' }], field: '科学' }],
   ['monotony', '名', '1', '単調・退屈', 'break the monotony', '単調さを破る', 'ギリシャ monos(単一)+tonos(調子)。', { syn: [{ w: 'tedium', m: '退屈' }, { w: 'sameness', m: '同一性' }], ant: [{ w: 'variety', m: '多様性' }], fam: [{ w: 'monotonous', m: '単調な' }], field: '心理' }],
   ['pioneering', '形', 'pre1', '先駆的な・草分けの', 'pioneering work', '先駆的な仕事', 'pioneer(先駆者)+ -ing。', { syn: [{ w: 'groundbreaking', m: '画期的な' }, { w: 'innovative', m: '革新的な' }], ant: [{ w: 'conventional', m: '従来の' }], fam: [{ w: 'pioneer', m: '先駆者' }], field: '技術' }],

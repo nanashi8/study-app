@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-09-10T00:44:11.223Z",
+  "auditedAt": "2026-09-10T01:18:27.826Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -12,7 +12,7 @@
     "quizItemCount": 16417,
     "storedAndGeneratedQuestionPathCount": 4207,
     "storedAndGeneratedChoicePathCount": 16712,
-    "overallContentSha256": "949fbb284b32aaad2021ef5d2d408200034fb9eb780167aee1f7599c7888c572"
+    "overallContentSha256": "539a55475cd7f433fc4da704372a0834d1517d78a78a78298bccbfe46209ca2c"
   },
   "completionCriteria": [
     "全18教材カテゴリのID・母数・重複・内容ハッシュが一致する",
@@ -103,7 +103,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "3b73af170e488a37f5b845c3d92df13d119a03c2e62571802d7ed32d65bf9551",
+    "sha256": "33e2466c72d8002dc2f1b3b3e269a6bb5f95c99cb61075434e9300700256a6c0",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -262,7 +262,7 @@
       "quizItemCount": 8851,
       "learningIdOrderSha256": "3cbe8d652b4d07a07d777c88a6783b12a1db9670381395996b0fe277439aee31",
       "quizIdOrderSha256": "3cbe8d652b4d07a07d777c88a6783b12a1db9670381395996b0fe277439aee31",
-      "contentSha256": "7e5080ac87e783f9e45ecaae7539715f8469a322b9764627c4813def510bf345",
+      "contentSha256": "92c1899ff522bab8187f01afb6f55f34469e1852f39c3cf78b4f6e698e54fd83",
       "auditGateIds": [
         "inventory",
         "coreData",
@@ -384,7 +384,7 @@
       "quizItemCount": 339,
       "learningIdOrderSha256": "c43d604fc867ea064a6f77e585543a89cd95651ed446c83be23bb63b713c3919",
       "quizIdOrderSha256": "c43d604fc867ea064a6f77e585543a89cd95651ed446c83be23bb63b713c3919",
-      "contentSha256": "03aa5086b33cade996c6993dc4927152dcf88dfba6e21fc3d7138e451102bc95",
+      "contentSha256": "24ad27106bfbe3895b27288e33bc4fc431f4b527edb3bd326d11157d68d705f8",
       "auditGateIds": [
         "inventory",
         "coreData",
@@ -793,7 +793,7 @@
       "choiceCount": 252,
       "generalRationaleCount": 84,
       "choiceSpecificRationaleCount": 0,
-      "questionSetSha256": "40dfb7407075862e20809cd0b9d6f07ee766ef94a3f3070b95bfcd640cf314b8",
+      "questionSetSha256": "d28ff7c0563d238697e36f994fd9d128bdbefa47d9782519a475565d769bb7c6",
       "result": "pass",
       "failureCount": 0,
       "failures": []
@@ -942,11 +942,11 @@
         "gain": 39
       },
       "2": {
-        "total": 1578,
-        "before": 270,
-        "beforePercent": 17.11,
-        "after": 696,
-        "afterPercent": 44.11,
+        "total": 1577,
+        "before": 269,
+        "beforePercent": 17.06,
+        "after": 695,
+        "afterPercent": 44.07,
         "gain": 426
       },
       "3": {
@@ -958,35 +958,35 @@
         "gain": 226
       },
       "4": {
-        "total": 694,
-        "before": 355,
-        "beforePercent": 51.15,
-        "after": 566,
-        "afterPercent": 81.56,
+        "total": 697,
+        "before": 358,
+        "beforePercent": 51.36,
+        "after": 569,
+        "afterPercent": 81.64,
         "gain": 211
       },
       "5": {
-        "total": 605,
-        "before": 351,
-        "beforePercent": 58.02,
-        "after": 483,
-        "afterPercent": 79.83,
+        "total": 606,
+        "before": 352,
+        "beforePercent": 58.09,
+        "after": 484,
+        "afterPercent": 79.87,
         "gain": 132
       },
       "pre2": {
-        "total": 1428,
-        "before": 464,
-        "beforePercent": 32.49,
-        "after": 864,
-        "afterPercent": 60.5,
+        "total": 1426,
+        "before": 462,
+        "beforePercent": 32.4,
+        "after": 862,
+        "afterPercent": 60.45,
         "gain": 400
       },
       "pre1": {
-        "total": 2774,
-        "before": 214,
-        "beforePercent": 7.71,
-        "after": 772,
-        "afterPercent": 27.83,
+        "total": 2773,
+        "before": 213,
+        "beforePercent": 7.68,
+        "after": 771,
+        "afterPercent": 27.8,
         "gain": 558
       }
     },
