@@ -4135,9 +4135,9 @@ export const EXTENDED_READING_TRANSLATION_SCENARIOS = Object.freeze({
       ),
     ],
     [
-      b('Four short sentences of', '四つの短い文のほうが'),
-      b('that kind will usually', 'その／種類の文は／たいてい', '', 'that／kind／will usually'),
-      b('do more', 'より多くをします／より多く', '', 'do／more'),
+      b('Four short sentences of that kind', 'その種の短い四つの文のほうが'),
+      b('will usually', 'たいてい'),
+      b('do more', '多くをもたらします'),
       b('for public trust than four hundred pages of technical detail', '公共の信頼のために、四百頁の技術的な詳細よりも'),
     ],
     [

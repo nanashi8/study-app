@@ -124,6 +124,29 @@ const BASE_READING_PHRASE_CORRECTIONS = Object.freeze({
       { role: 'M', en: 'water, pensions', ja: '水や年金や' },
     ], 'land と並ぶ、about の目的語です。land の目的語Oではありません。'),
   ]),
+  // 二つ目の述語が一つ目の動詞の目的語に取り込まれ、nominate の訳が落ちていた。
+  'The council may nominate officials, form a coalition, or ask a committee to study a difficult problem.': Object.freeze([
+    correction(['officials, form a coalition'], [
+      { role: 'O', en: 'officials,', ja: '職員を' },
+      { role: 'V', en: 'form', ja: '組み' },
+      { role: 'O', en: 'a coalition', ja: '連立を' },
+    ], 'form は may を共有する二つ目の述語Vで、nominate の目的語Oではありません。'),
+  ]),
+  // including が導く列挙が V と O に割られ、語順が入れ替わっていた。
+  'Officials first need a map of current lighting, including ownership, energy use, brightness, direction, and hours of operation.': Object.freeze([
+    correction(['including ownership energy use'], [
+      { role: 'M', en: 'including ownership energy use', ja: '所有者やエネルギー使用量や' },
+    ], 'including は a map の中身を並べる修飾Mです。述語Vではありません。'),
+    correction(['brightness direction'], [
+      { role: 'M', en: 'brightness direction', ja: '明るさや向きや' },
+    ], 'including が導く列挙の続きで、目的語Oではありません。'),
+  ]),
+  // of that kind が分断され、that が接続詞として読まれていた。
+  'Four short sentences of that kind will usually do more for public trust than four hundred pages of technical detail.': Object.freeze([
+    correction(['Four short sentences of', 'that', 'kind'], [
+      { role: 'S', en: 'Four short sentences of that kind', ja: 'その種の短い四つの文のほうが' },
+    ], 'of that kind までが主語Sの一部です。that は接続詞ではありません。'),
+  ]),
   'This month, the topic is local history.': Object.freeze([
     correction(['This month'], [
       { role: 'M', en: 'This month', ja: '今月は' },

@@ -673,6 +673,143 @@ export const READING_MEANING_PHRASE_OVERRIDES = Object.freeze({
       }),
     ]),
   }),
+
+  'The council may nominate officials, form a coalition, or ask a committee to study a difficult problem.': sentence({
+    groups: Object.freeze([
+      Object.freeze({
+        en: 'The council',
+        ja: '議会は',
+        grammar: 'The council がSです。',
+      }),
+      Object.freeze({
+        en: 'may nominate officials,',
+        ja: '職員を指名することができ',
+        grammar: 'may nominate がV、officials がOです。may はこのあとの述語にも係ります。',
+      }),
+      Object.freeze({
+        en: 'form a coalition',
+        ja: '連立を組み',
+        grammar: 'form が二つ目の述語Vで、a coalition がOです。',
+      }),
+      Object.freeze({
+        en: 'or',
+        ja: 'あるいは',
+        grammar: 'or が三つ目の選択肢をつなぎます。',
+      }),
+      Object.freeze({
+        en: 'ask a committee to study a difficult problem',
+        ja: '委員会に難しい問題を調べるよう依頼できます',
+        grammar: 'ask がV、a committee がO、to study 以下がその中身です。',
+      }),
+    ]),
+  }),
+
+  'Officials first need a map of current lighting, including ownership, energy use, brightness, direction, and hours of operation.': sentence({
+    groups: Object.freeze([
+      Object.freeze({
+        en: 'Officials',
+        ja: '行政担当者は',
+        grammar: 'Officials がSです。',
+      }),
+      Object.freeze({
+        en: 'first need',
+        ja: 'まず必要とします',
+        grammar: 'first がM、need がVです。',
+      }),
+      Object.freeze({
+        en: 'a map of current lighting,',
+        ja: '現在の照明の地図を',
+        grammar: 'a map がOで、of current lighting がその中身です。',
+      }),
+      Object.freeze({
+        en: 'including ownership energy use',
+        ja: '所有者やエネルギー使用量や',
+        grammar: 'including が a map の中身の列挙を始めます。',
+      }),
+      Object.freeze({
+        en: 'brightness direction',
+        ja: '明るさや向きや',
+        grammar: '列挙の続きです。',
+      }),
+      Object.freeze({
+        en: 'and hours of operation',
+        ja: 'そして点灯時間を含む',
+        grammar: 'and が列挙の最後をつなぎ、ここで「含む」と受け直します。',
+      }),
+    ]),
+  }),
+
+  // 22語がひとまとまりのままで、語順訳になっていなかった。
+  'Before that point they simply look like an ordinary addition to a long list that nobody has the time to read.': sentence({
+    'Before that point they simply look like an ordinary addition to a long list that nobody has the time to read': split(
+      item(
+        'その時点までは',
+        'Before that point は時を示す修飾Mです。',
+        { en: 'Before that point', role: 'M' },
+      ),
+      item(
+        'それらは単に〜のように見えるだけです',
+        'they がS、look like がVです。何に見えるのかは次へ渡します。',
+        { en: 'they simply look like', role: 'V' },
+      ),
+      item(
+        'ごく平凡な追加',
+        'an ordinary addition が look like の受け手Cです。',
+        { en: 'an ordinary addition', role: 'C' },
+      ),
+      item(
+        '長い目録への',
+        'to a long list は addition がどこへの追加かを示すMです。',
+        { en: 'to a long list', role: 'M' },
+      ),
+      item(
+        '誰も読む暇のない',
+        'that 以下は a long list を説明する関係詞節です。',
+        { en: 'that nobody has the time to read', role: 'M' },
+      ),
+    ),
+  }),
+
+  // 主語節と述語がひとまとまりのSになり、is がVとして見えなかった。
+  'What it changes is the list of things that a fair comparison between two individuals would have to hold constant.': sentence({
+    'What it changes is the list of things': split(
+      item(
+        'それが変えるのは',
+        'What it changes が主語Sになる名詞節です。',
+        { en: 'What it changes', role: 'S' },
+      ),
+      item(
+        '〜です（内容は次へ）',
+        'is がVです。何であるかは次のCで確かめます。',
+        { en: 'is', role: 'V' },
+      ),
+      item(
+        '事柄の一覧です',
+        'the list of things が主語の内容を説明するCです。',
+        { en: 'the list of things', role: 'C' },
+      ),
+    ),
+  }),
+
+  'Four short sentences of that kind will usually do more for public trust than four hundred pages of technical detail.': sentence({
+    groups: Object.freeze([
+      Object.freeze({
+        en: 'Four short sentences of that kind',
+        ja: 'その種の短い四つの文のほうが',
+        grammar: 'of that kind までが主語Sです。',
+      }),
+      Object.freeze({
+        en: 'will usually do more',
+        ja: 'たいてい多くをもたらします',
+        grammar: 'will do が述語Vで、usually が頻度M、more がOです。',
+      }),
+      Object.freeze({
+        en: 'for public trust than four hundred pages of technical detail',
+        ja: '公共の信頼のために、四百頁の技術的な詳細よりも',
+        grammar: '何のために、何と比べてかを示すMです。',
+      }),
+    ]),
+  }),
 })
 
 export function readingMeaningPhraseOverridesFor(sentenceEnglish) {
