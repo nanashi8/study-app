@@ -89,6 +89,14 @@ test('画面下部の同じ枠で、読み上げと出題バランスを切り�
   const quiz = read('../src/screens/VocabQuiz.jsx')
 
   assert.match(dock, /data-study-dock-tabs/)
+  // 切り替えは各パネルの見出し行の先頭に入れ、切り替えだけの段を作らない。
+  assert.match(dock, /export function SpeechConsole\(\{ state, onRateChange, leading = null \}\)/)
+  assert.match(mix, /export function VocabMixConsole\(\{ leading = null \} = \{\}\)/)
+  assert.equal((dock.match(/leading=\{tabs\}/g) ?? []).length, 2)
+  assert.doesNotMatch(dock, /grid grid-cols-2 gap-1 px-2 pt-1\.5/)
+  // 再生の6操作は残し、アイコンと名前を横に並べて押せる高さ44pxの1段に収める。
+  assert.match(dock, /flex min-h-11 min-w-0 items-center justify-center/)
+  assert.doesNotMatch(dock, /flex min-h-11 min-w-0 flex-col/)
   assert.match(dock, /読み上げ/)
   assert.match(dock, /出題バランス/)
   assert.match(dock, /vocabMixApplies\(screen, params\)/)

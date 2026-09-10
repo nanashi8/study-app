@@ -23,8 +23,9 @@ export function vocabMixApplies(screen, params = {}) {
 /**
  * 復習と未修（まだ学んでいない語）の配分を手で寄せるバー。
  * 読み上げ欄と同じ枠を分け合うので、見出し1行＋操作1行の高さにそろえる。
+ * leading には、読み上げとの切り替えが入る（そのときは見出しの名前を切り替えに任せる）。
  */
-export function VocabMixConsole() {
+export function VocabMixConsole({ leading = null } = {}) {
   const settings = useStore((store) => store.settings)
   const setSetting = useStore((store) => store.setSetting)
   const value = normalizeVocabMix(settings.vocabMix)
@@ -34,12 +35,14 @@ export function VocabMixConsole() {
     <section
       aria-label="出題バランスの調整"
       data-vocab-mix-console
-      className="flex h-full flex-col px-2 py-1.5"
+      className="flex h-full flex-col px-2 py-1"
     >
-      <div className="mb-1 flex min-w-0 items-center gap-1.5">
-        <span className="shrink-0 text-[9px] font-black tracking-[0.08em] text-brand-600">
-          出題バランス
-        </span>
+      <div className="mb-1 flex h-8 min-w-0 items-center gap-1.5">
+        {leading ?? (
+          <span className="shrink-0 text-[9px] font-black tracking-[0.08em] text-brand-600">
+            出題バランス
+          </span>
+        )}
         <p className="min-w-0 flex-1 truncate text-[11px] font-extrabold leading-tight text-ink">
           {step.label}
           <span className="ml-1 font-bold text-ink/45">
