@@ -39,6 +39,7 @@ import {
 import { normalizeVocabHistory } from './vocabHistory.js'
 import { normalizeDragonVeinProgress } from './dragonVein.js'
 import { normalizeLearningNotebook } from './learningNotebook.js'
+import { normalizeCustomWords } from './customWords.js'
 import { normalizeLearningAnalytics } from './learningAnalytics.js'
 import { normalizeContentQuizResults } from './contentProgress.js'
 
@@ -69,6 +70,8 @@ export function progressStateFromCloud(data = {}, current = useStore.getState())
     kanbunCultureSrs: data.kanbunCultureSrs ?? {},
     kanbunKundokuSrs: data.kanbunKundokuSrs ?? {},
     myList: data.myList ?? [],
+    // 古いクラウド保存にこの項目が無い場合、端末で作った自作単語を消さない。
+    customWords: normalizeCustomWords(data.customWords ?? current.customWords),
     vocabHistory: normalizeVocabHistory(data.vocabHistory ?? current.vocabHistory),
     myGrammarList: data.myGrammarList ?? [],
     // 古いクラウド保存にこの項目が無い場合、端末側で作ったノートを消さない。

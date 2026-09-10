@@ -250,13 +250,18 @@ export function automaticVocabSessionPlan(
     day = todayIndex(),
     size = SESSION_SIZE,
     purpose = 'study',
+    freshShareOverride = null,
   } = {},
 ) {
+  // 学習者が下部のバーで割合を指定した日は、その割合をそのまま使う。
+  const manualShare = Number.isFinite(freshShareOverride)
+    ? Math.min(1, Math.max(0, freshShareOverride))
+    : null
   const targetSize = Math.min(size, pool.length)
   if (!targetSize) {
     return {
-      profile: 'expansion',
-      freshShare: AUTOMATIC_VOCAB_MIX_PROFILES.expansion.freshShare,
+      profile: manualShare === null ? 'expansion' : 'manual',
+      freshShare: manualShare ?? AUTOMATIC_VOCAB_MIX_PROFILES.expansion.freshShare,
       targetSize: 0,
       reviewCount: 0,
       varietyCount: 0,
@@ -276,16 +281,21 @@ export function automaticVocabSessionPlan(
   )
   const reliableRecentRate = recent.attempts >= 4
   const duePressure = buckets.due.length / targetSize
-  const profile = (
+  const autoProfile = (
     duePressure >= 1.5 || (reliableRecentRate && recent.failureRate >= 0.5)
   )
     ? 'support'
     : duePressure >= 0.5 || (reliableRecentRate && recent.failureRate >= 0.25)
       ? 'balanced'
       : 'expansion'
-  const freshShare = AUTOMATIC_VOCAB_MIX_PROFILES[profile].freshShare
+  const profile = manualShare === null ? autoProfile : 'manual'
+  const freshShare = manualShare ?? AUTOMATIC_VOCAB_MIX_PROFILES[autoProfile].freshShare
+  // 自動配分は「新しい語を必ず1語は混ぜる」。手動指定のときは指定した割合を優先し、
+  // 「復習だけ」「未修だけ」と言われたらそのとおりに寄せる。
   const desiredVarietyCount = buckets.review.length
-    ? Math.max(1, Math.round(targetSize * freshShare))
+    ? (manualShare === null
+        ? Math.max(1, Math.round(targetSize * freshShare))
+        : Math.round(targetSize * freshShare))
     : targetSize
   let varietyCount = Math.min(buckets.variety.length, desiredVarietyCount)
   let reviewCount = Math.min(buckets.review.length, targetSize - varietyCount)
@@ -320,9 +330,19 @@ function unseenFirst(items, cycleIds) {
   ]
 }
 
-function balancedAutomaticDeck(pool, srs, day, size, purpose, completedIds = []) {
+function balancedAutomaticDeck(
+  pool,
+  srs,
+  day,
+  size,
+  purpose,
+  completedIds = [],
+  freshShareOverride = null,
+) {
   const buckets = automaticVocabularyBuckets(pool, srs, day, purpose)
-  const plan = automaticVocabSessionPlan(pool, { srs, day, size, purpose })
+  const plan = automaticVocabSessionPlan(pool, {
+    srs, day, size, purpose, freshShareOverride,
+  })
   const cycleIds = new Set(Array.isArray(completedIds) ? completedIds : [])
   const orderedReview = unseenFirst(buckets.review, cycleIds)
   const availableVariety = cycleIds.size
@@ -355,6 +375,7 @@ export function buildDeck(
     purpose = 'study',
     excludeIds = [],
     cycleIds = [],
+    freshShareOverride = null,
     now = Date.now(),
     day = todayIndex(now),
   } = {},
@@ -411,7 +432,9 @@ export function buildDeck(
     })
   }
   if (size && isAutomaticVocabularySource(source)) {
-    pool = balancedAutomaticDeck(pool, srs, day, size, purpose, cycleIds)
+    pool = balancedAutomaticDeck(
+      pool, srs, day, size, purpose, cycleIds, freshShareOverride,
+    )
   }
   return size ? pool.slice(0, size) : pool
 }

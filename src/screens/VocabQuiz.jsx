@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import { buildDeck, growDeck } from '../lib/session.js'
+import { vocabMixFreshShare } from '../lib/vocabMix.js'
 import {
   etymologyCardsForWord,
   etymologyStoryForWord,
@@ -105,6 +106,8 @@ export function VocabQuizScreen() {
     size,
     purpose: 'quiz',
     cycleIds: params.vocabCycleIds,
+    // 出題バランスのバーは、次に組む出題から効かせる（解答中の並びは動かさない）。
+    freshShareOverride: vocabMixFreshShare(useStore.getState().settings.vocabMix),
   })
   const [poolSize] = useState(() => buildFor(0).length)
   const sessionSize = useSessionSize(poolSize || Infinity)

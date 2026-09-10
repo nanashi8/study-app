@@ -6,6 +6,15 @@ import {
   selectProgressState,
 } from '../lib/progressCode.js'
 import { battleProgression, clampPos } from '../lib/adaptive.js'
+import { VOCAB_MIX_DEFAULT, normalizeVocabMix } from '../lib/vocabMix.js'
+import {
+  customStudyWords,
+  mergeCustomWords,
+  normalizeCustomWords,
+  removeCustomWord,
+  upsertCustomWord,
+} from '../lib/customWords.js'
+import { registerCustomWords } from '../data/vocab.js'
 import { getGrammarStrand, grammarStrandLevels } from '../data/grammar-strands.js'
 import {
   clampStrandPos,
@@ -71,6 +80,7 @@ import {
   createLearningNotebook,
   createNotebookSet as createNotebookSetState,
   deleteNotebookSet as deleteNotebookSetState,
+  forgetNotebookItem,
   moveNotebookSetItem as moveNotebookSetItemState,
   normalizeLearningNotebook,
   recordNotebookSetLaunch as recordNotebookSetLaunchState,
@@ -170,16 +180,19 @@ const DEFAULT_SETTINGS = {
   sessionSize: 10, // 1回の暗記・テストで出す問題数（進捗表示のタップで変更）
   revealAnswers: false, // 暗記/復習/マイ単語で、タップせず最初から意味・語源を表示する
   autoAdvanceCorrect: true, // テストで正解したら、短い確認時間の後に次の問題へ進む
+  vocabMix: VOCAB_MIX_DEFAULT, // 単語の通常セッションで復習と未修をどちらへ寄せるか
 }
 
 export function normalizeSettings(settings) {
   const source = settings && typeof settings === 'object' ? settings : {}
-  return Object.fromEntries(
+  const normalized = Object.fromEntries(
     Object.entries(DEFAULT_SETTINGS).map(([key, fallback]) => [
       key,
       Object.hasOwn(source, key) ? source[key] : fallback,
     ]),
   )
+  normalized.vocabMix = normalizeVocabMix(normalized.vocabMix)
+  return normalized
 }
 
 function returnNavigationState(st, screen, params = {}) {
@@ -209,6 +222,7 @@ export const createInitialLearningState = () => ({
   kanbunCultureSrs: {}, // 漢文常識の itemId -> { box, ... }
   kanbunKundokuSrs: {}, // 返り点・訓読ドリルの exerciseId -> { box, ... }
   myList: [], // [wordId]
+  customWords: [], // 自作単語（辞書に無い語を自分で登録したもの）
   vocabHistory: [], // 最近検索・参照・マイ単語登録した英単語ID（新しい順）
   myGrammarList: [], // [writingGrammarId] 英作文で保存した文法カード
   learningNotebook: createLearningNotebook(), // 8分野のメモ・タグ・自作問題集
@@ -411,6 +425,7 @@ export function migratePersistedState(persistedState) {
   state.portalHidden = normalizeHidden(state.portalHidden)
   state.vocabHistory = normalizeVocabHistory(state.vocabHistory)
   state.learningNotebook = normalizeLearningNotebook(state.learningNotebook)
+  state.customWords = normalizeCustomWords(state.customWords)
   state.learningAnalytics = normalizeLearningAnalytics(state.learningAnalytics)
   state.contentQuizResults = normalizeContentQuizResults(state.contentQuizResults)
   state.stats = { ...freshStats(), ...normalizeLegacyStats(state.stats) }
@@ -466,6 +481,7 @@ export function progressStateFromPayload(payload = {}) {
     kanbunCultureSrs: payload.kanbunCultureSrs ?? {},
     kanbunKundokuSrs: payload.kanbunKundokuSrs ?? {},
     myList: payload.myList ?? [],
+    customWords: normalizeCustomWords(payload.customWords),
     vocabHistory: normalizeVocabHistory(payload.vocabHistory),
     myGrammarList: payload.myGrammarList ?? [],
     learningNotebook: normalizeLearningNotebook(payload.learningNotebook),
@@ -929,6 +945,42 @@ export const useStore = create(
             vocabHistory: prependVocabHistory(st.vocabHistory, added),
           }
         }),
+
+      // ── 自作単語 ──
+      // 保存は一覧まるごとの入れ替えで行う。辞書側の引き当て表は
+      // ストアの購読（下部）で更新するので、ここでは持ち物だけを更新する。
+      saveCustomWord: (input) => {
+        let result = { id: null, status: 'invalid' }
+        set((st) => {
+          const next = upsertCustomWord(st.customWords, input)
+          result = { id: next.id, status: next.status }
+          return next.status === 'saved' ? { customWords: next.words } : {}
+        })
+        return result
+      },
+
+      deleteCustomWord: (id) =>
+        set((st) => ({
+          customWords: removeCustomWord(st.customWords, id),
+          // 消した語は、マイ単語・単語帳・辞書履歴からも一緒に外す。
+          myList: st.myList.filter((wordId) => wordId !== id),
+          vocabHistory: st.vocabHistory.filter((wordId) => wordId !== id),
+          learningNotebook: forgetNotebookItem(st.learningNotebook, 'vocab', id),
+        })),
+
+      importCustomWords: (words, mode = 'merge') => {
+        let result = { addedCount: 0, updatedCount: 0, skippedCount: 0 }
+        set((st) => {
+          const merged = mergeCustomWords(st.customWords, words, { mode })
+          result = {
+            addedCount: merged.addedCount,
+            updatedCount: merged.updatedCount,
+            skippedCount: merged.skippedCount,
+          }
+          return { customWords: merged.words }
+        })
+        return result
+      },
 
       toggleMyGrammar: (grammarId) =>
         set((st) => ({
@@ -1583,6 +1635,14 @@ export const useStore = create(
     },
   ),
 )
+
+// 自作単語は辞書と同じ ID 引き当て（getWord）で扱う。保存の読み戻し・追加・
+// 削除のたびに辞書側の引き当て表を作り直し、画面ごとの受け渡しを不要にする。
+const syncCustomWordRegistry = (words) => registerCustomWords(customStudyWords(words))
+syncCustomWordRegistry(useStore.getState().customWords)
+useStore.subscribe((state, previous) => {
+  if (state.customWords !== previous?.customWords) syncCustomWordRegistry(state.customWords)
+})
 
 // ── 画面から使う派生セレクタ（フックではない純関数） ──
 export const isDue = (entry, day = today()) => !entry || entry.due <= day

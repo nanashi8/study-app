@@ -3,6 +3,7 @@ import { useStore } from '../store/useStore.js'
 import { etymologyCardsForWord, etymologyStoryForWord } from '../data/vocab.js'
 import { getLevel } from '../data/levels.js'
 import { buildDeck, growDeck, recordStudyAnswer } from '../lib/session.js'
+import { vocabMixFreshShare } from '../lib/vocabMix.js'
 import { phraseGroupsForWord } from '../lib/wordPhrases.js'
 import { playSpeechItems } from '../lib/speech-player.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
@@ -10,10 +11,11 @@ import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
 import { EtymologyBlock } from '../components/WordBits.jsx'
 import { OtherSenses, PosBadge } from '../components/WordBits.jsx'
 import { Button, Chip, IconButton } from '../components/ui.jsx'
-import { Close, ArrowRight, Lightbulb } from '../components/Icons.jsx'
+import { Cards, Close, ArrowRight, Lightbulb } from '../components/Icons.jsx'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 import { VocabReviewHistory } from '../components/VocabReviewHistory.jsx'
 import { CardSaveToggle, CardStudyFooter, CardSwipeRegion } from '../components/CardStudyControls.jsx'
+import { WordListSheet } from '../components/WordListSheet.jsx'
 import {
   nextUnansweredSessionIndex,
   QuestionSessionControls,
@@ -71,6 +73,8 @@ export function VocabStudyScreen() {
       size,
       purpose: 'study',
       cycleIds: params.vocabCycleIds,
+      // 出題バランスのバーは、次に組む出題から効かせる（学習中の並びは動かさない）。
+      freshShareOverride: vocabMixFreshShare(useStore.getState().settings.vocabMix),
     })
   const [poolSize] = useState(() => buildFor(0).length)
   const sessionSize = useSessionSize(poolSize || Infinity)
@@ -79,6 +83,7 @@ export function VocabStudyScreen() {
   ))
   const [i, setI] = useState(restore?.i ?? 0)
   const [flipped, setFlipped] = useState(restore?.flipped ?? revealAll)
+  const [listSheetOpen, setListSheetOpen] = useState(false)
   const {
     value: recordedAnswer,
     setValue: setRecordedAnswer,
@@ -302,6 +307,16 @@ export function VocabStudyScreen() {
               unsavedLabel={`${word.word}をマイ単語に追加`}
               data-vocab-my-list-toggle
             />
+            <button
+              type="button"
+              onClick={() => setListSheetOpen(true)}
+              aria-label={`${word.word}を入れるマイ単語帳を選ぶ`}
+              data-vocab-word-list-button
+              className="inline-flex min-h-11 min-w-[3.25rem] shrink-0 flex-col items-center justify-center gap-0 rounded-xl bg-slate-100 px-1 text-[10px] font-extrabold text-ink/60 ring-1 ring-slate-200"
+            >
+              <Cards size={17} />
+              <span>単語帳</span>
+            </button>
           </>
         )}
       />
@@ -456,6 +471,13 @@ export function VocabStudyScreen() {
           </div>
         )}
       </CardStudyFooter>
+
+      <WordListSheet
+        open={listSheetOpen}
+        onClose={() => setListSheetOpen(false)}
+        wordId={word.id}
+        wordLabel={word.word}
+      />
     </div>
   )
 }

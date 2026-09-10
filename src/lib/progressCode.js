@@ -61,6 +61,7 @@ export const PERSISTED_PROGRESS_FIELDS = Object.freeze([
   'kanbunCultureSrs',
   'kanbunKundokuSrs',
   'myList',
+  'customWords',
   'vocabHistory',
   'myGrammarList',
   'learningNotebook',
