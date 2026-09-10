@@ -485,6 +485,113 @@ export const READING_MEANING_PHRASE_OVERRIDES = Object.freeze({
       'to avoidとor exploitはtoを共有する並列不定詞で、共通目的語the original designまでを一息で読みます。',
     ),
   }),
+
+  // 等位の動詞句が2つ目のOとして吸収され、片方の訳が消えたり語順が崩れたりしていた。
+  // 「V1 O1, V2 O2」は述語が並んだ形なので、まとまりも述語ごとに分ける。
+  'Modern lighting has extended working hours, made travel easier, and allowed public spaces to remain active after sunset.': sentence({
+    groups: Object.freeze([
+      Object.freeze({
+        en: 'Modern lighting',
+        ja: '現代の照明は',
+        grammar: 'Modern lighting がSです。',
+      }),
+      Object.freeze({
+        en: 'has extended working hours,',
+        ja: '労働時間を延ばし',
+        grammar: 'has extended がV、working hours がOです。同じ主語の述語がこのあと二つ続きます。',
+      }),
+      Object.freeze({
+        en: 'made travel easier',
+        ja: '移動を容易にし',
+        grammar: 'made がV、travel がO、easier がCです。has extended と並ぶ二つ目の述語で、Oではありません。',
+      }),
+      Object.freeze({
+        en: 'and allowed public spaces',
+        ja: 'そして公共空間ができるようにしました',
+        grammar: 'and が三つ目の述語をつなぎ、allowed がV、public spaces がOです。',
+      }),
+      Object.freeze({
+        en: 'to remain active after sunset',
+        ja: '日没後も活用され続ける',
+        grammar: 'public spaces がどうなることを許したのかを示す部分です。',
+      }),
+    ]),
+  }),
+
+  'Review dates force institutions to restate the goal, publish results, examine unequal effects, and consider less intrusive alternatives.': sentence({
+    groups: Object.freeze([
+      Object.freeze({
+        en: 'Review dates',
+        ja: '見直し日は',
+        grammar: 'Review dates がSです。',
+      }),
+      Object.freeze({
+        en: 'force institutions',
+        ja: '機関に求めます',
+        grammar: 'force がV、institutions がOです。求める中身はこのあとに並びます。',
+      }),
+      Object.freeze({
+        en: 'to restate',
+        ja: '言い直すように',
+        grammar: '機関に求める行為の一つ目です。',
+      }),
+      Object.freeze({
+        en: 'the goal,',
+        ja: '目標を',
+        grammar: 'restate のOです。',
+      }),
+      Object.freeze({
+        en: 'publish results,',
+        ja: '結果を公表し',
+        grammar: 'publish がV、results がOです。restate と並ぶ二つ目の行為です。',
+      }),
+      Object.freeze({
+        en: 'examine unequal effects',
+        ja: '不平等な影響を調べ',
+        grammar: 'examine がV、unequal effects がOです。publish のOではなく三つ目の行為です。',
+      }),
+      Object.freeze({
+        en: 'and consider less intrusive alternatives',
+        ja: 'そしてより干渉の少ない代案を検討するように',
+        grammar: 'and が四つ目の行為をつなぎます。',
+      }),
+    ]),
+  }),
+
+  'A responsible design pursues a legitimate goal, preserves a real exit, examines distribution, limits data, and remains open to revision.': sentence({
+    groups: Object.freeze([
+      Object.freeze({
+        en: 'A responsible design',
+        ja: '責任ある設計は',
+        grammar: 'A responsible design がSです。',
+      }),
+      Object.freeze({
+        en: 'pursues a legitimate goal,',
+        ja: '正当な目標を追求します',
+        grammar: 'pursues がV、a legitimate goal がOです。',
+      }),
+      Object.freeze({
+        en: 'preserves a real exit,',
+        ja: '実質的な退出手段を保ちます',
+        grammar: 'preserves がV、a real exit がOです。二つ目の述語です。',
+      }),
+      Object.freeze({
+        en: 'examines distribution,',
+        ja: '配分を検討し',
+        grammar: 'examines がV、distribution がOです。三つ目の述語です。',
+      }),
+      Object.freeze({
+        en: 'limits data',
+        ja: 'データを制限し',
+        grammar: 'limits がV、data がOです。examines のOではなく四つ目の述語です。',
+      }),
+      Object.freeze({
+        en: 'and remains open to revision',
+        ja: 'そして見直しに開かれ続けます',
+        grammar: 'and が五つ目の述語をつなぎ、remains がV、open to revision がCです。',
+      }),
+    ]),
+  }),
 })
 
 export function readingMeaningPhraseOverridesFor(sentenceEnglish) {

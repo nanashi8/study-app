@@ -68,8 +68,8 @@ test('全38長文・全990文の最上段英文へSVOCM等の役割を欠落な�
 
   assert.equal(PASSAGES.length, 38)
   assert.equal(sentenceCount, 990)
-  assert.equal(roleSegmentCount, 7440)
-  assert.equal(renderedRoleSegmentCount, 7440)
+  assert.equal(roleSegmentCount, 7443)
+  assert.equal(renderedRoleSegmentCount, 7443)
   assert.deepEqual(impliedSubjects, [{
     passageId: 'p_5_school_open_day',
     sentenceIndex: 5,

@@ -174,9 +174,9 @@ test('全長文・全文・全ブロックに講師監修の語順訳シナリ�
   assert.equal(PASSAGES.length, 38, '全38長文を対象にする')
   assert.equal(sentenceCount, 990, '全990文を対象にする')
   assert.equal(blockCount, 2420, '全2,415文法ブロックを対象にする')
-  assert.equal(phrasePairCount, 6877, '全6,869ブロック内役割単位を英語フレーズと直訳の組にする')
-  assert.equal(meaningPhraseCount, 5025, '全5,020件の学習者向け意味フレーズを対象にする')
-  assert.equal(meaningMultiRoleCount, 1936, 'SVOCMを内部に複数含む1,934件も一つの意味フレーズとして保つ')
+  assert.equal(phrasePairCount, 6880, '全6,869ブロック内役割単位を英語フレーズと直訳の組にする')
+  assert.equal(meaningPhraseCount, 5028, '全5,020件の学習者向け意味フレーズを対象にする')
+  assert.equal(meaningMultiRoleCount, 1939, 'SVOCMを内部に複数含む1,937件も一つの意味フレーズとして保つ')
 })
 
 test('基準例は英語の語順どおり、動作・行き先・手段・時を丁寧に読める', () => {
@@ -348,7 +348,7 @@ test('長文990文は上段と文法解説で同一説明を二重表示しな�
     }
   }
   assert.equal(sentenceCount, 990)
-  assert.equal(phraseCount, 5025)
+  assert.equal(phraseCount, 5028)
 })
 
 test('長文2420ブロックは読解手順と文法説明を役割分担し、意味の重複も抑える', () => {

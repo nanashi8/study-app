@@ -73,6 +73,25 @@ const BASE_READING_PHRASE_CORRECTIONS = Object.freeze({
       { role: 'O', en: 'letters', ja: '手紙を集めました' },
     ], '目的語の並びの最後に述語を置きます。前のブロックは「〜や」で次へ続きます。'),
   ]),
+  // 等位の二つ目の述語が、一つ目の動詞の目的語Oとして取り込まれていた。
+  'Modern lighting has extended working hours, made travel easier, and allowed public spaces to remain active after sunset.': Object.freeze([
+    correction(['made travel easier'], [
+      { role: 'V', en: 'made', ja: '〜にし' },
+      { role: 'O', en: 'travel', ja: '移動を' },
+      { role: 'C', en: 'easier', ja: 'より容易な状態に' },
+    ], 'made は has extended と並ぶ二つ目の述語Vで、travel がO、easier がCです。has extended のOではありません。'),
+  ]),
+  'Review dates force institutions to restate the goal, publish results, examine unequal effects, and consider less intrusive alternatives.': Object.freeze([
+    correction(['examine unequal effects'], [
+      { role: 'V', en: 'examine', ja: '調べ' },
+      { role: 'O', en: 'unequal effects', ja: '不平等な影響を' },
+    ], 'examine は publish と並ぶ三つ目の行為Vで、unequal effects がOです。publish のOではありません。'),
+  ]),
+  'A responsible design pursues a legitimate goal, preserves a real exit, examines distribution, limits data, and remains open to revision.': Object.freeze([
+    correction(['limits'], [
+      { role: 'V', en: 'limits', ja: '制限し' },
+    ], 'limits は examines と並ぶ四つ目の述語Vです。examines のOではありません。'),
+  ]),
   'This month, the topic is local history.': Object.freeze([
     correction(['This month'], [
       { role: 'M', en: 'This month', ja: '今月は' },
