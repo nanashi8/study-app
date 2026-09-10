@@ -190,6 +190,29 @@ function japaneseForMeaningGroup(items) {
 
   if (signature === 'LINK+LINK') return joinJapanese(bases)
 
+  // 助動詞は主動詞と離れていても一緒に述語Vを作る。焦点副詞の訂正台帳
+  // （reading-focus-role-corrections.js）は may / also / save を語ごとに分けて持ち、
+  // 助動詞側の日本語は「可能性を表し（動作は次へ）」のような、次へ渡す断片になっている。
+  // そのまま英語順で連結すると「可能性を表しさらに節約できますお金を」と読めない訳になるので、
+  // 助動詞の断片を捨て、日本語の語順（副詞→目的語→述語）へ並べ直す。
+  if (
+    /^V\+M\+V(?:\+(?:O|O1|O2|C))*$/.test(signature) &&
+    japaneseHasParenthetical(items[0].ja)
+  ) {
+    const [, adverbItem, verbItem, ...argumentItems] = items
+    const adverbJa = cleanJapaneseBase(adverbItem.ja)
+    const argumentsJa = japaneseList(
+      argumentItems,
+      argumentItems.map((item) => cleanJapaneseBase(item.ja)),
+    )
+    const verbJa = cleanJapaneseBase(verbItem.ja)
+    // 「さえ」「も」のように直前の語へ後接する副詞は、目的語の後ろへ置く。
+    const bound = /^(?:さえ|も|すら|だけ|しか|ばかり)$/u.test(adverbJa)
+    return joinJapanese(bound
+      ? [argumentsJa, adverbJa, verbJa]
+      : [adverbJa, argumentsJa, verbJa])
+  }
+
   if (/^S(?:\+M)*\+V$/.test(signature)) {
     const last = finalItem.closureBinding ? finalItem.ja : bases.at(-1)
     const subject = bases[0]

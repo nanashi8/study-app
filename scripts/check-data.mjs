@@ -964,6 +964,16 @@ for (const ps of PASSAGES) {
       }
     }
     const analysis = analyzeReadingSentence(s)
+    // 語順訳の日本語に、文法説明の断片がそのまま残っていないか。
+    // 助動詞や be動詞の語注は「可能性を表し（動作は次へ）」のように次へ渡す形で書くので、
+    // ブロックへ連結するときに括弧を落とすと「可能性を表しさらに節約できますお金を」になる。
+    for (const phrase of analysis.meaningPhraseSequence) {
+      if (/(?:可能性|これからのこと|状態|変化|動作)を表し(?![（(])/u.test(phrase.ja)) {
+        errors.push(
+          `長文 ${ps.id}: 第${sentenceIndex + 1}文の語順訳に語注の断片が残っている (${phrase.ja})`,
+        )
+      }
+    }
     readingPhraseSequenceCount += analysis.phraseSequence.length
     readingMeaningPhraseCount += analysis.meaningPhraseSequence.length
     readingMeaningMultiRoleCount += analysis.meaningPhraseSequence
