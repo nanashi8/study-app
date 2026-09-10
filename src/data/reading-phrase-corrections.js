@@ -65,6 +65,14 @@ const BASE_READING_PHRASE_CORRECTIONS = Object.freeze({
       { role: 'V', en: 'make', ja: '作ることができます' },
     ], 'make は can を共有する二つ目の本動詞Vです。'),
   ]),
+  // 目的語の並びが次のブロックへ続くと、述語 collected の訳が
+  // どのブロックにも現れず、語順訳に動詞が一度も出てこなかった。
+  'They collected old photographs, order books and letters from families.': Object.freeze([
+    correction(['and letters'], [
+      { role: 'LINK', en: 'and', ja: 'そして' },
+      { role: 'O', en: 'letters', ja: '手紙を集めました' },
+    ], '目的語の並びの最後に述語を置きます。前のブロックは「〜や」で次へ続きます。'),
+  ]),
   'This month, the topic is local history.': Object.freeze([
     correction(['This month'], [
       { role: 'M', en: 'This month', ja: '今月は' },
