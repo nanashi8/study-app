@@ -4,7 +4,7 @@ import {
   getKotenGrammar,
   KOTEN_GRAMMAR_CATEGORIES,
 } from '../data/koten-grammar.js'
-import { Button, Chip, IconButton } from '../components/ui.jsx'
+import { Button, Chip } from '../components/ui.jsx'
 import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 import { CardSaveToggle, CardStudyFooter, CardSwipeRegion } from '../components/CardStudyControls.jsx'
@@ -16,7 +16,6 @@ import {
 } from '../components/QuestionSessionControls.jsx'
 import {
   ArrowRight,
-  Close,
   Lightbulb,
 } from '../components/Icons.jsx'
 
@@ -135,15 +134,6 @@ export function KotenGrammarStudyScreen() {
         nextDisabled={index + 1 >= deck.length}
         itemLabel="カード"
         progressColor="#d97706"
-        leadingAction={(
-          <IconButton
-            onClick={backToKotenGrammar}
-            aria-label="学習をやめる"
-            className="shrink-0 rounded-xl text-ink/45"
-          >
-            <Close size={19} />
-          </IconButton>
-        )}
         progressControl={(
           <SessionCounter
             index={index}

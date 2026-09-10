@@ -210,5 +210,7 @@ test('自作単語の画面は登録・編集・削除とファイルの出し�
   assert.match(screen, /toggleMyList/)
   assert.match(screen, /<WordListSheet/)
   assert.match(screen, /navigate\(screen, \{/)
-  assert.match(screen, /source: \{ type: 'mylist', ids: ids\.slice\(0, SESSION_LIMIT\) \}/)
+  // 枚数は「1回のカード数」に任せ、画面側で頭打ちにしない。
+  assert.match(screen, /source: \{ type: 'mylist', ids \}/)
+  assert.doesNotMatch(screen, /SESSION_LIMIT/)
 })

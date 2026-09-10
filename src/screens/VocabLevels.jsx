@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import { LEVELS } from '../data/levels.js'
 import { ALL_WORDS, VOCAB_FIELDS, wordsByLevel } from '../data/vocab.js'
@@ -11,8 +12,9 @@ import {
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { Chip, IconButton } from '../components/ui.jsx'
 import { LearningEntryCard } from '../components/LearningEntryCard.jsx'
+import { WordBookStudySheet } from '../components/WordListSheet.jsx'
 import { summarizeVocabularySrsItems } from '../lib/vocabScheduler.js'
-import { Refresh, Bookmark, Search, Lightbulb, ArrowRight, Sparkles, Check, Link } from '../components/Icons.jsx'
+import { Refresh, Search, Lightbulb, ArrowRight, Sparkles, Check, Link, Cards } from '../components/Icons.jsx'
 
 // 下の級（前提）が弱点なら「先に固めよう」と案内するバナー。
 function WeakFoundationBanner({ srs, onReview }) {
@@ -46,6 +48,12 @@ function WeakFoundationBanner({ srs, onReview }) {
 function LevelCard({ level, srs, onStudy, onQuiz, onFields, onCatalog }) {
   const p = levelProgress(level.id, srs)
   const status = summarizeVocabularySrsItems(wordsByLevel(level.id), srs)
+  // 読み上げ名も同じ注記から作り、見えている案内と食い違わせない。
+  const note = p.due > 0
+    ? `復習が必要 ${p.due}語`
+    : p.ready > 0
+      ? `次に学ぶ ${p.ready}語`
+      : '今日の分は完了・くり返し練習できます'
   return (
     <LearningEntryCard
       emoji={level.emoji}
@@ -56,18 +64,12 @@ function LevelCard({ level, srs, onStudy, onQuiz, onFields, onCatalog }) {
       countLabel={`全${p.total}語`}
       status={status}
       units={{ learning: '語', quiz: '問' }}
-      note={p.due > 0
-        ? `復習が必要 ${p.due}語`
-        : p.ready > 0
-          ? `次に学ぶ ${p.ready}語`
-          : '次の復習日まで待つ'}
+      note={note}
       noteTone={p.due > 0 ? 'alert' : 'muted'}
       noteProps={{ 'data-vocab-study-ready': p.ready }}
-      studyLabel={p.ready ? '暗記' : '次回待ち'}
-      studyDisabled={!p.ready}
-      studyAriaLabel={p.ready
-        ? `英検${level.label}の単語を暗記。復習または未学習 ${p.ready}語`
-        : `英検${level.label}は次の復習日まで待つ`}
+      // 今日の候補を学び終えても暗記は止めない。次の復習日を待たずにくり返せる。
+      studyDisabled={!p.total}
+      studyAriaLabel={`英検${level.label}の単語を暗記。${note}`}
       onStudy={onStudy}
       quizDisabled={!p.total}
       quizAriaLabel={`英検${level.label}の単語テスト`}
@@ -115,6 +117,10 @@ export function VocabLevelsScreen() {
   const navigate = useStore((s) => s.navigate)
   const srs = useStore((s) => s.srs)
   const myList = useStore((s) => s.myList)
+  const wordBookSets = useStore((s) => s.learningNotebook.sets)
+  const [wordBookSheetOpen, setWordBookSheetOpen] = useState(false)
+  // マイ単語（いつもの1冊）＋名前をつけた単語帳の冊数。
+  const wordBookCount = 1 + wordBookSets.length
   const prog = overallProgress(srs)
   const reviewState = reviewActionState(prog)
   const reviewComplete = reviewState === 'complete'
@@ -160,7 +166,7 @@ export function VocabLevelsScreen() {
           }
         />
 
-        {/* 復習・マイ単語のショートカット */}
+        {/* 復習・単語帳のショートカット */}
         <div className="grid grid-cols-2 gap-3">
           <button
             disabled={!canReview}
@@ -192,21 +198,29 @@ export function VocabLevelsScreen() {
               </div>
             </div>
           </button>
+          {/* マイ単語を含む単語帳を選び、その冊で暗記・テストを始める。 */}
           <button
-            disabled={!myList.length}
-            onClick={() =>
-              navigate('vocabStudy', { source: { type: 'mylist', ids: myList }, title: 'マイ単語', mode: 'study', returnTo: { screen: 'vocabLevels' } })
-            }
-            className="flex items-center gap-2 rounded-2xl bg-brand-100 p-3 text-left active:scale-[0.98] transition-transform disabled:opacity-50"
+            type="button"
+            onClick={() => setWordBookSheetOpen(true)}
+            aria-haspopup="dialog"
+            data-vocab-word-books-shortcut
+            className="flex items-center gap-2 rounded-2xl bg-brand-100 p-3 text-left active:scale-[0.98] transition-transform"
           >
             <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-200 text-brand-600">
-              <Bookmark size={20} />
+              <Cards size={20} />
             </span>
             <div>
-              <div className="text-sm font-extrabold text-brand-800">マイ単語</div>
-              <div className="text-[11px] font-bold text-brand-700/70">{myList.length}語</div>
+              <div className="text-sm font-extrabold text-brand-800">単語帳</div>
+              <div className="text-[11px] font-bold text-brand-700/70">
+                {wordBookCount}冊・マイ単語{myList.length}語
+              </div>
             </div>
           </button>
+          <WordBookStudySheet
+            open={wordBookSheetOpen}
+            onClose={() => setWordBookSheetOpen(false)}
+            returnTo={{ screen: 'vocabLevels' }}
+          />
         </div>
 
         <FieldChooser onChoose={() => navigate('vocabGroups')} />

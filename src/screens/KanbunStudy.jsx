@@ -7,7 +7,7 @@ import {
   shuffleKanbun,
 } from '../data/kanbun-content.js'
 import { KANBUN_LEVEL_BY_ID } from '../data/kanbun-meta.js'
-import { Button, Chip, IconButton } from '../components/ui.jsx'
+import { Button, Chip } from '../components/ui.jsx'
 import { KanbunText, KanbunHeadword } from '../components/KanbunFurigana.jsx'
 import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
@@ -20,7 +20,6 @@ import {
 } from '../components/QuestionSessionControls.jsx'
 import {
   ArrowRight,
-  Close,
   Lightbulb,
 } from '../components/Icons.jsx'
 
@@ -183,15 +182,6 @@ export function KanbunStudyScreen() {
         nextDisabled={index + 1 >= deck.length}
         itemLabel="カード"
         progressColor="#be123c"
-        leadingAction={(
-          <IconButton
-            onClick={backToKanbunCatalog}
-            aria-label="学習をやめる"
-            className="shrink-0 rounded-xl text-ink/45"
-          >
-            <Close size={19} />
-          </IconButton>
-        )}
         progressControl={(
           <SessionCounter
             index={index}

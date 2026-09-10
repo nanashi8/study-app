@@ -1,11 +1,10 @@
 import { useMemo, useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import { getKoten, pickKotenDistractors } from '../data/koten.js'
-import { Button, IconButton } from '../components/ui.jsx'
+import { Button } from '../components/ui.jsx'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
 import { KotenText, KotenWord } from '../components/KotenFurigana.jsx'
-import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import {
   Bookmark,
   BookmarkFilled,
@@ -146,31 +145,6 @@ export function KotenQuizScreen() {
 
   return (
     <div className="flex h-full flex-col">
-      {/* 進捗 */}
-      <div className="flex items-center gap-3 px-3 py-3">
-        <IconButton onClick={back} aria-label="やめる">
-          <Close size={22} />
-        </IconButton>
-        <span className="min-w-0 flex-1" aria-hidden="true" />
-        <SpeechSettingsButton compact />
-        <SessionCounter
-          index={i}
-          total={deck.length}
-          max={poolSize}
-          onResize={(size, { discard }) => {
-            if (discard) {
-              setDeck(buildQuizDeck(params.ids, seed + 1, size))
-              setI(0)
-              clearSelections()
-              setCorrectCount(0)
-              setDone(false)
-            } else {
-              setDeck((current) => growDeck(current, i + 1, buildQuizDeck(params.ids, seed + 1, size), size))
-            }
-          }}
-        />
-      </div>
-
       <QuestionSessionControls
         index={i}
         total={deck.length}
@@ -180,6 +154,25 @@ export function KotenQuizScreen() {
         showAutoAdvance
         autoAdvanceSignal={isCorrectPick ? autoAdvanceSignal : null}
         progressColor="#f59e0b"
+        progressControl={(
+          <SessionCounter
+            index={i}
+            total={deck.length}
+            max={poolSize}
+            className="h-11"
+            onResize={(size, { discard }) => {
+              if (discard) {
+                setDeck(buildQuizDeck(params.ids, seed + 1, size))
+                setI(0)
+                clearSelections()
+                setCorrectCount(0)
+                setDone(false)
+              } else {
+                setDeck((current) => growDeck(current, i + 1, buildQuizDeck(params.ids, seed + 1, size), size))
+              }
+            }}
+          />
+        )}
       />
 
       <div className="flex-1 overflow-y-auto px-4 pb-4">

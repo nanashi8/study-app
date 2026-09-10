@@ -87,10 +87,16 @@ export function Chip({ className = '', color, children, style }) {
   )
 }
 
-export function ProgressBar({ value = 0, className = '', color = 'var(--color-brand-500)' }) {
+export function ProgressBar({
+  value = 0,
+  className = '',
+  color = 'var(--color-brand-500)',
+  // 高さは className に重ねて書いても既定の h-2.5 が勝つので、差し替える口を分ける。
+  heightClassName = 'h-2.5',
+}) {
   const pct = Math.max(0, Math.min(100, value * 100))
   return (
-    <div className={cx('h-2.5 w-full overflow-hidden rounded-full bg-brand-100', className)}>
+    <div className={cx(heightClassName, 'w-full overflow-hidden rounded-full bg-brand-100', className)}>
       <div
         className="h-full rounded-full transition-[width] duration-500 ease-out"
         style={{ width: `${pct}%`, background: color }}

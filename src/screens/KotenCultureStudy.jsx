@@ -5,11 +5,10 @@ import {
   KOTEN_CULTURE_CATEGORIES,
   KOTEN_CULTURE_LEVELS,
 } from '../data/koten-culture.js'
-import { Button, Chip, IconButton } from '../components/ui.jsx'
+import { Button, Chip } from '../components/ui.jsx'
 import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
 import {
   ArrowRight,
-  Close,
   Lightbulb,
 } from '../components/Icons.jsx'
 import { KotenText } from '../components/KotenFurigana.jsx'
@@ -138,15 +137,6 @@ export function KotenCultureStudyScreen() {
         nextDisabled={index + 1 >= deck.length}
         itemLabel="カード"
         progressColor="#7c3aed"
-        leadingAction={(
-          <IconButton
-            onClick={backToKotenCulture}
-            aria-label="学習をやめる"
-            className="shrink-0 rounded-xl text-ink/45"
-          >
-            <Close size={19} />
-          </IconButton>
-        )}
         progressControl={(
           <SessionCounter
             index={index}

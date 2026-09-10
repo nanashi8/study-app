@@ -15,7 +15,6 @@ import { growDeck } from '../lib/session.js'
 import { todayIndex } from '../store/useStore.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { LongSentenceTranslation } from '../components/LongSentenceTranslation.jsx'
-import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
 import { GrammarChoiceExplanations } from '../components/GrammarChoiceExplanations.jsx'
@@ -164,37 +163,6 @@ export function GrammarQuizScreen() {
 
   return (
     <div className="flex h-full flex-col">
-      <div className="flex items-center gap-3 px-3 py-3">
-        <IconButton onClick={back} aria-label="やめる"><Close size={22} /></IconButton>
-        <span className="min-w-0 flex-1" aria-hidden="true" />
-        <IconButton
-          onClick={() => toggleNotebookItem('grammar', item.id)}
-          aria-label={saved ? `${item.topic}の問題をマイ学習ノートから外す` : `${item.topic}の問題をマイ学習ノートへ保存`}
-          aria-pressed={saved}
-          className={saved ? 'text-amber-600' : 'text-ink/30'}
-        >
-          {saved ? <BookmarkFilled size={20} /> : <Bookmark size={20} />}
-        </IconButton>
-        <SpeechSettingsButton compact />
-        <SessionCounter
-          index={i}
-          total={deck.length}
-          max={poolSize}
-          onResize={(size, { discard }) => {
-            if (discard) {
-              setDeck(buildFor(size))
-              setI(0)
-              clearSelections()
-              clearOrderDrafts()
-              setOrderAttempt((value) => value + 1)
-              results.current = { correct: 0, wrong: 0, unknown: 0, wrongIds: [] }
-            } else {
-              setDeck((current) => growDeck(current, i + 1, buildFor(size), size))
-            }
-          }}
-        />
-      </div>
-
       <QuestionSessionControls
         index={i}
         total={deck.length}
@@ -204,6 +172,36 @@ export function GrammarQuizScreen() {
         showAutoAdvance
         autoAdvanceSignal={isCorrectPick ? autoAdvanceSignal : null}
         progressColor={color}
+        progressControl={(
+          <SessionCounter
+            index={i}
+            total={deck.length}
+            max={poolSize}
+            className="h-11"
+            onResize={(size, { discard }) => {
+              if (discard) {
+                setDeck(buildFor(size))
+                setI(0)
+                clearSelections()
+                clearOrderDrafts()
+                setOrderAttempt((value) => value + 1)
+                results.current = { correct: 0, wrong: 0, unknown: 0, wrongIds: [] }
+              } else {
+                setDeck((current) => growDeck(current, i + 1, buildFor(size), size))
+              }
+            }}
+          />
+        )}
+        trailingActions={(
+          <IconButton
+            onClick={() => toggleNotebookItem('grammar', item.id)}
+            aria-label={saved ? `${item.topic}の問題をマイ学習ノートから外す` : `${item.topic}の問題をマイ学習ノートへ保存`}
+            aria-pressed={saved}
+            className={cx('shrink-0', saved ? 'text-amber-600' : 'text-ink/30')}
+          >
+            {saved ? <BookmarkFilled size={20} /> : <Bookmark size={20} />}
+          </IconButton>
+        )}
       />
 
       <div className="flex-1 overflow-y-auto px-4 pb-4">

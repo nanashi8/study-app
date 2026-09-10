@@ -452,9 +452,13 @@ test('結果画面・暗記・テストの全配線が同じ周回IDを引き継
   for (const source of [study, quiz]) {
     assert.equal(
       (source.match(/cycleIds: params\.vocabCycleIds/g) ?? []).length,
-      2,
-      'デッキ作成と結果引き継ぎの両方へ周回IDを渡す',
+      3,
+      'デッキ作成・在庫数え・結果引き継ぎのすべてへ周回IDを渡す',
     )
+  }
+  // 「1回のカード数」で選べる上限は、今日の候補ではなく教材の在庫から数える。
+  for (const source of [study, quiz]) {
+    assert.match(source, /vocabularyStockCount\(source, \{/)
   }
   // テストは最後まで解いてから結果へ進むのでデッキ全体、暗記は途中でやめられるので
   // 答えたカードだけを一巡済みとして渡す。見ていない語を次セットから外さない。

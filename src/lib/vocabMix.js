@@ -47,10 +47,10 @@ export function vocabMixFreshShare(value) {
   return vocabMixStep(value).freshShare
 }
 
-/** 「復習7 : 未修3」のような、いま何が起きるかの説明。 */
+/** 「復習7・未修3」のような、10問あたりの内訳。読み上げ欄と同じ高さに収まる長さで返す。 */
 export function describeVocabMix(value) {
   const share = vocabMixFreshShare(value)
-  if (share === null) return '復習のたまり具合と最近の正誤で自動配分'
+  if (share === null) return 'たまり具合で自動'
   const fresh = Math.round(share * 10)
-  return `10問なら 復習${10 - fresh}問 : 未修${fresh}問`
+  return `10問中 復習${10 - fresh}・未修${fresh}`
 }

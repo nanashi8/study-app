@@ -198,7 +198,6 @@ const [
   vocabStudySource,
   vocabQuizSource,
   sessionControlsSource,
-  vocabCompletionReportSource,
 ] = await Promise.all([
   readProjectFile('src/components/InstructorExplanation.jsx'),
   readProjectFile('src/screens/GrammarQuiz.jsx'),
@@ -221,7 +220,6 @@ const [
   readProjectFile('src/screens/VocabStudy.jsx'),
   readProjectFile('src/screens/VocabQuiz.jsx'),
   readProjectFile('src/components/QuestionSessionControls.jsx'),
-  readProjectFile('src/components/VocabCompletionReport.jsx'),
 ])
 
 for (const label of ['根拠', '消去法', '考え方']) {
@@ -274,17 +272,14 @@ for (const relative of INTERRUPTED_SESSION_RECORD_SCREENS) {
     errors.push(`${relative}: 途中でやめたときの学習記録を残していない`)
   }
 }
-// 英単語の暗記は画面内の`やめる`でも学習結果へ進み、答えたカードだけを数える。
-if (!vocabStudySource.includes('onClick={stopSession}')) {
-  errors.push('英単語の暗記の`やめる`が中断時の結果へ進んでいない')
+// 暗記・テストの途中終了は上部の共通`戻る`が受け持つ。進捗バーに同じ働きの`×`を重ねない。
+if (sessionControlsSource.includes('leadingAction') || vocabStudySource.includes('stopSession')) {
+  errors.push('暗記・テストの進捗バーに、上部の`戻る`と重なる`やめる`が残っている')
 }
+// 英単語の暗記の結果は、答えたカードだけを数える。
 if (!vocabStudySource.includes('const wordIds = answeredWordIds(answers)')
   || vocabStudySource.includes('wordIds: deck.map')) {
   errors.push('英単語の暗記が答えていない語まで今回の結果に数えている')
-}
-if (!vocabCompletionReportSource.includes('data-vocab-completion-interrupted')
-  || !vocabCompletionReportSource.includes('途中でやめたので、答えた')) {
-  errors.push('中断した暗記の結果に、答えた語数と残りの語数の案内がない')
 }
 if (!progressBackupSource.includes('selectProgressState')) errors.push('QR／コードが共通永続スライスを使っていない')
 if (!progressBackupSource.includes('QRCodeCanvas')) errors.push('QR出力がない')

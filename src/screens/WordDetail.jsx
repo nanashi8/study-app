@@ -14,8 +14,8 @@ import { EtymologyBlock, OtherSenses, RelatedWords, PosBadge } from '../componen
 import { UsageGuideCards } from '../components/UsageGuideCards.jsx'
 import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
 import { Card, Button, Chip, IconButton } from '../components/ui.jsx'
-import { Bookmark, BookmarkFilled, Cards, Link, Lightbulb, ArrowRight } from '../components/Icons.jsx'
-import { WordListSheet } from '../components/WordListSheet.jsx'
+import { Bookmark, BookmarkFilled, Link, Lightbulb, ArrowRight } from '../components/Icons.jsx'
+import { WordListSheet, useWordInAnyBook } from '../components/WordListSheet.jsx'
 import { summarizeVocabularySrsItems } from '../lib/vocabScheduler.js'
 import { cx } from '../components/ui.jsx'
 import { VocabReviewHistory } from '../components/VocabReviewHistory.jsx'
@@ -97,10 +97,9 @@ export function WordDetailScreen() {
   const screenRef = useRef(null)
   const id = useStore((s) => s.params.id)
   const navigate = useStore((s) => s.navigate)
-  const myList = useStore((s) => s.myList)
-  const toggleMyList = useStore((s) => s.toggleMyList)
   const recordVocabHistory = useStore((s) => s.recordVocabHistory)
   const [listSheetOpen, setListSheetOpen] = useState(false)
+  const inWordBook = useWordInAnyBook(id)
   const entry = useStore((s) => s.srs[id])
   const word = getWord(id)
 
@@ -122,7 +121,6 @@ export function WordDetailScreen() {
   }
 
   const level = getLevel(word.level)
-  const saved = myList.includes(word.id)
   const progress = summarizeVocabularySrsItems([word], entry ? { [word.id]: entry } : {})
   const etymologyCards = etymologyCardsForWord(word)
   const etymologyStory = etymologyStoryForWord(word)
@@ -135,11 +133,12 @@ export function WordDetailScreen() {
           color={level.color}
           right={
             <IconButton
-              onClick={() => toggleMyList(word.id)}
-              className={saved ? 'text-hint' : 'text-ink/30'}
-              aria-label="マイ単語に保存"
+              onClick={() => setListSheetOpen(true)}
+              className={inWordBook ? 'text-hint' : 'text-ink/30'}
+              aria-label="単語帳に入れる"
+              aria-haspopup="dialog"
             >
-              {saved ? <BookmarkFilled size={24} /> : <Bookmark size={24} />}
+              {inWordBook ? <BookmarkFilled size={24} /> : <Bookmark size={24} />}
             </IconButton>
           }
         />
@@ -263,12 +262,15 @@ export function WordDetailScreen() {
 
       {/* 保存ボタン（本文の外に置き、末尾のカードへ重ならないようにする） */}
       <div className="shrink-0 space-y-2 border-t border-brand-100 bg-white/95 p-4 backdrop-blur">
-        <Button full variant={saved ? 'soft' : 'primary'} onClick={() => toggleMyList(word.id)}>
-          {saved ? <BookmarkFilled size={18} /> : <Bookmark size={18} />}
-          {saved ? 'マイ単語に保存済み（タップで解除）' : 'マイ単語リストに保存'}
-        </Button>
-        <Button full variant="secondary" onClick={() => setListSheetOpen(true)}>
-          <Cards size={18} /> マイ単語帳に入れる
+        {/* 保存先はマイ単語を含む「単語帳」1つ。押すと入れる冊を選ぶ。 */}
+        <Button
+          full
+          variant={inWordBook ? 'soft' : 'primary'}
+          onClick={() => setListSheetOpen(true)}
+          aria-haspopup="dialog"
+        >
+          {inWordBook ? <BookmarkFilled size={18} /> : <Bookmark size={18} />}
+          {inWordBook ? '単語帳に入っています（入れる冊を選ぶ）' : '単語帳に入れる'}
         </Button>
       </div>
 

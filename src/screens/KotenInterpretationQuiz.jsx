@@ -6,11 +6,10 @@ import {
   getKotenInterpretation,
   KOTEN_INTERPRETATION_FOCUS,
 } from '../data/koten-interpretations.js'
-import { Button, Chip, cx, IconButton } from '../components/ui.jsx'
+import { Button, Chip, cx } from '../components/ui.jsx'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
 import { KotenText, KotenWord } from '../components/KotenFurigana.jsx'
-import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import {
   ArrowRight,
   Bookmark,
@@ -167,31 +166,6 @@ export function KotenInterpretationQuizScreen() {
 
   return (
     <div className="flex h-full flex-col">
-      <div className="flex items-center gap-3 px-3 py-3">
-        <IconButton onClick={backToKotenInterpretationList} aria-label="短文解釈をやめる">
-          <Close size={22} />
-        </IconButton>
-        <span className="min-w-0 flex-1" aria-hidden="true" />
-        <SpeechSettingsButton compact />
-        <SessionCounter
-          index={index}
-          total={deck.length}
-          max={poolSize}
-          onResize={(size, { discard }) => {
-            if (discard) {
-              setRun((current) => current + 1)
-              setDeck(buildDeck(params.ids, size, params.preserveOrder))
-              setIndex(0)
-              clearSelections()
-              setCorrect(0)
-              setDone(false)
-            } else {
-              setDeck((current) => growDeck(current, index + 1, buildDeck(params.ids, size, params.preserveOrder), size))
-            }
-          }}
-        />
-      </div>
-
       <QuestionSessionControls
         index={index}
         total={deck.length}
@@ -202,6 +176,26 @@ export function KotenInterpretationQuizScreen() {
         autoAdvanceSignal={isCorrect ? autoAdvanceSignal : null}
         itemLabel="短文"
         progressColor="#d97706"
+        progressControl={(
+          <SessionCounter
+            index={index}
+            total={deck.length}
+            max={poolSize}
+            className="h-11"
+            onResize={(size, { discard }) => {
+              if (discard) {
+                setRun((current) => current + 1)
+                setDeck(buildDeck(params.ids, size, params.preserveOrder))
+                setIndex(0)
+                clearSelections()
+                setCorrect(0)
+                setDone(false)
+              } else {
+                setDeck((current) => growDeck(current, index + 1, buildDeck(params.ids, size, params.preserveOrder), size))
+              }
+            }}
+          />
+        )}
       />
 
       <div className="flex-1 overflow-y-auto px-4 pb-5">
