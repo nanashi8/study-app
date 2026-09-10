@@ -59,12 +59,12 @@ test('全長文・長い一文・文学の意味フレーズと内部SVOCMを監
   const audit = auditPhraseExplanations()
   assert.equal(audit.reading.passageCount, 38)
   assert.equal(audit.reading.sentenceCount, 990)
-  assert.equal(audit.reading.phraseCount, 6877)
-  assert.equal(audit.reading.meaningPhraseCount, 5025)
-  assert.equal(audit.reading.meaningMultiRoleCount, 1936)
+  assert.equal(audit.reading.phraseCount, 6880)
+  assert.equal(audit.reading.meaningPhraseCount, 5028)
+  assert.equal(audit.reading.meaningMultiRoleCount, 1939)
   assert.equal(audit.reading.grammarBlockCount, 2420)
-  assert.equal(audit.reading.correctionDecisionCount, 924)
-  assert.equal(audit.reading.appliedCorrectionCount, 924)
+  assert.equal(audit.reading.correctionDecisionCount, 927)
+  assert.equal(audit.reading.appliedCorrectionCount, 927)
   assert.deepEqual(audit.reading.connectorClosureReview, {
     candidateCount: 147,
     backReferenceCount: 63,
@@ -100,7 +100,7 @@ test('全規則と全文を監査確認済みにし、台帳外変更は別状�
   assert.equal(audit.longSentences.manuallyReviewedSentenceCount, 33)
   assert.equal(audit.reading.confirmedSentenceCount, 990)
   assert.equal(audit.longSentences.confirmedSentenceCount, 33)
-  assert.equal(audit.reading.confirmedPhraseCount, 6877)
+  assert.equal(audit.reading.confirmedPhraseCount, 6880)
   assert.equal(audit.longSentences.confirmedPhraseCount, 236)
   assert.equal(audit.reading.issues.unreviewedSentences.length, 0)
   assert.equal(audit.longSentences.issues.unreviewedGuides.length, 0)
