@@ -1223,17 +1223,17 @@ if (
   PASSAGES.length !== 38 ||
   readingTranslationSentenceCount !== 990 ||
   readingTranslationBlockCount !== 2420 ||
-  readingPhrasePairCount !== 6876 ||
-  readingPhraseSequenceCount !== 6876 ||
-  readingMeaningPhraseCount !== 5024 ||
-  readingMeaningMultiRoleCount !== 1937
+  readingPhrasePairCount !== 6877 ||
+  readingPhraseSequenceCount !== 6877 ||
+  readingMeaningPhraseCount !== 5025 ||
+  readingMeaningMultiRoleCount !== 1936
 ) {
   errors.push(
     `長文フレーズ監査: ${PASSAGES.length}長文・${readingTranslationSentenceCount}文・` +
     `${readingTranslationBlockCount}ブロック・${readingMeaningPhraseCount}意味フレーズ` +
     `（複数役割${readingMeaningMultiRoleCount}件）・${readingPhrasePairCount}ブロック内内部SVOCM単位・` +
     `${readingPhraseSequenceCount}文全体内部SVOCM単位` +
-    '（現行全件は38長文・990文・2,420ブロック・5,024意味フレーズ・6,876内部SVOCM単位）',
+    '（現行全件は38長文・990文・2,420ブロック・5,025意味フレーズ・6,877内部SVOCM単位）',
   )
 }
 if (
