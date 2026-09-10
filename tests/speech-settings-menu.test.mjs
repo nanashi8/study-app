@@ -133,7 +133,7 @@ test('全教材・学習アドバイザー・定着分析・管理機能を一�
   const expectedScreens = [
     'portal', 'home', 'mathMap', 'kotenList', 'kanbunHome', 'literatureLibrary',
     'vocabLevels', 'vocabSearch', 'writing', 'roots', 'readingList', 'phrases', 'grammar', 'listening',
-    'diagnostic', 'dictation', 'vocabCamera', 'wordRequests',
+    'diagnostic', 'dictation', 'vocabCamera', 'customWords', 'wordRequests',
     'myList', 'myLearning', 'myGrammar', 'kotenSaved', 'kanbunSaved', 'progress',
   ]
   assert.deepEqual(APP_MENU_SECTIONS.map(({ id, label }) => [id, label]), [
@@ -145,9 +145,9 @@ test('全教材・学習アドバイザー・定着分析・管理機能を一�
   ])
   assert.deepEqual(
     APP_MENU_SECTIONS.map((section) => section.items.length),
-    [6, 8, 6, 6, 3],
+    [6, 8, 7, 6, 3],
   )
-  assert.equal(APP_MENU_ITEMS.length, 29)
+  assert.equal(APP_MENU_ITEMS.length, 30)
   assert.deepEqual(APP_MENU_SCREEN_DESTINATIONS, expectedScreens)
   assert.deepEqual(APP_MENU_ACTIONS, ['advisor', 'analytics', 'settings', 'account', 'reset'])
   assert.equal(new Set(APP_MENU_SCREEN_DESTINATIONS).size, expectedScreens.length)
@@ -166,9 +166,9 @@ test('全教材・学習アドバイザー・定着分析・管理機能を一�
   assert.match(menu, /data-reset-group=\{group\.id\}/)
   assert.match(menu, /allSelected \? \[\] : \[\.\.\.ALL_PROGRESS_RESET_GROUP_IDS\]/)
   assert.deepEqual(ALL_PROGRESS_RESET_GROUP_IDS, [
-    'review', 'completion', 'results', 'saved', 'dictionary', 'legacy',
+    'review', 'completion', 'results', 'saved', 'customWords', 'dictionary', 'legacy',
   ])
-  assert.equal(PROGRESS_RESET_GROUPS.length, 6)
+  assert.equal(PROGRESS_RESET_GROUPS.length, 7)
   assert.match(menu, /resetProgressEverywhere\(account, selectedGroups\)/)
   assert.match(menu, /data-menu-reset-complete/)
   assert.match(menu, /学習履歴をリセットしました/)
@@ -200,6 +200,7 @@ test('共通メニューから保存される学習・音声・コンテンツ�
     'sessionSize',
     'revealAnswers',
     'autoAdvanceCorrect',
+    'vocabMix',
   ])
 
   assert.match(source, /data-settings-central-panel/)
@@ -243,6 +244,8 @@ test('永続設定の変更処理は共通メニューへ集約し、廃止し�
       'components/RevealAnswers.jsx',
       // 正解後の自動送りは、問題画面の上部ですぐ切り替える。
       'components/QuestionSessionControls.jsx',
+      // 復習と未修の配分は、読み上げ欄と同じ画面下部の枠で切り替える。
+      'components/VocabMixConsole.jsx',
     ]],
     ['setBattleRelicLevel', ['components/GameSettings.jsx']],
     ['setBattleThemeId', ['components/GameSettings.jsx']],
@@ -328,7 +331,7 @@ test('全画面共通の読み上げ再生パネルに6操作を一つずつ備�
   assert.match(speakButton, /visibleSpeechButtons/)
 })
 
-test('読み上げを持つ全28 UIモジュールが共通プレイヤー経由になる', () => {
+test('読み上げを持つ全29 UIモジュールが共通プレイヤー経由になる', () => {
   const files = ['components', 'screens'].flatMap((directory) =>
     readdirSync(new URL(`../src/${directory}/`, import.meta.url))
       .filter((filename) => filename.endsWith('.jsx'))
@@ -342,8 +345,8 @@ test('読み上げを持つ全28 UIモジュールが共通プレイヤー経由
   )
   const screenCount = speechUi.filter(({ path }) => path.startsWith('screens/')).length
 
-  assert.equal(speechUi.length, 28)
-  assert.equal(screenCount, 21)
+  assert.equal(speechUi.length, 29)
+  assert.equal(screenCount, 22)
   assert.ok(speechUi.some(({ path }) => path === 'components/LiteratureVocabularySheet.jsx'))
   assert.ok(speechUi.some(({ path }) => path === 'screens/Reader.jsx'))
   assert.ok(speechUi.some(({ path }) => path === 'components/ReadingSentenceDetail.jsx'))

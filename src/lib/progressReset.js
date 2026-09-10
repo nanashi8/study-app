@@ -71,6 +71,12 @@ export const PROGRESS_RESET_GROUPS = Object.freeze([
     ],
   ),
   resetGroup(
+    'customWords',
+    '自作した単語',
+    '自分で登録した英単語（マイ単語・単語帳からも外れます）',
+    ['customWords'],
+  ),
+  resetGroup(
     'dictionary',
     '辞書の参照履歴',
     '最近検索・参照した英単語の履歴',

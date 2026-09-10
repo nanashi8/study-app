@@ -47,6 +47,7 @@ export const APP_MENU_SECTIONS = Object.freeze([
     screenItem('diagnostic', '学習診断', '28問で得意・弱点と現在地を確認'),
     screenItem('dictation', 'ディクテーション', '聞き取りとつづりを結びつける'),
     screenItem('vocabCamera', '教科書から単語追加', '写真の文字を辞書と比べて保存'),
+    screenItem('customWords', '自作単語', '辞書に無い語を登録し、ファイルで持ち出す'),
     screenItem('wordRequests', '辞書リクエスト一覧', '辞書への追加希望を確認'),
   ]),
   section('records', '保存・記録', [

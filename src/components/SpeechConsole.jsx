@@ -1,4 +1,4 @@
-import { useEffect, useSyncExternalStore } from 'react'
+import { useEffect, useState, useSyncExternalStore } from 'react'
 import { useStore } from '../store/useStore.js'
 import {
   dismissSpeechPlayer,
@@ -20,6 +20,7 @@ import {
   Play,
   Stop,
 } from './Icons.jsx'
+import { VocabMixConsole, vocabMixApplies } from './VocabMixConsole.jsx'
 import { cx } from './ui.jsx'
 
 const RATE_OPTIONS = [0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.2]
@@ -58,7 +59,7 @@ export function SpeechConsole({ state, onRateChange }) {
     <section
       aria-label="読み上げ再生パネル"
       data-speech-console
-      className="border-t border-brand-100 bg-white/98 px-2 py-1.5 shadow-[0_-10px_30px_-22px_rgba(15,23,42,0.6)] backdrop-blur"
+      className="px-2 py-1.5"
     >
       <div className="mb-1 flex min-w-0 items-center gap-1.5">
         <div className="flex min-w-0 flex-1 items-center gap-1">
@@ -124,8 +125,12 @@ export function GlobalSpeechConsole() {
     getSpeechPlayerServerSnapshot,
   )
   const screen = useStore((store) => store.screen)
+  const params = useStore((store) => store.params)
   const settings = useStore((store) => store.settings)
   const setSetting = useStore((store) => store.setSetting)
+  // 画面下部の同じ場所を、読み上げ操作と出題バランスで分け合う。
+  // どちらを開いていたかは画面のあいだだけ覚えていればよい一時状態。
+  const [panel, setPanel] = useState('speech')
 
   useEffect(() => {
     updateSpeechPlayerVoices({
@@ -136,12 +141,54 @@ export function GlobalSpeechConsole() {
 
   useEffect(() => () => dismissSpeechPlayer(), [screen])
 
-  if (!state.visible) return null
+  // 読み上げを始めた瞬間は、押した本人が見たい再生操作へ戻す。
+  useEffect(() => {
+    if (state.visible) setPanel('speech')
+  }, [state.visible])
+
+  const mixAvailable = vocabMixApplies(screen, params)
+  if (!state.visible && !mixAvailable) return null
+
+  const showing = !mixAvailable || (state.visible && panel === 'speech')
+    ? 'speech'
+    : 'mix'
 
   const changeRate = (rate) => {
     setSetting('ttsRate', rate)
     setSpeechPlayerRate(rate)
   }
 
-  return <SpeechConsole state={state} onRateChange={changeRate} />
+  return (
+    <div
+      data-study-dock
+      className="shrink-0 border-t border-brand-100 bg-white/98 shadow-[0_-10px_30px_-22px_rgba(15,23,42,0.6)] backdrop-blur"
+    >
+      {state.visible && mixAvailable && (
+        <div className="grid grid-cols-2 gap-1 px-2 pt-1.5" data-study-dock-tabs>
+          {[
+            { id: 'speech', label: '読み上げ' },
+            { id: 'mix', label: '出題バランス' },
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              type="button"
+              onClick={() => setPanel(tab.id)}
+              aria-pressed={showing === tab.id}
+              className={cx(
+                'min-h-9 rounded-lg text-[10px] font-extrabold transition-colors',
+                showing === tab.id
+                  ? 'bg-brand-600 text-white'
+                  : 'bg-slate-100 text-ink/60 active:bg-slate-200',
+              )}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+      )}
+      {showing === 'speech'
+        ? <SpeechConsole state={state} onRateChange={changeRate} />
+        : <VocabMixConsole />}
+    </div>
+  )
 }

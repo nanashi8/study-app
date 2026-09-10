@@ -1,4 +1,5 @@
-import { ALL_WORDS, ETYMOLOGY_PACKS } from '../data/vocab.js'
+import { ALL_WORDS, ETYMOLOGY_PACKS, customWordList, getCustomWord } from '../data/vocab.js'
+import { isCustomWordId } from './customWords.js'
 import { PHRASES } from '../data/phrases.js'
 import { GRAMMAR_PRACTICE } from '../data/grammar.js'
 import { LISTENING_ITEMS } from '../data/listening.js'
@@ -70,15 +71,17 @@ const adapt = (domain, items, mapper) => items.map((raw) => {
   }
 })
 
+const vocabEntry = (item) => ({
+  title: item.word,
+  subtitle: item.meaning,
+  detail: item.example?.en ?? '',
+  category: compact([item.pos, item.field]).join('・'),
+  level: item.level ? `英検${item.level}級` : '',
+  search: [item.meanings, item.example?.ja, item.phonetic],
+})
+
 const CATALOG = Object.freeze({
-  vocab: adapt('vocab', ALL_WORDS, (item) => ({
-    title: item.word,
-    subtitle: item.meaning,
-    detail: item.example?.en ?? '',
-    category: compact([item.pos, item.field]).join('・'),
-    level: item.level ? `英検${item.level}級` : '',
-    search: [item.meanings, item.example?.ja, item.phonetic],
-  })),
+  vocab: adapt('vocab', ALL_WORDS, vocabEntry),
   phrases: adapt('phrases', PHRASES, (item) => ({
     title: item.phrase,
     subtitle: item.meaning,
@@ -158,14 +161,30 @@ export const NOTEBOOK_CATALOG_COUNTS = Object.freeze(
 export const NOTEBOOK_TOTAL_ITEMS = Object.values(NOTEBOOK_CATALOG_COUNTS)
   .reduce((sum, count) => sum + count, 0)
 
+// 自作単語は「全教材の件数」には数えない（NOTEBOOK_TOTAL_ITEMS は辞書の固定値）。
+// 一覧と引き当てにだけ後ろから足し、メモ・問題集・学習導線を共有する。
+const customVocabItems = () => adapt('vocab', customWordList(), vocabEntry)
+
+const customVocabItem = (itemId) => {
+  if (!isCustomWordId(itemId)) return null
+  const word = getCustomWord(itemId)
+  return word ? adapt('vocab', [word], vocabEntry)[0] : null
+}
+
 export function notebookItemsForDomain(domain) {
-  return CATALOG[domain] ?? []
+  const items = CATALOG[domain] ?? []
+  return domain === 'vocab' ? [...customVocabItems(), ...items] : items
 }
 
 export function resolveNotebookItem(domainOrRef, itemId) {
-  if (itemId !== undefined) return CATALOG_MAPS[domainOrRef]?.get(itemId) ?? null
+  if (itemId !== undefined) {
+    return CATALOG_MAPS[domainOrRef]?.get(itemId)
+      ?? (domainOrRef === 'vocab' ? customVocabItem(itemId) : null)
+  }
   const parsed = parseNotebookRef(domainOrRef)
-  return parsed ? CATALOG_MAPS[parsed.domain]?.get(parsed.itemId) ?? null : null
+  if (!parsed) return null
+  return CATALOG_MAPS[parsed.domain]?.get(parsed.itemId)
+    ?? (parsed.domain === 'vocab' ? customVocabItem(parsed.itemId) : null)
 }
 
 export function searchNotebookItems(domain, query = '') {

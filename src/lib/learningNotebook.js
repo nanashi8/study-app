@@ -286,6 +286,28 @@ export function updateNotebookItem(
   }
 }
 
+/**
+ * その項目をノートから完全に外す。メモ・タグごと消し、どの問題集からも抜く。
+ * 自作単語のように「教材そのものが消える」ときだけ使う。
+ * 教材が残る保存の解除は setNotebookItemSaved（メモを残す）を使う。
+ */
+export function forgetNotebookItem(notebook, domain, itemId, timestamp = Date.now()) {
+  const ref = notebookRef(domain, itemId)
+  const current = normalizeLearningNotebook(notebook)
+  if (!ref) return current
+  const entries = { ...current.entries }
+  delete entries[ref]
+  return {
+    ...current,
+    entries,
+    sets: current.sets.map((set) => (
+      set.refs.includes(ref)
+        ? { ...set, refs: set.refs.filter((item) => item !== ref), updatedAt: timestamp }
+        : set
+    )),
+  }
+}
+
 const uniqueId = (prefix, timestamp, randomPart) =>
   `${prefix}-${Math.floor(timestamp).toString(36)}-${String(randomPart).replace(/[^a-z0-9]/gi, '').slice(0, 8) || 'local'}`
 

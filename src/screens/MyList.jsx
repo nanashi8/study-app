@@ -10,12 +10,12 @@ import {
   parseNotebookRef,
 } from '../lib/learningNotebook.js'
 import {
+  NOTEBOOK_CATALOG_COUNTS,
   NOTEBOOK_DOMAINS,
   NOTEBOOK_DOMAIN_BY_ID,
   NOTEBOOK_TOTAL_ITEMS,
   isNotebookItemSaved,
   notebookItemProgress,
-  notebookItemsForDomain,
   notebookLearningSummary,
   notebookRecentItems,
   notebookSavedCounts,
@@ -804,7 +804,7 @@ export function MyListScreen() {
                     className={`min-h-14 min-w-28 rounded-xl border px-3 text-left ${domain === item.id ? 'border-slate-700 bg-slate-800 text-white' : 'border-slate-300 bg-white text-slate-700'}`}
                   >
                     <span className="block text-[11px] font-extrabold">{item.emoji} {item.label}</span>
-                    <span className="block text-[9px] font-bold opacity-70">保存 {savedCounts[item.id]} / 全 {notebookItemsForDomain(item.id).length.toLocaleString()}</span>
+                    <span className="block text-[9px] font-bold opacity-70">保存 {savedCounts[item.id]} / 全 {NOTEBOOK_CATALOG_COUNTS[item.id].toLocaleString()}</span>
                   </button>
                 ))}
               </div>

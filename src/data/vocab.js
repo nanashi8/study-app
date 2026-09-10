@@ -597,7 +597,24 @@ export {
 
 export const WORDS_BY_ID = Object.fromEntries(ALL_WORDS.map((w) => [w.id, w]))
 
-export const getWord = (id) => WORDS_BY_ID[id]
+// 利用者が自分で登録した語（自作単語）は、辞書本体には入れずここへ置く。
+// ALL_WORDS・級別件数・語源カード・監査台帳は辞書だけの固定値のまま保ち、
+// ID の引き当てだけを共有して暗記・テスト・マイ単語へ乗せるための一段。
+const CUSTOM_WORDS_BY_ID = new Map()
+
+export function registerCustomWords(words = []) {
+  CUSTOM_WORDS_BY_ID.clear()
+  for (const word of Array.isArray(words) ? words : []) {
+    if (word?.id) CUSTOM_WORDS_BY_ID.set(word.id, word)
+  }
+  return CUSTOM_WORDS_BY_ID.size
+}
+
+export const getCustomWord = (id) => CUSTOM_WORDS_BY_ID.get(id) ?? null
+
+export const customWordList = () => [...CUSTOM_WORDS_BY_ID.values()]
+
+export const getWord = (id) => WORDS_BY_ID[id] ?? CUSTOM_WORDS_BY_ID.get(id)
 
 const WORDS_BY_LEVEL = new Map()
 for (const word of ALL_WORDS) {

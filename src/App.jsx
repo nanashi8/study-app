@@ -39,6 +39,7 @@ const EtymologyQuizScreen = lazyScreen(
 )
 const RootsScreen = lazyScreen(() => import('./screens/Roots.jsx'), 'RootsScreen')
 const MyListScreen = lazyScreen(() => import('./screens/MyList.jsx'), 'MyListScreen')
+const CustomWordsScreen = lazyScreen(() => import('./screens/CustomWords.jsx'), 'CustomWordsScreen')
 const MyLearningScreen = lazyScreen(
   () => import('./screens/MyLearning.jsx'),
   'MyLearningScreen',
@@ -148,6 +149,7 @@ const SCREENS = {
   etymologyQuiz: EtymologyQuizScreen,
   myLearning: MyLearningScreen,
   myList: MyListScreen,
+  customWords: CustomWordsScreen,
   vocabCamera: VocabCameraScreen,
   progress: ProgressScreen,
   settings: SettingsScreen,
