@@ -92,6 +92,38 @@ const BASE_READING_PHRASE_CORRECTIONS = Object.freeze({
       { role: 'V', en: 'limits', ja: '制限し' },
     ], 'limits は examines と並ぶ四つ目の述語Vです。examines のOではありません。'),
   ]),
+  // 並列した主語が分割され、work / diet が述語Vと目的語Oに読まれていた。
+  'Housing, work, diet, and the quality of the air together account for far more variation than any treatment ever does.': Object.freeze([
+    correction(['work,'], [
+      { role: 'S', en: 'work,', ja: '仕事や' },
+    ], 'work は Housing と並ぶ主語Sの一つです。述語Vではありません。'),
+    correction(['diet'], [
+      { role: 'S', en: 'diet', ja: '食事や' },
+    ], 'diet も並列した主語Sの一つで、work の目的語Oではありません。'),
+    correction(['air'], [
+      { role: 'S', en: 'air', ja: '空気の質が' },
+    ], 'the quality of the air までが四つ目の主語Sです。'),
+    correction(['together account'], [
+      { role: 'M', en: 'together', ja: '合わさって' },
+      { role: 'V', en: 'account', ja: '説明します' },
+    ], 'together は述語に係る副詞Mで、account が並列した主語すべてを受ける述語Vです。'),
+  ]),
+  'Libraries, places of work, families, and neighbors together carry most of what a resident of a city actually ends up learning.': Object.freeze([
+    correction(['work,'], [
+      { role: 'S', en: 'work,', ja: '職場や' },
+    ], 'places of work までが二つ目の主語Sです。work は述語Vではありません。'),
+    correction(['families'], [
+      { role: 'S', en: 'families', ja: '家族や' },
+    ], 'families も並列した主語Sで、work の目的語Oではありません。'),
+  ]),
+  'Decisions about land, water, pensions, and public buildings all outlast by many years the people who first make and approve them.': Object.freeze([
+    correction(['land,'], [
+      { role: 'M', en: 'land,', ja: '土地や' },
+    ], 'about が導く範囲の一部で、Decisions を修飾するMです。述語Vではありません。'),
+    correction(['water, pensions'], [
+      { role: 'M', en: 'water, pensions', ja: '水や年金や' },
+    ], 'land と並ぶ、about の目的語です。land の目的語Oではありません。'),
+  ]),
   'This month, the topic is local history.': Object.freeze([
     correction(['This month'], [
       { role: 'M', en: 'This month', ja: '今月は' },
