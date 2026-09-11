@@ -22,7 +22,7 @@ const RAW = [
   ['epitome', '名', '1', '典型・縮図', 'She is the epitome of grace.', '彼女は優雅さの典型だ。', 'ギリシャ epi+temnein(切る)→要約。', { syn: [{ w: 'embodiment', m: '権化' }, { w: 'model', m: '典型' }], field: '一般' }],
   ['nuance', '名', '1', '微妙な差・ニュアンス', 'He missed the nuance of the word.', '彼はその語の微妙な意味を逃した。', 'フランス nuance(色合い)→ラテン nubes(雲)。', { syn: [{ w: 'subtlety', m: '微妙さ' }, { w: 'shade', m: '色合い' }], fam: [{ w: 'nuanced', m: '微妙な' }], field: '言語' }],
   ['paradigm', '名', '1', 'パラダイム・模範・枠組み', 'It marked a paradigm shift.', 'それはパラダイムの転換を示した。', 'ギリシャ para+deiknynai(示す)。', { syn: [{ w: 'model', m: '模範' }, { w: 'framework', m: '枠組み' }], field: '科学' }],
-  ['trajectory', '名', '1', '軌道・軌跡', 'the trajectory of the ball', 'ボールの軌道', 'ラテン trans+jacere(投げる)→ ject と同系。', { syn: [{ w: 'path', m: '経路' }, { w: 'course', m: '進路' }], field: '科学' }],
+  ['trajectory', '名', '1', '軌道・軌跡', 'The coach used a video to show the trajectory of the ball.', 'コーチは動画を使って、ボールの軌道を見せた。', 'ラテン trans+jacere(投げる)→ ject と同系。', { syn: [{ w: 'path', m: '経路' }, { w: 'course', m: '進路' }], field: '科学' }],
   ['vicinity', '名', '1', '近所・付近', 'Are there any cheap hotels in the vicinity of the station?', '駅の付近に安いホテルはありますか？', 'ラテン vicinus(隣の)。', { syn: [{ w: 'neighborhood', m: '近所' }, { w: 'surroundings', m: '周辺' }], field: '地理' }],
   // 上級形容詞
   ['conducive', '形', '1', '〜の助けになる・つながる', 'Quiet is conducive to study.', '静けさは勉強に役立つ。', 'ラテン con+ducere(導く)→ duct と同系。', { syn: [{ w: 'helpful', m: '役立つ' }, { w: 'favorable', m: '好都合な' }], ant: [{ w: 'hindering', m: '妨げる' }], field: '性質・状態' }],

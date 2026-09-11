@@ -37,7 +37,7 @@ const RAW = [
   ['stymie', '動', '1', '妨げる・行き詰まらせる', 'stymied by red tape', 'お役所仕事に阻まれて', 'ゴルフ用語(由来不確か)。', { syn: [{ w: 'thwart', m: '阻止する' }, { w: 'hinder', m: '妨げる' }], ant: [{ w: 'facilitate', m: '促進する' }], field: '一般' }],
   ['subterfuge', '名', '1', '策略・言い逃れ', 'win by subterfuge', '策略で勝つ', 'ラテン subterfugere(ひそかに逃れる)。', { syn: [{ w: 'deception', m: '欺き' }, { w: 'ruse', m: '計略' }], ant: [{ w: 'honesty', m: '正直' }], field: '社会' }],
   ['supercilious', '形', '1', '横柄な・人を見下した', 'a supercilious smile', '人を見下した笑み', 'ラテン supercilium(眉)。', { syn: [{ w: 'haughty', m: '傲慢な' }, { w: 'disdainful', m: '軽蔑的な' }], ant: [{ w: 'humble', m: '謙虚な' }], field: '心理' }],
-  ['synergy', '名', '1', '相乗効果', 'create synergy', '相乗効果を生む', 'ギリシャ synergos(共に働く)。', { syn: [{ w: 'cooperation', m: '協力' }, { w: 'collaboration', m: '共同' }], ant: [{ w: 'interference', m: '干渉' }], field: 'ビジネス' }],
+  ['synergy', '名', '1', '相乗効果', 'When the art and science clubs worked together, the synergy was amazing.', '美術部と科学部が協力すると、驚くほどの相乗効果が生まれた。', 'ギリシャ synergos(共に働く)。', { syn: [{ w: 'cooperation', m: '協力' }, { w: 'collaboration', m: '共同' }], ant: [{ w: 'interference', m: '干渉' }], field: 'ビジネス' }],
 ]
 
 export const WORDS_MORE129 = RAW.map(expandCompact)

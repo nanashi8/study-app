@@ -54,7 +54,7 @@ const RAW = [
   ['slender', '形', 'pre1', 'ほっそりした・わずかな', 'She has a slender figure.', '彼女はほっそりした体型だ。', '古フランス esclendre(細い)。', { syn: [{ w: 'slim', m: '細い' }, { w: 'thin', m: 'やせた' }], ant: [{ w: 'stout', m: '太った' }], field: '性質・状態' }],
   // 時間の形容詞
   ['brief', '形', 'pre1', '短い・簡潔な', 'He gave a brief speech.', '彼は短い演説をした。', 'ラテン brevis(短い)→ abbreviate と同系。', { syn: [{ w: 'short', m: '短い' }, { w: 'concise', m: '簡潔な' }], ant: [{ w: 'lengthy', m: '長たらしい' }], field: '性質・状態' }],
-  ['fleeting', '形', '1', 'つかの間の・はかない', 'a fleeting moment of joy', 'つかの間の喜び', 'fleet(速く過ぎる)+ -ing。', { syn: [{ w: 'brief', m: '短い' }, { w: 'transient', m: 'はかない' }], ant: [{ w: 'lasting', m: '永続する' }], field: '性質・状態' }],
+  ['fleeting', '形', '1', 'つかの間の・はかない', 'We caught a fleeting glimpse of a whale before it dived again.', 'クジラが再び潜る前に、私たちはつかの間その姿を目にした。', 'fleet(速く過ぎる)+ -ing。', { syn: [{ w: 'brief', m: '短い' }, { w: 'transient', m: 'はかない' }], ant: [{ w: 'lasting', m: '永続する' }], field: '性質・状態' }],
   ['transient', '形', '1', '一時的な・はかない', 'Fame can be transient.', '名声ははかないこともある。', 'ラテン trans+ire(通り過ぎる)→ transit と同系。', { syn: [{ w: 'temporary', m: '一時的な' }, { w: 'fleeting', m: 'つかの間の' }], ant: [{ w: 'permanent', m: '永続的な' }], field: '性質・状態' }],
   ['perpetual', '形', '1', '永続する・絶え間ない', 'He lives in perpetual fear.', '彼は絶え間ない恐怖の中で暮らす。', 'ラテン perpetuus(連続した)。', { syn: [{ w: 'constant', m: '絶え間ない' }, { w: 'eternal', m: '永遠の' }], ant: [{ w: 'temporary', m: '一時的な' }], field: '性質・状態' }],
   ['eternal', '形', 'pre1', '永遠の・不滅の', 'They promised eternal love.', '彼らは永遠の愛を誓った。', 'ラテン aeternus(永遠の)。', { syn: [{ w: 'everlasting', m: '永続する' }, { w: 'endless', m: '果てしない' }], ant: [{ w: 'temporary', m: '一時的な' }], field: '性質・状態' }],
