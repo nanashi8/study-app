@@ -1,7 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
-import { buildDeck, growDeck, vocabularyStockCount } from '../lib/session.js'
-import { vocabMixFreshShare } from '../lib/vocabMix.js'
+import {
+  buildDeck,
+  growDeck,
+  isAutomaticVocabularySource,
+  vocabularyStockCount,
+} from '../lib/session.js'
+import { vocabMixEmptyNotice, vocabMixFreshShare } from '../lib/vocabMix.js'
 import {
   etymologyCardsForWord,
   etymologyStoryForWord,
@@ -71,6 +76,7 @@ export function VocabQuizScreen() {
   const saveQuizSession = useStore((state) => state.saveQuizSession)
   const clearQuizSession = useStore((state) => state.clearQuizSession)
   const selectedStudentId = useStore((state) => state.battleStudentId)
+  const vocabMix = useStore((state) => state.settings.vocabMix)
   const source = params.source ?? { type: 'due' }
   const isDragonVein = isDragonVeinSource(source)
 
@@ -105,7 +111,6 @@ export function VocabQuizScreen() {
     size,
     purpose: 'quiz',
     cycleIds: params.vocabCycleIds,
-    // 出題バランスのバーは、次に組む出題から効かせる（解答中の並びは動かさない）。
     freshShareOverride: vocabMixFreshShare(useStore.getState().settings.vocabMix),
   })
   const [poolSize] = useState(() => vocabularyStockCount(source, {
@@ -152,6 +157,21 @@ export function VocabQuizScreen() {
     correct: results.current.correct,
   })
 
+  // 出題バランスのバーを動かしたら、まだ出していない先の問題をその割合で組み直す。
+  // いま表示している問題と答えた問題はそのまま残す（次の回まで待たせない）。
+  const appliedVocabMix = useRef(vocabMix)
+  useEffect(() => {
+    if (appliedVocabMix.current === vocabMix) return
+    appliedVocabMix.current = vocabMix
+    if (!isAutomaticVocabularySource(source)) return
+    const size = params.size ?? sessionSize
+    setDeck((current) => {
+      const keepCount = current.length ? index + 1 : 0
+      return growDeck(current, keepCount, buildFor(size), Math.max(size, keepCount))
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [vocabMix])
+
   const word = deck[index]
   const entry = useStore((state) => (word ? state.srs[word.id] : null))
   const options = useMemo(() => {
@@ -161,10 +181,15 @@ export function VocabQuizScreen() {
   }, [word?.id, index, restore])
 
   if (!deck.length) {
+    // 「未修だけ」「復習だけ」で出せる語がないときは、そう選んでいることと続け方を示す。
+    const mixNotice = isAutomaticVocabularySource(source) ? vocabMixEmptyNotice(vocabMix) : null
     return (
-      <div className="flex h-full flex-col items-center justify-center gap-4 p-8 text-center">
+      <div className="flex h-full flex-col items-center justify-center gap-4 p-8 text-center" data-vocab-empty-deck>
         <div className="text-5xl">🧩</div>
-        <p className="font-display text-lg font-extrabold text-ink">出題できる単語がありません</p>
+        <p className="font-display text-lg font-extrabold text-ink">
+          {mixNotice?.title ?? '出題できる単語がありません'}
+        </p>
+        {mixNotice && <p className="text-sm font-bold text-ink/50">{mixNotice.detail}</p>}
         <Button onClick={backToVocabParent}>戻る</Button>
       </div>
     )

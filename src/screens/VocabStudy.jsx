@@ -5,10 +5,11 @@ import { getLevel } from '../data/levels.js'
 import {
   buildDeck,
   growDeck,
+  isAutomaticVocabularySource,
   recordStudyAnswer,
   vocabularyStockCount,
 } from '../lib/session.js'
-import { vocabMixFreshShare } from '../lib/vocabMix.js'
+import { vocabMixEmptyNotice, vocabMixFreshShare } from '../lib/vocabMix.js'
 import { phraseGroupsForWord } from '../lib/wordPhrases.js'
 import { playSpeechItems } from '../lib/speech-player.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
@@ -76,7 +77,6 @@ export function VocabStudyScreen() {
       size,
       purpose: 'study',
       cycleIds: params.vocabCycleIds,
-      // 出題バランスのバーは、次に組む出題から効かせる（学習中の並びは動かさない）。
       freshShareOverride: vocabMixFreshShare(useStore.getState().settings.vocabMix),
     })
   // 「1回のカード数」で選べる上限は、今日の候補ではなく教材の在庫。
@@ -114,6 +114,35 @@ export function VocabStudyScreen() {
         : null,
     ])),
   )
+  const rememberBoxesAtStart = (items) => {
+    for (const item of items) {
+      if (!Object.hasOwn(beforeBoxesAtStart.current, item.id)) {
+        beforeBoxesAtStart.current[item.id] = Number.isFinite(srsAtStart.current[item.id]?.box)
+          ? srsAtStart.current[item.id].box
+          : null
+      }
+    }
+  }
+
+  // 出題バランスのバーを動かしたら、まだ答えていない先のカードをその割合で組み直す。
+  // いま見ているカードと答えたカードはそのまま残す（次の回まで待たせない）。
+  const appliedVocabMix = useRef(settings.vocabMix)
+  useEffect(() => {
+    if (appliedVocabMix.current === settings.vocabMix) return
+    appliedVocabMix.current = settings.vocabMix
+    if (!isAutomaticVocabularySource(source)) return
+    const size = params.size ?? sessionSize
+    const answeredIndexes = Object.keys(recordedAnswers).map(Number).filter(Number.isInteger)
+    setDeck((current) => {
+      const keepCount = current.length
+        ? Math.max(i + 1, ...answeredIndexes.map((index) => index + 1))
+        : 0
+      const nextDeck = growDeck(current, keepCount, buildFor(size), Math.max(size, keepCount))
+      rememberBoxesAtStart(nextDeck)
+      return nextDeck
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [settings.vocabMix])
   const word = deck[i]
   const entry = useStore((state) => (word ? state.srs[word.id] : null))
   const inWordBook = useWordInAnyBook(word?.id)
@@ -139,11 +168,17 @@ export function VocabStudyScreen() {
   }, [i, word?.id])
 
   if (!deck.length) {
+    // 「未修だけ」「復習だけ」で出せる語がないときは、そう選んでいることと続け方を示す。
+    const mixNotice = isAutomaticVocabularySource(source) ? vocabMixEmptyNotice(settings.vocabMix) : null
     return (
-      <div className="flex h-full flex-col items-center justify-center gap-4 p-8 text-center">
+      <div className="flex h-full flex-col items-center justify-center gap-4 p-8 text-center" data-vocab-empty-deck>
         <div className="text-5xl">🌳</div>
-        <p className="font-display text-lg font-extrabold text-ink">学習できる単語がありません</p>
-        <p className="text-sm font-bold text-ink/50">この条件では対象の単語が見つかりませんでした。</p>
+        <p className="font-display text-lg font-extrabold text-ink">
+          {mixNotice?.title ?? '学習できる単語がありません'}
+        </p>
+        <p className="text-sm font-bold text-ink/50">
+          {mixNotice?.detail ?? 'この条件では対象の単語が見つかりませんでした。'}
+        </p>
         <Button onClick={backToVocabParent}>戻る</Button>
       </div>
     )

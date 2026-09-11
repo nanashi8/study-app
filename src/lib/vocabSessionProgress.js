@@ -31,6 +31,8 @@ export function vocabularySessionContinuation(
     srs = {},
     storedSize = SESSION_SIZE,
     now = Date.now(),
+    // 出題バランスの指定。次の回で実際に出せる数を、同じ条件で数える。
+    freshShareOverride = null,
   } = {},
 ) {
   const source = params.source ?? { type: 'due' }
@@ -60,6 +62,7 @@ export function vocabularySessionContinuation(
     purpose: mode,
     excludeIds: cycleIds,
     now,
+    freshShareOverride,
   }).length
 
   if (!remainingCount) {
@@ -79,6 +82,7 @@ export function vocabularySessionContinuation(
     purpose: mode,
     cycleIds,
     now,
+    freshShareOverride,
   }).length
   const requestedCount = nextSessionCount(params.size, storedSize, selectableCount)
   const nextCount = buildDeck(source, {
@@ -87,6 +91,7 @@ export function vocabularySessionContinuation(
     purpose: mode,
     cycleIds,
     now,
+    freshShareOverride,
   }).length
   return {
     destination: {
