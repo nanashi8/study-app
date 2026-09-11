@@ -45,7 +45,7 @@ const RAW = [
   ['precarious', '形', '1', '不安定な・危うい', 'They were in a precarious position.', '彼らは危うい立場にいた。', 'ラテン precarius(懇願による)→ prayer と同系。', { syn: [{ w: 'unstable', m: '不安定な' }, { w: 'risky', m: '危険な' }], ant: [{ w: 'secure', m: '安定した' }], field: '性質・状態' }],
   ['prolific', '形', '1', '多作の・多産の', 'The prolific author has written more than eighty novels.', 'その多作の作家は、80冊以上の小説を書いてきた。', 'ラテン proles(子孫)+facere(作る)。', { syn: [{ w: 'fertile', m: '多産の' }], ant: [{ w: 'unproductive', m: '不毛な' }], field: '性質・状態' }],
   ['vibrant', '形', 'pre1', '活気のある・鮮やかな', 'The old port has become a vibrant area with shops and cafes.', 'その古い港は、店やカフェが並ぶ活気のある地域になった。', 'ラテン vibrare(震える)→ vibrate と同系。', { syn: [{ w: 'lively', m: '生き生きした' }, { w: 'vivid', m: '鮮やかな' }], ant: [{ w: 'dull', m: '活気のない' }], field: '性質・状態' }],
-  ['voracious', '形', '1', '貪欲な・がつがつした', 'a voracious reader', '貪欲な読書家', 'ラテン vorare(むさぼる)→ devour と同系。', { syn: [{ w: 'greedy', m: '欲深い' }, { w: 'insatiable', m: '飽くなき' }], field: '性質・状態' }],
+  ['voracious', '形', '1', '貪欲な・がつがつした', 'Emi is a voracious reader who finishes three novels every week.', '絵美は毎週小説を3冊読み終える貪欲な読書家だ。', 'ラテン vorare(むさぼる)→ devour と同系。', { syn: [{ w: 'greedy', m: '欲深い' }, { w: 'insatiable', m: '飽くなき' }], field: '性質・状態' }],
 ]
 
 export const WORDS_MORE39 = RAW.map(expandCompact)

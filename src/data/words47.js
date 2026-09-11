@@ -2,7 +2,7 @@
 import { expandCompact } from './compact.js'
 
 const RAW = [
-  ['alkali', '名', '1', 'アルカリ', 'a strong alkali', '強アルカリ', 'アラビア al-qali(灰)。', { ant: [{ w: 'acid', m: '酸' }], fam: [{ w: 'alkaline', m: 'アルカリ性の' }], field: '科学' }],
+  ['alkali', '名', '1', 'アルカリ', 'Mixing an acid with an alkali produces salt and water.', '酸とアルカリを混ぜると、塩と水ができる。', 'アラビア al-qali(灰)。', { ant: [{ w: 'acid', m: '酸' }], fam: [{ w: 'alkaline', m: 'アルカリ性の' }], field: '科学' }],
   ['categorize', '動', 'pre1', '分類する', 'We categorize books by genre.', '本をジャンルで分類する。', 'category(分類)+ -ize。', { syn: [{ w: 'classify', m: '分類する' }, { w: 'sort', m: '仕分ける' }], fam: [{ w: 'category', m: '分類' }], field: '動作・行為' }],
   ['ceasefire', '名', 'pre1', '停戦', 'They agreed to a ceasefire.', '彼らは停戦に合意した。', 'cease(やめる)+fire(発砲)。', { syn: [{ w: 'truce', m: '休戦' }, { w: 'armistice', m: '休戦協定' }], ant: [{ w: 'war', m: '戦争' }], field: '軍事' }],
   ['claim', '動', 'pre1', '主張する・要求する・主張', 'He claims to be innocent.', '彼は無実だと主張する。', 'ラテン clamare(叫ぶ)→ exclaim と同系。', { syn: [{ w: 'assert', m: '主張する' }, { w: 'demand', m: '要求する' }], ant: [{ w: 'deny', m: '否定する' }], field: '動作・行為' }],
@@ -43,7 +43,7 @@ const RAW = [
   ['age', '名', 'pre1', '年齢・時代', 'My cousin and I are the same age.', 'いとこと私は同じ年齢だ。', 'ラテン aetas(年齢)。', { syn: [{ w: 'era', m: '時代' }], fam: [{ w: 'aged', m: '年老いた' }], field: '一般' }],
   ['agitate', '動', 'pre1', '動揺させる・かき立てる', 'The news agitated her.', 'その知らせは彼女を動揺させた。', 'ラテン agitare(動かす)→ act と同系。', { syn: [{ w: 'disturb', m: '乱す' }, { w: 'upset', m: '動揺させる' }], ant: [{ w: 'calm', m: '落ち着かせる' }], fam: [{ w: 'agitated', m: '動揺した' }], field: '動作・行為' }],
   ['alternation', '名', 'pre1', '交互・交替', "The alternation of day and night is caused by the earth's rotation.", '昼と夜が交互に訪れるのは、地球の自転によるものだ。', 'alternate(交互の)+ -ation', { fam: [{ w: 'alternate', m: '交互に行う' }], field: '一般' }],
-  ['amalgamation', '名', '1', '統合・合併', 'the amalgamation of firms', '企業の統合', 'ラテン amalgama(合金)。', { syn: [{ w: 'merger', m: '合併' }, { w: 'fusion', m: '融合' }], field: 'ビジネス' }],
+  ['amalgamation', '名', '1', '統合・合併', 'The amalgamation of the two schools will take place next April.', '2つの学校の統合は来年の4月に行われる。', 'ラテン amalgama(合金)。', { syn: [{ w: 'merger', m: '合併' }, { w: 'fusion', m: '融合' }], field: 'ビジネス' }],
   ['amble', '動', 'pre1', 'のんびり歩く', 'They ambled along the shore.', '彼らは岸辺をのんびり歩いた。', 'ラテン ambulare(歩く)→ ambulance と同系。', { syn: [{ w: 'stroll', m: '散歩する' }, { w: 'wander', m: 'ぶらつく' }], ant: [{ w: 'rush', m: '急ぐ' }], field: '動作・行為' }],
   ['amendment', '名', '1', '修正・改正', "The committee made an amendment to the club's rules.", '委員会はクラブの規則を修正した。', 'amend(修正する)+ -ment', { fam: [{ w: 'amend', m: '修正する' }], syn: [{ w: 'revision', m: '改訂' }], field: '法律' }],
   ['amusement', '名', 'pre1', '娯楽・楽しみ', 'Grandpa grows vegetables just for his own amusement.', '祖父はただ自分の楽しみのために野菜を育てている。', 'amuse(楽しませる)+ -ment', { fam: [{ w: 'amuse', m: '楽しませる' }], syn: [], ant: [{ w: 'boredom', m: '退屈' }], field: '一般' }],
@@ -57,7 +57,7 @@ const RAW = [
   ['baffle', '動', '1', '当惑させる・困らせる', 'The puzzle baffled them.', 'その難問は彼らを困らせた。', '16世紀 baffle(辱める)。', { syn: [{ w: 'confuse', m: '混乱させる' }, { w: 'puzzle', m: '当惑させる' }], field: '動作・行為' }],
   ['bang', '動', 'pre1', '強くたたく・バタンと閉める', 'He banged the door.', '彼はドアをバタンと閉めた。', '擬音語(16世紀)。', { syn: [{ w: 'slam', m: 'バタンと閉める' }, { w: 'hit', m: 'たたく' }], field: '動作・行為' }],
   ['bankrupt', '形', 'pre1', '破産した', 'The firm went bankrupt.', 'その会社は倒産した。', 'イタリア banca rotta(壊れた台)。', { syn: [{ w: 'insolvent', m: '支払い不能の' }, { w: 'ruined', m: '破滅した' }], ant: [{ w: 'solvent', m: '支払い能力のある' }], fam: [{ w: 'bankruptcy', m: '破産' }], field: '経済' }],
-  ['barbarity', '名', '1', '蛮行・残虐', 'the barbarity of war', '戦争の蛮行', 'ギリシャ barbaros(異邦の)→ barbarian と同系。', { syn: [{ w: 'cruelty', m: '残酷' }, { w: 'atrocity', m: '残虐行為' }], ant: [{ w: 'civility', m: '礼節' }], field: '社会' }],
+  ['barbarity', '名', '1', '蛮行・残虐', 'The museum shows the barbarity of war through old letters and photographs.', 'その博物館は、古い手紙や写真を通して戦争の残虐さを伝えている。', 'ギリシャ barbaros(異邦の)→ barbarian と同系。', { syn: [{ w: 'cruelty', m: '残酷' }, { w: 'atrocity', m: '残虐行為' }], ant: [{ w: 'civility', m: '礼節' }], field: '社会' }],
   ['base', '名', '3', '土台・基地・基づく', 'Someone left flowers at the base of the statue in the park.', '誰かが公園の像の土台に花を置いていった。', 'ギリシャ basis(踏み台)。', { syn: [{ w: 'foundation', m: '基礎' }, { w: 'bottom', m: '底' }], ant: [{ w: 'top', m: '頂上' }], field: '一般' }],
   ['basic', '形', '3', '基本的な・初歩の', 'In the first lesson, we learned basic Spanish greetings.', '最初の授業で、私たちは基本的なスペイン語のあいさつを習った。', 'base(土台)+ -ic。', { syn: [{ w: 'fundamental', m: '根本的な' }, { w: 'elementary', m: '初歩の' }], ant: [{ w: 'advanced', m: '高度な' }], fam: [{ w: 'base', m: '土台' }], field: '性質・状態' }],
   ['beautiful', '形', '4', '美しい・見事な', 'We watched a beautiful sunset from the beach.', '私たちは浜辺から美しい夕日を見た。', 'beauty(美)+ -ful。', { syn: [{ w: 'gorgeous', m: '華麗な' }, { w: 'lovely', m: '愛らしい' }], ant: [{ w: 'ugly', m: '醜い' }], fam: [{ w: 'beauty', m: '美' }], field: '性質・状態' }],
@@ -87,7 +87,7 @@ const RAW = [
   ['buyer', '名', '5', '買い手・購入者', 'The shop gave each buyer a free bag.', 'その店は購入者一人一人に無料の袋を渡した。', 'buy(買う)+ -er', { fam: [{ w: 'buy', m: '買う' }], syn: [{ w: 'purchaser', m: '購入者' }], ant: [{ w: 'seller', m: '売り手' }], field: 'ビジネス' }],
   ['cable', '名', 'pre1', 'ケーブル・電線・電報', 'I need a longer cable to connect my laptop to the TV.', 'ノートパソコンをテレビにつなぐには、もっと長いケーブルが必要だ。', 'ラテン capulum(なわ)。', { syn: [{ w: 'wire', m: '電線' }, { w: 'cord', m: 'コード' }], field: '技術' }],
   ['cajole', '動', '1', 'おだてる・言いくるめる', 'She cajoled him into helping.', '彼女は彼をおだてて手伝わせた。', 'フランス cajoler(おだてる)。', { syn: [{ w: 'coax', m: 'なだめすかす' }, { w: 'flatter', m: 'おだてる' }], field: '動作・行為' }],
-  ['calamity', '名', '1', '災難・惨事', 'a natural calamity', '自然災害', 'ラテン calamitas(損害)。', { syn: [{ w: 'disaster', m: '災害' }, { w: 'catastrophe', m: '大惨事' }], ant: [{ w: 'blessing', m: '恵み' }], field: '一般' }],
+  ['calamity', '名', '1', '災難・惨事', 'The town slowly recovered from the calamity caused by the huge flood.', '町は大洪水による惨事から少しずつ立ち直った。', 'ラテン calamitas(損害)。', { syn: [{ w: 'disaster', m: '災害' }, { w: 'catastrophe', m: '大惨事' }], ant: [{ w: 'blessing', m: '恵み' }], field: '一般' }],
   ['calculation', '名', '3', '計算・見積もり', 'My sister did a quick calculation and found that we had enough money.', '姉はさっと計算して、お金が足りることが分かった。', 'calculate(計算する)+ -ation', { fam: [{ w: 'calculate', m: '計算する' }], syn: [{ w: 'computation', m: '算出' }], field: '測定' }],
   ['calculator', '名', '3', '計算機・電卓', 'You may not use a calculator during the math test.', '数学のテスト中に電卓を使ってはいけません。', 'calculate(計算する)+ -or', { fam: [{ w: 'calculate', m: '計算する' }], field: '技術' }],
   ['cancerous', '形', 'pre1', 'がん性の', 'Luckily, the doctor found that the lump was not cancerous.', '幸い、医師の診察でそのしこりはがん性ではないと分かった。', 'cancer(がん)+ -ous', { fam: [{ w: 'cancer', m: 'がん' }], syn: [{ w: 'malignant', m: '悪性の' }], ant: [{ w: 'benign', m: '良性の' }], field: '医学' }],
