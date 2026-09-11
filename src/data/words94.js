@@ -3,7 +3,7 @@ import { expandCompact } from './compact.js'
 
 const RAW = [
   ['clannish', '形', '1', '一族の・排他的な', 'a clannish community', '排他的な共同体', 'clan(一族)+ -ish。', { syn: [{ w: 'exclusive', m: '排他的な' }, { w: 'insular', m: '閉鎖的な' }], ant: [{ w: 'welcoming', m: '友好的な' }], fam: [{ w: 'clan', m: '一族' }], field: '社会' }],
-  ['comparative', '形', '1', '比較の・相対的な', 'comparative analysis', '比較分析', 'compare(比較する)+ -ative。', { syn: [{ w: 'relative', m: '相対的な' }, { w: 'corresponding', m: '対応する' }], ant: [{ w: 'absolute', m: '絶対の' }], fam: [{ w: 'compare', m: '比較する' }], field: '学問' }],
+  ['comparative', '形', '1', '比較の・相対的な', 'The professor teaches comparative literature at a university in Tokyo.', 'その教授は東京の大学で比較文学を教えている。', 'compare(比較する)+ -ative。', { syn: [{ w: 'relative', m: '相対的な' }, { w: 'corresponding', m: '対応する' }], ant: [{ w: 'absolute', m: '絶対の' }], fam: [{ w: 'compare', m: '比較する' }], field: '学問' }],
   ['confiscate', '動', '1', '没収する・押収する', 'confiscate the goods', '物品を没収する', 'ラテン confiscare(国庫に没収する)。', { syn: [{ w: 'seize', m: '押収する' }, { w: 'impound', m: '差し押さえる' }], ant: [{ w: 'return', m: '返却する' }], fam: [{ w: 'confiscation', m: '没収' }], field: '法律' }],
   ['conscription', '名', '1', '徴兵・召集', 'military conscription', '兵役の徴集', 'conscript(徴集する)+ -ion。', { syn: [{ w: 'draft', m: '徴兵' }, { w: 'enlistment', m: '入隊' }], ant: [{ w: 'discharge', m: '除隊' }], fam: [{ w: 'conscript', m: '徴集する' }], field: '軍事' }],
   ['contemptuous', '形', '1', '見下した・軽蔑的な', 'a contemptuous sneer', '見下したような冷笑', 'contempt(軽蔑)+ -uous。', { syn: [{ w: 'scornful', m: '軽蔑的な' }, { w: 'disdainful', m: '見下す' }], ant: [{ w: 'respectful', m: '敬意ある' }], fam: [{ w: 'contempt', m: '軽蔑' }], field: '社会' }],

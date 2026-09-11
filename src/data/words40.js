@@ -24,7 +24,7 @@ const RAW = [
   ['fortitude', '名', '1', '不屈の精神・勇気', 'She bore the pain with fortitude.', '彼女は不屈の精神で痛みに耐えた。', 'ラテン fortis(強い)→ force と同系。', { syn: [{ w: 'courage', m: '勇気' }, { w: 'resilience', m: '忍耐力' }], ant: [{ w: 'cowardice', m: '臆病' }], field: '心理' }],
   ['gratitude', '名', 'pre1', '感謝(の念)', 'He expressed his gratitude.', '彼は感謝の意を表した。', 'ラテン gratus(感謝する)→ grateful と同系。', { syn: [{ w: 'thankfulness', m: '感謝' }, { w: 'appreciation', m: '謝意' }], ant: [{ w: 'ingratitude', m: '恩知らず' }], field: '心理' }],
   ['ingenuity', '名', '1', '創意工夫・才知', 'They solved it with ingenuity.', '彼らは創意工夫で解決した。', 'ラテン ingenium(才能)→ engine と同系。', { syn: [{ w: 'creativity', m: '創造性' }, { w: 'inventiveness', m: '発明の才' }], fam: [{ w: 'ingenious', m: '巧妙な' }], field: '心理' }],
-  ['longevity', '名', '1', '長寿・長持ち', 'a secret to longevity', '長寿の秘訣', 'ラテン longus(長い)+aevum(年齢)。', { syn: [{ w: 'long life', m: '長命' }], ant: [{ w: 'mortality', m: '死亡' }], field: '医学' }],
+  ['longevity', '名', '1', '長寿・長持ち', 'Mr. Okada says walking every day is the secret of his longevity.', '岡田さんは、毎日歩くことが自分の長寿の秘訣だと言う。', 'ラテン longus(長い)+aevum(年齢)。', { syn: [{ w: 'long life', m: '長命' }], ant: [{ w: 'mortality', m: '死亡' }], field: '医学' }],
   ['nostalgia', '名', '1', '郷愁・懐かしさ', 'The song filled me with nostalgia.', 'その歌は私を郷愁で満たした。', 'ギリシャ nostos(帰郷)+algos(痛み)。', { syn: [{ w: 'longing', m: '思慕' }, { w: 'reminiscence', m: '追憶' }], fam: [{ w: 'nostalgic', m: '懐かしい' }], field: '心理' }],
   ['solitude', '名', '1', '孤独・ひとりでいること', 'She enjoys solitude.', '彼女は孤独を楽しむ。', 'ラテン solus(ひとりの)→ sole と同系。', { syn: [{ w: 'isolation', m: '孤立' }, { w: 'seclusion', m: '隠遁' }], ant: [{ w: 'company', m: '同伴' }], field: '心理' }],
   ['rationale', '名', '1', '論理的根拠・理由づけ', 'What is the rationale behind it?', 'その背後の根拠は何か？', 'ラテン ratio(理性)→ rational と同系。', { syn: [{ w: 'reasoning', m: '理由づけ' }, { w: 'justification', m: '正当化' }], field: '一般' }],
@@ -44,7 +44,7 @@ const RAW = [
   ['nimble', '形', '1', '機敏な・すばしこい', 'Her nimble fingers tied the knot.', '彼女は器用な指で結び目を作った。', '古英語 numol(つかみが速い)。', { syn: [{ w: 'agile', m: '敏捷な' }, { w: 'quick', m: '素早い' }], ant: [{ w: 'clumsy', m: '不器用な' }], field: '性質・状態' }],
   ['precarious', '形', '1', '不安定な・危うい', 'They were in a precarious position.', '彼らは危うい立場にいた。', 'ラテン precarius(懇願による)→ prayer と同系。', { syn: [{ w: 'unstable', m: '不安定な' }, { w: 'risky', m: '危険な' }], ant: [{ w: 'secure', m: '安定した' }], field: '性質・状態' }],
   ['prolific', '形', '1', '多作の・多産の', 'a prolific writer', '多作の作家', 'ラテン proles(子孫)+facere(作る)。', { syn: [{ w: 'fertile', m: '多産の' }], ant: [{ w: 'unproductive', m: '不毛な' }], field: '性質・状態' }],
-  ['vibrant', '形', 'pre1', '活気のある・鮮やかな', 'a vibrant city', '活気あふれる都市', 'ラテン vibrare(震える)→ vibrate と同系。', { syn: [{ w: 'lively', m: '生き生きした' }, { w: 'vivid', m: '鮮やかな' }], ant: [{ w: 'dull', m: '活気のない' }], field: '性質・状態' }],
+  ['vibrant', '形', 'pre1', '活気のある・鮮やかな', 'The old port has become a vibrant area with shops and cafes.', 'その古い港は、店やカフェが並ぶ活気のある地域になった。', 'ラテン vibrare(震える)→ vibrate と同系。', { syn: [{ w: 'lively', m: '生き生きした' }, { w: 'vivid', m: '鮮やかな' }], ant: [{ w: 'dull', m: '活気のない' }], field: '性質・状態' }],
   ['voracious', '形', '1', '貪欲な・がつがつした', 'a voracious reader', '貪欲な読書家', 'ラテン vorare(むさぼる)→ devour と同系。', { syn: [{ w: 'greedy', m: '欲深い' }, { w: 'insatiable', m: '飽くなき' }], field: '性質・状態' }],
 ]
 

@@ -45,7 +45,7 @@ const RAW = [
   ["kind","形","4","親切な・思いやりのある","She is kind to everyone.","彼女は誰にでも親切だ。","古英語 gecynde(生まれつき自然な)→思いやりのある→「親切な」。kin と同源。",{"syn":[{"w":"nice","m":"親切な"},{"w":"gentle","m":"優しい"}],"ant":[{"w":"cruel","m":"残酷な"},{"w":"mean","m":"意地悪な"}],"field":"性質・状態"}],
   ["careful","形","4","注意深い","Be careful with the knife.","ナイフに気をつけて。","care(古英語 caru=心配)+ful→「注意深い」。",{"ant":[{"w":"careless","m":"不注意な"}],"field":"性質・状態"}],
   ["hungry","形","4","空腹の","I am very hungry now.","私は今とても空腹だ。","古英語 hungrig→「空腹の」。",{"field":"自然"}],
-  ["thirsty","形","4","のどが渇いた","I am thirsty; let me drink.","のどが渇いた、飲ませて。","古英語 þurstig→「のどが渇いた」。",{"field":"医学"}],
+  ["thirsty","形","4","のどが渇いた","I am very thirsty after soccer practice.","サッカーの練習の後で、とてものどが渇いている。","古英語 þurstig→「のどが渇いた」。",{"field":"医学"}],
   ["tired","形","4","疲れた","I am tired after the trip.","旅行のあとで疲れている。","古英語 tēorian(疲れる)→「疲れた」。",{"field":"性質・状態"}],
   ["busy","形","4","忙しい","He is busy this week.","彼は今週忙しい。","古英語 bisig→「忙しい」。",{"ant":[{"w":"free","m":"暇な"}],"field":"性質・状態"}],
   ["free","形","4","自由な・暇な・無料の","Are you free tomorrow?","明日は暇？","古英語 frēo(自由な)→「自由な」。friend と同源。",{"ant":[{"w":"busy","m":"忙しい"}],"usage":"「自由な・暇な・無料の」の多義。","field":"性質・状態"}],
