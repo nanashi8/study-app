@@ -15,6 +15,7 @@ import { Button, Chip, cx } from '../components/ui.jsx'
 import { summarizeVocabularySrsItems } from '../lib/vocabScheduler.js'
 import { wordProgress } from '../lib/session.js'
 import { scrollScreenToTop } from '../lib/screenScroll.js'
+import { findWordBook } from '../lib/wordBooks.js'
 import {
   VOCAB_CATALOG_ACTIVITY_OPTIONS,
   VOCAB_CATALOG_DEFAULT_DIRECTIONS,
@@ -399,6 +400,19 @@ export function VocabDecksScreen() {
   const srs = useStore((state) => state.srs)
   const review = useStore((state) => state.review)
   const params = useStore((state) => state.params)
+  const myList = useStore((state) => state.myList)
+  const learningNotebook = useStore((state) => state.learningNotebook)
+
+  // 単語帳の一覧から来たときは、その冊の語を同じ一覧確認（左右スワイプつき）で見せる。
+  // 語の出し入れがあればその場で一覧へ反映し、スワイプの記録（srs）では組み直さない。
+  const wordBook = useMemo(
+    () => (params.wordBookId ? findWordBook({ myList, learningNotebook }, params.wordBookId) : null),
+    [learningNotebook, myList, params.wordBookId],
+  )
+  const wordBookWords = useMemo(
+    () => (wordBook ? wordBook.ids.map(getWord).filter(Boolean) : []),
+    [wordBook],
+  )
 
   const levelId = params.levelId ?? '5'
   const level = getLevel(levelId)
@@ -421,6 +435,30 @@ export function VocabDecksScreen() {
     returnTo: { screen: 'vocabDecks', params: { levelId } },
   })
   const openWord = (wordId) => navigate('wordDetail', { id: wordId })
+
+  if (params.wordBookId) {
+    if (!wordBook) {
+      return (
+        <div className="pb-6" data-vocab-word-book-missing>
+          <ScreenHeader title="単語帳の一覧を確認" compact />
+          <p className="px-4 pt-4 text-sm font-bold leading-relaxed text-ink/55">
+            この単語帳は見つかりませんでした。単語画面の「単語帳」から選び直してください。
+          </p>
+        </div>
+      )
+    }
+    return (
+      <VocabularyCatalog
+        data-vocab-catalog={`book:${wordBook.id}`}
+        catalogKey={`book:${wordBook.id}`}
+        title={`${wordBook.title}の一覧を確認`}
+        words={wordBookWords}
+        srs={srs}
+        review={review}
+        onOpenWord={openWord}
+      />
+    )
+  }
 
   // 10分野の入口から来たときは、その分野の全級をまとめて一覧にする。
   if (fieldGroup) {
