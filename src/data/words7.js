@@ -34,7 +34,7 @@ const RAW = [
   ["nearly","副","pre2","ほとんど・もう少しで","It is nearly noon.","もうすぐ正午だ。","near(近い)+ly→ほぼ→「ほとんど」。",{"field":"様子・程度"}],
   ["exactly","副","pre2","正確に・まさに","That is exactly right.","まさにその通りだ。","ラテン ex(きっちり)+agere(成す)→「正確に」。",{"field":"様子・程度"}],
   ["instead","副","pre2","代わりに","Let's walk instead.","代わりに歩こう。","in+stead(古英語 stede=場所)→その場所に代わって→「代わりに」。",{"field":"様子・程度"}],
-  ["therefore","副","2","それゆえ・したがって","He was sick; therefore, he rested.","彼は病気だった。だから休んだ。","there(それ)+fore(のために)→「それゆえ」。",{"field":"様子・程度"}],
+  ["therefore","副","2","それゆえ・したがって","The road was closed, and therefore we had to take a longer route.","道路が閉鎖されており、したがって私たちは遠回りしなければならなかった。","there(それ)+fore(のために)→「それゆえ」。",{"field":"様子・程度"}],
   ["however","副","2","しかしながら","It was hard; however, we did it.","大変だったが、私たちはやり遂げた。","how+ever(どんなにしても)→「しかしながら」。",{"field":"様子・程度"}],
   ["meanwhile","副","pre1","その間に","Meanwhile, I cooked lunch.","その間に私は昼食を作った。","mean(中間の)+while(時間)→「その間に」。",{"field":"様子・程度"}],
   ["furthermore","副","pre1","さらに","It is cheap; furthermore, it is useful.","安いし、さらに役立つ。","further(さらに)+more→「さらに」。",{"field":"様子・程度"}],

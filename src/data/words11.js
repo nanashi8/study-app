@@ -76,7 +76,7 @@ const RAW = [
   ["adolescent","名","pre1","青年・思春期の","Adolescents need enough sleep.","思春期の若者には十分な睡眠が必要だ。","ラテン adolescere(成長する)→「青年・思春期の」。adult と同源。",{"field":"一般"}],
   ["affirm","動","pre1","断言する・確認する","He affirmed his support.","彼は支持を明言した。","ラテン ad(〜に)+firmare(固める)→「断言する」。firm と同源。",{"field":"動作・行為"}],
   ["aggravate","動","pre1","悪化させる","Stress can aggravate illness.","ストレスは病気を悪化させうる。","ラテン ad(〜に)+gravis(重い)→重くする→「悪化させる」。grave と同源。",{"field":"動作・行為"}],
-  ["alleged","形","pre1","（真偽不明で）申し立てられた","the alleged crime","申し立てられている犯罪","ラテン ad(〜に)+litigare(訴える)→申し立てる→「申し立てられた」。",{"field":"性質・状態"}],
+  ["alleged","形","pre1","（真偽不明で）申し立てられた","The police are looking into the alleged theft at the bakery.","警察は、パン屋で盗難があったと申し立てられている件を調べている。","ラテン ad(〜に)+litigare(訴える)→申し立てる→「申し立てられた」。",{"field":"性質・状態"}],
   ["abhor","動","1","ひどく嫌う","She abhors cruelty to animals.","彼女は動物虐待をひどく嫌う。","ラテン ab(離れて)+horrere(身震いする)→ぞっとして離れる→「ひどく嫌う」。horror と同源。",{"field":"動作・行為"}],
   ["abide","動","1","我慢する・（by）従う","You must abide by the rules.","規則に従わねばならない。","古英語 ābīdan(とどまる・待つ)→「我慢する・従う」。",{"field":"動作・行為"}],
   ["accolade","名","1","称賛・栄誉","The film received many accolades.","その映画は多くの称賛を受けた。","フランス accolade(抱擁=騎士叙任の儀礼)→「称賛・栄誉」。",{"field":"一般"}],

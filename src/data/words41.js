@@ -29,7 +29,7 @@ const RAW = [
   ['proficiency', '名', '1', '熟達・堪能', 'language proficiency', '言語の熟達度', 'ラテン proficere(進歩する)→ profit と同系。', { syn: [{ w: 'skill', m: '技能' }], ant: [{ w: 'incompetence', m: '無能' }], fam: [{ w: 'proficient', m: '堪能な' }], field: '教育' }],
   ['rapport', '名', '1', '良好な関係・親密さ', 'She built rapport with clients.', '彼女は顧客と良い関係を築いた。', 'フランス rapporter(持ち帰る)。', { syn: [{ w: 'bond', m: '絆' }, { w: 'affinity', m: '親近感' }], field: '社会' }],
   ['sanctuary', '名', '1', '聖域・避難所・保護区', 'a wildlife sanctuary', '野生生物保護区', 'ラテン sanctus(神聖な)→ saint と同系。', { syn: [{ w: 'refuge', m: '避難所' }, { w: 'haven', m: '安息所' }], field: '環境' }],
-  ['stigma', '名', '1', '汚名・烙印', 'the stigma of failure', '失敗の烙印', 'ギリシャ stigma(刺し傷の印)。', { syn: [{ w: 'shame', m: '恥' }, { w: 'disgrace', m: '不名誉' }], fam: [{ w: 'stigmatize', m: '汚名を着せる' }], field: '社会' }],
+  ['stigma', '名', '1', '汚名・烙印', 'The campaign hopes to remove the stigma of mental illness.', 'そのキャンペーンは、心の病につきまとう烙印をなくそうとしている。', 'ギリシャ stigma(刺し傷の印)。', { syn: [{ w: 'shame', m: '恥' }, { w: 'disgrace', m: '不名誉' }], fam: [{ w: 'stigmatize', m: '汚名を着せる' }], field: '社会' }],
   // 上級形容詞
   ['arduous', '形', '1', '骨の折れる・困難な', 'an arduous journey', '困難な旅', 'ラテン arduus(険しい)。', { syn: [{ w: 'difficult', m: '困難な' }, { w: 'strenuous', m: '骨の折れる' }], ant: [{ w: 'easy', m: '容易な' }], field: '性質・状態' }],
   ['compelling', '形', '1', '説得力のある・引き込まれる', 'a compelling argument', '説得力のある論拠', 'compel(強いる)+ -ing。', { syn: [{ w: 'persuasive', m: '説得力のある' }], ant: [{ w: 'weak', m: '弱い' }], field: '性質・状態' }],

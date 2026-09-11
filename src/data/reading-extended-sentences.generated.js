@@ -3480,8 +3480,8 @@ export const EXTENDED_READING_GENERATED = Object.freeze({
         "source": "shared-vocabulary-example"
       },
       {
-        "en": "Waste is anathema to him.",
-        "ja": "浪費は彼の大嫌いなものだ",
+        "en": "Wasting food is anathema to my grandmother, who grew up in hard times.",
+        "ja": "苦しい時代に育った祖母にとって、食べ物を無駄にすることは何よりも忌み嫌うものだ。",
         "targetId": "anathema",
         "targetWord": "anathema",
         "field": "宗教",
@@ -8573,8 +8573,8 @@ export const EXTENDED_READING_GENERATED = Object.freeze({
         "source": "shared-vocabulary-example"
       },
       {
-        "en": "I am thirsty; let me drink.",
-        "ja": "のどが渇いた、飲ませて。",
+        "en": "I am very thirsty after soccer practice.",
+        "ja": "サッカーの練習の後で、とてものどが渇いている。",
         "targetId": "thirsty",
         "targetWord": "thirsty",
         "field": "医学",

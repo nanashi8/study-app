@@ -34,7 +34,7 @@ const RAW = [
   ['twelve', '形', '5', '12', 'A year has twelve months.', '1年は12か月ある。', '古英語 twelf(2余り)。', { field: '一般' }],
   ['thirteen', '形', '5', '13', 'My sister will be thirteen next month.', '姉は来月13歳になる。', 'three（3）＋ -teen（10台）で「13」。', { field: '一般' }],
   ['twenty', '形', '5', '20', 'The concert ticket costs twenty dollars.', 'コンサートのチケットは20ドルだ。', '古英語 twentig(2×10)。', { field: '一般' }],
-  ['hundred', '形', '5', '100・百', 'This pencil is a hundred yen.', 'この鉛筆は100円だ。', '古英語 hund(100)。', { field: '一般' }],
+  ['hundred', '形', '5', '100・百', 'This pencil costs a hundred yen.', 'この鉛筆は100円だ。', '古英語 hund(100)。', { field: '一般' }],
   ['thousand', '形', '4', '1000・千', 'A thousand people came to the concert.', 'そのコンサートには千人が来た。', '古英語 thusend(1000)。', { field: '一般' }],
   ['zero', '形', '5', 'ゼロ・0', 'It was zero degrees this morning.', '今朝は0度だった。', 'アラビア sifr(空)。', { field: '一般' }],
   // ── 食べ物・飲み物 ──

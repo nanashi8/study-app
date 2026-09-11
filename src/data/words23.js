@@ -55,7 +55,7 @@ const RAW = [
   ["emission","名","1","排出・放出","They cut carbon emissions.","彼らは炭素排出を削減した。","ラテン e+mittere(送り出す)→ miss と同源。",{"field":"一般"}],
   ["ecosystem","名","pre1","生態系","Pollution harms the ecosystem.","汚染は生態系を害する。","eco(生態)+system。",{"syn":[{"w":"environment","m":"環境"}],"field":"自然"}],
   ["habitat","名","pre1","生息地","The forest is their habitat.","その森は彼らの生息地だ。","ラテン habitare(住む)→ habit と同源。",{"syn":[{"w":"home","m":"すみか"}],"field":"自然"}],
-  ["network","名","3","ネットワーク・網","A wide network of roads","道路の広い網","net(網)+work(仕事)。",{"syn":[{"w":"web","m":"網"},{"w":"system","m":"系統"}],"field":"技術"}],
+  ["network","名","3","ネットワーク・網","Tokyo has a huge network of trains and subways.","東京には電車と地下鉄の巨大なネットワークがある。","net(網)+work(仕事)。",{"syn":[{"w":"web","m":"網"},{"w":"system","m":"系統"}],"field":"技術"}],
   ["innovation","名","pre1","革新・新機軸","The company values innovation.","その会社は革新を重んじる。","ラテン in+novus(新しい)→ novel と同系。",{"syn":[{"w":"invention","m":"発明"}],"field":"技術"}],
   ["literature","名","pre2","文学・文献","She loves English literature.","彼女は英文学が好きだ。","ラテン littera(文字)→ literate と同源。",{"field":"芸術"}],
   ["sculpture","名","pre1","彫刻","The museum displays sculptures.","美術館は彫刻を展示する。","ラテン sculpere(彫る)。",{"field":"芸術"}],

@@ -23,14 +23,14 @@ const RAW = [
   ['nuance', '名', '1', '微妙な差・ニュアンス', 'He missed the nuance of the word.', '彼はその語の微妙な意味を逃した。', 'フランス nuance(色合い)→ラテン nubes(雲)。', { syn: [{ w: 'subtlety', m: '微妙さ' }, { w: 'shade', m: '色合い' }], fam: [{ w: 'nuanced', m: '微妙な' }], field: '言語' }],
   ['paradigm', '名', '1', 'パラダイム・模範・枠組み', 'It marked a paradigm shift.', 'それはパラダイムの転換を示した。', 'ギリシャ para+deiknynai(示す)。', { syn: [{ w: 'model', m: '模範' }, { w: 'framework', m: '枠組み' }], field: '科学' }],
   ['trajectory', '名', '1', '軌道・軌跡', 'the trajectory of the ball', 'ボールの軌道', 'ラテン trans+jacere(投げる)→ ject と同系。', { syn: [{ w: 'path', m: '経路' }, { w: 'course', m: '進路' }], field: '科学' }],
-  ['vicinity', '名', '1', '近所・付近', 'shops in the vicinity', '付近の店', 'ラテン vicinus(隣の)。', { syn: [{ w: 'neighborhood', m: '近所' }, { w: 'surroundings', m: '周辺' }], field: '地理' }],
+  ['vicinity', '名', '1', '近所・付近', 'Are there any cheap hotels in the vicinity of the station?', '駅の付近に安いホテルはありますか？', 'ラテン vicinus(隣の)。', { syn: [{ w: 'neighborhood', m: '近所' }, { w: 'surroundings', m: '周辺' }], field: '地理' }],
   // 上級形容詞
   ['conducive', '形', '1', '〜の助けになる・つながる', 'Quiet is conducive to study.', '静けさは勉強に役立つ。', 'ラテン con+ducere(導く)→ duct と同系。', { syn: [{ w: 'helpful', m: '役立つ' }, { w: 'favorable', m: '好都合な' }], ant: [{ w: 'hindering', m: '妨げる' }], field: '性質・状態' }],
   ['detrimental', '形', '1', '有害な・不利な', 'Smoking is detrimental to health.', '喫煙は健康に有害だ。', 'ラテン de+terere(すり減らす)。', { syn: [{ w: 'harmful', m: '有害な' }, { w: 'damaging', m: '損なう' }], ant: [{ w: 'beneficial', m: '有益な' }], fam: [{ w: 'detriment', m: '損害' }], field: '性質・状態' }],
   ['inclusive', '形', 'pre1', '包括的な・すべてを含む', 'The price is inclusive of tax.', 'その価格は税込みだ。', 'include(含む)+ -ive。', { syn: [{ w: 'comprehensive', m: '包括的な' }], ant: [], fam: [{ w: 'inclusion', m: '包含' }, { w: 'include', m: '含む' }], field: '性質・状態' }],
-  ['subsequent', '形', '1', 'その後の・続いて起こる', 'subsequent events', 'その後の出来事', 'ラテン sub+sequi(続く)→ sequence と同系。', { syn: [{ w: 'later', m: 'のちの' }], ant: [{ w: 'previous', m: '以前の' }], fam: [{ w: 'subsequently', m: 'その後' }], field: '性質・状態' }],
+  ['subsequent', '形', '1', 'その後の・続いて起こる', 'The first test failed, but subsequent tests showed that the engine worked well.', '最初の試験は失敗したが、その後の試験でエンジンがよく動くことが分かった。', 'ラテン sub+sequi(続く)→ sequence と同系。', { syn: [{ w: 'later', m: 'のちの' }], ant: [{ w: 'previous', m: '以前の' }], fam: [{ w: 'subsequently', m: 'その後' }], field: '性質・状態' }],
   ['ubiquitous', '形', '1', '至る所にある・遍在する', 'Smartphones are now ubiquitous.', '今やスマホは至る所にある。', 'ラテン ubique(どこにでも)。', { syn: [{ w: 'omnipresent', m: '遍在する' }, { w: 'widespread', m: '広く普及した' }], ant: [{ w: 'rare', m: 'まれな' }], field: '性質・状態' }],
-  ['peripheral', '形', '1', '周辺の・末梢の・重要でない', 'a peripheral issue', '周辺的な問題', 'ギリシャ peri(周り)+pherein(運ぶ)。', { syn: [{ w: 'secondary', m: '二次的な' }, { w: 'marginal', m: '周辺の' }], ant: [{ w: 'central', m: '中心的な' }], field: '性質・状態' }],
+  ['peripheral', '形', '1', '周辺の・末梢の・重要でない', 'Skilled soccer players use their peripheral vision to spot open teammates.', '上手なサッカー選手は周辺視野を使って、フリーの味方を見つける。', 'ギリシャ peri(周り)+pherein(運ぶ)。', { syn: [{ w: 'secondary', m: '二次的な' }, { w: 'marginal', m: '周辺の' }], ant: [{ w: 'central', m: '中心的な' }], field: '性質・状態' }],
   ['integral', '形', '1', '不可欠な・全体を成す', 'Trust is integral to teamwork.', '信頼はチームワークに不可欠だ。', 'ラテン integer(完全な)→ integrity と同系。', { syn: [{ w: 'essential', m: '不可欠な' }, { w: 'fundamental', m: '基本的な' }], ant: [{ w: 'peripheral', m: '周辺的な' }], field: '性質・状態' }],
 ]
 
