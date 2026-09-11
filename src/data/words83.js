@@ -2,7 +2,7 @@
 import { expandCompact } from './compact.js'
 
 const RAW = [
-  ['talent', '名', 'pre1', '才能・素質', 'a natural talent', '生まれつきの才能', 'ギリシャ talanton(秤・重さの単位)。', { syn: [{ w: 'gift', m: '天賦の才' }, { w: 'aptitude', m: '素質' }], ant: [{ w: 'ineptitude', m: '不器用' }], fam: [{ w: 'talented', m: '才能のある' }], field: '一般' }],
+  ['talent', '名', 'pre1', '才能・素質', 'She has a talent for music.', '彼女には音楽の才能がある。', 'ギリシャ talanton(秤・重さの単位)。', { syn: [{ w: 'gift', m: '天賦の才' }, { w: 'aptitude', m: '素質' }], ant: [{ w: 'ineptitude', m: '不器用' }], fam: [{ w: 'talented', m: '才能のある' }], field: '一般' }],
   ['tame', '形', 'pre1', '飼いならされた・おとなしい・飼いならす', 'a tame rabbit', '飼いならされたウサギ', '古英語 tam(飼いならされた)。', { syn: [{ w: 'domesticated', m: '飼育された' }, { w: 'docile', m: '従順な' }], ant: [{ w: 'wild', m: '野生の' }], field: '科学' }],
   ['tarnish', '動', '1', '汚す・変色させる・くすむ', 'tarnish his reputation', '彼の評判を汚す', '古フランス terniss-(くすませる)。', { syn: [{ w: 'taint', m: '汚す' }, { w: 'sully', m: '汚す' }], ant: [{ w: 'polish', m: '磨く' }], field: '一般' }],
   ['tart', '形', '1', '酸味のある・辛辣な・タルト', 'a tart apple', '酸っぱいリンゴ', '古英語 teart(鋭い)。', { syn: [{ w: 'sour', m: '酸っぱい' }, { w: 'sharp', m: '辛辣な' }], ant: [{ w: 'sweet', m: '甘い' }], field: '料理' }],

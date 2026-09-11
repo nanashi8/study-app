@@ -2,7 +2,7 @@
 import { expandCompact } from './compact.js'
 
 const RAW = [
-  ['mistake', '名', 'pre1', '間違い・誤解・誤る', 'a costly mistake', '高くつく間違い', '古ノルド mistaka(取り違える)。', { syn: [{ w: 'error', m: '誤り' }, { w: 'blunder', m: 'へま' }], ant: [{ w: 'accuracy', m: '正確さ' }], fam: [{ w: 'mistaken', m: '誤った' }], field: '一般' }],
+  ['mistake', '名', 'pre1', '間違い・誤解・誤る', "Don't worry, everyone makes mistakes.", '心配しないで、だれでも間違いをするものだ。', '古ノルド mistaka(取り違える)。', { syn: [{ w: 'error', m: '誤り' }, { w: 'blunder', m: 'へま' }], ant: [{ w: 'accuracy', m: '正確さ' }], fam: [{ w: 'mistaken', m: '誤った' }], field: '一般' }],
   ['astonishing', '形', 'pre1', '驚異的な・びっくりさせる', 'an astonishing result', '驚くべき結果', 'astonish(驚かせる)+ -ing。', { syn: [{ w: 'amazing', m: '驚くべき' }, { w: 'staggering', m: '途方もない' }], ant: [{ w: 'ordinary', m: '平凡な' }], fam: [{ w: 'astonish', m: '驚かせる' }], field: '性質・状態' }],
   ['coldness', '名', '5', '冷たさ・よそよそしさ', 'the coldness of winter', '冬の寒さ', 'cold(寒い)+ -ness', { fam: [{ w: 'cold', m: '寒い' }], syn: [{ w: 'chill', m: '冷気' }], ant: [{ w: 'warmth', m: '暖かさ' }], field: '性質・状態' }],
   ['intake', '名', 'pre1', '摂取・取り入れ・吸気', 'daily calorie intake', '1日のカロリー摂取量', 'in(中へ)+take(取る)。', { syn: [{ w: 'consumption', m: '消費' }, { w: 'inflow', m: '流入' }], ant: [{ w: 'output', m: '産出' }], field: '医学' }],
@@ -40,8 +40,8 @@ const RAW = [
   ['extravagance', '名', 'pre1', '贅沢・浪費', 'an act of extravagance', '贅沢のきわみ', 'extravagant(贅沢な)+ -ce。', { syn: [{ w: 'lavishness', m: '豪華さ' }, { w: 'wastefulness', m: '浪費' }], ant: [{ w: 'frugality', m: '倹約' }], fam: [{ w: 'extravagant', m: '贅沢な' }], field: '経済' }],
   ['fate', '名', 'pre1', '運命・宿命', 'leave it to fate', '運命に任せる', 'ラテン fatum(予言・運命)。', { syn: [{ w: 'destiny', m: '宿命' }, { w: 'doom', m: '破滅' }], fam: [{ w: 'fatal', m: '致命的な' }], field: '一般' }],
   ['greenness', '名', '5', '緑・未熟さ', 'the greenness of spring', '春の緑', 'green(緑の)+ -ness', { fam: [{ w: 'green', m: '緑の' }], syn: [{ w: 'inexperience', m: '未熟' }], field: '自然' }],
-  ['group', '名', 'pre1', '集団・グループ・分類する', 'a study group', '勉強会', 'イタリア gruppo(かたまり)。', { syn: [{ w: 'cluster', m: '集まり' }, { w: 'team', m: 'チーム' }], ant: [{ w: 'individual', m: '個人' }], field: '社会' }],
-  ['heat', '名', 'pre1', '熱・暑さ・熱する', 'the heat of summer', '夏の暑さ', '古英語 hætu(熱)。', { syn: [{ w: 'warmth', m: '暖かさ' }, { w: 'temperature', m: '温度' }], ant: [{ w: 'cold', m: '寒さ' }], field: '科学' }],
+  ['group', '名', 'pre1', '集団・グループ・分類する', 'We worked in a group of four.', '私たちは4人のグループで作業した。', 'イタリア gruppo(かたまり)。', { syn: [{ w: 'cluster', m: '集まり' }, { w: 'team', m: 'チーム' }], ant: [{ w: 'individual', m: '個人' }], field: '社会' }],
+  ['heat', '名', 'pre1', '熱・暑さ・熱する', 'The dog was tired from the summer heat.', '犬は夏の暑さでぐったりしていた。', '古英語 hætu(熱)。', { syn: [{ w: 'warmth', m: '暖かさ' }, { w: 'temperature', m: '温度' }], ant: [{ w: 'cold', m: '寒さ' }], field: '科学' }],
   ['imprudent', '形', '1', '軽率な・無分別な', 'an imprudent decision', '軽率な決断', 'im(否定)+prudent(思慮深い)。', { syn: [{ w: 'rash', m: '無謀な' }, { w: 'indiscreet', m: '軽率な' }], ant: [{ w: 'prudent', m: '思慮深い' }], fam: [{ w: 'prudent', m: '思慮深い' }], field: '性質・状態' }],
   ['incarceration', '名', '1', '投獄・監禁', 'wrongful incarceration', '不当な投獄', 'incarcerate(収監する)+ -ation', { fam: [{ w: 'incarcerate', m: '収監する' }], syn: [{ w: 'imprisonment', m: '投獄' }], ant: [{ w: 'release', m: '釈放' }], field: '法律' }],
   ['infamous', '形', 'pre1', '悪名高い・不名誉な', 'an infamous criminal', '悪名高い犯罪者', 'in(否定)+famous(有名な)→悪い意味で有名。', { syn: [{ w: 'notorious', m: '悪名高い' }, { w: 'disreputable', m: '評判の悪い' }], ant: [{ w: 'famous', m: '有名な' }], fam: [{ w: 'infamy', m: '汚名' }], field: '社会' }],
@@ -54,7 +54,7 @@ const RAW = [
   ['inquiry', '名', 'pre1', '調査・問い合わせ', 'a formal inquiry', '正式な調査', 'inquire(尋ねる)+ -y。', { syn: [{ w: 'investigation', m: '捜査' }, { w: 'query', m: '質問' }], fam: [{ w: 'inquire', m: '尋ねる' }], field: '一般' }],
   ['inquisitive', '形', '1', '詮索好きな・好奇心の強い', 'an inquisitive child', '好奇心旺盛な子', 'ラテン inquirere(尋ねる)→ inquire と同系。', { syn: [{ w: 'curious', m: '好奇心の強い' }, { w: 'prying', m: '詮索好きな' }], ant: [{ w: 'indifferent', m: '無関心な' }], fam: [{ w: 'inquire', m: '尋ねる' }], field: '心理' }],
   ['insatiable', '形', '1', '飽くなき・満たされない', 'an insatiable appetite', '飽くなき食欲', 'ラテン in(否定)+satis(十分)→ satisfy と同系。', { syn: [{ w: 'voracious', m: '貪欲な' }, { w: 'unquenchable', m: '抑えがたい' }], ant: [{ w: 'satisfiable', m: '満たせる' }], field: '性質・状態' }],
-  ['insect', '名', 'pre1', '昆虫・虫', 'a harmful insect', '害虫', 'ラテン insectum(切り込みのある体)。', { syn: [{ w: 'bug', m: '虫' }], fam: [{ w: 'insecticide', m: '殺虫剤' }], field: '科学' }],
+  ['insect', '名', 'pre1', '昆虫・虫', 'My brother likes to catch insects in the park.', '弟は公園で虫を捕まえるのが好きだ。', 'ラテン insectum(切り込みのある体)。', { syn: [{ w: 'bug', m: '虫' }], fam: [{ w: 'insecticide', m: '殺虫剤' }], field: '科学' }],
   ['inseparable', '形', 'pre1', '不可分の・切り離せない', 'inseparable friends', '切っても切れない友', 'in(否定)+separable(分けられる)。', { syn: [{ w: 'indivisible', m: '不可分の' }], ant: [{ w: 'separable', m: '分離できる' }], fam: [{ w: 'separate', m: '分ける' }], field: '性質・状態' }],
   ['insignificance', '名', 'pre1', '取るに足りなさ・無意味', 'fade into insignificance', '影が薄くなる', 'in(否定)+significance(重要性)。', { syn: [{ w: 'unimportance', m: '些末さ' }, { w: 'triviality', m: 'ささいさ' }], ant: [{ w: 'significance', m: '重要性' }], fam: [{ w: 'insignificant', m: '取るに足らない' }], field: '一般' }],
   ['insistence', '名', '2', '主張・強要・固執', 'at his insistence', '彼の強い求めで', 'insist(主張する)+ -ence', { fam: [{ w: 'insist', m: '主張する' }], syn: [{ w: 'persistence', m: '固執' }, { w: 'demand', m: '要求' }], field: '動作・行為' }],

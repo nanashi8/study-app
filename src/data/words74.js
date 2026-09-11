@@ -4,7 +4,7 @@ import { expandCompact } from './compact.js'
 const RAW = [
   ['offensive', '形', 'pre1', '攻撃的な・無礼な・不快な', 'an offensive remark', '無礼な発言', 'offense(攻撃・違反)+ -ive', { fam: [{ w: 'offense', m: '攻撃' }], syn: [{ w: 'insulting', m: '侮辱的な' }, { w: 'rude', m: '失礼な' }], ant: [{ w: 'defensive', m: '防御の' }], field: '社会' }],
   ['praised', '形', 'pre1', '称賛された・ほめられた', 'a highly praised novel', '高く評価された小説', 'praise(称賛する)+ -d。', { syn: [{ w: 'acclaimed', m: '絶賛された' }, { w: 'celebrated', m: '名高い' }], ant: [{ w: 'criticized', m: '批判された' }], fam: [{ w: 'praise', m: '称賛する' }], field: '一般' }],
-  ['set', '名', 'pre1', '一式・組・決まった', 'a chess set', 'チェス一式', '古英語 settan(据える)。', { syn: [{ w: 'collection', m: '一そろい' }, { w: 'kit', m: '道具一式' }], field: '一般' }],
+  ['set', '名', 'pre1', '一式・組・決まった', 'My uncle gave me a chess set.', 'おじがチェスのセット一式をくれた。', '古英語 settan(据える)。', { syn: [{ w: 'collection', m: '一そろい' }, { w: 'kit', m: '道具一式' }], field: '一般' }],
   ['well', '副', '5', '上手に・よく', 'She sings very well.', '彼女はとても歌が上手だ。', '古英語 wel(良く)。', { field: '医学' }],
   ['widening', '名', 'pre1', '拡張・拡大', 'the widening of the gap', '格差の拡大', 'widen(広げる)+ -ing。', { syn: [{ w: 'expansion', m: '拡大' }, { w: 'broadening', m: '拡張' }], ant: [{ w: 'narrowing', m: '狭まり' }], fam: [{ w: 'widen', m: '広げる' }], field: '一般' }],
   ['armament', '名', '1', '軍備・兵器', 'the armament race', '軍拡競争', 'ラテン armare(武装する)→ arm と同系。', { syn: [{ w: 'weaponry', m: '兵器' }, { w: 'arms', m: '武器' }], ant: [{ w: 'disarmament', m: '軍縮' }], fam: [{ w: 'arm', m: '武装させる' }], field: '軍事' }],
@@ -26,16 +26,16 @@ const RAW = [
   ['insubordinate', '形', '1', '不服従の・反抗的な', 'insubordinate behavior', '反抗的な態度', 'in(否定)+subordinate(従属する)。', { syn: [{ w: 'rebellious', m: '反逆的な' }, { w: 'defiant', m: '反抗的な' }], ant: [{ w: 'obedient', m: '従順な' }], fam: [{ w: 'subordinate', m: '従属する' }], field: '軍事' }],
   ['marine', '形', 'pre1', '海の・海洋の・海兵隊員', 'marine life', '海洋生物', 'ラテン mare(海)。', { syn: [{ w: 'maritime', m: '海事の' }, { w: 'oceanic', m: '海洋の' }], ant: [{ w: 'terrestrial', m: '陸生の' }], field: '環境' }],
   ['maritime', '形', '1', '海事の・海運の・沿海の', 'maritime trade', '海運貿易', 'ラテン maritimus(海の)→ marine と同系。', { syn: [{ w: 'marine', m: '海の' }, { w: 'naval', m: '海軍の' }], ant: [{ w: 'inland', m: '内陸の' }], field: '交通' }],
-  ['moment', '名', 'pre1', '一瞬・時点・重要性', 'a decisive moment', '決定的瞬間', 'ラテン momentum(動き・重み)。', { syn: [{ w: 'instant', m: '瞬間' }, { w: 'point', m: '時点' }], ant: [{ w: 'eternity', m: '永遠' }], fam: [{ w: 'momentary', m: '瞬間的な' }], field: '一般' }],
-  ['movement', '名', '4', '動き・運動・楽章', 'a civil rights movement', '公民権運動', 'move(動く)+ -ment', { fam: [{ w: 'move', m: '動く' }], syn: [{ w: 'motion', m: '運動' }, { w: 'campaign', m: '運動' }], ant: [{ w: 'stillness', m: '静止' }], field: '社会' }],
+  ['moment', '名', 'pre1', '一瞬・時点・重要性', "For a moment, I couldn't see anything.", '一瞬、何も見えなかった。', 'ラテン momentum(動き・重み)。', { syn: [{ w: 'instant', m: '瞬間' }, { w: 'point', m: '時点' }], ant: [{ w: 'eternity', m: '永遠' }], fam: [{ w: 'momentary', m: '瞬間的な' }], field: '一般' }],
+  ['movement', '名', '4', '動き・運動・楽章', 'The cat watched every movement of the bird.', '猫は鳥の動きを一つ一つ見ていた。', 'move(動く)+ -ment', { fam: [{ w: 'move', m: '動く' }], syn: [{ w: 'motion', m: '運動' }, { w: 'campaign', m: '運動' }], ant: [{ w: 'stillness', m: '静止' }], field: '社会' }],
   ['municipal', '形', 'pre1', '市の・地方自治体の', 'municipal services', '市のサービス', 'ラテン municipium(自治都市)。', { syn: [{ w: 'civic', m: '市民の' }, { w: 'local', m: '地方の' }], ant: [{ w: 'national', m: '国の' }], fam: [{ w: 'municipality', m: '自治体' }], field: '政治' }],
   ['mutiny', '名', 'pre1', '反乱・暴動', 'a mutiny on the ship', '船上の反乱', 'ラテン movere(動く)→ move と同系。', { syn: [{ w: 'rebellion', m: '反乱' }, { w: 'uprising', m: '蜂起' }], ant: [{ w: 'obedience', m: '服従' }], fam: [{ w: 'mutinous', m: '反乱の' }], field: '軍事' }],
   ['negotiate', '動', 'pre1', '交渉する・取り決める', 'negotiate a contract', '契約を交渉する', 'ラテン negotium(商売・仕事)。', { syn: [{ w: 'bargain', m: '交渉する' }, { w: 'mediate', m: '仲裁する' }], fam: [{ w: 'negotiation', m: '交渉' }], field: 'ビジネス' }],
   ['neighboring', '形', 'pre1', '近隣の・隣接する', 'neighboring countries', '近隣諸国', 'neighbor(隣人)+ -ing。', { syn: [{ w: 'adjacent', m: '隣接した' }, { w: 'nearby', m: '近くの' }], ant: [{ w: 'distant', m: '遠い' }], fam: [{ w: 'neighbor', m: '隣人' }], field: '一般' }],
-  ['next', '形', 'pre1', '次の・隣の', 'next week', '来週', '古英語 niehst(最も近い)→ nigh と同系。', { syn: [{ w: 'following', m: '次の' }, { w: 'subsequent', m: 'その後の' }], ant: [{ w: 'previous', m: '前の' }], field: '一般' }],
+  ['next', '形', 'pre1', '次の・隣の', 'Please get off at the next station.', '次の駅で降りてください。', '古英語 niehst(最も近い)→ nigh と同系。', { syn: [{ w: 'following', m: '次の' }, { w: 'subsequent', m: 'その後の' }], ant: [{ w: 'previous', m: '前の' }], field: '一般' }],
   ['nibble', '動', 'pre1', '少しずつかじる・ついばむ', 'nibble on a cracker', 'クラッカーをかじる', '低地ドイツ nibbelen(つつく)。', { syn: [{ w: 'gnaw', m: 'かじる' }, { w: 'munch', m: 'もぐもぐ食べる' }], ant: [{ w: 'gobble', m: 'がつがつ食べる' }], field: '一般' }],
   ['nighttime', '名', 'pre1', '夜間・夜', 'during the nighttime', '夜間に', 'night(夜)+time(時)。', { syn: [{ w: 'night', m: '夜' }, { w: 'darkness', m: '暗闇' }], ant: [{ w: 'daytime', m: '昼間' }], field: '一般' }],
-  ['noise', '名', 'pre1', '騒音・雑音', 'background noise', '背景雑音', 'ラテン nausea(船酔い)→不快な音。', { syn: [{ w: 'din', m: '騒音' }, { w: 'racket', m: '騒ぎ' }], ant: [], fam: [{ w: 'noisy', m: '騒がしい' }], field: '一般' }],
+  ['noise', '名', 'pre1', '騒音・雑音', 'The noise from the construction woke me up.', '工事の騒音で目が覚めた。', 'ラテン nausea(船酔い)→不快な音。', { syn: [{ w: 'din', m: '騒音' }, { w: 'racket', m: '騒ぎ' }], ant: [], fam: [{ w: 'noisy', m: '騒がしい' }], field: '一般' }],
 ]
 
 export const WORDS_MORE73 = RAW.map(expandCompact)

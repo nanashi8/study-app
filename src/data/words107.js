@@ -50,7 +50,7 @@ const RAW = [
   ['dock', '名', '2', '波止場・ドック・(船を)つける', 'unload at the dock', '波止場で荷を降ろす', '中世オランダ docke(波止場)。', { syn: [{ w: 'wharf', m: '埠頭' }, { w: 'pier', m: '桟橋' }], field: '交通' }],
   ['dose', '名', '2', '(薬の)一服・服用量', 'a high dose', '高用量', 'ギリシャ dosis(与えること)。', { syn: [{ w: 'amount', m: '量' }, { w: 'measure', m: '分量' }], fam: [{ w: 'dosage', m: '投薬量' }], field: '医学' }],
   ['dough', '名', '2', '生地・練り粉', 'knead the dough', '生地をこねる', '古英語 dag(練り粉)。', { syn: [{ w: 'batter', m: '生地' }, { w: 'paste', m: 'ペースト' }], field: '料理' }],
-  ['downtown', '名', '2', '中心街・繁華街', 'go downtown', '繁華街へ行く', 'down(下の)+town(町)。', { syn: [{ w: 'city center', m: '都心' }], ant: [{ w: 'suburb', m: '郊外' }], field: '地理' }],
+  ['downtown', '名', '2', '中心街・繁華街', 'Downtown is always crowded on weekends.', '繁華街は週末いつも混んでいる。', 'down(下の)+town(町)。', { syn: [{ w: 'city center', m: '都心' }], ant: [{ w: 'suburb', m: '郊外' }], field: '地理' }],
   ['draft', '名', 'pre1', '草稿・下書き・徴兵・すきま風', 'a rough draft', '粗い草稿', '古英語 dragan(引く)→ draw と同系。', { syn: [{ w: 'outline', m: '概略' }, { w: 'sketch', m: '下書き' }], ant: [{ w: 'final', m: '完成稿' }], field: '文学' }],
   ['drown', '動', '3', 'おぼれ死ぬ・水浸しにする', 'drown in the river', '川でおぼれる', '中英語 drounen(おぼれる)。', { syn: [{ w: 'submerge', m: '水没させる' }, { w: 'flood', m: '水浸しにする' }], ant: [{ w: 'rescue', m: '救助する' }], field: '一般' }],
   ['dual', '形', 'pre1', '二重の・二者の', 'dual citizenship', '二重国籍', 'ラテン duo(2)→ duo と同系。', { syn: [{ w: 'double', m: '二重の' }, { w: 'twofold', m: '二倍の' }], ant: [{ w: 'single', m: '単一の' }], field: '一般' }],

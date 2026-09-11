@@ -2,7 +2,7 @@
 import { expandCompact } from './compact.js'
 
 const RAW = [
-  ['holder', '名', '4', '保有者・持ち主・容器', 'a record holder', '記録保持者', 'hold(持つ)+ -er', { fam: [{ w: 'hold', m: '持つ' }], syn: [{ w: 'owner', m: '所有者' }, { w: 'bearer', m: '持参人' }], field: '一般' }],
+  ['holder', '名', '4', '保有者・持ち主・容器', 'He is the holder of the world record.', '彼は世界記録の保持者だ。', 'hold(持つ)+ -er', { fam: [{ w: 'hold', m: '持つ' }], syn: [{ w: 'owner', m: '所有者' }, { w: 'bearer', m: '持参人' }], field: '一般' }],
   ['irresistible', '形', 'pre1', '抗しがたい・たまらなく魅力的な', 'an irresistible offer', '断れない申し出', 'ir(否定)+resistible(抵抗できる)。', { syn: [{ w: 'overpowering', m: '抗しがたい' }, { w: 'compelling', m: '人を引きつける' }], ant: [{ w: 'resistible', m: '抵抗できる' }], fam: [{ w: 'resist', m: '抵抗する' }], field: '性質・状態' }],
   ['oblivion', '名', '1', '忘却・無意識', 'fade into oblivion', '忘れ去られる', 'ラテン oblivisci(忘れる)→ oblivious と同系。', { syn: [{ w: 'obscurity', m: '無名' }, { w: 'nothingness', m: '虚無' }], ant: [{ w: 'fame', m: '名声' }], fam: [{ w: 'oblivious', m: '気づかない' }], field: '心理' }],
   ['ornate', '形', 'pre1', '華麗な・装飾過多の', 'an ornate ceiling', '凝った天井', 'ラテン ornare(飾る)→ ornament と同系。', { syn: [{ w: 'elaborate', m: '凝った' }, { w: 'decorated', m: '装飾された' }], ant: [{ w: 'plain', m: '簡素な' }], fam: [{ w: 'ornament', m: '装飾' }], field: '芸術' }],
