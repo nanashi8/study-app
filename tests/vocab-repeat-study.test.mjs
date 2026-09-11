@@ -81,9 +81,14 @@ test('今日の候補を学び終えても、暗記は「次回待ち」で止�
   }
 })
 
-test('今日の候補がない日も、結果画面の「次へ進む」は同じ教材を一巡するまで続く', () => {
+test('今日の候補がない日も、結果画面の「次へ進む」は同じ教材を一巡するまで続く', (t) => {
   const now = new Date(2026, 8, 10, 9, 0, 0, 0).getTime()
   const day = todayIndex(now)
+  // 学習状況の集計（wordProgress）は現在時刻で数えるので、学習した日の時刻に固定する。
+  // 固定しないと、翌日以降は「覚えた」語が復習日を迎え、今日の候補が0件にならない。
+  const realNow = Date.now
+  Date.now = () => now
+  t.after(() => { Date.now = realNow })
   const { source, count, label } = smallChapter()
   const words = wordsForSource(source)
   // 全語を今日学んだ状態。半分は「覚えた」（次の復習は明日）、半分は「まだ」。

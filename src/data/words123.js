@@ -42,12 +42,12 @@ const RAW = [
   ['social', '形', 'pre2', '社会の・社交的な', 'social problems', '社会問題', 'ラテン socius(仲間)。', { field: '社会' }],
   ['statement', '名', 'pre2', '声明・陳述', 'an official statement', '公式声明', 'state(述べる)+ -ment。', { field: '一般' }],
   ['stick', '動', 'pre2', '突き刺す・くっつく・棒', 'stick a note', 'メモを貼る', '古英語 stician(刺す)。', { field: '一般' }],
-  ['task', '名', 'pre2', '仕事・課題・任務', 'a difficult task', '難しい仕事', '古フランス tasche(課された仕事)。', { field: 'ビジネス' }],
+  ['task', '名', 'pre2', '仕事・課題・任務', 'My task today is to clean the classroom.', '今日の私の仕事は教室の掃除だ。', '古フランス tasche(課された仕事)。', { field: 'ビジネス' }],
   ['technology', '名', 'pre2', '科学技術・テクノロジー', 'modern technology', '現代技術', 'ギリシャ tekhne(技術)+ -logy。', { field: '技術' }],
   ['term', '名', 'pre2', '用語・期間・学期・(複)条件', 'a medical term', '医学用語', 'ラテン terminus(境界)。', { field: '一般' }],
-  ['topic', '名', 'pre2', '話題・主題', 'a hot topic', '話題の話', 'ギリシャ topos(場所)。', { field: '一般' }],
+  ['topic', '名', 'pre2', '話題・主題', 'Weather is a safe topic to talk about.', '天気は無難な話題だ。', 'ギリシャ topos(場所)。', { field: '一般' }],
   ['tour', '名', 'pre2', '旅行・周遊・見学', 'a city tour', '市内観光', 'ギリシャ tornos(回転)。', { field: '社会' }],
-  ['treat', '動', 'pre2', '扱う・治療する・おごる・楽しみ', 'treat a patient', '患者を治療する', '古フランス traitier(扱う)。', { field: '一般' }],
+  ['treat', '動', 'pre2', '扱う・治療する・おごる・楽しみ', 'Please treat your books with care.', '本は大切に扱ってください。', '古フランス traitier(扱う)。', { field: '一般' }],
   ['valuable', '形', 'pre2', '貴重な・高価な', 'valuable advice', '貴重な助言', 'value(価値)+ -able。', { field: '一般' }],
 ]
 

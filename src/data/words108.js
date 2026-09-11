@@ -15,7 +15,7 @@ const RAW = [
   ['foam', '名', '2', '泡・泡立つ', 'sea foam', '海の泡', '古英語 fam(泡)。', { syn: [{ w: 'froth', m: '泡' }, { w: 'lather', m: '石けんの泡' }], fam: [{ w: 'foamy', m: '泡だらけの' }], field: '科学' }],
   ['fort', '名', '2', '砦・要塞', 'an old fort', '古い砦', 'ラテン fortis(強い)→ force と同系。', { syn: [{ w: 'fortress', m: '要塞' }, { w: 'stronghold', m: '拠点' }], field: '軍事' }],
   ['foul', '形', '2', '不快な・汚い・反則の', 'a foul smell', '悪臭', '古英語 ful(腐った)。', { syn: [{ w: 'filthy', m: '不潔な' }, { w: 'disgusting', m: '不快な' }], ant: [{ w: 'fair', m: '公正な' }], field: '一般' }],
-  ['fountain', '名', '3', '噴水・泉・源', 'a marble fountain', '大理石の噴水', 'ラテン fons(泉)→ font と同系。', { syn: [{ w: 'spring', m: '泉' }, { w: 'source', m: '源' }], field: '一般' }],
+  ['fountain', '名', '3', '噴水・泉・源', 'Children are playing near the fountain in the park.', '子供たちが公園の噴水のそばで遊んでいる。', 'ラテン fons(泉)→ font と同系。', { syn: [{ w: 'spring', m: '泉' }, { w: 'source', m: '源' }], field: '一般' }],
   ['fragrance', '名', 'pre1', '芳香・香り', 'a sweet fragrance', '甘い香り', 'ラテン fragrare(よい香りがする)。', { syn: [{ w: 'scent', m: '香り' }, { w: 'aroma', m: '芳香' }], ant: [{ w: 'stench', m: '悪臭' }], fam: [{ w: 'fragrant', m: '香りのよい' }], field: '一般' }],
   ['gallery', '名', '3', '画廊・美術館・観客席', 'an art gallery', '美術館', 'イタリア galleria(回廊)。', { syn: [{ w: 'museum', m: '博物館' }, { w: 'exhibition', m: '展示' }], field: '芸術' }],
   ['gamble', '動', '2', 'ばくちを打つ・賭ける・賭博', 'gamble on stocks', '株に賭ける', '古英語 gamen(遊び)→ game と同系。', { syn: [{ w: 'bet', m: '賭ける' }, { w: 'risk', m: '危険を冒す' }], fam: [{ w: 'gambler', m: 'ばくち打ち' }], field: '一般' }],

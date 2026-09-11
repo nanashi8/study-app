@@ -5,7 +5,7 @@ const RAW = [
   ['pioneer', '名', 'pre1', '先駆者・開拓者・先駆ける', 'a pioneer of medicine', '医学の先駆者', 'フランス pionnier(歩兵・開拓者)。', { syn: [{ w: 'trailblazer', m: '先駆者' }, { w: 'forerunner', m: '先駆者' }], ant: [{ w: 'follower', m: '追随者' }], fam: [{ w: 'pioneering', m: '先駆的な' }], field: '社会' }],
   ['query', '名', 'pre1', '質問・疑問・問い合わせる', 'answer a query', '質問に答える', 'ラテン quaerere(求める)→ inquire と同系。', { syn: [{ w: 'question', m: '質問' }, { w: 'inquiry', m: '問い合わせ' }], ant: [{ w: 'answer', m: '答え' }], field: '技術' }],
   ['reverent', '形', '1', '敬虔な・うやうやしい', 'a reverent silence', 'うやうやしい沈黙', 'ラテン revereri(畏敬する)→ reverence と同系。', { syn: [{ w: 'respectful', m: '敬意のこもった' }, { w: 'devout', m: '敬虔な' }], ant: [{ w: 'irreverent', m: '不敬な' }], fam: [{ w: 'reverence', m: '崇敬' }], field: '宗教' }],
-  ['stupid', '形', 'pre1', '愚かな・ばかげた', 'a stupid mistake', 'ばかげた間違い', 'ラテン stupere(ぼう然とする)。', { syn: [{ w: 'foolish', m: '愚かな' }, { w: 'idiotic', m: 'ばかげた' }], ant: [{ w: 'intelligent', m: '知的な' }], fam: [{ w: 'stupidity', m: '愚かさ' }], field: '性質・状態' }],
+  ['stupid', '形', 'pre1', '愚かな・ばかげた', 'I made a stupid mistake on the test.', 'テストでばかげた間違いをしてしまった。', 'ラテン stupere(ぼう然とする)。', { syn: [{ w: 'foolish', m: '愚かな' }, { w: 'idiotic', m: 'ばかげた' }], ant: [{ w: 'intelligent', m: '知的な' }], fam: [{ w: 'stupidity', m: '愚かさ' }], field: '性質・状態' }],
   ['tedium', '名', '1', '退屈・単調さ', 'the tedium of the job', '仕事の単調さ', 'ラテン taedium(嫌気)→ tedious と同系。', { syn: [{ w: 'boredom', m: '退屈' }, { w: 'monotony', m: '単調' }], ant: [{ w: 'excitement', m: '興奮' }], fam: [{ w: 'tedious', m: '退屈な' }], field: '心理' }],
   ['unfairness', '名', 'pre1', '不公平・不当', 'the unfairness of life', '人生の不公平', 'un(否定)+fairness(公平)。', { syn: [{ w: 'injustice', m: '不正' }, { w: 'inequity', m: '不公正' }], ant: [{ w: 'fairness', m: '公平' }], fam: [{ w: 'unfair', m: '不公平な' }], field: '社会' }],
   ['unimaginative', '形', 'pre1', '想像力に欠ける・平凡な', 'an unimaginative design', '平凡な設計', 'un(否定)+imaginative(想像力豊かな)。', { syn: [{ w: 'dull', m: '退屈な' }, { w: 'uninspired', m: '独創性のない' }], ant: [{ w: 'imaginative', m: '想像力豊かな' }], fam: [{ w: 'imagine', m: '想像する' }], field: '性質・状態' }],
@@ -56,7 +56,7 @@ const RAW = [
   ['latter', '形', 'pre1', '後者の・後半の', 'the latter half', '後半', '古英語 lætra(より遅い)→ late と同系。', { syn: [{ w: 'last-mentioned', m: '後に述べた' }, { w: 'second', m: '2番目の' }], ant: [{ w: 'former', m: '前者の' }], field: '一般' }],
   ['lawyer', '名', 'pre1', '弁護士・法律家', 'consult a lawyer', '弁護士に相談する', 'law(法律)+ -yer。', { syn: [{ w: 'attorney', m: '弁護士' }, { w: 'solicitor', m: '事務弁護士' }], fam: [{ w: 'law', m: '法律' }], field: '法律' }],
   ['layout', '名', 'pre1', '配置・レイアウト', 'the page layout', 'ページ配置', 'lay(置く)+out(外に)。', { syn: [{ w: 'arrangement', m: '配置' }, { w: 'design', m: '設計' }], field: '技術' }],
-  ['leader', '名', 'pre1', '指導者・先頭', 'a natural leader', '生まれながらの指導者', 'lead(導く)+ -er。', { syn: [{ w: 'chief', m: '長' }, { w: 'commander', m: '指揮官' }], ant: [{ w: 'follower', m: '追随者' }], fam: [{ w: 'lead', m: '導く' }], field: '社会' }],
+  ['leader', '名', 'pre1', '指導者・先頭', 'Ken is the leader of our soccer team.', '健は私たちのサッカーチームのリーダーだ。', 'lead(導く)+ -er。', { syn: [{ w: 'chief', m: '長' }, { w: 'commander', m: '指揮官' }], ant: [{ w: 'follower', m: '追随者' }], fam: [{ w: 'lead', m: '導く' }], field: '社会' }],
   ['leading', '形', 'pre1', '一流の・主要な・先頭の', 'a leading expert', '第一人者', 'lead(導く)+ -ing。', { syn: [{ w: 'foremost', m: '一番の' }, { w: 'principal', m: '主要な' }], ant: [{ w: 'minor', m: '副次的な' }], fam: [{ w: 'lead', m: '導く' }], field: '性質・状態' }],
 ]
 

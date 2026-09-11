@@ -3,7 +3,7 @@ import { expandCompact } from './compact.js'
 
 const RAW = [
   ['facade', '名', '1', '外観・うわべ・建物の正面', 'a stone facade', '石造りの正面', 'フランス facade(建物の前面)→ face と同系。', { syn: [{ w: 'front', m: '正面' }, { w: 'exterior', m: '外観' }], ant: [{ w: 'interior', m: '内部' }], field: '建築' }],
-  ['feed', '動', 'pre1', '食べさせる・養う・供給する', 'feed the baby', '赤ちゃんに食べさせる', '古英語 fedan(養う)→ food と同系。', { syn: [{ w: 'nourish', m: '養う' }, { w: 'supply', m: '供給する' }], ant: [{ w: 'starve', m: '飢えさせる' }], fam: [{ w: 'food', m: '食物' }], field: '一般' }],
+  ['feed', '動', 'pre1', '食べさせる・養う・供給する', 'Mom is feeding the baby.', 'お母さんが赤ちゃんに食べさせている。', '古英語 fedan(養う)→ food と同系。', { syn: [{ w: 'nourish', m: '養う' }, { w: 'supply', m: '供給する' }], ant: [{ w: 'starve', m: '飢えさせる' }], fam: [{ w: 'food', m: '食物' }], field: '一般' }],
   ['hallucinate', '動', '1', '幻覚を見る', 'The fever made him hallucinate.', '高熱で彼は幻覚を見た。', 'ラテン hallucinari(心がさまよう)。', { syn: [{ w: 'imagine', m: '思い描く' }], fam: [{ w: 'hallucination', m: '幻覚' }], field: '医学' }],
   ['handler', '名', 'pre1', '取扱者・調教師・世話係', 'a baggage handler', '手荷物係', 'handle(扱う)+ -er', { fam: [{ w: 'handle', m: '扱う' }], syn: [{ w: 'manager', m: '管理者' }, { w: 'trainer', m: '調教師' }], field: 'ビジネス' }],
   ['hopefulness', '名', '3', '希望・楽観', 'a mood of hopefulness', '希望に満ちた雰囲気', 'hopeful(希望に満ちた)+ -ness', { fam: [{ w: 'hopeful', m: '希望に満ちた' }], syn: [{ w: 'optimism', m: '楽観主義' }], ant: [{ w: 'despair', m: '絶望' }], field: '心理' }],
@@ -26,7 +26,7 @@ const RAW = [
   ['overseer', '名', '1', '監督・管理者', 'a factory overseer', '工場の監督', 'oversee(監督する)+ -er', { fam: [{ w: 'oversee', m: '監督する' }], syn: [{ w: 'supervisor', m: '監督者' }, { w: 'foreman', m: '現場監督' }], ant: [{ w: 'worker', m: '労働者' }], field: 'ビジネス' }],
   ['overturn', '動', 'pre1', '覆す・転覆させる', 'overturn the verdict', '判決を覆す', 'over(ひっくり)+turn(回す)。', { syn: [{ w: 'reverse', m: '覆す' }, { w: 'topple', m: '転覆させる' }], ant: [{ w: 'uphold', m: '支持する' }], field: '法律' }],
   ['overweight', '形', 'pre1', '太りすぎの・重量超過の', 'an overweight suitcase', '重量オーバーのスーツケース', 'over(過度に)+weight(重さ)。', { syn: [{ w: 'obese', m: '肥満の' }, { w: 'heavy', m: '重い' }], ant: [{ w: 'underweight', m: '低体重の' }], field: '医学' }],
-  ['owner', '名', 'pre1', '所有者・持ち主', 'the car owner', '車の持ち主', 'own(所有する)+ -er', { fam: [{ w: 'own', m: '所有する' }], syn: [{ w: 'proprietor', m: '経営者' }, { w: 'holder', m: '保有者' }], ant: [{ w: 'tenant', m: '借り手' }], field: '一般' }],
+  ['owner', '名', 'pre1', '所有者・持ち主', 'Who is the owner of this umbrella?', 'この傘の持ち主はだれですか？', 'own(所有する)+ -er', { fam: [{ w: 'own', m: '所有する' }], syn: [{ w: 'proprietor', m: '経営者' }, { w: 'holder', m: '保有者' }], ant: [{ w: 'tenant', m: '借り手' }], field: '一般' }],
   ['oxidize', '動', 'pre1', '酸化する・さびさせる', 'Iron oxidizes in air.', '鉄は空気中で酸化する。', 'oxide(酸化物)+ -ize。', { syn: [{ w: 'rust', m: 'さびる' }, { w: 'corrode', m: '腐食する' }], ant: [{ w: 'reduce', m: '還元する' }], fam: [{ w: 'oxidation', m: '酸化' }], field: '科学' }],
   ['officially', '副', 'pre1', '公式に・正式に', 'officially announced', '正式に発表された', 'official(公式の)+ -ly', { fam: [{ w: 'official', m: '公式の' }], syn: [{ w: 'formally', m: '正式に' }], ant: [{ w: 'unofficially', m: '非公式に' }], field: '副詞' }],
   ['openly', '副', '5', '率直に・公然と', 'speak openly', '率直に話す', 'open(開いた)+ -ly', { fam: [{ w: 'open', m: '開いた' }], syn: [{ w: 'frankly', m: '率直に' }], ant: [{ w: 'secretly', m: 'ひそかに' }], field: '副詞' }],

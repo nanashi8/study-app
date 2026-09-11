@@ -28,7 +28,7 @@ const RAW = [
   ['bounce', '動', '3', '弾む・跳ね返る', 'bounce a ball', 'ボールを弾ませる', '中英語 bunsen(打つ)。', { syn: [{ w: 'rebound', m: '跳ね返る' }, { w: 'spring', m: '跳ねる' }], field: '一般' }],
   ['bow', '動', '3', 'お辞儀する・屈する・弓', 'bow politely', '丁寧にお辞儀する', '古英語 bugan(曲げる)。', { syn: [{ w: 'bend', m: 'かがむ' }, { w: 'nod', m: '会釈する' }], field: '社会' }],
   ['bride', '名', '3', '花嫁・新婦', 'a beautiful bride', '美しい花嫁', '古英語 bryd(花嫁)。', { syn: [{ w: 'newlywed', m: '新婚者' }], ant: [{ w: 'groom', m: '花婿' }], fam: [{ w: 'bridal', m: '花嫁の' }], field: '社会' }],
-  ['brush', '動', '3', 'ブラシをかける・軽く触れる・ブラシ', 'brush your teeth', '歯を磨く', '古フランス broisse(ブラシ)。', { syn: [{ w: 'sweep', m: 'はく' }, { w: 'graze', m: 'かすめる' }], field: '一般' }],
+  ['brush', '動', '3', 'ブラシをかける・軽く触れる・ブラシ', "She brushes her dog's hair every day.", '彼女は毎日犬の毛にブラシをかける。', '古フランス broisse(ブラシ)。', { syn: [{ w: 'sweep', m: 'はく' }, { w: 'graze', m: 'かすめる' }], field: '一般' }],
   ['bubble', '名', '3', '泡・泡立つ', 'soap bubbles', 'シャボン玉', '擬音語(中英語)。', { syn: [{ w: 'foam', m: '泡' }, { w: 'froth', m: '泡' }], fam: [{ w: 'bubbly', m: '泡立つ' }], field: '科学' }],
   ['bucket', '名', '3', 'バケツ・手おけ', 'a bucket of water', '水の入ったバケツ', '古英語 buc(水差し)。', { syn: [{ w: 'pail', m: '手おけ' }, { w: 'tub', m: 'おけ' }], field: '一般' }],
   ['bullet', '名', '3', '弾丸・箇条書きの点', 'a stray bullet', '流れ弾', 'フランス boulette(小さな球)→ ball と同系。', { syn: [{ w: 'shot', m: '弾丸' }, { w: 'round', m: '弾' }], field: '軍事' }],

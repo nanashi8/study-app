@@ -3,7 +3,7 @@ import { expandCompact } from './compact.js'
 
 const RAW = [
   ['safeguard', '名', '1', '保護策・安全装置・守る', 'a legal safeguard', '法的保護策', 'safe(安全な)+guard(守り)。', { syn: [{ w: 'protection', m: '保護' }, { w: 'precaution', m: '予防策' }], ant: [{ w: 'threat', m: '脅威' }], field: '一般' }],
-  ['sail', '動', 'pre1', '航海する・帆走する・帆', 'sail across the ocean', '海を渡って航海する', '古英語 segl(帆)。', { syn: [{ w: 'cruise', m: '巡航する' }, { w: 'voyage', m: '航海する' }], fam: [{ w: 'sailor', m: '船員' }], field: '交通' }],
+  ['sail', '動', 'pre1', '航海する・帆走する・帆', 'They sailed across the Pacific Ocean.', '彼らは太平洋を航海して渡った。', '古英語 segl(帆)。', { syn: [{ w: 'cruise', m: '巡航する' }, { w: 'voyage', m: '航海する' }], fam: [{ w: 'sailor', m: '船員' }], field: '交通' }],
   ['salvation', '名', '1', '救い・救済', 'eternal salvation', '永遠の救い', 'ラテン salvare(救う)→ save と同系。', { syn: [{ w: 'redemption', m: '贖い' }, { w: 'deliverance', m: '救出' }], ant: [{ w: 'damnation', m: '地獄落ち' }], fam: [{ w: 'salvage', m: '救出する' }], field: '宗教' }],
   ['sanctify', '動', '1', '神聖にする・清める', 'sanctify the temple', '神殿を聖別する', 'ラテン sanctus(神聖な)+facere(する)。', { syn: [{ w: 'consecrate', m: '奉献する' }, { w: 'bless', m: '祝福する' }], ant: [{ w: 'desecrate', m: '冒涜する' }], fam: [{ w: 'sacred', m: '神聖な' }], field: '宗教' }],
   ['sanction', '動', '1', '認可する・制裁を科す・制裁', 'impose sanctions', '制裁を科す', 'ラテン sancire(神聖にする)。', { syn: [{ w: 'authorize', m: '認可する' }, { w: 'penalize', m: '罰する' }], ant: [{ w: 'forbid', m: '禁じる' }], field: '法律' }],
