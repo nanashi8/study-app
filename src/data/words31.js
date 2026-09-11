@@ -51,7 +51,7 @@ const RAW = [
   // 接続副詞
   ['thereby', '副', '1', 'それによって', 'He saved money, thereby retiring early.', '彼は貯金し、それで早く引退した。', 'there(それ)+by(によって)。', { syn: [{ w: 'thus', m: 'こうして' }], field: '副詞' }],
   ['henceforth', '副', '1', '今後は', 'Henceforth, the rule applies.', '今後この規則が適用される。', 'hence(今から)+forth(先へ)。', { syn: [{ w: 'from now on', m: '今後' }], field: '副詞' }],
-  ['hitherto', '副', '1', '今まで・これまで', 'a hitherto unknown fact', 'これまで知られていなかった事実', 'hither(ここまで)+to。', { syn: [{ w: 'until now', m: '今まで' }, { w: 'previously', m: '以前は' }], field: '副詞' }],
+  ['hitherto', '副', '1', '今まで・これまで', 'An old diary in the attic revealed hitherto unknown facts about our town.', '屋根裏の古い日記から、私たちの町についてこれまで知られていなかった事実が明らかになった。', 'hither(ここまで)+to。', { syn: [{ w: 'until now', m: '今まで' }, { w: 'previously', m: '以前は' }], field: '副詞' }],
   ['notwithstanding', '前', '1', '〜にもかかわらず', 'Notwithstanding the rain, they played.', '雨にもかかわらず彼らは試合をした。', 'not+withstanding(逆らって立つ)。', { syn: [{ w: 'despite', m: '〜にもかかわらず' }, { w: 'in spite of', m: '〜をよそに' }], field: '機能語' }],
   ['albeit', '接', '1', '〜だけれども', 'It was useful, albeit expensive.', '高くついたが、役には立った。', 'all+be+it(たとえそうであっても)。', { syn: [{ w: 'although', m: '〜だが' }, { w: 'even though', m: 'たとえ〜でも' }], field: '機能語' }],
   ['conversely', '副', '1', '逆に・反対に', 'Conversely, prices may fall.', '逆に価格は下がるかもしれない。', 'converse(逆)+ -ly→ vers と同系。', { syn: [{ w: 'on the other hand', m: '他方' }], field: '副詞' }],
