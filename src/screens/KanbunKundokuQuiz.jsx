@@ -9,8 +9,8 @@ import { Button, Chip, cx } from '../components/ui.jsx'
 import { KanbunText } from '../components/KanbunFurigana.jsx'
 import { KanbunMarkedText } from '../components/KanbunMarkedText.js'
 import { Check, Close, Lightbulb, Refresh } from '../components/Icons.jsx'
-import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
-import { growDeck } from '../lib/session.js'
+import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
+import { answeredQuizIndexes, growDeck, restartSessionCount } from '../lib/session.js'
 import { QuestionSessionControls } from '../components/QuestionSessionControls.jsx'
 
 const ALL_EXERCISES = 9999 // 在庫数を数えるための十分大きな上限
@@ -28,6 +28,8 @@ export function KanbunKundokuQuizScreen() {
   const [correctCount, setCorrectCount] = useState(0)
   const [weakIds, setWeakIds] = useState([])
   const [done, setDone] = useState(false)
+  // 1回の問題数を減らして数え直す前に答えた問題。結果の全問数に含める。
+  const carried = useCarriedAnswers()
   const questionStates = useRef({})
   const autoAdvanceSequence = useRef(0)
   const [autoAdvanceSignal, setAutoAdvanceSignal] = useState(null)
@@ -86,7 +88,15 @@ export function KanbunKundokuQuizScreen() {
     if (index + 1 >= deck.length) setDone(true)
     else moveTo(index + 1)
   }
+  // 答えた問題の位置。表示中の問題は state、ほかは移動するときに退避した状態から数える。
+  const answeredIndexes = answeredQuizIndexes(index, {
+    ...Object.fromEntries(
+      Object.entries(questionStates.current).map(([position, state]) => [position, state?.answered ? true : null]),
+    ),
+    [index]: answered ? true : null,
+  })
   const restart = (ids = params.ids) => {
+    carried.reset()
     setDeck(pickKanbunKundokuExercises(ids, { size: deck.length || sessionSize, preserveOrder: params.preserveOrder }))
     setIndex(0)
     setSelectedIds([])
@@ -98,14 +108,15 @@ export function KanbunKundokuQuizScreen() {
   }
 
   if (done) {
-    const percentage = Math.round((correctCount / deck.length) * 100)
+    const total = carried.count + deck.length
+    const percentage = Math.round((correctCount / total) * 100)
     return (
       <div className="flex h-full flex-col overflow-y-auto p-6 text-center">
         <div className="m-auto flex w-full max-w-sm flex-col items-center gap-5 py-5">
           <div className="text-6xl">{percentage >= 80 ? '🏆' : '↩️'}</div>
           <div>
             <p className="text-xs font-extrabold text-rose-700">返り点の結果</p>
-            <p className="mt-1 font-display text-2xl font-extrabold text-ink">{correctCount} / {deck.length} 正解</p>
+            <p className="mt-1 font-display text-2xl font-extrabold text-ink">{correctCount} / {total} 正解</p>
             <p className="mt-1 text-sm font-bold text-ink/50">返り点の読む順・正答率 {percentage}%</p>
           </div>
           {weakIds.length > 0 && (
@@ -143,23 +154,19 @@ export function KanbunKundokuQuizScreen() {
             total={deck.length}
             max={poolSize}
             className="h-11"
-            onResize={(size, { discard }) => {
-              if (discard) {
-                setDeck(pickKanbunKundokuExercises(params.ids, { size, preserveOrder: params.preserveOrder }))
+            reached={Math.max(index, answeredIndexes.at(-1) ?? 0)}
+            onResize={(size, { restart }) => {
+              if (restart) {
+                // 答えた問題の記録と結果は残したまま、まだ答えていない問題を1問目として数え直す。
+                const next = restartSessionCount(deck, answeredIndexes, index, pickKanbunKundokuExercises(params.ids, { size: size + deck.length, preserveOrder: params.preserveOrder }), size)
+                carried.carry(next.answeredItems)
+                setDeck(next.deck)
                 setIndex(0)
                 setSelectedIds([])
                 setAnswered(false)
-                setCorrectCount(0)
-                setWeakIds([])
-                setDone(false)
                 questionStates.current = {}
               } else {
-                setDeck((current) => growDeck(
-                  current,
-                  index + 1,
-                  pickKanbunKundokuExercises(params.ids, { size, preserveOrder: params.preserveOrder }),
-                  size,
-                ))
+                setDeck((current) => growDeck(current, Math.max(index, answeredIndexes.at(-1) ?? 0) + 1, pickKanbunKundokuExercises(params.ids, { size: size, preserveOrder: params.preserveOrder }), size))
               }
             }}
           />

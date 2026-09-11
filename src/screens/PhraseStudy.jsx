@@ -1,6 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
-import { buildPhraseDeck, growDeck, recordStudyAnswer } from '../lib/session.js'
+import {
+  answeredSessionIndexes,
+  buildPhraseDeck,
+  growDeck,
+  recordStudyAnswer,
+  restartSessionCount,
+} from '../lib/session.js'
 import { getLevel } from '../data/levels.js'
 import { longSentenceTranslationFor } from '../data/long-sentence-translations.js'
 import { playSpeechItems } from '../lib/speech-player.js'
@@ -12,7 +18,7 @@ import { IdiomFormGuide } from '../components/IdiomFormGuide.jsx'
 import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
 import { Button, Chip } from '../components/ui.jsx'
 import { ArrowRight, Lightbulb, Link } from '../components/Icons.jsx'
-import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
+import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
 import { CardSaveToggle, CardStudyFooter, CardSwipeRegion } from '../components/CardStudyControls.jsx'
 import {
   nextUnansweredSessionIndex,
@@ -56,6 +62,8 @@ export function PhraseStudyScreen() {
     values: recordedAnswers,
   } = useIndexedSessionState(i)
   const results = useRef({ remembered: 0, forgot: 0, forgotIds: [] })
+  // 1回のカード数を減らして数え直す前に答えたカード。結果の全枚数に含める。
+  const carried = useCarriedAnswers()
   const item = deck[i]
   const leave = () => params.returnTo
     ? returnTo(params.returnTo.screen, params.returnTo.params ?? {})
@@ -90,12 +98,14 @@ export function PhraseStudyScreen() {
     )
   }
 
+  const answeredIndexes = answeredSessionIndexes(recordedAnswers)
+
   const finish = () => {
     navigate('sessionResult', {
       title: params.title ?? '熟語・構文',
       mode: 'study',
       engine: 'phrase',
-      total: deck.length,
+      total: carried.count + deck.length,
       correct: results.current.remembered,
       wrong: results.current.forgot,
       reviewIds: results.current.forgotIds,
@@ -151,15 +161,17 @@ export function PhraseStudyScreen() {
             max={poolSize}
             label="カード"
             className="h-11 w-full min-w-0 px-0 text-center text-xs no-underline"
-            onResize={(size, { discard }) => {
-              if (discard) {
-                setDeck(buildFor(size))
-                setI(0)
-                setFlipped(revealAll)
+            reached={Math.max(i, answeredIndexes.at(-1) ?? 0)}
+            onResize={(size, { restart }) => {
+              if (restart) {
+                // 答えたカードの記録と結果は残したまま、まだ答えていないカードを1枚目として数え直す。
+                const next = restartSessionCount(deck, answeredIndexes, i, buildFor(size + deck.length), size)
+                carried.carry(next.answeredItems)
+                setDeck(next.deck)
                 clearRecordedAnswers()
-                results.current = { remembered: 0, forgot: 0, forgotIds: [] }
+                moveToCard(0, {})
               } else {
-                setDeck((current) => growDeck(current, i + 1, buildFor(size), size))
+                setDeck((current) => growDeck(current, Math.max(i, answeredIndexes.at(-1) ?? 0) + 1, buildFor(size), size))
               }
             }}
           />

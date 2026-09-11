@@ -13,7 +13,7 @@ import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
 import { Button, Chip, IconButton, cx } from '../components/ui.jsx'
-import { growDeck } from '../lib/session.js'
+import { answeredQuizIndexes, growDeck, restartSessionCount } from '../lib/session.js'
 import {
   ArrowRight,
   Bookmark,
@@ -25,7 +25,7 @@ import {
   SpeakerWave,
 } from '../components/Icons.jsx'
 import { buildListeningInstructorExplanation } from '../lib/instructorExplanations.js'
-import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
+import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
 import {
   QuestionSessionControls,
   useIndexedSessionState,
@@ -72,6 +72,7 @@ export function ListeningQuizScreen() {
     value: selected,
     setValue: setSelected,
     clear: clearSelections,
+    values: selections,
   } = useIndexedSessionState(i)
   const autoAdvanceSequence = useRef(0)
   const [autoAdvanceSignal, setAutoAdvanceSignal] = useState(null)
@@ -81,6 +82,8 @@ export function ListeningQuizScreen() {
   const [activeSegment, setActiveSegment] = useState(null)
   const [showTranscript, setShowTranscript] = useState(false)
   const results = useRef({ correct: 0, wrong: 0, unknown: 0, wrongIds: [] })
+  // 1回の問題数を減らして数え直す前に答えた問題。結果の全問数に含める。
+  const carried = useCarriedAnswers()
 
   // 途中でやめても、そこまでに答えた分をこの分野の学習記録へ残す。
   const handOffSession = useUnfinishedSessionRecord({
@@ -105,6 +108,7 @@ export function ListeningQuizScreen() {
     [item],
   )
   const answered = selected !== null
+  const answeredIndexes = answeredQuizIndexes(i, selections)
   const isCorrectPick = answered && selected === item?.answer
   const correctChoice = item?.choices.find((choice) => choice.id === item.answer)
   const instructorExplanation = answered
@@ -186,7 +190,7 @@ export function ListeningQuizScreen() {
       mode: 'quiz',
       engine: 'listening',
       replayScreen: 'listeningQuiz',
-      total: deck.length,
+      total: carried.count + deck.length,
       correct: results.current.correct,
       wrong: results.current.wrong + results.current.unknown,
       reviewIds: results.current.wrongIds,
@@ -250,17 +254,20 @@ export function ListeningQuizScreen() {
             total={deck.length}
             max={poolSize}
             className="h-11"
-            onResize={(size, { discard }) => {
-              if (discard) {
-                setDeck(buildFor(size))
-                setI(0)
+            reached={Math.max(i, answeredIndexes.at(-1) ?? 0)}
+            onResize={(size, { restart }) => {
+              if (restart) {
+                // 答えた問題の記録と結果は残したまま、まだ答えていない問題を1問目として数え直す。
+                const next = restartSessionCount(deck, answeredIndexes, i, buildFor(size + deck.length), size)
+                carried.carry(next.answeredItems)
+                setDeck(next.deck)
                 clearSelections()
                 setPlaysUsed(0)
                 setPracticePlays(0)
                 setShowTranscript(false)
-                results.current = { correct: 0, wrong: 0, unknown: 0, wrongIds: [] }
+                setI(0)
               } else {
-                setDeck((current) => growDeck(current, i + 1, buildFor(size), size))
+                setDeck((current) => growDeck(current, Math.max(i, answeredIndexes.at(-1) ?? 0) + 1, buildFor(size), size))
               }
             }}
           />

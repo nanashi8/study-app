@@ -3,10 +3,12 @@ import { useStore } from '../store/useStore.js'
 import { etymologyCardsForWord, etymologyStoryForWord } from '../data/vocab.js'
 import { getLevel } from '../data/levels.js'
 import {
+  answeredSessionIndexes,
   buildDeck,
   growDeck,
   isAutomaticVocabularySource,
   recordStudyAnswer,
+  restartSessionCount,
   vocabularyStockCount,
 } from '../lib/session.js'
 import { vocabMixEmptyNotice, vocabMixFreshShare } from '../lib/vocabMix.js'
@@ -18,7 +20,7 @@ import { EtymologyBlock } from '../components/WordBits.jsx'
 import { OtherSenses, PosBadge } from '../components/WordBits.jsx'
 import { Button, Chip } from '../components/ui.jsx'
 import { ArrowRight, Lightbulb } from '../components/Icons.jsx'
-import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
+import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
 import { VocabReviewHistory } from '../components/VocabReviewHistory.jsx'
 import { CardSaveToggle, CardStudyFooter, CardSwipeRegion } from '../components/CardStudyControls.jsx'
 import { WordListSheet, useWordInAnyBook } from '../components/WordListSheet.jsx'
@@ -105,6 +107,8 @@ export function VocabStudyScreen() {
         forgotIds: [...(restore.results?.forgotIds ?? [])],
       }
     : { remembered: 0, forgot: 0, forgotIds: [] })
+  // 1回のカード数を減らして数え直す前に答えたカード。結果の「今回学んだ語」に含める。
+  const carried = useCarriedAnswers(restore?.carried)
   const beforeBoxesAtStart = useRef(
     restore?.beforeBoxes
     ?? Object.fromEntries(deck.map((item) => [
@@ -132,7 +136,7 @@ export function VocabStudyScreen() {
     appliedVocabMix.current = settings.vocabMix
     if (!isAutomaticVocabularySource(source)) return
     const size = params.size ?? sessionSize
-    const answeredIndexes = Object.keys(recordedAnswers).map(Number).filter(Number.isInteger)
+    const answeredIndexes = answeredSessionIndexes(recordedAnswers)
     setDeck((current) => {
       const keepCount = current.length
         ? Math.max(i + 1, ...answeredIndexes.map((index) => index + 1))
@@ -184,6 +188,7 @@ export function VocabStudyScreen() {
     )
   }
 
+  const answeredIndexes = answeredSessionIndexes(recordedAnswers)
   // 結果として送るのは、実際に答えたカードだけ。途中で枚数を変えてデッキが
   // 組み直されても、まだ見ていない語を「学んだ語」に混ぜない。
   const answeredWordIds = (answers) => (
@@ -197,7 +202,7 @@ export function VocabStudyScreen() {
 
   const finish = (answers = recordedAnswers) => {
     const completedAt = Date.now()
-    const wordIds = answeredWordIds(answers)
+    const wordIds = [...carried.ids, ...answeredWordIds(answers)]
     navigate('sessionResult', {
       title: params.title ?? '単語学習',
       mode: 'study',
@@ -257,6 +262,7 @@ export function VocabStudyScreen() {
       i,
       flipped,
       ratings: { ...recordedAnswers },
+      carried: carried.snapshot(),
       beforeBoxes: { ...beforeBoxesAtStart.current },
       results: {
         ...results.current,
@@ -283,30 +289,20 @@ export function VocabStudyScreen() {
             max={poolSize}
             label="カード"
             className="h-11 w-full min-w-0 px-0 text-center text-xs no-underline"
-            onResize={(size, { discard }) => {
-              if (discard) {
-                const nextDeck = buildFor(size)
-                setDeck(nextDeck)
-                setI(0)
-                setFlipped(revealAll)
+            reached={Math.max(i, answeredIndexes.at(-1) ?? 0)}
+            onResize={(size, { restart }) => {
+              if (restart) {
+                // 答えたカードの記録と結果は残したまま、まだ答えていないカードを1枚目として数え直す。
+                const next = restartSessionCount(deck, answeredIndexes, i, buildFor(size + deck.length), size)
+                carried.carry(next.answeredItems)
+                rememberBoxesAtStart(next.deck)
+                setDeck(next.deck)
                 clearRecordedAnswers()
-                results.current = { remembered: 0, forgot: 0, forgotIds: [] }
-                beforeBoxesAtStart.current = Object.fromEntries(nextDeck.map((item) => [
-                  item.id,
-                  Number.isFinite(srsAtStart.current[item.id]?.box)
-                    ? srsAtStart.current[item.id].box
-                    : null,
-                ]))
+                moveToCard(0, {})
               } else {
                 setDeck((current) => {
-                  const nextDeck = growDeck(current, i + 1, buildFor(size), size)
-                  for (const item of nextDeck) {
-                    if (!Object.hasOwn(beforeBoxesAtStart.current, item.id)) {
-                      beforeBoxesAtStart.current[item.id] = Number.isFinite(srsAtStart.current[item.id]?.box)
-                        ? srsAtStart.current[item.id].box
-                        : null
-                    }
-                  }
+                  const nextDeck = growDeck(current, Math.max(i, answeredIndexes.at(-1) ?? 0) + 1, buildFor(size), size)
+                  rememberBoxesAtStart(nextDeck)
                   return nextDeck
                 })
               }

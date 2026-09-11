@@ -462,8 +462,9 @@ test('結果画面・暗記・テストの全配線が同じ周回IDを引き継
   }
   // テストは最後まで解いてから結果へ進むのでデッキ全体、暗記は途中でやめられるので
   // 答えたカードだけを一巡済みとして渡す。見ていない語を次セットから外さない。
-  assert.match(quiz, /wordIds: deck\.map/)
-  assert.match(study, /const wordIds = answeredWordIds\(answers\)/)
+  // どちらも、1回の数を減らして数え直す前に答えた語を先に含める。
+  assert.match(quiz, /wordIds: \[\.\.\.carried\.ids, \.\.\.deck\.map/)
+  assert.match(study, /const wordIds = \[\.\.\.carried\.ids, \.\.\.answeredWordIds\(answers\)\]/)
   assert.match(result, /vocabularySessionContinuation\(params/)
   assert.match(result, /continueLabel=\{vocabContinuation\.label\}/)
   assert.doesNotMatch(levels, /data-vocab-session-policy|固定配分|30〜60%|同じ周回|次セット/)

@@ -6,7 +6,7 @@ import { SpeakButton } from '../components/SpeakButton.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { Button, Chip } from '../components/ui.jsx'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
-import { growDeck } from '../lib/session.js'
+import { answeredSessionIndexes, growDeck, restartSessionCount } from '../lib/session.js'
 import {
   nextUnansweredSessionIndex,
   QuestionSessionControls,
@@ -140,6 +140,8 @@ export function WritingGrammarReviewScreen() {
     setRevealed(Object.hasOwn(answers, nextIndex))
   }
 
+  const answeredIndexes = answeredSessionIndexes(recordedAnswers)
+
   return (
     <div className="flex min-h-full flex-col bg-paper">
       <QuestionSessionControls
@@ -157,15 +159,17 @@ export function WritingGrammarReviewScreen() {
             max={poolSize}
             label="カード"
             className="h-11"
-            onResize={(size, { discard }) => {
-              if (discard) {
-                setDeck(buildFor(size))
-                setIndex(0)
-                setRevealed(false)
-                setResults({ remembered: 0, forgot: 0 })
+            reached={Math.max(index, answeredIndexes.at(-1) ?? 0)}
+            onResize={(size, { restart }) => {
+              if (restart) {
+                // 答えたカードの記録と結果（わかった・もう一度の数）は残したまま、
+                // まだ答えていないカードを1枚目として数え直す。
+                const next = restartSessionCount(deck, answeredIndexes, index, buildFor(0), size)
+                setDeck(next.deck)
                 clearRecordedAnswers()
+                moveToCard(0, {})
               } else {
-                setDeck((current) => growDeck(current, index + 1, buildFor(size), size))
+                setDeck((current) => growDeck(current, Math.max(index, answeredIndexes.at(-1) ?? 0) + 1, buildFor(size), size))
               }
             }}
           />

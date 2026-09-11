@@ -1,6 +1,12 @@
 import { useMemo, useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
-import { buildPhraseDeck, growDeck, pickPhraseDistractors } from '../lib/session.js'
+import {
+  answeredQuizIndexes,
+  buildPhraseDeck,
+  growDeck,
+  pickPhraseDistractors,
+  restartSessionCount,
+} from '../lib/session.js'
 import { shuffle } from '../data/vocab.js'
 import { quizMeaning } from '../data/compact.js'
 import { phraseSpeechText } from '../lib/phrase-speech.js'
@@ -18,7 +24,7 @@ import { cx } from '../components/ui.jsx'
 import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { buildPhraseInstructorExplanation } from '../lib/instructorExplanations.js'
 import { isDragonVeinSource } from '../lib/dragonVein.js'
-import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
+import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
 import {
   QuestionSessionControls,
   useIndexedSessionState,
@@ -73,10 +79,13 @@ export function PhraseQuizScreen() {
     value: selected,
     setValue: setSelected,
     clear: clearSelections,
+    values: selections,
   } = useIndexedSessionState(index)
   const autoAdvanceSequence = useRef(0)
   const [autoAdvanceSignal, setAutoAdvanceSignal] = useState(null)
   const results = useRef({ correct: 0, wrong: 0, unknown: 0, wrongIds: [], answerLog: [] })
+  // 1回の問題数を減らして数え直す前に答えた問題。結果の全問数に含める。
+  const carried = useCarriedAnswers()
 
   // 途中でやめても、そこまでに答えた分をこの分野の学習記録へ残す。
   const handOffSession = useUnfinishedSessionRecord({
@@ -107,6 +116,7 @@ export function PhraseQuizScreen() {
   }
 
   const answered = selected !== null
+  const answeredIndexes = answeredQuizIndexes(index, selections)
   const streakState = streaksFromLog(results.current.answerLog)
   const isCorrectPick = answered && selected === item.id
   const instructorExplanation = answered
@@ -126,7 +136,7 @@ export function PhraseQuizScreen() {
       title: params.title ?? (isDragonVein ? '龍脈の熟語・構文解読' : '熟語・構文'),
       mode: 'quiz',
       engine: 'phrase',
-      total: deck.length,
+      total: carried.count + deck.length,
       correct: results.current.correct,
       wrong: results.current.wrong + results.current.unknown,
       reviewIds: results.current.wrongIds,
@@ -195,14 +205,17 @@ export function PhraseQuizScreen() {
             total={deck.length}
             max={poolSize}
             className="h-11"
-            onResize={(size, { discard }) => {
-              if (discard) {
-                setDeck(buildFor(size))
-                setIndex(0)
+            reached={Math.max(index, answeredIndexes.at(-1) ?? 0)}
+            onResize={(size, { restart }) => {
+              if (restart) {
+                // 答えた問題の記録と結果は残したまま、まだ答えていない問題を1問目として数え直す。
+                const next = restartSessionCount(deck, answeredIndexes, index, buildFor(size + deck.length), size)
+                carried.carry(next.answeredItems)
+                setDeck(next.deck)
                 clearSelections()
-                results.current = { correct: 0, wrong: 0, unknown: 0, wrongIds: [], answerLog: [] }
+                setIndex(0)
               } else {
-                setDeck((current) => growDeck(current, index + 1, buildFor(size), size))
+                setDeck((current) => growDeck(current, Math.max(index, answeredIndexes.at(-1) ?? 0) + 1, buildFor(size), size))
               }
             }}
           />

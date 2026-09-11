@@ -11,7 +11,7 @@ import {
 } from '../data/grammar-format-expansion.js'
 import { longSentenceTranslationFor } from '../data/long-sentence-translations.js'
 import { buildGrammarDeck } from '../lib/grammarDeck.js'
-import { growDeck } from '../lib/session.js'
+import { answeredQuizIndexes, growDeck, restartSessionCount } from '../lib/session.js'
 import { todayIndex } from '../store/useStore.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { LongSentenceTranslation } from '../components/LongSentenceTranslation.jsx'
@@ -24,7 +24,7 @@ import { ArrowRight, Bookmark, BookmarkFilled, Check, Close } from '../component
 import { limitQuizChoices, UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { buildGrammarInstructorExplanation } from '../lib/instructorExplanations.js'
 import { grammarQuestionNeedsMeaningCue } from '../lib/grammarQuestionExplanations.js'
-import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
+import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
 import {
   QuestionSessionControls,
   useIndexedSessionState,
@@ -67,6 +67,7 @@ export function GrammarQuizScreen() {
     value: selected,
     setValue: setSelected,
     clear: clearSelections,
+    values: selections,
   } = useIndexedSessionState(i)
   const autoAdvanceSequence = useRef(0)
   const [autoAdvanceSignal, setAutoAdvanceSignal] = useState(null)
@@ -77,6 +78,8 @@ export function GrammarQuizScreen() {
   } = useIndexedSessionState(i, EMPTY_ORDER_DRAFT)
   const [orderAttempt, setOrderAttempt] = useState(0)
   const results = useRef({ correct: 0, wrong: 0, unknown: 0, wrongIds: [] })
+  // 1回の問題数を減らして数え直す前に答えた問題。結果の全問数に含める。
+  const carried = useCarriedAnswers()
 
   // 途中でやめても、そこまでに答えた分をこの分野の学習記録へ残す。
   const handOffSession = useUnfinishedSessionRecord({
@@ -106,6 +109,7 @@ export function GrammarQuizScreen() {
   }
 
   const answered = selected !== null
+  const answeredIndexes = answeredQuizIndexes(i, selections)
   const questionType = grammarQuestionType(item)
   const questionTypeMeta = GRAMMAR_QUESTION_TYPE_META[questionType]
   const orderQuestion = questionType === 'word-order'
@@ -127,7 +131,7 @@ export function GrammarQuizScreen() {
       mode: 'quiz',
       engine: 'grammar',
       replayScreen: 'grammarQuiz',
-      total: deck.length,
+      total: carried.count + deck.length,
       correct: results.current.correct,
       wrong: results.current.wrong + results.current.unknown,
       reviewIds: results.current.wrongIds,
@@ -178,16 +182,19 @@ export function GrammarQuizScreen() {
             total={deck.length}
             max={poolSize}
             className="h-11"
-            onResize={(size, { discard }) => {
-              if (discard) {
-                setDeck(buildFor(size))
-                setI(0)
+            reached={Math.max(i, answeredIndexes.at(-1) ?? 0)}
+            onResize={(size, { restart }) => {
+              if (restart) {
+                // 答えた問題の記録と結果は残したまま、まだ答えていない問題を1問目として数え直す。
+                const next = restartSessionCount(deck, answeredIndexes, i, buildFor(size + deck.length), size)
+                carried.carry(next.answeredItems)
+                setDeck(next.deck)
                 clearSelections()
                 clearOrderDrafts()
                 setOrderAttempt((value) => value + 1)
-                results.current = { correct: 0, wrong: 0, unknown: 0, wrongIds: [] }
+                setI(0)
               } else {
-                setDeck((current) => growDeck(current, i + 1, buildFor(size), size))
+                setDeck((current) => growDeck(current, Math.max(i, answeredIndexes.at(-1) ?? 0) + 1, buildFor(size), size))
               }
             }}
           />

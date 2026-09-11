@@ -14,11 +14,11 @@ import {
   playSpeechItems,
 } from '../lib/speech-player.js'
 import { buildDictationInstructorExplanation } from '../lib/instructorExplanations.js'
-import { growDeck } from '../lib/session.js'
+import { answeredQuizIndexes, growDeck, restartSessionCount } from '../lib/session.js'
 import { Button, Chip, cx } from '../components/ui.jsx'
 import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
 import { Close, ArrowRight, SpeakerWave, Check } from '../components/Icons.jsx'
-import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
+import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
 import {
   QuestionSessionControls,
   useUnfinishedSessionRecord,
@@ -56,6 +56,8 @@ export function DictationPlayScreen() {
   const [slowPlays, setSlowPlays] = useState(0)
   const results = useRef({ correct: 0, wrong: 0, wrongIds: [] })
   const questionStates = useRef({})
+  // 1回の問題数を減らして数え直す前に答えた英文。結果の全問数に含める。
+  const carried = useCarriedAnswers()
   const autoAdvanceSequence = useRef(0)
   const [autoAdvanceSignal, setAutoAdvanceSignal] = useState(null)
 
@@ -131,7 +133,7 @@ export function DictationPlayScreen() {
       mode: 'quiz',
       engine: 'dictation',
       replayScreen: 'dictationPlay',
-      total: deck.length,
+      total: carried.count + deck.length,
       correct: results.current.correct,
       wrong: results.current.wrong,
       reviewIds: results.current.wrongIds,
@@ -201,6 +203,14 @@ export function DictationPlayScreen() {
     moveTo(i + 1)
   }
 
+  // 採点した英文の位置。表示中の英文は state、ほかは移動するときに退避した状態から数える。
+  const answeredIndexes = answeredQuizIndexes(i, {
+    ...Object.fromEntries(
+      Object.entries(questionStates.current).map(([index, state]) => [index, state?.result ?? null]),
+    ),
+    [i]: result,
+  })
+
   const playGoal =
     profile.recommendedPlays === 1 ? '通常速度1回で聞き取る' : `通常速度${profile.recommendedPlays}回以内`
 
@@ -222,21 +232,23 @@ export function DictationPlayScreen() {
             total={deck.length}
             max={poolSize}
             className="h-11"
-            onResize={(size, { discard }) => {
-              if (discard) {
-                const next = buildFor(size)
-                setDeck(next)
+            reached={Math.max(i, answeredIndexes.at(-1) ?? 0)}
+            onResize={(size, { restart }) => {
+              if (restart) {
+                // 答えた英文の記録と結果は残したまま、まだ答えていない英文を1問目として数え直す。
+                const next = restartSessionCount(deck, answeredIndexes, i, buildFor(size + deck.length), size)
+                carried.carry(next.answeredItems)
+                setDeck(next.deck)
                 setI(0)
-                setWordBank(buildWordBank(next[0]))
+                setWordBank(buildWordBank(next.deck[0]))
                 setAnswerTokens([])
                 setWrongSelections(0)
                 setResult(null)
                 setNormalPlays(0)
                 setSlowPlays(0)
                 questionStates.current = {}
-                results.current = { correct: 0, wrong: 0, wrongIds: [] }
               } else {
-                setDeck((current) => growDeck(current, i + 1, buildFor(size), size))
+                setDeck((current) => growDeck(current, Math.max(i, answeredIndexes.at(-1) ?? 0) + 1, buildFor(size), size))
               }
             }}
           />

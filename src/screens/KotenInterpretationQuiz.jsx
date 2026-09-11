@@ -17,10 +17,10 @@ import {
   Check,
   Close,
 } from '../components/Icons.jsx'
-import { growDeck } from '../lib/session.js'
+import { answeredQuizIndexes, growDeck, restartSessionCount } from '../lib/session.js'
 import { limitQuizChoices, UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { buildKotenInterpretationInstructorExplanation } from '../lib/instructorExplanations.js'
-import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
+import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
 import {
   QuestionSessionControls,
   useIndexedSessionState,
@@ -78,11 +78,14 @@ export function KotenInterpretationQuizScreen() {
     value: selected,
     setValue: setSelected,
     clear: clearSelections,
+    values: selections,
   } = useIndexedSessionState(index)
   const autoAdvanceSequence = useRef(0)
   const [autoAdvanceSignal, setAutoAdvanceSignal] = useState(null)
   const [correct, setCorrect] = useState(0)
   const [done, setDone] = useState(false)
+  // 1回の問題数を減らして数え直す前に答えた問題。結果の全問数に含める。
+  const carried = useCarriedAnswers()
 
   const item = deck[index]
   // 教材は4択だが、出題は「3択＋わからない」にそろえる。
@@ -91,6 +94,7 @@ export function KotenInterpretationQuizScreen() {
     [item?.id, run], // eslint-disable-line react-hooks/exhaustive-deps
   )
   const answered = selected !== null
+  const answeredIndexes = answeredQuizIndexes(index, selections)
   const isCorrect = answered && selected === item?.answer
 
   // コンテンツ画面の「戻る」は履歴でなく、短文解釈の内容選択画面へ。
@@ -99,6 +103,7 @@ export function KotenInterpretationQuizScreen() {
     : returnTo('kotenInterpretationList')
 
   const restart = () => {
+    carried.reset()
     const nextRun = run + 1
     setRun(nextRun)
     setDeck(buildDeck(params.ids, deck.length, params.preserveOrder))
@@ -119,13 +124,14 @@ export function KotenInterpretationQuizScreen() {
   }
 
   if (done) {
-    const percent = Math.round((correct / deck.length) * 100)
+    const total = carried.count + deck.length
+    const percent = Math.round((correct / total) * 100)
     return (
       <div className="flex h-full flex-col items-center justify-center gap-5 p-8 text-center">
         <div className="text-6xl">{percent >= 80 ? '🏆' : percent >= 50 ? '👏' : '📚'}</div>
         <div>
           <p className="font-display text-2xl font-extrabold text-ink">
-            {correct} / {deck.length} 正解
+            {correct} / {total} 正解
           </p>
           <p className="mt-1 text-sm font-bold text-ink/55">正答率 {percent}%</p>
         </div>
@@ -182,16 +188,18 @@ export function KotenInterpretationQuizScreen() {
             total={deck.length}
             max={poolSize}
             className="h-11"
-            onResize={(size, { discard }) => {
-              if (discard) {
+            reached={Math.max(index, answeredIndexes.at(-1) ?? 0)}
+            onResize={(size, { restart }) => {
+              if (restart) {
+                // 答えた問題の記録と結果は残したまま、まだ答えていない問題を1問目として数え直す。
+                const next = restartSessionCount(deck, answeredIndexes, index, buildDeck(params.ids, size + deck.length, params.preserveOrder), size)
+                carried.carry(next.answeredItems)
+                setDeck(next.deck)
                 setRun((current) => current + 1)
-                setDeck(buildDeck(params.ids, size, params.preserveOrder))
-                setIndex(0)
                 clearSelections()
-                setCorrect(0)
-                setDone(false)
+                setIndex(0)
               } else {
-                setDeck((current) => growDeck(current, index + 1, buildDeck(params.ids, size, params.preserveOrder), size))
+                setDeck((current) => growDeck(current, Math.max(index, answeredIndexes.at(-1) ?? 0) + 1, buildDeck(params.ids, size, params.preserveOrder), size))
               }
             }}
           />

@@ -13,7 +13,7 @@ import { limitQuizChoices, UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
 import { Button, Chip, cx } from '../components/ui.jsx'
-import { growDeck } from '../lib/session.js'
+import { answeredQuizIndexes, growDeck, restartSessionCount } from '../lib/session.js'
 import {
   ArrowRight,
   Book,
@@ -23,7 +23,7 @@ import {
   Close,
 } from '../components/Icons.jsx'
 import { buildKotenGrammarInstructorExplanation } from '../lib/instructorExplanations.js'
-import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
+import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
 import {
   QuestionSessionControls,
   useIndexedSessionState,
@@ -51,6 +51,7 @@ export function KotenGrammarQuizScreen() {
     value: selected,
     setValue: setSelected,
     clear: clearSelections,
+    values: selections,
   } = useIndexedSessionState(index)
   const autoAdvanceSequence = useRef(0)
   const [autoAdvanceSignal, setAutoAdvanceSignal] = useState(null)
@@ -58,6 +59,8 @@ export function KotenGrammarQuizScreen() {
   const [unknownCount, setUnknownCount] = useState(0)
   const [weakIds, setWeakIds] = useState([])
   const [done, setDone] = useState(false)
+  // 1回の問題数を減らして数え直す前に答えた問題。結果の全問数に含める。
+  const carried = useCarriedAnswers()
 
   const question = deck[index]
   // 教材は4択だが、出題は「3択＋わからない」にそろえる。
@@ -90,6 +93,7 @@ export function KotenGrammarQuizScreen() {
   }
 
   const restart = (ids = params.ids) => {
+    carried.reset()
     setDeck(pickKotenGrammarQuestions(ids, { size: deck.length || sessionSize }))
     setIndex(0)
     clearSelections()
@@ -127,7 +131,8 @@ export function KotenGrammarQuizScreen() {
   }
 
   if (done) {
-    const percentage = Math.round((correctCount / deck.length) * 100)
+    const total = carried.count + deck.length
+    const percentage = Math.round((correctCount / total) * 100)
     return (
       <div className="flex h-full flex-col overflow-y-auto p-6 text-center">
         <div className="m-auto flex w-full max-w-sm flex-col items-center gap-5 py-5">
@@ -135,7 +140,7 @@ export function KotenGrammarQuizScreen() {
           <div>
             <p className="text-xs font-extrabold text-amber-700">古典文法の結果</p>
             <p className="mt-1 font-display text-2xl font-extrabold text-ink">
-              {correctCount} / {deck.length} 正解
+              {correctCount} / {total} 正解
             </p>
             <p className="mt-1 text-sm font-bold text-ink/50">
               正答率 {percentage}%{unknownCount > 0 && `・わからない ${unknownCount}問`}
@@ -175,6 +180,7 @@ export function KotenGrammarQuizScreen() {
   }
 
   const answered = selected !== null
+  const answeredIndexes = answeredQuizIndexes(index, selections)
   const correctPick = selected === question.answer
   const unknownPick = selected === UNKNOWN_CHOICE_ID
 
@@ -195,22 +201,17 @@ export function KotenGrammarQuizScreen() {
             total={deck.length}
             max={poolSize}
             className="h-11"
-            onResize={(size, { discard }) => {
-              if (discard) {
-                setDeck(pickKotenGrammarQuestions(params.ids, { size }))
-                setIndex(0)
+            reached={Math.max(index, answeredIndexes.at(-1) ?? 0)}
+            onResize={(size, { restart }) => {
+              if (restart) {
+                // 答えた問題の記録と結果は残したまま、まだ答えていない問題を1問目として数え直す。
+                const next = restartSessionCount(deck, answeredIndexes, index, pickKotenGrammarQuestions(params.ids, { size: size + deck.length }), size)
+                carried.carry(next.answeredItems)
+                setDeck(next.deck)
                 clearSelections()
-                setCorrectCount(0)
-                setUnknownCount(0)
-                setWeakIds([])
-                setDone(false)
+                setIndex(0)
               } else {
-                setDeck((current) => growDeck(
-                  current,
-                  index + 1,
-                  pickKotenGrammarQuestions(params.ids, { size }),
-                  size,
-                ))
+                setDeck((current) => growDeck(current, Math.max(index, answeredIndexes.at(-1) ?? 0) + 1, pickKotenGrammarQuestions(params.ids, { size: size }), size))
               }
             }}
           />
