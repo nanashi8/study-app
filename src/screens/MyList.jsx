@@ -265,9 +265,12 @@ function NotebookItemCard({
 
 function ProblemSetCard({
   set,
+  position,
+  count,
   onUpdate,
   onDelete,
   onMove,
+  onMoveSet,
   onRemove,
   onStart,
   onOpenWordList,
@@ -295,7 +298,7 @@ function ProblemSetCard({
               {set.description || '説明なし'}・{set.refs.length}項目
             </p>
           </button>
-          {/* 名前・説明・項目の順番は、冊ごとの歯車から変える。 */}
+          {/* 名前・説明・並び順・項目の順番・削除は、冊ごとの歯車から変える（どの単語帳も同じ）。 */}
           <button
             type="button"
             onClick={() => setEditing((open) => !open)}
@@ -399,6 +402,31 @@ function ProblemSetCard({
           >
             変更を保存
           </Button>
+
+          {/* 単語帳の並び順。単語画面の単語帳・入れる単語帳を選ぶ窓も同じ順に並ぶ。 */}
+          <div className="flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-1.5" data-notebook-set-order>
+            <span className="min-w-0 flex-1 text-xs font-extrabold text-slate-700">
+              並び順（{count}冊中{position + 1}番目）
+            </span>
+            <button
+              type="button"
+              onClick={() => onMoveSet(set.id, 'up')}
+              disabled={position === 0}
+              aria-label={`${set.title}を1つ上へ`}
+              className="grid h-9 w-9 place-items-center rounded-md text-slate-600 disabled:opacity-20"
+            >
+              <ChevronUp size={17} />
+            </button>
+            <button
+              type="button"
+              onClick={() => onMoveSet(set.id, 'down')}
+              disabled={position === count - 1}
+              aria-label={`${set.title}を1つ下へ`}
+              className="grid h-9 w-9 place-items-center rounded-md text-slate-600 disabled:opacity-20"
+            >
+              <ChevronDown size={17} />
+            </button>
+          </div>
 
           {set.refs.length > 0 && (
             <details className="rounded-lg border border-slate-300 bg-white">
@@ -574,6 +602,7 @@ export function MyListScreen() {
   const deleteNotebookSet = useStore((state) => state.deleteNotebookSet)
   const setNotebookSetItem = useStore((state) => state.setNotebookSetItem)
   const moveNotebookSetItem = useStore((state) => state.moveNotebookSetItem)
+  const moveNotebookSet = useStore((state) => state.moveNotebookSet)
   const recordNotebookSetLaunch = useStore((state) => state.recordNotebookSetLaunch)
   const state = useStore(useShallow((current) => ({
     srs: current.srs,
@@ -581,7 +610,6 @@ export function MyListScreen() {
     kotenSrs: current.kotenSrs,
     kotenGrammarSrs: current.kotenGrammarSrs,
     kotenCultureSrs: current.kotenCultureSrs,
-    myList: current.myList,
     myGrammarList: current.myGrammarList,
     kotenWordList: current.kotenWordList,
     kotenGrammarList: current.kotenGrammarList,
@@ -946,15 +974,18 @@ export function MyListScreen() {
 
             {state.learningNotebook.sets.length ? (
               <div className="space-y-2.5">
-                {state.learningNotebook.sets.map((set) => (
+                {state.learningNotebook.sets.map((set, position, sets) => (
                   <ProblemSetCard
                     key={set.id}
                     set={set}
+                    position={position}
+                    count={sets.length}
                     selected={set.id === activeSetId}
                     onSelectForEditing={setActiveSetId}
                     onUpdate={updateNotebookSet}
                     onDelete={deleteNotebookSet}
                     onMove={moveNotebookSetItem}
+                    onMoveSet={moveNotebookSet}
                     onRemove={(setId, domainId, itemId) => setNotebookSetItem(setId, domainId, itemId, false)}
                     onStart={startDomain}
                     onOpenWordList={(target) => navigate('vocabDecks', { wordBookId: target.id })}

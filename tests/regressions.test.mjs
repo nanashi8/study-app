@@ -17,6 +17,10 @@ import {
   resetProgressEverywhere,
 } from '../src/lib/cloudSync.js'
 import {
+  createStarterLearningNotebook,
+  foldLegacyMyWords,
+} from '../src/lib/learningNotebook.js'
+import {
   ALL_PROGRESS_RESET_GROUP_IDS,
   PROGRESS_RESET_GROUPS,
   RESET_PRESERVED_PROGRESS_FIELDS,
@@ -345,7 +349,7 @@ test('学習記録の全永続項目は端末保存・画面発行・クラウ�
   assert.match(storeSource, /partialize:\s*selectProgressState/)
 })
 
-test('履歴リセットの7分類は全49永続項目を漏れなく一度だけ扱う', () => {
+test('履歴リセットの7分類は全48永続項目を漏れなく一度だけ扱う', () => {
   const groupIds = PROGRESS_RESET_GROUPS.map((group) => group.id)
   const combinedFields = [
     ...RESETTABLE_PROGRESS_FIELDS,
@@ -354,8 +358,10 @@ test('履歴リセットの7分類は全49永続項目を漏れなく一度だ�
 
   assert.deepEqual(groupIds, ALL_PROGRESS_RESET_GROUP_IDS)
   assert.equal(new Set(groupIds).size, groupIds.length, '分類IDを重複させない')
-  assert.equal(PERSISTED_PROGRESS_FIELDS.length, 49)
-  assert.equal(RESETTABLE_PROGRESS_FIELDS.length, 46)
+  // 以前の「マイ単語」（myList）は単語帳の1冊へ移したので、保存項目には持たない。
+  assert.equal(PERSISTED_PROGRESS_FIELDS.length, 48)
+  assert.equal(PERSISTED_PROGRESS_FIELDS.includes('myList'), false)
+  assert.equal(RESETTABLE_PROGRESS_FIELDS.length, 45)
   assert.equal(RESET_PRESERVED_PROGRESS_FIELDS.length, 3)
   assert.equal(new Set(combinedFields).size, combinedFields.length, '保存項目を二重分類しない')
   assert.deepEqual(
@@ -456,11 +462,11 @@ test('ログイン中の部分リセットは非選択データを保った全�
   const original = useStore.getState()
   const writes = []
   const keptSrs = { keepWord: entry(12) }
-  const keptList = ['keepWord']
+  const keptNotebook = foldLegacyMyWords(undefined, ['keepWord'], { timestamp: 1 })
   try {
     useStore.setState({
       srs: keptSrs,
-      myList: keptList,
+      learningNotebook: keptNotebook,
       vocabHistory: ['clearWord'],
     })
     const result = await resetProgressEverywhere(
@@ -475,7 +481,7 @@ test('ログイン中の部分リセットは非選択データを保った全�
     assert.equal(writes.length, 1)
     assert.deepEqual(writes[0].progress.vocabHistory, [])
     assert.deepEqual(writes[0].progress.srs, keptSrs)
-    assert.deepEqual(writes[0].progress.myList, keptList)
+    assert.deepEqual(writes[0].progress.learningNotebook, keptNotebook)
   } finally {
     useStore.setState(original, true)
   }
@@ -485,7 +491,10 @@ test('ログイン中のリセットは端末状態を先に初期化し、遅�
   const original = useStore.getState()
   const writes = []
   try {
-    useStore.setState({ srs: { resetWord: entry() }, myList: ['resetWord'] })
+    useStore.setState({
+      srs: { resetWord: entry() },
+      learningNotebook: foldLegacyMyWords(undefined, ['resetWord'], { timestamp: 1 }),
+    })
     const result = await resetProgressEverywhere(
       { uid: 'student-1', email: 'student@example.test' },
       async (uid, email) => {
@@ -497,7 +506,8 @@ test('ログイン中のリセットは端末状態を先に初期化し、遅�
     assert.equal(writes.length, 1)
     assert.equal(writes[0].uid, 'student-1')
     assert.deepEqual(writes[0].progress.srs, {})
-    assert.deepEqual(writes[0].progress.myList, [])
+    // 単語帳はリセット直後の形（空の「マイ単語」を1冊だけ持つ）に戻る。
+    assert.deepEqual(writes[0].progress.learningNotebook, createStarterLearningNotebook())
   } finally {
     useStore.setState(original, true)
   }
@@ -573,7 +583,7 @@ test('進捗コードは廃止済みデータを再保存せず、旧コード�
     new URL('../src/store/useStore.js', import.meta.url),
     'utf8',
   )
-  assert.match(storeSource, /version: 9/)
+  assert.match(storeSource, /version: 10/)
   assert.match(storeSource, /migrate: migratePersistedState/)
   assert.throws(() => decodeProgress(encodeProgress({ ...base, srs: [] })), /srs/)
   assert.throws(

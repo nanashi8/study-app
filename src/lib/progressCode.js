@@ -32,7 +32,7 @@ import {
 } from './dragonVein.js'
 import {
   compactLearningNotebook,
-  normalizeLearningNotebook,
+  foldLegacyMyWords,
   notebookStoredSavedCount,
 } from './learningNotebook.js'
 import {
@@ -60,7 +60,6 @@ export const PERSISTED_PROGRESS_FIELDS = Object.freeze([
   'kanbunGrammarSrs',
   'kanbunCultureSrs',
   'kanbunKundokuSrs',
-  'myList',
   'customWords',
   'vocabHistory',
   'myGrammarList',
@@ -189,6 +188,7 @@ export function decodeProgress(code) {
     'settings',
   ]
   const arrayFields = [
+    // 以前のコードの「マイ単語」。読み込むときに単語帳の1冊へ移す。
     'myList',
     'vocabHistory',
     'myGrammarList',
@@ -351,6 +351,7 @@ export function decodeProgress(code) {
 
 // 読込前のプレビュー用に、コードの中身を要約する。
 export function summarizePayload(payload, isWordId = () => true) {
+  const notebook = foldLegacyMyWords(payload.learningNotebook, payload.myList)
   const srs = payload.srs ?? {}
   const etymologySrs = payload.etymologySrs ?? {}
   const wordIds = Object.keys(srs).filter(isWordId)
@@ -362,9 +363,9 @@ export function summarizePayload(payload, isWordId = () => true) {
     etymologyMastered: Object.values(etymologySrs).filter(
       (entry) => (entry?.box ?? 0) >= 4,
     ).length,
-    myList: (payload.myList ?? []).length,
-    notebookSaved: notebookStoredSavedCount(payload),
-    notebookSets: normalizeLearningNotebook(payload.learningNotebook).sets.length,
+    // 以前のコードの「マイ単語」も、読み込んだあとと同じく単語帳の1冊として数える。
+    notebookSaved: notebookStoredSavedCount({ ...payload, learningNotebook: notebook }),
+    notebookSets: notebook.sets.length,
     myGrammar: (payload.myGrammarList ?? []).length,
     writing: Object.values(payload.writingProgress ?? {}).filter(
       (item) => (item?.completed ?? 0) > 0,

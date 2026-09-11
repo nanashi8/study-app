@@ -4,7 +4,7 @@
 // 語源カード・全教材監査台帳は英検の公表値や手動監査に合わせた固定値なので、
 // そこへ利用者の語を足すと「英検5級 全606語」のような約束が崩れる。
 // 自作語は別の保存領域に持ち、ID の引き当て（getWord）にだけ載せて
-// マイ単語・マイ単語帳・暗記・テスト・復習日の仕組みを共有する。
+// 単語帳・暗記・テスト・復習日の仕組みを共有する。
 //
 // JSONファイルはこの形で書き出し、同じ形だけを読み戻す。
 //   { app, kind, version, exportedAt, words: [ { id, word, meanings, ... } ] }
@@ -164,7 +164,7 @@ export function findCustomWord(list, id) {
 
 /**
  * 学習画面が扱う単語の形へ変える。辞書の語と同じ鍵をそろえるので、
- * 暗記カード・テストの誤答作り・マイ単語の一覧がそのまま動く。
+ * 暗記カード・テストの誤答作り・単語帳の一覧がそのまま動く。
  */
 export function customWordToStudyWord(entry) {
   const word = normalizeCustomWord(entry)

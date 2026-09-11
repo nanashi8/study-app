@@ -316,7 +316,7 @@ export function VocabStudyScreen() {
               toolbar
               onChange={(on) => setFlipped(on)}
             />
-            {/* 保存先はマイ単語を含む「単語帳」1つ。押すと入れる冊を選ぶ。 */}
+            {/* 保存先は「単語帳」1つ。押すと入れる冊を選ぶ。 */}
             <CardSaveToggle
               saved={inWordBook}
               onToggle={() => setListSheetOpen(true)}

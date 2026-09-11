@@ -32,6 +32,8 @@ import { ReadingRoleSentence } from '../components/ReadingRoleSentence.js'
 import { ReadingRuleCard } from '../components/ReadingRuleCard.jsx'
 import { LiteratureSceneNavigator } from '../components/LiteratureSceneNavigator.jsx'
 import { LiteratureVocabularySheet } from '../components/LiteratureVocabularySheet.jsx'
+import { WordListSheet } from '../components/WordListSheet.jsx'
+import { wordBookVocabIds } from '../lib/wordBooks.js'
 import { Button, Card, Chip, ProgressBar, cx } from '../components/ui.jsx'
 import { translationRoleMeta } from '../lib/translation-roles.js'
 import {
@@ -89,9 +91,7 @@ export function LiteratureReaderScreen() {
   const readingsDone = useStore((state) => state.readingsDone)
   const markLiteratureDone = useStore((state) => state.markLiteratureDone)
   const recordContentQuizResult = useStore((state) => state.recordContentQuizResult)
-  const myList = useStore((state) => state.myList)
-  const addManyToMyList = useStore((state) => state.addManyToMyList)
-  const toggleMyList = useStore((state) => state.toggleMyList)
+  const wordBookSets = useStore((state) => state.learningNotebook.sets)
   const recordVocabHistory = useStore((state) => state.recordVocabHistory)
   const kotenWordList = useStore((state) => state.kotenWordList)
   const kotenGrammarList = useStore((state) => state.kotenGrammarList)
@@ -111,6 +111,13 @@ export function LiteratureReaderScreen() {
   const [vocabularyOpen, setVocabularyOpen] = useState(false)
   const [activeWord, setActiveWord] = useState(null)
   const [questionAnswers, setQuestionAnswers] = useState({})
+  // 単語帳を選ぶ窓で入れる英単語。{ ids, label }。1語でも本文語彙の全語でも同じ窓を使う。
+  const [bookSheetWords, setBookSheetWords] = useState(null)
+  // どれかの単語帳に入っている英単語。
+  const inWordBookIds = useMemo(
+    () => new Set(wordBookSets.flatMap((set) => wordBookVocabIds(set))),
+    [wordBookSets],
+  )
 
   const narrationItems = useMemo(() => {
     const items = []
@@ -184,17 +191,16 @@ export function LiteratureReaderScreen() {
   )
   const playing = playbackStatus === 'playing'
   const playbackActive = playing || playbackStatus === 'paused'
+  // 英語の作品の語は単語帳（どの冊でも）、古典・漢文の語はそれぞれの登録リストに入っているかで数える。
   const learnedIds = work.kind === 'english'
-    ? myList
-    : work.kind === 'classical'
-      ? kotenWordList
-      : kanbunVocabList
+    ? inWordBookIds
+    : new Set(work.kind === 'classical' ? kotenWordList : kanbunVocabList)
   const sharedWordIds = work.kind === 'english'
     ? work.wordIds
     : work.kind === 'classical'
       ? work.kotenWordIds
       : work.kanbunVocabIds
-  const savedWordCount = sharedWordIds.filter((id) => learnedIds.includes(id)).length
+  const savedWordCount = sharedWordIds.filter((id) => learnedIds.has(id)).length
   const savedGrammarCount = work.grammarIds.filter((id) => kotenGrammarList.includes(id)).length
   const isEnglish = work.kind === 'english'
   const readingGuide = isEnglish
@@ -301,8 +307,10 @@ export function LiteratureReaderScreen() {
   }
 
   const saveWords = () => {
-    if (work.kind === 'english') addManyToMyList(sharedWordIds)
-    else if (work.kind === 'classical') addManyToKotenWordList(sharedWordIds)
+    // 英語の作品の本文語彙は、入れる単語帳を選んでまとめて入れる。
+    if (work.kind === 'english') {
+      setBookSheetWords({ ids: sharedWordIds, label: `${work.titleJa}の本文語彙${sharedWordIds.length}語` })
+    } else if (work.kind === 'classical') addManyToKotenWordList(sharedWordIds)
     else addManyToKanbunList('vocab', sharedWordIds)
   }
 
@@ -444,8 +452,10 @@ export function LiteratureReaderScreen() {
                 variant={savedWordCount === sharedWordIds.length ? 'soft' : 'hint'}
                 onClick={saveWords}
                 disabled={!sharedWordIds.length}
+                aria-haspopup={isEnglish ? 'dialog' : undefined}
+                data-literature-save-words
               >
-                <Bookmark size={16} /> 保存 {savedWordCount}/{sharedWordIds.length}
+                <Bookmark size={16} /> {isEnglish ? '単語帳' : '保存'} {savedWordCount}/{sharedWordIds.length}
               </Button>
             </div>
             {isEnglish && (
@@ -819,6 +829,13 @@ export function LiteratureReaderScreen() {
         </Button>
       </div>
 
+      <WordListSheet
+        open={Boolean(bookSheetWords)}
+        onClose={() => setBookSheetWords(null)}
+        wordIds={bookSheetWords?.ids}
+        wordLabel={bookSheetWords?.label}
+      />
+
       <LiteratureVocabularySheet
         open={vocabularyOpen}
         onClose={() => setVocabularyOpen(false)}
@@ -880,20 +897,23 @@ export function LiteratureReaderScreen() {
                     </button>
                   )}
                 </div>
+                {/* 押すと入れる単語帳を選ぶ（マイ単語もほかの単語帳と同じ1冊）。 */}
                 {activeWord.id && (
                   <button
                     type="button"
-                    onClick={() => toggleMyList(activeWord.id)}
+                    onClick={() => setBookSheetWords({ ids: [activeWord.id], label: activeWord.word })}
+                    aria-haspopup="dialog"
+                    data-literature-word-book
                     className={cx(
-                      'mt-3 flex w-full items-center justify-center gap-1.5 rounded-xl py-2 text-sm font-extrabold',
-                      myList.includes(activeWord.id)
+                      'mt-3 flex min-h-11 w-full items-center justify-center gap-1.5 rounded-xl py-2 text-sm font-extrabold',
+                      inWordBookIds.has(activeWord.id)
                         ? 'bg-hint-soft text-amber-700'
                         : 'bg-brand-500 text-white',
                     )}
                   >
-                    {myList.includes(activeWord.id)
-                      ? <><BookmarkFilled size={16} /> マイ単語に追加済み（タップで解除）</>
-                      : <><Bookmark size={16} /> マイ単語に追加</>}
+                    {inWordBookIds.has(activeWord.id)
+                      ? <><BookmarkFilled size={16} /> 単語帳に入っています（入れる冊を選ぶ）</>
+                      : <><Bookmark size={16} /> 単語帳に入れる</>}
                   </button>
                 )}
               </div>

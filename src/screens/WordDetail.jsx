@@ -262,7 +262,7 @@ export function WordDetailScreen() {
 
       {/* 保存ボタン（本文の外に置き、末尾のカードへ重ならないようにする） */}
       <div className="shrink-0 space-y-2 border-t border-brand-100 bg-white/95 p-4 backdrop-blur">
-        {/* 保存先はマイ単語を含む「単語帳」1つ。押すと入れる冊を選ぶ。 */}
+        {/* 保存先は「単語帳」1つ。押すと入れる冊を選ぶ。 */}
         <Button
           full
           variant={inWordBook ? 'soft' : 'primary'}

@@ -17,6 +17,8 @@ import { ScreenHeader } from '../components/AppShell.jsx'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { SyntaxFamilyGuide } from '../components/SyntaxFamilyGuide.jsx'
 import { PosBadge } from '../components/WordBits.jsx'
+import { WordListSheet } from '../components/WordListSheet.jsx'
+import { wordBookVocabIds } from '../lib/wordBooks.js'
 import { Chip, IconButton } from '../components/ui.jsx'
 import { Search, Close, ArrowRight, Bookmark, BookmarkFilled } from '../components/Icons.jsx'
 
@@ -103,7 +105,8 @@ function KindBadge({ type }) {
   )
 }
 
-function WordRow({ word, saved = false, onOpen, onToggleSave }) {
+// 右端の「単語帳」は、押すと入れる単語帳を選ぶ窓を開く（どの冊に入っていても塗りで示す）。
+function WordRow({ word, inBook = false, onOpen, onChooseBook }) {
   const level = getLevel(word.level)
   return (
     <div className="flex items-center gap-2 rounded-2xl bg-white p-2.5 shadow-sm">
@@ -114,11 +117,6 @@ function WordRow({ word, saved = false, onOpen, onToggleSave }) {
           <div className="flex min-w-0 items-center gap-2">
             <span className="truncate font-display font-extrabold text-ink">{word.word}</span>
             <Chip color={level.color}>{level.label}</Chip>
-            {saved && !onToggleSave && (
-              <span className="inline-flex shrink-0 items-center gap-0.5 text-[10px] font-extrabold text-amber-600">
-                <BookmarkFilled size={13} /> マイ単語
-              </span>
-            )}
           </div>
           <div className="flex min-w-0 items-center gap-1.5">
             <PosBadge pos={word.pos} className="h-5 min-w-5 px-1 text-[10px]" />
@@ -127,21 +125,21 @@ function WordRow({ word, saved = false, onOpen, onToggleSave }) {
         </div>
         <span className="text-brand-300"><ArrowRight size={16} /></span>
       </button>
-      {onToggleSave && (
-        <button
-          type="button"
-          onClick={onToggleSave}
-          aria-label={saved ? `${word.word}をマイ単語から外す` : `${word.word}をマイ単語に追加`}
-          className={`inline-flex min-h-12 shrink-0 items-center gap-1 rounded-xl px-2 text-[10px] font-extrabold ring-1 active:scale-[0.98] ${
-            saved
-              ? 'bg-amber-50 text-amber-700 ring-amber-200'
-              : 'bg-white text-brand-600 ring-brand-200'
-          }`}
-        >
-          {saved ? <BookmarkFilled size={14} /> : <Bookmark size={14} />}
-          {saved ? '追加済み' : '追加'}
-        </button>
-      )}
+      <button
+        type="button"
+        onClick={onChooseBook}
+        aria-haspopup="dialog"
+        aria-label={inBook ? `${word.word}の単語帳を選ぶ（単語帳に入っています）` : `${word.word}を入れる単語帳を選ぶ`}
+        data-dictionary-word-book
+        className={`inline-flex min-h-12 shrink-0 items-center gap-1 rounded-xl px-2 text-[10px] font-extrabold ring-1 active:scale-[0.98] ${
+          inBook
+            ? 'bg-amber-50 text-amber-700 ring-amber-200'
+            : 'bg-white text-brand-600 ring-brand-200'
+        }`}
+      >
+        {inBook ? <BookmarkFilled size={14} /> : <Bookmark size={14} />}
+        単語帳
+      </button>
     </div>
   )
 }
@@ -237,13 +235,13 @@ export function VocabSearchScreen() {
   const navigate = useStore((s) => s.navigate)
   const vocabHistory = useStore((s) => s.vocabHistory)
   const clearVocabHistory = useStore((s) => s.clearVocabHistory)
-  const myList = useStore((s) => s.myList)
-  const toggleMyList = useStore((s) => s.toggleMyList)
   const learningNotebook = useStore((s) => s.learningNotebook)
   const toggleNotebookItem = useStore((s) => s.toggleNotebookItem)
   const [q, setQ] = useState('')
   const [type, setType] = useState('all')
   const [shown, setShown] = useState(PAGE)
+  // 単語帳を選ぶ窓を開いている語。
+  const [bookWord, setBookWord] = useState(null)
 
   const query = normalizeVocabQuery(q)
 
@@ -274,7 +272,11 @@ export function VocabSearchScreen() {
     () => vocabHistory.map(getWord).filter(Boolean),
     [vocabHistory],
   )
-  const savedIds = useMemo(() => new Set(myList), [myList])
+  // どれかの単語帳に入っている語。
+  const inBookIds = useMemo(
+    () => new Set(learningNotebook.sets.flatMap((set) => wordBookVocabIds(set))),
+    [learningNotebook.sets],
+  )
 
   const openWord = (word) => navigate('wordDetail', { id: word.id })
   const studyPhrase = (phrase) =>
@@ -290,8 +292,9 @@ export function VocabSearchScreen() {
       <WordRow
         key={entry.id}
         word={entry.word}
-        saved={savedIds.has(entry.word.id)}
+        inBook={inBookIds.has(entry.word.id)}
         onOpen={() => openWord(entry.word)}
+        onChooseBook={() => setBookWord(entry.word)}
       />
     ) : (
       <PhraseRow
@@ -392,9 +395,9 @@ export function VocabSearchScreen() {
                     <WordRow
                       key={word.id}
                       word={word}
-                      saved={savedIds.has(word.id)}
+                      inBook={inBookIds.has(word.id)}
                       onOpen={() => openWord(word)}
-                      onToggleSave={() => toggleMyList(word.id)}
+                      onChooseBook={() => setBookWord(word)}
                     />
                   ))}
                 </div>
@@ -407,7 +410,7 @@ export function VocabSearchScreen() {
                   単語も熟語・構文も、日本語・例文・使い分けから引けます
                 </p>
                 <p className="mt-1 text-xs font-bold text-ink/30">
-                  検索・参照した単語や、マイ単語に追加した語はここに残ります
+                  検索・参照した単語や、単語帳に入れた語はここに残ります
                 </p>
               </div>
             )}
@@ -442,6 +445,13 @@ export function VocabSearchScreen() {
           </>
         )}
       </div>
+
+      <WordListSheet
+        open={Boolean(bookWord)}
+        onClose={() => setBookWord(null)}
+        wordId={bookWord?.id}
+        wordLabel={bookWord?.word}
+      />
     </div>
   )
 }

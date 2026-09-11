@@ -188,22 +188,26 @@ test('画面下部の同じ枠で、読み上げと出題バランスを切り�
   }
 })
 
-test('マイ単語は単語帳の1冊として扱い、名前つきの単語帳はマイ学習ノートと同じ保存先を使う', () => {
+test('マイ単語はほかの単語帳と同じ1冊で、どの冊もマイ学習ノートと同じ保存先を使う', () => {
   const sheet = read('../src/components/WordListSheet.jsx')
   const study = read('../src/screens/VocabStudy.jsx')
   const detail = read('../src/screens/WordDetail.jsx')
   const levels = read('../src/screens/VocabLevels.jsx')
 
   assert.match(sheet, /title="単語帳"/)
-  // 冊の並び・名前はライブラリ1か所で決め、画面ごとにずらさない。
-  assert.match(read('../src/lib/wordBooks.js'), /MY_WORDS_BOOK_TITLE = 'マイ単語'/)
-  // 先頭の1冊はマイ単語（アプリ全体の保存先 myList をそのまま使う）。
-  assert.match(sheet, /onClick=\{\(\) => toggleMyList\(wordId\)\}/)
+  // 冊の並び・数え方はライブラリ1か所で決め、画面ごとにずらさない。「マイ単語」だけの特別な冊は作らない。
+  const books = read('../src/lib/wordBooks.js')
+  assert.match(books, /return sets\.map\(\(set\) => \(\{/)
+  assert.doesNotMatch(books, /MY_WORDS_BOOK|renamable|myList/)
+  // どの冊も同じ行で並べ、同じ操作で入れる・外す（1語でも、まとめてでも）。
+  assert.doesNotMatch(sheet, /toggleMyList|(?:store|state)\.myList|data-word-list-my-words|いつもの単語帳/)
   assert.match(sheet, /createNotebookSet/)
-  assert.match(sheet, /setNotebookSetItem\(set\.id, DOMAIN, wordId, !included\)/)
+  assert.match(sheet, /setNotebookSetItems\(set\.id, DOMAIN, ids, !removes\)/)
+  // もう入らない冊（全部入っている・500項目でいっぱい）は、押すと入っている語を外す。行を押せないままにしない。
+  assert.match(sheet, /const removes = present > 0 && !canAdd/)
   assert.match(sheet, /data-word-list-new-title/)
   // マイ学習ノートでも同じ「単語帳」の名前で並び、「問題集」とは呼ばない。
-  assert.match(sheet, /マイ学習ノートの「単語帳」にも並びます/)
+  assert.match(sheet, /単語帳は、マイ学習ノートの「単語帳」にも並びます/)
   assert.doesNotMatch(sheet, /問題集と同じもの/)
   // 新しい保存領域は作らない（進捗コード・クラウド同期の契約を増やさない）。
   assert.doesNotMatch(sheet, /useStore\.setState/)
@@ -211,16 +215,16 @@ test('マイ単語は単語帳の1冊として扱い、名前つきの単語帳�
     assert.match(source, /<WordListSheet/)
     assert.match(source, /wordId=\{word\.id\}/)
     assert.match(source, /useWordInAnyBook/)
-    // マイ単語だけを直接切り替える2つ目の保存ボタンは置かない。
-    assert.doesNotMatch(source, /toggleMyList/)
+    assert.doesNotMatch(source, /toggleMyList|マイ単語/)
   }
   assert.match(study, /label="単語帳"/)
   assert.match(detail, /単語帳に入れる/)
   assert.doesNotMatch(detail, /マイ単語リストに保存|マイ単語帳に入れる/)
 
-  // 単語画面のショートカットは「今日の復習」の右隣で、単語帳を選んで学ぶ。
+  // 単語画面のショートカットは「今日の復習」の右隣で、単語帳を選んで学ぶ。冊数だけを示す。
   assert.match(levels, /<WordBookStudySheet/)
   assert.match(levels, /data-vocab-word-books-shortcut/)
-  assert.doesNotMatch(levels, /title: 'マイ単語'/)
+  assert.match(levels, /\{wordBookCount\}冊\n/)
+  assert.doesNotMatch(levels, /title: 'マイ単語'|(?:s|state)\.myList|マイ単語\{/)
   assert.ok(levels.indexOf('今日の復習') < levels.indexOf('data-vocab-word-books-shortcut'))
 })

@@ -7,6 +7,8 @@ import { ScreenHeader } from '../components/AppShell.jsx'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { PosBadge } from '../components/WordBits.jsx'
 import { Card, Button, Chip, IconButton } from '../components/ui.jsx'
+import { WordListSheet } from '../components/WordListSheet.jsx'
+import { wordBookRef } from '../lib/wordBooks.js'
 import { Book, Cards, Bookmark, BookmarkFilled, Check, ArrowRight } from '../components/Icons.jsx'
 
 export function ReadingSummaryScreen() {
@@ -14,12 +16,11 @@ export function ReadingSummaryScreen() {
   const passageId = params.passageId
   const navigate = useStore((s) => s.navigate)
   const returnTo = useStore((s) => s.returnTo)
-  const myList = useStore((s) => s.myList)
-  const toggleMyList = useStore((s) => s.toggleMyList)
-  const addManyToMyList = useStore((s) => s.addManyToMyList)
+  const wordBookSets = useStore((s) => s.learningNotebook.sets)
 
   const passage = getPassage(passageId)
-  const [savedAll, setSavedAll] = useState(false)
+  // 単語帳を選ぶ窓で入れる語。{ ids, label }。1語でも全部でも同じ窓を使う。
+  const [bookSheetWords, setBookSheetWords] = useState(null)
 
   if (!passage) {
     return (
@@ -32,7 +33,8 @@ export function ReadingSummaryScreen() {
 
   const words = passage.vocab.map(getWord).filter(Boolean)
   const ids = words.map((w) => w.id)
-  const allSaved = ids.every((id) => myList.includes(id))
+  const inWordBook = (id) => wordBookSets.some((set) => set.refs.includes(wordBookRef(id)))
+  const allSaved = ids.length > 0 && ids.every(inWordBook)
 
   return (
     <div className="pb-6">
@@ -53,22 +55,23 @@ export function ReadingSummaryScreen() {
           </div>
           <Button
             full
-            variant={allSaved || savedAll ? 'soft' : 'hint'}
+            variant={allSaved ? 'soft' : 'hint'}
             className="mt-2"
-            disabled={allSaved}
-            onClick={() => {
-              addManyToMyList(ids)
-              setSavedAll(true)
-            }}
+            disabled={!ids.length}
+            onClick={() => setBookSheetWords({ ids, label: `この長文の単語${ids.length}語` })}
+            aria-haspopup="dialog"
+            data-reading-summary-word-book
           >
-            {allSaved || savedAll ? <><Check size={16} /> マイ単語に保存済み</> : <><Bookmark size={16} /> 全部マイ単語に保存</>}
+            {allSaved
+              ? <><Check size={16} /> 全部が単語帳に入っています（入れる冊を選ぶ）</>
+              : <><Bookmark size={16} /> 全部を単語帳に入れる</>}
           </Button>
         </Card>
 
         <div className="space-y-2">
           {words.map((w) => {
             const level = getLevel(w.level)
-            const saved = myList.includes(w.id)
+            const saved = inWordBook(w.id)
             return (
               <div key={w.id} className="flex items-center gap-2 rounded-2xl bg-white p-2.5 shadow-sm">
                 <SpeakButton text={w.word} size="sm" />
@@ -83,13 +86,25 @@ export function ReadingSummaryScreen() {
                   </div>
                   <span className="text-brand-300"><ArrowRight size={16} /></span>
                 </button>
-                <IconButton onClick={() => toggleMyList(w.id)} className={saved ? 'text-hint' : 'text-ink/30'} aria-label="マイ単語に保存">
+                <IconButton
+                  onClick={() => setBookSheetWords({ ids: [w.id], label: w.word })}
+                  className={saved ? 'text-hint' : 'text-ink/30'}
+                  aria-haspopup="dialog"
+                  aria-label={saved ? `${w.word}の単語帳を選ぶ（単語帳に入っています）` : `${w.word}を入れる単語帳を選ぶ`}
+                >
                   {saved ? <BookmarkFilled size={20} /> : <Bookmark size={20} />}
                 </IconButton>
               </div>
             )
           })}
         </div>
+
+        <WordListSheet
+          open={Boolean(bookSheetWords)}
+          onClose={() => setBookSheetWords(null)}
+          wordIds={bookSheetWords?.ids}
+          wordLabel={bookSheetWords?.label}
+        />
 
         <Button full variant="ghost" onClick={() => navigate('reader', { passageId, returnTo: params.returnTo })}>
           もう一度読む

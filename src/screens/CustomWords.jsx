@@ -37,7 +37,8 @@ const emptyForm = () => ({
   exampleEn: '',
   exampleJa: '',
   note: '',
-  addToMyList: true,
+  // 登録と同時に入れる単語帳。null は「並びの先頭の単語帳」、'' は「入れない」。
+  addToBookId: null,
 })
 
 const formFromWord = (word) => ({
@@ -51,7 +52,7 @@ const formFromWord = (word) => ({
   exampleEn: word.example?.en ?? '',
   exampleJa: word.example?.ja ?? '',
   note: word.note,
-  addToMyList: false,
+  addToBookId: '',
 })
 
 const IMPORT_MESSAGE = {
@@ -73,7 +74,7 @@ function Field({ label, hint, children }) {
 const inputClass = 'mt-1 h-11 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm font-bold text-ink outline-none focus:border-brand-500'
 const selectClass = 'mt-1 h-11 w-full rounded-lg border border-slate-300 bg-white px-2 text-sm font-bold text-ink outline-none focus:border-brand-500'
 
-function WordForm({ form, onChange, onSubmit, onCancel, error }) {
+function WordForm({ form, books = [], onChange, onSubmit, onCancel, error }) {
   const set = (key) => (event) => onChange({ ...form, [key]: event.target.value })
 
   return (
@@ -156,16 +157,21 @@ function WordForm({ form, onChange, onSubmit, onCancel, error }) {
             className={inputClass}
           />
         </Field>
+        {/* 登録と同時に入れる単語帳。どの単語帳も同じように選べる。 */}
         {!form.id && (
-          <label className="flex items-center gap-2 rounded-lg bg-brand-50 px-3 py-2">
-            <input
-              type="checkbox"
-              checked={form.addToMyList}
-              onChange={(event) => onChange({ ...form, addToMyList: event.target.checked })}
-              className="h-4 w-4 accent-brand-600"
-            />
-            <span className="text-xs font-extrabold text-ink/70">単語帳「マイ単語」にも入れる</span>
-          </label>
+          <Field label="入れる単語帳">
+            <select
+              value={form.addToBookId ?? books[0]?.id ?? ''}
+              onChange={(event) => onChange({ ...form, addToBookId: event.target.value })}
+              data-custom-word-book-select
+              className={selectClass}
+            >
+              <option value="">入れない</option>
+              {books.map((book) => (
+                <option key={book.id} value={book.id}>{book.title}</option>
+              ))}
+            </select>
+          </Field>
         )}
       </div>
 
@@ -225,7 +231,7 @@ function CustomWordCard({ word, inBook, onEdit, onDelete, onOpenLists }) {
       </div>
 
       <div className="mt-2.5 grid grid-cols-3 gap-1.5 border-t border-slate-200 pt-2.5">
-        {/* 保存先はマイ単語を含む「単語帳」1つ。押すと入れる冊を選ぶ。 */}
+        {/* 保存先は「単語帳」1つ。押すと入れる冊を選ぶ。 */}
         <button
           type="button"
           onClick={() => onOpenLists(word)}
@@ -266,15 +272,14 @@ function CustomWordCard({ word, inBook, onEdit, onDelete, onOpenLists }) {
 }
 
 export function CustomWordsScreen() {
-  const { customWords, myList, wordBookSets } = useStore(useShallow((state) => ({
+  const { customWords, wordBookSets } = useStore(useShallow((state) => ({
     customWords: state.customWords,
-    myList: state.myList,
     wordBookSets: state.learningNotebook.sets,
   })))
   const saveCustomWord = useStore((state) => state.saveCustomWord)
   const deleteCustomWord = useStore((state) => state.deleteCustomWord)
   const importCustomWords = useStore((state) => state.importCustomWords)
-  const toggleMyList = useStore((state) => state.toggleMyList)
+  const setNotebookSetItem = useStore((state) => state.setNotebookSetItem)
   const navigate = useStore((state) => state.navigate)
 
   const [tab, setTab] = useState('words')
@@ -285,13 +290,12 @@ export function CustomWordsScreen() {
   const [pending, setPending] = useState(null)
   const fileInput = useRef(null)
 
-  // マイ単語か、名前をつけた単語帳のどれかに入っている語。
-  const bookedIds = useMemo(() => new Set([
-    ...myList,
-    ...wordBookSets.flatMap((set) => set.refs
+  // どれかの単語帳に入っている語。
+  const bookedIds = useMemo(() => new Set(
+    wordBookSets.flatMap((set) => set.refs
       .filter((ref) => ref.startsWith('vocab:'))
       .map((ref) => ref.slice('vocab:'.length))),
-  ]), [myList, wordBookSets])
+  ), [wordBookSets])
   const ids = useMemo(() => customWords.map((word) => word.id), [customWords])
 
   const submit = () => {
@@ -314,7 +318,8 @@ export function CustomWordsScreen() {
       setError(`自作単語は${CUSTOM_WORD_LIMITS.words}語までです。使わない語を消すとまた足せます。`)
       return
     }
-    if (!form.id && form.addToMyList) toggleMyList(result.id)
+    const bookId = form.addToBookId ?? wordBookSets[0]?.id ?? ''
+    if (!form.id && bookId) setNotebookSetItem(bookId, 'vocab', result.id, true)
     setError('')
     setForm(null)
   }
@@ -398,6 +403,7 @@ export function CustomWordsScreen() {
             {form ? (
               <WordForm
                 form={form}
+                books={wordBookSets}
                 onChange={setForm}
                 onSubmit={submit}
                 onCancel={() => { setForm(null); setError('') }}

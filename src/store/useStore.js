@@ -77,15 +77,16 @@ import {
 import { learnerDestination } from '../lib/learnerVisibility.js'
 import { appHomeForScreen, fallbackDestination } from '../lib/appHome.js'
 import {
-  createLearningNotebook,
   createNotebookSet as createNotebookSetState,
+  createStarterLearningNotebook,
   deleteNotebookSet as deleteNotebookSetState,
+  foldLegacyMyWords,
   forgetNotebookItem,
+  moveNotebookSet as moveNotebookSetState,
   moveNotebookSetItem as moveNotebookSetItemState,
-  normalizeLearningNotebook,
   recordNotebookSetLaunch as recordNotebookSetLaunchState,
   setNotebookItemSaved,
-  setNotebookSetItem as setNotebookSetItemState,
+  setNotebookSetItems as setNotebookSetItemsState,
   updateNotebookItem as updateNotebookItemState,
   updateNotebookSet as updateNotebookSetState,
 } from '../lib/learningNotebook.js'
@@ -178,7 +179,7 @@ const DEFAULT_SETTINGS = {
   autoSpeak: true,
   dailyGoal: 20,
   sessionSize: 10, // 1回の暗記・テストで出す問題数（進捗表示のタップで変更）
-  revealAnswers: false, // 暗記/復習/マイ単語で、タップせず最初から意味・語源を表示する
+  revealAnswers: false, // 暗記/復習/単語帳で、タップせず最初から意味・語源を表示する
   autoAdvanceCorrect: true, // テストで正解したら、短い確認時間の後に次の問題へ進む
   vocabMix: VOCAB_MIX_DEFAULT, // 単語の通常セッションで復習と未修をどちらへ寄せるか
 }
@@ -221,11 +222,11 @@ export const createInitialLearningState = () => ({
   kanbunGrammarSrs: {}, // 漢文法の itemId -> { box, ... }
   kanbunCultureSrs: {}, // 漢文常識の itemId -> { box, ... }
   kanbunKundokuSrs: {}, // 返り点・訓読ドリルの exerciseId -> { box, ... }
-  myList: [], // [wordId]
   customWords: [], // 自作単語（辞書に無い語を自分で登録したもの）
-  vocabHistory: [], // 最近検索・参照・マイ単語登録した英単語ID（新しい順）
+  vocabHistory: [], // 最近検索・参照・単語帳へ入れた英単語ID（新しい順）
   myGrammarList: [], // [writingGrammarId] 英作文で保存した文法カード
-  learningNotebook: createLearningNotebook(), // 8分野のメモ・タグ・自作問題集
+  // 8分野のメモ・タグと単語帳。単語帳は最初から「マイ単語」を1冊持つ（ほかの冊と同じ扱い）。
+  learningNotebook: createStarterLearningNotebook(),
   writingProgress: {}, // exerciseId -> { completed, lastText, lastMode, lastDay, bestWords, grammarIds }
   kotenWordList: [], // [古文単語id] 登録単語
   kotenGrammarList: [], // [古典文法id] 登録文法
@@ -424,7 +425,9 @@ export function migratePersistedState(persistedState) {
   state.portalOrder = normalizeOrder(state.portalOrder)
   state.portalHidden = normalizeHidden(state.portalHidden)
   state.vocabHistory = normalizeVocabHistory(state.vocabHistory)
-  state.learningNotebook = normalizeLearningNotebook(state.learningNotebook)
+  // 以前の「マイ単語」（myList）は、単語帳の1冊「マイ単語」へ移してから保存配列を捨てる。
+  state.learningNotebook = foldLegacyMyWords(state.learningNotebook, state.myList)
+  delete state.myList
   state.customWords = normalizeCustomWords(state.customWords)
   state.learningAnalytics = normalizeLearningAnalytics(state.learningAnalytics)
   state.contentQuizResults = normalizeContentQuizResults(state.contentQuizResults)
@@ -480,11 +483,11 @@ export function progressStateFromPayload(payload = {}) {
     kanbunGrammarSrs: payload.kanbunGrammarSrs ?? {},
     kanbunCultureSrs: payload.kanbunCultureSrs ?? {},
     kanbunKundokuSrs: payload.kanbunKundokuSrs ?? {},
-    myList: payload.myList ?? [],
     customWords: normalizeCustomWords(payload.customWords),
     vocabHistory: normalizeVocabHistory(payload.vocabHistory),
     myGrammarList: payload.myGrammarList ?? [],
-    learningNotebook: normalizeLearningNotebook(payload.learningNotebook),
+    // 以前の進捗コードの「マイ単語」（myList）は、単語帳の1冊へ移して読み込む。
+    learningNotebook: foldLegacyMyWords(payload.learningNotebook, payload.myList),
     writingProgress: payload.writingProgress ?? {},
     kotenWordList: payload.kotenWordList ?? [],
     kotenGrammarList: payload.kotenGrammarList ?? [],
@@ -911,41 +914,6 @@ export const useStore = create(
 
       clearVocabHistory: () => set({ vocabHistory: [] }),
 
-      toggleMyList: (wordId) =>
-        set((st) => {
-          const saved = st.myList.includes(wordId)
-          return {
-            myList: saved
-              ? st.myList.filter((id) => id !== wordId)
-              : [...st.myList, wordId],
-            learningNotebook: setNotebookItemSaved(
-              st.learningNotebook,
-              'vocab',
-              wordId,
-              !saved,
-            ),
-            // 登録した単語は、詳細画面以外から保存しても辞書履歴へ出す。
-            vocabHistory: saved
-              ? st.vocabHistory
-              : prependVocabHistory(st.vocabHistory, [wordId]),
-          }
-        }),
-
-      addManyToMyList: (ids) =>
-        set((st) => {
-          const known = new Set(st.myList)
-          const added = []
-          for (const id of Array.isArray(ids) ? ids : []) {
-            if (typeof id !== 'string' || !id || known.has(id)) continue
-            known.add(id)
-            added.push(id)
-          }
-          return {
-            myList: [...st.myList, ...added],
-            vocabHistory: prependVocabHistory(st.vocabHistory, added),
-          }
-        }),
-
       // ── 自作単語 ──
       // 保存は一覧まるごとの入れ替えで行う。辞書側の引き当て表は
       // ストアの購読（下部）で更新するので、ここでは持ち物だけを更新する。
@@ -962,8 +930,7 @@ export const useStore = create(
       deleteCustomWord: (id) =>
         set((st) => ({
           customWords: removeCustomWord(st.customWords, id),
-          // 消した語は、マイ単語・単語帳・辞書履歴からも一緒に外す。
-          myList: st.myList.filter((wordId) => wordId !== id),
+          // 消した語は、単語帳・辞書履歴からも一緒に外す。
           vocabHistory: st.vocabHistory.filter((wordId) => wordId !== id),
           learningNotebook: forgetNotebookItem(st.learningNotebook, 'vocab', id),
         })),
@@ -997,12 +964,12 @@ export const useStore = create(
           ],
         })),
 
-      // 8分野共通のノート保存。既存の英単語・古典リストは互換経路として
-      // 同時更新し、旧画面・旧保存データ・既存SRSをそのまま利用できるようにする。
+      // 8分野共通のノート保存。古典の登録リストは互換経路として同時更新し、
+      // 旧画面・旧保存データ・既存SRSをそのまま利用できるようにする。
+      // 英単語の保存はノートだけに持つ（単語帳への出し入れとは別）。
       toggleNotebookItem: (domain, itemId) =>
         set((st) => {
           const legacyField = {
-            vocab: 'myList',
             kotenVocab: 'kotenWordList',
             kotenGrammar: 'kotenGrammarList',
             kotenCulture: 'kotenCultureList',
@@ -1032,7 +999,6 @@ export const useStore = create(
       updateNotebookItem: (domain, itemId, patch) =>
         set((st) => {
           const legacyField = {
-            vocab: 'myList',
             kotenVocab: 'kotenWordList',
             kotenGrammar: 'kotenGrammarList',
             kotenCulture: 'kotenCultureList',
@@ -1087,16 +1053,38 @@ export const useStore = create(
           learningNotebook: deleteNotebookSetState(st.learningNotebook, setId),
         })),
 
-      setNotebookSetItem: (setId, domain, itemId, included) =>
+      // 単語帳の並びで1冊を上（up）・下（down）へ動かす。
+      moveNotebookSet: (setId, direction) =>
         set((st) => ({
-          learningNotebook: setNotebookSetItemState(
+          learningNotebook: moveNotebookSetState(st.learningNotebook, setId, direction),
+        })),
+
+      // 単語帳へ1項目を入れる・外す。英単語を入れたときは辞書履歴にも残す（どの冊でも同じ）。
+      setNotebookSetItem: (setId, domain, itemId, included) =>
+        get().setNotebookSetItems(setId, domain, [itemId], included),
+
+      // まとめて入れる・外す（長文や写真の読み取りの全語など）。1冊500項目を超える分は入らない。
+      setNotebookSetItems: (setId, domain, itemIds, included) =>
+        set((st) => {
+          const learningNotebook = setNotebookSetItemsState(
             st.learningNotebook,
             setId,
             domain,
-            itemId,
+            itemIds,
             included,
-          ),
-        })),
+          )
+          if (!included || domain !== 'vocab') return { learningNotebook }
+          const before = new Set(st.learningNotebook.sets.find((item) => item.id === setId)?.refs ?? [])
+          const added = (learningNotebook.sets.find((item) => item.id === setId)?.refs ?? [])
+            .filter((ref) => !before.has(ref) && ref.startsWith('vocab:'))
+            .map((ref) => ref.slice('vocab:'.length))
+          return {
+            learningNotebook,
+            vocabHistory: added.length
+              ? prependVocabHistory(st.vocabHistory, added)
+              : st.vocabHistory,
+          }
+        }),
 
       moveNotebookSetItem: (setId, ref, direction) =>
         set((st) => ({
@@ -1628,7 +1616,7 @@ export const useStore = create(
     }),
     {
       name: 'eigo-quest',
-      version: 9,
+      version: 10,
       migrate: migratePersistedState,
       // ナビゲーション系は保存しない。
       partialize: selectProgressState,

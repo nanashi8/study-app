@@ -4,7 +4,9 @@ import { ALL_WORDS } from '../data/vocab.js'
 import { getLevel } from '../data/levels.js'
 import { matchOcrTextToWords, normalizeOcrToken } from '../lib/vocabOcr.js'
 import { requestWords, WORD_REQUEST_TOTAL_LIMIT } from '../lib/wordRequests.js'
+import { wordBookRef } from '../lib/wordBooks.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
+import { WordListSheet } from '../components/WordListSheet.jsx'
 import { Button, Card, Chip, ProgressBar } from '../components/ui.jsx'
 import { Check, Close, Refresh, Sparkles, Upload } from '../components/Icons.jsx'
 
@@ -71,8 +73,7 @@ async function prepareImageForOcr(file) {
 
 export function VocabCameraScreen() {
   const navigate = useStore((state) => state.navigate)
-  const myList = useStore((state) => state.myList)
-  const addManyToMyList = useStore((state) => state.addManyToMyList)
+  const wordBookSets = useStore((state) => state.learningNotebook.sets)
   const cameraInput = useRef(null)
   const photoInput = useRef(null)
   const previewUrlRef = useRef('')
@@ -95,6 +96,11 @@ export function VocabCameraScreen() {
   const [requestError, setRequestError] = useState('')
   const [requestedCount, setRequestedCount] = useState(0)
   const [addedCount, setAddedCount] = useState(0)
+  // 選んだ語を入れる単語帳を選ぶ窓で扱っている語。閉じたときに、入った語だけを選択から外す。
+  const [bookSheetIds, setBookSheetIds] = useState(null)
+
+  // どれかの単語帳に入っている語は、候補のなかで「入っている」と示して選べなくする。
+  const inWordBook = (id, sets = wordBookSets) => sets.some((set) => set.refs.includes(wordBookRef(id)))
 
   useEffect(() => () => {
     mountedRef.current = false
@@ -104,9 +110,8 @@ export function VocabCameraScreen() {
 
   const applyMatches = (text) => {
     const next = matchOcrTextToWords(text, ALL_WORDS)
-    const saved = new Set(myList)
     setSummary(next)
-    setSelected(new Set(next.candidates.filter((item) => !saved.has(item.id)).map((item) => item.id)))
+    setSelected(new Set(next.candidates.filter((item) => !inWordBook(item.id)).map((item) => item.id)))
     setSelectedRequests(new Set(next.unmatched.map((item) => item.token)))
     setRequestedWords(new Set())
     setRequestedCount(0)
@@ -202,7 +207,7 @@ export function VocabCameraScreen() {
   }
 
   const toggleCandidate = (id) => {
-    if (myList.includes(id)) return
+    if (inWordBook(id)) return
     setSelected((current) => {
       const next = new Set(current)
       if (next.has(id)) next.delete(id)
@@ -213,16 +218,26 @@ export function VocabCameraScreen() {
 
   const selectAllNew = () => {
     if (!summary) return
-    const saved = new Set(myList)
-    setSelected(new Set(summary.candidates.filter((item) => !saved.has(item.id)).map((item) => item.id)))
+    setSelected(new Set(summary.candidates.filter((item) => !inWordBook(item.id)).map((item) => item.id)))
   }
 
   const addSelected = () => {
-    const ids = [...selected].filter((id) => !myList.includes(id))
+    const ids = [...selected].filter((id) => !inWordBook(id))
     if (!ids.length) return
-    addManyToMyList(ids)
-    setSelected(new Set())
-    setAddedCount(ids.length)
+    setBookSheetIds(ids)
+  }
+
+  const closeBookSheet = () => {
+    const sets = useStore.getState().learningNotebook.sets
+    const added = (bookSheetIds ?? []).filter((id) => inWordBook(id, sets))
+    setBookSheetIds(null)
+    if (!added.length) return
+    setSelected((current) => {
+      const next = new Set(current)
+      for (const id of added) next.delete(id)
+      return next
+    })
+    setAddedCount(added.length)
   }
 
   const toggleRequest = (token) => {
@@ -264,7 +279,7 @@ export function VocabCameraScreen() {
     }
   }
 
-  const newCandidateCount = summary?.candidates.filter((item) => !myList.includes(item.id)).length ?? 0
+  const newCandidateCount = summary?.candidates.filter((item) => !inWordBook(item.id)).length ?? 0
   const pendingRequestCount = summary?.unmatched.filter((item) => !requestedWords.has(item.token)).length ?? 0
 
   return (
@@ -452,7 +467,7 @@ export function VocabCameraScreen() {
                 <div className="space-y-2">
                   {summary.candidates.map((item) => {
                     const level = getLevel(item.level)
-                    const saved = myList.includes(item.id)
+                    const saved = inWordBook(item.id)
                     const checked = saved || selected.has(item.id)
                     const observed = item.observed
                       .filter((surface) => normalizeOcrToken(surface) !== normalizeOcrToken(item.headword))
@@ -498,7 +513,7 @@ export function VocabCameraScreen() {
                         </span>
                         {saved && (
                           <span className="shrink-0 text-[11px] font-extrabold text-amber-700">
-                            追加済み
+                            単語帳にある
                           </span>
                         )}
                       </label>
@@ -507,15 +522,15 @@ export function VocabCameraScreen() {
                 </div>
 
                 <div className="sticky bottom-3 z-10 mt-4 rounded-3xl bg-paper/90 p-2 shadow-xl backdrop-blur">
-                  <Button full disabled={!selected.size} onClick={addSelected}>
-                    <Check size={18} /> 選んだ {selected.size}語をマイ単語に追加
+                  <Button full disabled={!selected.size} onClick={addSelected} aria-haspopup="dialog" data-ocr-word-book>
+                    <Check size={18} /> 選んだ {selected.size}語を単語帳に入れる
                   </Button>
                 </div>
               </section>
             ) : (
               <Card className="p-5 text-center">
                 <div className="text-4xl">🔎</div>
-                <h2 className="mt-2 font-display font-extrabold text-ink">マイ単語へ追加できる語はありませんでした</h2>
+                <h2 className="mt-2 font-display font-extrabold text-ink">単語帳へ入れられる語はありませんでした</h2>
                 <p className="mt-1 text-xs font-bold leading-relaxed text-ink/50">
                   上の文字を修正するか、下の未登録語を確認して辞書登録をリクエストできます。
                 </p>
@@ -640,15 +655,15 @@ export function VocabCameraScreen() {
               </div>
               <div className="min-w-0 flex-1">
                 <p className="font-display font-extrabold text-emerald-800">
-                  {addedCount}語を追加しました
+                  {addedCount}語を単語帳に入れました
                 </p>
                 <p className="text-xs font-bold text-emerald-700/70">
-                  いつものマイ単語暗記とテストで復習できます。
+                  単語画面の「単語帳」から、その冊で暗記とテストができます。
                 </p>
               </div>
             </div>
             <Button full className="mt-3" variant="success" onClick={() => navigate('myList')}>
-              マイ単語を見る
+              マイ学習ノートで単語帳を見る
             </Button>
           </Card>
         )}
@@ -683,6 +698,13 @@ export function VocabCameraScreen() {
           </Button>
         )}
       </div>
+
+      <WordListSheet
+        open={Boolean(bookSheetIds)}
+        onClose={closeBookSheet}
+        wordIds={bookSheetIds ?? []}
+        wordLabel={`読み取った${bookSheetIds?.length ?? 0}語`}
+      />
     </div>
   )
 }

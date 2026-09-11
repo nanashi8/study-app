@@ -57,9 +57,8 @@ export const PROGRESS_RESET_GROUPS = Object.freeze([
   resetGroup(
     'saved',
     '保存した教材・ノート',
-    'マイ単語、マイ文法、学習ノート、全教材の学習項目・非表示、古典・漢文の登録項目',
+    '単語帳、マイ文法、学習ノート、全教材の学習項目・非表示、古典・漢文の登録項目',
     [
-      'myList',
       'myGrammarList',
       'learningNotebook',
       'kotenWordList',
@@ -73,7 +72,7 @@ export const PROGRESS_RESET_GROUPS = Object.freeze([
   resetGroup(
     'customWords',
     '自作した単語',
-    '自分で登録した英単語（マイ単語・単語帳からも外れます）',
+    '自分で登録した英単語（単語帳からも外れます）',
     ['customWords'],
   ),
   resetGroup(

@@ -14,6 +14,8 @@ import { LearningEntryCard } from '../components/LearningEntryCard.jsx'
 import { LearningViewTabs } from '../components/LearningViewTabs.jsx'
 import { LongSentenceTranslation } from '../components/LongSentenceTranslation.jsx'
 import { NormalLearningRecordList } from '../components/NormalLearningRecordList.jsx'
+import { WordListSheet } from '../components/WordListSheet.jsx'
+import { wordBookRef } from '../lib/wordBooks.js'
 import { Button, Card, Chip, cx } from '../components/ui.jsx'
 import { summarizeSrsItems } from '../lib/contentProgress.js'
 import { scrollScreenToTop } from '../lib/screenScroll.js'
@@ -33,9 +35,10 @@ export function ReadingPrepScreen() {
   const params = useStore((state) => state.params)
   const passageId = params.passageId
   const navigate = useStore((state) => state.navigate)
-  const myList = useStore((state) => state.myList)
+  const wordBookSets = useStore((state) => state.learningNotebook.sets)
   const srs = useStore((state) => state.srs)
-  const addManyToMyList = useStore((state) => state.addManyToMyList)
+  // 必須語彙をまとめて入れる単語帳を選ぶ窓。
+  const [bookSheetOpen, setBookSheetOpen] = useState(false)
   const [view, setView] = useState(params.view === 'list' ? 'list' : 'prep')
   const [tab, setTab] = useState(params.listTab === 'phrases' ? 'phrases' : 'words')
   const [detail, setDetail] = useState(null)
@@ -59,7 +62,10 @@ export function ReadingPrepScreen() {
   const wordIds = words.map((word) => word.id)
   const wordStatus = summarizeSrsItems(wordIds, srs)
   const phraseStatus = summarizeSrsItems(phrases, srs)
-  const allSaved = wordIds.length > 0 && wordIds.every((id) => myList.includes(id))
+  // どの語も、いずれかの単語帳に入っているか。
+  const allSaved = wordIds.length > 0 && wordIds.every((id) => (
+    wordBookSets.some((set) => set.refs.includes(wordBookRef(id)))
+  ))
   const detailTranslation = detail ? longSentenceTranslationFor(detail) : null
   const continueTo = {
     screen: 'readingPrep',
@@ -286,16 +292,18 @@ export function ReadingPrepScreen() {
           <Button
             full
             variant={allSaved ? 'soft' : 'hint'}
-            disabled={allSaved}
-            onClick={() => addManyToMyList(wordIds)}
+            disabled={!wordIds.length}
+            onClick={() => setBookSheetOpen(true)}
+            aria-haspopup="dialog"
+            data-reading-prep-word-book
           >
             {allSaved ? (
               <>
-                <Check size={17} /> 全語をマイ単語に保存済み
+                <Check size={17} /> 全語が単語帳に入っています（入れる冊を選ぶ）
               </>
             ) : (
               <>
-                <Bookmark size={17} /> 全語をマイ単語に保存
+                <Bookmark size={17} /> 全語を単語帳に入れる
               </>
             )}
           </Button>
@@ -344,6 +352,13 @@ export function ReadingPrepScreen() {
           本文を読む <ArrowRight size={18} />
         </Button>
       </div>
+
+      <WordListSheet
+        open={bookSheetOpen}
+        onClose={() => setBookSheetOpen(false)}
+        wordIds={wordIds}
+        wordLabel={`この長文の必須語彙${wordIds.length}語`}
+      />
 
       <Sheet open={!!detail} onClose={() => setDetail(null)} title="くわしく">
         {detail && (

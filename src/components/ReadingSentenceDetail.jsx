@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import { resolvePassageWord } from '../data/passage-gloss.js'
 import { readingRulesForSentence } from '../data/reading-rules.js'
@@ -10,6 +11,7 @@ import { SpeakButton } from './SpeakButton.jsx'
 import { StructureDiagram } from './StructureDiagram.js'
 import { ReadingRoleSentence } from './ReadingRoleSentence.js'
 import { ReadingRuleCard } from './ReadingRuleCard.jsx'
+import { WordListSheet, useWordInAnyBook } from './WordListSheet.jsx'
 import { Bookmark, BookmarkFilled, BookOpen, Lightbulb, Link } from './Icons.jsx'
 import { cx } from './ui.jsx'
 
@@ -80,8 +82,10 @@ export function ReadingSentenceDetail({
   onNavigateAway,
 }) {
   const navigate = useStore((s) => s.navigate)
-  const myList = useStore((s) => s.myList)
-  const toggleMyList = useStore((s) => s.toggleMyList)
+  const [bookSheetOpen, setBookSheetOpen] = useState(false)
+  const inWordBook = useWordInAnyBook(activeWord?.id)
+  // 別の語を開いたら、単語帳を選ぶ窓は閉じた状態から始める。
+  useEffect(() => setBookSheetOpen(false), [activeWord?.id])
   if (!sentence || !sentenceAnalysis) return null
   const visiblePhraseExplanations = readingPhraseExplanationTexts(sentenceAnalysis)
   const visibleBlockExplanations = readingBlockExplanationTexts(
@@ -135,28 +139,37 @@ export function ReadingSentenceDetail({
                     </button>
                   )}
                 </div>
-                {/* マイ単語に追加（語彙データにある語のみ） */}
+                {/* 単語帳に入れる（語彙データにある語のみ）。押すと入れる単語帳を選ぶ。 */}
                 {activeWord.id && (
                   <button
-                    onClick={() => toggleMyList(activeWord.id)}
+                    type="button"
+                    onClick={() => setBookSheetOpen(true)}
+                    aria-haspopup="dialog"
+                    data-reading-word-book
                     className={cx(
-                      'mt-3 flex w-full items-center justify-center gap-1.5 rounded-xl py-2 text-sm font-extrabold transition-colors',
-                      myList.includes(activeWord.id)
+                      'mt-3 flex min-h-11 w-full items-center justify-center gap-1.5 rounded-xl py-2 text-sm font-extrabold transition-colors',
+                      inWordBook
                         ? 'bg-hint-soft text-amber-700'
                         : 'bg-brand-500 text-white active:bg-brand-600',
                     )}
                   >
-                    {myList.includes(activeWord.id) ? (
+                    {inWordBook ? (
                       <>
-                        <BookmarkFilled size={16} /> マイ単語に追加済み（タップで解除）
+                        <BookmarkFilled size={16} /> 単語帳に入っています（入れる冊を選ぶ）
                       </>
                     ) : (
                       <>
-                        <Bookmark size={16} /> マイ単語に追加
+                        <Bookmark size={16} /> 単語帳に入れる
                       </>
                     )}
                   </button>
                 )}
+                <WordListSheet
+                  open={bookSheetOpen && Boolean(activeWord.id)}
+                  onClose={() => setBookSheetOpen(false)}
+                  wordId={activeWord.id}
+                  wordLabel={activeWord.word}
+                />
               </div>
             )}
 
