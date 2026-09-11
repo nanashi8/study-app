@@ -10,6 +10,7 @@ import {
   describeVocabMix,
   normalizeVocabMix,
   vocabMixAtIndex,
+  vocabMixEmptyNotice,
   vocabMixFreshShare,
   vocabMixIndex,
 } from '../src/lib/vocabMix.js'
@@ -59,8 +60,10 @@ test('バーで指定した割合は、自動プロファイルより優先し�
     'balanced',
   )
 
+  // 「復習だけ」は復習が8語しかなくても、まだ学んでいない語で10問に埋めない。
+  // 途中の段（復習寄りなど）は、足りない側をもう一方で補う。
   const cases = [
-    { mix: 'review-only', reviewCount: 8, varietyCount: 2 },
+    { mix: 'review-only', reviewCount: 8, varietyCount: 0 },
     { mix: 'review-heavy', reviewCount: 8, varietyCount: 2 },
     { mix: 'even', reviewCount: 5, varietyCount: 5 },
     { mix: 'fresh-only', reviewCount: 0, varietyCount: 10 },
@@ -80,6 +83,76 @@ test('バーで指定した割合は、自動プロファイルより優先し�
     assert.equal(deck.filter((word) => dueIds.has(word.id)).length, expected.reviewCount, expected.mix)
     assert.equal(deck.filter((word) => !dueIds.has(word.id)).length, expected.varietyCount, expected.mix)
   }
+})
+
+test('「未修だけ」は一度学んだ語を、「復習だけ」はまだ学んでいない語を、暗記にもテストにも出さない', () => {
+  const now = new Date(2026, 8, 12, 9, 0, 0, 0).getTime()
+  const day = todayIndex(now)
+  const source = { type: 'level', levelId: '4' }
+  const words = wordsByLevel('4')
+  const remembered = (lastAt, due) => ({
+    box: 1, correct: 1, wrong: 0, due, last: todayIndex(lastAt), lastAt,
+    memory: { passes: 1, remembered: 1, forgot: 0, lastAt, lastJudgment: 'remembered', marks: [1] },
+  })
+  const studied = (srs) => (word) => Boolean(srs[word.id])
+  const build = (srs, mix, purpose, size = 10) => buildDeck(source, {
+    srs, size, purpose, now, day, freshShareOverride: vocabMixFreshShare(mix),
+  })
+
+  // 今日40語を「覚えた」（復習日は明日）。以前のテストは、この学習済みの語を「未修」の枠へ先に入れていた。
+  const learnedToday = Object.fromEntries(words.slice(0, 40).map((word) => [word.id, remembered(now, day + 1)]))
+  for (const purpose of ['study', 'quiz']) {
+    const deck = build(learnedToday, 'fresh-only', purpose)
+    assert.equal(deck.length, 10, purpose)
+    assert.equal(deck.filter(studied(learnedToday)).length, 0, `${purpose}: 未修だけに学んだ語が混ざった`)
+  }
+  // 途中の段でも、「未修」の枠は学習済みの語で埋めない（テストは在庫の足りない側だけを補う）。
+  const heavyQuiz = build(learnedToday, 'fresh-heavy', 'quiz')
+  assert.equal(heavyQuiz.filter((word) => !learnedToday[word.id]).length, 8)
+
+  // 未修の語が3語しか残っていない級。10問にするために学んだ語で埋めない。
+  const unlearnedIds = new Set(words.slice(-3).map((word) => word.id))
+  const nearlyDone = Object.fromEntries(words
+    .filter((word) => !unlearnedIds.has(word.id))
+    .map((word, index) => [word.id, remembered(now - 2 * 86_400_000, index < 5 ? day : day + 3)]))
+  for (const purpose of ['study', 'quiz']) {
+    const freshOnly = build(nearlyDone, 'fresh-only', purpose)
+    assert.deepEqual(new Set(freshOnly.map((word) => word.id)), unlearnedIds, purpose)
+    assert.equal(build(nearlyDone, 'fresh-only', purpose, 0).length, 3, `${purpose}: 数えるときも同じ`)
+    // 「復習だけ」は、残り3語の未修を混ぜない。
+    const reviewOnly = build(nearlyDone, 'review-only', purpose)
+    assert.equal(reviewOnly.length, 10, purpose)
+    assert.equal(reviewOnly.filter((word) => unlearnedIds.has(word.id)).length, 0, purpose)
+  }
+
+  // 未修の語がない級で「未修だけ」なら、学んだ語を出さずに空にして、画面が理由を示す。
+  const allLearned = Object.fromEntries(words.map((word) => [word.id, remembered(now, day + 1)]))
+  assert.equal(build(allLearned, 'fresh-only', 'study').length, 0)
+  assert.equal(build(allLearned, 'fresh-only', 'quiz').length, 0)
+  assert.equal(vocabMixEmptyNotice('fresh-only').title, '未修の単語は残っていません')
+  assert.equal(vocabMixEmptyNotice('review-only').title, '復習する単語はまだありません')
+  assert.equal(vocabMixEmptyNotice('even'), null)
+  assert.equal(vocabMixEmptyNotice('auto'), null)
+})
+
+test('学習の途中でバーを動かすと、まだ答えていない先の問題からその割合で組み直す', () => {
+  const study = read('../src/screens/VocabStudy.jsx')
+  const quiz = read('../src/screens/VocabQuiz.jsx')
+  const result = read('../src/screens/SessionResult.jsx')
+  const progress = read('../src/lib/vocabSessionProgress.js')
+
+  for (const source of [study, quiz]) {
+    assert.match(source, /appliedVocabMix\.current === (?:settings\.)?vocabMix/)
+    assert.match(source, /if \(!isAutomaticVocabularySource\(source\)\) return/)
+    // いま表示している問題と答えた問題は残し、その先だけを新しい割合の出題に替える。
+    assert.match(source, /growDeck\(current, keepCount, buildFor\(size\), Math\.max\(size, keepCount\)\)/)
+    assert.match(source, /vocabMixEmptyNotice\((?:settings\.)?vocabMix\)/)
+    assert.doesNotMatch(source, /次に組む出題から効かせる/)
+  }
+  assert.match(study, /Math\.max\(i \+ 1, \.\.\.answeredIndexes\.map\(\(index\) => index \+ 1\)\)/)
+  // 結果画面の「次の◯語へ」も、同じ割合で実際に出せる数を数える。
+  assert.match(result, /freshShareOverride: vocabMixFreshShare\(settings\.vocabMix\)/)
+  assert.equal((progress.match(/^ {4}freshShareOverride,$/gm) ?? []).length, 3)
 })
 
 test('画面下部の同じ枠で、読み上げと出題バランスを切り替える', () => {

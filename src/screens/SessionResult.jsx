@@ -7,6 +7,7 @@ import { VocabCompletionReport } from '../components/VocabCompletionReport.jsx'
 import { DragonVeinCipherStage } from '../components/DragonVeinCipherStage.jsx'
 import { buildVocabCompletionReport } from '../lib/learningAnalyticsReport.js'
 import { vocabularySessionContinuation } from '../lib/vocabSessionProgress.js'
+import { vocabMixFreshShare } from '../lib/vocabMix.js'
 import {
   DRAGON_VEIN_TARGET,
   dragonVeinMainComplete,
@@ -103,9 +104,10 @@ export function SessionResultScreen() {
           srs,
           storedSize: settings.sessionSize,
           now: reportNow,
+          freshShareOverride: vocabMixFreshShare(settings.vocabMix),
         })
       : null
-  ), [isVocabResult, params, reportNow, settings.sessionSize, srs])
+  ), [isVocabResult, params, reportNow, settings.sessionSize, settings.vocabMix, srs])
   const vocabNextAfterReview = vocabContinuation
     ? {
         ...vocabContinuation.destination,
