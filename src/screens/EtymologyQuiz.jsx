@@ -3,10 +3,10 @@ import { useStore } from '../store/useStore.js'
 import { ETYMOLOGY_PACKS, getEtymologyPack, getWord } from '../data/vocab.js'
 import { buildEtymologyQuizQuestion } from '../lib/etymologyQuiz.js'
 import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
-import { growDeck } from '../lib/session.js'
+import { answeredQuizIndexes, growDeck, restartSessionCount } from '../lib/session.js'
 import { Button } from '../components/ui.jsx'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
-import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
+import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
 import {
   QuestionSessionControls,
   useIndexedSessionState,
@@ -44,11 +44,14 @@ export function EtymologyQuizScreen() {
     value: selected,
     setValue: setSelected,
     clear: clearSelections,
+    values: selections,
   } = useIndexedSessionState(index)
   const autoAdvanceSequence = useRef(0)
   const [autoAdvanceSignal, setAutoAdvanceSignal] = useState(null)
   const [correctCount, setCorrectCount] = useState(0)
   const [done, setDone] = useState(false)
+  // 1回の問題数を減らして数え直す前に答えた問題。結果の全問数に含める。
+  const carried = useCarriedAnswers()
 
   const card = deck[index]
   const question = useMemo(
@@ -75,6 +78,7 @@ export function EtymologyQuizScreen() {
   }
 
   const restart = () => {
+    carried.reset()
     setDeck(buildQuizDeck(params.ids, deck.length))
     setIndex(0)
     clearSelections()
@@ -83,12 +87,13 @@ export function EtymologyQuizScreen() {
   }
 
   if (done) {
-    const rate = Math.round((correctCount / deck.length) * 100)
+    const total = carried.count + deck.length
+    const rate = Math.round((correctCount / total) * 100)
     return (
       <div className="flex h-full flex-col items-center justify-center gap-5 p-8 text-center">
         <div className="text-6xl">{rate >= 80 ? '🏆' : rate >= 50 ? '👏' : '📚'}</div>
         <div>
-          <p className="font-display text-2xl font-extrabold text-ink">{correctCount} / {deck.length} 正解</p>
+          <p className="font-display text-2xl font-extrabold text-ink">{correctCount} / {total} 正解</p>
           <p className="mt-1 text-sm font-bold text-ink/55">正答率 {rate}%</p>
         </div>
         <div className="grid w-full max-w-xs grid-cols-2 gap-3">
@@ -100,6 +105,7 @@ export function EtymologyQuizScreen() {
   }
 
   const answered = selected !== null
+  const answeredIndexes = answeredQuizIndexes(index, selections)
   const isCorrectPick = answered && selected === question.answerId
 
   const choose = (optionId) => {
@@ -141,15 +147,17 @@ export function EtymologyQuizScreen() {
             total={deck.length}
             max={poolSize}
             className="h-11"
-            onResize={(size, { discard }) => {
-              if (discard) {
-                setDeck(buildQuizDeck(params.ids, size))
-                setIndex(0)
+            reached={Math.max(index, answeredIndexes.at(-1) ?? 0)}
+            onResize={(size, { restart }) => {
+              if (restart) {
+                // 答えた問題の記録と結果は残したまま、まだ答えていない問題を1問目として数え直す。
+                const next = restartSessionCount(deck, answeredIndexes, index, buildQuizDeck(params.ids, size + deck.length), size)
+                carried.carry(next.answeredItems)
+                setDeck(next.deck)
                 clearSelections()
-                setCorrectCount(0)
-                setDone(false)
+                setIndex(0)
               } else {
-                setDeck((current) => growDeck(current, index + 1, buildQuizDeck(params.ids, size), size))
+                setDeck((current) => growDeck(current, Math.max(index, answeredIndexes.at(-1) ?? 0) + 1, buildQuizDeck(params.ids, size), size))
               }
             }}
           />

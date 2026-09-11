@@ -12,8 +12,8 @@ import {
   Lightbulb,
 } from '../components/Icons.jsx'
 import { KotenText } from '../components/KotenFurigana.jsx'
-import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
-import { growDeck } from '../lib/session.js'
+import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
+import { answeredSessionIndexes, growDeck, restartSessionCount } from '../lib/session.js'
 import { CardSaveToggle, CardStudyFooter, CardSwipeRegion } from '../components/CardStudyControls.jsx'
 import {
   nextUnansweredSessionIndex,
@@ -62,6 +62,8 @@ export function KotenCultureStudyScreen() {
     clear: clearRecordedAnswers,
     values: recordedAnswers,
   } = useIndexedSessionState(index)
+  // 1回の数を減らして数え直す前に答えたカード。結果の全枚数に含める。
+  const carried = useCarriedAnswers()
 
   const item = deck[index]
   const category = item
@@ -86,6 +88,7 @@ export function KotenCultureStudyScreen() {
   }
 
   const restart = () => {
+    carried.reset()
     setDeck(buildDeck(params.ids, deck.length, params.preserveOrder))
     setIndex(0)
     setFlipped(revealAll)
@@ -109,6 +112,8 @@ export function KotenCultureStudyScreen() {
     setFlipped(revealAll || Object.hasOwn(answers, nextIndex))
   }
 
+  const answeredIndexes = answeredSessionIndexes(recordedAnswers)
+
   if (done) {
     return (
       <div className="flex h-full flex-col items-center justify-center gap-5 p-8 text-center">
@@ -116,7 +121,7 @@ export function KotenCultureStudyScreen() {
         <div>
           <p className="font-display text-2xl font-extrabold text-ink">古典常識カード完了</p>
           <p className="mt-1 text-sm font-bold text-ink/55">
-            {deck.length}テーマのうち {remembered}テーマを「覚えた」
+            {carried.count + deck.length}テーマのうち {remembered}テーマを「覚えた」
           </p>
         </div>
         <div className="grid w-full max-w-xs grid-cols-2 gap-3">
@@ -144,16 +149,17 @@ export function KotenCultureStudyScreen() {
             max={poolSize}
             label="項目"
             className="h-11 w-full min-w-0 px-0 text-center text-xs no-underline"
-            onResize={(size, { discard }) => {
-              if (discard) {
-                setDeck(buildDeck(params.ids, size, params.preserveOrder))
-                setIndex(0)
-                setFlipped(revealAll)
-                setDone(false)
-                setRemembered(0)
+            reached={Math.max(index, answeredIndexes.at(-1) ?? 0)}
+            onResize={(size, { restart }) => {
+              if (restart) {
+                // 答えたカードの記録と結果は残したまま、まだ答えていないカードを1枚目として数え直す。
+                const next = restartSessionCount(deck, answeredIndexes, index, buildDeck(params.ids, 0, params.preserveOrder), size)
+                carried.carry(next.answeredItems)
+                setDeck(next.deck)
                 clearRecordedAnswers()
+                moveToCard(0, {})
               } else {
-                setDeck((current) => growDeck(current, index + 1, buildDeck(params.ids, size, params.preserveOrder), size))
+                setDeck((current) => growDeck(current, Math.max(index, answeredIndexes.at(-1) ?? 0) + 1, buildDeck(params.ids, size, params.preserveOrder), size))
               }
             }}
           />

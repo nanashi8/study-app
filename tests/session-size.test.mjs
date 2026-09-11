@@ -3,6 +3,12 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync, readdirSync } from 'node:fs'
 
+import {
+  answeredQuizIndexes,
+  answeredSessionIndexes,
+  restartSessionCount,
+} from '../src/lib/session.js'
+
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8')
 
 test('選べる問題数は 5・10・20・30・50・100・200 と「全部」', () => {
@@ -71,28 +77,69 @@ test('問題数を選ぶ画面は、教材の在庫数を渡している（渡�
 
 test('問題数を増やす／進捗以上を選ぶと、進捗を保ったまま出題を追加する', () => {
   const sizes = read('src/components/SessionSize.jsx')
-  // 進捗（index）以下に減らすときだけ破棄扱いにする。
-  assert.match(sizes, /discard: resolvedSize <= index/)
-  // 進捗より少ない値を選んだときは即決せず、確認してから破棄する。
-  assert.match(sizes, /if \(index > 0 && resolvedSize <= index\)/)
-  assert.match(sizes, /setPendingDiscard\(\{ rawSize: size, resolvedSize \}\)/)
-  assert.match(sizes, /破棄して変更する/)
+  // いちばん先まで進んだ位置（答えた問題）以下に減らすときだけ、数え直しにする。
+  assert.match(sizes, /restart: resolvedSize <= Math\.max\(index, reached\)/)
+  // 減らしても答えた分は消さないので、「破棄」の確認は出さずにそのまま変える。
+  assert.doesNotMatch(sizes, /破棄|pendingDiscard|discard/)
+  assert.match(sizes, /答えた分の記録と結果はそのまま残り、番号だけを1から数え直します/)
 
   const session = read('src/lib/session.js')
   assert.match(session, /export function growDeck\(existingDeck, keepCount, freshDeck, targetSize\)/)
 })
 
-test('問題数を変える画面はすべて、破棄フラグに応じて進捗を保つか破棄するかを分けている', () => {
+test('いまの番号より少なくすると、答えた問題を結果に残したまま、まだ答えていない問題から数え直す', () => {
+  const deck = Array.from({ length: 10 }, (_, index) => ({ id: `q${index + 1}` }))
+  const fresh = [{ id: 'q2' }, { id: 'n1' }, { id: 'n2' }, { id: 'q9' }, { id: 'n3' }]
+
+  // テスト：7問答えて、7問目を表示中。5問にすると、残りの3問に新しい2問を足して1問目から。
+  const answered = answeredQuizIndexes(6, { 6: 'correct' })
+  assert.deepEqual(answered, [0, 1, 2, 3, 4, 5, 6])
+  const quiz = restartSessionCount(deck, answered, 6, fresh, 5)
+  assert.deepEqual(quiz.deck.map((item) => item.id), ['q8', 'q9', 'q10', 'n1', 'n2'])
+  assert.equal(quiz.answeredItems.length, 7)
+
+  // 7問目をまだ答えていなければ、その問題を1問目にする。
+  const unansweredCurrent = restartSessionCount(deck, answeredQuizIndexes(6, {}), 6, fresh, 5)
+  assert.deepEqual(unansweredCurrent.deck.map((item) => item.id), ['q7', 'q8', 'q9', 'q10', 'n1'])
+  assert.equal(unansweredCurrent.answeredItems.length, 6)
+
+  // 前へ戻って見直している途中でも、いちばん先の問題までは答えた問題として数える。
+  assert.deepEqual(answeredQuizIndexes(2, { 2: 'correct', 5: 'wrong' }), [0, 1, 2, 3, 4, 5])
+
+  // 暗記：飛ばしたカード（2枚目）も残し、表示中のカードから先 → 飛ばしたカードの順に並べる。
+  const cards = answeredSessionIndexes({ 0: true, 2: false, 3: true, 4: true, 5: null })
+  assert.deepEqual(cards, [0, 2, 3, 4])
+  const study = restartSessionCount(deck, cards, 5, fresh, 7)
+  assert.deepEqual(study.deck.map((item) => item.id), ['q6', 'q7', 'q8', 'q9', 'q10', 'q2', 'n1'])
+  assert.deepEqual(study.answeredItems.map((item) => item.id), ['q1', 'q3', 'q4', 'q5'])
+})
+
+test('問題数を変える画面はすべて、減らしても答えた分の集計を消さずに数え直す', () => {
   const screens = readdirSync(new URL('../src/screens', import.meta.url))
     .filter((name) => name.endsWith('.jsx'))
     .map((name) => `src/screens/${name}`)
     .filter((path) => read(path).includes('<SessionCounter'))
 
+  assert.equal(screens.length, 20)
   for (const path of screens) {
     const source = read(path)
-    const handler = /onResize=\{\(size, \{ discard \}\) => \{[\s\S]*?\n {8,12}\}\}/.exec(source)?.[0]
-    assert.ok(handler, `${path} の onResize が (size, { discard }) を受け取っていない`)
-    assert.match(handler, /if \(discard\)/, `${path} が discard で分岐していない`)
+    const handler = /onResize=\{\(size, \{ restart \}\) => \{[\s\S]*?\n {8,12}\}\}/.exec(source)?.[0]
+    assert.ok(handler, `${path} の onResize が (size, { restart }) を受け取っていない`)
+    assert.match(handler, /if \(restart\)/, `${path} が restart で分岐していない`)
+    assert.match(handler, /restartSessionCount\(deck, answeredIndexes, /, `${path} が答えた問題を残して数え直していない`)
     assert.match(handler, /growDeck\(/, `${path} が進捗を保つ growDeck を呼んでいない`)
+    // 数え直しでは、正解数・「覚えた」数などの集計を0に戻さない。
+    const restartBranch = handler.slice(handler.indexOf('if (restart)'), handler.indexOf('} else {'))
+    assert.doesNotMatch(
+      restartBranch,
+      /results\.current = |setCorrectCount\(0\)|setCorrect\(0\)|setRemembered\(0\)|setResults\(|setUnknownCount\(0\)|setWeakIds\(\[\]\)|setForgottenIds\(\[\]\)/,
+      `${path} が数え直しで結果の集計を消している`,
+    )
+    assert.match(source, /reached=\{Math\.max\(/, `${path} がいちばん先まで進んだ位置を渡していない`)
+    // 結果の全問数（全枚数）には、数え直す前に答えた分を含める。数を出さない画面は持ち越さない。
+    if (!path.endsWith('WritingGrammarReview.jsx')) {
+      assert.match(handler, /carried\.carry\(next\.answeredItems\)/, `${path} が答えた問題を持ち越していない`)
+      assert.match(source, /carried\.count \+ deck\.length|carried\.ids/, `${path} の結果が持ち越した分を数えていない`)
+    }
   }
 })

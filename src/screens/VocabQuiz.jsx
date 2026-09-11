@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import {
+  answeredQuizIndexes,
   buildDeck,
   growDeck,
   isAutomaticVocabularySource,
+  restartSessionCount,
   vocabularyStockCount,
 } from '../lib/session.js'
 import { vocabMixEmptyNotice, vocabMixFreshShare } from '../lib/vocabMix.js'
@@ -25,7 +27,7 @@ import { cx } from '../components/ui.jsx'
 import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { buildVocabInstructorExplanation } from '../lib/instructorExplanations.js'
 import { isDragonVeinSource } from '../lib/dragonVein.js'
-import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
+import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
 import { VocabReviewHistory } from '../components/VocabReviewHistory.jsx'
 import {
   QuestionSessionControls,
@@ -127,6 +129,7 @@ export function VocabQuizScreen() {
     value: selected,
     setValue: setSelected,
     clear: clearSelections,
+    values: selections,
   } = useIndexedSessionState(
     index,
     null,
@@ -150,6 +153,9 @@ export function VocabQuizScreen() {
       : { correct: 0, wrong: 0, unknown: 0, wrongIds: [], answerLog: [] },
   )
 
+  // 1回の問題数を減らして数え直す前に答えた問題。結果の全問数と答えた語に含める。
+  const carried = useCarriedAnswers(restore?.carried)
+
   // 途中でやめても、そこまでに答えた分をこの分野の学習記録へ残す。
   const handOffSession = useUnfinishedSessionRecord({
     skill: 'vocab',
@@ -165,8 +171,9 @@ export function VocabQuizScreen() {
     appliedVocabMix.current = vocabMix
     if (!isAutomaticVocabularySource(source)) return
     const size = params.size ?? sessionSize
+    const answeredIndexes = answeredQuizIndexes(index, selections)
     setDeck((current) => {
-      const keepCount = current.length ? index + 1 : 0
+      const keepCount = current.length ? Math.max(index, answeredIndexes.at(-1) ?? 0) + 1 : 0
       return growDeck(current, keepCount, buildFor(size), Math.max(size, keepCount))
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -176,7 +183,10 @@ export function VocabQuizScreen() {
   const entry = useStore((state) => (word ? state.srs[word.id] : null))
   const options = useMemo(() => {
     if (!word) return []
-    if (restore?.i === index && restore.options?.length) return restore.options
+    // 辞書から戻ったときだけ、その問題の選択肢の並びを戻す（数え直したあとの同じ番号には使わない）。
+    if (restore?.i === index && restore.deck?.[index]?.id === word.id && restore.options?.length) {
+      return restore.options
+    }
     return shuffle([word, ...pickDistractors(word, 2)])
   }, [word?.id, index, restore])
 
@@ -196,6 +206,7 @@ export function VocabQuizScreen() {
   }
 
   const answered = selected !== null
+  const answeredIndexes = answeredQuizIndexes(index, selections)
   const streakState = streaksFromLog(results.current.answerLog)
   const isCorrectPick = answered && selected === word.id
   const instructorExplanation = answered
@@ -213,7 +224,7 @@ export function VocabQuizScreen() {
       title: params.title ?? (isDragonVein ? '龍脈の単語解読' : 'テスト'),
       mode: 'quiz',
       engine: 'word',
-      total: deck.length,
+      total: carried.count + deck.length,
       correct: results.current.correct,
       wrong: results.current.wrong + results.current.unknown,
       reviewIds: results.current.wrongIds,
@@ -225,7 +236,7 @@ export function VocabQuizScreen() {
       answerLog: [...results.current.answerLog],
       vocabSession: {
         cycleIds: params.vocabCycleIds,
-        wordIds: deck.map((item) => item.id),
+        wordIds: [...carried.ids, ...deck.map((item) => item.id)],
         completedAt: Date.now(),
       },
     })
@@ -272,6 +283,7 @@ export function VocabQuizScreen() {
       i: index,
       selected,
       options,
+      carried: carried.snapshot(),
       results: {
         ...results.current,
         wrongIds: [...results.current.wrongIds],
@@ -308,14 +320,17 @@ export function VocabQuizScreen() {
             total={deck.length}
             max={poolSize}
             className="h-11"
-            onResize={(size, { discard }) => {
-              if (discard) {
-                setDeck(buildFor(size))
-                setIndex(0)
+            reached={Math.max(index, answeredIndexes.at(-1) ?? 0)}
+            onResize={(size, { restart }) => {
+              if (restart) {
+                // 答えた問題の記録と結果は残したまま、まだ答えていない問題を1問目として数え直す。
+                const next = restartSessionCount(deck, answeredIndexes, index, buildFor(size + deck.length), size)
+                carried.carry(next.answeredItems)
+                setDeck(next.deck)
                 clearSelections()
-                results.current = { correct: 0, wrong: 0, unknown: 0, wrongIds: [], answerLog: [] }
+                setIndex(0)
               } else {
-                setDeck((current) => growDeck(current, index + 1, buildFor(size), size))
+                setDeck((current) => growDeck(current, Math.max(index, answeredIndexes.at(-1) ?? 0) + 1, buildFor(size), size))
               }
             }}
           />

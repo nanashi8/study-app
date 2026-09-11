@@ -4,9 +4,9 @@ import { getKoten } from '../data/koten.js'
 import { Button } from '../components/ui.jsx'
 import { KotenText, KotenWord } from '../components/KotenFurigana.jsx'
 import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
-import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
+import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
 import { CardSaveToggle, CardStudyFooter, CardSwipeRegion } from '../components/CardStudyControls.jsx'
-import { growDeck } from '../lib/session.js'
+import { answeredSessionIndexes, growDeck, restartSessionCount } from '../lib/session.js'
 import {
   nextUnansweredSessionIndex,
   QuestionSessionControls,
@@ -54,6 +54,8 @@ export function KotenStudyScreen() {
     clear: clearRecordedAnswers,
     values: recordedAnswers,
   } = useIndexedSessionState(i)
+  // 1回の数を減らして数え直す前に答えたカード。結果の全枚数に含める。
+  const carried = useCarriedAnswers()
 
   const word = deck[i]
   const saved = word ? kotenWordList.includes(word.id) : false
@@ -69,6 +71,7 @@ export function KotenStudyScreen() {
   }
 
   const restart = () => {
+    carried.reset()
     const next = seed + 1
     setSeed(next)
     setDeck(buildKotenDeck(params.ids, next, deck.length, params.preserveOrder))
@@ -94,6 +97,8 @@ export function KotenStudyScreen() {
     setFlipped(revealAll || Object.hasOwn(answers, nextIndex))
   }
 
+  const answeredIndexes = answeredSessionIndexes(recordedAnswers)
+
   if (done) {
     return (
       <div className="flex h-full flex-col items-center justify-center gap-5 p-8 text-center">
@@ -101,7 +106,7 @@ export function KotenStudyScreen() {
         <div>
           <p className="font-display text-2xl font-extrabold text-ink">おつかれさま！</p>
           <p className="mt-1 text-sm font-bold text-ink/55">
-            {deck.length}語のうち {remembered}語を「覚えた」
+            {carried.count + deck.length}語のうち {remembered}語を「覚えた」
           </p>
         </div>
         <div className="grid w-full max-w-xs grid-cols-2 gap-3">
@@ -129,16 +134,17 @@ export function KotenStudyScreen() {
             max={poolSize}
             label="語"
             className="h-11 w-full min-w-0 px-0 text-center text-xs no-underline"
-            onResize={(size, { discard }) => {
-              if (discard) {
-                setDeck(buildKotenDeck(params.ids, seed + 1, size, params.preserveOrder))
-                setI(0)
-                setFlipped(revealAll)
-                setDone(false)
-                setRemembered(0)
+            reached={Math.max(i, answeredIndexes.at(-1) ?? 0)}
+            onResize={(size, { restart }) => {
+              if (restart) {
+                // 答えたカードの記録と結果は残したまま、まだ答えていないカードを1枚目として数え直す。
+                const next = restartSessionCount(deck, answeredIndexes, i, buildKotenDeck(params.ids, seed + 1, 0, params.preserveOrder), size)
+                carried.carry(next.answeredItems)
+                setDeck(next.deck)
                 clearRecordedAnswers()
+                moveToCard(0, {})
               } else {
-                setDeck((current) => growDeck(current, i + 1, buildKotenDeck(params.ids, seed + 1, size, params.preserveOrder), size))
+                setDeck((current) => growDeck(current, Math.max(i, answeredIndexes.at(-1) ?? 0) + 1, buildKotenDeck(params.ids, seed + 1, size, params.preserveOrder), size))
               }
             }}
           />

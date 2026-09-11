@@ -3,9 +3,9 @@ import { useStore } from '../store/useStore.js'
 import { getEtymologyPack, getWord } from '../data/vocab.js'
 import { Button } from '../components/ui.jsx'
 import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
-import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
+import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
 import { CardStudyFooter, CardSwipeRegion } from '../components/CardStudyControls.jsx'
-import { growDeck } from '../lib/session.js'
+import { answeredSessionIndexes, growDeck, restartSessionCount } from '../lib/session.js'
 import {
   nextUnansweredSessionIndex,
   QuestionSessionControls,
@@ -50,6 +50,8 @@ export function EtymologyStudyScreen() {
     clear: clearRecordedAnswers,
     values: recordedAnswers,
   } = useIndexedSessionState(index)
+  // 1回の数を減らして数え直す前に答えたカード。結果の全枚数に含める。
+  const carried = useCarriedAnswers()
 
   const card = deck[index]
 
@@ -68,6 +70,7 @@ export function EtymologyStudyScreen() {
   }
 
   const restart = () => {
+    carried.reset()
     setDeck(buildEtymologyCardDeck(params.ids, deck.length, params.preserveOrder))
     setIndex(0)
     setFlipped(revealAll)
@@ -98,7 +101,7 @@ export function EtymologyStudyScreen() {
         <div>
           <p className="font-display text-2xl font-extrabold text-ink">おつかれさま！</p>
           <p className="mt-1 text-sm font-bold text-ink/55">
-            {deck.length}枚のうち {remembered}枚を「覚えた」
+            {carried.count + deck.length}枚のうち {remembered}枚を「覚えた」
           </p>
         </div>
         <div className="grid w-full max-w-xs grid-cols-2 gap-3">
@@ -109,6 +112,7 @@ export function EtymologyStudyScreen() {
     )
   }
 
+  const answeredIndexes = answeredSessionIndexes(recordedAnswers)
   const words = card.coverageIds.map(getWord).filter(Boolean)
   const examples = card.exampleIds.map(getWord).filter(Boolean)
 
@@ -129,21 +133,17 @@ export function EtymologyStudyScreen() {
             max={poolSize}
             label="枚"
             className="h-11 w-full min-w-0 px-0 text-center text-xs no-underline"
-            onResize={(size, { discard }) => {
-              if (discard) {
-                setDeck(buildEtymologyCardDeck(params.ids, size, params.preserveOrder))
-                setIndex(0)
-                setFlipped(revealAll)
-                setDone(false)
-                setRemembered(0)
+            reached={Math.max(index, answeredIndexes.at(-1) ?? 0)}
+            onResize={(size, { restart }) => {
+              if (restart) {
+                // 答えたカードの記録と結果は残したまま、まだ答えていないカードを1枚目として数え直す。
+                const next = restartSessionCount(deck, answeredIndexes, index, buildEtymologyCardDeck(params.ids, 0, params.preserveOrder), size)
+                carried.carry(next.answeredItems)
+                setDeck(next.deck)
                 clearRecordedAnswers()
+                moveToCard(0, {})
               } else {
-                setDeck((current) => growDeck(
-                  current,
-                  index + 1,
-                  buildEtymologyCardDeck(params.ids, size, params.preserveOrder),
-                  size,
-                ))
+                setDeck((current) => growDeck(current, Math.max(index, answeredIndexes.at(-1) ?? 0) + 1, buildEtymologyCardDeck(params.ids, size, params.preserveOrder), size))
               }
             }}
           />

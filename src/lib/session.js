@@ -527,6 +527,50 @@ export function growDeck(existingDeck, keepCount, freshDeck, targetSize) {
   return [...kept, ...fresh].slice(0, targetSize)
 }
 
+/** 答えた問題の位置（小さい順）。values は問題の位置 → 回答（未回答は null か値なし）。 */
+export function answeredSessionIndexes(values = {}) {
+  return Object.entries(values ?? {})
+    .filter(([, value]) => value !== null && value !== undefined)
+    .map(([index]) => Number(index))
+    .filter((index) => Number.isInteger(index) && index >= 0)
+    .sort((a, b) => a - b)
+}
+
+/**
+ * テストで答えた問題の位置。テストは答えないと次へ進めないので、いちばん先まで進んだ問題より前は
+ * すべて答えている（辞書を開いて戻ると、表示中の問題の回答しか戻らないため、こう数える）。
+ */
+export function answeredQuizIndexes(currentIndex, values = {}) {
+  const selected = answeredSessionIndexes(values)
+  const reached = Math.max(currentIndex, selected.at(-1) ?? -1)
+  const before = Array.from({ length: Math.max(0, reached) }, (_, index) => index)
+  return [...new Set([...before, ...selected])].sort((a, b) => a - b)
+}
+
+/**
+ * 1回の数を、いまの番号より少なくしたとき（数え直し）。
+ * 答えた問題は記録も結果の集計もそのまま残し、デッキからだけ外して answeredItems で返す
+ * （画面は結果の全問数・答えた語にそれを足す）。新しい回は、まだ答えていない問題を
+ * いま表示しているものから順に並べ、足りない分を freshDeck（使った問題を除く）で補って size 問にする。
+ */
+export function restartSessionCount(existingDeck, answeredIndexes, currentIndex, freshDeck, size) {
+  const answered = new Set(answeredIndexes)
+  const answeredItems = existingDeck.filter((_, index) => answered.has(index))
+  const unanswered = existingDeck
+    .map((item, index) => ({ item, index }))
+    .filter(({ index }) => !answered.has(index))
+  const remaining = [
+    ...unanswered.filter(({ index }) => index >= currentIndex),
+    ...unanswered.filter(({ index }) => index < currentIndex),
+  ].map(({ item }) => item)
+  const usedIds = new Set(existingDeck.map((item) => item.id))
+  const fresh = freshDeck.filter((item) => !usedIds.has(item.id))
+  return {
+    deck: [...remaining, ...fresh].slice(0, Math.max(0, size)),
+    answeredItems,
+  }
+}
+
 /** 級ごとの進捗集計（既習・習得・期限切れ件数）。 */
 export function levelProgress(levelId, srs) {
   return wordProgress(wordsByLevel(levelId), srs)

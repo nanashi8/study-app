@@ -276,8 +276,8 @@ for (const relative of INTERRUPTED_SESSION_RECORD_SCREENS) {
 if (sessionControlsSource.includes('leadingAction') || vocabStudySource.includes('stopSession')) {
   errors.push('暗記・テストの進捗バーに、上部の`戻る`と重なる`やめる`が残っている')
 }
-// 英単語の暗記の結果は、答えたカードだけを数える。
-if (!vocabStudySource.includes('const wordIds = answeredWordIds(answers)')
+// 英単語の暗記の結果は、答えたカードだけを数える（1回のカード数を減らす前に答えたカードを含む）。
+if (!vocabStudySource.includes('const wordIds = [...carried.ids, ...answeredWordIds(answers)]')
   || vocabStudySource.includes('wordIds: deck.map')) {
   errors.push('英単語の暗記が答えていない語まで今回の結果に数えている')
 }

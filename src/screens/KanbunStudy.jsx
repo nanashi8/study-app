@@ -10,8 +10,8 @@ import { KANBUN_LEVEL_BY_ID } from '../data/kanbun-meta.js'
 import { Button, Chip } from '../components/ui.jsx'
 import { KanbunText, KanbunHeadword } from '../components/KanbunFurigana.jsx'
 import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
-import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
-import { growDeck } from '../lib/session.js'
+import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
+import { answeredSessionIndexes, growDeck, restartSessionCount } from '../lib/session.js'
 import { CardSaveToggle, CardStudyFooter, CardSwipeRegion } from '../components/CardStudyControls.jsx'
 import {
   nextUnansweredSessionIndex,
@@ -93,6 +93,8 @@ export function KanbunStudyScreen() {
     clear: clearRecordedAnswers,
     values: recordedAnswers,
   } = useIndexedSessionState(index)
+  // 1回の数を減らして数え直す前に答えたカード。結果の全枚数に含める。
+  const carried = useCarriedAnswers()
   const item = deck[index]
 
   // コンテンツ画面の「戻る」は履歴でなく、この分野の内容選択画面へ。
@@ -115,6 +117,7 @@ export function KanbunStudyScreen() {
   }
 
   const restart = (ids = params.ids) => {
+    carried.reset()
     setDeck(buildFor(ids, deck.length))
     setIndex(0)
     setRevealed(revealAll)
@@ -140,6 +143,8 @@ export function KanbunStudyScreen() {
     setRevealed(revealAll || Object.hasOwn(answers, nextIndex))
   }
 
+  const answeredIndexes = answeredSessionIndexes(recordedAnswers)
+
   if (done) {
     return (
       <div className="flex h-full flex-col overflow-y-auto p-6 text-center">
@@ -148,7 +153,7 @@ export function KanbunStudyScreen() {
           <div>
             <p className="font-display text-2xl font-extrabold text-ink">暗記カード完了</p>
             <p className="mt-1 text-sm font-bold text-ink/55">
-              {deck.length}{meta.itemLabel}のうち {remembered}{meta.itemLabel}を「覚えた」
+              {carried.count + deck.length}{meta.itemLabel}のうち {remembered}{meta.itemLabel}を「覚えた」
             </p>
           </div>
           {forgottenIds.length > 0 && (
@@ -189,17 +194,17 @@ export function KanbunStudyScreen() {
             max={poolSize}
             label="項目"
             className="h-11 w-full min-w-0 px-0 text-center text-xs no-underline"
-            onResize={(size, { discard }) => {
-              if (discard) {
-                setDeck(buildFor(params.ids, size))
-                setIndex(0)
-                setRevealed(revealAll)
-                setRemembered(0)
-                setForgottenIds([])
-                setDone(false)
+            reached={Math.max(index, answeredIndexes.at(-1) ?? 0)}
+            onResize={(size, { restart }) => {
+              if (restart) {
+                // 答えたカードの記録と結果は残したまま、まだ答えていないカードを1枚目として数え直す。
+                const next = restartSessionCount(deck, answeredIndexes, index, buildFor(params.ids, 0), size)
+                carried.carry(next.answeredItems)
+                setDeck(next.deck)
                 clearRecordedAnswers()
+                moveToCard(0, {})
               } else {
-                setDeck((current) => growDeck(current, index + 1, buildFor(params.ids, size), size))
+                setDeck((current) => growDeck(current, Math.max(index, answeredIndexes.at(-1) ?? 0) + 1, buildFor(params.ids, size), size))
               }
             }}
           />

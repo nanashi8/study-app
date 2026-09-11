@@ -11,8 +11,8 @@ import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { KanbunText } from '../components/KanbunFurigana.jsx'
 import { Button, Chip, cx } from '../components/ui.jsx'
-import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
-import { growDeck } from '../lib/session.js'
+import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
+import { answeredQuizIndexes, growDeck, restartSessionCount } from '../lib/session.js'
 import {
   QuestionSessionControls,
   useIndexedSessionState,
@@ -80,6 +80,7 @@ export function KanbunQuizScreen() {
     value: selected,
     setValue: setSelected,
     clear: clearSelections,
+    values: selections,
   } = useIndexedSessionState(index)
   const autoAdvanceSequence = useRef(0)
   const [autoAdvanceSignal, setAutoAdvanceSignal] = useState(null)
@@ -87,6 +88,8 @@ export function KanbunQuizScreen() {
   const [unknownCount, setUnknownCount] = useState(0)
   const [weakIds, setWeakIds] = useState([])
   const [done, setDone] = useState(false)
+  // 1回の問題数を減らして数え直す前に答えた問題。結果の全問数に含める。
+  const carried = useCarriedAnswers()
   const question = deck[index]
   const item = question ? getKanbunItem(domain, question.itemId) : null
 
@@ -104,6 +107,7 @@ export function KanbunQuizScreen() {
   }
 
   const restart = (ids = params.ids) => {
+    carried.reset()
     setDeck(pickKanbunQuestions(domain, ids, { size: deck.length || sessionSize }))
     setIndex(0)
     clearSelections()
@@ -136,14 +140,15 @@ export function KanbunQuizScreen() {
   }
 
   if (done) {
-    const percentage = Math.round((correctCount / deck.length) * 100)
+    const total = carried.count + deck.length
+    const percentage = Math.round((correctCount / total) * 100)
     return (
       <div className="flex h-full flex-col overflow-y-auto p-6 text-center">
         <div className="m-auto flex w-full max-w-sm flex-col items-center gap-5 py-5">
           <div className="text-6xl">{percentage >= 80 ? '🏆' : percentage >= 50 ? '📕' : '🧭'}</div>
           <div>
             <p className="text-xs font-extrabold text-rose-700">{meta.label}の結果</p>
-            <p className="mt-1 font-display text-2xl font-extrabold text-ink">{correctCount} / {deck.length} 正解</p>
+            <p className="mt-1 font-display text-2xl font-extrabold text-ink">{correctCount} / {total} 正解</p>
             <p className="mt-1 text-sm font-bold text-ink/50">正答率 {percentage}%{unknownCount ? `・わからない ${unknownCount}問` : ''}</p>
           </div>
           {weakIds.length > 0 && (
@@ -167,6 +172,7 @@ export function KanbunQuizScreen() {
   }
 
   const answered = selected !== null
+  const answeredIndexes = answeredQuizIndexes(index, selections)
   const correctPick = selected === question.answerId
   const saved = savedIds.includes(item.id)
   const level = KANBUN_LEVEL_BY_ID[item.level]
@@ -188,22 +194,17 @@ export function KanbunQuizScreen() {
             total={deck.length}
             max={poolSize}
             className="h-11"
-            onResize={(size, { discard }) => {
-              if (discard) {
-                setDeck(pickKanbunQuestions(domain, params.ids, { size }))
-                setIndex(0)
+            reached={Math.max(index, answeredIndexes.at(-1) ?? 0)}
+            onResize={(size, { restart }) => {
+              if (restart) {
+                // 答えた問題の記録と結果は残したまま、まだ答えていない問題を1問目として数え直す。
+                const next = restartSessionCount(deck, answeredIndexes, index, pickKanbunQuestions(domain, params.ids, { size: size + deck.length }), size)
+                carried.carry(next.answeredItems)
+                setDeck(next.deck)
                 clearSelections()
-                setCorrectCount(0)
-                setUnknownCount(0)
-                setWeakIds([])
-                setDone(false)
+                setIndex(0)
               } else {
-                setDeck((current) => growDeck(
-                  current,
-                  index + 1,
-                  pickKanbunQuestions(domain, params.ids, { size }),
-                  size,
-                ))
+                setDeck((current) => growDeck(current, Math.max(index, answeredIndexes.at(-1) ?? 0) + 1, pickKanbunQuestions(domain, params.ids, { size: size }), size))
               }
             }}
           />
