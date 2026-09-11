@@ -295,6 +295,12 @@ test('「先に固めよう」の案内は、出している学習済みの数�
   const screen = readFileSync(new URL('../src/screens/VocabLevels.jsx', import.meta.url), 'utf8')
   assert.match(screen, /\$\{progress\.total\}語のうち\$\{progress\.learned\}語を学習済みです。あと\$\{remaining\}語で上の級の土台になります/)
   assert.doesNotMatch(screen, /masteredPct|'mastery'/)
+  // 復習と「先に固めよう」は、どちらも今日すること。「今日の学習」の1枚に行として並べ、別の帯に分けない。
+  const today = screen.slice(screen.indexOf('data-vocab-today'), screen.indexOf('</section>'))
+  assert.match(today, /data-review-state=\{reviewState\}/)
+  assert.match(today, /\{weak && <WeakFoundationRow weak=\{weak\}/)
+  assert.ok(today.indexOf('data-review-state') < today.indexOf('<WeakFoundationRow'))
+  assert.doesNotMatch(screen, /WeakFoundationBanner/)
 })
 
 test('テストだけ解いた日の結果が、翌日の復習件数と復習導線に残る', () => {

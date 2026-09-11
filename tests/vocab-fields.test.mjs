@@ -85,11 +85,15 @@ test('単語の公開画面は10分野を直接示し、旧20語デッキを表�
   const study = readFileSync(new URL('../src/screens/VocabStudy.jsx', import.meta.url), 'utf8')
   const quiz = readFileSync(new URL('../src/screens/VocabQuiz.jsx', import.meta.url), 'utf8')
 
-  assert.match(levels, /10分野から学ぶ/)
+  // 英検級のほかの選び方（10分野・語源・単語帳）は、同じ形の入口3つを1段に並べる。
+  // 大きさや色の違う帯・カードに分けて、級カードより目立たせない。
+  const choosers = levels.slice(levels.indexOf('data-vocab-choosers'), levels.indexOf('<WordBookStudySheet'))
+  assert.equal((choosers.match(/<ChooserTile\b/g) ?? []).length, 3)
+  assert.match(choosers, /onClick=\{\(\) => navigate\('vocabGroups'\)\}\s*data-vocab-ten-field-entry[\s\S]*?label="10分野"/)
+  assert.match(choosers, /onClick=\{\(\) => navigate\('roots'\)\}\s*data-vocab-etymology-entry[\s\S]*?label="語源"/)
+  assert.match(choosers, /data-vocab-word-books-shortcut[\s\S]*?label="単語帳"/)
   assert.match(levels, /10分野で選ぶ/)
-  assert.match(levels, /data-vocab-etymology-entry/)
-  assert.match(levels, /語源から学ぶ/)
-  assert.match(levels, /語源から関連英単語を暗記/)
+  assert.doesNotMatch(levels, /bg-gradient-to-r|function FieldChooser/)
   assert.match(fields, /data-vocab-field-catalog/)
   assert.match(levelFields, /data-vocab-level-fields/)
   assert.doesNotMatch(`${levels}\n${fields}\n${levelFields}`, /20語|デッキでえらぶ|目次・デッキ/)
