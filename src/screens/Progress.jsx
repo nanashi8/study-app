@@ -340,7 +340,7 @@ export function ProgressScreen() {
               </div>
               <div className="rounded-2xl bg-hint-soft p-3 text-center">
                 <div className="font-display text-2xl font-extrabold text-amber-700">{preview.summary.notebookSaved}</div>
-                <div className="text-[11px] font-bold text-ink/50">マイノート（問題集 {preview.summary.notebookSets}冊）</div>
+                <div className="text-[11px] font-bold text-ink/50">マイノート（単語帳 {preview.summary.notebookSets}冊）</div>
               </div>
               <div className="rounded-2xl bg-violet-50 p-3 text-center">
                 <div className="font-display text-2xl font-extrabold text-violet-700">{preview.summary.myGrammar}</div>

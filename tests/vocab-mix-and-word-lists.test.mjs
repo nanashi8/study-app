@@ -115,20 +115,23 @@ test('画面下部の同じ枠で、読み上げと出題バランスを切り�
   }
 })
 
-test('マイ単語は単語帳の1冊として扱い、単語帳の保存先は既存の問題集を使う', () => {
+test('マイ単語は単語帳の1冊として扱い、名前つきの単語帳はマイ学習ノートと同じ保存先を使う', () => {
   const sheet = read('../src/components/WordListSheet.jsx')
   const study = read('../src/screens/VocabStudy.jsx')
   const detail = read('../src/screens/WordDetail.jsx')
   const levels = read('../src/screens/VocabLevels.jsx')
 
   assert.match(sheet, /title="単語帳"/)
-  assert.match(sheet, /MY_WORDS_BOOK_TITLE = 'マイ単語'/)
+  // 冊の並び・名前はライブラリ1か所で決め、画面ごとにずらさない。
+  assert.match(read('../src/lib/wordBooks.js'), /MY_WORDS_BOOK_TITLE = 'マイ単語'/)
   // 先頭の1冊はマイ単語（アプリ全体の保存先 myList をそのまま使う）。
   assert.match(sheet, /onClick=\{\(\) => toggleMyList\(wordId\)\}/)
   assert.match(sheet, /createNotebookSet/)
   assert.match(sheet, /setNotebookSetItem\(set\.id, DOMAIN, wordId, !included\)/)
   assert.match(sheet, /data-word-list-new-title/)
-  assert.match(sheet, /マイ学習ノートの問題集と同じもの/)
+  // マイ学習ノートでも同じ「単語帳」の名前で並び、「問題集」とは呼ばない。
+  assert.match(sheet, /マイ学習ノートの「単語帳」にも並びます/)
+  assert.doesNotMatch(sheet, /問題集と同じもの/)
   // 新しい保存領域は作らない（進捗コード・クラウド同期の契約を増やさない）。
   assert.doesNotMatch(sheet, /useStore\.setState/)
   for (const source of [study, detail]) {

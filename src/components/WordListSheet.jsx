@@ -1,29 +1,27 @@
 import { useState } from 'react'
 import { useStore } from '../store/useStore.js'
-import { getWord } from '../data/vocab.js'
 import { NOTEBOOK_LIMITS } from '../lib/learningNotebook.js'
+import {
+  MY_WORDS_BOOK_TITLE,
+  wordBookRef,
+  wordBookVocabIds,
+  wordBooksFromState,
+} from '../lib/wordBooks.js'
 import { Sheet } from './Sheet.jsx'
 import { Button, cx } from './ui.jsx'
-import { Check, Plus } from './Icons.jsx'
+import { Check, Gear, Plus } from './Icons.jsx'
 
 // 単語帳は「マイ単語」（いつもの1冊）と、名前をつけて作る単語帳をまとめた呼び名。
 // マイ単語は長文・辞書・写真の読み取りなどアプリ全体の保存先（myList）のまま残し、
-// 名前つきの単語帳はマイ学習ノートの問題集（learningNotebook.sets）を使う。
+// 名前つきの単語帳は learningNotebook.sets（マイ学習ノートの「単語帳」タブと同じもの）を使う。
 // どちらも新しい保存領域を作らないので、進捗コード・クラウド同期はこれまでどおり。
 const DOMAIN = 'vocab'
-export const MY_WORDS_BOOK_TITLE = 'マイ単語'
-
-const bookRef = (wordId) => `${DOMAIN}:${wordId}`
-
-const vocabIdsOf = (set) => set.refs
-  .filter((ref) => ref.startsWith(`${DOMAIN}:`))
-  .map((ref) => ref.slice(DOMAIN.length + 1))
 
 /** その語がどれか1冊にでも入っているか。カードの「単語帳」ボタンの塗りに使う。 */
 export function useWordInAnyBook(wordId) {
   return useStore((state) => Boolean(wordId) && (
     state.myList.includes(wordId)
-    || state.learningNotebook.sets.some((set) => set.refs.includes(bookRef(wordId)))
+    || state.learningNotebook.sets.some((set) => set.refs.includes(wordBookRef(wordId)))
   ))
 }
 
@@ -71,7 +69,7 @@ export function WordListSheet({ open, onClose, wordId, wordLabel }) {
   const [title, setTitle] = useState('')
 
   const full = sets.length >= NOTEBOOK_LIMITS.sets
-  const ref = bookRef(wordId)
+  const ref = wordBookRef(wordId)
 
   const createAndAdd = () => {
     const clean = title.trim()
@@ -88,7 +86,7 @@ export function WordListSheet({ open, onClose, wordId, wordLabel }) {
           {wordLabel
             ? `「${wordLabel}」を入れる単語帳を選びます。何冊に入れてもかまいません。`
             : '単語帳を作ります。'}
-          名前をつけた単語帳は、マイ学習ノートの問題集と同じものです。
+          作った単語帳は、マイ学習ノートの「単語帳」にも並びます。
         </p>
 
         <ul className="space-y-1.5">
@@ -103,7 +101,7 @@ export function WordListSheet({ open, onClose, wordId, wordLabel }) {
             />
           </li>
           {sets.map((set) => {
-            const count = vocabIdsOf(set).length
+            const count = wordBookVocabIds(set).length
             const included = set.refs.includes(ref)
             return (
               <li key={set.id}>
@@ -167,23 +165,25 @@ export function WordListSheet({ open, onClose, wordId, wordLabel }) {
   )
 }
 
-/** 単語画面のショートカットから、学ぶ単語帳を選んで暗記・テストを始める。 */
+/**
+ * 単語画面のショートカットから開く単語帳の一覧。
+ * 冊ごとに暗記・テスト・一覧確認を始められ、名前をつけた単語帳はその場で名前を変えられる。
+ */
 export function WordBookStudySheet({ open, onClose, returnTo = { screen: 'vocabLevels' } }) {
   const myList = useStore((store) => store.myList)
-  const sets = useStore((store) => store.learningNotebook.sets)
+  const learningNotebook = useStore((store) => store.learningNotebook)
   const navigate = useStore((store) => store.navigate)
   const recordNotebookSetLaunch = useStore((store) => store.recordNotebookSetLaunch)
+  const updateNotebookSet = useStore((store) => store.updateNotebookSet)
+  // 名前を変えている途中の単語帳。{ id, title } で、閉じるたびに破棄する一時状態。
+  const [renaming, setRenaming] = useState(null)
 
-  // 辞書から外れた語のIDが残っていても、出題できる語だけを数えて出す。
-  const books = [
-    { id: 'myList', title: MY_WORDS_BOOK_TITLE, ids: myList.filter((id) => getWord(id)), set: null },
-    ...sets.map((set) => ({
-      id: set.id,
-      title: set.title,
-      ids: vocabIdsOf(set).filter((id) => getWord(id)),
-      set,
-    })),
-  ]
+  const books = wordBooksFromState({ myList, learningNotebook })
+
+  const close = () => {
+    setRenaming(null)
+    onClose?.()
+  }
 
   const start = (book, mode) => {
     if (!book.ids.length) return
@@ -196,7 +196,7 @@ export function WordBookStudySheet({ open, onClose, returnTo = { screen: 'vocabL
         count: book.ids.length,
       })
     }
-    onClose?.()
+    close()
     navigate(mode === 'study' ? 'vocabStudy' : 'vocabQuiz', {
       source: { type: 'mylist', ids: book.ids },
       title: book.title,
@@ -205,39 +205,110 @@ export function WordBookStudySheet({ open, onClose, returnTo = { screen: 'vocabL
     })
   }
 
+  // 級の一覧確認と同じ画面で、その冊の語を左右スワイプで確認する。
+  const openList = (book) => {
+    if (!book.ids.length) return
+    close()
+    navigate('vocabDecks', { wordBookId: book.id })
+  }
+
+  const saveRename = () => {
+    const title = renaming?.title.trim()
+    if (!renaming || !title) return
+    updateNotebookSet(renaming.id, { title })
+    setRenaming(null)
+  }
+
   return (
-    <Sheet open={open} onClose={onClose} title="単語帳">
+    <Sheet open={open} onClose={close} title="単語帳">
       <div className="space-y-3 pb-2" data-word-book-study-sheet>
         <ul className="space-y-2">
-          {books.map((book) => (
-            <li
-              key={book.id}
-              className="rounded-2xl bg-white p-3 ring-1 ring-brand-100"
-              data-word-book-id={book.id}
-            >
-              <div className="flex items-baseline justify-between gap-2">
-                <span className="min-w-0 truncate font-display text-base font-extrabold text-ink">
-                  {book.title}
-                </span>
-                <span className="shrink-0 text-xs font-extrabold tabular-nums text-ink/45">
-                  {book.ids.length}語
-                </span>
-              </div>
-              <div className="mt-2 grid grid-cols-2 gap-2">
-                <Button size="sm" disabled={!book.ids.length} onClick={() => start(book, 'study')}>
-                  暗記
-                </Button>
-                <Button
-                  size="sm"
-                  variant="secondary"
-                  disabled={!book.ids.length}
-                  onClick={() => start(book, 'quiz')}
-                >
-                  テスト
-                </Button>
-              </div>
-            </li>
-          ))}
+          {books.map((book) => {
+            const editing = renaming?.id === book.id
+            return (
+              <li
+                key={book.id}
+                className="rounded-2xl bg-white p-3 ring-1 ring-brand-100"
+                data-word-book-id={book.id}
+              >
+                {editing ? (
+                  <div className="flex items-center gap-1.5" data-word-book-rename>
+                    <input
+                      value={renaming.title}
+                      onChange={(event) => setRenaming({ ...renaming, title: event.target.value })}
+                      onKeyDown={(event) => {
+                        if (event.key === 'Enter') saveRename()
+                        if (event.key === 'Escape') setRenaming(null)
+                      }}
+                      maxLength={NOTEBOOK_LIMITS.setTitleLength}
+                      aria-label="単語帳の新しい名前"
+                      autoFocus
+                      data-word-book-rename-input
+                      className="h-10 min-w-0 flex-1 rounded-lg border border-slate-300 bg-white px-2.5 text-sm font-bold text-ink outline-none focus:border-brand-500"
+                    />
+                    <Button size="sm" onClick={saveRename} disabled={!renaming.title.trim()}>
+                      保存
+                    </Button>
+                    <Button size="sm" variant="secondary" onClick={() => setRenaming(null)}>
+                      やめる
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="min-w-0 truncate font-display text-base font-extrabold text-ink">
+                      {book.title}
+                    </span>
+                    <span className="flex shrink-0 items-center gap-1.5">
+                      <span className="text-xs font-extrabold tabular-nums text-ink/45">
+                        {book.ids.length}語
+                      </span>
+                      {/* 名前つきの単語帳は、歯車からその場で名前を変えられる。 */}
+                      {book.renamable && (
+                        <button
+                          type="button"
+                          onClick={() => setRenaming({ id: book.id, title: book.title })}
+                          aria-label={`${book.title}の名前を変更`}
+                          title="名前を変更"
+                          data-word-book-rename-button
+                          className="grid h-11 w-11 place-items-center rounded-lg bg-slate-100 text-ink/60 active:bg-slate-200"
+                        >
+                          <Gear size={18} />
+                        </button>
+                      )}
+                    </span>
+                  </div>
+                )}
+                {!book.renamable && (
+                  <p className="mt-0.5 text-[10px] font-bold text-ink/40">
+                    長文や辞書からの保存先なので、名前は変えられません。
+                  </p>
+                )}
+                <div className="mt-2 grid grid-cols-3 gap-2">
+                  <Button size="sm" disabled={!book.ids.length} onClick={() => start(book, 'study')}>
+                    暗記
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    disabled={!book.ids.length}
+                    onClick={() => start(book, 'quiz')}
+                  >
+                    テスト
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    disabled={!book.ids.length}
+                    onClick={() => openList(book)}
+                    aria-label={`${book.title}の単語を一覧で確認する`}
+                    data-word-book-catalog
+                  >
+                    一覧で確認
+                  </Button>
+                </div>
+              </li>
+            )
+          })}
         </ul>
         <p className="text-[11px] font-bold leading-relaxed text-ink/45">
           単語帳は、単語カードや辞書ページの「単語帳」ボタンから作れます。
@@ -247,7 +318,7 @@ export function WordBookStudySheet({ open, onClose, returnTo = { screen: 'vocabL
           size="sm"
           variant="secondary"
           onClick={() => {
-            onClose?.()
+            close()
             navigate('myList')
           }}
         >

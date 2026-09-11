@@ -34,6 +34,7 @@ import {
   ChevronDown,
   ChevronUp,
   Close,
+  Gear,
   Lightbulb,
   Plus,
   Search,
@@ -211,7 +212,7 @@ function NotebookItemCard({
             disabled={!activeSet}
             className={`min-h-10 rounded-lg border px-2 text-[10px] font-extrabold ${inSet ? 'border-emerald-300 bg-emerald-50 text-emerald-800' : 'border-slate-300 bg-white text-slate-700'} disabled:bg-slate-100 disabled:text-slate-400`}
           >
-            {inSet ? '問題集から外す' : '問題集へ追加'}
+            {inSet ? '単語帳から外す' : '単語帳へ追加'}
           </button>
         </div>
       </div>
@@ -269,6 +270,7 @@ function ProblemSetCard({
   onMove,
   onRemove,
   onStart,
+  onOpenWordList,
   onSelectForEditing,
   selected,
 }) {
@@ -293,12 +295,17 @@ function ProblemSetCard({
               {set.description || '説明なし'}・{set.refs.length}項目
             </p>
           </button>
+          {/* 名前・説明・項目の順番は、冊ごとの歯車から変える。 */}
           <button
             type="button"
             onClick={() => setEditing((open) => !open)}
-            className="min-h-10 shrink-0 rounded-lg border border-slate-300 px-2.5 text-[10px] font-extrabold text-slate-700"
+            aria-expanded={editing}
+            aria-label={`${set.title}の名前と内容を編集`}
+            title="名前と内容を編集"
+            data-notebook-set-settings
+            className="grid h-11 w-11 shrink-0 place-items-center rounded-lg border border-slate-300 text-slate-600 active:bg-slate-100"
           >
-            編集
+            <Gear size={18} />
           </button>
         </div>
 
@@ -328,7 +335,7 @@ function ProblemSetCard({
                       onClick={() => onStart(domain.id, items, set, 'study')}
                       className="min-h-9 rounded-md border border-brand-200 bg-white px-2 text-[9px] font-extrabold text-brand-700"
                     >
-                      カード
+                      {domain.id === 'etymology' ? '語根を暗記' : '暗記'}
                     </button>
                   )}
                   <button
@@ -336,15 +343,27 @@ function ProblemSetCard({
                     onClick={() => onStart(domain.id, items, set, 'quiz')}
                     className="min-h-9 rounded-md bg-slate-800 px-2 text-[9px] font-extrabold text-white"
                   >
-                    問題
+                    テスト
                   </button>
+                  {/* 英単語は、級の一覧確認と同じ画面で左右スワイプしながら確認できる。 */}
+                  {domain.id === 'vocab' && (
+                    <button
+                      type="button"
+                      onClick={() => onOpenWordList(set)}
+                      aria-label={`${set.title}の英単語を一覧で確認する`}
+                      data-notebook-set-word-list
+                      className="min-h-9 rounded-md border border-slate-300 bg-white px-2 text-[9px] font-extrabold text-slate-700"
+                    >
+                      一覧で確認
+                    </button>
+                  )}
                 </div>
               )
             })}
           </div>
         ) : (
           <p className="mt-3 rounded-lg bg-slate-50 px-3 py-4 text-center text-[11px] font-bold text-slate-500">
-            上の「ノート」タブで、この問題集を選んで教材を追加してください。
+            上の「ノート」タブで、この単語帳を追加先に選んで教材を入れてください。
           </p>
         )}
       </div>
@@ -352,7 +371,7 @@ function ProblemSetCard({
       {editing && (
         <div className="space-y-3 border-t border-slate-200 bg-slate-50 p-3" data-notebook-set-editor>
           <label className="block">
-            <span className="text-[10px] font-extrabold text-slate-600">問題集名</span>
+            <span className="text-[10px] font-extrabold text-slate-600">単語帳の名前</span>
             <input
               value={title}
               onChange={(event) => setTitle(event.target.value)}
@@ -418,7 +437,7 @@ function ProblemSetCard({
                           const parsed = parseNotebookRef(ref)
                           if (parsed) onRemove(set.id, parsed.domain, parsed.itemId)
                         }}
-                        aria-label={`${item.title}を問題集から外す`}
+                        aria-label={`${item.title}を単語帳から外す`}
                         className="grid h-9 w-9 place-items-center rounded-md text-rose-600"
                       >
                         <Close size={17} />
@@ -436,7 +455,7 @@ function ProblemSetCard({
               onClick={() => setConfirmDelete(true)}
               className="min-h-10 w-full rounded-lg text-xs font-extrabold text-rose-700"
             >
-              この問題集を削除
+              この単語帳を削除
             </button>
           ) : (
             <div className="rounded-lg border border-rose-200 bg-rose-50 p-3">
@@ -460,22 +479,9 @@ function HistoryPanel({ state, day, onOpenProgress, onOpenDictionary }) {
 
   return (
     <div className="space-y-4" data-notebook-history>
-      <section className="grid grid-cols-3 gap-2">
-        {[
-          ['学習済み', summary.studied, '項目'],
-          ['回答', summary.attempts, '回'],
-          ['復習どき', summary.due, '項目'],
-        ].map(([label, value, unit]) => (
-          <div key={label} className="rounded-xl border border-slate-300 bg-white p-3 text-center">
-            <p className="font-display text-xl font-extrabold tabular-nums text-slate-950">{value.toLocaleString()}</p>
-            <p className="text-[9px] font-extrabold text-slate-500">{label}・{unit}</p>
-          </div>
-        ))}
-      </section>
-
       <section>
         <div className="mb-2 px-1">
-          <h2 className="font-display text-base font-extrabold text-slate-950">8分野の記録</h2>
+          <h2 className="font-display text-base font-extrabold text-slate-950">コンテンツの記録</h2>
           <p className="text-[10px] font-bold text-slate-500">正解・不正解と「覚えた／まだ」をまとめて表示</p>
         </div>
         <div className="grid grid-cols-2 gap-2">
@@ -498,8 +504,8 @@ function HistoryPanel({ state, day, onOpenProgress, onOpenDictionary }) {
       {sessions.length > 0 && (
         <section>
           <div className="mb-2 px-1">
-            <h2 className="font-display text-base font-extrabold text-slate-950">問題集の利用履歴</h2>
-            <p className="text-[10px] font-bold text-slate-500">自作問題集から開始した記録</p>
+            <h2 className="font-display text-base font-extrabold text-slate-950">単語帳の利用履歴</h2>
+            <p className="text-[10px] font-bold text-slate-500">単語帳から始めた学習</p>
           </div>
           <div className="space-y-1.5">
             {sessions.slice(0, 12).map((session) => {
@@ -509,7 +515,7 @@ function HistoryPanel({ state, day, onOpenProgress, onOpenDictionary }) {
                   <span>{domain.emoji}</span>
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-[11px] font-extrabold text-slate-800">{session.setTitle || '個別学習'}</p>
-                    <p className="text-[9px] font-bold text-slate-500">{domain.label}・{session.mode === 'study' ? 'カード' : '問題'}・{session.count}項目</p>
+                    <p className="text-[9px] font-bold text-slate-500">{domain.label}・{session.mode === 'study' ? '暗記' : 'テスト'}・{session.count}項目</p>
                   </div>
                   <span className="text-[9px] font-extrabold text-slate-400">{dateText(session.startedAt)}</span>
                 </div>
@@ -546,7 +552,7 @@ function HistoryPanel({ state, day, onOpenProgress, onOpenDictionary }) {
           </div>
         ) : (
           <EmptyState icon="📝" title="まだ学習記録がありません">
-            ノートや問題集から学習すると、8分野の正誤と復習時期がここへ集まります。
+            ノートや単語帳から学習すると、コンテンツごとの正誤と復習時期がここへ集まります。
           </EmptyState>
         )}
       </section>
@@ -604,7 +610,6 @@ export function MyListScreen() {
   const savedRefs = useMemo(() => notebookSavedRefs(state), [state])
   const savedRefSet = useMemo(() => new Set(savedRefs), [savedRefs])
   const savedCounts = useMemo(() => notebookSavedCounts(state), [state])
-  const learningSummary = useMemo(() => notebookLearningSummary(state, day), [state, day])
   const activeSet = state.learningNotebook.sets.find((set) => set.id === activeSetId) ?? null
 
   const filteredItems = useMemo(() => {
@@ -736,30 +741,29 @@ export function MyListScreen() {
     <div className="pb-6" data-learning-notebook-screen>
       <ScreenHeader
         title="マイ学習ノート"
-        subtitle={`8分野・全${NOTEBOOK_TOTAL_ITEMS.toLocaleString()}項目を自分用に編集`}
+        subtitle={`全${NOTEBOOK_TOTAL_ITEMS.toLocaleString()}項目のコンテンツを自分用に整理`}
       />
 
       <div className="space-y-4 px-3.5">
         <section className="overflow-hidden rounded-xl border-2 border-slate-700 bg-white" data-learning-notebook-summary>
           <div className="bg-slate-800 px-4 py-3 text-white">
             <p className="text-[9px] font-extrabold text-slate-300">自分の学習ノート</p>
-            <div className="mt-1 flex items-end justify-between gap-3">
-              <div>
-                <p className="font-display text-lg font-extrabold">保存・メモ・問題集・学習記録</p>
-                <p className="mt-0.5 text-[10px] font-bold text-slate-300">これまでのマイ単語と古典の登録もそのまま引き継ぎ</p>
-              </div>
-              <p className="font-display text-3xl font-extrabold tabular-nums">{savedRefs.length.toLocaleString()}</p>
+            <div className="mt-1">
+              <p className="font-display text-lg font-extrabold">保存・メモ・単語帳・学習記録</p>
+              <p className="mt-0.5 text-[10px] font-bold text-slate-300">これまでのマイ単語と古典の登録もそのまま引き継ぎ</p>
             </div>
           </div>
-          <div className="grid grid-cols-3 divide-x divide-slate-200 text-center">
+          {/* 数字には「何を数えたか」を名前と単位で添える。 */}
+          <div className="grid grid-cols-2 divide-x divide-slate-200 text-center" data-learning-notebook-counts>
             {[
-              ['保存項目', savedRefs.length],
-              ['自作問題集', state.learningNotebook.sets.length],
-              ['復習どき', learningSummary.due],
-            ].map(([label, value]) => (
+              ['しおりで保存した教材', savedRefs.length, '件'],
+              ['作った単語帳', state.learningNotebook.sets.length, '冊'],
+            ].map(([label, value, unit]) => (
               <div key={label} className="px-2 py-2.5">
-                <p className="font-display text-lg font-extrabold tabular-nums text-slate-950">{value.toLocaleString()}</p>
-                <p className="text-[9px] font-extrabold text-slate-500">{label}</p>
+                <p className="font-display text-lg font-extrabold tabular-nums text-slate-950">
+                  {value.toLocaleString()}<span className="ml-0.5 text-[10px] text-slate-500">{unit}</span>
+                </p>
+                <p className="text-[10px] font-extrabold text-slate-500">{label}</p>
               </div>
             ))}
           </div>
@@ -768,7 +772,7 @@ export function MyListScreen() {
         <div className="grid grid-cols-3 rounded-xl border border-slate-300 bg-slate-100 p-1" role="tablist" aria-label="マイ学習ノートの機能">
           {[
             ['notebook', 'ノート'],
-            ['sets', '問題集'],
+            ['sets', '単語帳'],
             ['history', '履歴'],
           ].map(([id, label]) => (
             <button
@@ -817,7 +821,7 @@ export function MyListScreen() {
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
                 className="h-12 w-full rounded-xl border border-slate-300 bg-white pl-10 pr-3 text-sm font-bold text-slate-900 outline-none focus:border-brand-500"
-                placeholder={`${domain === 'all' ? '8分野' : NOTEBOOK_DOMAIN_BY_ID[domain].label}を見出し・意味・本文から検索`}
+                placeholder={`${domain === 'all' ? 'すべてのコンテンツ' : NOTEBOOK_DOMAIN_BY_ID[domain].label}を見出し・意味・本文から検索`}
                 aria-label="ノート教材を検索"
               />
             </label>
@@ -839,15 +843,15 @@ export function MyListScreen() {
               <div className="flex items-center gap-2">
                 <Cards size={17} className="text-brand-700" />
                 <div className="min-w-0 flex-1">
-                  <p className="text-[11px] font-extrabold text-slate-800">追加先の問題集</p>
-                  <p className="truncate text-[9px] font-bold text-slate-500">各教材の「問題集へ追加」で編集</p>
+                  <p className="text-[11px] font-extrabold text-slate-800">追加先の単語帳</p>
+                  <p className="truncate text-[9px] font-bold text-slate-500">各教材の「単語帳へ追加」で入れる</p>
                 </div>
                 {state.learningNotebook.sets.length ? (
                   <select
                     value={activeSetId}
                     onChange={(event) => setActiveSetId(event.target.value)}
                     className="h-10 max-w-[45%] rounded-lg border border-slate-300 bg-white px-2 text-[10px] font-extrabold text-slate-700"
-                    aria-label="追加先の問題集"
+                    aria-label="追加先の単語帳"
                   >
                     {state.learningNotebook.sets.map((set) => <option key={set.id} value={set.id}>{set.title}</option>)}
                   </select>
@@ -906,8 +910,8 @@ export function MyListScreen() {
               <div className="flex items-center gap-3">
                 <span className="grid h-10 w-10 place-items-center rounded-lg bg-brand-100 text-brand-700"><Plus size={19} /></span>
                 <div className="min-w-0 flex-1">
-                  <p className="text-sm font-extrabold text-slate-900">自分専用の問題集を作る</p>
-                  <p className="text-[10px] font-bold leading-relaxed text-slate-500">8分野を混ぜて整理し、分野ごとの最適な出題形式で学習</p>
+                  <p className="text-sm font-extrabold text-slate-900">単語帳を作る</p>
+                  <p className="text-[10px] font-bold leading-relaxed text-slate-500">英単語・熟語・文法などを1冊にまとめ、コンテンツごとの形式で学習</p>
                 </div>
                 <button type="button" onClick={() => setNewSetOpen((open) => !open)} className="min-h-10 rounded-lg bg-brand-600 px-3 text-[10px] font-extrabold text-white">
                   新規
@@ -920,8 +924,8 @@ export function MyListScreen() {
                     onChange={(event) => setNewSetTitle(event.target.value)}
                     maxLength={NOTEBOOK_LIMITS.setTitleLength}
                     className="h-11 w-full rounded-lg border border-slate-300 px-3 text-sm font-bold outline-none focus:border-brand-500"
-                    placeholder="問題集名（例：定期テスト直前）"
-                    aria-label="新しい問題集名"
+                    placeholder="単語帳の名前（例：定期テスト直前）"
+                    aria-label="新しい単語帳の名前"
                   />
                   <textarea
                     value={newSetDescription}
@@ -930,7 +934,7 @@ export function MyListScreen() {
                     rows={2}
                     className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm font-bold outline-none focus:border-brand-500"
                     placeholder="目的や使い方（任意）"
-                    aria-label="新しい問題集の説明"
+                    aria-label="新しい単語帳の説明"
                   />
                   <div className="grid grid-cols-2 gap-2">
                     <Button size="sm" variant="secondary" onClick={() => setNewSetOpen(false)}>キャンセル</Button>
@@ -953,12 +957,13 @@ export function MyListScreen() {
                     onMove={moveNotebookSetItem}
                     onRemove={(setId, domainId, itemId) => setNotebookSetItem(setId, domainId, itemId, false)}
                     onStart={startDomain}
+                    onOpenWordList={(target) => navigate('vocabDecks', { wordBookId: target.id })}
                   />
                 ))}
               </div>
             ) : (
-              <EmptyState icon="🗂️" title="まだ自作問題集がありません">
-                問題集を作った後、「ノート」タブで追加先を選び、教材を自由に集められます。
+              <EmptyState icon="🗂️" title="まだ単語帳がありません">
+                単語帳を作ったあと、「ノート」タブで追加先に選ぶと、教材を集められます。
               </EmptyState>
             )}
 
