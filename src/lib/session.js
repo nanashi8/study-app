@@ -509,22 +509,31 @@ export function wordProgress(words, srs = {}) {
   let mastered = 0
   let due = 0
   let ready = 0
+  let learned = 0
   for (const w of words) {
     const e = srs[w.id]
     const metrics = vocabularyReviewMetrics(e, { now, day })
     if (metrics.shouldAutoAppear) ready++
     if (metrics.needsReview) due++
+    // 暗記で「覚えた」と答えた語。級カードの棒グラフの「学習済み」と同じ数え方。
+    if (metrics.learningStatus === 'learned') learned++
     if (!hasVocabularyReviewEvidence(e)) continue
     seen++
     if (e?.box >= 4) mastered++
   }
-  return { total: words.length, seen, mastered, due, ready }
+  return { total: words.length, seen, mastered, due, ready, learned }
 }
 
+// 下の級で「学習済み」がこの割合に届けば、弱点ナビの案内を終える。
+export const WEAK_FOUNDATION_LEARNED_SHARE = 0.6
+
 // ── 弱点ナビ：下の級（＝前提）が足を引っ張っていないか検知する ──
-// 英検は 5級→1級 が学習の土台。上の級に進んでいるのに、下の級の定着が弱い
-// （習得率が低い／復習がたまっている）なら、その級を「先に固めるべき前提」として返す。
-// 返り値: { level, progress, masteredPct, reason:'due'|'mastery' } または null。
+// 英検は 5級→1級 が学習の土台。上の級に進んでいるのに、下の級で復習がたまっている、
+// または学習済みの語が6割に届かないなら、その級を「先に固めるべき前提」として返す。
+// 判定には、案内に出す数（復習する語・学習済みの語）だけを使う。内部の復習段階（box）は
+// 日をおいた復習でしか上がらないので、それで判定すると案内どおり学び終えても表示が変わらない。
+// 返り値: { level, progress, remaining, reason:'due'|'learning' } または null。
+// remaining は学習済みが6割に届くまでの残り語数（reason が 'learning' のとき）。
 export function weakFoundationLevel(srs) {
   const stats = LEVELS.map((lv) => ({ lv, p: levelProgress(lv.id, srs) }))
   // いちばん上の「着手済み」級のインデックス。
@@ -537,9 +546,9 @@ export function weakFoundationLevel(srs) {
   for (let i = 0; i < highestActive; i++) {
     const { lv, p } = stats[i]
     if (p.seen < 3) continue // データが少なすぎる級は対象外
-    const masteredPct = p.total ? p.mastered / p.total : 0
-    if (p.due >= 3) return { level: lv, progress: p, masteredPct, reason: 'due' }
-    if (masteredPct < 0.6) return { level: lv, progress: p, masteredPct, reason: 'mastery' }
+    if (p.due >= 3) return { level: lv, progress: p, remaining: 0, reason: 'due' }
+    const remaining = Math.ceil(p.total * WEAK_FOUNDATION_LEARNED_SHARE) - p.learned
+    if (remaining > 0) return { level: lv, progress: p, remaining, reason: 'learning' }
   }
   return null
 }

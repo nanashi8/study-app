@@ -8,11 +8,13 @@ import { LEARNING_FIELD_TOC } from '../src/data/decks.js'
 import {
   AUTOMATIC_VOCAB_MIX_PROFILES,
   AUTOMATIC_VOCAB_REVIEW_SHARE,
+  WEAK_FOUNDATION_LEARNED_SHARE,
   automaticVocabSessionPlan,
   buildDeck,
   nextVocabularyReviewInDays,
   overallProgress,
   reviewActionState,
+  weakFoundationLevel,
   wordProgress,
 } from '../src/lib/session.js'
 import {
@@ -246,6 +248,53 @@ test('「覚えた」語は復習日が来ても学習済のまま残し、復�
   } finally {
     Date.now = originalNow
   }
+})
+
+test('「先に固めよう」の案内は、出している学習済みの数で判定し、案内どおり学び終えた日に消える', () => {
+  const original = useStore.getState()
+  const originalNow = Date.now
+  const now = new Date(2026, 8, 12, 9, 0, 0, 0).getTime()
+  const [lower, upper] = LEVELS
+  const lowerWords = wordsByLevel(lower.id)
+  const target = Math.ceil(lowerWords.length * WEAK_FOUNDATION_LEARNED_SHARE)
+  const remember = (words) => words.forEach((word) => {
+    useStore.getState().review(word.id, 'remembered', 'vocab')
+  })
+
+  try {
+    Date.now = () => now
+    useStore.setState({ srs: {} })
+    // 上の級に進みながら、下の級はまだ10語だけ。
+    remember(wordsByLevel(upper.id).slice(0, 3))
+    remember(lowerWords.slice(0, 10))
+    let weak = weakFoundationLevel(useStore.getState().srs)
+    assert.equal(weak?.level.id, lower.id)
+    assert.equal(weak.reason, 'learning')
+    assert.equal(weak.progress.learned, 10)
+    assert.equal(weak.remaining, target - 10)
+
+    // 案内から暗記を進めると、同じ日のうちに数が動く。
+    remember(lowerWords.slice(10, target - 1))
+    weak = weakFoundationLevel(useStore.getState().srs)
+    assert.equal(weak?.progress.learned, target - 1)
+    assert.equal(weak.remaining, 1)
+
+    // 全語を「覚えた」と答えた日は、日をおいた復習がまだ（box 4 以上の語は0）でも案内を終える。
+    // 以前は box 4 以上の割合で判定していたので、「606語のうち606語を学習済み」の案内が何日も変わらなかった。
+    remember(lowerWords.slice(target - 1))
+    const srs = useStore.getState().srs
+    assert.equal(wordProgress(lowerWords, srs).learned, lowerWords.length)
+    assert.equal(wordProgress(lowerWords, srs).mastered, 0)
+    assert.equal(weakFoundationLevel(srs), null)
+  } finally {
+    Date.now = originalNow
+    useStore.setState(original, true)
+  }
+
+  // 画面の文言も、判定に使った数をそのまま出す。
+  const screen = readFileSync(new URL('../src/screens/VocabLevels.jsx', import.meta.url), 'utf8')
+  assert.match(screen, /\$\{progress\.total\}語のうち\$\{progress\.learned\}語を学習済みです。あと\$\{remaining\}語で上の級の土台になります/)
+  assert.doesNotMatch(screen, /masteredPct|'mastery'/)
 })
 
 test('テストだけ解いた日の結果が、翌日の復習件数と復習導線に残る', () => {

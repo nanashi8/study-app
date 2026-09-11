@@ -17,11 +17,11 @@ import { summarizeVocabularySrsItems } from '../lib/vocabScheduler.js'
 import { Refresh, Search, Lightbulb, ArrowRight, Sparkles, Check, Link, Cards } from '../components/Icons.jsx'
 
 // 下の級（前提）が弱点なら「先に固めよう」と案内するバナー。
+// 出す数は判定に使った数そのもの。学んだ分だけ数が動き、届けば案内が消える。
 function WeakFoundationBanner({ srs, onReview }) {
   const weak = weakFoundationLevel(srs)
   if (!weak) return null
-  const { level, progress, reason } = weak
-  const status = summarizeVocabularySrsItems(wordsByLevel(level.id), srs)
+  const { level, progress, remaining, reason } = weak
   return (
     <button
       onClick={() => onReview(level)}
@@ -37,7 +37,7 @@ function WeakFoundationBanner({ srs, onReview }) {
         <div className="text-[11px] font-bold text-amber-800/75">
           {reason === 'due'
             ? `復習する語が${progress.due}語たまっています。まずこの級を固めましょう`
-            : `${status.total}語のうち${status.learning.learned}語を学習済みです。上の級の土台になります`}
+            : `${progress.total}語のうち${progress.learned}語を学習済みです。あと${remaining}語で上の級の土台になります`}
         </div>
       </div>
       <span className="text-amber-700"><ArrowRight size={20} /></span>
