@@ -1,7 +1,7 @@
 import { LEVELS } from '../data/levels.js'
 import { ScreenHeader } from './AppShell.jsx'
 import { Chip } from './ui.jsx'
-import { ArrowRight, Bookmark } from './Icons.jsx'
+import { ArrowRight } from './Icons.jsx'
 import { LearningStatusBars } from './LearningStatusBars.jsx'
 
 /** リスニング/ディクテーション/発音採点で使い回す級選択。
@@ -16,8 +16,6 @@ export function LevelPicker({
   detailFor,
   statusFor,
   onPick,
-  myListCount = 0,
-  onMyList,
   note,
 }) {
   return (
@@ -26,22 +24,6 @@ export function LevelPicker({
       <div className="space-y-3 px-4">
         {note && (
           <p className="rounded-2xl bg-brand-50 px-4 py-3 text-xs font-bold leading-relaxed text-brand-700">{note}</p>
-        )}
-
-        {myListCount > 0 && onMyList && (
-          <button
-            onClick={onMyList}
-            className="flex w-full items-center gap-3 rounded-2xl bg-hint-soft p-3 text-left active:scale-[0.98] transition-transform"
-          >
-            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-hint/20 text-hint">
-              <Bookmark size={20} />
-            </span>
-            <div className="flex-1">
-              <div className="text-sm font-extrabold text-amber-900">マイ単語で挑戦</div>
-              <div className="text-[11px] font-bold text-amber-800/70">{myListCount}語</div>
-            </div>
-            <ArrowRight size={18} className="text-amber-600" />
-          </button>
         )}
 
         {levels.map((l) => {

@@ -400,14 +400,13 @@ export function VocabDecksScreen() {
   const srs = useStore((state) => state.srs)
   const review = useStore((state) => state.review)
   const params = useStore((state) => state.params)
-  const myList = useStore((state) => state.myList)
   const learningNotebook = useStore((state) => state.learningNotebook)
 
   // 単語帳の一覧から来たときは、その冊の語を同じ一覧確認（左右スワイプつき）で見せる。
   // 語の出し入れがあればその場で一覧へ反映し、スワイプの記録（srs）では組み直さない。
   const wordBook = useMemo(
-    () => (params.wordBookId ? findWordBook({ myList, learningNotebook }, params.wordBookId) : null),
-    [learningNotebook, myList, params.wordBookId],
+    () => (params.wordBookId ? findWordBook({ learningNotebook }, params.wordBookId) : null),
+    [learningNotebook, params.wordBookId],
   )
   const wordBookWords = useMemo(
     () => (wordBook ? wordBook.ids.map(getWord).filter(Boolean) : []),

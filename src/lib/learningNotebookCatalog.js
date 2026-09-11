@@ -195,8 +195,9 @@ export function searchNotebookItems(domain, query = '') {
   return items.filter((item) => terms.every((term) => item.searchText.includes(term)))
 }
 
+// 古典の旧登録リストは、ノートの保存と双方向にそろえて使い続けている。
+// 英単語の旧保存配列（myList）は、読み込むときに単語帳「マイ単語」とノートの保存へ移している。
 export function notebookLegacySavedIds(state, domain) {
-  if (domain === 'vocab') return Array.isArray(state?.myList) ? state.myList : []
   if (domain === 'kotenVocab') return Array.isArray(state?.kotenWordList) ? state.kotenWordList : []
   if (domain === 'kotenGrammar') return Array.isArray(state?.kotenGrammarList) ? state.kotenGrammarList : []
   if (domain === 'kotenCulture') return Array.isArray(state?.kotenCultureList) ? state.kotenCultureList : []

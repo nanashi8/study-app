@@ -10,6 +10,7 @@ import { ReadingSentenceDetail } from './ReadingSentenceDetail.jsx'
 import { Sheet } from './Sheet.jsx'
 import { SpeakButton } from './SpeakButton.jsx'
 import { SpeechSettingsButton } from './SpeechSettings.jsx'
+import { WordListSheet, useWordInAnyBook } from './WordListSheet.jsx'
 import { Button, Chip, IconButton, cx } from './ui.jsx'
 import {
   ArrowRight,
@@ -95,12 +96,14 @@ export function ExtendedReader({ passage }) {
   const navigate = useStore((state) => state.navigate)
   const back = useStore((state) => state.back)
   const settings = useStore((state) => state.settings)
-  const myList = useStore((state) => state.myList)
-  const toggleMyList = useStore((state) => state.toggleMyList)
   const recordVocabHistory = useStore((state) => state.recordVocabHistory)
   const [sectionIndex, setSectionIndex] = useState(() => storedSectionIndex(passage))
   const [showJa, setShowJa] = useState(false)
   const [activeWord, setActiveWord] = useState(null)
+  const [bookSheetOpen, setBookSheetOpen] = useState(false)
+  const inWordBook = useWordInAnyBook(activeWord?.id)
+  // 別の語を開いたら、単語帳を選ぶ窓は閉じた状態から始める。
+  useEffect(() => setBookSheetOpen(false), [activeWord?.id])
   const [activeIdx, setActiveIdx] = useState(null)
   const [readingChecked, setReadingChecked] = useState(false)
   const scrollRef = useRef(null)
@@ -494,20 +497,30 @@ export function ExtendedReader({ passage }) {
                 >
                   <Link size={17} /> 辞書で例文・語源を見る
                 </Button>
+                {/* 押すと入れる単語帳を選ぶ（マイ単語もほかの単語帳と同じ1冊）。 */}
                 <Button
                   full
-                  variant={myList.includes(activeWord.id) ? 'hint' : 'primary'}
-                  onClick={() => toggleMyList(activeWord.id)}
+                  variant={inWordBook ? 'hint' : 'primary'}
+                  onClick={() => setBookSheetOpen(true)}
+                  aria-haspopup="dialog"
+                  data-extended-reading-word-book
                 >
-                  {myList.includes(activeWord.id)
-                    ? <><BookmarkFilled size={17} /> マイ単語に追加済み（押すと解除）</>
-                    : <><Bookmark size={17} /> マイ単語に追加</>}
+                  {inWordBook
+                    ? <><BookmarkFilled size={17} /> 単語帳に入っています（入れる冊を選ぶ）</>
+                    : <><Bookmark size={17} /> 単語帳に入れる</>}
                 </Button>
               </>
             )}
           </div>
         )}
       </Sheet>
+
+      <WordListSheet
+        open={bookSheetOpen && Boolean(activeWord?.id)}
+        onClose={() => setBookSheetOpen(false)}
+        wordId={activeWord?.id}
+        wordLabel={activeWord?.surface}
+      />
     </div>
   )
 }

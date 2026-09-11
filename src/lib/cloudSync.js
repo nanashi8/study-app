@@ -3,7 +3,7 @@
 // 保存し、ログイン時はそこから復元する。「どの端末でも続きから」が成立する。
 //
 // データ構造（先生用ダッシュボードもここを読む）：
-//   /students/{uid} = { email, updatedAt, srs, myList, readingsDone, stats, settings }
+//   /students/{uid} = { email, updatedAt, srs, learningNotebook, readingsDone, stats, settings }
 import { ref, get, set, serverTimestamp } from 'firebase/database'
 import { db } from './firebase.js'
 import {
@@ -38,7 +38,7 @@ import {
 } from './storyAlbum.js'
 import { normalizeVocabHistory } from './vocabHistory.js'
 import { normalizeDragonVeinProgress } from './dragonVein.js'
-import { normalizeLearningNotebook } from './learningNotebook.js'
+import { foldLegacyMyWords } from './learningNotebook.js'
 import { normalizeCustomWords } from './customWords.js'
 import { normalizeLearningAnalytics } from './learningAnalytics.js'
 import { normalizeContentQuizResults } from './contentProgress.js'
@@ -69,14 +69,15 @@ export function progressStateFromCloud(data = {}, current = useStore.getState())
     kanbunGrammarSrs: data.kanbunGrammarSrs ?? {},
     kanbunCultureSrs: data.kanbunCultureSrs ?? {},
     kanbunKundokuSrs: data.kanbunKundokuSrs ?? {},
-    myList: data.myList ?? [],
     // 古いクラウド保存にこの項目が無い場合、端末で作った自作単語を消さない。
     customWords: normalizeCustomWords(data.customWords ?? current.customWords),
     vocabHistory: normalizeVocabHistory(data.vocabHistory ?? current.vocabHistory),
     myGrammarList: data.myGrammarList ?? [],
     // 古いクラウド保存にこの項目が無い場合、端末側で作ったノートを消さない。
-    learningNotebook: normalizeLearningNotebook(
+    // 以前の保存の「マイ単語」（myList）は、単語帳の1冊「マイ単語」へ移して読み込む。
+    learningNotebook: foldLegacyMyWords(
       data.learningNotebook ?? current.learningNotebook,
+      data.myList,
     ),
     writingProgress: data.writingProgress ?? {},
     kotenWordList: data.kotenWordList ?? [],

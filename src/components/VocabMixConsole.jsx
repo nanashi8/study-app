@@ -13,7 +13,7 @@ const MIX_SCREENS = new Set(['vocabStudy', 'vocabQuiz'])
 
 /**
  * 級・分野をまるごと学ぶ通常セッションだけが、復習と未修を混ぜて組み立てる。
- * マイ単語や復習など、出す語がすでに決まっている画面ではバーを出さない。
+ * 単語帳や復習など、出す語がすでに決まっている画面ではバーを出さない。
  */
 export function vocabMixApplies(screen, params = {}) {
   return MIX_SCREENS.has(screen)

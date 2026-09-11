@@ -157,13 +157,22 @@ if (!screen.includes("const mode = domainId === 'etymology' && requestedMode ===
 const store = read('../src/store/useStore.js')
 for (const action of [
   'toggleNotebookItem', 'updateNotebookItem', 'createNotebookSet',
-  'updateNotebookSet', 'deleteNotebookSet', 'setNotebookSetItem',
-  'moveNotebookSetItem', 'recordNotebookSetLaunch',
+  'updateNotebookSet', 'deleteNotebookSet', 'setNotebookSetItem', 'setNotebookSetItems',
+  'moveNotebookSet', 'moveNotebookSetItem', 'recordNotebookSetLaunch',
 ]) {
   if (!store.includes(`${action}:`)) fail(`ストア操作不足: ${action}`)
 }
-for (const legacyField of ['myList', 'kotenWordList', 'kotenGrammarList', 'kotenCultureList']) {
+for (const legacyField of ['kotenWordList', 'kotenGrammarList', 'kotenCultureList']) {
   if (!store.includes(`${legacyField}:`)) fail(`旧保存互換不足: ${legacyField}`)
+}
+// 以前の「マイ単語」（myList）は、端末保存・進捗コード・クラウドのどこから読んでも単語帳の1冊へ移す。
+for (const [label, source, needle] of [
+  ['端末保存', 'store', 'foldLegacyMyWords(state.learningNotebook, state.myList)'],
+  ['進捗コード', 'store', 'foldLegacyMyWords(payload.learningNotebook, payload.myList)'],
+  ['クラウド', 'cloud', 'data.myList,'],
+]) {
+  const text = source === 'store' ? store : read('../src/lib/cloudSync.js')
+  if (!text.includes(needle)) fail(`旧保存互換不足: ${label}の myList を単語帳へ移していません`)
 }
 
 const progress = read('../src/lib/progressCode.js')

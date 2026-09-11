@@ -27,8 +27,6 @@ export function ReaderScreen() {
   const navigate = useStore((s) => s.navigate)
   const back = useStore((s) => s.back)
   const settings = useStore((s) => s.settings)
-  const myList = useStore((s) => s.myList)
-  const toggleMyList = useStore((s) => s.toggleMyList)
   const recordVocabHistory = useStore((s) => s.recordVocabHistory)
   const passage = getPassage(passageId)
 

@@ -124,7 +124,7 @@ test('自作単語は辞書へ混ぜず、ID の引き当てだけを共有し�
     assert.equal(ALL_WORDS.some((item) => isCustomWordId(item.id)), false)
 
     assert.equal(getWord(word.id)?.word, 'serendipity')
-    // マイ単語・マイ単語帳から始める学習は、辞書の語と同じ経路で組める。
+    // 単語帳から始める学習は、辞書の語と同じ経路で組める。
     const deck = buildDeck({ type: 'mylist', ids: [word.id] }, { size: 1 })
     assert.deepEqual(deck.map((item) => item.id), [word.id])
     // テストの誤答は辞書側から作れる（自作語だけでも3択が成り立つ）。
@@ -156,17 +156,13 @@ test('自作単語は端末保存・進捗コード・リセット分類の契�
     // 保存した直後から、辞書と同じ引き当てで学習画面が語を取り出せる。
     assert.equal(getWord(saved.id)?.word, 'serendipity')
 
-    useStore.getState().toggleMyList(saved.id)
-    assert.ok(useStore.getState().myList.includes(saved.id))
-    useStore.getState().setNotebookSetItem(
-      useStore.getState().createNotebookSet('テスト範囲'),
-      'vocab',
-      saved.id,
-      true,
-    )
-    assert.ok(
-      useStore.getState().learningNotebook.sets[0].refs.includes(`vocab:${saved.id}`),
-    )
+    // 「マイ単語」も自分で作った単語帳も、同じ操作で入れる。
+    const myWordsId = useStore.getState().learningNotebook.sets[0].id
+    const setId = useStore.getState().createNotebookSet('テスト範囲')
+    useStore.getState().setNotebookSetItem(myWordsId, 'vocab', saved.id, true)
+    useStore.getState().setNotebookSetItem(setId, 'vocab', saved.id, true)
+    const books = useStore.getState().learningNotebook.sets
+    assert.ok(books.every((set) => set.refs.includes(`vocab:${saved.id}`)))
 
     const payload = buildPayload(useStore.getState())
     assert.equal(payload.customWords.length, 1)
@@ -175,13 +171,12 @@ test('自作単語は端末保存・進捗コード・リセット分類の契�
       state.customWords,
     )
 
-    // 語を消したら、マイ単語・単語帳・辞書履歴からも一緒に外れる。
+    // 語を消したら、どの単語帳・辞書履歴からも一緒に外れる。
     useStore.getState().deleteCustomWord(saved.id)
     const after = useStore.getState()
     assert.deepEqual(after.customWords, [])
-    assert.equal(after.myList.includes(saved.id), false)
     assert.equal(after.vocabHistory.includes(saved.id), false)
-    assert.equal(after.learningNotebook.sets[0].refs.includes(`vocab:${saved.id}`), false)
+    assert.ok(after.learningNotebook.sets.every((set) => !set.refs.includes(`vocab:${saved.id}`)))
     assert.equal(after.learningNotebook.entries[`vocab:${saved.id}`], undefined)
     assert.equal(getWord(saved.id), undefined)
   } finally {
@@ -206,8 +201,10 @@ test('自作単語の画面は登録・編集・削除とファイルの出し�
   assert.match(screen, /saveCustomWord/)
   assert.match(screen, /deleteCustomWord/)
   assert.match(screen, /importCustomWords/)
-  // 登録した語は、そのままマイ単語・マイ単語帳・暗記・テストへつながる。
-  assert.match(screen, /toggleMyList/)
+  // 登録した語は、選んだ単語帳（最初は並びの先頭の冊）に入り、暗記・テストへつながる。
+  assert.match(screen, /data-custom-word-book-select/)
+  assert.match(screen, /setNotebookSetItem\(bookId, 'vocab', result\.id, true\)/)
+  assert.doesNotMatch(screen, /toggleMyList|myList|単語帳「マイ単語」/)
   assert.match(screen, /<WordListSheet/)
   assert.match(screen, /navigate\(screen, \{/)
   // 枚数は「1回のカード数」に任せ、画面側で頭打ちにしない。

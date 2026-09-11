@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import { IconButton } from './ui.jsx'
 import { Close } from './Icons.jsx'
@@ -13,9 +13,16 @@ export function Sheet({
   scrollAreaRef = null,
   maxH = 'min(85svh, calc(var(--app-visual-viewport-height) - 0.5rem))',
 }) {
+  const layerRef = useRef(null)
   useEffect(() => {
     if (!open) return
-    const onKey = (e) => e.key === 'Escape' && onClose?.()
+    // シートの上にシートを重ねたとき（長文の単語から単語帳を選ぶなど）は、いちばん上だけを閉じる。
+    const onKey = (e) => {
+      if (e.key !== 'Escape') return
+      const layers = document.querySelectorAll('[data-sheet-layer]')
+      if (layerRef.current && layers[layers.length - 1] !== layerRef.current) return
+      onClose?.()
+    }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   }, [open, onClose])
@@ -24,7 +31,7 @@ export function Sheet({
   // 画面側のバー（backdrop-blur などで重なりの文脈を作る要素）の下に潜り込まないよう、
   // シートは呼び出し位置ではなく body 直下へ描く。
   const layer = (
-    <div className="app-viewport-overlay fixed inset-x-0 z-[70] flex items-end justify-center" data-sheet-layer>
+    <div ref={layerRef} className="app-viewport-overlay fixed inset-x-0 z-[70] flex items-end justify-center" data-sheet-layer>
       <div
         className="absolute inset-0 bg-ink/40 backdrop-blur-[2px]"
         onClick={onClose}

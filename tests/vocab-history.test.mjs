@@ -3,6 +3,7 @@ import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 
 import { decodeProgress } from '../src/lib/progressCode.js'
+import { createStarterLearningNotebook } from '../src/lib/learningNotebook.js'
 import {
   VOCAB_HISTORY_LIMIT,
   normalizeVocabHistory,
@@ -23,9 +24,9 @@ test('辞書履歴は新しい順の一意な単語IDだけを上限内で保持
   assert.deepEqual(normalizeVocabHistory('affect'), [])
 })
 
-test('参照とマイ単語登録は辞書履歴へ集まり、解除では履歴を消さない', () => {
+test('参照と単語帳へ入れた語は辞書履歴へ集まり、外しても履歴を消さない', () => {
   const before = useStore.getState()
-  useStore.setState({ vocabHistory: [], myList: [] })
+  useStore.setState({ vocabHistory: [], learningNotebook: createStarterLearningNotebook() })
 
   try {
     useStore.getState().recordVocabHistory('affect')
@@ -33,16 +34,22 @@ test('参照とマイ単語登録は辞書履歴へ集まり、解除では履�
     useStore.getState().recordVocabHistory('affect')
     assert.deepEqual(useStore.getState().vocabHistory, ['affect', 'access'])
 
-    useStore.getState().toggleMyList('say')
-    assert.deepEqual(useStore.getState().myList, ['say'])
+    // 「マイ単語」も名前をつけた単語帳も、入れた語は同じように辞書履歴へ残る。
+    const myWordsId = useStore.getState().learningNotebook.sets[0].id
+    useStore.getState().setNotebookSetItem(myWordsId, 'vocab', 'say', true)
+    assert.deepEqual(useStore.getState().learningNotebook.sets[0].refs, ['vocab:say'])
     assert.deepEqual(useStore.getState().vocabHistory, ['say', 'affect', 'access'])
 
-    useStore.getState().toggleMyList('say')
-    assert.deepEqual(useStore.getState().myList, [])
+    useStore.getState().setNotebookSetItem(myWordsId, 'vocab', 'say', false)
+    assert.deepEqual(useStore.getState().learningNotebook.sets[0].refs, [])
     assert.deepEqual(useStore.getState().vocabHistory, ['say', 'affect', 'access'])
 
-    useStore.getState().addManyToMyList(['read', 'access', 'read'])
-    assert.deepEqual(useStore.getState().myList, ['read', 'access'])
+    const setId = useStore.getState().createNotebookSet('テスト範囲')
+    useStore.getState().setNotebookSetItems(setId, 'vocab', ['read', 'access', 'read'], true)
+    assert.deepEqual(
+      useStore.getState().learningNotebook.sets.find((set) => set.id === setId).refs,
+      ['vocab:read', 'vocab:access'],
+    )
     assert.deepEqual(
       useStore.getState().vocabHistory,
       ['read', 'access', 'say', 'affect'],
@@ -51,7 +58,7 @@ test('参照とマイ単語登録は辞書履歴へ集まり、解除では履�
     useStore.getState().clearVocabHistory()
     assert.deepEqual(useStore.getState().vocabHistory, [])
   } finally {
-    useStore.setState({ vocabHistory: before.vocabHistory, myList: before.myList })
+    useStore.setState({ vocabHistory: before.vocabHistory, learningNotebook: before.learningNotebook })
   }
 })
 
@@ -77,15 +84,16 @@ test('辞書履歴は端末保存・進捗コード向けに正規化して往�
   }
 })
 
-test('検索・参照履歴の各単語からマイ単語へ追加・解除できる', () => {
+test('英和辞書の検索結果・参照履歴の各単語から、入れる単語帳を選べる', () => {
   const source = readFileSync(
     new URL('../src/screens/VocabSearch.jsx', import.meta.url),
     'utf8',
   )
 
-  assert.match(source, /const toggleMyList = useStore/)
-  assert.match(source, /onToggleSave=\{\(\) => toggleMyList\(word\.id\)\}/)
-  assert.match(source, /マイ単語に追加/)
-  assert.match(source, /マイ単語から外す/)
-  assert.match(source, /追加済み/)
+  // 検索結果にも履歴にも同じ「単語帳」ボタンを置き、押すと入れる単語帳を選ぶ窓を開く。
+  assert.equal((source.match(/onChooseBook=\{\(\) => setBookWord\(/g) ?? []).length, 2)
+  assert.match(source, /<WordListSheet/)
+  assert.match(source, /data-dictionary-word-book/)
+  assert.match(source, /を入れる単語帳を選ぶ/)
+  assert.doesNotMatch(source, /toggleMyList|マイ単語/)
 })

@@ -144,6 +144,96 @@ export function createLearningNotebook() {
   }
 }
 
+// 「マイ単語」は、ほかの単語帳と同じ1冊（名前の変更・削除・並べ替え・どの教材でも入れられる）。
+// はじめて使う人にも最初から1冊用意しておき、単語カードの「単語帳」からすぐ入れられるようにする。
+// ID を決めておくのは、以前の保存（myList）を何度読み込んでも同じ1冊へまとめ、二重に作らないため。
+export const MY_WORDS_SET_ID = 'notebook-set-my-words'
+export const MY_WORDS_SET_TITLE = 'マイ単語'
+const MY_WORDS_OVERFLOW_PREFIX = `${MY_WORDS_SET_ID}-`
+
+const isMyWordsSetId = (id) => id === MY_WORDS_SET_ID || id.startsWith(MY_WORDS_OVERFLOW_PREFIX)
+
+const emptySet = (id, title, timestamp) => ({
+  id,
+  title,
+  description: '',
+  refs: [],
+  createdAt: timestamp,
+  updatedAt: timestamp,
+})
+
+/** 初めて使う端末・リセット直後のノート。空の「マイ単語」を1冊だけ持つ。 */
+export function createStarterLearningNotebook() {
+  return {
+    ...createLearningNotebook(),
+    sets: [emptySet(MY_WORDS_SET_ID, MY_WORDS_SET_TITLE, null)],
+  }
+}
+
+/**
+ * 以前の「マイ単語」（英単語IDだけを並べた保存配列 myList）を、単語帳の1冊「マイ単語」へ移す。
+ *
+ * - legacyIds が配列でなければ（今の形式の保存）何もしない。空の配列なら空の「マイ単語」を用意する。
+ * - 1冊500項目を超える分は「マイ単語2」「マイ単語3」…へ続ける。40冊に届いたら、それ以上は作らない。
+ * - すでに移した語は入れ直さない（同じ保存を何度読んでも増えない）。
+ * - 以前のマイ単語はノートの「保存中」も兼ねていたので、移した語はノートに保存したまま残す
+ *   （40冊に届いて単語帳へ入らなかった語も、ノートからは消えない）。
+ */
+export function foldLegacyMyWords(notebook, legacyIds, { timestamp = Date.now() } = {}) {
+  const current = normalizeLearningNotebook(notebook)
+  if (!Array.isArray(legacyIds)) return current
+  const refs = normalizeRefs(legacyIds.map((id) => notebookRef('vocab', id)), Infinity)
+
+  const entries = { ...current.entries }
+  for (const ref of refs) {
+    const previous = entries[ref]
+    if (previous?.saved) continue
+    entries[ref] = {
+      saved: true,
+      note: previous?.note ?? '',
+      tags: previous?.tags ?? [],
+      createdAt: previous?.createdAt ?? timestamp,
+      updatedAt: timestamp,
+    }
+  }
+
+  const sets = [...current.sets]
+  const bookIndexes = () => sets
+    .map((set, index) => (isMyWordsSetId(set.id) ? index : -1))
+    .filter((index) => index >= 0)
+  if (!bookIndexes().length) {
+    if (sets.length >= NOTEBOOK_LIMITS.sets) return { ...current, entries }
+    sets.unshift(emptySet(MY_WORDS_SET_ID, MY_WORDS_SET_TITLE, timestamp))
+  }
+
+  const alreadyMoved = new Set(bookIndexes().flatMap((index) => sets[index].refs))
+  const pending = refs.filter((ref) => !alreadyMoved.has(ref))
+  while (pending.length) {
+    const indexes = bookIndexes()
+    const lastIndex = indexes[indexes.length - 1]
+    const last = sets[lastIndex]
+    const room = NOTEBOOK_LIMITS.itemsPerSet - last.refs.length
+    if (room > 0) {
+      sets[lastIndex] = {
+        ...last,
+        refs: [...last.refs, ...pending.splice(0, room)],
+        updatedAt: timestamp,
+      }
+      continue
+    }
+    if (sets.length >= NOTEBOOK_LIMITS.sets) break
+    let number = indexes.length + 1
+    while (sets.some((set) => set.id === `${MY_WORDS_OVERFLOW_PREFIX}${number}`)) number += 1
+    sets.splice(
+      lastIndex + 1,
+      0,
+      emptySet(`${MY_WORDS_OVERFLOW_PREFIX}${number}`, `${MY_WORDS_SET_TITLE}${number}`, timestamp),
+    )
+  }
+
+  return { ...current, entries, sets }
+}
+
 export function normalizeLearningNotebook(value) {
   const source = isRecord(value) ? value : {}
   const entries = {}
@@ -197,10 +287,10 @@ export function notebookEntryFor(notebook, domain, itemId) {
 
 // 教材データを読み込まずに、旧リストを含む保存参照を数える軽量セレクタ。
 // 共通メニューなど、全16,071項目のカタログをロードしたくない場所で使う。
+// 以前の英単語の保存配列（myList）は、読み込むときに foldLegacyMyWords でノートへ移している。
 export function notebookStoredSavedRefs(state = {}) {
   const refs = new Set()
   const legacy = [
-    ['vocab', state.myList],
     ['kotenVocab', state.kotenWordList],
     ['kotenGrammar', state.kotenGrammarList],
     ['kotenCulture', state.kotenCultureList],
@@ -360,6 +450,18 @@ export function updateNotebookSet(notebook, setId, patch = {}, timestamp = Date.
   }
 }
 
+/** 単語帳の並びで、1冊を1つ上（up）か1つ下（down）へ動かす。並びはどの画面でも同じ順に使う。 */
+export function moveNotebookSet(notebook, setId, direction) {
+  const current = normalizeLearningNotebook(notebook)
+  const step = direction === 'up' ? -1 : direction === 'down' ? 1 : 0
+  const index = current.sets.findIndex((set) => set.id === setId)
+  const target = index + step
+  if (!step || index < 0 || target < 0 || target >= current.sets.length) return current
+  const sets = [...current.sets]
+  ;[sets[index], sets[target]] = [sets[target], sets[index]]
+  return { ...current, sets }
+}
+
 export function deleteNotebookSet(notebook, setId) {
   const current = normalizeLearningNotebook(notebook)
   return {
@@ -391,6 +493,44 @@ export function setNotebookSetItem(
       if (included && !present && refs.length < NOTEBOOK_LIMITS.itemsPerSet) refs = [...refs, ref]
       if (!included && present) refs = refs.filter((item) => item !== ref)
       return refs === set.refs ? set : { ...set, refs, updatedAt: timestamp }
+    }),
+  }
+}
+
+/**
+ * まとめて入れる・外す（長文の全語を単語帳へ、など）。1冊500項目を超える分は入れない。
+ * すでに入っている項目は入れ直さず、入っていない項目を外そうとしても何も変えない。
+ */
+export function setNotebookSetItems(
+  notebook,
+  setId,
+  domain,
+  itemIds,
+  included,
+  timestamp = Date.now(),
+) {
+  const current = normalizeLearningNotebook(notebook)
+  const refs = normalizeRefs(
+    (Array.isArray(itemIds) ? itemIds : []).map((itemId) => notebookRef(domain, itemId)),
+    Infinity,
+  )
+  if (!refs.length) return current
+  return {
+    ...current,
+    sets: current.sets.map((set) => {
+      if (set.id !== setId) return set
+      let nextRefs = set.refs
+      if (included) {
+        const present = new Set(set.refs)
+        const room = Math.max(0, NOTEBOOK_LIMITS.itemsPerSet - set.refs.length)
+        const added = refs.filter((ref) => !present.has(ref)).slice(0, room)
+        if (added.length) nextRefs = [...set.refs, ...added]
+      } else {
+        const removing = new Set(refs)
+        const kept = set.refs.filter((ref) => !removing.has(ref))
+        if (kept.length !== set.refs.length) nextRefs = kept
+      }
+      return nextRefs === set.refs ? set : { ...set, refs: nextRefs, updatedAt: timestamp }
     }),
   }
 }

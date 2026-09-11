@@ -116,11 +116,10 @@ function FieldChooser({ onChoose }) {
 export function VocabLevelsScreen() {
   const navigate = useStore((s) => s.navigate)
   const srs = useStore((s) => s.srs)
-  const myList = useStore((s) => s.myList)
   const wordBookSets = useStore((s) => s.learningNotebook.sets)
   const [wordBookSheetOpen, setWordBookSheetOpen] = useState(false)
-  // マイ単語（いつもの1冊）＋名前をつけた単語帳の冊数。
-  const wordBookCount = 1 + wordBookSets.length
+  // 単語帳の冊数（マイ単語もほかの単語帳と同じ1冊として数える）。
+  const wordBookCount = wordBookSets.length
   const prog = overallProgress(srs)
   const reviewState = reviewActionState(prog)
   const reviewComplete = reviewState === 'complete'
@@ -198,7 +197,7 @@ export function VocabLevelsScreen() {
               </div>
             </div>
           </button>
-          {/* マイ単語を含む単語帳を選び、その冊で暗記・テストを始める。 */}
+          {/* 単語帳を選び、その冊で暗記・テストを始める。 */}
           <button
             type="button"
             onClick={() => setWordBookSheetOpen(true)}
@@ -212,7 +211,7 @@ export function VocabLevelsScreen() {
             <div>
               <div className="text-sm font-extrabold text-brand-800">単語帳</div>
               <div className="text-[11px] font-bold text-brand-700/70">
-                {wordBookCount}冊・マイ単語{myList.length}語
+                {wordBookCount}冊
               </div>
             </div>
           </button>

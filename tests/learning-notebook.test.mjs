@@ -1,10 +1,12 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import {
+  MY_WORDS_SET_ID,
   NOTEBOOK_DOMAIN_IDS,
   NOTEBOOK_LIMITS,
   createLearningNotebook,
   createNotebookSet,
+  foldLegacyMyWords,
   moveNotebookSetItem,
   normalizeLearningNotebook,
   notebookRef,
@@ -167,19 +169,22 @@ test('自作問題集は作成・説明編集・分野混在・追加削除・�
   )
 })
 
-test('旧マイ単語・古典リストを統合表示し、8分野の正誤・期限・最近履歴を読む', () => {
+test('以前のマイ単語はノートの保存と単語帳「マイ単語」へ移し、古典リストと合わせて8分野の正誤・期限・最近履歴を読む', () => {
   const day = 20000
   const state = {
-    myList: ['book'],
     kotenWordList: ['k001'],
     kotenGrammarList: ['kg_neg_zu'],
     kotenCultureList: ['kc001'],
-    learningNotebook: setNotebookItemSaved(
-      setNotebookItemSaved(createLearningNotebook(), 'phrases', 'idm_get_up', true, 10),
-      'listening',
-      'listen_1_01',
-      true,
-      20,
+    learningNotebook: foldLegacyMyWords(
+      setNotebookItemSaved(
+        setNotebookItemSaved(createLearningNotebook(), 'phrases', 'idm_get_up', true, 10),
+        'listening',
+        'listen_1_01',
+        true,
+        20,
+      ),
+      ['book'],
+      { timestamp: 30 },
     ),
     srs: {
       book: { correct: 3, wrong: 1, box: 3, due: day, lastAt: 100 },
@@ -190,6 +195,11 @@ test('旧マイ単語・古典リストを統合表示し、8分野の正誤・�
     kotenCultureSrs: {},
     etymologySrs: {},
   }
+  // 以前のマイ単語の語は、ノートに保存したまま単語帳「マイ単語」（ほかの冊と同じ1冊）にも入る。
+  assert.deepEqual(
+    state.learningNotebook.sets.map((set) => [set.id, set.title, set.refs]),
+    [[MY_WORDS_SET_ID, 'マイ単語', ['vocab:book']]],
+  )
   assert.equal(isNotebookItemSaved(state, 'vocab', 'book'), true)
   assert.equal(notebookSavedRefs(state).length, 6)
   assert.deepEqual(notebookSavedCounts(state), {
@@ -218,12 +228,11 @@ test('旧マイ単語・古典リストを統合表示し、8分野の正誤・�
   )
 })
 
-test('統合ノートは旧保存配列と同期し、端末・進捗コード・クラウドの全経路で復元する', () => {
+test('統合ノートは古典の旧保存配列と同期し、端末・進捗コード・クラウドの全経路で復元する', () => {
   const before = selectProgressState(useStore.getState())
   try {
     useStore.setState({
       ...before,
-      myList: [],
       kotenWordList: [],
       kotenGrammarList: [],
       kotenCultureList: [],
@@ -241,8 +250,11 @@ test('統合ノートは旧保存配列と同期し、端末・進捗コード�
     useStore.getState().setNotebookSetItem(setId, 'listening', 'listen_1_01', true)
 
     const current = useStore.getState()
-    assert.deepEqual(current.myList, ['book'])
+    // 英単語をノートに保存しても、単語帳へは勝手に入れない（単語帳への出し入れは別の操作）。
+    assert.equal(isNotebookItemSaved(current, 'vocab', 'book'), true)
+    assert.equal('myList' in selectProgressState(current), false)
     assert.deepEqual(current.kotenGrammarList, ['kg_neg_zu'])
+    assert.equal(current.learningNotebook.sets.length, 1)
     assert.equal(current.learningNotebook.sets[0].refs.length, 2)
     assert.ok(PERSISTED_PROGRESS_FIELDS.includes('learningNotebook'))
     assert.deepEqual(selectProgressState(current).learningNotebook, current.learningNotebook)
@@ -254,10 +266,12 @@ test('統合ノートは旧保存配列と同期し、端末・進捗コード�
 
     const cloud = progressStateFromCloud(decoded, before)
     assert.equal(cloud.learningNotebook.sets[0].description, '朝に解く')
+    // 以前のクラウド保存の「マイ単語」（myList）は、端末で作った単語帳を消さずに「マイ単語」へ移す。
     const oldCloud = progressStateFromCloud({ myList: ['book'] }, current)
-    assert.equal(oldCloud.learningNotebook.sets[0].title, '明日の10問')
+    assert.deepEqual(oldCloud.learningNotebook.sets.map((set) => set.title), ['マイ単語', '明日の10問'])
+    assert.deepEqual(oldCloud.learningNotebook.sets[0].refs, ['vocab:book'])
 
-    useStore.getState().toggleMyList('book')
+    useStore.getState().toggleNotebookItem('vocab', 'book')
     assert.equal(isNotebookItemSaved(useStore.getState(), 'vocab', 'book'), false)
   } finally {
     useStore.setState(before)

@@ -205,7 +205,11 @@ test('全作品の読む前に共通予習導線があり、一覧・検索・�
   assert.match(reader, /data-literature-vocabulary-preparation=\{work\.id\}/)
   assert.match(reader, /data-literature-vocabulary-open/)
   assert.match(reader, /本文語彙を予習/)
-  assert.match(reader, /addManyToMyList\(sharedWordIds\)/)
+  // 英語の作品の本文語彙は、入れる単語帳を選ぶ窓からまとめて入れる（1語ずつも同じ窓）。
+  assert.match(reader, /setBookSheetWords\(\{ ids: sharedWordIds, label: /)
+  assert.match(reader, /setBookSheetWords\(\{ ids: \[activeWord\.id\], label: activeWord\.word \}\)/)
+  assert.match(reader, /<WordListSheet/)
+  assert.doesNotMatch(reader, /addManyToMyList|toggleMyList|マイ単語に追加/)
   assert.match(reader, /addManyToKotenWordList\(sharedWordIds\)/)
   assert.match(reader, /addManyToKanbunList\('vocab', sharedWordIds\)/)
   assert.match(reader, /navigate\('kanbunStudy'/)
