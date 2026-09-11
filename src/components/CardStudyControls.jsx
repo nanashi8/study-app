@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { cardIndexAfterSwipe, cardSwipeDirection } from '../lib/cardSwipe.js'
 import { Bookmark, BookmarkFilled } from './Icons.jsx'
-import { cx } from './ui.jsx'
+import { Button, cx } from './ui.jsx'
 
 const INTERACTIVE_TARGETS = [
   'button',
@@ -100,6 +100,39 @@ export function CardStudyFooter({ className = '', children, ...props }) {
       )}
     >
       {children}
+    </div>
+  )
+}
+
+/**
+ * 答えたあと戻ってきたカードの「まだ／覚えた」。いまの答えを押した状態で示し、
+ * もう一方を押すと選び直せる（記録と集計は画面側で入れ替える）。
+ */
+export function StudyAnswerReselect({
+  remembered,
+  onAnswer,
+  forgotLabel = 'まだ🤔',
+  rememberedLabel = '覚えた👍',
+  forgotVariant = 'danger',
+}) {
+  return (
+    <div className="grid grid-cols-2 gap-2" data-card-answer-reselect>
+      <Button
+        variant={remembered ? 'secondary' : forgotVariant}
+        size="lg"
+        aria-pressed={!remembered}
+        onClick={() => onAnswer(false)}
+      >
+        {forgotLabel}
+      </Button>
+      <Button
+        variant={remembered ? 'success' : 'secondary'}
+        size="lg"
+        aria-pressed={Boolean(remembered)}
+        onClick={() => onAnswer(true)}
+      >
+        {rememberedLabel}
+      </Button>
     </div>
   )
 }

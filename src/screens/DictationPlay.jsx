@@ -14,13 +14,20 @@ import {
   playSpeechItems,
 } from '../lib/speech-player.js'
 import { buildDictationInstructorExplanation } from '../lib/instructorExplanations.js'
-import { answeredQuizIndexes, growDeck, restartSessionCount } from '../lib/session.js'
+import {
+  answeredQuizIndexes,
+  growDeck,
+  restartSessionCount,
+  reviseQuizTally,
+} from '../lib/session.js'
 import { Button, Chip, cx } from '../components/ui.jsx'
 import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
 import { Close, ArrowRight, SpeakerWave, Check } from '../components/Icons.jsx'
 import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
 import {
   QuestionSessionControls,
+  useAnswerReceipts,
+  useRevisitedAnswer,
   useUnfinishedSessionRecord,
 } from '../components/QuestionSessionControls.jsx'
 
@@ -37,6 +44,7 @@ export function DictationPlayScreen() {
   const navigate = useStore((s) => s.navigate)
   const back = useStore((s) => s.back)
   const review = useStore((s) => s.review)
+  const reviseReview = useStore((s) => s.reviseReview)
   const settings = useStore((s) => s.settings)
 
   const source = params.source ?? { type: 'level', levelId: '5' }
@@ -58,6 +66,10 @@ export function DictationPlayScreen() {
   const questionStates = useRef({})
   // 1回の問題数を減らして数え直す前に答えた英文。結果の全問数に含める。
   const carried = useCarriedAnswers()
+  // 答え合わせをした英文ごとの記録の控え。前へ戻って並べ直したとき、最初の答えを置き換える。
+  const receipts = useAnswerReceipts()
+  // 前へ戻って「並べ直す」を押した英文と、並べ直す前の状態（途中でほかの英文へ移ったら戻す）。
+  const [redo, setRedo] = useState(null)
   const autoAdvanceSequence = useRef(0)
   const [autoAdvanceSignal, setAutoAdvanceSignal] = useState(null)
 
@@ -116,6 +128,9 @@ export function DictationPlayScreen() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [i, item?.id])
 
+  // 答え合わせをしてから戻ってきた英文は、並べ直せる。
+  const reselectable = useRevisitedAnswer(i, result !== null)
+
   if (!deck.length) {
     return (
       <div className="flex h-full flex-col items-center justify-center gap-4 p-8 text-center">
@@ -148,12 +163,21 @@ export function DictationPlayScreen() {
     const checked = scoreDictationSelection(item.text, wrongSelections, {
       passScore: profile.passScore,
     })
+    const outcome = checked.passed ? 'correct' : checked.score >= 60 ? 'wrong' : 'unknown'
     setResult(checked)
-    review(
-      item.id,
-      checked.passed ? 'correct' : checked.score >= 60 ? 'wrong' : 'unknown',
-      'dictation',
-    )
+    if (redo?.index === i) {
+      // 並べ直した英文は、最初の答え合わせの記録を置き換える（正解数も記録も二重に数えない）。
+      receipts.set(i, reviseReview(receipts.get(i), outcome))
+      reviseQuizTally(
+        results.current,
+        item.id,
+        redo.state.result?.passed ? 'correct' : 'wrong',
+        checked.passed ? 'correct' : 'wrong',
+      )
+      setRedo(null)
+      return
+    }
+    receipts.set(i, review(item.id, outcome, 'dictation'))
     if (checked.passed) {
       results.current.correct++
       autoAdvanceSequence.current += 1
@@ -162,6 +186,15 @@ export function DictationPlayScreen() {
       results.current.wrong++
       results.current.wrongIds.push(item.id)
     }
+  }
+
+  // 答え合わせをした英文を、はじめから並べ直す。
+  const startRedo = () => {
+    setRedo({ index: i, state: { wordBank, answerTokens, wrongSelections, result } })
+    setWordBank(buildWordBank(item))
+    setAnswerTokens([])
+    setWrongSelections(0)
+    setResult(null)
   }
 
   const placeWord = (token) => {
@@ -181,12 +214,16 @@ export function DictationPlayScreen() {
   }
 
   const moveTo = (nextIndex) => {
-    questionStates.current[i] = {
-      wordBank,
-      answerTokens,
-      wrongSelections,
-      result,
-    }
+    // 並べ直しの途中で移ったときは、並べ直す前の答えのまま残す。
+    questionStates.current[i] = redo?.index === i
+      ? redo.state
+      : {
+          wordBank,
+          answerTokens,
+          wrongSelections,
+          result,
+        }
+    setRedo(null)
     const restored = questionStates.current[nextIndex]
     setI(nextIndex)
     setWordBank(restored?.wordBank ?? buildWordBank(deck[nextIndex]))
@@ -238,6 +275,8 @@ export function DictationPlayScreen() {
                 // 答えた英文の記録と結果は残したまま、まだ答えていない英文を1問目として数え直す。
                 const next = restartSessionCount(deck, answeredIndexes, i, buildFor(size + deck.length), size)
                 carried.carry(next.answeredItems)
+                receipts.clear()
+                setRedo(null)
                 setDeck(next.deck)
                 setI(0)
                 setWordBank(buildWordBank(next.deck[0]))
@@ -483,7 +522,16 @@ export function DictationPlayScreen() {
       </div>
 
       <div className="shrink-0 border-t border-brand-100 bg-white/90 p-4 pb-4 backdrop-blur">
-        {!result ? (
+        {result && reselectable ? (
+          <div className="grid grid-cols-2 gap-2">
+            <Button size="lg" variant="secondary" onClick={startRedo} data-dictation-redo>
+              並べ直す
+            </Button>
+            <Button size="lg" onClick={next}>
+              {i + 1 >= deck.length ? '結果を見る' : '次へ'} <ArrowRight size={18} />
+            </Button>
+          </div>
+        ) : !result ? (
           <Button full size="lg" disabled={!sentenceComplete} onClick={check}>
             {sentenceComplete
               ? '答えを確定する'

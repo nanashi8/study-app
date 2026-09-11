@@ -11,7 +11,11 @@ import { KanbunMarkedText } from '../components/KanbunMarkedText.js'
 import { Check, Close, Lightbulb, Refresh } from '../components/Icons.jsx'
 import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
 import { answeredQuizIndexes, growDeck, restartSessionCount } from '../lib/session.js'
-import { QuestionSessionControls } from '../components/QuestionSessionControls.jsx'
+import {
+  QuestionSessionControls,
+  useAnswerReceipts,
+  useRevisitedAnswer,
+} from '../components/QuestionSessionControls.jsx'
 
 const ALL_EXERCISES = 9999 // 在庫数を数えるための十分大きな上限
 
@@ -19,6 +23,7 @@ export function KanbunKundokuQuizScreen() {
   const params = useStore((state) => state.params)
   const returnTo = useStore((state) => state.returnTo)
   const review = useStore((state) => state.reviewKanbunKundoku)
+  const reviseReview = useStore((state) => state.reviseReview)
   const [poolSize] = useState(() => pickKanbunKundokuExercises(params.ids, { size: ALL_EXERCISES, preserveOrder: params.preserveOrder }).length)
   const sessionSize = useSessionSize(poolSize || Infinity)
   const [deck, setDeck] = useState(() => pickKanbunKundokuExercises(params.ids, { size: params.size ?? sessionSize, preserveOrder: params.preserveOrder }))
@@ -30,6 +35,10 @@ export function KanbunKundokuQuizScreen() {
   const [done, setDone] = useState(false)
   // 1回の問題数を減らして数え直す前に答えた問題。結果の全問数に含める。
   const carried = useCarriedAnswers()
+  // 答えた問題ごとの記録の控え。前へ戻って並べ直したとき、最初の答えを置き換える。
+  const receipts = useAnswerReceipts()
+  // 前へ戻って「並べ直す」を押した問題と、並べ直す前の状態（途中でほかの問題へ移ったら戻す）。
+  const [redo, setRedo] = useState(null)
   const questionStates = useRef({})
   const autoAdvanceSequence = useRef(0)
   const [autoAdvanceSignal, setAutoAdvanceSignal] = useState(null)
@@ -45,6 +54,9 @@ export function KanbunKundokuQuizScreen() {
   const backToKanbunKundoku = () => params.returnTo?.screen
     ? returnTo(params.returnTo.screen, params.returnTo.params ?? {})
     : returnTo('kanbunKundoku')
+
+  // 答えてから戻ってきた問題は、読む順を並べ直せる。
+  const reselectable = useRevisitedAnswer(index, answered)
 
   if (!exercise) {
     return (
@@ -68,7 +80,18 @@ export function KanbunKundokuQuizScreen() {
   const submit = () => {
     if (answered || selectedIds.length !== exercise.order.length) return
     const isCorrect = isCorrectKanbunKundokuOrder(exercise, selectedIds)
-    review(exercise.id, isCorrect ? 'correct' : 'wrong')
+    if (redo?.index === index) {
+      // 並べ直した問題は、最初の答えの記録を置き換える（正解数も記録も二重に数えない）。
+      const wasCorrect = isCorrectKanbunKundokuOrder(exercise, redo.state.selectedIds)
+      receipts.set(index, reviseReview(receipts.get(index), isCorrect ? 'correct' : 'wrong'))
+      setCorrectCount((count) => count + (isCorrect ? 1 : 0) - (wasCorrect ? 1 : 0))
+      if (isCorrect) setWeakIds((ids) => ids.filter((id) => id !== exercise.id))
+      else setWeakIds((ids) => [...new Set([...ids, exercise.id])])
+      setRedo(null)
+      setAnswered(true)
+      return
+    }
+    receipts.set(index, review(exercise.id, isCorrect ? 'correct' : 'wrong'))
     if (isCorrect) {
       setCorrectCount((count) => count + 1)
       autoAdvanceSequence.current += 1
@@ -77,8 +100,16 @@ export function KanbunKundokuQuizScreen() {
     else setWeakIds((ids) => [...new Set([...ids, exercise.id])])
     setAnswered(true)
   }
+  // 答えた問題を、はじめから並べ直す。
+  const startRedo = () => {
+    setRedo({ index, state: { selectedIds, answered } })
+    setSelectedIds([])
+    setAnswered(false)
+  }
   const moveTo = (nextIndex) => {
-    questionStates.current[index] = { selectedIds, answered }
+    // 並べ直しの途中で移ったときは、並べ直す前の答えのまま残す。
+    questionStates.current[index] = redo?.index === index ? redo.state : { selectedIds, answered }
+    setRedo(null)
     const restored = questionStates.current[nextIndex]
     setIndex(nextIndex)
     setSelectedIds(restored?.selectedIds ?? [])
@@ -97,6 +128,8 @@ export function KanbunKundokuQuizScreen() {
   })
   const restart = (ids = params.ids) => {
     carried.reset()
+    receipts.clear()
+    setRedo(null)
     setDeck(pickKanbunKundokuExercises(ids, { size: deck.length || sessionSize, preserveOrder: params.preserveOrder }))
     setIndex(0)
     setSelectedIds([])
@@ -160,6 +193,8 @@ export function KanbunKundokuQuizScreen() {
                 // 答えた問題の記録と結果は残したまま、まだ答えていない問題を1問目として数え直す。
                 const next = restartSessionCount(deck, answeredIndexes, index, pickKanbunKundokuExercises(params.ids, { size: size + deck.length, preserveOrder: params.preserveOrder }), size)
                 carried.carry(next.answeredItems)
+                receipts.clear()
+                setRedo(null)
                 setDeck(next.deck)
                 setIndex(0)
                 setSelectedIds([])
@@ -272,6 +307,11 @@ export function KanbunKundokuQuizScreen() {
         >
           {answered ? index + 1 >= deck.length ? '結果を見る' : '次の問題へ' : 'この順で答える'}
         </Button>
+        {answered && reselectable && (
+          <Button full size="sm" variant="secondary" className="mt-2" onClick={startRedo} data-kundoku-redo>
+            並べ直す
+          </Button>
+        )}
       </div>
     </div>
   )

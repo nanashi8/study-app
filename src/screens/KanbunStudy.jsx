@@ -12,11 +12,18 @@ import { KanbunText, KanbunHeadword } from '../components/KanbunFurigana.jsx'
 import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
 import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
 import { answeredSessionIndexes, growDeck, restartSessionCount } from '../lib/session.js'
-import { CardSaveToggle, CardStudyFooter, CardSwipeRegion } from '../components/CardStudyControls.jsx'
+import {
+  CardSaveToggle,
+  CardStudyFooter,
+  CardSwipeRegion,
+  StudyAnswerReselect,
+} from '../components/CardStudyControls.jsx'
 import {
   nextUnansweredSessionIndex,
   QuestionSessionControls,
+  useAnswerReceipts,
   useIndexedSessionState,
+  useRevisitedAnswer,
 } from '../components/QuestionSessionControls.jsx'
 import {
   ArrowRight,
@@ -93,6 +100,11 @@ export function KanbunStudyScreen() {
     clear: clearRecordedAnswers,
     values: recordedAnswers,
   } = useIndexedSessionState(index)
+  // 答えたカードごとの記録の控え。前へ戻って選び直したとき、最初の答えを置き換える。
+  const receipts = useAnswerReceipts()
+  // 答えたあと戻ってきたカードは、「覚えた／まだ」を選び直せる。
+  const reselectable = useRevisitedAnswer(index, recordedAnswer !== null)
+  const reviseReview = useStore((state) => state.reviseReview)
   // 1回の数を減らして数え直す前に答えたカード。結果の全枚数に含める。
   const carried = useCarriedAnswers()
   const item = deck[index]
@@ -117,6 +129,7 @@ export function KanbunStudyScreen() {
   }
 
   const restart = (ids = params.ids) => {
+    receipts.clear()
     carried.reset()
     setDeck(buildFor(ids, deck.length))
     setIndex(0)
@@ -128,8 +141,20 @@ export function KanbunStudyScreen() {
   }
 
   const answer = (rememberedNow) => {
-    if (recordedAnswer !== null) return
-    review(domain, item.id, rememberedNow ? 'remembered' : 'forgot')
+    if (recordedAnswer === rememberedNow) return
+    const result = rememberedNow ? 'remembered' : 'forgot'
+    if (recordedAnswer !== null) {
+      if (!reselectable) return
+      // 前へ戻って選び直したときは、このカードの最初の答えを置き換える（記録も集計も二重に数えない）。
+      receipts.set(index, reviseReview(receipts.get(index), result))
+      setRemembered((count) => count + (rememberedNow ? 1 : -1))
+      setForgottenIds((ids) => (rememberedNow
+        ? ids.filter((id) => id !== item.id)
+        : [...new Set([...ids, item.id])]))
+      setRecordedAnswer(rememberedNow)
+      return
+    }
+    receipts.set(index, review(domain, item.id, result))
     if (rememberedNow) setRemembered((count) => count + 1)
     else setForgottenIds((ids) => [...new Set([...ids, item.id])])
     const nextAnswers = { ...recordedAnswers, [index]: rememberedNow }
@@ -200,6 +225,7 @@ export function KanbunStudyScreen() {
                 // 答えたカードの記録と結果は残したまま、まだ答えていないカードを1枚目として数え直す。
                 const next = restartSessionCount(deck, answeredIndexes, index, buildFor(params.ids, 0), size)
                 carried.carry(next.answeredItems)
+                receipts.clear()
                 setDeck(next.deck)
                 clearRecordedAnswers()
                 moveToCard(0, {})
@@ -264,7 +290,10 @@ export function KanbunStudyScreen() {
       </CardSwipeRegion>
 
       <CardStudyFooter className="border-rose-100">
-        {recordedAnswer !== null ? (
+        {recordedAnswer !== null && reselectable ? (
+          // 答えたあと戻ってきたカード。いまの答えを示したまま、もう一方を押すと選び直せる。
+          <StudyAnswerReselect remembered={recordedAnswer} onAnswer={answer} />
+        ) : recordedAnswer !== null ? (
           <Button full size="lg" variant={recordedAnswer ? 'success' : 'danger'} disabled>
             {recordedAnswer ? '覚えた' : 'まだ'}（回答済み）
           </Button>

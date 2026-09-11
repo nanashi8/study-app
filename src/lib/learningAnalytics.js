@@ -336,6 +336,50 @@ export function recordLearningEvent(current, event, timestamp = Date.now()) {
   return analytics
 }
 
+/**
+ * 前へ戻って答えを選び直したとき、最初に答えたときの記録の「正解数」だけを入れ替える。
+ * 回答数・学習時間・学習日は最初の回答のまま残し、同じ問題を二重に数えない。
+ * event は最初の回答と同じ skill・activity・memoryHour・memoryPasses・gapHours、
+ * timestamp は最初に答えた時刻（時間帯・学習日の集計先を同じにするため）。
+ */
+export function reviseLearningEventCorrect(current, event, correctDelta, timestamp) {
+  const analytics = normalizeLearningAnalytics(current)
+  const delta = Math.trunc(finiteOr(correctDelta))
+  if (!delta) return analytics
+  const at = Number.isFinite(timestamp) ? timestamp : Date.now()
+  const hour = new Date(at).getHours()
+  const day = localDateKey(at)
+  const skill = event?.skill || 'other'
+  const activity = activityModeFor(event, 1)
+  const shift = (aggregate) => (aggregate
+    ? { ...aggregate, correct: clamp(aggregate.correct + delta, 0, aggregate.scored) }
+    : aggregate)
+  const shiftInto = (collection, key) => {
+    if (collection?.[key]) collection[key] = shift(collection[key])
+  }
+
+  analytics.correct = clamp(analytics.correct + delta, 0, analytics.scored)
+  shiftInto(analytics.hours, hour)
+  shiftInto(analytics.skills, skill)
+  shiftInto(analytics.days, day)
+  const mode = analytics.modes[activity]
+  if (mode) {
+    analytics.modes[activity] = {
+      ...shift(mode),
+      hours: mode.hours?.[hour] ? { ...mode.hours, [hour]: shift(mode.hours[hour]) } : mode.hours,
+    }
+  }
+  if (activity === 'test') {
+    const memoryHour = Number(event?.memoryHour)
+    if (Number.isInteger(memoryHour)) shiftInto(analytics.memoryCohorts.hours, memoryHour)
+    const passBucket = memoryPassBucketFor(event?.memoryPasses)
+    if (passBucket) shiftInto(analytics.memoryCohorts.passes, passBucket)
+  }
+  const bucket = intervalBucketFor(event?.gapHours)
+  if (bucket) shiftInto(analytics.intervals, bucket.id)
+  return analytics
+}
+
 export function recordLearningEvents(current, events, timestamp = Date.now()) {
   return (Array.isArray(events) ? events : []).reduce(
     (analytics, event) => recordLearningEvent(analytics, event, timestamp),

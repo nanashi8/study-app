@@ -19,7 +19,10 @@ import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components
 import { answeredQuizIndexes, growDeck, restartSessionCount } from '../lib/session.js'
 import {
   QuestionSessionControls,
+  ReselectNote,
+  useAnswerReceipts,
   useIndexedSessionState,
+  useRevisitedAnswer,
 } from '../components/QuestionSessionControls.jsx'
 
 function shuffle(arr) {
@@ -41,6 +44,7 @@ export function KotenQuizScreen() {
   const params = useStore((s) => s.params)
   const back = useStore((s) => s.back)
   const reviewKoten = useStore((s) => s.reviewKoten)
+  const reviseReview = useStore((state) => state.reviseReview)
   const kotenWordList = useStore((s) => s.kotenWordList)
   const toggleKotenWordList = useStore((s) => s.toggleKotenWordList)
 
@@ -61,6 +65,8 @@ export function KotenQuizScreen() {
   const [done, setDone] = useState(false)
   // 1回の問題数を減らして数え直す前に答えた問題。結果の全問数に含める。
   const carried = useCarriedAnswers()
+  // 答えた問題ごとの記録の控え。前へ戻って選び直したときに入れ替える。
+  const receipts = useAnswerReceipts()
 
   const word = deck[i]
   const saved = word ? kotenWordList.includes(word.id) : false
@@ -69,6 +75,9 @@ export function KotenQuizScreen() {
     // 「3択＋わからない」にそろえるため、誤答は2つだけ作る。
     return shuffle([word, ...pickKotenDistractors(word, QUIZ_CHOICE_COUNT - 1)])
   }, [word?.id]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // 前に答えてから戻ってきた問題は、答えを選び直せる。
+  const reselectable = useRevisitedAnswer(i, selected !== null)
 
   if (!deck.length) {
     return (
@@ -82,6 +91,7 @@ export function KotenQuizScreen() {
 
   const restart = () => {
     carried.reset()
+    receipts.clear()
     const next = seed + 1
     setSeed(next)
     setDeck(buildQuizDeck(params.ids, next, deck.length))
@@ -117,18 +127,26 @@ export function KotenQuizScreen() {
   const answered = selected !== null
   const answeredIndexes = answeredQuizIndexes(i, selections)
 
+  const resultOf = (optId) => (
+    optId === UNKNOWN_CHOICE_ID ? 'unknown' : optId === word.id ? 'correct' : 'wrong'
+  )
+
   const choose = (optId) => {
-    if (answered) return
+    if (optId === selected || (answered && !reselectable)) return
+    const result = resultOf(optId)
+    if (answered) {
+      // 前へ戻って選び直したときは、この問題の最初の答えを置き換える（正解数も記録も二重に数えない）。
+      receipts.set(i, reviseReview(receipts.get(i), result))
+      setCorrectCount((n) => n + (result === 'correct') - (resultOf(selected) === 'correct'))
+      setSelected(optId)
+      return
+    }
     setSelected(optId)
-    if (optId === UNKNOWN_CHOICE_ID) {
-      reviewKoten(word.id, 'unknown')
-    } else if (optId === word.id) {
-      reviewKoten(word.id, 'correct')
+    receipts.set(i, reviewKoten(word.id, result))
+    if (result === 'correct') {
       setCorrectCount((n) => n + 1)
       autoAdvanceSequence.current += 1
       setAutoAdvanceSignal(autoAdvanceSequence.current)
-    } else {
-      reviewKoten(word.id, 'wrong')
     }
   }
 
@@ -172,6 +190,7 @@ export function KotenQuizScreen() {
                 // 答えた問題の記録と結果は残したまま、まだ答えていない問題を1問目として数え直す。
                 const next = restartSessionCount(deck, answeredIndexes, i, buildQuizDeck(params.ids, seed + 1, size + deck.length), size)
                 carried.carry(next.answeredItems)
+                receipts.clear()
                 setDeck(next.deck)
                 clearSelections()
                 setI(0)
@@ -197,6 +216,7 @@ export function KotenQuizScreen() {
 
         {/* 選択肢 */}
         <div className="mt-4 space-y-2.5">
+          {reselectable && <ReselectNote />}
           {options.map((o) => {
             const correct = o.id === word.id
             const chosen = selected === o.id
@@ -209,7 +229,8 @@ export function KotenQuizScreen() {
             return (
               <button
                 key={o.id}
-                disabled={answered}
+                disabled={answered && !reselectable}
+                aria-pressed={answered ? selected === o.id : undefined}
                 onClick={() => choose(o.id)}
                 className={cx(
                   'flex w-full items-center gap-3 rounded-2xl border-2 px-4 py-3.5 text-left font-bold transition-all',
@@ -229,7 +250,7 @@ export function KotenQuizScreen() {
           })}
           <UnknownChoiceButton
             selected={selected === UNKNOWN_CHOICE_ID}
-            disabled={answered}
+            disabled={answered && !reselectable}
             onClick={() => choose(UNKNOWN_CHOICE_ID)}
           />
         </div>

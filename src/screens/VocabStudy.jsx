@@ -9,6 +9,7 @@ import {
   isAutomaticVocabularySource,
   recordStudyAnswer,
   restartSessionCount,
+  reviseStudyAnswer,
   vocabularyStockCount,
 } from '../lib/session.js'
 import { vocabMixEmptyNotice, vocabMixFreshShare } from '../lib/vocabMix.js'
@@ -22,12 +23,19 @@ import { Button, Chip } from '../components/ui.jsx'
 import { ArrowRight, Lightbulb } from '../components/Icons.jsx'
 import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
 import { VocabReviewHistory } from '../components/VocabReviewHistory.jsx'
-import { CardSaveToggle, CardStudyFooter, CardSwipeRegion } from '../components/CardStudyControls.jsx'
+import {
+  CardSaveToggle,
+  CardStudyFooter,
+  CardSwipeRegion,
+  StudyAnswerReselect,
+} from '../components/CardStudyControls.jsx'
 import { WordListSheet, useWordInAnyBook } from '../components/WordListSheet.jsx'
 import {
   nextUnansweredSessionIndex,
   QuestionSessionControls,
+  useAnswerReceipts,
   useIndexedSessionState,
+  useRevisitedAnswer,
 } from '../components/QuestionSessionControls.jsx'
 
 const sessionKey = (params) => (
@@ -39,6 +47,7 @@ export function VocabStudyScreen() {
   const navigate = useStore((s) => s.navigate)
   const returnTo = useStore((s) => s.returnTo)
   const review = useStore((s) => s.review)
+  const reviseReview = useStore((s) => s.reviseReview)
   const settings = useStore((s) => s.settings)
   const saveQuizSession = useStore((s) => s.saveQuizSession)
   const clearQuizSession = useStore((s) => s.clearQuizSession)
@@ -109,6 +118,8 @@ export function VocabStudyScreen() {
     : { remembered: 0, forgot: 0, forgotIds: [] })
   // 1回のカード数を減らして数え直す前に答えたカード。結果の「今回学んだ語」に含める。
   const carried = useCarriedAnswers(restore?.carried)
+  // 答えたカードごとの記録の控え。前へ戻って選び直したとき、最初の答えを置き換える。
+  const receipts = useAnswerReceipts(restore?.receipts)
   const beforeBoxesAtStart = useRef(
     restore?.beforeBoxes
     ?? Object.fromEntries(deck.map((item) => [
@@ -148,6 +159,8 @@ export function VocabStudyScreen() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [settings.vocabMix])
   const word = deck[i]
+  // 答えたあと戻ってきたカードは、「覚えた／まだ」を選び直せる。
+  const reselectable = useRevisitedAnswer(i, recordedAnswer !== null)
   const entry = useStore((state) => (word ? state.srs[word.id] : null))
   const inWordBook = useWordInAnyBook(word?.id)
   // その語を含む熟語・構文は全部見せる（数を絞ると使い方が抜ける）。
@@ -233,8 +246,17 @@ export function VocabStudyScreen() {
   }
 
   const answer = (remembered) => {
-    if (recordedAnswer !== null) return
-    review(word.id, remembered ? 'remembered' : 'forgot', 'vocab')
+    if (recordedAnswer === remembered) return
+    const result = remembered ? 'remembered' : 'forgot'
+    if (recordedAnswer !== null) {
+      if (!reselectable) return
+      // 前へ戻って選び直したときは、このカードの最初の答えを置き換える（記録も集計も二重に数えない）。
+      receipts.set(i, reviseReview(receipts.get(i), result))
+      results.current = reviseStudyAnswer(results.current, word.id, recordedAnswer, remembered)
+      setRecordedAnswer(remembered)
+      return
+    }
+    receipts.set(i, review(word.id, result, 'vocab'))
     results.current = recordStudyAnswer(results.current, word.id, remembered)
     const nextAnswers = { ...recordedAnswers, [i]: remembered }
     setRecordedAnswer(remembered)
@@ -262,6 +284,7 @@ export function VocabStudyScreen() {
       i,
       flipped,
       ratings: { ...recordedAnswers },
+      receipts: receipts.snapshot(),
       carried: carried.snapshot(),
       beforeBoxes: { ...beforeBoxesAtStart.current },
       results: {
@@ -295,6 +318,7 @@ export function VocabStudyScreen() {
                 // 答えたカードの記録と結果は残したまま、まだ答えていないカードを1枚目として数え直す。
                 const next = restartSessionCount(deck, answeredIndexes, i, buildFor(size + deck.length), size)
                 carried.carry(next.answeredItems)
+                receipts.clear()
                 rememberBoxesAtStart(next.deck)
                 setDeck(next.deck)
                 clearRecordedAnswers()
@@ -462,7 +486,10 @@ export function VocabStudyScreen() {
 
       {/* フッター操作 */}
       <CardStudyFooter className="vocab-study-actions border-brand-100" data-vocab-study-actions>
-        {recordedAnswer !== null ? (
+        {recordedAnswer !== null && reselectable ? (
+          // 答えたあと戻ってきたカード。いまの答えを示したまま、もう一方を押すと選び直せる。
+          <StudyAnswerReselect remembered={recordedAnswer} onAnswer={answer} />
+        ) : recordedAnswer !== null ? (
           <Button full size="lg" variant={recordedAnswer ? 'success' : 'danger'} disabled>
             {recordedAnswer ? '覚えた' : 'まだ'}（回答済み）
           </Button>

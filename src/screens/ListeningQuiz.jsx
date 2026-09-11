@@ -13,7 +13,12 @@ import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
 import { Button, Chip, IconButton, cx } from '../components/ui.jsx'
-import { answeredQuizIndexes, growDeck, restartSessionCount } from '../lib/session.js'
+import {
+  answeredQuizIndexes,
+  growDeck,
+  restartSessionCount,
+  reviseQuizTally,
+} from '../lib/session.js'
 import {
   ArrowRight,
   Bookmark,
@@ -28,7 +33,10 @@ import { buildListeningInstructorExplanation } from '../lib/instructorExplanatio
 import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
 import {
   QuestionSessionControls,
+  ReselectNote,
+  useAnswerReceipts,
   useIndexedSessionState,
+  useRevisitedAnswer,
   useUnfinishedSessionRecord,
 } from '../components/QuestionSessionControls.jsx'
 
@@ -55,6 +63,7 @@ export function ListeningQuizScreen() {
   const navigate = useStore((s) => s.navigate)
   const returnTo = useStore((s) => s.returnTo)
   const review = useStore((s) => s.review)
+  const reviseReview = useStore((s) => s.reviseReview)
   const settings = useStore((s) => s.settings)
   const toggleNotebookItem = useStore((s) => s.toggleNotebookItem)
   const learningNotebook = useStore((s) => s.learningNotebook)
@@ -84,6 +93,8 @@ export function ListeningQuizScreen() {
   const results = useRef({ correct: 0, wrong: 0, unknown: 0, wrongIds: [] })
   // 1回の問題数を減らして数え直す前に答えた問題。結果の全問数に含める。
   const carried = useCarriedAnswers()
+  // 答えた問題ごとの記録の控え。前へ戻って選び直したときに入れ替える。
+  const receipts = useAnswerReceipts()
 
   // 途中でやめても、そこまでに答えた分をこの分野の学習記録へ残す。
   const handOffSession = useUnfinishedSessionRecord({
@@ -108,6 +119,8 @@ export function ListeningQuizScreen() {
     [item],
   )
   const answered = selected !== null
+  // 前に答えてから戻ってきた問題は、答えを選び直せる。
+  const reselectable = useRevisitedAnswer(i, answered)
   const answeredIndexes = answeredQuizIndexes(i, selections)
   const isCorrectPick = answered && selected === item?.answer
   const correctChoice = item?.choices.find((choice) => choice.id === item.answer)
@@ -200,22 +213,28 @@ export function ListeningQuizScreen() {
     })
   }
 
+  const resultOf = (choiceId) => (
+    choiceId === UNKNOWN_CHOICE_ID ? 'unknown' : choiceId === item.answer ? 'correct' : 'wrong'
+  )
+
   const choose = (choiceId) => {
-    if (answered) return
+    if (choiceId === selected || (answered && !reselectable)) return
+    const answer = resultOf(choiceId)
+    if (answered) {
+      // 前へ戻って選び直したときは、この問題の最初の答えを置き換える（正解数も記録も二重に数えない）。
+      receipts.set(i, reviseReview(receipts.get(i), answer))
+      reviseQuizTally(results.current, item.id, resultOf(selected), answer)
+      setSelected(choiceId)
+      return
+    }
     setSelected(choiceId)
     setShowTranscript(true)
-    if (choiceId === UNKNOWN_CHOICE_ID) {
-      review(item.id, 'unknown', 'listening')
-      results.current.unknown++
-      results.current.wrongIds.push(item.id)
-    } else if (choiceId === item.answer) {
-      review(item.id, 'correct', 'listening')
-      results.current.correct++
+    receipts.set(i, review(item.id, answer, 'listening'))
+    results.current[answer] += 1
+    if (answer === 'correct') {
       autoAdvanceSequence.current += 1
       setAutoAdvanceSignal(autoAdvanceSequence.current)
     } else {
-      review(item.id, 'wrong', 'listening')
-      results.current.wrong++
       results.current.wrongIds.push(item.id)
     }
   }
@@ -260,6 +279,7 @@ export function ListeningQuizScreen() {
                 // 答えた問題の記録と結果は残したまま、まだ答えていない問題を1問目として数え直す。
                 const next = restartSessionCount(deck, answeredIndexes, i, buildFor(size + deck.length), size)
                 carried.carry(next.answeredItems)
+                receipts.clear()
                 setDeck(next.deck)
                 clearSelections()
                 setPlaysUsed(0)
@@ -422,6 +442,7 @@ export function ListeningQuizScreen() {
           )}
         </div>
 
+        {reselectable && <ReselectNote className="mt-3" />}
         <div className="mt-3 space-y-2.5">
           {options.map((choice, displayIndex) => {
             const correct = choice.id === item.answer
@@ -432,7 +453,8 @@ export function ListeningQuizScreen() {
             return (
               <button
                 key={choice.id}
-                disabled={answered}
+                disabled={answered && !reselectable}
+                aria-pressed={answered ? chosen : undefined}
                 onClick={() => choose(choice.id)}
                 aria-label={hideText ? `第${displayIndex + 1}番を選ぶ` : choice.text}
                 className={cx(
@@ -470,7 +492,7 @@ export function ListeningQuizScreen() {
           })}
           <UnknownChoiceButton
             selected={selected === UNKNOWN_CHOICE_ID}
-            disabled={answered}
+            disabled={answered && !reselectable}
             onClick={() => choose(UNKNOWN_CHOICE_ID)}
           />
         </div>

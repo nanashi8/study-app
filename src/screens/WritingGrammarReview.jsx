@@ -5,12 +5,15 @@ import { getWritingGrammar } from '../data/writing.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { Button, Chip } from '../components/ui.jsx'
+import { StudyAnswerReselect } from '../components/CardStudyControls.jsx'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 import { answeredSessionIndexes, growDeck, restartSessionCount } from '../lib/session.js'
 import {
   nextUnansweredSessionIndex,
   QuestionSessionControls,
+  useAnswerReceipts,
   useIndexedSessionState,
+  useRevisitedAnswer,
 } from '../components/QuestionSessionControls.jsx'
 import {
   ArrowRight,
@@ -48,6 +51,11 @@ export function WritingGrammarReviewScreen() {
     clear: clearRecordedAnswers,
     values: recordedAnswers,
   } = useIndexedSessionState(index)
+  // 答えたカードごとの記録の控え。前へ戻って選び直したとき、最初の答えを置き換える。
+  const receipts = useAnswerReceipts()
+  // 答えたあと戻ってきたカードは、「わかった／もう一度」を選び直せる。
+  const reselectable = useRevisitedAnswer(index, recordedAnswer !== null)
+  const reviseReview = useStore((s) => s.reviseReview)
 
   const item = deck[index]
   const level = item ? getLevel(item.level) : null
@@ -122,8 +130,19 @@ export function WritingGrammarReviewScreen() {
   }
 
   const answer = (result) => {
-    if (recordedAnswer !== null) return
-    review(item.id, result, 'grammar')
+    if (recordedAnswer === result) return
+    if (recordedAnswer !== null) {
+      if (!reselectable) return
+      // 前へ戻って選び直したときは、このカードの最初の答えを置き換える（記録も集計も二重に数えない）。
+      receipts.set(index, reviseReview(receipts.get(index), result))
+      setResults((current) => ({
+        remembered: Math.max(0, current.remembered + (result === 'remembered' ? 1 : -1)),
+        forgot: Math.max(0, current.forgot + (result === 'remembered' ? -1 : 1)),
+      }))
+      setRecordedAnswer(result)
+      return
+    }
+    receipts.set(index, review(item.id, result, 'grammar'))
     setResults((current) => ({
       ...current,
       [result === 'remembered' ? 'remembered' : 'forgot']:
@@ -165,6 +184,7 @@ export function WritingGrammarReviewScreen() {
                 // 答えたカードの記録と結果（わかった・もう一度の数）は残したまま、
                 // まだ答えていないカードを1枚目として数え直す。
                 const next = restartSessionCount(deck, answeredIndexes, index, buildFor(0), size)
+                receipts.clear()
                 setDeck(next.deck)
                 clearRecordedAnswers()
                 moveToCard(0, {})
@@ -235,7 +255,16 @@ export function WritingGrammarReviewScreen() {
       </main>
 
       <div className="border-t border-brand-100 bg-white/92 p-4 pb-4 backdrop-blur">
-        {recordedAnswer !== null ? (
+        {recordedAnswer !== null && reselectable ? (
+          // 答えたあと戻ってきたカード。いまの答えを示したまま、もう一方を押すと選び直せる。
+          <StudyAnswerReselect
+            remembered={recordedAnswer === 'remembered'}
+            onAnswer={(remembered) => answer(remembered ? 'remembered' : 'forgot')}
+            forgotLabel="もう一度"
+            rememberedLabel="わかった"
+            forgotVariant="hint"
+          />
+        ) : recordedAnswer !== null ? (
           <Button
             full
             size="lg"

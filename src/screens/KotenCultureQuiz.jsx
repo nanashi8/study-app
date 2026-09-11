@@ -25,7 +25,10 @@ import { buildKotenCultureInstructorExplanation } from '../lib/instructorExplana
 import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
 import {
   QuestionSessionControls,
+  ReselectNote,
+  useAnswerReceipts,
   useIndexedSessionState,
+  useRevisitedAnswer,
 } from '../components/QuestionSessionControls.jsx'
 
 const ALL_QUESTIONS = 9999 // 在庫数を数えるための十分大きな上限
@@ -35,6 +38,7 @@ export function KotenCultureQuizScreen() {
   const navigate = useStore((state) => state.navigate)
   const returnTo = useStore((state) => state.returnTo)
   const reviewCulture = useStore((state) => state.reviewKotenCulture)
+  const reviseReview = useStore((state) => state.reviseReview)
   const savedIds = useStore((state) => state.kotenCultureList)
   const addSaved = useStore((state) => state.addManyToKotenCultureList)
   const recordQuizResult = useStore((state) => state.recordContentQuizResult)
@@ -60,6 +64,8 @@ export function KotenCultureQuizScreen() {
   const [done, setDone] = useState(false)
   // 1回の問題数を減らして数え直す前に答えた問題。結果の全問数に含める。
   const carried = useCarriedAnswers()
+  // 答えた問題ごとの記録の控え。前へ戻って選び直したときに入れ替える。
+  const receipts = useAnswerReceipts()
 
   const question = deck[index]
   // 教材は4択だが、出題は「3択＋わからない」にそろえる。
@@ -81,6 +87,9 @@ export function KotenCultureQuizScreen() {
   // コンテンツ画面の「戻る」は履歴でなく、古典常識の内容選択画面へ。
   const backToKotenCulture = () => returnTo('kotenCulture')
 
+  // 前に答えてから戻ってきた問題は、答えを選び直せる。
+  const reselectable = useRevisitedAnswer(index, selected !== null)
+
   if (!deck.length) {
     return (
       <div className="flex h-full flex-col items-center justify-center gap-4 p-8 text-center">
@@ -93,6 +102,7 @@ export function KotenCultureQuizScreen() {
 
   const restart = (ids = params.ids) => {
     carried.reset()
+    receipts.clear()
     setDeck(pickKotenCultureQuestions(ids, { size: deck.length || sessionSize }))
     setIndex(0)
     clearSelections()
@@ -102,22 +112,45 @@ export function KotenCultureQuizScreen() {
     setDone(false)
   }
 
+  const resultOf = (choice) => (
+    choice === UNKNOWN_CHOICE_ID ? 'unknown' : choice === question.answer ? 'correct' : 'wrong'
+  )
+
+  // 選び直した問題以外で、まだ間違えたままの問題が持つ項目。見直しリストから外してよいかの判断に使う。
+  const stillWeakIds = () => new Set(Object.entries(selections)
+    .filter(([position, choice]) => (
+      Number(position) !== index && choice !== null && choice !== deck[Number(position)]?.answer
+    ))
+    .flatMap(([position]) => deck[Number(position)]?.cultureIds ?? []))
+
   const choose = (choice) => {
-    if (selected !== null || !primary) return
-    setSelected(choice)
+    if (choice === selected || !primary || (selected !== null && !reselectable)) return
+    const result = resultOf(choice)
     // テストの進み具合は「全112問」に対して数えるので、問題そのものの結果も残す。
-    recordQuizResult('koten-culture', question.id, choice === question.answer ? 1 : 0, 1)
-    if (choice === UNKNOWN_CHOICE_ID) {
-      reviewCulture(primary.id, 'unknown')
-      setUnknownCount((count) => count + 1)
-      setWeakIds((ids) => [...new Set([...ids, ...question.cultureIds])])
-    } else if (choice === question.answer) {
-      reviewCulture(primary.id, 'correct')
+    recordQuizResult('koten-culture', question.id, result === 'correct' ? 1 : 0, 1)
+    if (selected !== null) {
+      // 前へ戻って選び直したときは、この問題の最初の答えを置き換える（正解数も記録も二重に数えない）。
+      const previous = resultOf(selected)
+      receipts.set(index, reviseReview(receipts.get(index), result))
+      setCorrectCount((count) => count + (result === 'correct') - (previous === 'correct'))
+      setUnknownCount((count) => count + (result === 'unknown') - (previous === 'unknown'))
+      if (result === 'correct') {
+        const keep = stillWeakIds()
+        setWeakIds((ids) => ids.filter((id) => !question.cultureIds.includes(id) || keep.has(id)))
+      } else {
+        setWeakIds((ids) => [...new Set([...ids, ...question.cultureIds])])
+      }
+      setSelected(choice)
+      return
+    }
+    setSelected(choice)
+    receipts.set(index, reviewCulture(primary.id, result))
+    if (result === 'correct') {
       setCorrectCount((count) => count + 1)
       autoAdvanceSequence.current += 1
       setAutoAdvanceSignal(autoAdvanceSequence.current)
     } else {
-      reviewCulture(primary.id, 'wrong')
+      if (result === 'unknown') setUnknownCount((count) => count + 1)
       setWeakIds((ids) => [...new Set([...ids, ...question.cultureIds])])
     }
   }
@@ -206,6 +239,7 @@ export function KotenCultureQuizScreen() {
                 // 答えた問題の記録と結果は残したまま、まだ答えていない問題を1問目として数え直す。
                 const next = restartSessionCount(deck, answeredIndexes, index, pickKotenCultureQuestions(params.ids, { size: size + deck.length }), size)
                 carried.carry(next.answeredItems)
+                receipts.clear()
                 setDeck(next.deck)
                 clearSelections()
                 setIndex(0)
@@ -244,6 +278,7 @@ export function KotenCultureQuizScreen() {
         </section>
 
         <div className="mt-4 space-y-2.5">
+          {reselectable && <ReselectNote />}
           {choices.map((choice, choiceIndex) => {
             const correct = choice === question.answer
             const chosen = selected === choice
@@ -256,7 +291,8 @@ export function KotenCultureQuizScreen() {
             return (
               <button
                 key={choice}
-                disabled={answered}
+                disabled={answered && !reselectable}
+                aria-pressed={answered ? selected === choice : undefined}
                 onClick={() => choose(choice)}
                 className={cx(
                   'flex w-full items-start gap-3 rounded-2xl border-2 px-4 py-3.5 text-left transition-all',
@@ -282,7 +318,7 @@ export function KotenCultureQuizScreen() {
           })}
           <UnknownChoiceButton
             selected={unknownPick}
-            disabled={answered}
+            disabled={answered && !reselectable}
             onClick={() => choose(UNKNOWN_CHOICE_ID)}
           />
         </div>
