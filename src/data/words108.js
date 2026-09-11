@@ -7,7 +7,7 @@ const RAW = [
   ['estate', '名', 'pre1', '地所・財産・私有地', "The family's estate includes a large house and a forest.", 'その一家の地所には、大きな家と森がある。', '古フランス estat(状態)→ state と同系。', { syn: [{ w: 'property', m: '不動産' }, { w: 'manor', m: '荘園' }], field: 'ビジネス' }],
   ['fare', '名', '3', '運賃・料金', 'How much is the bus fare to the next town?', '隣町までのバス運賃はいくらですか？', '古英語 faru(旅)→ far と同系。', { syn: [{ w: 'fee', m: '料金' }, { w: 'charge', m: '料金' }], field: '交通' }],
   ['feast', '名', '2', '祝宴・ごちそう・満喫する', 'The whole village was invited to the wedding feast.', '村じゅうの人が婚礼の祝宴に招かれた。', 'ラテン festus(祝祭の)→ festival と同系。', { syn: [{ w: 'banquet', m: '宴会' }, { w: 'celebration', m: '祝宴' }], ant: [{ w: 'famine', m: '飢饉' }], field: '社会' }],
-  ['fellow', '名', 'pre1', '仲間・同輩・男・特別研究員', 'a fellow worker', '仕事仲間', '古英語 feolaga(共同出資者)。', { syn: [{ w: 'companion', m: '仲間' }, { w: 'colleague', m: '同僚' }], ant: [{ w: 'stranger', m: '見知らぬ人' }], field: '社会' }],
+  ['fellow', '名', 'pre1', '仲間・同輩・男・特別研究員', 'He is a friendly fellow who talks to everyone.', '彼はだれにでも話しかける人なつこい男だ。', '古英語 feolaga(共同出資者)。', { syn: [{ w: 'companion', m: '仲間' }, { w: 'colleague', m: '同僚' }], ant: [{ w: 'stranger', m: '見知らぬ人' }], field: '社会' }],
   ['fence', '名', '3', '柵・塀・フェンシングをする', 'Our dog jumped over the fence and ran into the street.', 'うちの犬が柵を跳び越えて、通りに走り出た。', 'defense(防御)の短縮。', { syn: [{ w: 'barrier', m: '障壁' }, { w: 'railing', m: '手すり' }], field: '一般' }],
   ['filter', '名', '2', 'フィルター・濾過する', 'We use a water filter to remove chlorine from tap water.', '私たちは水道水から塩素を取り除くために浄水フィルターを使っている。', 'ラテン filtrum(フェルト)。', { syn: [{ w: 'strainer', m: 'こし器' }, { w: 'sieve', m: 'ふるい' }], fam: [{ w: 'filtration', m: '濾過' }], field: '技術' }],
   ['fist', '名', '3', 'こぶし・げんこつ', 'Our captain raised his fist in the air when we won.', '私たちが勝ったとき、キャプテンはこぶしを突き上げた。', '古英語 fyst(こぶし)。', { syn: [{ w: 'knuckle', m: '指関節' }], ant: [{ w: 'palm', m: '手のひら' }], field: '一般' }],
@@ -34,12 +34,12 @@ const RAW = [
   ['heel', '名', '3', 'かかと・(靴の)ヒール', 'My new shoes hurt my heels after a long walk.', '長く歩いたら、新しい靴のせいでかかとが痛くなった。', '古英語 hela(かかと)。', { syn: [{ w: 'back of the foot', m: '足の後部' }], ant: [{ w: 'toe', m: 'つま先' }], field: '一般' }],
   ['herd', '名', '2', '群れ・群衆・追い集める', 'A herd of cows was blocking the country road.', '牛の群れが田舎道をふさいでいた。', '古英語 heord(群れ)。', { syn: [{ w: 'flock', m: '(羊などの)群れ' }, { w: 'drove', m: '家畜の群れ' }], field: '科学' }],
   ['hive', '名', '2', 'ミツバチの巣・密集地', 'The beekeeper wore gloves when she opened the hive.', '養蜂家は、ミツバチの巣箱を開けるときに手袋をはめた。', '古英語 hyf(巣箱)。', { syn: [{ w: 'colony', m: '集団' }, { w: 'nest', m: '巣' }], field: '科学' }],
-  ['hoist', '動', 'pre1', '巻き上げる・掲げる', 'hoist the flag', '旗を掲げる', '中世オランダ hijsen(引き上げる)。', { syn: [{ w: 'lift', m: '持ち上げる' }, { w: 'raise', m: '上げる' }], ant: [{ w: 'lower', m: '下ろす' }], field: '一般' }],
+  ['hoist', '動', 'pre1', '巻き上げる・掲げる', 'At the start of sports day, two students hoisted the school flag.', '運動会の始めに、2人の生徒が校旗を掲げた。', '中世オランダ hijsen(引き上げる)。', { syn: [{ w: 'lift', m: '持ち上げる' }, { w: 'raise', m: '上げる' }], ant: [{ w: 'lower', m: '下ろす' }], field: '一般' }],
   ['homeland', '名', '2', '祖国・故国', 'After the war ended, many refugees returned to their homeland.', '戦争が終わると、多くの難民が祖国へ帰った。', 'home(家)+land(土地)。', { syn: [{ w: 'motherland', m: '母国' }, { w: 'native land', m: '故郷' }], ant: [{ w: 'abroad', m: '外国' }], field: '社会' }],
   ['hook', '名', '3', 'フック・かぎ・引っかける', 'Hang your coat on the hook by the door.', 'ドアのそばのフックにコートを掛けてね。', '古英語 hoc(かぎ)。', { syn: [{ w: 'peg', m: '掛けくぎ' }, { w: 'clasp', m: '留め金' }], field: '一般' }],
   ['hose', '名', '2', 'ホース・水をまく', 'We watered the vegetable garden with a long hose.', '私たちは長いホースで家庭菜園に水をまいた。', '古英語 hosa(覆い)。', { syn: [{ w: 'tube', m: '管' }, { w: 'pipe', m: 'パイプ' }], field: '技術' }],
   ['hum', '動', '3', '鼻歌を歌う・ブンブンいう', 'Kate hums her favorite song while she washes the dishes.', 'ケイトは皿を洗いながら、お気に入りの歌を鼻歌で歌う。', '擬音語(中英語)。', { syn: [{ w: 'buzz', m: 'ブンブンいう' }, { w: 'murmur', m: 'つぶやく' }], field: '音楽' }],
-  ['hymn', '名', 'pre1', '賛美歌・聖歌', 'sing a hymn', '賛美歌を歌う', 'ギリシャ hymnos(神への歌)。', { syn: [{ w: 'anthem', m: '聖歌' }, { w: 'psalm', m: '詩編' }], field: '宗教' }],
+  ['hymn', '名', 'pre1', '賛美歌・聖歌', 'The choir opened the Christmas concert with a hymn.', '合唱団は賛美歌でクリスマスコンサートの幕を開けた。', 'ギリシャ hymnos(神への歌)。', { syn: [{ w: 'anthem', m: '聖歌' }, { w: 'psalm', m: '詩編' }], field: '宗教' }],
 ]
 
 export const WORDS_MORE107 = RAW.map(expandCompact)

@@ -44,9 +44,9 @@ test('問題別解説と選択肢別根拠を混同せず、記録済み台帳�
   assert.equal(ledger.extendedReadingDetail.targetVocabularyCount, 1_484)
   assert.equal(ledger.extendedReadingDetail.baselineCoveredVocabulary, 1_958)
   assert.equal(ledger.extendedReadingDetail.baselineCoveragePercent, 22.12)
-  assert.equal(ledger.extendedReadingDetail.combinedCoveredVocabulary, 3_950)
-  assert.equal(ledger.extendedReadingDetail.combinedCoveragePercent, 44.63)
-  assert.equal(ledger.extendedReadingDetail.coverageGain, 1_992)
+  assert.equal(ledger.extendedReadingDetail.combinedCoveredVocabulary, 3_951)
+  assert.equal(ledger.extendedReadingDetail.combinedCoveragePercent, 44.64)
+  assert.equal(ledger.extendedReadingDetail.coverageGain, 1_993)
   assert.equal(ledger.extendedReadingDetail.unresolvedExtendedTokenCount, 0)
   assert.deepEqual(ledger.extendedReadingDetail.practiceTypeCounts, {
     'word-order': 4,

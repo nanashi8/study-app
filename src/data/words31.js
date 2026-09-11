@@ -23,15 +23,15 @@ const RAW = [
   ['rectify', '動', '1', '是正する・正す', 'We must rectify the error.', '私たちはその誤りを正さねば。', 'ラテン rectus(正しい)+facere(する)→ correct と同系。', { syn: [{ w: 'correct', m: '直す' }, { w: 'fix', m: '修正する' }], field: '動作・行為' }],
   ['overhaul', '動', '1', '徹底的に見直す・分解修理する', 'They overhauled the engine.', '彼らはエンジンを分解修理した。', 'over(すっかり)+haul(引く)。', { syn: [{ w: 'revamp', m: '刷新する' }, { w: 'renovate', m: '改修する' }], field: '動作・行為' }],
   // 抽象名詞
-  ['onset', '名', '1', '始まり・発症', 'the onset of winter', '冬の到来', 'on+set(始まる)。', { syn: [{ w: 'beginning', m: '始まり' }, { w: 'start', m: '開始' }], ant: [{ w: 'end', m: '終わり' }], field: '一般' }],
+  ['onset', '名', '1', '始まり・発症', 'With the onset of winter, the village roads are often closed by snow.', '冬の始まりとともに、その村の道はしばしば雪で通行止めになる。', 'on+set(始まる)。', { syn: [{ w: 'beginning', m: '始まり' }, { w: 'start', m: '開始' }], ant: [{ w: 'end', m: '終わり' }], field: '一般' }],
   ['culmination', '名', '1', '頂点・最高潮', 'It was the culmination of years of work.', 'それは長年の努力の集大成だった。', 'ラテン culmen(頂上)。', { syn: [{ w: 'climax', m: '最高潮' }, { w: 'peak', m: '頂点' }], field: '一般' }],
   ['climax', '名', 'pre1', '最高潮・クライマックス', 'The story reaches its climax here.', '物語はここで最高潮に達する。', 'ギリシャ klimax(はしご)。', { syn: [{ w: 'peak', m: '頂点' }, { w: 'culmination', m: '集大成' }], ant: [{ w: 'anticlimax', m: '尻すぼみ' }], field: '芸術' }],
-  ['brink', '名', '1', '瀬戸際・縁', 'on the brink of war', '戦争の瀬戸際で', '中低ドイツ語 brink(縁)。', { syn: [{ w: 'verge', m: '間際' }, { w: 'edge', m: '縁' }], field: '一般' }],
+  ['brink', '名', '1', '瀬戸際・縁', 'The small bakery was on the brink of closing until the town helped it.', 'その小さなパン屋は、町が支援するまで閉店の瀬戸際にあった。', '中低ドイツ語 brink(縁)。', { syn: [{ w: 'verge', m: '間際' }, { w: 'edge', m: '縁' }], field: '一般' }],
   ['verge', '名', '1', '間際・縁', 'She was on the verge of tears.', '彼女は今にも泣きそうだった。', 'ラテン virga(小枝・棒)。', { syn: [{ w: 'brink', m: '瀬戸際' }, { w: 'edge', m: '縁' }], field: '一般' }],
   ['span', '名', 'pre1', '期間・幅・及ぶ(動)', 'Ken read five long books in the short span of a week.', '健はわずか1週間という短い期間で、長い本を5冊読んだ。', '古英語 spann(手の幅)。', { syn: [{ w: 'period', m: '期間' }, { w: 'range', m: '範囲' }], field: '測定' }],
   ['duration', '名', 'pre1', '持続時間・期間', 'The main street is closed to cars for the duration of the festival.', '祭りの期間中、大通りは車の通行が禁止される。', 'ラテン durare(続く)→ during と同源。', { syn: [{ w: 'period', m: '期間' }], field: '測定' }],
   ['inclination', '名', '1', '傾向・好み・傾斜', 'She has an inclination to help.', '彼女は人を助ける傾向がある。', 'ラテン in+clinare(傾く)→ incline と同源。', { syn: [{ w: 'tendency', m: '傾向' }, { w: 'preference', m: '好み' }], field: '心理' }],
-  ['propensity', '名', '1', '傾向・性癖', 'a propensity for risk', 'リスクを好む性向', 'ラテン pro+pendere(傾く)→ pend と同系。', { syn: [{ w: 'tendency', m: '傾向' }, { w: 'inclination', m: '性向' }], field: '心理' }],
+  ['propensity', '名', '1', '傾向・性癖', 'My little brother has a propensity to exaggerate when he tells stories.', '弟は話をするときに大げさに言う傾向がある。', 'ラテン pro+pendere(傾く)→ pend と同系。', { syn: [{ w: 'tendency', m: '傾向' }, { w: 'inclination', m: '性向' }], field: '心理' }],
   ['aptitude', '名', '1', '素質・適性', 'She has an aptitude for math.', '彼女は数学の素質がある。', 'ラテン aptus(適した)→ apt と同系。', { syn: [{ w: 'talent', m: '才能' }, { w: 'ability', m: '能力' }], field: '心理' }],
   // 上級形容詞
   ['convoluted', '形', '1', '入り組んだ・難解な', 'The plot was convoluted.', '筋が入り組んでいた。', 'ラテン con+volvere(巻く)→ revolve と同系。', { syn: [{ w: 'complicated', m: 'ややこしい' }], ant: [{ w: 'straightforward', m: '分かりやすい' }], field: '性質・状態' }],
@@ -47,7 +47,7 @@ const RAW = [
   ['sturdy', '形', 'pre1', '頑丈な・たくましい', 'It is a sturdy table.', 'それは頑丈な机だ。', '古フランス estourdi(向こう見ずな)。', { syn: [{ w: 'strong', m: '丈夫な' }, { w: 'robust', m: '頑健な' }], ant: [{ w: 'flimsy', m: 'もろい' }], field: '性質・状態' }],
   ['flimsy', '形', '1', '薄っぺらな・もろい・説得力のない', 'It was a flimsy excuse.', 'それは見え透いた言い訳だった。', '由来不確か(18世紀)。', { syn: [{ w: 'weak', m: '弱い' }, { w: 'feeble', m: '貧弱な' }], ant: [{ w: 'sturdy', m: '頑丈な' }], field: '性質・状態' }],
   ['bleak', '形', '1', '暗い・荒涼とした・わびしい', 'The future looks bleak.', '将来は暗そうだ。', '古ノルド bleikr(青白い)→ bleach と同系。', { syn: [{ w: 'gloomy', m: '陰気な' }, { w: 'dismal', m: '陰うつな' }], ant: [{ w: 'bright', m: '明るい' }], field: '性質・状態' }],
-  ['serene', '形', '1', '穏やかな・静かな', 'a serene lake at dawn', '夜明けの静かな湖', 'ラテン serenus(澄んだ)。', { syn: [{ w: 'calm', m: '穏やかな' }], ant: [{ w: 'turbulent', m: '荒れた' }], field: '性質・状態' }],
+  ['serene', '形', '1', '穏やかな・静かな', 'The lake looked serene in the early morning mist.', '早朝の霧の中で、湖は穏やかで静かに見えた。', 'ラテン serenus(澄んだ)。', { syn: [{ w: 'calm', m: '穏やかな' }], ant: [{ w: 'turbulent', m: '荒れた' }], field: '性質・状態' }],
   // 接続副詞
   ['thereby', '副', '1', 'それによって', 'He saved money, thereby retiring early.', '彼は貯金し、それで早く引退した。', 'there(それ)+by(によって)。', { syn: [{ w: 'thus', m: 'こうして' }], field: '副詞' }],
   ['henceforth', '副', '1', '今後は', 'Henceforth, the rule applies.', '今後この規則が適用される。', 'hence(今から)+forth(先へ)。', { syn: [{ w: 'from now on', m: '今後' }], field: '副詞' }],

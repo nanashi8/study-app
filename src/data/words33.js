@@ -20,8 +20,8 @@ const RAW = [
   ['beckon', '動', '1', '手招きする・誘う', 'He beckoned me to come.', '彼は私に来るよう手招きした。', '古英語 bīecnan(合図する)→ beacon と同系。', { syn: [{ w: 'signal', m: '合図する' }, { w: 'wave', m: '手で招く' }], field: '動作・行為' }],
   // 抽象名詞
   ['scarcity', '名', '1', '不足・欠乏', 'There is a scarcity of water.', '水の不足がある。', 'scarce(乏しい)+ -ity。', { syn: [{ w: 'shortage', m: '不足' }, { w: 'lack', m: '欠乏' }], ant: [{ w: 'abundance', m: '豊富' }], field: '経済' }],
-  ['abundance', '名', '1', '豊富・多量', 'an abundance of food', 'あり余る食料', 'ラテン abundare(あふれる)→ abundant と同源。', { syn: [{ w: 'plenty', m: 'たくさん' }], ant: [{ w: 'scarcity', m: '不足' }], field: '一般' }],
-  ['excess', '名', '1', '過剰・超過', 'an excess of sugar', '過剰な砂糖', 'ラテン ex+cedere(越える)→ cess と同源。', { syn: [{ w: 'surplus', m: '余剰' }], ant: [{ w: 'shortage', m: '不足' }], field: '一般' }],
+  ['abundance', '名', '1', '豊富・多量', 'The forest provides an abundance of food for bears in autumn.', '秋になると、その森はクマに豊富な食べ物を与えてくれる。', 'ラテン abundare(あふれる)→ abundant と同源。', { syn: [{ w: 'plenty', m: 'たくさん' }], ant: [{ w: 'scarcity', m: '不足' }], field: '一般' }],
+  ['excess', '名', '1', '過剰・超過', 'An excess of salt in your diet can raise your blood pressure.', '食事の塩分が過剰だと、血圧が上がることがある。', 'ラテン ex+cedere(越える)→ cess と同源。', { syn: [{ w: 'surplus', m: '余剰' }], ant: [{ w: 'shortage', m: '不足' }], field: '一般' }],
   ['magnitude', '名', '1', '大きさ・重大さ', 'The mayor only realized the magnitude of the flood damage from the air.', '市長は上空から見て初めて、洪水の被害の大きさを実感した。', 'ラテン magnus(大きい)→ magnify と同系。', { syn: [{ w: 'size', m: '大きさ' }, { w: 'scale', m: '規模' }], field: '測定' }],
   ['intensity', '名', '1', '強さ・激しさ', 'The intensity of the storm forced the ferry to stay in port.', '嵐の激しさのため、フェリーは港にとどまらざるをえなかった。', 'intense(激しい)+ -ity→ tend と同系。', { syn: [{ w: 'strength', m: '強さ' }, { w: 'force', m: '力' }], field: '測定' }],
   ['dignity', '名', '1', '尊厳・威厳', 'She faced it with dignity.', '彼女は威厳をもって立ち向かった。', 'ラテン dignus(価値ある)→ deign と同系。', { syn: [{ w: 'honor', m: '名誉' }], field: '社会' }],

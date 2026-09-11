@@ -78,7 +78,7 @@ const RAW = [
   ["abate","動","1","弱まる・和らぐ","The storm finally abated.","嵐はついに収まった。","古フランス abatre(打ち倒す)→勢いを落とす→「弱まる」。",{"field":"動作・行為"}],
   ["abstain","動","1","控える・棄権する","He abstained from drinking.","彼は飲酒を控えた。",{"parts":[{"t":"abs","kind":"prefix","gloss":"離れて"},{"t":"tain","kind":"root","gloss":"保つ","root":"tain"}],"note":"手を離して(abs)おく(tain)→「控える」。"},{"field":"動作・行為"}],
   ["adhere","動","1","固執する・付着する","We must adhere to the plan.","私たちは計画を守らねばならない。","ラテン ad(〜に)+haerere(くっつく)→「固執する」。coherent と同源。",{"field":"動作・行為"}],
-  ["advent","名","1","出現・到来","the advent of the internet","インターネットの出現",{"parts":[{"t":"ad","kind":"prefix","gloss":"〜へ"},{"t":"vent","kind":"root","gloss":"来る","root":"vent"}],"note":"こちらへ(ad)やって来ること(vent)→「出現・到来」。"},{"field":"一般"}],
+  ["advent","名","1","出現・到来","The advent of smartphones changed the way people take photos.","スマートフォンの出現は、人々の写真の撮り方を変えた。",{"parts":[{"t":"ad","kind":"prefix","gloss":"〜へ"},{"t":"vent","kind":"root","gloss":"来る","root":"vent"}],"note":"こちらへ(ad)やって来ること(vent)→「出現・到来」。"},{"field":"一般"}],
   ["adversary","名","1","敵・対戦相手","He defeated his adversary.","彼は敵を打ち負かした。",{"parts":[{"t":"ad","kind":"prefix","gloss":"〜に向かって"},{"t":"vers","kind":"root","gloss":"向ける","root":"vers"},{"t":"ary","kind":"suffix","gloss":"〜する人"}],"note":"敵対して(ad)向かってくる(vers)者→「敵」。"},{"field":"一般"}],
   ["aesthetic","形","1","美的な","The design has aesthetic value.","そのデザインは美的価値がある。","ギリシャ aisthesis(感覚)→美を感じる→「美的な」。",{"field":"性質・状態"}],
   ["affinity","名","1","親近感・親和性","I feel an affinity with her.","私は彼女に親近感を覚える。","ラテン ad(〜に)+finis(境界)→境を接する→「親近感」。final と同源。",{"field":"一般"}],
