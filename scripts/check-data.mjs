@@ -165,6 +165,7 @@ import { HOMOGRAPH_SEPARATE_SENSES } from '../src/data/homographs.js'
 import { KNOWN_DUPLICATE_FORMS, PLURAL_ONLY_SENSES, singularCandidates } from '../src/data/duplicate-forms.js'
 import { MATH_PROBLEMS, MATH_UNITS } from '../src/data/math.js'
 import { WRITING_EXAM_QUESTIONS } from '../src/data/writing-exam.js'
+import { PASSAGE_DICTIONARY_WORD_IDS } from '../src/data/reading-words.js'
 
 const LEVELS = new Set(['5', '4', '3', 'pre2', '2', 'pre1', '1'])
 const READING_LEVELS = new Set(['5', '4', '3', 'pre2', 'pre2plus', '2', 'pre1', '1'])
@@ -239,6 +240,39 @@ const exampleShowsHeadword = (word, example) => {
   return sentence.some((token) => forms.has(token))
 }
 
+// 例文は、その語が使われる場面を一文で見せる。`a loquacious guide` のような句や
+// `Thus, we conclude that...` のような言いさしでは、どう使う語なのかが伝わらない。
+// 略語の点（Mr. / Mt. / a.m.）では文を区切らない。
+const WORD_EXAMPLE_ABBREVIATION = /(?:^|\s)(?:Mr|Mrs|Ms|Dr|St|Mt|Jr|Sr|No|vs|etc|a\.m|p\.m|U\.S|U\.K|e\.g|i\.e)\.$/
+const englishSentenceCount = (text) => {
+  let count = 0
+  let pending = ''
+  for (const part of String(text ?? '').split(/(?<=[.!?]["'”’)]*)\s+(?=["'“‘(]*[A-Z0-9])/)) {
+    pending = pending ? `${pending} ${part}` : part
+    if (WORD_EXAMPLE_ABBREVIATION.test(pending)) continue
+    count += 1
+    pending = ''
+  }
+  return pending ? count + 1 : count
+}
+// 長文辞書語（reading-words.js）は本文の一文と本文の和訳をそのまま引くので、
+// 本文の和訳が2文に分かれていても和訳の一文検査からは外す（英文は一文）。
+const PASSAGE_DICTIONARY_IDS = new Set(PASSAGE_DICTIONARY_WORD_IDS)
+const auditWordExampleSentence = (label, example, { quotesPassage = false } = {}) => {
+  const en = String(example?.en ?? '')
+  const ja = String(example?.ja ?? '')
+  if (!/^[("'“‘]*[A-Z0-9]/.test(en) || !/[.!?]["'”’)]*$/.test(en)) {
+    errors.push(`${label}が句のまま（大文字で始まり . ? ! で終わる一文にする） (${en})`)
+  } else if (englishSentenceCount(en) !== 1) {
+    errors.push(`${label}が一文ではない (${en})`)
+  }
+  if (/\.{3}|…/.test(`${en}${ja}`)) errors.push(`${label}が言いさしで終わる (${en} / ${ja})`)
+  if (!/[。？！]$/.test(ja)) errors.push(`${label}の和訳が文の形で終わらない (${ja})`)
+  else if (!quotesPassage && /[。？！](?=.)/.test(ja.replace(/「[^」]*」/g, '「」'))) {
+    errors.push(`${label}の和訳が一文ではない (${ja})`)
+  }
+}
+
 // ── 単語：id, word, pos, level, meaning, meanings, example(en/ja), etymology, phonetic(IPA) ──
 for (const w of ALL_WORDS) {
   const at = w.id || w.word || '?'
@@ -310,6 +344,7 @@ for (const w of ALL_WORDS) {
   if (!exampleShowsHeadword(w.word, w.example?.en)) {
     errors.push(`${at}: 例文に見出し語が現れない (${w.example?.en})`)
   }
+  auditWordExampleSentence(`${at}: 例文`, w.example, { quotesPassage: PASSAGE_DICTIONARY_IDS.has(w.id) })
   // 先頭語義はテストの答えであり、カードの品詞バッジが指す意味でもある。
   // ここに (名)(動) のような別品詞の注記が付くと、答えと品詞が食い違う。
   if (/[（(](名|動|形|副|前|接|代)[）)]/.test(w.meanings?.[0] ?? '')) {
@@ -336,6 +371,8 @@ for (const w of ALL_WORDS) {
     senseKeys.add(key)
     if (sense?.example && (!sense.example.en?.trim() || !sense.example.ja?.trim())) {
       errors.push(`${where} の例文(en/ja) が片方だけ`)
+    } else if (sense?.example) {
+      auditWordExampleSentence(`${where} の例文`, sense.example)
     }
     // 由来がちがう同綴り語は「同じつづりの別の語」として分けて出すため、
     // なぜ別の語なのかを必ず添える。
