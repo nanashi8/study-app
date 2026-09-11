@@ -221,7 +221,7 @@ test('マイ単語はほかの単語帳と同じ1冊で、どの冊もマイ学�
   assert.match(detail, /単語帳に入れる/)
   assert.doesNotMatch(detail, /マイ単語リストに保存|マイ単語帳に入れる/)
 
-  // 単語画面のショートカットは「今日の復習」の右隣で、単語帳を選んで学ぶ。冊数だけを示す。
+  // 単語画面の単語帳の入口は「今日の学習」の下、10分野・語源と並ぶ選び方の1つで、単語帳を選んで学ぶ。冊数だけを示す。
   assert.match(levels, /<WordBookStudySheet/)
   assert.match(levels, /data-vocab-word-books-shortcut/)
   assert.match(levels, /\{wordBookCount\}冊\n/)
