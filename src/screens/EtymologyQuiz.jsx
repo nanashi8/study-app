@@ -9,7 +9,10 @@ import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
 import {
   QuestionSessionControls,
+  ReselectNote,
+  useAnswerReceipts,
   useIndexedSessionState,
+  useRevisitedAnswer,
 } from '../components/QuestionSessionControls.jsx'
 import { ArrowRight, Check, Close } from '../components/Icons.jsx'
 import { cx } from '../components/ui.jsx'
@@ -35,6 +38,7 @@ export function EtymologyQuizScreen() {
   const navigate = useStore((state) => state.navigate)
   const returnTo = useStore((state) => state.returnTo)
   const reviewEtymology = useStore((state) => state.reviewEtymology)
+  const reviseReview = useStore((state) => state.reviseReview)
 
   const poolSize = (params.ids ?? []).length
   const sessionSize = useSessionSize(poolSize || Infinity)
@@ -52,6 +56,8 @@ export function EtymologyQuizScreen() {
   const [done, setDone] = useState(false)
   // 1回の問題数を減らして数え直す前に答えた問題。結果の全問数に含める。
   const carried = useCarriedAnswers()
+  // 答えた問題ごとの記録の控え。前へ戻って選び直したときに入れ替える。
+  const receipts = useAnswerReceipts()
 
   const card = deck[index]
   const question = useMemo(
@@ -67,6 +73,9 @@ export function EtymologyQuizScreen() {
     ? returnTo(params.returnTo.screen, params.returnTo.params ?? {})
     : back())
 
+  // 前に答えてから戻ってきた問題は、答えを選び直せる。
+  const reselectable = useRevisitedAnswer(index, selected !== null)
+
   if (!deck.length || !question) {
     return (
       <div className="flex h-full flex-col items-center justify-center gap-4 p-8 text-center">
@@ -79,6 +88,7 @@ export function EtymologyQuizScreen() {
 
   const restart = () => {
     carried.reset()
+    receipts.clear()
     setDeck(buildQuizDeck(params.ids, deck.length))
     setIndex(0)
     clearSelections()
@@ -108,18 +118,26 @@ export function EtymologyQuizScreen() {
   const answeredIndexes = answeredQuizIndexes(index, selections)
   const isCorrectPick = answered && selected === question.answerId
 
+  const resultOf = (optionId) => (
+    optionId === UNKNOWN_CHOICE_ID ? 'unknown' : optionId === question.answerId ? 'correct' : 'wrong'
+  )
+
   const choose = (optionId) => {
-    if (answered) return
+    if (optionId === selected || (answered && !reselectable)) return
+    const result = resultOf(optionId)
+    if (answered) {
+      // 前へ戻って選び直したときは、この問題の最初の答えを置き換える（正解数も記録も二重に数えない）。
+      receipts.set(index, reviseReview(receipts.get(index), result))
+      setCorrectCount((count) => count + (result === 'correct') - (resultOf(selected) === 'correct'))
+      setSelected(optionId)
+      return
+    }
     setSelected(optionId)
-    if (optionId === UNKNOWN_CHOICE_ID) {
-      reviewEtymology(card.id, 'unknown')
-    } else if (optionId === question.answerId) {
-      reviewEtymology(card.id, 'correct')
+    receipts.set(index, reviewEtymology(card.id, result))
+    if (result === 'correct') {
       setCorrectCount((count) => count + 1)
       autoAdvanceSequence.current += 1
       setAutoAdvanceSignal(autoAdvanceSequence.current)
-    } else {
-      reviewEtymology(card.id, 'wrong')
     }
   }
 
@@ -153,6 +171,7 @@ export function EtymologyQuizScreen() {
                 // 答えた問題の記録と結果は残したまま、まだ答えていない問題を1問目として数え直す。
                 const next = restartSessionCount(deck, answeredIndexes, index, buildQuizDeck(params.ids, size + deck.length), size)
                 carried.carry(next.answeredItems)
+                receipts.clear()
                 setDeck(next.deck)
                 clearSelections()
                 setIndex(0)
@@ -179,6 +198,7 @@ export function EtymologyQuizScreen() {
         </div>
 
         <div className="mt-4 space-y-2.5">
+          {reselectable && <ReselectNote />}
           {options.map((option) => {
             const correct = option.id === question.answerId
             const chosen = selected === option.id
@@ -187,7 +207,8 @@ export function EtymologyQuizScreen() {
             return (
               <button
                 key={option.id}
-                disabled={answered}
+                disabled={answered && !reselectable}
+                aria-pressed={answered ? selected === option.id : undefined}
                 onClick={() => choose(option.id)}
                 className={cx(
                   'flex w-full items-center gap-3 rounded-2xl border-2 px-4 py-3.5 text-left font-bold transition-all',
@@ -205,7 +226,7 @@ export function EtymologyQuizScreen() {
           })}
           <UnknownChoiceButton
             selected={selected === UNKNOWN_CHOICE_ID}
-            disabled={answered}
+            disabled={answered && !reselectable}
             onClick={() => choose(UNKNOWN_CHOICE_ID)}
           />
         </div>

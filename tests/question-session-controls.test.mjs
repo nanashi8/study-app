@@ -217,7 +217,8 @@ test('戻って見直した回答を二重計上せず、やり直し時だけ�
 test('英文法の並び替えは途中の語順も問題別に復元する', () => {
   const source = read('src/screens/GrammarQuiz.jsx')
   assert.match(source, /useIndexedSessionState\(i, EMPTY_ORDER_DRAFT\)/)
-  assert.match(source, /initialText=\{orderDraft\.text\}/)
+  // 前へ戻って並べ直している間は空から並べ、答え合わせまでは前の答え（orderDraft）を残す。
+  assert.match(source, /initialText=\{rearranging \? '' : orderDraft\.text\}/)
   assert.match(source, /clearOrderDrafts\(\)/)
 })
 

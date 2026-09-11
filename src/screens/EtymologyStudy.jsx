@@ -4,12 +4,18 @@ import { getEtymologyPack, getWord } from '../data/vocab.js'
 import { Button } from '../components/ui.jsx'
 import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
 import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
-import { CardStudyFooter, CardSwipeRegion } from '../components/CardStudyControls.jsx'
+import {
+  CardStudyFooter,
+  CardSwipeRegion,
+  StudyAnswerReselect,
+} from '../components/CardStudyControls.jsx'
 import { answeredSessionIndexes, growDeck, restartSessionCount } from '../lib/session.js'
 import {
   nextUnansweredSessionIndex,
   QuestionSessionControls,
+  useAnswerReceipts,
   useIndexedSessionState,
+  useRevisitedAnswer,
 } from '../components/QuestionSessionControls.jsx'
 import { ArrowRight, Book, Lightbulb } from '../components/Icons.jsx'
 
@@ -50,6 +56,11 @@ export function EtymologyStudyScreen() {
     clear: clearRecordedAnswers,
     values: recordedAnswers,
   } = useIndexedSessionState(index)
+  // 答えたカードごとの記録の控え。前へ戻って選び直したとき、最初の答えを置き換える。
+  const receipts = useAnswerReceipts()
+  // 答えたあと戻ってきたカードは、「覚えた／まだ」を選び直せる。
+  const reselectable = useRevisitedAnswer(index, recordedAnswer !== null)
+  const reviseReview = useStore((state) => state.reviseReview)
   // 1回の数を減らして数え直す前に答えたカード。結果の全枚数に含める。
   const carried = useCarriedAnswers()
 
@@ -70,6 +81,7 @@ export function EtymologyStudyScreen() {
   }
 
   const restart = () => {
+    receipts.clear()
     carried.reset()
     setDeck(buildEtymologyCardDeck(params.ids, deck.length, params.preserveOrder))
     setIndex(0)
@@ -85,8 +97,17 @@ export function EtymologyStudyScreen() {
   }
 
   const answer = (ok) => {
-    if (recordedAnswer !== null) return
-    reviewEtymology(card.id, ok ? 'remembered' : 'forgot')
+    if (recordedAnswer === ok) return
+    const result = ok ? 'remembered' : 'forgot'
+    if (recordedAnswer !== null) {
+      if (!reselectable) return
+      // 前へ戻って選び直したときは、このカードの最初の答えを置き換える（記録も集計も二重に数えない）。
+      receipts.set(index, reviseReview(receipts.get(index), result))
+      setRemembered((count) => count + (ok ? 1 : -1))
+      setRecordedAnswer(ok)
+      return
+    }
+    receipts.set(index, reviewEtymology(card.id, result))
     if (ok) setRemembered((count) => count + 1)
     const nextAnswers = { ...recordedAnswers, [index]: ok }
     setRecordedAnswer(ok)
@@ -139,6 +160,7 @@ export function EtymologyStudyScreen() {
                 // 答えたカードの記録と結果は残したまま、まだ答えていないカードを1枚目として数え直す。
                 const next = restartSessionCount(deck, answeredIndexes, index, buildEtymologyCardDeck(params.ids, 0, params.preserveOrder), size)
                 carried.carry(next.answeredItems)
+                receipts.clear()
                 setDeck(next.deck)
                 clearRecordedAnswers()
                 moveToCard(0, {})
@@ -231,7 +253,10 @@ export function EtymologyStudyScreen() {
       </CardSwipeRegion>
 
       <CardStudyFooter className="border-violet-100">
-        {recordedAnswer !== null ? (
+        {recordedAnswer !== null && reselectable ? (
+          // 答えたあと戻ってきたカード。いまの答えを示したまま、もう一方を押すと選び直せる。
+          <StudyAnswerReselect remembered={recordedAnswer} onAnswer={answer} />
+        ) : recordedAnswer !== null ? (
           <Button full size="lg" variant={recordedAnswer ? 'success' : 'danger'} disabled>
             {recordedAnswer ? '覚えた' : 'まだ'}（回答済み）
           </Button>

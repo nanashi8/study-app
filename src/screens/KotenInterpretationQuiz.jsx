@@ -23,7 +23,10 @@ import { buildKotenInterpretationInstructorExplanation } from '../lib/instructor
 import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
 import {
   QuestionSessionControls,
+  ReselectNote,
+  useAnswerReceipts,
   useIndexedSessionState,
+  useRevisitedAnswer,
 } from '../components/QuestionSessionControls.jsx'
 
 function shuffle(items) {
@@ -64,6 +67,7 @@ export function KotenInterpretationQuizScreen() {
   const navigate = useStore((state) => state.navigate)
   const returnTo = useStore((state) => state.returnTo)
   const review = useStore((state) => state.reviewKotenInterpretation)
+  const reviseReview = useStore((state) => state.reviseReview)
   const wordList = useStore((state) => state.kotenWordList)
   const grammarList = useStore((state) => state.kotenGrammarList)
   const toggleWord = useStore((state) => state.toggleKotenWordList)
@@ -86,6 +90,8 @@ export function KotenInterpretationQuizScreen() {
   const [done, setDone] = useState(false)
   // 1回の問題数を減らして数え直す前に答えた問題。結果の全問数に含める。
   const carried = useCarriedAnswers()
+  // 答えた問題ごとの記録の控え。前へ戻って選び直したときに入れ替える。
+  const receipts = useAnswerReceipts()
 
   const item = deck[index]
   // 教材は4択だが、出題は「3択＋わからない」にそろえる。
@@ -97,6 +103,9 @@ export function KotenInterpretationQuizScreen() {
   const answeredIndexes = answeredQuizIndexes(index, selections)
   const isCorrect = answered && selected === item?.answer
 
+  // 前に答えてから戻ってきた問題は、答えを選び直せる。
+  const reselectable = useRevisitedAnswer(index, selected !== null)
+
   // コンテンツ画面の「戻る」は履歴でなく、短文解釈の内容選択画面へ。
   const backToKotenInterpretationList = () => params.returnTo?.screen
     ? returnTo(params.returnTo.screen, params.returnTo.params ?? {})
@@ -104,6 +113,7 @@ export function KotenInterpretationQuizScreen() {
 
   const restart = () => {
     carried.reset()
+    receipts.clear()
     const nextRun = run + 1
     setRun(nextRun)
     setDeck(buildDeck(params.ids, deck.length, params.preserveOrder))
@@ -146,12 +156,23 @@ export function KotenInterpretationQuizScreen() {
     )
   }
 
+  const resultOf = (choice) => (
+    choice === UNKNOWN_CHOICE_ID ? 'unknown' : choice === item.answer ? 'correct' : 'wrong'
+  )
+
   const choose = (choice) => {
-    if (answered) return
+    if (choice === selected || (answered && !reselectable)) return
+    const result = resultOf(choice)
+    if (answered) {
+      // 前へ戻って選び直したときは、この問題の最初の答えを置き換える（正解数も記録も二重に数えない）。
+      receipts.set(index, reviseReview(receipts.get(index), result))
+      setCorrect((value) => value + (result === 'correct') - (resultOf(selected) === 'correct'))
+      setSelected(choice)
+      return
+    }
     setSelected(choice)
-    const ok = choice === item.answer
-    review(item.id, choice === UNKNOWN_CHOICE_ID ? 'unknown' : ok ? 'correct' : 'wrong')
-    if (ok) {
+    receipts.set(index, review(item.id, result))
+    if (result === 'correct') {
       setCorrect((value) => value + 1)
       autoAdvanceSequence.current += 1
       setAutoAdvanceSignal(autoAdvanceSequence.current)
@@ -194,6 +215,7 @@ export function KotenInterpretationQuizScreen() {
                 // 答えた問題の記録と結果は残したまま、まだ答えていない問題を1問目として数え直す。
                 const next = restartSessionCount(deck, answeredIndexes, index, buildDeck(params.ids, size + deck.length, params.preserveOrder), size)
                 carried.carry(next.answeredItems)
+                receipts.clear()
                 setDeck(next.deck)
                 setRun((current) => current + 1)
                 clearSelections()
@@ -225,6 +247,7 @@ export function KotenInterpretationQuizScreen() {
         </div>
 
         <div className="mt-4 space-y-2.5">
+          {reselectable && <ReselectNote />}
           {choices.map((choice) => {
             const correctChoice = choice === item.answer
             const chosen = choice === selected
@@ -237,7 +260,8 @@ export function KotenInterpretationQuizScreen() {
             return (
               <button
                 key={choice}
-                disabled={answered}
+                disabled={answered && !reselectable}
+                aria-pressed={answered ? selected === choice : undefined}
                 onClick={() => choose(choice)}
                 className={cx(
                   'flex w-full items-start gap-3 rounded-2xl border-2 px-4 py-3.5 text-left text-sm font-bold leading-relaxed transition-all',
@@ -255,7 +279,7 @@ export function KotenInterpretationQuizScreen() {
           })}
           <UnknownChoiceButton
             selected={selected === UNKNOWN_CHOICE_ID}
-            disabled={answered}
+            disabled={answered && !reselectable}
             onClick={() => choose(UNKNOWN_CHOICE_ID)}
           />
         </div>

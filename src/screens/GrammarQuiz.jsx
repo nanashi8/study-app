@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import { shuffle } from '../data/vocab.js'
 import {
@@ -11,7 +11,12 @@ import {
 } from '../data/grammar-format-expansion.js'
 import { longSentenceTranslationFor } from '../data/long-sentence-translations.js'
 import { buildGrammarDeck } from '../lib/grammarDeck.js'
-import { answeredQuizIndexes, growDeck, restartSessionCount } from '../lib/session.js'
+import {
+  answeredQuizIndexes,
+  growDeck,
+  restartSessionCount,
+  reviseQuizTally,
+} from '../lib/session.js'
 import { todayIndex } from '../store/useStore.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { LongSentenceTranslation } from '../components/LongSentenceTranslation.jsx'
@@ -27,7 +32,10 @@ import { grammarQuestionNeedsMeaningCue } from '../lib/grammarQuestionExplanatio
 import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
 import {
   QuestionSessionControls,
+  ReselectNote,
+  useAnswerReceipts,
   useIndexedSessionState,
+  useRevisitedAnswer,
   useUnfinishedSessionRecord,
 } from '../components/QuestionSessionControls.jsx'
 
@@ -49,6 +57,7 @@ export function GrammarQuizScreen() {
   const navigate = useStore((s) => s.navigate)
   const back = useStore((s) => s.back)
   const review = useStore((s) => s.review)
+  const reviseReview = useStore((s) => s.reviseReview)
   const toggleNotebookItem = useStore((s) => s.toggleNotebookItem)
   const learningNotebook = useStore((s) => s.learningNotebook)
   const color = params.levelColor ?? '#6366f1'
@@ -80,6 +89,12 @@ export function GrammarQuizScreen() {
   const results = useRef({ correct: 0, wrong: 0, unknown: 0, wrongIds: [] })
   // 1回の問題数を減らして数え直す前に答えた問題。結果の全問数に含める。
   const carried = useCarriedAnswers()
+  // 答えた問題ごとの記録の控え。前へ戻って選び直したときに入れ替える。
+  const receipts = useAnswerReceipts()
+  // 答えたあと戻ってきた並べ替え問題で「並べ直す」を押した問題の番号と、並べ直している途中の答え。
+  // 答え合わせまでは、前の答え（orderDraft）をそのまま残す。
+  const [rearrangingIndex, setRearrangingIndex] = useState(null)
+  const [rearrangeDraft, setRearrangeDraft] = useState(EMPTY_ORDER_DRAFT)
 
   // 途中でやめても、そこまでに答えた分をこの分野の学習記録へ残す。
   const handOffSession = useUnfinishedSessionRecord({
@@ -98,6 +113,10 @@ export function GrammarQuizScreen() {
     () => samePatternExamplesFor(item),
     [item?.id], // eslint-disable-line react-hooks/exhaustive-deps
   )
+  // 前に答えてから戻ってきた問題は、答えを選び直せる（並べ替え問題は並べ直せる）。
+  const reselectable = useRevisitedAnswer(i, selected !== null)
+  // 並べ直しの途中で別の問題へ移ったら、並べ直しはやめて前の答えのまま残す。
+  useEffect(() => setRearrangingIndex(null), [i])
   if (!deck.length) {
     return (
       <div className="flex h-full flex-col items-center justify-center gap-4 p-8 text-center">
@@ -113,6 +132,7 @@ export function GrammarQuizScreen() {
   const questionType = grammarQuestionType(item)
   const questionTypeMeta = GRAMMAR_QUESTION_TYPE_META[questionType]
   const orderQuestion = questionType === 'word-order'
+  const rearranging = orderQuestion && rearrangingIndex === i && answered
   const isCorrectPick = answered && selected === item.answer
   const selectedGuidance = orderQuestion ? null : grammarChoiceGuidanceFor(item, selected)
   const instructorExplanation = answered
@@ -141,24 +161,43 @@ export function GrammarQuizScreen() {
     })
   }
 
+  const resultOf = (opt) => (
+    opt === UNKNOWN_CHOICE_ID ? 'unknown' : opt === item.answer ? 'correct' : 'wrong'
+  )
+
   const choose = (opt) => {
-    if (answered) return
+    if (answered && !reselectable) return
+    const answer = resultOf(opt)
+    if (answered) {
+      if (rearranging) {
+        setOrderDraft(rearrangeDraft)
+        setRearrangingIndex(null)
+      }
+      if (opt === selected) return
+      // 前へ戻って選び直したときは、この問題の最初の答えを置き換える（正解数も記録も二重に数えない）。
+      receipts.set(i, reviseReview(receipts.get(i), answer))
+      reviseQuizTally(results.current, item.id, resultOf(selected), answer)
+      setSelected(opt)
+      return
+    }
     setSelected(opt)
-    if (opt === UNKNOWN_CHOICE_ID) {
-      review(item.id, 'unknown', 'grammar')
-      results.current.unknown++
-      results.current.wrongIds.push(item.id)
-    } else if (opt === item.answer) {
-      review(item.id, 'correct', 'grammar')
-      results.current.correct++
+    receipts.set(i, review(item.id, answer, 'grammar'))
+    results.current[answer]++
+    if (answer === 'correct') {
       autoAdvanceSequence.current += 1
       setAutoAdvanceSignal(autoAdvanceSequence.current)
     } else {
-      review(item.id, 'wrong', 'grammar')
-      results.current.wrong++
       results.current.wrongIds.push(item.id)
     }
   }
+
+  // 並べ替え問題を並べ直す。答え合わせを押すと、選び直しと同じく最初の答えを置き換える。
+  const rearrange = () => {
+    setRearrangeDraft(EMPTY_ORDER_DRAFT)
+    setOrderAttempt((value) => value + 1)
+    setRearrangingIndex(i)
+  }
+  const activeOrderDraft = rearranging ? rearrangeDraft : orderDraft
 
   const next = () => {
     if (i + 1 >= deck.length) finish()
@@ -188,6 +227,8 @@ export function GrammarQuizScreen() {
                 // 答えた問題の記録と結果は残したまま、まだ答えていない問題を1問目として数え直す。
                 const next = restartSessionCount(deck, answeredIndexes, i, buildFor(size + deck.length), size)
                 carried.carry(next.answeredItems)
+                receipts.clear()
+                setRearrangingIndex(null)
                 setDeck(next.deck)
                 clearSelections()
                 clearOrderDrafts()
@@ -240,16 +281,26 @@ export function GrammarQuizScreen() {
           </p>
         </div>
 
+        {reselectable && !rearranging && <ReselectNote className="mt-3" />}
         <div className="mt-4 space-y-2.5">
           {orderQuestion ? (
-            <WordOrderExercise
-              key={`${item.id}:${orderAttempt}`}
-              targetText={item.answer}
-              seed={`${item.id}:${orderAttempt}`}
-              initialText={orderDraft.text}
-              checked={answered}
-              onChange={(text, status) => setOrderDraft({ text, complete: status.complete })}
-            />
+            <>
+              <WordOrderExercise
+                key={`${item.id}:${orderAttempt}`}
+                targetText={item.answer}
+                seed={`${item.id}:${orderAttempt}`}
+                initialText={rearranging ? '' : orderDraft.text}
+                checked={answered && !rearranging}
+                onChange={(text, status) => (rearranging
+                  ? setRearrangeDraft({ text, complete: status.complete })
+                  : setOrderDraft({ text, complete: status.complete }))}
+              />
+              {reselectable && !rearranging && (
+                <Button full size="sm" variant="secondary" onClick={rearrange} data-word-order-rearrange>
+                  並べ直す
+                </Button>
+              )}
+            </>
           ) : options.map((o) => {
             const correct = o === item.answer
             const chosen = selected === o
@@ -258,7 +309,8 @@ export function GrammarQuizScreen() {
             return (
               <button
                 key={o}
-                disabled={answered}
+                disabled={answered && !reselectable}
+                aria-pressed={answered ? chosen : undefined}
                 onClick={() => choose(o)}
                 className={cx(
                   'flex w-full items-center gap-3 rounded-2xl border-2 px-4 py-3.5 text-left font-bold transition-all',
@@ -276,12 +328,12 @@ export function GrammarQuizScreen() {
           })}
           <UnknownChoiceButton
             selected={selected === UNKNOWN_CHOICE_ID}
-            disabled={answered}
+            disabled={answered && !reselectable}
             onClick={() => choose(UNKNOWN_CHOICE_ID)}
           />
         </div>
 
-        {answered && (
+        {answered && !rearranging && (
           <div className="mt-4 animate-slide-up rounded-2xl bg-white p-4 shadow-card">
             <p className={cx('font-display text-lg font-extrabold', isCorrectPick ? 'text-emerald-600' : 'text-rose-500')}>
               {isCorrectPick ? '正解！🎉' : selected === UNKNOWN_CHOICE_ID ? '答えはこちら' : 'ざんねん…'}
@@ -334,10 +386,10 @@ export function GrammarQuizScreen() {
         <Button
           full
           size="lg"
-          disabled={orderQuestion ? !answered && !orderDraft.complete : !answered}
-          onClick={orderQuestion && !answered ? () => choose(orderDraft.text) : next}
+          disabled={orderQuestion ? (!answered || rearranging) && !activeOrderDraft.complete : !answered}
+          onClick={orderQuestion && (!answered || rearranging) ? () => choose(activeOrderDraft.text) : next}
         >
-          {orderQuestion && !answered
+          {orderQuestion && (!answered || rearranging)
             ? '答え合わせ'
             : i + 1 >= deck.length
               ? '結果を見る'

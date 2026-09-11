@@ -43,6 +43,57 @@ export function recordStudyAnswer(results, itemId, remembered) {
   }
 }
 
+/**
+ * 前へ戻って「覚えた／まだ」を選び直したとき、その1枚の集計だけを入れ替える（二重に数えない）。
+ * wasRemembered は最初の答え、remembered は選び直した答え。
+ */
+export function reviseStudyAnswer(results, itemId, wasRemembered, remembered) {
+  if (Boolean(wasRemembered) === Boolean(remembered)) return results
+  const forgotIds = [...(results.forgotIds ?? [])]
+  if (remembered) {
+    const at = forgotIds.lastIndexOf(itemId)
+    if (at >= 0) forgotIds.splice(at, 1)
+  } else {
+    forgotIds.push(itemId)
+  }
+  return {
+    ...results,
+    remembered: Math.max(0, (results.remembered ?? 0) + (remembered ? 1 : -1)),
+    forgot: Math.max(0, (results.forgot ?? 0) + (remembered ? -1 : 1)),
+    forgotIds,
+  }
+}
+
+/**
+ * 前へ戻ってテストの答えを選び直したとき、その1問の集計だけを入れ替える（二重に数えない）。
+ * previous・next は 'correct' | 'wrong' | 'unknown'。wrongIds（間違えた問題）と
+ * answerLog（答えた順の結果）も持っていれば入れ替える。logIndex はその問題を最初に答えた位置。
+ */
+export function reviseQuizTally(results, itemId, previous, next, logIndex = null) {
+  if (!previous || !next || previous === next) return results
+  if (Number.isFinite(results[previous])) results[previous] = Math.max(0, results[previous] - 1)
+  results[next] = (Number.isFinite(results[next]) ? results[next] : 0) + 1
+  if (Array.isArray(results.wrongIds)) {
+    const wasWrong = previous !== 'correct'
+    const isWrong = next !== 'correct'
+    if (wasWrong && !isWrong) {
+      const at = results.wrongIds.lastIndexOf(itemId)
+      if (at >= 0) results.wrongIds.splice(at, 1)
+    } else if (!wasWrong && isWrong) {
+      results.wrongIds.push(itemId)
+    }
+  }
+  if (
+    Array.isArray(results.answerLog)
+    && Number.isInteger(logIndex)
+    && logIndex >= 0
+    && logIndex < results.answerLog.length
+  ) {
+    results.answerLog[logIndex] = next
+  }
+  return results
+}
+
 // 適応バトルの出題プール：敵LV（その級）を主力に、ひとつ下の級から少量だけ
 // 復習を混ぜる（土台を確認しつつ学習効率を上げる）。
 function battlePool(levelIndex, rng = Math.random) {

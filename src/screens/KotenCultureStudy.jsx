@@ -14,11 +14,18 @@ import {
 import { KotenText } from '../components/KotenFurigana.jsx'
 import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
 import { answeredSessionIndexes, growDeck, restartSessionCount } from '../lib/session.js'
-import { CardSaveToggle, CardStudyFooter, CardSwipeRegion } from '../components/CardStudyControls.jsx'
+import {
+  CardSaveToggle,
+  CardStudyFooter,
+  CardSwipeRegion,
+  StudyAnswerReselect,
+} from '../components/CardStudyControls.jsx'
 import {
   nextUnansweredSessionIndex,
   QuestionSessionControls,
+  useAnswerReceipts,
   useIndexedSessionState,
+  useRevisitedAnswer,
 } from '../components/QuestionSessionControls.jsx'
 
 const SESSION_SIZE = 20
@@ -62,6 +69,11 @@ export function KotenCultureStudyScreen() {
     clear: clearRecordedAnswers,
     values: recordedAnswers,
   } = useIndexedSessionState(index)
+  // 答えたカードごとの記録の控え。前へ戻って選び直したとき、最初の答えを置き換える。
+  const receipts = useAnswerReceipts()
+  // 答えたあと戻ってきたカードは、「覚えた／まだ」を選び直せる。
+  const reselectable = useRevisitedAnswer(index, recordedAnswer !== null)
+  const reviseReview = useStore((state) => state.reviseReview)
   // 1回の数を減らして数え直す前に答えたカード。結果の全枚数に含める。
   const carried = useCarriedAnswers()
 
@@ -88,6 +100,7 @@ export function KotenCultureStudyScreen() {
   }
 
   const restart = () => {
+    receipts.clear()
     carried.reset()
     setDeck(buildDeck(params.ids, deck.length, params.preserveOrder))
     setIndex(0)
@@ -98,8 +111,17 @@ export function KotenCultureStudyScreen() {
   }
 
   const answer = (ok) => {
-    if (recordedAnswer !== null) return
-    reviewCulture(item.id, ok ? 'remembered' : 'forgot')
+    if (recordedAnswer === ok) return
+    const result = ok ? 'remembered' : 'forgot'
+    if (recordedAnswer !== null) {
+      if (!reselectable) return
+      // 前へ戻って選び直したときは、このカードの最初の答えを置き換える（記録も集計も二重に数えない）。
+      receipts.set(index, reviseReview(receipts.get(index), result))
+      setRemembered((count) => count + (ok ? 1 : -1))
+      setRecordedAnswer(ok)
+      return
+    }
+    receipts.set(index, reviewCulture(item.id, result))
     if (ok) setRemembered((count) => count + 1)
     const nextAnswers = { ...recordedAnswers, [index]: ok }
     setRecordedAnswer(ok)
@@ -155,6 +177,7 @@ export function KotenCultureStudyScreen() {
                 // 答えたカードの記録と結果は残したまま、まだ答えていないカードを1枚目として数え直す。
                 const next = restartSessionCount(deck, answeredIndexes, index, buildDeck(params.ids, 0, params.preserveOrder), size)
                 carried.carry(next.answeredItems)
+                receipts.clear()
                 setDeck(next.deck)
                 clearRecordedAnswers()
                 moveToCard(0, {})
@@ -250,7 +273,10 @@ export function KotenCultureStudyScreen() {
       </CardSwipeRegion>
 
       <CardStudyFooter className="border-violet-100">
-        {recordedAnswer !== null ? (
+        {recordedAnswer !== null && reselectable ? (
+          // 答えたあと戻ってきたカード。いまの答えを示したまま、もう一方を押すと選び直せる。
+          <StudyAnswerReselect remembered={recordedAnswer} onAnswer={answer} />
+        ) : recordedAnswer !== null ? (
           <Button full size="lg" variant={recordedAnswer ? 'success' : 'danger'} disabled>
             {recordedAnswer ? '覚えた' : 'まだ'}（回答済み）
           </Button>

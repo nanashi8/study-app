@@ -27,6 +27,7 @@ import {
   normalizeLearningAnalytics,
   recordLearningEvent,
   recordLearningEvents,
+  reviseLearningEventCorrect,
 } from '../lib/learningAnalytics.js'
 import { DEFAULT_CONTENT_ORDER } from '../data/contents.js'
 import {
@@ -402,6 +403,43 @@ function applyReview(
   }
 }
 
+const isCorrectResult = (result) => result === 'correct' || result === 'remembered'
+
+/**
+ * 暗記・テストの1回答を記録し、あとで選び直すときの控え（receipt）も作る。
+ * 控えには、答える前の記録（before）・答えた時刻・学習分析へ入れた内容を持たせる。
+ */
+function recordReviewState(st, { field, itemId, result, skill, adaptiveVocabulary = false }) {
+  const timestamp = Date.now()
+  const { srs, stats, reviewMeta } = applyReview(
+    st[field],
+    st.stats,
+    itemId,
+    result,
+    timestamp,
+    { adaptiveVocabulary },
+  )
+  const correct = isCorrectResult(result)
+  const event = { skill, inputs: 1, scored: 1, correct: correct ? 1 : 0, ...reviewMeta }
+  return {
+    patch: {
+      [field]: srs,
+      stats,
+      learningAnalytics: recordLearningEvent(st.learningAnalytics, event, timestamp),
+    },
+    receipt: {
+      field,
+      itemId,
+      before: st[field]?.[itemId],
+      result,
+      correct,
+      at: timestamp,
+      adaptiveVocabulary,
+      event,
+    },
+  }
+}
+
 // 英作文1本の完成を、今日の学習回数・連続日数へ反映する。
 function awardWriting(stats, timestamp = Date.now()) {
   const day = localDayIndexAt(timestamp)
@@ -665,237 +703,147 @@ export const useStore = create(
       // ── 学習state（永続化する） ──
       ...createInitialLearningState(),
 
-      review: (wordId, result, skillHint = null) =>
+      // 回答を記録し、選び直しに使う控えを返す（reviseReview へ渡す）。
+      review: (wordId, result, skillHint = null) => {
+        let receipt = null
         set((st) => {
-          const timestamp = Date.now()
-          const { srs, stats, reviewMeta } = applyReview(
-            st.srs,
-            st.stats,
-            wordId,
+          const recorded = recordReviewState(st, {
+            field: 'srs',
+            itemId: wordId,
             result,
-            timestamp,
-            { adaptiveVocabulary: skillHint === 'vocab' },
+            skill: learningSkillForItem(wordId, skillHint),
+            adaptiveVocabulary: skillHint === 'vocab',
+          })
+          receipt = recorded.receipt
+          return recorded.patch
+        })
+        return receipt
+      },
+
+      // 前へ戻って答えを選び直したとき。その問題を答える前の記録へ戻してから新しい答えだけを記録し、
+      // 正解数も入れ替える（回答数・学習時間は最初の回答のまま）。同じ問題を二重に数えない。
+      reviseReview: (receipt, result) => {
+        if (!receipt?.field || !receipt.itemId || !result || receipt.result === result) return receipt
+        let next = receipt
+        set((st) => {
+          const base = { ...(st[receipt.field] ?? {}) }
+          if (receipt.before === undefined) delete base[receipt.itemId]
+          else base[receipt.itemId] = receipt.before
+          const { srs } = applyReview(
+            base,
+            st.stats,
+            receipt.itemId,
+            result,
+            Date.now(),
+            { adaptiveVocabulary: receipt.adaptiveVocabulary },
           )
-          const remembered = result === 'correct' || result === 'remembered'
+          const correct = isCorrectResult(result)
+          const delta = (correct ? 1 : 0) - (receipt.correct ? 1 : 0)
+          next = { ...receipt, result, correct }
           return {
-            srs,
-            stats,
-            learningAnalytics: recordLearningEvent(
+            [receipt.field]: srs,
+            stats: delta
+              ? { ...st.stats, correct: Math.max(0, (Number(st.stats.correct) || 0) + delta) }
+              : st.stats,
+            learningAnalytics: reviseLearningEventCorrect(
               st.learningAnalytics,
-              {
-                skill: learningSkillForItem(wordId, skillHint),
-                inputs: 1,
-                scored: 1,
-                correct: remembered ? 1 : 0,
-                ...reviewMeta,
-              },
-              timestamp,
+              receipt.event,
+              delta,
+              receipt.at,
             ),
           }
-        }),
+        })
+        return next
+      },
 
       // 旧版の語源専用SRSを読み戻すために残す互換操作。現行の学習者向け画面は
       // vocabStudy だけを使い、語源から覚えた結果も単語SRSへ記録する。
-      reviewEtymology: (packId, result) =>
+      reviewEtymology: (packId, result) => {
+        let receipt = null
         set((st) => {
-          const timestamp = Date.now()
-          const { srs, stats, reviewMeta } = applyReview(
-            st.etymologySrs,
-            st.stats,
-            packId,
-            result,
-            timestamp,
-          )
-          return {
-            etymologySrs: srs,
-            stats,
-            learningAnalytics: recordLearningEvent(
-              st.learningAnalytics,
-              {
-                skill: 'etymology',
-                inputs: 1,
-                scored: 1,
-                correct: result === 'correct' || result === 'remembered' ? 1 : 0,
-                ...reviewMeta,
-              },
-              timestamp,
-            ),
-          }
-        }),
+          const recorded = recordReviewState(st, { field: 'etymologySrs', itemId: packId, result, skill: 'etymology' })
+          receipt = recorded.receipt
+          return recorded.patch
+        })
+        return receipt
+      },
 
       // 古文単語の復習（英単語と同じLeitnerロジックを別srsで使う）。
-      reviewKoten: (wordId, result) =>
+      reviewKoten: (wordId, result) => {
+        let receipt = null
         set((st) => {
-          const timestamp = Date.now()
-          const { srs, stats, reviewMeta } = applyReview(
-            st.kotenSrs,
-            st.stats,
-            wordId,
-            result,
-            timestamp,
-          )
-          return {
-            kotenSrs: srs,
-            stats,
-            learningAnalytics: recordLearningEvent(
-              st.learningAnalytics,
-              {
-                skill: 'koten',
-                inputs: 1,
-                scored: 1,
-                correct: result === 'correct' || result === 'remembered' ? 1 : 0,
-                ...reviewMeta,
-              },
-              timestamp,
-            ),
-          }
-        }),
+          const recorded = recordReviewState(st, { field: 'kotenSrs', itemId: wordId, result, skill: 'koten' })
+          receipt = recorded.receipt
+          return recorded.patch
+        })
+        return receipt
+      },
 
       // 古典文法も「暗記→テスト」を同じLeitner間隔でつなぐ。
-      reviewKotenGrammar: (grammarId, result) =>
+      reviewKotenGrammar: (grammarId, result) => {
+        let receipt = null
         set((st) => {
-          const timestamp = Date.now()
-          const { srs, stats, reviewMeta } = applyReview(
-            st.kotenGrammarSrs,
-            st.stats,
-            grammarId,
-            result,
-            timestamp,
-          )
-          return {
-            kotenGrammarSrs: srs,
-            stats,
-            learningAnalytics: recordLearningEvent(
-              st.learningAnalytics,
-              {
-                skill: 'koten_grammar',
-                inputs: 1,
-                scored: 1,
-                correct: result === 'correct' || result === 'remembered' ? 1 : 0,
-                ...reviewMeta,
-              },
-              timestamp,
-            ),
-          }
-        }),
+          const recorded = recordReviewState(st, { field: 'kotenGrammarSrs', itemId: grammarId, result, skill: 'koten_grammar' })
+          receipt = recorded.receipt
+          return recorded.patch
+        })
+        return receipt
+      },
 
       // 古典常識も本文で思い出せるよう、暗記と入試型問題を同じSRSでつなぐ。
-      reviewKotenCulture: (cultureId, result) =>
+      reviewKotenCulture: (cultureId, result) => {
+        let receipt = null
         set((st) => {
-          const timestamp = Date.now()
-          const { srs, stats, reviewMeta } = applyReview(
-            st.kotenCultureSrs,
-            st.stats,
-            cultureId,
-            result,
-            timestamp,
-          )
-          return {
-            kotenCultureSrs: srs,
-            stats,
-            learningAnalytics: recordLearningEvent(
-              st.learningAnalytics,
-              {
-                skill: 'koten_culture',
-                inputs: 1,
-                scored: 1,
-                correct: result === 'correct' || result === 'remembered' ? 1 : 0,
-                ...reviewMeta,
-              },
-              timestamp,
-            ),
-          }
-        }),
+          const recorded = recordReviewState(st, { field: 'kotenCultureSrs', itemId: cultureId, result, skill: 'koten_culture' })
+          receipt = recorded.receipt
+          return recorded.patch
+        })
+        return receipt
+      },
 
       // 古典短文解釈も、問題ごとに同じ間隔反復で復習時期を管理する。
-      reviewKotenInterpretation: (questionId, result) =>
+      reviewKotenInterpretation: (questionId, result) => {
+        let receipt = null
         set((st) => {
-          const timestamp = Date.now()
-          const { srs, stats, reviewMeta } = applyReview(
-            st.kotenInterpretationSrs,
-            st.stats,
-            questionId,
-            result,
-            timestamp,
-          )
-          return {
-            kotenInterpretationSrs: srs,
-            stats,
-            learningAnalytics: recordLearningEvent(
-              st.learningAnalytics,
-              {
-                skill: 'koten_reading',
-                inputs: 1,
-                scored: 1,
-                correct: result === 'correct' || result === 'remembered' ? 1 : 0,
-                ...reviewMeta,
-              },
-              timestamp,
-            ),
-          }
-        }),
+          const recorded = recordReviewState(st, { field: 'kotenInterpretationSrs', itemId: questionId, result, skill: 'koten_reading' })
+          receipt = recorded.receipt
+          return recorded.patch
+        })
+        return receipt
+      },
 
       // 漢文の三主分野は保存領域を分離し、同じ間隔反復ロジックで暗記とテストをつなぐ。
-      reviewKanbun: (domain, itemId, result) =>
+      reviewKanbun: (domain, itemId, result) => {
+        const config = {
+          vocab: { field: 'kanbunVocabSrs', skill: 'kanbun_vocab' },
+          grammar: { field: 'kanbunGrammarSrs', skill: 'kanbun_grammar' },
+          culture: { field: 'kanbunCultureSrs', skill: 'kanbun_culture' },
+        }[domain]
+        if (!config || !itemId) return null
+        let receipt = null
         set((st) => {
-          const config = {
-            vocab: { field: 'kanbunVocabSrs', skill: 'kanbun_vocab' },
-            grammar: { field: 'kanbunGrammarSrs', skill: 'kanbun_grammar' },
-            culture: { field: 'kanbunCultureSrs', skill: 'kanbun_culture' },
-          }[domain]
-          if (!config || !itemId) return {}
-          const timestamp = Date.now()
-          const { srs, stats, reviewMeta } = applyReview(
-            st[config.field],
-            st.stats,
-            itemId,
-            result,
-            timestamp,
-          )
-          return {
-            [config.field]: srs,
-            stats,
-            learningAnalytics: recordLearningEvent(
-              st.learningAnalytics,
-              {
-                skill: config.skill,
-                inputs: 1,
-                scored: 1,
-                correct: result === 'correct' || result === 'remembered' ? 1 : 0,
-                ...reviewMeta,
-              },
-              timestamp,
-            ),
-          }
-        }),
+          const recorded = recordReviewState(st, { field: config.field, itemId, result, skill: config.skill })
+          receipt = recorded.receipt
+          return recorded.patch
+        })
+        return receipt
+      },
 
-      reviewKanbunKundoku: (exerciseId, result) =>
+      reviewKanbunKundoku: (exerciseId, result) => {
+        if (!exerciseId) return null
+        let receipt = null
         set((st) => {
-          if (!exerciseId) return {}
-          const timestamp = Date.now()
-          const { srs, stats, reviewMeta } = applyReview(
-            st.kanbunKundokuSrs,
-            st.stats,
-            exerciseId,
+          const recorded = recordReviewState(st, {
+            field: 'kanbunKundokuSrs',
+            itemId: exerciseId,
             result,
-            timestamp,
-          )
-          return {
-            kanbunKundokuSrs: srs,
-            stats,
-            learningAnalytics: recordLearningEvent(
-              st.learningAnalytics,
-              {
-                skill: 'kanbun_kundoku',
-                inputs: 1,
-                scored: 1,
-                correct: result === 'correct' ? 1 : 0,
-                ...reviewMeta,
-              },
-              timestamp,
-            ),
-          }
-        }),
+            skill: 'kanbun_kundoku',
+          })
+          receipt = recorded.receipt
+          return recorded.patch
+        })
+        return receipt
+      },
 
       // 一覧の連続スワイプも、各教材の暗記・テスト画面と同じ書き込み口を使う。
       // 新しい進捗領域を作らず、進捗コード・クラウド同期・リセットとの互換を保つ。

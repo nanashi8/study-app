@@ -6,6 +6,7 @@ import {
   growDeck,
   pickPhraseDistractors,
   restartSessionCount,
+  reviseQuizTally,
 } from '../lib/session.js'
 import { shuffle } from '../data/vocab.js'
 import { quizMeaning } from '../data/compact.js'
@@ -27,7 +28,10 @@ import { isDragonVeinSource } from '../lib/dragonVein.js'
 import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
 import {
   QuestionSessionControls,
+  ReselectNote,
+  useAnswerReceipts,
   useIndexedSessionState,
+  useRevisitedAnswer,
   useUnfinishedSessionRecord,
 } from '../components/QuestionSessionControls.jsx'
 
@@ -62,6 +66,7 @@ export function PhraseQuizScreen() {
   const navigate = useStore((state) => state.navigate)
   const returnTo = useStore((state) => state.returnTo)
   const review = useStore((state) => state.review)
+  const reviseReview = useStore((state) => state.reviseReview)
   const toggleNotebookItem = useStore((state) => state.toggleNotebookItem)
   const learningNotebook = useStore((state) => state.learningNotebook)
   const selectedStudentId = useStore((state) => state.battleStudentId)
@@ -86,6 +91,9 @@ export function PhraseQuizScreen() {
   const results = useRef({ correct: 0, wrong: 0, unknown: 0, wrongIds: [], answerLog: [] })
   // 1回の問題数を減らして数え直す前に答えた問題。結果の全問数に含める。
   const carried = useCarriedAnswers()
+  // 答えた問題ごとの記録の控えと、答えた順の位置。前へ戻って選び直したときに入れ替える。
+  const receipts = useAnswerReceipts()
+  const answerLogPositions = useRef({})
 
   // 途中でやめても、そこまでに答えた分をこの分野の学習記録へ残す。
   const handOffSession = useUnfinishedSessionRecord({
@@ -104,6 +112,9 @@ export function PhraseQuizScreen() {
   const backToPhrases = () => params.returnTo
     ? returnTo(params.returnTo.screen, params.returnTo.params ?? {})
     : returnTo('phrases')
+
+  // 前に答えてから戻ってきた問題は、答えを選び直せる。
+  const reselectable = useRevisitedAnswer(index, selected !== null)
 
   if (!deck.length) {
     return (
@@ -149,27 +160,30 @@ export function PhraseQuizScreen() {
     })
   }
 
+  const resultOf = (optionId) => (
+    optionId === UNKNOWN_CHOICE_ID ? 'unknown' : optionId === item.id ? 'correct' : 'wrong'
+  )
+
   const choose = (optionId) => {
-    if (answered) return
+    if (optionId === selected || (answered && !reselectable)) return
+    const answer = resultOf(optionId)
+    if (answered) {
+      // 前へ戻って選び直したときは、この問題の最初の答えを置き換える（正解数も記録も二重に数えない）。
+      receipts.set(index, reviseReview(receipts.get(index), answer))
+      reviseQuizTally(results.current, item.id, resultOf(selected), answer, answerLogPositions.current[index])
+      setSelected(optionId)
+      return
+    }
     setSelected(optionId)
-    let answer
-    if (optionId === UNKNOWN_CHOICE_ID) {
-      review(item.id, 'unknown', 'usage')
-      results.current.unknown += 1
-      results.current.wrongIds.push(item.id)
-      answer = 'unknown'
-    } else if (optionId === item.id) {
-      review(item.id, 'correct', 'usage')
-      results.current.correct += 1
-      answer = 'correct'
+    receipts.set(index, review(item.id, answer, 'usage'))
+    results.current[answer] += 1
+    if (answer === 'correct') {
       autoAdvanceSequence.current += 1
       setAutoAdvanceSignal(autoAdvanceSequence.current)
     } else {
-      review(item.id, 'wrong', 'usage')
-      results.current.wrong += 1
       results.current.wrongIds.push(item.id)
-      answer = 'wrong'
     }
+    answerLogPositions.current[index] = results.current.answerLog.length
     results.current.answerLog.push(answer)
   }
 
@@ -211,6 +225,8 @@ export function PhraseQuizScreen() {
                 // 答えた問題の記録と結果は残したまま、まだ答えていない問題を1問目として数え直す。
                 const next = restartSessionCount(deck, answeredIndexes, index, buildFor(size + deck.length), size)
                 carried.carry(next.answeredItems)
+                receipts.clear()
+                answerLogPositions.current = {}
                 setDeck(next.deck)
                 clearSelections()
                 setIndex(0)
@@ -265,6 +281,7 @@ export function PhraseQuizScreen() {
           </p>
         </div>
 
+        {reselectable && <ReselectNote className="mx-auto mt-3 max-w-xl" />}
         <div className={cx(
           'mx-auto w-full max-w-xl',
           isDragonVein ? 'mt-2 grid grid-cols-2 gap-2' : 'mt-4 space-y-2.5',
@@ -277,7 +294,8 @@ export function PhraseQuizScreen() {
             return (
               <button
                 key={option.id}
-                disabled={answered}
+                disabled={answered && !reselectable}
+                aria-pressed={answered ? chosen : undefined}
                 onClick={() => choose(option.id)}
                 className={cx(
                   'flex w-full items-center gap-3 border-2 text-left font-bold transition-all',
@@ -297,7 +315,7 @@ export function PhraseQuizScreen() {
           })}
           <UnknownChoiceButton
             selected={selected === UNKNOWN_CHOICE_ID}
-            disabled={answered}
+            disabled={answered && !reselectable}
             onClick={() => choose(UNKNOWN_CHOICE_ID)}
             className={isDragonVein ? 'min-h-14 rounded-xl py-2.5' : ''}
           />

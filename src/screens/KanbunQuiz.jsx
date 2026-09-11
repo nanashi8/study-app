@@ -15,7 +15,10 @@ import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components
 import { answeredQuizIndexes, growDeck, restartSessionCount } from '../lib/session.js'
 import {
   QuestionSessionControls,
+  ReselectNote,
+  useAnswerReceipts,
   useIndexedSessionState,
+  useRevisitedAnswer,
 } from '../components/QuestionSessionControls.jsx'
 import {
   ArrowRight,
@@ -68,6 +71,7 @@ export function KanbunQuizScreen() {
   const navigate = useStore((state) => state.navigate)
   const returnTo = useStore((state) => state.returnTo)
   const review = useStore((state) => state.reviewKanbun)
+  const reviseReview = useStore((state) => state.reviseReview)
   const addSaved = useStore((state) => state.addManyToKanbunList)
   const domain = KANBUN_COLLECTIONS[params.domain] ? params.domain : 'vocab'
   const meta = kanbunDomainMeta(domain)
@@ -90,11 +94,16 @@ export function KanbunQuizScreen() {
   const [done, setDone] = useState(false)
   // 1回の問題数を減らして数え直す前に答えた問題。結果の全問数に含める。
   const carried = useCarriedAnswers()
+  // 答えた問題ごとの記録の控え。前へ戻って選び直したときに入れ替える。
+  const receipts = useAnswerReceipts()
   const question = deck[index]
   const item = question ? getKanbunItem(domain, question.itemId) : null
 
   // コンテンツ画面の「戻る」は履歴でなく、この分野の内容選択画面へ。
   const backToKanbunCatalog = () => returnTo('kanbunCatalog', { domain })
+
+  // 前に答えてから戻ってきた問題は、答えを選び直せる。
+  const reselectable = useRevisitedAnswer(index, selected !== null)
 
   if (!question || !item) {
     return (
@@ -108,6 +117,7 @@ export function KanbunQuizScreen() {
 
   const restart = (ids = params.ids) => {
     carried.reset()
+    receipts.clear()
     setDeck(pickKanbunQuestions(domain, ids, { size: deck.length || sessionSize }))
     setIndex(0)
     clearSelections()
@@ -117,18 +127,45 @@ export function KanbunQuizScreen() {
     setDone(false)
   }
 
+  const resultOf = (choiceId) => (
+    choiceId === question.answerId ? 'correct' : choiceId === UNKNOWN_CHOICE_ID ? 'unknown' : 'wrong'
+  )
+
+  // 選び直した問題以外で、まだ間違えたままの問題の項目。見直しリストから外してよいかの判断に使う。
+  const stillWeakIds = () => new Set(Object.entries(selections)
+    .filter(([position, choiceId]) => (
+      Number(position) !== index && choiceId !== null && choiceId !== deck[Number(position)]?.answerId
+    ))
+    .map(([position]) => deck[Number(position)]?.itemId))
+
   const choose = (choiceId) => {
-    if (selected !== null) return
+    if (choiceId === selected || (selected !== null && !reselectable)) return
+    const result = resultOf(choiceId)
+    if (selected !== null) {
+      // 前へ戻って選び直したときは、この問題の最初の答えを置き換える（正解数も記録も二重に数えない）。
+      const previous = resultOf(selected)
+      receipts.set(index, reviseReview(receipts.get(index), result))
+      setCorrectCount((count) => count + (result === 'correct') - (previous === 'correct'))
+      setUnknownCount((count) => count + (result === 'unknown') - (previous === 'unknown'))
+      if (result === 'correct') {
+        if (!stillWeakIds().has(question.itemId)) {
+          setWeakIds((ids) => ids.filter((id) => id !== question.itemId))
+        }
+      } else {
+        setWeakIds((ids) => [...new Set([...ids, question.itemId])])
+      }
+      setSelected(choiceId)
+      return
+    }
     setSelected(choiceId)
-    if (choiceId === question.answerId) {
-      review(domain, question.itemId, 'correct')
+    receipts.set(index, review(domain, question.itemId, result))
+    if (result === 'correct') {
       setCorrectCount((count) => count + 1)
       autoAdvanceSequence.current += 1
       setAutoAdvanceSignal(autoAdvanceSequence.current)
     } else {
-      review(domain, question.itemId, choiceId === UNKNOWN_CHOICE_ID ? 'unknown' : 'wrong')
       setWeakIds((ids) => [...new Set([...ids, question.itemId])])
-      if (choiceId === UNKNOWN_CHOICE_ID) setUnknownCount((count) => count + 1)
+      if (result === 'unknown') setUnknownCount((count) => count + 1)
     }
   }
 
@@ -200,6 +237,7 @@ export function KanbunQuizScreen() {
                 // 答えた問題の記録と結果は残したまま、まだ答えていない問題を1問目として数え直す。
                 const next = restartSessionCount(deck, answeredIndexes, index, pickKanbunQuestions(domain, params.ids, { size: size + deck.length }), size)
                 carried.carry(next.answeredItems)
+                receipts.clear()
                 setDeck(next.deck)
                 clearSelections()
                 setIndex(0)
@@ -238,6 +276,7 @@ export function KanbunQuizScreen() {
         </section>
 
         <div className="mt-4 space-y-2.5">
+          {reselectable && <ReselectNote />}
           {question.choices.map((choice, choiceIndex) => {
             const isCorrect = choice.id === question.answerId
             const isSelected = selected === choice.id
@@ -251,7 +290,8 @@ export function KanbunQuizScreen() {
               <button
                 type="button"
                 key={choice.id}
-                disabled={answered}
+                disabled={answered && !reselectable}
+                aria-pressed={answered ? selected === choice.id : undefined}
                 onClick={() => choose(choice.id)}
                 className={cx(
                   'flex w-full items-start gap-3 rounded-2xl border-2 px-4 py-3.5 text-left transition-all',
@@ -275,7 +315,7 @@ export function KanbunQuizScreen() {
           })}
           <UnknownChoiceButton
             selected={selected === UNKNOWN_CHOICE_ID}
-            disabled={answered}
+            disabled={answered && !reselectable}
             onClick={() => choose(UNKNOWN_CHOICE_ID)}
           />
         </div>

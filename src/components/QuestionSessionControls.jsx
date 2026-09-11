@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import { ChevronLeft, ChevronRight } from './Icons.jsx'
 import { ProgressBar, cx } from './ui.jsx'
@@ -11,6 +11,50 @@ export function nextUnansweredSessionIndex(index, total, answeredValues) {
     if (!Object.hasOwn(answeredValues, candidate)) return candidate
   }
   return index
+}
+
+/**
+ * 答えた問題ごとの記録の控え（ストアの review 系が返す receipt）。
+ * 前へ戻って選び直したとき、reviseReview に渡して最初の回答を置き換える。
+ * 辞書などを開いて戻る画面は、退避した控えを initial で戻す。問題の並びを組み直したら clear する。
+ */
+export function useAnswerReceipts(initial = null) {
+  const receipts = useRef({ ...(initial ?? {}) })
+  return useMemo(() => ({
+    get: (index) => receipts.current[index] ?? null,
+    set: (index, receipt) => {
+      if (receipt) receipts.current[index] = receipt
+    },
+    clear: () => {
+      receipts.current = {}
+    },
+    snapshot: () => ({ ...receipts.current }),
+  }), [])
+}
+
+/**
+ * 表示中の問題が「前に答えてから、いったん離れて戻ってきた問題」か。
+ * そのときだけ答えを選び直せるようにする（答えた直後のその場では、これまでどおり確定のまま）。
+ */
+export function useRevisitedAnswer(index, answered) {
+  const [arrival, setArrival] = useState({ index, answered })
+  if (arrival.index !== index) {
+    setArrival({ index, answered })
+    return answered
+  }
+  return arrival.answered && answered
+}
+
+/** 答えたあと戻ってきた問題で、答えを選び直せることを示す一行。 */
+export function ReselectNote({ className = '' }) {
+  return (
+    <p
+      className={cx('text-center text-[11px] font-bold leading-relaxed text-ink/45', className)}
+      data-answer-reselect-note
+    >
+      答えた問題です。別の答えを押すと、答えと記録を入れ替えます。
+    </p>
+  )
 }
 
 /**

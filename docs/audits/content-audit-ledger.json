@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-09-11T18:30:31.192Z",
+  "auditedAt": "2026-09-11T18:53:08.456Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -103,7 +103,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "e050916a6d253c30f73a7f8ab4e36103054fadfc89d7902f28ff983e0ffa9146",
+    "sha256": "0a02c7368a9b925b523253629316c9c4a5762a5945d4702ce22686f5aa11a2e2",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -150,6 +150,7 @@
       "src/screens/PhraseQuiz.jsx",
       "src/screens/Diagnostic.jsx",
       "tests/after-school-story.test.mjs",
+      "tests/answer-reselect.test.mjs",
       "tests/app-navigation.test.mjs",
       "tests/app-recovery.test.mjs",
       "tests/battle-cinematic-visuals.test.mjs",
