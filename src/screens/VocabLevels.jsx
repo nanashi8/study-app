@@ -10,36 +10,18 @@ import {
   weakFoundationLevel,
 } from '../lib/session.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
-import { Chip, IconButton, cx } from '../components/ui.jsx'
+import { Chip, IconButton } from '../components/ui.jsx'
 import { LearningEntryCard } from '../components/LearningEntryCard.jsx'
 import { WordBookStudySheet } from '../components/WordListSheet.jsx'
+import {
+  ChooserTile,
+  ChooserTiles,
+  ReviewTodayRow,
+  TodayCard,
+  TodayRow,
+} from '../components/ContentTop.jsx'
 import { summarizeVocabularySrsItems } from '../lib/vocabScheduler.js'
-import { Refresh, Search, ChevronRight, Sparkles, Check, Link, Cards } from '../components/Icons.jsx'
-
-// 「今日の学習」の1行。復習も、下の級を先に固める案内も同じ形で並べる。
-function TodayRow({ icon, iconClassName = '', iconStyle, title, detail, detailClassName = 'text-ink/55', ...props }) {
-  // 2文の案内は文の切れ目（。）で折り返し、「あ／と352語」のように語の途中で行を割らない。
-  // 1文が1行に収まらない狭い画面では、対応するブラウザで文節の切れ目を選ぶ（auto-phrase）。
-  const sentences = detail.split(/(?<=。)/)
-  return (
-    <button
-      type="button"
-      className="flex w-full items-center gap-3 px-3.5 py-3 text-left transition-colors active:bg-slate-50 disabled:cursor-default disabled:opacity-50"
-      {...props}
-    >
-      <span className={cx('grid h-10 w-10 shrink-0 place-items-center rounded-xl', iconClassName)} style={iconStyle}>
-        {icon}
-      </span>
-      <span className="min-w-0 flex-1">
-        <strong className="block text-sm font-extrabold text-ink">{title}</strong>
-        <span className={cx('mt-0.5 block text-[11px] font-bold leading-snug [word-break:auto-phrase]', detailClassName)}>
-          {sentences.map((sentence, index) => <span key={index} className="inline-block">{sentence}</span>)}
-        </span>
-      </span>
-      <ChevronRight size={18} className="shrink-0 text-ink/25" />
-    </button>
-  )
-}
+import { Search, Sparkles, Link, Cards } from '../components/Icons.jsx'
 
 // 下の級（前提）が弱点なら「先に固めよう」と案内する行。級カードと同じ絵文字・色で、どの級かを示す。
 // 出す数は判定に使った数そのもの。学んだ分だけ数が動き、届けば案内が消える。
@@ -56,21 +38,6 @@ function WeakFoundationRow({ weak, onStudy }) {
         ? `復習する語が${progress.due}語たまっています。まずこの級を固めましょう`
         : `${progress.total}語のうち${progress.learned}語を学習済みです。あと${remaining}語で上の級の土台になります`}
     />
-  )
-}
-
-// 英検級のほかの選び方。3つを同じ大きさ・同じ形でそろえ、下の数だけが中身を表す。
-function ChooserTile({ icon, iconClassName, label, children, ...props }) {
-  return (
-    <button
-      type="button"
-      className="flex min-w-0 flex-col items-center rounded-2xl border border-slate-200/70 bg-white px-1 pb-2.5 pt-3 text-center shadow-card transition-colors active:bg-brand-50"
-      {...props}
-    >
-      <span className={cx('grid h-9 w-9 place-items-center rounded-xl', iconClassName)}>{icon}</span>
-      <span className="mt-1.5 text-sm font-extrabold text-ink">{label}</span>
-      <span className="text-[11px] font-bold text-ink/50">{children}</span>
-    </button>
   )
 }
 
@@ -126,24 +93,9 @@ export function VocabLevelsScreen() {
   const wordBookCount = wordBookSets.length
   const weak = weakFoundationLevel(srs)
   const prog = overallProgress(srs)
+  // 復習の行は各コンテンツと同じ部品（ReviewTodayRow）。単語は覚え具合から数えた復習予定を渡す。
   const reviewState = reviewActionState(prog)
-  const reviewComplete = reviewState === 'complete'
-  const canReview = prog.seen > 0
   const nextReviewInDays = nextVocabularyReviewInDays(srs)
-  const reviewLabel = reviewState === 'due'
-    ? '今日の復習'
-    : reviewComplete
-      ? '復習日より前に練習'
-      : '復習'
-  const reviewTiming = reviewState === 'due'
-    ? `${prog.due}語を今日復習`
-    : reviewComplete
-      ? nextReviewInDays === 1
-        ? '次の復習日は明日'
-        : Number.isFinite(nextReviewInDays)
-          ? `次の復習日まであと${nextReviewInDays}日`
-          : '学習済み語を確認'
-      : '学習後に表示'
 
   const study = (levelId, label) =>
     navigate('vocabStudy', { source: { type: 'level', levelId }, title: `英検${label}`, mode: 'study', returnTo: { screen: 'vocabLevels' } })
@@ -163,32 +115,24 @@ export function VocabLevelsScreen() {
       />
       <div className="space-y-3 px-4">
         {/* 今日の学習：復習と、下の級を先に固める案内を1枚にまとめる。 */}
-        <section
-          aria-label="今日の学習"
-          className="divide-y divide-slate-100 overflow-hidden rounded-2xl border border-slate-200/70 bg-white shadow-card"
-          data-vocab-today
-        >
-          <TodayRow
-            disabled={!canReview}
-            onClick={() => navigate('vocabStudy', {
+        <TodayCard data-vocab-today>
+          <ReviewTodayRow
+            state={reviewState}
+            due={prog.due}
+            nextInDays={nextReviewInDays}
+            unit="語"
+            onStart={() => navigate('vocabStudy', {
               source: { type: reviewState === 'due' ? 'due' : 'review' },
               title: reviewState === 'due' ? '今日の復習' : '復習日より前に練習',
               mode: 'study',
               returnTo: { screen: 'vocabLevels' },
             })}
-            aria-label={`${reviewLabel}。${reviewTiming}`}
-            data-review-state={reviewState}
-            icon={reviewComplete ? <Check size={20} /> : <Refresh size={20} />}
-            iconClassName={reviewComplete ? 'bg-emerald-100 text-emerald-600' : 'bg-hint/20 text-amber-600'}
-            title={reviewLabel}
-            detail={reviewTiming}
-            detailClassName={reviewState === 'due' ? 'text-amber-700' : reviewComplete ? 'text-emerald-700' : 'text-ink/50'}
           />
           {weak && <WeakFoundationRow weak={weak} onStudy={(level) => study(level.id, level.label)} />}
-        </section>
+        </TodayCard>
 
         {/* 英検級のほかの選び方：10分野・語源・単語帳 */}
-        <div className="grid grid-cols-3 gap-2" data-vocab-choosers>
+        <ChooserTiles data-vocab-choosers>
           <ChooserTile
             onClick={() => navigate('vocabGroups')}
             data-vocab-ten-field-entry
@@ -221,7 +165,7 @@ export function VocabLevelsScreen() {
           >
             {wordBookCount}冊
           </ChooserTile>
-        </div>
+        </ChooserTiles>
         <WordBookStudySheet
           open={wordBookSheetOpen}
           onClose={() => setWordBookSheetOpen(false)}

@@ -11,13 +11,22 @@ import {
   GRAMMAR_QUESTION_TYPE_META,
   GRAMMAR_QUESTION_TYPES,
 } from '../data/grammar-format-expansion.js'
+import { GRAMMAR_LESSONS } from '../data/grammar-lessons.js'
 import { GRAMMAR_STRANDS } from '../data/grammar-strands.js'
 import { todayIndex } from '../store/useStore.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { Card, Button, Chip, cx } from '../components/ui.jsx'
 import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
+import {
+  ChooserTile,
+  ChooserTiles,
+  ReviewTodayRow,
+  TodayCard,
+  WordBookTile,
+} from '../components/ContentTop.jsx'
 import { summarizeSrsItems } from '../lib/contentProgress.js'
-import { Cards, ArrowRight, Refresh } from '../components/Icons.jsx'
+import { contentReviewSummary } from '../lib/contentReview.js'
+import { Cards, ArrowRight, BookOpen, Target } from '../components/Icons.jsx'
 
 const lessonStageForLevel = (level) => {
   if (level === '5') return '中1'
@@ -58,7 +67,7 @@ export function GrammarScreen() {
   const levelItems = grammarPracticeByLevel(level, questionType)
   const lp = dueProgressOf(levelItems, srs)
   const levelStatus = summarizeSrsItems(levelItems, srs)
-  const allProgress = dueProgressOf(GRAMMAR_PRACTICE, srs)
+  const review = contentReviewSummary(GRAMMAR_PRACTICE, srs, todayIndex())
   const questionTypeMeta = GRAMMAR_QUESTION_TYPE_META[questionType]
   const returnTo = { screen: 'grammar', params: { level, questionType } }
 
@@ -66,62 +75,63 @@ export function GrammarScreen() {
     navigate('grammarQuiz', { source: { type: 'grammar', level, questionType }, title: `${meta.label} ${questionTypeMeta.label}`, levelColor: meta.color, returnTo })
   const quizTopic = (topic) =>
     navigate('grammarQuiz', { source: { type: 'grammar', level, topic, questionType }, title: `${topic}・${questionTypeMeta.short}`, levelColor: meta.color, returnTo })
+  // 今日の復習があれば復習どきの問題を、なければ解いた問題を復習日が近い順に出す。
+  const startReview = () => (review.state === 'due'
+    ? navigate('grammarQuiz', {
+        source: { type: 'grammarDue', questionType: 'mixed' },
+        title: '文法の復習',
+        levelColor: '#f59e0b',
+        returnTo,
+      })
+    : navigate('grammarQuiz', {
+        source: { type: 'grammarList', ids: review.studiedItems.map((item) => item.id) },
+        title: '文法・復習日より前に練習',
+        levelColor: '#f59e0b',
+        returnTo,
+      }))
 
   return (
     <div className="pb-6">
       <ScreenHeader title="文法" subtitle="級と問題の種類を選んで、文の形と使い方を身につける" />
 
       <div className="px-4">
-        {allProgress.due > 0 && (
-          <button
-            onClick={() =>
-              navigate('grammarQuiz', {
-                source: { type: 'grammarDue', questionType: 'mixed' },
-                title: '文法の復習',
-                levelColor: '#f59e0b',
-                returnTo,
-              })
-            }
-            className="mb-4 flex w-full items-center gap-3 rounded-2xl bg-hint-soft p-3.5 text-left text-amber-900 transition-transform active:scale-[0.99]"
-          >
-            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-200/70 text-amber-700">
-              <Refresh size={20} />
-            </span>
-            <div className="flex-1">
-              <div className="font-display font-extrabold">文法を復習しよう</div>
-              <div className="text-xs font-bold text-amber-800/75">{allProgress.due}問が復習どきです</div>
-            </div>
-            <ArrowRight size={20} />
-          </button>
-        )}
+        <div className="mb-5 space-y-3">
+          {/* 今日の学習：復習を1枚にまとめる。 */}
+          <TodayCard data-grammar-today>
+            <ReviewTodayRow
+              state={review.state}
+              due={review.dueItems.length}
+              nextInDays={review.nextInDays}
+              unit="問"
+              onStart={startReview}
+            />
+          </TodayCard>
 
-        {/* 文法解説（中学・高校カリキュラム順に読む） */}
-        <button
-          onClick={() => navigate('grammarLessons', { stage: lessonStageForLevel(level) })}
-          className="mb-3 flex w-full items-center gap-3 rounded-2xl bg-gradient-to-r from-brand-500 to-brand-400 p-4 text-left text-white shadow-pop transition-transform active:scale-[0.99]"
-        >
-          <span className="text-2xl">📖</span>
-          <div className="min-w-0 flex-1">
-            <div className="font-display font-extrabold">文法解説で学ぶ</div>
-            <div className="text-xs font-bold text-white/80">中学・高校のカリキュラム順に、形・ポイント・例文で理解する</div>
-          </div>
-          <ArrowRight size={20} />
-        </button>
-
-        {/* 単元から学ぶ（級をまたいで1つの文法を、成績に合う級で練習する） */}
-        <button
-          onClick={() => navigate('grammarStrands')}
-          className="mb-4 flex w-full items-center gap-3 rounded-2xl bg-white p-4 text-left shadow-sm ring-1 ring-brand-100 transition-transform active:scale-[0.99]"
-        >
-          <span className="text-2xl">🎯</span>
-          <div className="min-w-0 flex-1">
-            <div className="font-display font-extrabold text-ink">単元から学ぶ</div>
-            <div className="text-xs font-bold text-ink/55">
-              比較・仮定法など{GRAMMAR_STRANDS.length}系統を、級をまたいで練習します。正答率に応じて級が上下します
-            </div>
-          </div>
-          <span className="text-brand-400"><ArrowRight size={20} /></span>
-        </button>
+          {/* 級のほかの選び方：文法解説・級をまたぐ単元・単語帳 */}
+          <ChooserTiles data-grammar-choosers>
+            <ChooserTile
+              onClick={() => navigate('grammarLessons', { stage: lessonStageForLevel(level) })}
+              data-grammar-lessons-entry
+              aria-label={`文法解説で学ぶ。中学・高校のカリキュラム順に${GRAMMAR_LESSONS.length}単元`}
+              icon={<BookOpen size={19} />}
+              iconClassName="bg-brand-100 text-brand-600"
+              label="文法解説"
+            >
+              {GRAMMAR_LESSONS.length}単元
+            </ChooserTile>
+            <ChooserTile
+              onClick={() => navigate('grammarStrands')}
+              data-grammar-strands-entry
+              aria-label={`単元から学ぶ。比較・仮定法など${GRAMMAR_STRANDS.length}系統を、級をまたいで練習`}
+              icon={<Target size={19} />}
+              iconClassName="bg-violet-100 text-violet-600"
+              label="単元から学ぶ"
+            >
+              {GRAMMAR_STRANDS.length}系統
+            </ChooserTile>
+            <WordBookTile domain="grammar" returnTo={returnTo} />
+          </ChooserTiles>
+        </div>
 
         <h2 className="mb-2 px-1 font-display text-base font-extrabold text-ink/80">級から選ぶ</h2>
 
