@@ -94,9 +94,7 @@ test('通常一覧は学習・テストの切替、左右スワイプ、再表�
     assert.ok(component.includes(token), token)
   }
   for (const token of [
-    'onPointerDown={startSwipe}',
-    'onPointerMove={previewSwipe}',
-    'onPointerUp={finishSwipe}',
+    'useHorizontalSwipe(rowRef',
     'data-learning-record-status',
   ]) {
     assert.ok(row.includes(token), token)

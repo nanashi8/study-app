@@ -1,9 +1,9 @@
 import { useRef, useState } from 'react'
 import { cx } from './ui.jsx'
-import { learningContentCatalogSwipeAction } from '../lib/learningContentCatalogSwipe.js'
+import { learningContentCatalogSwipeSide } from '../lib/learningContentCatalogSwipe.js'
+import { useHorizontalSwipe } from './useHorizontalSwipe.js'
 
 const SWIPE_PREVIEW_MAX_DISTANCE = 88
-const SWIPE_PREVIEW_START_DISTANCE = 8
 
 export const VOCABULARY_HISTORY_ACTIVITY_META = Object.freeze({
   memory: {
@@ -72,66 +72,23 @@ export function LearningRecordRow({
     ?? VOCABULARY_HISTORY_ACTIVITY_META.memory
   const resultMeta = rowResult(row, activity)
   const canOpen = typeof onOpen === 'function'
-  const swipeStartRef = useRef(null)
-  const suppressOpenUntilRef = useRef(0)
+  const rowRef = useRef(null)
   const [swipeOffset, setSwipeOffset] = useState(0)
 
-  const resetSwipe = () => {
-    swipeStartRef.current = null
-    setSwipeOffset(0)
-  }
-
-  const startSwipe = (event) => {
-    if (event.isPrimary === false || event.button !== 0) return
-    swipeStartRef.current = {
-      pointerId: event.pointerId,
-      x: event.clientX,
-      y: event.clientY,
-    }
-    try {
-      event.currentTarget.setPointerCapture?.(event.pointerId)
-    } catch {
-      // スクロール開始直後など、取得できないポインターはそのまま無視する。
-    }
-  }
-
-  const previewSwipe = (event) => {
-    const start = swipeStartRef.current
-    if (!start || start.pointerId !== event.pointerId) return
-    const deltaX = event.clientX - start.x
-    const deltaY = event.clientY - start.y
-    if (
-      Math.abs(deltaX) < SWIPE_PREVIEW_START_DISTANCE
-      || Math.abs(deltaX) <= Math.abs(deltaY) * 1.2
-    ) {
-      setSwipeOffset(0)
-      return
-    }
-    setSwipeOffset(Math.max(
+  // 行は指に合わせて横へずれ、下に敷いた左右の操作名が見える。
+  useHorizontalSwipe(rowRef, {
+    onDrag: (offset) => setSwipeOffset(Math.max(
       -SWIPE_PREVIEW_MAX_DISTANCE,
-      Math.min(SWIPE_PREVIEW_MAX_DISTANCE, deltaX),
-    ))
-  }
+      Math.min(SWIPE_PREVIEW_MAX_DISTANCE, offset),
+    )),
+    onEnd: (direction) => {
+      setSwipeOffset(0)
+      const side = learningContentCatalogSwipeSide(direction)
+      if (side) onSwipe(side)
+    },
+  })
 
-  const finishSwipe = (event) => {
-    const start = swipeStartRef.current
-    resetSwipe()
-    if (!start || start.pointerId !== event.pointerId) return
-    const direction = learningContentCatalogSwipeAction(start, {
-      x: event.clientX,
-      y: event.clientY,
-    })
-    if (!direction) return
-    event.preventDefault()
-    suppressOpenUntilRef.current = Date.now() + 450
-    onSwipe(direction)
-  }
-
-  const openDetails = (event) => {
-    if (Date.now() < suppressOpenUntilRef.current) {
-      event.preventDefault()
-      return
-    }
+  const openDetails = () => {
     if (canOpen) onOpen(id)
   }
 
@@ -157,12 +114,9 @@ export function LearningRecordRow({
         </span>
       </div>
       <button
+        ref={rowRef}
         type="button"
         onClick={openDetails}
-        onPointerDown={startSwipe}
-        onPointerMove={previewSwipe}
-        onPointerUp={finishSwipe}
-        onPointerCancel={resetSwipe}
         onKeyDown={handleKeyDown}
         aria-label={`${title}、${meaning}、${note ? `${note}、` : ''}現在は${resultMeta.label}。${canOpen ? `タップで${openLabel}。` : ''}左にスワイプで${activityMeta.leftLabel}、右にスワイプで${activityMeta.rightLabel}`}
         className={cx(
