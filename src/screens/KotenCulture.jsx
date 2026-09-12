@@ -1,5 +1,7 @@
 import { useMemo, useState } from 'react'
-import { isDue, useStore } from '../store/useStore.js'
+import { isDue, todayIndex, useStore } from '../store/useStore.js'
+import { ChooserTile, ChooserTiles, ReviewTodayRow, TodayCard, WordBookTile } from '../components/ContentTop.jsx'
+import { contentReviewSummary, reviewTargetItems } from '../lib/contentReview.js'
 import { WordBookButton, WordBookStudySheet } from '../components/WordListSheet.jsx'
 import {
   KOTEN_CULTURE,
@@ -10,11 +12,10 @@ import {
 import { pickKotenInterpretationIds } from '../data/koten-interpretations.js'
 import {
   Button,
-  Card,
+  IconButton,
   cx,
 } from '../components/ui.jsx'
 import { ScreenHeader } from '../components/AppShell.jsx'
-import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { LearningEntryCard } from '../components/LearningEntryCard.jsx'
 import { LearningViewTabs } from '../components/LearningViewTabs.jsx'
 import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
@@ -27,8 +28,6 @@ import {
   ArrowRight,
   Book,
   Cards,
-  ChevronLeft,
-  Refresh,
   Search,
 } from '../components/Icons.jsx'
 
@@ -120,143 +119,60 @@ export function KotenCultureScreen() {
     setView('list')
   }
 
+  // 今日の学習：古典常識の復習。今日の分がなければ、学んだ項目を復習日が近い順に。
+  const review = contentReviewSummary(KOTEN_CULTURE, cultureSrs, todayIndex())
+
   const homeView = (
     <div className="pb-8">
-      <div className="rounded-b-[2.5rem] bg-gradient-to-br from-violet-800 via-purple-700 to-fuchsia-600 px-5 pb-7 pt-5 text-white">
-        <div className="mb-3 flex items-center justify-between">
-          <button
-            onClick={() => navigate('kotenList')}
-            className="flex items-center gap-1 rounded-full bg-white/15 py-1 pl-1.5 pr-2.5 text-[11px] font-extrabold text-white/90 transition-transform active:scale-95"
+      <ScreenHeader
+        title="古典常識"
+        subtitle="暗記 → 本文の行動理由を見抜く → 読解につなぐ"
+        right={(
+          <IconButton onClick={() => openCatalog('all')} aria-label="古典常識を検索">
+            <Search size={22} />
+          </IconButton>
+        )}
+      />
+      <div className="space-y-3 px-4">
+        <TodayCard data-koten-culture-today>
+          <ReviewTodayRow
+            state={review.state}
+            due={review.dueItems.length}
+            nextInDays={review.nextInDays}
+            unit="テーマ"
+            onStart={() => study(
+              reviewTargetItems(review),
+              review.state === 'due' ? '古典常識・今日の復習' : '古典常識・復習日より前に練習',
+            )}
+          />
+        </TodayCard>
+
+        {/* 分野のほかの選び方：常識事典（一覧）と単語帳 */}
+        <ChooserTiles data-koten-culture-choosers>
+          <ChooserTile
+            onClick={() => openCatalog('all')}
+            data-koten-culture-dictionary-entry
+            aria-label={`常識事典で探す。全${KOTEN_CULTURE.length}テーマ`}
+            icon={<Book size={19} />}
+            iconClassName="bg-violet-100 text-violet-700"
+            label="常識事典"
           >
-            <ChevronLeft size={14} /> 古典アプリ
-          </button>
-          <SpeechSettingsButton compact inverse />
-        </div>
-        <p className="text-xs font-bold text-white/70">大学受験・古文の背景知識</p>
-        <h1 className="font-display text-2xl font-extrabold tracking-wide">古典常識</h1>
-        <p className="mt-1 text-sm font-bold text-white/80">
-          暗記 → 本文の行動理由を見抜く → 読解につなぐ
-        </p>
-
-        <div className="mt-4 rounded-2xl bg-white/15 p-3.5">
-          <div>
-            <p className="font-display text-lg font-extrabold">
-              全{KOTEN_CULTURE.length}テーマ・全{KOTEN_CULTURE_QUESTIONS.length}問
-            </p>
-            <p className="mt-0.5 text-xs font-bold text-white/70">
-              学習済 {totalStatus.learning.learned}・復習中 {totalStatus.learning.reviewing}・未学習 {totalStatus.learning.unlearned}
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <div className="space-y-5 px-4 pt-5">
-        <Card className="p-4" data-koten-culture-status>
-          <LearningStatusBars progress={totalStatus} compact units={{ learning: 'テーマ', quiz: '問' }} />
-        </Card>
-        <section>
-          <div className="mb-2 px-1">
-            <p className="text-[10px] font-extrabold tracking-[0.14em] text-violet-600">LEARN → CHALLENGE</p>
-            <h2 className="font-display text-lg font-extrabold text-ink">今日の古典常識</h2>
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <button
-              onClick={() => study(KOTEN_CULTURE, '古典常識・全範囲')}
-              className="rounded-3xl bg-gradient-to-br from-violet-600 to-fuchsia-600 p-4 text-left text-white shadow-card transition-transform active:scale-[0.98]"
-            >
-              <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/15">
-                <Book size={23} />
-              </span>
-              <span className="mt-3 block font-display text-lg font-extrabold">暗記</span>
-              <span className="mt-1 block text-[11px] font-bold leading-relaxed text-white/75">
-                用語・背景・本文の手掛かりを思い出す
-              </span>
-            </button>
-            <button
-              onClick={() => quiz(KOTEN_CULTURE, '全範囲・入試型テスト')}
-              className="rounded-3xl bg-gradient-to-br from-slate-900 to-indigo-950 p-4 text-left text-white shadow-card transition-transform active:scale-[0.98]"
-            >
-              <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/10">
-                <Cards size={23} />
-              </span>
-              <span className="mt-3 block font-display text-lg font-extrabold">テスト</span>
-              <span className="mt-1 block text-[11px] font-bold leading-relaxed text-white/65">
-                本文・人物関係・資料から3択
-              </span>
-            </button>
-          </div>
-
-          <div className="mt-3 grid grid-cols-2 gap-3">
-            <button
-              disabled={!dueItems.length}
-              onClick={() => study(dueItems, '古典常識の復習')}
-              className="flex items-center gap-2 rounded-2xl bg-hint-soft p-3 text-left transition-transform active:scale-[0.98] disabled:opacity-45"
-            >
-              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-hint/20 text-hint">
-                <Refresh size={19} />
-              </span>
-              <span>
-                <span className="block text-sm font-extrabold text-amber-900">復習</span>
-                <span className="block text-[11px] font-bold text-amber-800/65">{dueItems.length}テーマ</span>
-              </span>
-            </button>
-            <button
-              onClick={() => setWordBookOpen(true)}
-              aria-haspopup="dialog"
-              data-koten-culture-word-books
-              className="flex items-center gap-2 rounded-2xl bg-sky-100 p-3 text-left transition-transform active:scale-[0.98]"
-            >
-              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-sky-200 text-sky-700">
-                <Cards size={19} />
-              </span>
-              <span>
-                <span className="block text-sm font-extrabold text-sky-900">単語帳</span>
-                <span className="block text-[11px] font-bold text-sky-800/60">冊ごとに暗記・テスト</span>
-              </span>
-            </button>
-          </div>
-        </section>
-
-        <section>
-          <div className="mb-2 flex items-end justify-between px-1">
-            <div>
-              <p className="text-[10px] font-extrabold text-violet-600">コース</p>
-              <h2 className="font-display text-lg font-extrabold text-ink">分野から学ぶ</h2>
-            </div>
-            <span className="text-[10px] font-bold text-ink/35">{KOTEN_CULTURE_CATEGORIES.length}分野</span>
-          </div>
-          <div className="space-y-3">
-            {KOTEN_CULTURE_CATEGORIES.map((meta) => {
-              const categoryItems = kotenCultureByCategory(meta.id)
-              const categoryQuestions = KOTEN_CULTURE_QUESTIONS.filter(
-                (question) => question.category === meta.id,
-              )
-              return (
-                <CategoryCard
-                  key={meta.id}
-                  meta={meta}
-                  items={categoryItems}
-                  srs={cultureSrs}
-                  questions={categoryQuestions}
-                  quizResults={quizResults}
-                  onStudy={() => study(categoryItems, `${meta.label}を暗記`)}
-                  onQuiz={() => quiz(categoryItems, `${meta.label}・入試型テスト`)}
-                  onCatalog={() => openCatalog(meta.id)}
-                />
-              )
-            })}
-          </div>
-        </section>
+            全{KOTEN_CULTURE.length}テーマ
+          </ChooserTile>
+          <WordBookTile domain="kotenCulture" returnTo={{ screen: 'kotenCulture' }} />
+        </ChooserTiles>
 
         <LearningEntryCard
           data-koten-culture-catalog-entry
           emoji="📚"
           accentColor="#7c3aed"
-          title="古典常識事典"
+          title="古典常識の全範囲"
           countLabel={`全${KOTEN_CULTURE.length}テーマ`}
-          subtitle="検索して、覚えたテーマとまだのテーマを見分ける"
+          subtitle="用語・背景・本文の手掛かりを、暗記と入試型3択で"
           status={totalStatus}
           units={{ learning: 'テーマ', quiz: '問' }}
+          note={dueItems.length > 0 ? `復習が必要 ${dueItems.length}テーマ` : undefined}
+          noteTone={dueItems.length > 0 ? 'alert' : 'muted'}
           studyAriaLabel="古典常識の全範囲を暗記"
           onStudy={() => study(KOTEN_CULTURE, '古典常識・全範囲')}
           quizAriaLabel="古典常識の全範囲をテスト"
@@ -265,6 +181,27 @@ export function KotenCultureScreen() {
           catalogAriaLabel="古典常識の全項目を一覧で確認する"
           onCatalog={() => openCatalog('all')}
         />
+
+        <h2 className="px-1 pt-2 font-display text-base font-extrabold text-ink/80">分野から選ぶ</h2>
+        {KOTEN_CULTURE_CATEGORIES.map((meta) => {
+          const categoryItems = kotenCultureByCategory(meta.id)
+          const categoryQuestions = KOTEN_CULTURE_QUESTIONS.filter(
+            (question) => question.category === meta.id,
+          )
+          return (
+            <CategoryCard
+              key={meta.id}
+              meta={meta}
+              items={categoryItems}
+              srs={cultureSrs}
+              questions={categoryQuestions}
+              quizResults={quizResults}
+              onStudy={() => study(categoryItems, `${meta.label}を暗記`)}
+              onQuiz={() => quiz(categoryItems, `${meta.label}・入試型テスト`)}
+              onCatalog={() => openCatalog(meta.id)}
+            />
+          )
+        })}
       </div>
     </div>
   )

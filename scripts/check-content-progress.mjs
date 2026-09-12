@@ -42,7 +42,7 @@ const detailDisplays = [
   'src/components/LevelPicker.jsx',
   'src/screens/Diagnostic.jsx',
   'src/screens/EtymologyPack.jsx',
-  'src/screens/KanbunHome.jsx',
+  // 漢文アプリのホームは英語アプリのホームと同じくコンテンツを選ぶだけの画面。進み具合は各コンテンツのトップで示す。
   'src/screens/KotenList.jsx',
   'src/screens/ReadingPrep.jsx',
   'src/screens/RootDetail.jsx',
