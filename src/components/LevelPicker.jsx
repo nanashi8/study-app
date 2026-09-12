@@ -5,7 +5,8 @@ import { ArrowRight } from './Icons.jsx'
 import { LearningStatusBars } from './LearningStatusBars.jsx'
 
 /** リスニング/ディクテーション/発音採点で使い回す級選択。
- *  countFor(levelId) -> 件数 / detailFor(levelId) -> 級別の補足 */
+ *  countFor(levelId) -> 件数 / detailFor(levelId) -> 級別の補足
+ *  today（今日の学習の1枚）と choosers（単語帳などほかの選び方）は、単語画面と同じく級カードの上に置く。 */
 export function LevelPicker({
   title,
   subtitle,
@@ -17,11 +18,15 @@ export function LevelPicker({
   statusFor,
   onPick,
   note,
+  today = null,
+  choosers = null,
 }) {
   return (
     <div className="pb-6">
       <ScreenHeader title={title} subtitle={subtitle} color={accent} />
       <div className="space-y-3 px-4">
+        {today}
+        {choosers}
         {note && (
           <p className="rounded-2xl bg-brand-50 px-4 py-3 text-xs font-bold leading-relaxed text-brand-700">{note}</p>
         )}

@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { useStore } from '../store/useStore.js'
+import { todayIndex, useStore } from '../store/useStore.js'
+import { ChooserTiles, ReviewTodayRow, TodayCard, WordBookTile } from '../components/ContentTop.jsx'
+import { contentReviewSummary, reviewTargetItems } from '../lib/contentReview.js'
 import {
   ETYMOLOGY_PACKS,
   ETYMOLOGY_SUMMARY,
@@ -186,31 +188,51 @@ export function RootsScreen() {
     setQuery('')
     setView('list')
   }
+  // 今日の学習：語源カードの復習。今日の分がなければ、学んだカードを復習日が近い順に。
+  const cardReview = contentReviewSummary(ETYMOLOGY_PACKS, etymologySrs, todayIndex())
+  const startCardReview = () => startStudy(
+    reviewTargetItems(cardReview).map((card) => card.id),
+    cardReview.state === 'due' ? '語源カード・今日の復習' : '語源カード・復習日より前に練習',
+  )
 
   const homeView = (
     <>
+      {/* 今日の学習とほかの選び方は、単語画面と同じ形で上に置く。 */}
+      <TodayCard data-etymology-today>
+        <ReviewTodayRow
+          state={cardReview.state}
+          due={cardReview.dueItems.length}
+          nextInDays={cardReview.nextInDays}
+          unit="枚"
+          onStart={startCardReview}
+        />
+      </TodayCard>
+      <ChooserTiles data-etymology-choosers>
+        <WordBookTile domain="etymology" returnTo={returnTarget} />
+      </ChooserTiles>
+
       <section
-        className="rounded-3xl bg-gradient-to-br from-violet-700 to-indigo-600 p-4 text-white shadow-card"
+        className="rounded-2xl border border-slate-200/70 bg-white p-4 shadow-card"
         aria-labelledby="etymology-flow-heading"
         data-etymology-intro
       >
-        <p className="text-xs font-extrabold text-white/75">語根から意味をつなぐ</p>
-        <h1 id="etymology-flow-heading" className="mt-1 font-display text-xl font-extrabold">
+        <p className="text-xs font-extrabold text-violet-700">語根から意味をつなぐ</p>
+        <h2 id="etymology-flow-heading" className="mt-1 font-display text-lg font-extrabold text-ink">
           形が分かると、意味を思い出せる
-        </h1>
-        <p className="mt-1 text-sm font-bold leading-relaxed text-white/80">
+        </h2>
+        <p className="mt-1 text-sm font-bold leading-relaxed text-ink/60">
           語根そのものを暗記・テストで覚え、そのまま関連する英単語へ広げます。
           語根でまとめられない語も、単語画面で1語ずつ成り立ちを読めます。
         </p>
-        <ol className="mt-4 grid grid-cols-3 gap-2" aria-label="語源から単語を暗記する3ステップ">
+        <ol className="mt-3 grid grid-cols-3 gap-2" aria-label="語源から単語を暗記する3ステップ">
           {[
             ['1', '形を見る'],
             ['2', '意味をつなぐ'],
             ['3', '単語を暗記'],
           ].map(([number, label]) => (
-            <li key={number} className="rounded-2xl bg-white/12 px-2 py-2.5 text-center">
-              <span className="mx-auto grid h-6 w-6 place-items-center rounded-full bg-white text-xs font-extrabold text-violet-700">{number}</span>
-              <span className="mt-1.5 block text-xs font-extrabold leading-snug">{label}</span>
+            <li key={number} className="rounded-2xl bg-violet-50 px-2 py-2.5 text-center">
+              <span className="mx-auto grid h-6 w-6 place-items-center rounded-full bg-violet-600 text-xs font-extrabold text-white">{number}</span>
+              <span className="mt-1.5 block text-xs font-extrabold leading-snug text-violet-900">{label}</span>
             </li>
           ))}
         </ol>
