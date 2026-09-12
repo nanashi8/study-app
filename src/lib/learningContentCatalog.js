@@ -381,16 +381,22 @@ export const LEARNING_CONTENT_CATALOG_ACTIONS = Object.freeze({
 export function learningContentCatalogLaunch(
   content,
   rows = [],
-  { catalogView = 'all' } = {},
+  { catalogView = 'all', catalogState } = {},
 ) {
   if (!content?.id || !rows.length) return null
   const action = LEARNING_CONTENT_CATALOG_ACTIONS[content.id]
   if (!action) return null
   const selectedRows = action.selection === 'one' ? rows.slice(0, 1) : rows
   const ids = selectedRows.map((row) => row.id)
+  // 学び終えて（または途中で）一覧へ戻ったとき、離れる前の見え方から始められるよう一緒に運ぶ。
   const returnTo = {
     screen: 'myLearning',
-    params: { view: 'catalog', contentId: content.id, catalogView },
+    params: {
+      view: 'catalog',
+      contentId: content.id,
+      catalogView,
+      ...(catalogState ? { catalogState } : {}),
+    },
   }
   const common = {
     title: `${content.label}・一覧で選択`,

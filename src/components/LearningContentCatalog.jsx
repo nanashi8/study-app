@@ -1,6 +1,7 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { useStore } from '../store/useStore.js'
+import { catalogReturnState, readCatalogReturnState } from '../lib/catalogReturnState.js'
 import { selectProgressState } from '../lib/progressCode.js'
 import { LEARNING_CONTENTS } from '../lib/learningContentProgress.js'
 import {
@@ -200,7 +201,7 @@ function CatalogItemRow({
   )
 }
 
-export function LearningContentCatalog({ initialContentId, initialCatalogView }) {
+export function LearningContentCatalog({ initialContentId, initialCatalogView, returnState }) {
   const navigate = useStore((state) => state.navigate)
   const replaceParams = useStore((state) => state.replaceParams)
   const reviewLearningContent = useStore((state) => state.reviewLearningContent)
@@ -210,23 +211,34 @@ export function LearningContentCatalog({ initialContentId, initialCatalogView })
   const validInitialId = LEARNING_CONTENTS.some((content) => content.id === initialContentId)
     ? initialContentId
     : fallbackId
+  const validInitialView = Object.hasOwn(CATALOG_VIEW_META, initialCatalogView)
+    ? initialCatalogView
+    : 'all'
+  // 語の詳細や学習から戻ったときは、離れる前の見え方（検索・並び・隠した行・スクロール位置）から始める。
+  const [restored] = useState(() => readCatalogReturnState(returnState, {
+    key: `${validInitialId}:${validInitialView}`,
+    sorts: LEARNING_CONTENT_CATALOG_SORT_OPTIONS.map((option) => option.id),
+    defaultSort: 'weight',
+    defaultDirections: LEARNING_CONTENT_CATALOG_DEFAULT_DIRECTIONS,
+    pageSize: CATALOG_PAGE_SIZE,
+  }))
   const [contentId, setContentId] = useState(validInitialId)
-  const [catalogView, setCatalogView] = useState(
-    Object.hasOwn(CATALOG_VIEW_META, initialCatalogView) ? initialCatalogView : 'all',
+  const [catalogView, setCatalogView] = useState(validInitialView)
+  const [sort, setSort] = useState(restored?.sort ?? 'weight')
+  const [direction, setDirection] = useState(
+    restored?.direction ?? LEARNING_CONTENT_CATALOG_DEFAULT_DIRECTIONS.weight,
   )
-  const [sort, setSort] = useState('weight')
-  const [direction, setDirection] = useState(LEARNING_CONTENT_CATALOG_DEFAULT_DIRECTIONS.weight)
-  const [query, setQuery] = useState('')
-  const [visible, setVisible] = useState(CATALOG_PAGE_SIZE)
+  const [query, setQuery] = useState(restored?.filters.query ?? '')
   const [selectedIds, setSelectedIds] = useState(() => new Set())
-  const [recordActivity, setRecordActivity] = useState('memory')
-  const [dismissedReviewByActivity, setDismissedReviewByActivity] = useState(() => ({
+  const [recordActivity, setRecordActivity] = useState(restored?.activity ?? 'memory')
+  const [dismissedReviewByActivity, setDismissedReviewByActivity] = useState(() => restored?.dismissedByActivity ?? {
     memory: new Set(),
     test: new Set(),
-  }))
+  })
   const [swipeMessage, setSwipeMessage] = useState('')
-  const [toolsOpen, setToolsOpen] = useState(false)
+  const [toolsOpen, setToolsOpen] = useState(restored?.toolsOpen ?? false)
   const [now] = useState(() => Date.now())
+  const listRef = useRef(null)
   const content = LEARNING_CONTENTS.find((item) => item.id === contentId) ?? LEARNING_CONTENTS[0]
   const isVocabulary = content.id === 'vocab'
   const supportsDirectReview = learningContentCatalogSupportsReview(content.id)
@@ -247,6 +259,13 @@ export function LearningContentCatalog({ initialContentId, initialCatalogView })
     ? recordedTestRows.length
     : recordedMemoryRows.length
   const normalizedQuery = query.trim().toLocaleLowerCase('ja')
+  // 教材・一覧・並び・検索・学習とテストの切替を変えたら、表示件数は最初の数へ戻す。
+  const pagingKey = [contentId, catalogView, sort, direction, normalizedQuery, recordActivity].join('')
+  const [paging, setPaging] = useState(() => ({
+    key: pagingKey,
+    visible: restored?.visible ?? CATALOG_PAGE_SIZE,
+  }))
+  const visible = paging.key === pagingKey ? paging.visible : CATALOG_PAGE_SIZE
   const viewRows = useMemo(() => {
     if (supportsDirectReview) return rows
     if (catalogView === 'registered') return rows.filter((row) => row.registered)
@@ -269,7 +288,13 @@ export function LearningContentCatalog({ initialContentId, initialCatalogView })
   const recordActivityMeta = VOCABULARY_HISTORY_ACTIVITY_META[recordActivity]
     ?? VOCABULARY_HISTORY_ACTIVITY_META.memory
 
-  useEffect(() => setVisible(CATALOG_PAGE_SIZE), [catalogView, contentId, direction, normalizedQuery, recordActivity, sort])
+  useLayoutEffect(() => {
+    if (restored && listRef.current) listRef.current.scrollTop = restored.scrollTop
+  }, [restored])
+  // 読み戻した見え方は履歴から外す。同じ一覧を開き直したときに、古い見え方を当てないため。
+  useEffect(() => {
+    if (restored) replaceParams({ view: 'catalog', contentId: validInitialId, catalogView: validInitialView })
+  }, [restored])
 
   const chooseContent = (nextContentId) => {
     setContentId(nextContentId)
@@ -378,7 +403,7 @@ export function LearningContentCatalog({ initialContentId, initialCatalogView })
       ...current,
       [recordActivity]: new Set(),
     }))
-    setVisible(CATALOG_PAGE_SIZE)
+    setPaging({ key: pagingKey, visible: CATALOG_PAGE_SIZE })
     setSwipeMessage(`${recordActivity === 'test' ? 'テスト' : '学習'}の一覧を再表示しました。`)
   }
 
@@ -388,17 +413,38 @@ export function LearningContentCatalog({ initialContentId, initialCatalogView })
     return next
   })
 
+  // 一覧を離れる前の見え方。語の詳細や学習から戻ったとき、ここから始め直す。
+  const currentReturnState = () => catalogReturnState({
+    key: `${content.id}:${catalogView}`,
+    activity: recordActivity,
+    sort,
+    direction,
+    filters: { query },
+    toolsOpen,
+    visible,
+    dismissedByActivity: dismissedReviewByActivity,
+    scrollTop: listRef.current?.scrollTop,
+  })
+
   const startSelected = () => {
-    const launch = learningContentCatalogLaunch(content, selectedRows, { catalogView })
+    const launch = learningContentCatalogLaunch(content, selectedRows, {
+      catalogView,
+      catalogState: currentReturnState(),
+    })
     if (launch) navigate(launch.screen, launch.params)
   }
 
   const openRecordRow = (row) => {
     if (isVocabulary) {
+      // 語の詳細から戻ると履歴の params ごと戻るので、見え方をいまの params へ残してから移る。
+      replaceParams({ view: 'catalog', contentId: content.id, catalogView, catalogState: currentReturnState() })
       navigate('wordDetail', { id: row.id })
       return
     }
-    const launch = learningContentCatalogLaunch(content, [row], { catalogView })
+    const launch = learningContentCatalogLaunch(content, [row], {
+      catalogView,
+      catalogState: currentReturnState(),
+    })
     if (launch) navigate(launch.screen, launch.params)
   }
 
@@ -640,7 +686,7 @@ export function LearningContentCatalog({ initialContentId, initialCatalogView })
         )}
       </div>
 
-      <div className="min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto px-3 py-3" data-learning-catalog-list>
+      <div ref={listRef} className="min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto px-3 py-3" data-learning-catalog-list>
         <p className="mb-2 px-1 text-xs font-extrabold text-ink/50" aria-live="polite">
           {supportsDirectReview
             ? normalizedQuery
@@ -702,7 +748,10 @@ export function LearningContentCatalog({ initialContentId, initialCatalogView })
             full
             variant="secondary"
             className="mt-3"
-            onClick={() => setVisible((count) => Math.min(remainingRows.length, count + CATALOG_PAGE_SIZE))}
+            onClick={() => setPaging({
+              key: pagingKey,
+              visible: Math.min(remainingRows.length, visible + CATALOG_PAGE_SIZE),
+            })}
           >
             さらに{Math.min(CATALOG_PAGE_SIZE, remainingRows.length - visible).toLocaleString('ja-JP')}{content.unit}を表示
           </Button>

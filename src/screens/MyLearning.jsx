@@ -132,6 +132,7 @@ export function MyLearningScreen() {
       <LearningContentCatalog
         initialContentId={params.contentId}
         initialCatalogView={params.catalogView}
+        returnState={params.catalogState}
       />
     )
   }
