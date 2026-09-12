@@ -162,6 +162,29 @@ export function findCustomWord(list, id) {
   return (Array.isArray(list) ? list : []).find((word) => word?.id === id) ?? null
 }
 
+const headwordText = (value) => String(value ?? '')
+  .normalize('NFKC')
+  .replace(/[’]/gu, "'")
+  .replace(/\s+/gu, ' ')
+  .trim()
+
+// 英字の語。語の間の空白・ハイフン・アポストロフィは使える。
+const ENGLISH_HEADWORD = /^[a-z]+(?:[-' ][a-z]+)*$/iu
+
+/**
+ * 英和辞書で引いた語を、自作単語の登録欄へ入れられるか。
+ * 英語のつづりで、辞書の見出しにも登録済みの自作単語にも同じ語が無いときだけ { word } を返す。
+ */
+export function customWordDraftFromQuery(rawQuery, { headwords = [], customWords = [] } = {}) {
+  const word = headwordText(rawQuery)
+  if (!word || word.length > CUSTOM_WORD_LIMITS.word || !ENGLISH_HEADWORD.test(word)) return null
+  const key = word.toLowerCase()
+  const sameWord = (value) => headwordText(value).toLowerCase() === key
+  if (headwords.some(sameWord)) return null
+  if ((Array.isArray(customWords) ? customWords : []).some((entry) => sameWord(entry?.word))) return null
+  return { word }
+}
+
 /**
  * 学習画面が扱う単語の形へ変える。辞書の語と同じ鍵をそろえるので、
  * 暗記カード・テストの誤答作り・単語帳の一覧がそのまま動く。

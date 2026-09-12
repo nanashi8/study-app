@@ -13,6 +13,7 @@ import {
   DICTIONARY_TYPE_META,
   searchDictionary,
 } from '../lib/dictionary.js'
+import { customWordDraftFromQuery, customWordToStudyWord } from '../lib/customWords.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { SyntaxFamilyGuide } from '../components/SyntaxFamilyGuide.jsx'
@@ -20,7 +21,7 @@ import { PosBadge } from '../components/WordBits.jsx'
 import { WordListSheet } from '../components/WordListSheet.jsx'
 import { wordBookVocabIds } from '../lib/wordBooks.js'
 import { Chip, IconButton } from '../components/ui.jsx'
-import { Search, Close, ArrowRight, Bookmark, BookmarkFilled } from '../components/Icons.jsx'
+import { Search, Close, ArrowRight, Bookmark, BookmarkFilled, Plus } from '../components/Icons.jsx'
 
 // 見つからなかったときの案内。ボタンを押さなくても、その場で自動リクエストする。
 // query が変わると state がリセットされるよう、呼び出し側で key={query} を付ける。
@@ -46,7 +47,8 @@ const REQUEST_MESSAGE = {
   offline: { tone: 'text-rose-500', text: 'いまは送信できませんでした。通信状態が戻るともう一度試せます。' },
 }
 
-function NoResults({ query, onSeeList }) {
+// 自作単語として登録する入口は、この案内の見出しのすぐ下に children で差し込む。
+function NoResults({ query, onSeeList, children }) {
   const [phase, setPhase] = useState('waiting')
 
   useEffect(() => {
@@ -76,6 +78,7 @@ function NoResults({ query, onSeeList }) {
     <div className="px-6 py-12 text-center" data-dictionary-no-results>
       <div className="text-4xl">🔍</div>
       <p className="mt-3 font-extrabold text-ink/70">「{query}」は辞書にありません</p>
+      {children}
       <p className="mt-1 text-sm font-bold text-ink/40">
         辞書にない語は、ボタンを押さなくても自動で追加リクエストします。
       </p>
@@ -86,6 +89,28 @@ function NoResults({ query, onSeeList }) {
         リクエストの受付方法を見る
       </button>
     </div>
+  )
+}
+
+// 辞書の見出しに無い語を、そのまま自作単語の登録欄へ渡す入口。
+function RegisterCustomWord({ word, onRegister, className = '' }) {
+  return (
+    <button
+      type="button"
+      onClick={onRegister}
+      data-dictionary-register-custom
+      className={`flex w-full items-center gap-3 rounded-2xl border-2 border-dashed border-amber-300 bg-amber-50 px-3 py-2.5 text-left active:bg-amber-100 ${className}`}
+    >
+      <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-amber-500 text-white">
+        <Plus size={18} />
+      </span>
+      <span className="min-w-0 flex-1">
+        <span className="block break-words text-sm font-extrabold text-ink">「{word}」を自作単語に登録</span>
+        <span className="block text-[11px] font-bold leading-relaxed text-ink/50">
+          意味を入れると、単語帳に入れて暗記・テストできます
+        </span>
+      </span>
+    </button>
   )
 }
 
@@ -105,14 +130,23 @@ function KindBadge({ type }) {
   )
 }
 
+// 自作単語は辞書の語と見分けられるよう、種類の位置に「自作」と出す。
+function CustomBadge() {
+  return (
+    <span className="shrink-0 rounded-lg bg-amber-500 px-1.5 py-0.5 text-[10px] font-extrabold text-white">
+      自作
+    </span>
+  )
+}
+
 // 右端の「単語帳」は、押すと入れる単語帳を選ぶ窓を開く（どの冊に入っていても塗りで示す）。
-function WordRow({ word, inBook = false, onOpen, onChooseBook }) {
+function WordRow({ word, inBook = false, custom = false, onOpen, onChooseBook }) {
   const level = getLevel(word.level)
   return (
-    <div className="flex items-center gap-2 rounded-2xl bg-white p-2.5 shadow-sm">
+    <div className="flex items-center gap-2 rounded-2xl bg-white p-2.5 shadow-sm" data-dictionary-custom-word={custom ? word.id : undefined}>
       <SpeakButton text={word.word} size="sm" />
       <button onClick={onOpen} className="flex min-w-0 flex-1 items-center gap-2 text-left">
-        <KindBadge type="word" />
+        {custom ? <CustomBadge /> : <KindBadge type="word" />}
         <div className="min-w-0 flex-1">
           <div className="flex min-w-0 items-center gap-2">
             <span className="truncate font-display font-extrabold text-ink">{word.word}</span>
@@ -233,13 +267,19 @@ const TABS = [
   { id: 'syntax', label: '構文' },
 ]
 
+const headwordOf = (entry) => (entry.type === 'word' ? entry.word.word : entry.phrase.phrase)
+
 export function VocabSearchScreen() {
   const navigate = useStore((s) => s.navigate)
+  const replaceParams = useStore((s) => s.replaceParams)
+  const params = useStore((s) => s.params)
   const vocabHistory = useStore((s) => s.vocabHistory)
   const clearVocabHistory = useStore((s) => s.clearVocabHistory)
   const learningNotebook = useStore((s) => s.learningNotebook)
-  const [q, setQ] = useState('')
-  const [type, setType] = useState('all')
+  const customWords = useStore((s) => s.customWords)
+  // 語の詳細・学習・自作単語の登録から戻ったときは、引いていた語と種類の絞り込みから続ける。
+  const [q, setQ] = useState(() => (typeof params.q === 'string' ? params.q : ''))
+  const [type, setType] = useState(() => (TABS.some((tab) => tab.id === params.type) ? params.type : 'all'))
   const [shown, setShown] = useState(PAGE)
   // 単語帳を選ぶ窓を開いている語。
   const [bookWord, setBookWord] = useState(null)
@@ -251,15 +291,34 @@ export function VocabSearchScreen() {
   // 単語・熟語・構文を1本にまとめ、一致の強い順に検索する。
   const matched = useMemo(() => searchDictionary(query), [query])
   const pool = query ? matched : []
+  // 自作単語は辞書に混ぜず、つづりか意味が合う語を検索結果の先頭へ別に並べる。
+  const customMatches = useMemo(() => (
+    query
+      ? customWords
+        .map(customWordToStudyWord)
+        .filter(Boolean)
+        .filter((word) => [word.word, ...word.meanings]
+          .some((text) => normalizeVocabQuery(text).includes(query)))
+      : []
+  ), [customWords, query])
+  const shownCustom = type === 'all' || type === 'word' ? customMatches : []
   const counts = useMemo(() => {
-    const tally = { all: pool.length, word: 0, idiom: 0, syntax: 0 }
+    const tally = { all: pool.length + customMatches.length, word: customMatches.length, idiom: 0, syntax: 0 }
     for (const entry of pool) tally[entry.type] += 1
     return tally
-  }, [pool])
+  }, [customMatches.length, pool])
   const listed = useMemo(
     () => (type === 'all' ? pool : pool.filter((entry) => entry.type === type)),
     [pool, type],
   )
+  // 辞書の見出しにも自作単語にも無い英語なら、自作単語として登録できる。
+  const draft = useMemo(
+    () => customWordDraftFromQuery(q, { headwords: pool.map(headwordOf), customWords }),
+    [customWords, pool, q],
+  )
+  // 見出しに引いた語を含むものが無ければ入口を先頭に、あれば（入力の途中など）結果の後ろに置く。
+  const draftFirst = Boolean(draft)
+    && !pool.some((entry) => normalizeVocabQuery(headwordOf(entry)).includes(query))
 
   // 検索語・絞り込みが変わったら、表示件数は先頭に戻す。
   useEffect(() => {
@@ -281,13 +340,23 @@ export function VocabSearchScreen() {
     [learningNotebook.sets],
   )
 
-  const openWord = (word) => navigate('wordDetail', { id: word.id })
+  // 詳細から戻ると履歴の params ごと戻るので、引いていた語をいまの params へ残してから移る。
+  const openWord = (word) => {
+    replaceParams({ ...params, q, type })
+    navigate('wordDetail', { id: word.id })
+  }
   const studyPhrase = (phrase) =>
     navigate('phraseStudy', {
       source: { type: 'phraseList', ids: [phrase.id] },
       size: 1,
       title: phrase.kind === 'syntax' ? '構文' : '熟語',
-      returnTo: { screen: 'vocabSearch' },
+      returnTo: { screen: 'vocabSearch', params: { q, type } },
+    })
+  // 登録を終えたら（やめても）この画面へ戻り、同じ語を引いた状態から続けられるようにする。
+  const registerCustomWord = () =>
+    navigate('customWords', {
+      draft: { word: draft.word },
+      returnTo: { screen: 'vocabSearch', params: { q: draft.word } },
     })
 
   const renderEntry = (entry) =>
@@ -310,6 +379,9 @@ export function VocabSearchScreen() {
     )
 
   const showList = Boolean(query)
+  const registerEntry = draft && (
+    <RegisterCustomWord word={draft.word} onRegister={registerCustomWord} />
+  )
 
   return (
     <div className="flex h-full flex-col">
@@ -364,7 +436,7 @@ export function VocabSearchScreen() {
             </div>
             <p className="mt-2 px-1 text-xs font-bold text-ink/40">
               {query
-                ? `「${q.trim()}」に一致する${listed.length}件を、単語・熟語・構文まとめて表示`
+                ? `「${q.trim()}」に一致する${listed.length + shownCustom.length}件を、単語・熟語・構文まとめて表示`
                 : ''}
             </p>
           </>
@@ -398,6 +470,7 @@ export function VocabSearchScreen() {
                     <WordRow
                       key={word.id}
                       word={word}
+                      custom={Boolean(word.custom)}
                       inBook={inBookIds.has(word.id)}
                       onOpen={() => openWord(word)}
                       onChooseBook={() => setBookWord(word)}
@@ -420,13 +493,15 @@ export function VocabSearchScreen() {
           </>
         ) : (
           <>
-            {listed.length === 0 ? (
-              query && pool.length === 0 ? (
+            {listed.length === 0 && shownCustom.length === 0 ? (
+              query && pool.length === 0 && customMatches.length === 0 ? (
                 <NoResults
                   key={query}
                   query={query}
                   onSeeList={() => navigate('wordRequests')}
-                />
+                >
+                  {registerEntry && <div className="mb-3 mt-4">{registerEntry}</div>}
+                </NoResults>
               ) : (
                 <p className="px-6 py-12 text-center text-sm font-bold text-ink/40">
                   この絞り込みでは見つかりませんでした
@@ -434,6 +509,21 @@ export function VocabSearchScreen() {
               )
             ) : (
               <div className="space-y-2">
+                {draftFirst && registerEntry}
+                {shownCustom.length > 0 && (
+                  <div className="space-y-2" data-dictionary-custom-words>
+                    {shownCustom.map((word) => (
+                      <WordRow
+                        key={word.id}
+                        word={word}
+                        custom
+                        inBook={inBookIds.has(word.id)}
+                        onOpen={() => openWord(word)}
+                        onChooseBook={() => setBookWord(word)}
+                      />
+                    ))}
+                  </div>
+                )}
                 {listed.slice(0, shown).map(renderEntry)}
                 {listed.length > shown && (
                   <button
@@ -443,6 +533,7 @@ export function VocabSearchScreen() {
                     続きを表示（残り{listed.length - shown}件）
                   </button>
                 )}
+                {!draftFirst && registerEntry}
               </div>
             )}
           </>

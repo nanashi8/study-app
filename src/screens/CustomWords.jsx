@@ -281,9 +281,17 @@ export function CustomWordsScreen() {
   const importCustomWords = useStore((state) => state.importCustomWords)
   const setNotebookSetItem = useStore((state) => state.setNotebookSetItem)
   const navigate = useStore((state) => state.navigate)
+  const back = useStore((state) => state.back)
+  const params = useStore((state) => state.params)
+  // 英和辞書で見つからなかった語から来たときは、その語を入れた登録欄から始める。
+  const draftWord = typeof params.draft?.word === 'string' ? params.draft.word : ''
 
   const [tab, setTab] = useState('words')
-  const [form, setForm] = useState(null)
+  const [form, setForm] = useState(() => (
+    draftWord
+      ? { ...emptyForm(), word: draftWord.slice(0, CUSTOM_WORD_LIMITS.word), fromDictionary: true }
+      : null
+  ))
   const [error, setError] = useState('')
   const [listSheetWord, setListSheetWord] = useState(null)
   const [fileNotice, setFileNotice] = useState('')
@@ -322,6 +330,14 @@ export function CustomWordsScreen() {
     if (!form.id && bookId) setNotebookSetItem(bookId, 'vocab', result.id, true)
     setError('')
     setForm(null)
+    // 辞書から来た登録は、終わったら辞書へ戻す（引いていた語と、登録した語が出る）。
+    if (form.fromDictionary) back()
+  }
+
+  const cancelForm = () => {
+    setForm(null)
+    setError('')
+    if (form?.fromDictionary) back()
   }
 
   const startSession = (screen) => {
@@ -400,13 +416,21 @@ export function CustomWordsScreen() {
       <div className="flex-1 space-y-3 overflow-y-auto px-4 py-4">
         {tab === 'words' ? (
           <>
+            {form?.fromDictionary && (
+              <p
+                className="rounded-2xl bg-amber-50 px-4 py-3 text-xs font-extrabold leading-relaxed text-amber-900"
+                data-custom-word-from-dictionary
+              >
+                英和辞書にない「{draftWord}」を自作単語として登録します。意味を入れて登録すると、辞書の画面へ戻ります。
+              </p>
+            )}
             {form ? (
               <WordForm
                 form={form}
                 books={wordBookSets}
                 onChange={setForm}
                 onSubmit={submit}
-                onCancel={() => { setForm(null); setError('') }}
+                onCancel={cancelForm}
                 error={error}
               />
             ) : (

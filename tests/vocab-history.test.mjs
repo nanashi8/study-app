@@ -90,8 +90,8 @@ test('英和辞書の検索結果・参照履歴の各単語から、入れる�
     'utf8',
   )
 
-  // 検索結果にも履歴にも同じ「単語帳」ボタンを置き、押すと入れる単語帳を選ぶ窓を開く。
-  assert.equal((source.match(/onChooseBook=\{\(\) => setBookWord\(/g) ?? []).length, 2)
+  // 検索結果・自作単語・履歴に同じ「単語帳」ボタンを置き、押すと入れる単語帳を選ぶ窓を開く。
+  assert.equal((source.match(/onChooseBook=\{\(\) => setBookWord\(/g) ?? []).length, 3)
   assert.match(source, /<WordListSheet/)
   assert.match(source, /data-dictionary-word-book/)
   assert.match(source, /を入れる単語帳を選ぶ/)
