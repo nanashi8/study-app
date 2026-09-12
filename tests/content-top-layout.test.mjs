@@ -47,3 +47,40 @@ test('英語アプリの各コンテンツのトップは、今日の学習・�
     assert.match(source, /choosers=\{\(/, path)
   }
 })
+
+// 古典アプリ・漢文アプリも、英語アプリと同じく「ホーム（学ぶ内容を選ぶ）→ コンテンツのトップ」の2段にする。
+const CLASSICS_TOPS = {
+  'src/screens/KotenList.jsx': { tile: '<WordBookTile domain="kotenVocab"', marker: 'data-koten-vocab-today' },
+  'src/screens/KotenGrammar.jsx': { tile: '<WordBookTile domain="kotenGrammar"', marker: 'data-koten-grammar-today' },
+  'src/screens/KotenCulture.jsx': { tile: '<WordBookTile domain="kotenCulture"', marker: 'data-koten-culture-today' },
+  'src/screens/KotenInterpretationList.jsx': { tile: '<WordBookTile domain="kotenInterpretation"', marker: 'data-koten-interpretation-today' },
+  'src/screens/KanbunCatalog.jsx': { tile: '<WordBookTile domain={wordBookDomain}', marker: 'data-kanbun-catalog-today={domain}' },
+  'src/screens/KanbunKundoku.jsx': { tile: '<WordBookTile domain="kanbunKundoku"', marker: 'data-kanbun-kundoku-today' },
+}
+
+test('古典・漢文のアプリのホームはコンテンツを選ぶだけにし、各コンテンツのトップを単語画面の形にそろえる', () => {
+  const menu = read('src/components/ContentMenu.jsx')
+  for (const name of ['ContentMenu', 'ContentMenuSection', 'ContentMenuButton']) {
+    assert.match(menu, new RegExp(`export function ${name}\\b`), name)
+  }
+  const koten = read('src/screens/KotenList.jsx')
+  const kanbun = read('src/screens/KanbunHome.jsx')
+  for (const [source, title] of [[koten, '古典アプリ'], [kanbun, '漢文アプリ']]) {
+    assert.ok(source.includes(`<ContentMenu title="${title}"`), title)
+    assert.match(source, /<ContentMenuSection title="コンテンツを選ぶ"/, title)
+    // 以前のグラデーションのヒーローと、画面ごとの「スタディアプリ」へ戻るボタンは置かない（上部の共通バーが担う）。
+    assert.doesNotMatch(source, /rounded-b-\[2\.5rem\]|goPortal|SpeechSettingsButton/, title)
+  }
+  // 古典単語のトップはホームから view 'vocab' で開き、上部の「戻る」でホームへ戻る（同じ画面のまま表示をそろえる）。
+  assert.ok(koten.includes("navigate('kotenList', { view: 'vocab' })"))
+  assert.match(koten, /useEffect\(\(\) => \{\s*setView\(viewFromParams\(params\)\)\s*\}, \[params\]\)/)
+
+  for (const [path, { tile, marker }] of Object.entries(CLASSICS_TOPS)) {
+    const source = read(path)
+    assert.ok(source.includes(`<TodayCard ${marker}>`), `${path}: 今日の学習の1枚がない`)
+    assert.match(source, /<ReviewTodayRow/, path)
+    assert.ok(source.includes(tile), `${path}: 単語帳の入口がない`)
+    assert.ok(source.indexOf('<TodayCard') < source.indexOf('<ChooserTiles'), path)
+    assert.doesNotMatch(source, /rounded-b-\[2\.5rem\]|SpeechSettingsButton/, `${path}: 以前のヒーローが残っている`)
+  }
+})

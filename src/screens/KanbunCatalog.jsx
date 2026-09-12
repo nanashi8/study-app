@@ -1,6 +1,8 @@
 import { useMemo, useState } from 'react'
-import { useStore } from '../store/useStore.js'
-import { WordBookStudySheet, WordBookToggle } from '../components/WordListSheet.jsx'
+import { todayIndex, useStore } from '../store/useStore.js'
+import { WordBookToggle } from '../components/WordListSheet.jsx'
+import { ChooserTiles, ReviewTodayRow, TodayCard, WordBookTile } from '../components/ContentTop.jsx'
+import { contentReviewSummary, reviewTargetItems } from '../lib/contentReview.js'
 import { kanbunNotebookDomain } from '../lib/wordBookLaunch.js'
 import { KANBUN_VOCAB_CATEGORIES } from '../data/kanbun-vocab.js'
 import { KANBUN_GRAMMAR_CATEGORIES } from '../data/kanbun-grammar.js'
@@ -12,9 +14,8 @@ import {
 } from '../data/kanbun-content.js'
 import { KANBUN_LEVELS } from '../data/kanbun-meta.js'
 import { kanbunDueItems } from '../lib/kanbunProgress.js'
-import { Button, Card } from '../components/ui.jsx'
+import { Button, IconButton } from '../components/ui.jsx'
 import { ScreenHeader } from '../components/AppShell.jsx'
-import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { KanbunHeadword } from '../components/KanbunFurigana.jsx'
 import { LearningEntryCard } from '../components/LearningEntryCard.jsx'
 import { LearningViewTabs } from '../components/LearningViewTabs.jsx'
@@ -23,9 +24,6 @@ import { NormalLearningRecordList } from '../components/NormalLearningRecordList
 import { summarizeSrsItems } from '../lib/contentProgress.js'
 import { scrollScreenToTop } from '../lib/screenScroll.js'
 import {
-  Cards,
-  ChevronLeft,
-  Refresh,
   Search,
 } from '../components/Icons.jsx'
 
@@ -51,7 +49,6 @@ export function KanbunCatalogScreen() {
   const learningRecordContentId = LEARNING_RECORD_CONTENT_IDS[domain]
   const srs = useStore((state) => state[meta.srsField])
   const wordBookDomain = kanbunNotebookDomain(domain)
-  const [wordBookOpen, setWordBookOpen] = useState(false)
   const [view, setView] = useState(params.view === 'list' ? 'list' : 'home')
   const [level, setLevel] = useState('all')
   const [category, setCategory] = useState('all')
@@ -85,36 +82,37 @@ export function KanbunCatalogScreen() {
     setView('list')
   }
 
+  // 今日の学習：この教材の復習。今日の分がなければ、学んだ項目を復習日が近い順に。
+  const review = contentReviewSummary(collection, srs, todayIndex())
+
   const homeView = (
     <div className="pb-8">
-      <header className="rounded-b-[2.5rem] bg-gradient-to-br from-rose-950 via-red-900 to-orange-800 px-5 pb-7 pt-5 text-white">
-        <div className="mb-3 flex items-center justify-between">
-          <button
-            type="button"
-            onClick={() => navigate('kanbunHome')}
-            className="flex items-center gap-1 rounded-full bg-white/15 py-1 pl-1.5 pr-2.5 text-[11px] font-extrabold text-white/90"
-          >
-            <ChevronLeft size={14} /> 漢文アプリ
-          </button>
-          <SpeechSettingsButton compact inverse />
-        </div>
-        <p className="text-xs font-bold text-white/70">中学入門〜最難関大学</p>
-        <h1 className="font-display text-2xl font-extrabold">{meta.emoji} {meta.label}</h1>
-        <p className="mt-1 text-sm font-bold text-white/80">{meta.description}</p>
-        <div className="mt-4 rounded-2xl bg-white/12 p-3.5">
-          <div>
-            <p className="font-display text-base font-extrabold">全{collection.length}{meta.itemLabel}</p>
-            <p className="mt-1 text-[11px] font-bold text-white/65">
-              学習済 {totalStatus.learning.learned}・復習中 {totalStatus.learning.reviewing}・未学習 {totalStatus.learning.unlearned}
-            </p>
-          </div>
-        </div>
-      </header>
+      <ScreenHeader
+        title={meta.label}
+        subtitle={meta.description}
+        right={(
+          <IconButton onClick={() => openCatalog('all')} aria-label={`${meta.label}を検索`}>
+            <Search size={22} />
+          </IconButton>
+        )}
+      />
 
-      <main className="space-y-3 px-4 pt-5">
-        <Card className="p-4" data-kanbun-catalog-status={domain}>
-          <LearningStatusBars progress={totalStatus} compact units={{ learning: meta.itemLabel, quiz: '問' }} />
-        </Card>
+      <main className="space-y-3 px-4">
+        <TodayCard data-kanbun-catalog-today={domain}>
+          <ReviewTodayRow
+            state={review.state}
+            due={review.dueItems.length}
+            nextInDays={review.nextInDays}
+            unit={meta.itemLabel}
+            onStart={() => study(
+              reviewTargetItems(review),
+              review.state === 'due' ? `${meta.label}・今日の復習` : `${meta.label}・復習日より前に練習`,
+            )}
+          />
+        </TodayCard>
+        <ChooserTiles data-kanbun-catalog-choosers={domain}>
+          <WordBookTile domain={wordBookDomain} returnTo={{ screen: 'kanbunCatalog', params: { domain } }} />
+        </ChooserTiles>
 
         {/* 全範囲：英単語の級カードと同じ並び */}
         <LearningEntryCard
@@ -128,7 +126,7 @@ export function KanbunCatalogScreen() {
           units={{ learning: meta.itemLabel, quiz: '問' }}
           note={dueItems.length > 0
             ? `復習が必要 ${dueItems.length}${meta.itemLabel}`
-            : '次の復習日まで待つ'}
+            : undefined}
           noteTone={dueItems.length > 0 ? 'alert' : 'muted'}
           studyAriaLabel={`${meta.label}の全範囲を暗記`}
           onStudy={() => study(collection, `${meta.label}・全範囲`)}
@@ -139,35 +137,7 @@ export function KanbunCatalogScreen() {
           onCatalog={() => openCatalog('all')}
         />
 
-        <div className="grid grid-cols-2 gap-3">
-          <Button
-            variant="secondary"
-            disabled={!dueItems.length}
-            onClick={() => study(dueItems, `${meta.label}・今日の復習`)}
-          >
-            <Refresh size={16} /> 復習 {dueItems.length}
-          </Button>
-          <Button
-            variant="secondary"
-            onClick={() => setWordBookOpen(true)}
-            aria-haspopup="dialog"
-            data-kanbun-word-books={wordBookDomain}
-          >
-            <Cards size={16} /> 単語帳
-          </Button>
-        </div>
-        <WordBookStudySheet
-          open={wordBookOpen}
-          onClose={() => setWordBookOpen(false)}
-          domain={wordBookDomain}
-          returnTo={{ screen: 'kanbunCatalog', params: { domain } }}
-        />
-
-        <div className="px-1 pt-2">
-          <p className="text-[10px] font-extrabold text-rose-700">コース</p>
-          <h2 className="font-display text-lg font-extrabold text-ink">分野から学ぶ</h2>
-        </div>
-
+        <h2 className="px-1 pt-2 font-display text-base font-extrabold text-ink/80">分野から選ぶ</h2>
         {categories.map((item) => {
           const categoryItems = collection.filter((entry) => entry.category === item.id)
           const categoryDue = kanbunDueItems(categoryItems, srs)
@@ -184,7 +154,7 @@ export function KanbunCatalogScreen() {
               units={{ learning: meta.itemLabel, quiz: '問' }}
               note={categoryDue.length > 0
                 ? `復習が必要 ${categoryDue.length}${meta.itemLabel}`
-                : '次の復習日まで待つ'}
+                : undefined}
               noteTone={categoryDue.length > 0 ? 'alert' : 'muted'}
               studyDisabled={!categoryItems.length}
               studyAriaLabel={`${item.label}を暗記`}
