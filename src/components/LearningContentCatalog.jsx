@@ -11,7 +11,8 @@ import {
   learningContentCatalogRows,
   learningContentCatalogTotal,
 } from '../lib/learningContentCatalog.js'
-import { learningContentCatalogSwipeAction } from '../lib/learningContentCatalogSwipe.js'
+import { learningContentCatalogSwipeSide } from '../lib/learningContentCatalogSwipe.js'
+import { useHorizontalSwipe } from './useHorizontalSwipe.js'
 import { learningContentCatalogSupportsReview } from '../lib/learningContentCatalogReview.js'
 import {
   VOCAB_CATALOG_ACTIVITY_OPTIONS,
@@ -88,7 +89,6 @@ function directionLabel(sort, direction) {
 }
 
 const SWIPE_PREVIEW_MAX_DISTANCE = 88
-const SWIPE_PREVIEW_START_DISTANCE = 8
 
 function CatalogItemRow({
   content,
@@ -100,70 +100,20 @@ function CatalogItemRow({
 }) {
   const meta = PRIORITY_META[row.priority] ?? PRIORITY_META.unlearned
   const swipeMeta = CATALOG_VIEW_META[catalogView] ?? CATALOG_VIEW_META.all
-  const swipeStartRef = useRef(null)
-  const suppressClickUntilRef = useRef(0)
+  const rowRef = useRef(null)
   const [swipeOffset, setSwipeOffset] = useState(0)
 
-  const resetSwipe = () => {
-    swipeStartRef.current = null
-    setSwipeOffset(0)
-  }
-
-  const startSwipe = (event) => {
-    if (event.isPrimary === false || event.button !== 0) return
-    swipeStartRef.current = {
-      pointerId: event.pointerId,
-      x: event.clientX,
-      y: event.clientY,
-    }
-    try {
-      event.currentTarget.setPointerCapture?.(event.pointerId)
-    } catch {
-      // 一部のブラウザーはスクロール開始直後など、取得できないポインターを通知する。
-    }
-  }
-
-  const previewSwipe = (event) => {
-    const start = swipeStartRef.current
-    if (!start || start.pointerId !== event.pointerId) return
-    const deltaX = event.clientX - start.x
-    const deltaY = event.clientY - start.y
-    if (
-      Math.abs(deltaX) < SWIPE_PREVIEW_START_DISTANCE
-      || Math.abs(deltaX) <= Math.abs(deltaY) * 1.2
-    ) {
-      setSwipeOffset(0)
-      return
-    }
-    setSwipeOffset(Math.max(
+  useHorizontalSwipe(rowRef, {
+    onDrag: (offset) => setSwipeOffset(Math.max(
       -SWIPE_PREVIEW_MAX_DISTANCE,
-      Math.min(SWIPE_PREVIEW_MAX_DISTANCE, deltaX),
-    ))
-  }
-
-  const finishSwipe = (event) => {
-    const start = swipeStartRef.current
-    resetSwipe()
-    if (!start || start.pointerId !== event.pointerId) return
-
-    const swipeAction = learningContentCatalogSwipeAction(start, {
-      x: event.clientX,
-      y: event.clientY,
-    })
-    if (!swipeAction) return
-
-    suppressClickUntilRef.current = Date.now() + 450
-    event.preventDefault()
-    onSwipe(swipeAction)
-  }
-
-  const toggleFromClick = (event) => {
-    if (Date.now() < suppressClickUntilRef.current) {
-      event.preventDefault()
-      return
-    }
-    onToggle()
-  }
+      Math.min(SWIPE_PREVIEW_MAX_DISTANCE, offset),
+    )),
+    onEnd: (direction) => {
+      setSwipeOffset(0)
+      const side = learningContentCatalogSwipeSide(direction)
+      if (side) onSwipe(side)
+    },
+  })
 
   return (
     <div
@@ -179,12 +129,9 @@ function CatalogItemRow({
         </span>
       </div>
       <button
+        ref={rowRef}
         type="button"
-        onClick={toggleFromClick}
-        onPointerDown={startSwipe}
-        onPointerMove={previewSwipe}
-        onPointerUp={finishSwipe}
-        onPointerCancel={resetSwipe}
+        onClick={onToggle}
         aria-pressed={selected}
         aria-label={`${row.title}を${selected ? '選択から外す' : `${LEARNING_CONTENT_CATALOG_ACTIONS[content.id]?.verb || '学習'}に選ぶ`}。右スワイプで${swipeMeta.rightLabel}、左スワイプで${swipeMeta.leftLabel}`}
         className={cx(

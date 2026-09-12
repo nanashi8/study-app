@@ -95,9 +95,7 @@ for (const required of [
   assert.ok(component.includes(required), `通常一覧の共通処理に ${required} がありません`)
 }
 for (const required of [
-  'onPointerDown={startSwipe}',
-  'onPointerMove={previewSwipe}',
-  'onPointerUp={finishSwipe}',
+  'useHorizontalSwipe(rowRef',
   'touch-pan-y',
   'data-learning-record-status',
 ]) {

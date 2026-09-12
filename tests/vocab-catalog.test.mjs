@@ -296,7 +296,8 @@ test('級画面から一覧を開き、記録別の一覧を左右スワイプ�
   assert.match(historyRow, /unanswered: \{ label: 'テスト前'/)
   assert.match(historyRow, /type="button"/)
   assert.match(historyRow, /onClick=\{openDetails\}/)
-  assert.match(historyRow, /suppressOpenUntilRef/)
+  // 横に動かしたあとの click は共通の左右スワイプが止め、詳細を開かない。
+  assert.match(historyRow, /useHorizontalSwipe\(rowRef/)
   assert.match(historyRow, /data-vocab-catalog-open-word/)
   assert.match(decks, /data-vocab-catalog-swipe-guide/)
   assert.match(decks, /data-vocab-catalog-restore/)

@@ -1,18 +1,12 @@
 import { useEffect, useRef } from 'react'
-import { cardIndexAfterSwipe, cardSwipeDirection } from '../lib/cardSwipe.js'
+import { cardIndexAfterSwipe } from '../lib/cardSwipe.js'
 import { Bookmark, BookmarkFilled } from './Icons.jsx'
 import { Button, cx } from './ui.jsx'
+import { useHorizontalSwipe } from './useHorizontalSwipe.js'
 
-const INTERACTIVE_TARGETS = [
-  'button',
-  'a',
-  'input',
-  'select',
-  'textarea',
-  'summary',
-  '[role="button"]',
-  '[contenteditable="true"]',
-].join(',')
+// 最初と最後のカードで引いたときの重さ。それより先へはめくれないことを指に伝える。
+const EDGE_DRAG_RESISTANCE = 0.3
+const SETTLE_TRANSITION = 'transform 180ms ease-out'
 
 export function CardSwipeRegion({
   index,
@@ -22,53 +16,36 @@ export function CardSwipeRegion({
   children,
 }) {
   const regionRef = useRef(null)
-  const swipeStartRef = useRef(null)
-  const suppressClickUntilRef = useRef(0)
+  const trackRef = useRef(null)
 
   useEffect(() => {
     regionRef.current?.scrollTo({ top: 0, behavior: 'auto' })
   }, [index])
 
-  const startSwipe = (event) => {
-    if (
-      event.isPrimary === false
-      || event.button !== 0
-      || event.target?.closest?.(INTERACTIVE_TARGETS)
-    ) {
-      swipeStartRef.current = null
-      return
-    }
-    swipeStartRef.current = {
-      pointerId: event.pointerId,
-      x: event.clientX,
-      y: event.clientY,
-    }
+  // 指に合わせてカードを横へずらす。動かすたびに描画し直さないよう、style を直接書き換える。
+  const placeTrack = (offset, transition = '') => {
+    const track = trackRef.current
+    if (!track) return
+    track.style.transition = transition
+    track.style.transform = offset ? `translate3d(${offset}px, 0, 0)` : ''
   }
 
-  const endSwipe = (event) => {
-    const start = swipeStartRef.current
-    swipeStartRef.current = null
-    if (!start || start.pointerId !== event.pointerId) return
-
-    const direction = cardSwipeDirection(start, {
-      x: event.clientX,
-      y: event.clientY,
-    })
-    if (!direction) return
-
-    // 横スワイプ直後に生成される click で、カードの答えが開閉しないようにする。
-    suppressClickUntilRef.current = Date.now() + 450
-    event.preventDefault()
-
-    const nextIndex = cardIndexAfterSwipe(index, total, direction)
-    if (nextIndex !== index) onIndexChange(nextIndex)
-  }
-
-  const suppressSwipeClick = (event) => {
-    if (Date.now() >= suppressClickUntilRef.current) return
-    event.preventDefault()
-    event.stopPropagation()
-  }
+  useHorizontalSwipe(regionRef, {
+    onDrag: (offset) => {
+      const atEdge = (offset > 0 && index <= 0) || (offset < 0 && index >= total - 1)
+      placeTrack(atEdge ? offset * EDGE_DRAG_RESISTANCE : offset)
+    },
+    onEnd: (direction) => {
+      const nextIndex = cardIndexAfterSwipe(index, total, direction)
+      if (nextIndex === index) {
+        // めくらなかったときは、元の位置へすべらせて戻す。
+        placeTrack(0, SETTLE_TRANSITION)
+        return
+      }
+      placeTrack(0)
+      onIndexChange(nextIndex)
+    },
+  })
 
   return (
     <div
@@ -78,13 +55,11 @@ export function CardSwipeRegion({
       data-card-swipe-region
       data-card-swipe-index={index + 1}
       data-card-swipe-total={total}
-      className={cx('touch-pan-y', className)}
-      onPointerDown={startSwipe}
-      onPointerUp={endSwipe}
-      onPointerCancel={() => { swipeStartRef.current = null }}
-      onClickCapture={suppressSwipeClick}
+      className={cx('touch-pan-y overflow-x-hidden', className)}
     >
-      {children}
+      <div ref={trackRef} data-card-swipe-track>
+        {children}
+      </div>
     </div>
   )
 }
