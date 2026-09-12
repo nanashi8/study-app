@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useStore } from '../store/useStore.js'
+import { WordBookToggle } from '../components/WordListSheet.jsx'
 import {
   getKotenGrammar,
   KOTEN_GRAMMAR_CATEGORIES,
@@ -8,7 +9,6 @@ import { Button, Chip } from '../components/ui.jsx'
 import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
 import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
 import {
-  CardSaveToggle,
   CardStudyFooter,
   CardSwipeRegion,
   StudyAnswerReselect,
@@ -49,8 +49,6 @@ export function KotenGrammarStudyScreen() {
   const params = useStore((state) => state.params)
   const returnTo = useStore((state) => state.returnTo)
   const reviewGrammar = useStore((state) => state.reviewKotenGrammar)
-  const savedIds = useStore((state) => state.kotenGrammarList)
-  const toggleSaved = useStore((state) => state.toggleKotenGrammarList)
   const settings = useStore((state) => state.settings)
   const revealAll = settings.revealAnswers
 
@@ -79,7 +77,6 @@ export function KotenGrammarStudyScreen() {
   const category = item
     ? KOTEN_GRAMMAR_CATEGORIES.find((candidate) => candidate.id === item.category)
     : null
-  const saved = item ? savedIds.includes(item.id) : false
 
   // コンテンツ画面の「戻る」は履歴でなく、古典文法の内容選択画面へ。
   const backToKotenGrammar = () => params.returnTo?.screen
@@ -191,13 +188,7 @@ export function KotenGrammarStudyScreen() {
               toolbar
               onChange={(on) => setFlipped(on)}
             />
-            <CardSaveToggle
-              saved={saved}
-              onToggle={() => toggleSaved(item.id)}
-              label="登録"
-              savedLabel={`${item.title}を登録文法から外す`}
-              unsavedLabel={`${item.title}を登録文法へ追加`}
-            />
+            <WordBookToggle domain="kotenGrammar" itemId={item.id} itemLabel={item.title} />
           </>
         )}
       />

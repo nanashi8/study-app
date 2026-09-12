@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useStore } from '../store/useStore.js'
+import { WordBookToggle } from '../components/WordListSheet.jsx'
 import { getEtymologyPack, getWord } from '../data/vocab.js'
 import { Button } from '../components/ui.jsx'
 import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
@@ -171,7 +172,10 @@ export function EtymologyStudyScreen() {
           />
         )}
         trailingActions={(
-          <RevealAnswersToggle label="意味" toolbar onChange={(on) => setFlipped(on)} />
+          <>
+            <RevealAnswersToggle label="意味" toolbar onChange={(on) => setFlipped(on)} />
+            <WordBookToggle domain="etymology" itemId={card?.id} itemLabel={card?.title} />
+          </>
         )}
       />
 

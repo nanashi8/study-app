@@ -90,7 +90,7 @@ test('語源の全公開入口は語根の暗記・テスト・一覧と通常�
   assert.doesNotMatch(`${vocabLevels}\n${appMenu}`, /語源の確認問題|2択/)
   assert.match(notebook, /domain\.id === 'etymology' \? \([\s\S]*単語を暗記/)
   assert.match(notebook, /getEtymologyPack\(id\)\?\.studyIds/)
-  const notebookEtymology = blockBetween(notebook, "} else if (domainId === 'etymology') {", "} else if (domainId === 'kotenVocab') {")
+  const notebookEtymology = blockBetween(notebook, "if (domainId === 'etymology' && mode === 'words') {", 'const target = wordBookLaunchTarget(')
   assert.match(notebookEtymology, /navigate\('vocabStudy'/)
   assert.doesNotMatch(notebookEtymology, /navigate\('vocabQuiz'/)
   assert.match(app, /etymologyStudy: EtymologyStudyScreen/)
@@ -190,9 +190,9 @@ test('メニューの全教材・個人機能は公開ルートに存在し、�
     [...screenMap.matchAll(/^  ([A-Za-z][A-Za-z0-9]*):/gm)].map((match) => match[1]),
   )
 
-  assert.equal(publicScreens.size, 71)
-  assert.equal(APP_MENU_ITEMS.length, 30)
-  assert.equal(APP_MENU_SCREEN_DESTINATIONS.length, 25)
+  assert.equal(publicScreens.size, 69)
+  assert.equal(APP_MENU_ITEMS.length, 28)
+  assert.equal(APP_MENU_SCREEN_DESTINATIONS.length, 23)
   assert.deepEqual(
     APP_MENU_SCREEN_DESTINATIONS.filter((screen) => !publicScreens.has(screen)),
     [],

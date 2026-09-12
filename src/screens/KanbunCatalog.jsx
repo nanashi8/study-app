@@ -1,5 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useStore } from '../store/useStore.js'
+import { WordBookStudySheet, WordBookToggle } from '../components/WordListSheet.jsx'
+import { kanbunNotebookDomain } from '../lib/wordBookLaunch.js'
 import { KANBUN_VOCAB_CATEGORIES } from '../data/kanbun-vocab.js'
 import { KANBUN_GRAMMAR_CATEGORIES } from '../data/kanbun-grammar.js'
 import { KANBUN_CULTURE_CATEGORIES } from '../data/kanbun-culture.js'
@@ -10,7 +12,7 @@ import {
 } from '../data/kanbun-content.js'
 import { KANBUN_LEVELS } from '../data/kanbun-meta.js'
 import { kanbunDueItems } from '../lib/kanbunProgress.js'
-import { Button, Card, IconButton } from '../components/ui.jsx'
+import { Button, Card } from '../components/ui.jsx'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { KanbunHeadword } from '../components/KanbunFurigana.jsx'
@@ -21,8 +23,7 @@ import { NormalLearningRecordList } from '../components/NormalLearningRecordList
 import { summarizeSrsItems } from '../lib/contentProgress.js'
 import { scrollScreenToTop } from '../lib/screenScroll.js'
 import {
-  Bookmark,
-  BookmarkFilled,
+  Cards,
   ChevronLeft,
   Refresh,
   Search,
@@ -49,8 +50,8 @@ export function KanbunCatalogScreen() {
   const categories = CATEGORY_MAP[domain]
   const learningRecordContentId = LEARNING_RECORD_CONTENT_IDS[domain]
   const srs = useStore((state) => state[meta.srsField])
-  const savedIds = useStore((state) => state[meta.listField])
-  const toggleSaved = useStore((state) => state.toggleKanbunList)
+  const wordBookDomain = kanbunNotebookDomain(domain)
+  const [wordBookOpen, setWordBookOpen] = useState(false)
   const [view, setView] = useState(params.view === 'list' ? 'list' : 'home')
   const [level, setLevel] = useState('all')
   const [category, setCategory] = useState('all')
@@ -104,7 +105,7 @@ export function KanbunCatalogScreen() {
           <div>
             <p className="font-display text-base font-extrabold">全{collection.length}{meta.itemLabel}</p>
             <p className="mt-1 text-[11px] font-bold text-white/65">
-              学習済 {totalStatus.learning.learned}・復習中 {totalStatus.learning.reviewing}・未学習 {totalStatus.learning.unlearned}・登録 {savedIds.length}
+              学習済 {totalStatus.learning.learned}・復習中 {totalStatus.learning.reviewing}・未学習 {totalStatus.learning.unlearned}
             </p>
           </div>
         </div>
@@ -148,12 +149,19 @@ export function KanbunCatalogScreen() {
           </Button>
           <Button
             variant="secondary"
-            disabled={!savedIds.length}
-            onClick={() => study(savedIds.map((id) => collection.find((item) => item.id === id)).filter(Boolean), `登録${meta.label}`)}
+            onClick={() => setWordBookOpen(true)}
+            aria-haspopup="dialog"
+            data-kanbun-word-books={wordBookDomain}
           >
-            <BookmarkFilled size={16} /> 登録 {savedIds.length}
+            <Cards size={16} /> 単語帳
           </Button>
         </div>
+        <WordBookStudySheet
+          open={wordBookOpen}
+          onClose={() => setWordBookOpen(false)}
+          domain={wordBookDomain}
+          returnTo={{ screen: 'kanbunCatalog', params: { domain } }}
+        />
 
         <div className="px-1 pt-2">
           <p className="text-[10px] font-extrabold text-rose-700">コース</p>
@@ -292,14 +300,7 @@ export function KanbunCatalogScreen() {
                 {item.pattern && <p className="text-[11px] font-bold text-rose-700">形：{item.pattern}</p>}
                 <p className="mt-1 text-xs font-bold leading-relaxed text-ink/45">{item.clue}</p>
               </div>
-              <IconButton
-                onClick={() => toggleSaved(domain, item.id)}
-                aria-label={savedIds.includes(item.id) ? `${item.title}を登録から外す` : `${item.title}を登録する`}
-                aria-pressed={savedIds.includes(item.id)}
-                className={savedIds.includes(item.id) ? 'text-amber-600' : 'text-ink/25'}
-              >
-                {savedIds.includes(item.id) ? <BookmarkFilled size={20} /> : <Bookmark size={20} />}
-              </IconButton>
+              <WordBookToggle domain={wordBookDomain} itemId={item.id} itemLabel={item.title} />
             </div>
           )}
         />

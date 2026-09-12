@@ -464,8 +464,6 @@ const MENU_ITEM_ICONS = {
   myList: Bookmark,
   myLearning: Bookmark,
   myGrammar: Lightbulb,
-  kotenSaved: Book,
-  kanbunSaved: BookOpen,
   progress: Chart,
   advisor: Sparkles,
   analytics: Chart,

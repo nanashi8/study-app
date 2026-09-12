@@ -134,7 +134,7 @@ test('全教材・学習アドバイザー・定着分析・管理機能を一�
     'portal', 'home', 'mathMap', 'kotenList', 'kanbunHome', 'literatureLibrary',
     'vocabLevels', 'vocabSearch', 'writing', 'roots', 'readingList', 'phrases', 'grammar', 'listening',
     'diagnostic', 'dictation', 'vocabCamera', 'customWords', 'wordRequests',
-    'myList', 'myLearning', 'myGrammar', 'kotenSaved', 'kanbunSaved', 'progress',
+    'myList', 'myLearning', 'myGrammar', 'progress',
   ]
   assert.deepEqual(APP_MENU_SECTIONS.map(({ id, label }) => [id, label]), [
     ['apps', 'スタディアプリ'],
@@ -145,9 +145,9 @@ test('全教材・学習アドバイザー・定着分析・管理機能を一�
   ])
   assert.deepEqual(
     APP_MENU_SECTIONS.map((section) => section.items.length),
-    [6, 8, 7, 6, 3],
+    [6, 8, 7, 4, 3],
   )
-  assert.equal(APP_MENU_ITEMS.length, 30)
+  assert.equal(APP_MENU_ITEMS.length, 28)
   assert.deepEqual(APP_MENU_SCREEN_DESTINATIONS, expectedScreens)
   assert.deepEqual(APP_MENU_ACTIONS, ['advisor', 'analytics', 'settings', 'account', 'reset'])
   assert.equal(new Set(APP_MENU_SCREEN_DESTINATIONS).size, expectedScreens.length)

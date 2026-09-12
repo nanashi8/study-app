@@ -12,7 +12,6 @@ export const APP_HOMES = [
       'kotenInterpretationList', 'kotenInterpretationPrep', 'kotenInterpretationQuiz',
       'kotenGrammar', 'kotenGrammarStudy', 'kotenGrammarQuiz',
       'kotenCulture', 'kotenCultureStudy', 'kotenCultureQuiz',
-      'kotenSaved',
     ],
   },
   {
@@ -21,7 +20,7 @@ export const APP_HOMES = [
     label: '漢文アプリ',
     screens: [
       'kanbunHome', 'kanbunCatalog', 'kanbunStudy', 'kanbunQuiz',
-      'kanbunKundoku', 'kanbunKundokuQuiz', 'kanbunSaved',
+      'kanbunKundoku', 'kanbunKundokuQuiz',
     ],
   },
   {

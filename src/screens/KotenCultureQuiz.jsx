@@ -1,5 +1,7 @@
 import { useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
+import { useWordBookPicker } from '../components/WordListSheet.jsx'
+import { notebookRefs } from '../lib/learningNotebook.js'
 import {
   getKotenCulture,
   KOTEN_CULTURE_CATEGORIES,
@@ -39,8 +41,8 @@ export function KotenCultureQuizScreen() {
   const returnTo = useStore((state) => state.returnTo)
   const reviewCulture = useStore((state) => state.reviewKotenCulture)
   const reviseReview = useStore((state) => state.reviseReview)
-  const savedIds = useStore((state) => state.kotenCultureList)
-  const addSaved = useStore((state) => state.addManyToKotenCultureList)
+  const wordBookSets = useStore((state) => state.learningNotebook.sets)
+  const picker = useWordBookPicker()
   const recordQuizResult = useStore((state) => state.recordContentQuizResult)
 
   // 在庫を数えて、選べる問題数の上限を実態に合わせる。
@@ -81,8 +83,10 @@ export function KotenCultureQuizScreen() {
     : null
   const level = question ? KOTEN_CULTURE_LEVELS[question.level] : null
   const format = question ? KOTEN_CULTURE_QUESTION_FORMATS[question.format] : null
-  const allSaved = relatedCulture.length > 0
-    && relatedCulture.every((item) => savedIds.includes(item.id))
+  // この問題に関わる項目が、どれも1冊以上の単語帳に入っているか。
+  const relatedRefs = notebookRefs('kotenCulture', relatedCulture.map((item) => item.id))
+  const allSaved = relatedRefs.length > 0
+    && relatedRefs.every((ref) => wordBookSets.some((set) => set.refs.includes(ref)))
 
   // コンテンツ画面の「戻る」は履歴でなく、古典常識の内容選択画面へ。
   const backToKotenCulture = () => returnTo('kotenCulture')
@@ -333,15 +337,17 @@ export function KotenCultureQuizScreen() {
                 {correctPick ? '正解！' : unknownPick ? '答えを確認しよう' : 'ここを覚え直そう'}
               </p>
               <button
-                onClick={() => addSaved(question.cultureIds)}
-                disabled={allSaved}
+                onClick={() => picker.open(relatedRefs, relatedCulture.map((item) => item.title).join('・'))}
+                disabled={!relatedRefs.length}
+                aria-haspopup="dialog"
+                data-word-book-related="kotenCulture"
                 className={cx(
-                  'flex shrink-0 items-center gap-1 rounded-xl px-2.5 py-2 text-[11px] font-extrabold',
-                  allSaved ? 'bg-violet-100 text-violet-700' : 'bg-paper text-ink/50 active:scale-95',
+                  'flex shrink-0 items-center gap-1 rounded-xl px-2.5 py-2 text-[11px] font-extrabold active:scale-95',
+                  allSaved ? 'bg-violet-100 text-violet-700' : 'bg-paper text-ink/50',
                 )}
               >
                 {allSaved ? <BookmarkFilled size={15} /> : <Bookmark size={15} />}
-                {allSaved ? '登録済み' : '常識を登録'}
+                単語帳
               </button>
             </div>
 
@@ -385,6 +391,7 @@ export function KotenCultureQuizScreen() {
           {index + 1 >= deck.length ? '結果を見る' : '次の問題へ'} <ArrowRight size={18} />
         </Button>
       </div>
+      {picker.sheet}
     </div>
   )
 }

@@ -1,5 +1,7 @@
 import { useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
+import { WordBookToggle } from '../components/WordListSheet.jsx'
+import { kanbunNotebookDomain } from '../lib/wordBookLaunch.js'
 import {
   KANBUN_COLLECTIONS,
   getKanbunItem,
@@ -23,8 +25,6 @@ import {
 import {
   ArrowRight,
   Book,
-  Bookmark,
-  BookmarkFilled,
   Check,
   Close,
   Lightbulb,
@@ -72,10 +72,8 @@ export function KanbunQuizScreen() {
   const returnTo = useStore((state) => state.returnTo)
   const review = useStore((state) => state.reviewKanbun)
   const reviseReview = useStore((state) => state.reviseReview)
-  const addSaved = useStore((state) => state.addManyToKanbunList)
   const domain = KANBUN_COLLECTIONS[params.domain] ? params.domain : 'vocab'
   const meta = kanbunDomainMeta(domain)
-  const savedIds = useStore((state) => state[meta.listField])
   const [poolSize] = useState(() => pickKanbunQuestions(domain, params.ids, { size: ALL_QUESTIONS }).length)
   const sessionSize = useSessionSize(poolSize || Infinity)
   const [deck, setDeck] = useState(() => pickKanbunQuestions(domain, params.ids, { size: params.size ?? sessionSize }))
@@ -211,7 +209,6 @@ export function KanbunQuizScreen() {
   const answered = selected !== null
   const answeredIndexes = answeredQuizIndexes(index, selections)
   const correctPick = selected === question.answerId
-  const saved = savedIds.includes(item.id)
   const level = KANBUN_LEVEL_BY_ID[item.level]
 
   return (
@@ -256,14 +253,7 @@ export function KanbunQuizScreen() {
               <Chip color={level?.color}>{level?.label}</Chip>
               <Chip color={meta.color}>{meta.label}</Chip>
             </div>
-            <button
-              type="button"
-              onClick={() => addSaved(domain, [item.id])}
-              disabled={saved}
-              className={cx('flex items-center gap-1 rounded-xl px-2.5 py-2 text-[11px] font-extrabold', saved ? 'bg-amber-100 text-amber-700' : 'bg-paper text-ink/50')}
-            >
-              {saved ? <BookmarkFilled size={15} /> : <Bookmark size={15} />} {saved ? '登録済み' : '登録'}
-            </button>
+            <WordBookToggle domain={kanbunNotebookDomain(domain)} itemId={item.id} itemLabel={item.title} />
           </div>
 
           {question.passage && (

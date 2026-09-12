@@ -33,6 +33,7 @@ import {
 import {
   compactLearningNotebook,
   foldLegacyMyWords,
+  foldLegacySavedLists,
   notebookStoredSavedCount,
 } from './learningNotebook.js'
 import {
@@ -65,12 +66,6 @@ export const PERSISTED_PROGRESS_FIELDS = Object.freeze([
   'myGrammarList',
   'learningNotebook',
   'writingProgress',
-  'kotenWordList',
-  'kotenGrammarList',
-  'kotenCultureList',
-  'kanbunVocabList',
-  'kanbunGrammarList',
-  'kanbunCultureList',
   'readingsDone',
   'mathDone',
   'mathMastery',
@@ -188,7 +183,7 @@ export function decodeProgress(code) {
     'settings',
   ]
   const arrayFields = [
-    // 以前のコードの「マイ単語」。読み込むときに単語帳の1冊へ移す。
+    // 以前のコードの「マイ単語」と古典・漢文の登録リスト。読み込むときに単語帳へ移す。
     'myList',
     'vocabHistory',
     'myGrammarList',
@@ -351,7 +346,10 @@ export function decodeProgress(code) {
 
 // 読込前のプレビュー用に、コードの中身を要約する。
 export function summarizePayload(payload, isWordId = () => true) {
-  const notebook = foldLegacyMyWords(payload.learningNotebook, payload.myList)
+  const notebook = foldLegacySavedLists(
+    foldLegacyMyWords(payload.learningNotebook, payload.myList),
+    payload,
+  )
   const srs = payload.srs ?? {}
   const etymologySrs = payload.etymologySrs ?? {}
   const wordIds = Object.keys(srs).filter(isWordId)

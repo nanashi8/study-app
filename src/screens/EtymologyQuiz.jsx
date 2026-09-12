@@ -1,5 +1,6 @@
 import { useMemo, useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
+import { WordBookToggle } from '../components/WordListSheet.jsx'
 import { ETYMOLOGY_PACKS, getEtymologyPack, getWord } from '../data/vocab.js'
 import { buildEtymologyQuizQuestion } from '../lib/etymologyQuiz.js'
 import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
@@ -180,6 +181,9 @@ export function EtymologyQuizScreen() {
               }
             }}
           />
+        )}
+        trailingActions={(
+          <WordBookToggle domain="etymology" itemId={card?.id} itemLabel={card?.title} />
         )}
       />
 

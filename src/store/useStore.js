@@ -82,12 +82,14 @@ import {
   createStarterLearningNotebook,
   deleteNotebookSet as deleteNotebookSetState,
   foldLegacyMyWords,
+  foldLegacySavedLists,
+  LEGACY_SAVED_LIST_FIELDS,
   forgetNotebookItem,
   moveNotebookSet as moveNotebookSetState,
   moveNotebookSetItem as moveNotebookSetItemState,
   recordNotebookSetLaunch as recordNotebookSetLaunchState,
   setNotebookItemSaved,
-  setNotebookSetItems as setNotebookSetItemsState,
+  setNotebookSetRefs as setNotebookSetRefsState,
   updateNotebookItem as updateNotebookItemState,
   updateNotebookSet as updateNotebookSetState,
 } from '../lib/learningNotebook.js'
@@ -226,15 +228,10 @@ export const createInitialLearningState = () => ({
   customWords: [], // 自作単語（辞書に無い語を自分で登録したもの）
   vocabHistory: [], // 最近検索・参照・単語帳へ入れた英単語ID（新しい順）
   myGrammarList: [], // [writingGrammarId] 英作文で保存した文法カード
-  // 8分野のメモ・タグと単語帳。単語帳は最初から「マイ単語」を1冊持つ（ほかの冊と同じ扱い）。
+  // 全教材のメモ・タグと単語帳。単語帳は最初から「マイ単語」を1冊持つ（ほかの冊と同じ扱い）。
+  // 古典・漢文の項目も、以前の登録リストではなく単語帳に入れる。
   learningNotebook: createStarterLearningNotebook(),
   writingProgress: {}, // exerciseId -> { completed, lastText, lastMode, lastDay, bestWords, grammarIds }
-  kotenWordList: [], // [古文単語id] 登録単語
-  kotenGrammarList: [], // [古典文法id] 登録文法
-  kotenCultureList: [], // [古典常識id] 登録常識
-  kanbunVocabList: [], // [漢語id] 登録語
-  kanbunGrammarList: [], // [漢文法id] 登録文法
-  kanbunCultureList: [], // [漢文常識id] 登録常識
   readingsDone: [], // [passageId | literatureId] 読了した長文・名作朗読
   mathDone: [], // [problemId] クリアした数学問題
   mathMastery: {}, // unitId -> 最高正答率(0-100) ＝ 理解度
@@ -463,9 +460,13 @@ export function migratePersistedState(persistedState) {
   state.portalOrder = normalizeOrder(state.portalOrder)
   state.portalHidden = normalizeHidden(state.portalHidden)
   state.vocabHistory = normalizeVocabHistory(state.vocabHistory)
-  // 以前の「マイ単語」（myList）は、単語帳の1冊「マイ単語」へ移してから保存配列を捨てる。
-  state.learningNotebook = foldLegacyMyWords(state.learningNotebook, state.myList)
+  // 以前の「マイ単語」（myList）と古典・漢文の登録リストは、単語帳へ移してから保存配列を捨てる。
+  state.learningNotebook = foldLegacySavedLists(
+    foldLegacyMyWords(state.learningNotebook, state.myList),
+    state,
+  )
   delete state.myList
+  for (const field of LEGACY_SAVED_LIST_FIELDS) delete state[field]
   state.customWords = normalizeCustomWords(state.customWords)
   state.learningAnalytics = normalizeLearningAnalytics(state.learningAnalytics)
   state.contentQuizResults = normalizeContentQuizResults(state.contentQuizResults)
@@ -524,15 +525,12 @@ export function progressStateFromPayload(payload = {}) {
     customWords: normalizeCustomWords(payload.customWords),
     vocabHistory: normalizeVocabHistory(payload.vocabHistory),
     myGrammarList: payload.myGrammarList ?? [],
-    // 以前の進捗コードの「マイ単語」（myList）は、単語帳の1冊へ移して読み込む。
-    learningNotebook: foldLegacyMyWords(payload.learningNotebook, payload.myList),
+    // 以前の進捗コードの「マイ単語」（myList）と古典・漢文の登録リストは、単語帳へ移して読み込む。
+    learningNotebook: foldLegacySavedLists(
+      foldLegacyMyWords(payload.learningNotebook, payload.myList),
+      payload,
+    ),
     writingProgress: payload.writingProgress ?? {},
-    kotenWordList: payload.kotenWordList ?? [],
-    kotenGrammarList: payload.kotenGrammarList ?? [],
-    kotenCultureList: payload.kotenCultureList ?? [],
-    kanbunVocabList: payload.kanbunVocabList ?? [],
-    kanbunGrammarList: payload.kanbunGrammarList ?? [],
-    kanbunCultureList: payload.kanbunCultureList ?? [],
     readingsDone: payload.readingsDone ?? [],
     mathDone: payload.mathDone ?? [],
     mathMastery: payload.mathMastery ?? {},
@@ -912,19 +910,11 @@ export const useStore = create(
           ],
         })),
 
-      // 8分野共通のノート保存。古典の登録リストは互換経路として同時更新し、
-      // 旧画面・旧保存データ・既存SRSをそのまま利用できるようにする。
-      // 英単語の保存はノートだけに持つ（単語帳への出し入れとは別）。
+      // 全教材共通のノート保存（しおり）。単語帳への出し入れとは別の操作。
       toggleNotebookItem: (domain, itemId) =>
         set((st) => {
-          const legacyField = {
-            kotenVocab: 'kotenWordList',
-            kotenGrammar: 'kotenGrammarList',
-            kotenCulture: 'kotenCultureList',
-          }[domain]
-          const legacySaved = legacyField && st[legacyField].includes(itemId)
           const ref = `${domain}:${itemId}`
-          const saved = legacySaved || st.learningNotebook?.entries?.[ref]?.saved === true
+          const saved = st.learningNotebook?.entries?.[ref]?.saved === true
           const next = {
             learningNotebook: setNotebookItemSaved(
               st.learningNotebook,
@@ -932,11 +922,6 @@ export const useStore = create(
               itemId,
               !saved,
             ),
-          }
-          if (legacyField) {
-            next[legacyField] = saved
-              ? st[legacyField].filter((id) => id !== itemId)
-              : [...st[legacyField], itemId]
           }
           if (domain === 'vocab' && !saved) {
             next.vocabHistory = prependVocabHistory(st.vocabHistory, [itemId])
@@ -946,11 +931,6 @@ export const useStore = create(
 
       updateNotebookItem: (domain, itemId, patch) =>
         set((st) => {
-          const legacyField = {
-            kotenVocab: 'kotenWordList',
-            kotenGrammar: 'kotenGrammarList',
-            kotenCulture: 'kotenCultureList',
-          }[domain]
           const next = {
             learningNotebook: updateNotebookItemState(
               st.learningNotebook,
@@ -958,9 +938,6 @@ export const useStore = create(
               itemId,
               patch,
             ),
-          }
-          if (legacyField && !st[legacyField].includes(itemId)) {
-            next[legacyField] = [...st[legacyField], itemId]
           }
           if (domain === 'vocab') {
             next.vocabHistory = prependVocabHistory(st.vocabHistory, [itemId])
@@ -1009,19 +986,26 @@ export const useStore = create(
 
       // 単語帳へ1項目を入れる・外す。英単語を入れたときは辞書履歴にも残す（どの冊でも同じ）。
       setNotebookSetItem: (setId, domain, itemId, included) =>
-        get().setNotebookSetItems(setId, domain, [itemId], included),
+        get().setNotebookSetRefs(setId, [`${domain}:${itemId}`], included),
 
       // まとめて入れる・外す（長文や写真の読み取りの全語など）。1冊500項目を超える分は入らない。
       setNotebookSetItems: (setId, domain, itemIds, included) =>
+        get().setNotebookSetRefs(
+          setId,
+          (Array.isArray(itemIds) ? itemIds : []).map((itemId) => `${domain}:${itemId}`),
+          included,
+        ),
+
+      // 教材をまたいでまとめて入れる・外す（短文解釈の重要語と文法など）。refs は「教材:ID」の並び。
+      setNotebookSetRefs: (setId, refs, included) =>
         set((st) => {
-          const learningNotebook = setNotebookSetItemsState(
+          const learningNotebook = setNotebookSetRefsState(
             st.learningNotebook,
             setId,
-            domain,
-            itemIds,
+            refs,
             included,
           )
-          if (!included || domain !== 'vocab') return { learningNotebook }
+          if (!included) return { learningNotebook }
           const before = new Set(st.learningNotebook.sets.find((item) => item.id === setId)?.refs ?? [])
           const added = (learningNotebook.sets.find((item) => item.id === setId)?.refs ?? [])
             .filter((ref) => !before.has(ref) && ref.startsWith('vocab:'))
@@ -1092,110 +1076,6 @@ export const useStore = create(
               { skill: 'writing', inputs: 1, scored: 0, correct: 0 },
               timestamp,
             ),
-          }
-        }),
-
-      toggleKotenWordList: (wordId) =>
-        set((st) => {
-          const saved = st.kotenWordList.includes(wordId)
-          return {
-            kotenWordList: saved
-              ? st.kotenWordList.filter((id) => id !== wordId)
-              : [...st.kotenWordList, wordId],
-            learningNotebook: setNotebookItemSaved(
-              st.learningNotebook,
-              'kotenVocab',
-              wordId,
-              !saved,
-            ),
-          }
-        }),
-
-      addManyToKotenWordList: (ids) =>
-        set((st) => ({
-          kotenWordList: [
-            ...st.kotenWordList,
-            ...ids.filter((id) => !st.kotenWordList.includes(id)),
-          ],
-        })),
-
-      toggleKotenGrammarList: (grammarId) =>
-        set((st) => {
-          const saved = st.kotenGrammarList.includes(grammarId)
-          return {
-            kotenGrammarList: saved
-              ? st.kotenGrammarList.filter((id) => id !== grammarId)
-              : [...st.kotenGrammarList, grammarId],
-            learningNotebook: setNotebookItemSaved(
-              st.learningNotebook,
-              'kotenGrammar',
-              grammarId,
-              !saved,
-            ),
-          }
-        }),
-
-      addManyToKotenGrammarList: (ids) =>
-        set((st) => ({
-          kotenGrammarList: [
-            ...st.kotenGrammarList,
-            ...ids.filter((id) => !st.kotenGrammarList.includes(id)),
-          ],
-        })),
-
-      toggleKotenCultureList: (cultureId) =>
-        set((st) => {
-          const saved = st.kotenCultureList.includes(cultureId)
-          return {
-            kotenCultureList: saved
-              ? st.kotenCultureList.filter((id) => id !== cultureId)
-              : [...st.kotenCultureList, cultureId],
-            learningNotebook: setNotebookItemSaved(
-              st.learningNotebook,
-              'kotenCulture',
-              cultureId,
-              !saved,
-            ),
-          }
-        }),
-
-      addManyToKotenCultureList: (ids) =>
-        set((st) => ({
-          kotenCultureList: [
-            ...st.kotenCultureList,
-            ...ids.filter((id) => !st.kotenCultureList.includes(id)),
-          ],
-        })),
-
-      toggleKanbunList: (domain, itemId) =>
-        set((st) => {
-          const field = {
-            vocab: 'kanbunVocabList',
-            grammar: 'kanbunGrammarList',
-            culture: 'kanbunCultureList',
-          }[domain]
-          if (!field || !itemId) return {}
-          const saved = st[field].includes(itemId)
-          return {
-            [field]: saved
-              ? st[field].filter((id) => id !== itemId)
-              : [...st[field], itemId],
-          }
-        }),
-
-      addManyToKanbunList: (domain, ids) =>
-        set((st) => {
-          const field = {
-            vocab: 'kanbunVocabList',
-            grammar: 'kanbunGrammarList',
-            culture: 'kanbunCultureList',
-          }[domain]
-          if (!field || !Array.isArray(ids)) return {}
-          return {
-            [field]: [
-              ...st[field],
-              ...ids.filter((id) => !st[field].includes(id)),
-            ],
           }
         }),
 
@@ -1564,7 +1444,7 @@ export const useStore = create(
     }),
     {
       name: 'eigo-quest',
-      version: 10,
+      version: 11,
       migrate: migratePersistedState,
       // ナビゲーション系は保存しない。
       partialize: selectProgressState,

@@ -1,32 +1,35 @@
 import { ALL_WORDS, ETYMOLOGY_PACKS, customWordList, getCustomWord } from '../data/vocab.js'
 import { isCustomWordId } from './customWords.js'
+import { LEVELS } from '../data/levels.js'
 import { PHRASES } from '../data/phrases.js'
 import { GRAMMAR_PRACTICE } from '../data/grammar.js'
 import { LISTENING_ITEMS } from '../data/listening.js'
+import { DICTATION_ITEMS } from '../data/dictation.js'
 import { KOTEN_CATEGORIES, KOTEN_WORDS } from '../data/koten.js'
 import { KOTEN_GRAMMAR, KOTEN_GRAMMAR_CATEGORIES } from '../data/koten-grammar.js'
 import { KOTEN_CULTURE, KOTEN_CULTURE_CATEGORIES } from '../data/koten-culture.js'
 import {
+  KOTEN_INTERPRETATIONS,
+  KOTEN_INTERPRETATION_FOCUS,
+  KOTEN_INTERPRETATION_LEVELS,
+} from '../data/koten-interpretations.js'
+import { KANBUN_VOCAB, KANBUN_VOCAB_CATEGORIES } from '../data/kanbun-vocab.js'
+import { KANBUN_GRAMMAR, KANBUN_GRAMMAR_CATEGORIES } from '../data/kanbun-grammar.js'
+import { KANBUN_CULTURE, KANBUN_CULTURE_CATEGORIES } from '../data/kanbun-culture.js'
+import { KANBUN_KUNDOKU_EXERCISES, KANBUN_KUNDOKU_LEVELS } from '../data/kanbun-kundoku.js'
+import { KANBUN_LEVEL_BY_ID } from '../data/kanbun-meta.js'
+import { kanbunSearchText } from '../data/kanbun-content.js'
+import {
+  NOTEBOOK_DOMAINS,
+  NOTEBOOK_DOMAIN_BY_ID,
   NOTEBOOK_DOMAIN_IDS,
   notebookRef,
   parseNotebookRef,
 } from './learningNotebook.js'
 import { grammarQuestionExplanationFor } from './grammarQuestionExplanations.js'
 
-export const NOTEBOOK_DOMAINS = Object.freeze([
-  { id: 'vocab', label: '英単語', unit: '語', emoji: '📘', color: '#4f46e5' },
-  { id: 'phrases', label: '英熟語・構文', unit: '項目', emoji: '🧩', color: '#7c3aed' },
-  { id: 'grammar', label: '英文法', unit: '問', emoji: '✍️', color: '#d97706' },
-  { id: 'listening', label: 'リスニング', unit: '問', emoji: '🎧', color: '#0284c7' },
-  { id: 'etymology', label: '語源', unit: '項目', emoji: '🌱', color: '#a21caf' },
-  { id: 'kotenVocab', label: '古典単語', unit: '語', emoji: '📜', color: '#c2410c' },
-  { id: 'kotenGrammar', label: '古典文法', unit: '項目', emoji: '🪶', color: '#b45309' },
-  { id: 'kotenCulture', label: '古典常識', unit: '項目', emoji: '🏯', color: '#6d28d9' },
-])
-
-export const NOTEBOOK_DOMAIN_BY_ID = Object.freeze(
-  Object.fromEntries(NOTEBOOK_DOMAINS.map((domain) => [domain.id, domain])),
-)
+// 教材の名前・単位は、教材データを読まずに使えるよう learningNotebook.js に置いている。ここからも同じものを出す。
+export { NOTEBOOK_DOMAINS, NOTEBOOK_DOMAIN_BY_ID }
 
 const compact = (values) => values
   .flat(Infinity)
@@ -36,14 +39,21 @@ const compact = (values) => values
 
 const searchable = (...values) => compact(values).join(' ').toLocaleLowerCase('ja')
 
-const wordById = new Map(ALL_WORDS.map((item) => [item.id, item]))
-const kotenCategoryById = new Map(KOTEN_CATEGORIES.map((item) => [item.id, item]))
-const kotenGrammarCategoryById = new Map(
-  KOTEN_GRAMMAR_CATEGORIES.map((item) => [item.id, item]),
-)
-const kotenCultureCategoryById = new Map(
-  KOTEN_CULTURE_CATEGORIES.map((item) => [item.id, item]),
-)
+const byId = (items) => new Map(items.map((item) => [item.id, item]))
+
+const wordById = byId(ALL_WORDS)
+const levelById = byId(LEVELS)
+const kotenCategoryById = byId(KOTEN_CATEGORIES)
+const kotenGrammarCategoryById = byId(KOTEN_GRAMMAR_CATEGORIES)
+const kotenCultureCategoryById = byId(KOTEN_CULTURE_CATEGORIES)
+const interpretationLevelById = byId(KOTEN_INTERPRETATION_LEVELS)
+const kundokuLevelById = byId(KANBUN_KUNDOKU_LEVELS)
+
+// 級は「英検準2級」のように、画面の級カードと同じ名前で出す。
+const examLevel = (levelId) => {
+  const level = levelById.get(levelId)
+  return level ? `英検${level.label}` : ''
+}
 
 const adapt = (domain, items, mapper) => items.map((raw) => {
   const mapped = mapper(raw)
@@ -76,8 +86,18 @@ const vocabEntry = (item) => ({
   subtitle: item.meaning,
   detail: item.example?.en ?? '',
   category: compact([item.pos, item.field]).join('・'),
-  level: item.level ? `英検${item.level}級` : '',
+  level: examLevel(item.level),
   search: [item.meanings, item.example?.ja, item.phonetic],
+})
+
+// 漢語・漢文法・漢文常識は同じ形（見出し・答え・解説・分野・段階）なので、分野の表だけ差し替える。
+const kanbunEntry = (categoryById) => (item) => ({
+  title: item.title,
+  subtitle: item.answer,
+  detail: item.detail ?? '',
+  category: categoryById.get(item.category)?.label ?? '',
+  level: KANBUN_LEVEL_BY_ID[item.level]?.label ?? '',
+  search: [kanbunSearchText(item)],
 })
 
 const CATALOG = Object.freeze({
@@ -87,7 +107,7 @@ const CATALOG = Object.freeze({
     subtitle: item.meaning,
     detail: item.example?.en ?? item.note ?? '',
     category: item.kind === 'syntax' ? '構文' : item.category === 'expression' ? '表現' : '熟語',
-    level: item.level ? `英検${item.level}級` : '',
+    level: examLevel(item.level),
     search: [item.meanings, item.example?.ja, item.origin, item.note],
   })),
   grammar: adapt('grammar', GRAMMAR_PRACTICE, (item) => ({
@@ -97,7 +117,7 @@ const CATALOG = Object.freeze({
       ? item.explain
       : grammarQuestionExplanationFor(item),
     category: item.topic,
-    level: item.level ? `英検${item.level}級` : '',
+    level: examLevel(item.level),
     search: [item.q, item.choices, item.sentence?.ja],
   })),
   listening: adapt('listening', LISTENING_ITEMS, (item) => ({
@@ -105,8 +125,16 @@ const CATALOG = Object.freeze({
     subtitle: item.questionJa || item.question,
     detail: item.question,
     category: item.type === 'conversation' ? '会話' : 'ナレーション',
-    level: item.level ? `英検${item.level}級` : '',
+    level: examLevel(item.level),
     search: [item.audio?.map((segment) => segment.text), item.choices?.map((choice) => choice.text), item.explain],
+  })),
+  dictation: adapt('dictation', DICTATION_ITEMS, (item) => ({
+    title: item.text,
+    subtitle: item.ja,
+    detail: item.focus ?? '',
+    category: compact([item.topic, item.kind]).join('・'),
+    level: examLevel(item.level),
+    search: [item.topic, item.kind],
   })),
   etymology: adapt('etymology', ETYMOLOGY_PACKS, (item) => {
     const words = item.studyIds.map((id) => wordById.get(id)?.word).filter(Boolean)
@@ -143,6 +171,25 @@ const CATALOG = Object.freeze({
     level: item.level === 'basic' ? '基礎' : '標準',
     search: [item.prompt, item.detail, item.examTip, item.scene?.text, item.scene?.note],
   })),
+  kotenInterpretation: adapt('kotenInterpretation', KOTEN_INTERPRETATIONS, (item) => ({
+    title: item.text,
+    subtitle: item.translation,
+    detail: item.question ?? '',
+    category: KOTEN_INTERPRETATION_FOCUS[item.focus]?.label ?? '',
+    level: interpretationLevelById.get(item.level)?.label ?? '',
+    search: [item.source, item.choices, item.vocabTip, item.grammarTip],
+  })),
+  kanbunVocab: adapt('kanbunVocab', KANBUN_VOCAB, kanbunEntry(byId(KANBUN_VOCAB_CATEGORIES))),
+  kanbunGrammar: adapt('kanbunGrammar', KANBUN_GRAMMAR, kanbunEntry(byId(KANBUN_GRAMMAR_CATEGORIES))),
+  kanbunCulture: adapt('kanbunCulture', KANBUN_CULTURE, kanbunEntry(byId(KANBUN_CULTURE_CATEGORIES))),
+  kanbunKundoku: adapt('kanbunKundoku', KANBUN_KUNDOKU_EXERCISES, (item) => ({
+    title: item.title,
+    subtitle: item.kakikudashi,
+    detail: item.translation ?? '',
+    category: kundokuLevelById.get(item.level)?.label ?? '',
+    level: KANBUN_LEVEL_BY_ID[item.level]?.label ?? '',
+    search: [item.marked, item.clue, item.pitfall],
+  })),
 })
 
 const CATALOG_MAPS = Object.freeze(
@@ -162,7 +209,7 @@ export const NOTEBOOK_TOTAL_ITEMS = Object.values(NOTEBOOK_CATALOG_COUNTS)
   .reduce((sum, count) => sum + count, 0)
 
 // 自作単語は「全教材の件数」には数えない（NOTEBOOK_TOTAL_ITEMS は辞書の固定値）。
-// 一覧と引き当てにだけ後ろから足し、メモ・問題集・学習導線を共有する。
+// 一覧と引き当てにだけ後ろから足し、メモ・単語帳・学習導線を共有する。
 const customVocabItems = () => adapt('vocab', customWordList(), vocabEntry)
 
 const customVocabItem = (itemId) => {
@@ -195,36 +242,18 @@ export function searchNotebookItems(domain, query = '') {
   return items.filter((item) => terms.every((term) => item.searchText.includes(term)))
 }
 
-// 古典の旧登録リストは、ノートの保存と双方向にそろえて使い続けている。
-// 英単語の旧保存配列（myList）は、読み込むときに単語帳「マイ単語」とノートの保存へ移している。
-export function notebookLegacySavedIds(state, domain) {
-  if (domain === 'kotenVocab') return Array.isArray(state?.kotenWordList) ? state.kotenWordList : []
-  if (domain === 'kotenGrammar') return Array.isArray(state?.kotenGrammarList) ? state.kotenGrammarList : []
-  if (domain === 'kotenCulture') return Array.isArray(state?.kotenCultureList) ? state.kotenCultureList : []
-  return []
-}
-
+// 以前の「マイ単語」や古典・漢文の登録リストは、読み込むときにノートの保存と単語帳へ移している。
+// 保存中かどうかは、ノートの保存だけを見ればよい。
 export function isNotebookItemSaved(state, domain, itemId) {
   const ref = notebookRef(domain, itemId)
   if (!ref) return false
-  if (state?.learningNotebook?.entries?.[ref]?.saved === true) return true
-  return notebookLegacySavedIds(state, domain).includes(itemId)
+  return state?.learningNotebook?.entries?.[ref]?.saved === true
 }
 
 export function notebookSavedRefs(state = {}) {
   const result = []
-  const seen = new Set()
-  const push = (ref) => {
-    if (!ref || seen.has(ref) || !resolveNotebookItem(ref)) return
-    seen.add(ref)
-    result.push(ref)
-  }
-
-  for (const domain of NOTEBOOK_DOMAIN_IDS) {
-    for (const itemId of notebookLegacySavedIds(state, domain)) push(notebookRef(domain, itemId))
-  }
   for (const [ref, entry] of Object.entries(state.learningNotebook?.entries ?? {})) {
-    if (entry?.saved) push(ref)
+    if (entry?.saved && resolveNotebookItem(ref)) result.push(ref)
   }
   return result
 }
@@ -238,14 +267,25 @@ export function notebookSavedCounts(state = {}) {
   return counts
 }
 
-const srsForDomain = (state, domain) => {
-  if (['vocab', 'phrases', 'grammar', 'listening'].includes(domain)) return state?.srs ?? {}
-  if (domain === 'etymology') return state?.etymologySrs ?? {}
-  if (domain === 'kotenVocab') return state?.kotenSrs ?? {}
-  if (domain === 'kotenGrammar') return state?.kotenGrammarSrs ?? {}
-  if (domain === 'kotenCulture') return state?.kotenCultureSrs ?? {}
-  return {}
-}
+// 教材ごとの復習記録の置き場所。英単語・熟語・文法・リスニング・ディクテーションは同じ記録を共有する。
+const SRS_FIELD_BY_DOMAIN = Object.freeze({
+  vocab: 'srs',
+  phrases: 'srs',
+  grammar: 'srs',
+  listening: 'srs',
+  dictation: 'srs',
+  etymology: 'etymologySrs',
+  kotenVocab: 'kotenSrs',
+  kotenGrammar: 'kotenGrammarSrs',
+  kotenCulture: 'kotenCultureSrs',
+  kotenInterpretation: 'kotenInterpretationSrs',
+  kanbunVocab: 'kanbunVocabSrs',
+  kanbunGrammar: 'kanbunGrammarSrs',
+  kanbunCulture: 'kanbunCultureSrs',
+  kanbunKundoku: 'kanbunKundokuSrs',
+})
+
+const srsForDomain = (state, domain) => state?.[SRS_FIELD_BY_DOMAIN[domain]] ?? {}
 
 export function notebookItemProgress(state, domain, itemId, day) {
   const entry = srsForDomain(state, domain)[itemId]

@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { useStore } from '../store/useStore.js'
+import { WordBookToggle } from '../components/WordListSheet.jsx'
+import { kanbunNotebookDomain } from '../lib/wordBookLaunch.js'
 import {
   KANBUN_COLLECTIONS,
   kanbunDomainMeta,
@@ -13,7 +15,6 @@ import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
 import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
 import { answeredSessionIndexes, growDeck, restartSessionCount } from '../lib/session.js'
 import {
-  CardSaveToggle,
   CardStudyFooter,
   CardSwipeRegion,
   StudyAnswerReselect,
@@ -73,10 +74,8 @@ export function KanbunStudyScreen() {
   const params = useStore((state) => state.params)
   const returnTo = useStore((state) => state.returnTo)
   const review = useStore((state) => state.reviewKanbun)
-  const toggleSaved = useStore((state) => state.toggleKanbunList)
   const domain = KANBUN_COLLECTIONS[params.domain] ? params.domain : 'vocab'
   const meta = kanbunDomainMeta(domain)
-  const savedIds = useStore((state) => state[meta.listField])
   const revealAll = useStore((state) => state.settings.revealAnswers)
   // size を指定しないときは設定した問題数まで絞る。
   const buildFor = (ids, size) => {
@@ -199,7 +198,6 @@ export function KanbunStudyScreen() {
     )
   }
 
-  const saved = savedIds.includes(item.id)
   const level = KANBUN_LEVEL_BY_ID[item.level]
 
   return (
@@ -242,13 +240,7 @@ export function KanbunStudyScreen() {
               toolbar
               onChange={(on) => setRevealed(on)}
             />
-            <CardSaveToggle
-              saved={saved}
-              onToggle={() => toggleSaved(domain, item.id)}
-              label="登録"
-              savedLabel={`${item.title}を登録から外す`}
-              unsavedLabel={`${item.title}を登録する`}
-            />
+            <WordBookToggle domain={kanbunNotebookDomain(domain)} itemId={item.id} itemLabel={item.title} />
           </>
         )}
       />

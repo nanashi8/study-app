@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
+import { WordBookToggle } from '../components/WordListSheet.jsx'
 import { buildDictationDeck, DICTATION_PROFILES } from '../data/dictation.js'
 import { scoreDictationSelection } from '../lib/dictation.js'
 import {
@@ -291,6 +292,9 @@ export function DictationPlayScreen() {
               }
             }}
           />
+        )}
+        trailingActions={(
+          <WordBookToggle domain="dictation" itemId={item?.id} itemLabel={item?.topic ? `${item.topic}の英文` : 'この英文'} />
         )}
       />
 

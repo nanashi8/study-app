@@ -17,6 +17,8 @@ import {
   resetProgressEverywhere,
 } from '../src/lib/cloudSync.js'
 import {
+  KANBUN_SAVED_SET_ID,
+  KOTEN_SAVED_SET_ID,
   createStarterLearningNotebook,
   foldLegacyMyWords,
 } from '../src/lib/learningNotebook.js'
@@ -303,9 +305,6 @@ test('学習記録の全永続項目は端末保存・画面発行・クラウ�
     kanbunGrammarSrs: { kgw001: entry(22) },
     kanbunCultureSrs: { kcw001: entry(23) },
     kanbunKundokuSrs: { kk001: entry(24) },
-    kanbunVocabList: ['kv001'],
-    kanbunGrammarList: ['kgw001'],
-    kanbunCultureList: ['kcw001'],
     battleStars: 123,
     battleXpSpent: 50,
     battleStoryStep: 5,
@@ -320,9 +319,8 @@ test('学習記録の全永続項目は端末保存・画面発行・クラウ�
   assert.deepEqual(restored.kanbunGrammarSrs, portable.kanbunGrammarSrs)
   assert.deepEqual(restored.kanbunCultureSrs, portable.kanbunCultureSrs)
   assert.deepEqual(restored.kanbunKundokuSrs, portable.kanbunKundokuSrs)
-  assert.deepEqual(restored.kanbunVocabList, ['kv001'])
-  assert.deepEqual(restored.kanbunGrammarList, ['kgw001'])
-  assert.deepEqual(restored.kanbunCultureList, ['kcw001'])
+  // 漢文の登録リストは保存項目ではなく、単語帳（learningNotebook）で持ち運ぶ。
+  assert.equal('kanbunVocabList' in restored, false)
 
   const restoredFromCloud = progressStateFromCloud(portable, state)
   for (const field of [
@@ -330,12 +328,19 @@ test('学習記録の全永続項目は端末保存・画面発行・クラウ�
     'kanbunGrammarSrs',
     'kanbunCultureSrs',
     'kanbunKundokuSrs',
-    'kanbunVocabList',
-    'kanbunGrammarList',
-    'kanbunCultureList',
   ]) {
     assert.deepEqual(restoredFromCloud[field], portable[field], field)
   }
+  // 以前のクラウド保存の漢文の登録リストは、単語帳「漢文の登録リスト」へ移して読み込む。
+  const oldKanbunCloud = progressStateFromCloud(
+    { ...portable, kanbunVocabList: ['kv001'], kanbunCultureList: ['kcw001'] },
+    state,
+  )
+  assert.equal('kanbunVocabList' in oldKanbunCloud, false)
+  assert.deepEqual(
+    oldKanbunCloud.learningNotebook.sets.find((set) => set.id === KANBUN_SAVED_SET_ID)?.refs,
+    ['kanbunVocab:kv001', 'kanbunCulture:kcw001'],
+  )
 
   const progressSource = readFileSync(
     new URL('../src/screens/Progress.jsx', import.meta.url),
@@ -349,7 +354,7 @@ test('学習記録の全永続項目は端末保存・画面発行・クラウ�
   assert.match(storeSource, /partialize:\s*selectProgressState/)
 })
 
-test('履歴リセットの7分類は全48永続項目を漏れなく一度だけ扱う', () => {
+test('履歴リセットの7分類は全42永続項目を漏れなく一度だけ扱う', () => {
   const groupIds = PROGRESS_RESET_GROUPS.map((group) => group.id)
   const combinedFields = [
     ...RESETTABLE_PROGRESS_FIELDS,
@@ -358,10 +363,12 @@ test('履歴リセットの7分類は全48永続項目を漏れなく一度だ�
 
   assert.deepEqual(groupIds, ALL_PROGRESS_RESET_GROUP_IDS)
   assert.equal(new Set(groupIds).size, groupIds.length, '分類IDを重複させない')
-  // 以前の「マイ単語」（myList）は単語帳の1冊へ移したので、保存項目には持たない。
-  assert.equal(PERSISTED_PROGRESS_FIELDS.length, 48)
+  // 以前の「マイ単語」（myList）と古典・漢文の登録リストは単語帳へ移したので、保存項目には持たない。
+  assert.equal(PERSISTED_PROGRESS_FIELDS.length, 42)
   assert.equal(PERSISTED_PROGRESS_FIELDS.includes('myList'), false)
-  assert.equal(RESETTABLE_PROGRESS_FIELDS.length, 45)
+  assert.equal(PERSISTED_PROGRESS_FIELDS.includes('kotenWordList'), false)
+  assert.equal(PERSISTED_PROGRESS_FIELDS.includes('kanbunCultureList'), false)
+  assert.equal(RESETTABLE_PROGRESS_FIELDS.length, 39)
   assert.equal(RESET_PRESERVED_PROGRESS_FIELDS.length, 3)
   assert.equal(new Set(combinedFields).size, combinedFields.length, '保存項目を二重分類しない')
   assert.deepEqual(
@@ -555,6 +562,12 @@ test('進捗コードは廃止済みデータを再保存せず、旧コード�
   assert.deepEqual(restored.vnCleared, ['ep1_first_day'])
   useStore.getState().importCode(legacyCode)
   assert.equal('vnCleared' in useStore.getState(), false)
+  // 以前のコードの古典の登録リストは、読み込むと単語帳「古典の登録リスト」に入り、保存項目には残らない。
+  assert.equal('kotenWordList' in useStore.getState(), false)
+  assert.deepEqual(
+    useStore.getState().learningNotebook.sets.find((set) => set.id === KOTEN_SAVED_SET_ID)?.refs,
+    ['kotenVocab:k001', 'kotenGrammar:kg_neg_zu', 'kotenCulture:kc001'],
+  )
   assert.deepEqual(restored.kotenWordList, ['k001'])
   assert.deepEqual(restored.kotenGrammarList, ['kg_neg_zu'])
   assert.deepEqual(restored.kotenCultureList, ['kc001'])
@@ -583,8 +596,15 @@ test('進捗コードは廃止済みデータを再保存せず、旧コード�
     new URL('../src/store/useStore.js', import.meta.url),
     'utf8',
   )
-  assert.match(storeSource, /version: 10/)
+  assert.match(storeSource, /version: 11/)
   assert.match(storeSource, /migrate: migratePersistedState/)
+  // 端末保存（版10まで）の登録リストも、読み込み時に単語帳へ移してから保存項目を捨てる。
+  const migrated = migratePersistedState({ ...base })
+  assert.equal('kotenCultureList' in migrated, false)
+  assert.deepEqual(
+    migrated.learningNotebook.sets.find((set) => set.id === KOTEN_SAVED_SET_ID)?.refs,
+    ['kotenVocab:k001', 'kotenGrammar:kg_neg_zu', 'kotenCulture:kc001'],
+  )
   assert.throws(() => decodeProgress(encodeProgress({ ...base, srs: [] })), /srs/)
   assert.throws(
     () => decodeProgress(encodeProgress({ ...base, battleRelicLevel: 100 })),

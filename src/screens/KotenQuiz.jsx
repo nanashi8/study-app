@@ -1,13 +1,12 @@
 import { useMemo, useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
+import { WordBookToggle } from '../components/WordListSheet.jsx'
 import { getKoten, pickKotenDistractors } from '../data/koten.js'
 import { Button } from '../components/ui.jsx'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
 import { KotenText, KotenWord } from '../components/KotenFurigana.jsx'
 import {
-  Bookmark,
-  BookmarkFilled,
   Close,
   Check,
   ArrowRight,
@@ -45,8 +44,6 @@ export function KotenQuizScreen() {
   const back = useStore((s) => s.back)
   const reviewKoten = useStore((s) => s.reviewKoten)
   const reviseReview = useStore((state) => state.reviseReview)
-  const kotenWordList = useStore((s) => s.kotenWordList)
-  const toggleKotenWordList = useStore((s) => s.toggleKotenWordList)
 
   const [seed, setSeed] = useState(0)
   const poolSize = (params.ids ?? []).length
@@ -69,7 +66,6 @@ export function KotenQuizScreen() {
   const receipts = useAnswerReceipts()
 
   const word = deck[i]
-  const saved = word ? kotenWordList.includes(word.id) : false
   const options = useMemo(() => {
     if (!word) return []
     // 「3択＋わからない」にそろえるため、誤答は2つだけ作る。
@@ -262,18 +258,7 @@ export function KotenQuizScreen() {
               <p className={cx('font-display text-lg font-extrabold', isCorrectPick ? 'text-emerald-600' : 'text-rose-500')}>
                 {isCorrectPick ? '正解！🎉' : selected === UNKNOWN_CHOICE_ID ? '答えはこちら' : 'ざんねん…'}
               </p>
-              <button
-                onClick={() => toggleKotenWordList(word.id)}
-                aria-label={saved ? `${word.word}を登録単語から外す` : `${word.word}を登録単語へ追加`}
-                aria-pressed={saved}
-                className={cx(
-                  'flex items-center gap-1 rounded-xl px-2.5 py-2 text-[11px] font-extrabold active:scale-95',
-                  saved ? 'bg-amber-100 text-amber-700' : 'bg-paper text-ink/45',
-                )}
-              >
-                {saved ? <BookmarkFilled size={16} /> : <Bookmark size={16} />}
-                {saved ? '登録済み' : '登録'}
-              </button>
+              <WordBookToggle domain="kotenVocab" itemId={word.id} itemLabel={word.word} />
             </div>
             <p className="mt-1 font-bold text-ink">
               <span className="font-display"><KotenWord word={word} /></span>

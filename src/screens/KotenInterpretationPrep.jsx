@@ -1,16 +1,17 @@
 import { useMemo, useState } from 'react'
 import { useStore } from '../store/useStore.js'
+import { WordBookToggle, useWordBookPicker } from '../components/WordListSheet.jsx'
+import { notebookRefs } from '../lib/learningNotebook.js'
 import { getKoten } from '../data/koten.js'
 import { getKotenGrammar, KOTEN_GRAMMAR_CATEGORIES } from '../data/koten-grammar.js'
 import { getKotenInterpretation } from '../data/koten-interpretations.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
-import { Button, Card, Chip, cx, IconButton } from '../components/ui.jsx'
+import { Button, Card, Chip, cx } from '../components/ui.jsx'
 import { KotenText, KotenWord } from '../components/KotenFurigana.jsx'
 import {
   ArrowRight,
   Book,
   Bookmark,
-  BookmarkFilled,
   Check,
   ChevronDown,
   ChevronUp,
@@ -23,13 +24,9 @@ const uniqueById = (items) => [
 export function KotenInterpretationPrepScreen() {
   const params = useStore((state) => state.params)
   const navigate = useStore((state) => state.navigate)
-  const wordList = useStore((state) => state.kotenWordList)
-  const grammarList = useStore((state) => state.kotenGrammarList)
+  const wordBookSets = useStore((state) => state.learningNotebook.sets)
   const kotenSrs = useStore((state) => state.kotenSrs)
-  const toggleWord = useStore((state) => state.toggleKotenWordList)
-  const toggleGrammar = useStore((state) => state.toggleKotenGrammarList)
-  const addWords = useStore((state) => state.addManyToKotenWordList)
-  const addGrammar = useStore((state) => state.addManyToKotenGrammarList)
+  const picker = useWordBookPicker()
   const [tab, setTab] = useState('words')
   const [openGrammarId, setOpenGrammarId] = useState(null)
 
@@ -78,9 +75,12 @@ export function KotenInterpretationPrepScreen() {
 
   const wordIds = words.map((word) => word.id)
   const grammarIds = grammar.map((item) => item.id)
-  const allWordsSaved = wordIds.length > 0 && wordIds.every((id) => wordList.includes(id))
-  const allGrammarSaved =
-    grammarIds.length > 0 && grammarIds.every((id) => grammarList.includes(id))
+  // 重要語・文法が、どれも1冊以上の単語帳に入っているか。
+  const wordRefs = notebookRefs('kotenVocab', wordIds)
+  const grammarRefs = notebookRefs('kotenGrammar', grammarIds)
+  const inAnyBook = (ref) => wordBookSets.some((set) => set.refs.includes(ref))
+  const allWordsSaved = wordRefs.length > 0 && wordRefs.every(inAnyBook)
+  const allGrammarSaved = grammarRefs.length > 0 && grammarRefs.every(inAnyBook)
   const learnedWords = words.filter((word) => kotenSrs[word.id]).length
 
   const tabs = [
@@ -172,23 +172,23 @@ export function KotenInterpretationPrepScreen() {
             <Button
               full
               variant={allWordsSaved ? 'soft' : 'hint'}
-              disabled={allWordsSaved}
-              onClick={() => addWords(wordIds)}
+              disabled={!wordRefs.length}
+              onClick={() => picker.open(wordRefs, `短文の重要語${wordRefs.length}語`)}
+              aria-haspopup="dialog"
             >
               {allWordsSaved ? (
                 <>
-                  <Check size={17} /> 全語を登録済み
+                  <Check size={17} /> 全語が単語帳に入っています
                 </>
               ) : (
                 <>
-                  <Bookmark size={17} /> 全語を登録単語に追加
+                  <Bookmark size={17} /> 全語を単語帳に入れる
                 </>
               )}
             </Button>
 
             <div className="mt-3 space-y-2">
               {words.map((word) => {
-                const saved = wordList.includes(word.id)
                 const learned = Boolean(kotenSrs[word.id])
                 return (
                   <div key={word.id} className="flex items-start gap-2 rounded-2xl bg-white p-3 shadow-sm">
@@ -209,14 +209,7 @@ export function KotenInterpretationPrepScreen() {
                         </p>
                       )}
                     </div>
-                    <IconButton
-                      onClick={() => toggleWord(word.id)}
-                      className={saved ? 'text-amber-600' : 'text-ink/25'}
-                      aria-label={saved ? `${word.word}を登録から外す` : `${word.word}を登録する`}
-                      aria-pressed={saved}
-                    >
-                      {saved ? <BookmarkFilled size={20} /> : <Bookmark size={20} />}
-                    </IconButton>
+                    <WordBookToggle domain="kotenVocab" itemId={word.id} itemLabel={word.word} />
                   </div>
                 )
               })}
@@ -229,23 +222,23 @@ export function KotenInterpretationPrepScreen() {
             <Button
               full
               variant={allGrammarSaved ? 'soft' : 'hint'}
-              disabled={allGrammarSaved}
-              onClick={() => addGrammar(grammarIds)}
+              disabled={!grammarRefs.length}
+              onClick={() => picker.open(grammarRefs, `短文の文法${grammarRefs.length}項目`)}
+              aria-haspopup="dialog"
             >
               {allGrammarSaved ? (
                 <>
-                  <Check size={17} /> 全項目を登録済み
+                  <Check size={17} /> 全項目が単語帳に入っています
                 </>
               ) : (
                 <>
-                  <Bookmark size={17} /> 全項目を登録文法に追加
+                  <Bookmark size={17} /> 全項目を単語帳に入れる
                 </>
               )}
             </Button>
 
             <div className="mt-3 space-y-2">
               {grammar.map((item) => {
-                const saved = grammarList.includes(item.id)
                 const open = openGrammarId === item.id
                 const category = KOTEN_GRAMMAR_CATEGORIES.find(
                   (meta) => meta.id === item.category,
@@ -266,14 +259,7 @@ export function KotenInterpretationPrepScreen() {
                         </div>
                         <p className="mt-1 text-xs font-bold text-ink/55">{item.meaning}</p>
                       </button>
-                      <IconButton
-                        onClick={() => toggleGrammar(item.id)}
-                        className={saved ? 'text-amber-600' : 'text-ink/25'}
-                        aria-label={saved ? `${item.title}を登録から外す` : `${item.title}を登録する`}
-                        aria-pressed={saved}
-                      >
-                        {saved ? <BookmarkFilled size={20} /> : <Bookmark size={20} />}
-                      </IconButton>
+                      <WordBookToggle domain="kotenGrammar" itemId={item.id} itemLabel={item.title} />
                       <button
                         onClick={() => setOpenGrammarId(open ? null : item.id)}
                         aria-label={open ? '説明を閉じる' : '説明を開く'}
@@ -345,6 +331,7 @@ export function KotenInterpretationPrepScreen() {
           問題を解く <ArrowRight size={18} />
         </Button>
       </div>
+      {picker.sheet}
     </div>
   )
 }

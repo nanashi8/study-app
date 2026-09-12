@@ -1,5 +1,6 @@
 import { useMemo, useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
+import { WordBookToggle } from '../components/WordListSheet.jsx'
 import { getKoten } from '../data/koten.js'
 import { getKotenGrammar } from '../data/koten-grammar.js'
 import {
@@ -12,8 +13,6 @@ import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
 import { KotenText, KotenWord } from '../components/KotenFurigana.jsx'
 import {
   ArrowRight,
-  Bookmark,
-  BookmarkFilled,
   Check,
   Close,
 } from '../components/Icons.jsx'
@@ -45,33 +44,12 @@ function buildDeck(ids, size = 12, preserveOrder = false) {
   return size > 0 ? items.slice(0, size) : items
 }
 
-function SaveButton({ saved, onClick, label }) {
-  return (
-    <button
-      onClick={onClick}
-      aria-label={saved ? `${label}を登録から外す` : `${label}を登録する`}
-      aria-pressed={saved}
-      className={cx(
-        'flex shrink-0 items-center gap-1 rounded-xl px-2.5 py-2 text-[11px] font-extrabold transition-colors active:scale-95',
-        saved ? 'bg-amber-100 text-amber-700' : 'bg-paper text-ink/45',
-      )}
-    >
-      {saved ? <BookmarkFilled size={16} /> : <Bookmark size={16} />}
-      {saved ? '登録済み' : '登録'}
-    </button>
-  )
-}
-
 export function KotenInterpretationQuizScreen() {
   const params = useStore((state) => state.params)
   const navigate = useStore((state) => state.navigate)
   const returnTo = useStore((state) => state.returnTo)
   const review = useStore((state) => state.reviewKotenInterpretation)
   const reviseReview = useStore((state) => state.reviseReview)
-  const wordList = useStore((state) => state.kotenWordList)
-  const grammarList = useStore((state) => state.kotenGrammarList)
-  const toggleWord = useStore((state) => state.toggleKotenWordList)
-  const toggleGrammar = useStore((state) => state.toggleKotenGrammarList)
 
   const [run, setRun] = useState(0)
   const [poolSize] = useState(() => buildDeck(params.ids, 0, params.preserveOrder).length)
@@ -319,11 +297,7 @@ export function KotenInterpretationQuizScreen() {
                         <KotenText>{word.meanings.join('・')}</KotenText>
                       </div>
                     </div>
-                    <SaveButton
-                      saved={wordList.includes(word.id)}
-                      onClick={() => toggleWord(word.id)}
-                      label={word.word}
-                    />
+                    <WordBookToggle domain="kotenVocab" itemId={word.id} itemLabel={word.word} />
                   </div>
                 ))}
               </div>
@@ -344,11 +318,7 @@ export function KotenInterpretationQuizScreen() {
                       <div className="font-display text-sm font-extrabold text-ink">{grammar.title}</div>
                       <div className="mt-0.5 text-xs font-bold text-ink/55">{grammar.meaning}</div>
                     </div>
-                    <SaveButton
-                      saved={grammarList.includes(grammar.id)}
-                      onClick={() => toggleGrammar(grammar.id)}
-                      label={grammar.title}
-                    />
+                    <WordBookToggle domain="kotenGrammar" itemId={grammar.id} itemLabel={grammar.title} />
                   </div>
                 ))}
               </div>

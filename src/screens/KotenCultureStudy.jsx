@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useStore } from '../store/useStore.js'
+import { WordBookToggle } from '../components/WordListSheet.jsx'
 import {
   getKotenCulture,
   KOTEN_CULTURE_CATEGORIES,
@@ -15,7 +16,6 @@ import { KotenText } from '../components/KotenFurigana.jsx'
 import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
 import { answeredSessionIndexes, growDeck, restartSessionCount } from '../lib/session.js'
 import {
-  CardSaveToggle,
   CardStudyFooter,
   CardSwipeRegion,
   StudyAnswerReselect,
@@ -51,8 +51,6 @@ export function KotenCultureStudyScreen() {
   const params = useStore((state) => state.params)
   const returnTo = useStore((state) => state.returnTo)
   const reviewCulture = useStore((state) => state.reviewKotenCulture)
-  const savedIds = useStore((state) => state.kotenCultureList)
-  const toggleSaved = useStore((state) => state.toggleKotenCultureList)
   const settings = useStore((state) => state.settings)
   const revealAll = settings.revealAnswers
 
@@ -82,7 +80,6 @@ export function KotenCultureStudyScreen() {
     ? KOTEN_CULTURE_CATEGORIES.find((candidate) => candidate.id === item.category)
     : null
   const level = item ? KOTEN_CULTURE_LEVELS[item.level] : null
-  const saved = item ? savedIds.includes(item.id) : false
 
   // コンテンツ画面の「戻る」は履歴でなく、古典常識の内容選択画面へ。
   const backToKotenCulture = () => params.returnTo?.screen
@@ -194,13 +191,7 @@ export function KotenCultureStudyScreen() {
               toolbar
               onChange={(on) => setFlipped(on)}
             />
-            <CardSaveToggle
-              saved={saved}
-              onToggle={() => toggleSaved(item.id)}
-              label="登録"
-              savedLabel={`${item.title}を登録から外す`}
-              unsavedLabel={`${item.title}を登録する`}
-            />
+            <WordBookToggle domain="kotenCulture" itemId={item.id} itemLabel={item.title} />
           </>
         )}
       />

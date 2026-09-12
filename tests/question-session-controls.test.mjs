@@ -158,11 +158,11 @@ test('全6暗記カードが前後移動・数字進捗・意味・保存を1本
     assert.match(study, /progressControl=\{\(\s*<SessionCounter/, `${path}: 数字進捗がバーの中にない`)
     assert.match(study, /trailingActions=\{\(\s*<>/, `${path}: 表示切替と保存がバーの中にない`)
     assert.match(study, /<RevealAnswersToggle[\s\S]*?toolbar/, `${path}: 表示切替がバー用の形でない`)
-    assert.match(study, /<CardSaveToggle/, `${path}: 保存切替がない`)
+    assert.match(study, /<CardSaveToggle|<WordBookToggle/, `${path}: 保存切替がない`)
     assert.equal((study.match(/<QuestionSessionControls/g) ?? []).length, 1, `${path}: バーが1本でない`)
     assert.equal((study.match(/<SessionCounter/g) ?? []).length, 1, `${path}: 数字進捗が1つでない`)
     assert.equal((study.match(/<RevealAnswersToggle/g) ?? []).length, 1, `${path}: 表示切替が1つでない`)
-    assert.equal((study.match(/<CardSaveToggle/g) ?? []).length, 1, `${path}: 保存切替が1つでない`)
+    assert.equal((study.match(/<CardSaveToggle|<WordBookToggle/g) ?? []).length, 1, `${path}: 保存切替が1つでない`)
     // カード上の保存ボタンとの二重表示・画面ごとの音声設定ボタンは残さない。
     assert.doesNotMatch(study, /<BookmarkFilled|<Bookmark\b/, `${path}: カード側に保存ボタンが残っている`)
     assert.doesNotMatch(study, /SpeechSettingsButton/, `${path}: バーの外に音声設定が残っている`)
@@ -185,19 +185,25 @@ test('保存切替は共通部品で、44px以上・状態名・読み上げ名�
   assert.match(source, /min-h-11/)
   assert.match(source, /saved \? <BookmarkFilled size=\{17\} \/> : <Bookmark size=\{17\} \/>/)
 
-  // 保存先の名前は画面ごとに違うので、読み上げ名も画面ごとに渡す。
-  const labels = {
-    'src/screens/VocabStudy.jsx': ['単語帳', '入れる単語帳を選ぶ'],
-    'src/screens/PhraseStudy.jsx': ['ノート', 'マイ学習ノートへ保存'],
-    'src/screens/KotenStudy.jsx': ['登録', '登録単語へ追加'],
-    'src/screens/KotenGrammarStudy.jsx': ['登録', '登録文法へ追加'],
-    'src/screens/KotenCultureStudy.jsx': ['登録', '登録する'],
-    'src/screens/KanbunStudy.jsx': ['登録', '登録する'],
+  // 保存先はどの教材も「単語帳」。単語は画面で、ほかの教材は共通の単語帳ボタン（WordBookToggle）で名前と読み上げ名を渡す。
+  const vocab = read('src/screens/VocabStudy.jsx')
+  assert.match(vocab, /label="単語帳"/)
+  assert.match(vocab, /入れる単語帳を選ぶ/)
+  const sheet = read('src/components/WordListSheet.jsx')
+  assert.match(sheet, /export function WordBookToggle/)
+  assert.match(sheet, /<CardSaveToggle[\s\S]*?label="単語帳"/)
+  assert.match(sheet, /unsavedLabel=\{`\$\{itemLabel\}を入れる単語帳を選ぶ`\}/)
+  const toggles = {
+    'src/screens/PhraseStudy.jsx': '"phrases"',
+    'src/screens/KotenStudy.jsx': '"kotenVocab"',
+    'src/screens/KotenGrammarStudy.jsx': '"kotenGrammar"',
+    'src/screens/KotenCultureStudy.jsx': '"kotenCulture"',
+    'src/screens/KanbunStudy.jsx': '{kanbunNotebookDomain(domain)}',
   }
-  for (const [path, [label, spoken]] of Object.entries(labels)) {
+  for (const [path, domain] of Object.entries(toggles)) {
     const study = read(path)
-    assert.match(study, new RegExp(`label="${label}"`), `${path}: 保存切替の名前がない`)
-    assert.match(study, new RegExp(spoken), `${path}: 保存先を読み上げていない`)
+    assert.ok(study.includes(`<WordBookToggle domain=${domain}`), `${path}: 単語帳ボタンがない`)
+    assert.doesNotMatch(study, /label="(?:ノート|登録)"/, `${path}: 以前の保存先の名前が残っている`)
   }
 })
 

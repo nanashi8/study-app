@@ -147,7 +147,6 @@ test('古文単語・古典常識の主要画面は共通ルビ表示を使う',
     'KotenCulture.jsx',
     'KotenCultureStudy.jsx',
     'KotenCultureQuiz.jsx',
-    'KotenSaved.jsx',
     'KotenInterpretationPrep.jsx',
     'KotenInterpretationQuiz.jsx',
   ]
