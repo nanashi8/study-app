@@ -6,7 +6,10 @@ import {
   NOTEBOOK_LIMITS,
   createLearningNotebook,
   createNotebookSet,
+  KANBUN_SAVED_SET_ID,
+  KOTEN_SAVED_SET_ID,
   foldLegacyMyWords,
+  foldLegacySavedLists,
   moveNotebookSetItem,
   normalizeLearningNotebook,
   notebookRef,
@@ -43,28 +46,40 @@ import {
   updateLearningContentPlan,
 } from '../src/lib/learningContentPlan.js'
 
-test('マイ学習ノートは指定8分野・全15,457項目を安定IDで解決する', () => {
+test('マイ学習ノートは英語・古典・漢文の14教材・全15,957項目を安定IDで解決する', () => {
   assert.deepEqual(NOTEBOOK_DOMAIN_IDS, [
     'vocab',
     'phrases',
     'grammar',
     'listening',
+    'dictation',
     'etymology',
     'kotenVocab',
     'kotenGrammar',
     'kotenCulture',
+    'kotenInterpretation',
+    'kanbunVocab',
+    'kanbunGrammar',
+    'kanbunCulture',
+    'kanbunKundoku',
   ])
   assert.deepEqual(NOTEBOOK_CATALOG_COUNTS, {
     vocab: 8851,
     phrases: 2104,
     grammar: 3555,
     listening: 160,
+    dictation: 140,
     etymology: 339,
     kotenVocab: 300,
     kotenGrammar: 74,
     kotenCulture: 56,
+    kotenInterpretation: 36,
+    kanbunVocab: 120,
+    kanbunGrammar: 87,
+    kanbunCulture: 95,
+    kanbunKundoku: 40,
   })
-  assert.equal(NOTEBOOK_TOTAL_ITEMS, 15439)
+  assert.equal(NOTEBOOK_TOTAL_ITEMS, 15957)
 
   for (const [domain, count] of Object.entries(NOTEBOOK_CATALOG_COUNTS)) {
     assert.ok(count > 0, domain)
@@ -169,13 +184,10 @@ test('自作問題集は作成・説明編集・分野混在・追加削除・�
   )
 })
 
-test('以前のマイ単語はノートの保存と単語帳「マイ単語」へ移し、古典リストと合わせて8分野の正誤・期限・最近履歴を読む', () => {
+test('以前のマイ単語と古典・漢文の登録リストはノートの保存と単語帳へ移し、全教材の正誤・期限・最近履歴を読む', () => {
   const day = 20000
-  const state = {
-    kotenWordList: ['k001'],
-    kotenGrammarList: ['kg_neg_zu'],
-    kotenCultureList: ['kc001'],
-    learningNotebook: foldLegacyMyWords(
+  const learningNotebook = foldLegacySavedLists(
+    foldLegacyMyWords(
       setNotebookItemSaved(
         setNotebookItemSaved(createLearningNotebook(), 'phrases', 'idm_get_up', true, 10),
         'listening',
@@ -186,6 +198,16 @@ test('以前のマイ単語はノートの保存と単語帳「マイ単語」�
       ['book'],
       { timestamp: 30 },
     ),
+    {
+      kotenWordList: ['k001'],
+      kotenGrammarList: ['kg_neg_zu'],
+      kotenCultureList: ['kc001'],
+      kanbunVocabList: ['kv001'],
+    },
+    { timestamp: 40 },
+  )
+  const state = {
+    learningNotebook,
     srs: {
       book: { correct: 3, wrong: 1, box: 3, due: day, lastAt: 100 },
       idm_get_up: { correct: 1, wrong: 2, box: 0, due: day + 1, lastAt: 200 },
@@ -194,24 +216,40 @@ test('以前のマイ単語はノートの保存と単語帳「マイ単語」�
     kotenGrammarSrs: {},
     kotenCultureSrs: {},
     etymologySrs: {},
+    kanbunVocabSrs: { kv001: { correct: 1, wrong: 0, box: 1, due: day + 3, lastAt: 250 } },
   }
-  // 以前のマイ単語の語は、ノートに保存したまま単語帳「マイ単語」（ほかの冊と同じ1冊）にも入る。
+  // 以前のマイ単語は「マイ単語」、古典・漢文の登録はそれぞれの登録リストの冊に入り、ノートにも保存したまま残る。
   assert.deepEqual(
     state.learningNotebook.sets.map((set) => [set.id, set.title, set.refs]),
-    [[MY_WORDS_SET_ID, 'マイ単語', ['vocab:book']]],
+    [
+      [MY_WORDS_SET_ID, 'マイ単語', ['vocab:book']],
+      [KOTEN_SAVED_SET_ID, '古典の登録リスト', ['kotenVocab:k001', 'kotenGrammar:kg_neg_zu', 'kotenCulture:kc001']],
+      [KANBUN_SAVED_SET_ID, '漢文の登録リスト', ['kanbunVocab:kv001']],
+    ],
   )
   assert.equal(isNotebookItemSaved(state, 'vocab', 'book'), true)
-  assert.equal(notebookSavedRefs(state).length, 6)
+  assert.equal(isNotebookItemSaved(state, 'kanbunVocab', 'kv001'), true)
+  assert.equal(notebookSavedRefs(state).length, 7)
   assert.deepEqual(notebookSavedCounts(state), {
     vocab: 1,
     phrases: 1,
     grammar: 0,
     listening: 1,
+    dictation: 0,
     etymology: 0,
     kotenVocab: 1,
     kotenGrammar: 1,
     kotenCulture: 1,
+    kotenInterpretation: 0,
+    kanbunVocab: 1,
+    kanbunGrammar: 0,
+    kanbunCulture: 0,
+    kanbunKundoku: 0,
   })
+  // 同じ登録を何度読み込んでも、冊も項目も増えない。登録が1つもなければ冊を作らない。
+  const again = foldLegacySavedLists(learningNotebook, { kotenWordList: ['k001'], kanbunVocabList: ['kv001'] }, { timestamp: 50 })
+  assert.deepEqual(again.sets.map((set) => set.refs.length), [1, 3, 1])
+  assert.equal(foldLegacySavedLists(createLearningNotebook(), {}).sets.length, 0)
   assert.deepEqual(notebookItemProgress(state, 'vocab', 'book', day), {
     entry: state.srs.book,
     correct: 3,
@@ -224,18 +262,15 @@ test('以前のマイ単語はノートの保存と単語帳「マイ単語」�
   })
   assert.deepEqual(
     notebookRecentItems(state, { day }).map(({ item }) => item.ref),
-    ['kotenVocab:k001', 'phrases:idm_get_up', 'vocab:book'],
+    ['kotenVocab:k001', 'kanbunVocab:kv001', 'phrases:idm_get_up', 'vocab:book'],
   )
 })
 
-test('統合ノートは古典の旧保存配列と同期し、端末・進捗コード・クラウドの全経路で復元する', () => {
+test('統合ノートの保存と単語帳は端末・進捗コード・クラウドの全経路で復元し、以前の登録リストも単語帳へ移す', () => {
   const before = selectProgressState(useStore.getState())
   try {
     useStore.setState({
       ...before,
-      kotenWordList: [],
-      kotenGrammarList: [],
-      kotenCultureList: [],
       learningNotebook: createLearningNotebook(),
     })
     useStore.getState().toggleNotebookItem('vocab', 'book')
@@ -248,28 +283,38 @@ test('統合ノートは古典の旧保存配列と同期し、端末・進捗�
     const setId = useStore.getState().createNotebookSet('明日の10問', '朝に解く')
     useStore.getState().setNotebookSetItem(setId, 'vocab', 'book', true)
     useStore.getState().setNotebookSetItem(setId, 'listening', 'listen_1_01', true)
+    // 教材をまたいでまとめて入れる（短文解釈の重要語と文法など）。不正な参照は入れない。
+    useStore.getState().setNotebookSetRefs(setId, ['kotenVocab:k001', 'kotenGrammar:kg_neg_zu', 'bad'], true)
 
     const current = useStore.getState()
     // 英単語をノートに保存しても、単語帳へは勝手に入れない（単語帳への出し入れは別の操作）。
     assert.equal(isNotebookItemSaved(current, 'vocab', 'book'), true)
+    assert.equal(isNotebookItemSaved(current, 'kotenGrammar', 'kg_neg_zu'), true)
     assert.equal('myList' in selectProgressState(current), false)
-    assert.deepEqual(current.kotenGrammarList, ['kg_neg_zu'])
+    assert.equal('kotenGrammarList' in current, false)
     assert.equal(current.learningNotebook.sets.length, 1)
-    assert.equal(current.learningNotebook.sets[0].refs.length, 2)
+    assert.deepEqual(current.learningNotebook.sets[0].refs, [
+      'vocab:book',
+      'listening:listen_1_01',
+      'kotenVocab:k001',
+      'kotenGrammar:kg_neg_zu',
+    ])
     assert.ok(PERSISTED_PROGRESS_FIELDS.includes('learningNotebook'))
     assert.deepEqual(selectProgressState(current).learningNotebook, current.learningNotebook)
 
     const decoded = decodeProgress(encodeProgress(current))
     assert.equal(decoded.learningNotebook.sets[0].title, '明日の10問')
     assert.equal(decoded.learningNotebook.entries['listening:listen_1_01'].note, '最後の提案を聞く')
-    assert.equal(progressStateFromPayload(decoded).learningNotebook.sets[0].refs.length, 2)
+    assert.equal(progressStateFromPayload(decoded).learningNotebook.sets[0].refs.length, 4)
 
     const cloud = progressStateFromCloud(decoded, before)
     assert.equal(cloud.learningNotebook.sets[0].description, '朝に解く')
-    // 以前のクラウド保存の「マイ単語」（myList）は、端末で作った単語帳を消さずに「マイ単語」へ移す。
-    const oldCloud = progressStateFromCloud({ myList: ['book'] }, current)
-    assert.deepEqual(oldCloud.learningNotebook.sets.map((set) => set.title), ['マイ単語', '明日の10問'])
+    // 以前のクラウド保存の「マイ単語」（myList）と古典の登録リストは、端末で作った単語帳を消さずに単語帳へ移す。
+    const oldCloud = progressStateFromCloud({ myList: ['book'], kotenGrammarList: ['kg_neg_zu'] }, current)
+    assert.deepEqual(oldCloud.learningNotebook.sets.map((set) => set.title), ['マイ単語', '明日の10問', '古典の登録リスト'])
     assert.deepEqual(oldCloud.learningNotebook.sets[0].refs, ['vocab:book'])
+    assert.deepEqual(oldCloud.learningNotebook.sets[2].refs, ['kotenGrammar:kg_neg_zu'])
+    assert.equal('kotenGrammarList' in oldCloud, false)
 
     useStore.getState().toggleNotebookItem('vocab', 'book')
     assert.equal(isNotebookItemSaved(useStore.getState(), 'vocab', 'book'), false)

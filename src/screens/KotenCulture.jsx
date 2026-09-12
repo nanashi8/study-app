@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { isDue, useStore } from '../store/useStore.js'
+import { WordBookButton, WordBookStudySheet } from '../components/WordListSheet.jsx'
 import {
   KOTEN_CULTURE,
   KOTEN_CULTURE_CATEGORIES,
@@ -25,8 +26,6 @@ import { kotenTextForSearch } from '../lib/kotenFurigana.js'
 import {
   ArrowRight,
   Book,
-  Bookmark,
-  BookmarkFilled,
   Cards,
   ChevronLeft,
   Refresh,
@@ -66,8 +65,7 @@ export function KotenCultureScreen() {
   const navigate = useStore((state) => state.navigate)
   const params = useStore((state) => state.params)
   const cultureSrs = useStore((state) => state.kotenCultureSrs)
-  const saved = useStore((state) => state.kotenCultureList)
-  const toggleSaved = useStore((state) => state.toggleKotenCultureList)
+  const [wordBookOpen, setWordBookOpen] = useState(false)
   const [category, setCategory] = useState('all')
   const [query, setQuery] = useState('')
   const [openId, setOpenId] = useState(null)
@@ -84,9 +82,6 @@ export function KotenCultureScreen() {
   const dueItems = KOTEN_CULTURE.filter(
     (item) => cultureSrs[item.id] && isDue(cultureSrs[item.id]),
   )
-  const savedItems = saved
-    .map((id) => KOTEN_CULTURE.find((item) => item.id === id))
-    .filter(Boolean)
 
   const items = useMemo(() => {
     const base = category === 'all' ? KOTEN_CULTURE : kotenCultureByCategory(category)
@@ -149,7 +144,7 @@ export function KotenCultureScreen() {
               全{KOTEN_CULTURE.length}テーマ・全{KOTEN_CULTURE_QUESTIONS.length}問
             </p>
             <p className="mt-0.5 text-xs font-bold text-white/70">
-              学習済 {totalStatus.learning.learned}・復習中 {totalStatus.learning.reviewing}・未学習 {totalStatus.learning.unlearned}・登録 {savedItems.length}
+              学習済 {totalStatus.learning.learned}・復習中 {totalStatus.learning.reviewing}・未学習 {totalStatus.learning.unlearned}
             </p>
           </div>
         </div>
@@ -206,16 +201,17 @@ export function KotenCultureScreen() {
               </span>
             </button>
             <button
-              disabled={!savedItems.length}
-              onClick={() => study(savedItems, '登録した古典常識')}
-              className="flex items-center gap-2 rounded-2xl bg-sky-100 p-3 text-left transition-transform active:scale-[0.98] disabled:opacity-45"
+              onClick={() => setWordBookOpen(true)}
+              aria-haspopup="dialog"
+              data-koten-culture-word-books
+              className="flex items-center gap-2 rounded-2xl bg-sky-100 p-3 text-left transition-transform active:scale-[0.98]"
             >
               <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-sky-200 text-sky-700">
-                <BookmarkFilled size={19} />
+                <Cards size={19} />
               </span>
               <span>
-                <span className="block text-sm font-extrabold text-sky-900">登録常識</span>
-                <span className="block text-[11px] font-bold text-sky-800/60">{savedItems.length}テーマ</span>
+                <span className="block text-sm font-extrabold text-sky-900">単語帳</span>
+                <span className="block text-[11px] font-bold text-sky-800/60">冊ごとに暗記・テスト</span>
               </span>
             </button>
           </div>
@@ -291,10 +287,11 @@ export function KotenCultureScreen() {
               <h2 className="font-display text-lg font-extrabold text-ink">古典常識事典</h2>
             </div>
             <button
-              onClick={() => navigate('kotenSaved', { tab: 'culture' })}
+              onClick={() => setWordBookOpen(true)}
+              aria-haspopup="dialog"
               className="flex items-center gap-1 text-xs font-extrabold text-violet-700"
             >
-              <BookmarkFilled size={14} /> 登録リスト <ArrowRight size={14} />
+              <Cards size={14} /> 単語帳 <ArrowRight size={14} />
             </button>
           </div>
 
@@ -349,15 +346,7 @@ export function KotenCultureScreen() {
                 className="mt-2 space-y-3 rounded-2xl border border-violet-100 bg-violet-50/55 p-4 animate-slide-up"
                 data-koten-culture-detail={item.id}
               >
-                <button
-                  type="button"
-                  onClick={() => toggleSaved(item.id)}
-                  aria-pressed={saved.includes(item.id)}
-                  className="flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-white px-3 text-xs font-extrabold text-violet-700"
-                >
-                  {saved.includes(item.id) ? <BookmarkFilled size={18} /> : <Bookmark size={18} />}
-                  {saved.includes(item.id) ? '登録から外す' : '登録する'}
-                </button>
+                <WordBookButton domain="kotenCulture" itemId={item.id} itemLabel={item.title} className="text-violet-700" />
                 <p className="text-sm font-bold leading-relaxed text-ink/65">
                   <KotenText>{item.detail}</KotenText>
                 </p>
@@ -405,5 +394,15 @@ export function KotenCultureScreen() {
     </div>
   )
 
-  return view === 'list' ? catalogView : homeView
+  return (
+    <>
+      {view === 'list' ? catalogView : homeView}
+      <WordBookStudySheet
+        open={wordBookOpen}
+        onClose={() => setWordBookOpen(false)}
+        domain="kotenCulture"
+        returnTo={{ screen: 'kotenCulture' }}
+      />
+    </>
+  )
 }

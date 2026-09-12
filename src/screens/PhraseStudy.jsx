@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
+import { WordBookToggle } from '../components/WordListSheet.jsx'
 import {
   answeredSessionIndexes,
   buildPhraseDeck,
@@ -21,7 +22,6 @@ import { Button, Chip } from '../components/ui.jsx'
 import { ArrowRight, Lightbulb, Link } from '../components/Icons.jsx'
 import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
 import {
-  CardSaveToggle,
   CardStudyFooter,
   CardSwipeRegion,
   StudyAnswerReselect,
@@ -46,8 +46,6 @@ export function PhraseStudyScreen() {
   const returnTo = useStore((s) => s.returnTo)
   const review = useStore((s) => s.review)
   const settings = useStore((s) => s.settings)
-  const toggleNotebookItem = useStore((s) => s.toggleNotebookItem)
-  const learningNotebook = useStore((s) => s.learningNotebook)
 
   // 暗記モード：ONなら毎カード最初から意味・解説を開いて見せる（単語学習と共通）。
   const revealAll = settings.revealAnswers
@@ -164,7 +162,6 @@ export function PhraseStudyScreen() {
     },
     { text: item.example.en, label: item.example.en, style: 'sentence' },
   ]
-  const saved = learningNotebook?.entries?.[`phrases:${item.id}`]?.saved === true
 
   return (
     <div className="flex h-full flex-col">
@@ -206,13 +203,7 @@ export function PhraseStudyScreen() {
               toolbar
               onChange={(on) => setFlipped(on)}
             />
-            <CardSaveToggle
-              saved={saved}
-              onToggle={() => toggleNotebookItem('phrases', item.id)}
-              label="ノート"
-              savedLabel={`${item.phrase}をマイ学習ノートから外す`}
-              unsavedLabel={`${item.phrase}をマイ学習ノートへ保存`}
-            />
+            <WordBookToggle domain="phrases" itemId={item.id} itemLabel={item.phrase} />
           </>
         )}
       />

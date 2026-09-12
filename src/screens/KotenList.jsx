@@ -20,7 +20,6 @@ import { summarizeSrsItems, summarizeSrsItemsWithQuestions } from '../lib/conten
 import { scrollScreenToTop } from '../lib/screenScroll.js'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import {
-  BookmarkFilled,
   BookOpen,
   Cards,
   Refresh,
@@ -58,9 +57,6 @@ export function KotenListScreen() {
   const grammarSrs = useStore((s) => s.kotenGrammarSrs)
   const cultureSrs = useStore((s) => s.kotenCultureSrs)
   const interpretationSrs = useStore((s) => s.kotenInterpretationSrs)
-  const savedWords = useStore((s) => s.kotenWordList)
-  const savedGrammar = useStore((s) => s.kotenGrammarList)
-  const savedCulture = useStore((s) => s.kotenCultureList)
   const [curriculumLevel, setCurriculumLevel] = useState('middle')
   const [view, setView] = useState('home')
   const [listCategory, setListCategory] = useState('all')
@@ -177,7 +173,7 @@ export function KotenListScreen() {
         <div className="px-1 pb-1">
           <p className="text-[10px] font-extrabold text-amber-700">主な教材</p>
           <h2 className="font-display text-xl font-extrabold text-ink">三つのメインアイテム</h2>
-          <p className="mt-1 text-xs font-bold text-ink/45">暗記 → テスト → 登録 → 日を空けて復習、の順で進めます。</p>
+          <p className="mt-1 text-xs font-bold text-ink/45">暗記 → テスト → 単語帳 → 日を空けて復習、の順で進めます。</p>
         </div>
 
         <LearningEntryCard
@@ -314,8 +310,8 @@ export function KotenListScreen() {
         </Card>
 
         <div className="px-1 pt-3">
-          <p className="text-[10px] font-extrabold text-ink/40">読解と登録リスト</p>
-          <h2 className="font-display text-lg font-extrabold text-ink">読解・登録</h2>
+          <p className="text-[10px] font-extrabold text-ink/40">読解と単語帳</p>
+          <h2 className="font-display text-lg font-extrabold text-ink">読解・単語帳</h2>
         </div>
 
         <button
@@ -359,16 +355,17 @@ export function KotenListScreen() {
         </button>
 
         <button
-          onClick={() => navigate('kotenSaved')}
+          onClick={() => navigate('myList', { tab: 'sets' })}
           className="flex w-full items-center gap-3 rounded-2xl bg-sky-100 p-3.5 text-left transition-transform active:scale-[0.98]"
+          data-koten-word-books
         >
           <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-sky-200 text-sky-700">
-            <BookmarkFilled size={20} />
+            <Cards size={20} />
           </span>
           <div className="min-w-0 flex-1">
-            <div className="font-display text-sm font-extrabold text-sky-950">登録リスト</div>
+            <div className="font-display text-sm font-extrabold text-sky-950">単語帳</div>
             <div className="mt-0.5 text-[11px] font-bold text-sky-800/65">
-              単語{savedWords.length}・文法{savedGrammar.length}・常識{savedCulture.length}
+              古典単語・文法・常識をまとめて学ぶ
             </div>
           </div>
           <ArrowRight size={18} className="text-sky-600" />

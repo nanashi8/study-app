@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useStore } from '../store/useStore.js'
+import { notebookRefs } from '../lib/learningNotebook.js'
 import {
   LITERATURE_KIND_META,
   getLiteratureWork,
@@ -93,12 +94,6 @@ export function LiteratureReaderScreen() {
   const recordContentQuizResult = useStore((state) => state.recordContentQuizResult)
   const wordBookSets = useStore((state) => state.learningNotebook.sets)
   const recordVocabHistory = useStore((state) => state.recordVocabHistory)
-  const kotenWordList = useStore((state) => state.kotenWordList)
-  const kotenGrammarList = useStore((state) => state.kotenGrammarList)
-  const addManyToKotenWordList = useStore((state) => state.addManyToKotenWordList)
-  const addManyToKotenGrammarList = useStore((state) => state.addManyToKotenGrammarList)
-  const kanbunVocabList = useStore((state) => state.kanbunVocabList)
-  const addManyToKanbunList = useStore((state) => state.addManyToKanbunList)
 
   const work = getLiteratureWork(workId)
   const steps = useMemo(() => buildLiteratureNarration(work), [work])
@@ -111,11 +106,15 @@ export function LiteratureReaderScreen() {
   const [vocabularyOpen, setVocabularyOpen] = useState(false)
   const [activeWord, setActiveWord] = useState(null)
   const [questionAnswers, setQuestionAnswers] = useState({})
-  // 単語帳を選ぶ窓で入れる英単語。{ ids, label }。1語でも本文語彙の全語でも同じ窓を使う。
+  // 単語帳を選ぶ窓で入れる項目。{ refs, label }。1語でも本文語彙の全語でも、古典・漢文の語や文法でも同じ窓を使う。
   const [bookSheetWords, setBookSheetWords] = useState(null)
-  // どれかの単語帳に入っている英単語。
+  // どれかの単語帳に入っている英単語と、ほかの教材の項目（「教材:ID」）。
   const inWordBookIds = useMemo(
     () => new Set(wordBookSets.flatMap((set) => wordBookVocabIds(set))),
+    [wordBookSets],
+  )
+  const inWordBookRefs = useMemo(
+    () => new Set(wordBookSets.flatMap((set) => set.refs)),
     [wordBookSets],
   )
 
@@ -191,17 +190,19 @@ export function LiteratureReaderScreen() {
   )
   const playing = playbackStatus === 'playing'
   const playbackActive = playing || playbackStatus === 'paused'
-  // 英語の作品の語は単語帳（どの冊でも）、古典・漢文の語はそれぞれの登録リストに入っているかで数える。
-  const learnedIds = work.kind === 'english'
-    ? inWordBookIds
-    : new Set(work.kind === 'classical' ? kotenWordList : kanbunVocabList)
+  // 本文の語（英単語・古典単語・漢語）と古典文法は、どれか1冊の単語帳に入っているかで数える。
+  const sharedWordDomain = work.kind === 'english'
+    ? 'vocab'
+    : work.kind === 'classical'
+      ? 'kotenVocab'
+      : 'kanbunVocab'
   const sharedWordIds = work.kind === 'english'
     ? work.wordIds
     : work.kind === 'classical'
       ? work.kotenWordIds
       : work.kanbunVocabIds
-  const savedWordCount = sharedWordIds.filter((id) => learnedIds.has(id)).length
-  const savedGrammarCount = work.grammarIds.filter((id) => kotenGrammarList.includes(id)).length
+  const savedWordCount = sharedWordIds.filter((id) => inWordBookRefs.has(`${sharedWordDomain}:${id}`)).length
+  const savedGrammarCount = work.grammarIds.filter((id) => inWordBookRefs.has(`kotenGrammar:${id}`)).length
   const isEnglish = work.kind === 'english'
   const readingGuide = isEnglish
     ? getLiteratureReadingGuide(work.id, sceneIndex, currentScene)
@@ -307,11 +308,12 @@ export function LiteratureReaderScreen() {
   }
 
   const saveWords = () => {
-    // 英語の作品の本文語彙は、入れる単語帳を選んでまとめて入れる。
-    if (work.kind === 'english') {
-      setBookSheetWords({ ids: sharedWordIds, label: `${work.titleJa}の本文語彙${sharedWordIds.length}語` })
-    } else if (work.kind === 'classical') addManyToKotenWordList(sharedWordIds)
-    else addManyToKanbunList('vocab', sharedWordIds)
+    // 本文語彙は、入れる単語帳を選んでまとめて入れる（英語・古典・漢文のどの作品でも同じ窓）。
+    const kindLabel = work.kind === 'english' ? '本文語彙' : work.kind === 'classical' ? '古典単語' : '漢語'
+    setBookSheetWords({
+      refs: notebookRefs(sharedWordDomain, sharedWordIds),
+      label: `${work.titleJa}の${kindLabel}${sharedWordIds.length}語`,
+    })
   }
 
   const openVocabulary = () => {
@@ -452,10 +454,10 @@ export function LiteratureReaderScreen() {
                 variant={savedWordCount === sharedWordIds.length ? 'soft' : 'hint'}
                 onClick={saveWords}
                 disabled={!sharedWordIds.length}
-                aria-haspopup={isEnglish ? 'dialog' : undefined}
+                aria-haspopup="dialog"
                 data-literature-save-words
               >
-                <Bookmark size={16} /> {isEnglish ? '単語帳' : '保存'} {savedWordCount}/{sharedWordIds.length}
+                <Bookmark size={16} /> 単語帳 {savedWordCount}/{sharedWordIds.length}
               </Button>
             </div>
             {isEnglish && (
@@ -774,9 +776,14 @@ export function LiteratureReaderScreen() {
               <Button
                 size="sm"
                 variant={savedGrammarCount === work.grammarIds.length ? 'soft' : 'hint'}
-                onClick={() => addManyToKotenGrammarList(work.grammarIds)}
+                onClick={() => setBookSheetWords({
+                  refs: notebookRefs('kotenGrammar', work.grammarIds),
+                  label: `${work.titleJa}の古典文法${work.grammarIds.length}項目`,
+                })}
+                aria-haspopup="dialog"
+                data-literature-save-grammar
               >
-                <Bookmark size={16} /> {savedGrammarCount}/{work.grammarIds.length}
+                <Bookmark size={16} /> 単語帳 {savedGrammarCount}/{work.grammarIds.length}
               </Button>
             </div>
         </Card>}
@@ -832,8 +839,8 @@ export function LiteratureReaderScreen() {
       <WordListSheet
         open={Boolean(bookSheetWords)}
         onClose={() => setBookSheetWords(null)}
-        wordIds={bookSheetWords?.ids}
-        wordLabel={bookSheetWords?.label}
+        refs={bookSheetWords?.refs ?? []}
+        label={bookSheetWords?.label}
       />
 
       <LiteratureVocabularySheet
@@ -901,7 +908,7 @@ export function LiteratureReaderScreen() {
                 {activeWord.id && (
                   <button
                     type="button"
-                    onClick={() => setBookSheetWords({ ids: [activeWord.id], label: activeWord.word })}
+                    onClick={() => setBookSheetWords({ refs: notebookRefs('vocab', activeWord.id), label: activeWord.word })}
                     aria-haspopup="dialog"
                     data-literature-word-book
                     className={cx(

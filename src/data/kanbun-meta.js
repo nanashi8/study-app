@@ -49,7 +49,6 @@ export const KANBUN_DOMAIN_META = Object.freeze({
     color: '#0f766e',
     description: '重要漢字・熟語・虚字を、訓読と文中の働きで暗記',
     srsField: 'kanbunVocabSrs',
-    listField: 'kanbunVocabList',
     analyticsSkill: 'kanbun_vocab',
   }),
   grammar: Object.freeze({
@@ -60,7 +59,6 @@ export const KANBUN_DOMAIN_META = Object.freeze({
     color: '#be123c',
     description: '返り点・再読文字・重要句法を、形と語順から見抜く',
     srsField: 'kanbunGrammarSrs',
-    listField: 'kanbunGrammarList',
     analyticsSkill: 'kanbun_grammar',
   }),
   culture: Object.freeze({
@@ -71,7 +69,6 @@ export const KANBUN_DOMAIN_META = Object.freeze({
     color: '#7c3aed',
     description: '思想・歴史・文学・制度を、本文の判断材料として暗記',
     srsField: 'kanbunCultureSrs',
-    listField: 'kanbunCultureList',
     analyticsSkill: 'kanbun_culture',
   }),
 })

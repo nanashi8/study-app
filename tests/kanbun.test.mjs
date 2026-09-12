@@ -150,7 +150,6 @@ test('トップメニューは古典と漢文を別アプリとして公開し�
   assert.notEqual(koten.screen, kanbun.screen)
   assert.ok(APP_MENU_SCREEN_DESTINATIONS.includes('kotenList'))
   assert.ok(APP_MENU_SCREEN_DESTINATIONS.includes('kanbunHome'))
-  assert.ok(APP_MENU_SCREEN_DESTINATIONS.includes('kanbunSaved'))
 
   const app = readFileSync(new URL('../src/App.jsx', import.meta.url), 'utf8')
   const portal = readFileSync(new URL('../src/screens/Portal.jsx', import.meta.url), 'utf8')
@@ -167,7 +166,6 @@ test('トップメニューは古典と漢文を別アプリとして公開し�
     'kanbunQuiz',
     'kanbunKundoku',
     'kanbunKundokuQuiz',
-    'kanbunSaved',
   ]) {
     assert.match(app, new RegExp(`${screen}:`), screen)
   }

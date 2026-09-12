@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
+import { WordBookToggle } from '../components/WordListSheet.jsx'
 import {
   buildListeningDeck,
   LISTENING_PROFILES,
@@ -12,7 +13,7 @@ import { playListeningItem, stopListeningAudio } from '../lib/listening.js'
 import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
-import { Button, Chip, IconButton, cx } from '../components/ui.jsx'
+import { Button, Chip, cx } from '../components/ui.jsx'
 import {
   answeredQuizIndexes,
   growDeck,
@@ -21,8 +22,6 @@ import {
 } from '../lib/session.js'
 import {
   ArrowRight,
-  Bookmark,
-  BookmarkFilled,
   Check,
   Close,
   Eye,
@@ -65,8 +64,6 @@ export function ListeningQuizScreen() {
   const review = useStore((s) => s.review)
   const reviseReview = useStore((s) => s.reviseReview)
   const settings = useStore((s) => s.settings)
-  const toggleNotebookItem = useStore((s) => s.toggleNotebookItem)
-  const learningNotebook = useStore((s) => s.learningNotebook)
 
   const source = params.source ?? { type: 'level', levelId: '5' }
   // size=0 は「絞り込みなし」。登録リストは全問、それ以外は設定した問題数で出す。
@@ -106,7 +103,6 @@ export function ListeningQuizScreen() {
   const item = deck[i]
   const profile =
     LISTENING_PROFILES[item?.level ?? source.levelId] ?? LISTENING_PROFILES['5']
-  const saved = Boolean(item && learningNotebook?.entries?.[`listening:${item.id}`]?.saved)
   const typeMeta = LISTENING_TYPE_META[item?.type]
   const options = useMemo(
     () => shuffledListeningChoices(item),
@@ -293,14 +289,7 @@ export function ListeningQuizScreen() {
           />
         )}
         trailingActions={(
-          <IconButton
-            onClick={() => item && toggleNotebookItem('listening', item.id)}
-            aria-label={saved ? `${item?.topic}をマイ学習ノートから外す` : `${item?.topic}をマイ学習ノートへ保存`}
-            aria-pressed={saved}
-            className={cx('shrink-0', saved ? 'text-amber-600' : 'text-ink/30')}
-          >
-            {saved ? <BookmarkFilled size={20} /> : <Bookmark size={20} />}
-          </IconButton>
+          <WordBookToggle domain="listening" itemId={item?.id} itemLabel={item?.topic ?? 'この問題'} />
         )}
       />
 

@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { isDue, useStore } from '../store/useStore.js'
+import { WordBookButton, WordBookStudySheet } from '../components/WordListSheet.jsx'
 import {
   KOTEN_GRAMMAR,
   KOTEN_GRAMMAR_CATEGORIES,
@@ -22,8 +23,6 @@ import { scrollScreenToTop } from '../lib/screenScroll.js'
 import {
   ArrowRight,
   Book,
-  Bookmark,
-  BookmarkFilled,
   Cards,
   ChevronLeft,
   Refresh,
@@ -63,8 +62,7 @@ export function KotenGrammarScreen() {
   const navigate = useStore((state) => state.navigate)
   const params = useStore((state) => state.params)
   const grammarSrs = useStore((state) => state.kotenGrammarSrs)
-  const saved = useStore((state) => state.kotenGrammarList)
-  const toggleSaved = useStore((state) => state.toggleKotenGrammarList)
+  const [wordBookOpen, setWordBookOpen] = useState(false)
   const [category, setCategory] = useState('all')
   const [query, setQuery] = useState('')
   const [openId, setOpenId] = useState(null)
@@ -81,9 +79,6 @@ export function KotenGrammarScreen() {
   const dueItems = KOTEN_GRAMMAR.filter(
     (item) => grammarSrs[item.id] && isDue(grammarSrs[item.id]),
   )
-  const savedItems = saved
-    .map((id) => KOTEN_GRAMMAR.find((item) => item.id === id))
-    .filter(Boolean)
 
   const items = useMemo(() => {
     const base = category === 'all' ? KOTEN_GRAMMAR : kotenGrammarByCategory(category)
@@ -138,7 +133,7 @@ export function KotenGrammarScreen() {
               全{KOTEN_GRAMMAR.length}項目・全{KOTEN_GRAMMAR_QUESTIONS.length}問
             </p>
             <p className="mt-0.5 text-xs font-bold text-white/70">
-              学習済 {totalStatus.learning.learned}・復習中 {totalStatus.learning.reviewing}・未学習 {totalStatus.learning.unlearned}・登録 {savedItems.length}
+              学習済 {totalStatus.learning.learned}・復習中 {totalStatus.learning.reviewing}・未学習 {totalStatus.learning.unlearned}
             </p>
           </div>
         </div>
@@ -195,16 +190,17 @@ export function KotenGrammarScreen() {
               </span>
             </button>
             <button
-              disabled={!savedItems.length}
-              onClick={() => study(savedItems, '登録文法')}
-              className="flex items-center gap-2 rounded-2xl bg-sky-100 p-3 text-left transition-transform active:scale-[0.98] disabled:opacity-45"
+              onClick={() => setWordBookOpen(true)}
+              aria-haspopup="dialog"
+              data-koten-grammar-word-books
+              className="flex items-center gap-2 rounded-2xl bg-sky-100 p-3 text-left transition-transform active:scale-[0.98]"
             >
               <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-sky-200 text-sky-700">
-                <BookmarkFilled size={19} />
+                <Cards size={19} />
               </span>
               <span>
-                <span className="block text-sm font-extrabold text-sky-900">登録文法</span>
-                <span className="block text-[11px] font-bold text-sky-800/60">{savedItems.length}項目</span>
+                <span className="block text-sm font-extrabold text-sky-900">単語帳</span>
+                <span className="block text-[11px] font-bold text-sky-800/60">冊ごとに暗記・テスト</span>
               </span>
             </button>
           </div>
@@ -280,10 +276,11 @@ export function KotenGrammarScreen() {
               <h2 className="font-display text-lg font-extrabold text-ink">文法辞典</h2>
             </div>
             <button
-              onClick={() => navigate('kotenSaved', { tab: 'grammar' })}
+              onClick={() => setWordBookOpen(true)}
+              aria-haspopup="dialog"
               className="flex items-center gap-1 text-xs font-extrabold text-amber-700"
             >
-              <BookmarkFilled size={14} /> 登録リスト <ArrowRight size={14} />
+              <Cards size={14} /> 単語帳 <ArrowRight size={14} />
             </button>
           </div>
 
@@ -338,15 +335,7 @@ export function KotenGrammarScreen() {
                 className="mt-2 space-y-3 rounded-2xl border border-amber-100 bg-amber-50/60 p-4 animate-slide-up"
                 data-koten-grammar-detail={item.id}
               >
-                <button
-                  type="button"
-                  onClick={() => toggleSaved(item.id)}
-                  aria-pressed={saved.includes(item.id)}
-                  className="flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-white px-3 text-xs font-extrabold text-amber-700"
-                >
-                  {saved.includes(item.id) ? <BookmarkFilled size={18} /> : <Bookmark size={18} />}
-                  {saved.includes(item.id) ? '登録から外す' : '登録する'}
-                </button>
+                <WordBookButton domain="kotenGrammar" itemId={item.id} itemLabel={item.title} className="text-amber-700" />
                 <div>
                   <p className="text-[10px] font-extrabold tracking-wide text-amber-600">活用・形</p>
                   <p className="mt-1 text-sm font-bold leading-relaxed text-ink/75">{item.forms}</p>
@@ -376,5 +365,15 @@ export function KotenGrammarScreen() {
     </div>
   )
 
-  return view === 'list' ? catalogView : homeView
+  return (
+    <>
+      {view === 'list' ? catalogView : homeView}
+      <WordBookStudySheet
+        open={wordBookOpen}
+        onClose={() => setWordBookOpen(false)}
+        domain="kotenGrammar"
+        returnTo={{ screen: 'kotenGrammar' }}
+      />
+    </>
+  )
 }

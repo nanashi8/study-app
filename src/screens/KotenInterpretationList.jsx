@@ -97,7 +97,7 @@ export function KotenInterpretationListScreen() {
             ))}
           </div>
           <p className="mt-3 text-xs font-bold leading-relaxed text-ink/50">
-            問題で出会った古典単語と古典文法は、その場で登録リストへ保存できます。
+            問題で出会った古典単語と古典文法は、その場で単語帳へ入れられます。
           </p>
         </Card>
 

@@ -1,5 +1,6 @@
 import { useMemo, useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
+import { WordBookToggle } from '../components/WordListSheet.jsx'
 import {
   KANBUN_KUNDOKU_LEVELS,
   isCorrectKanbunKundokuOrder,
@@ -205,6 +206,9 @@ export function KanbunKundokuQuizScreen() {
               }
             }}
           />
+        )}
+        trailingActions={(
+          <WordBookToggle domain="kanbunKundoku" itemId={exercise?.id} itemLabel={exercise?.title} />
         )}
       />
 

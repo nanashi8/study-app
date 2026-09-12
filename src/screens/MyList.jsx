@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { useStore, todayIndex } from '../store/useStore.js'
+import { wordBookLaunchTarget } from '../lib/wordBookLaunch.js'
 import { getEtymologyPack } from '../data/vocab.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { SpeakButton } from '../components/SpeakButton.jsx'
@@ -47,20 +48,20 @@ const SESSION_LIMITS = Object.freeze({
   phrases: 20,
   grammar: 10,
   listening: 20,
+  dictation: 10,
   etymology: 20,
   kotenVocab: 20,
   kotenGrammar: 20,
   kotenCulture: 12,
+  kotenInterpretation: 12,
+  kanbunVocab: 20,
+  kanbunGrammar: 20,
+  kanbunCulture: 12,
+  kanbunKundoku: 10,
 })
 
-const STUDY_DOMAINS = new Set([
-  'vocab',
-  'phrases',
-  'etymology',
-  'kotenVocab',
-  'kotenGrammar',
-  'kotenCulture',
-])
+// 「暗記」で始められる教材。ほかはテストで学ぶ（どの画面の単語帳でも同じ区別）。
+const STUDY_DOMAINS = new Set(NOTEBOOK_DOMAINS.filter((domain) => domain.canStudy).map((domain) => domain.id))
 
 const FILTERS = [
   { id: 'saved', label: '保存中' },
@@ -610,18 +611,26 @@ export function MyListScreen() {
     kotenSrs: current.kotenSrs,
     kotenGrammarSrs: current.kotenGrammarSrs,
     kotenCultureSrs: current.kotenCultureSrs,
+    kotenInterpretationSrs: current.kotenInterpretationSrs,
+    kanbunVocabSrs: current.kanbunVocabSrs,
+    kanbunGrammarSrs: current.kanbunGrammarSrs,
+    kanbunCultureSrs: current.kanbunCultureSrs,
+    kanbunKundokuSrs: current.kanbunKundokuSrs,
     myGrammarList: current.myGrammarList,
-    kotenWordList: current.kotenWordList,
-    kotenGrammarList: current.kotenGrammarList,
-    kotenCultureList: current.kotenCultureList,
     learningNotebook: current.learningNotebook,
   })))
-  const [tab, setTab] = useState('notebook')
+  const params = useStore((current) => current.params)
+  // 各コンテンツの単語帳から「一覧で確認」で来たときは、単語帳タブでその冊を選んでおく。
+  const [tab, setTab] = useState(['notebook', 'sets', 'history'].includes(params?.tab) ? params.tab : 'notebook')
   const [domain, setDomain] = useState('all')
   const [filter, setFilter] = useState('saved')
   const [query, setQuery] = useState('')
   const [visible, setVisible] = useState(PAGE_SIZE)
-  const [activeSetId, setActiveSetId] = useState(state.learningNotebook.sets[0]?.id ?? '')
+  const [activeSetId, setActiveSetId] = useState(() => (
+    state.learningNotebook.sets.some((set) => set.id === params?.setId)
+      ? params.setId
+      : state.learningNotebook.sets[0]?.id ?? ''
+  ))
   const [newSetOpen, setNewSetOpen] = useState(false)
   const [newSetTitle, setNewSetTitle] = useState('')
   const [newSetDescription, setNewSetDescription] = useState('')
@@ -689,71 +698,30 @@ export function MyListScreen() {
       })
     }
 
-    if (domainId === 'vocab') {
-      navigate(mode === 'study' ? 'vocabStudy' : 'vocabQuiz', {
-        source: { type: 'mylist', ids },
-        title,
-        mode,
-        size: ids.length,
-        returnTo: { screen: 'myList', params: {} },
-      })
-    } else if (domainId === 'phrases') {
-      navigate(mode === 'study' ? 'phraseStudy' : 'phraseQuiz', {
-        source: { type: 'phraseList', ids },
-        title,
-        mode,
-        engine: 'phrase',
-        size: ids.length,
-        returnTo: { screen: 'myList', params: {} },
-      })
-    } else if (domainId === 'grammar') {
-      navigate('grammarQuiz', { source: { type: 'grammarList', ids }, title, returnTo: { screen: 'myList', params: {} } })
-    } else if (domainId === 'listening') {
-      navigate('listeningQuiz', {
-        source: { type: 'listeningList', ids },
-        title,
-        engine: 'listening',
-        returnTo: { screen: 'myList', params: {} },
-      })
-    } else if (domainId === 'etymology') {
-      if (mode === 'words') {
-        const wordIds = [...new Set(ids.flatMap(
-          (id) => getEtymologyPack(id)?.studyIds ?? [],
-        ))]
-        if (!wordIds.length) {
-          navigate('roots')
-          return
-        }
-        navigate('vocabStudy', {
-          source: { type: 'deck', ids: wordIds },
-          title: `${title}の単語`,
-          mode: 'study',
-          size: Math.min(SESSION_LIMITS.etymology, wordIds.length),
-          returnTo: { screen: 'myList', params: {} },
-        })
+    // 語源は、語根そのものに加えて「紐づく英単語」を暗記することもできる。
+    if (domainId === 'etymology' && mode === 'words') {
+      const wordIds = [...new Set(ids.flatMap(
+        (id) => getEtymologyPack(id)?.studyIds ?? [],
+      ))]
+      if (!wordIds.length) {
+        navigate('roots')
         return
       }
-      navigate(mode === 'study' ? 'etymologyStudy' : 'etymologyQuiz', {
-        ids,
-        title,
-        size: Math.min(SESSION_LIMITS.etymology, ids.length),
+      navigate('vocabStudy', {
+        source: { type: 'deck', ids: wordIds },
+        title: `${title}の単語`,
+        mode: 'study',
+        size: Math.min(SESSION_LIMITS.etymology, wordIds.length),
         returnTo: { screen: 'myList', params: {} },
       })
-    } else if (domainId === 'kotenVocab') {
-      navigate(mode === 'study' ? 'kotenStudy' : 'kotenQuiz', { ids, title })
-    } else if (domainId === 'kotenGrammar') {
-      navigate(mode === 'study' ? 'kotenGrammarStudy' : 'kotenGrammarQuiz', {
-        ids,
-        title,
-        size: ids.length,
-      })
-    } else if (domainId === 'kotenCulture') {
-      navigate(mode === 'study' ? 'kotenCultureStudy' : 'kotenCultureQuiz', {
-        ids,
-        title,
-        size: ids.length,
-      })
+      return
     }
+    // ほかの教材は、各コンテンツの単語帳と同じ行き先で、選んだ数だけを1回分として出す。
+    const target = wordBookLaunchTarget(domainId, mode, ids, {
+      title,
+      returnTo: { screen: 'myList', params: {} },
+    })
+    if (target) navigate(target.screen, { ...target.params, size: ids.length })
   }
 
   const createSet = () => {
@@ -778,7 +746,7 @@ export function MyListScreen() {
             <p className="text-[9px] font-extrabold text-slate-300">自分の学習ノート</p>
             <div className="mt-1">
               <p className="font-display text-lg font-extrabold">保存・メモ・単語帳・学習記録</p>
-              <p className="mt-0.5 text-[10px] font-bold text-slate-300">これまでのマイ単語と古典の登録もそのまま引き継ぎ</p>
+              <p className="mt-0.5 text-[10px] font-bold text-slate-300">これまでのマイ単語と、古典・漢文の登録リストも単語帳に引き継ぎ</p>
             </div>
           </div>
           {/* 数字には「何を数えたか」を名前と単位で添える。 */}

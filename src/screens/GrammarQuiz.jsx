@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
+import { WordBookToggle } from '../components/WordListSheet.jsx'
 import { shuffle } from '../data/vocab.js'
 import {
   grammarChoiceGuidanceFor,
@@ -24,8 +25,8 @@ import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
 import { GrammarChoiceExplanations } from '../components/GrammarChoiceExplanations.jsx'
 import { WordOrderExercise } from '../components/WordOrderExercise.jsx'
-import { Button, IconButton, Chip, cx } from '../components/ui.jsx'
-import { ArrowRight, Bookmark, BookmarkFilled, Check, Close } from '../components/Icons.jsx'
+import { Button, Chip, cx } from '../components/ui.jsx'
+import { ArrowRight, Check, Close } from '../components/Icons.jsx'
 import { limitQuizChoices, UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { buildGrammarInstructorExplanation } from '../lib/instructorExplanations.js'
 import { grammarQuestionNeedsMeaningCue } from '../lib/grammarQuestionExplanations.js'
@@ -58,8 +59,6 @@ export function GrammarQuizScreen() {
   const back = useStore((s) => s.back)
   const review = useStore((s) => s.review)
   const reviseReview = useStore((s) => s.reviseReview)
-  const toggleNotebookItem = useStore((s) => s.toggleNotebookItem)
-  const learningNotebook = useStore((s) => s.learningNotebook)
   const color = params.levelColor ?? '#6366f1'
 
   // size=0 は「絞り込みなし」。在庫数から、選べる問題数の上限を決める。
@@ -142,7 +141,6 @@ export function GrammarQuizScreen() {
   const needsMeaningCue = orderQuestion
     || questionType === 'usage'
     || grammarQuestionNeedsMeaningCue(item)
-  const saved = learningNotebook?.entries?.[`grammar:${item.id}`]?.saved === true
 
   const finish = () => {
     handOffSession()
@@ -241,14 +239,7 @@ export function GrammarQuizScreen() {
           />
         )}
         trailingActions={(
-          <IconButton
-            onClick={() => toggleNotebookItem('grammar', item.id)}
-            aria-label={saved ? `${item.topic}の問題をマイ学習ノートから外す` : `${item.topic}の問題をマイ学習ノートへ保存`}
-            aria-pressed={saved}
-            className={cx('shrink-0', saved ? 'text-amber-600' : 'text-ink/30')}
-          >
-            {saved ? <BookmarkFilled size={20} /> : <Bookmark size={20} />}
-          </IconButton>
+          <WordBookToggle domain="grammar" itemId={item.id} itemLabel={`${item.topic}の問題`} />
         )}
       />
 

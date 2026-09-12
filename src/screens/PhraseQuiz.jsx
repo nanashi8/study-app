@@ -1,5 +1,6 @@
 import { useMemo, useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
+import { WordBookToggle } from '../components/WordListSheet.jsx'
 import {
   answeredQuizIndexes,
   buildPhraseDeck,
@@ -19,8 +20,8 @@ import { IdiomFormGuide } from '../components/IdiomFormGuide.jsx'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
 import { DragonVeinCipherStage } from '../components/DragonVeinCipherStage.jsx'
-import { Button, IconButton, Chip } from '../components/ui.jsx'
-import { ArrowRight, Bookmark, BookmarkFilled, Check, Close } from '../components/Icons.jsx'
+import { Button, Chip } from '../components/ui.jsx'
+import { ArrowRight, Check, Close } from '../components/Icons.jsx'
 import { cx } from '../components/ui.jsx'
 import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { buildPhraseInstructorExplanation } from '../lib/instructorExplanations.js'
@@ -67,8 +68,6 @@ export function PhraseQuizScreen() {
   const returnTo = useStore((state) => state.returnTo)
   const review = useStore((state) => state.review)
   const reviseReview = useStore((state) => state.reviseReview)
-  const toggleNotebookItem = useStore((state) => state.toggleNotebookItem)
-  const learningNotebook = useStore((state) => state.learningNotebook)
   const selectedStudentId = useStore((state) => state.battleStudentId)
   const source = params.source ?? { type: 'phrase', kind: 'idiom' }
   const isDragonVein = isDragonVeinSource(source)
@@ -139,7 +138,6 @@ export function PhraseQuizScreen() {
       )
     : null
   const longSentenceTranslation = longSentenceTranslationFor(item)
-  const saved = learningNotebook?.entries?.[`phrases:${item.id}`]?.saved === true
 
   const finish = () => {
     handOffSession()
@@ -237,14 +235,7 @@ export function PhraseQuizScreen() {
           />
         )}
         trailingActions={(
-          <IconButton
-            onClick={() => toggleNotebookItem('phrases', item.id)}
-            aria-label={saved ? `${item.phrase}をマイ学習ノートから外す` : `${item.phrase}をマイ学習ノートへ保存`}
-            aria-pressed={saved}
-            className={cx('shrink-0', saved ? 'text-amber-600' : 'text-ink/30')}
-          >
-            {saved ? <BookmarkFilled size={20} /> : <Bookmark size={20} />}
-          </IconButton>
+          <WordBookToggle domain="phrases" itemId={item.id} itemLabel={item.phrase} />
         )}
       />
 

@@ -38,7 +38,7 @@ import {
 } from './storyAlbum.js'
 import { normalizeVocabHistory } from './vocabHistory.js'
 import { normalizeDragonVeinProgress } from './dragonVein.js'
-import { foldLegacyMyWords } from './learningNotebook.js'
+import { foldLegacyMyWords, foldLegacySavedLists } from './learningNotebook.js'
 import { normalizeCustomWords } from './customWords.js'
 import { normalizeLearningAnalytics } from './learningAnalytics.js'
 import { normalizeContentQuizResults } from './contentProgress.js'
@@ -74,18 +74,15 @@ export function progressStateFromCloud(data = {}, current = useStore.getState())
     vocabHistory: normalizeVocabHistory(data.vocabHistory ?? current.vocabHistory),
     myGrammarList: data.myGrammarList ?? [],
     // 古いクラウド保存にこの項目が無い場合、端末側で作ったノートを消さない。
-    // 以前の保存の「マイ単語」（myList）は、単語帳の1冊「マイ単語」へ移して読み込む。
-    learningNotebook: foldLegacyMyWords(
-      data.learningNotebook ?? current.learningNotebook,
-      data.myList,
+    // 以前の保存の「マイ単語」（myList）と古典・漢文の登録リストは、単語帳へ移して読み込む。
+    learningNotebook: foldLegacySavedLists(
+      foldLegacyMyWords(
+        data.learningNotebook ?? current.learningNotebook,
+        data.myList,
+      ),
+      data,
     ),
     writingProgress: data.writingProgress ?? {},
-    kotenWordList: data.kotenWordList ?? [],
-    kotenGrammarList: data.kotenGrammarList ?? [],
-    kotenCultureList: data.kotenCultureList ?? [],
-    kanbunVocabList: data.kanbunVocabList ?? [],
-    kanbunGrammarList: data.kanbunGrammarList ?? [],
-    kanbunCultureList: data.kanbunCultureList ?? [],
     readingsDone: data.readingsDone ?? [],
     mathDone: data.mathDone ?? [],
     mathMastery: data.mathMastery ?? {},

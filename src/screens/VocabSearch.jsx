@@ -145,7 +145,7 @@ function WordRow({ word, inBook = false, onOpen, onChooseBook }) {
 }
 
 // 熟語・構文はその場で開いて意味・例文・解説まで読める（単語詳細に当たる表示）。
-function PhraseRow({ phrase, saved = false, onToggleSave, onStudy }) {
+function PhraseRow({ phrase, inBook = false, onChooseBook, onStudy }) {
   const [open, setOpen] = useState(false)
   const level = getLevel(phrase.level)
   const meanings = phrase.meanings?.length ? phrase.meanings : [phrase.meaning]
@@ -159,9 +159,9 @@ function PhraseRow({ phrase, saved = false, onToggleSave, onStudy }) {
             <div className="flex min-w-0 items-center gap-2">
               <span className="truncate font-display font-extrabold text-ink">{phrase.phrase}</span>
               <Chip color={level.color}>{level.label}</Chip>
-              {saved && (
+              {inBook && (
                 <span className="inline-flex shrink-0 items-center gap-0.5 text-[10px] font-extrabold text-amber-600">
-                  <BookmarkFilled size={13} /> ノート
+                  <BookmarkFilled size={13} /> 単語帳
                 </span>
               )}
             </div>
@@ -212,10 +212,12 @@ function PhraseRow({ phrase, saved = false, onToggleSave, onStudy }) {
               ▶ この項目で学習
             </button>
             <button
-              onClick={onToggleSave}
+              onClick={onChooseBook}
+              aria-haspopup="dialog"
+              data-dictionary-phrase-word-book
               className="rounded-full px-3 py-1.5 text-xs font-extrabold text-amber-600 ring-1 ring-amber-100 active:bg-amber-50"
             >
-              {saved ? '★ ノートから外す' : '☆ マイ学習ノートへ'}
+              {inBook ? '★ 単語帳に入っています' : '☆ 単語帳に入れる'}
             </button>
           </div>
         </div>
@@ -236,12 +238,13 @@ export function VocabSearchScreen() {
   const vocabHistory = useStore((s) => s.vocabHistory)
   const clearVocabHistory = useStore((s) => s.clearVocabHistory)
   const learningNotebook = useStore((s) => s.learningNotebook)
-  const toggleNotebookItem = useStore((s) => s.toggleNotebookItem)
   const [q, setQ] = useState('')
   const [type, setType] = useState('all')
   const [shown, setShown] = useState(PAGE)
   // 単語帳を選ぶ窓を開いている語。
   const [bookWord, setBookWord] = useState(null)
+  // 単語帳を選ぶ窓を開いている熟語・構文。
+  const [bookPhrase, setBookPhrase] = useState(null)
 
   const query = normalizeVocabQuery(q)
 
@@ -300,8 +303,8 @@ export function VocabSearchScreen() {
       <PhraseRow
         key={entry.id}
         phrase={entry.phrase}
-        saved={learningNotebook?.entries?.[`phrases:${entry.phrase.id}`]?.saved === true}
-        onToggleSave={() => toggleNotebookItem('phrases', entry.phrase.id)}
+        inBook={learningNotebook.sets.some((set) => set.refs.includes(`phrases:${entry.phrase.id}`))}
+        onChooseBook={() => setBookPhrase(entry.phrase)}
         onStudy={() => studyPhrase(entry.phrase)}
       />
     )
@@ -451,6 +454,13 @@ export function VocabSearchScreen() {
         onClose={() => setBookWord(null)}
         wordId={bookWord?.id}
         wordLabel={bookWord?.word}
+      />
+      <WordListSheet
+        open={Boolean(bookPhrase)}
+        onClose={() => setBookPhrase(null)}
+        domain="phrases"
+        itemId={bookPhrase?.id}
+        label={bookPhrase?.phrase}
       />
     </div>
   )

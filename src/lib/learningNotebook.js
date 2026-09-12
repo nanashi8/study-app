@@ -1,5 +1,5 @@
-// 8分野を横断する「マイ学習ノート」の保存形式。
-// 教材本文は既存データを正本とし、ここには安定ID・ユーザーのメモ・問題集だけを保存する。
+// 英語・古典・漢文の暗記・テスト教材を横断する「マイ学習ノート」の保存形式。
+// 教材本文は既存データを正本とし、ここには安定ID・ユーザーのメモ・単語帳だけを保存する。
 import {
   createLearningContentPlan,
   normalizeLearningContentPlan,
@@ -7,16 +7,31 @@ import {
 
 export const NOTEBOOK_SCHEMA_VERSION = 2
 
-export const NOTEBOOK_DOMAIN_IDS = Object.freeze([
-  'vocab',
-  'phrases',
-  'grammar',
-  'listening',
-  'etymology',
-  'kotenVocab',
-  'kotenGrammar',
-  'kotenCulture',
-])
+// 単語帳に入れられる教材の種類。並びはアプリごと（英語→古典→漢文）で、ノートの絞り込みもこの順に出す。
+// 教材データを読み込まずに使える名前・単位だけをここに置く（本文の引き当ては learningNotebookCatalog.js）。
+// canStudy は「暗記」で始められる教材。ほかはテスト（問題を解く形）で学ぶ。
+export const NOTEBOOK_DOMAINS = Object.freeze([
+  { id: 'vocab', label: '英単語', unit: '語', emoji: '📘', color: '#4f46e5', canStudy: true },
+  { id: 'phrases', label: '英熟語・構文', unit: '項目', emoji: '🧩', color: '#7c3aed', canStudy: true },
+  { id: 'grammar', label: '英文法', unit: '問', emoji: '✍️', color: '#d97706', canStudy: false },
+  { id: 'listening', label: 'リスニング', unit: '問', emoji: '🎧', color: '#0284c7', canStudy: false },
+  { id: 'dictation', label: 'ディクテーション', unit: '問', emoji: '⌨️', color: '#0d9488', canStudy: false },
+  { id: 'etymology', label: '語源', unit: '項目', emoji: '🌱', color: '#a21caf', canStudy: true },
+  { id: 'kotenVocab', label: '古典単語', unit: '語', emoji: '📜', color: '#c2410c', canStudy: true },
+  { id: 'kotenGrammar', label: '古典文法', unit: '項目', emoji: '🪶', color: '#b45309', canStudy: true },
+  { id: 'kotenCulture', label: '古典常識', unit: '項目', emoji: '🏯', color: '#6d28d9', canStudy: true },
+  { id: 'kotenInterpretation', label: '短文解釈', unit: '問', emoji: '🔎', color: '#ea580c', canStudy: false },
+  { id: 'kanbunVocab', label: '漢語', unit: '語', emoji: '📕', color: '#0f766e', canStudy: true },
+  { id: 'kanbunGrammar', label: '漢文法', unit: '項目', emoji: '🧭', color: '#be123c', canStudy: true },
+  { id: 'kanbunCulture', label: '漢文常識', unit: 'テーマ', emoji: '🏛️', color: '#7c3aed', canStudy: true },
+  { id: 'kanbunKundoku', label: '返り点', unit: '題', emoji: '🔁', color: '#9f1239', canStudy: false },
+].map((domain) => Object.freeze(domain)))
+
+export const NOTEBOOK_DOMAIN_IDS = Object.freeze(NOTEBOOK_DOMAINS.map((domain) => domain.id))
+
+export const NOTEBOOK_DOMAIN_BY_ID = Object.freeze(
+  Object.fromEntries(NOTEBOOK_DOMAINS.map((domain) => [domain.id, domain])),
+)
 
 export const NOTEBOOK_LIMITS = Object.freeze({
   noteLength: 2000,
@@ -67,6 +82,12 @@ export function parseNotebookRef(ref) {
   const domain = ref.slice(0, separator)
   const itemId = ref.slice(separator + 1)
   return DOMAIN_SET.has(domain) && itemId ? { domain, itemId } : null
+}
+
+/** 教材 domain の項目IDを「教材:ID」の参照へ（重複と不正なIDは除く）。1つでも並びでも受け取る。 */
+export function notebookRefs(domain, itemIds) {
+  const ids = Array.isArray(itemIds) ? itemIds : [itemIds]
+  return [...new Set(ids.map((itemId) => notebookRef(domain, itemId)).filter(Boolean))]
 }
 
 const normalizeRefs = (refs, limit = NOTEBOOK_LIMITS.itemsPerSet) => {
@@ -149,9 +170,22 @@ export function createLearningNotebook() {
 // ID を決めておくのは、以前の保存（myList）を何度読み込んでも同じ1冊へまとめ、二重に作らないため。
 export const MY_WORDS_SET_ID = 'notebook-set-my-words'
 export const MY_WORDS_SET_TITLE = 'マイ単語'
-const MY_WORDS_OVERFLOW_PREFIX = `${MY_WORDS_SET_ID}-`
 
-const isMyWordsSetId = (id) => id === MY_WORDS_SET_ID || id.startsWith(MY_WORDS_OVERFLOW_PREFIX)
+// 以前の古典・漢文の「登録リスト」（教材ごとのID配列）を移す単語帳。固定IDにして、何度読み込んでも同じ冊へまとめる。
+export const KOTEN_SAVED_SET_ID = 'notebook-set-koten-saved'
+export const KOTEN_SAVED_SET_TITLE = '古典の登録リスト'
+export const KANBUN_SAVED_SET_ID = 'notebook-set-kanbun-saved'
+export const KANBUN_SAVED_SET_TITLE = '漢文の登録リスト'
+
+// 以前の保存項目。読み込むときに単語帳へ移し、端末保存・進捗コード・クラウドの保存項目からは外す。
+export const LEGACY_SAVED_LIST_FIELDS = Object.freeze([
+  'kotenWordList',
+  'kotenGrammarList',
+  'kotenCultureList',
+  'kanbunVocabList',
+  'kanbunGrammarList',
+  'kanbunCultureList',
+])
 
 const emptySet = (id, title, timestamp) => ({
   id,
@@ -171,18 +205,26 @@ export function createStarterLearningNotebook() {
 }
 
 /**
- * 以前の「マイ単語」（英単語IDだけを並べた保存配列 myList）を、単語帳の1冊「マイ単語」へ移す。
+ * 以前の保存配列（「教材:ID」の並び）を、固定IDの単語帳へ移す共通の手順。
  *
- * - legacyIds が配列でなければ（今の形式の保存）何もしない。空の配列なら空の「マイ単語」を用意する。
- * - 1冊500項目を超える分は「マイ単語2」「マイ単語3」…へ続ける。40冊に届いたら、それ以上は作らない。
- * - すでに移した語は入れ直さない（同じ保存を何度読んでも増えない）。
- * - 以前のマイ単語はノートの「保存中」も兼ねていたので、移した語はノートに保存したまま残す
- *   （40冊に届いて単語帳へ入らなかった語も、ノートからは消えない）。
+ * - 1冊500項目を超える分は「名前2」「名前3」…へ続ける。40冊に届いたら、それ以上は作らない。
+ * - すでに移した項目は入れ直さない（同じ保存を何度読んでも増えない）。
+ * - 以前の保存はノートの「保存中」も兼ねていたので、移した項目はノートに保存したまま残す
+ *   （40冊に届いて単語帳へ入らなかった項目も、ノートからは消えない）。
+ * - placeFirst の冊は単語帳の先頭へ、ほかは利用者が作った冊のあとへ置く。
  */
-export function foldLegacyMyWords(notebook, legacyIds, { timestamp = Date.now() } = {}) {
+function foldLegacyBook(notebook, legacyRefs, {
+  setId,
+  title,
+  placeFirst = false,
+  createWhenEmpty = false,
+  timestamp,
+}) {
   const current = normalizeLearningNotebook(notebook)
-  if (!Array.isArray(legacyIds)) return current
-  const refs = normalizeRefs(legacyIds.map((id) => notebookRef('vocab', id)), Infinity)
+  const refs = normalizeRefs(legacyRefs, Infinity)
+  if (!refs.length && !createWhenEmpty) return current
+  const overflowPrefix = `${setId}-`
+  const isBookId = (id) => id === setId || id.startsWith(overflowPrefix)
 
   const entries = { ...current.entries }
   for (const ref of refs) {
@@ -199,11 +241,13 @@ export function foldLegacyMyWords(notebook, legacyIds, { timestamp = Date.now() 
 
   const sets = [...current.sets]
   const bookIndexes = () => sets
-    .map((set, index) => (isMyWordsSetId(set.id) ? index : -1))
+    .map((set, index) => (isBookId(set.id) ? index : -1))
     .filter((index) => index >= 0)
   if (!bookIndexes().length) {
     if (sets.length >= NOTEBOOK_LIMITS.sets) return { ...current, entries }
-    sets.unshift(emptySet(MY_WORDS_SET_ID, MY_WORDS_SET_TITLE, timestamp))
+    const book = emptySet(setId, title, timestamp)
+    if (placeFirst) sets.unshift(book)
+    else sets.push(book)
   }
 
   const alreadyMoved = new Set(bookIndexes().flatMap((index) => sets[index].refs))
@@ -223,15 +267,51 @@ export function foldLegacyMyWords(notebook, legacyIds, { timestamp = Date.now() 
     }
     if (sets.length >= NOTEBOOK_LIMITS.sets) break
     let number = indexes.length + 1
-    while (sets.some((set) => set.id === `${MY_WORDS_OVERFLOW_PREFIX}${number}`)) number += 1
+    while (sets.some((set) => set.id === `${overflowPrefix}${number}`)) number += 1
     sets.splice(
       lastIndex + 1,
       0,
-      emptySet(`${MY_WORDS_OVERFLOW_PREFIX}${number}`, `${MY_WORDS_SET_TITLE}${number}`, timestamp),
+      emptySet(`${overflowPrefix}${number}`, `${title}${number}`, timestamp),
     )
   }
 
   return { ...current, entries, sets }
+}
+
+/**
+ * 以前の「マイ単語」（英単語IDだけを並べた保存配列 myList）を、単語帳の先頭の1冊「マイ単語」へ移す。
+ * legacyIds が配列でなければ（今の形式の保存）何もしない。空の配列なら空の「マイ単語」を用意する（以前は誰にでもあったため）。
+ */
+export function foldLegacyMyWords(notebook, legacyIds, { timestamp = Date.now() } = {}) {
+  if (!Array.isArray(legacyIds)) return normalizeLearningNotebook(notebook)
+  return foldLegacyBook(notebook, legacyIds.map((id) => notebookRef('vocab', id)), {
+    setId: MY_WORDS_SET_ID,
+    title: MY_WORDS_SET_TITLE,
+    placeFirst: true,
+    createWhenEmpty: true,
+    timestamp,
+  })
+}
+
+/**
+ * 以前の古典・漢文の「登録リスト」を、単語帳「古典の登録リスト」「漢文の登録リスト」へ移す。
+ * source は読み込む保存（端末・進捗コード・クラウド）そのもの。登録が1つもなければ冊は作らない。
+ * 単語・文法・常識は同じ1冊に入り、学ぶときは各コンテンツの「単語帳」から教材ごとに分けて始める。
+ */
+export function foldLegacySavedLists(notebook, source = {}, { timestamp = Date.now() } = {}) {
+  const refsFrom = (pairs) => pairs.flatMap(([domain, ids]) => (
+    Array.isArray(ids) ? ids.map((id) => notebookRef(domain, id)) : []
+  ))
+  const withKoten = foldLegacyBook(notebook, refsFrom([
+    ['kotenVocab', source?.kotenWordList],
+    ['kotenGrammar', source?.kotenGrammarList],
+    ['kotenCulture', source?.kotenCultureList],
+  ]), { setId: KOTEN_SAVED_SET_ID, title: KOTEN_SAVED_SET_TITLE, timestamp })
+  return foldLegacyBook(withKoten, refsFrom([
+    ['kanbunVocab', source?.kanbunVocabList],
+    ['kanbunGrammar', source?.kanbunGrammarList],
+    ['kanbunCulture', source?.kanbunCultureList],
+  ]), { setId: KANBUN_SAVED_SET_ID, title: KANBUN_SAVED_SET_TITLE, timestamp })
 }
 
 export function normalizeLearningNotebook(value) {
@@ -285,22 +365,11 @@ export function notebookEntryFor(notebook, domain, itemId) {
   return normalizeLearningNotebook(notebook).entries[ref] ?? null
 }
 
-// 教材データを読み込まずに、旧リストを含む保存参照を数える軽量セレクタ。
-// 共通メニューなど、全16,071項目のカタログをロードしたくない場所で使う。
-// 以前の英単語の保存配列（myList）は、読み込むときに foldLegacyMyWords でノートへ移している。
+// 教材データを読み込まずに、ノートの保存参照を数える軽量セレクタ。
+// 共通メニューなど、全教材のカタログをロードしたくない場所で使う。
+// 以前の「マイ単語」（myList）と古典・漢文の登録リストは、読み込むときにノートの保存と単語帳へ移している。
 export function notebookStoredSavedRefs(state = {}) {
   const refs = new Set()
-  const legacy = [
-    ['kotenVocab', state.kotenWordList],
-    ['kotenGrammar', state.kotenGrammarList],
-    ['kotenCulture', state.kotenCultureList],
-  ]
-  for (const [domain, ids] of legacy) {
-    for (const itemId of Array.isArray(ids) ? ids : []) {
-      const ref = notebookRef(domain, itemId)
-      if (ref) refs.add(ref)
-    }
-  }
   for (const [ref, entry] of Object.entries(state.learningNotebook?.entries ?? {})) {
     if (entry?.saved && parseNotebookRef(ref)) refs.add(ref)
   }
@@ -509,11 +578,13 @@ export function setNotebookSetItems(
   included,
   timestamp = Date.now(),
 ) {
+  return setNotebookSetRefs(notebook, setId, notebookRefs(domain, itemIds ?? []), included, timestamp)
+}
+
+/** 教材をまたいでまとめて入れる・外す。refs は「教材:ID」の並び（短文解釈の重要語と文法など）。 */
+export function setNotebookSetRefs(notebook, setId, itemRefs, included, timestamp = Date.now()) {
   const current = normalizeLearningNotebook(notebook)
-  const refs = normalizeRefs(
-    (Array.isArray(itemIds) ? itemIds : []).map((itemId) => notebookRef(domain, itemId)),
-    Infinity,
-  )
+  const refs = normalizeRefs(itemRefs, Infinity)
   if (!refs.length) return current
   return {
     ...current,

@@ -202,7 +202,7 @@ test('マイ単語はほかの単語帳と同じ1冊で、どの冊もマイ学�
   // どの冊も同じ行で並べ、同じ操作で入れる・外す（1語でも、まとめてでも）。
   assert.doesNotMatch(sheet, /toggleMyList|(?:store|state)\.myList|data-word-list-my-words|いつもの単語帳/)
   assert.match(sheet, /createNotebookSet/)
-  assert.match(sheet, /setNotebookSetItems\(set\.id, DOMAIN, ids, !removes\)/)
+  assert.match(sheet, /setNotebookSetRefs\(set\.id, refs, !removes\)/)
   // もう入らない冊（全部入っている・500項目でいっぱい）は、押すと入っている語を外す。行を押せないままにしない。
   assert.match(sheet, /const removes = present > 0 && !canAdd/)
   assert.match(sheet, /data-word-list-new-title/)

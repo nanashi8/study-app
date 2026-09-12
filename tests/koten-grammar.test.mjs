@@ -16,6 +16,8 @@ import {
   pickKotenGrammarQuestions,
 } from '../src/data/koten-grammar-questions.js'
 import { decodeProgress, encodeProgress } from '../src/lib/progressCode.js'
+import LZString from 'lz-string'
+import { KOTEN_SAVED_SET_ID, foldLegacySavedLists } from '../src/lib/learningNotebook.js'
 
 const LEGACY_GRAMMAR_COUNT = 29
 const categoryIds = new Set(KOTEN_GRAMMAR_CATEGORIES.map((item) => item.id))
@@ -99,7 +101,7 @@ test('腕試しは重複なし12問で文脈型と基礎型を混ぜる', () => 
   assert.equal(picked.filter((item) => item.style === 'foundation').length, 4)
 })
 
-test('古典文法SRSは進捗コードで往復し、旧コードでは省略できる', () => {
+test('古典文法SRSは進捗コードで往復し、以前の登録リストは単語帳へ移し、旧コードでは省略できる', () => {
   const srs = {
     kg_neg_zu: {
       box: 3,
@@ -134,7 +136,12 @@ test('古典文法SRSは進捗コードで往復し、旧コードでは省略�
     settings: {},
   }))
   assert.deepEqual(restored.kotenGrammarSrs, srs)
-  assert.deepEqual(restored.kotenGrammarList, ['kg_neg_zu'])
+  // 登録リストは保存項目から外し、単語帳（learningNotebook）で持ち運ぶ。
+  assert.equal('kotenGrammarList' in restored, false)
+  // 以前のコードの登録リストは、読み込むときに単語帳「古典の登録リスト」へ移す。
+  const oldCode = `EQ1-${LZString.compressToEncodedURIComponent(JSON.stringify({ v: 1, kotenGrammarSrs: srs, kotenGrammarList: ['kg_neg_zu'] }))}`
+  const folded = foldLegacySavedLists(undefined, decodeProgress(oldCode))
+  assert.deepEqual(folded.sets.map((set) => [set.id, set.refs]), [[KOTEN_SAVED_SET_ID, ['kotenGrammar:kg_neg_zu']]])
 
   const legacy = decodeProgress(encodeProgress({
     srs: {},

@@ -119,7 +119,7 @@ const kanbunTile = CONTENTS.find((content) => content.id === 'kanbun-quest')
 assert.equal(kotenTile?.screen, 'kotenList')
 assert.equal(kanbunTile?.screen, 'kanbunHome')
 assert.notEqual(kotenTile.screen, kanbunTile.screen)
-for (const screen of ['kotenList', 'kanbunHome', 'kanbunSaved']) {
+for (const screen of ['kotenList', 'kanbunHome']) {
   assert.ok(APP_MENU_SCREEN_DESTINATIONS.includes(screen), `${screen}: メニュー未接続`)
 }
 
@@ -136,7 +136,6 @@ for (const screen of [
   'kanbunQuiz',
   'kanbunKundoku',
   'kanbunKundokuQuiz',
-  'kanbunSaved',
 ]) {
   assert.match(appSource, new RegExp(`${screen}:`), `${screen}: 公開ルート未接続`)
 }
@@ -146,9 +145,6 @@ const kanbunProgressFields = [
   'kanbunGrammarSrs',
   'kanbunCultureSrs',
   'kanbunKundokuSrs',
-  'kanbunVocabList',
-  'kanbunGrammarList',
-  'kanbunCultureList',
 ]
 for (const field of kanbunProgressFields) {
   assert.ok(PERSISTED_PROGRESS_FIELDS.includes(field), `${field}: 保存契約にありません`)
@@ -185,7 +181,6 @@ for (const [file, needles] of [
   ['src/screens/KanbunStudy.jsx', ['KanbunHeadword', '<KanbunText>{item.kakikudashi}']],
   ['src/screens/KanbunQuiz.jsx', ['<KanbunText>{question.kakikudashi}']],
   ['src/screens/KanbunCatalog.jsx', ['KanbunHeadword']],
-  ['src/screens/KanbunSaved.jsx', ['KanbunHeadword']],
   ['src/screens/KanbunKundokuQuiz.jsx', ['<KanbunText>{exercise.kakikudashi}']],
 ]) {
   const source = readFileSync(new URL(`../${file}`, import.meta.url), 'utf8')
@@ -197,5 +192,5 @@ for (const [file, needles] of [
 console.log('古典・漢文全件監査: PASS')
 console.log('  古典: 暗記430項目 / 選択問題548問相当（出題は3択） / 短文読解36問 / 5段階')
 console.log(`  漢文: 暗記302項目 / 自動生成3択302問 / 返り点・訓読40題・返り点${kanbunReturnMarkCount}個を親字へ固定 / 5段階`)
-console.log(`  保存契約: 漢文7項目 / 全${PERSISTED_PROGRESS_FIELDS.length}永続項目`)
+console.log(`  保存契約: 漢文4項目 / 全${PERSISTED_PROGRESS_FIELDS.length}永続項目`)
 console.log('  ふりがな: 見出し語・書き下し文の振り漏れ0 / 白文は書き下し文と必ず対')

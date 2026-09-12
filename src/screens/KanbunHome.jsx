@@ -10,7 +10,6 @@ import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import {
   ArrowRight,
   Book,
-  BookmarkFilled,
   Cards,
   ChevronLeft,
   Headphones,
@@ -46,9 +45,6 @@ export function KanbunHomeScreen() {
   const grammarSrs = useStore((state) => state.kanbunGrammarSrs)
   const cultureSrs = useStore((state) => state.kanbunCultureSrs)
   const kundokuSrs = useStore((state) => state.kanbunKundokuSrs)
-  const vocabList = useStore((state) => state.kanbunVocabList)
-  const grammarList = useStore((state) => state.kanbunGrammarList)
-  const cultureList = useStore((state) => state.kanbunCultureList)
 
   const vocabStatus = summarizeSrsItems(KANBUN_VOCAB, vocabSrs)
   const grammarStatus = summarizeSrsItems(KANBUN_GRAMMAR, grammarSrs)
@@ -168,13 +164,14 @@ export function KanbunHomeScreen() {
         <div className="grid grid-cols-2 gap-3 pt-1">
           <button
             type="button"
-            onClick={() => navigate('kanbunSaved')}
+            onClick={() => navigate('myList', { tab: 'sets' })}
             className="rounded-2xl bg-amber-50 p-3.5 text-left active:scale-[0.98]"
+            data-kanbun-word-books
           >
-            <BookmarkFilled size={21} className="text-amber-700" />
-            <span className="mt-2 block text-sm font-extrabold text-amber-950">登録リスト</span>
+            <Cards size={21} className="text-amber-700" />
+            <span className="mt-2 block text-sm font-extrabold text-amber-950">単語帳</span>
             <span className="mt-1 block text-[10px] font-bold text-amber-800/65">
-              漢語{vocabList.length}・文法{grammarList.length}・常識{cultureList.length}
+              漢語・漢文法・漢文常識をまとめて学ぶ
             </span>
           </button>
           <button

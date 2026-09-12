@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import { useStore } from '../store/useStore.js'
+import { WordBookToggle } from '../components/WordListSheet.jsx'
 import { getKoten } from '../data/koten.js'
 import { Button } from '../components/ui.jsx'
 import { KotenText, KotenWord } from '../components/KotenFurigana.jsx'
 import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
 import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
 import {
-  CardSaveToggle,
   CardStudyFooter,
   CardSwipeRegion,
   StudyAnswerReselect,
@@ -42,8 +42,6 @@ export function KotenStudyScreen() {
   const params = useStore((s) => s.params)
   const back = useStore((s) => s.back)
   const reviewKoten = useStore((s) => s.reviewKoten)
-  const kotenWordList = useStore((s) => s.kotenWordList)
-  const toggleKotenWordList = useStore((s) => s.toggleKotenWordList)
   const settings = useStore((s) => s.settings)
   const revealAll = settings.revealAnswers
 
@@ -70,7 +68,6 @@ export function KotenStudyScreen() {
   const carried = useCarriedAnswers()
 
   const word = deck[i]
-  const saved = word ? kotenWordList.includes(word.id) : false
 
   if (!deck.length) {
     return (
@@ -179,13 +176,7 @@ export function KotenStudyScreen() {
               toolbar
               onChange={(on) => setFlipped(on)}
             />
-            <CardSaveToggle
-              saved={saved}
-              onToggle={() => toggleKotenWordList(word.id)}
-              label="登録"
-              savedLabel={`${word.word}を登録単語から外す`}
-              unsavedLabel={`${word.word}を登録単語へ追加`}
-            />
+            <WordBookToggle domain="kotenVocab" itemId={word.id} itemLabel={word.word} />
           </>
         )}
       />

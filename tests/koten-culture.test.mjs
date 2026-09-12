@@ -15,6 +15,8 @@ import {
 } from '../src/data/koten-culture.js'
 import { getKotenInterpretation } from '../src/data/koten-interpretations.js'
 import { decodeProgress, encodeProgress } from '../src/lib/progressCode.js'
+import LZString from 'lz-string'
+import { KOTEN_SAVED_SET_ID, foldLegacySavedLists } from '../src/lib/learningNotebook.js'
 
 const categoryIds = new Set(KOTEN_CULTURE_CATEGORIES.map((item) => item.id))
 
@@ -89,7 +91,7 @@ test('古典常識の腕試しは重複なし12問で文脈型8・基礎型4を�
   assert.equal(picked.filter((item) => item.style === 'foundation').length, 4)
 })
 
-test('古典常識SRSと登録リストは進捗コードで往復し、旧コードでは省略できる', () => {
+test('古典常識SRSは進捗コードで往復し、以前の登録リストは単語帳へ移し、旧コードでは省略できる', () => {
   const srs = {
     kc001: {
       box: 3,
@@ -126,7 +128,12 @@ test('古典常識SRSと登録リストは進捗コードで往復し、旧コ�
     settings: {},
   }))
   assert.deepEqual(restored.kotenCultureSrs, srs)
-  assert.deepEqual(restored.kotenCultureList, ['kc001'])
+  // 登録リストは保存項目から外し、単語帳（learningNotebook）で持ち運ぶ。
+  assert.equal('kotenCultureList' in restored, false)
+  // 以前のコードの登録リストは、読み込むときに単語帳「古典の登録リスト」へ移す。
+  const oldCode = `EQ1-${LZString.compressToEncodedURIComponent(JSON.stringify({ v: 1, kotenCultureSrs: srs, kotenCultureList: ['kc001'] }))}`
+  const folded = foldLegacySavedLists(undefined, decodeProgress(oldCode))
+  assert.deepEqual(folded.sets.map((set) => [set.id, set.refs]), [[KOTEN_SAVED_SET_ID, ['kotenCulture:kc001']]])
 
   const legacy = decodeProgress(encodeProgress({
     srs: {},

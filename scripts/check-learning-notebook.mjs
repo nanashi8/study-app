@@ -3,10 +3,17 @@ import { ALL_WORDS, ETYMOLOGY_PACKS } from '../src/data/vocab.js'
 import { PHRASES } from '../src/data/phrases.js'
 import { GRAMMAR_PRACTICE } from '../src/data/grammar.js'
 import { LISTENING_ITEMS } from '../src/data/listening.js'
+import { DICTATION_ITEMS } from '../src/data/dictation.js'
 import { KOTEN_WORDS } from '../src/data/koten.js'
 import { KOTEN_GRAMMAR } from '../src/data/koten-grammar.js'
 import { KOTEN_CULTURE } from '../src/data/koten-culture.js'
+import { KOTEN_INTERPRETATIONS } from '../src/data/koten-interpretations.js'
+import { KANBUN_VOCAB } from '../src/data/kanbun-vocab.js'
+import { KANBUN_GRAMMAR } from '../src/data/kanbun-grammar.js'
+import { KANBUN_CULTURE } from '../src/data/kanbun-culture.js'
+import { KANBUN_KUNDOKU_EXERCISES } from '../src/data/kanbun-kundoku.js'
 import {
+  LEGACY_SAVED_LIST_FIELDS,
   NOTEBOOK_DOMAIN_IDS,
   createLearningNotebook,
   createNotebookSet,
@@ -37,13 +44,23 @@ const sources = {
   phrases: PHRASES,
   grammar: GRAMMAR_PRACTICE,
   listening: LISTENING_ITEMS,
+  dictation: DICTATION_ITEMS,
   etymology: ETYMOLOGY_PACKS,
   kotenVocab: KOTEN_WORDS,
   kotenGrammar: KOTEN_GRAMMAR,
   kotenCulture: KOTEN_CULTURE,
+  kotenInterpretation: KOTEN_INTERPRETATIONS,
+  kanbunVocab: KANBUN_VOCAB,
+  kanbunGrammar: KANBUN_GRAMMAR,
+  kanbunCulture: KANBUN_CULTURE,
+  kanbunKundoku: KANBUN_KUNDOKU_EXERCISES,
 }
+const domainCount = NOTEBOOK_DOMAIN_IDS.length
 
-if (NOTEBOOK_DOMAIN_IDS.length !== 8) fail(`分野数が8ではありません: ${NOTEBOOK_DOMAIN_IDS.length}`)
+if (domainCount !== 14) fail(`教材の種類が14ではありません: ${domainCount}`)
+for (const domain of NOTEBOOK_DOMAIN_IDS) {
+  if (!sources[domain]) fail(`${domain}: 監査する正本データがありません`)
+}
 
 for (const domain of NOTEBOOK_DOMAIN_IDS) {
   const source = sources[domain] ?? []
@@ -90,8 +107,8 @@ for (const domain of NOTEBOOK_DOMAIN_IDS) {
   }, 200)
   sampleRefs.push(notebookRef(domain, itemId))
 }
-const created = createNotebookSet(sample, '8分野監査問題集', {
-  description: '全分野の往復監査',
+const created = createNotebookSet(sample, '全教材監査単語帳', {
+  description: '全教材の往復監査',
   timestamp: 300,
   randomPart: 'audit',
 })
@@ -100,13 +117,13 @@ for (const domain of NOTEBOOK_DOMAIN_IDS) {
   sample = setNotebookSetItem(sample, created.setId, domain, sources[domain][0].id, true, 400)
 }
 sample = normalizeLearningNotebook(sample)
-if (Object.keys(sample.entries).length !== 8) fail('8分野のメモを保存できません')
-if (sample.sets[0]?.refs.length !== 8) fail('8分野混在の問題集を保存できません')
+if (Object.keys(sample.entries).length !== domainCount) fail('全教材のメモを保存できません')
+if (sample.sets[0]?.refs.length !== domainCount) fail('全教材が混ざった単語帳を保存できません')
 if (!sampleRefs.every((ref) => sample.sets[0]?.refs.includes(ref))) fail('問題集の安定参照が欠落しています')
 
 const decoded = decodeProgress(encodeProgress({ learningNotebook: sample }))
-if (decoded.learningNotebook?.sets?.[0]?.refs?.length !== 8) {
-  fail('進捗コードで8分野問題集を往復できません')
+if (decoded.learningNotebook?.sets?.[0]?.refs?.length !== domainCount) {
+  fail('進捗コードで全教材の単語帳を往復できません')
 }
 if (!PERSISTED_PROGRESS_FIELDS.includes('learningNotebook')) {
   fail('learningNotebook が一元永続化契約にありません')
@@ -123,23 +140,25 @@ for (const marker of [
 ]) {
   if (!screen.includes(marker)) fail(`統合画面の機能マーカー不足: ${marker}`)
 }
+// 単語帳から学ぶ行き先は1か所（wordBookLaunch.js）で決め、ノート・単語画面・各コンテンツのトップが同じものを使う。
+const launch = read('../src/lib/wordBookLaunch.js')
 for (const route of [
   'vocabStudy', 'vocabQuiz', 'phraseStudy', 'phraseQuiz', 'grammarQuiz',
-  'listeningQuiz', 'etymologyStudy', 'etymologyQuiz', 'kotenStudy', 'kotenQuiz',
+  'listeningQuiz', 'dictationPlay', 'etymologyStudy', 'etymologyQuiz', 'kotenStudy', 'kotenQuiz',
   'kotenGrammarStudy', 'kotenGrammarQuiz', 'kotenCultureStudy', 'kotenCultureQuiz',
+  'kotenInterpretationPrep', 'kanbunStudy', 'kanbunQuiz', 'kanbunKundokuQuiz',
 ]) {
-  if (!screen.includes(`'${route}'`)) fail(`統合画面から学習経路 ${route} へ接続していません`)
+  if (!launch.includes(`'${route}'`)) fail(`単語帳の行き先に学習経路 ${route} がありません`)
+}
+if (!screen.includes('wordBookLaunchTarget(domainId, mode, ids')) {
+  fail('統合画面が単語帳と同じ行き先を使っていません')
 }
 const etymologyLaunch = screen.slice(
-  screen.indexOf("} else if (domainId === 'etymology') {"),
-  screen.indexOf("} else if (domainId === 'kotenVocab') {"),
+  screen.indexOf("if (domainId === 'etymology' && mode === 'words') {"),
+  screen.indexOf('const target = wordBookLaunchTarget('),
 )
 if (!etymologyLaunch.includes("navigate('vocabStudy'")) {
   fail('語源ノートが単語の「暗記」へ接続していません')
-}
-// 語源ノートは「語根そのもの」と「紐づく単語」の両方へ進める。
-for (const route of ['etymologyStudy', 'etymologyQuiz']) {
-  if (!etymologyLaunch.includes(`'${route}'`)) fail(`語源ノートが ${route} へ接続していません`)
 }
 if (/vocabQuiz/.test(etymologyLaunch)) {
   fail('語源ノートに廃止した単語テストへの接続が残っています')
@@ -158,12 +177,20 @@ const store = read('../src/store/useStore.js')
 for (const action of [
   'toggleNotebookItem', 'updateNotebookItem', 'createNotebookSet',
   'updateNotebookSet', 'deleteNotebookSet', 'setNotebookSetItem', 'setNotebookSetItems',
-  'moveNotebookSet', 'moveNotebookSetItem', 'recordNotebookSetLaunch',
+  'moveNotebookSet', 'moveNotebookSetItem', 'recordNotebookSetLaunch', 'setNotebookSetRefs',
 ]) {
   if (!store.includes(`${action}:`)) fail(`ストア操作不足: ${action}`)
 }
-for (const legacyField of ['kotenWordList', 'kotenGrammarList', 'kotenCultureList']) {
-  if (!store.includes(`${legacyField}:`)) fail(`旧保存互換不足: ${legacyField}`)
+// 以前の古典・漢文の登録リストは保存項目から外し、どこから読んでも単語帳へ移す。
+for (const legacyField of LEGACY_SAVED_LIST_FIELDS) {
+  if (PERSISTED_PROGRESS_FIELDS.includes(legacyField)) fail(`以前の登録リスト ${legacyField} が保存項目に残っています`)
+}
+for (const [label, text] of [
+  ['端末保存・進捗コード', store],
+  ['クラウド', read('../src/lib/cloudSync.js')],
+  ['進捗コードの要約', read('../src/lib/progressCode.js')],
+]) {
+  if (!text.includes('foldLegacySavedLists(')) fail(`旧保存互換不足: ${label}の登録リストを単語帳へ移していません`)
 }
 // 以前の「マイ単語」（myList）は、端末保存・進捗コード・クラウドのどこから読んでも単語帳の1冊へ移す。
 for (const [label, source, needle] of [
@@ -182,16 +209,23 @@ if (!cloud.includes('data.learningNotebook ?? current.learningNotebook')) {
   fail('旧クラウド保存からの復元時に端末ノートを保護していません')
 }
 
-const directSaveScreens = {
+// 暗記・テストのカードからは、どの教材も入れる単語帳を選ぶ窓を開く。
+const wordBookScreens = {
   phrases: ['PhraseStudy.jsx', 'PhraseQuiz.jsx'],
   grammar: ['GrammarQuiz.jsx'],
   listening: ['ListeningQuiz.jsx'],
+  dictation: ['DictationPlay.jsx'],
+  etymology: ['EtymologyStudy.jsx', 'EtymologyQuiz.jsx'],
+  kotenVocab: ['KotenStudy.jsx', 'KotenQuiz.jsx'],
+  kotenGrammar: ['KotenGrammarStudy.jsx'],
+  kotenCulture: ['KotenCultureStudy.jsx'],
+  kanbunKundoku: ['KanbunKundokuQuiz.jsx'],
 }
-for (const [domain, files] of Object.entries(directSaveScreens)) {
+for (const [domain, files] of Object.entries(wordBookScreens)) {
   for (const file of files) {
     const source = read(`../src/screens/${file}`)
-    if (!source.includes(`toggleNotebookItem('${domain}'`)) {
-      fail(`${file}: ${domain}の直接保存がありません`)
+    if (!source.includes(`<WordBookToggle domain="${domain}"`)) {
+      fail(`${file}: ${domain}を単語帳へ入れるボタンがありません`)
     }
   }
 }
@@ -201,7 +235,7 @@ for (const domain of NOTEBOOK_DOMAIN_IDS) {
   console.log(`  ${domain.padEnd(13)} ${sources[domain].length.toLocaleString()}件`)
 }
 console.log(`  合計            ${expectedTotal.toLocaleString()}件`)
-console.log(`  永続参照        ${sample.sets[0]?.refs.length ?? 0}/8分野`)
+console.log(`  永続参照        ${sample.sets[0]?.refs.length ?? 0}/${domainCount}教材`)
 console.log(`  エラー          ${errors.length}件`)
 
 if (errors.length) {

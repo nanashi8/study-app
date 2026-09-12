@@ -1,3 +1,6 @@
+import * as notebookForBooks from '../src/lib/learningNotebook.js'
+import * as wordBooksForBooks from '../src/lib/wordBooks.js'
+import * as launchForBooks from '../src/lib/wordBookLaunch.js'
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
@@ -218,8 +221,8 @@ test('単語帳の一覧の歯車から、どの冊も名前の変更・並び�
   assert.match(sheet, /moveNotebookSet\(book\.id, 'down'\)/)
   assert.match(sheet, /data-word-book-delete-confirm/)
   assert.match(sheet, /deleteNotebookSet\(bookId\)/)
-  assert.match(sheet, /単語の学習記録は残ります/)
-  assert.match(sheet, /wordBooksFromState\(\{ learningNotebook \}\)/)
+  assert.match(sheet, /入っている項目の学習記録は残ります/)
+  assert.match(sheet, /wordBooksFromState\(\{ learningNotebook \}, meta\.id\)/)
   // 暗記・テストを始めた記録は、どの冊でも同じように残す。
   assert.doesNotMatch(sheet, /if \(book\.set\) \{/)
   assert.match(sheet, />\s*一覧で確認\s*</)
@@ -291,4 +294,57 @@ test('マイ学習ノートでは単語帳を「単語帳」と呼び、冊ご�
   assert.doesNotMatch(notebook, /current\.myList/)
   // 単語帳の学習ボタンは、アプリ全体と同じ「暗記」「テスト」と呼ぶ。
   assert.match(notebook, /domain\.id === 'etymology' \? '語根を暗記' : '暗記'/)
+})
+
+test('熟語・文法・古典・漢文などほかの教材も単語帳に入れ、各教材の画面から冊ごとに学べる', () => {
+  // 1冊に教材をまたいで入り、学ぶときは教材ごとに数える。
+  let notebook = notebookForBooks.createStarterLearningNotebook()
+  notebook = notebookForBooks.setNotebookSetRefs(
+    notebook,
+    notebookForBooks.MY_WORDS_SET_ID,
+    ['phrases:idm_get_up', 'kanbunKundoku:kk001', 'vocab:book', 'unknown:x'],
+    true,
+    1,
+  )
+  assert.deepEqual(notebook.sets[0].refs, ['phrases:idm_get_up', 'kanbunKundoku:kk001', 'vocab:book'])
+  assert.deepEqual(wordBooksForBooks.wordBookItemIds(notebook.sets[0], 'phrases'), ['idm_get_up'])
+  assert.deepEqual(wordBooksForBooks.wordBooksFromState({ learningNotebook: notebook }, 'kanbunKundoku')[0].ids, ['kk001'])
+
+  // 行き先は教材ごとに1か所で決め、暗記のない教材はテストを開く。
+  for (const domain of notebookForBooks.NOTEBOOK_DOMAIN_IDS) {
+    const study = launchForBooks.wordBookLaunchTarget(domain, 'study', ['x'], { title: '単語帳' })
+    assert.ok(study?.screen, domain)
+    if (!launchForBooks.wordBookCanStudy(domain)) {
+      assert.equal(launchForBooks.wordBookLaunchTarget(domain, 'quiz', ['x']).screen, study.screen, domain)
+    }
+  }
+  assert.equal(launchForBooks.wordBookLaunchTarget('kanbunGrammar', 'quiz', ['kgw001']).params.domain, 'grammar')
+  assert.equal(launchForBooks.kanbunNotebookDomain('culture'), 'kanbunCulture')
+
+  // 暗記・テストのカードの保存ボタンは、どれも入れる単語帳を選ぶ窓を開く。
+  const toggles = {
+    'src/screens/PhraseStudy.jsx': 'phrases',
+    'src/screens/PhraseQuiz.jsx': 'phrases',
+    'src/screens/GrammarQuiz.jsx': 'grammar',
+    'src/screens/ListeningQuiz.jsx': 'listening',
+    'src/screens/DictationPlay.jsx': 'dictation',
+    'src/screens/EtymologyStudy.jsx': 'etymology',
+    'src/screens/EtymologyQuiz.jsx': 'etymology',
+    'src/screens/KotenStudy.jsx': 'kotenVocab',
+    'src/screens/KotenQuiz.jsx': 'kotenVocab',
+    'src/screens/KotenGrammarStudy.jsx': 'kotenGrammar',
+    'src/screens/KotenCultureStudy.jsx': 'kotenCulture',
+    'src/screens/KotenInterpretationQuiz.jsx': 'kotenVocab',
+    'src/screens/KanbunKundokuQuiz.jsx': 'kanbunKundoku',
+  }
+  for (const [path, domain] of Object.entries(toggles)) {
+    assert.ok(read(`../${path}`).includes(`<WordBookToggle domain="${domain}"`), path)
+  }
+  for (const path of ['src/screens/KanbunStudy.jsx', 'src/screens/KanbunQuiz.jsx']) {
+    assert.ok(read(`../${path}`).includes('<WordBookToggle domain={kanbunNotebookDomain(domain)}'), path)
+  }
+  // 以前の登録リストの操作・画面は残さない。
+  const store = read('../src/store/useStore.js')
+  assert.doesNotMatch(store, /toggleKotenWordList|addManyToKotenWordList|toggleKanbunList|addManyToKanbunList|kotenWordList: \[\]/)
+  assert.doesNotMatch(read('../src/App.jsx'), /kotenSaved|kanbunSaved/)
 })
