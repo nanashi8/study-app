@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
+import { catalogReturnState, readCatalogReturnState } from '../lib/catalogReturnState.js'
 import { getLevel } from '../data/levels.js'
 import {
   VOCAB_FIELD_GROUPS,
@@ -80,21 +81,40 @@ function VocabularyCatalog({
   onShowFields,
   onOpenWord,
   initialFieldFilter = VOCAB_CATALOG_FIELD_FILTER_ALL,
+  returnState,
+  onReturnStateRead,
   ...rest
 }) {
-  const [activity, setActivity] = useState('memory')
-  const [sort, setSort] = useState('weight')
-  const [direction, setDirection] = useState(VOCAB_CATALOG_DEFAULT_DIRECTIONS.weight)
-  const [statusFilter, setStatusFilter] = useState('all')
-  const [fieldFilter, setFieldFilter] = useState(initialFieldFilter)
-  const [visible, setVisible] = useState(CATALOG_PAGE_SIZE)
+  // 語の詳細から戻ったときは、離れる前の見え方（しぼり込み・並び・隠した語・スクロール位置）から始める。
+  const [restored] = useState(() => readCatalogReturnState(returnState, {
+    key: catalogKey,
+    sorts: VOCAB_CATALOG_SORT_OPTIONS.map((option) => option.id),
+    defaultSort: 'weight',
+    defaultDirections: VOCAB_CATALOG_DEFAULT_DIRECTIONS,
+    pageSize: CATALOG_PAGE_SIZE,
+  }))
+  const [activity, setActivity] = useState(restored?.activity ?? 'memory')
+  const [sort, setSort] = useState(restored?.sort ?? 'weight')
+  const [direction, setDirection] = useState(
+    restored?.direction ?? VOCAB_CATALOG_DEFAULT_DIRECTIONS.weight,
+  )
+  const [statusFilter, setStatusFilter] = useState(restored?.filters.statusFilter ?? 'all')
+  const [fieldFilter, setFieldFilter] = useState(restored?.filters.fieldFilter ?? initialFieldFilter)
   const [swipeMessage, setSwipeMessage] = useState('')
-  const [sortOpen, setSortOpen] = useState(false)
-  const [dismissedByActivity, setDismissedByActivity] = useState(() => ({
+  const [sortOpen, setSortOpen] = useState(restored?.toolsOpen ?? false)
+  const [dismissedByActivity, setDismissedByActivity] = useState(() => restored?.dismissedByActivity ?? {
     memory: new Set(),
     test: new Set(),
-  }))
+  })
   const [now] = useState(() => Date.now())
+  const listRef = useRef(null)
+  // しぼり込み・並び・学習とテストの切替を変えたら、表示件数は最初の数へ戻す。
+  const pagingKey = [activity, sort, direction, fieldFilter, statusFilter].join('')
+  const [paging, setPaging] = useState(() => ({
+    key: pagingKey,
+    visible: restored?.visible ?? CATALOG_PAGE_SIZE,
+  }))
+  const visible = paging.key === pagingKey ? paging.visible : CATALOG_PAGE_SIZE
   const rows = useMemo(
     () => vocabularyCatalogActivityRows(words, srs, {
       activity, sort, direction, now,
@@ -127,16 +147,13 @@ function VocabularyCatalog({
   const activityMeta = VOCABULARY_HISTORY_ACTIVITY_META[activity]
     ?? VOCABULARY_HISTORY_ACTIVITY_META.memory
 
-  useEffect(
-    () => setVisible(CATALOG_PAGE_SIZE),
-    [activity, direction, fieldFilter, sort, statusFilter],
-  )
+  useLayoutEffect(() => {
+    if (restored && listRef.current) listRef.current.scrollTop = restored.scrollTop
+  }, [restored])
+  // 読み戻した見え方は履歴から外す。同じ画面で開き直した一覧へ、古い見え方を当てないため。
   useEffect(() => {
-    setDismissedByActivity({ memory: new Set(), test: new Set() })
-    setSwipeMessage('')
-    setFieldFilter(initialFieldFilter)
-    setStatusFilter('all')
-  }, [catalogKey, initialFieldFilter])
+    if (restored) onReturnStateRead?.()
+  }, [restored])
 
   const chooseSort = (nextSort) => {
     setSort(nextSort)
@@ -158,9 +175,22 @@ function VocabularyCatalog({
 
   const restoreList = () => {
     setDismissedByActivity((current) => ({ ...current, [activity]: new Set() }))
-    setVisible(CATALOG_PAGE_SIZE)
+    setPaging({ key: pagingKey, visible: CATALOG_PAGE_SIZE })
     setSwipeMessage(`${activity === 'test' ? 'テスト' : '学習'}の一覧を再表示しました。`)
   }
+
+  // 語の詳細へ移る前に、いまの見え方を渡して履歴へ残してもらう。
+  const openWord = (wordId) => onOpenWord(wordId, catalogReturnState({
+    key: catalogKey,
+    activity,
+    sort,
+    direction,
+    filters: { fieldFilter, statusFilter },
+    toolsOpen: sortOpen,
+    visible,
+    dismissedByActivity,
+    scrollTop: listRef.current?.scrollTop,
+  }))
 
   return (
     <div className="flex h-full min-h-0 flex-col" {...rest}>
@@ -318,7 +348,7 @@ function VocabularyCatalog({
         </p>
       </div>
 
-      <div className="min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto px-3 py-3" data-vocab-catalog-list>
+      <div ref={listRef} className="min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto px-3 py-3" data-vocab-catalog-list>
         <p className="mb-2 px-1 text-xs font-extrabold text-ink/50" aria-live="polite">
           {fieldFilter !== VOCAB_CATALOG_FIELD_FILTER_ALL && `${fieldFilterLabel}・`}
           {`${activity === 'test' ? 'テスト済' : '学習済'} ${recordedCount.toLocaleString('ja-JP')}/${fieldRows.length.toLocaleString('ja-JP')}語`}
@@ -332,7 +362,7 @@ function VocabularyCatalog({
               row={row}
               activity={activity}
               onSwipe={(swipeDirection) => handleSwipe(row, swipeDirection)}
-              onOpen={() => onOpenWord(row.word.id)}
+              onOpen={() => openWord(row.word.id)}
             />
           ))}
         </div>
@@ -350,7 +380,10 @@ function VocabularyCatalog({
             full
             variant="secondary"
             className="mt-3"
-            onClick={() => setVisible((count) => Math.min(remainingRows.length, count + CATALOG_PAGE_SIZE))}
+            onClick={() => setPaging({
+              key: pagingKey,
+              visible: Math.min(remainingRows.length, visible + CATALOG_PAGE_SIZE),
+            })}
           >
             さらに{Math.min(CATALOG_PAGE_SIZE, remainingRows.length - visible).toLocaleString('ja-JP')}語を表示
           </Button>
@@ -400,6 +433,7 @@ export function VocabDecksScreen() {
   const srs = useStore((state) => state.srs)
   const review = useStore((state) => state.review)
   const params = useStore((state) => state.params)
+  const replaceParams = useStore((state) => state.replaceParams)
   const learningNotebook = useStore((state) => state.learningNotebook)
 
   // 単語帳の一覧から来たときは、その冊の語を同じ一覧確認（左右スワイプつき）で見せる。
@@ -433,7 +467,18 @@ export function VocabDecksScreen() {
     ...(quiz ? {} : { mode: 'study' }),
     returnTo: { screen: 'vocabDecks', params: { levelId } },
   })
-  const openWord = (wordId) => navigate('wordDetail', { id: wordId })
+  // 一覧から語の詳細へ移る前に、一覧の見え方をこの画面の params へ残す。
+  // 詳細から戻ると履歴の params ごと戻るので、しぼり込みや隠した語が外れない。
+  const openWord = (wordId, catalogState) => {
+    replaceParams({ ...params, view, fieldFilter: listFieldFilter, catalogState })
+    navigate('wordDetail', { id: wordId })
+  }
+  // 読み戻したあとは外し、同じ画面で開き直した一覧には当てない。
+  const forgetReturnState = () => {
+    const current = { ...useStore.getState().params }
+    delete current.catalogState
+    replaceParams(current)
+  }
 
   if (params.wordBookId) {
     if (!wordBook) {
@@ -448,6 +493,7 @@ export function VocabDecksScreen() {
     }
     return (
       <VocabularyCatalog
+        key={`book:${wordBook.id}`}
         data-vocab-catalog={`book:${wordBook.id}`}
         catalogKey={`book:${wordBook.id}`}
         title={`${wordBook.title}の一覧を確認`}
@@ -455,6 +501,8 @@ export function VocabDecksScreen() {
         srs={srs}
         review={review}
         onOpenWord={openWord}
+        returnState={params.catalogState}
+        onReturnStateRead={forgetReturnState}
       />
     )
   }
@@ -463,6 +511,7 @@ export function VocabDecksScreen() {
   if (fieldGroup) {
     return (
       <VocabularyCatalog
+        key={`field:${fieldGroup.id}`}
         data-vocab-catalog={`field:${fieldGroup.id}`}
         catalogKey={`field:${fieldGroup.id}`}
         title={`${fieldGroup.label}の一覧を確認`}
@@ -470,6 +519,8 @@ export function VocabDecksScreen() {
         srs={srs}
         review={review}
         onOpenWord={openWord}
+        returnState={params.catalogState}
+        onReturnStateRead={forgetReturnState}
       />
     )
   }
@@ -477,6 +528,7 @@ export function VocabDecksScreen() {
   if (view === 'list') {
     return (
       <VocabularyCatalog
+        key={`${level.id}:${listFieldFilter}`}
         data-vocab-catalog={level.id}
         catalogKey={level.id}
         title={`英検${level.label}の一覧を確認`}
@@ -486,6 +538,8 @@ export function VocabDecksScreen() {
         review={review}
         onShowFields={() => setView('fields')}
         onOpenWord={openWord}
+        returnState={params.catalogState}
+        onReturnStateRead={forgetReturnState}
       />
     )
   }
