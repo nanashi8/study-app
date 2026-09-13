@@ -36,6 +36,7 @@ import { LiteratureVocabularySheet } from '../components/LiteratureVocabularyShe
 import { WordListSheet } from '../components/WordListSheet.jsx'
 import { wordBookVocabIds } from '../lib/wordBooks.js'
 import { Button, Card, Chip, ProgressBar, cx } from '../components/ui.jsx'
+import { MeaningText } from '../components/MeaningText.jsx'
 import { translationRoleMeta } from '../lib/translation-roles.js'
 import {
   Book,
@@ -892,7 +893,11 @@ export function LiteratureReaderScreen() {
                   <SpeakButton text={activeWord.word} size="sm" />
                   <div className="min-w-0 flex-1">
                     <p lang="en" className="font-display text-lg font-extrabold text-ink">{activeWord.word}</p>
-                    <p className="text-sm font-bold text-ink/60">{activeWord.ja ?? '発音を確認できます'}</p>
+                    <p className="text-sm font-bold text-ink/60">
+                      {activeWord.ja
+                        ? (isEnglish ? <MeaningText>{activeWord.ja}</MeaningText> : activeWord.ja)
+                        : '発音を確認できます'}
+                    </p>
                   </div>
                   {activeWord.id && (
                     <button

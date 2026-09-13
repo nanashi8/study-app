@@ -10,6 +10,7 @@ import { Card, Button, Chip, IconButton } from '../components/ui.jsx'
 import { WordListSheet } from '../components/WordListSheet.jsx'
 import { wordBookRef } from '../lib/wordBooks.js'
 import { Book, Cards, Bookmark, BookmarkFilled, Check, ArrowRight } from '../components/Icons.jsx'
+import { MeaningText } from '../components/MeaningText.jsx'
 
 export function ReadingSummaryScreen() {
   const params = useStore((s) => s.params)
@@ -82,7 +83,7 @@ export function ReadingSummaryScreen() {
                       <span className="font-display font-extrabold text-ink">{w.word}</span>
                       <Chip color={level.color}>{level.label}</Chip>
                     </div>
-                    <div className="truncate text-xs font-bold text-ink/55">{w.meaning}</div>
+                    <div className="truncate text-xs font-bold text-ink/55"><MeaningText>{w.meaning}</MeaningText></div>
                   </div>
                   <span className="text-brand-300"><ArrowRight size={16} /></span>
                 </button>

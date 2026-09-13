@@ -21,6 +21,7 @@ import { PosBadge } from '../components/WordBits.jsx'
 import { WordListSheet } from '../components/WordListSheet.jsx'
 import { wordBookVocabIds } from '../lib/wordBooks.js'
 import { Chip, IconButton } from '../components/ui.jsx'
+import { MeaningText } from '../components/MeaningText.jsx'
 import { Search, Close, ArrowRight, Bookmark, BookmarkFilled, Plus } from '../components/Icons.jsx'
 
 // 見つからなかったときの案内。ボタンを押さなくても、その場で自動リクエストする。
@@ -154,7 +155,7 @@ function WordRow({ word, inBook = false, custom = false, onOpen, onChooseBook })
           </div>
           <div className="flex min-w-0 items-center gap-1.5">
             <PosBadge pos={word.pos} className="h-5 min-w-5 px-1 text-[10px]" />
-            <span className="truncate text-xs font-bold text-ink/55">{word.meaning}</span>
+            <span className="truncate text-xs font-bold text-ink/55"><MeaningText>{word.meaning}</MeaningText></span>
           </div>
         </div>
         <span className="text-brand-300"><ArrowRight size={16} /></span>

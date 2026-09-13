@@ -23,6 +23,7 @@ import {
 } from '../lib/vocabCatalog.js'
 import { ScreenHeader } from './AppShell.jsx'
 import { Button, cx } from './ui.jsx'
+import { MeaningText } from './MeaningText.jsx'
 import { BookOpen, Check, Search } from './Icons.jsx'
 import {
   LearningRecordRow,
@@ -187,7 +188,8 @@ function CatalogItemRow({
           </span>
           {row.subtitle && (
             <span className="mt-1 block break-words text-sm font-bold leading-snug text-ink/70">
-              {row.subtitle}
+              {/* 英語の教材だけ、意味の読みにくい語に読みを添える（古典・漢文は専用のルビ表示を使う）。 */}
+              {content.group === 'english' ? <MeaningText>{row.subtitle}</MeaningText> : row.subtitle}
             </span>
           )}
           <span className="mt-1.5 flex flex-wrap gap-x-3 gap-y-1 text-[11px] font-bold text-ink/45">

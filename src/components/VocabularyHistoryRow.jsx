@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { cx } from './ui.jsx'
 import { learningContentCatalogSwipeSide } from '../lib/learningContentCatalogSwipe.js'
 import { useHorizontalSwipe } from './useHorizontalSwipe.js'
+import { MeaningText } from './MeaningText.jsx'
 
 const SWIPE_PREVIEW_MAX_DISTANCE = 88
 
@@ -157,7 +158,8 @@ export function LearningRecordRow({
             )}
           </span>
           <span className="mt-1 block break-words text-sm font-bold leading-snug text-ink/75">
-            {meaning}
+            {/* 英語の教材だけ、意味の読みにくい語に読みを添える（古典・漢文は専用のルビ表示を使う）。 */}
+            {titleLanguage === 'en' ? <MeaningText>{meaning}</MeaningText> : meaning}
           </span>
           {note && (
             <span

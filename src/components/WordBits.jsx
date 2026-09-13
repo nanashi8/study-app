@@ -8,6 +8,7 @@ import {
 import { LEVELS, getLevel } from '../data/levels.js'
 import { ArrowRight, Check } from './Icons.jsx'
 import { Chip, cx } from './ui.jsx'
+import { MeaningText } from './MeaningText.jsx'
 
 const POS_COLORS = {
   動: '#6366f1', 名: '#0ea5e9', 形: '#f59e0b', 副: '#10b981',
@@ -45,7 +46,7 @@ function SenseList({ senses, baseRank }) {
                 <span className="text-[11px] font-bold text-ink/45">この先の級で出てくる</span>
               )}
             </div>
-            <p className="mt-1.5 font-bold text-ink">{sense.meaning}</p>
+            <p className="mt-1.5 font-bold text-ink"><MeaningText>{sense.meaning}</MeaningText></p>
             {sense.example && (
               <>
                 <p className="mt-1 text-sm font-bold text-ink/70">{sense.example.en}</p>
@@ -232,7 +233,7 @@ export function RelatedWords({ word, onPick, onRoot }) {
                   <span className="min-w-0 flex-1">
                     <span className="block font-display font-extrabold text-ink">{relatedWord.word}</span>
                     <span className="block truncate text-xs font-bold text-ink/55">
-                      {relatedWord.meanings?.[0] ?? relatedWord.meaning}
+                      <MeaningText>{relatedWord.meanings?.[0] ?? relatedWord.meaning}</MeaningText>
                     </span>
                   </span>
                   <ArrowRight size={17} className="shrink-0 text-violet-400" />
