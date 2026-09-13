@@ -169,11 +169,11 @@ export function auditEtymologyLearningQuality() {
       }
       if (item.head !== story.head) fail(`${at}: 出典見出し ${item.head} が監査対象外`)
     }
-    // 書き起こした本文は全桁、既存メモを固定したものは台帳が持つ桁数で照合する。
-    const actual = story.origin === 'reviewed-text'
-      ? createHash('sha256').update(etymologyWordNoteMaterial(story)).digest('hex')
-      : createHash('sha256').update(story.note).digest('hex').slice(0, story.evidence.fingerprint.length)
-    if (actual !== story.evidence?.fingerprint) fail(`${at}: 説明が手動確認後に変更された`)
+    // 書き起こした本文は素材JSON、既存メモを固定したものは本文を、台帳が持つ桁数（16桁以上）で照合する。
+    const fingerprint = story.evidence?.fingerprint ?? ''
+    const material = story.origin === 'reviewed-text' ? etymologyWordNoteMaterial(story) : story.note
+    const actual = createHash('sha256').update(material).digest('hex').slice(0, fingerprint.length)
+    if (fingerprint.length < 16 || actual !== fingerprint) fail(`${at}: 説明が手動確認後に変更された`)
   }
   if (storyHeads.size) fail(`台帳にあるのに公開していない語: ${[...storyHeads].join(', ')}`)
   for (const word of ALL_WORDS) {

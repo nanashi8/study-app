@@ -12,6 +12,8 @@
 //
 // note を1文字でも変えると品質GATEが落ち、再確認なしには公開できない。
 
+import { ETYMOLOGY_CLEAR_WORD_NOTES } from './etymology-word-notes-clear.js'
+
 export const ETYMOLOGY_WORD_NOTE_SCHEMA = 1
 
 const note = (text, fingerprint) => Object.freeze({
@@ -21,7 +23,7 @@ const note = (text, fingerprint) => Object.freeze({
   fingerprint,
 })
 
-export const ETYMOLOGY_WORD_NOTES = Object.freeze({
+const HAND_WRITTEN_WORD_NOTES = Object.freeze({
   // ── 語根では表せない「語そのものの歴史」。人名・神名・造語の年など。（39語）──
   academy: note('プラトンが学園を開いたアテネの地アカデメイア（Akadēmeia）から。', 'fd436e167c099bff070ac3dca18558b2e8a2b45d967f5e162ba53ff8eb4d6fea'),
   algorithm: note('9世紀の数学者アル・フワーリズミーの名から。ラテン語形 algorismus を経て今の綴りになった。', '150d4af2aea31752784c167fe106d320822b348753a372627d3faf3be1c7d8bd'),
@@ -318,4 +320,11 @@ export const ETYMOLOGY_WORD_NOTES = Object.freeze({
   verbal: note('ラテン verbum(言葉)→ proverb と同系。', '1761cd58fbf04815dbda51a90d9684eced45fcbf989d2a08218d3cfb2301e482'),
   verse: note('ラテン versus(畝・行)→ universe と同源。', 'e043916ab8f8ed949ac1cc4c4a2ded70a99cc9f92a09cf0363b9c3ed1644128d'),
   view: note('古フランス veue(見ること)→ television と同系。', '09167aabbf7c4cb74032b984caf91cd8cb0fc43cb2c6f43832c94035ae6559b5'),
+})
+
+// 語源メモだけでは意味が分からなかった語は、書き直した本文（etymology-word-notes-clear.js）を出す。
+// 上の書き起こし本文と同じ語は持たない（生成時に確かめている）。
+export const ETYMOLOGY_WORD_NOTES = Object.freeze({
+  ...ETYMOLOGY_CLEAR_WORD_NOTES,
+  ...HAND_WRITTEN_WORD_NOTES,
 })
