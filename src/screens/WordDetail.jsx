@@ -13,51 +13,19 @@ import { SpeakButton } from '../components/SpeakButton.jsx'
 import { EtymologyBlock, OtherSenses, RelatedWords, PosBadge } from '../components/WordBits.jsx'
 import { UsageGuideCards } from '../components/UsageGuideCards.jsx'
 import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
+import {
+  ConfusableSection,
+  IdiomEquivalentSection,
+  LoanwordHint,
+  RefChips,
+  SynonymSection,
+} from '../components/WordRelations.jsx'
 import { Card, Button, Chip, IconButton } from '../components/ui.jsx'
-import { Bookmark, BookmarkFilled, Link, Lightbulb, ArrowRight } from '../components/Icons.jsx'
+import { Bookmark, BookmarkFilled, Link, Lightbulb } from '../components/Icons.jsx'
 import { WordListSheet, useWordInAnyBook } from '../components/WordListSheet.jsx'
 import { summarizeVocabularySrsItems } from '../lib/vocabScheduler.js'
-import { cx } from '../components/ui.jsx'
+import { wordRelationsFor } from '../lib/wordRelations.js'
 import { VocabReviewHistory } from '../components/VocabReviewHistory.jsx'
-
-const toId = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '')
-
-// 類義語・反対語・派生語のチップ。items=[{w,m}]。辞書にある語はタップで詳細へ。
-const TONES = {
-  syn: 'bg-brand-50 text-brand-700 ring-brand-100',
-  ant: 'bg-rose-50 text-rose-600 ring-rose-100',
-  der: 'bg-emerald-50 text-emerald-700 ring-emerald-100',
-}
-function RefChips({ items, tone, navigate }) {
-  const cls = TONES[tone] ?? TONES.syn
-  return (
-    <div className="flex flex-wrap gap-1.5">
-      {items.map((it, i) => {
-        const exists = getWord(toId(it.w))
-        const body = (
-          <>
-            <span className="font-extrabold">{it.w}</span>
-            {it.m && <span className="font-bold opacity-70">{it.m}</span>}
-            {exists && (
-              <span className="rounded-full bg-white/70 px-1 text-[9px] font-extrabold leading-tight ring-1 ring-current/20">
-                {getLevel(exists.level).label}
-              </span>
-            )}
-            {exists && <ArrowRight size={11} className="opacity-70" />}
-          </>
-        )
-        const base = 'inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs ring-1'
-        return exists ? (
-          <button key={i} onClick={() => navigate('wordDetail', { id: toId(it.w) })} className={cx(base, cls, 'active:opacity-80')}>
-            {body}
-          </button>
-        ) : (
-          <span key={i} className={cx(base, cls)}>{body}</span>
-        )
-      })}
-    </div>
-  )
-}
 
 // 辞書の前後（アルファベット順で隣り合う見出し語）。ページをめくる感覚で移動。
 function NeighborList({ word, navigate }) {
@@ -124,6 +92,8 @@ export function WordDetailScreen() {
   const progress = summarizeVocabularySrsItems([word], entry ? { [word.id]: entry } : {})
   const etymologyCards = etymologyCardsForWord(word)
   const etymologyStory = etymologyStoryForWord(word)
+  const relations = wordRelationsFor(word)
+  const openWord = (wordId) => navigate('wordDetail', { id: wordId })
 
   return (
     <div className="flex h-full flex-col">
@@ -165,6 +135,8 @@ export function WordDetailScreen() {
             <div className="mt-3 rounded-2xl bg-brand-50 p-3">
               <div className="font-display text-xl font-extrabold text-ink">{word.meanings.join('・')}</div>
             </div>
+            {/* 日本語に定着したカタカナ語。意味がずれる語は注意書きを添える。 */}
+            <LoanwordHint hint={relations.loanword} className="mt-2" />
             <LearningStatusBars progress={progress} className="mt-4" compact units={{ learning: '語', quiz: '問' }} />
             <VocabReviewHistory entry={entry} className="mt-3 justify-start" />
           </Card>
@@ -198,7 +170,7 @@ export function WordDetailScreen() {
               {word.derivatives?.length > 0 && (
                 <div>
                   <div className="mb-1.5 text-[11px] font-extrabold uppercase tracking-wide text-emerald-500">派生語</div>
-                  <RefChips items={word.derivatives} tone="der" navigate={navigate} />
+                  <RefChips items={word.derivatives} tone="der" onWord={openWord} />
                 </div>
               )}
             </Card>
@@ -210,21 +182,24 @@ export function WordDetailScreen() {
           {/* 入試・英検で混同しやすい語の比較と推奨表現 */}
           <UsageGuideCards guides={word.usageGuides} />
 
-          {/* 類義語・反対語 */}
-          {(word.synonyms?.length > 0 || word.antonyms?.length > 0) && (
+          {/* 意味が同じ・近い語、同じ意味の熟語、反対・対照の語 */}
+          {(relations.synonyms.length > 0 || relations.idioms.length > 0 || word.antonyms?.length > 0) && (
             <Card className="space-y-3 p-4">
-              {word.synonyms?.length > 0 && (
-                <div>
-                  <div className="mb-1.5 text-xs font-extrabold uppercase tracking-wide text-brand-400">意味が近い語</div>
-                  <RefChips items={word.synonyms} tone="syn" navigate={navigate} />
-                </div>
-              )}
+              <SynonymSection items={relations.synonyms} onWord={openWord} />
+              <IdiomEquivalentSection phrases={relations.idioms} />
               {word.antonyms?.length > 0 && (
                 <div>
-                  <div className="mb-1.5 text-xs font-extrabold uppercase tracking-wide text-rose-400">反対・対照の語</div>
-                  <RefChips items={word.antonyms} tone="ant" navigate={navigate} />
+                  <div className="mb-1.5 text-xs font-extrabold tracking-wide text-rose-500">反対・対照の語</div>
+                  <RefChips items={word.antonyms} tone="ant" onWord={openWord} />
                 </div>
               )}
+            </Card>
+          )}
+
+          {/* つづりが似ていて間違えやすい語。ちがう文字に色をつける。 */}
+          {relations.confusables.length > 0 && (
+            <Card className="p-4">
+              <ConfusableSection word={word} items={relations.confusables} onWord={openWord} />
             </Card>
           )}
 

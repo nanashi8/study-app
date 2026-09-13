@@ -14,11 +14,18 @@ import {
 } from '../lib/session.js'
 import { vocabMixEmptyNotice, vocabMixFreshShare } from '../lib/vocabMix.js'
 import { phraseGroupsForWord } from '../lib/wordPhrases.js'
+import { wordRelationsFor } from '../lib/wordRelations.js'
 import { playSpeechItems } from '../lib/speech-player.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
 import { EtymologyBlock } from '../components/WordBits.jsx'
 import { OtherSenses, PosBadge } from '../components/WordBits.jsx'
+import {
+  ConfusableSection,
+  IdiomEquivalentSection,
+  LoanwordHint,
+  SynonymSection,
+} from '../components/WordRelations.jsx'
 import { Button, Chip } from '../components/ui.jsx'
 import { ArrowRight, Lightbulb } from '../components/Icons.jsx'
 import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
@@ -165,6 +172,8 @@ export function VocabStudyScreen() {
   const inWordBook = useWordInAnyBook(word?.id)
   // その語を含む熟語・構文は全部見せる（数を絞ると使い方が抜ける）。
   const relatedPhrases = useMemo(() => phraseGroupsForWord(word), [word?.id])
+  // 意味が同じ・近い語、同じ意味の熟語、つづりが似た語、カタカナ語のヒント。
+  const relations = useMemo(() => wordRelationsFor(word), [word?.id])
 
   // カードが変わるたび自動で読み上げ
   useEffect(() => {
@@ -294,6 +303,7 @@ export function VocabStudyScreen() {
     })
     navigate(screen, referenceParams)
   }
+  const openRelatedWord = (id) => saveBeforeReference('wordDetail', { id })
 
   return (
     <div className="flex h-full flex-col">
@@ -405,6 +415,9 @@ export function VocabStudyScreen() {
                 </div>
               </div>
 
+              {/* 日本語に定着したカタカナ語。意味がずれる語は注意書きを添える。 */}
+              <LoanwordHint hint={relations.loanword} />
+
               {/* 代表義以外の意味。取り違えないよう品詞と習う級を添えて並べる。 */}
               <OtherSenses senses={word.otherSenses} level={word.level} />
 
@@ -438,6 +451,21 @@ export function VocabStudyScreen() {
                     word={word}
                     onRoot={(rootId) => saveBeforeReference('rootDetail', { rootId })}
                   />
+                </div>
+              )}
+
+              {/* 意味が同じ・近い語と、同じ意味の熟語。辞書にある語はタップでその語の辞書ページへ。 */}
+              {(relations.synonyms.length > 0 || relations.idioms.length > 0) && (
+                <div className="space-y-3 rounded-2xl bg-white p-4 ring-1 ring-brand-100">
+                  <SynonymSection items={relations.synonyms} onWord={openRelatedWord} />
+                  <IdiomEquivalentSection phrases={relations.idioms} />
+                </div>
+              )}
+
+              {/* つづりが似ていて間違えやすい語。ちがう文字に色をつける。 */}
+              {relations.confusables.length > 0 && (
+                <div className="rounded-2xl bg-white p-4 ring-1 ring-rose-100">
+                  <ConfusableSection word={word} items={relations.confusables} onWord={openRelatedWord} />
                 </div>
               )}
 

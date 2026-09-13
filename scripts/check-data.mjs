@@ -166,6 +166,9 @@ import { KNOWN_DUPLICATE_FORMS, PLURAL_ONLY_SENSES, singularCandidates } from '.
 import { MATH_PROBLEMS, MATH_UNITS } from '../src/data/math.js'
 import { WRITING_EXAM_QUESTIONS } from '../src/data/writing-exam.js'
 import { PASSAGE_DICTIONARY_WORD_IDS } from '../src/data/reading-words.js'
+import { WORD_IDIOM_EQUIVALENTS } from '../src/data/word-idiom-equivalents.js'
+import { SPELLING_CONFUSABLE_PAIRS } from '../src/data/spelling-confusables.js'
+import { LOANWORD_HINTS } from '../src/data/loanword-hints.js'
 
 const LEVELS = new Set(['5', '4', '3', 'pre2', '2', 'pre1', '1'])
 const READING_LEVELS = new Set(['5', '4', '3', 'pre2', 'pre2plus', '2', 'pre1', '1'])
@@ -179,6 +182,37 @@ const errors = []
 const ids = new Set()
 
 if (ROOT_IDS.size !== ROOTS.length) errors.push('語根idに重複あり')
+
+// 単語カードと辞書ページに出す関連語の台帳。中身は人が1件ずつ読んで決めたもので、
+// ここでは参照先が辞書にあることと、形が崩れていないことだけを確かめる。
+{
+  const wordIds = new Set(ALL_WORDS.map((word) => word.id))
+  for (const [wordId, phraseIds] of Object.entries(WORD_IDIOM_EQUIVALENTS)) {
+    if (!wordIds.has(wordId)) errors.push(`同じ意味の熟語: 見出し語 ${wordId} が辞書にない`)
+    if (!phraseIds.length) errors.push(`同じ意味の熟語: ${wordId} に熟語がない`)
+    if (new Set(phraseIds).size !== phraseIds.length) errors.push(`同じ意味の熟語: ${wordId} に同じ熟語が2回ある`)
+    for (const phraseId of phraseIds) {
+      const phrase = getPhrase(phraseId)
+      if (!phrase) errors.push(`同じ意味の熟語: ${wordId} → ${phraseId} が熟語データにない`)
+      else if (phrase.kind !== 'idiom') errors.push(`同じ意味の熟語: ${wordId} → ${phraseId} は熟語ではない (${phrase.kind})`)
+    }
+  }
+  const confusablePairs = new Set()
+  for (const pair of SPELLING_CONFUSABLE_PAIRS) {
+    if (pair.length !== 2 || pair[0] === pair[1]) errors.push(`つづり注意: 組の形が不正 (${pair.join(', ')})`)
+    for (const wordId of pair) {
+      if (!wordIds.has(wordId)) errors.push(`つづり注意: ${wordId} が辞書にない`)
+    }
+    const key = [...pair].sort().join('|')
+    if (confusablePairs.has(key)) errors.push(`つづり注意: 同じ組が2回ある (${pair.join(', ')})`)
+    confusablePairs.add(key)
+  }
+  for (const [wordId, hint] of Object.entries(LOANWORD_HINTS)) {
+    if (!wordIds.has(wordId)) errors.push(`カタカナ語: 見出し語 ${wordId} が辞書にない`)
+    if (!/^[ァ-ヺー・]+$/u.test(hint.kana ?? '')) errors.push(`カタカナ語: ${wordId} の表記がカタカナだけではない (${hint.kana})`)
+    if ('note' in hint && !String(hint.note).trim()) errors.push(`カタカナ語: ${wordId} の注意書きが空`)
+  }
+}
 
 // 単数形と複数形を別カードで登録すると、同じことを二度覚えさせることになり、
 // 片方の代表義がもう片方の誤答に出て「正解なのに不正解」になりうる。
