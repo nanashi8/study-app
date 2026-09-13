@@ -13,6 +13,7 @@ import { SpeakButton } from '../components/SpeakButton.jsx'
 import { EtymologyBlock, OtherSenses, RelatedWords, PosBadge } from '../components/WordBits.jsx'
 import { UsageGuideCards } from '../components/UsageGuideCards.jsx'
 import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
+import { MeaningText } from '../components/MeaningText.jsx'
 import {
   ConfusableSection,
   IdiomEquivalentSection,
@@ -42,7 +43,7 @@ function NeighborList({ word, navigate }) {
         </span>
         <span className="font-display font-extrabold text-ink">{w.word}</span>
         <Chip color={lv.color}>{lv.label}</Chip>
-        <span className="min-w-0 flex-1 truncate text-xs font-bold text-ink/45">{w.meaning}</span>
+        <span className="min-w-0 flex-1 truncate text-xs font-bold text-ink/45"><MeaningText>{w.meaning}</MeaningText></span>
       </button>
     )
   }
@@ -133,7 +134,7 @@ export function WordDetailScreen() {
             </div>
             {word.phonetic && <p className="mt-1 text-sm font-bold text-ink/45">{word.phonetic}</p>}
             <div className="mt-3 rounded-2xl bg-brand-50 p-3">
-              <div className="font-display text-xl font-extrabold text-ink">{word.meanings.join('・')}</div>
+              <div className="font-display text-xl font-extrabold text-ink"><MeaningText>{word.meanings.join('・')}</MeaningText></div>
             </div>
             {/* 日本語に定着したカタカナ語。意味がずれる語は注意書きを添える。 */}
             <LoanwordHint hint={relations.loanword} className="mt-2" />

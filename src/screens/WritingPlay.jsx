@@ -47,6 +47,7 @@ import {
 import { buildWritingInstructorExplanation } from '../lib/instructorExplanations.js'
 import { wordBookRef } from '../lib/wordBooks.js'
 import { WordListSheet } from '../components/WordListSheet.jsx'
+import { MeaningText } from '../components/MeaningText.jsx'
 
 function MissingWriting({ onBack }) {
   return (
@@ -120,7 +121,7 @@ function WordSaveRow({ ids }) {
                   {word.word}
                 </span>
                 <span className="block max-w-32 truncate text-[10px] font-bold opacity-55">
-                  {word.meaning}
+                  <MeaningText>{word.meaning}</MeaningText>
                 </span>
               </span>
               {saved ? (
@@ -629,7 +630,7 @@ export function WritingPlayScreen() {
                       )}
                     </span>
                     <span className="mt-0.5 block max-w-36 truncate text-[10px] font-bold text-ink/45">
-                      {word.meaning}
+                      <MeaningText>{word.meaning}</MeaningText>
                     </span>
                   </button>
                 ))}

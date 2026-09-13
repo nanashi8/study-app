@@ -1,6 +1,7 @@
 import { getLevel } from '../data/levels.js'
 import { getWord } from '../data/vocab.js'
 import { ArrowRight } from './Icons.jsx'
+import { MeaningText } from './MeaningText.jsx'
 import { Chip, cx } from './ui.jsx'
 
 // 単語カードの裏と辞書ページで使う、その語と組にして押さえたい語の表示部品。
@@ -25,7 +26,7 @@ export function RefChips({ items, tone, onWord }) {
         const body = (
           <>
             <span className="font-extrabold">{it.w}</span>
-            {it.m && <span className="font-bold opacity-70">{it.m}</span>}
+            {it.m && <span className="font-bold opacity-70"><MeaningText>{it.m}</MeaningText></span>}
             {level && (
               <span className="rounded-full bg-white/70 px-1 text-[9px] font-extrabold leading-tight ring-1 ring-current/20">
                 {level.label}
@@ -108,7 +109,7 @@ export function ConfusableSection({ word, items, onWord }) {
                     </span>
                   )}
                 </div>
-                <p className="text-xs font-bold leading-relaxed text-ink/55">{item.word.meaning}</p>
+                <p className="text-xs font-bold leading-relaxed text-ink/55"><MeaningText>{item.word.meaning}</MeaningText></p>
               </div>
               {onWord && <ArrowRight size={14} className="shrink-0 text-ink/30" />}
             </>

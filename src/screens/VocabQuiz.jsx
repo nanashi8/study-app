@@ -17,6 +17,7 @@ import {
   shuffle,
 } from '../data/vocab.js'
 import { quizMeaning } from '../data/compact.js'
+import { MeaningText } from '../components/MeaningText.jsx'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { EtymologyBlock, PosBadge } from '../components/WordBits.jsx'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
@@ -422,7 +423,7 @@ export function VocabQuizScreen() {
                     {optionIndex + 1}
                   </span>
                 )}
-                <span className="flex-1">{quizMeaning(option)}</span>
+                <span className="flex-1"><MeaningText>{quizMeaning(option)}</MeaningText></span>
                 {tone === 'correct' && <Check size={20} className="text-emerald-600" />}
                 {tone === 'wrong' && <Close size={18} className="text-rose-500" />}
               </button>
@@ -445,7 +446,7 @@ export function VocabQuizScreen() {
               {isDragonVein ? feedback : isCorrectPick ? '正解！🎉' : selected === UNKNOWN_CHOICE_ID ? '答えはこちら' : 'ざんねん…'}
             </p>
             <p className="mt-1 font-bold text-ink">
-              <span className="font-display">{word.word}</span> ＝ {word.meanings.join('・')}
+              <span className="font-display">{word.word}</span> ＝ <MeaningText>{word.meanings.join('・')}</MeaningText>
             </p>
             <div className="mt-3 flex items-start gap-2 rounded-2xl bg-brand-50/70 p-3">
               <SpeakButton text={word.example.en} size="sm" />

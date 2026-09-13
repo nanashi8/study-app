@@ -20,6 +20,7 @@ import { SpeakButton } from '../components/SpeakButton.jsx'
 import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
 import { EtymologyBlock } from '../components/WordBits.jsx'
 import { OtherSenses, PosBadge } from '../components/WordBits.jsx'
+import { MeaningText } from '../components/MeaningText.jsx'
 import {
   ConfusableSection,
   IdiomEquivalentSection,
@@ -411,7 +412,7 @@ export function VocabStudyScreen() {
               <div className="rounded-2xl bg-brand-50 p-4">
                 <div className="text-xs font-extrabold text-brand-500">意味</div>
                 <div className="mt-0.5 font-display text-xl font-extrabold text-ink">
-                  {word.meanings.join('・')}
+                  <MeaningText>{word.meanings.join('・')}</MeaningText>
                 </div>
               </div>
 

@@ -14,6 +14,7 @@ import { ReadingRuleCard } from './ReadingRuleCard.jsx'
 import { WordListSheet, useWordInAnyBook } from './WordListSheet.jsx'
 import { Bookmark, BookmarkFilled, BookOpen, Lightbulb, Link } from './Icons.jsx'
 import { cx } from './ui.jsx'
+import { MeaningText } from './MeaningText.jsx'
 
 const ROLE_STYLE = {
   S: 'border-emerald-200 bg-emerald-50 text-emerald-800',
@@ -127,7 +128,7 @@ export function ReadingSentenceDetail({
                   <div className="flex-1">
                     <div className="font-display text-lg font-extrabold text-ink">{activeWord.word}</div>
                     <div className="text-sm font-bold text-ink/60">
-                      {activeWord.ja ?? '（発音を確認できます）'}
+                      {activeWord.ja ? <MeaningText>{activeWord.ja}</MeaningText> : '（発音を確認できます）'}
                     </div>
                   </div>
                   {activeWord.id && (

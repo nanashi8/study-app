@@ -169,6 +169,8 @@ import { PASSAGE_DICTIONARY_WORD_IDS } from '../src/data/reading-words.js'
 import { WORD_IDIOM_EQUIVALENTS } from '../src/data/word-idiom-equivalents.js'
 import { SPELLING_CONFUSABLE_PAIRS } from '../src/data/spelling-confusables.js'
 import { LOANWORD_HINTS } from '../src/data/loanword-hints.js'
+import { MEANING_READINGS, MEANING_READING_KANJI } from '../src/data/meaning-readings.js'
+import { meaningSegments } from '../src/lib/meaningReadings.js'
 
 const LEVELS = new Set(['5', '4', '3', 'pre2', '2', 'pre1', '1'])
 const READING_LEVELS = new Set(['5', '4', '3', 'pre2', 'pre2plus', '2', 'pre1', '1'])
@@ -211,6 +213,46 @@ if (ROOT_IDS.size !== ROOTS.length) errors.push('語根idに重複あり')
     if (!wordIds.has(wordId)) errors.push(`カタカナ語: 見出し語 ${wordId} が辞書にない`)
     if (!/^[ァ-ヺー・]+$/u.test(hint.kana ?? '')) errors.push(`カタカナ語: ${wordId} の表記がカタカナだけではない (${hint.kana})`)
     if ('note' in hint && !String(hint.note).trim()) errors.push(`カタカナ語: ${wordId} の注意書きが空`)
+  }
+}
+
+// 英単語の意味に（よみ）を添える台帳。読みが正しいかは人が決め、ここでは形と載せ漏れだけを確かめる。
+// 区切り方は画面と同じ meaningSegments を使う（熟語の途中からは当てない）。
+{
+  const readingKanji = new Set([...MEANING_READING_KANJI])
+  const readingTexts = new Set()
+  for (const [text, reading] of MEANING_READINGS) {
+    if (readingTexts.has(text)) errors.push(`意味の読み: 「${text}」が2回ある`)
+    readingTexts.add(text)
+    if (!/^[ぁ-ゖー・]+$/u.test(reading)) errors.push(`意味の読み: 「${text}」の読みがひらがなでない (${reading})`)
+  }
+  const usedReadings = new Set()
+  const missingReadings = new Map()
+  for (const word of ALL_WORDS) {
+    const meaningTexts = [
+      ...(word.meanings ?? []),
+      ...(word.otherSenses ?? []).map((sense) => sense.meaning),
+      ...[word.synonyms, word.antonyms, word.derivatives].flatMap((list) => (list ?? []).map((item) => item.m)),
+    ]
+    for (const text of meaningTexts) {
+      for (const segment of meaningSegments(text)) {
+        if (segment.entry) {
+          usedReadings.add(segment.entry)
+          continue
+        }
+        for (const run of segment.text.matchAll(/[\p{Script=Han}々〆ヶ]+/gu)) {
+          if ([...run[0]].some((char) => readingKanji.has(char)) && !missingReadings.has(run[0])) {
+            missingReadings.set(run[0], word.id)
+          }
+        }
+      }
+    }
+  }
+  for (const [run, wordId] of missingReadings) {
+    errors.push(`意味の読み: ${wordId} の「${run}」に読みがない（src/data/meaning-readings.js に熟語ごと載せる）`)
+  }
+  for (const text of readingTexts) {
+    if (!usedReadings.has(text)) errors.push(`意味の読み: 「${text}」はどの単語の意味にも出てこない`)
   }
 }
 

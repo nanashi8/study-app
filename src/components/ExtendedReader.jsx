@@ -12,6 +12,7 @@ import { SpeakButton } from './SpeakButton.jsx'
 import { SpeechSettingsButton } from './SpeechSettings.jsx'
 import { WordListSheet, useWordInAnyBook } from './WordListSheet.jsx'
 import { Button, Chip, IconButton, cx } from './ui.jsx'
+import { MeaningText } from './MeaningText.jsx'
 import {
   ArrowRight,
   Bookmark,
@@ -483,7 +484,7 @@ export function ExtendedReader({ passage }) {
                     {activeWord.surface}
                   </p>
                   <p className="mt-1 text-sm font-bold leading-relaxed text-ink/65">
-                    {activeWord.ja ?? 'この語の発音を確認できます。'}
+                    {activeWord.ja ? <MeaningText>{activeWord.ja}</MeaningText> : 'この語の発音を確認できます。'}
                   </p>
                 </div>
               </div>
