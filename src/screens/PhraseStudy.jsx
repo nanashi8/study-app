@@ -11,7 +11,7 @@ import {
 } from '../lib/session.js'
 import { getLevel } from '../data/levels.js'
 import { longSentenceTranslationFor } from '../data/long-sentence-translations.js'
-import { playSpeechItems } from '../lib/speech-player.js'
+import { dismissSpeechPlayer, playSpeechItems } from '../lib/speech-player.js'
 import { phraseSpeechText } from '../lib/phrase-speech.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { LongSentenceTranslation } from '../components/LongSentenceTranslation.jsx'
@@ -25,6 +25,7 @@ import {
   CardStudyFooter,
   CardSwipeRegion,
   StudyAnswerReselect,
+  useStudyAnswerLog,
 } from '../components/CardStudyControls.jsx'
 import {
   nextUnansweredSessionIndex,
@@ -49,6 +50,8 @@ export function PhraseStudyScreen() {
 
   // 暗記モード：ONなら毎カード最初から意味・解説を開いて見せる（単語学習と共通）。
   const revealAll = settings.revealAnswers
+  // 英語を隠すモード：意味を先に見せ、英語と発音はカードを開くまで出さない（単語学習と共通）。
+  const hideSpelling = settings.hideSpelling === true
 
   // size=0 は「絞り込みなし」。在庫数から、選べる問題数の上限を決める。
   const buildFor = (size) =>
@@ -75,13 +78,25 @@ export function PhraseStudyScreen() {
   const results = useRef({ remembered: 0, forgot: 0, forgotIds: [] })
   // 1回のカード数を減らして数え直す前に答えたカード。結果の全枚数に含める。
   const carried = useCarriedAnswers()
+  // 結果画面の「一覧で確認」へ渡す、今回「覚えた」「まだ」と答えた項目。
+  const answerLog = useStudyAnswerLog()
   const item = deck[i]
   const leave = () => params.returnTo
     ? returnTo(params.returnTo.screen, params.returnTo.params ?? {})
     : back()
 
+  // 英語を隠していて、まだカードを開いていない。
+  const spellingHidden = Boolean(item) && hideSpelling && !flipped
+
+  // カードが変わるたび自動で読み上げ。英語を隠しているあいだは読まず、流れている音声と、
+  // 英文が出る下の再生パネルも閉じる。カードを開いて英語が見えたら、そこで読み上げる。
   useEffect(() => {
-    if (item && settings.autoSpeak) {
+    if (!item) return
+    if (spellingHidden) {
+      dismissSpeechPlayer()
+      return
+    }
+    if (settings.autoSpeak) {
       playSpeechItems([
         {
           text: phraseSpeechText(item),
@@ -97,7 +112,7 @@ export function PhraseStudyScreen() {
       })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [i, item?.id])
+  }, [i, item?.id, spellingHidden])
 
   if (!deck.length) {
     return (
@@ -120,6 +135,11 @@ export function PhraseStudyScreen() {
       correct: results.current.remembered,
       wrong: results.current.forgot,
       reviewIds: results.current.forgotIds,
+      // 結果画面の「一覧で確認」で分けて並べる答え。熟語・構文の見出しと意味だけを渡す。
+      studyAnswers: answerLog.entries().map(({ item: answered, remembered }) => ({
+        item: { id: answered.id, title: answered.phrase, meaning: answered.meanings.join('・') },
+        remembered,
+      })),
       source: params.source,
       size: params.size,
       continueTo: params.continueTo,
@@ -136,10 +156,12 @@ export function PhraseStudyScreen() {
       receipts.set(i, reviseReview(receipts.get(i), result))
       results.current = reviseStudyAnswer(results.current, item.id, recordedAnswer, remembered)
       setRecordedAnswer(remembered)
+      answerLog.record(item, remembered)
       return
     }
     receipts.set(i, review(item.id, result, 'usage'))
     results.current = recordStudyAnswer(results.current, item.id, remembered)
+    answerLog.record(item, remembered)
     const nextAnswers = { ...recordedAnswers, [i]: remembered }
     setRecordedAnswer(remembered)
     if (Object.keys(nextAnswers).length >= deck.length) finish()
@@ -200,10 +222,12 @@ export function PhraseStudyScreen() {
           <>
             <RevealAnswersToggle
               label="意味"
+              spellingLabel="英語"
               toolbar
               onChange={(on) => setFlipped(on)}
             />
-            <WordBookToggle domain="phrases" itemId={item.id} itemLabel={item.phrase} />
+            {/* 英語を隠しているあいだは、単語帳の窓や読み上げ名にも英語を出さない。 */}
+            <WordBookToggle domain="phrases" itemId={item.id} itemLabel={spellingHidden ? `この${kind.label}` : item.phrase} />
           </>
         )}
       />
@@ -220,22 +244,36 @@ export function PhraseStudyScreen() {
             <Chip color={kind.color}>{kind.label}</Chip>
           </div>
           <div className="mt-3 flex flex-col items-center text-center">
-            <h2 className="font-display text-3xl font-extrabold tracking-tight text-ink">{item.phrase}</h2>
-            <div className="mt-3">
-              <SpeakButton
-                text={phraseSpeechText(item)}
-                phrases={phraseSpeechItems}
-                phraseIndex={0}
-                title="熟語・構文カード"
-                size="lg"
-              />
-            </div>
+            {spellingHidden ? (
+              // 英語を隠すモード：意味から英語を思い出す。英語と読み上げはカードを開くまで出さない。
+              <>
+                <p className="text-[11px] font-extrabold text-brand-400">意味</p>
+                <h2 className="mt-1 font-display text-2xl font-extrabold leading-snug text-ink" data-phrase-english-hidden>
+                  {item.meanings.join('・')}
+                </h2>
+              </>
+            ) : (
+              <>
+                <h2 className="font-display text-3xl font-extrabold tracking-tight text-ink">{item.phrase}</h2>
+                <div className="mt-3">
+                  <SpeakButton
+                    text={phraseSpeechText(item)}
+                    phrases={phraseSpeechItems}
+                    phraseIndex={0}
+                    title="熟語・構文カード"
+                    size="lg"
+                  />
+                </div>
+              </>
+            )}
           </div>
 
           {!flipped ? (
             <div className="mt-6 flex flex-col items-center gap-2 rounded-2xl border-2 border-dashed border-brand-200 py-8 text-brand-400">
               <span className="text-sm font-extrabold">
-                タップして{item.kind === 'syntax' ? '意味とポイント' : '意味と成り立ち'}を見る
+                {spellingHidden
+                  ? 'タップして英語と発音を確かめる'
+                  : `タップして${item.kind === 'syntax' ? '意味とポイント' : '意味と成り立ち'}を見る`}
               </span>
               <ArrowRight size={20} className="rotate-90" />
             </div>
@@ -304,7 +342,9 @@ export function PhraseStudyScreen() {
           </Button>
         ) : !flipped ? (
           <Button full size="lg" onClick={() => setFlipped(true)}>
-            {item.kind === 'syntax' ? '意味・ポイントを見る' : '意味・成り立ちを見る'}
+            {spellingHidden
+              ? '英語を見る'
+              : item.kind === 'syntax' ? '意味・ポイントを見る' : '意味・成り立ちを見る'}
           </Button>
         ) : (
           <div className="grid grid-cols-2 gap-2">

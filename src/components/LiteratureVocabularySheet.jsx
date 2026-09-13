@@ -3,6 +3,7 @@ import { useStore } from '../store/useStore.js'
 import { Sheet } from './Sheet.jsx'
 import { SpeakButton } from './SpeakButton.jsx'
 import { RevealAnswersToggle } from './RevealAnswers.jsx'
+import { StudyAnswerListButton, useStudyAnswerLog } from './CardStudyControls.jsx'
 import { Button, Chip, ProgressBar, cx } from './ui.jsx'
 import { Book, Check, Search } from './Icons.jsx'
 
@@ -68,6 +69,8 @@ export function LiteratureVocabularySheet({
   const [revealed, setRevealed] = useState(false)
   const [remembered, setRemembered] = useState(0)
   const [forgotten, setForgotten] = useState(0)
+  // 終えたあと「一覧で確認」で見せる、今回「覚えた」「まだ」と答えた語句。
+  const answerLog = useStudyAnswerLog()
 
   useEffect(() => {
     if (!open) return
@@ -108,6 +111,7 @@ export function LiteratureVocabularySheet({
     setRevealed(revealAll)
     setRemembered(0)
     setForgotten(0)
+    answerLog.reset()
     setMode('cards')
   }
 
@@ -115,6 +119,7 @@ export function LiteratureVocabularySheet({
     const entry = deck[cardIndex]
     if (!entry) return
     const result = rememberedNow ? 'remembered' : 'forgot'
+    answerLog.record(entry, rememberedNow)
     if (entry.reviewDomain === 'koten') reviewKoten(entry.id, result)
     else if (entry.reviewDomain === 'kanbun') reviewKanbun('vocab', entry.id, result)
     else review(entry.id, result, entry.reviewSkill)
@@ -380,7 +385,15 @@ export function LiteratureVocabularySheet({
             <p className="mt-2 text-sm font-bold text-ink/55">
               {deck.length}件中、覚えた {remembered}件・まだ {forgotten}件
             </p>
-            <div className="mt-5 grid grid-cols-2 gap-3">
+            <StudyAnswerListButton
+              groups={answerLog.groups()}
+              unit="件"
+              titleLang={work?.kind === 'english' ? 'en' : 'ja'}
+              renderTitle={(entry) => entry.word}
+              renderMeaning={(entry) => entry.meanings.join('・')}
+              className="mt-5"
+            />
+            <div className="mt-3 grid grid-cols-2 gap-3">
               <Button variant="secondary" onClick={startCards}>もう一度</Button>
               <Button onClick={() => setMode('list')}>一覧へ</Button>
             </div>

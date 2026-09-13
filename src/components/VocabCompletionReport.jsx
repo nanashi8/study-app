@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { Button, Card, ProgressBar } from './ui.jsx'
+import { StudyAnswerListButton } from './CardStudyControls.jsx'
+import { MeaningText } from './MeaningText.jsx'
 import { NormalLearningRecordList } from './NormalLearningRecordList.jsx'
 import {
   ArrowRight,
@@ -32,6 +34,8 @@ export function VocabCompletionReport({
   onWord,
   onReviewSchedule = () => {},
   continueLabel = '次へ進む',
+  // 今回「まだ」「覚えた」と答えた語（studyAnswerGroups）。「一覧で確認」で分けて並べる。
+  answerGroups = null,
 }) {
   const { session, today, priorityItems, schedule } = report
   // 一覧で答えを直すたびに記録は変わるが、並びは開いたときのまま保つ。
@@ -98,6 +102,17 @@ export function VocabCompletionReport({
             <p className="mt-3 text-xs font-bold leading-relaxed text-white/85">
               今回は{session.remembered}語を「覚えた」、{session.forgot}語を「まだ」と答えました。
             </p>
+            {answerGroups && (
+              <StudyAnswerListButton
+                groups={answerGroups}
+                unit="語"
+                titleLang="en"
+                renderTitle={(word) => word.word}
+                renderMeaning={(word) => <MeaningText>{word.meanings?.join('・') ?? word.meaning}</MeaningText>}
+                variant="secondary"
+                className="mt-2 text-sm"
+              />
+            )}
             <p className="mt-1 text-[10px] font-bold leading-relaxed text-white/70">
               復習間隔が延びた語：{session.advancedCount}語・長期定着へ進んだ語：{session.newlyMasteredCount}語
             </p>

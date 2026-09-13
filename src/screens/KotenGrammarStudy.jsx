@@ -11,7 +11,9 @@ import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components
 import {
   CardStudyFooter,
   CardSwipeRegion,
+  StudyAnswerListButton,
   StudyAnswerReselect,
+  useStudyAnswerLog,
 } from '../components/CardStudyControls.jsx'
 import { answeredSessionIndexes, growDeck, restartSessionCount } from '../lib/session.js'
 import {
@@ -72,6 +74,8 @@ export function KotenGrammarStudyScreen() {
   const reviseReview = useStore((state) => state.reviseReview)
   // 1回の数を減らして数え直す前に答えたカード。結果の全枚数に含める。
   const carried = useCarriedAnswers()
+  // 終えたあと「一覧で確認」で見せる、今回「覚えた」「まだ」と答えた文法。
+  const answerLog = useStudyAnswerLog()
 
   const item = deck[index]
   const category = item
@@ -96,6 +100,7 @@ export function KotenGrammarStudyScreen() {
   const restart = () => {
     receipts.clear()
     carried.reset()
+    answerLog.reset()
     setDeck(buildDeck(params.ids, deck.length, params.preserveOrder))
     setIndex(0)
     setFlipped(revealAll)
@@ -113,9 +118,11 @@ export function KotenGrammarStudyScreen() {
       receipts.set(index, reviseReview(receipts.get(index), result))
       setRemembered((count) => count + (ok ? 1 : -1))
       setRecordedAnswer(ok)
+      answerLog.record(item, ok)
       return
     }
     receipts.set(index, reviewGrammar(item.id, result))
+    answerLog.record(item, ok)
     if (ok) setRemembered((count) => count + 1)
     const nextAnswers = { ...recordedAnswers, [index]: ok }
     setRecordedAnswer(ok)
@@ -139,6 +146,14 @@ export function KotenGrammarStudyScreen() {
           <p className="mt-1 text-sm font-bold text-ink/55">
             {carried.count + deck.length}項目のうち {remembered}項目を「覚えた」
           </p>
+        </div>
+        <div className="w-full max-w-xs">
+          <StudyAnswerListButton
+            groups={answerLog.groups()}
+            unit="項目"
+            renderTitle={(entry) => entry.title}
+            renderMeaning={(entry) => entry.meaning}
+          />
         </div>
         <div className="grid w-full max-w-xs grid-cols-2 gap-3">
           <Button variant="secondary" onClick={restart}>もう一度</Button>

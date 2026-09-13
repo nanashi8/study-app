@@ -1,6 +1,8 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { cardIndexAfterSwipe } from '../lib/cardSwipe.js'
-import { Bookmark, BookmarkFilled } from './Icons.jsx'
+import { studyAnswerGroups } from '../lib/studyAnswerList.js'
+import { Bookmark, BookmarkFilled, Cards } from './Icons.jsx'
+import { Sheet } from './Sheet.jsx'
 import { Button, cx } from './ui.jsx'
 import { useHorizontalSwipe } from './useHorizontalSwipe.js'
 
@@ -109,6 +111,115 @@ export function StudyAnswerReselect({
         {rememberedLabel}
       </Button>
     </div>
+  )
+}
+
+/**
+ * 暗記カードで答えた「覚えた／まだ」を、全部終えたあと「一覧で確認」で見せるために残す。
+ * 選び直した項目は最後の答えで分け（studyAnswerGroups）、数え直しでは消さず、やり直すときだけ reset する。
+ */
+export function useStudyAnswerLog() {
+  const log = useRef([])
+  return useMemo(() => ({
+    record: (item, remembered) => {
+      if (item?.id == null) return
+      log.current = [...log.current, { item, remembered: Boolean(remembered) }]
+    },
+    entries: () => [...log.current],
+    groups: () => studyAnswerGroups(log.current),
+    reset: () => {
+      log.current = []
+    },
+  }), [])
+}
+
+const ANSWER_GROUP_TONES = {
+  forgot: {
+    heading: 'text-rose-700',
+    badge: 'bg-rose-100 text-rose-700',
+    row: 'ring-rose-100',
+  },
+  remembered: {
+    heading: 'text-emerald-700',
+    badge: 'bg-emerald-100 text-emerald-700',
+    row: 'ring-emerald-100',
+  },
+}
+
+function StudyAnswerGroup({ id, label, items, unit, renderTitle, renderMeaning, titleLang }) {
+  const tone = ANSWER_GROUP_TONES[id]
+  return (
+    <section aria-label={`「${label}」と答えた${items.length}${unit}`} data-study-answer-group={id}>
+      <h4 className={cx('flex items-center justify-between gap-2 text-sm font-extrabold', tone.heading)}>
+        <span>「{label}」と答えた</span>
+        <span className={cx('rounded-full px-2 py-0.5 text-[11px] tabular-nums', tone.badge)}>
+          {items.length}{unit}
+        </span>
+      </h4>
+      {items.length ? (
+        <ul className="mt-2 space-y-1.5">
+          {items.map((item) => (
+            <li
+              key={item.id}
+              className={cx('rounded-xl bg-white px-3 py-2 ring-1', tone.row)}
+              data-study-answer-item={item.id}
+            >
+              <p lang={titleLang} className="font-display text-base font-extrabold leading-snug text-ink">
+                {renderTitle(item)}
+              </p>
+              <p className="mt-0.5 text-xs font-bold leading-relaxed text-ink/55">{renderMeaning(item)}</p>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="mt-2 rounded-xl bg-slate-50 px-3 py-3 text-xs font-bold text-ink/50">ありません。</p>
+      )}
+    </section>
+  )
+}
+
+/**
+ * 全カードを終えたあとに置く「一覧で確認」。押すと、今回「まだ」「覚えた」と答えた項目を分けて並べる。
+ * 見出しと意味の描き方（振り仮名や読みを添えるなど）は、画面ごとに renderTitle / renderMeaning で渡す。
+ */
+export function StudyAnswerListButton({
+  groups,
+  unit = '語',
+  renderTitle = (item) => item.title,
+  renderMeaning = (item) => item.meaning,
+  titleLang,
+  variant = 'soft',
+  className = '',
+}) {
+  const [open, setOpen] = useState(false)
+  const forgot = groups?.forgot ?? []
+  const remembered = groups?.remembered ?? []
+  const total = forgot.length + remembered.length
+  if (!total) return null
+  const shared = { unit, renderTitle, renderMeaning, titleLang }
+
+  return (
+    <>
+      <Button
+        full
+        variant={variant}
+        className={className}
+        onClick={() => setOpen(true)}
+        aria-haspopup="dialog"
+        data-study-answer-list-open
+      >
+        <Cards size={18} /> 一覧で確認
+      </Button>
+      <Sheet open={open} onClose={() => setOpen(false)} title="覚えた・まだの一覧">
+        <div className="space-y-5 pb-2 text-left" data-study-answer-list>
+          <p className="text-xs font-bold leading-relaxed text-ink/55">
+            今回の{total}{unit}を、最後に選んだ答えで分けています。
+          </p>
+          <StudyAnswerGroup id="forgot" label="まだ" items={forgot} {...shared} />
+          <StudyAnswerGroup id="remembered" label="覚えた" items={remembered} {...shared} />
+        </div>
+      </Sheet>
+    </>
   )
 }
 

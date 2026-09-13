@@ -199,12 +199,14 @@ test('共通メニューから保存される学習・音声・コンテンツ�
     'dailyGoal',
     'sessionSize',
     'revealAnswers',
+    'hideSpelling',
     'autoAdvanceCorrect',
     'vocabMix',
   ])
 
   assert.match(source, /data-settings-central-panel/)
   assert.match(source, /setSetting\('revealAnswers'/)
+  assert.match(source, /setSetting\('hideSpelling'/)
   assert.match(source, /setSetting\('dailyGoal'/)
   assert.match(source, /setSetting\('sessionSize'/)
   assert.match(source, /title="読み上げの速さ"/)

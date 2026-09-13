@@ -183,6 +183,7 @@ const DEFAULT_SETTINGS = {
   dailyGoal: 20,
   sessionSize: 10, // 1回の暗記・テストで出す問題数（進捗表示のタップで変更）
   revealAnswers: false, // 暗記/復習/単語帳で、タップせず最初から意味・語源を表示する
+  hideSpelling: false, // 英単語・熟語の暗記で、意味を先に見せ、スペルと発音はカードを開くまで隠す
   autoAdvanceCorrect: true, // テストで正解したら、短い確認時間の後に次の問題へ進む
   vocabMix: VOCAB_MIX_DEFAULT, // 単語の通常セッションで復習と未修をどちらへ寄せるか
 }
@@ -196,6 +197,8 @@ export function normalizeSettings(settings) {
     ]),
   )
   normalized.vocabMix = normalizeVocabMix(normalized.vocabMix)
+  // 「答えを開いたまま」と「スペルを隠す」は同時に成り立たない。両方ONで届いたら、前からある開いたままを残す。
+  normalized.hideSpelling = normalized.hideSpelling === true && normalized.revealAnswers !== true
   return normalized
 }
 
@@ -1404,8 +1407,16 @@ export const useStore = create(
           }
         }),
 
+      // 「答えを開いたまま見せる」と「スペルを隠す」は同時に成り立たないので、片方をONにしたらもう片方を外す。
       setSetting: (key, value) =>
-        set((st) => ({ settings: { ...st.settings, [key]: value } })),
+        set((st) => ({
+          settings: {
+            ...st.settings,
+            [key]: value,
+            ...(key === 'revealAnswers' && value === true ? { hideSpelling: false } : {}),
+            ...(key === 'hideSpelling' && value === true ? { revealAnswers: false } : {}),
+          },
+        })),
 
       // ── ポータルのタイル並べ替え／表示オンオフ ──
       // タイルを上下に動かす（dir: -1=上, +1=下）。並びは表示・非表示まとめて1列で管理。

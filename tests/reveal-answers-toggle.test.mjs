@@ -2,6 +2,8 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 
+import { normalizeSettings, useStore } from '../src/store/useStore.js'
+
 // 「タップして意味を見る」を毎回タップしなくて済むカード上の切り替えは、
 // 一度ヘッダー整理で消えたことがある。カード画面から消えないよう固定する。
 const CARD_SCREENS = [
@@ -44,4 +46,64 @@ test('カード画面に「まだ」と「覚えた」の両方のボタンが�
     assert.match(source, /answer\(false\)/, `${path} が「まだ」を記録していない`)
     assert.match(source, /answer\(true\)/, `${path} が「覚えた」を記録していない`)
   }
+})
+
+// 英単語・熟語のカードは、目のボタンで「意味を隠す→スペルを隠す→全部見せる」と切り替える。
+// スペルを隠しているあいだは、つづり・発音記号・読み上げボタンを出さず、自動の読み上げもしない。
+test('英単語・熟語のカードは目のボタンでスペルも隠し、隠しているあいだは発音しない', () => {
+  const toggle = readFileSync('src/components/RevealAnswers.jsx', 'utf8')
+  assert.match(toggle, /spellingLabel/)
+  assert.match(toggle, /setSetting\('hideSpelling', true\)/)
+  assert.match(toggle, /data-reveal-mode=\{mode\}/)
+
+  for (const [path, spellingLabel, heading] of [
+    ['src/screens/VocabStudy.jsx', 'スペル', '{word.word}'],
+    ['src/screens/PhraseStudy.jsx', '英語', '{item.phrase}'],
+  ]) {
+    const source = readFileSync(path, 'utf8')
+    assert.match(
+      source,
+      new RegExp(`<RevealAnswersToggle[\\s\\S]*?spellingLabel="${spellingLabel}"`),
+      `${path}: 目のボタンでスペルを隠せない`,
+    )
+    assert.match(source, /const spellingHidden = Boolean\((?:word|item)\) && hideSpelling && !flipped/)
+    // 隠しているあいだは読み上げず、流れている音声と、つづりが出る再生パネルも閉じる
+    assert.match(
+      source,
+      /if \(spellingHidden\) \{\s*dismissSpeechPlayer\(\)\s*return\s*\}\s*if \(settings\.autoSpeak\)/,
+      `${path}: スペルを隠しても読み上げる`,
+    )
+    // カードを開いてスペルが見えたら、そこで読み上げる
+    assert.match(source, /\}, \[i, (?:word|item)\?\.id, spellingHidden\]\)/, `${path}: スペルが見えても読み上げない`)
+    // 隠している側の表示に、つづりと読み上げボタンを置かない
+    const hiddenStart = source.indexOf('{spellingHidden ? (')
+    assert.ok(hiddenStart > 0, `${path}: スペルを隠した表示がない`)
+    const hiddenBranch = source.slice(hiddenStart, source.indexOf(') : (', hiddenStart))
+    assert.doesNotMatch(hiddenBranch, /SpeakButton|phonetic/, `${path}: 隠している側に読み上げが残っている`)
+    assert.ok(!hiddenBranch.includes(heading), `${path}: 隠している側につづりが出る`)
+  }
+})
+
+test('「答えを開いたまま」と「スペルを隠す」は、片方をONにするともう片方が外れる', () => {
+  const original = useStore.getState().settings
+  try {
+    const { setSetting } = useStore.getState()
+    setSetting('revealAnswers', true)
+    setSetting('hideSpelling', true)
+    assert.equal(useStore.getState().settings.hideSpelling, true)
+    assert.equal(useStore.getState().settings.revealAnswers, false)
+    setSetting('revealAnswers', true)
+    assert.equal(useStore.getState().settings.revealAnswers, true)
+    assert.equal(useStore.getState().settings.hideSpelling, false)
+    setSetting('revealAnswers', false)
+    assert.equal(useStore.getState().settings.hideSpelling, false)
+  } finally {
+    useStore.setState({ settings: original })
+  }
+  // 両方ONで届いた値は、前からある「開いたまま」を残す
+  const both = normalizeSettings({ revealAnswers: true, hideSpelling: true })
+  assert.equal(both.revealAnswers, true)
+  assert.equal(both.hideSpelling, false)
+  assert.equal(normalizeSettings({}).hideSpelling, false)
+  assert.equal(normalizeSettings({ hideSpelling: true }).hideSpelling, true)
 })

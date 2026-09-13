@@ -15,7 +15,7 @@ import {
 import { vocabMixEmptyNotice, vocabMixFreshShare } from '../lib/vocabMix.js'
 import { phraseGroupsForWord } from '../lib/wordPhrases.js'
 import { wordRelationsFor } from '../lib/wordRelations.js'
-import { playSpeechItems } from '../lib/speech-player.js'
+import { dismissSpeechPlayer, playSpeechItems } from '../lib/speech-player.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
 import { EtymologyBlock } from '../components/WordBits.jsx'
@@ -62,6 +62,8 @@ export function VocabStudyScreen() {
 
   // 暗記モード：ONなら毎カード、タップせず最初から意味・語源を開いて見せる。
   const revealAll = settings.revealAnswers
+  // スペルを隠すモード：意味を先に見せ、スペルと発音はカードを開くまで出さない（上部の目のボタンで切り替え）。
+  const hideSpelling = settings.hideSpelling === true
 
   const source = params.source ?? { type: 'due' }
 
@@ -176,9 +178,18 @@ export function VocabStudyScreen() {
   // 意味が同じ・近い語、同じ意味の熟語、つづりが似た語、カタカナ語のヒント。
   const relations = useMemo(() => wordRelationsFor(word), [word?.id])
 
-  // カードが変わるたび自動で読み上げ
+  // スペルを隠していて、まだカードを開いていない。
+  const spellingHidden = Boolean(word) && hideSpelling && !flipped
+
+  // カードが変わるたび自動で読み上げ。スペルを隠しているあいだは読まず、流れている音声と、
+  // つづりが出る下の再生パネルも閉じる。カードを開いてスペルが見えたら、そこで読み上げる。
   useEffect(() => {
-    if (word && settings.autoSpeak) {
+    if (!word) return
+    if (spellingHidden) {
+      dismissSpeechPlayer()
+      return
+    }
+    if (settings.autoSpeak) {
       playSpeechItems([
         { text: word.word, label: word.word, style: 'word' },
         ...(word.example
@@ -192,7 +203,7 @@ export function VocabStudyScreen() {
       })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [i, word?.id])
+  }, [i, word?.id, spellingHidden])
 
   if (!deck.length) {
     // 「未修だけ」「復習だけ」で出せる語がないときは、そう選んでいることと続け方を示す。
@@ -280,6 +291,8 @@ export function VocabStudyScreen() {
   }
 
   const level = getLevel(word.level)
+  // スペルを隠しているあいだは、単語帳の窓や読み上げ名にも語を出さない。
+  const wordName = spellingHidden ? 'この単語' : word.word
   const wordSpeechItems = [
     { text: word.word, label: word.word, style: 'word' },
     ...(word.example
@@ -348,6 +361,7 @@ export function VocabStudyScreen() {
           <>
             <RevealAnswersToggle
               label="意味"
+              spellingLabel="スペル"
               toolbar
               onChange={(on) => setFlipped(on)}
             />
@@ -356,8 +370,8 @@ export function VocabStudyScreen() {
               saved={inWordBook}
               onToggle={() => setListSheetOpen(true)}
               label="単語帳"
-              savedLabel={`${word.word}の単語帳を選ぶ（単語帳に入っています）`}
-              unsavedLabel={`${word.word}を入れる単語帳を選ぶ`}
+              savedLabel={`${wordName}の単語帳を選ぶ（単語帳に入っています）`}
+              unsavedLabel={`${wordName}を入れる単語帳を選ぶ`}
               aria-pressed={undefined}
               aria-haspopup="dialog"
               data-vocab-word-book-toggle
@@ -385,25 +399,39 @@ export function VocabStudyScreen() {
           </div>
 
           <div className="mt-2 flex flex-col items-center text-center">
-            <h2 className="font-display text-4xl font-extrabold tracking-tight text-ink">{word.word}</h2>
-            {settings.showPhonetic && word.phonetic && (
-              <p className="mt-1 text-sm font-bold text-ink/45">{word.phonetic}</p>
+            {spellingHidden ? (
+              // スペルを隠すモード：意味から英単語を思い出す。つづり・発音記号・読み上げはカードを開くまで出さない。
+              <>
+                <p className="text-xs font-extrabold text-brand-500">意味</p>
+                <h2 className="mt-1 font-display text-2xl font-extrabold leading-snug text-ink" data-vocab-spelling-hidden>
+                  <MeaningText>{word.meanings.join('・')}</MeaningText>
+                </h2>
+              </>
+            ) : (
+              <>
+                <h2 className="font-display text-4xl font-extrabold tracking-tight text-ink">{word.word}</h2>
+                {settings.showPhonetic && word.phonetic && (
+                  <p className="mt-1 text-sm font-bold text-ink/45">{word.phonetic}</p>
+                )}
+                <div className="mt-3">
+                  <SpeakButton
+                    text={word.word}
+                    phrases={wordSpeechItems}
+                    phraseIndex={0}
+                    title="単語カード"
+                    size="lg"
+                  />
+                </div>
+              </>
             )}
-            <div className="mt-3">
-              <SpeakButton
-                text={word.word}
-                phrases={wordSpeechItems}
-                phraseIndex={0}
-                title="単語カード"
-                size="lg"
-              />
-            </div>
             <VocabReviewHistory entry={entry} className="mt-2" />
           </div>
 
           {!flipped ? (
             <div className="mt-6 flex flex-col items-center gap-2 rounded-2xl border-2 border-dashed border-brand-200 py-8 text-brand-400">
-              <span className="text-sm font-extrabold">タップして意味と語源を見る</span>
+              <span className="text-sm font-extrabold">
+                {hideSpelling ? 'タップしてスペルと発音を確かめる' : 'タップして意味と語源を見る'}
+              </span>
               <ArrowRight size={20} className="rotate-90" />
             </div>
           ) : (
@@ -542,7 +570,7 @@ export function VocabStudyScreen() {
         open={listSheetOpen}
         onClose={() => setListSheetOpen(false)}
         wordId={word.id}
-        wordLabel={word.word}
+        wordLabel={wordName}
       />
     </div>
   )

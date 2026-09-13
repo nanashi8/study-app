@@ -13,6 +13,7 @@ import {
   moveSwipeGesture,
   swipeGestureOffset,
 } from '../src/lib/cardSwipe.js'
+import { studyAnswerGroups } from '../src/lib/studyAnswerList.js'
 
 const CARD_SCREENS = [
   'VocabStudy.jsx',
@@ -139,4 +140,63 @@ test('全暗記カードと一覧の行が、指を離すまで追う共通の�
     assert.match(source, /useHorizontalSwipe\(rowRef/, `${filename} の行が共通の左右スワイプを使っていない`)
     assert.doesNotMatch(source, /onPointerDown=/, `${filename} に古いスワイプ判定が残っている`)
   }
+})
+
+test('全カードを終えたあとの一覧は、選び直した項目を最後の答えで「まだ」「覚えた」に分ける', () => {
+  const apple = { id: 'apple', title: 'apple' }
+  const book = { id: 'book', title: 'book' }
+  const cat = { id: 'cat', title: 'cat' }
+  const groups = studyAnswerGroups([
+    { item: apple, remembered: true },
+    { item: book, remembered: false },
+    { item: cat, remembered: false },
+    // 前へ戻って book を「覚えた」に選び直す。並びは最初に答えた順のまま。
+    { item: book, remembered: true },
+    { item: { title: 'IDのない記録' }, remembered: false },
+  ])
+  assert.deepEqual(groups.forgot.map((item) => item.id), ['cat'])
+  assert.deepEqual(groups.remembered.map((item) => item.id), ['apple', 'book'])
+  assert.deepEqual(studyAnswerGroups(), { forgot: [], remembered: [] })
+})
+
+test('全暗記カードの終わりに「一覧で確認」があり、答えるたびに残して、やり直しで消す', () => {
+  const read = (path) => readFileSync(new URL(`../src/${path}`, import.meta.url), 'utf8')
+  const controls = read('components/CardStudyControls.jsx')
+  assert.match(controls, /export function useStudyAnswerLog/)
+  assert.match(controls, /export function StudyAnswerListButton/)
+  assert.match(controls, /一覧で確認/)
+  assert.match(controls, /label="まだ"/)
+  assert.match(controls, /label="覚えた"/)
+
+  // 画面の中に終わりの画面を持つ暗記カード
+  for (const filename of [
+    'KotenStudy.jsx',
+    'KotenGrammarStudy.jsx',
+    'KotenCultureStudy.jsx',
+    'KanbunStudy.jsx',
+    'EtymologyStudy.jsx',
+  ]) {
+    const source = read(`screens/${filename}`)
+    assert.match(source, /const answerLog = useStudyAnswerLog\(\)/, `${filename}: 答えを残していない`)
+    // 最初の答えと、前へ戻って選び直した答えの両方を残す
+    assert.equal((source.match(/answerLog\.record\(/g) ?? []).length, 2, `${filename}: 答えを残す場所が2か所でない`)
+    assert.match(source, /answerLog\.reset\(\)/, `${filename}: やり直しで一覧を消していない`)
+    assert.match(source, /<StudyAnswerListButton[\s\S]*?groups=\{answerLog\.groups\(\)\}/, `${filename}: 終わりの画面に一覧がない`)
+  }
+
+  // 熟語・構文と英単語は、共通の結果画面で並べる
+  const phrase = read('screens/PhraseStudy.jsx')
+  assert.equal((phrase.match(/answerLog\.record\(/g) ?? []).length, 2)
+  assert.match(phrase, /studyAnswers: answerLog\.entries\(\)/)
+  const result = read('screens/SessionResult.jsx')
+  assert.match(result, /studyAnswerGroups\(params\.studyAnswers\)/)
+  assert.match(result, /<StudyAnswerListButton groups=\{studyAnswers\}/)
+  assert.match(result, /answerGroups=\{studyAnswers\}/)
+  assert.match(read('components/VocabCompletionReport.jsx'), /<StudyAnswerListButton[\s\S]*?groups=\{answerGroups\}/)
+
+  // 名作の本文語彙カードも同じ一覧
+  const literature = read('components/LiteratureVocabularySheet.jsx')
+  assert.match(literature, /answerLog\.record\(entry, rememberedNow\)/)
+  assert.match(literature, /answerLog\.reset\(\)/)
+  assert.match(literature, /<StudyAnswerListButton[\s\S]*?groups=\{answerLog\.groups\(\)\}/)
 })
