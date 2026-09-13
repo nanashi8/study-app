@@ -611,7 +611,7 @@ test('語の成り立ちは全語を出典つきで出す', () => {
     ...totals,
     [story.origin]: (totals[story.origin] ?? 0) + 1,
   }), {})
-  assert.deepEqual(kinds, { 'reviewed-text': 2439, 'sealed-note': 6412 })
+  assert.deepEqual(kinds, { 'reviewed-text': 4399, 'sealed-note': 4452 })
   for (const story of ETYMOLOGY_WORD_STORIES) {
     // January / Ms. のように大文字で始まる見出し語もあるため、引くときは小文字にそろえる。
     const word = byHead.get(story.head.toLowerCase())
