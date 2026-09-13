@@ -58,6 +58,7 @@ export function PhraseStudyScreen() {
     buildPhraseDeck(params.source ?? { type: 'phrase', kind: 'idiom' }, {
       srs: useStore.getState().srs,
       size,
+      purpose: 'study',
     })
   const [poolSize] = useState(() => buildFor(0).length)
   const sessionSize = useSessionSize(poolSize || Infinity)

@@ -1,6 +1,8 @@
 // 古文を読むための古典常識。断片的な雑学ではなく、本文中の人物関係・行動・
 // 時刻・価値観を判断する手掛かりとして「暗記→文脈で使う」を一体化する。
 
+import { pickInStudyOrder, rankQuestionsForStudy } from '../lib/studyOrder.js'
+
 export const KOTEN_CULTURE_CATEGORIES = [
   {
     id: 'court',
@@ -1589,37 +1591,29 @@ export function kotenCultureQuestionsFor(cultureIds) {
   )
 }
 
-function shuffle(items, rng = Math.random) {
-  const result = [...items]
-  for (let index = result.length - 1; index > 0; index--) {
-    const picked = Math.floor(rng() * (index + 1))
-    ;[result[index], result[picked]] = [result[picked], result[index]]
-  }
-  return result
-}
-
 // 12問中8問を文脈型、4問を基礎型にし、用語暗記と本文適用を往復する。
+// 出題順は全教材共通（lib/studyOrder.js）。未回答・不正解は問題ごとの結果（quizResults）で、
+// 点数はその問題が扱う最初の常識項目の記録（srs）で見る。文脈・基礎の配分は同じ段の中で守る。
 export function pickKotenCultureQuestions(
   cultureIds,
-  { size = 12, rng = Math.random } = {},
+  { size = 12, rng = Math.random, srs = {}, quizResults = {}, now = Date.now() } = {},
 ) {
   const candidates = kotenCultureQuestionsFor(cultureIds)
   const limit = Math.max(1, Math.min(Number(size) || 12, candidates.length))
-  if (candidates.length <= limit) return shuffle(candidates, rng)
+  const ranked = rankQuestionsForStudy(candidates, {
+    quizResults,
+    quizDomain: 'koten-culture',
+    srs,
+    itemIdOf: (question) => question.cultureIds.find((id) => KOTEN_CULTURE_BY_ID[id]),
+    now,
+    rng,
+  })
+  if (candidates.length <= limit) return ranked.map(({ item }) => item)
 
-  const context = shuffle(candidates.filter((item) => item.style === 'context'), rng)
-  const foundation = shuffle(candidates.filter((item) => item.style === 'foundation'), rng)
-  const contextTarget = Math.min(context.length, Math.ceil(limit * (2 / 3)))
-  const picked = [
-    ...context.slice(0, contextTarget),
-    ...foundation.slice(0, limit - contextTarget),
-  ]
-  if (picked.length < limit) {
-    const used = new Set(picked.map((item) => item.id))
-    picked.push(
-      ...shuffle(candidates.filter((item) => !used.has(item.id)), rng)
-        .slice(0, limit - picked.length),
-    )
-  }
-  return shuffle(picked, rng)
+  const contextCount = candidates.filter((item) => item.style === 'context').length
+  const contextTarget = Math.min(contextCount, Math.ceil(limit * (2 / 3)))
+  return pickInStudyOrder(ranked, limit, {
+    groupOf: (item) => item.style,
+    quotas: { context: contextTarget, foundation: limit - contextTarget },
+  })
 }

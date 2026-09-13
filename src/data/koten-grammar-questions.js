@@ -3,6 +3,7 @@ import {
   KOTEN_GRAMMAR,
   KOTEN_GRAMMAR_BY_ID,
 } from './koten-grammar.js'
+import { pickInStudyOrder, rankQuestionsForStudy } from '../lib/studyOrder.js'
 
 // 実在する過去問の転載ではなく、大学入試で頻出する問い方を再現したオリジナル問題。
 // grammarIds はSRS更新・登録・分野別出題に使う安定キー。
@@ -960,37 +961,29 @@ export function kotenGrammarQuestionsFor(grammarIds) {
   )
 }
 
-function shuffle(items, rng = Math.random) {
-  const result = [...items]
-  for (let index = result.length - 1; index > 0; index--) {
-    const picked = Math.floor(rng() * (index + 1))
-    ;[result[index], result[picked]] = [result[picked], result[index]]
-  }
-  return result
-}
-
 // 文脈問題を約3分の2、基礎問題を約3分の1にして、知識だけ・読解だけへ偏らせない。
+// 出題順は全教材共通（lib/studyOrder.js）。未回答・不正解は問題ごとの結果（quizResults）で、
+// 点数はその問題が扱う最初の文法項目の記録（srs）で見る。文脈・基礎の配分は同じ段の中で守る。
 export function pickKotenGrammarQuestions(
   grammarIds,
-  { size = 12, rng = Math.random } = {},
+  { size = 12, rng = Math.random, srs = {}, quizResults = {}, now = Date.now() } = {},
 ) {
   const candidates = kotenGrammarQuestionsFor(grammarIds)
   const limit = Math.max(1, Math.min(Number(size) || 12, candidates.length))
-  if (candidates.length <= limit) return shuffle(candidates, rng)
+  const ranked = rankQuestionsForStudy(candidates, {
+    quizResults,
+    quizDomain: 'koten-grammar',
+    srs,
+    itemIdOf: (question) => question.grammarIds.find((id) => KOTEN_GRAMMAR_BY_ID[id]),
+    now,
+    rng,
+  })
+  if (candidates.length <= limit) return ranked.map(({ item }) => item)
 
-  const context = shuffle(candidates.filter((item) => item.style === 'context'), rng)
-  const foundation = shuffle(candidates.filter((item) => item.style === 'foundation'), rng)
-  const contextTarget = Math.min(context.length, Math.ceil(limit * (2 / 3)))
-  const picked = [
-    ...context.slice(0, contextTarget),
-    ...foundation.slice(0, limit - contextTarget),
-  ]
-  if (picked.length < limit) {
-    const used = new Set(picked.map((item) => item.id))
-    picked.push(
-      ...shuffle(candidates.filter((item) => !used.has(item.id)), rng)
-        .slice(0, limit - picked.length),
-    )
-  }
-  return shuffle(picked, rng)
+  const contextCount = candidates.filter((item) => item.style === 'context').length
+  const contextTarget = Math.min(contextCount, Math.ceil(limit * (2 / 3)))
+  return pickInStudyOrder(ranked, limit, {
+    groupOf: (item) => item.style,
+    quotas: { context: contextTarget, foundation: limit - contextTarget },
+  })
 }

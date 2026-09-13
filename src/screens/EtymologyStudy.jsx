@@ -13,6 +13,7 @@ import {
   useStudyAnswerLog,
 } from '../components/CardStudyControls.jsx'
 import { answeredSessionIndexes, growDeck, restartSessionCount } from '../lib/session.js'
+import { orderForStudy } from '../lib/studyOrder.js'
 import {
   nextUnansweredSessionIndex,
   QuestionSessionControls,
@@ -25,15 +26,13 @@ import { MeaningText } from '../components/MeaningText.jsx'
 
 // 語源そのものを暗記するカード。表は語根の形、裏は意味・由来・確認済みの例語。
 // 判定は語源専用の記録（etymologySrs）に入る。紐づく英単語の暗記は別画面。
+// 一覧で選んだ順でなければ、その記録から全教材共通の出題順に並べる。
 function buildEtymologyCardDeck(ids, size = 0, preserveOrder = false) {
   const cards = (ids ?? []).map(getEtymologyPack).filter(Boolean)
-  if (!preserveOrder) {
-    for (let index = cards.length - 1; index > 0; index -= 1) {
-      const swap = Math.floor(Math.random() * (index + 1))
-      ;[cards[index], cards[swap]] = [cards[swap], cards[index]]
-    }
-  }
-  return size > 0 ? cards.slice(0, size) : cards
+  const ordered = preserveOrder
+    ? cards
+    : orderForStudy(cards, useStore.getState().etymologySrs, { purpose: 'study' })
+  return size > 0 ? ordered.slice(0, size) : ordered
 }
 
 export function EtymologyStudyScreen() {

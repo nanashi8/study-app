@@ -8,6 +8,7 @@ import { Button, Chip } from '../components/ui.jsx'
 import { StudyAnswerReselect } from '../components/CardStudyControls.jsx'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 import { answeredSessionIndexes, growDeck, restartSessionCount } from '../lib/session.js'
+import { orderForStudy } from '../lib/studyOrder.js'
 import {
   nextUnansweredSessionIndex,
   QuestionSessionControls,
@@ -27,16 +28,13 @@ export function WritingGrammarReviewScreen() {
   const myGrammarList = useStore((s) => s.myGrammarList)
   const srs = useStore((s) => s.srs)
   const review = useStore((s) => s.review)
-  // 復習どきのカードを優先し、なければ保存カード全体から出す。size=0 は「絞り込みなし」。
+  // 復習どきのカード（まだ学習していないカードを含む）を優先し、なければ保存カード全体から出す。
+  // その中は全教材共通の出題順（lib/studyOrder.js）で、段も点数も同じなら保存した順。size=0 は「絞り込みなし」。
   const buildFor = (size) => {
-    const items = useStore
-      .getState()
-      .myGrammarList.map(getWritingGrammar)
-      .filter(Boolean)
-    const due = items.filter((item) =>
-      isDue(useStore.getState().srs[item.id]),
-    )
-    const pool = due.length ? due : items
+    const state = useStore.getState()
+    const items = state.myGrammarList.map(getWritingGrammar).filter(Boolean)
+    const due = items.filter((item) => isDue(state.srs[item.id]))
+    const pool = orderForStudy(due.length ? due : items, state.srs, { purpose: 'study', rng: null })
     return size > 0 ? pool.slice(0, size) : pool
   }
   const [poolSize] = useState(() => buildFor(0).length)

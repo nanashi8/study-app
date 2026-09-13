@@ -14,6 +14,7 @@ import {
 } from '../data/grammar-format-expansion.js'
 import { getGrammarStrand, grammarStrandQuestions } from '../data/grammar-strands.js'
 import { shuffle } from '../data/vocab.js'
+import { STUDY_ORDER_STAGE, rankForStudy, studyOrderKey } from './studyOrder.js'
 
 export const GRAMMAR_SESSION_SIZE = 10
 
@@ -62,29 +63,22 @@ export function grammarCandidates(source = {}) {
   return grammarByLevel(source.level)
 }
 
-function reviewPriority(item, srs, day) {
-  const review = srs[item.id]
-  if (review?.due <= day) return [0, review.box ?? 0]
-  if (!review) return [1, 0]
-  return [2, review.box ?? 0]
-}
-
-function comparePriority(a, b, srs, day) {
-  const [aState, aBox] = reviewPriority(a, srs, day)
-  const [bState, bBox] = reviewPriority(b, srs, day)
-  return aState - bState || aBox - bBox
-}
-
 // 既存の選択問題が3,450問あっても、混合テストではその在庫差で
-// 並び替え・語法が押し出されないよう、同じ復習優先度の中で形式を巡回する。
-function balanceQuestionTypes(items, srs, day) {
+// 並び替え・語法が押し出されないよう、出題順の同じ段の中で形式を巡回する。
+// 今日間違えた問題（2段）だけは、形式の巡回より点数の低い順を優先する。
+function balanceQuestionTypes(items, stageOf) {
   const result = []
-  for (const priorityState of [0, 1, 2]) {
-    const groups = Object.fromEntries(GRAMMAR_QUESTION_TYPES.map((type) => [type, []]))
-    for (const item of items) {
-      if (reviewPriority(item, srs, day)[0] !== priorityState) continue
-      groups[grammarQuestionType(item)]?.push(item)
+  for (const stage of Object.values(STUDY_ORDER_STAGE)) {
+    const stageItems = items.filter((item) => (
+      stageOf.get(item.id) === stage
+      && GRAMMAR_QUESTION_TYPES.includes(grammarQuestionType(item))
+    ))
+    if (stage === STUDY_ORDER_STAGE.missedToday) {
+      result.push(...stageItems)
+      continue
     }
+    const groups = Object.fromEntries(GRAMMAR_QUESTION_TYPES.map((type) => [type, []]))
+    for (const item of stageItems) groups[grammarQuestionType(item)].push(item)
     let remaining = Object.values(groups).reduce((total, group) => total + group.length, 0)
     while (remaining > 0) {
       for (const type of GRAMMAR_QUESTION_TYPES) {
@@ -100,7 +94,7 @@ function balanceQuestionTypes(items, srs, day) {
 
 // 選ばれた問題の集合は変えず、可能な限り同じ単元が隣り合わない順へ並べる。
 // 同じ級をまとめて解くときも、近い問題が固まらず文法判断を切り替えられる。
-function spreadTopics(items) {
+function spreadTopics(items, previous = null) {
   const groups = new Map()
   items.forEach((item, index) => {
     const group = groups.get(item.topic) ?? { topic: item.topic, firstIndex: index, items: [] }
@@ -109,7 +103,7 @@ function spreadTopics(items) {
   })
 
   const ordered = []
-  let previousTopic = null
+  let previousTopic = previous
   while (ordered.length < items.length) {
     const available = [...groups.values()]
       .filter((group) => group.items.length)
@@ -122,7 +116,43 @@ function spreadTopics(items) {
   return ordered
 }
 
-// 復習日・未着手の優先順位を守りながら、語句差し替えだけの同型は
+// 点数の低い順に並んだ段は、その順をなるべく崩さない。直前と同じ単元になるときだけ、次の問題を先に出す。
+function spreadTopicsKeepingOrder(items, previous = null) {
+  const rest = [...items]
+  const ordered = []
+  let previousTopic = previous
+  while (rest.length) {
+    const at = Math.max(0, rest.findIndex((item) => item.topic !== previousTopic))
+    const [next] = rest.splice(at, 1)
+    ordered.push(next)
+    previousTopic = next.topic
+  }
+  return ordered
+}
+
+// 出題順の段ごとに単元を散らす。まだ答えていない問題（1段）は単元の偏りだけを見て散らし、
+// 今日間違えた問題（2段）は点数の低い順のまま、ほかの段は点数の低い順をなるべく保つ。
+// 段をまたいで順番を入れ替えない。
+function spreadTopicsByStage(items, stageOf) {
+  const result = []
+  let start = 0
+  while (start < items.length) {
+    const stage = stageOf.get(items[start].id)
+    let end = start
+    while (end < items.length && stageOf.get(items[end].id) === stage) end += 1
+    const group = items.slice(start, end)
+    const previous = result.at(-1)?.topic ?? null
+    result.push(...(stage === STUDY_ORDER_STAGE.fresh
+      ? spreadTopics(group, previous)
+      : stage === STUDY_ORDER_STAGE.missedToday
+        ? group
+        : spreadTopicsKeepingOrder(group, previous)))
+    start = end
+  }
+  return result
+}
+
+// 出題順（studyOrder.js）を守りながら、語句差し替えだけの同型は
 // 1セッションに1問だけ選ぶ。型の少ない単元では問題数を水増ししない。
 export function buildGrammarDeck(
   source,
@@ -130,6 +160,7 @@ export function buildGrammarDeck(
     srs = {},
     size = GRAMMAR_SESSION_SIZE,
     day = 0,
+    now = Date.now(),
     rng = Math.random,
   } = {},
 ) {
@@ -141,12 +172,18 @@ export function buildGrammarDeck(
   if (source?.type === 'grammarDue') {
     pool = pool.filter((item) => srs[item.id]?.due <= day)
   }
-  pool.sort((a, b) => comparePriority(a, b, srs, day))
+  // 文法はテストだけの教材なので、まだ答えていない問題を1段に数える。
+  const ranked = rankForStudy(
+    pool,
+    (item) => studyOrderKey(srs[item.id], { purpose: 'quiz', now, day }),
+    { rng: null },
+  )
+  const stageOf = new Map(ranked.map(({ item, stage }) => [item.id, stage]))
 
   const limit = size > 0 ? size : Number.POSITIVE_INFINITY
   const variationKeys = new Set()
   const unique = []
-  for (const item of pool) {
+  for (const { item } of ranked) {
     const key = grammarVariationKey(item)
     if (variationKeys.has(key)) continue
     variationKeys.add(key)
@@ -154,7 +191,7 @@ export function buildGrammarDeck(
   }
 
   const ordered = source?.questionType === 'mixed'
-    ? balanceQuestionTypes(unique, srs, day)
+    ? balanceQuestionTypes(unique, stageOf)
     : unique
-  return spreadTopics(ordered.slice(0, limit))
+  return spreadTopicsByStage(ordered.slice(0, limit), stageOf)
 }

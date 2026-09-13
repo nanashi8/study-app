@@ -25,9 +25,15 @@ export function KanbunKundokuQuizScreen() {
   const returnTo = useStore((state) => state.returnTo)
   const review = useStore((state) => state.reviewKanbunKundoku)
   const reviseReview = useStore((state) => state.reviseReview)
-  const [poolSize] = useState(() => pickKanbunKundokuExercises(params.ids, { size: ALL_EXERCISES, preserveOrder: params.preserveOrder }).length)
+  // 出題順は、いまの記録から全教材共通の決まりで並べる（lib/studyOrder.js）。一覧で選んだ順ならそのまま。
+  const pickExercises = (ids, size) => pickKanbunKundokuExercises(ids, {
+    size,
+    preserveOrder: params.preserveOrder,
+    srs: useStore.getState().kanbunKundokuSrs,
+  })
+  const [poolSize] = useState(() => pickExercises(params.ids, ALL_EXERCISES).length)
   const sessionSize = useSessionSize(poolSize || Infinity)
-  const [deck, setDeck] = useState(() => pickKanbunKundokuExercises(params.ids, { size: params.size ?? sessionSize, preserveOrder: params.preserveOrder }))
+  const [deck, setDeck] = useState(() => pickExercises(params.ids, params.size ?? sessionSize))
   const [index, setIndex] = useState(0)
   const [selectedIds, setSelectedIds] = useState([])
   const [answered, setAnswered] = useState(false)
@@ -131,7 +137,7 @@ export function KanbunKundokuQuizScreen() {
     carried.reset()
     receipts.clear()
     setRedo(null)
-    setDeck(pickKanbunKundokuExercises(ids, { size: deck.length || sessionSize, preserveOrder: params.preserveOrder }))
+    setDeck(pickExercises(ids, deck.length || sessionSize))
     setIndex(0)
     setSelectedIds([])
     setAnswered(false)
@@ -192,7 +198,7 @@ export function KanbunKundokuQuizScreen() {
             onResize={(size, { restart }) => {
               if (restart) {
                 // 答えた問題の記録と結果は残したまま、まだ答えていない問題を1問目として数え直す。
-                const next = restartSessionCount(deck, answeredIndexes, index, pickKanbunKundokuExercises(params.ids, { size: size + deck.length, preserveOrder: params.preserveOrder }), size)
+                const next = restartSessionCount(deck, answeredIndexes, index, pickExercises(params.ids, size + deck.length), size)
                 carried.carry(next.answeredItems)
                 receipts.clear()
                 setRedo(null)
@@ -202,7 +208,7 @@ export function KanbunKundokuQuizScreen() {
                 setAnswered(false)
                 questionStates.current = {}
               } else {
-                setDeck((current) => growDeck(current, Math.max(index, answeredIndexes.at(-1) ?? 0) + 1, pickKanbunKundokuExercises(params.ids, { size: size, preserveOrder: params.preserveOrder }), size))
+                setDeck((current) => growDeck(current, Math.max(index, answeredIndexes.at(-1) ?? 0) + 1, pickExercises(params.ids, size), size))
               }
             }}
           />

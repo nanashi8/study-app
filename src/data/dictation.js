@@ -7,6 +7,8 @@
 // https://www.eiken.or.jp/eiken/exam/criteria/
 // https://www.eiken.or.jp/eiken/exam/
 
+import { orderForStudy } from '../lib/studyOrder.js'
+
 export const DICTATION_PROFILES = Object.freeze({
   '5': Object.freeze({
     label: '5級',
@@ -267,25 +269,17 @@ export const getDictation = (id) => DICTATION_BY_ID[id]
 export const dictationByLevel = (levelId) =>
   DICTATION_ITEMS.filter((item) => item.level === levelId)
 
-function shuffled(items, rng = Math.random) {
-  const out = [...items]
-  for (let i = out.length - 1; i > 0; i--) {
-    const j = Math.floor(rng() * (i + 1))
-    ;[out[i], out[j]] = [out[j], out[i]]
-  }
-  return out
-}
-
 export function buildDictationDeck(
   source = { type: 'level', levelId: '5' },
-  { size = 8, rng = Math.random } = {},
+  { size = 8, rng = Math.random, srs = {}, now = Date.now() } = {},
 ) {
   const candidates =
     source.type === 'dictationList'
       ? (source.ids ?? []).map(getDictation).filter(Boolean)
       : dictationByLevel(source.levelId ?? '5')
+  // 出題順は全教材共通（lib/studyOrder.js）。書き取りはテストだけの教材なので、まだ答えていない問題を先に出す。
   const deck = source.type === 'dictationList' && source.preserveOrder
     ? candidates
-    : shuffled(candidates, rng)
+    : orderForStudy(candidates, srs, { purpose: 'quiz', now, rng })
   return size ? deck.slice(0, size) : deck
 }

@@ -17,6 +17,7 @@ import {
   Close,
 } from '../components/Icons.jsx'
 import { answeredQuizIndexes, growDeck, restartSessionCount } from '../lib/session.js'
+import { orderForStudy } from '../lib/studyOrder.js'
 import { limitQuizChoices, UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { buildKotenInterpretationInstructorExplanation } from '../lib/instructorExplanations.js'
 import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
@@ -37,10 +38,12 @@ function shuffle(items) {
   return result
 }
 
-// size=0 は「絞り込みなし」。
+// size=0 は「絞り込みなし」。一覧で選んだ順でなければ、いまの記録から全教材共通の出題順に並べる。
 function buildDeck(ids, size = 12, preserveOrder = false) {
   const selected = (ids ?? []).map(getKotenInterpretation).filter(Boolean)
-  const items = preserveOrder ? selected : shuffle(selected)
+  const items = preserveOrder
+    ? selected
+    : orderForStudy(selected, useStore.getState().kotenInterpretationSrs, { purpose: 'quiz' })
   return size > 0 ? items.slice(0, size) : items
 }
 

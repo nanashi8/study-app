@@ -50,7 +50,8 @@ export function DictationPlayScreen() {
 
   const source = params.source ?? { type: 'level', levelId: '5' }
   // size=0 は「絞り込みなし」。登録リストは全問、それ以外は設定した問題数で出す。
-  const buildFor = (size) => buildDictationDeck(source, { size })
+  // 出題順は、いまの記録から全教材共通の決まりで並べる（lib/studyOrder.js）。
+  const buildFor = (size) => buildDictationDeck(source, { size, srs: useStore.getState().srs })
   const [poolSize] = useState(() => buildFor(0).length)
   const sessionSize = useSessionSize(poolSize || Infinity)
   const [deck, setDeck] = useState(() => (
