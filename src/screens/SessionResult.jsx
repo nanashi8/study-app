@@ -4,8 +4,11 @@ import { ProgressRing, ProgressBar, Button, Card } from '../components/ui.jsx'
 import { Flame, Refresh, Home, Bookmark, ArrowRight } from '../components/Icons.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { VocabCompletionReport } from '../components/VocabCompletionReport.jsx'
+import { StudyAnswerListButton } from '../components/CardStudyControls.jsx'
 import { DragonVeinCipherStage } from '../components/DragonVeinCipherStage.jsx'
+import { getWord } from '../data/vocab.js'
 import { buildVocabCompletionReport } from '../lib/learningAnalyticsReport.js'
+import { studyAnswerGroups } from '../lib/studyAnswerList.js'
 import { vocabularySessionContinuation } from '../lib/vocabSessionProgress.js'
 import { vocabMixFreshShare } from '../lib/vocabMix.js'
 import {
@@ -140,6 +143,19 @@ export function SessionResultScreen() {
     srs,
     wrong,
   ])
+  // 暗記を終えたあと「一覧で確認」で見せる、今回「まだ」「覚えた」と答えた語・項目。
+  // 英単語は答えた語と「まだ」の語から分け、熟語・構文は暗記画面が渡した答えの記録から分ける。
+  const studyAnswers = useMemo(() => {
+    if (!isMemoryCheck) return null
+    if (isVocabStudy) {
+      const forgotIds = new Set(reviewIds)
+      return studyAnswerGroups(vocabSessionIds.map((id) => ({
+        item: getWord(id),
+        remembered: !forgotIds.has(id),
+      })))
+    }
+    return studyAnswerGroups(params.studyAnswers)
+  }, [isMemoryCheck, isVocabStudy, params.studyAnswers, reviewIds, vocabSessionIds])
 
   useEffect(() => {
     if (recorded.current || !total) return
@@ -351,6 +367,7 @@ export function SessionResultScreen() {
           onBack={returnFromVocab}
           onWord={(id) => navigate('wordDetail', { id })}
           onReviewSchedule={reviewVocabSchedule}
+          answerGroups={studyAnswers}
         />
       </div>
     )
@@ -382,6 +399,7 @@ export function SessionResultScreen() {
           <>
             {params.continueTo?.screen && <Button full onClick={() => navigate(params.continueTo.screen, params.continueTo.params ?? {})}>{params.continueTo.label ?? '次へ'} <ArrowRight size={18} /></Button>}
             {wrong > 0 && <Button full variant="primary" onClick={reviewWrong}>{isMemoryCheck ? <><Refresh size={18} /> 「まだ」の{wrong}{reviewUnit}をもう一度確認する</> : <><Bookmark size={18} /> まちがい {wrong}{reviewUnit}を復習</>}</Button>}
+            {studyAnswers && <StudyAnswerListButton groups={studyAnswers} unit={reviewUnit} titleLang="en" />}
             <Button full variant="secondary" onClick={replay}><Refresh size={18} /> もう一度</Button>
             <Button full variant="ghost" onClick={exitSessionResult}><Home size={18} /> 学習メニューへ戻る</Button>
           </>

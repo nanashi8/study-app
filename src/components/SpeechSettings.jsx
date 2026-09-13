@@ -335,6 +335,16 @@ function LearningSettingsPanel() {
           />
         </SettingRow>
         <SettingRow
+          title="英語のスペルと発音を隠す"
+          desc="英単語・熟語の暗記カードで意味を先に見せ、スペルと発音はカードを開くまで隠します。カード画面上部の目のボタンでも切り替えられます"
+        >
+          <Toggle
+            label="英語のスペルと発音を隠す"
+            on={settings.hideSpelling === true}
+            onChange={(value) => setSetting('hideSpelling', value)}
+          />
+        </SettingRow>
+        <SettingRow
           title="1回の問題数"
           desc={`現在 ${settings.sessionSize === SESSION_SIZE_ALL ? '全部' : `${settings.sessionSize ?? 10}問`}・学習中は「1/10」の表示をタップしても変更できます`}
           stacked

@@ -8,7 +8,9 @@ import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components
 import {
   CardStudyFooter,
   CardSwipeRegion,
+  StudyAnswerListButton,
   StudyAnswerReselect,
+  useStudyAnswerLog,
 } from '../components/CardStudyControls.jsx'
 import { answeredSessionIndexes, growDeck, restartSessionCount } from '../lib/session.js'
 import {
@@ -65,6 +67,8 @@ export function EtymologyStudyScreen() {
   const reviseReview = useStore((state) => state.reviseReview)
   // 1回の数を減らして数え直す前に答えたカード。結果の全枚数に含める。
   const carried = useCarriedAnswers()
+  // 終えたあと「一覧で確認」で見せる、今回「覚えた」「まだ」と答えた語源カード。
+  const answerLog = useStudyAnswerLog()
 
   const card = deck[index]
 
@@ -85,6 +89,7 @@ export function EtymologyStudyScreen() {
   const restart = () => {
     receipts.clear()
     carried.reset()
+    answerLog.reset()
     setDeck(buildEtymologyCardDeck(params.ids, deck.length, params.preserveOrder))
     setIndex(0)
     setFlipped(revealAll)
@@ -107,9 +112,11 @@ export function EtymologyStudyScreen() {
       receipts.set(index, reviseReview(receipts.get(index), result))
       setRemembered((count) => count + (ok ? 1 : -1))
       setRecordedAnswer(ok)
+      answerLog.record(card, ok)
       return
     }
     receipts.set(index, reviewEtymology(card.id, result))
+    answerLog.record(card, ok)
     if (ok) setRemembered((count) => count + 1)
     const nextAnswers = { ...recordedAnswers, [index]: ok }
     setRecordedAnswer(ok)
@@ -126,6 +133,15 @@ export function EtymologyStudyScreen() {
           <p className="mt-1 text-sm font-bold text-ink/55">
             {carried.count + deck.length}枚のうち {remembered}枚を「覚えた」
           </p>
+        </div>
+        <div className="w-full max-w-xs">
+          <StudyAnswerListButton
+            groups={answerLog.groups()}
+            unit="枚"
+            titleLang="en"
+            renderTitle={(item) => item.rootForm}
+            renderMeaning={(item) => item.rootMeaning}
+          />
         </div>
         <div className="grid w-full max-w-xs grid-cols-2 gap-3">
           <Button variant="secondary" onClick={restart}>もう一度</Button>

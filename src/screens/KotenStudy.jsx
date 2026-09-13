@@ -9,7 +9,9 @@ import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components
 import {
   CardStudyFooter,
   CardSwipeRegion,
+  StudyAnswerListButton,
   StudyAnswerReselect,
+  useStudyAnswerLog,
 } from '../components/CardStudyControls.jsx'
 import { answeredSessionIndexes, growDeck, restartSessionCount } from '../lib/session.js'
 import {
@@ -66,6 +68,8 @@ export function KotenStudyScreen() {
   const reviseReview = useStore((state) => state.reviseReview)
   // 1回の数を減らして数え直す前に答えたカード。結果の全枚数に含める。
   const carried = useCarriedAnswers()
+  // 終えたあと「一覧で確認」で見せる、今回「覚えた」「まだ」と答えた語。
+  const answerLog = useStudyAnswerLog()
 
   const word = deck[i]
 
@@ -82,6 +86,7 @@ export function KotenStudyScreen() {
   const restart = () => {
     receipts.clear()
     carried.reset()
+    answerLog.reset()
     const next = seed + 1
     setSeed(next)
     setDeck(buildKotenDeck(params.ids, next, deck.length, params.preserveOrder))
@@ -101,9 +106,11 @@ export function KotenStudyScreen() {
       receipts.set(i, reviseReview(receipts.get(i), result))
       setRemembered((n) => n + (ok ? 1 : -1))
       setRecordedAnswer(ok)
+      answerLog.record(word, ok)
       return
     }
     receipts.set(i, reviewKoten(word.id, result))
+    answerLog.record(word, ok)
     if (ok) setRemembered((n) => n + 1)
     const nextAnswers = { ...recordedAnswers, [i]: ok }
     setRecordedAnswer(ok)
@@ -127,6 +134,14 @@ export function KotenStudyScreen() {
           <p className="mt-1 text-sm font-bold text-ink/55">
             {carried.count + deck.length}語のうち {remembered}語を「覚えた」
           </p>
+        </div>
+        <div className="w-full max-w-xs">
+          <StudyAnswerListButton
+            groups={answerLog.groups()}
+            unit="語"
+            renderTitle={(item) => <KotenWord word={item} />}
+            renderMeaning={(item) => <KotenText>{item.meanings.join('・')}</KotenText>}
+          />
         </div>
         <div className="grid w-full max-w-xs grid-cols-2 gap-3">
           <Button variant="secondary" onClick={restart}>もう一度</Button>

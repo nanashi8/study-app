@@ -17,7 +17,9 @@ import { answeredSessionIndexes, growDeck, restartSessionCount } from '../lib/se
 import {
   CardStudyFooter,
   CardSwipeRegion,
+  StudyAnswerListButton,
   StudyAnswerReselect,
+  useStudyAnswerLog,
 } from '../components/CardStudyControls.jsx'
 import {
   nextUnansweredSessionIndex,
@@ -106,6 +108,8 @@ export function KanbunStudyScreen() {
   const reviseReview = useStore((state) => state.reviseReview)
   // 1回の数を減らして数え直す前に答えたカード。結果の全枚数に含める。
   const carried = useCarriedAnswers()
+  // 終えたあと「一覧で確認」で見せる、今回「覚えた」「まだ」と答えた項目。
+  const answerLog = useStudyAnswerLog()
   const item = deck[index]
 
   // コンテンツ画面の「戻る」は履歴でなく、この分野の内容選択画面へ。
@@ -130,6 +134,7 @@ export function KanbunStudyScreen() {
   const restart = (ids = params.ids) => {
     receipts.clear()
     carried.reset()
+    answerLog.reset()
     setDeck(buildFor(ids, deck.length))
     setIndex(0)
     setRevealed(revealAll)
@@ -151,9 +156,11 @@ export function KanbunStudyScreen() {
         ? ids.filter((id) => id !== item.id)
         : [...new Set([...ids, item.id])]))
       setRecordedAnswer(rememberedNow)
+      answerLog.record(item, rememberedNow)
       return
     }
     receipts.set(index, review(domain, item.id, result))
+    answerLog.record(item, rememberedNow)
     if (rememberedNow) setRemembered((count) => count + 1)
     else setForgottenIds((ids) => [...new Set([...ids, item.id])])
     const nextAnswers = { ...recordedAnswers, [index]: rememberedNow }
@@ -180,6 +187,12 @@ export function KanbunStudyScreen() {
               {carried.count + deck.length}{meta.itemLabel}のうち {remembered}{meta.itemLabel}を「覚えた」
             </p>
           </div>
+          <StudyAnswerListButton
+            groups={answerLog.groups()}
+            unit={meta.itemLabel}
+            renderTitle={(entry) => entry.title}
+            renderMeaning={(entry) => entry.answer}
+          />
           {forgottenIds.length > 0 && (
             <button
               type="button"
