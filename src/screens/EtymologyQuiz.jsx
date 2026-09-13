@@ -5,6 +5,7 @@ import { ETYMOLOGY_PACKS, getEtymologyPack, getWord } from '../data/vocab.js'
 import { buildEtymologyQuizQuestion } from '../lib/etymologyQuiz.js'
 import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { answeredQuizIndexes, growDeck, restartSessionCount } from '../lib/session.js'
+import { orderForStudy } from '../lib/studyOrder.js'
 import { Button } from '../components/ui.jsx'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
@@ -27,8 +28,13 @@ function shuffle(values) {
   return list
 }
 
+// 語源の記録（etymologySrs）から、全教材共通の出題順に並べる。
 function buildQuizDeck(ids, size = 0) {
-  const cards = shuffle((ids ?? []).map(getEtymologyPack).filter(Boolean))
+  const cards = orderForStudy(
+    (ids ?? []).map(getEtymologyPack).filter(Boolean),
+    useStore.getState().etymologySrs,
+    { purpose: 'quiz' },
+  )
   return size > 0 ? cards.slice(0, size) : cards
 }
 

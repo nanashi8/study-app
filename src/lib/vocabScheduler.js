@@ -21,7 +21,7 @@ const boxFor = (entry) => (
   clamp(Math.floor(count(entry?.box)), 0, MAX_VOCAB_REVIEW_BOX)
 )
 
-const localDayIndex = (timestamp) => {
+export const localDayIndex = (timestamp) => {
   const offset = new Date(timestamp).getTimezoneOffset()
   return Math.floor((timestamp - offset * 60_000) / DAY_MS)
 }

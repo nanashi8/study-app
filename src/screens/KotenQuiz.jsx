@@ -16,6 +16,7 @@ import { QUIZ_CHOICE_COUNT, UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { buildKotenWordInstructorExplanation } from '../lib/instructorExplanations.js'
 import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
 import { answeredQuizIndexes, growDeck, restartSessionCount } from '../lib/session.js'
+import { orderForStudy } from '../lib/studyOrder.js'
 import {
   QuestionSessionControls,
   ReselectNote,
@@ -33,10 +34,14 @@ function shuffle(arr) {
   return a
 }
 
-// 渡された id 群からシャッフルして作る（既定は設定した問題数）。
+// 渡された id 群から、いまの記録で全教材共通の出題順に並べて作る（既定は設定した問題数）。
 function buildQuizDeck(ids, seed, size = 20) { // eslint-disable-line no-unused-vars
-  const words = (ids ?? []).map(getKoten).filter(Boolean)
-  return size > 0 ? shuffle(words).slice(0, size) : shuffle(words)
+  const words = orderForStudy(
+    (ids ?? []).map(getKoten).filter(Boolean),
+    useStore.getState().kotenSrs,
+    { purpose: 'quiz' },
+  )
+  return size > 0 ? words.slice(0, size) : words
 }
 
 export function KotenQuizScreen() {

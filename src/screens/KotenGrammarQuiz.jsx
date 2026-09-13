@@ -46,12 +46,19 @@ export function KotenGrammarQuizScreen() {
   const picker = useWordBookPicker()
   const recordQuizResult = useStore((state) => state.recordContentQuizResult)
 
+  // 出題順は、いまの記録から全教材共通の決まりで並べる（lib/studyOrder.js）。
+  const pickQuestions = (ids, size) => {
+    const state = useStore.getState()
+    return pickKotenGrammarQuestions(ids, {
+      size,
+      srs: state.kotenGrammarSrs,
+      quizResults: state.contentQuizResults,
+    })
+  }
   // 在庫を数えて、選べる問題数の上限を実態に合わせる。
-  const [poolSize] = useState(() => pickKotenGrammarQuestions(params.ids, { size: ALL_QUESTIONS }).length)
+  const [poolSize] = useState(() => pickQuestions(params.ids, ALL_QUESTIONS).length)
   const sessionSize = useSessionSize(poolSize || Infinity)
-  const [deck, setDeck] = useState(() =>
-    pickKotenGrammarQuestions(params.ids, { size: params.size ?? sessionSize }),
-  )
+  const [deck, setDeck] = useState(() => pickQuestions(params.ids, params.size ?? sessionSize))
   const [index, setIndex] = useState(0)
   const {
     value: selected,
@@ -108,7 +115,7 @@ export function KotenGrammarQuizScreen() {
   const restart = (ids = params.ids) => {
     carried.reset()
     receipts.clear()
-    setDeck(pickKotenGrammarQuestions(ids, { size: deck.length || sessionSize }))
+    setDeck(pickQuestions(ids, deck.length || sessionSize))
     setIndex(0)
     clearSelections()
     setCorrectCount(0)
@@ -242,14 +249,14 @@ export function KotenGrammarQuizScreen() {
             onResize={(size, { restart }) => {
               if (restart) {
                 // 答えた問題の記録と結果は残したまま、まだ答えていない問題を1問目として数え直す。
-                const next = restartSessionCount(deck, answeredIndexes, index, pickKotenGrammarQuestions(params.ids, { size: size + deck.length }), size)
+                const next = restartSessionCount(deck, answeredIndexes, index, pickQuestions(params.ids, size + deck.length), size)
                 carried.carry(next.answeredItems)
                 receipts.clear()
                 setDeck(next.deck)
                 clearSelections()
                 setIndex(0)
               } else {
-                setDeck((current) => growDeck(current, Math.max(index, answeredIndexes.at(-1) ?? 0) + 1, pickKotenGrammarQuestions(params.ids, { size: size }), size))
+                setDeck((current) => growDeck(current, Math.max(index, answeredIndexes.at(-1) ?? 0) + 1, pickQuestions(params.ids, size), size))
               }
             }}
           />

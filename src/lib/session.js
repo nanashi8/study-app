@@ -16,6 +16,12 @@ import { LEVELS } from '../data/levels.js'
 import { LEVEL_ORDER, enemyLevelIndex, clampPos } from './adaptive.js'
 import { todayIndex } from '../store/useStore.js'
 import { hasVocabularyReviewEvidence, vocabularyReviewMetrics } from './vocabScheduler.js'
+import {
+  STUDY_ORDER_STAGE,
+  compareStudyOrderKeys,
+  orderForStudy,
+  studyOrderKey,
+} from './studyOrder.js'
 
 export const SESSION_SIZE = 10
 
@@ -147,25 +153,9 @@ export function wordsForSource(source = {}) {
   }
 }
 
-function legacyRank(word, srs, day) {
-  const e = srs[word.id]
-  if (!e) return 1 // 未習
-  if (e.due <= day) return 0 // 復習どき
-  return 2 // まだ復習日前
-}
-
 // 旧来の固定配分を参照する保存済みテストとの互換値。実際の通常セッションは
 // 下の適応プロファイルで新しい語・別の語を30〜60%に調整する。
 export const AUTOMATIC_VOCAB_REVIEW_SHARE = 0.6
-
-function vocabularyRank(word, srs, now, day) {
-  const metrics = vocabularyReviewMetrics(srs[word.id], { now, day })
-  if (metrics.needsReview && metrics.learningStatus === 'reviewing') return 0
-  if (metrics.needsReview) return 1
-  if (metrics.learningStatus === 'unlearned') return 2
-  if (metrics.learningStatus === 'reviewing') return 3
-  return 4
-}
 
 const AUTOMATIC_VOCAB_SOURCES = new Set([
   'all',
@@ -478,12 +468,6 @@ function sessionPool(
   return pool
 }
 
-// 自動で出す今日の候補（未学習・復習どき）。学習済みで期限前の語と、その日に
-// 「まだ」と答えた語は、今日の候補を出し切ったあとの続きとして後ろに回す。
-const autoAppearing = (pool, srs, now, day) => pool.filter((word) => (
-  vocabularyReviewMetrics(srs[word.id], { now, day }).shouldAutoAppear
-))
-
 /**
  * 「1回のカード数」で選べる上限＝その教材の在庫。
  * 今日の候補が少ない日でも、枚数の選択肢が 5〜200 のまま変わらないようにする。
@@ -507,27 +491,23 @@ export function buildDeck(
   } = {},
 ) {
   // 一覧で明示的に選んだ語は、学習者が並べ替えた順をそのまま使う。
-  // 通常の級・分野学習はこれまでどおりシャッフルと復習優先順位を適用する。
-  const preserveSourceOrder = source.type === 'deck' && source.preserveOrder === true
   const stock = sessionPool(source, { srs, purpose, excludeIds, cycleIds, now, day })
-  let pool = preserveSourceOrder ? stock : shuffle(stock)
-  if (!preserveSourceOrder) {
-    pool.sort((a, b) => {
-      if (source.type === 'review') {
-        const dueDifference = (srs[a.id]?.due ?? Infinity) - (srs[b.id]?.due ?? Infinity)
-        if (dueDifference !== 0) return dueDifference
-      }
-      const ra = vocabularyRank(a, srs, now, day)
-      const rb = vocabularyRank(b, srs, now, day)
-      if (ra !== rb) return ra - rb
-      const aScore = vocabularyReviewMetrics(srs[a.id], { now, day }).score
-      const bScore = vocabularyReviewMetrics(srs[b.id], { now, day }).score
-      if (aScore !== bScore) return aScore - bScore
-      const ba = srs[a.id]?.box ?? 0
-      const bb = srs[b.id]?.box ?? 0
-      return ba - bb // box が低い（苦手）ほど先
-    })
+  if (source.type === 'deck' && source.preserveOrder === true) {
+    return size ? stock.slice(0, size) : stock
   }
+  // それ以外は全教材共通の出題順（studyOrder.js）：今日の候補（復習日を迎えた語・未学習／未回答の語）
+  // → 今日「まだ」「不正解」になった語 → そのほか。同じ段の中は点数の低い順。
+  const keys = new Map(stock.map((word) => [
+    word.id,
+    studyOrderKey(srs[word.id], { purpose, now, day }),
+  ]))
+  const pool = shuffle(stock).sort((a, b) => {
+    if (source.type === 'review') {
+      const dueDifference = (srs[a.id]?.due ?? Infinity) - (srs[b.id]?.due ?? Infinity)
+      if (dueDifference !== 0) return dueDifference
+    }
+    return compareStudyOrderKeys(keys.get(a.id), keys.get(b.id))
+  })
   if (!isAutomaticVocabularySource(source)) return size ? pool.slice(0, size) : pool
 
   // 出題バランスの「未修だけ」は学んだ語を、「復習だけ」はまだ学んでいない語を、
@@ -539,11 +519,11 @@ export function buildDeck(
         hasVocabularyReviewEvidence(srs[word.id]) ? sides.review : sides.fresh
       ))
 
-  // 通常セッションは「今日の候補」から組む。暗記は、学習済みで期限前の語と
-  // その日に「まだ」と答えた語を、今日の候補があるうちは自動では混ぜない。
-  const candidates = purpose === 'study'
-    ? autoAppearing(mixPool, srs, now, day)
-    : mixPool
+  // 通常セッションは「今日の候補」（出題順の0・1段）から組む。今日「まだ」「不正解」になった語と、
+  // 覚えた・正解で復習日前の語は、今日の候補があるうちは暗記にもテストにも混ぜない。
+  const candidates = mixPool.filter((word) => (
+    keys.get(word.id).stage <= STUDY_ORDER_STAGE.fresh
+  ))
   if (!size) {
     // 数えるとき（結果画面の「次へ進む」など）は、今日の候補のあとに続けて出せる残りも含める。
     const candidateIds = new Set(candidates.map((word) => word.id))
@@ -553,8 +533,8 @@ export function buildDeck(
   const deck = balancedAutomaticDeck(
     candidates, srs, day, size, purpose, cycleIds, freshShareOverride,
   )
-  // 今日の候補で足りない分は、同じ教材の残りを苦手な順（「まだ」と答えた語から）に続けて出す。
-  // 今日の候補を学び終えた日も、次の復習日を待たずに暗記をくり返せるようにするため。
+  // 今日の候補で足りない分は、同じ教材の残りを出題順（今日「まだ」「不正解」になった語を点数の低い順に、
+  // そのあと覚えた・正解の語）で続けて出す。今日の候補を学び終えた日も、次の復習日を待たずにくり返せる。
   if (deck.length < size) {
     const used = new Set([
       ...deck.map((word) => word.id),
@@ -697,22 +677,20 @@ function phraseCandidates(source) {
   return phrasesByKind(source.kind)
 }
 
-export function buildPhraseDeck(source, { srs = {}, size = SESSION_SIZE } = {}) {
-  const day = todayIndex()
+// purpose は study（暗記）か quiz（テスト）。出題順は全教材共通（studyOrder.js）。
+export function buildPhraseDeck(
+  source,
+  { srs = {}, size = SESSION_SIZE, purpose = 'study', now = Date.now() } = {},
+) {
+  const day = todayIndex(now)
   let pool = phraseCandidates(source)
   if (source.type === 'phraseList' && source.preserveOrder) {
     return size ? pool.slice(0, size) : pool
   }
-  pool = shuffle(pool)
   if (source.type === 'phraseDue') {
     pool = pool.filter((p) => srs[p.id] && srs[p.id].due <= day)
   }
-  pool.sort((a, b) => {
-    const ra = legacyRank(a, srs, day)
-    const rb = legacyRank(b, srs, day)
-    if (ra !== rb) return ra - rb
-    return (srs[a.id]?.box ?? 0) - (srs[b.id]?.box ?? 0)
-  })
+  pool = orderForStudy(pool, srs, { purpose, now, day })
   if (source.type === 'dragonVeinPhrase' && Number.isFinite(size) && size && pool.length > 0 && pool.length < size) {
     const original = [...pool]
     while (pool.length < size) pool.push(original[pool.length % original.length])

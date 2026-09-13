@@ -6,8 +6,8 @@ import {
   KANBUN_COLLECTIONS,
   kanbunDomainMeta,
   kanbunItems,
-  shuffleKanbun,
 } from '../data/kanbun-content.js'
+import { orderForStudy } from '../lib/studyOrder.js'
 import { KANBUN_LEVEL_BY_ID } from '../data/kanbun-meta.js'
 import { Button, Chip } from '../components/ui.jsx'
 import { KanbunText, KanbunHeadword } from '../components/KanbunFurigana.jsx'
@@ -79,12 +79,12 @@ export function KanbunStudyScreen() {
   const domain = KANBUN_COLLECTIONS[params.domain] ? params.domain : 'vocab'
   const meta = kanbunDomainMeta(domain)
   const revealAll = useStore((state) => state.settings.revealAnswers)
-  // size を指定しないときは設定した問題数まで絞る。
+  // size を指定しないときは設定した問題数まで絞る。一覧で選んだ順でなければ、いまの記録から全教材共通の出題順に並べる。
   const buildFor = (ids, size) => {
     const selected = kanbunItems(domain, ids)
     const items = params.preserveOrder && Array.isArray(ids)
       ? ids.map((id) => selected.find((item) => item.id === id)).filter(Boolean)
-      : shuffleKanbun(selected)
+      : orderForStudy(selected, useStore.getState()[meta.srsField], { purpose: 'study' })
     return size > 0 ? items.slice(0, size) : items
   }
   const [poolSize] = useState(() => kanbunItems(domain, params.ids).length)

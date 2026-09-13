@@ -14,6 +14,7 @@ import {
   useStudyAnswerLog,
 } from '../components/CardStudyControls.jsx'
 import { answeredSessionIndexes, growDeck, restartSessionCount } from '../lib/session.js'
+import { orderForStudy } from '../lib/studyOrder.js'
 import {
   nextUnansweredSessionIndex,
   QuestionSessionControls,
@@ -26,18 +27,15 @@ import {
   Lightbulb,
 } from '../components/Icons.jsx'
 
-// 渡された id 配列から学習デッキを作る（1回だけシャッフル）。
+// 渡された id 配列から学習デッキを作る。一覧で選んだ順（preserveOrder）でなければ、
+// いまの記録から全教材共通の出題順に並べる（「もう一度」のたびに並べ直す）。
 function buildKotenDeck(ids, seed, size = 0, preserveOrder = false) {
   const words = (ids ?? []).map(getKoten).filter(Boolean)
-  if (!preserveOrder) {
-    // seed を変えるたびに並べ替え（「もう一度」用）。Math.random でよい。
-    for (let i = words.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1))
-      ;[words[i], words[j]] = [words[j], words[i]]
-    }
-  }
+  const ordered = preserveOrder
+    ? words
+    : orderForStudy(words, useStore.getState().kotenSrs, { purpose: 'study' })
   // size=0 は「絞り込みなし」。
-  return size > 0 ? words.slice(0, size) : words
+  return size > 0 ? ordered.slice(0, size) : ordered
 }
 
 export function KotenStudyScreen() {

@@ -1,3 +1,5 @@
+import { orderForStudy } from '../lib/studyOrder.js'
+
 export const KANBUN_KUNDOKU_LEVELS = Object.freeze([
   { id: 'middle', label: 'レ点・一二点', color: '#0f766e' },
   { id: 'basic', label: '上下点・置き字', color: '#0369a1' },
@@ -303,7 +305,7 @@ export const getKanbunKundokuExercise = (id) => KANBUN_KUNDOKU_BY_ID[id]
 
 export function pickKanbunKundokuExercises(
   ids,
-  { size = 10, rng = Math.random, preserveOrder = false } = {},
+  { size = 10, rng = Math.random, preserveOrder = false, srs = {}, now = Date.now() } = {},
 ) {
   const requested = Array.isArray(ids) && ids.length
     ? new Set(ids)
@@ -311,17 +313,14 @@ export function pickKanbunKundokuExercises(
   const candidates = KANBUN_KUNDOKU_EXERCISES.filter(
     (item) => !requested || requested.has(item.id),
   )
-  const shuffled = preserveOrder && Array.isArray(ids)
-    ? ids.map((id) => candidates.find((item) => item.id === id)).filter(Boolean)
-    : [...candidates]
-  if (preserveOrder) {
-    return shuffled.slice(0, Math.min(Math.max(0, Number(size) || 10), shuffled.length))
-  }
-  for (let index = shuffled.length - 1; index > 0; index -= 1) {
-    const target = Math.floor(rng() * (index + 1))
-    ;[shuffled[index], shuffled[target]] = [shuffled[target], shuffled[index]]
-  }
-  return shuffled.slice(0, Math.min(Math.max(0, Number(size) || 10), shuffled.length))
+  // 一覧で選んだ順ならそのまま。それ以外は全教材共通の出題順（lib/studyOrder.js）で、
+  // 返り点ドリルはテストだけの教材なので、まだ答えていない問題を先に出す。
+  const ordered = preserveOrder
+    ? Array.isArray(ids)
+      ? ids.map((id) => candidates.find((item) => item.id === id)).filter(Boolean)
+      : [...candidates]
+    : orderForStudy(candidates, srs, { purpose: 'quiz', now, rng })
+  return ordered.slice(0, Math.min(Math.max(0, Number(size) || 10), ordered.length))
 }
 
 export function isCorrectKanbunKundokuOrder(exercise, selectedIds) {

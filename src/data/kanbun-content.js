@@ -3,6 +3,7 @@ import { KANBUN_GRAMMAR, getKanbunGrammar } from './kanbun-grammar.js'
 import { KANBUN_VOCAB, getKanbunVocab } from './kanbun-vocab.js'
 import { KANBUN_DOMAIN_META } from './kanbun-meta.js'
 import { QUIZ_CHOICE_COUNT } from '../lib/quizChoices.js'
+import { orderForStudy } from '../lib/studyOrder.js'
 
 export const KANBUN_COLLECTIONS = Object.freeze({
   vocab: KANBUN_VOCAB,
@@ -120,9 +121,10 @@ export function makeKanbunQuestion(domain, item, rng = Math.random) {
 export function pickKanbunQuestions(
   domain,
   ids,
-  { size = 12, rng = Math.random } = {},
+  { size = 12, rng = Math.random, srs = {}, now = Date.now() } = {},
 ) {
-  const candidates = shuffleKanbun(kanbunItems(domain, ids), rng)
+  // 出題順は全教材共通（lib/studyOrder.js）。記録は項目ごとなので、項目を並べてから問題にする。
+  const candidates = orderForStudy(kanbunItems(domain, ids), srs, { purpose: 'quiz', now, rng })
   const requestedSize = Math.max(0, Math.min(Number(size) || 12, candidates.length))
   return candidates.slice(0, requestedSize).map((item) => makeKanbunQuestion(domain, item, rng))
 }

@@ -15,6 +15,7 @@ import {
 import { KotenText } from '../components/KotenFurigana.jsx'
 import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
 import { answeredSessionIndexes, growDeck, restartSessionCount } from '../lib/session.js'
+import { orderForStudy } from '../lib/studyOrder.js'
 import {
   CardStudyFooter,
   CardSwipeRegion,
@@ -32,20 +33,13 @@ import {
 
 const SESSION_SIZE = 20
 
-function shuffle(items) {
-  const result = [...items]
-  for (let index = result.length - 1; index > 0; index--) {
-    const picked = Math.floor(Math.random() * (index + 1))
-    ;[result[index], result[picked]] = [result[picked], result[index]]
-  }
-  return result
-}
-
-// size=0 は「絞り込みなし」。
+// size=0 は「絞り込みなし」。一覧で選んだ順でなければ、いまの記録から全教材共通の出題順に並べる。
 function buildDeck(ids, size = SESSION_SIZE, preserveOrder = false) {
   const unique = [...new Set(ids ?? [])]
   const selected = unique.map(getKotenCulture).filter(Boolean)
-  const items = preserveOrder ? selected : shuffle(selected)
+  const items = preserveOrder
+    ? selected
+    : orderForStudy(selected, useStore.getState().kotenCultureSrs, { purpose: 'study' })
   return size > 0 ? items.slice(0, size) : items
 }
 

@@ -74,9 +74,14 @@ export function KanbunQuizScreen() {
   const reviseReview = useStore((state) => state.reviseReview)
   const domain = KANBUN_COLLECTIONS[params.domain] ? params.domain : 'vocab'
   const meta = kanbunDomainMeta(domain)
-  const [poolSize] = useState(() => pickKanbunQuestions(domain, params.ids, { size: ALL_QUESTIONS }).length)
+  // 出題順は、いまの記録から全教材共通の決まりで並べる（lib/studyOrder.js）。
+  const pickQuestions = (ids, size) => pickKanbunQuestions(domain, ids, {
+    size,
+    srs: useStore.getState()[meta.srsField],
+  })
+  const [poolSize] = useState(() => pickQuestions(params.ids, ALL_QUESTIONS).length)
   const sessionSize = useSessionSize(poolSize || Infinity)
-  const [deck, setDeck] = useState(() => pickKanbunQuestions(domain, params.ids, { size: params.size ?? sessionSize }))
+  const [deck, setDeck] = useState(() => pickQuestions(params.ids, params.size ?? sessionSize))
   const [index, setIndex] = useState(0)
   const {
     value: selected,
@@ -116,7 +121,7 @@ export function KanbunQuizScreen() {
   const restart = (ids = params.ids) => {
     carried.reset()
     receipts.clear()
-    setDeck(pickKanbunQuestions(domain, ids, { size: deck.length || sessionSize }))
+    setDeck(pickQuestions(ids, deck.length || sessionSize))
     setIndex(0)
     clearSelections()
     setCorrectCount(0)
@@ -232,14 +237,14 @@ export function KanbunQuizScreen() {
             onResize={(size, { restart }) => {
               if (restart) {
                 // 答えた問題の記録と結果は残したまま、まだ答えていない問題を1問目として数え直す。
-                const next = restartSessionCount(deck, answeredIndexes, index, pickKanbunQuestions(domain, params.ids, { size: size + deck.length }), size)
+                const next = restartSessionCount(deck, answeredIndexes, index, pickQuestions(params.ids, size + deck.length), size)
                 carried.carry(next.answeredItems)
                 receipts.clear()
                 setDeck(next.deck)
                 clearSelections()
                 setIndex(0)
               } else {
-                setDeck((current) => growDeck(current, Math.max(index, answeredIndexes.at(-1) ?? 0) + 1, pickKanbunQuestions(domain, params.ids, { size: size }), size))
+                setDeck((current) => growDeck(current, Math.max(index, answeredIndexes.at(-1) ?? 0) + 1, pickQuestions(params.ids, size), size))
               }
             }}
           />

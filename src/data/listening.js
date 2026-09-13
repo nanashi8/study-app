@@ -4,6 +4,7 @@
 // 級別の場面・題材・放送回数をそろえた問題。
 
 import { limitQuizChoices } from '../lib/quizChoices.js'
+import { pickInStudyOrder, rankItemsForStudy } from '../lib/studyOrder.js'
 
 export const LISTENING_TYPE_META = Object.freeze({
   response: Object.freeze({ label: '応答選択', icon: '💬', spokenChoices: true }),
@@ -358,17 +359,20 @@ export function shuffledListeningChoices(item, rng = Math.random) {
 
 export function buildListeningDeck(
   source = { type: 'level', levelId: '5' },
-  { size = 10, rng = Math.random } = {},
+  { size = 10, rng = Math.random, srs = {}, now = Date.now() } = {},
 ) {
+  // 出題順は全教材共通（lib/studyOrder.js）。リスニングはテストだけの教材なので、まだ答えていない問題を先に出す。
+  const rank = (items) => rankItemsForStudy(items, srs, { purpose: 'quiz', now, rng })
   if (source.type === 'listeningList') {
     const reviewItems = (source.ids ?? []).map(getListeningItem).filter(Boolean)
-    const deck = source.preserveOrder ? reviewItems : shuffled(reviewItems, rng)
+    const deck = source.preserveOrder ? reviewItems : rank(reviewItems).map(({ item }) => item)
     return size ? deck.slice(0, size) : deck
   }
 
   const levelId = source.levelId ?? '5'
   const candidates = listeningByLevel(levelId)
-  if (!size || size >= candidates.length) return shuffled(candidates, rng)
+  const ranked = rank(candidates)
+  if (!size || size >= candidates.length) return ranked.map(({ item }) => item)
 
   // 10問版でも、級の出題形式が偶然欠落しないよう、級の構成比を縮約して層化抽出する。
   const profile = LISTENING_PROFILES[levelId]
@@ -392,8 +396,7 @@ export function buildListeningDeck(
     allocated += 1
   }
 
-  const deck = targets.flatMap(([type]) =>
-    shuffled(candidates.filter((item) => item.type === type), rng).slice(0, quotas[type]),
-  )
-  return shuffled(deck, rng)
+  // 形式の配分は出題順の同じ段の中で守る。配分をそろえるために、まだ答えていない問題を残したまま
+  // 今日間違えた問題を先に出すことはしない。
+  return pickInStudyOrder(ranked, size, { groupOf: (item) => item.type, quotas })
 }
