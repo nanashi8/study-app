@@ -66,6 +66,10 @@ test('日本語に定着したカタカナ語は、意味とのつながりや�
   assert.equal(snap.kana, 'スナップ')
   assert.match(snap.note, /snapshot/)
   assert.match(loanwordHintFor(getWord('tip')).note, /chip/)
+  // 同じカタカナになる別の英単語は、どちらの語からも取り違えを示す。
+  assert.match(loanwordHintFor(getWord('drag')).note, /drug/)
+  assert.match(loanwordHintFor(getWord('drug')).note, /drag/)
+  assert.equal(loanwordHintFor(getWord('strike')).kana, 'ストライク')
   // 同じつづりの別の語は代表義に混ぜず、ほかの意味の「別の語」として出す。
   const bark = getWord('bark')
   assert.equal(bark.meanings.includes('樹皮'), false)
