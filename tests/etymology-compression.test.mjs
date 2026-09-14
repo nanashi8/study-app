@@ -611,7 +611,7 @@ test('語の成り立ちは全語を確認記録つきで出す', () => {
     ...totals,
     [story.origin]: (totals[story.origin] ?? 0) + 1,
   }), {})
-  assert.deepEqual(kinds, { 'reviewed-text': 8515, 'sealed-note': 336 })
+  assert.deepEqual(kinds, { 'reviewed-text': 8524, 'sealed-note': 327 })
   for (const story of ETYMOLOGY_WORD_STORIES) {
     // January / Ms. のように大文字で始まる見出し語もあるため、引くときは小文字にそろえる。
     const word = byHead.get(story.head.toLowerCase())
@@ -637,6 +637,10 @@ test('語の成り立ちは全語を確認記録つきで出す', () => {
   // 意味どうしのつながりを本文で結ぶ（snap はスナップ写真まで）。別の語は分けて書く（post は郵便と柱）。
   assert.match(etymologyStoryForWord(byHead.get('snap')).note, /snapshot/)
   assert.match(etymologyStoryForWord(byHead.get('post')).note, /イタリア語 posta/)
+  // 並べた意味は1つずつ広がり方を書く（change の「小銭」、strike の「ストライキ」）。
+  assert.match(etymologyStoryForWord(byHead.get('change')).note, /交換して受け取る細かいお金→「小銭」/)
+  assert.match(etymologyStoryForWord(byHead.get('strike')).note, /帆を下ろして/)
+  assert.doesNotMatch(etymologyStoryForWord(byHead.get('daylight')).note, /両系統/)
 })
 
 test('ラテン語・ギリシャ語の接尾辞カードは語尾と別語源の除外を守る', () => {

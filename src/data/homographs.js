@@ -71,6 +71,7 @@ export const HOMOGRAPH_SEPARATE_SENSES = Object.freeze({
   lean: Object.freeze(['やせた']),
   flight: Object.freeze(['逃走']),
   light: Object.freeze(['軽い']),
+  lighten: Object.freeze(['軽くする']),
   bit: Object.freeze(['ビット', '情報']),
   clip: Object.freeze(['留める']),
   tip: Object.freeze(['先端']),
