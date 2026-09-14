@@ -74,6 +74,10 @@ test('日本語に定着したカタカナ語は、意味とのつながりや�
   const bark = getWord('bark')
   assert.equal(bark.meanings.includes('樹皮'), false)
   assert.ok(bark.otherSenses.some((sense) => sense.separateWord && sense.meaning === '樹皮'))
+  // 分けた語を部品にする派生語も合わせる（「光」の lighten と「軽い」の lighten）。
+  const lighten = getWord('lighten')
+  assert.equal(lighten.meanings.some((meaning) => meaning.includes('軽く')), false)
+  assert.ok(lighten.otherSenses.some((sense) => sense.separateWord && sense.meaning.startsWith('軽くする')))
 })
 
 test('自作単語には辞書の台帳を当てない', () => {

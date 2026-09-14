@@ -767,4 +767,12 @@ export const WORD_SENSES = Object.freeze({
       example: Object.freeze({ en: 'The tip of my pencil broke.', ja: '鉛筆の先が折れた。' }),
     }),
   ]),
+  lighten: Object.freeze([
+    Object.freeze({
+      pos: '動', level: 'pre2', meaning: '軽くする・(負担を)和らげる',
+      separateWord: true,
+      note: '「軽い」の light(古英語 lēoht=重さが軽い)に -en がついた語。明るくする lighten(「光」の light から)とは別の語。',
+      example: Object.freeze({ en: 'Sharing the work will lighten your load.', ja: '仕事を分け合えば、あなたの負担は軽くなる。' }),
+    }),
+  ]),
 })
