@@ -5,7 +5,7 @@ const RAW = [
   // 動詞（抑制・誘導・追放）
   ['oversee', '動', '1', '監督する・統括する', 'She oversees the whole project.', '彼女は事業全体を統括する。', 'over(上から)+see(見る)。', { syn: [{ w: 'supervise', m: '監督する' }, { w: 'manage', m: '管理する' }], field: '動作・行為' }],
   ['withhold', '動', '1', '差し控える・保留する', 'They withheld the information.', '彼らは情報を伏せた。', 'with(後ろへ)+hold(保つ)。', { syn: [{ w: 'hold back', m: '差し控える' }], ant: [{ w: 'release', m: '公開する' }], field: '動作・行為' }],
-  ['refrain', '動', '1', '差し控える・慎む・繰り返し(名)', 'Please refrain from smoking.', '喫煙はご遠慮ください。', 'ラテン re+frenare(手綱で抑える)。', { syn: [{ w: 'abstain', m: '控える' }, { w: 'avoid', m: '避ける' }], ant: [{ w: 'indulge', m: 'ふける' }], field: '動作・行為' }],
+  ['refrain', '動', '1', '差し控える・慎む', 'Please refrain from smoking.', '喫煙はご遠慮ください。', 'ラテン re+frenare(手綱で抑える)。', { syn: [{ w: 'abstain', m: '控える' }, { w: 'avoid', m: '避ける' }], ant: [{ w: 'indulge', m: 'ふける' }], field: '動作・行為' }],
   ['succumb', '動', '1', '屈する・(病に)倒れる', 'He succumbed to temptation.', '彼は誘惑に屈した。', 'ラテン sub+cumbere(横たわる)。', { syn: [{ w: 'yield', m: '屈する' }, { w: 'give in', m: '負ける' }], ant: [{ w: 'resist', m: '抵抗する' }], field: '動作・行為' }],
   ['heed', '動', '1', '心に留める・注意を払う', 'They did not heed the warning.', '彼らは警告に耳を貸さなかった。', '古英語 hēdan(世話する)。', { syn: [{ w: 'mind', m: '気をつける' }, { w: 'pay attention to', m: '注意する' }], ant: [{ w: 'ignore', m: '無視する' }], field: '動作・行為' }],
   ['dissuade', '動', '1', '思いとどまらせる', 'She dissuaded him from leaving.', '彼女は彼が去るのを思いとどまらせた。', 'ラテン dis+suadere(勧める)。', { syn: [{ w: 'discourage', m: '思いとどまらせる' }], ant: [{ w: 'persuade', m: '説得する' }], field: '動作・行為' }],

@@ -16,6 +16,7 @@ import {
   VOCAB_FIELD_GROUPS,
   VOCAB_FIELDS,
   VOCAB_POS,
+  etymologyStoryForWord,
   getWord,
   vocabFieldFor,
   wordsByField,
@@ -334,6 +335,25 @@ const englishSentenceCount = (text) => {
 // 長文辞書語（reading-words.js）は本文の一文と本文の和訳をそのまま引くので、
 // 本文の和訳が2文に分かれていても和訳の一文検査からは外す（英文は一文）。
 const PASSAGE_DICTIONARY_IDS = new Set(PASSAGE_DICTIONARY_WORD_IDS)
+// 語の成り立ちの本文から「別の語」と書かれた意味を拾う（「樹皮」の bark は…別の語、など）。
+// 何が別の語かは人が本文に書くので、ここでは本文と意味欄の食い違いだけを見る。
+const meaningCore = (text) => String(text ?? '').replace(/[（(][^）)]*[）)]/gu, '').trim()
+const separateGlossesInStory = (note) => {
+  const found = []
+  for (const sentence of String(note ?? '').split('。')) {
+    if (!sentence.includes('別の語')) continue
+    const lead = sentence.match(/^[^「]*?((?:「[^」]+」)+)(?:の(?:意味の)?\s*[A-Za-z][A-Za-z'.-]*\s*)?は/u)
+    if (!lead) continue
+    for (const quoted of lead[1].matchAll(/「([^」]+)」/gu)) {
+      for (const gloss of quoted[1].split('・')) {
+        const core = meaningCore(gloss)
+        if (core) found.push(core)
+      }
+    }
+  }
+  return found
+}
+
 const auditWordExampleSentence = (label, example, { quotesPassage = false } = {}) => {
   const en = String(example?.en ?? '')
   const ja = String(example?.ja ?? '')
@@ -413,6 +433,16 @@ for (const w of ALL_WORDS) {
       errors.push(
         `${at}: 代表義の欄に別語の意味「${gloss}」が入っている → word-senses.js へ separateWord: true で移す`,
       )
+    }
+  }
+  // 語の成り立ちが「別の語」と書いた意味を代表義の欄にも並べると、つながらない意味の羅列になる
+  // （bark の「樹皮」、tap の「蛇口」など。2026-09-14 に 28 語見つかった）。
+  {
+    const shown = new Set((w.meanings ?? []).map(meaningCore))
+    for (const gloss of separateGlossesInStory(etymologyStoryForWord(w)?.note)) {
+      if (shown.has(gloss)) {
+        errors.push(`${at}: 語の成り立ちが別の語とする「${gloss}」が代表義の欄にある → word-senses.js へ separateWord: true で移す`)
+      }
     }
   }
   // 例文はその語の使い方を見せるためにあるので、見出し語そのものが現れていないと

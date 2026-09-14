@@ -29,6 +29,13 @@ const renote = (text, fingerprint) => Object.freeze({
   reviewedBy: 'manual-etymology-audit',
   fingerprint,
 })
+// 2026-09-14 の点検: 同じつづりの別の語を分け、意味どうしのつながりが分かるように書き直したもの。
+const relink = (text, fingerprint) => Object.freeze({
+  note: text,
+  reviewedAt: '2026-09-14',
+  reviewedBy: 'manual-etymology-audit',
+  fingerprint,
+})
 
 const HAND_WRITTEN_WORD_NOTES = Object.freeze({
   // ── 語根では表せない「語そのものの歴史」。人名・神名・造語の年など。（39語）──
@@ -219,7 +226,7 @@ const HAND_WRITTEN_WORD_NOTES = Object.freeze({
   thirty: note('古英語 þrītig（þrīe「3」＋ -tig「10のまとまり」）から。', '6b1ea645e39965353f4913fcae958a8a2c820ae049914d0cdbe30b85bc633043'),
   timer: renote('time（時間）＋ -er（〜するもの）から。time は古英語 tīma から。', '88527ca6eda60ec8b2bf0ce97ada44e51a0374770e276d7c4b5e074ffdeae471'),
   timetable: renote('time（時間）＋ table（表）から。time は古英語 tīma から。table はラテン語 tabula「板」から。', '654ceb752c80e5e3f3d604264ef180c8bea3d97337545a883112bfef8dd335de'),
-  tip: note('中英語 tip「先端」から。心づけの tip は別の語史を持つ。', 'fbc176ce4ccaa752c8ad255d4ba46544c06dbfbdd5220cc08ed3191a66d754a5'),
+  tip: relink('17世紀の隠語 tip「（そっと）手渡す」から（それより前の由来ははっきりしない）。こっそり渡す役立つ情報→「助言・こつ」、そっと渡すお金→「チップ・心づけ」。「先端」の tip は中世オランダ語 tip「先端」から来た別の語。', 'c81bdff07edac65815ff83814bab82617d5ccc49ca1211688b0fa542c7b56814'),
   track: note('中期オランダ語 trak「引いた跡」から。', '760e785bcb8d34ecb6cda164430c8d5fba31cb8d8a143aab64cb82e574604581'),
   training: note('train（訓練する）＋ -ing から。train はラテン語 trahere「引く」にさかのぼる。', '5e6c213c2753279031689c768a86335e6ae4dd89ecac9018fe608ba5e6a9ebe4'),
   transaction: note('ラテン語 trans（越えて）＋ agere（行う）から。取り引きをやり遂げること。', '8001f4dbc4a0bd0fb7de015b59b459591e721f3452974ad77eb1a3ae0246641b'),

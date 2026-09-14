@@ -61,6 +61,17 @@ test('カタカナ語は、意味欄に同じ表記があり注意書きもな�
   }
 })
 
+test('日本語に定着したカタカナ語は、意味とのつながりや別の語との区別を添えて出す', () => {
+  const snap = loanwordHintFor(getWord('snap'))
+  assert.equal(snap.kana, 'スナップ')
+  assert.match(snap.note, /snapshot/)
+  assert.match(loanwordHintFor(getWord('tip')).note, /chip/)
+  // 同じつづりの別の語は代表義に混ぜず、ほかの意味の「別の語」として出す。
+  const bark = getWord('bark')
+  assert.equal(bark.meanings.includes('樹皮'), false)
+  assert.ok(bark.otherSenses.some((sense) => sense.separateWord && sense.meaning === '樹皮'))
+})
+
 test('自作単語には辞書の台帳を当てない', () => {
   const custom = { id: 'tension', word: 'tension', custom: true, meanings: ['緊張'], synonyms: [] }
   assert.deepEqual(wordRelationsFor(custom), { synonyms: [], idioms: [], confusables: [], loanword: null })

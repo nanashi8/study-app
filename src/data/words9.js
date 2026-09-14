@@ -54,7 +54,7 @@ const RAW = [
   ["full","形","4","いっぱいの・満腹の","The box is full of toys.","箱はおもちゃでいっぱいだ。","古英語 full→「いっぱいの」。",{"ant":[{"w":"empty","m":"空の"}],"field":"性質・状態"}],
   ["empty","形","4","空の","The glass is empty.","コップは空だ。","古英語 ǣmettig(暇な・空の)→「空の」。",{"syn":[{"w":"vacant","m":"空いている"}],"ant":[{"w":"full","m":"いっぱいの"}],"field":"自然"}],
   ["heavy","形","4","重い","This bag is too heavy.","このかばんは重すぎる。","古英語 hefig(重い)→「重い」。heave と同源。",{"ant":[{"w":"light","m":"軽い"}],"field":"性質・状態"}],
-  ["light","名","4","光・明かり・軽い(形)・明るい(形)","Please turn on the light.","明かりをつけてください。","古英語 lēoht（「光」と「軽い」の両系統）→「光・軽い」。",{"ant":[{"w":"heavy","m":"重い"},{"w":"dark","m":"暗い"}],"usage":"重さは↔heavy、明るさは↔dark。「軽い・明るい」の両義。","field":"一般"}],
+  ["light","名","4","光・明かり","Please turn on the light.","明かりをつけてください。","古英語 lēoht（「光」と「軽い」の両系統）→「光・軽い」。",{"ant":[{"w":"dark","m":"暗い"}],"usage":"明るさの light は↔dark。重さの「軽い」は別の語の light で、↔heavy。","field":"一般"}],
   ["clean","形","4","清潔な・きれいにする","Keep your room clean.","部屋をきれいに保ちなさい。","古英語 clǣne(汚れのない)→「清潔な」。",{"syn":[{"w":"neat","m":"きちんとした"}],"ant":[{"w":"dirty","m":"汚い"}],"field":"性質・状態"}],
   ["dirty","形","4","汚い","My shoes are dirty.","私の靴は汚れている。","dirt(古ノルド drit=汚物)+y→「汚い」。",{"ant":[{"w":"clean","m":"清潔な"}],"field":"性質・状態"}],
   ["dark","形","4","暗い・濃い","It gets dark early in winter.","冬は早く暗くなる。","古英語 deorc→「暗い」。",{"ant":[{"w":"bright","m":"明るい"},{"w":"light","m":"明るい"}],"field":"性質・状態"}],
