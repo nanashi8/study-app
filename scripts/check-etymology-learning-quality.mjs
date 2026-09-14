@@ -44,6 +44,14 @@ const publicAssociationIsExplicit = (word, rootId) =>
 
 const FORBIDDEN_PUBLIC_COPY = /ことばの歴史|由来ストーリー単独|学習量をまとめたセット|語どうしが同じ語根の仲間や関連語という意味ではありません/
 
+// 語の成り立ちを英語の語で止めないための型（2026-09-14、deduction が deduce で止まっていた報告から）。
+// 英単語を部品にした説明（deduce「推論する」＋ -tion …）
+const STARTS_WITH_ENGLISH_PARTS = /^[A-Za-z][A-Za-z'.-]*(?:「[^」]*」|（[^）]*）)?\s*＋/u
+// 言語名に続けて元の語を書いている（ラテン語 dēdūcere、古英語 bēon など）
+const NAMES_SOURCE_WORD = /(?:ラテン|ギリシャ|フランス|英|ノルド|ドイツ|オランダ|イタリア|スペイン|ポルトガル|アラビア|ペルシャ|ヘブライ|サンスクリット|ケルト|ゲール|ゲルマン|北欧|スラブ|チェコ|ロシア|トルコ|中国|日本|マレー|アフリカーンス|イディッシュ)[^\s「」（）。、]{0,8}?語[^「」。、]{0,12}?\s*[A-Za-zÀ-ɏͰ-Ͽἀ-῿Ḁ-ỿ*þðæǣʿ]/u
+// 由来がたどれないことを明記した説明
+const UNTRACEABLE_ORIGIN = /はっきりしない|分かっていない|不明|音をまね|声をまね|系の語とされる|の名から|にちなむ|頭字語|頭文字|商標/u
+
 export function auditEtymologyLearningQuality() {
   const errors = []
   const fail = (message) => errors.push(message)
@@ -159,6 +167,18 @@ export function auditEtymologyLearningQuality() {
     if (!word) fail(`${at}: 収録していない単語`)
     if (!story.note?.trim()) fail(`${at}: 説明が空`)
     if (/確かな語源分解を収録していないため/.test(story.note ?? '')) fail(`${at}: 定型文のまま公開している`)
+    // 部品の英単語にも、ラテン語などの元の語までさかのぼった由来を書く。
+    const storyNote = story.note ?? ''
+    if (/(?:ラテン|ギリシャ|アラビア|イタリア|スペイン|ドイツ|オランダ|フランス)(?![語系人])[\s(（]/u.test(storyNote)) {
+      fail(`${at}: 言語名を略している`)
+    }
+    if (/[ぁ-んァ-ヶ一-龠ー]\([a-z]+(?:=[a-z]+)?\)/u.test(storyNote)) fail(`${at}: 語の断片だけで元の語を示していない`)
+    if (/と同(?:源|系|根)[。、]/u.test(storyNote)) fail(`${at}: 「〜と同じ語源」と書いていない`)
+    if (
+      STARTS_WITH_ENGLISH_PARTS.test(storyNote) &&
+      !NAMES_SOURCE_WORD.test(storyNote) &&
+      !UNTRACEABLE_ORIGIN.test(storyNote)
+    ) fail(`${at}: 英語の語で説明が止まり、その語の由来を書いていない`)
     if (!/^\d{4}-\d{2}-\d{2}$/.test(story.evidence?.reviewedAt ?? '')) fail(`${at}: 手動確認日がない`)
     if (story.evidence?.reviewedBy !== 'manual-etymology-audit') fail(`${at}: 手動確認者の記録がない`)
     if (story.evidence?.sources?.length !== 2) fail(`${at}: 独立した照合先が2件ない`)
