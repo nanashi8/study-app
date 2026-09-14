@@ -611,7 +611,7 @@ test('語の成り立ちは全語を確認記録つきで出す', () => {
     ...totals,
     [story.origin]: (totals[story.origin] ?? 0) + 1,
   }), {})
-  assert.deepEqual(kinds, { 'reviewed-text': 8024, 'sealed-note': 827 })
+  assert.deepEqual(kinds, { 'reviewed-text': 8510, 'sealed-note': 341 })
   for (const story of ETYMOLOGY_WORD_STORIES) {
     // January / Ms. のように大文字で始まる見出し語もあるため、引くときは小文字にそろえる。
     const word = byHead.get(story.head.toLowerCase())
@@ -629,6 +629,11 @@ test('語の成り立ちは全語を確認記録つきで出す', () => {
   // 綴りが接頭辞の形と合わない語は、カードではなく台帳が受け持つ。
   assert.match(etymologyStoryForWord(byHead.get('enemy')).note, /amīcus/)
   assert.equal(etymologyCardsForWord(byHead.get('enemy')).length, 0)
+  // 英語の語を部品にした説明は、その語の由来までさかのぼる（deduction → deduce → ラテン語 dēdūcere）。
+  assert.match(etymologyStoryForWord(byHead.get('deduction')).note, /deduce はラテン語 dēdūcere/)
+  assert.match(etymologyStoryForWord(byHead.get('production')).note, /ラテン語 prōdūcere/)
+  // 同じつづりの別語を取り違えない（armed の arm は「腕」ではなく「武器」）。
+  assert.match(etymologyStoryForWord(byHead.get('armed')).note, /ラテン語 arma/)
 })
 
 test('ラテン語・ギリシャ語の接尾辞カードは語尾と別語源の除外を守る', () => {
