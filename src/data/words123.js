@@ -6,7 +6,7 @@ const RAW = [
   ['disagree', '動', 'pre2', '意見が合わない・反対する', 'Sometimes I disagree with my best friend about which movie to watch.', 'どの映画を見るかについて、私は親友と意見が合わないことがある。', 'dis(否定)+agree(同意する)。', { field: '社会' }],
   ['discuss', '動', 'pre2', '議論する・話し合う', 'The family discussed where to go for summer vacation over dinner.', '家族は夕食をとりながら、夏休みにどこへ行くかを話し合った。', 'ラテン discutere(打ち砕く)。', { field: '一般' }],
   ['education', '名', 'pre2', '教育', 'Her parents worked hard so that she could get a good education.', '両親は、彼女がよい教育を受けられるように懸命に働いた。', 'educate(教育する)+ -ion。', { field: '教育' }],
-  ['flight', '名', 'pre2', '飛行・便・逃走', 'Our flight to Sydney leaves at nine tonight.', '私たちが乗るシドニー行きの便は今夜9時に出発する。', 'fly(飛ぶ)+ -t。', { field: '交通' }],
+  ['flight', '名', 'pre2', '飛行・便', 'Our flight to Sydney leaves at nine tonight.', '私たちが乗るシドニー行きの便は今夜9時に出発する。', 'fly(飛ぶ)+ -t。', { field: '交通' }],
   ['forward', '副', 'pre2', '前へ・先へ・転送する', 'The teacher asked the winners to step forward and receive their medals.', '先生は優勝者たちに、前へ出てメダルを受け取るように言った。', 'fore(前)+ward(方向)。', { field: '一般' }],
   ['gesture', '名', 'pre2', '身ぶり・しぐさ', "Since Tom couldn't speak Italian, he used gestures to order food.", 'トムはイタリア語が話せなかったので、身ぶりで料理を注文した。', 'ラテン gerere(行う)。', { field: '社会' }],
   ['global', '形', 'pre2', '世界的な・全体の', 'Plastic waste in the ocean has become a global problem.', '海のプラスチックごみは世界的な問題になっている。', 'globe(地球)+ -al。', { field: '社会' }],

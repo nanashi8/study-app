@@ -4,7 +4,7 @@ import { expandCompact } from './compact.js'
 const RAW = [
   // ── 月 ──
   ['January', '名', '5', '1月', 'My birthday is in January.', '私の誕生日は1月だ。', 'ローマ神 Janus(門の神)から。', { field: '一般' }],
-  ['March', '名', '5', '3月・行進する', 'Spring vacation starts in March.', '春休みは3月に始まる。', 'ローマ神 Mars(軍神)から。', { field: '一般' }],
+  ['March', '名', '5', '3月', 'Spring vacation starts in March.', '春休みは3月に始まる。', 'ローマ神 Mars(軍神)から。', { field: '一般' }],
   ['May', '名', '5', '5月', 'We have a long holiday in May.', '5月には長い休みがある。', 'ローマ女神 Maia から。', { field: '一般' }],
   ['June', '名', '5', '6月', 'It rains a lot in June.', '6月は雨がたくさん降る。', 'ローマ女神 Juno から。', { field: '一般' }],
   ['July', '名', '5', '7月', 'Summer vacation begins in July.', '夏休みは7月に始まる。', 'ユリウス・カエサル(Julius)から。', { field: '一般' }],

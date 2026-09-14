@@ -65,7 +65,7 @@ const RAW = [
   ['sleeve', '名', '3', '袖', 'Roll up your sleeves before you wash your hands.', '手を洗う前に袖をまくりなさい。', '古英語 sliefe(袖)。', { syn: [{ w: 'cuff', m: '袖口' }], field: '一般' }],
   ['slice', '名', '3', '薄切り・一切れ・薄く切る', 'Emma put two slices of tomato on her sandwich.', 'エマはサンドイッチにトマトの薄切りを2枚のせた。', '古フランス esclice(かけら)。', { syn: [{ w: 'piece', m: '一片' }, { w: 'portion', m: '部分' }], field: '料理' }],
   ['slide', '動', '3', '滑る・滑り落ちる・滑り台', 'The children took turns sliding down the snowy hill.', '子どもたちは交代で雪の積もった丘を滑り降りた。', '古英語 slidan(滑る)。', { syn: [{ w: 'glide', m: '滑空する' }, { w: 'slip', m: '滑る' }], field: '一般' }],
-  ['slip', '動', '3', '滑る・こっそり動く・滑り・伝票', "Watch your step, or you'll slip on the ice.", '足元に気をつけないと、氷で滑るよ。', '中世低地ドイツ slippen(滑る)。', { syn: [{ w: 'slide', m: '滑る' }, { w: 'stumble', m: 'つまずく' }], fam: [{ w: 'slippery', m: '滑りやすい' }], field: '一般' }],
+  ['slip', '動', '3', '滑る・こっそり動く・滑り', "Watch your step, or you'll slip on the ice.", '足元に気をつけないと、氷で滑るよ。', '中世低地ドイツ slippen(滑る)。', { syn: [{ w: 'slide', m: '滑る' }, { w: 'stumble', m: 'つまずく' }], fam: [{ w: 'slippery', m: '滑りやすい' }], field: '一般' }],
 ]
 
 export const WORDS_MORE110 = RAW.map(expandCompact)

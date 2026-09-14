@@ -41,7 +41,7 @@ const RAW = [
   ['ward', '名', 'pre1', '病棟・行政区・保護する', "My aunt is a nurse in the children's ward of the city hospital.", 'おばは市立病院の小児病棟で看護師をしている。', '古英語 weard(見張り)。', { syn: [{ w: 'district', m: '区' }, { w: 'unit', m: '病棟' }], field: '医学' }],
   ['wardrobe', '名', '2', '衣装だんす・衣装一式', 'Yuki hung her school uniform in the wardrobe.', '由紀は制服を衣装だんすに掛けた。', '古フランス warder(守る)+robe(衣服)。', { syn: [{ w: 'closet', m: 'クローゼット' }, { w: 'attire', m: '衣装' }], field: '一般' }],
   ['wasp', '名', '2', 'スズメバチ・ハチ', 'A wasp flew into the classroom, and the students started screaming.', '教室にスズメバチが飛び込んできて、生徒たちは悲鳴を上げ始めた。', '古英語 wæsp(ハチ)。', { syn: [{ w: 'hornet', m: 'スズメバチ' }, { w: 'bee', m: 'ミツバチ' }], field: '科学' }],
-  ['wax', '名', '2', 'ろう・ワックス・(月が)満ちる', 'A drop of hot wax from the candle fell on my hand.', 'ろうそくから熱いろうが一滴、私の手に垂れた。', '古英語 weax(ろう)。', { syn: [{ w: 'polish', m: 'つや出し剤' }], field: '一般' }],
+  ['wax', '名', '2', 'ろう・ワックス', 'A drop of hot wax from the candle fell on my hand.', 'ろうそくから熱いろうが一滴、私の手に垂れた。', '古英語 weax(ろう)。', { syn: [{ w: 'polish', m: 'つや出し剤' }], field: '一般' }],
   ['weed', '名', '2', '雑草・(雑草を)取り除く', 'We spent Saturday morning pulling weeds in the school garden.', '私たちは土曜日の午前中、学校の花壇で雑草を抜いて過ごした。', '古英語 weod(雑草)。', { syn: [{ w: 'plant', m: '草' }], ant: [{ w: 'crop', m: '作物' }], field: '農業' }],
   ['wheat', '名', '3', '小麦', 'Farmers in this area grow wheat and potatoes.', 'この地域の農家は小麦とジャガイモを育てている。', '古英語 hwæte(小麦)。', { syn: [{ w: 'grain', m: '穀物' }, { w: 'corn', m: '穀物' }], field: '農業' }],
   ['whip', '動', '2', 'むち打つ・泡立てる・むち', 'Sara whipped the cream for the strawberry cake.', 'サラはイチゴのケーキ用に生クリームを泡立てた。', '中世低地ドイツ wippen(揺れる)。', { syn: [{ w: 'lash', m: 'むち打つ' }, { w: 'beat', m: '泡立てる' }], field: '料理' }],

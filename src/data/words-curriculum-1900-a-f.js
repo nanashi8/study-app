@@ -50,7 +50,7 @@ beverage	名	pre2	飲み物	Water is the most popular beverage here.	ここで�
 bid	動	2	値を付ける・入札する・試みる	Two companies bid for the construction contract.	2社がその建設契約に入札した。	古英語 biddan（求める・申し出る）に由来し、値を申し出る意味へ広がった。	ビジネス
 bike	名	5	自転車	I ride my bike to school.	私は自転車で学校へ通う。	bicycle を短くした口語形。	交通
 biological	形	pre2	生物学の・生物由来の	The team studied biological changes in the lake.	チームは湖の生物学的変化を調べた。	bio-（生命）＋-logical（学問に関する）から、「生命・生物に関する」を表す。	科学
-bit	名	4	少し・小片・情報の最小単位	Add a bit of salt to the sauce.	ソースに塩を少し加えてください。	bite（かむ）と同系で、もともと「かみ取った小片」を表した。情報単位は binary digit の短縮。	時間・数量
+bit	名	4	少し・小片	Add a bit of salt to the sauce.	ソースに塩を少し加えてください。	bite（かむ）と同系で、もともと「かみ取った小片」を表した。情報単位は binary digit の短縮。	時間・数量
 blossom	動	2	花が咲く・発展する	Cherry trees blossom in early spring.	桜の木は春の初めに花を咲かせる。	古英語 blostm（花）に由来し、名詞から「花が開く」という動詞にもなった。	自然
 blur	動	2	ぼやけさせる・曖昧にする	Rain blurred the view through the window.	雨で窓越しの景色がぼやけた。	起源が確定していない語だが、輪郭が不鮮明になる意味で近世英語から使われる。	性質・状態
 board	名	pre2	板・掲示板・委員会	The schedule is written on the board.	予定は掲示板に書かれている。	古英語 bord（板）から、板状の物や、同じ食卓を囲む人々の会議体へ意味が広がった。	一般
@@ -80,7 +80,7 @@ chip	名	2	小片・チップ・半導体素子	A tiny chip controls the device.
 Christmas	名	4	クリスマス	Our family has dinner together at Christmas.	私たちの家族はクリスマスに一緒に夕食をとる。	Christ（キリスト）＋Mass（ミサ）の複合語。	宗教
 classmate	名	5	同級生・クラスメート	My classmate lent me a notebook.	同級生が私にノートを貸してくれた。	class（学級）＋mate（仲間）の複合語。	家族・人
 click	動	pre2	クリックする・かちりと鳴る	Click the blue button to save the file.	ファイルを保存するには青いボタンをクリックしてください。	短い「かちっ」という音をまねた語から、マウス操作の意味へ広がった。	情報
-clip	動	3	切り取る・留める	She clipped the article from the newspaper.	彼女は新聞からその記事を切り抜いた。	古ノルド語 klippa（切る）につながる語で、切り取る意味と留め具の名詞用法を持つ。	動作・行為
+clip	動	3	切り取る・切り抜く	She clipped the article from the newspaper.	彼女は新聞からその記事を切り抜いた。	古ノルド語 klippa（切る）につながる語で、切り取る意味と留め具の名詞用法を持つ。	動作・行為
 colorful	形	3	色彩豊かな・多彩な	Colorful flags decorated the street.	色鮮やかな旗が通りを飾った。	color（色）＋-ful（〜に満ちた）から、「色に満ちた」を表す。	性質・状態
 comedy	名	3	喜劇・コメディー	The comedy made the whole audience laugh.	その喜劇は観客全員を笑わせた。	ギリシャ語 komoidia（祝祭の歌・喜劇）を経て、笑いを中心とする作品を表す。	芸術
 congestion	名	pre1	混雑・うっ血	The city introduced buses to reduce traffic congestion.	その市は交通渋滞を減らすためバスを導入した。	ラテン語 con-（一緒に）＋gerere（運ぶ・集める）から、物が一か所に詰まる状態を表す。	交通
