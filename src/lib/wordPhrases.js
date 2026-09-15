@@ -6,6 +6,7 @@
 // 語形が変わって使われる語（be composed of の compose）も拾えるよう、
 // 規則的な変化形（-s / -ed / -ing …）まで見る。
 import { PHRASES } from '../data/phrases.js'
+import { HOMOGRAPH_WORDS } from '../data/homograph-words.js'
 
 const LEVEL_RANK = { 5: 0, 4: 1, 3: 2, pre2: 3, 2: 4, pre1: 5, 1: 6 }
 
@@ -70,6 +71,17 @@ for (const phrase of PHRASES.filter(isHeadwordPhrase)) {
   }
 }
 
+// 同じつづりの別の語（homograph-words.js）は、つづりでは元の語と区別できない。
+// その語の意味で使う熟語は人が phraseIds に書いてあるので、それだけをその語のものとして扱う。
+const HOMOGRAPH_PHRASE_IDS = new Map(
+  HOMOGRAPH_WORDS.map((word) => [word.id, new Set(word.phraseIds ?? [])]),
+)
+const PHRASE_IDS_OWNED_BY_HOMOGRAPHS = new Map()
+for (const word of HOMOGRAPH_WORDS) {
+  if (!PHRASE_IDS_OWNED_BY_HOMOGRAPHS.has(word.word)) PHRASE_IDS_OWNED_BY_HOMOGRAPHS.set(word.word, new Set())
+  for (const phraseId of word.phraseIds ?? []) PHRASE_IDS_OWNED_BY_HOMOGRAPHS.get(word.word).add(phraseId)
+}
+
 const comparePhrases = (a, b) =>
   (LEVEL_RANK[a.level] ?? 99) - (LEVEL_RANK[b.level] ?? 99)
   || a.phrase.localeCompare(b.phrase, 'en')
@@ -82,10 +94,14 @@ export function phrasesForWord(word, { kind } = {}) {
   const head = typeof word === 'string' ? word : word?.word
   if (!head) return []
   if (ARTICLES.has(head.toLowerCase().trim())) return []
+  // 同じつづりの別の語のカードには、その語の意味で使う熟語だけを出す。元の語のカードからは外す。
+  const homographPhraseIds = typeof word === 'string' ? null : HOMOGRAPH_PHRASE_IDS.get(word?.id)
+  const ownedByHomographs = PHRASE_IDS_OWNED_BY_HOMOGRAPHS.get(head.toLowerCase().trim())
   const found = new Map()
   for (const form of inflectedForms(head)) {
     for (const phrase of PHRASES_BY_TOKEN.get(form) ?? []) {
       if (kind && phrase.kind !== kind) continue
+      if (homographPhraseIds ? !homographPhraseIds.has(phrase.id) : ownedByHomographs?.has(phrase.id)) continue
       found.set(phrase.id, phrase)
     }
   }

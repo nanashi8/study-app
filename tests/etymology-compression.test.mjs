@@ -51,21 +51,27 @@ import {
 } from '../src/data/etymology-suffix-roots.js'
 import { ETYMOLOGY_COMPLETION_WORDS } from '../src/data/words-etymology-completion.js'
 import { CURRICULUM_1900_WORDS } from '../src/data/words-curriculum-1900.js'
+import { HOMOGRAPH_WORDS } from '../src/data/homograph-words.js'
 import { wordsForSource } from '../src/lib/session.js'
 
 const compact = (value = '') => value.toLowerCase().replace(/[^a-z0-9]+/g, '')
 const completionWordIds = new Set(ETYMOLOGY_COMPLETION_WORDS.map((word) => word.id))
 const curriculum1900WordIds = new Set(CURRICULUM_1900_WORDS.map((word) => word.id))
+const homographWordIds = new Set(HOMOGRAPH_WORDS.map((word) => word.id))
 const sourceGroup = (id) => completionWordIds.has(id)
   ? 'completion'
   : curriculum1900WordIds.has(id)
     ? 'curriculum-1900'
-    : 'legacy'
+    : homographWordIds.has(id)
+      ? 'homograph'
+      : 'legacy'
 const byHead = new Map()
 const byId = new Map(ALL_WORDS.map((word) => [word.id, word]))
 const legacyPackById = new Map(ETYMOLOGY_PACKS.map((pack) => [pack.id, pack]))
 const getEtymologyPack = (packId) => legacyPackById.get(packId)
 for (const word of ALL_WORDS) {
+  // 同じつづりの別の語（homograph-words.js）はつづりでは引かず、元の語を返す。
+  if (word.homographOf) continue
   byHead.set(word.word.toLowerCase(), word)
   if (!byHead.has(compact(word.word))) byHead.set(compact(word.word), word)
 }
@@ -246,26 +252,31 @@ test('代表語を形成法と言語層の別軸へ分類し、旧来の無関�
   assert.notEqual(word('comic').compression.packId, word('box').compression.packId)
 })
 
-test('既存語源パックを固定し、2種の補完語だけを各名前空間へ分離する', () => {
+test('既存語源パックを固定し、2種の補完語と同じつづりの別の語だけを各名前空間へ分離する', () => {
   const legacyWords = ALL_WORDS.filter((word) => sourceGroup(word.id) === 'legacy')
   const completionWords = ALL_WORDS.filter((word) => completionWordIds.has(word.id))
   const curriculum1900Words = ALL_WORDS.filter((word) => curriculum1900WordIds.has(word.id))
+  const homographWords = ALL_WORDS.filter((word) => homographWordIds.has(word.id))
+  const addedPrefixes = ['completion:', 'curriculum-1900:', 'homograph:']
   const legacyPacks = ETYMOLOGY_PACKS.filter((pack) =>
-    !pack.id.startsWith('completion:') && !pack.id.startsWith('curriculum-1900:'))
+    !addedPrefixes.some((prefix) => pack.id.startsWith(prefix)))
   const completionPacks = ETYMOLOGY_PACKS.filter((pack) => pack.id.startsWith('completion:'))
   const curriculum1900Packs = ETYMOLOGY_PACKS.filter((pack) => pack.id.startsWith('curriculum-1900:'))
+  const homographPacks = ETYMOLOGY_PACKS.filter((pack) => pack.id.startsWith('homograph:'))
 
   assert.equal(legacyWords.length, 8216)
   assert.equal(legacyPacks.length, 2712)
   assert.equal(completionWords.length, 215)
   assert.equal(curriculum1900Words.length, 420)
+  assert.equal(homographWords.length, 56)
   assert.ok(completionPacks.length > 0)
   assert.ok(curriculum1900Packs.length > 0)
+  assert.ok(homographPacks.length > 0)
   assert.ok(legacyWords.every((word) =>
-    !word.compression.packId.startsWith('completion:') &&
-    !word.compression.packId.startsWith('curriculum-1900:')))
+    !addedPrefixes.some((prefix) => word.compression.packId.startsWith(prefix))))
   assert.ok(completionWords.every((word) => word.compression.packId.startsWith('completion:')))
   assert.ok(curriculum1900Words.every((word) => word.compression.packId.startsWith('curriculum-1900:')))
+  assert.ok(homographWords.every((word) => word.compression.packId.startsWith('homograph:')))
   assert.deepEqual(
     new Set(completionPacks.flatMap((pack) => pack.coverageIds)),
     completionWordIds,
@@ -273,6 +284,10 @@ test('既存語源パックを固定し、2種の補完語だけを各名前空�
   assert.deepEqual(
     new Set(curriculum1900Packs.flatMap((pack) => pack.coverageIds)),
     curriculum1900WordIds,
+  )
+  assert.deepEqual(
+    new Set(homographPacks.flatMap((pack) => pack.coverageIds)),
+    homographWordIds,
   )
 })
 
@@ -611,12 +626,14 @@ test('語の成り立ちは全語を確認記録つきで出す', () => {
     ...totals,
     [story.origin]: (totals[story.origin] ?? 0) + 1,
   }), {})
-  assert.deepEqual(kinds, { 'reviewed-text': 8524, 'sealed-note': 327 })
+  assert.deepEqual(kinds, { 'reviewed-text': 8581, 'sealed-note': 326 })
   for (const story of ETYMOLOGY_WORD_STORIES) {
-    // January / Ms. のように大文字で始まる見出し語もあるため、引くときは小文字にそろえる。
-    const word = byHead.get(story.head.toLowerCase())
+    // 同じつづりの別の語は見出し語が元の語と同じなので、つづりではなく id で引く。
+    // January / Ms. のように大文字で始まる見出し語もあるため、つづりは小文字にそろえて比べる。
+    const word = byId.get(story.wordId)
     assert.ok(word, story.head)
-    assert.equal(story.wordId, word.id)
+    assert.equal(word.word.toLowerCase(), story.head.toLowerCase())
+    if (!word.homographOf) assert.equal(byHead.get(story.head.toLowerCase())?.id, word.id)
     assert.ok(story.note.length >= 6, story.head)
     assert.doesNotMatch(story.note, /確かな語源分解を収録していないため/, story.head)
     assert.equal(story.evidence.sources.length, 2)

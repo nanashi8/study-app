@@ -83,6 +83,9 @@ const isInflectionOfAnotherCard = (head) => {
   return false
 }
 for (const word of ALL_WORDS) {
+  // 同じつづりの別の語（homograph-words.js）は、英文に同じつづりが出ても、どちらの語として
+  // 使われたかが分からない。英文は元の語の級の根拠として見て、別の語の級の根拠にはしない。
+  if (word.homographOf) continue
   if (isInflectionOfAnotherCard(word.word)) continue
   let found
   for (const form of inflections(word.word)) {

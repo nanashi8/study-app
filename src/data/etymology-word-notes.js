@@ -37,11 +37,19 @@ const relink = (text, fingerprint) => Object.freeze({
   fingerprint,
 })
 
+// 2026-09-15 の点検: 同じつづりの別の語を独立した見出し語にしたとき、元の語の本文にもその別の語のことを書き足し、つながりの薄い本文を直したもの。
+const pair = (text, fingerprint) => Object.freeze({
+  note: text,
+  reviewedAt: '2026-09-15',
+  reviewedBy: 'manual-etymology-audit',
+  fingerprint,
+})
+
 const HAND_WRITTEN_WORD_NOTES = Object.freeze({
   // ── 語根では表せない「語そのものの歴史」。人名・神名・造語の年など。（39語）──
   academy: note('プラトンが学園を開いたアテネの地アカデメイア（Akadēmeia）から。', 'fd436e167c099bff070ac3dca18558b2e8a2b45d967f5e162ba53ff8eb4d6fea'),
   algorithm: note('9世紀の数学者アル・フワーリズミーの名から。ラテン語形 algorismus を経て今の綴りになった。', '150d4af2aea31752784c167fe106d320822b348753a372627d3faf3be1c7d8bd'),
-  bank: note('イタリア語 banca「両替商の台」から。台の上で金を扱ったことによる。', '51735a6891f9e0301102d88b240326357c1b9747026d7def745283074a123f56'),
+  bank: pair('イタリア語 banca「両替商の台」から、フランス語 banque を経た語。台の上でお金を扱った→「銀行」。「土手・堤」の bank は古ノルド語 banki から来た別の語。', 'ca11680547e4cd977fc18b1b1fae5a88053f41876292199941346135fc341156'),
   boycott: note('19世紀アイルランドの土地差配人 Charles Boycott の名から。地域ぐるみで取引を断たれた出来事による。', 'd3c683680b223b4ccd5ff7d94088fb5698fff46b41b73e0e365ba5504ee76cc5'),
   calculate: note('ラテン語 calculus「計算に使う小石」から。', '8492c213865ca27e176829d01658bab6b8788dfb903086cd583450ce0a29b03c'),
   candidate: note('ラテン語 candidātus「白い服を着た人」から。ローマで公職を志願する人は白いトガを着た。', '9835e231a04f222f543c119fc4f21092565790d39c4c7d862134a7b2da6c9474'),
@@ -341,4 +349,72 @@ const HAND_WRITTEN_WORD_NOTES = Object.freeze({
 export const ETYMOLOGY_WORD_NOTES = Object.freeze({
   ...ETYMOLOGY_CLEAR_WORD_NOTES,
   ...HAND_WRITTEN_WORD_NOTES,
+})
+
+// 同じつづりの別の語（homograph-words.js）の語の成り立ち。見出し語のつづりが元の語と同じなので、id ごとに持つ。
+// 2026-09-15、元の語のカードの一枠から独立した見出し語へ移したときに書いた。
+const homographNote = (text, fingerprint) => Object.freeze({
+  note: text,
+  reviewedAt: '2026-09-15',
+  reviewedBy: 'manual-etymology-audit',
+  fingerprint,
+})
+
+export const ETYMOLOGY_HOMOGRAPH_WORD_NOTES = Object.freeze({
+  well_2: homographNote('古英語 wella「泉・わき水」から。水がわき出る所→「井戸」。「上手に・よく」の well（古英語 wel から）とは別の語で、つづりがたまたま同じになった。', 'f4dbff9ad6559505'),
+  lie_2: homographNote('古英語 licgan「横たわる」から→「横たわる」、物がそこに横たわっている→「（物が）ある」。「うそ・うそをつく」の lie（古英語 lyge「うそ」・lēogan「うそをつく」から）とは別の語で、活用も lie-lied-lied ではなく lie-lay-lain になる。', '2a48d695015c179d'),
+  left_2: homographNote('leave「残す・去る」の過去分詞から。残された→「残っている」。leave は古英語 lǣfan「残す」から。「左の」の left（古英語 lyft「弱い」から）とは別の語。', '69fe7cd92b0c4045'),
+  may_2: homographNote('古英語 magan「〜できる・力がある」から。できる→許されている→「〜してよい」、そうなる力がある→「〜かもしれない」。月名の May（ラテン語 Maius「女神マイアの月」から）とは別の語で、つづりがたまたま同じになった。', 'b5e6f2f8c5eeb716'),
+  bank_2: homographNote('古ノルド語 banki「土手・砂州」から→川の「土手・堤」。「銀行」の bank（イタリア語 banca「両替商の台」から）とは別々に英語へ入った別の語だが、どちらもさかのぼれば「台・盛り上がった所」を表すゲルマン系の語につながるとされる。', '76ab0a74edafdc9a'),
+  pole_2: homographNote('ギリシャ語 polos「回転の軸」から、ラテン語 polus を経た語。天が回る軸の端→地球の「極・極地」。「棒・柱」の pole（ラテン語 pālus「くい」から）とは別の語。', '983e5e042cc301bb'),
+  race_2: homographNote('イタリア語 razza「血統・種類」から、フランス語 race を経た語（それより前の由来ははっきりしない）→「人種・民族」。「競走する」の race（古ノルド語 rás「突進・流れ」から）とは別の語。', '33c44040258d48c3'),
+  stern_2: homographNote('古ノルド語 stjórn「舵取り」から。舵を取る所→「船尾」。steer「かじを取る」と同じ語源で、「厳格な」の stern（古英語 styrne「厳しい」から）とは別の語。', '1d7ade95ec5d7eeb'),
+  swallow_2: homographNote('古英語 swealwe「ツバメ」から→「ツバメ」。「飲み込む」の swallow（古英語 swelgan「飲み込む」から）とは別の語で、つづりがたまたま同じになった。', '6715901685e19b8a'),
+  grave_2: homographNote('ラテン語 gravis「重い」から、フランス語 grave を経た語。重い→「重大な・厳粛な」。gravity「重力」と同じ語源で、「墓」の grave（古英語 græf「掘った穴」から）とは別の語。', '01cca5d392d6a4ba'),
+  quarry_2: homographNote('古フランス語 cuirie「猟犬に分け与える獲物の分け前」から。与えられる獲物→狩りで追う「獲物」→「追われるもの」。「採石場」の quarry（ラテン語 quadrāre「四角にする」から）とは別の語。', '775f5c027428f600'),
+  scale_2: homographNote('古フランス語 escale「殻・薄片」から（もとはゲルマン系の語）。魚の体をおおう薄片→「うろこ」。「規模・目盛り」の scale（ラテン語 scāla「はしご」から）とは別の語。', 'a1050e95a1a3d81d'),
+  sole_2: homographNote('ラテン語 solea「サンダル・足の裏」（solum「地面・底」から）から、古フランス語を経た語→「足の裏・靴底」。「唯一の・単独の」の sole（ラテン語 sōlus「ひとりの」から）とは別の語。', 'f5ce84b7ab333822'),
+  stalk_2: homographNote('古英語 bestealcian「こっそり歩く」から→「忍び寄る・つけ回す」。steal「盗む」と同じ仲間の語とされる。「茎・柄」の stalk（古英語 stalu「支柱」から来たとされる）とは別の語。', 'c0fc397731d47d24'),
+  post_2: homographNote('ラテン語 postis「戸口の柱」から→「柱・支柱」。柱に貼り紙を掲げて知らせる→「掲示する」→ネットに載せて知らせる→「投稿する」。「郵便・地位」の post（イタリア語 posta・posto から、さらにラテン語 pōnere「置く」にさかのぼる）とは別の語。', 'f41c15e9055d244b'),
+  ring_2: homographNote('古英語 hringan「（鐘などが）音を出す」から（音をまねた語とされる）→「鳴る・鳴らす」。「指輪・輪」の ring（古英語 hring「輪」から）とは別の語。', '22860865880fcd4d'),
+  stable_2: homographNote('ラテン語 stabulum「家畜を立たせておく場所」（stāre「立つ」から）から、古フランス語 estable を経た語→「馬小屋・厩舎」。「安定した」の stable（ラテン語 stabilis「しっかり立った」から）と同じ「立つ」から出たが、別々に英語へ入った別の語。', '2ffb691772bd0a7d'),
+  scour_2: homographNote('後期ラテン語 excūrāre「よく手入れする」（ex-「すっかり」＋ cūrāre「世話をする」）から、古フランス語 escurer・中世オランダ語 schūren を経た語とされる→「ごしごし洗う・磨く」。「徹底的に捜す」の scour（由来ははっきりしない）とは別の語で、つづりがたまたま同じになった。', '6888c2dd6baa0e56'),
+  yen_2: homographNote('中国語（広東語）で阿片を強く欲しがることを表した語から、アメリカ英語に入った語とされる→「強い願望・あこがれ」。通貨の yen（日本語の「円」から）とは別の語。', '233474ce8ce1f2fa'),
+  row_2: homographNote('18世紀のイギリスで使われ始めた語で、由来ははっきりしない→「口論・騒ぎ」。発音は /ˈɹaʊ/（ラウ）で、「列・並び」の row（古英語 rāw「列」から、発音は /ˈɹoʊ/）とは別の語。', '1ba302cf3008f8dd'),
+  bark_2: homographNote('古ノルド語 bǫrkr「木の皮」から→「樹皮」。「ほえる・どなる」の bark（古英語 beorcan「ほえる」から）とは別の語で、つづりがたまたま同じになった。', 'd959786f2c3a8bf6'),
+  last_2: homographNote('古英語 lǣstan「あとに続く・持ちこたえる」から→「続く・長持ちする」。「最後の」の last（古英語 latost「最も遅い」から）とは別の語。', '0ea25e07775a10a0'),
+  fan_2: homographNote('ラテン語 vannus「箕（み）＝穀物をあおいでもみ殻を飛ばす道具」から、古英語 fann を経た語。あおいで風を送る道具→「うちわ・扇風機」、風を送る→「扇ぐ・あおる」。「ファン・熱心な愛好者」の fan（fanatic「熱狂的な人」を短くした語）とは別の語。', 'c7df8f96edfc8e7a'),
+  rest_2: homographNote('ラテン語 restāre「後に残る」（re-「後ろに」＋ stāre「立つ」）から、フランス語 reste「残り」を経た語→「残り・その他」。「休む・休息」の rest（古英語 ræst「休息」から）とは別の語。', '015c929b4a9c33de'),
+  bound_2: homographNote('bind「縛る」の過去分詞から→「縛られた」、義務に縛られている→「〜する義務がある」、そうなることに縛られている→「きっと〜する」。bind は古英語 bindan「縛る」から。「〜行きの」の bound（古ノルド語 búinn「準備ができた」から）とは別の語。', '93229419975efded'),
+  tense_2: homographNote('古フランス語 tens「時」（ラテン語 tempus「時」から）から。動詞が表す時→文法の「時制」。「緊張した」の tense（ラテン語 tēnsus「張られた」から）とは別の語。', '078abda58bbf463c'),
+  flat_2: homographNote('古英語 flett「床・住まい」から。スコットランドで「家の一つの階」を指し、「平らな」の flat に引かれて形が変わったとされる→「アパート・（1世帯分の）住まい」。「平らな」の flat（古ノルド語 flatr から）とは別の語だが、どちらもさかのぼれば同じゲルマン系の語根につながる。', '7b9d8b564832479e'),
+  file_2: homographNote('古英語 fēol「やすり」から→「やすり」。「提出する・ファイルする」の file（書類を通してとじる糸、ラテン語 fīlum「糸」から）とは別の語。', '170d4dfc40342db5'),
+  shed_2: homographNote('古英語 scēadan「分ける・切り離す」から。体から切り離す→「脱ぎ捨てる」、しずくを離して落とす→「（涙を）流す」、あたりに注ぐ→「（光を）当てる」。「小屋・物置」の shed（shade「日陰」の変化形とされる）とは別の語。', '85d806a0dcad80c3'),
+  tart_2: homographNote('古フランス語 tarte「焼き菓子」から（それより前の由来ははっきりしない）→「タルト」。「酸味のある・辛辣な」の tart（古英語 teart「鋭い・厳しい」から）とは別の語。', '2d973aac3a889efe'),
+  tend_2: homographNote('attend「付き添う・世話をする」の頭が落ちてできた語→「世話をする・手入れする」。attend はラテン語 attendere「心を向ける」（ad-「〜へ」＋ tendere「伸ばす」）から。「〜しがちである」の tend（ラテン語 tendere「伸ばす・向かう」から）と同じ tendere にさかのぼるが、別々にできた別の語。', '44e0ce8e42753b8a'),
+  blow_2: homographNote('中英語 blaw「強く打つこと」から（中世オランダ語 blouwen「打つ」と関係するとされる）。強い一撃→「打撃」、心に受ける一撃→「ショック」。「吹く・吹き飛ばす」の blow（古英語 blāwan「吹く」から）とは別の語。', 'c2e5ebd58a03243a'),
+  gum_2: homographNote('古英語 gōma「口の中・あご」から→「歯茎」。「ガム・ゴム」の gum（古フランス語 gomme「樹脂」から）とは別の語で、つづりがたまたま同じになった。', '1b4492c37e948a4b'),
+  hatch_2: homographNote('古英語 hæc「（半分の）戸・格子戸」から。床や甲板に開けた戸→船や飛行機の「昇降口・ハッチ」。「卵がかえる・たくらむ」の hatch（中英語 hacchen から）とは別の語。', '4762d46ce818ea19'),
+  loaf_2: homographNote('19世紀アメリカの loafer「なまけ者」から、語尾を取って逆に作られた語→「のらくらする・ぶらぶら過ごす」。loafer の由来ははっきりしない（ドイツ語 Landläufer「放浪者」から来たとする説がある）。「（パンの）ひとかたまり」の loaf（古英語 hlāf「パン」から）とは別の語。', 'e152f11ef042e2a2'),
+  mold_2: homographNote('中英語 moulde「かびが生えた」から→「かび」。moulde は moulen「かびる」の過去分詞で、古ノルド語 mygla「かびる」から来たとされる。「型に入れて作る」の mold（ラテン語 modulus「小さな尺度」から）とは別の語。', '44cc85bc625fe7a4'),
+  pawn_2: homographNote('古フランス語 pan「担保・質」から→「質に入れる・質草にする」。「手先・（チェスの）歩」の pawn（古フランス語 peon「歩兵」から）とは別の語。', '7cf12afae3744997'),
+  pit_2: homographNote('オランダ語 pit「芯・種」から、19世紀のアメリカ英語に入った語→モモやサクランボなどの「種」。「穴・くぼみ」の pit（古英語 pytt「穴」から）とは別の語。', '1d3121ce27275763'),
+  slip_2: homographNote('中世オランダ語 slippe「切れ端・細長い切れ」から来たとされる→「細長い紙切れ・伝票」。「滑る」の slip（中世低地ドイツ語 slippen「滑る」から）とは別の語。', '3efdc3aa8068f9e1'),
+  spade_2: homographNote('イタリア語 spade（spada「剣」の複数形で、ギリシャ語 spathē「幅広の刃」にさかのぼる）から。剣の印→トランプの「スペード」。「すき・シャベル」の spade（古英語 spadu から）とは別々に英語へ入った別の語だが、どちらもさかのぼれば「平たく長い板」を表す同じ語根につながるとされる。', '4d998f7b1ba6eca8'),
+  tap_2: homographNote('古英語 tæppa「（たるの）栓」から。栓のついた口→「蛇口」、栓を開けて中身を取り出す→「（資源・才能などを）利用する・活用する」。「軽くたたく」の tap（古フランス語 taper「軽くたたく」から）とは別の語。', '49c3bfe8e322e3be'),
+  toll_2: homographNote('中英語 tollen「引く・誘う」の特別な使い方から来たとされる→「（鐘を）ゆっくり鳴らす」。「通行料・犠牲」の toll（古英語 toll「税・料金」から）とは別の語。', '6cddb9c5d18a171b'),
+  wax_2: homographNote('古英語 weaxan「育つ・大きくなる」から→「大きくなる」、月が大きくなる→「（月が）満ちる」。「ろう・ワックス」の wax（古英語 weax「ろう」から）とは別の語。', 'da9084897ab9d2cb'),
+  raft_2: homographNote('山積みのものを表した古い語 raff が、「いかだ」の raft に引かれて形を変えたとされる→「大量・たくさん」。raff の由来ははっきりしない。「いかだ」の raft（古ノルド語 raptr「丸太」から）とは別の語。', 'c0735021c1bf62e2'),
+  defer_2: homographNote('ラテン語 dēferre「運び渡す・ゆだねる」（dē-「下へ・離れて」＋ ferre「運ぶ」）から、古フランス語 deferer を経た語。判断を相手にゆだねる→「（意見・判断に）従う・敬意を表して譲る」。「延期する」の defer（ラテン語 differre「先へ運ぶ・遅らせる」から）とは別の語。', '09f0f18b320d39de'),
+  pry_2: homographNote('「てこ」を表す prize（古フランス語 prise「つかむこと」から）を、pry の変化形 pries と取り違えて逆に作られた語とされる→「てこでこじ開ける」。「詮索する」の pry（中英語 prien「のぞき込む」から）とは別の語。', '37792cd0829c6393'),
+  march_2: homographNote('フランス語 marcher「歩く」（もとは「踏みつける」）から→足並みをそろえて「行進する」。「3月」の March（ラテン語 Mārtius「軍神マルスの月」から）とは別の語。', 'df553924e41442e1'),
+  mummy_2: homographNote('幼い子どもが母を呼ぶ mammy・mommy と同じ呼び方から来たイギリス英語の語→「ママ・お母さん」。「ミイラ」の mummy（アラビア語 mūmiyā「防腐処理した遺体」から）とは別の語。', 'bcf4bdf1ebcba496'),
+  refrain_2: homographNote('古フランス語 refrain「繰り返し句」から（ラテン語 refringere「打ち砕く・途切れさせる」にさかのぼるとされる）。歌の途中で何度も戻ってくる部分→「（歌・詩の）繰り返しの部分」。「差し控える」の refrain（ラテン語 refrēnāre「手綱で抑える」から）とは別の語。', '1db034356e45fb6d'),
+  lean_2: homographNote('古英語 hlǣne「やせた」から→「やせた」、肉に脂が少ない→「脂肪の少ない」、余分がない→「むだのない」。「寄りかかる・傾く」の lean（古英語 hleonian「傾く」から）とは別の語。', '82f71bb6b3456c18'),
+  flight_2: homographNote('古英語 flēon「逃げる」（flee の元の語）の仲間の語から→「逃走・逃避」。「飛行・便」の flight（fly「飛ぶ」の仲間の語から）とは別の語で、つづりが同じになった。', '25af5ca9beec9867'),
+  light_2: homographNote('古英語 lēoht「重さが軽い」から→「軽い」。「光・明かり」の light（古英語 lēoht「光」から）とは語根がちがう別の語で、つづりがたまたま同じになった。', '68aa16a78fbb0eef'),
+  bit_2: homographNote('binary digit「2進数の桁」を縮めて、1940年代に作られた語→情報量の単位「ビット」。binary はラテン語 bīnārius「2つずつの」、digit はラテン語 digitus「指」から。「少し・小片」の bit（古英語 bita「かみ取った一片」から）とは別の語だが、その「わずかな量」にも引っかけた名前とされる。', '12ba89eed60312a3'),
+  clip_2: homographNote('古英語 clyppan「抱きしめる・しっかりつかむ」から→「（クリップで）留める・はさむ」。紙をはさむクリップはこちら。「切り取る・切り抜く」の clip（古ノルド語 klippa「切る」から）とは別の語。', '5938ae92e4423cfe'),
+  tip_2: homographNote('中世オランダ語 tip「先端」から来たとされる→「先端・先」。「助言・チップ」の tip（17世紀の隠語 tip「そっと手渡す」から）とは別の語。', 'f2a10791876f5445'),
+  lighten_2: homographNote('light「軽い」＋ -en「〜にする」→「軽くする」、負担を軽くする→「（負担を）和らげる」。light は古英語 lēoht「重さが軽い」から。「明るくする」の lighten（「光」の light から）とは別の語。', '2649ab5aa7d78bb4'),
 })

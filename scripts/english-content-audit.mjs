@@ -8,6 +8,7 @@ import { fileURLToPath } from 'node:url'
 
 import {
   ALL_WORDS,
+  homographsFor,
   pickDistractors,
 } from '../src/data/vocab.js'
 import { quizMeaning, quizMeaningKey } from '../src/data/compact.js'
@@ -100,9 +101,15 @@ const overlapText = (value) => String(value ?? '')
 const allSenseText = (item) => overlapText(
   [item.meaning, ...(item.otherSenses ?? []).map((sense) => sense.meaning)].join(''),
 )
-const meaningContains = (outer, inner) => {
+// 画面に出るのは英単語のつづりなので、正解側は同じつづりの別の語の意味もまとめて見る。
+const spellingSenseText = (item) => overlapText(
+  [item, ...homographsFor(item)]
+    .flatMap((entry) => [entry.meaning, ...(entry.otherSenses ?? []).map((sense) => sense.meaning)])
+    .join(''),
+)
+const meaningContains = (outer, inner, senseTextFor = allSenseText) => {
   const needle = overlapText(quizMeaning(inner))
-  return needle.length >= 2 && allSenseText(outer).includes(needle)
+  return needle.length >= 2 && senseTextFor(outer).includes(needle)
 }
 
 function rngFor(id, seed) {
@@ -188,8 +195,12 @@ for (const word of ALL_WORDS) {
     // pickDistractors 側でも弾いているが、判定をここへ独立に書いて二重に守る。
     for (const candidate of distractors) {
       assert(
-        !meaningContains(word, candidate) && !meaningContains(candidate, word),
+        !meaningContains(word, candidate, spellingSenseText) && !meaningContains(candidate, word),
         `語彙 ${word.id}: 誤答 ${candidate.word}「${quizMeaning(candidate)}」が正解の意味に含まれる`,
+      )
+      assert(
+        candidate.word.toLowerCase() !== word.word.toLowerCase(),
+        `語彙 ${word.id}: 誤答 ${candidate.id} が正解と同じつづり`,
       )
     }
     if (seed === 17) {

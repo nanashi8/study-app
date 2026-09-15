@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
-import { etymologyCardsForWord, etymologyStoryForWord } from '../data/vocab.js'
+import { etymologyCardsForWord, etymologyStoryForWord, homographsFor } from '../data/vocab.js'
 import { getLevel } from '../data/levels.js'
 import {
   answeredSessionIndexes,
@@ -19,7 +19,7 @@ import { dismissSpeechPlayer, playSpeechItems } from '../lib/speech-player.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
 import { EtymologyBlock } from '../components/WordBits.jsx'
-import { OtherSenses, PosBadge } from '../components/WordBits.jsx'
+import { HomographWords, OtherSenses, PosBadge } from '../components/WordBits.jsx'
 import { MeaningText } from '../components/MeaningText.jsx'
 import {
   ConfusableSection,
@@ -413,6 +413,12 @@ export function VocabStudyScreen() {
                 {settings.showPhonetic && word.phonetic && (
                   <p className="mt-1 text-sm font-bold text-ink/45">{word.phonetic}</p>
                 )}
+                {/* 同じつづりで由来のちがう語が、別のカードになっている。どちらの語かは品詞と裏の意味で確かめる。 */}
+                {homographsFor(word).length > 0 && (
+                  <p className="mt-1 text-[11px] font-extrabold text-rose-600/80" data-vocab-homograph-note>
+                    同じつづりの別の語があります
+                  </p>
+                )}
                 <div className="mt-3">
                   <SpeakButton
                     text={word.word}
@@ -449,6 +455,9 @@ export function VocabStudyScreen() {
 
               {/* 代表義以外の意味。取り違えないよう品詞と習う級を添えて並べる。 */}
               <OtherSenses senses={word.otherSenses} level={word.level} />
+
+              {/* 由来のちがう、同じつづりの別の語。それぞれ独立したカードとして暗記する。 */}
+              <HomographWords word={word} onWord={openRelatedWord} />
 
               {/* 例文 */}
               {word.example && (

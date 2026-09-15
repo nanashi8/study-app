@@ -7,8 +7,8 @@
 // だけ説明していて、土手が両替商の台に由来すると読める状態だった。
 //
 // 使い方:
-// - 別語の意味は words*.js の meaning へ書かず、word-senses.js へ
-//   separateWord: true と note（どう別の語か）を付けて置く。
+// - 別語の意味は words*.js の meaning へ書かず、homograph-words.js に
+//   独立した見出し語（id は「元の語の id_2」）として置く。
 // - ここに載せた語は、代表義の欄に「別語側の意味」が現れていないかを
 //   scripts/check-data.mjs が毎回確かめる。
 // - まだカードに別語の意味を載せていない語も、先に登録しておく。
@@ -18,7 +18,7 @@
 // 混入の検出だけを機械に任せる。同じ語の意味の枝分かれ（kind の「親切な／種類」、
 // fine の「良い／罰金」、spring の「春／泉／ばね」など）はここへ入れない。
 export const HOMOGRAPH_SEPARATE_SENSES = Object.freeze({
-  // すでに word-senses.js へ分けてある語
+  // すでに homograph-words.js へ見出し語として分けてある語
   bank: Object.freeze(['土手', '堤']),
   pole: Object.freeze(['極']),
   race: Object.freeze(['人種', '民族']),

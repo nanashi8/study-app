@@ -15,13 +15,14 @@ const TONES = {
   der: 'bg-emerald-50 text-emerald-700 ring-emerald-100',
 }
 
-// 類義語・反対語・派生語のチップ。items=[{w,m}]。辞書にある語はタップでその語へ。
+// 類義語・反対語・派生語のチップ。items=[{w,m,id?}]。辞書にある語はタップでその語へ。
+// id があるのは同じつづりの別の語を指す項目で、つづりで引くと元の語へ飛んでしまうもの。
 export function RefChips({ items, tone, onWord }) {
   const cls = TONES[tone] ?? TONES.syn
   return (
     <div className="flex flex-wrap gap-1.5">
       {items.map((it, i) => {
-        const exists = getWord(toId(it.w))
+        const exists = getWord(it.id ?? toId(it.w))
         const level = exists ? getLevel(exists.level) : null
         const body = (
           <>
