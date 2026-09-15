@@ -9,7 +9,7 @@ import {
 } from '../data/koten-interpretations.js'
 import { Button, Chip, cx } from '../components/ui.jsx'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
-import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
+import { ChoiceExplanations } from '../components/ChoiceExplanations.jsx'
 import { KotenText, KotenWord } from '../components/KotenFurigana.jsx'
 import {
   ArrowRight,
@@ -19,7 +19,7 @@ import {
 import { answeredQuizIndexes, growDeck, restartSessionCount } from '../lib/session.js'
 import { orderForStudy } from '../lib/studyOrder.js'
 import { limitQuizChoices, UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
-import { buildKotenInterpretationInstructorExplanation } from '../lib/instructorExplanations.js'
+import { kotenInterpretationChoiceNoteFor } from '../data/koten-interpretation-choice-notes.js'
 import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
 import {
   QuestionSessionControls,
@@ -277,10 +277,19 @@ export function KotenInterpretationQuizScreen() {
               <p className="mt-2 text-sm font-bold leading-relaxed text-ink">
                 <KotenText>{item.translation}</KotenText>
               </p>
-              <InstructorExplanation
-                explanation={buildKotenInterpretationInstructorExplanation(item, selected)}
+              {/* 訳の根拠になる単語・文法は下の欄にあるので、ここは出題した選択肢1件ずつの説明だけを出す。 */}
+              <ChoiceExplanations
+                title="選択肢解説（3択すべて）"
+                name="kotenInterpretation"
                 className="mt-3"
                 renderText={(text) => <KotenText>{text}</KotenText>}
+                rows={choices.map((choice) => ({
+                  id: choice,
+                  heading: choice,
+                  body: kotenInterpretationChoiceNoteFor(item, choice),
+                  correct: choice === item.answer,
+                  chosen: selected === choice,
+                }))}
               />
             </div>
 

@@ -27,6 +27,8 @@ import {
 import { limitQuizChoices, UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
+import { ChoiceExplanations } from '../components/ChoiceExplanations.jsx'
+import { literatureReadingChoiceNoteFor } from '../data/literature-reading-choice-notes.js'
 import { Sheet } from '../components/Sheet.jsx'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { ReadingRoleSentence } from '../components/ReadingRoleSentence.js'
@@ -747,6 +749,20 @@ export function LiteratureReaderScreen() {
                           根拠 Scene {item.evidenceScene + 1}: {work.scenes[item.evidenceScene].original}
                         </p>
                       </div>
+                    )}
+                    {answered && (
+                      <ChoiceExplanations
+                        title="選択肢解説（3択すべて）"
+                        name="literature"
+                        className="mt-2"
+                        rows={shownChoices.map(({ choice, choiceIndex }) => ({
+                          id: `${item.id}:${choiceIndex}`,
+                          heading: choice,
+                          body: literatureReadingChoiceNoteFor(item, choiceIndex),
+                          correct: choiceIndex === item.answer,
+                          chosen: choiceIndex === selected,
+                        }))}
+                      />
                     )}
                   </section>
                 )

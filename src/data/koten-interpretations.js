@@ -384,9 +384,9 @@ export const KOTEN_INTERPRETATIONS = [
     answer: '今ごろどのようであろう。',
     translation: '少納言よ、香炉峰の雪は今ごろどのようであろう。',
     wordIds: ['k120'],
-    grammarIds: ['kg_present_ramu'],
-    vocabTip: '「らむ」は、目の前にない現在の様子を想像して「今ごろ…だろう」。',
-    grammarTip: '疑問語「いかに」＋現在推量「らむ」。過去を想像する「けむ」と区別する。',
+    grammarIds: ['kg_adjectival_nari', 'kg_conjecture_mu'],
+    vocabTip: '「いかなり」は「どのようだ」。目の前にない香炉峰の雪の様子を想像して「どのようであろう」と尋ねている。',
+    grammarTip: '「いかなら」は形容動詞「いかなり」の未然形で、推量の「む」が付く。「いかならむ」の「ら」は「いかなり」の活用語尾で、現在推量の「らむ」ではない。',
     culture: {
       title: '漢詩を踏まえた機知',
       body: '清少納言は白居易の詩を踏まえ、御簾を高く上げて雪を見せた。漢詩の知識を行動で示した逸話。',
@@ -469,8 +469,8 @@ export const KOTEN_INTERPRETATIONS = [
     level: 'standard',
     focus: 'grammar',
     source: '練習文',
-    text: 'この御恩、なほ忘れまじ。',
-    question: '「忘れまじ」の意味として最も適切なものは？',
+    text: 'この御恩、なほ忘るまじ。',
+    question: '「忘るまじ」の意味として最も適切なものは？',
     choices: [
       '決して忘れまい。',
       '忘れないだろうか。',

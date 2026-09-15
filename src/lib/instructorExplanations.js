@@ -324,19 +324,6 @@ const listeningStrategy = (item = {}) => {
   return '先に質問の焦点を定め、音声中の言い換えと転換語を拾う。聞こえた単語があるだけの選択肢ではなく、内容が一致するものを選ぶ。'
 }
 
-const classicalGrammarStrategy = (question = {}) => {
-  if (question.category === 'auxiliary') {
-    return '助動詞は①直前の活用形から接続を決める ②文中の時・主語・語調から意味を絞る ③現代語訳へ戻して不自然でないか確かめる。'
-  }
-  if (/敬語|honorific/.test(`${question.category} ${question.format}`)) {
-    return '敬語は語形だけでなく、誰から誰への敬意かを人物関係で決める。主体を高める尊敬、受け手を高める謙譲、聞き手への丁寧を分ける。'
-  }
-  if (/識別|活用|conjugation/.test(`${question.category} ${question.format}`)) {
-    return '傍線部だけで決めず、直前・直後の語が求める活用形と、文中での働きを同時に確かめる。'
-  }
-  return '傍線部の直前直後を見て、接続・活用・文中の意味を順に確定する。最後に現代語訳へ入れて文脈が通るか検算する。'
-}
-
 const DIAGNOSTIC_SKILL_LABEL = Object.freeze({
   vocab: '語彙',
   grammar: '文法',
@@ -446,51 +433,6 @@ export function buildListeningInstructorExplanation(item, selectedChoice) {
       correctAnswer: `正解できても、聞こえた単語の一致ではなく、${quote(focus)}を放送のどの箇所から判断したかを説明する。`,
     }),
     strategy: listeningStrategy(item),
-  })
-}
-
-export function buildKotenGrammarInstructorExplanation(question, selected) {
-  return explanation({
-    answer: `正解は${quote(question?.answer)}。傍線部だけでなく、接続と文脈を合わせて判定する。`,
-    evidence: `${clean(question?.explanation)}${question?.translation ? ` 現代語訳は${quote(question.translation)}。` : ''}`,
-    trap: selectionTrap({
-      selected,
-      correct: question?.answer,
-      wrong: (picked) => `${quote(picked)}では、傍線部の接続・活用または文脈上の意味を同時に満たせない。${clean(question?.explanation)}`,
-      unknown: `迷ったら語の見た目だけで決めず、直前の活用形を確認する。判定の根拠は ${clean(question?.explanation)}`,
-      correctAnswer: '正解できても、名称だけでなく「どの形に接続し、ここでは何を表すか」を一息で説明する。',
-    }),
-    strategy: classicalGrammarStrategy(question),
-  })
-}
-
-export function buildKotenCultureInstructorExplanation(question, selected, related) {
-  return explanation({
-    answer: `正解は${quote(question?.answer)}。古典常識を単語の定義ではなく、本文中の人物・場所・行動の関係へ当てはめる。`,
-    evidence: `${clean(question?.explanation)}${related?.core ? ` 背景の核は${clean(related.core)}` : ''}`,
-    trap: selectionTrap({
-      selected,
-      correct: question?.answer,
-      wrong: (picked) => `${quote(picked)}は本文の時代背景・身分関係・場面のいずれかと合わない。この問題の決め手は ${clean(question?.explanation)} 用語だけでなく、誰がどこで何をしているかを確かめる。`,
-      unknown: `分からないときは固有語を「人物・場所・制度・年中行事」のどれかに分類する。そこから本文での役割へ戻す。`,
-      correctAnswer: `正解できても、知識を本文の因果へ変換できるか確認する。${clean(related?.examTip)}`,
-    }),
-    strategy: '古典常識は用語集として暗記せず、①誰の世界か ②どこで起きたか ③その慣習が行動をどう決めたか、の三点で本文へ接続する。',
-  })
-}
-
-export function buildKotenInterpretationInstructorExplanation(item, selected) {
-  return explanation({
-    answer: `正解は${quote(item?.answer)}。単語・文法・背景の三つが同じ読みを支えている。`,
-    evidence: `単語は ${clean(item?.vocabTip)} 文法は ${clean(item?.grammarTip)} したがって現代語訳は${quote(item?.translation)}となる。`,
-    trap: selectionTrap({
-      selected,
-      correct: item?.answer,
-      wrong: (picked) => `${quote(picked)}は、語義・助動詞や活用・省略された主語の少なくとも一つが本文と合わない。この文では ${clean(item?.vocabTip)} ${clean(item?.grammarTip)} 現代語として自然かより先に、原文の形を守る。`,
-      unknown: `訳せないときは一気に自然な日本語を作らず、重要語の意味、助動詞・活用、主語の順に骨格を作る。`,
-      correctAnswer: `正解できても、${quote(item?.culture?.title)}という背景までつなぐと、同じ表現を別本文でも判断できる。`,
-    }),
-    strategy: '古文解釈は①重要単語を置く ②助動詞・助詞で関係を決める ③省略された主語を補う ④最後に自然な現代語へ整える。この順序を崩さない。',
   })
 }
 

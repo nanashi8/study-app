@@ -13,8 +13,9 @@ import {
 } from '../data/koten-grammar-questions.js'
 import { limitQuizChoices, UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
-import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
 import { CardSaveToggle } from '../components/CardStudyControls.jsx'
+import { ChoiceExplanations } from '../components/ChoiceExplanations.jsx'
+import { kotenGrammarChoiceNoteFor } from '../lib/kotenGrammarChoiceNotes.js'
 import { Button, Chip, cx } from '../components/ui.jsx'
 import { answeredQuizIndexes, growDeck, restartSessionCount } from '../lib/session.js'
 import {
@@ -23,7 +24,6 @@ import {
   Check,
   Close,
 } from '../components/Icons.jsx'
-import { buildKotenGrammarInstructorExplanation } from '../lib/instructorExplanations.js'
 import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
 import {
   QuestionSessionControls,
@@ -360,9 +360,22 @@ export function KotenGrammarQuizScreen() {
                 {question.answer}
               </p>
             </div>
-            <InstructorExplanation
-              explanation={buildKotenGrammarInstructorExplanation(question, selected)}
+            {/* この問題固有の説明と、出題した選択肢1件ずつの説明だけを出す（決まり文句の4段解説は置かない）。 */}
+            <div className="mt-3 rounded-xl bg-white px-3 py-2.5 ring-1 ring-amber-100" data-koten-grammar-explanation>
+              <p className="text-[10px] font-extrabold text-amber-700">解説</p>
+              <p className="mt-0.5 text-sm font-bold leading-relaxed text-ink/75">{question.explanation}</p>
+            </div>
+            <ChoiceExplanations
+              title="選択肢解説（3択すべて）"
+              name="kotenGrammar"
               className="mt-3"
+              rows={choices.map((choice) => ({
+                id: choice,
+                heading: choice,
+                body: kotenGrammarChoiceNoteFor(question, choice),
+                correct: choice === question.answer,
+                chosen: selected === choice,
+              }))}
             />
             {question.translation && (
               <div className="mt-3 rounded-xl bg-slate-50 px-3 py-2.5">
