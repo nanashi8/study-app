@@ -200,7 +200,7 @@ export const SPELLING_CONFUSABLE_PAIRS = Object.freeze([
   ['device', 'devise'],
   ['price', 'prize'],
   ['rise', 'raise'],
-  ['lie', 'lay'],
+  ['lie_2', 'lay'],
   ['walk', 'work'],
   ['hungry', 'angry'],
   ['their', 'there'],

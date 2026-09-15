@@ -7999,7 +7999,6 @@ export const ETYMOLOGY_NOTE_LEDGER = Object.freeze([
   'relay da1c7329d4b9da4f',
   'rhyme 13fc1ac8f878cda9',
   'rid a0fa3a955a309672',
-  'row bf0c261d80bfb1cf',
   'royal 25eb8257e95b8598',
   'rub c9f82bb26e73450a',
   'rugby 5998ae1b7cc89fbc',

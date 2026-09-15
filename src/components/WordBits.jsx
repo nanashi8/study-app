@@ -4,6 +4,7 @@ import {
   etymologyStoryForWord,
   getRoot,
   getWord,
+  homographsFor,
 } from '../data/vocab.js'
 import { LEVELS, getLevel } from '../data/levels.js'
 import { ArrowRight, Check } from './Icons.jsx'
@@ -29,8 +30,8 @@ export function PosBadge({ pos, className = '' }) {
 
 // 代表義には入りきらない、その語のほかの意味。品詞と、その意味を習う級を添える。
 // カードの級より上のものは、先に出会う意味と取り違えないよう「この先の級で出てくる」と示す。
-// 由来がちがう語がたまたま同じつづりになっているだけのものは、同じ語の意味の枝分かれと
-// 混ぜず「同じつづりの別の語」として分けて出す（well「上手に」と well「井戸」など）。
+// 由来がちがう語がたまたま同じつづりになっているだけのものは、ここへは出さない。
+// それぞれ独立した見出し語なので、下の HomographWords からその語へリンクする。
 function SenseList({ senses, baseRank }) {
   return (
     <ul className="space-y-2">
@@ -53,9 +54,6 @@ function SenseList({ senses, baseRank }) {
                 <p className="text-xs font-bold text-ink/45">{sense.example.ja}</p>
               </>
             )}
-            {sense.note && (
-              <p className="mt-1.5 text-xs font-bold leading-relaxed text-ink/55">{sense.note}</p>
-            )}
           </li>
         )
       })}
@@ -66,25 +64,62 @@ function SenseList({ senses, baseRank }) {
 export function OtherSenses({ senses = [], level, className = '' }) {
   if (!senses.length) return null
   const baseRank = LEVELS.findIndex((item) => item.id === level)
-  const related = senses.filter((sense) => !sense.separateWord)
-  const separate = senses.filter((sense) => sense.separateWord)
   return (
-    <div className={cx('space-y-3', className)}>
-      {related.length > 0 && (
-        <div className="rounded-2xl bg-white p-4 ring-1 ring-amber-100">
-          <div className="mb-2 text-xs font-extrabold text-amber-700">ほかの意味</div>
-          <SenseList senses={related} baseRank={baseRank} />
-        </div>
-      )}
-      {separate.length > 0 && (
-        <div className="rounded-2xl bg-white p-4 ring-1 ring-rose-100">
-          <div className="text-xs font-extrabold text-rose-700">同じつづりの別の語</div>
-          <p className="mb-2 mt-0.5 text-[11px] font-bold leading-relaxed text-ink/50">
-            由来のちがう語が、たまたま同じつづりになっています。上の意味の仲間ではありません。
-          </p>
-          <SenseList senses={separate} baseRank={baseRank} />
-        </div>
-      )}
+    <div className={cx('rounded-2xl bg-white p-4 ring-1 ring-amber-100', className)}>
+      <div className="mb-2 text-xs font-extrabold text-amber-700">ほかの意味</div>
+      <SenseList senses={senses} baseRank={baseRank} />
+    </div>
+  )
+}
+
+// 由来のちがう語が、たまたま同じつづりになったもの（well「上手に」と well「井戸」など）。
+// 意味の枝分かれではなく別々の見出し語なので、それぞれのカード・辞書ページへリンクする。
+export function HomographWords({ word, onWord, className = '' }) {
+  const others = homographsFor(word)
+  if (!others.length) return null
+  return (
+    <div data-homograph-words className={cx('rounded-2xl bg-white p-4 ring-1 ring-rose-100', className)}>
+      <div className="text-xs font-extrabold text-rose-700">同じつづりの別の語</div>
+      <p className="mb-2 mt-0.5 text-[11px] font-bold leading-relaxed text-ink/50">
+        由来のちがう語が、たまたま同じつづりになっています。この語の意味の仲間ではありません。
+      </p>
+      <ul className="space-y-1.5">
+        {others.map((other) => {
+          const otherLevel = getLevel(other.level)
+          const body = (
+            <>
+              <PosBadge pos={other.pos} />
+              <span className="min-w-0 flex-1">
+                <span className="flex flex-wrap items-center gap-1.5">
+                  <span className="font-display font-extrabold text-ink">{other.word}</span>
+                  <Chip color={otherLevel.color}>英検{otherLevel.label}</Chip>
+                </span>
+                <span className="mt-0.5 block text-xs font-bold text-ink/60">
+                  <MeaningText>{other.meaning}</MeaningText>
+                </span>
+              </span>
+              {onWord && <ArrowRight size={17} className="shrink-0 text-rose-300" />}
+            </>
+          )
+          return (
+            <li key={other.id}>
+              {onWord ? (
+                <button
+                  type="button"
+                  onClick={() => onWord(other.id)}
+                  className="flex min-h-12 w-full items-center gap-2 rounded-xl bg-rose-50/60 p-2.5 text-left active:bg-rose-100"
+                >
+                  {body}
+                </button>
+              ) : (
+                <div className="flex min-h-12 w-full items-center gap-2 rounded-xl bg-rose-50/60 p-2.5">
+                  {body}
+                </div>
+              )}
+            </li>
+          )
+        })}
+      </ul>
     </div>
   )
 }

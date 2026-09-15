@@ -1,4 +1,5 @@
 import {
+  ETYMOLOGY_HOMOGRAPH_WORD_NOTES,
   ETYMOLOGY_WORD_NOTES,
   ETYMOLOGY_WORD_NOTE_SCHEMA,
 } from './etymology-word-notes.js'
@@ -41,10 +42,31 @@ const LEDGER = new Map(ETYMOLOGY_NOTE_LEDGER.map((row) => {
  * - 本文を書き起こした語は台帳の本文をそのまま使う。
  * - それ以外は既存メモを使うが、本文のハッシュが台帳と一致する語だけ。
  *   監査後にメモが書き換わると一致しなくなり、その語は自動的に公開から外れる。
+ * - 同じつづりの別の語（homograph-words.js）は、つづりでは元の語と区別できないので id で本文を引く。
  */
 export function buildReviewedWordNotes(words, { hash }) {
   const out = []
   for (const word of words) {
+    if (word.homographOf) {
+      const reviewed = ETYMOLOGY_HOMOGRAPH_WORD_NOTES[word.id]
+      if (reviewed) {
+        out.push({
+          id: `story:${word.id}`,
+          head: word.word,
+          wordId: word.id,
+          note: reviewed.note,
+          origin: 'reviewed-text',
+          evidence: {
+            reviewSchema: ETYMOLOGY_WORD_NOTE_SCHEMA,
+            reviewedAt: reviewed.reviewedAt,
+            reviewedBy: reviewed.reviewedBy,
+            sources: evidenceSources(word.word),
+            fingerprint: reviewed.fingerprint,
+          },
+        })
+      }
+      continue
+    }
     const key = word.word.toLowerCase()
     const override = OVERRIDES.get(key)
     if (override) {

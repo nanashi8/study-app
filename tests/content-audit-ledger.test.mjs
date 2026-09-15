@@ -11,8 +11,8 @@ test('全教材監査台帳は18カテゴリの母数・ゲート・ハッシュ
   assert.equal(ledger.failureCount, 0)
   assert.equal(ledger.scope.categoryCount, 18)
   assert.equal(ledger.categories.length, 18)
-  assert.equal(ledger.scope.learningItemCount, 16_299)
-  assert.equal(ledger.scope.quizItemCount, 16_417)
+  assert.equal(ledger.scope.learningItemCount, 16_355)
+  assert.equal(ledger.scope.quizItemCount, 16_473)
   assert.ok(ledger.scope.overallContentSha256)
   assert.ok(ledger.auditImplementation.sha256)
   for (const category of ledger.categories) {
@@ -43,9 +43,9 @@ test('問題別解説と選択肢別根拠を混同せず、記録済み台帳�
   assert.equal(ledger.extendedReadingDetail.sentenceCount, 528)
   assert.equal(ledger.extendedReadingDetail.targetVocabularyCount, 1_484)
   assert.equal(ledger.extendedReadingDetail.baselineCoveredVocabulary, 1_958)
-  assert.equal(ledger.extendedReadingDetail.baselineCoveragePercent, 22.12)
+  assert.equal(ledger.extendedReadingDetail.baselineCoveragePercent, 21.98)
   assert.equal(ledger.extendedReadingDetail.combinedCoveredVocabulary, 3_951)
-  assert.equal(ledger.extendedReadingDetail.combinedCoveragePercent, 44.64)
+  assert.equal(ledger.extendedReadingDetail.combinedCoveragePercent, 44.36)
   assert.equal(ledger.extendedReadingDetail.coverageGain, 1_993)
   assert.equal(ledger.extendedReadingDetail.unresolvedExtendedTokenCount, 0)
   assert.deepEqual(ledger.extendedReadingDetail.practiceTypeCounts, {
@@ -76,10 +76,10 @@ test('全選択式教材の正解・全誤答・わからない経路数を教�
   const paths = ledger.instructorAnswerPaths
   assert.equal(paths.coverageTest, 'tests/instructor-explanations.test.mjs')
   assert.equal(paths.result, 'pass')
-  assert.equal(paths.questionCount, 15_743)
-  assert.equal(paths.displayedChoiceCount, 51_601)
-  assert.equal(paths.unknownPathCount, 15_743)
-  assert.equal(paths.answerPathCount, 67_344)
+  assert.equal(paths.questionCount, 15_799)
+  assert.equal(paths.displayedChoiceCount, 51_769)
+  assert.equal(paths.unknownPathCount, 15_799)
+  assert.equal(paths.answerPathCount, 67_568)
   assert.deepEqual(
     paths.families.map(({ id }) => id),
     [

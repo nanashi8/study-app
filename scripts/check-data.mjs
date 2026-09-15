@@ -163,6 +163,8 @@ import {
 } from '../src/data/writing.js'
 import { hasBalancedParentheses } from '../src/data/compact.js'
 import { HOMOGRAPH_SEPARATE_SENSES } from '../src/data/homographs.js'
+import { HOMOGRAPH_WORDS } from '../src/data/homograph-words.js'
+import { phrasesForWord } from '../src/lib/wordPhrases.js'
 import { KNOWN_DUPLICATE_FORMS, PLURAL_ONLY_SENSES, singularCandidates } from '../src/data/duplicate-forms.js'
 import { MATH_PROBLEMS, MATH_UNITS } from '../src/data/math.js'
 import { WRITING_EXAM_QUESTIONS } from '../src/data/writing-exam.js'
@@ -427,11 +429,11 @@ for (const w of ALL_WORDS) {
     break
   }
   // 由来のちがう別語の意味を代表義の欄へ並べると、語源の説明が片方にしか
-  // 当てはまらず、学習者は誤った由来を教わる。別語は word-senses.js 側へ置く。
+  // 当てはまらず、学習者は誤った由来を教わる。別語は homograph-words.js の見出し語にする。
   for (const gloss of HOMOGRAPH_SEPARATE_SENSES[w.id] ?? []) {
     if (String(w.meaning ?? '').includes(gloss)) {
       errors.push(
-        `${at}: 代表義の欄に別語の意味「${gloss}」が入っている → word-senses.js へ separateWord: true で移す`,
+        `${at}: 代表義の欄に別語の意味「${gloss}」が入っている → homograph-words.js の見出し語へ分ける`,
       )
     }
   }
@@ -441,7 +443,7 @@ for (const w of ALL_WORDS) {
     const shown = new Set((w.meanings ?? []).map(meaningCore))
     for (const gloss of separateGlossesInStory(etymologyStoryForWord(w)?.note)) {
       if (shown.has(gloss)) {
-        errors.push(`${at}: 語の成り立ちが別の語とする「${gloss}」が代表義の欄にある → word-senses.js へ separateWord: true で移す`)
+        errors.push(`${at}: 語の成り立ちが別の語とする「${gloss}」が代表義の欄にある → homograph-words.js の見出し語へ分ける`)
       }
     }
   }
@@ -480,13 +482,10 @@ for (const w of ALL_WORDS) {
     } else if (sense?.example) {
       auditWordExampleSentence(`${where} の例文`, sense.example)
     }
-    // 由来がちがう同綴り語は「同じつづりの別の語」として分けて出すため、
-    // なぜ別の語なのかを必ず添える。
-    if (sense?.separateWord && !sense.note?.trim()) {
-      errors.push(`${where} は別の語としているが、どう別かの説明が無い`)
-    }
-    if (!sense?.separateWord && sense?.note !== undefined) {
-      errors.push(`${where} は同じ語なのに別の語の説明を持っている`)
+    // 由来がちがう同綴り語は、ほかの意味の一枠に混ぜず homograph-words.js の独立した見出し語にする
+    // （2026-09-15、元の語のカードに同居していた56語を見出し語へ移した）。
+    if (sense?.separateWord !== undefined || sense?.note !== undefined) {
+      errors.push(`${where} に別の語の印・説明がある → 同じつづりの別の語は homograph-words.js の見出し語にする`)
     }
   }
   const referenceRoots = w.referenceRoots ?? []
@@ -691,6 +690,85 @@ for (const w of ALL_WORDS) {
   for (const d of w.derivatives ?? []) {
     if (d?.w && wordIds.has(slug(d.w)) && slug(d.w) !== w.id) {
       errors.push(`${w.id}: 派生語「${d.w}」は独立エントリです。派生語(メタ)と独立エントリは二重計上不可（語族=1エントリで数える）。別語なら synonyms/usage で参照を。`)
+    }
+  }
+}
+
+// ── 同じつづりの別の語（homograph-words.js）：独立した見出し語が元の語や台帳と食い違っていないか ──
+// 何が別の語か、どの熟語・関連語がどちらの語のものかは人が決める。ここでは台帳どうしの食い違いだけを見る。
+{
+  const senseCores = (word) => new Set(
+    [word.meaning, ...(word.otherSenses ?? []).map((sense) => sense.meaning)]
+      .flatMap((meaning) => String(meaning ?? '').split('・'))
+      .map(meaningCore)
+      .filter(Boolean),
+  )
+  const senseText = (word) => [word.meaning, ...(word.otherSenses ?? []).map((sense) => sense.meaning)].join('・')
+  const homographIds = new Set()
+  const homographsBySpelling = new Map()
+  for (const entry of HOMOGRAPH_WORDS) {
+    const at = `同じつづりの別の語 ${entry.id}`
+    const word = getWord(entry.id)
+    const base = getWord(entry.homographOf)
+    if (homographIds.has(entry.id)) errors.push(`${at}: id が重複`)
+    homographIds.add(entry.id)
+    if (!base || base.homographOf) {
+      errors.push(`${at}: 元の語 ${entry.homographOf} が辞書の見出し語にない`)
+      continue
+    }
+    if (!new RegExp(`^${entry.homographOf}_[2-9]$`).test(entry.id)) errors.push(`${at}: id は「元の語の id_2」にする`)
+    if (!word) {
+      errors.push(`${at}: 辞書に入っていない`)
+      continue
+    }
+    if (!homographsBySpelling.has(word.word)) homographsBySpelling.set(word.word, [])
+    homographsBySpelling.get(word.word).push(word)
+    if (word.word !== base.word.toLowerCase()) errors.push(`${at}: つづりが元の語 ${base.word} と同じでない`)
+    // homographs.js が元の語の別語の意味として登録したものが、この見出し語の意味にある。
+    const glosses = HOMOGRAPH_SEPARATE_SENSES[base.id] ?? []
+    if (!glosses.length) errors.push(`${at}: homographs.js に元の語 ${base.id} の別語の意味が登録されていない`)
+    else if (!glosses.some((gloss) => senseText(word).includes(gloss))) {
+      errors.push(`${at}: homographs.js の別語の意味（${glosses.join('・')}）がこの見出し語の意味にない`)
+    }
+    // 元の語と同じ意味を持つなら、別の語ではなく同じ語の意味の枝分かれ。
+    const baseCores = senseCores(base)
+    const shared = [...senseCores(word)].filter((core) => baseCores.has(core))
+    if (shared.length) errors.push(`${at}: 元の語と意味「${shared.join('・')}」が重なる`)
+    // この語の意味で使う熟語は、そのつづりを含む熟語から選ぶ。
+    const ownPhraseIds = new Set(phrasesForWord(word).map((phrase) => phrase.id))
+    for (const phraseId of entry.phraseIds ?? []) {
+      if (!getPhrase(phraseId)) errors.push(`${at}: 熟語 ${phraseId} が熟語データにない`)
+      else if (!ownPhraseIds.has(phraseId)) errors.push(`${at}: 熟語 ${phraseId} に ${entry.word} が含まれない`)
+    }
+    // linkedFrom に書いた見出し語は、類義語・反意語・派生語の欄でこのつづりを実際に指している。
+    for (const referrerId of entry.linkedFrom ?? []) {
+      const referrer = getWord(referrerId)
+      const items = [...(referrer?.synonyms ?? []), ...(referrer?.antonyms ?? []), ...(referrer?.derivatives ?? [])]
+      if (!referrer) errors.push(`${at}: linkedFrom の ${referrerId} が辞書にない`)
+      else if (!items.some((item) => item.id === entry.id)) {
+        errors.push(`${at}: ${referrerId} の類義語・反意語・派生語の欄に ${entry.word} が無い`)
+      }
+    }
+  }
+  // つづりのままでは元の語へ飛ぶのに、添えた意味は別の語のものになっている関連語の項目。
+  for (const w of ALL_WORDS) {
+    for (const key of ['synonyms', 'antonyms', 'derivatives']) {
+      for (const item of w[key] ?? []) {
+        const homographs = homographsBySpelling.get(String(item?.w ?? '').toLowerCase())
+        if (!homographs || item.id) continue
+        const base = getWord(slug(item.w))
+        const baseCores = base ? [...senseCores(base)] : []
+        const cores = String(item.m ?? '').split('・').map(meaningCore).filter(Boolean)
+        for (const homograph of homographs) {
+          const text = senseText(homograph)
+          if (cores.some((core) => text.includes(core) && !baseCores.some((baseCore) => baseCore.includes(core)))) {
+            errors.push(
+              `${w.id}: ${key} の ${item.w}「${item.m}」は同じつづりの別の語 ${homograph.id} の意味`
+              + ` → homograph-words.js の ${homograph.id} の linkedFrom に ${w.id} を書く`,
+            )
+          }
+        }
+      }
     }
   }
 }

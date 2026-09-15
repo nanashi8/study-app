@@ -569,7 +569,7 @@ export const EXAM_USAGE_GUIDES = [
   {
     id: 'lay-lie',
     title: 'lay / lie',
-    wordIds: ['lay', 'lie'],
+    wordIds: ['lay', 'lie_2'],
     summary: 'lay は他動詞「〜を置く」、lie は自動詞「横たわる」。活用も異なる。',
     choices: [
       { term: 'lay', rule: 'lay-laid-laid＋目的語', example: 'Lay the book on the desk.', ja: '本を机の上に置きなさい。' },

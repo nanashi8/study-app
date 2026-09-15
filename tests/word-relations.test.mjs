@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import test from 'node:test'
-import { getWord } from '../src/data/vocab.js'
+import { getWord, homographsFor } from '../src/data/vocab.js'
 import { LOANWORD_HINTS } from '../src/data/loanword-hints.js'
 import { WORD_IDIOM_EQUIVALENTS } from '../src/data/word-idiom-equivalents.js'
 import {
@@ -70,14 +70,31 @@ test('日本語に定着したカタカナ語は、意味とのつながりや�
   assert.match(loanwordHintFor(getWord('drag')).note, /drug/)
   assert.match(loanwordHintFor(getWord('drug')).note, /drag/)
   assert.equal(loanwordHintFor(getWord('strike')).kana, 'ストライク')
-  // 同じつづりの別の語は代表義に混ぜず、ほかの意味の「別の語」として出す。
+  // 同じつづりの別の語は代表義に混ぜず、独立した見出し語にして互いにリンクする。
   const bark = getWord('bark')
   assert.equal(bark.meanings.includes('樹皮'), false)
-  assert.ok(bark.otherSenses.some((sense) => sense.separateWord && sense.meaning === '樹皮'))
+  assert.deepEqual(homographsFor(bark).map((word) => [word.id, word.meaning]), [['bark_2', '樹皮']])
   // 分けた語を部品にする派生語も合わせる（「光」の lighten と「軽い」の lighten）。
   const lighten = getWord('lighten')
   assert.equal(lighten.meanings.some((meaning) => meaning.includes('軽く')), false)
-  assert.ok(lighten.otherSenses.some((sense) => sense.separateWord && sense.meaning.startsWith('軽くする')))
+  assert.ok(getWord('lighten_2').meanings[0].startsWith('軽くする'))
+  // カタカナ語は、そのカタカナが来ている方の語に付ける（紙をはさむクリップは「留める」の clip）。
+  assert.match(loanwordHintFor(getWord('clip_2')).note, /紙をはさむクリップがこの clip/)
+  assert.equal(LOANWORD_HINTS.bit, undefined)
+})
+
+test('関連語の欄と台帳は、同じつづりの別の語のうち意味の合う方へつなぐ', () => {
+  // つづりで引くと元の語へ飛んでしまう項目は、別の語の id を持つ。
+  assert.equal(getWord('heavy').antonyms.find((item) => item.w === 'light')?.id, 'light_2')
+  assert.equal(wordRelationsFor(getWord('pillar')).synonyms.find((item) => item.w === 'post')?.id, 'post_2')
+  // 元の語を指す項目は id を持たず、つづりのまま元の語へ飛ぶ。
+  assert.equal(getWord('dark').antonyms.find((item) => item.w === 'light')?.id, undefined)
+  // 「世話をする」の attend to は、別の語の tend（世話をする）の同じ意味の熟語。
+  assert.deepEqual(wordRelationsFor(getWord('tend_2')).idioms.map((phrase) => phrase.phrase), ['attend to'])
+  assert.equal(wordRelationsFor(getWord('tend')).idioms.some((phrase) => phrase.phrase === 'attend to'), false)
+  // lay と取り違えるのは、過去形が lay になる「横たわる」の lie。
+  assert.ok(confusablesFor(getWord('lie_2')).some((item) => item.word.id === 'lay'))
+  assert.equal(confusablesFor(getWord('lie')).some((item) => item.word.id === 'lay'), false)
 })
 
 test('自作単語には辞書の台帳を当てない', () => {

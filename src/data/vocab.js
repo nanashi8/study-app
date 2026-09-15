@@ -161,6 +161,7 @@ import {
 } from './etymology-history.js'
 import { quizMeaning, quizMeaningKey, splitMeanings } from './compact.js'
 import { WORD_SENSES } from './word-senses.js'
+import { HOMOGRAPH_WORDS } from './homograph-words.js'
 import { EXAM_WORDS, USAGE_GUIDES_BY_WORD } from './exam-lexicon.js'
 import { ETYMOLOGY_COMPLETION_WORDS } from './words-etymology-completion.js'
 import { CURRICULUM_1900_WORDS } from './words-curriculum-1900.js'
@@ -424,131 +425,118 @@ const LEGACY_NORMALIZED_WORDS = deriveFamilies(
 )
 const COMPLETION_NORMALIZED_WORDS = deriveFamilies(ETYMOLOGY_COMPLETION_WORDS.map(normalize))
 const CURRICULUM_1900_NORMALIZED_WORDS = deriveFamilies(CURRICULUM_1900_WORDS.map(normalize))
+// 同じつづりの別の語（homograph-words.js）。級の補正・語根の自動判定・補助語根はつづりで引く
+// 元の語のための台帳なので当てない。語族の自動補完もつづりで結ぶので通さない。
+const HOMOGRAPH_NORMALIZED_WORDS = HOMOGRAPH_WORDS.map((word) => ({
+  ...normalize(word),
+  level: word.level,
+  roots: [],
+  referenceRoots: [],
+}))
 
 // 既存8,211語だけで従来どおり圧縮してから、不足語を別集合として圧縮する。
 // 新語が既存パックの並び・anchor・packIdを変えないための保存互換境界。
 const LEGACY_ETYMOLOGY_INDEX = buildEtymologyCompression(LEGACY_NORMALIZED_WORDS, LEARNING_ROOTS)
-const rawCompletionIndex = buildEtymologyCompression(COMPLETION_NORMALIZED_WORDS, LEARNING_ROOTS)
-const rawCurriculum1900Index = buildEtymologyCompression(
-  CURRICULUM_1900_NORMALIZED_WORDS,
-  LEARNING_ROOTS,
+
+// 追加した語の集合は、それぞれの名前空間を packId の前に付けて既存パックと衝突させない。
+const withPackPrefix = (index, prefix) => ({
+  ...index,
+  words: index.words.map((word) => ({
+    ...word,
+    compression: {
+      ...word.compression,
+      packId: `${prefix}${word.compression.packId}`,
+    },
+  })),
+  packs: index.packs.map((pack) => ({
+    ...pack,
+    id: `${prefix}${pack.id}`,
+  })),
+})
+const COMPLETION_ETYMOLOGY_INDEX = withPackPrefix(
+  buildEtymologyCompression(COMPLETION_NORMALIZED_WORDS, LEARNING_ROOTS),
+  'completion:',
 )
-
-const COMPLETION_PACK_PREFIX = 'completion:'
-const completionPackId = (id) => `${COMPLETION_PACK_PREFIX}${id}`
-const COMPLETION_ETYMOLOGY_INDEX = {
-  ...rawCompletionIndex,
-  words: rawCompletionIndex.words.map((word) => ({
-    ...word,
-    compression: {
-      ...word.compression,
-      packId: completionPackId(word.compression.packId),
-    },
-  })),
-  packs: rawCompletionIndex.packs.map((pack) => ({
-    ...pack,
-    id: completionPackId(pack.id),
-  })),
-}
-
-const CURRICULUM_1900_PACK_PREFIX = 'curriculum-1900:'
-const curriculum1900PackId = (id) => `${CURRICULUM_1900_PACK_PREFIX}${id}`
-const CURRICULUM_1900_ETYMOLOGY_INDEX = {
-  ...rawCurriculum1900Index,
-  words: rawCurriculum1900Index.words.map((word) => ({
-    ...word,
-    compression: {
-      ...word.compression,
-      packId: curriculum1900PackId(word.compression.packId),
-    },
-  })),
-  packs: rawCurriculum1900Index.packs.map((pack) => ({
-    ...pack,
-    id: curriculum1900PackId(pack.id),
-  })),
-}
+const CURRICULUM_1900_ETYMOLOGY_INDEX = withPackPrefix(
+  buildEtymologyCompression(CURRICULUM_1900_NORMALIZED_WORDS, LEARNING_ROOTS),
+  'curriculum-1900:',
+)
+const HOMOGRAPH_ETYMOLOGY_INDEX = withPackPrefix(
+  buildEtymologyCompression(HOMOGRAPH_NORMALIZED_WORDS, LEARNING_ROOTS),
+  'homograph:',
+)
+const ETYMOLOGY_INDEXES = [
+  LEGACY_ETYMOLOGY_INDEX,
+  COMPLETION_ETYMOLOGY_INDEX,
+  CURRICULUM_1900_ETYMOLOGY_INDEX,
+  HOMOGRAPH_ETYMOLOGY_INDEX,
+]
 
 const sumCounts = (left, right) => Object.fromEntries(
   [...new Set([...Object.keys(left), ...Object.keys(right)])]
     .map((key) => [key, (left[key] ?? 0) + (right[key] ?? 0)]),
 )
-const mergedPacks = [
-  ...LEGACY_ETYMOLOGY_INDEX.packs,
-  ...COMPLETION_ETYMOLOGY_INDEX.packs,
-  ...CURRICULUM_1900_ETYMOLOGY_INDEX.packs,
-]
+const sumOverIndexes = (select) => ETYMOLOGY_INDEXES.map(select).reduce(sumCounts)
+const totalOverIndexes = (select) => ETYMOLOGY_INDEXES.reduce((total, index) => total + select(index), 0)
+const mergedPacks = ETYMOLOGY_INDEXES.flatMap((index) => index.packs)
 if (new Set(mergedPacks.map((pack) => pack.id)).size !== mergedPacks.length) {
   throw new Error('既存語と補完語のpackIdが衝突しています。')
 }
 
+// 類義語・反意語・派生語の欄は英単語のつづりで相手を指すので、そのままでは同じつづりの元の語へ飛ぶ。
+// homograph-words.js の linkedFrom に書いた見出し語だけ、その欄の項目に相手の id を持たせる。
+const HOMOGRAPH_LINKS_BY_REFERRER = new Map()
+for (const homograph of HOMOGRAPH_WORDS) {
+  for (const referrerId of homograph.linkedFrom ?? []) {
+    if (!HOMOGRAPH_LINKS_BY_REFERRER.has(referrerId)) HOMOGRAPH_LINKS_BY_REFERRER.set(referrerId, new Map())
+    HOMOGRAPH_LINKS_BY_REFERRER.get(referrerId).set(homograph.word, homograph.id)
+  }
+}
+const linkRelationsToHomographs = (word) => {
+  const links = HOMOGRAPH_LINKS_BY_REFERRER.get(word.id)
+  if (!links) return word
+  const link = (items) => items.map((item) => {
+    const id = links.get(String(item.w).toLowerCase())
+    return id ? { ...item, id } : item
+  })
+  return {
+    ...word,
+    synonyms: link(word.synonyms),
+    antonyms: link(word.antonyms),
+    derivatives: link(word.derivatives),
+  }
+}
+
 const ETYMOLOGY_INDEX = {
-  words: applyCompletionFamilyBridges([
-    ...LEGACY_ETYMOLOGY_INDEX.words.map((word) => ({
-      ...word,
-      // 独立見出しになった派生語は、旧カード計算には残してpackIdを守りつつ、
-      // 公開データでは「派生語メタ」との二重計上を解消する。
-      derivatives: word.derivatives.filter((item) =>
-        !supplementalIds.has(item.w.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, ''))),
-    })),
-    ...COMPLETION_ETYMOLOGY_INDEX.words,
-    ...CURRICULUM_1900_ETYMOLOGY_INDEX.words,
-  ]),
+  words: [
+    ...applyCompletionFamilyBridges([
+      ...LEGACY_ETYMOLOGY_INDEX.words.map((word) => ({
+        ...word,
+        // 独立見出しになった派生語は、旧カード計算には残してpackIdを守りつつ、
+        // 公開データでは「派生語メタ」との二重計上を解消する。
+        derivatives: word.derivatives.filter((item) =>
+          !supplementalIds.has(item.w.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, ''))),
+      })),
+      ...COMPLETION_ETYMOLOGY_INDEX.words,
+      ...CURRICULUM_1900_ETYMOLOGY_INDEX.words,
+    ]).map(linkRelationsToHomographs),
+    // 同じつづりの別の語は、つづりで結ぶ語族の橋渡しに入れず、既存の並びを変えないよう末尾へ置く。
+    ...HOMOGRAPH_ETYMOLOGY_INDEX.words,
+  ],
   packs: mergedPacks,
   packsById: Object.fromEntries(mergedPacks.map((pack) => [pack.id, pack])),
   summary: {
-    total:
-      LEGACY_ETYMOLOGY_INDEX.summary.total +
-      COMPLETION_ETYMOLOGY_INDEX.summary.total +
-      CURRICULUM_1900_ETYMOLOGY_INDEX.summary.total,
-    covered:
-      LEGACY_ETYMOLOGY_INDEX.summary.covered +
-      COMPLETION_ETYMOLOGY_INDEX.summary.covered +
-      CURRICULUM_1900_ETYMOLOGY_INDEX.summary.covered,
-    counts: sumCounts(
-      sumCounts(
-        LEGACY_ETYMOLOGY_INDEX.summary.counts,
-        COMPLETION_ETYMOLOGY_INDEX.summary.counts,
-      ),
-      CURRICULUM_1900_ETYMOLOGY_INDEX.summary.counts,
-    ),
-    packCounts: sumCounts(
-      sumCounts(
-        LEGACY_ETYMOLOGY_INDEX.summary.packCounts,
-        COMPLETION_ETYMOLOGY_INDEX.summary.packCounts,
-      ),
-      CURRICULUM_1900_ETYMOLOGY_INDEX.summary.packCounts,
-    ),
+    total: totalOverIndexes((index) => index.summary.total),
+    covered: totalOverIndexes((index) => index.summary.covered),
+    counts: sumOverIndexes((index) => index.summary.counts),
+    packCounts: sumOverIndexes((index) => index.summary.packCounts),
     packs: mergedPacks.length,
     origin: {
-      formationCounts: sumCounts(
-        sumCounts(
-          LEGACY_ETYMOLOGY_INDEX.summary.origin.formationCounts,
-          COMPLETION_ETYMOLOGY_INDEX.summary.origin.formationCounts,
-        ),
-        CURRICULUM_1900_ETYMOLOGY_INDEX.summary.origin.formationCounts,
-      ),
-      sourceCounts: sumCounts(
-        sumCounts(
-          LEGACY_ETYMOLOGY_INDEX.summary.origin.sourceCounts,
-          COMPLETION_ETYMOLOGY_INDEX.summary.origin.sourceCounts,
-        ),
-        CURRICULUM_1900_ETYMOLOGY_INDEX.summary.origin.sourceCounts,
-      ),
-      domainCounts: sumCounts(
-        sumCounts(
-          LEGACY_ETYMOLOGY_INDEX.summary.origin.domainCounts,
-          COMPLETION_ETYMOLOGY_INDEX.summary.origin.domainCounts,
-        ),
-        CURRICULUM_1900_ETYMOLOGY_INDEX.summary.origin.domainCounts,
-      ),
-      packs:
-        LEGACY_ETYMOLOGY_INDEX.summary.origin.packs +
-        COMPLETION_ETYMOLOGY_INDEX.summary.origin.packs +
-        CURRICULUM_1900_ETYMOLOGY_INDEX.summary.origin.packs,
-      singletonPacks:
-        LEGACY_ETYMOLOGY_INDEX.summary.origin.singletonPacks +
-        COMPLETION_ETYMOLOGY_INDEX.summary.origin.singletonPacks +
-        CURRICULUM_1900_ETYMOLOGY_INDEX.summary.origin.singletonPacks,
+      formationCounts: sumOverIndexes((index) => index.summary.origin.formationCounts),
+      sourceCounts: sumOverIndexes((index) => index.summary.origin.sourceCounts),
+      domainCounts: sumOverIndexes((index) => index.summary.origin.domainCounts),
+      packs: totalOverIndexes((index) => index.summary.origin.packs),
+      singletonPacks: totalOverIndexes((index) => index.summary.origin.singletonPacks),
     },
   },
 }
@@ -596,6 +584,21 @@ export {
 }
 
 export const WORDS_BY_ID = Object.fromEntries(ALL_WORDS.map((w) => [w.id, w]))
+
+// 同じつづりの別の語どうし（元の語と、そこから分けた見出し語）。互いに相手を返す。
+const HOMOGRAPH_GROUPS = new Map()
+for (const homograph of HOMOGRAPH_WORDS) {
+  const group = HOMOGRAPH_GROUPS.get(homograph.homographOf) ?? [homograph.homographOf]
+  group.push(homograph.id)
+  for (const id of group) HOMOGRAPH_GROUPS.set(id, group)
+}
+export const homographsFor = (wordOrId) => {
+  const id = typeof wordOrId === 'string' ? wordOrId : wordOrId?.id
+  return (HOMOGRAPH_GROUPS.get(id) ?? [])
+    .filter((otherId) => otherId !== id)
+    .map((otherId) => WORDS_BY_ID[otherId])
+    .filter(Boolean)
+}
 
 // 利用者が自分で登録した語（自作単語）は、辞書本体には入れずここへ置く。
 // ALL_WORDS・級別件数・語源カード・監査台帳は辞書だけの固定値のまま保ち、
@@ -832,11 +835,18 @@ const overlapText = (value) => String(value ?? '')
 const allSensesText = (item) => overlapText(
   [item.meaning, ...(item.otherSenses ?? []).map((sense) => sense.meaning)].join(''),
 )
+// 画面に出るのは英単語のつづりなので、同じつづりの別の語の意味（bark の「樹皮」など）も
+// 正解になりうる。正解側は、同じつづりの語の意味をまとめて見る。
+const spellingSensesText = (item) => overlapText(
+  [item, ...homographsFor(item)]
+    .flatMap((entry) => [entry.meaning, ...(entry.otherSenses ?? []).map((sense) => sense.meaning)])
+    .join(''),
+)
 const meaningsOverlap = (word, candidate) => {
   const answer = quizMeaningKeyText(word)
   const other = quizMeaningKeyText(candidate)
   if (answer.length >= 2 && allSensesText(candidate).includes(answer)) return true
-  if (other.length >= 2 && allSensesText(word).includes(other)) return true
+  if (other.length >= 2 && spellingSensesText(word).includes(other)) return true
   return false
 }
 const quizMeaningKeyText = (item) => overlapText(quizMeaning(item))
@@ -856,12 +866,15 @@ export function pickDistractors(word, count, rng = Math.random) {
     ALL_WORDS,
   ]
   const seenIds = new Set([word.id])
+  // 同じつづりの語（同じつづりの別の語）は、選択肢の英単語が正解と同じになるので誤答にしない。
+  const spelling = String(word.word ?? '').toLowerCase()
   const picked = []
   const usedMeaning = new Set([quizMeaningKey(word)])
   for (const tier of tiers) {
     for (const candidate of shuffle(tier, rng)) {
       if (seenIds.has(candidate.id)) continue
       seenIds.add(candidate.id)
+      if (String(candidate.word ?? '').toLowerCase() === spelling) continue
       const meaningKey = quizMeaningKey(candidate)
       if (!meaningKey || usedMeaning.has(meaningKey)) continue
       if (meaningsOverlap(word, candidate)) continue

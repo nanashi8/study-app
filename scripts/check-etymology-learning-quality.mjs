@@ -18,7 +18,10 @@ import {
   etymologyCardsForWord,
   getRoot,
 } from '../src/data/vocab.js'
-import { ETYMOLOGY_WORD_NOTES } from '../src/data/etymology-word-notes.js'
+import {
+  ETYMOLOGY_HOMOGRAPH_WORD_NOTES,
+  ETYMOLOGY_WORD_NOTES,
+} from '../src/data/etymology-word-notes.js'
 import { etymologyWordNoteMaterial } from '../src/data/etymology-word-note-review.js'
 import { ETYMOLOGY_CARD_REVIEWS } from '../src/data/etymology-card-reviews.js'
 import { buildAllEtymologyQuizQuestions } from '../src/lib/etymologyQuiz.js'
@@ -26,13 +29,13 @@ import { QUIZ_CHOICE_COUNT } from '../src/lib/quizChoices.js'
 import { etymologyCardReviewMaterial } from '../src/data/etymology-reviewed-cards.js'
 
 export const ETYMOLOGY_QUALITY_TARGETS = Object.freeze({
-  rawWords: 8851,
+  rawWords: 8907,
   publicCards: 339,
   publicWords: 4026,
   publicLinks: 6330,
-  quarantinedWords: 4825,
-  retiredLegacyPacks: 2957,
-  wordStories: 8851,
+  quarantinedWords: 4881,
+  retiredLegacyPacks: 2995,
+  wordStories: 8907,
 })
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
@@ -56,7 +59,10 @@ export function auditEtymologyLearningQuality() {
   const errors = []
   const fail = (message) => errors.push(message)
   const wordsById = new Map(ALL_WORDS.map((word) => [word.id, word]))
-  const wordsByHead = new Map(ALL_WORDS.map((word) => [lowerHead(word.word), word]))
+  // 同じつづりの別の語（homograph-words.js）はつづりでは元の語と区別できないので、見出し語で引くときは元の語だけを見る。
+  const wordsByHead = new Map(
+    ALL_WORDS.filter((word) => !word.homographOf).map((word) => [lowerHead(word.word), word]),
+  )
   const cardIds = new Set()
   const publicWordIds = new Set()
   const reviewRootIds = new Set(Object.keys(ETYMOLOGY_CARD_REVIEWS))
@@ -154,17 +160,20 @@ export function auditEtymologyLearningQuality() {
   // 語の成り立ちは全語ぶん公開する。本文は「書き起こした台帳」か
   // 「既存メモをハッシュで固定した台帳」のどちらかで内容を固定する。
   const storyHeads = new Set(Object.keys(ETYMOLOGY_WORD_NOTES))
+  // 同じつづりの別の語の本文は、見出し語ではなく id ごとに持つ。
+  const homographStoryIds = new Set(Object.keys(ETYMOLOGY_HOMOGRAPH_WORD_NOTES))
   if (ETYMOLOGY_WORD_STORIES.length !== ETYMOLOGY_QUALITY_TARGETS.wordStories) {
     fail(`語の成り立ちの公開数が不一致: ${ETYMOLOGY_WORD_STORIES.length}/${ETYMOLOGY_QUALITY_TARGETS.wordStories}`)
   }
   const storyWordIds = new Set()
   for (const story of ETYMOLOGY_WORD_STORIES) {
     const at = `${story.id}`
-    storyHeads.delete(story.head)
+    const word = wordsById.get(story.wordId)
+    if (word?.homographOf) homographStoryIds.delete(word.id)
+    else storyHeads.delete(story.head)
     if (storyWordIds.has(story.wordId)) fail(`${at}: 同じ単語に2件ある`)
     storyWordIds.add(story.wordId)
-    const word = wordsByHead.get(lowerHead(story.head))
-    if (!word) fail(`${at}: 収録していない単語`)
+    if (!word || lowerHead(word.word) !== lowerHead(story.head)) fail(`${at}: 収録していない単語`)
     if (!story.note?.trim()) fail(`${at}: 説明が空`)
     if (/確かな語源分解を収録していないため/.test(story.note ?? '')) fail(`${at}: 定型文のまま公開している`)
     // 部品の英単語にも、ラテン語などの元の語までさかのぼった由来を書く。
@@ -196,6 +205,9 @@ export function auditEtymologyLearningQuality() {
     if (fingerprint.length < 16 || actual !== fingerprint) fail(`${at}: 説明が手動確認後に変更された`)
   }
   if (storyHeads.size) fail(`台帳にあるのに公開していない語: ${[...storyHeads].join(', ')}`)
+  if (homographStoryIds.size) {
+    fail(`同じつづりの別の語の台帳にあるのに公開していない語: ${[...homographStoryIds].join(', ')}`)
+  }
   for (const word of ALL_WORDS) {
     if (!storyWordIds.has(word.id)) fail(`${word.word}: 語の成り立ちを公開していない`)
   }

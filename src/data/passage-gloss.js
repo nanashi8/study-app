@@ -8,7 +8,7 @@
 //
 // 返り値 { ja, id }：ja=日本語の意味、id=語彙データの単語ID（あればマイ単語に追加できる）。
 
-import { getWord } from './vocab.js'
+import { getWord, homographsFor } from './vocab.js'
 
 const toId = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '')
 
@@ -336,10 +336,13 @@ export const READER_GLOSS = {
  */
 // 本文をタップしたときは、その場の文脈がどの意味かを決める。単語カードのように
 // 代表義だけへ絞ると「a different kind of loss」の kind が「親切な」になってしまうため、
-// word-senses.js が持つほかの意味も並べて返す。
+// word-senses.js が持つほかの意味も並べて返す。本文のつづりだけでは同じつづりの別の語
+// （bark の「樹皮」など）とも区別できないので、その語の意味も続けて並べる。
 const fullMeaning = (word) => (
   word?.meaning
-    ? [word.meaning, ...(word.otherSenses ?? []).map((sense) => sense.meaning)].join('・')
+    ? [word, ...homographsFor(word)]
+      .flatMap((entry) => [entry.meaning, ...(entry.otherSenses ?? []).map((sense) => sense.meaning)])
+      .join('・')
     : null
 )
 

@@ -61,7 +61,10 @@ export function spellingDifference(base, other) {
   return segments
 }
 
-/** 類義語欄の語を {w, m} で返す。exclude にある語（同じ意味の熟語の欄に出すもの）は除く。 */
+/**
+ * 類義語欄の語を {w, m} で返す。exclude にある語（同じ意味の熟語の欄に出すもの）は除く。
+ * 同じつづりの別の語を指す項目は、リンク先の id も持たせたまま返す。
+ */
 export function synonymWordsFor(word, { exclude = [] } = {}) {
   const seen = new Set([String(word?.word ?? '').toLowerCase(), ...exclude.map((text) => text.toLowerCase())])
   const items = []
@@ -70,7 +73,7 @@ export function synonymWordsFor(word, { exclude = [] } = {}) {
     const key = text.toLowerCase()
     if (!text || seen.has(key)) continue
     seen.add(key)
-    items.push({ w: text, m: item.m ?? '' })
+    items.push({ w: text, m: item.m ?? '', ...(item.id ? { id: item.id } : {}) })
   }
   return items
 }
