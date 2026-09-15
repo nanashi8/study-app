@@ -25,7 +25,6 @@ import { KOTEN_INTERPRETATIONS } from '../src/data/koten-interpretations.js'
 import { KOTEN_WORDS } from '../src/data/koten.js'
 import { PUBLIC_DOMAIN_LITERATURE } from '../src/data/public-domain-literature.js'
 import { getLiteratureReadingQuestions } from '../src/data/literature-reading.js'
-import { ALL_WORDS } from '../src/data/vocab.js'
 import { LEARNING_CONTENTS } from '../src/lib/learningContentProgress.js'
 import {
   grammarChoiceDecisionFor,
@@ -328,7 +327,6 @@ function buildInstructorAnswerPathAudit() {
     }
   }
   const families = [
-    family('vocab', '英単語', ALL_WORDS, () => 3),
     family('phrases', '熟語・構文', PHRASES, () => 3),
     family('grammar', '英文法', GRAMMAR, (item) => item.choices.length),
     family('koten-vocab', '古典単語', KOTEN_WORDS, () => 4),

@@ -1,22 +1,11 @@
 import { UNKNOWN_CHOICE_ID } from './quizChoices.js'
 import { syntaxFamilyFor } from '../data/syntax-families.js'
-import { etymologyCardsForWord } from '../data/vocab.js'
 import {
   grammarChoiceMismatchExplanationFor,
   grammarCorrectChoiceExplanationFor,
   grammarExamFocusExplanationFor,
   grammarQuestionExplanationFor,
 } from './grammarQuestionExplanations.js'
-
-const POS_GUIDE = Object.freeze({
-  動: '動作・状態を表す動詞',
-  名: '人・物・概念を指す名詞',
-  形: '名詞や状態を説明する形容詞',
-  副: '動作・程度・文全体を詳しくする副詞',
-  前: '後ろの名詞句との関係を示す前置詞',
-  接: '語・句・節をつなぐ接続詞',
-  代: '名詞の代わりをする代名詞',
-})
 
 const clean = (value) => String(value ?? '')
   .replace(/\s+/g, ' ')
@@ -355,30 +344,6 @@ const DIAGNOSTIC_SKILL_LABEL = Object.freeze({
   usage: '熟語・語法',
   reading: '読解',
 })
-
-export function buildVocabInstructorExplanation(word, selectedWord) {
-  const meanings = list(word?.meanings) || clean(word?.meaning)
-  const selectedMeaning = selectedWord
-    ? list(selectedWord.meanings) || clean(selectedWord.meaning)
-    : ''
-  const role = POS_GUIDE[word?.pos] ?? `${clean(word?.pos)}としての働き`
-  const reviewedCard = etymologyCardsForWord(word)[0]
-  const recallCue = reviewedCard
-    ? `語源カード「${reviewedCard.rootForm}＝${reviewedCard.rootMeaning}」も手掛かりにする`
-    : '品詞と例文を手掛かりに、基本の意味を言い直す'
-  return explanation({
-    answer: `${quote(word?.word)}の中心となる意味は${quote(meanings)}。まずこの基本の意味を正解として押さえる。`,
-    evidence: `用例 ${quote(word?.example?.en)} では、${quote(word?.word)}が${role}として働く。日本語では${quote(word?.example?.ja)}となるため、意味を文脈の中で確定できる。`,
-    trap: selectionTrap({
-      selected: selectedWord,
-      correct: word?.meaning,
-      wrong: () => `${quote(selectedMeaning)}は${quote(selectedWord?.word)}側の意味。日本語だけの印象で選ばず、問われた綴り${quote(word?.word)}と正しい意味を一対一で結び付ける。`,
-      unknown: `意味が出てこないときは、品詞${quote(word?.pos)}と例文の位置から働きを先に絞る。空欄のままにせず、基本の意味${quote(meanings)}へ戻す。`,
-      correctAnswer: `意味を一語訳だけで固定せず、${quote(word?.word)}が${role}として使われることまで確認すると、別の文脈でも崩れにくい。`,
-    }),
-    strategy: `次からは「品詞 → 基本の意味 → 例文」の順で思い出す。${recallCue}。`,
-  })
-}
 
 export function buildPhraseInstructorExplanation(item, selectedItem) {
   const meanings = list(item?.meanings) || clean(item?.meaning)

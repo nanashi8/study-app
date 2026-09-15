@@ -323,6 +323,7 @@ test('熟語・文法・古典・漢文などほかの教材も単語帳に入�
 
   // 暗記・テストのカードの保存ボタンは、どれも入れる単語帳を選ぶ窓を開く。
   const toggles = {
+    'src/screens/VocabQuiz.jsx': 'vocab',
     'src/screens/PhraseStudy.jsx': 'phrases',
     'src/screens/PhraseQuiz.jsx': 'phrases',
     'src/screens/GrammarQuiz.jsx': 'grammar',

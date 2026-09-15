@@ -21,13 +21,12 @@ import { MeaningText } from '../components/MeaningText.jsx'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { EtymologyBlock, PosBadge } from '../components/WordBits.jsx'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
-import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
+import { WordBookToggle } from '../components/WordListSheet.jsx'
 import { DragonVeinCipherStage } from '../components/DragonVeinCipherStage.jsx'
 import { Button } from '../components/ui.jsx'
 import { Close, Check, ArrowRight } from '../components/Icons.jsx'
 import { cx } from '../components/ui.jsx'
 import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
-import { buildVocabInstructorExplanation } from '../lib/instructorExplanations.js'
 import { isDragonVeinSource } from '../lib/dragonVein.js'
 import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
 import { VocabReviewHistory } from '../components/VocabReviewHistory.jsx'
@@ -73,6 +72,51 @@ function streaksFromLog(log = []) {
     }
   }
   return { streak, wrongStreak, lastAnswer: log.at(-1) ?? null }
+}
+
+// 答え合わせで、出題した選択肢がそれぞれどの英単語の意味だったかを並べる。
+// 出題は英単語だけなので、例文や文脈から答えを決める説明は置かない。
+function VocabChoiceMeanings({ options, answerId, selected, className }) {
+  return (
+    <section
+      className={cx('rounded-2xl bg-slate-50 p-3 text-left ring-1 ring-slate-200', className)}
+      data-vocab-choice-meanings
+      aria-label="選択肢の単語と意味"
+    >
+      <p className="mb-2 text-sm font-extrabold text-brand-700">選択肢の単語と意味</p>
+      <ul className="space-y-1.5">
+        {options.map((option) => {
+          const correct = option.id === answerId
+          const chosenWrong = selected === option.id && !correct
+          return (
+            <li
+              key={option.id}
+              data-vocab-choice={option.id}
+              data-choice-correct={correct ? 'true' : 'false'}
+              className={cx(
+                'rounded-xl bg-white px-3 py-2',
+                correct && 'ring-1 ring-emerald-300',
+                chosenWrong && 'ring-2 ring-rose-300',
+              )}
+            >
+              <div className="flex flex-wrap items-center gap-1.5">
+                <span className="font-display font-extrabold text-ink">{option.word}</span>
+                {correct && (
+                  <span className="rounded-full bg-emerald-500 px-2 py-0.5 text-[10px] font-extrabold text-white">正解</span>
+                )}
+                {chosenWrong && (
+                  <span className="rounded-full bg-rose-500 px-2 py-0.5 text-[10px] font-extrabold text-white">あなたの回答</span>
+                )}
+              </div>
+              <p className="mt-0.5 text-xs font-bold leading-relaxed text-ink/65">
+                <MeaningText>{option.meanings.join('・')}</MeaningText>
+              </p>
+            </li>
+          )
+        })}
+      </ul>
+    </section>
+  )
 }
 
 export function VocabQuizScreen() {
@@ -221,14 +265,6 @@ export function VocabQuizScreen() {
   const answeredIndexes = answeredQuizIndexes(index, selections)
   const streakState = streaksFromLog(results.current.answerLog)
   const isCorrectPick = answered && selected === word.id
-  const instructorExplanation = answered
-    ? buildVocabInstructorExplanation(
-        word,
-        selected === UNKNOWN_CHOICE_ID
-          ? UNKNOWN_CHOICE_ID
-          : options.find((option) => option.id === selected),
-      )
-    : null
 
   const finish = () => {
     handOffSession()
@@ -318,7 +354,7 @@ export function VocabQuizScreen() {
       ? `連続${streakState.streak}正解！ 記憶の文脈が一気につながった`
       : '正解。英語の記憶断片を1つ復元した'
     : selected === UNKNOWN_CHOICE_ID
-      ? '未解読として記録。例文から手掛かりを拾おう'
+      ? '未解読として記録。意味と語源を確かめよう'
       : '組み合わせが合わない。意味と語源を見直そう'
 
   return (
@@ -354,6 +390,9 @@ export function VocabQuizScreen() {
               }
             }}
           />
+        )}
+        trailingActions={(
+          <WordBookToggle domain="vocab" itemId={word.id} itemLabel={word.word} />
         )}
       />
 
@@ -455,7 +494,7 @@ export function VocabQuizScreen() {
                 <p className="mt-0.5 text-xs font-bold leading-relaxed text-ink/55">{word.example.ja}</p>
               </div>
             </div>
-            <InstructorExplanation explanation={instructorExplanation} className="mt-3" />
+            <VocabChoiceMeanings options={options} answerId={word.id} selected={selected} className="mt-3" />
             {(etymologyCardsForWord(word).length > 0 || etymologyStoryForWord(word)) && (
               <div className="mt-3 rounded-2xl bg-slate-50 p-3 text-left ring-1 ring-slate-200">
                 <p className="mb-2 text-sm font-extrabold text-brand-700">語の成り立ち</p>

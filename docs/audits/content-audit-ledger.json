@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-09-15T00:56:30.164Z",
+  "auditedAt": "2026-09-15T02:22:25.183Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -17,7 +17,7 @@
   "completionCriteria": [
     "全18教材カテゴリのID・母数・重複・内容ハッシュが一致する",
     "全問題バンクで選択肢が重複せず、正答が一つだけ存在し、問題別解説がある",
-    "共通講師解説を使う全選択式問題の正解・全誤答・わからない67,568経路に回答別指導がある",
+    "共通講師解説を使う全選択式問題の正解・全誤答・わからない31,940経路に回答別指導がある",
     "英文法は全3,450問・全13,800選択肢に問題文固有の根拠を持つ",
     "長文32本・794文・140問・560選択肢の和訳と選択肢別解説が原文順に対応する",
     "長文32本すべてが並び替え・文法・語法の技能練習を1問ずつ持ち、原文・訳・重点語・読解ルールが本文と一致する",
@@ -103,7 +103,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "0e6cc7ae0c098e76920e24cf996b79c45883f7da55de1184c54cc618512caacd",
+    "sha256": "576ebb9247df7470c405d5639045831d160b755854866481557e2a96ce5c7d06",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -814,20 +814,12 @@
   "instructorAnswerPaths": {
     "coverageTest": "tests/instructor-explanations.test.mjs",
     "requirement": "共通講師解説を使う全選択式問題の正解・全誤答・わからないに、正解、問題固有の根拠、回答別の指導、次に使える考え方を返す",
-    "questionCount": 15799,
-    "displayedChoiceCount": 51769,
-    "unknownPathCount": 15799,
-    "answerPathCount": 67568,
+    "questionCount": 6892,
+    "displayedChoiceCount": 25048,
+    "unknownPathCount": 6892,
+    "answerPathCount": 31940,
     "result": "pass",
     "families": [
-      {
-        "id": "vocab",
-        "label": "英単語",
-        "questionCount": 8907,
-        "displayedChoiceCount": 26721,
-        "unknownPathCount": 8907,
-        "answerPathCount": 35628
-      },
       {
         "id": "phrases",
         "label": "熟語・構文",
