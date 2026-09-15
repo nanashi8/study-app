@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-09-15T04:12:27.214Z",
+  "auditedAt": "2026-09-15T04:52:10.126Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -12,12 +12,12 @@
     "quizItemCount": 16473,
     "storedAndGeneratedQuestionPathCount": 4207,
     "storedAndGeneratedChoicePathCount": 16712,
-    "overallContentSha256": "abe2a6d8c91552cdfda42f5c878130969d22818e0aae9050dd1e55fb22bb34ce"
+    "overallContentSha256": "2e7e5d4a3ec257ef79ee116b32e6d805b291e91dc40ecce5212bb4e2b72c4a9e"
   },
   "completionCriteria": [
     "全18教材カテゴリのID・母数・重複・内容ハッシュが一致する",
     "全問題バンクで選択肢が重複せず、正答が一つだけ存在し、問題別解説がある",
-    "共通講師解説を使う全選択式問題の正解・全誤答・わからない21,786経路に回答別指導がある",
+    "共通講師解説を使う全選択式問題の正解・全誤答・わからない20,366経路に回答別指導がある",
     "英文法は全3,450問・全13,800選択肢に問題文固有の根拠を持つ",
     "長文32本・794文・140問・560選択肢の和訳と選択肢別解説が原文順に対応する",
     "長文32本すべてが並び替え・文法・語法の技能練習を1問ずつ持ち、原文・訳・重点語・読解ルールが本文と一致する",
@@ -103,7 +103,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "0bc6a2756037b8b3c37702787dd86f047b645f13916d1be908bb9443319e15f9",
+    "sha256": "c6e8fc86e936a7409217f1d58751ea607ce656937d7d0ae434e75d8d902804df",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -491,7 +491,7 @@
       "quizItemCount": 136,
       "learningIdOrderSha256": "04c2acc014b67ab7a4c519434edde5b15cb7b614ed4e3ccd1bfcf0dcb45df9a1",
       "quizIdOrderSha256": "2115268d84a32bef70dfee84ff9ed7a9cd6e91c4452a6a4b3c0e3999c03161ab",
-      "contentSha256": "b90468723c33616202caa6d47d1048a7e0dd9b5c97a244ce90b4ad5395594d36",
+      "contentSha256": "66178a8731d86eea20e2b349767de9a574eee81614625d418f2165a9c5a8a1c3",
       "auditGateIds": [
         "inventory",
         "coreData",
@@ -537,7 +537,7 @@
       "quizItemCount": 36,
       "learningIdOrderSha256": "56626eb857dfb874955079e5e451829aa5bdc074277ab5a59a726fb5633191f5",
       "quizIdOrderSha256": "56626eb857dfb874955079e5e451829aa5bdc074277ab5a59a726fb5633191f5",
-      "contentSha256": "4d786f767ea7fcb7fd0459967d2e034f83a7986751a3ab4744d6543f37602853",
+      "contentSha256": "ba3923099916b3fdfa2fd41c7831ef9d7fa2285481ae3c047f8d44e34bcd6ca5",
       "auditGateIds": [
         "inventory",
         "coreData",
@@ -744,7 +744,7 @@
       "questionCount": 136,
       "choiceCount": 544,
       "generalRationaleCount": 136,
-      "choiceSpecificRationaleCount": 0,
+      "choiceSpecificRationaleCount": 544,
       "questionSetSha256": "4aae2175b960fd74b9c690189ce052b88dd03ad84851ce5953af6cb1ccf52cba",
       "result": "pass",
       "failureCount": 0,
@@ -756,7 +756,7 @@
       "questionCount": 112,
       "choiceCount": 448,
       "generalRationaleCount": 112,
-      "choiceSpecificRationaleCount": 0,
+      "choiceSpecificRationaleCount": 448,
       "questionSetSha256": "46ec9bab4701157c2f9bea3f72c01dae6b8161f76abc953e7880906a7b1441f0",
       "result": "pass",
       "failureCount": 0,
@@ -768,7 +768,7 @@
       "questionCount": 36,
       "choiceCount": 144,
       "generalRationaleCount": 36,
-      "choiceSpecificRationaleCount": 0,
+      "choiceSpecificRationaleCount": 144,
       "questionSetSha256": "d1962f11e9e46f47b398db2e9c99583009b02ea28866014a9848208d50ac28db",
       "result": "pass",
       "failureCount": 0,
@@ -780,7 +780,7 @@
       "questionCount": 18,
       "choiceCount": 72,
       "generalRationaleCount": 18,
-      "choiceSpecificRationaleCount": 0,
+      "choiceSpecificRationaleCount": 72,
       "questionSetSha256": "ed678575f9bb0b08cc89330f2602de31277f7a6c70b3227a7ba80f7a2cd1a831",
       "result": "pass",
       "failureCount": 0,
@@ -814,10 +814,10 @@
   "instructorAnswerPaths": {
     "coverageTest": "tests/instructor-explanations.test.mjs",
     "requirement": "共通講師解説を使う全選択式問題の正解・全誤答・わからないに、正解、問題固有の根拠、回答別の指導、次に使える考え方を返す",
-    "questionCount": 4432,
-    "displayedChoiceCount": 17354,
-    "unknownPathCount": 4432,
-    "answerPathCount": 21786,
+    "questionCount": 4148,
+    "displayedChoiceCount": 16218,
+    "unknownPathCount": 4148,
+    "answerPathCount": 20366,
     "result": "pass",
     "families": [
       {
@@ -827,30 +827,6 @@
         "displayedChoiceCount": 13800,
         "unknownPathCount": 3450,
         "answerPathCount": 17250
-      },
-      {
-        "id": "koten-grammar",
-        "label": "古典文法",
-        "questionCount": 136,
-        "displayedChoiceCount": 544,
-        "unknownPathCount": 136,
-        "answerPathCount": 680
-      },
-      {
-        "id": "koten-culture",
-        "label": "古典常識",
-        "questionCount": 112,
-        "displayedChoiceCount": 448,
-        "unknownPathCount": 112,
-        "answerPathCount": 560
-      },
-      {
-        "id": "koten-reading",
-        "label": "古典短文",
-        "questionCount": 36,
-        "displayedChoiceCount": 144,
-        "unknownPathCount": 36,
-        "answerPathCount": 180
       },
       {
         "id": "listening",

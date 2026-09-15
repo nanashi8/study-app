@@ -8,12 +8,22 @@ import {
   GRAMMAR,
   grammarChoiceGuidanceFor,
 } from '../src/data/grammar.js'
-import {
-  KOTEN_CULTURE_QUESTIONS,
-  getKotenCulture,
-} from '../src/data/koten-culture.js'
+import { KOTEN_CULTURE_QUESTIONS } from '../src/data/koten-culture.js'
+import { KOTEN_CULTURE_CHOICE_NOTES } from '../src/data/koten-culture-choice-notes.js'
+import { KOTEN_GRAMMAR_CHOICE_NOTES } from '../src/data/koten-grammar-choice-notes.js'
 import { KOTEN_GRAMMAR_QUESTIONS } from '../src/data/koten-grammar-questions.js'
+import {
+  KOTEN_INTERPRETATION_CHOICE_NOTES,
+  kotenInterpretationChoiceNoteFor,
+} from '../src/data/koten-interpretation-choice-notes.js'
 import { KOTEN_INTERPRETATIONS } from '../src/data/koten-interpretations.js'
+import { LITERATURE_READING_QUESTIONS } from '../src/data/literature-reading.js'
+import {
+  LITERATURE_READING_CHOICE_NOTES,
+  literatureReadingChoiceNoteFor,
+} from '../src/data/literature-reading-choice-notes.js'
+import { kotenCultureChoiceNoteFor } from '../src/lib/kotenCultureChoiceNotes.js'
+import { kotenGrammarChoiceNoteFor } from '../src/lib/kotenGrammarChoiceNotes.js'
 import {
   KOTEN_WORDS,
   pickKotenDistractors,
@@ -37,9 +47,6 @@ import {
   buildDiagnosticInstructorExplanation,
   buildDictationInstructorExplanation,
   buildGrammarInstructorExplanation,
-  buildKotenCultureInstructorExplanation,
-  buildKotenGrammarInstructorExplanation,
-  buildKotenInterpretationInstructorExplanation,
   buildListeningInstructorExplanation,
   buildMathChoiceInstructorExplanation,
   buildMathFillInstructorExplanation,
@@ -187,43 +194,6 @@ test('全教材の全設問から問題固有の予備校講師型4段解説を�
     units += 1
   }
 
-  for (const question of KOTEN_GRAMMAR_QUESTIONS) {
-    const value = buildKotenGrammarInstructorExplanation(question)
-    assertExplanation(value, `koten-grammar:${question.id}`)
-    assertContains(value.answer, question.answer, `koten-grammar:${question.id}.answer`)
-    assertContains(
-      value.evidence,
-      question.explanation,
-      `koten-grammar:${question.id}.evidence`,
-    )
-    units += 1
-  }
-
-  for (const question of KOTEN_CULTURE_QUESTIONS) {
-    const related = getKotenCulture(question.cultureIds?.[0])
-    const value = buildKotenCultureInstructorExplanation(question, undefined, related)
-    assertExplanation(value, `koten-culture:${question.id}`)
-    assertContains(value.answer, question.answer, `koten-culture:${question.id}.answer`)
-    assertContains(
-      value.evidence,
-      question.explanation,
-      `koten-culture:${question.id}.evidence`,
-    )
-    units += 1
-  }
-
-  for (const item of KOTEN_INTERPRETATIONS) {
-    const value = buildKotenInterpretationInstructorExplanation(item)
-    assertExplanation(value, `koten-interpretation:${item.id}`)
-    assertContains(value.answer, item.answer, `koten-interpretation:${item.id}.answer`)
-    assertContains(
-      value.evidence,
-      item.vocabTip,
-      `koten-interpretation:${item.id}.evidence`,
-    )
-    units += 1
-  }
-
   for (const item of LISTENING_ITEMS) {
     const value = buildListeningInstructorExplanation(item)
     const correct = item.choices.find((choice) => choice.id === item.answer)
@@ -348,44 +318,6 @@ test('全選択式問題の正答・全誤答・「わからない」に回答�
       answerAnchor: item.answer,
       evidenceAnchor: item.explain,
       wrongTrapAnchor: item.explain,
-    })
-  }
-
-  for (const question of KOTEN_GRAMMAR_QUESTIONS) {
-    paths += assertChoiceFamily({
-      label: `koten-grammar:${question.id}`,
-      cases: choiceCases(question.choices, question.answer),
-      build: (selected) => buildKotenGrammarInstructorExplanation(question, selected),
-      answerAnchor: question.answer,
-      evidenceAnchor: question.explanation,
-      wrongTrapAnchor: question.explanation,
-    })
-  }
-
-  for (const question of KOTEN_CULTURE_QUESTIONS) {
-    const related = getKotenCulture(question.cultureIds?.[0])
-    paths += assertChoiceFamily({
-      label: `koten-culture:${question.id}`,
-      cases: choiceCases(question.choices, question.answer),
-      build: (selected) => buildKotenCultureInstructorExplanation(
-        question,
-        selected,
-        related,
-      ),
-      answerAnchor: question.answer,
-      evidenceAnchor: question.explanation,
-      wrongTrapAnchor: question.explanation,
-    })
-  }
-
-  for (const item of KOTEN_INTERPRETATIONS) {
-    paths += assertChoiceFamily({
-      label: `koten-interpretation:${item.id}`,
-      cases: choiceCases(item.choices, item.answer),
-      build: (selected) => buildKotenInterpretationInstructorExplanation(item, selected),
-      answerAnchor: item.answer,
-      evidenceAnchor: item.vocabTip,
-      wrongTrapAnchor: item.vocabTip,
     })
   }
 
@@ -660,9 +592,6 @@ test('採点を伴う全問題画面が共通の講師解説を表示する', as
     'Diagnostic.jsx',
     'DictationPlay.jsx',
     'GrammarQuiz.jsx',
-    'KotenCultureQuiz.jsx',
-    'KotenGrammarQuiz.jsx',
-    'KotenInterpretationQuiz.jsx',
     'ListeningQuiz.jsx',
     'MathSolve.jsx',
     'components/ReadingComprehensionCheck.jsx',
@@ -805,4 +734,72 @@ test('意味を問うテストは、出題した選択肢すべての中身を�
     }
   }
   assert.ok(notes >= 300, `診断の選択肢説明の監査数が不足しています: ${notes}`)
+})
+
+// 問題形式の古典テスト（古典文法・古典常識・短文解釈）。テンプレートの4段解説は置かず、
+// 問題固有の解説と、出題した選択肢すべての説明を示す。教材の4択すべてに説明を書く。
+test('古典文法・古典常識・短文解釈は、教材の全選択肢に問題固有の説明があり、決まり文句の講師解説を使わない', async () => {
+  const read = (screen) => readFile(new URL(`../src/screens/${screen}`, import.meta.url), 'utf8')
+  for (const [screen, rowsPattern] of [
+    ['KotenGrammarQuiz.jsx', /rows=\{choices\.map\(\(choice\) => \(\{[\s\S]*?body: kotenGrammarChoiceNoteFor\(question, choice\)/],
+    ['KotenCultureQuiz.jsx', /rows=\{choices\.map\(\(choice\) => \(\{[\s\S]*?body: kotenCultureChoiceNoteFor\(question, choice\)/],
+    ['KotenInterpretationQuiz.jsx', /rows=\{choices\.map\(\(choice\) => \(\{[\s\S]*?body: kotenInterpretationChoiceNoteFor\(item, choice\)/],
+  ]) {
+    const source = await read(screen)
+    assert.doesNotMatch(source, /InstructorExplanation/, `${screen}: 決まり文句の講師解説が戻っています`)
+    assert.match(source, /<ChoiceExplanations/, `${screen}: 選択肢ごとの欄がありません`)
+    assert.match(source, rowsPattern, `${screen}: 選択肢の欄がボタンと同じ選択肢から作られていません`)
+  }
+
+  let notes = 0
+  for (const [label, questions, noteFor, table] of [
+    ['koten-grammar', KOTEN_GRAMMAR_QUESTIONS, kotenGrammarChoiceNoteFor, KOTEN_GRAMMAR_CHOICE_NOTES],
+    ['koten-culture', KOTEN_CULTURE_QUESTIONS, kotenCultureChoiceNoteFor, KOTEN_CULTURE_CHOICE_NOTES],
+    ['koten-interpretation', KOTEN_INTERPRETATIONS, kotenInterpretationChoiceNoteFor, KOTEN_INTERPRETATION_CHOICE_NOTES],
+  ]) {
+    for (const question of questions) {
+      const texts = question.choices.map((choice) => normalize(noteFor(question, choice)))
+      texts.forEach((text, index) => {
+        assert.ok(text.length >= 5, `${label}:${question.id}「${question.choices[index]}」の説明がありません`)
+      })
+      assert.equal(new Set(texts).size, texts.length, `${label}:${question.id} の選択肢の説明が重複しています`)
+      notes += texts.length
+    }
+    // 問題や選択肢を直したのに、説明だけが古いまま残らないようにする。
+    for (const [id, notesByChoice] of Object.entries(table)) {
+      const question = questions.find((entry) => entry.id === id)
+      assert.ok(question, `${label}:${id} は存在しない問題の説明です`)
+      for (const choice of Object.keys(notesByChoice)) {
+        assert.ok(question.choices.includes(choice), `${label}:${id}「${choice}」は選択肢にありません`)
+      }
+    }
+  }
+  assert.equal(notes, 544 + 448 + 144)
+})
+
+test('名作の読解チェックは、教材の全選択肢に本文に照らした説明を示す', async () => {
+  const source = await readFile(new URL('../src/screens/LiteratureReader.jsx', import.meta.url), 'utf8')
+  assert.match(source, /<ChoiceExplanations/, 'LiteratureReader.jsx: 選択肢ごとの欄がありません')
+  assert.match(
+    source,
+    /rows=\{shownChoices\.map\(\(\{ choice, choiceIndex \}\) => \(\{[\s\S]*?body: literatureReadingChoiceNoteFor\(item, choiceIndex\)/,
+    'LiteratureReader.jsx: 選択肢の欄が、表示した選択肢から作られていません',
+  )
+
+  const questions = Object.values(LITERATURE_READING_QUESTIONS).flat()
+  let notes = 0
+  for (const question of questions) {
+    const texts = question.choices.map((_, index) => normalize(literatureReadingChoiceNoteFor(question, index)))
+    texts.forEach((text, index) => {
+      assert.ok(text.length >= 5, `literature:${question.id} の選択肢${index + 1}の説明がありません`)
+    })
+    assert.equal(new Set(texts).size, texts.length, `literature:${question.id} の選択肢の説明が重複しています`)
+    notes += texts.length
+  }
+  for (const [id, list] of Object.entries(LITERATURE_READING_CHOICE_NOTES)) {
+    const question = questions.find((entry) => entry.id === id)
+    assert.ok(question, `literature:${id} は存在しない問題の説明です`)
+    assert.equal(list.length, question.choices.length, `literature:${id} の説明の数が選択肢の数と違います`)
+  }
+  assert.equal(notes, 72)
 })

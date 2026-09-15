@@ -11,8 +11,8 @@ import {
 } from '../data/koten-culture.js'
 import { limitQuizChoices, UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
-import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
 import { CardSaveToggle } from '../components/CardStudyControls.jsx'
+import { ChoiceExplanations } from '../components/ChoiceExplanations.jsx'
 import { KotenText } from '../components/KotenFurigana.jsx'
 import { Button, Chip, cx } from '../components/ui.jsx'
 import { answeredQuizIndexes, growDeck, restartSessionCount } from '../lib/session.js'
@@ -22,7 +22,7 @@ import {
   Check,
   Close,
 } from '../components/Icons.jsx'
-import { buildKotenCultureInstructorExplanation } from '../lib/instructorExplanations.js'
+import { kotenCultureChoiceNoteFor } from '../lib/kotenCultureChoiceNotes.js'
 import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
 import {
   QuestionSessionControls,
@@ -363,14 +363,25 @@ export function KotenCultureQuizScreen() {
                 <KotenText>{question.answer}</KotenText>
               </p>
             </div>
-            <InstructorExplanation
-              explanation={buildKotenCultureInstructorExplanation(
-                question,
-                selected,
-                relatedCulture[0],
-              )}
+            {/* この問題固有の説明と、出題した選択肢1件ずつの説明だけを出す（決まり文句の4段解説は置かない）。 */}
+            <div className="mt-3 rounded-xl bg-white px-3 py-2.5 ring-1 ring-violet-100" data-koten-culture-explanation>
+              <p className="text-[10px] font-extrabold text-violet-700">解説</p>
+              <p className="mt-0.5 text-sm font-bold leading-relaxed text-ink/75">
+                <KotenText>{question.explanation}</KotenText>
+              </p>
+            </div>
+            <ChoiceExplanations
+              title="選択肢解説（3択すべて）"
+              name="kotenCulture"
               className="mt-3"
               renderText={(text) => <KotenText>{text}</KotenText>}
+              rows={choices.map((choice) => ({
+                id: choice,
+                heading: choice,
+                body: kotenCultureChoiceNoteFor(question, choice),
+                correct: choice === question.answer,
+                chosen: selected === choice,
+              }))}
             />
 
             <div className="mt-3 space-y-2">
