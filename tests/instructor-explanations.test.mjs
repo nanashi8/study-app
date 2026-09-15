@@ -30,6 +30,10 @@ import {
 } from '../src/data/koten.js'
 import { KANBUN_COLLECTIONS } from '../src/data/kanbun-content.js'
 import { LISTENING_ITEMS } from '../src/data/listening.js'
+import {
+  LISTENING_CHOICE_NOTES,
+  listeningChoiceNoteFor,
+} from '../src/data/listening-choice-notes.js'
 import { MATH_PROBLEMS } from '../src/data/math.js'
 import { PHRASES } from '../src/data/phrases.js'
 import { ALL_PASSAGES } from '../src/data/passages.js'
@@ -47,7 +51,6 @@ import {
   buildDiagnosticInstructorExplanation,
   buildDictationInstructorExplanation,
   buildGrammarInstructorExplanation,
-  buildListeningInstructorExplanation,
   buildMathChoiceInstructorExplanation,
   buildMathFillInstructorExplanation,
   buildMathSolvedInstructorExplanation,
@@ -194,15 +197,6 @@ test('全教材の全設問から問題固有の予備校講師型4段解説を�
     units += 1
   }
 
-  for (const item of LISTENING_ITEMS) {
-    const value = buildListeningInstructorExplanation(item)
-    const correct = item.choices.find((choice) => choice.id === item.answer)
-    assertExplanation(value, `listening:${item.id}`)
-    assertContains(value.answer, correct?.text, `listening:${item.id}.answer`)
-    assertContains(value.evidence, item.explain, `listening:${item.id}.evidence`)
-    units += 1
-  }
-
   for (const question of allReadingQuestions) {
     const value = buildReadingInstructorExplanation(question)
     assertExplanation(value, `reading:${question.q}`)
@@ -321,25 +315,6 @@ test('全選択式問題の正答・全誤答・「わからない」に回答�
     })
   }
 
-  for (const item of LISTENING_ITEMS) {
-    const correct = item.choices.find((choice) => choice.id === item.answer)
-    paths += assertChoiceFamily({
-      label: `listening:${item.id}`,
-      cases: [
-        ...item.choices.map((choice) => ({
-          selected: choice,
-          label: choice.text,
-          kind: choice.id === item.answer ? 'correct' : 'wrong',
-        })),
-        { selected: UNKNOWN_CHOICE_ID, label: 'わからない', kind: 'unknown' },
-      ],
-      build: (selected) => buildListeningInstructorExplanation(item, selected),
-      answerAnchor: correct?.text,
-      evidenceAnchor: item.explain,
-      wrongTrapAnchor: item.explain,
-    })
-  }
-
   for (const question of allReadingQuestions) {
     paths += assertChoiceFamily({
       label: `reading:${question.q}`,
@@ -392,7 +367,7 @@ test('全選択式問題の正答・全誤答・「わからない」に回答�
     }
   }
 
-  assert.ok(paths >= 20_000, `全回答経路の監査数が不足しています: ${paths}`)
+  assert.ok(paths >= 19_500, `全回答経路の監査数が不足しています: ${paths}`)
 })
 
 const grammarStrategyExpectation = (topic) => {
@@ -468,54 +443,40 @@ test('英文法3,450問は全単元で対応する再現可能な解法を示す
   }
 })
 
-test('リスニング160問は設問意図ごとの聞き方と誤答の切り方を示す', () => {
+// リスニングも問題形式のテスト。設問の型から作る決まり文句の4段解説は置かず、
+// 問題固有の解説と、出題した選択肢すべての説明（和訳と、放送・絵のどこと合うか）を示す。
+test('リスニング160問は、教材の全選択肢に放送や絵に照らした説明を示し、決まり文句の講師解説を使わない', async () => {
+  const source = await readFile(new URL('../src/screens/ListeningQuiz.jsx', import.meta.url), 'utf8')
+  assert.doesNotMatch(source, /InstructorExplanation/, 'ListeningQuiz.jsx: 決まり文句の講師解説が戻っています')
+  assert.match(source, /\{item\.explain\}/, 'ListeningQuiz.jsx: 問題固有の解説がありません')
+  assert.match(source, /<ChoiceExplanations/, 'ListeningQuiz.jsx: 選択肢ごとの欄がありません')
+  assert.match(
+    source,
+    /rows=\{options\.map\(\(choice\) => \(\{[\s\S]*?body: listeningChoiceNoteFor\(item, choice\.id\)/,
+    'ListeningQuiz.jsx: 選択肢の欄がボタンと同じ選択肢から作られていません',
+  )
+
+  let notes = 0
   for (const item of LISTENING_ITEMS) {
-    const value = buildListeningInstructorExplanation(item)
-    const question = normalize(
-      item.type === 'response' ? item.audio?.at(-1)?.text : item.question,
-    ).toLowerCase()
-
-    let expected
-    if (/^(how many|how much)\b/.test(question)) expected = /数量|合計/
-    else if (/^how long\b/.test(question)) expected = /期間/
-    else if (/^(when|what time|what day|which day)\b/.test(question)) {
-      expected = /曜日|日付|時刻/
-    } else if (/^where\b/.test(question)) expected = /場所|位置/
-    else if (/^why\b|what caused|what influences?/.test(question)) expected = /理由|因果/
-    else if (/^how\b/.test(question)) expected = /方法|手段/
-    else if (/^who\b/.test(question)) expected = /人物|対象者/
-    else if (/suggest|imply|infer|probably|attitude|feel|believe|conclusion/.test(question)) {
-      expected = /推測|言える範囲/
-    }
-    else if (/\b(condition|qualification|limitation|challenge|problem|weakness|concern|caution)\b/.test(question)) {
-      expected = /条件|弱点|懸念/
-    } else if (/\b(change|changes|changed|result|happened|effect|benefit|advantage)\b/.test(question)) {
-      expected = /変化・結果/
-    } else if (/\b(agree|decide|plan|solution|recommend|advise|propose)\b/.test(question)) {
-      expected = /案|合意|推奨/
-    }
-
-    if (expected) {
-      assert.match(
-        `${value.strategy} ${value.evidence}`,
-        expected,
-        `listening:${item.id} の問い「${question}」と解法が一致しません`,
-      )
-    }
-    assert.doesNotMatch(
-      value.strategy,
-      /^(?:会話は各発言|説明文は冒頭|案内は|質問者の問い)|先に質問の焦点を定め/,
-      `listening:${item.id} が設問意図ではなく素材タイプだけの汎用解法です`,
-    )
-    if (item.type === 'response') {
-      assert.match(value.answer, /応答/)
-      assert.doesNotMatch(
-        `${value.answer} ${value.evidence}`,
-        /言い換え/,
-        `listening:${item.id} が応答問題を言い換え問題として説明しています`,
-      )
-    }
+    const texts = item.choices.map((choice) => normalize(listeningChoiceNoteFor(item, choice.id)))
+    texts.forEach((text, index) => {
+      // 「選択肢の和訳」。放送・絵のどこと合うか（合わないか）、の形。
+      assert.match(text, /^「[^」]+」。.{4,}/u, `listening:${item.id}「${item.choices[index].text}」の説明がありません`)
+    })
+    assert.equal(new Set(texts).size, texts.length, `listening:${item.id} の選択肢の説明が重複しています`)
+    notes += texts.length
   }
+  // 問題や選択肢を直したのに、説明だけが古いまま残らないようにする。
+  for (const [id, notesByChoice] of Object.entries(LISTENING_CHOICE_NOTES)) {
+    const item = LISTENING_ITEMS.find((entry) => entry.id === id)
+    assert.ok(item, `listening:${id} は存在しない問題の説明です`)
+    assert.deepEqual(
+      Object.keys(notesByChoice).sort(),
+      item.choices.map((choice) => choice.id).sort(),
+      `listening:${id} の説明の選択肢が教材と違います`,
+    )
+  }
+  assert.equal(notes, 608)
 })
 
 const sameFillAnswer = (fill, selectedValues) => {
@@ -592,7 +553,6 @@ test('採点を伴う全問題画面が共通の講師解説を表示する', as
     'Diagnostic.jsx',
     'DictationPlay.jsx',
     'GrammarQuiz.jsx',
-    'ListeningQuiz.jsx',
     'MathSolve.jsx',
     'components/ReadingComprehensionCheck.jsx',
     'WritingPlay.jsx',

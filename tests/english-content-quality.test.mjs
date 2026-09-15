@@ -115,7 +115,7 @@ test('主要テストは正答後に英文・和訳・学習ポイントを表�
     'VocabQuiz.jsx': [/word\.example\.en/, /word\.example\.ja/, /<ChoiceExplanations/, /<EtymologyBlock word=\{word\} \/>/],
     'GrammarQuiz.jsx': [/item\.sentence\.en/, /item\.sentence\.ja/, /buildGrammarInstructorExplanation/, /GrammarChoiceExplanations/, /patternExamples/],
     'PhraseQuiz.jsx': [/item\.example\.en/, /item\.example\.ja/, /<ChoiceExplanations/, /\{item\.origin\}/],
-    'ListeningQuiz.jsx': [/item\.questionJa/, /buildListeningInstructorExplanation/],
+    'ListeningQuiz.jsx': [/item\.questionJa/, /\{item\.explain\}/, /<ChoiceExplanations/, /listeningChoiceNoteFor/],
     'DictationPlay.jsx': [/item\.text/, /item\.ja/, /buildDictationInstructorExplanation/],
     'components/ReadingComprehensionCheck.jsx': [/buildReadingInstructorExplanation/, /UnknownChoiceButton/],
     'Diagnostic.jsx': [/question\.review/, /question\.passageJa/, /buildDiagnosticInstructorExplanation/],

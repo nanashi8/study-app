@@ -557,7 +557,7 @@ const sourceChecks = [
   ['PhraseStudy.jsx', [/SyntaxFamilyGuide/, /item=\{item\}/]],
   ['Phrases.jsx', [/SyntaxFamilyGuide/, /syntaxFamilySearchText/, /data-syntax-family-filter/]],
   ['VocabSearch.jsx', [/SyntaxFamilyGuide/, /item=\{phrase\}/, /この文のポイント/]],
-  ['ListeningQuiz.jsx', [/\breview\(/, /UnknownChoiceButton/, /item\.questionJa/, /buildListeningInstructorExplanation/]],
+  ['ListeningQuiz.jsx', [/\breview\(/, /UnknownChoiceButton/, /item\.questionJa/, /listeningChoiceNoteFor/]],
   ['DictationPlay.jsx', [/\breview\(/, /positionResults/, /item\.ja/, /buildDictationInstructorExplanation/]],
   ['components/ReadingComprehensionCheck.jsx', [/markReadingDone\(/, /recordSkillResult\(/, /UnknownChoiceButton/, /buildReadingInstructorExplanation/]],
   ['WritingPlay.jsx', [/recordWritingCompletion\(/, /writingTokenPositionResults/, /buildWritingInstructorExplanation/, /toggleMyGrammar/]],
