@@ -4,8 +4,6 @@ import { readFileSync } from 'node:fs'
 
 import { GRAMMAR } from '../src/data/grammar.js'
 import { PHRASES } from '../src/data/phrases.js'
-import { buildPhraseInstructorExplanation } from '../src/lib/instructorExplanations.js'
-import { UNKNOWN_CHOICE_ID } from '../src/lib/quizChoices.js'
 import {
   MANUAL_SYNTAX_FAMILY,
   SYNTAX_FAMILY_GUIDES,
@@ -106,11 +104,11 @@ test('haveの使役カードからmake・let・get・help・知覚・受動・�
   assert.match(guideText, /O がその動作をする側なら do \/ to do、される側なら done/)
   assert.match(guideText, /財布を盗まれた/)
 
-  const instructor = buildPhraseInstructorExplanation(item, UNKNOWN_CHOICE_ID)
-  assert.match(instructor.answer, /使役・知覚を「Oがする／される」で整理/)
-  assert.match(instructor.evidence, /O がその動作をする側なら do \/ to do、される側なら done/)
-  assert.match(instructor.strategy, /使役動詞を一語ずつ暗記せず/)
-  assert.doesNotMatch(instructor.trap, /後ろの前置詞・副詞が作る方向や状態/)
+  // テストの答え合わせでは、この比較をファミリー解説（SyntaxFamilyGuide）がそのまま示す。
+  const guide = syntaxFamilyFor(item)
+  assert.match(guide.title, /使役・知覚を「Oがする／される」で整理/)
+  assert.match(guide.decision, /O がその動作をする側なら do \/ to do、される側なら done/)
+  assert.match(guide.summary, /使役動詞を一語ずつ暗記せず/)
 })
 
 test('一覧・暗記・テストの全構文導線でファミリー解説を直接表示する', () => {

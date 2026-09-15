@@ -307,15 +307,22 @@ for (const obsolete of [
 if (!vocabQuizSource.includes('<EtymologyBlock word={word} />')) {
   errors.push('単語テストの解答直後に語源本文がない')
 }
-// 単語テストの出題は英単語だけなので、例文の文脈で答えを決められると説く4段解説は置かない。
-// 答え合わせでは、出題した3択すべてについて、どの英単語の意味だったかを並べる。
-if (/InstructorExplanation/.test(vocabQuizSource)) {
-  errors.push('単語テストの答え合わせに、例文や文脈で答えを決めさせる4段の講師解説が戻っている')
-}
-if (!vocabQuizSource.includes('data-vocab-choice-meanings') ||
-    !/<VocabChoiceMeanings options=\{options\}/.test(vocabQuizSource) ||
-    !/options\.map\(\(option\) => \{[\s\S]*?\{option\.word\}[\s\S]*?option\.meanings\.join\('・'\)/.test(vocabQuizSource)) {
-  errors.push('単語テストの答え合わせに、出題した3択それぞれの英単語と意味がない')
+// 意味を知っているかを問うテストは、出題にない例文や文脈で答えを決められると説く4段解説を置かない。
+// 答え合わせでは、画面の選択肢ボタンと同じ並びから、出題した選択肢すべての中身を並べる。
+for (const [label, file, rowsPattern] of [
+  ['単語テスト', 'src/screens/VocabQuiz.jsx', /rows=\{options\.map\(\(option\) => \(\{[\s\S]*?heading: option\.word,[\s\S]*?option\.meanings\.join\('・'\)/],
+  ['熟語・構文テスト', 'src/screens/PhraseQuiz.jsx', /rows=\{options\.map\(\(option\) => \(\{[\s\S]*?heading: option\.phrase,[\s\S]*?option\.meanings\.join\('・'\)/],
+  ['古典単語テスト', 'src/screens/KotenQuiz.jsx', /rows=\{options\.map\(\(option\) => \(\{[\s\S]*?heading: <KotenWord word=\{option\} \/>,[\s\S]*?option\.meanings\.join\('・'\)/],
+  ['漢文テスト', 'src/screens/KanbunQuiz.jsx', /rows=\{question\.choices\.map\(\(choice\) => \{[\s\S]*?heading: choice\.label,/],
+  ['語源テスト', 'src/screens/EtymologyQuiz.jsx', /rows=\{options\.map\(\(option\) => \{[\s\S]*?heading: option\.label,/],
+]) {
+  const source = await readProjectFile(file)
+  if (/InstructorExplanation/.test(source)) {
+    errors.push(`${label}の答え合わせに、例文や文脈で答えを決めさせる4段の講師解説が戻っている`)
+  }
+  if (!/<ChoiceExplanations/.test(source) || !rowsPattern.test(source)) {
+    errors.push(`${label}の答え合わせに、出題した選択肢それぞれの中身がない`)
+  }
 }
 if (!vocabStudySource.includes('<EtymologyBlock')) {
   errors.push('単語カードの答えに語源本文がない')

@@ -1,5 +1,4 @@
 import { UNKNOWN_CHOICE_ID } from './quizChoices.js'
-import { syntaxFamilyFor } from '../data/syntax-families.js'
 import {
   grammarChoiceMismatchExplanationFor,
   grammarCorrectChoiceExplanationFor,
@@ -345,47 +344,6 @@ const DIAGNOSTIC_SKILL_LABEL = Object.freeze({
   reading: '読解',
 })
 
-export function buildPhraseInstructorExplanation(item, selectedItem) {
-  const meanings = list(item?.meanings) || clean(item?.meaning)
-  const selectedMeaning = selectedItem
-    ? list(selectedItem.meanings) || clean(selectedItem.meaning)
-    : ''
-
-  if (item?.kind === 'syntax') {
-    const guide = syntaxFamilyFor(item)
-    const familyTitle = guide?.title ?? '同じ働きをする構文'
-    const familySummary = stripTerminal(guide?.summary) || '似た構文を一語ずつでなく、共通点と相違点でまとめて理解します'
-    const decision = stripTerminal(guide?.decision)
-    const point = stripTerminal(item?.origin)
-
-    return explanation({
-      answer: `${quote(item?.phrase)}は${quote(meanings)}を表す文。このカードは【${familyTitle}】に属し、語順と後ろに続く動詞・節の形まで一緒に捉える。`,
-      evidence: `${point}。例文 ${quote(item?.example?.en)} は${quote(item?.example?.ja)}となる。${decision}。この判断手順を当てはめると、文の形と意味が一致する。`,
-      trap: selectionTrap({
-        selected: selectedItem,
-        correct: item?.meaning,
-        wrong: () => `${quote(selectedMeaning)}は${quote(selectedItem?.phrase)}が表す意味。日本語訳の印象だけで選ばず、英文の語順と、空所の前後が要求する形を比べる。このカード固有の決め手は次の通り。${point}。`,
-        unknown: `迷ったら、${decision}。続いて、このカード固有の決め手を確認する。${point}。正解は${quote(meanings)}。`,
-        correctAnswer: `正解できた場合も、【${familyTitle}】のどの型かを、語順と動詞・節の形を挙げて説明できるか確認する。`,
-      }),
-      strategy: `${familySummary}。同じ仲間の構文を「形・意味・例文」で横に並べ、何が同じで何が違うかを説明してから次へ進む。`,
-    })
-  }
-
-  return explanation({
-    answer: `${quote(item?.phrase)}は、まとまりで${quote(meanings)}。語をばらばらに直訳せず、ひとかたまりの表現として取る。`,
-    evidence: `${clean(item?.origin)} 例文 ${quote(item?.example?.en)} は${quote(item?.example?.ja)}となり、この意味が文脈でも確認できる。`,
-    trap: selectionTrap({
-      selected: selectedItem,
-      correct: item?.meaning,
-      wrong: () => `${quote(selectedMeaning)}は${quote(selectedItem?.phrase)}の意味。共通する単語の印象ではなく、前置詞・副詞まで含む形全体を見分ける。`,
-      unknown: `思い出せないときは、中心動詞だけで決めず、後ろの前置詞・副詞が作る方向や状態を手掛かりにする。正解は${quote(meanings)}。`,
-      correctAnswer: `${quote(item?.phrase)}は一語ずつの訳より、使う場面と結び付ける。${clean(item?.note)}`,
-    }),
-    strategy: `「表現の形 → 成り立ち → 例文」の三点セットで覚える。次に同じ表現を見たら、まず${quote(item?.example?.ja)}の場面を思い出す。`,
-  })
-}
-
 export function buildGrammarInstructorExplanation(item, selected, selectedGuidance, choices = item?.choices ?? []) {
   if (item?.questionType === 'word-order') {
     const picked = chosenText(selected)
@@ -491,28 +449,6 @@ export function buildListeningInstructorExplanation(item, selectedChoice) {
   })
 }
 
-export function buildKotenWordInstructorExplanation(word, selectedWord) {
-  const meanings = list(word?.meanings) || clean(word?.meaning)
-  const selectedMeaning = selectedWord
-    ? list(selectedWord.meanings) || clean(selectedWord.meaning)
-    : ''
-  const example = word?.example?.ja && word?.example?.gendai
-    ? `用例${quote(word.example.ja)}は${quote(word.example.gendai)}。`
-    : ''
-  return explanation({
-    answer: `${quote(word?.word)}の中心となる意味は${quote(meanings)}。品詞は${quote(word?.pos)}である。`,
-    evidence: `${clean(word?.note)} 品詞と、人物・物事に向けられた評価の方向を合わせると、この意味に決まる。${example}`,
-    trap: selectionTrap({
-      selected: selectedWord,
-      correct: word?.meaning,
-      wrong: () => `${quote(selectedMeaning)}は${quote(selectedWord?.word)}側の意味。現代語の見た目や音だけでなく、古語の品詞と中心の意味を確かめる。この語の見分け方は ${clean(word?.note)}`,
-      unknown: `意味が出ないときは、品詞${quote(word?.pos)}と語の感情・評価の向きを先に思い出す。正解は${quote(meanings)}。`,
-      correctAnswer: '正解できても、現代語と同じ意味だと思い込まず、古文特有の基本の意味と文脈での広がりを確認する。',
-    }),
-    strategy: `古典単語は「基本の意味 → 文脈で広がった意味 → 用例」の順で覚える。まず ${clean(word?.note)}`,
-  })
-}
-
 export function buildKotenGrammarInstructorExplanation(question, selected) {
   return explanation({
     answer: `正解は${quote(question?.answer)}。傍線部だけでなく、接続と文脈を合わせて判定する。`,
@@ -558,17 +494,15 @@ export function buildKotenInterpretationInstructorExplanation(item, selected) {
   })
 }
 
+// 実力診断の文法・読解問題の解説。単語・熟語の問題は意味を知っているかだけを問うので、
+// 画面では4段の解説を使わず、語の説明と選択肢の中身だけを示す。
 export function buildDiagnosticInstructorExplanation(question, selected) {
   const review = question?.review?.en && question?.review?.ja
     ? ` 確認例${quote(question.review.en)}は${quote(question.review.ja)}。`
     : ''
   const strategy = question?.skill === 'reading'
     ? readingStrategy(question?.prompt)
-    : question?.skill === 'grammar'
-      ? grammarStrategy(question)
-      : question?.skill === 'usage'
-      ? '熟語・語法は一語ずつ直訳せず、前置詞まで含む形と、例文での使われ方を一まとまりで確認する。'
-      : '単語は綴りと品詞を確認し、基本の意味を例文の中で思い出す。日本語の選択肢だけを見比べない。'
+    : grammarStrategy(question)
   const skillLabel = DIAGNOSTIC_SKILL_LABEL[question?.skill] ?? '基礎力'
   return explanation({
     answer: `正解は${quote(question?.answer)}。この一問では${quote(skillLabel)}の基礎となる判断を確認している。`,

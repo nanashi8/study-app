@@ -11,6 +11,7 @@ import {
 import { KANBUN_LEVEL_BY_ID } from '../data/kanbun-meta.js'
 import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
+import { ChoiceExplanations } from '../components/ChoiceExplanations.jsx'
 import { KanbunText } from '../components/KanbunFurigana.jsx'
 import { Button, Chip, cx } from '../components/ui.jsx'
 import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
@@ -32,11 +33,15 @@ import {
 
 const ALL_QUESTIONS = 9999 // 在庫数を数えるための十分大きな上限
 
+// 選択肢は、どれも別の項目の「答え」の文。どの項目のものかと、その項目の見分けるヒントを並べる。
+const CHOICE_SOURCE_LABEL = Object.freeze({
+  vocab: (item) => `「${item.title}」の中心の意味`,
+  grammar: (item) => `句法「${item.title}」（${item.pattern}）の読み・意味`,
+  culture: (item) => `「${item.title}」の説明`,
+})
+
 function ChoiceExplanation({ question, selected }) {
-  const selectedItemId = selected?.split(':')[1]
-  const selectedItem = selectedItemId ? getKanbunItem(question.domain, selectedItemId) : null
-  const unknown = selected === UNKNOWN_CHOICE_ID
-  const correct = selected === question.answerId
+  const sourceLabel = CHOICE_SOURCE_LABEL[question.domain] ?? CHOICE_SOURCE_LABEL.culture
   return (
     <div className="mt-3 space-y-2.5">
       <div className="rounded-xl bg-emerald-50 p-3">
@@ -44,16 +49,23 @@ function ChoiceExplanation({ question, selected }) {
         <p className="mt-1 text-sm font-extrabold leading-relaxed text-emerald-950">{question.answer}</p>
         <p className="mt-1 text-xs font-bold leading-relaxed text-emerald-900/70">{question.clue}</p>
       </div>
-      {!correct && (
-        <div className="rounded-xl bg-rose-50 p-3">
-          <p className="text-[10px] font-extrabold text-rose-700">{unknown ? 'わからないときの考え方' : 'その答えが違う理由'}</p>
-          <p className="mt-1 text-xs font-bold leading-relaxed text-rose-950/70">
-            {unknown
-              ? `まず「${question.clue}」を探し、形・主語・くらべる相手のどれを聞かれているかを一つに決める。`
-              : `「${selectedItem?.answer ?? 'その選択肢'}」は「${selectedItem?.title ?? '別項目'}」の説明。ここでは「${getKanbunItem(question.domain, question.itemId)?.title}」に固有の手掛かりと一致しない。`}
-          </p>
-        </div>
-      )}
+      <ChoiceExplanations
+        title="選択肢の項目と見分けるヒント"
+        name="kanbun"
+        rows={question.choices.map((choice) => {
+          const source = getKanbunItem(question.domain, choice.id.split(':')[1])
+          const correct = choice.id === question.answerId
+          return {
+            id: choice.id,
+            heading: choice.label,
+            body: source
+              ? `${sourceLabel(source)}。${correct ? 'この問題の答え。' : `見分けるヒント：${source.clue}`}`
+              : '',
+            correct,
+            chosen: selected === choice.id,
+          }
+        })}
+      />
       <div className="rounded-xl border border-slate-200 bg-white p-3">
         <p className="text-[10px] font-extrabold text-slate-500">次に出たときの見分け方</p>
         <p className="mt-1 text-xs font-bold leading-relaxed text-ink/65">{question.detail}</p>
@@ -249,16 +261,16 @@ export function KanbunQuizScreen() {
             }}
           />
         )}
+        trailingActions={(
+          <WordBookToggle domain={kanbunNotebookDomain(domain)} itemId={item.id} itemLabel={item.title} />
+        )}
       />
 
       <div className="flex-1 overflow-y-auto px-4 pb-4">
         <section className="mt-3 rounded-[2rem] bg-white p-5 shadow-card">
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <div className="flex flex-wrap gap-2">
-              <Chip color={level?.color}>{level?.label}</Chip>
-              <Chip color={meta.color}>{meta.label}</Chip>
-            </div>
-            <WordBookToggle domain={kanbunNotebookDomain(domain)} itemId={item.id} itemLabel={item.title} />
+          <div className="flex flex-wrap gap-2">
+            <Chip color={level?.color}>{level?.label}</Chip>
+            <Chip color={meta.color}>{meta.label}</Chip>
           </div>
 
           {question.passage && (

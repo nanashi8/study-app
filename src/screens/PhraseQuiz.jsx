@@ -12,19 +12,19 @@ import {
 import { shuffle } from '../data/vocab.js'
 import { quizMeaning } from '../data/compact.js'
 import { phraseSpeechText } from '../lib/phrase-speech.js'
+import { isGenericPhraseNote, isGenericPhraseOrigin } from '../lib/phraseNotes.js'
 import { longSentenceTranslationFor } from '../data/long-sentence-translations.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { LongSentenceTranslation } from '../components/LongSentenceTranslation.jsx'
 import { SyntaxFamilyGuide } from '../components/SyntaxFamilyGuide.jsx'
 import { IdiomFormGuide } from '../components/IdiomFormGuide.jsx'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
-import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
+import { ChoiceExplanations } from '../components/ChoiceExplanations.jsx'
 import { DragonVeinCipherStage } from '../components/DragonVeinCipherStage.jsx'
 import { Button, Chip } from '../components/ui.jsx'
 import { ArrowRight, Check, Close } from '../components/Icons.jsx'
 import { cx } from '../components/ui.jsx'
 import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
-import { buildPhraseInstructorExplanation } from '../lib/instructorExplanations.js'
 import { isDragonVeinSource } from '../lib/dragonVein.js'
 import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
 import {
@@ -129,14 +129,6 @@ export function PhraseQuizScreen() {
   const answeredIndexes = answeredQuizIndexes(index, selections)
   const streakState = streaksFromLog(results.current.answerLog)
   const isCorrectPick = answered && selected === item.id
-  const instructorExplanation = answered
-    ? buildPhraseInstructorExplanation(
-        item,
-        selected === UNKNOWN_CHOICE_ID
-          ? UNKNOWN_CHOICE_ID
-          : options.find((option) => option.id === selected),
-      )
-    : null
   const longSentenceTranslation = longSentenceTranslationFor(item)
 
   const finish = () => {
@@ -197,8 +189,8 @@ export function PhraseQuizScreen() {
       ? `連続${streakState.streak}正解！ 消えた言い回しが鮮明に戻った`
       : '正解。文脈のつながりを1つ復元した'
     : selected === UNKNOWN_CHOICE_ID
-      ? '未解読として記録。例文の語順を手掛かりにしよう'
-      : '文脈がつながらない。例文で使われる場面を確かめよう'
+      ? '未解読として記録。意味と成り立ちを確かめよう'
+      : '組み合わせが合わない。意味と成り立ちを見直そう'
 
   return (
     <div className={cx('flex h-full flex-col', isDragonVein && 'dragon-vein-quiz-screen')}>
@@ -329,7 +321,33 @@ export function PhraseQuizScreen() {
               </div>
             </div>
             <LongSentenceTranslation guide={longSentenceTranslation} className="mt-3" />
-            <InstructorExplanation explanation={instructorExplanation} className="mt-3" />
+            {/* 出題は表現だけなので、例文や文脈から答えを決める説明は置かず、選択肢の中身と成り立ちを並べる。 */}
+            <ChoiceExplanations
+              title="選択肢の表現と意味"
+              name="phrases"
+              className="mt-3"
+              rows={options.map((option) => ({
+                id: option.id,
+                heading: option.phrase,
+                body: option.meanings.join('・'),
+                correct: option.id === item.id,
+                chosen: selected === option.id,
+              }))}
+            />
+            {/* 表現の種類だけを言う決まり文句の成り立ち・注意書きは出さず、この表現だけの説明を出す。 */}
+            {(!isGenericPhraseOrigin(item.origin) || (item.note && !isGenericPhraseNote(item.note))) && (
+              <div className="mt-3 rounded-2xl bg-slate-50 p-3 text-left ring-1 ring-slate-200" data-phrase-origin>
+                <p className="mb-1 text-sm font-extrabold text-brand-700">
+                  {item.kind === 'syntax' ? 'この文のポイント' : '成り立ち'}
+                </p>
+                {!isGenericPhraseOrigin(item.origin) && (
+                  <p className="text-sm font-bold leading-relaxed text-ink">{item.origin}</p>
+                )}
+                {item.note && !isGenericPhraseNote(item.note) && (
+                  <p className="mt-1 text-xs font-bold leading-relaxed text-ink/55">{item.note}</p>
+                )}
+              </div>
+            )}
             <SyntaxFamilyGuide item={item} className="mt-3 text-left" />
             <IdiomFormGuide item={item}
               familyId={params.idiomFormFamilyId}

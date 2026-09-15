@@ -341,6 +341,10 @@ test('熟語・文法・古典・漢文などほかの教材も単語帳に入�
   for (const [path, domain] of Object.entries(toggles)) {
     assert.ok(read(`../${path}`).includes(`<WordBookToggle domain="${domain}"`), path)
   }
+  assert.ok(
+    read('../src/screens/KotenInterpretationQuiz.jsx').includes('<WordBookToggle domain="kotenInterpretation"'),
+    'src/screens/KotenInterpretationQuiz.jsx',
+  )
   for (const path of ['src/screens/KanbunStudy.jsx', 'src/screens/KanbunQuiz.jsx']) {
     assert.ok(read(`../${path}`).includes('<WordBookToggle domain={kanbunNotebookDomain(domain)}'), path)
   }

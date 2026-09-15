@@ -1,0 +1,261 @@
+// 実力診断の答え合わせで、選択肢を1件ずつ説明する台帳（問題ID → 選択肢の文 → 説明）。
+// 単語・熟語の固定問題は「その選択肢がどの語の意味か」、読解問題は「選択肢の和訳と、本文に照らして正しい／合わない理由」を書く。
+// 自動で作る単語・熟語の問題は、選択肢の元になった語から説明を組み立てるので、ここには載せない。
+// 文法問題は文法の選択肢解説（grammarChoiceExplanationFor）を使う。
+
+export const DIAGNOSTIC_CHOICE_NOTES = Object.freeze({
+  diag_v_5: {
+    ときどき: 'sometimes の意味。always（いつも）より回数が少ない。',
+    いつも: 'always の意味。頻度を表す副詞で「毎回・常に」。',
+    まだ: 'still（肯定文）や yet（否定文）の意味。',
+    すぐに: 'soon や right away の意味。',
+  },
+  diag_u_5: {
+    '〜を見る': 'look at の意味。目を向けるだけで、探してはいない。',
+    '〜を探す': 'look for の意味。I am looking for my key. は「鍵を探している」。',
+    '〜に似ている': 'look like の意味。',
+    '〜の世話をする': 'look after（take care of）の意味。',
+  },
+  diag_v_4: {
+    訪問する: 'visit の意味。',
+    紹介する: 'introduce の意味。',
+    招待する: 'invite の意味。invite A to B で「AをBに招く」。',
+    発明する: 'invent の意味。つづりの似た invite と取り違えやすい。',
+  },
+  diag_u_4: {
+    at: 'be good at（〜が得意だ）など、得意・不得意を言う形で使う。be interested の後ろには置かない。',
+    in: 'be interested in で「〜に興味がある」という決まった形。',
+    on: 'be keen on（〜に熱中している）などで使う。be interested の後ろには置かない。',
+    with: 'be pleased with（〜に満足している）などで使う。be interested の後ろには置かない。',
+  },
+  diag_v_3: {
+    経験: 'experience の意味。',
+    環境: 'environment の意味。',
+    発明: 'invention の意味。',
+    教育: 'education の意味。',
+  },
+  diag_u_3: {
+    '〜を連れて行く': 'take A to B（AをBへ連れて行く）の意味。',
+    '〜をこわがる': 'be afraid of の意味。',
+    '〜の世話をする': 'take care of の意味。look after と同じ。',
+    '〜を呼び出す': 'call（呼ぶ）の意味。',
+  },
+  diag_v_pre2: {
+    維持する: 'maintain の意味。',
+    発見する: 'discover の意味。',
+    比較する: 'compare の意味。',
+    許可する: 'permit や allow の意味。',
+  },
+  diag_u_pre2: {
+    中止する: 'call off や cancel の意味。put off は取りやめず、先へ延ばす。',
+    延期する: 'put off（postpone）の意味。',
+    再開する: 'resume の意味。',
+    参加する: 'take part in や participate in の意味。',
+  },
+  diag_v_2: {
+    予測できない: 'unpredictable の意味。',
+    避けられない: 'inevitable の意味。in-（否定）＋evitable（避けられる）。',
+    説明しにくい: 'inexplicable（説明できない）に近い意味。',
+    信頼できる: 'reliable の意味。',
+  },
+  diag_u_2: {
+    '〜に追いつく': 'catch up with の意味。',
+    '〜を思いつく': 'come up with の意味。a practical solution を思いついた。',
+    '〜を取り替える': 'replace の意味。',
+    '〜を実行する': 'carry out の意味。',
+  },
+  diag_v_pre1: {
+    細部まで注意深い: 'meticulous の意味。',
+    極端に臆病な: 'cowardly や timid に近い意味。',
+    すぐに飽きる: 'easily bored の意味。',
+    一時的な: 'temporary の意味。',
+  },
+  diag_u_pre1: {
+    Aを当然のものと思う: 'take A for granted の意味。ありがたみを感じず、当たり前だと思う。',
+    Aを慎重に調べる: 'examine A carefully の意味。',
+    Aを一時的に借りる: 'borrow A の意味。',
+    Aを高く評価して褒める: 'praise A や think highly of A の意味。',
+  },
+  diag_v_1: {
+    時代遅れの: 'outdated や obsolete の意味。',
+    厳しく制限された: 'strictly restricted の意味。',
+    至る所にある: 'ubiquitous の意味。',
+    誤解を招く: 'misleading の意味。',
+  },
+  diag_u_1: {
+    '〜を防ぐ目的で': 'to prevent 〜 の意味。',
+    '〜の結果として': 'in the wake of の意味。事故の後、その結果として規制が導入された。',
+    '〜とは対照的に': 'in contrast to の意味。',
+    '〜より前に': 'prior to や before の意味。',
+  },
+
+  diag_g_5: {
+    play: '原形。主語 She は3人称単数なので、現在形は -s を付けた plays になる。',
+    plays: '3人称単数現在形。every Sunday は現在の習慣で、主語は She。',
+    played: '過去形。every Sunday は毎週の習慣を表し、過去の1回の出来事ではない。',
+    playing: '-ing 形。be動詞がないので、単独では文の動詞にならない。',
+  },
+  diag_g_4: {
+    have: '現在形。電話がかかってきたのは過去（called）なので、時制が合わない。',
+    had: '過去形。「夕食をとった」と出来事全体を表し、電話の時点で食事の途中だったことは表せない。',
+    'were having': '過去進行形。電話がかかってきた時点で、夕食の途中だったことを表す。',
+    'are having': '現在進行形。called は過去なので、時制が合わない。',
+  },
+  diag_g_3: {
+    for: 'for は期間の長さ（for five years など）の前に置く。2020 は期間ではなく、住み始めた時点。',
+    since: 'since は継続の始まった時点を示す。現在完了 have lived と一緒に使う。',
+    during: 'during は「〜の間に」で、the summer のような期間を表す名詞の前に置く。継続の起点は表さない。',
+    from: 'from も起点を表すが、現在完了で「〜からずっと」と言うときは since を使う。from 2020 to 2023 のように終点と組むことが多い。',
+  },
+  diag_g_pre2: {
+    stand: '原形。文の動詞は is なので、The woman を説明する形にする必要がある。',
+    stood: '過去形。文にはすでに動詞 is があるので、もう1つ動詞の過去形を置けない。',
+    standing: '現在分詞。standing by the window が The woman を「窓辺に立っている」と後ろから説明する。',
+    'is stood': 'be＋過去分詞の受け身。文にはすでに動詞 is があり、「立っている」という意味にもならない。',
+  },
+  diag_g_2: {
+    have: '現在形。主節が would learn なので、現在の事実に反する仮定では If 節を過去形にする。',
+    had: '過去形。現在の事実に反する仮定（仮定法過去）で、主節の would＋原形と組み合わせる。',
+    'will have': '未来の形。条件を表す If 節には will を使わず、ここは仮定なので過去形 had にする。',
+    'have had': '現在完了形。仮定法過去の If 節には過去形を使う。',
+  },
+  diag_g_pre1: {
+    did: 'did を使うと、後ろの動詞は原形 start になる。ここは過去分詞 started が続くので had が要る。',
+    was: '受け身の was。Hardly … when の「〜するとすぐ」は、過去完了 had＋過去分詞で表す。',
+    has: '現在完了の has。警報が鳴ったのは過去（rang）なので、それより前を表す had を使う。',
+    had: '過去完了の had。Hardly が文頭に出て倒置し、had the meeting started となる。',
+  },
+  diag_g_1: {
+    submits: '3人称単数現在形。imperative の後の that 節では、主語が単数でも動詞の原形を使う。',
+    submitted: '過去形。必要性を表す that 節では時制を変えず、原形 submit を使う。',
+    submit: '動詞の原形（仮定法現在）。imperative など必要性を表す語の後の that 節で使う。',
+    'will submit': '未来の形。この that 節では will を付けず、原形を使う。',
+  },
+
+  diag_r_5: {
+    'It is new.': '「新しいから」。本文は傘が青いとは言うが、新しいとは書いていない。',
+    'It is raining.': '「雨が降っているから」。It is raining today, so she takes it to school. の so が理由を示す。',
+    'It is hot.': '「暑いから」。本文に暑さの話はない。',
+    'It is Sunday.': '「日曜日だから」。本文に曜日は出てこない。傘は学校へ持っていく。',
+  },
+  diag_r_4: {
+    'By bicycle.': '「自転車で」。乗りたかったが、タイヤがパンクしていたので乗っていない。',
+    'By bus.': '「バスで」。本文にバスは出てこない。',
+    'On foot.': '「歩いて」。he walked to the park instead とある。',
+    'By train.': '「電車で」。本文に電車は出てこない。',
+  },
+  diag_r_3: {
+    'Thursday.': '「木曜日」。本文に木曜日は出てこない。',
+    'Friday.': '「金曜日」。最初の予定だが、曇ったので土曜日へ移した。',
+    'Saturday.': '「土曜日」。行事を土曜日へ移し、その日は晴れた。',
+    'Sunday.': '「日曜日」。本文に日曜日は出てこない。',
+  },
+  diag_r_pre2: {
+    'Cold drinks became cheaper.': '「冷たい飲み物が安くなった」。値段の話は本文にない。',
+    'More customers asked for plastic straws.': '「ストローを頼む客が増えた」。頼むことはできるが、多くの客は金属のスプーンを使っている。',
+    'The café uses far fewer plastic straws.': '「店のプラスチックストローの使用が大きく減った」。買う量が以前の3分の1になったとある。',
+    'The café stopped selling cold drinks.': '「冷たい飲み物の販売をやめた」。冷たい飲み物にはスプーンを付けて出している。',
+  },
+  diag_r_2: {
+    'They ended all quiet hours.': '「静かな時間をすべてやめた」。成功した会社は静かな時間を残した（kept the quiet hours）。',
+    'They held more morning meetings.': '「朝の会議を増やした」。会議のない午前中を保ったのであり、会議は増やしていない。',
+    'They allowed a way to handle urgent questions.': '「緊急の質問を扱う方法を用意した」。creating a channel for truly urgent messages と一致する。',
+    'They asked employees to work at night.': '「夜に働くよう求めた」。本文に夜の勤務は出てこない。',
+  },
+  diag_r_pre1: {
+    'Planting the largest possible number of one species.': '「1種類をできるだけ多く植える」。本文は多様な樹種を選ぶよう勧め、本数の発表だけでは足りないとする。',
+    'Replacing trees whenever temperatures rise.': '「気温が上がるたびに木を植え替える」。本文が勧めるのは長年の手入れで、植え替えの話はない。',
+    'Ongoing care and a variety of suitable species.': '「継続的な手入れと、適した多様な樹種」。funding continued care and choosing diverse species と一致する。',
+    'Publishing planting totals more frequently.': '「植樹本数をもっと頻繁に発表する」。本文は、本数を発表するだけでは効果が小さいと述べている。',
+  },
+  diag_r_1: {
+    'Quantitative indicators should never influence policy.': '「数値指標は政策に一切影響させるべきでない」。筆者は測定が無用だとは言っていない（This does not make measurement useless）。',
+    'A single stable indicator is the fairest basis for rewards.': '「変わらない単一の指標が報酬の最も公平な基準だ」。筆者は指標を見直せる状態に保つべきだとし、単一の指標だけで評価する例を、行動がゆがむ例として挙げている。',
+    'Complex cases should be excluded from performance reviews.': '「複雑な事例は業績評価から外すべきだ」。複雑な患者を避ける病院は、指標が行動をゆがめた例として出てくる。',
+    'Indicators are useful only when their limits are continually considered.': '「指標は、その限界を考え続けるときにだけ役に立つ」。指標を見直せる状態にし、捉えられない証拠と併せて解釈すべきだという主張と一致する。',
+  },
+  diag_r_5_b: {
+    'At eight.': '「8時に」。家を出る時刻で、学校に着く時刻ではない。',
+    'At eight forty.': '「8時40分に」。He gets to school at eight forty. とある。',
+    'At nine.': '「9時に」。音楽の授業が始まる時刻。',
+    'At nine forty.': '「9時40分に」。本文に出てこない時刻。',
+  },
+  diag_r_5_c: {
+    'She feeds the cat.': '「猫に餌をやる」。これは学校へ行く前にすること。',
+    'She goes to school.': '「学校へ行く」。夕食後にすることではない。',
+    'She walks the dog.': '「犬を散歩させる」。After dinner, she walks the dog とある。',
+    'She reads with her father.': '「父親と本を読む」。父親とするのは犬の散歩で、読書の話はない。',
+  },
+  diag_r_4_b: {
+    'His friends were busy.': '「友人が忙しかった」。友人にはメールで知らせただけで、忙しいとは書いていない。',
+    'Saturday was expected to be rainy.': '「土曜日は雨の予報だった」。The weather report said it would rain, so he changed it とある。',
+    'The park was closed on Sunday.': '「日曜日は公園が閉まっていた」。本文に公園の休みの話はない。日曜日は変更先の日。',
+    'He forgot to buy food.': '「食べ物を買い忘れた」。本文に買い物の話はない。',
+  },
+  diag_r_4_c: {
+    'Thirty minutes.': '「30分」。土曜日は5時に閉まり、4時30分に着いたので残りは30分。',
+    'One hour.': '「1時間」。4時30分から5時までは1時間ではなく30分。',
+    'One and a half hours.': '「1時間半」。平日の閉館時刻6時で数えた長さだが、土曜日は5時に閉まる。',
+    'Two hours.': '「2時間」。平日・週末どちらの閉館時刻で数えても出ない長さ。',
+  },
+  diag_r_3_b: {
+    'They repaired the printer.': '「印刷機を直した」。直したとは書いていない。代わりにオンラインで知らせた。',
+    'They shared it online.': '「オンラインで共有した」。They shared the event online instead とある。',
+    'They called every visitor.': '「来場者全員に電話した」。本文に電話の話はない。',
+    'They canceled the posters.': '「ポスターを取りやめた」。宣伝の方法ではなく、本文も取りやめたとは言っていない。',
+  },
+  diag_r_3_c: {
+    'His showers became warmer.': '「シャワーが温かくなった」。シャワーは短くしただけで、温度の話はない。',
+    'He bought a new toothbrush.': '「新しい歯ブラシを買った」。歯磨き中に蛇口を閉めただけで、買い物の話はない。',
+    'The water meter reading decreased.': '「水道メーターの値が下がった」。the water meter showed a clear decrease とある。',
+    'A month had passed.': '「1か月たった」。時間がたったことは、節水の効果を示すものではない。',
+  },
+  diag_r_pre2_b: {
+    'It bought cars for commuters.': '「通勤者用に車を買った」。本文に車の話はない。',
+    'It closed residential stations.': '「住宅地の置き場を閉じた」。住宅地の自転車を中心部へ移したのであり、置き場は閉じていない。',
+    'It moved bicycles before the morning rush.': '「朝の混雑前に自転車を移した」。moving bicycles ... before sunrise と一致する。',
+    'It raised the price downtown.': '「中心部の料金を上げた」。本文に料金の話はない。',
+  },
+  diag_r_pre2_c: {
+    'Phones can distract people even when unused.': '「使っていなくても、携帯電話は注意をそらし得る」。携帯電話を別室に置いた組の方が難問を多く解いた。',
+    'Difficult problems require phone apps.': '「難問にはアプリが必要だ」。携帯電話のない組の方がよく解けたので逆。',
+    'Feeling relaxed always improves scores.': '「落ち着いた気分なら必ず点が上がる」。よく解けた組にも、不安を感じた人がいた。',
+    'People work best with phones on their desks.': '「机に携帯電話を置くと最もはかどる」。机に置いた組の方が、解けた難問は少なかった。',
+  },
+  diag_r_2_b: {
+    'To reduce the number of new employees.': '「新入社員の数を減らすため」。新入社員を支える仕組みで、数を減らす話はない。',
+    'To replace all formal training.': '「正式な研修をすべて置き換えるため」。減っていたのは非公式な助言で、研修を置き換える話はない。',
+    'To restore guidance that remote work had reduced.': '「在宅勤務で減った助言を取り戻すため」。new employees received less informal advice を受けてメンターを付けた。',
+    'To measure how long online meetings lasted.': '「オンライン会議の長さを測るため」。本文に会議時間を測る話はない。',
+  },
+  diag_r_2_c: {
+    'Visitors learn skills that may reduce waste.': '「来訪者が、廃棄を減らしうる技術を身につける」。簡単な修理を自分で試し、すぐ捨てなくなったとある。',
+    'Volunteers can sell more new appliances.': '「ボランティアが新しい家電を多く売れる」。本文に販売の話はなく、むしろ買い替えを減らす方向。',
+    'Repairs are completed without any tools.': '「道具を使わずに修理が終わる」。所有者に道具を使ってもらうとある。',
+    'Owners no longer need to attend the café.': '「所有者がカフェに来なくてよくなる」。所有者はカフェで手順を学ぶ。',
+  },
+  diag_r_pre1_b: {
+    'They accept reports only from professionals.': '「専門家の報告だけを受け付ける」。ボランティアの観察を集める活動なので逆。',
+    'They limit observations to familiar locations.': '「観察を見慣れた場所に限る」。専門家が訪れない地域から集められることが利点とされている。',
+    'They combine training with expert checks.': '「訓練と専門家の確認を組み合わせる」。短い訓練課題と、専門家が確認した写真との照合を用意するとある。',
+    'They ask volunteers to study every species.': '「すべての種を学ばせる」。用意するのは短い訓練課題で、全種の学習ではない。',
+  },
+  diag_r_pre1_c: {
+    'To make every historical claim appear certain.': '「どの歴史的主張も確かに見せるため」。記録には情報の空白や論争も含めるので逆。',
+    'To provide context that an image cannot show by itself.': '「画像だけでは見せられない背景を補うため」。画像では由来の不確かさや文化的役割が隠れるとある。',
+    'To prevent communities from discussing objects.': '「共同体が資料について話すのを防ぐため」。記録には、資料につながる共同体も含める。',
+    'To replace physical collections completely.': '「実物の所蔵品を完全に置き換えるため」。本文に置き換えの話はない。',
+  },
+  diag_r_1_b: {
+    'Forecasts can change the outcome being predicted.': '「予測が、予測している結果そのものを変えうる」。不足の警告が買いだめを生む例と一致する。',
+    'Consumers never respond to credible warnings.': '「消費者は信頼できる警告に決して反応しない」。信頼できる警告は節約を促すとあり逆。',
+    'Shortages occur only when data are unavailable.': '「不足はデータがないときだけ起こる」。本文は、警告による買いだめで不足が起こる例を挙げる。',
+    'Conservation makes forecasting unnecessary.': '「節約すれば予測は要らなくなる」。本文は、予測が自らの影響を考えに入れるべきだと述べる。',
+  },
+  diag_r_1_c: {
+    'They guarantee that every hypothesis is correct.': '「どの仮説も正しいと保証する」。評価するのは問いと方法で、仮説の正しさは保証しない。',
+    'They value the study design before the result is known.': '「結果が分かる前に研究の設計を評価する」。evaluating a study’s question and method before its results are known と一致する。',
+    'They prevent researchers from repeating earlier work.': '「研究者が先行研究を繰り返すのを防ぐ」。再現の試みが評価されにくい偏りに対処する仕組みなので逆。',
+    'They publish only results that appear surprising.': '「意外に見える結果だけを掲載する」。掲載は結果の意外さに左右されにくくなるとあり逆。',
+  },
+})

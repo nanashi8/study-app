@@ -14,13 +14,12 @@ import {
 import { limitQuizChoices, UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
+import { CardSaveToggle } from '../components/CardStudyControls.jsx'
 import { Button, Chip, cx } from '../components/ui.jsx'
 import { answeredQuizIndexes, growDeck, restartSessionCount } from '../lib/session.js'
 import {
   ArrowRight,
   Book,
-  Bookmark,
-  BookmarkFilled,
   Check,
   Close,
 } from '../components/Icons.jsx'
@@ -261,6 +260,21 @@ export function KotenGrammarQuizScreen() {
             }}
           />
         )}
+        trailingActions={(
+          // 関わる文法事項の名前は答えの手掛かりになるので、答えるまでは押せない。
+          <CardSaveToggle
+            saved={allSaved}
+            onToggle={() => picker.open(relatedRefs, relatedGrammar.map((item) => item.title).join('・'))}
+            disabled={!answered || !relatedRefs.length}
+            label="単語帳"
+            savedLabel="この問題の文法事項を入れる単語帳を選ぶ（単語帳に入っています）"
+            unsavedLabel={answered ? 'この問題の文法事項を入れる単語帳を選ぶ' : '答えたあとで、この問題の文法事項を単語帳に入れられます'}
+            aria-pressed={undefined}
+            aria-haspopup="dialog"
+            data-word-book-related="kotenGrammar"
+            className="disabled:opacity-40"
+          />
+        )}
       />
 
       <div className="flex-1 overflow-y-auto px-4 pb-4">
@@ -333,27 +347,12 @@ export function KotenGrammarQuizScreen() {
 
         {answered && (
           <section className="mt-4 animate-slide-up rounded-2xl bg-white p-4 shadow-card">
-            <div className="flex items-start justify-between gap-3">
-              <p className={cx(
-                'font-display text-lg font-extrabold',
-                correctPick ? 'text-emerald-600' : 'text-rose-500',
-              )}>
-                {correctPick ? '正解！' : unknownPick ? '答えを確認しよう' : 'ここを覚え直そう'}
-              </p>
-              <button
-                onClick={() => picker.open(relatedRefs, relatedGrammar.map((item) => item.title).join('・'))}
-                disabled={!relatedRefs.length}
-                aria-haspopup="dialog"
-                data-word-book-related="kotenGrammar"
-                className={cx(
-                  'flex shrink-0 items-center gap-1 rounded-xl px-2.5 py-2 text-[11px] font-extrabold active:scale-95',
-                  allSaved ? 'bg-amber-100 text-amber-700' : 'bg-paper text-ink/50',
-                )}
-              >
-                {allSaved ? <BookmarkFilled size={15} /> : <Bookmark size={15} />}
-                単語帳
-              </button>
-            </div>
+            <p className={cx(
+              'font-display text-lg font-extrabold',
+              correctPick ? 'text-emerald-600' : 'text-rose-500',
+            )}>
+              {correctPick ? '正解！' : unknownPick ? '答えを確認しよう' : 'ここを覚え直そう'}
+            </p>
 
             <div className="mt-3 rounded-xl bg-emerald-50 px-3 py-2.5">
               <p className="text-[10px] font-extrabold text-emerald-600">正解</p>

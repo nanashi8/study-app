@@ -18,6 +18,7 @@ import {
   KOTEN_WORDS,
   pickKotenDistractors,
 } from '../src/data/koten.js'
+import { KANBUN_COLLECTIONS } from '../src/data/kanbun-content.js'
 import { LISTENING_ITEMS } from '../src/data/listening.js'
 import { MATH_PROBLEMS } from '../src/data/math.js'
 import { PHRASES } from '../src/data/phrases.js'
@@ -25,6 +26,7 @@ import { ALL_PASSAGES } from '../src/data/passages.js'
 import { getReadingQuestions } from '../src/data/reading-questions.js'
 import {
   ALL_WORDS,
+  getEtymologyPack,
   pickDistractors,
 } from '../src/data/vocab.js'
 import {
@@ -38,17 +40,17 @@ import {
   buildKotenCultureInstructorExplanation,
   buildKotenGrammarInstructorExplanation,
   buildKotenInterpretationInstructorExplanation,
-  buildKotenWordInstructorExplanation,
   buildListeningInstructorExplanation,
   buildMathChoiceInstructorExplanation,
   buildMathFillInstructorExplanation,
   buildMathSolvedInstructorExplanation,
-  buildPhraseInstructorExplanation,
   buildReadingInstructorExplanation,
   buildWritingInstructorExplanation,
   isCompleteInstructorExplanation,
 } from '../src/lib/instructorExplanations.js'
-import { buildDiagnosticQuestions } from '../src/lib/diagnosticQuestions.js'
+import { buildDiagnosticQuestions, diagnosticChoiceNoteFor } from '../src/lib/diagnosticQuestions.js'
+import { buildAllEtymologyQuizQuestions } from '../src/lib/etymologyQuiz.js'
+import { isGenericPhraseNote, isGenericPhraseOrigin } from '../src/lib/phraseNotes.js'
 import { UNKNOWN_CHOICE_ID } from '../src/lib/quizChoices.js'
 import { pickPhraseDistractors } from '../src/lib/session.js'
 
@@ -167,37 +169,21 @@ const diagnosticQuestions = [
     seed: 0x1a2b3c4d,
   })),
 ]
+// 共通講師解説を使うのは文法と読解だけ。単語・熟語は選択肢の中身を示す（下の意味を問うテストの検査）。
+const diagnosticInstructorQuestions = diagnosticQuestions.filter(
+  ({ skill }) => skill === 'grammar' || skill === 'reading',
+)
 
 const allReadingQuestions = ALL_PASSAGES.flatMap((passage) =>
   getReadingQuestions(passage.id))
 
 test('全教材の全設問から問題固有の予備校講師型4段解説を生成できる', () => {
   let units = 0
-  for (const item of PHRASES) {
-    const value = buildPhraseInstructorExplanation(item)
-    assertExplanation(value, `phrase:${item.id}`)
-    assertContains(
-      value.answer,
-      item.meanings?.[0] ?? item.meaning,
-      `phrase:${item.id}.answer`,
-    )
-    assertContains(value.evidence, item.example?.en, `phrase:${item.id}.evidence`)
-    units += 1
-  }
-
   for (const item of GRAMMAR) {
     const value = buildGrammarInstructorExplanation(item)
     assertExplanation(value, `grammar:${item.id}`)
     assertContains(value.answer, item.answer, `grammar:${item.id}.answer`)
     assertContains(value.evidence, item.explain, `grammar:${item.id}.evidence`)
-    units += 1
-  }
-
-  for (const word of KOTEN_WORDS) {
-    const value = buildKotenWordInstructorExplanation(word)
-    assertExplanation(value, `koten-word:${word.id}`)
-    assertContains(value.answer, word.meaning, `koten-word:${word.id}.answer`)
-    assertContains(value.evidence, word.note, `koten-word:${word.id}.evidence`)
     units += 1
   }
 
@@ -255,7 +241,7 @@ test('全教材の全設問から問題固有の予備校講師型4段解説を�
     units += 1
   }
 
-  for (const question of diagnosticQuestions) {
+  for (const question of diagnosticInstructorQuestions) {
     const value = buildDiagnosticInstructorExplanation(question)
     assertExplanation(value, `diagnostic:${question.id}`)
     assertContains(value.answer, question.answer, `diagnostic:${question.id}.answer`)
@@ -343,30 +329,11 @@ test('全教材の全設問から問題固有の予備校講師型4段解説を�
     })
   }
 
-  assert.ok(units >= 8_000, `全件監査の対象数が不足しています: ${units}`)
+  assert.ok(units >= 5_000, `全件監査の対象数が不足しています: ${units}`)
 })
 
 test('全選択式問題の正答・全誤答・「わからない」に回答別の指導を返す', () => {
   let paths = 0
-  for (const item of PHRASES) {
-    const options = [item, ...pickPhraseDistractors(item, 2, deterministicRng)]
-    assert.equal(options.length, 3, `phrase:${item.id} の選択肢が不足しています`)
-    paths += assertChoiceFamily({
-      label: `phrase:${item.id}`,
-      cases: [
-        ...options.map((option) => ({
-          selected: option,
-          label: option.meanings?.[0] ?? option.meaning,
-          kind: option.id === item.id ? 'correct' : 'wrong',
-        })),
-        { selected: UNKNOWN_CHOICE_ID, label: 'わからない', kind: 'unknown' },
-      ],
-      build: (selected) => buildPhraseInstructorExplanation(item, selected),
-      answerAnchor: item.meanings?.[0] ?? item.meaning,
-      evidenceAnchor: item.example?.en,
-    })
-  }
-
   for (const item of GRAMMAR) {
     paths += assertChoiceFamily({
       label: `grammar:${item.id}`,
@@ -381,26 +348,6 @@ test('全選択式問題の正答・全誤答・「わからない」に回答�
       answerAnchor: item.answer,
       evidenceAnchor: item.explain,
       wrongTrapAnchor: item.explain,
-    })
-  }
-
-  for (const word of KOTEN_WORDS) {
-    const options = [word, ...pickKotenDistractors(word, 3, deterministicRng)]
-    assert.equal(options.length, 4, `koten-word:${word.id} の選択肢が不足しています`)
-    paths += assertChoiceFamily({
-      label: `koten-word:${word.id}`,
-      cases: [
-        ...options.map((option) => ({
-          selected: option,
-          label: option.meaning,
-          kind: option.id === word.id ? 'correct' : 'wrong',
-        })),
-        { selected: UNKNOWN_CHOICE_ID, label: 'わからない', kind: 'unknown' },
-      ],
-      build: (selected) => buildKotenWordInstructorExplanation(word, selected),
-      answerAnchor: word.meaning,
-      evidenceAnchor: word.note,
-      wrongTrapAnchor: word.note,
     })
   }
 
@@ -472,7 +419,7 @@ test('全選択式問題の正答・全誤答・「わからない」に回答�
     })
   }
 
-  for (const question of diagnosticQuestions) {
+  for (const question of diagnosticInstructorQuestions) {
     paths += assertChoiceFamily({
       label: `diagnostic:${question.id}`,
       cases: choiceCases(question.choices, question.answer),
@@ -513,7 +460,7 @@ test('全選択式問題の正答・全誤答・「わからない」に回答�
     }
   }
 
-  assert.ok(paths >= 30_000, `全回答経路の監査数が不足しています: ${paths}`)
+  assert.ok(paths >= 20_000, `全回答経路の監査数が不足しています: ${paths}`)
 })
 
 const grammarStrategyExpectation = (topic) => {
@@ -716,10 +663,8 @@ test('採点を伴う全問題画面が共通の講師解説を表示する', as
     'KotenCultureQuiz.jsx',
     'KotenGrammarQuiz.jsx',
     'KotenInterpretationQuiz.jsx',
-    'KotenQuiz.jsx',
     'ListeningQuiz.jsx',
     'MathSolve.jsx',
-    'PhraseQuiz.jsx',
     'components/ReadingComprehensionCheck.jsx',
     'WritingPlay.jsx',
   ]
@@ -744,20 +689,44 @@ test('共通解説の表示名と各フィールドの意味契約を一致さ�
   assert.doesNotMatch(source, /根拠を一本化|誤答を切る|次も解ける型/)
 })
 
-test('英単語テストの答え合わせは、出題した3択すべての英単語と意味を示し、例文や文脈で答えを決めさせない', async () => {
-  const source = await readFile(new URL('../src/screens/VocabQuiz.jsx', import.meta.url), 'utf8')
-  // 出題は英単語だけ。4段の講師解説や「例文・文脈から答えを決める」説明を戻さない。
-  assert.doesNotMatch(source, /InstructorExplanation|instructorExplanation/)
-  assert.doesNotMatch(source, /文脈の中で確定|例文から手掛かり|例文の位置|例文を手掛かり/)
-  // 選択肢ボタンと同じ options を、1件も省かずに英単語と意味つきで並べる。
-  assert.match(source, /<VocabChoiceMeanings options=\{options\} answerId=\{word\.id\} selected=\{selected\}/)
-  assert.match(
-    source,
-    /options\.map\(\(option\) => \{[\s\S]*?data-vocab-choice=\{option\.id\}[\s\S]*?\{option\.word\}[\s\S]*?<MeaningText>\{option\.meanings\.join\('・'\)\}<\/MeaningText>/,
-  )
-  assert.match(source, /<EtymologyBlock word=\{word\} \/>/)
+// 意味を知っているかを問うテスト。出題にない例文や文脈から答えを決めさせる4段解説は置かず、
+// 画面の選択肢ボタンと同じ並びから、出題した選択肢すべての中身を並べる。
+const MEANING_CHOICE_SCREENS = [
+  ['VocabQuiz.jsx', /rows=\{options\.map\(\(option\) => \(\{[\s\S]*?heading: option\.word,[\s\S]*?option\.meanings\.join\('・'\)/],
+  ['PhraseQuiz.jsx', /rows=\{options\.map\(\(option\) => \(\{[\s\S]*?heading: option\.phrase,[\s\S]*?option\.meanings\.join\('・'\)/],
+  ['KotenQuiz.jsx', /rows=\{options\.map\(\(option\) => \(\{[\s\S]*?heading: <KotenWord word=\{option\} \/>,[\s\S]*?option\.meanings\.join\('・'\)/],
+  ['KanbunQuiz.jsx', /rows=\{question\.choices\.map\(\(choice\) => \{[\s\S]*?heading: choice\.label,/],
+  ['EtymologyQuiz.jsx', /rows=\{options\.map\(\(option\) => \{[\s\S]*?heading: option\.label,/],
+]
 
-  // 誤答はどの語からも選ばれうるので、全語に英単語と空でない意味があることを確かめる。
+test('意味を問うテストは、出題した選択肢すべての中身を示し、例文や文脈で答えを決めさせない', async () => {
+  for (const [screen, rowsPattern] of MEANING_CHOICE_SCREENS) {
+    const source = await readFile(new URL(`../src/screens/${screen}`, import.meta.url), 'utf8')
+    assert.doesNotMatch(source, /InstructorExplanation|instructorExplanation/, `${screen}: 4段の講師解説が戻っています`)
+    assert.doesNotMatch(
+      source,
+      /文脈の中で確定|例文から手掛かり|例文の位置|例文を手掛かり|例文の語順を手掛かり|例文で使われる場面/,
+      `${screen}: 例文や文脈を答えの根拠にしています`,
+    )
+    assert.match(source, /<ChoiceExplanations/, `${screen}: 選択肢ごとの欄がありません`)
+    assert.match(source, rowsPattern, `${screen}: 選択肢の欄がボタンと同じ選択肢から作られていません`)
+  }
+  const read = (screen) => readFile(new URL(`../src/screens/${screen}`, import.meta.url), 'utf8')
+  assert.match(await read('VocabQuiz.jsx'), /<EtymologyBlock word=\{word\} \/>/)
+  assert.match(await read('PhraseQuiz.jsx'), /\{item\.origin\}/)
+  // 表現の種類だけを言う決まり文句の成り立ち・進め方の指示だけの注意書きは、答え合わせに出さない。
+  assert.match(await read('PhraseQuiz.jsx'), /!isGenericPhraseOrigin\(item\.origin\)/)
+  assert.match(await read('PhraseQuiz.jsx'), /!isGenericPhraseNote\(item\.note\)/)
+  assert.equal(isGenericPhraseOrigin('前置詞を含む語のまとまり全体で一つの働きをする定型表現。'), true)
+  assert.equal(isGenericPhraseNote('目的語を置く位置と、自動詞・他動詞の違いまで例文で確認する。'), true)
+  assert.equal(isGenericPhraseOrigin(PHRASES.find((item) => item.phrase === 'get up')?.origin), false)
+  assert.equal(isGenericPhraseNote(PHRASES.find((item) => item.phrase === 'get up')?.note), false)
+  assert.match(await read('KotenQuiz.jsx'), /<KotenText>\{word\.note\}<\/KotenText>/)
+  const diagnostic = await read('Diagnostic.jsx')
+  assert.match(diagnostic, /question\.skill === 'vocab' \|\| question\.skill === 'usage' \?/)
+  assert.match(diagnostic, /rows=\{question\.choices\.map\(\(choice\) => \(\{[\s\S]*?body: diagnosticChoiceNoteFor\(question, choice\)/)
+
+  // 誤答はどの項目からも選ばれうるので、全項目に選択肢の欄へ出す中身があることを確かめる。
   for (const word of ALL_WORDS) {
     assert.ok(normalize(word.word), `vocab:${word.id} の英単語が空です`)
     assert.ok(
@@ -765,7 +734,38 @@ test('英単語テストの答え合わせは、出題した3択すべての英�
       `vocab:${word.id} の意味が空です`,
     )
   }
-  // 出題と同じ組み方で、どの語も3択がそろい、選択肢の英単語が重ならない。
+  for (const item of PHRASES) {
+    assert.ok(
+      normalize(item.phrase) && item.meanings?.length && normalize(item.origin),
+      `phrase:${item.id} の表現・意味・成り立ちが欠けています`,
+    )
+  }
+  for (const word of KOTEN_WORDS) {
+    assert.ok(
+      normalize(word.word) && word.meanings?.length && normalize(word.note),
+      `koten:${word.id} の古語・意味・覚え方が欠けています`,
+    )
+  }
+  for (const [domain, items] of Object.entries(KANBUN_COLLECTIONS)) {
+    for (const item of items) {
+      assert.ok(
+        normalize(item.title) && normalize(item.answer) && normalize(item.clue),
+        `kanbun:${domain}:${item.id} の見出し・答え・見分けるヒントが欠けています`,
+      )
+      if (domain === 'grammar') assert.ok(normalize(item.pattern), `kanbun:grammar:${item.id} の句形が欠けています`)
+    }
+  }
+  for (const question of buildAllEtymologyQuizQuestions()) {
+    for (const option of question.options) {
+      const card = getEtymologyPack(option.id)
+      assert.ok(
+        card && normalize(card.rootForm) && normalize(card.rootMeaning) && normalize(card.rootOrigin),
+        `etymology:${question.cardId}:${option.id} の語根の説明が欠けています`,
+      )
+    }
+  }
+
+  // 出題と同じ組み方で、どの項目も3択がそろい、英単語の選択肢は見出しが重ならない。
   let choices = 0
   for (const seed of [17, 101, 20260729]) {
     const rng = seededRandom(seed)
@@ -779,6 +779,30 @@ test('英単語テストの答え合わせは、出題した3択すべての英�
       )
       choices += options.length
     }
+    for (const item of PHRASES) {
+      const options = [item, ...pickPhraseDistractors(item, 2, rng)]
+      assert.equal(options.length, 3, `phrase:${item.id} の選択肢が不足しています`)
+      choices += options.length
+    }
+    for (const word of KOTEN_WORDS) {
+      const options = [word, ...pickKotenDistractors(word, 2, rng)]
+      assert.equal(options.length, 3, `koten:${word.id} の選択肢が不足しています`)
+      choices += options.length
+    }
   }
-  assert.equal(choices, ALL_WORDS.length * 9)
+  assert.equal(choices, (ALL_WORDS.length + PHRASES.length + KOTEN_WORDS.length) * 9)
+
+  // 実力診断：単語・熟語・読解と、出典のない文法の固定問題は、表示する全選択肢に説明がある。
+  let notes = 0
+  for (const question of diagnosticQuestions) {
+    if (question.skill === 'grammar' && question.sourceId?.startsWith('grammar:')) continue
+    for (const choice of question.choices) {
+      assert.ok(
+        normalize(diagnosticChoiceNoteFor(question, choice)),
+        `diagnostic:${question.id}「${choice}」の説明がありません`,
+      )
+      notes += 1
+    }
+  }
+  assert.ok(notes >= 300, `診断の選択肢説明の監査数が不足しています: ${notes}`)
 })

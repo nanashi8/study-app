@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-09-15T02:22:25.183Z",
+  "auditedAt": "2026-09-15T04:12:27.214Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -17,7 +17,7 @@
   "completionCriteria": [
     "全18教材カテゴリのID・母数・重複・内容ハッシュが一致する",
     "全問題バンクで選択肢が重複せず、正答が一つだけ存在し、問題別解説がある",
-    "共通講師解説を使う全選択式問題の正解・全誤答・わからない31,940経路に回答別指導がある",
+    "共通講師解説を使う全選択式問題の正解・全誤答・わからない21,786経路に回答別指導がある",
     "英文法は全3,450問・全13,800選択肢に問題文固有の根拠を持つ",
     "長文32本・794文・140問・560選択肢の和訳と選択肢別解説が原文順に対応する",
     "長文32本すべてが並び替え・文法・語法の技能練習を1問ずつ持ち、原文・訳・重点語・読解ルールが本文と一致する",
@@ -103,7 +103,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "576ebb9247df7470c405d5639045831d160b755854866481557e2a96ce5c7d06",
+    "sha256": "0bc6a2756037b8b3c37702787dd86f047b645f13916d1be908bb9443319e15f9",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -792,7 +792,7 @@
       "questionCount": 28,
       "choiceCount": 112,
       "generalRationaleCount": 28,
-      "choiceSpecificRationaleCount": 0,
+      "choiceSpecificRationaleCount": 112,
       "questionSetSha256": "a103010b5cb63f9c47d020616eb41508db9e69a165dc890f9c9c1ff25b17d33a",
       "result": "pass",
       "failureCount": 0,
@@ -804,7 +804,7 @@
       "questionCount": 84,
       "choiceCount": 252,
       "generalRationaleCount": 84,
-      "choiceSpecificRationaleCount": 0,
+      "choiceSpecificRationaleCount": 252,
       "questionSetSha256": "c34835cfce8adbd9aa863af40e5577990b41d9d439bd2f394657f34cbb491928",
       "result": "pass",
       "failureCount": 0,
@@ -814,20 +814,12 @@
   "instructorAnswerPaths": {
     "coverageTest": "tests/instructor-explanations.test.mjs",
     "requirement": "共通講師解説を使う全選択式問題の正解・全誤答・わからないに、正解、問題固有の根拠、回答別の指導、次に使える考え方を返す",
-    "questionCount": 6892,
-    "displayedChoiceCount": 25048,
-    "unknownPathCount": 6892,
-    "answerPathCount": 31940,
+    "questionCount": 4432,
+    "displayedChoiceCount": 17354,
+    "unknownPathCount": 4432,
+    "answerPathCount": 21786,
     "result": "pass",
     "families": [
-      {
-        "id": "phrases",
-        "label": "熟語・構文",
-        "questionCount": 2104,
-        "displayedChoiceCount": 6312,
-        "unknownPathCount": 2104,
-        "answerPathCount": 8416
-      },
       {
         "id": "grammar",
         "label": "英文法",
@@ -835,14 +827,6 @@
         "displayedChoiceCount": 13800,
         "unknownPathCount": 3450,
         "answerPathCount": 17250
-      },
-      {
-        "id": "koten-vocab",
-        "label": "古典単語",
-        "questionCount": 300,
-        "displayedChoiceCount": 1200,
-        "unknownPathCount": 300,
-        "answerPathCount": 1500
       },
       {
         "id": "koten-grammar",
@@ -886,11 +870,11 @@
       },
       {
         "id": "diagnostic",
-        "label": "診断基準問題・生成3フォーム",
-        "questionCount": 112,
-        "displayedChoiceCount": 364,
-        "unknownPathCount": 112,
-        "answerPathCount": 476
+        "label": "診断の文法・読解（基準問題・生成3フォーム）",
+        "questionCount": 56,
+        "displayedChoiceCount": 182,
+        "unknownPathCount": 56,
+        "answerPathCount": 238
       },
       {
         "id": "math",
