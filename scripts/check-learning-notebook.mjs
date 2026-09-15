@@ -211,6 +211,7 @@ if (!cloud.includes('data.learningNotebook ?? current.learningNotebook')) {
 
 // 暗記・テストのカードからは、どの教材も入れる単語帳を選ぶ窓を開く。
 const wordBookScreens = {
+  vocab: ['VocabQuiz.jsx'],
   phrases: ['PhraseStudy.jsx', 'PhraseQuiz.jsx'],
   grammar: ['GrammarQuiz.jsx'],
   listening: ['ListeningQuiz.jsx'],

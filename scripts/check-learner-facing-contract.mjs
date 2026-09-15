@@ -307,6 +307,16 @@ for (const obsolete of [
 if (!vocabQuizSource.includes('<EtymologyBlock word={word} />')) {
   errors.push('単語テストの解答直後に語源本文がない')
 }
+// 単語テストの出題は英単語だけなので、例文の文脈で答えを決められると説く4段解説は置かない。
+// 答え合わせでは、出題した3択すべてについて、どの英単語の意味だったかを並べる。
+if (/InstructorExplanation/.test(vocabQuizSource)) {
+  errors.push('単語テストの答え合わせに、例文や文脈で答えを決めさせる4段の講師解説が戻っている')
+}
+if (!vocabQuizSource.includes('data-vocab-choice-meanings') ||
+    !/<VocabChoiceMeanings options=\{options\}/.test(vocabQuizSource) ||
+    !/options\.map\(\(option\) => \{[\s\S]*?\{option\.word\}[\s\S]*?option\.meanings\.join\('・'\)/.test(vocabQuizSource)) {
+  errors.push('単語テストの答え合わせに、出題した3択それぞれの英単語と意味がない')
+}
 if (!vocabStudySource.includes('<EtymologyBlock')) {
   errors.push('単語カードの答えに語源本文がない')
 }
