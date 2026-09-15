@@ -12,7 +12,7 @@ import { isTTSSupported } from '../lib/tts.js'
 import { playListeningItem, stopListeningAudio } from '../lib/listening.js'
 import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
-import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
+import { ChoiceExplanations } from '../components/ChoiceExplanations.jsx'
 import { Button, Chip, cx } from '../components/ui.jsx'
 import {
   answeredQuizIndexes,
@@ -28,7 +28,7 @@ import {
   EyeOff,
   SpeakerWave,
 } from '../components/Icons.jsx'
-import { buildListeningInstructorExplanation } from '../lib/instructorExplanations.js'
+import { listeningChoiceNoteFor } from '../data/listening-choice-notes.js'
 import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
 import {
   QuestionSessionControls,
@@ -121,14 +121,6 @@ export function ListeningQuizScreen() {
   const answeredIndexes = answeredQuizIndexes(i, selections)
   const isCorrectPick = answered && selected === item?.answer
   const correctChoice = item?.choices.find((choice) => choice.id === item.answer)
-  const instructorExplanation = answered
-    ? buildListeningInstructorExplanation(
-        item,
-        selected === UNKNOWN_CHOICE_ID
-          ? UNKNOWN_CHOICE_ID
-          : options.find((choice) => choice.id === selected),
-      )
-    : null
   const userRateScale = (settings.ttsRate ?? 0.9) / 0.9
   const normalRate = clampRate(profile.rate * userRateScale)
   const slowRate = clampRate(profile.slowRate * userRateScale)
@@ -510,9 +502,22 @@ export function ListeningQuizScreen() {
               </p>
             </div>
 
-            <InstructorExplanation
-              explanation={instructorExplanation}
+            {/* この問題固有の説明と、出題した選択肢1件ずつの説明だけを出す（決まり文句の4段解説は置かない）。 */}
+            <div className="mt-3 rounded-xl bg-white px-3 py-2.5 ring-1 ring-sky-100" data-listening-explanation>
+              <p className="text-[10px] font-extrabold text-sky-700">解説</p>
+              <p className="mt-0.5 text-sm font-bold leading-relaxed text-ink/75">{item.explain}</p>
+            </div>
+            <ChoiceExplanations
+              title="選択肢解説（3択すべて）"
+              name="listening"
               className="mt-3"
+              rows={options.map((choice) => ({
+                id: choice.id,
+                heading: choice.text,
+                body: listeningChoiceNoteFor(item, choice.id),
+                correct: choice.id === item.answer,
+                chosen: selected === choice.id,
+              }))}
             />
 
             <div className="mt-3 flex flex-wrap gap-2">

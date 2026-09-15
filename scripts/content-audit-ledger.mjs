@@ -22,6 +22,7 @@ import { kotenCultureChoiceNoteFor } from '../src/lib/kotenCultureChoiceNotes.js
 import { kotenGrammarChoiceNoteFor } from '../src/lib/kotenGrammarChoiceNotes.js'
 import { kotenInterpretationChoiceNoteFor } from '../src/data/koten-interpretation-choice-notes.js'
 import { literatureReadingChoiceNoteFor } from '../src/data/literature-reading-choice-notes.js'
+import { listeningChoiceNoteFor } from '../src/data/listening-choice-notes.js'
 import { KOTEN_GRAMMAR_QUESTIONS } from '../src/data/koten-grammar-questions.js'
 import { KOTEN_CULTURE_QUESTIONS } from '../src/data/koten-culture.js'
 import { KOTEN_INTERPRETATIONS } from '../src/data/koten-interpretations.js'
@@ -285,6 +286,7 @@ function buildQuestionBanks() {
       items: LISTENING_ITEMS,
       answerMatches: (item, choices) => choices.filter((choice) => choice.id === item.answer).length,
       rationaleFor: (item) => item.explain,
+      choiceRationalesFor: (item) => item.choices.map((choice) => listeningChoiceNoteFor(item, choice.id)),
       expectedChoiceCounts: [3, 4],
     }),
     stringBank('koten-grammar', '古典文法', KOTEN_GRAMMAR_QUESTIONS, (item) => item.explanation, {
@@ -350,7 +352,6 @@ function buildInstructorAnswerPathAudit() {
   }
   const families = [
     family('grammar', '英文法', GRAMMAR, (item) => item.choices.length),
-    family('listening', 'リスニング', LISTENING_ITEMS, (item) => item.choices.length),
     family('reading', '英語長文内容理解', readingQuestions, (item) => item.choices.length),
     // 診断の単語・熟語は講師解説を使わず、選択肢の中身だけを示す。
     family(
