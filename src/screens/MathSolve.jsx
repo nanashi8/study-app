@@ -5,14 +5,15 @@ import { shuffle } from '../data/vocab.js'
 import { MathBlock, MathText } from '../components/MathText.jsx'
 import { MathFillIn, resolveFill } from '../components/MathFillIn.jsx'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
+import { ChoiceExplanations } from '../components/ChoiceExplanations.jsx'
 import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { Button, ProgressBar, IconButton } from '../components/ui.jsx'
 import { cx } from '../components/ui.jsx'
 import { Close, Check, ArrowRight, Lightbulb, Target } from '../components/Icons.jsx'
 import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
+import { mathChoiceNoteFor } from '../data/math-choice-notes.js'
 import {
-  buildMathChoiceInstructorExplanation,
   buildMathFillInstructorExplanation,
   buildMathSolvedInstructorExplanation,
 } from '../lib/instructorExplanations.js'
@@ -223,8 +224,8 @@ export function MathSolveScreen() {
             <RecallCard recall={p.recall} />
             {quiz && (
               <Question
-                problem={p}
                 q={quiz}
+                noteKey={`${p.id}:recall`}
                 badge="方針"
                 sel={sel}
                 onChoose={chooseOption}
@@ -254,7 +255,7 @@ export function MathSolveScreen() {
               )}
             </>
           ) : (
-            <Question problem={p} q={step} sel={sel} onChoose={chooseOption} />
+            <Question q={step} noteKey={`${p.id}:step:${si}`} sel={sel} onChoose={chooseOption} />
           )
         )}
 
@@ -300,9 +301,12 @@ function RecallCard({ recall }) {
   )
 }
 
-// 3択（方針確認 / 3択ステップ）。
-function Question({ problem, q, badge, sel, onChoose }) {
+// 選択式の設問（方針確認 / 選択式のステップ）。
+function Question({ q, noteKey, badge, sel, onChoose }) {
   const answered = sel !== null
+  // 教材は正解を先頭に書いているので、出すたびに並びを混ぜる（同じ設問の間は並びを保つ）。
+  // 選んだ値は教材の選択肢の番号のまま扱う。
+  const order = useMemo(() => shuffle(q.choices.map((_, index) => index)), [q])
   return (
     <div className="mt-4">
       <div className="mb-3 flex items-start gap-2 px-1">
@@ -315,7 +319,8 @@ function Question({ problem, q, badge, sel, onChoose }) {
       </div>
 
       <div className="space-y-2.5">
-        {q.choices.map((c, idx) => {
+        {order.map((idx) => {
+          const c = q.choices[idx]
           const correct = idx === q.answer
           const chosen = sel === idx
           let tone = 'idle'
@@ -351,11 +356,25 @@ function Question({ problem, q, badge, sel, onChoose }) {
       </div>
 
       {answered && (
-        <InstructorExplanation
-          explanation={buildMathChoiceInstructorExplanation(problem, q, sel)}
-          className="mt-4 animate-slide-up"
-          renderText={(text) => <MathText>{text}</MathText>}
-        />
+        <div className="mt-4 space-y-3 animate-slide-up">
+          {/* この設問固有の説明と、出した選択肢1件ずつの説明だけを出す（決まり文句の4段解説は置かない）。 */}
+          <div className="rounded-xl bg-white px-3 py-2.5 ring-1 ring-violet-100" data-math-choice-explanation>
+            <p className="text-[10px] font-extrabold text-violet-600">解説</p>
+            <p className="mt-0.5 text-sm font-bold leading-relaxed text-ink/75"><MathText>{q.why ?? q.note}</MathText></p>
+          </div>
+          <ChoiceExplanations
+            title={`選択肢解説（${q.choices.length}択すべて）`}
+            name="math"
+            renderText={(text) => <MathText>{text}</MathText>}
+            rows={order.map((idx) => ({
+              id: String(idx),
+              heading: q.choices[idx],
+              body: mathChoiceNoteFor(noteKey, idx),
+              correct: idx === q.answer,
+              chosen: sel === idx,
+            }))}
+          />
+        </div>
       )}
     </div>
   )

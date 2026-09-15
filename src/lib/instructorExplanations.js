@@ -278,22 +278,6 @@ export function buildDiagnosticInstructorExplanation(question, selected) {
   })
 }
 
-export function buildMathChoiceInstructorExplanation(problem, question, selected) {
-  const correct = question?.choices?.[question.answer]
-  return explanation({
-    answer: `正解は${quote(correct)}。この選択が、問題で与えられた条件と使うべき方針を同時に満たす。`,
-    evidence: `判断の根拠は次の通り。${clean(question?.why ?? question?.note)} 条件を式へ戻しても同じ結論になる。`,
-    trap: selectionTrap({
-      selected: selected === UNKNOWN_CHOICE_ID ? selected : question?.choices?.[selected],
-      correct,
-      wrong: (picked) => `${quote(picked)}では問題の条件または途中式と一致しない。この設問の決め手は ${clean(question?.why ?? question?.note)} ${clean(problem?.pitfall)}`,
-      unknown: `方針が立たないときは、求めるものと与えられた条件を分け、使う公式を一つに絞る。${clean(problem?.pitfall)}`,
-      correctAnswer: `正解できても、選択肢を見ずに理由を言えるか確認する。${clean(problem?.pitfall)}`,
-    }),
-    strategy: list(problem?.recall?.points, '。') || '条件を式へ翻訳し、一段ずつ計算して、元の問いへ答えが戻っているか検算する。',
-  })
-}
-
 export function buildMathFillInstructorExplanation(problem, step, selectedValues = []) {
   const correctItems = (step?.fill?.blanks ?? []).map(clean)
   const pickedItems = selectedValues.map(clean)
