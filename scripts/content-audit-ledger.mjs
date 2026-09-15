@@ -10,7 +10,6 @@ import { GRAMMAR, grammarChoiceUsageFor } from '../src/data/grammar.js'
 import { LISTENING_ITEMS } from '../src/data/listening.js'
 import { MATH_PROBLEMS } from '../src/data/math.js'
 import { ALL_PASSAGES, PASSAGES } from '../src/data/passages.js'
-import { PHRASES } from '../src/data/phrases.js'
 import { EXTENDED_PASSAGES } from '../src/data/reading-extended-passages.js'
 import { EXTENDED_PASSAGE_READING_APPROACHES } from '../src/data/reading-extended-approaches.js'
 import { EXTENDED_READING_PRACTICE_QUESTIONS } from '../src/data/reading-extended-practice-questions.js'
@@ -18,11 +17,10 @@ import { EXTENDED_READING_QUESTIONS } from '../src/data/reading-extended-questio
 import { EXTENDED_READING_STUDY } from '../src/data/reading-extended-study.js'
 import { getReadingQuestions } from '../src/data/reading-questions.js'
 import { DIAGNOSTIC_QUESTIONS } from '../src/data/diagnostic.js'
-import { buildDiagnosticQuestions } from '../src/lib/diagnosticQuestions.js'
+import { buildDiagnosticQuestions, diagnosticChoiceNoteFor } from '../src/lib/diagnosticQuestions.js'
 import { KOTEN_GRAMMAR_QUESTIONS } from '../src/data/koten-grammar-questions.js'
 import { KOTEN_CULTURE_QUESTIONS } from '../src/data/koten-culture.js'
 import { KOTEN_INTERPRETATIONS } from '../src/data/koten-interpretations.js'
-import { KOTEN_WORDS } from '../src/data/koten.js'
 import { PUBLIC_DOMAIN_LITERATURE } from '../src/data/public-domain-literature.js'
 import { getLiteratureReadingQuestions } from '../src/data/literature-reading.js'
 import { LEARNING_CONTENTS } from '../src/lib/learningContentProgress.js'
@@ -239,6 +237,17 @@ function buildQuestionBanks() {
     })))
 
   const stringAnswerMatches = (item, choices) => choices.filter((choice) => choice === item.answer).length
+  // 診断の答え合わせは、出典つきの文法問題なら文法の選択肢解説、それ以外は選択肢ごとの説明を全択に出す。
+  const diagnosticChoiceRationales = (item) => {
+    const grammarItem = item.skill === 'grammar' && item.sourceId?.startsWith('grammar:')
+      ? GRAMMAR.find((entry) => entry.id === item.sourceId.slice('grammar:'.length))
+      : null
+    // 生成3フォームは台帳の ID に「formN:」を付けているので、元の問題 ID で説明を引く。
+    const question = { ...item, id: String(item.id).replace(/^form\d+:/, '') }
+    return item.choices.map((choice) => (grammarItem
+      ? grammarChoiceExplanationFor(grammarItem, choice, item.choices)
+      : diagnosticChoiceNoteFor(question, choice)))
+  }
   const stringBank = (id, label, items, rationaleFor, extra = {}) => auditQuestionBank({
     id,
     label,
@@ -289,10 +298,13 @@ function buildQuestionBanks() {
       answerMatches: (item, choices) => Number.isInteger(item.answer) && choices[item.answer] ? 1 : 0,
       rationaleFor: (item) => item.explanation,
     }),
-    stringBank('diagnostic-static', '診断基準問題', DIAGNOSTIC_QUESTIONS, (item) => item.explain),
+    stringBank('diagnostic-static', '診断基準問題', DIAGNOSTIC_QUESTIONS, (item) => item.explain, {
+      choiceRationalesFor: diagnosticChoiceRationales,
+    }),
     // 出題は「3択＋わからない」。教材データは4択のままで、組み立て時に絞る。
     stringBank('diagnostic-generated', '診断生成3フォーム', diagnosticGenerated, (item) => item.explain, {
       expectedChoiceCounts: [3],
+      choiceRationalesFor: diagnosticChoiceRationales,
     }),
   ]
 }
@@ -327,15 +339,19 @@ function buildInstructorAnswerPathAudit() {
     }
   }
   const families = [
-    family('phrases', '熟語・構文', PHRASES, () => 3),
     family('grammar', '英文法', GRAMMAR, (item) => item.choices.length),
-    family('koten-vocab', '古典単語', KOTEN_WORDS, () => 4),
     family('koten-grammar', '古典文法', KOTEN_GRAMMAR_QUESTIONS, (item) => item.choices.length),
     family('koten-culture', '古典常識', KOTEN_CULTURE_QUESTIONS, (item) => item.choices.length),
     family('koten-reading', '古典短文', KOTEN_INTERPRETATIONS, (item) => item.choices.length),
     family('listening', 'リスニング', LISTENING_ITEMS, (item) => item.choices.length),
     family('reading', '英語長文内容理解', readingQuestions, (item) => item.choices.length),
-    family('diagnostic', '診断基準問題・生成3フォーム', diagnosticQuestions, (item) => item.choices.length),
+    // 診断の単語・熟語は講師解説を使わず、選択肢の中身だけを示す。
+    family(
+      'diagnostic',
+      '診断の文法・読解（基準問題・生成3フォーム）',
+      diagnosticQuestions.filter(({ skill }) => skill === 'grammar' || skill === 'reading'),
+      (item) => item.choices.length,
+    ),
     family('math', '数学選択問題', mathChoiceQuestions, (item) => item.choices.length),
   ]
   return {

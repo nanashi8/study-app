@@ -8,6 +8,7 @@ import { answeredQuizIndexes, growDeck, restartSessionCount } from '../lib/sessi
 import { orderForStudy } from '../lib/studyOrder.js'
 import { Button } from '../components/ui.jsx'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
+import { ChoiceExplanations } from '../components/ChoiceExplanations.jsx'
 import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
 import {
   QuestionSessionControls,
@@ -250,6 +251,21 @@ export function EtymologyQuizScreen() {
               <span className="font-display">{card.rootForm}</span> ＝ {card.rootMeaning}
             </p>
             <p className="mt-2 text-sm font-bold leading-relaxed text-ink/60">{question.explanation}</p>
+            <ChoiceExplanations
+              title="選択肢の語根と意味"
+              name="etymology"
+              className="mt-3"
+              rows={options.map((option) => {
+                const source = getEtymologyPack(option.id)
+                return {
+                  id: option.id,
+                  heading: option.label,
+                  body: source ? `${source.rootForm} ＝ ${source.rootMeaning}（${source.rootOrigin}）` : '',
+                  correct: option.id === question.answerId,
+                  chosen: selected === option.id,
+                }
+              })}
+            />
             <div className="mt-3 rounded-2xl bg-violet-50/70 p-3">
               <p className="text-[11px] font-extrabold uppercase tracking-wide text-violet-500">この形を使う語</p>
               <p className="mt-1 text-sm font-bold leading-relaxed text-ink/70">

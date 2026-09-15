@@ -207,6 +207,9 @@ export function KotenInterpretationQuizScreen() {
             }}
           />
         )}
+        trailingActions={(
+          <WordBookToggle domain="kotenInterpretation" itemId={item.id} itemLabel={item.text} />
+        )}
       />
 
       <div className="flex-1 overflow-y-auto px-4 pb-5">

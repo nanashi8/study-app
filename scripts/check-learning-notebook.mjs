@@ -220,6 +220,7 @@ const wordBookScreens = {
   kotenVocab: ['KotenStudy.jsx', 'KotenQuiz.jsx'],
   kotenGrammar: ['KotenGrammarStudy.jsx'],
   kotenCulture: ['KotenCultureStudy.jsx'],
+  kotenInterpretation: ['KotenInterpretationQuiz.jsx'],
   kanbunKundoku: ['KanbunKundokuQuiz.jsx'],
 }
 for (const [domain, files] of Object.entries(wordBookScreens)) {

@@ -4,7 +4,7 @@ import { WordBookToggle } from '../components/WordListSheet.jsx'
 import { getKoten, pickKotenDistractors } from '../data/koten.js'
 import { Button } from '../components/ui.jsx'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
-import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
+import { ChoiceExplanations } from '../components/ChoiceExplanations.jsx'
 import { KotenText, KotenWord } from '../components/KotenFurigana.jsx'
 import {
   Close,
@@ -13,7 +13,6 @@ import {
 } from '../components/Icons.jsx'
 import { cx } from '../components/ui.jsx'
 import { QUIZ_CHOICE_COUNT, UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
-import { buildKotenWordInstructorExplanation } from '../lib/instructorExplanations.js'
 import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
 import { answeredQuizIndexes, growDeck, restartSessionCount } from '../lib/session.js'
 import { orderForStudy } from '../lib/studyOrder.js'
@@ -159,14 +158,6 @@ export function KotenQuizScreen() {
   }
 
   const isCorrectPick = answered && selected === word.id
-  const instructorExplanation = answered
-    ? buildKotenWordInstructorExplanation(
-        word,
-        selected === UNKNOWN_CHOICE_ID
-          ? UNKNOWN_CHOICE_ID
-          : options.find((option) => option.id === selected),
-      )
-    : null
 
   return (
     <div className="flex h-full flex-col">
@@ -200,6 +191,9 @@ export function KotenQuizScreen() {
               }
             }}
           />
+        )}
+        trailingActions={(
+          <WordBookToggle domain="kotenVocab" itemId={word.id} itemLabel={word.word} />
         )}
       />
 
@@ -259,22 +253,37 @@ export function KotenQuizScreen() {
         {/* 答え合わせ後 */}
         {answered && (
           <div className="mt-4 animate-slide-up rounded-2xl bg-white p-4 shadow-card">
-            <div className="flex items-start justify-between gap-2">
-              <p className={cx('font-display text-lg font-extrabold', isCorrectPick ? 'text-emerald-600' : 'text-rose-500')}>
-                {isCorrectPick ? '正解！🎉' : selected === UNKNOWN_CHOICE_ID ? '答えはこちら' : 'ざんねん…'}
-              </p>
-              <WordBookToggle domain="kotenVocab" itemId={word.id} itemLabel={word.word} />
-            </div>
+            <p className={cx('font-display text-lg font-extrabold', isCorrectPick ? 'text-emerald-600' : 'text-rose-500')}>
+              {isCorrectPick ? '正解！🎉' : selected === UNKNOWN_CHOICE_ID ? '答えはこちら' : 'ざんねん…'}
+            </p>
             <p className="mt-1 font-bold text-ink">
               <span className="font-display"><KotenWord word={word} /></span>
               {' ＝ '}
               <KotenText>{word.meanings.join('・')}</KotenText>
             </p>
-            <InstructorExplanation
-              explanation={instructorExplanation}
+            {/* 古語の意味を知っているかを問うテストなので、決まり文句の解説は置かず、選択肢の中身と覚え方を並べる。 */}
+            <ChoiceExplanations
+              title="選択肢の古語と意味"
+              name="kotenVocab"
               className="mt-3"
-              renderText={(text) => <KotenText>{text}</KotenText>}
+              rows={options.map((option) => ({
+                id: option.id,
+                heading: <KotenWord word={option} />,
+                body: <KotenText>{option.meanings.join('・')}</KotenText>,
+                correct: option.id === word.id,
+                chosen: selected === option.id,
+              }))}
             />
+            <div className="mt-3 rounded-2xl bg-slate-50 p-3 text-left ring-1 ring-slate-200" data-koten-word-note>
+              <p className="mb-1 text-sm font-extrabold text-amber-700">覚え方・ポイント</p>
+              <p className="text-sm font-bold leading-relaxed text-ink"><KotenText>{word.note}</KotenText></p>
+              {word.example && (
+                <div className="mt-2 border-t border-slate-200 pt-2">
+                  <p className="text-sm font-bold leading-relaxed text-ink"><KotenText>{word.example.ja}</KotenText></p>
+                  <p className="mt-0.5 text-xs font-bold leading-relaxed text-ink/55"><KotenText>{word.example.gendai}</KotenText></p>
+                </div>
+              )}
+            </div>
           </div>
         )}
       </div>

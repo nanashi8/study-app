@@ -13,6 +13,12 @@ import { PHRASES } from '../data/phrases.js'
 import { etymologyCardsForWord, pickDistractors, wordsByLevel } from '../data/vocab.js'
 import { pickPhraseDistractors } from './session.js'
 import { limitQuizChoices, QUIZ_CHOICE_COUNT } from './quizChoices.js'
+import { DIAGNOSTIC_CHOICE_NOTES } from '../data/diagnostic-choice-notes.js'
+
+// 答え合わせで選択肢1件ずつに添える説明。自動で作る単語・熟語の問題は選択肢の元の語から、それ以外は台帳から引く。
+export function diagnosticChoiceNoteFor(question, choice) {
+  return question?.choiceNotes?.[choice] ?? DIAGNOSTIC_CHOICE_NOTES[question?.id]?.[choice] ?? ''
+}
 
 // 端末ごとの seed と受験回数から同じ問題列を再現できるようにする。
 // 一度並べた候補を受験回数で順送りするため、単なる乱数抽選と違い、
@@ -88,6 +94,7 @@ function baseQuestion({
   passage,
   passageJa,
   review,
+  choiceNotes,
 }) {
   return {
     id,
@@ -95,6 +102,7 @@ function baseQuestion({
     skill,
     level,
     difficulty: diagnosticDifficulty(level, skill),
+    ...(choiceNotes ? { choiceNotes } : {}),
     ...(passage ? { passage } : {}),
     ...(passageJa ? { passageJa } : {}),
     ...(promptJa ? { promptJa } : {}),
@@ -135,6 +143,10 @@ function vocabQuestion(level, attemptNumber, seed) {
     prompt: `“${word.word}” の意味として最も近いものは？`,
     choices: shuffledChoices(choices, word.meaning, seed, sourceId, attemptNumber),
     answer: word.meaning,
+    // 選択肢の意味が、それぞれどの英単語のものか。
+    choiceNotes: Object.fromEntries(
+      [word, ...distractors].map((entry) => [entry.meaning, `${entry.word} の意味。`]),
+    ),
     explain: [
       `${word.word} は「${word.meaning}」という意味です。`,
       reviewedCard
@@ -199,6 +211,10 @@ function phraseQuestion(level, attemptNumber, seed) {
     prompt: `“${item.phrase}” の意味として最も近いものは？`,
     choices: shuffledChoices(choices, item.meaning, seed, sourceId, attemptNumber),
     answer: item.meaning,
+    // 選択肢の意味が、それぞれどの熟語・構文のものか。
+    choiceNotes: Object.fromEntries(
+      [item, ...distractors].map((entry) => [entry.meaning, `${entry.phrase} の意味。`]),
+    ),
     explain: [item.origin, item.note].filter(Boolean).join(' '),
     review: item.example,
   })

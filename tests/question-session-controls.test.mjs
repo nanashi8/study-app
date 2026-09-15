@@ -242,3 +242,32 @@ test('自動送り設定は既存の設定保存に追加され、初期状態�
   const store = read('src/store/useStore.js')
   assert.match(store, /autoAdvanceCorrect: true/)
 })
+
+// 単語帳に入る教材のテストは、答え合わせの欄や問題カードの中ではなく、上部バーの右端に「単語帳」ボタンを置く。
+test('単語帳に入る教材のテストは、上部バーの右端に単語帳ボタンを置く', () => {
+  const screens = [
+    'src/screens/VocabQuiz.jsx',
+    'src/screens/PhraseQuiz.jsx',
+    'src/screens/GrammarQuiz.jsx',
+    'src/screens/ListeningQuiz.jsx',
+    'src/screens/DictationPlay.jsx',
+    'src/screens/EtymologyQuiz.jsx',
+    'src/screens/KotenQuiz.jsx',
+    'src/screens/KotenGrammarQuiz.jsx',
+    'src/screens/KotenCultureQuiz.jsx',
+    'src/screens/KotenInterpretationQuiz.jsx',
+    'src/screens/KanbunQuiz.jsx',
+    'src/screens/KanbunKundokuQuiz.jsx',
+  ]
+  for (const path of screens) {
+    assert.match(
+      read(path),
+      /trailingActions=\{\(\s*(?:\/\/[^\n]*\n\s*)?<(?:WordBookToggle|CardSaveToggle)\b/,
+      `${path}: 上部バーの右端に単語帳ボタンがない`,
+    )
+  }
+  // 関わる文法事項・古典常識の名前は答えの手掛かりになるので、答えるまでは押せない。
+  for (const path of ['src/screens/KotenGrammarQuiz.jsx', 'src/screens/KotenCultureQuiz.jsx']) {
+    assert.match(read(path), /disabled=\{!answered \|\| !relatedRefs\.length\}/, `${path}: 答える前に単語帳の窓で答えが見える`)
+  }
+})

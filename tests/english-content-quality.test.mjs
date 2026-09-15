@@ -112,9 +112,9 @@ test('全英文法の13,800選択肢は正答理由または誤答の使える�
 
 test('主要テストは正答後に英文・和訳・学習ポイントを表示する', () => {
   const checks = {
-    'VocabQuiz.jsx': [/word\.example\.en/, /word\.example\.ja/, /data-vocab-choice-meanings/, /<EtymologyBlock word=\{word\} \/>/],
+    'VocabQuiz.jsx': [/word\.example\.en/, /word\.example\.ja/, /<ChoiceExplanations/, /<EtymologyBlock word=\{word\} \/>/],
     'GrammarQuiz.jsx': [/item\.sentence\.en/, /item\.sentence\.ja/, /buildGrammarInstructorExplanation/, /GrammarChoiceExplanations/, /patternExamples/],
-    'PhraseQuiz.jsx': [/item\.example\.en/, /item\.example\.ja/, /buildPhraseInstructorExplanation/],
+    'PhraseQuiz.jsx': [/item\.example\.en/, /item\.example\.ja/, /<ChoiceExplanations/, /\{item\.origin\}/],
     'ListeningQuiz.jsx': [/item\.questionJa/, /buildListeningInstructorExplanation/],
     'DictationPlay.jsx': [/item\.text/, /item\.ja/, /buildDictationInstructorExplanation/],
     'components/ReadingComprehensionCheck.jsx': [/buildReadingInstructorExplanation/, /UnknownChoiceButton/],

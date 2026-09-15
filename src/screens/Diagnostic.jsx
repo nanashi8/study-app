@@ -12,7 +12,7 @@ import {
   scoreDiagnostic,
   UNKNOWN_DIAGNOSTIC_ANSWER,
 } from '../lib/diagnostic.js'
-import { buildDiagnosticQuestions } from '../lib/diagnosticQuestions.js'
+import { buildDiagnosticQuestions, diagnosticChoiceNoteFor } from '../lib/diagnosticQuestions.js'
 import { analyzeLearning } from '../lib/learningAnalytics.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { SpeakButton } from '../components/SpeakButton.jsx'
@@ -24,9 +24,17 @@ import { ArrowRight, Check, Close, Sparkles, Target, Trophy } from '../component
 import { buildDiagnosticInstructorExplanation } from '../lib/instructorExplanations.js'
 import { getGrammar } from '../data/grammar.js'
 import { GrammarChoiceExplanations } from '../components/GrammarChoiceExplanations.jsx'
+import { ChoiceExplanations } from '../components/ChoiceExplanations.jsx'
 
 const LEVEL_BY_ID = Object.fromEntries(DIAGNOSTIC_LEVELS.map((level) => [level.id, level]))
 const SKILL_BY_ID = Object.fromEntries(DIAGNOSTIC_SKILLS.map((skill) => [skill.id, skill]))
+// 答え合わせで選択肢を並べるときの見出し。単語・熟語は「その選択肢がどの語の意味か」、文法・読解は選択肢ごとの理由を示す。
+const DIAGNOSTIC_CHOICE_TITLE = Object.freeze({
+  vocab: '選択肢の単語と意味',
+  usage: '選択肢の表現と意味',
+  grammar: '選択肢解説（すべての選択肢）',
+  reading: '選択肢解説（すべての選択肢）',
+})
 
 const STATUS = {
   strength: { label: '強み', className: 'bg-emerald-100 text-emerald-700' },
@@ -774,22 +782,40 @@ function AnswerReview({ questions, answers }) {
               )}
 
               <div data-diagnostic-explanation>
-                <InstructorExplanation
-                  explanation={buildDiagnosticInstructorExplanation(
-                    question,
-                    review.selectedAnswer,
-                  )}
-                  className="mt-2"
-                  compact
-                />
+                {question.skill === 'vocab' || question.skill === 'usage' ? (
+                  // 単語・熟語は意味を知っているかだけを問うので、4段の解説は置かず、語の説明と選択肢の中身を示す。
+                  <p className="mt-2 text-xs font-bold leading-relaxed text-ink/65">{question.explain}</p>
+                ) : (
+                  <InstructorExplanation
+                    explanation={buildDiagnosticInstructorExplanation(
+                      question,
+                      review.selectedAnswer,
+                    )}
+                    className="mt-2"
+                    compact
+                  />
+                )}
               </div>
-              {grammarItem && (
+              {grammarItem ? (
                 <GrammarChoiceExplanations
                   item={grammarItem}
                   choices={question.choices}
                   selected={review.selectedAnswer}
                   className="mt-2"
                   compact
+                />
+              ) : (
+                <ChoiceExplanations
+                  title={DIAGNOSTIC_CHOICE_TITLE[question.skill] ?? '選択肢解説'}
+                  name={`diagnostic-${question.skill}`}
+                  className="mt-2"
+                  rows={question.choices.map((choice) => ({
+                    id: choice,
+                    heading: choice,
+                    body: diagnosticChoiceNoteFor(question, choice),
+                    correct: choice === question.answer,
+                    chosen: review.selectedAnswer === choice,
+                  }))}
                 />
               )}
             </article>
