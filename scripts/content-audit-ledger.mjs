@@ -23,6 +23,7 @@ import { kotenGrammarChoiceNoteFor } from '../src/lib/kotenGrammarChoiceNotes.js
 import { kotenInterpretationChoiceNoteFor } from '../src/data/koten-interpretation-choice-notes.js'
 import { literatureReadingChoiceNoteFor } from '../src/data/literature-reading-choice-notes.js'
 import { listeningChoiceNoteFor } from '../src/data/listening-choice-notes.js'
+import { mathChoiceNoteFor } from '../src/data/math-choice-notes.js'
 import { KOTEN_GRAMMAR_QUESTIONS } from '../src/data/koten-grammar-questions.js'
 import { KOTEN_CULTURE_QUESTIONS } from '../src/data/koten-culture.js'
 import { KOTEN_INTERPRETATIONS } from '../src/data/koten-interpretations.js'
@@ -318,6 +319,19 @@ function buildQuestionBanks() {
       expectedChoiceCounts: [3],
       choiceRationalesFor: diagnosticChoiceRationales,
     }),
+    // 数学の方針の確認と選択式のステップ。ID は画面と同じ「問題ID:recall」「問題ID:step:番号」。
+    auditQuestionBank({
+      id: 'math-choice',
+      label: '数学選択問題',
+      items: Object.values(MATH_PROBLEMS).flat().flatMap((problem) => [
+        ...(problem.recall?.quiz ? [{ ...problem.recall.quiz, id: `${problem.id}:recall` }] : []),
+        ...problem.steps.flatMap((step, index) => (step.fill ? [] : [{ ...step, id: `${problem.id}:step:${index}` }])),
+      ]),
+      answerMatches: (item, choices) => Number.isInteger(item.answer) && choices[item.answer] ? 1 : 0,
+      rationaleFor: (item) => item.why ?? item.note,
+      choiceRationalesFor: (item) => item.choices.map((_, index) => mathChoiceNoteFor(item.id, index)),
+      expectedChoiceCounts: [2, 3],
+    }),
   ]
 }
 
@@ -335,10 +349,6 @@ function buildInstructorAnswerPathAudit() {
       seed: 0x1a2b3c4d,
     })),
   ]
-  const mathChoiceQuestions = Object.values(MATH_PROBLEMS).flat().flatMap((problem) => [
-    ...(problem.recall?.quiz ? [problem.recall.quiz] : []),
-    ...problem.steps.filter((step) => !step.fill),
-  ])
   const family = (id, label, items, choicesFor) => {
     const displayedChoiceCount = items.reduce((sum, item) => sum + choicesFor(item), 0)
     return {
@@ -360,7 +370,6 @@ function buildInstructorAnswerPathAudit() {
       diagnosticQuestions.filter(({ skill }) => skill === 'grammar' || skill === 'reading'),
       (item) => item.choices.length,
     ),
-    family('math', '数学選択問題', mathChoiceQuestions, (item) => item.choices.length),
   ]
   return {
     coverageTest: 'tests/instructor-explanations.test.mjs',

@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
 import test from 'node:test'
+import katex from 'katex'
 
 import { DIAGNOSTIC_QUESTIONS } from '../src/data/diagnostic.js'
 import { DICTATION_ITEMS } from '../src/data/dictation.js'
@@ -35,6 +36,7 @@ import {
   listeningChoiceNoteFor,
 } from '../src/data/listening-choice-notes.js'
 import { MATH_PROBLEMS } from '../src/data/math.js'
+import { MATH_CHOICE_NOTES, mathChoiceNoteFor } from '../src/data/math-choice-notes.js'
 import { PHRASES } from '../src/data/phrases.js'
 import { ALL_PASSAGES } from '../src/data/passages.js'
 import { getReadingQuestions } from '../src/data/reading-questions.js'
@@ -51,7 +53,6 @@ import {
   buildDiagnosticInstructorExplanation,
   buildDictationInstructorExplanation,
   buildGrammarInstructorExplanation,
-  buildMathChoiceInstructorExplanation,
   buildMathFillInstructorExplanation,
   buildMathSolvedInstructorExplanation,
   buildReadingInstructorExplanation,
@@ -255,45 +256,19 @@ test('全教材の全設問から問題固有の予備校講師型4段解説を�
       `math:${problem.id}:solved.evidence`,
     )
     units += 1
-    if (problem.recall?.quiz) {
-      const value = buildMathChoiceInstructorExplanation(
-          problem,
-          problem.recall.quiz,
-          problem.recall.quiz.answer,
-        )
-      assertExplanation(value, `math:${problem.id}:recall`)
-      assertContains(
-        value.answer,
-        problem.recall.quiz.choices[problem.recall.quiz.answer],
-        `math:${problem.id}:recall.answer`,
-      )
-      assertContains(
-        value.evidence,
-        problem.recall.quiz.why ?? problem.recall.quiz.note,
-        `math:${problem.id}:recall.evidence`,
-      )
-      units += 1
-    }
+    // 選択問題（方針の確認・選択式のステップ）は、問題固有の解説と選択肢ごとの説明を示す（数学の選択問題のテスト）。
+    // 講師解説を使うのは穴埋めと解き終わりだけ。
     problem.steps.forEach((step, index) => {
-      const value = step.fill
-        ? buildMathFillInstructorExplanation(problem, step, step.fill.blanks)
-        : buildMathChoiceInstructorExplanation(problem, step, step.answer)
+      if (!step.fill) return
+      const value = buildMathFillInstructorExplanation(problem, step, step.fill.blanks)
       assertExplanation(value, `math:${problem.id}:step:${index}`)
-      assertContains(
-        value.answer,
-        step.fill ? step.fill.blanks.join('、') : step.choices[step.answer],
-        `math:${problem.id}:step:${index}.answer`,
-      )
-      assertContains(
-        value.evidence,
-        step.fill ? step.note : step.why ?? step.note,
-        `math:${problem.id}:step:${index}.evidence`,
-      )
+      assertContains(value.answer, step.fill.blanks.join('、'), `math:${problem.id}:step:${index}.answer`)
+      assertContains(value.evidence, step.note, `math:${problem.id}:step:${index}.evidence`)
       units += 1
     })
   }
 
-  assert.ok(units >= 5_000, `全件監査の対象数が不足しています: ${units}`)
+  assert.ok(units >= 4_800, `全件監査の対象数が不足しています: ${units}`)
 })
 
 test('全選択式問題の正答・全誤答・「わからない」に回答別の指導を返す', () => {
@@ -337,37 +312,7 @@ test('全選択式問題の正答・全誤答・「わからない」に回答�
     })
   }
 
-  for (const problem of Object.values(MATH_PROBLEMS).flat()) {
-    const questions = [
-      ...(problem.recall?.quiz ? [{ id: 'recall', question: problem.recall.quiz }] : []),
-      ...problem.steps
-        .map((step, index) => ({ id: `step:${index}`, question: step }))
-        .filter(({ question }) => !question.fill),
-    ]
-    for (const { id, question } of questions) {
-      paths += assertChoiceFamily({
-        label: `math:${problem.id}:${id}`,
-        cases: [
-          ...question.choices.map((choice, index) => ({
-            selected: index,
-            label: choice,
-            kind: index === question.answer ? 'correct' : 'wrong',
-          })),
-          { selected: UNKNOWN_CHOICE_ID, label: 'わからない', kind: 'unknown' },
-        ],
-        build: (selected) => buildMathChoiceInstructorExplanation(
-          problem,
-          question,
-          selected,
-        ),
-        answerAnchor: question.choices[question.answer],
-        evidenceAnchor: question.why ?? question.note,
-        wrongTrapAnchor: question.why ?? question.note,
-      })
-    }
-  }
-
-  assert.ok(paths >= 19_500, `全回答経路の監査数が不足しています: ${paths}`)
+  assert.ok(paths >= 18_000, `全回答経路の監査数が不足しています: ${paths}`)
 })
 
 const grammarStrategyExpectation = (topic) => {
@@ -477,6 +422,60 @@ test('リスニング160問は、教材の全選択肢に放送や絵に照ら�
     )
   }
   assert.equal(notes, 608)
+})
+
+// 数学の選択問題（方針の確認・選択式のステップ）。決まり文句の4段解説は置かず、設問固有の解説と、
+// 出した選択肢すべての説明を示す。教材は正解を先頭に書いているので、画面で並びを混ぜる。
+test('数学の選択問題299問は、全選択肢に式や値に照らした説明を示し、正解を先頭に固定しない', async () => {
+  const source = await readFile(new URL('../src/screens/MathSolve.jsx', import.meta.url), 'utf8')
+  assert.doesNotMatch(source, /buildMathChoiceInstructorExplanation/, 'MathSolve.jsx: 選択問題に決まり文句の講師解説が戻っています')
+  assert.match(
+    source,
+    /const order = useMemo\(\(\) => shuffle\(q\.choices\.map\(\(_, index\) => index\)\), \[q\]\)/,
+    'MathSolve.jsx: 選択肢の並びを混ぜていません',
+  )
+  assert.match(source, /\{order\.map\(\(idx\) => \{/, 'MathSolve.jsx: 選択肢ボタンが混ぜた並びから作られていません')
+  assert.match(source, /<MathText>\{q\.why \?\? q\.note\}<\/MathText>/, 'MathSolve.jsx: 設問固有の解説がありません')
+  assert.match(
+    source,
+    /rows=\{order\.map\(\(idx\) => \(\{[\s\S]*?body: mathChoiceNoteFor\(noteKey, idx\)/,
+    'MathSolve.jsx: 選択肢の欄がボタンと同じ並びから作られていません',
+  )
+  assert.match(source, /noteKey=\{`\$\{p\.id\}:recall`\}/)
+  assert.match(source, /noteKey=\{`\$\{p\.id\}:step:\$\{si\}`\}/)
+
+  const questions = Object.values(MATH_PROBLEMS).flat().flatMap((problem) => [
+    ...(problem.recall?.quiz ? [{ key: `${problem.id}:recall`, question: problem.recall.quiz }] : []),
+    ...problem.steps.flatMap((step, index) => (step.fill ? [] : [{ key: `${problem.id}:step:${index}`, question: step }])),
+  ])
+  let notes = 0
+  for (const { key, question } of questions) {
+    assert.ok(normalize(question.why ?? question.note), `math:${key} の解説がありません`)
+    const texts = question.choices.map((_, index) => normalize(mathChoiceNoteFor(key, index)))
+    texts.forEach((text, index) => {
+      assert.ok(text.length >= 5, `math:${key}「${question.choices[index]}」の説明がありません`)
+      // 画面は $...$ を数式として描くので、閉じていない $ や描けない数式を残さない。
+      const segments = text.split('$')
+      assert.equal(segments.length % 2, 1, `math:${key}「${question.choices[index]}」の説明の $ が閉じていません`)
+      segments.forEach((segment, part) => {
+        if (part % 2 === 0) return
+        assert.doesNotThrow(
+          () => katex.renderToString(segment, { throwOnError: true }),
+          `math:${key} の説明の数式「${segment}」が描けません`,
+        )
+      })
+    })
+    assert.equal(new Set(texts).size, texts.length, `math:${key} の選択肢の説明が重複しています`)
+    notes += texts.length
+  }
+  // 設問や選択肢を直したのに、説明だけが古いまま残らないようにする。
+  for (const [key, list] of Object.entries(MATH_CHOICE_NOTES)) {
+    const entry = questions.find((candidate) => candidate.key === key)
+    assert.ok(entry, `math:${key} は存在しない設問の説明です`)
+    assert.equal(list.length, entry.question.choices.length, `math:${key} の説明の数が選択肢の数と違います`)
+  }
+  assert.equal(questions.length, 299)
+  assert.equal(notes, 896)
 })
 
 const sameFillAnswer = (fill, selectedValues) => {

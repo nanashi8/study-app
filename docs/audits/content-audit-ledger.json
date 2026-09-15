@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-09-15T05:29:19.350Z",
+  "auditedAt": "2026-09-15T05:47:10.755Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -10,14 +10,14 @@
     "categoryCount": 18,
     "learningItemCount": 16355,
     "quizItemCount": 16473,
-    "storedAndGeneratedQuestionPathCount": 4207,
-    "storedAndGeneratedChoicePathCount": 16712,
+    "storedAndGeneratedQuestionPathCount": 4506,
+    "storedAndGeneratedChoicePathCount": 17608,
     "overallContentSha256": "3e44dd3e407e801d6a8f94a4a562da11e104317a136d96cda747f7dec315b801"
   },
   "completionCriteria": [
     "全18教材カテゴリのID・母数・重複・内容ハッシュが一致する",
     "全問題バンクで選択肢が重複せず、正答が一つだけ存在し、問題別解説がある",
-    "共通講師解説を使う全選択式問題の正解・全誤答・わからない19,598経路に回答別指導がある",
+    "共通講師解説を使う全選択式問題の正解・全誤答・わからない18,403経路に回答別指導がある",
     "英文法は全3,450問・全13,800選択肢に問題文固有の根拠を持つ",
     "長文32本・794文・140問・560選択肢の和訳と選択肢別解説が原文順に対応する",
     "長文32本すべてが並び替え・文法・語法の技能練習を1問ずつ持ち、原文・訳・重点語・読解ルールが本文と一致する",
@@ -103,7 +103,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "4ab1e9479de00abae631036f5cb404624f8df008a16f148f5dafc27ee9f8ab9b",
+    "sha256": "971920b1f99d11df1eee5dfd115acf98946c45e8ae82d02aa0f4efccf43f10cb",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -809,15 +809,27 @@
       "result": "pass",
       "failureCount": 0,
       "failures": []
+    },
+    {
+      "id": "math-choice",
+      "label": "数学選択問題",
+      "questionCount": 299,
+      "choiceCount": 896,
+      "generalRationaleCount": 299,
+      "choiceSpecificRationaleCount": 896,
+      "questionSetSha256": "7aaa35e67f4f37f849f04244f9b4ecfd3904cca0f9b98a755baa9b3659446995",
+      "result": "pass",
+      "failureCount": 0,
+      "failures": []
     }
   ],
   "instructorAnswerPaths": {
     "coverageTest": "tests/instructor-explanations.test.mjs",
     "requirement": "共通講師解説を使う全選択式問題の正解・全誤答・わからないに、正解、問題固有の根拠、回答別の指導、次に使える考え方を返す",
-    "questionCount": 3988,
-    "displayedChoiceCount": 15610,
-    "unknownPathCount": 3988,
-    "answerPathCount": 19598,
+    "questionCount": 3689,
+    "displayedChoiceCount": 14714,
+    "unknownPathCount": 3689,
+    "answerPathCount": 18403,
     "result": "pass",
     "families": [
       {
@@ -843,14 +855,6 @@
         "displayedChoiceCount": 182,
         "unknownPathCount": 56,
         "answerPathCount": 238
-      },
-      {
-        "id": "math",
-        "label": "数学選択問題",
-        "questionCount": 299,
-        "displayedChoiceCount": 896,
-        "unknownPathCount": 299,
-        "answerPathCount": 1195
       }
     ]
   },
