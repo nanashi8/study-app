@@ -678,12 +678,26 @@ function phraseCandidates(source) {
 }
 
 // purpose は study（暗記）か quiz（テスト）。出題順は全教材共通（studyOrder.js）。
+// 結果画面の「次の◯項目へ」で続けるときは、同じ周回ですでに終えた項目（cycleIds）を
+// 候補から外し、一巡するまで同じ項目を出し直さない（英単語の buildDeck と同じ考え方）。
 export function buildPhraseDeck(
   source,
-  { srs = {}, size = SESSION_SIZE, purpose = 'study', now = Date.now() } = {},
+  {
+    srs = {},
+    size = SESSION_SIZE,
+    purpose = 'study',
+    excludeIds = [],
+    cycleIds = [],
+    now = Date.now(),
+  } = {},
 ) {
   const day = todayIndex(now)
   let pool = phraseCandidates(source)
+  const completed = new Set([
+    ...(Array.isArray(excludeIds) ? excludeIds : []),
+    ...(Array.isArray(cycleIds) ? cycleIds : []),
+  ])
+  if (completed.size) pool = pool.filter((item) => !completed.has(item.id))
   if (source.type === 'phraseList' && source.preserveOrder) {
     return size ? pool.slice(0, size) : pool
   }

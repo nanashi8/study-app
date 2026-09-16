@@ -221,7 +221,7 @@ test('単語の学習・テスト結果は、復習・次セットまたは終�
     assert.match(source, /復習する/)
     assert.match(source, /戻る/)
   }
-  assert.match(resultSource, /vocabContinuation\.label/)
+  assert.match(resultSource, /continuation\.label/)
   assert.match(reportSource, /\{continueLabel\}/)
   assert.match(reportSource, /次の学習へ/)
   assert.doesNotMatch(reportSource, /今回の\{session\.total\}語を腕試し|詳細な記録|ホーム/)

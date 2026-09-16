@@ -466,12 +466,12 @@ test('結果画面・暗記・テストの全配線が同じ周回IDを引き継
   assert.match(quiz, /wordIds: \[\.\.\.carried\.ids, \.\.\.deck\.map/)
   assert.match(study, /const wordIds = \[\.\.\.carried\.ids, \.\.\.answeredWordIds\(answers\)\]/)
   assert.match(result, /vocabularySessionContinuation\(params/)
-  assert.match(result, /continueLabel=\{vocabContinuation\.label\}/)
+  assert.match(result, /continueLabel=\{continuation\.label\}/)
   assert.doesNotMatch(levels, /data-vocab-session-policy|固定配分|30〜60%|同じ周回|次セット/)
-  const continuation = result.slice(
-    result.indexOf('const continueVocab'),
+  const continueSession = result.slice(
+    result.indexOf('const continueSession'),
     result.indexOf('const reviewVocabSchedule'),
   )
-  assert.match(continuation, /vocabContinuation\.destination/)
-  assert.doesNotMatch(continuation, /replay\(\)/)
+  assert.match(continueSession, /continuation\.destination/)
+  assert.doesNotMatch(continueSession, /replay\(\)/)
 })

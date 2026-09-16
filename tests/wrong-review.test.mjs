@@ -48,17 +48,22 @@ test('各結果画面には全デッキではなく誤答IDだけを渡す', () 
   }
 })
 
-test('単語の自己評価後も結果画面の復習導線を「復習する」に統一する', () => {
+test('単語・熟語の自己評価後も結果画面の復習導線を「復習する」に統一する', () => {
   const source = readFileSync(
     new URL('../src/screens/SessionResult.jsx', import.meta.url),
     'utf8',
   )
 
   assert.match(source, /isVocabResult = engine === 'word' \|\| engine === 'vocab'/)
-  assert.match(source, /vocabReviewIds = reviewIds\.length \? reviewIds : vocabSessionIds/)
+  assert.match(source, /reviewTargetIds = reviewIds\.length \? reviewIds : sessionItemIds/)
   assert.match(source, /vocabularySessionContinuation\(params/)
-  assert.match(source, /vocabNextAfterReview = vocabContinuation[\s\S]{0,160}\.\.\.vocabContinuation\.destination/)
-  assert.match(source, /size: vocabReviewIds\.length,[\s\S]{0,80}continueTo: vocabNextAfterReview/)
+  assert.match(source, /phraseSessionContinuation\(params/)
+  assert.match(source, /nextAfterReview = continuation[\s\S]{0,160}\.\.\.continuation\.destination/)
+  // 英単語も熟語・構文も、まちがいが無い回はその回の分をまとめて復習に回す。
+  assert.equal(
+    (source.match(/size: reviewTargetIds\.length,[\s\S]{0,80}continueTo: nextAfterReview/g) ?? []).length,
+    2,
+  )
   assert.match(source, /title: '復習'/)
   assert.match(source, /復習する/)
 })

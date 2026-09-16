@@ -9,7 +9,10 @@ import { DragonVeinCipherStage } from '../components/DragonVeinCipherStage.jsx'
 import { getWord } from '../data/vocab.js'
 import { buildVocabCompletionReport } from '../lib/learningAnalyticsReport.js'
 import { studyAnswerGroups } from '../lib/studyAnswerList.js'
-import { vocabularySessionContinuation } from '../lib/vocabSessionProgress.js'
+import {
+  phraseSessionContinuation,
+  vocabularySessionContinuation,
+} from '../lib/vocabSessionProgress.js'
 import { vocabMixFreshShare } from '../lib/vocabMix.js'
 import {
   DRAGON_VEIN_TARGET,
@@ -85,10 +88,9 @@ export function SessionResultScreen() {
   const nodeStatus = isDragonVein ? dragonVeinNodeStatus(dragonVeinProgress, node.id) : null
   const track = nodeStatus?.[restorationKind]
   const recorded = useRef(false)
+  const completedAt = params.vocabSession?.completedAt ?? params.phraseSession?.completedAt
   const reportNow = useRef(
-    Number.isFinite(params.vocabSession?.completedAt)
-      ? params.vocabSession.completedAt
-      : Date.now(),
+    Number.isFinite(completedAt) ? completedAt : Date.now(),
   ).current
 
   const isPhrase = engine === 'phrase'
@@ -97,24 +99,37 @@ export function SessionResultScreen() {
   const isListening = engine === 'listening' || params.replayScreen === 'listeningQuiz'
   const isVocabStudy = mode === 'study' && engine === 'word'
   const isVocabResult = engine === 'word' || engine === 'vocab'
+  // 熟語・構文のテストも、英単語と同じ「復習する／次の◯項目へ／戻る」で続ける。
+  const isPhraseQuiz = isPhrase && mode === 'quiz'
+  const continuesSession = isVocabResult || isPhraseQuiz
   const isMemoryCheck = mode === 'study' && (engine === 'word' || engine === 'phrase')
   const reviewUnit = isGrammar || isDictation || isListening ? '問' : isPhrase ? '項目' : '語'
   const vocabSessionIds = params.vocabSession?.wordIds ?? []
-  const vocabReviewIds = reviewIds.length ? reviewIds : vocabSessionIds
-  const vocabContinuation = useMemo(() => (
-    isVocabResult
-      ? vocabularySessionContinuation(params, {
-          srs,
-          storedSize: settings.sessionSize,
-          now: reportNow,
-          freshShareOverride: vocabMixFreshShare(settings.vocabMix),
-        })
-      : null
-  ), [isVocabResult, params, reportNow, settings.sessionSize, settings.vocabMix, srs])
-  const vocabNextAfterReview = vocabContinuation
+  // 今回出した語・項目。まちがいが1つも無いときは、この回の分をまとめて復習に回す。
+  const sessionItemIds = isPhrase ? params.phraseSession?.itemIds ?? [] : vocabSessionIds
+  const reviewTargetIds = reviewIds.length ? reviewIds : sessionItemIds
+  const continuation = useMemo(() => {
+    if (isVocabResult) {
+      return vocabularySessionContinuation(params, {
+        srs,
+        storedSize: settings.sessionSize,
+        now: reportNow,
+        freshShareOverride: vocabMixFreshShare(settings.vocabMix),
+      })
+    }
+    if (isPhraseQuiz) {
+      return phraseSessionContinuation(params, {
+        srs,
+        storedSize: settings.sessionSize,
+        now: reportNow,
+      })
+    }
+    return null
+  }, [isPhraseQuiz, isVocabResult, params, reportNow, settings.sessionSize, settings.vocabMix, srs])
+  const nextAfterReview = continuation
     ? {
-        ...vocabContinuation.destination,
-        label: vocabContinuation.label,
+        ...continuation.destination,
+        label: continuation.label,
       }
     : params.continueTo
   const vocabCompletion = useMemo(() => {
@@ -238,34 +253,34 @@ export function SessionResultScreen() {
           : isPhrase
             ? navigate('phraseStudy', {
                 source: source?.type === 'customPhrase'
-                  ? { type: 'customPhrase', items: (source.items ?? []).filter((item) => reviewIds.includes(item.id)) }
-                  : { type: 'phraseList', kind: source?.kind, ids: reviewIds },
-                title: isMemoryCheck ? 'もう一度確認' : 'まちがい復習',
+                  ? { type: 'customPhrase', items: (source.items ?? []).filter((item) => reviewTargetIds.includes(item.id)) }
+                  : { type: 'phraseList', kind: source?.kind, ids: reviewTargetIds },
+                title: isMemoryCheck ? 'もう一度確認' : '復習',
                 mode: 'study',
                 engine: 'phrase',
-                size: reviewIds.length,
-                continueTo: params.continueTo,
+                size: reviewTargetIds.length,
+                continueTo: nextAfterReview,
                 returnTo: params.returnTo,
               })
             : navigate('vocabStudy', {
-                source: { type: 'mylist', ids: vocabReviewIds },
+                source: { type: 'mylist', ids: reviewTargetIds },
                 title: '復習',
                 mode: 'study',
-                size: vocabReviewIds.length,
-                continueTo: vocabNextAfterReview,
+                size: reviewTargetIds.length,
+                continueTo: nextAfterReview,
                 returnTo: params.returnTo,
               })
   )
 
-  const continueVocab = () => {
-    if (!vocabContinuation) return
-    if (vocabContinuation.exhausted) {
+  const continueSession = () => {
+    if (!continuation) return
+    if (continuation.exhausted) {
       exitSessionResult()
       return
     }
     navigate(
-      vocabContinuation.destination.screen,
-      vocabContinuation.destination.params ?? {},
+      continuation.destination.screen,
+      continuation.destination.params ?? {},
     )
   }
 
@@ -279,12 +294,12 @@ export function SessionResultScreen() {
         : `${scheduleItem.label}の内容を今練習`,
       mode: 'study',
       size: ids.length,
-      continueTo: vocabNextAfterReview,
+      continueTo: nextAfterReview,
       returnTo: params.returnTo,
     })
   }
 
-  const returnFromVocab = () => {
+  const returnFromSession = () => {
     exitSessionResult()
   }
 
@@ -362,9 +377,9 @@ export function SessionResultScreen() {
           title={title}
           streak={stats.streak}
           onReviewNow={reviewWrong}
-          onContinue={continueVocab}
-          continueLabel={vocabContinuation.label}
-          onBack={returnFromVocab}
+          onContinue={continueSession}
+          continueLabel={continuation.label}
+          onBack={returnFromSession}
           onWord={(id) => navigate('wordDetail', { id })}
           onReviewSchedule={reviewVocabSchedule}
           answerGroups={studyAnswers}
@@ -389,11 +404,11 @@ export function SessionResultScreen() {
         <Card className="flex flex-1 flex-col items-center gap-1 p-3"><span className="text-rose-500"><Flame size={22} /></span><span className="font-display text-xl font-extrabold text-ink">{streak}</span><span className="text-[11px] font-bold text-ink/45">連続日数</span></Card>
       </div>
       <div className="mt-2 w-full max-w-xs space-y-2.5">
-        {isVocabResult ? (
+        {continuesSession ? (
           <>
             <Button full onClick={reviewWrong}><Refresh size={18} /> 復習する</Button>
-            <Button full variant="secondary" onClick={continueVocab}>{vocabContinuation.label} <ArrowRight size={18} /></Button>
-            <Button full variant="ghost" onClick={returnFromVocab}>戻る</Button>
+            <Button full variant="secondary" onClick={continueSession}>{continuation.label} <ArrowRight size={18} /></Button>
+            <Button full variant="ghost" onClick={returnFromSession}>戻る</Button>
           </>
         ) : (
           <>
