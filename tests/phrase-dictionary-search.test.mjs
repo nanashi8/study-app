@@ -160,6 +160,6 @@ test('検索画面はABC一覧を出さず、単語・熟語・構文を同じ�
   assert.ok(!src.includes('ABCから引く'))
   assert.ok(!src.includes('ABC一覧へ戻る'))
   assert.ok(!menu.includes('ABC順に引く'))
-  assert.ok(menu.includes("screenItem('vocabSearch', '英和辞書', '単語・熟語・構文を検索')"))
+  assert.ok(menu.includes("englishItem('vocabSearch', '英和辞書', '単語・熟語・構文を検索')"))
   for (const label of ['単語', '熟語', '構文']) assert.ok(src.includes(label))
 })

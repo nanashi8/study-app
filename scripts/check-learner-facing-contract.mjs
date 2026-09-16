@@ -253,14 +253,15 @@ if (!shellSource.includes('openSpeechSettings()')) errors.push('上部メニュ�
 if (shellSource.includes('data-global-bottom-nav') || appSource.includes('BottomNav')) {
   errors.push('廃止した統一下部ナビが残っている')
 }
-if (!menuSource.includes('data-progress-save-confirmation')) errors.push('途中離脱の保存確認がない')
+if (menuSource.includes('data-progress-save-confirmation') || menuSource.includes('requiresProgressSaveConfirmation')) {
+  errors.push('メニューから移るときに廃止した保存確認を挟んでいる')
+}
 if (menuSource.includes('data-progress-discard-confirmation') || menuSource.includes('進捗は破棄されます')) {
   errors.push('途中の戻る操作に廃止した進捗破棄の確認が残っている')
 }
 if (shellSource.includes("openSpeechSettings('back')") || shellSource.includes('requiresProgressSaveConfirmation')) {
   errors.push('途中の戻る操作が確認を挟んでいる')
 }
-if (!menuSource.includes('requiresProgressSaveConfirmation')) errors.push('保存確認の画面判定がない')
 if (!sessionControlsSource.includes('export function useUnfinishedSessionRecord')) {
   errors.push('途中でやめたテストの記録を残す共通処理がない')
 }
@@ -441,6 +442,9 @@ if (new Set(APP_MENU_SCREEN_DESTINATIONS).size !== APP_MENU_SCREEN_DESTINATIONS.
 if (!menuSource.includes('data-menu-section-list')) errors.push('メニューに一段の項目一覧がない')
 if (!menuSource.includes('data-menu-section={menuSection.id}')) errors.push('メニューの見出しが描画されない')
 if (!menuSource.includes('data-menu-item')) errors.push('メニュー項目を直接選べない')
+if (!menuSource.includes('data-menu-content-settings') || !menuSource.includes('data-content-settings-open')) {
+  errors.push('メニューの教材の行が、教材の設定と教材を開く操作を持たない')
+}
 if (!menuSource.includes('data-menu-advisor-entry')) errors.push('メニューに学習アドバイザーがない')
 if (!menuSource.includes('data-menu-retention-entry')) errors.push('メニューに学習分析がない')
 for (const obsolete of [

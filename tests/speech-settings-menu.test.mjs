@@ -3,18 +3,17 @@ import assert from 'node:assert/strict'
 import { readFileSync, readdirSync } from 'node:fs'
 import {
   APP_MENU_ACTIONS,
+  APP_MENU_CONTENT_ITEMS,
   APP_MENU_SECTIONS,
   APP_MENU_ITEMS,
   APP_MENU_SCREEN_DESTINATIONS,
+  CONTENT_SETTING_GROUPS,
+  contentSettingsSummary,
 } from '../src/lib/appMenu.js'
 import {
   ALL_PROGRESS_RESET_GROUP_IDS,
   PROGRESS_RESET_GROUPS,
 } from '../src/lib/progressReset.js'
-import {
-  IN_PROGRESS_SCREENS,
-  requiresProgressSaveConfirmation,
-} from '../src/lib/navigationPolicy.js'
 
 const read = (path) =>
   readFileSync(new URL(path, import.meta.url), 'utf8')
@@ -54,39 +53,29 @@ test('上部の一つの共通メニューを全画面から開き、その中�
   assert.match(settings, /data-speech-settings-trigger/)
 })
 
-test('学習途中に戻るボタンを押しても確認を挟まず、メニューからスタディアプリ ホームへ出るときだけ保存できる', () => {
+test('学習の途中で戻る・メニューから移るときも、保存確認を挟まない', () => {
   const header = read('../src/components/AppShell.jsx')
   const settings = read('../src/components/SpeechSettings.jsx')
   const backup = read('../src/components/ProgressBackup.jsx')
   const policy = read('../src/lib/navigationPolicy.js')
   const progress = read('../src/lib/progressCode.js')
 
-  assert.match(settings, /requiresProgressSaveConfirmation\(currentScreen, screen\)/)
-  assert.doesNotMatch(header, /requiresProgressSaveConfirmation/)
+  // 答えた分は1問ごとに保存されるので、戻る・アプリ名・メニューのどこから移っても確認を出さない。
+  assert.doesNotMatch(
+    `${header}\n${settings}\n${policy}`,
+    /requiresProgressSaveConfirmation|data-progress-save-confirmation|途中の進捗を保存しますか？/,
+  )
   assert.doesNotMatch(header, /openSpeechSettings\('back'\)/)
   assert.match(header, /const goBack = \(\) => \{\n    if \(!canGoBack \|\| menuOpen\) return\n    globalBack\(\)\n  \}/)
   assert.match(header, /disabled=\{!canGoBack \|\| menuOpen\}/)
-  assert.match(settings, /data-progress-save-confirmation/)
   assert.doesNotMatch(settings, /data-progress-discard-confirmation/)
   assert.doesNotMatch(settings, /進捗は破棄されます/)
-  assert.match(settings, /途中の進捗を保存しますか？/)
-  assert.match(settings, /<ProgressBackupPanel/)
-  assert.match(settings, /continueLabel=\{`保存を終えて\$\{pendingLabel\}へ`\}/)
-  assert.match(settings, /goPortal\(\)/)
+  assert.match(settings, /const openScreen = \(screen, params = \{\}\) => \{\n    close\(\)\n    if \(screen === 'portal'\) goPortal\(\)/)
   for (const screen of ['vocabStudy', 'vocabQuiz', 'reader', 'grammarQuiz', 'mathSolve', 'diagnostic']) {
     assert.match(policy, new RegExp(`'${screen}'`))
   }
-  // 答えた分は1問ごとに保存されるので、メニューのほかの項目は途中でもそのまま開く。
-  // 保存確認を出すのは、学習の途中からスタディアプリ ホームへ出るときだけ。
-  for (const current of IN_PROGRESS_SCREENS) {
-    assert.equal(requiresProgressSaveConfirmation(current, 'portal'), true, current)
-    for (const target of APP_MENU_SCREEN_DESTINATIONS.filter((screen) => screen !== 'portal')) {
-      assert.equal(requiresProgressSaveConfirmation(current, target), false, `${current}→${target}`)
-    }
-  }
-  for (const current of ['portal', 'home', 'vocabLevels', 'kotenList', 'sessionResult']) {
-    assert.equal(requiresProgressSaveConfirmation(current, 'portal'), false, current)
-  }
+  // QR・コードは「学習記録・バックアップ」と、リセット前のバックアップから持ち出す。
+  assert.match(settings, /<ProgressBackupPanel/)
   assert.match(backup, /QRCodeCanvas/)
   assert.match(backup, /コードをコピー/)
   assert.match(backup, /useStore\(useShallow\(selectProgressState\)\)/)
@@ -238,6 +227,116 @@ test('共通メニューから保存される学習・音声・コンテンツ�
   assert.match(portal, /resetPortal/)
   assert.match(settingsScreen, /<SettingsMenuPanel \/>/)
   assert.doesNotMatch(settingsScreen, /resetProgress|進捗をリセット|<Sheet/)
+})
+
+test('教材の行はその教材で効く設定を開き、設定のいちばん上から教材へ進める', () => {
+  const menu = read('../src/components/SpeechSettings.jsx')
+  const store = read('../src/store/useStore.js')
+  const defaultSettings = store.slice(
+    store.indexOf('const DEFAULT_SETTINGS'),
+    store.indexOf('export const createInitialLearningState'),
+  )
+  const settingKeys = [...defaultSettings.matchAll(/^  (\w+):/gm)]
+    .map((match) => match[1])
+  const groupedKeys = CONTENT_SETTING_GROUPS.flatMap((group) => group.settings)
+  const settingsOf = (screen) => APP_MENU_CONTENT_ITEMS.find((item) => item.screen === screen).settings
+  const screensUsing = (key) => APP_MENU_CONTENT_ITEMS
+    .filter((item) => item.settings.includes(key))
+    .map((item) => item.screen)
+
+  // 学ぶ内容の行だけが設定を開く。ホーム・道具・保存・記録・設定の行は押すとそのまま開く。
+  assert.deepEqual(APP_MENU_CONTENT_ITEMS.map((item) => item.screen), [
+    'home', 'mathMap', 'kotenList', 'kanbunHome', 'literatureLibrary',
+    'vocabLevels', 'vocabSearch', 'writing', 'roots', 'readingList', 'phrases', 'grammar', 'listening',
+    'diagnostic', 'dictation',
+  ])
+  assert.equal(APP_MENU_ITEMS.find((item) => item.screen === 'portal').settings, undefined)
+  // 保存される設定は、どれもいずれかの教材の設定に並ぶ。
+  assert.deepEqual([...groupedKeys].sort(), [...settingKeys].sort())
+  for (const key of settingKeys) assert.ok(screensUsing(key).length > 0, `${key} を使う教材がない`)
+  assert.deepEqual(settingsOf('home'), groupedKeys)
+  for (const item of APP_MENU_SECTIONS.find((menuSection) => menuSection.id === 'english').items) {
+    for (const key of item.settings) assert.ok(settingsOf('home').includes(key), `英語アプリに ${item.label} の ${key} が無い`)
+  }
+  assert.deepEqual(settingsOf('mathMap'), [])
+  assert.deepEqual(settingsOf('kotenList'), ['revealAnswers', 'sessionSize', 'autoAdvanceCorrect'])
+  assert.deepEqual(settingsOf('kanbunHome'), ['revealAnswers', 'sessionSize', 'autoAdvanceCorrect'])
+  assert.deepEqual(settingsOf('diagnostic'), ['ttsRate', 'ttsVoiceURI'])
+  // 出題バランスは級・分野から始める英単語だけ、日本語の声は訳や古典・漢文を読み上げる教材だけ。
+  assert.deepEqual(screensUsing('vocabMix'), ['home', 'vocabLevels'])
+  assert.deepEqual(screensUsing('ttsJapaneseVoiceURI'), ['home', 'literatureLibrary', 'readingList'])
+  assert.equal(contentSettingsSummary({ settings: settingsOf('writing') }), '問題数・読み上げ')
+  assert.equal(contentSettingsSummary({ settings: settingsOf('kotenList') }), '答えの表示・問題数・自動で次へ')
+  assert.equal(contentSettingsSummary({ settings: [] }), '変えられる設定はありません')
+
+  // 教材の画面が読んでいる設定は、その教材の設定に必ず並ぶ（画面へ設定を足したら台帳にも足す）。
+  // 日本語の声はどの読み上げにも引数で渡るため、ソースの字面では判定しない。
+  const markers = [
+    ['revealAnswers', /revealAnswers/],
+    ['hideSpelling', /hideSpelling/],
+    ['sessionSize', /sessionSize|useSessionSize/],
+    ['autoAdvanceCorrect', /showAutoAdvance/],
+    ['vocabMix', /vocabMix/],
+    ['dailyGoal', /dailyGoal/],
+    ['autoSpeak', /autoSpeak/],
+    ['showPhonetic', /showPhonetic/],
+    ['ttsRate', /<SpeakButton|ttsRate|playSpeechItems/],
+    ['ttsVoiceURI', /<SpeakButton|ttsVoiceURI|playSpeechItems/],
+  ]
+  const ownFiles = {
+    mathMap: ['screens/MathMap', 'screens/MathUnits', 'screens/MathSolve', 'screens/MathIntro'],
+    kotenList: [
+      'screens/KotenList', 'screens/KotenStudy', 'screens/KotenQuiz',
+      'screens/KotenGrammar', 'screens/KotenGrammarStudy', 'screens/KotenGrammarQuiz',
+      'screens/KotenCulture', 'screens/KotenCultureStudy', 'screens/KotenCultureQuiz',
+      'screens/KotenInterpretationList', 'screens/KotenInterpretationPrep', 'screens/KotenInterpretationQuiz',
+    ],
+    kanbunHome: [
+      'screens/KanbunHome', 'screens/KanbunCatalog', 'screens/KanbunStudy', 'screens/KanbunQuiz',
+      'screens/KanbunKundoku', 'screens/KanbunKundokuQuiz',
+    ],
+    literatureLibrary: ['screens/LiteratureLibrary', 'screens/LiteratureReader', 'components/LiteratureVocabularySheet'],
+    vocabLevels: ['screens/VocabLevels', 'screens/VocabGroups', 'screens/VocabDecks', 'screens/VocabStudy', 'screens/VocabQuiz'],
+    vocabSearch: ['screens/VocabSearch', 'screens/WordDetail'],
+    writing: ['screens/Writing', 'screens/WritingPlay', 'screens/WritingExam', 'screens/WritingGrammarReview'],
+    roots: ['screens/Roots', 'screens/RootDetail', 'screens/EtymologyPack', 'screens/EtymologyStudy', 'screens/EtymologyQuiz'],
+    readingList: [
+      'screens/ReadingList', 'screens/ReadingPrep', 'screens/Reader', 'screens/ReadingSummary', 'screens/SceneBundles',
+      'components/ExtendedReader', 'components/LongSentenceTranslation', 'components/SceneBundles',
+    ],
+    phrases: ['screens/Phrases', 'screens/PhraseStudy', 'screens/PhraseQuiz'],
+    grammar: ['screens/Grammar', 'screens/GrammarLessons', 'screens/GrammarQuiz', 'screens/GrammarStrands'],
+    listening: ['screens/Listening', 'screens/ListeningQuiz'],
+    diagnostic: ['screens/Diagnostic'],
+    dictation: ['screens/Dictation', 'screens/DictationPlay'],
+  }
+  assert.deepEqual(Object.keys(ownFiles).sort(), APP_MENU_CONTENT_ITEMS.map((item) => item.screen).filter((screen) => screen !== 'home').sort())
+  for (const [screen, files] of Object.entries(ownFiles)) {
+    for (const file of files) {
+      const source = read(`../src/${file}.jsx`)
+      for (const [key, pattern] of markers) {
+        if (pattern.test(source)) {
+          assert.ok(settingsOf(screen).includes(key), `${file} は ${key} を読むのに、${screen} の設定に無い`)
+        }
+      }
+    }
+  }
+  // 語源学習の入口は1回の数を決め打ちせず、「1回の問題数」の設定で組む。
+  for (const file of ['screens/Roots', 'screens/EtymologyPack', 'screens/RootDetail']) {
+    assert.doesNotMatch(read(`../src/${file}.jsx`), /SESSION_SIZE\b|LEARN_BATCH/, file)
+  }
+
+  // 行は設定を開き、設定画面のいちばん上の「◯◯を開く」から教材へ進む。
+  assert.match(menu, /const opensSettings = Array\.isArray\(item\.settings\)/)
+  assert.match(menu, /onOpenContentSettings\?\.\(item\)/)
+  assert.match(menu, /data-menu-content-settings=\{opensSettings \? item\.screen : undefined\}/)
+  assert.match(menu, /data-content-settings=\{item\.screen\}/)
+  assert.match(menu, /data-content-settings-open/)
+  assert.match(menu, /\{item\.label\}を開く/)
+  assert.match(menu, /onOpen=\{\(\) => openScreen\(contentSettingsItem\.screen\)\}/)
+  assert.match(menu, /'content-settings': contentSettingsItem \? `\$\{contentSettingsItem\.label\}の設定` : '設定'/)
+  // 教材ごとの設定と全体の設定は、同じ部品（保存される設定1つにつき1つ）を並べる。
+  for (const key of settingKeys) assert.match(menu, new RegExp(`\\n  ${key}: [A-Za-z]+Setting,`), key)
 })
 
 test('永続設定の変更処理は共通メニューへ集約し、廃止した対戦設定を表示しない', () => {

@@ -8,7 +8,6 @@ import {
   isEtymologyDue,
 } from '../lib/etymologyProgress.js'
 import { summarizeVocabularySrsItems } from '../lib/vocabScheduler.js'
-import { SESSION_SIZE } from '../lib/session.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { NormalLearningRecordList } from '../components/NormalLearningRecordList.jsx'
 import { StatusDistributionBar } from '../components/LearningStatusBars.jsx'
@@ -52,19 +51,17 @@ export function EtymologyPackScreen() {
   const cardEntry = etymologySrs[pack.id]
 
   // 語根1つだけを覚え直しても身につかないため、このカードからは紐づく単語そのものを、
-  // いつもの単語の暗記・テストで学ぶ。
+  // いつもの単語の暗記・テストで学ぶ。1回の数は「1回の問題数」の設定で組む。
   const returnTarget = { screen: 'etymologyPack', params: { packId: pack.id } }
   const studyWords = () => navigate('vocabStudy', {
     source: { type: 'deck', ids: pack.studyIds, preserveOrder: true },
     title: `${pack.rootForm}（${pack.rootMeaning}）に紐づく単語`,
     mode: 'study',
-    size: Math.min(SESSION_SIZE, pack.studyIds.length),
     returnTo: returnTarget,
   })
   const quizWords = () => navigate('vocabQuiz', {
     source: { type: 'deck', ids: pack.studyIds },
     title: `${pack.rootForm}（${pack.rootMeaning}）に紐づく単語`,
-    size: Math.min(SESSION_SIZE, pack.studyIds.length),
     returnTo: returnTarget,
   })
 
