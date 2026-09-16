@@ -5,7 +5,6 @@ import {
   GRAMMAR_FORMAT_EXPANSION,
   grammarQuestionType,
 } from './grammar-format-expansion.js'
-import { createGrammarChoiceGuidance } from '../lib/grammarChoiceGuidance.js'
 
 // 既存の手作り問題にも、生成問題・入試型問題と同じ文法判断を問うものがある。
 // IDや並び順は変えず、出題時だけ同じ variationGroup として重複を抑える。
@@ -61,7 +60,7 @@ export const GRAMMAR = [
   { id: 'gr_5_be_1', level: '5', topic: 'be動詞', q: 'I ___ a student.', choices: ['am', 'is', 'are', 'be'], answer: 'am', explain: '主語が I のとき be動詞は am。', sentence: { en: 'I am a student.', ja: '私は学生です。' } },
   { id: 'gr_5_be_2', level: '5', topic: 'be動詞', q: 'She ___ kind.', choices: ['is', 'am', 'are', 'do'], answer: 'is', explain: '主語が3人称単数(she)のとき be動詞は is。', sentence: { en: 'She is kind.', ja: '彼女は親切です。' } },
   { id: 'gr_5_be_3', level: '5', topic: 'be動詞', q: 'You and Tom ___ friends.', choices: ['are', 'is', 'am', 'be'], answer: 'are', explain: '主語が複数(you and Tom)のとき be動詞は are。', sentence: { en: 'You and Tom are friends.', ja: 'あなたとトムは友達です。' } },
-  { id: 'gr_5_verb_1', level: '5', topic: '一般動詞・3単現', q: 'He ___ tennis every day.', choices: ['plays', 'play', 'playing', 'played'], answer: 'plays', explain: '主語が3人称単数で現在の文は動詞に s をつける。', sentence: { en: 'He plays tennis every day.', ja: '彼は毎日テニスをします。' } },
+  { id: 'gr_5_verb_1', level: '5', topic: '一般動詞・3単現', q: 'He ___ tennis every day.', choices: ['plays', 'play', 'playing', 'is play'], answer: 'plays', explain: '主語が3人称単数で現在の文は動詞に s をつける。', sentence: { en: 'He plays tennis every day.', ja: '彼は毎日テニスをします。' } },
   { id: 'gr_5_verb_2', level: '5', topic: '一般動詞・3単現', q: 'My sister ___ to school by bus.', choices: ['goes', 'go', 'going', 'gone'], answer: 'goes', explain: 'go は3単現で goes（o で終わる語は es）。', sentence: { en: 'My sister goes to school by bus.', ja: '姉はバスで学校へ行きます。' } },
   { id: 'gr_5_verb_3', level: '5', topic: '一般動詞・3単現', q: 'I ___ soccer after school.', choices: ['play', 'plays', 'playing', 'to play'], answer: 'play', explain: '主語が I のときは s をつけない。', sentence: { en: 'I play soccer after school.', ja: '私は放課後サッカーをします。' } },
   { id: 'gr_5_neg_1', level: '5', topic: '否定文・疑問文', q: 'I ___ like natto.', choices: ['do not', 'does not', 'am not', 'not'], answer: 'do not', explain: '一般動詞(I/you/複数)の否定は do not（don’t）。', sentence: { en: 'I do not like natto.', ja: '私は納豆が好きではありません。' } },
@@ -97,8 +96,8 @@ export const GRAMMAR = [
 
   // ───────── 3級（中3）─────────
   { id: 'gr_3_perf_1', level: '3', topic: '現在完了', q: 'I have ___ in Tokyo for ten years.', choices: ['lived', 'live', 'living', 'lives'], answer: 'lived', explain: '現在完了は have＋過去分詞。継続を表す。', sentence: { en: 'I have lived in Tokyo for ten years.', ja: '私は10年間東京に住んでいます。' } },
-  { id: 'gr_3_perf_2', level: '3', topic: '現在完了', q: 'Have you ___ finished it?', choices: ['already', 'ever', 'yet', 'since'], answer: 'already', explain: 'already は「もう・すでに」。疑問文では驚きや確認の気持ちを添える。', sentence: { en: 'Have you already finished it?', ja: 'もう終えましたか。' } },
-  { id: 'gr_3_perf_3', level: '3', topic: '現在完了', q: 'She has ___ to Australia twice.', choices: ['been', 'gone', 'went', 'being'], answer: 'been', explain: 'have been to で「行ったことがある（経験）」。', sentence: { en: 'She has been to Australia twice.', ja: '彼女は2回オーストラリアに行ったことがあります。' } },
+  { id: 'gr_3_perf_2', level: '3', topic: '現在完了', q: 'Have you ___ finished it?', choices: ['already', 'ever', 'still', 'since'], answer: 'already', explain: 'already は「もう・すでに」。疑問文では驚きや確認の気持ちを添える。', sentence: { en: 'Have you already finished it?', ja: 'もう終えましたか。' } },
+  { id: 'gr_3_perf_3', level: '3', topic: '現在完了', q: 'She has ___ to Australia twice.', choices: ['been', 'go', 'went', 'being'], answer: 'been', explain: 'have been to で「行ったことがある（経験）」。', sentence: { en: 'She has been to Australia twice.', ja: '彼女は2回オーストラリアに行ったことがあります。' } },
   { id: 'gr_3_pass_1', level: '3', topic: '受動態', q: 'This book ___ by many people.', choices: ['is read', 'reads', 'is reading', 'read'], answer: 'is read', explain: '受動態は be動詞＋過去分詞。「読まれている」。', sentence: { en: 'This book is read by many people.', ja: 'この本は多くの人に読まれています。' } },
   { id: 'gr_3_pass_2', level: '3', topic: '受動態', q: 'The room ___ cleaned yesterday.', choices: ['was', 'is', 'has', 'did'], answer: 'was', explain: '過去の受動態は was/were＋過去分詞。', sentence: { en: 'The room was cleaned yesterday.', ja: 'その部屋は昨日掃除された。' } },
   { id: 'gr_3_rel_1', level: '3', topic: '関係代名詞', q: 'I have a friend ___ lives in Canada.', choices: ['who', 'which', 'whose', 'what'], answer: 'who', explain: '先行詞が人で主格なら who。', sentence: { en: 'I have a friend who lives in Canada.', ja: '私にはカナダに住む友達がいます。' } },
@@ -133,12 +132,12 @@ export const GRAMMAR = [
 
   // ───────── 1級（大学上級）─────────
   { id: 'gr_1_invc_1', level: '1', topic: '倒置・強調', q: 'Not until then ___ the truth.', choices: ['did I realize', 'I realized', 'I did realize', 'realized I'], answer: 'did I realize', explain: 'Not until ... が文頭で倒置〈did＋主語＋原形〉。', sentence: { en: 'Not until then did I realize the truth.', ja: 'そのときになって初めて真実に気づいた。' } },
-  { id: 'gr_1_subj_1', level: '1', topic: '仮定法・語法', q: 'The doctor suggested that he ___ a rest.', choices: ['take', 'takes', 'took', 'taking'], answer: 'take', explain: 'suggest など要求・提案の that節は動詞原形(should省略)。', sentence: { en: 'The doctor suggested that he take a rest.', ja: '医者は彼に休養をとるよう勧めた。' } },
-  { id: 'gr_1_idiom_1', level: '1', topic: '高度語法', q: 'He spoke as though he ___ everything.', choices: ['knew', 'knows', 'has known', 'know'], answer: 'knew', explain: 'as though＋仮定法過去で「まるで〜のように」。', sentence: { en: 'He spoke as though he knew everything.', ja: '彼はまるで何でも知っているかのように話した。' } },
+  { id: 'gr_1_subj_1', level: '1', topic: '仮定法・語法', q: 'The doctor suggested that he ___ a rest.', choices: ['take', 'to take', 'should to take', 'taking'], answer: 'take', explain: 'suggest など要求・提案の that節は動詞原形(should省略)。', sentence: { en: 'The doctor suggested that he take a rest.', ja: '医者は彼に休養をとるよう勧めた。' } },
+  { id: 'gr_1_idiom_1', level: '1', topic: '高度語法', q: 'He spoke as though he ___ everything.', choices: ['knew', 'knowing', 'has known', 'know'], answer: 'knew', explain: 'as though＋仮定法過去で「まるで〜のように」。', sentence: { en: 'He spoke as though he knew everything.', ja: '彼はまるで何でも知っているかのように話した。' } },
 
   // ───────── 5級 追加 ─────────
   { id: 'gr_5_be_4', level: '5', topic: 'be動詞', q: '___ you a teacher? — Yes, I am.', choices: ['Are', 'Is', 'Am', 'Do'], answer: 'Are', explain: '主語 you の be動詞疑問文は Are で始める。', sentence: { en: 'Are you a teacher?', ja: 'あなたは先生ですか。' } },
-  { id: 'gr_5_art_1', level: '5', topic: '冠詞', q: 'I have ___ apple.', choices: ['an', 'a', 'the', 'one'], answer: 'an', explain: '母音で始まる語の前は a でなく an。', sentence: { en: 'I have an apple.', ja: '私はリンゴを1個持っています。' } },
+  { id: 'gr_5_art_1', level: '5', topic: '冠詞', q: 'I have ___ apple.', choices: ['an', 'a', 'the', 'any'], answer: 'an', explain: '母音で始まる語の前は a でなく an。', sentence: { en: 'I have an apple.', ja: '私はリンゴを1個持っています。' } },
   { id: 'gr_5_this_1', level: '5', topic: '指示語', q: '___ are my books.', choices: ['These', 'This', 'That', 'It'], answer: 'These', explain: '複数(books)を指すので These。', sentence: { en: 'These are my books.', ja: 'これらは私の本です。' } },
   { id: 'gr_5_wh_3', level: '5', topic: '疑問詞', q: '___ is that man? — He is my uncle.', choices: ['Who', 'What', 'Whose', 'Where'], answer: 'Who', explain: '人が誰かをたずねるときは Who。', sentence: { en: 'Who is that man?', ja: 'あの男性は誰ですか。' } },
   { id: 'gr_5_how_1', level: '5', topic: '疑問詞', q: '___ many pens do you have?', choices: ['How', 'What', 'How much', 'Which'], answer: 'How', explain: '数をたずねる how many。後ろは複数名詞。', sentence: { en: 'How many pens do you have?', ja: 'ペンを何本持っていますか。' } },
@@ -149,8 +148,8 @@ export const GRAMMAR = [
   { id: 'gr_4_inf_3', level: '4', topic: '不定詞', q: 'He went to the library ___ books.', choices: ['to borrow', 'borrow', 'borrowing', 'borrowed'], answer: 'to borrow', explain: '目的「〜するために」を表す副詞的用法の不定詞。', sentence: { en: 'He went to the library to borrow books.', ja: '彼は本を借りるために図書館へ行った。' } },
   { id: 'gr_4_ger_2', level: '4', topic: '動名詞', q: '___ books is fun.', choices: ['Reading', 'Read', 'To reading', 'Reads'], answer: 'Reading', explain: '動名詞は主語にもなれる（〜することは）。', sentence: { en: 'Reading books is fun.', ja: '読書は楽しい。' } },
   { id: 'gr_4_comp_4', level: '4', topic: '比較', q: 'This is the ___ mountain in Japan.', choices: ['highest', 'higher', 'high', 'most high'], answer: 'highest', explain: '短い語の最上級は -est。the をつける。', sentence: { en: 'This is the highest mountain in Japan.', ja: 'これは日本で一番高い山です。' } },
-  { id: 'gr_4_must_1', level: '4', topic: '助動詞', q: 'You ___ not run here.', choices: ['must', 'are', 'do', 'have'], answer: 'must', explain: 'must not で「〜してはいけない」（禁止）。', sentence: { en: 'You must not run here.', ja: 'ここで走ってはいけません。' } },
-  { id: 'gr_4_have_to_1', level: '4', topic: '助動詞', q: 'I ___ to get up early tomorrow.', choices: ['have', 'must', 'am', 'do'], answer: 'have', explain: 'have to＋原形で「〜しなければならない」。', sentence: { en: 'I have to get up early tomorrow.', ja: '明日は早く起きなければならない。' } },
+  { id: 'gr_4_must_1', level: '4', topic: '助動詞', q: 'You ___ not run here.', choices: ['must', 'are', 'does', 'have'], answer: 'must', explain: 'must not で「〜してはいけない」（禁止）。', sentence: { en: 'You must not run here.', ja: 'ここで走ってはいけません。' } },
+  { id: 'gr_4_have_to_1', level: '4', topic: '助動詞', q: 'I ___ to get up early tomorrow.', choices: ['have', 'must', 'will', 'do'], answer: 'have', explain: 'have to＋原形で「〜しなければならない」。', sentence: { en: 'I have to get up early tomorrow.', ja: '明日は早く起きなければならない。' } },
   { id: 'gr_4_conj_2', level: '4', topic: '接続詞', q: 'I was tired, ___ I went to bed early.', choices: ['so', 'but', 'or', 'that'], answer: 'so', explain: 'so は「だから」と結果を表す。', sentence: { en: 'I was tired, so I went to bed early.', ja: '疲れていたので早く寝た。' } },
   { id: 'gr_4_conj_3', level: '4', topic: '接続詞', q: 'I think ___ he is right.', choices: ['that', 'what', 'if', 'so'], answer: 'that', explain: 'think that 〜 で「〜だと思う」。that は省略可。', sentence: { en: 'I think that he is right.', ja: '私は彼が正しいと思う。' } },
 
@@ -164,7 +163,7 @@ export const GRAMMAR = [
   { id: 'gr_3_so_1', level: '3', topic: 'so...that', q: 'He was ___ tired that he fell asleep.', choices: ['so', 'such', 'too', 'very'], answer: 'so', explain: 'so＋形容詞＋that …（とても〜なので…）。', sentence: { en: 'He was so tired that he fell asleep.', ja: '彼はとても疲れていて眠ってしまった。' } },
 
   // ───────── 準2級 追加 ─────────
-  { id: 'gr_pre2_part_3', level: 'pre2', topic: '分詞', q: 'I heard someone ___ my name.', choices: ['calling', 'call', 'to call', 'called'], answer: 'calling', explain: '知覚動詞 hear＋O＋ing（〜しているのが聞こえる）。', sentence: { en: 'I heard someone calling my name.', ja: '誰かが私の名前を呼んでいるのが聞こえた。' } },
+  { id: 'gr_pre2_part_3', level: 'pre2', topic: '分詞', q: 'I heard someone ___ my name.', choices: ['calling', 'calls', 'to call', 'called'], answer: 'calling', explain: '知覚動詞 hear＋O＋ing（〜しているのが聞こえる）。', sentence: { en: 'I heard someone calling my name.', ja: '誰かが私の名前を呼んでいるのが聞こえた。' } },
   { id: 'gr_pre2_perf_1', level: 'pre2', topic: '現在完了進行形', q: 'It ___ raining since morning.', choices: ['has been', 'is', 'was', 'has'], answer: 'has been', explain: '現在完了進行形 have been＋ing（ずっと〜し続けている）。', sentence: { en: 'It has been raining since morning.', ja: '朝からずっと雨が降り続いている。' } },
   { id: 'gr_pre2_rel_1', level: 'pre2', topic: '関係代名詞(継続)', q: 'My uncle, ___ lives in NY, is a doctor.', choices: ['who', 'that', 'which', 'whom'], answer: 'who', explain: '非制限用法（コンマ）では that は使えない。人は who。', sentence: { en: 'My uncle, who lives in NY, is a doctor.', ja: 'おじはニューヨークに住んでいて、医者だ。' } },
   { id: 'gr_pre2_subj_2', level: 'pre2', topic: '仮定法(基礎)', q: 'If I had time, I ___ help you.', choices: ['would', 'will', 'can', 'am'], answer: 'would', explain: '仮定法過去の帰結節は would＋原形。', sentence: { en: 'If I had time, I would help you.', ja: '時間があれば手伝うのに。' } },
@@ -175,7 +174,7 @@ export const GRAMMAR = [
 
   // ───────── 2級 追加 ─────────
   { id: 'gr_2_subj_1', level: '2', topic: '仮定法', q: 'I wish I ___ taller.', choices: ['were', 'am', 'was being', 'will be'], answer: 'were', explain: 'I wish＋仮定法過去（現在の願望）。be は were。', sentence: { en: 'I wish I were taller.', ja: 'もっと背が高ければなあ。' } },
-  { id: 'gr_2_subj_2', level: '2', topic: '仮定法', q: '___ for your help, I would have failed.', choices: ['But', 'Except', 'Without', 'Unless'], answer: 'But', explain: 'But for 〜（〜がなかったら）＝仮定法。', sentence: { en: 'But for your help, I would have failed.', ja: 'あなたの助けがなければ失敗していただろう。' } },
+  { id: 'gr_2_subj_2', level: '2', topic: '仮定法', q: '___ for your help, I would have failed.', choices: ['But', 'Instead', 'Without', 'Unless'], answer: 'But', explain: 'But for 〜（〜がなかったら）＝仮定法。', sentence: { en: 'But for your help, I would have failed.', ja: 'あなたの助けがなければ失敗していただろう。' } },
   { id: 'gr_2_partc_2', level: '2', topic: '分詞構文', q: '___ from space, the earth looks blue.', choices: ['Seen', 'Seeing', 'See', 'To see'], answer: 'Seen', explain: '受動の分詞構文は過去分詞で始める（〜されると）。', sentence: { en: 'Seen from space, the earth looks blue.', ja: '宇宙から見ると地球は青く見える。' } },
   { id: 'gr_2_emph_1', level: '2', topic: '強調構文', q: 'It was John ___ broke the window.', choices: ['that', 'what', 'which', 'whom'], answer: 'that', explain: 'It is/was ... that 〜 の強調構文。', sentence: { en: 'It was John that broke the window.', ja: '窓を割ったのはジョンだった。' } },
   { id: 'gr_2_inanimate_1', level: '2', topic: '無生物主語', q: 'The heavy rain ___ us from going out.', choices: ['prevented', 'stopped to', 'avoided', 'refused'], answer: 'prevented', explain: 'prevent＋O＋from doing（OがVするのを妨げる）。', sentence: { en: 'The heavy rain prevented us from going out.', ja: '大雨で外出できなかった。' } },
@@ -191,7 +190,7 @@ export const GRAMMAR = [
 
   // ───────── 1級 追加 ─────────
   { id: 'gr_1_inv_2', level: '1', topic: '倒置・強調', q: 'Only after the war ___ the truth.', choices: ['did they learn', 'they learned', 'they did learn', 'learned they'], answer: 'did they learn', explain: 'Only＋副詞句が文頭→倒置〈did＋S＋原形〉。', sentence: { en: 'Only after the war did they learn the truth.', ja: '戦後になって初めて彼らは真実を知った。' } },
-  { id: 'gr_1_subj_2', level: '1', topic: '仮定法・語法', q: 'It is essential that every student ___ present.', choices: ['be', 'is', 'was', 'will be'], answer: 'be', explain: 'essential などの that節は should省略の原形(be)。', sentence: { en: 'It is essential that every student be present.', ja: '全生徒が出席することが不可欠だ。' } },
+  { id: 'gr_1_subj_2', level: '1', topic: '仮定法・語法', q: 'It is essential that every student ___ present.', choices: ['be', 'being', 'to be', 'been'], answer: 'be', explain: 'essential などの that節は should省略の原形(be)。', sentence: { en: 'It is essential that every student be present.', ja: '全生徒が出席することが不可欠だ。' } },
   { id: 'gr_1_were_1', level: '1', topic: '仮定法・語法', q: '___ to do it again, I would choose differently.', choices: ['Were I', 'If I am', 'Was I', 'Should I be'], answer: 'Were I', explain: 'if省略倒置の仮定法：Were S to do（仮に〜なら）。', sentence: { en: 'Were I to do it again, I would choose differently.', ja: '仮にもう一度やるなら別の選択をするだろう。' } },
   { id: 'gr_1_idiom_2', level: '1', topic: '高度語法', q: 'No sooner had he sat down ___ the phone rang.', choices: ['than', 'when', 'that', 'then'], answer: 'than', explain: 'No sooner had S done than 〜（〜するやいなや）。', sentence: { en: 'No sooner had he sat down than the phone rang.', ja: '彼が座るやいなや電話が鳴った。' } },
 
@@ -201,7 +200,7 @@ export const GRAMMAR = [
   { id: 'gr_5_verb_4', level: '5', topic: '一般動詞・3単現', q: 'My father ___ a car.', choices: ['has', 'have', 'haves', 'having'], answer: 'has', explain: 'have の3単現は has（不規則）。', sentence: { en: 'My father has a car.', ja: '父は車を持っています。' } },
   { id: 'gr_5_verb_5', level: '5', topic: '一般動詞・3単現', q: 'Does he ___ English?', choices: ['speak', 'speaks', 'speaking', 'spoke'], answer: 'speak', explain: 'Does の疑問文では動詞は原形。', sentence: { en: 'Does he speak English?', ja: '彼は英語を話しますか。' } },
   { id: 'gr_5_plural_3', level: '5', topic: '名詞の複数形', q: 'I see three ___ over there.', choices: ['children', 'childs', 'childes', 'child'], answer: 'children', explain: 'child の複数は children（不規則）。', sentence: { en: 'I see three children over there.', ja: '向こうに3人の子どもが見える。' } },
-  { id: 'gr_5_plural_4', level: '5', topic: '名詞の複数形', q: 'There are many ___ in the pond.', choices: ['fish', 'fishs', 'fishies', 'fishes'], answer: 'fish', explain: 'fish は単複同形（複数でも fish）。', sentence: { en: 'There are many fish in the pond.', ja: '池にたくさんの魚がいる。' } },
+  { id: 'gr_5_plural_4', level: '5', topic: '名詞の複数形', q: 'There are many ___ in the pond.', choices: ['fish', 'fishs', 'fishies', 'fish’s'], answer: 'fish', explain: 'fish は単複同形（複数でも fish）。', sentence: { en: 'There are many fish in the pond.', ja: '池にたくさんの魚がいる。' } },
   { id: 'gr_5_pron_3', level: '5', topic: '代名詞', q: '___ is a doctor. (Tom)', choices: ['He', 'His', 'Him', 'They'], answer: 'He', explain: '主語には主格 he を使う。', sentence: { en: 'He is a doctor.', ja: '彼は医者です。' } },
   { id: 'gr_5_pron_4', level: '5', topic: '代名詞', q: 'These are ___ pencils.', choices: ['our', 'us', 'ours', 'we'], answer: 'our', explain: '名詞の前は所有格 our（私たちの）。', sentence: { en: 'These are our pencils.', ja: 'これらは私たちの鉛筆です。' } },
   { id: 'gr_5_wh_4', level: '5', topic: '疑問詞', q: '___ bag is this? — It’s Mary’s.', choices: ['Whose', 'Who', 'Which', 'What'], answer: 'Whose', explain: '持ち主をたずねるときは Whose。', sentence: { en: 'Whose bag is this?', ja: 'これは誰のかばんですか。' } },
@@ -217,14 +216,14 @@ export const GRAMMAR = [
   { id: 'gr_4_past_4', level: '4', topic: '過去形', q: 'I ___ a movie last night.', choices: ['saw', 'see', 'seen', 'sees'], answer: 'saw', explain: 'see の過去形は saw。', sentence: { en: 'I saw a movie last night.', ja: '私は昨夜映画を見た。' } },
   { id: 'gr_4_past_5', level: '4', topic: '過去形', q: 'She ___ breakfast at seven yesterday.', choices: ['had', 'has', 'have', 'having'], answer: 'had', explain: 'have の過去形は had。', sentence: { en: 'She had breakfast at seven yesterday.', ja: '彼女は昨日7時に朝食をとった。' } },
   { id: 'gr_4_past_6', level: '4', topic: '過去形', q: 'I ___ not busy yesterday.', choices: ['was', 'were', 'did', 'am'], answer: 'was', explain: 'be動詞の過去（I）は was。', sentence: { en: 'I was not busy yesterday.', ja: '私は昨日忙しくなかった。' } },
-  { id: 'gr_4_future_3', level: '4', topic: '未来表現', q: 'What ___ you do tomorrow?', choices: ['will', 'do', 'are', 'did'], answer: 'will', explain: '未来の疑問文は will＋主語＋原形。', sentence: { en: 'What will you do tomorrow?', ja: '明日は何をしますか。' } },
+  { id: 'gr_4_future_3', level: '4', topic: '未来表現', q: 'What ___ you do tomorrow?', choices: ['will', 'does', 'are', 'did'], answer: 'will', explain: '未来の疑問文は will＋主語＋原形。', sentence: { en: 'What will you do tomorrow?', ja: '明日は何をしますか。' } },
   { id: 'gr_4_comp_5', level: '4', topic: '比較', q: 'This bag is ___ than that one.', choices: ['better', 'gooder', 'good', 'best'], answer: 'better', explain: 'good の比較級は better（不規則）。', sentence: { en: 'This bag is better than that one.', ja: 'このかばんはあれよりよい。' } },
   { id: 'gr_4_comp_6', level: '4', topic: '比較', q: 'Ken is ___ tall as his father.', choices: ['as', 'so', 'more', 'than'], answer: 'as', explain: 'as＋原級＋as（同じくらい〜）。', sentence: { en: 'Ken is as tall as his father.', ja: 'ケンは父と同じくらい背が高い。' } },
   { id: 'gr_4_modal_2', level: '4', topic: '助動詞', q: '___ you open the window? — Sure.', choices: ['Could', 'Do', 'Are', 'May'], answer: 'Could', explain: 'Could you 〜? で丁寧な依頼。', sentence: { en: 'Could you open the window?', ja: '窓を開けてくれますか。' } },
   { id: 'gr_4_modal_3', level: '4', topic: '助動詞', q: '___ I use your pen?', choices: ['May', 'Do', 'Am', 'Will'], answer: 'May', explain: 'May I 〜? で許可を求める（丁寧）。', sentence: { en: 'May I use your pen?', ja: 'ペンをお借りしてもいいですか。' } },
   { id: 'gr_4_inf_4', level: '4', topic: '不定詞', q: 'It started ___ rain.', choices: ['to', 'for', 'at', 'of'], answer: 'to', explain: 'start to do（〜し始める）。', sentence: { en: 'It started to rain.', ja: '雨が降り始めた。' } },
   { id: 'gr_4_ger_3', level: '4', topic: '動名詞', q: 'Thank you for ___ me.', choices: ['helping', 'help', 'to help', 'helped'], answer: 'helping', explain: '前置詞 for のあとは動名詞(ing)。', sentence: { en: 'Thank you for helping me.', ja: '手伝ってくれてありがとう。' } },
-  { id: 'gr_4_ger_4', level: '4', topic: '動名詞', q: 'Stop ___ , please.', choices: ['talking', 'to talk', 'talk', 'talked'], answer: 'talking', explain: 'stop doing は「〜するのをやめる」。', sentence: { en: 'Stop talking, please.', ja: 'おしゃべりをやめてください。' } },
+  { id: 'gr_4_ger_4', level: '4', topic: '動名詞', q: 'Stop ___, please.', choices: ['talking', 'to talk', 'talk', 'talked'], answer: 'talking', explain: 'stop doing は「〜するのをやめる」。', sentence: { en: 'Stop talking, please.', ja: 'おしゃべりをやめてください。' } },
   { id: 'gr_4_conj_4', level: '4', topic: '接続詞', q: '___ you are free, let’s go out.', choices: ['If', 'That', 'But', 'So'], answer: 'If', explain: 'If は「もし〜なら」の条件。', sentence: { en: 'If you are free, let’s go out.', ja: 'もしひまなら出かけよう。' } },
   { id: 'gr_4_conj_5', level: '4', topic: '接続詞', q: 'Wash your hands ___ you eat.', choices: ['before', 'during', 'while', 'that'], answer: 'before', explain: 'before は「〜する前に」。', sentence: { en: 'Wash your hands before you eat.', ja: '食べる前に手を洗いなさい。' } },
   { id: 'gr_4_there_2', level: '4', topic: 'There is/are', q: '___ a cat under the chair.', choices: ['There is', 'There are', 'It is', 'Have'], answer: 'There is', explain: '単数(a cat)なら There is。', sentence: { en: 'There is a cat under the chair.', ja: 'いすの下に猫がいる。' } },
@@ -235,7 +234,7 @@ export const GRAMMAR = [
   { id: 'gr_3_perf_6', level: '3', topic: '現在完了', q: 'Have you ___ been to Hawaii?', choices: ['ever', 'yet', 'already', 'just'], answer: 'ever', explain: '経験をたずねる疑問文では ever（今までに）。', sentence: { en: 'Have you ever been to Hawaii?', ja: '今までにハワイへ行ったことがありますか。' } },
   { id: 'gr_3_perf_7', level: '3', topic: '現在完了', q: 'The train has ___ left.', choices: ['just', 'yet', 'ever', 'since'], answer: 'just', explain: 'just は「ちょうど〜したところ」（完了）。', sentence: { en: 'The train has just left.', ja: '電車はちょうど出たところだ。' } },
   { id: 'gr_3_pass_4', level: '3', topic: '受動態', q: '___ this letter written by Tom?', choices: ['Was', 'Did', 'Has', 'Were'], answer: 'Was', explain: '受動態の疑問文は be動詞を前へ。単数過去は Was。', sentence: { en: 'Was this letter written by Tom?', ja: 'この手紙はトムによって書かれましたか。' } },
-  { id: 'gr_3_pass_5', level: '3', topic: '受動態', q: 'The mountain is covered ___ snow.', choices: ['with', 'by', 'of', 'in'], answer: 'with', explain: 'be covered with（〜で覆われている）。byでない熟語。', sentence: { en: 'The mountain is covered with snow.', ja: '山は雪で覆われている。' } },
+  { id: 'gr_3_pass_5', level: '3', topic: '受動態', q: 'The mountain is covered ___ snow.', choices: ['with', 'on', 'of', 'at'], answer: 'with', explain: 'be covered with（〜で覆われている）。byでない熟語。', sentence: { en: 'The mountain is covered with snow.', ja: '山は雪で覆われている。' } },
   { id: 'gr_3_rel_4', level: '3', topic: '関係代名詞', q: 'I have a dog ___ name is Pochi.', choices: ['whose', 'who', 'which', 'that'], answer: 'whose', explain: '所有を表す関係代名詞は whose。', sentence: { en: 'I have a dog whose name is Pochi.', ja: '私はポチという名前の犬を飼っている。' } },
   { id: 'gr_3_rel_5', level: '3', topic: '関係代名詞', q: 'This is the best movie ___ I have ever seen.', choices: ['that', 'who', 'whose', 'where'], answer: 'that', explain: '最上級が先行詞のときは that を好む。', sentence: { en: 'This is the best movie that I have ever seen.', ja: 'これは今まで見た中で最高の映画だ。' } },
   { id: 'gr_3_indq_3', level: '3', topic: '間接疑問', q: 'Do you know ___ this is?', choices: ['what', 'what is', 'how', 'that'], answer: 'what', explain: '間接疑問は〈疑問詞＋主語＋動詞〉。', sentence: { en: 'Do you know what this is?', ja: 'これが何か知っていますか。' } },
@@ -244,7 +243,7 @@ export const GRAMMAR = [
   { id: 'gr_3_part_1', level: '3', topic: '分詞', q: 'The girl ___ over there is my sister.', choices: ['standing', 'stand', 'stood', 'to stand'], answer: 'standing', explain: '現在分詞 -ing が名詞を後置修飾（〜している）。', sentence: { en: 'The girl standing over there is my sister.', ja: '向こうに立っている女の子は私の妹だ。' } },
   { id: 'gr_3_part_2', level: '3', topic: '分詞', q: 'I read a book ___ in easy English.', choices: ['written', 'writing', 'wrote', 'write'], answer: 'written', explain: '過去分詞が名詞を後置修飾（〜された）。', sentence: { en: 'I read a book written in easy English.', ja: '私は易しい英語で書かれた本を読んだ。' } },
   { id: 'gr_3_comp_3', level: '3', topic: '比較応用', q: 'This room is twice as large ___ that one.', choices: ['as', 'than', 'so', 'that'], answer: 'as', explain: '倍数＋as＋原級＋as（〜の…倍）。', sentence: { en: 'This room is twice as large as that one.', ja: 'この部屋はあの部屋の2倍の広さだ。' } },
-  { id: 'gr_3_svoc_2', level: '3', topic: '文型(SVOO/SVOC)', q: 'Please keep the door ___.', choices: ['open', 'opening', 'opened', 'to open'], answer: 'open', explain: 'keep＋O＋C(形容詞)で「Oを〜のままにする」。', sentence: { en: 'Please keep the door open.', ja: 'ドアを開けたままにしておいてください。' } },
+  { id: 'gr_3_svoc_2', level: '3', topic: '文型(SVOO/SVOC)', q: 'Please keep the door ___.', choices: ['open', 'opening', 'openly', 'to open'], answer: 'open', explain: 'keep＋O＋C(形容詞)で「Oを〜のままにする」。', sentence: { en: 'Please keep the door open.', ja: 'ドアを開けたままにしておいてください。' } },
   { id: 'gr_3_conj_1', level: '3', topic: '接続詞', q: 'I stayed home ___ it was raining.', choices: ['because', 'so', 'but', 'or'], answer: 'because', explain: 'because は理由「〜だから」を表す。', sentence: { en: 'I stayed home because it was raining.', ja: '雨だったので家にいた。' } },
 
   // ───────── 準2級 ─────────
@@ -263,8 +262,8 @@ export const GRAMMAR = [
   { id: 'gr_pre2_subj_3', level: 'pre2', topic: '仮定法(基礎)', q: 'If it ___ tomorrow, I will stay home.', choices: ['rains', 'rained', 'will rain', 'would rain'], answer: 'rains', explain: '条件のif節は未来でも現在形（時・条件の副詞節）。', sentence: { en: 'If it rains tomorrow, I will stay home.', ja: '明日雨なら家にいる。' } },
 
   // ───────── 2級 ─────────
-  { id: 'gr_2_subj_3', level: '2', topic: '仮定法', q: 'If I ___ you, I would accept the offer.', choices: ['were', 'am', 'was', 'be'], answer: 'were', explain: '仮定法過去（現在の反実）。be は were。', sentence: { en: 'If I were you, I would accept the offer.', ja: '私があなたなら申し出を受けるのに。' } },
-  { id: 'gr_2_subj_4', level: '2', topic: '仮定法', q: 'He acts as if he ___ the boss.', choices: ['were', 'is', 'will be', 'has been'], answer: 'were', explain: 'as if＋仮定法過去（まるで〜かのように）。', sentence: { en: 'He acts as if he were the boss.', ja: '彼はまるで上司であるかのようにふるまう。' } },
+  { id: 'gr_2_subj_3', level: '2', topic: '仮定法', q: 'If I ___ you, I would accept the offer.', choices: ['were', 'am', 'would be', 'be'], answer: 'were', explain: '仮定法過去（現在の反実）。be は were。', sentence: { en: 'If I were you, I would accept the offer.', ja: '私があなたなら申し出を受けるのに。' } },
+  { id: 'gr_2_subj_4', level: '2', topic: '仮定法', q: 'He acts as if he ___ the boss.', choices: ['were', 'being', 'will be', 'has been'], answer: 'were', explain: 'as if＋仮定法過去（まるで〜かのように）。', sentence: { en: 'He acts as if he were the boss.', ja: '彼はまるで上司であるかのようにふるまう。' } },
   { id: 'gr_2_subj_5', level: '2', topic: '仮定法', q: 'It’s time you ___ to bed.', choices: ['went', 'go', 'will go', 'have gone'], answer: 'went', explain: 'It’s time＋仮定法過去（もう〜する時間だ）。', sentence: { en: 'It’s time you went to bed.', ja: 'もう寝る時間だよ。' } },
   { id: 'gr_2_partc_3', level: '2', topic: '分詞構文', q: '___ finished the work, he went home.', choices: ['Having', 'Has', 'Have', 'Had'], answer: 'Having', explain: '完了の分詞構文 Having＋過分（〜し終えて）。', sentence: { en: 'Having finished the work, he went home.', ja: '仕事を終えて彼は帰宅した。' } },
   { id: 'gr_2_partc_4', level: '2', topic: '分詞構文', q: '___ what to say, she kept silent.', choices: ['Not knowing', 'Not know', 'Knowing not', 'Don’t know'], answer: 'Not knowing', explain: '分詞構文の否定は not を分詞の前に置く。', sentence: { en: 'Not knowing what to say, she kept silent.', ja: '何と言ってよいかわからず彼女は黙っていた。' } },
@@ -273,15 +272,15 @@ export const GRAMMAR = [
   { id: 'gr_2_emph_2', level: '2', topic: '強調構文', q: 'It was in Paris ___ I met her.', choices: ['that', 'where', 'which', 'when'], answer: 'that', explain: '副詞句の強調も It is ... that 〜。', sentence: { en: 'It was in Paris that I met her.', ja: '私が彼女に会ったのはパリでだった。' } },
   { id: 'gr_2_emph_3', level: '2', topic: '強調', q: 'I ___ want to see you.', choices: ['do', 'am', 'have', 'will'], answer: 'do', explain: '動詞の強調は do/does/did＋原形。', sentence: { en: 'I do want to see you.', ja: '本当にあなたに会いたい。' } },
   { id: 'gr_2_perf_2', level: '2', topic: '完了形応用', q: 'I ___ studying for two hours.', choices: ['have been', 'have', 'am', 'had'], answer: 'have been', explain: '現在完了進行形 have been＋ing（継続）。', sentence: { en: 'I have been studying for two hours.', ja: '私は2時間ずっと勉強している。' } },
-  { id: 'gr_2_noun_1', level: '2', topic: '名詞節', q: 'I’m not sure ___ he will come.', choices: ['whether', 'that', 'what', 'which'], answer: 'whether', explain: 'whether/if は「〜かどうか」の名詞節。', sentence: { en: 'I’m not sure whether he will come.', ja: '彼が来るかどうかわからない。' } },
+  { id: 'gr_2_noun_1', level: '2', topic: '名詞節', q: 'I’m not sure ___ he will come.', choices: ['whether', 'who', 'what', 'which'], answer: 'whether', explain: 'whether/if は「〜かどうか」の名詞節。', sentence: { en: 'I’m not sure whether he will come.', ja: '彼が来るかどうかわからない。' } },
   { id: 'gr_2_partial_1', level: '2', topic: '部分否定', q: '___ all of them agreed.', choices: ['Not', 'No', 'None', 'Never'], answer: 'Not', explain: 'not all で「すべてが〜とは限らない」（部分否定）。', sentence: { en: 'Not all of them agreed.', ja: '全員が賛成したわけではない。' } },
-  { id: 'gr_2_caus_1', level: '2', topic: '使役', q: 'The teacher had us ___ the room.', choices: ['clean', 'to clean', 'cleaning', 'cleaned'], answer: 'clean', explain: '使役 have＋O＋原形（〜させる）。', sentence: { en: 'The teacher had us clean the room.', ja: '先生は私たちに部屋を掃除させた。' } },
+  { id: 'gr_2_caus_1', level: '2', topic: '使役', q: 'The teacher had us ___ the room.', choices: ['clean', 'to clean', 'cleans', 'cleaned'], answer: 'clean', explain: '使役 have＋O＋原形（〜させる）。', sentence: { en: 'The teacher had us clean the room.', ja: '先生は私たちに部屋を掃除させた。' } },
 
   // ───────── 準1級 ─────────
   { id: 'gr_pre1_inv_3', level: 'pre1', topic: '倒置', q: 'Not only ___ he late, but he was rude.', choices: ['was', 'he was', 'did', 'were'], answer: 'was', explain: 'Not only が文頭→倒置〈be/助動詞＋主語〉。', sentence: { en: 'Not only was he late, but he was rude.', ja: '彼は遅れただけでなく失礼でもあった。' } },
   { id: 'gr_pre1_inv_4', level: 'pre1', topic: '倒置', q: 'Little ___ that danger was near.', choices: ['did he know', 'he knew', 'he did know', 'knew he'], answer: 'did he know', explain: '否定語 Little が文頭→倒置。', sentence: { en: 'Little did he know that danger was near.', ja: '危険が迫っているとは彼は思いもしなかった。' } },
   { id: 'gr_pre1_subj_3', level: 'pre1', topic: '仮定法応用', q: '___ it not for water, nothing could live.', choices: ['Were', 'If', 'Had', 'Was'], answer: 'Were', explain: 'Were it not for 〜（〜がなければ）＝if省略倒置。', sentence: { en: 'Were it not for water, nothing could live.', ja: '水がなければ何も生きられない。' } },
-  { id: 'gr_pre1_subj_4', level: 'pre1', topic: '仮定法応用', q: 'I would rather you ___ now.', choices: ['left', 'leave', 'will leave', 'have left'], answer: 'left', explain: 'would rather＋S＋仮定法過去（むしろ〜してほしい）。', sentence: { en: 'I would rather you left now.', ja: 'もう帰ってほしいのですが。' } },
+  { id: 'gr_pre1_subj_4', level: 'pre1', topic: '仮定法応用', q: 'I would rather you ___ now.', choices: ['left', 'leaving', 'will leave', 'have left'], answer: 'left', explain: 'would rather＋S＋仮定法過去（むしろ〜してほしい）。', sentence: { en: 'I would rather you left now.', ja: 'もう帰ってほしいのですが。' } },
   { id: 'gr_pre1_comp_1', level: 'pre1', topic: 'whatever等', q: '___ happens, I will support you.', choices: ['Whatever', 'However', 'Whenever', 'Wherever'], answer: 'Whatever', explain: '複合関係代名詞 whatever（何が〜しようとも）。', sentence: { en: 'Whatever happens, I will support you.', ja: '何が起ころうと君を支える。' } },
   { id: 'gr_pre1_conc_3', level: 'pre1', topic: '譲歩', q: '___ hard it may be, never give up.', choices: ['However', 'Whatever', 'Whichever', 'Whoever'], answer: 'However', explain: 'However＋形容詞/副詞＋S＋V（どんなに〜でも）。', sentence: { en: 'However hard it may be, never give up.', ja: 'どんなに難しくても決してあきらめるな。' } },
   { id: 'gr_pre1_part_2', level: 'pre1', topic: '分詞構文応用', q: '___ written in haste, the report had errors.', choices: ['Having been', 'Having', 'Being write', 'Wrote'], answer: 'Having been', explain: '完了受動の分詞構文 Having been＋過分。', sentence: { en: 'Having been written in haste, the report had errors.', ja: '急いで書かれたので報告書には誤りがあった。' } },
@@ -289,8 +288,8 @@ export const GRAMMAR = [
   // ───────── 1級 ─────────
   { id: 'gr_1_inv_3', level: '1', topic: '倒置・強調', q: 'So absurd ___ that no one believed it.', choices: ['was the story', 'the story was', 'did the story', 'the story did'], answer: 'was the story', explain: 'So＋補語が文頭→倒置〈be＋主語〉。', sentence: { en: 'So absurd was the story that no one believed it.', ja: 'その話はあまりにばかげていて誰も信じなかった。' } },
   { id: 'gr_1_inv_4', level: '1', topic: '倒置・強調', q: 'Such ___ his anger that he left at once.', choices: ['was', 'did', 'were', 'has'], answer: 'was', explain: 'Such＋be＋主語＋that …（あまりの〜に）。', sentence: { en: 'Such was his anger that he left at once.', ja: '彼の怒りはすさまじく、すぐに立ち去った。' } },
-  { id: 'gr_1_subj_3', level: '1', topic: '仮定法・語法', q: 'He demanded that the rule ___ changed.', choices: ['be', 'is', 'was', 'will be'], answer: 'be', explain: 'demand など要求の that節は原形(should省略)。', sentence: { en: 'He demanded that the rule be changed.', ja: '彼は規則を変えるよう要求した。' } },
-  { id: 'gr_1_lest_1', level: '1', topic: '高度語法', q: 'He spoke slowly lest he ___ misunderstood.', choices: ['be', 'is', 'was', 'will be'], answer: 'be', explain: 'lest S (should) 原形（〜しないように）。', sentence: { en: 'He spoke slowly lest he be misunderstood.', ja: '誤解されないように彼はゆっくり話した。' } },
+  { id: 'gr_1_subj_3', level: '1', topic: '仮定法・語法', q: 'He demanded that the rule ___ changed.', choices: ['be', 'being', 'been', 'will be'], answer: 'be', explain: 'demand など要求の that節は原形(should省略)。', sentence: { en: 'He demanded that the rule be changed.', ja: '彼は規則を変えるよう要求した。' } },
+  { id: 'gr_1_lest_1', level: '1', topic: '高度語法', q: 'He spoke slowly lest he ___ misunderstood.', choices: ['be', 'being', 'been', 'will be'], answer: 'be', explain: 'lest S (should) 原形（〜しないように）。', sentence: { en: 'He spoke slowly lest he be misunderstood.', ja: '誤解されないように彼はゆっくり話した。' } },
   { id: 'gr_1_idiom_3', level: '1', topic: '高度語法', q: 'She is the last person ___ tell a lie.', choices: ['to', 'who', 'that', 'for'], answer: 'to', explain: 'the last＋名詞＋to do（最も〜しそうにない）。', sentence: { en: 'She is the last person to tell a lie.', ja: '彼女は決してうそをつくような人ではない。' } },
 
   // ═══════════ 中学・高校の文法単元の網羅バッチ ═══════════
@@ -305,7 +304,7 @@ export const GRAMMAR = [
   { id: 'gr_3_caus_1', level: '3', topic: '原形不定詞', q: 'My mother let me ___ out.', choices: ['go', 'to go', 'going', 'went'], answer: 'go', explain: 'let＋O＋原形（〜させてやる）。', sentence: { en: 'My mother let me go out.', ja: '母は私を外出させてくれた。' } },
   { id: 'gr_3_caus_2', level: '3', topic: '原形不定詞', q: 'This song makes me ___ happy.', choices: ['feel', 'to feel', 'feeling', 'felt'], answer: 'feel', explain: 'make＋O＋原形（Oに〜させる）。', sentence: { en: 'This song makes me feel happy.', ja: 'この歌は私を幸せな気持ちにさせる。' } },
   { id: 'gr_3_perfprog_1', level: '3', topic: '現在完了進行形', q: 'It has been ___ for three hours.', choices: ['snowing', 'snow', 'snowed', 'snows'], answer: 'snowing', explain: '現在完了進行形 have been＋ing（ずっと〜している）。', sentence: { en: 'It has been snowing for three hours.', ja: '3時間ずっと雪が降っている。' } },
-  { id: 'gr_3_subj_1', level: '3', topic: '仮定法(基礎)', q: 'If I ___ a bird, I could fly.', choices: ['were', 'am', 'was', 'be'], answer: 'were', explain: '仮定法過去（現在の反実）。be は were。', sentence: { en: 'If I were a bird, I could fly.', ja: 'もし鳥だったら飛べるのに。' } },
+  { id: 'gr_3_subj_1', level: '3', topic: '仮定法(基礎)', q: 'If I ___ a bird, I could fly.', choices: ['were', 'am', 'would be', 'be'], answer: 'were', explain: '仮定法過去（現在の反実）。be は were。', sentence: { en: 'If I were a bird, I could fly.', ja: 'もし鳥だったら飛べるのに。' } },
 
   // ── 助動詞＋have done（高校）──
   { id: 'gr_2_modalp_1', level: '2', topic: '助動詞+have done', q: 'He ___ have missed the train.', choices: ['must', 'must to', 'is', 'does'], answer: 'must', explain: 'must have＋過分（〜したにちがいない）。', sentence: { en: 'He must have missed the train.', ja: '彼は電車に乗り遅れたにちがいない。' } },
@@ -315,35 +314,35 @@ export const GRAMMAR = [
 
   // ── used to / would（過去の習慣）・had better（高校）──
   { id: 'gr_4_used_1', level: '4', topic: 'used to', q: 'There ___ to be a tree here.', choices: ['used', 'use', 'uses', 'using'], answer: 'used', explain: 'used to＋原形（以前は〜だった/よく〜した）。', sentence: { en: 'There used to be a tree here.', ja: '昔ここには木があった。' } },
-  { id: 'gr_pre2_would_1', level: 'pre2', topic: '過去の習慣', q: 'He ___ often swim in this river as a boy.', choices: ['would', 'used', 'did', 'was'], answer: 'would', explain: 'would often＋原形（よく〜したものだ）。', sentence: { en: 'He would often swim in this river as a boy.', ja: '彼は少年のころよくこの川で泳いだものだ。' } },
+  { id: 'gr_pre2_would_1', level: 'pre2', topic: '過去の習慣', q: 'He ___ often swim in this river as a boy.', choices: ['would', 'used', 'does', 'was'], answer: 'would', explain: 'would often＋原形（よく〜したものだ）。', sentence: { en: 'He would often swim in this river as a boy.', ja: '彼は少年のころよくこの川で泳いだものだ。' } },
   { id: 'gr_pre2_better_1', level: 'pre2', topic: 'had better', q: 'You ___ better see a doctor.', choices: ['had', 'would', 'have', 'will'], answer: 'had', explain: 'had better＋原形（〜したほうがよい・強い忠告）。', sentence: { en: 'You had better see a doctor.', ja: '医者に診てもらったほうがいい。' } },
 
   // ── 話法（高校）──
-  { id: 'gr_2_speech_1', level: '2', topic: '話法', q: 'He said that he ___ busy then.', choices: ['was', 'is', 'will be', 'has been'], answer: 'was', explain: '間接話法では時制の一致（is→was）。', sentence: { en: 'He said that he was busy then.', ja: '彼はそのとき忙しいと言った。' } },
+  { id: 'gr_2_speech_1', level: '2', topic: '話法', q: 'He said that he ___ busy then.', choices: ['was', 'is', 'being', 'has been'], answer: 'was', explain: '間接話法では時制の一致（is→was）。', sentence: { en: 'He said that he was busy then.', ja: '彼はそのとき忙しいと言った。' } },
   { id: 'gr_2_speech_2', level: '2', topic: '話法', q: 'She asked me ___ I was free.', choices: ['if', 'that', 'what', 'which'], answer: 'if', explain: 'Yes/No疑問の伝達は if/whether＋S＋V。', sentence: { en: 'She asked me if I was free.', ja: '彼女は私にひまかどうか尋ねた。' } },
   { id: 'gr_pre1_speech_1', level: 'pre1', topic: '話法', q: 'He told me ___ careful.', choices: ['to be', 'be', 'that be', 'being'], answer: 'to be', explain: '命令の伝達は tell＋O＋to do。', sentence: { en: 'He told me to be careful.', ja: '彼は私に気をつけるよう言った。' } },
 
   // ── 完了不定詞・be to構文・in order to（高校）──
   { id: 'gr_2_inf_3', level: '2', topic: '完了不定詞', q: 'He seems to ___ been ill.', choices: ['have', 'has', 'had', 'having'], answer: 'have', explain: 'seem to have＋過分（過去のことを今思う）。', sentence: { en: 'He seems to have been ill.', ja: '彼は病気だったようだ。' } },
   { id: 'gr_2_inf_4', level: '2', topic: '完了不定詞', q: 'I am sorry ___ have kept you waiting.', choices: ['to', 'for', 'that', 'of'], answer: 'to', explain: 'to have＋過分で本動詞より前を表す。', sentence: { en: 'I am sorry to have kept you waiting.', ja: 'お待たせして申し訳ありません。' } },
-  { id: 'gr_2_beto_1', level: '2', topic: 'be to構文', q: 'You ___ to finish this by noon.', choices: ['are', 'will', 'have', 'must'], answer: 'are', explain: 'be to do（義務・予定など）。', sentence: { en: 'You are to finish this by noon.', ja: '正午までにこれを終えなさい。' } },
+  { id: 'gr_2_beto_1', level: '2', topic: 'be to構文', q: 'You ___ to finish this by noon.', choices: ['are', 'will', 'do', 'must'], answer: 'are', explain: 'be to do（義務・予定など）。', sentence: { en: 'You are to finish this by noon.', ja: '正午までにこれを終えなさい。' } },
   { id: 'gr_pre1_beto_1', level: 'pre1', topic: 'be to構文', q: 'When I woke up, not a sound ___ to be heard.', choices: ['was', 'is', 'did', 'were'], answer: 'was', explain: 'be to do の可能用法（否定文で〜できた）。', sentence: { en: 'When I woke up, not a sound was to be heard.', ja: '私が目を覚ましたとき、物音ひとつ聞こえなかった。' } },
   { id: 'gr_pre2_inorder_1', level: 'pre2', topic: '目的の表現', q: 'He got up early ___ order to catch the train.', choices: ['in', 'for', 'so', 'to'], answer: 'in', explain: 'in order to＋原形（〜するために）。', sentence: { en: 'He got up early in order to catch the train.', ja: '彼は電車に間に合うよう早く起きた。' } },
   { id: 'gr_pre2_soas_1', level: 'pre2', topic: '目的の表現', q: 'Speak slowly ___ that everyone can understand.', choices: ['so', 'such', 'in', 'as'], answer: 'so', explain: 'so that S can 〜（〜できるように）。', sentence: { en: 'Speak slowly so that everyone can understand.', ja: 'みなが理解できるようにゆっくり話して。' } },
 
   // ── 接続詞（高校）──
   { id: 'gr_pre2_unless_1', level: 'pre2', topic: '接続詞', q: '___ you hurry, you’ll miss the bus.', choices: ['Unless', 'If', 'Though', 'While'], answer: 'Unless', explain: 'unless＝if … not（〜しない限り）。', sentence: { en: 'Unless you hurry, you’ll miss the bus.', ja: '急がないとバスに乗り遅れるよ。' } },
-  { id: 'gr_pre2_aslong_1', level: 'pre2', topic: '接続詞', q: 'You may stay ___ long as you like.', choices: ['as', 'so', 'too', 'very'], answer: 'as', explain: 'as long as（〜する限り・条件）。', sentence: { en: 'You may stay as long as you like.', ja: '好きなだけいていいよ。' } },
+  { id: 'gr_pre2_aslong_1', level: 'pre2', topic: '接続詞', q: 'You may stay ___ long as you like.', choices: ['as', 'much', 'too', 'very'], answer: 'as', explain: 'as long as（〜する限り・条件）。', sentence: { en: 'You may stay as long as you like.', ja: '好きなだけいていいよ。' } },
   { id: 'gr_2_incase_1', level: '2', topic: '接続詞', q: 'Take an umbrella ___ it rains.', choices: ['in case', 'even if', 'as if', 'so that'], answer: 'in case', explain: 'in case＋S＋V（〜する場合に備えて）。', sentence: { en: 'Take an umbrella in case it rains.', ja: '雨が降るといけないから傘を持って行きなさい。' } },
   { id: 'gr_2_nowthat_1', level: '2', topic: '接続詞', q: '___ that you are here, let’s begin.', choices: ['Now', 'So', 'Such', 'Even'], answer: 'Now', explain: 'now that＋S＋V（今や〜だから）。', sentence: { en: 'Now that you are here, let’s begin.', ja: 'もう来たのだから始めよう。' } },
-  { id: 'gr_2_asfar_1', level: '2', topic: '接続詞', q: '___ far as I know, he is honest.', choices: ['As', 'So', 'By', 'In'], answer: 'As', explain: 'as far as I know（私の知る限り・範囲）。', sentence: { en: 'As far as I know, he is honest.', ja: '私の知る限り彼は正直だ。' } },
+  { id: 'gr_2_asfar_1', level: '2', topic: '接続詞', q: '___ far as I know, he is honest.', choices: ['As', 'Too', 'By', 'In'], answer: 'As', explain: 'as far as I know（私の知る限り・範囲）。', sentence: { en: 'As far as I know, he is honest.', ja: '私の知る限り彼は正直だ。' } },
 
   // ── 形式目的語・動名詞慣用（高校）──
   { id: 'gr_2_it_1', level: '2', topic: '形式目的語', q: 'I found ___ hard to believe his story.', choices: ['it', 'that', 'this', 'what'], answer: 'it', explain: 'find/think＋it＋C＋to do（形式目的語 it）。', sentence: { en: 'I found it hard to believe his story.', ja: '私は彼の話を信じるのは難しいと思った。' } },
   { id: 'gr_2_it_2', level: '2', topic: '形式目的語', q: 'I make ___ a rule to walk every day.', choices: ['it', 'that', 'this', 'me'], answer: 'it', explain: 'make it a rule to do（〜することにしている）。', sentence: { en: 'I make it a rule to walk every day.', ja: '私は毎日歩くことにしている。' } },
   { id: 'gr_pre2_ger_5', level: 'pre2', topic: '動名詞の慣用', q: 'I am used to ___ early.', choices: ['getting up', 'get up', 'got up', 'to get up'], answer: 'getting up', explain: 'be used to doing（〜に慣れている）。to は前置詞。', sentence: { en: 'I am used to getting up early.', ja: '私は早起きに慣れている。' } },
   { id: 'gr_2_ger_3', level: '2', topic: '動名詞の慣用', q: 'I cannot help ___ at the joke.', choices: ['laughing', 'laugh', 'to laugh', 'laughed'], answer: 'laughing', explain: 'cannot help doing（〜せずにはいられない）。', sentence: { en: 'I cannot help laughing at the joke.', ja: 'その冗談に笑わずにはいられない。' } },
-  { id: 'gr_2_ger_4', level: '2', topic: '動名詞の慣用', q: 'It is no use ___ over spilt milk.', choices: ['crying', 'cry', 'to cry', 'cried'], answer: 'crying', explain: 'It is no use doing（〜してもむだだ）。', sentence: { en: 'It is no use crying over spilt milk.', ja: '覆水盆に返らず。' } },
+  { id: 'gr_2_ger_4', level: '2', topic: '動名詞の慣用', q: 'It is no use ___ over spilt milk.', choices: ['crying', 'cry', 'cries', 'cried'], answer: 'crying', explain: 'It is no use doing（〜してもむだだ）。', sentence: { en: 'It is no use crying over spilt milk.', ja: '覆水盆に返らず。' } },
   { id: 'gr_pre2_ger_6', level: 'pre2', topic: '動名詞の慣用', q: 'I feel like ___ tonight.', choices: ['cooking', 'cook', 'to cook', 'cooked'], answer: 'cooking', explain: 'feel like doing（〜したい気がする）。', sentence: { en: 'I feel like cooking tonight.', ja: '今夜は料理がしたい気分だ。' } },
 
   // ── 数量・代名詞語法（中高）──
@@ -360,8 +359,8 @@ export const GRAMMAR = [
 
   // ── 比較の重要構文・連鎖関係詞（高校〜）──
   { id: 'gr_3_comp_4', level: '3', topic: '比較応用', q: 'Come back as soon as ___.', choices: ['possible', 'can', 'you', 'soon'], answer: 'possible', explain: 'as 〜 as possible（できるだけ〜）。', sentence: { en: 'Come back as soon as possible.', ja: 'できるだけ早く戻ってきて。' } },
-  { id: 'gr_2_comp_2', level: '2', topic: '比較応用', q: 'No other student is ___ tall as Tom.', choices: ['as', 'so', 'more', 'than'], answer: 'as', explain: 'No other 〜 as … as A（最上級相当）。', sentence: { en: 'No other student is as tall as Tom.', ja: 'トムほど背の高い生徒は他にいない。' } },
-  { id: 'gr_pre1_whale_1', level: 'pre1', topic: 'クジラ構文', q: 'A whale is no ___ a fish than a horse is.', choices: ['more', 'less', 'better', 'fewer'], answer: 'more', explain: 'A is no more B than C is（AがBでないのはCと同じ＝クジラ構文）。', sentence: { en: 'A whale is no more a fish than a horse is.', ja: 'クジラが魚でないのは馬が魚でないのと同じだ。' } },
+  { id: 'gr_2_comp_2', level: '2', topic: '比較応用', q: 'No other student is ___ tall as Tom.', choices: ['as', 'such', 'more', 'than'], answer: 'as', explain: 'No other 〜 as … as A（最上級相当）。', sentence: { en: 'No other student is as tall as Tom.', ja: 'トムほど背の高い生徒は他にいない。' } },
+  { id: 'gr_pre1_whale_1', level: 'pre1', topic: 'クジラ構文', q: 'A whale is no ___ a fish than a horse is.', choices: ['more', 'less', 'most', 'fewer'], answer: 'more', explain: 'A is no more B than C is（AがBでないのはCと同じ＝クジラ構文）。', sentence: { en: 'A whale is no more a fish than a horse is.', ja: 'クジラが魚でないのは馬が魚でないのと同じだ。' } },
   { id: 'gr_1_comp_2', level: '1', topic: '高度語法', q: 'I have no ___ than a thousand yen.', choices: ['more', 'less', 'fewer', 'better'], answer: 'more', explain: 'no more than＝only（たった〜）。', sentence: { en: 'I have no more than a thousand yen.', ja: '私はたった千円しか持っていない。' } },
   { id: 'gr_pre1_rel_2', level: 'pre1', topic: '連鎖関係詞', q: 'The man ___ I thought was honest lied.', choices: ['who', 'whom', 'whose', 'which'], answer: 'who', explain: '連鎖関係代名詞：I thought を挟むが主格 who。', sentence: { en: 'The man who I thought was honest lied.', ja: '正直だと思っていた男がうそをついた。' } },
 
@@ -371,7 +370,7 @@ export const GRAMMAR = [
   { id: 'gr_5_verb_x1', level: '5', topic: '否定文・疑問文', q: 'He ___ not like fish.', choices: ['does', 'do', 'is', 'are'], answer: 'does', explain: '3単現の否定は does not＋原形。', sentence: { en: 'He does not like fish.', ja: '彼は魚が好きではない。' } },
   { id: 'gr_5_pl_x1', level: '5', topic: '名詞の複数形', q: 'I have two ___.', choices: ['knives', 'knifes', 'knife', 'knifies'], answer: 'knives', explain: 'fで終わる語の複数は ves（knife→knives）。', sentence: { en: 'I have two knives.', ja: '私はナイフを2本持っている。' } },
   { id: 'gr_5_pron_x1', level: '5', topic: '代名詞', q: 'Whose pen is this? — It’s ___.', choices: ['hers', 'her', 'she', 'his’'], answer: 'hers', explain: '「彼女のもの」は所有代名詞 hers。', sentence: { en: 'It’s hers.', ja: 'それは彼女のものです。' } },
-  { id: 'gr_5_wh_x1', level: '5', topic: '疑問詞', q: '___ do you like, tea or coffee?', choices: ['Which', 'What', 'Who', 'Where'], answer: 'Which', explain: '限られた中から選ぶときは Which。', sentence: { en: 'Which do you like, tea or coffee?', ja: '紅茶とコーヒー、どちらが好きですか。' } },
+  { id: 'gr_5_wh_x1', level: '5', topic: '疑問詞', q: '___ do you like, tea or coffee?', choices: ['Which', 'How', 'Who', 'Where'], answer: 'Which', explain: '限られた中から選ぶときは Which。', sentence: { en: 'Which do you like, tea or coffee?', ja: '紅茶とコーヒー、どちらが好きですか。' } },
   { id: 'gr_5_can_x1', level: '5', topic: '助動詞 can', q: 'I ___ swim at all.', choices: ['cannot', 'don’t', 'am not', 'isn’t'], answer: 'cannot', explain: 'can の否定は cannot（can’t）。', sentence: { en: 'I cannot swim at all.', ja: '私は全く泳げない。' } },
   { id: 'gr_5_prep_x1', level: '5', topic: '前置詞', q: 'Cut the cake ___ a knife.', choices: ['with', 'by', 'in', 'of'], answer: 'with', explain: '道具「〜を使って」は with。', sentence: { en: 'Cut the cake with a knife.', ja: 'ナイフでケーキを切って。' } },
   { id: 'gr_5_prog_x1', level: '5', topic: '現在進行形', q: 'Is he ___ now?', choices: ['sleeping', 'sleep', 'sleeps', 'slept'], answer: 'sleeping', explain: '進行形の疑問文も be動詞＋ing。', sentence: { en: 'Is he sleeping now?', ja: '彼は今眠っていますか。' } },
@@ -380,7 +379,7 @@ export const GRAMMAR = [
   { id: 'gr_4_past_x1', level: '4', topic: '過去形', q: 'I ___ not go to school yesterday.', choices: ['did', 'was', 'do', 'were'], answer: 'did', explain: '一般動詞の過去否定は did not＋原形。', sentence: { en: 'I did not go to school yesterday.', ja: '私は昨日学校へ行かなかった。' } },
   { id: 'gr_4_fut_x1', level: '4', topic: '未来表現', q: 'Are you ___ to play soccer?', choices: ['going', 'go', 'will', 'goes'], answer: 'going', explain: 'be going to の疑問文は be＋主語＋going to。', sentence: { en: 'Are you going to play soccer?', ja: 'サッカーをするつもりですか。' } },
   { id: 'gr_4_comp_x1', level: '4', topic: '比較', q: 'He is the tallest ___ his class.', choices: ['in', 'of', 'at', 'on'], answer: 'in', explain: '最上級の範囲：集団・場所は in、複数名詞は of。', sentence: { en: 'He is the tallest in his class.', ja: '彼はクラスで一番背が高い。' } },
-  { id: 'gr_4_comp_x2', level: '4', topic: '比較', q: 'I like cats ___ than dogs.', choices: ['better', 'well', 'good', 'more'], answer: 'better', explain: 'like A better than B（BよりAが好き）。', sentence: { en: 'I like cats better than dogs.', ja: '私は犬より猫が好きだ。' } },
+  { id: 'gr_4_comp_x2', level: '4', topic: '比較', q: 'I like cats ___ than dogs.', choices: ['better', 'well', 'good', 'best'], answer: 'better', explain: 'like A better than B（BよりAが好き）。', sentence: { en: 'I like cats better than dogs.', ja: '私は犬より猫が好きだ。' } },
   { id: 'gr_4_modal_x1', level: '4', topic: '助動詞', q: 'You ___ see a doctor.', choices: ['should', 'are', 'do', 'must to'], answer: 'should', explain: 'should＋原形（〜したほうがよい・すべきだ）。', sentence: { en: 'You should see a doctor.', ja: '医者に診てもらうべきだ。' } },
   { id: 'gr_4_ger_x1', level: '4', topic: '動名詞', q: 'I finished ___ the book.', choices: ['reading', 'to read', 'read', 'reads'], answer: 'reading', explain: 'finish のあとは動名詞(ing)。', sentence: { en: 'I finished reading the book.', ja: '私はその本を読み終えた。' } },
   { id: 'gr_4_conj_x1', level: '4', topic: '接続詞', q: 'I was cooking ___ he came home.', choices: ['when', 'that', 'so', 'or'], answer: 'when', explain: 'when は「〜したとき」を表す。', sentence: { en: 'I was cooking when he came home.', ja: '彼が帰宅したとき私は料理していた。' } },
@@ -393,7 +392,7 @@ export const GRAMMAR = [
   { id: 'gr_3_rel_x1', level: '3', topic: '関係代名詞', q: 'I took a train ___ goes to Tokyo.', choices: ['which', 'who', 'whose', 'where'], answer: 'which', explain: '先行詞が物で主格なら which（that も可）。', sentence: { en: 'I took a train which goes to Tokyo.', ja: '私は東京行きの電車に乗った。' } },
   { id: 'gr_3_part_x1', level: '3', topic: '分詞', q: 'English is a language ___ in many countries.', choices: ['spoken', 'speaking', 'speak', 'spoke'], answer: 'spoken', explain: '過去分詞の後置修飾（〜される言語）。', sentence: { en: 'English is a language spoken in many countries.', ja: '英語は多くの国で話されている言語だ。' } },
   { id: 'gr_3_svoo_x1', level: '3', topic: '文型(SVOO/SVOC)', q: 'He showed ___ the picture.', choices: ['me', 'to me', 'for me', 'my'], answer: 'me', explain: 'show＋人＋物（SVOO）。to は不要。', sentence: { en: 'He showed me the picture.', ja: '彼は私にその写真を見せた。' } },
-  { id: 'gr_3_indq_x1', level: '3', topic: '間接疑問', q: 'I asked her how old ___.', choices: ['she was', 'was she', 'is she', 'she is'], answer: 'she was', explain: '間接疑問は〈疑問詞＋主語＋動詞〉＋時制の一致。', sentence: { en: 'I asked her how old she was.', ja: '私は彼女に何歳か尋ねた。' } },
+  { id: 'gr_3_indq_x1', level: '3', topic: '間接疑問', q: 'I asked her how old ___.', choices: ['she was', 'was she', 'is she', 'she does'], answer: 'she was', explain: '間接疑問は〈疑問詞＋主語＋動詞〉＋時制の一致。', sentence: { en: 'I asked her how old she was.', ja: '私は彼女に何歳か尋ねた。' } },
   { id: 'gr_3_conj_x1', level: '3', topic: '接続詞', q: '___ it was cold, we went out.', choices: ['Although', 'Because', 'So', 'If'], answer: 'Although', explain: 'although は「〜だけれども」（譲歩）。', sentence: { en: 'Although it was cold, we went out.', ja: '寒かったが私たちは外出した。' } },
 
   // ── 準2級 ──
@@ -412,8 +411,8 @@ export const GRAMMAR = [
   { id: 'gr_2_inv_x1', level: '2', topic: '倒置', q: 'Only then ___ I understand the truth.', choices: ['did', 'do', 'have', 'was'], answer: 'did', explain: 'Only＋副詞が文頭→倒置〈did＋S＋原形〉。', sentence: { en: 'Only then did I understand the truth.', ja: 'そのとき初めて真実がわかった。' } },
   { id: 'gr_2_emph_x1', level: '2', topic: '強調構文', q: '___ was it that broke the vase?', choices: ['Who', 'Whom', 'Which', 'How'], answer: 'Who', explain: '疑問詞の強調構文：疑問詞＋is/was it that 〜?。', sentence: { en: 'Who was it that broke the vase?', ja: '花びんを割ったのは誰だったのか。' } },
   { id: 'gr_2_noun_x1', level: '2', topic: '名詞節', q: '___ he is honest is certain.', choices: ['That', 'What', 'Which', 'If'], answer: 'That', explain: 'That節が主語（〜ということ）。', sentence: { en: 'That he is honest is certain.', ja: '彼が正直だということは確かだ。' } },
-  { id: 'gr_2_rel_x1', level: '2', topic: '関係代名詞 what', q: 'Reading is to the mind ___ food is to the body.', choices: ['what', 'that', 'which', 'as'], answer: 'what', explain: 'A is to B what C is to D（AのBに対する関係はCのDに対する関係と同じ）。', sentence: { en: 'Reading is to the mind what food is to the body.', ja: '読書の精神に対する関係は食物の体に対する関係に等しい。' } },
-  { id: 'gr_2_comp_x1', level: '2', topic: '比較応用', q: 'He is the ___ of the two.', choices: ['taller', 'tallest', 'tall', 'more tall'], answer: 'taller', explain: '2者の比較で「より〜なほう」は the＋比較級。', sentence: { en: 'He is the taller of the two.', ja: '彼は2人のうち背が高いほうだ。' } },
+  { id: 'gr_2_rel_x1', level: '2', topic: '関係代名詞 what', q: 'Reading is to the mind ___ food is to the body.', choices: ['what', 'that', 'which', 'where'], answer: 'what', explain: 'A is to B what C is to D（AのBに対する関係はCのDに対する関係と同じ）。', sentence: { en: 'Reading is to the mind what food is to the body.', ja: '読書の精神に対する関係は食物の体に対する関係に等しい。' } },
+  { id: 'gr_2_comp_x1', level: '2', topic: '比較応用', q: 'He is the ___ of the two.', choices: ['taller', 'most taller', 'tall', 'more tall'], answer: 'taller', explain: '2者の比較で「より〜なほう」は the＋比較級。', sentence: { en: 'He is the taller of the two.', ja: '彼は2人のうち背が高いほうだ。' } },
   { id: 'gr_2_conj_x1', level: '2', topic: '接続詞', q: '___ he was tired, he kept working.', choices: ['Even though', 'Even if', 'As if', 'In case'], answer: 'Even though', explain: 'even though＝実際に〜だけれども（事実の譲歩）。', sentence: { en: 'Even though he was tired, he kept working.', ja: '疲れていたけれど彼は働き続けた。' } },
 
   // ── 準1級 ──
@@ -431,7 +430,7 @@ export const GRAMMAR = [
   { id: 'gr_1_comp_x1', level: '1', topic: '高度比較', q: 'He is not so much a scholar ___ a poet.', choices: ['as', 'than', 'but', 'like'], answer: 'as', explain: 'not so much A as B（AというよりむしろB）。', sentence: { en: 'He is not so much a scholar as a poet.', ja: '彼は学者というよりむしろ詩人だ。' } },
   { id: 'gr_1_idiom_x1', level: '1', topic: '高度語法', q: 'He is, ___ it were, a walking dictionary.', choices: ['as', 'so', 'like', 'that'], answer: 'as', explain: 'as it were（いわば）。慣用的な仮定法。', sentence: { en: 'He is, as it were, a walking dictionary.', ja: '彼はいわば歩く辞書だ。' } },
   { id: 'gr_1_subj_x1', level: '1', topic: '仮定法・語法', q: '___ it not been for your advice, I would have failed.', choices: ['Had', 'Were', 'If', 'Have'], answer: 'Had', explain: 'Had it not been for 〜（〜がなかったら）＝if省略倒置(過去完了)。', sentence: { en: 'Had it not been for your advice, I would have failed.', ja: 'あなたの助言がなければ失敗していただろう。' } },
-  { id: 'gr_1_conj_x1', level: '1', topic: '高度語法', q: 'You may go out ___ that you come home by ten.', choices: ['provided', 'supposing', 'unless', 'lest'], answer: 'provided', explain: 'provided (that)（〜という条件で）。', sentence: { en: 'You may go out provided that you come home by ten.', ja: '10時までに帰るなら出かけてよい。' } },
+  { id: 'gr_1_conj_x1', level: '1', topic: '高度語法', q: 'You may go out ___ that you come home by ten.', choices: ['provided', 'even', 'unless', 'lest'], answer: 'provided', explain: 'provided (that)（〜という条件で）。', sentence: { en: 'You may go out provided that you come home by ten.', ja: '10時までに帰るなら出かけてよい。' } },
   { id: 'gr_1_idiom_x2', level: '1', topic: '高度語法', q: 'You cannot be ___ careful when you drive.', choices: ['too', 'very', 'so', 'much'], answer: 'too', explain: 'cannot be too 〜（いくら〜してもしすぎることはない）。', sentence: { en: 'You cannot be too careful when you drive.', ja: '運転はいくら注意してもしすぎることはない。' } },
   { id: 'gr_1_idiom_x3', level: '1', topic: '高度語法', q: 'It goes ___ saying that health is important.', choices: ['without', 'with', 'by', 'for'], answer: 'without', explain: 'It goes without saying that 〜（〜は言うまでもない）。', sentence: { en: 'It goes without saying that health is important.', ja: '健康が大切なのは言うまでもない。' } },
   { id: 'gr_1_opt_x1', level: '1', topic: '祈願文', q: 'Long ___ the king!', choices: ['live', 'lives', 'lived', 'living'], answer: 'live', explain: '祈願文は動詞の原形（May ... の may 省略）。', sentence: { en: 'Long live the king!', ja: '国王万歳！' } },
@@ -460,32 +459,6 @@ export const grammarPracticeTopicsForLevel = (level, questionType = 'mixed') => 
 export const getGrammar = (id) => GRAMMAR_PRACTICE.find((g) => g.id === id)
 export const grammarPatternGroup = (item) =>
   item?.variationGroup ?? item?.pattern ?? null
-
-const grammarChoiceGuidance = createGrammarChoiceGuidance(
-  GRAMMAR_PRACTICE.filter((item) => grammarQuestionType(item) !== 'word-order'),
-)
-
-// 各選択肢がこの問題の条件に合わない理由と、その形が成立する条件を全問で補う。
-export const grammarChoiceGuidanceFor = (item, choice) =>
-  grammarChoiceGuidance(item, choice)
-
-// 正答を含む4択すべての「その形をどう使うか」を返す。
-// 既存の誤答APIは後方互換のため正答に null を返す契約を維持する。
-export const grammarChoiceUsageFor = (item, choice) => {
-  if (!item || choice == null) return null
-  const guidance = choice === item.answer
-    ? grammarChoiceGuidance({ ...item, answer: '__correct_choice__' }, choice)
-    : grammarChoiceGuidance(item, choice)
-  if (choice === item.answer && (!guidance || guidance.status === 'unresolved')) {
-    return {
-      status: 'valid',
-      summary: `${item.explain} この問題では「${choice}」を入れた「${item.sentence.en}」が、その規則を満たす完成文です。`,
-      pattern: item.sentence.en,
-      source: 'correct-answer-rule',
-    }
-  }
-  return guidance
-}
 
 // 解説欄に出す「同じ形の例」。同じ級・単元の検証済み完成文から、現在の問題を除いて返す。
 export const samePatternExamplesFor = (item, limit = 2) => {

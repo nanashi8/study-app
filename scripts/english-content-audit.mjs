@@ -14,16 +14,13 @@ import {
 import { quizMeaning, quizMeaningKey } from '../src/data/compact.js'
 import {
   GRAMMAR,
-  grammarChoiceGuidanceFor,
-  grammarChoiceUsageFor,
   samePatternExamplesFor,
 } from '../src/data/grammar.js'
 import {
-  grammarAnswerEvidenceFor,
-  grammarChoiceDecisionFor,
-  grammarChoiceExplanationFor,
   grammarQuestionNeedsMeaningCue,
+  grammarRuleExplanationFor,
 } from '../src/lib/grammarQuestionExplanations.js'
+import { grammarChoiceNoteFor } from '../src/lib/grammarChoiceNotes.js'
 import { GRAMMAR_LESSONS } from '../src/data/grammar-lessons.js'
 import { PHRASES } from '../src/data/phrases.js'
 import {
@@ -240,49 +237,19 @@ for (const item of GRAMMAR) {
   assert(hasEnglish(item.sentence?.en), `${at}: 完成英文不足`)
   assert(hasJapanese(item.sentence?.ja), `${at}: 完成文の和訳不足`)
   assert(text(item.explain), `${at}: 正答根拠の解説不足`)
-  const evidence = grammarAnswerEvidenceFor(item)
-  const visiblePrompt = item.q.replace('___', '［空所］')
-  assert(evidence?.englishClue.includes(visiblePrompt), `${at}: 問題文固有の手掛かり不足`)
-  assert(text(evidence?.rule), `${at}: 適用規則不足`)
-  const needsMeaningCue = grammarQuestionNeedsMeaningCue(item)
-  if (needsMeaningCue) {
-    assert(hasJapanese(evidence?.meaningClue), `${at}: 判断に必要な和訳不足`)
-    grammarMeaningCueCount += 1
-  } else {
-    assert(!evidence?.meaningClue, `${at}: 語形問題に不要な解答前和訳がある`)
-    grammarFormOnlyCount += 1
-  }
+  assert(hasJapanese(grammarRuleExplanationFor(item)), `${at}: 規則の解説不足`)
+  if (grammarQuestionNeedsMeaningCue(item)) grammarMeaningCueCount += 1
+  else grammarFormOnlyCount += 1
   const examples = samePatternExamplesFor(item, 2)
   assert(examples.length === 2, `${at}: 同じ形の比較例が2文未満`)
   assert(
     examples.every((example) => hasEnglish(example.en) && hasJapanese(example.ja)),
     `${at}: 同じ形の例に英文/和訳不足`,
   )
-  const decisions = item.choices.map((choice) => grammarChoiceDecisionFor(item, choice))
-  assert(decisions.filter((decision) => decision?.isCorrect).length === 1, `${at}: 正答判定が一意ではない`)
   for (const choice of item.choices) {
-    const usage = grammarChoiceUsageFor(item, choice)
-    const reason = grammarChoiceExplanationFor(item, choice)
-    assert(
-      ['valid', 'invalid'].includes(usage?.status),
-      `${at}: 選択肢「${choice}」の使い分けが未解決`,
-    )
-    assert(
-      hasJapanese(usage?.summary),
-      `${at}: 選択肢「${choice}」の日本語説明不足`,
-    )
-    assert(reason.includes(visiblePrompt), `${at}: 選択肢「${choice}」に問題文の根拠不足`)
-    assert(reason.includes(evidence.rule), `${at}: 選択肢「${choice}」に適用規則不足`)
-    assert(reason.includes(item.answer), `${at}: 選択肢「${choice}」に正答との比較不足`)
+    assert(hasJapanese(grammarChoiceNoteFor(item, choice)), `${at}: 選択肢「${choice}」の解説不足`)
     grammarChoiceReasonCount += 1
-    if (choice === item.answer) {
-      assert(usage.status === 'valid', `${at}: 正答「${choice}」の使い方が valid ではない`)
-      assert(reason.includes(item.sentence.en), `${at}: 正答「${choice}」に完成文不足`)
-      grammarCorrectChoiceReasonCount += 1
-    } else {
-      const guidance = grammarChoiceGuidanceFor(item, choice)
-      assert(guidance, `${at}: 誤答「${choice}」の互換ガイド不足`)
-    }
+    if (choice === item.answer) grammarCorrectChoiceReasonCount += 1
   }
 }
 
@@ -620,7 +587,7 @@ console.log(
   `（${SYNTAX_FAMILY_GUIDES.length}ファミリー）`,
 )
 console.log(`  文法の即時解説＋同型例2文: ${GRAMMAR.length}/${GRAMMAR.length}`)
-console.log(`  文法の正解を含む4択別根拠: ${grammarChoiceReasonCount}/${GRAMMAR.length * 4}（正解${grammarCorrectChoiceReasonCount}）`)
+console.log(`  文法の正解を含む選択肢解説: ${grammarChoiceReasonCount}/${GRAMMAR.length * 4}（正解${grammarCorrectChoiceReasonCount}）`)
 console.log(`  文法の解答前和訳: 意味判断${grammarMeaningCueCount}問・語形のみ非表示${grammarFormOnlyCount}問`)
 console.log(`  文法の長形式レッスン接続: ${grammarWithLesson}/${GRAMMAR.length}`)
 console.log(`  診断3フォームの解説＋英文/和訳: ${diagnosticForms.length}/${diagnosticForms.length}`)

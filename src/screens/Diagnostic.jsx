@@ -792,7 +792,6 @@ function AnswerReview({ questions, answers }) {
                   choices={question.choices}
                   selected={review.selectedAnswer}
                   className="mt-2"
-                  compact
                 />
               ) : (
                 <ChoiceExplanations

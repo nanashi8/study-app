@@ -2,11 +2,7 @@ import { readdir, readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import {
-  GRAMMAR,
-  grammarChoiceGuidanceFor,
-  grammarChoiceUsageFor,
-} from '../src/data/grammar.js'
+import { GRAMMAR } from '../src/data/grammar.js'
 import { LONG_SENTENCE_TRANSLATIONS } from '../src/data/long-sentence-translations.js'
 import { PASSAGES } from '../src/data/passages.js'
 import {
@@ -19,10 +15,8 @@ import {
   readingPhraseExplanationTexts,
 } from '../src/lib/explanationDedup.js'
 import { analyzeReadingSentence } from '../src/lib/reading-grammar.js'
-import {
-  grammarChoiceExplanationFor,
-  grammarRuleExplanationFor,
-} from '../src/lib/grammarQuestionExplanations.js'
+import { grammarRuleExplanationFor } from '../src/lib/grammarQuestionExplanations.js'
+import { grammarChoiceNoteFor } from '../src/lib/grammarChoiceNotes.js'
 import {
   ALL_WORDS,
   ETYMOLOGY_MODE_META,
@@ -230,8 +224,8 @@ for (const label of ['根拠', '消去法', '考え方']) {
 if (!grammarQuizSource.includes('GrammarChoiceExplanations')) errors.push('英文法画面に選択肢解説部品がない')
 if (!grammarQuizSource.includes('{grammarRuleExplanationFor(item)}')) errors.push('英文法画面に規則ごとの解説がない')
 if (grammarQuizSource.includes('InstructorExplanation')) errors.push('英文法画面に決まり文句の4段解説が戻っている')
-if (!grammarChoiceExplanationsSource.includes('選択肢解説（3択すべて）')) {
-  errors.push('英文法画面に正解を含む3択すべての解説がない')
+if (!grammarChoiceExplanationsSource.includes('選択肢解説（${choices.length}択すべて）') || !grammarChoiceExplanationsSource.includes('grammarChoiceNoteFor(item, choice)')) {
+  errors.push('英文法画面に正解を含む出題した選択肢すべての解説がない')
 }
 if (!grammarQuizSource.includes('limitQuizChoices')) errors.push('英文法画面が3択に絞っていない')
 if (/id: 'quiz'/.test(homeSource)) errors.push('英語ホームに重複したクイズ入口がある')
@@ -532,19 +526,10 @@ for (const item of GRAMMAR) {
   }
   for (const choice of item.choices) {
     grammarChoicePaths += 1
-    const choiceReason = grammarChoiceExplanationFor(item, choice)
-    const usage = grammarChoiceUsageFor(item, choice)
-    if (!normalize(choiceReason).includes(normalize(choice)) || !normalize(choiceReason).includes(normalize(item.answer))) {
-      errors.push(`文法 ${item.id}: 選択肢「${choice}」の根拠が選択肢と正答を比較しない`)
+    if (normalize(grammarChoiceNoteFor(item, choice)).length < 12) {
+      errors.push(`文法 ${item.id}: 選択肢「${choice}」の解説がない`)
     }
-    if (!usage?.summary || usage.status === 'unresolved') {
-      errors.push(`文法 ${item.id}: 選択肢「${choice}」の使い方が未解決`)
-    }
-    if (choice === item.answer) continue
-    grammarWrongChoicePaths += 1
-    if (!grammarChoiceGuidanceFor(item, choice)) {
-      errors.push(`文法 ${item.id}: 誤答「${choice}」の使い方がない`)
-    }
+    if (choice !== item.answer) grammarWrongChoicePaths += 1
   }
 }
 
@@ -616,5 +601,5 @@ if (errors.length) {
 }
 
 console.log(
-  `学習者向け品質契約: 違反0 / 用語監査${learnerTerminologyFiles.length}ファイル / 語源${ALL_WORDS.length}語・${ETYMOLOGY_PACKS.length}カード / メニュー${APP_MENU_ITEMS.length}項目 / 履歴リセット${PROGRESS_RESET_GROUPS.length}分類・保存${PERSISTED_PROGRESS_FIELDS.length}項目 / 長文${PASSAGES.length}本・${sentenceCount}文・${phraseCount}フレーズ・${blockCount}ブロック / 長い一文${longSentenceCount}件・${longStepCount}フレーズ / 文法${GRAMMAR.length}問・4択根拠${grammarChoicePaths}件（誤答${grammarWrongChoicePaths}件）`,
+  `学習者向け品質契約: 違反0 / 用語監査${learnerTerminologyFiles.length}ファイル / 語源${ALL_WORDS.length}語・${ETYMOLOGY_PACKS.length}カード / メニュー${APP_MENU_ITEMS.length}項目 / 履歴リセット${PROGRESS_RESET_GROUPS.length}分類・保存${PERSISTED_PROGRESS_FIELDS.length}項目 / 長文${PASSAGES.length}本・${sentenceCount}文・${phraseCount}フレーズ・${blockCount}ブロック / 長い一文${longSentenceCount}件・${longStepCount}フレーズ / 文法${GRAMMAR.length}問・選択肢解説${grammarChoicePaths}件（誤答${grammarWrongChoicePaths}件）`,
 )

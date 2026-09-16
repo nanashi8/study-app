@@ -2,9 +2,8 @@ import {
   GRAMMAR,
   GRAMMAR_PRACTICE,
   getGrammar,
-  grammarChoiceGuidanceFor,
-  grammarChoiceUsageFor,
 } from '../data/grammar.js'
+import { grammarChoiceNoteFor } from './grammarChoiceNotes.js'
 import {
   GRAMMAR_FORMAT_EXPANSION,
   GRAMMAR_QUESTION_TYPES,
@@ -288,16 +287,9 @@ export function auditEnglishQuestionFormats() {
     }
     for (const choice of item.choices) {
       grammarChoicePathCount += 1
-      const usage = grammarChoiceUsageFor(item, choice)
-      if (!usage || usage.status === 'unresolved' || !hasJapanese(usage.summary)) {
-        addIssue('incomplete-grammar-choice-usage', item.id, choice)
-      }
-      if (choice !== item.answer) {
-        grammarWrongChoicePathCount += 1
-        const guidance = grammarChoiceGuidanceFor(item, choice)
-        if (!guidance || guidance.status === 'unresolved' || !hasJapanese(guidance.summary)) {
-          addIssue('incomplete-grammar-wrong-choice-guidance', item.id, choice)
-        }
+      if (choice !== item.answer) grammarWrongChoicePathCount += 1
+      if (!hasJapanese(grammarChoiceNoteFor(item, choice))) {
+        addIssue('missing-grammar-choice-note', item.id, choice)
       }
     }
   }

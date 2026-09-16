@@ -455,7 +455,7 @@ export const GRAMMAR_RULE_EXPLANATIONS = Object.freeze({
   "受動態の疑問文は be動詞を前へ。単数過去は Was。":
     "受け身の疑問文は、be動詞を主語の前に出して作る。過去のことで主語 this letter は単数なので Was を使い、Was this letter written by Tom? となる。",
   "be covered with（〜で覆われている）。byでない熟語。":
-    "be covered with〜 で「〜でおおわれている」を表す。受け身の形だが by ではなく with を使う決まった言い方として覚える。",
+    "be covered with〜 で「〜でおおわれている」という状態を表す。山が雪におおわれている様子を言うので、決まった言い方の with を使う。",
   "助動詞＋be＋過去分詞（〜されうる）。":
     "助動詞を含む受け身は、助動詞＋be＋過去分詞の形になる。can の後ろは動詞の原形なので be を置き、can be seen で「見られる・見える」となる。",
   "受動態の行為者は by＋人。":
@@ -509,7 +509,7 @@ export const GRAMMAR_RULE_EXPLANATIONS = Object.freeze({
   "already は「もう・すでに」。疑問文では驚きや確認の気持ちを添える。":
     "already は「もう・すでに」を表す。疑問文で使うと「もう終えたのですか」と、思ったより早いことへの驚きを添える。ふつうに「もう〜しましたか」とたずねるなら、yet を文末に置く。",
   "have been to で「行ったことがある（経験）」。":
-    "have been to〜 で「〜へ行ったことがある」という経験を表す。have gone to〜 は「〜へ行ってしまった（今ここにいない）」という意味になるので、twice（2回）とある経験には been を使う。",
+    "have been to〜 で「〜へ行ったことがある」という経験を表す。twice（2回）と回数を言う経験なので、has been to Australia twice となる（have gone to〜 は、ふつう「〜へ行ってしまって今ここにいない」の意味で使う）。",
   "起点は since（〜以来）、期間は for。":
     "現在完了で続いている期間を言うとき、始まった時点には since（〜以来）、期間の長さには for（〜の間）を使う。2010 は始まった年なので since 2010 となる。",
   "否定文の文末 yet は「まだ（〜ない）」。":
@@ -1074,12 +1074,12 @@ export const GRAMMAR_RULE_EXPLANATIONS = Object.freeze({
   // 準1級 一致
   "neither＋単数名詞は「どちらの〜も…ない」を表し、単数扱いにして is を使う。":
     "neither＋単数名詞で「どちらの〜も…ない」を表す。2つを1つずつ打ち消す言い方なので単数として扱い、Neither explanation の後ろの be動詞は is になる。",
-  "主語の中心は単数の A series なので、of workshops に惑わされず is を使う。":
-    "主語 A series of workshops の中心は単数の series（一続き）なので、be動詞は is を使う。直前の workshops が複数でも、動詞は主語の中心の語に合わせる。",
+  "主語の中心は単数の One なので、of the workshops に惑わされず is を使う。":
+    "主語 One of the workshops（研修会の1つ）の中心は、of の前の One（1つ）で単数なので、be動詞は is を使う。直前の workshops が複数でも、動詞は主語の中心の語に合わせる。",
   "時間・距離・金額を一つのまとまりとして見る場合は単数動詞を使う。":
     "Ten years のような時間・距離・金額は、複数形でも1つのまとまった量として見るときは単数として扱う。「10年という期間」なので is を使う。",
-  "a series of＋複数名詞では、主語の中心 series に合わせ単数動詞を使う。":
-    "a series of・a set of＋複数名詞が主語のときは、中心の語 series・set（一続き・一組）に合わせて単数として扱い、is を使う。後ろの名詞（reviews・guidelines）が複数でも、be動詞は中心の語に合わせる。",
+  "one of・the quality of＋複数名詞では、of の前の中心の名詞に合わせて単数動詞を使う。":
+    "one of the reviews（審査の1つ）・the quality of the reviews（審査の質）のように「名詞＋of＋複数名詞」が主語のときは、of の前の中心の名詞（one・quality・accuracy）に動詞を合わせる。中心の名詞は単数なので、後ろの reviews・figures が複数でも is を使う。ただし a number of〜（多くの〜）や a lot of〜 のように量を表す言い方では、後ろの名詞に合わせる。",
   // 準1級 付帯状況
   "with＋O＋分詞/形容詞（〜したまま・付帯状況）。":
     "with＋名詞＋過去分詞・形容詞で「〜を…した状態で」と、同時の様子を表す（付帯状況）。his eyes closed（目が閉じられた状態）の前に with を置いて「目を閉じたまま」となる。",
@@ -1268,7 +1268,7 @@ export const GRAMMAR_RULE_EXPLANATIONS = Object.freeze({
     "a number of＋複数名詞は「多くの〜」で複数、the number of＋複数名詞は「〜の数」で単数として扱う。A number of experts は複数なので have を使う。",
   // 1級 仮定法・語法
   "suggest など要求・提案の that節は動詞原形(should省略)。":
-    "suggest（提案する）の後ろの that の文では、主語が何でも動詞の原形（should を省いた形）を使う。主語が he でも takes ではなく take になる。",
+    "suggest（提案する）の後ろの that の文では、主語が何でも動詞の原形（should を省いた形）を使う。主語が he でも s を付けない原形 take を使う。",
   "essential などの that節は should省略の原形(be)。":
     "essential（不可欠な）のように必要を表す形容詞の後ろの that の文では、動詞の原形を使う。be動詞も原形の be にして every student be present とする。",
   "if省略倒置の仮定法：Were S to do（仮に〜なら）。":
@@ -1286,7 +1286,7 @@ export const GRAMMAR_RULE_EXPLANATIONS = Object.freeze({
   "if need be は仮定法現在が残る慣用表現で「必要なら」を意味する。":
     "if need be は「必要なら」を表す決まった言い方で、need の後ろに be動詞の原形 be を置く。",
   "提案・要求を表す動詞の that 節では、動詞原形（仮定法現在）を使う。":
-    "recommend（勧める）のような提案・要求の動詞の後ろの that の文では、主語が何でも動詞の原形を使う。that の後ろの主語が3人称単数でも、revises ではなく revise のような原形になる。",
+    "recommend（勧める）のような提案・要求の動詞の後ろの that の文では、主語が何でも動詞の原形を使う。that の後ろの主語が3人称単数でも、s を付けない revise のような原形を使う。",
   "It is high time＋主語＋過去形で「もう〜すべき時だ」を表す。":
     "It is high time＋主語＋過去形で「もう〜すべき時だ（まだしていない）」を表す。これからのことでも過去形を使うので、revise を revised のように過去形にする。",
   "Were＋主語＋to do は If＋主語＋were to do のif省略倒置。":
