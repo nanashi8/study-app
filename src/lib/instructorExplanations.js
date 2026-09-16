@@ -1,10 +1,4 @@
 import { UNKNOWN_CHOICE_ID } from './quizChoices.js'
-import {
-  grammarChoiceMismatchExplanationFor,
-  grammarCorrectChoiceExplanationFor,
-  grammarExamFocusExplanationFor,
-  grammarQuestionExplanationFor,
-} from './grammarQuestionExplanations.js'
 
 const clean = (value) => String(value ?? '')
   .replace(/\s+/g, ' ')
@@ -54,104 +48,6 @@ const selectionTrap = ({
   return clean(correctAnswer)
 }
 
-const grammarStrategy = (source = '') => {
-  const topic = typeof source === 'object' ? clean(source?.topic) : clean(source)
-  const details = typeof source === 'object'
-    ? clean(`${source?.prompt ?? source?.q ?? ''} ${source?.explain ?? ''}`)
-    : ''
-  // 通常問題は単元名を最優先する。解説本文中に「主語」「前置詞」などが
-  // 偶然現れても、別単元の解法へ誤分類しないためである。
-  const value = topic || details
-  // 診断問題には単元名がないため、解説中のより強い文法標識を先に拾う。
-  if (!topic && /疑問文|疑問詞|間接疑問|付加疑問/.test(details)) {
-    return 'まず肯定文の語順で主語と動詞を確定し、必要な助動詞を前へ出す。疑問詞が問う情報を空所にして、疑問文全体の語順と時制を組み直す。'
-  }
-  if (!topic && /受動態|受け身|分詞構文/.test(details)) {
-    return '主語・目的語と動作の関係が「する側」か「される側」かを決め、原形・現在分詞・過去分詞を選び分ける。'
-  }
-  if (!topic && /進行形|完了形|時制|時を表す副詞節|過去のある時/.test(details)) {
-    return 'まず時を示す語と出来事の前後関係を拾い、基準時を現在・過去・未来のどこに置くか決める。最後に主語と動詞の形が合うか確かめる。'
-  }
-  if (!topic && /比較級|最上級|原級|倍数/.test(details)) {
-    return '比較する対象の数と、原級・比較級・最上級の合図を先に探す。than、as、of / in まで一まとまりで確認する。'
-  }
-  if (!topic && /助動詞|\b(?:must|may|should|could|would|can)\b/i.test(details)) {
-    return '事実なのか、可能性・義務・反実仮想なのかを先に判定する。助動詞の後ろは原形、仮定法は条件節と帰結節の時制を対で確認する。'
-  }
-  if (!topic && /相関接続詞|\b(?:either|neither|both)\b/i.test(details)) {
-    return '空所の前後が語・句・節のどれかを判定し、同じ文法上の役割どうしを結ぶ。節なら主語と動詞がそろうか、因果・逆接・譲歩のどの論理関係かまで確認する。'
-  }
-  if (!topic && /関係詞|関係代名詞|\bwhich\b/i.test(details)) {
-    return '空所の後ろが完全文か不完全文かを見て、空所が節をつなぐだけか、節内の主語・目的語を兼ねるかを判定する。先行詞の有無と、人・物・場所・時の区別が合うか確かめる。'
-  }
-  if (/used to\s*\/\s*be used to/.test(value)) {
-    return 'used to の後ろが動詞原形なら「以前は〜した」、be used to の to が前置詞なら後ろは名詞・動名詞で「〜に慣れている」。to の品詞と直後の形を対で見る。'
-  }
-  if (/be to構文/.test(value)) {
-    return 'be to は予定・義務・可能・運命・意図のどれかを、主語、時を示す語、前後の文脈から決める。be動詞の時制を先に確定し、to の後ろは動詞原形にする。'
-  }
-  if (/疑問詞\+不定詞|完了不定詞|原形不定詞|不定詞|動名詞/.test(value)) {
-    return '空所が名詞・形容詞・副詞のどの働きかを見たうえで、直前の動詞が to不定詞と動名詞のどちらを取るか確認する。完了形なら述語動詞との時間差、原形なら使役・知覚との関係まで見る。'
-  }
-  if (/so\.\.\.that|so\/such\.\.\.that|too\/enough|目的の表現/.test(value)) {
-    return '程度・結果・目的のどれを表す文かを日本語で確定し、so / such、too / enough、to不定詞や that節の型へ当てはめる。形容詞・名詞と語順を一まとまりで確認する。'
-  }
-  if (/命令文|感嘆文|祈願文/.test(value)) {
-    return '文が命令・感嘆・願望のどれかを判定し、その文型の先頭語と動詞の形を固定する。通常の平叙文へ戻した意味と一致するか最後に確かめる。'
-  }
-  if (/倒置|強調|省略|代用|部分否定|クジラ構文/.test(value)) {
-    return '強調・倒置・省略をいったん通常語順へ戻し、何が移動または省略されたかを補う。否定語の位置と及ぶ範囲まで確定してから、元の形へ組み直す。'
-  }
-  if (/it\.\.\.to\/for/.test(value)) {
-    return '形式主語 It の後ろに真の主語である to不定詞を置き、不定詞の動作主を示す前置詞を決める。一般的な評価は for 人、人の性質を評価する形容詞は of 人と判定する。'
-  }
-  if (/形式目的語/.test(value)) {
-    return 'find / make / think などの後ろで、長い to不定詞・that節を真の目的語として後置し、その位置を形式目的語 it で埋める。動詞＋it＋補語＋真の目的語の骨格を取る。'
-  }
-  if (/^(?:一致|主語と動詞の一致)$/.test(value)) {
-    return '主語の中心語を of 句などの修飾語から切り離し、単数・複数を確定する。neither A nor B などの特殊則、数量を一まとまりと見る場合も確認して動詞を一致させる。'
-  }
-  if (/文型|無生物主語|同格|付帯状況/.test(value)) {
-    return '修飾語をいったん外して主語・動詞・目的語・補語の骨格を取る。動詞が要求する文型と、各要素が同一関係か動作の対象かを確認してから語形を選ぶ。'
-  }
-  if (/関係|複合関係詞|whatever|連鎖関係詞|前置詞\+関係代名詞/.test(value)) {
-    return '空所の後ろが完全文か不完全文かを見て、空所が節をつなぐだけか、節内の主語・目的語を兼ねるかを判定する。先行詞の有無と、人・物・場所・時の区別が合うか確かめる。'
-  }
-  if (/接続|名詞節|譲歩|相関/.test(value)) {
-    return '空所の前後が語・句・節のどれかを判定し、同じ文法上の役割どうしを結ぶ。節なら主語と動詞がそろうか、因果・逆接・譲歩のどの論理関係かまで確認する。'
-  }
-  if (/be動詞|3単現|3人称単数|主語と動詞|There is\/are/.test(value)) {
-    return 'まず主語の人称と単数・複数を確定し、次に時制を決める。その二条件から動詞の形を一つに絞り、完成文を音読して主語と動詞の一致を確認する。'
-  }
-  if (/名詞の複数形|冠詞|限定詞|数量表現|限定詞・数量|指示語/.test(value)) {
-    return '空所の後ろの名詞が数えられるか、単数か複数か、話し手と聞き手の間で特定済みかを順に確認する。数量語・冠詞・指示語と名詞の形が合うか確かめる。'
-  }
-  if (/再帰代名詞|代名詞/.test(value)) {
-    return '代名詞が指す名詞を先に特定し、人称・単数複数・主格／目的格／所有格を決める。主語と目的語が同一人物なら再帰代名詞になるかも確認する。'
-  }
-  if (/前置詞/.test(value)) {
-    return '前置詞は日本語一語に置き換えず、後ろの名詞との位置・方向・時・手段の関係を図にする。動詞や形容詞との決まった結び付きも含めて完成句で判断する。'
-  }
-  if (/否定文・疑問文|付加疑問|間接疑問|疑問詞/.test(value)) {
-    return 'まず肯定文の語順で主語と動詞を確定し、必要な助動詞を前へ出す。疑問詞が問う情報を空所にして、疑問文全体の語順と時制を組み直す。'
-  }
-  if (/助動詞|仮定|条件|had better/.test(value)) {
-    return '事実なのか、可能性・義務・反実仮想なのかを先に判定する。助動詞の後ろは原形、仮定法は条件節と帰結節の時制を対で確認する。'
-  }
-  if (/時制|完了|進行|過去形|未来表現|過去の習慣|used to|話法/.test(value)) {
-    return 'まず時を示す語と出来事の前後関係を拾い、基準時を現在・過去・未来のどこに置くか決める。最後に主語と動詞の形が合うか確かめる。'
-  }
-  if (/比較/.test(value)) {
-    return '比較する対象の数と、原級・比較級・最上級の合図を先に探す。than、as、of / in まで一まとまりで確認する。'
-  }
-  if (/受動|分詞|使役|知覚/.test(value)) {
-    return '主語・目的語と動作の関係が「する側」か「される側」かを決め、原形・現在分詞・過去分詞を選び分ける。'
-  }
-  return `まず完成文で必要な意味と品詞を言葉にし、選択肢の語形・語順・結び付きを一つずつ比べる。この問題では${stripTerminal(
-    typeof source === 'object' ? source?.explain : source,
-  )}を最終判断の軸にする。`
-}
-
 const readingStrategy = (question = '') => {
   const value = clean(question).toLowerCase()
   if (value.startsWith('why')) {
@@ -175,38 +71,6 @@ const DIAGNOSTIC_SKILL_LABEL = Object.freeze({
   usage: '熟語・語法',
   reading: '読解',
 })
-
-export function buildGrammarInstructorExplanation(item, selected, selectedGuidance, choices = item?.choices ?? []) {
-  if (item?.questionType === 'word-order') {
-    const picked = chosenText(selected)
-    return explanation({
-      answer: `正しい語順は${quote(item?.sentence?.en)}。日本語では${quote(item?.sentence?.ja)}。`,
-      evidence: `${clean(item?.explain)} 英文では、主語と動詞の骨格を先に置き、目的語・補語・修飾語をそれぞれの結び付きのまま続ける。`,
-      trap: isUnknown(selected)
-        ? `分からないときは、まず動詞を探し、その動作をする主語を左に置く。次に${clean(item?.explain)}`
-        : picked === clean(item?.answer)
-          ? `正解できても、単語を暗記した順ではなく、どの語がどの語に結び付くかを説明する。${clean(item?.explain)}`
-          : `並べた文${quote(picked)}では、正しい文${quote(item?.answer)}の語の結び付きと一致しない。${clean(item?.explain)}`,
-      strategy: '日本語の語順から一語ずつ置かず、「主語 + 動詞」を最初に作る。次に動詞が必要とする目的語・補語を置き、時・場所・理由などの説明を最後に加える。',
-    })
-  }
-  const decisive = grammarExamFocusExplanationFor(item) || clean(item?.explain)
-  const fullExplanation = grammarQuestionExplanationFor(item)
-  return explanation({
-    answer: grammarCorrectChoiceExplanationFor(item, choices),
-    evidence: fullExplanation,
-    trap: selectionTrap({
-      selected,
-      correct: item?.answer,
-      wrong: (picked) => selectedGuidance?.summary
-        ? `${grammarChoiceMismatchExplanationFor(item, picked)} 基礎規則は ${clean(item?.explain)} なお、別の文では ${clean(selectedGuidance.summary)}`
-        : `${grammarChoiceMismatchExplanationFor(item, picked)} 基礎規則は ${clean(item?.explain)} 正解を入れた文全体で比較する。`,
-      unknown: `迷ったときは選択肢を眺め続けず、目標の意味と空所の役割を先に言葉にする。${fullExplanation}`,
-      correctAnswer: `正解できた場合も、答えの語だけでなく、この文の決め手を説明できるか確認する。${decisive}`,
-    }),
-    strategy: grammarStrategy(item),
-  })
-}
 
 export function buildReadingInstructorExplanation(question, selected) {
   const basis = stripTerminal(question?.explain)
@@ -254,15 +118,13 @@ export function buildReadingChoiceExplanations(question) {
   }
 }
 
-// 実力診断の文法・読解問題の解説。単語・熟語の問題は意味を知っているかだけを問うので、
-// 画面では4段の解説を使わず、語の説明と選択肢の中身だけを示す。
+// 実力診断の読解問題の解説。単語・熟語は語の説明と選択肢の中身、文法は規則ごとの解説を出すので、
+// この4段の解説は使わない。
 export function buildDiagnosticInstructorExplanation(question, selected) {
   const review = question?.review?.en && question?.review?.ja
     ? ` 確認例${quote(question.review.en)}は${quote(question.review.ja)}。`
     : ''
-  const strategy = question?.skill === 'reading'
-    ? readingStrategy(question?.prompt)
-    : grammarStrategy(question)
+  const strategy = readingStrategy(question?.prompt)
   const skillLabel = DIAGNOSTIC_SKILL_LABEL[question?.skill] ?? '基礎力'
   return explanation({
     answer: `正解は${quote(question?.answer)}。この一問では${quote(skillLabel)}の基礎となる判断を確認している。`,

@@ -772,8 +772,8 @@ function AnswerReview({ questions, answers }) {
               )}
 
               <div data-diagnostic-explanation>
-                {question.skill === 'vocab' || question.skill === 'usage' ? (
-                  // 単語・熟語は意味を知っているかだけを問うので、4段の解説は置かず、語の説明と選択肢の中身を示す。
+                {question.skill !== 'reading' ? (
+                  // 単語・熟語は語の説明、文法は形がどう決まるかの解説を出す（4段の解説は置かない）。
                   <p className="mt-2 text-xs font-bold leading-relaxed text-ink/65">{question.explain}</p>
                 ) : (
                   <InstructorExplanation

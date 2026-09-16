@@ -6,8 +6,8 @@ import {
 } from '../data/diagnostic.js'
 import { GRAMMAR } from '../data/grammar.js'
 import {
-  grammarQuestionExplanationFor,
   grammarQuestionNeedsMeaningCue,
+  grammarRuleExplanationFor,
 } from './grammarQuestionExplanations.js'
 import { PHRASES } from '../data/phrases.js'
 import { etymologyCardsForWord, pickDistractors, wordsByLevel } from '../data/vocab.js'
@@ -182,7 +182,7 @@ function grammarQuestion(level, attemptNumber, seed) {
     meaningCueRequired: grammarQuestionNeedsMeaningCue(item),
     choices: shuffledChoices(item.choices, item.answer, seed, sourceId, attemptNumber),
     answer: item.answer,
-    explain: grammarQuestionExplanationFor(item),
+    explain: grammarRuleExplanationFor(item),
     review: item.sentence,
   })
 }

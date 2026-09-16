@@ -870,8 +870,8 @@ const SVOO_EVENTS = [
   ['showed', 'show', 'us', 'the new classroom', '私たちに新しい教室を見せました'],
   ['sent', 'send', 'her', 'a birthday card', '彼女に誕生日カードを送りました'],
   ['taught', 'teach', 'them', 'an English song', '彼らに英語の歌を教えました'],
-  ['lent', 'lend', 'Ken', 'a bicycle', 'ケンに自転車を貸しました'],
-  ['bought', 'buy', 'his son', 'a warm coat', '息子に暖かい上着を買いました'],
+  ['lent', 'lend', 'my cousin', 'a bicycle', 'いとこに自転車を貸しました'],
+  ['bought', 'buy', 'the boy', 'a warm coat', 'その男の子に暖かい上着を買いました'],
   ['made', 'make', 'the children', 'some sandwiches', '子どもたちにサンドイッチを作りました'],
   ['wrote', 'write', 'me', 'a long email', '私に長いメールを書きました'],
 ]
@@ -1321,10 +1321,10 @@ const PRE2_FAMILIES = [
     explain: 'have＋物＋過去分詞で「物を〜してもらう」を表す。',
     cases: HAVE_OBJECT_CASES,
     build: ([objectEn, objectJa, pp, timeEn, timeJa, jaAction]) => ({
-      q: `We had ${objectEn} ___ ${timeEn}.`,
+      q: `I had ${objectEn} ___ ${timeEn}.`,
       choices: [pp, `being ${pp}`, `to be ${pp}`, 'have'],
       answer: pp,
-      ja: `私たちは${timeJa}${objectJa}を${jaAction}もらいました。`,
+      ja: `私は${timeJa}${objectJa}を${jaAction}もらいました。`,
     }),
   }),
   family({
@@ -1413,7 +1413,8 @@ const PRE2_FAMILIES = [
   family({
     key: 'pre2_so_such', level: 'pre2', topic: 'so/such...that',
     explain: 'such＋a/an＋形容詞＋名詞＋that節で程度と結果を表す。',
-    cases: cross(LONG_ADJECTIVES, ROLES),
+    // 結果の「皆が注意深く耳を傾けた」に合う形容詞だけを使う（beautiful・expensive な人だから聞き入る、は成り立たない）。
+    cases: cross(LONG_ADJECTIVES.filter(([adj]) => ['interesting', 'important', 'popular'].includes(adj)), ROLES),
     // ROLES は人を表す語しかないので、主語は It ではなく人を指す代名詞にする。
     // It was such an interesting teacher … は人を It で受けており、英語として成り立たない。
     build: ([[adj, , , jaAdj], [roleEn, roleJa]]) => ({
@@ -1547,6 +1548,10 @@ const jaPotential = (academic) => academic.base === 'review'
   ? academic.jaAction.replace(/見直す$/, '見直せる')
   : academic.jaAction.replace(/する$/, 'できる')
 const jaObject = (academic) => academic.jaAction.replace(/を[^を]+$/, '')
+// 主語が その組織 ではない文で its emissions と書くと its が何も指さないので、持ち主を名詞で言う。
+const jaDetached = (academic, text) => academic.object === 'its emissions'
+  ? text.replace('排出量', 'その会社の排出量')
+  : text
 const detachedObject = (academic) => academic.object === 'its emissions'
   ? 'the company’s emissions'
   : academic.object
@@ -1625,9 +1630,9 @@ const TWO_FAMILIES = [
     explain: '先行詞と後ろの名詞の所有関係は whose で表す。',
     cases: cross(RELATIVE_PEOPLE, ACADEMIC_ACTIONS),
     build: ([[personEn, personJa], academic]) => ({
-      q: `We interviewed ${personEn} ___ team had ${academic.pp} ${academic.object}.`,
+      q: `We interviewed ${personEn} ___ team had ${academic.pp} ${detachedObject(academic)}.`,
       choices: ['whose', 'who', 'whom', 'which'], answer: 'whose',
-      ja: `私たちは、所属チームが${jaPast(academic)}${personJa}に取材しました。`,
+      ja: `私たちは、所属チームが${jaDetached(academic, jaPast(academic))}${personJa}に取材しました。`,
     }),
   }),
   family({
@@ -1676,9 +1681,9 @@ const TWO_FAMILIES = [
     explain: 'コンマ後の数量＋of whom/which で、先行詞の一部を補足する。',
     cases: cross(['two', 'three', 'four'], RELATIVE_PEOPLE, ACADEMIC_ACTIONS),
     build: ([number, [, personJa, , pluralEn], academic]) => ({
-      q: `We met several ${pluralEn}, ${number} of ___ had ${academic.pp} ${academic.object}.`,
+      q: `We met several ${pluralEn}, ${number} of ___ had ${academic.pp} ${detachedObject(academic)}.`,
       choices: ['whom', 'them', 'who', 'that'], answer: 'whom',
-      ja: `私たちは数人の${personJa}に会い、そのうち${number === 'two' ? '2人' : number === 'three' ? '3人' : '4人'}が${jaPast(academic)}ことを知りました。`,
+      ja: `私たちは数人の${personJa}に会い、そのうち${number === 'two' ? '2人' : number === 'three' ? '3人' : '4人'}が${jaDetached(academic, jaPast(academic))}ことを知りました。`,
     }),
   }),
   family({
@@ -1716,10 +1721,10 @@ const TWO_FAMILIES = [
     explain: 'get＋人＋to do で「人に〜してもらう・させる」を表す。',
     cases: cross(THIRD_SUBJECTS, ACADEMIC_ACTIONS),
     build: ([[sEn, sJa], academic]) => ({
-      q: `We got ${sEn} ___ ${academic.object}.`,
+      q: `We got ${sEn} ___ ${detachedObject(academic)}.`,
       choices: [`to ${academic.base}`, academic.base, academic.ing, academic.pp],
       answer: `to ${academic.base}`,
-      ja: `私たちは${sJa}に${jaTe(academic)}もらいました。`,
+      ja: `私たちは${sJa}に${jaDetached(academic, jaTe(academic))}もらいました。`,
     }),
   }),
   family({
@@ -1771,9 +1776,9 @@ const TWO_FAMILIES = [
     explain: 'find/make＋it＋形容詞＋to do で、itを形式目的語として使う。',
     cases: cross(['easy', 'difficult', 'necessary', 'possible'], ACADEMIC_ACTIONS),
     build: ([adj, academic]) => ({
-      q: `The new data made ___ ${adj} to ${academic.base} ${academic.object}.`,
+      q: `The new data made ___ ${adj} to ${academic.base} ${detachedObject(academic)}.`,
       choices: ['it', 'that', 'this', 'what'], answer: 'it',
-      ja: `新しいデータによって、${academic.jaAction}ことが${adj === 'easy' ? '容易に' : adj === 'difficult' ? '難しく' : adj === 'necessary' ? '必要に' : '可能に'}なりました。`,
+      ja: `新しいデータによって、${jaDetached(academic, academic.jaAction)}ことが${adj === 'easy' ? '容易に' : adj === 'difficult' ? '難しく' : adj === 'necessary' ? '必要に' : '可能に'}なりました。`,
     }),
   }),
   family({
@@ -1850,10 +1855,11 @@ const PRE1_FAMILIES = [
     explain: '分詞構文に独自の主語を置くと独立分詞構文になる。',
     cases: cross(['There being no objections', 'The review being complete', 'All factors considered'], ACADEMIC_ACTIONS),
     build: ([opening, academic]) => ({
-      q: `${opening}, ${academic.subject} ___ ${academic.object}.`,
+      // 文の動詞の時制を yesterday で決める（時の手掛かりが無いと現在形 revises なども成り立つ）。
+      q: `${opening}, ${academic.subject} ___ ${academic.object} yesterday.`,
       choices: [academic.past, academic.base, academic.ing, academic.third],
       answer: academic.past,
-      ja: `${opening === 'There being no objections' ? '反対がなかったので' : opening === 'The review being complete' ? '審査が完了したので' : 'すべての要因を考慮して'}、${academic.jaSubject}は${jaPolitePast(academic)}。`,
+      ja: `${opening === 'There being no objections' ? '反対がなかったので' : opening === 'The review being complete' ? '審査が完了したので' : 'すべての要因を考慮して'}、${academic.jaSubject}は昨日${jaPolitePast(academic)}。`,
     }),
   }),
   family({
@@ -1924,9 +1930,9 @@ const PRE1_FAMILIES = [
     explain: '挿入節を除いた関係詞節内で主語なら who、目的語なら whom を使う。',
     cases: cross(RELATIVE_PEOPLE, ACADEMIC_ACTIONS),
     build: ([[personEn, personJa], academic]) => ({
-      q: `This is ${personEn} ___ we believe can ${academic.base} ${academic.object}.`,
+      q: `This is ${personEn} ___ we believe can ${academic.base} ${detachedObject(academic)}.`,
       choices: ['who', 'whom', 'whose', 'which'], answer: 'who',
-      ja: `こちらが${jaPotential(academic)}と私たちが考える${personJa}です。`,
+      ja: `こちらが${jaDetached(academic, jaPotential(academic))}と私たちが考える${personJa}です。`,
     }),
   }),
   family({
@@ -1934,10 +1940,11 @@ const PRE1_FAMILIES = [
     explain: 'with＋目的語＋現在分詞で、目的語が動作中の付帯状況を表す。',
     cases: cross(ACADEMIC_ACTIONS, ['the discussion continuing', 'several members waiting', 'the deadline approaching']),
     build: ([academic, situation]) => ({
-      q: `With ${situation}, ${academic.subject} ___ ${academic.object}.`,
+      // 文の動詞の時制を yesterday で決める（時の手掛かりが無いと現在形 revises なども成り立つ）。
+      q: `With ${situation}, ${academic.subject} ___ ${academic.object} yesterday.`,
       choices: [academic.past, academic.base, academic.ing, academic.third],
       answer: academic.past,
-      ja: `${situation === 'the discussion continuing' ? '議論が続く中' : situation === 'several members waiting' ? '数人の委員が待つ中' : '締め切りが迫る中'}、${academic.jaSubject}は${jaPolitePast(academic)}。`,
+      ja: `${situation === 'the discussion continuing' ? '議論が続く中' : situation === 'several members waiting' ? '数人の委員が待つ中' : '締め切りが迫る中'}、${academic.jaSubject}は昨日${jaPolitePast(academic)}。`,
     }),
   }),
   family({
@@ -2075,9 +2082,9 @@ const ONE_FAMILIES = [
     explain: 'a number of＋複数名詞は複数、the number of＋複数名詞は単数扱い。',
     cases: cross(['A number of experts', 'A number of reviewers'], ACADEMIC_ACTIONS, ['already', 'independently']),
     build: ([subject, academic, adverb]) => ({
-      q: `${subject} ___ ${academic.pp} ${academic.object} ${adverb}.`,
+      q: `${subject} ___ ${academic.pp} ${detachedObject(academic)} ${adverb}.`,
       choices: ['have', 'has', 'is', 'was'], answer: 'have',
-      ja: `多くの専門家が${adverb === 'already' ? 'すでに' : '独自に'}${jaPolitePast(academic)}。`,
+      ja: `${subject === 'A number of experts' ? '多くの専門家' : '多くの審査員'}が${adverb === 'already' ? 'すでに' : '独自に'}${jaDetached(academic, jaPolitePast(academic))}。`,
     }),
   }),
   family({
@@ -2105,9 +2112,9 @@ const ONE_FAMILIES = [
     explain: 'superior/inferior/senior/junior は比較対象の前に than ではなく to を使う。',
     cases: cross(['superior', 'inferior', 'preferable'], ACADEMIC_ACTIONS, ['in accuracy', 'in cost', 'in reliability']),
     build: ([adj, academic, respect]) => ({
-      q: `In handling ${academic.object}, this approach is ${adj} ___ the previous one ${respect}.`,
+      q: `In handling ${detachedObject(academic)}, this approach is ${adj} ___ the previous one ${respect}.`,
       choices: ['to', 'than', 'over than', 'with'], answer: 'to',
-      ja: `${jaObject(academic)}を扱う際、この方法は${respect === 'in accuracy' ? '正確さ' : respect === 'in cost' ? '費用' : '信頼性'}の点で以前の方法より${adj === 'superior' ? '優れています' : adj === 'inferior' ? '劣っています' : '望ましいです'}。`,
+      ja: `${jaDetached(academic, jaObject(academic))}を扱う際、この方法は${respect === 'in accuracy' ? '正確さ' : respect === 'in cost' ? '費用' : '信頼性'}の点で以前の方法より${adj === 'superior' ? '優れています' : adj === 'inferior' ? '劣っています' : '望ましいです'}。`,
     }),
   }),
   family({

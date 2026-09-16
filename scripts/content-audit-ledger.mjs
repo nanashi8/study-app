@@ -360,14 +360,13 @@ function buildInstructorAnswerPathAudit() {
       answerPathCount: displayedChoiceCount + items.length,
     }
   }
+  // 英文法は規則ごとの解説、診断の単語・熟語は選択肢の中身を示すので、講師解説を使うのは読解だけ。
   const families = [
-    family('grammar', '英文法', GRAMMAR, (item) => item.choices.length),
     family('reading', '英語長文内容理解', readingQuestions, (item) => item.choices.length),
-    // 診断の単語・熟語は講師解説を使わず、選択肢の中身だけを示す。
     family(
       'diagnostic',
-      '診断の文法・読解（基準問題・生成3フォーム）',
-      diagnosticQuestions.filter(({ skill }) => skill === 'grammar' || skill === 'reading'),
+      '診断の読解（基準問題・生成3フォーム）',
+      diagnosticQuestions.filter(({ skill }) => skill === 'reading'),
       (item) => item.choices.length,
     ),
   ]

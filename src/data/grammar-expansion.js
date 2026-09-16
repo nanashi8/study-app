@@ -104,7 +104,7 @@ export const GRAMMAR_EXPANSION = [
   ['gr_more_pre1_ellip_02', 'pre1', '省略', 'There are few errors, if ___.', ['any', 'some', 'ever', 'not'], 'any', 'if any は if there are any errors の省略で「あるとしても」を表す。', '誤りは、あるとしてもほとんどありません。'],
   ['gr_more_pre1_emph_01', 'pre1', '強調', 'I ___ appreciate your patience.', ['do', 'am', 'have', 'very'], 'do', '肯定文の動詞の前に do を置くと「本当に〜する」と強調できる。', 'あなたの辛抱に本当に感謝しています。'],
   ['gr_more_pre1_emph_02', 'pre1', '強調', 'It is because the data are incomplete ___ we need another study.', ['that', 'why', 'which', 'what'], 'that', 'It is ... that の強調構文で、理由を表す because 節を強調している。', 'もう一つ研究が必要なのは、データが不完全だからです。'],
-  ['gr_more_pre1_agree_01', 'pre1', '一致', 'Neither of the explanations ___ convincing.', ['is', 'are', 'have', 'be'], 'is', 'neither of＋複数名詞は、標準的な試験文法では単数扱いにして is を用いる。', 'どちらの説明にも説得力がありません。'],
+  ['gr_more_pre1_agree_01', 'pre1', '一致', 'Neither explanation ___ convincing.', ['is', 'are', 'have', 'be'], 'is', 'neither＋単数名詞は「どちらの〜も…ない」を表し、単数扱いにして is を使う。', 'どちらの説明にも説得力がありません。'],
   ['gr_more_pre1_modal_01', 'pre1', '助動詞', 'You ought to ___ consulted us before changing the plan.', ['have', 'had', 'be', 'having'], 'have', 'ought to have＋過去分詞で「〜すべきだったのに」と過去への非難・後悔を表す。', '計画を変える前に、私たちに相談すべきでした。'],
   ['gr_more_pre1_compare_01', 'pre1', '比較構文', 'The sooner we leave, ___ better.', ['the', 'a', 'much', 'more'], 'the', 'the＋比較級 ..., the＋比較級 ... で「〜すればするほど…」を表す。', '早く出発すればするほどよいです。'],
 
@@ -182,7 +182,7 @@ export const GRAMMAR_EXPANSION = [
   ['gr_depth_pre2_indq_01', 'pre2', '間接疑問', 'I wonder ___ he left so early.', ['why', 'why did', 'that why', 'what did'], 'why', '間接疑問では why＋主語＋動詞の平叙文語順にする。', '彼がなぜそんなに早く帰ったのか不思議です。'],
   ['gr_depth_pre2_partc_01', 'pre2', '分詞構文', '___ tired, she went straight to bed.', ['Feeling', 'Felt', 'To feel', 'Having feel'], 'Feeling', 'Because she felt tired を分詞構文にすると Feeling tired となる。', '疲れていたので、彼女はまっすぐ寝ました。'],
   ['gr_depth_pre2_what_01', 'pre2', '関係代名詞 what', 'This is exactly ___ he needs.', ['what', 'that', 'which', 'how'], 'what', 'what は先行詞を含み、「彼が必要としているもの」を表す。', 'これはまさに彼が必要としているものです。'],
-  ['gr_depth_pre2_pastperf_01', 'pre2', '過去完了', 'She ___ finished dinner before the guests arrived.', ['had', 'has', 'was', 'would'], 'had', '客が到着した過去時点より前に完了した動作なので過去完了 had finished を使う。', '客が到着する前に、彼女は夕食を作り終えていました。'],
+  ['gr_depth_pre2_pastperf_01', 'pre2', '過去完了', 'She ___ finished dinner before the guests arrived.', ['had', 'has', 'was', 'would'], 'had', '客が到着した過去時点より前に完了した動作なので過去完了 had finished を使う。', '客が到着する前に、彼女は夕食を済ませていました。'],
   ['gr_depth_pre2_such_01', 'pre2', 'so/such...that', 'The lecture was ___ boring that several students fell asleep.', ['so', 'such', 'too', 'enough'], 'so', 'so＋形容詞＋that 節で、程度とその結果を表す。', '講義はとても退屈だったので、数人の学生が眠ってしまいました。'],
   ['gr_depth_pre2_such_02', 'pre2', 'so/such...that', 'It was ___ an urgent matter that we met immediately.', ['such', 'so', 'too', 'very'], 'such', 'such＋a/an＋形容詞＋名詞＋that 節の語順を使う。', 'それは非常に緊急な問題だったので、私たちはすぐに会合を開きました。'],
   ['gr_depth_pre2_corr_01', 'pre2', '相関接続詞', 'Neither the teacher ___ the students knew the answer.', ['nor', 'or', 'and', 'but'], 'nor', 'neither A nor B で「AもBも〜ない」を表す。', '先生も生徒たちも答えを知りませんでした。'],

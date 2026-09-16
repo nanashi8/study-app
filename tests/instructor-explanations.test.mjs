@@ -11,7 +11,7 @@ import {
 } from '../src/data/dictation-explanations.js'
 import {
   GRAMMAR,
-  grammarChoiceGuidanceFor,
+  GRAMMAR_PRACTICE,
 } from '../src/data/grammar.js'
 import { KOTEN_CULTURE_QUESTIONS } from '../src/data/koten-culture.js'
 import { KOTEN_CULTURE_CHOICE_NOTES } from '../src/data/koten-culture-choice-notes.js'
@@ -55,13 +55,13 @@ import {
 } from '../src/data/writing.js'
 import {
   buildDiagnosticInstructorExplanation,
-  buildGrammarInstructorExplanation,
   buildMathFillInstructorExplanation,
   buildReadingInstructorExplanation,
   isCompleteInstructorExplanation,
 } from '../src/lib/instructorExplanations.js'
 import { buildDiagnosticQuestions, diagnosticChoiceNoteFor } from '../src/lib/diagnosticQuestions.js'
 import { buildAllEtymologyQuizQuestions } from '../src/lib/etymologyQuiz.js'
+import { grammarRuleExplanationFor } from '../src/lib/grammarQuestionExplanations.js'
 import { isGenericPhraseNote, isGenericPhraseOrigin } from '../src/lib/phraseNotes.js'
 import { UNKNOWN_CHOICE_ID } from '../src/lib/quizChoices.js'
 import { pickPhraseDistractors } from '../src/lib/session.js'
@@ -181,9 +181,9 @@ const diagnosticQuestions = [
     seed: 0x1a2b3c4d,
   })),
 ]
-// 共通講師解説を使うのは文法と読解だけ。単語・熟語は選択肢の中身を示す（下の意味を問うテストの検査）。
+// 共通講師解説を使うのは読解だけ。単語・熟語は選択肢の中身、文法は規則ごとの解説を示す（下の検査）。
 const diagnosticInstructorQuestions = diagnosticQuestions.filter(
-  ({ skill }) => skill === 'grammar' || skill === 'reading',
+  ({ skill }) => skill === 'reading',
 )
 
 const allReadingQuestions = ALL_PASSAGES.flatMap((passage) =>
@@ -191,14 +191,6 @@ const allReadingQuestions = ALL_PASSAGES.flatMap((passage) =>
 
 test('全教材の全設問から問題固有の予備校講師型4段解説を生成できる', () => {
   let units = 0
-  for (const item of GRAMMAR) {
-    const value = buildGrammarInstructorExplanation(item)
-    assertExplanation(value, `grammar:${item.id}`)
-    assertContains(value.answer, item.answer, `grammar:${item.id}.answer`)
-    assertContains(value.evidence, item.explain, `grammar:${item.id}.evidence`)
-    units += 1
-  }
-
   for (const question of allReadingQuestions) {
     const value = buildReadingInstructorExplanation(question)
     assertExplanation(value, `reading:${question.q}`)
@@ -228,28 +220,12 @@ test('全教材の全設問から問題固有の予備校講師型4段解説を�
     })
   }
 
-  assert.ok(units >= 4_000, `全件監査の対象数が不足しています: ${units}`)
+  // 長文の設問・学習診断の読解・数学の穴埋め（英文法は規則ごとの解説に移したので含めない）。
+  assert.equal(units, 651, `全件監査の対象数が変わりました: ${units}`)
 })
 
 test('全選択式問題の正答・全誤答・「わからない」に回答別の指導を返す', () => {
   let paths = 0
-  for (const item of GRAMMAR) {
-    paths += assertChoiceFamily({
-      label: `grammar:${item.id}`,
-      cases: choiceCases(item.choices, item.answer),
-      build: (selected) => buildGrammarInstructorExplanation(
-        item,
-        selected,
-        selected === UNKNOWN_CHOICE_ID
-          ? undefined
-          : grammarChoiceGuidanceFor(item, selected),
-      ),
-      answerAnchor: item.answer,
-      evidenceAnchor: item.explain,
-      wrongTrapAnchor: item.explain,
-    })
-  }
-
   for (const question of allReadingQuestions) {
     paths += assertChoiceFamily({
       label: `reading:${question.q}`,
@@ -272,230 +248,38 @@ test('全選択式問題の正答・全誤答・「わからない」に回答�
     })
   }
 
-  assert.ok(paths >= 18_000, `全回答経路の監査数が不足しています: ${paths}`)
+  assert.equal(paths, 1034, `全回答経路の監査数が変わりました: ${paths}`)
 })
 
-const grammarStrategyExpectation = (topic) => {
-  if (topic === '高度語法') return /この問題では.+を最終判断の軸にする/
-  if (/used to\s*\/\s*be used to/.test(topic)) return /to の品詞と直後の形/
-  if (/be to構文/.test(topic)) return /予定・義務・可能・運命・意図/
-  if (/疑問詞\+不定詞|完了不定詞|原形不定詞|不定詞|動名詞/.test(topic)) {
-    return /to不定詞と動名詞/
-  }
-  if (/so\.\.\.that|so\/such\.\.\.that|too\/enough|目的の表現/.test(topic)) {
-    return /程度・結果・目的/
-  }
-  if (/命令文|感嘆文|祈願文/.test(topic)) return /命令・感嘆・願望/
-  if (/倒置|強調|省略|代用|部分否定|クジラ構文/.test(topic)) return /通常語順/
-  if (/it\.\.\.to\/for/.test(topic)) return /形式主語/
-  if (/形式目的語/.test(topic)) return /形式目的語/
-  if (/^(?:一致|主語と動詞の一致)$/.test(topic)) return /主語の中心語/
-  if (/文型|無生物主語|同格|付帯状況/.test(topic)) return /主語・動詞・目的語・補語/
-  if (/関係|複合関係詞|whatever|連鎖関係詞/.test(topic)) return /完全文か不完全文/
-  if (/接続|名詞節|譲歩|相関/.test(topic)) return /語・句・節/
-  if (/be動詞|3単現|3人称単数|There is\/are/.test(topic)) return /人称と単数・複数/
-  if (/名詞の複数形|冠詞|限定詞|数量表現|指示語/.test(topic)) return /数えられるか/
-  if (/再帰代名詞|代名詞/.test(topic)) return /代名詞が指す名詞/
-  if (/前置詞/.test(topic)) return /位置・方向・時・手段/
-  if (/否定文・疑問文|付加疑問|間接疑問|疑問詞/.test(topic)) return /疑問文全体の語順/
-  if (/助動詞|仮定|条件|had better/.test(topic)) return /反実仮想/
-  if (/時制|完了|進行|過去形|未来表現|過去の習慣|used to|話法/.test(topic)) {
-    return /基準時/
-  }
-  if (/比較/.test(topic)) return /比較する対象/
-  if (/受動|分詞|使役|知覚/.test(topic)) return /する側.*される側/
-  return null
-}
+// 英文法は、決まり文句の4段解説をやめ、規則ごとに書いた解説を出す（形の決まり方と、その文への当てはめ）。
+test('英文法3,555問は規則ごとの解説を出し、決まり文句の講師解説を使わない', async () => {
+  const source = await readFile(new URL('../src/screens/GrammarQuiz.jsx', import.meta.url), 'utf8')
+  assert.doesNotMatch(source, /InstructorExplanation/, 'GrammarQuiz.jsx: 決まり文句の講師解説が戻っています')
+  assert.match(source, /\{grammarRuleExplanationFor\(item\)\}/, 'GrammarQuiz.jsx: 規則ごとの解説がありません')
 
-test('英文法3,450問は全単元で対応する再現可能な解法を示す', () => {
-  const topics = new Set()
-  for (const item of GRAMMAR) {
-    topics.add(item.topic)
-    const value = buildGrammarInstructorExplanation(item)
-    const expected = grammarStrategyExpectation(item.topic)
-    assert.ok(expected, `grammar:${item.id} の単元「${item.topic}」が解法分類されていません`)
-    assert.match(
-      value.strategy,
-      expected,
-      `grammar:${item.id} の単元「${item.topic}」と解法が一致しません`,
-    )
-    if (item.topic === '高度語法') {
-      assertContains(value.strategy, item.explain, `grammar:${item.id}.strategy`)
-    } else {
-      assert.doesNotMatch(
-        value.strategy,
-        /まず完成文で必要な意味と品詞/,
-        `grammar:${item.id} が単元別解法ではなく汎用フォールバックです`,
-      )
-    }
-  }
-  assert.ok(topics.size >= 100, `監査した文法単元数が不足しています: ${topics.size}`)
-
-  const recognizedDiagnosticStrategy =
-    /主語の人称|疑問文全体|基準時|する側|反実仮想|通常語順|比較する対象|to不定詞と動名詞|完全文か不完全文|形式目的語|語・句・節|主語・動詞・目的語・補語|命令・感嘆・願望|数えられるか|代名詞が指す名詞|位置・方向・時・手段|この問題では/
-  for (const question of diagnosticQuestions.filter(({ skill }) => skill === 'grammar')) {
-    const strategy = buildDiagnosticInstructorExplanation(question).strategy
-    assert.match(
-      strategy,
-      recognizedDiagnosticStrategy,
-      `diagnostic:${question.id} に文法事項固有の解法がありません`,
-    )
+  const explanations = new Set()
+  for (const item of GRAMMAR_PRACTICE) {
+    const value = normalize(grammarRuleExplanationFor(item))
+    assert.ok(value.length >= 30, `grammar:${item.id} の解説がありません`)
     assert.doesNotMatch(
-      strategy,
-      /この問題では\s*を最終判断/,
-      `diagnostic:${question.id} の判断軸が空です`,
+      value,
+      /英語の手掛かり|適用する規則|したがって、空所は|この条件を満たすのは|正解は一つに決まる/,
+      `grammar:${item.id} の解説に決まり文句が残っています`,
     )
+    explanations.add(value)
   }
-})
+  assert.equal(GRAMMAR_PRACTICE.length, 3555)
+  // 規則654件と形式別の問題105問に1つずつ。別の規則と同じ文を使い回していない。
+  assert.equal(explanations.size, 759)
 
-// リスニングも問題形式のテスト。設問の型から作る決まり文句の4段解説は置かず、
-// 問題固有の解説と、出題した選択肢すべての説明（和訳と、放送・絵のどこと合うか）を示す。
-test('リスニング160問は、教材の全選択肢に放送や絵に照らした説明を示し、決まり文句の講師解説を使わない', async () => {
-  const source = await readFile(new URL('../src/screens/ListeningQuiz.jsx', import.meta.url), 'utf8')
-  assert.doesNotMatch(source, /InstructorExplanation/, 'ListeningQuiz.jsx: 決まり文句の講師解説が戻っています')
-  assert.match(source, /\{item\.explain\}/, 'ListeningQuiz.jsx: 問題固有の解説がありません')
-  assert.match(source, /<ChoiceExplanations/, 'ListeningQuiz.jsx: 選択肢ごとの欄がありません')
-  assert.match(
-    source,
-    /rows=\{options\.map\(\(choice\) => \(\{[\s\S]*?body: listeningChoiceNoteFor\(item, choice\.id\)/,
-    'ListeningQuiz.jsx: 選択肢の欄がボタンと同じ選択肢から作られていません',
-  )
-
-  let notes = 0
-  for (const item of LISTENING_ITEMS) {
-    const texts = item.choices.map((choice) => normalize(listeningChoiceNoteFor(item, choice.id)))
-    texts.forEach((text, index) => {
-      // 「選択肢の和訳」。放送・絵のどこと合うか（合わないか）、の形。
-      assert.match(text, /^「[^」]+」。.{4,}/u, `listening:${item.id}「${item.choices[index].text}」の説明がありません`)
-    })
-    assert.equal(new Set(texts).size, texts.length, `listening:${item.id} の選択肢の説明が重複しています`)
-    notes += texts.length
+  // 学習診断の文法問題も、同じ規則の解説を出す。
+  const grammarById = new Map(GRAMMAR.map((item) => [item.id, item]))
+  const diagnosticGrammar = diagnosticQuestions.filter(({ sourceId }) => sourceId?.startsWith('grammar:'))
+  assert.ok(diagnosticGrammar.length > 0)
+  for (const question of diagnosticGrammar) {
+    const item = grammarById.get(question.sourceId.slice('grammar:'.length))
+    assert.equal(question.explain, grammarRuleExplanationFor(item), `diagnostic:${question.id}`)
   }
-  // 問題や選択肢を直したのに、説明だけが古いまま残らないようにする。
-  for (const [id, notesByChoice] of Object.entries(LISTENING_CHOICE_NOTES)) {
-    const item = LISTENING_ITEMS.find((entry) => entry.id === id)
-    assert.ok(item, `listening:${id} は存在しない問題の説明です`)
-    assert.deepEqual(
-      Object.keys(notesByChoice).sort(),
-      item.choices.map((choice) => choice.id).sort(),
-      `listening:${id} の説明の選択肢が教材と違います`,
-    )
-  }
-  assert.equal(notes, 608)
-})
-
-// 数学の選択問題（方針の確認・選択式のステップ）。決まり文句の4段解説は置かず、設問固有の解説と、
-// 出した選択肢すべての説明を示す。教材は正解を先頭に書いているので、画面で並びを混ぜる。
-test('数学の選択問題299問は、全選択肢に式や値に照らした説明を示し、正解を先頭に固定しない', async () => {
-  const source = await readFile(new URL('../src/screens/MathSolve.jsx', import.meta.url), 'utf8')
-  assert.doesNotMatch(source, /buildMathChoiceInstructorExplanation/, 'MathSolve.jsx: 選択問題に決まり文句の講師解説が戻っています')
-  assert.match(
-    source,
-    /const order = useMemo\(\(\) => shuffle\(q\.choices\.map\(\(_, index\) => index\)\), \[q\]\)/,
-    'MathSolve.jsx: 選択肢の並びを混ぜていません',
-  )
-  assert.match(source, /\{order\.map\(\(idx\) => \{/, 'MathSolve.jsx: 選択肢ボタンが混ぜた並びから作られていません')
-  assert.match(source, /<MathText>\{q\.why \?\? q\.note\}<\/MathText>/, 'MathSolve.jsx: 設問固有の解説がありません')
-  assert.match(
-    source,
-    /rows=\{order\.map\(\(idx\) => \(\{[\s\S]*?body: mathChoiceNoteFor\(noteKey, idx\)/,
-    'MathSolve.jsx: 選択肢の欄がボタンと同じ並びから作られていません',
-  )
-  assert.match(source, /noteKey=\{`\$\{p\.id\}:recall`\}/)
-  assert.match(source, /noteKey=\{`\$\{p\.id\}:step:\$\{si\}`\}/)
-
-  const questions = Object.values(MATH_PROBLEMS).flat().flatMap((problem) => [
-    ...(problem.recall?.quiz ? [{ key: `${problem.id}:recall`, question: problem.recall.quiz }] : []),
-    ...problem.steps.flatMap((step, index) => (step.fill ? [] : [{ key: `${problem.id}:step:${index}`, question: step }])),
-  ])
-  let notes = 0
-  for (const { key, question } of questions) {
-    assert.ok(normalize(question.why ?? question.note), `math:${key} の解説がありません`)
-    const texts = question.choices.map((_, index) => normalize(mathChoiceNoteFor(key, index)))
-    texts.forEach((text, index) => {
-      assert.ok(text.length >= 5, `math:${key}「${question.choices[index]}」の説明がありません`)
-      // 画面は $...$ を数式として描くので、閉じていない $ や描けない数式を残さない。
-      const segments = text.split('$')
-      assert.equal(segments.length % 2, 1, `math:${key}「${question.choices[index]}」の説明の $ が閉じていません`)
-      segments.forEach((segment, part) => {
-        if (part % 2 === 0) return
-        assert.doesNotThrow(
-          () => katex.renderToString(segment, { throwOnError: true }),
-          `math:${key} の説明の数式「${segment}」が描けません`,
-        )
-      })
-    })
-    assert.equal(new Set(texts).size, texts.length, `math:${key} の選択肢の説明が重複しています`)
-    notes += texts.length
-  }
-  // 設問や選択肢を直したのに、説明だけが古いまま残らないようにする。
-  for (const [key, list] of Object.entries(MATH_CHOICE_NOTES)) {
-    const entry = questions.find((candidate) => candidate.key === key)
-    assert.ok(entry, `math:${key} は存在しない設問の説明です`)
-    assert.equal(list.length, entry.question.choices.length, `math:${key} の説明の数が選択肢の数と違います`)
-  }
-  assert.equal(questions.length, 299)
-  assert.equal(notes, 896)
-})
-
-const sameFillAnswer = (fill, selectedValues) => {
-  const correct = fill.blanks.map(normalize)
-  const selected = selectedValues.map(normalize)
-  if (correct.length !== selected.length) return false
-  if (fill.unordered) {
-    return [...correct].sort().every((value, index) => value === [...selected].sort()[index])
-  }
-  return correct.every((value, index) => value === selected[index])
-}
-
-test('数学440穴埋めは正誤判定と解説が一致し、順不同7題は逆順も正答として扱う', () => {
-  let fills = 0
-  let unordered = 0
-  for (const problem of Object.values(MATH_PROBLEMS).flat()) {
-    for (const [index, step] of problem.steps.entries()) {
-      if (!step.fill) continue
-      fills += 1
-      const label = `math:${problem.id}:fill:${index}`
-      const correct = buildMathFillInstructorExplanation(problem, step, step.fill.blanks)
-      assertExplanation(correct, `${label}:correct`)
-      assert.doesNotMatch(correct.trap, /一致しない/, `${label} が正答を誤答として説明しています`)
-
-      let wrongValues
-      for (let blankIndex = 0; blankIndex < step.fill.blanks.length; blankIndex += 1) {
-        for (const tile of step.fill.tiles) {
-          const candidate = [...step.fill.blanks]
-          candidate[blankIndex] = tile
-          if (!sameFillAnswer(step.fill, candidate)) {
-            wrongValues = candidate
-            break
-          }
-        }
-        if (wrongValues) break
-      }
-      assert.ok(wrongValues, `${label} の誤答経路を作れません`)
-      const wrong = buildMathFillInstructorExplanation(problem, step, wrongValues)
-      assertExplanation(wrong, `${label}:wrong`)
-      assert.match(wrong.trap, /一致しない/, `${label} が誤答を明示していません`)
-      assertContains(wrong.trap, wrongValues.join('、'), `${label}:wrong.trap`)
-      assertContains(wrong.trap, step.note, `${label}:wrong.rule`)
-
-      if (step.fill.unordered) {
-        unordered += 1
-        const reversed = [...step.fill.blanks].reverse()
-        assert.equal(sameFillAnswer(step.fill, reversed), true, `${label} の順不同判定が不一致です`)
-        const reverseExplanation = buildMathFillInstructorExplanation(problem, step, reversed)
-        assertExplanation(reverseExplanation, `${label}:reversed`)
-        assert.doesNotMatch(
-          reverseExplanation.trap,
-          /一致しない/,
-          `${label} が逆順の正答を誤答として説明しています`,
-        )
-        assert.match(reverseExplanation.trap, /順序/, `${label} が順不同条件を説明していません`)
-      }
-    }
-  }
-  assert.equal(fills, 440)
-  assert.equal(unordered, 7)
 })
 
 // ディクテーション・英作文・数学の解き終わりは、決まり文句の4段解説をやめ、その文・その問題だけの説明を出す。
@@ -566,7 +350,6 @@ test('数学の解き終わりは、答えと解き方を1段ずつと、つま�
 test('採点を伴う全問題画面が共通の講師解説を表示する', async () => {
   const screens = [
     'Diagnostic.jsx',
-    'GrammarQuiz.jsx',
     'MathSolve.jsx',
     'components/ReadingComprehensionCheck.jsx',
   ]
@@ -632,7 +415,8 @@ test('意味を問うテストは、出題した選択肢すべての中身を�
   assert.equal(isGenericPhraseNote(PHRASES.find((item) => item.phrase === 'get up')?.note), false)
   assert.match(await read('KotenQuiz.jsx'), /<KotenText>\{word\.note\}<\/KotenText>/)
   const diagnostic = await read('Diagnostic.jsx')
-  assert.match(diagnostic, /question\.skill === 'vocab' \|\| question\.skill === 'usage' \?/)
+  // 単語・熟語は語の説明、文法は規則ごとの解説を1段落で出し、4段の解説は読解だけに使う。
+  assert.match(diagnostic, /question\.skill !== 'reading' \?/)
   assert.match(diagnostic, /question\.skill !== 'vocab' && question\.skill !== 'usage' && question\.review\?\.en/)
   assert.match(diagnostic, /rows=\{question\.choices\.map\(\(choice\) => \(\{[\s\S]*?body: diagnosticChoiceNoteFor\(question, choice\)/)
 

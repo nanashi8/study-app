@@ -1,3 +1,5 @@
+import { GRAMMAR_RULE_EXPLANATIONS } from '../data/grammar-rule-explanations.js'
+
 const clean = (value) => String(value ?? '')
   .replace(/\s+/g, ' ')
   .replace(/。{2,}/g, '。')
@@ -56,6 +58,11 @@ const choicesAreOneVisibleInflectionFamily = (choices) => {
     const forms = regularForms(candidate)
     return normalized.every((choice) => forms.has(choice))
   })
+}
+
+// 答え合わせの「解説」。問題データの explain（短い規則）ごとに、形の決まり方とその文への当てはめを書いてある。
+export function grammarRuleExplanationFor(item) {
+  return GRAMMAR_RULE_EXPLANATIONS[item?.explain] ?? ''
 }
 
 // 語形だけで4択を切れる問題では、解答前の和訳を答えのヒントにしない。
