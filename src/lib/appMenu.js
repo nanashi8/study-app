@@ -19,7 +19,7 @@ const section = (id, label, items) => Object.freeze({
   items: Object.freeze(items),
 })
 
-// 教材の設定に並べる見出しと順番。値は教材ごとに分けず、同じ設定を使う教材で共通。
+// 教材の設定に並べる見出しと順番。値は教材ごとに持つ（src/lib/contentSettings.js）。
 export const CONTENT_SETTING_GROUPS = Object.freeze([
   Object.freeze({
     id: 'study',
@@ -78,6 +78,9 @@ const ENGLISH_CONTENT_SETTINGS = Object.freeze({
   dictation: settingsOf(QUESTION_TEST, ['autoSpeak'], ENGLISH_SPEECH),
 })
 
+// 英語アプリの行がまとめて設定を変える、英語の教材の行。
+export const ENGLISH_CONTENT_SCREENS = Object.freeze(Object.keys(ENGLISH_CONTENT_SETTINGS))
+
 // 教材の行。押すとその教材の設定を開き、設定のいちばん上から教材そのものへ進む。
 const contentItem = (screen, label, description, settings) => Object.freeze({
   ...screenItem(screen, label, description),
@@ -126,7 +129,7 @@ export const APP_MENU_SECTIONS = Object.freeze([
     screenItem('progress', '学習記録・バックアップ', '教材別の記録、学習の傾向、QR・コード'),
   ]),
   section('settings', '設定・アカウント', [
-    actionItem('settings', '設定', '学習カード・音声・ホームの表示'),
+    actionItem('settings', '設定', 'すべての教材の設定をまとめて変える・ホームの表示'),
     actionItem('account', 'ログイン・アカウント', 'クラウド保存とログアウト'),
     actionItem('reset', '学習履歴を選んでリセット', 'すべて、または項目を選択', 'danger'),
   ]),

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useStore } from '../store/useStore.js'
+import { useStore, useContentSettings } from '../store/useStore.js'
 import { WordBookToggle } from '../components/WordListSheet.jsx'
 import { getKoten } from '../data/koten.js'
 import { Button } from '../components/ui.jsx'
@@ -42,7 +42,7 @@ export function KotenStudyScreen() {
   const params = useStore((s) => s.params)
   const back = useStore((s) => s.back)
   const reviewKoten = useStore((s) => s.reviewKoten)
-  const settings = useStore((s) => s.settings)
+  const settings = useContentSettings()
   const revealAll = settings.revealAnswers
 
   const [seed, setSeed] = useState(0)

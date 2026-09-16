@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useStore } from '../store/useStore.js'
+import { useStore, useContentSettings } from '../store/useStore.js'
 import { WordBookToggle } from '../components/WordListSheet.jsx'
 import {
   getKotenGrammar,
@@ -45,7 +45,7 @@ export function KotenGrammarStudyScreen() {
   const params = useStore((state) => state.params)
   const returnTo = useStore((state) => state.returnTo)
   const reviewGrammar = useStore((state) => state.reviewKotenGrammar)
-  const settings = useStore((state) => state.settings)
+  const settings = useContentSettings()
   const revealAll = settings.revealAnswers
 
   const [poolSize] = useState(() => buildDeck(params.ids, 0, params.preserveOrder).length)

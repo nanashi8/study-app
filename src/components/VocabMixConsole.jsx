@@ -1,4 +1,4 @@
-import { useStore } from '../store/useStore.js'
+import { useStore, useContentSettings } from '../store/useStore.js'
 import { isAutomaticVocabularySource } from '../lib/session.js'
 import {
   VOCAB_MIX_STEPS,
@@ -26,7 +26,7 @@ export function vocabMixApplies(screen, params = {}) {
  * leading には、読み上げとの切り替えが入る（そのときは見出しの名前を切り替えに任せる）。
  */
 export function VocabMixConsole({ leading = null } = {}) {
-  const settings = useStore((store) => store.settings)
+  const settings = useContentSettings()
   const setSetting = useStore((store) => store.setSetting)
   const value = normalizeVocabMix(settings.vocabMix)
   const step = vocabMixStep(value)

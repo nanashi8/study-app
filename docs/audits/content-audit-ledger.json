@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-09-16T20:46:14.985Z",
+  "auditedAt": "2026-09-16T20:58:11.187Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -103,7 +103,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "89f143553e11b9fe2141cd400be1963efaf57b3e7f98d9d05ef812581391ab6d",
+    "sha256": "1b8b220f5e045a4ea9db3035b772c53c83b16813bd65b4ad55fb9c5df427f90f",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -164,6 +164,7 @@
       "tests/content-audit-ledger.test.mjs",
       "tests/content-navigation.test.mjs",
       "tests/content-progress.test.mjs",
+      "tests/content-settings.test.mjs",
       "tests/content-top-layout.test.mjs",
       "tests/curriculum-1900-coverage.test.mjs",
       "tests/custom-words.test.mjs",

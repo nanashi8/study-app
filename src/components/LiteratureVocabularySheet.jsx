@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useStore } from '../store/useStore.js'
+import { useStore, useContentSettings } from '../store/useStore.js'
 import { Sheet } from './Sheet.jsx'
 import { SpeakButton } from './SpeakButton.jsx'
 import { RevealAnswersToggle } from './RevealAnswers.jsx'
@@ -58,7 +58,7 @@ export function LiteratureVocabularySheet({
   const srs = useStore((state) => state.srs)
   const kotenSrs = useStore((state) => state.kotenSrs)
   const kanbunVocabSrs = useStore((state) => state.kanbunVocabSrs)
-  const revealAll = useStore((state) => state.settings.revealAnswers === true)
+  const revealAll = useContentSettings().revealAnswers === true
   const stores = { srs, kotenSrs, kanbunVocabSrs }
 
   const [mode, setMode] = useState('list')

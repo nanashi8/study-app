@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { useStore } from '../store/useStore.js'
+import { useStore, useContentSettings } from '../store/useStore.js'
 import { getLevel } from '../data/levels.js'
 import { getWord } from '../data/vocab.js'
 import { resolvePassageWord } from '../data/passage-gloss.js'
@@ -96,7 +96,7 @@ function TappableSentence({ sentence, onWord, sectionTargetIds }) {
 export function ExtendedReader({ passage }) {
   const navigate = useStore((state) => state.navigate)
   const back = useStore((state) => state.back)
-  const settings = useStore((state) => state.settings)
+  const settings = useContentSettings()
   const recordVocabHistory = useStore((state) => state.recordVocabHistory)
   const [sectionIndex, setSectionIndex] = useState(() => storedSectionIndex(passage))
   const [showJa, setShowJa] = useState(false)

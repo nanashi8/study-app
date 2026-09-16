@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef } from 'react'
-import { useStore } from '../store/useStore.js'
+import { useStore, useContentSettings } from '../store/useStore.js'
 import { ProgressRing, ProgressBar, Button, Card } from '../components/ui.jsx'
 import { Flame, Refresh, Home, Bookmark, ArrowRight } from '../components/Icons.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
@@ -59,7 +59,7 @@ export function SessionResultScreen() {
   const exitSessionResult = useStore((state) => state.exitSessionResult)
   const goHome = useStore((state) => state.goHome)
   const stats = useStore((state) => state.stats)
-  const settings = useStore((state) => state.settings)
+  const settings = useContentSettings()
   const srs = useStore((state) => state.srs)
   const learningAnalytics = useStore((state) => state.learningAnalytics)
   const skillStats = useStore((state) => state.skillStats)

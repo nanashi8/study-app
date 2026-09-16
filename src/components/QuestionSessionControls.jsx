@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useStore } from '../store/useStore.js'
+import { useStore, useContentSettings } from '../store/useStore.js'
 import { ChevronLeft, ChevronRight } from './Icons.jsx'
 import { ProgressBar, cx } from './ui.jsx'
 
@@ -119,9 +119,7 @@ export function QuestionSessionControls({
   progressControl = null,
   trailingActions = null,
 }) {
-  const autoAdvanceCorrect = useStore(
-    (state) => state.settings.autoAdvanceCorrect !== false,
-  )
+  const autoAdvanceCorrect = useContentSettings().autoAdvanceCorrect !== false
   const setSetting = useStore((state) => state.setSetting)
   const advanceRef = useRef(onNext)
   const handledSignalsRef = useRef(new Set())

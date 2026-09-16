@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { createContext, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { useStore } from '../store/useStore.js'
 import { useAuth } from '../store/useAuth.js'
@@ -24,6 +24,12 @@ import {
   normalizeVocabMix,
   vocabMixStep,
 } from '../lib/vocabMix.js'
+import {
+  ENGLISH_SETTING_SCOPES,
+  SETTING_SCOPES,
+  effectiveSettings,
+  settingScopesUsing,
+} from '../lib/contentSettings.js'
 import { Button, cx } from './ui.jsx'
 import {
   Book,
@@ -84,12 +90,17 @@ const DAILY_GOALS = [10, 20, 30, 50]
 // 並びは学習画面の選択肢と同じものを使う。「全部」はその教材の在庫すべて。
 const SESSION_SIZES = [...SESSION_SIZE_OPTIONS, SESSION_SIZE_ALL]
 
-function SettingRow({ title, desc, children, stacked = false }) {
+function SettingRow({ title, desc, children, stacked = false, mixed = false }) {
   return (
     <div className={cx('gap-3 py-3', stacked ? 'space-y-2' : 'flex items-center justify-between')}>
       <div className="min-w-0">
         <div className="font-bold text-ink">{title}</div>
         {desc && <div className="text-xs font-bold leading-relaxed text-ink/45">{desc}</div>}
+        {mixed && (
+          <div className="mt-0.5 text-[11px] font-extrabold leading-relaxed text-amber-700" data-setting-mixed>
+            教材ごとに異なります。選ぶと、まとめてそろえます
+          </div>
+        )}
       </div>
       <div className={cx(stacked ? 'w-full' : 'shrink-0')}>{children}</div>
     </div>
@@ -132,17 +143,23 @@ function voiceStatus(voices, selectedVoiceURI) {
   return `高品質・標準音声が使えないため、${choice.voice.name}を代替使用`
 }
 
-function VoiceSelect({ voices, value, onChange, label }) {
+const MIXED_VOICE = '__mixed__'
+
+function VoiceSelect({ voices, value, onChange, label, mixed = false }) {
   const betterVoiceAvailable = voices.some((voice) => voiceQuality(voice) !== 'low')
-  const effectiveValue = usableSelectedVoiceURI(voices, value)
+  const effectiveValue = mixed ? MIXED_VOICE : usableSelectedVoiceURI(voices, value)
 
   return (
     <select
       aria-label={label}
       value={effectiveValue}
-      onChange={(event) => onChange(event.target.value || null)}
+      onChange={(event) => {
+        if (event.target.value === MIXED_VOICE) return
+        onChange(event.target.value || null)
+      }}
       className="w-full rounded-xl bg-white px-3 py-2 text-sm font-bold text-ink ring-1 ring-brand-100"
     >
+      {mixed && <option value={MIXED_VOICE} disabled>教材ごとに異なる</option>}
       <option value="">自動（高品質優先）</option>
       {VOICE_GROUPS.map((group) => {
         const groupedVoices = voices.filter(
@@ -184,14 +201,42 @@ function useVoices(readVoices) {
   return voices
 }
 
-function SpeechRateSetting() {
+// 設定の部品が読み書きする教材。scopes が null なら、すべての教材をまとめて変える（全体の設定）。
+const SettingTargetContext = createContext({ scopes: null })
+
+// 見比べるときの値。未設定と既定値の違いで「教材ごとに異なる」にしない。
+function comparableSettingValue(key, value) {
+  if (key === 'autoAdvanceCorrect') return value !== false
+  if (key === 'revealAnswers' || key === 'hideSpelling') return value === true
+  if (key === 'autoSpeak' || key === 'showPhonetic') return Boolean(value)
+  if (key === 'vocabMix') return normalizeVocabMix(value)
+  if (key === 'ttsVoiceURI' || key === 'ttsJapaneseVoiceURI') return value || null
+  return value
+}
+
+/** 部品が扱う教材の値。教材ごとに違うときは mixed で、選ぶとその教材すべてを同じ値にする。 */
+function useSettingField(key) {
+  const { scopes } = useContext(SettingTargetContext)
   const settings = useStore((state) => state.settings)
-  const setSetting = useStore((state) => state.setSetting)
+  const setContentSetting = useStore((state) => state.setContentSetting)
+  const targets = settingScopesUsing(key, scopes ?? SETTING_SCOPES)
+  const values = (targets.length ? targets : [null])
+    .map((scope) => comparableSettingValue(key, effectiveSettings(settings, scope)[key]))
+  return {
+    value: values[0],
+    mixed: values.some((value) => value !== values[0]),
+    set: (value) => setContentSetting(scopes ? targets : null, key, value),
+  }
+}
+
+function SpeechRateSetting() {
+  const rate = useSettingField('ttsRate')
 
   return (
     <SettingRow
       title="読み上げの速さ"
-      desc={`現在 ${settings.ttsRate.toFixed(1)}倍。次の再生から反映します。`}
+      desc={rate.mixed ? '次の再生から反映します。' : `現在 ${rate.value.toFixed(1)}倍。次の再生から反映します。`}
+      mixed={rate.mixed}
       stacked
     >
       <input
@@ -199,8 +244,8 @@ function SpeechRateSetting() {
         min="0.5"
         max="1.2"
         step="0.1"
-        value={settings.ttsRate}
-        onChange={(event) => setSetting('ttsRate', Number(event.target.value))}
+        value={rate.value}
+        onChange={(event) => rate.set(Number(event.target.value))}
         aria-label="読み上げの速さ"
         className="w-full accent-brand-500"
       />
@@ -209,11 +254,11 @@ function SpeechRateSetting() {
           <button
             key={preset.value}
             type="button"
-            onClick={() => setSetting('ttsRate', preset.value)}
-            aria-pressed={settings.ttsRate === preset.value}
+            onClick={() => rate.set(preset.value)}
+            aria-pressed={!rate.mixed && rate.value === preset.value}
             className={cx(
               'rounded-xl px-2 py-2 text-xs font-extrabold transition-colors',
-              settings.ttsRate === preset.value
+              !rate.mixed && rate.value === preset.value
                 ? 'bg-brand-500 text-white'
                 : 'bg-brand-50 text-brand-700 active:bg-brand-100',
             )}
@@ -227,21 +272,22 @@ function SpeechRateSetting() {
 }
 
 function EnglishVoiceSetting() {
-  const settings = useStore((state) => state.settings)
-  const setSetting = useStore((state) => state.setSetting)
+  const voice = useSettingField('ttsVoiceURI')
   const voices = useVoices(getEnglishVoices)
 
   return (
     <SettingRow
       title="英語の声"
-      desc={voiceStatus(voices, settings.ttsVoiceURI)}
+      desc={voice.mixed ? null : voiceStatus(voices, voice.value)}
+      mixed={voice.mixed}
       stacked
     >
       <VoiceSelect
         label="英語の読み上げ音声"
         voices={voices}
-        value={settings.ttsVoiceURI}
-        onChange={(value) => setSetting('ttsVoiceURI', value)}
+        value={voice.value}
+        mixed={voice.mixed}
+        onChange={voice.set}
       />
       <VoiceUpgradeNotice voices={voices} />
     </SettingRow>
@@ -249,21 +295,22 @@ function EnglishVoiceSetting() {
 }
 
 function JapaneseVoiceSetting() {
-  const settings = useStore((state) => state.settings)
-  const setSetting = useStore((state) => state.setSetting)
+  const voice = useSettingField('ttsJapaneseVoiceURI')
   const voices = useVoices(getJapaneseVoices)
 
   return (
     <SettingRow
       title="日本語の声"
-      desc={voiceStatus(voices, settings.ttsJapaneseVoiceURI)}
+      desc={voice.mixed ? null : voiceStatus(voices, voice.value)}
+      mixed={voice.mixed}
       stacked
     >
       <VoiceSelect
         label="日本語の読み上げ音声"
         voices={voices}
-        value={settings.ttsJapaneseVoiceURI}
-        onChange={(value) => setSetting('ttsJapaneseVoiceURI', value)}
+        value={voice.value}
+        mixed={voice.mixed}
+        onChange={voice.set}
       />
       <VoiceUpgradeNotice voices={voices} />
     </SettingRow>
@@ -271,79 +318,82 @@ function JapaneseVoiceSetting() {
 }
 
 function AutoSpeakSetting() {
-  const settings = useStore((state) => state.settings)
-  const setSetting = useStore((state) => state.setSetting)
+  const autoSpeak = useSettingField('autoSpeak')
 
   return (
-    <SettingRow title="カード表示時に自動で発音" desc="単語・熟語のカードやディクテーションの問題を開くと、自動で読み上げます">
+    <SettingRow
+      title="カード表示時に自動で発音"
+      desc="単語・熟語のカードやディクテーションの問題を開くと、自動で読み上げます"
+      mixed={autoSpeak.mixed}
+    >
       <Toggle
         label="カード表示時に自動で発音"
-        on={settings.autoSpeak}
-        onChange={(value) => setSetting('autoSpeak', value)}
+        on={!autoSpeak.mixed && autoSpeak.value}
+        onChange={autoSpeak.set}
       />
     </SettingRow>
   )
 }
 
 function ShowPhoneticSetting() {
-  const settings = useStore((state) => state.settings)
-  const setSetting = useStore((state) => state.setSetting)
+  const showPhonetic = useSettingField('showPhonetic')
 
   return (
-    <SettingRow title="発音記号を表示" desc="単語カードに発音記号を出す">
+    <SettingRow title="発音記号を表示" desc="単語カードに発音記号を出す" mixed={showPhonetic.mixed}>
       <Toggle
         label="発音記号を表示"
-        on={settings.showPhonetic}
-        onChange={(value) => setSetting('showPhonetic', value)}
+        on={!showPhonetic.mixed && showPhonetic.value}
+        onChange={showPhonetic.set}
       />
     </SettingRow>
   )
 }
 
 function RevealAnswersSetting() {
-  const settings = useStore((state) => state.settings)
-  const setSetting = useStore((state) => state.setSetting)
+  const revealAnswers = useSettingField('revealAnswers')
 
   return (
     <SettingRow
       title="答えを開いたまま見せる"
       desc="暗記カードの意味や答えを最初から表示します。カード画面の「意味」「答え」でも切り替えられます"
+      mixed={revealAnswers.mixed}
     >
       <Toggle
         label="答えを開いたまま見せる"
-        on={settings.revealAnswers === true}
-        onChange={(value) => setSetting('revealAnswers', value)}
+        on={!revealAnswers.mixed && revealAnswers.value}
+        onChange={revealAnswers.set}
       />
     </SettingRow>
   )
 }
 
 function HideSpellingSetting() {
-  const settings = useStore((state) => state.settings)
-  const setSetting = useStore((state) => state.setSetting)
+  const hideSpelling = useSettingField('hideSpelling')
 
   return (
     <SettingRow
       title="英語のスペルと発音を隠す"
       desc="英単語・熟語の暗記カードで意味を先に見せ、スペルと発音はカードを開くまで隠します。カード画面上部の目のボタンでも切り替えられます"
+      mixed={hideSpelling.mixed}
     >
       <Toggle
         label="英語のスペルと発音を隠す"
-        on={settings.hideSpelling === true}
-        onChange={(value) => setSetting('hideSpelling', value)}
+        on={!hideSpelling.mixed && hideSpelling.value}
+        onChange={hideSpelling.set}
       />
     </SettingRow>
   )
 }
 
 function SessionSizeSetting() {
-  const settings = useStore((state) => state.settings)
-  const setSetting = useStore((state) => state.setSetting)
+  const sessionSize = useSettingField('sessionSize')
+  const current = sessionSize.value === SESSION_SIZE_ALL ? '全部' : `${sessionSize.value ?? 10}問`
 
   return (
     <SettingRow
       title="1回の問題数"
-      desc={`現在 ${settings.sessionSize === SESSION_SIZE_ALL ? '全部' : `${settings.sessionSize ?? 10}問`}・学習中は「1/10」の表示をタップしても変更できます`}
+      desc={`${sessionSize.mixed ? '' : `現在 ${current}・`}学習中は「1/10」の表示をタップしても変更できます`}
+      mixed={sessionSize.mixed}
       stacked
     >
       <div className="grid grid-cols-4 gap-2">
@@ -351,11 +401,11 @@ function SessionSizeSetting() {
           <button
             key={size}
             type="button"
-            onClick={() => setSetting('sessionSize', size)}
-            aria-pressed={settings.sessionSize === size}
+            onClick={() => sessionSize.set(size)}
+            aria-pressed={!sessionSize.mixed && sessionSize.value === size}
             className={cx(
               'min-h-11 rounded-xl text-sm font-extrabold transition-colors',
-              settings.sessionSize === size
+              !sessionSize.mixed && sessionSize.value === size
                 ? 'bg-brand-500 text-white'
                 : 'bg-brand-50 text-brand-700',
             )}
@@ -369,32 +419,31 @@ function SessionSizeSetting() {
 }
 
 function AutoAdvanceSetting() {
-  const settings = useStore((state) => state.settings)
-  const setSetting = useStore((state) => state.setSetting)
+  const autoAdvance = useSettingField('autoAdvanceCorrect')
 
   return (
     <SettingRow
       title="正解したら自動で次へ"
       desc="テストで正解したら、少し待って次の問題へ進みます。テスト画面上部の「正解後」でも切り替えられます"
+      mixed={autoAdvance.mixed}
     >
       <Toggle
         label="正解したら自動で次へ"
-        on={settings.autoAdvanceCorrect !== false}
-        onChange={(value) => setSetting('autoAdvanceCorrect', value)}
+        on={!autoAdvance.mixed && autoAdvance.value}
+        onChange={autoAdvance.set}
       />
     </SettingRow>
   )
 }
 
 function VocabMixSetting() {
-  const settings = useStore((state) => state.settings)
-  const setSetting = useStore((state) => state.setSetting)
-  const vocabMix = normalizeVocabMix(settings.vocabMix)
+  const vocabMix = useSettingField('vocabMix')
 
   return (
     <SettingRow
       title="英単語の出題バランス"
-      desc={`現在 ${vocabMixStep(vocabMix).label}（${describeVocabMix(vocabMix)}）・級や分野から始める英単語の暗記・テストで、復習と未修のどちらを多く出すかを決めます。学習中は画面下部の「出題」でも変えられます`}
+      desc={`${vocabMix.mixed ? '' : `現在 ${vocabMixStep(vocabMix.value).label}（${describeVocabMix(vocabMix.value)}）・`}級や分野から始める英単語の暗記・テストで、復習と未修のどちらを多く出すかを決めます。学習中は画面下部の「出題」でも変えられます`}
+      mixed={vocabMix.mixed}
       stacked
     >
       <div className="grid grid-cols-3 gap-2">
@@ -402,11 +451,11 @@ function VocabMixSetting() {
           <button
             key={step.id}
             type="button"
-            onClick={() => setSetting('vocabMix', step.id)}
-            aria-pressed={vocabMix === step.id}
+            onClick={() => vocabMix.set(step.id)}
+            aria-pressed={!vocabMix.mixed && vocabMix.value === step.id}
             className={cx(
               'min-h-11 rounded-xl text-sm font-extrabold transition-colors',
-              vocabMix === step.id
+              !vocabMix.mixed && vocabMix.value === step.id
                 ? 'bg-brand-500 text-white'
                 : 'bg-brand-50 text-brand-700',
             )}
@@ -420,13 +469,13 @@ function VocabMixSetting() {
 }
 
 function DailyGoalSetting() {
-  const settings = useStore((state) => state.settings)
-  const setSetting = useStore((state) => state.setSetting)
+  const dailyGoal = useSettingField('dailyGoal')
 
   return (
     <SettingRow
       title="1日の目標"
-      desc={`現在 ${settings.dailyGoal ?? 20}語`}
+      desc={dailyGoal.mixed ? null : `現在 ${dailyGoal.value ?? 20}語`}
+      mixed={dailyGoal.mixed}
       stacked
     >
       <div className="grid grid-cols-4 gap-2">
@@ -434,11 +483,11 @@ function DailyGoalSetting() {
           <button
             key={goal}
             type="button"
-            onClick={() => setSetting('dailyGoal', goal)}
-            aria-pressed={settings.dailyGoal === goal}
+            onClick={() => dailyGoal.set(goal)}
+            aria-pressed={!dailyGoal.mixed && dailyGoal.value === goal}
             className={cx(
               'min-h-11 rounded-xl text-sm font-extrabold transition-colors',
-              settings.dailyGoal === goal
+              !dailyGoal.mixed && dailyGoal.value === goal
                 ? 'bg-brand-500 text-white'
                 : 'bg-brand-50 text-brand-700',
             )}
@@ -496,7 +545,9 @@ function SpeechNotes() {
 }
 
 function VoiceTestButtons({ english = true, japanese = true }) {
-  const settings = useStore((state) => state.settings)
+  const rate = useSettingField('ttsRate')
+  const englishVoice = useSettingField('ttsVoiceURI')
+  const japaneseVoice = useSettingField('ttsJapaneseVoiceURI')
 
   return (
     <div className={cx('grid gap-2 pb-3', english && japanese ? 'grid-cols-2' : 'grid-cols-1')}>
@@ -507,8 +558,8 @@ function VoiceTestButtons({ english = true, japanese = true }) {
           onClick={() =>
             playSpeechItems(['After a brief pause, Alice looked up. “Where am I going?” she wondered.'], {
               title: '英語の試聴',
-              rate: settings.ttsRate,
-              voiceURI: settings.ttsVoiceURI,
+              rate: rate.value,
+              voiceURI: englishVoice.value,
               style: 'passage',
             })
           }
@@ -524,8 +575,8 @@ function VoiceTestButtons({ english = true, japanese = true }) {
             playSpeechItems(['少し間を置いて、アリスは顔を上げました。「ここはどこ？」と、静かにたずねます。'], {
               title: '日本語の試聴',
               lang: 'ja-JP',
-              rate: settings.ttsRate,
-              japaneseVoiceURI: settings.ttsJapaneseVoiceURI,
+              rate: rate.value,
+              japaneseVoiceURI: japaneseVoice.value,
               style: 'passage',
             })
           }
@@ -560,8 +611,14 @@ function LearningSettingsPanel() {
   )
 }
 
-// メニューの教材の行から開く、その教材で効く設定だけを並べた画面。
+// メニューの教材の行から開く、その教材で効く設定だけを並べた画面。値はその教材だけのもの。
+// 英語アプリの行は、英語の教材すべてをまとめて変える。
 function ContentSettingsPanel({ item, onOpen }) {
+  const englishApp = item.screen === 'home'
+  const target = useMemo(
+    () => ({ scopes: englishApp ? ENGLISH_SETTING_SCOPES : [item.screen] }),
+    [englishApp, item.screen],
+  )
   const groups = CONTENT_SETTING_GROUPS
     .map((group) => ({
       ...group,
@@ -570,57 +627,61 @@ function ContentSettingsPanel({ item, onOpen }) {
     .filter((group) => group.ids.length)
 
   return (
-    <section aria-label={`${item.label}の設定`} data-content-settings={item.screen}>
-      <button
-        type="button"
-        onClick={onOpen}
-        className="flex min-h-14 w-full items-center gap-3 rounded-2xl bg-brand-50 px-4 py-3 text-left active:bg-brand-100"
-        data-content-settings-open
-      >
-        <span className="min-w-0 flex-1">
-          <strong className="block text-sm font-extrabold text-brand-800">{item.label}を開く</strong>
-          <span className="mt-0.5 block text-[11px] font-bold leading-snug text-brand-700/70">
-            {item.description}
+    <SettingTargetContext.Provider value={target}>
+      <section aria-label={`${item.label}の設定`} data-content-settings={item.screen}>
+        <button
+          type="button"
+          onClick={onOpen}
+          className="flex min-h-14 w-full items-center gap-3 rounded-2xl bg-brand-50 px-4 py-3 text-left active:bg-brand-100"
+          data-content-settings-open
+        >
+          <span className="min-w-0 flex-1">
+            <strong className="block text-sm font-extrabold text-brand-800">{item.label}を開く</strong>
+            <span className="mt-0.5 block text-[11px] font-bold leading-snug text-brand-700/70">
+              {item.description}
+            </span>
           </span>
-        </span>
-        <ChevronRight size={18} className="shrink-0 text-brand-400" />
-      </button>
+          <ChevronRight size={18} className="shrink-0 text-brand-400" />
+        </button>
 
-      {groups.length ? (
-        <>
-          <p className="mt-3 px-1 text-xs font-bold leading-relaxed text-ink/50">
-            ここで変えた設定は、同じ設定を使うほかの教材にも反映されます。
-          </p>
-          {groups.map((group) => {
-            const english = group.ids.includes('ttsVoiceURI')
-            const japanese = group.ids.includes('ttsJapaneseVoiceURI')
-            return (
-              <section
-                key={group.id}
-                aria-label={group.label}
-                className="mt-4"
-                data-content-setting-group={group.id}
-              >
-                <h3 className="px-1 font-display text-sm font-extrabold text-ink/65">{group.label}</h3>
-                {(english || japanese) && (
-                  <div className="px-1">
-                    <SpeechNotes />
+        {groups.length ? (
+          <>
+            <p className="mt-3 px-1 text-xs font-bold leading-relaxed text-ink/50" data-content-settings-note>
+              {englishApp
+                ? '英語の教材すべてに、まとめて反映します。教材ごとの設定は、メニューの各教材の行から変えられます。'
+                : 'この教材だけの設定です。ほかの教材の設定は変わりません。'}
+            </p>
+            {groups.map((group) => {
+              const english = group.ids.includes('ttsVoiceURI')
+              const japanese = group.ids.includes('ttsJapaneseVoiceURI')
+              return (
+                <section
+                  key={group.id}
+                  aria-label={group.label}
+                  className="mt-4"
+                  data-content-setting-group={group.id}
+                >
+                  <h3 className="px-1 font-display text-sm font-extrabold text-ink/65">{group.label}</h3>
+                  {(english || japanese) && (
+                    <div className="px-1">
+                      <SpeechNotes />
+                    </div>
+                  )}
+                  <div className="mt-2 rounded-2xl border border-slate-200/80 bg-white px-4">
+                    <SettingControls ids={group.ids} />
+                    {(english || japanese) && <VoiceTestButtons english={english} japanese={japanese} />}
                   </div>
-                )}
-                <div className="mt-2 rounded-2xl border border-slate-200/80 bg-white px-4">
-                  <SettingControls ids={group.ids} />
-                  {(english || japanese) && <VoiceTestButtons english={english} japanese={japanese} />}
-                </div>
-              </section>
-            )
-          })}
-        </>
-      ) : (
-        <p className="mt-3 rounded-2xl bg-slate-50 px-4 py-3 text-xs font-bold leading-relaxed text-ink/55">
-          {item.label}には、変えられる設定はありません。
-        </p>
-      )}
-    </section>
+                </section>
+              )
+            })}
+          </>
+        ) : (
+          <p className="mt-3 rounded-2xl bg-slate-50 px-4 py-3 text-xs font-bold leading-relaxed text-ink/55">
+            {item.label}には、変えられる設定はありません。
+          </p>
+        )}
+      </section>
+    </SettingTargetContext.Provider>
   )
 }
 
@@ -643,39 +704,44 @@ function SettingsSection({ title, desc, children, defaultOpen = false }) {
   )
 }
 
+// 全体の設定。ここで変えると、すべての教材がその値にそろう。
+const ALL_CONTENTS_TARGET = { scopes: null }
+
 export function SettingsMenuPanel({ heading = true }) {
   return (
-    <section aria-label="設定" data-settings-central-panel>
-      {heading && (
-        <div className="pt-3">
-          <h2 className="font-display text-lg font-extrabold text-ink">設定</h2>
-          <p className="mt-1 text-xs font-bold leading-relaxed text-ink/50">
-            保存される学習・音声・表示設定を、ここで変更できます。
-          </p>
+    <SettingTargetContext.Provider value={ALL_CONTENTS_TARGET}>
+      <section aria-label="設定" data-settings-central-panel>
+        {heading && (
+          <div className="pt-3">
+            <h2 className="font-display text-lg font-extrabold text-ink">設定</h2>
+          </div>
+        )}
+        <p className={cx('px-1 text-xs font-bold leading-relaxed text-ink/50', heading ? 'mt-1' : '')} data-settings-all-contents-note>
+          ここで変えると、すべての教材がその値にそろいます。教材ごとの設定は、メニューの各教材の行から変えられます。
+        </p>
+        <div className="mt-3 space-y-3">
+          <SettingsSection
+            title="学習カード・目標"
+            desc="答えの表示、問題数、正解後の自動送り、出題バランス、1日の目標"
+            defaultOpen
+          >
+            <LearningSettingsPanel />
+          </SettingsSection>
+          <SettingsSection
+            title="音声・発音"
+            desc="速度、英語・日本語の声、自動発音、発音記号"
+          >
+            <SpeechSettingsPanel heading={false} />
+          </SettingsSection>
+          <SettingsSection
+            title="ホームの表示"
+            desc="スタディアプリ ホームの並び順と表示・非表示"
+          >
+            <PortalSettingsPanel />
+          </SettingsSection>
         </div>
-      )}
-      <div className={cx('space-y-3', heading ? 'mt-3' : '')}>
-        <SettingsSection
-          title="学習カード・目標"
-          desc="答えの表示、問題数、正解後の自動送り、出題バランス、1日の目標"
-          defaultOpen
-        >
-          <LearningSettingsPanel />
-        </SettingsSection>
-        <SettingsSection
-          title="音声・発音"
-          desc="速度、英語・日本語の声、自動発音、発音記号"
-        >
-          <SpeechSettingsPanel heading={false} />
-        </SettingsSection>
-        <SettingsSection
-          title="ホームの表示"
-          desc="スタディアプリ ホームの並び順と表示・非表示"
-        >
-          <PortalSettingsPanel />
-        </SettingsSection>
-      </div>
-    </section>
+      </section>
+    </SettingTargetContext.Provider>
   )
 }
 

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { useStore } from '../store/useStore.js'
+import { useStore, useContentSettings } from '../store/useStore.js'
 import { WordBookToggle } from '../components/WordListSheet.jsx'
 import {
   answeredSessionIndexes,
@@ -46,7 +46,7 @@ export function PhraseStudyScreen() {
   const back = useStore((s) => s.back)
   const returnTo = useStore((s) => s.returnTo)
   const review = useStore((s) => s.review)
-  const settings = useStore((s) => s.settings)
+  const settings = useContentSettings()
 
   // 暗記モード：ONなら毎カード最初から意味・解説を開いて見せる（単語学習と共通）。
   const revealAll = settings.revealAnswers

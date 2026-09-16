@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useStore } from '../store/useStore.js'
+import { useStore, useContentSettings } from '../store/useStore.js'
 import { WordBookToggle } from '../components/WordListSheet.jsx'
 import { kanbunNotebookDomain } from '../lib/wordBookLaunch.js'
 import {
@@ -81,7 +81,8 @@ export function KanbunStudyScreen() {
   const review = useStore((state) => state.reviewKanbun)
   const domain = KANBUN_COLLECTIONS[params.domain] ? params.domain : 'vocab'
   const meta = kanbunDomainMeta(domain)
-  const revealAll = useStore((state) => state.settings.revealAnswers)
+  const settings = useContentSettings()
+  const revealAll = settings.revealAnswers
   // size を指定しないときは設定した問題数まで絞る。一覧で選んだ順でなければ、いまの記録から全教材共通の出題順に並べる。
   const buildFor = (ids, size) => {
     const selected = kanbunItems(domain, ids)

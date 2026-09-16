@@ -1,4 +1,4 @@
-import { useStore } from '../store/useStore.js'
+import { useStore, useContentSettings } from '../store/useStore.js'
 import { cx } from './ui.jsx'
 import { Eye, EyeOff } from './Icons.jsx'
 
@@ -16,8 +16,9 @@ export function RevealAnswersToggle({
   spellingLabel = null,
   toolbar = false,
 }) {
-  const revealAnswers = useStore((state) => state.settings.revealAnswers === true)
-  const hideSpelling = useStore((state) => state.settings.hideSpelling === true)
+  const settings = useContentSettings()
+  const revealAnswers = settings.revealAnswers === true
+  const hideSpelling = settings.hideSpelling === true
   const setSetting = useStore((state) => state.setSetting)
   const withSpelling = Boolean(spellingLabel)
   // スペルを隠せない画面（古典・漢文など）では、スペルを隠す設定のときも「意味を隠す」段として扱う。
