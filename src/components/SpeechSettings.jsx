@@ -18,6 +18,12 @@ import {
 import { Sheet } from './Sheet.jsx'
 import { SESSION_SIZE_ALL, SESSION_SIZE_OPTIONS } from './SessionSize.jsx'
 import { isAppHomeScreen } from '../lib/appHome.js'
+import {
+  VOCAB_MIX_STEPS,
+  describeVocabMix,
+  normalizeVocabMix,
+  vocabMixStep,
+} from '../lib/vocabMix.js'
 import { Button, cx } from './ui.jsx'
 import {
   Book,
@@ -100,7 +106,8 @@ function Toggle({ on, onChange, label }) {
     >
       <span
         className={cx(
-          'absolute top-0.5 h-6 w-6 rounded-full bg-white shadow transition-transform',
+          // left-0 がないと、ボタンの中央揃えでつまみが中央から始まり、オフでも右に寄って見える。
+          'absolute left-0 top-0.5 h-6 w-6 rounded-full bg-white shadow transition-transform',
           on ? 'translate-x-5' : 'translate-x-0.5',
         )}
       />
@@ -320,6 +327,7 @@ export function SpeechSettingsPanel({ heading = true }) {
 function LearningSettingsPanel() {
   const settings = useStore((state) => state.settings)
   const setSetting = useStore((state) => state.setSetting)
+  const vocabMix = normalizeVocabMix(settings.vocabMix)
 
   return (
     <section aria-label="学習設定">
@@ -364,6 +372,40 @@ function LearningSettingsPanel() {
                 )}
               >
                 {size === SESSION_SIZE_ALL ? '全部' : `${size}問`}
+              </button>
+            ))}
+          </div>
+        </SettingRow>
+        <SettingRow
+          title="正解したら自動で次へ"
+          desc="テストで正解したら、少し待って次の問題へ進みます。テスト画面上部の「正解後」でも切り替えられます"
+        >
+          <Toggle
+            label="正解したら自動で次へ"
+            on={settings.autoAdvanceCorrect !== false}
+            onChange={(value) => setSetting('autoAdvanceCorrect', value)}
+          />
+        </SettingRow>
+        <SettingRow
+          title="英単語の出題バランス"
+          desc={`現在 ${vocabMixStep(vocabMix).label}（${describeVocabMix(vocabMix)}）・級や分野から始める英単語の暗記・テストで、復習と未修のどちらを多く出すかを決めます。学習中は画面下部の「出題」でも変えられます`}
+          stacked
+        >
+          <div className="grid grid-cols-3 gap-2">
+            {VOCAB_MIX_STEPS.map((step) => (
+              <button
+                key={step.id}
+                type="button"
+                onClick={() => setSetting('vocabMix', step.id)}
+                aria-pressed={vocabMix === step.id}
+                className={cx(
+                  'min-h-11 rounded-xl text-sm font-extrabold transition-colors',
+                  vocabMix === step.id
+                    ? 'bg-brand-500 text-white'
+                    : 'bg-brand-50 text-brand-700',
+                )}
+              >
+                {step.label}
               </button>
             ))}
           </div>
@@ -430,7 +472,7 @@ export function SettingsMenuPanel({ heading = true }) {
       <div className={cx('space-y-3', heading ? 'mt-3' : '')}>
         <SettingsSection
           title="学習カード・目標"
-          desc="答えの表示方法と1日の学習量"
+          desc="答えの表示、問題数、正解後の自動送り、出題バランス、1日の目標"
           defaultOpen
         >
           <LearningSettingsPanel />

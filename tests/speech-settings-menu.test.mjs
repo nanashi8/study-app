@@ -11,6 +11,10 @@ import {
   ALL_PROGRESS_RESET_GROUP_IDS,
   PROGRESS_RESET_GROUPS,
 } from '../src/lib/progressReset.js'
+import {
+  IN_PROGRESS_SCREENS,
+  requiresProgressSaveConfirmation,
+} from '../src/lib/navigationPolicy.js'
 
 const read = (path) =>
   readFileSync(new URL(path, import.meta.url), 'utf8')
@@ -50,7 +54,7 @@ test('上部の一つの共通メニューを全画面から開き、その中�
   assert.match(settings, /data-speech-settings-trigger/)
 })
 
-test('学習途中に戻るボタンを押しても確認を挟まず、メニュー移動では保存できる', () => {
+test('学習途中に戻るボタンを押しても確認を挟まず、メニューからスタディアプリ ホームへ出るときだけ保存できる', () => {
   const header = read('../src/components/AppShell.jsx')
   const settings = read('../src/components/SpeechSettings.jsx')
   const backup = read('../src/components/ProgressBackup.jsx')
@@ -69,9 +73,19 @@ test('学習途中に戻るボタンを押しても確認を挟まず、メニ�
   assert.match(settings, /<ProgressBackupPanel/)
   assert.match(settings, /continueLabel=\{`保存を終えて\$\{pendingLabel\}へ`\}/)
   assert.match(settings, /goPortal\(\)/)
-  assert.match(policy, /targetScreen !== currentScreen/)
   for (const screen of ['vocabStudy', 'vocabQuiz', 'reader', 'grammarQuiz', 'mathSolve', 'diagnostic']) {
     assert.match(policy, new RegExp(`'${screen}'`))
+  }
+  // 答えた分は1問ごとに保存されるので、メニューのほかの項目は途中でもそのまま開く。
+  // 保存確認を出すのは、学習の途中からスタディアプリ ホームへ出るときだけ。
+  for (const current of IN_PROGRESS_SCREENS) {
+    assert.equal(requiresProgressSaveConfirmation(current, 'portal'), true, current)
+    for (const target of APP_MENU_SCREEN_DESTINATIONS.filter((screen) => screen !== 'portal')) {
+      assert.equal(requiresProgressSaveConfirmation(current, target), false, `${current}→${target}`)
+    }
+  }
+  for (const current of ['portal', 'home', 'vocabLevels', 'kotenList', 'sessionResult']) {
+    assert.equal(requiresProgressSaveConfirmation(current, 'portal'), false, current)
   }
   assert.match(backup, /QRCodeCanvas/)
   assert.match(backup, /コードをコピー/)
@@ -205,16 +219,15 @@ test('共通メニューから保存される学習・音声・コンテンツ�
   ])
 
   assert.match(source, /data-settings-central-panel/)
-  assert.match(source, /setSetting\('revealAnswers'/)
-  assert.match(source, /setSetting\('hideSpelling'/)
-  assert.match(source, /setSetting\('dailyGoal'/)
-  assert.match(source, /setSetting\('sessionSize'/)
+  // 学習画面の上や下で切り替えられる設定も、保存される設定はすべてメニューの「設定」から変えられる。
+  for (const key of settingKeys) {
+    assert.ok(source.includes(`setSetting('${key}'`), `メニューの設定で ${key} を変えられない`)
+  }
   assert.match(source, /title="読み上げの速さ"/)
-  assert.match(source, /setSetting\('ttsRate'/)
-  assert.match(source, /setSetting\('ttsVoiceURI'/)
-  assert.match(source, /setSetting\('ttsJapaneseVoiceURI'/)
-  assert.match(source, /setSetting\('autoSpeak'/)
-  assert.match(source, /setSetting\('showPhonetic'/)
+  assert.match(source, /title="正解したら自動で次へ"/)
+  assert.match(source, /title="英単語の出題バランス"/)
+  // トグルのつまみは左端から動かす（中央から始まるとオフでも右に寄り、オンでは枠からはみ出す）。
+  assert.match(source, /'absolute left-0 top-0\.5 h-6 w-6 rounded-full/)
   assert.match(source, /英語をテスト/)
   assert.match(source, /日本語をテスト/)
   assert.doesNotMatch(source, /GameSettingsPanel|title="ゲーム"|龍脈/)
@@ -244,9 +257,9 @@ test('永続設定の変更処理は共通メニューへ集約し、廃止し�
       'components/SessionSize.jsx',
       // 問題数と同じく、カード画面から共通設定を切り替える共通部品。
       'components/RevealAnswers.jsx',
-      // 正解後の自動送りは、問題画面の上部ですぐ切り替える。
+      // 正解後の自動送りは、問題画面の上部でもすぐ切り替える（メニューの設定にも置く）。
       'components/QuestionSessionControls.jsx',
-      // 復習と未修の配分は、読み上げ欄と同じ画面下部の枠で切り替える。
+      // 復習と未修の配分は、読み上げ欄と同じ画面下部の枠でも切り替える（メニューの設定にも置く）。
       'components/VocabMixConsole.jsx',
     ]],
     ['setBattleRelicLevel', ['components/GameSettings.jsx']],
