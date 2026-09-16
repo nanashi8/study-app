@@ -526,9 +526,9 @@ const sourceChecks = [
   ['VocabSearch.jsx', [/SyntaxFamilyGuide/, /item=\{phrase\}/, /この文のポイント/]],
   ['ListeningQuiz.jsx', [/\breview\(/, /UnknownChoiceButton/, /item\.questionJa/, /listeningChoiceNoteFor/]],
   ['DictationPlay.jsx', [/\breview\(/, /positionResults/, /item\.ja/, /dictationExplanationFor/]],
-  ['components/ReadingComprehensionCheck.jsx', [/markReadingDone\(/, /recordSkillResult\(/, /UnknownChoiceButton/, /buildReadingInstructorExplanation/]],
+  ['components/ReadingComprehensionCheck.jsx', [/markReadingDone\(/, /recordSkillResult\(/, /UnknownChoiceButton/, /data-reading-explanation/, /<ReadingChoiceExplanations/]],
   ['WritingPlay.jsx', [/recordWritingCompletion\(/, /writingTokenPositionResults/, /selected\.tip/, /toggleMyGrammar/]],
-  ['Diagnostic.jsx', [/recordDiagnosticResult\(/, /data-diagnostic-explanation/, /buildDiagnosticInstructorExplanation/, /question\.review/]],
+  ['Diagnostic.jsx', [/recordDiagnosticResult\(/, /data-diagnostic-explanation/, /diagnosticChoiceNoteFor\(question, choice\)/, /question\.review/]],
 ]
 for (const [filename, patterns] of sourceChecks) {
   const source = readFileSync(

@@ -71,14 +71,17 @@ test('次回の台帳算定は長文の全和訳ゲートと全選択肢解説�
   assert.match(source, /既存英語長文560択、語彙強化長文64択で全択監査/)
 })
 
-test('全選択式教材の正解・全誤答・わからない経路数を教材別に残す', async () => {
+test('長文と診断の読解の正解・全誤答・わからない経路数と、選択肢の説明の数を残す', async () => {
   const ledger = await readJson('../docs/audits/content-audit-ledger.json')
-  const paths = ledger.instructorAnswerPaths
-  assert.equal(paths.coverageTest, 'tests/instructor-explanations.test.mjs')
+  const paths = ledger.readingAnswerPaths
+  assert.equal(ledger.instructorAnswerPaths, undefined)
+  assert.equal(paths.coverageTest, 'tests/reading-question-translations.test.mjs')
   assert.equal(paths.result, 'pass')
-  // 英文法は規則ごとの解説に移したので、講師解説の経路は長文と学習診断の読解だけ。
+  assert.equal(paths.failureCount, 0)
+  // 長文42本の183問と、学習診断の読解28問。どの経路でも根拠の解説と出題した選択肢すべての説明を出す。
   assert.equal(paths.questionCount, 211)
   assert.equal(paths.displayedChoiceCount, 823)
+  assert.equal(paths.choiceNoteCount, 823)
   assert.equal(paths.unknownPathCount, 211)
   assert.equal(paths.answerPathCount, 1_034)
   assert.deepEqual(

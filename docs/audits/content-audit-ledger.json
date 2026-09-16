@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-09-16T22:08:05.038Z",
+  "auditedAt": "2026-09-16T22:41:20.079Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -12,12 +12,12 @@
     "quizItemCount": 16473,
     "storedAndGeneratedQuestionPathCount": 4506,
     "storedAndGeneratedChoicePathCount": 17608,
-    "overallContentSha256": "44814719507850429b89ac4d0996d17840da32a9d4d5cf6190dc77a83964e70c"
+    "overallContentSha256": "9764e5234b0cfd6f1ef91166194333fe43c1517dae2db4db1824374abe24a886"
   },
   "completionCriteria": [
     "全18教材カテゴリのID・母数・重複・内容ハッシュが一致する",
     "全問題バンクで選択肢が重複せず、正答が一つだけ存在し、問題別解説がある",
-    "共通講師解説を使う全選択式問題の正解・全誤答・わからない1,034経路に回答別指導がある",
+    "英語長文と学習診断の読解の正解・全誤答・わからない1,034経路で、本文の根拠を示す解説と出題した選択肢すべての説明を表示する",
     "英文法は全3,450問・全13,800選択肢に問題文固有の根拠を持つ",
     "長文32本・794文・140問・560選択肢の和訳と選択肢別解説が原文順に対応する",
     "長文32本すべてが並び替え・文法・語法の技能練習を1問ずつ持ち、原文・訳・重点語・読解ルールが本文と一致する",
@@ -103,7 +103,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "fa556e52c96a53cc68d240dd3e2f90ae4d1c12353c89cd8fdfef9579a74c619c",
+    "sha256": "ccfe27fef778f563c70604d01698bacaf3f61314fca23eb9953678e4b846da88",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -126,7 +126,8 @@
       "src/data/grammar-choice-notes.js",
       "src/lib/reading-translation-audit.js",
       "src/lib/extendedReadingAudit.js",
-      "src/lib/instructorExplanations.js",
+      "src/lib/readingChoiceNotes.js",
+      "src/data/reading-choice-notes.js",
       "src/lib/normalLearningRecordEntries.js",
       "src/data/reading-question-translations.js",
       "src/data/reading-question-translations-core.js",
@@ -425,7 +426,7 @@
       "quizItemCount": 42,
       "learningIdOrderSha256": "5a73640787e6fb7d0e952cc3e4b513903f10cee089c479e8f91d9a8d8bf0215b",
       "quizIdOrderSha256": "5a73640787e6fb7d0e952cc3e4b513903f10cee089c479e8f91d9a8d8bf0215b",
-      "contentSha256": "37d1e705909ba317d3aa920fedb5edf573d2dff776349970373f71517b84d5c5",
+      "contentSha256": "adef61e35695d403733085f97f23401c259aec4dac3a8c91db7d2bf6a8df24d8",
       "auditGateIds": [
         "inventory",
         "coreData",
@@ -829,20 +830,24 @@
       "failures": []
     }
   ],
-  "instructorAnswerPaths": {
-    "coverageTest": "tests/instructor-explanations.test.mjs",
-    "requirement": "共通講師解説を使う全選択式問題の正解・全誤答・わからないに、正解、問題固有の根拠、回答別の指導、次に使える考え方を返す",
+  "readingAnswerPaths": {
+    "coverageTest": "tests/reading-question-translations.test.mjs",
+    "requirement": "英語長文と学習診断の読解は、正解・全誤答・わからないのどれでも、本文の根拠を示す解説と、出題した選択肢すべての説明を表示する",
     "questionCount": 211,
     "displayedChoiceCount": 823,
+    "choiceNoteCount": 823,
     "unknownPathCount": 211,
     "answerPathCount": 1034,
     "result": "pass",
+    "failureCount": 0,
     "families": [
       {
         "id": "reading",
         "label": "英語長文内容理解",
         "questionCount": 183,
+        "explanationCount": 183,
         "displayedChoiceCount": 732,
+        "choiceNoteCount": 732,
         "unknownPathCount": 183,
         "answerPathCount": 915
       },
@@ -850,11 +855,14 @@
         "id": "diagnostic",
         "label": "診断の読解（基準問題・生成3フォーム）",
         "questionCount": 28,
+        "explanationCount": 28,
         "displayedChoiceCount": 91,
+        "choiceNoteCount": 91,
         "unknownPathCount": 28,
         "answerPathCount": 119
       }
-    ]
+    ],
+    "failures": []
   },
   "extendedReadingDetail": {
     "passageCount": 4,

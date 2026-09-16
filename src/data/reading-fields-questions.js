@@ -137,7 +137,7 @@ export const FIELD_READING_QUESTIONS = Object.freeze({
         'The team stopped keeping records of pain.',
       ],
       answer: 'The number of hurt members fell from nine to one.',
-      explain: '第26文が数の変化を示し、第27文で「だれも長く練習していないのに成績は良くなった」と続きます。',
+      explain: '第26文と第27文が、けが人が9人から1人に減ったことを示し、第28文で「だれも長く練習していないのに成績は良くなった」と続きます。',
     },
     {
       q: 'What limit does the mentor point out?',
@@ -148,7 +148,7 @@ export const FIELD_READING_QUESTIONS = Object.freeze({
         'Records cannot predict every accident.',
       ],
       answer: 'Records cannot predict every accident.',
-      explain: '第31文と第32文で「記録はすべての事故を予測できない」「一部の損傷は古い傷から生じる」と限界が述べられています。',
+      explain: '第32文で限界があると注意し、第33文で「記録はすべての事故を予測できない」「一部の損傷は古い傷から生じる」と述べています。',
     },
   ],
   p_2_factory_museum: [
@@ -308,7 +308,7 @@ export const FIELD_READING_QUESTIONS = Object.freeze({
         'It begins when a warning reaches every phone.',
       ],
       answer: 'It grows from contact between people in ordinary times.',
-      explain: '第37文が結論です。第32文から第35文で限界を認めたうえで、第36文の「最後には近所のつながりに頼る」へつながります。',
+      explain: '第38文が結論です。第33文から第36文で限界を認めたうえで、第37文の「最後には近所のつながりに頼る」へつながります。',
     },
   ],
 })
