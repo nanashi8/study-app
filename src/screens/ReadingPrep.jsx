@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import { getPassage } from '../data/passages.js'
 import { getLevel } from '../data/levels.js'
@@ -15,10 +15,17 @@ import { LearningViewTabs } from '../components/LearningViewTabs.jsx'
 import { LongSentenceTranslation } from '../components/LongSentenceTranslation.jsx'
 import { NormalLearningRecordList } from '../components/NormalLearningRecordList.jsx'
 import { WordListSheet } from '../components/WordListSheet.jsx'
+import { SceneBundleRows, SceneBundleSheet } from '../components/SceneBundles.jsx'
 import { wordBookRef } from '../lib/wordBooks.js'
 import { Button, Card, Chip, cx } from '../components/ui.jsx'
 import { summarizeSrsItems } from '../lib/contentProgress.js'
 import { scrollScreenToTop } from '../lib/screenScroll.js'
+import {
+  getSceneBundle,
+  sceneBundleLaunch,
+  sceneBundleWordCount,
+  sceneBundlesForPassage,
+} from '../lib/sceneBundles.js'
 import {
   ArrowRight,
   BookOpen,
@@ -35,6 +42,7 @@ export function ReadingPrepScreen() {
   const params = useStore((state) => state.params)
   const passageId = params.passageId
   const navigate = useStore((state) => state.navigate)
+  const replaceParams = useStore((state) => state.replaceParams)
   const wordBookSets = useStore((state) => state.learningNotebook.sets)
   const srs = useStore((state) => state.srs)
   // 必須語彙をまとめて入れる単語帳を選ぶ窓。
@@ -42,7 +50,17 @@ export function ReadingPrepScreen() {
   const [view, setView] = useState(params.view === 'list' ? 'list' : 'prep')
   const [tab, setTab] = useState(params.listTab === 'phrases' ? 'phrases' : 'words')
   const [detail, setDetail] = useState(null)
+  // 場面の束の暗記・テストから戻ったときは、その束を開いたままにして、次のテストや本文へ進めるようにする。
+  const [openBundle, setOpenBundle] = useState(() => {
+    const bundle = getSceneBundle(params.bundleId)
+    return bundle?.passageId === passageId ? bundle : null
+  })
   const scrollAreaRef = useRef(null)
+
+  // 開き直す束は一度だけ使う。残すと、次に別の画面から戻ったときにも同じ束が開いてしまう。
+  useEffect(() => {
+    if (params.bundleId) replaceParams({ ...params, bundleId: undefined })
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const passage = getPassage(passageId)
 
@@ -57,6 +75,7 @@ export function ReadingPrepScreen() {
 
   const level = getLevel(passage.level)
   const { words, phrases } = getReadingStudy(passage)
+  const sceneBundles = sceneBundlesForPassage(passage.id)
   const passageApproach = readingApproachForPassage(passage)
   const passageRules = readingRulesForPassage(passage)
   const wordIds = words.map((word) => word.id)
@@ -92,6 +111,22 @@ export function ReadingPrepScreen() {
       continueTo,
       returnTo: { screen: 'readingPrep', params: { passageId } },
     })
+
+  // 場面の束は、終えたらこの準備画面の同じ束へ戻る。本文から戻る先（params.returnTo）も持ち越す。
+  const studyBundle = (bundle, mode) => {
+    const target = {
+      screen: 'readingPrep',
+      params: { passageId, bundleId: bundle.id, ...(params.returnTo ? { returnTo: params.returnTo } : {}) },
+    }
+    const { screen, params: launchParams } = sceneBundleLaunch(bundle, mode, {
+      continueTo: { ...target, label: '場面の束に戻る' },
+      returnTo: target,
+    })
+    setOpenBundle(null)
+    navigate(screen, launchParams)
+  }
+
+  const readPassage = () => navigate('reader', { passageId, returnTo: params.returnTo })
 
   // 「準備」と「一覧を確認」を切り替えたときは、切り替え先を先頭から読み始められるようにする。
   const showView = (nextView) => {
@@ -205,6 +240,37 @@ export function ReadingPrepScreen() {
       </div>
 
       <div className="space-y-3">
+        {sceneBundles.length > 0 && (
+          <Card className="overflow-hidden" data-reading-prep-scenes>
+            <div className="flex items-start gap-3 px-4 pb-3 pt-4">
+              <span
+                className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl"
+                style={{ backgroundColor: `${level.color}22`, color: level.color }}
+                aria-hidden="true"
+              >
+                <Cards size={22} />
+              </span>
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center justify-between gap-2">
+                  <h3 className="font-display text-lg font-extrabold text-ink">場面の束</h3>
+                  <span className="shrink-0 text-xs font-extrabold tabular-nums text-ink/45">
+                    {sceneBundles.length}束・{sceneBundleWordCount(sceneBundles)}語
+                  </span>
+                </div>
+                <p className="mt-0.5 text-xs font-bold leading-relaxed text-ink/50">
+                  本文の場面ごとに分けた語を、1束ずつ暗記する
+                </p>
+              </div>
+            </div>
+            <SceneBundleRows
+              bundles={sceneBundles}
+              srs={srs}
+              onOpen={setOpenBundle}
+              className="border-t border-slate-100"
+            />
+          </Card>
+        )}
+
         <LearningEntryCard
           data-reading-prep-entry="words"
           icon={<Cards size={22} />}
@@ -352,6 +418,17 @@ export function ReadingPrepScreen() {
           本文を読む <ArrowRight size={18} />
         </Button>
       </div>
+
+      <SceneBundleSheet
+        bundle={openBundle}
+        onClose={() => setOpenBundle(null)}
+        onStudy={() => studyBundle(openBundle, 'study')}
+        onQuiz={() => studyBundle(openBundle, 'quiz')}
+        onRead={() => {
+          setOpenBundle(null)
+          readPassage()
+        }}
+      />
 
       <WordListSheet
         open={bookSheetOpen}

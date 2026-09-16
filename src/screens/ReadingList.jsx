@@ -7,7 +7,8 @@ import { ScreenHeader } from '../components/AppShell.jsx'
 import { Button, Card, Chip } from '../components/ui.jsx'
 import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
 import { summarizeCompletionItems } from '../lib/contentProgress.js'
-import { Check, ArrowRight, Book } from '../components/Icons.jsx'
+import { Check, ArrowRight, Book, Cards } from '../components/Icons.jsx'
+import { SCENE_BUNDLE_SUMMARY, sceneBundlesForPassage } from '../lib/sceneBundles.js'
 
 const levelOrder = Object.fromEntries(READING_LEVELS.map((l, i) => [l.id, i]))
 const sorted = [...ALL_PASSAGES].sort((a, b) => {
@@ -60,6 +61,25 @@ export function ReadingListScreen() {
           </button>
         </Card>
 
+        <Card className="overflow-hidden" data-scene-bundles-entry>
+          <button
+            type="button"
+            onClick={() => navigate('sceneBundles')}
+            className="flex w-full items-center gap-3 p-4 text-left active:bg-brand-50"
+          >
+            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-amber-100 text-amber-700">
+              <Cards size={21} />
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block font-display text-base font-extrabold text-ink">場面の束から読む</span>
+              <span className="mt-0.5 block text-xs font-bold leading-relaxed text-ink/50">
+                本文の場面ごとの語を暗記してから長文へ。全{SCENE_BUNDLE_SUMMARY.bundles}束
+              </span>
+            </span>
+            <ArrowRight size={19} className="shrink-0 text-brand-500" />
+          </button>
+        </Card>
+
         <Card className="p-4" data-reading-status>
           <LearningStatusBars progress={status} compact units={{ learning: '本', quiz: '本' }} />
           <p className="mt-2 text-[10px] font-bold text-ink/45">読了と読解チェックの最近の結果を、全{ALL_PASSAGES.length}題でまとめて表示</p>
@@ -69,6 +89,7 @@ export function ReadingListScreen() {
           const level = getLevel(p.level)
           const done = readingsDone.includes(p.id)
           const { words, phrases } = getReadingStudy(p)
+          const sceneBundleCount = sceneBundlesForPassage(p.id).length
           return (
             <Card key={p.id} className="overflow-hidden">
               <div className="flex items-center gap-3 p-4">
@@ -106,6 +127,9 @@ export function ReadingListScreen() {
                       <Book size={12} /> 本文 {passageWordCount(p)}語
                     </span>
                     <span className="whitespace-nowrap">・ 必須語彙等 {words.length + phrases.length}項目</span>
+                    {sceneBundleCount > 0 && (
+                      <span className="whitespace-nowrap">・ 場面の束 {sceneBundleCount}</span>
+                    )}
                     {done && (
                       <span className="inline-flex whitespace-nowrap items-center gap-0.5 text-emerald-600">
                         <Check size={12} /> 読了
