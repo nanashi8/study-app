@@ -106,7 +106,7 @@ export function KanbunKundokuScreen() {
               </ol>
             </div>
           </div>
-          <KanbunMarkedText marked="使二人読一レ書" className="mt-4 rounded-2xl bg-slate-50 px-3 py-3" />
+          <KanbunMarkedText marked="使㆓人読㆒㆑書" className="mt-4 rounded-2xl bg-slate-50 px-3 py-3" />
         </Card>
       </main>
     </div>

@@ -25,7 +25,12 @@ import {
   isCorrectKanbunKundokuOrder,
 } from '../src/data/kanbun-kundoku.js'
 import { KANBUN_LEVELS } from '../src/data/kanbun-meta.js'
-import { parseKanbunMarkedText } from '../src/lib/kanbun-marks.js'
+import {
+  kanbunNeedsReturnMarks,
+  kanbunPlainText,
+  kanbunReadingMatchesKakikudashi,
+  parseKanbunMarkedText,
+} from '../src/lib/kanbun-marks.js'
 import { uncoveredKanbunKanji } from '../src/lib/kanbunFurigana.js'
 import { CONTENTS } from '../src/data/contents.js'
 import { APP_MENU_SCREEN_DESTINATIONS } from '../src/lib/appMenu.js'
@@ -110,9 +115,44 @@ for (const exercise of KANBUN_KUNDOKU_EXERCISES) {
   const parsed = parseKanbunMarkedText(exercise.marked)
   assert.deepEqual(parsed.errors, [], `${exercise.id}: 返り点の親字対応が不正`)
   assert.equal(parsed.units.map((unit) => unit.sourceText).join(''), exercise.marked, exercise.id)
+  const match = kanbunReadingMatchesKakikudashi(exercise.marked, exercise.kakikudashi)
+  assert.ok(
+    match.ok,
+    `${exercise.id}: 返り点の読む順が書き下し文と合いません（${match.mismatch || JSON.stringify(match.errors)}）`,
+  )
   kanbunReturnMarkCount += parsed.returnMarkCount
 }
 assert.equal(kanbunReturnMarkCount, 113, '返り点40題の点数が監査基準と不一致です')
+
+// ── 返り点 ────────────────────────────────────────────────
+// 漢文の用例は返り点付きの訓読文で持つ。返る順が書き下し文と矛盾しないこと、
+// 語順が入れ替わる用例に付け忘れがないことを、全件で確かめる。
+let exampleReturnMarkCount = 0
+let markedExampleCount = 0
+for (const [domain, collection] of [['vocab', KANBUN_VOCAB], ['grammar', KANBUN_GRAMMAR]]) {
+  for (const item of collection) {
+    const parsed = parseKanbunMarkedText(item.marked)
+    assert.deepEqual(parsed.errors, [], `${domain}:${item.id}: 返り点の親字対応が不正`)
+    assert.equal(kanbunPlainText(parsed), item.original, `${domain}:${item.id}: 白文が訓読文と一致しません`)
+    const match = kanbunReadingMatchesKakikudashi(item.marked, item.kakikudashi)
+    assert.ok(
+      match.ok,
+      `${domain}:${item.id}: 返り点の読む順が書き下し文と合いません（${match.mismatch || JSON.stringify(match.errors)}）`,
+    )
+    exampleReturnMarkCount += parsed.returnMarkCount
+    if (parsed.returnMarkCount > 0) {
+      markedExampleCount += 1
+    } else {
+      assert.equal(
+        kanbunNeedsReturnMarks(item.original, item.kakikudashi),
+        false,
+        `${domain}:${item.id}: 語順が入れ替わるのに返り点がありません`,
+      )
+    }
+  }
+}
+assert.equal(exampleReturnMarkCount, 426, '用例の返り点の数が監査基準と不一致です')
+assert.equal(markedExampleCount, 182, '返り点付き用例の数が監査基準と不一致です')
 
 const kotenTile = CONTENTS.find((content) => content.id === 'koten-quest')
 const kanbunTile = CONTENTS.find((content) => content.id === 'kanbun-quest')
@@ -178,8 +218,8 @@ assert.deepEqual(furiganaMisses, [], `ふりがなの振り漏れ: ${furiganaMis
 
 // 表示側も、見出し語と書き下し文は共通のルビ部品を通す。
 for (const [file, needles] of [
-  ['src/screens/KanbunStudy.jsx', ['KanbunHeadword', '<KanbunText>{item.kakikudashi}']],
-  ['src/screens/KanbunQuiz.jsx', ['<KanbunText>{question.kakikudashi}']],
+  ['src/screens/KanbunStudy.jsx', ['KanbunHeadword', '<KanbunText>{item.kakikudashi}', 'marked={item.marked}']],
+  ['src/screens/KanbunQuiz.jsx', ['<KanbunText>{question.kakikudashi}', 'marked={question.marked}']],
   ['src/screens/KanbunCatalog.jsx', ['KanbunHeadword']],
   ['src/screens/KanbunKundokuQuiz.jsx', ['<KanbunText>{exercise.kakikudashi}']],
 ]) {
@@ -192,5 +232,6 @@ for (const [file, needles] of [
 console.log('古典・漢文全件監査: PASS')
 console.log('  古典: 暗記430項目 / 選択問題548問相当（出題は3択） / 短文読解36問 / 5段階')
 console.log(`  漢文: 暗記302項目 / 自動生成3択302問 / 返り点・訓読40題・返り点${kanbunReturnMarkCount}個を親字へ固定 / 5段階`)
+console.log(`  用例の返り点: ${markedExampleCount}例文に${exampleReturnMarkCount}個 / 読む順は全件が書き下し文と一致`)
 console.log(`  保存契約: 漢文4項目 / 全${PERSISTED_PROGRESS_FIELDS.length}永続項目`)
 console.log('  ふりがな: 見出し語・書き下し文の振り漏れ0 / 白文は書き下し文と必ず対')

@@ -11,6 +11,7 @@ import { orderForStudy } from '../lib/studyOrder.js'
 import { KANBUN_LEVEL_BY_ID } from '../data/kanbun-meta.js'
 import { Button, Chip } from '../components/ui.jsx'
 import { KanbunText, KanbunHeadword } from '../components/KanbunFurigana.jsx'
+import { KanbunMarkedText } from '../components/KanbunMarkedText.js'
 import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
 import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
 import { answeredSessionIndexes, growDeck, restartSessionCount } from '../lib/session.js'
@@ -57,7 +58,9 @@ function AnswerDetails({ domain, item }) {
       {(item.original || item.scene) && (
         <div className="rounded-2xl bg-gradient-to-br from-slate-950 to-rose-950 p-4 text-white">
           <p className="text-[10px] font-extrabold text-rose-200">{domain === 'culture' ? '本文で使う場面' : '用例'}</p>
-          <p className="mt-2 font-serif text-lg font-bold leading-[1.8]">{item.original || item.scene}</p>
+          {item.marked
+            ? <KanbunMarkedText marked={item.marked} className="mt-2" inverse showLegend={false} size="sm" />
+            : <p className="mt-2 font-serif text-lg font-bold leading-[1.8]">{item.original || item.scene}</p>}
           {item.kakikudashi && <p className="mt-2 text-sm font-bold leading-relaxed text-white/80"><KanbunText>{item.kakikudashi}</KanbunText></p>}
           {item.translation && <p className="mt-1 text-xs font-bold leading-relaxed text-white/60">{item.translation}</p>}
           {item.application && <p className="mt-2 text-xs font-bold leading-relaxed text-white/70">{item.application}</p>}

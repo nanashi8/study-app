@@ -18,6 +18,12 @@ import {
   narrationStepIndex,
 } from '../src/lib/literature.js'
 import { japanesePhraseSpeechText } from '../src/lib/phrase-speech.js'
+import {
+  kanbunNeedsReturnMarks,
+  kanbunPlainText,
+  kanbunReadingMatchesKakikudashi,
+  parseKanbunMarkedText,
+} from '../src/lib/kanbun-marks.js'
 import { LITERATURE_TRANSLATION_REVIEW } from '../src/data/literature-full-text/translation-review.js'
 import { createLearningAnalytics } from '../src/lib/learningAnalytics.js'
 import { useStore } from '../src/store/useStore.js'
@@ -288,6 +294,46 @@ test('漢文3作品は全17場面で原文を表示し、書き下し→現代�
     getLiteratureWork('lit_zh_hanfeizi_contradiction').scenes[4].original,
     '其人弗能應也。',
   )
+})
+
+// 作品本文は旧字体、書き下し文は新字体なので、並びを比べる前に字体をそろえる。
+const OLD_TO_NEW_FORMS = {
+  學: '学', 說: '説', 來: '来', 樂: '楽', 溫: '温', 爲: '為', 對: '対', 戰: '戦',
+  塡: '填', 步: '歩', 鄰: '隣', 國: '国', 與: '与', 譽: '誉', 陷: '陥', 應: '応', 喻: '喩',
+}
+const modernizeForms = (text) => [...`${text}`].map((character) => OLD_TO_NEW_FORMS[character] ?? character).join('')
+
+test('漢文3作品は本文も朗読の区切りも返り点付きで、読む順が書き下し文と合う', () => {
+  let returnMarkCount = 0
+  for (const work of literatureByKind('kanbun')) {
+    for (const [sceneIndex, scene] of work.scenes.entries()) {
+      const where = `${work.id}:${sceneIndex + 1}`
+      assert.ok(scene.marked, `${where}: 訓読文がありません`)
+      const parsed = parseKanbunMarkedText(scene.marked)
+      assert.deepEqual(parsed.errors, [], `${where}: ${JSON.stringify(parsed.errors)}`)
+      assert.equal(kanbunPlainText(parsed), scene.original, `${where}: 白文が訓読文と一致しません`)
+      const match = kanbunReadingMatchesKakikudashi(
+        modernizeForms(scene.marked),
+        modernizeForms(scene.speech),
+      )
+      assert.ok(match.ok, `${where}: 読む順が書き下し文と合いません（${match.mismatch ?? ''}）`)
+      if (parsed.returnMarkCount === 0) {
+        assert.equal(
+          kanbunNeedsReturnMarks(modernizeForms(scene.original), modernizeForms(scene.speech)),
+          false,
+          `${where}: 語順が入れ替わるのに返り点がありません`,
+        )
+      }
+      // 区切りへ配った訓読文は、つなぎ直すと必ず場面の訓読文へ戻る。
+      assert.equal(
+        scene.narrationSegments.map((segment) => segment.marked).join(''),
+        scene.marked,
+        `${where}: 区切りの訓読文が場面と一致しません`,
+      )
+      returnMarkCount += parsed.returnMarkCount
+    }
+  }
+  assert.equal(returnMarkCount, 65)
 })
 
 test('作品語彙・古典文法は既存の共通学習データへ解決できる', () => {

@@ -106,6 +106,8 @@ export function makeKanbunQuestion(domain, item, rng = Math.random) {
     category: item.category,
     prompt,
     passage: item.original || item.scene,
+    // 用例は返り点付きの訓読文で見せる。常識テーマは日本語の場面文なので返り点を持たない。
+    marked: item.marked ?? null,
     choices: Object.freeze(choices),
     answerId: choiceId(domain, item),
     answer: item.answer,

@@ -116,11 +116,12 @@ test('返り点ドリルはレ点・一二点・上下点・甲乙点・天地�
     new Set(KANBUN_KUNDOKU_EXERCISES.map((item) => item.level)),
     new Set(KANBUN_KUNDOKU_LEVELS.map((level) => level.id)),
   )
-  assert.ok(KANBUN_KUNDOKU_EXERCISES.some((item) => item.marked.includes('レ')))
-  assert.ok(KANBUN_KUNDOKU_EXERCISES.some((item) => /[一二]/.test(item.marked)))
-  assert.ok(KANBUN_KUNDOKU_EXERCISES.some((item) => /[上下]/.test(item.marked)))
-  assert.ok(KANBUN_KUNDOKU_EXERCISES.some((item) => /[甲乙]/.test(item.marked)))
-  assert.ok(KANBUN_KUNDOKU_EXERCISES.some((item) => /[天地]/.test(item.marked)))
+  // 返り点は本文の漢字と別の記号（漢文用の㆑㆒㆓…）で書く。
+  assert.ok(KANBUN_KUNDOKU_EXERCISES.some((item) => item.marked.includes('㆑')))
+  assert.ok(KANBUN_KUNDOKU_EXERCISES.some((item) => /[㆒㆓]/u.test(item.marked)))
+  assert.ok(KANBUN_KUNDOKU_EXERCISES.some((item) => /[㆖㆘]/u.test(item.marked)))
+  assert.ok(KANBUN_KUNDOKU_EXERCISES.some((item) => /[㆙㆚]/u.test(item.marked)))
+  assert.ok(KANBUN_KUNDOKU_EXERCISES.some((item) => /[㆝㆞]/u.test(item.marked)))
 
   for (const exercise of KANBUN_KUNDOKU_EXERCISES) {
     assert.equal(getKanbunKundokuExercise(exercise.id), exercise)
