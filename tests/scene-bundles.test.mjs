@@ -68,9 +68,9 @@ test('本文に出る形は、原形・規則変化・長文の不規則変化�
   assert.ok(sceneWordForms(getWord('leaf')).has('leaves'))
   assert.deepEqual([...sceneWordForms({ id: 'ice_cream', word: 'ice cream', pos: '名' })], [])
 
-  // 本文の語義が同じ見出し語を指す出現を先に選ぶ（1文目の claims は別の見出し語「claims」に解決される）。
-  const health = getPassage('p_2_online_health_claims')
-  assert.equal(findSceneWordInPassage(health, getWord('claim')).index, 2)
+  // 本文の語義が同じ見出し語を指す出現を先に選ぶ（12文目の notices は別の見出し語「notices」に解決される）。
+  const translators = getPassage('p_2_disaster_translators')
+  assert.equal(findSceneWordInPassage(translators, getWord('notice')).index, 12)
   // 別の見出し語にしか解決されない形でも、語形変化として本文に出ていれば数える。
   const garden = getPassage('p_3_school_garden')
   assert.deepEqual(findSceneWordInPassage(garden, getWord('decrease')), { index: 10, surface: 'decreased' })

@@ -37,7 +37,7 @@ test('長文42本の準備は、必須語彙も熟語・表現も既存SRSへ記
       }
     }
   }
-  assert.equal(words, 3_045)
+  assert.equal(words, 3_043)
   assert.equal(phrases, 204)
 })
 

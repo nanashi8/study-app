@@ -56,8 +56,8 @@ export const SCENE_BUNDLE_LEDGER = Object.freeze({
     scene('だれでも使える案内', ['exchange', 'version', 'wheelchair', 'step', 'crossing', 'available', 'online', 'translation', 'imagine', 'journey']),
   ],
   p_3_ai_class_rules: [
-    scene('宿題とAI', ['ai', 'chat', 'tool', 'homework', 'carefully', 'unusual', 'phrase', 'worry', 'ban', 'copy']),
-    scene('使い方を試して比べる', ['example', 'helpful', 'honest', 'confident', 'experiment', 'summary', 'general', 'fact', 'mention', 'collect']),
+    scene('宿題とAI', ['ai', 'chat', 'tool', 'homework', 'copy', 'carefully', 'unusual', 'phrase', 'worry', 'ban']),
+    scene('使い方を試して比べる', ['collect', 'example', 'helpful', 'honest', 'confident', 'experiment', 'summary', 'general', 'fact', 'mention']),
     scene('クラスで決めたルール', ['report', 'include', 'source', 'step', 'draft', 'compare', 'perfect', 'unfair', 'future', 'skill']),
   ],
   p_pre2_museum_volunteers: [
@@ -134,7 +134,7 @@ export const SCENE_BUNDLE_LEDGER = Object.freeze({
     scene('小さく試して確かめる', ['digital', 'trial', 'neighborhood', 'complaint', 'publish', 'evidence', 'modern', 'issue', 'handle']),
   ],
   p_2_online_health_claims: [
-    scene('広まる健康動画', ['video', 'confident', 'scientific', 'claim', 'detail', 'reliable', 'evidence', 'available', 'university', 'method']),
+    scene('広まる健康動画', ['video', 'claim', 'confident', 'scientific', 'detail', 'reliable', 'evidence', 'available', 'university', 'method']),
     scene('研究のしかたを確かめる', ['expert', 'institution', 'investigation', 'examine', 'sample', 'clue', 'apply', 'separate', 'treatment', 'factor']),
     scene('相関と因果を分ける', ['diet', 'expectation', 'correlation', 'cause', 'suppose', 'relaxed', 'income', 'habit', 'influence', 'distinguish']),
     scene('研究の背後にある利害', ['whereas', 'financial', 'context', 'funding', 'false', 'independent', 'statement', 'conflict', 'evaluate']),
@@ -248,7 +248,7 @@ export const SCENE_BUNDLE_LEDGER = Object.freeze({
   ],
   p_1_synthetic_media_trust: [
     scene('写真が証拠だった時代', ['century', 'authority', 'absolute', 'production', 'conceal', 'convincing', 'fabrication', 'equipment', 'possess', 'reasonable']),
-    scene('だれでも作れる偽物', ['synthetic', 'assumption', 'outright', 'fabricated', 'release', 'election', 'correction', 'audience', 'weaken']),
+    scene('だれでも作れる偽物', ['synthetic', 'weaken', 'assumption', 'outright', 'fabricated', 'release', 'election', 'correction', 'audience']),
     scene('本物まで疑われる', ['subtle', 'damaging', 'fake', 'genuine', 'dismiss', 'bribe', 'dividend', 'dishonest', 'manufacture', 'deny']),
     scene('見破る技術の限界', ['detection', 'statistical', 'trace', 'pixel', 'compress', 'sharply', 'precisely', 'asymmetric', 'consistent', 'reliability']),
     scene('出どころを記録する', ['originate', 'capture', 'edit', 'chain', 'custody', 'adopt', 'version', 'standard']),

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-09-16T20:25:34.300Z",
+  "auditedAt": "2026-09-16T20:46:14.985Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -12,7 +12,7 @@
     "quizItemCount": 16473,
     "storedAndGeneratedQuestionPathCount": 4506,
     "storedAndGeneratedChoicePathCount": 17608,
-    "overallContentSha256": "412ea40310bea7ef7feb35a8c695f9d1ba64a52f178c7df1026d15d45c5bd5d0"
+    "overallContentSha256": "35c264a588e63ff4aaad42871a5afc13f748b738839f4489bc0f6fa78b861b82"
   },
   "completionCriteria": [
     "全18教材カテゴリのID・母数・重複・内容ハッシュが一致する",
@@ -103,7 +103,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "e7a1118a4110801ca87caa8342efd8d90172be726763e6c85f868822a268544d",
+    "sha256": "89f143553e11b9fe2141cd400be1963efaf57b3e7f98d9d05ef812581391ab6d",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -211,6 +211,7 @@
       "tests/meaning-readings.test.mjs",
       "tests/no-background-music.test.mjs",
       "tests/normal-learning-record-lists.test.mjs",
+      "tests/passage-sense-glosses.test.mjs",
       "tests/phrase-dictionary-search.test.mjs",
       "tests/phrase-explanation-audit.test.mjs",
       "tests/phrase-session-progression.test.mjs",
@@ -422,7 +423,7 @@
       "quizItemCount": 42,
       "learningIdOrderSha256": "5a73640787e6fb7d0e952cc3e4b513903f10cee089c479e8f91d9a8d8bf0215b",
       "quizIdOrderSha256": "5a73640787e6fb7d0e952cc3e4b513903f10cee089c479e8f91d9a8d8bf0215b",
-      "contentSha256": "1296619ba522ad851d02ea29747427b097f8013fd922192cab588ad84893af60",
+      "contentSha256": "37d1e705909ba317d3aa920fedb5edf573d2dff776349970373f71517b84d5c5",
       "auditGateIds": [
         "inventory",
         "coreData",
@@ -655,7 +656,7 @@
       "quizItemCount": 12,
       "learningIdOrderSha256": "70a5ff32a814dd8e6ca40a77736c291f531329ade8b38e80d527cf30e6defbc9",
       "quizIdOrderSha256": "70a5ff32a814dd8e6ca40a77736c291f531329ade8b38e80d527cf30e6defbc9",
-      "contentSha256": "a8ca534db59ac88095a80832fcb7485fa7adae8c47efd52766d8f5f6d6c119e1",
+      "contentSha256": "eb348d8ecea4610b481679fd60dd27c99534d904adae9fe388d5dc585bc82da5",
       "auditGateIds": [
         "inventory",
         "coreData",
@@ -871,11 +872,11 @@
     "totalWords": 9860,
     "sentenceCount": 528,
     "targetVocabularyCount": 1484,
-    "baselineCoveredVocabulary": 1958,
-    "baselineCoveragePercent": 21.98,
-    "combinedCoveredVocabulary": 3951,
-    "combinedCoveragePercent": 44.36,
-    "coverageGain": 1993,
+    "baselineCoveredVocabulary": 1942,
+    "baselineCoveragePercent": 21.8,
+    "combinedCoveredVocabulary": 3943,
+    "combinedCoveragePercent": 44.27,
+    "coverageGain": 2001,
     "dictionarySize": 8907,
     "extendedTokenCount": 18891,
     "resolvedExtendedTokenCount": 18891,
@@ -898,51 +899,51 @@
       },
       "2": {
         "total": 1578,
-        "before": 269,
-        "beforePercent": 17.05,
-        "after": 695,
-        "afterPercent": 44.04,
-        "gain": 426
+        "before": 267,
+        "beforePercent": 16.92,
+        "after": 692,
+        "afterPercent": 43.85,
+        "gain": 425
       },
       "3": {
         "total": 807,
-        "before": 295,
-        "beforePercent": 36.56,
-        "after": 521,
-        "afterPercent": 64.56,
-        "gain": 226
+        "before": 294,
+        "beforePercent": 36.43,
+        "after": 524,
+        "afterPercent": 64.93,
+        "gain": 230
       },
       "4": {
         "total": 699,
-        "before": 358,
-        "beforePercent": 51.22,
-        "after": 570,
-        "afterPercent": 81.55,
-        "gain": 212
+        "before": 360,
+        "beforePercent": 51.5,
+        "after": 573,
+        "afterPercent": 81.97,
+        "gain": 213
       },
       "5": {
         "total": 609,
         "before": 352,
         "beforePercent": 57.8,
-        "after": 484,
-        "afterPercent": 79.47,
-        "gain": 132
+        "after": 485,
+        "afterPercent": 79.64,
+        "gain": 133
       },
       "pre2": {
         "total": 1448,
-        "before": 462,
-        "beforePercent": 31.91,
-        "after": 862,
-        "afterPercent": 59.53,
-        "gain": 400
+        "before": 454,
+        "beforePercent": 31.35,
+        "after": 855,
+        "afterPercent": 59.05,
+        "gain": 401
       },
       "pre1": {
         "total": 2790,
-        "before": 213,
-        "beforePercent": 7.63,
-        "after": 771,
-        "afterPercent": 27.63,
-        "gain": 558
+        "before": 206,
+        "beforePercent": 7.38,
+        "after": 766,
+        "afterPercent": 27.46,
+        "gain": 560
       }
     },
     "domains": [
@@ -951,7 +952,7 @@
       "環境・科学・医療・政策",
       "社会総合・経済・心理・科学技術"
     ],
-    "contentSha256": "de071f45dd3a88b2e1fbbf4210fdedd767b28043a6f9711a5249e7ecbe09f23a"
+    "contentSha256": "b403110710db8441e4181887c894567c5bdd355e01586f206b4dfdc1d42495af"
   },
   "grammarDetail": {
     "sourceQuestionCount": 3450,
