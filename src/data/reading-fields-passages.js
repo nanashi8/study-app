@@ -153,7 +153,7 @@ export const FIELD_PASSAGES = [
       'factor', 'pattern', 'method', 'pressure', 'range',
     ],
     sentences: [
-      p('Last spring, four members of our track club were injured within a single month.', '昨春、私たちの陸上部の4人の部員がひと月のうちにけがをしました.'),
+      p('Last spring, four members of our track club were injured within a single month.', '昨春、私たちの陸上部の4人の部員がひと月のうちにけがをしました。'),
       s('The teacher called each case bad luck.', '先生はそれぞれの出来事を不運だと呼びました。'),
       s('A graduate of the school, however, returned to help the club.', 'しかし、その学校の卒業生が部を手伝うために戻ってきました。'),
       s('She asked every member to keep a simple record after practice.', '彼女はすべての部員に、練習のあとで簡単な記録をつけるよう頼みました。'),

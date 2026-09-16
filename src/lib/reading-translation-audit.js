@@ -5,7 +5,7 @@ import {
   READING_QUESTION_TRANSLATION_REVIEW_LEDGER,
 } from '../data/reading-question-translations.js'
 import { reviewSourceFingerprint } from '../data/reading-phrase-review-ledger.js'
-import { buildReadingChoiceExplanations } from './instructorExplanations.js'
+import { readingChoiceNoteFor } from './readingChoiceNotes.js'
 
 const hasJapanese = (value = '') => /[\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Han}]/u.test(value)
 const clean = (value) => `${value ?? ''}`.replace(/\s+/g, ' ').trim()
@@ -110,22 +110,6 @@ export function auditReadingTranslations() {
         })
       }
 
-      const choiceDetails = buildReadingChoiceExplanations(question)
-      if (choiceDetails.question.en !== clean(question.q)
-        || choiceDetails.question.ja !== clean(question.questionJa)) {
-        issues.push({
-          type: 'question-explanation-payload-mismatch',
-          passageId: passage.id,
-          questionIndex,
-        })
-      }
-      if (choiceDetails.choices.length !== question.choices.length) {
-        issues.push({
-          type: 'choice-explanation-count-mismatch',
-          passageId: passage.id,
-          questionIndex,
-        })
-      }
       const translatedChoices = question.choices.map((choice) =>
         clean(question.choiceTranslations?.[choice]))
       if (new Set(translatedChoices).size !== translatedChoices.length) {
@@ -139,7 +123,6 @@ export function auditReadingTranslations() {
       for (const [choiceIndex, choice] of question.choices.entries()) {
         choiceCount += 1
         const translatedChoice = clean(question.choiceTranslations?.[choice])
-        const detail = choiceDetails.choices[choiceIndex]
         if (hasJapanese(translatedChoice)) choiceTranslationCount += 1
         else {
           issues.push({
@@ -159,18 +142,8 @@ export function auditReadingTranslations() {
             source: translatedChoice,
           })
         }
-        const explanationMatchesChoice = detail?.correct
-          ? clean(detail?.explanation).includes(clean(question.explain))
-          : clean(detail?.explanation).includes(translatedChoice)
-            && clean(detail?.explanation).includes(clean(question.answerJa))
-            && clean(detail?.explanation).includes(clean(question.explain))
-        if (
-          detail?.en === clean(choice)
-          && detail?.ja === translatedChoice
-          && detail?.correct === (choice === question.answer)
-          && hasJapanese(clean(detail?.explanation))
-          && explanationMatchesChoice
-        ) choiceExplanationCount += 1
+        // 選択肢ごとに、本文と合う（合わない）理由を書いた説明がある。
+        if (hasJapanese(clean(readingChoiceNoteFor(passage.id, questionIndex, choice)))) choiceExplanationCount += 1
         else {
           issues.push({
             type: 'invalid-choice-explanation',

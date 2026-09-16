@@ -17,11 +17,9 @@ import { analyzeLearning } from '../lib/learningAnalytics.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
-import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
 import { StatusDistributionBar } from '../components/LearningStatusBars.jsx'
 import { Button, Card, Chip, IconButton, ProgressBar, ProgressRing, cx } from '../components/ui.jsx'
 import { ArrowRight, Check, Close, Sparkles, Target, Trophy } from '../components/Icons.jsx'
-import { buildDiagnosticInstructorExplanation } from '../lib/instructorExplanations.js'
 import { getGrammar } from '../data/grammar.js'
 import { GrammarChoiceExplanations } from '../components/GrammarChoiceExplanations.jsx'
 import { ChoiceExplanations } from '../components/ChoiceExplanations.jsx'
@@ -772,19 +770,8 @@ function AnswerReview({ questions, answers }) {
               )}
 
               <div data-diagnostic-explanation>
-                {question.skill !== 'reading' ? (
-                  // 単語・熟語は語の説明、文法は形がどう決まるかの解説を出す（4段の解説は置かない）。
-                  <p className="mt-2 text-xs font-bold leading-relaxed text-ink/65">{question.explain}</p>
-                ) : (
-                  <InstructorExplanation
-                    explanation={buildDiagnosticInstructorExplanation(
-                      question,
-                      review.selectedAnswer,
-                    )}
-                    className="mt-2"
-                    compact
-                  />
-                )}
+                {/* 単語・熟語は語の説明、文法は形がどう決まるか、読解は本文のどこが根拠かを出す（4段の解説は置かない）。 */}
+                <p className="mt-2 text-xs font-bold leading-relaxed text-ink/65">{question.explain}</p>
               </div>
               {grammarItem ? (
                 <GrammarChoiceExplanations

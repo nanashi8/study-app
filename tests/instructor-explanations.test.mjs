@@ -42,8 +42,6 @@ import {
 import { MATH_PROBLEMS } from '../src/data/math.js'
 import { MATH_CHOICE_NOTES, mathChoiceNoteFor } from '../src/data/math-choice-notes.js'
 import { PHRASES } from '../src/data/phrases.js'
-import { ALL_PASSAGES } from '../src/data/passages.js'
-import { getReadingQuestions } from '../src/data/reading-questions.js'
 import {
   ALL_WORDS,
   getEtymologyPack,
@@ -54,16 +52,13 @@ import {
   getWritingGrammar,
 } from '../src/data/writing.js'
 import {
-  buildDiagnosticInstructorExplanation,
   buildMathFillInstructorExplanation,
-  buildReadingInstructorExplanation,
   isCompleteInstructorExplanation,
 } from '../src/lib/instructorExplanations.js'
 import { buildDiagnosticQuestions, diagnosticChoiceNoteFor } from '../src/lib/diagnosticQuestions.js'
 import { buildAllEtymologyQuizQuestions } from '../src/lib/etymologyQuiz.js'
 import { grammarRuleExplanationFor } from '../src/lib/grammarQuestionExplanations.js'
 import { isGenericPhraseNote, isGenericPhraseOrigin } from '../src/lib/phraseNotes.js'
-import { UNKNOWN_CHOICE_ID } from '../src/lib/quizChoices.js'
 import { pickPhraseDistractors } from '../src/lib/session.js'
 
 const normalize = (value) => String(value ?? '').replace(/\s+/g, ' ').trim()
@@ -112,68 +107,6 @@ const assertContains = (actual, expected, label) => {
   )
 }
 
-const assertChoiceFamily = ({
-  label,
-  cases,
-  build,
-  answerAnchor,
-  evidenceAnchor,
-  wrongTrapAnchor,
-}) => {
-  let correctTrap = ''
-  let unknownTrap = ''
-  const wrongTraps = []
-  for (const choiceCase of cases) {
-    const value = build(choiceCase.selected)
-    assertExplanation(value, `${label}:${choiceCase.kind}:${choiceCase.label}`)
-    assertContains(value.answer, answerAnchor, `${label}.answer`)
-    assertContains(value.evidence, evidenceAnchor, `${label}.evidence`)
-    if (choiceCase.kind === 'correct') {
-      correctTrap = value.trap
-    } else if (choiceCase.kind === 'unknown') {
-      unknownTrap = value.trap
-    } else {
-      assertContains(
-        value.trap,
-        choiceCase.label,
-        `${label}.trap:${choiceCase.label}`,
-      )
-      assertContains(
-        value.trap,
-        wrongTrapAnchor,
-        `${label}.trap:${choiceCase.label}:rule`,
-      )
-      wrongTraps.push(value.trap)
-    }
-  }
-  assert.ok(correctTrap, `${label} に正答時解説がありません`)
-  assert.ok(unknownTrap, `${label} に「わからない」時解説がありません`)
-  assert.notEqual(
-    unknownTrap,
-    correctTrap,
-    `${label} の正答時と「わからない」時の指導が同一です`,
-  )
-  assert.equal(
-    new Set(wrongTraps).size,
-    wrongTraps.length,
-    `${label} の誤答別指導が選択肢ごとに分かれていません`,
-  )
-  return cases.length
-}
-
-const choiceCases = (choices, answer) => [
-  ...choices.map((choice) => ({
-    selected: choice,
-    label: normalize(choice),
-    kind: choice === answer ? 'correct' : 'wrong',
-  })),
-  {
-    selected: UNKNOWN_CHOICE_ID,
-    label: 'わからない',
-    kind: 'unknown',
-  },
-]
-
 const diagnosticQuestions = [
   ...DIAGNOSTIC_QUESTIONS,
   ...[1, 2, 3].flatMap((attemptNumber) => buildDiagnosticQuestions({
@@ -181,32 +114,8 @@ const diagnosticQuestions = [
     seed: 0x1a2b3c4d,
   })),
 ]
-// 共通講師解説を使うのは読解だけ。単語・熟語は選択肢の中身、文法は規則ごとの解説を示す（下の検査）。
-const diagnosticInstructorQuestions = diagnosticQuestions.filter(
-  ({ skill }) => skill === 'reading',
-)
-
-const allReadingQuestions = ALL_PASSAGES.flatMap((passage) =>
-  getReadingQuestions(passage.id))
-
-test('全教材の全設問から問題固有の予備校講師型4段解説を生成できる', () => {
+test('数学の穴埋めの全か所から問題固有の4段解説を生成できる', () => {
   let units = 0
-  for (const question of allReadingQuestions) {
-    const value = buildReadingInstructorExplanation(question)
-    assertExplanation(value, `reading:${question.q}`)
-    assertContains(value.answer, question.answer, `reading:${question.q}.answer`)
-    assertContains(value.evidence, question.explain, `reading:${question.q}.evidence`)
-    units += 1
-  }
-
-  for (const question of diagnosticInstructorQuestions) {
-    const value = buildDiagnosticInstructorExplanation(question)
-    assertExplanation(value, `diagnostic:${question.id}`)
-    assertContains(value.answer, question.answer, `diagnostic:${question.id}.answer`)
-    assertContains(value.evidence, question.explain, `diagnostic:${question.id}.evidence`)
-    units += 1
-  }
-
   for (const problem of Object.values(MATH_PROBLEMS).flat()) {
     // 選択問題は問題固有の解説と選択肢ごとの説明、解き終わりは解き方とつまずきやすい点を示す（それぞれのテスト）。
     // 講師解説を使うのは穴埋めだけ。
@@ -220,35 +129,33 @@ test('全教材の全設問から問題固有の予備校講師型4段解説を�
     })
   }
 
-  // 長文の設問・学習診断の読解・数学の穴埋め（英文法は規則ごとの解説に移したので含めない）。
-  assert.equal(units, 651, `全件監査の対象数が変わりました: ${units}`)
+  // 数学の穴埋めだけ（英文法・長文・学習診断の読解は、問題ごとに書いた解説と選択肢ごとの説明に移した）。
+  assert.equal(units, 440, `全件監査の対象数が変わりました: ${units}`)
 })
 
-test('全選択式問題の正答・全誤答・「わからない」に回答別の指導を返す', () => {
-  let paths = 0
-  for (const question of allReadingQuestions) {
-    paths += assertChoiceFamily({
-      label: `reading:${question.q}`,
-      cases: choiceCases(question.choices, question.answer),
-      build: (selected) => buildReadingInstructorExplanation(question, selected),
-      answerAnchor: question.answer,
-      evidenceAnchor: question.explain,
-      wrongTrapAnchor: question.explain,
-    })
-  }
+// 長文の内容理解と学習診断の読解は、決まり文句の4段解説をやめ、本文のどの文が根拠かを書いた解説と、
+// 出題した選択肢1件ずつの説明を出す（選択肢の説明の中身は tests/reading-question-translations.test.mjs）。
+test('長文の内容理解と学習診断の読解は、根拠の解説と選択肢ごとの説明を出し、決まり文句の講師解説を使わない', async () => {
+  const read = (relative) => readFile(new URL(`../src/${relative}`, import.meta.url), 'utf8')
+  const check = await read('components/ReadingComprehensionCheck.jsx')
+  assert.doesNotMatch(check, /InstructorExplanation|instructorExplanations/, 'ReadingComprehensionCheck.jsx: 決まり文句の講師解説が戻っています')
+  assert.match(check, /data-reading-explanation[\s\S]*?\{question\.explain\}/, 'ReadingComprehensionCheck.jsx: 根拠の解説がありません')
+  assert.match(check, /<ReadingChoiceExplanations\s+passageId=\{passageId\}\s+questionIndex=\{questionIndex\}/)
 
-  for (const question of diagnosticInstructorQuestions) {
-    paths += assertChoiceFamily({
-      label: `diagnostic:${question.id}`,
-      cases: choiceCases(question.choices, question.answer),
-      build: (selected) => buildDiagnosticInstructorExplanation(question, selected),
-      answerAnchor: question.answer,
-      evidenceAnchor: question.explain,
-      wrongTrapAnchor: question.explain,
-    })
-  }
+  const choices = await read('components/ReadingChoiceExplanations.jsx')
+  assert.doesNotMatch(choices, /instructorExplanations/)
+  assert.match(
+    choices,
+    /rows=\{question\.choices\.map\(\(choice\) => \(\{[\s\S]*?readingChoiceNoteFor\(passageId, questionIndex, choice\)/,
+    'ReadingChoiceExplanations.jsx: 選択肢の欄が、出題した選択肢から作られていません',
+  )
 
-  assert.equal(paths, 1034, `全回答経路の監査数が変わりました: ${paths}`)
+  const diagnostic = await read('screens/Diagnostic.jsx')
+  assert.doesNotMatch(diagnostic, /InstructorExplanation|instructorExplanations/, 'Diagnostic.jsx: 決まり文句の講師解説が戻っています')
+  assert.match(diagnostic, /data-diagnostic-explanation[\s\S]*?\{question\.explain\}/)
+
+  const source = await readFile(new URL('../src/lib/instructorExplanations.js', import.meta.url), 'utf8')
+  assert.doesNotMatch(source, /buildReadingInstructorExplanation|buildReadingChoiceExplanations|buildDiagnosticInstructorExplanation/)
 })
 
 // 英文法は、決まり文句の4段解説をやめ、規則ごとに書いた解説を出す（形の決まり方と、その文への当てはめ）。
@@ -347,20 +254,9 @@ test('数学の解き終わりは、答えと解き方を1段ずつと、つま�
   }
 })
 
-test('採点を伴う全問題画面が共通の講師解説を表示する', async () => {
-  const screens = [
-    'Diagnostic.jsx',
-    'MathSolve.jsx',
-    'components/ReadingComprehensionCheck.jsx',
-  ]
-
-  for (const screen of screens) {
-    const source = await readFile(
-      new URL(screen.includes('/') ? `../src/${screen}` : `../src/screens/${screen}`, import.meta.url),
-      'utf8',
-    )
-    assert.match(source, /InstructorExplanation/, `${screen} に共通講師解説がありません`)
-  }
+test('数学の穴埋めの答え合わせは共通の講師解説を表示する', async () => {
+  const source = await readFile(new URL('../src/screens/MathSolve.jsx', import.meta.url), 'utf8')
+  assert.match(source, /InstructorExplanation/, 'MathSolve.jsx に共通講師解説がありません')
 })
 
 test('共通解説の表示名と各フィールドの意味契約を一致させる', async () => {
@@ -415,8 +311,8 @@ test('意味を問うテストは、出題した選択肢すべての中身を�
   assert.equal(isGenericPhraseNote(PHRASES.find((item) => item.phrase === 'get up')?.note), false)
   assert.match(await read('KotenQuiz.jsx'), /<KotenText>\{word\.note\}<\/KotenText>/)
   const diagnostic = await read('Diagnostic.jsx')
-  // 単語・熟語は語の説明、文法は規則ごとの解説を1段落で出し、4段の解説は読解だけに使う。
-  assert.match(diagnostic, /question\.skill !== 'reading' \?/)
+  // 単語・熟語は語の説明、文法は規則ごとの解説、読解は本文の根拠を1段落で出す（4段の解説は置かない）。
+  assert.doesNotMatch(diagnostic, /InstructorExplanation/)
   assert.match(diagnostic, /question\.skill !== 'vocab' && question\.skill !== 'usage' && question\.review\?\.en/)
   assert.match(diagnostic, /rows=\{question\.choices\.map\(\(choice\) => \(\{[\s\S]*?body: diagnosticChoiceNoteFor\(question, choice\)/)
 

@@ -109,8 +109,8 @@ test('主要テストは正答後に、その問題の学習ポイントを表�
     'PhraseQuiz.jsx': [/<ChoiceExplanations/, /\{item\.origin\}/],
     'ListeningQuiz.jsx': [/item\.questionJa/, /\{item\.explain\}/, /<ChoiceExplanations/, /listeningChoiceNoteFor/],
     'DictationPlay.jsx': [/item\.text/, /item\.ja/, /dictationExplanationFor/],
-    'components/ReadingComprehensionCheck.jsx': [/buildReadingInstructorExplanation/, /UnknownChoiceButton/],
-    'Diagnostic.jsx': [/question\.review/, /question\.passageJa/, /buildDiagnosticInstructorExplanation/],
+    'components/ReadingComprehensionCheck.jsx': [/\{question\.explain\}/, /<ReadingChoiceExplanations/, /UnknownChoiceButton/],
+    'Diagnostic.jsx': [/question\.review/, /question\.passageJa/, /\{question\.explain\}/, /diagnosticChoiceNoteFor\(question, choice\)/],
   }
 
   for (const [filename, patterns] of Object.entries(checks)) {

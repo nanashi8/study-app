@@ -7,8 +7,6 @@ import {
 } from '../data/reading-current-affairs-practice-questions.js'
 import { READING_RULES_BY_ID, readingRuleForQuestion } from '../data/reading-rules.js'
 import { limitQuizChoices, UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
-import { buildReadingInstructorExplanation } from '../lib/instructorExplanations.js'
-import { InstructorExplanation } from './InstructorExplanation.jsx'
 import { ReadingChoiceExplanations } from './ReadingChoiceExplanations.jsx'
 import { ReadingPracticeExplanation } from './ReadingPracticeExplanation.jsx'
 import { ReadingRuleCard } from './ReadingRuleCard.jsx'
@@ -224,12 +222,14 @@ export function ReadingComprehensionCheck({ passageId, onStatusChange }) {
                   />
                 ) : (
                   <>
-                    <InstructorExplanation
-                      explanation={buildReadingInstructorExplanation(question, answers[questionIndex])}
-                      className="mt-3"
-                      compact
-                    />
+                    {/* その設問の根拠の文を示す解説と、出題した選択肢1件ずつの説明（決まり文句の4段解説は置かない）。 */}
+                    <div className="mt-3 rounded-xl bg-white px-3 py-2.5 ring-1 ring-sky-100" data-reading-explanation>
+                      <p className="text-[10px] font-extrabold text-sky-700">解説</p>
+                      <p className="mt-0.5 text-sm font-bold leading-relaxed text-ink/75">{question.explain}</p>
+                    </div>
                     <ReadingChoiceExplanations
+                      passageId={passageId}
+                      questionIndex={questionIndex}
                       question={shown}
                       selectedChoice={answers[questionIndex]}
                     />

@@ -35,7 +35,7 @@ import {
   grammarRuleExplanationFor,
 } from '../src/lib/grammarQuestionExplanations.js'
 import { grammarChoiceNoteFor } from '../src/lib/grammarChoiceNotes.js'
-import { buildReadingChoiceExplanations } from '../src/lib/instructorExplanations.js'
+import { readingChoiceNoteFor } from '../src/lib/readingChoiceNotes.js'
 import { auditExtendedReadings } from '../src/lib/extendedReadingAudit.js'
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url))
@@ -253,6 +253,12 @@ function buildQuestionBanks() {
       ? grammarChoiceNoteFor(grammarItem, choice)
       : diagnosticChoiceNoteFor(question, choice)))
   }
+  // 長文の台帳 ID は「長文ID#設問番号」。画面と同じく、長文IDと設問の並び順で選択肢の説明を引く。
+  const readingChoiceRationales = (item) => {
+    const id = String(item.id)
+    const mark = id.lastIndexOf('#')
+    return item.choices.map((choice) => readingChoiceNoteFor(id.slice(0, mark), Number(id.slice(mark + 1)) - 1, choice))
+  }
   const stringBank = (id, label, items, rationaleFor, extra = {}) => auditQuestionBank({
     id,
     label,
@@ -273,11 +279,11 @@ function buildQuestionBanks() {
       },
     ),
     stringBank('reading', '英語長文内容理解', readingQuestions, (item) => item.explain, {
-      choiceRationalesFor: (item) => buildReadingChoiceExplanations(item).choices.map((choice) => choice.explanation),
+      choiceRationalesFor: readingChoiceRationales,
       expectedChoiceCounts: [3, 4],
     }),
     stringBank('extended-reading', '語彙強化長文内容理解', extendedReadingQuestions, (item) => item.explain, {
-      choiceRationalesFor: (item) => buildReadingChoiceExplanations(item).choices.map((choice) => choice.explanation),
+      choiceRationalesFor: readingChoiceRationales,
       expectedChoiceCounts: [4],
     }),
     auditQuestionBank({
@@ -334,50 +340,66 @@ function buildQuestionBanks() {
   ]
 }
 
-function buildInstructorAnswerPathAudit() {
-  const readingQuestions = Object.values(
-    ALL_PASSAGES.reduce((all, passage) => ({
-      ...all,
-      [passage.id]: getReadingQuestions(passage.id),
-    }), {}),
-  ).flat()
-  const diagnosticQuestions = [
+function buildReadingAnswerPathAudit() {
+  const readingEntries = ALL_PASSAGES.flatMap((passage) =>
+    getReadingQuestions(passage.id).map((question, index) => ({
+      id: `${passage.id}#${index + 1}`,
+      question,
+      noteFor: (choice) => readingChoiceNoteFor(passage.id, index, choice),
+    })))
+  const diagnosticEntries = [
     ...DIAGNOSTIC_QUESTIONS,
     ...[1, 2, 3].flatMap((attemptNumber) => buildDiagnosticQuestions({
       attemptNumber,
       seed: 0x1a2b3c4d,
     })),
   ]
-  const family = (id, label, items, choicesFor) => {
-    const displayedChoiceCount = items.reduce((sum, item) => sum + choicesFor(item), 0)
+    .filter(({ skill }) => skill === 'reading')
+    .map((question) => ({
+      id: question.id,
+      question,
+      noteFor: (choice) => diagnosticChoiceNoteFor(question, choice),
+    }))
+  const family = (id, label, entries) => {
+    const failures = entries.flatMap(({ id: questionId, question, noteFor }) => [
+      ...(hasText(question.explain) ? [] : [`${questionId}: 根拠の解説なし`]),
+      ...question.choices
+        .filter((choice) => !hasText(noteFor(choice)))
+        .map((choice) => `${questionId}:${choice}: 選択肢の説明なし`),
+    ])
+    const displayedChoiceCount = entries.reduce((sum, { question }) => sum + question.choices.length, 0)
     return {
       id,
       label,
-      questionCount: items.length,
+      questionCount: entries.length,
+      explanationCount: entries.filter(({ question }) => hasText(question.explain)).length,
       displayedChoiceCount,
-      unknownPathCount: items.length,
-      answerPathCount: displayedChoiceCount + items.length,
+      choiceNoteCount: entries.reduce((sum, { question, noteFor }) => (
+        sum + question.choices.filter((choice) => hasText(noteFor(choice))).length
+      ), 0),
+      unknownPathCount: entries.length,
+      answerPathCount: displayedChoiceCount + entries.length,
+      failures,
     }
   }
-  // 英文法は規則ごとの解説、診断の単語・熟語は選択肢の中身を示すので、講師解説を使うのは読解だけ。
+  // 正解・誤答・わからないのどれを選んでも、同じ根拠の解説と出題した選択肢すべての説明を出す。
   const families = [
-    family('reading', '英語長文内容理解', readingQuestions, (item) => item.choices.length),
-    family(
-      'diagnostic',
-      '診断の読解（基準問題・生成3フォーム）',
-      diagnosticQuestions.filter(({ skill }) => skill === 'reading'),
-      (item) => item.choices.length,
-    ),
+    family('reading', '英語長文内容理解', readingEntries),
+    family('diagnostic', '診断の読解（基準問題・生成3フォーム）', diagnosticEntries),
   ]
+  const failures = families.flatMap((item) => item.failures)
   return {
-    coverageTest: 'tests/instructor-explanations.test.mjs',
-    requirement: '共通講師解説を使う全選択式問題の正解・全誤答・わからないに、正解、問題固有の根拠、回答別の指導、次に使える考え方を返す',
+    coverageTest: 'tests/reading-question-translations.test.mjs',
+    requirement: '英語長文と学習診断の読解は、正解・全誤答・わからないのどれでも、本文の根拠を示す解説と、出題した選択肢すべての説明を表示する',
     questionCount: families.reduce((sum, item) => sum + item.questionCount, 0),
     displayedChoiceCount: families.reduce((sum, item) => sum + item.displayedChoiceCount, 0),
+    choiceNoteCount: families.reduce((sum, item) => sum + item.choiceNoteCount, 0),
     unknownPathCount: families.reduce((sum, item) => sum + item.unknownPathCount, 0),
     answerPathCount: families.reduce((sum, item) => sum + item.answerPathCount, 0),
-    result: 'pass',
-    families,
+    result: failures.length ? 'fail' : 'pass',
+    failureCount: failures.length,
+    families: families.map(({ failures: familyFailures, ...item }) => item),
+    failures,
   }
 }
 
@@ -408,7 +430,8 @@ async function auditImplementationHash() {
     'src/data/grammar-choice-notes.js',
     'src/lib/reading-translation-audit.js',
     'src/lib/extendedReadingAudit.js',
-    'src/lib/instructorExplanations.js',
+    'src/lib/readingChoiceNotes.js',
+    'src/data/reading-choice-notes.js',
     'src/lib/normalLearningRecordEntries.js',
     'src/data/reading-question-translations.js',
     'src/data/reading-question-translations-core.js',
@@ -452,11 +475,12 @@ async function buildLedger(auditedAt) {
   )
   const categories = LEARNING_CONTENTS.map(inventoryFor)
   const questionBanks = buildQuestionBanks()
-  const instructorAnswerPaths = buildInstructorAnswerPathAudit()
+  const readingAnswerPaths = buildReadingAnswerPathAudit()
   const extendedReadingAudit = auditExtendedReadings()
   const failures = [
     ...categories.flatMap((category) => category.failures.map((failure) => `${category.id}: ${failure}`)),
     ...questionBanks.flatMap((bank) => bank.failures.map((failure) => `${bank.id}: ${failure}`)),
+    ...readingAnswerPaths.failures.map((failure) => `reading-answer-paths: ${failure}`),
     ...extendedReadingAudit.errors.map((failure) => `extended-reading: ${failure}`),
   ]
   const grammarMeaningCueCount = GRAMMAR.filter(grammarQuestionNeedsMeaningCue).length
@@ -497,7 +521,7 @@ async function buildLedger(auditedAt) {
     completionCriteria: [
       '全18教材カテゴリのID・母数・重複・内容ハッシュが一致する',
       '全問題バンクで選択肢が重複せず、正答が一つだけ存在し、問題別解説がある',
-      `共通講師解説を使う全選択式問題の正解・全誤答・わからない${instructorAnswerPaths.answerPathCount.toLocaleString('en-US')}経路に回答別指導がある`,
+      `英語長文と学習診断の読解の正解・全誤答・わからない${readingAnswerPaths.answerPathCount.toLocaleString('en-US')}経路で、本文の根拠を示す解説と出題した選択肢すべての説明を表示する`,
       '英文法は全3,450問・全13,800選択肢に問題文固有の根拠を持つ',
       '長文32本・794文・140問・560選択肢の和訳と選択肢別解説が原文順に対応する',
       '長文32本すべてが並び替え・文法・語法の技能練習を1問ずつ持ち、原文・訳・重点語・読解ルールが本文と一致する',
@@ -516,7 +540,7 @@ async function buildLedger(auditedAt) {
     auditImplementation: implementation,
     categories,
     questionBanks,
-    instructorAnswerPaths,
+    readingAnswerPaths,
     extendedReadingDetail: {
       ...extendedReadingAudit.metrics,
       contentSha256: dataHash({
