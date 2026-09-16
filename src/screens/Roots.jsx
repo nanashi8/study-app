@@ -18,7 +18,6 @@ import {
   isEtymologyDue,
 } from '../lib/etymologyProgress.js'
 import { summarizeSrsItems } from '../lib/contentProgress.js'
-import { SESSION_SIZE } from '../lib/session.js'
 import { scrollScreenToTop } from '../lib/screenScroll.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { LearningEntryCard } from '../components/LearningEntryCard.jsx'
@@ -164,23 +163,21 @@ export function RootsScreen() {
     ? statusLabel
     : `${FAMILY_LABEL[family]}の${status === 'all' ? '語源カード' : ETYMOLOGY_STATUS_META[status].label}`
 
+  // 1回の数は渡さず、暗記・テストの画面が「1回の問題数」の設定で組む。
   const startStudy = (ids, title) => navigate('etymologyStudy', {
     ids,
     title,
-    size: Math.min(SESSION_SIZE, ids.length),
     returnTo: returnTarget,
   })
   const startQuiz = (ids, title) => navigate('etymologyQuiz', {
     ids,
     title,
-    size: Math.min(SESSION_SIZE, ids.length),
     returnTo: returnTarget,
   })
   const studyWords = () => navigate('vocabStudy', {
     source: { type: 'deck', ids: studyIds, preserveOrder: true },
     title: `${scopeLabel}に紐づく単語`,
     mode: 'study',
-    size: Math.min(SESSION_SIZE, studyIds.length),
     returnTo: returnTarget,
   })
   const openCatalog = () => {

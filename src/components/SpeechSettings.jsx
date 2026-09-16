@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { useStore } from '../store/useStore.js'
 import { useAuth } from '../store/useAuth.js'
@@ -49,7 +49,6 @@ import {
 } from './Icons.jsx'
 import { PortalSettingsPanel } from './PortalSettings.jsx'
 import { ProgressBackupPanel } from './ProgressBackup.jsx'
-import { requiresProgressSaveConfirmation } from '../lib/navigationPolicy.js'
 import { overallProgress } from '../lib/session.js'
 import { buildLearningPowerProfile } from '../lib/learningPower.js'
 import { LearningAnalyticsPanel } from './LearningAnalytics.jsx'
@@ -58,6 +57,8 @@ import {
 } from './LearningAdvisor.jsx'
 import {
   APP_MENU_SECTIONS,
+  CONTENT_SETTING_GROUPS,
+  contentSettingsSummary,
 } from '../lib/appMenu.js'
 import { resetProgressEverywhere } from '../lib/cloudSync.js'
 import {
@@ -177,28 +178,311 @@ function VoiceUpgradeNotice({ voices }) {
   )
 }
 
-export function SpeechSettingsPanel({ heading = true }) {
+function useVoices(readVoices) {
+  const [voices, setVoices] = useState(readVoices)
+  useEffect(() => subscribeVoices(() => setVoices(readVoices())), [readVoices])
+  return voices
+}
+
+function SpeechRateSetting() {
   const settings = useStore((state) => state.settings)
   const setSetting = useStore((state) => state.setSetting)
-  const [englishVoices, setEnglishVoices] = useState(getEnglishVoices())
-  const [japaneseVoices, setJapaneseVoices] = useState(getJapaneseVoices())
-
-  useEffect(
-    () =>
-      subscribeVoices(() => {
-        setEnglishVoices(getEnglishVoices())
-        setJapaneseVoices(getJapaneseVoices())
-      }),
-    [],
-  )
 
   return (
-    <section aria-label="音声・発音設定">
-      {heading && (
-        <h2 className="pt-3 font-display text-base font-extrabold text-ink/80">
-          音声・発音
-        </h2>
-      )}
+    <SettingRow
+      title="読み上げの速さ"
+      desc={`現在 ${settings.ttsRate.toFixed(1)}倍。次の再生から反映します。`}
+      stacked
+    >
+      <input
+        type="range"
+        min="0.5"
+        max="1.2"
+        step="0.1"
+        value={settings.ttsRate}
+        onChange={(event) => setSetting('ttsRate', Number(event.target.value))}
+        aria-label="読み上げの速さ"
+        className="w-full accent-brand-500"
+      />
+      <div className="mt-2 grid grid-cols-3 gap-2">
+        {RATE_PRESETS.map((preset) => (
+          <button
+            key={preset.value}
+            type="button"
+            onClick={() => setSetting('ttsRate', preset.value)}
+            aria-pressed={settings.ttsRate === preset.value}
+            className={cx(
+              'rounded-xl px-2 py-2 text-xs font-extrabold transition-colors',
+              settings.ttsRate === preset.value
+                ? 'bg-brand-500 text-white'
+                : 'bg-brand-50 text-brand-700 active:bg-brand-100',
+            )}
+          >
+            {preset.label} {preset.value.toFixed(1)}倍
+          </button>
+        ))}
+      </div>
+    </SettingRow>
+  )
+}
+
+function EnglishVoiceSetting() {
+  const settings = useStore((state) => state.settings)
+  const setSetting = useStore((state) => state.setSetting)
+  const voices = useVoices(getEnglishVoices)
+
+  return (
+    <SettingRow
+      title="英語の声"
+      desc={voiceStatus(voices, settings.ttsVoiceURI)}
+      stacked
+    >
+      <VoiceSelect
+        label="英語の読み上げ音声"
+        voices={voices}
+        value={settings.ttsVoiceURI}
+        onChange={(value) => setSetting('ttsVoiceURI', value)}
+      />
+      <VoiceUpgradeNotice voices={voices} />
+    </SettingRow>
+  )
+}
+
+function JapaneseVoiceSetting() {
+  const settings = useStore((state) => state.settings)
+  const setSetting = useStore((state) => state.setSetting)
+  const voices = useVoices(getJapaneseVoices)
+
+  return (
+    <SettingRow
+      title="日本語の声"
+      desc={voiceStatus(voices, settings.ttsJapaneseVoiceURI)}
+      stacked
+    >
+      <VoiceSelect
+        label="日本語の読み上げ音声"
+        voices={voices}
+        value={settings.ttsJapaneseVoiceURI}
+        onChange={(value) => setSetting('ttsJapaneseVoiceURI', value)}
+      />
+      <VoiceUpgradeNotice voices={voices} />
+    </SettingRow>
+  )
+}
+
+function AutoSpeakSetting() {
+  const settings = useStore((state) => state.settings)
+  const setSetting = useStore((state) => state.setSetting)
+
+  return (
+    <SettingRow title="カード表示時に自動で発音" desc="単語・熟語のカードやディクテーションの問題を開くと、自動で読み上げます">
+      <Toggle
+        label="カード表示時に自動で発音"
+        on={settings.autoSpeak}
+        onChange={(value) => setSetting('autoSpeak', value)}
+      />
+    </SettingRow>
+  )
+}
+
+function ShowPhoneticSetting() {
+  const settings = useStore((state) => state.settings)
+  const setSetting = useStore((state) => state.setSetting)
+
+  return (
+    <SettingRow title="発音記号を表示" desc="単語カードに発音記号を出す">
+      <Toggle
+        label="発音記号を表示"
+        on={settings.showPhonetic}
+        onChange={(value) => setSetting('showPhonetic', value)}
+      />
+    </SettingRow>
+  )
+}
+
+function RevealAnswersSetting() {
+  const settings = useStore((state) => state.settings)
+  const setSetting = useStore((state) => state.setSetting)
+
+  return (
+    <SettingRow
+      title="答えを開いたまま見せる"
+      desc="暗記カードの意味や答えを最初から表示します。カード画面の「意味」「答え」でも切り替えられます"
+    >
+      <Toggle
+        label="答えを開いたまま見せる"
+        on={settings.revealAnswers === true}
+        onChange={(value) => setSetting('revealAnswers', value)}
+      />
+    </SettingRow>
+  )
+}
+
+function HideSpellingSetting() {
+  const settings = useStore((state) => state.settings)
+  const setSetting = useStore((state) => state.setSetting)
+
+  return (
+    <SettingRow
+      title="英語のスペルと発音を隠す"
+      desc="英単語・熟語の暗記カードで意味を先に見せ、スペルと発音はカードを開くまで隠します。カード画面上部の目のボタンでも切り替えられます"
+    >
+      <Toggle
+        label="英語のスペルと発音を隠す"
+        on={settings.hideSpelling === true}
+        onChange={(value) => setSetting('hideSpelling', value)}
+      />
+    </SettingRow>
+  )
+}
+
+function SessionSizeSetting() {
+  const settings = useStore((state) => state.settings)
+  const setSetting = useStore((state) => state.setSetting)
+
+  return (
+    <SettingRow
+      title="1回の問題数"
+      desc={`現在 ${settings.sessionSize === SESSION_SIZE_ALL ? '全部' : `${settings.sessionSize ?? 10}問`}・学習中は「1/10」の表示をタップしても変更できます`}
+      stacked
+    >
+      <div className="grid grid-cols-4 gap-2">
+        {SESSION_SIZES.map((size) => (
+          <button
+            key={size}
+            type="button"
+            onClick={() => setSetting('sessionSize', size)}
+            aria-pressed={settings.sessionSize === size}
+            className={cx(
+              'min-h-11 rounded-xl text-sm font-extrabold transition-colors',
+              settings.sessionSize === size
+                ? 'bg-brand-500 text-white'
+                : 'bg-brand-50 text-brand-700',
+            )}
+          >
+            {size === SESSION_SIZE_ALL ? '全部' : `${size}問`}
+          </button>
+        ))}
+      </div>
+    </SettingRow>
+  )
+}
+
+function AutoAdvanceSetting() {
+  const settings = useStore((state) => state.settings)
+  const setSetting = useStore((state) => state.setSetting)
+
+  return (
+    <SettingRow
+      title="正解したら自動で次へ"
+      desc="テストで正解したら、少し待って次の問題へ進みます。テスト画面上部の「正解後」でも切り替えられます"
+    >
+      <Toggle
+        label="正解したら自動で次へ"
+        on={settings.autoAdvanceCorrect !== false}
+        onChange={(value) => setSetting('autoAdvanceCorrect', value)}
+      />
+    </SettingRow>
+  )
+}
+
+function VocabMixSetting() {
+  const settings = useStore((state) => state.settings)
+  const setSetting = useStore((state) => state.setSetting)
+  const vocabMix = normalizeVocabMix(settings.vocabMix)
+
+  return (
+    <SettingRow
+      title="英単語の出題バランス"
+      desc={`現在 ${vocabMixStep(vocabMix).label}（${describeVocabMix(vocabMix)}）・級や分野から始める英単語の暗記・テストで、復習と未修のどちらを多く出すかを決めます。学習中は画面下部の「出題」でも変えられます`}
+      stacked
+    >
+      <div className="grid grid-cols-3 gap-2">
+        {VOCAB_MIX_STEPS.map((step) => (
+          <button
+            key={step.id}
+            type="button"
+            onClick={() => setSetting('vocabMix', step.id)}
+            aria-pressed={vocabMix === step.id}
+            className={cx(
+              'min-h-11 rounded-xl text-sm font-extrabold transition-colors',
+              vocabMix === step.id
+                ? 'bg-brand-500 text-white'
+                : 'bg-brand-50 text-brand-700',
+            )}
+          >
+            {step.label}
+          </button>
+        ))}
+      </div>
+    </SettingRow>
+  )
+}
+
+function DailyGoalSetting() {
+  const settings = useStore((state) => state.settings)
+  const setSetting = useStore((state) => state.setSetting)
+
+  return (
+    <SettingRow
+      title="1日の目標"
+      desc={`現在 ${settings.dailyGoal ?? 20}語`}
+      stacked
+    >
+      <div className="grid grid-cols-4 gap-2">
+        {DAILY_GOALS.map((goal) => (
+          <button
+            key={goal}
+            type="button"
+            onClick={() => setSetting('dailyGoal', goal)}
+            aria-pressed={settings.dailyGoal === goal}
+            className={cx(
+              'min-h-11 rounded-xl text-sm font-extrabold transition-colors',
+              settings.dailyGoal === goal
+                ? 'bg-brand-500 text-white'
+                : 'bg-brand-50 text-brand-700',
+            )}
+          >
+            {goal}語
+          </button>
+        ))}
+      </div>
+    </SettingRow>
+  )
+}
+
+// 保存される設定1つにつき1つの部品。全体の設定と、教材ごとの設定の両方で使う。
+const SETTING_CONTROLS = {
+  revealAnswers: RevealAnswersSetting,
+  hideSpelling: HideSpellingSetting,
+  sessionSize: SessionSizeSetting,
+  autoAdvanceCorrect: AutoAdvanceSetting,
+  vocabMix: VocabMixSetting,
+  dailyGoal: DailyGoalSetting,
+  ttsRate: SpeechRateSetting,
+  ttsVoiceURI: EnglishVoiceSetting,
+  ttsJapaneseVoiceURI: JapaneseVoiceSetting,
+  autoSpeak: AutoSpeakSetting,
+  showPhonetic: ShowPhoneticSetting,
+}
+
+const groupSettingIds = (groupId) =>
+  CONTENT_SETTING_GROUPS.find((group) => group.id === groupId).settings
+
+function SettingControls({ ids }) {
+  return (
+    <div className="divide-y divide-brand-50">
+      {ids.map((id) => {
+        const Control = SETTING_CONTROLS[id]
+        return Control ? <Control key={id} /> : null
+      })}
+    </div>
+  )
+}
+
+function SpeechNotes() {
+  return (
+    <>
       <p className="mt-1 text-xs font-bold leading-relaxed text-ink/50">
         「自動」は、端末で使える最も高品質な声を選びます。
       </p>
@@ -207,89 +491,16 @@ export function SpeechSettingsPanel({ heading = true }) {
           この端末/ブラウザは音声合成に対応していないようです。
         </p>
       )}
+    </>
+  )
+}
 
-      <div className="divide-y divide-brand-50">
-        <SettingRow
-          title="読み上げの速さ"
-          desc={`現在 ${settings.ttsRate.toFixed(1)}倍。次の再生から反映します。`}
-          stacked
-        >
-          <input
-            type="range"
-            min="0.5"
-            max="1.2"
-            step="0.1"
-            value={settings.ttsRate}
-            onChange={(event) => setSetting('ttsRate', Number(event.target.value))}
-            aria-label="読み上げの速さ"
-            className="w-full accent-brand-500"
-          />
-          <div className="mt-2 grid grid-cols-3 gap-2">
-            {RATE_PRESETS.map((preset) => (
-              <button
-                key={preset.value}
-                type="button"
-                onClick={() => setSetting('ttsRate', preset.value)}
-                aria-pressed={settings.ttsRate === preset.value}
-                className={cx(
-                  'rounded-xl px-2 py-2 text-xs font-extrabold transition-colors',
-                  settings.ttsRate === preset.value
-                    ? 'bg-brand-500 text-white'
-                    : 'bg-brand-50 text-brand-700 active:bg-brand-100',
-                )}
-              >
-                {preset.label} {preset.value.toFixed(1)}倍
-              </button>
-            ))}
-          </div>
-        </SettingRow>
+function VoiceTestButtons({ english = true, japanese = true }) {
+  const settings = useStore((state) => state.settings)
 
-        <SettingRow
-          title="英語の声"
-          desc={voiceStatus(englishVoices, settings.ttsVoiceURI)}
-          stacked
-        >
-          <VoiceSelect
-            label="英語の読み上げ音声"
-            voices={englishVoices}
-            value={settings.ttsVoiceURI}
-            onChange={(value) => setSetting('ttsVoiceURI', value)}
-          />
-          <VoiceUpgradeNotice voices={englishVoices} />
-        </SettingRow>
-
-        <SettingRow
-          title="日本語の声"
-          desc={voiceStatus(japaneseVoices, settings.ttsJapaneseVoiceURI)}
-          stacked
-        >
-          <VoiceSelect
-            label="日本語の読み上げ音声"
-            voices={japaneseVoices}
-            value={settings.ttsJapaneseVoiceURI}
-            onChange={(value) => setSetting('ttsJapaneseVoiceURI', value)}
-          />
-          <VoiceUpgradeNotice voices={japaneseVoices} />
-        </SettingRow>
-
-        <SettingRow title="カード表示時に自動で発音" desc="単語カードを開くと自動で読み上げ">
-          <Toggle
-            label="カード表示時に自動で発音"
-            on={settings.autoSpeak}
-            onChange={(value) => setSetting('autoSpeak', value)}
-          />
-        </SettingRow>
-
-        <SettingRow title="発音記号を表示" desc="単語カードに発音記号を出す">
-          <Toggle
-            label="発音記号を表示"
-            on={settings.showPhonetic}
-            onChange={(value) => setSetting('showPhonetic', value)}
-          />
-        </SettingRow>
-      </div>
-
-      <div className="grid grid-cols-2 gap-2 pb-3">
+  return (
+    <div className={cx('grid gap-2 pb-3', english && japanese ? 'grid-cols-2' : 'grid-cols-1')}>
+      {english && (
         <Button
           variant="soft"
           size="sm"
@@ -304,6 +515,8 @@ export function SpeechSettingsPanel({ heading = true }) {
         >
           <SpeakerWave size={16} /> 英語をテスト
         </Button>
+      )}
+      {japanese && (
         <Button
           variant="soft"
           size="sm"
@@ -319,122 +532,94 @@ export function SpeechSettingsPanel({ heading = true }) {
         >
           <SpeakerWave size={16} /> 日本語をテスト
         </Button>
-      </div>
+      )}
+    </div>
+  )
+}
+
+export function SpeechSettingsPanel({ heading = true }) {
+  return (
+    <section aria-label="音声・発音設定">
+      {heading && (
+        <h2 className="pt-3 font-display text-base font-extrabold text-ink/80">
+          音声・発音
+        </h2>
+      )}
+      <SpeechNotes />
+      <SettingControls ids={groupSettingIds('speech')} />
+      <VoiceTestButtons />
     </section>
   )
 }
 
 function LearningSettingsPanel() {
-  const settings = useStore((state) => state.settings)
-  const setSetting = useStore((state) => state.setSetting)
-  const vocabMix = normalizeVocabMix(settings.vocabMix)
-
   return (
     <section aria-label="学習設定">
-      <div className="divide-y divide-brand-50">
-        <SettingRow
-          title="答えを開いたまま見せる"
-          desc="暗記カードの意味や答えを最初から表示します。カード画面の「意味」「答え」でも切り替えられます"
-        >
-          <Toggle
-            label="答えを開いたまま見せる"
-            on={settings.revealAnswers === true}
-            onChange={(value) => setSetting('revealAnswers', value)}
-          />
-        </SettingRow>
-        <SettingRow
-          title="英語のスペルと発音を隠す"
-          desc="英単語・熟語の暗記カードで意味を先に見せ、スペルと発音はカードを開くまで隠します。カード画面上部の目のボタンでも切り替えられます"
-        >
-          <Toggle
-            label="英語のスペルと発音を隠す"
-            on={settings.hideSpelling === true}
-            onChange={(value) => setSetting('hideSpelling', value)}
-          />
-        </SettingRow>
-        <SettingRow
-          title="1回の問題数"
-          desc={`現在 ${settings.sessionSize === SESSION_SIZE_ALL ? '全部' : `${settings.sessionSize ?? 10}問`}・学習中は「1/10」の表示をタップしても変更できます`}
-          stacked
-        >
-          <div className="grid grid-cols-4 gap-2">
-            {SESSION_SIZES.map((size) => (
-              <button
-                key={size}
-                type="button"
-                onClick={() => setSetting('sessionSize', size)}
-                aria-pressed={settings.sessionSize === size}
-                className={cx(
-                  'min-h-11 rounded-xl text-sm font-extrabold transition-colors',
-                  settings.sessionSize === size
-                    ? 'bg-brand-500 text-white'
-                    : 'bg-brand-50 text-brand-700',
-                )}
+      <SettingControls ids={groupSettingIds('study')} />
+    </section>
+  )
+}
+
+// メニューの教材の行から開く、その教材で効く設定だけを並べた画面。
+function ContentSettingsPanel({ item, onOpen }) {
+  const groups = CONTENT_SETTING_GROUPS
+    .map((group) => ({
+      ...group,
+      ids: group.settings.filter((id) => item.settings.includes(id)),
+    }))
+    .filter((group) => group.ids.length)
+
+  return (
+    <section aria-label={`${item.label}の設定`} data-content-settings={item.screen}>
+      <button
+        type="button"
+        onClick={onOpen}
+        className="flex min-h-14 w-full items-center gap-3 rounded-2xl bg-brand-50 px-4 py-3 text-left active:bg-brand-100"
+        data-content-settings-open
+      >
+        <span className="min-w-0 flex-1">
+          <strong className="block text-sm font-extrabold text-brand-800">{item.label}を開く</strong>
+          <span className="mt-0.5 block text-[11px] font-bold leading-snug text-brand-700/70">
+            {item.description}
+          </span>
+        </span>
+        <ChevronRight size={18} className="shrink-0 text-brand-400" />
+      </button>
+
+      {groups.length ? (
+        <>
+          <p className="mt-3 px-1 text-xs font-bold leading-relaxed text-ink/50">
+            ここで変えた設定は、同じ設定を使うほかの教材にも反映されます。
+          </p>
+          {groups.map((group) => {
+            const english = group.ids.includes('ttsVoiceURI')
+            const japanese = group.ids.includes('ttsJapaneseVoiceURI')
+            return (
+              <section
+                key={group.id}
+                aria-label={group.label}
+                className="mt-4"
+                data-content-setting-group={group.id}
               >
-                {size === SESSION_SIZE_ALL ? '全部' : `${size}問`}
-              </button>
-            ))}
-          </div>
-        </SettingRow>
-        <SettingRow
-          title="正解したら自動で次へ"
-          desc="テストで正解したら、少し待って次の問題へ進みます。テスト画面上部の「正解後」でも切り替えられます"
-        >
-          <Toggle
-            label="正解したら自動で次へ"
-            on={settings.autoAdvanceCorrect !== false}
-            onChange={(value) => setSetting('autoAdvanceCorrect', value)}
-          />
-        </SettingRow>
-        <SettingRow
-          title="英単語の出題バランス"
-          desc={`現在 ${vocabMixStep(vocabMix).label}（${describeVocabMix(vocabMix)}）・級や分野から始める英単語の暗記・テストで、復習と未修のどちらを多く出すかを決めます。学習中は画面下部の「出題」でも変えられます`}
-          stacked
-        >
-          <div className="grid grid-cols-3 gap-2">
-            {VOCAB_MIX_STEPS.map((step) => (
-              <button
-                key={step.id}
-                type="button"
-                onClick={() => setSetting('vocabMix', step.id)}
-                aria-pressed={vocabMix === step.id}
-                className={cx(
-                  'min-h-11 rounded-xl text-sm font-extrabold transition-colors',
-                  vocabMix === step.id
-                    ? 'bg-brand-500 text-white'
-                    : 'bg-brand-50 text-brand-700',
+                <h3 className="px-1 font-display text-sm font-extrabold text-ink/65">{group.label}</h3>
+                {(english || japanese) && (
+                  <div className="px-1">
+                    <SpeechNotes />
+                  </div>
                 )}
-              >
-                {step.label}
-              </button>
-            ))}
-          </div>
-        </SettingRow>
-        <SettingRow
-          title="1日の目標"
-          desc={`現在 ${settings.dailyGoal ?? 20}語`}
-          stacked
-        >
-          <div className="grid grid-cols-4 gap-2">
-            {DAILY_GOALS.map((goal) => (
-              <button
-                key={goal}
-                type="button"
-                onClick={() => setSetting('dailyGoal', goal)}
-                aria-pressed={settings.dailyGoal === goal}
-                className={cx(
-                  'min-h-11 rounded-xl text-sm font-extrabold transition-colors',
-                  settings.dailyGoal === goal
-                    ? 'bg-brand-500 text-white'
-                    : 'bg-brand-50 text-brand-700',
-                )}
-              >
-                {goal}語
-              </button>
-            ))}
-          </div>
-        </SettingRow>
-      </div>
+                <div className="mt-2 rounded-2xl border border-slate-200/80 bg-white px-4">
+                  <SettingControls ids={group.ids} />
+                  {(english || japanese) && <VoiceTestButtons english={english} japanese={japanese} />}
+                </div>
+              </section>
+            )
+          })}
+        </>
+      ) : (
+        <p className="mt-3 rounded-2xl bg-slate-50 px-4 py-3 text-xs font-bold leading-relaxed text-ink/55">
+          {item.label}には、変えられる設定はありません。
+        </p>
+      )}
     </section>
   )
 }
@@ -528,6 +713,7 @@ function MenuDestinationList({
   items,
   onNavigate,
   onAction,
+  onOpenContentSettings,
   account,
   authStatus,
   tone = 'brand',
@@ -541,27 +727,33 @@ function MenuDestinationList({
         const key = item.kind === 'screen' ? item.screen : item.action
         const Icon = MENU_ITEM_ICONS[key] ?? Book
         const isAccount = item.action === 'account'
+        // 教材の行は、押すとその教材の設定を開く（教材へは設定のいちばん上から進む）。
+        const opensSettings = Array.isArray(item.settings)
         const label = isAccount
           ? account ? 'アカウント' : 'ログイン・保存'
           : item.label
         const description = isAccount
           ? account?.email ?? (authStatus === 'out' ? '任意でクラウド保存' : 'ゲストで端末保存中')
-          : item.description
+          : opensSettings ? contentSettingsSummary(item) : item.description
         const danger = item.tone === 'danger'
         return (
           <button
             key={`${item.kind}-${key}`}
             type="button"
             onClick={() => (
-              item.kind === 'screen'
-                ? onNavigate?.(item.screen, item.params ?? {})
-                : onAction?.(item.action)
+              opensSettings
+                ? onOpenContentSettings?.(item)
+                : item.kind === 'screen'
+                  ? onNavigate?.(item.screen, item.params ?? {})
+                  : onAction?.(item.action)
             )}
+            aria-label={opensSettings ? `${label}の設定。${description}` : undefined}
             className={cx(
               'flex min-h-12 w-full items-center gap-2.5 px-3 py-2 text-left',
               danger ? 'active:bg-rose-50' : 'active:bg-brand-50',
             )}
-            data-menu-destination={item.kind === 'screen' ? item.screen : undefined}
+            data-menu-destination={item.kind === 'screen' && !opensSettings ? item.screen : undefined}
+            data-menu-content-settings={opensSettings ? item.screen : undefined}
             data-menu-action={item.kind === 'action' ? item.action : undefined}
             data-menu-settings-entry={item.action === 'settings' ? '' : undefined}
             data-menu-account-entry={item.action === 'account' ? '' : undefined}
@@ -589,7 +781,9 @@ function MenuDestinationList({
                 {description}
               </span>
             </span>
-            <ChevronRight size={18} className={cx('shrink-0', danger ? 'text-rose-300' : 'text-ink/25')} />
+            {opensSettings
+              ? <Gear size={17} className="shrink-0 text-ink/30" />
+              : <ChevronRight size={18} className={cx('shrink-0', danger ? 'text-rose-300' : 'text-ink/25')} />}
           </button>
         )
       })}
@@ -602,6 +796,7 @@ export function AppMenuPanel({
   authStatus,
   onNavigate,
   onAction,
+  onOpenContentSettings,
 }) {
   return (
     <section aria-label="メニュー" data-app-menu-panel>
@@ -618,6 +813,7 @@ export function AppMenuPanel({
               items={menuSection.items}
               onNavigate={onNavigate}
               onAction={onAction}
+              onOpenContentSettings={onOpenContentSettings}
               account={account}
               authStatus={authStatus}
               tone={menuSection.id === 'english' || menuSection.id === 'support' ? 'violet' : 'brand'}
@@ -857,12 +1053,10 @@ function AccountPanel({ account, authStatus, onLogin, onSignOut }) {
 
 export function SpeechSettingsSheet() {
   const open = useStore((state) => state.speechSettingsOpen)
-  const menuRequest = useStore((state) => state.speechSettingsRequest)
   const closeSpeechSettings = useStore((state) => state.closeSpeechSettings)
   const navigate = useStore((state) => state.navigate)
   const goPortal = useStore((state) => state.goPortal)
   const goHomeScreen = useStore((state) => state.goHomeScreen)
-  const currentScreen = useStore((state) => state.screen)
   const learningState = useStore(useShallow((state) => ({
     srs: state.srs,
     etymologySrs: state.etymologySrs,
@@ -883,7 +1077,7 @@ export function SpeechSettingsSheet() {
   const authStatus = useAuth((state) => state.status)
   const signOutNow = useAuth((state) => state.signOutNow)
   const [view, setView] = useState('menu')
-  const [pendingNavigation, setPendingNavigation] = useState(null)
+  const [contentSettingsItem, setContentSettingsItem] = useState(null)
   const [resetStatus, setResetStatus] = useState('idle')
   const [resetGroupIds, setResetGroupIds] = useState([
     ...ALL_PROGRESS_RESET_GROUP_IDS,
@@ -914,24 +1108,24 @@ export function SpeechSettingsSheet() {
   )
 
   useEffect(() => {
-    if (!open) {
-      setView('menu')
-      setPendingNavigation(null)
-      setResetStatus('idle')
-      setResetGroupIds([...ALL_PROGRESS_RESET_GROUP_IDS])
-      return
-    }
-    if (menuRequest?.type === 'navigate' && menuRequest.screen) {
-      setPendingNavigation({
-        type: 'screen',
-        screen: menuRequest.screen,
-        params: menuRequest.params ?? {},
-      })
-      setView('save-progress')
-    } else {
-      setView('menu')
-    }
-  }, [open, menuRequest])
+    if (open) return
+    setView('menu')
+    setContentSettingsItem(null)
+    setResetStatus('idle')
+    setResetGroupIds([...ALL_PROGRESS_RESET_GROUP_IDS])
+  }, [open])
+
+  // 下の方の行から設定などを開いても先頭から見せ、メニューへ戻ったら元の位置に戻す。
+  const scrollAreaRef = useRef(null)
+  const menuScrollTop = useRef(0)
+  const showView = (next) => {
+    if (view === 'menu') menuScrollTop.current = scrollAreaRef.current?.scrollTop ?? 0
+    setView(next)
+  }
+  useLayoutEffect(() => {
+    if (!scrollAreaRef.current) return
+    scrollAreaRef.current.scrollTop = view === 'menu' ? menuScrollTop.current : 0
+  }, [view, contentSettingsItem])
 
   const close = () => {
     setView('menu')
@@ -940,28 +1134,23 @@ export function SpeechSettingsSheet() {
     dismissSpeechPlayer()
     closeSpeechSettings()
   }
-  const performNavigation = (destination) => {
-    if (!destination) return
-    close()
-    if (destination.screen === 'portal') goPortal()
-    else if (isAppHomeScreen(destination.screen)) goHomeScreen(destination.screen)
-    else navigate(destination.screen, destination.params ?? {})
-  }
+  // 答えた分は1問ごとに保存されているので、学習の途中でも確認を挟まずに移る。
   const openScreen = (screen, params = {}) => {
-    const destination = { type: 'screen', screen, params }
-    if (requiresProgressSaveConfirmation(currentScreen, screen)) {
-      setPendingNavigation(destination)
-      setView('save-progress')
-      return
-    }
-    performNavigation(destination)
+    close()
+    if (screen === 'portal') goPortal()
+    else if (isAppHomeScreen(screen)) goHomeScreen(screen)
+    else navigate(screen, params)
+  }
+  const openContentSettings = (item) => {
+    setContentSettingsItem(item)
+    showView('content-settings')
   }
   const confirmReset = async () => {
     const selectedGroups = normalizeProgressResetGroupIds(resetGroupIds)
     if (resetStatus === 'syncing' || !selectedGroups.length) return
     setResetGroupIds(selectedGroups)
     setResetStatus('syncing')
-    setView('reset-complete')
+    showView('reset-complete')
     try {
       const result = await resetProgressEverywhere(account, selectedGroups)
       setResetStatus(result.scope)
@@ -985,10 +1174,6 @@ export function SpeechSettingsSheet() {
     goPortal()
   }
 
-  const pendingLabel = pendingNavigation?.screen === 'portal'
-    ? 'スタディアプリ ホーム'
-    : '選んだ画面'
-
   const sheetTitles = {
     menu: 'メニュー',
     settings: '設定',
@@ -998,7 +1183,7 @@ export function SpeechSettingsSheet() {
     'reset-complete': 'リセット完了',
     'backup-reset': 'リセット前のバックアップ',
     account: account ? 'アカウント' : 'ログイン・保存',
-    'save-progress': '途中の進捗を保存しますか？',
+    'content-settings': contentSettingsItem ? `${contentSettingsItem.label}の設定` : '設定',
   }
   const sheetTitle = sheetTitles[view] ?? 'メニュー'
 
@@ -1007,25 +1192,34 @@ export function SpeechSettingsSheet() {
       open={open}
       onClose={close}
       title={sheetTitle}
+      scrollAreaRef={scrollAreaRef}
       maxH="calc(var(--app-visual-viewport-height) - 0.5rem)"
     >
-      {view === 'settings' ? (
+      {view === 'content-settings' && contentSettingsItem ? (
         <>
-          <MenuBackButton onClick={() => setView('menu')} />
+          <MenuBackButton onClick={() => showView('menu')} />
+          <ContentSettingsPanel
+            item={contentSettingsItem}
+            onOpen={() => openScreen(contentSettingsItem.screen)}
+          />
+        </>
+      ) : view === 'settings' ? (
+        <>
+          <MenuBackButton onClick={() => showView('menu')} />
           <SettingsMenuPanel heading={false} />
         </>
       ) : view === 'advisor' ? (
         <>
-          <MenuBackButton onClick={() => setView('menu')} />
+          <MenuBackButton onClick={() => showView('menu')} />
           <LearningAdvisorPanel
             profile={profile}
             onStart={openScreen}
-            onOpenAnalysis={() => setView('analytics')}
+            onOpenAnalysis={() => showView('analytics')}
           />
         </>
       ) : view === 'analytics' ? (
         <>
-          <MenuBackButton onClick={() => setView('menu')} />
+          <MenuBackButton onClick={() => showView('menu')} />
           <LearningAnalyticsPanel
             learningAnalytics={learningState.learningAnalytics}
             srs={learningState.srs}
@@ -1048,13 +1242,13 @@ export function SpeechSettingsSheet() {
         </>
       ) : view === 'reset' ? (
         <>
-          <MenuBackButton onClick={() => setView('menu')} />
+          <MenuBackButton onClick={() => showView('menu')} />
           <ResetProgressPanel
             selectedGroupIds={resetGroupIds}
             onSelectionChange={setResetGroupIds}
-            onBackup={() => setView('backup-reset')}
+            onBackup={() => showView('backup-reset')}
             onReset={confirmReset}
-            onCancel={() => setView('menu')}
+            onCancel={() => showView('menu')}
             busy={resetStatus === 'syncing'}
           />
         </>
@@ -1067,19 +1261,19 @@ export function SpeechSettingsSheet() {
             close()
             goPortal()
           }}
-          onMenu={() => setView('menu')}
+          onMenu={() => showView('menu')}
         />
       ) : view === 'backup-reset' ? (
         <>
-          <MenuBackButton onClick={() => setView('reset')} />
+          <MenuBackButton onClick={() => showView('reset')} />
           <ProgressBackupPanel
-            onContinue={() => setView('reset')}
+            onContinue={() => showView('reset')}
             continueLabel="保存を終えてリセット確認へ"
           />
         </>
       ) : view === 'account' ? (
         <>
-          <MenuBackButton onClick={() => setView('menu')} />
+          <MenuBackButton onClick={() => showView('menu')} />
           <AccountPanel
             account={account}
             authStatus={authStatus}
@@ -1087,28 +1281,13 @@ export function SpeechSettingsSheet() {
             onSignOut={signOutAndClose}
           />
         </>
-      ) : view === 'save-progress' ? (
-        <div data-progress-save-confirmation>
-          <p className="mb-3 rounded-2xl bg-emerald-50 px-3 py-2.5 text-xs font-bold leading-relaxed text-emerald-800">
-            回答ボタンを押した分まで、この端末には自動保存されています。別端末でも再開する場合は、下のQR画像かコードを保存してから{pendingLabel}へ進んでください。
-          </p>
-          <ProgressBackupPanel
-            onContinue={() => performNavigation(pendingNavigation)}
-            continueLabel={`保存を終えて${pendingLabel}へ`}
-          />
-          <Button full className="mt-2" variant="ghost" onClick={() => performNavigation(pendingNavigation)}>
-            この端末の自動保存だけで{pendingLabel}へ
-          </Button>
-          <Button full className="mt-1" variant="ghost" onClick={close}>
-            戻らず学習を続ける
-          </Button>
-        </div>
       ) : (
         <AppMenuPanel
           account={account}
           authStatus={authStatus}
           onNavigate={openScreen}
-          onAction={(action) => setView(action)}
+          onAction={showView}
+          onOpenContentSettings={openContentSettings}
         />
       )}
     </Sheet>

@@ -5,10 +5,9 @@ import { summarizeVocabularySrsItems, vocabularyLearningStatus } from '../lib/vo
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { NormalLearningRecordList } from '../components/NormalLearningRecordList.jsx'
 import { StatusDistributionBar } from '../components/LearningStatusBars.jsx'
+import { useSessionSize } from '../components/SessionSize.jsx'
 import { Button, Card } from '../components/ui.jsx'
 import { Book, Cards } from '../components/Icons.jsx'
-
-const LEARN_BATCH = 10
 
 export function RootDetailScreen() {
   const rootId = useStore((state) => state.params.rootId)
@@ -16,6 +15,8 @@ export function RootDetailScreen() {
   const srs = useStore((state) => state.srs)
   const root = getRoot(rootId)
   const card = getEtymologyPack(`root:${rootId}`)
+  // 1回に暗記・テストする語の数は、ほかの教材と同じ「1回の問題数」の設定に合わせる。
+  const batchSize = useSessionSize(card?.studyIds.length || Infinity)
 
   if (!root || !card) {
     return (
@@ -40,7 +41,7 @@ export function RootDetailScreen() {
     ...words.filter((word) => vocabularyLearningStatus(srs[word.id]) === 'reviewing'),
     ...words.filter((word) => vocabularyLearningStatus(srs[word.id]) === 'unlearned'),
     ...words.filter((word) => vocabularyLearningStatus(srs[word.id]) === 'learned'),
-  ].slice(0, LEARN_BATCH)
+  ].slice(0, batchSize)
 
   // 語根1つだけを覚え直しても身につかないため、この画面からは紐づく単語を、
   // いつもの単語の暗記・テストで学ぶ。
@@ -55,7 +56,7 @@ export function RootDetailScreen() {
   const quizWords = () => navigate('vocabQuiz', {
     source: { type: 'deck', ids: words.map((word) => word.id) },
     title: `${card.rootForm}（${card.rootMeaning}）のテスト`,
-    size: Math.min(LEARN_BATCH, words.length),
+    size: Math.min(batchSize, words.length),
     returnTo: returnTarget,
   })
 
