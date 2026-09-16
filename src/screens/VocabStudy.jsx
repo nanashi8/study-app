@@ -20,6 +20,8 @@ import { SpeakButton } from '../components/SpeakButton.jsx'
 import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
 import { EtymologyBlock } from '../components/WordBits.jsx'
 import { HomographWords, OtherSenses, PosBadge } from '../components/WordBits.jsx'
+import { PronunciationNote } from '../components/PronunciationNote.jsx'
+import { exampleSpeechAllowed } from '../lib/speechGuard.js'
 import { MeaningText } from '../components/MeaningText.jsx'
 import {
   ConfusableSection,
@@ -192,7 +194,7 @@ export function VocabStudyScreen() {
     if (settings.autoSpeak) {
       playSpeechItems([
         { text: word.word, label: word.word, style: 'word' },
-        ...(word.example
+        ...(word.example && exampleSpeechAllowed(word)
           ? [{ text: word.example.en, label: word.example.en, style: 'sentence' }]
           : []),
       ], {
@@ -293,9 +295,10 @@ export function VocabStudyScreen() {
   const level = getLevel(word.level)
   // スペルを隠しているあいだは、単語帳の窓や読み上げ名にも語を出さない。
   const wordName = spellingHidden ? 'この単語' : word.word
+  // 使い方で発音が変わる語は単語を読まず（再生パネル側で外れる）、文でも読み分けられない語は例文も読まない。
   const wordSpeechItems = [
     { text: word.word, label: word.word, style: 'word' },
-    ...(word.example
+    ...(word.example && exampleSpeechAllowed(word)
       ? [{ text: word.example.en, label: word.example.en, style: 'sentence' }]
       : []),
   ]
@@ -419,6 +422,8 @@ export function VocabStudyScreen() {
                     同じつづりの別の語があります
                   </p>
                 )}
+                {/* 使い方で発音が変わる語は音声を出さない。裏を見る前は意味を書かない短い形で知らせる。 */}
+                <PronunciationNote word={word} compact className="mt-1" />
                 <div className="mt-3">
                   <SpeakButton
                     text={word.word}
@@ -450,6 +455,9 @@ export function VocabStudyScreen() {
                 </div>
               </div>
 
+              {/* 使い方で発音が変わる語の読み分け */}
+              <PronunciationNote word={word} />
+
               {/* 日本語に定着したカタカナ語。意味がずれる語は注意書きを添える。 */}
               <LoanwordHint hint={relations.loanword} />
 
@@ -463,13 +471,15 @@ export function VocabStudyScreen() {
               {word.example && (
                 <div className="rounded-2xl bg-white p-3 ring-1 ring-brand-100">
                   <div className="flex items-start gap-2">
-                    <SpeakButton
-                      text={word.example.en}
-                      phrases={wordSpeechItems}
-                      phraseIndex={1}
-                      title="単語カード"
-                      size="sm"
-                    />
+                    {exampleSpeechAllowed(word) && (
+                      <SpeakButton
+                        text={word.example.en}
+                        phrases={wordSpeechItems}
+                        phraseIndex={1}
+                        title="単語カード"
+                        size="sm"
+                      />
+                    )}
                     <div className="flex-1">
                       <p className="font-bold text-ink">{word.example.en}</p>
                       <p className="mt-0.5 text-sm font-bold text-ink/55">{word.example.ja}</p>

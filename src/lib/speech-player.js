@@ -5,6 +5,7 @@ import {
   speakWith,
   stopSpeaking,
 } from './tts.js'
+import { isAmbiguousSpeechText } from './speechGuard.js'
 
 const clamp = (value, min, max) => Math.max(min, Math.min(max, value))
 
@@ -52,6 +53,8 @@ function normalizeItems(items, defaults) {
       const segments = (source.segments?.length ? source.segments : [source])
         .map((segment) => textSegment(segment, defaults))
         .filter((segment) => String(segment.text ?? '').trim())
+        // 使い方で発音が変わる語（heteronyms.js）は、単語だけでは読み上げない（長文の単語タップも同じ）。
+        .filter((segment) => !isAmbiguousSpeechText(segment.text, segment.lang))
       if (!segments.length) return null
       return {
         id: source.id ?? `speech-item-${index}`,

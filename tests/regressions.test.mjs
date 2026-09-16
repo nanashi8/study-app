@@ -153,7 +153,8 @@ test('同綴異音語は見出し語の品詞・語義に合うIPAを使う', ()
     assert.equal(getWord(id)?.phonetic, ipa, id)
   }
   assert.equal(getWord('read').phonetic, '/ˈɹid/')
-  assert.equal(getWord('minute').phonetic, '/maɪˈnut/')
+  // minute のカードは「分」なので /ˈmɪnət/。「微小な」の /maɪˈnut/ は heteronyms.js の読み分けに置く。
+  assert.equal(getWord('minute').phonetic, '/ˈmɪnət/')
 })
 
 test('全ての文法問題は正解を入れると完成文を含む', () => {

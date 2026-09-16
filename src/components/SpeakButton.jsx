@@ -1,6 +1,7 @@
 import { useStore } from '../store/useStore.js'
 import { isTTSSupported } from '../lib/tts.js'
 import { playSpeechItems } from '../lib/speech-player.js'
+import { isAmbiguousSpeechText } from '../lib/speechGuard.js'
 import { SpeakerWave } from './Icons.jsx'
 import { cx } from './ui.jsx'
 
@@ -32,7 +33,8 @@ export function SpeakButton({
   lang = 'en-US',
 }) {
   const settings = useStore((s) => s.settings)
-  if (!isTTSSupported()) return null
+  // 使い方で発音が変わる語（heteronyms.js）は、単語だけでは読み上げない。発音は画面の注釈で示す。
+  if (!isTTSSupported() || isAmbiguousSpeechText(text, lang)) return null
   const handle = (e) => {
     e.stopPropagation()
     if (disabled) return
