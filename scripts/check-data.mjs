@@ -174,6 +174,8 @@ import { SPELLING_CONFUSABLE_PAIRS } from '../src/data/spelling-confusables.js'
 import { LOANWORD_HINTS } from '../src/data/loanword-hints.js'
 import { MEANING_READINGS, MEANING_READING_KANJI } from '../src/data/meaning-readings.js'
 import { meaningSegments } from '../src/lib/meaningReadings.js'
+import { SCENE_BUNDLE_LEDGER } from '../src/data/scene-bundles.js'
+import { SCENE_BUNDLE_SIZE, findSceneWordInPassage } from '../src/lib/sceneBundles.js'
 
 const LEVELS = new Set(['5', '4', '3', 'pre2', '2', 'pre1', '1'])
 const READING_LEVELS = new Set(['5', '4', '3', 'pre2', 'pre2plus', '2', 'pre1', '1'])
@@ -256,6 +258,52 @@ if (ROOT_IDS.size !== ROOTS.length) errors.push('語根idに重複あり')
   }
   for (const text of readingTexts) {
     if (!usedReadings.has(text)) errors.push(`意味の読み: 「${text}」はどの単語の意味にも出てこない`)
+  }
+}
+
+// 場面の束：長文1本を、本文の場面ごとの語に分けた暗記の単位。どの語を入れるか、辞書の意味が本文での
+// 使われ方と合うかは人が読んで決め、ここでは「この束を暗記してから、この長文を読む」が成り立つ形だけを確かめる。
+// 本文への出方は画面と同じ findSceneWordInPassage で求める（原形・規則変化・長文の不規則変化）。
+{
+  const passageById = new Map(PASSAGES.map((passage) => [passage.id, passage]))
+  const bundleNames = new Set()
+  for (const [passageId, bundles] of Object.entries(SCENE_BUNDLE_LEDGER)) {
+    const passage = passageById.get(passageId)
+    if (!passage) {
+      errors.push(`場面の束: 長文 ${passageId} がない（一文ごとに確かめた長文にだけ置く）`)
+      continue
+    }
+    if (bundles.length < 2) errors.push(`場面の束: ${passageId} の束が${bundles.length}つ（本文の場面ごとに2つ以上に分ける）`)
+    const bundleOfWord = new Map()
+    for (const [index, bundle] of bundles.entries()) {
+      const at = `場面の束 ${passageId}#${index + 1}「${bundle.name}」`
+      if (!String(bundle.name ?? '').trim()) errors.push(`${at}: 名前がない`)
+      if (bundleNames.has(bundle.name)) errors.push(`${at}: 同じ名前の束がほかの長文にもある`)
+      bundleNames.add(bundle.name)
+      if (bundle.words.length < SCENE_BUNDLE_SIZE.min || bundle.words.length > SCENE_BUNDLE_SIZE.max) {
+        errors.push(`${at}: ${bundle.words.length}語（${SCENE_BUNDLE_SIZE.min}〜${SCENE_BUNDLE_SIZE.max}語にする）`)
+      }
+      let lastSentence = -1
+      for (const wordId of bundle.words) {
+        const word = getWord(wordId)
+        if (!word) {
+          errors.push(`${at}: ${wordId} が辞書にない`)
+          continue
+        }
+        if (bundleOfWord.has(wordId)) errors.push(`${at}: ${wordId} が同じ長文の「${bundleOfWord.get(wordId)}」にもある`)
+        bundleOfWord.set(wordId, bundle.name)
+        const found = findSceneWordInPassage(passage, word)
+        if (!found) {
+          errors.push(`${at}: ${wordId} が本文に出てこない（原形か語形変化で本文に出る語だけを入れる）`)
+          continue
+        }
+        if (found.index < lastSentence) errors.push(`${at}: ${wordId} が本文に出る順に並んでいない（${found.index + 1}文目）`)
+        lastSentence = Math.max(lastSentence, found.index)
+      }
+    }
+  }
+  for (const passage of PASSAGES) {
+    if (!SCENE_BUNDLE_LEDGER[passage.id]) errors.push(`場面の束: 長文 ${passage.id} に束がない（src/data/scene-bundles.js に本文の場面ごとに足す）`)
   }
 }
 
