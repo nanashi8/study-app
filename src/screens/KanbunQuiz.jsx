@@ -12,6 +12,7 @@ import { KANBUN_LEVEL_BY_ID } from '../data/kanbun-meta.js'
 import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { ChoiceExplanations } from '../components/ChoiceExplanations.jsx'
+import { KanbunMarkedText } from '../components/KanbunMarkedText.js'
 import { KanbunText } from '../components/KanbunFurigana.jsx'
 import { Button, Chip, cx } from '../components/ui.jsx'
 import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
@@ -275,7 +276,9 @@ export function KanbunQuizScreen() {
 
           {question.passage && (
             <div className="mt-4 rounded-2xl bg-gradient-to-br from-slate-950 to-rose-950 p-4 text-white">
-              <p className="font-serif text-lg font-bold leading-[1.9]">{question.passage}</p>
+              {question.marked
+                ? <KanbunMarkedText marked={question.marked} inverse showLegend={false} size="sm" />
+                : <p className="font-serif text-lg font-bold leading-[1.9]">{question.passage}</p>}
               {question.kakikudashi && <p className="mt-2 text-xs font-bold leading-relaxed text-white/60"><KanbunText>{question.kakikudashi}</KanbunText></p>}
             </div>
           )}

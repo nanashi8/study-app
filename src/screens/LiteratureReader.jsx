@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useStore } from '../store/useStore.js'
+import { KanbunMarkedText } from '../components/KanbunMarkedText.js'
 import { notebookRefs } from '../lib/learningNotebook.js'
 import {
   LITERATURE_KIND_META,
@@ -79,9 +80,9 @@ const READER_COPY = Object.freeze({
   kanbun: Object.freeze({
     playingOriginal: '書き下しを再生中',
     playingTranslation: '現代語訳を再生中',
-    originalSegment: '漢文（原文）',
+    originalSegment: '漢文（返り点つき）',
     translationSegment: '区切りの現代語訳',
-    help: '漢文の原文を目で追い、書き下し文を一息ぶん読んだあと、対応する現代語訳を続けて読みます。',
+    help: '返り点に従って漢文を読む順に目で追い、書き下し文を一息ぶん読んだあと、対応する現代語訳を続けて読みます。',
     speechSummary: '場面全体の書き下し文',
     footer: '漢文（書き下し） → 区切りの現代語訳',
     gradient: 'linear-gradient(135deg,#4c0519,#9f1239,#7f1d1d)',
@@ -599,16 +600,20 @@ export function LiteratureReaderScreen() {
                           </span>
                         )}
                       </div>
-                      <p
-                        className={cx(
-                          'font-bold leading-[1.8] text-ink',
-                          work.kind !== 'english'
-                            ? 'font-serif text-lg'
-                            : 'text-base',
-                        )}
-                      >
-                        {segment.original}
-                      </p>
+                      {segment.marked ? (
+                        <KanbunMarkedText marked={segment.marked} showLegend={false} align="start" size="sm" />
+                      ) : (
+                        <p
+                          className={cx(
+                            'font-bold leading-[1.8] text-ink',
+                            work.kind !== 'english'
+                              ? 'font-serif text-lg'
+                              : 'text-base',
+                          )}
+                        >
+                          {segment.original}
+                        </p>
+                      )}
                       {work.kind === 'kanbun' && (
                         <div className="mt-2 border-t border-teal-100 pt-2">
                           <span className="text-[10px] font-extrabold tracking-wide text-rose-700">
