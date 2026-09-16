@@ -177,6 +177,14 @@ export const PASSAGE_FORM_ALIASES = {
   untested: { id: 'test', ja: '未検証の・試されていない' },
   whenever: { id: 'when', ja: '〜するときはいつでも' },
   wooden: { id: 'wood', ja: '木造の・木製の' },
+  // 語尾を落とすと別の語（ad・rid・suite・us）に当たる活用形と、名詞で使う reader。
+  added: { id: 'add', ja: '加えた・加えられた' },
+  adding: { id: 'add', ja: '加えること' },
+  reader: { id: 'read', ja: '読み手・読者' },
+  rider: { id: 'ride', ja: '乗る人' },
+  riding: { id: 'ride', ja: '乗ること・運転' },
+  suited: { id: 'suit', ja: '適した（be suited to）' },
+  using: { id: 'use', ja: '使うこと・使いながら' },
 }
 
 // 原形の候補を緩く生成（最初に語彙データと一致したものを採用）。

@@ -49,7 +49,7 @@ import {
   EXAM_USAGE_GUIDES,
   EXAM_WORDS,
 } from '../src/data/exam-lexicon.js'
-import { PASSAGES } from '../src/data/passages.js'
+import { ANNOTATED_PASSAGES, PASSAGES } from '../src/data/passages.js'
 import {
   READING_PHRASE_EXPLANATIONS,
   READING_PHRASE_OPEN_QUESTIONS,
@@ -65,6 +65,7 @@ import {
   passageWordCount,
 } from '../src/data/reading-study.js'
 import { resolvePassageWord } from '../src/data/passage-gloss.js'
+import { PASSAGE_SENSE_GLOSSES } from '../src/data/passage-sense-glosses.js'
 import { READING_GRAMMAR_EXPECTATIONS } from '../src/data/reading-grammar-expectations.js'
 import {
   READING_CORE_PHRASE_WORD_LIMIT,
@@ -1495,7 +1496,7 @@ if (
   readingPhrasePairCount !== 6880 ||
   readingPhraseSequenceCount !== 6880 ||
   readingMeaningPhraseCount !== 5029 ||
-  readingMeaningMultiRoleCount !== 1938
+  readingMeaningMultiRoleCount !== 1939
 ) {
   errors.push(
     `長文フレーズ監査: ${PASSAGES.length}長文・${readingTranslationSentenceCount}文・` +
@@ -1527,6 +1528,47 @@ if (READING_PHRASE_OPEN_QUESTIONS.some(
   (item) => !item.id || !item.example || !item.proposal || !item.reason,
 )) {
   errors.push('長文のフレーズ解説: 未確定パターンの必須項目が不足')
+}
+
+// ── 長文：同じつづりで見出し語・品詞が割れる語の、文ごとの語義台帳 ──
+// leaves（leaf／leave）や may（助動詞／5月）は、つづりから引くと文脈と違う語に当たる。
+// 台帳の英文が本文にあり、語が文中にあり、本文をタップしたときの解決が台帳どおりかを確かめる。
+{
+  const annotatedSentences = new Map()
+  for (const passage of ANNOTATED_PASSAGES) {
+    for (const [index, sentence] of passage.sentences.entries()) {
+      annotatedSentences.set(sentence.en, [
+        ...(annotatedSentences.get(sentence.en) ?? []),
+        { at: `${passage.id}#${index + 1}`, sentence },
+      ])
+    }
+  }
+  for (const [en, senses] of Object.entries(PASSAGE_SENSE_GLOSSES)) {
+    const places = annotatedSentences.get(en)
+    if (!places) {
+      errors.push(`長文の語義台帳: 本文に無い英文「${en}」（本文を直したら台帳のキーも合わせる）`)
+      continue
+    }
+    for (const { at, sentence } of places) {
+      const keys = new Set(readingPhraseWords(sentence.en))
+      for (const [key, sense] of Object.entries(senses)) {
+        const where = `長文の語義台帳 ${at} "${key}"`
+        if (!keys.has(key)) errors.push(`${where}: 本文にこの語が無い`)
+        if (!getWord(sense.id)) errors.push(`${where}: 見出し語 ${sense.id} が辞書に無い`)
+        if (!/[\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Han}]/u.test(sense.ja ?? '')) {
+          errors.push(`${where}: 日本語の意味が無い`)
+        }
+        const resolved = resolvePassageWord(key, sentence.gloss)
+        if (resolved?.id !== sense.id || resolved?.ja !== sense.ja) {
+          errors.push(`${where}: 本文タップの解決が台帳と違う（${resolved?.id}「${resolved?.ja}」）`)
+        }
+        const spelled = resolvePassageWord(key)
+        if (spelled?.id === sense.id && spelled?.ja === sense.ja) {
+          errors.push(`${where}: つづりから引いた結果と同じなので台帳に置かない`)
+        }
+      }
+    }
+  }
 }
 
 // ── 文法：空所・正解・完成文の整合性 ──

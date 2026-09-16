@@ -79,7 +79,7 @@ export const CURRENT_AFFAIRS_READING_PHRASE_CORRECTIONS = freeze({
     ], 'that は found の内容節を導くLINKで、動名詞句 copying a finished report がその節の主語Sです。'),
   ]),
   'Some students thought the panels were broken, but the weather was the real reason.': freeze([
-    correction(['Some students thought', 'the panels were', 'broken'], [
+    correction(['Some students', 'thought', 'the panels were broken'], [
       { role: 'S', en: 'Some students', ja: '一部の生徒は' },
       { role: 'V', en: 'thought', ja: '〜と思いました（内容は次へ）' },
       { role: 'S', en: 'the panels', ja: 'パネルが' },
@@ -174,7 +174,7 @@ export const CURRENT_AFFAIRS_READING_PHRASE_CORRECTIONS = freeze({
     ], 'begin doing の -ing は動名詞で、began の目的語として動作の開始を示します。進行形の分詞ではありません。'),
   ]),
   'Our teacher told us that learning to judge information is the real skill.': freeze([
-    correction(['that learning', 'to judge information'], [
+    correction(['that', 'learning to judge information'], [
       { role: 'LINK', en: 'that', ja: '〜ということを' },
       {
         role: 'S',

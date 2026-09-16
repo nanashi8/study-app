@@ -11,6 +11,7 @@ import { CURRENT_AFFAIRS_PASSAGES } from './reading-current-affairs-passages.js'
 import { FIELD_PASSAGES } from './reading-fields-passages.js'
 import { EXTENDED_PASSAGES } from './reading-extended-passages.js'
 import { READING_TRANSLATION_SCENARIOS } from './reading-translation-scenarios.js'
+import { PASSAGE_SENSE_GLOSSES } from './passage-sense-glosses.js'
 import { reviewSourceFingerprint } from './reading-phrase-review-ledger.js'
 
 const s = (en, ja, chunks, paragraphStart = false) => ({
@@ -458,6 +459,10 @@ for (const passage of ANNOTATED_PASSAGES) {
       for (const [key, ja] of Object.entries(entry.words)) {
         sentence.gloss[key] = { ja, proper: true }
       }
+    }
+    // 同じつづりで見出し語や品詞が割れる語は、文ごとに確かめた語義を使う。
+    for (const [key, { id, ja }] of Object.entries(PASSAGE_SENSE_GLOSSES[sentence.en] ?? {})) {
+      sentence.gloss[key] = { id, ja }
     }
   }
 }
