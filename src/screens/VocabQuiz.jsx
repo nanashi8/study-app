@@ -19,6 +19,7 @@ import {
 import { quizMeaning } from '../data/compact.js'
 import { MeaningText } from '../components/MeaningText.jsx'
 import { SpeakButton } from '../components/SpeakButton.jsx'
+import { PronunciationNote } from '../components/PronunciationNote.jsx'
 import { EtymologyBlock, PosBadge } from '../components/WordBits.jsx'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { WordBookToggle } from '../components/WordListSheet.jsx'
@@ -379,6 +380,8 @@ export function VocabQuizScreen() {
                 isDragonVein ? 'text-3xl' : 'mt-2 text-4xl',
               )}>{word.word}</h2>
               {word.phonetic && <p className="mt-1 text-sm font-bold text-ink/40">{word.phonetic}</p>}
+              {/* 使い方で発音が変わる語は音声を出さない。答える前は意味を書かない短い形で知らせる。 */}
+              <PronunciationNote word={word} compact className="mt-1" />
             </div>
             <SpeakButton text={word.word} size="md" />
           </div>
@@ -443,6 +446,7 @@ export function VocabQuizScreen() {
             <p className="mt-1 font-bold text-ink">
               <span className="font-display">{word.word}</span> ＝ <MeaningText>{word.meanings.join('・')}</MeaningText>
             </p>
+            <PronunciationNote word={word} className="mt-3" />
             {/* 答え合わせは、選択肢の中身と語の成り立ちだけを出す。例文は暗記カードと辞書で見る。 */}
             <ChoiceExplanations
               title="選択肢の単語と意味"

@@ -11,6 +11,8 @@ import { getLevel } from '../data/levels.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { EtymologyBlock, HomographWords, OtherSenses, RelatedWords, PosBadge } from '../components/WordBits.jsx'
+import { PronunciationNote } from '../components/PronunciationNote.jsx'
+import { exampleSpeechAllowed } from '../lib/speechGuard.js'
 import { UsageGuideCards } from '../components/UsageGuideCards.jsx'
 import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
 import { MeaningText } from '../components/MeaningText.jsx'
@@ -133,6 +135,8 @@ export function WordDetailScreen() {
               <SpeakButton text={word.word} size="md" className="mb-1" />
             </div>
             {word.phonetic && <p className="mt-1 text-sm font-bold text-ink/45">{word.phonetic}</p>}
+            {/* 使い方で発音が変わる語の読み分け（この語は音声を出さない） */}
+            <PronunciationNote word={word} className="mt-2" />
             <div className="mt-3 rounded-2xl bg-brand-50 p-3">
               <div className="font-display text-xl font-extrabold text-ink"><MeaningText>{word.meanings.join('・')}</MeaningText></div>
             </div>
@@ -147,7 +151,7 @@ export function WordDetailScreen() {
             <Card className="p-4">
               <div className="mb-1 text-[11px] font-extrabold uppercase tracking-wide text-brand-400">例文</div>
               <div className="flex items-start gap-2">
-                <SpeakButton text={word.example.en} size="sm" />
+                {exampleSpeechAllowed(word) && <SpeakButton text={word.example.en} size="sm" />}
                 <div className="flex-1">
                   <p className="font-bold text-ink">{word.example.en}</p>
                   <p className="mt-0.5 text-sm font-bold text-ink/55">{word.example.ja}</p>

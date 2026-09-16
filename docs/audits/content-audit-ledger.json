@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-09-16T12:21:15.992Z",
+  "auditedAt": "2026-09-16T12:26:34.545Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -12,7 +12,7 @@
     "quizItemCount": 16473,
     "storedAndGeneratedQuestionPathCount": 4506,
     "storedAndGeneratedChoicePathCount": 17608,
-    "overallContentSha256": "079575607de287adb1bb21a7bf2f859d8ed5860c15828711917c3d930a6e8f6b"
+    "overallContentSha256": "29960e46cf2daf563feda0754f3ad2a31da9ecf3f06d2c14921b4bf1fd12b7a7"
   },
   "completionCriteria": [
     "全18教材カテゴリのID・母数・重複・内容ハッシュが一致する",
@@ -103,7 +103,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "080145355c18bad52eb7e631ac2d87f2b3a3b5b915bed5c1af9df67fa99d02e4",
+    "sha256": "6cf9efb1f491b846102bc0ae0ec3002fcdc4b61bcfc35bee4fc096b1d8430ea1",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -187,6 +187,7 @@
       "tests/grammar-exam-patterns.test.mjs",
       "tests/grammar-explanation-completeness.test.mjs",
       "tests/grammar-strand.test.mjs",
+      "tests/heteronyms.test.mjs",
       "tests/homograph-words.test.mjs",
       "tests/idiom-form-families.test.mjs",
       "tests/instructor-explanations.test.mjs",
@@ -275,7 +276,7 @@
       "quizItemCount": 8907,
       "learningIdOrderSha256": "6ce7b8aea762f737ca116621d5f51a7a660d7eba5f75e6d40631f734aacf30b4",
       "quizIdOrderSha256": "6ce7b8aea762f737ca116621d5f51a7a660d7eba5f75e6d40631f734aacf30b4",
-      "contentSha256": "7a95b0420d6b0be39b88b107c0f0b00df295f5bbf5e07716ecd73f4f68ef8cf8",
+      "contentSha256": "4c659bea80edbad66eb7862b22ce235182ab6e76acde6b09181b70f4d1721d42",
       "auditGateIds": [
         "inventory",
         "coreData",
