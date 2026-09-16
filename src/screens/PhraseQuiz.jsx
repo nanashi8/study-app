@@ -74,7 +74,13 @@ export function PhraseQuizScreen() {
 
   const sessionId = useRef(newSessionId())
   // size=0 は「絞り込みなし」。在庫数から、選べる問題数の上限を決める。
-  const buildFor = (size) => buildPhraseDeck(source, { srs: useStore.getState().srs, size, purpose: 'quiz' })
+  // 結果画面の「次の◯項目へ」で続けた回は、同じ周回で出し終えた項目を除いて数える。
+  const buildFor = (size) => buildPhraseDeck(source, {
+    srs: useStore.getState().srs,
+    size,
+    purpose: 'quiz',
+    cycleIds: params.phraseCycleIds,
+  })
   const [poolSize] = useState(() => buildFor(0).length)
   const sessionSize = useSessionSize(poolSize || Infinity)
   const [deck, setDeck] = useState(() => buildFor(params.size ?? sessionSize))
@@ -147,6 +153,11 @@ export function PhraseQuizScreen() {
       answerLog: [...results.current.answerLog],
       continueTo: params.continueTo,
       returnTo: params.returnTo,
+      phraseSession: {
+        cycleIds: params.phraseCycleIds,
+        itemIds: [...carried.ids, ...deck.map((entry) => entry.id)],
+        completedAt: Date.now(),
+      },
     })
   }
 

@@ -1,10 +1,36 @@
 import {
   buildDeck,
+  buildPhraseDeck,
   SESSION_SIZE,
 } from './session.js'
 import { completedSessionDestination } from './navigationPolicy.js'
 
-function uniqueWordIds(...groups) {
+// 英単語と熟語・構文は、結果画面から同じ流れで続ける。
+// 教材ごとに違うのは、出題の組み方・行き先の画面・数え方の単位・引き継ぐ記録の名前だけ。
+const ENGINES = {
+  word: {
+    engine: 'word',
+    build: buildDeck,
+    unit: '語',
+    defaultSource: { type: 'due' },
+    screens: { study: 'vocabStudy', quiz: 'vocabQuiz' },
+    sessionKey: 'vocabSession',
+    idsKey: 'wordIds',
+    cycleKey: 'vocabCycleIds',
+  },
+  phrase: {
+    engine: 'phrase',
+    build: buildPhraseDeck,
+    unit: '項目',
+    defaultSource: { type: 'phrase', kind: 'idiom' },
+    screens: { study: 'phraseStudy', quiz: 'phraseQuiz' },
+    sessionKey: 'phraseSession',
+    idsKey: 'itemIds',
+    cycleKey: 'phraseCycleIds',
+  },
+}
+
+function uniqueIds(...groups) {
   return [...new Set(groups.flatMap((group) => (
     Array.isArray(group) ? group.filter((id) => typeof id === 'string' && id) : []
   )))]
@@ -21,12 +47,12 @@ function nextSessionCount(requestedSize, storedSize, remainingCount) {
 }
 
 /**
- * 英単語の結果画面で「次へ進む」を押したときの行き先を決める。
- * 同じ連続学習で終えた語を引き継ぎ、対象を一巡するまで再出題しない。
+ * 結果画面で「次へ進む」を押したときの行き先を決める。
+ * 同じ連続学習で終えた語・項目を引き継ぎ、対象を一巡するまで再出題しない。
  * 「復習する」で作った明示的な復習セッションは continueTo を優先する。
  */
-export function vocabularySessionContinuation(
-  params = {},
+function sessionContinuation(
+  params,
   {
     srs = {},
     storedSize = SESSION_SIZE,
@@ -34,12 +60,13 @@ export function vocabularySessionContinuation(
     // 出題バランスの指定。次の回で実際に出せる数を、同じ条件で数える。
     freshShareOverride = null,
   } = {},
+  engineId = 'word',
 ) {
-  const source = params.source ?? { type: 'due' }
+  const engine = ENGINES[engineId]
+  const source = params.source ?? engine.defaultSource
   const mode = params.mode === 'quiz' ? 'quiz' : 'study'
-  const previousCycleIds = params.vocabSession?.cycleIds
-  const currentIds = params.vocabSession?.wordIds
-  const cycleIds = uniqueWordIds(previousCycleIds, currentIds)
+  const record = params[engine.sessionKey] ?? {}
+  const cycleIds = uniqueIds(record.cycleIds, record[engine.idsKey])
 
   if (params.continueTo?.screen) {
     return {
@@ -56,7 +83,7 @@ export function vocabularySessionContinuation(
     }
   }
 
-  const remainingCount = buildDeck(source, {
+  const remainingCount = engine.build(source, {
     srs,
     size: 0,
     purpose: mode,
@@ -76,7 +103,7 @@ export function vocabularySessionContinuation(
     }
   }
 
-  const selectableCount = buildDeck(source, {
+  const selectableCount = engine.build(source, {
     srs,
     size: 0,
     purpose: mode,
@@ -85,7 +112,7 @@ export function vocabularySessionContinuation(
     freshShareOverride,
   }).length
   const requestedCount = nextSessionCount(params.size, storedSize, selectableCount)
-  const nextCount = buildDeck(source, {
+  const nextCount = engine.build(source, {
     srs,
     size: requestedCount,
     purpose: mode,
@@ -95,21 +122,31 @@ export function vocabularySessionContinuation(
   }).length
   return {
     destination: {
-      screen: mode === 'quiz' ? 'vocabQuiz' : 'vocabStudy',
+      screen: engine.screens[mode],
       params: {
         source,
         title: params.title,
         mode,
-        engine: 'word',
+        engine: engine.engine,
         size: params.size,
         returnTo: params.returnTo,
-        vocabCycleIds: cycleIds,
+        [engine.cycleKey]: cycleIds,
       },
     },
     cycleIds,
     remainingCount,
     nextCount,
     exhausted: false,
-    label: `次の${nextCount}語へ`,
+    label: `次の${nextCount}${engine.unit}へ`,
   }
+}
+
+/** 英単語の暗記・テストの続き。 */
+export function vocabularySessionContinuation(params = {}, options = {}) {
+  return sessionContinuation(params, options, 'word')
+}
+
+/** 熟語・構文の暗記・テストの続き。英単語と同じ数え方・同じ進み方で続ける。 */
+export function phraseSessionContinuation(params = {}, options = {}) {
+  return sessionContinuation(params, options, 'phrase')
 }

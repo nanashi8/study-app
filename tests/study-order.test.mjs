@@ -363,7 +363,7 @@ test('暗記・テストの全20画面が、いまの記録から共通の出題
     ['VocabStudy.jsx', /buildDeck\(source, \{[\s\S]*?purpose: 'study'/],
     ['VocabQuiz.jsx', /buildDeck\(source, \{[\s\S]*?purpose: 'quiz'/],
     ['PhraseStudy.jsx', /buildPhraseDeck\([\s\S]*?srs: useStore\.getState\(\)\.srs,\s*size,\s*purpose: 'study',/],
-    ['PhraseQuiz.jsx', /buildPhraseDeck\(source, \{ srs: useStore\.getState\(\)\.srs, size, purpose: 'quiz' \}\)/],
+    ['PhraseQuiz.jsx', /buildPhraseDeck\(source, \{[\s\S]*?srs: useStore\.getState\(\)\.srs,\s*size,\s*purpose: 'quiz',/],
     ['GrammarQuiz.jsx', /buildGrammarDeck\([\s\S]*?srs: useStore\.getState\(\)\.srs/],
     ['ListeningQuiz.jsx', /buildListeningDeck\(source, \{ size, srs: useStore\.getState\(\)\.srs \}\)/],
     ['DictationPlay.jsx', /buildDictationDeck\(source, \{ size, srs: useStore\.getState\(\)\.srs \}\)/],
