@@ -1,10 +1,7 @@
 // 英検級別リスニング専用データ。
 //
-// 英検公式が示す「会話の応答」「会話・文の内容一致」「Real-Life」
-// 「インタビュー」等の形式、級別の場面・題材、放送回数を土台にした
-// オリジナル問題。過去問・公式問題の転載ではない。
-// 設計確認日: 2026-07-27
-// https://www.eiken.or.jp/eiken/exam/
+// 「会話の応答」「会話・文の内容一致」「Real-Life」「インタビュー」等の形式で、
+// 級別の場面・題材・放送回数をそろえた問題。
 
 import { limitQuizChoices } from '../lib/quizChoices.js'
 import { pickInStudyOrder, rankItemsForStudy } from '../lib/studyOrder.js'
@@ -377,7 +374,7 @@ export function buildListeningDeck(
   const ranked = rank(candidates)
   if (!size || size >= candidates.length) return ranked.map(({ item }) => item)
 
-  // 10問版でも、級の出題形式が偶然欠落しないよう公式構成比を縮約して層化抽出する。
+  // 10問版でも、級の出題形式が偶然欠落しないよう、級の構成比を縮約して層化抽出する。
   const profile = LISTENING_PROFILES[levelId]
   const targets = Object.entries(profile?.typeTargets ?? {})
   const targetTotal = targets.reduce((sum, [, target]) => sum + target, 0)

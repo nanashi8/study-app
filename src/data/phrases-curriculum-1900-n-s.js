@@ -1,6 +1,6 @@
 import { parseCurriculum1900PhraseRows } from './curriculum-phrase-utils.js'
 
-// 出典順ではなく、正規形の英字順。
+// 正規形の英字順。
 const ROWS = String.raw`
 name A after B	pre2	BにちなんでAと名付ける	They named the school after its founder.	彼らは創設者にちなんで学校を名付けた。	structure
 needless to say	2	言うまでもなく	Needless to say, everyone needs clean water.	言うまでもなく、誰にでもきれいな水が必要だ。	discourse

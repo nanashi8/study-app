@@ -41,7 +41,7 @@ test('読解30ルールは五段階・三手・誤読防止・図解を備える
     [4, 7, 7, 6, 6],
   )
   assert.equal(READING_RULES.filter((rule) => rule.origin === 'added').length, 10)
-  assert.equal(READING_RULES.filter((rule) => rule.origin === 'reference-reframed').length, 20)
+  assert.equal(READING_RULES.filter((rule) => rule.origin === 'core').length, 20)
   assert.ok(!JSON.stringify(READING_RULES).includes('読む目的を一つ決める'))
   assert.equal(
     READING_RULES.find((rule) => rule.id === 'purpose-first')?.title,

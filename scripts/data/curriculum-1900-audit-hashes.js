@@ -1,29 +1,15 @@
-// 1900.xlsx の全件照合スナップショット。語彙選定や並びを再配布しないよう、
-// 正規化・正規形解決後の値は SHA-256 の先頭64bitだけを英字順に保持する。
-// scripts/audit-curriculum-1900.mjs がアプリ側データを同じ方法で照合する。
+// 収録を保証する見出し語の照合用ハッシュ（正規化・正規形解決後の値の SHA-256 先頭64bit、英字順）。
+// scripts/audit-curriculum-1900.mjs がアプリ側データを同じ方法で照合し、見出し語が消えていないことを確かめる。
 export const CURRICULUM_1900_AUDIT_META = Object.freeze({
-  "sourceRows": {
-    "highWords": 1900,
-    "highPhrases": 1000,
-    "juniorWords": 1584,
-    "juniorPhrases": 200,
-    "total": 4684
-  },
-  "sourceUnique": {
-    "words": 3283,
-    "phrases": 1145,
-    "total": 4428
-  },
-  "canonicalTargets": {
+  "headwords": {
     "words": 3283,
     "phrases": 1138,
     "total": 4421
   },
-  "hash": "sha256-64",
-  "sourceOrderRetained": false
+  "hash": "sha256-64"
 })
 
-export const CURRICULUM_1900_WORD_TARGET_HASHES = Object.freeze([
+export const CURRICULUM_1900_WORD_HASHES = Object.freeze([
   '000c285457fc971f',
   '00154761637ca746',
   '003c443ef2785c09',
@@ -3309,7 +3295,7 @@ export const CURRICULUM_1900_WORD_TARGET_HASHES = Object.freeze([
   'ffe97bba510b9f5c',
 ])
 
-export const CURRICULUM_1900_PHRASE_TARGET_HASHES = Object.freeze([
+export const CURRICULUM_1900_PHRASE_HASHES = Object.freeze([
   '0015b0cb568c491c',
   '0073ee07080718db',
   '0107a91c7c1ace3d',

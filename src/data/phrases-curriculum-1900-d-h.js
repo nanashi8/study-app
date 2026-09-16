@@ -1,6 +1,6 @@
 import { parseCurriculum1900PhraseRows } from './curriculum-phrase-utils.js'
 
-// 出典順ではなく、正規形の英字順。
+// 正規形の英字順。
 const ROWS = String.raw`
 dare to do	pre1	思い切って〜する	She dared to question the old rule.	彼女は思い切って古い規則に疑問を呈した。	structure
 date back to	2	〜までさかのぼる	This bridge dates back to the 1800s.	この橋は1800年代までさかのぼる。	phrasal-verb

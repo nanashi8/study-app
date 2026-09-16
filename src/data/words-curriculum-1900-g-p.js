@@ -1,6 +1,6 @@
 import { parseCurriculumWordRows } from './curriculum-word-utils.js'
 
-// 出版物の掲載順を再現しない独立補完。見出し語はアルファベット順。
+// 補完した単語。見出し語はアルファベット順。
 export const WORDS_CURRICULUM_1900_G_P = parseCurriculumWordRows(`
 garment	名	2	衣服・衣料品	Each garment carries a washing label.	それぞれの衣服には洗濯表示が付いている。	古フランス語 garnement（装備・衣服）を経て、身に着ける一着を表すようになった。	食・生活
 geometry	名	2	幾何学	Geometry helps us describe shapes and space.	幾何学は形と空間を記述するのに役立つ。	ギリシャ語 geo-（土地）＋metron（測るもの）から、もとは土地測量を表した。	数学

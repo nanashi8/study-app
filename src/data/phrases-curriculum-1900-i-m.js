@@ -1,6 +1,6 @@
 import { parseCurriculum1900PhraseRows } from './curriculum-phrase-utils.js'
 
-// 出典順ではなく、正規形の英字順。
+// 正規形の英字順。
 const ROWS = String.raw`
 I see.	4	なるほど・分かりました	I see. That explains the delay.	なるほど。それで遅れた理由が分かりました。	conversation
 I'm afraid not.	pre1	残念ですが違います・できません	Will the shop reopen today? I'm afraid not.	店は今日また開きますか。残念ですが開きません。	conversation

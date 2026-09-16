@@ -293,7 +293,7 @@ export const GRAMMAR = [
   { id: 'gr_1_lest_1', level: '1', topic: '高度語法', q: 'He spoke slowly lest he ___ misunderstood.', choices: ['be', 'is', 'was', 'will be'], answer: 'be', explain: 'lest S (should) 原形（〜しないように）。', sentence: { en: 'He spoke slowly lest he be misunderstood.', ja: '誤解されないように彼はゆっくり話した。' } },
   { id: 'gr_1_idiom_3', level: '1', topic: '高度語法', q: 'She is the last person ___ tell a lie.', choices: ['to', 'who', 'that', 'for'], answer: 'to', explain: 'the last＋名詞＋to do（最も〜しそうにない）。', sentence: { en: 'She is the last person to tell a lie.', ja: '彼女は決してうそをつくような人ではない。' } },
 
-  // ═══════════ 教科書単元の網羅バッチ ═══════════
+  // ═══════════ 中学・高校の文法単元の網羅バッチ ═══════════
   // ── 付加疑問・感嘆文（中学）──
   { id: 'gr_4_tag_1', level: '4', topic: '付加疑問', q: 'You are from Canada, ___?', choices: ['aren’t you', 'are you', 'don’t you', 'isn’t it'], answer: 'aren’t you', explain: '肯定文の付加疑問は否定形＋主語。be動詞は aren’t you。', sentence: { en: 'You are from Canada, aren’t you?', ja: 'あなたはカナダ出身ですよね。' } },
   { id: 'gr_4_tag_2', level: '4', topic: '付加疑問', q: 'He plays the guitar, ___?', choices: ['doesn’t he', 'isn’t he', 'does he', 'doesn’t it'], answer: 'doesn’t he', explain: '一般動詞3単現の付加疑問は doesn’t he。', sentence: { en: 'He plays the guitar, doesn’t he?', ja: '彼はギターを弾きますよね。' } },

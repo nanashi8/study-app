@@ -1,5 +1,4 @@
-// 外部の語源資料をきっかけに、既存の全語彙を再監査して確認した補助語根。
-// 著作物の文章・図・配列は保存せず、語源という事実だけをアプリ独自の短い表現にする。
+// 既存の全語彙を再監査して確認した補助語根。語源の事実だけを短い表現にする。
 //
 // 重要:
 // - 綴りの部分一致では誤語源が混ざるため、単語は下の許可リストで明示する。
@@ -65,7 +64,7 @@ export const REFERENCE_ROOTS = [
   { id: 'ton', form: 'ton / tone', meaning: '張り・調子', origin: 'ギリシャ語 tonos「張り・調子」', emoji: '🎵' },
   { id: 'ann', form: 'ann / enn', meaning: '年', origin: 'ラテン語 annus「年」', emoji: '📅' },
   { id: 'sed', form: 'sed / sid / sess', meaning: '座る', origin: 'ラテン語 sedēre「座る」', emoji: '🪑' },
-// 資料の掲載順は保持せず、アプリ固有のID順で表示する。
+// ID順で表示する。
 ].sort((left, right) => left.id.localeCompare(right.id, 'en'))
 
 // 単純な綴り一致で拾うと imminent→mini、curse→curr、passion→pass などの

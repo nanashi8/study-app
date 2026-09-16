@@ -1,6 +1,6 @@
 import { parseCurriculumWordRows } from './curriculum-word-utils.js'
 
-// 出版物の掲載順を再現しない独立補完。見出し語はアルファベット順。
+// 補完した単語。見出し語はアルファベット順。
 export const WORDS_CURRICULUM_1900_Q_Z = parseCurriculumWordRows(`
 quarter	名	3	4分の1・15分・四半期	A quarter of the students walk to school.	生徒の4分の1は歩いて通学する。	ラテン語 quartus（4番目）をフランス語を経て取り入れ、「四つに分けた一つ」を表す。	時間・数量
 quest	名	2	探求・追求	The novel follows a hero's quest for truth.	その小説は真実を求める主人公の旅を描く。	ラテン語 quaerere（求める・尋ねる）を古フランス語を経て取り入れた語。	文学

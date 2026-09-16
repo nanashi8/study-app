@@ -508,8 +508,8 @@ export function passageWordCount(passage) {
   return text.match(/[A-Za-z0-9]+(?:['’-][A-Za-z0-9]+)*/g)?.length ?? 0
 }
 
-// 英検公式の直近3回分で観測した最長本文を基準にした教材レンジ。
-// 5級の筆記には独立長文がないため、5級だけはアプリ独自の導入教材レンジ。
+// 級ごとの本文の長さの目安。
+// 5級だけは短い導入教材レンジ。
 export const READING_WORD_COUNT_TARGETS = Object.freeze({
   5: Object.freeze({ min: 70, max: 110, officialLongPassage: false }),
   4: Object.freeze({ min: 160, max: 180, officialLongPassage: true }),

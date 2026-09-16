@@ -620,7 +620,7 @@ test('ラテン語・ギリシャ語の接頭辞カードは同化形と別語�
   assert.deepEqual(new Set(cardIds('suffocation')), new Set(['pf-sub', 'sf-tion']))
 })
 
-test('語の成り立ちは全語を出典つきで出す', () => {
+test('語の成り立ちは全語を確認記録つきで出す', () => {
   assert.equal(ETYMOLOGY_WORD_STORIES.length, ALL_WORDS.length)
   const kinds = ETYMOLOGY_WORD_STORIES.reduce((totals, story) => ({
     ...totals,

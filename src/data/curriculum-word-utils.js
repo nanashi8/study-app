@@ -1,7 +1,7 @@
 import { expandCompact } from './compact.js'
 
 /**
- * 外部語彙一覧との差分を、既存の単語カード形式へ展開する。
+ * 補完する単語を、既存の単語カード形式へ展開する。
  *
  * TSV columns:
  * word, pos, level, meaning, example.en, example.ja, etymology, field, phonetic(optional)

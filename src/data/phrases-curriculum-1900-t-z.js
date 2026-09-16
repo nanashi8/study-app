@@ -1,6 +1,6 @@
 import { parseCurriculum1900PhraseRows } from './curriculum-phrase-utils.js'
 
-// 出典順ではなく、正規形の英字順。空所で始まる2項目も語句本体の t で配置する。
+// 正規形の英字順。空所で始まる2項目も語句本体の t で配置する。
 const ROWS = String.raw`
 take ~ by surprise	2	〜を驚かせる	The sudden question took me by surprise.	突然の質問に私は驚いた。	structure
 take A for B	pre2	AをBだと思い込む	I took the distant light for a star.	私は遠くの明かりを星だと思った。	structure

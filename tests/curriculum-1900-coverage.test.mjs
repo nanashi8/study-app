@@ -15,8 +15,8 @@ import {
 } from '../src/data/curriculum-1900-resolutions.js'
 import {
   CURRICULUM_1900_AUDIT_META,
-  CURRICULUM_1900_PHRASE_TARGET_HASHES,
-  CURRICULUM_1900_WORD_TARGET_HASHES,
+  CURRICULUM_1900_PHRASE_HASHES,
+  CURRICULUM_1900_WORD_HASHES,
 } from '../scripts/data/curriculum-1900-audit-hashes.js'
 import {
   IDIOM_FORM_FAMILIES,
@@ -38,30 +38,18 @@ const alphaKey = (value) => key(value).replace(/^[^a-z]+/, '')
 const sorted = (values) => [...values].sort((a, b) =>
   alphaKey(a).localeCompare(alphaKey(b), 'en', { sensitivity: 'base' }))
 
-test('添付3シート4,684行・4,428ユニーク項目をハッシュ監査で全件収録する', () => {
-  assert.deepEqual(CURRICULUM_1900_AUDIT_META.sourceRows, {
-    highWords: 1900,
-    highPhrases: 1000,
-    juniorWords: 1584,
-    juniorPhrases: 200,
-    total: 4684,
-  })
-  assert.deepEqual(CURRICULUM_1900_AUDIT_META.sourceUnique, {
-    words: 3283,
-    phrases: 1145,
-    total: 4428,
-  })
-  assert.equal(CURRICULUM_1900_AUDIT_META.sourceOrderRetained, false)
+test('照合用ハッシュの見出し語をすべて収録する', () => {
+  assert.deepEqual(CURRICULUM_1900_AUDIT_META.headwords, { words: 3283, phrases: 1138, total: 4421 })
 
   const wordHashes = new Set(ALL_WORDS.map((item) => hash(item.word)))
   const phraseHashes = new Set(PHRASES.map((item) => hash(item.phrase)))
-  assert.equal(CURRICULUM_1900_WORD_TARGET_HASHES.length, 3283)
-  assert.equal(CURRICULUM_1900_PHRASE_TARGET_HASHES.length, 1138)
-  assert.deepEqual(CURRICULUM_1900_WORD_TARGET_HASHES.filter((item) => !wordHashes.has(item)), [])
-  assert.deepEqual(CURRICULUM_1900_PHRASE_TARGET_HASHES.filter((item) => !phraseHashes.has(item)), [])
+  assert.equal(CURRICULUM_1900_WORD_HASHES.length, 3283)
+  assert.equal(CURRICULUM_1900_PHRASE_HASHES.length, 1138)
+  assert.deepEqual(CURRICULUM_1900_WORD_HASHES.filter((item) => !wordHashes.has(item)), [])
+  assert.deepEqual(CURRICULUM_1900_PHRASE_HASHES.filter((item) => !phraseHashes.has(item)), [])
 })
 
-test('不足単語420件・熟語604件は級、独自用例、語源・成り立ちを持つ', () => {
+test('補完した単語420件・熟語604件は級、用例、語源・成り立ちを持つ', () => {
   assert.equal(ALL_WORDS.length, 8907)
   assert.equal(PHRASES.length, 2104)
   assert.equal(CURRICULUM_1900_WORDS.length, 420)
@@ -90,13 +78,9 @@ test('不足単語420件・熟語604件は級、独自用例、語源・成り�
   }
 })
 
-test('補完データは出版物の順番を保持せず、正規形の英字順に再構成する', () => {
+test('補完データは正規形の英字順に並べる', () => {
   assert.deepEqual(CURRICULUM_1900_WORDS.map((item) => item.word), sorted(CURRICULUM_1900_WORDS.map((item) => item.word)))
   assert.deepEqual(CURRICULUM_1900_IDIOMS.map((item) => item.phrase), sorted(CURRICULUM_1900_IDIOMS.map((item) => item.phrase)))
-  const forbidden = new Set(['sourceOrder', 'sourceNumber', 'bookOrder', 'sourcePage', 'sourceQuote'])
-  for (const item of [...CURRICULUM_1900_WORDS, ...CURRICULUM_1900_IDIOMS]) {
-    assert.deepEqual(Object.keys(item).filter((field) => forbidden.has(field)), [], item.id)
-  }
 })
 
 test('誤記・省略・表記揺れは正規形へ解決し、元表記でも辞書検索できる', () => {

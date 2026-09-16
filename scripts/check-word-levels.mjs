@@ -17,14 +17,14 @@ const rank = (level) => LEVELS.indexOf(level)
 const errors = []
 const wordByHead = new Map(ALL_WORDS.map((word) => [word.word.toLowerCase(), word]))
 
-// ① 英検1900語の収録リストが級を挙げている語は、その級で出す。
-// 食い違うと、同じ語をカリキュラムでは4級、単語帳では3級として教えることになる。
+// ① 補完した単語は、補完データが持つ級で出す。
+// 食い違うと、同じ語を補完データでは4級、単語カードでは3級として教えることになる。
 for (const listed of CURRICULUM_1900_WORDS) {
   const card = ALL_WORDS.find((word) => word.id === listed.id)
   if (!card || card.level === listed.level) continue
   errors.push(
-    `${listed.id}: 英検1900語リストは${LABEL[listed.level]}だがカードは${LABEL[card.level]}`
-    + ' → levels-override.js をリストに合わせる',
+    `${listed.id}: 補完データは${LABEL[listed.level]}だがカードは${LABEL[card.level]}`
+    + ' → levels-override.js を補完データに合わせる',
   )
 }
 
@@ -108,4 +108,4 @@ if (errors.length) {
   process.exit(1)
 }
 const spread = LEVELS.map((level) => `${LABEL[level]}${ALL_WORDS.filter((word) => word.level === level).length}`)
-console.log(`✅ 単語の級OK: ${ALL_WORDS.length}語（${spread.join(' / ')}）／1900語リストと一致・教材と3段以上の食い違いなし`)
+console.log(`✅ 単語の級OK: ${ALL_WORDS.length}語（${spread.join(' / ')}）／補完データの級と一致・教材と3段以上の食い違いなし`)

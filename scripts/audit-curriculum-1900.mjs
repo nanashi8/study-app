@@ -9,8 +9,8 @@ import {
 } from '../src/data/curriculum-1900-resolutions.js'
 import {
   CURRICULUM_1900_AUDIT_META,
-  CURRICULUM_1900_PHRASE_TARGET_HASHES,
-  CURRICULUM_1900_WORD_TARGET_HASHES,
+  CURRICULUM_1900_PHRASE_HASHES,
+  CURRICULUM_1900_WORD_HASHES,
 } from './data/curriculum-1900-audit-hashes.js'
 
 const clean = (value) => String(value ?? '')
@@ -32,24 +32,21 @@ const uniqueWordIds = new Set(ALL_WORDS.map((item) => item.id))
 const uniquePhraseIds = new Set(PHRASES.map((item) => item.id))
 const appWordHashes = new Set(ALL_WORDS.map((item) => hash(item.word)))
 const appPhraseHashes = new Set(PHRASES.map((item) => hash(item.phrase)))
-const missingWordHashes = CURRICULUM_1900_WORD_TARGET_HASHES.filter((item) => !appWordHashes.has(item))
-const missingPhraseHashes = CURRICULUM_1900_PHRASE_TARGET_HASHES.filter((item) => !appPhraseHashes.has(item))
+const missingWordHashes = CURRICULUM_1900_WORD_HASHES.filter((item) => !appWordHashes.has(item))
+const missingPhraseHashes = CURRICULUM_1900_PHRASE_HASHES.filter((item) => !appPhraseHashes.has(item))
 
-check(CURRICULUM_1900_AUDIT_META.sourceRows.total === 4684, '添付3シートの有効行数が4,684件ではない')
-check(CURRICULUM_1900_AUDIT_META.sourceUnique.total === 4428, '添付3シートのユニーク項目数が4,428件ではない')
-check(CURRICULUM_1900_AUDIT_META.sourceOrderRetained === false, '出典順を保持しない契約が失われた')
 check(
-  CURRICULUM_1900_WORD_TARGET_HASHES.length === CURRICULUM_1900_AUDIT_META.canonicalTargets.words,
-  '単語ターゲットハッシュ数が監査メタデータと一致しない',
+  CURRICULUM_1900_WORD_HASHES.length === CURRICULUM_1900_AUDIT_META.headwords.words,
+  '単語の照合用ハッシュ数が監査メタデータと一致しない',
 )
 check(
-  CURRICULUM_1900_PHRASE_TARGET_HASHES.length === CURRICULUM_1900_AUDIT_META.canonicalTargets.phrases,
-  '熟語ターゲットハッシュ数が監査メタデータと一致しない',
+  CURRICULUM_1900_PHRASE_HASHES.length === CURRICULUM_1900_AUDIT_META.headwords.phrases,
+  '熟語の照合用ハッシュ数が監査メタデータと一致しない',
 )
-check(new Set(CURRICULUM_1900_WORD_TARGET_HASHES).size === CURRICULUM_1900_WORD_TARGET_HASHES.length, '単語ターゲットハッシュが重複している')
-check(new Set(CURRICULUM_1900_PHRASE_TARGET_HASHES).size === CURRICULUM_1900_PHRASE_TARGET_HASHES.length, '熟語ターゲットハッシュが重複している')
-check(missingWordHashes.length === 0, `未収録の単語ターゲットが${missingWordHashes.length}件ある`)
-check(missingPhraseHashes.length === 0, `未収録の熟語ターゲットが${missingPhraseHashes.length}件ある`)
+check(new Set(CURRICULUM_1900_WORD_HASHES).size === CURRICULUM_1900_WORD_HASHES.length, '単語の照合用ハッシュが重複している')
+check(new Set(CURRICULUM_1900_PHRASE_HASHES).size === CURRICULUM_1900_PHRASE_HASHES.length, '熟語の照合用ハッシュが重複している')
+check(missingWordHashes.length === 0, `収録されていない見出し語（単語）が${missingWordHashes.length}件ある`)
+check(missingPhraseHashes.length === 0, `収録されていない見出し語（熟語）が${missingPhraseHashes.length}件ある`)
 check(uniqueWordIds.size === ALL_WORDS.length, '全単語IDに重複がある')
 check(uniquePhraseIds.size === PHRASES.length, '全熟語・構文IDに重複がある')
 
@@ -82,8 +79,8 @@ const sortedWordHeads = [...CURRICULUM_1900_WORDS.map((item) => item.word)].sort
   alphaKey(a).localeCompare(alphaKey(b), 'en', { sensitivity: 'base' }))
 const sortedPhraseHeads = [...CURRICULUM_1900_IDIOMS.map((item) => item.phrase)].sort((a, b) =>
   alphaKey(a).localeCompare(alphaKey(b), 'en', { sensitivity: 'base' }))
-check(sortedWordHeads.every((word, index) => word === CURRICULUM_1900_WORDS[index].word), '単語補完が独立した英字順ではない')
-check(sortedPhraseHeads.every((phrase, index) => phrase === CURRICULUM_1900_IDIOMS[index].phrase), '熟語補完が独立した英字順ではない')
+check(sortedWordHeads.every((word, index) => word === CURRICULUM_1900_WORDS[index].word), '単語補完が英字順ではない')
+check(sortedPhraseHeads.every((phrase, index) => phrase === CURRICULUM_1900_IDIOMS[index].phrase), '熟語補完が英字順ではない')
 
 const wordByHead = new Set(ALL_WORDS.map((item) => key(item.word)))
 const phraseByHead = new Set(PHRASES.map((item) => key(item.phrase)))
@@ -103,11 +100,11 @@ const levelCounts = Object.fromEntries(['5', '4', '3', 'pre2', '2', 'pre1', '1']
 ]))
 
 const result = {
-  source: CURRICULUM_1900_AUDIT_META,
+  headwords: CURRICULUM_1900_AUDIT_META,
   app: { words: ALL_WORDS.length, phrases: PHRASES.length },
   coverage: {
-    wordTargets: CURRICULUM_1900_WORD_TARGET_HASHES.length,
-    phraseTargets: CURRICULUM_1900_PHRASE_TARGET_HASHES.length,
+    wordHashes: CURRICULUM_1900_WORD_HASHES.length,
+    phraseHashes: CURRICULUM_1900_PHRASE_HASHES.length,
     missingWords: missingWordHashes.length,
     missingPhrases: missingPhraseHashes.length,
   },

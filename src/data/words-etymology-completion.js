@@ -1,8 +1,6 @@
 import { expandCompact } from './compact.js'
 
-// 語源資料との全件差分監査で、辞書見出しとして不足していた語。
-// 資料の説明・例文・配列は転記せず、一般的な語形成の事実をもとに
-// 意味・例文・語源説明をこのアプリ向けに独自作成している。
+// 語源の学習のために補った語。意味・例文・語源説明は、語形成の事実をもとに書いている。
 const RAW = [
   ['abduct', '動', 'pre1', '誘拐する・連れ去る', 'The gang abducted a local businessman.', 'その集団は地元の実業家を誘拐した。', 'ラテン語 ab-(離れて)＋ducere(導く)から、「元の場所から連れ去る」という意味になった。', { field: '法律' }],
   ['abduction', '名', 'pre1', '誘拐・連れ去り', 'Police investigated the child abduction.', '警察はその児童誘拐を捜査した。', 'abduct(連れ去る)に、行為を表す -ion が付いた名詞。', { field: '法律' }],
@@ -223,7 +221,7 @@ const RAW = [
 
 const LEVEL_ORDER = { '5': 0, '4': 1, '3': 2, pre2: 3, '2': 4, pre1: 5, '1': 6 }
 
-// 外部資料の掲載順ではなく、アプリ固有の級→分野→見出し語順に並べる。
+// 級→分野→見出し語順に並べる。
 export const ETYMOLOGY_COMPLETION_WORDS = RAW
   .map(expandCompact)
   .sort((left, right) =>

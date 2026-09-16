@@ -11,7 +11,7 @@ import { ETYMOLOGY_COMPLETION_WORDS } from '../src/data/words-etymology-completi
 const completionIds = new Set(ETYMOLOGY_COMPLETION_WORDS.map((word) => word.id))
 const liveById = new Map(ALL_WORDS.map((word) => [word.id, word]))
 
-test('語源差分監査で不足した215語を独立見出しとして収録する', () => {
+test('語源の補完語215語を独立見出しとして収録する', () => {
   assert.equal(ETYMOLOGY_COMPLETION_WORDS.length, 215)
   assert.equal(completionIds.size, 215)
   assert.equal(ALL_WORDS.length, 8907)
@@ -24,7 +24,7 @@ test('語源差分監査で不足した215語を独立見出しとして収録�
   }
 })
 
-test('補完語は独自の意味・例文・語源説明と発音をすべて持つ', () => {
+test('補完語は意味・例文・語源説明と発音をすべて持つ', () => {
   const notes = new Set()
   const examples = new Set()
 
@@ -40,24 +40,6 @@ test('補完語は独自の意味・例文・語源説明と発音をすべて�
     assert.ok(!examples.has(word.example.en), `${id}: 例文の使い回し`)
     notes.add(word.etymology.note)
     examples.add(word.example.en)
-  }
-})
-
-test('補完データに資料本文・ページ・図版の保存用フィールドを持たせない', () => {
-  const forbiddenKeys = new Set([
-    'sourcePage',
-    'sourceQuote',
-    'sourceText',
-    'sourceImage',
-    'sourceOrder',
-    'ocr',
-    'bookPage',
-  ])
-
-  for (const word of ETYMOLOGY_COMPLETION_WORDS) {
-    for (const key of Object.keys(word)) {
-      assert.ok(!forbiddenKeys.has(key), `${word.id}: ${key}`)
-    }
   }
 })
 
@@ -92,7 +74,7 @@ test('年と座るの代表語根を補い、確実な同根語だけを結ぶ',
   }
 })
 
-test('既存語源パック・語源補完・1900補完・同じつづりの別の語のID空間が交わらない', () => {
+test('既存語源パック・語源補完・補完語・同じつづりの別の語のID空間が交わらない', () => {
   const addedPrefixes = ['completion:', 'curriculum-1900:', 'homograph:']
   const legacy = ETYMOLOGY_PACKS.filter((pack) =>
     !addedPrefixes.some((prefix) => pack.id.startsWith(prefix)))

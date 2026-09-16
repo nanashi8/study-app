@@ -1,9 +1,7 @@
 import { EXTENDED_PASSAGE_READING_APPROACHES } from './reading-extended-approaches.js'
 
-// 読解100.xlsxを出発点に、断定しすぎる「公式」ではなく、
-// 実際の本文で再現できる判断手順として再設計した長文読解ルール。
-// origin: reference-reframed は引用内容を統合・言い換えたもの、
-// added は長文全体の読み方・根拠確認のために追加したものを示す。
+// 断定しすぎる「公式」ではなく、実際の本文で再現できる判断手順としてまとめた長文読解ルール。
+// origin: core は基本の判断手順、added は長文全体の読み方・根拠確認のためのものを示す。
 
 const freeze = (items) => Object.freeze(items)
 
@@ -29,7 +27,7 @@ const makeRule = (
   steps: freeze(steps),
   example: Object.freeze({ en: exampleEn, ja: exampleJa }),
   caution,
-  origin: options.origin || 'reference-reframed',
+  origin: options.origin || 'core',
   diagram: options.diagram ? Object.freeze(options.diagram) : null,
 })
 

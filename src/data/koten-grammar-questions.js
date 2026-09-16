@@ -5,7 +5,6 @@ import {
 } from './koten-grammar.js'
 import { pickInStudyOrder, rankQuestionsForStudy } from '../lib/studyOrder.js'
 
-// 実在する過去問の転載ではなく、大学入試で頻出する問い方を再現したオリジナル問題。
 // grammarIds はSRS更新・登録・分野別出題に使う安定キー。
 export const KOTEN_GRAMMAR_LEVELS = {
   basic: { label: '基礎', color: '#0ea5e9' },

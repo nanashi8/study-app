@@ -38,7 +38,7 @@ export const PLURAL_ONLY_SENSES = Object.freeze({
 // ここが空のままなら、重複はゼロで通っている。例外を足すときは理由も書く。
 export const KNOWN_DUPLICATE_FORMS = Object.freeze({
   // この2組だけは、別の教材がそれぞれの形を名指しで要求している。
-  // 英検1900語の収録リストが挙げているのは複数形（grapes / socks）で、
+  // 補完データが収録しているのは複数形（grapes / socks）で、
   // 見出しを畳むとその語を収録しないことになる。一方で長文
   // p_ext_3000_shared_watershed は "a hole in my sock" と単数形を使い、
   // 語彙解決は単数形を複数形カードへ寄せない。どちらも消せない。

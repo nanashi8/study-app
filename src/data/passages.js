@@ -2,8 +2,8 @@
 // 各文： en（英文）/ ja（自然な和訳）/ chunks（区切り直訳：スラッシュリーディング）
 // vocab： まとめで学習する重要語（src/data/words.js にある単語の id）
 //
-// 本試験の素材感に近づけるため、低い級は身近な生活・案内文、高い級は社会・科学・
-// 論説調の説明文にし、級が上がるほど語数と文構造を段階的に重くしている。
+// 低い級は身近な生活・案内文、高い級は社会・科学・論説調の説明文にし、
+// 級が上がるほど語数と文構造を段階的に重くしている。
 
 import { EXAM_PASSAGES } from './passages-exam.js'
 import { EXPANDED_PASSAGES } from './reading-expansion-passages.js'

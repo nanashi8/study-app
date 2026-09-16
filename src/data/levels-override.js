@@ -543,7 +543,7 @@ export const LEVEL_OVERRIDE = {
   // even は代表義が「平らな・偶数の」だが、5級の英文にも「〜でさえ」で出る一般語。
   ...L('3', ['even']),
 
-  // ④ 英検1900語の収録リストと級が食い違っていた。リストの級に合わせる。
+  // ④ 補完データの級と食い違っていた。補完データの級に合わせる。
   ...L('4', ['mirror', 'prize']),
   ...L('3', ['wrap', 'further']),
   ...L('pre2', ['dialogue', 'forever', 'symbol']),
@@ -614,7 +614,7 @@ export const LEVEL_OVERRIDE = {
     'tact', 'taint', 'unruly']),
   ...L('1', ['consul', 'hymn', 'mutiny', 'ornate', 'thatch']),
 
-  // 英検1900語リストが級を挙げている語は、読み直しの結果よりリストを優先する。
+  // 補完データが級を持つ語は、読み直しの結果より補完データの級を優先する。
   ...L('pre2', ['aisle', 'census', 'imperial', 'landmine', 'millennium']),
   ...L('4', ['awesome', 'medium', 'stationery']),
 

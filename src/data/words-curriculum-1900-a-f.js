@@ -1,6 +1,6 @@
 import { parseCurriculumWordRows } from './curriculum-word-utils.js'
 
-// 出版物の掲載順を再現しない独立補完。見出し語はアルファベット順。
+// 補完した単語。見出し語はアルファベット順。
 export const WORDS_CURRICULUM_1900_A_F = parseCurriculumWordRows(`
 a.m.	副	5	午前・午前の時刻	The first train leaves at six a.m.	始発列車は午前6時に出る。	ラテン語 ante meridiem（正午の前）の頭文字を取った時刻表現。	時間・数量	/ˌeɪ ˈem/
 accustom	動	2	慣れさせる	It took time to accustom the team to the new system.	チームを新しい仕組みに慣れさせるには時間がかかった。	古フランス語 acostumer（習慣にする）を経た語で、custom（習慣）と同じ語族に属する。	心理

@@ -1,6 +1,6 @@
 import { parseCurriculum1900PhraseRows } from './curriculum-phrase-utils.js'
 
-// 出典順ではなく、正規形の英字順。
+// 正規形の英字順。
 const ROWS = String.raw`
 a ~ amount of	4	ある量の	A small amount of salt is enough.	少量の塩で十分です。	structure
 A as well as B	pre2	BだけでなくAも	Maya as well as Ken joined the team.	ケンだけでなくマヤもチームに加わった。	structure

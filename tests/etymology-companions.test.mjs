@@ -28,7 +28,7 @@ test('全8,869語を走査し、109カード・781語だけを確認済み教材
   assert.equal(ETYMOLOGY_LEGACY_PACKS.length, ETYMOLOGY_QUALITY_TARGETS.retiredLegacyPacks)
 })
 
-test('公開カードの全リンクは明示され、出典・確認日・内容固定hashを持つ', () => {
+test('公開カードの全リンクは明示され、確認記録・確認日・内容固定hashを持つ', () => {
   for (const card of ETYMOLOGY_PACKS) {
     assert.equal(card.mode, 'root', card.id)
     assert.equal(card.groupClaim, 'manual-reviewed-root', card.id)
