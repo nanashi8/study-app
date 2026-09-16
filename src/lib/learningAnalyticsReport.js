@@ -438,7 +438,7 @@ function supplementalRows(state, analysis, now, srsRows) {
       typeLabel: meta.label,
       color: meta.color,
       title: `${meta.label}・累計`,
-      subtitle: '以前のアプリで、まとめて記録した学習結果',
+      subtitle: 'まとめて記録した学習結果',
       field: '全体',
       level: '',
       entry: {},

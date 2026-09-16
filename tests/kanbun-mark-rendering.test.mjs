@@ -102,5 +102,6 @@ test('返り点表示は親字と点を同じDOM単位に入れ、支援技術�
   assert.match(html, /data-kanbun-character-unit="読"/)
   assert.match(html, /data-kanbun-return-marks="一レ"/)
   assert.match(html, /aria-label="読に一点・レ点"/)
-  assert.match(html, /折り返しても離れません/)
+  assert.match(html, /小さな返り点は、すぐ上の大きな字に付いています。/)
+  assert.doesNotMatch(html, /折り返しても離れません/)
 })

@@ -438,6 +438,11 @@ test('画面導線・連続TTS・通常長文の分離集計を実装してい�
   assert.match(sceneNavigator, /min-h-11 min-w-11/)
   assert.match(sceneNavigator, /addEventListener\('resize', handleResize\)/)
   assert.match(library, /title="名作に親しむ"/)
+  // 権利・出典・収録範囲の確認は教材を用意する側の管理情報で、生徒の学習には使わない。
+  for (const source of [reader, library]) {
+    assert.doesNotMatch(source, /work\.rights|work\.source|work\.coverage/)
+    assert.doesNotMatch(source, /出典|著作権|権利を確認|パブリックドメイン|本アプリ独自|音声合成です|文化庁/)
+  }
   assert.match(library, /id: 'kanbun'/)
   assert.match(contents, /title: '名作に親しむ'/)
   assert.doesNotMatch(koten, /kind: 'kanbun'/)

@@ -169,6 +169,6 @@ test('維持復習へ進むほど30日後の定着予測は水平に近づき、
   const completionUi = readFileSync(new URL('../src/components/VocabCompletionReport.jsx', import.meta.url), 'utf8')
   assert.match(analyticsModel, /MAX_SRS_BOX/)
   assert.doesNotMatch(analyticsUi, /\{MAX_SRS_BOX\}/)
-  assert.match(completionUi, /data-maintenance-review-policy/)
-  assert.match(completionUi, /30→60→90→180日/)
+  // 復習間隔の内部方針は学習者の画面に出さない。次に何をするかは復習日の一覧が示す。
+  assert.doesNotMatch(completionUi, /data-maintenance-review-policy|30→60→90→180日|維持確認します/)
 })

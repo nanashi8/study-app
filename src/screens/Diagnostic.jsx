@@ -73,15 +73,6 @@ function formatTimeWindow({ startHour, windowStartHour = startHour, endHour }) {
   return `${formatHour(windowStartHour)}〜${crossesMidnight ? '翌' : ''}${formatHour(endHour)}`
 }
 
-function EstimateNotice() {
-  return (
-    <div className="rounded-2xl border border-amber-200 bg-amber-50 p-3 text-[11px] font-bold leading-relaxed text-amber-900/75">
-      <span className="font-extrabold text-amber-800">偏差値について：</span>
-      このアプリの問題結果から求めた目安で、公式試験の偏差値や合否ではありません。
-    </div>
-  )
-}
-
 const REPORT_MARK = {
   correct: {
     label: '正解',
@@ -540,8 +531,6 @@ function Intro({ history, onStart }) {
           </ul>
         </Card>
 
-        <EstimateNotice />
-
         <Button full size="lg" onClick={onStart}>
           {latest ? 'もう一度診断する' : '診断テストをはじめる'} <ArrowRight size={19} />
         </Button>
@@ -890,8 +879,6 @@ function Result({
         <RecommendationCard guidance={guidance} onOpen={onOpenRecommendation} />
         <StudyPlan guidance={guidance} onOpen={onOpenRecommendation} />
         <AnswerReview questions={questions} answers={answers} />
-
-        <EstimateNotice />
 
         <div className="grid grid-cols-2 gap-3">
           <Button full variant="secondary" onClick={onRetry}>もう一度</Button>

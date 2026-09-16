@@ -133,7 +133,7 @@ export function ReadingPrepScreen() {
         className="mb-4 p-4"
         data-reading-approach-for-passage={passage.id}
       >
-        <div className="text-xs font-extrabold text-ink/45">厳選テーマ</div>
+        <div className="text-xs font-extrabold text-ink/45">テーマ</div>
         <div className="mt-1 font-display text-base font-extrabold text-ink">
           {passage.theme}
         </div>

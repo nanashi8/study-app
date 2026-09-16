@@ -46,8 +46,6 @@ import {
   Bookmark,
   BookmarkFilled,
   Check,
-  ChevronRight,
-  Link,
   SpeakerWave,
 } from '../components/Icons.jsx'
 
@@ -390,7 +388,6 @@ export function LiteratureReaderScreen() {
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-center gap-1.5">
                 <Chip className="bg-white/12 text-white">{meta.description}</Chip>
-                <Chip className="bg-white/12 text-white">{work.coverage.label}</Chip>
                 {completed && (
                   <span className="inline-flex items-center gap-1 text-[11px] font-extrabold text-emerald-200">
                     <Check size={13} /> 読了

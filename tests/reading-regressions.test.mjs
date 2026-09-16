@@ -2,7 +2,7 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 
-import { PASSAGES } from '../src/data/passages.js'
+import { ALL_PASSAGES, PASSAGES } from '../src/data/passages.js'
 import { PHRASES } from '../src/data/phrases.js'
 import { READING_LEVELS } from '../src/data/levels.js'
 import {
@@ -286,5 +286,15 @@ test('パラグラフ解説は段落数と一致し、役割・要旨・接続�
     for (const guide of guides) {
       assert.ok(guide.role && guide.summary && guide.connection && guide.strategy, passage.id)
     }
+  }
+})
+
+test('長文の紹介文は内容と難しさだけを書き、教材の作り方を書かない', () => {
+  for (const passage of ALL_PASSAGES) {
+    assert.doesNotMatch(
+      passage.blurb ?? '',
+      /アプリ独自|オリジナル|辞書連動|監査|書き下ろし/,
+      `${passage.id}: 紹介文に教材の作り方が入っています`,
+    )
   }
 })

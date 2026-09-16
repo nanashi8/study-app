@@ -177,7 +177,8 @@ test('暗記完了画面は全単語暗記入口の合流点だけで詳細レ�
     assert.match(report, new RegExp(action))
   }
   assert.match(report, /data-vocab-review-schedule/)
-  assert.match(report, /30→60→90→180日/)
+  // 復習間隔の内部方針は載せず、復習日の一覧だけで次の行動を示す。
+  assert.doesNotMatch(report, /30→60→90→180日/)
   assert.match(report, /今日、\{today\.uniqueWords\}語に取り組みました/)
   assert.match(report, /同じ語に何度か答えた場合は、今日最後の答えで分けています/)
   // 語ごとの結果は「一覧で確認」と同じスワイプ一覧で、その場で直せる。

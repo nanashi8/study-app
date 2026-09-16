@@ -10,7 +10,7 @@ import { ScreenHeader } from '../components/AppShell.jsx'
 import { Card, Chip, cx } from '../components/ui.jsx'
 import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
 import { summarizeCompletionItems } from '../lib/contentProgress.js'
-import { ArrowRight, Check, Headphones, Link } from '../components/Icons.jsx'
+import { ArrowRight, Check, Headphones } from '../components/Icons.jsx'
 
 const FILTERS = [
   { id: 'all', label: 'すべて' },
@@ -134,9 +134,6 @@ export function LiteratureLibraryScreen() {
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-1.5">
                         <Chip color={meta.color}>{meta.shortLabel}</Chip>
-                        <Chip className="bg-emerald-50 text-emerald-700">
-                          {work.coverage.label}
-                        </Chip>
                         <Chip className="bg-ink/5 text-ink/55">{work.level}</Chip>
                         {completed && (
                           <span className="inline-flex items-center gap-1 text-[11px] font-extrabold text-emerald-600">

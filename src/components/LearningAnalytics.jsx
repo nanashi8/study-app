@@ -412,8 +412,7 @@ function DiagnosticSnapshot({ diagnostic, onOpen }) {
           </tbody>
         </table>
         <div className="p-3">
-          <p className="text-[10px] font-bold leading-relaxed text-slate-500">偏差値と級は、このアプリの問題結果から求めた目安です。</p>
-          <Button full className="mt-2" variant="secondary" onClick={onOpen}>学習診断の4分野を見る</Button>
+          <Button full variant="secondary" onClick={onOpen}>学習診断の4分野を見る</Button>
         </div>
       </div>
     </ReportSection>
@@ -512,12 +511,6 @@ function ActivitySplit({ analysis, report }) {
           </div>
         ))}
       </dl>
-      {legacySamples > 0 && (
-        <p className="border-t border-amber-200 bg-amber-50 px-3 py-2 text-[10px] font-bold leading-relaxed text-amber-900">
-          以前の{legacySamples}回答は暗記とテストを区別していないため、「以前の記録」にまとめています。
-          これからの回答は、暗記とテストを分けて記録します。
-        </p>
-      )}
       {!splitSamples && !legacySamples && (
         <p className="border-t border-slate-200 px-3 py-2 text-[10px] font-bold text-slate-500">学習を始めると、暗記とテストが別々に記録されます。</p>
       )}
@@ -951,7 +944,7 @@ function AdviceReport({ profile, analysis, dueCount, report, onNavigate }) {
 
         <details className="mt-3 border border-slate-300 bg-white" data-scientific-basis>
           <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between px-3 text-xs font-extrabold text-slate-700">
-            <span>助言の科学的根拠と限界</span>
+            <span>助言のもとになる学び方</span>
             <span className="text-slate-400">3原則</span>
           </summary>
           <div className="space-y-3 border-t border-slate-200 p-3">
@@ -961,9 +954,6 @@ function AdviceReport({ profile, analysis, dueCount, report, onNavigate }) {
                 <p className="mt-0.5 text-[10px] font-bold leading-relaxed text-slate-600">{reference.practice}</p>
               </div>
             ))}
-            <p className="border-t border-slate-200 pt-2 text-[10px] font-bold leading-relaxed text-slate-500">
-              参考文献は、一般的な学習方法を説明するために掲載しています。
-            </p>
           </div>
         </details>
       </div>
@@ -976,13 +966,11 @@ function StudyWisdomFooter() {
   const quote = STUDY_QUOTES[seed % STUDY_QUOTES.length]
   const reference = SCIENCE_REFERENCES[Math.floor(seed / STUDY_QUOTES.length) % SCIENCE_REFERENCES.length]
   return (
-    <ReportSection number="12" title="学びの言葉と科学的な根拠" note="表示するたびに、言葉と学習方法を一つずつ選択">
+    <ReportSection number="12" title="学びの言葉と学び方">
       <div className="p-4" data-random-study-wisdom>
         <blockquote className="border-l-4 border-slate-800 bg-slate-50 p-3">
           <p className="font-display text-base font-extrabold leading-relaxed text-slate-950">「{quote.text}」</p>
-          <footer className="mt-2 text-[10px] font-bold text-slate-500">
-            {quote.author}
-          </footer>
+          <footer className="mt-2 text-[10px] font-bold text-slate-500">{quote.author}</footer>
           <p className="mt-2 text-[10px] font-bold leading-relaxed text-slate-600">{quote.note}</p>
         </blockquote>
         <div className="mt-3 border border-emerald-200 bg-emerald-50 p-3">
@@ -995,7 +983,7 @@ function StudyWisdomFooter() {
           onClick={() => setSeed((value) => value + 4)}
           className="mt-3 min-h-10 w-full border border-slate-300 bg-white text-[10px] font-extrabold text-slate-700 active:bg-slate-50"
         >
-          別の言葉と根拠を表示
+          別の言葉と学び方を表示
         </button>
       </div>
     </ReportSection>

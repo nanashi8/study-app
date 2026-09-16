@@ -159,9 +159,6 @@ export function VocabCompletionReport({
               <p className="mt-2 text-[10px] font-bold leading-relaxed text-ink/50">
                 日付を押すと、その語を今すぐ復習できます。予定日は、これまでの答えに合わせて変わります。
               </p>
-              <p className="mt-1 text-[10px] font-bold leading-relaxed text-indigo-700/70" data-maintenance-review-policy>
-                長期定着後は30→60→90→180日と間隔を広げ、以後は180日ごとに維持確認します。
-              </p>
             </div>
           </Card>
 
