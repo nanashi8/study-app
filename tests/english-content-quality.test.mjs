@@ -110,11 +110,12 @@ test('全英文法の13,800選択肢は正答理由または誤答の使える�
   assert.equal(count, 13_800)
 })
 
-test('主要テストは正答後に英文・和訳・学習ポイントを表示する', () => {
+// 単語・熟語のテストは選択肢の中身と成り立ちだけを出し、例文は出さない（例文は暗記カードと辞書で見る）。
+test('主要テストは正答後に、その問題の学習ポイントを表示する', () => {
   const checks = {
-    'VocabQuiz.jsx': [/word\.example\.en/, /word\.example\.ja/, /<ChoiceExplanations/, /<EtymologyBlock word=\{word\} \/>/],
+    'VocabQuiz.jsx': [/<ChoiceExplanations/, /<EtymologyBlock word=\{word\} \/>/],
     'GrammarQuiz.jsx': [/item\.sentence\.en/, /item\.sentence\.ja/, /buildGrammarInstructorExplanation/, /GrammarChoiceExplanations/, /patternExamples/],
-    'PhraseQuiz.jsx': [/item\.example\.en/, /item\.example\.ja/, /<ChoiceExplanations/, /\{item\.origin\}/],
+    'PhraseQuiz.jsx': [/<ChoiceExplanations/, /\{item\.origin\}/],
     'ListeningQuiz.jsx': [/item\.questionJa/, /\{item\.explain\}/, /<ChoiceExplanations/, /listeningChoiceNoteFor/],
     'DictationPlay.jsx': [/item\.text/, /item\.ja/, /buildDictationInstructorExplanation/],
     'components/ReadingComprehensionCheck.jsx': [/buildReadingInstructorExplanation/, /UnknownChoiceButton/],

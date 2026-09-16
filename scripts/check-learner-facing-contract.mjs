@@ -320,6 +320,10 @@ for (const [label, file, rowsPattern] of [
   if (/InstructorExplanation/.test(source)) {
     errors.push(`${label}の答え合わせに、例文や文脈で答えを決めさせる4段の講師解説が戻っている`)
   }
+  // 例文は暗記カードと辞書で見る。テストの答え合わせには出さない。
+  if (/\.example\.(?:en|ja|gendai)\b|<LongSentenceTranslation|<SyntaxFamilyGuide(?![^>]*showExamples=\{false\})/.test(source)) {
+    errors.push(`${label}の答え合わせに例文が戻っている`)
+  }
   if (!/<ChoiceExplanations/.test(source) || !rowsPattern.test(source)) {
     errors.push(`${label}の答え合わせに、出題した選択肢それぞれの中身がない`)
   }

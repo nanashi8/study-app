@@ -277,12 +277,6 @@ export function KotenQuizScreen() {
             <div className="mt-3 rounded-2xl bg-slate-50 p-3 text-left ring-1 ring-slate-200" data-koten-word-note>
               <p className="mb-1 text-sm font-extrabold text-amber-700">覚え方・ポイント</p>
               <p className="text-sm font-bold leading-relaxed text-ink"><KotenText>{word.note}</KotenText></p>
-              {word.example && (
-                <div className="mt-2 border-t border-slate-200 pt-2">
-                  <p className="text-sm font-bold leading-relaxed text-ink"><KotenText>{word.example.ja}</KotenText></p>
-                  <p className="mt-0.5 text-xs font-bold leading-relaxed text-ink/55"><KotenText>{word.example.gendai}</KotenText></p>
-                </div>
-              )}
             </div>
           </div>
         )}

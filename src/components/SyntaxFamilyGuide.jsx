@@ -2,7 +2,8 @@ import { syntaxFamilyFor } from '../data/syntax-families.js'
 import { Check, Lightbulb } from './Icons.jsx'
 import { cx } from './ui.jsx'
 
-export function SyntaxFamilyGuide({ item, className = '' }) {
+// テストの答え合わせでは例文を出さない（showExamples={false}）。例文は暗記カードと辞書で見る。
+export function SyntaxFamilyGuide({ item, showExamples = true, className = '' }) {
   const guide = syntaxFamilyFor(item)
   if (!guide) return null
 
@@ -32,7 +33,7 @@ export function SyntaxFamilyGuide({ item, className = '' }) {
 
       <div className="mt-3" role="list" aria-label="同じ仲間の構文比較">
         <div className="mb-1.5 text-[10px] font-extrabold tracking-wide text-violet-500">
-          同じ仲間の形・意味・例
+          {showExamples ? '同じ仲間の形・意味・例' : '同じ仲間の形と意味'}
         </div>
         <div className="space-y-2">
           {guide.patterns.map((pattern) => (
@@ -47,7 +48,7 @@ export function SyntaxFamilyGuide({ item, className = '' }) {
               <p className="mt-0.5 text-xs font-bold leading-relaxed text-ink/75">
                 {pattern.meaning}
               </p>
-              {pattern.example && (
+              {showExamples && pattern.example && (
                 <div className="mt-1.5 border-l-2 border-violet-200 pl-2.5">
                   <p className="text-xs font-bold leading-relaxed text-ink">{pattern.example}</p>
                   <p className="text-[11px] font-bold leading-relaxed text-ink/50">{pattern.ja}</p>

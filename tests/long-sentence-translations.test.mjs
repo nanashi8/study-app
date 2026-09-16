@@ -146,7 +146,6 @@ test('長い一文の自然訳と英語順の対応訳は、一覧詳細・暗�
   for (const path of [
     '../src/screens/Phrases.jsx',
     '../src/screens/PhraseStudy.jsx',
-    '../src/screens/PhraseQuiz.jsx',
     '../src/screens/GrammarQuiz.jsx',
   ]) {
     const source = readFileSync(new URL(path, import.meta.url), 'utf8')
