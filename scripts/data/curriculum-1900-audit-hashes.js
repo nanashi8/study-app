@@ -1,7 +1,7 @@
 // 収録を保証する見出し語の照合用ハッシュ（正規化・正規形解決後の値の SHA-256 先頭64bit、英字順）。
 // scripts/audit-curriculum-1900.mjs がアプリ側データを同じ方法で照合し、見出し語が消えていないことを確かめる。
 export const CURRICULUM_1900_AUDIT_META = Object.freeze({
-  "canonicalTargets": {
+  "headwords": {
     "words": 3283,
     "phrases": 1138,
     "total": 4421
@@ -9,7 +9,7 @@ export const CURRICULUM_1900_AUDIT_META = Object.freeze({
   "hash": "sha256-64"
 })
 
-export const CURRICULUM_1900_WORD_TARGET_HASHES = Object.freeze([
+export const CURRICULUM_1900_WORD_HASHES = Object.freeze([
   '000c285457fc971f',
   '00154761637ca746',
   '003c443ef2785c09',
@@ -3295,7 +3295,7 @@ export const CURRICULUM_1900_WORD_TARGET_HASHES = Object.freeze([
   'ffe97bba510b9f5c',
 ])
 
-export const CURRICULUM_1900_PHRASE_TARGET_HASHES = Object.freeze([
+export const CURRICULUM_1900_PHRASE_HASHES = Object.freeze([
   '0015b0cb568c491c',
   '0073ee07080718db',
   '0107a91c7c1ace3d',

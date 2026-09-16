@@ -15,8 +15,8 @@ import {
 } from '../src/data/curriculum-1900-resolutions.js'
 import {
   CURRICULUM_1900_AUDIT_META,
-  CURRICULUM_1900_PHRASE_TARGET_HASHES,
-  CURRICULUM_1900_WORD_TARGET_HASHES,
+  CURRICULUM_1900_PHRASE_HASHES,
+  CURRICULUM_1900_WORD_HASHES,
 } from '../scripts/data/curriculum-1900-audit-hashes.js'
 import {
   IDIOM_FORM_FAMILIES,
@@ -39,14 +39,14 @@ const sorted = (values) => [...values].sort((a, b) =>
   alphaKey(a).localeCompare(alphaKey(b), 'en', { sensitivity: 'base' }))
 
 test('照合用ハッシュの見出し語をすべて収録する', () => {
-  assert.deepEqual(CURRICULUM_1900_AUDIT_META.canonicalTargets, { words: 3283, phrases: 1138, total: 4421 })
+  assert.deepEqual(CURRICULUM_1900_AUDIT_META.headwords, { words: 3283, phrases: 1138, total: 4421 })
 
   const wordHashes = new Set(ALL_WORDS.map((item) => hash(item.word)))
   const phraseHashes = new Set(PHRASES.map((item) => hash(item.phrase)))
-  assert.equal(CURRICULUM_1900_WORD_TARGET_HASHES.length, 3283)
-  assert.equal(CURRICULUM_1900_PHRASE_TARGET_HASHES.length, 1138)
-  assert.deepEqual(CURRICULUM_1900_WORD_TARGET_HASHES.filter((item) => !wordHashes.has(item)), [])
-  assert.deepEqual(CURRICULUM_1900_PHRASE_TARGET_HASHES.filter((item) => !phraseHashes.has(item)), [])
+  assert.equal(CURRICULUM_1900_WORD_HASHES.length, 3283)
+  assert.equal(CURRICULUM_1900_PHRASE_HASHES.length, 1138)
+  assert.deepEqual(CURRICULUM_1900_WORD_HASHES.filter((item) => !wordHashes.has(item)), [])
+  assert.deepEqual(CURRICULUM_1900_PHRASE_HASHES.filter((item) => !phraseHashes.has(item)), [])
 })
 
 test('補完した単語420件・熟語604件は級、用例、語源・成り立ちを持つ', () => {
