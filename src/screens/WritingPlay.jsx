@@ -21,7 +21,6 @@ import {
 } from '../lib/writing.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
-import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
 import {
   Button,
   Card,
@@ -44,7 +43,6 @@ import {
   Sparkles,
   Target,
 } from '../components/Icons.jsx'
-import { buildWritingInstructorExplanation } from '../lib/instructorExplanations.js'
 import { wordBookRef } from '../lib/wordBooks.js'
 import { WordListSheet } from '../components/WordListSheet.jsx'
 import { MeaningText } from '../components/MeaningText.jsx'
@@ -1140,14 +1138,17 @@ export function WritingPlayScreen() {
                 <div className="rounded-xl bg-amber-100/75 px-3 py-2 font-mono text-sm font-extrabold text-amber-900">
                   {selectedGrammar.pattern}
                 </div>
-                <InstructorExplanation
-                  explanation={buildWritingInstructorExplanation(
-                    currentStep,
-                    selected,
-                    selectedGrammar,
-                  )}
-                  className="mt-3"
-                />
+                {/* 選んだ文のポイントと文法の説明を出す（決まり文句の4段解説は置かない）。 */}
+                <div className="mt-3 space-y-2" data-writing-explanation>
+                  <div className="rounded-xl bg-white/85 px-3 py-2.5">
+                    <p className="text-[10px] font-extrabold text-amber-700">この文のポイント</p>
+                    <p className="mt-0.5 text-sm font-bold leading-relaxed text-ink/80">{selected.tip}</p>
+                  </div>
+                  <div className="rounded-xl bg-white/85 px-3 py-2.5">
+                    <p className="text-[10px] font-extrabold text-amber-700">文法の説明</p>
+                    <p className="mt-0.5 text-sm font-bold leading-relaxed text-ink/80">{selectedGrammar.explanation}</p>
+                  </div>
+                </div>
                 <WordSaveRow ids={selected.wordIds ?? []} />
               </div>
             </div>

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-09-16T12:00:53.898Z",
+  "auditedAt": "2026-09-16T12:12:41.782Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -12,7 +12,7 @@
     "quizItemCount": 16473,
     "storedAndGeneratedQuestionPathCount": 4506,
     "storedAndGeneratedChoicePathCount": 17608,
-    "overallContentSha256": "e2b8bfff2908f1bc6b6fa818b27e25cc79f02fc8aaa3f1a4ac4a2d739aa2770d"
+    "overallContentSha256": "079575607de287adb1bb21a7bf2f859d8ed5860c15828711917c3d930a6e8f6b"
   },
   "completionCriteria": [
     "全18教材カテゴリのID・母数・重複・内容ハッシュが一致する",
@@ -103,7 +103,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "c679967bbca521b1448192a29a94c06084651f77c271fd2d2589c8ec4a793ad0",
+    "sha256": "9e43fc93f63b3d069cedf1f2478c7096262c3fb3a1d1f59972f91e93094ddaf2",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -374,7 +374,7 @@
       "quizItemCount": 140,
       "learningIdOrderSha256": "917154633596d98dbf9c0ecb92f75f821cbfe65460543b60bbc1cc49567ff2e9",
       "quizIdOrderSha256": "917154633596d98dbf9c0ecb92f75f821cbfe65460543b60bbc1cc49567ff2e9",
-      "contentSha256": "f0ed318ea141ee393d23c7aab54ab5a06d75f9ebe7632d16e14f722ef2174682",
+      "contentSha256": "52d41ae9ec6158f8434c8e5a782dc0ab7ffc9b1636afffcbc5a46445f23e79b2",
       "auditGateIds": [
         "inventory",
         "coreData",

@@ -14,7 +14,7 @@ import {
   dismissSpeechPlayer,
   playSpeechItems,
 } from '../lib/speech-player.js'
-import { buildDictationInstructorExplanation } from '../lib/instructorExplanations.js'
+import { dictationExplanationFor } from '../data/dictation-explanations.js'
 import {
   answeredQuizIndexes,
   growDeck,
@@ -22,7 +22,6 @@ import {
   reviseQuizTally,
 } from '../lib/session.js'
 import { Button, Chip, cx } from '../components/ui.jsx'
-import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
 import { Close, ArrowRight, SpeakerWave, Check } from '../components/Icons.jsx'
 import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
 import {
@@ -518,10 +517,11 @@ export function DictationPlayScreen() {
                 通常再生 {normalPlays}回{slowPlays ? `・ゆっくり ${slowPlays}回` : ''}
               </span>
             </div>
-            <InstructorExplanation
-              explanation={buildDictationInstructorExplanation(item, result)}
-              className="mt-3"
-            />
+            {/* この文の区切りと文法の要点を出す（決まり文句の4段解説は置かない）。 */}
+            <div className="mt-3 rounded-xl bg-white px-3 py-2.5 ring-1 ring-teal-100" data-dictation-explanation>
+              <p className="text-[10px] font-extrabold text-teal-700">解説</p>
+              <p className="mt-0.5 text-sm font-bold leading-relaxed text-ink/75">{dictationExplanationFor(item)}</p>
+            </div>
           </div>
         )}
       </div>

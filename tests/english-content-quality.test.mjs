@@ -117,7 +117,7 @@ test('主要テストは正答後に、その問題の学習ポイントを表�
     'GrammarQuiz.jsx': [/item\.sentence\.en/, /item\.sentence\.ja/, /buildGrammarInstructorExplanation/, /GrammarChoiceExplanations/, /patternExamples/],
     'PhraseQuiz.jsx': [/<ChoiceExplanations/, /\{item\.origin\}/],
     'ListeningQuiz.jsx': [/item\.questionJa/, /\{item\.explain\}/, /<ChoiceExplanations/, /listeningChoiceNoteFor/],
-    'DictationPlay.jsx': [/item\.text/, /item\.ja/, /buildDictationInstructorExplanation/],
+    'DictationPlay.jsx': [/item\.text/, /item\.ja/, /dictationExplanationFor/],
     'components/ReadingComprehensionCheck.jsx': [/buildReadingInstructorExplanation/, /UnknownChoiceButton/],
     'Diagnostic.jsx': [/question\.review/, /question\.passageJa/, /buildDiagnosticInstructorExplanation/],
   }

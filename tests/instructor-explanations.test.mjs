@@ -6,6 +6,10 @@ import katex from 'katex'
 import { DIAGNOSTIC_QUESTIONS } from '../src/data/diagnostic.js'
 import { DICTATION_ITEMS } from '../src/data/dictation.js'
 import {
+  DICTATION_EXPLANATIONS,
+  dictationExplanationFor,
+} from '../src/data/dictation-explanations.js'
+import {
   GRAMMAR,
   grammarChoiceGuidanceFor,
 } from '../src/data/grammar.js'
@@ -51,12 +55,9 @@ import {
 } from '../src/data/writing.js'
 import {
   buildDiagnosticInstructorExplanation,
-  buildDictationInstructorExplanation,
   buildGrammarInstructorExplanation,
   buildMathFillInstructorExplanation,
-  buildMathSolvedInstructorExplanation,
   buildReadingInstructorExplanation,
-  buildWritingInstructorExplanation,
   isCompleteInstructorExplanation,
 } from '../src/lib/instructorExplanations.js'
 import { buildDiagnosticQuestions, diagnosticChoiceNoteFor } from '../src/lib/diagnosticQuestions.js'
@@ -214,50 +215,9 @@ test('全教材の全設問から問題固有の予備校講師型4段解説を�
     units += 1
   }
 
-  for (const item of DICTATION_ITEMS) {
-    const value = buildDictationInstructorExplanation(item, { wrongSelections: 0 })
-    assertExplanation(value, `dictation:${item.id}`)
-    assertContains(value.answer, item.text, `dictation:${item.id}.answer`)
-    assertContains(value.evidence, item.focus, `dictation:${item.id}.evidence`)
-    units += 1
-  }
-
-  for (const exercise of WRITING_EXERCISES) {
-    for (const step of exercise.steps) {
-      for (const option of step.options) {
-        const value = buildWritingInstructorExplanation(
-            step,
-            option,
-            getWritingGrammar(option.grammarId),
-          )
-        assertExplanation(value, `writing:${exercise.id}:${step.id}:${option.id}`)
-        assertContains(
-          value.answer,
-          option.text,
-          `writing:${exercise.id}:${step.id}:${option.id}.answer`,
-        )
-        assertContains(
-          value.evidence,
-          option.tip,
-          `writing:${exercise.id}:${step.id}:${option.id}.evidence`,
-        )
-        units += 1
-      }
-    }
-  }
-
   for (const problem of Object.values(MATH_PROBLEMS).flat()) {
-    const solved = buildMathSolvedInstructorExplanation(problem)
-    assertExplanation(solved, `math:${problem.id}:solved`)
-    assertContains(solved.answer, problem.answer, `math:${problem.id}:solved.answer`)
-    assertContains(
-      solved.evidence,
-      problem.steps[0]?.note,
-      `math:${problem.id}:solved.evidence`,
-    )
-    units += 1
-    // 選択問題（方針の確認・選択式のステップ）は、問題固有の解説と選択肢ごとの説明を示す（数学の選択問題のテスト）。
-    // 講師解説を使うのは穴埋めと解き終わりだけ。
+    // 選択問題は問題固有の解説と選択肢ごとの説明、解き終わりは解き方とつまずきやすい点を示す（それぞれのテスト）。
+    // 講師解説を使うのは穴埋めだけ。
     problem.steps.forEach((step, index) => {
       if (!step.fill) return
       const value = buildMathFillInstructorExplanation(problem, step, step.fill.blanks)
@@ -268,7 +228,7 @@ test('全教材の全設問から問題固有の予備校講師型4段解説を�
     })
   }
 
-  assert.ok(units >= 4_800, `全件監査の対象数が不足しています: ${units}`)
+  assert.ok(units >= 4_000, `全件監査の対象数が不足しています: ${units}`)
 })
 
 test('全選択式問題の正答・全誤答・「わからない」に回答別の指導を返す', () => {
@@ -538,23 +498,77 @@ test('数学440穴埋めは正誤判定と解説が一致し、順不同7題は�
   assert.equal(unordered, 7)
 })
 
-test('ディクテーションは結果別の具体的な復習指示を返す', () => {
+// ディクテーション・英作文・数学の解き終わりは、決まり文句の4段解説をやめ、その文・その問題だけの説明を出す。
+test('ディクテーション140文は、その文の区切りと文法の要点を解説し、決まり文句の講師解説を使わない', async () => {
+  const source = await readFile(new URL('../src/screens/DictationPlay.jsx', import.meta.url), 'utf8')
+  assert.doesNotMatch(source, /InstructorExplanation/, 'DictationPlay.jsx: 決まり文句の講師解説が戻っています')
+  assert.match(source, /\{dictationExplanationFor\(item\)\}/, 'DictationPlay.jsx: 文ごとの解説がありません')
+
+  const englishWords = (text) => (String(text).match(/[A-Za-z][A-Za-z’'-]*/g) ?? []).map((word) => word.toLowerCase())
+  const notes = new Set()
   for (const item of DICTATION_ITEMS) {
-    const value = buildDictationInstructorExplanation(item, { wrongSelections: 2 })
-    assertExplanation(value, `dictation:${item.id}:wrong`)
-    assert.match(value.trap, /2回/)
-    assertContains(value.evidence, item.focus, `dictation:${item.id}:wrong.evidence`)
+    const note = normalize(dictationExplanationFor(item))
+    assert.ok(note.length >= 40, `dictation:${item.id} の解説がありません`)
+    // 解説はその文の英語を引きながら説明する（別の文の解説が入っていない）。
+    const sentenceWords = new Set(englishWords(item.text))
+    assert.ok(
+      englishWords(note).some((word) => word.length > 3 && sentenceWords.has(word)),
+      `dictation:${item.id} の解説がこの文を説明していません`,
+    )
+    assert.ok(!notes.has(note), `dictation:${item.id} の解説が別の文と同じです`)
+    notes.add(note)
+  }
+  for (const id of Object.keys(DICTATION_EXPLANATIONS)) {
+    assert.ok(DICTATION_ITEMS.some((item) => item.id === id), `dictation:${id} は存在しない文の解説です`)
+  }
+  assert.equal(notes.size, 140)
+})
+
+test('英作文の答え合わせは、選んだ文のポイントと文法の説明を出し、決まり文句の講師解説を使わない', async () => {
+  const source = await readFile(new URL('../src/screens/WritingPlay.jsx', import.meta.url), 'utf8')
+  assert.doesNotMatch(source, /InstructorExplanation/, 'WritingPlay.jsx: 決まり文句の講師解説が戻っています')
+  assert.match(source, /\{selected\.tip\}/, 'WritingPlay.jsx: 選んだ文のポイントがありません')
+  assert.match(source, /\{selectedGrammar\.explanation\}/, 'WritingPlay.jsx: 文法の説明がありません')
+
+  const tips = new Set()
+  for (const exercise of WRITING_EXERCISES) {
+    for (const step of exercise.steps) {
+      for (const option of step.options) {
+        const label = `writing:${exercise.id}:${step.id}:${option.id}`
+        assert.ok(normalize(option.tip).length >= 10, `${label} のポイントがありません`)
+        assert.ok(normalize(getWritingGrammar(option.grammarId)?.explanation), `${label} の文法の説明がありません`)
+        assert.ok(!tips.has(option.tip), `${label} のポイントが別の文と同じです`)
+        tips.add(option.tip)
+      }
+    }
+  }
+  assert.equal(tips.size, 330)
+})
+
+test('数学の解き終わりは、答えと解き方を1段ずつと、つまずきやすい点を示す', async () => {
+  const source = await readFile(new URL('../src/screens/MathSolve.jsx', import.meta.url), 'utf8')
+  assert.doesNotMatch(source, /buildMathSolvedInstructorExplanation/, 'MathSolve.jsx: 解き終わりに決まり文句の講師解説が戻っています')
+  assert.match(source, /data-math-solution/)
+  assert.match(source, /resolveFill\(step\.fill, step\.fill\.blanks\)/)
+  assert.match(source, /step\.choices\[step\.answer\]/)
+  assert.match(source, /data-math-pitfall/)
+  for (const problem of Object.values(MATH_PROBLEMS).flat()) {
+    assert.ok(normalize(problem.answer), `math:${problem.id} の答えがありません`)
+    assert.ok(normalize(problem.pitfall), `math:${problem.id} のつまずきやすい点がありません`)
+    problem.steps.forEach((step, index) => {
+      const label = `math:${problem.id}:step:${index}`
+      assert.ok(normalize(step.fill ? step.fill.ask : step.q ?? step.ask), `${label} の何を求めるかがありません`)
+      assert.ok(normalize(step.fill ? step.note : step.why ?? step.note), `${label} の理由がありません`)
+    })
   }
 })
 
 test('採点を伴う全問題画面が共通の講師解説を表示する', async () => {
   const screens = [
     'Diagnostic.jsx',
-    'DictationPlay.jsx',
     'GrammarQuiz.jsx',
     'MathSolve.jsx',
     'components/ReadingComprehensionCheck.jsx',
-    'WritingPlay.jsx',
   ]
 
   for (const screen of screens) {
