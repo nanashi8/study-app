@@ -13,9 +13,7 @@ import { shuffle } from '../data/vocab.js'
 import { quizMeaning } from '../data/compact.js'
 import { phraseSpeechText } from '../lib/phrase-speech.js'
 import { isGenericPhraseNote, isGenericPhraseOrigin } from '../lib/phraseNotes.js'
-import { longSentenceTranslationFor } from '../data/long-sentence-translations.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
-import { LongSentenceTranslation } from '../components/LongSentenceTranslation.jsx'
 import { SyntaxFamilyGuide } from '../components/SyntaxFamilyGuide.jsx'
 import { IdiomFormGuide } from '../components/IdiomFormGuide.jsx'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
@@ -135,7 +133,6 @@ export function PhraseQuizScreen() {
   const answeredIndexes = answeredQuizIndexes(index, selections)
   const streakState = streaksFromLog(results.current.answerLog)
   const isCorrectPick = answered && selected === item.id
-  const longSentenceTranslation = longSentenceTranslationFor(item)
 
   const finish = () => {
     handOffSession()
@@ -321,18 +318,7 @@ export function PhraseQuizScreen() {
               {isDragonVein ? feedback : isCorrectPick ? '正解！🎉' : selected === UNKNOWN_CHOICE_ID ? '答えはこちら' : 'ざんねん…'}
             </p>
             <p className="mt-1 font-bold text-ink"><span className="font-display">{item.phrase}</span> ＝ {item.meanings.join('・')}</p>
-            <div className="mt-3 flex items-start gap-2 rounded-2xl bg-brand-50/70 p-3">
-              <SpeakButton text={item.example.en} size="sm" />
-              <div className="min-w-0 text-left">
-                <p className="text-sm font-bold leading-relaxed text-ink">{item.example.en}</p>
-                <p className="mt-0.5 text-xs font-bold leading-relaxed text-ink/55">
-                  {longSentenceTranslation && <span className="mr-1 text-[10px] text-ink/35">自然な和訳</span>}
-                  {item.example.ja}
-                </p>
-              </div>
-            </div>
-            <LongSentenceTranslation guide={longSentenceTranslation} className="mt-3" />
-            {/* 出題は表現だけなので、例文や文脈から答えを決める説明は置かず、選択肢の中身と成り立ちを並べる。 */}
+            {/* 答え合わせは、選択肢の中身と成り立ちだけを出す。例文は暗記カードと辞書で見る。 */}
             <ChoiceExplanations
               title="選択肢の表現と意味"
               name="phrases"
@@ -359,7 +345,7 @@ export function PhraseQuizScreen() {
                 )}
               </div>
             )}
-            <SyntaxFamilyGuide item={item} className="mt-3 text-left" />
+            <SyntaxFamilyGuide item={item} showExamples={false} className="mt-3 text-left" />
             <IdiomFormGuide item={item}
               familyId={params.idiomFormFamilyId}
               returnTo={params.returnTo}

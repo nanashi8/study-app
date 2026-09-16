@@ -596,12 +596,19 @@ test('意味を問うテストは、出題した選択肢すべての中身を�
       /文脈の中で確定|例文から手掛かり|例文の位置|例文を手掛かり|例文の語順を手掛かり|例文で使われる場面/,
       `${screen}: 例文や文脈を答えの根拠にしています`,
     )
+    // 例文は暗記カードと辞書で見る。答え合わせには、長い例文の訳し方も構文の仲間の例文も出さない。
+    assert.doesNotMatch(
+      source,
+      /\.example\.(?:en|ja|gendai)\b|<LongSentenceTranslation|<SyntaxFamilyGuide(?![^>]*showExamples=\{false\})/,
+      `${screen}: 答え合わせに例文が戻っています`,
+    )
     assert.match(source, /<ChoiceExplanations/, `${screen}: 選択肢ごとの欄がありません`)
     assert.match(source, rowsPattern, `${screen}: 選択肢の欄がボタンと同じ選択肢から作られていません`)
   }
   const read = (screen) => readFile(new URL(`../src/screens/${screen}`, import.meta.url), 'utf8')
   assert.match(await read('VocabQuiz.jsx'), /<EtymologyBlock word=\{word\} \/>/)
   assert.match(await read('PhraseQuiz.jsx'), /\{item\.origin\}/)
+  assert.match(await read('PhraseQuiz.jsx'), /<SyntaxFamilyGuide item=\{item\} showExamples=\{false\}/)
   // 表現の種類だけを言う決まり文句の成り立ち・進め方の指示だけの注意書きは、答え合わせに出さない。
   assert.match(await read('PhraseQuiz.jsx'), /!isGenericPhraseOrigin\(item\.origin\)/)
   assert.match(await read('PhraseQuiz.jsx'), /!isGenericPhraseNote\(item\.note\)/)
@@ -612,6 +619,7 @@ test('意味を問うテストは、出題した選択肢すべての中身を�
   assert.match(await read('KotenQuiz.jsx'), /<KotenText>\{word\.note\}<\/KotenText>/)
   const diagnostic = await read('Diagnostic.jsx')
   assert.match(diagnostic, /question\.skill === 'vocab' \|\| question\.skill === 'usage' \?/)
+  assert.match(diagnostic, /question\.skill !== 'vocab' && question\.skill !== 'usage' && question\.review\?\.en/)
   assert.match(diagnostic, /rows=\{question\.choices\.map\(\(choice\) => \(\{[\s\S]*?body: diagnosticChoiceNoteFor\(question, choice\)/)
 
   // 誤答はどの項目からも選ばれうるので、全項目に選択肢の欄へ出す中身があることを確かめる。

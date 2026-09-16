@@ -756,7 +756,8 @@ function AnswerReview({ questions, answers }) {
                 </p>
               </div>
 
-              {question.review?.en && question.review?.ja && (
+              {/* 単語・熟語の問題には例文を出さない（例文は暗記カードと辞書で見る）。文法は問題文を完成させた文を示す。 */}
+              {question.skill !== 'vocab' && question.skill !== 'usage' && question.review?.en && question.review?.ja && (
                 <div className="mt-2 flex items-start gap-2 rounded-xl bg-sky-50 px-3 py-2.5">
                   <SpeakButton text={question.review.en} size="sm" />
                   <div className="min-w-0">

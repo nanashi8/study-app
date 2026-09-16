@@ -551,7 +551,7 @@ assert(
 // ── 習熟導線 ─────────────────────────────────────────────────────────
 
 const sourceChecks = [
-  ['VocabQuiz.jsx', [/\breview\(/, /UnknownChoiceButton/, /word\.example\.en/, /<ChoiceExplanations/]],
+  ['VocabQuiz.jsx', [/\breview\(/, /UnknownChoiceButton/, /<EtymologyBlock word=\{word\} \/>/, /<ChoiceExplanations/]],
   ['GrammarQuiz.jsx', [/\breview\(/, /UnknownChoiceButton/, /buildGrammarInstructorExplanation/, /patternExamples/]],
   ['PhraseQuiz.jsx', [/\breview\(/, /UnknownChoiceButton/, /<ChoiceExplanations/, /\{item\.origin\}/, /SyntaxFamilyGuide/]],
   ['PhraseStudy.jsx', [/SyntaxFamilyGuide/, /item=\{item\}/]],

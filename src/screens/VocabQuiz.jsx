@@ -443,14 +443,7 @@ export function VocabQuizScreen() {
             <p className="mt-1 font-bold text-ink">
               <span className="font-display">{word.word}</span> ＝ <MeaningText>{word.meanings.join('・')}</MeaningText>
             </p>
-            <div className="mt-3 flex items-start gap-2 rounded-2xl bg-brand-50/70 p-3">
-              <SpeakButton text={word.example.en} size="sm" />
-              <div className="min-w-0 text-left">
-                <p className="text-sm font-bold leading-relaxed text-ink">{word.example.en}</p>
-                <p className="mt-0.5 text-xs font-bold leading-relaxed text-ink/55">{word.example.ja}</p>
-              </div>
-            </div>
-            {/* 出題は英単語だけなので、例文や文脈から答えを決める説明は置かず、選択肢の中身を並べる。 */}
+            {/* 答え合わせは、選択肢の中身と語の成り立ちだけを出す。例文は暗記カードと辞書で見る。 */}
             <ChoiceExplanations
               title="選択肢の単語と意味"
               name="vocab"
@@ -465,7 +458,10 @@ export function VocabQuizScreen() {
             />
             {(etymologyCardsForWord(word).length > 0 || etymologyStoryForWord(word)) && (
               <div className="mt-3 rounded-2xl bg-slate-50 p-3 text-left ring-1 ring-slate-200">
-                <p className="mb-2 text-sm font-extrabold text-brand-700">語の成り立ち</p>
+                {/* 語の歴史がある語は、その欄に「語の成り立ち」の見出しが付くので、ここでは重ねない。 */}
+                {!etymologyStoryForWord(word) && (
+                  <p className="mb-2 text-sm font-extrabold text-brand-700">語の成り立ち</p>
+                )}
                 <EtymologyBlock word={word} />
               </div>
             )}

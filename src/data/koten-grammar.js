@@ -399,11 +399,11 @@ export const KOTEN_GRAMMAR = [
     id: 'kg_conj_nagara',
     title: '接続助詞「ながら」',
     category: 'particle',
-    forms: '連用形・形容詞終止形・形容動詞語幹・体言＋ながら',
+    forms: '連用形・体言・副詞・形容詞と形容動詞の語幹＋ながら',
     connection: '連用形などに接続',
     meaning: '…ながら／…けれども／…のまま',
     summary: '同時進行だけでなく逆接や状態の継続もある。前後が予想に反するなら逆接。',
-    example: { ja: '幼きながら、心ざし深し。', gendai: '幼いけれども、思いは深い。' },
+    example: { ja: '身はいやしながら、母なむ宮なりける。', gendai: '身分は低いけれども、母は皇女であった。' },
   },
   {
     id: 'kg_conj_monono',
