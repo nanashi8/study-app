@@ -80,17 +80,13 @@ import {
 import {
   GRAMMAR,
   GRAMMAR_LEVEL_TARGETS,
+  GRAMMAR_PRACTICE,
   GRAMMAR_TOPIC_MINIMUM,
   GRAMMAR_TOTAL_TARGET,
-  grammarChoiceGuidanceFor,
-  grammarChoiceUsageFor,
   grammarByTopic,
 } from '../src/data/grammar.js'
-import {
-  grammarAnswerEvidenceFor,
-  grammarChoiceDecisionFor,
-  grammarChoiceExplanationFor,
-} from '../src/lib/grammarQuestionExplanations.js'
+import { GRAMMAR_CHOICE_NOTES } from '../src/data/grammar-choice-notes.js'
+import { grammarChoiceNoteFor } from '../src/lib/grammarChoiceNotes.js'
 import { GRAMMAR_LESSONS } from '../src/data/grammar-lessons.js'
 import { EXAM_GRAMMAR_LESSONS } from '../src/data/grammar-lessons-exam.js'
 import {
@@ -1575,15 +1571,7 @@ if (READING_PHRASE_OPEN_QUESTIONS.some(
 const grammarIds = new Set()
 const grammarPrompts = new Set()
 const grammarSentences = new Set()
-let grammarDistractorGuidanceCount = 0
-let grammarInvalidChoiceCount = 0
-let grammarAllChoiceEvidenceCount = 0
-const normalizeGrammarChoice = (text) =>
-  (text ?? '').trim().toLowerCase().replace(/[’]/g, "'").replace(/\s+/g, ' ')
-const grammarAnswerForms = new Set(GRAMMAR.map((item) => normalizeGrammarChoice(item.answer)))
-const vocabularyHeadwordForms = new Set(
-  ALL_WORDS.map((word) => normalizeGrammarChoice(word.word)),
-)
+let grammarChoiceNoteCount = 0
 const normalizeSentence = (text) =>
   (text ?? '').replace(/\s+/g, ' ').replace(/\s+([,.?!])/g, '$1').trim()
 // so...that の結果節と、従属節の主語位置に立つ代名詞は、いずれも文の主語を指す。
@@ -1660,52 +1648,17 @@ for (const g of GRAMMAR) {
   }
   if (!g.choices?.includes(g.answer)) errors.push(`${at}: answer が choices に無い (${g.answer})`)
   if (!g.sentence?.en || !g.sentence?.ja || !g.explain) errors.push(`${at}: sentence(en/ja) または explain 不足`)
-  const evidence = grammarAnswerEvidenceFor(g)
-  const visiblePrompt = g.q?.replace('___', '［空所］')
-  const decisions = g.choices?.map((choice) => grammarChoiceDecisionFor(g, choice)) ?? []
-  if (decisions.filter((decision) => decision?.isCorrect).length !== 1) {
-    errors.push(`${at}: 4択の正答判定が一意ではない`)
-  }
-  for (const choice of g.choices ?? []) {
-    grammarAllChoiceEvidenceCount += 1
-    const usage = grammarChoiceUsageFor(g, choice)
-    const reason = grammarChoiceExplanationFor(g, choice)
-    if (!usage || !['valid', 'invalid'].includes(usage.status) || !usage.summary?.trim()) {
-      errors.push(`${at}: 選択肢「${choice}」の使い方が未解決`)
-    }
-    if (!reason?.includes(visiblePrompt) || !reason.includes(evidence?.rule) || !reason.includes(g.answer)) {
-      errors.push(`${at}: 選択肢「${choice}」に問題文・規則・正答比較の根拠が不足`)
-    }
-    if (choice === g.answer && (usage?.status !== 'valid' || !reason.includes(g.sentence?.en))) {
-      errors.push(`${at}: 正答「${choice}」の根拠または完成文が不足`)
-    }
-  }
-  for (const choice of g.choices?.filter((candidate) => candidate !== g.answer) ?? []) {
-    grammarDistractorGuidanceCount += 1
-    const guidance = grammarChoiceGuidanceFor(g, choice)
-    if (!guidance || !['valid', 'invalid'].includes(guidance.status)) {
-      errors.push(`${at}: 誤答「${choice}」の使う場面が未分類`)
+  // 答え合わせで4つの選択肢それぞれに、この問題の文に当てはめた説明を出す。
+  const choiceNotes = g.choices?.map((choice) => grammarChoiceNoteFor(g, choice)) ?? []
+  for (const [index, choice] of (g.choices ?? []).entries()) {
+    if (!/[ぁ-んァ-ヶ一-龠]/u.test(choiceNotes[index])) {
+      errors.push(`${at}: 選択肢「${choice}」の解説が無い`)
       continue
     }
-    if (!guidance.summary?.trim()) {
-      errors.push(`${at}: 誤答「${choice}」の使い分け説明が空`)
-    }
-    if (guidance.source === 'unresolved' || guidance.source === 'related-vocabulary') {
-      errors.push(`${at}: 誤答「${choice}」が具体的な使い分けガイドに未接続`)
-    }
-    if (guidance.status === 'valid' && !guidance.example?.en && !guidance.pattern) {
-      errors.push(`${at}: 誤答「${choice}」の使用例・型が無い`)
-    }
-    if (guidance.status === 'invalid') {
-      grammarInvalidChoiceCount += 1
-      const normalizedChoice = normalizeGrammarChoice(choice)
-      if (grammarAnswerForms.has(normalizedChoice)) {
-        errors.push(`${at}: 別問題の正答「${choice}」を「使わない形」に分類`)
-      }
-      if (vocabularyHeadwordForms.has(normalizedChoice)) {
-        errors.push(`${at}: 登録語彙「${choice}」を「使わない形」に分類`)
-      }
-    }
+    grammarChoiceNoteCount += 1
+  }
+  if (new Set(choiceNotes).size !== choiceNotes.length) {
+    errors.push(`${at}: 別々の選択肢に同じ解説を使っている`)
   }
   const promptKey = normalizeSentence(g.q).toLowerCase()
   if (promptKey && grammarPrompts.has(promptKey)) errors.push(`${at}: 同一の問題文が重複`)
@@ -1737,20 +1690,24 @@ for (const [level, minimum] of Object.entries(GRAMMAR_LEVEL_TARGETS)) {
 if (GRAMMAR.length !== GRAMMAR_TOTAL_TARGET) {
   errors.push(`文法 合計: ${GRAMMAR.length}問（収録目標は${GRAMMAR_TOTAL_TARGET}問）`)
 }
-if (grammarDistractorGuidanceCount !== GRAMMAR.length * 3) {
+if (grammarChoiceNoteCount !== GRAMMAR.length * 4) {
   errors.push(
-    `文法 誤答使い分けガイド: ${grammarDistractorGuidanceCount}件` +
-      `（4択全問なら${GRAMMAR.length * 3}件必要）`,
-  )
-}
-if (grammarAllChoiceEvidenceCount !== GRAMMAR.length * 4) {
-  errors.push(
-    `文法 正解を含む選択肢別根拠: ${grammarAllChoiceEvidenceCount}件` +
+    `文法 選択肢解説: ${grammarChoiceNoteCount}件` +
       `（4択全問なら${GRAMMAR.length * 4}件必要）`,
   )
 }
-if (grammarInvalidChoiceCount === 0) {
-  errors.push('文法 誤答使い分けガイド: 「使わない形」の分類が0件')
+// 選択肢解説の台帳に、もう無い問題や、差し替えた前の選択肢の説明が残っていないか。
+const grammarPracticeById = new Map(GRAMMAR_PRACTICE.map((item) => [item.id, item]))
+for (const [id, notes] of Object.entries(GRAMMAR_CHOICE_NOTES)) {
+  const item = grammarPracticeById.get(id)
+  if (!item) {
+    errors.push(`文法 選択肢解説 ${id}: 問題が無い`)
+    continue
+  }
+  if (item.choiceNotes) errors.push(`文法 選択肢解説 ${id}: 問題データと台帳の両方に解説がある`)
+  for (const choice of Object.keys(notes)) {
+    if (!item.choices.includes(choice)) errors.push(`文法 選択肢解説 ${id}: 出題しない選択肢「${choice}」の解説がある`)
+  }
 }
 const grammarTopicCounts = new Map()
 for (const item of GRAMMAR) {

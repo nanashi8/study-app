@@ -129,7 +129,7 @@ export const LONG_SENTENCE_MEANING_PHRASES = Object.freeze({
     m('the other is black.', 'もう一匹は黒いです'),
   ),
   curr_syn_gr_auto_pre1_agreement_001: groups(
-    m('A series of reviews is expected', '一連の審査が期待されています'),
+    m('One of the reviews is expected', '審査の1つが期待されています'),
     m('to help the committee revise the proposal.', '委員会がその提案を修正する助けになると'),
   ),
   curr_syn_gr_auto_pre1_be_to_001: groups(
@@ -147,7 +147,7 @@ export const LONG_SENTENCE_MEANING_PHRASES = Object.freeze({
     m('is no more evidence than a guess is.', '推測が証拠でないのと同じく、証拠ではありません'),
   ),
   curr_syn_gr_auto_pre1_agreement_002: groups(
-    m('A series of reviews is expected', '一連の審査が期待されています'),
+    m('One of the reviews is expected', '審査の1つが期待されています'),
     m('to help the research team verify the results.', '研究チームがその結果を検証する助けになると'),
   ),
   curr_syn_gr_auto_pre1_appositive_that_002: groups(

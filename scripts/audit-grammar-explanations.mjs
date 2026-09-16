@@ -4,23 +4,14 @@ import {
   GRAMMAR,
   GRAMMAR_PRACTICE,
   GRAMMAR_TOTAL_TARGET,
-  grammarChoiceGuidanceFor,
-  grammarChoiceUsageFor,
 } from '../src/data/grammar.js'
 import { GRAMMAR_LESSONS, GRAMMAR_STAGES } from '../src/data/grammar-lessons.js'
 import { ALL_WORDS } from '../src/data/vocab.js'
 import {
-  grammarAnswerEvidenceFor,
-  grammarChoiceDecisionFor,
-  grammarChoiceExplanationFor,
-  grammarChoiceMismatchExplanationFor,
-  grammarCorrectChoiceExplanationFor,
-  grammarExamFocusExplanationFor,
-  grammarQuestionExplanationFor,
   grammarQuestionNeedsMeaningCue,
   grammarRuleExplanationFor,
-  isCompleteGrammarQuestionExplanation,
 } from '../src/lib/grammarQuestionExplanations.js'
+import { grammarChoiceNoteFor } from '../src/lib/grammarChoiceNotes.js'
 
 const normalize = (value) => String(value ?? '')
   .trim()
@@ -29,7 +20,6 @@ const normalize = (value) => String(value ?? '')
   .replace(/\s+/g, ' ')
 
 const contains = (text, part) => normalize(text).includes(normalize(part))
-const withoutTerminal = (value) => String(value ?? '').replace(/[。.!！?？]+$/u, '')
 
 assert.equal(GRAMMAR.length, GRAMMAR_TOTAL_TARGET, '英文法の全件母数が収録目標と一致しません')
 
@@ -63,14 +53,14 @@ for (const required of ['動詞の原形', 'Be', 'Don’t', 'Never', 'Always', '
 }
 
 let ruleExplanationCount = 0
-let choiceMismatchCount = 0
-let allChoiceReasonCount = 0
-let correctChoiceReasonCount = 0
+let choiceNoteCount = 0
+let correctChoiceNoteCount = 0
 let uniqueAnswerCount = 0
 let meaningCueQuestionCount = 0
 let formOnlyQuestionCount = 0
 let examQuestionCount = 0
 const examFocuses = new Set()
+const TEMPLATE_PHRASES = /英語の手掛かり|適用する規則|したがって、空所は|この条件を満たすのは|正解は一つに決まる|この手掛かりと規則を/u
 
 for (const item of GRAMMAR) {
   const label = `文法 ${item.id}`
@@ -81,77 +71,27 @@ for (const item of GRAMMAR) {
     1,
     `${label}: 正答が選択肢内で一つに定まりません`,
   )
-
-  const evidence = grammarAnswerEvidenceFor(item)
-  const visiblePrompt = String(item.q).replace('___', '［空所］')
-  assert.ok(evidence?.englishClue.includes(visiblePrompt), `${label}: 問題文の具体的な手掛かりがありません`)
-  assert.ok(evidence?.rule, `${label}: 選択根拠となる規則がありません`)
-  assert.ok(contains(evidence.conclusion, item.answer), `${label}: 根拠から正答へ至る結論がありません`)
-  assert.ok(contains(evidence.conclusion, item.sentence.en), `${label}: 根拠と完成文が結ばれていません`)
-
-  const needsMeaningCue = grammarQuestionNeedsMeaningCue(item)
-  assert.equal(evidence.requiresMeaningCue, needsMeaningCue, `${label}: 和訳表示の判定が一致しません`)
-  if (needsMeaningCue) {
-    assert.ok(contains(evidence.meaningClue, withoutTerminal(item.sentence.ja)), `${label}: 判断に必要な和訳がありません`)
-    meaningCueQuestionCount += 1
-  } else {
-    assert.equal(evidence.meaningClue, '', `${label}: 語形だけで決まる問題に解答前の和訳を要求しています`)
-    formOnlyQuestionCount += 1
-  }
-
-  const learnerExplanation = grammarQuestionExplanationFor(item)
-  assert.ok(isCompleteGrammarQuestionExplanation(item), `${label}: 問題別の正答根拠が未完成`)
-  assert.ok(contains(learnerExplanation, item.explain), `${label}: 元の文法規則が解説から欠落`)
-  assert.ok(contains(learnerExplanation, item.answer), `${label}: 正答そのものの説明が欠落`)
-  assert.ok(contains(learnerExplanation, item.sentence.en), `${label}: 完成英文が解説から欠落`)
-  assert.ok(contains(learnerExplanation, withoutTerminal(item.sentence.ja)), `${label}: 完成文の意味が解説から欠落`)
-
+  uniqueAnswerCount += 1
+  if (grammarQuestionNeedsMeaningCue(item)) meaningCueQuestionCount += 1
+  else formOnlyQuestionCount += 1
   if (item.examFocus) {
     examQuestionCount += 1
     examFocuses.add(item.examFocus)
-    const focusExplanation = grammarExamFocusExplanationFor(item)
-    assert.ok(focusExplanation.length >= 24, `${label}: 入試型の問われ方固有の決め手が短すぎます`)
-    assert.ok(contains(focusExplanation, item.answer), `${label}: 入試型の決め手に正答がありません`)
   }
+}
 
-
-  const decisions = item.choices.map((choice) => grammarChoiceDecisionFor(item, choice))
-  assert.equal(decisions.filter((decision) => decision?.isCorrect).length, 1, `${label}: 4択の正誤判定が一意ではありません`)
-  assert.equal(decisions.find((decision) => decision?.isCorrect)?.choice, item.answer, `${label}: 一意な正答判定が答えと一致しません`)
-  uniqueAnswerCount += 1
-
-  for (const choice of item.choices) {
-    const decision = grammarChoiceDecisionFor(item, choice)
-    const usage = grammarChoiceUsageFor(item, choice)
-    const choiceExplanation = grammarChoiceExplanationFor(item, choice)
-    assert.ok(decision, `${label}: 選択肢「${choice}」の正誤判定がありません`)
-    assert.ok(choiceExplanation.length >= 24, `${label}: 選択肢「${choice}」の根拠が短すぎます`)
-    assert.ok(contains(choiceExplanation, choice), `${label}: 選択肢根拠に「${choice}」がありません`)
-    assert.ok(contains(choiceExplanation, item.answer), `${label}: 選択肢根拠に正答「${item.answer}」がありません`)
-    assert.ok(contains(choiceExplanation, visiblePrompt), `${label}: 選択肢根拠に問題文の手掛かりがありません`)
-    assert.ok(contains(choiceExplanation, evidence.rule), `${label}: 選択肢根拠に適用規則がありません`)
-    assert.ok(usage?.status && usage.status !== 'unresolved', `${label}: 選択肢「${choice}」の使い方が未解決です`)
-    assert.ok(usage?.summary, `${label}: 選択肢「${choice}」の使い方がありません`)
-    allChoiceReasonCount += 1
-
-    if (choice === item.answer) {
-      const correctChoiceReason = grammarCorrectChoiceExplanationFor(item)
-      assert.equal(decision.status, 'correct', `${label}: 正解選択肢の判定表示が不正です`)
-      assert.equal(usage.status, 'valid', `${label}: 正解選択肢の使い方が valid ではありません`)
-      assert.ok(contains(correctChoiceReason, item.sentence.en), `${label}: 正解選択肢の根拠に完成文がありません`)
-      assert.match(correctChoiceReason, /正解は一つ/u, `${label}: 正解選択肢に唯一性の説明がありません`)
-      correctChoiceReasonCount += 1
-      continue
-    }
-
-    const guidance = grammarChoiceGuidanceFor(item, choice)
-    assert.ok(guidance, `${label}: 誤答「${choice}」の使い方がありません`)
-    const mismatch = grammarChoiceMismatchExplanationFor(item, choice)
-    assert.ok(mismatch.length >= 24, `${label}: 誤答「${choice}」がこの文で違う理由が短すぎます`)
-    assert.ok(contains(mismatch, choice), `${label}: 誤答理由に選択肢「${choice}」がありません`)
-    assert.ok(contains(mismatch, item.answer), `${label}: 誤答理由に正答「${item.answer}」がありません`)
-    assert.ok(contains(mismatch, withoutTerminal(item.sentence.ja)), `${label}: 誤答理由に目標の意味がありません`)
-    choiceMismatchCount += 1
+// 答え合わせの選択肢解説は、正解・誤答とも問題ごとに書いた説明を出す（並び替え問題は選択肢がない）。
+for (const item of GRAMMAR_PRACTICE.filter((candidate) => candidate.questionType !== 'word-order')) {
+  const label = `文法 ${item.id}`
+  const notes = item.choices.map((choice) => grammarChoiceNoteFor(item, choice))
+  assert.equal(new Set(notes).size, notes.length, `${label}: 別々の選択肢に同じ解説を使っています`)
+  for (const [index, choice] of item.choices.entries()) {
+    const note = notes[index]
+    assert.ok(note.length >= 12, `${label}: 選択肢「${choice}」の解説がないか短すぎます`)
+    assert.match(note, /[ぁ-んァ-ヶ一-龠]/u, `${label}: 選択肢「${choice}」の解説が日本語ではありません`)
+    assert.doesNotMatch(note, TEMPLATE_PHRASES, `${label}: 選択肢「${choice}」の解説に決まり文句の枠が残っています`)
+    choiceNoteCount += 1
+    if (choice === item.answer) correctChoiceNoteCount += 1
   }
 }
 
@@ -159,7 +99,6 @@ for (const item of GRAMMAR) {
 // 1問だけの規則は、その問題文に当てはめて書くので、正解の語が必ず入る。
 const ruleUseCount = new Map()
 for (const item of GRAMMAR_PRACTICE) ruleUseCount.set(item.explain, (ruleUseCount.get(item.explain) ?? 0) + 1)
-const TEMPLATE_PHRASES = /英語の手掛かり|適用する規則|したがって、空所は|この条件を満たすのは|正解は一つに決まる|この手掛かりと規則を/u
 for (const item of GRAMMAR_PRACTICE) {
   const label = `文法 ${item.id}`
   const ruleExplanation = grammarRuleExplanationFor(item)
@@ -173,20 +112,20 @@ for (const item of GRAMMAR_PRACTICE) {
 
 assert.equal(examQuestionCount, 450, '入試型の問題別焦点監査が450問に届いていません')
 assert.equal(examFocuses.size, 260, '入試型の問われ方260種類を全て監査できていません')
+const choiceQuestions = GRAMMAR_PRACTICE.filter((item) => item.questionType !== 'word-order')
 assert.equal(ruleExplanationCount, GRAMMAR_PRACTICE.length)
-assert.equal(choiceMismatchCount, GRAMMAR.length * 3)
-assert.equal(allChoiceReasonCount, GRAMMAR.length * 4)
-assert.equal(correctChoiceReasonCount, GRAMMAR.length)
+assert.equal(choiceNoteCount, choiceQuestions.reduce((sum, item) => sum + item.choices.length, 0))
+assert.equal(correctChoiceNoteCount, choiceQuestions.length)
 assert.equal(uniqueAnswerCount, GRAMMAR.length)
 assert.equal(meaningCueQuestionCount + formOnlyQuestionCount, GRAMMAR.length)
 
 const neverImperatives = GRAMMAR.filter((item) => item.examFocus === 'never-imperative')
 assert.equal(neverImperatives.length, 2, 'Neverを使う命令文の監査対象が変化しました')
 for (const item of neverImperatives) {
-  const explanation = grammarQuestionExplanationFor(item)
-  assert.match(explanation, /Never＋動詞の原形/)
-  assert.match(explanation, /決して/)
-  assert.match(explanation, /Don’t/)
+  const note = grammarChoiceNoteFor(item, 'Never')
+  assert.match(note, /Never＋動詞の原形/)
+  assert.match(note, /決して/)
+  assert.match(grammarRuleExplanationFor(item), /Don’t/)
 }
 
 // 文頭の空所に複数の命令表現を並べると、英文だけなら複数解になり得る。
@@ -225,23 +164,25 @@ for (const headword of ['always', 'please']) {
   assert.ok(entries.some((word) => String(word.level) === '5'), `${headword}: 5級語として収録されていません`)
 }
 
+// 取り違えやすい問題で、決め手の説明が選択肢解説から消えていないか。
 const examById = new Map(GRAMMAR.map((item) => [item.id, item]))
 const focusRegressionCases = [
-  ['gr_exam_eiken_2_comparison_advanced_2_007', /even.*「さらに」|「さらに」.*even/u],
-  ['gr_exam_university_pre1_noun_clause_2_009', /That.*名詞節|名詞節.*That/u],
-  ['gr_exam_university_1_not_until_inversion_004', /did＋主語＋動詞の原形/u],
-  ['gr_exam_eiken_4_have_to_004', /does not.*原形 have/u],
-  ['gr_exam_university_1_degree_adverb_008', /remain.*連結動詞/u],
-  ['gr_exam_university_2_perfect_passive_006', /過去の基準時.*already/u],
-  ['gr_exam_university_pre1_mandative_010', /that 節.*原形.*受動態/u],
-  ['gr_exam_university_1_degree_adverb_009', /ほとんど.*barely/u],
-  ['gr_exam_university_1_degree_adverb_002', /chance.*限定詞 no/u],
-  ['gr_exam_eiken_2_conjunction_advanced_2_010', /even if.*備えの目的を表さない/u],
+  ['gr_exam_eiken_2_comparison_advanced_2_007', 'even', /比較級 longer を前から強めて/u],
+  ['gr_exam_university_pre1_noun_clause_2_009', 'That', /文の主語にするので That/u],
+  ['gr_exam_university_1_not_until_inversion_004', 'Aya', /did の後ろには主語 Aya を置き、原形 understand/u],
+  ['gr_exam_eiken_4_have_to_004', 'have', /does not の後ろは原形/u],
+  ['gr_exam_university_1_degree_adverb_008', 'unchanged', /remained の補語になる形容詞/u],
+  ['gr_exam_university_2_perfect_passive_006', 'already', /had already been＋過去分詞/u],
+  ['gr_exam_university_pre1_mandative_010', 'be', /原形の be を使って be kept/u],
+  ['gr_exam_university_1_degree_adverb_009', 'barely', /かろうじて・ほとんど〜ない/u],
+  ['gr_exam_university_1_degree_adverb_002', 'no', /名詞 chance の前に置いて打ち消すのは no/u],
+  ['gr_exam_eiken_2_conjunction_advanced_2_010', 'even if', /備える意味にならない/u],
 ]
-for (const [id, expected] of focusRegressionCases) {
+for (const [id, choice, expected] of focusRegressionCases) {
   const item = examById.get(id)
   assert.ok(item, `${id}: 監査対象がありません`)
-  assert.match(grammarExamFocusExplanationFor(item), expected, `${id}: 問われ方固有の説明が後退しました`)
+  assert.ok(item.choices.includes(choice), `${id}: 選択肢「${choice}」がありません`)
+  assert.match(grammarChoiceNoteFor(item, choice), expected, `${id}: 選択肢「${choice}」の決め手の説明が後退しました`)
 }
 
 const [grammarQuizSource, diagnosticSource, choiceExplanationsSource, diagnosticQuestionsSource] = await Promise.all([
@@ -259,18 +200,17 @@ assert.match(diagnosticQuestionsSource, /explain: grammarRuleExplanationFor\(ite
 assert.match(diagnosticSource, /data-diagnostic-grammar-meaning/)
 assert.match(diagnosticSource, /item\.promptJa && item\.meaningCueRequired/)
 assert.match(diagnosticSource, /<GrammarChoiceExplanations/)
-assert.match(choiceExplanationsSource, /選択肢解説（3択すべて）/)
+assert.match(choiceExplanationsSource, /選択肢解説（\$\{choices\.length\}択すべて）/)
 assert.match(choiceExplanationsSource, /choices\.map/)
-assert.match(choiceExplanationsSource, /data-choice-correct/)
-assert.match(choiceExplanationsSource, /grammarChoiceExplanationFor/)
+assert.match(choiceExplanationsSource, /<ChoiceExplanations/)
+assert.match(choiceExplanationsSource, /grammarChoiceNoteFor\(item, choice\)/)
 
 console.log('✅ 英文法の全解説監査OK')
 console.log(`  読んで学ぶ文法レッスン: ${GRAMMAR_LESSONS.length}/${GRAMMAR_LESSONS.length}（形・判断・例文・注意点）`)
-console.log(`  問題別の正答根拠: ${GRAMMAR.length}/${GRAMMAR.length}`)
 console.log(`  問題・4択・答えの一意性: ${uniqueAnswerCount}/${GRAMMAR.length}`)
-console.log(`  入試型の問われ方固有の決め手: ${examQuestionCount}/${examQuestionCount}（${examFocuses.size}種類）`)
+console.log(`  入試型の問われ方: ${examQuestionCount}問（${examFocuses.size}種類）`)
 console.log(`  意味・構造の取り違え回帰: ${focusRegressionCases.length}/${focusRegressionCases.length}`)
-console.log(`  正解を含む選択肢別の根拠: ${allChoiceReasonCount}/${GRAMMAR.length * 4}（正解${correctChoiceReasonCount}・誤答${choiceMismatchCount}）`)
+console.log(`  正解を含む選択肢解説: ${choiceNoteCount}件（正解${correctChoiceNoteCount}・誤答${choiceNoteCount - correctChoiceNoteCount}）`)
 console.log(`  解答前の和訳: 意味判断${meaningCueQuestionCount}問・語形のみ非表示${formOnlyQuestionCount}問`)
 console.log(`  命令文の先頭語競合: ${imperativeOpenerCollisionCount}件`)
 console.log(`  規則ごとの解説: ${ruleExplanationCount}/${GRAMMAR_PRACTICE.length}（決まり文句の枠なし）`)

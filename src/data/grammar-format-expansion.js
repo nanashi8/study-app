@@ -19,7 +19,6 @@ const choiceItem = (questionType, [
   answer,
   ja,
   explain,
-  choiceGuidance,
 ]) => {
   const en = q.replace('___', answer)
   return Object.freeze({
@@ -34,9 +33,6 @@ const choiceItem = (questionType, [
     sentence: Object.freeze({ en, ja }),
     variationGroup: `format:${questionType}:${id}`,
     formatSource: 'balanced-question-types',
-    ...(choiceGuidance
-      ? { choiceGuidance: Object.freeze({ ...choiceGuidance }) }
-      : {}),
   })
 }
 
@@ -56,7 +52,7 @@ const orderItem = ([id, level, topic, en, ja, explain]) => Object.freeze({
 
 const CHOICE_ROWS = [
   // 5級
-  ['gr_format_choice_5_01', '5', '一般動詞・3単現', 'My brother ___ soccer every Saturday.', ['plays', 'play', 'playing', 'played'], 'plays', '弟は毎週土曜日にサッカーをします。', '主語 My brother は3人称単数で、習慣を表す現在形なので plays とする。'],
+  ['gr_format_choice_5_01', '5', '一般動詞・3単現', 'My brother ___ soccer every Saturday.', ['plays', 'play', 'playing', 'is play'], 'plays', '弟は毎週土曜日にサッカーをします。', '主語 My brother は3人称単数で、習慣を表す現在形なので plays とする。'],
   ['gr_format_choice_5_02', '5', '指示語', '___ these your notebooks?', ['Are', 'Is', 'Am', 'Do'], 'Are', 'これらはあなたのノートですか。', '主語 these は複数で、名詞 notebooks と be動詞で結ぶ疑問文なので Are を使う。'],
   ['gr_format_choice_5_03', '5', 'be動詞', 'Emi and I ___ classmates.', ['are', 'is', 'am', 'be'], 'are', 'エミと私は同級生です。', 'Emi and I は二人を表す複数主語なので、be動詞は are になる。'],
   ['gr_format_choice_5_04', '5', '助動詞 can', 'My father can ___ dinner tonight.', ['cook', 'cooks', 'cooking', 'cooked'], 'cook', '父は今夜夕食を作れます。', '助動詞 can の直後には主語にかかわらず動詞原形 cook を置く。'],
@@ -84,9 +80,7 @@ const CHOICE_ROWS = [
   ['gr_format_choice_pre2_05', 'pre2', '使役・知覚', 'The coach made us ___ the plan again.', ['check', 'to check', 'checking', 'checked'], 'check', 'コーチは私たちに計画をもう一度確認させました。', 'make + 人 + 動詞原形で「人に〜させる」となるため check を使う。'],
 
   // 2級
-  ['gr_format_choice_2_01', '2', '仮定法過去完了', 'If we had left earlier, we ___ the train.', ['would have caught', 'will catch', 'caught', 'would catch'], 'would have caught', 'もっと早く出ていたら、その電車に間に合っていたでしょう。', '過去の事実に反する仮定なので、帰結は would have + 過去分詞になる。', {
-    caught: 'caught は catch の過去形・過去分詞で、We caught the train. のように実際に起きた過去の出来事を述べるときに使います。',
-  }],
+  ['gr_format_choice_2_01', '2', '仮定法過去完了', 'If we had left earlier, we ___ the train.', ['would have caught', 'will catch', 'caught', 'would catch'], 'would have caught', 'もっと早く出ていたら、その電車に間に合っていたでしょう。', '過去の事実に反する仮定なので、帰結は would have + 過去分詞になる。'],
   ['gr_format_choice_2_02', '2', '倒置', 'Only then ___ the team understand the risk.', ['did', 'the team did', 'was', 'has'], 'did', 'その時になって初めて、チームは危険を理解しました。', 'Only + 副詞が文頭に出たため、主節を did + 主語 + 動詞原形の倒置にする。'],
   ['gr_format_choice_2_03', '2', '強調構文', 'It was the final interview ___ changed her decision.', ['that', 'what', 'where', 'whom'], 'that', '彼女の決定を変えたのは最後の面接でした。', 'It was ... that 〜 の強調構文で the final interview を焦点化する。'],
   ['gr_format_choice_2_04', '2', '関係代名詞 whose', 'We met a researcher ___ work influenced the policy.', ['whose', 'who', 'whom', 'which'], 'whose', '私たちは、その研究が政策に影響した研究者に会いました。', 'researcher と work の所有関係を表すため、関係代名詞 whose を使う。'],
@@ -96,21 +90,15 @@ const CHOICE_ROWS = [
   ['gr_format_choice_pre1_01', 'pre1', '倒置', 'No sooner had the speech ended ___ questions began.', ['than', 'when', 'that', 'then'], 'than', '演説が終わるやいなや質問が始まりました。', 'No sooner had S done than ... の固定した倒置構文なので than を使う。'],
   ['gr_format_choice_pre1_02', 'pre1', '複合関係詞', '___ needs the data may download it.', ['Whoever', 'Whomever', 'Whatever', 'However'], 'Whoever', 'そのデータを必要とする人は誰でもダウンロードできます。', '後ろの節で主語となり「〜する人は誰でも」を表す Whoever が入る。'],
   ['gr_format_choice_pre1_03', 'pre1', '独立分詞構文', 'The meeting ___ over, everyone left the room.', ['being', 'was', 'is', 'been'], 'being', '会議が終わったので、全員が部屋を出ました。', '主節と異なる主語 The meeting を持つ独立分詞構文なので being を使う。'],
-  ['gr_format_choice_pre1_04', 'pre1', '仮定法応用', 'It is vital that every record ___ preserved.', ['be', 'is', 'was', 'being'], 'be', 'すべての記録が保存されることが極めて重要です。', 'vital の that 節では仮定法現在の動詞原形を用い、受動なので be preserved とする。'],
-  ['gr_format_choice_pre1_05', 'pre1', '省略', 'Though ___ by the result, she continued the study.', ['disappointed', 'she disappointed', 'disappointing', 'was disappointed'], 'disappointed', '結果に落胆したものの、彼女は研究を続けました。', 'Though she was disappointed の主語と be動詞を省略し、過去分詞だけを残す。', {
-    'she disappointed': 'she disappointed ... は「彼女が…を落胆させた」という主語＋他動詞の節で、後ろに落胆させた相手を置くときに使います。',
-  }],
+  ['gr_format_choice_pre1_04', 'pre1', '仮定法応用', 'It is vital that every record ___ preserved.', ['be', 'been', 'to be', 'being'], 'be', 'すべての記録が保存されることが極めて重要です。', 'vital の that 節では仮定法現在の動詞原形を用い、受動なので be preserved とする。'],
+  ['gr_format_choice_pre1_05', 'pre1', '省略', 'Though ___ by the result, she continued the study.', ['disappointed', 'she disappointed', 'disappointing', 'was disappointed'], 'disappointed', '結果に落胆したものの、彼女は研究を続けました。', 'Though she was disappointed の主語と be動詞を省略し、過去分詞だけを残す。'],
 
   // 1級
-  ['gr_format_choice_1_01', '1', '倒置・強調', 'Not until the audit ended ___ the error become clear.', ['did', 'the error did', 'was', 'had'], 'did', '監査が終わって初めて、その誤りが明らかになりました。', 'Not until 節が文頭に出たため、主節を did + 主語 + 動詞原形の倒置にする。', {
-    'the error did': 'the error did become clear は「その誤りは確かに明らかになった」と過去の肯定を強調する通常語順で使います。',
-  }],
+  ['gr_format_choice_1_01', '1', '倒置・強調', 'Not until the audit ended ___ the error become clear.', ['did', 'the error did', 'was', 'does'], 'did', '監査が終わって初めて、その誤りが明らかになりました。', 'Not until 節が文頭に出たため、主節を did + 主語 + 動詞原形の倒置にする。'],
   ['gr_format_choice_1_02', '1', '仮定法・語法', 'Were the policy ___ fail, the council would revise it.', ['to', 'will', 'should have', 'for'], 'to', '万一その政策が失敗するなら、議会は改訂するでしょう。', 'Were S to do は if を省略した仮定法の倒置で、可能性の低い未来を表す。'],
   ['gr_format_choice_1_03', '1', '高度語法', 'Scarcely had the file been released ___ doubts appeared.', ['when', 'than', 'that', 'while'], 'when', 'そのファイルが公開されるとすぐに疑念が生じました。', 'Scarcely had S done when ... で「〜するとすぐに」を表す固定構文になる。'],
   ['gr_format_choice_1_04', '1', '主語と動詞の一致', 'Many a promising reform ___ failed without local support.', ['has', 'have', 'are', 'were'], 'has', '多くの有望な改革が地域の支持なしに失敗してきました。', 'many a + 単数名詞は意味が複数でも文法上は単数扱いなので has を使う。'],
-  ['gr_format_choice_1_05', '1', '強調・倒置', 'Little ___ the public know how the data had been altered.', ['did', 'the public did', 'was', 'had'], 'did', 'データがどう改変されたかを一般の人々はほとんど知りませんでした。', '否定的な Little が文頭に出たため、主節を did + 主語 + 動詞原形に倒置する。', {
-    'the public did': 'the public did know ... は「一般の人々は確かに知っていた」と過去の肯定を強調する通常語順で使います。',
-  }],
+  ['gr_format_choice_1_05', '1', '強調・倒置', 'Little ___ the public know how the data had been altered.', ['did', 'the public did', 'was', 'had'], 'did', 'データがどう改変されたかを一般の人々はほとんど知りませんでした。', '否定的な Little が文頭に出たため、主節を did + 主語 + 動詞原形に倒置する。'],
 ]
 
 const ORDER_ROWS = [
@@ -173,23 +161,16 @@ const USAGE_ROWS = [
   ['gr_format_usage_5_05', '5', '一般動詞・3単現', 'Tom ___ his teeth before bed.', ['brushes', 'opens', 'carries', 'visits'], 'brushes', 'トムは寝る前に歯を磨きます。', 'brush one’s teeth が「歯を磨く」の自然な語の組み合わせである。'],
 
   // 4級
-  ['gr_format_usage_4_01', '4', '未来表現', 'We will ___ a picnic if it is sunny.', ['have', 'do', 'make', 'take'], 'have', '晴れたら私たちはピクニックをします。', 'have a picnic で「ピクニックをする」。行事を行う have の語法を使う。'],
-  ['gr_format_usage_4_02', '4', '過去形', 'My aunt ___ me a useful book.', ['gave', 'said', 'told', 'borrowed'], 'gave', '叔母は私に役立つ本をくれました。', 'give + 人 + 物で「人に物を与える」。me と a book の二つを目的語に取る。', {
-    said: 'said は say something to someone または said that ... の形で、言った内容を目的語にするときに使います。',
-    told: 'told は tell someone something の形で、told me a story のように人へ情報や物語を伝えたときに使います。',
-  }],
+  ['gr_format_usage_4_01', '4', '未来表現', 'We will ___ a picnic if it is sunny.', ['have', 'do', 'make', 'play'], 'have', '晴れたら私たちはピクニックをします。', 'have a picnic で「ピクニックをする」。行事を行う have の語法を使う。'],
+  ['gr_format_usage_4_02', '4', '過去形', 'My aunt ___ me a useful book.', ['gave', 'said', 'told', 'borrowed'], 'gave', '叔母は私に役立つ本をくれました。', 'give + 人 + 物で「人に物を与える」。me と a book の二つを目的語に取る。'],
   ['gr_format_usage_4_03', '4', '不定詞', 'Please ___ care of this plant.', ['take', 'make', 'do', 'get'], 'take', 'この植物の世話をしてください。', 'take care of ... で「〜の世話をする」という固定表現になる。'],
   ['gr_format_usage_4_04', '4', '前置詞', 'I am looking ___ my lost key.', ['for', 'at', 'after', 'up'], 'for', '私はなくした鍵を探しています。', 'look for ... は「〜を探す」。look at や look after とは目的が異なる。'],
   ['gr_format_usage_4_05', '4', '過去形', 'The train ___ at nine yesterday.', ['arrived', 'reached', 'visited', 'entered'], 'arrived', 'その電車は昨日9時に到着しました。', 'arrive は自動詞で、この文では目的語を取らず時刻 at nine と結び付く。'],
 
   // 3級
-  ['gr_format_usage_3_01', '3', '現在完了', 'She has ___ a cold since Monday.', ['had', 'caught', 'taken', 'made'], 'had', '彼女は月曜日からずっと風邪をひいています。', 'have a cold で風邪の状態を表し、since と現在完了で継続を示す。', {
-    caught: 'caught a cold は「風邪をひいた」という状態の始まりを表し、She caught a cold on Monday. のように時点と組み合わせます。',
-  }],
+  ['gr_format_usage_3_01', '3', '現在完了', 'She has ___ a cold since Monday.', ['had', 'caught', 'taken', 'made'], 'had', '彼女は月曜日からずっと風邪をひいています。', 'have a cold で風邪の状態を表し、since と現在完了で継続を示す。'],
   ['gr_format_usage_3_02', '3', '受動態', 'This tool is used ___ cutting paper.', ['for', 'by', 'to', 'with'], 'for', 'この道具は紙を切るために使われます。', 'be used for + 動名詞で「〜するために使われる」と用途を表す。'],
-  ['gr_format_usage_3_03', '3', '不定詞応用', 'My teacher ___ me to check the source.', ['advised', 'said', 'explained', 'spoke'], 'advised', '先生は私に出典を確認するよう助言しました。', 'advise + 人 + to do で「人に〜するよう助言する」。said はこの形を取らない。', {
-    said: 'said は said that ... または said something to me の形で、発言内容を伝えるときに使い、人 + to do を直接には続けません。',
-  }],
+  ['gr_format_usage_3_03', '3', '不定詞応用', 'My teacher ___ me to check the source.', ['advised', 'said', 'explained', 'spoke'], 'advised', '先生は私に出典を確認するよう助言しました。', 'advise + 人 + to do で「人に〜するよう助言する」。said はこの形を取らない。'],
   ['gr_format_usage_3_04', '3', '動詞と不定詞・動名詞', 'We look forward to ___ from you.', ['hearing', 'hear', 'to hear', 'heard'], 'hearing', 'ご連絡を楽しみにしています。', 'look forward to の to は前置詞なので、後ろには動名詞 hearing を置く。'],
   ['gr_format_usage_3_05', '3', '前置詞', 'The rain prevented us ___ playing outside.', ['from', 'of', 'to', 'for'], 'from', '雨のため私たちは外で遊べませんでした。', 'prevent + 人 + from doing で「人が〜するのを妨げる」と表す。'],
 
@@ -203,7 +184,7 @@ const USAGE_ROWS = [
   // 2級
   ['gr_format_usage_2_01', '2', '無生物主語', 'The policy gave ___ to public concern.', ['rise', 'raise', 'growth', 'up'], 'rise', 'その政策は市民の懸念を生みました。', 'give rise to ... で「〜を引き起こす」。rise はここでは名詞として使われる。'],
   ['gr_format_usage_2_02', '2', '接続詞', 'We should distinguish facts ___ opinions.', ['from', 'with', 'by', 'for'], 'from', '私たちは事実と意見を区別すべきです。', 'distinguish A from B で「AとBを区別する」と二項を結ぶ。'],
-  ['gr_format_usage_2_03', '2', '無生物主語', 'The plan is likely to ___ resistance.', ['meet', 'see', 'take', 'carry'], 'meet', 'その計画は反対に遭う可能性が高いです。', 'meet resistance で「抵抗・反対に遭う」という自然な語の結び付きになる。'],
+  ['gr_format_usage_2_03', '2', '無生物主語', 'The plan is likely to ___ resistance.', ['meet', 'look', 'take', 'carry'], 'meet', 'その計画は反対に遭う可能性が高いです。', 'meet resistance で「抵抗・反対に遭う」という自然な語の結び付きになる。'],
   ['gr_format_usage_2_04', '2', '前置詞', 'The new system places a burden ___ small schools.', ['on', 'at', 'to', 'by'], 'on', '新しい制度は小規模校に負担をかけます。', 'place a burden on ... で「〜に負担をかける」と表す。'],
   ['gr_format_usage_2_05', '2', '接続詞', 'His explanation accounts ___ the difference.', ['for', 'to', 'of', 'with'], 'for', '彼の説明によってその違いを説明できます。', 'account for ... で「〜を説明する・〜の割合を占める」となる。'],
 
@@ -218,8 +199,8 @@ const USAGE_ROWS = [
   ['gr_format_usage_1_01', '1', '高度語法', 'The evidence does not ___ close examination.', ['withstand', 'prevent', 'avoid', 'refuse'], 'withstand', 'その証拠は綿密な検討に耐えません。', 'withstand scrutiny / examination で「精査に耐える」という語の結び付きになる。'],
   ['gr_format_usage_1_02', '1', '高度語法', 'The decision is contingent ___ future funding.', ['on', 'to', 'for', 'with'], 'on', 'その決定は今後の資金次第です。', 'be contingent on ... で「〜を条件とする・〜次第である」と表す。'],
   ['gr_format_usage_1_03', '1', '高度語法', 'The article ___ light on a hidden cost.', ['sheds', 'spends', 'borrows', 'divides'], 'sheds', 'その記事は隠れた費用を明らかにします。', 'shed light on ... で「〜を明らかにする・解明する」という固定表現になる。'],
-  ['gr_format_usage_1_04', '1', '高度語法', 'The measure is intended to ___ accountability.', ['enhance', 'rise', 'grow', 'happen'], 'enhance', 'その措置は説明責任を高めることを意図しています。', 'enhance accountability で「説明責任を高める」という自然な政策表現になる。'],
-  ['gr_format_usage_1_05', '1', '高度語法', 'The claim is open ___ challenge.', ['to', 'for', 'by', 'with'], 'to', 'その主張には異議を唱える余地があります。', 'be open to challenge で「異議を受ける余地がある」と表す。'],
+  ['gr_format_usage_1_04', '1', '高度語法', 'The measure is intended to ___ accountability.', ['enhance', 'rise', 'occur', 'happen'], 'enhance', 'その措置は説明責任を高めることを意図しています。', 'enhance accountability で「説明責任を高める」という自然な政策表現になる。'],
+  ['gr_format_usage_1_05', '1', '高度語法', 'The claim is open ___ challenge.', ['to', 'at', 'by', 'with'], 'to', 'その主張には異議を唱える余地があります。', 'be open to challenge で「異議を受ける余地がある」と表す。'],
 ]
 
 export const GRAMMAR_FORMAT_EXPANSION = Object.freeze([

@@ -7,12 +7,8 @@ import {
   pickDistractors,
 } from '../src/data/vocab.js'
 import { quizMeaning, quizMeaningKey } from '../src/data/compact.js'
-import {
-  GRAMMAR,
-  grammarChoiceGuidanceFor,
-  grammarChoiceUsageFor,
-} from '../src/data/grammar.js'
-import { grammarChoiceExplanationFor } from '../src/lib/grammarQuestionExplanations.js'
+import { GRAMMAR } from '../src/data/grammar.js'
+import { grammarChoiceNoteFor } from '../src/lib/grammarChoiceNotes.js'
 import { PHRASES } from '../src/data/phrases.js'
 import { pickPhraseDistractors } from '../src/lib/session.js'
 import {
@@ -94,16 +90,11 @@ test('診断の全基準問題・読解バンク・生成3フォームは解説�
   }
 })
 
-test('全英文法の13,800選択肢は正答理由または誤答の使える場面・不成立理由を日本語で説明する', () => {
+test('全英文法の13,800選択肢は、正解の理由または誤答がこの文に入らない理由を日本語で説明する', () => {
   let count = 0
   for (const item of GRAMMAR) {
     for (const choice of item.choices) {
-      const usage = grammarChoiceUsageFor(item, choice)
-      const reason = grammarChoiceExplanationFor(item, choice)
-      assert.ok(['valid', 'invalid'].includes(usage?.status), `${item.id}: ${choice}`)
-      assert.match(usage.summary, /[\u3040-\u30ff\u3400-\u9fff]/, `${item.id}: ${choice}`)
-      assert.match(reason, /[\u3040-\u30ff\u3400-\u9fff]/, `${item.id}: ${choice}`)
-      if (choice !== item.answer) assert.ok(grammarChoiceGuidanceFor(item, choice))
+      assert.match(grammarChoiceNoteFor(item, choice), /[\u3040-\u30ff\u3400-\u9fff]/, `${item.id}: ${choice}`)
       count += 1
     }
   }
@@ -134,6 +125,6 @@ test('主要テストは正答後に、その問題の学習ポイントを表�
     new URL('../src/components/GrammarChoiceExplanations.jsx', import.meta.url),
     'utf8',
   )
-  assert.match(grammarChoicesSource, /data-grammar-choice-guidance/)
-  assert.match(grammarChoicesSource, /data-choice-correct/)
+  assert.match(grammarChoicesSource, /<ChoiceExplanations/)
+  assert.match(grammarChoicesSource, /grammarChoiceNoteFor\(item, choice\)/)
 })

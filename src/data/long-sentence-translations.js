@@ -449,19 +449,19 @@ const RAW_LONG_SENTENCE_TRANSLATIONS = Object.freeze({
     step('C', 'black.', '黒いです', 'the other の色を置き、第二節後半を完成します。'),
   ),
   curr_syn_gr_auto_pre1_agreement_001: guide(
-    'A series of reviews を四語の一つの単数Sとして保ち、V→不定詞内V→O→V→Oへ進みます。',
-    step('S', 'A series of reviews', '一連の審査が', '四語の名詞句全体を一役割の主語Sとして保ちます。中心語 series が単数なので後ろは is になります。', '', {
+    'One of the reviews を四語の一つの単数Sとして保ち、V→不定詞内V→O→V→Oへ進みます。',
+    step('S', 'One of the reviews', '審査の1つが', '四語の名詞句全体を一役割の主語Sとして保ちます。中心語は of の前の One（1つ）で単数なので、後ろは is になります。', '', {
       specialGrammar: ['agreement'],
-      agreementBinding: { type: 'head-noun-agreement', controller: 'series', number: 'singular' },
+      agreementBinding: { type: 'head-noun-agreement', controller: 'One', number: 'singular' },
     }),
     step('V', 'is expected', '期待されています（内容は次へ）', '受動態の主節動詞です。'),
     step('V', 'to help', '助けることが期待されています（誰を何にかは次へ）', '期待される具体的な動作です。後ろのO→V→Oを読み終えるまで内容を保留します。', 'Cの不定詞', {
       specialGrammar: ['infinitive'],
-      infinitiveBinding: { type: 'passive-verb-complement', governor: 'is expected', semanticSubject: 'A series of reviews' },
+      infinitiveBinding: { type: 'passive-verb-complement', governor: 'is expected', semanticSubject: 'One of the reviews' },
     }),
     step('O', 'the committee', '委員会が（次の動作をするのを）', 'help の目的語で、revise の意味上の主語です。', 'Cの不定詞'),
     step('V', 'revise', '修正すること（対象は次へ）', 'help O do の原形動詞です。目的語が後ろに来るため、ここでは格を閉じません。', 'Cの不定詞'),
-    step('O', 'the proposal.', '委員会がその提案を修正するのに役立つと期待されています', 'revise の対象まで読んで、reviews が委員会の修正に役立つという to help 以下の内容を is expected へ受け直します。', 'Cの不定詞', {
+    step('O', 'the proposal.', '委員会がその提案を修正するのに役立つと期待されています', 'revise の対象まで読んで、審査の1つが委員会の修正に役立つという to help 以下の内容を is expected へ受け直します。', 'Cの不定詞', {
       closureBinding: { type: 'infinitive-chain', opener: 'to help', governor: 'is expected', clause: 'to help the committee revise the proposal' },
     }),
   ),
@@ -510,19 +510,19 @@ const RAW_LONG_SENTENCE_TRANSLATIONS = Object.freeze({
     step('V', 'is.', '証拠でない', '省略された evidence を受けます。'),
   ),
   curr_syn_gr_auto_pre1_agreement_002: guide(
-    'A series of reviews を四語の一つの単数Sとして保ち、V→不定詞内V→O→V→Oへ進みます。',
-    step('S', 'A series of reviews', '一連の審査が', '四語の名詞句全体を一役割の主語Sとして保ちます。中心語 series が単数なので後ろは is になります。', '', {
+    'One of the reviews を四語の一つの単数Sとして保ち、V→不定詞内V→O→V→Oへ進みます。',
+    step('S', 'One of the reviews', '審査の1つが', '四語の名詞句全体を一役割の主語Sとして保ちます。中心語は of の前の One（1つ）で単数なので、後ろは is になります。', '', {
       specialGrammar: ['agreement'],
-      agreementBinding: { type: 'head-noun-agreement', controller: 'series', number: 'singular' },
+      agreementBinding: { type: 'head-noun-agreement', controller: 'One', number: 'singular' },
     }),
     step('V', 'is expected', '期待されています（内容は次へ）', '受動態の主節動詞です。'),
     step('V', 'to help', '助けることが期待されています（誰を何にかは次へ）', '期待される具体的な動作です。後ろのO→V→Oを読み終えるまで内容を保留します。', 'Cの不定詞', {
       specialGrammar: ['infinitive'],
-      infinitiveBinding: { type: 'passive-verb-complement', governor: 'is expected', semanticSubject: 'A series of reviews' },
+      infinitiveBinding: { type: 'passive-verb-complement', governor: 'is expected', semanticSubject: 'One of the reviews' },
     }),
     step('O', 'the research team', '研究チームが（次の動作をするのを）', 'help の目的語で、verify の意味上の主語です。', 'Cの不定詞'),
     step('V', 'verify', '検証すること（対象は次へ）', 'help O do の原形動詞です。目的語が後ろに来るため、ここでは格を閉じません。', 'Cの不定詞'),
-    step('O', 'the results.', '研究チームがその結果を検証するのに役立つと期待されています', 'verify の対象まで読んで、reviews が研究チームの検証に役立つという to help 以下の内容を is expected へ受け直します。', 'Cの不定詞', {
+    step('O', 'the results.', '研究チームがその結果を検証するのに役立つと期待されています', 'verify の対象まで読んで、審査の1つが研究チームの検証に役立つという to help 以下の内容を is expected へ受け直します。', 'Cの不定詞', {
       closureBinding: { type: 'infinitive-chain', opener: 'to help', governor: 'is expected', clause: 'to help the research team verify the results' },
     }),
   ),

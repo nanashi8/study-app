@@ -11,7 +11,7 @@ console.log(`  長文の追加問題: ${audit.readingPracticeQuestionCount}問�
 console.log(`  読解ルール: ${audit.readingRuleCount}種類`)
 console.log(`  文法の追加問題: ${audit.grammarFormatQuestionCount}問（${Object.entries(audit.grammarFormatTypeCounts).map(([type, count]) => `${type} ${count}`).join(' / ')}）`)
 console.log(`  級ごと: ${Object.entries(audit.grammarFormatLevelCounts).map(([level, count]) => `${level} ${count}`).join(' / ')}`)
-console.log(`  文法選択肢の用法解説: ${audit.grammarChoicePathCount}/${audit.grammarChoicePathCount}経路（うち誤答 ${audit.grammarWrongChoicePathCount}経路）`)
+console.log(`  文法選択肢の解説: ${audit.grammarChoicePathCount}件（うち誤答 ${audit.grammarWrongChoicePathCount}件）`)
 console.log(`  問題: ${audit.issues.length}件`)
 
 for (const issue of audit.issues.slice(0, 40)) {

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-09-16T20:58:11.187Z",
+  "auditedAt": "2026-09-16T22:08:05.038Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -12,7 +12,7 @@
     "quizItemCount": 16473,
     "storedAndGeneratedQuestionPathCount": 4506,
     "storedAndGeneratedChoicePathCount": 17608,
-    "overallContentSha256": "35c264a588e63ff4aaad42871a5afc13f748b738839f4489bc0f6fa78b861b82"
+    "overallContentSha256": "44814719507850429b89ac4d0996d17840da32a9d4d5cf6190dc77a83964e70c"
   },
   "completionCriteria": [
     "全18教材カテゴリのID・母数・重複・内容ハッシュが一致する",
@@ -103,7 +103,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "1b8b220f5e045a4ea9db3035b772c53c83b16813bd65b4ad55fb9c5df427f90f",
+    "sha256": "fa556e52c96a53cc68d240dd3e2f90ae4d1c12353c89cd8fdfef9579a74c619c",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -122,7 +122,8 @@
       "scripts/check-learning-links.mjs",
       "scripts/audit-learner-japanese.mjs",
       "src/lib/grammarQuestionExplanations.js",
-      "src/lib/grammarChoiceGuidance.js",
+      "src/lib/grammarChoiceNotes.js",
+      "src/data/grammar-choice-notes.js",
       "src/lib/reading-translation-audit.js",
       "src/lib/extendedReadingAudit.js",
       "src/lib/instructorExplanations.js",
@@ -183,7 +184,7 @@
       "tests/extended-reading.test.mjs",
       "tests/feature-upgrades.test.mjs",
       "tests/game-retirement.test.mjs",
-      "tests/grammar-choice-guidance.test.mjs",
+      "tests/grammar-choice-notes.test.mjs",
       "tests/grammar-deck.test.mjs",
       "tests/grammar-exam-patterns.test.mjs",
       "tests/grammar-explanation-completeness.test.mjs",
@@ -304,7 +305,7 @@
       "quizItemCount": 2104,
       "learningIdOrderSha256": "4de63b70fc6c4292e7a4921b2f862b540fc01b067911694285a0de29cf44ca51",
       "quizIdOrderSha256": "4de63b70fc6c4292e7a4921b2f862b540fc01b067911694285a0de29cf44ca51",
-      "contentSha256": "7f3db10cf94b19b8d223c7362c09ae5be4e499e01be75622daf79c66fac766b5",
+      "contentSha256": "b95e845e4ac5f615abaafc9c0e3f01106836ff21f2fdd0c3796082f536d7c104",
       "auditGateIds": [
         "inventory",
         "coreData",
@@ -330,7 +331,7 @@
       "quizItemCount": 3555,
       "learningIdOrderSha256": "7a85cde2891a803140edc98a66788612056c218c346ce1af2acc8d0b1b1fdb83",
       "quizIdOrderSha256": "7a85cde2891a803140edc98a66788612056c218c346ce1af2acc8d0b1b1fdb83",
-      "contentSha256": "f636555a652f50d0b231b8439abe66009d8ec8d89f89e619dc3647e99fe3649d",
+      "contentSha256": "d2eaa073b076457141b336132f5ab526b37fc74dbeea8050ff2196a0795eabd2",
       "auditGateIds": [
         "inventory",
         "coreData",
@@ -702,7 +703,7 @@
       "choiceCount": 13800,
       "generalRationaleCount": 3450,
       "choiceSpecificRationaleCount": 13800,
-      "questionSetSha256": "f5fb2a5c3c59c6118c15d27c75d5a67c357dc00c736f8b175bc6e0b600e76c3e",
+      "questionSetSha256": "f2049dbdd8df47508e4ba06e7751be9c3e1b132db1521bbbdefce8f337fc2b26",
       "result": "pass",
       "failureCount": 0,
       "failures": []
@@ -810,7 +811,7 @@
       "choiceCount": 252,
       "generalRationaleCount": 84,
       "choiceSpecificRationaleCount": 252,
-      "questionSetSha256": "c34835cfce8adbd9aa863af40e5577990b41d9d439bd2f394657f34cbb491928",
+      "questionSetSha256": "f491ce5b12bf0089c9d09d5f5ebbf676bb58e06a36215417b8c48352fc86699a",
       "result": "pass",
       "failureCount": 0,
       "failures": []
@@ -964,10 +965,10 @@
     "correctChoiceRationaleCount": 3450,
     "distractorRationaleCount": 10350,
     "answerPathCount": 17250,
-    "meaningCueBeforeAnswerCount": 2672,
-    "formOnlyTranslationAfterAnswerCount": 778,
+    "meaningCueBeforeAnswerCount": 2673,
+    "formOnlyTranslationAfterAnswerCount": 777,
     "uniqueDecisionFailureCount": 0,
-    "choiceUsageFailureCount": 0,
+    "choiceNoteFailureCount": 0,
     "imperativeOpenerCollisionCount": 0
   },
   "coverageNote": "合格は各カテゴリに列挙した機械監査の範囲を示す。選択肢別根拠は英文法13,800択、既存英語長文560択、語彙強化長文64択で全択監査し、他教材は questionBanks の generalRationaleCount と choiceSpecificRationaleCount を分けて記録する。"

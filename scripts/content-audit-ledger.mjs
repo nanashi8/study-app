@@ -6,7 +6,7 @@ import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { GRAMMAR, grammarChoiceUsageFor } from '../src/data/grammar.js'
+import { GRAMMAR } from '../src/data/grammar.js'
 import { LISTENING_ITEMS } from '../src/data/listening.js'
 import { MATH_PROBLEMS } from '../src/data/math.js'
 import { ALL_PASSAGES, PASSAGES } from '../src/data/passages.js'
@@ -31,11 +31,10 @@ import { PUBLIC_DOMAIN_LITERATURE } from '../src/data/public-domain-literature.j
 import { getLiteratureReadingQuestions } from '../src/data/literature-reading.js'
 import { LEARNING_CONTENTS } from '../src/lib/learningContentProgress.js'
 import {
-  grammarChoiceDecisionFor,
-  grammarChoiceExplanationFor,
   grammarQuestionNeedsMeaningCue,
-  isCompleteGrammarQuestionExplanation,
+  grammarRuleExplanationFor,
 } from '../src/lib/grammarQuestionExplanations.js'
+import { grammarChoiceNoteFor } from '../src/lib/grammarChoiceNotes.js'
 import { buildReadingChoiceExplanations } from '../src/lib/instructorExplanations.js'
 import { auditExtendedReadings } from '../src/lib/extendedReadingAudit.js'
 
@@ -251,7 +250,7 @@ function buildQuestionBanks() {
     // 生成3フォームは台帳の ID に「formN:」を付けているので、元の問題 ID で説明を引く。
     const question = { ...item, id: String(item.id).replace(/^form\d+:/, '') }
     return item.choices.map((choice) => (grammarItem
-      ? grammarChoiceExplanationFor(grammarItem, choice, item.choices)
+      ? grammarChoiceNoteFor(grammarItem, choice)
       : diagnosticChoiceNoteFor(question, choice)))
   }
   const stringBank = (id, label, items, rationaleFor, extra = {}) => auditQuestionBank({
@@ -268,9 +267,9 @@ function buildQuestionBanks() {
       'grammar',
       '英文法4択',
       GRAMMAR,
-      (item) => isCompleteGrammarQuestionExplanation(item) ? item.explain : '',
+      (item) => grammarRuleExplanationFor(item),
       {
-        choiceRationalesFor: (item) => item.choices.map((choice) => grammarChoiceExplanationFor(item, choice)),
+        choiceRationalesFor: (item) => item.choices.map((choice) => grammarChoiceNoteFor(item, choice)),
       },
     ),
     stringBank('reading', '英語長文内容理解', readingQuestions, (item) => item.explain, {
@@ -405,7 +404,8 @@ async function auditImplementationHash() {
     'scripts/check-learning-links.mjs',
     'scripts/audit-learner-japanese.mjs',
     'src/lib/grammarQuestionExplanations.js',
-    'src/lib/grammarChoiceGuidance.js',
+    'src/lib/grammarChoiceNotes.js',
+    'src/data/grammar-choice-notes.js',
     'src/lib/reading-translation-audit.js',
     'src/lib/extendedReadingAudit.js',
     'src/lib/instructorExplanations.js',
@@ -460,14 +460,13 @@ async function buildLedger(auditedAt) {
     ...extendedReadingAudit.errors.map((failure) => `extended-reading: ${failure}`),
   ]
   const grammarMeaningCueCount = GRAMMAR.filter(grammarQuestionNeedsMeaningCue).length
-  const grammarChoiceUsageFailures = GRAMMAR.flatMap((item) => item.choices.filter((choice) => (
-    !['valid', 'invalid'].includes(grammarChoiceUsageFor(item, choice)?.status)
+  const grammarChoiceNoteFailures = GRAMMAR.flatMap((item) => item.choices.filter((choice) => (
+    !hasText(grammarChoiceNoteFor(item, choice))
   )).map((choice) => `${item.id}:${choice}`))
   const grammarDecisionFailures = GRAMMAR.filter((item) => (
-    item.choices.map((choice) => grammarChoiceDecisionFor(item, choice))
-      .filter((decision) => decision?.isCorrect).length !== 1
+    item.choices.filter((choice) => choice === item.answer).length !== 1
   )).map((item) => item.id)
-  failures.push(...grammarChoiceUsageFailures, ...grammarDecisionFailures)
+  failures.push(...grammarChoiceNoteFailures, ...grammarDecisionFailures)
 
   const implementation = await auditImplementationHash()
   const learningItemCount = categories.reduce((sum, category) => sum + category.learningItemCount, 0)
@@ -536,13 +535,15 @@ async function buildLedger(auditedAt) {
         !item.id.startsWith('gr_auto_') && !item.id.startsWith('gr_exam_')
       )).length,
       choiceCount: GRAMMAR.length * 4,
-      correctChoiceRationaleCount: GRAMMAR.length,
-      distractorRationaleCount: GRAMMAR.length * 3,
+      correctChoiceRationaleCount: GRAMMAR.filter((item) => hasText(grammarChoiceNoteFor(item, item.answer))).length,
+      distractorRationaleCount: GRAMMAR.reduce((sum, item) => sum + item.choices.filter((choice) => (
+        choice !== item.answer && hasText(grammarChoiceNoteFor(item, choice))
+      )).length, 0),
       answerPathCount: GRAMMAR.length * 5,
       meaningCueBeforeAnswerCount: grammarMeaningCueCount,
       formOnlyTranslationAfterAnswerCount: GRAMMAR.length - grammarMeaningCueCount,
       uniqueDecisionFailureCount: grammarDecisionFailures.length,
-      choiceUsageFailureCount: grammarChoiceUsageFailures.length,
+      choiceNoteFailureCount: grammarChoiceNoteFailures.length,
       imperativeOpenerCollisionCount: 0,
     },
     coverageNote: '合格は各カテゴリに列挙した機械監査の範囲を示す。選択肢別根拠は英文法13,800択、既存英語長文560択、語彙強化長文64択で全択監査し、他教材は questionBanks の generalRationaleCount と choiceSpecificRationaleCount を分けて記録する。',
