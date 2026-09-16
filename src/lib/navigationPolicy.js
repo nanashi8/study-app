@@ -1,5 +1,5 @@
 // 途中までの回答・学習結果がある可能性の高い画面。
-// 共通ナビゲーションで別画面へ離れるときは、現在の永続進捗を
+// ここからメニューで「スタディアプリ ホーム」へ出るときは、現在の永続進捗を
 // QR／コードで持ち出すか本人に確認する。
 export const IN_PROGRESS_SCREENS = Object.freeze(new Set([
   'vocabStudy',
@@ -30,8 +30,12 @@ export const IN_PROGRESS_SCREENS = Object.freeze(new Set([
   'kanbunKundokuQuiz',
 ]))
 
+// 答えた分は1問ごとに端末へ保存されるので、メニューからほかの教材・記録を開くときは
+// 確認を挟まない。確認するのはスタディアプリ ホームへ出るときだけ。
 export function requiresProgressSaveConfirmation(currentScreen, targetScreen) {
-  return targetScreen !== currentScreen && IN_PROGRESS_SCREENS.has(currentScreen)
+  return targetScreen === 'portal'
+    && targetScreen !== currentScreen
+    && IN_PROGRESS_SCREENS.has(currentScreen)
 }
 
 const SESSION_REENTRY_SCREENS = new Set([
