@@ -299,37 +299,6 @@ export function buildMathFillInstructorExplanation(problem, step, selectedValues
   })
 }
 
-export function buildMathSolvedInstructorExplanation(problem) {
-  const stepReasons = list(problem?.steps?.map((step) => step.note), ' ')
-  return explanation({
-    answer: `最終答案は${quote(problem?.answer)}。単位や問いの形式まで含めて答える。`,
-    evidence: `途中の論理は次の順でつながる。${stepReasons} 各段が一つ前の式・条件から導けることを確認する。`,
-    trap: `最も注意したい誤りは次の点。${clean(problem?.pitfall)} 答えが出た後にも、この観点で検算する。`,
-    strategy: `${list(problem?.recall?.points, '。')}。解き終えたら、条件への代入・概算・単位の少なくとも一つで検算する。`,
-  })
-}
-
-export function buildDictationInstructorExplanation(item, result) {
-  const attempts = result?.wrongSelections ?? 0
-  return explanation({
-    answer: `正しい英文は${quote(item?.text)}。意味は${quote(item?.ja)}。`,
-    evidence: `この文の聞き取りの核は${quote(item?.focus)}。内容語だけでなく、主語・動詞・接続語を含む意味のまとまりで取る。`,
-    trap: attempts > 0
-      ? `${attempts}回迷った位置は、単語単体ではなく前後との結び付きが弱かった箇所。日本語順へ引っ張られず、英語の語順のまま区切る。`
-      : 'ノーミスでも、カードの形を覚えただけで終えず、音声だけから同じ語順を再現できるかを確認する。',
-    strategy: `英文を意味のまとまりで二、三か所に区切り、通常速度で聞く → 見ずに復唱する → ${quote(item?.focus)}を意識してもう一度聞く。`,
-  })
-}
-
-export function buildWritingInstructorExplanation(step, option, grammar) {
-  return explanation({
-    answer: `完成文は${quote(option?.text)}。${quote(option?.ja)}を、英語の基本語順で表している。`,
-    evidence: `${clean(grammar?.explanation)} この文では ${clean(option?.tip)}`,
-    trap: `この段階の条件は${quote(step?.constraint)}。日本語の語順だけで並べると、${quote(grammar?.pattern)}の核が崩れる。この文では${quote(option?.tip)}を外さない。`,
-    strategy: `①${quote(step?.prompt)}で文の役割を確認する ②${quote(grammar?.pattern)}の型を先に置く ③${quote(option?.tip)}を確認して残りの語をつなぐ ④完成文を見ずに同じ型でもう一文言う。`,
-  })
-}
-
 export function isCompleteInstructorExplanation(value) {
   return ['answer', 'evidence', 'trap', 'strategy'].every(
     (key) => (

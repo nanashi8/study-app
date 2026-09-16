@@ -182,7 +182,7 @@ const RAW_ITEMS = {
     ['If the new recycling program succeeds, the town will expand it to every neighborhood next year.', '新しいリサイクル計画が成功すれば、町は来年すべての地区へ拡大します。', '環境', 'ニュース', '条件節'],
     ['Some hospitals are using robots to deliver medicine, allowing nurses to focus more on patient care.', '一部の病院では薬を運ぶロボットを使い、看護師が患者のケアに集中できるようにしています。', '医療', '説明', '分詞構文'],
     ['The documentary showed how rising ocean temperatures are changing the behavior of several fish species.', 'そのドキュメンタリーは海水温の上昇が複数の魚種の行動をどう変えているか示しました。', '科学', '説明', '間接疑問'],
-    ['Applicants must submit two references before the company will arrange an online interview with its manager.', '応募者は会社が管理者とのオンライン面接を設定する前に、2通の推薦状を提出しなければなりません。', '仕事', '案内', '義務・時の節'],
+    ['Applicants must submit two references before the company arranges an online interview with its manager.', '応募者は会社が管理者とのオンライン面接を設定する前に、2通の推薦状を提出しなければなりません。', '仕事', '案内', '義務・時の節'],
     ['The professor canceled today’s lecture because a train delay prevented her from reaching campus on time.', '教授は電車の遅延で時間どおり大学に着けなかったため、今日の講義を休講にしました。', '教育', 'アナウンス', 'prevent 人 from'],
     ['Many consumers say they prefer local products, even when those products cost slightly more at the store.', '店で少し高くても地元の商品を好むと、多くの消費者が答えています。', 'ビジネス', '説明', '譲歩節'],
     ['The community center offers language classes designed for residents who recently moved to Japan with their families.', '地域センターは家族と最近来日した住民向けの語学講座を提供しています。', '地域', '案内', '過去分詞・関係節'],

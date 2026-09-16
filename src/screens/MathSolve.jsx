@@ -13,10 +13,7 @@ import { cx } from '../components/ui.jsx'
 import { Close, Check, ArrowRight, Lightbulb, Target } from '../components/Icons.jsx'
 import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { mathChoiceNoteFor } from '../data/math-choice-notes.js'
-import {
-  buildMathFillInstructorExplanation,
-  buildMathSolvedInstructorExplanation,
-} from '../lib/instructorExplanations.js'
+import { buildMathFillInstructorExplanation } from '../lib/instructorExplanations.js'
 
 // 誘導型の数学ソルバー。1問を「確認 → 穴埋め → 答え」で解き進める。
 //  ① recall  … 着眼点・公式を思い出し、方針を3択で確認
@@ -380,7 +377,7 @@ function Question({ q, noteKey, badge, sel, onChoose }) {
   )
 }
 
-// 解き終わり：最終解とつまずきポイント。
+// 解き終わり：答えと、解き方を1段ずつ、つまずきやすい点。
 function Solved({ problem }) {
   return (
     <div className="mt-4 space-y-3">
@@ -388,10 +385,41 @@ function Solved({ problem }) {
         <p className="mb-1 text-xs font-extrabold tracking-wide text-emerald-600">答え</p>
         <MathBlock tex={problem.answer} className="text-emerald-900 [&_.katex]:text-[1.4rem]" />
       </div>
-      <InstructorExplanation
-        explanation={buildMathSolvedInstructorExplanation(problem)}
-        renderText={(text) => <MathText>{text}</MathText>}
-      />
+      {/* 解き方を1段ずつ（何を求めるか・式・理由）と、つまずきやすい点を出す（決まり文句の4段解説は置かない）。 */}
+      <section className="rounded-2xl bg-white p-4 shadow-card" data-math-solution aria-label="解き方">
+        <p className="text-xs font-extrabold tracking-wide text-violet-500">解き方</p>
+        <ol className="mt-2 space-y-3">
+          {problem.steps.map((step, index) => (
+            <li key={index} className="flex gap-2.5">
+              <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-violet-100 text-xs font-extrabold text-violet-600">
+                {index + 1}
+              </span>
+              <div className="min-w-0 flex-1 text-left">
+                <p className="text-sm font-extrabold leading-relaxed text-ink/80">
+                  <MathText>{step.fill ? step.fill.ask : step.q ?? step.ask}</MathText>
+                </p>
+                {step.fill ? (
+                  <MathBlock tex={resolveFill(step.fill, step.fill.blanks)} className="mt-1 text-ink [&_.katex]:text-[1.05rem]" />
+                ) : (
+                  <>
+                    <p className="mt-1 text-sm font-bold leading-relaxed text-emerald-800">
+                      <MathText>{step.choices[step.answer]}</MathText>
+                    </p>
+                    {step.math && <MathBlock tex={step.math} className="mt-1 text-ink [&_.katex]:text-[1.05rem]" />}
+                  </>
+                )}
+                <p className="mt-1 text-xs font-bold leading-relaxed text-ink/65">
+                  <MathText>{step.fill ? step.note : step.why ?? step.note}</MathText>
+                </p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </section>
+      <div className="rounded-2xl bg-rose-50 px-4 py-3 text-left ring-1 ring-rose-100" data-math-pitfall>
+        <p className="text-xs font-extrabold text-rose-600">つまずきやすい点</p>
+        <p className="mt-1 text-sm font-bold leading-relaxed text-rose-950/80"><MathText>{problem.pitfall}</MathText></p>
+      </div>
     </div>
   )
 }

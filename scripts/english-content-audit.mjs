@@ -558,9 +558,9 @@ const sourceChecks = [
   ['Phrases.jsx', [/SyntaxFamilyGuide/, /syntaxFamilySearchText/, /data-syntax-family-filter/]],
   ['VocabSearch.jsx', [/SyntaxFamilyGuide/, /item=\{phrase\}/, /この文のポイント/]],
   ['ListeningQuiz.jsx', [/\breview\(/, /UnknownChoiceButton/, /item\.questionJa/, /listeningChoiceNoteFor/]],
-  ['DictationPlay.jsx', [/\breview\(/, /positionResults/, /item\.ja/, /buildDictationInstructorExplanation/]],
+  ['DictationPlay.jsx', [/\breview\(/, /positionResults/, /item\.ja/, /dictationExplanationFor/]],
   ['components/ReadingComprehensionCheck.jsx', [/markReadingDone\(/, /recordSkillResult\(/, /UnknownChoiceButton/, /buildReadingInstructorExplanation/]],
-  ['WritingPlay.jsx', [/recordWritingCompletion\(/, /writingTokenPositionResults/, /buildWritingInstructorExplanation/, /toggleMyGrammar/]],
+  ['WritingPlay.jsx', [/recordWritingCompletion\(/, /writingTokenPositionResults/, /selected\.tip/, /toggleMyGrammar/]],
   ['Diagnostic.jsx', [/recordDiagnosticResult\(/, /data-diagnostic-explanation/, /buildDiagnosticInstructorExplanation/, /question\.review/]],
 ]
 for (const [filename, patterns] of sourceChecks) {
