@@ -26,7 +26,7 @@ import {
   notebookRef,
   parseNotebookRef,
 } from './learningNotebook.js'
-import { grammarQuestionExplanationFor } from './grammarQuestionExplanations.js'
+import { grammarRuleExplanationFor } from './grammarQuestionExplanations.js'
 
 // 教材の名前・単位は、教材データを読まずに使えるよう learningNotebook.js に置いている。ここからも同じものを出す。
 export { NOTEBOOK_DOMAINS, NOTEBOOK_DOMAIN_BY_ID }
@@ -113,9 +113,7 @@ const CATALOG = Object.freeze({
   grammar: adapt('grammar', GRAMMAR_PRACTICE, (item) => ({
     title: item.sentence?.en ?? item.q,
     subtitle: `${item.topic}｜答え：${item.answer}`,
-    detail: item.questionType === 'word-order'
-      ? item.explain
-      : grammarQuestionExplanationFor(item),
+    detail: grammarRuleExplanationFor(item),
     category: item.topic,
     level: examLevel(item.level),
     search: [item.q, item.choices, item.sentence?.ja],

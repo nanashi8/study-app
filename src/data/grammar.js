@@ -215,7 +215,7 @@ export const GRAMMAR = [
 
   // ───────── 4級 ─────────
   { id: 'gr_4_past_4', level: '4', topic: '過去形', q: 'I ___ a movie last night.', choices: ['saw', 'see', 'seen', 'sees'], answer: 'saw', explain: 'see の過去形は saw。', sentence: { en: 'I saw a movie last night.', ja: '私は昨夜映画を見た。' } },
-  { id: 'gr_4_past_5', level: '4', topic: '過去形', q: 'She ___ breakfast at seven.', choices: ['had', 'has', 'have', 'having'], answer: 'had', explain: 'have の過去形は had。', sentence: { en: 'She had breakfast at seven.', ja: '彼女は7時に朝食をとった。' } },
+  { id: 'gr_4_past_5', level: '4', topic: '過去形', q: 'She ___ breakfast at seven yesterday.', choices: ['had', 'has', 'have', 'having'], answer: 'had', explain: 'have の過去形は had。', sentence: { en: 'She had breakfast at seven yesterday.', ja: '彼女は昨日7時に朝食をとった。' } },
   { id: 'gr_4_past_6', level: '4', topic: '過去形', q: 'I ___ not busy yesterday.', choices: ['was', 'were', 'did', 'am'], answer: 'was', explain: 'be動詞の過去（I）は was。', sentence: { en: 'I was not busy yesterday.', ja: '私は昨日忙しくなかった。' } },
   { id: 'gr_4_future_3', level: '4', topic: '未来表現', q: 'What ___ you do tomorrow?', choices: ['will', 'do', 'are', 'did'], answer: 'will', explain: '未来の疑問文は will＋主語＋原形。', sentence: { en: 'What will you do tomorrow?', ja: '明日は何をしますか。' } },
   { id: 'gr_4_comp_5', level: '4', topic: '比較', q: 'This bag is ___ than that one.', choices: ['better', 'gooder', 'good', 'best'], answer: 'better', explain: 'good の比較級は better（不規則）。', sentence: { en: 'This bag is better than that one.', ja: 'このかばんはあれよりよい。' } },
@@ -327,7 +327,7 @@ export const GRAMMAR = [
   { id: 'gr_2_inf_3', level: '2', topic: '完了不定詞', q: 'He seems to ___ been ill.', choices: ['have', 'has', 'had', 'having'], answer: 'have', explain: 'seem to have＋過分（過去のことを今思う）。', sentence: { en: 'He seems to have been ill.', ja: '彼は病気だったようだ。' } },
   { id: 'gr_2_inf_4', level: '2', topic: '完了不定詞', q: 'I am sorry ___ have kept you waiting.', choices: ['to', 'for', 'that', 'of'], answer: 'to', explain: 'to have＋過分で本動詞より前を表す。', sentence: { en: 'I am sorry to have kept you waiting.', ja: 'お待たせして申し訳ありません。' } },
   { id: 'gr_2_beto_1', level: '2', topic: 'be to構文', q: 'You ___ to finish this by noon.', choices: ['are', 'will', 'have', 'must'], answer: 'are', explain: 'be to do（義務・予定など）。', sentence: { en: 'You are to finish this by noon.', ja: '正午までにこれを終えなさい。' } },
-  { id: 'gr_pre1_beto_1', level: 'pre1', topic: 'be to構文', q: 'Not a sound ___ to be heard.', choices: ['was', 'is', 'did', 'were'], answer: 'was', explain: 'be to do の可能用法（否定文で〜できた）。', sentence: { en: 'Not a sound was to be heard.', ja: '物音ひとつ聞こえなかった。' } },
+  { id: 'gr_pre1_beto_1', level: 'pre1', topic: 'be to構文', q: 'When I woke up, not a sound ___ to be heard.', choices: ['was', 'is', 'did', 'were'], answer: 'was', explain: 'be to do の可能用法（否定文で〜できた）。', sentence: { en: 'When I woke up, not a sound was to be heard.', ja: '私が目を覚ましたとき、物音ひとつ聞こえなかった。' } },
   { id: 'gr_pre2_inorder_1', level: 'pre2', topic: '目的の表現', q: 'He got up early ___ order to catch the train.', choices: ['in', 'for', 'so', 'to'], answer: 'in', explain: 'in order to＋原形（〜するために）。', sentence: { en: 'He got up early in order to catch the train.', ja: '彼は電車に間に合うよう早く起きた。' } },
   { id: 'gr_pre2_soas_1', level: 'pre2', topic: '目的の表現', q: 'Speak slowly ___ that everyone can understand.', choices: ['so', 'such', 'in', 'as'], answer: 'so', explain: 'so that S can 〜（〜できるように）。', sentence: { en: 'Speak slowly so that everyone can understand.', ja: 'みなが理解できるようにゆっくり話して。' } },
 
@@ -339,7 +339,7 @@ export const GRAMMAR = [
   { id: 'gr_2_asfar_1', level: '2', topic: '接続詞', q: '___ far as I know, he is honest.', choices: ['As', 'So', 'By', 'In'], answer: 'As', explain: 'as far as I know（私の知る限り・範囲）。', sentence: { en: 'As far as I know, he is honest.', ja: '私の知る限り彼は正直だ。' } },
 
   // ── 形式目的語・動名詞慣用（高校）──
-  { id: 'gr_2_it_1', level: '2', topic: '形式目的語', q: 'I found ___ hard to believe.', choices: ['it', 'that', 'this', 'what'], answer: 'it', explain: 'find/think＋it＋C＋to do（形式目的語 it）。', sentence: { en: 'I found it hard to believe.', ja: '私はそれを信じがたいと思った。' } },
+  { id: 'gr_2_it_1', level: '2', topic: '形式目的語', q: 'I found ___ hard to believe his story.', choices: ['it', 'that', 'this', 'what'], answer: 'it', explain: 'find/think＋it＋C＋to do（形式目的語 it）。', sentence: { en: 'I found it hard to believe his story.', ja: '私は彼の話を信じるのは難しいと思った。' } },
   { id: 'gr_2_it_2', level: '2', topic: '形式目的語', q: 'I make ___ a rule to walk every day.', choices: ['it', 'that', 'this', 'me'], answer: 'it', explain: 'make it a rule to do（〜することにしている）。', sentence: { en: 'I make it a rule to walk every day.', ja: '私は毎日歩くことにしている。' } },
   { id: 'gr_pre2_ger_5', level: 'pre2', topic: '動名詞の慣用', q: 'I am used to ___ early.', choices: ['getting up', 'get up', 'got up', 'to get up'], answer: 'getting up', explain: 'be used to doing（〜に慣れている）。to は前置詞。', sentence: { en: 'I am used to getting up early.', ja: '私は早起きに慣れている。' } },
   { id: 'gr_2_ger_3', level: '2', topic: '動名詞の慣用', q: 'I cannot help ___ at the joke.', choices: ['laughing', 'laugh', 'to laugh', 'laughed'], answer: 'laughing', explain: 'cannot help doing（〜せずにはいられない）。', sentence: { en: 'I cannot help laughing at the joke.', ja: 'その冗談に笑わずにはいられない。' } },

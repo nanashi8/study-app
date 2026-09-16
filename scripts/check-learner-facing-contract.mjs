@@ -19,8 +19,10 @@ import {
   readingPhraseExplanationTexts,
 } from '../src/lib/explanationDedup.js'
 import { analyzeReadingSentence } from '../src/lib/reading-grammar.js'
-import { buildGrammarInstructorExplanation } from '../src/lib/instructorExplanations.js'
-import { grammarChoiceExplanationFor } from '../src/lib/grammarQuestionExplanations.js'
+import {
+  grammarChoiceExplanationFor,
+  grammarRuleExplanationFor,
+} from '../src/lib/grammarQuestionExplanations.js'
 import {
   ALL_WORDS,
   ETYMOLOGY_MODE_META,
@@ -226,6 +228,8 @@ for (const label of ['根拠', '消去法', '考え方']) {
   if (!instructorSource.includes(`label: '${label}'`)) errors.push(`共通解説に「${label}」がない`)
 }
 if (!grammarQuizSource.includes('GrammarChoiceExplanations')) errors.push('英文法画面に選択肢解説部品がない')
+if (!grammarQuizSource.includes('{grammarRuleExplanationFor(item)}')) errors.push('英文法画面に規則ごとの解説がない')
+if (grammarQuizSource.includes('InstructorExplanation')) errors.push('英文法画面に決まり文句の4段解説が戻っている')
 if (!grammarChoiceExplanationsSource.includes('選択肢解説（3択すべて）')) {
   errors.push('英文法画面に正解を含む3択すべての解説がない')
 }
@@ -519,12 +523,8 @@ for (const [id, guide] of Object.entries(LONG_SENTENCE_TRANSLATIONS)) {
 let grammarChoicePaths = 0
 let grammarWrongChoicePaths = 0
 for (const item of GRAMMAR) {
-  const base = buildGrammarInstructorExplanation(item)
-  if (!normalize(base.evidence).includes(normalize(item.explain))) {
-    errors.push(`文法 ${item.id}: 根拠が設問固有の説明を含まない`)
-  }
-  if (!normalize(base.strategy) || normalize(base.strategy) === normalize(base.evidence)) {
-    errors.push(`文法 ${item.id}: 考え方が独立した手順になっていない`)
+  if (normalize(grammarRuleExplanationFor(item)).length < 30) {
+    errors.push(`文法 ${item.id}: 規則ごとの解説がない`)
   }
   for (const choice of item.choices) {
     grammarChoicePaths += 1
@@ -538,13 +538,8 @@ for (const item of GRAMMAR) {
     }
     if (choice === item.answer) continue
     grammarWrongChoicePaths += 1
-    const guidance = grammarChoiceGuidanceFor(item, choice)
-    const explanation = buildGrammarInstructorExplanation(item, choice, guidance)
-    if (!normalize(explanation.trap).includes(normalize(choice))) {
-      errors.push(`文法 ${item.id}: 消去法が選択肢「${choice}」を特定しない`)
-    }
-    if (!normalize(explanation.trap).includes(normalize(item.explain))) {
-      errors.push(`文法 ${item.id}: 消去法がこの問題の根拠を含まない`)
+    if (!grammarChoiceGuidanceFor(item, choice)) {
+      errors.push(`文法 ${item.id}: 誤答「${choice}」の使い方がない`)
     }
   }
 }

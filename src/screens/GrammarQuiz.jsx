@@ -2,10 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import { WordBookToggle } from '../components/WordListSheet.jsx'
 import { shuffle } from '../data/vocab.js'
-import {
-  grammarChoiceGuidanceFor,
-  samePatternExamplesFor,
-} from '../data/grammar.js'
+import { samePatternExamplesFor } from '../data/grammar.js'
 import {
   GRAMMAR_QUESTION_TYPE_META,
   grammarQuestionType,
@@ -22,14 +19,15 @@ import { todayIndex } from '../store/useStore.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
 import { LongSentenceTranslation } from '../components/LongSentenceTranslation.jsx'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
-import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
 import { GrammarChoiceExplanations } from '../components/GrammarChoiceExplanations.jsx'
 import { WordOrderExercise } from '../components/WordOrderExercise.jsx'
 import { Button, Chip, cx } from '../components/ui.jsx'
 import { ArrowRight, Check, Close } from '../components/Icons.jsx'
 import { limitQuizChoices, UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
-import { buildGrammarInstructorExplanation } from '../lib/instructorExplanations.js'
-import { grammarQuestionNeedsMeaningCue } from '../lib/grammarQuestionExplanations.js'
+import {
+  grammarQuestionNeedsMeaningCue,
+  grammarRuleExplanationFor,
+} from '../lib/grammarQuestionExplanations.js'
 import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
 import {
   QuestionSessionControls,
@@ -133,10 +131,6 @@ export function GrammarQuizScreen() {
   const orderQuestion = questionType === 'word-order'
   const rearranging = orderQuestion && rearrangingIndex === i && answered
   const isCorrectPick = answered && selected === item.answer
-  const selectedGuidance = orderQuestion ? null : grammarChoiceGuidanceFor(item, selected)
-  const instructorExplanation = answered
-    ? buildGrammarInstructorExplanation(item, selected, selectedGuidance, options)
-    : null
   const longSentenceTranslation = longSentenceTranslationFor(item)
   const needsMeaningCue = orderQuestion
     || questionType === 'usage'
@@ -340,10 +334,11 @@ export function GrammarQuizScreen() {
               </div>
             </div>
             <LongSentenceTranslation guide={longSentenceTranslation} className="mt-3" />
-            <InstructorExplanation
-              explanation={instructorExplanation}
-              className="mt-3"
-            />
+            {/* 形がどう決まるかを規則ごとに書いた解説（決まり文句の4段解説は置かない）。 */}
+            <div className="mt-3 rounded-xl bg-brand-50/60 px-3 py-2.5 ring-1 ring-brand-100" data-grammar-explanation>
+              <p className="text-[10px] font-extrabold text-brand-600">解説</p>
+              <p className="mt-0.5 text-sm font-bold leading-relaxed text-ink/75">{grammarRuleExplanationFor(item)}</p>
+            </div>
             {!orderQuestion && (
               <GrammarChoiceExplanations
                 item={item}

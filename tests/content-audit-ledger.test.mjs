@@ -76,14 +76,14 @@ test('全選択式教材の正解・全誤答・わからない経路数を教�
   const paths = ledger.instructorAnswerPaths
   assert.equal(paths.coverageTest, 'tests/instructor-explanations.test.mjs')
   assert.equal(paths.result, 'pass')
-  assert.equal(paths.questionCount, 3_689)
-  assert.equal(paths.displayedChoiceCount, 14_714)
-  assert.equal(paths.unknownPathCount, 3_689)
-  assert.equal(paths.answerPathCount, 18_403)
+  // 英文法は規則ごとの解説に移したので、講師解説の経路は長文と学習診断の読解だけ。
+  assert.equal(paths.questionCount, 211)
+  assert.equal(paths.displayedChoiceCount, 823)
+  assert.equal(paths.unknownPathCount, 211)
+  assert.equal(paths.answerPathCount, 1_034)
   assert.deepEqual(
     paths.families.map(({ id }) => id),
     [
-      'grammar',
       'reading',
       'diagnostic',
     ],

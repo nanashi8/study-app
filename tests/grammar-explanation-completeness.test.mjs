@@ -19,7 +19,6 @@ import {
   grammarQuestionNeedsMeaningCue,
   isCompleteGrammarQuestionExplanation,
 } from '../src/lib/grammarQuestionExplanations.js'
-import { buildGrammarInstructorExplanation } from '../src/lib/instructorExplanations.js'
 
 const normalize = (value) => String(value ?? '')
   .toLocaleLowerCase('en-US')
@@ -85,9 +84,6 @@ test('誤答10,350件すべてに、この文で違う理由と別の使い方�
       assert.ok(normalize(mismatch).includes(normalize(choice)), `${item.id}: ${choice}`)
       assert.ok(normalize(mismatch).includes(normalize(item.answer)), `${item.id}: ${choice}`)
       assert.ok(usage?.summary, `${item.id}: ${choice}`)
-      const instructor = buildGrammarInstructorExplanation(item, choice, usage)
-      assert.ok(normalize(instructor.trap).includes(normalize(choice)), `${item.id}: ${choice}`)
-      assert.ok(normalize(instructor.trap).includes(normalize(item.answer)), `${item.id}: ${choice}`)
       count += 1
     }
   }

@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
 import {
   GRAMMAR,
+  GRAMMAR_PRACTICE,
   GRAMMAR_TOTAL_TARGET,
   grammarChoiceGuidanceFor,
   grammarChoiceUsageFor,
@@ -17,13 +18,9 @@ import {
   grammarExamFocusExplanationFor,
   grammarQuestionExplanationFor,
   grammarQuestionNeedsMeaningCue,
+  grammarRuleExplanationFor,
   isCompleteGrammarQuestionExplanation,
 } from '../src/lib/grammarQuestionExplanations.js'
-import {
-  buildGrammarInstructorExplanation,
-  isCompleteInstructorExplanation,
-} from '../src/lib/instructorExplanations.js'
-import { UNKNOWN_CHOICE_ID } from '../src/lib/quizChoices.js'
 
 const normalize = (value) => String(value ?? '')
   .trim()
@@ -65,9 +62,7 @@ for (const required of ['動詞の原形', 'Be', 'Don’t', 'Never', 'Always', '
   assert.ok(contains(imperativeLessonText, required), `命令文レッスンに「${required}」の説明がありません`)
 }
 
-let correctPaths = 0
-let wrongPaths = 0
-let unknownPaths = 0
+let ruleExplanationCount = 0
 let choiceMismatchCount = 0
 let allChoiceReasonCount = 0
 let correctChoiceReasonCount = 0
@@ -119,11 +114,6 @@ for (const item of GRAMMAR) {
     assert.ok(contains(focusExplanation, item.answer), `${label}: 入試型の決め手に正答がありません`)
   }
 
-  const correctExplanation = buildGrammarInstructorExplanation(item, item.answer)
-  assert.ok(isCompleteInstructorExplanation(correctExplanation), `${label}: 正答経路の4段解説が未完成`)
-  assert.ok(contains(correctExplanation.answer, item.answer), `${label}: 正答経路に正答がありません`)
-  assert.ok(contains(correctExplanation.evidence, item.explain), `${label}: 正答経路に元の文法規則がありません`)
-  correctPaths += 1
 
   const decisions = item.choices.map((choice) => grammarChoiceDecisionFor(item, choice))
   assert.equal(decisions.filter((decision) => decision?.isCorrect).length, 1, `${label}: 4択の正誤判定が一意ではありません`)
@@ -162,27 +152,28 @@ for (const item of GRAMMAR) {
     assert.ok(contains(mismatch, item.answer), `${label}: 誤答理由に正答「${item.answer}」がありません`)
     assert.ok(contains(mismatch, withoutTerminal(item.sentence.ja)), `${label}: 誤答理由に目標の意味がありません`)
     choiceMismatchCount += 1
-
-    const wrongExplanation = buildGrammarInstructorExplanation(item, choice, guidance)
-    assert.ok(isCompleteInstructorExplanation(wrongExplanation), `${label}: 誤答「${choice}」経路の4段解説が未完成`)
-    assert.ok(contains(wrongExplanation.trap, choice), `${label}: 誤答経路に選んだ答えがありません`)
-    assert.ok(contains(wrongExplanation.trap, item.answer), `${label}: 誤答経路に正答がありません`)
-    assert.ok(contains(wrongExplanation.trap, item.explain), `${label}: 誤答経路にこの問題の文法規則がありません`)
-    wrongPaths += 1
   }
+}
 
-  const unknownExplanation = buildGrammarInstructorExplanation(item, UNKNOWN_CHOICE_ID)
-  assert.ok(isCompleteInstructorExplanation(unknownExplanation), `${label}: 「わからない」経路の4段解説が未完成`)
-  assert.ok(contains(unknownExplanation.trap, item.answer), `${label}: 「わからない」経路に正答がありません`)
-  assert.ok(contains(unknownExplanation.trap, item.explain), `${label}: 「わからない」経路に文法規則がありません`)
-  unknownPaths += 1
+// 答え合わせの「解説」は、規則ごとに書いた説明を出す。決まり文句の枠（手掛かり・結論の定型文）は使わない。
+// 1問だけの規則は、その問題文に当てはめて書くので、正解の語が必ず入る。
+const ruleUseCount = new Map()
+for (const item of GRAMMAR_PRACTICE) ruleUseCount.set(item.explain, (ruleUseCount.get(item.explain) ?? 0) + 1)
+const TEMPLATE_PHRASES = /英語の手掛かり|適用する規則|したがって、空所は|この条件を満たすのは|正解は一つに決まる|この手掛かりと規則を/u
+for (const item of GRAMMAR_PRACTICE) {
+  const label = `文法 ${item.id}`
+  const ruleExplanation = grammarRuleExplanationFor(item)
+  assert.ok(ruleExplanation.length >= 30, `${label}: 規則の解説がないか短すぎます`)
+  assert.doesNotMatch(ruleExplanation, TEMPLATE_PHRASES, `${label}: 解説に決まり文句の枠が残っています`)
+  if (ruleUseCount.get(item.explain) === 1 && item.questionType !== 'word-order') {
+    assert.ok(contains(ruleExplanation, item.answer), `${label}: 1問だけの規則の解説に正解「${item.answer}」がありません`)
+  }
+  ruleExplanationCount += 1
 }
 
 assert.equal(examQuestionCount, 450, '入試型の問題別焦点監査が450問に届いていません')
 assert.equal(examFocuses.size, 260, '入試型の問われ方260種類を全て監査できていません')
-assert.equal(correctPaths, GRAMMAR.length)
-assert.equal(wrongPaths, GRAMMAR.length * 3)
-assert.equal(unknownPaths, GRAMMAR.length)
+assert.equal(ruleExplanationCount, GRAMMAR_PRACTICE.length)
 assert.equal(choiceMismatchCount, GRAMMAR.length * 3)
 assert.equal(allChoiceReasonCount, GRAMMAR.length * 4)
 assert.equal(correctChoiceReasonCount, GRAMMAR.length)
@@ -253,14 +244,18 @@ for (const [id, expected] of focusRegressionCases) {
   assert.match(grammarExamFocusExplanationFor(item), expected, `${id}: 問われ方固有の説明が後退しました`)
 }
 
-const [grammarQuizSource, diagnosticSource, choiceExplanationsSource] = await Promise.all([
+const [grammarQuizSource, diagnosticSource, choiceExplanationsSource, diagnosticQuestionsSource] = await Promise.all([
   readFile(new URL('../src/screens/GrammarQuiz.jsx', import.meta.url), 'utf8'),
   readFile(new URL('../src/screens/Diagnostic.jsx', import.meta.url), 'utf8'),
   readFile(new URL('../src/components/GrammarChoiceExplanations.jsx', import.meta.url), 'utf8'),
+  readFile(new URL('../src/lib/diagnosticQuestions.js', import.meta.url), 'utf8'),
 ])
 assert.match(grammarQuizSource, /data-grammar-target-meaning/)
 assert.match(grammarQuizSource, /grammarQuestionNeedsMeaningCue/)
 assert.match(grammarQuizSource, /<GrammarChoiceExplanations/)
+assert.match(grammarQuizSource, /data-grammar-explanation[\s\S]*grammarRuleExplanationFor\(item\)/)
+assert.doesNotMatch(grammarQuizSource, /InstructorExplanation/)
+assert.match(diagnosticQuestionsSource, /explain: grammarRuleExplanationFor\(item\)/)
 assert.match(diagnosticSource, /data-diagnostic-grammar-meaning/)
 assert.match(diagnosticSource, /item\.promptJa && item\.meaningCueRequired/)
 assert.match(diagnosticSource, /<GrammarChoiceExplanations/)
@@ -278,4 +273,4 @@ console.log(`  意味・構造の取り違え回帰: ${focusRegressionCases.leng
 console.log(`  正解を含む選択肢別の根拠: ${allChoiceReasonCount}/${GRAMMAR.length * 4}（正解${correctChoiceReasonCount}・誤答${choiceMismatchCount}）`)
 console.log(`  解答前の和訳: 意味判断${meaningCueQuestionCount}問・語形のみ非表示${formOnlyQuestionCount}問`)
 console.log(`  命令文の先頭語競合: ${imperativeOpenerCollisionCount}件`)
-console.log(`  4段解説の回答経路: 正答${correctPaths}・誤答${wrongPaths}・わからない${unknownPaths}（計${correctPaths + wrongPaths + unknownPaths}）`)
+console.log(`  規則ごとの解説: ${ruleExplanationCount}/${GRAMMAR_PRACTICE.length}（決まり文句の枠なし）`)

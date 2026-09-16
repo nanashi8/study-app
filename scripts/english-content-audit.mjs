@@ -552,7 +552,7 @@ assert(
 
 const sourceChecks = [
   ['VocabQuiz.jsx', [/\breview\(/, /UnknownChoiceButton/, /<EtymologyBlock word=\{word\} \/>/, /<ChoiceExplanations/]],
-  ['GrammarQuiz.jsx', [/\breview\(/, /UnknownChoiceButton/, /buildGrammarInstructorExplanation/, /patternExamples/]],
+  ['GrammarQuiz.jsx', [/\breview\(/, /UnknownChoiceButton/, /grammarRuleExplanationFor\(item\)/, /patternExamples/]],
   ['PhraseQuiz.jsx', [/\breview\(/, /UnknownChoiceButton/, /<ChoiceExplanations/, /\{item\.origin\}/, /SyntaxFamilyGuide/]],
   ['PhraseStudy.jsx', [/SyntaxFamilyGuide/, /item=\{item\}/]],
   ['Phrases.jsx', [/SyntaxFamilyGuide/, /syntaxFamilySearchText/, /data-syntax-family-filter/]],

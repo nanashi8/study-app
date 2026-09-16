@@ -78,8 +78,9 @@ test('診断問題は連続3回すべて入れ替わり、同じ回は再現で�
       assert.ok(question.sourceId, question.id)
       if (question.skill === 'grammar') {
         assert.ok(question.promptJa, `${question.id}: 文法問題の目標の意味がありません`)
-        assert.match(question.explain, /空所は「.+」に決まる/)
-        assert.ok(question.explain.includes(question.answer), question.id)
+        // 解説は、規則ごとに書いた説明（決まり文句の「空所は〜に決まる」は使わない）。
+        assert.ok(question.explain.length >= 30, `${question.id}: 文法問題の解説がありません`)
+        assert.doesNotMatch(question.explain, /空所は「.+」に決まる|英語の手掛かり/)
       }
     }
     for (const skill of DIAGNOSTIC_SKILLS) {
