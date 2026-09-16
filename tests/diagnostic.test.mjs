@@ -290,7 +290,8 @@ test('診断結果は成績表、根拠付きおすすめ、次回計画を答�
   assert.match(source, /data-diagnostic-study-plan/)
   assert.match(source, /次回は、ここから/)
   assert.match(source, /今後の学習履歴に合わせて予定を更新します/)
-  assert.match(source, /公式試験の偏差値や合否ではありません/)
+  // 公式試験ではない・医療検査ではない、といった学習に関係しない注意書きは載せない。
+  assert.doesNotMatch(source, /公式試験の偏差値や合否ではありません|EstimateNotice/)
   assert.doesNotMatch(source, /医療検査/)
   assert.doesNotMatch(source, /覚え具合|回答履歴からの推定|脳力|まだ判定できません/)
   assert.ok(

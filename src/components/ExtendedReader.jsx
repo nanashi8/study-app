@@ -347,7 +347,7 @@ export function ExtendedReader({ passage }) {
               <span className="shrink-0 text-[11px] font-extrabold text-amber-700">{vocabularyCases.length}語</span>
             </div>
             <p className="mt-1 text-[11px] font-bold leading-relaxed text-ink/55">
-              本文を読み終えたら、同じ分野の語を辞書の監査済み例文で確かめます。
+              本文を読み終えたら、同じ分野の語を辞書の例文で確かめます。
             </p>
             <ul className="mt-3 space-y-2">
               {vocabularyCases.map((item) => (

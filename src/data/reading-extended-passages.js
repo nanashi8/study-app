@@ -29,7 +29,7 @@ const PASSAGE_META = Object.freeze({
     emoji: '🗳️',
     title: 'A Civic Vocabulary Atlas',
     titleJa: '公共の決定を読む語彙地図',
-    blurb: '声と代表、法と権利、情報、予算、見直しの5節を、辞書連動の語彙事例で読み進める約1,000語の多読教材。',
+    blurb: '声と代表、法と権利、情報、予算、見直しの5節を読む約1,000語の多読教材。',
     theme: '政治・法・メディア・公共の選択',
     extendedReadingDomain: '政治・法・経済',
     examTypes: Object.freeze(['大学受験', '英検']),

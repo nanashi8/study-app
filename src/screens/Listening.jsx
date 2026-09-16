@@ -64,7 +64,7 @@ export function ListeningScreen() {
           <WordBookTile domain="listening" returnTo={returnTo} />
         </ChooserTiles>
       )}
-      note="英検の級別形式と放送回数を参考にしたオリジナル問題です。解答前は本番と同じ回数、解答後は何度でも聞けます。音声は端末の音声合成です。"
+      note="解答前は本番と同じ回数、解答後は何度でも聞けます。"
       countFor={(levelId) => listeningByLevel(levelId).length}
       countUnit="問"
       detailFor={profileDetail}

@@ -46,8 +46,6 @@ import {
   Bookmark,
   BookmarkFilled,
   Check,
-  ChevronRight,
-  Link,
   SpeakerWave,
 } from '../components/Icons.jsx'
 
@@ -390,7 +388,6 @@ export function LiteratureReaderScreen() {
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-center gap-1.5">
                 <Chip className="bg-white/12 text-white">{meta.description}</Chip>
-                <Chip className="bg-white/12 text-white">{work.coverage.label}</Chip>
                 {completed && (
                   <span className="inline-flex items-center gap-1 text-[11px] font-extrabold text-emerald-200">
                     <Check size={13} /> 読了
@@ -809,40 +806,6 @@ export function LiteratureReaderScreen() {
               </Button>
             </div>
         </Card>}
-
-        <Card className="p-4">
-          <details>
-            <summary className="flex cursor-pointer list-none items-center gap-3">
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700">
-                <Check size={19} />
-              </span>
-              <div className="min-w-0 flex-1">
-                <h2 className="font-display text-sm font-extrabold text-ink">
-                  出典と著作権の確認
-                </h2>
-                <p className="truncate text-xs font-bold text-ink/45">{work.rights.status}</p>
-              </div>
-              <ChevronRight size={18} className="text-ink/30" />
-            </summary>
-            <div className="mt-3 space-y-2 border-t border-ink/5 pt-3 text-xs font-bold leading-relaxed text-ink/55">
-              <p>収録範囲：{work.coverage.sourceUnit}（{work.coverage.label}）</p>
-              {work.coverage.limitNote && <p>{work.coverage.limitNote}</p>}
-              <p>{work.rights.basis}</p>
-              <p>{work.rights.translation}</p>
-              <a
-                href={work.source.url}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center gap-1 text-teal-700 underline underline-offset-2"
-              >
-                <Link size={13} /> {work.source.label}
-              </a>
-              <p className="text-[10px] text-ink/35">
-                確認日 {work.source.checkedOn}。原文は学習しやすい句読点・表記に一部整えています。
-              </p>
-            </div>
-          </details>
-        </Card>
 
         <Button
           full

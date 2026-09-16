@@ -432,7 +432,7 @@ export function buildLearningPowerProfile({
         : trackedSkillAnswers
           ? `${analysis.skills.length}分野・${trackedSkillAnswers}回答`
           : '診断やテストに答えると表示します',
-      note: '教科テストへの対応であり、IQではありません',
+      note: '診断とテストで採点された回答の結果',
       color: '#0ea5e9',
     }),
     dimension({

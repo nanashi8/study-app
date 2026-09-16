@@ -10,7 +10,7 @@ import { ScreenHeader } from '../components/AppShell.jsx'
 import { Card, Chip, cx } from '../components/ui.jsx'
 import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
 import { summarizeCompletionItems } from '../lib/contentProgress.js'
-import { ArrowRight, Check, Headphones, Link } from '../components/Icons.jsx'
+import { ArrowRight, Check, Headphones } from '../components/Icons.jsx'
 
 const FILTERS = [
   { id: 'all', label: 'すべて' },
@@ -85,33 +85,6 @@ export function LiteratureLibraryScreen() {
           </p>
         </Card>
 
-        <Card className="p-4">
-          <div className="flex items-start gap-3">
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700">
-              <Check size={20} />
-            </span>
-            <div>
-              <h2 className="font-display text-sm font-extrabold text-ink">
-                権利を確認した原文だけを収録
-              </h2>
-              <p className="mt-1 text-xs font-bold leading-relaxed text-ink/55">
-                作品ごとに作者・初出・底本を表示します。訳と解説は本アプリ独自で、朗読は端末の音声合成です。
-              </p>
-              <p className="mt-1 text-xs font-bold leading-relaxed text-ink/55">
-                英語の長編は章の全文、短編は作品の全文を収録。古典・漢文も、題名に示した段や故事を最後まで読めます。
-              </p>
-              <a
-                href="https://www.bunka.go.jp/seisaku/chosakuken/taisetsu/point/index.html"
-                target="_blank"
-                rel="noreferrer"
-                className="mt-2 inline-flex items-center gap-1 text-[11px] font-extrabold text-emerald-700 underline underline-offset-2"
-              >
-                <Link size={12} /> 文化庁「保護期間とパブリックドメイン」
-              </a>
-            </div>
-          </div>
-        </Card>
-
         <div className="grid grid-cols-4 rounded-2xl bg-teal-100 p-1">
           {FILTERS.map((item) => (
             <button
@@ -161,9 +134,6 @@ export function LiteratureLibraryScreen() {
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-1.5">
                         <Chip color={meta.color}>{meta.shortLabel}</Chip>
-                        <Chip className="bg-emerald-50 text-emerald-700">
-                          {work.coverage.label}
-                        </Chip>
                         <Chip className="bg-ink/5 text-ink/55">{work.level}</Chip>
                         {completed && (
                           <span className="inline-flex items-center gap-1 text-[11px] font-extrabold text-emerald-600">
@@ -186,9 +156,6 @@ export function LiteratureLibraryScreen() {
                     <span>{work.authorJa}（{work.authorYears}）</span>
                     <span>{work.scenes.length}場面</span>
                     {work.kind === 'english' && <span>原文 {literatureWordCount(work)}語</span>}
-                    <span className="inline-flex items-center gap-1 text-emerald-700">
-                      <Link size={12} /> 出典表示あり
-                    </span>
                   </div>
                 </button>
               </Card>

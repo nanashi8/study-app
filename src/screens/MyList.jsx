@@ -746,7 +746,6 @@ export function MyListScreen() {
             <p className="text-[9px] font-extrabold text-slate-300">自分の学習ノート</p>
             <div className="mt-1">
               <p className="font-display text-lg font-extrabold">保存・メモ・単語帳・学習記録</p>
-              <p className="mt-0.5 text-[10px] font-bold text-slate-300">これまでのマイ単語と、古典・漢文の登録リストも単語帳に引き継ぎ</p>
             </div>
           </div>
           {/* 数字には「何を数えたか」を名前と単位で添える。 */}

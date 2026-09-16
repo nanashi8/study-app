@@ -109,7 +109,7 @@ export function KanbunMarkedText({
               inverse ? 'text-white/65' : 'text-ink/45',
             ),
           },
-          '小さな返り点は、同じまとまりの大きな親字に付いています。折り返しても離れません。',
+          '小さな返り点は、すぐ上の大きな字に付いています。',
         )
       : null,
   )

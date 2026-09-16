@@ -29,7 +29,7 @@ const CORE_PASSAGES = [
     emoji: '📘',
     title: 'A Notebook for Rina',
     titleJa: 'リナのノート',
-    blurb: '5級の短文・会話文をつないで読む、アプリ独自の読解入門。',
+    blurb: '5級の短文・会話文をつないで読む読解入門。',
     vocab: [
       'junior', 'student', 'school', 'bus', 'class', 'teacher',
       'picture', 'notebook', 'friend', 'story', 'happy',

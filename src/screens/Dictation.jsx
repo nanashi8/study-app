@@ -40,7 +40,7 @@ export function DictationScreen() {
           <WordBookTile domain="dictation" returnTo={returnTo} />
         </ChooserTiles>
       )}
-      note="英検本試験に書き取り問題はありません。級別リスニングを使った練習で、大文字・句読点は採点せず、綴りと語順を採点します。"
+      note="級別リスニングを使った練習で、大文字・句読点は採点せず、綴りと語順を採点します。"
       countFor={(levelId) => dictationByLevel(levelId).length}
       countUnit="問"
       detailFor={(levelId) => DICTATION_PROFILES[levelId]?.target}

@@ -71,6 +71,8 @@ for (const question of [...KOTEN_GRAMMAR_QUESTIONS, ...KOTEN_CULTURE_QUESTIONS])
   assert.equal(new Set(question.choices).size, 4, question.id)
   assert.ok(question.choices.includes(question.answer), question.id)
   assert.ok(question.explanation, `${question.id}: 解説がありません`)
+  // 問題に添えるラベルは問い方の種類だけ。作問の出どころ（オリジナル等）は学習に関係しない。
+  assert.doesNotMatch(question.source, /オリジナル|過去問|作問/, `${question.id}: 作問の出どころをラベルにしています`)
 }
 
 assert.equal(KOTEN_CURRICULUM_PATHS.length, 5)

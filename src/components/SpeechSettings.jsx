@@ -705,7 +705,7 @@ function ResetProgressPanel({
                     {group.implies
                       .map((id) => PROGRESS_RESET_GROUPS.find((item) => item.id === id)?.label ?? id)
                       .join('・')}
-                    」も一緒にリセットします（数値の食い違いを防ぐため）
+                    」も一緒にリセットします
                   </span>
                 )}
               </span>

@@ -151,7 +151,7 @@ function ReviewedEtymologyCard({ card, onPack, onRoot, compact = false }) {
           </span>
         )}
         <span className="mt-0.5 block text-xs font-extrabold text-emerald-700">
-          <Check size={12} className="mr-1 inline" />確認済み・関連する{card.coverageIds.length}語
+          <Check size={12} className="mr-1 inline" />関連する{card.coverageIds.length}語
         </span>
       </span>
       {action && <ArrowRight size={17} className="shrink-0 text-violet-400" />}

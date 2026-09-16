@@ -19,22 +19,16 @@ const SCIENCE_REFERENCES = [
     id: 'retrieval',
     label: '思い出す練習',
     practice: '答えを見る前に、自力で一度思い出す。',
-    citation: 'Roediger & Karpicke (2006)',
-    href: 'https://doi.org/10.1111/j.1467-9280.2006.01693.x',
   },
   {
     id: 'spacing',
     label: '分散学習',
     practice: '同じ項目を一度に詰め込まず、間隔を空けて再学習する。',
-    citation: 'Cepeda et al. (2006)',
-    href: 'https://doi.org/10.1037/0033-2909.132.3.354',
   },
   {
     id: 'implementation',
     label: '実行意図',
     practice: '「いつ・どこで・何をするか」を、もし〜なら〜する形式で決める。',
-    citation: 'Gollwitzer (1999)',
-    href: 'https://doi.org/10.1037/0003-066X.54.7.493',
   },
 ]
 
@@ -43,25 +37,19 @@ const STUDY_QUOTES = [
     id: 'analects',
     text: '学びて時にこれを習う、また説ばしからずや。',
     author: '孔子',
-    source: '『論語』学而 第一',
     note: '学んだ内容を時間を置いて繰り返すことを、学びの喜びとして捉える言葉です。',
-    href: 'https://ctext.org/analects/xue-er/ens',
   },
   {
     id: 'bacon',
     text: '知識そのものが力である。',
     author: 'フランシス・ベーコン',
-    source: 'Meditationes Sacrae（1597）',
     note: '知ることを、判断し行動するための力へ結び付ける言葉です。',
-    href: 'https://en.wikisource.org/wiki/The_Works_of_Francis_Bacon/Volume_1/Meditationes_Sacrae',
   },
   {
     id: 'fukuzawa',
     text: '学問の力あるとなきとによりて、その相違もできたる。',
     author: '福澤諭吉',
-    source: '『学問のすすめ』初編',
     note: '生まれつきの固定差ではなく、学びによって変えられる部分へ目を向ける言葉です。',
-    href: 'https://ja.wikisource.org/wiki/%E5%AD%A6%E5%95%8F%E3%81%AE%E3%81%99%E3%81%99%E3%82%81',
   },
 ]
 
@@ -424,8 +412,7 @@ function DiagnosticSnapshot({ diagnostic, onOpen }) {
           </tbody>
         </table>
         <div className="p-3">
-          <p className="text-[10px] font-bold leading-relaxed text-slate-500">偏差値と級は、このアプリの問題結果から求めた目安です。</p>
-          <Button full className="mt-2" variant="secondary" onClick={onOpen}>学習診断の4分野を見る</Button>
+          <Button full variant="secondary" onClick={onOpen}>学習診断の4分野を見る</Button>
         </div>
       </div>
     </ReportSection>
@@ -524,12 +511,6 @@ function ActivitySplit({ analysis, report }) {
           </div>
         ))}
       </dl>
-      {legacySamples > 0 && (
-        <p className="border-t border-amber-200 bg-amber-50 px-3 py-2 text-[10px] font-bold leading-relaxed text-amber-900">
-          以前の{legacySamples}回答は暗記とテストを区別していないため、「以前の記録」にまとめています。
-          これからの回答は、暗記とテストを分けて記録します。
-        </p>
-      )}
       {!splitSamples && !legacySamples && (
         <p className="border-t border-slate-200 px-3 py-2 text-[10px] font-bold text-slate-500">学習を始めると、暗記とテストが別々に記録されます。</p>
       )}
@@ -963,7 +944,7 @@ function AdviceReport({ profile, analysis, dueCount, report, onNavigate }) {
 
         <details className="mt-3 border border-slate-300 bg-white" data-scientific-basis>
           <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between px-3 text-xs font-extrabold text-slate-700">
-            <span>助言の科学的根拠と限界</span>
+            <span>助言のもとになる学び方</span>
             <span className="text-slate-400">3原則</span>
           </summary>
           <div className="space-y-3 border-t border-slate-200 p-3">
@@ -971,19 +952,8 @@ function AdviceReport({ profile, analysis, dueCount, report, onNavigate }) {
               <div key={reference.id}>
                 <p className="text-xs font-extrabold text-slate-800">{reference.label}</p>
                 <p className="mt-0.5 text-[10px] font-bold leading-relaxed text-slate-600">{reference.practice}</p>
-                <a
-                  href={reference.href}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="mt-0.5 inline-block text-[10px] font-extrabold text-sky-700 underline"
-                >
-                  {reference.citation}
-                </a>
               </div>
             ))}
-            <p className="border-t border-slate-200 pt-2 text-[10px] font-bold leading-relaxed text-slate-500">
-              参考文献は、一般的な学習方法を説明するために掲載しています。
-            </p>
           </div>
         </details>
       </div>
@@ -996,27 +966,24 @@ function StudyWisdomFooter() {
   const quote = STUDY_QUOTES[seed % STUDY_QUOTES.length]
   const reference = SCIENCE_REFERENCES[Math.floor(seed / STUDY_QUOTES.length) % SCIENCE_REFERENCES.length]
   return (
-    <ReportSection number="12" title="学びの言葉と科学的な根拠" note="表示するたびに、出典を確認した言葉と学習方法を一つずつ選択">
+    <ReportSection number="12" title="学びの言葉と学び方">
       <div className="p-4" data-random-study-wisdom>
         <blockquote className="border-l-4 border-slate-800 bg-slate-50 p-3">
           <p className="font-display text-base font-extrabold leading-relaxed text-slate-950">「{quote.text}」</p>
-          <footer className="mt-2 text-[10px] font-bold text-slate-500">
-            {quote.author}・<a href={quote.href} target="_blank" rel="noreferrer" className="text-sky-700 underline">{quote.source}</a>
-          </footer>
+          <footer className="mt-2 text-[10px] font-bold text-slate-500">{quote.author}</footer>
           <p className="mt-2 text-[10px] font-bold leading-relaxed text-slate-600">{quote.note}</p>
         </blockquote>
         <div className="mt-3 border border-emerald-200 bg-emerald-50 p-3">
           <p className="text-[9px] font-extrabold text-emerald-700">今日の学習に使える考え方</p>
           <h3 className="mt-1 text-sm font-extrabold text-emerald-950">{reference.label}</h3>
           <p className="mt-1 text-[10px] font-bold leading-relaxed text-emerald-900">{reference.practice}</p>
-          <a href={reference.href} target="_blank" rel="noreferrer" className="mt-1 inline-block text-[10px] font-extrabold text-emerald-800 underline">{reference.citation}</a>
         </div>
         <button
           type="button"
           onClick={() => setSeed((value) => value + 4)}
           className="mt-3 min-h-10 w-full border border-slate-300 bg-white text-[10px] font-extrabold text-slate-700 active:bg-slate-50"
         >
-          別の言葉と根拠を表示
+          別の言葉と学び方を表示
         </button>
       </div>
     </ReportSection>
