@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, useRef } from 'react'
-import { useStore } from '../store/useStore.js'
+import { useStore, useContentSettings } from '../store/useStore.js'
 import { getPassage } from '../data/passages.js'
 import { getLevel } from '../data/levels.js'
 import { resolvePassageWord } from '../data/passage-gloss.js'
@@ -26,7 +26,7 @@ export function ReaderScreen() {
   const passageId = params.passageId
   const navigate = useStore((s) => s.navigate)
   const back = useStore((s) => s.back)
-  const settings = useStore((s) => s.settings)
+  const settings = useContentSettings()
   const recordVocabHistory = useStore((s) => s.recordVocabHistory)
   const passage = getPassage(passageId)
 

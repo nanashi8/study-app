@@ -1,4 +1,4 @@
-import { useStore } from '../store/useStore.js'
+import { useContentSettings } from '../store/useStore.js'
 import { playSpeechItems } from '../lib/speech-player.js'
 import { japanesePhraseSpeechText } from '../lib/phrase-speech.js'
 import { longSentenceExplanationTexts } from '../lib/explanationDedup.js'
@@ -17,7 +17,7 @@ const ROLE_STYLE = {
 }
 
 export function LongSentenceTranslation({ guide, className = '' }) {
-  const settings = useStore((state) => state.settings)
+  const settings = useContentSettings()
   const phraseSteps = guide?.meaningSteps?.length ? guide.meaningSteps : guide?.steps
   if (!phraseSteps?.length) return null
   const explanationTexts = longSentenceExplanationTexts(phraseSteps)

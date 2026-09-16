@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useStore } from '../store/useStore.js'
+import { useStore, useContentSettings } from '../store/useStore.js'
 import { KanbunMarkedText } from '../components/KanbunMarkedText.js'
 import { notebookRefs } from '../lib/learningNotebook.js'
 import {
@@ -90,7 +90,7 @@ const READER_COPY = Object.freeze({
 export function LiteratureReaderScreen() {
   const workId = useStore((state) => state.params.workId)
   const navigate = useStore((state) => state.navigate)
-  const settings = useStore((state) => state.settings)
+  const settings = useContentSettings()
   const readingsDone = useStore((state) => state.readingsDone)
   const markLiteratureDone = useStore((state) => state.markLiteratureDone)
   const recordContentQuizResult = useStore((state) => state.recordContentQuizResult)

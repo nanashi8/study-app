@@ -210,8 +210,13 @@ test('共通メニューから保存される学習・音声・コンテンツ�
   assert.match(source, /data-settings-central-panel/)
   // 学習画面の上や下で切り替えられる設定も、保存される設定はすべてメニューの「設定」から変えられる。
   for (const key of settingKeys) {
-    assert.ok(source.includes(`setSetting('${key}'`), `メニューの設定で ${key} を変えられない`)
+    assert.ok(source.includes(`useSettingField('${key}')`), `メニューの設定で ${key} を変えられない`)
   }
+  // 全体の設定は、すべての教材をまとめてそろえる。
+  assert.match(source, /const ALL_CONTENTS_TARGET = \{ scopes: null \}/)
+  assert.match(source, /<SettingTargetContext\.Provider value=\{ALL_CONTENTS_TARGET\}>/)
+  assert.match(source, /ここで変えると、すべての教材がその値にそろいます/)
+  assert.match(source, /set: \(value\) => setContentSetting\(scopes \? targets : null, key, value\)/)
   assert.match(source, /title="読み上げの速さ"/)
   assert.match(source, /title="正解したら自動で次へ"/)
   assert.match(source, /title="英単語の出題バランス"/)
@@ -335,6 +340,13 @@ test('教材の行はその教材で効く設定を開き、設定のいちば�
   assert.match(menu, /\{item\.label\}を開く/)
   assert.match(menu, /onOpen=\{\(\) => openScreen\(contentSettingsItem\.screen\)\}/)
   assert.match(menu, /'content-settings': contentSettingsItem \? `\$\{contentSettingsItem\.label\}の設定` : '設定'/)
+  // 教材の設定はその教材だけの値を変え、英語アプリの行は英語の教材すべてをまとめて変える。
+  assert.match(menu, /\{ scopes: englishApp \? ENGLISH_SETTING_SCOPES : \[item\.screen\] \}/)
+  assert.match(menu, /<SettingTargetContext\.Provider value=\{target\}>/)
+  assert.match(menu, /この教材だけの設定です。ほかの教材の設定は変わりません。/)
+  assert.match(menu, /英語の教材すべてに、まとめて反映します。/)
+  assert.match(menu, /教材ごとに異なります。選ぶと、まとめてそろえます/)
+  assert.doesNotMatch(menu, /同じ設定を使うほかの教材にも反映されます/)
   // 教材ごとの設定と全体の設定は、同じ部品（保存される設定1つにつき1つ）を並べる。
   for (const key of settingKeys) assert.match(menu, new RegExp(`\\n  ${key}: [A-Za-z]+Setting,`), key)
 })
@@ -361,6 +373,8 @@ test('永続設定の変更処理は共通メニューへ集約し、廃止し�
       // 復習と未修の配分は、読み上げ欄と同じ画面下部の枠でも切り替える（メニューの設定にも置く）。
       'components/VocabMixConsole.jsx',
     ]],
+    // メニューの教材の設定と全体の設定は、選んだ教材の値を変える。
+    ['setContentSetting', ['components/SpeechSettings.jsx']],
     ['setBattleRelicLevel', ['components/GameSettings.jsx']],
     ['setBattleThemeId', ['components/GameSettings.jsx']],
     ['raiseBattleTrait', ['components/GameSettings.jsx']],

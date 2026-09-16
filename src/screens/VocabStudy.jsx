@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { useStore } from '../store/useStore.js'
+import { useStore, useContentSettings, currentContentSettings } from '../store/useStore.js'
 import { etymologyCardsForWord, etymologyStoryForWord, homographsFor } from '../data/vocab.js'
 import { getLevel } from '../data/levels.js'
 import {
@@ -58,7 +58,7 @@ export function VocabStudyScreen() {
   const returnTo = useStore((s) => s.returnTo)
   const review = useStore((s) => s.review)
   const reviseReview = useStore((s) => s.reviseReview)
-  const settings = useStore((s) => s.settings)
+  const settings = useContentSettings()
   const saveQuizSession = useStore((s) => s.saveQuizSession)
   const clearQuizSession = useStore((s) => s.clearQuizSession)
 
@@ -100,7 +100,7 @@ export function VocabStudyScreen() {
       size,
       purpose: 'study',
       cycleIds: params.vocabCycleIds,
-      freshShareOverride: vocabMixFreshShare(useStore.getState().settings.vocabMix),
+      freshShareOverride: vocabMixFreshShare(currentContentSettings().vocabMix),
     })
   // 「1回のカード数」で選べる上限は、今日の候補ではなく教材の在庫。
   // 今日ぶんを終えかけた級でも、5〜200枚とすべてを選べる状態を保つ。

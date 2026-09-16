@@ -184,7 +184,7 @@ test('画面下部の同じ枠で、読み上げと出題バランスを切り�
   // 出す語が決まっている画面（マイ単語・復習など）ではバーを出さない。
   assert.match(mix, /isAutomaticVocabularySource/)
   for (const source of [study, quiz]) {
-    assert.match(source, /freshShareOverride: vocabMixFreshShare\(useStore\.getState\(\)\.settings\.vocabMix\)/)
+    assert.match(source, /freshShareOverride: vocabMixFreshShare\(currentContentSettings\(\)\.vocabMix\)/)
   }
 })
 

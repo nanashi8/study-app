@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import { useShallow } from 'zustand/react/shallow'
 import {
   decodeProgress,
   encodeProgress,
@@ -114,6 +115,12 @@ import {
 } from '../lib/srs.js'
 import { scheduleVocabularyReview } from '../lib/vocabScheduler.js'
 import { completedSessionDestination } from '../lib/navigationPolicy.js'
+import {
+  applySettingChange,
+  effectiveSettings,
+  normalizeContentOverrides,
+  settingsScopeFor,
+} from '../lib/contentSettings.js'
 import { learningContentCatalogReviewCommand } from '../lib/learningContentCatalogReview.js'
 
 // ── 学習ロジックの定数 ──────────────────────────────────────────────
@@ -199,6 +206,8 @@ export function normalizeSettings(settings) {
   normalized.vocabMix = normalizeVocabMix(normalized.vocabMix)
   // 「答えを開いたまま」と「スペルを隠す」は同時に成り立たない。両方ONで届いたら、前からある開いたままを残す。
   normalized.hideSpelling = normalized.hideSpelling === true && normalized.revealAnswers !== true
+  // 教材ごとの値。上の各キーは、教材ごとの値が無いときに使う全体の値。
+  normalized.byContent = normalizeContentOverrides(source.byContent)
   return normalized
 }
 
@@ -1408,14 +1417,20 @@ export const useStore = create(
         }),
 
       // 「答えを開いたまま見せる」と「スペルを隠す」は同時に成り立たないので、片方をONにしたらもう片方を外す。
+      // 学習画面の上や下の切り替えは、いま開いている教材の値を変える。
+      // どの教材にも属さない画面では全体の値を変える。
       setSetting: (key, value) =>
+        set((st) => {
+          const scope = settingsScopeFor(st)
+          return {
+            settings: applySettingChange(st.settings, key, value, { scopes: scope ? [scope] : null }),
+          }
+        }),
+      // メニューの教材の設定（scopes に教材）と、全体の設定（scopes が null）から変える。
+      // 全体の設定はすべての教材を同じ値にそろえる。
+      setContentSetting: (scopes, key, value) =>
         set((st) => ({
-          settings: {
-            ...st.settings,
-            [key]: value,
-            ...(key === 'revealAnswers' && value === true ? { hideSpelling: false } : {}),
-            ...(key === 'hideSpelling' && value === true ? { revealAnswers: false } : {}),
-          },
+          settings: applySettingChange(st.settings, key, value, { scopes, clearOverrides: !scopes }),
         })),
 
       // ── ポータルのタイル並べ替え／表示オンオフ ──
@@ -1475,3 +1490,14 @@ useStore.subscribe((state, previous) => {
 export const isDue = (entry, day = today()) => !entry || entry.due <= day
 export const todayIndex = today
 export { INTERVALS, MAX_BOX }
+
+/** いま開いている教材の設定（教材ごとの値があればそれ、無ければ全体の値）。 */
+export function useContentSettings() {
+  return useStore(useShallow((state) => effectiveSettings(state.settings, settingsScopeFor(state))))
+}
+
+/** 出題を組む関数の中など、描画の外で、いま開いている教材の設定を読む。 */
+export function currentContentSettings() {
+  const state = useStore.getState()
+  return effectiveSettings(state.settings, settingsScopeFor(state))
+}

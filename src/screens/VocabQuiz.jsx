@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { useStore } from '../store/useStore.js'
+import { useStore, useContentSettings, currentContentSettings } from '../store/useStore.js'
 import {
   answeredQuizIndexes,
   buildDeck,
@@ -85,7 +85,7 @@ export function VocabQuizScreen() {
   const saveQuizSession = useStore((state) => state.saveQuizSession)
   const clearQuizSession = useStore((state) => state.clearQuizSession)
   const selectedStudentId = useStore((state) => state.battleStudentId)
-  const vocabMix = useStore((state) => state.settings.vocabMix)
+  const { vocabMix } = useContentSettings()
   const source = params.source ?? { type: 'due' }
   const isDragonVein = isDragonVeinSource(source)
 
@@ -120,7 +120,7 @@ export function VocabQuizScreen() {
     size,
     purpose: 'quiz',
     cycleIds: params.vocabCycleIds,
-    freshShareOverride: vocabMixFreshShare(useStore.getState().settings.vocabMix),
+    freshShareOverride: vocabMixFreshShare(currentContentSettings().vocabMix),
   })
   const [poolSize] = useState(() => vocabularyStockCount(source, {
     srs: useStore.getState().srs,

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { useStore } from '../store/useStore.js'
+import { useStore, useContentSettings } from '../store/useStore.js'
 import { WordBookToggle } from '../components/WordListSheet.jsx'
 import {
   buildListeningDeck,
@@ -63,7 +63,7 @@ export function ListeningQuizScreen() {
   const returnTo = useStore((s) => s.returnTo)
   const review = useStore((s) => s.review)
   const reviseReview = useStore((s) => s.reviseReview)
-  const settings = useStore((s) => s.settings)
+  const settings = useContentSettings()
 
   const source = params.source ?? { type: 'level', levelId: '5' }
   // size=0 は「絞り込みなし」。登録リストは全問、それ以外は設定した問題数で出す。

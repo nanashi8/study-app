@@ -1,5 +1,5 @@
 import { useEffect, useState, useSyncExternalStore } from 'react'
-import { useStore } from '../store/useStore.js'
+import { useStore, useContentSettings } from '../store/useStore.js'
 import {
   dismissSpeechPlayer,
   getSpeechPlayerServerSnapshot,
@@ -129,7 +129,7 @@ export function GlobalSpeechConsole() {
   )
   const screen = useStore((store) => store.screen)
   const params = useStore((store) => store.params)
-  const settings = useStore((store) => store.settings)
+  const settings = useContentSettings()
   const setSetting = useStore((store) => store.setSetting)
   // 画面下部の同じ場所を、読み上げ操作と出題バランスで分け合う。
   // どちらを開いていたかは画面のあいだだけ覚えていればよい一時状態。

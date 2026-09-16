@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from 'react'
-import { useStore } from '../store/useStore.js'
+import { useStore, useContentSettings } from '../store/useStore.js'
 import { SESSION_SIZE } from '../lib/session.js'
 import { Sheet } from './Sheet.jsx'
 import { Button, cx } from './ui.jsx'
@@ -21,7 +21,7 @@ export function normalizeSessionSize(value, max = Infinity) {
 
 /** 保存済みの「1セッションの問題数」。教材の在庫数を渡すとその範囲へ収める。 */
 export function useSessionSize(max = Infinity) {
-  const stored = useStore((state) => state.settings.sessionSize)
+  const stored = useContentSettings().sessionSize
   return normalizeSessionSize(stored, max)
 }
 
@@ -75,7 +75,7 @@ export function SessionCounter({
 }) {
   const [open, setOpen] = useState(false)
   const setSetting = useStore((state) => state.setSetting)
-  const stored = useStore((state) => state.settings.sessionSize)
+  const stored = useContentSettings().sessionSize
   const pool = Number.isFinite(Number(max)) ? Math.max(1, Math.floor(Number(max))) : null
   // 在庫より多い選択肢は出さず、最後に「全部」を置く。
   const options = [

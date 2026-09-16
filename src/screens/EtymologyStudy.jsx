@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useStore } from '../store/useStore.js'
+import { useStore, useContentSettings } from '../store/useStore.js'
 import { WordBookToggle } from '../components/WordListSheet.jsx'
 import { getEtymologyPack, getWord } from '../data/vocab.js'
 import { Button } from '../components/ui.jsx'
@@ -41,7 +41,7 @@ export function EtymologyStudyScreen() {
   const navigate = useStore((state) => state.navigate)
   const returnTo = useStore((state) => state.returnTo)
   const reviewEtymology = useStore((state) => state.reviewEtymology)
-  const settings = useStore((state) => state.settings)
+  const settings = useContentSettings()
   const revealAll = settings.revealAnswers
 
   const poolSize = (params.ids ?? []).length
