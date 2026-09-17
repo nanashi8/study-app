@@ -438,18 +438,31 @@ export const PASSAGE_SENSE_GLOSSES = Object.freeze({
   'Now students talk about energy at home, and some families check their own use.': words({ own: sense('own', '自分たちの'), use: sense('use', '使用（量）') }),
 
   // p_3_ai_class_rules（自分たちで作ったルール）
-  'Some used them to check spelling, and others asked for ideas before writing.': words({ used: sense('use', '使った') }),
+  'Some used them to check spelling, and others asked for ideas before writing.': words({
+    used: sense('use', '使った'),
+    spelling: sense('spell', 'つづり'),
+  }),
   'A few students copied whole answers and did not read them carefully.': words({ copied: sense('copy', '写した・まねた'), answers: sense('answer', '答え（複数）') }),
   'One teacher noticed that several reports used the same unusual phrase.': words({ used: sense('use', '使っていた') }),
   'Instead, the school asked each class to write its own rules.': words({ own: sense('own', '自分たちの') }),
   'Our class first collected examples of good and bad use.': words({ collected: sense('collect', '集めた'), use: sense('use', '使い方') }),
   'The class found that a list of ideas was often helpful.': words({ found: sense('find', '分かった・気づいた') }),
   'The class also found that copying a finished report was not honest work.': words({ found: sense('find', '分かった・気づいた') }),
-  'A student pointed out that the tools sometimes give confident but wrong answers.': words({ answers: sense('answer', '答え（複数）') }),
+  'A student pointed out that the tools sometimes give confident but wrong answers.': words({
+    pointed: sense('point', '指摘した（point out で「指摘する」）'),
+    answers: sense('answer', '答え（複数）'),
+  }),
+  'Then we ran a short experiment with the tools.': words({
+    ran: sense('run', '行った（run an experiment で「実験を行う」）'),
+  }),
   'Half of the class wrote a summary alone, and the other half used AI first.': words({ used: sense('use', '使った') }),
   'Two answers even included a fact that no other source mentioned.': words({ answers: sense('answer', '答え（複数）') }),
   'Some students still think that any use of AI is unfair.': words({ use: sense('use', '使用') }),
-  'Our teacher told us that learning to judge information is the real skill.': words({ learning: sense('learn', '学ぶこと・身につけること') }),
+  'Our teacher told us that learning to judge information is the real skill.': words({
+    told: sense('tell', '言った・伝えた'),
+    learning: sense('learn', '学ぶこと・身につけること'),
+    judge: sense('judge', '判断する・見分ける'),
+  }),
 
   // p_pre2_crowded_town_tourism（写真が広まった町で）
   'Shops and restaurants welcomed the change because many young families had left the town.': words({ left: sense('leave', '去った・離れた') }),
