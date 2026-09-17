@@ -189,6 +189,18 @@ function relativeExplanation(unit) {
       explanation: `${commaLead}${use}関係代名詞（目的格）です。直前の ${antecedent}（先行詞）を受けて、節の中で ${verb} の目的語Oになります。後ろに主語 ${subject} と動詞 ${verb} が続くのに、${verb} の目的語がない形になっている点で見分けます。${restoreText}${commaNote}${nonRestrictive ? '' : '目的格の関係代名詞は省略されることもあります。'}`,
     }
   }
+  // put a price on … のように、節の終わりに残った前置詞の目的語になる関係代名詞。
+  if (lead?.role === 'M') {
+    const stranded = [...elements].reverse()
+      .find((element) => element.role === 'M' && words(plain(element)).length === 1)
+    const preposition = stranded ? plain(stranded) : ''
+    return {
+      word: leadText,
+      chip: '関係代名詞',
+      kind: '関係代名詞（前置詞の目的語）',
+      explanation: `${commaLead}${use}関係代名詞です。直前の ${antecedent}（先行詞）を受けて、${preposition ? `節の終わりに残った前置詞 ${preposition} の目的語になります。` : '節の中で前置詞の目的語になります。'}後ろに主語 ${subject} と動詞 ${verb} が続くのに、${preposition ? `${preposition} の後ろの語がない` : '前置詞の後ろの語がない'}形になっている点で見分けます。`,
+    }
+  }
   if (lead?.role === 'C') {
     return {
       word: leadText,
