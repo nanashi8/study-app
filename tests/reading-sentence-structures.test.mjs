@@ -75,9 +75,10 @@ test('構造台帳の主節の文型は、5文型の正解表と一致する', (
     assert.ok(expected, `${passageId}: 5文型の正解表がない`)
     passage.sentences.forEach((sentence, index) => {
       const structure = buildSentenceStructure(sentence.en, entries[index].markup, entries[index])
-      // 命令文は主語 you を省いた形として、正解表の5文型と照らす。
-      const mainPattern = structure.patterns[0].replace(/^\(you\)/, 'S')
-      assert.equal(mainPattern, expected[index], `${sentence.reviewId}: ${structure.patterns.join('／')}`)
+      // 命令文は主語 you を省いた形として照らす。正解表は1文に1つなので、
+      // 述語が並ぶ文（teach … and show 人 もの など）は、主節の文型のどれかと一致すればよい。
+      const mainPatterns = structure.patterns.map((pattern) => pattern.replace(/^\(you\)/, 'S'))
+      assert.ok(mainPatterns.includes(expected[index]), `${sentence.reviewId}: 正解表 ${expected[index]}／台帳 ${structure.patterns.join('／')}`)
     })
   }
 })

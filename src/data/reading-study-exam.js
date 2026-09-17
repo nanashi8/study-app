@@ -94,7 +94,7 @@ export const EXAM_READING_STUDY = {
         'for free',
         '無料で',
         'Local shop workers will check the brakes, seats, and lights for free.',
-        '地域の自転車店の人が、ブレーキ、座席、ライトを無料で点検します。',
+        '地元の店の人たちが、ブレーキ、座席、ライトを無料で点検します。',
         '料金・申込条件を読む案内文の必須表現。',
       ),
       expression(
