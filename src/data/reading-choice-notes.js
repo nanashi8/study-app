@@ -249,7 +249,7 @@ export const READING_CHOICE_NOTES = freezeNotes({
   "p_4_bicycle_safety#3": {
     "Replace expensive parts.": "第9文 they cannot replace expensive parts と一致する。cannot の後ろが、できないこと。",
     "Check bicycle seats.": "第8文で、座席は点検すると書かれている。できることの一つ。",
-    "Make small repairs.": "第9文で、小さな問題は修理できる（They can repair small problems）と書かれている。",
+    "Make small repairs.": "第9文で、小さな不具合は直せる（They can repair small problems）と書かれている。",
     "Look at bicycle lights.": "第8文で、ライトは点検すると書かれている。できることの一つ。",
   },
   "p_4_bicycle_safety#4": {

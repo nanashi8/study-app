@@ -525,7 +525,7 @@ export const PASSAGE_READING_APPROACHES = Object.freeze({
   p_4_bicycle_safety: makePassageApproach(
     '安全の指示と、その理由・結果を一組にする',
     '告知文では、命令や助言を覚えるだけでなく、なぜ必要なのか、守ると何が変わるのかと結びつけて読む。',
-    ['指示の内容を、命令文の動詞から拾う', '指示ごとに、理由と結果を探す', '必要な情報を、設問の場面に当てはめる'],
+    ['指示の内容を、should・must の後ろの動詞から拾う', '指示ごとに、理由と結果を探す', '必要な情報を、設問の場面に当てはめる'],
     ['purpose-first', 'finite-verb-check', 'infinitive-role', 'cause-result', 'evidence-backtrack', 'reference-chain'],
   ),
   p_3_lunch_food_waste: makePassageApproach(
@@ -800,7 +800,13 @@ function structureRuleIds(sentence, structure) {
   const unitDetails = structure.units.map((unit) => `${unit.base}:${unit.detail}`)
   const elements = structureElementsOf(structure.root)
   const elementText = (element) => structureNodeText(element).replace(/\s+/g, ' ').trim()
-  const links = elements.filter((element) => element.role === '接').map((element) => elementText(element).toLowerCase())
+  // so (that) が目的の節を作るときは、因果の so として数えない。
+  const purposeLinks = new Set(structure.units
+    .filter((unit) => unit.base === '副詞節' && unit.detail === '目的')
+    .flatMap((unit) => unit.node.children.filter((child) => child.kind === 'element' && child.role === '接')))
+  const links = elements
+    .filter((element) => element.role === '接' && !purposeLinks.has(element))
+    .map((element) => elementText(element).toLowerCase())
   const verbs = elements.filter((element) => element.role === 'V').map((element) => elementText(element).toLowerCase())
   const modifiers = elements.filter((element) => element.role === 'M').map(elementText)
   const has = (pattern) => pattern.test(lower)
@@ -820,7 +826,7 @@ function structureRuleIds(sentence, structure) {
   if (
     !ids.includes('contrast-concession') &&
     !ids.includes('cause-result') &&
-    has(/\b(?:also|if|unless|in addition|moreover|furthermore|besides)\b/)
+    (has(/\b(?:also|if|unless|in addition|moreover|furthermore|besides)\b/) || purposeLinks.size > 0)
   ) ids.push('logic-connectors')
   if (has(/\bthan\b|\bas\s+(?:\w+\s+){1,3}as\b|\b(?:more|less|fewer)\b/)) ids.push('comparison-pairs')
   if (has(/\bthat\b/)) ids.push('that-diagnosis')

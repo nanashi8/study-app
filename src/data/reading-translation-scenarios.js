@@ -253,7 +253,7 @@ export const READING_TRANSLATION_SCENARIOS = Object.freeze({
       b('families can bring their bicycles to the park', '家族は／持ってくることができます／自転車を／公園へ'),
     ],
     [
-      b('Local shop workers will check the brakes, seats, and lights', '地域の自転車店の人が／点検します／ブレーキ・座席・ライトを'),
+      b('Local shop workers will check the brakes, seats, and lights', '地元の店の人たちが／点検します／ブレーキ・座席・ライトを'),
       b('for free', '無料で'),
     ],
     [
@@ -272,7 +272,7 @@ export const READING_TRANSLATION_SCENARIOS = Object.freeze({
       b('Parents should join the ride too', '保護者も／参加するべきです／その走行に'),
       b(
         'so they can practice the rules',
-        'そうすれば／保護者は／練習できます／そのルールを',
+        '〜できるように／保護者が／練習できる／そのルールを',
         '',
         'so／they／can practice／the rules',
       ),
