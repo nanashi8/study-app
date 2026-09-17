@@ -124,7 +124,7 @@ export const EXPANDED_READING_QUESTIONS = Object.freeze({
 
   p_pre2plus_clothing_second_life: freezeQuestions([
     {
-      q: 'Why can sending donated clothing overseas create a problem?',
+      q: 'Why can sending unwanted clothing overseas create a problem?',
       choices: ['It can shift disposal costs to communities that cannot use every item.', 'It always makes local clothing more expensive.', 'It prevents any item from finding a new owner.', 'It makes cotton impossible to reuse as cleaning cloths.'],
       answer: 'It can shift disposal costs to communities that cannot use every item.',
       explain: '受け入れ先で使い切れない品の処分負担が生じる可能性を本文が指摘しています。',
@@ -139,18 +139,18 @@ export const EXPANDED_READING_QUESTIONS = Object.freeze({
       q: 'Why was counting exchanged items alone not enough?',
       choices: ['An item has little benefit if nobody actually uses it.', 'The organizers did not know how many tables they had.', 'Every exchanged shirt replaced a new purchase.', 'Mixed materials were counted twice.'],
       answer: 'An item has little benefit if nobody actually uses it.',
-      explain: '別の戸棚で未使用のままなら環境上の利点が小さいため、後日の着用も調べました。',
+      explain: '別のクローゼットで使われないままなら環境への利点はほとんどないため、後日、実際に何を着たかも調べました。',
     },
     {
       q: 'How did the project protect participants’ dignity?',
       choices: ['It did not require anyone to explain why they wanted low-cost clothing.', 'It separated students from neighbors at different tables.', 'It published the names of everyone who received clothing.', 'It allowed only teachers to choose items.'],
       answer: 'It did not require anyone to explain why they wanted low-cost clothing.',
-      explain: '利用理由を説明させず、全員が同じテーブルと選択方法を使いました。',
+      explain: '安い服を求める理由を説明させず、生徒も先生も近所の人も同じテーブルと同じ選び方の仕組みを使いました。',
     },
     {
       q: 'What broader responsibility does the passage identify?',
-      choices: ['Manufacturers should use durable, repairable designs as well as local reuse efforts.', 'Volunteers should solve every material problem alone.', 'Consumers should replace clothing whenever styles change.', 'Schools should report only successful exchanges.'],
-      answer: 'Manufacturers should use durable, repairable designs as well as local reuse efforts.',
+      choices: ['Along with local reuse efforts, manufacturers should make durable, repairable products.', 'Volunteers should solve every material problem alone.', 'Consumers should replace clothing whenever styles change.', 'Schools should report only successful exchanges.'],
+      answer: 'Along with local reuse efforts, manufacturers should make durable, repairable products.',
       explain: '結論は交換・修理だけでなく、素材選択、修理可能性、丈夫な設計にも責任を広げています。',
     },
   ]),

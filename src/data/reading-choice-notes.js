@@ -543,7 +543,7 @@ export const READING_CHOICE_NOTES = freezeNotes({
   "p_pre2plus_clothing_second_life#3": {
     "An item has little benefit if nobody actually uses it.": "第16文 A shirt has little environmental benefit if it remains unused in another closet. と一致する。そのため後日、実際に何を着たかを尋ねた（第17文）。",
     "The organizers did not know how many tables they had.": "テーブルの数は出てこない。テーブルは、全員が同じものを使ったという話（第21文）。",
-    "Every exchanged shirt replaced a new purchase.": "購入予定の新品の代わりになったかは、後日のアンケートで尋ねたこと（第18文）。すべてがそうだったとは書かれていない。",
+    "Every exchanged shirt replaced a new purchase.": "買う予定だった品の代わりになったかは、後日のアンケートで尋ねたこと（第18文）。すべてがそうだったとは書かれていない。",
     "Mixed materials were counted twice.": "混合素材は、安全な再利用が難しい物として出てくる（第12文）。二重に数えたとは書かれていない。",
   },
   "p_pre2plus_clothing_second_life#4": {
@@ -553,7 +553,7 @@ export const READING_CHOICE_NOTES = freezeNotes({
     "It allowed only teachers to choose items.": "第21文で、生徒・先生・近隣の人が同じ選び方を使ったと書かれている。先生だけではない。",
   },
   "p_pre2plus_clothing_second_life#5": {
-    "Manufacturers should use durable, repairable designs as well as local reuse efforts.": "メーカーは素材や修理できるかを決めることで廃棄物に影響し（第25文）、二度目の生は交換と修理だけでなく丈夫な設計にもかかっている（第26文）と述べている。",
+    "Along with local reuse efforts, manufacturers should make durable, repairable products.": "メーカーは素材や修理できるかを決めることで廃棄物に影響し（第25文）、二度目の生は交換と修理だけでなく丈夫な設計にもかかっている（第26文）と述べている。",
     "Volunteers should solve every material problem alone.": "第23文で、地域のボランティアだけでは解決できない問題もあると書かれている。",
     "Consumers should replace clothing whenever styles change.": "流行が変わって服が捨てられることを問題としており（第2文）、不必要な購入を減らすことも必要だとしている（第26文）。",
     "Schools should report only successful exchanges.": "第24文で、明るい合計値だけでなく処理できなかった廃棄物も報告したと書かれている。",
