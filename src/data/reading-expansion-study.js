@@ -128,7 +128,7 @@ export const EXPANDED_READING_STUDY = Object.freeze({
       'どのくらい長く・どのくらい時間が',
       'Teams measured how long each route took.',
       '各チームはそれぞれの道順にかかる時間を測りました。',
-      'how long以下の節全体がmeasuredの目的内容になる。',
+      'how long以下の節全体がmeasuredの目的語になる。',
       'syntax',
     ),
     expression(
@@ -138,7 +138,7 @@ export const EXPANDED_READING_STUDY = Object.freeze({
       '〜する以上のこと',
       'Good translation requires more than replacing words.',
       'よい翻訳には単語を置き換える以上のことが必要です。',
-      'more thanは比較を使い、後ろの行動だけでは不十分だと示す。',
+      'more thanは比較の形で、後ろの行動だけでは足りないことを示す。',
     ),
   ]),
 
