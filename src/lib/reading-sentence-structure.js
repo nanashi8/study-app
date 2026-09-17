@@ -965,11 +965,13 @@ const DETERMINERS_BEFORE_NOUN = new Set([
 ])
 
 // 前置詞の形をしていても前置詞ではない語。
-function exemptPreposition(found, list, cursor, nextNode) {
+function exemptPreposition(found, list, cursor, nextNode, options = {}) {
   const next = (list[cursor + 1] ?? '').toLowerCase()
   const previous = (list[cursor - 1] ?? '').toLowerCase()
   // as quickly as possible の1つ目の as、as well の as は副詞。
   if (found === 'as' && (/ly$/.test(next) || next === 'well')) return true
+  // as powerful as fear is のように、後ろに as で始まる比較のまとまりがあるときの1つ目の as も副詞。
+  if (found === 'as' && options.hasAsComparison) return true
   // the past・of the past の past は名詞。
   if (found === 'past' && DETERMINERS_BEFORE_NOUN.has(previous)) return true
   // less by … than by … の than は、前置詞句どうしを並べる語。
@@ -981,6 +983,17 @@ function exemptPreposition(found, list, cursor, nextNode) {
 
 export function unbracketedPrepositions(structure) {
   const issues = []
+  // as … as の比較がある文かどうか（1つ目の as は前置詞ではなく副詞）。
+  const hasAsComparison = (function findAsComparison(nodes) {
+    for (const node of nodes) {
+      if (node.kind === 'unit') {
+        const first = (structureWords(rawText(node.children))[0] ?? '').toLowerCase()
+        if (first === 'as' && (node.base === '前' || node.base === '副詞節')) return true
+      }
+      if (node.children && findAsComparison(node.children)) return true
+    }
+    return false
+  })(structure.root)
   const visit = (nodes, unit) => {
     const firstElement = unit
       ? unit.children.find((child) => child.kind === 'element')
@@ -995,7 +1008,7 @@ export function unbracketedPrepositions(structure) {
         }
         while (cursor < list.length) {
           const found = leadingPreposition(list.slice(cursor))
-          if (found && !exemptPreposition(found, list, cursor, nodes[index + 1])) {
+          if (found && !exemptPreposition(found, list, cursor, nodes[index + 1], { hasAsComparison })) {
             issues.push({ word: found, text: normalizeStructureText(node.text) })
             cursor += found.split(' ').length
             continue

@@ -55,6 +55,19 @@ const ROLE_IN_CLAUSE = Object.freeze({
   M: '修飾語M',
 })
 
+// 文の途中へ先行詞を戻すときは、文頭で大文字になっていた冠詞などを小文字へ戻す。
+const SENTENCE_HEAD_WORDS = new Set([
+  'A', 'An', 'The', 'This', 'That', 'These', 'Those', 'Some', 'Every', 'No', 'Each', 'Any', 'One',
+  'Many', 'Most', 'Public', 'Local',
+])
+
+function lowerAntecedent(antecedent) {
+  const [first] = antecedent.split(/\s+/)
+  return SENTENCE_HEAD_WORDS.has(first)
+    ? `${first.toLowerCase()}${antecedent.slice(first.length)}`
+    : antecedent
+}
+
 function capitalizeSentence(text) {
   const trimmed = text.replace(/\s+/g, ' ').replace(/\s+([,.;:!?])/g, '$1').trim().replace(/[,.;:]$/u, '')
   return `${trimmed.charAt(0).toUpperCase()}${trimmed.slice(1)}.`
@@ -74,7 +87,7 @@ function restoreRelativeSentence(unitNode, antecedent) {
   const lastVerb = rest.map((element) => element.role).lastIndexOf('V')
   if (lastVerb < 0) return ''
   const pieces = rest.map(rawText)
-  pieces.splice(lastVerb + 1, 0, antecedent)
+  pieces.splice(lastVerb + 1, 0, lowerAntecedent(antecedent))
   return capitalizeSentence(pieces.join(' '))
 }
 
@@ -94,7 +107,11 @@ function restoreOmittedRelative(unitNode, antecedent, gapVerb) {
     insertAt = words(elements.slice(0, lastVerbIndex + 1).map(rawText).join(' ')).length - 1
   }
   if (insertAt < 0) return ''
-  const restored = [...clauseWords.slice(0, insertAt + 1), antecedent, ...clauseWords.slice(insertAt + 1)]
+  const restored = [
+    ...clauseWords.slice(0, insertAt + 1),
+    lowerAntecedent(antecedent),
+    ...clauseWords.slice(insertAt + 1),
+  ]
   return capitalizeSentence(restored.join(' '))
 }
 

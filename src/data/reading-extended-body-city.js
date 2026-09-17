@@ -118,7 +118,7 @@ export const GENERATIONAL_CITY_BODY = Object.freeze({
         ),
         s(
           'A problem that nobody at all has noticed cannot be solved, however serious that problem may later turn out to be.',
-          '誰も気づいていない問題はまったく解決できません。それがのちにどれほど深刻だと分かろうともです。',
+          'だれ一人気づいていない問題は、のちにどれほど深刻だと分かろうとも、解決できません。',
         ),
         s(
           'A problem that everybody has noticed will be answered somehow, even in cases where it is comparatively small and easy to bear.',
@@ -126,7 +126,7 @@ export const GENERATIONAL_CITY_BODY = Object.freeze({
         ),
         s(
           'The order in which problems arrive on a public agenda is therefore itself an important political outcome in its own right as well.',
-          'したがって問題が公の議題に上る順序そのものが、重要な政治的結果なのです。',
+          'したがって問題が公の議題に上る順序そのものが、それだけで見ても重要な政治的結果なのです。',
         ),
         p(
           'Fear responds to vivid images far more readily than it responds to rates, which is why rare events dominate discussion.',
