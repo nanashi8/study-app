@@ -367,7 +367,7 @@ export const READING_CHOICE_NOTES = freezeNotes({
     "Working hours may be caused only by tea.": "第15文で、労働時間はお茶を飲むこととストレスの両方に影響し得る要因として挙げられている。お茶が労働時間を決めるのではない。",
   },
   "p_2_online_health_claims#4": {
-    "Check its methods, conflicts, and independent review.": "企業が試験中の製品を売っているかを確かめ（第19文）、独立した審査と利害対立の説明が評価を助ける（第20文）と書かれている。研究の設計を調べること（第7文）も同じ。",
+    "Check its methods, conflicts, and independent review.": "企業が試験中の製品を売っているかを確かめ（第19文）、独立した審査と利益相反の説明が評価を助ける（第20文）と書かれている。研究の設計を調べること（第7文）も同じ。",
     "Accept it if the advertisement sounds confident.": "話し手が自信ありげでも、それだけでは信頼できるかどうか分からない（第2・3文）と書かれている。",
     "Reject it automatically without reading the study.": "第19文で、企業資金が自動的に研究を誤りにするわけではないと書かれている。",
     "Use it instead of advice from a professional.": "第23文で、オンラインで読むことは専門家の助言を置き換えるのではなく補うべきだと書かれている。",
@@ -375,7 +375,7 @@ export const READING_CHOICE_NOTES = freezeNotes({
   "p_2_online_health_claims#5": {
     "Strong conclusions require strong and repeated support.": "第24文で、責任ある読み手は証拠の質に確信の強さを合わせる人だと述べている。研究をくり返すと効果を確かめやすくなる（第17文）ので、強い結論には強くくり返された裏付けが要る。",
     "Readers should doubt every health statement equally.": "第24文で、責任ある読み手はすべてを疑う人ではないと書かれている。",
-    "A popular claim is more reliable than a careful review.": "何千人に共有されても信頼できるとは限らず（第1・3文）、多数の研究を検討した再評価を区別すべきだとしている（第16文）。",
+    "A popular claim is more reliable than a careful review.": "何千人に共有されても信頼できるとは限らず（第1・3文）、多くの研究を検討したレビューと区別すべきだとしている（第16文）。",
     "Uncertainty means that research has no value.": "1つの実験も可能性を示せ（第17文）、こうした問いは結論の強さを判断する助けになる（第22文）。研究に価値がないとは言っていない。",
   },
   "p_pre1_cashless_inclusion#1": {
