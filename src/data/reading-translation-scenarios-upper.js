@@ -490,7 +490,7 @@ export const UPPER_READING_TRANSLATION_SCENARIOS = Object.freeze({
       b('or rainfall patterns change', 'あるいは降雨の傾向が／変化すれば'),
     ],
     [
-      b('Setting review dates and publishing results allows governments', '定めることと／見直しの日程を／公表することは／結果を／可能にします／政府が'),
+      b('Setting review dates and publishing results allow governments', '定めることと／見直しの日程を／公表することは／結果を／可能にします／政府が'),
       b('to revise policies without treating revision as failure', '改めることを／政策を／見直しを失敗とみなさずに'),
     ],
     [

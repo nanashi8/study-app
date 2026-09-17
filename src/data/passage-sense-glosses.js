@@ -130,7 +130,7 @@ export const PASSAGE_SENSE_GLOSSES = Object.freeze({
     may: MAY,
     use: sense('use', '利用（land use で土地利用）'),
   }),
-  'Setting review dates and publishing results allows governments to revise policies without treating revision as failure.': words({
+  'Setting review dates and publishing results allow governments to revise policies without treating revision as failure.': words({
     setting: sense('set', '定めること・設けること'),
   }),
 

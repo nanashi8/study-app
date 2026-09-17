@@ -60,8 +60,8 @@ test('全長文・長い一文・文学の意味フレーズと内部SVOCMを監
   assert.equal(audit.reading.passageCount, 38)
   assert.equal(audit.reading.sentenceCount, 990)
   assert.equal(audit.reading.phraseCount, 6881)
-  assert.equal(audit.reading.meaningPhraseCount, 4947)
-  assert.equal(audit.reading.meaningMultiRoleCount, 1962)
+  assert.equal(audit.reading.meaningPhraseCount, 4880)
+  assert.equal(audit.reading.meaningMultiRoleCount, 1973)
   assert.equal(audit.reading.grammarBlockCount, 2420)
   assert.equal(audit.reading.correctionDecisionCount, 939)
   assert.equal(audit.reading.appliedCorrectionCount, 939)
@@ -190,7 +190,7 @@ test('複合主語・動名詞主語・目的so・名詞修飾不定詞の実rol
     '始めました（何を始めたかは次へ）')
 
   const gerunds = analysisFor(
-    'Setting review dates and publishing results allows governments to revise policies without treating revision as failure.',
+    'Setting review dates and publishing results allow governments to revise policies without treating revision as failure.',
   )
   assert.deepEqual(gerunds.phraseSequence.slice(0, 3).map(({ en, role, ja }) => ({ en, role, ja })), [
     { en: 'Setting review dates', role: 'S', ja: '見直しの日程を定めること' },

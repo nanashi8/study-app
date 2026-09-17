@@ -69,6 +69,7 @@ const ADVERBIAL_CLAUSE_KINDS = Object.freeze({
   程度: '程度',
   範囲: '範囲の限定',
   場所: '場所',
+  比例: '比例（〜するにつれて）',
 })
 
 const INFINITIVE_ADVERB_KINDS = Object.freeze({
@@ -317,6 +318,14 @@ function clauseGroups(elements) {
   const groups = []
   let current = { elements: [], sharedSubject: false }
   for (const [index, element] of elements.entries()) {
+    // セミコロン・コロンの後ろなど、接続語なしで新しい主語が来たら新しい節。
+    if (
+      ['S', '仮S'].includes(element.role) &&
+      current.elements.some((item) => item.role === 'V' && verbIsComplete(item))
+    ) {
+      groups.push(current)
+      current = { elements: [], sharedSubject: false }
+    }
     if (
       element.role === 'V' &&
       current.elements.some((item) => item.role === 'V' && verbIsComplete(item)) &&
@@ -401,6 +410,12 @@ function prepositionBeforeUnit(container, unit) {
   const before = normalizeStructureText(rawText(container.children.slice(0, Math.max(0, index))))
   const words = structureWords(before)
   if (!words.length) return ''
+  // A or B のように並んだ二つ目のまとまりは、一つ目と同じ前置詞を受ける。
+  if (/^(?:and|or)$/i.test(words.at(-1))) {
+    const previousUnit = container.children.slice(0, Math.max(0, index)).reverse()
+      .find((child) => child.kind === 'unit')
+    return previousUnit ? prepositionBeforeUnit(container, previousUnit) : ''
+  }
   const joined = words.join(' ').toLowerCase()
   const multi = /(?:^|\s)(instead of|because of|in spite of|as well as|according to|in addition to|rather than|such as|by means of|in terms of|apart from|out of)$/.exec(joined)
   if (multi) return words.slice(-multi[1].split(' ').length).join(' ')
@@ -417,7 +432,11 @@ function nounFunctionText(unit, container, scopeElements, scopeUnit) {
     if (/^(?:than|as)$/i.test(preposition)) {
       return `${inside}${preposition} の後ろに置かれた、比べる相手です（${ROLE_NAMES[container.role]}「${nodeText(container)}」の一部）。`
     }
-    return `${inside}前置詞 ${preposition} の目的語です（${preposition} から始まるまとまりが${ROLE_NAMES[container.role]}）。`
+    const containerText = nodeText(container)
+    const startsWithPreposition = containerText.toLowerCase().startsWith(preposition.toLowerCase())
+    return startsWithPreposition
+      ? `${inside}前置詞 ${preposition} の目的語です（${preposition} から始まるまとまりが${ROLE_NAMES[container.role]}）。`
+      : `${inside}前置詞 ${preposition} の目的語です（${ROLE_NAMES[container.role]}「${containerText}」の一部）。`
   }
   switch (container.role) {
     case 'S':
@@ -769,13 +788,21 @@ function partDescription(part, scopeInfo) {
 
 function describeParts(parts, scopeInfo) {
   // will also talk のように、間に修飾語をはさんだ動詞は一つの動詞Vとして述べる。
-  if (
-    parts.length === 3 &&
-    parts[0].role === 'V' && parts[1].role === 'M' && parts[2].role === 'V'
-  ) {
-    return `${parts[0].text} … ${parts[2].text} が動詞V（間の ${parts[1].text} は修飾語M）`
+  const pieces = []
+  for (let index = 0; index < parts.length; index++) {
+    const part = parts[index]
+    if (
+      part.role === 'V' &&
+      parts[index + 1]?.role === 'M' &&
+      parts[index + 2]?.role === 'V'
+    ) {
+      pieces.push(`${part.text} … ${parts[index + 2].text} が動詞V（間の ${parts[index + 1].text} は修飾語M）`)
+      index += 2
+      continue
+    }
+    pieces.push(partDescription(part, scopeInfo))
   }
-  return parts.map((part) => partDescription(part, scopeInfo)).join('、')
+  return pieces.join('、')
 }
 
 // 語順訳のまとまり（連続する語 start..end）に、台帳の役割を割り当てる。

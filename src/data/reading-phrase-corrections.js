@@ -1576,13 +1576,13 @@ const BASE_READING_PHRASE_CORRECTIONS = Object.freeze({
       { role: 'C', en: 'flexible', ja: '柔軟な状態（のままで）' },
     ], 'flexible は adaptation plans の状態Cで、括弧で remain へ受け直します。'),
   ]),
-  'Setting review dates and publishing results allows governments to revise policies without treating revision as failure.': Object.freeze([
+  'Setting review dates and publishing results allow governments to revise policies without treating revision as failure.': Object.freeze([
     correction(['Setting', 'review dates'], [
       { role: 'S', en: 'Setting review dates', ja: '見直しの日程を定めること' },
-    ], 'Setting review dates は動名詞句全体で、主節 allows の一つ目の主語Sです。内部の目的語を分けて日本語を逆転させず、一つの自然な意味単位にします。'),
+    ], 'Setting review dates は動名詞句全体で、主節 allow の一つ目の主語Sです。内部の目的語を分けて日本語を逆転させず、一つの自然な意味単位にします。'),
     correction(['publishing', 'results'], [
       { role: 'S', en: 'publishing results', ja: '結果を公表することは' },
-    ], 'publishing results は一つ目の動名詞句と並列された二つ目の主語Sです。二項全体が allows の複合主語になります。'),
+    ], 'publishing results は一つ目の動名詞句と並列された二つ目の主語Sです。二項全体が allow の複合主語になります。'),
     correction(['without treating revision as failure'], [
       { role: 'M', en: 'without', ja: '〜することなく（内容は次へ）' },
       { role: 'V', en: 'treating', ja: 'みなします（何を何と、は次へ）' },
@@ -3171,7 +3171,7 @@ const ADJACENT_JA_READING_PHRASE_CORRECTIONS = Object.freeze({
       },
     ], '関係詞節末から先行詞failuresへ戻り、help officials identify の内容を完成します。'),
   ]),
-  'Setting review dates and publishing results allows governments to revise policies without treating revision as failure.': Object.freeze([
+  'Setting review dates and publishing results allow governments to revise policies without treating revision as failure.': Object.freeze([
     correction(['to revise'], [
       { role: 'V', en: 'to revise', ja: '改めること（対象・条件は次へ）' },
     ], 'allow O to do の動作を目的語とwithout句より前で閉じません。'),
@@ -3179,9 +3179,9 @@ const ADJACENT_JA_READING_PHRASE_CORRECTIONS = Object.freeze({
       {
         role: 'C', en: 'as failure',
         ja: '見直しを失敗とみなさずに政策を改められるよう、政府を助けます',
-        closureBinding: closure('object-to-infinitive', 'to revise', 'allows governments', 'governments to revise policies without treating revision as failure'),
+        closureBinding: closure('object-to-infinitive', 'to revise', 'allow governments', 'governments to revise policies without treating revision as failure'),
       },
-    ], 'without句末でtreat O as Cを完成し、allows governments to reviseへ戻します。'),
+    ], 'without句末でtreat O as Cを完成し、allow governments to reviseへ戻します。'),
   ]),
   'Societies often assume that important events will be remembered simply because they are recorded in books, archives, or digital databases.': Object.freeze([
     correction(['are recorded'], [

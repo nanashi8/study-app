@@ -251,7 +251,7 @@ test('代表的な5文型・受動態・存在構文を正しく区別する', (
     ['have been designed to be almost invisible', 'SV'],
     ['There is also a social problem', 'SV'],
     ['treated floods, heat waves', 'SVOC'],
-    ['allows governments to revise', 'SVOC'],
+    ['allow governments to revise', 'SVOC'],
     ['keeps multiple perspectives in conversation', 'SVOC'],
   ]
   for (const [fragment, pattern] of fixtures) {
