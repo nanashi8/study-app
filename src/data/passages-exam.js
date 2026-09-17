@@ -52,7 +52,7 @@ export const EXAM_PASSAGES = [
     vocab: [
       'bicycle', 'safety', 'traffic', 'accident', 'helmet', 'rule',
       'cross', 'road', 'light', 'driver', 'notice', 'dark', 'check',
-      'brake', 'repair', 'free', 'volunteer', 'practice', 'carefully',
+      'brake', 'repair', 'free', 'volunteer', 'practice', 'careful',
       'protect',
     ],
     sentences: [
@@ -82,10 +82,10 @@ export const EXAM_PASSAGES = [
     theme: '食品ロス・学校での調査',
     examFocus: ['出来事の順序', '数値の比較', '課題と解決策'],
     vocab: [
-      'waste', 'cafeteria', 'notice', 'leftover', 'survey', 'reason',
-      'portion', 'measure', 'amount', 'suggest', 'choice', 'instead',
-      'reduce', 'result', 'continue', 'encourage', 'environment',
-      'resource', 'produce', 'transport', 'improve', 'effort',
+      'waste', 'cafeteria', 'notice', 'leftover', 'survey', 'portion',
+      'measure', 'amount', 'discover', 'suggest', 'offer', 'choice',
+      'instead', 'record', 'reduce', 'result', 'encourage', 'energy',
+      'improvement', 'protect', 'valuable', 'resource',
     ],
     sentences: [
       p('Students at one junior high school noticed that a lot of food was left in the cafeteria after lunch.', 'ある中学校の生徒たちは、昼食後の食堂にたくさんの食べ物が残されていることに気づきました。'),
@@ -118,9 +118,9 @@ export const EXAM_PASSAGES = [
     theme: '睡眠・教育制度',
     examFocus: ['主張と根拠', '利点と課題', '筆者の結論'],
     vocab: [
-      'sleep', 'teenager', 'schedule', 'research', 'brain', 'natural',
-      'attention', 'performance', 'experiment', 'attendance', 'mood',
-      'advantage', 'challenge', 'transportation', 'activity', 'solution',
+      'sleep', 'teenager', 'schedule', 'researcher', 'brain', 'reasonable',
+      'attention', 'cooperation', 'experiment', 'attendance', 'mood',
+      'benefit', 'challenge', 'transportation', 'activity', 'solution',
       'community', 'evidence', 'balance', 'effective', 'policy',
     ],
     sentences: [
@@ -199,10 +199,10 @@ export const EXAM_PASSAGES = [
     examFocus: ['情報源の評価', '相関と因果', '結論の妥当性'],
     vocab: [
       'claim', 'evidence', 'source', 'expert', 'research', 'correlation',
-      'cause', 'sample', 'participant', 'compare', 'factor', 'advertisement',
-      'conflict', 'interest', 'reliable', 'conclusion', 'uncertain',
-      'confirm', 'context', 'treatment', 'risk', 'misleading', 'evaluate',
-      'independent', 'recommendation',
+      'cause', 'sample', 'volunteer', 'compare', 'factor', 'financial',
+      'conflict', 'interest', 'reliable', 'conclusion', 'confidence',
+      'examine', 'context', 'treatment', 'risk', 'distinguish', 'evaluate',
+      'independent', 'advice',
     ],
     sentences: [
       p('A short video claims that a certain drink improves memory, and thousands of users share it within a day.', 'ある飲み物が記憶力を高めると短い動画が主張し、何千人もの利用者が1日でそれを共有します。'),
@@ -243,10 +243,10 @@ export const EXAM_PASSAGES = [
     examFocus: ['対立意見の比較', '具体例からの推論', '条件付き結論'],
     vocab: [
       'cashless', 'transaction', 'convenience', 'efficient', 'merchant',
-      'consumer', 'exclude', 'access', 'bank', 'account', 'fee', 'identity',
+      'consumer', 'barrier', 'access', 'bank', 'account', 'fee', 'identity',
       'privacy', 'data', 'vulnerable', 'inclusion', 'alternative',
-      'incentive', 'requirement', 'participate', 'inequality', 'policy',
-      'innovation', 'flexibility', 'resilient', 'infrastructure',
+      'incentive', 'require', 'participation', 'circumstance', 'policy',
+      'innovation', 'flexibility', 'resilience', 'infrastructure',
     ],
     sentences: [
       p('Cashless payment has recently moved from a convenient option to the expected form of payment in many shops, transport systems, and public facilities.', 'キャッシュレス決済は近年、多くの店、交通機関、公共施設で、便利な選択肢から当然とされる支払い方法へ変化してきました。'),
@@ -292,11 +292,11 @@ export const EXAM_PASSAGES = [
     examFocus: ['抽象概念の具体化', '反論への応答', '筆者の限定的主張'],
     vocab: [
       'metric', 'indicator', 'measurement', 'quantify', 'performance',
-      'institution', 'incentive', 'target', 'accountability', 'transparent',
-      'distort', 'proxy', 'objective', 'optimize', 'neglect', 'unintended',
+      'institution', 'incentive', 'target', 'accountability', 'transparency',
+      'inconsistent', 'proxy', 'objective', 'optimize', 'neglect', 'surveillance',
       'consequence', 'judgment', 'qualitative', 'context', 'audit',
       'compliance', 'discretion', 'legitimacy', 'deliberation', 'feedback',
-      'adaptive', 'plural', 'threshold', 'evaluate', 'mission', 'governance',
+      'adaptive', 'plural', 'threshold', 'evaluation', 'mission', 'democratic',
     ],
     sentences: [
       p('Modern institutions measure almost everything they hope to improve in complex systems with competing public purposes.', '現代の機関は、公共の目的どうしがぶつかり合う複雑な仕組みの中で、改善したいと望むほとんどすべてのものを測定します。'),
