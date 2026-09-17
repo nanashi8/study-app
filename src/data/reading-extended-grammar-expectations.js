@@ -10,8 +10,8 @@ const patterns = (source) => Object.freeze(source.trim().split(/\s+/))
 
 export const EXTENDED_READING_GRAMMAR_EXPECTATIONS = Object.freeze({
   p_ext_4000_generational_city: patterns(`
-    SVC  SV   SV   SVC  SVO  SVO  SVO  SVO  SVC  SV   SVO  SV
-    SVO  SVO  SVO  SVC  SVC  SVO  SV   SVO
+    SVC  SV   SV   SVC  SVO  SVOC SVO  SVO  SVC  SV   SVO  SV
+    SVO  SVO  SVO  SVC  SVC  SVO  SVC  SVO
     SV   SV   SV   SVC  SV   SVO  SVC  SV   SVC  SVO  SVO  SVOC
     SVO  SV   SVO  SV   SV   SV   SVO  SVC
     SVC  SV   SVO  SVO  SVC  SVO  SVO  SVC  SVO  SVC  SVO  SVC

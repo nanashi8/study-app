@@ -17,12 +17,28 @@ import {
 
 const passageById = new Map(ANNOTATED_PASSAGES.map((passage) => [passage.id, passage]))
 
+// 語彙強化ロングリーディングは節ごとに手で確かめて台帳へ移す。
+// ここに書いた文数までが台帳、その先は台帳ができるまで解析器の表示のまま。
+const LEDGERS_IN_PROGRESS = Object.freeze({
+  p_ext_4000_generational_city: 20,
+})
+
+// 台帳がある文（途中までの長文は、その文数まで）。
+function ledgerSentences(passageId, passage) {
+  const covered = LEDGERS_IN_PROGRESS[passageId] ?? passage.sentences.length
+  return passage.sentences.slice(0, covered)
+}
+
 test('構造台帳は本文と同じ順番・同じ英文で、書き方の誤りがない', () => {
   for (const [passageId, entries] of Object.entries(READING_SENTENCE_STRUCTURES)) {
     const passage = passageById.get(passageId)
     assert.ok(passage, `${passageId}: 本文がない`)
-    assert.equal(entries.length, passage.sentences.length, `${passageId}: 文の数が本文と違う`)
-    passage.sentences.forEach((sentence, index) => {
+    assert.equal(
+      entries.length,
+      LEDGERS_IN_PROGRESS[passageId] ?? passage.sentences.length,
+      `${passageId}: 文の数が本文と違う`,
+    )
+    ledgerSentences(passageId, passage).forEach((sentence, index) => {
       const entry = entries[index]
       const structure = buildSentenceStructure(sentence.en, entry.markup, entry)
       assert.deepEqual(structure.errors, [], `${sentence.reviewId}: ${sentence.en}`)
@@ -40,7 +56,7 @@ test('構造台帳は本文と同じ順番・同じ英文で、書き方の誤�
 test('構造台帳のある文は、画面の要素・構造図・語順訳の役割を台帳から作る', () => {
   for (const [passageId, entries] of Object.entries(READING_SENTENCE_STRUCTURES)) {
     const passage = passageById.get(passageId)
-    passage.sentences.forEach((sentence, index) => {
+    ledgerSentences(passageId, passage).forEach((sentence, index) => {
       const analysis = analyzeReadingSentence(sentence)
       assert.ok(analysis.structure, `${sentence.reviewId}: 台帳が解析へ届かない`)
       assert.equal(analysis.marked, analysis.structure.marked, `${sentence.reviewId}: 構造図が台帳と違う`)
@@ -74,7 +90,7 @@ test('構造台帳の主節の文型は、5文型の正解表と一致する', (
     const passage = passageById.get(passageId)
     const expected = READING_GRAMMAR_EXPECTATIONS[passageId]
     assert.ok(expected, `${passageId}: 5文型の正解表がない`)
-    passage.sentences.forEach((sentence, index) => {
+    ledgerSentences(passageId, passage).forEach((sentence, index) => {
       const structure = buildSentenceStructure(sentence.en, entries[index].markup, entries[index])
       // 命令文は主語 you を省いた形として照らす。正解表は1文に1つなので、
       // 述語が並ぶ文（teach … and show 人 もの など）は、主節の文型のどれかと一致すればよい。
@@ -184,7 +200,7 @@ test('台帳の前置詞は、すべて前置詞句 {前| …} でくくる', ()
   const issues = []
   for (const [passageId, entries] of Object.entries(READING_SENTENCE_STRUCTURES)) {
     const passage = passageById.get(passageId)
-    passage.sentences.forEach((sentence, index) => {
+    ledgerSentences(passageId, passage).forEach((sentence, index) => {
       for (const issue of unbracketedPrepositions(
         buildSentenceStructure(sentence.en, entries[index].markup, entries[index]),
       )) {
@@ -198,7 +214,7 @@ test('台帳の前置詞は、すべて前置詞句 {前| …} でくくる', ()
 test('節のまとまりには、つなぐ語の種類と見分け方がある', () => {
   for (const [passageId, entries] of Object.entries(READING_SENTENCE_STRUCTURES)) {
     const passage = passageById.get(passageId)
-    passage.sentences.forEach((sentence, index) => {
+    ledgerSentences(passageId, passage).forEach((sentence, index) => {
       const structure = buildSentenceStructure(sentence.en, entries[index].markup, entries[index])
       for (const unit of structure.units) {
         if (!unit.clause) continue

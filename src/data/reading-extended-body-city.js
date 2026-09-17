@@ -25,19 +25,19 @@ export const GENERATIONAL_CITY_BODY = Object.freeze({
       sentences: Object.freeze([
         p(
           'A city is above all a machine for moving costs and benefits across time, although it is very rarely described in quite those terms.',
-          '都市は何よりも費用と利益を時間を越えて移す装置ですが、そのような言葉で説明されることはめったにありません。',
+          '都市は何よりも費用と利益を時間を越えて移す装置ですが、まさにそういう言葉で説明されることはめったにありません。',
         ),
         s(
           'A road that is built this year will be repaired, widened, and eventually replaced by people who have not yet been born.',
-          '今年造られた道路は、まだ生まれていない人々によって修理され、やがて造り替えられます。',
+          '今年造られる道路は、まだ生まれていない人々によって修理され、広げられ、やがて造り替えられます。',
         ),
         s(
           'A pension that is promised this year will be paid out of the future wages of workers who are still at school today.',
-          '今年約束された年金は、まだ学校にいる働き手の賃金から支払われます。',
+          '今年約束される年金は、今日まだ学校にいる働き手の将来の賃金から支払われます。',
         ),
         s(
           'Every serious argument about the future of a city is therefore in the end an argument about who pays for it and when.',
-          'したがって都市の将来についての真剣な議論はすべて、誰がいつその費用を払うのかについての議論です。',
+          'したがって都市の将来についての真剣な議論はすべて、結局のところ、誰がいつその費用を払うのかについての議論です。',
         ),
         p(
           'Economists usually handle this problem with a discount rate, a single number that states how much a future benefit is worth today.',
@@ -45,7 +45,7 @@ export const GENERATIONAL_CITY_BODY = Object.freeze({
         ),
         s(
           'A high rate treats the distant future as almost worth nothing, while a low rate treats that same future as very nearly present indeed.',
-          '高い率は遠い未来をほとんど無価値として扱い、低い率は同じ未来をほぼ現在として扱います。',
+          '高い率は遠い未来をほとんど無価値として扱い、低い率は同じ未来を実にほぼ現在として扱います。',
         ),
         s(
           'The choice of that single number therefore settles the answer long before any piece of evidence has actually been examined.',
