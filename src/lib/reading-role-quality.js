@@ -359,7 +359,7 @@ export function auditReadingRoleQuality(passages, analyzeReadingSentence) {
       errors.push('choice architecture第1文の下段ブロック内役割列が人手正解表と不一致')
     }
     const expectedMarked =
-      'People often describe choice (as if it begins only when a person consciously compares several options)'
+      'People often describe choice (as if it begins only (when a person consciously compares several options))'
     if (choiceAnalysis.marked !== expectedMarked) {
       errors.push(`choice architecture第1文の構造表示が不正: ${choiceAnalysis.marked}`)
     }
