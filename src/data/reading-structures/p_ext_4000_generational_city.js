@@ -1,7 +1,7 @@
 import { st } from './entry.js'
 
 // 語彙強化ロングリーディング（約4,000語）の構造台帳。節ごとに手で確かめて足していく。
-// いまは「翌年より先を考える」（#1〜#20）と「恐れ・希望・注意」（#21〜#40）まで。
+// いまは「翌年より先を考える」から「結果を左右する条件」まで（#1〜#80）。
 // 残りの文は、台帳ができるまで解析器の表示のまま。
 export default Object.freeze([
   st('[S A city] [V is] [M {前| above all}] [C a machine {前| for {動名詞| [V moving] [O costs and benefits] [M {前| across time}]}}], [M {副詞節:譲歩| [接 although] [S it] [V is] [M very rarely] [V described] [M {前| in quite those terms}]}].', {
@@ -446,6 +446,436 @@ export default Object.freeze([
     ],
     notes: {
       'Spending that reserve on a project': '動名詞 Spending … が文の主語Sです。',
+    },
+  }),
+  st('[S Work] [V is] [C the place {関係>the place| [M where] [S most people] [M actually] [V meet] [O the economy]}], [接 and] [S it] [V is] [M also] [C {疑問詞節| [M where] [S most public policy] [M finally] [V lands]}].', {
+    chunks: [
+      ['Work is the place', '仕事こそが場所です（どんな場所かは次へ）'],
+      ['where most people actually meet the economy,', '大半の人が実際に経済に出会う'],
+      ['and it is also where', 'そしてそこはまた〜場所でもあります'],
+      ['most public policy finally lands', '公共政策が最後に着地する'],
+    ],
+    notes: {
+      'and it is also where': 'ここの where は「〜する場所」という意味のまとまりを作り、is の補語Cになります。',
+    },
+  }),
+  st('[S A rule {前| about wages, working hours, or safety}] [V reaches] [O a household] [M only] [M {前| through the one particular job {関係>the one particular job| [O that] [S one member {前| of it}] [V does]}}].', {
+    chunks: [
+      ['A rule about wages, working hours, or safety', '賃金や労働時間や安全についての規則は'],
+      ['reaches a household only', '家庭に届くのは〜を通してだけです'],
+      ['through the one particular job', 'その一つの特定の仕事を通して'],
+      ['that one member of it does', '家族の一人が就いている（仕事を）'],
+    ],
+    notes: {
+      'that one member of it does': 'that は the one particular job を受ける関係代名詞で、does の目的語にあたります。',
+    },
+  }),
+  st('[S {動名詞| [V Changing] [O that rule]}] [M therefore] [V changes] [O different households] [M {前| in ways {関係>ways| [O that] [S no average figure] [V is able to show] [M {前| at all}]}}].', {
+    chunks: [
+      ['Changing that rule therefore changes', 'その規則を変えることは、したがって変えます（何をかは次へ）'],
+      ['different households in ways', '家庭ごとに違う形で（どんな形かは次へ）'],
+      ['that no average figure', 'どんな平均値にも'],
+      ['is able to show at all', 'まったく示せない（形で）'],
+    ],
+    notes: {
+      'is able to show at all': 'be able to ＋ 動詞 で「〜できる」。at all は否定を強めます。',
+    },
+  }),
+  st('[S Any honest account {前| of a labor reform}] [M therefore] [V has to name] [O {疑問詞節| [S who] [V gains] [M {前| from it}]} and {疑問詞節| [S who] [V loses] [M {前| by it}]}].', {
+    chunks: [
+      ['Any honest account of a labor reform', '労働改革のどんな誠実な説明も'],
+      ['therefore has to name', 'したがって名指しする必要があります（何をかは次へ）'],
+      ['who gains from it', 'だれがそれで得をするのか'],
+      ['and who loses by it', 'そしてだれがそれで損をするのかを'],
+    ],
+    notes: {
+      'who gains from it': 'この who は疑問詞で、「だれが得をするのか」という間接疑問を作ります。',
+    },
+  }),
+  st('[S A skill] [V is not] [M {前| at all}] [C the same thing {前| as a certificate}], [M {副詞節:理由| [接 because] [S it] [V is] [C a set {前| of judgments {関係>judgments| [S that] [V are built] [M {前| by long repetition}]}}]}].', {
+    chunks: [
+      ['A skill is not at all the same thing', '技能はまったく同じものではありません'],
+      ['as a certificate,', '証書と'],
+      ['because it is a set of judgments', 'なぜならそれは一連の判断だからです'],
+      ['that are built by long repetition', '長い繰り返しによって築かれる（判断）'],
+    ],
+    notes: {
+      'A skill is not at all the same thing': 'the same A as B で「Bと同じA」。not at all は「まったく〜ない」。',
+    },
+  }),
+  st('[S A worker {関係>A worker| [S who] [V has performed] [O a task] [M {前| for many years}]}] [V can see] [O a problem {関係>a problem| [O that] [S no printed manual] [V has ever been able to describe]}].', {
+    chunks: [
+      ['A worker who has performed a task', 'その作業をこなしてきた働き手は'],
+      ['for many years', '何年も'],
+      ['can see a problem', '問題を見て取れます（どんな問題かは次へ）'],
+      ['that no printed manual', 'どの印刷された手引書にも'],
+      ['has ever been able to describe', 'これまで書き表せたことのない（問題を）'],
+    ],
+    notes: {
+      'has ever been able to describe': 'has been able to は「〜できたことがある」。no ＋ 名詞 と組んで「どれも〜できたことがない」。',
+    },
+  }),
+  st('[S Training programs] [V reproduce] [O the manual] [M fully and consistently], [接 and] [S they] [V reproduce] [O the judgment] [M only] [M {前| with the greatest {前| of difficulty}}].', {
+    chunks: [
+      ['Training programs reproduce the manual', '研修は手引書を再現します'],
+      ['fully and consistently,', '完全に、そして確実に'],
+      ['and they reproduce the judgment only', 'そして判断を再現できるのはようやく'],
+      ['with the greatest of difficulty', '最大の苦労をしてやっとです'],
+    ],
+    notes: {
+      'with the greatest of difficulty': 'with difficulty で「苦労して」。the greatest of difficulty はその強めた形です。',
+    },
+  }),
+  st('[S That] [V is] [M precisely] [C {疑問詞節| [M why] [S an experienced workforce] [V is] [C a valuable asset {関係>a valuable asset| [O that] [S no line {前| in any public budget}] [M ever] [V records]}]}].', {
+    chunks: [
+      ['That is precisely why', 'それがまさに理由です（何のかは次へ）'],
+      ['an experienced workforce is a valuable asset', '経験を積んだ働き手が貴重な資産である'],
+      ['that no line in any public budget', 'どの公共予算のどの項目も'],
+      ['ever records', '記録することのない（資産）'],
+    ],
+    notes: {
+      'That is precisely why': 'That is why … で「だからこそ〜」。precisely はそれを強めます。',
+    },
+  }),
+  st('[S Organizations] [V remember] [O {what節| [O what] [S they] [V have learned]}] [M {前| through their formal procedures}] [M {前| rather than {前| through the memories {前| of their staff}}}].', {
+    chunks: [
+      ['Organizations remember what they have learned', '組織は学んだことを記憶します'],
+      ['through their formal procedures', '成文の手順によって'],
+      ['rather than through the memories of their staff', '職員の記憶によってではなく'],
+    ],
+    notes: {
+      'Organizations remember what they have learned': 'what は先行詞を含む関係代名詞で、「学んだこと」というまとまりを作ります。',
+    },
+  }),
+  st('[S A form {関係>A form| [S that] [V asks] [O an awkward and apparently useless question]}] [V is] [M very often] [C the trace {前| of an old and extremely expensive mistake}].', {
+    chunks: [
+      ['A form that asks an awkward', '厄介で〜質問をする書式は'],
+      ['and apparently useless question', '一見無用な'],
+      ['is very often the trace', 'しばしば痕跡です（何のかは次へ）'],
+      ['of an old and extremely expensive mistake', '古く、きわめて高くついた失敗の'],
+    ],
+    notes: {
+      'is very often the trace': 'trace は「痕跡」。ここは「昔の失敗の名残」という意味です。',
+    },
+  }),
+  st('[S {動名詞| [V Removing] [O such questions] [M {to:副詞(目的)| [V in order to save] [O a little time]}]}] [V can] [M quietly] [V bring back] [O the failure {関係省略:目的格(prevent)>the failure| [S they] [V were designed] [C {to:補語| [V to prevent]}]}].', {
+    chunks: [
+      ['Removing such questions', 'そうした質問を消すことは'],
+      ['in order to save a little time', '少し時間を節約するために'],
+      ['can quietly bring back the failure', '失敗を静かに呼び戻しかねません'],
+      ['they were designed to prevent', 'その質問が防ぐために作られた（失敗を）'],
+    ],
+    notes: {
+      'in order to save a little time': 'in order to ＋ 動詞 で「〜するために」と目的をはっきり示します。',
+    },
+  }),
+  st('[S {動名詞| [V Making] [O a procedure] [C simpler]}] [V is] [C valuable], [接 but] [S it] [V should] [M always] [V begin] [M {前| by {動名詞| [V asking] [O {疑問詞節| [M what] [S each step] [V was originally built] [M for]}]}}].', {
+    chunks: [
+      ['Making a procedure simpler is valuable,', '手順を簡単にすることには価値があります'],
+      ['but it should always begin', 'しかし必ず始めるべきです（何からかは次へ）'],
+      ['by asking what each step', '各段階が〜のかを問うことから'],
+      ['was originally built for', 'もともと何のために作られた'],
+    ],
+    notes: {
+      'was originally built for': 'what … for で「何のために」。for が文の終わりに残る形です。',
+    },
+  }),
+  st('[S Automation] [V removes] [O particular tasks] [M {前| rather than whole occupations}] [M {前| in almost every single case {関係>every single case| [S that] [V has been carefully recorded]}}].', {
+    chunks: [
+      ['Automation removes particular tasks', '自動化は特定の作業を取り除きます'],
+      ['rather than whole occupations', '職業全体ではなく'],
+      ['in almost every single case', 'ほとんどどの場合でも'],
+      ['that has been carefully recorded', '丁寧に記録された（場合では）'],
+    ],
+    notes: {
+      'rather than whole occupations': 'rather than … は「…ではなく」。前の particular tasks と比べています。',
+    },
+  }),
+  st('[S A job {関係>A job| [S that] [V is made up] [M {前| of ten separate tasks}]}] [V may lose] [O four {前| of them}] [接 and] [V become] [C a different job {前| with exactly the same title}].', {
+    chunks: [
+      ['A job that is made up of ten separate tasks', '十の別々の作業からなる仕事は'],
+      ['may lose four of them', 'そのうち四つを失い'],
+      ['and become a different job', 'そして別の仕事になることがあります'],
+      ['with exactly the same title', 'まったく同じ名称の'],
+    ],
+    notes: {
+      'A job that is made up of ten separate tasks': 'be made up of … で「…から成り立っている」。',
+    },
+  }),
+  st('[S The person {現在分詞>The person| [V doing] [O that job]}] [V experiences] [O the change] [M {前| as a demand {前| for new skills}}] [M {前| rather than {前| as the simple loss {前| of employment}}}].', {
+    chunks: [
+      ['The person doing that job', 'その仕事をしている人は'],
+      ['experiences the change', 'その変化を受け取ります（どう受け取るかは次へ）'],
+      ['as a demand for new skills', '新しい技能の要求として'],
+      ['rather than as the simple loss of employment', '単なる失職としてではなく'],
+    ],
+    notes: {
+      'The person doing that job': 'doing that job は The person を後ろから説明する現在分詞のまとまりです。',
+    },
+  }),
+  st('[S {whether節| [接 Whether] [S that demand] [V is truly answered]}] [V depends] [M entirely] [M {前| on training {関係>training| [S that] [V begins] [M well] [M {副詞節:時| [接 before] [S the change] [V has arrived]}]}}].', {
+    chunks: [
+      ['Whether that demand is truly answered', 'その要求が本当に満たされるかどうかは'],
+      ['depends entirely on training', '訓練にすべてかかっています（どんな訓練かは次へ）'],
+      ['that begins well before', 'ずっと前に始まる（訓練に）'],
+      ['the change has arrived', 'その変化が到達するより'],
+    ],
+    notes: {
+      'Whether that demand is truly answered': 'whether の節が文の主語Sです。「〜かどうか」というまとまりになります。',
+    },
+  }),
+  st('[S Transitions] [V are] [C {疑問詞節| [M where] [S the whole cost {前| of change}] [V concentrates]}], [接 and] [S they] [V are] [M almost always] [V planned] [M last {前| of all}].', {
+    chunks: [
+      ['Transitions are where', '移行こそが〜場所です'],
+      ['the whole cost of change concentrates,', '変化の費用が丸ごと集まる'],
+      ['and they are almost always planned last of all', 'そして、ほとんど常に最後に計画されます'],
+    ],
+    notes: {
+      'Transitions are where': 'ここの where は「〜する場所」という意味のまとまりを作り、are の補語Cになります。',
+    },
+  }),
+  st('[S A city {関係>A city| [S that] [V funds] [O retraining] [M only] [M {副詞節:時| [接 after] [S a large factory] [V has finally closed]}]}] [V has already lost] [O several genuinely useful years].', {
+    chunks: [
+      ['A city that funds retraining only', '再訓練に資金を出すのがようやく〜の都市は'],
+      ['after a large factory has finally closed', '大きな工場がついに閉じたあとになる'],
+      ['has already lost several genuinely useful years', 'すでに本当に有用な数年を失っています'],
+    ],
+    notes: {
+      'A city that funds retraining only': 'fund は動詞で「資金を出す」。only は後ろの after の節を限定します。',
+    },
+  }),
+  st('[S The very same money], [M {副詞節:条件| [接 if] [S it] [V is used] [M earlier]}], [V reaches] [O workers] [M {副詞節:時| [接 while] [S they] [M still] [V have] [O savings, contacts, and a measure {前| of confidence}]}].', {
+    chunks: [
+      ['The very same money,', 'まったく同じ資金も'],
+      ['if it is used earlier,', 'もっと早く使われれば'],
+      ['reaches workers', '働き手に届きます（いつかは次へ）'],
+      ['while they still have savings, contacts,', '彼らにまだ貯えと人脈'],
+      ['and a measure of confidence', 'そしていくらかの自信があるうちに'],
+    ],
+    notes: {
+      'and a measure of confidence': 'a measure of … で「いくらかの…」。',
+    },
+  }),
+  st('[S Timing, {前| rather than generosity},] [M therefore] [V decides] [O {疑問詞節| [O how much] [S a transition program {前| of this kind}] [M actually] [V achieves]}].', {
+    chunks: [
+      ['Timing, rather than generosity,', '気前のよさではなく時期が'],
+      ['therefore decides', 'したがって決めます（何をかは次へ）'],
+      ['how much a transition program of this kind', 'この種の移行の施策がどれだけ'],
+      ['actually achieves', '実際に成し遂げるかを'],
+    ],
+    notes: {
+      'how much a transition program of this kind': 'how much は achieves の目的語で、「どれだけ成し遂げるか」。',
+    },
+  }),
+  st('[S Two people {関係>Two people| [S who] [V make] [O exactly the same decision] [M {前| on the very same day}]}] [V can end up] [M {前| in two very different places}].', {
+    chunks: [
+      ['Two people who make exactly the same decision', 'まったく同じ決定をする二人が'],
+      ['on the very same day', 'まさに同じ日に'],
+      ['can end up in two very different places', 'まったく違う二つの場所に行き着くことがあります'],
+    ],
+    notes: {
+      'can end up in two very different places': 'end up in … で「最後には…に行き着く」。',
+    },
+  }),
+  st('[S The difference] [M usually] [V lies] [M {前| in the conditions {関係>the conditions| [S that] [V surround] [O the decision]}}] [M {前| rather than {前| in the quality {前| of the decision itself}}}] [M {前| at all}].', {
+    chunks: [
+      ['The difference usually lies', 'その違いがあるのはたいてい（どこかは次へ）'],
+      ['in the conditions that surround the decision', '決定を取り巻く条件のほうです'],
+      ['rather than in the quality', '質のほうではなく'],
+      ['of the decision itself at all', 'その決定そのものの'],
+    ],
+    notes: {
+      'The difference usually lies': 'lie in … で「…にある」。違いや原因のありかを示します。',
+    },
+  }),
+  st('[S A single missed payment] [V is] [C a small trouble {前| for one household} and the beginning {前| of a long spiral} {前| for another}].', {
+    chunks: [
+      ['A single missed payment is a small trouble', '支払いが一度遅れることは小さな面倒です'],
+      ['for one household', 'ある家庭にとっては'],
+      ['and the beginning of a long spiral', 'そして長い転落の始まりです'],
+      ['for another', '別の家庭にとっては'],
+    ],
+    notes: {
+      'and the beginning of a long spiral': 'spiral は「らせん」で、ここでは悪い方向へ回り続ける状態を指します。',
+    },
+  }),
+  st('[S Any policy {関係>Any policy| [S that] [V ignores] [O this asymmetry]}] [V will end] [M {前| by {動名詞| [V describing] [O the second {前| of those households}] [C {前| as {動名詞| [V being] [C simply careless]}}]}}].', {
+    chunks: [
+      ['Any policy that ignores this asymmetry', 'この非対称を無視する政策は'],
+      ['will end by describing', '結局〜と書くことになります（何をかは次へ）'],
+      ['the second of those households', 'そうした家庭のうち後者を'],
+      ['as being simply careless', '単に不注意なだけだと'],
+    ],
+    notes: {
+      'will end by describing': 'end by ＋ -ing で「結局〜することになる」。',
+    },
+  }),
+  st('[S A margin] [V is] [C the distance {前| between an ordinary setback and a setback {関係>a setback| [S that] [V turns] [M {前| into something genuinely serious}]}}].', {
+    chunks: [
+      ['A margin is the distance', '余裕とは距離のことです（何の距離かは次へ）'],
+      ['between an ordinary setback and a setback', 'ありふれた不調と、もう一つの不調との'],
+      ['that turns into something genuinely serious', '本当に深刻な事態に変わる（不調との）'],
+    ],
+    notes: {
+      'that turns into something genuinely serious': 'turn into … で「…に変わる」。',
+    },
+  }),
+  st('[S Savings, family support, and secure housing] [M all] [V widen] [O that distance] [M {前| without {動名詞| [M ever] [V appearing] [M {前| in any published official figure}]}}].', {
+    chunks: [
+      ['Savings, family support, and secure housing', '貯蓄と家族の支えと安定した住まいは'],
+      ['all widen that distance', 'どれもその距離を広げます'],
+      ['without ever appearing', '一度も現れることなく（どこにかは次へ）'],
+      ['in any published official figure', '公表されるどの公式の数値にも'],
+    ],
+    notes: {
+      'without ever appearing': 'without ＋ -ing で「〜することなく」。ever は「一度も」。',
+    },
+  }),
+  st('[S Two households {前| with identical incomes}] [V can] [M therefore] [V represent] [O entirely different degrees {前| of practical safety and personal freedom}].', {
+    chunks: [
+      ['Two households with identical incomes', '同じ収入の二つの家庭が'],
+      ['can therefore represent entirely different degrees', 'したがってまったく異なる度合いを表しえます'],
+      ['of practical safety and personal freedom', '実際の安全と個人の自由の'],
+    ],
+    notes: {
+      'can therefore represent entirely different degrees': 'represent はここでは「（ある状態を）表している」。',
+    },
+  }),
+  st('[S {動名詞| [V Measuring] [O income] [M {前| by itself}]}] [V hides] [O most {前| of {what節| [S what] [M actually] [V determines] [O {疑問詞節| [M how] [S a sudden shock] [V is going to be absorbed]}]}}].', {
+    chunks: [
+      ['Measuring income by itself hides most', '収入だけを測ることは大半を隠します（何のかは次へ）'],
+      ['of what actually determines', '実際に決めているものの'],
+      ['how a sudden shock is going to be absorbed', '突然の衝撃がどう吸収されるのかを'],
+    ],
+    notes: {
+      'Measuring income by itself hides most': 'by itself は「それだけで」。動名詞 Measuring … が文の主語Sです。',
+    },
+  }),
+  st('[S Time] [V is] [C the resource {関係>the resource| [O that] [S inequality] [V distributes] [M most unevenly]} and {関係>the resource| [O that] [S public policy] [V notices] [M least often]}].', {
+    chunks: [
+      ['Time is the resource', '時間は資源です（どんな資源かは次へ）'],
+      ['that inequality distributes most unevenly', '不平等が最も不均等に分ける'],
+      ['and that public policy notices least often', 'そして政策が最も気づきにくい（資源）'],
+    ],
+    notes: {
+      'and that public policy notices least often': '二つの that はどちらも the resource を受ける関係代名詞です。',
+    },
+  }),
+  st('[S A long journey {前| to work}, an unpredictable shift, and a second job] [M all] [V consume] [O exactly the hours {関係>the hours| [O that] [S any serious planning] [V requires]}].', {
+    chunks: [
+      ['A long journey to work,', '長い通勤と'],
+      ['an unpredictable shift, and a second job', '予測できない勤務と二つ目の仕事は'],
+      ['all consume exactly the hours', 'どれもまさにその時間を食いつぶします'],
+      ['that any serious planning requires', 'まじめな計画に必要な（時間を）'],
+    ],
+    notes: {
+      'all consume exactly the hours': 'all は主語をまとめて「どれも」。consume は「使い尽くす」。',
+    },
+  }),
+  st('[S Advice {関係>Advice| [S that] [M quietly] [V assumes] [O a free evening {前| at home}]}] [V is] [C entirely useless] [M {前| to the people {関係>the people| [S who] [M most] [V need] [O that advice]}}].', {
+    chunks: [
+      ['Advice that quietly assumes', '〜を暗に当てにした助言は'],
+      ['a free evening at home', '家で空いている夜を'],
+      ['is entirely useless to the people', '人々にはまったく役立ちません'],
+      ['who most need that advice', 'その助言を最も必要とする（人々には）'],
+    ],
+    notes: {
+      'Advice that quietly assumes': 'assume はここでは「（当然のこととして）前提にする」。',
+    },
+  }),
+  st('[S Public services {過去分詞>Public services| [V designed] [M {前| around the schedules {前| of their own staff}}]}] [V exclude] [O exactly those residents] [M most {前| of all}] [M {前| in practice}].', {
+    chunks: [
+      ['Public services designed around the schedules', '〜の予定に合わせて作られた行政の窓口は'],
+      ['of their own staff', '職員自身の'],
+      ['exclude exactly those residents', 'まさにそうした住民を締め出します'],
+      ['most of all in practice', '実際には最も強く'],
+    ],
+    notes: {
+      'Public services designed around the schedules': 'designed around … は Public services を後ろから説明する過去分詞のまとまりです。',
+    },
+  }),
+  st('[S Place] [V multiplies] [O every other condition {関係>every other condition| [O that] [S a household] [V faces]}], [M {副詞節:譲歩| [接 whether] [M {前| in a favorable direction}] [接 or] [M {前| in the opposite one}]}].', {
+    chunks: [
+      ['Place multiplies every other condition', '場所は他のあらゆる条件を何倍にもします'],
+      ['that a household faces,', '家庭が直面する（条件を）'],
+      ['whether in a favorable direction', 'よい向きであれ'],
+      ['or in the opposite one', '反対の向きであれ'],
+    ],
+    notes: {
+      'whether in a favorable direction': 'whether A or B で「AであれBであれ」。ここは主語と be動詞が省かれています。',
+    },
+  }),
+  st('[S A child {現在分詞>A child| [V growing up] [M ten kilometers away] [M {前| from a good school}]}] [M effectively] [V lives] [M {前| in a different city}] [M {前| from a nearer neighbor}].', {
+    chunks: [
+      ['A child growing up ten kilometers away', '十キロ離れて育つ子どもは'],
+      ['from a good school', 'よい学校から'],
+      ['effectively lives in a different city', '事実上、別の都市に暮らしています'],
+      ['from a nearer neighbor', 'より近い隣人とは'],
+    ],
+    notes: {
+      'effectively lives in a different city': 'effectively はここでは「事実上」。',
+    },
+  }),
+  st('[S Transport policy] [V is] [M therefore] [C education policy] [M as well], [M {副詞節:譲歩| [接 although] [S the two] [V are] [M almost never] [V discussed] [M {前| in the same room}]}].', {
+    chunks: [
+      ['Transport policy is therefore education policy as well,', 'したがって交通政策は教育政策でもあります'],
+      ['although the two are almost never discussed', 'ただし、この二つが論じられることはほとんどありません'],
+      ['in the same room', '同じ場で'],
+    ],
+    notes: {
+      'in the same room': 'in the same room は「同じ部屋で」で、ここでは同じ会議の場という意味です。',
+    },
+  }),
+  st('[S {動名詞| [V Moving] [O a single bus route]}] [V can change] [O more outcomes {前| for children}] [M {前| than an entirely new curriculum {前| in the same district}}].', {
+    chunks: [
+      ['Moving a single bus route', 'バス路線を一本動かすことは'],
+      ['can change more outcomes for children', '子どもにとってより多くの結果を変えられます'],
+      ['than an entirely new curriculum', 'まったく新しい教育課程よりも'],
+      ['in the same district', '同じ地区の'],
+    ],
+    notes: {
+      'Moving a single bus route': '動名詞 Moving … が文の主語Sです。',
+    },
+  }),
+  st('[S None {前| of this argument}] [V removes] [O responsibility] [M {前| from the individual {関係>the individual| [S who] [M finally] [V makes] [O one particular choice]}}].', {
+    chunks: [
+      ['None of this argument removes responsibility', 'この議論のどれも責任を取り去りません'],
+      ['from the individual', '個人から'],
+      ['who finally makes one particular choice', '最後に特定の選択をする（個人から）'],
+    ],
+    notes: {
+      'None of this argument removes responsibility': 'none of … は「…のどれも〜ない」。',
+    },
+  }),
+  st('[S {what節| [O What] [S it] [V changes]}] [V is] [C the list {前| of things {関係>things| [O that] [S a fair comparison {前| between two individuals}] [V would have to hold] [C constant]}}].', {
+    chunks: [
+      ['What it changes is the list of things', 'それが変えるのは事柄の一覧です（どんな事柄かは次へ）'],
+      ['that a fair comparison between two individuals', '二人を公平に比べるときに'],
+      ['would have to hold constant', 'そろえておかねばならない（事柄の）'],
+    ],
+    notes: {
+      'would have to hold constant': 'hold ＋ 目的語 ＋ constant で「〜を一定に保つ」。ここは that が hold の目的語です。',
+    },
+  }),
+  st('[S A city {関係>A city| [S that] [V improves] [O conditions]}] [V is] [M therefore] [V not excusing] [O anyone], [M {副詞節:理由| [接 because] [S {what節| [O what] [S it] [V is doing]}] [V is] [C {動名詞| [V widening] [O the margin]}]}].', {
+    chunks: [
+      ['A city that improves conditions', '条件を良くする都市は'],
+      ['is therefore not excusing anyone,', 'したがってだれかを免責しているのではありません'],
+      ['because what it is doing', 'なぜならしていることは'],
+      ['is widening the margin', '余裕を広げることだからです'],
+    ],
+    notes: {
+      'because what it is doing': 'what it is doing は「それがしていること」というまとまりで、because の節の主語です。',
+    },
+  }),
+  st('[S The practical question {前| in every single case}] [V is] [C {疑問詞節| [S which {前| of those conditions}] [V can be changed] [M {前| at a cost {関係>a cost| [S that] [V is] [C worth {動名詞| [V paying]}]}}]}].', {
+    chunks: [
+      ['The practical question in every single case', 'どの場合でも実際的な問いは'],
+      ['is which of those conditions can be changed', 'それらの条件のどれを変えられるか、です'],
+      ['at a cost that is worth paying', '払う価値のある費用で'],
+    ],
+    notes: {
+      'at a cost that is worth paying': 'be worth ＋ -ing で「〜する価値がある」。',
     },
   }),
 ])
