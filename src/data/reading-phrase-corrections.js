@@ -1521,8 +1521,8 @@ const BASE_READING_PHRASE_CORRECTIONS = Object.freeze({
       { role: 'C', en: 'an important factor', ja: '重要な要因' },
     ], 'still の意味を重ねず、主語を説明するCだけを訳します。'),
   ]),
-  'They compare energy use, waiting times, and complaints in different neighborhoods, then publish the results.': Object.freeze([
-    correction(['in different neighborhoods,'], [
+  'They compare energy use, waiting times, and complaints in different neighborhoods and then publish the results.': Object.freeze([
+    correction(['in different neighborhoods'], [
       { role: 'M', en: 'in different neighborhoods', ja: '異なる地域ごとに（エネルギー使用量・待ち時間・苦情を）' },
     ], 'in different neighborhoods は complaints だけでなく、比較する三項全体の地域差を示すMです。'),
   ]),

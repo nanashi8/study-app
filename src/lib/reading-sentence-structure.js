@@ -677,7 +677,8 @@ export function buildSentenceStructure(sentenceEn = '', markup = '', options = {
       errors.push(`「${unit.text}」が説明する ${unit.antecedent} が前にありません`)
     }
   }
-  const marked = normalizeStructureText(markedText(root))
+  // 構造図は文末の句点を付けずに示す（本文の句点は上の英文で見える）。
+  const marked = normalizeStructureText(markedText(root)).replace(/[.!?]$/u, '')
   const parsedMarkers = parseStructureMarkers(marked)
   const notes = options.notes ?? {}
   const unitNotes = options.unitNotes ?? {}
