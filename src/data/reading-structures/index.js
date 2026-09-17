@@ -29,6 +29,7 @@ import p_1_choice_architecture from './p_1_choice_architecture.js'
 import p_5_hot_summer_school from './p_5_hot_summer_school.js'
 import p_4_school_solar_roof from './p_4_school_solar_roof.js'
 import p_ext_4000_generational_city from './p_ext_4000_generational_city.js'
+import p_ext_3000_shared_watershed from './p_ext_3000_shared_watershed.js'
 
 const PASSAGE_STRUCTURES = Object.freeze({
   p_5_lost_notebook,
@@ -58,6 +59,7 @@ const PASSAGE_STRUCTURES = Object.freeze({
   p_5_hot_summer_school,
   p_4_school_solar_roof,
   p_ext_4000_generational_city,
+  p_ext_3000_shared_watershed,
 })
 
 export const READING_SENTENCE_STRUCTURES = PASSAGE_STRUCTURES
