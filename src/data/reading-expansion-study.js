@@ -168,8 +168,8 @@ export const EXPANDED_READING_STUDY = Object.freeze({
       'do not mean that ...',
       '〜という意味ではない',
       'The result did not mean that every student liked the plan.',
-      'その結果は全員が方法を好んだという意味ではありません。',
-      '結果から言える範囲を限定する。that以下を否定内容としてまとめる。',
+      'その結果は、全員がその方法を気に入ったという意味ではありませんでした。',
+      'notはmeanを打ち消し、that以下の内容までは結果から言えないと範囲を限定する。',
       'syntax',
     ),
     expression(

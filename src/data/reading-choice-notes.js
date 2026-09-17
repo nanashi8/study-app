@@ -517,14 +517,14 @@ export const READING_CHOICE_NOTES = freezeNotes({
     "To allow one group to use easier questions.": "第8文で、両方のグループが同じ短い読解課題を行ったと書かれている。",
   },
   "p_pre2_phone_free_focus#3": {
-    "Teachers could approve necessary learning tools.": "スマートフォンの翻訳や読み上げのツールが必要な生徒がいたので（第16文）、必要な学習ツールを先生が許可できるようにした（第17文）と書かれている。",
+    "Teachers could approve necessary learning tools.": "スマートフォンの翻訳のツールや読むのを助けるツールが必要な生徒がいたので（第16文）、必要な学習ツールを先生が許可できるようにした（第17文）と書かれている。",
     "Every student could answer messages at any time.": "いつでも返信してよいとは書かれていない。例外は、先生が許可した学習ツール（第17文）。",
     "Only health messages were permanently blocked.": "健康の連絡は、家庭から受けるため不安になる生徒がいたという話（第15文）で、遮断したとは書かれていない。",
     "Assignments no longer required steady attention.": "課題の性質は変えていない。この時間は、継続的な集中が必要な問題などに使った（第6文）。",
   },
   "p_pre2_phone_free_focus#4": {
     "Reducing interruptions can help, but clear tasks and thoughtful choices are also necessary.": "メッセージを減らすことは集中を助けるが、分かりやすい指導の代わりにはならず（第20文）、機器を使う時を生徒が判断するよう教え（第22文）、集中を守る習慣を作ることが目標だ（第24文）とまとめている。",
-    "Phones are the only reason students lose attention.": "第19文で、課題が分かりにくければスマートフォンがなくても集中を失ったと書かれている。",
+    "Phones are the only reason students lose attention.": "第19文で、課題が分かりにくいと、近くにスマートフォンがなくても生徒の集中は途切れたと書かれている。",
     "A few more answers prove that every student learned deeply.": "第13文で、数問多く答えたことを深い学びの証拠とはみなさなかったと書かれている。",
     "Schools should use the same permanent rule without review.": "第21文で、学校は学期ごとに規則を見直していると書かれている。",
   },

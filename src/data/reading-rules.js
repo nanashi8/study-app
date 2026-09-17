@@ -586,7 +586,7 @@ export const PASSAGE_READING_APPROACHES = Object.freeze({
     '実験群・比較群・例外を混ぜずに読む',
     '学校での実験を扱う論説文では、比べる条件をそろえ、わずかな差を大げさに受け取らず、例外を受けて出された修正案まで追う。',
     ['二つのグループの条件をそろえる', '結果の差と、実験の限界を分ける', '例外を受けて、規則がどう変わったかを読む'],
-    ['reading-mode', 'punctuation-map', 'passive-active', 'comparison-pairs', 'distractor-strength', 'author-stance'],
+    ['reading-mode', 'parallel-shape', 'wh-clause', 'comparison-pairs', 'distractor-strength', 'author-stance'],
   ),
   p_pre2plus_clothing_second_life: makePassageApproach(
     '再利用案を、効果の測り方と限界まで読む',

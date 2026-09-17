@@ -297,10 +297,11 @@ export const PASSAGE_SENSE_GLOSSES = Object.freeze({
     focus: sense('focus', '集中'),
   }),
   'The school compared completion rates but did not treat a few extra answers as proof of deeper learning.': words({ answers: sense('answer', '答え（複数）・解答') }),
-  'Others needed translation or reading tools that were available on their phones.': words({ reading: sense('read', '読むための・読み上げの') }),
+  'Others needed translation or reading tools that were available on their phones.': words({ reading: sense('read', '読むための（reading tools で読むのを助けるツール）') }),
   'The school now keeps the hour but reviews the rules every term.': words({ reviews: sense('review', '見直す') }),
   'At home, students can silence alerts or place a device out of reach while studying.': words({
     silence: sense('silence', '（通知を）消す・静かにさせる'),
+    alerts: sense('alert', '通知・警報（複数）'),
     reach: sense('reach', '（out of reach で）手の届かない所'),
   }),
 
