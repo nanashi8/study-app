@@ -291,7 +291,7 @@ export const EXAM_READING_QUESTIONS = {
         'Use it instead of advice from a professional.',
       ],
       answer: 'Check its methods, conflicts, and independent review.',
-      explain: '企業資金だけで真偽を決めず、方法・利害関係・独立審査を確認します。',
+      explain: '企業の資金提供だけで真偽を決めず、方法・利益相反・独立した審査を確かめます。',
     },
     {
       q: 'What does the author mean by matching confidence to evidence?',

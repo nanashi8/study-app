@@ -20,7 +20,7 @@ export const EXAM_READING_GRAMMAR_EXPECTATIONS = Object.freeze({
   `),
   p_2_online_health_claims: patterns(`
     SVO SVO SVO SVO SVO SVO SVO SVC SVC SVO SV SVC SVO SVO SVO SVO SVO SVO SVOC
-    SVOC SVO SVO SVO SVC
+    SVOC SVO SVOC SVO SVC
   `),
   p_pre1_cashless_inclusion: patterns(`
     SV SVO SVOC SVC SVO SVO SVO SVC SVO SVO SVC SVC SVO SVO SVO SVO SVO SVOC SVO
