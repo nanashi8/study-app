@@ -57,7 +57,7 @@ const guides = [
     '読解では主節のS＋Vを先に確保し、補語Cを次に足します。文法上のSVC境界は内部ラベルで区別します。',
     [
       phrase('Rina is', ['S', 'V'], 'リナは〜です（内容は次へ）'),
-      phrase('a junior high school student', 'C', '一人の中学生'),
+      phrase('a junior high school student', 'C', '中学生'),
     ],
   ),
   guide(
@@ -89,7 +89,7 @@ const guides = [
     [
       phrase('After lunch', 'M', '昼食のあとに'),
       phrase('Rina', 'S', 'リナは'),
-      phrase('cannot find her blue notebook', ['V', 'O'], '彼女の青いノートを見つけられません'),
+      phrase('cannot find her blue notebook', ['V', 'O'], '自分の青いノートを見つけられません'),
     ],
   ),
   guide(
@@ -110,7 +110,7 @@ const guides = [
       phrase('Then', 'M', 'それから'),
       phrase('Ken', 'S', 'ケンは'),
       phrase('sees the notebook', ['V', 'O'], 'そのノートを見つけます'),
-      phrase('near the classroom door', 'M', '教室のドアの近くで'),
+      phrase('near the classroom door', 'M', '教室のドアの近くに'),
     ],
   ),
   guide(

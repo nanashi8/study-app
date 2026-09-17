@@ -47,6 +47,30 @@ export const TRANSLATION_ROLE_META = Object.freeze({
     question: 'いつ・どこで・どのように・なぜ',
     japaneseShape: '「〜で／〜に／〜なので」など',
   }),
+  S_FORMAL: Object.freeze({
+    code: '仮S',
+    label: '形式主語',
+    question: '主語の位置に置く形だけの it',
+    japaneseShape: '訳さず、後ろの真主語を主語として訳す',
+  }),
+  S_REAL: Object.freeze({
+    code: '真S',
+    label: '真主語',
+    question: '形式主語 it が指す中身',
+    japaneseShape: '「〜することは／〜ということは」',
+  }),
+  O_FORMAL: Object.freeze({
+    code: '仮O',
+    label: '形式目的語',
+    question: '目的語の位置に置く形だけの it',
+    japaneseShape: '訳さず、後ろの真目的語を目的語として訳す',
+  }),
+  O_REAL: Object.freeze({
+    code: '真O',
+    label: '真目的語',
+    question: '形式目的語 it が指す中身',
+    japaneseShape: '「〜することを／〜ということを」',
+  }),
 })
 
 export function translationRoleMeta(role) {

@@ -299,7 +299,7 @@ test('長文画面は意味フレーズの表示を保ち、講師音声機能�
     'utf8',
   )
   const source = `${reader}\n${detail}`
-  assert.match(source, /<StructureDiagram tokens=\{sentenceAnalysis\.structureTokens\} \/>/)
+  assert.match(source, /<StructureDiagram tokens=\{structure\?\.structureTokens \?\? sentenceAnalysis\.structureTokens\} \/>/)
   assert.doesNotMatch(source, /sentenceAnalysis\.blocks\.map\(\(block\) =>/)
 
   assert.doesNotMatch(source, /speakBlockPair|learnerPhrasePairsForBlock/)
@@ -307,7 +307,7 @@ test('長文画面は意味フレーズの表示を保ち、講師音声機能�
   assert.match(source, /data-reading-phrase-method=\{sentenceAnalysis\.phraseMethod\}/)
   assert.match(source, /\{phraseItem\.displayEn\}/)
   assert.match(source, /\{phraseItem\.ja\}/)
-  assert.match(source, /フレーズ内の文法：\{visiblePhraseExplanations\[phraseIndex\]\}/)
+  assert.match(source, /フレーズ内の文法：\{phraseGrammar\}/)
   assert.match(source, /title:\s*'長文・全文'/)
   assert.match(source, /<SpeakerWave size=\{14\} \/> 全文を読み上げ/)
   assert.match(source, /<SpeakButton text=\{sentence\.en\} size="sm" \/>/)

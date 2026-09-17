@@ -1,0 +1,18 @@
+// 長文の一文ごとの構造台帳。本文を1文ずつ読んで、主節の要素と、節・句の中の要素を
+// 入れ子で書いた正解。画面の「文の要素」「構造図」「文型」「節・句の解説」はここから作る。
+// 配列の順番は本文の文の順番と一致させる（検査で照合する）。
+
+import p_5_lost_notebook from './p_5_lost_notebook.js'
+
+const PASSAGE_STRUCTURES = Object.freeze({
+  p_5_lost_notebook,
+})
+
+export const READING_SENTENCE_STRUCTURES = PASSAGE_STRUCTURES
+
+export function readingSentenceStructureEntry(reviewId = '') {
+  const [passageId, number] = `${reviewId}`.split('#')
+  const entries = PASSAGE_STRUCTURES[passageId]
+  if (!entries) return null
+  return entries[Number(number) - 1] ?? null
+}

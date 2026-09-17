@@ -23,6 +23,12 @@ import { parseStructureMarkers } from './structure-markers.js'
 import { buildMeaningPhraseSequence } from './meaning-phrases.js'
 import { readingMeaningPhraseOverridesFor } from '../data/reading-meaning-phrase-overrides.js'
 import { readingExpectedMainPattern } from '../data/reading-grammar-expectations.js'
+import { readingSentenceStructureEntry } from '../data/reading-structures/index.js'
+import { READING_PARAGRAPH_GUIDES } from '../data/reading-paragraph-guides.js'
+import {
+  buildSentenceStructure,
+  structureRolesForPhrases,
+} from './reading-sentence-structure.js'
 
 export const READING_CORE_PHRASE_WORD_LIMIT = 5
 export const READING_MODIFIER_PHRASE_WORD_LIMIT = 7
@@ -6093,9 +6099,12 @@ export function analyzeReadingSentence(sentence) {
     structuredBlocks,
   )
   const projectedBlocks = projectedTeachingBlocks(teachingBlocks, phraseSequence, sentence.en)
+  // 構造台帳がある文は、語順訳のまとまりの区切りと日本語も台帳の指定を優先する。
+  const structureEntry = readingSentenceStructureEntry(sentence.reviewId)
   const meaningPhraseSequence = buildMeaningPhraseSequence(phraseSequence, {
     wordLimit: 8,
     overrides: readingMeaningPhraseOverridesFor(sentence.en),
+    explicitGroups: structureEntry?.chunks ?? null,
   })
   const meaningGroups = projectPhraseGroupsToSourceBlocks(projectedBlocks, meaningPhraseSequence)
   const learnerBlocks = Object.freeze(projectedBlocks.map((block, index) => Object.freeze({
@@ -6103,11 +6112,20 @@ export function analyzeReadingSentence(sentence) {
     meaningPhrasePairs: Object.freeze(meaningGroups[index]),
   })))
 
-  const marked = READING_SENTENCE_STRUCTURE_OVERRIDES[sentence.en] ??
+  const structure = structureEntry
+    ? buildSentenceStructure(sentence.en, structureEntry.markup, structureEntry)
+    : null
+  const marked = structure?.marked ??
+    READING_SENTENCE_STRUCTURE_OVERRIDES[sentence.en] ??
     projectedBlocks.map((block) => block.displayEn).join(' ')
   const structureMarkerParse = parseStructureMarkers(marked)
 
   return {
+    // 画面の役割・節・文型は構造台帳が正。phraseSequence の役割は語順訳を組み立てる内部値。
+    structure,
+    structurePhrases: structure
+      ? Object.freeze(structureRolesForPhrases(structure, meaningPhraseSequence))
+      : null,
     blocks: learnerBlocks,
     phraseSequence,
     meaningPhraseSequence,
@@ -6157,6 +6175,20 @@ export function analyzePassageParagraphs(passage) {
   for (const [sentenceIndex, item] of passage.sentences.entries()) {
     if (!groups.length || item.paragraphStart) groups.push([])
     groups.at(-1).push({ item, sentenceIndex })
+  }
+
+  // 本文を読んで書いた段落解説がある長文は、それを使う。
+  const reviewedGuides = READING_PARAGRAPH_GUIDES[passage.id]
+  if (reviewedGuides) {
+    return groups.map((paragraph, index) => ({
+      index,
+      role: reviewedGuides[index]?.role ?? '',
+      topicSentenceIndex: paragraph[0].sentenceIndex,
+      summary: reviewedGuides[index]?.summary ?? '',
+      connection: reviewedGuides[index]?.connection ?? '',
+      strategy: reviewedGuides[index]?.strategy ?? '',
+      sentences: paragraph,
+    }))
   }
 
   return groups.map((paragraph, index) => {

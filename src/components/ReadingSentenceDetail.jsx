@@ -15,6 +15,10 @@ import { WordListSheet, useWordInAnyBook } from './WordListSheet.jsx'
 import { Bookmark, BookmarkFilled, BookOpen, Lightbulb, Link } from './Icons.jsx'
 import { cx } from './ui.jsx'
 import { MeaningText } from './MeaningText.jsx'
+import {
+  STRUCTURE_DISPLAY_ROLE,
+  structurePatternName,
+} from '../lib/reading-sentence-structure.js'
 
 const ROLE_STYLE = {
   S: 'border-emerald-200 bg-emerald-50 text-emerald-800',
@@ -50,7 +54,7 @@ function SvocFlow({ parts }) {
                 {part.text}
               </p>
               <p className="mt-0.5 text-[10px] font-bold leading-relaxed text-ink/50">
-                {meta.label}：{meta.question} → {meta.japaneseShape}
+                {meta.label}：{meta.question}
               </p>
             </div>
           </li>
@@ -74,6 +78,53 @@ function flowPattern(parts) {
   return parts.map((part) => translationRoleMeta(part.role).code).join(' → ')
 }
 
+function structureDisplayParts(parts = []) {
+  return parts.map((part) => ({
+    role: STRUCTURE_DISPLAY_ROLE[part.role] ?? part.role,
+    text: part.text,
+  }))
+}
+
+function structurePatternsText(patterns = []) {
+  const names = patterns.map(structurePatternName).filter(Boolean)
+  if (names.length <= 1) return names[0] ?? ''
+  return names.map((name, index) => `${index + 1}つ目の述語 ${name}`).join('／')
+}
+
+// 節・句の中の要素。入れ子の深さだけ字下げし、主節の要素と同じ段に混ぜない。
+function StructureUnitRows({ units, activeWord, isKnownWord, onWordClick }) {
+  if (!units.length) return null
+  return (
+    <ol className="mt-3 space-y-2 border-t border-brand-100 pt-3" aria-label="節・句の中の要素">
+      {units.map((unit) => (
+        <li
+          key={unit.id}
+          className="border-l-2 border-sky-200 bg-white/70 py-1.5 pl-2 pr-1"
+          style={{ marginLeft: `${unit.depth * 0.75}rem` }}
+          data-reading-structure-unit={unit.base}
+        >
+          <p className="text-[11px] font-extrabold text-sky-800">{unit.label}</p>
+          <p className="text-[10px] font-bold leading-relaxed text-ink/55">{unit.functionText}</p>
+          <div className="mt-1">
+            {unit.parts.length ? (
+              <ReadingRoleSentence
+                sentence={unit.text}
+                parts={structureDisplayParts(unit.parts)}
+                activeWord={activeWord}
+                isKnownWord={isKnownWord}
+                onWordClick={onWordClick}
+                inner
+              />
+            ) : (
+              <p lang="en" className="text-sm font-bold text-ink">{unit.text}</p>
+            )}
+          </div>
+        </li>
+      ))}
+    </ol>
+  )
+}
+
 // 一文をタップしたときの構文詳細。受験長文と語彙強化ロングリーディングで共通。
 export function ReadingSentenceDetail({
   sentence,
@@ -93,13 +144,23 @@ export function ReadingSentenceDetail({
     sentenceAnalysis,
     visiblePhraseExplanations,
   )
-  const visibleSentenceRules = readingRulesForSentence(sentence)
+  const structure = sentenceAnalysis.structure ?? null
+  const structurePhrases = sentenceAnalysis.structurePhrases ?? []
+  const visibleSentenceRules = readingRulesForSentence(sentence, 3, structure)
   const closeSentence = () => onNavigateAway?.()
   const tapToken = (token) => onWordTap?.(token)
+  const isKnownWord = (token) => Boolean(
+    resolvePassageWord(token.key, sentence.gloss)?.id,
+  )
+  const patternText = structure ? structurePatternsText(structure.patterns) : ''
   return (
           <div className="space-y-4">
             {/* 構文ラベルを原文へ直接対応させた英文（単語タップ可） */}
-            <div className="rounded-2xl bg-brand-50 p-4" data-reading-role-card="direct-labels">
+            <div
+              className="rounded-2xl bg-brand-50 p-4"
+              data-reading-role-card="direct-labels"
+              data-reading-structure={structure ? 'ledger' : 'analyzer'}
+            >
               <div className="mb-2 flex items-center justify-between">
                 <span className="text-[11px] font-extrabold tracking-wide text-brand-500">
                   文の要素
@@ -108,15 +169,30 @@ export function ReadingSentenceDetail({
               </div>
               <ReadingRoleSentence
                 sentence={sentence.en}
-                parts={sentenceFlowParts(sentenceAnalysis)}
+                parts={structure
+                  ? structureDisplayParts(structure.elements)
+                  : sentenceFlowParts(sentenceAnalysis)}
                 activeWord={activeWord?.word}
-                isKnownWord={(token) => Boolean(
-                  resolvePassageWord(token.key, sentence.gloss)?.id,
-                )}
+                isKnownWord={isKnownWord}
                 onWordClick={tapToken}
               />
+              {patternText && (
+                <p className="mt-2 text-xs font-extrabold text-brand-700" data-reading-sentence-pattern>
+                  文型：{patternText}
+                </p>
+              )}
+              {structure && (
+                <StructureUnitRows
+                  units={structure.units}
+                  activeWord={activeWord?.word}
+                  isKnownWord={isKnownWord}
+                  onWordClick={tapToken}
+                />
+              )}
               <p className="mt-2 text-[10px] font-bold leading-relaxed text-ink/55">
-                下線の下にあるS・V・O・C・Mが、その役割の範囲です。青い太字は重要語で、どの単語もタップできます。
+                {structure
+                  ? '上の下線は文全体の骨組みでの役割です。節や句の中の役割は、字下げした行に分けて示します。青い太字は重要語で、どの単語もタップできます。'
+                  : '下線の下にあるS・V・O・C・Mが、その役割の範囲です。青い太字は重要語で、どの単語もタップできます。'}
               </p>
             </div>
 
@@ -183,18 +259,25 @@ export function ReadingSentenceDetail({
               <div className="mb-2 flex flex-wrap gap-2 text-[11px] font-bold text-ink/55">
                 <span><b className="text-sky-700">( )</b> は節（S+Vを含む）</span>
                 <span>
-                  <b className="text-violet-700">&lt; &gt;</b> は句
-                  （句自体にS+Vなし・中に節を含む場合あり）
+                  <b className="text-violet-700">&lt; &gt;</b> は
+                  {structure
+                    ? '不定詞・動名詞・分詞などの句'
+                    : '句（句自体にS+Vなし・中に節を含む場合あり）'}
                 </span>
               </div>
               <p
                 className="text-base font-bold leading-loose text-ink"
                 data-reading-structure-diagram={sentenceAnalysis.marked}
               >
-                <StructureDiagram tokens={sentenceAnalysis.structureTokens} />
+                <StructureDiagram tokens={structure?.structureTokens ?? sentenceAnalysis.structureTokens} />
               </p>
               <div className="mt-3">
-                <SvocFlow parts={sentenceFlowParts(sentenceAnalysis)} />
+                <SvocFlow parts={structure
+                  ? structure.elements.map((element) => ({
+                    role: element.displayRole,
+                    text: element.trimmed,
+                  }))
+                  : sentenceFlowParts(sentenceAnalysis)} />
               </div>
             </section>
 
@@ -236,6 +319,13 @@ export function ReadingSentenceDetail({
             >
               <div className="space-y-2" aria-label="英文と対応する日本語">
                 {sentenceAnalysis.meaningPhraseSequence.map((phraseItem, phraseIndex) => {
+                  const structurePhrase = structurePhrases[phraseIndex] ?? null
+                  const structureNote = structure
+                    ? structure.notes[phraseItem.spokenEn ?? phraseItem.en] ?? ''
+                    : ''
+                  const phraseGrammar = structure
+                    ? [structurePhrase?.explanation, structureNote].filter(Boolean).join(' ')
+                    : visiblePhraseExplanations[phraseIndex]
                   return (
                     <article
                       key={phraseItem.id}
@@ -246,8 +336,13 @@ export function ReadingSentenceDetail({
                       <div className="min-w-0">
                         <div className="mb-1 flex flex-wrap items-center gap-1 text-[10px] font-extrabold">
                           <span className="border border-emerald-100 bg-emerald-50 px-1.5 py-0.5 text-emerald-800">
-                            {phraseIndex + 1}. {phraseItem.pattern || phraseItem.label || '意味フレーズ'}
+                            {phraseIndex + 1}. {structurePhrase?.pattern || phraseItem.pattern || phraseItem.label || '意味フレーズ'}
                           </span>
+                          {structurePhrase?.scope && (
+                            <span className="border border-sky-100 bg-sky-50 px-1.5 py-0.5 text-sky-800">
+                              {structurePhrase.scope}の中
+                            </span>
+                          )}
                         </div>
                         <p lang="en" className="font-bold leading-relaxed text-ink">
                           {phraseItem.displayEn}
@@ -261,9 +356,9 @@ export function ReadingSentenceDetail({
                           {phraseItem.ja}
                         </p>
                       </div>
-                      {visiblePhraseExplanations[phraseIndex] && (
+                      {phraseGrammar && (
                         <p className="mt-2 border-l-2 border-sky-300 bg-sky-50/70 px-2 py-1.5 text-xs font-bold leading-relaxed text-ink/65">
-                          フレーズ内の文法：{visiblePhraseExplanations[phraseIndex]}
+                          フレーズ内の文法：{phraseGrammar}
                         </p>
                       )}
                     </article>
@@ -272,7 +367,55 @@ export function ReadingSentenceDetail({
               </div>
             </section>
 
-            {/* 上段の意味フレーズを再掲せず、節・句ごとの固有情報だけを示す。 */}
+            {/* 構造台帳がある文は、節・句ごとの種類・働き・中の順序を台帳から示す。 */}
+            {structure ? (
+              structure.units.length > 0 && (
+                <section data-reading-grammar-explanations="ledger">
+                  <div className="mb-2 flex items-center gap-1.5 text-brand-600">
+                    <BookOpen size={16} />
+                    <span className="text-[11px] font-extrabold uppercase tracking-wide">
+                      節・句の解説
+                    </span>
+                  </div>
+                  <div className="space-y-2">
+                    {structure.units.map((unit, index) => (
+                      <article
+                        key={unit.id}
+                        className="border border-brand-100 bg-white p-3"
+                        data-reading-structure-unit-card={unit.base}
+                      >
+                        <div className="flex flex-wrap items-center gap-1 text-[10px] font-extrabold">
+                          <span className="bg-brand-50 px-1.5 py-0.5 text-brand-700">
+                            {index + 1}. {unit.label}
+                          </span>
+                          {unit.parts.length > 0 && (
+                            <span className="bg-ink/5 px-1.5 py-0.5 text-ink/60">
+                              中の順：{flowPattern(structureDisplayParts(unit.parts))}
+                            </span>
+                          )}
+                        </div>
+                        <p lang="en" className="mt-1 text-xs font-bold leading-relaxed text-ink/55">
+                          {unit.text}
+                        </p>
+                        <p className="mt-2 border-l-2 border-sky-300 bg-sky-50/70 px-2 py-1.5 text-xs font-bold leading-relaxed text-sky-900/75">
+                          文中の働き：{unit.functionText}
+                        </p>
+                        {unit.patterns.length > 0 && (
+                          <p className="mt-1 text-[11px] font-bold text-ink/55">
+                            節の中の文型：{structurePatternsText(unit.patterns)}
+                          </p>
+                        )}
+                        {unit.note && (
+                          <p className="mt-2 border-l-2 border-amber-300 bg-amber-50/70 px-2 py-1.5 text-xs font-bold leading-relaxed text-ink/65">
+                            文法の決まり：{unit.note}
+                          </p>
+                        )}
+                      </article>
+                    ))}
+                  </div>
+                </section>
+              )
+            ) : (
             <section data-reading-grammar-explanations>
               <div className="mb-2 flex items-center gap-1.5 text-brand-600">
                 <BookOpen size={16} />
@@ -325,6 +468,7 @@ export function ReadingSentenceDetail({
                 })}
               </div>
             </section>
+            )}
 
             {/* 自然な和訳 */}
             <div className="rounded-2xl bg-hint-soft/70 p-4">

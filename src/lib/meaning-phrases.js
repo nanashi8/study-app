@@ -784,7 +784,104 @@ function collectMeaningGroups(items, wordLimit, separations = []) {
   return groups
 }
 
-function collectExplicitMeaningGroups(items, definitions) {
+// 明示したまとまりの境界が、語順訳の内部単位の途中にあるときは、その単位を語の位置で分ける。
+// まとまりの日本語は明示した値を使うため、分けた単位の日本語は組み立てに使わない。
+function splitRoleParts(item, pieces) {
+  const parts = item.roleParts ?? []
+  const partWords = parts.map((part) => englishWords(part.en).length)
+  const itemWords = englishWords(item.spokenEn ?? item.en).length
+  const aligned = parts.length && partWords.reduce((sum, count) => sum + count, 0) === itemWords
+  let partIndex = 0
+  let partOffset = 0
+  return pieces.map((piece) => {
+    const pieceWords = englishWords(piece).length
+    if (!aligned) {
+      const meta = translationRoleMeta(primaryRole(item))
+      return Object.freeze([Object.freeze({ ...meta, role: primaryRole(item), en: piece })])
+    }
+    const output = []
+    let remaining = pieceWords
+    while (remaining > 0 && partIndex < parts.length) {
+      const available = partWords[partIndex] - partOffset
+      const take = Math.min(available, remaining)
+      const partTokens = parts[partIndex].en.split(/\s+/).filter(Boolean)
+      const selected = []
+      let seen = 0
+      for (const token of partTokens) {
+        const count = englishWords(token).length
+        if (seen >= partOffset && seen < partOffset + take) selected.push(token)
+        else if (count === 0 && seen > partOffset && seen <= partOffset + take && selected.length) selected.push(token)
+        seen += count
+      }
+      output.push(Object.freeze({ ...parts[partIndex], en: selected.join(' ') }))
+      remaining -= take
+      partOffset += take
+      if (partOffset >= partWords[partIndex]) {
+        partIndex++
+        partOffset = 0
+      }
+    }
+    return Object.freeze(output)
+  })
+}
+
+function splitItemsAtDefinitionBoundaries(items, definitions) {
+  const boundaries = []
+  let total = 0
+  for (const definition of definitions) {
+    total += englishWords(definition.en).length
+    boundaries.push(total)
+  }
+  const output = []
+  let cursor = 0
+  for (const item of items) {
+    const spoken = item.spokenEn ?? item.en
+    const count = englishWords(spoken).length
+    const inner = boundaries.filter((boundary) => boundary > cursor && boundary < cursor + count)
+    if (!inner.length) {
+      output.push(item)
+      cursor += count
+      continue
+    }
+    if (spoken !== item.en || (item.displayEn ?? item.en) !== item.en) {
+      throw new Error(`意味フレーズ定義の境界が、構造表示を補った単位「${item.displayEn ?? item.en}」の途中にあります。`)
+    }
+    const pieces = []
+    let current = []
+    let words = cursor
+    for (const token of item.en.split(/\s+/).filter(Boolean)) {
+      current.push(token)
+      words += englishWords(token).length
+      if (inner.includes(words) && englishWords(token).length) {
+        pieces.push(current.join(' '))
+        current = []
+      }
+    }
+    if (current.length) pieces.push(current.join(' '))
+    const pieceRoleParts = splitRoleParts(item, pieces)
+    pieces.forEach((piece, index) => {
+      const roleParts = pieceRoleParts[index]
+      const roles = Object.freeze([...new Set(roleParts.map((part) => part.role))])
+      output.push(Object.freeze({
+        ...item,
+        id: `${item.id ?? item.en}-group-split-${index}`,
+        en: piece,
+        spokenEn: piece,
+        displayEn: piece,
+        structureEn: '',
+        ja: index === 0 ? item.ja : '',
+        role: roles[0] ?? primaryRole(item),
+        roles,
+        roleParts,
+      }))
+    })
+    cursor += count
+  }
+  return output
+}
+
+function collectExplicitMeaningGroups(sourceItems, definitions) {
+  const items = splitItemsAtDefinitionBoundaries(sourceItems, definitions)
   const groups = []
   let cursor = 0
   for (const definition of definitions) {

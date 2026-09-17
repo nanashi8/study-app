@@ -9,6 +9,10 @@ export const READING_ROLE_CODES = Object.freeze([
   'C',
   'M',
   'LINK',
+  'S_FORMAL',
+  'S_REAL',
+  'O_FORMAL',
+  'O_REAL',
 ])
 
 const READING_ROLE_CODE_SET = new Set(READING_ROLE_CODES)
@@ -101,7 +105,7 @@ export function buildReadingRoleAnnotation(sentence = '', parts = [], options = 
 
   const roles = segments.map((segment) => segment.role)
   const verbOmitted = !roles.includes('V') && Boolean(options.allowVerbOmission)
-  if (!roles.includes('V') && !verbOmitted) {
+  if (!roles.includes('V') && !verbOmitted && !options.allowMissingVerb) {
     errors.push(Object.freeze({ type: 'missing-verb-role' }))
   }
 
@@ -111,7 +115,8 @@ export function buildReadingRoleAnnotation(sentence = '', parts = [], options = 
     errors: Object.freeze(errors),
     sourceWordCount: sourceWords.length,
     annotatedWordCount: wordCursor,
-    impliedSubject: !roles.includes('S') && roles.includes('V'),
+    impliedSubject: !options.withoutImpliedSubject &&
+      !roles.includes('S') && !roles.includes('S_FORMAL') && roles.includes('V'),
     verbOmitted,
   })
 }

@@ -12,6 +12,10 @@ const ROLE_LINE_CLASS = Object.freeze({
   C: 'border-amber-400',
   M: 'border-violet-400',
   LINK: 'border-slate-400',
+  S_FORMAL: 'border-emerald-300 border-dashed',
+  S_REAL: 'border-emerald-400',
+  O_FORMAL: 'border-sky-300 border-dashed',
+  O_REAL: 'border-sky-400',
 })
 
 const ROLE_LABEL_CLASS = Object.freeze({
@@ -23,6 +27,10 @@ const ROLE_LABEL_CLASS = Object.freeze({
   C: 'bg-amber-100 text-amber-800',
   M: 'bg-violet-100 text-violet-800',
   LINK: 'bg-slate-100 text-slate-700',
+  S_FORMAL: 'bg-emerald-50 text-emerald-700',
+  S_REAL: 'bg-emerald-100 text-emerald-800',
+  O_FORMAL: 'bg-sky-50 text-sky-700',
+  O_REAL: 'bg-sky-100 text-sky-800',
 })
 
 function classes(...values) {
@@ -71,8 +79,14 @@ export function ReadingRoleSentence({
   onWordClick = () => {},
   allowVerbOmission = false,
   verbOmissionNote = 'Vなし（動詞を省いた文体上の断片）',
+  // 節・句の中を示すときは、動詞のない句や主語のない句をそのまま表示する。
+  inner = false,
 }) {
-  const annotation = buildReadingRoleAnnotation(sentence, parts, { allowVerbOmission })
+  const annotation = buildReadingRoleAnnotation(sentence, parts, {
+    allowVerbOmission,
+    allowMissingVerb: inner,
+    withoutImpliedSubject: inner,
+  })
   const children = []
 
   if (annotation.verbOmitted) {
@@ -134,7 +148,9 @@ export function ReadingRoleSentence({
         {
           lang: 'en',
           className: classes(
-            'max-w-full border-b-[3px] pb-0.5 text-lg leading-relaxed',
+            inner
+              ? 'max-w-full border-b-[3px] pb-0.5 text-base leading-relaxed'
+              : 'max-w-full border-b-[3px] pb-0.5 text-lg leading-relaxed',
             ROLE_LINE_CLASS[segment.role] ?? 'border-brand-400',
           ),
         },
@@ -157,7 +173,7 @@ export function ReadingRoleSentence({
     'p',
     {
       lang: 'en',
-      'aria-label': 'S・V・O・C・Mの役割を直接表示した英文',
+      'aria-label': inner ? '節・句の中のS・V・O・C・M' : 'S・V・O・C・Mの役割を直接表示した英文',
       'data-reading-role-sentence': 'true',
       'data-reading-role-status': annotation.errors.length ? 'incomplete' : 'complete',
       'data-reading-role-segment-count': annotation.segments.length,
