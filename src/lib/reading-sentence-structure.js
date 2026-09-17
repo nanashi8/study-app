@@ -302,11 +302,27 @@ function patternFromRoles(roles) {
   return `${subject ? 'S' : '(S)'}${core}`
 }
 
+const AUXILIARY_ONLY = /^(?:will|would|can|could|shall|should|may|might|must|do|does|did|has|have|had|am|is|are|was|were|be|been|being|not|never|also|still|often|always)(?:\s+(?:not|never))?$/i
+
+function verbIsComplete(element) {
+  const text = normalizeStructureText(rawText(element.children))
+  return !AUXILIARY_ONLY.test(text)
+}
+
 function clauseGroups(elements) {
   // 接続語のあとに主語が来れば新しい節、動詞が来れば主語を共有する述語の並列。
+  // 接続語のないコンマの並列（listen …, make …）も、動詞が完結したあとの新しい動詞で区切る。
   const groups = []
   let current = { elements: [], sharedSubject: false }
   for (const [index, element] of elements.entries()) {
+    if (
+      element.role === 'V' &&
+      current.elements.some((item) => item.role === 'V' && verbIsComplete(item)) &&
+      current.elements.at(-1)?.role !== '接'
+    ) {
+      groups.push(current)
+      current = { elements: [], sharedSubject: true }
+    }
     if (element.role === '接' && current.elements.some((item) => item.role === 'V')) {
       const rest = elements.slice(index + 1)
       const nextSubject = rest.findIndex((item) => ['S', '仮S'].includes(item.role))
@@ -366,11 +382,19 @@ function nearestRole(scopeElements, container, roles) {
   return before ? nodeText(before) : ''
 }
 
+// まとまりの直前にある前置詞（instead of のような2語以上の前置詞も含む）。
+// 要素の中でまとまりの前に名詞があるとき（books about …）は前置詞ではないので返さない。
 function prepositionBeforeUnit(container, unit) {
   const index = container.children.indexOf(unit)
-  const before = rawText(container.children.slice(0, Math.max(0, index)))
+  const before = normalizeStructureText(rawText(container.children.slice(0, Math.max(0, index))))
   const words = structureWords(before)
-  return words.at(-1)?.toLowerCase() ?? ''
+  if (!words.length) return ''
+  const joined = words.join(' ').toLowerCase()
+  const multi = /(?:^|\s)(instead of|because of|in spite of|as well as|according to|in addition to|rather than|such as|by means of|in terms of|apart from|out of)$/.exec(joined)
+  if (multi) return words.slice(-multi[1].split(' ').length).join(' ')
+  const last = words.at(-1).toLowerCase()
+  const prepositions = new Set(['about', 'after', 'against', 'as', 'at', 'before', 'by', 'during', 'for', 'from', 'in', 'into', 'like', 'of', 'on', 'over', 'than', 'through', 'to', 'toward', 'towards', 'under', 'until', 'upon', 'with', 'within', 'without', 'beyond', 'despite', 'among', 'between', 'behind', 'besides', 'since', 'across', 'around', 'along', 'onto'])
+  return prepositions.has(last) ? words.at(-1) : ''
 }
 
 function nounFunctionText(unit, container, scopeElements, scopeUnit) {
@@ -378,7 +402,7 @@ function nounFunctionText(unit, container, scopeElements, scopeUnit) {
   const verb = nearestVerb(scopeElements, container)
   const preposition = prepositionBeforeUnit(container, unit)
   if (preposition) {
-    if (preposition === 'than' || preposition === 'as') {
+    if (/^(?:than|as)$/i.test(preposition)) {
       return `${inside}${preposition} の後ろに置かれた、比べる相手です。`
     }
     return `${inside}前置詞 ${preposition} の目的語です（${preposition} から始まるまとまりが${ROLE_NAMES[container.role]}）。`
@@ -454,6 +478,9 @@ function unitFunctionText(unit, container, scopeElements, scopeUnit) {
         const kind = INFINITIVE_ADVERB_KINDS[unit.adverbKind]
         if (unit.adverbKind === '形容詞') {
           return `${inside}直前の形容詞の内容を後ろから限定します。`
+        }
+        if (unit.adverbKind === '程度' && container && container.role !== 'M') {
+          return `${inside}enough や too と組んで、どのくらいかという程度を表します${partOf}。`
         }
         return `${inside}${kind}を表し、修飾語Mとして働きます。`
       }
@@ -656,6 +683,7 @@ export function buildSentenceStructure(sentenceEn = '', markup = '', options = {
     marked,
     structureTokens: parsedMarkers.tokens,
     notes,
+    rules: options.rules ?? null,
   })
 }
 
@@ -706,9 +734,28 @@ function scopeDepthForWords(words) {
   return depth
 }
 
-function partDescription(part, scopeUnit) {
+function partDescription(part, scopeInfo) {
   const name = ROLE_NAMES[part.role] ?? part.role
-  return `${part.text} は${name}`
+  if (scopeInfo && !scopeInfo.parts.length) {
+    if (scopeInfo.base === '同格') {
+      return `${part.text} は ${scopeInfo.antecedent} を言いかえる同格の語句で、${name}の一部`
+    }
+    return `${part.text} は文の途中に差し込まれた補足で、${name}の一部`
+  }
+  if (part.coversElement || !part.elementText) return `${part.text} は${name}`
+  if (part.startsElement) return `${part.text} から${name}が始まり、${name}は「${part.elementText}」全体`
+  return `${part.text} は${name}「${part.elementText}」の一部`
+}
+
+function describeParts(parts, scopeInfo) {
+  // will also talk のように、間に修飾語をはさんだ動詞は一つの動詞Vとして述べる。
+  if (
+    parts.length === 3 &&
+    parts[0].role === 'V' && parts[1].role === 'M' && parts[2].role === 'V'
+  ) {
+    return `${parts[0].text} … ${parts[2].text} が動詞V（間の ${parts[1].text} は修飾語M）`
+  }
+  return parts.map((part) => partDescription(part, scopeInfo)).join('、')
 }
 
 // 語順訳のまとまり（連続する語 start..end）に、台帳の役割を割り当てる。
@@ -749,19 +796,20 @@ export function structureRolesForWordSpan(structure, start, end) {
     const covers = elementWords.length &&
       elementWords[0].index >= part.start &&
       elementWords.at(-1).index < part.end
+    const startsElement = elementWords.length && elementWords[0].index === part.start
     return Object.freeze({
       role: part.role,
       displayRole: STRUCTURE_DISPLAY_ROLE[part.role],
       text: part.text || part.words.join(' '),
       elementText,
       coversElement: Boolean(covers),
+      startsElement: Boolean(startsElement),
     })
   })
-  const prefix = scopeInfo ? `${scopeInfo.label}の中で、` : ''
-  const described = resolvedParts.map((part) => partDescription(part, scopeInfo)).join('、')
-  const continuations = resolvedParts
-    .filter((part) => !part.coversElement && part.elementText && !['M', '接', 'V'].includes(part.role))
-    .map((part) => `${ROLE_NAMES[part.role]}は「${part.elementText}」全体です。`)
+  const bareScope = scopeInfo && !scopeInfo.parts.length
+  const prefix = scopeInfo && !bareScope ? `${scopeInfo.label}の中で、` : ''
+  const described = describeParts(resolvedParts, scopeInfo)
+  const continuations = []
   const relativeLead = scopeInfo &&
     ['関係', '関係,'].includes(scopeInfo.base) &&
     resolvedParts.length === 1 &&
@@ -774,7 +822,11 @@ export function structureRolesForWordSpan(structure, start, end) {
     scope: scopeInfo?.label ?? '',
     scopeUnitId: scopeInfo?.id ?? null,
     parts: Object.freeze(resolvedParts),
-    pattern: resolvedParts.map((part) => roleCode(part.role)).join('＋'),
+    pattern: resolvedParts.map((part) => {
+      if (bareScope) return `${roleCode(part.role)}（${scopeInfo.base === '同格' ? '同格' : '挿入'}）`
+      if (!part.coversElement && part.elementText && !part.startsElement) return `${roleCode(part.role)}の一部`
+      return roleCode(part.role)
+    }).join('＋'),
     explanation: [`${prefix}${described}です。`, relativeLead, ...continuations].filter(Boolean).join(' '),
   })
 }

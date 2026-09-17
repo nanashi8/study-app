@@ -824,13 +824,18 @@ function structureRuleIds(sentence, structure) {
   if (has(/\bthan\b|\bas\s+(?:\w+\s+){1,3}as\b|\b(?:more|less|fewer)\b/)) ids.push('comparison-pairs')
   if (has(/\bthat\b/)) ids.push('that-diagnosis')
   if (['疑問詞節', 'whether節', 'if節', 'what節', '疑問詞to'].some((base) => unitBases.has(base))) ids.push('wh-clause')
-  if (['関係', '関係,', '関係省略'].some((base) => unitBases.has(base))) ids.push('relative-clause')
+  // 前の節の内容を受ける非制限用法の which は、名詞へ戻す関係詞節ではない。
+  if (structure.units.some((unit) =>
+    ['関係', '関係,', '関係省略'].includes(unit.base) && unit.antecedent !== '前の内容')) ids.push('relative-clause')
+  if (structure.units.some((unit) => unit.base === '関係,' && unit.antecedent === '前の内容')) ids.push('reference-chain')
   if (verbs.some((verb) => PASSIVE_PARTICIPLE.test(verb))) ids.push('passive-active')
   if (unitBases.has('to') || unitBases.has('疑問詞to')) ids.push('infinitive-role')
   if (['動名詞', '現在分詞', '過去分詞', '分詞構文'].some((base) => unitBases.has(base))) ids.push('ing-ed-role')
   if (/[:;—]/.test(text)) ids.push('punctuation-map')
+  // 文の途中にコンマなどで挟まれた補足だけを「挿入」とする（文末のコンマ＋which は含めない）。
   if (
-    ['挿入', '同格', '関係,'].some((base) => unitBases.has(base)) ||
+    ['挿入', '同格'].some((base) => unitBases.has(base)) ||
+    structure.units.some((unit) => unit.base === '関係,' && text.includes(`${unit.text},`)) ||
     modifiers.some((modifier) => text.includes(`, ${modifier.replace(/,$/, '')},`))
   ) ids.push('insertion')
   if (links.some((link) => /^(?:and|or|nor|both|either|neither)$/.test(link)) || has(/\b(?:and|or)\b/)) ids.push('parallel-shape')
@@ -849,6 +854,7 @@ function structureRuleIds(sentence, structure) {
 
 export function readingRulesForSentence(sentence, limit = 3, structure = null) {
   if (structure) {
+    if (structure.rules?.length) return uniqueRules(structure.rules).slice(0, limit)
     const matched = structureRuleIds(sentence, structure)
     const fallbacks = [
       'main-clause-skeleton',

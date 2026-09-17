@@ -4,6 +4,7 @@ import assert from 'node:assert/strict'
 import { ANNOTATED_PASSAGES } from '../src/data/passages.js'
 import { READING_SENTENCE_STRUCTURES } from '../src/data/reading-structures/index.js'
 import { READING_PARAGRAPH_GUIDES } from '../src/data/reading-paragraph-guides.js'
+import { READING_RULES_BY_ID } from '../src/data/reading-rules.js'
 import { analyzeReadingSentence, analyzePassageParagraphs } from '../src/lib/reading-grammar.js'
 import {
   buildSentenceStructure,
@@ -26,6 +27,9 @@ test('構造台帳は本文と同じ順番・同じ英文で、書き方の誤�
       assert.ok(structure.patterns.length > 0, `${sentence.reviewId}: 文型を決められない`)
       for (const unit of structure.units) {
         assert.ok(unit.functionText, `${sentence.reviewId}: 「${unit.text}」の働きが空`)
+      }
+      for (const id of entry.rules ?? []) {
+        assert.ok(READING_RULES_BY_ID[id], `${sentence.reviewId}: 読解ルール ${id} がない`)
       }
     })
   }
@@ -104,7 +108,7 @@ test('関係代名詞の節は先行詞を含む名詞のまとまりの中に�
   assert.equal(makesEachDay.scope, '関係代名詞の節（形容詞節）')
   const reportsThePower = structureRolesForWordSpan(structure, 5, 8)
   assert.equal(reportsThePower.pattern, 'V＋O')
-  assert.match(reportsThePower.explanation, /目的語Oは「the power that the school makes each day」全体です/)
+  assert.match(reportsThePower.explanation, /目的語Oは「the power that the school makes each day」全体/)
 })
 
 test('台帳の英文が本文と違う・役割のない語がある・説明する名詞が前にない場合は落とす', () => {

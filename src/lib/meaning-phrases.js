@@ -404,9 +404,12 @@ function combinedBinding(items, key) {
   return items.find((item) => item?.[key])?.[key]
 }
 
-function buildMeaningPhrase(items, index, overrides) {
-  const en = spokenEnglish(items)
-  const override = overrides?.[en] ?? overrides?.[normalizedEnglish(en)] ?? null
+function buildMeaningPhrase(items, index, overrides, explicitDefinition = null) {
+  // 明示したまとまりは、句読点も含めて定義どおりの英語を使う（構造表示の補いがある場合を除く）。
+  const itemsEnglish = spokenEnglish(items)
+  const en = explicitDefinition?.en ?? itemsEnglish
+  const override = explicitDefinition ??
+    overrides?.[itemsEnglish] ?? overrides?.[normalizedEnglish(itemsEnglish)] ?? null
   const roleParts = Object.freeze(items.flatMap(rolePartFor))
   const roles = Object.freeze([...new Set(roleParts.map((part) => part.role))])
   const scope = override?.scope ?? items.find((item) => item.scope)?.scope ?? ''
@@ -429,7 +432,9 @@ function buildMeaningPhrase(items, index, overrides) {
   const allConfirmed = items.every((item) => item.status === 'confirmed')
   const allReviewed = items.every((item) => ['reviewed', 'confirmed'].includes(item.status))
   const reviewStates = [...new Set(items.map((item) => item.reviewState).filter(Boolean))]
-  const displayEn = override?.displayEn ?? displayEnglish(items)
+  const itemsDisplay = displayEnglish(items)
+  const displayEn = override?.displayEn ??
+    (explicitDefinition && !/[()]/.test(itemsDisplay) ? explicitDefinition.en : itemsDisplay)
 
   return Object.freeze({
     ...items[0],
@@ -967,9 +972,7 @@ export function buildMeaningPhraseSequence(items, {
   if (Array.isArray(reviewedGroups) && reviewedGroups.length) {
     const groups = collectExplicitMeaningGroups(expandedItems, reviewedGroups)
     return Object.freeze(groups.map(({ group, definition }, index) =>
-      buildMeaningPhrase(group, index, {
-        [spokenEnglish(group)]: definition,
-      })))
+      buildMeaningPhrase(group, index, null, definition)))
   }
   const groups = collectMeaningGroups(expandedItems, wordLimit, overrides?.separate ?? [])
   return Object.freeze(groups.map((group, index) =>
