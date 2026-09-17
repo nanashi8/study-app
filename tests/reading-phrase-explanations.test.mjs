@@ -97,17 +97,15 @@ test('形式目的語・共有to・比較・前置詞＋whatの確定例を回�
     evidence.phrases.map(({ en, roles }) => [en, roles]),
     [
       ['This evidence', ['S']], ['makes it easier', ['V', 'O', 'C']],
-      ['to improve a design', ['V', 'O']], ['or', ['LINK']],
-      ['decide that', ['V', 'LINK']], ['a simpler solution would work', ['S', 'V']],
-      ['better', ['M']],
+      ['to improve a design', ['V', 'O']], ['or decide', ['LINK', 'V']],
+      ['that a simpler solution would work better', ['LINK', 'S', 'V', 'M']],
     ],
   )
-  const decide = evidence.phrases.find((phrase) => phrase.en === 'decide that')
-  assert.equal(decide.displayEn, '(to) decide that')
-  assert.equal(decide.spokenEn, 'decide that')
-  assert.match(decide.grammar, /二つ目のto|省略|並列/)
-  assert.equal(evidence.phrases.find((phrase) => phrase.en === 'better')?.ja,
-    'よりうまく（機能するだろう）')
+  const decide = evidence.phrases.find((phrase) => phrase.en === 'or decide')
+  assert.equal(decide.displayEn, 'or (to) decide')
+  assert.equal(decide.spokenEn, 'or decide')
+  assert.match(decide.grammar, /to を共有/)
+  assert.match(evidence.phrases[1].ja, /it の中身は次へ/)
 
   const memory = bySentence[
     'The integrity of public memory is then shaped less by what is available than by what is repeatedly presented as relevant.'

@@ -85,7 +85,7 @@ export const PASSAGE_SENSE_GLOSSES = Object.freeze({
     stop: sense('stop', '停留所（bus stop でバス停）'),
     may: MAY,
   }),
-  'They compare energy use, waiting times, and complaints in different neighborhoods, then publish the results.': words({
+  'They compare energy use, waiting times, and complaints in different neighborhoods and then publish the results.': words({
     use: sense('use', '使用（energy use でエネルギー使用量）'),
   }),
 

@@ -7,6 +7,7 @@ import p_4_library_event from './p_4_library_event.js'
 import p_3_school_garden from './p_3_school_garden.js'
 import p_pre2_museum_volunteers from './p_pre2_museum_volunteers.js'
 import p_pre2plus_repair_cafes from './p_pre2plus_repair_cafes.js'
+import p_2_quiet_technology from './p_2_quiet_technology.js'
 
 const PASSAGE_STRUCTURES = Object.freeze({
   p_5_lost_notebook,
@@ -14,6 +15,7 @@ const PASSAGE_STRUCTURES = Object.freeze({
   p_3_school_garden,
   p_pre2_museum_volunteers,
   p_pre2plus_repair_cafes,
+  p_2_quiet_technology,
 })
 
 export const READING_SENTENCE_STRUCTURES = PASSAGE_STRUCTURES

@@ -227,7 +227,7 @@ const CORE_PASSAGES = [
       s('City leaders therefore need to ask where a new system will have the greatest effect and who might be left out.', 'したがって都市の指導者は、新しいシステムがどこで最大の効果を持つのか、そして誰が取り残される可能性があるのかを問う必要があります。'),
       s('In some cases, a simple repair to an old bus stop or a clearer sign may help residents more than an expensive digital service.', '場合によっては、古いバス停の簡単な修理やより分かりやすい標識の方が、高価なデジタルサービスより住民の役に立つこともあります。'),
       p('Several cities have therefore begun small trial programs before introducing a system everywhere.', 'そのため、いくつかの都市はシステムを全域に導入する前に、小規模な試験運用を始めています。'),
-      s('They compare energy use, waiting times, and complaints in different neighborhoods, then publish the results.', '都市は地域ごとのエネルギー使用量、待ち時間、苦情を比較し、その結果を公表します。'),
+      s('They compare energy use, waiting times, and complaints in different neighborhoods and then publish the results.', '都市は地域ごとのエネルギー使用量、待ち時間、苦情を比較し、その結果を公表します。'),
       s('This evidence makes it easier to improve a design or decide that a simpler solution would work better.', 'この証拠によって、設計を改善したり、より単純な解決策の方がうまくいくと判断したりしやすくなります。'),
       p('Technology should be judged not by how modern it appears, but by whether it solves a real problem for the people who use the space.', 'テクノロジーは、どれほど現代的に見えるかではなく、その空間を使う人々にとって実際の問題を解決するかどうかで判断されるべきです。'),
       s('If these issues are handled carefully, quiet technology can improve public spaces without making people feel controlled by it.', 'これらの問題が慎重に扱われれば、静かなテクノロジーは人々に支配されていると感じさせずに公共空間を改善できます。'),

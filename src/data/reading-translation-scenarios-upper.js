@@ -139,7 +139,7 @@ export const UPPER_READING_TRANSLATION_SCENARIOS = Object.freeze({
     ],
     [
       b('They compare energy use, waiting times', '都市は／比較します／エネルギー使用量・待ち時間を'),
-      b('and complaints in different neighborhoods, then publish the results', 'そして苦情を／異なる地域の／そのあと公表します／結果を'),
+      b('and complaints in different neighborhoods and then publish the results', 'そして苦情を／異なる地域ごとに／そしてそのあと公表します／結果を'),
     ],
     [
       b(
