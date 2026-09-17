@@ -23,6 +23,7 @@ import {
   wordsByPos,
 } from '../src/data/vocab.js'
 import { PHRASES, getPhrase } from '../src/data/phrases.js'
+import { isGenericPhraseNote, isGenericPhraseOrigin } from '../src/lib/phraseNotes.js'
 import {
   MANUAL_SYNTAX_FAMILY,
   SYNTAX_FAMILY_GUIDES,
@@ -870,6 +871,7 @@ if (EXAM_USAGE_GUIDES.length < 43 || usageGuideWordIds.size < 93) {
 // ── 熟語・構文 ──
 const phraseIds = new Set()
 const phraseHeads = new Set()
+const phraseOrigins = new Map()
 const longSentenceTargetIds = new Set()
 let longSentenceTranslationCount = 0
 let longSentenceTranslationStepCount = 0
@@ -890,6 +892,14 @@ for (const p of PHRASES) {
   if (!p.origin?.trim() || !p.note?.trim()) {
     errors.push(`熟語/構文 ${at}: 成り立ち・語法注意が不足`)
   }
+  // 成り立ちと注意書きは、その表現だけの文にする（表現の種類だけを言う決まり文句や、ほかの表現と同じ文にしない）。
+  if (isGenericPhraseOrigin(p.origin) || isGenericPhraseNote(p.note)) {
+    errors.push(`熟語/構文 ${at}: 成り立ち・語法注意が表現の種類だけを言う決まり文句`)
+  }
+  if (p.origin?.trim() && phraseOrigins.has(p.origin.trim())) {
+    errors.push(`熟語/構文 ${at}: 成り立ちが ${phraseOrigins.get(p.origin.trim())} と同じ文`)
+  }
+  if (p.origin?.trim()) phraseOrigins.set(p.origin.trim(), at)
   if (p.kind === 'syntax' && !syntaxFamilyFor(p)) {
     errors.push(`構文 ${at}: 仲間で比較する構文ファミリーが未分類 (${p.sourceTopic ?? '手動項目'})`)
   }

@@ -414,6 +414,14 @@ test('意味を問うテストは、出題した選択肢すべての中身を�
   assert.equal(isGenericPhraseNote('目的語を置く位置と、自動詞・他動詞の違いまで例文で確認する。'), true)
   assert.equal(isGenericPhraseOrigin(PHRASES.find((item) => item.phrase === 'get up')?.origin), false)
   assert.equal(isGenericPhraseNote(PHRASES.find((item) => item.phrase === 'get up')?.note), false)
+  // 熟語・構文カードは、成り立ちも注意書きもすべてその表現だけの文にする（決まり文句で埋めず、ほかの表現と同じ成り立ちにしない）。
+  assert.deepEqual(
+    PHRASES.filter((item) => isGenericPhraseOrigin(item.origin) || isGenericPhraseNote(item.note)).map((item) => item.id),
+    [],
+  )
+  assert.equal(new Set(PHRASES.map((item) => item.origin)).size, PHRASES.length)
+  assert.match(PHRASES.find((item) => item.id === 'curr_idm_2_pull_down')?.origin ?? '', /^pull\(引く\)＋down\(下へ\)。/)
+  assert.match(PHRASES.find((item) => item.id === 'curr1900_idm_pre2_pull_blank_s_leg')?.origin ?? '', /相手の脚を引っ張る/)
   assert.match(await read('KotenQuiz.jsx'), /<KotenText>\{word\.note\}<\/KotenText>/)
   const diagnostic = await read('Diagnostic.jsx')
   // 単語・熟語は語の説明、文法は規則ごとの解説、読解は本文の根拠を1段落で出す（4段の解説は置かない）。
