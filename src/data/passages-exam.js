@@ -35,7 +35,7 @@ export const EXAM_PASSAGES = [
       s('Please bring your own drinks.', '飲み物は各自で持ってきてください。'),
       p('At one, the sports club meets in the gym.', '1時には、運動部が体育館に集まります。'),
       s('Students wear indoor shoes and join some games.', '生徒は上履きを履き、いくつかのゲームに参加します。'),
-      s('Please ask a teacher near the front door if you have any questions.', '質問があれば、正面のドアの近くにいる先生に尋ねてください。'),
+      s('Please ask a teacher near the front door if you have any questions.', '質問があれば、正面玄関の近くにいる先生に尋ねてください。'),
       s('The open day will end at three.', '学校公開日は3時に終わります。'),
     ],
   },

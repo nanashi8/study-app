@@ -75,7 +75,9 @@ test('構造台帳の主節の文型は、5文型の正解表と一致する', (
     assert.ok(expected, `${passageId}: 5文型の正解表がない`)
     passage.sentences.forEach((sentence, index) => {
       const structure = buildSentenceStructure(sentence.en, entries[index].markup, entries[index])
-      assert.equal(structure.patterns[0], expected[index], `${sentence.reviewId}: ${structure.patterns.join('／')}`)
+      // 命令文は主語 you を省いた形として、正解表の5文型と照らす。
+      const mainPattern = structure.patterns[0].replace(/^\(you\)/, 'S')
+      assert.equal(mainPattern, expected[index], `${sentence.reviewId}: ${structure.patterns.join('／')}`)
     })
   }
 })

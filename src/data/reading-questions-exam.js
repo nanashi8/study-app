@@ -23,7 +23,7 @@ export const EXAM_READING_QUESTIONS = {
         'Behind the music hall.',
       ],
       answer: 'Near the front door.',
-      explain: '質問がある人は正面のドア近くにいる先生へ尋ねます。',
+      explain: '質問がある人は正面玄関の近くにいる先生に尋ねます。',
     },
   ],
 

@@ -230,8 +230,8 @@ export const READING_CHOICE_NOTES = freezeNotes({
   },
   "p_5_school_open_day#3": {
     "Near the front door.": "第9文 Please ask a teacher near the front door if you have any questions. と一致する。",
-    "In the school garden.": "庭は昼食を食べる場所（第5文）。質問するのは、正面のドアの近くにいる先生（第9文）。",
-    "At the bus stop.": "バス停は本文に出てこない。質問するのは、正面のドアの近くにいる先生（第9文）。",
+    "In the school garden.": "庭は昼食を食べる場所（第5文）。質問するのは、正面玄関の近くにいる先生（第9文）。",
+    "At the bus stop.": "バス停は本文に出てこない。質問するのは、正面玄関の近くにいる先生（第9文）。",
     "Behind the music hall.": "音楽部が歌うのは学校のホール（第4文）で、その裏で質問するとは書かれていない。",
   },
   "p_4_bicycle_safety#1": {

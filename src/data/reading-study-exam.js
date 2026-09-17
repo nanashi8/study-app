@@ -60,7 +60,7 @@ export const EXAM_READING_STUDY = {
         'If you have a question, ...',
         '質問があれば〜',
         'If you have a question, ask a teacher near the front door.',
-        '質問があれば、正面のドアの近くにいる先生に尋ねてください。',
+        '質問があれば、正面玄関の近くにいる先生に尋ねてください。',
         'if で条件を示す案内文の定型。',
         'syntax',
       ),

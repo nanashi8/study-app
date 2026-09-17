@@ -439,7 +439,7 @@ export const CORE_READING_PRACTICE_QUESTIONS = Object.freeze({
       questionJa: '「もし〜なら」と条件をつなぐ語を選びなさい。',
       answer: 'if',
       sourceSentence: 'Please ask a teacher near the front door if you have any questions.',
-      sourceJa: '質問があれば、正面のドアの近くにいる先生に尋ねてください。',
+      sourceJa: '質問があれば、正面玄関の近くにいる先生に尋ねてください。',
       explain: 'if は後ろに主語＋動詞を取り、その場合にだけ当てはまる条件を足します。',
       readingRuleId: 'logic-connectors',
       vocabIds: ['front', 'question'],

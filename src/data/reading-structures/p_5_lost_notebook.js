@@ -43,6 +43,10 @@ export default Object.freeze([
       ['sees the notebook', 'そのノートを見つけます'],
       ['near the classroom door', '教室のドアの近くに'],
     ],
+    notes: {
+      'near the classroom door': 'near the classroom door は、ケンがノートを見つけた場所を表します。名詞 the notebook の説明として「ドアの近くにあるノート」と読んでも、意味は同じです。',
+    },
+    rules: ['postmodifier', 'logic-connectors', 'svoc-core'],
   }),
   st('[S Rina] [V says] [O thank you] [接 and] [V writes] [O a short story] [M in it].', {
     chunks: [

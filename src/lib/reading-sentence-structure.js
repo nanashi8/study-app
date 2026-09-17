@@ -360,7 +360,7 @@ function clauseGroups(elements) {
   return groups.filter((group) => group.elements.some((item) => item.role === 'V'))
 }
 
-function patternsForScope(elements) {
+function patternsForScope(elements, { root = false } = {}) {
   const groups = clauseGroups(elements)
   let previousHadSubject = false
   return groups.map((group) => {
@@ -368,7 +368,8 @@ function patternsForScope(elements) {
     const inherits = group.sharedSubject && previousHadSubject
     const pattern = patternFromRoles(inherits ? ['S', ...roles] : roles)
     previousHadSubject = roles.some((role) => ['S', '仮S'].includes(role)) || inherits
-    return pattern
+    // 文全体の主節に主語がなければ、主語 you を省いた命令文。
+    return root && pattern.startsWith('(S)') ? `(you)${pattern.slice(3)}` : pattern
   }).filter(Boolean)
 }
 
@@ -377,6 +378,10 @@ export function structurePatternName(pattern = '') {
   if (pattern.startsWith('(S)')) {
     const name = PATTERN_NAMES[`S${pattern.slice(3)}`]
     return name ? `主語のない形・${name}` : ''
+  }
+  if (pattern.startsWith('(you)')) {
+    const name = PATTERN_NAMES[`S${pattern.slice(5)}`]
+    return name ? `命令文（主語 you の省略）・${name}` : ''
   }
   return PATTERN_NAMES[pattern] ?? ''
 }
@@ -735,7 +740,7 @@ export function buildSentenceStructure(sentenceEn = '', markup = '', options = {
       trimmed: nodeText(element),
       hasUnit: element.children.some((child) => child.kind === 'unit'),
     }))),
-    patterns: Object.freeze(patternsForScope(elements)),
+    patterns: Object.freeze(patternsForScope(elements, { root: true })),
     units: Object.freeze(units.map((unit, index) => Object.freeze({
       id: index,
       ...unit,
