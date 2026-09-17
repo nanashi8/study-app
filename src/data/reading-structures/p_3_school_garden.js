@@ -1,20 +1,20 @@
 import { st } from './entry.js'
 
 export default Object.freeze([
-  st('[M Last spring], [S the students at Maple Junior High] [V started] [O a vegetable garden] [M behind their school].'),
-  st('[M At first], [S many students] [V thought] [O {that省略| [S the work] [V would be] [C simple]}], [接 but] [S they] [M soon] [V learned] [O {that節| [接 that] [S plants] [V need] [O careful attention]}].', {
+  st('[M Last spring], [S the students {前| at Maple Junior High}] [V started] [O a vegetable garden] [M {前| behind their school}].'),
+  st('[M {前| At first}], [S many students] [V thought] [O {that省略| [S the work] [V would be] [C simple]}], [接 but] [S they] [M soon] [V learned] [O {that節| [接 that] [S plants] [V need] [O careful attention]}].', {
     notes: {
       'many students thought': 'thought の後ろでは接続詞 that が省略されています（thought (that) the work would be simple）。',
       'would be simple': 'would は「（そのときは）〜だろう」と、過去の時点での予想を表します。',
     },
   }),
-  st('[S They] [V had to choose] [O a sunny place], [V remove] [O stones] [M from the soil], [接 and] [V water] [O the young plants] [M every day].', {
+  st('[S They] [V had to choose] [O a sunny place], [V remove] [O stones] [M {前| from the soil}], [接 and] [V water] [O the young plants] [M every day].', {
     notes: {
       'had to choose a sunny place,': 'had to は have to の過去形で「〜しなければならなかった」。',
       'remove stones': 'remove と後ろの water は、前の had to を共有する動詞です（had to remove / had to water）。',
     },
   }),
-  st('[S Some students] [V forgot] [O their jobs] [M during the first week], [接 so] [S the tomatoes] [V did not grow] [M well].', {
+  st('[S Some students] [V forgot] [O their jobs] [M {前| during the first week}], [接 so] [S the tomatoes] [V did not grow] [M well].', {
     chunks: [
       ['Some students', '何人かの生徒は'],
       ['forgot their jobs', '自分の仕事を忘れました'],
@@ -27,13 +27,13 @@ export default Object.freeze([
       'did not grow well': 'not … well で「うまく〜しない」。まったく育たなかったのではなく、育ち方がよくなかったという意味です。',
     },
   }),
-  st('[S Their science teacher] [V asked] [O each group] [C {to:補語| [V to make] [O a schedule] [接 and] [V write] [O short notes about the weather]}].', {
+  st('[S Their science teacher] [V asked] [O each group] [C {to:補語| [V to make] [O a schedule] [接 and] [V write] [O short notes {前| about the weather}]}].', {
     notes: {
       'asked each group to make a schedule': 'ask ＋ 人 ＋ to do で「人に〜するように求める」。',
       'write short notes': 'write は to make と to を共有しています（(to) write）。',
     },
   }),
-  st('[M After that], [S the garden] [V changed] [M quickly].', {
+  st('[M {前| After that}], [S the garden] [V changed] [M quickly].', {
     notes: {
       'After that': 'この that は「そのこと」と前の内容を指す代名詞です。',
     },
@@ -51,7 +51,7 @@ export default Object.freeze([
       how: 'how 以下（how … affected the vegetables）は「どのように〜したか」という名詞のまとまりで、understand の目的語です。',
     },
   }),
-  st('[M In June], [S the students] [V noticed] [O {that節| [接 that] [S insects] [V were eating] [O the leaves of several plants]}].', {
+  st('[M {前| In June}], [S the students] [V noticed] [O {that節| [接 that] [S insects] [V were eating] [O the leaves {前| of several plants}]}].', {
     chunks: [
       ['In June', '6月に'],
       ['the students noticed', '生徒たちは気づきました'],
@@ -75,7 +75,7 @@ export default Object.freeze([
       Some: 'Some は Some students の students を省いた形です。',
     },
   }),
-  st('[S They] [V learned] [O {that節| [接 that] [S certain flowers] [V attract] [O insects {関係>insects| [S that] [V eat] [O garden pests] [M without {動名詞| [V harming] [O the vegetables]}]}]}].', {
+  st('[S They] [V learned] [O {that節| [接 that] [S certain flowers] [V attract] [O insects {関係>insects| [S that] [V eat] [O garden pests] [M {前| without {動名詞| [V harming] [O the vegetables]}}]}]}].', {
     chunks: [
       ['They learned', '生徒たちは学びました'],
       ['that', '次の内容だと（中身は次へ）'],
@@ -89,7 +89,7 @@ export default Object.freeze([
       'without harming the vegetables': 'without ＋ -ing で「〜せずに」。harming は前置詞 without の目的語になる動名詞です。',
     },
   }),
-  st('[S The class] [V planted] [O those flowers] [M around the garden], [接 and] [S the number of damaged leaves] [M soon] [V decreased].', {
+  st('[S The class] [V planted] [O those flowers] [M {前| around the garden}], [接 and] [S the number {前| of damaged leaves}] [M soon] [V decreased].', {
     chunks: [
       ['The class', 'クラスは'],
       ['planted those flowers', 'その花を植えました'],
@@ -100,7 +100,7 @@ export default Object.freeze([
       ['decreased', '減りました'],
     ],
   }),
-  st('[M In July], [S they] [V picked] [O enough cucumbers and tomatoes {to:副詞(程度)| [V to share] [M with people at a nearby community center]}].', {
+  st('[M {前| In July}], [S they] [V picked] [O enough cucumbers and tomatoes {to:副詞(程度)| [V to share] [M {前| with people {前| at a nearby community center}}]}].', {
     chunks: [
       ['In July', '7月に'],
       ['they', '生徒たちは'],
@@ -113,7 +113,7 @@ export default Object.freeze([
       'to share': 'enough ＋ 名詞 ＋ to do で「〜できるほど十分な名詞」。',
     },
   }),
-  st('[M Instead of {動名詞| [M simply] [V giving] [O the food] [M away]}], [S the students] [V visited] [O the center] [接 and] [V explained] [O {疑問詞節| [M how] [S they] [V had grown] [O it]}].', {
+  st('[M {前| Instead of {動名詞| [M simply] [V giving] [O the food] [M away]}}], [S the students] [V visited] [O the center] [接 and] [V explained] [O {疑問詞節| [M how] [S they] [V had grown] [O it]}].', {
     chunks: [
       ['Instead of', '〜するのではなく（内容は次へ）'],
       ['simply giving the food away', 'ただ食べ物をあげてしまう（のではなく）'],
@@ -130,7 +130,7 @@ export default Object.freeze([
       'had grown it': 'had grown は過去完了で、説明した時点までに育ててきたことを表します。it は the food を指します。',
     },
   }),
-  st('[S The older residents] [V shared] [O recipes] [接 and] [V suggested] [O vegetables {関係>vegetables| [O that] [S the class] [V could plant] [M in autumn]}].', {
+  st('[S The older residents] [V shared] [O recipes] [接 and] [V suggested] [O vegetables {関係>vegetables| [O that] [S the class] [V could plant] [M {前| in autumn}]}].', {
     chunks: [
       ['The older residents', '年配の住民は'],
       ['shared recipes', 'レシピを教えてくれました'],
@@ -141,7 +141,7 @@ export default Object.freeze([
       ['in autumn', '秋に'],
     ],
   }),
-  st('[S The students] [V used] [O this advice] [M {to:副詞(目的)| [V to plan] [O a second garden]}], [M {関係,>前の内容| [S which] [V made] [O the project] [C {原形| [V continue] [M beyond one school term]}]}].', {
+  st('[S The students] [V used] [O this advice] [M {to:副詞(目的)| [V to plan] [O a second garden]}], [M {関係,>前の内容| [S which] [V made] [O the project] [C {原形| [V continue] [M {前| beyond one school term}]}]}].', {
     chunks: [
       ['The students', '生徒たちは'],
       ['used this advice', 'この助言を使いました'],
@@ -155,7 +155,7 @@ export default Object.freeze([
       'made the project continue': 'make ＋ O ＋ 動詞の原形で「Oに〜させる」。continue は to のない不定詞（原形不定詞）です。',
     },
   }),
-  st('[S The experience] [V taught] [O1 them] [O2 {that節| [接 that] [S {動名詞| [V protecting] [O the environment]}] [V can begin] [M with small daily actions]}].', {
+  st('[S The experience] [V taught] [O1 them] [O2 {that節| [接 that] [S {動名詞| [V protecting] [O the environment]}] [V can begin] [M {前| with small daily actions}]}].', {
     chunks: [
       ['The experience', 'その経験は'],
       ['taught them', '生徒たちに教えました（内容は次へ）'],
@@ -168,7 +168,7 @@ export default Object.freeze([
       'protecting the environment can begin': 'protecting the environment は「環境を守ること」という動名詞のまとまりで、that 節の主語です。',
     },
   }),
-  st('[S It] [M also] [V gave] [O1 them] [O2 a chance {to:形容詞>a chance| [V to talk] [M with older people {関係>older people| [S who] [V knew] [O many useful farming tips]}]}].', {
+  st('[S It] [M also] [V gave] [O1 them] [O2 a chance {to:形容詞>a chance| [V to talk] [M {前| with older people {関係>older people| [S who] [V knew] [O many useful farming tips]}}]}].', {
     chunks: [
       ['It', 'その経験は'],
       ['also', 'また'],
@@ -181,7 +181,7 @@ export default Object.freeze([
       It: 'It は前の文の The experience を指します。',
     },
   }),
-  st('[M By the end of the project], [M even] [S the students {関係>the students| [S who] [V had disliked] [O gardening]}] [V were] [C proud of the result].', {
+  st('[M {前| By the end {前| of the project}}], [M even] [S the students {関係>the students| [S who] [V had disliked] [O gardening]}] [V were] [C proud {前| of the result}].', {
     chunks: [
       ['By the end of the project', 'プロジェクトの終わりまでには'],
       ['even the students', '生徒たちでさえ'],

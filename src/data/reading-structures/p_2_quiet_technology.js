@@ -1,7 +1,7 @@
 import { st } from './entry.js'
 
 export default Object.freeze([
-  st('[M {副詞節:時| [接 When] [S people] [V discuss] [O technology]}], [S they] [M often] [V imagine] [O large machines, bright screens, or dramatic changes in daily life].', {
+  st('[M {副詞節:時| [接 When] [S people] [V discuss] [O technology]}], [S they] [M often] [V imagine] [O large machines, bright screens, or dramatic changes {前| in daily life}].', {
     chunks: [
       ['When', '〜するとき（内容は次へ）'],
       ['people discuss technology', '人々がテクノロジーについて話す（とき）'],
@@ -13,7 +13,7 @@ export default Object.freeze([
       'people discuss technology': 'discuss は他動詞なので about を付けず、discuss technology で「テクノロジーについて話し合う」。',
     },
   }),
-  st('[M In recent years], [M however], [S some of the most useful technologies] [V have been designed] [M {to:副詞(目的)| [V to be] [M almost] [C invisible]}].', {
+  st('[M {前| In recent years}], [M however], [S some {前| of the most useful technologies}] [V have been designed] [M {to:副詞(目的)| [V to be] [M almost] [C invisible]}].', {
     chunks: [
       ['In recent years', '近年'],
       ['however,', 'しかし'],
@@ -24,7 +24,7 @@ export default Object.freeze([
       'have been designed to be almost invisible': 'have been designed は現在完了の受け身で「設計されてきた」。invisible は「目に見えない」で、ここでは使う人がほとんど気づかないという意味です。',
     },
   }),
-  st('[M For example], [S several train stations] [V have introduced] [O sensors {関係>sensors| [S that] [V measure] [O {疑問詞節| [C how crowded] [S each platform] [V is]}]}].', {
+  st('[M {前| For example}], [S several train stations] [V have introduced] [O sensors {関係>sensors| [S that] [V measure] [O {疑問詞節| [C how crowded] [S each platform] [V is]}]}].', {
     chunks: [
       ['For example', '例えば'],
       ['several train stations', 'いくつかの駅は'],
@@ -36,7 +36,7 @@ export default Object.freeze([
       'how crowded each platform is': 'how ＋ 形容詞 ＋ S ＋ V で「Sがどれほど〜か」。how crowded が is の補語です。',
     },
   }),
-  st('[S The information] [V is sent] [M to signs and phone apps], [接 so] [S passengers] [V can choose] [O a less crowded area] [M {副詞節:時| [接 before] [S the train] [V arrives]}].', {
+  st('[S The information] [V is sent] [M {前| to signs and phone apps}], [接 so] [S passengers] [V can choose] [O a less crowded area] [M {副詞節:時| [接 before] [S the train] [V arrives]}].', {
     chunks: [
       ['The information is sent', 'その情報は送られます'],
       ['to signs and phone apps', '表示板とスマートフォンのアプリへ'],
@@ -50,7 +50,7 @@ export default Object.freeze([
       'can choose a less crowded area': 'less crowded は「より混雑していない」つまり「より空いている」。',
     },
   }),
-  st('[S The system] [V does not tell] [O1 people] [O2 {疑問詞to| [O what] [V to do]}], [接 but] [S it] [V gives] [O1 them] [O2 a better source of information].', {
+  st('[S The system] [V does not tell] [O1 people] [O2 {疑問詞to| [O what] [V to do]}], [接 but] [S it] [V gives] [O1 them] [O2 a better source {前| of information}].', {
     chunks: [
       ['The system', 'その仕組みは'],
       ['does not tell people what to do', '人々に何をすべきかを指示するのではありません'],
@@ -63,7 +63,7 @@ export default Object.freeze([
       'gives them a better source of information': 'give ＋ 人 ＋ もの で「人にものを与える」。',
     },
   }),
-  st('[S This small difference] [V can reduce] [O stress], [M especially for elderly passengers or parents {現在分詞>parents| [V traveling] [M with children]}].', {
+  st('[S This small difference] [V can reduce] [O stress], [M especially {前| for elderly passengers or parents {現在分詞>parents| [V traveling] [M {前| with children}]}}].', {
     chunks: [
       ['This small difference', 'この小さな違いは'],
       ['can reduce stress,', 'ストレスを減らすことができます'],
@@ -74,13 +74,13 @@ export default Object.freeze([
       'or parents traveling with children': 'traveling with children は parents を後ろから説明する現在分詞のまとまりです。',
     },
   }),
-  st('[S Another example] [V can be found] [M in public libraries].', {
+  st('[S Another example] [V can be found] [M {前| in public libraries}].', {
     chunks: [
       ['Another example can be found', '別の例も見られます'],
       ['in public libraries', '公共図書館に'],
     ],
   }),
-  st('[S Some libraries] [M now] [V use] [O quiet air-control systems {関係>quiet air-control systems| [S that] [V keep] [O rooms] [C comfortable] [M {副詞節:時| [接 while] [V using] [O less energy than older equipment]}]}].', {
+  st('[S Some libraries] [M now] [V use] [O quiet air-control systems {関係>quiet air-control systems| [S that] [V keep] [O rooms] [C comfortable] [M {副詞節:時| [接 while] [V using] [O less energy {前| than older equipment}]}]}].', {
     chunks: [
       ['Some libraries', '一部の図書館は'],
       ['now', '今では'],
@@ -95,7 +95,7 @@ export default Object.freeze([
       'while using less energy': 'while using は while (they are) using の形で、「〜しながら・〜と同時に」。',
     },
   }),
-  st('[S Visitors] [V may not notice] [O the system] [M at all], [接 yet] [S it] [V affects] [O {疑問詞節| [M how long] [S they] [V can read] [接 or] [V study] [M without {動名詞| [V becoming] [C tired]}]}].', {
+  st('[S Visitors] [V may not notice] [O the system] [M {前| at all}], [接 yet] [S it] [V affects] [O {疑問詞節| [M how long] [S they] [V can read] [接 or] [V study] [M {前| without {動名詞| [V becoming] [C tired]}}]}].', {
     chunks: [
       ['Visitors', '来館者は'],
       ['may not notice the system at all', 'そのシステムにまったく気づかないかもしれません'],
@@ -122,7 +122,7 @@ export default Object.freeze([
       'is not always the technology': 'not always は「必ずしも〜とは限らない」という部分否定です。',
     },
   }),
-  st('[S Cost] [V is] [M still] [C an important factor], [接 and] [S cities] [V must consider] [O {whether節| [接 whether] [S new systems] [V can be maintained] [M for many years]}].', {
+  st('[S Cost] [V is] [M still] [C an important factor], [接 and] [S cities] [V must consider] [O {whether節| [接 whether] [S new systems] [V can be maintained] [M {前| for many years}]}].', {
     chunks: [
       ['Cost', '費用は'],
       ['is still an important factor', '今でも重要な要因です'],
@@ -136,7 +136,7 @@ export default Object.freeze([
       whether: 'whether 以下は「〜かどうか」という名詞のまとまりで、consider の目的語です。',
     },
   }),
-  st('[S Privacy] [V is] [C another concern] [M {副詞節:理由| [接 because] [S sensors] [V can collect] [O data about public behavior]}].', {
+  st('[S Privacy] [V is] [C another concern] [M {副詞節:理由| [接 because] [S sensors] [V can collect] [O data {前| about public behavior}]}].', {
     chunks: [
       ['Privacy', 'プライバシーは'],
       ['is another concern', 'もう一つの懸念です'],
@@ -146,7 +146,7 @@ export default Object.freeze([
       ['about public behavior', '公共の場での行動についての（データを集められるからです）'],
     ],
   }),
-  st('[M For that reason], [S officials] [V should explain] [M clearly] [O {疑問詞節| [S what kind of data] [V is collected]} and {疑問詞節| [M how] [S it] [V will be protected]}].', {
+  st('[M {前| For that reason}], [S officials] [V should explain] [M clearly] [O {疑問詞節| [S what kind of data] [V is collected]} and {疑問詞節| [M how] [S it] [V will be protected]}].', {
     chunks: [
       ['For that reason', 'その理由から'],
       ['officials should explain', '担当者は説明するべきです（何をかは次へ）'],
@@ -172,7 +172,7 @@ export default Object.freeze([
       'is easy to overlook': 'easy to overlook で「見落としやすい」。問題そのものが見落とされる側です。',
     },
   }),
-  st('[M {副詞節:条件| [接 If] [M only] [S wealthy areas] [V receive] [O the newest systems]}], [S technology] [V may make] [O public services] [C more unequal] [M instead of more convenient].', {
+  st('[M {副詞節:条件| [接 If] [M only] [S wealthy areas] [V receive] [O the newest systems]}], [S technology] [V may make] [O public services] [C more unequal] [M {前| instead of more convenient}].', {
     chunks: [
       ['If', 'もし'],
       ['only wealthy areas', '裕福な地域だけが'],
@@ -197,7 +197,7 @@ export default Object.freeze([
       'and who might be left out': 'leave out は「取り残す・外す」。be left out はその受け身です。',
     },
   }),
-  st('[M In some cases], [S a simple repair to an old bus stop or a clearer sign] [V may help] [O residents] [M more than an expensive digital service].', {
+  st('[M {前| In some cases}], [S a simple repair {前| to an old bus stop or a clearer sign}] [V may help] [O residents] [M more {前| than an expensive digital service}].', {
     chunks: [
       ['In some cases', '場合によっては'],
       ['a simple repair to an old bus stop', '古いバス停のちょっとした修理や'],
@@ -206,7 +206,7 @@ export default Object.freeze([
       ['more than an expensive digital service', '高価なデジタルサービスよりも'],
     ],
   }),
-  st('[S Several cities] [V have] [M therefore] [V begun] [O small trial programs] [M before {動名詞| [V introducing] [O a system] [M everywhere]}].', {
+  st('[S Several cities] [V have] [M therefore] [V begun] [O small trial programs] [M {前| before {動名詞| [V introducing] [O a system] [M everywhere]}}].', {
     chunks: [
       ['Several cities', 'いくつかの都市は'],
       ['have therefore begun small trial programs', 'そのため小規模な試験運用を始めています'],
@@ -216,7 +216,7 @@ export default Object.freeze([
       'before introducing a system everywhere': 'before ＋ -ing で「〜する前に」。introducing は前置詞 before の後ろの動名詞です。',
     },
   }),
-  st('[S They] [V compare] [O energy use, waiting times, and complaints] [M in different neighborhoods] [接 and] [M then] [V publish] [O the results].', {
+  st('[S They] [V compare] [O energy use, waiting times, and complaints] [M {前| in different neighborhoods}] [接 and] [M then] [V publish] [O the results].', {
     chunks: [
       ['They', '都市は'],
       ['compare energy use, waiting times, and complaints', 'エネルギー使用量や待ち時間、苦情を比べます'],
@@ -241,7 +241,7 @@ export default Object.freeze([
       'that a simpler solution would work better': 'would は「（そうすれば）〜だろう」という控えめな推量です。',
     },
   }),
-  st('[S Technology] [V should be judged] [M not by {疑問詞節| [C how modern] [S it] [V appears]}], [接 but] [M by {whether節| [接 whether] [S it] [V solves] [O a real problem for the people {関係>the people| [S who] [V use] [O the space]}]}].', {
+  st('[S Technology] [V should be judged] [M not {前| by {疑問詞節| [C how modern] [S it] [V appears]}}], [接 but] [M {前| by {whether節| [接 whether] [S it] [V solves] [O a real problem {前| for the people {関係>the people| [S who] [V use] [O the space]}}]}}].', {
     chunks: [
       ['Technology should be judged', 'テクノロジーは判断されるべきです（何によってかは次へ）'],
       ['not by how modern it appears,', 'それがどれほど現代的に見えるかによってではなく'],
@@ -255,7 +255,7 @@ export default Object.freeze([
       'but by whether': 'whether 以下は「〜かどうか」という名詞のまとまりで、前置詞 by の目的語です。',
     },
   }),
-  st('[M {副詞節:条件| [接 If] [S these issues] [V are handled] [M carefully]}], [S quiet technology] [V can improve] [O public spaces] [M without {動名詞| [V making] [O people] [C {原形| [V feel] [C controlled by it]}]}].', {
+  st('[M {副詞節:条件| [接 If] [S these issues] [V are handled] [M carefully]}], [S quiet technology] [V can improve] [O public spaces] [M {前| without {動名詞| [V making] [O people] [C {原形| [V feel] [C controlled {前| by it}]}]}}].', {
     chunks: [
       ['If', 'もし'],
       ['these issues are handled carefully', 'これらの問題が慎重に扱われれば'],

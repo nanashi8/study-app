@@ -1,7 +1,7 @@
 import { st } from './entry.js'
 
 export default Object.freeze([
-  st('[S Heavy rain] [M sometimes] [V covers] [O streets in our town] [M with water].', {
+  st('[S Heavy rain] [M sometimes] [V covers] [O streets {前| in our town}] [M {前| with water}].', {
     chunks: [
       ['Heavy rain sometimes covers streets', '大雨がときどき道路を覆います（どこのかは次へ）'],
       ['in our town', '私たちの町の（道路を）'],
@@ -21,7 +21,7 @@ export default Object.freeze([
       'decided to make a safer walking map': 'decide to ＋ 動詞の原形 で「〜することに決める」。safer は safe の比較級です。',
     },
   }),
-  st('[S They] [M first] [V interviewed] [O residents] [M about places {関係>places| [S that] [V became] [C dangerous] [M during storms]}].', {
+  st('[S They] [M first] [V interviewed] [O residents] [M {前| about places {関係>places| [S that] [V became] [C dangerous] [M {前| during storms}]}}].', {
     chunks: [
       ['They first interviewed residents', '彼らはまず、住民に聞き取りをしました（何についてかは次へ）'],
       ['about places', '場所について（どんな場所かは次へ）'],
@@ -32,7 +32,7 @@ export default Object.freeze([
       'that became dangerous during storms': 'that は places を受ける関係代名詞です。become ＋ 形容詞 で「〜になる」。',
     },
   }),
-  st('[S Several people] [V warned] [O them] [M about a low bridge near the river].', {
+  st('[S Several people] [V warned] [O them] [M {前| about a low bridge {前| near the river}}].', {
     chunks: [
       ['Several people warned them', '何人かの人が彼らに注意しました（何についてかは次へ）'],
       ['about a low bridge near the river', '川の近くの低い橋について'],
@@ -42,7 +42,7 @@ export default Object.freeze([
     },
     rules: ['postmodifier', 'reference-chain', 'main-clause-skeleton'],
   }),
-  st('[S Water] [V can rise] [M there] [M quickly], [接 so] [S the students] [V marked] [O another route to the community center].', {
+  st('[S Water] [V can rise] [M there] [M quickly], [接 so] [S the students] [V marked] [O another route {前| to the community center}].', {
     chunks: [
       ['Water can rise there quickly,', 'そこでは水がすぐに上がることがあります'],
       ['so', 'だから'],
@@ -53,7 +53,7 @@ export default Object.freeze([
       'Water can rise there quickly,': 'there は前の文の「川の近くの低い橋のあたり」を指します。',
     },
   }),
-  st('[S An older resident] [M also] [V showed] [O1 them] [O2 a narrow street without lights].', {
+  st('[S An older resident] [M also] [V showed] [O1 them] [O2 a narrow street {前| without lights}].', {
     chunks: [
       ['An older resident also showed them', 'ある年配の住民は、彼らに〜も教えてくれました（何をかは次へ）'],
       ['a narrow street without lights', '街灯のない狭い道を'],
@@ -64,7 +64,7 @@ export default Object.freeze([
     },
     rules: ['postmodifier', 'logic-connectors', 'svoc-core'],
   }),
-  st('[S The map] [V tells] [O walkers] [C {to:補語| [V to avoid] [O that street] [M after dark]}].', {
+  st('[S The map] [V tells] [O walkers] [C {to:補語| [V to avoid] [O that street] [M {前| after dark}]}].', {
     chunks: [
       ['The map tells walkers', '地図は歩く人に伝えます（何をかは次へ）'],
       ['to avoid that street after dark', '暗くなったらその道を避けるように'],
@@ -75,7 +75,7 @@ export default Object.freeze([
     },
     rules: ['infinitive-role', 'reference-chain', 'svoc-core'],
   }),
-  st('[M {副詞節:時| [接 When] [S the first map] [V was] [C ready]}], [S families] [V tested] [O it] [M on a rainy afternoon].', {
+  st('[M {副詞節:時| [接 When] [S the first map] [V was] [C ready]}], [S families] [V tested] [O it] [M {前| on a rainy afternoon}].', {
     chunks: [
       ['When the first map was ready,', '最初の地図ができあがると'],
       ['families tested it', '家族の人たちがそれを試しました'],
@@ -85,7 +85,7 @@ export default Object.freeze([
       'families tested it': 'it は the first map を指します。',
     },
   }),
-  st('[S They] [V found] [O {that節| [接 that] [S one sign] [V was hidden] [M behind a large tree]}].', {
+  st('[S They] [V found] [O {that節| [接 that] [S one sign] [V was hidden] [M {前| behind a large tree}]}].', {
     chunks: [
       ['They found that', '彼らは〜ことに気づきました（内容は次へ）'],
       ['one sign was hidden behind a large tree', '標識の一つが大きな木の後ろに隠れていた（ことに）'],
@@ -95,7 +95,7 @@ export default Object.freeze([
       'one sign was hidden behind a large tree': 'was hidden は hide（隠す）の受け身で「隠れていた」。',
     },
   }),
-  st('[S They] [M also] [V asked] [M for larger letters and simple pictures].', {
+  st('[S They] [M also] [V asked] [M {前| for larger letters and simple pictures}].', {
     chunks: [
       ['They also asked for', 'その人たちは〜も求めました（何をかは次へ）'],
       ['larger letters and simple pictures', 'もっと大きな文字と簡単な絵を'],
@@ -116,7 +116,7 @@ export default Object.freeze([
       'if the rain grew stronger': 'grow ＋ 形容詞 で「〜になる」。stronger は strong の比較級です。',
     },
   }),
-  st('[S The students] [V changed] [O the map] [接 and] [V printed] [O copies] [M for schools and shops].', {
+  st('[S The students] [V changed] [O the map] [接 and] [V printed] [O copies] [M {前| for schools and shops}].', {
     chunks: [
       ['The students changed the map', '生徒たちは地図を直しました'],
       ['and printed copies', 'そして何部も印刷しました（だれのためにかは次へ）'],
@@ -126,7 +126,7 @@ export default Object.freeze([
       'and printed copies': 'copies は「（印刷した）部数・写し」。printed も The students を主語にしています。',
     },
   }),
-  st('[S They] [V put] [O the same information] [M on the town website].', {
+  st('[S They] [V put] [O the same information] [M {前| on the town website}].', {
     chunks: [
       ['They put the same information', '彼らは同じ情報を載せました（どこにかは次へ）'],
       ['on the town website', '町のウェブサイトに'],

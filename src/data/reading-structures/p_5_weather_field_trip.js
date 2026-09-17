@@ -1,7 +1,7 @@
 import { st } from './entry.js'
 
 export default Object.freeze([
-  st('[S Our class] [V will visit] [O the city zoo] [M on Friday].', {
+  st('[S Our class] [V will visit] [O the city zoo] [M {前| on Friday}].', {
     chunks: [
       ['Our class will visit the city zoo', '私たちのクラスは、市の動物園を訪れます'],
       ['on Friday', '金曜日に'],
@@ -12,7 +12,7 @@ export default Object.freeze([
     },
     rules: ['purpose-first', 'svoc-core', 'paragraph-map'],
   }),
-  st('[S We] [V meet] [M at school] [M at eight in the morning].', {
+  st('[S We] [V meet] [M {前| at school}] [M {前| at eight {前| in the morning}}].', {
     chunks: [
       ['We meet at school', '私たちは学校に集まります'],
       ['at eight in the morning', '朝の8時に'],
@@ -41,7 +41,7 @@ export default Object.freeze([
       'a guide shows us': 'show ＋ 人 ＋ もの で「人にものを見せる」。',
     },
   }),
-  st('[M Then] [S we] [V eat] [O lunch] [M near the flower garden].', {
+  st('[M Then] [S we] [V eat] [O lunch] [M {前| near the flower garden}].', {
     chunks: [
       ['Then', 'それから'],
       ['we eat lunch', '私たちは昼食を食べます'],
@@ -51,7 +51,7 @@ export default Object.freeze([
       Then: 'Then は「それから」。First（まず）に続く順番を表します。',
     },
   }),
-  st('[M In the afternoon], [S we] [V watch] [O the penguins] [接 and] [V draw] [O one animal].', {
+  st('[M {前| In the afternoon}], [S we] [V watch] [O the penguins] [接 and] [V draw] [O one animal].', {
     chunks: [
       ['In the afternoon,', '午後には'],
       ['we watch the penguins', '私たちはペンギンを見ます'],
@@ -61,7 +61,7 @@ export default Object.freeze([
       'and draw one animal': 'draw も we を主語にしています（we draw）。draw は「（絵を）かく」。',
     },
   }),
-  st('[S The bus] [V leaves] [O the zoo] [M at two thirty].', {
+  st('[S The bus] [V leaves] [O the zoo] [M {前| at two thirty}].', {
     chunks: [
       ['The bus leaves the zoo', 'バスは動物園を出発します'],
       ['at two thirty', '2時30分に'],
@@ -80,7 +80,7 @@ export default Object.freeze([
       'we visit the science museum instead': 'instead は「代わりに」。動物園の代わりに、という意味です。',
     },
   }),
-  st('[S The museum] [V is] [M next to the train station].', {
+  st('[S The museum] [V is] [M {前| next to the train station}].', {
     chunks: [
       ['The museum', 'その博物館は'],
       ['is next to the train station', '駅の隣にあります'],
@@ -89,7 +89,7 @@ export default Object.freeze([
       'is next to the train station': 'next to 〜 で「〜の隣に」。is ＋ 場所 で「〜にある」という第1文型です。',
     },
   }),
-  st('[S Our teacher] [V puts] [O the final plan] [M on the school website] [M on Thursday evening].', {
+  st('[S Our teacher] [V puts] [O the final plan] [M {前| on the school website}] [M {前| on Thursday evening}].', {
     chunks: [
       ['Our teacher puts the final plan', '先生は、最後の予定を載せます（どこにかは次へ）'],
       ['on the school website', '学校のウェブサイトに'],

@@ -12,6 +12,7 @@ import {
   structurePatternName,
   structureWords,
   structureRolesForWordSpan,
+  unbracketedPrepositions,
 } from '../src/lib/reading-sentence-structure.js'
 
 const passageById = new Map(ANNOTATED_PASSAGES.map((passage) => [passage.id, passage]))
@@ -143,4 +144,79 @@ test('台帳の英文が本文と違う・役割のない語がある・説明�
     ).errors,
     [],
   )
+})
+
+// 利用者と例文で確認した括弧の付け方（2026-09-17）。
+// 変えるときは、必ず利用者に例文を見せて確認する。勝手に期待値を書き換えない。
+const CONFIRMED_BRACKETS = Object.freeze({
+  'p_1_collective_memory#5':
+    '(When these mechanisms weaken), the past becomes a collection <of isolated facts> <rather than a resource <for judgment>>',
+  'p_1_collective_memory#10':
+    'The integrity <of public memory> is then shaped less <by (what is available)> than <by (what is repeatedly presented <as relevant>)>',
+  'p_1_collective_memory#46':
+    '(If that practice declines), even perfect archives will not prevent societies <from <losing their ability <to learn <from (what they once knew)>>>>',
+  'p_pre1_cashless_inclusion#19':
+    'Some governments therefore require essential businesses <to accept cash> (while encouraging digital innovation elsewhere)',
+  'p_pre2plus_repair_cafes#5':
+    '<At these events>, local volunteers help visitors <examine broken things and, (when possible), repair them>',
+  'p_1_metric_fixation#17':
+    'Judgment can remain informed and humane, but it can also become inconsistent, biased, and difficult <for outsiders> <to challenge>',
+  'p_pre1_resilient_cities#25':
+    'A city (that takes resilience seriously) must therefore evaluate projects <over a long period> <rather than only <during the year (in which they are introduced)>>',
+  'p_2_quiet_technology#17':
+    '<In some cases>, a simple repair <to an old bus stop or a clearer sign> may help residents more <than an expensive digital service>',
+  'p_pre2_museum_volunteers#15':
+    'The museum has also changed the way (it prepares labels <for new displays>)',
+})
+
+test('利用者と例文で確認した括弧の付け方を保つ', () => {
+  for (const [reviewId, expected] of Object.entries(CONFIRMED_BRACKETS)) {
+    const [passageId, number] = reviewId.split('#')
+    const passage = passageById.get(passageId)
+    const sentence = passage.sentences[Number(number) - 1]
+    const entry = READING_SENTENCE_STRUCTURES[passageId][Number(number) - 1]
+    const structure = buildSentenceStructure(sentence.en, entry.markup, entry)
+    assert.equal(structure.marked, expected, reviewId)
+  }
+})
+
+test('台帳の前置詞は、すべて前置詞句 {前| …} でくくる', () => {
+  const issues = []
+  for (const [passageId, entries] of Object.entries(READING_SENTENCE_STRUCTURES)) {
+    const passage = passageById.get(passageId)
+    passage.sentences.forEach((sentence, index) => {
+      for (const issue of unbracketedPrepositions(
+        buildSentenceStructure(sentence.en, entries[index].markup, entries[index]),
+      )) {
+        issues.push(`${sentence.reviewId} [${issue.word}] ${issue.text}`)
+      }
+    })
+  }
+  assert.deepEqual(issues, [])
+})
+
+test('節のまとまりには、つなぐ語の種類と見分け方がある', () => {
+  for (const [passageId, entries] of Object.entries(READING_SENTENCE_STRUCTURES)) {
+    const passage = passageById.get(passageId)
+    passage.sentences.forEach((sentence, index) => {
+      const structure = buildSentenceStructure(sentence.en, entries[index].markup, entries[index])
+      for (const unit of structure.units) {
+        if (!unit.clause) continue
+        assert.ok(unit.connector, `${sentence.reviewId}: 「${unit.text}」のつなぐ語がない`)
+        assert.ok(unit.connector.kind, `${sentence.reviewId}: 「${unit.text}」の種類が空`)
+        assert.ok(
+          unit.connector.explanation.length > 20,
+          `${sentence.reviewId}: 「${unit.text}」の見分け方が短い`,
+        )
+        assert.doesNotMatch(
+          unit.connector.explanation,
+          /(?:主語 と|動詞 と|直前の （|「」)/u,
+          `${sentence.reviewId}: 「${unit.text}」の説明に空欄が残っている`,
+        )
+      }
+      for (const link of structure.links) {
+        assert.ok(link.explanation.length > 15, `${sentence.reviewId}: ${link.word} の説明が短い`)
+      }
+    })
+  }
 })

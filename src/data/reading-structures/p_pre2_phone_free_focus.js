@@ -12,7 +12,7 @@ export default Object.freeze([
       'and contact their families': 'and は organize と contact をつなぎ、どちらも help them の後ろの動詞の原形です。',
     },
   }),
-  st('[S The same phones], [M however], [V can interrupt] [O study] [M with messages {関係>messages| [S that] [V feel] [C urgent]}].', {
+  st('[S The same phones], [M however], [V can interrupt] [O study] [M {前| with messages {関係>messages| [S that] [V feel] [C urgent]}}].', {
     chunks: [
       ['The same phones, however,', 'しかし、同じスマートフォンが'],
       ['can interrupt study', '学習を中断させることがあります（何でかは次へ）'],
@@ -25,7 +25,7 @@ export default Object.freeze([
     },
     rules: ['insertion', 'relative-clause', 'contrast-concession'],
   }),
-  st('[S One high school] [V tested] [O a daily phone-free hour] [M instead of {動名詞| [V banning] [O phones] [M all day]}].', {
+  st('[S One high school] [V tested] [O a daily phone-free hour] [M {前| instead of {動名詞| [V banning] [O phones] [M all day]}}].', {
     chunks: [
       ['One high school', 'ある高校は'],
       ['tested a daily phone-free hour', '毎日スマートフォンを使わない1時間を試しました'],
@@ -36,7 +36,7 @@ export default Object.freeze([
       'instead of banning phones all day': 'instead of ＋ -ing で「〜する代わりに」。banning は前置詞の後ろの動名詞です。',
     },
   }),
-  st('[M At the beginning of the hour], [S students] [V placed] [O phones] [M in their bags or lockers].', {
+  st('[M {前| At the beginning {前| of the hour}}], [S students] [V placed] [O phones] [M {前| in their bags or lockers}].', {
     chunks: [
       ['At the beginning of the hour,', 'その1時間の始めに'],
       ['students placed phones', '生徒たちはスマートフォンを入れました（どこにかは次へ）'],
@@ -46,7 +46,7 @@ export default Object.freeze([
       'students placed phones': 'place はここでは動詞で「置く・入れる」。',
     },
   }),
-  st('[S The office] [V kept] [O a number {関係>a number| [O that] [S families] [V could call] [M in an emergency]}].', {
+  st('[S The office] [V kept] [O a number {関係>a number| [O that] [S families] [V could call] [M {前| in an emergency}]}].', {
     chunks: [
       ['The office kept a number', '事務室は番号を用意しておきました（どんな番号かは次へ）'],
       ['that families could call in an emergency', '緊急時に家族が電話をかけられる（番号を）'],
@@ -56,7 +56,7 @@ export default Object.freeze([
       'that families could call in an emergency': 'that は a number を受ける関係代名詞で、call の目的語にあたります。',
     },
   }),
-  st('[S Teachers] [V used] [O the time] [M for reading, writing, or problems {関係>problems| [S that] [V required] [O steady attention]}].', {
+  st('[S Teachers] [V used] [O the time] [M {前| for reading, writing, or problems {関係>problems| [S that] [V required] [O steady attention]}}].', {
     chunks: [
       ['Teachers used the time', '先生たちはその時間を使いました（何にかは次へ）'],
       ['for reading, writing, or problems', '読むこと、書くこと、または問題に（どんな問題かは次へ）'],
@@ -67,7 +67,7 @@ export default Object.freeze([
       'that required steady attention': 'that は problems を受ける関係代名詞です。steady attention は「途切れない集中」。',
     },
   }),
-  st('[M For four weeks], [S two classes] [V followed] [O the plan] [M {副詞節:対比| [接 while] [S two other classes] [V kept] [O their usual rules]}].', {
+  st('[M {前| For four weeks}], [S two classes] [V followed] [O the plan] [M {副詞節:対比| [接 while] [S two other classes] [V kept] [O their usual rules]}].', {
     chunks: [
       ['For four weeks,', '4週間'],
       ['two classes followed the plan', '2つのクラスがその方法を実施しました'],
@@ -88,7 +88,7 @@ export default Object.freeze([
     },
     rules: ['comparison-pairs', 'reference-chain', 'svoc-core'],
   }),
-  st('[S Students] [M also] [V reported] [O {疑問詞節| [M how often] [S their attention] [V moved] [M away from the work]}].', {
+  st('[S Students] [M also] [V reported] [O {疑問詞節| [M how often] [S their attention] [V moved] [M away {前| from the work}]}].', {
     chunks: [
       ['Students also reported', '生徒たちは〜も報告しました（何をかは次へ）'],
       ['how often their attention moved away', 'どのくらいの頻度で注意がそれたかを'],
@@ -133,7 +133,7 @@ export default Object.freeze([
       'and reported fewer interruptions': 'fewer は few の比較級で「より少ない」。interruption は interrupt の名詞形です。',
     },
   }),
-  st('[S The school] [V compared] [O completion rates] [接 but] [V did not treat] [O a few extra answers] [C as proof of deeper learning].', {
+  st('[S The school] [V compared] [O completion rates] [接 but] [V did not treat] [O a few extra answers] [C {前| as proof {前| of deeper learning}}].', {
     chunks: [
       ['The school compared completion rates', '学校は課題を終えた割合を比べました'],
       ['but did not treat a few extra answers', 'しかし、数問多い答えを〜とはみなしませんでした（何とかは次へ）'],
@@ -155,7 +155,7 @@ export default Object.freeze([
     },
     rules: ['negation-scope', 'that-diagnosis', 'paragraph-map'],
   }),
-  st('[S Some] [V felt] [C anxious] [M {副詞節:理由| [接 because] [S they] [M regularly] [V received] [O health messages from home]}].', {
+  st('[S Some] [V felt] [C anxious] [M {副詞節:理由| [接 because] [S they] [M regularly] [V received] [O health messages {前| from home}]}].', {
     chunks: [
       ['Some felt anxious', '不安を感じる生徒もいました'],
       ['because they regularly received', '定期的に受け取っていたので（何をかは次へ）'],
@@ -166,7 +166,7 @@ export default Object.freeze([
       'because they regularly received': 'they は Some（一部の生徒）を指します。regularly は「定期的に」。',
     },
   }),
-  st('[S Others] [V needed] [O translation or reading tools {関係>translation or reading tools| [S that] [V were] [C available] [M on their phones]}].', {
+  st('[S Others] [V needed] [O translation or reading tools {関係>translation or reading tools| [S that] [V were] [C available] [M {前| on their phones}]}].', {
     chunks: [
       ['Others needed translation or reading tools', 'ほかの生徒は、翻訳や読むのを助けるツールを必要としました（どんなツールかは次へ）'],
       ['that were available on their phones', 'スマートフォンで使える（ツールを）'],
@@ -186,7 +186,7 @@ export default Object.freeze([
       'to approve necessary learning tools': 'approve は「許可する・認める」。',
     },
   }),
-  st('[S A second survey] [V showed] [O another limit of the experiment].', {
+  st('[S A second survey] [V showed] [O another limit {前| of the experiment}].', {
     chunks: [
       ['A second survey showed another limit', '2回目のアンケートは、もう一つの限界を示しました（何のかは次へ）'],
       ['of the experiment', 'この実験の'],
@@ -196,7 +196,7 @@ export default Object.freeze([
     },
     rules: ['paragraph-map', 'reference-chain', 'main-clause-skeleton'],
   }),
-  st('[M {副詞節:条件| [接 If] [S an assignment] [V was] [C unclear]}], [S students] [V became] [C distracted] [M even without a phone nearby].', {
+  st('[M {副詞節:条件| [接 If] [S an assignment] [V was] [C unclear]}], [S students] [V became] [C distracted] [M even {前| without a phone nearby}].', {
     chunks: [
       ['If an assignment was unclear,', '課題が分かりにくいと'],
       ['students became distracted', '生徒の集中は途切れました'],
@@ -238,7 +238,7 @@ export default Object.freeze([
       'and when it interrupts': 'and は2つの when のまとまりをつなぎます。it は a device を指します。',
     },
   }),
-  st('[M At home], [S students] [V can silence] [O alerts] [接 or] [V place] [O a device] [M out of reach] [M {副詞節:時| [接 while] [V studying]}].', {
+  st('[M {前| At home}], [S students] [V can silence] [O alerts] [接 or] [V place] [O a device] [M {前| out of reach}] [M {副詞節:時| [接 while] [V studying]}].', {
     chunks: [
       ['At home,', '家庭では'],
       ['students can silence alerts', '生徒は通知が鳴らないようにしたり'],

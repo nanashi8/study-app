@@ -10,12 +10,12 @@ export default Object.freeze([
       'a junior high school student': '主語 Rina が何者かを説明します（Rina＝中学生）。',
     },
   }),
-  st('[S She] [V goes] [M to school] [M by bus] [M every morning].', {
+  st('[S She] [V goes] [M {前| to school}] [M {前| by bus}] [M every morning].', {
     notes: {
       'every morning': '前置詞を付けずに「いつ」を表します。',
     },
   }),
-  st('[M On Monday], [S she] [V has] [O English, music, and science classes].', {
+  st('[M {前| On Monday}], [S she] [V has] [O English, music, and science classes].', {
     notes: {
       'has English, music, and science classes': 'English, music, and science が classes を前から説明し、三つの教科の授業全体で一つの目的語です。have classes で「授業がある」。',
     },
@@ -25,7 +25,7 @@ export default Object.freeze([
       'likes English': 'like の目的語は、日本語では「〜が好き」と訳します。',
     },
   }),
-  st('[M After lunch], [S Rina] [V cannot find] [O her blue notebook].', {
+  st('[M {前| After lunch}], [S Rina] [V cannot find] [O her blue notebook].', {
     chunks: [
       ['After lunch', '昼食のあとに'],
       ['Rina', 'リナは'],
@@ -35,8 +35,8 @@ export default Object.freeze([
       'cannot find her blue notebook': 'her はリナ自身を指すので「自分の」と訳します。',
     },
   }),
-  st('[S Her friend Ken] [V looks] [M under the desks] [M with her].'),
-  st('[M Then] [S Ken] [V sees] [O the notebook] [M near the classroom door].', {
+  st('[S Her friend Ken] [V looks] [M {前| under the desks}] [M {前| with her}].'),
+  st('[M Then] [S Ken] [V sees] [O the notebook] [M {前| near the classroom door}].', {
     chunks: [
       ['Then', 'それから'],
       ['Ken', 'ケンは'],
@@ -48,7 +48,7 @@ export default Object.freeze([
     },
     rules: ['postmodifier', 'logic-connectors', 'svoc-core'],
   }),
-  st('[S Rina] [V says] [O thank you] [接 and] [V writes] [O a short story] [M in it].', {
+  st('[S Rina] [V says] [O thank you] [接 and] [V writes] [O a short story] [M {前| in it}].', {
     chunks: [
       ['Rina', 'リナは'],
       ['says thank you', 'お礼を言います'],
@@ -60,7 +60,7 @@ export default Object.freeze([
       'in it': 'it は前の文の the notebook を指します。',
     },
   }),
-  st('[S She] [V is] [C happy] [M {副詞節:理由| [接 because] [S she] [V can use] [O the story] [M in English class]}].', {
+  st('[S She] [V is] [C happy] [M {副詞節:理由| [接 because] [S she] [V can use] [O the story] [M {前| in English class}]}].', {
     chunks: [
       ['She', '彼女は'],
       ['is happy', 'うれしいです'],

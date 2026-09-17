@@ -13,7 +13,7 @@ export default Object.freeze([
     },
     rules: ['purpose-first', 'paragraph-map', 'svoc-core'],
   }),
-  st('[S Students] [V come] [M at nine] [M with a parent].', {
+  st('[S Students] [V come] [M {前| at nine}] [M {前| with a parent}].', {
     chunks: [
       ['Students come', '生徒は来ます'],
       ['at nine', '9時に'],
@@ -37,7 +37,7 @@ export default Object.freeze([
       'watch a science class': 'watch も families を主語にしています（families watch）。',
     },
   }),
-  st('[M At ten], [S the music club] [V sings] [M in the school hall].', {
+  st('[M {前| At ten}], [S the music club] [V sings] [M {前| in the school hall}].', {
     chunks: [
       ['At ten,', '10時には'],
       ['the music club sings', '音楽部が歌います'],
@@ -47,7 +47,7 @@ export default Object.freeze([
       'the music club sings': 'the music club は一つの部なので、動詞は三人称単数の sings です。',
     },
   }),
-  st('[M After that], [S families] [V eat] [O lunch] [M in the garden].', {
+  st('[M {前| After that}], [S families] [V eat] [O lunch] [M {前| in the garden}].', {
     chunks: [
       ['After that,', 'そのあと'],
       ['families', '家族は'],
@@ -68,7 +68,7 @@ export default Object.freeze([
     },
     rules: ['purpose-first', 'svoc-core', 'noun-boundary'],
   }),
-  st('[M At one], [S the sports club] [V meets] [M in the gym].', {
+  st('[M {前| At one}], [S the sports club] [V meets] [M {前| in the gym}].', {
     chunks: [
       ['At one,', '1時には'],
       ['the sports club meets', '運動部が集まります'],
@@ -90,7 +90,7 @@ export default Object.freeze([
       'join some games': 'join は「〜に参加する」で、後ろに直接 some games を置きます。',
     },
   }),
-  st('[M Please] [V ask] [O a teacher near the front door] [M {副詞節:条件| [接 if] [S you] [V have] [O any questions]}].', {
+  st('[M Please] [V ask] [O a teacher {前| near the front door}] [M {副詞節:条件| [接 if] [S you] [V have] [O any questions]}].', {
     chunks: [
       ['Please ask a teacher', '先生に尋ねてください'],
       ['near the front door', '正面玄関の近くにいる（先生に）'],
@@ -103,7 +103,7 @@ export default Object.freeze([
     },
     rules: ['postmodifier', 'logic-connectors', 'purpose-first'],
   }),
-  st('[S The open day] [V will end] [M at three].', {
+  st('[S The open day] [V will end] [M {前| at three}].', {
     chunks: [
       ['The open day will end', '学校公開日は終わります'],
       ['at three', '3時に'],

@@ -1,7 +1,7 @@
 import { st } from './entry.js'
 
 export default Object.freeze([
-  st('[S Many museums] [V are trying] [O {to:名詞| [V to become] [C places {関係>places| [M where] [S teenagers] [V can do] [O more than {原形| [M simply] [V look] [M at objects behind glass]}]}]}].', {
+  st('[S Many museums] [V are trying] [O {to:名詞| [V to become] [C places {関係>places| [M where] [S teenagers] [V can do] [O more {前| than {原形| [M simply] [V look] [M {前| at objects {前| behind glass}}]}}]}]}].', {
     chunks: [
       ['Many museums', '多くの博物館は'],
       ['are trying to become places', '場所になろうとしています（どんな場所かは次へ）'],
@@ -17,7 +17,7 @@ export default Object.freeze([
       'than simply look at objects': 'than の後ろの look は to のない動詞の原形で、「ただ見ること」と比べています。',
     },
   }),
-  st('[S One city museum] [M recently] [V began] [O a volunteer program for high school students {関係>high school students| [S who] [V are] [C interested in local culture]}].', {
+  st('[S One city museum] [M recently] [V began] [O a volunteer program {前| for high school students {関係>high school students| [S who] [V are] [C interested {前| in local culture}]}}].', {
     chunks: [
       ['One city museum', 'ある市立博物館は'],
       ['recently', '最近'],
@@ -29,7 +29,7 @@ export default Object.freeze([
       'who are interested in local culture': 'be interested in 〜 で「〜に関心がある」。interested は形容詞として補語になります。',
     },
   }),
-  st("[M {副詞節:時| [接 Before] [S the museum] [V opens] [M on Saturdays]}], [S the students] [V meet] [O a staff member] [接 and] [V learn] [M about the day's exhibition].", {
+  st("[M {副詞節:時| [接 Before] [S the museum] [V opens] [M {前| on Saturdays}]}], [S the students] [V meet] [O a staff member] [接 and] [V learn] [M {前| about the day's exhibition}].", {
     chunks: [
       ['Before', '〜する前に（内容は次へ）'],
       ['the museum opens', '博物館が開館する'],
@@ -44,7 +44,7 @@ export default Object.freeze([
       'on Saturdays': 'Saturdays と複数形にすると「毎週土曜日に」という意味になります。',
     },
   }),
-  st('[S They] [V check] [O maps], [V prepare] [O simple worksheets], [接 and] [V practice] [O {動名詞| [V explaining] [O the displays] [M in easy words]}].', {
+  st('[S They] [V check] [O maps], [V prepare] [O simple worksheets], [接 and] [V practice] [O {動名詞| [V explaining] [O the displays] [M {前| in easy words}]}].', {
     chunks: [
       ['They', '生徒たちは'],
       ['check maps,', '地図を確認します'],
@@ -56,7 +56,7 @@ export default Object.freeze([
       'practice explaining the displays in easy words': 'practice ＋ -ing で「〜する練習をする」。explaining 以下が practice の目的語です。',
     },
   }),
-  st('[M During the afternoon], [S they] [V help] [O families {関係>families| [S who] [V have] [O small children]} or visitors {関係>visitors| [S who] [V are not] [C used to museums]}].', {
+  st('[M {前| During the afternoon}], [S they] [V help] [O families {関係>families| [S who] [V have] [O small children]} or visitors {関係>visitors| [S who] [V are not] [C used {前| to museums}]}].', {
     chunks: [
       ['During the afternoon', '午後には'],
       ['they', '生徒たちは'],
@@ -85,7 +85,7 @@ export default Object.freeze([
       'even when': 'even は when 以下の時の節を強め、「〜するときでさえ」となります。',
     },
   }),
-  st('[S They] [V may not know] [O the answer to every question], [接 so] [S they] [V are taught] [C {to:補語| [V to admit] [O uncertainty] [接 and] [V ask] [O a staff member] [M for help]}].', {
+  st('[S They] [V may not know] [O the answer {前| to every question}], [接 so] [S they] [V are taught] [C {to:補語| [V to admit] [O uncertainty] [接 and] [V ask] [O a staff member] [M {前| for help}]}].', {
     chunks: [
       ['They', '生徒たちは'],
       ['may not know the answer to every question', 'すべての質問の答えを知っているとは限りません'],
@@ -101,7 +101,7 @@ export default Object.freeze([
       'ask a staff member for help': 'ask ＋ 人 ＋ for 〜 で「人に〜を求める」。ask は to admit と to を共有しています。',
     },
   }),
-  st('[S This approach] [V is] [C more useful than {動名詞| [V giving] [O1 visitors] [O2 information {関係>information| [S that] [V may be] [C incorrect]}]}].', {
+  st('[S This approach] [V is] [C more useful {前| than {動名詞| [V giving] [O1 visitors] [O2 information {関係>information| [S that] [V may be] [C incorrect]}]}}].', {
     chunks: [
       ['This approach', 'このやり方は'],
       ['is more useful', 'より役に立ちます（比べる相手は次へ）'],
@@ -113,7 +113,7 @@ export default Object.freeze([
       'giving visitors information': 'give ＋ 人 ＋ もの の形の動名詞で、「人にものを与えること」。',
     },
   }),
-  st('[M However], [S many students] [V say] [O {that省略| [S the program] [V gives] [O1 them] [O2 a useful sense of responsibility]}].', {
+  st('[M However], [S many students] [V say] [O {that省略| [S the program] [V gives] [O1 them] [O2 a useful sense {前| of responsibility}]}].', {
     chunks: [
       ['However', 'しかし'],
       ['many students say', '多くの生徒は言います（内容は次へ）'],
@@ -125,7 +125,7 @@ export default Object.freeze([
       'gives them a useful sense of responsibility': 'give ＋ 人 ＋ もの で「人にものを与える」。them は many students を指します。',
     },
   }),
-  st('[S They] [M also] [V discover] [O {that節| [接 that] [S a museum] [V is connected] [M to schools, shops, parks, and many other parts of the community]}].', {
+  st('[S They] [M also] [V discover] [O {that節| [接 that] [S a museum] [V is connected] [M {前| to schools, shops, parks, and many other parts {前| of the community}}]}].', {
     chunks: [
       ['They also discover', '生徒たちはまた気づきます（内容は次へ）'],
       ['that', '〜ということに'],
@@ -138,7 +138,7 @@ export default Object.freeze([
     },
     rules: ['that-diagnosis', 'parallel-shape', 'logic-connectors'],
   }),
-  st('[S One student] [V said] [O {that省略| [S she] [V had become] [C more confident] [M after {動名詞| [V answering] [O questions from foreign visitors]}]}].', {
+  st('[S One student] [V said] [O {that省略| [S she] [V had become] [C more confident] [M {前| after {動名詞| [V answering] [O questions {前| from foreign visitors}]}}]}].', {
     chunks: [
       ['One student said', 'ある生徒は言いました（内容は次へ）'],
       ['she', '自分は'],
@@ -150,7 +150,7 @@ export default Object.freeze([
       'after answering questions from foreign visitors': 'answering は前置詞 after の後ろの動名詞で、「答えたあとで」。',
     },
   }),
-  st('[S Another student] [V decided] [O {to:名詞| [V to study] [O history] [M at college]}] [M {副詞節:理由| [接 because] [S he] [V wanted] [O {to:名詞| [V to protect] [O old buildings in his town]}]}].', {
+  st('[S Another student] [V decided] [O {to:名詞| [V to study] [O history] [M {前| at college}]}] [M {副詞節:理由| [接 because] [S he] [V wanted] [O {to:名詞| [V to protect] [O old buildings {前| in his town}]}]}].', {
     chunks: [
       ['Another student', '別の生徒は'],
       ['decided to study history at college', '大学で歴史を学ぶことに決めました'],
@@ -159,7 +159,7 @@ export default Object.freeze([
       ['wanted to protect old buildings in his town', '自分の町の古い建物を守りたいと思ったからです'],
     ],
   }),
-  st('[M For the museum], [S the benefit] [V is] [C clear] [M as well].', {
+  st('[M {前| For the museum}], [S the benefit] [V is] [C clear] [M as well].', {
     chunks: [
       ['For the museum', '博物館にとって'],
       ['the benefit', 'その利点は'],
@@ -185,7 +185,7 @@ export default Object.freeze([
       'are more willing to ask questions': 'be willing to do で「進んで〜する」。to ask は willing の内容を後ろから説明します。',
     },
   }),
-  st('[S The museum] [V has] [M also] [V changed] [O the way {関係省略>the way| [S it] [V prepares] [O labels for new displays]}].', {
+  st('[S The museum] [V has] [M also] [V changed] [O the way {関係省略:関係副詞>the way| [S it] [V prepares] [O labels {前| for new displays}]}].', {
     chunks: [
       ['The museum', '博物館は'],
       ['has also changed the way', '方法も変えました（どんな方法かは次へ）'],
@@ -196,7 +196,7 @@ export default Object.freeze([
       'it prepares labels for new displays': 'the way の後ろで関係詞（that / in which）が省略され、「〜する方法」となります。it は the museum を指します。',
     },
   }),
-  st('[S Staff members] [V used to write] [O long explanations for adults], [接 but] [S they] [M now] [V ask] [O student volunteers] [C {to:補語| [V to read] [O the labels] [M first]}].', {
+  st('[S Staff members] [V used to write] [O long explanations {前| for adults}], [接 but] [S they] [M now] [V ask] [O student volunteers] [C {to:補語| [V to read] [O the labels] [M first]}].', {
     chunks: [
       ['Staff members', '職員は'],
       ['used to write long explanations', '以前は長い説明を書いていました'],
@@ -211,7 +211,7 @@ export default Object.freeze([
       'ask student volunteers to read the labels first': 'ask ＋ 人 ＋ to do で「人に〜するように頼む」。',
     },
   }),
-  st('[M {副詞節:条件| [接 If] [S the students] [V cannot understand] [O an important point]}], [S the staff] [V try] [O {to:名詞| [V to make] [O the language] [C clearer] [M without {動名詞| [V removing] [O the main idea]}]}].', {
+  st('[M {副詞節:条件| [接 If] [S the students] [V cannot understand] [O an important point]}], [S the staff] [V try] [O {to:名詞| [V to make] [O the language] [C clearer] [M {前| without {動名詞| [V removing] [O the main idea]}}]}].', {
     chunks: [
       ['If', 'もし'],
       ['the students', '生徒たちが'],
@@ -225,7 +225,7 @@ export default Object.freeze([
       'without removing the main idea': 'without ＋ -ing で「〜せずに」。',
     },
   }),
-  st('[S The students] [M also] [V record] [O the questions {関係省略>the questions| [S visitors] [V ask] [M most often]}], [接 and] [S the museum] [V uses] [O this feedback] [M {副詞節:時| [接 when] [V planning] [O future exhibitions]}].', {
+  st('[S The students] [M also] [V record] [O the questions {関係省略:目的格>the questions| [S visitors] [V ask] [M most often]}], [接 and] [S the museum] [V uses] [O this feedback] [M {副詞節:時| [接 when] [V planning] [O future exhibitions]}].', {
     chunks: [
       ['The students', '生徒たちは'],
       ['also', 'また'],
@@ -241,7 +241,7 @@ export default Object.freeze([
       'when planning future exhibitions': 'when (it is) planning の主語と be動詞が省略された形で、主語は前の the museum です。',
     },
   }),
-  st('[S The program] [V shows] [O {that節| [接 that] [S {動名詞| [V learning] [M about the past]}] [V can help] [O people] [C {原形| [V build] [O stronger relationships in the present]}]}].', {
+  st('[S The program] [V shows] [O {that節| [接 that] [S {動名詞| [V learning] [M {前| about the past}]}] [V can help] [O people] [C {原形| [V build] [O stronger relationships {前| in the present}]}]}].', {
     chunks: [
       ['The program shows', 'このプログラムは示しています（内容は次へ）'],
       ['that', '〜ということを'],
