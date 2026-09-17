@@ -95,7 +95,7 @@ export const EXAM_READING_QUESTIONS = {
         'To ask every student to eat the same amount.',
       ],
       answer: 'To learn why different students left food.',
-      explain: '学年や活動によって必要な量が異なることを調べるためでした。',
+      explain: '全員にもっと食べるよう求めるのではなく、問題を調べるためでした（第3文）。アンケートで、下級生と上級生の事情の違いが分かりました（第5文）。',
     },
     {
       q: 'When was food waste greatest?',
@@ -106,7 +106,7 @@ export const EXAM_READING_QUESTIONS = {
         'When the cooking staff used daily records.',
       ],
       answer: 'When every student received the same large portion.',
-      explain: '全員に同じ大盛りを配った日に廃棄が最大でした。',
+      explain: '全員に同じ大盛りを配った日に、食品ロスが最も多くなりました。',
     },
     {
       q: 'How did the two plate sizes help students?',

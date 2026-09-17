@@ -531,7 +531,7 @@ export const PASSAGE_READING_APPROACHES = Object.freeze({
   p_3_lunch_food_waste: makePassageApproach(
     '取り組みの前と後で、数値と行動を比べる',
     '課題の解決を扱う説明文では、取り組みの順序と比べる条件をそろえ、数字が示す変化を読み取る。',
-    ['取り組む前の課題と、もとの数値を確かめる', '変えた行動を、順番に並べる', '同じ条件の数値を比べて、解決策を評価する'],
+    ['取り組む前の課題と、そのときの食べ残しの様子を確かめる', '変えた行動を、順番に並べる', '取り組みの前と後の量を比べて、解決策を評価する'],
     ['paragraph-map', 'parallel-shape', 'passive-active', 'comparison-pairs', 'evidence-backtrack', 'distractor-strength'],
   ),
   p_pre2_later_school_start: makePassageApproach(
