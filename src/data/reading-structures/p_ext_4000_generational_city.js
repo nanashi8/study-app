@@ -1,7 +1,8 @@
 import { st } from './entry.js'
 
 // 語彙強化ロングリーディング（約4,000語）の構造台帳。節ごとに手で確かめて足していく。
-// いまは「翌年より先を考える」（#1〜#20）まで。残りの文は、台帳ができるまで解析器の表示のまま。
+// いまは「翌年より先を考える」（#1〜#20）と「恐れ・希望・注意」（#21〜#40）まで。
+// 残りの文は、台帳ができるまで解析器の表示のまま。
 export default Object.freeze([
   st('[S A city] [V is] [M {前| above all}] [C a machine {前| for {動名詞| [V moving] [O costs and benefits] [M {前| across time}]}}], [M {副詞節:譲歩| [接 although] [S it] [V is] [M very rarely] [V described] [M {前| in quite those terms}]}].', {
     chunks: [
@@ -230,6 +231,221 @@ export default Object.freeze([
     ],
     notes: {
       'The nine sections that follow examine': 'that follow は「あとに続く」で、The nine sections を後ろから説明します。',
+    },
+  }),
+  st('[S Public argument] [V is shaped] [M {前| by the direction {前| of public attention}}] [M long] [M {副詞節:時| [接 before] [S it] [V is shaped] [M {前| by any piece {前| of evidence}}]}].', {
+    chunks: [
+      ['Public argument is shaped', '公の議論は形づくられます（何によってかは次へ）'],
+      ['by the direction of public attention', '公衆の注意の向きによって'],
+      ['long before it is shaped', 'それが形づくられるずっと前に'],
+      ['by any piece of evidence', 'どんな証拠によってよりも'],
+    ],
+    notes: {
+      'long before it is shaped': 'long は before の節を強めて「ずっと前に」。',
+    },
+  }),
+  st('[S A problem {関係>A problem| [O that] [S nobody {前| at all}] [V has noticed]}] [V cannot be solved], [M {副詞節:譲歩| [C however serious] [S that problem] [V may] [M later] [V turn out] [C {to:補語| [V to be]}]}].', {
+    chunks: [
+      ['A problem', '問題は'],
+      ['that nobody at all has noticed', 'だれ一人気づいていない（問題は）'],
+      ['cannot be solved,', '解決できません'],
+      ['however serious', 'どれほど深刻だと'],
+      ['that problem may later turn out to be', 'その問題がのちに分かろうとも'],
+    ],
+    notes: {
+      'that nobody at all has noticed': 'nobody at all は「だれ一人〜ない」。at all は nobody を強めます。',
+      'however serious': 'however ＋ 形容詞 で「どれほど〜でも」。文の後ろに譲歩のまとまりを作ります。',
+    },
+  }),
+  st('[S A problem {関係>A problem| [O that] [S everybody] [V has noticed]}] [V will be answered] [M somehow], [M even] [M {前| in cases {関係>cases| [M where] [S it] [V is] [C comparatively small and easy {to:副詞(形容詞)| [V to bear]}]}}].', {
+    chunks: [
+      ['A problem', '問題は'],
+      ['that everybody has noticed', 'だれもが気づいている（問題は）'],
+      ['will be answered somehow,', '何らかの形で対処されます'],
+      ['even in cases', '場合でさえ（どんな場合かは次へ）'],
+      ['where it is comparatively small', 'それが比較的小さく'],
+      ['and easy to bear', '耐えやすい（場合でさえ）'],
+    ],
+    notes: {
+      'and easy to bear': 'easy to bear は「耐えやすい」。to bear が easy の内容を後ろから限定します。',
+    },
+  }),
+  st('[S The order {関係>The order| [M in which] [S problems] [V arrive] [M {前| on a public agenda}]}] [V is] [M therefore] [M itself] [C an important political outcome {前| in its own right}] [M as well].', {
+    chunks: [
+      ['The order in which problems arrive', '問題が上ってくる順序は'],
+      ['on a public agenda', '公の議題に'],
+      ['is therefore itself an important political outcome', 'したがってそれ自体が重要な政治的結果です'],
+      ['in its own right as well', 'それだけで見ても'],
+    ],
+    notes: {
+      'The order in which problems arrive': 'in which は前置詞＋関係代名詞で、in the order（その順序で）の意味です。',
+    },
+  }),
+  st('[S Fear] [V responds] [M {前| to vivid images}] [M far more readily] [M {副詞節:比較| [接 than] [S it] [V responds] [M {前| to rates}]}], [M {関係,>前の内容| [S which] [V is] [C {疑問詞節| [M why] [S rare events] [V dominate] [O discussion]}]}].', {
+    chunks: [
+      ['Fear responds to vivid images', '恐れは生々しい映像に反応します'],
+      ['far more readily than it responds to rates', '割合に反応するよりはるかにたやすく'],
+      ['which is why rare events dominate discussion', 'そのためまれな出来事が議論を占めます'],
+    ],
+    notes: {
+      'which is why rare events dominate discussion': 'which は前の節の内容を受け、which is why … で「そのため〜」となります。',
+    },
+  }),
+  st('[S A single dramatic accident] [V will change] [O more behavior] [M {前| in one month}] [M {前| than a whole decade {前| of quiet and careful figures}}].', {
+    chunks: [
+      ['A single dramatic accident will change', '一件の劇的な事故が変えます（何をかは次へ）'],
+      ['more behavior in one month', '一か月でより多くの行動を'],
+      ['than a whole decade', '十年分よりも'],
+      ['of quiet and careful figures', '静かで丁寧な数値の'],
+    ],
+    notes: {
+      'than a whole decade': 'than の後ろは比べる相手で、a whole decade of … figures と続きます。',
+    },
+  }),
+  st('[S This] [V is not] [C simple stupidity], [M {副詞節:理由| [接 because] [S a single vivid case] [M really] [V does carry] [O information {関係>information| [O that] [S a long table {前| of numbers}] [V hides]}]}].', {
+    chunks: [
+      ['This is not simple stupidity,', 'これは単なる愚かさではありません'],
+      ['because a single vivid case really does carry', 'なぜなら生々しい一つの事例が実際に運ぶからです'],
+      ['information that a long table of numbers hides', '数字の長い表が隠す情報を'],
+    ],
+    notes: {
+      'because a single vivid case really does carry': 'does carry の does は carry を強める助動詞で、「実際に運ぶ」。',
+    },
+  }),
+  st('[S The error] [V appears] [M only] [M {前| at the moment {関係>the moment| [M when] [S that one vivid case] [V is treated] [M {副詞節:様態| [接 as though] [S it] [V were] [C entirely typical]}]}}].', {
+    chunks: [
+      ['The error appears only at the moment', '誤りが現れるのはその瞬間だけです'],
+      ['when that one vivid case is treated', 'その生々しい一つの事例が扱われるとき'],
+      ['as though it were entirely typical', 'まるでまったく典型であるかのように'],
+    ],
+    notes: {
+      'as though it were entirely typical': 'as though ＋ 過去形 で、事実ではないことを「まるで〜かのように」と表します。',
+    },
+  }),
+  st('[S Hope] [V is] [C quite as powerful] [M {副詞節:比較| [接 as] [S fear] [V is]}], [接 and] [S it] [V distorts] [O public planning] [M {前| in precisely the opposite direction {前| from fear}}].', {
+    chunks: [
+      ['Hope is quite as powerful as fear is,', '希望は恐れとまったく同じくらい強く'],
+      ['and it distorts public planning', 'そして公共の計画をゆがめます'],
+      ['in precisely the opposite direction from fear', '恐れとちょうど反対の向きに'],
+    ],
+    notes: {
+      'Hope is quite as powerful as fear is,': 'as ＋ 形容詞 ＋ as … で「…と同じくらい〜」。',
+    },
+  }),
+  st('[S Optimism {前| about a promising new technology}] [M regularly] [V produces] [O schedules {関係>schedules| [O that] [S nobody {過去分詞>nobody| [V involved] [M {前| in it}]}] [V could ever keep]}].', {
+    chunks: [
+      ['Optimism about a promising new technology', '有望な新技術への楽観は'],
+      ['regularly produces schedules', '繰り返し工程表を生みます（どんな工程表かは次へ）'],
+      ['that nobody involved in it could ever keep', 'それに関わるだれにも守れない（工程表を）'],
+    ],
+    notes: {
+      'that nobody involved in it could ever keep': 'involved in it は nobody を後ろから説明して「それに関わるだれも」。',
+    },
+  }),
+  st('[S That very same optimism] [M also] [V produces] [O the sustained effort {関係>the sustained effort| [S that] [M occasionally] [V makes] [O a genuinely difficult project] [C {原形| [V succeed]}]}].', {
+    chunks: [
+      ['That very same optimism also produces', 'そのまったく同じ楽観がまた生みます（何をかは次へ）'],
+      ['the sustained effort', '持続的な努力を'],
+      ['that occasionally makes a genuinely difficult project', 'ときに、本当に難しい事業を'],
+      ['succeed', '成功させる（努力を）'],
+    ],
+    notes: {
+      'succeed': 'make ＋ 目的語 ＋ 動詞の原形 で「〜に…させる」。succeed は to のない不定詞です。',
+    },
+  }),
+  st('[S {動名詞| [V Removing] [O it] [M entirely]}] [V would leave] [O a city] [C perfectly accurate {前| about the present} and quite incapable {前| of {動名詞| [V building] [O anything] [M {前| at all}]}}].', {
+    chunks: [
+      ['Removing it entirely would leave a city', 'それを完全に取り除けば、都市は〜のままになるでしょう'],
+      ['perfectly accurate about the present', '現在については完璧に正確で'],
+      ['and quite incapable of building anything at all', 'しかも何一つ造れない（ままに）'],
+    ],
+    notes: {
+      'Removing it entirely would leave a city': 'leave ＋ 目的語 ＋ 形容詞 で「〜を…のままにする」。',
+    },
+  }),
+  st('[S Habits] [V perform] [O far more {前| of the work {前| of ordinary daily life}}] [M {副詞節:比較| [接 than] [S deliberate choices] [M ever] [V manage] [O {to:名詞| [V to perform]}]}].', {
+    chunks: [
+      ['Habits perform far more of the work', '習慣がはるかに多くの仕事を果たします'],
+      ['of ordinary daily life', 'ふだんの日々の生活の'],
+      ['than deliberate choices ever manage to perform', '意識的な選択が果たすよりも'],
+    ],
+    notes: {
+      'than deliberate choices ever manage to perform': 'manage to ＋ 動詞 で「どうにか〜する」。ever は than の節の中で「これまでに」。',
+    },
+  }),
+  st('[S A resident {関係>A resident| [S who] [V has to think] [M carefully] [M {前| about recycling}] [M every single week]}] [V will] [M {前| in the end}] [V stop] [O {動名詞| [V doing] [O it] [M completely]}].', {
+    chunks: [
+      ['A resident who has to think carefully', 'きちんと考えなければならない住民は'],
+      ['about recycling every single week', '毎週リサイクルについて'],
+      ['will in the end stop doing it completely', '最後にはすっかりやめてしまうでしょう'],
+    ],
+    notes: {
+      'will in the end stop doing it completely': 'stop ＋ -ing で「〜するのをやめる」。doing it は stop の目的語です。',
+    },
+  }),
+  st('[S A system {関係>A system| [S that] [V makes] [O the desired action] [C the easiest available action]}] [V will survive] [O every change {前| in public enthusiasm}].', {
+    chunks: [
+      ['A system that makes the desired action', '望ましい行動を〜にする仕組みは'],
+      ['the easiest available action', '選べる中で最も簡単な行動に'],
+      ['will survive every change in public enthusiasm', '世論の熱意のどんな変化も生き延びます'],
+    ],
+    notes: {
+      'the easiest available action': 'make ＋ 目的語 ＋ 名詞 で「〜を…にする」。available は「選べる・利用できる」。',
+    },
+  }),
+  st('[S Design] [M therefore] [V matters] [M far more] [M {前| than persuasion}] [M {前| for anything {前| at all} {関係>anything| [S that] [V has to continue] [M {前| for several decades}]}}].', {
+    chunks: [
+      ['Design therefore matters far more', 'したがって設計のほうがはるかに重要です'],
+      ['than persuasion', '説得よりも'],
+      ['for anything at all', 'どんなものについても'],
+      ['that has to continue for several decades', '数十年続けなければならない（ものについては）'],
+    ],
+    notes: {
+      'for anything at all': 'at all は anything を強めて「どんなものでも」。',
+    },
+  }),
+  st('[S Trust] [V behaves] [M much more] [M {前| like a stock {関係>a stock| [S that] [V is slowly accumulated]}}] [M than {前| like a flow {関係>a flow| [S that] [V arrives] [M each year]}}].', {
+    chunks: [
+      ['Trust behaves much more like a stock', '信頼は蓄えのようにふるまいます'],
+      ['that is slowly accumulated', 'ゆっくり積み上げられる（蓄えの）'],
+      ['than like a flow that arrives each year', '毎年届く流れというよりも'],
+    ],
+    notes: {
+      'Trust behaves much more like a stock': 'behave like … で「…のようにふるまう」。stock は「蓄え」、flow は「流れ」。',
+    },
+  }),
+  st('[S It] [V builds up] [M slowly] [M {前| through a long series {前| of small promises {関係>small promises| [S that] [V are kept]}}}] [接 and] [V falls] [M very quickly] [M {副詞節:時| [接 when] [S one large promise] [V fails]}].', {
+    chunks: [
+      ['It builds up slowly', 'それはゆっくり積み上がります（何を通してかは次へ）'],
+      ['through a long series of small promises', '小さな約束の長い連なりを通じて'],
+      ['that are kept', '守られた（約束の）'],
+      ['and falls very quickly', 'そして非常に速く落ちます'],
+      ['when one large promise fails', '大きな約束が一つ破られたとき'],
+    ],
+    notes: {
+      'and falls very quickly': 'and は builds up と falls をつなぎ、どちらも主語 It の動詞です。',
+    },
+  }),
+  st('[S A city {前| with a deep reserve {前| of public trust}}] [V can attempt] [O reforms {関係>reforms| [O that] [S a more suspicious city] [M simply] [V cannot attempt] [M {前| at all}]}].', {
+    chunks: [
+      ['A city with a deep reserve of public trust', '公共の信頼の蓄えが厚い都市は'],
+      ['can attempt reforms', '改革を試みることができます（どんな改革かは次へ）'],
+      ['that a more suspicious city', 'もっと疑い深い都市には'],
+      ['simply cannot attempt at all', 'とうてい試みられない（改革を）'],
+    ],
+    notes: {
+      'simply cannot attempt at all': 'simply は否定を強めて「まったく〜ない」。at all も否定を強めます。',
+    },
+  }),
+  st('[S {動名詞| [V Spending] [O that reserve] [M {前| on a project {関係>a project| [S that] [M then] [V fails]}}]}] [V is] [M therefore] [C much more expensive] [M {前| than the failed project itself}].', {
+    chunks: [
+      ['Spending that reserve on a project', 'その蓄えを事業に使うことは'],
+      ['that then fails', 'そのあと失敗する（事業に）'],
+      ['is therefore much more expensive', 'したがってずっと高くつきます'],
+      ['than the failed project itself', 'その失敗した事業そのものよりも'],
+    ],
+    notes: {
+      'Spending that reserve on a project': '動名詞 Spending … が文の主語Sです。',
     },
   }),
 ])
