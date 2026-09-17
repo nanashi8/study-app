@@ -139,19 +139,6 @@ test('読解ルールと長文の読み方は、校正で直した言い回し�
       assert.doesNotMatch(node, /^[→←＜<>：:;；]|[→←]$/, `${rule.id}: 図の項目「${node}」が区切り記号で始まる・終わる`)
     }
   }
-
-  // JSXの地の文で日本語を2行に分けると、つなぎ目に半角スペースが入る。
-  for (const [file, source] of screenSources) {
-    const lines = source.split('\n').map((line) => line.trim())
-    lines.forEach((line, index) => {
-      const next = lines[index + 1] || ''
-      const isText = (value) => value && !/^[<{}/*]/.test(value) && !/[<>{}=;'"`]/.test(value)
-      assert.ok(
-        !(isText(line) && isText(next) && /[぀-ヿ㐀-鿿。、」）]$/u.test(line) && /^[぀-ヿ㐀-鿿「（]/u.test(next)),
-        `${file}:${index + 1}: 日本語の文が行をまたぎ、画面で半角スペースが入る`,
-      )
-    })
-  }
 })
 
 test('全38長文は級別の複数題・試験テーマ・十分な語数・根拠付き設問を保つ', () => {

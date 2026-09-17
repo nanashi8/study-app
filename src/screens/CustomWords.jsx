@@ -475,8 +475,8 @@ export function CustomWordsScreen() {
             <Card className="p-4">
               <h2 className="font-display text-base font-extrabold text-ink">ファイルに書き出す</h2>
               <p className="mt-1 text-xs font-bold leading-relaxed text-ink/55">
-                いまの自作単語{customWords.length}語をJSONファイルとして保存します。
-                保存先はお使いの端末（ダウンロード先のフォルダ）です。
+                {`いまの自作単語${customWords.length}語をJSONファイルとして保存します。`}
+                {'保存先はお使いの端末（ダウンロード先のフォルダ）です。'}
               </p>
               <Button full size="sm" className="mt-2.5" onClick={download} disabled={!customWords.length}>
                 <Download size={16} /> {customWordsFileName()} を保存
@@ -486,8 +486,8 @@ export function CustomWordsScreen() {
             <Card className="p-4">
               <h2 className="font-display text-base font-extrabold text-ink">ファイルから読み込む</h2>
               <p className="mt-1 text-xs font-bold leading-relaxed text-ink/55">
-                書き出したJSONファイルを選ぶと、中の単語をこの端末へ取り込みます。
-                取り込んだ語は、この画面でそのまま書き換え・削除できます。
+                {'書き出したJSONファイルを選ぶと、中の単語をこの端末へ取り込みます。'}
+                {'取り込んだ語は、この画面でそのまま書き換え・削除できます。'}
               </p>
               <input
                 ref={fileInput}
@@ -549,9 +549,9 @@ export function CustomWordsScreen() {
             )}
 
             <p className="px-1 text-[11px] font-bold leading-relaxed text-ink/45">
-              自作単語はこの端末に保存され、ログインしていればクラウドにも保存されます。
-              進捗コード・QRにも入りますが、語数が多いとQRに収まらないことがあります。
-              端末を替えるときや、まとめて直したいときはこのファイルを使ってください。
+              {'自作単語はこの端末に保存され、ログインしていればクラウドにも保存されます。'}
+              {'進捗コード・QRにも入りますが、語数が多いとQRに収まらないことがあります。'}
+              {'端末を替えるときや、まとめて直したいときはこのファイルを使ってください。'}
             </p>
           </>
         )}

@@ -420,8 +420,8 @@ function DragonVeinRestorationBoard({ progress, student, day, onDaily, onLaunch 
           <p className="text-[9px] font-extrabold tracking-[0.18em] text-cyan-300">THE FORGOTTEN ENGLISH</p>
           <h2 className="mt-0.5 font-display text-lg font-extrabold">英語を忘れた街の龍脈</h2>
           <p className="mt-2 text-[10px] font-bold leading-relaxed text-white/65">
-            英語が当たり前に使われていた記憶は、主人公たちと一部の生徒にしか残っていない。
-            先生たちのかすかな記憶と専門知識を借り、五つの頂点で単語100語・熟語と構文100題を紡ぎ直す。
+            {'英語が当たり前に使われていた記憶は、主人公たちと一部の生徒にしか残っていない。'}
+            {'先生たちのかすかな記憶と専門知識を借り、五つの頂点で単語100語・熟語と構文100題を紡ぎ直す。'}
           </p>
           <div className="mt-3 flex items-center gap-3">
             <img src={battleStudentPortrait(student.id, 'thinking')} alt={`${student.name}が龍脈について考えている表情`} className="h-12 w-12 rounded-xl bg-slate-900 object-cover [image-rendering:pixelated]" />

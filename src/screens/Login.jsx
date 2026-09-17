@@ -95,8 +95,8 @@ export function UnconfiguredScreen() {
       <div className="text-5xl">☁️</div>
       <h1 className="mt-3 font-display text-xl font-extrabold text-ink">クラウド保存を使えません</h1>
       <p className="mt-2 max-w-xs text-sm font-bold text-ink/60">
-        この端末では、ログインして学習記録を保存する準備が終わっていません。
-        端末への保存は、そのまま使えます。
+        {'この端末では、ログインして学習記録を保存する準備が終わっていません。'}
+        {'端末への保存は、そのまま使えます。'}
       </p>
     </div>
   )

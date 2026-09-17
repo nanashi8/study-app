@@ -33,8 +33,8 @@ export function WordRequestsScreen() {
             辞書にない語は自動でリクエストします
           </h2>
           <p className="mt-2 text-sm font-bold leading-relaxed text-ink/55">
-            英和辞書で調べて見つからなかった語は、ボタンを押さなくてもそのまま追加リクエストになります。
-            ログインは必要ありません。
+            {'英和辞書で調べて見つからなかった語は、ボタンを押さなくてもそのまま追加リクエストになります。'}
+            {'ログインは必要ありません。'}
           </p>
           <div className="mt-4 rounded-2xl bg-brand-50 p-4 text-center">
             <p className="text-xs font-extrabold text-brand-600">受付語数</p>
@@ -51,10 +51,9 @@ export function WordRequestsScreen() {
             </p>
           </div>
           <p className="mt-3 text-xs font-bold leading-relaxed text-ink/45">
-            同じ語は何度調べても1件だけ数えます。全体で
-            {WORD_REQUEST_TOTAL_LIMIT.toLocaleString('ja-JP')}語まで受け付け、いっぱいになると新しい受付を止めます。
-            打ち間違いで枠を使い切らないよう、自動リクエストは1台につき1日
-            {WORD_REQUEST_DEVICE_DAILY_LIMIT}語までにしています。
+            {'同じ語は何度調べても1件だけ数えます。'}
+            {`全体で${WORD_REQUEST_TOTAL_LIMIT.toLocaleString('ja-JP')}語まで受け付け、いっぱいになると新しい受付を止めます。`}
+            {`打ち間違いで枠を使い切らないよう、自動リクエストは1台につき1日${WORD_REQUEST_DEVICE_DAILY_LIMIT}語までにしています。`}
           </p>
         </Card>
 
