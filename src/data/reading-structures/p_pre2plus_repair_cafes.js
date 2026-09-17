@@ -1,14 +1,14 @@
 import { st } from './entry.js'
 
 export default Object.freeze([
-  st('[S People] [V replace] [O phones, lamps, and other household devices] [M for many reasons].', {
+  st('[S People] [V replace] [O phones, lamps, and other household devices] [M {前| for many reasons}].', {
     chunks: [
       ['People', '人々は'],
       ['replace phones, lamps, and other household devices', '電話やランプ、そのほかの家庭用機器を買い替えます'],
       ['for many reasons', 'さまざまな理由で'],
     ],
   }),
-  st('[M Sometimes] [S a product] [V is] [M badly] [C damaged], [接 but] [M in other cases] [M only] [S a small part] [V has stopped] [O {動名詞| [V working]}].', {
+  st('[M Sometimes] [S a product] [V is] [M badly] [C damaged], [接 but] [M {前| in other cases}] [M only] [S a small part] [V has stopped] [O {動名詞| [V working]}].', {
     chunks: [
       ['Sometimes', 'ときには'],
       ['a product is badly damaged', '製品がひどく壊れています'],
@@ -20,7 +20,7 @@ export default Object.freeze([
       'only a small part has stopped working': 'only は a small part を限定して「〜だけが」。stop ＋ -ing で「〜するのをやめる」で、ここでは部品が「動かなくなる」。',
     },
   }),
-  st('[M {副詞節:理由| [接 Because] [S {動名詞| [V buying] [O a new item]}] [V is] [M often] [C easier than {動名詞| [V finding] [O someone {to:形容詞>someone| [V to fix] [O the old one]}]}]}], [S usable products] [V become] [C waste].', {
+  st('[M {副詞節:理由| [接 Because] [S {動名詞| [V buying] [O a new item]}] [V is] [M often] [C easier {前| than {動名詞| [V finding] [O someone {to:形容詞>someone| [V to fix] [O the old one]}]}}]}], [S usable products] [V become] [C waste].', {
     chunks: [
       ['Because', '〜なので（理由は次へ）'],
       ['buying a new item', '新しい品物を買うことは'],
@@ -37,7 +37,7 @@ export default Object.freeze([
     },
     rules: ['cause-result', 'comparison-pairs', 'ing-ed-role'],
   }),
-  st('[M In response], [S communities in several countries] [V have started] [O events {過去分詞>events| [V called] [C repair cafes]}].', {
+  st('[M {前| In response}], [S communities {前| in several countries}] [V have started] [O events {過去分詞>events| [V called] [C repair cafes]}].', {
     chunks: [
       ['In response', 'これに応じて'],
       ['communities', '地域社会は'],
@@ -49,7 +49,7 @@ export default Object.freeze([
       'called repair cafes': 'called 以下は events を後ろから説明する過去分詞のまとまりで、「リペアカフェと呼ばれる」。',
     },
   }),
-  st('[M At these events], [S local volunteers] [V help] [O visitors] [C {原形| [V examine] [O broken things] [接 and], [M when possible], [V repair] [O them]}].', {
+  st('[M {前| At these events}], [S local volunteers] [V help] [O visitors] [C {原形| [V examine] [O broken things] [接 and], [M {副詞節:時| [接 when] [C possible]}], [V repair] [O them]}].', {
     chunks: [
       ['At these events', 'こうした催しでは'],
       ['local volunteers', '地域のボランティアが'],
@@ -63,7 +63,7 @@ export default Object.freeze([
       'when possible,': 'when possible は when it is possible の it is が省かれた形です。',
     },
   }),
-  st('[S A repair cafe] [V is] [C different from a normal repair shop].', {
+  st('[S A repair cafe] [V is] [C different {前| from a normal repair shop}].', {
     chunks: [
       ['A repair cafe', 'リペアカフェは'],
       ['is different', '違っています（何と違うかは次へ）'],
@@ -73,7 +73,7 @@ export default Object.freeze([
       'is different': 'be different from 〜 で「〜とは違う」。',
     },
   }),
-  st('[S Visitors] [V are expected] [C {to:補語| [V to sit] [M with volunteers] [接 and] [V take part] [M in the work] [M instead of {動名詞| [M simply] [V leaving] [O an item] [M at a counter]}]}].', {
+  st('[S Visitors] [V are expected] [C {to:補語| [V to sit] [M {前| with volunteers}] [接 and] [V take part] [M {前| in the work}] [M {前| instead of {動名詞| [M simply] [V leaving] [O an item] [M {前| at a counter}]}}]}].', {
     chunks: [
       ['Visitors', '来場者は'],
       ['are expected to sit', '座ることが求められています（だれと座るかは次へ）'],
@@ -89,7 +89,7 @@ export default Object.freeze([
       'instead of': 'instead of ＋ -ing で「〜するのではなく」。',
     },
   }),
-  st('[S A volunteer] [V may show] [O1 someone] [O2 {疑問詞to| [M how] [V to open] [O a lamp] [M safely], [V replace] [O a worn wire], [接 or] [V search] [M for instructions] [M online]}].', {
+  st('[S A volunteer] [V may show] [O1 someone] [O2 {疑問詞to| [M how] [V to open] [O a lamp] [M safely], [V replace] [O a worn wire], [接 or] [V search] [M {前| for instructions}] [M online]}].', {
     chunks: [
       ['A volunteer', 'ボランティアは'],
       ['may show someone', '人に教えることもあります（何を教えるかは次へ）'],
@@ -111,7 +111,7 @@ export default Object.freeze([
       'allows participants to gain practical skills and confidence': 'allow ＋ 人 ＋ to do で「人が〜できるようにする」。',
     },
   }),
-  st('[S It] [M also] [V creates] [O conversations between people of different ages].', {
+  st('[S It] [M also] [V creates] [O conversations {前| between people {前| of different ages}}].', {
     chunks: [
       ['It', 'この過程は'],
       ['also', 'また'],
@@ -148,7 +148,7 @@ export default Object.freeze([
       'offer both environmental and social benefits': 'both A and B で「AとBの両方」。',
     },
   }),
-  st('[S {動名詞| [V Extending] [O the life of a product]}] [V reduces] [O waste] [接 and] [V lowers] [O demand for the energy and resources {過去分詞>the energy and resources| [V required] [M {to:副詞(目的)| [V to make] [O new goods]}]}].', {
+  st('[S {動名詞| [V Extending] [O the life {前| of a product}]}] [V reduces] [O waste] [接 and] [V lowers] [O demand {前| for the energy and resources {過去分詞>the energy and resources| [V required] [M {to:副詞(目的)| [V to make] [O new goods]}]}}].', {
     chunks: [
       ['Extending the life of a product', '製品の寿命を延ばすことは'],
       ['reduces waste', 'ごみを減らします'],
@@ -175,7 +175,7 @@ export default Object.freeze([
       'when prices are rising': 'are rising は現在進行形で「上がっている最中」。',
     },
   }),
-  st('[M In addition], [S the events] [V encourage] [O people] [C {to:補語| [V to think] [M differently] [M about ownership]}].', {
+  st('[M {前| In addition}], [S the events] [V encourage] [O people] [C {to:補語| [V to think] [M differently] [M {前| about ownership}]}].', {
     chunks: [
       ['In addition', 'さらに'],
       ['the events', 'その催しは'],
@@ -185,7 +185,7 @@ export default Object.freeze([
       'encourage people to think differently about ownership': 'encourage ＋ 人 ＋ to do で「人に〜するよう促す」。',
     },
   }),
-  st('[S A device] [M no longer] [V seems] [C like a closed box {関係>a closed box| [O that] [M only] [S its manufacturer] [V understands]}].', {
+  st('[S A device] [M no longer] [V seems] [C {前| like a closed box {関係>a closed box| [O that] [M only] [S its manufacturer] [V understands]}}].', {
     chunks: [
       ['A device', '機器は'],
       ['no longer seems like a closed box', 'もはや閉ざされた箱のようには思えません'],
@@ -225,7 +225,7 @@ export default Object.freeze([
       'that could be dangerous': 'could はここでは「〜になりうる」という可能性です。',
     },
   }),
-  st('[S Some modern products] [V are] [M also] [V designed] [M {副詞節:目的| [接 so that] [S they] [V are] [C difficult {to:副詞(形容詞)| [V to open] [M without special tools]}]}].', {
+  st('[S Some modern products] [V are] [M also] [V designed] [M {副詞節:目的| [接 so that] [S they] [V are] [C difficult {to:副詞(形容詞)| [V to open] [M {前| without special tools}]}]}].', {
     chunks: [
       ['Some modern products', '現代の製品の中には'],
       ['are also designed', '設計されているものもあります（どう設計されているかは次へ）'],
@@ -249,7 +249,7 @@ export default Object.freeze([
       'should make parts and instructions easier to obtain': 'make ＋ O ＋ C で「OをCにする」。easier to obtain が C で、to obtain は easier を後ろから限定します。',
     },
   }),
-  st('[S Repair cafes] [V cannot change] [O product design] [M by themselves], [接 but] [S they] [V can show] [O1 consumers] [O2 {疑問詞節| [S what] [V prevents] [O repairs]}].', {
+  st('[S Repair cafes] [V cannot change] [O product design] [M {前| by themselves}], [接 but] [S they] [V can show] [O1 consumers] [O2 {疑問詞節| [S what] [V prevents] [O repairs]}].', {
     chunks: [
       ['Repair cafes', 'リペアカフェは'],
       ['cannot change product design', '製品の設計を変えることはできません'],
@@ -264,7 +264,7 @@ export default Object.freeze([
       'what prevents repairs': 'what は「何が」と問う疑問詞で、what 以下が show の二つ目の目的語です。',
     },
   }),
-  st('[S Their greatest value] [V may be] [C {that節| [接 that] [S they] [V turn] [O a private problem, {同格>a private problem| a broken object},] [M into a public lesson about waste, skills, and responsibility]}].', {
+  st('[S Their greatest value] [V may be] [C {that節| [接 that] [S they] [V turn] [O a private problem, {同格>a private problem| a broken object},] [M {前| into a public lesson {前| about waste, skills, and responsibility}}]}].', {
     chunks: [
       ['Their greatest value may be', 'リペアカフェの最大の価値は〜ことかもしれません（内容は次へ）'],
       ['that', '〜ということ'],

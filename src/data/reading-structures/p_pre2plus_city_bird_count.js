@@ -1,7 +1,7 @@
 import { st } from './entry.js'
 
 export default Object.freeze([
-  st('[S Professional scientists] [V cannot be] [M everywhere] [M at once], [M especially {副詞節:時| [接 when] [S they] [V study] [O animals {関係>animals| [S that] [V move] [M across wide areas]}]}].', {
+  st('[S Professional scientists] [V cannot be] [M everywhere] [M {前| at once}], [M especially {副詞節:時| [接 when] [S they] [V study] [O animals {関係>animals| [S that] [V move] [M {前| across wide areas}]}]}].', {
     chunks: [
       ['Professional scientists cannot be everywhere at once,', '専門の科学者は、同時にあらゆる場所にいることはできません'],
       ['especially when they study animals', '特に動物を研究するときには（どんな動物かは次へ）'],
@@ -12,7 +12,7 @@ export default Object.freeze([
       'especially when they study animals': 'especially は when 以下を強めて「特に〜するときは」。they は Professional scientists を指します。',
     },
   }),
-  st('[S Many research groups] [V need] [O more information], [接 so] [S they] [V invite] [O ordinary people] [C {to:補語| [V to join] [O projects {過去分詞>projects| [V known] [C as citizen science]}]}].', {
+  st('[S Many research groups] [V need] [O more information], [接 so] [S they] [V invite] [O ordinary people] [C {to:補語| [V to join] [O projects {過去分詞>projects| [V known] [C {前| as citizen science}]}]}].', {
     chunks: [
       ['Many research groups need more information,', '多くの研究団体は、もっと多くの情報を必要としています'],
       ['so', 'そのため'],
@@ -24,7 +24,7 @@ export default Object.freeze([
       'known as citizen science': 'known は know の過去分詞で、projects を後ろから説明します。be known as 〜 で「〜として知られている」。',
     },
   }),
-  st('[S One common project] [V asks] [O participants] [C {to:補語| [V to observe] [O birds] [M in gardens, parks, and school grounds]}].', {
+  st('[S One common project] [V asks] [O participants] [C {to:補語| [V to observe] [O birds] [M {前| in gardens, parks, and school grounds}]}].', {
     chunks: [
       ['One common project asks participants', 'よくある活動の一つは、参加者に求めます（何をかは次へ）'],
       ['to observe birds', '鳥を観察するように'],
@@ -34,7 +34,7 @@ export default Object.freeze([
       'One common project asks participants': 'ask ＋ 人 ＋ to 〜 で「人に〜するよう求める」。',
     },
   }),
-  st('[S Volunteers] [V record] [O each species {関係省略>each species| [S they] [V see]}, the number of birds, the location, and the time].', {
+  st('[S Volunteers] [V record] [O each species {関係省略:目的格>each species| [S they] [V see]}, the number {前| of birds}, the location, and the time].', {
     chunks: [
       ['Volunteers record each species', 'ボランティアは、それぞれの種類を記録します（どの種類かは次へ）'],
       ['they see,', '自分が見た（種類を）'],
@@ -46,7 +46,7 @@ export default Object.freeze([
       'the location, and the time': 'each species から the time までの四つが、どれも record の目的語です。',
     },
   }),
-  st('[M {副詞節:時| [接 When] [S thousands of people] [V send] [O reports]}], [S researchers] [V can discover] [O patterns {関係>patterns| [O that] [S a small team] [V might miss]}].', {
+  st('[M {副詞節:時| [接 When] [S thousands {前| of people}] [V send] [O reports]}], [S researchers] [V can discover] [O patterns {関係>patterns| [O that] [S a small team] [V might miss]}].', {
     chunks: [
       ['When thousands of people send reports,', '何千人もの人が報告を送ると'],
       ['researchers can discover patterns', '研究者は傾向を見つけることができます（どんな傾向かは次へ）'],
@@ -56,7 +56,7 @@ export default Object.freeze([
       'that a small team might miss': 'that は patterns を受ける関係代名詞で、miss の目的語です。might は「〜かもしれない」。',
     },
   }),
-  st('[M For example], [S the records] [V may show] [O {that節| [接 that] [S a species] [V is arriving] [M earlier] [M in spring] [接 or] [V disappearing] [M from certain neighborhoods]}].', {
+  st('[M {前| For example}], [S the records] [V may show] [O {that節| [接 that] [S a species] [V is arriving] [M earlier] [M {前| in spring}] [接 or] [V disappearing] [M {前| from certain neighborhoods}]}].', {
     chunks: [
       ['For example,', '例えば'],
       ['the records may show that', '記録から〜ことが分かるかもしれません（内容は次へ）'],
@@ -78,7 +78,7 @@ export default Object.freeze([
       'Such changes can suggest that': 'suggest that 〜 は、ここでは「〜ということをうかがわせる」。',
     },
   }),
-  st('[M However], [S large numbers of reports] [V cannot] [M automatically] [V ensure] [O reliable data] [M in practice].', {
+  st('[M However], [S large numbers {前| of reports}] [V cannot] [M automatically] [V ensure] [O reliable data] [M {前| in practice}].', {
     chunks: [
       ['However,', 'しかし'],
       ['large numbers of reports', '報告が大量にあっても'],
@@ -89,7 +89,7 @@ export default Object.freeze([
       'cannot automatically ensure reliable data': 'not automatically は「自動的に〜とは限らない」という部分否定です。',
     },
   }),
-  st('[S An experienced observer] [V may identify] [O a bird] [M by its song], [M {副詞節:対比| [接 while] [S a beginner] [V may confuse] [O two similar species]}].', {
+  st('[S An experienced observer] [V may identify] [O a bird] [M {前| by its song}], [M {副詞節:対比| [接 while] [S a beginner] [V may confuse] [O two similar species]}].', {
     chunks: [
       ['An experienced observer may identify a bird', '経験豊かな観察者は、鳥を見分けるかもしれません'],
       ['by its song,', '鳴き声で'],
@@ -101,7 +101,7 @@ export default Object.freeze([
       while: 'while はここでは「一方で」と、経験豊かな観察者と初心者を比べています。',
     },
   }),
-  st('[S People] [M also] [V visit] [O places {関係>places| [S that] [V are] [C easy {to:副詞(形容詞)| [V to reach]}]}] [M more often than distant or unsafe locations].', {
+  st('[S People] [M also] [V visit] [O places {関係>places| [S that] [V are] [C easy {to:副詞(形容詞)| [V to reach]}]}] [M more often {前| than distant or unsafe locations}].', {
     chunks: [
       ['People also visit places', 'また、人々は場所を訪れます（どんな場所かは次へ）'],
       ['that are easy to reach', '行きやすい（場所を）'],
@@ -125,7 +125,7 @@ export default Object.freeze([
       'and others receive few': 'others は other habitats、few は few reports のことです。',
     },
   }),
-  st('[S Good projects] [V reduce] [O these problems] [M through clear training and careful design].', {
+  st('[S Good projects] [V reduce] [O these problems] [M {前| through clear training and careful design}].', {
     chunks: [
       ['Good projects reduce these problems', 'よい活動は、こうした問題を減らします'],
       ['through clear training and careful design', '分かりやすい訓練と慎重な設計によって'],
@@ -144,7 +144,7 @@ export default Object.freeze([
       'that help volunteers identify species correctly': 'help ＋ 人 ＋ 動詞の原形 で「人が〜するのを助ける」。',
     },
   }),
-  st('[S They] [V may ask] [O participants] [C {to:補語| [V to watch] [M for the same length of time]} and {to:補語| [V to report] [O visits {関係>visits| [M when] [S no birds] [V appeared]}]}].', {
+  st('[S They] [V may ask] [O participants] [C {to:補語| [V to watch] [M {前| for the same length {前| of time}}]} and {to:補語| [V to report] [O visits {関係>visits| [M when] [S no birds] [V appeared]}]}].', {
     chunks: [
       ['They may ask participants', 'よい活動は、参加者に求めることがあります（何をかは次へ）'],
       ['to watch for the same length of time', '同じ長さの時間だけ観察するように'],
@@ -197,7 +197,7 @@ export default Object.freeze([
       'not because volunteers replace professionals,': 'not because A, but because B で「AだからではなくBだから」。',
     },
   }),
-  st('[S The public] [V contributes] [O time, local knowledge, and a large number of observations].', {
+  st('[S The public] [V contributes] [O time, local knowledge, and a large number {前| of observations}].', {
     chunks: [
       ['The public contributes', '一般の人々は提供します（何をかは次へ）'],
       ['time, local knowledge,', '時間や地域についての知識'],
@@ -207,7 +207,7 @@ export default Object.freeze([
       'The public contributes': 'the public は「一般の人々」。一つのまとまりとして扱うので contributes です。',
     },
   }),
-  st('[S Scientists] [V contribute] [O research methods {関係>research methods| [S that] [V turn] [O those observations] [M into careful conclusions]}].', {
+  st('[S Scientists] [V contribute] [O research methods {関係>research methods| [S that] [V turn] [O those observations] [M {前| into careful conclusions}]}].', {
     chunks: [
       ['Scientists contribute research methods', '科学者は研究の方法を提供します（どんな方法かは次へ）'],
       ['that turn those observations into careful conclusions', 'それらの観察結果を慎重な結論に変える（方法を）'],
@@ -216,7 +216,7 @@ export default Object.freeze([
       'that turn those observations into careful conclusions': 'turn A into B で「AをBに変える」。those observations は前の文の観察結果を指します。',
     },
   }),
-  st('[M Together], [S they] [V can follow] [O changes in biodiversity] [接 and] [V identify] [O places {関係>places| [S that] [V may need] [O conservation]}].', {
+  st('[M Together], [S they] [V can follow] [O changes {前| in biodiversity}] [接 and] [V identify] [O places {関係>places| [S that] [V may need] [O conservation]}].', {
     chunks: [
       ['Together,', '力を合わせれば'],
       ['they can follow changes in biodiversity', '両者は生物多様性の変化を追うことができます'],
@@ -228,7 +228,7 @@ export default Object.freeze([
       'and identify places': 'identify も can を共有しています（can identify）。',
     },
   }),
-  st('[S The partnership] [M also] [V shows] [O {that節| [接 that] [S useful science] [V depends] [M on {動名詞| [V recording] [O uncertainty] [M as honestly as discovery]}]}].', {
+  st('[S The partnership] [M also] [V shows] [O {that節| [接 that] [S useful science] [V depends] [M {前| on {動名詞| [V recording] [O uncertainty] [M as honestly {前| as discovery}]}}]}].', {
     chunks: [
       ['The partnership also shows that', 'この協力関係はまた、〜ことを示しています（内容は次へ）'],
       ['useful science depends on recording uncertainty', '役に立つ科学は、不確かさを記録することにかかっている（どう記録するかは次へ）'],

@@ -1,7 +1,7 @@
 import { st } from './entry.js'
 
 export default Object.freeze([
-  st('[S A short video] [V claims] [O {that節| [接 that] [S a certain drink] [V improves] [O memory]}], [接 and] [S thousands of users] [V share] [O it] [M within a day].', {
+  st('[S A short video] [V claims] [O {that節| [接 that] [S a certain drink] [V improves] [O memory]}], [接 and] [S thousands {前| of users}] [V share] [O it] [M {前| within a day}].', {
     chunks: [
       ['A short video claims that', '短い動画が〜と主張しています（内容は次へ）'],
       ['a certain drink improves memory,', 'ある飲み物が記憶力を高める（と）'],
@@ -42,7 +42,7 @@ export default Object.freeze([
       'who produced the message': 'who は疑問詞で、節の中では主語です。who 以下と what 以下の二つが asks の目的語です。',
     },
   }),
-  st('[S Readers] [V can check] [O a university report {関係>a university report| [S that] [V describes] [O its methods]}] [M more easily than a video with no named source].', {
+  st('[S Readers] [V can check] [O a university report {関係>a university report| [S that] [V describes] [O its methods]}] [M more easily {前| than a video {前| with no named source}}].', {
     chunks: [
       ['Readers can check a university report', '読み手は大学の報告書を確かめることができます（どんな報告書かは次へ）'],
       ['that describes its methods', 'その研究方法を説明している（報告書を）'],
@@ -55,7 +55,7 @@ export default Object.freeze([
     },
     rules: ['comparison-pairs', 'relative-clause', 'postmodifier'],
   }),
-  st('[M However], [S the name of an expert or institution] [V should not end] [O the investigation].', {
+  st('[M However], [S the name {前| of an expert or institution}] [V should not end] [O the investigation].', {
     chunks: [
       ['However,', 'しかし'],
       ['the name of an expert or institution', '専門家や機関の名前があっても'],
@@ -84,7 +84,7 @@ export default Object.freeze([
       'Sample size is one important clue': 'sample size は、調べた人数などの「標本の大きさ」です。',
     },
   }),
-  st('[S A result from twelve volunteers] [V may be] [C interesting], [接 but] [S it] [V may not apply] [M to people of different ages or health conditions].', {
+  st('[S A result {前| from twelve volunteers}] [V may be] [C interesting], [接 but] [S it] [V may not apply] [M {前| to people {前| of different ages or health conditions}}].', {
     chunks: [
       ['A result from twelve volunteers', '12人のボランティアから得た結果は'],
       ['may be interesting,', '興味深いかもしれません'],
@@ -95,7 +95,7 @@ export default Object.freeze([
       'but it may not apply': 'apply to 〜 で「〜に当てはまる」。it は A result を指します。',
     },
   }),
-  st('[S A useful study] [M also] [V compares] [O groups] [M {副詞節:目的| [接 so that] [S researchers] [V can separate] [O the treatment] [M from other possible factors]}].', {
+  st('[S A useful study] [M also] [V compares] [O groups] [M {副詞節:目的| [接 so that] [S researchers] [V can separate] [O the treatment] [M {前| from other possible factors}]}].', {
     chunks: [
       ['A useful study also compares groups', 'また、役に立つ研究はグループどうしを比べます'],
       ['so that researchers can separate the treatment', '研究者が治療を切り分けられるように（何からかは次へ）'],
@@ -105,7 +105,7 @@ export default Object.freeze([
       'so that researchers can separate the treatment': 'so that ＋ 主語 ＋ can 〜 で「〜できるように」。separate A from B で「AをBから切り分ける」。',
     },
   }),
-  st('[M Without such a comparison], [S improvement] [V may come] [M from sleep, diet, expectation, or simple chance].', {
+  st('[M {前| Without such a comparison}], [S improvement] [V may come] [M {前| from sleep, diet, expectation, or simple chance}].', {
     chunks: [
       ['Without such a comparison,', 'そのような比較がなければ'],
       ['improvement may come', '改善は生じているのかもしれません（何からかは次へ）'],
@@ -115,7 +115,7 @@ export default Object.freeze([
       'Without such a comparison,': 'without 〜 は、ここでは「〜がなければ」という条件の意味です。',
     },
   }),
-  st('[S Another common mistake] [V is] [C {to:名詞| [V to treat] [O correlation] [C as proof of cause]}].', {
+  st('[S Another common mistake] [V is] [C {to:名詞| [V to treat] [O correlation] [C {前| as proof {前| of cause}}]}].', {
     chunks: [
       ['Another common mistake', 'もう一つのよくある誤りは'],
       ['is to treat correlation as proof of cause', '相関を原因の証明として扱うことです'],
@@ -156,7 +156,7 @@ export default Object.freeze([
       'as well': 'as well は「〜も」。三つ目の説明を付け足しています。',
     },
   }),
-  st('[S Readers] [V should] [M also] [V distinguish] [O an early report] [M from a review {関係>a review| [S that] [V considers] [O many studies]}].', {
+  st('[S Readers] [V should] [M also] [V distinguish] [O an early report] [M {前| from a review {関係>a review| [S that] [V considers] [O many studies]}}].', {
     chunks: [
       ['Readers should also distinguish an early report', 'また、読み手は初期の報告を区別するべきです（何とかは次へ）'],
       ['from a review', 'レビューと'],
@@ -167,7 +167,7 @@ export default Object.freeze([
       'from a review': 'review はここでは、多くの研究をまとめて検討した論文（総説）のことです。',
     },
   }),
-  st('[S One experiment] [V can suggest] [O a possibility], [M {副詞節:対比| [接 whereas] [S repeated studies] [V help] [O {原形| [V show] [O {whether節| [接 whether] [S an effect] [V appears] [M under different conditions]}]}]}].', {
+  st('[S One experiment] [V can suggest] [O a possibility], [M {副詞節:対比| [接 whereas] [S repeated studies] [V help] [O {原形| [V show] [O {whether節| [接 whether] [S an effect] [V appears] [M {前| under different conditions}]}]}]}].', {
     chunks: [
       ['One experiment can suggest a possibility,', '一つの実験は、可能性を示すことができます'],
       ['whereas', '一方で'],
@@ -179,7 +179,7 @@ export default Object.freeze([
       'repeated studies help show': 'help ＋ 動詞の原形 で「〜するのに役立つ」。',
     },
   }),
-  st('[S Financial interests behind a study] [V provide] [O useful context] [M for readers].', {
+  st('[S Financial interests {前| behind a study}] [V provide] [O useful context] [M {前| for readers}].', {
     chunks: [
       ['Financial interests behind a study', '研究の背後にあるお金の利害は'],
       ['provide useful context', '役に立つ背景を与えます'],
@@ -202,7 +202,7 @@ export default Object.freeze([
       'being tested': 'being tested は「試験されている」という受け身の進行の形で、the product を後ろから説明します。',
     },
   }),
-  st('[S Independent review and a clear statement of possible conflicts] [V make] [O the evidence] [C easier {to:副詞(形容詞)| [V to evaluate]}].', {
+  st('[S Independent review and a clear statement {前| of possible conflicts}] [V make] [O the evidence] [C easier {to:副詞(形容詞)| [V to evaluate]}].', {
     chunks: [
       ['Independent review and a clear statement', '独立した審査と、はっきりした説明が（何の説明かは次へ）'],
       ['of possible conflicts', '起こり得る利益相反についての（説明が）'],
@@ -213,7 +213,7 @@ export default Object.freeze([
       'make the evidence easier to evaluate': 'make ＋ O ＋ C で「OをCにする」。easy to 〜 は「〜しやすい」で、easier はその比較級です。',
     },
   }),
-  st('[S None of these questions] [V gives] [O a quick promise {同格that>a quick promise| [接 that] [S a claim] [V is] [C true or false]}].', {
+  st('[S None {前| of these questions}] [V gives] [O a quick promise {同格that>a quick promise| [接 that] [S a claim] [V is] [C true or false]}].', {
     chunks: [
       ['None of these questions gives a quick promise', 'こうした問いのどれも、すぐに保証してくれるわけではありません（何をかは次へ）'],
       ['that a claim is true or false', '主張が正しいか誤りかを'],
@@ -236,7 +236,7 @@ export default Object.freeze([
     },
     rules: ['contrast-concession', 'wh-clause', 'infinitive-role'],
   }),
-  st('[M {副詞節:時| [接 When] [S a decision] [V involves] [O serious health risks]}], [S online reading] [V should support, not replace,] [O advice from a qualified professional].', {
+  st('[M {副詞節:時| [接 When] [S a decision] [V involves] [O serious health risks]}], [S online reading] [V should support, not replace,] [O advice {前| from a qualified professional}].', {
     chunks: [
       ['When a decision involves serious health risks,', '決定が重大な健康上の危険を伴うときには'],
       ['online reading should support, not replace,', 'オンラインで読むことは、置き換えるのではなく支えとなるべきです（何をかは次へ）', 'online reading should support, not replace,'],
@@ -246,7 +246,7 @@ export default Object.freeze([
       'online reading should support, not replace,': 'support, not replace は「A, not B（BではなくA）」の形で、二つの動詞が後ろの advice を共有しています。オンラインで読んだことを、専門家の助言の代わりにしてはいけない、という意味です。',
     },
   }),
-  st('[S Responsible readers] [V are not] [C people {関係>people| [S who] [V doubt] [O everything]}]; [S they] [V are] [C people {関係>people| [S who] [V match] [O their confidence] [M to the quality of the evidence]}].', {
+  st('[S Responsible readers] [V are not] [C people {関係>people| [S who] [V doubt] [O everything]}]; [S they] [V are] [C people {関係>people| [S who] [V match] [O their confidence] [M {前| to the quality {前| of the evidence}}]}].', {
     chunks: [
       ['Responsible readers are not people', '責任ある読み手とは、〜人ではありません（どんな人かは次へ）'],
       ['who doubt everything;', 'すべてを疑う（人では）'],

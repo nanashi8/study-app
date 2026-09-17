@@ -597,11 +597,11 @@ const READING_BLOCK_MARKED_EXPECTATIONS = new Map([
   ],
   [
     'The integrity of public memory is then shaped less by what is available than by what is repeatedly presented as relevant.',
-    'The integrity of public memory is then shaped less by (what is available) than by (what is repeatedly presented as relevant)',
+    'The integrity <of public memory> is then shaped less <by (what is available)> than <by (what is repeatedly presented <as relevant>)>',
   ],
   [
     'If that practice declines, even perfect archives will not prevent societies from losing their ability to learn from what they once knew.',
-    '(If that practice declines), even perfect archives will not prevent societies from <losing their ability <to learn from (what they once knew)>>',
+    '(If that practice declines), even perfect archives will not prevent societies <from <losing their ability <to learn <from (what they once knew)>>>>',
   ],
 ])
 
@@ -622,11 +622,18 @@ const READING_BLOCK_STRUCTURE_TOKEN_EXPECTATIONS = new Map([
   [
     'The integrity of public memory is then shaped less by what is available than by what is repeatedly presented as relevant.',
     [
-      { kind: 'clause', depth: 0, parentKind: null, text: 'what is available' },
+      { kind: 'phrase', depth: 0, parentKind: null, text: 'of public memory' },
+      { kind: 'phrase', depth: 0, parentKind: null, text: 'by what is available' },
+      { kind: 'clause', depth: 1, parentKind: 'phrase', text: 'what is available' },
       {
-        kind: 'clause', depth: 0, parentKind: null,
+        kind: 'phrase', depth: 0, parentKind: null,
+        text: 'by what is repeatedly presented as relevant',
+      },
+      {
+        kind: 'clause', depth: 1, parentKind: 'phrase',
         text: 'what is repeatedly presented as relevant',
       },
+      { kind: 'phrase', depth: 2, parentKind: 'clause', text: 'as relevant' },
     ],
   ],
   [
@@ -635,10 +642,15 @@ const READING_BLOCK_STRUCTURE_TOKEN_EXPECTATIONS = new Map([
       { kind: 'clause', depth: 0, parentKind: null, text: 'If that practice declines' },
       {
         kind: 'phrase', depth: 0, parentKind: null,
+        text: 'from losing their ability to learn from what they once knew',
+      },
+      {
+        kind: 'phrase', depth: 1, parentKind: 'phrase',
         text: 'losing their ability to learn from what they once knew',
       },
-      { kind: 'phrase', depth: 1, parentKind: 'phrase', text: 'to learn from what they once knew' },
-      { kind: 'clause', depth: 2, parentKind: 'phrase', text: 'what they once knew' },
+      { kind: 'phrase', depth: 2, parentKind: 'phrase', text: 'to learn from what they once knew' },
+      { kind: 'phrase', depth: 3, parentKind: 'phrase', text: 'from what they once knew' },
+      { kind: 'clause', depth: 4, parentKind: 'phrase', text: 'what they once knew' },
     ],
   ],
 ])

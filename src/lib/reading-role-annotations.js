@@ -78,9 +78,15 @@ export function buildReadingRoleAnnotation(sentence = '', parts = [], options = 
     }
 
     wordCursor += expectedWords.length
+    const previous = sourceWords[wordCursor - 1]
+    const lastWordEnd = previous ? (previous.index ?? 0) + previous[0].length : characterCursor
     const nextWordStart = sourceWords[wordCursor]?.index ?? source.length
-    const sourceText = source.slice(characterCursor, nextWordStart)
-    characterCursor = nextWordStart
+    // 構造図の括弧つきで表示するとき、次の語の前に付く「(」「<」は次の役割の側に入れる。
+    const boundary = source.slice(lastWordEnd, nextWordStart)
+    const opening = /[(<][\s(<]*$/.exec(boundary)
+    const cut = opening ? lastWordEnd + (opening.index ?? 0) : nextWordStart
+    const sourceText = source.slice(characterCursor, Math.max(characterCursor, cut))
+    characterCursor = Math.max(characterCursor, cut)
     segments.push(Object.freeze({
       index,
       role,

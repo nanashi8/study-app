@@ -1,7 +1,7 @@
 import { st } from './entry.js'
 
 export default Object.freeze([
-  st('[S Cities] [V have] [M always] [V had to respond] [M to weather], [接 but] [S the challenge] [V has become] [C more complicated] [M {副詞節:比例| [接 as] [S extreme heat and sudden storms] [V occur] [M more frequently]}].', {
+  st('[S Cities] [V have] [M always] [V had to respond] [M {前| to weather}], [接 but] [S the challenge] [V has become] [C more complicated] [M {副詞節:比例| [接 as] [S extreme heat and sudden storms] [V occur] [M more frequently]}].', {
     chunks: [
       ['Cities', '都市は'],
       ['have always had to respond', 'これまでずっと対応しなければなりませんでした'],
@@ -18,7 +18,7 @@ export default Object.freeze([
       as: 'as はここでは「〜するにつれて」と、変化が並んで進むことを表します。',
     },
   }),
-  st('[M In the past], [S local governments] [M often] [V treated] [O floods, heat waves, and water shortages] [C as separate problems].', {
+  st('[M {前| In the past}], [S local governments] [M often] [V treated] [O floods, heat waves, and water shortages] [C {前| as separate problems}].', {
     chunks: [
       ['In the past', 'かつては'],
       ['local governments', '地方自治体は'],
@@ -41,7 +41,7 @@ export default Object.freeze([
       ['transportation, housing, energy, and public health', '交通・住宅・エネルギー・公衆衛生を'],
     ],
   }),
-  st('[S One reason] [V is] [C {that節| [接 that] [S a measure {過去分詞>a measure| [V designed] [M for a single purpose]}] [V can have] [O unexpected consequences] [M in another area]}].', {
+  st('[S One reason] [V is] [C {that節| [接 that] [S a measure {過去分詞>a measure| [V designed] [M {前| for a single purpose}]}] [V can have] [O unexpected consequences] [M {前| in another area}]}].', {
     chunks: [
       ['One reason is that', '理由の一つは次のことです'],
       ['a measure designed for a single purpose', '一つの目的のために作られた対策が'],
@@ -53,7 +53,7 @@ export default Object.freeze([
       'a measure designed for a single purpose': 'designed 以下は a measure を後ろから説明する過去分詞のまとまりです。',
     },
   }),
-  st('[M For instance], [S {動名詞| [V building] [O higher concrete walls] [M along a river]}] [V may reduce] [O flooding in one district] [M {副詞節:対比| [接 while] [V pushing] [O water] [M toward a poorer neighborhood downstream]}].', {
+  st('[M {前| For instance}], [S {動名詞| [V building] [O higher concrete walls] [M {前| along a river}]}] [V may reduce] [O flooding {前| in one district}] [M {副詞節:対比| [接 while] [V pushing] [O water] [M {前| toward a poorer neighborhood }downstream]}].', {
     chunks: [
       ['For instance', '例えば'],
       ['building higher concrete walls along a river', '川沿いにより高いコンクリートの壁を建てることは'],
@@ -66,7 +66,7 @@ export default Object.freeze([
       'while pushing water': 'while pushing は while (it is) pushing の形で、「〜する一方で」。',
     },
   }),
-  st('[M Similarly], [S {動名詞| [V installing] [O powerful air conditioners] [M in public buildings]}] [V may protect] [O residents] [M during heat waves], [接 yet] [S it] [V can increase] [O energy demand] [M {副詞節:時| [接 when] [S the power supply] [V is] [M already] [M under pressure]}].', {
+  st('[M Similarly], [S {動名詞| [V installing] [O powerful air conditioners] [M {前| in public buildings}]}] [V may protect] [O residents] [M {前| during heat waves}], [接 yet] [S it] [V can increase] [O energy demand] [M {副詞節:時| [接 when] [S the power supply] [V is] [M already] [M {前| under pressure}]}].', {
     chunks: [
       ['Similarly', '同じように'],
       ['installing powerful air conditioners in public buildings', '公共施設に強力なエアコンを設置することは'],
@@ -84,7 +84,7 @@ export default Object.freeze([
       'is already under pressure': 'under pressure は「圧力を受けて・逼迫して」。',
     },
   }),
-  st('[S A more resilient city] [M therefore] [V begins] [M by {動名詞| [V assessing] [O {疑問詞節| [S who] [V is] [C most vulnerable]} and {疑問詞節| [S which resources] [V can serve] [O several needs] [M at once]}]}].', {
+  st('[S A more resilient city] [M therefore] [V begins] [M {前| by {動名詞| [V assessing] [O {疑問詞節| [S who] [V is] [C most vulnerable]} and {疑問詞節| [S which resources] [V can serve] [O several needs] [M {前| at once}]}]}}].', {
     chunks: [
       ['A more resilient city therefore begins', 'そのため、より回復力のある都市は始めます（何から始めるかは次へ）'],
       ['by assessing', '評価することから（何をかは次へ）'],
@@ -103,7 +103,7 @@ export default Object.freeze([
       ['are a useful example', '役に立つ例です'],
     ],
   }),
-  st('[S They] [V provide] [O shade], [V absorb] [O rainwater], [V improve] [O air quality], [接 and] [V make] [O streets] [C more pleasant for walking].', {
+  st('[S They] [V provide] [O shade], [V absorb] [O rainwater], [V improve] [O air quality], [接 and] [V make] [O streets] [C more pleasant {前| for walking}].', {
     chunks: [
       ['They', '樹木は'],
       ['provide shade,', '日陰を作ります'],
@@ -117,7 +117,7 @@ export default Object.freeze([
       'make streets more pleasant': 'make ＋ O ＋ C で「OをCにする」。',
     },
   }),
-  st('[M However], [S {動名詞| [V planting] [O trees]}] [V is not] [C a simple solution] [M {副詞節:条件| [接 if] [S maintenance money] [V is limited]}] [接 or] [M {副詞節:条件| [接 if] [S sidewalks] [V are] [C too narrow {to:副詞(程度)| [M for roots] [V to grow] [M safely]}]}].', {
+  st('[M However], [S {動名詞| [V planting] [O trees]}] [V is not] [C a simple solution] [M {副詞節:条件| [接 if] [S maintenance money] [V is limited]}] [接 or] [M {副詞節:条件| [接 if] [S sidewalks] [V are] [C too narrow {前:意味上の主語| for roots} {to:副詞(程度)| [V to grow] [M safely]}]}].', {
     chunks: [
       ['However', 'しかし'],
       ['planting trees', '木を植えることは'],
@@ -146,7 +146,7 @@ export default Object.freeze([
       'an attempt': 'コロン（:）の後ろで、maladaptation がどういう問題かを説明しています。',
     },
   }),
-  st('[S A park {関係>A park| [S that] [V cools] [O a wealthy district]}], [M for example], [V may increase] [O nearby rents] [接 and] [V force] [O lower-income residents] [C {to:補語| [V to move] [M {副詞節:時| [接 before] [S they] [V enjoy] [O the benefits]}]}].', {
+  st('[S A park {関係>A park| [S that] [V cools] [O a wealthy district]}], [M {前| for example}], [V may increase] [O nearby rents] [接 and] [V force] [O lower-income residents] [C {to:補語| [V to move] [M {副詞節:時| [接 before] [S they] [V enjoy] [O the benefits]}]}].', {
     chunks: [
       ['A park', '公園が'],
       ['that cools a wealthy district,', '裕福な地区を涼しくする（公園が）'],
@@ -172,7 +172,7 @@ export default Object.freeze([
       'not only': 'not only A but also B で「AだけでなくBも」。A も B も examine の目的語です。',
     },
   }),
-  st('[S Good policy] [V must be based] [M on evidence from the actual community] [M rather than on attractive ideas {過去分詞>attractive ideas| [V copied] [M from other cities]}].', {
+  st('[S Good policy] [V must be based] [M {前| on evidence {前| from the actual community}}] [M {前| rather than {前| on attractive ideas {過去分詞>attractive ideas| [V copied] [M {前| from other cities}]}}}].', {
     chunks: [
       ['Good policy must be based', 'よい政策は基づくべきです（何にかは次へ）'],
       ['on evidence from the actual community', '実際の地域から得た根拠に'],
@@ -184,7 +184,7 @@ export default Object.freeze([
       'rather than on attractive ideas': 'A rather than B で「BではなくA」。on evidence と on attractive ideas を比べています。',
     },
   }),
-  st('[S Some cities] [V have begun] [O {to:名詞| [V to invite] [O residents] [C {to:補語| [V to map] [O dangerous intersections, hot streets, and places {関係>places| [M where] [S water] [V remains] [M after heavy rain]}]}]}].', {
+  st('[S Some cities] [V have begun] [O {to:名詞| [V to invite] [O residents] [C {to:補語| [V to map] [O dangerous intersections, hot streets, and places {関係>places| [M where] [S water] [V remains] [M {前| after heavy rain}]}]}]}].', {
     chunks: [
       ['Some cities', '一部の都市は'],
       ['have begun to invite residents', '住民に呼びかけ始めています（何をかは次へ）'],
@@ -197,7 +197,7 @@ export default Object.freeze([
       'where water remains after heavy rain': 'where は places を説明する関係副詞で、「その場所では」と受け直します。',
     },
   }),
-  st('[S This process] [V takes] [O time], [接 and] [S it] [V may reveal] [O disagreements about {疑問詞節| [S which projects] [V should come] [M first]}].', {
+  st('[S This process] [V takes] [O time], [接 and] [S it] [V may reveal] [O disagreements {前| about {疑問詞節| [S which projects] [V should come] [M first]}}].', {
     chunks: [
       ['This process', 'この過程は'],
       ['takes time', '時間がかかります'],
@@ -210,7 +210,7 @@ export default Object.freeze([
       'about which projects should come first': 'which projects … は前置詞 about の目的語になる疑問詞の節です。',
     },
   }),
-  st('[M Nevertheless], [S it] [V can build] [O trust] [M {副詞節:理由| [接 because] [S residents] [V see] [O {that節| [接 that] [S their daily experience] [V is treated] [C as valuable information]}]}].', {
+  st('[M Nevertheless], [S it] [V can build] [O trust] [M {副詞節:理由| [接 because] [S residents] [V see] [O {that節| [接 that] [S their daily experience] [V is treated] [C {前| as valuable information}]}]}].', {
     chunks: [
       ['Nevertheless', 'それでも'],
       ['it', 'この過程は'],
@@ -237,7 +237,7 @@ export default Object.freeze([
       'that computer models miss': 'that は failures を受ける関係代名詞で、miss の目的語です。',
     },
   }),
-  st('[S A drainage map] [V may look] [C complete], [接 yet] [S residents] [V may know] [O {that節| [接 that] [S blocked street drains] [M regularly] [V send] [O water] [M into a particular apartment building]}].', {
+  st('[S A drainage map] [V may look] [C complete], [接 yet] [S residents] [V may know] [O {that節| [接 that] [S blocked street drains] [M regularly] [V send] [O water] [M {前| into a particular apartment building}]}].', {
     chunks: [
       ['A drainage map', '排水の地図は'],
       ['may look complete', '完全に見えるかもしれません'],
@@ -264,7 +264,7 @@ export default Object.freeze([
       'they reveal': 'セミコロン（;）の後ろで、前の文を補って「そうではなく〜する」と続けています。they は Such observations を指します。',
     },
   }),
-  st('[S The financial side of adaptation] [V is] [M equally] [C difficult].', {
+  st('[S The financial side {前| of adaptation}] [V is] [M equally] [C difficult].', {
     chunks: [
       ['The financial side of adaptation', '適応のお金の面も'],
       ['is equally difficult', '同じように難しいのです'],
@@ -273,7 +273,7 @@ export default Object.freeze([
       'is equally difficult': 'equally は「（前に述べたことと）同じように」。',
     },
   }),
-  st('[S Large infrastructure projects] [V are] [C attractive to politicians] [M {副詞節:理由| [接 because] [S they] [V are] [C visible] [接 and] [V can be announced] [C as decisive action]}].', {
+  st('[S Large infrastructure projects] [V are] [C attractive {前| to politicians}] [M {副詞節:理由| [接 because] [S they] [V are] [C visible] [接 and] [V can be announced] [C {前| as decisive action}]}].', {
     chunks: [
       ['Large infrastructure projects', '大規模なインフラ事業は'],
       ['are attractive to politicians', '政治家にとって魅力的です'],
@@ -285,7 +285,7 @@ export default Object.freeze([
       'and can be announced as decisive action': 'announce A as B「AをBとして発表する」の受け身です。can be announced は are visible と主語 they を共有しています。',
     },
   }),
-  st('[M Yet] [S smaller investments, such as {動名詞| [V training] [O neighborhood volunteers]} or {動名詞| [V improving] [O warning messages in several languages]},] [V may save] [O more lives] [M during an emergency].', {
+  st('[M Yet] [S smaller investments, {前| such as {動名詞| [V training] [O neighborhood volunteers]} or {動名詞| [V improving] [O warning messages {前| in several languages}]}},] [V may save] [O more lives] [M {前| during an emergency}].', {
     chunks: [
       ['Yet', 'しかし'],
       ['smaller investments,', 'より小さな投資のほうが（どんな投資かは次へ）'],
@@ -311,7 +311,7 @@ export default Object.freeze([
     },
     rules: ['cause-result', 'comparison-pairs', 'infinitive-role'],
   }),
-  st('[S A city {関係>A city| [S that] [V takes] [O resilience] [M seriously]}] [V must] [M therefore] [V evaluate] [O projects] [M over a long period] [M rather than only during the year {関係>the year| [M in which] [S they] [V are introduced]}].', {
+  st('[S A city {関係>A city| [S that] [V takes] [O resilience] [M seriously]}] [V must] [M therefore] [V evaluate] [O projects] [M {前| over a long period}] [M {前| rather than only {前| during the year {関係>the year| [M in which] [S they] [V are introduced]}}}].', {
     chunks: [
       ['A city', '都市は'],
       ['that takes resilience seriously', '回復力を真剣に考える（都市は）'],
@@ -325,7 +325,7 @@ export default Object.freeze([
       'in which they are introduced': 'in which は the year を受ける前置詞＋関係代名詞で、「その年に」と読みます。they は projects を指します。',
     },
   }),
-  st('[S It] [V must] [M also] [V recognize] [O {that節| [接 that] [S the absence of disaster] [V is not] [C proof {同格that>proof| [接 that] [S preparation] [V was] [C unnecessary]}]}].', {
+  st('[S It] [V must] [M also] [V recognize] [O {that節| [接 that] [S the absence {前| of disaster}] [V is not] [C proof {同格that>proof| [接 that] [S preparation] [V was] [C unnecessary]}]}].', {
     chunks: [
       ['It must also recognize', '都市はまた認めなければなりません（内容は次へ）'],
       ['that', '〜ということを'],
@@ -348,7 +348,7 @@ export default Object.freeze([
       'must remain flexible': 'remain ＋ 形容詞 で「〜のままである」。',
     },
   }),
-  st('[S A project {関係>A project| [S that] [V performs] [M well] [M under today\'s conditions]}] [V may be] [C inadequate] [M {副詞節:条件| [接 if] [S migration, land use, or rainfall patterns] [V change]}].', {
+  st('[S A project {関係>A project| [S that] [V performs] [M well] [M {前| under today\'s conditions}]}] [V may be] [C inadequate] [M {副詞節:条件| [接 if] [S migration, land use, or rainfall patterns] [V change]}].', {
     chunks: [
       ['A project', '事業は'],
       ['that performs well', 'うまく機能する（事業は）'],
@@ -358,7 +358,7 @@ export default Object.freeze([
       ['migration, land use, or rainfall patterns change', '人口の移動や土地の使われ方、雨の降り方が変われば'],
     ],
   }),
-  st('[S {動名詞| [V Setting] [O review dates]} and {動名詞| [V publishing] [O results]}] [V allow] [O governments] [C {to:補語| [V to revise] [O policies] [M without {動名詞| [V treating] [O revision] [C as failure]}]}].', {
+  st('[S {動名詞| [V Setting] [O review dates]} and {動名詞| [V publishing] [O results]}] [V allow] [O governments] [C {to:補語| [V to revise] [O policies] [M {前| without {動名詞| [V treating] [O revision] [C {前| as failure}]}}]}].', {
     chunks: [
       ['Setting review dates and publishing results', '見直しの日程を決め、結果を公表することは'],
       ['allow governments to revise policies', '政府が政策を見直せるようにします'],
@@ -370,7 +370,7 @@ export default Object.freeze([
       'without treating revision as failure': 'treat A as B で「AをBとみなす」。',
     },
   }),
-  st('[M {副詞節:理由| [接 As] [S climate conditions] [V remain] [C uncertain]}], [S the cities {関係>the cities| [S that] [V adapt] [M most successfully]}] [V will] [M probably] [V be] [C those {関係>those| [S that] [V combine] [O technical knowledge] [M with public participation]}].', {
+  st('[M {副詞節:理由| [接 As] [S climate conditions] [V remain] [C uncertain]}], [S the cities {関係>the cities| [S that] [V adapt] [M most successfully]}] [V will] [M probably] [V be] [C those {関係>those| [S that] [V combine] [O technical knowledge] [M {前| with public participation}]}].', {
     chunks: [
       ['As', '〜ので（理由は次へ）'],
       ['climate conditions remain uncertain', '気候の状況が不確かなままな（ので）'],

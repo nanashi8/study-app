@@ -1,7 +1,7 @@
 import { st } from './entry.js'
 
 export default Object.freeze([
-  st('[S A small town on the coast] [V receives] [O many visitors] [M during the summer].', {
+  st('[S A small town {前| on the coast}] [V receives] [O many visitors] [M {前| during the summer}].', {
     chunks: [
       ['A small town on the coast', '海岸にある小さな町は'],
       ['receives many visitors', '多くの旅行者を迎えます'],
@@ -13,7 +13,7 @@ export default Object.freeze([
     },
     rules: ['main-clause-skeleton', 'postmodifier', 'paragraph-map'],
   }),
-  st('[S Local students] [V wanted] [O {to:名詞| [V to help] [O them] [C {原形| [V explore] [O the town] [M without {動名詞| [V getting] [C lost]}]}]}].', {
+  st('[S Local students] [V wanted] [O {to:名詞| [V to help] [O them] [C {原形| [V explore] [O the town] [M {前| without {動名詞| [V getting] [C lost]}}]}]}].', {
     chunks: [
       ['Local students wanted to help them', '地元の生徒たちは旅行者を手助けしたいと考えました（何をするのをかは次へ）'],
       ['explore the town', '町を見て回るのを'],
@@ -26,7 +26,7 @@ export default Object.freeze([
     },
     rules: ['infinitive-role', 'svoc-core', 'reference-chain'],
   }),
-  st('[S They] [V decided] [O {to:名詞| [V to create] [O a walking guide in Japanese and easy English]}].', {
+  st('[S They] [V decided] [O {to:名詞| [V to create] [O a walking guide {前| in Japanese and easy English}]}].', {
     chunks: [
       ['They decided to create a walking guide', '彼らは街歩きガイドを作ることにしました（何語のかは次へ）'],
       ['in Japanese and easy English', '日本語とやさしい英語の'],
@@ -36,7 +36,7 @@ export default Object.freeze([
       'in Japanese and easy English': 'in ＋ 言語 で「その言葉で書かれた」。a walking guide を後ろから説明しています。',
     },
   }),
-  st('[M Before {動名詞| [V writing]}], [S the students] [V gave] [O1 tourists] [O2 a short survey] [M at the station].', {
+  st('[M {前| Before {動名詞| [V writing]}}], [S the students] [V gave] [O1 tourists] [O2 a short survey] [M {前| at the station}].', {
     chunks: [
       ['Before writing,', '書き始める前に'],
       ['the students gave tourists a short survey', '生徒たちは旅行者に短いアンケートを行いました'],
@@ -82,7 +82,7 @@ export default Object.freeze([
     },
     rules: ['wh-clause', 'svoc-core', 'logic-connectors'],
   }),
-  st('[S The class] [M therefore] [V chose] [O practical information] [M instead of {動名詞| [V listing] [O every famous place]}].', {
+  st('[S The class] [M therefore] [V chose] [O practical information] [M {前| instead of {動名詞| [V listing] [O every famous place]}}].', {
     chunks: [
       ['The class therefore chose practical information', 'そこでクラスは実用的な情報を選びました'],
       ['instead of listing every famous place', '有名な場所をすべて並べる代わりに'],
@@ -112,7 +112,7 @@ export default Object.freeze([
       'because busy summer streets could slow a group': 'slow はここでは動詞で「遅くする」。could は「〜することがある」という可能性を表します。',
     },
   }),
-  st('[S They] [V photographed] [O clear landmarks, such as a red bridge and a stone tower].', {
+  st('[S They] [V photographed] [O clear landmarks, {前| such as a red bridge and a stone tower}].', {
     chunks: [
       ['They photographed clear landmarks,', '彼らは分かりやすい目印を写真に撮りました'],
       ['such as a red bridge', '例えば赤い橋や'],
@@ -123,7 +123,7 @@ export default Object.freeze([
       'such as a red bridge': 'such as 以下は clear landmarks の具体例で、目的語の一部です。',
     },
   }),
-  st('[S Restaurant owners] [V checked] [O names, prices, and business hours] [M for mistakes].', {
+  st('[S Restaurant owners] [V checked] [O names, prices, and business hours] [M {前| for mistakes}].', {
     chunks: [
       ['Restaurant owners checked names, prices, and business hours', '飲食店の店主は名前・価格・営業時間を確認しました'],
       ['for mistakes', '間違いがないか'],
@@ -133,7 +133,7 @@ export default Object.freeze([
       'for mistakes': 'check A for mistakes で「Aに間違いがないか確かめる」。',
     },
   }),
-  st('[M Next], [S exchange students] [V used] [O the first version] [M without help from the class].', {
+  st('[M Next], [S exchange students] [V used] [O the first version] [M {前| without help {前| from the class}}].', {
     chunks: [
       ['Next, exchange students used the first version', '次に、交換留学生が最初の版を使いました'],
       ['without help from the class', 'クラスの助けなしに'],
@@ -144,7 +144,7 @@ export default Object.freeze([
     },
     rules: ['paragraph-map', 'logic-connectors', 'main-clause-skeleton'],
   }),
-  st('[S They] [V understood] [O the English] [接 but] [M sometimes] [V missed] [O a turn {過去分詞>a turn| [V shown] [M only by a street name]}].', {
+  st('[S They] [V understood] [O the English] [接 but] [M sometimes] [V missed] [O a turn {過去分詞>a turn| [V shown] [M only {前| by a street name}]}].', {
     chunks: [
       ['They understood the English', '彼らは英語は理解しました'],
       ['but sometimes missed a turn', 'しかし、ときどき曲がり角を見落としました（どんな角かは次へ）'],
@@ -156,7 +156,7 @@ export default Object.freeze([
       'shown only by a street name': 'shown は過去分詞で、a turn を後ろから説明して「〜で示された」。only は by a street name にかかり「道路名だけで」。',
     },
   }),
-  st('[S One student in a wheelchair] [M also] [V found] [O {that節| [接 that] [S a short route] [V had] [O many steps]}].', {
+  st('[S One student {前| in a wheelchair}] [M also] [V found] [O {that節| [接 that] [S a short route] [V had] [O many steps]}].', {
     chunks: [
       ['One student in a wheelchair also found that', '車いすを使う一人の生徒は、〜ことにも気づきました（内容は次へ）'],
       ['a short route had many steps', '短い道順に階段が多い（ことに）'],
@@ -166,7 +166,7 @@ export default Object.freeze([
       'a short route had many steps': 'steps はここでは「（階段の）段」。had many steps で「階段が多かった」。',
     },
   }),
-  st('[S The class] [V added] [O pictures, safer crossings, and a longer route without steps].', {
+  st('[S The class] [V added] [O pictures, safer crossings, and a longer route {前| without steps}].', {
     chunks: [
       ['The class added pictures, safer crossings,', 'クラスは写真とより安全な横断場所を加えました'],
       ['and a longer route without steps', 'さらに、階段のない長めの道順も（加えました）'],
@@ -177,7 +177,7 @@ export default Object.freeze([
     },
     rules: ['parallel-shape', 'postmodifier', 'svoc-core'],
   }),
-  st('[S The finished guide] [V is] [M now] [C available] [M at the station and on the town website].', {
+  st('[S The finished guide] [V is] [M now] [C available] [M {前| at the station} and {前| on the town website}].', {
     chunks: [
       ['The finished guide is now available', '完成したガイドは今、利用できます'],
       ['at the station and on the town website', '駅でも町のウェブサイトでも'],
@@ -187,7 +187,7 @@ export default Object.freeze([
       'at the station and on the town website': 'and は at the station と on the town website の2つの場所をつないでいます。',
     },
   }),
-  st('[S Printed pages] [V include] [O a code {関係>a code| [S that] [V opens] [O the newest online map] [M on a phone]}].', {
+  st('[S Printed pages] [V include] [O a code {関係>a code| [S that] [V opens] [O the newest online map] [M {前| on a phone}]}].', {
     chunks: [
       ['Printed pages include a code', '印刷されたページにはコードが載っています（どんなコードかは次へ）'],
       ['that opens the newest online map', '最新のオンライン地図を開く（コードが）'],
@@ -209,7 +209,7 @@ export default Object.freeze([
       'that is no longer correct': 'that は information を受ける関係代名詞です。no longer は「もはや〜ない」。',
     },
   }),
-  st('[S The students] [V learned] [O {that節| [接 that] [S good translation] [V requires] [O more than {動名詞| [V replacing] [O words]}]}].', {
+  st('[S The students] [V learned] [O {that節| [接 that] [S good translation] [V requires] [O more {前| than {動名詞| [V replacing] [O words]}}]}].', {
     chunks: [
       ['The students learned that', '生徒たちは〜と学びました（内容は次へ）'],
       ['good translation requires more than replacing words', 'よい翻訳には単語を置き換える以上のことが必要だ（と）'],
@@ -219,7 +219,7 @@ export default Object.freeze([
       'good translation requires more than replacing words': 'more than 〜 で「〜以上のこと」。more が requires の目的語で、than の後ろの replacing words は「単語を置き換えること」。',
     },
   }),
-  st('[S It] [M also] [V requires] [O {動名詞| [V imagining] [O {疑問詞節| [O what] [S a reader] [V needs] [M at each moment of a journey]}]}].', {
+  st('[S It] [M also] [V requires] [O {動名詞| [V imagining] [O {疑問詞節| [O what] [S a reader] [V needs] [M {前| at each moment {前| of a journey}}]}]}].', {
     chunks: [
       ['It also requires imagining', 'それには〜を想像することも必要です（何をかは次へ）'],
       ['what a reader needs', '読み手が何を必要とするか'],

@@ -10,8 +10,20 @@
 //
 // 名詞を後ろから説明する節・句は、その名詞を含む要素の中に置く。
 // そのため reports の目的語Oは the power that the school makes each day 全体になる。
+//
+// 構造図の括弧（利用者と例文で決めたルール。docs/reading-structure-brackets.md）
+//   ( ) 節。主語と動詞を持つまとまり。主語と be動詞を省いた while using … / when possible も節
+//   < > 句。前置詞句 {前| …}・to不定詞・動名詞・分詞のまとまり
+//   前置詞の後ろの節・動名詞は前置詞の外側で入れ子にする: {前| about {疑問詞節| …}} → <about (who pays …)>
+//   for A to do は {前:意味上の主語| for A} {to:…| [V to do]} と2つに分ける
+//   前置詞＋関係代名詞（[M in which]）と句動詞の V の中の語は、前置詞句として括らない
 
 import { parseStructureMarkers } from './structure-markers.js'
+import {
+  describeLinkElement,
+  describeUnitConnector,
+  shortConnectorNote,
+} from './reading-structure-connectors.js'
 
 export const STRUCTURE_ROLES = Object.freeze([
   'S', 'V', 'O', 'O1', 'O2', 'C', 'M', '接', '仮S', '真S', '仮O', '真O',
@@ -95,8 +107,40 @@ const CLAUSE_TYPES = new Set([
 ])
 
 const PHRASE_TYPES = new Set([
-  'to', '疑問詞to', '原形', '動名詞', 'ing限定', '現在分詞', '過去分詞', '分詞構文', '同格', '挿入',
+  'to', '疑問詞to', '原形', '動名詞', 'ing限定', '現在分詞', '過去分詞', '分詞構文', '同格', '挿入', '前',
 ])
+
+// 役割（要素）を持たずに語句を直接入れるまとまり。前置詞句は中に節・句を入れ子にできる。
+const BARE_UNIT_TYPES = new Set(['同格', '挿入', '前'])
+
+// 前置詞句の先頭に置ける前置詞（2語以上のものを先に照らす）。
+export const MULTIWORD_PREPOSITIONS = Object.freeze([
+  'in addition to', 'in front of', 'in spite of', 'in terms of', 'in response to', 'in favor of',
+  'in place of', 'in case of', 'on behalf of', 'by means of', 'with regard to', 'as well as',
+  'according to', 'ahead of', 'along with', 'apart from', 'as for', 'aside from', 'because of',
+  'close to', 'due to', 'except for', 'far from', 'instead of', 'next to', 'out of', 'owing to',
+  'prior to', 'rather than', 'regardless of', 'such as', 'thanks to', 'together with', 'up to',
+])
+
+export const SINGLE_PREPOSITIONS = new Set([
+  'about', 'above', 'across', 'after', 'against', 'along', 'alongside', 'amid', 'among', 'amongst',
+  'around', 'as', 'at',
+  'before', 'behind', 'below', 'beneath', 'beside', 'besides', 'between', 'beyond', 'by',
+  'concerning', 'despite', 'down', 'during', 'except', 'for', 'from', 'in', 'including', 'inside',
+  'into', 'like', 'near', 'of', 'off', 'on', 'onto', 'outside', 'over', 'past', 'per', 'regarding',
+  'since', 'than', 'through', 'throughout', 'to', 'toward', 'towards', 'under', 'underneath',
+  'unlike', 'until', 'up', 'upon', 'versus', 'via', 'with', 'within', 'without',
+])
+
+// 語の並び（小文字）の先頭にある前置詞。なければ空文字。
+export function leadingPreposition(words = []) {
+  const lower = words.map((word) => `${word}`.toLowerCase())
+  for (const phrase of MULTIWORD_PREPOSITIONS) {
+    const parts = phrase.split(' ')
+    if (parts.every((part, index) => lower[index] === part)) return phrase
+  }
+  return SINGLE_PREPOSITIONS.has(lower[0]) ? lower[0] : ''
+}
 
 const WORD_PATTERN = /[A-Za-z0-9]+(?:['’][A-Za-z0-9]+)*(?:[-‐][A-Za-z0-9]+(?:['’][A-Za-z0-9]+)*)*/g
 const TRAILING_PUNCTUATION = /[\s,;:—–-]+$/u
@@ -140,6 +184,17 @@ function parseUnitType(spec) {
   }
   if (base === '分詞構文' && !PARTICIPIAL_CONSTRUCTION_KINDS[detail]) {
     throw new StructureSyntaxError(`分詞構文の種類が不明「${raw}」`)
+  }
+  if (base === '前' && !['', '意味上の主語'].includes(detail)) {
+    throw new StructureSyntaxError(`前置詞句の種類が不明「${raw}」`)
+  }
+  // 関係省略:目的格（節の動詞の目的語が欠ける）／目的格(improve)（その動詞の目的語が欠ける）／関係副詞（欠けた語がない）
+  if (base === '関係省略' && !/^(?:目的格(?:\([A-Za-z'’ -]+\))?|関係副詞)$/u.test(detail)) {
+    throw new StructureSyntaxError(`省略された関係詞の種類（目的格・目的格(動詞)・関係副詞）が必要です「${raw}」`)
+  }
+  if (base === '関係省略') {
+    unit.omittedKind = detail.startsWith('目的格') ? '目的格' : '関係副詞'
+    unit.gapVerb = /\((.+)\)$/u.exec(detail)?.[1] ?? ''
   }
   if (base === 'to') {
     const usage = detail.replace(/\(.*\)$/u, '')
@@ -245,7 +300,9 @@ export function structureUnitLabel(unit) {
         ? '非制限用法の関係副詞の節'
         : '非制限用法の関係代名詞の節'
     case '関係省略':
-      return '関係詞が省略された節（形容詞節）'
+      return unit.omittedKind === '関係副詞'
+        ? '関係副詞の働きをする語が省略された節（形容詞節）'
+        : '目的格の関係代名詞が省略された節（形容詞節）'
     case 'that節':
       return 'that節（名詞節）'
     case 'that省略':
@@ -261,7 +318,9 @@ export function structureUnitLabel(unit) {
     case 'what節':
       return '関係代名詞 what の節（名詞節）'
     case '副詞節':
-      return `${ADVERBIAL_CLAUSE_KINDS[unit.detail]}を表す副詞節`
+      return adverbialClauseHasSubject(unit)
+        ? `${ADVERBIAL_CLAUSE_KINDS[unit.detail]}を表す副詞節`
+        : `${ADVERBIAL_CLAUSE_KINDS[unit.detail]}を表す副詞節（主語と be動詞の省略）`
     case '強調':
       return '強調構文（It is 〜 that …）'
     case 'to':
@@ -287,9 +346,16 @@ export function structureUnitLabel(unit) {
       return '同格の名詞句'
     case '挿入':
       return '挿入句'
+    case '前':
+      return unit.detail === '意味上の主語' ? '不定詞の意味上の主語（for＋名詞）' : '前置詞句'
     default:
       return 'まとまり'
   }
+}
+
+// 副詞節の中に主語があるか。while using … や when possible は主語と be動詞を省いた形。
+function adverbialClauseHasSubject(unit) {
+  return unit.children.some((child) => child.kind === 'element' && ['S', '仮S'].includes(child.role))
 }
 
 function patternFromRoles(roles) {
@@ -416,22 +482,29 @@ function nearestRole(scopeElements, container, roles) {
   return before ? nodeText(before) : ''
 }
 
+// 意味上の主語の for A は、後ろの不定詞と並ぶだけで、語の並びを調べるときは読み飛ばす。
+function isSubjectPhrase(node) {
+  return node?.kind === 'unit' && node.base === '前' && node.detail === '意味上の主語'
+}
+
 // まとまりの直前にある前置詞（instead of のような2語以上の前置詞も含む）。
 // 要素の中でまとまりの前に名詞があるとき（books about …）は前置詞ではないので返さない。
-function prepositionBeforeUnit(container, unit) {
-  const index = container.children.indexOf(unit)
-  const before = normalizeStructureText(rawText(container.children.slice(0, Math.max(0, index))))
+// parent は、まとまりをじかに含む要素か前置詞句。
+function prepositionBeforeUnit(parent, unit) {
+  const index = parent.children.indexOf(unit)
+  const siblings = parent.children.slice(0, Math.max(0, index)).filter((child) => !isSubjectPhrase(child))
+  const before = normalizeStructureText(rawText(siblings))
   const words = structureWords(before)
   if (!words.length) return ''
   // A, B, and C や A or B のように並んだ二つ目以降のまとまりは、一つ目と同じ前置詞を受ける。
-  const previousIndex = container.children.slice(0, Math.max(0, index))
+  const previousIndex = parent.children.slice(0, Math.max(0, index))
     .map((child, childIndex) => ({ child, childIndex }))
     .reverse()
-    .find(({ child }) => child.kind === 'unit')?.childIndex ?? -1
+    .find(({ child }) => child.kind === 'unit' && !isSubjectPhrase(child))?.childIndex ?? -1
   if (previousIndex >= 0) {
-    const between = structureWords(rawText(container.children.slice(previousIndex + 1, index)))
+    const between = structureWords(rawText(parent.children.slice(previousIndex + 1, index)))
     if (between.every((word) => /^(?:and|or|but|also|not|only)$/i.test(word))) {
-      return prepositionBeforeUnit(container, container.children[previousIndex])
+      return prepositionBeforeUnit(parent, parent.children[previousIndex])
     }
   }
   const joined = words.join(' ').toLowerCase()
@@ -442,10 +515,10 @@ function prepositionBeforeUnit(container, unit) {
   return prepositions.has(last) ? words.at(-1) : ''
 }
 
-function nounFunctionText(unit, container, scopeElements, scopeUnit) {
+function nounFunctionText(unit, container, scopeElements, scopeUnit, parent = container) {
   const inside = scopeUnit ? `${structureUnitLabel(scopeUnit)}の中で、` : ''
   const verb = nearestVerb(scopeElements, container)
-  const preposition = prepositionBeforeUnit(container, unit)
+  const preposition = prepositionBeforeUnit(parent, unit)
   if (preposition) {
     if (/^(?:rather than|than|as)$/i.test(preposition)) {
       return `${inside}${preposition} の後ろに置かれた、比べる相手です（${ROLE_NAMES[container.role]}「${nodeText(container)}」の一部）。`
@@ -481,18 +554,24 @@ function nounFunctionText(unit, container, scopeElements, scopeUnit) {
   }
 }
 
-function unitFunctionText(unit, container, scopeElements, scopeUnit) {
+function unitFunctionText(unit, container, scopeElements, scopeUnit, parent = container) {
   const inside = scopeUnit ? `${structureUnitLabel(scopeUnit)}の中で、` : ''
   const containerText = container ? nodeText(container) : ''
   const containerRole = container ? ROLE_NAMES[container.role] : ''
   const partOf = container && !['M', '接'].includes(container.role) && containerText !== unitText(unit)
     ? `（${containerRole}「${containerText}」の一部）`
     : ''
-  // 形容詞を後ろから限定するまとまりは、すぐ前の語がその形容詞。
-  const wordBefore = container
-    ? structureWords(rawText(container.children.slice(0, Math.max(0, container.children.indexOf(unit))))).at(-1) ?? ''
-    : ''
+  // 形容詞を後ろから限定するまとまりは、すぐ前の語がその形容詞（意味上の主語の for A は読み飛ばす）。
+  const siblingsBefore = parent
+    ? parent.children.slice(0, Math.max(0, parent.children.indexOf(unit)))
+    : []
+  const wordBefore = structureWords(rawText(siblingsBefore.filter((child) => !isSubjectPhrase(child)))).at(-1) ?? ''
   const adjectiveBefore = wordBefore ? ` ${wordBefore} ` : ''
+  // difficult for outsiders to challenge の for outsiders は、不定詞の意味上の主語。
+  const subjectPhrase = [...siblingsBefore].reverse().find((child) => child.kind === 'unit')
+  const semanticSubject = isSubjectPhrase(subjectPhrase)
+    ? `意味上の主語は、直前の ${trimPhraseText(rawText(subjectPhrase.children))} です。`
+    : ''
   switch (unit.base) {
     case '関係':
     case '関係省略':
@@ -526,8 +605,8 @@ function unitFunctionText(unit, container, scopeElements, scopeUnit) {
     case '強調':
       return `${inside}強調したい語句を It is と that の間に置く形です。`
     case '原形': {
-      if (container && /^(?:rather than|than|as|but|except)$/i.test(prepositionBeforeUnit(container, unit))) {
-        return nounFunctionText(unit, container, scopeElements, scopeUnit)
+      if (container && /^(?:rather than|than|as|but|except)$/i.test(prepositionBeforeUnit(parent, unit))) {
+        return nounFunctionText(unit, container, scopeElements, scopeUnit, parent)
       }
       // help design … のように、原形不定詞そのものが動詞の目的語になる形。
       if (container?.role === 'O' && containerText === unitText(unit)) {
@@ -546,17 +625,17 @@ function unitFunctionText(unit, container, scopeElements, scopeUnit) {
       if (unit.usage === '副詞') {
         const kind = INFINITIVE_ADVERB_KINDS[unit.adverbKind]
         if (unit.adverbKind === '形容詞') {
-          return `${inside}直前の形容詞${adjectiveBefore}の内容を後ろから限定します${partOf}。`
+          return `${inside}直前の形容詞${adjectiveBefore}の内容を後ろから限定します${partOf}。${semanticSubject}`
         }
         if (unit.adverbKind === '程度' && container && container.role !== 'M') {
-          return `${inside}enough や too と組んで、どのくらいかという程度を表します${partOf}。`
+          return `${inside}enough や too と組んで、どのくらいかという程度を表します${partOf}。${semanticSubject}`
         }
-        return `${inside}${kind}を表し、修飾語Mとして働きます。`
+        return `${inside}${kind}を表し、修飾語Mとして働きます。${semanticSubject}`
       }
       if (unit.usage === '補語') {
         // depend on A to 〜 のように、前置詞の目的語 A が意味の上の主語になる形。
         if (container?.role === 'M') {
-          const words = structureWords(rawText(container.children.slice(0, Math.max(0, container.children.indexOf(unit)))))
+          const words = structureWords(rawText(siblingsBefore))
           const preposition = words[0] ?? ''
           const noun = words.slice(1).join(' ')
           if (preposition && noun) {
@@ -569,10 +648,10 @@ function unitFunctionText(unit, container, scopeElements, scopeUnit) {
           ? `${inside}目的語 ${object} が何をするかを表す補語Cです。`
           : `${inside}主語 ${subject} が何をするかを表す補語Cです。`
       }
-      return container ? nounFunctionText(unit, container, scopeElements, scopeUnit) : ''
+      return container ? nounFunctionText(unit, container, scopeElements, scopeUnit, parent) : ''
     }
     default:
-      return container ? nounFunctionText(unit, container, scopeElements, scopeUnit) : ''
+      return container ? nounFunctionText(unit, container, scopeElements, scopeUnit, parent) : ''
   }
 }
 
@@ -611,14 +690,15 @@ function collectWords(nodes, scopes, elements, output) {
       collectWords(node.children, scopes, [...elements, node], output)
       continue
     }
-    collectWords(node.children, [...scopes, node], elements, output)
+    // 前置詞句は括弧を付けるだけで、語順訳の役割を探す場面（節・句の中）にはしない。
+    collectWords(node.children, node.base === '前' ? scopes : [...scopes, node], elements, output)
   }
 }
 
 function validateTree(nodes, errors, scopeUnit = null) {
   for (const node of nodes) {
     if (node.kind === 'text') {
-      if (structureWords(node.text).length && !(scopeUnit && ['同格', '挿入'].includes(scopeUnit.base))) {
+      if (structureWords(node.text).length && !(scopeUnit && BARE_UNIT_TYPES.has(scopeUnit.base))) {
         errors.push(`役割のない語句「${normalizeStructureText(node.text)}」があります`)
       }
       continue
@@ -640,21 +720,57 @@ function validateElement(element, errors) {
     if (child.kind === 'element') {
       errors.push(`要素 [${element.role}] の中に要素を直接置けません（まとまり {…} で囲みます）`)
     }
-    if (child.kind === 'unit') validateUnit(child, errors)
+    if (child.kind === 'unit') {
+      child.parentNode = element
+      validateUnit(child, errors)
+    }
   }
+}
+
+// 同じ親の中で、すぐ後ろに続くまとまり（間に語があれば null）。
+function nextUnitSibling(unit) {
+  const siblings = unit.parentNode?.children ?? []
+  const index = siblings.indexOf(unit)
+  for (const child of siblings.slice(index + 1)) {
+    if (child.kind === 'unit') return child
+    if (child.kind === 'text' && structureWords(child.text).length) return null
+  }
+  return null
 }
 
 function validateUnit(unit, errors) {
   const elements = unit.children.filter((child) => child.kind === 'element')
-  const bare = ['同格', '挿入'].includes(unit.base)
+  const bare = BARE_UNIT_TYPES.has(unit.base)
   if (!bare && !elements.length) {
     errors.push(`まとまり「${unitText(unit)}」の中に要素がありません`)
   }
-  if (!bare && !elements.some((element) => element.role === 'V') && unit.base !== '強調') {
+  // when possible のように主語と be動詞を省いた副詞節は、動詞がなくてもよい。
+  const ellipticalAdverbial = unit.base === '副詞節' && !adverbialClauseHasSubject(unit)
+  if (!bare && !elements.some((element) => element.role === 'V') && unit.base !== '強調' && !ellipticalAdverbial) {
     errors.push(`まとまり「${unitText(unit)}」に動詞Vがありません`)
   }
+  if (unit.base === '前') {
+    const words = structureWords(rawText(unit.children))
+    const preposition = leadingPreposition(words)
+    const leadingText = unit.children[0]?.kind === 'text' ? structureWords(unit.children[0].text) : []
+    if (!preposition || leadingText.length < preposition.split(' ').length) {
+      errors.push(`前置詞句「${unitText(unit)}」が前置詞で始まっていません`)
+    } else if (words.length <= preposition.split(' ').length) {
+      errors.push(`前置詞句「${unitText(unit)}」に前置詞の目的語がありません`)
+    }
+    if (elements.length) errors.push(`前置詞句「${unitText(unit)}」の中に要素を置けません（要素の中に前置詞句を置きます）`)
+    if (unit.detail === '意味上の主語') {
+      const next = nextUnitSibling(unit)
+      if (!/^for$/i.test(words[0] ?? '') || next?.base !== 'to') {
+        errors.push(`意味上の主語「${unitText(unit)}」は for で始め、すぐ後ろに to不定詞のまとまりを置きます`)
+      }
+    }
+  }
   for (const child of unit.children) {
-    if (child.kind === 'unit') errors.push(`まとまり「${unitText(child)}」は要素の中に置く必要があります`)
+    if (child.kind === 'unit') {
+      if (!bare) errors.push(`まとまり「${unitText(child)}」は要素の中に置く必要があります`)
+      child.parentNode = unit
+    }
     if (child.kind === 'element') validateElement(child, errors)
     if (child.kind === 'text' && structureWords(child.text).length && !bare) {
       errors.push(`まとまり「${unitText(unit)}」の中に役割のない語句「${normalizeStructureText(child.text)}」があります`)
@@ -666,13 +782,18 @@ function validateUnit(unit, errors) {
   }
 }
 
-function collectUnits(nodes, scopeUnit, scopeElements, containerElement, output, depth) {
+function collectUnits(nodes, scopeUnit, scopeElements, containerElement, output, depth, parent = null) {
   for (const node of nodes) {
     if (node.kind === 'element') {
-      collectUnits(node.children, scopeUnit, scopeElements, node, output, depth)
+      collectUnits(node.children, scopeUnit, scopeElements, node, output, depth, node)
       continue
     }
     if (node.kind !== 'unit') continue
+    // 前置詞句は節・句の解説には並べず、中の節・句だけを、前置詞句を親として集める。
+    if (node.base === '前') {
+      collectUnits(node.children, scopeUnit, scopeElements, containerElement, output, depth, node)
+      continue
+    }
     const innerElements = node.children.filter((child) => child.kind === 'element')
     const roles = innerElements.map((element) => element.role)
     const clause = unitIsClause(node)
@@ -688,14 +809,17 @@ function collectUnits(nodes, scopeUnit, scopeElements, containerElement, output,
       antecedent: node.antecedent,
       text: unitText(node),
       containerRole: containerElement?.role ?? '',
-      functionText: unitFunctionText(node, containerElement, scopeElements, scopeUnit),
+      functionText: unitFunctionText(node, containerElement, scopeElements, scopeUnit, parent ?? containerElement),
+      containerVerb: containerElement ? nearestVerb(scopeElements, containerElement) : '',
       parts: innerElements.map((element) => Object.freeze({
         role: element.role,
         text: nodeText(element),
       })),
       patterns: clause ? patternsForScope(innerElements) : [],
+      // 節・句そのものを括弧つきで示す文字列（外側の括弧も含む）。
+      marked: normalizeStructureText(markedText([node])),
     })
-    collectUnits(node.children, node, innerElements, null, output, depth + 1)
+    collectUnits(node.children, node, innerElements, null, output, depth + 1, node)
   }
 }
 
@@ -709,7 +833,7 @@ export function parseSentenceStructure(markup = '') {
   }
 }
 
-// 本文と台帳を照合して、画面表示に必要な情報をまとめる。
+// 本文と台帳を比べて、画面表示に必要な情報をまとめる。
 export function buildSentenceStructure(sentenceEn = '', markup = '', options = {}) {
   const { root, error } = parseSentenceStructure(markup)
   const errors = error ? [error] : []
@@ -739,10 +863,60 @@ export function buildSentenceStructure(sentenceEn = '', markup = '', options = {
     }
   }
   // 構造図は文末の句点を付けずに示す（本文の句点は上の英文で見える）。
-  const marked = normalizeStructureText(markedText(root)).replace(/[.!?]$/u, '')
+  const markedSentence = normalizeStructureText(markedText(root))
+  const marked = markedSentence.replace(/[.!?]$/u, '')
   const parsedMarkers = parseStructureMarkers(marked)
   const notes = options.notes ?? {}
   const unitNotes = options.unitNotes ?? {}
+  // つなぐ語（接続詞・関係詞・疑問詞・接続副詞）の種類と見分け方。
+  const connectorByUnit = new Map()
+  for (const unit of units) {
+    const info = describeUnitConnector(unit)
+    if (info) connectorByUnit.set(unit.node, info)
+  }
+  const wordRange = (elementNode) => {
+    const indexes = words
+      .map((word, index) => (word.elements.includes(elementNode) ? index : -1))
+      .filter((index) => index >= 0)
+    return indexes.length ? { start: indexes[0], end: indexes.at(-1) + 1 } : null
+  }
+  const unitWordStart = (unitNode) => {
+    const index = words.findIndex((word) => word.scopes.includes(unitNode))
+    return index >= 0 ? { start: index, end: index + 1 } : null
+  }
+  const connectorSpans = []
+  const chipByElement = new Map()
+  const links = []
+  const scopes = [
+    { elements, unit: null },
+    ...units.map((unit) => ({
+      elements: unit.node.children.filter((child) => child.kind === 'element'),
+      unit,
+    })),
+  ]
+  for (const scope of scopes) {
+    const info = scope.unit ? connectorByUnit.get(scope.unit.node) : null
+    scope.elements.forEach((element, index) => {
+      // 節の先頭の接続詞・関係詞は、その節のつなぐ語としてすでに説明している。
+      if (info && index === 0 && (element.role === '接' || nodeText(element) === info.word)) {
+        chipByElement.set(element, info.chip)
+        const range = wordRange(element)
+        if (range) connectorSpans.push({ ...range, note: shortConnectorNote(info, scope.unit) })
+        return
+      }
+      const link = describeLinkElement(element, scope.elements, index)
+      if (!link) return
+      chipByElement.set(element, link.chip)
+      links.push(link)
+      const range = wordRange(element)
+      if (range) connectorSpans.push({ ...range, note: shortConnectorNote(link) })
+    })
+    // 省略された関係詞・接続詞は語がないので、節の先頭の語に注記を結びつける。
+    if (info && !info.word) {
+      const range = unitWordStart(scope.unit.node)
+      if (range) connectorSpans.push({ ...range, note: shortConnectorNote(info, scope.unit) })
+    }
+  }
   return Object.freeze({
     markup,
     errors: Object.freeze([...errors, ...parsedMarkers.errors.map((item) => `構造図の括弧: ${item.type}`)]),
@@ -753,19 +927,101 @@ export function buildSentenceStructure(sentenceEn = '', markup = '', options = {
       text: normalizeStructureText(rawText(element.children)),
       trimmed: nodeText(element),
       hasUnit: element.children.some((child) => child.kind === 'unit'),
+      connector: chipByElement.get(element) ?? '',
     }))),
+    // 「文の要素」の下線表示に使う、括弧つきで句点も残した英文。
+    markedSentence,
     patterns: Object.freeze(patternsForScope(elements, { root: true })),
     units: Object.freeze(units.map((unit, index) => Object.freeze({
       id: index,
       ...unit,
       note: unitNotes[unit.text] ?? '',
+      connector: connectorByUnit.get(unit.node) ?? null,
+      parts: Object.freeze(unit.node.children
+        .filter((child) => child.kind === 'element')
+        .map((element) => Object.freeze({
+          role: element.role,
+          text: nodeText(element),
+          connector: chipByElement.get(element) ?? '',
+        }))),
     }))),
+    // 文全体・節の中の接続語（節を導く語を除く）。
+    links: Object.freeze(links),
+    connectorSpans: Object.freeze(connectorSpans),
     words: Object.freeze(words),
     marked,
     structureTokens: parsedMarkers.tokens,
     notes,
     rules: options.rules ?? null,
   })
+}
+
+// 前置詞句 {前| …} で囲み忘れた前置詞を探す（括弧のルールの検査）。
+// 動詞の中の語（句動詞の out など）、接続語、関係詞節の先頭（in which）は前置詞句にしない。
+const FIRST_ELEMENT_NOT_PHRASE = new Set(['関係', '関係,', '疑問詞節', 'what節'])
+
+const DETERMINERS_BEFORE_NOUN = new Set([
+  'the', 'a', 'an', 'its', 'this', 'that', 'their', 'our', 'his', 'her', 'my', 'your', 'these', 'those',
+])
+
+// 前置詞の形をしていても前置詞ではない語。
+function exemptPreposition(found, list, cursor, nextNode) {
+  const next = (list[cursor + 1] ?? '').toLowerCase()
+  const previous = (list[cursor - 1] ?? '').toLowerCase()
+  // as quickly as possible の1つ目の as、as well の as は副詞。
+  if (found === 'as' && (/ly$/.test(next) || next === 'well')) return true
+  // the past・of the past の past は名詞。
+  if (found === 'past' && DETERMINERS_BEFORE_NOUN.has(previous)) return true
+  // less by … than by … の than は、前置詞句どうしを並べる語。
+  if ((found === 'than' || found === 'rather than') && !next) {
+    return nextNode?.kind === 'unit' && nextNode.base === '前'
+  }
+  return false
+}
+
+export function unbracketedPrepositions(structure) {
+  const issues = []
+  const visit = (nodes, unit) => {
+    const firstElement = unit
+      ? unit.children.find((child) => child.kind === 'element')
+      : null
+    for (const [index, node] of nodes.entries()) {
+      if (node.kind === 'text') {
+        const list = structureWords(node.text)
+        let cursor = 0
+        if (unit?.base === '前' && index === 0) {
+          const lead = leadingPreposition(list)
+          cursor = lead ? lead.split(' ').length : 0
+        }
+        while (cursor < list.length) {
+          const found = leadingPreposition(list.slice(cursor))
+          if (found && !exemptPreposition(found, list, cursor, nodes[index + 1])) {
+            issues.push({ word: found, text: normalizeStructureText(node.text) })
+            cursor += found.split(' ').length
+            continue
+          }
+          cursor += found ? found.split(' ').length : 1
+        }
+        continue
+      }
+      if (node.kind === 'element') {
+        const single = structureWords(rawText(node.children)).length <= 1
+        const skip = node.role === 'V' || node.role === '接' || single ||
+          (unit && FIRST_ELEMENT_NOT_PHRASE.has(unit.base) && node === firstElement)
+        if (skip) {
+          for (const child of node.children) {
+            if (child.kind === 'unit') visit([child], null)
+          }
+          continue
+        }
+        visit(node.children, null)
+        continue
+      }
+      visit(node.children, node)
+    }
+  }
+  visit(structure.root, null)
+  return issues
 }
 
 // 語 start..end の範囲を、句読点を保ったまま台帳の原文から取り出す。
@@ -916,6 +1172,9 @@ export function structureRolesForWordSpan(structure, start, end) {
       ? `${resolvedParts[0].text} は前の節の内容を受けます。`
       : `${resolvedParts[0].text} は先行詞 ${scopeInfo.antecedent} を受けます。`)
     : ''
+  const connectorNotes = (structure.connectorSpans ?? [])
+    .filter((span) => span.note && span.start >= start && span.end <= end)
+    .map((span) => span.note)
   return Object.freeze({
     scope: scopeInfo?.label ?? '',
     scopeUnitId: scopeInfo?.id ?? null,
@@ -925,7 +1184,12 @@ export function structureRolesForWordSpan(structure, start, end) {
       if (!part.coversElement && part.elementText && !part.startsElement) return `${roleCode(part.role)}の一部`
       return roleCode(part.role)
     }).join('＋'),
-    explanation: [`${prefix}${described}です。`, relativeLead, ...continuations].filter(Boolean).join(' '),
+    // 接続語だけのまとまりは、「接続語です」と重ねずに、つなぐ語の説明だけを出す。
+    explanation: (
+      connectorNotes.length && resolvedParts.length === 1 && resolvedParts[0].role === '接'
+        ? [`${prefix}${connectorNotes.join(' ')}`, ...continuations]
+        : [`${prefix}${described}です。`, relativeLead, ...connectorNotes, ...continuations]
+    ).filter(Boolean).join(' '),
   })
 }
 

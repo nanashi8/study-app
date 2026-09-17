@@ -1,7 +1,7 @@
 import { st } from './entry.js'
 
 export default Object.freeze([
-  st('[S Societies] [M often] [V assume] [O {that節| [接 that] [S important events] [V will be remembered] [M simply {副詞節:理由| [接 because] [S they] [V are recorded] [M in books, archives, or digital databases]}]}].', {
+  st('[S Societies] [M often] [V assume] [O {that節| [接 that] [S important events] [V will be remembered] [M simply {副詞節:理由| [接 because] [S they] [V are recorded] [M {前| in books, archives, or digital databases}]}]}].', {
     chunks: [
       ['Societies often assume', '社会はよく考えます（内容は次へ）'],
       ['that', '〜だと'],
@@ -15,7 +15,7 @@ export default Object.freeze([
       'they are recorded': 'they は important events を指します。',
     },
   }),
-  st('[M Yet] [S collective memory] [V is] [C a far more fragile phenomenon {副詞節:比較| [接 than] [S the existence of records] [V might suggest]}].', {
+  st('[M Yet] [S collective memory] [V is] [C a far more fragile phenomenon {副詞節:比較| [接 than] [S the existence {前| of records}] [V might suggest]}].', {
     chunks: [
       ['Yet', 'しかし'],
       ['collective memory', '集合的記憶は'],
@@ -30,7 +30,7 @@ export default Object.freeze([
       'than the existence of records might suggest': 'suggest の後ろでは、比べる内容（集合的記憶がどれほどもろいか）が省かれています。than の後ろでは、前と重なる語句がよく省かれます。',
     },
   }),
-  st('[S A document] [V can survive] [M for centuries] [接 and] [M still] [V fail] [O {to:名詞| [V to influence] [O {疑問詞節| [M how] [S later generations] [V understand] [O the past]}]}].', {
+  st('[S A document] [V can survive] [M {前| for centuries}] [接 and] [M still] [V fail] [O {to:名詞| [V to influence] [O {疑問詞節| [M how] [S later generations] [V understand] [O the past]}]}].', {
     chunks: [
       ['A document can survive', '文書は残ることができます'],
       ['for centuries', '何世紀にもわたって'],
@@ -41,7 +41,7 @@ export default Object.freeze([
       'and still fail to influence': 'fail to do で「〜しない・〜できない」。fail は can を共有しています。',
     },
   }),
-  st('[S The reason] [V is] [C {that節| [接 that] [S memory] [V depends] [M not only on preservation but also on repeated interpretation within families, schools, media, and political institutions]}].', {
+  st('[S The reason] [V is] [C {that節| [接 that] [S memory] [V depends] [M not only {前| on preservation} but also {前| on repeated interpretation {前| within families, schools, media, and political institutions}}]}].', {
     chunks: [
       ['The reason is that', 'その理由は次のことです'],
       ['memory depends', '記憶は左右されます（何にかは次へ）'],
@@ -53,7 +53,7 @@ export default Object.freeze([
       'not only on preservation': 'not only A but also B で「AだけでなくBも」。depend on が on を二度使って続きます。',
     },
   }),
-  st('[M {副詞節:時| [接 When] [S these mechanisms] [V weaken]}], [S the past] [V becomes] [C a collection of isolated facts rather than a resource for judgment].', {
+  st('[M {副詞節:時| [接 When] [S these mechanisms] [V weaken]}], [S the past] [V becomes] [C a collection {前| of isolated facts} {前| rather than a resource {前| for judgment}}].', {
     chunks: [
       ['When', '〜すると（内容は次へ）'],
       ['these mechanisms weaken', 'これらの仕組みが弱まる（と）'],
@@ -65,14 +65,14 @@ export default Object.freeze([
       'rather than a resource for judgment': 'A rather than B で「BではなくA」。',
     },
   }),
-  st('[S This problem] [V has become] [C more urgent] [M in the digital age].', {
+  st('[S This problem] [V has become] [C more urgent] [M {前| in the digital age}].', {
     chunks: [
       ['This problem', 'この問題は'],
       ['has become more urgent', 'より差し迫ったものになっています'],
       ['in the digital age', 'デジタル時代に'],
     ],
   }),
-  st('[仮S It] [V is] [M now] [C possible] [真S {to:名詞| [V to store] [O enormous amounts of information] [M at little cost]}], [接 and] [S many people] [M therefore] [V believe] [O {that節| [接 that] [S forgetting] [V has become] [C less likely]}].', {
+  st('[仮S It] [V is] [M now] [C possible] [真S {to:名詞| [V to store] [O enormous amounts {前| of information}] [M {前| at little cost}]}], [接 and] [S many people] [M therefore] [V believe] [O {that節| [接 that] [S forgetting] [V has become] [C less likely]}].', {
     chunks: [
       ['It is now possible', '今では可能です（何がかは次へ）'],
       ['to store enormous amounts of information', '膨大な量の情報を保存することが'],
@@ -89,7 +89,7 @@ export default Object.freeze([
     },
     rules: ['author-stance', 'cause-result', 'infinitive-role'],
   }),
-  st('[M In practice], [M however], [S abundance] [V can produce] [O a different kind of loss].', {
+  st('[M {前| In practice}], [M however], [S abundance] [V can produce] [O a different kind {前| of loss}].', {
     chunks: [
       ['In practice', '実際には'],
       ['however,', 'しかし'],
@@ -97,7 +97,7 @@ export default Object.freeze([
       ['can produce a different kind of loss', '別の種類の喪失を生むことがあります'],
     ],
   }),
-  st('[M {副詞節:時| [接 When] [S search results, short videos, and algorithmic recommendations] [V compete] [M for attention]}], [S materials {関係>materials| [S that] [V require] [O slow reading or moral reflection]}] [V may become] [M almost] [C invisible].', {
+  st('[M {副詞節:時| [接 When] [S search results, short videos, and algorithmic recommendations] [V compete] [M {前| for attention}]}], [S materials {関係>materials| [S that] [V require] [O slow reading or moral reflection]}] [V may become] [M almost] [C invisible].', {
     chunks: [
       ['When', '〜すると（内容は次へ）'],
       ['search results, short videos,', '検索結果や短い動画'],
@@ -108,7 +108,7 @@ export default Object.freeze([
       ['may become almost invisible', 'ほとんど見えなくなるかもしれません'],
     ],
   }),
-  st('[S The integrity of public memory] [V is] [M then] [V shaped] [M less by {what節| [S what] [V is] [C available]} than by {what節| [S what] [V is] [M repeatedly] [V presented] [C as relevant]}].', {
+  st('[S The integrity {前| of public memory}] [V is] [M then] [V shaped] [M less {前| by {what節| [S what] [V is] [C available]}} than {前| by {what節| [S what] [V is] [M repeatedly] [V presented] [C {前| as relevant}]}}].', {
     chunks: [
       ['The integrity of public memory', '公共的記憶の健全さは'],
       ['is then shaped', 'そうなると形づくられます（何によってかは次へ）'],
@@ -120,7 +120,7 @@ export default Object.freeze([
       'less by what is available': 'less by A than by B で「AによってというよりBによって」。二つの by what … を比べています。what は「〜するもの」という関係代名詞で、what 以下が前置詞 by の目的語です。',
     },
   }),
-  st('[S Digital records] [M also] [V depend] [M on technical systems {関係>technical systems| [S whose apparent permanence] [V can be] [C misleading]}].', {
+  st('[S Digital records] [M also] [V depend] [M {前| on technical systems {関係>technical systems| [S whose apparent permanence] [V can be] [C misleading]}}].', {
     chunks: [
       ['Digital records also depend', 'デジタルの記録はまた依存しています（何にかは次へ）'],
       ['on technical systems', '技術的な仕組みに'],
@@ -146,7 +146,7 @@ export default Object.freeze([
       'become unreadable': 'become は may を共有しています（may become）。',
     },
   }),
-  st('[M More subtly], [S platforms] [V can revise] [O the categories and rankings {関係>the categories and rankings| [M through which] [S users] [V encounter] [O material]}] [M without {動名詞| [V deleting] [O a single record]}].', {
+  st('[M More subtly], [S platforms] [V can revise] [O the categories and rankings {関係>the categories and rankings| [M through which] [S users] [V encounter] [O material]}] [M {前| without {動名詞| [V deleting] [O a single record]}}].', {
     chunks: [
       ['More subtly', 'さらに目立たない形では'],
       ['platforms', 'プラットフォームは'],
@@ -158,7 +158,7 @@ export default Object.freeze([
       'through which users encounter material': 'through which は the categories and rankings を受ける前置詞＋関係代名詞です。',
     },
   }),
-  st('[S Preservation], [M therefore], [V is not] [M merely] [C the retention of data]; [S it] [V includes] [O {動名詞| [V maintaining] [O the pathways {関係>the pathways| [S that] [V make] [O data] [C intelligible and discoverable]}]}].', {
+  st('[S Preservation], [M therefore], [V is not] [M merely] [C the retention {前| of data}]; [S it] [V includes] [O {動名詞| [V maintaining] [O the pathways {関係>the pathways| [S that] [V make] [O data] [C intelligible and discoverable]}]}].', {
     chunks: [
       ['Preservation', '保存とは'],
       ['therefore,', 'したがって'],
@@ -172,14 +172,14 @@ export default Object.freeze([
       'that make data intelligible and discoverable': 'make ＋ O ＋ C で「OをCにする」。',
     },
   }),
-  st('[S This] [V raises] [O a difficult question about institutional responsibility].', {
+  st('[S This] [V raises] [O a difficult question {前| about institutional responsibility}].', {
     chunks: [
       ['This', 'このことは'],
       ['raises a difficult question', '難しい問いを投げかけます'],
       ['about institutional responsibility', '機関の責任についての（問いを）'],
     ],
   }),
-  st('[S Libraries, museums, universities, and news organizations] [V have] [M traditionally] [V claimed] [O a degree of autonomy] [M {副詞節:目的| [接 so that] [S they] [V can protect] [O records] [M from temporary political pressure]}].', {
+  st('[S Libraries, museums, universities, and news organizations] [V have] [M traditionally] [V claimed] [O a degree {前| of autonomy}] [M {副詞節:目的| [接 so that] [S they] [V can protect] [O records] [M {前| from temporary political pressure}]}].', {
     chunks: [
       ['Libraries, museums, universities, and news organizations', '図書館や博物館、大学、報道機関は'],
       ['have traditionally claimed a degree of autonomy', 'これまで一定の自律性を求めてきました'],
@@ -191,7 +191,7 @@ export default Object.freeze([
       'so that': 'so that ＋ S ＋ can ＋ 動詞 で「Sが〜できるように」。',
     },
   }),
-  st('[S That autonomy] [V remains] [C essential], [接 but] [S it] [V can] [M also] [V be misused] [M {副詞節:条件| [接 if] [S institutions] [V avoid] [O scrutiny] [M by {動名詞| [V describing] [O all criticism] [C as interference]}]}].', {
+  st('[S That autonomy] [V remains] [C essential], [接 but] [S it] [V can] [M also] [V be misused] [M {副詞節:条件| [接 if] [S institutions] [V avoid] [O scrutiny] [M {前| by {動名詞| [V describing] [O all criticism] [C {前| as interference}]}}]}].', {
     chunks: [
       ['That autonomy', 'その自律性は'],
       ['remains essential', '今も欠かせません'],
@@ -205,14 +205,14 @@ export default Object.freeze([
     },
     rules: ['contrast-concession', 'passive-active', 'ing-ed-role'],
   }),
-  st('[S A healthy culture of memory] [M therefore] [V requires] [O both independence and accountability].', {
+  st('[S A healthy culture {前| of memory}] [M therefore] [V requires] [O both independence and accountability].', {
     chunks: [
       ['A healthy culture of memory', '健全な記憶の文化には'],
       ['therefore', 'したがって'],
       ['requires both independence and accountability', '独立性と説明責任の両方が必要です'],
     ],
   }),
-  st('[S Institutions] [V must be] [C free {to:副詞(形容詞)| [V to preserve] [O uncomfortable evidence]}], [M {副詞節:対比| [接 while] [S citizens] [V must be able to ask] [O {疑問詞節| [M how] [S decisions about selection, description, and access] [V are made]}]}].', {
+  st('[S Institutions] [V must be] [C free {to:副詞(形容詞)| [V to preserve] [O uncomfortable evidence]}], [M {副詞節:対比| [接 while] [S citizens] [V must be able to ask] [O {疑問詞節| [M how] [S decisions {前| about selection, description, and access}] [V are made]}]}].', {
     chunks: [
       ['Institutions', '機関は'],
       ['must be free', '自由でなければなりません（何をする自由かは次へ）'],
@@ -229,7 +229,7 @@ export default Object.freeze([
       'must be able to ask': 'be able to do は can と同じく「〜できる」。',
     },
   }),
-  st('[S Calls for complete neutrality] [V do not resolve] [O the problem], [M {副詞節:理由| [接 since] [S every archive] [V must decide] [O {疑問詞to| [O what] [V to collect]}, {疑問詞to| [M how] [V to describe] [O it]}, and {疑問詞節| [S which materials] [V receive] [O scarce conservation resources]}]}].', {
+  st('[S Calls {前| for complete neutrality}] [V do not resolve] [O the problem], [M {副詞節:理由| [接 since] [S every archive] [V must decide] [O {疑問詞to| [O what] [V to collect]}, {疑問詞to| [M how] [V to describe] [O it]}, and {疑問詞節| [S which materials] [V receive] [O scarce conservation resources]}]}].', {
     chunks: [
       ['Calls for complete neutrality', '完全な中立を求める声は'],
       ['do not resolve the problem', 'その問題を解決しません'],
@@ -256,7 +256,7 @@ export default Object.freeze([
     },
     rules: ['negation-scope', 'logic-connectors', 'main-clause-skeleton'],
   }),
-  st('[S A public consultation] [V may reproduce] [O existing inequalities] [M {副詞節:条件| [接 if] [S organized groups] [V can speak] [M more loudly than communities with less time, money, or trust in institutions]}].', {
+  st('[S A public consultation] [V may reproduce] [O existing inequalities] [M {副詞節:条件| [接 if] [S organized groups] [V can speak] [M more loudly {前| than communities {前| with less time, money, or trust {前| in institutions}}}]}].', {
     chunks: [
       ['A public consultation', '公開の話し合いは'],
       ['may reproduce existing inequalities', '今ある不平等を再び生み出してしまうかもしれません'],
@@ -265,7 +265,7 @@ export default Object.freeze([
       ['with less time, money, or trust in institutions', '時間やお金、制度への信頼が少ない（共同体よりも）'],
     ],
   }),
-  st('[S Accountability] [V must] [M consequently] [V include] [O transparent reasons, opportunities for challenge, and continuing efforts {to:形容詞>continuing efforts| [V to hear] [O people {関係>people| [S who] [V were] [C absent from the original decision]}]}].', {
+  st('[S Accountability] [V must] [M consequently] [V include] [O transparent reasons, opportunities {前| for challenge}, and continuing efforts {to:形容詞>continuing efforts| [V to hear] [O people {関係>people| [S who] [V were] [C absent {前| from the original decision}]}]}].', {
     chunks: [
       ['Accountability must consequently include', 'そのため説明責任は含まなければなりません（何をかは次へ）'],
       ['transparent reasons,', 'はっきり示された理由'],
@@ -287,7 +287,7 @@ export default Object.freeze([
       'are rarely simple': 'rarely は「めったに〜ない」という否定の意味の副詞です。',
     },
   }),
-  st('[S A photograph] [V may reveal] [O suffering] [M to one group] [接 and] [O national achievement] [M to another]; [S a monument] [V may be seen] [C as heritage] [M by some] [接 and] [C as exclusion] [M by others].', {
+  st('[S A photograph] [V may reveal] [O suffering] [M {前| to one group}] [接 and] [O national achievement] [M {前| to another}]; [S a monument] [V may be seen] [C {前| as heritage}] [M {前| by some}] [接 and] [C {前| as exclusion}] [M {前| by others}].', {
     chunks: [
       ['A photograph', '一枚の写真は'],
       ['may reveal suffering', '苦しみを示すかもしれません'],
@@ -318,7 +318,7 @@ export default Object.freeze([
       'should not be to force a single consensus': 'to force 以下は「〜を押しつけること」という名詞のまとまりで、be の補語です。',
     },
   }),
-  st('[M Rather], [S a mature society] [V keeps] [O multiple perspectives] [C in conversation] [M {副詞節:時| [接 while] [V refusing] [O {to:名詞| [V to treat] [O evidence] [C as optional]}]}].', {
+  st('[M Rather], [S a mature society] [V keeps] [O multiple perspectives] [C {前| in conversation}] [M {副詞節:時| [接 while] [V refusing] [O {to:名詞| [V to treat] [O evidence] [C {前| as optional}]}]}].', {
     chunks: [
       ['Rather', 'むしろ'],
       ['a mature society', '成熟した社会は'],
@@ -331,7 +331,7 @@ export default Object.freeze([
       'while refusing': 'while refusing は while (it is) refusing の形で「〜しながら」。',
     },
   }),
-  st('[S Education] [V plays] [O a central role] [M in {動名詞| [V sustaining] [O that discipline]}], [接 but] [S the task] [V is] [C more demanding than {動名詞| [V adding] [O a few historical dates] [M to a curriculum]}].', {
+  st('[S Education] [V plays] [O a central role] [M {前| in {動名詞| [V sustaining] [O that discipline]}}], [接 but] [S the task] [V is] [C more demanding {前| than {動名詞| [V adding] [O a few historical dates] [M {前| to a curriculum}]}}].', {
     chunks: [
       ['Education', '教育は'],
       ['plays a central role', '中心的な役割を果たします'],
@@ -347,7 +347,7 @@ export default Object.freeze([
     },
     rules: ['contrast-concession', 'comparison-pairs', 'reference-chain'],
   }),
-  st('[S Students] [V must learn] [O {疑問詞節| [M how] [S narratives] [V are constructed]}, {疑問詞節| [M why] [S certain voices] [V were ignored]}, and {疑問詞節| [M how] [S apparently neutral categories] [V can reflect] [O older relations of power]}].', {
+  st('[S Students] [V must learn] [O {疑問詞節| [M how] [S narratives] [V are constructed]}, {疑問詞節| [M why] [S certain voices] [V were ignored]}, and {疑問詞節| [M how] [S apparently neutral categories] [V can reflect] [O older relations {前| of power}]}].', {
     chunks: [
       ['Students must learn', '生徒は学ばなければなりません（何をかは次へ）'],
       ['how narratives are constructed,', '物語がどのように組み立てられるか'],
@@ -359,7 +359,7 @@ export default Object.freeze([
       'how narratives are constructed,': '三つの疑問詞のまとまりが並び、すべて learn の目的語です。',
     },
   }),
-  st('[S {動名詞| [V Comparing] [O conflicting accounts]}] [V can help] [O students] [C {原形| [V see] [O {that節| [接 that] [S disagreement] [V is not] [C the same as ignorance]}]}].', {
+  st('[S {動名詞| [V Comparing] [O conflicting accounts]}] [V can help] [O students] [C {原形| [V see] [O {that節| [接 that] [S disagreement] [V is not] [C the same {前| as ignorance}]}]}].', {
     chunks: [
       ['Comparing conflicting accounts', '食い違う説明を比べることは'],
       ['can help students see', '生徒が分かるのを助けることができます（何をかは次へ）'],
@@ -371,7 +371,7 @@ export default Object.freeze([
       'can help students see': 'help ＋ 人 ＋ 動詞の原形 で「人が〜するのを助ける」。',
     },
   }),
-  st('[S Two historians] [V may accept] [O the same evidence] [接 yet] [V assign] [O different significance] [M to it] [M {副詞節:理由| [接 because] [S they] [V ask] [O different questions]}].', {
+  st('[S Two historians] [V may accept] [O the same evidence] [接 yet] [V assign] [O different significance] [M {前| to it}] [M {副詞節:理由| [接 because] [S they] [V ask] [O different questions]}].', {
     chunks: [
       ['Two historians', '二人の歴史家が'],
       ['may accept the same evidence', '同じ証拠を受け入れるかもしれません'],
@@ -386,7 +386,7 @@ export default Object.freeze([
       'assign different significance': 'assign は may を共有しています。assign A to B で「AをBに割り当てる」。',
     },
   }),
-  st('[S The discipline] [V lies] [M in {動名詞| [V explaining] [O those choices]}, {動名詞| [V confronting] [O contrary evidence]}, and {動名詞| [V stating] [O {疑問詞節| [M where] [S certainty] [V ends]}]}].', {
+  st('[S The discipline] [V lies] [M {前| in {動名詞| [V explaining] [O those choices]}, {動名詞| [V confronting] [O contrary evidence]}, and {動名詞| [V stating] [O {疑問詞節| [M where] [S certainty] [V ends]}]}}].', {
     chunks: [
       ['The discipline lies', 'その規律はあります（どこにかは次へ）'],
       ['in explaining those choices,', 'そうした選択を説明することに'],
@@ -399,7 +399,7 @@ export default Object.freeze([
       'in explaining those choices,': 'explaining・confronting・stating の三つの動名詞が前置詞 in の目的語として並んでいます。',
     },
   }),
-  st('[M At the same time], [S they] [V need] [O intellectual habits {関係>intellectual habits| [S that] [V prevent] [O skepticism] [M from {動名詞| [V turning] [M into cynicism]}]}].', {
+  st('[M {前| At the same time}], [S they] [V need] [O intellectual habits {関係>intellectual habits| [S that] [V prevent] [O skepticism] [M {前| from {動名詞| [V turning] [M {前| into cynicism}]}}]}].', {
     chunks: [
       ['At the same time', '同時に'],
       ['they', '生徒たちは'],
@@ -411,7 +411,7 @@ export default Object.freeze([
       'that prevent skepticism from turning into cynicism': 'prevent ＋ O ＋ from -ing で「Oが〜するのを防ぐ」。',
     },
   }),
-  st('[M {副詞節:条件| [接 If] [S every account of the past] [V is dismissed] [C as merely political]}], [S citizens] [V lose] [O the capacity {to:形容詞>the capacity| [V to distinguish] [O careful revision] [M from deliberate distortion]}].', {
+  st('[M {副詞節:条件| [接 If] [S every account {前| of the past}] [V is dismissed] [C {前| as merely political}]}], [S citizens] [V lose] [O the capacity {to:形容詞>the capacity| [V to distinguish] [O careful revision] [M {前| from deliberate distortion}]}].', {
     chunks: [
       ['If', 'もし'],
       ['every account of the past', '過去についてのあらゆる説明が'],
@@ -425,7 +425,7 @@ export default Object.freeze([
       'to distinguish careful revision from deliberate distortion': 'distinguish A from B で「AとBを見分ける」。',
     },
   }),
-  st('[S Digital platforms] [V intensify] [O this risk] [M {副詞節:理由| [接 because] [S they] [V reward] [O speed, emotional certainty, and loyalty to a group] [M more readily than patient investigation]}].', {
+  st('[S Digital platforms] [V intensify] [O this risk] [M {副詞節:理由| [接 because] [S they] [V reward] [O speed, emotional certainty, and loyalty {前| to a group}] [M more readily {前| than patient investigation}]}].', {
     chunks: [
       ['Digital platforms', 'デジタルのプラットフォームは'],
       ['intensify this risk', 'この危険を強めます'],
@@ -438,7 +438,7 @@ export default Object.freeze([
       'more readily than patient investigation': 'reward A more readily than B で「BよりもAに報いやすい」。',
     },
   }),
-  st('[S A rumor {関係>A rumor| [S that] [V confirms] [O a community\'s self-image]}] [V may travel] [M farther than a well-documented study {関係>a well-documented study| [S that] [V complicates] [O it]}].', {
+  st('[S A rumor {関係>A rumor| [S that] [V confirms] [O a community\'s self-image]}] [V may travel] [M farther {前| than a well-documented study {関係>a well-documented study| [S that] [V complicates] [O it]}}].', {
     chunks: [
       ['A rumor', 'うわさは'],
       ["that confirms a community's self-image", '共同体の自己像を裏づける（うわさは）'],
@@ -450,7 +450,7 @@ export default Object.freeze([
       'that complicates it': 'it は a community\'s self-image を指します。',
     },
   }),
-  st('[S Some observers] [V respond] [M by {動名詞| [V demanding] [O {that節| [接 that] [S platforms] [V remove] [O misleading historical claims] [M more aggressively]}]}].', {
+  st('[S Some observers] [V respond] [M {前| by {動名詞| [V demanding] [O {that節| [接 that] [S platforms] [V remove] [O misleading historical claims] [M more aggressively]}]}}].', {
     chunks: [
       ['Some observers respond', 'これに対して一部の論者は応じます（どうやってかは次へ）'],
       ['by demanding', '求めることによって（内容は次へ）'],
@@ -463,7 +463,7 @@ export default Object.freeze([
     },
     rules: ['author-stance', 'that-diagnosis', 'ing-ed-role'],
   }),
-  st('[M {副詞節:譲歩| [接 Although] [S such action] [V can limit] [O obvious fabrications]}], [S it] [M also] [V gives] [O1 private companies] [O2 substantial authority over public memory].', {
+  st('[M {副詞節:譲歩| [接 Although] [S such action] [V can limit] [O obvious fabrications]}], [S it] [M also] [V gives] [O1 private companies] [O2 substantial authority {前| over public memory}].', {
     chunks: [
       ['Although', '〜ではあるものの（内容は次へ）'],
       ['such action', 'そうした対応は'],
@@ -474,7 +474,7 @@ export default Object.freeze([
       ['over public memory', '公共の記憶に対する（権限を）'],
     ],
   }),
-  st('[S The alternative] [V is] [C not {to:名詞| [V to abandon] [O moderation]}, but {to:名詞| [V to combine] [O it] [M with accessible evidence, independent review, and explanations {関係>explanations| [O that] [S users] [V can examine] [M rather than merely obey]}]}].', {
+  st('[S The alternative] [V is] [C not {to:名詞| [V to abandon] [O moderation]}, but {to:名詞| [V to combine] [O it] [M {前| with accessible evidence, independent review, and explanations {関係>explanations| [O that] [S users] [V can examine] [M {前| rather than merely obey}]}}]}].', {
     chunks: [
       ['The alternative', 'ほかのやり方は'],
       ['is not to abandon moderation,', '投稿の管理をやめることではありません'],
@@ -491,7 +491,7 @@ export default Object.freeze([
       'rather than merely obey': 'examine rather than merely obey で「ただ従うのではなく検討する」。',
     },
   }),
-  st('[S A warning label without a visible chain of reasoning] [V may suppress] [O circulation] [M {副詞節:対比| [接 while] [V doing] [O little] [M {to:副詞(目的)| [V to strengthen] [O citizens\' judgment]}]}].', {
+  st('[S A warning label {前| without a visible chain {前| of reasoning}}] [V may suppress] [O circulation] [M {副詞節:対比| [接 while] [V doing] [O little] [M {to:副詞(目的)| [V to strengthen] [O citizens\' judgment]}]}].', {
     chunks: [
       ['A warning label', '警告の表示は'],
       ['without a visible chain of reasoning', '理由のつながりが見えない（表示は）'],
@@ -503,14 +503,14 @@ export default Object.freeze([
       'while doing little': 'do little to do で「〜するのにほとんど役立たない」。while doing は while (it is) doing の形です。',
     },
   }),
-  st('[M For this reason], [S public memory] [V cannot be protected] [M by experts alone].', {
+  st('[M {前| For this reason}], [S public memory] [V cannot be protected] [M {前| by experts alone}].', {
     chunks: [
       ['For this reason', 'このため'],
       ['public memory cannot be protected', '公共の記憶は守ることができません（だれによってかは次へ）'],
       ['by experts alone', '専門家だけでは'],
     ],
   }),
-  st('[S It] [M also] [V requires] [O citizens {関係>citizens| [S who] [V are] [C willing {to:副詞(形容詞)| [V to read] [M beyond headlines], [V tolerate] [O uncertainty], [接 and] [V revise] [O their views] [M {副詞節:時| [接 when] [S stronger evidence] [V appears]}]}]}].', {
+  st('[S It] [M also] [V requires] [O citizens {関係>citizens| [S who] [V are] [C willing {to:副詞(形容詞)| [V to read] [M {前| beyond headlines}], [V tolerate] [O uncertainty], [接 and] [V revise] [O their views] [M {副詞節:時| [接 when] [S stronger evidence] [V appears]}]}]}].', {
     chunks: [
       ['It also requires citizens', 'それには市民も必要です（どんな市民かは次へ）'],
       ['who are willing', '進んで〜しようとする（市民が。何をかは次へ）'],
@@ -524,7 +524,7 @@ export default Object.freeze([
       'to read beyond headlines,': 'be willing to do で「進んで〜する」。tolerate と revise も to を共有しています。',
     },
   }),
-  st('[S This civic dimension] [V explains] [O {疑問詞節| [M why] [S collective memory] [V cannot be measured] [M only by the number of documents {過去分詞>documents| [V preserved]} or people {過去分詞>people| [V reached]}]}].', {
+  st('[S This civic dimension] [V explains] [O {疑問詞節| [M why] [S collective memory] [V cannot be measured] [M only {前| by the number {前| of documents {過去分詞>documents| [V preserved]} or people {過去分詞>people| [V reached]}}}]}].', {
     chunks: [
       ['This civic dimension explains', 'この市民的な面は説明しています（何をかは次へ）'],
       ['why collective memory cannot be measured', 'なぜ集合的記憶は測りきれないのかを（何によってかは次へ）'],
@@ -538,7 +538,7 @@ export default Object.freeze([
       'or people reached': 'reached は people を後ろから説明する過去分詞で、「（情報が）届いた人々」。',
     },
   }),
-  st('[S Its quality] [V depends] [M on {whether節| [接 whether] [S a society] [V can use] [O records] [M {to:副詞(目的)| [V to question] [O comfortable stories], [V recognize] [O obligations], [接 and] [V deliberate] [M about future choices]}]}].', {
+  st('[S Its quality] [V depends] [M {前| on {whether節| [接 whether] [S a society] [V can use] [O records] [M {to:副詞(目的)| [V to question] [O comfortable stories], [V recognize] [O obligations], [接 and] [V deliberate] [M {前| about future choices}]}]}}].', {
     chunks: [
       ['Its quality depends', 'その質は左右されます（何にかは次へ）'],
       ['on whether', '〜かどうかに'],
@@ -552,7 +552,7 @@ export default Object.freeze([
       'to question comfortable stories,': 'recognize と deliberate も to を共有し、三つとも records を使う目的です。',
     },
   }),
-  st('[S Remembering], [M in this sense], [V is not] [C a passive act of storage but an active practice of civic discipline].', {
+  st('[S Remembering], [M {前| in this sense}], [V is not] [C a passive act {前| of storage} but an active practice {前| of civic discipline}].', {
     chunks: [
       ['Remembering,', '覚えておくことは'],
       ['in this sense', 'この意味で'],
@@ -563,7 +563,7 @@ export default Object.freeze([
       'is not a passive act of storage': 'not A but B で「AではなくB」。A も B も is の補語です。',
     },
   }),
-  st('[M {副詞節:条件| [接 If] [S that practice] [V declines]}], [M even] [S perfect archives] [V will not prevent] [O societies] [M from {動名詞| [V losing] [O their ability {to:形容詞>their ability| [V to learn] [M from {what節| [O what] [S they] [M once] [V knew]}]}]}].', {
+  st('[M {副詞節:条件| [接 If] [S that practice] [V declines]}], [M even] [S perfect archives] [V will not prevent] [O societies] [M {前| from {動名詞| [V losing] [O their ability {to:形容詞>their ability| [V to learn] [M {前| from {what節| [O what] [S they] [M once] [V knew]}}]}]}}].', {
     chunks: [
       ['If that practice declines,', 'もしその実践が衰えれば'],
       ['even perfect archives', '完璧な記録保管所でさえ'],

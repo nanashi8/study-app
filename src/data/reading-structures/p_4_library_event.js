@@ -1,7 +1,7 @@
 import { st } from './entry.js'
 
 export default Object.freeze([
-  st('[S Green Town Library] [V has] [O a special event] [M on the first Saturday of every month].', {
+  st('[S Green Town Library] [V has] [O a special event] [M {前| on the first Saturday {前| of every month}}].', {
     chunks: [
       ['Green Town Library', 'グリーンタウン図書館は'],
       ['has a special event', '特別なイベントを開きます'],
@@ -11,7 +11,7 @@ export default Object.freeze([
       'has a special event': 'has an event で「イベントを開く・イベントがある」。',
     },
   }),
-  st("[S Children] [V can listen] [M to stories], [V make] [O small cards], [接 and] [V borrow] [O books about the month's topic].", {
+  st("[S Children] [V can listen] [M {前| to stories}], [V make] [O small cards], [接 and] [V borrow] [O books {前| about the month's topic}].", {
     notes: {
       'make small cards': 'make も後ろの borrow も、前の can を共有する動詞です（can make / can borrow）。',
     },
@@ -21,8 +21,8 @@ export default Object.freeze([
       'This month': '前置詞を付けずに「いつ」を表す修飾語で、主語ではありません。',
     },
   }),
-  st('[S Ms. Brown, {同格>Ms. Brown| one of the librarians},] [V will show] [O old pictures of the town].'),
-  st('[S She] [V will] [M also] [V talk] [M about the old station {関係>the old station| [S that] [V stood] [M near the river] [M fifty years ago]}].', {
+  st('[S Ms. Brown, {同格>Ms. Brown| one {前| of the librarians}},] [V will show] [O old pictures {前| of the town}].'),
+  st('[S She] [V will] [M also] [V talk] [M {前| about the old station {関係>the old station| [S that] [V stood] [M {前| near the river}] [M fifty years ago]}}].', {
     chunks: [
       ['She', '彼女は'],
       ['will also talk', 'また話します'],
@@ -36,7 +36,7 @@ export default Object.freeze([
       'that stood': 'stand の過去形 stood は、ここでは「（建物が）建っていた」という意味です。',
     },
   }),
-  st('[M After the talk], [S children] [V will work] [M in small groups] [M {to:副詞(目的)| [V to build] [O a paper model of the station]}].', {
+  st('[M {前| After the talk}], [S children] [V will work] [M {前| in small groups}] [M {to:副詞(目的)| [V to build] [O a paper model {前| of the station}]}].', {
     notes: {
       'After the talk': 'after ＋ 名詞で「〜のあとに」。後ろに主語と動詞がないので節ではありません。',
     },
@@ -46,7 +46,7 @@ export default Object.freeze([
       'do not need to bring craft materials': 'need to do の否定で「〜する必要はない」。',
     },
   }),
-  st('[S Parents] [V may help], [接 but] [S each child] [V should write] [O a name] [M on the model] [接 and] [V take] [O it] [M home] [M at noon].', {
+  st('[S Parents] [V may help], [接 but] [S each child] [V should write] [O a name] [M {前| on the model}] [接 and] [V take] [O it] [M home] [M {前| at noon}].', {
     chunks: [
       ['Parents may help', '保護者は手伝ってもかまいません'],
       ['but', 'しかし'],
@@ -63,7 +63,7 @@ export default Object.freeze([
     },
     rules: ['contrast-concession', 'parallel-shape', 'main-clause-skeleton'],
   }),
-  st('[S The event] [V starts] [M at ten in the morning] [接 and] [V ends] [M before lunch].', {
+  st('[S The event] [V starts] [M {前| at ten {前| in the morning}}] [接 and] [V ends] [M {前| before lunch}].', {
     chunks: [
       ['The event starts', 'イベントは始まります'],
       ['at ten in the morning', '午前10時に'],
@@ -82,7 +82,7 @@ export default Object.freeze([
       'is not very large': 'not very は「あまり〜ない」。',
     },
   }),
-  st('[M {副詞節:条件| [接 If] [S it] [V becomes] [C full]}], [S the library] [V will put] [O a message] [M on its website].', {
+  st('[M {副詞節:条件| [接 If] [S it] [V becomes] [C full]}], [S the library] [V will put] [O a message] [M {前| on its website}].', {
     chunks: [
       ['If', 'もし'],
       ['it', 'その部屋が'],
@@ -96,7 +96,7 @@ export default Object.freeze([
       'becomes full': 'if の節の中では、未来のことでも現在形 becomes を使います。',
     },
   }),
-  st('[S The event] [V is] [C popular] [M {副詞節:理由| [接 because] [S children] [V can learn] [M about their town] [M in a fun way]}].', {
+  st('[S The event] [V is] [C popular] [M {副詞節:理由| [接 because] [S children] [V can learn] [M {前| about their town}] [M {前| in a fun way}]}].', {
     chunks: [
       ['The event', 'そのイベントは'],
       ['is popular', '人気があります'],

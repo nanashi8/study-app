@@ -1,7 +1,7 @@
 import { st } from './entry.js'
 
 export default Object.freeze([
-  st('[M Next month], [S our town] [V will hold] [O a bicycle safety week for children and their families].', {
+  st('[M Next month], [S our town] [V will hold] [O a bicycle safety week {前| for children and their families}].', {
     chunks: [
       ['Next month,', '来月'],
       ['our town', '私たちの町は'],
@@ -26,7 +26,7 @@ export default Object.freeze([
       'how to prevent common bicycle accidents': 'how to ＋ 動詞の原形 で「〜のしかた・〜する方法」。',
     },
   }),
-  st('[S It] [V begins] [M with a short talk at the community center] [M on Monday evening].', {
+  st('[S It] [V begins] [M {前| with a short talk {前| at the community center}}] [M {前| on Monday evening}].', {
     chunks: [
       ['It begins', 'その催しは始まります'],
       ['with a short talk', '短い話から'],
@@ -58,7 +58,7 @@ export default Object.freeze([
       'to stop before they cross a busy road': 'to stop は the correct place を後ろから説明して「止まるための場所」。before 以下は stop にかかり、「渡る前に止まる」。they は Children を指します。',
     },
   }),
-  st('[S They] [V must use] [O bicycle lights] [M {副詞節:理由| [接 because] [S drivers] [V may not notice] [O them] [M after dark]}].', {
+  st('[S They] [V must use] [O bicycle lights] [M {副詞節:理由| [接 because] [S drivers] [V may not notice] [O them] [M {前| after dark}]}].', {
     chunks: [
       ['They', '子どもたちは'],
       ['must use bicycle lights', '自転車のライトを使わなければなりません'],
@@ -71,7 +71,7 @@ export default Object.freeze([
     },
     rules: ['cause-result', 'reference-chain', 'negation-scope'],
   }),
-  st('[M On Wednesday], [S families] [V can bring] [O their bicycles] [M to the park].', {
+  st('[M {前| On Wednesday}], [S families] [V can bring] [O their bicycles] [M {前| to the park}].', {
     chunks: [
       ['On Wednesday,', '水曜日には'],
       ['families', '家族は'],
@@ -82,7 +82,7 @@ export default Object.freeze([
       'can bring their bicycles': 'bring は「持ってくる」。their は families を指します。',
     },
   }),
-  st('[S Local shop workers] [V will check] [O the brakes, seats, and lights] [M for free].', {
+  st('[S Local shop workers] [V will check] [O the brakes, seats, and lights] [M {前| for free}].', {
     chunks: [
       ['Local shop workers', '地元の店の人たちが'],
       ['will check the brakes, seats, and lights', 'ブレーキや座席、ライトを点検します'],
@@ -103,7 +103,7 @@ export default Object.freeze([
       'they cannot replace expensive parts': 'cannot は「〜できない」。but の前後で、できることとできないことを比べています。',
     },
   }),
-  st('[S The week] [V ends] [M with a practice ride on Saturday morning].', {
+  st('[S The week] [V ends] [M {前| with a practice ride {前| on Saturday morning}}].', {
     chunks: [
       ['The week ends', 'その安全週間は終わります'],
       ['with a practice ride', '練習走行で'],
@@ -113,7 +113,7 @@ export default Object.freeze([
       'with a practice ride': 'end with 〜 で「〜で終わる」。',
     },
   }),
-  st('[S Volunteers] [V will ride] [M with small groups] [M through quiet streets].', {
+  st('[S Volunteers] [V will ride] [M {前| with small groups}] [M {前| through quiet streets}].', {
     chunks: [
       ['Volunteers will ride', 'ボランティアが走ります'],
       ['with small groups', '小さなグループと一緒に'],
@@ -123,7 +123,7 @@ export default Object.freeze([
       'through quiet streets': 'through は「〜を通り抜けて」。',
     },
   }),
-  st('[S Parents] [V should join] [O the ride] [M too], [M {副詞節:目的| [接 so] [S they] [V can practice] [O the rules] [M with their children]}].', {
+  st('[S Parents] [V should join] [O the ride] [M too], [M {副詞節:目的| [接 so] [S they] [V can practice] [O the rules] [M {前| with their children}]}].', {
     chunks: [
       ['Parents should join the ride too,', '保護者もその走行に参加するべきです'],
       ['so they can practice the rules', 'ルールを練習できるように'],

@@ -1,7 +1,7 @@
 import { st } from './entry.js'
 
 export default Object.freeze([
-  st('[S Modern institutions] [V measure] [O almost everything {関係省略>everything| [S they] [V hope] [O {to:名詞| [V to improve]}]}] [M in complex systems with competing public purposes].', {
+  st('[S Modern institutions] [V measure] [O almost everything {関係省略:目的格(improve)>everything| [S they] [V hope] [O {to:名詞| [V to improve]}]}] [M {前| in complex systems {前| with competing public purposes}}].', {
     chunks: [
       ['Modern institutions measure almost everything', '現代の機関は、ほとんどすべてのものを測っています（どんなものかは次へ）'],
       ['they hope to improve', '自分たちがよくしたいと望む（ものを）'],
@@ -13,7 +13,7 @@ export default Object.freeze([
       'with competing public purposes': 'competing は「互いにぶつかり合う」。with 以下は complex systems を後ろから説明します。',
     },
   }),
-  st('[S Schools] [V compare] [O test scores], [S hospitals] [V track] [O waiting times], [S universities] [V count] [O publications], [接 and] [S governments] [V publish] [O targets for employment, safety, and environmental quality].', {
+  st('[S Schools] [V compare] [O test scores], [S hospitals] [V track] [O waiting times], [S universities] [V count] [O publications], [接 and] [S governments] [V publish] [O targets {前| for employment, safety, and environmental quality}].', {
     chunks: [
       ['Schools compare test scores,', '学校はテストの点数を比べ'],
       ['hospitals track waiting times,', '病院は待ち時間を記録し'],
@@ -25,7 +25,7 @@ export default Object.freeze([
       'Schools compare test scores,': '主語と動詞の組が四つ並び、測定の例を挙げています。',
     },
   }),
-  st('[S Such indicators] [V give] [O1 institutions] [O2 a common language for {動名詞| [V judging] [O performance] [M across places and over time]}].', {
+  st('[S Such indicators] [V give] [O1 institutions] [O2 a common language {前| for {動名詞| [V judging] [O performance] [M {前| across places} and {前| over time}]}}].', {
     chunks: [
       ['Such indicators give institutions', 'そうした指標は、機関に与えます（何をかは次へ）'],
       ['a common language', '共通の言葉を（何のためのかは次へ）'],
@@ -36,7 +36,7 @@ export default Object.freeze([
       'Such indicators give institutions': 'give ＋ 人 ＋ もの で「人にものを与える」。Such indicators は前の文の点数や待ち時間などを指します。',
     },
   }),
-  st('[S They] [V can expose] [O failure {関係>failure| [S that] [V would] [M otherwise] [V remain] [C hidden] [M behind confident speeches or professional authority]}].', {
+  st('[S They] [V can expose] [O failure {関係>failure| [S that] [V would] [M otherwise] [V remain] [C hidden] [M {前| behind confident speeches or professional authority}]}].', {
     chunks: [
       ['They can expose failure', '指標は失敗を明らかにできます（どんな失敗かは次へ）'],
       ['that would otherwise remain hidden', '指標がなければ隠れたままになるはずの（失敗を）'],
@@ -47,7 +47,7 @@ export default Object.freeze([
       'that would otherwise remain hidden': 'otherwise は「そうでなければ（指標がなければ）」。would は、指標がない場合を想像して「〜だろう」と言っています。remain ＋ 過去分詞 で「〜されたままである」。',
     },
   }),
-  st('[S The difficulty] [V begins] [M {副詞節:時| [接 when] [S a useful measure] [V becomes] [C the institution’s practical definition of success]}].', {
+  st('[S The difficulty] [V begins] [M {副詞節:時| [接 when] [S a useful measure] [V becomes] [C the institution’s practical definition {前| of success}]}].', {
     chunks: [
       ['The difficulty begins', '問題は始まります（いつかは次へ）'],
       ['when a useful measure becomes', '役に立つ測定値が〜になるときに（何になるかは次へ）'],
@@ -57,7 +57,7 @@ export default Object.freeze([
       'the institution’s practical definition of success': 'practical はここでは「事実上の」。数字がよいことが、そのまま成功だと見なされるようになることです。',
     },
   }),
-  st('[S An indicator] [V is] [M necessarily] [C a simplified representation of a broader objective].', {
+  st('[S An indicator] [V is] [M necessarily] [C a simplified representation {前| of a broader objective}].', {
     chunks: [
       ['An indicator', '指標は'],
       ['is necessarily a simplified representation', '必ず、単純にして表したものです（何をかは次へ）'],
@@ -67,7 +67,7 @@ export default Object.freeze([
       'is necessarily a simplified representation': 'necessarily は「必ず・どうしても」。',
     },
   }),
-  st('[S A reading test] [V captures] [O some forms of comprehension], [M for example], [接 but] [M not] [O every capacity {関係>every capacity| [S that] [V makes] [O someone] [C a thoughtful reader]}].', {
+  st('[S A reading test] [V captures] [O some forms {前| of comprehension}], [M {前| for example}], [接 but] [M not] [O every capacity {関係>every capacity| [S that] [V makes] [O someone] [C a thoughtful reader]}].', {
     chunks: [
       ['A reading test captures some forms of comprehension,', '読解のテストは、理解力のいくつかの形をとらえます'],
       ['for example,', '例えば'],
@@ -79,7 +79,7 @@ export default Object.freeze([
       'that makes someone a thoughtful reader': 'make ＋ O ＋ C で「OをCにする」。',
     },
   }),
-  st('[M {副詞節:時| [接 Once] [S rewards or penalties] [V depend] [M heavily] [M on the score]}], [S people] [V have] [O an incentive {to:形容詞>an incentive| [V to optimize] [O the proxy] [M rather than {原形| [V pursue] [O the underlying mission]}]}].', {
+  st('[M {副詞節:時| [接 Once] [S rewards or penalties] [V depend] [M heavily] [M {前| on the score}]}], [S people] [V have] [O an incentive {to:形容詞>an incentive| [V to optimize] [O the proxy] [M {前| rather than {原形| [V pursue] [O the underlying mission]}}]}].', {
     chunks: [
       ['Once rewards or penalties depend heavily', 'いったん報酬や罰が大きく左右されるようになると（何にかは次へ）'],
       ['on the score,', '点数に'],
@@ -103,7 +103,7 @@ export default Object.freeze([
       'need not involve obvious cheating': 'need not ＋ 動詞の原形 で「〜する必要はない・〜するとは限らない」。この need は助動詞です。',
     },
   }),
-  st('[S A school] [V may devote] [O more time] [M to easily tested skills] [M {副詞節:対比| [接 while] [V neglecting] [O discussion, curiosity, or students {関係>students| [S whose improvement] [V is] [C unlikely {to:副詞(形容詞)| [V to change] [O its ranking]}]}]}].', {
+  st('[S A school] [V may devote] [O more time] [M {前| to easily tested skills}] [M {副詞節:対比| [接 while] [V neglecting] [O discussion, curiosity, or students {関係>students| [S whose improvement] [V is] [C unlikely {to:副詞(形容詞)| [V to change] [O its ranking]}]}]}].', {
     chunks: [
       ['A school may devote more time', '学校は、より多くの時間を充てるかもしれません（何にかは次へ）'],
       ['to easily tested skills', '試験しやすい技能に'],
@@ -127,7 +127,7 @@ export default Object.freeze([
       'when the waiting-time clock officially starts': 'when 以下は「いつ〜するか」という名詞のまとまりで、redefine の目的語です。',
     },
   }),
-  st('[S Each action] [V can improve] [O the reported number] [M without {動名詞| [V producing] [O an equivalent improvement in education or care]}].', {
+  st('[S Each action] [V can improve] [O the reported number] [M {前| without {動名詞| [V producing] [O an equivalent improvement {前| in education or care}]}}].', {
     chunks: [
       ['Each action can improve the reported number', 'どの行動も、報告される数字をよくすることができます'],
       ['without producing an equivalent improvement', '同じだけの改善を生むことなく（何の改善かは次へ）'],
@@ -149,7 +149,7 @@ export default Object.freeze([
       'an otherwise strong record': 'otherwise strong は「そうでなければ（その実験がなければ）良好な」。',
     },
   }),
-  st('[S A narrow target] [V may] [M consequently] [V punish] [O the very risk taking {過去分詞>the very risk taking| [V required] [M for genuine learning]}].', {
+  st('[S A narrow target] [V may] [M consequently] [V punish] [O the very risk taking {過去分詞>the very risk taking| [V required] [M {前| for genuine learning}]}].', {
     chunks: [
       ['A narrow target may consequently punish', 'その結果、狭い目標は罰してしまうかもしれません（何をかは次へ）'],
       ['the very risk taking', 'まさにリスクを取ること（そのものを）'],
@@ -173,7 +173,7 @@ export default Object.freeze([
       'should simply be trusted': 'trust ＋ 人 ＋ to 〜（人を信頼して〜を任せる）の受け身です。',
     },
   }),
-  st('[S That position] [V underestimates] [O {疑問詞節| [M why] [S measurement] [V became] [C attractive] [M in the first place]}].', {
+  st('[S That position] [V underestimates] [O {疑問詞節| [M why] [S measurement] [V became] [C attractive] [M {前| in the first place}]}].', {
     chunks: [
       ['That position underestimates', 'その立場は、軽く見ています（何をかは次へ）'],
       ['why measurement became attractive', '測定がなぜ魅力的になったのかを'],
@@ -185,7 +185,7 @@ export default Object.freeze([
     },
     rules: ['author-stance', 'wh-clause', 'reference-chain'],
   }),
-  st('[S Judgment] [V can remain] [C informed and humane], [接 but] [S it] [V can] [M also] [V become] [C inconsistent, biased, and difficult {to:副詞(形容詞)| [M for outsiders] [V to challenge]}].', {
+  st('[S Judgment] [V can remain] [C informed and humane], [接 but] [S it] [V can] [M also] [V become] [C inconsistent, biased, and difficult {前:意味上の主語| for outsiders} {to:副詞(形容詞)| [V to challenge]}].', {
     chunks: [
       ['Judgment can remain informed and humane,', '判断は、よく知ったうえでの、人間味のあるものであり続けることができます'],
       ['but it can also become', 'しかし、〜になることもあります（どんなものかは次へ）'],
@@ -197,7 +197,7 @@ export default Object.freeze([
       'and difficult for outsiders to challenge': 'difficult for A to 〜 で「Aが〜しにくい」。challenge はここでは「異議を唱える」。',
     },
   }),
-  st('[M Without records], [S leaders] [V may celebrate] [O a program’s intentions] [M {副詞節:時| [接 while] [V ignoring] [O evidence {同格that>evidence| [接 that] [S it] [M repeatedly] [V fails] [O particular communities]}]}].', {
+  st('[M {前| Without records}], [S leaders] [V may celebrate] [O a program’s intentions] [M {副詞節:時| [接 while] [V ignoring] [O evidence {同格that>evidence| [接 that] [S it] [M repeatedly] [V fails] [O particular communities]}]}].', {
     chunks: [
       ['Without records,', '記録がなければ'],
       ['leaders may celebrate a program’s intentions', '指導者は、事業のねらいをたたえるかもしれません'],
@@ -220,7 +220,7 @@ export default Object.freeze([
       'because neither exists': 'この neither は「どちらも〜ない」という代名詞で、主語です。単数として扱うので exists です。',
     },
   }),
-  st('[S Better systems] [V treat] [O indicators] [C as evidence within a process of judgment rather than as automatic verdicts].', {
+  st('[S Better systems] [V treat] [O indicators] [C {前| as evidence {前| within a process {前| of judgment}}} {前| rather than {前| as automatic verdicts}}].', {
     chunks: [
       ['Better systems treat indicators', 'よりよい仕組みは、指標を扱います（何としてかは次へ）'],
       ['as evidence within a process of judgment', '判断の過程の中の証拠として'],
@@ -231,7 +231,7 @@ export default Object.freeze([
       'rather than as automatic verdicts': 'A rather than B で「BではなくA」。',
     },
   }),
-  st('[S This] [V requires] [O several forms of institutional restraint].', {
+  st('[S This] [V requires] [O several forms {前| of institutional restraint}].', {
     chunks: [
       ['This requires', 'このためには必要です（何がかは次へ）'],
       ['several forms of institutional restraint', '機関によるいくつかの形の自制が'],
@@ -241,7 +241,7 @@ export default Object.freeze([
       'several forms of institutional restraint': 'restraint は「（自分を）抑えること・自制」。このあと First・Second・Third で一つずつ説明されます。',
     },
   }),
-  st('[M First], [S decision makers] [V should use] [O multiple measures {関係>multiple measures| [S that] [V illuminate] [O different parts of the mission]}].', {
+  st('[M First], [S decision makers] [V should use] [O multiple measures {関係>multiple measures| [S that] [V illuminate] [O different parts {前| of the mission}]}].', {
     chunks: [
       ['First,', '第一に'],
       ['decision makers should use multiple measures', '決定する人々は、複数の測定値を使うべきです（どんな測定値かは次へ）'],
@@ -251,7 +251,7 @@ export default Object.freeze([
       'that illuminate different parts of the mission': 'illuminate は「照らす・明らかにする」。',
     },
   }),
-  st('[S Graduation rates] [V may be considered] [M alongside student surveys, samples of actual work, and information about {what節| [O what] [S graduates] [V can do] [M later]}].', {
+  st('[S Graduation rates] [V may be considered] [M {前| alongside student surveys, samples {前| of actual work}, and information {前| about {what節| [O what] [S graduates] [V can do] [M later]}}}].', {
     chunks: [
       ['Graduation rates may be considered alongside', '卒業率は、〜と並べて検討されることがあります（何とかは次へ）'],
       ['student surveys, samples of actual work,', '生徒へのアンケートや、実際の作品の見本'],
@@ -262,7 +262,7 @@ export default Object.freeze([
       'and information about what graduates can do later': 'what は「〜すること」という関係代名詞で、do の目的語です。',
     },
   }),
-  st('[S No collection of measures] [V eliminates] [O judgment], [接 but] [S plural indicators] [V make] [仮O it] [C harder] [真O {to:名詞| [M for one narrow target] [V to dominate] [O behavior]}].', {
+  st('[S No collection {前| of measures}] [V eliminates] [O judgment], [接 but] [S plural indicators] [V make] [仮O it] [C harder] [真O {前:意味上の主語| for one narrow target} {to:名詞| [V to dominate] [O behavior]}].', {
     chunks: [
       ['No collection of measures eliminates judgment,', 'どんな測定値の集まりも、判断をなくしはしません'],
       ['but plural indicators make it harder', 'しかし、指標が複数あると、〜が難しくなります（何がかは次へ）'],
@@ -273,7 +273,7 @@ export default Object.freeze([
       'but plural indicators make it harder': 'make it ＋ 形容詞 ＋ for A to 〜 で「Aが〜するのを…にする」。it は形式目的語で、中身は for one narrow target to dominate behavior です。',
     },
   }),
-  st('[M Second], [S metrics] [V should be interpreted] [M with qualitative evidence from the people {過去分詞>the people| [V represented] [M by them]}].', {
+  st('[M Second], [S metrics] [V should be interpreted] [M {前| with qualitative evidence {前| from the people {過去分詞>the people| [V represented] [M {前| by them}]}}}].', {
     chunks: [
       ['Second,', '第二に'],
       ['metrics should be interpreted', '指標は解釈されるべきです（どう解釈するかは次へ）'],
@@ -318,7 +318,7 @@ export default Object.freeze([
       'once a measure carries consequences': 'carry consequences は「（報酬や処罰などの）結果を伴う」。',
     },
   }),
-  st('[S A quiet diagnostic metric] [V can become] [C unreliable] [M {副詞節:時| [接 after] [S promotion, funding, or punishment] [V depends] [M on it]}].', {
+  st('[S A quiet diagnostic metric] [V can become] [C unreliable] [M {副詞節:時| [接 after] [S promotion, funding, or punishment] [V depends] [M {前| on it}]}].', {
     chunks: [
       ['A quiet diagnostic metric can become unreliable', '目立たずに使われていた診断用の指標も、信頼できなくなることがあります'],
       ['after promotion, funding, or punishment depends on it', '昇進や資金、処罰がそれで決まるようになると'],
@@ -328,7 +328,7 @@ export default Object.freeze([
       'after promotion, funding, or punishment depends on it': 'A, B, or C が主語のときは、近い punishment に合わせて depends になります。it は A quiet diagnostic metric を指します。',
     },
   }),
-  st('[S Regular audits] [V should look] [M not only for false reports but also for neglected tasks, displaced risks, and groups {関係>groups| [S that] [V disappear] [M from the data]}].', {
+  st('[S Regular audits] [V should look] [M not only {前| for false reports} but also {前| for neglected tasks, displaced risks, and groups {関係>groups| [S that] [V disappear] [M {前| from the data}]}}].', {
     chunks: [
       ['Regular audits should look', '定期的な監査は、探すべきです（何をかは次へ）'],
       ['not only for false reports', 'うその報告だけでなく'],
@@ -341,7 +341,7 @@ export default Object.freeze([
       'not only for false reports': 'not only A but also B で「AだけでなくBも」。',
     },
   }),
-  st('[S Evaluation systems] [V must be] [C adaptive] [M {副詞節:理由| [接 because] [S the behavior {関係省略>the behavior| [S they] [V observe]}] [V changes] [M in response to observation]}].', {
+  st('[S Evaluation systems] [V must be] [C adaptive] [M {副詞節:理由| [接 because] [S the behavior {関係省略:目的格>the behavior| [S they] [V observe]}] [V changes] [M {前| in response to observation}]}].', {
     chunks: [
       ['Evaluation systems must be adaptive', '評価の仕組みは、状況に合わせて変われなければなりません'],
       ['because the behavior they observe changes', '観察している行動そのものが変わるからです（どう変わるかは次へ）'],
@@ -360,7 +360,7 @@ export default Object.freeze([
       'yet publishing more data is not sufficient': 'yet は「しかし」。publishing more data は「より多くのデータを公開すること」という動名詞のまとまりで、主語です。',
     },
   }),
-  st('[S A dashboard] [V can appear] [C open] [M {副詞節:対比| [接 while] [V hiding] [O decisions about definitions, missing cases, statistical adjustments, and acceptable thresholds]}].', {
+  st('[S A dashboard] [V can appear] [C open] [M {副詞節:対比| [接 while] [V hiding] [O decisions {前| about definitions, missing cases, statistical adjustments, and acceptable thresholds}]}].', {
     chunks: [
       ['A dashboard can appear open', 'データをまとめた画面は、開かれているように見えることがあります'],
       ['while hiding decisions', '決定を隠している一方で（何についての決定かは次へ）'],
@@ -384,7 +384,7 @@ export default Object.freeze([
       'why a measure was chosen,': 'why・what・how・who で始まる四つのまとまりが、どれも explains の目的語です。',
     },
   }),
-  st('[S That explanation] [V enables] [O public deliberation about goals] [M instead of {動名詞| [V limiting] [O debate] [M to technical compliance]}].', {
+  st('[S That explanation] [V enables] [O public deliberation {前| about goals}] [M {前| instead of {動名詞| [V limiting] [O debate] [M {前| to technical compliance}]}}].', {
     chunks: [
       ['That explanation enables public deliberation about goals', 'その説明によって、目標について公に話し合えるようになります'],
       ['instead of limiting debate', '議論を限ってしまうのではなく（何にかは次へ）'],
@@ -407,7 +407,7 @@ export default Object.freeze([
       'would tell a substantially different story': 'tell a different story で「違う実態を示す」。would は「（もし別の定義を使ったら）〜だろう」。',
     },
   }),
-  st('[M There] [V is] [M also] [S a political question about {疑問詞節| [S who] [V bears] [O the burden of {動名詞| [V being measured]}]}].', {
+  st('[M There] [V is] [M also] [S a political question {前| about {疑問詞節| [S who] [V bears] [O the burden {前| of {動名詞| [V being measured]}}]}}].', {
     chunks: [
       ['There is also a political question', '政治的な問いもあります（何についてかは次へ）'],
       ['about who bears the burden', 'だれが負担を負うのかという（問いが）'],
@@ -418,7 +418,7 @@ export default Object.freeze([
       'of being measured': 'being measured は「測られること」という受け身の動名詞です。',
     },
   }),
-  st('[S Frontline workers and vulnerable citizens] [M often] [V supply] [O detailed data], [M {副詞節:対比| [接 while] [S senior institutions] [V retain] [O discretion over {疑問詞節| [M how] [S the numbers] [V are interpreted]}]}].', {
+  st('[S Frontline workers and vulnerable citizens] [M often] [V supply] [O detailed data], [M {副詞節:対比| [接 while] [S senior institutions] [V retain] [O discretion {前| over {疑問詞節| [M how] [S the numbers] [V are interpreted]}}]}].', {
     chunks: [
       ['Frontline workers and vulnerable citizens', '現場で働く人々や弱い立場の市民が'],
       ['often supply detailed data,', '詳しいデータを出すことが多いのです'],
@@ -440,7 +440,7 @@ export default Object.freeze([
       'the system may weaken rather than strengthen legitimacy': 'weaken と strengthen の二つの動詞が legitimacy を共有しています。A rather than B で「BではなくA」。',
     },
   }),
-  st('[S Those {関係>Those| [S who] [V design] [O indicators]}] [V should] [M therefore] [V be] [C answerable for their consequences, including the administrative labor {関係省略>the administrative labor| [S they] [V create]}].', {
+  st('[S Those {関係>Those| [S who] [V design] [O indicators]}] [V should] [M therefore] [V be] [C answerable {前| for their consequences, {前| including the administrative labor {関係省略:目的格>the administrative labor| [S they] [V create]}}}].', {
     chunks: [
       ['Those who design indicators', '指標を作る人々は'],
       ['should therefore be answerable', 'したがって責任を負うべきです（何についてかは次へ）'],
@@ -452,7 +452,7 @@ export default Object.freeze([
       'including the administrative labor they create': 'the administrative labor と they の間に関係詞 that が省略されています。their と they は indicators を指します。',
     },
   }),
-  st('[S A mature culture of evaluation] [V recognizes] [O {that節| [接 that] [S important purposes] [V cannot] [M always] [V be] [M fully] [V quantified]}].', {
+  st('[S A mature culture {前| of evaluation}] [V recognizes] [O {that節| [接 that] [S important purposes] [V cannot] [M always] [V be] [M fully] [V quantified]}].', {
     chunks: [
       ['A mature culture of evaluation recognizes that', '成熟した評価の文化は、〜ことを認めています（内容は次へ）'],
       ['important purposes cannot always be fully quantified', '大切な目的をいつも完全に数で表せるわけではない（ことを）'],
@@ -485,7 +485,7 @@ export default Object.freeze([
       'that judgment must remain visible and contestable': 'that 以下は a warning の中身です。contestable は「異議を唱えられる」。',
     },
   }),
-  st('[S Institutions] [V can strengthen] [O trust] [M by {動名詞| [M publicly] [V stating] [O that limit]}] [M {副詞節:理由| [接 because] [S this] [V prevents] [O precision] [M from {動名詞| [V being mistaken] [M for certainty]}]}].', {
+  st('[S Institutions] [V can strengthen] [O trust] [M {前| by {動名詞| [M publicly] [V stating] [O that limit]}}] [M {副詞節:理由| [接 because] [S this] [V prevents] [O precision] [M {前| from {動名詞| [V being mistaken] [M {前| for certainty}]}}]}].', {
     chunks: [
       ['Institutions can strengthen trust', '機関は、信頼を強めることができます（どうやってかは次へ）'],
       ['by publicly stating that limit', 'その限界を公に述べることによって'],
@@ -498,7 +498,7 @@ export default Object.freeze([
     },
     rules: ['cause-result', 'reference-chain', 'ing-ed-role'],
   }),
-  st('[S Metrics] [V are] [C most valuable] [M {副詞節:時| [接 when] [S they] [V create] [O questions] [M rather than {原形| [V close] [O them]}]}].', {
+  st('[S Metrics] [V are] [C most valuable] [M {副詞節:時| [接 when] [S they] [V create] [O questions] [M {前| rather than {原形| [V close] [O them]}}]}].', {
     chunks: [
       ['Metrics are most valuable', '指標が最も価値を持つのは（いつかは次へ）'],
       ['when they create questions', '問いを生み出すときです'],
@@ -508,7 +508,7 @@ export default Object.freeze([
       'rather than close them': 'rather than の後ろに動詞の原形 close を置き、「〜するのではなく」。them は questions を指します。',
     },
   }),
-  st('[S They] [V should direct] [O attention] [M toward patterns {関係>patterns| [S that] [V require] [O explanation]}], [V provide] [O feedback for revision], [接 and] [V reveal] [O {whether節| [接 whether] [S policies] [V serve] [O their stated mission]}].', {
+  st('[S They] [V should direct] [O attention] [M {前| toward patterns {関係>patterns| [S that] [V require] [O explanation]}}], [V provide] [O feedback {前| for revision}], [接 and] [V reveal] [O {whether節| [接 whether] [S policies] [V serve] [O their stated mission]}].', {
     chunks: [
       ['They should direct attention', '指標は、注意を向けるべきです（どこへかは次へ）'],
       ['toward patterns that require explanation,', '説明が必要な傾向へ'],
@@ -519,7 +519,7 @@ export default Object.freeze([
       'They should direct attention': 'They は前の文の Metrics を指します。direct、provide、reveal の三つが should を共有しています。',
     },
   }),
-  st('[M {副詞節:時| [接 When] [S a measure] [V becomes] [C a substitute for that mission]}], [S apparent precision] [V can conceal] [O institutional drift].', {
+  st('[M {副詞節:時| [接 When] [S a measure] [V becomes] [C a substitute {前| for that mission}]}], [S apparent precision] [V can conceal] [O institutional drift].', {
     chunks: [
       ['When a measure becomes a substitute', '測定値が代わりになると（何の代わりかは次へ）'],
       ['for that mission,', 'その使命の'],
@@ -530,7 +530,7 @@ export default Object.freeze([
     },
     rules: ['reference-chain', 'main-clause-skeleton', 'svoc-core'],
   }),
-  st('[M {副詞節:時| [接 When] [S it] [V remains] [C one disciplined source of evidence among others]}], [S measurement] [V can support] [O both learning and democratic accountability] [M across changing circumstances and competing interpretations of public value] [M over time].', {
+  st('[M {副詞節:時| [接 When] [S it] [V remains] [C one disciplined source {前| of evidence {前| among others}}]}], [S measurement] [V can support] [O both learning and democratic accountability] [M {前| across changing circumstances and competing interpretations {前| of public value}}] [M {前| over time}].', {
     chunks: [
       ['When it remains one disciplined source of evidence', '測定が、規律ある一つの証拠の源であり続けるなら'],
       ['among others,', 'ほかの証拠と並んで'],
