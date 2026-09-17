@@ -295,7 +295,7 @@ export const READING_CHOICE_NOTES = freezeNotes({
     "Measuring a problem makes action unnecessary.": "測った後に皿の大きさを変える行動をとり（第6〜10文）、近くの学校にもそれぞれの食品ロスを測るよう勧めている（第16文）。",
   },
   "p_pre2_later_school_start#1": {
-    "Their body clock often changes during the teenage years.": "第2文 the body clock often changes during the teenage years と一致する。第3文で、脳が夜遅くに眠気を感じ始めると説明している。",
+    "Their body clock often changes during the teenage years.": "第2文 the body clock often changes during the teenage years と一致する。第3文で、脳が夜のより遅い時間に眠気を感じ始めると説明している。",
     "Their schools always hold sports practice at night.": "練習が暗くなってから終わるかもしれないのは、始業を遅らせた場合の問題（第10文）で、早く眠れない理由ではない。",
     "Their teachers ask them to wake during the night.": "先生が夜中に起こすとは書かれていない。先生は朝の授業で注意力が高まったことを確認した人（第6文）。",
     "Their buses arrive after morning classes begin.": "バスの時刻は、始業を遅らせると変更が必要になるという問題（第9文）で、早く眠れない理由ではない。",

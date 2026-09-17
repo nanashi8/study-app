@@ -598,7 +598,7 @@ export const CORE_READING_PRACTICE_QUESTIONS = Object.freeze({
       questionJa: '「交通費」を表す本文の語を選びなさい。',
       answer: 'transportation',
       sourceSentence: 'School buses may need new schedules, which can increase transportation costs.',
-      sourceJa: 'スクールバスには新しい運行予定が必要になり、交通費が増える可能性があります。',
+      sourceJa: 'スクールバスには新しい運行予定が必要になるかもしれず、そうなると交通費が増える可能性があります。',
       explain: 'transportation costs で「輸送・交通にかかる費用」。バスの運行に関わる支出を指します。',
       readingRuleId: 'unknown-word-context',
       vocabIds: ['schedule', 'transportation'],

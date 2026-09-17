@@ -529,6 +529,11 @@ function unitFunctionText(unit, container, scopeElements, scopeUnit) {
       if (container && /^(?:than|as|but|except)$/i.test(prepositionBeforeUnit(container, unit))) {
         return nounFunctionText(unit, container, scopeElements, scopeUnit)
       }
+      // help design … のように、原形不定詞そのものが動詞の目的語になる形。
+      if (container?.role === 'O' && containerText === unitText(unit)) {
+        const verb = nearestVerb(scopeElements, container)
+        return `${inside}${verb ? `${verb} の` : ''}目的語Oです（to のない不定詞）。`
+      }
       const object = container ? nearestRole(scopeElements, container, ['O', '仮O']) : ''
       return object
         ? `${inside}目的語 ${object} が何をするかを表す補語Cです（to のない不定詞）。`
@@ -549,6 +554,15 @@ function unitFunctionText(unit, container, scopeElements, scopeUnit) {
         return `${inside}${kind}を表し、修飾語Mとして働きます。`
       }
       if (unit.usage === '補語') {
+        // depend on A to 〜 のように、前置詞の目的語 A が意味の上の主語になる形。
+        if (container?.role === 'M') {
+          const words = structureWords(rawText(container.children.slice(0, Math.max(0, container.children.indexOf(unit)))))
+          const preposition = words[0] ?? ''
+          const noun = words.slice(1).join(' ')
+          if (preposition && noun) {
+            return `${inside}前置詞 ${preposition} の目的語 ${noun} が何をするかを表します（修飾語M「${containerText}」の一部）。`
+          }
+        }
         const object = container ? nearestRole(scopeElements, container, ['O', '仮O']) : ''
         const subject = container ? nearestRole(scopeElements, container, ['S', '仮S']) : ''
         return object
