@@ -447,7 +447,7 @@ function nounFunctionText(unit, container, scopeElements, scopeUnit) {
   const verb = nearestVerb(scopeElements, container)
   const preposition = prepositionBeforeUnit(container, unit)
   if (preposition) {
-    if (/^(?:than|as)$/i.test(preposition)) {
+    if (/^(?:rather than|than|as)$/i.test(preposition)) {
       return `${inside}${preposition} の後ろに置かれた、比べる相手です（${ROLE_NAMES[container.role]}「${nodeText(container)}」の一部）。`
     }
     const containerText = nodeText(container)
@@ -526,7 +526,7 @@ function unitFunctionText(unit, container, scopeElements, scopeUnit) {
     case '強調':
       return `${inside}強調したい語句を It is と that の間に置く形です。`
     case '原形': {
-      if (container && /^(?:than|as|but|except)$/i.test(prepositionBeforeUnit(container, unit))) {
+      if (container && /^(?:rather than|than|as|but|except)$/i.test(prepositionBeforeUnit(container, unit))) {
         return nounFunctionText(unit, container, scopeElements, scopeUnit)
       }
       // help design … のように、原形不定詞そのものが動詞の目的語になる形。
@@ -838,8 +838,17 @@ function describeParts(parts, scopeInfo) {
       parts[index + 1]?.role === 'M' &&
       parts[index + 2]?.role === 'V'
     ) {
-      pieces.push(`${part.text} … ${parts[index + 2].text} が動詞V（間の ${parts[index + 1].text} は修飾語M）`)
-      index += 2
+      // cannot always be fully quantified のように、修飾語が二つ以上はさまっても一つの動詞Vとして述べる。
+      const verbs = [part.text]
+      const modifiers = []
+      let cursor = index
+      while (parts[cursor + 1]?.role === 'M' && parts[cursor + 2]?.role === 'V') {
+        modifiers.push(parts[cursor + 1].text)
+        verbs.push(parts[cursor + 2].text)
+        cursor += 2
+      }
+      pieces.push(`${verbs.join(' … ')} が動詞V（間の ${modifiers.join(' と ')} は修飾語M）`)
+      index = cursor
       continue
     }
     pieces.push(partDescription(part, scopeInfo))

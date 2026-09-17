@@ -421,7 +421,7 @@ export const READING_CHOICE_NOTES = freezeNotes({
     "Stable definitions always reveal groups missing from the data.": "第30文で、監査はデータから姿を消した集団を探すべきだと書かれている。定義を固定すれば必ず分かるとは言っていない。",
   },
   "p_1_metric_fixation#4": {
-    "They are valuable as one contestable source of evidence, not as a substitute for a mission.": "指標が使命の代わりになると漂流を隠すが（第47文）、ほかの証拠と並ぶ一つの情報源なら学習と説明責任を支える（第48文）と述べ、判断は異議を唱えられる形であるべきだとしている（第43文）。",
+    "They are valuable as one contestable source of evidence, not as a substitute for a mission.": "指標が使命の代わりになると、本来の目的からのずれを隠してしまうが（第47文）、ほかの証拠と並ぶ一つの情報源なら学習と説明責任を支える（第48文）と述べ、判断は異議を唱えられる形であるべきだとしている（第43文）。",
     "They should automatically determine every institutional decision.": "第20文で、指標は自動的な判決ではなく、判断の中の証拠として扱うべきだと書かれている。",
     "They are useful only when they eliminate public disagreement.": "第45文で、指標は問いを閉じるのではなく生み出すときに最も価値があると書かれている。",
     "They should be abandoned whenever a value is difficult to quantify.": "数量化しにくい価値も無視できないと述べるが（第42文）、指標を捨てるべきだとは言っていない。ほかの証拠と並べて使う（第48文）。",
