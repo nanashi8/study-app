@@ -721,7 +721,7 @@ export const CORE_READING_PRACTICE_QUESTIONS = Object.freeze({
       questionJa: '直前の名詞 barriers を受けて説明を続ける語を選びなさい。',
       answer: 'that',
       sourceSentence: 'It should be to preserve meaningful alternatives while removing barriers that prevent people from choosing freely.',
-      sourceJa: '人々の自由な選択を妨げる障壁を取り除きながら、実質的な代替手段を保つことであるべきです。',
+      sourceJa: '目標は、人々の自由な選択を妨げる障壁を取り除きながら、実質的な代替手段を保つことであるべきです。',
       explain: '関係代名詞 that が barriers を受け、そのあとに動詞 prevent が続いて説明を足しています。',
       readingRuleId: 'relative-clause',
       vocabIds: ['alternative'],

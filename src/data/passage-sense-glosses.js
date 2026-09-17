@@ -236,7 +236,7 @@ export const PASSAGE_SENSE_GLOSSES = Object.freeze({
   'People with little economic or political power may be especially vulnerable when they cannot choose a private alternative.': words({ may: MAY }),
   'A fixed amount in an envelope stays visible, while digital balances may be divided across several apps and delayed transactions.': words({ may: MAY }),
   'Some governments therefore require essential businesses to accept cash while encouraging digital innovation elsewhere.': words({
-    encouraging: sense('encourage', '促すこと・奨励すること'),
+    encouraging: sense('encourage', '促しながら・後押ししながら'),
   }),
   'Cash may sometimes appear inefficient as an option, just as backup power can appear wasteful on an ordinary day.': words({ may: MAY }),
 
