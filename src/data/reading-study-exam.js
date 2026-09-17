@@ -515,7 +515,7 @@ export const EXAM_READING_STUDY = {
         'a substitute for ...',
         '〜の代用品・代わり',
         'A measure can become a substitute for the institution’s mission.',
-        '測定値が制度の使命の代わりになることがあります。',
+        '測定値が機関の使命の代わりになることがあります。',
         'substitute for で置き換えられる対象を示す。',
       ),
     ],
