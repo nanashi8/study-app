@@ -770,7 +770,88 @@ const uniqueRules = (ids) => [...new Set(ids)]
   .map((id) => READING_RULES_BY_ID[id])
   .filter(Boolean)
 
-export function readingRulesForSentence(sentence, limit = 3) {
+// 構造台帳がある文は、語の字面ではなく、その文に実際にある節・句・役割から選ぶ。
+// 例: to school の to では「to doの役割」を出さず、that が接続詞なら関係詞のルールを出さない。
+const PASSIVE_PARTICIPLE = /\b(?:am|is|are|was|were|be|been|being)\s+(?:\w+ly\s+|not\s+|also\s+|still\s+|often\s+|always\s+|never\s+|already\s+|now\s+)?(?:\w+ed|\w+en|made|built|taught|known|found|held|kept|told|given|shown|seen|done|brought|bought|thought|caught|sold|sent|spent|left|lost|paid|put|read|set|shut|cut|hurt|let|run|won|written|spoken|chosen|broken|taken|driven|drawn|grown|thrown|worn|torn|born|hidden|forgotten|understood|met|led|fed|heard|meant|felt|built|laid|said|struck|hung|spread|split|cast|cost|bound|wound|ground|sought|taught|dealt)\b/i
+
+function structureElementsOf(nodes, output = []) {
+  for (const node of nodes) {
+    if (node.kind === 'element') output.push(node)
+    if (node.children) structureElementsOf(node.children, output)
+  }
+  return output
+}
+
+function structureNodeText(node) {
+  if (node.kind === 'text') return node.text
+  return node.children.map(structureNodeText).join('')
+}
+
+function structureRuleIds(sentence, structure) {
+  const text = sentence?.en || ''
+  const lower = text.toLowerCase()
+  const unitBases = new Set(structure.units.map((unit) => unit.base))
+  const unitDetails = structure.units.map((unit) => `${unit.base}:${unit.detail}`)
+  const elements = structureElementsOf(structure.root)
+  const elementText = (element) => structureNodeText(element).replace(/\s+/g, ' ').trim()
+  const links = elements.filter((element) => element.role === '接').map((element) => elementText(element).toLowerCase())
+  const verbs = elements.filter((element) => element.role === 'V').map((element) => elementText(element).toLowerCase())
+  const modifiers = elements.filter((element) => element.role === 'M').map(elementText)
+  const has = (pattern) => pattern.test(lower)
+  const ids = []
+  if (has(/\b(?:not|never|no|nor|none|nothing|nobody|neither|few|little|hardly|seldom|rarely|without|cannot)\b|n't\b/)) ids.push('negation-scope')
+  if (
+    links.some((link) => /^(?:but|yet)$/.test(link)) ||
+    unitDetails.some((detail) => /^副詞節:(?:譲歩|対比)$/.test(detail)) ||
+    has(/\b(?:however|nevertheless|nonetheless|on the other hand|in contrast|by contrast|instead|whereas)\b/)
+  ) ids.push('contrast-concession')
+  if (
+    unitDetails.some((detail) => /^副詞節:(?:理由|結果)$/.test(detail)) ||
+    links.some((link) => /^(?:so|for)$/.test(link)) ||
+    has(/\b(?:therefore|thus|consequently|as a result|because of|due to|lead to|leads to|led to|leading to|result in|results in|resulted in|cause|causes|caused)\b/)
+  ) ids.push('cause-result')
+  if (has(/\b(?:for example|for instance|such as|in other words|that is,)/)) ids.push('example-restatement')
+  if (
+    !ids.includes('contrast-concession') &&
+    !ids.includes('cause-result') &&
+    has(/\b(?:also|if|unless|in addition|moreover|furthermore|besides)\b/)
+  ) ids.push('logic-connectors')
+  if (has(/\bthan\b|\bas\s+(?:\w+\s+){1,3}as\b|\b(?:more|less|fewer)\b/)) ids.push('comparison-pairs')
+  if (has(/\bthat\b/)) ids.push('that-diagnosis')
+  if (['疑問詞節', 'whether節', 'if節', 'what節', '疑問詞to'].some((base) => unitBases.has(base))) ids.push('wh-clause')
+  if (['関係', '関係,', '関係省略'].some((base) => unitBases.has(base))) ids.push('relative-clause')
+  if (verbs.some((verb) => PASSIVE_PARTICIPLE.test(verb))) ids.push('passive-active')
+  if (unitBases.has('to') || unitBases.has('疑問詞to')) ids.push('infinitive-role')
+  if (['動名詞', '現在分詞', '過去分詞', '分詞構文'].some((base) => unitBases.has(base))) ids.push('ing-ed-role')
+  if (/[:;—]/.test(text)) ids.push('punctuation-map')
+  if (
+    ['挿入', '同格', '関係,'].some((base) => unitBases.has(base)) ||
+    modifiers.some((modifier) => text.includes(`, ${modifier.replace(/,$/, '')},`))
+  ) ids.push('insertion')
+  if (links.some((link) => /^(?:and|or|nor|both|either|neither)$/.test(link)) || has(/\b(?:and|or)\b/)) ids.push('parallel-shape')
+  // 発言・主張の動詞が内容節を目的語に取るときと、may / might で確信の強さを示すときだけ。
+  const reportsContent = structure.units.some((unit) =>
+    ['that節', 'that省略', '疑問詞節', 'whether節', 'if節'].includes(unit.base) &&
+    unit.containerRole === 'O' &&
+    /\b(?:say|says|said|argue|argues|argued|claim|claims|claimed|suggest|suggests|suggested|believe|believes|believed|insist|insists|insisted|warn|warns|warned|doubt|doubts|doubted|admit|admits|admitted|report|reports|reported|point out|points out|pointed out)\b/.test(
+      verbs.join(' '),
+    ))
+  if (reportsContent || verbs.some((verb) => /\b(?:may|might)\b/.test(verb))) ids.push('author-stance')
+  if (['現在分詞', '過去分詞'].some((base) => unitBases.has(base)) || structure.units.some((unit) => unit.base === 'to' && unit.usage === '形容詞')) ids.push('postmodifier')
+  if (structure.units.some((unit) => unit.clause)) ids.push('main-clause-skeleton')
+  return ids
+}
+
+export function readingRulesForSentence(sentence, limit = 3, structure = null) {
+  if (structure) {
+    const matched = structureRuleIds(sentence, structure)
+    const fallbacks = [
+      'main-clause-skeleton',
+      sentence?.paragraphStart ? 'paragraph-map' : 'svoc-core',
+      'repair-monitor',
+    ]
+    return uniqueRules([...matched, ...fallbacks]).slice(0, limit)
+  }
   const text = sentence?.en || ''
   const matchedIds = new Set(SENTENCE_TRIGGER_GROUPS
     .filter((entry) => entry.test(text))

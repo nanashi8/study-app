@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-09-17T01:38:15.252Z",
+  "auditedAt": "2026-09-17T02:20:52.228Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -104,7 +104,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "11dfbdfa3775368ad97aaf9dea32f0c0d6106177b8f55a0de53d14be365a9aaf",
+    "sha256": "c93b5f65c73bfb30e6c94309926bfc69f0ea1dcb3e13daab1850769ed507d34f",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -235,6 +235,7 @@
       "tests/reading-regressions.test.mjs",
       "tests/reading-role-annotations.test.mjs",
       "tests/reading-rules-and-expansion.test.mjs",
+      "tests/reading-sentence-structures.test.mjs",
       "tests/reading-translation-scenarios.test.mjs",
       "tests/regressions.test.mjs",
       "tests/reveal-answers-toggle.test.mjs",

@@ -74,7 +74,7 @@ test('SVOCMを機械的に分断せず、発音できて意味が通るまとま
       .map(({ en, roles, ja }) => ({ en, roles, ja })),
     [
       { en: 'Rina is', roles: ['S', 'V'], ja: 'リナは〜です（内容は次へ）' },
-      { en: 'a junior high school student', roles: ['C'], ja: '一人の中学生' },
+      { en: 'a junior high school student', roles: ['C'], ja: '中学生' },
     ],
   )
 
