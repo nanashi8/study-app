@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-09-17T20:32:11.370Z",
+  "auditedAt": "2026-09-17T20:45:18.509Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -12,7 +12,7 @@
     "quizItemCount": 16473,
     "storedAndGeneratedQuestionPathCount": 4946,
     "storedAndGeneratedChoicePathCount": 19353,
-    "overallContentSha256": "622390aff531d07c7e8831568d178882782387e6193b14b606d413fff78f5571"
+    "overallContentSha256": "3aad4d0a75add8c37a102bcf6e76e20950c3dd8ebc445b71e6bdd61447ab0a2b"
   },
   "completionCriteria": [
     "全18教材カテゴリのID・母数・重複・内容ハッシュが一致する",
@@ -104,7 +104,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "8b94b2776ff9218199e25179713b5f010b35ba2264d3fd2531ef3140e43afda9",
+    "sha256": "a5d45b48ed11f74c9141c40cf8ee20c43309bdfe2868bd9eab57519c6959ff5e",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -430,7 +430,7 @@
       "quizItemCount": 42,
       "learningIdOrderSha256": "5a73640787e6fb7d0e952cc3e4b513903f10cee089c479e8f91d9a8d8bf0215b",
       "quizIdOrderSha256": "5a73640787e6fb7d0e952cc3e4b513903f10cee089c479e8f91d9a8d8bf0215b",
-      "contentSha256": "47ec672adb9c82d47a365bb6813a3bb97bdd50963c37425454a73a50f65502ff",
+      "contentSha256": "32981af988d12616e4d75107dc87ed60b57b7a406781231118e4dcdc3ded6dcf",
       "auditGateIds": [
         "inventory",
         "coreData",
@@ -978,7 +978,7 @@
       "環境・科学・医療・政策",
       "社会総合・経済・心理・科学技術"
     ],
-    "contentSha256": "2c80200c8bc106f316e364492983b7ef3117618d3c909be97a12556dd27859f5"
+    "contentSha256": "60b19e78330d31b540cabc1fad9aaf991128dc28fdee17b11a96b74c50212e3a"
   },
   "grammarDetail": {
     "sourceQuestionCount": 3450,
