@@ -119,8 +119,8 @@ const guides = [
     '施設の名詞句、has＋目的語の述部、開催日のまとまりに分けます。',
     [
       phrase('Green Town Library', 'S', 'グリーンタウン図書館は'),
-      phrase('has a special event', ['V', 'O'], '特別な催しを開催します'),
-      phrase('on the first Saturday of every month', 'M', '毎月の第1土曜日に'),
+      phrase('has a special event', ['V', 'O'], '特別なイベントを開きます'),
+      phrase('on the first Saturday of every month', 'M', '毎月の第一土曜日に'),
     ],
   ),
   guide(

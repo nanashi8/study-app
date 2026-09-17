@@ -71,7 +71,7 @@ const CORE_PASSAGES = [
       s('She will also talk about the old station that stood near the river fifty years ago.', '彼女はまた、50年前に川の近くにあった古い駅についても話します。'),
       p('After the talk, children will work in small groups to build a paper model of the station.', '話の後、子どもたちは小さなグループで駅の紙模型を作ります。'),
       s('The library will provide paper and glue, so families do not need to bring craft materials.', '図書館が紙とのりを用意するので、家族は工作材料を持参する必要はありません。'),
-      s('Parents may help, but each child should write a name on the model and take it home at noon.', '保護者は手伝ってもかまいませんが、子どもは一人ずつ模型に名前を書き、正午に持ち帰ります。'),
+      s('Parents may help, but each child should write a name on the model and take it home at noon.', '保護者は手伝ってもかまいませんが、子どもは一人ずつ模型に名前を書き、正午に持ち帰ることになっています。'),
       p('The event starts at ten in the morning and ends before lunch.', 'イベントは午前10時に始まり、昼食前に終わります。'),
       s('People do not have to pay, but they should bring a pencil.', '参加者はお金を払う必要はありませんが、鉛筆を持ってくるべきです。'),
       s('Many families come early because the room is not very large.', '部屋があまり広くないので、多くの家族は早く来ます。'),
