@@ -162,7 +162,7 @@ test('語義台帳の英文はすべて本文にあり、本文のタップが�
     }
   }
   assert.equal(Object.keys(PASSAGE_SENSE_GLOSSES).length, 406)
-  assert.equal(words, 482)
+  assert.equal(words, 483)
 })
 
 test('語尾を落とすと別の語（ad・rid・suite・us）に当たる活用形は、元の語へつなぐ', () => {

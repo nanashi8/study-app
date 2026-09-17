@@ -100,19 +100,19 @@ export const EXPANDED_READING_QUESTIONS = Object.freeze({
       q: 'Why did the school use a phone-free hour instead of an all-day ban?',
       choices: ['It wanted to test a limited way to protect attention.', 'It wanted students to stop contacting families.', 'It had no lockers for phones after lunch.', 'It planned to replace every phone with a computer.'],
       answer: 'It wanted to test a limited way to protect attention.',
-      explain: '全面禁止ではなく1時間の試行にし、集中への影響を比較できるようにしました。',
+      explain: 'スマートフォンは宿題や家族との連絡に役立つ一方で学習を中断させることもあるため、一日中禁止するのではなく、1時間に限って集中を守る方法を試しました。',
     },
     {
       q: 'Why did the school wait until the trial ended before revealing the comparison group?',
       choices: ['To reduce the effect of expectations on students’ reports.', 'To prevent teachers from giving reading tasks.', 'To hide emergency phone numbers from families.', 'To allow one group to use easier questions.'],
       answer: 'To reduce the effect of expectations on students’ reports.',
-      explain: '自分が比較対象だという期待だけで集中の報告が変わる可能性を小さくするためです。',
+      explain: '比べられていると知ったことによる期待だけで、生徒が自分の集中をどう答えるかが変わってしまう可能性を小さくするためです。',
     },
     {
       q: 'What exception did the school add to the phone-free rule?',
       choices: ['Teachers could approve necessary learning tools.', 'Every student could answer messages at any time.', 'Only health messages were permanently blocked.', 'Assignments no longer required steady attention.'],
       answer: 'Teachers could approve necessary learning tools.',
-      explain: '翻訳や読み上げなど必要な機能があるため、先生が学習ツールを許可できるようにしました。',
+      explain: 'スマートフォンの翻訳のツールや読むのを助けるツールが必要な生徒がいたため、先生が必要な学習ツールを許可できるようにしました。',
     },
     {
       q: 'What is the passage’s main conclusion?',
