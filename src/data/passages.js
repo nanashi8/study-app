@@ -91,7 +91,7 @@ const CORE_PASSAGES = [
       'vegetable', 'garden', 'simple', 'careful', 'attention', 'choose',
       'remove', 'soil', 'schedule', 'temperature', 'affect', 'community',
       'experience', 'protect', 'environment', 'action', 'result',
-      'research', 'chemical', 'attract', 'damage', 'harvest',
+      'research', 'chemical', 'attract', 'damage', 'insect',
     ],
     sentences: [
       p('Last spring, the students at Maple Junior High started a vegetable garden behind their school.', '昨年の春、メープル中学校の生徒たちは学校の裏に野菜畑を作り始めました。'),
@@ -162,7 +162,7 @@ const CORE_PASSAGES = [
       'repair', 'device', 'waste', 'replace', 'community', 'volunteer',
       'examine', 'instruction', 'practical', 'confidence', 'benefit',
       'resource', 'demand', 'ownership', 'manufacturer', 'consumer',
-      'responsibility', 'available', 'encourage', 'reduce',
+      'responsibility', 'obtain', 'encourage', 'reduce',
     ],
     sentences: [
       p('People replace phones, lamps, and other household devices for many reasons.', '人々はさまざまな理由で、電話やランプなどの家庭用機器を買い替えます。'),
@@ -205,8 +205,8 @@ const CORE_PASSAGES = [
       'technology', 'dramatic', 'invisible', 'sensor', 'measure', 'platform',
       'passenger', 'source', 'reduce', 'stress', 'equipment', 'affect',
       'factor', 'consider', 'maintain', 'privacy', 'concern', 'behavior',
-      'overlook', 'unequal', 'resident', 'effect', 'evidence', 'efficient',
-      'policy',
+      'overlook', 'unequal', 'resident', 'effect', 'evidence', 'data',
+      'official',
     ],
     sentences: [
       p('When people discuss technology, they often imagine large machines, bright screens, or dramatic changes in daily life.', '人々がテクノロジーについて話すとき、大きな機械、明るい画面、日常生活の劇的な変化を想像しがちです。'),

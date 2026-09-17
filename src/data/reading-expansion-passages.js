@@ -56,7 +56,7 @@ export const EXPANDED_PASSAGES = [
     vocab: [
       'heavy', 'rain', 'town', 'street', 'safe', 'map', 'student', 'interview',
       'resident', 'bridge', 'river', 'route', 'center', 'dark', 'light',
-      'family', 'test', 'notice', 'change', 'website',
+      'family', 'test', 'sign', 'change', 'website',
     ],
     sentences: [
       p('Heavy rain sometimes covers streets in our town with water.', '大雨によって、私たちの町の道路が水に覆われることがあります。'),
@@ -89,9 +89,9 @@ export const EXPANDED_PASSAGES = [
     examFocus: ['活動の順序', '利用者の視点', '筆者の学び'],
     vocab: [
       'visitor', 'coast', 'town', 'student', 'guide', 'survey', 'tourist',
-      'information', 'bus', 'local', 'choose', 'simple', 'language', 'map',
+      'information', 'bus', 'local', 'choose', 'practical', 'translation', 'map',
       'restaurant', 'owner', 'mistake', 'test', 'exchange', 'landmark',
-      'wheelchair', 'culture', 'station', 'improve',
+      'wheelchair', 'route', 'station', 'imagine',
     ],
     sentences: [
       p('A small town on the coast receives many visitors during the summer.', '海岸にある小さな町には、夏に多くの旅行者が訪れます。'),
@@ -131,8 +131,8 @@ export const EXPANDED_PASSAGES = [
     examFocus: ['実験の比較', '例外の理由', '限定的な結論'],
     vocab: [
       'phone', 'attention', 'school', 'experiment', 'student', 'message',
-      'locker', 'emergency', 'focus', 'task', 'survey', 'result', 'improve',
-      'anxiety', 'family', 'teacher', 'assignment', 'choice', 'habit', 'review',
+      'locker', 'emergency', 'focus', 'task', 'survey', 'result', 'interrupt',
+      'anxious', 'family', 'teacher', 'assignment', 'device', 'habit', 'review',
     ],
     sentences: [
       p('Many students say that phones help them organize homework and contact their families.', '多くの生徒は、スマートフォンが宿題の整理や家族への連絡に役立つと言います。'),
@@ -174,9 +174,9 @@ export const EXPANDED_PASSAGES = [
     examLabel: '大学受験基礎・英検準2級プラス',
     examFocus: ['解決案と限界', '指標の読み取り', '社会的な配慮'],
     vocab: [
-      'clothing', 'produce', 'energy', 'water', 'waste', 'donate', 'quality',
-      'repair', 'button', 'material', 'measure', 'replace', 'hygiene', 'choice',
-      'participant', 'reduce', 'manufacturer', 'design', 'durable', 'responsibility',
+      'clothing', 'produce', 'energy', 'water', 'waste', 'donate', 'condition',
+      'repair', 'button', 'material', 'dignity', 'replace', 'hygiene', 'choice',
+      'participant', 'reduce', 'manufacturer', 'design', 'durable', 'influence',
     ],
     sentences: [
       p('Producing clothing requires water, energy, labor, and transportation across long distances.', '衣服の生産には、水、エネルギー、労働、そして長距離の輸送が必要です。'),
@@ -222,7 +222,7 @@ export const EXPANDED_PASSAGES = [
     vocab: [
       'farm', 'vertical', 'crop', 'indoor', 'soil', 'light', 'water', 'weather',
       'transport', 'energy', 'electricity', 'cost', 'pollinator', 'evidence',
-      'location', 'efficient', 'labor', 'community', 'policy', 'transparent',
+      'climate', 'efficient', 'renewable', 'affordable', 'advantage', 'transparent',
       'investment', 'system', 'food', 'produce',
     ],
     sentences: [
@@ -267,10 +267,10 @@ export const EXPANDED_PASSAGES = [
     examLabel: '大学受験・英検準1級',
     examFocus: ['複数の利害', '反論への応答', '段階的な政策'],
     vocab: [
-      'artificial', 'light', 'pollution', 'night', 'wildlife', 'migration',
-      'insect', 'health', 'glare', 'safety', 'evidence', 'shield',
+      'artificial', 'light', 'pollution', 'night', 'wildlife', 'migrate',
+      'insect', 'disturb', 'glare', 'safety', 'evidence', 'shield',
       'brightness', 'resident', 'worker', 'business', 'tourism', 'standard',
-      'monitor', 'policy', 'adapt', 'community', 'public', 'environment', 'energy',
+      'monitor', 'policy', 'alter', 'community', 'public', 'ecosystem', 'energy',
     ],
     sentences: [
       p('For most of human history, darkness was a predictable part of every night.', '人類の歴史の大半で、暗闇は毎晩予測できるものでした。'),
@@ -324,10 +324,10 @@ export const EXPANDED_PASSAGES = [
     examFocus: ['抽象概念の具体化', '反論の比較', '倫理的な条件'],
     vocab: [
       'choice', 'default', 'behavior', 'architecture', 'convenience', 'policy',
-      'decision', 'automatic', 'option', 'participation', 'evidence', 'ethical',
-      'autonomy', 'transparent', 'manipulation', 'institution', 'burden',
-      'distribution', 'consent', 'review', 'accountability', 'legitimate',
-      'intervention', 'democratic', 'feedback', 'data', 'privacy', 'inequality',
+      'decision', 'automatic', 'option', 'nudge', 'evidence', 'ethical',
+      'refusal', 'transparency', 'manipulation', 'institution', 'burden',
+      'distribution', 'disclosure', 'review', 'alternative', 'legitimate',
+      'intervention', 'democratic', 'safeguard', 'data', 'privacy', 'vulnerable',
       'public', 'citizen', 'design', 'system',
     ],
     sentences: [

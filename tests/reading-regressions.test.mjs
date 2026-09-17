@@ -22,6 +22,7 @@ import {
   analyzeReadingSentence,
 } from '../src/lib/reading-grammar.js'
 import { phraseSpeechText } from '../src/lib/phrase-speech.js'
+import { findSceneWordInPassage } from '../src/lib/sceneBundles.js'
 
 const EXPECTED_LEVELS = ['5', '4', '3', 'pre2', 'pre2plus', '2', 'pre1', '1']
 
@@ -89,6 +90,14 @@ test('事前学習語彙は共通辞書で解決し、表現カードを備え�
       study.words.length + study.phrases.length,
       `${passage.id}: 事前学習IDが重複`,
     )
+  }
+})
+
+test('長文の単語一覧は、読後に「この長文に出てきた単語」と示すので本文に出てくる語だけにする', () => {
+  for (const passage of PASSAGES) {
+    for (const id of passage.vocab) {
+      assert.ok(findSceneWordInPassage(passage, getWord(id)), `${passage.id}: ${id} が本文に出てこない`)
+    }
   }
 })
 

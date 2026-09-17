@@ -27,7 +27,7 @@ export const CURRENT_AFFAIRS_PASSAGES = [
     examLabel: '英検5級・時事入門',
     examFocus: ['比較の文', '道具とその働き', 'ifの条件'],
     vocab: [
-      'summer', 'town', 'hot', 'school', 'classroom', 'sun', 'plant', 'window', 'cool',
+      'summer', 'town', 'hot', 'school', 'classroom', 'curtain', 'plant', 'window', 'cool',
       'wall', 'leaf', 'teacher', 'water', 'outside',
     ],
     sentences: [
@@ -57,7 +57,7 @@ export const CURRENT_AFFAIRS_PASSAGES = [
     examLabel: '高校受験・英検4級',
     examFocus: ['数値の変化と理由', '設備の目的', '限界の指摘'],
     vocab: [
-      'spring', 'worker', 'roof', 'sun', 'electricity', 'school', 'classroom', 'screen', 'office',
+      'spring', 'worker', 'roof', 'solar', 'electricity', 'school', 'classroom', 'screen', 'office',
       'power', 'science', 'number', 'learn', 'cloud', 'rain', 'weather', 'real', 'reason',
       'battery', 'store', 'light', 'night', 'problem', 'winter', 'company', 'energy',
     ],
@@ -94,7 +94,7 @@ export const CURRENT_AFFAIRS_PASSAGES = [
     examFocus: ['賛否の整理', '実験の結果', 'ルールの根拠'],
     vocab: [
       'student', 'school', 'tool', 'homework', 'idea', 'answer', 'teacher', 'ban', 'class',
-      'rule', 'example', 'agree', 'list', 'helpful', 'report', 'honest', 'summary',
+      'rule', 'example', 'source', 'list', 'helpful', 'report', 'honest', 'summary',
       'general', 'fact', 'information', 'note', 'perfect', 'unfair', 'future', 'judge',
       'skill',
     ],
@@ -186,7 +186,7 @@ export const CURRENT_AFFAIRS_PASSAGES = [
     examLabel: '大学受験基礎・英検準2級プラス',
     examFocus: ['原因の重なり', '調査から設計へ', '二案の比較'],
     vocab: [
-      'rural', 'local', 'hospital', 'passenger', 'decade', 'company', 'route', 'driver',
+      'rural', 'local', 'hospital', 'passenger', 'decrease', 'company', 'route', 'driver',
       'retirement', 'village', 'service', 'elderly', 'resident', 'clinic', 'office',
       'complaint', 'expensive', 'official', 'trip', 'app', 'cost', 'vehicle', 'schedule',
       'system', 'signal', 'volunteer', 'taxi', 'prefecture',
@@ -235,8 +235,8 @@ export const CURRENT_AFFAIRS_PASSAGES = [
     vocab: [
       'satellite', 'orbit', 'earth', 'weather', 'data', 'signal', 'internet', 'service', 'information',
       'community', 'rocket', 'fragment', 'debris', 'spacecraft', 'collision', 'fuel',
-      'radar', 'research', 'dangerous', 'solution', 'engineer', 'mission', 'capture',
-      'scale', 'remove', 'politics', 'agreement', 'launch', 'insurance', 'disposal',
+      'radar', 'researcher', 'dangerous', 'solution', 'engineer', 'mission', 'capture',
+      'scale', 'remove', 'political', 'agreement', 'launch', 'insurance', 'disposal',
       'resource',
     ],
     sentences: [
@@ -355,7 +355,7 @@ export const CURRENT_AFFAIRS_PASSAGES = [
       'equipment', 'skill', 'assumption', 'synthetic', 'media', 'fabrication', 'concern',
       'false', 'material', 'correction', 'genuine', 'dismiss', 'doubt', 'accountability',
       'detection', 'software', 'provenance', 'camera', 'capture', 'chain', 'custody',
-      'verify', 'metadata', 'privacy', 'institution', 'court', 'platform', 'label',
+      'verify', 'metadata', 'disclosure', 'institution', 'court', 'platform', 'label',
       'burden',
     ],
     sentences: [

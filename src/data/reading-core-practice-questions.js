@@ -571,7 +571,7 @@ export const CORE_READING_PRACTICE_QUESTIONS = Object.freeze({
       sourceJa: '睡眠研究者は、10代には体内時計が変化することが多いと説明します。',
       explain: '主語 Sleep researchers と動詞 explain を先に置き、that 以下の内容節をひとかたまりで後ろへ回します。',
       readingRuleId: 'that-diagnosis',
-      vocabIds: ['sleep', 'research'],
+      vocabIds: ['sleep', 'researcher'],
     }),
     pick({
       id: 'crp_schoolstart_grammar',
