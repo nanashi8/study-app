@@ -10,6 +10,7 @@ import p_pre2plus_repair_cafes from './p_pre2plus_repair_cafes.js'
 import p_2_quiet_technology from './p_2_quiet_technology.js'
 import p_pre1_resilient_cities from './p_pre1_resilient_cities.js'
 import p_1_collective_memory from './p_1_collective_memory.js'
+import p_5_school_open_day from './p_5_school_open_day.js'
 
 const PASSAGE_STRUCTURES = Object.freeze({
   p_5_lost_notebook,
@@ -20,6 +21,7 @@ const PASSAGE_STRUCTURES = Object.freeze({
   p_2_quiet_technology,
   p_pre1_resilient_cities,
   p_1_collective_memory,
+  p_5_school_open_day,
 })
 
 export const READING_SENTENCE_STRUCTURES = PASSAGE_STRUCTURES

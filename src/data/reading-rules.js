@@ -471,8 +471,8 @@ export const PASSAGE_READING_APPROACHES = Object.freeze({
   p_5_lost_notebook: makePassageApproach(
     '人物・出来事・転機を時系列で追う',
     '身近な物語では、人物ごとの状況と行動を結びつけ、話が動いたきっかけを確かめる。',
-    ['登場人物と、その人物に関わる物・場所を結びつける', 'first・then・afterを手がかりに、出来事を順に並べる', '結末から、人物がそう行動した理由を本文で確かめる'],
-    ['genre-prediction', 'svoc-core', 'relative-clause', 'logic-connectors', 'reference-chain', 'evidence-backtrack'],
+    ['登場人物と、その人物に関わる物・場所を結びつける', 'On Monday・After lunch・Then を手がかりに、出来事を順に並べる', '結末から、人物がそう感じた理由を本文で確かめる'],
+    ['genre-prediction', 'svoc-core', 'postmodifier', 'logic-connectors', 'reference-chain', 'evidence-backtrack'],
   ),
   p_4_library_event: makePassageApproach(
     '日時・場所・参加条件を表にして読む',
@@ -495,14 +495,14 @@ export const PASSAGE_READING_APPROACHES = Object.freeze({
   p_pre2plus_repair_cafes: makePassageApproach(
     '仕組み・効果・限界を分けて整理する',
     '持続可能性を扱う説明文では、活動の仕組み、確かめられた効果、地域だけでは解決できない限界を混ぜずに読む。',
-    ['活動の手順と担い手を整理する', '効果を、本文の具体例で確かめる', 'butの後ろの限界から、結論がどこまで言えるかを決める'],
+    ['活動の手順と担い手を整理する', '効果を、本文の具体例で確かめる', 'However の後ろの限界から、結論がどこまで言えるかを決める'],
     ['genre-prediction', 'finite-verb-check', 'passive-active', 'contrast-concession', 'author-stance', 'evidence-backtrack'],
   ),
   p_2_quiet_technology: makePassageApproach(
     '技術ごとに、働き・利点・懸念をそろえて比べる',
     '技術を扱う論説文では、便利さの例だけを拾わず、それぞれの技術が誰の役に立ち、どんな懸念や条件を伴うかを比べる。',
     ['具体例ごとに、その技術の働きを短く書く', '同じ技術の利点と懸念を、並べて書く', '最後の提案が、どのくらい強い言い方か確かめる'],
-    ['reading-mode', 'punctuation-map', 'that-diagnosis', 'contrast-concession', 'author-stance', 'distractor-strength'],
+    ['reading-mode', 'parallel-shape', 'that-diagnosis', 'contrast-concession', 'author-stance', 'distractor-strength'],
   ),
   p_pre1_resilient_cities: makePassageApproach(
     '気候対策を効果・費用・公平性で比較する',
@@ -520,7 +520,7 @@ export const PASSAGE_READING_APPROACHES = Object.freeze({
     '案内文から「時刻・場所・持ち物」を探し出す',
     '行事の案内文は、最初から全文を訳すより、設問が求める予定や持ち物を表のように整理して読む。',
     ['時刻と場所を一組にして、表にまとめる', '持ち物と、することを分けて書く', '設問の人物に必要な情報だけを、本文で確かめる'],
-    ['purpose-first', 'noun-boundary', 'infinitive-role', 'logic-connectors', 'evidence-backtrack', 'repair-monitor'],
+    ['purpose-first', 'noun-boundary', 'postmodifier', 'logic-connectors', 'evidence-backtrack', 'repair-monitor'],
   ),
   p_4_bicycle_safety: makePassageApproach(
     '安全の指示と、その理由・結果を一組にする',

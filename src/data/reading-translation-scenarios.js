@@ -129,7 +129,7 @@ export const READING_TRANSLATION_SCENARIOS = Object.freeze({
     ],
     [
       b('Please ask a teacher', 'どうぞ／尋ねてください／先生に'),
-      b('near the front door', '正面のドアの近くにいる'),
+      b('near the front door', '正面玄関の近くにいる'),
       b('if you have any questions', 'もし／あなたに／何か質問があれば'),
     ],
     [

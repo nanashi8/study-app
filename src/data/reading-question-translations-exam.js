@@ -20,8 +20,8 @@ export const EXAM_READING_QUESTION_TRANSLATIONS = Object.freeze({
       '音楽の本。',
     ]),
     t('来校者はどこで先生に質問できますか。', [
-      '正面のドアの近くで。',
-      '学校の菜園で。',
+      '正面玄関の近くで。',
+      '学校の庭で。',
       'バス停で。',
       '音楽ホールの裏で。',
     ]),
