@@ -16,6 +16,7 @@ import p_3_lunch_food_waste from './p_3_lunch_food_waste.js'
 import p_pre2_later_school_start from './p_pre2_later_school_start.js'
 import p_pre2plus_city_bird_count from './p_pre2plus_city_bird_count.js'
 import p_2_online_health_claims from './p_2_online_health_claims.js'
+import p_pre1_cashless_inclusion from './p_pre1_cashless_inclusion.js'
 
 const PASSAGE_STRUCTURES = Object.freeze({
   p_5_lost_notebook,
@@ -32,6 +33,7 @@ const PASSAGE_STRUCTURES = Object.freeze({
   p_pre2_later_school_start,
   p_pre2plus_city_bird_count,
   p_2_online_health_claims,
+  p_pre1_cashless_inclusion,
 })
 
 export const READING_SENTENCE_STRUCTURES = PASSAGE_STRUCTURES

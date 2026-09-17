@@ -23,7 +23,7 @@ export const EXAM_READING_GRAMMAR_EXPECTATIONS = Object.freeze({
     SVOC SVO SVOC SVO SVC
   `),
   p_pre1_cashless_inclusion: patterns(`
-    SV SVO SVOC SVC SVO SVO SVO SVC SVO SVO SVC SVC SVO SVO SVO SVO SVO SVOC SVO
+    SV SVO SVOC SVC SVO SVO SVO SVC SVO SVO SVC SVC SVO SVO SVO SVO SVC SVOC SVOC
     SVO SVC SVO SVC SVC SVC SVO SVC SVC SVC
   `),
   p_1_metric_fixation: patterns(`
