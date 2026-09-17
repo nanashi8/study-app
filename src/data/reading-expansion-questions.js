@@ -64,34 +64,34 @@ export const EXPANDED_READING_QUESTIONS = Object.freeze({
 
   p_3_multilingual_town_guide: freezeQuestions([
     {
-      q: 'What did the first survey change about the guide?',
+      q: 'What did the survey at the station change about the guide?',
       choices: ['It made the class choose practical information visitors needed.', 'It made the class list every famous place in town.', 'It removed all Japanese from the guide.', 'It limited the guide to restaurant prices.'],
       answer: 'It made the class choose practical information visitors needed.',
-      explain: '旅行者は時刻や給水場所などを求めたため、クラスは名所一覧より実用情報を選びました。',
+      explain: '旅行者はバスや閉店の時刻、水を補給できる場所などを知りたがっていたため、クラスは有名な場所の一覧ではなく実用的な情報を選びました。',
     },
     {
       q: 'Why did the teams measure each walking time twice?',
       choices: ['Busy summer streets could slow a group.', 'Restaurant owners asked them to walk at night.', 'The first measurement used a wheelchair.', 'The station closed during the first test.'],
       answer: 'Busy summer streets could slow a group.',
-      explain: '混雑する夏の道路では歩行時間が変わり得ることが、再測定の理由です。',
+      explain: '夏の混雑した道路ではグループの歩みが遅くなることがあるので、歩行時間を2回測りました。',
     },
     {
       q: 'What problem did the wheelchair user find?',
       choices: ['A short route had many steps.', 'The online map could not open on a phone.', 'The guide used only difficult English.', 'The red bridge was closed every summer.'],
       answer: 'A short route had many steps.',
-      explain: '短い道順でも階段が多いと分かり、階段のない長めの道順が追加されました。',
+      explain: '短い道順に階段が多いと分かり、クラスは階段のない長めの道順を加えました。',
     },
     {
       q: 'Why is a code printed in the paper guide?',
       choices: ['To open the newest online map.', 'To pay restaurant owners.', 'To translate street names automatically.', 'To reserve a seat at the station.'],
       answer: 'To open the newest online map.',
-      explain: '印刷版のコードは、スマートフォンで更新後のオンライン地図を開くためのものです。',
+      explain: '印刷版のコードは、スマートフォンで最新のオンライン地図を開くためのものです。',
     },
     {
       q: 'What did the students learn about good translation?',
       choices: ['It requires imagining what readers need, not only replacing words.', 'It should always make a walking route shorter.', 'It is complete when every place name is listed.', 'It should be written only by hotel workers.'],
       answer: 'It requires imagining what readers need, not only replacing words.',
-      explain: '最後の2文が、語の置換に加えて読み手の場面と必要を想像する重要性をまとめています。',
+      explain: '最後の2文で、よい翻訳には単語を置き換えるだけでなく、旅の場面ごとに読み手が何を必要とするかを想像することも必要だと述べています。',
     },
   ]),
 

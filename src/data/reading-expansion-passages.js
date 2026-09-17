@@ -110,7 +110,7 @@ export const EXPANDED_PASSAGES = [
       s('They understood the English but sometimes missed a turn shown only by a street name.', '彼らは英語は理解できましたが、道路名だけで示された角を通り過ぎることがありました。'),
       s('One student in a wheelchair also found that a short route had many steps.', '車いすを使う一人の生徒は、短い道順に階段が多いことにも気づきました。'),
       s('The class added pictures, safer crossings, and a longer route without steps.', 'クラスは写真、より安全な横断場所、階段のない長めの道順を追加しました。'),
-      p('The finished guide is now available at the station and on the town website.', '完成したガイドは今、駅と町のウェブサイトで利用できます。'),
+      p('The finished guide is now available at the station and on the town website.', '完成したガイドは今、駅でも町のウェブサイトでも利用できます。'),
       s('Printed pages include a code that opens the newest online map on a phone.', '印刷版には、スマートフォンで最新のオンライン地図を開くコードが載っています。'),
       s('A small note asks users to report information that is no longer correct.', '小さな注意書きは、もはや正しくない情報を知らせるよう利用者に求めています。'),
       s('The students learned that good translation requires more than replacing words.', '生徒たちは、よい翻訳には単語を置き換える以上のことが必要だと学びました。'),

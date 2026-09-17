@@ -475,7 +475,7 @@ export const READING_CHOICE_NOTES = freezeNotes({
     "The community center opens only in spring.": "公民館が春だけ開くとは書かれていない。春は、道順を確認し直す時期（第14文）。",
   },
   "p_3_multilingual_town_guide#1": {
-    "It made the class choose practical information visitors needed.": "アンケートでバスの時刻や閉店時刻、水やごみの場所を知りたいという声が出て（第5・6文）、クラスは有名な場所を並べるのではなく実用的な情報を選んだ（第8文）。",
+    "It made the class choose practical information visitors needed.": "アンケートで、バスの時刻や閉店時刻が見つけにくい、水を補給できる場所やごみを捨てられる場所を知りたいという声が出て（第5・6文）、クラスは有名な場所をすべて並べるのではなく実用的な情報を選んだ（第8文）。",
     "It made the class list every famous place in town.": "第8文で、有名な場所をすべて並べるのではなく実用的な情報を選んだと書かれている。逆の内容。",
     "It removed all Japanese from the guide.": "ガイドは日本語とやさしい英語で作った（第3文）。日本語を削ったとは書かれていない。",
     "It limited the guide to restaurant prices.": "飲食店の価格は、店主が確認した情報の一つ（第12文）で、それだけに限ったのではない。",
@@ -483,7 +483,7 @@ export const READING_CHOICE_NOTES = freezeNotes({
   "p_3_multilingual_town_guide#2": {
     "Busy summer streets could slow a group.": "第10文 They tested the walking times twice because busy summer streets could slow a group. と一致する。",
     "Restaurant owners asked them to walk at night.": "店主が確認したのは名前・価格・営業時間（第12文）。夜に歩くよう頼んではいない。",
-    "The first measurement used a wheelchair.": "車いすを使う生徒は、完成前の版を試して階段の多さに気づいた人（第15文）で、1回目の測定の話ではない。",
+    "The first measurement used a wheelchair.": "車いすを使う生徒は、短い道順に階段が多いことに気づいた人（第15文）で、歩行時間の測定の話ではない。",
     "The station closed during the first test.": "駅はアンケートをした場所で（第4文）、閉まったとは書かれていない。",
   },
   "p_3_multilingual_town_guide#3": {

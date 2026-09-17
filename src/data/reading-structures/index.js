@@ -20,6 +20,7 @@ import p_pre1_cashless_inclusion from './p_pre1_cashless_inclusion.js'
 import p_1_metric_fixation from './p_1_metric_fixation.js'
 import p_5_weather_field_trip from './p_5_weather_field_trip.js'
 import p_4_emergency_map from './p_4_emergency_map.js'
+import p_3_multilingual_town_guide from './p_3_multilingual_town_guide.js'
 
 const PASSAGE_STRUCTURES = Object.freeze({
   p_5_lost_notebook,
@@ -40,6 +41,7 @@ const PASSAGE_STRUCTURES = Object.freeze({
   p_1_metric_fixation,
   p_5_weather_field_trip,
   p_4_emergency_map,
+  p_3_multilingual_town_guide,
 })
 
 export const READING_SENTENCE_STRUCTURES = PASSAGE_STRUCTURES
