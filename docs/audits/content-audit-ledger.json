@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-09-16T22:41:20.079Z",
+  "auditedAt": "2026-09-17T00:12:57.854Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -10,8 +10,8 @@
     "categoryCount": 18,
     "learningItemCount": 16355,
     "quizItemCount": 16473,
-    "storedAndGeneratedQuestionPathCount": 4506,
-    "storedAndGeneratedChoicePathCount": 17608,
+    "storedAndGeneratedQuestionPathCount": 4946,
+    "storedAndGeneratedChoicePathCount": 19353,
     "overallContentSha256": "9764e5234b0cfd6f1ef91166194333fe43c1517dae2db4db1824374abe24a886"
   },
   "completionCriteria": [
@@ -19,6 +19,7 @@
     "全問題バンクで選択肢が重複せず、正答が一つだけ存在し、問題別解説がある",
     "英語長文と学習診断の読解の正解・全誤答・わからない1,034経路で、本文の根拠を示す解説と出題した選択肢すべての説明を表示する",
     "英文法は全3,450問・全13,800選択肢に問題文固有の根拠を持つ",
+    "数学の穴埋めは全440か所に段ごとの解説があり、全1,745タイルに空所に入る理由または合わない理由を書いた説明がある",
     "長文32本・794文・140問・560選択肢の和訳と選択肢別解説が原文順に対応する",
     "長文32本すべてが並び替え・文法・語法の技能練習を1問ずつ持ち、原文・訳・重点語・読解ルールが本文と一致する",
     "語彙強化長文4本は約1,000・2,000・3,000・4,000語、全9,860語を辞書解決し、内容16問と並び替え・文法・語法各4問を持ち、既存8,869語の本文カバー率40%以上を保つ",
@@ -103,7 +104,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "ccfe27fef778f563c70604d01698bacaf3f61314fca23eb9953678e4b846da88",
+    "sha256": "379ef42308f14a300162fbd5301d23d47b7054000781929cf3840aa7c5892764",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -128,6 +129,8 @@
       "src/lib/extendedReadingAudit.js",
       "src/lib/readingChoiceNotes.js",
       "src/data/reading-choice-notes.js",
+      "src/data/math-fill-notes.js",
+      "src/screens/MathSolve.jsx",
       "src/lib/normalLearningRecordEntries.js",
       "src/data/reading-question-translations.js",
       "src/data/reading-question-translations-core.js",
@@ -825,6 +828,18 @@
       "generalRationaleCount": 299,
       "choiceSpecificRationaleCount": 896,
       "questionSetSha256": "7aaa35e67f4f37f849f04244f9b4ecfd3904cca0f9b98a755baa9b3659446995",
+      "result": "pass",
+      "failureCount": 0,
+      "failures": []
+    },
+    {
+      "id": "math-fill",
+      "label": "数学穴埋め",
+      "questionCount": 440,
+      "choiceCount": 1745,
+      "generalRationaleCount": 440,
+      "choiceSpecificRationaleCount": 1745,
+      "questionSetSha256": "14c2c1b7e2dff80d00358e61ef148e0f33bfe4ca78a9a439b9541c997b4ded69",
       "result": "pass",
       "failureCount": 0,
       "failures": []

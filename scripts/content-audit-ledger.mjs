@@ -24,6 +24,7 @@ import { kotenInterpretationChoiceNoteFor } from '../src/data/koten-interpretati
 import { literatureReadingChoiceNoteFor } from '../src/data/literature-reading-choice-notes.js'
 import { listeningChoiceNoteFor } from '../src/data/listening-choice-notes.js'
 import { mathChoiceNoteFor } from '../src/data/math-choice-notes.js'
+import { mathFillNoteFor } from '../src/data/math-fill-notes.js'
 import { KOTEN_GRAMMAR_QUESTIONS } from '../src/data/koten-grammar-questions.js'
 import { KOTEN_CULTURE_QUESTIONS } from '../src/data/koten-culture.js'
 import { KOTEN_INTERPRETATIONS } from '../src/data/koten-interpretations.js'
@@ -203,7 +204,7 @@ function auditQuestionBank({
         choiceSpecificRationaleCount += choiceRationales.length
       }
     }
-    return { id: idValue, choices: choiceKeys, answer: item.answer ?? item.answerId }
+    return { id: idValue, choices: choiceKeys, answer: item.answer ?? item.answerId ?? item.fill?.blanks }
   })
   return {
     id,
@@ -337,6 +338,19 @@ function buildQuestionBanks() {
       choiceRationalesFor: (item) => item.choices.map((_, index) => mathChoiceNoteFor(item.id, index)),
       expectedChoiceCounts: [2, 3],
     }),
+    // 数学の穴埋め。選択肢はタイル、正答は空所に入るタイルの組（全部がタイルにあること）。ID は画面と同じ「問題ID:step:番号」。
+    auditQuestionBank({
+      id: 'math-fill',
+      label: '数学穴埋め',
+      items: Object.values(MATH_PROBLEMS).flat().flatMap((problem) => (
+        problem.steps.flatMap((step, index) => (step.fill ? [{ ...step, id: `${problem.id}:step:${index}` }] : []))
+      )),
+      choicesFor: (item) => item.fill.tiles,
+      answerMatches: (item, choices) => (item.fill.blanks.every((blank) => choices.includes(blank)) ? 1 : 0),
+      rationaleFor: (item) => item.note,
+      choiceRationalesFor: (item) => item.fill.tiles.map((_, index) => mathFillNoteFor(item.id, index)),
+      expectedChoiceCounts: [2, 3, 4],
+    }),
   ]
 }
 
@@ -432,6 +446,8 @@ async function auditImplementationHash() {
     'src/lib/extendedReadingAudit.js',
     'src/lib/readingChoiceNotes.js',
     'src/data/reading-choice-notes.js',
+    'src/data/math-fill-notes.js',
+    'src/screens/MathSolve.jsx',
     'src/lib/normalLearningRecordEntries.js',
     'src/data/reading-question-translations.js',
     'src/data/reading-question-translations-core.js',
@@ -523,6 +539,7 @@ async function buildLedger(auditedAt) {
       '全問題バンクで選択肢が重複せず、正答が一つだけ存在し、問題別解説がある',
       `英語長文と学習診断の読解の正解・全誤答・わからない${readingAnswerPaths.answerPathCount.toLocaleString('en-US')}経路で、本文の根拠を示す解説と出題した選択肢すべての説明を表示する`,
       '英文法は全3,450問・全13,800選択肢に問題文固有の根拠を持つ',
+      '数学の穴埋めは全440か所に段ごとの解説があり、全1,745タイルに空所に入る理由または合わない理由を書いた説明がある',
       '長文32本・794文・140問・560選択肢の和訳と選択肢別解説が原文順に対応する',
       '長文32本すべてが並び替え・文法・語法の技能練習を1問ずつ持ち、原文・訳・重点語・読解ルールが本文と一致する',
       '語彙強化長文4本は約1,000・2,000・3,000・4,000語、全9,860語を辞書解決し、内容16問と並び替え・文法・語法各4問を持ち、既存8,869語の本文カバー率40%以上を保つ',

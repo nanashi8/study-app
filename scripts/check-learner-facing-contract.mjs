@@ -105,6 +105,12 @@ for (const retired of ['src/components/EtymologyKnowledge.jsx']) {
     errors.push(`${retired}: 廃止した2択実装が残る`)
   }
 }
+// 決まり文句の4段解説（徹底解説・根拠・消去法・考え方）は、全教材で問題ごとの解説と、選択肢・タイルごとの説明に置き換えた。
+for (const retired of ['src/components/InstructorExplanation.jsx', 'src/lib/instructorExplanations.js']) {
+  if (files.some((file) => path.relative(projectRoot, file) === retired)) {
+    errors.push(`${retired}: 廃止した決まり文句の4段解説が残る`)
+  }
+}
 for (const required of [
   'src/screens/EtymologyStudy.jsx',
   'src/screens/EtymologyQuiz.jsx',
@@ -119,6 +125,9 @@ for (const file of files) {
   const relative = path.relative(projectRoot, file)
   for (const forbidden of forbiddenRuntimeCopy) {
     if (source.includes(forbidden)) errors.push(`${relative}: 廃止表記「${forbidden}」`)
+  }
+  if (/InstructorExplanation|instructorExplanations/.test(source)) {
+    errors.push(`${relative}: 廃止した決まり文句の4段解説を使っている`)
   }
 }
 
@@ -173,7 +182,7 @@ for (const file of files) {
 
 const readProjectFile = (relative) => readFile(path.join(projectRoot, relative), 'utf8')
 const [
-  instructorSource,
+  mathSolveSource,
   grammarQuizSource,
   grammarChoiceExplanationsSource,
   homeSource,
@@ -195,7 +204,7 @@ const [
   vocabQuizSource,
   sessionControlsSource,
 ] = await Promise.all([
-  readProjectFile('src/components/InstructorExplanation.jsx'),
+  readProjectFile('src/screens/MathSolve.jsx'),
   readProjectFile('src/screens/GrammarQuiz.jsx'),
   readProjectFile('src/components/GrammarChoiceExplanations.jsx'),
   readProjectFile('src/screens/Home.jsx'),
@@ -218,8 +227,12 @@ const [
   readProjectFile('src/components/QuestionSessionControls.jsx'),
 ])
 
-for (const label of ['根拠', '消去法', '考え方']) {
-  if (!instructorSource.includes(`label: '${label}'`)) errors.push(`共通解説に「${label}」がない`)
+if (
+  !mathSolveSource.includes('data-math-fill-explanation')
+  || !mathSolveSource.includes('タイルの解説（${bank.length}枚すべて）')
+  || !mathSolveSource.includes('mathFillNoteFor(`${p.id}:step:${si}`, tile.id)')
+) {
+  errors.push('数学の穴埋めの答え合わせに、その段の解説と、出したタイルすべての説明がない')
 }
 if (!grammarQuizSource.includes('GrammarChoiceExplanations')) errors.push('英文法画面に選択肢解説部品がない')
 if (!grammarQuizSource.includes('{grammarRuleExplanationFor(item)}')) errors.push('英文法画面に規則ごとの解説がない')
