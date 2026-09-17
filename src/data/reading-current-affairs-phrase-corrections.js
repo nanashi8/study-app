@@ -107,11 +107,12 @@ export const CURRENT_AFFAIRS_READING_PHRASE_CORRECTIONS = freeze({
     ], 'Some が主語S、used が述語V、them が目的語Oです。to check spelling は目的を示す不定詞Mです。'),
   ]),
   'A few students copied whole answers and did not read them carefully.': freeze([
-    correction(['and did not', 'read', 'them carefully'], [
+    correction(['and did not read', 'them', 'carefully'], [
       { role: 'LINK', en: 'and', ja: 'そして' },
       { role: 'V', en: 'did not read', ja: '読みませんでした' },
-      { role: 'O', en: 'them carefully', ja: 'それらを注意深く' },
-    ], 'and は主語を共有したまま述語を並べます。did not read は助動詞と本動詞を分けず一つのVです。'),
+      { role: 'O', en: 'them', ja: 'それらを' },
+      { role: 'M', en: 'carefully', ja: '注意深く' },
+    ], 'and は主語を共有したまま述語を並べます。did not read は助動詞と本動詞を分けず一つのVです。carefully は読み方を示すMです。'),
   ]),
   'Our class first collected examples of good and bad use.': freeze([
     correction(['Our class first', 'collected examples'], [

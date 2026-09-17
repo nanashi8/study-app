@@ -128,7 +128,7 @@ export const CURRENT_AFFAIRS_READING_QUESTIONS = Object.freeze({
         'The group without AI could not finish the task.',
       ],
       answer: 'The AI group finished faster but wrote general sentences.',
-      explain: '第13文に、AIを使った組は速く終えたが文はしばしば一般的すぎたとあります。',
+      explain: '第13文に、AIを使った組は速く終えたが文はしばしばおおざっぱすぎたとあります。',
     },
     {
       q: 'What must students do under the new rules?',
@@ -139,7 +139,7 @@ export const CURRENT_AFFAIRS_READING_QUESTIONS = Object.freeze({
         'Ask a teacher before starting any homework.',
       ],
       answer: 'List the source of every piece of information.',
-      explain: '第17文に、それぞれの報告はあらゆる情報の出典を挙げなければならないと明記されています。',
+      explain: '第17文に、どの報告もすべての情報の出どころを挙げなければならないと明記されています。',
     },
     {
       q: 'What does the teacher say the real skill is?',

@@ -694,11 +694,11 @@ export const READING_CHOICE_NOTES = freezeNotes({
     "It asked each class to write its own rules instead.": "完全に禁止したくはなく（第5文）、Instead, the school asked each class to write its own rules.（第6文）と一致する。",
     "It checked every student’s computer.": "コンピューターを調べたとは書かれていない。学校はクラスごとにルールを書かせた（第6文）。",
     "It bought the tools for every class.": "道具を買ったとは書かれていない。学校はクラスごとにルールを書かせた（第6文）。",
-    "It asked students to finish homework faster.": "速く終えるよう求めたとは書かれていない。実験で早く終わったのはAIを使った組だが、文は一般的すぎた（第13文）。",
+    "It asked students to finish homework faster.": "速く終えるよう求めたとは書かれていない。実験で早く終わったのはAIを使った組だが、文はおおざっぱすぎた（第13文）。",
   },
   "p_3_ai_class_rules#3": {
     "The AI group finished faster but wrote general sentences.": "第13文 The AI group finished faster, but their sentences were often too general. と一致する。",
-    "The AI group wrote longer and more exact summaries.": "第13文で、AIを使った組の文はしばしば一般的すぎたと書かれている。正確だったのではない。",
+    "The AI group wrote longer and more exact summaries.": "第13文で、AIを使った組の文はしばしばおおざっぱすぎたと書かれている。正確だったのではない。",
     "Both groups finished at exactly the same time.": "第13文で、AIを使った組の方が早く終わったと書かれている。",
     "The group without AI could not finish the task.": "自力で書いた組が終えられなかったとは書かれていない。比べているのは速さと文の中身（第13文）。",
   },
