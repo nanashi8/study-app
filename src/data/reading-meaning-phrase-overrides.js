@@ -224,8 +224,8 @@ export const READING_MEANING_PHRASE_OVERRIDES = Object.freeze({
     ),
   }),
 
-  'Setting review dates and publishing results allows governments to revise policies without treating revision as failure.': sentence({
-    'allows governments to revise policies': item(
+  'Setting review dates and publishing results allow governments to revise policies without treating revision as failure.': sentence({
+    'allow governments to revise policies': item(
       '政府が政策を改められるようにします',
       'allow O to do は「Oが〜できるようにする」です。governments は allow のOであると同時に to revise の意味上の主語です。',
     ),

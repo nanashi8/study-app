@@ -277,8 +277,8 @@ const CORE_PASSAGES = [
       s('It must also recognize that the absence of disaster is not proof that preparation was unnecessary.', 'また、災害が起こらなかったことは準備が不要だった証拠ではないと認識しなければなりません。'),
       p('Finally, adaptation plans must remain flexible.', '最後に、適応計画は柔軟であり続けなければなりません。'),
       s('A project that performs well under today\'s conditions may be inadequate if migration, land use, or rainfall patterns change.', '現在の条件でうまく機能する事業でも、人口移動、土地利用、降雨パターンが変われば不十分になるかもしれません。'),
-      s('Setting review dates and publishing results allows governments to revise policies without treating revision as failure.', '見直しの日程を定めて結果を公表すれば、政府は修正を失敗とみなさずに政策を改められます。'),
-      p('As climate conditions remain uncertain, the cities that adapt most successfully will probably be those that combine technical knowledge with public participation.', '気候条件が不確かなままである中、最もうまく適応する都市は、おそらく専門的知識と市民参加を組み合わせる都市でしょう。'),
+      s('Setting review dates and publishing results allow governments to revise policies without treating revision as failure.', '見直しの日程を定めて結果を公表すれば、政府は修正を失敗とみなさずに政策を改められます。'),
+      p('As climate conditions remain uncertain, the cities that adapt most successfully will probably be those that combine technical knowledge with public participation.', '気候条件は不確かなままなので、最もうまく適応する都市は、おそらく専門的な知識と市民の参加を組み合わせる都市でしょう。'),
     ],
   },
 

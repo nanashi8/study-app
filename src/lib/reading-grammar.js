@@ -4348,7 +4348,7 @@ const ING_CONTEXT_OVERRIDES = new Map([
     { type: 'preposition-gerund', governor: 'for', semanticSubject: '通りを歩く一般の利用者', note: 'walking は前置詞 for の目的語となる動名詞です。歩く主体は trees / They ではなく、通りの一般利用者です。' },
   ],
   [
-    'Setting review dates and publishing results allows governments to revise policies without treating revision as failure.|||treating',
+    'Setting review dates and publishing results allow governments to revise policies without treating revision as failure.|||treating',
     { type: 'preposition-gerund', governor: 'without', semanticSubject: 'governments', note: 'treating ... は without の目的語となる動名詞で、意味上の主語は governments です。publishing が treating の主語ではありません。' },
   ],
   [
@@ -4719,13 +4719,13 @@ const COORDINATION_CONTEXT_OVERRIDES = new Map([
     },
   ],
   [
-    'Setting review dates and publishing results allows governments to revise policies without treating revision as failure.|||1',
+    'Setting review dates and publishing results allow governments to revise policies without treating revision as failure.|||1',
     {
       type: 'compound-gerund-subject',
       left: 'Setting review dates',
       right: 'publishing results',
-      governor: 'allows',
-      note: 'and は Setting review dates と publishing results という二つの動名詞句を並列し、allows の複合主語Sを作ります。publishing から新しい独立節が始まる形ではありません。',
+      governor: 'allow',
+      note: 'and は Setting review dates と publishing results という二つの動名詞句を並列し、allow の複合主語Sを作ります。publishing から新しい独立節が始まる形ではありません。',
     },
   ],
   [
