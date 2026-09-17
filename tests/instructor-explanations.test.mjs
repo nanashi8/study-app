@@ -41,6 +41,7 @@ import {
 } from '../src/data/listening-choice-notes.js'
 import { MATH_PROBLEMS } from '../src/data/math.js'
 import { MATH_CHOICE_NOTES, mathChoiceNoteFor } from '../src/data/math-choice-notes.js'
+import { MATH_FILL_NOTES, mathFillNoteFor } from '../src/data/math-fill-notes.js'
 import { PHRASES } from '../src/data/phrases.js'
 import {
   ALL_WORDS,
@@ -51,10 +52,6 @@ import {
   WRITING_EXERCISES,
   getWritingGrammar,
 } from '../src/data/writing.js'
-import {
-  buildMathFillInstructorExplanation,
-  isCompleteInstructorExplanation,
-} from '../src/lib/instructorExplanations.js'
 import { buildDiagnosticQuestions, diagnosticChoiceNoteFor } from '../src/lib/diagnosticQuestions.js'
 import { buildAllEtymologyQuizQuestions } from '../src/lib/etymologyQuiz.js'
 import { grammarRuleExplanationFor } from '../src/lib/grammarQuestionExplanations.js'
@@ -62,7 +59,6 @@ import { isGenericPhraseNote, isGenericPhraseOrigin } from '../src/lib/phraseNot
 import { pickPhraseDistractors } from '../src/lib/session.js'
 
 const normalize = (value) => String(value ?? '').replace(/\s+/g, ' ').trim()
-const withoutTerminal = (value) => normalize(value).replace(/[。.!！?？]+$/u, '')
 const deterministicRng = () => 0.3141592653
 // scripts/english-content-audit.mjs と同じ決まった順の乱数（出題の組み方を再現する）。
 const seededRandom = (seed) => {
@@ -75,38 +71,6 @@ const seededRandom = (seed) => {
     return ((result ^ (result >>> 14)) >>> 0) / 4294967296
   }
 }
-const forbiddenOutput = /\bundefined\b|\bNaN\b|__study_app_unknown_choice__/
-
-const assertExplanation = (value, label) => {
-  assert.equal(
-    isCompleteInstructorExplanation(value),
-    true,
-    `${label} に「正解・根拠・消去法・考え方」のいずれかがありません: ${JSON.stringify(value)}`,
-  )
-  for (const key of ['answer', 'evidence', 'trap', 'strategy']) {
-    assert.ok(value[key].length >= 20, `${label}.${key} が短すぎます: ${value[key]}`)
-    assert.doesNotMatch(
-      value[key],
-      forbiddenOutput,
-      `${label}.${key} に内部値または不正値が露出しています`,
-    )
-  }
-  assert.equal(
-    new Set(['answer', 'evidence', 'trap', 'strategy'].map((key) => value[key])).size,
-    4,
-    `${label} の4段解説が重複しています`,
-  )
-}
-
-const assertContains = (actual, expected, label) => {
-  const needle = withoutTerminal(expected)
-  if (!needle) return
-  assert.ok(
-    normalize(actual).includes(needle),
-    `${label} に問題固有の根拠「${needle}」がありません: ${actual}`,
-  )
-}
-
 const diagnosticQuestions = [
   ...DIAGNOSTIC_QUESTIONS,
   ...[1, 2, 3].flatMap((attemptNumber) => buildDiagnosticQuestions({
@@ -114,23 +78,75 @@ const diagnosticQuestions = [
     seed: 0x1a2b3c4d,
   })),
 ]
-test('数学の穴埋めの全か所から問題固有の4段解説を生成できる', () => {
-  let units = 0
-  for (const problem of Object.values(MATH_PROBLEMS).flat()) {
-    // 選択問題は問題固有の解説と選択肢ごとの説明、解き終わりは解き方とつまずきやすい点を示す（それぞれのテスト）。
-    // 講師解説を使うのは穴埋めだけ。
-    problem.steps.forEach((step, index) => {
-      if (!step.fill) return
-      const value = buildMathFillInstructorExplanation(problem, step, step.fill.blanks)
-      assertExplanation(value, `math:${problem.id}:step:${index}`)
-      assertContains(value.answer, step.fill.blanks.join('、'), `math:${problem.id}:step:${index}.answer`)
-      assertContains(value.evidence, step.note, `math:${problem.id}:step:${index}.evidence`)
-      units += 1
-    })
+const sameFillAnswer = (fill, selectedValues) => {
+  const correct = fill.blanks.map(normalize)
+  const selected = selectedValues.map(normalize)
+  if (correct.length !== selected.length) return false
+  if (fill.unordered) {
+    return [...correct].sort().every((value, index) => value === [...selected].sort()[index])
   }
+  return correct.every((value, index) => value === selected[index])
+}
 
-  // 数学の穴埋めだけ（英文法・長文・学習診断の読解は、問題ごとに書いた解説と選択肢ごとの説明に移した）。
-  assert.equal(units, 440, `全件監査の対象数が変わりました: ${units}`)
+// 数学の穴埋め。決まり文句の4段解説は置かず、その段の解説と、出したタイル1枚ずつの説明を示す。
+// 説明で「正解」とするタイル（空所に入るもの）と、画面の正誤判定がそろっていることも確かめる。
+test('数学440穴埋めは、全タイルに式や値に照らした説明があり、正誤判定と一致し、順不同7題は逆順も正答として扱う', () => {
+  let fills = 0
+  let unordered = 0
+  let tiles = 0
+  const problems = Object.values(MATH_PROBLEMS).flat()
+  for (const problem of problems) {
+    for (const [index, step] of problem.steps.entries()) {
+      if (!step.fill) continue
+      fills += 1
+      const key = `${problem.id}:step:${index}`
+      assert.ok(normalize(step.note), `math:${key} の解説がありません`)
+      assert.equal(sameFillAnswer(step.fill, step.fill.blanks), true, `math:${key} の正答が正答と判定されません`)
+      const texts = step.fill.tiles.map((_, tileIndex) => normalize(mathFillNoteFor(key, tileIndex)))
+      step.fill.tiles.forEach((tile, tileIndex) => {
+        const label = `math:${key}「${tile}」`
+        const text = texts[tileIndex]
+        assert.ok(text.length >= 5, `${label} の説明がありません`)
+        // 画面は $...$ を数式として描くので、閉じていない $ や描けない数式を残さない。
+        const segments = text.split('$')
+        assert.equal(segments.length % 2, 1, `${label} の説明の $ が閉じていません`)
+        segments.forEach((segment, part) => {
+          if (part % 2 === 0) return
+          assert.doesNotThrow(
+            () => katex.renderToString(segment, { throwOnError: true }),
+            `${label} の説明の数式「${segment}」が描けません`,
+          )
+        })
+        if (step.fill.blanks.includes(tile)) {
+          // 空所が2つある段は、どちらの空所に入るか（順不同ならどちらでもよいこと）を書く。
+          if (step.fill.blanks.length > 1) assert.match(text, /①|②/u, `${label} の説明に入る空所がありません`)
+        } else {
+          // 空所に入らないタイルは、どの空所に入れても正答にならない。
+          step.fill.blanks.forEach((_, blankIndex) => {
+            const candidate = [...step.fill.blanks]
+            candidate[blankIndex] = tile
+            assert.equal(sameFillAnswer(step.fill, candidate), false, `${label} を入れても正答になります`)
+          })
+        }
+        tiles += 1
+      })
+      assert.equal(new Set(texts).size, texts.length, `math:${key} のタイルの説明が重複しています`)
+      if (step.fill.unordered) {
+        unordered += 1
+        assert.equal(sameFillAnswer(step.fill, [...step.fill.blanks].reverse()), true, `math:${key} の順不同判定が不一致です`)
+      }
+    }
+  }
+  // 問題やタイルを直したのに、説明だけが古いまま残らないようにする。
+  for (const [key, list] of Object.entries(MATH_FILL_NOTES)) {
+    const [problemId, , stepIndex] = key.split(':')
+    const step = problems.find((problem) => problem.id === problemId)?.steps[Number(stepIndex)]
+    assert.ok(step?.fill, `math:${key} は存在しない穴埋めの説明です`)
+    assert.equal(list.length, step.fill.tiles.length, `math:${key} の説明の数がタイルの数と違います`)
+  }
+  assert.equal(fills, 440)
+  assert.equal(unordered, 7)
+  assert.equal(tiles, 1745)
 })
 
 // 長文の内容理解と学習診断の読解は、決まり文句の4段解説をやめ、本文のどの文が根拠かを書いた解説と、
@@ -153,9 +169,6 @@ test('長文の内容理解と学習診断の読解は、根拠の解説と選�
   const diagnostic = await read('screens/Diagnostic.jsx')
   assert.doesNotMatch(diagnostic, /InstructorExplanation|instructorExplanations/, 'Diagnostic.jsx: 決まり文句の講師解説が戻っています')
   assert.match(diagnostic, /data-diagnostic-explanation[\s\S]*?\{question\.explain\}/)
-
-  const source = await readFile(new URL('../src/lib/instructorExplanations.js', import.meta.url), 'utf8')
-  assert.doesNotMatch(source, /buildReadingInstructorExplanation|buildReadingChoiceExplanations|buildDiagnosticInstructorExplanation/)
 })
 
 // 英文法は、決まり文句の4段解説をやめ、規則ごとに書いた解説を出す（形の決まり方と、その文への当てはめ）。
@@ -187,6 +200,96 @@ test('英文法3,555問は規則ごとの解説を出し、決まり文句の講
     const item = grammarById.get(question.sourceId.slice('grammar:'.length))
     assert.equal(question.explain, grammarRuleExplanationFor(item), `diagnostic:${question.id}`)
   }
+})
+
+// リスニングも問題形式のテスト。設問の型から作る決まり文句の4段解説は置かず、
+// 問題固有の解説と、出題した選択肢すべての説明（和訳と、放送・絵のどこと合うか）を示す。
+test('リスニング160問は、教材の全選択肢に放送や絵に照らした説明を示し、決まり文句の講師解説を使わない', async () => {
+  const source = await readFile(new URL('../src/screens/ListeningQuiz.jsx', import.meta.url), 'utf8')
+  assert.doesNotMatch(source, /InstructorExplanation/, 'ListeningQuiz.jsx: 決まり文句の講師解説が戻っています')
+  assert.match(source, /\{item\.explain\}/, 'ListeningQuiz.jsx: 問題固有の解説がありません')
+  assert.match(source, /<ChoiceExplanations/, 'ListeningQuiz.jsx: 選択肢ごとの欄がありません')
+  assert.match(
+    source,
+    /rows=\{options\.map\(\(choice\) => \(\{[\s\S]*?body: listeningChoiceNoteFor\(item, choice\.id\)/,
+    'ListeningQuiz.jsx: 選択肢の欄がボタンと同じ選択肢から作られていません',
+  )
+
+  let notes = 0
+  for (const item of LISTENING_ITEMS) {
+    const texts = item.choices.map((choice) => normalize(listeningChoiceNoteFor(item, choice.id)))
+    texts.forEach((text, index) => {
+      // 「選択肢の和訳」。放送・絵のどこと合うか（合わないか）、の形。
+      assert.match(text, /^「[^」]+」。.{4,}/u, `listening:${item.id}「${item.choices[index].text}」の説明がありません`)
+    })
+    assert.equal(new Set(texts).size, texts.length, `listening:${item.id} の選択肢の説明が重複しています`)
+    notes += texts.length
+  }
+  // 問題や選択肢を直したのに、説明だけが古いまま残らないようにする。
+  for (const [id, notesByChoice] of Object.entries(LISTENING_CHOICE_NOTES)) {
+    const item = LISTENING_ITEMS.find((entry) => entry.id === id)
+    assert.ok(item, `listening:${id} は存在しない問題の説明です`)
+    assert.deepEqual(
+      Object.keys(notesByChoice).sort(),
+      item.choices.map((choice) => choice.id).sort(),
+      `listening:${id} の説明の選択肢が教材と違います`,
+    )
+  }
+  assert.equal(notes, 608)
+})
+
+// 数学の選択問題（方針の確認・選択式のステップ）。決まり文句の4段解説は置かず、設問固有の解説と、
+// 出した選択肢すべての説明を示す。教材は正解を先頭に書いているので、画面で並びを混ぜる。
+test('数学の選択問題299問は、全選択肢に式や値に照らした説明を示し、正解を先頭に固定しない', async () => {
+  const source = await readFile(new URL('../src/screens/MathSolve.jsx', import.meta.url), 'utf8')
+  assert.doesNotMatch(source, /buildMathChoiceInstructorExplanation/, 'MathSolve.jsx: 選択問題に決まり文句の講師解説が戻っています')
+  assert.match(
+    source,
+    /const order = useMemo\(\(\) => shuffle\(q\.choices\.map\(\(_, index\) => index\)\), \[q\]\)/,
+    'MathSolve.jsx: 選択肢の並びを混ぜていません',
+  )
+  assert.match(source, /\{order\.map\(\(idx\) => \{/, 'MathSolve.jsx: 選択肢ボタンが混ぜた並びから作られていません')
+  assert.match(source, /<MathText>\{q\.why \?\? q\.note\}<\/MathText>/, 'MathSolve.jsx: 設問固有の解説がありません')
+  assert.match(
+    source,
+    /rows=\{order\.map\(\(idx\) => \(\{[\s\S]*?body: mathChoiceNoteFor\(noteKey, idx\)/,
+    'MathSolve.jsx: 選択肢の欄がボタンと同じ並びから作られていません',
+  )
+  assert.match(source, /noteKey=\{`\$\{p\.id\}:recall`\}/)
+  assert.match(source, /noteKey=\{`\$\{p\.id\}:step:\$\{si\}`\}/)
+
+  const questions = Object.values(MATH_PROBLEMS).flat().flatMap((problem) => [
+    ...(problem.recall?.quiz ? [{ key: `${problem.id}:recall`, question: problem.recall.quiz }] : []),
+    ...problem.steps.flatMap((step, index) => (step.fill ? [] : [{ key: `${problem.id}:step:${index}`, question: step }])),
+  ])
+  let notes = 0
+  for (const { key, question } of questions) {
+    assert.ok(normalize(question.why ?? question.note), `math:${key} の解説がありません`)
+    const texts = question.choices.map((_, index) => normalize(mathChoiceNoteFor(key, index)))
+    texts.forEach((text, index) => {
+      assert.ok(text.length >= 5, `math:${key}「${question.choices[index]}」の説明がありません`)
+      // 画面は $...$ を数式として描くので、閉じていない $ や描けない数式を残さない。
+      const segments = text.split('$')
+      assert.equal(segments.length % 2, 1, `math:${key}「${question.choices[index]}」の説明の $ が閉じていません`)
+      segments.forEach((segment, part) => {
+        if (part % 2 === 0) return
+        assert.doesNotThrow(
+          () => katex.renderToString(segment, { throwOnError: true }),
+          `math:${key} の説明の数式「${segment}」が描けません`,
+        )
+      })
+    })
+    assert.equal(new Set(texts).size, texts.length, `math:${key} の選択肢の説明が重複しています`)
+    notes += texts.length
+  }
+  // 設問や選択肢を直したのに、説明だけが古いまま残らないようにする。
+  for (const [key, list] of Object.entries(MATH_CHOICE_NOTES)) {
+    const entry = questions.find((candidate) => candidate.key === key)
+    assert.ok(entry, `math:${key} は存在しない設問の説明です`)
+    assert.equal(list.length, entry.question.choices.length, `math:${key} の説明の数が選択肢の数と違います`)
+  }
+  assert.equal(questions.length, 299)
+  assert.equal(notes, 896)
 })
 
 // ディクテーション・英作文・数学の解き終わりは、決まり文句の4段解説をやめ、その文・その問題だけの説明を出す。
@@ -254,20 +357,22 @@ test('数学の解き終わりは、答えと解き方を1段ずつと、つま�
   }
 })
 
-test('数学の穴埋めの答え合わせは共通の講師解説を表示する', async () => {
+test('数学の穴埋めの答え合わせは、その段の解説とタイル1枚ずつの説明を出し、決まり文句の講師解説を使わない', async () => {
   const source = await readFile(new URL('../src/screens/MathSolve.jsx', import.meta.url), 'utf8')
-  assert.match(source, /InstructorExplanation/, 'MathSolve.jsx に共通講師解説がありません')
+  assert.doesNotMatch(source, /InstructorExplanation|instructorExplanations/, 'MathSolve.jsx: 決まり文句の講師解説が戻っています')
+  assert.match(source, /data-math-fill-explanation[\s\S]*?<MathText>\{step\.note\}<\/MathText>/, 'MathSolve.jsx: 穴埋めの解説がありません')
+  assert.match(
+    source,
+    /rows=\{bank\.map\(\(tile\) => \(\{[\s\S]*?body: mathFillNoteFor\(`\$\{p\.id\}:step:\$\{si\}`, tile\.id\)/,
+    'MathSolve.jsx: タイルの欄が、出したタイルから作られていません',
+  )
 })
 
-test('共通解説の表示名と各フィールドの意味契約を一致させる', async () => {
-  const source = await readFile(
-    new URL('../src/components/InstructorExplanation.jsx', import.meta.url),
-    'utf8',
-  )
-  assert.match(source, /key: 'evidence', label: '根拠'/)
-  assert.match(source, /key: 'trap', label: '消去法'/)
-  assert.match(source, /key: 'strategy', label: '考え方'/)
-  assert.doesNotMatch(source, /根拠を一本化|誤答を切る|次も解ける型/)
+// どの教材の答え合わせも、問題ごとに書いた解説と選択肢・タイルごとの説明に置き換えた。
+test('決まり文句の4段解説の部品と組み立て関数を残さない', async () => {
+  const exists = (relative) => readFile(new URL(relative, import.meta.url)).then(() => true, () => false)
+  assert.equal(await exists('../src/components/InstructorExplanation.jsx'), false)
+  assert.equal(await exists('../src/lib/instructorExplanations.js'), false)
 })
 
 // 意味を知っているかを問うテスト。出題にない例文や文脈から答えを決めさせる4段解説は置かず、

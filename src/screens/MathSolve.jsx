@@ -2,18 +2,17 @@ import { useMemo, useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import { problemsForUnit, unitById } from '../data/math.js'
 import { shuffle } from '../data/vocab.js'
-import { MathBlock, MathText } from '../components/MathText.jsx'
+import { MathBlock, MathInline, MathText } from '../components/MathText.jsx'
 import { MathFillIn, resolveFill } from '../components/MathFillIn.jsx'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { ChoiceExplanations } from '../components/ChoiceExplanations.jsx'
-import { InstructorExplanation } from '../components/InstructorExplanation.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
 import { Button, ProgressBar, IconButton } from '../components/ui.jsx'
 import { cx } from '../components/ui.jsx'
 import { Close, Check, ArrowRight, Lightbulb, Target } from '../components/Icons.jsx'
 import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { mathChoiceNoteFor } from '../data/math-choice-notes.js'
-import { buildMathFillInstructorExplanation } from '../lib/instructorExplanations.js'
+import { mathFillNoteFor } from '../data/math-fill-notes.js'
 
 // 誘導型の数学ソルバー。1問を「確認 → 穴埋め → 答え」で解き進める。
 //  ① recall  … 着眼点・公式を思い出し、方針を3択で確認
@@ -240,15 +239,25 @@ export function MathSolveScreen() {
                 onAdd={addTile} onRemove={removeSlot} onClear={clearTiles}
               />
               {fillResult && (
-                <InstructorExplanation
-                  explanation={buildMathFillInstructorExplanation(
-                    p,
-                    step,
-                    placed.map((id) => bank.find((item) => item.id === id)?.label),
-                  )}
-                  className="mt-4 animate-slide-up"
-                  renderText={(text) => <MathText>{text}</MathText>}
-                />
+                <div className="mt-4 space-y-3 animate-slide-up">
+                  {/* この段で行う操作の説明と、出したタイル1枚ずつの説明だけを出す（決まり文句の4段解説は置かない）。 */}
+                  <div className="rounded-xl bg-white px-3 py-2.5 ring-1 ring-violet-100" data-math-fill-explanation>
+                    <p className="text-[10px] font-extrabold text-violet-600">解説</p>
+                    <p className="mt-0.5 text-sm font-bold leading-relaxed text-ink/75"><MathText>{step.note}</MathText></p>
+                  </div>
+                  <ChoiceExplanations
+                    title={`タイルの解説（${bank.length}枚すべて）`}
+                    name="math-fill"
+                    renderText={(text) => <MathText>{text}</MathText>}
+                    rows={bank.map((tile) => ({
+                      id: String(tile.id),
+                      heading: <MathInline tex={tile.label} />,
+                      body: mathFillNoteFor(`${p.id}:step:${si}`, tile.id),
+                      correct: step.fill.blanks.includes(tile.label),
+                      chosen: placed.includes(tile.id),
+                    }))}
+                  />
+                </div>
               )}
             </>
           ) : (

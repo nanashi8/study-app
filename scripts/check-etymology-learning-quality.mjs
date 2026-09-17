@@ -260,7 +260,6 @@ export function auditEtymologyLearningQuality() {
     'src/lib/learningNotebookCatalog.js',
     'src/lib/learningAnalyticsReport.js',
     'src/lib/appMenu.js',
-    'src/lib/instructorExplanations.js',
     'src/lib/diagnosticQuestions.js',
   ]
   const publicSource = publicFiles.map(source).join('\n')
@@ -350,7 +349,6 @@ export function auditEtymologyLearningQuality() {
     'src/screens/VocabQuiz.jsx',
     'src/lib/etymologyQuiz.js',
     'src/lib/learningNotebookCatalog.js',
-    'src/lib/instructorExplanations.js',
     'src/lib/diagnosticQuestions.js',
   ].map(source).join('\n')
   if (/\b(?:word|item)\??\.etymology\??\.(?:note|origin|parts)/.test(learnerSurfaceSource)) {
