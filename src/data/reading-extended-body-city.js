@@ -494,7 +494,7 @@ export const GENERATIONAL_CITY_BODY = Object.freeze({
         ),
         s(
           'A step that appears useless in ninety-nine ordinary cases exists entirely because of the one rare case that remains.',
-          '九十九のありふれた場合には無用に見える段階は、百番目の場合のためだけに存在します。',
+          '九十九のありふれた場合には無用に見える段階は、残る一つのまれな場合のためだけに存在します。',
         ),
         s(
           'Reform therefore requires knowing which particular kind of case each step was originally built to catch.',

@@ -1,7 +1,7 @@
 import { st } from './entry.js'
 
 // 語彙強化ロングリーディング（約4,000語）の構造台帳。節ごとに手で確かめて足していく。
-// いまは「翌年より先を考える」から「結果を左右する条件」まで（#1〜#80）。
+// いまは「翌年より先を考える」から「制度と公共の信頼」まで（#1〜#120）。
 // 残りの文は、台帳ができるまで解析器の表示のまま。
 export default Object.freeze([
   st('[S A city] [V is] [M {前| above all}] [C a machine {前| for {動名詞| [V moving] [O costs and benefits] [M {前| across time}]}}], [M {副詞節:譲歩| [接 although] [S it] [V is] [M very rarely] [V described] [M {前| in quite those terms}]}].', {
@@ -876,6 +876,420 @@ export default Object.freeze([
     ],
     notes: {
       'at a cost that is worth paying': 'be worth ＋ -ing で「〜する価値がある」。',
+    },
+  }),
+  st('[S A price] [V is] [C a message {前| about scarcity}], [接 and] [S it] [V is] [M {前| at the very same time}] [C a bill {関係>a bill| [O that] [S some particular household] [V has to pay]}].', {
+    chunks: [
+      ['A price is a message about scarcity,', '価格は希少さについての伝言です'],
+      ['and it is at the very same time a bill', 'そして同時に請求書でもあります'],
+      ['that some particular household has to pay', 'どこかの家庭が払わねばならない（請求書）'],
+    ],
+    notes: {
+      'A price is a message about scarcity,': 'scarcity は「足りないこと・希少さ」。',
+    },
+  }),
+  st('[S {動名詞| [V Raising] [O a price]}] [V reduces] [O demand] [M very efficiently indeed], [接 and] [S it] [V reduces] [O that demand] [M most sharply] [M {前| among those {前| with the least money}}].', {
+    chunks: [
+      ['Raising a price reduces demand', '価格を上げれば需要は減ります'],
+      ['very efficiently indeed,', '実にきわめて効率よく'],
+      ['and it reduces that demand most sharply', 'そして最も鋭く減らします'],
+      ['among those with the least money', 'お金の最も少ない人たちのあいだで'],
+    ],
+    notes: {
+      'among those with the least money': 'those は「人々」。with the least money が後ろから説明しています。',
+    },
+  }),
+  st('[S Both {前| of those statements}] [V are] [C entirely true], [接 and] [S any policy {関係>any policy| [S that] [V admits] [O only one {前| of them}]}] [V will] [M sooner or later] [V be resisted].', {
+    chunks: [
+      ['Both of those statements are entirely true,', 'その二つの言明はどちらもまったく正しいのです'],
+      ['and any policy that admits only one of them', 'そして一方しか認めない政策は'],
+      ['will sooner or later be resisted', '遅かれ早かれ抵抗を受けます'],
+    ],
+    notes: {
+      'will sooner or later be resisted': 'sooner or later で「遅かれ早かれ」。be resisted は受け身です。',
+    },
+  }),
+  st('[S {動名詞| [V Pairing] [O a price signal] [M {前| with a direct payment}]}] [V is] [M usually] [C the cheapest available way {to:形容詞>the cheapest available way| [V to keep] [O both effects] [M {前| at once}]}].', {
+    chunks: [
+      ['Pairing a price signal with a direct payment', '価格の合図に直接の給付を組み合わせることが'],
+      ['is usually the cheapest available way', 'たいてい最も安上がりな方法です'],
+      ['to keep both effects at once', '両方の効果を同時に保つ（方法）'],
+    ],
+    notes: {
+      'Pairing a price signal with a direct payment': 'pair A with B で「AをBと組み合わせる」。',
+    },
+  }),
+  st('[S Housing] [V is] [M {前| by a considerable margin}] [C the largest single expense {前| in the yearly budget {前| of most households}}].', {
+    chunks: [
+      ['Housing is by a considerable margin', '住居費はかなりの差をつけて'],
+      ['the largest single expense', '最大の単一支出です'],
+      ['in the yearly budget of most households', 'たいていの家計の一年の予算で'],
+    ],
+    notes: {
+      'Housing is by a considerable margin': 'by a considerable margin で「かなりの差で」。',
+    },
+  }),
+  st('[S It] [V is] [M also] [C the asset {関係>the asset| [M through which] [S most families] [V hold] [O the wealth {関係>the wealth| [O that] [S they] [V have managed] [O {to:名詞| [V to accumulate] [M {前| over a life}]}]}]}].', {
+    chunks: [
+      ['It is also the asset', 'それはまた資産でもあります（どんな資産かは次へ）'],
+      ['through which most families hold the wealth', 'それを通して多くの家族が財産を持つ'],
+      ['that they have managed to accumulate', 'どうにか蓄えてきた（財産を）'],
+      ['over a life', '一生をかけて'],
+    ],
+    notes: {
+      'that they have managed to accumulate': 'manage to ＋ 動詞 で「どうにか〜する」。that は accumulate の目的語にあたります。',
+    },
+  }),
+  st('[S Those two roles] [V pull] [O housing policy] [M {前| in opposite directions}], [接 and] [S they] [V cannot] [M both] [V be fully satisfied] [M {前| at the same time}].', {
+    chunks: [
+      ['Those two roles pull housing policy', 'この二つの役割は住宅政策を引っぱります'],
+      ['in opposite directions,', '反対の向きへ'],
+      ['and they cannot both be fully satisfied', 'そして両方を完全に満たすことはできません'],
+      ['at the same time', '同時には'],
+    ],
+    notes: {
+      'and they cannot both be fully satisfied': 'not both … で「両方とも〜とはいかない」という部分否定です。',
+    },
+  }),
+  st('[S Cheaper housing] [V is] [C good {前| for new buyers} and bad {前| for the existing owners {関係>the existing owners| [S who] [V voted] [M {前| for the rules {関係>the rules| [S that] [V are] [M now] [M {前| in force}]}}]}}].', {
+    chunks: [
+      ['Cheaper housing is good for new buyers', '住宅が安いことは新しい買い手にはよく'],
+      ['and bad for the existing owners', '既存の所有者には悪いことです'],
+      ['who voted for the rules', 'その所有者が賛成票を投じた規則があり'],
+      ['that are now in force', 'それが今効力を持っています'],
+    ],
+    notes: {
+      'that are now in force': 'in force は「効力がある」。that は the rules を受ける関係代名詞です。',
+    },
+  }),
+  st('[S Debt] [V moves] [O consumption] [M {前| from the future}] [M {前| into the present}] [M {前| at a price {関係>a price| [S that] [V is] [M normally] [V stated] [M {前| in advance}]}}].', {
+    chunks: [
+      ['Debt moves consumption', '負債は消費を動かします'],
+      ['from the future into the present', '未来から現在へ'],
+      ['at a price that is normally stated in advance', 'ふつう前もって示される価格で'],
+    ],
+    notes: {
+      'at a price that is normally stated in advance': 'in advance は「前もって」。ここでの price は利子などの負担です。',
+    },
+  }),
+  st('[M {分詞構文:条件| [V Used] [M {前| for education} or {前| for the purchase {前| of a house}}]}], [S it] [V can raise] [O the income {前| of a whole life}] [M quite substantially].', {
+    chunks: [
+      ['Used for education or for the purchase of a house,', '教育や住宅の購入のために使われれば'],
+      ['it can raise the income of a whole life', 'それは一生の所得を引き上げられます'],
+      ['quite substantially', 'かなり大きく'],
+    ],
+    notes: {
+      'Used for education or for the purchase of a house,': '文頭の Used … は「もし使われれば」という条件を表す分詞のまとまりです。',
+    },
+  }),
+  st('[M {分詞構文:条件| [V Used] [M {前| for ordinary daily expenses}]}], [S it] [V converts] [O a temporary shortage] [M {前| into a permanent charge {前| on every future month}}].', {
+    chunks: [
+      ['Used for ordinary daily expenses,', 'ふだんの日々の支出に使われれば'],
+      ['it converts a temporary shortage', 'それは一時的な不足を変えてしまいます'],
+      ['into a permanent charge on every future month', '将来のあらゆる月にかかる恒久的な負担に'],
+    ],
+    notes: {
+      'it converts a temporary shortage': 'convert A into B で「AをBに変える」。',
+    },
+  }),
+  st('[S The very same instrument] [M therefore] [V builds] [O security] [M {前| for one household}] [接 and] [M steadily] [V removes] [O it] [M {前| from the next}].', {
+    chunks: [
+      ['The very same instrument therefore builds security', 'まったく同じ道具がしたがって安定を築きます'],
+      ['for one household', 'ある家庭には'],
+      ['and steadily removes it from the next', 'そして別の家庭からは着実にそれを奪います'],
+    ],
+    notes: {
+      'and steadily removes it from the next': 'the next は「次の（別の）家庭」。it は security を指します。',
+    },
+  }),
+  st('[S Insurance] [V is] [C the market instrument {関係>the market instrument| [S that] [V addresses] [O risk {前| between the generations}] [M more directly] [M {前| than any other instrument}]}].', {
+    chunks: [
+      ['Insurance is the market instrument', '保険は市場の道具です（どんな道具かは次へ）'],
+      ['that addresses risk between the generations', '世代のあいだの危険に向き合う'],
+      ['more directly than any other instrument', 'ほかのどの道具よりも直接に'],
+    ],
+    notes: {
+      'that addresses risk between the generations': 'address はここでは「（問題に）取り組む」。',
+    },
+  }),
+  st('[S It] [V works] [M {前| by {動名詞| [V pooling] [O events {関係>events| [S that] [V are] [C rare {前| for any single individual} and reasonably predictable {前| for a whole population}]}]}}].', {
+    chunks: [
+      ['It works by pooling events', 'それは出来事をまとめることで働きます'],
+      ['that are rare for any single individual', 'どの個人にもまれで'],
+      ['and reasonably predictable for a whole population', '集団全体にはかなり読める（出来事を）'],
+    ],
+    notes: {
+      'It works by pooling events': 'pool は動詞で「一つにまとめる」。by ＋ -ing で「〜することによって」。',
+    },
+  }),
+  st('[M {副詞節:時| [接 When] [S a risk] [V becomes] [C common] [M {前| rather than rare}]}], [S that pool] [V stops] [O {動名詞| [V functioning] [M properly]}] [接 and] [S prices] [V rise] [M very sharply indeed].', {
+    chunks: [
+      ['When a risk becomes common rather than rare,', '危険がまれではなく当たり前になると'],
+      ['that pool stops functioning properly', 'その集まりはうまく働かなくなり'],
+      ['and prices rise very sharply indeed', 'そして価格は実に急激に上がります'],
+    ],
+    notes: {
+      'that pool stops functioning properly': 'stop ＋ -ing で「〜するのをやめる」。functioning は stop の目的語です。',
+    },
+  }),
+  st('[S Flood cover {前| in an exposed coastal district}] [V is] [C the clearest current example {前| of exactly that kind {前| of breakdown}}].', {
+    chunks: [
+      ['Flood cover in an exposed coastal district', '風雨にさらされる沿岸地区の水害保険は'],
+      ['is the clearest current example', '最も明確な今の例です'],
+      ['of exactly that kind of breakdown', 'まさにその種の破綻の'],
+    ],
+    notes: {
+      'Flood cover in an exposed coastal district': 'cover はここでは名詞で「保険の補償」。exposed は「さらされた」。',
+    },
+  }),
+  st('[S Markets] [V allocate] [O resources] [M very efficiently] [M {前| within the rules {関係>the rules| [O that] [S a society] [V has already chosen] [O {to:名詞| [V to set out] [M {前| for them}]}]}}].', {
+    chunks: [
+      ['Markets allocate resources very efficiently', '市場は資源をきわめて効率よく配分します'],
+      ['within the rules', '規則の内側で'],
+      ['that a society has already chosen', '社会がすでに選んだ（規則の）'],
+      ['to set out for them', '市場のために定めることを'],
+    ],
+    notes: {
+      'to set out for them': 'set out は「定める・示す」。them は Markets を指します。',
+    },
+  }),
+  st('[S They] [V cannot choose] [O those rules] [M {前| for themselves}], [接 and] [S they] [V cannot notice] [O any cost {関係>any cost| [M that] [S nobody] [V has yet put] [O a price] [M on]}].', {
+    chunks: [
+      ['They cannot choose those rules for themselves,', '市場は自分でその規則を選べません'],
+      ['and they cannot notice any cost', 'そしてどんな費用にも気づけません'],
+      ['that nobody has yet put a price on', 'だれもまだ値をつけていない（費用に）'],
+    ],
+    notes: {
+      'that nobody has yet put a price on': 'put a price on … で「…に値をつける」。文末の on の目的語が that です。',
+    },
+  }),
+  st('[S {動名詞| [V Treating] [O a market outcome] [C {前| as a verdict {前| about fairness}}]}] [M therefore] [V confuses] [O a mechanism] [M {前| with a considered judgment}].', {
+    chunks: [
+      ['Treating a market outcome as a verdict', '市場の結果を判定として扱うことは'],
+      ['about fairness', '公正さについての'],
+      ['therefore confuses a mechanism', 'したがって仕組みを取り違えます'],
+      ['with a considered judgment', 'よく考えられた判断と'],
+    ],
+    notes: {
+      'therefore confuses a mechanism': 'confuse A with B で「AとBを取り違える」。',
+    },
+  }),
+  st('[S The useful question] [V is] [M always] [C {疑問詞節| [S which particular set {前| of rules}] [V produces] [O outcomes {関係>outcomes| [M that] [S a city] [V is prepared] [C {to:補語| [V to live] [M with]}]}]}].', {
+    chunks: [
+      ['The useful question is always', '役に立つ問いは常に（何かは次へ）'],
+      ['which particular set of rules produces outcomes', 'どの規則の組み合わせが結果を生むか、です'],
+      ['that a city is prepared to live with', '都市が受け入れて暮らせる（結果を）'],
+    ],
+    notes: {
+      'that a city is prepared to live with': 'live with … で「…を受け入れて暮らす」。文末の with の目的語が that です。',
+    },
+  }),
+  st('[S An institution] [V is] [M essentially] [C a promise {関係>a promise| [S that] [V keeps] [O its force] [M even] [M {副詞節:時| [接 after] [S the people {関係>the people| [S who] [M first] [V made] [O it]}] [V have left] [O it] [M behind]}]}].', {
+    chunks: [
+      ['An institution is essentially a promise', '制度とは本質的に約束です（どんな約束かは次へ）'],
+      ['that keeps its force even after', 'そのあとも効力を保つ（約束）'],
+      ['the people who first made it', 'それを最初に作った人々が'],
+      ['have left it behind', 'それを置いて去ったあとも'],
+    ],
+    notes: {
+      'have left it behind': 'leave … behind で「…を置いていく」。',
+    },
+  }),
+  st('[S Its value] [V comes] [M {前| from {動名詞| [V being] [C consistently predictable]}}] [M {前| rather than {前| from {動名詞| [V being] [C clever] [M {前| in any one particular case}]}}}].', {
+    chunks: [
+      ['Its value comes from being consistently predictable', 'その価値は、いつも予測できることから生まれます'],
+      ['rather than from being clever', '賢いことからではなく'],
+      ['in any one particular case', '個々の場面で'],
+    ],
+    notes: {
+      'Its value comes from being consistently predictable': 'come from ＋ -ing で「〜することから生まれる」。',
+    },
+  }),
+  st('[S A court {関係>A court| [S that] [V decided] [O every single case] [M purely] [M {前| on its own merits}]}] [V would be] [C entirely fair and completely useless].', {
+    chunks: [
+      ['A court that decided every single case', 'すべての事件を裁くような裁判所は'],
+      ['purely on its own merits', 'その都度の是非だけで'],
+      ['would be entirely fair and completely useless', 'まったく公正で、まったく役に立たないでしょう'],
+    ],
+    notes: {
+      'purely on its own merits': 'on its own merits で「そのこと自体のよしあしで」。',
+    },
+  }),
+  st('[S People] [V arrange] [O their whole lives] [M {前| around {what節| [O what] [S they] [M confidently] [V expect] [O an institution] [C {to:補語| [V to do] [M {前| in the following year}]}]}}].', {
+    chunks: [
+      ['People arrange their whole lives', '人は生活の全体を組み立てます'],
+      ['around what they confidently expect', '自信を持って見込んでいることを軸に'],
+      ['an institution to do in the following year', '制度が翌年に何をするか、という形で'],
+    ],
+    notes: {
+      'around what they confidently expect': 'expect ＋ 目的語 ＋ to ＋ 動詞 で「〜が…すると見込む」。',
+    },
+  }),
+  st('[S Procedure] [V is] [M very often] [V criticized] [M {前| as useless delay}], [接 and] [S a part {前| of that criticism}] [V is entirely justified].', {
+    chunks: [
+      ['Procedure is very often criticized', '手続きはしばしば批判されます'],
+      ['as useless delay,', '無用な遅れとして'],
+      ['and a part of that criticism is entirely justified', 'そしてその批判の一部はまったく正当です'],
+    ],
+    notes: {
+      'and a part of that criticism is entirely justified': 'justified は「正当だと認められる」。',
+    },
+  }),
+  st('[S The remaining part {前| of that criticism}] [V mistakes] [O a safeguard] [M {前| for an obstacle {関係>an obstacle| [S that] [V serves] [O no useful purpose] [M {前| at all}]}}].', {
+    chunks: [
+      ['The remaining part of that criticism', 'その批判の残りの部分は'],
+      ['mistakes a safeguard for an obstacle', '安全装置を障害物と取り違えています'],
+      ['that serves no useful purpose at all', '何の役にも立たない（障害物と）'],
+    ],
+    notes: {
+      'mistakes a safeguard for an obstacle': 'mistake A for B で「AをBと取り違える」。',
+    },
+  }),
+  st('[S A step {関係>A step| [S that] [V appears] [C useless] [M {前| in ninety-nine ordinary cases}]}] [V exists] [M entirely] [M {前| because of the one rare case {関係>the one rare case| [S that] [V remains]}}].', {
+    chunks: [
+      ['A step that appears useless', '無用に見える段階は'],
+      ['in ninety-nine ordinary cases', '九十九のありふれた場合には'],
+      ['exists entirely because of the one rare case', 'ただ一つのまれな場合のためだけに存在します'],
+      ['that remains', '残っている（その場合の）'],
+    ],
+    notes: {
+      'exists entirely because of the one rare case': 'because of ＋ 名詞 で「〜のせいで・〜のために」。',
+    },
+  }),
+  st('[S Reform] [M therefore] [V requires] [O {動名詞| [V knowing] [O {疑問詞節| [O which particular kind {前| of case}] [S each step] [V was originally built] [C {to:補語| [V to catch]}]}]}].', {
+    chunks: [
+      ['Reform therefore requires knowing', 'したがって改革には知ることが必要です（何をかは次へ）'],
+      ['which particular kind of case', 'どの種類の場合を'],
+      ['each step was originally built to catch', '各段階がもともと捉えるために作られたのかを'],
+    ],
+    notes: {
+      'each step was originally built to catch': 'be built to ＋ 動詞 で「〜するために作られる」。',
+    },
+  }),
+  st('[S Accountability] [V means] [M simply] [O {that節| [接 that] [S someone] [V can be identified] [M {前| by name}] [M {前| at the point {関係>the point| [M when] [S a decision] [V turns out] [C {to:補語| [V to be] [C wrong]}]}}]}].', {
+    chunks: [
+      ['Accountability means simply that', '説明責任とは要するに〜ということです'],
+      ['someone can be identified by name', 'だれかを名前で特定できる'],
+      ['at the point when a decision turns out to be wrong', '決定が誤りだと分かる時点で'],
+    ],
+    notes: {
+      'at the point when a decision turns out to be wrong': 'turn out to be … で「…だと分かる」。when は the point を受ける関係副詞です。',
+    },
+  }),
+  st('[S Systems {関係>Systems| [S that] [V spread] [O responsibility] [M thinly] [M {前| across many offices}]}] [M consistently] [V produce] [O decisions {関係>decisions| [O that] [S nobody {前| at all}] [V owns]}].', {
+    chunks: [
+      ['Systems that spread responsibility thinly', '責任を薄く分散させる仕組みは'],
+      ['across many offices', '多くの部署へ'],
+      ['consistently produce decisions', '決まって決定を生みます（どんな決定かは次へ）'],
+      ['that nobody at all owns', 'だれ一人引き受けない（決定を）'],
+    ],
+    notes: {
+      'that nobody at all owns': 'own はここでは「自分のものとして引き受ける」。',
+    },
+  }),
+  st('[S Such systems] [V are] [C comfortable {to:副詞(形容詞)| [V to work] [M inside]} and almost impossible {to:副詞(形容詞)| [V to correct] [M {前| from anywhere {前| outside them}}]}].', {
+    chunks: [
+      ['Such systems are comfortable to work inside', 'そうした仕組みは中で働くには居心地がよく'],
+      ['and almost impossible to correct', 'そして正すのはほぼ不可能です'],
+      ['from anywhere outside them', 'その外のどこからも'],
+    ],
+    notes: {
+      'Such systems are comfortable to work inside': 'work inside で「中で働く」。inside は副詞です。',
+    },
+  }),
+  st('[S {動名詞| [V Naming] [O the responsible office] [M well] [M {前| in advance}]}] [V is] [M therefore] [C a technical measure {前| rather than any form {前| of punishment}}].', {
+    chunks: [
+      ['Naming the responsible office well in advance', '責任のある部署を前もってはっきり示すことは'],
+      ['is therefore a technical measure', 'したがって技術的な措置です'],
+      ['rather than any form of punishment', '罰の一種ではなく'],
+    ],
+    notes: {
+      'Naming the responsible office well in advance': 'well in advance で「かなり前もって」。',
+    },
+  }),
+  st('[S Transparency] [V is] [M frequently] [V offered] [M {前| to the public}] [M {前| as a complete and sufficient answer {前| to every kind {前| of distrust}}}].', {
+    chunks: [
+      ['Transparency is frequently offered to the public', '透明性はしばしば人々に差し出されます'],
+      ['as a complete and sufficient answer', '完全で十分な答えとして'],
+      ['to every kind of distrust', 'あらゆる不信への'],
+    ],
+    notes: {
+      'as a complete and sufficient answer': 'as は「〜として」。差し出される資格を表します。',
+    },
+  }),
+  st('[S {動名詞| [V Publishing] [O a long document {関係>a long document| [O that] [S nobody] [V is actually able to read]}]}] [V produces] [O the appearance {前| of openness} and none {前| of its substance}].', {
+    chunks: [
+      ['Publishing a long document', '長い文書を公表することは'],
+      ['that nobody is actually able to read', 'だれも実際には読めない（文書を）'],
+      ['produces the appearance of openness', '公開の外見だけを生みます'],
+      ['and none of its substance', 'そして中身は何も生みません'],
+    ],
+    notes: {
+      'and none of its substance': 'none of … で「…のどれも〜ない」。substance は「中身」。',
+    },
+  }),
+  st('[S Genuinely useful transparency] [V states] [O the decision, the reason {前| for it}, the alternatives, and the date {前| of the next review}].', {
+    chunks: [
+      ['Genuinely useful transparency states the decision,', '本当に役立つ透明性は、決定と'],
+      ['the reason for it, the alternatives,', 'その理由と、ほかの選択肢と'],
+      ['and the date of the next review', '次の見直しの期日を述べます'],
+    ],
+    notes: {
+      'the reason for it, the alternatives,': 'alternatives は「ほかに取りえた選択肢」。',
+    },
+  }),
+  st('[S Four short sentences {前| of that kind}] [V will] [M usually] [V do] [O more] [M {前| for public trust}] [M {前| than four hundred pages {前| of technical detail}}].', {
+    chunks: [
+      ['Four short sentences of that kind', 'その種の短い四つの文が'],
+      ['will usually do more for public trust', 'たいてい公共の信頼により多く役立ちます'],
+      ['than four hundred pages of technical detail', '四百頁の細かな説明よりも'],
+    ],
+    notes: {
+      'will usually do more for public trust': 'do more for … で「…のためにより多くの働きをする」。',
+    },
+  }),
+  st('[S Institutions] [V decay] [M very quietly], [接 and] [S that decay] [V becomes] [C visible] [M only] [M {前| in the way {関係省略:関係副詞>the way| [S they] [V respond] [M {前| to a genuine surprise}]}}].', {
+    chunks: [
+      ['Institutions decay very quietly,', '制度はきわめて静かに衰えます'],
+      ['and that decay becomes visible only', 'そしてその衰えが見えるのはようやく（どこでかは次へ）'],
+      ['in the way they respond', '反応の仕方にです'],
+      ['to a genuine surprise', '本物の驚きへの'],
+    ],
+    notes: {
+      'in the way they respond': 'the way ＋ 主語 ＋ 動詞 で「〜するやり方」。the way の後ろに how は置きません。',
+    },
+  }),
+  st('[S A body {関係>A body| [S that] [V carries out] [O its routine work] [M extremely well]}] [V may] [M still] [V be] [C quite incapable {前| of {動名詞| [V admitting] [O a single error]}}].', {
+    chunks: [
+      ['A body that carries out its routine work', '定型の仕事をこなす組織でも'],
+      ['extremely well', 'きわめてうまく'],
+      ['may still be quite incapable', 'それでもまったくできないことがあります'],
+      ['of admitting a single error', '一つの誤りを認めることが'],
+    ],
+    notes: {
+      'may still be quite incapable': 'be incapable of ＋ -ing で「〜することができない」。',
+    },
+  }),
+  st('[S The ability {to:形容詞>The ability| [V to reverse] [O an earlier decision] [M {前| in public}]}] [V is] [C the clearest available sign {同格that>sign| [接 that] [S an institution] [V is] [M still] [C fully alive]}].', {
+    chunks: [
+      ['The ability to reverse an earlier decision', '以前の決定を撤回できることが'],
+      ['in public', '公の場で'],
+      ['is the clearest available sign that', '最も明確な証です（何のかは次へ）'],
+      ['an institution is still fully alive', '制度がまだ十分に生きているという'],
+    ],
+    notes: {
+      'is the clearest available sign that': 'この that は同格の that で、sign の中身を説明します。',
+    },
+  }),
+  st('[S A city] [V should test] [O that ability] [M deliberately] [M {前| in small matters}] [M {前| rather than {動名詞| [V waiting] [M {前:意味上の主語| for a crisis} {to:副詞(目的)| [V to test] [O it] [M {前| for them}]}]}}].', {
+    chunks: [
+      ['A city should test that ability deliberately', '都市はその力を意図的に試すべきです'],
+      ['in small matters', '小さな事柄で'],
+      ['rather than waiting for a crisis', '危機を待つのではなく'],
+      ['to test it for them', '危機が代わりに試すのを'],
+    ],
+    notes: {
+      'rather than waiting for a crisis': 'wait for A to ＋ 動詞 で「Aが〜するのを待つ」。for a crisis は to test の意味上の主語です。',
     },
   }),
 ])
