@@ -777,11 +777,11 @@ export const GENERATIONAL_CITY_BODY = Object.freeze({
         ),
         s(
           'That very value is exactly why the limits have to be agreed before the data is ever gathered.',
-          'そのまさに価値こそ、データが集められる前に制限を書き留めておかねばならない理由です。',
+          'まさにその価値こそ、データが集められる前に制限を取り決めておかねばならない理由です。',
         ),
         s(
           'Rules that are agreed later are always shaped by the value of the material that has already been collected.',
-          'あとから書かれる規則は、すでに集められたものの価値によって必ず形づくられます。',
+          'あとから取り決められる規則は、すでに集められたものの価値によって必ず形づくられます。',
         ),
         p(
           'Automation performs its work consistently, and for the same reason it fails in ways that are equally consistent.',
@@ -789,7 +789,7 @@ export const GENERATIONAL_CITY_BODY = Object.freeze({
         ),
         s(
           'A human error affects one case at a time, while a single error in the code affects every single case simultaneously.',
-          '人の誤りは一度に一件に及びますが、算法の誤りは全件に同時に及びます。',
+          '人の誤りは一度に一件に及びますが、コードの誤りは全件に同時に及びます。',
         ),
         s(
           'Scale therefore converts a small mistake into a very large one without any change at all in the mistake itself.',

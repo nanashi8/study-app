@@ -1,7 +1,7 @@
 import { st } from './entry.js'
 
 // 語彙強化ロングリーディング（約4,000語）の構造台帳。節ごとに手で確かめて足していく。
-// いまは「翌年より先を考える」から「生涯にわたるケア」まで（#1〜#160）。
+// 全200文（十の節すべて）を手で確かめて書いた。
 // 残りの文は、台帳ができるまで解析器の表示のまま。
 export default Object.freeze([
   st('[S A city] [V is] [M {前| above all}] [C a machine {前| for {動名詞| [V moving] [O costs and benefits] [M {前| across time}]}}], [M {副詞節:譲歩| [接 although] [S it] [V is] [M very rarely] [V described] [M {前| in quite those terms}]}].', {
@@ -1703,6 +1703,416 @@ export default Object.freeze([
     ],
     notes: {
       'A rule that is stated openly can be argued with,': 'argue with … で「…に反論する」。受け身になって with が文の終わりに残っています。',
+    },
+  }),
+  st('[S Every new tool {関係>Every new tool| [O that] [S a city] [V adopts]}] [V creates] [O a new capability and a new dependence {前| on it}] [M {前| at exactly the same moment}].', {
+    chunks: [
+      ['Every new tool that a city adopts', '都市が取り入れるどの新しい道具も'],
+      ['creates a new capability and a new dependence on it', '新しい能力と、それへの新しい依存を生みます'],
+      ['at exactly the same moment', 'まったく同じ瞬間に'],
+    ],
+    notes: {
+      'creates a new capability and a new dependence on it': 'capability は「できること」、dependence on … は「…への依存」。',
+    },
+  }),
+  st('[S A payment system {関係>A payment system| [S that] [V works] [M perfectly] [M {前| for many years}]}] [M quietly] [V becomes] [C infrastructure {関係>infrastructure| [S that] [V can] [M no longer] [V be turned off]}].', {
+    chunks: [
+      ['A payment system that works perfectly', '完璧に働く決済の仕組みは'],
+      ['for many years', '何年も'],
+      ['quietly becomes infrastructure', '静かに基盤設備になります（どんな設備かは次へ）'],
+      ['that can no longer be turned off', 'もはや止められない（設備に）'],
+    ],
+    notes: {
+      'that can no longer be turned off': 'turn off … で「…を止める」。no longer は「もはや〜ない」。',
+    },
+  }),
+  st('[S The dependence] [V remains] [C quite invisible] [M {副詞節:時| [接 while] [S the tool] [V works]}] [接 and] [V becomes] [C total] [M {前| on the day {関係>the day| [M that] [S it] [M finally] [V fails]}}].', {
+    chunks: [
+      ['The dependence remains quite invisible', 'その依存は見えないままです'],
+      ['while the tool works', '道具が働いているあいだは'],
+      ['and becomes total on the day', 'そしてその日に全面的なものになります'],
+      ['that it finally fails', 'ついに壊れる（日に）'],
+    ],
+    notes: {
+      'that it finally fails': 'the day that ＋ 主語 ＋ 動詞 で「〜する日」。on which に置きかえられます。',
+    },
+  }),
+  st('[S {動名詞| [V Planning] [M carefully] [M {前| for that day}]}] [V is] [C the whole difference {前| between a small trouble and a complete stop}].', {
+    chunks: [
+      ['Planning carefully for that day', 'その日に向けて丁寧に備えることが'],
+      ['is the whole difference', '違いのすべてです（何の違いかは次へ）'],
+      ['between a small trouble and a complete stop', '小さな面倒と完全な停止との'],
+    ],
+    notes: {
+      'is the whole difference': 'the whole difference で「違いのすべて・分かれ目」。',
+    },
+  }),
+  st('[S Networks] [V concentrate] [O value] [M {前| at their center}] [接 and] [V concentrate] [O most {前| of the risk}] [M {前| at their outer edges}] [M instead].', {
+    chunks: [
+      ['Networks concentrate value at their center', 'ネットワークは価値を中心に集めます'],
+      ['and concentrate most of the risk', 'そして危険の大半を集めます'],
+      ['at their outer edges instead', '代わりに外側の周縁に'],
+    ],
+    notes: {
+      'at their outer edges instead': 'instead はここでは「そのかわりに」で、中心と周縁を対比しています。',
+    },
+  }),
+  st('[S A service {関係>A service| [O that] [M absolutely] [S everybody] [V uses]}] [V is] [C highly efficient], [接 and] [S its failure] [M then] [V affects] [O everybody] [M {前| at once}].', {
+    chunks: [
+      ['A service that absolutely everybody uses', 'だれもが例外なく使う仕組みは'],
+      ['is highly efficient,', 'きわめて効率的です'],
+      ['and its failure then affects everybody at once', 'そして故障は全員に同時に及びます'],
+    ],
+    notes: {
+      'A service that absolutely everybody uses': 'that は uses の目的語にあたる関係代名詞です。',
+    },
+  }),
+  st('[S {動名詞| [V Keeping] [O several options] [C open]}] [V is] [C expensive] [M {前| in ordinary years}] [接 and] [V is] [C the reason {関係省略:関係副詞>the reason| [S a city] [V survives] [O an unusual one]}].', {
+    chunks: [
+      ['Keeping several options open is expensive', '複数の選択肢を残しておくのは高くつきます'],
+      ['in ordinary years', 'ふつうの年には'],
+      ['and is the reason a city survives an unusual one', 'そして異常な年に都市が生き延びる理由になります'],
+    ],
+    notes: {
+      'Keeping several options open is expensive': 'keep ＋ 目的語 ＋ 形容詞 で「〜を…のままにしておく」。',
+    },
+  }),
+  st('[S {動名詞| [V Deciding] [O {疑問詞to| [O how much duplication] [V to keep]}]}] [V is] [M {前| in the end}] [C a judgment {前| about {疑問詞節| [C how strange] [S the future] [V may turn out] [C {to:補語| [V to be]}]}}].', {
+    chunks: [
+      ['Deciding how much duplication to keep', 'どれだけ重ねて持つかを決めることは'],
+      ['is in the end a judgment', '結局のところ判断です（何についてかは次へ）'],
+      ['about how strange the future may turn out to be', '未来がどれほど奇妙だと分かりうるかについての'],
+    ],
+    notes: {
+      'Deciding how much duplication to keep': '疑問詞 ＋ to ＋ 動詞 で「どれだけ〜すべきか」という名詞のまとまりになります。',
+    },
+  }),
+  st('[S Data {関係>Data| [S that] [V is collected] [M {前| for one stated purpose}]}] [V is] [M almost always] [V used] [M later] [M {前| for some quite different one}].', {
+    chunks: [
+      ['Data that is collected for one stated purpose', 'ある目的のために集められたと言われるデータは'],
+      ['is almost always used later', 'ほとんど常にのちに使われます'],
+      ['for some quite different one', 'まったく別の目的のために'],
+    ],
+    notes: {
+      'for some quite different one': 'この one は purpose の代わりで、「別の目的」という意味です。',
+    },
+  }),
+  st('[S A record {関係>A record| [S that] [V is kept] [M {to:副詞(目的)| [V in order to run] [O a bus service]}]}] [V can] [M eventually] [V answer] [O a question {前| about school attendance}].', {
+    chunks: [
+      ['A record that is kept', '保たれている記録は'],
+      ['in order to run a bus service', 'バスの運行のために'],
+      ['can eventually answer a question', 'やがて問いに答えることができます'],
+      ['about school attendance', '学校の出席についての'],
+    ],
+    notes: {
+      'in order to run a bus service': 'in order to ＋ 動詞 で「〜するために」。run は「（事業を）運営する」。',
+    },
+  }),
+  st('[S That very value] [V is] [M exactly] [C {疑問詞節| [M why] [S the limits] [V have to be agreed] [M {副詞節:時| [接 before] [S the data] [V is] [M ever] [V gathered]}]}].', {
+    chunks: [
+      ['That very value is exactly why', 'まさにその価値こそ理由です（何のかは次へ）'],
+      ['the limits have to be agreed', '制限を取り決めておかねばならない'],
+      ['before the data is ever gathered', 'データが集められる前に'],
+    ],
+    notes: {
+      'the limits have to be agreed': 'agree はここでは「取り決める」。have to be agreed で「取り決めておかねばならない」。',
+    },
+  }),
+  st('[S Rules {関係>Rules| [S that] [V are agreed] [M later]}] [V are] [M always] [V shaped] [M {前| by the value {前| of the material {関係>the material| [S that] [V has already been collected]}}}].', {
+    chunks: [
+      ['Rules that are agreed later', 'あとから取り決められる規則は'],
+      ['are always shaped', '必ず形づくられます（何によってかは次へ）'],
+      ['by the value of the material', '集めたものの価値によって'],
+      ['that has already been collected', 'すでに集められた（ものの）'],
+    ],
+    notes: {
+      'are always shaped': 'shape は「形づくる」。ここは受け身です。',
+    },
+  }),
+  st('[S Automation] [V performs] [O its work] [M consistently], [接 and] [M {前| for the same reason}] [S it] [V fails] [M {前| in ways {関係>ways| [S that] [V are] [C equally consistent]}}].', {
+    chunks: [
+      ['Automation performs its work consistently,', '自動化は仕事を一貫してこなします'],
+      ['and for the same reason it fails', 'そして同じ理由で失敗もします（どう失敗かは次へ）'],
+      ['in ways that are equally consistent', '同じくらい一貫したやり方で'],
+    ],
+    notes: {
+      'in ways that are equally consistent': 'equally は「同じくらい」。consistent は「いつも同じ」。',
+    },
+  }),
+  st('[S A human error] [V affects] [O one case] [M {前| at a time}], [M {副詞節:対比| [接 while] [S a single error {前| in the code}] [V affects] [O every single case] [M simultaneously]}].', {
+    chunks: [
+      ['A human error affects one case at a time,', '人の誤りは一度に一件にしか及びません'],
+      ['while a single error in the code', '一方、コードの中の一つの誤りは'],
+      ['affects every single case simultaneously', '全件に同時に及びます'],
+    ],
+    notes: {
+      'A human error affects one case at a time,': 'at a time で「一度に」。',
+    },
+  }),
+  st('[S Scale] [M therefore] [V converts] [O a small mistake] [M {前| into a very large one}] [M {前| without any change {前| at all} {前| in the mistake itself}}].', {
+    chunks: [
+      ['Scale therefore converts a small mistake', 'したがって規模は小さな誤りを変えます'],
+      ['into a very large one', '非常に大きな誤りに'],
+      ['without any change at all', 'まったく変わらないまま'],
+      ['in the mistake itself', '誤りそのものは'],
+    ],
+    notes: {
+      'into a very large one': 'convert A into B で「AをBに変える」。one は mistake の代わりです。',
+    },
+  }),
+  st('[S {動名詞| [V Testing] [M {前| at full scale}] [M {前| before any wide deployment}]}] [V is] [M therefore] [C not simple caution but a matter {前| of ordinary arithmetic}].', {
+    chunks: [
+      ['Testing at full scale', '実際の規模で試すことは'],
+      ['before any wide deployment', '広く導入する前に'],
+      ['is therefore not simple caution', 'したがって単なる慎重さではなく'],
+      ['but a matter of ordinary arithmetic', 'ふつうの計算の問題です'],
+    ],
+    notes: {
+      'is therefore not simple caution': 'not A but B で「AではなくB」。',
+    },
+  }),
+  st('[S The strongest argument {前| in favor of {動名詞| [V adopting] [O a new tool]}}] [V is] [M very rarely] [C the fact {同格that>the fact| [接 that] [S the tool] [V is] [C new]}].', {
+    chunks: [
+      ['The strongest argument in favor of adopting a new tool', '新しい道具を推す最も強い論拠が'],
+      ['is very rarely the fact that', '〜という事実であることはごくまれです'],
+      ['the tool is new', 'その道具が新しい'],
+    ],
+    notes: {
+      'is very rarely the fact that': 'この that は同格の that で、the fact の中身を示します。',
+    },
+  }),
+  st('[S It] [V is] [C {that節| [接 that] [S the current arrangement] [V has] [O one specific failure {関係>one specific failure| [O which] [S this particular tool] [V would] [M {前| in fact} actually] [V address]}]}].', {
+    chunks: [
+      ['It is that the current arrangement has', '論拠は、今の仕組みに〜があるということです'],
+      ['one specific failure', '一つの具体的な欠陥'],
+      ['which this particular tool would in fact actually address', 'この道具が実際に手を打てる（欠陥が）'],
+    ],
+    notes: {
+      'which this particular tool would in fact actually address': 'address はここでは「（問題に）対処する」。which は address の目的語にあたります。',
+    },
+  }),
+  st('[S {動名詞| [V Adopting] [O a tool] [M {前| without {動名詞| [V naming] [O that failure]}}]}] [V guarantees] [O {that節| [接 that] [S nobody] [V will be able to evaluate] [O it] [M properly] [M later]}].', {
+    chunks: [
+      ['Adopting a tool without naming that failure', 'その欠陥を名指しせずに道具を取り入れると'],
+      ['guarantees that nobody will be able', 'だれも〜できないことが確実になります'],
+      ['to evaluate it properly later', 'のちにそれをきちんと評価する'],
+    ],
+    notes: {
+      'guarantees that nobody will be able': 'guarantee that … で「…ということを確実にする」。',
+    },
+  }),
+  st('[S {動名詞| [V Stating] [O the expected improvement] [M {前| in advance}]}] [V is] [M much] [C the cheapest form {前| of accountability {関係>accountability| [S that] [V is] [C available] [M {前| to a public body}]}}].', {
+    chunks: [
+      ['Stating the expected improvement in advance', '期待される改善を前もって述べておくことが'],
+      ['is much the cheapest form of accountability', '最も安上がりな説明責任の形です'],
+      ['that is available to a public body', '公的機関に取りうる（形の中で）'],
+    ],
+    notes: {
+      'is much the cheapest form of accountability': 'much は最上級を強めて「ずば抜けて」。',
+    },
+  }),
+  st('[S No plan] [V survives] [O an entire generation] [M completely intact], [接 and] [S the genuinely useful plans] [V are designed] [M {前| from the start}] [M {to:副詞(目的)| [V to be changed]}].', {
+    chunks: [
+      ['No plan survives an entire generation completely intact,', 'どんな計画も一世代を丸ごと無傷では越えられません'],
+      ['and the genuinely useful plans are designed', 'そして本当に役立つ計画は設計されています'],
+      ['from the start to be changed', '初めから、変えられるように'],
+    ],
+    notes: {
+      'No plan survives an entire generation completely intact,': 'intact は「そのままの・無傷の」。',
+    },
+  }),
+  st('[S The distinction {関係>The distinction| [S that] [M really] [V matters] [M here]}] [V lies] [M {前| between decisions {関係>decisions| [S that] [V can be reversed]} and decisions {関係>decisions| [S that] [V cannot be reversed]}}].', {
+    chunks: [
+      ['The distinction that really matters here', 'ここで本当に大切な区別は'],
+      ['lies between decisions that can be reversed', '撤回できる決定と'],
+      ['and decisions that cannot be reversed', '撤回できない決定とのあいだにあります'],
+    ],
+    notes: {
+      'lies between decisions that can be reversed': 'lie between A and B で「AとBのあいだにある」。',
+    },
+  }),
+  st('[S A tax rate] [V can be adjusted] [M again] [M next year], [M {副詞節:対比| [接 while] [S a building {関係>a building| [S that] [V has once been destroyed]}] [V can] [M never] [V be restored]}].', {
+    chunks: [
+      ['A tax rate can be adjusted again next year,', '税率は翌年また調整できます'],
+      ['while a building that has once been destroyed', '一方、いったん壊された建物は'],
+      ['can never be restored', '決して元に戻せません'],
+    ],
+    notes: {
+      'while a building that has once been destroyed': 'once はここでは「いったん〜すると」。',
+    },
+  }),
+  st('[S Decisions {関係>Decisions| [S that] [V cannot be reversed]}] [M therefore] [V deserve] [O a much higher standard {前| of evidence}] [M {前| than decisions {関係>decisions| [S that] [V can]}}].', {
+    chunks: [
+      ['Decisions that cannot be reversed', '撤回できない決定は'],
+      ['therefore deserve a much higher standard of evidence', 'したがってずっと高い証拠の水準に値します'],
+      ['than decisions that can', '撤回できる決定よりも'],
+    ],
+    notes: {
+      'than decisions that can': 'that can の後ろに be reversed が省かれています。',
+    },
+  }),
+  st('[S Uncertainty] [V is] [M really] [C an argument {前| for {動名詞| [V keeping] [O options] [C open]}} {前| rather than an argument {前| for {動名詞| [V doing] [O nothing] [M {前| at all}]}}}].', {
+    chunks: [
+      ['Uncertainty is really an argument', '不確実性は本当は論拠です（何のかは次へ）'],
+      ['for keeping options open', '選択肢を開いておくことの'],
+      ['rather than an argument for doing nothing at all', 'まったく何もしないことの論拠ではなく'],
+    ],
+    notes: {
+      'for keeping options open': 'an argument for … で「…を支える論拠」。',
+    },
+  }),
+  st('[S {動名詞| [V Doing] [O nothing]}] [V is] [M itself] [C a decision], [接 and] [S it] [V is] [M frequently] [C the hardest decision {前| of all} {to:副詞(形容詞)| [V to reverse] [M {前| at a later date}]}].', {
+    chunks: [
+      ['Doing nothing is itself a decision,', '何もしないこと自体が一つの決定です'],
+      ['and it is frequently the hardest decision of all', 'そしてしばしば最も難しい決定です'],
+      ['to reverse at a later date', 'あとで撤回するのが'],
+    ],
+    notes: {
+      'to reverse at a later date': 'the hardest … to reverse で「撤回するのが最も難しい…」。',
+    },
+  }),
+  st('[S Land {関係>Land| [M that] [V has been built] [M on]}] [V cannot] [M easily] [V be cleared] [M again], [接 and] [S a species {関係>a species| [S that] [V is] [M once] [V lost]}] [V does not come back].', {
+    chunks: [
+      ['Land that has been built on', 'すでに建物が建った土地は'],
+      ['cannot easily be cleared again,', '再び更地にするのは簡単ではありません'],
+      ['and a species that is once lost does not come back', 'そして一度失われた種は戻ってきません'],
+    ],
+    notes: {
+      'Land that has been built on': 'build on … で「…の上に建てる」。文の終わりに on が残っています。',
+    },
+  }),
+  st('[S Delay] [V is] [M therefore] [M only] [C prudent] [M {前| in those particular cases {関係>those particular cases| [M where] [S the delay itself] [M genuinely] [V preserves] [O the choice] [M {前| for later}]}}].', {
+    chunks: [
+      ['Delay is therefore only prudent', 'したがって遅らせることが賢明なのは（どんな場合かは次へ）'],
+      ['in those particular cases', 'そうした場合だけです'],
+      ['where the delay itself genuinely preserves the choice', 'その遅れ自体が本当に選択を保つ'],
+      ['for later', 'あとのために'],
+    ],
+    notes: {
+      'Delay is therefore only prudent': 'prudent は「賢明な・用心深い」。',
+    },
+  }),
+  st('[S A clearly stated review date] [V is] [M much] [C the cheapest instrument {前| for {動名詞| [V building] [O revision] [M {前| into almost any decision}]}}].', {
+    chunks: [
+      ['A clearly stated review date', 'はっきり示された見直しの期日は'],
+      ['is much the cheapest instrument', 'ずば抜けて安上がりな道具です'],
+      ['for building revision into almost any decision', 'ほとんどどんな決定にも見直しを組み込むための'],
+    ],
+    notes: {
+      'for building revision into almost any decision': 'build A into B で「AをBに組み込む」。',
+    },
+  }),
+  st('[S It] [V converts] [O a permanent commitment] [M {前| into a temporary one}] [M {前| without {動名詞| [V weakening] [O its force] [M {前| in any way} {前| at all}] [M today]}}].', {
+    chunks: [
+      ['It converts a permanent commitment', 'それは恒久的な約束を変えます'],
+      ['into a temporary one', '暫定的なものに'],
+      ['without weakening its force in any way at all today', '今日の効力をいささかも弱めずに'],
+    ],
+    notes: {
+      'It converts a permanent commitment': 'commitment は「約束・確約」。',
+    },
+  }),
+  st('[M {前| Without such a date}], [S a rule] [M simply] [V continues] [M {前| in force}] [M {副詞節:時| [接 until] [S someone] [V spends] [O real effort] [M {前| on {動名詞| [V getting] [O it] [C removed]}}]}].', {
+    chunks: [
+      ['Without such a date,', 'そのような期日がなければ'],
+      ['a rule simply continues in force', '規則はただ効力を持ち続けます'],
+      ['until someone spends real effort', 'だれかが実際に労力をかけるまで'],
+      ['on getting it removed', 'それを取り除いてもらうことに'],
+    ],
+    notes: {
+      'on getting it removed': 'get ＋ 目的語 ＋ 過去分詞 で「〜を…してもらう」。',
+    },
+  }),
+  st('[S That asymmetry] [V explains] [O {疑問詞節| [M why] [S obsolete rules] [V accumulate] [M steadily] [M {前| in almost every long-lived public organization} there is]}].', {
+    chunks: [
+      ['That asymmetry explains why', 'この非対称が理由を説明します（何のかは次へ）'],
+      ['obsolete rules accumulate steadily', '時代遅れの規則が着実にたまる'],
+      ['in almost every long-lived public organization there is', '長く続く公的な組織のほとんどどれにも'],
+    ],
+    notes: {
+      'in almost every long-lived public organization there is': 'every ＋ 名詞 ＋ there is で「存在するどの…にも」。',
+    },
+  }),
+  st('[S Residents {関係>Residents| [S who] [V will live] [M {前| in this city}] [M {前| in fifty years}]}] [V cannot speak] [M {前| at any meeting {関係>any meeting| [S that] [V is arranged] [M today]}}].', {
+    chunks: [
+      ['Residents who will live in this city', 'この都市で暮らす住民は'],
+      ['in fifty years', '五十年後に'],
+      ['cannot speak at any meeting', 'どの会合でも発言できません'],
+      ['that is arranged today', '今日開かれる（会合では）'],
+    ],
+    notes: {
+      'in fifty years': 'in ＋ 期間 で「〜後に」。',
+    },
+  }),
+  st('[S Any procedure {関係>Any procedure| [S that] [V counts] [O only the voices actually present {前| in the room}]}] [V will] [M systematically] [V favor] [O the people {前| of the present}].', {
+    chunks: [
+      ['Any procedure that counts only the voices', '声だけを数える手続きは'],
+      ['actually present in the room', 'その部屋に実際にいる（声だけを）'],
+      ['will systematically favor the people of the present', '決まって今の人々を有利にします'],
+    ],
+    notes: {
+      'actually present in the room': 'present はここでは形容詞で「その場にいる」。voices を後ろから説明します。',
+    },
+  }),
+  st('[S Some cities] [M now] [V appoint] [O an officer {関係>an officer| [S whose one formal task] [V is] [C {to:補語| [V to state] [O the long-term case] [M {前| at every public meeting}]}]}].', {
+    chunks: [
+      ['Some cities now appoint an officer', 'いまでは職員を置く都市もあります（どんな職員かは次へ）'],
+      ['whose one formal task is', 'その職員の唯一の正式な仕事は'],
+      ['to state the long-term case at every public meeting', 'どの公の会合でも長期の立場を述べることです'],
+    ],
+    notes: {
+      'whose one formal task is': 'whose ＋ 名詞 で「その人の〜」。ここは an officer の職務を指します。',
+    },
+  }),
+  st('[S That device] [V is] [C {前| far from perfect}], [接 and] [M yet] [S it] [V is] [C better] [M {前| than {動名詞| [M simply] [V assuming] [O {that節| [接 that] [S someone else] [V will remember]}]}}].', {
+    chunks: [
+      ['That device is far from perfect,', 'その仕掛けは完全からはほど遠いのですが'],
+      ['and yet it is better', 'それでもましです（何よりかは次へ）'],
+      ['than simply assuming that someone else will remember', 'だれかが覚えているだろうとただ思うよりも'],
+    ],
+    notes: {
+      'That device is far from perfect,': 'far from ＋ 形容詞 で「〜からはほど遠い」。',
+    },
+  }),
+  st('[S A city {関係>A city| [S that] [V expects] [O {to:名詞| [V to be] [C wrong] [M {前| about something}]}]}] [V builds] [M {前| in quite a different way}] [M {前| from one {関係>one| [S that] [V expects] [O {to:名詞| [V to be] [C right]}]}}].', {
+    chunks: [
+      ['A city that expects to be wrong about something', '何かで自分は誤りうると考える都市は'],
+      ['builds in quite a different way', 'かなり違うやり方で造ります'],
+      ['from one that expects to be right', '正しいと考える都市とは'],
+    ],
+    notes: {
+      'from one that expects to be right': 'この one は a city の代わりです。',
+    },
+  }),
+  st('[S It] [V leaves] [O physical space], [V keeps] [O its records], [V states] [O its assumptions], [接 and] [V schedules] [O the exact moment {前| of the next review}].', {
+    chunks: [
+      ['It leaves physical space,', 'それは物理的な余地を残し'],
+      ['keeps its records,', '記録を保ち'],
+      ['states its assumptions,', '前提を述べ'],
+      ['and schedules the exact moment of the next review', 'そして次の見直しの時を予定に入れます'],
+    ],
+    notes: {
+      'and schedules the exact moment of the next review': 'schedule は動詞で「予定に組み入れる」。',
+    },
+  }),
+  st('[S None {前| of that}] [V guarantees] [O a good outcome], [M {前| for the simple reason {同格that>the simple reason| [接 that] [S no arrangement {前| at all}] [V can] [M ever] [V promise] [O one]}}].', {
+    chunks: [
+      ['None of that guarantees a good outcome,', 'そのどれもよい結果を保証しません'],
+      ['for the simple reason that', '〜という単純な理由からです（内容は次へ）'],
+      ['no arrangement at all can ever promise one', 'どんな仕組みもそれを約束できないという'],
+    ],
+    notes: {
+      'no arrangement at all can ever promise one': 'この one は a good outcome の代わりです。',
+    },
+  }),
+  st('[S {what節| [O What] [S it] [V does guarantee]}] [V is] [C {that節| [接 that] [S a mistake] [V will be found] [M {前| at a time {関係>a time| [M when] [M there] [V is] [M still] [S time {to:形容詞>time| [V to put] [O it] [C right]}]}}]}].', {
+    chunks: [
+      ['What it does guarantee is that', 'それが確かに保証するのは〜ということです'],
+      ['a mistake will be found at a time', '誤りがその時点で見つかる'],
+      ['when there is still time to put it right', 'まだ直す時間が残っているときに'],
+    ],
+    notes: {
+      'What it does guarantee is that': 'does guarantee の does は guarantee を強めて「確かに保証する」。',
     },
   }),
 ])
