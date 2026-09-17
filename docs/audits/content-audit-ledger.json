@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-09-17T19:08:54.835Z",
+  "auditedAt": "2026-09-17T19:27:59.411Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -12,7 +12,7 @@
     "quizItemCount": 16473,
     "storedAndGeneratedQuestionPathCount": 4946,
     "storedAndGeneratedChoicePathCount": 19353,
-    "overallContentSha256": "075021ad9ed3c3e8aa4fa1404e20ba8fdb6ef1b14db2b9374a598119a4d20bc9"
+    "overallContentSha256": "daead84aa5caef63b7545f00eabd24551b1dae92730786369a18e3e5ddceb216"
   },
   "completionCriteria": [
     "全18教材カテゴリのID・母数・重複・内容ハッシュが一致する",
@@ -104,7 +104,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "53645d4326aac29f209dd572ccf05741e7a10a17de5df2a46e166bfba6846cda",
+    "sha256": "1859e8001e1cfd684343963fb2731dc7193e06a67b7a2e1c40336cc22d22a75e",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -285,7 +285,7 @@
       "quizItemCount": 8907,
       "learningIdOrderSha256": "6ce7b8aea762f737ca116621d5f51a7a660d7eba5f75e6d40631f734aacf30b4",
       "quizIdOrderSha256": "6ce7b8aea762f737ca116621d5f51a7a660d7eba5f75e6d40631f734aacf30b4",
-      "contentSha256": "69d56d65c12489a5c5c6f8cece966b234e0ab9621ff994ee36ae2149a09e6fc4",
+      "contentSha256": "3a071d9b806c960bd4dcca02806dde9494551094849df114b68bb0f5285ed82f",
       "auditGateIds": [
         "inventory",
         "coreData",
@@ -430,7 +430,7 @@
       "quizItemCount": 42,
       "learningIdOrderSha256": "5a73640787e6fb7d0e952cc3e4b513903f10cee089c479e8f91d9a8d8bf0215b",
       "quizIdOrderSha256": "5a73640787e6fb7d0e952cc3e4b513903f10cee089c479e8f91d9a8d8bf0215b",
-      "contentSha256": "5020742a710c0fd8f94a2b47da2f9a18e876fc2a28c1199afaba91a90de2a95a",
+      "contentSha256": "b2f6fe9d30bf2ec52d71b8a2052353f80ee283146e8043333eb57bb7aabc3f12",
       "auditGateIds": [
         "inventory",
         "coreData",
@@ -720,7 +720,7 @@
       "choiceCount": 668,
       "generalRationaleCount": 167,
       "choiceSpecificRationaleCount": 668,
-      "questionSetSha256": "7e3cd1be4f0a67da4e6456a1a48dd9d52bdd01c9872ed0b58f2fabd5c4f5c1f3",
+      "questionSetSha256": "d8d6d9fe9e2dd1065a711cb44d76ef391e1dc77a46d930f9f8ee26cb72f04ed9",
       "result": "pass",
       "failureCount": 0,
       "failures": []

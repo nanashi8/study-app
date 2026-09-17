@@ -19,7 +19,7 @@ export const EXPANDED_READING_GRAMMAR_EXPECTATIONS = Object.freeze({
     'SVC SVO SVO SVOC SVO SVC',
   ),
   p_pre2plus_clothing_second_life: patterns(
-    'SVO SV SV SVO SVO SVO SVO SVO SVO SV SVC SVC SVC SVO SVO SVO SVO SVO SVO SV ' +
+    'SVO SV SV SVO SVO SVO SVO SVO SVO SVC SVC SVC SVC SVO SVO SVO SVO SVO SVO SVC ' +
     'SVO SVO SVO SVO SVO SV',
   ),
   p_2_vertical_farming: patterns(

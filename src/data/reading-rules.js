@@ -592,7 +592,7 @@ export const PASSAGE_READING_APPROACHES = Object.freeze({
     '再利用案を、効果の測り方と限界まで読む',
     '衣料の廃棄を扱う説明文では、交換した数だけで成功と判断せず、実際に着られたか、処理しきれなかった衣料はないか、受け取る人の尊厳に配慮したかまで確かめる。',
     ['交換・修理・再利用の例を分類する', '成功を測る指標を確かめる', '地域の活動の限界と、企業の責任を分ける'],
-    ['paragraph-map', 'finite-verb-check', 'relative-clause', 'contrast-concession', 'example-restatement', 'author-stance'],
+    ['paragraph-map', 'finite-verb-check', 'relative-clause', 'contrast-concession', 'negation-scope', 'distractor-strength'],
   ),
   p_2_vertical_farming: makePassageApproach(
     '利点と制約を、地域条件ごとに比較する',

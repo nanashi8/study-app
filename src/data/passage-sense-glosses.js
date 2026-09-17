@@ -312,6 +312,8 @@ export const PASSAGE_SENSE_GLOSSES = Object.freeze({
     learned: sense('learn', '学んだ・身につけた'),
   }),
   'A repair did not need to look perfect; it needed to make the item safe and useful.': words({ repair: sense('repair', '修理') }),
+  'Clothes that could not be worn were not automatically counted as useless.': words({ worn: sense('wear', '着られる（wear の過去分詞）') }),
+  'Items made from one clearly labeled material were easier to sort than items with hidden mixtures.': words({ labeled: sense('label', 'ラベルで表示された') }),
   'Some cotton shirts became cleaning cloths, while artists used colorful material in school projects.': words({ used: sense('use', '使った') }),
   'The organizers wanted to know whether the exchange truly reduced waste.': words({ reduced: sense('reduce', '減らした') }),
   'Counting exchanged items alone would give an incomplete answer.': words({ answer: sense('answer', '答え') }),

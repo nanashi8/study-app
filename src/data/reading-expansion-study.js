@@ -219,7 +219,7 @@ export const EXPANDED_READING_STUDY = Object.freeze({
       'depend on ...',
       '〜に依存する・〜次第である',
       'A useful second life depends on durable design.',
-      '役立つ二度目の生は丈夫な設計にもかかっています。',
+      '役立つ二度目の生は、丈夫な設計にかかっています。',
       '結論を支える条件がon以下に示される。',
     ),
   ]),
