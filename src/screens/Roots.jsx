@@ -218,8 +218,8 @@ export function RootsScreen() {
           形が分かると、意味を思い出せる
         </h2>
         <p className="mt-1 text-sm font-bold leading-relaxed text-ink/60">
-          語根そのものを暗記・テストで覚え、そのまま関連する英単語へ広げます。
-          語根でまとめられない語も、単語画面で1語ずつ成り立ちを読めます。
+          {'語根そのものを暗記・テストで覚え、そのまま関連する英単語へ広げます。'}
+          {'語根でまとめられない語も、単語画面で1語ずつ成り立ちを読めます。'}
         </p>
         <ol className="mt-3 grid grid-cols-3 gap-2" aria-label="語源から単語を暗記する3ステップ">
           {[
@@ -401,8 +401,8 @@ export function RootsScreen() {
         <div className="mb-2 px-1">
           <h2 id="etymology-card-heading" className="font-display text-base font-extrabold text-slate-900">カードを選ぶ</h2>
           <p className="text-xs font-bold leading-relaxed text-slate-500">
-            語根を選ぶと、意味と関連する単語を確認できます。ラテン語系・ギリシャ語系のほか、
-            英語の土着語（be- / -th / grow・grass・green など）もここから学べます。
+            {'語根を選ぶと、意味と関連する単語を確認できます。'}
+            {'ラテン語系・ギリシャ語系のほか、英語の土着語（be- / -th / grow・grass・green など）もここから学べます。'}
           </p>
         </div>
 
@@ -458,9 +458,8 @@ export function RootsScreen() {
       </section>
 
       <p className="px-1 text-xs font-bold leading-relaxed text-slate-400">
-        {ETYMOLOGY_SUMMARY.cards.toLocaleString()}枚・紐づく{ETYMOLOGY_SUMMARY.total.toLocaleString()}語。
-        カードに載らない語をふくめ{ETYMOLOGY_WORD_STORIES.length.toLocaleString()}語すべての成り立ちを、
-        単語画面から読めます。
+        {`${ETYMOLOGY_SUMMARY.cards.toLocaleString()}枚・紐づく${ETYMOLOGY_SUMMARY.total.toLocaleString()}語。`}
+        {`カードに載らない語をふくめ${ETYMOLOGY_WORD_STORIES.length.toLocaleString()}語すべての成り立ちを、単語画面から読めます。`}
       </p>
     </>
   )

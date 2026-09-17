@@ -348,8 +348,8 @@ function StudyRhythmSection({ analysis }) {
         </p>
       )}
       <p className="border-t border-slate-200 bg-slate-50 px-3 py-2 text-[10px] font-bold leading-relaxed text-slate-500">
-        学習時間は回答した時刻の差から計算します（5分を超えた分は、席を離れた時間として数えません）。
-        学習リズムは、よく学習する3つの時間帯を学習日のうち何日繰り返せたかで表します。
+        {'学習時間は回答した時刻の差から計算します（5分を超えた分は、席を離れた時間として数えません）。'}
+        {'学習リズムは、よく学習する3つの時間帯を学習日のうち何日繰り返せたかで表します。'}
       </p>
     </ReportSection>
   )

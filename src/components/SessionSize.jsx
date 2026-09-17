@@ -116,8 +116,8 @@ export function SessionCounter({
       <Sheet open={open} onClose={closeSheet} title={`1回の${label}数`}>
         <div className="space-y-4 pb-2">
           <p className="text-xs font-bold leading-relaxed text-ink/50" data-session-size-restart-note>
-            この問題数は、すべての暗記・テストに使われます。
-            今の番号より少なくしても、答えた分の記録と結果はそのまま残り、番号だけを1から数え直します。
+            {'この問題数は、すべての暗記・テストに使われます。'}
+            {'今の番号より少なくしても、答えた分の記録と結果はそのまま残り、番号だけを1から数え直します。'}
           </p>
           <div className="grid grid-cols-3 gap-2" data-session-size-options>
             {options.map((size) => (

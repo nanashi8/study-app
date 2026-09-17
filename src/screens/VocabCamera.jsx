@@ -403,8 +403,8 @@ export function VocabCameraScreen() {
                     {summary.candidates.length}語が辞書と一致
                   </h2>
                   <p className="mt-0.5 text-xs font-bold leading-relaxed text-ink/50">
-                    読み取った {summary.tokenCount} 語のうち、辞書にある単語を候補にしました。
-                    意味を確認して追加する語を選んでください。
+                    {`読み取った ${summary.tokenCount} 語のうち、辞書にある単語を候補にしました。`}
+                    {'意味を確認して追加する語を選んでください。'}
                   </p>
                 </div>
               </div>
@@ -549,8 +549,8 @@ export function VocabCameraScreen() {
                         辞書にない単語
                       </h2>
                       <p className="mt-0.5 text-xs font-bold leading-relaxed text-ink/50">
-                        選んだ語だけを辞書登録リクエストへ送ります。ログインは要りません。
-                        写真や教科書の本文、メールアドレスは送信しません。誤読や人名は選択から外してください。
+                        {'選んだ語だけを辞書登録リクエストへ送ります。ログインは要りません。'}
+                        {'写真や教科書の本文、メールアドレスは送信しません。誤読や人名は選択から外してください。'}
                       </p>
                     </div>
                   </div>

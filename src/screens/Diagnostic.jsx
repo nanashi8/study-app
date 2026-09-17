@@ -227,8 +227,8 @@ function PerformanceReport({ result, guidance }) {
           <span className="text-amber-700">？ わからない</span>
         </div>
         <p className="mt-2 rounded-xl bg-sky-50 px-3 py-2 text-[9px] font-bold leading-relaxed text-sky-800/65">
-          各マスは今回の1問、分野別は各7問、級別は各4問の結果です。
-          1マスだけで実力を断定せず、下の答え合わせと一緒に確認してください。
+          {'各マスは今回の1問、分野別は各7問、級別は各4問の結果です。'}
+          {'1マスだけで実力を断定せず、下の答え合わせと一緒に確認してください。'}
         </p>
 
         <h3 className="mt-5 font-display text-base font-extrabold text-ink">分野別の得意・不得意</h3>
@@ -416,8 +416,8 @@ function StudyPlan({ guidance, onOpen }) {
         </div>
 
         <p className="mt-2 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-[10px] font-bold leading-relaxed text-slate-500">
-          答えを読み直すだけでなく、いったん隠して思い出す練習をします。
-          翌日→3日後→7日後と少しずつ間隔を空け、今後の学習履歴に合わせて予定を更新します。
+          {'答えを読み直すだけでなく、いったん隠して思い出す練習をします。'}
+          {'翌日→3日後→7日後と少しずつ間隔を空け、今後の学習履歴に合わせて予定を更新します。'}
         </p>
 
         <Button full className="mt-3" onClick={() => onOpen(next.screen)}>

@@ -1,6 +1,7 @@
 import { readdir, readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { parseAst } from 'vite'
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const sourceRoot = path.join(projectRoot, 'src')
@@ -290,6 +291,44 @@ function sourceWithoutComments(source) {
   return output
 }
 
+// JSXの地の文は、改行をまたぐと行のつなぎ目が半角スペース1つになる（JSXの空白の決まり）。
+// 日本語の文を2行に分けて書くと「使われます。 今の番号」のように空白が入るので、
+// つなぎ目の前後どちらかが日本語なら止める。1文ずつ {'…'} で書けば空白は入らない。
+const JAPANESE_EDGE = /[\u3000-\u303f\u3040-\u30ff\u3400-\u9fff々\uff00-\uffef]/u
+
+export function jsxTextLineJoins(source) {
+  const joins = []
+  const visit = (node) => {
+    if (!node || typeof node !== 'object') return
+    if (Array.isArray(node)) {
+      node.forEach(visit)
+      return
+    }
+    if (node.type === 'JSXText') {
+      const lines = node.value.split(/\r\n|\n|\r/)
+      const kept = []
+      lines.forEach((line, index) => {
+        let text = line.replace(/\t/g, ' ')
+        if (index > 0) text = text.replace(/^ +/, '')
+        if (index < lines.length - 1) text = text.replace(/ +$/, '')
+        if (text) kept.push({ index, text })
+      })
+      for (let at = 0; at + 1 < kept.length; at += 1) {
+        const before = kept[at].text
+        const after = kept[at + 1].text
+        if (JAPANESE_EDGE.test(before.at(-1)) || JAPANESE_EDGE.test(after[0])) {
+          joins.push({ line: lineNumberAt(source, node.start) + kept[at].index, before, after })
+        }
+      }
+    }
+    for (const value of Object.values(node)) {
+      if (value && typeof value === 'object') visit(value)
+    }
+  }
+  visit(parseAst(source, { lang: 'jsx' }))
+  return joins
+}
+
 function jsxJapanese(source) {
   const values = []
   const visibleSource = sourceWithoutComments(source)
@@ -315,6 +354,7 @@ export async function auditLearnerJapanese() {
   const allEntries = []
   const learnerEntries = []
   const learnerFiles = new Set()
+  const lineJoins = []
 
   for (const file of files) {
     const source = await readFile(file, 'utf8')
@@ -328,12 +368,23 @@ export async function auditLearnerJapanese() {
       learnerFiles.add(relative)
       learnerEntries.push(...entries)
     }
+    if (relative.endsWith('.jsx')) {
+      lineJoins.push(...jsxTextLineJoins(source).map((join) => ({ ...join, file: relative })))
+    }
   }
 
   const issueByKey = new Map()
   const recordIssue = (entry, forbidden, reason, scope) => {
     const key = `${entry.file}:${entry.line}:${forbidden}`
     if (!issueByKey.has(key)) issueByKey.set(key, { ...entry, forbidden, reason, scope })
+  }
+  for (const join of lineJoins) {
+    recordIssue(
+      { file: join.file, line: join.line, text: `${join.before}\n${join.after}` },
+      `${join.before.slice(-12)}⏎${join.after.slice(0, 12)}`,
+      'JSXの地の文を改行でつなぐと、画面ではつなぎ目に半角スペースが入る。1文ずつ {\'…\'} で書く',
+      'learner',
+    )
   }
   for (const entry of learnerEntries) {
     for (const [forbidden, reason] of FORBIDDEN_GUIDANCE) {
