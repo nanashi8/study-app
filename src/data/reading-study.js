@@ -246,7 +246,7 @@ export const READING_STUDY = {
         'instead of doing',
         '〜する代わりに',
         'Visitors help instead of simply leaving an item at a counter.',
-        '来場者は品物を受付に預けるだけでなく、作業を手伝います。',
+        '来場者は、ただ品物を受付に預けるのではなく、作業を手伝います。',
         'instead of の後ろに動作を置くときは動名詞を使う。',
         'syntax',
       ),

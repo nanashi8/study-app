@@ -269,7 +269,7 @@ export const CORE_READING_PRACTICE_QUESTIONS = Object.freeze({
       questionJa: '「壊れた物を調べる」という本文の語を選びなさい。',
       answer: 'examine',
       sourceSentence: 'At these events, local volunteers help visitors examine broken things and, when possible, repair them.',
-      sourceJa: 'そこでは地域のボランティアが、来場者と一緒に壊れた物を調べ、可能であれば修理します。',
+      sourceJa: 'こうした催しでは、地域のボランティアが、来場者が壊れた物を調べ、できる場合には修理するのを手伝います。',
       explain: 'examine は「詳しく調べる」。修理の前に不具合を確かめる場面で使います。',
       readingRuleId: 'unknown-word-context',
       vocabIds: ['volunteer', 'examine', 'repair'],

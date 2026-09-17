@@ -94,7 +94,7 @@ const CLAUSE_TYPES = new Set([
 ])
 
 const PHRASE_TYPES = new Set([
-  'to', '疑問詞to', '原形', '動名詞', '現在分詞', '過去分詞', '分詞構文', '同格', '挿入',
+  'to', '疑問詞to', '原形', '動名詞', 'ing限定', '現在分詞', '過去分詞', '分詞構文', '同格', '挿入',
 ])
 
 const WORD_PATTERN = /[A-Za-z0-9]+(?:['’][A-Za-z0-9]+)*(?:[-‐][A-Za-z0-9]+(?:['’][A-Za-z0-9]+)*)*/g
@@ -244,7 +244,7 @@ export function structureUnitLabel(unit) {
         ? '非制限用法の関係副詞の節'
         : '非制限用法の関係代名詞の節'
     case '関係省略':
-      return '関係代名詞が省略された節（形容詞節）'
+      return '関係詞が省略された節（形容詞節）'
     case 'that節':
       return 'that節（名詞節）'
     case 'that省略':
@@ -274,6 +274,8 @@ export function structureUnitLabel(unit) {
       return '原形不定詞'
     case '動名詞':
       return '動名詞句（名詞のはたらき）'
+    case 'ing限定':
+      return '-ing形のまとまり（形容詞の内容を限定）'
     case '現在分詞':
       return '現在分詞句（後ろから名詞を説明）'
     case '過去分詞':
@@ -366,9 +368,20 @@ function nodeText(node) {
   return trimPhraseText(rawText(node.children))
 }
 
+// 同じ節（接続語で区切られた範囲）の中だけで、要素を探す。
+function sameClauseBefore(scopeElements, container) {
+  const index = scopeElements.indexOf(container)
+  const before = []
+  for (const element of scopeElements.slice(0, Math.max(0, index)).reverse()) {
+    if (element.role === '接') break
+    before.push(element)
+  }
+  return before
+}
+
 function nearestVerb(scopeElements, container) {
   const index = scopeElements.indexOf(container)
-  const before = scopeElements.slice(0, Math.max(0, index)).reverse()
+  const before = sameClauseBefore(scopeElements, container)
     .find((element) => element.role === 'V')
   const after = scopeElements.slice(index + 1).find((element) => element.role === 'V')
   const verb = before ?? after
@@ -376,8 +389,7 @@ function nearestVerb(scopeElements, container) {
 }
 
 function nearestRole(scopeElements, container, roles) {
-  const index = scopeElements.indexOf(container)
-  const before = scopeElements.slice(0, Math.max(0, index)).reverse()
+  const before = sameClauseBefore(scopeElements, container)
     .find((element) => roles.includes(element.role))
   return before ? nodeText(before) : ''
 }
@@ -403,7 +415,7 @@ function nounFunctionText(unit, container, scopeElements, scopeUnit) {
   const preposition = prepositionBeforeUnit(container, unit)
   if (preposition) {
     if (/^(?:than|as)$/i.test(preposition)) {
-      return `${inside}${preposition} の後ろに置かれた、比べる相手です。`
+      return `${inside}${preposition} の後ろに置かれた、比べる相手です（${ROLE_NAMES[container.role]}「${nodeText(container)}」の一部）。`
     }
     return `${inside}前置詞 ${preposition} の目的語です（${preposition} から始まるまとまりが${ROLE_NAMES[container.role]}）。`
   }
@@ -456,15 +468,22 @@ function unitFunctionText(unit, container, scopeElements, scopeUnit) {
       return `${inside}直前の ${unit.antecedent} を後ろから説明します${partOf}。`
     case '副詞節': {
       const kind = ADVERBIAL_CLAUSE_KINDS[unit.detail]
-      return `${inside}${kind}を表し、文全体では修飾語Mとして働きます。`
+      return scopeUnit
+        ? `${inside}${kind}を表す修飾語Mとして働きます。`
+        : `${kind}を表す修飾語Mとして働きます。`
     }
     case '分詞構文':
       return `${inside}${PARTICIPIAL_CONSTRUCTION_KINDS[unit.detail]}を表し、修飾語Mとして働きます。`
     case '挿入':
       return `${inside}文の途中に補足を差し込みます。`
+    case 'ing限定':
+      return `${inside}直前の形容詞の内容を「〜することに・〜するのに」と後ろから限定します${partOf}。`
     case '強調':
       return `${inside}強調したい語句を It is と that の間に置く形です。`
     case '原形': {
+      if (container && /^(?:than|as|but|except)$/i.test(prepositionBeforeUnit(container, unit))) {
+        return nounFunctionText(unit, container, scopeElements, scopeUnit)
+      }
       const object = container ? nearestRole(scopeElements, container, ['O', '仮O']) : ''
       return object
         ? `${inside}目的語 ${object} が何をするかを表す補語Cです（to のない不定詞）。`
