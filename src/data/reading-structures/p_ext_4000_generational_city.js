@@ -1,7 +1,7 @@
 import { st } from './entry.js'
 
 // 語彙強化ロングリーディング（約4,000語）の構造台帳。節ごとに手で確かめて足していく。
-// いまは「翌年より先を考える」から「制度と公共の信頼」まで（#1〜#120）。
+// いまは「翌年より先を考える」から「生涯にわたるケア」まで（#1〜#160）。
 // 残りの文は、台帳ができるまで解析器の表示のまま。
 export default Object.freeze([
   st('[S A city] [V is] [M {前| above all}] [C a machine {前| for {動名詞| [V moving] [O costs and benefits] [M {前| across time}]}}], [M {副詞節:譲歩| [接 although] [S it] [V is] [M very rarely] [V described] [M {前| in quite those terms}]}].', {
@@ -1290,6 +1290,419 @@ export default Object.freeze([
     ],
     notes: {
       'rather than waiting for a crisis': 'wait for A to ＋ 動詞 で「Aが〜するのを待つ」。for a crisis は to test の意味上の主語です。',
+    },
+  }),
+  st('[S A city] [V passes on] [O a great deal more knowledge] [M {前| outside its schools}] [M {副詞節:比較| [接 than] [S it] [V will] [M ever] [V pass on] [M {前| inside them}]}].', {
+    chunks: [
+      ['A city passes on a great deal more knowledge', '都市は、はるかに多くの知識を受け渡します'],
+      ['outside its schools', '学校の外で'],
+      ['than it will ever pass on inside them', '学校の中で受け渡すよりも'],
+    ],
+    notes: {
+      'A city passes on a great deal more knowledge': 'pass on … で「…を次へ渡す」。a great deal more で「はるかに多くの」。',
+    },
+  }),
+  st('[S Libraries, places {前| of work}, families, and neighbors] [M together] [V carry] [O most {前| of {what節| [O what] [S a resident {前| of a city}] [M actually] [V ends up] [O {動名詞| [V learning]}]}}].', {
+    chunks: [
+      ['Libraries, places of work, families, and neighbors', '図書館と職場と家族と隣人が'],
+      ['together carry most of what', '合わさって、〜ことの大半を運びます'],
+      ['a resident of a city actually ends up learning', '都市の住民が結局実際に学ぶ'],
+    ],
+    notes: {
+      'a resident of a city actually ends up learning': 'end up ＋ -ing で「結局〜することになる」。',
+    },
+  }),
+  st('[S Schools] [V matter] [M so much] [M {副詞節:理由| [接 because] [S they] [V are] [C the one part {前| of that larger system} {関係>the one part| [O that] [S policy] [V can reach] [M directly]}]}].', {
+    chunks: [
+      ['Schools matter so much', '学校がこれほど大切なのは'],
+      ['because they are the one part', 'それが唯一の部分だからです（何のかは次へ）'],
+      ['of that larger system', 'その大きな仕組みのうち'],
+      ['that policy can reach directly', '政策が直接届く（部分）'],
+    ],
+    notes: {
+      'Schools matter so much': 'matter は動詞で「重要である」。',
+    },
+  }),
+  st('[S {動名詞| [V Treating] [O schools] [M {副詞節:様態| [接 as though] [S they] [V were] [C the whole {前| of that system}]}]}] [V produces] [O reforms {関係>reforms| [S that] [V fail] [M {前| for reasons {関係省略:目的格(predicted)>reasons| [S nobody] [V had predicted]}}]}].', {
+    chunks: [
+      ['Treating schools as though they were the whole', '学校が全体であるかのように扱うことは'],
+      ['of that system', 'その仕組みの'],
+      ['produces reforms that fail', '失敗する改革を生みます'],
+      ['for reasons nobody had predicted', 'だれも予測していなかった理由で'],
+    ],
+    notes: {
+      'for reasons nobody had predicted': 'reasons の後ろに目的格の関係代名詞が省かれています。',
+    },
+  }),
+  st('[S Assessment] [V shapes] [O {what節| [S what] [V is] [M actually] [V taught] [M {前| in a classroom}]}] [M far more powerfully] [M {副詞節:比較| [接 than] [S any curriculum document] [M ever] [V manages] [O {to:名詞| [V to do]}]}].', {
+    chunks: [
+      ['Assessment shapes what is actually taught', '評価は実際に教えられる内容を形づくります'],
+      ['in a classroom', '教室で'],
+      ['far more powerfully', 'はるかに強く'],
+      ['than any curriculum document ever manages to do', 'どの教育課程の文書ができるよりも'],
+    ],
+    notes: {
+      'Assessment shapes what is actually taught': 'assessment は「評価・試験」。what 以下が shapes の目的語です。',
+    },
+  }),
+  st('[S Teachers] [V respond] [M rationally] [M {前| to the things {関係>the things| [S that] [V are measured]}}], [接 and] [S they] [V are] [C entirely right {to:副詞(形容詞)| [V to respond] [M {前| in that way}]}].', {
+    chunks: [
+      ['Teachers respond rationally', '教師は理にかなった形で応じます（何にかは次へ）'],
+      ['to the things that are measured,', '測られるものに'],
+      ['and they are entirely right to respond in that way', 'そしてそう応じるのはまったく正しいのです'],
+    ],
+    notes: {
+      'and they are entirely right to respond in that way': 'be right to ＋ 動詞 で「〜するのは正しい」。',
+    },
+  }),
+  st('[S A test {関係>A test| [S that] [M mainly] [V rewards] [O recall]}] [V will] [M consistently] [V produce] [O classrooms {関係>classrooms| [S that] [V are organized] [M {前| around recall and nothing else}]}].', {
+    chunks: [
+      ['A test that mainly rewards recall', '主に暗記に報いる試験は'],
+      ['will consistently produce classrooms', '決まって教室を生みます（どんな教室かは次へ）'],
+      ['that are organized around recall and nothing else', '暗記だけを軸に組み立てられた（教室を）'],
+    ],
+    notes: {
+      'A test that mainly rewards recall': 'recall は名詞で「思い出すこと・暗記」。',
+    },
+  }),
+  st('[S {動名詞| [V Changing] [O {what節| [S what] [V is examined]}]}] [V is] [M therefore] [M {前| by far}] [C the fastest available way {to:形容詞>the fastest available way| [V to change] [O {what節| [S what] [V is] [M actually] [V taught]}]}].', {
+    chunks: [
+      ['Changing what is examined', '何が試験されるかを変えることが'],
+      ['is therefore by far the fastest available way', 'したがって群を抜いて速い方法です'],
+      ['to change what is actually taught', '実際に教えられる内容を変える（方法）'],
+    ],
+    notes: {
+      'is therefore by far the fastest available way': 'by far は最上級を強めて「群を抜いて」。',
+    },
+  }),
+  st('[S Some {前| of the most valuable outcomes {前| of an education}}] [V are] [M also] [C the very hardest {to:副詞(形容詞)| [V to measure] [M {前| at all}]}].', {
+    chunks: [
+      ['Some of the most valuable outcomes of an education', '教育の最も価値ある成果のいくつかは'],
+      ['are also the very hardest to measure at all', 'そもそも測るのが最も難しいものでもあります'],
+    ],
+    notes: {
+      'are also the very hardest to measure at all': 'the very ＋ 最上級 で「まさに最も〜」。to measure が hardest の内容を示します。',
+    },
+  }),
+  st('[S Patience, curiosity, and a willingness {to:形容詞>a willingness| [V to revise] [O a strong belief]}] [M all] [V resist] [O almost every simple instrument {前| of measurement}].', {
+    chunks: [
+      ['Patience, curiosity, and a willingness', '忍耐と好奇心と意志は'],
+      ['to revise a strong belief', '固く抱いた信念を改める（意志）'],
+      ['all resist almost every simple instrument', 'どれもほとんどどんな単純な道具にも抵抗します'],
+      ['of measurement', '測るための'],
+    ],
+    notes: {
+      'to revise a strong belief': 'a willingness to ＋ 動詞 で「〜しようとする気持ち」。',
+    },
+  }),
+  st('[S {動名詞| [V Measuring] [M only] [O {what節| [S what] [V happens] [C {to:補語| [V to be] [C easy]}]}]}] [M therefore] [V produces] [O a system {関係>a system| [S that] [M quietly] [V discards] [O almost everything else {前| of value}]}].', {
+    chunks: [
+      ['Measuring only what happens to be easy', 'たまたま測りやすいものだけを測ることは'],
+      ['therefore produces a system', 'したがって仕組みを生みます（どんな仕組みかは次へ）'],
+      ['that quietly discards almost everything else', 'ほかのほとんどすべてを静かに捨てる'],
+      ['of value', '価値のある（もの）'],
+    ],
+    notes: {
+      'Measuring only what happens to be easy': 'happen to ＋ 動詞 で「たまたま〜である」。',
+    },
+  }),
+  st('[S {動名詞| [V Stating] [O a goal {関係>a goal| [S that] [V is not measured]}] [M {前| in plain language}]}] [V is] [C a weak defense], [接 but] [S it] [V is] [C a good deal better {前| than nothing}].', {
+    chunks: [
+      ['Stating a goal that is not measured', '測られない目標を書いておくことは'],
+      ['in plain language', '分かりやすい言葉で'],
+      ['is a weak defense,', '弱い備えです'],
+      ['but it is a good deal better than nothing', 'しかし何もないよりずっとましです'],
+    ],
+    notes: {
+      'but it is a good deal better than nothing': 'a good deal は比較級を強めて「ずっと」。',
+    },
+  }),
+  st('[S Adults] [V learn] [M {前| in quite a different way}] [M {前| from children}], [接 and] [S public systems] [M rarely] [V reflect] [O that difference] [M {前| at all}].', {
+    chunks: [
+      ['Adults learn in quite a different way', '大人はかなり違うやり方で学びます'],
+      ['from children,', '子どもとは'],
+      ['and public systems rarely reflect that difference at all', 'そして公的な仕組みがその違いを映すことはまれです'],
+    ],
+    notes: {
+      'Adults learn in quite a different way': 'a different way from … で「…とは違うやり方」。',
+    },
+  }),
+  st('[S An adult] [V brings] [O experience, severely limited time, and an immediate practical reason {前| for {動名詞| [V learning] [O one particular thing]}}].', {
+    chunks: [
+      ['An adult brings experience,', '大人は経験と'],
+      ['severely limited time,', 'ひどく限られた時間と'],
+      ['and an immediate practical reason', 'そして差し迫った実際的な理由を持ち込みます'],
+      ['for learning one particular thing', 'あることを学ぶための'],
+    ],
+    notes: {
+      'and an immediate practical reason': 'immediate は「すぐ目の前の」。',
+    },
+  }),
+  st('[S Courses {関係>Courses| [S that] [V were designed] [M {前| for eighteen-year-old students}]}] [V will waste] [O all three {前| of those considerable advantages}].', {
+    chunks: [
+      ['Courses that were designed', '設計された課程は'],
+      ['for eighteen-year-old students', '十八歳の学生向けに'],
+      ['will waste all three of those considerable advantages', 'その三つの大きな利点をすべて無駄にします'],
+    ],
+    notes: {
+      'will waste all three of those considerable advantages': 'all three of … で「…の三つとも」。',
+    },
+  }),
+  st('[S Short and practical formats {関係>Short and practical formats| [S that] [V can be repeated]}] [V reach] [O far more adults] [M {副詞節:比較| [接 than] [S long degree programs] [M ever] [V do]}].', {
+    chunks: [
+      ['Short and practical formats that can be repeated', '繰り返せる短く実際的な形式は'],
+      ['reach far more adults', 'はるかに多くの大人に届きます'],
+      ['than long degree programs ever do', '長い学位課程が届くよりも'],
+    ],
+    notes: {
+      'than long degree programs ever do': 'この do は reach の代わりで、繰り返しを避けています。',
+    },
+  }),
+  st('[S Public knowledge] [V decays] [M steadily] [M {副詞節:条件| [接 unless] [S someone] [V is] [M actually] [V paid] [C {to:補語| [V to maintain] [接 and] [V correct] [O it] [M year {前| after year}]}]}].', {
+    chunks: [
+      ['Public knowledge decays steadily', '公共の知識は着実に朽ちていきます'],
+      ['unless someone is actually paid', 'だれかが実際に報酬を受けて〜しないかぎり'],
+      ['to maintain and correct it year after year', '毎年それを保ち、直す'],
+    ],
+    notes: {
+      'unless someone is actually paid': 'unless は「〜しないかぎり」。be paid to ＋ 動詞 で「報酬を受けて〜する」。',
+    },
+  }),
+  st('[S Records] [V are lost], [S formats] [V become] [C unreadable], [接 and] [S the people {関係>the people| [S who] [M once] [V understood] [O an old system]}] [M quietly] [V retire].', {
+    chunks: [
+      ['Records are lost,', '記録は失われ'],
+      ['formats become unreadable,', '形式は読めなくなり'],
+      ['and the people who once understood an old system', 'そして古い仕組みをかつて理解していた人は'],
+      ['quietly retire', '静かに引退します'],
+    ],
+    notes: {
+      'formats become unreadable,': 'format は「保存の形式」。unreadable は「読み取れない」。',
+    },
+  }),
+  st('[S {動名詞| [V Maintaining] [O an archive]}] [V is] [C plain work {関係>plain work| [S that] [V is] [M never] [V rewarded]}], [接 and] [S it] [V is] [M usually] [C the first budget line {to:形容詞>the first budget line| [V to be cut]}].', {
+    chunks: [
+      ['Maintaining an archive is plain work', '文書館を保つことは地味な仕事です'],
+      ['that is never rewarded,', '決して報われない（仕事）'],
+      ['and it is usually the first budget line', 'そしてたいてい最初の予算項目です'],
+      ['to be cut', '削られる（項目）'],
+    ],
+    notes: {
+      'and it is usually the first budget line': 'budget line は「予算の項目」。',
+    },
+  }),
+  st('[S A city {関係>A city| [S that] [V cannot consult] [O its own past]}] [V will keep on] [O {動名詞| [V repeating] [O experiments {関係>experiments| [O that] [S it] [V has already run] [M once before]}]}].', {
+    chunks: [
+      ['A city that cannot consult its own past', '自らの過去を参照できない都市は'],
+      ['will keep on repeating experiments', '実験を繰り返し続けます（どんな実験かは次へ）'],
+      ['that it has already run once before', 'すでに一度行った（実験を）'],
+    ],
+    notes: {
+      'will keep on repeating experiments': 'keep on ＋ -ing で「〜し続ける」。run an experiment で「実験を行う」。',
+    },
+  }),
+  st('[S Health] [V is produced] [M {前| for the most part}] [M {前| outside hospitals}], [接 and] [S it] [V is measured] [M almost entirely] [M {前| inside them}].', {
+    chunks: [
+      ['Health is produced for the most part', '健康はおおむね生み出されます（どこでかは次へ）'],
+      ['outside hospitals,', '病院の外で'],
+      ['and it is measured almost entirely inside them', 'そして測られるのはほとんどすべて病院の中です'],
+    ],
+    notes: {
+      'Health is produced for the most part': 'for the most part で「おおむね・大部分は」。',
+    },
+  }),
+  st('[S Housing, work, diet, and the quality {前| of the air}] [M together] [V account for] [O far more variation] [M {副詞節:比較| [接 than] [S any treatment] [M ever] [V does]}].', {
+    chunks: [
+      ['Housing, work, diet, and the quality of the air', '住まいと仕事と食事と空気の質が'],
+      ['together account for far more variation', '合わさって、はるかに大きな差を生んでいます'],
+      ['than any treatment ever does', 'どんな治療が生むよりも'],
+    ],
+    notes: {
+      'together account for far more variation': 'account for … で「…を説明する・…の原因である」。',
+    },
+  }),
+  st('[S A health budget {関係>A health budget| [S that] [V is used] [M entirely] [M {前| on treatment}]}] [V is] [M therefore] [V being used] [M {前| at the very last stage {前| of the process}}].', {
+    chunks: [
+      ['A health budget that is used entirely', 'すべてが使われる保健予算は'],
+      ['on treatment', '治療に'],
+      ['is therefore being used', 'したがって使われていることになります（どこでかは次へ）'],
+      ['at the very last stage of the process', '過程のまさに最後の段階で'],
+    ],
+    notes: {
+      'is therefore being used': 'is being used は「いま使われている」という受け身の進行形です。',
+    },
+  }),
+  st('[S {動名詞| [V Moving] [O part {前| of that budget}] [M earlier]}] [V is] [C difficult] [M {副詞節:理由| [接 because] [S the benefits] [M then] [V appear] [M {前| in the accounts {前| of some other office}}]}].', {
+    chunks: [
+      ['Moving part of that budget earlier is difficult', 'その予算の一部を前倒しするのは難しいのです'],
+      ['because the benefits then appear', 'なぜならそのとき利益が現れるからです（どこにかは次へ）'],
+      ['in the accounts of some other office', 'ほかの部署の帳簿に'],
+    ],
+    notes: {
+      'in the accounts of some other office': 'accounts はここでは「会計・帳簿」。',
+    },
+  }),
+  st('[S Prevention] [V is] [C very cheap] [M {副詞節:時| [接 when] [S it] [V is counted] [M {前| in total}]}] [接 and] [M yet] [C completely invisible] [M {前| in every individual case}].', {
+    chunks: [
+      ['Prevention is very cheap', '予防はきわめて安上がりです'],
+      ['when it is counted in total', '全体として数えれば'],
+      ['and yet completely invisible', 'それでいてまったく目に見えません'],
+      ['in every individual case', '一つ一つの場面では'],
+    ],
+    notes: {
+      'and yet completely invisible': 'and yet は「それでいて」。前と対立する内容を続けます。',
+    },
+  }),
+  st('[S Nobody] [V is] [M ever] [V able to point] [M {前| to the particular illness {関係>the particular illness| [O that] [S a clean water supply] [V did not happen] [C {to:補語| [V to cause]}]}}].', {
+    chunks: [
+      ['Nobody is ever able to point', 'だれも指し示すことができません（何をかは次へ）'],
+      ['to the particular illness', 'その特定の病気を'],
+      ['that a clean water supply did not happen to cause', '清潔な水道がたまたま起こさずにすんだ（病気を）'],
+    ],
+    notes: {
+      'that a clean water supply did not happen to cause': 'that は to cause の目的語にあたります。happen to ＋ 動詞 で「たまたま〜する」。',
+    },
+  }),
+  st('[S Treatment], [M {前| by contrast}], [V produces] [O a grateful patient {関係>a grateful patient| [S who] [V can be photographed] [接 and] [M publicly] [V thanked] [M {前| by name}]}].', {
+    chunks: [
+      ['Treatment, by contrast, produces a grateful patient', '対照的に、治療は感謝する患者を生みます'],
+      ['who can be photographed', 'その患者は写真に撮られ'],
+      ['and publicly thanked by name', '名前を挙げて公に感謝されます'],
+    ],
+    notes: {
+      'and publicly thanked by name': 'can be photographed and thanked と、二つの過去分詞が can be を共有しています。',
+    },
+  }),
+  st('[S That difference {前| in visibility}] [V explains] [O most {前| of the lasting imbalance {前| in the way {関係>the way| [M that] [S health money] [V is used]}}}].', {
+    chunks: [
+      ['That difference in visibility explains most', 'この見えやすさの違いが大半を説明します（何のかは次へ）'],
+      ['of the lasting imbalance', '長く続く偏りの'],
+      ['in the way that health money is used', '保健の予算の使われ方における'],
+    ],
+    notes: {
+      'in the way that health money is used': 'the way that ＋ 主語 ＋ 動詞 で「〜するやり方」。in which に置きかえられます。',
+    },
+  }),
+  st('[S Care {前| for the very old} and {前| for the very young}] [V is] [M largely] [C invisible], [接 and] [S it] [M hardly ever] [V appears] [M {前| in any official set {前| of figures}}].', {
+    chunks: [
+      ['Care for the very old and for the very young', '高齢者と幼い子どもへのケアは'],
+      ['is largely invisible,', 'その大半が目に見えません'],
+      ['and it hardly ever appears', 'そしてほとんど現れません（どこにかは次へ）'],
+      ['in any official set of figures', 'どの公式の統計にも'],
+    ],
+    notes: {
+      'and it hardly ever appears': 'hardly ever で「めったに〜ない」。',
+    },
+  }),
+  st('[S It] [V is performed] [M {前| at home}], [M mostly] [M {前| by a woman {前| in the family}}], [接 and] [S it] [M never once] [V enters] [O the national accounts].', {
+    chunks: [
+      ['It is performed at home,', 'それは家庭で行われます'],
+      ['mostly by a woman in the family,', '多くは家族の中の女性によって'],
+      ['and it never once enters the national accounts', 'そして国民経済計算に入ることは一度もありません'],
+    ],
+    notes: {
+      'and it never once enters the national accounts': 'the national accounts は国全体の経済を数える統計です。',
+    },
+  }),
+  st('[S A policy {関係>A policy| [S that] [V shifts] [O care] [M {前| from an institution}] [M {前| to a family}]}] [V has] [M merely] [V moved] [O a cost] [接 rather than] [V removed] [O it].', {
+    chunks: [
+      ['A policy that shifts care', 'ケアを移す政策は'],
+      ['from an institution to a family', '施設から家庭へ'],
+      ['has merely moved a cost', '費用をただ移しただけです'],
+      ['rather than removed it', 'それを取り除いたのではなく'],
+    ],
+    notes: {
+      'rather than removed it': 'rather than … で「…ではなく」。moved と removed を比べています。',
+    },
+  }),
+  st('[S {動名詞| [V Counting] [O that work] [M honestly], [M even] [M {副詞節:時| [接 when] [S nobody] [V is paid] [M {前| for it}]}]}], [V changes] [O {疑問詞節| [S which reform] [V looks] [C cheap]} and {疑問詞節| [S which] [V looks] [C expensive]}].', {
+    chunks: [
+      ['Counting that work honestly,', 'その仕事を誠実に数えることは'],
+      ['even when nobody is paid for it,', 'だれも報酬を受けていないときでさえ'],
+      ['changes which reform looks cheap', 'どの改革が安く見えるかを変えます'],
+      ['and which looks expensive', 'そしてどれが高く見えるかを'],
+    ],
+    notes: {
+      'changes which reform looks cheap': 'which reform … は「どの改革が…か」という間接疑問です。',
+    },
+  }),
+  st('[S Medical technology] [V extends] [O the length {前| of a life}] [M far more consistently] [M {副詞節:比較| [接 than] [S it] [V manages] [O {to:名詞| [V to extend] [O independence and comfort]}]}].', {
+    chunks: [
+      ['Medical technology extends the length of a life', '医療技術は人生の長さを延ばします'],
+      ['far more consistently', 'はるかに確実に'],
+      ['than it manages to extend independence and comfort', '自立と快適さを延ばせるよりも'],
+    ],
+    notes: {
+      'than it manages to extend independence and comfort': 'manage to ＋ 動詞 で「どうにか〜する」。',
+    },
+  }),
+  st('[S A treatment {関係>A treatment| [S that] [V adds] [O five years {前| of life}]}] [V may] [M equally] [V add] [O five years {前| of dependence {前| on someone else}}].', {
+    chunks: [
+      ['A treatment that adds five years of life', '五年の命を加える治療は'],
+      ['may equally add five years', '同じだけ五年を加えることもあります'],
+      ['of dependence on someone else', 'ほかのだれかに頼る（五年を）'],
+    ],
+    notes: {
+      'may equally add five years': 'equally はここでは「同じように・同じだけ」。',
+    },
+  }),
+  st('[S Families] [M usually] [V discover] [O this] [M only] [M {副詞節:時| [接 after] [S the decision] [V has been made] [接 and] [V can] [M no longer easily] [V be reversed] [M {前| at all}]}].', {
+    chunks: [
+      ['Families usually discover this only', '家族がこれを知るのはたいてい（いつかは次へ）'],
+      ['after the decision has been made', '決定が下されたあとです'],
+      ['and can no longer easily be reversed at all', 'そしてもう簡単には覆せなくなってから'],
+    ],
+    notes: {
+      'and can no longer easily be reversed at all': 'no longer は「もはや〜ない」。be reversed は「覆される」。',
+    },
+  }),
+  st('[S {動名詞| [V Discussing] [O the question] [M well] [M {前| in advance}]}] [V is] [C unpleasant], [接 and] [S it] [V is] [C the only point {関係>the only point| [M at which] [S it] [V can be discussed] [M {前| at all}]}].', {
+    chunks: [
+      ['Discussing the question well in advance is unpleasant,', 'その問いを前もって話し合うのは気が進みません'],
+      ['and it is the only point', 'そしてそれが唯一の時点でもあります'],
+      ['at which it can be discussed at all', 'そもそも話し合える（時点）'],
+    ],
+    notes: {
+      'at which it can be discussed at all': 'at which は「前置詞＋関係代名詞」で、at the point の意味です。',
+    },
+  }),
+  st('[S Every health system {前| in the world}] [V shares out] [O care], [接 and] [S the honest ones] [V state] [M openly] [O {疑問詞節| [M how] [S they] [V do] [O it]}].', {
+    chunks: [
+      ['Every health system in the world shares out care,', '世界のどの医療制度もケアを配分しています'],
+      ['and the honest ones state openly', 'そして誠実な制度は率直に述べます（何をかは次へ）'],
+      ['how they do it', 'どうやって配分しているかを'],
+    ],
+    notes: {
+      'Every health system in the world shares out care,': 'share out … で「…を分け合う・配分する」。',
+    },
+  }),
+  st('[S Waiting lists, prices, distance, and rules {前| about {疑問詞節| [S who] [V qualifies]}}] [V are] [M all] [C different methods {前| of {動名詞| [V sharing out] [O care]}}].', {
+    chunks: [
+      ['Waiting lists, prices, distance, and rules', '待機名簿と価格と距離と規則は'],
+      ['about who qualifies', 'だれに資格があるかについての'],
+      ['are all different methods of sharing out care', 'どれもケアを配分する別々のやり方です'],
+    ],
+    notes: {
+      'about who qualifies': 'この who は疑問詞で、about の目的語になる間接疑問を作ります。',
+    },
+  }),
+  st('[S {動名詞| [V Pretending] [O {that節| [接 that] [S no such choice] [V is being made]}]}] [M merely] [V hides] [O the choice] [M {前| rather than {動名詞| [M actually] [V avoiding] [O it] [M {前| in any way}]}}].', {
+    chunks: [
+      ['Pretending that no such choice is being made', 'そんな選択はしていないふりをすることは'],
+      ['merely hides the choice', 'その選択をただ隠すだけです'],
+      ['rather than actually avoiding it in any way', '実際に避けているのではなく'],
+    ],
+    notes: {
+      'Pretending that no such choice is being made': 'この that は接続詞で、pretend の目的語になる名詞節を作ります。',
+    },
+  }),
+  st('[S A rule {関係>A rule| [S that] [V is stated] [M openly]}] [V can be argued] [M with], [M {副詞節:対比| [接 while] [S a rule {関係>a rule| [S that] [V is] [M never] [V stated]}] [V can] [M only] [V be quietly endured]}].', {
+    chunks: [
+      ['A rule that is stated openly can be argued with,', '公然と述べられた規則には反論できます'],
+      ['while a rule that is never stated', '一方、決して述べられない規則は'],
+      ['can only be quietly endured', '黙って耐えるほかありません'],
+    ],
+    notes: {
+      'A rule that is stated openly can be argued with,': 'argue with … で「…に反論する」。受け身になって with が文の終わりに残っています。',
     },
   }),
 ])

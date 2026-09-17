@@ -86,6 +86,10 @@ function restoreRelativeSentence(unitNode, antecedent) {
   if (rest.some((element) => ['O', 'O1', 'O2', '仮O', '真O'].includes(element.role))) return ''
   const lastVerb = rest.map((element) => element.role).lastIndexOf('V')
   if (lastVerb < 0) return ''
+  // 動詞の後ろに不定詞や動名詞のまとまりがあるときは、欠けた語がその中なので出さない。
+  const embedded = rest.slice(lastVerb + 1).some((element) =>
+    element.children.some((child) => child.kind === 'unit' && ['to', '原形', '動名詞'].includes(child.base)))
+  if (embedded) return ''
   const pieces = rest.map(rawText)
   pieces.splice(lastVerb + 1, 0, lowerAntecedent(antecedent))
   return capitalizeSentence(pieces.join(' '))
@@ -115,12 +119,31 @@ function restoreOmittedRelative(unitNode, antecedent, gapVerb) {
   return capitalizeSentence(restored.join(' '))
 }
 
+// 節の終わりに残りやすい前置詞。
+const STRANDED_PREPOSITIONS = new Set([
+  'on', 'with', 'for', 'about', 'in', 'to', 'at', 'from', 'by', 'into', 'through', 'after', 'of',
+])
+
 const RELATIVE_PRONOUN_USE = Object.freeze({
   who: 'who は人を受ける',
   whom: 'whom は人を受ける',
   which: 'which は、もの・ことを受ける',
   that: 'that は人にも、もの・ことにも使える',
 })
+
+// 節の動詞の後ろにある不定詞・動名詞の中の動詞（欠けた目的語はそちらのことがある）。
+function embeddedVerbAfterMainVerb(elements) {
+  const lastVerb = elements.map((element) => element.role).lastIndexOf('V')
+  if (lastVerb < 0) return ''
+  for (const element of elements.slice(lastVerb + 1)) {
+    for (const child of element.children) {
+      if (child.kind !== 'unit' || !['to', '原形', '動名詞'].includes(child.base)) continue
+      const inner = child.children.find((item) => item.kind === 'element' && item.role === 'V')
+      if (inner) return plain(inner)
+    }
+  }
+  return ''
+}
 
 function relativeExplanation(unit) {
   const node = unit.node
@@ -182,18 +205,29 @@ function relativeExplanation(unit) {
     ? `コンマのある非制限用法なので、${antecedent} に情報を付け足すように、前から順に読みます。`
     : ''
   if (lead?.role === 'O') {
+    // 目的語が欠けているのが、不定詞や動名詞の中の動詞であることもある。
+    const gapVerb = embeddedVerbAfterMainVerb(elements) || verb
     return {
       word: leadText,
       chip: '関係代名詞',
       kind: nonRestrictive ? '関係代名詞（目的格・非制限用法）' : '関係代名詞（目的格）',
-      explanation: `${commaLead}${use}関係代名詞（目的格）です。直前の ${antecedent}（先行詞）を受けて、節の中で ${verb} の目的語Oになります。後ろに主語 ${subject} と動詞 ${verb} が続くのに、${verb} の目的語がない形になっている点で見分けます。${restoreText}${commaNote}${nonRestrictive ? '' : '目的格の関係代名詞は省略されることもあります。'}`,
+      explanation: `${commaLead}${use}関係代名詞（目的格）です。直前の ${antecedent}（先行詞）を受けて、節の中で ${gapVerb} の目的語Oになります。後ろに主語 ${subject} と動詞 ${verb} が続くのに、${gapVerb} の目的語がない形になっている点で見分けます。${restoreText}${commaNote}${nonRestrictive ? '' : '目的格の関係代名詞は省略されることもあります。'}`,
     }
   }
   // put a price on … のように、節の終わりに残った前置詞の目的語になる関係代名詞。
   if (lead?.role === 'M') {
     const stranded = [...elements].reverse()
-      .find((element) => element.role === 'M' && words(plain(element)).length === 1)
+      .find((element) => element.role === 'M' && STRANDED_PREPOSITIONS.has(plain(element).toLowerCase()))
     const preposition = stranded ? plain(stranded) : ''
+    if (!preposition) {
+      // the way that … のように、関係副詞の働きをする that。
+      return {
+        word: leadText,
+        chip: '関係詞',
+        kind: '関係副詞の働きをする that',
+        explanation: `${leadText} は直前の ${antecedent}（先行詞）を受けて、節の中で修飾語Mの働きをします。後ろは主語 ${subject} と動詞 ${verb} に必要な語がそろった文なので、欠けた語を補う関係代名詞ではありません。in which に置きかえられる形です。`,
+      }
+    }
     return {
       word: leadText,
       chip: '関係代名詞',
@@ -480,6 +514,7 @@ const COORDINATE_CONJUNCTIONS = Object.freeze({
   yet: { meaning: 'それでも', note: '前から予想されることと反対の内容を続けます' },
   nor: { meaning: '〜もまた…ない', note: '否定の内容を続けます' },
   for: { meaning: 'というのは', note: '理由を後から付け足します' },
+  'rather than': { meaning: '〜ではなく', note: '後ろのほうを打ち消します' },
 })
 
 const CONJUNCTIVE_ADVERBS = Object.freeze({

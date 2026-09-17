@@ -974,6 +974,8 @@ function exemptPreposition(found, list, cursor, nextNode, options = {}) {
   if (found === 'as' && options.hasAsComparison) return true
   // the past・of the past の past は名詞。
   if (found === 'past' && DETERMINERS_BEFORE_NOUN.has(previous)) return true
+  // 目的語が続かない語は前置詞ではない（its own past の past、once before の before など）。
+  if (!next && !(nextNode?.kind === 'unit')) return true
   // near miss（あと少しで事故になりかけたこと）の near は名詞の一部。
   if (found === 'near' && (next === 'miss' || next === 'misses')) return true
   // less by … than by … の than は、前置詞句どうしを並べる語。

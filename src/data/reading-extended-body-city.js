@@ -680,7 +680,7 @@ export const GENERATIONAL_CITY_BODY = Object.freeze({
         ),
         p(
           'Care for the very old and for the very young is largely invisible, and it hardly ever appears in any official set of figures.',
-          '高齢者と幼い子どもへのケアは、大半が報われず、統計にはほとんど見えません。',
+          '高齢者と幼い子どもへのケアは、その大半が目に見えず、公式の統計にもほとんど現れません。',
         ),
         s(
           'It is performed at home, mostly by a woman in the family, and it never once enters the national accounts.',
@@ -696,7 +696,7 @@ export const GENERATIONAL_CITY_BODY = Object.freeze({
         ),
         p(
           'Medical technology extends the length of a life far more consistently than it manages to extend independence and comfort.',
-          '医療技術は、自立を延ばすよりもはるかに確実に人生の長さを延ばします。',
+          '医療技術は、自立と快適さを延ばすよりもはるかに確実に、人生の長さを延ばします。',
         ),
         s(
           'A treatment that adds five years of life may equally add five years of dependence on someone else.',
