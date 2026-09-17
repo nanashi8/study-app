@@ -277,6 +277,16 @@ export const WORD_SENSES = Object.freeze({
       example: Object.freeze({ en: 'We left a tip on the table for the waiter.', ja: '私たちはウエイターのためにテーブルにチップを置いた。' }),
     }),
   ]),
+  class: Object.freeze([
+    Object.freeze({
+      pos: '名', level: 'pre2', meaning: '種類',
+      example: Object.freeze({ en: 'Dolphins belong to the same class of animals as whales.', ja: 'イルカはクジラと同じ種類の動物に属する。' }),
+    }),
+    Object.freeze({
+      pos: '名', level: '2', meaning: '階級',
+      example: Object.freeze({ en: 'Her novel describes the life of the working class.', ja: '彼女の小説は労働者階級の暮らしを描いている。' }),
+    }),
+  ]),
   post_2: Object.freeze([
     Object.freeze({
       pos: '名', level: 'pre1', meaning: '柱・支柱',

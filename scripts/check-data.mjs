@@ -1499,9 +1499,9 @@ if (
   PASSAGES.length !== 38 ||
   readingTranslationSentenceCount !== 990 ||
   readingTranslationBlockCount !== 2420 ||
-  readingPhrasePairCount !== 6881 ||
-  readingPhraseSequenceCount !== 6881 ||
-  readingMeaningPhraseCount !== 4177 ||
+  readingPhrasePairCount !== 6882 ||
+  readingPhraseSequenceCount !== 6882 ||
+  readingMeaningPhraseCount !== 4176 ||
   readingMeaningMultiRoleCount !== 2081
 ) {
   errors.push(

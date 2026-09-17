@@ -106,7 +106,7 @@ export const READING_FOCUS_ROLE_REVIEW_FINGERPRINTS = freeze({
   'p_5_hot_summer_school#4': freeze({ phrase: '78854df4', block: '896702b8' }),
   'p_4_school_solar_roof#8': freeze({ phrase: 'd4cb8286', block: 'bb900590' }),
   'p_3_ai_class_rules#8': freeze({ phrase: 'c9b40946', block: 'd4fd2f7a' }),
-  'p_3_ai_class_rules#9': freeze({ phrase: 'e520231b', block: 'fbd8945e' }),
+  'p_3_ai_class_rules#9': freeze({ phrase: 'df469765', block: '948ef58b' }),
   'p_3_ai_class_rules#13': freeze({ phrase: '821d271a', block: '8b47ea0d' }),
   'p_3_ai_class_rules#14': freeze({ phrase: '60ffacd4', block: '64146d1b' }),
   'p_3_ai_class_rules#18': freeze({ phrase: 'c77d4353', block: '44a230f4' }),

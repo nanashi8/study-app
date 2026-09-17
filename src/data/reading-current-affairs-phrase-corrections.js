@@ -73,6 +73,11 @@ export const CURRENT_AFFAIRS_READING_PHRASE_CORRECTIONS = freeze({
     ], 'onlyはMで、関係詞節の述語Vであるlearnに焦点を当て、学ぶ内容をその一つに限定します。learnを主語Sとは扱いません。'),
   ]),
   'The class also found that copying a finished report was not honest work.': freeze([
+    correction(['The class also', 'found'], [
+      { role: 'S', en: 'The class', ja: 'クラスは' },
+      { role: 'M', en: 'also', ja: 'また' },
+      { role: 'V', en: 'found', ja: '分かりました' },
+    ], 'also は found に焦点を当てる修飾語Mで、主語Sは The class だけです。'),
     correction(['that copying a finished', 'report'], [
       { role: 'LINK', en: 'that', ja: '〜ということも' },
       { role: 'S', en: 'copying a finished report', ja: '完成した報告を写すことは' },
