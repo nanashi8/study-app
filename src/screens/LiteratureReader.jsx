@@ -78,9 +78,9 @@ const READER_COPY = Object.freeze({
   kanbun: Object.freeze({
     playingOriginal: '書き下しを再生中',
     playingTranslation: '現代語訳を再生中',
-    originalSegment: '漢文（返り点つき）',
+    originalSegment: '漢文（送り仮名・返り点つき）',
     translationSegment: '区切りの現代語訳',
-    help: '返り点に従って漢文を読む順に目で追い、書き下し文を一息ぶん読んだあと、対応する現代語訳を続けて読みます。',
+    help: '送り仮名と返り点に従って漢文を読む順に目で追い、書き下し文を一息ぶん読んだあと、対応する現代語訳を続けて読みます。',
     speechSummary: '場面全体の書き下し文',
     footer: '漢文（書き下し） → 区切りの現代語訳',
     gradient: 'linear-gradient(135deg,#4c0519,#9f1239,#7f1d1d)',

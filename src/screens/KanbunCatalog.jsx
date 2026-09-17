@@ -17,6 +17,7 @@ import { kanbunDueItems } from '../lib/kanbunProgress.js'
 import { Button, IconButton } from '../components/ui.jsx'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { KanbunHeadword } from '../components/KanbunFurigana.jsx'
+import { KanbunPatternText } from '../components/KanbunMarkedText.js'
 import { LearningEntryCard } from '../components/LearningEntryCard.jsx'
 import { LearningViewTabs } from '../components/LearningViewTabs.jsx'
 import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
@@ -267,7 +268,7 @@ export function KanbunCatalogScreen() {
               <div className="min-w-0 flex-1">
                 <h3 className="font-display text-sm font-extrabold leading-relaxed text-ink"><KanbunHeadword item={item} /></h3>
                 {item.reading && <p className="text-[11px] font-bold text-rose-700">読み：{item.reading}</p>}
-                {item.pattern && <p className="text-[11px] font-bold text-rose-700">形：{item.pattern}</p>}
+                {item.pattern && <p className="text-[11px] font-bold text-rose-700">形：<KanbunPatternText pattern={item.pattern} /></p>}
                 <p className="mt-1 text-xs font-bold leading-relaxed text-ink/45">{item.clue}</p>
               </div>
               <WordBookToggle domain={wordBookDomain} itemId={item.id} itemLabel={item.title} />

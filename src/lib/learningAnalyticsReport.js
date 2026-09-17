@@ -200,7 +200,7 @@ function descriptor(domain, item, fallbackId) {
     catalogResolved: Boolean(item),
     id,
     title: item?.title ?? fallbackId,
-    subtitle: item?.marked ?? '',
+    subtitle: item?.kakikudashi ?? '',
     field: '返り点・訓読',
     level: KANBUN_LEVEL_BY_ID[item?.level]?.label ?? '',
   }

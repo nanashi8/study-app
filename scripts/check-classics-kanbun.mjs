@@ -26,9 +26,11 @@ import {
 } from '../src/data/kanbun-kundoku.js'
 import { KANBUN_LEVELS } from '../src/data/kanbun-meta.js'
 import {
-  kanbunNeedsReturnMarks,
+  kanbunKakikudashiMatch,
+  kanbunNotationIssues,
   kanbunPlainText,
-  kanbunReadingMatchesKakikudashi,
+  kanbunReadingOrder,
+  kanbunTapOrder,
   parseKanbunMarkedText,
 } from '../src/lib/kanbun-marks.js'
 import { uncoveredKanbunKanji } from '../src/lib/kanbunFurigana.js'
@@ -109,52 +111,73 @@ const grammarText = KANBUN_GRAMMAR.map((item) => Object.values(item).join(' ')).
 for (const term of ['白文', '訓読', '書き下し', 'レ点', '一二点', '上下点', '甲乙', '天地人', '再読文字', '使役', '受身', '反語', '比較']) {
   assert.ok(grammarText.includes(term), `漢文法に「${term}」がありません`)
 }
+// ── 訓点（送り仮名・返り点・再読文字の二度目の読み・句読点）──────────────
+// 訓読文を返り点どおりに読み、送り仮名をつなぐと書き下し文と一字残らず一致すること。
+// どの訓点が抜けても、返り点の付け方を誤っても、どこかで書き下し文から外れる。
+function kundokuMismatch(where, marked, kakikudashi) {
+  const match = kanbunKakikudashiMatch(marked, kakikudashi)
+  assert.ok(
+    match.ok,
+    `${where}: 訓読文が書き下し文と合いません（${match.reason}: ${match.matched ?? ''}｜${match.unit ?? JSON.stringify(match.errors ?? [])}）`,
+  )
+  assert.deepEqual(kanbunNotationIssues(marked), [], `${where}: 返り点の付け方が誤っています`)
+}
+
 let kanbunReturnMarkCount = 0
+let kanbunOkuriganaCount = 0
 for (const exercise of KANBUN_KUNDOKU_EXERCISES) {
   assert.equal(isCorrectKanbunKundokuOrder(exercise, exercise.order), true, exercise.id)
   assert.equal(new Set(exercise.order).size, exercise.tokens.length, exercise.id)
   assert.ok(exercise.kakikudashi && exercise.translation && exercise.clue && exercise.pitfall, exercise.id)
   const parsed = parseKanbunMarkedText(exercise.marked)
-  assert.deepEqual(parsed.errors, [], `${exercise.id}: 返り点の親字対応が不正`)
+  assert.deepEqual(parsed.errors, [], `${exercise.id}: 訓点の親字対応が不正`)
   assert.equal(parsed.units.map((unit) => unit.sourceText).join(''), exercise.marked, exercise.id)
-  const match = kanbunReadingMatchesKakikudashi(exercise.marked, exercise.kakikudashi)
-  assert.ok(
-    match.ok,
-    `${exercise.id}: 返り点の読む順が書き下し文と合いません（${match.mismatch || JSON.stringify(match.errors)}）`,
+  kundokuMismatch(exercise.id, exercise.marked, exercise.kakikudashi)
+  // 正解のタップ順は訓読文の読む順そのもの（置き字「於」だけは助詞が入る位置でタップ）。
+  const labels = Object.fromEntries(exercise.tokens.map((token) => [token.id, token.label.replace(/[①②]/gu, '')]))
+  assert.equal(
+    exercise.order.map((id) => labels[id]).join(''),
+    kanbunTapOrder(exercise.marked).text,
+    `${exercise.id}: 正解のタップ順が訓読文の読む順と合いません`,
   )
   kanbunReturnMarkCount += parsed.returnMarkCount
+  kanbunOkuriganaCount += parsed.okuriganaCount
 }
-assert.equal(kanbunReturnMarkCount, 113, '返り点40題の点数が監査基準と不一致です')
+assert.equal(kanbunReturnMarkCount, 119, '返り点40題の点数が監査基準と不一致です')
+assert.equal(kanbunOkuriganaCount, 180, '返り点40題の送り仮名の数が監査基準と不一致です')
 
-// ── 返り点 ────────────────────────────────────────────────
-// 漢文の用例は返り点付きの訓読文で持つ。返る順が書き下し文と矛盾しないこと、
-// 語順が入れ替わる用例に付け忘れがないことを、全件で確かめる。
 let exampleReturnMarkCount = 0
+let exampleOkuriganaCount = 0
 let markedExampleCount = 0
 for (const [domain, collection] of [['vocab', KANBUN_VOCAB], ['grammar', KANBUN_GRAMMAR]]) {
   for (const item of collection) {
     const parsed = parseKanbunMarkedText(item.marked)
-    assert.deepEqual(parsed.errors, [], `${domain}:${item.id}: 返り点の親字対応が不正`)
+    assert.deepEqual(parsed.errors, [], `${domain}:${item.id}: 訓点の親字対応が不正`)
     assert.equal(kanbunPlainText(parsed), item.original, `${domain}:${item.id}: 白文が訓読文と一致しません`)
-    const match = kanbunReadingMatchesKakikudashi(item.marked, item.kakikudashi)
-    assert.ok(
-      match.ok,
-      `${domain}:${item.id}: 返り点の読む順が書き下し文と合いません（${match.mismatch || JSON.stringify(match.errors)}）`,
-    )
+    kundokuMismatch(`${domain}:${item.id}`, item.marked, item.kakikudashi)
     exampleReturnMarkCount += parsed.returnMarkCount
-    if (parsed.returnMarkCount > 0) {
-      markedExampleCount += 1
-    } else {
-      assert.equal(
-        kanbunNeedsReturnMarks(item.original, item.kakikudashi),
-        false,
-        `${domain}:${item.id}: 語順が入れ替わるのに返り点がありません`,
-      )
-    }
+    exampleOkuriganaCount += parsed.okuriganaCount
+    if (parsed.returnMarkCount > 0) markedExampleCount += 1
   }
 }
-assert.equal(exampleReturnMarkCount, 426, '用例の返り点の数が監査基準と不一致です')
-assert.equal(markedExampleCount, 182, '返り点付き用例の数が監査基準と不一致です')
+assert.equal(exampleReturnMarkCount, 444, '用例の返り点の数が監査基準と不一致です')
+assert.equal(markedExampleCount, 186, '返り点付き用例の数が監査基準と不一致です')
+assert.equal(exampleOkuriganaCount, 815, '用例の送り仮名の数が監査基準と不一致です')
+
+// 句法の「形」も訓読文と同じ記号で返り点を書く。普通の漢字「二・一・レ」で書くと本文と見分けられず、
+// 「A見レV於B」のような一二点の付け忘れも読む順を組み立てられないので見逃す。
+// kgw008 は点の名前の一覧、kgw071 の「三倍」は本文の数字なので対象外。
+const LEGACY_PATTERN_MARK = /[A-Z][一二三上中下甲乙天地]|[一二三上中下]レ|[不弗無勿莫毋可能所見為非使令教遣被未]レ[A-Z能可不如若]|[不無非使令教遣被未莫与]二[A-Z必其]/u
+let patternReturnMarkCount = 0
+for (const item of KANBUN_GRAMMAR) {
+  const parsed = parseKanbunMarkedText(item.pattern)
+  assert.deepEqual(kanbunReadingOrder(parsed).errors, [], `grammar:${item.id}: 形の返り点が読めません（${item.pattern}）`)
+  if (!['kgw008', 'kgw071'].includes(item.id)) {
+    assert.doesNotMatch(item.pattern, LEGACY_PATTERN_MARK, `grammar:${item.id}: 形の返り点を普通の漢字で書いています（${item.pattern}）`)
+  }
+  patternReturnMarkCount += parsed.returnMarkCount
+}
+assert.equal(patternReturnMarkCount, 62, '句法の形の返り点の数が監査基準と不一致です')
 
 const kotenTile = CONTENTS.find((content) => content.id === 'koten-quest')
 const kanbunTile = CONTENTS.find((content) => content.id === 'kanbun-quest')
@@ -233,7 +256,7 @@ for (const [file, needles] of [
 
 console.log('古典・漢文全件監査: PASS')
 console.log('  古典: 暗記430項目 / 選択問題548問相当（出題は3択） / 短文読解36問 / 5段階')
-console.log(`  漢文: 暗記302項目 / 自動生成3択302問 / 返り点・訓読40題・返り点${kanbunReturnMarkCount}個を親字へ固定 / 5段階`)
-console.log(`  用例の返り点: ${markedExampleCount}例文に${exampleReturnMarkCount}個 / 読む順は全件が書き下し文と一致`)
+console.log(`  漢文: 暗記302項目 / 自動生成3択302問 / 返り点・訓読40題・返り点${kanbunReturnMarkCount}個・送り仮名を付けた字${kanbunOkuriganaCount}を親字へ固定 / 5段階`)
+console.log(`  用例の訓点: ${markedExampleCount}例文に返り点${exampleReturnMarkCount}個・送り仮名を付けた字${exampleOkuriganaCount} / 訓読文は全件が書き下し文と一字残らず一致`)
 console.log(`  保存契約: 漢文4項目 / 全${PERSISTED_PROGRESS_FIELDS.length}永続項目`)
 console.log('  ふりがな: 見出し語・書き下し文の振り漏れ0 / 白文は書き下し文と必ず対')

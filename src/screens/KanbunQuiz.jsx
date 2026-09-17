@@ -12,7 +12,7 @@ import { KANBUN_LEVEL_BY_ID } from '../data/kanbun-meta.js'
 import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { ChoiceExplanations } from '../components/ChoiceExplanations.jsx'
-import { KanbunMarkedText } from '../components/KanbunMarkedText.js'
+import { KanbunMarkedText, KanbunPatternText } from '../components/KanbunMarkedText.js'
 import { KanbunText } from '../components/KanbunFurigana.jsx'
 import { Button, Chip, cx } from '../components/ui.jsx'
 import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
@@ -37,9 +37,21 @@ const ALL_QUESTIONS = 9999 // 在庫数を数えるための十分大きな上�
 // 選択肢は、どれも別の項目の「答え」の文。どの項目のものかと、その項目の見分けるヒントを並べる。
 const CHOICE_SOURCE_LABEL = Object.freeze({
   vocab: (item) => `「${item.title}」の中心の意味`,
-  grammar: (item) => `句法「${item.title}」（${item.pattern}）の読み・意味`,
+  grammar: (item) => <>句法「{item.title}」（<KanbunPatternText pattern={item.pattern} />）の読み・意味</>,
   culture: (item) => `「${item.title}」の説明`,
 })
+
+// 問題文の中の「形」だけは、返り点を記号で添えて出す。
+function QuestionPrompt({ question }) {
+  const pattern = question.pattern ? `（${question.pattern}）` : ''
+  const at = pattern ? question.prompt.indexOf(pattern) : -1
+  if (at === -1) return question.prompt
+  return (
+    <>
+      {question.prompt.slice(0, at)}（<KanbunPatternText pattern={question.pattern} />）{question.prompt.slice(at + pattern.length)}
+    </>
+  )
+}
 
 function ChoiceExplanation({ question, selected }) {
   const sourceLabel = CHOICE_SOURCE_LABEL[question.domain] ?? CHOICE_SOURCE_LABEL.culture
@@ -60,7 +72,7 @@ function ChoiceExplanation({ question, selected }) {
             id: choice.id,
             heading: choice.label,
             body: source
-              ? `${sourceLabel(source)}。${correct ? 'この問題の答え。' : `見分けるヒント：${source.clue}`}`
+              ? <>{sourceLabel(source)}。{correct ? 'この問題の答え。' : `見分けるヒント：${source.clue}`}</>
               : '',
             correct,
             chosen: selected === choice.id,
@@ -282,7 +294,7 @@ export function KanbunQuizScreen() {
               {question.kakikudashi && <p className="mt-2 text-xs font-bold leading-relaxed text-white/60"><KanbunText>{question.kakikudashi}</KanbunText></p>}
             </div>
           )}
-          <p className="mt-4 text-sm font-extrabold leading-relaxed text-ink/75">{question.prompt}</p>
+          <p className="mt-4 text-sm font-extrabold leading-relaxed text-ink/75"><QuestionPrompt question={question} /></p>
         </section>
 
         <div className="mt-4 space-y-2.5">
