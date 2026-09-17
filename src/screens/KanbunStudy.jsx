@@ -11,7 +11,7 @@ import { orderForStudy } from '../lib/studyOrder.js'
 import { KANBUN_LEVEL_BY_ID } from '../data/kanbun-meta.js'
 import { Button, Chip } from '../components/ui.jsx'
 import { KanbunText, KanbunHeadword } from '../components/KanbunFurigana.jsx'
-import { KanbunMarkedText } from '../components/KanbunMarkedText.js'
+import { KanbunMarkedText, KanbunPatternText } from '../components/KanbunMarkedText.js'
 import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
 import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
 import { answeredSessionIndexes, growDeck, restartSessionCount } from '../lib/session.js'
@@ -285,7 +285,7 @@ export function KanbunStudyScreen() {
             {item.reading && item.reading.includes('・') && (
               <p className="mt-1 text-sm font-extrabold text-rose-700">{item.reading}</p>
             )}
-            {item.pattern && <p className="mt-2 rounded-xl bg-slate-100 px-3 py-2 font-mono text-sm font-extrabold text-slate-800">{item.pattern}</p>}
+            {item.pattern && <p className="mt-2 rounded-xl bg-slate-100 px-3 py-2 font-mono text-sm font-extrabold text-slate-800"><KanbunPatternText pattern={item.pattern} /></p>}
             <p className="mt-3 text-sm font-bold leading-relaxed text-ink/45">{item.front}</p>
           </div>
 

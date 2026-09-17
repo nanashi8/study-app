@@ -96,17 +96,19 @@ export function KanbunKundokuScreen() {
           <div className="flex gap-3">
             <Book size={21} className="mt-0.5 shrink-0 text-rose-700" />
             <div>
-              <h2 className="font-display text-base font-extrabold text-ink">返って読む順のきまり</h2>
+              <h2 className="font-display text-base font-extrabold text-ink">訓読文を読むきまり</h2>
               <ol className="mt-2 space-y-1.5 text-xs font-bold leading-relaxed text-ink/60">
                 <li>1. レ点：すぐ下の一字を先に読む</li>
                 <li>2. 一二点：一点を読んで二点へ返る</li>
                 <li>3. 上下点：一二点をまたぎ、上から下へ返る</li>
                 <li>4. 甲乙点 → 天地人点：さらに外側の階層</li>
                 <li>5. 複合するときは、必ず内側の小さい返りから閉じる</li>
+                <li>6. 字の右の送り仮名は、その字を読むときに続けて読む</li>
+                <li>7. 再読文字は先に一度読み、返ったところで二度目の読みを読む</li>
               </ol>
             </div>
           </div>
-          <KanbunMarkedText marked="使㆓人読㆒㆑書" className="mt-4 rounded-2xl bg-slate-50 px-3 py-3" />
+          <KanbunMarkedText marked="使ム㆓人ヲシテ読マ㆒㆑書ヲ。" className="mt-4 rounded-2xl bg-slate-50 px-3 py-3" />
         </Card>
       </main>
     </div>

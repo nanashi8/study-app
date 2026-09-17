@@ -19,6 +19,7 @@ import { KANBUN_CULTURE, KANBUN_CULTURE_CATEGORIES } from '../data/kanbun-cultur
 import { KANBUN_KUNDOKU_EXERCISES, KANBUN_KUNDOKU_LEVELS } from '../data/kanbun-kundoku.js'
 import { KANBUN_LEVEL_BY_ID } from '../data/kanbun-meta.js'
 import { kanbunSearchText } from '../data/kanbun-content.js'
+import { kanbunPlainText } from './kanbun-marks.js'
 import {
   NOTEBOOK_DOMAINS,
   NOTEBOOK_DOMAIN_BY_ID,
@@ -186,7 +187,8 @@ const CATALOG = Object.freeze({
     detail: item.translation ?? '',
     category: kundokuLevelById.get(item.level)?.label ?? '',
     level: KANBUN_LEVEL_BY_ID[item.level]?.label ?? '',
-    search: [item.marked, item.clue, item.pitfall],
+    // 訓読文は字の間に送り仮名が入るので、白文でも引けるようにする。
+    search: [kanbunPlainText(item.marked), item.marked, item.clue, item.pitfall],
   })),
 })
 
