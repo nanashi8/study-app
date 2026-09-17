@@ -205,7 +205,7 @@ export const EXPANDED_READING_QUESTIONS = Object.freeze({
       q: 'Why do communities begin with small trials?',
       choices: ['To measure several effects and reveal trade-offs before wider rules.', 'To avoid listening to residents who work late.', 'To keep all crossings dark after the last bus.', 'To prove that tourism is the only useful goal.'],
       answer: 'To measure several effects and reveal trade-offs before wider rules.',
-      explain: '小規模試行なら安全、快適さ、エネルギー、生態系などを測り、調整できます。',
+      explain: '小さく試せば、空の明るさ・エネルギー・交通・生き物・住民の安心などを測り、何を得て何を失うかが見えるからです（第22〜25文）。',
     },
     {
       q: 'What principle best summarizes the author’s preferred standards?',
