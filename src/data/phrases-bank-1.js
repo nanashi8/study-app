@@ -18,7 +18,7 @@ clear away	取り除く・晴らす	clear away debris after the storm	嵐の後�
 come across as	〜という印象を与える	The statement came across as dismissive.	その声明は取り合わないような印象を与えた。	phrasal-verb	as の後ろに他者が受ける印象を置く。	come across(相手の側へ伝わる)＋as(〜として)。人柄や発言が〜として相手に伝わることから「〜という印象を与える」。
 come apart	ばらばらになる・崩れる	The coalition began to come apart.	連立は崩れ始めた。	phrasal-verb	物理的分解と組織・関係の崩壊に使う。	come(なる)＋apart(ばらばらに)。まとまっていたものがばらばらになることから「ばらばらになる・崩れる」。
 come around to	最終的に〜へ同意する	come around to accepting the revised proposal	最終的に修正案を受け入れる	preposition	to は前置詞なので後ろは名詞・動名詞。	come around(回って来る)＋to(〜に)。考えが回り道をして〜に行き着くことから「最終的に〜へ同意する」。
-come between	〜の仲を裂く・間に入る	Do not let minor disputes come between colleagues.	小さな争いで同僚の仲を裂いてはいけない。	phrasal-verb	2者の関係を妨げる物を主語にする。	come(入って来る)＋between(〜の間に)。2人の間に割って入ることから「〜の仲を裂く・間に入る」。
+come between	〜の仲を裂く・間に入る	Do not let minor disputes come between colleagues.	小さな争いで同僚の仲が裂かれないようにしなさい。	phrasal-verb	2者の関係を妨げる物を主語にする。	come(入って来る)＋between(〜の間に)。2人の間に割って入ることから「〜の仲を裂く・間に入る」。
 come in for	批判・称賛などを受ける	The report came in for severe criticism.	その報告書は厳しい批判を受けた。	phrasal-verb	criticism・praise・attention とよく結ぶ。	come in(入って来る)＋for(〜を受ける番として)。批判や称賛を受ける番が回ってくることから「批判・称賛などを受ける」。
 come out with	突然言う・発表する	come out with a surprisingly bold proposal	驚くほど大胆な提案を発表する	phrasal-verb	発言・新製品を公に出す。	come out(外へ出て来る)＋with(〜を持って)。考えや製品を持って人前に出て来ることから「突然言う・発表する」。
 come through	切り抜ける・期待に応える	The emergency system came through when needed.	緊急システムは必要な時に期待どおり機能した。	phrasal-verb	困難を生き延びる、人が約束を果たす意味。	come(来る)＋through(〜を通り抜けて)。困難の中を通り抜けて来ることから「切り抜ける」、頼まれたことを最後まで届けることから「期待に応える」。
@@ -36,7 +36,7 @@ go beyond	〜を越える・〜にとどまらない	go beyond a purely economic
 go for	〜を選ぶ・〜を目指す	go for the option with the lowest long-term risk	長期的危険が最小の選択肢を選ぶ	phrasal-verb	口語で選択・挑戦・好みを表す。	go(向かう)＋for(〜を求めて)。〜を求めて向かっていくことから「〜を選ぶ・〜を目指す」。
 hold forth	長々と意見を述べる	hold forth on the failures of modern education	現代教育の失敗について長々と論じる	phrasal-verb	on の後ろに話題を置き、否定的含みが多い。	hold(続ける)＋forth(前へ)。人々の前で話を長く続けることから「長々と意見を述べる」。
 iron out	問題を解消する	iron out the remaining technical difficulties	残る技術的問題を解消する	phrasal-verb	しわをアイロンで伸ばす比喩。	iron(アイロンをかける)＋out(平らに伸ばして)。しわをアイロンで伸ばすように問題を平らにすることから「問題を解消する」。
-keep abreast of	〜の最新事情に通じている	keep abreast of rapid advances in medicine	医学の急速な進歩に遅れず通じる	fixed	of の後ろに変化する分野を置く。	keep(保つ)＋abreast(横に並んで)＋of(〜と)。〜と横に並んだ状態を保つことから「〜の最新事情に通じている」。
+keep abreast of	〜の最新事情に通じている	keep abreast of rapid advances in medicine	医学の急速な進歩について常に最新の知識を保つ	fixed	of の後ろに変化する分野を置く。	keep(保つ)＋abreast(横に並んで)＋of(〜と)。〜と横に並んだ状態を保つことから「〜の最新事情に通じている」。
 latch on to	〜をすぐ理解する・つかむ	latch on to the significance of the finding	その知見の重要性を理解する	phrasal-verb	留め金でつかむ比喩。考えに固執する意味もある。	latch(掛け金で留める)＋on to(〜にくっついて)。掛け金がかちっと掛かるように〜をつかむことから「〜をすぐ理解する・つかむ」。
 live down	過去の恥を忘れられるまで生きる	never live down the public mistake	公の場での失敗をいつまでも忘れてもらえない	phrasal-verb	否定・疑問でよく使う。	live(生きる)＋down(押さえ込んで)。恥ずかしい過去を時間をかけて押さえ込むように暮らすことから「過去の恥を忘れられるまで生きる」。
 map out	詳細に計画する	map out a path toward carbon neutrality	炭素中立への道筋を詳しく描く	phrasal-verb	地図を描く比喩から手順・将来像を示す。	map(地図を描く)＋out(細かく広げて)。道筋を地図のように細かく描き出すことから「詳細に計画する」。
@@ -88,7 +88,7 @@ succumb to	〜に屈する・〜で亡くなる	succumb to pressure from powerfu
 tamper with	〜を勝手にいじる・改ざんする	tamper with the original research data	元の研究データを改ざんする	preposition	許可なく変更して信頼性・安全性を損なう。	tamper(いじる)＋with(〜を)。勝手に手を出してあれこれいじることから「〜を勝手にいじる・改ざんする」。
 verge on	〜に近い・〜すれすれである	criticism verging on personal attack	個人攻撃に近い批判	preposition	on の後ろに近づく極端な状態を置く。	verge(ふちに迫る)＋on(〜に)。verge(ふち)から、〜のすぐふちまで来ていることから「〜に近い・〜すれすれである」。
 vie for	〜を競い合う	vie for limited research funding	限られた研究資金を競い合う	preposition	複数者が賞・地位・資源を争う。	vie(競う)＋for(〜を求めて)。〜を得ようと互いに競うことから「〜を競い合う」。
-warrant doing	〜するに値する・〜を正当化する	The anomaly warrants further investigation.	その異常はさらなる調査を必要とする。	fixed	warrant は動名詞・名詞を目的語に取り、to不定詞は通常取らない。	warrant(正当な理由を与える)＋doing(〜すること)。〜することに正当な理由を与えることから「〜するに値する・〜を正当化する」。
+warrant doing	〜するに値する・〜を正当化する	The anomaly warrants further investigation.	その異常はさらに調査するに値する。	fixed	warrant は動名詞・名詞を目的語に取り、to不定詞は通常取らない。	warrant(正当な理由を与える)＋doing(〜すること)。〜することに正当な理由を与えることから「〜するに値する・〜を正当化する」。
 acquaint A with B	AにBを熟知させる	acquaint new staff with safety procedures	新人職員に安全手順を理解させる	preposition	人を A、知識・事情を with の後ろに置く。	acquaint(知らせてなじませる)＋A＋with B(Bと)。ラテン語の「知る」から来た語で、AをBと顔見知りにさせることから「AにBを熟知させる」。
 apprise A of B	AにBを知らせる	apprise the committee of recent developments	委員会に最近の進展を知らせる	preposition	人を A、情報を of の後ろに置く改まった表現。	apprise(知らせる)＋A＋of B(Bについて)。フランス語の「教えた」から来た語で、of で知らせる中身を示して「AにBを知らせる」。
 ascribe A to B	AをBの原因・作者とみなす	ascribe the change to demographic pressures	変化を人口動態上の圧力の結果とみなす	preposition	結果・作品を A、原因・作者を to の後ろに置く。	ascribe(〜のものとする)＋A＋to B(Bに)。a(〜に)＋scribe(書く)で、AをBの名の下に書き入れることから「AをBの原因・作者とみなす」。
@@ -148,7 +148,7 @@ for once	今回だけは・珍しく	For once, all the forecasts agreed.	珍し�
 in and of itself	それ自体で	The correlation is not, in and of itself, proof of causation.	相関はそれ自体では因果の証明でない。	fixed	他の要因から切り離した対象そのものを強調する。	in itself(それ自体で)と of itself(それ自体から)を重ねて強めた形。ほかのものから切り離したそれ自体でということから「それ自体で」。
 in point of fact	実際のところ	In point of fact, the policy predates the crisis.	実際のところ、その政策は危機以前からある。	discourse	in fact の非常に改まった形。	in point of(〜の点で)＋fact(事実)。事実という点ではということから「実際のところ」。
 on the brink of	〜の瀬戸際で	The species is on the brink of extinction.	その種は絶滅の瀬戸際にある。	preposition	of の後ろは名詞・動名詞。	on(〜の上に)＋the brink(がけのふち)＋of(〜の)。〜というがけのふちに立っていることから「〜の瀬戸際で」。
-on the premise that	〜という前提で	The model operates on the premise that preferences are stable.	そのモデルは選好が安定しているという前提で働く。	fixed	that の後ろに理論・議論の前提を置く。	on(〜の上に立って)＋the premise(前提)＋that(〜という)。〜という前提の上に立ってということから「〜という前提で」。
+on the premise that	〜という前提で	The model operates on the premise that preferences are stable.	そのモデルは選好が安定しているという前提で成り立っている。	fixed	that の後ろに理論・議論の前提を置く。	on(〜の上に立って)＋the premise(前提)＋that(〜という)。〜という前提の上に立ってということから「〜という前提で」。
 short of	〜を除けば・〜に足りず	Nothing short of a full review will restore trust.	全面的審査以外では信頼を回復できない。	preposition	不足と「〜以外には」の強調を表す。	short(届かない)＋of(〜に)。〜に届かないことから「〜に足りず」、〜まで行かないものならということから「〜を除けば」。
 vis-à-vis	〜に関して・〜と比べて	the firm's position vis-à-vis its competitors	競合他社に対する会社の立場	preposition	フランス語由来の改まった比較・関係表現。	フランス語の vis(顔)＋à(〜に)＋vis(顔)。顔と顔を向き合わせることから、相手と向き合わせて「〜に関して・〜と比べて」。
 adopt an approach	手法を採用する	adopt an evidence-based approach to prevention	予防に証拠に基づく手法を採用する	collocation	対象分野は approach to 名詞で続ける。	adopt(取り入れる)＋an approach(近づき方)。課題への近づき方を一つ取り入れることから「手法を採用する」。

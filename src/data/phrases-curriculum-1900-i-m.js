@@ -22,7 +22,7 @@ in good shape	1	調子がよい・良好な状態で	The old bicycle is still in
 in harmony with	2	〜と調和して	The new building is in harmony with the park.	新しい建物は公園と調和している。	preposition	live in harmony with nature のように、人と自然・周りとの関係にも使う。	in(〜の状態で)＋harmony(調和)＋with(〜との)。〜と調和した状態にあることから「〜と調和して」。
 in honor of	2	〜に敬意を表して	A concert was held in honor of the composer.	その作曲家に敬意を表して演奏会が開かれた。	preposition	式典・行事・記念の名付けに使う（named in honor of the founder）。	in(〜として)＋honor(敬意)＋of(〜への)。〜への敬意としてということから「〜に敬意を表して」。
 in itself	2	それ自体では	Technology is not harmful in itself.	技術はそれ自体では有害ではない。	idiom	ほかの条件から切り離して評価する（not harmful in itself）。複数なら in themselves。	in(〜の中で)＋itself(それ自身)。それ自身の中だけで見るとということから「それ自体では」。
-in line	3	列に並んで	We waited in line for tickets.	私たちは切符を買うため列で待った。	preposition	wait / stand in line の形でよく使う。in line with は「〜と一致して」で意味が違う。	in(〜の中に)＋line(列)。列の中にいることから「列に並んで」。
+in line	3	列に並んで	We waited in line for tickets.	私たちは切符を買うため列に並んで待った。	preposition	wait / stand in line の形でよく使う。in line with は「〜と一致して」で意味が違う。	in(〜の中に)＋line(列)。列の中にいることから「列に並んで」。
 in need	3	困って・必要として	The fund helps families in need.	その基金は困っている家庭を助ける。	idiom	名詞の後ろに置くことが多い（families in need）。何が必要かは in need of 〜 で示す。	in(〜の状態で)＋need(必要・困窮)。必要なものがない状態にあることから「困って・必要として」。
 in order	2	順序よく・正常で	Please put the cards in order.	カードを順番に並べてください。	idiom	in order to do（〜するために）とは別の表現。out of order は「故障して・順序が乱れて」。	in(〜の状態で)＋order(順序・整った状態)。順序どおりに並んだ状態から「順序よく」、きちんと整った状態から「正常で」。
 in part	2	一部は	The delay was caused in part by fog.	遅れは一部、霧が原因だった。	discourse	原因などが全部ではないことを表す（caused in part by fog）。partly とほぼ同じ意味。	in(〜の点で)＋part(部分)。部分的な点ではということから「一部は」。
@@ -69,7 +69,7 @@ keep one's temper	2	怒りを抑える	She kept her temper during the argument.	
 keep pace with	pre2	〜に遅れずついていく	Small firms struggle to keep pace with change.	小企業は変化に遅れずついていこうと苦労する。	idiom	変化・技術・需要など速く動くものに使う。keep up with とほぼ同じ意味。	keep(保つ)＋pace(歩調・速さ)＋with(〜と)。〜と同じ歩調を保つことから「〜に遅れずついていく」。
 keep track of	pre1	〜の経過を把握する	This chart helps us keep track of costs.	この表で費用の推移を把握できる。	idiom	反対は lose track of「〜が分からなくなる」。予算・時間・人の居場所などに使う。	keep(保つ)＋track(通った跡)＋of(〜の)。〜の通った跡を見失わずに保つことから「〜の経過を把握する」。
 know ~ by sight	pre2	〜の顔は知っている	I know the teacher by sight but not by name.	その先生は顔だけ知っていて名前は知らない。	structure	直接の付き合いはないことを含む。名前を知っているなら know ~ by name。	know(知っている)＋~(人)＋by sight(見た目で)。見た目によって知っているだけということから「〜の顔は知っている」。
-know better than to do	pre1	〜するほど愚かではない	You should know better than to trust that rumor.	そのうわさを信じるほど分別がないはずはない。	structure	should know better than to do で「〜するべきではないと分かっているはずだ」と相手をとがめる。	know better(もっと分別がある)＋than to do(〜するよりは)。〜するよりはましな分別があることから「〜するほど愚かではない」。
+know better than to do	pre1	〜するほど愚かではない	You should know better than to trust that rumor.	君ならそのうわさを信じたりしない分別があるはずだ。	structure	should know better than to do で「〜するべきではないと分かっているはずだ」と相手をとがめる。	know better(もっと分別がある)＋than to do(〜するよりは)。〜するよりはましな分別があることから「〜するほど愚かではない」。
 last but not least	pre2	最後だが重要な	Last but not least, thank you to our volunteers.	最後になりましたが、ボランティアの皆さんに感謝します。	discourse	スピーチや一覧の最後の項目を紹介するときの決まり文句。	last(最後だが)＋but not least(一番小さいわけではない)。順番は最後でも重要さは劣らないということから「最後だが重要な」。
 learn ~ by heart	pre2	〜を暗記する	We learned the poem by heart.	私たちはその詩を暗記した。	structure	詩・せりふ・番号などに使う。memorize とほぼ同じ意味。	learn(覚える)＋~＋by heart(心で)。心に刻んで覚えることから「〜を暗記する」。
 leave ~ alone	pre2	〜を放っておく	Leave the sleeping dog alone.	眠っている犬をそっとしておきなさい。	structure	人・物・話題に使う（Leave me alone.「ほっといて」）。let alone は「〜はもちろん」で別の表現。	leave(置いておく)＋~＋alone(そのままに)。手を出さずにそのままにしておくことから「〜を放っておく」。
@@ -78,7 +78,7 @@ leave nothing to be desired	pre2	申し分がない	The service leaves nothing t
 Legend has it that	pre1	伝説によれば〜だ	Legend has it that a giant built the wall.	伝説によれば巨人がその壁を築いたという。	structure	has it は「〜と言っている」の意味。Rumor has it that …「うわさでは〜だ」も同じ作り。	legend(伝説)＋has it(〜と伝えている)＋that(〜ということを)。伝説が〜と伝えていることから「伝説によれば〜だ」。
 lest ~ should do	pre2	〜しないように	She spoke softly lest she should wake the baby.	赤ん坊を起こさないよう彼女は静かに話した。	structure	改まった書き言葉。should を省いて原形を使うこともある（lest she wake the baby）。for fear that とほぼ同じ意味。	lest(〜するといけないから)＋~＋should do。lest は「〜するといけないから」を表す古い接続詞で、「〜しないように」。
 let alone	pre2	〜はもちろんのこと	He cannot cook an egg, let alone a full meal.	彼は卵すら料理できず、まして一食分など無理だ。	discourse	否定の内容の後に、それよりさらに難しいことを続ける（cannot cook an egg, let alone a full meal）。	let(させる)＋alone(そのままに)。〜のことは話に出すまでもなくということから、否定文の後で「〜はもちろんのこと」。
-let go of	pre1	〜を手放す	Let go of the rope slowly.	ロープをゆっくり手放しなさい。	phrasal-verb	物をつかむ手を離す意味と、考えや感情を手放す意味がある。let go だけでも使う。	let go(離してやる)＋of(〜を)。つかんでいた〜を離してやることから「〜を手放す」。
+let go of	pre1	〜を手放す	Let go of the rope slowly.	ロープからゆっくり手を離しなさい。	phrasal-verb	物をつかむ手を離す意味と、考えや感情を手放す意味がある。let go だけでも使う。	let go(離してやる)＋of(〜を)。つかんでいた〜を離してやることから「〜を手放す」。
 Let's see.	4	ええと・考えてみよう	Let's see. Where did I put the key?	ええと、鍵をどこに置いたかな。	conversation	答えをすぐ言えずに考えるときのつなぎの言葉。Let me see. も同じ意味。	let's(〜しよう)＋see(確かめる)。確かめてみようと言いながら考えることから「ええと・考えてみよう」。
 lie in	pre2	〜にある	The solution lies in better communication.	解決策はよりよい意思疎通にある。	preposition	原因・解決策・価値などを主語にする（The solution lies in better communication.）。lie の活用は lay, lain。	lie(ある・横たわる)＋in(〜の中に)。問題の核心が〜の中にあることから「〜にある」。
 live a ~ life	pre2	〜な生活を送る	They live a quiet life by the sea.	彼らは海辺で静かな生活を送っている。	structure	~ に形容詞を置く（live a quiet life）。live と life は同じ語源の組み合わせ。	live(送る)＋a ~ life(〜な生活)。〜な生活を生きることから「〜な生活を送る」。

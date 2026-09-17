@@ -94,7 +94,7 @@ be relevant to	〜に関連がある	be relevant to the main question	中心的�
 be reluctant to	〜したがらない・〜するのをためらう	be reluctant to admit a mistake	間違いを認めたがらない	preposition	やりたくないためためらう気持ちを表す。	reluctant(気が進まない)＋to do(〜することに)。re(逆らって)＋luct(もがく)で、逆らってもがく気持ちから「〜したがらない・〜するのをためらう」。
 be superior to	〜より優れている	be superior to the older model	旧型より優れている	preposition	比較対象には than でなく to を使う。	superior(より上の)＋to(〜に比べて)。ラテン語の比較級から来た語なので、比べる相手を than でなく to で示し「〜より優れている」。
 be inferior to	〜より劣っている	be inferior to the original product	元の製品より劣っている	preposition	比較対象には than でなく to を使う。	inferior(より下の)＋to(〜に比べて)。ラテン語の比較級から来た語なので、比べる相手を to で示し「〜より劣っている」。
-be typical of	〜に典型的である	This pattern is typical of early modern art.	この型は近代初期の芸術に典型的だ。	preposition	典型を共有する集団・時代を of で示す。	typical(型どおりの)＋of(〜の)。type(型)から来た語で、〜の型をよく表していることから「〜に典型的である」。
+be typical of	〜に典型的である	This pattern is typical of early modern art.	この型は近世の芸術に典型的だ。	preposition	典型を共有する集団・時代を of で示す。	typical(型どおりの)＋of(〜の)。type(型)から来た語で、〜の型をよく表していることから「〜に典型的である」。
 adapt to	〜に適応する	adapt to a changing environment	変化する環境に適応する	preposition	adapt A to B なら「AをBに適合させる」。	adapt(合わせる)＋to(〜に)。ad(〜に)＋apt(合った)で、自分を〜に合わせることから「〜に適応する」。
 aim at	〜を目指す・〜を狙う	aim at reducing waste by half	廃棄物を半減することを目指す	preposition	at の後ろは名詞・動名詞。	aim(ねらう)＋at(〜をめがけて)。at が目標となる的を示し、「〜を目指す・〜を狙う」。
 allow for	〜を考慮に入れる	allow for possible delays	起こり得る遅れを考慮に入れる	preposition	計画時に変動・例外の余地を確保する。	allow(余地を与える)＋for(〜のために)。〜が起きる分の余地をあらかじめ与えておくことから「〜を考慮に入れる」。
@@ -163,7 +163,7 @@ on condition that	〜という条件で	You may borrow it on condition that you 
 on the basis of	〜に基づいて	make a decision on the basis of evidence	証拠に基づいて決定する	preposition	判断・分類の根拠を of の後ろに置く。	on(〜の上に)＋the basis(土台)＋of(〜という)。〜という土台の上に立ってということから「〜に基づいて」。
 on the way	途中で・進行中で	meet a friend on the way home	帰宅途中に友人に会う	fixed	目的地へ進む途中。be on the way なら「まもなく到着する」。	on(〜の上に)＋the way(道)。目的地へ向かう道の上にいることから「途中で・進行中で」。
 out of control	制御不能で	The fire spread out of control.	火事は制御不能に広がった。	fixed	under control の反対。	out of(〜の外に)＋control(管理)。管理の外に出てしまったことから「制御不能で」。
-out of sight	見えない所に	The ship moved out of sight.	船は見えない所へ進んだ。	fixed	視界の外にあること。	out of(〜の外に)＋sight(視界)。視界の外にあることから「見えない所に」。
+out of sight	見えない所に	The ship moved out of sight.	船は進んで見えなくなった。	fixed	視界の外にあること。	out of(〜の外に)＋sight(視界)。視界の外にあることから「見えない所に」。
 out of the question	全く不可能で・論外で	Canceling the exam is out of the question.	試験の中止は全く論外だ。	fixed	検討する余地もないほど不可能なことを表す。	out of(〜の外に)＋the question(検討する問題)。検討する問題の範囲の外にあることから「全く不可能で・論外で」。
 to some extent	ある程度まで	The two explanations overlap to some extent.	2つの説明はある程度重なる。	fixed	完全ではない限定的な程度を示す。	to(〜まで)＋some extent(ある広がり)。ある程度の広がりまでということから「ある程度まで」。
 under construction	建設中で	The new bridge is under construction.	新しい橋は建設中だ。	fixed	作業過程の下にあるという定型。	under(〜の最中で)＋construction(建設)。建設の作業の最中にあることから「建設中で」。

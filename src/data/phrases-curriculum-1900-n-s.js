@@ -19,14 +19,14 @@ not to mention	2	〜は言うまでもなく	The room is bright, not to mention 
 nothing but	pre2	〜にすぎない・〜だけ	The claim is nothing but a rumor.	その主張はただのうわさにすぎない。	idiom	only とほぼ同じ意味。anything but は「決して〜ない」で意味が違う。	nothing(何も〜ない)＋but(〜を除いて)。〜を除いて何もないことから「〜にすぎない・〜だけ」。
 Nothing is more A than B	pre1	BほどAなものはない	Nothing is more valuable than time.	時間ほど貴重なものはない。	structure	最上級と同じ内容を表す（Time is the most valuable thing.）。Nothing is as A as B も同じ意味。	nothing(何も〜ない)＋is more A(よりAである)＋than B(Bより)。Bより A なものは何もないことから「BほどAなものはない」。
 nothing short of	pre1	まさに〜・〜にほかならない	Her recovery was nothing short of remarkable.	彼女の回復はまさに驚くべきものだった。	idiom	後ろには驚きや称賛を表す強い語を置くことが多い（nothing short of a miracle）。	nothing(何も〜ない)＋short of(〜に届かない)。〜に届かない点が何もないことから「まさに〜・〜にほかならない」。
-now that	pre2	今や〜なので	Now that the rain has stopped, let's leave.	雨がやんだので、出発しよう。	structure	後ろに主語＋動詞を置く。会話では that を省いて Now 主語＋動詞 とも言う。	now(今)＋that(〜ということで)。今や〜という状況になったのでということから「今や〜なので」。
+now that	pre2	今や〜なので	Now that the rain has stopped, let's leave.	雨がもうやんだので、出発しよう。	structure	後ろに主語＋動詞を置く。会話では that を省いて Now 主語＋動詞 とも言う。	now(今)＋that(〜ということで)。今や〜という状況になったのでということから「今や〜なので」。
 occur to	2	〜の心に浮かぶ	A simple solution occurred to me.	簡単な解決策が私の心に浮かんだ。	preposition	考えを主語にし、人を to の後ろに置く（It occurred to me that …）。人を主語にして I occurred とは言わない。	occur(ラテン語 ob「〜に向かって」＋currere「走る」)＋to(〜に)。考えが人の方へ走って来ることから「〜の心に浮かぶ」。
 of importance	pre2	重要で	This question is of great importance.	この問題は非常に重要だ。	preposition	of＋抽象名詞で形容詞の働きをする（of importance = important）。great などで強める。	of(〜を持った)＋importance(重要性)。重要性を持っていることから「重要で」。
 of late	2	最近	She has been busy of late.	彼女は最近忙しい。	idiom	現在完了とよく使う改まった言い方。lately / recently とほぼ同じ意味。	of(〜のうちの)＋late(近ごろ)。late を「近ごろ」の意味で名詞のように使い、近ごろのうちにということから「最近」。
 of one's own	pre1	自分自身の	Every child needs a space of their own.	どの子にも自分だけの場所が必要だ。	idiom	名詞の後ろに置く（a room of my own）。one's own＋名詞 と同じ意味。	of(〜の)＋one's own(自分自身のもの)。自分自身のものであることから「自分自身の」。
 of one's own doing	pre1	自分自身が招いた	The confusion was of his own doing.	その混乱は彼自身が招いたものだった。	idiom	悪い結果に使うことが多い。one's は結果を招いた人に合わせる（of his own doing）。	of(〜による)＋one's own doing(自分自身の行い)。doing を「行い」の意味の名詞で使い、自分自身の行いによるものということから「自分自身が招いた」。
 on ~ terms with	pre1	〜な間柄で	She is on friendly terms with her neighbors.	彼女は近所の人と友好的な間柄だ。	structure	terms は必ず複数形。~ に good・friendly などを置く。	on(〜の状態で)＋~ terms(〜な間柄)＋with(〜との)。terms を複数形で「人との間柄」の意味に使い、〜との間柄がある状態から「〜な間柄で」。
-on a ~ basis	2	〜という基準・方式で	We meet on a weekly basis.	私たちは週単位で会う。	structure	~ に weekly・daily などを置く。on a weekly basis は weekly 1語とほぼ同じ意味。	on(〜に基づいて)＋a ~ basis(〜な基礎)。〜という基礎に基づいてということから「〜という基準・方式で」。
+on a ~ basis	2	〜という基準・方式で	We meet on a weekly basis.	私たちは毎週会っている。	structure	~ に weekly・daily などを置く。on a weekly basis は weekly 1語とほぼ同じ意味。	on(〜に基づいて)＋a ~ basis(〜な基礎)。〜という基礎に基づいてということから「〜という基準・方式で」。
 on a ~ scale	2	〜な規模で	The survey was conducted on a national scale.	その調査は全国規模で行われた。	structure	~ に large・small・global などを置く。on a large scale は「大規模に」。	on(〜に基づいて)＋a ~ scale(〜な目盛り・規模)。scale はラテン語の「はしご」から「目盛り・規模」の意味になり、〜な規模に基づいてということから「〜な規模で」。
 on a charge of	2	〜の容疑で	He was arrested on a charge of theft.	彼は窃盗の容疑で逮捕された。	preposition	be arrested（逮捕される）とよく使う。on charges of と複数形にもする。	on(〜に基づいて)＋a charge(告発)＋of(〜という)。〜という告発に基づいてということから「〜の容疑で」。
 on board	2	乗り物に乗って	There were fifty passengers on board.	乗客が50人乗っていた。	idiom	船のほか飛行機・列車・バスにも使う。乗り物を続けるなら on board the ship のように言う。	on(〜の上に)＋board(船べり・甲板)。船の上にいることから「乗り物に乗って」。
@@ -89,7 +89,7 @@ round up	pre1	〜を集める	We rounded up volunteers for the cleanup.	私た�
 scores of	1	多数の	Scores of people attended the open day.	多数の人が公開日に参加した。	collocation	後ろは複数名詞。dozens of（何ダースもの）と同じ作りで、それより多い感じを表す。	score(20)の複数形＋of(〜の)。score はもと20を1組として数える単位で、何組もの20ということから「多数の」。
 second to none	pre1	誰にも劣らない	Her knowledge of the region is second to none.	彼女の地域についての知識は誰にも劣らない。	idiom	be second to none の形で、最高であることを遠回しに言う。	second(2番目の)＋to none(誰に対しても〜ない)。誰に対しても2番目にならないことから「誰にも劣らない」。
 see much of	pre1	〜によく会う	I don't see much of my old classmates now.	今は昔の同級生にあまり会わない。	idiom	否定文・疑問文で使うことが多い。肯定文では see a lot of が自然。	see(会う)＋much(多く)＋of(〜の)。〜の姿を多く見ることから「〜によく会う」。
-see that	pre2	必ず〜するようにする	See that every window is closed.	すべての窓が閉まっていることを確認しなさい。	structure	see to it that とも言う。that 節の中は未来のことでも現在形を使う（See that the door is locked.）。	see(見届ける)＋that(〜ということを)。〜という状態になるのを見届けることから「必ず〜するようにする」。
+see that	pre2	必ず〜するようにする	See that every window is closed.	必ずすべての窓が閉まっているようにしなさい。	structure	see to it that とも言う。that 節の中は未来のことでも現在形を使う（See that the door is locked.）。	see(見届ける)＋that(〜ということを)。〜という状態になるのを見届けることから「必ず〜するようにする」。
 see the sights of	1	〜を観光する	We spent a day seeing the sights of Kyoto.	私たちは一日京都を観光して過ごした。	idiom	名詞 sightseeing「観光」も sight と see の組み合わせ。	see(見る)＋the sights(名所)＋of(〜の)。sight を複数形で「名所」の意味に使い、〜の名所を見ることから「〜を観光する」。
 See you.	4	またね	See you. Have a good weekend.	またね。よい週末を。	conversation	See you later. / See you tomorrow. のように時を付けることも多い。	(I'll) see you (later)(またあなたに会う)。また会うことを約束する言い方を短くして「またね」。
 serve ~ right	pre2	〜には当然の報いだ	It serves him right for ignoring the warning.	警告を無視した彼には当然の報いだ。	structure	主語は it や出来事で、悪い目にあった人を目的語にする。理由は for で示す（for ignoring the warning）。	serve(扱う)＋~(人)＋right(正しく)。その人にふさわしい正しい扱いをすることから「〜には当然の報いだ」。

@@ -2,7 +2,7 @@ import { parseIdiomRows } from './phrase-bank-utils.js'
 
 export const PHRASES_BANK_3 = parseIdiomRows('3', `
 break up	別れる・解散する	The band broke up last year.	そのバンドは昨年解散した。	phrasal-verb	人間関係・集団がばらばらになる意味。	break(壊れる)＋up(すっかり・ばらばらに)。まとまっていたものが壊れてばらばらになることから「別れる・解散する」。
-bring back	持ち帰る・思い出させる	bring back a book tomorrow	明日本を持ち帰る	phrasal-verb	目的語が代名詞なら bring it back の語順。	bring(持って来る)＋back(元の所へ)。元の所へ持って来ることから「持ち帰る」、過去の記憶を今へ連れ戻すことから「思い出させる」。
+bring back	持ち帰る・思い出させる	bring back souvenirs from Kyoto	京都からお土産を持ち帰る	phrasal-verb	目的語が代名詞なら bring it back の語順。	bring(持って来る)＋back(元の所へ)。元の所へ持って来ることから「持ち帰る」、過去の記憶を今へ連れ戻すことから「思い出させる」。
 call up	電話をかける	call up an old friend	旧友に電話をかける	phrasal-verb	くだけた表現。call an old friend だけでも同じ意味。	call(呼ぶ・電話する)＋up(呼び出して)。電話で相手を呼び出すことから「電話をかける」。
 carry on	続ける	carry on with the work	その仕事を続ける	phrasal-verb	carry on doing / carry on with 名詞 の形を取る。	carry(運ぶ)＋on(先へ続けて)。止めずに先へ運び続けることから「続ける」。
 check in	到着手続きをする	check in at the hotel	ホテルでチェックインする	phrasal-verb	ホテル・空港で到着を登録する。反対は check out。	check(照らし合わせて確かめる)＋in(中へ)。到着を記録して中へ入ることから「到着手続きをする」。
@@ -42,11 +42,11 @@ be rich in	〜が豊富である	be rich in vitamin C	ビタミンCが豊富で�
 be tired of	〜にうんざりしている	be tired of waiting	待つことにうんざりしている	preposition	of の後ろは名詞・動名詞。単なる疲労は be tired from。	tired(疲れた)＋of(〜のことで)。同じことが続いて気持ちが疲れることから「〜にうんざりしている」。
 care about	〜を気にかける	care about the environment	環境を気にかける	preposition	大切だと思い関心を持つことを表す。	care(気にかける)＋about(〜について)。ある物事について心を配ることから「〜を気にかける」。
 complain about	〜について不平を言う	complain about the noise	騒音について不平を言う	preposition	不満の内容は about、相手は complain to 人。	complain(不平を言う)＋about(〜について)。about で不満の中身を示し、「〜について不平を言う」。
-hear of	〜のことを聞く・存在を知る	have you ever heard of the artist	その芸術家のことを聞いたことがある	preposition	hear about は詳しい情報を聞く、hear of は存在を知る。	hear(耳にする)＋of(〜のことを)。あるものがあることを耳にすることから「〜のことを聞く・存在を知る」。
+hear of	〜のことを聞く・存在を知る	have heard of the artist	その芸術家のことを聞いたことがある	preposition	hear about は詳しい情報を聞く、hear of は存在を知る。	hear(耳にする)＋of(〜のことを)。あるものがあることを耳にすることから「〜のことを聞く・存在を知る」。
 laugh at	〜を笑う・あざ笑う	laugh at his joke	彼の冗談を笑う	preposition	at の後ろに笑いの対象を置く。	laugh(笑う)＋at(〜をめがけて)。at が笑いを向ける的を示し、「〜を笑う・あざ笑う」。
 learn from	〜から学ぶ	learn from our mistakes	自分たちの失敗から学ぶ	preposition	知識・教訓の出どころを from で示す。	learn(学ぶ)＋from(〜から)。from が知識や教訓の出どころを示し、「〜から学ぶ」。
 talk about	〜について話す	talk about our summer plans	夏の計画について話す	preposition	話題は about で示す。	talk(話す)＋about(〜について)。about が話の中身を示し、「〜について話す」。
-talk with	〜と話す	talk with my teacher after class	放課後先生と話す	preposition	会話の相手は with。talk to も使う。	talk(話す)＋with(〜と一緒に)。相手と言葉をやりとりすることから「〜と話す」。
+talk with	〜と話す	talk with my teacher after class	授業の後で先生と話す	preposition	会話の相手は with。talk to も使う。	talk(話す)＋with(〜と一緒に)。相手と言葉をやりとりすることから「〜と話す」。
 think of	〜を思いつく・〜についてどう思う	think of a good name	良い名前を思いつく	preposition	意見をたずねる What do you think of ...? でも頻出。	think(考える)＋of(〜のことを)。ある物事が頭に浮かぶことから「〜を思いつく」、その物事を考えることから「〜についてどう思う」。
 worry about	〜を心配する	worry about the exam	試験を心配する	preposition	心配の対象を about で示す。	worry(心配する)＋about(〜について)。about で気がかりな物事を示し、「〜を心配する」。
 prepare for	〜に備える	prepare for the coming storm	近づく嵐に備える	preposition	準備する対象・出来事を for で示す。	prepare(準備する)＋for(〜に向けて)。これから起こる出来事に向けて準備することから「〜に備える」。
@@ -67,10 +67,10 @@ cover A with B	AをBで覆う	cover the table with a cloth	テーブルを布で
 fill A with B	AをBで満たす	fill the bottle with water	瓶を水で満たす	preposition	容器を A、中身を with の後ろに置く。	fill(満たす)＋A＋with B(Bを使って)。with が入れる中身を示し、「AをBで満たす」。
 at last	ついに・ようやく	At last, the rain stopped.	ついに雨がやんだ。	fixed	長く待った末の結果を表す。	at(〜の時点で)＋last(最後)。長く待った最後の時点でということから「ついに・ようやく」。
 at once	すぐに・同時に	Come here at once.	すぐにここへ来なさい。	fixed	文脈により「ただちに」と「同時に」の二義。	at(〜の時点で)＋once(一度)。一度の時点でということから、間を置かず「すぐに」、一度にそろって「同時に」。
-at present	現在は	at present living in Kyoto	現在は京都に住んでいる	preposition	now よりやや改まった表現。	at(〜の時点で)＋present(今この時)。今という時点でということから「現在は」。
+at present	現在は	be living in Kyoto at present	現在は京都に住んでいる	preposition	now よりやや改まった表現。	at(〜の時点で)＋present(今この時)。今という時点でということから「現在は」。
 by the way	ところで	By the way, how is your sister?	ところで、お姉さんは元気ですか。	discourse	話題を変えたり付け足したりするときに使う。	by(〜のわきで)＋the way(道)。話の本筋の道のわきでということから、話のついでに「ところで」。
 for the first time	初めて	visit Okinawa for the first time	初めて沖縄を訪れる	preposition	ある経験が初回であることを表す。	for(〜として)＋the first time(最初の回)。最初の回としてということから「初めて」。
-for years	何年もの間	know each other for years	何年もの間お互いを知っている	preposition	長い継続期間を表し、完了形とよく使う。	for(〜の間)＋years(何年も)。何年もの期間ずっとということから「何年もの間」。
+for years	何年もの間	have known each other for years	何年も前からお互いを知っている	preposition	長い継続期間を表し、完了形とよく使う。	for(〜の間)＋years(何年も)。何年もの期間ずっとということから「何年もの間」。
 from now on	これからは・今後	from now on, keep a record	これからは記録をつける	fixed	現在を境にその後ずっと、という意味。	from(〜から)＋now(今)＋on(先へ続けて)。今を起点に先へずっとということから「これからは・今後」。
 in a hurry	急いで・慌てて	leave home in a hurry	急いで家を出る	preposition	急いだ状態を表す。	in(〜の状態で)＋a hurry(急ぎ)。急いでいる状態の中にいることから「急いで・慌てて」。
 in fact	実は・実際は	In fact, I have met her before.	実は以前彼女に会ったことがある。	discourse	前の内容を訂正・補強する事実を導く。	in(〜の点で)＋fact(事実)。事実の点ではということから「実は・実際は」。
@@ -100,7 +100,7 @@ step by step	一歩ずつ・段階的に	learn the process step by step	手順�
 side by side	並んで	sit side by side	並んで座る	fixed	2人・2物が横に並ぶ状態。	side(わき)＋by(〜のそばに)＋side(わき)。わきとわきを並べることから「並んで」。
 face to face	面と向かって	talk face to face	面と向かって話す	fixed	直接対面することを表す。	face(顔)＋to(〜に向かって)＋face(顔)。顔と顔を向き合わせることから「面と向かって」。
 all over	〜じゅうに・至る所に	travel all over Japan	日本中を旅行する	fixed	範囲全体に広がることを表す。	all(すべて)＋over(〜の上一面に)。ある範囲の上一面にということから「〜じゅうに・至る所に」。
-all around	周囲の至る所に	trees all around the house	家の周囲の木々	fixed	中心を取り囲む範囲全体を表す。	all(すべて)＋around(ぐるりと周りに)。周りのすべてにということから「周囲の至る所に」。
+all around	周囲の至る所に	trees all around the house	家の周りのいたる所にある木々	fixed	中心を取り囲む範囲全体を表す。	all(すべて)＋around(ぐるりと周りに)。周りのすべてにということから「周囲の至る所に」。
 make a plan	計画を立てる	make a plan for the weekend	週末の計画を立てる	collocation	plan は日本語の「作る」に引かれず make と結ぶ。	make(作る)＋a plan(計画)。計画を一つ組み立てることから「計画を立てる」。
 make a promise	約束する	make a promise to my friend	友達に約束する	collocation	約束の相手は to、内容は to do / that節で続ける。	make(作る)＋a promise(約束)。相手との間に約束を一つ作ることから「約束する」。
 make a wish	願い事をする	make a wish on a star	星に願い事をする	collocation	wish を具体的な願い事として数える。	make(作る)＋a wish(願い事)。心の中で願い事を一つ作ることから「願い事をする」。

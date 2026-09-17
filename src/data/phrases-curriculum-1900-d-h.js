@@ -29,7 +29,7 @@ enough ~ to go around	1	全員に行き渡るだけの〜	There is enough food t
 enter into	2	〜に入る・〜を始める	The two companies entered into an agreement.	2社は契約を結んだ。	preposition	契約・議論・関係などに使う（enter into an agreement）。部屋などの場所には enter だけで into は付けない。	enter(入る)＋into(〜の中へ)。話し合いや契約の中へ入ることから「〜に入る・〜を始める」。
 even as	pre2	まさに〜する間にも	The town changed even as we watched.	私たちが見ている間にも町は変わった。	structure	2つのことが同時に進むことを強調する。even if・even though とは意味が違う。	even(まさに)＋as(〜する間に)。まさに〜しているその間にということから「まさに〜する間にも」。
 even if	3	たとえ〜でも	I will go even if it rains.	たとえ雨でも私は行く。	structure	起こるか分からないことを仮定する。事実を認める「〜だけれども」は even though。	even(たとえ)＋if(もし〜なら)。if を even で強め、仮にそうなってもということから「たとえ〜でも」。
-every other	1	一つおきの・隔〜	The bus runs every other hour.	そのバスは2時間おきに走る。	collocation	every other day は「1日おき（2日に1回）」、every other week は「隔週」。	every(どの〜も)＋other(一つおいた別の)。一つおきに選んでいくことから「一つおきの・隔〜」。
+every other	1	一つおきの・隔〜	The bus runs every other hour.	そのバスは2時間に1本走る。	collocation	every other day は「1日おき（2日に1回）」、every other week は「隔週」。	every(どの〜も)＋other(一つおいた別の)。一つおきに選んでいくことから「一つおきの・隔〜」。
 every time	pre1	〜するたびに	Every time I hear the song, I remember home.	その歌を聞くたびに故郷を思い出す。	structure	後ろに主語＋動詞を置く（Every time I hear the song, …）。whenever とほぼ同じ意味。	every(どの〜も)＋time(回)。どの回もということから、接続詞として「〜するたびに」。
 Excuse me.	4	すみません	Excuse me. Is this seat free?	すみません。この席は空いていますか。	conversation	人に話しかける、前を通る、軽くわびるときに使う。はっきり謝るなら I'm sorry.。	excuse(許す)＋me(私を)。私の失礼を許してくださいということから「すみません」。
 expose A to B	2	AをBにさらす	Do not expose the film to direct sunlight.	そのフィルムを直射日光にさらさないでください。	structure	受け身 be exposed to もよく使う。新しい考えや文化に「触れさせる」意味にもなる。	expose(さらす)＋A＋to B(Bに)。ex(外に)＋pose(置く)で、Aを外に出してBに当てることから「AをBにさらす」。
@@ -74,7 +74,7 @@ give ~ a hand	3	〜を手伝う	Could you give me a hand with these boxes?	こ�
 give ~ a try	3	〜を試してみる	Give the new method a try.	新しい方法を試してみなさい。	structure	~ には方法・食べ物・店などを置く（Give it a try.）。have a try とほぼ同じ意味。	give(与える)＋~(物事)＋a try(一度の試み)。物事に一度の試みを与えることから「〜を試してみる」。
 give birth to	2	〜を産む・〜を生み出す	The discovery gave birth to a new field.	その発見は新しい分野を生み出した。	idiom	人・動物の出産のほか、発見や考えが新しい分野を生む意味にも使う。	give(与える)＋birth(誕生)＋to(〜に)。子に誕生を与えることから「〜を産む」、新しいものを生み出すことから「〜を生み出す」。
 give one's regards to	pre1	〜によろしく伝える	Please give my regards to your family.	ご家族によろしくお伝えください。	idiom	one's は話す人に合わせる（give my regards to your family）。say hello to より少し改まった言い方。	give(伝える)＋one's regards(その人の好意・敬意)＋to(〜に)。自分の好意や敬意を〜に伝えることから「〜によろしく伝える」。
-given that	pre2	〜を考慮すると	Given that time is short, we should begin.	時間が短いことを考えると、始めるべきだ。	structure	後ろに主語＋動詞を置く。名詞だけなら given 名詞（given the time limit）。	given(与えられた)＋that(〜ということが)。〜ということが前提として与えられているならということから「〜を考慮すると」。
+given that	pre2	〜を考慮すると	Given that time is short, we should begin.	時間があまりないことを考えると、始めるべきだ。	structure	後ろに主語＋動詞を置く。名詞だけなら given 名詞（given the time limit）。	given(与えられた)＋that(〜ということが)。〜ということが前提として与えられているならということから「〜を考慮すると」。
 go ~ing	4	〜しに行く	We went swimming after school.	私たちは放課後泳ぎに行った。	structure	行き先は to ではなく in / at などで示す（go swimming in the river）。shopping・fishing・camping など娯楽に使う。	go(行く)＋~ing(〜すること)。〜する活動をしに出かけることから「〜しに行く」。
 go a long way to do	1	〜するのに大いに役立つ	A kind word can go a long way to build trust.	親切な一言は信頼を築くのに大いに役立つ。	structure	to do の代わりに toward(s) doing も使う。主語は行為や物（A kind word can go a long way.）。	go(進む)＋a long way(長い道のり)＋to do(〜する方へ)。〜するための長い道のりを進められることから「〜するのに大いに役立つ」。
 go along	4	一緒に行く・進む	You may go along with us.	私たちと一緒に行ってもよい。	phrasal-verb	一緒の相手は with で示す（go along with us）。go along with 意見 は「〜に同意する」。	go(行く)＋along(一緒に・先へ)。一緒について行くことから「一緒に行く」、先へ進むことから「進む」。
