@@ -234,6 +234,7 @@ export default Object.freeze([
       'they help readers': 'help ＋ 人 ＋ to 〜 で「人が〜するのを助ける」。they は these questions を指します。',
       'how strong a conclusion can reasonably be': 'how ＋ 形容詞 ＋ 主語 ＋ 動詞 で「どのくらい〜か」。how strong は be の補語です。',
     },
+    rules: ['contrast-concession', 'wh-clause', 'infinitive-role'],
   }),
   st('[M {副詞節:時| [接 When] [S a decision] [V involves] [O serious health risks]}], [S online reading] [V should support, not replace,] [O advice from a qualified professional].', {
     chunks: [

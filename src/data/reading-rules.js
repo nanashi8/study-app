@@ -568,7 +568,7 @@ export const PASSAGE_READING_APPROACHES = Object.freeze({
     '天気による二つの予定を読み分ける',
     '予定が変わる場合の案内では、二つの予定を混ぜず、ifの条件・時刻・持ち物をそれぞれの予定に結びつける。',
     ['条件ごとの予定を、別々の列に書き分ける', '時刻と持ち物を、正しい列に書き込む', 'ifの条件から、実際にとる行動を選ぶ'],
-    ['purpose-first', 'finite-verb-check', 'infinitive-role', 'logic-connectors', 'evidence-backtrack', 'repair-monitor'],
+    ['purpose-first', 'finite-verb-check', 'postmodifier', 'logic-connectors', 'evidence-backtrack', 'repair-monitor'],
   ),
   p_4_emergency_map: makePassageApproach(
     '危険箇所・地図の改善・使う人を結ぶ',
@@ -815,7 +815,8 @@ function structureRuleIds(sentence, structure) {
   if (
     links.some((link) => /^(?:but|yet)$/.test(link)) ||
     unitDetails.some((detail) => /^副詞節:(?:譲歩|対比)$/.test(detail)) ||
-    has(/\b(?:however|nevertheless|nonetheless|on the other hand|in contrast|by contrast|instead|whereas)\b/)
+    // 文末などの instead（代わりに）は代わりの行動を示すだけなので、instead of だけを対比の手がかりにする。
+    has(/\b(?:however|nevertheless|nonetheless|on the other hand|in contrast|by contrast|instead of|whereas)\b/)
   ) ids.push('contrast-concession')
   if (
     unitDetails.some((detail) => /^副詞節:(?:理由|結果)$/.test(detail)) ||
@@ -826,7 +827,7 @@ function structureRuleIds(sentence, structure) {
   if (
     !ids.includes('contrast-concession') &&
     !ids.includes('cause-result') &&
-    (has(/\b(?:also|if|unless|in addition|moreover|furthermore|besides)\b/) || purposeLinks.size > 0)
+    (has(/\b(?:also|if|unless|instead|in addition|moreover|furthermore|besides)\b/) || purposeLinks.size > 0)
   ) ids.push('logic-connectors')
   if (has(/\bthan\b|\bas\s+(?:\w+\s+){1,3}as\b|\b(?:more|less|fewer)\b/)) ids.push('comparison-pairs')
   if (has(/\bthat\b/)) ids.push('that-diagnosis')
