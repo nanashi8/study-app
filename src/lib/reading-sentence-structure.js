@@ -305,7 +305,7 @@ function patternFromRoles(roles) {
   return `${subject ? 'S' : '(S)'}${core}`
 }
 
-const AUXILIARY_ONLY = /^(?:will|would|can|could|shall|should|may|might|must|do|does|did|has|have|had|am|is|are|was|were|be|been|being|not|never|also|still|often|always)(?:\s+(?:not|never))?$/i
+const AUXILIARY_ONLY = /^(?:will|would|can|could|shall|should|may|might|must|do|does|did|has|have|had|am|is|are|was|were|be|been|being|not|never|also|still|often|always|cannot|can't|couldn't|won't|wouldn't|shouldn't|mustn't|don't|doesn't|didn't|isn't|aren't|wasn't|weren't|hasn't|haven't|hadn't)(?:\s+(?:not|never))?$/i
 
 // 助動詞だけの形（will / is / has など）でも、後ろ（修飾語を除く）に動詞が続かなければ、
 // それ自体が述語動詞（is not merely … の is not など）。

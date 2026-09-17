@@ -627,7 +627,7 @@ export const CORE_READING_PRACTICE_QUESTIONS = Object.freeze({
       questionJa: '「〜なので」と理由をつなぐ語を選びなさい。',
       answer: 'because',
       sourceSentence: 'This creates a bias because some habitats receive many reports and others receive few.',
-      sourceJa: 'このことは、報告が多い生息地と少ない生息地が生まれるため、偏りを生じさせます。',
+      sourceJa: '一部の生息地には多くの報告が集まり、ほかの生息地にはわずかしか集まらないため、このことは偏りを生みます。',
       explain: 'because 以下が、偏りが生まれる理由をそのまま説明しています。',
       readingRuleId: 'cause-result',
       vocabIds: ['bias', 'habitat'],

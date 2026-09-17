@@ -284,11 +284,11 @@ export const EXAM_READING_STUDY = {
       expression(
         'pre2plus_compare_answers',
         'pre2plus',
-        'compare A and B',
-        'AとBを比較する',
+        'compare ...',
+        '〜を比べる',
         'Projects compare volunteers’ answers to estimate how often mistakes occur.',
-        '活動は誤りの頻度を推定するため、ボランティアの回答を比較します。',
-        'compare は共通点・相違点を調べる入試頻出語法。',
+        '活動は誤りの頻度を推定するため、ボランティアの回答を比べます。',
+        'compare ＋ 名詞 で「〜を比べる」。二つを比べるときは compare A with B（AとBを比べる）の形も使う。',
       ),
       expression(
         'pre2plus_not_because_but',
