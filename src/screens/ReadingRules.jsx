@@ -14,7 +14,7 @@ export function ReadingRulesScreen() {
     <div className="pb-8">
       <ScreenHeader
         title="長文読解の30ルール"
-        subtitle="見通す → 骨組み → 関係づける → 論理 → 根拠"
+        subtitle="五つの段階で、合図から根拠まで読み解く"
       />
 
       <div className="space-y-4 px-4">
@@ -22,14 +22,15 @@ export function ReadingRulesScreen() {
           <div className="bg-gradient-to-br from-brand-600 to-sky-500 p-4 text-white">
             <div className="flex flex-wrap gap-2">
               <Chip color="#ffffff">全30ルール</Chip>
-              <Chip color="#fde68a">実戦補強10</Chip>
             </div>
             <h1 className="mt-3 font-display text-xl font-extrabold">
-              テーマと文章の型に合わせて、道筋をつかむ
+              テーマと文章の種類に合わせて、話の筋道をつかむ
             </h1>
+            {/* 日本語を複数行に分けて書くと、行のつなぎ目に半角スペースが入るので1文ずつ文字列で書く */}
             <p className="mt-2 text-sm font-bold leading-relaxed text-white/85">
-              本文の合図を見つけ、三つ以内の手順で判断します。
-              物語・案内・説明・論説で注目点を変え、迷ったらこの五段階へ戻りましょう。
+              {'本文でhoweverやthatなどの「合図」を見つけたら、ルールごとの三つの手順に沿って読み解きます。'}
+              {'文章の種類（物語・案内文・説明文・論説文）によって、注目する点は変わります。'}
+              {'迷ったときは、下の五つの段階を順にたどり直しましょう。'}
             </p>
           </div>
 
@@ -63,12 +64,12 @@ export function ReadingRulesScreen() {
         </Card>
 
         <Card className="p-4">
-          <h2 className="font-display text-base font-extrabold text-ink">効率のよい使い方</h2>
+          <h2 className="font-display text-base font-extrabold text-ink">ルールの使い方</h2>
           <ol className="mt-3 grid gap-2">
             {[
-              ['読む前', '題名・文章の種類・テーマを見て、何に注意して読むかを2〜3点決める。'],
-              ['読む途中', '接続語や長い文で止まり、その文章に合う読み方を使う。'],
-              ['答えた後', '本文のどこが根拠かを確かめ、間違えた理由を見直す。'],
+              ['読む前', '題名・文章の種類・テーマを見て、注目して読む点を二つか三つ決める。'],
+              ['読みながら', '接続語や長い文に出会ったら立ち止まり、合図に合うルールで読み解く。'],
+              ['解いたあと', '答えの根拠が本文のどこにあるかを確かめ、間違えた問題は、どこで読み違えたかを見直す。'],
             ].map(([label, text], index) => (
               <li key={label} className="rounded-xl bg-brand-50 p-3">
                 <p className="text-xs font-black text-brand-600">{index + 1}. {label}</p>
@@ -78,7 +79,7 @@ export function ReadingRulesScreen() {
           </ol>
         </Card>
 
-        <div className="-mx-4 overflow-x-auto px-4 pb-1" aria-label="ルールの段階を絞り込む">
+        <div className="-mx-4 overflow-x-auto px-4 pb-1" aria-label="段階でルールを絞り込む">
           <div className="flex w-max gap-2">
             <button
               type="button"
