@@ -23,6 +23,7 @@ import p_4_emergency_map from './p_4_emergency_map.js'
 import p_3_multilingual_town_guide from './p_3_multilingual_town_guide.js'
 import p_pre2_phone_free_focus from './p_pre2_phone_free_focus.js'
 import p_pre2plus_clothing_second_life from './p_pre2plus_clothing_second_life.js'
+import p_ext_4000_generational_city from './p_ext_4000_generational_city.js'
 
 const PASSAGE_STRUCTURES = Object.freeze({
   p_5_lost_notebook,
@@ -46,6 +47,7 @@ const PASSAGE_STRUCTURES = Object.freeze({
   p_3_multilingual_town_guide,
   p_pre2_phone_free_focus,
   p_pre2plus_clothing_second_life,
+  p_ext_4000_generational_city,
 })
 
 export const READING_SENTENCE_STRUCTURES = PASSAGE_STRUCTURES
