@@ -5,6 +5,7 @@ import { ANNOTATED_PASSAGES } from '../src/data/passages.js'
 import { READING_SENTENCE_STRUCTURES } from '../src/data/reading-structures/index.js'
 import { READING_PARAGRAPH_GUIDES } from '../src/data/reading-paragraph-guides.js'
 import { READING_RULES_BY_ID } from '../src/data/reading-rules.js'
+import { READING_GRAMMAR_EXPECTATIONS } from '../src/data/reading-grammar-expectations.js'
 import { analyzeReadingSentence, analyzePassageParagraphs } from '../src/lib/reading-grammar.js'
 import {
   buildSentenceStructure,
@@ -63,6 +64,18 @@ test('構造台帳のある文は、画面の要素・構造図・語順訳の�
           `${sentence.reviewId}: 台帳で指定した語順訳が画面に出ない`,
         )
       }
+    })
+  }
+})
+
+test('構造台帳の主節の文型は、5文型の正解表と一致する', () => {
+  for (const [passageId, entries] of Object.entries(READING_SENTENCE_STRUCTURES)) {
+    const passage = passageById.get(passageId)
+    const expected = READING_GRAMMAR_EXPECTATIONS[passageId]
+    assert.ok(expected, `${passageId}: 5文型の正解表がない`)
+    passage.sentences.forEach((sentence, index) => {
+      const structure = buildSentenceStructure(sentence.en, entries[index].markup, entries[index])
+      assert.equal(structure.patterns[0], expected[index], `${sentence.reviewId}: ${structure.patterns.join('／')}`)
     })
   }
 })

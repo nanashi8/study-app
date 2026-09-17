@@ -35,6 +35,7 @@ export default Object.freeze([
       'than finding someone': 'than の後ろも finding（見つけること）という動名詞で、buying と比べています。',
       'to fix the old one': 'to fix は someone を後ろから説明します。one は前に出た item の代わりです。',
     },
+    rules: ['cause-result', 'comparison-pairs', 'ing-ed-role'],
   }),
   st('[M In response], [S communities in several countries] [V have started] [O events {過去分詞>events| [V called] [C repair cafes]}].', {
     chunks: [

@@ -597,11 +597,11 @@ const READING_BLOCK_MARKED_EXPECTATIONS = new Map([
   ],
   [
     'The integrity of public memory is then shaped less by what is available than by what is repeatedly presented as relevant.',
-    'The integrity of public memory is then shaped less (by what is available) than (by what is repeatedly presented as relevant)',
+    'The integrity of public memory is then shaped less by (what is available) than by (what is repeatedly presented as relevant)',
   ],
   [
     'If that practice declines, even perfect archives will not prevent societies from losing their ability to learn from what they once knew.',
-    '(If that practice declines) even perfect archives will not prevent societies <from losing their ability> <to learn> (from what they once knew)',
+    '(If that practice declines), even perfect archives will not prevent societies from <losing their ability <to learn from (what they once knew)>>',
   ],
 ])
 
@@ -622,10 +622,10 @@ const READING_BLOCK_STRUCTURE_TOKEN_EXPECTATIONS = new Map([
   [
     'The integrity of public memory is then shaped less by what is available than by what is repeatedly presented as relevant.',
     [
-      { kind: 'clause', depth: 0, parentKind: null, text: 'by what is available' },
+      { kind: 'clause', depth: 0, parentKind: null, text: 'what is available' },
       {
         kind: 'clause', depth: 0, parentKind: null,
-        text: 'by what is repeatedly presented as relevant',
+        text: 'what is repeatedly presented as relevant',
       },
     ],
   ],
@@ -633,9 +633,12 @@ const READING_BLOCK_STRUCTURE_TOKEN_EXPECTATIONS = new Map([
     'If that practice declines, even perfect archives will not prevent societies from losing their ability to learn from what they once knew.',
     [
       { kind: 'clause', depth: 0, parentKind: null, text: 'If that practice declines' },
-      { kind: 'phrase', depth: 0, parentKind: null, text: 'from losing their ability' },
-      { kind: 'phrase', depth: 0, parentKind: null, text: 'to learn' },
-      { kind: 'clause', depth: 0, parentKind: null, text: 'from what they once knew' },
+      {
+        kind: 'phrase', depth: 0, parentKind: null,
+        text: 'losing their ability to learn from what they once knew',
+      },
+      { kind: 'phrase', depth: 1, parentKind: 'phrase', text: 'to learn from what they once knew' },
+      { kind: 'clause', depth: 2, parentKind: 'phrase', text: 'what they once knew' },
     ],
   ],
 ])

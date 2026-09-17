@@ -410,7 +410,7 @@ export const CORE_READING_PRACTICE_QUESTIONS = Object.freeze({
       questionJa: '「悪用される」という本文の語を選びなさい。',
       answer: 'misused',
       sourceSentence: 'That autonomy remains essential, but it can also be misused if institutions avoid scrutiny by describing all criticism as interference.',
-      sourceJa: 'その自律性は依然として不可欠ですが、制度がすべての批判を干渉だと表現して検証を避けるなら、悪用される可能性もあります。',
+      sourceJa: 'その自律性は依然として不可欠ですが、機関がすべての批判を干渉だと表現して検証を避けるなら、悪用される可能性もあります。',
       explain: 'misuse は「本来の目的から外れた使い方をする」。接頭辞 mis- が誤りや逸脱を示します。',
       readingRuleId: 'unknown-word-context',
       vocabIds: ['autonomy', 'institution', 'scrutiny'],

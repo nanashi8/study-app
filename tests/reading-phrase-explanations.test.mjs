@@ -111,20 +111,19 @@ test('形式目的語・共有to・比較・前置詞＋whatの確定例を回�
     'The integrity of public memory is then shaped less by what is available than by what is repeatedly presented as relevant.'
   ]
   assert.deepEqual(memory.phrases.map((phrase) => phrase.en), [
-    'The integrity of public memory', 'is then shaped', 'less', 'by what',
-    'is available', 'than', 'by what', 'is repeatedly presented', 'as relevant',
+    'The integrity of public memory', 'is then shaped',
+    'less by what is available', 'than by what is repeatedly presented as relevant',
   ])
-  assert.equal(memory.phrases[3].ja, 'あるものによって')
-  assert.deepEqual(memory.phrases[8].roles, ['C'])
+  assert.equal(memory.phrases[2].ja, '入手できるものによってというより')
+  assert.deepEqual(memory.phrases[3].roles, ['LINK', 'M', 'V', 'C'])
 
   const learn = bySentence[
     'If that practice declines, even perfect archives will not prevent societies from losing their ability to learn from what they once knew.'
   ]
-  assert.deepEqual(learn.phrases.slice(-4).map(({ en, roles }) => [en, roles]), [
+  assert.deepEqual(learn.phrases.slice(-3).map(({ en, roles }) => [en, roles]), [
+    ['will not prevent', ['V']],
     ['societies from losing their ability', ['O', 'M']],
-    ['to learn', ['V']],
-    ['from what', ['M']],
-    ['they once knew', ['S', 'M', 'V']],
+    ['to learn from what they once knew', ['V', 'M', 'S']],
   ])
 })
 
