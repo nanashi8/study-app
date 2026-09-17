@@ -544,7 +544,7 @@ export const PASSAGE_READING_APPROACHES = Object.freeze({
     '調査方法・得られるデータ・限界を区別する',
     '市民科学の記事では、参加人数の多さをそのまま信頼性と見なさず、数え方と偏りへの対策を読む。',
     ['誰が、何を、どう数えるかを整理する', 'データから言えることを確かめる', '限界と改善策から、データで言える範囲を決める'],
-    ['paragraph-map', 'punctuation-map', 'passive-active', 'cause-result', 'unknown-word-context', 'distractor-strength'],
+    ['paragraph-map', 'parallel-shape', 'relative-clause', 'cause-result', 'unknown-word-context', 'distractor-strength'],
   ),
   p_2_online_health_claims: makePassageApproach(
     '情報源・証拠・因果の三点を順に疑う',

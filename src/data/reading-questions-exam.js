@@ -200,7 +200,7 @@ export const EXAM_READING_QUESTIONS = {
         'The name of every person who visits a park.',
       ],
       answer: 'Patterns that a small team might miss.',
-      explain: '多数の報告により、少人数の研究者では見落とす広域・長期の傾向を発見できます。',
+      explain: '何千人もの人が報告を送ると、小さなチームでは見落とすかもしれない傾向を研究者が見つけられます（第5文）。',
     },
     {
       q: 'How can easy-to-reach locations create bias?',
@@ -233,7 +233,7 @@ export const EXAM_READING_QUESTIONS = {
         'Volunteers replace professionals after receiving one training session.',
       ],
       answer: 'Volunteers provide many local observations, while scientists provide research methods.',
-      explain: '市民は時間・地域知識・観察数を、科学者は信頼できる結論へ導く方法を提供します。',
+      explain: '一般の人々は時間・地域の知識・たくさんの観察結果を、科学者は観察結果を慎重な結論に変える研究方法を提供します（第19・20文）。',
     },
     {
       q: 'What broader lesson does the partnership teach?',
