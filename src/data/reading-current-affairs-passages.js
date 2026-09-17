@@ -33,7 +33,7 @@ export const CURRENT_AFFAIRS_PASSAGES = [
     sentences: [
       p('Summers in our town are hotter than before.', '私たちの町の夏は以前より暑いです。'),
       s('Last year, the school put new curtains in every classroom.', '昨年、学校はすべての教室に新しいカーテンを取り付けました。'),
-      s('The curtains stop strong sunlight in the afternoon.', 'そのカーテンは午後の強い日差しを止めます。'),
+      s('The curtains stop strong sunlight in the afternoon.', 'そのカーテンは、午後の強い日ざしをさえぎります。'),
       p('Our class also keeps green plants by the windows.', '私たちのクラスは窓のそばに緑の植物も置いています。'),
       s('The plants make a cool wall of leaves.', 'その植物は葉でできた涼しい壁を作ります。'),
       s('Every morning, a teacher checks the temperature in the gym.', '毎朝、先生が体育館の気温を確認します。'),

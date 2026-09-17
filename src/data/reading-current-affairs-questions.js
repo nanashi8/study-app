@@ -12,7 +12,7 @@ export const CURRENT_AFFAIRS_READING_QUESTIONS = Object.freeze({
         'To show pictures of the school garden.',
       ],
       answer: 'To stop strong sunlight in the afternoon.',
-      explain: '第3文に「そのカーテンは午後の強い日差しを止めます」とあり、購入の目的が示されています。',
+      explain: '第3文に「そのカーテンは、午後の強い日ざしをさえぎります」とあり、取り付けた目的が示されています。',
     },
     {
       q: 'What does the teacher check every morning?',

@@ -38,7 +38,7 @@ export const CURRENT_AFFAIRS_READING_STUDY = Object.freeze({
       'in the afternoon',
       '午後に',
       'The curtains stop strong sunlight in the afternoon.',
-      'そのカーテンは午後の強い日差しを止めます。',
+      'そのカーテンは、午後の強い日ざしをさえぎります。',
       '朝・午後・夕方という時間帯にはinを使う。時を表すMなので文型には数えない。',
     ),
     expression(

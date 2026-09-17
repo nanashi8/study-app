@@ -1501,7 +1501,7 @@ if (
   readingTranslationBlockCount !== 2420 ||
   readingPhrasePairCount !== 6882 ||
   readingPhraseSequenceCount !== 6882 ||
-  readingMeaningPhraseCount !== 3885 ||
+  readingMeaningPhraseCount !== 3840 ||
   readingMeaningMultiRoleCount !== 2049
 ) {
   errors.push(
