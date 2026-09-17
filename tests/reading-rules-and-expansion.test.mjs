@@ -5,6 +5,7 @@ import { readFileSync } from 'node:fs'
 import { PASSAGES } from '../src/data/passages.js'
 import { EXPANDED_PASSAGES } from '../src/data/reading-expansion-passages.js'
 import { getReadingQuestions } from '../src/data/reading-questions.js'
+import { EXTENDED_PASSAGE_READING_APPROACHES } from '../src/data/reading-extended-approaches.js'
 import {
   PASSAGE_READING_APPROACHES,
   READING_RULE_PHASES,
@@ -32,7 +33,7 @@ const minimumWordsByLevel = Object.freeze({
   1: 780,
 })
 
-test('読解30ルールは五段階・三手・誤読防止・図解を備える', () => {
+test('読解30ルールは五段階・三つの手順・読み違いの注意・図解を備える', () => {
   assert.equal(READING_RULES.length, 30)
   assert.equal(new Set(READING_RULES.map((rule) => rule.id)).size, 30)
   assert.equal(READING_RULE_PHASES.length, 5)
@@ -45,7 +46,7 @@ test('読解30ルールは五段階・三手・誤読防止・図解を備える
   assert.ok(!JSON.stringify(READING_RULES).includes('読む目的を一つ決める'))
   assert.equal(
     READING_RULES.find((rule) => rule.id === 'purpose-first')?.title,
-    '文章の型に合わせて注目点を変える',
+    '文章の種類に合わせて、注目する点を変える',
   )
 
   const phaseIds = new Set(READING_RULE_PHASES.map((phase) => phase.id))
@@ -57,6 +58,99 @@ test('読解30ルールは五段階・三手・誤読防止・図解を備える
     assert.ok(rule.steps.every((step) => step.length >= 8), `${rule.id}: 手順が短すぎる`)
     assert.ok(rule.example.en && rule.example.ja, `${rule.id}: 英日例が不足`)
     assert.ok(rule.diagram?.nodes?.length >= 2, `${rule.id}: 図解が不足`)
+  }
+})
+
+// 30ルール画面の校正（2026-09-17）で直した言い回し。塾の教材として不自然・不正確だったもの。
+const READING_RULE_COPY_DEFECTS = [
+  ['三つ以内の手順', '手順はどのルールも三つ。「以内」とぼかさない'],
+  ['物語・案内・説明・論説', '「案内」「説明」「論説」だけでは文章の種類と読めない。案内文・説明文・論説文と書く'],
+  ['五段階へ戻', '段階へ「戻る」とは言わない。段階を順にたどり直すと書く'],
+  ['十数字', '「十数文字」の誤り'],
+  ['地図にする', '段落は地図にできない。役割を一言でまとめると書く'],
+  ['地図化', '文章は地図化できない。整理する・まとめると書く'],
+  ['案内板にする', '記号は案内板にできない。意味の手がかりにすると書く'],
+  ['確保する', '主語と動詞は「つかむ」'],
+  ['道順', 'route は「ルート」。道順は曲がる順のことで、長さを測ったり安全さを比べたりする語ではない'],
+  ['精密に読む', '「じっくり読む」'],
+  ['減速', '読む速さは「ペースを落とす」'],
+  ['論理語', 'アプリ全体の用語は「接続語」'],
+  ['関係節', 'アプリ全体の用語は「関係詞節」'],
+  ['文種', '「文章の種類」'],
+  ['文章の型', '「文章の種類」'],
+  ['中心成分', '専門用語を避け「文の中心になる語」'],
+  ['入口語', '造語。「目印」'],
+  ['上位概念', '「まとめの言葉」'],
+  ['設問語', '造語。「設問の言葉」'],
+  ['仮置き', '「仮に決める」'],
+  ['待ち受ける', '「予測しながら読む」'],
+  ['意味が壊れ', '意味は壊れない。「話が合わなくなる」'],
+  ['重く置く', '「重く見る」'],
+  ['逆転内容', '「予想がどうくつがえるか」'],
+  ['曲がり角を逃す', '「曲がり角を見落とす」'],
+  ['生徒が向上', '生徒は向上しない。「上達した」'],
+  ['で検索する', '文章は検索できない。「探し出す」'],
+  ['往復する', '「結びつけて読む」'],
+  ['何対何', '数ではなく、どれとどれが対応するかを書く'],
+  ['語彙事例', '散文に書き直した長文には当てはまらない旧形式の説明'],
+  ['誤読防止', '「読み違いに注意」'],
+  ['実戦補強', '追加した経緯を示すだけで、段階の表示と重なる'],
+  ['言いかえ', '表記は「言い換え」にそろえる'],
+  ['置きかえ', '表記は「置き換え」にそろえる'],
+  ['最終段落', '表記は「最後の段落」にそろえる'],
+]
+
+const learnerRuleTexts = () => [
+  ...READING_RULE_PHASES.flatMap((phase) => [phase.label, phase.description]),
+  ...READING_RULES.flatMap((rule) => [
+    rule.title, rule.short, rule.signal, ...rule.steps, rule.example.ja, rule.caution, ...rule.diagram.nodes,
+  ]),
+  ...Object.values({ ...PASSAGE_READING_APPROACHES, ...EXTENDED_PASSAGE_READING_APPROACHES })
+    .flatMap((approach) => [approach.title, approach.summary, ...approach.steps]),
+]
+
+test('読解ルールと長文の読み方は、校正で直した言い回し・用語に戻らない', () => {
+  const screenSources = ['../src/screens/ReadingRules.jsx', '../src/screens/ReadingList.jsx', '../src/components/ReadingRuleCard.jsx']
+    .map((file) => [file, readFileSync(new URL(file, import.meta.url), 'utf8')])
+  for (const [phrase, reason] of READING_RULE_COPY_DEFECTS) {
+    const hit = learnerRuleTexts().find((text) => text.includes(phrase))
+    assert.equal(hit, undefined, `「${phrase}」: ${reason}（${hit}）`)
+    for (const [file, source] of screenSources) {
+      assert.ok(!source.includes(phrase), `${file}「${phrase}」: ${reason}`)
+    }
+  }
+
+  // 段階名は「全体を見通す」「骨組みをつかむ」のように、どれも動作の形でそろえる。
+  for (const phase of READING_RULE_PHASES) {
+    assert.match(phase.label, /[うくぐすつぬぶむる]$/, `段階「${phase.label}」が動作の形でない`)
+  }
+
+  // 横に並ぶ図は、区切りの矢印や不等号を画面側で入れる。項目に記号を書くと「→ → →」「→ ← →」と重なる。
+  const card = screenSources.find(([file]) => file.endsWith('ReadingRuleCard.jsx'))[1]
+  const labelBlock = card.match(/const DIAGRAM_LABELS = Object\.freeze\(\{([\s\S]*?)\}\)/)[1]
+  const labeledTypes = new Set([...labelBlock.matchAll(/^\s*(\w+):/gm)].map((match) => match[1]))
+  const verticalTypes = new Set([...card.match(/const VERTICAL_DIAGRAM_TYPES = new Set\(\[([^\]]*)\]\)/)[1].matchAll(/'(\w+)'/g)]
+    .map((match) => match[1]))
+  assert.ok(verticalTypes.has('branch'), '縦に並べる図の種類を読み取れない')
+  for (const rule of READING_RULES) {
+    assert.ok(labeledTypes.has(rule.diagram.type), `${rule.id}: 図の種類「${rule.diagram.type}」に見出しがない`)
+    if (verticalTypes.has(rule.diagram.type)) continue
+    for (const node of rule.diagram.nodes) {
+      assert.doesNotMatch(node, /^[→←＜<>：:;；]|[→←]$/, `${rule.id}: 図の項目「${node}」が区切り記号で始まる・終わる`)
+    }
+  }
+
+  // JSXの地の文で日本語を2行に分けると、つなぎ目に半角スペースが入る。
+  for (const [file, source] of screenSources) {
+    const lines = source.split('\n').map((line) => line.trim())
+    lines.forEach((line, index) => {
+      const next = lines[index + 1] || ''
+      const isText = (value) => value && !/^[<{}/*]/.test(value) && !/[<>{}=;'"`]/.test(value)
+      assert.ok(
+        !(isText(line) && isText(next) && /[぀-ヿ㐀-鿿。、」）]$/u.test(line) && /^[぀-ヿ㐀-鿿「（]/u.test(next)),
+        `${file}:${index + 1}: 日本語の文が行をまたぎ、画面で半角スペースが入る`,
+      )
+    })
   }
 })
 

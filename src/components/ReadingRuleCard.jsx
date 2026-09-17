@@ -9,17 +9,32 @@ const DIAGRAM_LABELS = Object.freeze({
   roles: '文の中心',
   bracket: 'かたまり',
   balance: '対応',
-  backlink: '戻り先',
+  backlink: 'つながる先',
   scope: 'かかる範囲',
-  turn: '逆転',
+  turn: '逆接',
   scale: '強さ',
   loop: '読み直し',
+  rewrite: '言い換え',
+  example: 'まとめと具体例',
 })
 
-function DiagramArrow() {
+// 横に並べる図の区切り記号。説明が前の語へつながる図は左向き、強さの順は不等号、
+// 並べて見比べるだけの図は記号を置かない（ほかは右向きの矢印）。
+const DIAGRAM_JOINERS = Object.freeze({
+  backlink: '←',
+  scale: '＜',
+  speed: '',
+  roles: '',
+  bracket: '',
+  balance: '',
+})
+
+const VERTICAL_DIAGRAM_TYPES = new Set(['branch', 'layers', 'example'])
+
+function DiagramJoiner({ symbol }) {
   return (
     <span aria-hidden="true" className="shrink-0 px-0.5 text-base font-black text-brand-300">
-      →
+      {symbol}
     </span>
   )
 }
@@ -27,8 +42,9 @@ function DiagramArrow() {
 export function ReadingRuleDiagram({ diagram, className }) {
   if (!diagram?.nodes?.length) return null
 
-  const branching = diagram.type === 'branch' || diagram.type === 'layers'
+  const branching = VERTICAL_DIAGRAM_TYPES.has(diagram.type)
   const looping = diagram.type === 'loop'
+  const joiner = DIAGRAM_JOINERS[diagram.type] ?? '→'
 
   return (
     <figure
@@ -42,20 +58,16 @@ export function ReadingRuleDiagram({ diagram, className }) {
         className={cx(
           branching
             ? 'grid gap-1.5'
-            : 'flex flex-wrap items-center gap-y-1.5',
+            : cx('flex flex-wrap items-center gap-y-1.5', !joiner && 'gap-x-1.5'),
         )}
       >
         {diagram.nodes.map((node, index) => (
-          <span key={node + '-' + index} className={cx(!branching && 'contents')}>
-            <span
-              className={cx(
-                'rounded-lg border border-brand-200 bg-white px-2.5 py-1.5 text-center text-xs font-extrabold leading-relaxed text-ink/75',
-                branching && 'min-w-0',
-              )}
-            >
+          // 区切り記号は次の項目と一緒に折り返し、行末に「→」「←」だけが残らないようにする。
+          <span key={node + '-' + index} className={cx(!branching && 'inline-flex max-w-full items-center')}>
+            {!branching && joiner && index > 0 && <DiagramJoiner symbol={joiner} />}
+            <span className="min-w-0 rounded-lg border border-brand-200 bg-white px-2.5 py-1.5 text-center text-xs font-extrabold leading-relaxed text-ink/75">
               {node}
             </span>
-            {!branching && index < diagram.nodes.length - 1 && <DiagramArrow />}
             {looping && index === diagram.nodes.length - 1 && (
               <span className="ml-1 text-xs font-black text-brand-500" aria-label="最初へ戻る">
                 ↩ 最初へ
@@ -104,7 +116,7 @@ export function ReadingRuleCard({ rule, compact = false, className }) {
           </ol>
           {rule.diagram && <ReadingRuleDiagram diagram={rule.diagram} className="mt-2" />}
           <p className="mt-2 rounded-lg bg-amber-50 px-2.5 py-2 text-[11px] font-bold leading-relaxed text-amber-900">
-            誤読防止：{rule.caution}
+            読み違いに注意：{rule.caution}
           </p>
         </div>
       </details>
@@ -119,7 +131,6 @@ export function ReadingRuleCard({ rule, compact = false, className }) {
       <div className="flex flex-wrap items-center gap-2">
         <Chip color={phase.color}>{phase.step}. {phase.label}</Chip>
         <Chip color={level.color}>{level.label}</Chip>
-        {rule.origin === 'added' && <Chip color="#be123c">実戦補強</Chip>}
       </div>
       <h3 className="mt-2 font-display text-lg font-extrabold text-ink">{rule.title}</h3>
       <p className="mt-1 text-sm font-bold leading-relaxed text-ink/65">{rule.short}</p>
@@ -148,7 +159,7 @@ export function ReadingRuleCard({ rule, compact = false, className }) {
       </div>
 
       <p className="mt-3 rounded-xl bg-amber-50 px-3 py-2.5 text-xs font-bold leading-relaxed text-amber-950">
-        <span className="font-black">誤読防止：</span>{rule.caution}
+        <span className="font-black">読み違いに注意：</span>{rule.caution}
       </p>
     </article>
   )

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-09-17T02:20:52.228Z",
+  "auditedAt": "2026-09-17T02:33:07.076Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -104,7 +104,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "c93b5f65c73bfb30e6c94309926bfc69f0ea1dcb3e13daab1850769ed507d34f",
+    "sha256": "d38bd476e6b0a8674a799d12e3fcc077a9224c4c040097e792a3abb41f2ccb28",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -978,7 +978,7 @@
       "環境・科学・医療・政策",
       "社会総合・経済・心理・科学技術"
     ],
-    "contentSha256": "b403110710db8441e4181887c894567c5bdd355e01586f206b4dfdc1d42495af"
+    "contentSha256": "d1e19154da350ca158406ea32e85a906e2119697a63b0d2afb5ae3d4f8e82ae1"
   },
   "grammarDetail": {
     "sourceQuestionCount": 3450,

@@ -46,7 +46,7 @@ export function ReadingListScreen() {
                 <p className="text-xs font-black text-white/75">全{ALL_PASSAGES.length}題の本文で使える</p>
                 <h2 className="mt-0.5 font-display text-lg font-extrabold">長文読解の30ルール</h2>
                 <p className="mt-1 text-xs font-bold leading-relaxed text-white/85">
-                  丸暗記せず、合図 → 三つの手順 → 読み違いの確認の順に練習
+                  合図を見つけ、三つの手順で読み解き、読み違いを防ぐ練習をします
                 </p>
               </div>
               <span className="mt-1 shrink-0 rounded-full bg-white/15 p-2"><ArrowRight size={19} /></span>
