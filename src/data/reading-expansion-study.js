@@ -280,7 +280,7 @@ export const EXPANDED_READING_STUDY = Object.freeze({
       'instead of doing',
       '〜する代わりに',
       'A shield directs light downward instead of allowing it to escape.',
-      '遮光具は光を逃がす代わりに下へ向けます。',
+      '覆いは、光を逃がす代わりに下へ向けます。',
       '望ましくない経路と改善後の経路を対比する。',
     ),
     expression(

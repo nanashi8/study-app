@@ -604,7 +604,7 @@ export const PASSAGE_READING_APPROACHES = Object.freeze({
     '環境・安全・経済の利害を立場ごとに整理する',
     '環境政策の論説文では、どちらか一方だけを正しいと決めつけず、利害関係者の反論と段階的な政策案を追う。',
     ['立場ごとの利益と懸念を分ける', '反論と、それに対する応答を結びつける', '段階的な政策の条件と、評価のしかたを確かめる'],
-    ['reading-mode', 'insertion', 'wh-clause', 'contrast-concession', 'author-stance', 'evidence-backtrack'],
+    ['reading-mode', 'parallel-shape', 'wh-clause', 'contrast-concession', 'author-stance', 'evidence-backtrack'],
   ),
   p_1_choice_architecture: makePassageApproach(
     '行動への効果と、倫理的な条件を分けて読む',

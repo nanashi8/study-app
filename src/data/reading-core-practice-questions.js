@@ -1085,7 +1085,7 @@ export const CORE_READING_PRACTICE_QUESTIONS = Object.freeze({
     order({
       id: 'crp_darksky_order',
       sourceSentence: 'Glare from a poorly aimed lamp can reduce visibility even while increasing brightness.',
-      sourceJa: '向きの悪い照明のまぶしさは、明るさを増しながらも視認性を下げることがあります。',
+      sourceJa: '向きの悪い照明のまぶしさは、明るさを増していても、かえって見えにくくすることがあります。',
       explain: '主語 Glare に from 以下を後置し、can reduce の目的語 visibility を出してから even while 以下の譲歩を末尾に置きます。',
       readingRuleId: 'contrast-concession',
       vocabIds: ['glare', 'brightness'],
