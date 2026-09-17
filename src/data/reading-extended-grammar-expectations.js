@@ -52,7 +52,7 @@ export const EXTENDED_READING_GRAMMAR_EXPECTATIONS = Object.freeze({
   p_ext_2000_customs_across_borders: patterns(`
     SVC  SVO  SVO  SV   SV   SVC  SVO  SV   SV   SVC  SVO  SVO
     SVO  SV   SVO  SVC  SVC  SVC
-    SVC  SV   SV   SV   SVC  SVO  SVC  SVO  SVO  SVO  SVO  SV
+    SVC  SV   SVC  SV   SVC  SVO  SVC  SVO  SVO  SVO  SVO  SV
     SVO  SVC  SVO  SVC  SVC  SVC
     SV   SVO  SVC  SVC  SVC  SVOC SVO  SV   SVC  SVC  SVC  SVO
     SVO  SV   SVC  SVO  SVC  SVO

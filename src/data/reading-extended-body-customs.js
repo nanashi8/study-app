@@ -85,7 +85,7 @@ export const CUSTOMS_ACROSS_BORDERS_BODY = Object.freeze({
         ),
         s(
           'A visitor who happens to stand in the wrong place is usually judged careless rather than deliberately rude.',
-          '間違った場所に立つ新参者はたいてい、意図的に無礼だというより不注意だと判断されます。',
+          'たまたま違う場所に立った訪問者はたいてい、わざと無礼なのではなく不注意だと判断されます。',
         ),
         s(
           'Hospitality toward strangers is common everywhere, yet the way it is offered follows local rules that nobody writes down.',
@@ -247,7 +247,7 @@ export const CUSTOMS_ACROSS_BORDERS_BODY = Object.freeze({
         ),
         p(
           'Imperial history complicates the question further, since some traditions were suppressed and much later revived deliberately.',
-          '植民地の歴史はこの問いをさらに複雑にします。抑圧され、ずっと後になって意図的に復活させられた伝統があるからです。',
+          '帝国の歴史はこの問いをさらに複雑にします。抑圧され、ずっと後になって意図的に復活させられた伝統があるからです。',
         ),
         s(
           'A revived custom is not less real, although it may serve purposes that the original version never had and could not have imagined.',
