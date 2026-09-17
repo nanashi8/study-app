@@ -268,13 +268,13 @@ export const READING_CHOICE_NOTES = freezeNotes({
     "To learn why different students left food.": "ただ食べるよう求めるのではなく調べることにし（第3文）、アンケートで、下級生は量が多すぎ、運動部の練習後の上級生はもっと食べたいと、残す事情がちがうことが分かった（第4・5文）。",
     "To decide which cooking staff should leave.": "調理スタッフを辞めさせる話は出てこない。スタッフは毎日の記録で献立ごとの量を調整した（第13文）。",
     "To find a school with a larger cafeteria.": "大きな食堂のある学校を探すとは書かれていない。近くの学校とは結果を共有している（第16文）。",
-    "To ask every student to eat the same amount.": "第3文で、ただ全員にもっと食べるよう求めるのではなく調べることにしたと書かれている。全員が同じ大盛りの日にごみが最も多かった（第7文）。",
+    "To ask every student to eat the same amount.": "第3文で、ただ全員にもっと食べるよう求めるのではなく調べることにしたと書かれている。全員が同じ大盛りの日に食品ロスが最も多かった（第7文）。",
   },
   "p_3_lunch_food_waste#2": {
     "When every student received the same large portion.": "第7文 waste was greatest on days when every student received the same large portion と一致する。",
-    "When students could return for more food.": "おかわりできる仕組み（第9文）は、ごみを減らすために始めた対策。",
-    "When pictures were placed near the entrance.": "入口の写真（第10文）は量を選びやすくするための対策で、その後ごみはほぼ半分になった（第11文）。",
-    "When the cooking staff used daily records.": "毎日の記録は、スタッフが献立ごとに合った量を用意する助けになった（第13文）。ごみが多かった日ではない。",
+    "When students could return for more food.": "おかわりできる仕組み（第9文）は、食品ロスを減らすために始めた対策。",
+    "When pictures were placed near the entrance.": "入口の写真（第10文）は量を選びやすくするための対策で、その後食品ロスはほぼ半分になった（第11文）。",
+    "When the cooking staff used daily records.": "毎日の記録は、スタッフが献立ごとに合った量を用意する助けになった（第13文）。食品ロスが多かった日ではない。",
   },
   "p_3_lunch_food_waste#3": {
     "They could choose an amount and get more later.": "2種類の大きさの皿を用意し（第8文）、小さい皿を選んだ人は後でもっと取りに戻れた（第9文）と書かれている。",
@@ -292,7 +292,7 @@ export const READING_CHOICE_NOTES = freezeNotes({
     "Clear information and useful choices can reduce waste.": "全員に一つの完璧な規則は必要ないと学び（第14文）、分かりやすい情報と役に立つ選択肢を与えることから始められる（第15文）と書かれている。",
     "One strict portion rule works perfectly for everyone.": "第14文で、全員に一つの完璧な規則を当てはめる必要はないと書かれている。逆の内容。",
     "Food waste is caused only by younger students.": "第5文で、下級生は量が多すぎると感じる一方、上級生はもっと食べたいと答えている。下級生だけが原因とは書かれていない。",
-    "Measuring a problem makes action unnecessary.": "測った後に皿の大きさを変える行動をとり（第6〜10文）、近くの学校にも自分たちのごみを測るよう勧めている（第16文）。",
+    "Measuring a problem makes action unnecessary.": "測った後に皿の大きさを変える行動をとり（第6〜10文）、近くの学校にもそれぞれの食品ロスを測るよう勧めている（第16文）。",
   },
   "p_pre2_later_school_start#1": {
     "Their body clock often changes during the teenage years.": "第2文 the body clock often changes during the teenage years と一致する。第3文で、脳が夜遅くに眠気を感じ始めると説明している。",

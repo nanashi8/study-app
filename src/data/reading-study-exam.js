@@ -138,7 +138,7 @@ export const EXAM_READING_STUDY = {
         'instead of ...',
         '〜する代わりに・〜ではなく',
         'The class studied the problem instead of simply asking everyone to eat more.',
-        'クラスは全員にもっと食べるよう求めるだけでなく、問題を調べました。',
+        'クラスは、ただ全員にもっと食べるよう求めるのではなく、問題を調べました。',
         'of の後は名詞または動名詞を置き、採らなかった選択を示す。',
       ),
       expression(
@@ -147,7 +147,7 @@ export const EXAM_READING_STUDY = {
         '..., while ...',
         '一方で〜',
         'Younger students found portions large, while some older students wanted more food.',
-        '下級生には量が多い一方、上級生の中にはもっと食べたい人もいました。',
+        '下級生は量が多いと感じた一方、上級生の中にはもっと食べたい人もいました。',
         'while で二つの集団・傾向を対比する。',
         'syntax',
       ),
@@ -156,8 +156,8 @@ export const EXAM_READING_STUDY = {
         '3',
         'fall by half',
         '半分減る',
-        'Food waste was almost half of the earlier amount.',
-        '食品廃棄は以前の量のほぼ半分になっていました。',
+        'Leftover food fell by almost half.',
+        '食べ残しはほぼ半分に減りました。',
         '変化量は by、変化後の値は to で表す。',
       ),
       expression(
