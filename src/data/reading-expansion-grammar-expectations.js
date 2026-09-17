@@ -5,7 +5,7 @@ const patterns = (source) => Object.freeze(source.trim().split(/\s+/))
 
 export const EXPANDED_READING_GRAMMAR_EXPECTATIONS = Object.freeze({
   p_5_weather_field_trip: patterns(
-    'SVO SV SVO SVOO SVO SVO SVO SVO SVC SVO',
+    'SVO SV SVO SVOO SVO SVO SVO SVO SV SVO',
   ),
   p_4_emergency_map: patterns(
     'SVO SVO SVO SVO SV SVOO SVOC SVO SVO SV SVO SVO SVO SVO',

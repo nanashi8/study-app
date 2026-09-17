@@ -34,7 +34,7 @@ export const EXPANDED_PASSAGES = [
       s('Everyone brings a hat, a notebook, and some water.', 'みんなが帽子、ノート、そして水を持ってきます。'),
       p('First, a guide shows us the new animal hospital.', 'まず、ガイドが私たちに新しい動物病院を見せてくれます。'),
       s('Then we eat lunch near the flower garden.', 'それから私たちは花畑の近くで昼食を食べます。'),
-      s('In the afternoon, we watch the penguins and draw one animal.', '午後はペンギンを見て、動物を1頭描きます。'),
+      s('In the afternoon, we watch the penguins and draw one animal.', '午後はペンギンを見て、動物を1匹描きます。'),
       s('The bus leaves the zoo at two thirty.', 'バスは2時30分に動物園を出ます。'),
       p('If it rains, we visit the science museum instead.', 'もし雨が降ったら、代わりに科学博物館を訪れます。'),
       s('The museum is next to the train station.', 'その博物館は駅の隣にあります。'),
