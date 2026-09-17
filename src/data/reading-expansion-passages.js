@@ -69,7 +69,7 @@ export const EXPANDED_PASSAGES = [
       p('When the first map was ready, families tested it on a rainy afternoon.', '最初の地図が完成すると、家族の人たちが雨の午後に実際に使ってみました。'),
       s('They found that one sign was hidden behind a large tree.', '彼らは、一つの標識が大きな木の後ろに隠れていることに気づきました。'),
       s('They also asked for larger letters and simple pictures.', 'また、より大きな文字と簡単な絵も求めました。'),
-      s('Families suggested marking places where people could wait safely if the rain grew stronger.', '家族の人たちは、雨がさらに強くなった場合に安全に待てる場所へ印を付けることも提案しました。'),
+      s('Families suggested marking places where people could wait safely if the rain grew stronger.', '家族の人たちは、雨がさらに強くなった場合に安全に待てる場所へ印を付けることを提案しました。'),
       p('The students changed the map and printed copies for schools and shops.', '生徒たちは地図を修正し、学校や店のために印刷しました。'),
       s('They put the same information on the town website.', '彼らは同じ情報を町のウェブサイトにも載せました。'),
       s('Because streets and buildings change, the class will check every route again each spring.', '道路や建物は変わるため、クラスは毎年春にすべての道順を再び確認する予定です。'),

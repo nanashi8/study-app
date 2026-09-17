@@ -19,6 +19,7 @@ import p_2_online_health_claims from './p_2_online_health_claims.js'
 import p_pre1_cashless_inclusion from './p_pre1_cashless_inclusion.js'
 import p_1_metric_fixation from './p_1_metric_fixation.js'
 import p_5_weather_field_trip from './p_5_weather_field_trip.js'
+import p_4_emergency_map from './p_4_emergency_map.js'
 
 const PASSAGE_STRUCTURES = Object.freeze({
   p_5_lost_notebook,
@@ -38,6 +39,7 @@ const PASSAGE_STRUCTURES = Object.freeze({
   p_pre1_cashless_inclusion,
   p_1_metric_fixation,
   p_5_weather_field_trip,
+  p_4_emergency_map,
 })
 
 export const READING_SENTENCE_STRUCTURES = PASSAGE_STRUCTURES
