@@ -393,7 +393,7 @@ export const SHARED_WATERSHED_BODY = Object.freeze({
         ),
         s(
           'Maintenance therefore competes for money against new projects that the public can actually see and even admire.',
-          'したがって維持管理は、有権者が実際に目にできる事業と予算を奪い合うことになります。',
+          'したがって維持管理は、人々が実際に目にし、感心さえできる新しい事業と予算を奪い合うことになります。',
         ),
         p(
           'A network full of small leaks loses a fixed share of everything that is ever pumped into its pipes.',
@@ -425,7 +425,7 @@ export const SHARED_WATERSHED_BODY = Object.freeze({
         ),
         s(
           'Engineers can slow that peak with holding pools, gardens, and open surfaces that cost far less than a concrete wall.',
-          '技術者は、堤防よりはるかに安い調整池や緑地や透水性の舗装でその頂点を低くできます。',
+          '技術者は、コンクリートの壁よりはるかに安い調整池や庭や開いた地面で、その頂点を緩やかにできます。',
         ),
         p(
           'Buildings then decide who is exposed on the day when the peak of a flood arrives in any case.',
@@ -518,7 +518,7 @@ export const SHARED_WATERSHED_BODY = Object.freeze({
         ),
         p(
           'Control has now moved from valves and levers to software that runs on servers far away.',
-          '制御は弁やてこから、遠くのサーバー上で動く算法へと移りました。',
+          '制御は弁やてこから、遠く離れたサーバー上で動くソフトウェアへと移りました。',
         ),
         s(
           'That shift makes a system quick to respond, and at the very same time it makes the whole system a target.',
@@ -716,7 +716,7 @@ export const SHARED_WATERSHED_BODY = Object.freeze({
         ),
         s(
           'Publishing the data, the model, and the reasoning costs very little and buys a great deal of patience.',
-          '観測値と模型と論拠を公表することは費用がわずかで、多くの忍耐を買います。',
+          '観測値と計算のモデルと考えの筋道を公表することは費用がわずかで、多くの辛抱強さを買います。',
         ),
         s(
           'Communities will accept an unpopular decision far more readily when they can follow the whole argument behind it.',
