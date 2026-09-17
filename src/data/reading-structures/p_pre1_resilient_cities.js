@@ -306,8 +306,10 @@ export default Object.freeze([
       ['when budgets become tight', '予算が厳しくなると'],
     ],
     notes: {
+      'these measures are less dramatic': 'these measures は前の文の smaller investments を指します。less dramatic は、その前の文の大規模なインフラ事業と比べて「それほど目立たない」という意味です。',
       'they are often the first to be reduced': 'the first to do で「最初に〜するもの」。to be reduced は受け身の不定詞で、the first を後ろから説明します。',
     },
+    rules: ['cause-result', 'comparison-pairs', 'infinitive-role'],
   }),
   st('[S A city {関係>A city| [S that] [V takes] [O resilience] [M seriously]}] [V must] [M therefore] [V evaluate] [O projects] [M over a long period] [M rather than only during the year {関係>the year| [M in which] [S they] [V are introduced]}].', {
     chunks: [

@@ -296,9 +296,9 @@ function patternFromRoles(roles) {
   const has = (role) => roles.includes(role)
   const subject = has('S') || has('仮S')
   if (!has('V')) return ''
-  const objects = roles.filter((role) => ['O', 'O1', 'O2', '仮O'].includes(role)).length
+  // and で並んだ目的語（O … and O …）は一つの目的語として数え、第4文型は O1 があるときだけ。
   let core = 'V'
-  if (has('O1') || objects >= 2) core = 'VOO'
+  if (has('O1')) core = 'VOO'
   else if ((has('O') || has('仮O') || has('O2')) && has('C')) core = 'VOC'
   else if (has('O') || has('仮O') || has('O2')) core = 'VO'
   else if (has('C')) core = 'VC'
@@ -307,9 +307,16 @@ function patternFromRoles(roles) {
 
 const AUXILIARY_ONLY = /^(?:will|would|can|could|shall|should|may|might|must|do|does|did|has|have|had|am|is|are|was|were|be|been|being|not|never|also|still|often|always)(?:\s+(?:not|never))?$/i
 
-function verbIsComplete(element) {
+// 助動詞だけの形（will / is / has など）でも、後ろ（修飾語を除く）に動詞が続かなければ、
+// それ自体が述語動詞（is not merely … の is not など）。
+function verbIsComplete(element, elements = []) {
   const text = normalizeStructureText(rawText(element.children))
-  return !AUXILIARY_ONLY.test(text)
+  if (!AUXILIARY_ONLY.test(text)) return true
+  const index = elements.indexOf(element)
+  if (index < 0) return false
+  // Nor does S … guarantee のような倒置も、主語をはさんで動詞が続くので未完結。
+  const next = elements.slice(index + 1).find((item) => !['M', 'S', '仮S'].includes(item.role))
+  return next?.role !== 'V'
 }
 
 function clauseGroups(elements) {
@@ -321,28 +328,29 @@ function clauseGroups(elements) {
     // セミコロン・コロンの後ろなど、接続語なしで新しい主語が来たら新しい節。
     if (
       ['S', '仮S'].includes(element.role) &&
-      current.elements.some((item) => item.role === 'V' && verbIsComplete(item))
+      elements.slice(index + 1).find((item) => item.role !== 'M')?.role === 'V' &&
+      current.elements.some((item) => item.role === 'V' && verbIsComplete(item, elements))
     ) {
       groups.push(current)
       current = { elements: [], sharedSubject: false }
     }
     if (
       element.role === 'V' &&
-      current.elements.some((item) => item.role === 'V' && verbIsComplete(item)) &&
+      current.elements.some((item) => item.role === 'V' && verbIsComplete(item, elements)) &&
       current.elements.at(-1)?.role !== '接'
     ) {
       groups.push(current)
       current = { elements: [], sharedSubject: true }
     }
     if (element.role === '接' && current.elements.some((item) => item.role === 'V')) {
-      const rest = elements.slice(index + 1)
-      const nextSubject = rest.findIndex((item) => ['S', '仮S'].includes(item.role))
-      const nextVerb = rest.findIndex((item) => item.role === 'V')
-      if (nextVerb >= 0) {
+      // 接続語の直後（修飾語を除く）が主語か動詞のときだけ、新しい節・述語とする。
+      // and national achievement to another のように動詞を省いた並列は同じ節に含める。
+      const next = elements.slice(index + 1).find((item) => item.role !== 'M')
+      if (next && ['S', '仮S', 'V'].includes(next.role)) {
         groups.push(current)
         current = {
           elements: [],
-          sharedSubject: nextSubject < 0 || nextSubject > nextVerb,
+          sharedSubject: next.role === 'V',
         }
       }
     }
@@ -410,11 +418,16 @@ function prepositionBeforeUnit(container, unit) {
   const before = normalizeStructureText(rawText(container.children.slice(0, Math.max(0, index))))
   const words = structureWords(before)
   if (!words.length) return ''
-  // A or B のように並んだ二つ目のまとまりは、一つ目と同じ前置詞を受ける。
-  if (/^(?:and|or)$/i.test(words.at(-1))) {
-    const previousUnit = container.children.slice(0, Math.max(0, index)).reverse()
-      .find((child) => child.kind === 'unit')
-    return previousUnit ? prepositionBeforeUnit(container, previousUnit) : ''
+  // A, B, and C や A or B のように並んだ二つ目以降のまとまりは、一つ目と同じ前置詞を受ける。
+  const previousIndex = container.children.slice(0, Math.max(0, index))
+    .map((child, childIndex) => ({ child, childIndex }))
+    .reverse()
+    .find(({ child }) => child.kind === 'unit')?.childIndex ?? -1
+  if (previousIndex >= 0) {
+    const between = structureWords(rawText(container.children.slice(previousIndex + 1, index)))
+    if (between.every((word) => /^(?:and|or|but|also|not|only)$/i.test(word))) {
+      return prepositionBeforeUnit(container, container.children[previousIndex])
+    }
   }
   const joined = words.join(' ').toLowerCase()
   const multi = /(?:^|\s)(instead of|because of|in spite of|as well as|according to|in addition to|rather than|such as|by means of|in terms of|apart from|out of)$/.exec(joined)
@@ -470,6 +483,11 @@ function unitFunctionText(unit, container, scopeElements, scopeUnit) {
   const partOf = container && !['M', '接'].includes(container.role) && containerText !== unitText(unit)
     ? `（${containerRole}「${containerText}」の一部）`
     : ''
+  // 形容詞を後ろから限定するまとまりは、すぐ前の語がその形容詞。
+  const wordBefore = container
+    ? structureWords(rawText(container.children.slice(0, Math.max(0, container.children.indexOf(unit))))).at(-1) ?? ''
+    : ''
+  const adjectiveBefore = wordBefore ? ` ${wordBefore} ` : ''
   switch (unit.base) {
     case '関係':
     case '関係省略':
@@ -487,6 +505,9 @@ function unitFunctionText(unit, container, scopeElements, scopeUnit) {
       return `${inside}直前の ${unit.antecedent} を後ろから説明します${partOf}。`
     case '副詞節': {
       const kind = ADVERBIAL_CLAUSE_KINDS[unit.detail]
+      if (unit.detail === '比較' && container && container.role !== 'M') {
+        return `${inside}比べる相手を表します${partOf}。`
+      }
       return scopeUnit
         ? `${inside}${kind}を表す修飾語Mとして働きます。`
         : `${kind}を表す修飾語Mとして働きます。`
@@ -496,7 +517,7 @@ function unitFunctionText(unit, container, scopeElements, scopeUnit) {
     case '挿入':
       return `${inside}文の途中に補足を差し込みます。`
     case 'ing限定':
-      return `${inside}直前の形容詞の内容を「〜することに・〜するのに」と後ろから限定します${partOf}。`
+      return `${inside}直前の形容詞${adjectiveBefore}の内容を「〜することに・〜するのに」と後ろから限定します${partOf}。`
     case '強調':
       return `${inside}強調したい語句を It is と that の間に置く形です。`
     case '原形': {
@@ -515,7 +536,7 @@ function unitFunctionText(unit, container, scopeElements, scopeUnit) {
       if (unit.usage === '副詞') {
         const kind = INFINITIVE_ADVERB_KINDS[unit.adverbKind]
         if (unit.adverbKind === '形容詞') {
-          return `${inside}直前の形容詞の内容を後ろから限定します。`
+          return `${inside}直前の形容詞${adjectiveBefore}の内容を後ろから限定します${partOf}。`
         }
         if (unit.adverbKind === '程度' && container && container.role !== 'M') {
           return `${inside}enough や too と組んで、どのくらいかという程度を表します${partOf}。`
@@ -641,6 +662,8 @@ function collectUnits(nodes, scopeUnit, scopeElements, containerElement, output,
       depth,
       type: node.rawType,
       base: node.base,
+      detail: node.detail,
+      usage: node.usage ?? '',
       clause,
       label: structureUnitLabel(node),
       antecedent: node.antecedent,

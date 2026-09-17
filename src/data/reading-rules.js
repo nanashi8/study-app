@@ -794,7 +794,8 @@ function structureNodeText(node) {
 
 function structureRuleIds(sentence, structure) {
   const text = sentence?.en || ''
-  const lower = text.toLowerCase()
+  // a few・a little は「少しある」という肯定の意味なので、否定の手がかりから外す。
+  const lower = text.toLowerCase().replace(/\ba\s+(?:few|little)\b/g, 'a some')
   const unitBases = new Set(structure.units.map((unit) => unit.base))
   const unitDetails = structure.units.map((unit) => `${unit.base}:${unit.detail}`)
   const elements = structureElementsOf(structure.root)

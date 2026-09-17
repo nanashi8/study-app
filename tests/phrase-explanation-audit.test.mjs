@@ -60,8 +60,8 @@ test('全長文・長い一文・文学の意味フレーズと内部SVOCMを監
   assert.equal(audit.reading.passageCount, 38)
   assert.equal(audit.reading.sentenceCount, 990)
   assert.equal(audit.reading.phraseCount, 6881)
-  assert.equal(audit.reading.meaningPhraseCount, 4880)
-  assert.equal(audit.reading.meaningMultiRoleCount, 1973)
+  assert.equal(audit.reading.meaningPhraseCount, 4783)
+  assert.equal(audit.reading.meaningMultiRoleCount, 2007)
   assert.equal(audit.reading.grammarBlockCount, 2420)
   assert.equal(audit.reading.correctionDecisionCount, 939)
   assert.equal(audit.reading.appliedCorrectionCount, 939)
@@ -337,13 +337,13 @@ test('下段ブロックは内部SVOCMと学習者向け意味フレーズの双
   assert.match(comparison.blocks[2].note, /present A as C/)
   assert.equal(
     comparison.marked,
-    'The integrity of public memory is then shaped less (by what is available) than (by what is repeatedly presented as relevant)',
+    'The integrity of public memory is then shaped less by (what is available) than by (what is repeatedly presented as relevant)',
   )
   assert.deepEqual(structureGroupOutline(comparison.structureTokens), [
-    { kind: 'clause', depth: 0, parentKind: null, text: 'by what is available' },
+    { kind: 'clause', depth: 0, parentKind: null, text: 'what is available' },
     {
       kind: 'clause', depth: 0, parentKind: null,
-      text: 'by what is repeatedly presented as relevant',
+      text: 'what is repeatedly presented as relevant',
     },
   ])
 
@@ -358,13 +358,16 @@ test('下段ブロックは内部SVOCMと学習者向け意味フレーズの双
   assert.doesNotMatch(fusedRelative.blocks.at(-1).note, /時・条件の副詞節/)
   assert.equal(
     fusedRelative.marked,
-    '(If that practice declines) even perfect archives will not prevent societies <from losing their ability> <to learn> (from what they once knew)',
+    '(If that practice declines), even perfect archives will not prevent societies from <losing their ability <to learn from (what they once knew)>>',
   )
   assert.deepEqual(structureGroupOutline(fusedRelative.structureTokens), [
     { kind: 'clause', depth: 0, parentKind: null, text: 'If that practice declines' },
-    { kind: 'phrase', depth: 0, parentKind: null, text: 'from losing their ability' },
-    { kind: 'phrase', depth: 0, parentKind: null, text: 'to learn' },
-    { kind: 'clause', depth: 0, parentKind: null, text: 'from what they once knew' },
+    {
+      kind: 'phrase', depth: 0, parentKind: null,
+      text: 'losing their ability to learn from what they once knew',
+    },
+    { kind: 'phrase', depth: 1, parentKind: 'phrase', text: 'to learn from what they once knew' },
+    { kind: 'clause', depth: 2, parentKind: 'phrase', text: 'what they once knew' },
   ])
 
   for (const analysis of [formalObject, comparison, fusedRelative]) {
