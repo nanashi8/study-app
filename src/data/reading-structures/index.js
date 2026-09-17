@@ -13,6 +13,7 @@ import p_1_collective_memory from './p_1_collective_memory.js'
 import p_5_school_open_day from './p_5_school_open_day.js'
 import p_4_bicycle_safety from './p_4_bicycle_safety.js'
 import p_3_lunch_food_waste from './p_3_lunch_food_waste.js'
+import p_pre2_later_school_start from './p_pre2_later_school_start.js'
 
 const PASSAGE_STRUCTURES = Object.freeze({
   p_5_lost_notebook,
@@ -26,6 +27,7 @@ const PASSAGE_STRUCTURES = Object.freeze({
   p_5_school_open_day,
   p_4_bicycle_safety,
   p_3_lunch_food_waste,
+  p_pre2_later_school_start,
 })
 
 export const READING_SENTENCE_STRUCTURES = PASSAGE_STRUCTURES
