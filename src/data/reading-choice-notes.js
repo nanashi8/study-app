@@ -577,8 +577,8 @@ export const READING_CHOICE_NOTES = freezeNotes({
     "All crops with low value per shelf.": "棚一段あたりの価値が低いことは、向かない理由として挙げられている（第13文）。",
   },
   "p_2_vertical_farming#4": {
-    "The same crop, season, destination, and full life of the system.": "ライフサイクル全体を調べ（第19・20文）、同じ作物・同じ季節・同じ目的地向けの農場どうしを比べる（第22文）と書かれている。",
-    "Only photographs of a new city farm.": "第18文で、刺激的な画像だけではなく透明な根拠に基づくべきだと書かれている。",
+    "The same crop, season, destination, and full life of the system.": "そのしくみの一生全体を調べ（第19・20文）、同じ作物・同じ季節・同じ届け先の農場どうしを比べる（第22文）と書かれている。",
+    "Only photographs of a new city farm.": "第18文で、目を引く映像だけでなく、だれでも確かめられる根拠に基づくべきだと書かれている。",
     "Only construction cost and no social effects.": "建設材料のほか水・電気・輸送なども含め（第20文）、仕事や手頃な食料を誰が得るかも問う（第21文）と書かれている。",
     "A city farm and an unrelated distant average.": "第22文で、ある都市農場を遠方の平均値と比べることはしないと書かれている。",
   },
@@ -586,7 +586,7 @@ export const READING_CHOICE_NOTES = freezeNotes({
     "Supplying certain crops where its measured strengths fit local needs.": "土地が少ない・輸送が難しい・天候が不安定な場所で特定の作物を供給し（第24文）、限界も慎重に測るときに最も価値がある（第26文）と述べている。",
     "Replacing all ordinary farms as quickly as possible.": "第23文で、通常の農業に取って代わる可能性は低く、それは誤った目標だと書かれている。",
     "Growing every crop without regard to energy cost.": "電力の出どころや費用を問題にしており（第8〜11・16文）、向いている作物も限られる（第12・13文）。",
-    "Receiving public support without transparent evidence.": "第18文で、公的支援は透明な根拠に基づくべきだと書かれている。",
+    "Receiving public support without transparent evidence.": "第18文で、公的な支援はだれでも確かめられる根拠に基づくべきだと書かれている。",
   },
   "p_pre1_dark_sky_policy#1": {
     "People have legitimate safety, work, and business needs for some light.": "暗い歩道への不安や夜勤の人の道（第10文）、営業中を示す光（第11文）を挙げ、すべての照明を同じく有害と扱う政策は信頼を失う（第12文）と書かれている。",

@@ -323,6 +323,7 @@ export const PASSAGE_SENSE_GLOSSES = Object.freeze({
   }),
 
   // p_2_vertical_farming（垂直農場にできること・できないこと）
+  'Shorter transport can reduce damaged produce and allow growers to harvest food when it is ready.': words({ produce: sense('produce', '農産物') }),
   'Because water is collected and used again, some systems use far less water than field farming.': words({ collected: sense('collect', '集められる・回収される') }),
   'Artificial lights and cooling systems may require large amounts of electricity.': words({ may: MAY }),
   'If that electricity comes from fossil fuels, saved transport may not balance the extra energy use.': words({
