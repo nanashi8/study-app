@@ -19,7 +19,9 @@ const passageById = new Map(ANNOTATED_PASSAGES.map((passage) => [passage.id, pas
 
 // 語彙強化ロングリーディングは節ごとに手で確かめて台帳へ移す。
 // ここに書いた文数までが台帳、その先は台帳ができるまで解析器の表示のまま。
-const LEDGERS_IN_PROGRESS = Object.freeze({})
+const LEDGERS_IN_PROGRESS = Object.freeze({
+  p_ext_3000_shared_watershed: 80,
+})
 
 // 台帳がある文（途中までの長文は、その文数まで）。
 function ledgerSentences(passageId, passage) {

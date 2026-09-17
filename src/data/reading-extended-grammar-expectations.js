@@ -32,13 +32,13 @@ export const EXTENDED_READING_GRAMMAR_EXPECTATIONS = Object.freeze({
     SV   SVO  SVO  SVC  SV   SVO  SVO  SVC
   `),
   p_ext_3000_shared_watershed: patterns(`
-    SVC  SV   SVO  SV   SVO  SV   SV   SVO  SVO  SV   SV   SV
-    SVC  SV   SVO  SVC  SVO  SVO  SVO  SVC
+    SVC  SV   SVO  SVO  SVO  SV   SV   SVO  SVO  SVO  SV   SV
+    SVC  SV   SVO  SVC  SVO  SVOC SV   SVC
     SVC  SVO  SVC  SVC  SVC  SVC  SVC  SVO  SVO  SVC  SVC  SV
     SV   SVO  SVC  SVOC SVOC SVO  SVO  SVC
     SVO  SVO  SVO  SVC  SVO  SVC  SVO  SV   SV   SVO  SVO  SVO
-    SVO  SVC  SVC  SVO  SV   SVC  SVO  SVC
-    SVC  SVO  SVC  SV   SVOO SV   SVO  SV   SVO  SVO  SV   SVO
+    SVO  SVC  SVC  SVO  SV   SVC  SVO  SVO
+    SVC  SVO  SVC  SV   SVOO SVC  SVO  SVC  SVO  SVO  SV   SVO
     SVO  SVO  SV   SVO  SVO  SV   SVO  SV
     SV   SV   SV   SV   SVO  SV   SVC  SVC  SVO  SVO  SVO  SVO
     SVO  SV   SVC  SVC  SVO  SVC  SV   SVC

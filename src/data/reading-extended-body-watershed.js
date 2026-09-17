@@ -53,7 +53,7 @@ export const SHARED_WATERSHED_BODY = Object.freeze({
         ),
         p(
           'Snow adds a delay of several months that farmers living downstream have depended on for many centuries.',
-          '雪は、下流に暮らす農民が何世紀も頼ってきた遅れをもたらします。',
+          '雪は、下流に暮らす農民が何世紀も頼ってきた数か月の遅れをもたらします。',
         ),
         s(
           'A deep layer of winter snow collects several months of rainfall and then releases it slowly through the spring and the early summer.',
@@ -69,7 +69,7 @@ export const SHARED_WATERSHED_BODY = Object.freeze({
         ),
         p(
           'Fog, pollen, and fine sand are all carried into the basin by the same moving air that also brings the rain.',
-          '霧と花粉と細かな塵は、雨を運ぶのと同じ動く空気によって運ばれます。',
+          '霧と花粉と細かな砂は、雨を運ぶのと同じ動く空気によって運ばれます。',
         ),
         s(
           'What a river actually contains is therefore partly a record of what the wind has picked up along the way.',
@@ -89,7 +89,7 @@ export const SHARED_WATERSHED_BODY = Object.freeze({
         ),
         s(
           'Separating an ordinary season from a real change requires records that run longer than any single working career.',
-          'その二つを見分けるには、一人の職業人生より長い記録が必要です。',
+          'ふつうの季節と本当の変化を見分けるには、一人の職業人生より長く続く記録が必要です。',
         ),
         s(
           'Communities that begin keeping such records early can see a crisis approaching while it is still relatively cheap to answer.',
@@ -158,7 +158,7 @@ export const SHARED_WATERSHED_BODY = Object.freeze({
         ),
         p(
           'Species that arrive from elsewhere are described as harmful only after they have already spread widely.',
-          '他所から来た種が侵入的だと言われるのは、広く広がったあとになってからです。',
+          'よそから来た種が有害だと言われるのは、すでに広く広がったあとになってからです。',
         ),
         s(
           'Before that point they simply look like an ordinary addition to a long list that nobody has the time to read.',
@@ -186,7 +186,7 @@ export const SHARED_WATERSHED_BODY = Object.freeze({
         ),
         s(
           'Readers who treat every careful wording as doubt will misread the most responsible work in the whole field.',
-          'あらゆる留保を疑いと受け取る読者は、この分野で最も慎重な仕事を読み違えるでしょう。',
+          '慎重な言い回しをどれも疑いと受け取る読者は、この分野で最も責任ある仕事を読み違えるでしょう。',
         ),
         s(
           'The useful question is never whether the science is fully certain, but rather which parts of it are settled enough to act on.',
@@ -207,7 +207,7 @@ export const SHARED_WATERSHED_BODY = Object.freeze({
         ),
         s(
           'That single fact decides how any serious argument about water scarcity in a basin has to begin.',
-          'このたった一つの事実が、流域における不足をめぐる議論の始め方を決めます。',
+          'このたった一つの事実が、流域の水不足についての真剣な議論をどう始めねばならないかを決めます。',
         ),
         s(
           'A change in the crops that farmers plant will move more water than any campaign aimed at households.',
@@ -239,7 +239,7 @@ export const SHARED_WATERSHED_BODY = Object.freeze({
         ),
         s(
           'Downstream the very same chemical that raised a yield can feed an enormous growth of water plants and weeds.',
-          '下流では、収量を上げたのと同じ化学物質が、藻類の膨大な繁殖を養うことがあります。',
+          '下流では、収量を上げたのと同じ化学物質が、水草や雑草の膨大な繁殖を養うことがあります。',
         ),
         s(
           'When that growth dies and decays, it removes the oxygen on which the fish and insects depend.',
@@ -251,7 +251,7 @@ export const SHARED_WATERSHED_BODY = Object.freeze({
         ),
         s(
           'Every drop of water that evaporates leaves behind any minerals that it happened to be carrying.',
-          '蒸発する一リットルごとに、たまたま運んでいた鉱物が残されます。',
+          '蒸発する水の一滴ごとに、たまたま運んでいた鉱物が残されます。',
         ),
         s(
           'A field can therefore become steadily less productive while every single season still looks successful at harvest.',
