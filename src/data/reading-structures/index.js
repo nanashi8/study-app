@@ -25,6 +25,7 @@ import p_pre2_phone_free_focus from './p_pre2_phone_free_focus.js'
 import p_pre2plus_clothing_second_life from './p_pre2plus_clothing_second_life.js'
 import p_2_vertical_farming from './p_2_vertical_farming.js'
 import p_pre1_dark_sky_policy from './p_pre1_dark_sky_policy.js'
+import p_1_choice_architecture from './p_1_choice_architecture.js'
 import p_ext_4000_generational_city from './p_ext_4000_generational_city.js'
 
 const PASSAGE_STRUCTURES = Object.freeze({
@@ -51,6 +52,7 @@ const PASSAGE_STRUCTURES = Object.freeze({
   p_pre2plus_clothing_second_life,
   p_2_vertical_farming,
   p_pre1_dark_sky_policy,
+  p_1_choice_architecture,
   p_ext_4000_generational_city,
 })
 
