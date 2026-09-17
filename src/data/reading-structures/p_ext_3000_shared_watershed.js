@@ -1,7 +1,7 @@
 import { st } from './entry.js'
 
 // 語彙強化ロングリーディング（約3,000語）の構造台帳。節ごとに手で確かめて足していく。
-// いまは #1〜#80 まで。残りは台帳ができるまで解析器の表示のまま。
+// 全160文（十の節すべて）を手で確かめて書いた。残りは台帳ができるまで解析器の表示のまま。
 export default Object.freeze([
   st('[S A river basin] [V is] [C the whole area {前| of land} {関係>the whole area of land| [M from which] [S rain and melting snow] [V drain] [M {前| into one single river}]}].', {
     chunks: [
@@ -815,6 +815,804 @@ export default Object.freeze([
     ],
     notes: {
       'The remaining distance has to be closed': 'close a distance で「隔たりを埋める」。',
+    },
+  }),
+  st('[S Most {前| of the equipment {関係>the equipment| [S that] [V delivers] [O water] [M {前| to a house}]}}] [V is] [V buried] [M underground] [接 and] [M therefore] [C easy {to:副詞(形容詞)| [V to forget]}].', {
+    chunks: [
+      ['Most of the equipment that delivers water', '水を届ける設備の大半は'],
+      ['to a house is buried underground', '家まで、地下に埋められていて'],
+      ['and therefore easy to forget', 'そのため忘れられがちです'],
+    ],
+    notes: {
+      'and therefore easy to forget': 'easy to ＋ 動詞 で「〜しやすい」。ここは is が省かれています。',
+    },
+  }),
+  st('[S A pipe {過去分詞>A pipe| [V installed] [M a century ago]}] [V may] [M still] [V work] [M perfectly] [M {副詞節:対比| [接 while] [S the one {前| beside it}] [V is] [C close {前| to failure}]}].', {
+    chunks: [
+      ['A pipe installed a century ago', '百年前に敷かれた管が'],
+      ['may still work perfectly', 'いまも完璧に働くことがあります'],
+      ['while the one beside it is close to failure', '一方、その隣の管は壊れる寸前ということも'],
+    ],
+    notes: {
+      'A pipe installed a century ago': 'installed a century ago は A pipe を後ろから説明する過去分詞のまとまりです。',
+    },
+  }),
+  st('[S Nobody] [V can separate] [O the two] [M {前| from the surface}] [M alone] [M {前| without instruments and a careful survey {前| of the network}}].', {
+    chunks: [
+      ['Nobody can separate the two', 'その二つを見分けられる人はいません'],
+      ['from the surface alone', '地表からだけでは'],
+      ['without instruments and a careful survey', '器具と丁寧な調査がなければ'],
+      ['of the network', '管の網の'],
+    ],
+    notes: {
+      'from the surface alone': 'alone はここでは「〜だけでは」。',
+    },
+  }),
+  st('[S Maintenance] [M therefore] [V competes] [M {前| for money}] [M {前| against new projects {関係>new projects| [O that] [S the public] [V can] [M actually] [V see] [接 and] [M even] [V admire]}}].', {
+    chunks: [
+      ['Maintenance therefore competes for money', 'したがって維持管理は予算を奪い合います'],
+      ['against new projects', '新しい事業と'],
+      ['that the public can actually see and even admire', '人々が実際に目にし、感心さえできる（事業と）'],
+    ],
+    notes: {
+      'Maintenance therefore competes for money': 'compete for … で「…を求めて争う」。',
+    },
+  }),
+  st('[S A network full {前| of small leaks}] [V loses] [O a fixed share {前| of everything {関係>everything| [S that] [V is] [M ever] [V pumped] [M {前| into its pipes}]}}].', {
+    chunks: [
+      ['A network full of small leaks', '小さな漏れだらけの管網は'],
+      ['loses a fixed share of everything', '送り込まれたものの一定の割合を失います'],
+      ['that is ever pumped into its pipes', 'その管に送り込まれた（もののうち）'],
+    ],
+    notes: {
+      'A network full of small leaks': 'full of … で「…だらけの」。',
+    },
+  }),
+  st('[M {前| In some cities}] [S that share] [V reaches] [O a third {前| of the total}], [M {関係,>前の内容| [S which] [V is] [C more] [M {副詞節:比較| [接 than] [S any conservation campaign] [V could save]}]}].', {
+    chunks: [
+      ['In some cities that share reaches a third', '都市によってはその割合が三分の一に達します'],
+      ['of the total,', '全体の'],
+      ['which is more than any conservation campaign could save', 'それはどんな節水の呼びかけで減らせる量より多いのです'],
+    ],
+    notes: {
+      'which is more than any conservation campaign could save': 'コンマの後ろの which は、前の内容全体を受けています。',
+    },
+  }),
+  st('[S {動名詞| [V Finding] [O those leaks]}] [V is] [C quiet and patient work {関係>quiet and patient work| [S that] [V produces] [O no photograph worth {動名詞| [V printing] [M {前| in a newspaper}]}]}].', {
+    chunks: [
+      ['Finding those leaks is quiet and patient work', '漏れを見つけるのは静かで根気のいる仕事です'],
+      ['that produces no photograph', '写真の一枚も生まない（仕事）'],
+      ['worth printing in a newspaper', '新聞に載せる価値のある'],
+    ],
+    notes: {
+      'worth printing in a newspaper': 'worth ＋ -ing で「〜する価値がある」。',
+    },
+  }),
+  st('[S It] [V is] [M also] [C the cheapest new supply {関係>the cheapest new supply| [S that] [V is] [C available] [M {前| to almost every older city {前| in the world}}]}].', {
+    chunks: [
+      ['It is also the cheapest new supply', 'それは同時に最も安い新しい水源でもあります'],
+      ['that is available', '手に入る（水源の中で）'],
+      ['to almost every older city in the world', '世界のほとんどすべての古い都市にとって'],
+    ],
+    notes: {
+      'It is also the cheapest new supply': 'supply はここでは「供給・水源」。',
+    },
+  }),
+  st('[S Roads] [V change] [O a basin] [M quite as much] [M {前| as any dam}], [M {副詞節:譲歩| [接 although] [S they] [V are] [M rarely] [V counted] [M {前| as water projects}] [M {前| at all}]}].', {
+    chunks: [
+      ['Roads change a basin quite as much as any dam,', '道路はどのダムにも劣らず流域を変えます'],
+      ['although they are rarely counted', 'ただし数えられることはまれです'],
+      ['as water projects at all', '水の事業としては'],
+    ],
+    notes: {
+      'Roads change a basin quite as much as any dam,': 'as much as … で「…と同じくらい」。',
+    },
+  }),
+  st('[S A hard paved surface] [V sends] [O rain] [M straight] [M {前| to the nearest drain}] [M {前| instead of {動名詞| [V letting] [O it] [C {原形| [V soak] [M {前| into the ground}]}]}}].', {
+    chunks: [
+      ['A hard paved surface sends rain straight', '硬い舗装は雨をまっすぐ送ります'],
+      ['to the nearest drain', '最も近い排水口へ'],
+      ['instead of letting it soak into the ground', '地面にしみ込ませる代わりに'],
+    ],
+    notes: {
+      'instead of letting it soak into the ground': 'let ＋ 目的語 ＋ 動詞の原形 で「〜が…するままにする」。',
+    },
+  }),
+  st('[S The same storm] [M therefore] [V produces] [O a higher and much faster peak] [M {前| in a city}] [M than {前| in an open field}].', {
+    chunks: [
+      ['The same storm therefore produces', 'そのため同じ嵐でも生みます（何をかは次へ）'],
+      ['a higher and much faster peak', 'より高く、ずっと速い出水の頂点を'],
+      ['in a city than in an open field', '開けた畑でよりも都市で'],
+    ],
+    notes: {
+      'a higher and much faster peak': 'peak はここでは「水かさが最も高くなるとき」。',
+    },
+  }),
+  st('[S Engineers] [V can slow] [O that peak] [M {前| with holding pools, gardens, and open surfaces {関係>holding pools, gardens, and open surfaces| [S that] [V cost] [M far less] [M {前| than a concrete wall}]}}].', {
+    chunks: [
+      ['Engineers can slow that peak', '技術者はその頂点を緩やかにできます（何でかは次へ）'],
+      ['with holding pools, gardens, and open surfaces', '調整池と庭と開いた地面で'],
+      ['that cost far less than a concrete wall', 'コンクリートの壁よりはるかに安い（もので）'],
+    ],
+    notes: {
+      'with holding pools, gardens, and open surfaces': 'holding pool は「水をためておく池」。',
+    },
+  }),
+  st('[S Buildings] [M then] [V decide] [O {疑問詞節| [S who] [V is exposed] [M {前| on the day {関係>the day| [M when] [S the peak {前| of a flood}] [V arrives] [M {前| in any case}]}}]}].', {
+    chunks: [
+      ['Buildings then decide who is exposed', '建物は、だれがさらされるのかを決めます'],
+      ['on the day when the peak of a flood arrives', '出水の頂点が来る日に'],
+      ['in any case', 'いずれにせよ'],
+    ],
+    notes: {
+      'Buildings then decide who is exposed': 'この who は疑問詞で、「だれがさらされるのか」という間接疑問を作ります。',
+    },
+  }),
+  st('[S A ground floor {関係>A ground floor| [S that] [V is used] [M {前| for storage}]}] [V recovers] [M {前| from a flood}] [M far more easily] [M {前| than one {過去分詞>one| [V used] [M {前| for sleeping}]}}].', {
+    chunks: [
+      ['A ground floor that is used for storage', '物置として使われる一階は'],
+      ['recovers from a flood far more easily', '洪水からはるかに容易に立ち直ります'],
+      ['than one used for sleeping', '寝室として使われる一階よりも'],
+    ],
+    notes: {
+      'than one used for sleeping': 'この one は a ground floor の代わりです。',
+    },
+  }),
+  st('[S Rules {関係>Rules| [S that] [V require] [O the second {前| of these uses}] [C {to:補語| [V to sit] [M higher]}]}] [V are] [C cheap] [M {副詞節:時| [接 while] [S a district] [V is] [M still] [V being built]}].', {
+    chunks: [
+      ['Rules that require the second of these uses', 'この二つのうち後者の使い方に求める規則は'],
+      ['to sit higher are cheap', 'より高い階に置くよう、安上がりです'],
+      ['while a district is still being built', '地区がまだ建設中のあいだは'],
+    ],
+    notes: {
+      'to sit higher are cheap': 'require ＋ 目的語 ＋ to ＋ 動詞 で「〜に…するよう求める」。',
+    },
+  }),
+  st('[S The very same rules] [V become] [C extremely expensive] [M {副詞節:時| [接 once] [S that district] [V has been finished] [接 and] [M fully] [V occupied]}].', {
+    chunks: [
+      ['The very same rules become extremely expensive', 'まったく同じ規則が非常に高くつきます'],
+      ['once that district has been finished', 'その地区ができあがり'],
+      ['and fully occupied', '人がすっかり住んだあとでは'],
+    ],
+    notes: {
+      'once that district has been finished': 'once は「いったん〜すると」。occupied は「人が入った」。',
+    },
+  }),
+  st('[S Every single one {前| of these choices}] [M quietly] [V moves] [O some cost] [M {前| between the present and the future}].', {
+    chunks: [
+      ['Every single one of these choices', 'こうした選択の一つ一つが'],
+      ['quietly moves some cost', '静かに費用を移します'],
+      ['between the present and the future', '現在と未来のあいだで'],
+    ],
+    notes: {
+      'Every single one of these choices': 'every single … で「一つ残らず…」。',
+    },
+  }),
+  st('[S {動名詞| [V Deferring] [O maintenance]}] [V is not] [M really] [C {動名詞| [V saving] [O money]}], [M {副詞節:理由| [接 because] [S it] [V is borrowing] [M {前| against a repair {関係>a repair| [S that] [M only] [V grows] [C larger]}}]}].', {
+    chunks: [
+      ['Deferring maintenance is not really saving money,', '維持を先送りすることは、実は節約ではありません'],
+      ['because it is borrowing', 'なぜならそれは借りているからです（何からかは次へ）'],
+      ['against a repair that only grows larger', '大きくなる一方の修理を担保に'],
+    ],
+    notes: {
+      'because it is borrowing': 'borrow against … で「…を当てにして借りる」。',
+    },
+  }),
+  st('[S The interest {前| on that loan}] [V is paid] [M {前| by the family {関係>the family| [S that] [V happens] [C {to:補語| [V to be living] [M there] [M {副詞節:時| [接 when] [S the pipe] [M finally] [V breaks]}]}]}}].', {
+    chunks: [
+      ['The interest on that loan is paid', 'その借りの利子を払うのは'],
+      ['by the family that happens to be living there', 'たまたまそこに住んでいる家族です'],
+      ['when the pipe finally breaks', '管がついに壊れたとき'],
+    ],
+    notes: {
+      'by the family that happens to be living there': 'happen to ＋ 動詞 で「たまたま〜している」。',
+    },
+  }),
+  st('[S A budget {関係>A budget| [S that] [V states] [O all {前| of this}] [M openly]}] [V is] [C far easier {to:副詞(形容詞)| [V to defend]}] [M {前| than one {関係>one| [S that] [M simply] [V postpones] [O the question]}}].', {
+    chunks: [
+      ['A budget that states all of this openly', 'これをすべて率直に述べる予算は'],
+      ['is far easier to defend', '守るのがはるかに簡単です'],
+      ['than one that simply postpones the question', '問いをただ先送りする予算よりも'],
+    ],
+    notes: {
+      'is far easier to defend': 'defend はここでは「（批判に対して）擁護する」。',
+    },
+  }),
+  st('[S Water and energy] [V are] [M so closely] [C linked together] [M {副詞節:結果| [接 that] [S neither {前| of them}] [V can be planned] [M {前| on its own}]}].', {
+    chunks: [
+      ['Water and energy are so closely linked together', '水とエネルギーはとても密接に結び付いていて'],
+      ['that neither of them can be planned', 'どちらも計画できません'],
+      ['on its own', 'それだけでは'],
+    ],
+    notes: {
+      'that neither of them can be planned': 'so … that 〜 で「とても…なので〜」。neither of … は「どちらも〜ない」。',
+    },
+  }),
+  st('[S {動名詞| [V Moving] [O water] [M up] [M {前| to a higher place}]}] [V takes] [O electricity], [接 and] [S {動名詞| [V generating] [O that electricity]}] [M usually] [V takes] [O a great deal {前| of water}].', {
+    chunks: [
+      ['Moving water up to a higher place takes electricity,', '水を高い所へ動かすには電力が要ります'],
+      ['and generating that electricity', 'そしてその電力を作るには'],
+      ['usually takes a great deal of water', 'たいてい多くの水が要ります'],
+    ],
+    notes: {
+      'Moving water up to a higher place takes electricity,': 'take はここでは「（費用や労力が）かかる」。',
+    },
+  }),
+  st('[S A drought] [M therefore] [V reduces] [O power output] [M {前| at exactly the moment {関係>the moment| [M when] [S the demand {前| for {動名詞| [V pumping] [O water]}}] [V rises]}}].', {
+    chunks: [
+      ['A drought therefore reduces power output', 'そのため干ばつは発電量を減らします'],
+      ['at exactly the moment', 'まさにその瞬間に'],
+      ['when the demand for pumping water rises', '水をくみ上げる必要が高まる（瞬間に）'],
+    ],
+    notes: {
+      'A drought therefore reduces power output': 'output は「産出量」。drought は「干ばつ」。',
+    },
+  }),
+  st('[S {動名詞| [V Planning] [O either {前| of these two systems}] [M {前| without the other}]}] [V guarantees] [O a shortage {関係>a shortage| [O that] [S nobody {前| in charge}] [V predicted]}].', {
+    chunks: [
+      ['Planning either of these two systems', 'この二つの仕組みのどちらかを計画することは'],
+      ['without the other', 'もう一方を抜きに'],
+      ['guarantees a shortage that nobody in charge predicted', '責任者のだれも予測しなかった不足を確実に招きます'],
+    ],
+    notes: {
+      'guarantees a shortage that nobody in charge predicted': 'in charge で「担当している・責任のある」。',
+    },
+  }),
+  st('[S A dam] [V is] [C the most visible machine {前| in any basin} and also the hardest one {to:副詞(形容詞)| [V to evaluate] [M honestly]}].', {
+    chunks: [
+      ['A dam is the most visible machine in any basin', 'ダムはどの流域でも最も目につく機械であり'],
+      ['and also the hardest one', '同時に最も難しい機械です'],
+      ['to evaluate honestly', '誠実に評価するのが'],
+    ],
+    notes: {
+      'and also the hardest one': 'この one は machine の代わりです。',
+    },
+  }),
+  st('[S It] [V stores] [O water], [V produces] [O power], [V controls] [O floods], [接 and] [V blocks] [O the movement {前| of fish}] [M all] [M {前| at the same time}].', {
+    chunks: [
+      ['It stores water, produces power,', 'それは水を蓄え、電力を生み'],
+      ['controls floods,', '洪水を抑え'],
+      ['and blocks the movement of fish all at the same time', '同時に魚の移動をさえぎります'],
+    ],
+    notes: {
+      'and blocks the movement of fish all at the same time': 'block は「さえぎる」。all at the same time で「どれも同時に」。',
+    },
+  }),
+  st('[S Each {前| of those four effects}] [V is] [M entirely] [C real], [接 and] [S no single number] [V can combine] [O them] [M {前| into one verdict}].', {
+    chunks: [
+      ['Each of those four effects is entirely real,', 'その四つの影響はどれもまぎれもない事実です'],
+      ['and no single number can combine them', 'そしてどんな一つの数字もそれらをまとめられません'],
+      ['into one verdict', '一つの判定へと'],
+    ],
+    notes: {
+      'into one verdict': 'verdict は「判定・結論」。',
+    },
+  }),
+  st('[S Arguments {前| about dams}] [M usually] [V turn out] [C {to:補語| [V to be] [C arguments {前| about {疑問詞節| [S which {前| of those effects}] [V gets counted] [M first]}}]}].', {
+    chunks: [
+      ['Arguments about dams usually turn out', 'ダムをめぐる議論はたいてい〜だと分かります'],
+      ['to be arguments about', '〜についての議論だと'],
+      ['which of those effects gets counted first', 'その影響のどれを最初に数えるか'],
+    ],
+    notes: {
+      'which of those effects gets counted first': 'get ＋ 過去分詞 で「〜される」。which of … は「…のどれが」。',
+    },
+  }),
+  st('[S Smaller machines] [M now] [V do] [O a growing share {前| of the work {関係>the work| [S that] [V used to require] [O a large structure]}}].', {
+    chunks: [
+      ['Smaller machines now do a growing share', '小さな機械がいまや増えつつある割合を担っています'],
+      ['of the work', '仕事のうち'],
+      ['that used to require a large structure', 'かつては大きな構造物を必要とした（仕事の）'],
+    ],
+    notes: {
+      'that used to require a large structure': 'used to ＋ 動詞 で「かつては〜した」。',
+    },
+  }),
+  st('[S A valve {関係>A valve| [S that] [V opens] [M {前| on a fixed schedule}]}] [V can hold back] [O a flood peak {関係>a flood peak| [S that] [V would] [M otherwise] [V pass] [M downstream]}].', {
+    chunks: [
+      ['A valve that opens on a fixed schedule', '決まった時刻に開く弁は'],
+      ['can hold back a flood peak', '出水の頂点をせき止められます'],
+      ['that would otherwise pass downstream', 'そうでなければ下流へ抜けていく（頂点を）'],
+    ],
+    notes: {
+      'that would otherwise pass downstream': 'otherwise は「そうでなければ」。hold back … で「…をせき止める」。',
+    },
+  }),
+  st('[S A pump {関係>A pump| [S that] [V is controlled] [M {前| by a sensor}]}] [V uses] [O far less electricity] [M {前| than one {関係>one| [S that] [M simply] [V runs] [M all day]}}].', {
+    chunks: [
+      ['A pump that is controlled by a sensor', 'センサーで制御される揚水機は'],
+      ['uses far less electricity', 'はるかに少ない電力しか使いません'],
+      ['than one that simply runs all day', '一日中ただ動き続ける揚水機よりも'],
+    ],
+    notes: {
+      'than one that simply runs all day': 'この one は pump の代わりです。',
+    },
+  }),
+  st('[S These gains] [V are] [C quiet ones], [接 and] [M {分詞構文:条件| [V added] [M together]}] [S they] [M often] [V exceed] [O {what節| [O what] [S an entire new power plant] [V could supply]}].', {
+    chunks: [
+      ['These gains are quiet ones,', 'こうした改善は地味なものです'],
+      ['and added together they often exceed', 'しかし合わせれば、しばしば上回ります'],
+      ['what an entire new power plant could supply', '新しい発電所ひとつが供給できる量を'],
+    ],
+    notes: {
+      'and added together they often exceed': 'added together は「合わせると」という条件を表す分詞のまとまりです。',
+    },
+  }),
+  st('[S Control] [V has] [M now] [V moved] [M {前| from valves and levers}] [M {前| to software {関係>software| [S that] [V runs] [M {前| on servers far away}]}}].', {
+    chunks: [
+      ['Control has now moved from valves and levers', '制御はいまや弁やてこから移りました'],
+      ['to software that runs', '動くソフトウェアへと'],
+      ['on servers far away', '遠く離れたサーバーの上で'],
+    ],
+    notes: {
+      'to software that runs': 'run はここでは「（プログラムが）動く」。',
+    },
+  }),
+  st('[S That shift] [V makes] [O a system] [C quick {to:副詞(形容詞)| [V to respond]}], [接 and] [M {前| at the very same time}] [S it] [V makes] [O the whole system] [C a target].', {
+    chunks: [
+      ['That shift makes a system quick to respond,', 'その移り変わりは仕組みを応答の速いものにします'],
+      ['and at the very same time', 'そしてまさに同時に'],
+      ['it makes the whole system a target', '仕組み全体を標的にもします'],
+    ],
+    notes: {
+      'it makes the whole system a target': 'make ＋ 目的語 ＋ 名詞 で「〜を…にする」。',
+    },
+  }),
+  st('[S A failure {前| in connectivity}] [V can] [M now] [V stop] [O a pump {関係>a pump| [S that] [V has] [O nothing {前| at all} mechanically wrong {前| with it}]}].', {
+    chunks: [
+      ['A failure in connectivity can now stop a pump', '通信の不具合がいまや揚水機を止めてしまいます'],
+      ['that has nothing at all mechanically wrong', '機械としてはどこも壊れていない（揚水機を）'],
+      ['with it', 'その機械に'],
+    ],
+    notes: {
+      'that has nothing at all mechanically wrong': 'nothing wrong with … で「…に悪いところは何もない」。',
+    },
+  }),
+  st('[S Cybersecurity] [M therefore] [V belongs] [M {前| inside a water plan}] [M {前| rather than only {前| inside some separate technology plan}}].', {
+    chunks: [
+      ['Cybersecurity therefore belongs inside a water plan', 'したがって情報の安全は水の計画の中に入ります'],
+      ['rather than only inside', '〜の中だけではなく'],
+      ['some separate technology plan', '別立ての技術の計画'],
+    ],
+    notes: {
+      'Cybersecurity therefore belongs inside a water plan': 'belong inside … で「…の中に属する」。',
+    },
+  }),
+  st('[S Old equipment] [M usually] [V becomes] [C obsolete] [M long] [M {副詞節:時| [接 before] [S it] [M actually] [V stops] [O {動名詞| [V working]}] [M out] [M {前| in the field}]}].', {
+    chunks: [
+      ['Old equipment usually becomes obsolete long', '古い設備はたいていずっと前に時代遅れになります'],
+      ['before it actually stops working', '実際に動かなくなるより'],
+      ['out in the field', '現場で'],
+    ],
+    notes: {
+      'Old equipment usually becomes obsolete long': 'obsolete は「時代遅れの」。',
+    },
+  }),
+  st('[S Parts] [V stop] [O {動名詞| [V being made]}], [S the engineers {関係>the engineers| [S who] [V understand] [O it]}] [V retire], [接 and] [S the records {関係>the records| [S that] [V explain] [O it]}] [V go] [C missing].', {
+    chunks: [
+      ['Parts stop being made,', '部品は作られなくなり'],
+      ['the engineers who understand it retire,', 'それを分かる技術者は引退し'],
+      ['and the records that explain it go missing', 'そしてそれを説明する記録は行方が分からなくなります'],
+    ],
+    notes: {
+      'and the records that explain it go missing': 'go missing で「行方が分からなくなる」。',
+    },
+  }),
+  st('[S A prototype {関係>A prototype| [O that] [S nobody] [M ever] [M fully] [V described] [M {前| on paper}]}] [V is] [C a risk {過去分詞>a risk| [V disguised] [M {前| as a valuable asset}]}].', {
+    chunks: [
+      ['A prototype that nobody ever fully described', 'だれも紙の上で十分に書き表さなかった試作機は'],
+      ['on paper', '書面で'],
+      ['is a risk disguised as a valuable asset', '貴重な資産の姿をした危険です'],
+    ],
+    notes: {
+      'is a risk disguised as a valuable asset': 'disguised as … で「…に見せかけた」。',
+    },
+  }),
+  st('[S {動名詞| [V Writing down] [O {疑問詞節| [M how] [S a machine] [M actually] [V works]}]}] [V is] [M therefore] [C an ordinary and necessary part {前| of {動名詞| [V keeping] [O the machine] [C running]}}].', {
+    chunks: [
+      ['Writing down how a machine actually works', '機械が実際にどう動くのかを書き留めることは'],
+      ['is therefore an ordinary and necessary part', 'したがってありふれた、欠かせない一部です'],
+      ['of keeping the machine running', 'その機械を動かし続けることの'],
+    ],
+    notes: {
+      'of keeping the machine running': 'keep ＋ 目的語 ＋ -ing で「〜を…させ続ける」。',
+    },
+  }),
+  st('[S Every claim {前| about a river}] [M finally] [V rests] [M {前| on a measurement {関係>a measurement| [O that] [S someone] [M once] [V chose] [O {to:名詞| [V to make]}]}}].', {
+    chunks: [
+      ['Every claim about a river finally rests', '川についてのどの主張も、結局は成り立っています'],
+      ['on a measurement', 'ある測定の上に'],
+      ['that someone once chose to make', 'かつてだれかが行うと決めた（測定の）'],
+    ],
+    notes: {
+      'that someone once chose to make': 'choose to ＋ 動詞 で「〜することに決める」。that は to make の目的語にあたります。',
+    },
+  }),
+  st('[S {疑問詞節| [M Where] [S the gauge] [V sits]}, {疑問詞節| [M how often] [S it] [V is read]}, and {疑問詞節| [O what] [S it] [V ignores]}] [M all] [V help] [O {to:名詞| [V to shape] [O the result]}].', {
+    chunks: [
+      ['Where the gauge sits, how often it is read,', '観測器がどこにあり、どれほど頻繁に読まれ'],
+      ['and what it ignores', '何を無視するかが'],
+      ['all help to shape the result', 'どれも結果を形づくる助けになります'],
+    ],
+    notes: {
+      'Where the gauge sits, how often it is read,': '疑問詞で始まる三つのまとまりが、並んで文の主語Sになっています。',
+    },
+  }),
+  st('[S A number] [V is] [M therefore] [C a summary {前| of a human decision} quite as much {前| as a summary {前| of the world}}].', {
+    chunks: [
+      ['A number is therefore a summary of a human decision', 'したがって数字は人の決定の要約です'],
+      ['quite as much as a summary of the world', '世界の要約であるのと同じくらい'],
+    ],
+    notes: {
+      'quite as much as a summary of the world': 'as much as … で「…と同じくらい」。',
+    },
+  }),
+  st('[S An average] [V conceals] [O the distribution {関係>the distribution| [S that] [V produced] [O it]}], [接 and] [S that distribution] [V is] [M usually] [C {what節| [O what] [M really] [V matters]}].', {
+    chunks: [
+      ['An average conceals the distribution that produced it,', '平均はそれを生んだ散らばりを覆い隠します'],
+      ['and that distribution is usually', 'そしてその散らばりこそ、たいてい'],
+      ['what really matters', '本当に大切なものです'],
+    ],
+    notes: {
+      'An average conceals the distribution that produced it,': 'conceal は「隠す」。distribution は「散らばり・分布」。',
+    },
+  }),
+  st('[S A basin {前| with adequate rainfall} {前| on average}] [V can] [M still] [V fail] [M {前| in the three years {関係>the three years| [S that] [V happen] [C {to:補語| [V to fall] [M {前| below the minimum}]}]}}].', {
+    chunks: [
+      ['A basin with adequate rainfall on average', '平均すれば十分な降水のある流域も'],
+      ['can still fail', 'それでも立ち行かなくなることがあります'],
+      ['in the three years that happen to fall below the minimum', 'たまたま最低量を下回る三年のあいだに'],
+    ],
+    notes: {
+      'A basin with adequate rainfall on average': 'on average で「平均すると」。adequate は「十分な」。',
+    },
+  }),
+  st('[S {動名詞| [V Planning] [M {前| for the mean}]}] [M therefore] [V prepares] [O a community] [M {前| for a year {関係>a year| [O that] [S it] [V will] [M only rarely] [V experience]}}].', {
+    chunks: [
+      ['Planning for the mean therefore prepares a community', 'そのため平均に合わせた計画は、地域に備えさせます'],
+      ['for a year', 'ある年に'],
+      ['that it will only rarely experience', 'めったに経験しない（年に）'],
+    ],
+    notes: {
+      'Planning for the mean therefore prepares a community': 'the mean はここでは「平均値」。prepare A for B で「AにBの備えをさせる」。',
+    },
+  }),
+  st('[S {動名詞| [V Planning] [M {前| for the most severe year {前| on record}}]}] [V is] [C expensive], [接 and] [S it] [V is] [C the only figure {関係>the only figure| [O that] [S a household] [M actually] [V feels]}].', {
+    chunks: [
+      ['Planning for the most severe year on record', '記録に残る最悪の年に備えることは'],
+      ['is expensive,', '高くつきます'],
+      ['and it is the only figure', 'しかしそれが唯一の数字です'],
+      ['that a household actually feels', '家庭が実際に感じる（数字）'],
+    ],
+    notes: {
+      'Planning for the most severe year on record': 'on record で「記録に残る中で」。',
+    },
+  }),
+  st('[S A baseline] [V is] [C the quiet assumption {現在分詞>the quiet assumption| [V sitting] [M {前| inside almost every comparison {関係>almost every comparison| [S that] [M ever] [V gets published] [M anywhere]}}]}].', {
+    chunks: [
+      ['A baseline is the quiet assumption', '基準線とは静かな前提です（どんな前提かは次へ）'],
+      ['sitting inside almost every comparison', 'ほとんどどの比較の内側にもある'],
+      ['that ever gets published anywhere', 'どこかで公表される（比較の）'],
+    ],
+    notes: {
+      'sitting inside almost every comparison': 'sitting inside … は the quiet assumption を後ろから説明しています。',
+    },
+  }),
+  st('[S {動名詞| [V Choosing] [O a wet decade] [C {前| as the starting point}]}] [V makes] [O almost any later period] [C {原形| [V look] [M {前| like a decline}]}].', {
+    chunks: [
+      ['Choosing a wet decade as the starting point', '雨の多い十年を出発点に選ぶと'],
+      ['makes almost any later period', 'その後のほとんどどの期間も'],
+      ['look like a decline', '減少のように見せます'],
+    ],
+    notes: {
+      'look like a decline': 'make ＋ 目的語 ＋ 動詞の原形 で「〜を…のように見せる」。',
+    },
+  }),
+  st('[S {動名詞| [V Choosing] [O a dry decade] [M instead]}] [V makes] [O exactly the same later period] [C {原形| [V look] [M {前| like a welcome recovery}]}].', {
+    chunks: [
+      ['Choosing a dry decade instead', '代わりに乾いた十年を選ぶと'],
+      ['makes exactly the same later period', 'まったく同じその後の期間を'],
+      ['look like a welcome recovery', '喜ばしい回復のように見せます'],
+    ],
+    notes: {
+      'look like a welcome recovery': 'welcome はここでは形容詞で「歓迎すべき」。',
+    },
+  }),
+  st('[S Honest reports] [V state] [O the baseline] [M first], [M {副詞節:理由| [接 because] [S a reader] [V cannot check] [O any {前| of the claims}] [M {前| without it}]}].', {
+    chunks: [
+      ['Honest reports state the baseline first,', '誠実な報告はまず基準線を述べます'],
+      ['because a reader cannot check any of the claims', 'なぜなら読み手はどの主張も確かめられないからです'],
+      ['without it', 'それがなければ'],
+    ],
+    notes: {
+      'because a reader cannot check any of the claims': 'not … any で「どれも〜ない」。',
+    },
+  }),
+  st('[S Correlation] [V appears] [M {前| in almost any pair {前| of series} {関係>almost any pair of series| [S that] [M both] [V happen] [C {to:補語| [V to rise] [M {前| over the same decades}]}]}}].', {
+    chunks: [
+      ['Correlation appears in almost any pair of series', '相関はほとんどどんな二つの系列にも現れます'],
+      ['that both happen to rise', 'たまたま両方とも上がっている（系列に）'],
+      ['over the same decades', '同じ数十年のあいだ'],
+    ],
+    notes: {
+      'Correlation appears in almost any pair of series': 'correlation は「二つが一緒に動くこと」。series は「一続きの数値」。',
+    },
+  }),
+  st('[S Causation] [V requires] [O a mechanism, a clear sequence {前| in time}, and a case {関係>a case| [S that] [V fails] [M {副詞節:時| [接 when] [S the mechanism] [V is] [C absent]}]}].', {
+    chunks: [
+      ['Causation requires a mechanism,', '因果には仕組みと'],
+      ['a clear sequence in time,', '時間の上のはっきりした前後と'],
+      ['and a case that fails', 'そして成り立たなくなる事例が要ります'],
+      ['when the mechanism is absent', 'その仕組みがないときに'],
+    ],
+    notes: {
+      'Causation requires a mechanism,': 'causation は「原因と結果の関係」。',
+    },
+  }),
+  st('[S Reports {関係>Reports| [S that] [V supply] [O only the first {前| of these}]}] [V are describing] [O an accident {前| of the record}] [M {前| with great confidence}].', {
+    chunks: [
+      ['Reports that supply only the first of these', 'このうち最初のものしか示さない報告は'],
+      ['are describing an accident of the record', '記録の偶然を書いているだけです'],
+      ['with great confidence', 'たいそうな自信をもって'],
+    ],
+    notes: {
+      'are describing an accident of the record': 'accident はここでは「たまたまそうなったこと」。',
+    },
+  }),
+  st('[S {動名詞| [V Asking] [O {疑問詞節| [S what] [V would have to be observed] [M {前:意味上の主語| for such a claim} {to:副詞(目的)| [V to fail]}]}]}] [V is] [C the fastest test available].', {
+    chunks: [
+      ['Asking what would have to be observed', '何が観測されねばならないかを問うことが'],
+      ['for such a claim to fail', 'その主張が成り立たなくなるには'],
+      ['is the fastest test available', '取りうる中で最も速い確かめ方です'],
+    ],
+    notes: {
+      'for such a claim to fail': 'for ＋ 名詞 ＋ to ＋ 動詞 で「〜が…するには」。',
+    },
+  }),
+  st('[S Different academic disciplines] [V measure] [O the very same basin] [接 and] [M only rarely] [V produce] [O the same picture {前| of it}].', {
+    chunks: [
+      ['Different academic disciplines measure the very same basin', '異なる学問の分野がまったく同じ流域を測ります'],
+      ['and only rarely produce', 'それでも、めったに生みません'],
+      ['the same picture of it', '同じ像を'],
+    ],
+    notes: {
+      'Different academic disciplines measure the very same basin': 'discipline はここでは「学問の分野」。',
+    },
+  }),
+  st('[S A water scientist, a specialist {前| in ecology}, and an economist] [V will] [M each] [V treat] [O a different quantity] [C {前| as the important one}].', {
+    chunks: [
+      ['A water scientist, a specialist in ecology,', '水の科学者と、生態学の専門家と'],
+      ['and an economist will each treat', '経済学者は、それぞれ扱います'],
+      ['a different quantity as the important one', '別々の量を重要なものとして'],
+    ],
+    notes: {
+      'a different quantity as the important one': 'treat A as B で「AをBとして扱う」。',
+    },
+  }),
+  st('[S None {前| of them}] [V is] [M simply] [C wrong], [接 and] [S none {前| of their separate pictures}] [V is] [C complete] [M {前| on its own}].', {
+    chunks: [
+      ['None of them is simply wrong,', 'どの人もただ間違っているのではありません'],
+      ['and none of their separate pictures', 'そして別々の像はどれも'],
+      ['is complete on its own', 'それだけでは完全ではありません'],
+    ],
+    notes: {
+      'None of them is simply wrong,': 'none of … で「…のどれも〜ない」。',
+    },
+  }),
+  st('[S Work {前| across several disciplines}] [V is] [C slow] [M precisely] [M {副詞節:理由| [接 because] [S the separate vocabularies] [V have to be reconciled] [M first]}].', {
+    chunks: [
+      ['Work across several disciplines is slow', '複数の分野にまたがる仕事は遅いのです'],
+      ['precisely because the separate vocabularies', 'まさに、別々の用語を'],
+      ['have to be reconciled first', 'まずすり合わせねばならないからです'],
+    ],
+    notes: {
+      'have to be reconciled first': 'reconcile は「食い違いをすり合わせる」。',
+    },
+  }),
+  st('[S A basin {関係>A basin| [S that] [V funds] [O that slow work] [M early]}] [V avoids] [O {動名詞| [V having to argue] [M {前| about basic definitions}] [M {前| during an emergency}]}].', {
+    chunks: [
+      ['A basin that funds that slow work early', 'その遅い仕事に早くから資金を出す流域は'],
+      ['avoids having to argue', '争わずに済みます（何をかは次へ）'],
+      ['about basic definitions during an emergency', '非常時に基本の定義をめぐって'],
+    ],
+    notes: {
+      'avoids having to argue': 'avoid ＋ -ing で「〜せずに済む」。have to ＋ 動詞 で「〜しなければならない」。',
+    },
+  }),
+  st('[S A river] [V gives] [O1 a community {前| near its source}] [O2 an advantage {関係>an advantage| [O that] [S no argument] [V can] [M ever] [M fully] [V remove]}].', {
+    chunks: [
+      ['A river gives a community near its source', '川は水源に近い地域に与えます'],
+      ['an advantage that no argument can ever fully remove', 'どんな議論でも完全には取り除けない有利さを'],
+    ],
+    notes: {
+      'A river gives a community near its source': 'give ＋ 人 ＋ もの で「人にものを与える」。source は「水源」。',
+    },
+  }),
+  st('[S Anything {関係>Anything| [S that] [V happens] [M above]}] [V arrives] [M below] [M {前| in time}], [接 and] [S nothing {関係>nothing| [S that] [V happens] [M below]}] [M ever] [V travels] [M back] [M up] [M again].', {
+    chunks: [
+      ['Anything that happens above arrives below in time,', '上で起きることは、やがて下に届きます'],
+      ['and nothing that happens below', 'そして下で起きることは何一つ'],
+      ['ever travels back up again', '上へ戻ることはありません'],
+    ],
+    notes: {
+      'Anything that happens above arrives below in time,': 'in time はここでは「やがて」。above と below は「上流で・下流で」。',
+    },
+  }),
+  st('[S Every treaty {前| about a shared river}] [V is] [C an attempt {to:形容詞>an attempt| [V to answer] [O that one basic asymmetry] [M somehow]}].', {
+    chunks: [
+      ['Every treaty about a shared river is an attempt', '共有された川についてのどの条約も試みです'],
+      ['to answer that one basic asymmetry somehow', 'その根本のつり合わなさに何とか答えようとする'],
+    ],
+    notes: {
+      'Every treaty about a shared river is an attempt': 'an attempt to ＋ 動詞 で「〜しようとする試み」。',
+    },
+  }),
+  st('[S Agreements {関係>Agreements| [S that] [V ignore] [O this asymmetry]}] [V collapse] [M {副詞節:時| [接 as soon as] [S the first genuinely dry year] [M finally] [V arrives]}].', {
+    chunks: [
+      ['Agreements that ignore this asymmetry collapse', 'このつり合わなさを無視した合意は崩れます'],
+      ['as soon as the first genuinely dry year finally arrives', '本当に乾いた最初の年が来たとたんに'],
+    ],
+    notes: {
+      'as soon as the first genuinely dry year finally arrives': 'as soon as … で「…するとすぐに」。',
+    },
+  }),
+  st('[S A workable agreement] [V gives] [O1 the side {前| near the source}] [O2 something valuable {関係>something valuable| [O that] [S it] [V cannot obtain] [M {前| on its own}]}].', {
+    chunks: [
+      ['A workable agreement gives the side near the source', '機能する合意は、水源に近い側に与えます'],
+      ['something valuable that it cannot obtain on its own', '単独では手に入らない価値あるものを'],
+    ],
+    notes: {
+      'A workable agreement gives the side near the source': 'workable は「実際に動く・機能する」。',
+    },
+  }),
+  st('[S Electricity, access {前| to markets}, flood warnings, and shared observations] [V have] [M all] [V served] [O that purpose] [M rather well].', {
+    chunks: [
+      ['Electricity, access to markets, flood warnings,', '電力と、市場に入れること、洪水の警報'],
+      ['and shared observations', 'そして共有された観測値が'],
+      ['have all served that purpose rather well', 'どれもその役目をかなりよく果たしてきました'],
+    ],
+    notes: {
+      'have all served that purpose rather well': 'serve a purpose で「役目を果たす」。',
+    },
+  }),
+  st('[S An agreement {関係>An agreement| [S that] [M only] [V asks] [O the other side] [M {前| for restraint}]}] [V is] [C a request {前| rather than a bargain}].', {
+    chunks: [
+      ['An agreement that only asks the other side', '相手側にただ求めるだけの合意は'],
+      ['for restraint', '自制を'],
+      ['is a request rather than a bargain', '取引ではなくお願いです'],
+    ],
+    notes: {
+      'is a request rather than a bargain': 'bargain は「互いに得のある取り決め」。',
+    },
+  }),
+  st('[S Requests] [V hold] [M only] [M {副詞節:時| [接 while] [S relations] [V are] [C warm]}] [接 and] [V fail] [M {前| at exactly the moment {関係>the moment| [M when] [S they] [V are] [M most] [V needed]}}].', {
+    chunks: [
+      ['Requests hold only while relations are warm', 'お願いは関係が良いあいだしか持ちません'],
+      ['and fail at exactly the moment', 'そしてまさにその瞬間に破れます'],
+      ['when they are most needed', '最も必要とされる（瞬間に）'],
+    ],
+    notes: {
+      'Requests hold only while relations are warm': 'hold はここでは「（効力が）持続する」。',
+    },
+  }),
+  st('[S Sovereignty] [V makes] [O enforcement] [C difficult] [M even] [M {前| in cases {関係>cases| [M where] [S the text {前| of a treaty}] [V is] [C perfectly clear]}}].', {
+    chunks: [
+      ['Sovereignty makes enforcement difficult', '主権は履行を難しくします'],
+      ['even in cases', '場合でさえ'],
+      ['where the text of a treaty is perfectly clear', '条約の文言が申し分なく明確な（場合でも）'],
+    ],
+    notes: {
+      'Sovereignty makes enforcement difficult': 'sovereignty は「主権」、enforcement は「取り決めを守らせること」。',
+    },
+  }),
+  st('[S {what節| [O What] [V holds] [O an agreement] [M together]}] [V is] [M usually] [C the cost {前| of {動名詞| [V leaving] [O it]}} {前| rather than any penalty {過去分詞>any penalty| [V stated] [M {前| inside it}]}}].', {
+    chunks: [
+      ['What holds an agreement together', '合意をつなぎとめているのは'],
+      ['is usually the cost of leaving it', 'たいてい、そこから抜ける費用です'],
+      ['rather than any penalty stated inside it', '中に書かれた罰則ではなく'],
+    ],
+    notes: {
+      'What holds an agreement together': 'hold … together で「…をまとめておく」。',
+    },
+  }),
+  st('[S Joint monitoring] [V is] [C valuable] [M mainly] [M {副詞節:理由| [接 because] [S it] [V makes] [O any disagreement {前| about the basic facts}] [C expensive and slow]}].', {
+    chunks: [
+      ['Joint monitoring is valuable mainly', '共同の観測が価値を持つのは、主に'],
+      ['because it makes any disagreement', 'それが意見の食い違いを〜にするからです'],
+      ['about the basic facts expensive and slow', '基本の事実についての、高くつき遅いものに'],
+    ],
+    notes: {
+      'because it makes any disagreement': 'make ＋ 目的語 ＋ 形容詞 で「〜を…にする」。',
+    },
+  }),
+  st('[S Two governments {関係>Two governments| [S that] [V share] [O a single gauge]}] [V will argue] [M {前| about policy}] [M {前| instead of {動名詞| [V arguing] [M {前| about the numbers}]}}].', {
+    chunks: [
+      ['Two governments that share a single gauge', '一つの観測器を共有する二つの政府は'],
+      ['will argue about policy', '政策について議論します'],
+      ['instead of arguing about the numbers', '数字について争う代わりに'],
+    ],
+    notes: {
+      'Two governments that share a single gauge': 'gauge は「測る器具」。',
+    },
+  }),
+  st('[S Indigenous communities] [M frequently] [V hold] [O the longest continuous record {前| of {疑問詞節| [M how] [S a particular basin] [M actually] [V behaves]}}].', {
+    chunks: [
+      ['Indigenous communities frequently hold', '先住の人々の共同体はしばしば持っています'],
+      ['the longest continuous record', '最も長く途切れない記録を'],
+      ['of how a particular basin actually behaves', 'ある流域が実際にどうふるまうかの'],
+    ],
+    notes: {
+      'the longest continuous record': 'continuous は「途切れない」。',
+    },
+  }),
+  st('[S That record] [V is stored] [M {前| in daily practice} and {前| in language}] [M {前| rather than {前| in any published series {前| of numbers}}}].', {
+    chunks: [
+      ['That record is stored in daily practice', 'その記録は日々の営みの中に蓄えられています'],
+      ['and in language', 'そして言葉の中に'],
+      ['rather than in any published series of numbers', '公表された数値の並びの中ではなく'],
+    ],
+    notes: {
+      'That record is stored in daily practice': 'practice はここでは「日々くり返される行い」。',
+    },
+  }),
+  st('[S {動名詞| [V Treating] [O it] [C {前| as folklore}] [M {前| rather than {前| as real evidence}}]}] [V discards] [O information {関係>information| [O that] [V cannot be recovered] [M later]}].', {
+    chunks: [
+      ['Treating it as folklore', 'それを言い伝えとして扱い'],
+      ['rather than as real evidence', '本当の証拠として扱わないことは'],
+      ['discards information that cannot be recovered later', 'あとで取り戻せない情報を捨てることになります'],
+    ],
+    notes: {
+      'Treating it as folklore': 'folklore は「言い伝え」。treat A as B で「AをBとして扱う」。',
+    },
+  }),
+  st('[S Consultation {関係>Consultation| [S that] [V begins] [M {副詞節:時| [接 after] [S a plan] [V is] [M already] [C complete]}]}] [V is] [C a formal step] [M only], [接 and] [S everyone] [V understands] [O it] [C {前| as one}].', {
+    chunks: [
+      ['Consultation that begins after a plan is already complete', '計画ができあがってから始まる協議は'],
+      ['is a formal step only,', '形ばかりの手続きにすぎません'],
+      ['and everyone understands it as one', 'そしてだれもがそう受け取ります'],
+    ],
+    notes: {
+      'and everyone understands it as one': 'この one は a formal step の代わりです。',
+    },
+  }),
+  st('[S A basin authority] [V works] [M only] [M {副詞節:時| [接 when] [S the people {関係省略:目的格>the people| [S it] [V governs]}] [V can see] [O {疑問詞節| [O what] [S it] [V decides]} and why]}].', {
+    chunks: [
+      ['A basin authority works only', '流域の管理機構が働くのは'],
+      ['when the people it governs can see', '統治される人々が見られるときだけです'],
+      ['what it decides and why', '何を決め、なぜそう決めたのかを'],
+    ],
+    notes: {
+      'what it decides and why': 'and why は and why it decides so の省略です。',
+    },
+  }),
+  st('[S {動名詞| [V Publishing] [O the data, the model, and the reasoning]}] [V costs] [O very little] [接 and] [V buys] [O a great deal {前| of patience}].', {
+    chunks: [
+      ['Publishing the data, the model, and the reasoning', '観測値と計算のモデルと考えの筋道を公表することは'],
+      ['costs very little', 'ほとんど費用がかからず'],
+      ['and buys a great deal of patience', '多くの辛抱強さを買います'],
+    ],
+    notes: {
+      'and buys a great deal of patience': 'buy はここでは「（努力や費用で）手に入れる」。',
+    },
+  }),
+  st('[S Communities] [V will accept] [O an unpopular decision] [M far more readily] [M {副詞節:時| [接 when] [S they] [V can follow] [O the whole argument {前| behind it}]}].', {
+    chunks: [
+      ['Communities will accept an unpopular decision', '人々は歓迎されない決定も受け入れます'],
+      ['far more readily', 'はるかにたやすく'],
+      ['when they can follow the whole argument behind it', 'その背後の議論を最後までたどれるときには'],
+    ],
+    notes: {
+      'when they can follow the whole argument behind it': 'follow an argument で「議論の筋をたどる」。',
+    },
+  }),
+  st('[S A shared river] [V is] [M finally] [V governed] [M {前| by {whether節| [接 whether] [S the neighbors {関係>the neighbors| [S who] [V live] [M {前| along it}]}] [V can] [M still] [V talk] [M {前| to one another}]}}].', {
+    chunks: [
+      ['A shared river is finally governed by', '共有された川を最後に治めるのは'],
+      ['whether the neighbors who live along it', '川沿いに暮らす隣人たちが'],
+      ['can still talk to one another', 'なお互いに話し合えるかどうかです'],
+    ],
+    notes: {
+      'whether the neighbors who live along it': 'whether … で「〜かどうか」。ここは前置詞 by の目的語です。',
     },
   }),
 ])
