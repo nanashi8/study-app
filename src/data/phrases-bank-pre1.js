@@ -43,7 +43,7 @@ hold out	持ちこたえる・差し出す	The supplies will hold out for a week
 keep at	〜を根気よく続ける	keep at the task until it is finished	終わるまで課題を根気よく続ける	phrasal-verb	at の後ろに継続する作業を置く。	keep(続ける)＋at(〜に向かって)。作業に向かい続けることから「〜を根気よく続ける」。
 keep up	維持する・遅れず続ける	keep up the high standard	高い水準を維持する	phrasal-verb	目的語なしでは速度・努力を保つ意味。	keep(保つ)＋up(高いまま)。水準を下げずに高いまま保つことから「維持する」、遅れずに並び続けることから「遅れず続ける」。
 lay out	配置する・詳しく説明する	lay out the evidence in a clear order	証拠を明確な順序で示す	phrasal-verb	物の配置と、計画・論拠の提示に使う。	lay(置く・並べる)＋out(広げて)。物を広げて並べることから「配置する」、考えを順に広げて示すことから「詳しく説明する」。
-leave behind	置き忘れる・後に残す	leave no important detail behind	重要な細部を何も取り残さない	phrasal-verb	物・人を残して先へ進む。	leave(残す)＋behind(後ろに)。自分が進んだ後ろに残すことから「置き忘れる・後に残す」。
+leave behind	置き忘れる・後に残す	leave my umbrella behind on the train	電車に傘を置き忘れる	phrasal-verb	物・人を残して先へ進む。	leave(残す)＋behind(後ろに)。自分が進んだ後ろに残すことから「置き忘れる・後に残す」。
 let off	罰を免れさせる・放つ	The judge let him off with a warning.	裁判官は警告だけで彼を放免した。	phrasal-verb	let A off with B で軽い処分だけにする。	let(させる)＋off(放して)。つかまえていた人を放してやることから「罰を免れさせる」、たまったものを外へ放つことから「放つ」。
 live up to	〜に応える・〜に恥じない	live up to high expectations	高い期待に応える	phrasal-verb	to は前置詞で、基準・評判・期待を続ける。	live up(高く生きる)＋to(〜に届くまで)。期待の高さに届くように生きることから「〜に応える・〜に恥じない」。
 look on	見物する・〜と見なす	look on the setback as a useful lesson	挫折を有益な教訓と見なす	phrasal-verb	look on A as B の形で評価を表す。	look(見る)＋on(そのまま続けて)。手を出さずに見続けることから「見物する」。look on A as B は「AをBとして見る」ことから「〜と見なす」。
@@ -140,18 +140,18 @@ be committed to	〜に専念・公約している	be committed to reducing inequ
 be concerned with	〜に関係している・〜を扱う	The chapter is concerned with data privacy.	その章はデータのプライバシーを扱う。	preposition	be concerned about は心配、with は関係・主題。	concerned(かかわっている)＋with(〜と)。with がかかわる主題を示し、「〜に関係している・〜を扱う」。
 be exempt from	〜を免除されている	be exempt from paying the registration fee	登録料の支払いを免除されている	preposition	from の後ろは名詞・動名詞。	exempt(免除された)＋from(〜から)。ex(外へ)＋empt(取る)で、義務の外へ取り出されていることから「〜を免除されている」。
 be identical to	〜と同一である	The copied file is identical to the original.	複製ファイルは原本と同一だ。	preposition	比較対象には to / with を使う。	identical(まったく同じ)＋to(〜と)。identity(同一であること)と同じ語源で、〜とまったく同じであることから「〜と同一である」。
-be proportional to	〜に比例している	Risk is proportional to the level of exposure.	危険は暴露の程度に比例する。	preposition	比例する変数・量を to で結ぶ。	proportional(釣り合った)＋to(〜に)。pro(〜に応じた)＋portion(分け前)で、〜に応じた分量になっていることから「〜に比例している」。
+be proportional to	〜に比例している	Risk is proportional to the level of exposure.	危険はさらされる程度に比例する。	preposition	比例する変数・量を to で結ぶ。	proportional(釣り合った)＋to(〜に)。pro(〜に応じた)＋portion(分け前)で、〜に応じた分量になっていることから「〜に比例している」。
 be receptive to	〜を進んで受け入れる	be receptive to alternative viewpoints	別の観点を進んで受け入れる	preposition	提案・批判への開かれた態度を to で示す。	receptive(受け入れやすい)＋to(〜を)。receive(受け取る)と同じ語源で、〜を受け取る構えがあることから「〜を進んで受け入れる」。
 be synonymous with	〜と同義である・〜の代名詞である	The brand became synonymous with quality.	そのブランドは品質の代名詞となった。	preposition	同じ意味・強い連想を with で示す。	synonymous(同じ意味の)＋with(〜と)。syn(同じ)＋onym(名前)で、〜と同じ名で呼べるほど結びついていることから「〜と同義である・〜の代名詞である」。
 be tolerant of	〜に寛容である・〜に耐性がある	be tolerant of minor differences	小さな違いに寛容である	preposition	人・行動・条件を受け入れる度合いを of で示す。	tolerant(寛容な)＋of(〜を)。tolerate(我慢する)と同じ語源で、〜を我慢して受け入れることから「〜に寛容である・〜に耐性がある」。
 abstain from	〜を控える・棄権する	abstain from commenting during the inquiry	調査中の論評を控える	preposition	from の後ろは名詞・動名詞。	abstain(控える)＋from(〜から離れて)。abs(離れて)＋tain(保つ)で、〜から身を離しておくことから「〜を控える・棄権する」。
 embark on	〜に着手する・乗り出す	embark on a long-term research project	長期研究計画に着手する	preposition	大きな事業・旅の開始に使う。	embark(乗り込む)＋on(〜に)。em(中に)＋bark(小舟)で、船に乗り込むことから、大きな事業へ乗り出す「〜に着手する」。
 encroach on	〜を侵害する・徐々に入り込む	encroach on protected forest land	保護林を侵食する	preposition	権利・時間・土地へ徐々に侵入する。	encroach(侵す)＋on(〜の上に)。もとは「かぎで引っかけて取る」意味で、他人の領分に少しずつ食い込むことから「〜を侵害する・徐々に入り込む」。
-prevail over	〜に打ち勝つ・〜より優勢になる	evidence prevailed over speculation	証拠が憶測に打ち勝った。	preposition	争い・比較で最終的に勝る。	prevail(勝る)＋over(〜の上に)。pre(前に)＋vail(強い)で、〜の上に立つほど強いことから「〜に打ち勝つ・〜より優勢になる」。
+prevail over	〜に打ち勝つ・〜より優勢になる	Evidence prevailed over speculation.	証拠が憶測に打ち勝った。	preposition	争い・比較で最終的に勝る。	prevail(勝る)＋over(〜の上に)。pre(前に)＋vail(強い)で、〜の上に立つほど強いことから「〜に打ち勝つ・〜より優勢になる」。
 a matter of	〜の問題・〜次第	a matter of public safety	公共安全の問題	fixed	分類・重要性・時間などの性質を示す。	a matter(事柄)＋of(〜の)。〜にかかわる事柄だということから「〜の問題・〜次第」。
 a means of	〜する手段	a means of reducing energy use	エネルギー使用を減らす手段	fixed	means は単数・複数が同形。	a means(手段)＋of(〜の)。〜をするための手段ということから「〜する手段」。
 a series of	一連の・ひと続きの	a series of controlled experiments	一連の統制実験	fixed	後ろは複数名詞だが中心語 series は単数扱いになり得る。	a series(ひと続き)＋of(〜の)。同じ種類のものがひと続きに並ぶことから「一連の・ひと続きの」。
-all along	初めからずっと	I suspected the answer all along.	私は初めからずっと答えに気づいていた。	fixed	期間の全体にわたり同じ状態だったこと。	all(ずっと)＋along(沿って)。時間の流れに沿ってずっとということから「初めからずっと」。
+all along	初めからずっと	I suspected the answer all along.	私は初めからずっと答えにうすうす感づいていた。	fixed	期間の全体にわたり同じ状態だったこと。	all(ずっと)＋along(沿って)。時間の流れに沿ってずっとということから「初めからずっと」。
 all in all	全体として・結局のところ	All in all, the policy produced mixed results.	全体として政策の結果は一長一短だった。	discourse	利点・欠点をまとめた総合判断を導く。	all(すべて)＋in all(全部で)。すべてをひとまとめにして見るとということから「全体として・結局のところ」。
 as opposed to	〜とは対照的に・〜ではなく	renewable sources as opposed to fossil fuels	化石燃料ではなく再生可能資源	preposition	対照・選択されない側を to の後ろに置く。	as(〜として)＋opposed to(〜に対立させて)。〜と向かい合わせて比べるとということから「〜とは対照的に・〜ではなく」。
 at all costs	どんな犠牲を払っても	avoid a conflict at all costs	どんな犠牲を払っても衝突を避ける	fixed	目的達成の強い決意を表す。	at(〜で)＋all costs(あらゆる代価)。どんな代価を払ってもということから「どんな犠牲を払っても」。
@@ -181,7 +181,7 @@ in the interests of	〜の利益・ために	withhold names in the interests of 
 in the process of	〜している最中で	be in the process of updating the database	データベースを更新している最中である	preposition	of の後ろは名詞・動名詞。	in(〜の中で)＋the process(進行の過程)＋of(〜の)。〜が進んでいる過程の中にいることから「〜している最中で」。
 in theory	理論上は	In theory, the device can run indefinitely.	理論上その装置は無期限に動く。	discourse	実際との対比を含みやすい。	in(〜の中で)＋theory(理論)。理論の上ではということから「理論上は」。
 on a large scale	大規模に	produce clean fuel on a large scale	クリーン燃料を大規模に生産する	preposition	活動の規模を表す。	on(〜に基づいて)＋a large scale(大きな規模)。大きな規模でということから「大規模に」。
-on the grounds that	〜という理由で	reject the proposal on the grounds that it was too costly	費用が高すぎるという理由で提案を退ける	fixed	that の後ろに根拠となる節を置く。	on(〜の上に立って)＋the grounds(根拠)＋that(〜という)。〜という根拠の上に立ってということから「〜という理由で」。
+on the grounds that	〜という理由で	reject the proposal on the grounds that it is too costly	費用が高すぎるという理由で提案を退ける	fixed	that の後ろに根拠となる節を置く。	on(〜の上に立って)＋the grounds(根拠)＋that(〜という)。〜という根拠の上に立ってということから「〜という理由で」。
 on the verge of	今にも〜しそうで・〜寸前で	be on the verge of collapse	崩壊寸前である	preposition	of の後ろは名詞・動名詞。	on(〜の上に)＋the verge(ふち・へり)＋of(〜の)。〜の一歩手前のふちに立っていることから「今にも〜しそうで・〜寸前で」。
 out of proportion to	〜と釣り合わず	The response was out of proportion to the risk.	その対応は危険度と釣り合っていなかった。	preposition	比較基準を to の後ろに置く。	out of(〜から外れて)＋proportion(釣り合い)＋to(〜との)。〜との釣り合いから外れていることから「〜と釣り合わず」。
 prior to	〜より前に	obtain consent prior to the interview	面接前に同意を得る	preposition	before より改まった表現。to は前置詞。	prior(より前の)＋to(〜に対して)。ラテン語の比較級から来た語なので、比べる基準を to で示し「〜より前に」。

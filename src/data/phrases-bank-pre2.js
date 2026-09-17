@@ -18,7 +18,7 @@ come out	出て来る・発表される	The results will come out tomorrow.	結�
 come over	訪ねて来る	come over to my house after school	放課後私の家へ遊びに来る	phrasal-verb	話し手側へ短時間訪問する口語。	come(来る)＋over(距離を越えて)。道のりを越えてこちらへ来ることから「訪ねて来る」。
 cut off	切り離す・供給を止める	The storm cut off the electricity.	嵐で電気の供給が止まった。	phrasal-verb	電話・交通・供給などを途中で断つ。	cut(切る)＋off(離して)。切って本体から離すことから「切り離す」、流れを途中で切ることから「供給を止める」。
 cut out	切り抜く・やめる	cut out a picture from the magazine	雑誌から写真を切り抜く	phrasal-verb	口語で習慣をやめる意味にもなる。	cut(切る)＋out(外へ)。切って外へ取り出すことから「切り抜く」、習慣を暮らしから切り取ることから「やめる」。
-drop in	ちょっと立ち寄る	drop in on my aunt	おばにちょっと立ち寄る	phrasal-verb	人には on、場所には at を続けられる。	drop(ぽとりと落ちる)＋in(中へ)。ふらりと落ちるように中へ入ることから「ちょっと立ち寄る」。
+drop in	ちょっと立ち寄る	drop in on my aunt	おばの家にちょっと立ち寄る	phrasal-verb	人には on、場所には at を続けられる。	drop(ぽとりと落ちる)＋in(中へ)。ふらりと落ちるように中へ入ることから「ちょっと立ち寄る」。
 fall down	倒れる・転ぶ	The old fence fell down.	古い柵が倒れた。	phrasal-verb	人・物が下へ倒れる。階段などから落ちるなら fall down the stairs。	fall(倒れる・落ちる)＋down(下へ)。下へ倒れることから「倒れる・転ぶ」。
 fall off	〜から落ちる・減少する	fall off a bicycle	自転車から落ちる	phrasal-verb	数量が減少する意味でも使う。	fall(落ちる)＋off(くっついた所から離れて)。乗っていた物から離れて落ちることから「〜から落ちる」、数量が落ちていくことから「減少する」。
 figure out	理解する・解決する	figure out how the machine works	機械の仕組みを理解する	phrasal-verb	考えて答えを見つける口語。	figure(計算する・考える)＋out(答えを外へ出して)。考えて答えを引き出すことから「理解する・解決する」。
@@ -83,7 +83,7 @@ care for	〜の世話をする・〜を好む	care for an injured bird	けがを
 concentrate on	〜に集中する	concentrate on solving the problem	問題を解くことに集中する	preposition	on の後ろは名詞・動名詞。	concentrate(一点に集める)＋on(〜の上に)。con(一緒に)＋center(中心)で、力を一つの中心に集めることから「〜に集中する」。
 congratulate A on B	BについてAを祝う	congratulate her on winning the prize	受賞について彼女を祝う	preposition	人を直接目的語、祝いの理由を on で示す。	congratulate(祝う)＋A＋on B(Bの件について)。on が祝う出来事を示し、「BについてAを祝う」。
 connect A with B	AとBを結びつける	connect the computer with the printer	コンピューターとプリンターを接続する	preposition	関連付けでは connect A with B、接続先は to も使う。	connect(つなぐ)＋A＋with B(Bと)。with がつなぐ相手を示し、「AとBを結びつける」。
-divide A into B	AをBに分ける	divide the class into four groups	クラスを4群に分ける	preposition	分割後の部分・群を into の後ろに置く。	divide(分ける)＋A＋into B(Bという形へ)。into が分けた後の形を示し、「AをBに分ける」。
+divide A into B	AをBに分ける	divide the class into four groups	クラスを4つのグループに分ける	preposition	分割後の部分・群を into の後ろに置く。	divide(分ける)＋A＋into B(Bという形へ)。into が分けた後の形を示し、「AをBに分ける」。
 exchange A for B	AをBと交換する	exchange dollars for yen	ドルを円に交換する	preposition	手放す物を A、得る物を for の後ろに置く。	exchange(取りかえる)＋A＋for B(Bと引きかえに)。ex(外へ)＋change(かえる)で、for が引きかえに得る物を示す。
 expect A from B	BにAを期待する	expect honest work from every member	全員に誠実な仕事を期待する	preposition	期待する内容を A、期待を向ける相手を from の後ろに置く。	expect(期待して待つ)＋A＋from B(Bから)。ex(外を)＋spect(見る)で、外を見て待つこと。from で期待するものが出てくる相手を示す。
 forgive A for B	BについてAを許す	forgive him for being late	遅刻したことで彼を許す	preposition	人を直接目的語、理由を for で示す。	forgive(許す)＋A＋for B(Bのことで)。for が許す理由を示し、「BについてAを許す」。
@@ -111,15 +111,15 @@ respond to	〜に応答する	respond to the customer's question	客の質問に
 specialize in	〜を専門とする	specialize in environmental law	環境法を専門とする	preposition	専門分野を in の後ろに置く。	specialize(専門にする)＋in(〜の分野で)。special(特別な)から、ある分野を特別に扱うことから「〜を専門とする」。
 vote for	〜に投票する・〜に賛成票を投じる	vote for the new proposal	新しい提案に賛成票を投じる	preposition	候補・案への支持を for で示す。反対は vote against。	vote(投票する)＋for(〜に賛成して)。for が支持する相手や案を示し、「〜に投票する」。
 above all	とりわけ・何よりも	Above all, keep everyone safe.	何よりも全員の安全を守りなさい。	discourse	最も重要な点を強調する。	above(〜の上に)＋all(すべて)。ほかのすべてのものの上に置くことから「とりわけ・何よりも」。
-after all	結局・だって	After all, the choice is yours.	結局、選ぶのはあなたです。	discourse	予想に反する結論、または理由の念押しに使う。	after(〜の後で)＋all(すべて)。すべてを考え合わせた後でということから「結局・だって」。
+after all	結局・だって	After all, the choice is yours.	何といっても、選ぶのはあなたです。	discourse	予想に反する結論、または理由の念押しに使う。	after(〜の後で)＋all(すべて)。すべてを考え合わせた後でということから「結局・だって」。
 all at once	突然・一斉に	All at once, the lights went out.	突然、明かりが消えた。	fixed	「突然」と「全員・全部が同時に」の二義。	all(みんな)＋at once(一度に)。みんなが一度にということから「一斉に」、前ぶれなく一度に起こることから「突然」。
 all the time	いつも・その間ずっと	The baby smiled all the time.	赤ん坊はずっと笑っていた。	fixed	継続期間の全体を表す。	all(全部の)＋the time(その時間)。その時間の全部にわたってということから「いつも・その間ずっと」。
 apart from	〜を除いて・〜に加えて	Apart from one error, the report was excellent.	1つの誤りを除けば報告書は優れていた。	preposition	except for と besides の両方の意味になり得る。	apart(離れて)＋from(〜から)。〜を離して別にしておくことから「〜を除いて」、別に取り分けたうえで「〜に加えて」。
 as a matter of fact	実を言うと・実際は	As a matter of fact, I already knew.	実を言うと、私はすでに知っていた。	discourse	前の発言を訂正・強調する事実を導く。	as(〜として)＋a matter of fact(事実の事柄)。事実の問題として言えばということから「実を言うと・実際は」。
-as a whole	全体として	The team performed well as a whole.	チームは全体としてよく働いた。	fixed	個々ではなく集団・作品全体を評価する。	as(〜として)＋a whole(一つの全体)。一つの全体としてとらえることから「全体として」。
+as a whole	全体として	The team performed well as a whole.	チームは全体としてよい成績を上げた。	fixed	個々ではなく集団・作品全体を評価する。	as(〜として)＋a whole(一つの全体)。一つの全体としてとらえることから「全体として」。
 as well	〜もまた	She speaks French as well.	彼女はフランス語も話す。	fixed	通常は文末に置く。as well as とは形が異なる。	as(同じように)＋well(よく)。ほかのものと同じようにということから「〜もまた」。
 at any rate	とにかく・いずれにせよ	At any rate, we should begin now.	いずれにせよ今始めるべきだ。	discourse	細部にかかわらず結論を進める。	at(〜で)＋any rate(どんな程度)。どんな程度であってもということから「とにかく・いずれにせよ」。
-at most	多くても・せいぜい	The walk takes twenty minutes at most.	その徒歩は長くても20分だ。	fixed	上限を表す。反対は at least。	at(〜の点で)＋most(最大)。最大に見てもということから「多くても・せいぜい」。
+at most	多くても・せいぜい	The walk takes twenty minutes at most.	歩いても、かかるのはせいぜい20分だ。	fixed	上限を表す。反対は at least。	at(〜の点で)＋most(最大)。最大に見てもということから「多くても・せいぜい」。
 at times	時々	The work can be difficult at times.	その仕事は時々難しいことがある。	fixed	sometimes よりやや改まった表現。	at(〜の時点で)＋times(何回かの時)。何回かある時にということから「時々」。
 before long	間もなく	Before long, the rain stopped.	間もなく雨がやんだ。	fixed	現在・過去の基準時からあまり時間がたたないうちに。	before(〜より前に)＋long(長い時間)。長い時間がたつより前にということから「間もなく」。
 by chance	偶然に	meet an old friend by chance	偶然旧友に会う	preposition	計画なしに起こること。by accident と近い。	by(〜によって)＋chance(偶然)。偶然によって起こることから「偶然に」。
@@ -147,7 +147,7 @@ rather than	〜ではなく・〜するよりも	walk rather than take a taxi	�
 regardless of	〜にかかわらず	regardless of age or experience	年齢や経験にかかわらず	preposition	of の後ろは名詞。節なら regardless of whether。	regardless(気にかけずに)＋of(〜を)。regard(注意して見る)＋less(〜のない)で、〜を気にかけないことから「〜にかかわらず」。
 so far	これまでのところ	So far, the plan has worked well.	これまでのところ計画はうまくいっている。	fixed	現在までの範囲を表し、現在完了とよく使う。	so(これほど)＋far(遠くまで)。今いるここまでの範囲でということから「これまでのところ」。
 to one's surprise	驚いたことに	To my surprise, everyone agreed.	驚いたことに全員が同意した。	fixed	one's を驚いた人に合わせて変える。	to(〜に至って)＋one's surprise(その人の驚き)。結果がその人の驚きに行き着くことから「驚いたことに」。
-under control	制御されて・収拾して	The fire is now under control.	火事は現在鎮火の見通しが立っている。	fixed	状況が管理可能な範囲にあること。	under(〜の下に)＋control(管理)。管理の下に置かれていることから「制御されて・収拾して」。
+under control	制御されて・収拾して	The fire is now under control.	火事はもう抑え込まれている。	fixed	状況が管理可能な範囲にあること。	under(〜の下に)＋control(管理)。管理の下に置かれていることから「制御されて・収拾して」。
 with the help of	〜の助けを借りて	solve the problem with the help of a map	地図の助けを借りて問題を解く	preposition	助けとなる人・物を of の後ろに置く。	with(〜を使って)＋the help of(〜の助け)。〜からの助けを使ってということから「〜の助けを借りて」。
 within walking distance	歩いて行ける距離に	The station is within walking distance.	駅は歩いて行ける距離にある。	fixed	within は一定範囲の内側を表す。	within(〜の内側に)＋walking distance(歩いて行ける距離)。歩いて行ける範囲の内側にあることから「歩いて行ける距離に」。
 make an effort	努力する	make an effort to arrive on time	時間どおり着くよう努力する	collocation	努力の内容は to do で続ける。	make(作り出す)＋an effort(努力)。努力を一つ作り出して力を注ぐことから「努力する」。

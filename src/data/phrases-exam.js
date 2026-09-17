@@ -76,7 +76,7 @@ const RAW_EXAM_PHRASES = [
 
   // ── 準2級：高校基礎・説明文で頻出 ──
   ['pre2', 'idiom', 'according to', '〜によれば・〜に従って', 'According to the report, demand is increasing.', '報告書によれば需要は増えています。', 'according(一致して)＋to(基準に)。', '情報源・規則を示す。自分の意見に According to me は普通使わない。'],
-  ['pre2', 'idiom', 'as a result', 'その結果', 'The road was closed; as a result, we took a train.', '道路が閉鎖されたため、その結果私たちは電車に乗りました。', 'as(〜として)＋a result(一つの結果)。', '文全体をつなぐ。原因を続ける as a result of＋名詞 と区別。'],
+  ['pre2', 'idiom', 'as a result', 'その結果', 'The road was closed; as a result, we took a train.', '道路が閉鎖されていて、その結果、私たちは電車に乗りました。', 'as(〜として)＋a result(一つの結果)。', '文全体をつなぐ。原因を続ける as a result of＋名詞 と区別。'],
   ['pre2', 'idiom', 'at least', '少なくとも', 'At least ten students joined the project.', '少なくとも10人の生徒が計画に参加しました。', 'at(ある点で)＋least(最小)。最小限を示す。', '数だけでなく「少なくとも〜ではある」という評価にも使う。'],
   ['pre2', 'idiom', 'be aware of', '〜に気づいている・認識している', 'Students should be aware of online risks.', '生徒はオンライン上の危険を認識すべきです。', 'aware(気づいた)＋of(対象について)。', 'be aware that節 も可。know より注意・意識を向ける含み。'],
   ['pre2', 'idiom', 'be based on', '〜に基づいている', 'The film is based on a true story.', 'その映画は実話に基づいています。', 'base A on B「Aの土台をBに置く」の受け身。', 'A is based on B。能動では base A on B。'],
@@ -109,7 +109,7 @@ const RAW_EXAM_PHRASES = [
   ['2', 'syntax', 'have difficulty doing', '〜するのに苦労する', 'Some learners have difficulty understanding irony.', '皮肉を理解するのに苦労する学習者もいます。', 'have(持つ)＋difficulty(困難)＋doing(行為について)。', 'difficulty は通常不可算。have trouble doing も同型。'],
   ['2', 'idiom', 'in contrast to', '〜と対照的に', 'In contrast to the first study, the second used interviews.', '最初の研究とは対照的に、2番目は聞き取りを用いました。', 'in contrast(対照の状態で)＋to(比較対象へ)。', '文全体をつなぐ In contrast, ... と使い分ける。with も使う。'],
   ['2', 'idiom', 'in terms of', '〜の観点で・〜に関して', 'The plan is effective in terms of cost.', 'その計画は費用の面で効果的です。', 'in terms(尺度・言葉の枠内で)＋of(〜の)。', '観点を限定する。多用すると曖昧になるので具体的な尺度を続ける。'],
-  ['2', 'idiom', 'make a difference', '違いを生む・重要な影響を与える', 'Small daily choices can make a difference.', '毎日の小さな選択が変化を生み得ます。', 'make(作る)＋a difference(差)。差を現実に作る。', 'make a difference to/in ...「…に影響を与える」。'],
+  ['2', 'idiom', 'make a difference', '違いを生む・重要な影響を与える', 'Small daily choices can make a difference.', '毎日の小さな選択が大きな違いを生むことがあります。', 'make(作る)＋a difference(差)。差を現実に作る。', 'make a difference to/in ...「…に影響を与える」。'],
   ['2', 'idiom', 'on behalf of', '〜を代表して・〜のために', 'She spoke on behalf of the student council.', '彼女は生徒会を代表して話しました。', 'on behalf(利益・立場の側に立って)＋of(〜の)。', '代表発言と、利益のための行為の両方に使う。'],
   ['2', 'idiom', 'play a role in', '〜で役割を果たす', 'Education plays a key role in social mobility.', '教育は社会移動で重要な役割を果たします。', 'play(演じる)＋a role(役割)＋in(分野の中で)。', 'play an important/key/central role in doing。'],
   ['2', 'idiom', 'refer to', '〜を指す・〜に言及する・参照する', 'The term refers to a wide range of technologies.', 'その用語は幅広い技術を指します。', 'refer(送り戻す)＋to(参照先へ)。', '「指す」「言及する」「参照する」の三義を文脈で判断する。'],

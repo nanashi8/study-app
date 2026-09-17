@@ -11,7 +11,7 @@ a host of	pre1	多数の	The plan created a host of problems.	その計画は多
 A is one thing; B is another	pre1	AとBは別問題だ	Knowing the rule is one thing; using it is another.	規則を知ることと使えることは別問題だ。	structure	AとBには動名詞や名詞を置く（Knowing the rule is one thing; using it is another.）。another の後ろの thing は省く。	one thing(一つの事柄)と another(別の事柄)を並べ、AとBがそれぞれ別の事柄だと示すことから「AとBは別問題だ」。
 A is to B what C is to D	pre1	AのBに対する関係はCのDに対する関係と同じだ	Reading is to the mind what exercise is to the body.	読書の心に対する関係は運動の体に対する関係と同じだ。	structure	身近な関係（CとD）を使って、分かりにくい関係（AとB）を説明するたとえの型。what の後ろの動詞は C に合わせる。	what C is to D(CがDに対してであるもの)をAとBの関係に当てはめる形。「AのBに対する関係は、CのDに対する関係と同じだ」とたとえる。
 a lot	4	とても・たくさん	We learned a lot today.	私たちは今日たくさん学んだ。	collocation	副詞として動詞の後ろに置く（learn a lot）。名詞の前では a lot of にする。	a lot(ひと山・大量)。lot はもと「くじで分けた分け前」の意味で、そこから「ひと山」、さらに「たくさん」になった。
-a white elephant	pre1	持て余す高価な物	The empty stadium became a white elephant.	その空の競技場は金食い虫になった。	idiom	費用ばかりかかって役に立たない建物・計画などに使う（The stadium became a white elephant.）。	white elephant(白い象)。昔のシャム(タイ)で、王が世話に大金のかかる白い象を家来に贈って困らせたという言い伝えから「持て余す高価な物」。
+a white elephant	pre1	持て余す高価な物	The empty stadium became a white elephant.	その使われていない競技場は金食い虫になった。	idiom	費用ばかりかかって役に立たない建物・計画などに使う（The stadium became a white elephant.）。	white elephant(白い象)。昔のシャム(タイ)で、王が世話に大金のかかる白い象を家来に贈って困らせたという言い伝えから「持て余す高価な物」。
 abound in	pre2	〜が豊富にある	These woods abound in wildlife.	この森には野生動物が豊富にいる。	preposition	主語は場所（These woods abound in wildlife.）。物を主語にするなら Wildlife abounds in these woods. と言う。	abound(あふれるほどある)＋in(〜で)。abound は ab(あふれ出て)＋ound(波打つ)で、波があふれるように多くあることから「〜が豊富にある」。
 adjust A to B	pre2	AをBに合わせる	Adjust the seat to your height.	座席を自分の身長に合わせなさい。	structure	物を合わせるときは adjust A to B。自分が環境に慣れるなら adjust to B / adjust oneself to B。	adjust(合わせて整える)＋A＋to B(Bに)。AをBにちょうど合うように整えることから「AをBに合わせる」。
 admit to	2	〜を認める	He admitted to making the mistake.	彼はその誤りを犯したと認めた。	preposition	to は前置詞なので後ろは名詞・動名詞（admit to making the mistake）。admit making / admit that節 とも言える。	admit(認める)＋to(〜について)。自分のよくない行いについて認めることから「〜を認める」。
@@ -55,7 +55,7 @@ at ~'s convenience	pre1	〜の都合のよい時に	Reply at your convenience.	�
 at ~'s disposal	1	〜が自由に使える	You have several tools at your disposal.	自由に使える道具がいくつかある。	preposition	主語は使えるもの（Several tools are at your disposal.）か、have A at one's disposal の形で使う。	at(〜の状態に)＋~'s disposal(〜が思いどおりに扱えること)。〜が好きなように使える状態に置かれていることから「〜が自由に使える」。
 at a distance	pre2	少し離れて	Please keep the animals at a distance.	動物から距離を置いてください。	preposition	keep A at a distance で「Aを遠ざけておく」。from a distance は「遠くから」。	at(〜の位置に)＋a distance(ある距離)。ある程度の距離をおいた位置にということから「少し離れて」。
 at a time	pre2	一度に	Take one tablet at a time.	一度に1錠飲みなさい。	preposition	数と一緒に使う（one at a time / two at a time）。at one time は「かつて」なので区別する。	at(〜の時に)＋a time(一回)。一回につきということから「一度に」。
-at all	pre2	少しでも・いったい	I don't understand it at all.	私はそれがまったく分からない。	idiom	否定文で not ... at all「まったく〜ない」、疑問文・if 節で「少しでも」。	at(〜の点で)＋all(すべて)。どんな点をとってもということから、否定文で「まったく〜ない」、疑問文で「少しでも」。
+at all	pre2	少しでも・いったい	If you have any questions at all, please ask.	少しでも質問があれば聞いてください。	idiom	否定文で not ... at all「まったく〜ない」、疑問文・if 節で「少しでも」。	at(〜の点で)＋all(すべて)。どんな点をとってもということから、否定文で「まったく〜ない」、疑問文で「少しでも」。
 at ease	2	くつろいで	Her smile put us at ease.	彼女の笑顔で私たちは安心した。	idiom	put A at ease で「Aを安心させる」。反対は ill at ease「落ち着かない」。	at(〜の状態で)＋ease(気楽さ)。気持ちが楽な状態にあることから「くつろいで」。
 at first hand	pre1	直接に	I heard the story at first hand.	私はその話を直接聞いた。	idiom	経験・情報を人から聞くのでなく自分で得ること。形容詞は firsthand（firsthand experience）。	at(〜で)＋first hand(最初の手)。人の手を経ず、最初の手から直接受け取ることから「直接に」。
 at heart	2	本質的には・心の底では	He is a teacher at heart.	彼は根っからの教師だ。	idiom	外からの見え方と対比して、本当の性質を言う（He is a teacher at heart.）。	at(〜の所で)＋heart(心・中心)。外見でなく心の中心ではということから「本質的には・心の底では」。
@@ -72,10 +72,10 @@ at will	2	自由に・思いのままに	Users can change the font at will.	利�
 at work	2	仕事中で・作用して	Several forces are at work here.	ここではいくつかの力が作用している。	idiom	人なら「職場で・仕事中」、力や要因なら「働いている」（Several forces are at work here.）。	at(〜の状態で)＋work(仕事・働き)。仕事をしている状態から「仕事中で」、力が働いている状態から「作用して」。
 attach A to B	2	AをBに取り付ける	Attach the label to the box.	ラベルを箱に付けなさい。	structure	メールにファイルを添付するときも attach A to B。attach importance to は「〜を重視する」。	attach(くっつける)＋A＋to B(Bに)。AをBにくっつけることから「AをBに取り付ける」。
 attend to	pre1	〜に対処する・世話をする	A nurse attended to the injured runner.	看護師が負傷した走者を手当てした。	preposition	attend 場所 は「出席する」で to を付けない。attend to は仕事・客・けが人などに対応する意味。	attend(心を向ける)＋to(〜に)。at(〜に)＋tend(伸ばす)で、〜に心を伸ばして向けることから「〜に対処する・世話をする」。
-back and forth	2	行ったり来たり	The pendulum moved back and forth.	振り子が前後に動いた。	idiom	動きや、やりとりのくり返しに使う（move back and forth / emails going back and forth）。	back(後ろへ)＋and＋forth(前へ)。後ろへ行って前へ行くことをくり返すことから「行ったり来たり」。
+back and forth	2	行ったり来たり	The pendulum moved back and forth.	振り子が行ったり来たりした。	idiom	動きや、やりとりのくり返しに使う（move back and forth / emails going back and forth）。	back(後ろへ)＋and＋forth(前へ)。後ろへ行って前へ行くことをくり返すことから「行ったり来たり」。
 be about to do	pre2	まさに〜しようとしている	The train is about to leave.	列車はまさに出発しようとしている。	structure	すぐ先の未来を言うので、tomorrow などの時を表す語とは一緒に使わない。	about(〜のすぐ近くに)＋to do(〜すること)。〜することのすぐ手前にいることから「まさに〜しようとしている」。
 be abundant in	2	〜が豊富である	The region is abundant in clean water.	その地域はきれいな水が豊富だ。	preposition	主語は場所・地域（The region is abundant in clean water.）。rich in とほぼ同じ意味。	abundant(あふれるほどある)＋in(〜の点で)。abound(あふれる)と同じ語源で、〜の点であふれるほど豊かなことから「〜が豊富である」。
-be accustomed to	2	〜に慣れている	I am accustomed to working early.	私は早く働くことに慣れている。	preposition	to は前置詞なので、後ろには名詞または動名詞を置く。	accustomed(慣れた)＋to(〜に)。custom(習慣)と同じ語源で、〜が習慣になっていることから「〜に慣れている」。
+be accustomed to	2	〜に慣れている	I am accustomed to working early.	私は朝早くから働くことに慣れている。	preposition	to は前置詞なので、後ろには名詞または動名詞を置く。	accustomed(慣れた)＋to(〜に)。custom(習慣)と同じ語源で、〜が習慣になっていることから「〜に慣れている」。
 be acquainted with	2	〜を知っている・〜と面識がある	She is acquainted with the local history.	彼女は地元の歴史をよく知っている。	preposition	人との面識にも知識にも使う。get acquainted with で「〜と知り合いになる」。	acquainted(知り合いの)＋with(〜と)。〜と顔見知りになっていることから「〜と面識がある」、物事と親しんでいることから「〜を知っている」。
 be all ears	pre1	ぜひ聞きたい・熱心に耳を傾けている	Tell me your idea; I'm all ears.	君の案を話して。ぜひ聞きたい。	idiom	会話で、相手の話を聞く準備ができていることを伝える（I'm all ears.）。	all(全部)＋ears(耳)。体じゅうが耳になったように聞くことから「熱心に耳を傾けている」。
 be all the rage	pre1	大流行している	Reusable bottles are all the rage now.	今は再利用ボトルが大流行している。	idiom	一時的な流行に使う（are all the rage now）。くだけた表現。	all(まったく)＋the rage(熱狂)。rage(激しい怒り・熱狂)から、世の中が熱狂するほど流行していることから「大流行している」。
@@ -115,7 +115,7 @@ be ready to	4	〜する準備ができている	We are ready to begin.	私たち
 be sensitive to	2	〜に敏感である	Some plants are sensitive to cold.	寒さに敏感な植物もある。	preposition	「傷つきやすい」の意味もある。sensible(分別のある)と区別する。	sensitive(感じやすい)＋to(〜に対して)。sense(感覚)と同じ語源で、〜に対して感じやすいことから「〜に敏感である」。
 be sure of	pre2	〜を確信している	Are you sure of the answer?	その答えに確信がありますか。	preposition	of の後ろは名詞・動名詞。be sure to do は「きっと〜する」で意味が違う。	sure(確かだと思う)＋of(〜について)。〜について確かだと思っていることから「〜を確信している」。
 be susceptible to	pre1	〜の影響を受けやすい	Young trees are susceptible to frost.	若木は霜の影響を受けやすい。	preposition	病気・影響・圧力を受けやすいことを表す（susceptible to frost / disease）。	susceptible(受け入れやすい)＋to(〜を)。sus(下から)＋cept(取る)で、下から受け取ってしまいやすいことから「〜の影響を受けやすい」。
-be tired from	pre2	〜で疲れている	I was tired from the long walk.	私は長い徒歩で疲れていた。	preposition	体の疲れの原因を言う。be tired of は「〜にうんざりしている」で意味が違う。	tired(疲れた)＋from(〜が原因で)。from が疲れの原因を示し、「〜で疲れている」。
+be tired from	pre2	〜で疲れている	I was tired from the long walk.	私は長い距離を歩いて疲れていた。	preposition	体の疲れの原因を言う。be tired of は「〜にうんざりしている」で意味が違う。	tired(疲れた)＋from(〜が原因で)。from が疲れの原因を示し、「〜で疲れている」。
 be to blame for	2	〜の責任がある	No single person is to blame for the delay.	その遅れを一人だけの責任にはできない。	idiom	to blame は能動の形のまま「責められるべき」を表す（ふつう to be blamed とは言わない）。	be to blame(責められるべきである)＋for(〜のことで)。be to do の「〜されるべき」の意味で、〜のことで責められるべきだということから「〜の責任がある」。
 be to do	2	〜することになっている	The president is to visit tomorrow.	大統領は明日訪問することになっている。	structure	公式の予定（The president is to visit tomorrow.）のほか、義務・可能・意図の意味にもなるので文脈で判断する。	be＋to do(〜する方へ向かっている)。これから〜する方へ向かっている状態から、予定・義務・運命などを表し「〜することになっている」。
 be true of	pre2	〜に当てはまる	The same is true of this example.	同じことがこの例にも当てはまる。	preposition	The same is true of … の形でよく使う。be true to は「〜に忠実である」で意味が違う。	true(真実である)＋of(〜について)。〜について言っても真実であることから「〜に当てはまる」。
@@ -165,7 +165,7 @@ close at hand	2	すぐ近くに	Keep a flashlight close at hand.	懐中電灯を
 come by	pre2	〜を手に入れる・立ち寄る	Reliable data is hard to come by.	信頼できるデータは入手しにくい。	phrasal-verb	「手に入れる」は hard to come by（手に入りにくい）の形が多い。「立ち寄る」は会話的。	come(来る)＋by(そばに)。そばにやって来ることから「立ち寄る」、物が手元のそばへ来ることから「〜を手に入れる」。
 come close to doing	2	もう少しで〜するところである	The climber came close to falling.	その登山者はもう少しで落ちるところだった。	structure	to は前置詞なので後ろは動名詞（came close to falling）。実際にはしなかったことを含む。	come close(近くまで来る)＋to doing(〜することの)。〜することのすぐ近くまで来たことから「もう少しで〜するところである」。
 come in handy	1	役に立つ	This small tool may come in handy.	この小さな道具が役に立つかもしれない。	idiom	道具や知識が、いざという時に役立つことを表す（may come in handy）。	come in(入って来る)＋handy(手近で便利な)。手近で便利なものとして役に立つことから「役に立つ」。
-come of age	1	成人する・成熟する	The young artist came of age in Tokyo.	その若い芸術家は東京で成長した。	idiom	人のほか、技術・産業などが十分に発展したことにも使う。	come(至る)＋of age(一人前の年齢に)。法律で一人前とされる年齢に達することから「成人する」、分野や人が十分に育つことから「成熟する」。
+come of age	1	成人する・成熟する	The young artist came of age in Tokyo.	その若い芸術家は東京で大人になった。	idiom	人のほか、技術・産業などが十分に発展したことにも使う。	come(至る)＋of age(一人前の年齢に)。法律で一人前とされる年齢に達することから「成人する」、分野や人が十分に育つことから「成熟する」。
 come to	2	意識を取り戻す・合計〜になる	She came to a few minutes later.	彼女は数分後に意識を取り戻した。	phrasal-verb	「意識を取り戻す」は目的語なしで使う（She came to.）。「合計〜になる」は後ろに金額を置く（The bill came to 50 dollars.）。	come(戻って来る)＋to(意識のある所へ)。意識が戻って来ることから「意識を取り戻す」、数が積み重なってある額に至ることから「合計〜になる」。
 come to an end	2	終わる	The long meeting came to an end.	長い会議が終わった。	idiom	end だけより改まった表現。bring A to an end は「Aを終わらせる」。	come to(〜に至る)＋an end(終わり)。終わりに至ることから「終わる」。
 come to light	1	明るみに出る	New evidence came to light yesterday.	新しい証拠が昨日明るみに出た。	idiom	事実・証拠・不正などを主語にする。bring A to light は「Aを明るみに出す」。	come(出て来る)＋to light(光の当たる所へ)。隠れていたものが光の当たる所へ出て来ることから「明るみに出る」。

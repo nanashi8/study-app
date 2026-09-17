@@ -399,7 +399,7 @@ export const KOTEN_GRAMMAR = [
     id: 'kg_conj_nagara',
     title: '接続助詞「ながら」',
     category: 'particle',
-    forms: '連用形・体言・副詞・形容詞と形容動詞の語幹＋ながら',
+    forms: '連用形・体言・副詞・形容詞と形容動詞の語幹（シク活用の形容詞は終止形と同じ形）＋ながら',
     connection: '連用形などに接続',
     meaning: '…ながら／…けれども／…のまま',
     summary: '同時進行だけでなく逆接や状態の継続もある。前後が予想に反するなら逆接。',

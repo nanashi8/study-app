@@ -66,7 +66,7 @@ have a cold	風邪をひいている	have a slight cold	軽い風邪をひいて
 have a headache	頭が痛い	have a bad headache	ひどく頭が痛い	collocation	痛みの種類に応じて headache・toothache などを使う。	have(持っている)＋a headache(頭痛)。headache は head(頭)＋ache(痛み)で、頭の痛みがある状態から「頭が痛い」。
 have a question	質問がある	have a question about the homework	宿題について質問がある	collocation	質問の話題は about で続ける。	have(持っている)＋a question(質問)。聞きたいことを一つ持っていることから「質問がある」。
 keep a diary	日記をつける	keep a diary in English	英語で日記をつける	collocation	継続して記録するので write より keep が定型。	keep(続けて保つ)＋a diary(日記)。日記を毎日書き続けて手元に保つことから「日記をつける」。
-keep warm	暖かくしている	wear a coat to keep warm	暖かくしているためコートを着る	collocation	keep + 形容詞で状態を保つ。	keep(保つ)＋warm(暖かい)。暖かい状態を保ち続けることから「暖かくしている」。
+keep warm	暖かくしている	wear a coat to keep warm	暖かくしておくためにコートを着る	collocation	keep + 形容詞で状態を保つ。	keep(保つ)＋warm(暖かい)。暖かい状態を保ち続けることから「暖かくしている」。
 tell the truth	本当のことを言う	Please tell me the truth.	本当のことを私に話してください。	collocation	truth には通常 the を付ける。	tell(内容を伝える)＋the truth(本当のこと)。本当のことを相手に伝えることから「本当のことを言う」。
 tell a story	物語を話す	tell a funny story	面白い話をする	collocation	内容を語るときは say でなく tell を使う。	tell(内容を伝える)＋a story(話・物語)。物語の中身を相手に語ることから「物語を話す」。
 ask a question	質問する	ask the teacher a question	先生に質問する	collocation	ask + 人 + a question の語順が使える。	ask(たずねる)＋a question(質問)。相手に質問を投げかけることから「質問する」。

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-09-17T01:06:58.902Z",
+  "auditedAt": "2026-09-17T01:38:15.252Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -12,7 +12,7 @@
     "quizItemCount": 16473,
     "storedAndGeneratedQuestionPathCount": 4946,
     "storedAndGeneratedChoicePathCount": 19353,
-    "overallContentSha256": "d7b9fc8b8bfdfee157bbf4ce6bc356539baab73b702b01ac8bcbc9a8865db01b"
+    "overallContentSha256": "102da6cdcc9f292122541a16aba47debbb269aadb27160fad762dfa109611157"
   },
   "completionCriteria": [
     "全18教材カテゴリのID・母数・重複・内容ハッシュが一致する",
@@ -309,7 +309,7 @@
       "quizItemCount": 2104,
       "learningIdOrderSha256": "4de63b70fc6c4292e7a4921b2f862b540fc01b067911694285a0de29cf44ca51",
       "quizIdOrderSha256": "4de63b70fc6c4292e7a4921b2f862b540fc01b067911694285a0de29cf44ca51",
-      "contentSha256": "a8f93ea66dcacf7290526e3b8fd9636c48b0e7ab81d18c577ce952e6df0908f6",
+      "contentSha256": "bf56f9c00b9438a2f05cc0819fe23a0854238be3441ffff3b6996c3f118f562b",
       "auditGateIds": [
         "inventory",
         "coreData",
@@ -501,7 +501,7 @@
       "quizItemCount": 136,
       "learningIdOrderSha256": "04c2acc014b67ab7a4c519434edde5b15cb7b614ed4e3ccd1bfcf0dcb45df9a1",
       "quizIdOrderSha256": "2115268d84a32bef70dfee84ff9ed7a9cd6e91c4452a6a4b3c0e3999c03161ab",
-      "contentSha256": "97fb22720cf4b8e7056f6458f6359d0a3f3728cea04872468686c0c70a560d04",
+      "contentSha256": "e20d57cb8407907bff0905f5de5ca98af4e347a303052139f6f89c333bdfbf76",
       "auditGateIds": [
         "inventory",
         "coreData",
@@ -755,7 +755,7 @@
       "choiceCount": 544,
       "generalRationaleCount": 136,
       "choiceSpecificRationaleCount": 544,
-      "questionSetSha256": "08442ca426af2eead7f12f36ff4dbee4404ffb2e02fa926efa43d465c8672b41",
+      "questionSetSha256": "754e51b0a4d70c569f238a112f7918c178bb462ee8901a42756b4bf6a06155b6",
       "result": "pass",
       "failureCount": 0,
       "failures": []

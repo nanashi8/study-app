@@ -22,7 +22,7 @@ tell on	pre1	〜に悪影響を及ぼす・〜を告げ口する	Lack of sleep i
 Thank you.	4	ありがとう	Thank you for waiting.	待ってくれてありがとう。	conversation	理由は for で示し、後ろは名詞・動名詞（Thank you for waiting.）。	(I) thank you(私はあなたに感謝する)。主語の I を省いた形で「ありがとう」。
 Thanks for ~ .	4	〜をありがとう	Thanks for your helpful advice.	役に立つ助言をありがとう。	conversation	Thank you for ~. よりくだけた言い方。for の後ろは名詞・動名詞。	thanks(感謝。複数形の名詞)＋for(〜に対する)。〜に対する感謝を伝えることから「〜をありがとう」。
 that is to say	2	すなわち	The route is direct; that is to say, there are no changes.	その経路は直通、つまり乗り換えがない。	discourse	前の内容を詳しく、または正確に言い直すときに使う。短く that is, とも言う。	that is(それは〜である)＋to say(言いかえると)。前の内容を言いかえるとそれはということから「すなわち」。
-that much 比較級	pre1	それだけいっそう〜	The clear map made the walk that much easier.	分かりやすい地図のおかげで徒歩がそれだけ楽になった。	structure	前に述べた理由の分だけ程度が増すことを表す。all the＋比較級 とほぼ同じ意味。	that much(それだけの分)＋比較級(より〜)。それだけの分さらに〜になることから「それだけいっそう〜」。
+that much 比較級	pre1	それだけいっそう〜	The clear map made the walk that much easier.	分かりやすい地図のおかげで、歩くのがそれだけ楽になった。	structure	前に述べた理由の分だけ程度が増すことを表す。all the＋比較級 とほぼ同じ意味。	that much(それだけの分)＋比較級(より〜)。それだけの分さらに〜になることから「それだけいっそう〜」。
 That's right.	4	そのとおりです	Is this the final stop? That's right.	ここが終点ですか。そのとおりです。	conversation	相手の確認に答えるときに使う。All right. は「わかった・大丈夫」で意味が違う。	that(それは)＋is right(正しい)。相手の言ったことが正しいと認めることから「そのとおりです」。
 the bottom line	pre2	最も重要な点・最終結果	The bottom line is that we need more time.	最も重要なのは、もっと時間が必要だということだ。	idiom	The bottom line is (that) … の形で、結論を言うときに使う。	the bottom(一番下の)＋line(行)。決算書の一番下の行に最終的な損益が書かれることから「最終結果・最も重要な点」。
 The chances are that	pre1	おそらく〜だ	The chances are that the road is closed.	おそらくその道は閉鎖されている。	structure	会話では The を省いて Chances are (that) … とも言う。	the chances(見込み)＋are that(〜ということだ)。見込みは〜ということだということから「おそらく〜だ」。
@@ -53,7 +53,7 @@ to the contrary	pre2	それと反対の趣旨の	There is no evidence to the con
 to the effect that	pre1	〜という趣旨の	We received a message to the effect that the event was canceled.	催しが中止だという趣旨の連絡を受けた。	structure	言葉どおりではなく内容をまとめて伝えるときに使う（a message to the effect that …）。	to(〜に向かう)＋the effect(趣旨)＋that(〜という)。effect を「趣旨」の意味で使い、〜という趣旨を持つことから「〜という趣旨の」。
 to the full	pre1	十分に・心ゆくまで	Enjoy the holiday to the full.	休暇を心ゆくまで楽しみなさい。	idiom	enjoy・use などの後ろに置く。米国では to the fullest とも言う。	to(〜まで)＋the full(いっぱいの状態)。いっぱいになるところまでということから「十分に・心ゆくまで」。
 to the point	2	要点を突いて	Her answer was brief and to the point.	彼女の答えは簡潔で要点を突いていた。	idiom	brief and to the point「簡潔で的を射た」の形でよく使う。get to the point は「本題に入る」。	to(〜に向かって)＋the point(要点)。要点にまっすぐ向かっていることから「要点を突いて」。
-treat A to B	pre1	AにBをおごる・味わわせる	My aunt treated us to lunch.	叔母が私たちに昼食をおごってくれた。	structure	名詞 treat は「おごり・ごちそう」（It's my treat.「私のおごりです」）。	treat(もてなす)＋A(人)＋to B(Bで)。AをBでもてなすことから「AにBをおごる・味わわせる」。
+treat A to B	pre1	AにBをおごる・味わわせる	My aunt treated us to lunch.	おばが私たちに昼食をおごってくれた。	structure	名詞 treat は「おごり・ごちそう」（It's my treat.「私のおごりです」）。	treat(もてなす)＋A(人)＋to B(Bで)。AをBでもてなすことから「AにBをおごる・味わわせる」。
 turn a blind eye to	pre2	〜を見て見ぬふりをする	We must not turn a blind eye to bullying.	いじめを見て見ぬふりしてはいけない。	idiom	不正や問題を知りながら黙認することを表す。	turn(向ける)＋a blind eye(見えない目)＋to(〜に)。〜に見えないほうの目を向けることから「〜を見て見ぬふりをする」。
 turn A into B	pre2	AをBに変える	They turned the warehouse into a theater.	彼らは倉庫を劇場に変えた。	structure	自動詞で A turns into B「AがBに変わる」とも使う。change A into B とほぼ同じ意味。	turn(変える)＋A＋into B(Bの中へ)。Aを変えてBの状態の中へ入れることから「AをBに変える」。
 turn in	2	〜を提出する・寝る	Please turn in your report by Friday.	金曜日までに報告書を提出してください。	phrasal-verb	「提出する」は hand in / submit とほぼ同じ意味。「寝る」はくだけた言い方（I'll turn in early tonight.）。	turn(向きを変える)＋in(中へ)。書類を相手の手の中へ渡すことから「〜を提出する」、寝床の中へ入ることから「寝る」。
@@ -69,7 +69,7 @@ watch one's step	pre1	足元に気を付ける・行動に注意する	Watch you
 wear out	2	使い古す・疲れ果てさせる	These shoes wore out after years of use.	この靴は何年も使ってすり減った。	phrasal-verb	自動詞で「すり減る」（These shoes wore out.）。受け身 be worn out で「疲れ果てている・すり切れている」。	wear(すり減らす)＋out(すっかり)。使ってすっかりすり減らすことから「使い古す」、人の力をすり減らすことから「疲れ果てさせる」。
 Welcome to ~ .	4	〜へようこそ	Welcome to our school.	私たちの学校へようこそ。	conversation	場所の前に to を置く（Welcome to our school.）。home・back など副詞の前では to を付けない（Welcome home.）。	welcome(歓迎される)＋to(〜へ)。welcome はもと「喜ばれる客」の意味の語で、〜へ来た人を喜んで迎えることから「〜へようこそ」。
 What ... for?	2	何のために〜か	What did you buy this rope for?	何のためにこのロープを買ったのですか。	structure	What for? だけでも「何のために」と聞き返せる。	what(何)＋...＋for(〜のために)。for what（何のために）の what を文頭に出した形で「何のために〜か」。
-what ... is	2	〜の現在の姿・本質	Experience made the town what it is today.	経験がその町を今日の姿にした。	structure	過去の姿は what ... was / used to be。what I am は「今の私」。	what(〜であるもの)＋...＋is(である)。今〜であるところのものということから「〜の現在の姿・本質」。
+what ... is	2	〜の現在の姿・本質	Tourism made the town what it is today.	観光がその町を今日の姿にした。	structure	過去の姿は what ... was / used to be。what I am は「今の私」。	what(〜であるもの)＋...＋is(である)。今〜であるところのものということから「〜の現在の姿・本質」。
 What about ~ ?	4	〜はどうですか	What about the second option?	二つ目の選択肢はどうですか。	conversation	提案のほか、話題を移して相手の考えをたずねるときに使う。How about ~? とほぼ同じ意味。	what(何)＋about ~(〜について)。〜についてはどうなのかとたずねることから「〜はどうですか」。
 What is ... like?	2	〜はどのようなものか	What is your new teacher like?	新しい先生はどんな人ですか。	structure	人柄・場所・天気などの様子をたずねる。like を落とさない（What is your new teacher like?）。	what(何)＋is ...(〜は)＋like(〜に似ている)。〜は何に似ているかとたずねることから「〜はどのようなものか」。
 what is more	pre1	さらに	The route is short; what is more, it is safe.	その道は短く、さらに安全だ。	discourse	前の内容に同じ方向の内容を重ねるときに使う。what is worse は「さらに悪いことに」。	what(〜であること)＋is more(それ以上である)。それ以上であることにはということから「さらに」。
