@@ -366,7 +366,7 @@ export default Object.freeze([
       'Curiosity that is expressed without any comment': 'express は「表に出す」。ここは受け身です。',
     },
   }),
-  st('[S Festivals] [V look] [M {前| like exceptions {前| to daily life}}], [接 and] [M yet] [S they] [M usually] [V restate] [O {what節| [O what] [S a community] [V values] [M most]}].', {
+  st('[S Festivals] [V look] [M {前| like exceptions {前| to daily life}}], [接 and yet] [S they] [M usually] [V restate] [O {what節| [O what] [S a community] [V values] [M most]}].', {
     chunks: [
       ['Festivals look like exceptions to daily life,', '祭りは日々の暮らしの例外のように見えます'],
       ['and yet they usually restate', 'それでもたいてい言い直しています'],

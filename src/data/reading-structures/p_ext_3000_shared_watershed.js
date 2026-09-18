@@ -526,7 +526,7 @@ export default Object.freeze([
       'on which the fish and insects depend': 'on which は「前置詞＋関係代名詞」で、depend on … の on です。',
     },
   }),
-  st('[S Irrigation] [V raises] [O yields] [M {並列| surely | and steadily}], [接 and] [M yet] [S it] [M also] [V concentrates] [O salt] [M {前| in the very ground {関係>the very ground| [O that] [S it] [V waters]}}].', {
+  st('[S Irrigation] [V raises] [O yields] [M {並列| surely | and steadily}], [接 and yet] [S it] [M also] [V concentrates] [O salt] [M {前| in the very ground {関係>the very ground| [O that] [S it] [V waters]}}].', {
     chunks: [
       ['Irrigation raises yields surely and steadily,', '灌漑は確実に着実に収量を上げます'],
       ['and yet it also concentrates salt', 'それでいて塩も集めてしまいます'],

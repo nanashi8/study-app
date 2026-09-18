@@ -195,9 +195,20 @@ Farmers <from nearby villages> bring vegetables,
 
 ## 7. 確認待ちの型
 
-まだ決まっていない型。例文と選べる形を書いておき、まとめて確認する。
+まだ決まっていない型。例文と選べる形を書いておき、作業の区切りで、たまった分をまとめて確認する。
 
-（いまはない）
+1. **節・句の途中で並びが終わったあとの続き**（全台帳で27か所。多くは節の中で主語が並び、節の続きが左端に戻る形）
+   - 例：school_garden#7 `affected the vegetables)>`、resilient_cities#1 `occur more frequently)`、collective_memory#19 `are made))`、shared_watershed#60 `all> <at the same time>`
+   - 選べる形：(a) いまのまま、その行の始まり（左端）に戻す（利用者の図の決まりそのまま）
+     (b) 節・句の中の並びなら、その節・句の開き括弧の位置にそろえて続ける
+     ```
+     The students began <to understand (how temperature,
+                                            rain,
+                                            and
+                                            insects
+                                       affected the vegetables)>
+     ```
+   - 推奨 (b)：続きが同じ節の中だと見え、左端の行が主節の続きと取り違えられにくい。決まったら配置の処理で節・句を1つの枠として組む。
 
 ### 決まった型（2026-09-18、並列の縦そろえで出た4件をまとめて確認）
 
