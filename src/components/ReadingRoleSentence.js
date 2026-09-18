@@ -277,6 +277,22 @@ function parallelRoleChildren(annotation, parallel, options) {
       run = []
     }
     for (const item of row.items) {
+      // 節・句の中の並びは、開き括弧から先を一つの枠にして、続きを開き括弧の位置にそろえる。
+      if (item.type === 'box') {
+        flush()
+        const key = `${path}.${children.length}`
+        children.push(createElement(
+          'span',
+          {
+            key,
+            className: 'flex flex-wrap items-start gap-x-2 gap-y-3',
+            style: PARALLEL_STACK_STYLE,
+            'data-reading-parallel-box': '',
+          },
+          ...renderRow(item.row, key),
+        ))
+        continue
+      }
       if (item.type === 'stack') {
         flush()
         const key = `${path}.${children.length}`

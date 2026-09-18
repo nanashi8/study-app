@@ -94,6 +94,24 @@ test('共有する限定詞は並びの手前に残す（the brakes, seats, and 
   assert.deepEqual(inside, [])
 })
 
+// 2026-09-18 利用者が決定：節・句の中の並びなら、続きはその節・句の開き括弧の位置にそろえる。
+test('節・句の中の並びの続きは、その節・句の開き括弧の位置にそろえる', () => {
+  assert.deepEqual(diagramLines(ledgerStructure('p_3_school_garden', 7)), [
+    'The students began <to understand (how temperature,',
+    '                                       rain,',
+    '                                       and',
+    '                                       insects',
+    '                                  affected the vegetables)>',
+  ])
+  // 文の頭から始まる節の中の並びは、左端（節の開き括弧の位置）から続ける。
+  assert.equal(diagramLines(ledgerStructure('p_1_collective_memory', 9))[4], 'compete <for attention>), materials (that require slow reading')
+  const html = renderToStaticMarkup(StructureDiagram({
+    tokens: ledgerStructure('p_3_school_garden', 7).structureTokens,
+    parallel: ledgerStructure('p_3_school_garden', 7).parallel,
+  }))
+  assert.match(html, /data-structure-parallel-box/)
+})
+
 test('並ぶものの始まりは、共有する助動詞・対になる語・コンマの並び・倒置・文末の修飾語で決まる', () => {
   // 共有する can のあとの本動詞にそろえる。
   assert.deepEqual(diagramLines(ledgerStructure('p_4_library_event', 2)), [
