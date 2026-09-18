@@ -688,7 +688,7 @@ export const PASSAGE_READING_APPROACHES = Object.freeze({
     '聞き手の指摘と、変えた点を一つずつ結ぶ',
     '校内活動の報告文では、指摘された弱点の一つ一つに、実際に変えた手順のどれが対応しているかを確かめる。',
     ['調べて分かった不満を、先に押さえる', '変更点を、指摘の一つ一つと結びつける', '新しい役割と、最後の主張を結びつける'],
-    ['purpose-first', 'svoc-core', 'infinitive-role', 'logic-connectors', 'example-restatement', 'evidence-backtrack'],
+    ['purpose-first', 'svoc-core', 'parallel-shape', 'infinitive-role', 'logic-connectors', 'evidence-backtrack'],
   ),
   p_2_disaster_translators: makePassageApproach(
     '届いたことと、伝わったことを分けて読む',

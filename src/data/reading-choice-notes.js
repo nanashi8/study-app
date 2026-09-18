@@ -955,7 +955,7 @@ export const READING_CHOICE_NOTES = freezeNotes({
     "It has closed the museum after four years.": "博物館は4年後に開館した（第24文）。閉じたのではない。",
   },
   "p_pre2_school_radio#1": {
-    "The lunch program was too long.": "昼の番組は4分しかなかった（第2文）。長すぎるという意見は書かれていない。",
+    "The lunch program was too long.": "昼の番組は4分間だった（第2文）。長すぎるという意見は書かれていない。",
     "The voices were too fast and the topics felt far away.": "生徒たちは声が速すぎると言い（第7文）、話題は日々の生活から遠く感じられた（第8文）。",
     "The school needed a second radio room.": "2つ目の放送室の話は出てこない。調査で分かったのは声の速さと話題の遠さ（第7・8文）。",
     "The members had to read more books.": "本は、司書が加わる毎月の番組（第17文）に出てくるだけ。調査の結果ではない。",
@@ -963,13 +963,13 @@ export const READING_CHOICE_NOTES = freezeNotes({
   "p_pre2_school_radio#2": {
     "The speed and the volume of the reading.": "第12文 An older student checks the speed and the volume. と一致する。",
     "The names of every teacher in the school.": "名前は、部全体が気をつけて発音するもの（第13文）で、上級生が確かめるものとは書かれていない。",
-    "The weather for the next morning.": "天気の知らせは、毎日ニュースのあとに流す番組の一部（第19文）で、上級生が確かめるものではない。",
+    "The weather for the next morning.": "天気予報は、毎日ニュースのあとに続くもの（第19文）で、上級生が確かめるものではない。",
     "The number of listeners in the halls.": "聞き手の数を確かめるとは書かれていない。聞き手は増えた（第22文）とあるだけ。",
   },
   "p_pre2_school_radio#3": {
     "It asked the town office to choose the topics.": "町役場の職員は防災訓練について話した人（第21文）で、話題を選ぶよう頼んだとは書かれていない。",
     "It gave the same three minutes to each student.": "第20文 During the election, the club gave the same three minutes to each student. と一致する。",
-    "It read only the name of the winner.": "候補者それぞれに同じ3分を与えた（第20文）。当選者の名前だけではない。",
+    "It read only the name of the winner.": "それぞれの生徒に同じ3分を与えた（第20文）。当選者の名前だけを読んだとは書かれていない。",
     "It stopped the lunch program during the election.": "番組を止めたとは書かれていない。選挙のあいだも、生徒に同じ時間を与えて放送した（第20文）。",
   },
   "p_pre2_school_radio#4": {

@@ -218,10 +218,10 @@ export const FIELD_READING_QUESTIONS = Object.freeze({
         'The members had to read more books.',
       ],
       answer: 'The voices were too fast and the topics felt far away.',
-      explain: '第7文と第8文が調査の結果です。第6文で意見が率直だったと述べ、その中身がこの二点だと続きます。',
+      explain: '第7文と第8文が調査の結果です。第6文で意見が率直だったと述べたあと、声が速すぎること（第7文）と、話題が日々の生活から遠く感じられたこと（第8文）が続きます。',
     },
     {
-      q: 'What does an older student check before the program?',
+      q: 'What does an older student check?',
       choices: [
         'The speed and the volume of the reading.',
         'The names of every teacher in the school.',
@@ -251,7 +251,7 @@ export const FIELD_READING_QUESTIONS = Object.freeze({
         'To collect a new survey from the audience.',
       ],
       answer: 'To carry the announcement from the radio room.',
-      explain: '第27文で非常時の役割が示され、第28文で「災害が学校のチャイムを止めたら放送室が知らせを伝える」と具体化されています。',
+      explain: '第27文で非常時の役割が示され、第28文で「災害で学校のチャイムが止まったら、放送室が知らせを伝える」と具体化されています。',
     },
   ],
   p_2_disaster_translators: [
