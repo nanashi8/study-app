@@ -17,6 +17,10 @@
 //   前置詞の後ろの節・動名詞は前置詞の外側で入れ子にする: {前| about {疑問詞節| …}} → <about (who pays …)>
 //   for A to do は {前:意味上の主語| for A} {to:…| [V to do]} と2つに分ける
 //   前置詞＋関係代名詞（[M in which]）と句動詞の V の中の語は、前置詞句として括らない
+//
+// 並列（2026-09-18 利用者が図で決めた表示。src/lib/structure-parallel-layout.js）
+//   要素どうしの並列は [接 and] などから決める。要素の中で並ぶ語句は {並列| A, | B | and C} と
+//   | で区切って書く（区切りは表示の改行だけに使い、括弧・語の並び・役割には影響しない）。
 
 import { parseStructureMarkers } from './structure-markers.js'
 import {
@@ -119,6 +123,9 @@ const PHRASE_TYPES = new Set([
 // 形容詞そのものは括らず、中の句だけを括る（2026-09-18 利用者が決定）。
 const BARE_UNIT_TYPES = new Set(['同格', '挿入', '前', '数量', '反復', '形容詞'])
 
+// 要素の中で並ぶ語句のまとまり。読み取ったあとで外し、並ぶものの語の範囲だけを残す。
+const PARALLEL_UNIT = '並列'
+
 // 前置詞句の先頭に置ける前置詞（2語以上のものを先に照らす）。
 export const MULTIWORD_PREPOSITIONS = Object.freeze([
   'in addition to', 'in front of', 'in spite of', 'in terms of', 'in response to', 'in favor of',
@@ -149,6 +156,8 @@ export function leadingPreposition(words = []) {
 }
 
 const WORD_PATTERN = /[A-Za-z0-9]+(?:['’][A-Za-z0-9]+)*(?:[-‐][A-Za-z0-9]+(?:['’][A-Za-z0-9]+)*)*/g
+// 並列の配置（structure-parallel-layout.js）も同じ語の区切りで語に番号を振る。
+export const STRUCTURE_WORD_SOURCE = WORD_PATTERN.source
 const TRAILING_PUNCTUATION = /[\s,;:—–-]+$/u
 const LEADING_PUNCTUATION = /^[\s,;:—–-]+/u
 
@@ -203,6 +212,7 @@ const QUANTITY_LEAD_MEANINGS = Object.freeze({
 
 function parseUnitType(spec) {
   const raw = spec.trim()
+  if (raw === PARALLEL_UNIT) return { rawType: raw, base: PARALLEL_UNIT, detail: '', antecedent: '' }
   const [head, antecedent = ''] = raw.split('>')
   const [base, detail = ''] = head.split(':')
   const unit = { rawType: raw, base, detail, antecedent: antecedent.trim() }
@@ -252,7 +262,7 @@ function parseUnitType(spec) {
   return unit
 }
 
-function parseNodes(source, cursor, closer) {
+function parseNodes(source, cursor, closer, separators = false) {
   const nodes = []
   let text = ''
   const flush = () => {
@@ -285,8 +295,15 @@ function parseNodes(source, cursor, closer) {
       if (bar < 0) throw new StructureSyntaxError('まとまりの種類の後ろに | がありません')
       const unit = parseUnitType(source.slice(cursor.index, bar))
       cursor.index = bar + 1
-      const children = parseNodes(source, cursor, '}')
+      const children = parseNodes(source, cursor, '}', unit.base === PARALLEL_UNIT)
       nodes.push({ kind: 'unit', ...unit, children })
+      continue
+    }
+    // {並列| A | B} の中の | は、並ぶものの区切り。
+    if (character === '|' && separators) {
+      flush()
+      nodes.push({ kind: 'separator' })
+      cursor.index++
       continue
     }
     if (character === ']' || character === '}' || character === '|') {
@@ -1012,20 +1029,421 @@ function collectUnits(nodes, scopeUnit, scopeElements, containerElement, output,
   }
 }
 
+// 並ぶものの先頭に置く接続語（長いものから照らす）。{並列| …} の2つ目以降の区切りの先頭で探す。
+const COORDINATOR_LEADS = Object.freeze([
+  'as well as', 'rather than', 'but also', 'and yet', 'and', 'or', 'but', 'nor', 'yet',
+])
+
+// 要素どうしを並べる接続語 [接 …]。節を導く that・because などはまとまりの先頭にあり、ここには入れない。
+const COORDINATOR_LINKS = new Set([
+  'and', 'or', 'but', 'nor', 'yet', 'so', 'and yet', 'and so', 'but also', 'and also',
+  'rather than', 'as well as', 'or else', 'but rather',
+])
+
+export function coordinatorLeadLength(words = []) {
+  const lower = words.map((word) => `${word}`.toLowerCase())
+  for (const phrase of COORDINATOR_LEADS) {
+    const parts = phrase.split(' ')
+    if (parts.every((part, index) => lower[index] === part)) return parts.length
+  }
+  return 0
+}
+
+function mergeTextNodes(nodes) {
+  const merged = []
+  for (const node of nodes) {
+    const last = merged.at(-1)
+    if (node.kind === 'text' && last?.kind === 'text') {
+      merged[merged.length - 1] = { kind: 'text', text: `${last.text}${node.text}` }
+    } else {
+      merged.push(node)
+    }
+  }
+  return merged
+}
+
+// {並列| A | B | and C} を外して中身を親へ戻し、並ぶもの（本文の語の番号の範囲）を記録する。
+// 外したあとの木は {並列| …} を書かない台帳とまったく同じになる（括弧・役割・語の並びは変わらない）。
+function unwrapParallel(nodes, state, inElement = false) {
+  const output = []
+  for (const node of nodes) {
+    if (node.kind === 'text') {
+      state.words += structureWords(node.text).length
+      output.push(node)
+      continue
+    }
+    if (node.kind === 'separator') continue
+    if (node.kind === 'unit' && node.base === PARALLEL_UNIT) {
+      const parts = [[]]
+      for (const child of node.children) {
+        if (child.kind === 'separator') parts.push([])
+        else parts.at(-1).push(child)
+      }
+      const conjuncts = []
+      let elementLevel = false
+      for (const part of parts) {
+        const start = state.words
+        const inner = unwrapParallel(part, state, inElement)
+        // 要素どうしの並列を手で決めるときは、要素 [ ] を並べて | で区切る（要素の外に置く）。
+        const hasElements = inner.some((child) => child.kind === 'element')
+        if (hasElements) {
+          elementLevel = true
+          if (inElement) state.errors.push('要素 [ ] を並べる {並列| …} は、要素の中ではなく要素の並びに置きます')
+          if (inner.some((child) => child.kind === 'text' && structureWords(child.text).length)) {
+            state.errors.push('要素 [ ] を並べる {並列| …} の中の語句は、すべて要素 [ ] に入れます')
+          }
+        }
+        const text = normalizeStructureText(rawText(inner))
+        const lead = conjuncts.length ? coordinatorLeadLength(structureWords(text)) : 0
+        if (state.words - start - lead <= 0) {
+          state.errors.push(`並列の区切り「${text}」に、接続語のほかの語がありません`)
+        }
+        conjuncts.push({ start, end: state.words, lead, text })
+        output.push(...inner)
+      }
+      const label = conjuncts.map((conjunct) => conjunct.text).join(' | ')
+      if (!elementLevel && !inElement) state.errors.push(`語句を並べる {並列| ${label}} は要素 [ ] の中に置きます`)
+      if (conjuncts.length < 2) state.errors.push(`並列「${label}」は | で2つ以上に区切ります`)
+      if (!conjuncts.slice(1).some((conjunct) => conjunct.lead)) {
+        state.errors.push(`並列「${label}」の2つ目以降のどれかは and・or・but などで始めます`)
+      }
+      state.groups.push({
+        kind: elementLevel ? 'element' : 'inner',
+        explicit: true,
+        conjuncts: conjuncts.map(({ start, end, lead }) => ({ start, end, lead })),
+      })
+      continue
+    }
+    output.push({ ...node, children: unwrapParallel(node.children, state, inElement || node.kind === 'element') })
+  }
+  return mergeTextNodes(output)
+}
+
 export function parseSentenceStructure(markup = '') {
   try {
-    const root = parseNodes(`${markup}`, { index: 0 }, '')
-    return { root, error: '' }
+    const parsed = parseNodes(`${markup}`, { index: 0 }, '')
+    const state = { words: 0, groups: [], errors: [] }
+    const root = unwrapParallel(parsed, state)
+    return { root, error: '', parallel: state.groups, parallelErrors: state.errors }
   } catch (error) {
-    if (error instanceof StructureSyntaxError) return { root: [], error: error.message }
+    if (error instanceof StructureSyntaxError) {
+      return { root: [], error: error.message, parallel: [], parallelErrors: [] }
+    }
     throw error
   }
 }
 
+function isCoordinatorLink(element) {
+  return element?.role === '接' && COORDINATOR_LINKS.has(nodeText(element).toLowerCase())
+}
+
+// clauseGroups と同じ区切り方で、要素を落とさずに節・述語のまとまりに分ける。
+function coordinationGroups(elements) {
+  const groups = []
+  let current = { elements: [], sharedSubject: false }
+  for (const [index, element] of elements.entries()) {
+    const hasCompleteVerb = current.elements.some((item) => item.role === 'V' && verbIsComplete(item, elements))
+    if (
+      ['S', '仮S'].includes(element.role) &&
+      elements.slice(index + 1).find((item) => item.role !== 'M')?.role === 'V' &&
+      hasCompleteVerb
+    ) {
+      groups.push(current)
+      current = { elements: [], sharedSubject: false }
+    } else if (element.role === 'V' && hasCompleteVerb && current.elements.at(-1)?.role !== '接') {
+      groups.push(current)
+      current = { elements: [], sharedSubject: true }
+    } else if (element.role === '接' && current.elements.some((item) => item.role === 'V')) {
+      const next = elements.slice(index + 1).find((item) => item.role !== 'M')
+      if (next && ['S', '仮S', 'V'].includes(next.role)) {
+        groups.push(current)
+        current = { elements: [], sharedSubject: next.role === 'V' }
+      }
+    }
+    current.elements.push(element)
+  }
+  groups.push(current)
+  return groups.filter((group) => group.elements.length)
+}
+
+// 主語のあとの最初の動詞（述語の始まり）。主語がなければ最初の動詞。
+function predicateStart(list) {
+  const lastSubject = list.findLastIndex((element) => ['S', '仮S'].includes(element.role))
+  const afterSubject = list.findIndex((element, index) => index > lastSubject && element.role === 'V')
+  if (afterSubject >= 0) return afterSubject
+  const verb = list.findIndex((element) => element.role === 'V')
+  return verb >= 0 ? verb : 0
+}
+
+// 並ぶ述語が助動詞・to を共有するとき（can listen …, make …／had to choose …, remove …／how to open …, replace …／
+// is arriving … or disappearing …）、1つ目は共有する語のあとの本動詞からそろえる。
+// 2つ目の動詞の形が、共有する語のあとに来る形（原形・-ing・過去分詞）と合うときだけにする（was founded and grew は共有しない）。
+const MODAL_WORDS = new Set(['can', 'could', 'will', 'would', 'shall', 'should', 'may', 'might', 'must'])
+const DO_WORDS = new Set(['do', 'does', 'did'])
+const HAVE_WORDS = new Set(['has', 'have', 'had', 'having'])
+const BE_WORDS = new Set(['am', 'is', 'are', 'was', 'were', 'be', 'been', 'being'])
+const TO_HEADS = new Set(['has', 'have', 'had', 'used', 'ought', 'going', 'able', 'how', 'what', 'where', 'when', 'which', 'whether'])
+
+function isAuxiliaryWord(word) {
+  return MODAL_WORDS.has(word) || DO_WORDS.has(word) || HAVE_WORDS.has(word) || BE_WORDS.has(word)
+}
+
+function sharedVerbLeadLength(firstList, secondList) {
+  const verbs = []
+  for (const element of firstList) {
+    if (element.role !== 'V') break
+    verbs.push(element)
+  }
+  const secondVerb = secondList.find((element) => element.role === 'V')
+  if (!verbs.length || !secondVerb) return 0
+  const words = verbs.flatMap((verb) => structureWords(nodeText(verb)).map((word) => word.toLowerCase()))
+  const second = structureWords(nodeText(secondVerb))[0]?.toLowerCase() ?? ''
+  if (!second || isAuxiliaryWord(second) || ['to', 'not', 'never'].includes(second)) return 0
+  let count = 0
+  while (
+    count < words.length - 1 &&
+    (isAuxiliaryWord(words[count]) || words[count] === 'to' || (TO_HEADS.has(words[count]) && words[count + 1] === 'to'))
+  ) count++
+  if (!count || ['not', 'never'].includes(words[count])) return 0
+  const last = words[count - 1]
+  const main = words[count]
+  const participle = (word) => /(?:ed|en)$/.test(word)
+  const bare = (word) => !/(?:ed|ing|[^su]s)$/.test(word)
+  if (MODAL_WORDS.has(last) || DO_WORDS.has(last) || last === 'to') return bare(second) ? count : 0
+  if (HAVE_WORDS.has(last)) return participle(main) && participle(second) ? count : 0
+  if (BE_WORDS.has(last)) {
+    if (main.endsWith('ing') && second.endsWith('ing')) return count
+    return participle(main) && participle(second) ? count : 0
+  }
+  return 0
+}
+
+// neither … nor・both … and・not only … but など、対になる前半の語。1つ目の並ぶものに入れる。
+const CORRELATIVE_FIRSTS = Object.freeze({
+  neither: ['nor'],
+  either: ['or'],
+  both: ['and'],
+  'not only': ['but', 'but also'],
+  'not just': ['but', 'but also'],
+  'not merely': ['but', 'but also'],
+  'not simply': ['but', 'but also'],
+  not: ['but', 'but rather'],
+})
+
+function correlativePairs(first, link) {
+  const pairs = CORRELATIVE_FIRSTS[nodeText(first).toLowerCase()]
+  return first.role === 'M' && Boolean(pairs?.includes(nodeText(link).toLowerCase()))
+}
+
+// 並びの最後の要素のあとに、コンマで区切って文全体にかかる修飾語（, while … など）が続くときは、
+// 並びに入れずに後ろへ出す（左端に戻して次の行）。
+function trimTrailingModifiers(list, commaBefore) {
+  for (let index = 2; index < list.length; index++) {
+    if (commaBefore.has(list[index]) && list.slice(index).every((element) => element.role === 'M')) {
+      return list.slice(0, index)
+    }
+  }
+  return list
+}
+
+// 一つの場面（主節、または節・句の中）の要素どうしの並列。
+//   節どうし：and・but などのあとに主語があるとき。節ごとに行を分ける。
+//   述語どうし：and などのあとに動詞が来るとき。主語のあとの動詞から並べる。
+//   要素どうし：and などのあとの要素と同じ役割の要素を前へ探して、そこから並べる。
+function scopeParallelGroups(elements, ranges, commaBefore) {
+  const result = []
+  if (elements.length < 3) return result
+  const span = (list) => {
+    const lead = isCoordinatorLink(list[0]) ? ranges.get(list[0]) : null
+    return {
+      start: ranges.get(list[0]).start,
+      end: ranges.get(list.at(-1)).end,
+      lead: lead ? lead.end - lead.start : 0,
+    }
+  }
+  // まとまりの先頭の接続語（that・whether・文頭の But）は、並ぶものに入れず手前に置く。
+  const withoutConnector = (list) => (list[0] === elements[0] && list[0].role === '接' ? list.slice(1) : list)
+  const groups = coordinationGroups(elements)
+  const clauses = []
+  for (const group of groups) {
+    // and so does a period … のように、動詞のあとに主語が来る形は文どうしの並列。
+    const inverted = group.sharedSubject && group.elements.some((element) => ['S', '仮S'].includes(element.role))
+    if (!clauses.length || !group.sharedSubject || inverted) clauses.push([group])
+    else clauses.at(-1).push(group)
+  }
+  const startsWithLink = (group) => isCoordinatorLink(group.elements[0])
+  if (clauses.length >= 2 && clauses.slice(1).some((clause) => startsWithLink(clause[0]))) {
+    const conjuncts = clauses
+      .map((clause) => withoutConnector(clause.flatMap((group) => group.elements)))
+      .filter((list) => list.length)
+      .map(span)
+    if (conjuncts.length >= 2) result.push({ kind: 'clause', conjuncts })
+  }
+  for (const clause of clauses) {
+    if (clause.length < 2 || !clause.slice(1).some(startsWithLink)) continue
+    const first = withoutConnector(clause[0].elements)
+    const lists = [first.slice(predicateStart(first)), ...clause.slice(1).map((group) => group.elements)]
+      .filter((list) => list.length)
+    if (lists.length < 2) continue
+    lists[lists.length - 1] = trimTrailingModifiers(lists.at(-1), commaBefore)
+    const conjuncts = lists.map(span)
+    const shared = sharedVerbLeadLength(lists[0], lists[1])
+    if (shared) conjuncts[0] = { ...conjuncts[0], start: conjuncts[0].start + shared }
+    const [auxiliary, correlative, mainVerb] = lists[0]
+    if (
+      auxiliary?.role === 'V' && AUXILIARY_ONLY.test(nodeText(auxiliary)) &&
+      mainVerb?.role === 'V' && correlative && isCoordinatorLink(lists[1][0]) &&
+      correlativePairs(correlative, lists[1][0])
+    ) {
+      conjuncts[0] = { ...conjuncts[0], start: ranges.get(correlative).start }
+    }
+    result.push({ kind: 'predicate', conjuncts })
+  }
+  for (const group of groups) {
+    const list = group.elements
+    const links = list
+      .map((element, index) => (index > 0 && isCoordinatorLink(element) ? index : -1))
+      .filter((index) => index >= 0)
+    let previous = null
+    for (const [order, link] of links.entries()) {
+      const nextLink = links[order + 1] ?? list.length
+      const after = list.slice(link + 1, nextLink)
+      if (!after.length) continue
+      const role = after.find((element) => element.role !== 'M')?.role ?? 'M'
+      const floor = order > 0 ? links[order - 1] + 1 : 0
+      let from = -1
+      for (let index = link - 1; index >= floor; index--) {
+        if (list[index].role === role) {
+          from = index
+          break
+        }
+      }
+      if (from < 0) from = Math.max(floor, predicateStart(list))
+      if (from - 1 >= floor && correlativePairs(list[from - 1], list[link])) from--
+      const firstConjunct = withoutConnector(list.slice(from, link))
+      if (!firstConjunct.length) continue
+      // by region, by generation, and by … のように、コンマで続く同じ役割の要素も並ぶものに入れる。
+      const leading = []
+      let head = from
+      while (
+        head - 1 >= floor && link - from === 1 && commaBefore.has(list[head]) &&
+        list[head - 1].role === role && list[head - 1] !== elements[0]
+      ) {
+        head--
+        leading.unshift(span([list[head]]))
+      }
+      const first = span(firstConjunct)
+      const second = span(nextLink === list.length
+        ? trimTrailingModifiers(list.slice(link, nextLink), commaBefore)
+        : list.slice(link, nextLink))
+      // A, B, and C のように続く並列は一つにまとめる。
+      const last = previous?.conjuncts.at(-1)
+      if (last && last.start === first.start && last.end === first.end) {
+        previous.conjuncts.push(second)
+        continue
+      }
+      previous = { kind: 'element', conjuncts: [...leading, first, second] }
+      result.push(previous)
+    }
+  }
+  return result
+}
+
+function shiftParallelGroup(group, offset) {
+  return Object.freeze({
+    kind: group.kind,
+    start: group.start + offset,
+    end: group.end + offset,
+    conjuncts: Object.freeze(group.conjuncts.map((conjunct) => Object.freeze({
+      ...conjunct,
+      start: conjunct.start + offset,
+      end: conjunct.end + offset,
+    }))),
+  })
+}
+
+// 文全体の並列（語の番号の範囲）。場面ごとの要素どうしの並列と、{並列| …} の並列を合わせる。
+function collectParallelGroups(root, units, words, innerGroups) {
+  const ranges = new Map()
+  words.forEach((word, index) => {
+    for (const element of word.elements) {
+      const range = ranges.get(element)
+      if (range) range.end = index + 1
+      else ranges.set(element, { start: index, end: index + 1 })
+    }
+  })
+  // 要素の直前（前の要素とのあいだ）にコンマがあるか。
+  const commaBefore = new Set()
+  const markCommas = (children) => {
+    let between = ''
+    for (const child of children) {
+      if (child.kind === 'element') {
+        if (between.includes(',')) commaBefore.add(child)
+        between = ''
+      } else if (child.kind === 'text') {
+        between += child.text
+      }
+    }
+  }
+  markCommas(root)
+  for (const unit of units) markCommas(unit.node.children)
+  const scopes = [
+    root.filter((node) => node.kind === 'element'),
+    ...units.map((unit) => unit.node.children.filter((child) => child.kind === 'element')),
+  ]
+  const explicit = innerGroups.filter((group) => group.kind === 'element')
+  const overlapsExplicit = (group) => explicit.some((manual) => {
+    const start = group.conjuncts[0].start
+    const end = group.conjuncts.at(-1).end
+    const manualStart = manual.conjuncts[0].start
+    const manualEnd = manual.conjuncts.at(-1).end
+    if (end <= manualStart || manualEnd <= start) return false
+    return !manual.conjuncts.some((conjunct) => conjunct.start + conjunct.lead <= start && end <= conjunct.end)
+  })
+  return [
+    ...scopes.flatMap((elements) => scopeParallelGroups(elements, ranges, commaBefore))
+      .filter((group) => !overlapsExplicit(group)),
+    ...innerGroups,
+  ]
+    .map((group) => shiftParallelGroup({
+      kind: group.kind,
+      start: group.conjuncts[0].start,
+      end: group.conjuncts.at(-1).end,
+      conjuncts: group.conjuncts,
+    }, 0))
+    .sort((a, b) => a.start - b.start || b.end - a.end)
+}
+
+// 並列どうしが入れ子になっているか（重なるなら、内側は外側の一つの並ぶものの中に収まる）。
+function parallelNestingErrors(groups) {
+  const errors = []
+  for (const outer of groups) {
+    for (const inner of groups) {
+      if (outer === inner) continue
+      if (!(inner.start < outer.end && outer.start < inner.end)) continue
+      if (outer.start === inner.start && outer.end === inner.end) {
+        errors.push(`同じ範囲の並列が二つあります（語 ${outer.start}〜${outer.end}）`)
+        continue
+      }
+      const inside = outer.start <= inner.start && inner.end <= outer.end
+      if (!inside) {
+        if (!(inner.start <= outer.start && outer.end <= inner.end)) {
+          errors.push(`並列の範囲が重なっています（語 ${outer.start}〜${outer.end} と ${inner.start}〜${inner.end}）`)
+        }
+        continue
+      }
+      const within = outer.conjuncts.some((conjunct) =>
+        conjunct.start + conjunct.lead <= inner.start && inner.end <= conjunct.end)
+      if (!within) errors.push(`並列（語 ${inner.start}〜${inner.end}）が外側の並列の区切りをまたいでいます`)
+    }
+  }
+  return [...new Set(errors)]
+}
+
 // 本文と台帳を比べて、画面表示に必要な情報をまとめる。
 export function buildSentenceStructure(sentenceEn = '', markup = '', options = {}) {
-  const { root, error } = parseSentenceStructure(markup)
-  const errors = error ? [error] : []
+  const { root, error, parallel: innerParallel, parallelErrors } = parseSentenceStructure(markup)
+  const errors = error ? [error] : [...parallelErrors]
   if (!error) {
     const plain = normalizeStructureText(rawText(root))
     if (plain !== normalizeStructureText(sentenceEn)) {
@@ -1042,6 +1460,17 @@ export function buildSentenceStructure(sentenceEn = '', markup = '', options = {
   }
   const units = []
   collectUnits(root, null, elements, null, units, 0)
+  const parallel = error ? [] : collectParallelGroups(root, units, words, innerParallel)
+  errors.push(...parallelNestingErrors(parallel))
+  // 節・句の行の並列は、そのまとまりの語の範囲に入るものだけを、まとまりの先頭からの番号で持つ。
+  const unitParallel = (node) => {
+    const start = words.findIndex((word) => word.scopes.includes(node))
+    if (start < 0) return Object.freeze([])
+    const end = words.findLastIndex((word) => word.scopes.includes(node)) + 1
+    return Object.freeze(parallel
+      .filter((group) => group.start >= start && group.end <= end)
+      .map((group) => shiftParallelGroup(group, -start)))
+  }
   for (const unit of units) {
     if (!unit.antecedent || unit.antecedent === '前の内容') continue
     const unitStart = words.findIndex((word) => word.scopes.includes(unit.node))
@@ -1122,10 +1551,13 @@ export function buildSentenceStructure(sentenceEn = '', markup = '', options = {
     }))),
     // 「文の要素」の下線表示に使う、括弧つきで句点も残した英文。
     markedSentence,
+    // and・or・but で並ぶもの（本文の語の番号の範囲）。表示で改行して縦にそろえる。
+    parallel: Object.freeze(parallel),
     patterns: Object.freeze(patternsForScope(elements, { root: true })),
     units: Object.freeze(units.map((unit, index) => Object.freeze({
       id: index,
       ...unit,
+      parallel: unitParallel(unit.node),
       note: unitNotes[unit.text] ?? '',
       connector: connectorByUnit.get(unit.node) ?? null,
       parts: Object.freeze(unit.node.children

@@ -60,8 +60,8 @@
 | -ing は動名詞・分詞・分詞構文・省略された副詞節を区別する | 台帳の種類（`動名詞` `現在分詞` `分詞構文` `副詞節`）と節・句の解説 |
 | 過去分詞の後置修飾は、省略された関係詞＋be動詞と受け身を説明する | 節・句の解説（`過去分詞`：that is・that are が省かれた受け身） |
 | 比較は前項・後項・省略された述語を示す | つなぐ語の解説（than・as の節、共通の主語と動詞の省略） |
-| 並列は左右の語句と、共有する主語・助動詞・to・前置詞を示す | **作業中**：並列の縦そろえ表示（別の作業で進行中） |
-| 共有された (to)・(can) を構造の表示だけに補う | **未対応**：並列の縦そろえ表示と合わせて決める |
+| 並列は左右の語句と、共有する主語・助動詞・to・前置詞を示す | 並列の縦そろえ表示（4.5章）。並ぶものを縦にそろえ、共有する主語・助動詞・to・前置詞は並びの手前に残る |
+| 共有された (to)・(can) を構造の表示だけに補う | **確認待ち**（7章）：縦そろえで共有が見えるので、補わない案 |
 | セミコロン・コロンを表示と説明に残す | 構造の表示には残る。説明は必要な文だけ台帳の `notes` に書く |
 
 ## 3. 構造台帳の書き方
@@ -97,6 +97,7 @@
 | | `反復` | year after year・from week to week（同じ名詞をくり返す決まった言い方） |
 | 括らない | `同格>名詞` | 名詞の言いかえ。名詞そのものは括らず、中の句・節だけ括る |
 | | `形容詞>名詞` | 名詞を後ろから説明する形容詞（full of …・least able to …） |
+| | `並列` | and・or・but で並ぶ語句を `\|` で区切る（4.5章）。表示の改行だけに使い、括弧・役割は変えない |
 
 ### 書き方の決まり
 
@@ -122,6 +123,47 @@
 - 名詞を後ろから説明する節は、句を名詞のところで閉じてから ( ) だけで示す（`<about the old station> (that stood …)`）。
 - 同格の名詞と、名詞を後ろから説明する形容詞は括らない（`Ms. Brown, one <of the librarians>,` `<than a harsh law> full <of loopholes>`）。
 - 決まった言い方（year after year・from week to week・more than＋数）は全体を一つの < >。
+
+## 4.5 表示の決まり（並列）
+
+2026-09-18 利用者が図で決めた形。「文の要素」と構造図の両方で、and・or・but で並ぶものを改行して縦にそろえる。
+
+```
+The students measured the water level
+             and
+             recorded the temperature every week.
+
+The prefecture now bans that action,
+but
+the official rule was too late.
+
+Farmers <from nearby villages> bring vegetables,
+                                     fruit
+                                     and
+                                     flowers
+<in small trucks>.
+```
+
+- 接続詞（and・or・but・nor・yet・so・rather than など）は単独の行に置く。接続詞の直後のコンマはその行に入れる（and,）。
+- 並ぶものは1つ目の先頭の位置にそろえる。手前の語句（共有する主語・助動詞・前置詞）は1つ目の行の左に残る。
+- 文どうしの並列は左端から行を分ける。
+- 並びの後ろに続く語句は、その行の始まり（左端、または外側の並ぶものの先頭）に戻して次の行に置く。
+- 並ぶものごとに左に細い線を引き、画面の幅で折り返した行と次の並ぶものを見分けられるようにする。接続詞の行には線を引かない。
+- 手前の語句の右に 12rem 以上の幅が残らない狭い画面では、並びを次の行の左端から置く。
+
+並ぶものの範囲（`src/lib/reading-sentence-structure.js` の `parallel`、配置は `src/lib/structure-parallel-layout.js`）:
+
+- 要素どうし（台帳の `[接 and]` など）は台帳から自動で決める。
+  - 接続詞のあとに主語がある → 文どうし。主語と動詞が入れかわる形（and so does X）も文どうし。
+  - 接続詞のあとに動詞がある → 述語どうし。1つ目は主語のあとの動詞から。共有する助動詞・to（can・had to・how to、語形が合うときの be・have）は手前に残し、本動詞にそろえる。
+  - それ以外 → 接続詞のあとの要素と同じ役割の要素を前へ探し、そこから並べる。コンマで続く同じ役割の要素（by A, by B, and by C）も並ぶものに入れる。対になる前半の語（neither・both・not only・not）は1つ目に入れる。
+  - 最後の並ぶもののあとに、コンマで区切って続く修飾語（, while …）は、並びに入れずに後ろへ出す。
+- 要素の中で並ぶ語句は、台帳に `{並列| vegetables, | fruit | and flowers}` と `|` で区切って書く。
+  1つ目は名詞のかたまりの頭（the・both・neither などを含む）から、2つ目以降は接続詞から始める。
+  後ろで共有する名詞は最後の並ぶものに入れる（`{並列| both environmental | and social benefits}`）。
+- 自動で決めきれない要素どうしの並列は、要素を並べて `|` で区切る。重なる自動の並列は使わない。
+  `[S It] [V travels] [M {前| with the next heavy rain}] {並列| [M {前| into a ditch}], | [M then] [M {前| into a stream}], | [接 and] [M finally] [M {前| into water …}]}`
+- 検査は `tests/reading-parallel-layout.test.mjs`（利用者の図の3つの形を固定。全台帳で語を落とさずに組めるか）。
 
 ## 5. つなぐ語の解説の決まり
 
@@ -152,7 +194,21 @@
 
 まだ決まっていない型。例文と選べる形を書いておき、まとめて確認する。
 
-（いまはない。並列の縦そろえの作業で出る型 — more and more・two or three・between A and B・共有する the／both など — は、届いたらここに足す）
+並列の縦そろえ（4.5章）で出た型。推奨の形で台帳を書いておき、決まったら直す。
+
+1. **between A and B**（`<between ten and two>` crowded_town_tourism#12、`<between damage and repair>` shared_watershed#31 など7文）
+   - 選べる形：(a) A と B を縦にそろえる　(b) 一まとまりの句として1行のまま
+   - 推奨 (a)：A と B は and で結ばれた並ぶもので、ほかの並列と同じ見え方になる。
+2. **sooner or later のような決まった言い方**（generational_city#83）
+   - 選べる形：(a) 1行のまま（並列にしない）　(b) sooner / or / later とそろえる
+   - 推奨 (a)：「遅かれ早かれ」という一つの副詞のまとまりで、並ぶ2つの意味を読み分ける所ではない。
+3. **共有された (can)・(to) を補うか**（最初の仕様の「特殊構文の扱い」）
+   - 例：Children can listen to stories, make small cards, and borrow books.
+   - 選べる形：(a) 補わない（can は並びの手前に残り、listen・make・borrow が縦にそろう）　(b) 2つ目以降に (can) を補う
+   - 推奨 (a)：縦にそろえることで、can を共有していることが見える。補うとそろえ位置が崩れる。
+4. **共有する the などの限定詞**（the brakes, seats, and lights・enough cucumbers and tomatoes）
+   - 選べる形：(a) the から1つ目にする（the brakes, / seats, / and / lights）　(b) the を手前に残す（the ⟨brakes, / seats, / and / lights⟩）
+   - 推奨 (a)：名詞のかたまりの頭から並べると、1つ目がそのまま読める。
 
 ## 8. 検査と固定値
 
