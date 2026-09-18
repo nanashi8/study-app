@@ -109,12 +109,15 @@ const CLAUSE_TYPES = new Set([
 
 const PHRASE_TYPES = new Set([
   'to', '疑問詞to', '原形', '動名詞', 'ing限定', '現在分詞', '過去分詞', '分詞構文', '同格', '挿入', '前', '数量', '反復',
+  '形容詞',
 ])
 
 // 役割（要素）を持たずに語句を直接入れるまとまり。前置詞句は中に節・句を入れ子にできる。
 // 数量は、more than ten thousand のような数の言い方を一まとまりの句として括る（利用者と確認済み）。
 // 反復は、year after year のように同じ名詞を前置詞でつなぐ決まった言い方を一つの句にする（2026-09-18 利用者が決定）。
-const BARE_UNIT_TYPES = new Set(['同格', '挿入', '前', '数量', '反復'])
+// 形容詞は、a harsh law full of loopholes の full of … のように名詞を後ろから説明する形容詞のまとまり。
+// 形容詞そのものは括らず、中の句だけを括る（2026-09-18 利用者が決定）。
+const BARE_UNIT_TYPES = new Set(['同格', '挿入', '前', '数量', '反復', '形容詞'])
 
 // 前置詞句の先頭に置ける前置詞（2語以上のものを先に照らす）。
 export const MULTIWORD_PREPOSITIONS = Object.freeze([
@@ -175,6 +178,12 @@ class StructureSyntaxError extends Error {}
 const REPETITION_PREPOSITIONS = new Set(['after', 'by', 'to', 'upon', 'in'])
 const REPETITION_MEANINGS = Object.freeze({
   'year after year': '毎年毎年',
+  'from week to week': '週ごとに',
+  'from end to end': '端から端まで',
+  'from day to day': '日ごとに',
+  'from year to year': '年ごとに',
+  'from time to time': 'ときどき',
+  'from door to door': '一軒一軒',
   'day after day': '来る日も来る日も',
   'time after time': '何度も何度も',
   'step by step': '一歩ずつ',
@@ -235,7 +244,7 @@ function parseUnitType(spec) {
     unit.usage = usage
     unit.adverbKind = adverbKind
   }
-  const needsAntecedent = ['関係', '関係,', '関係省略', '同格that', '現在分詞', '過去分詞', '同格']
+  const needsAntecedent = ['関係', '関係,', '関係省略', '同格that', '現在分詞', '過去分詞', '同格', '形容詞']
     .includes(base) || (base === 'to' && unit.usage === '形容詞')
   if (needsAntecedent && !unit.antecedent) {
     throw new StructureSyntaxError(`「${raw}」には説明する名詞（>名詞）が必要です`)
@@ -381,6 +390,8 @@ export function structureUnitLabel(unit) {
       return '数を表す句'
     case '反復':
       return '同じ名詞をくり返す句'
+    case '形容詞':
+      return '名詞を後ろから説明する形容詞のまとまり'
     default:
       return 'まとまり'
   }
@@ -627,10 +638,12 @@ function unitFunctionText(unit, container, scopeElements, scopeUnit, parent = co
     }
     case '反復': {
       const words = structureWords(rawText(unit.children))
-      const [noun = '', preposition = ''] = words
       const meaning = REPETITION_MEANINGS[words.join(' ').toLowerCase()]
-      return `${inside}${noun} を前置詞 ${preposition} でくり返す決まった言い方${meaning ? `（「${meaning}」）` : ''}で、副詞のはたらきをします${partOf}。`
+      const how = words.length === 4 ? `${words[1]} を from と to で` : `${words[0]} を前置詞 ${words[1]} で`
+      return `${inside}${how}くり返す決まった言い方${meaning ? `（「${meaning}」）` : ''}で、副詞のはたらきをします${partOf}。`
     }
+    case '形容詞':
+      return `${inside}直前の ${unit.antecedent} を後ろから説明します${partOf}。`
     case '現在分詞':
     case '過去分詞':
       return `${inside}直前の ${unit.antecedent} を後ろから説明します${partOf}。`
@@ -719,11 +732,15 @@ function markedText(nodes) {
   const out = []
   const emit = (text) => out.push(text)
   const walk = (list, phrase, parentUnit = null) => {
-    for (const node of list) {
+    for (const [index, node] of list.entries()) {
       if (node.kind === 'text') {
         // and・or だけが残るときは括らない（<across places> and <over time>）。
         const reopenWords = structureWords(node.text).filter((word) => !OBJECT_COORDINATORS.has(word.toLowerCase()))
-        if (phrase && !phrase.open && reopenWords.length) {
+        // simply・only などが後ろの節にかかるだけのときも括らない（<into a system> simply (because …)）。
+        const next = list[index + 1]
+        const focusBeforeClause = reopenWords.every((word) => FOCUS_BEFORE_OBJECT.has(word.toLowerCase()))
+          && next?.kind === 'unit' && unitIsClause(next)
+        if (phrase && !phrase.open && reopenWords.length && !focusBeforeClause) {
           // 閉じ直すときは、先頭のコンマや and・or を括弧の外に出す（<beyond headlines>, <tolerate …>、
           // <the price> <of food>, and <the currency>）。
           const lead = /^[\s,;:]*(?:(?:and|or|but|nor)\b[\s,]*)?/i.exec(node.text)[0]
@@ -753,8 +770,9 @@ function markedText(nodes) {
         emit(') ')
         continue
       }
-      // 同格の語句は、言いかえる名詞そのものは括らず、中の句・節だけを括る（Ms. Brown, one <of the librarians>）。
-      if (node.base === '同格') {
+      // 同格の語句・名詞を後ろから説明する形容詞は、句を名詞のところで閉じ、それ自体は括らず中の句・節だけを括る
+      // （Ms. Brown, one <of the librarians>、<than a harsh law> full <of loopholes>）。
+      if (['同格', '形容詞'].includes(node.base)) {
         if (phrase?.open) {
           emit('> ')
           phrase.open = false
@@ -893,8 +911,10 @@ function validateUnit(unit, errors) {
   }
   if (unit.base === '反復') {
     const words = structureWords(rawText(unit.children)).map((word) => word.toLowerCase())
-    if (words.length !== 3 || words[0] !== words[2] || !REPETITION_PREPOSITIONS.has(words[1])) {
-      errors.push(`反復の句「${unitText(unit)}」は year after year のように「名詞＋前置詞＋同じ名詞」で書きます`)
+    const nounPrepNoun = words.length === 3 && words[0] === words[2] && REPETITION_PREPOSITIONS.has(words[1])
+    const fromNounToNoun = words.length === 4 && words[0] === 'from' && words[2] === 'to' && words[1] === words[3]
+    if (!nounPrepNoun && !fromNounToNoun) {
+      errors.push(`反復の句「${unitText(unit)}」は year after year・from week to week のように同じ名詞をくり返して書きます`)
     }
   }
   if (unit.base === '数量') {

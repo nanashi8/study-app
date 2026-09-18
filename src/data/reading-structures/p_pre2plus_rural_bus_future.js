@@ -107,7 +107,7 @@ export default Object.freeze([
       'and happened at predictable times': 'and の後ろの happened の主語も most trips です。predictable は「予測できる」。',
     },
   }),
-  st('[S Very few people] [V used] [O the full route] [M {前| from end} {前| to end}].', {
+  st('[S Very few people] [V used] [O the full route] [M {反復| from end to end}].', {
     chunks: [
       ['Very few people used the full route', 'ごくわずかな人しか、路線全体を使いませんでした（どのようにかは次へ）'],
       ['from end to end', '端から端まで'],

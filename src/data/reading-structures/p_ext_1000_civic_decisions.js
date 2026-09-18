@@ -201,7 +201,7 @@ export default Object.freeze([
       'but a penalty deters nobody': 'deterrent は「思いとどまらせるもの」、deter は「思いとどまらせる」。',
     },
   }),
-  st('[S A clear law {前| with a small penalty}] [M often] [V changes] [O behavior] [M more] [M {前| than a harsh law full {前| of loopholes}}].', {
+  st('[S A clear law {前| with a small penalty}] [M often] [V changes] [O behavior] [M more] [M {前| than a harsh law {形容詞>a harsh law| full {前| of loopholes}}}].', {
     chunks: [
       ['A clear law with a small penalty', '罰の軽い明確な法律は'],
       ['often changes behavior more', 'しばしば行動をよりよく変えます'],
