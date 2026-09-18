@@ -333,7 +333,7 @@ export const CURRENT_AFFAIRS_READING_STUDY = Object.freeze({
       '意のままに・思いのままに',
       'Once audiences know that anything can be faked, genuine evidence can be dismissed at will.',
       '何でも作れると人々が知れば、本物の証拠も意のままに退けられます。',
-      '制約なく行えることを示す。ここでは否定側が負担なく反証を退けられる状態を指す。',
+      '制約なく行えることを示す。ここでは、否定したい側が本物の証拠を手間なく退けられる状態を指す。',
     ),
     expression(
       'trust_as_easy_as',

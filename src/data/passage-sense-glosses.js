@@ -720,35 +720,131 @@ export const PASSAGE_SENSE_GLOSSES = Object.freeze({
   }),
 
   // p_1_synthetic_media_trust（見ることが信じることでなくなるとき）
+  'For most of the last century, a photograph or a sound recording carried a special kind of authority in public argument.': words({
+    recording: sense('record', '録音'),
+    carried: sense('carry', '持っていた（carry authority で「権威を持つ」）'),
+    kind: sense('kind', '種類'),
+  }),
+  'Ordinary readers could therefore treat a published photograph as reasonable evidence without examining it closely.': words({
+    reasonable: sense('reasonable', 'もっともな・妥当な'),
+  }),
   'Synthetic media has weakened this assumption rather than destroyed it outright.': words({ weakened: sense('weaken', '弱めた') }),
-  'A single convincing file can reach millions of people long before any expert examines it.': words({ file: sense('file', 'ファイル（データのまとまり）') }),
+  'The necessary tools are widely available, and each improvement lowers the effort required again.': words({
+    widely: sense('wide', '広く'),
+  }),
+  'A single convincing file can reach millions of people long before any expert examines it.': words({
+    file: sense('file', 'ファイル（データのまとまり）'),
+    long: sense('long', 'ずっと（long before で「〜よりずっと前に」）'),
+  }),
+  'A fabricated recording released the night before an election can cause damage that no later correction repairs.': words({
+    recording: sense('record', '録音'),
+  }),
   'A subtler danger works in the opposite direction and may prove more damaging.': words({ may: MAY }),
+  'Once audiences know that anything can be faked, genuine evidence can be dismissed at will.': words({
+    once: sense('once', 'いったん〜すると（接続詞）'),
+  }),
+  'An official can simply claim that a recording of a bribe was generated.': words({
+    official: sense('official', '役人・職員'),
+    recording: sense('record', '録音'),
+  }),
+  'Accountability weakens whenever an inconvenient record can be denied without any supporting argument.': words({
+    record: sense('record', '記録'),
+  }),
   'Detection software is usually proposed as the first answer, and it is genuinely useful.': words({ answer: sense('answer', '答え・対策') }),
-  'Their accuracy falls sharply when a file is compressed, cropped, or recorded again from a screen.': words({ file: sense('file', 'ファイル（データのまとまり）') }),
-  'Detection therefore deserves continued investment, but it cannot carry the whole burden of public trust.': words({ trust: sense('trust', '信頼') }),
-  'A second approach records where a file originated instead of asking what it looks like.': words({ file: sense('file', 'ファイル（データのまとまり）') }),
-  'A file without such a record is then treated as unverified rather than false, so the approach fails safely.': words({
+  'Such tools search for statistical traces that generation leaves behind in pixels or sound.': words({
+    traces: sense('trace', '跡・痕跡（複数）'),
+    generation: sense('generation', '（機械による）生成'),
+  }),
+  'Their accuracy falls sharply when a file is compressed, cropped, or recorded again from a screen.': words({
+    file: sense('file', 'ファイル（データのまとまり）'),
+    cropped: sense('crop', '（画像の端を）切り取られた（crop の過去分詞）'),
+  }),
+  'Every published detector also teaches the next generation of systems precisely what to avoid.': words({
+    systems: sense('system', 'システム（仕組み）'),
+  }),
+  'The contest is asymmetric, since one success is enough for an attacker while a verifier needs consistent reliability.': words({
+    contest: sense('contest', '争い・競い合い'),
+  }),
+  'Detection therefore deserves continued investment, but it cannot carry the whole burden of public trust.': words({
+    carry: sense('carry', '背負う'),
+    trust: sense('trust', '信頼'),
+  }),
+  'A second approach records where a file originated instead of asking what it looks like.': words({
+    approach: sense('approach', 'やり方・取り組み方'),
     file: sense('file', 'ファイル（データのまとまり）'),
   }),
-  'Provenance systems carry their own risks, and those risks deserve equal attention.': words({ own: sense('own', 'それ自身の・固有の') }),
-  'Signing equipment is expensive, so the poorest witnesses are least able to prove what they saw.': words({ saw: sense('see', '見た') }),
+  'A camera can sign an image at the moment of capture, and later edits can be added to the same record.': words({
+    sign: sense('sign', '署名する'),
+    capture: sense('capture', '撮影（すること）'),
+    record: sense('record', '記録'),
+  }),
+  'A file without such a record is then treated as unverified rather than false, so the approach fails safely.': words({
+    file: sense('file', 'ファイル（データのまとまり）'),
+    record: sense('record', '記録'),
+    approach: sense('approach', 'やり方・取り組み方'),
+  }),
+  'Provenance systems carry their own risks, and those risks deserve equal attention.': words({
+    systems: sense('system', 'システム（仕組み）'),
+    carry: sense('carry', '（危険などを）伴う'),
+    own: sense('own', 'それ自身の・固有の'),
+  }),
+  'Signing equipment is expensive, so the poorest witnesses are least able to prove what they saw.': words({
+    signing: sense('sign', '署名する（ための）'),
+    saw: sense('see', '見た'),
+  }),
   'Metadata that establishes authenticity may also reveal the location, the device, and the identity of a source.': words({ may: MAY }),
+  'A system designed to protect the public can therefore endanger the people who expose wrongdoing.': words({
+    system: sense('system', 'システム（仕組み）'),
+    designed: sense('design', '（〜のために）作られた（design の過去分詞）'),
+  }),
+  'Technical measures are less important than the institutions that interpret and apply them.': words({
+    measures: sense('measure', '手段・対策（複数）'),
+  }),
   'Courts have handled disputed evidence for centuries without assuming that documents prove themselves.': words({
     disputed: sense('dispute', '争われている（disputeの過去分詞）'),
   }),
+  'Newsrooms that publish their verification steps allow readers to judge the strength of a report.': words({
+    steps: sense('step', '手順（複数）'),
+    judge: sense('judge', '判断する'),
+  }),
   'Trust of this kind is harder to destroy than trust resting on the appearance of a single file.': words({
     trust: sense('trust', '信頼'),
+    kind: sense('kind', '種類'),
     resting: sense('rest', '（〜に）頼る・基づく（rest on）'),
     file: sense('file', 'ファイル（データのまとまり）'),
   }),
   'Warning labels can help, yet unlabeled material may then seem verified by default.': words({ may: MAY }),
-  'Communities with the fewest resources therefore face the highest risk of manufactured evidence.': words({ face: sense('face', '直面する・さらされる') }),
+  'Researchers describe this as the implied truth effect, and it grows stronger as labeling expands.': words({
+    grows: sense('grow', '（だんだん）〜になる（grow stronger で「強くなる」）'),
+  }),
+  'Useful teaching shows students how to ask who published a claim and what independent evidence supports it.': words({
+    teaching: sense('teach', '教えること・指導'),
+  }),
+  'The burden of this new work is distributed very unevenly across the world.': words({
+    work: sense('work', '仕事'),
+  }),
+  'Large newsrooms can employ verification teams, while a local reporter covering a rural election cannot.': words({
+    covering: sense('cover', '取材している（cover の -ing 形）'),
+  }),
+  'Communities with the fewest resources therefore face the highest risk of manufactured evidence.': words({
+    fewest: sense('few', 'いちばん少ない（few の最上級）'),
+    face: sense('face', '直面する・さらされる'),
+    manufactured: sense('manufacture', '（にせ物として）作られた'),
+  }),
+  'A better approach asks what supports a claim rather than whether an image is real.': words({
+    approach: sense('approach', 'やり方・取り組み方'),
+  }),
   'A single file is rarely decisive on its own, whether it happens to be genuine or not.': words({
     file: sense('file', 'ファイル（データのまとまり）'),
     own: sense('own', '（on its own で）それだけで・単独で'),
   }),
+  'Independent records, consistent testimony, and institutions that can be questioned carry far more weight together.': words({
+    records: sense('record', '記録（複数）'),
+    questioned: sense('question', '問いただされる（受け身）'),
+  }),
   'Belief never rested on the image alone, and the present task is to rebuild the arrangements that made evidence trustworthy.': words({
     rested: sense('rest', '（〜に）支えられていた・基づいていた（rest on）'),
+    present: sense('present', '今の・現在の'),
   }),
 
   // p_pre2_pond_comeback（学校の裏の池）

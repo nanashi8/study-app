@@ -658,7 +658,7 @@ export const PASSAGE_READING_APPROACHES = Object.freeze({
     '対策ごとに効果・副作用・負担を並べる',
     '評論文では、対策を良し悪しで裁かず、それぞれが何を守り、何を新たに壊すのかを同じ表で比べる。',
     ['中心となる概念の定義と、その範囲を先に押さえる', '対策ごとに効果と副作用を対にする', '負担を負う側が誰かを最後に確かめる'],
-    ['reading-mode', 'insertion', 'that-diagnosis', 'comparison-pairs', 'author-stance', 'repair-monitor'],
+    ['reading-mode', 'noun-boundary', 'that-diagnosis', 'comparison-pairs', 'author-stance', 'repair-monitor'],
   ),
   p_pre2_pond_comeback: makePassageApproach(
     '原因の候補を一つずつ消して、本当の原因を絞り込む',

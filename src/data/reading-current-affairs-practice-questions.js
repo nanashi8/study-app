@@ -424,7 +424,7 @@ export const CURRENT_AFFAIRS_READING_PRACTICE_QUESTIONS = Object.freeze({
       sourceSentence: 'A better approach asks what supports a claim rather than whether an image is real.',
       sourceJa: 'より良い進め方は、画像が本物かどうかではなく、何がその主張を支えるかを問うことです。',
       explain: 'asks の目的語を what 節と whether 節で対比し、rather than の前を筆者が採る問いとして読む。',
-      readingRuleId: 'that-diagnosis',
+      readingRuleId: 'wh-clause',
       vocabIds: ['evidence'],
     }),
     choiceQuestion({
@@ -461,7 +461,7 @@ export const CURRENT_AFFAIRS_READING_PRACTICE_QUESTIONS = Object.freeze({
       choices: [
         ['examine', '詳しく調べる', 'この文では来歴の連鎖を詳しく検討するので examine が検証行為に合う。'],
         ['publish', '公表する', 'publish a record は記録を公表する場面なら使えるが、読者が信頼性を判断する調査行為ではない。'],
-        ['replace', '置き換える', 'replace A with B なら対象を置き換える意味だが、この文は検討対象を比較しているので前置詞も意味も合わない。'],
+        ['replace', '置き換える', 'replace は「置き換える」で、読者が来歴を置き換えるのではなく詳しく調べる、という本文の流れに合わない。'],
         ['doubt', '疑う', 'doubt a claim は主張を疑う場面で使えるが、本文は何でも疑うのでなく来歴を具体的に調べる方法を述べる。'],
       ],
     }),
