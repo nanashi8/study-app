@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-09-18T01:12:53.513Z",
+  "auditedAt": "2026-09-18T01:22:02.333Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -12,7 +12,7 @@
     "quizItemCount": 16473,
     "storedAndGeneratedQuestionPathCount": 4946,
     "storedAndGeneratedChoicePathCount": 19353,
-    "overallContentSha256": "853a23329f6abf53c70eefd1d6f7f9f7588e7f18c22411699cc74e56bee21b54"
+    "overallContentSha256": "52b14524e53ce8611ba38d4231bdafd591217db27355e4588c29d9276d641711"
   },
   "completionCriteria": [
     "全18教材カテゴリのID・母数・重複・内容ハッシュが一致する",
@@ -430,7 +430,7 @@
       "quizItemCount": 42,
       "learningIdOrderSha256": "5a73640787e6fb7d0e952cc3e4b513903f10cee089c479e8f91d9a8d8bf0215b",
       "quizIdOrderSha256": "5a73640787e6fb7d0e952cc3e4b513903f10cee089c479e8f91d9a8d8bf0215b",
-      "contentSha256": "86f9cb3d68a9b730ad258c4c593b4fd59f75f014ef19d24f451b8e92d2e549be",
+      "contentSha256": "a6fffccd267fd47d318164c1cbaa27ed4735a2e8e34db6b3547200814aa2c1ed",
       "auditGateIds": [
         "inventory",
         "coreData",
@@ -978,7 +978,7 @@
       "環境・科学・医療・政策",
       "社会総合・経済・心理・科学技術"
     ],
-    "contentSha256": "aa55c000f1a1636422088c74d468c5852cdf50f4855c606da965a8f8ee7644d3"
+    "contentSha256": "dd480eac1330d671edaf198c968dcc7e7660c25907016f94de9209b60d6b5865"
   },
   "grammarDetail": {
     "sourceQuestionCount": 3450,
