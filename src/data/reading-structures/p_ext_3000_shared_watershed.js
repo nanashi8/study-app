@@ -496,7 +496,7 @@ export default Object.freeze([
       'Fertilizer that a plant does not take up': 'take up … で「…を吸い上げる」。',
     },
   }),
-  st('[S It] [V travels] [M {前| with the next heavy rain}] [M {前| into a ditch}], [M then] [M {前| into a stream}], [接 and] [M finally] [M {前| into water {関係>water| [O that] [S other people] [V use]}}].', {
+  st('[S It] [V travels] [M {前| with the next heavy rain}] {並列| [M {前| into a ditch}], | [M then] [M {前| into a stream}], | [接 and] [M finally] [M {前| into water {関係>water| [O that] [S other people] [V use]}}]}.', {
     chunks: [
       ['It travels with the next heavy rain', 'それは次の大雨とともに移動します'],
       ['into a ditch, then into a stream,', '用水路へ、次に小川へ'],
@@ -786,7 +786,7 @@ export default Object.freeze([
       'a household is actually able to obtain': 'be able to obtain で「手に入れられる」。',
     },
   }),
-  st('[S A clinic two hours away] [V is used] [M only] [M {前| for emergencies}] [接 and] [M almost never] [M {前| for the small problems {関係>the small problems| [S that] [V precede] [O them]}}].', {
+  st('[S A clinic two hours away] [V is used] {並列| [M only] [M {前| for emergencies}] | [接 and] [M almost never] [M {前| for the small problems {関係>the small problems| [S that] [V precede] [O them]}}]}.', {
     chunks: [
       ['A clinic two hours away is used only', '二時間かかる診療所が使われるのは'],
       ['for emergencies', '緊急のときだけで'],

@@ -111,6 +111,7 @@ function StructureUnitRows({ units, activeWord, isKnownWord, onWordClick }) {
               <ReadingRoleSentence
                 sentence={unit.marked}
                 parts={structureDisplayParts(unit.parts)}
+                parallel={unit.parallel ?? []}
                 activeWord={activeWord}
                 isKnownWord={isKnownWord}
                 onWordClick={onWordClick}
@@ -173,6 +174,7 @@ export function ReadingSentenceDetail({
                 parts={structure
                   ? structureDisplayParts(structure.elements)
                   : sentenceFlowParts(sentenceAnalysis)}
+                parallel={structure?.parallel ?? []}
                 activeWord={activeWord?.word}
                 isKnownWord={isKnownWord}
                 onWordClick={tapToken}
@@ -192,7 +194,7 @@ export function ReadingSentenceDetail({
               )}
               <p className="mt-2 text-[10px] font-bold leading-relaxed text-ink/55">
                 {structure
-                  ? '上の下線は文全体の骨組みでの役割です。( ) は主語と動詞を持つ節、< > は前置詞句や不定詞などの句です。節や句の中の役割は、字下げした行に分けて示します。青い太字は重要語で、どの単語もタップできます。'
+                  ? '上の下線は文全体の骨組みでの役割です。( ) は主語と動詞を持つ節、< > は前置詞句や不定詞などの句です。and・or・but で並ぶものは改行して先頭をそろえ、並ぶものごとに左に線を引きます。節や句の中の役割は、字下げした行に分けて示します。青い太字は重要語で、どの単語もタップできます。'
                   : '下線の下にあるS・V・O・C・Mが、その役割の範囲です。青い太字は重要語で、どの単語もタップできます。'}
               </p>
             </div>
@@ -270,7 +272,10 @@ export function ReadingSentenceDetail({
                 className="text-base font-bold leading-loose text-ink"
                 data-reading-structure-diagram={sentenceAnalysis.marked}
               >
-                <StructureDiagram tokens={structure?.structureTokens ?? sentenceAnalysis.structureTokens} />
+                <StructureDiagram
+                  tokens={structure?.structureTokens ?? sentenceAnalysis.structureTokens}
+                  parallel={structure?.parallel ?? []}
+                />
               </p>
               <div className="mt-3">
                 <SvocFlow parts={structure

@@ -299,7 +299,7 @@ test('長文画面は意味フレーズの表示を保ち、講師音声機能�
     'utf8',
   )
   const source = `${reader}\n${detail}`
-  assert.match(source, /<StructureDiagram tokens=\{structure\?\.structureTokens \?\? sentenceAnalysis\.structureTokens\} \/>/)
+  assert.match(source, /<StructureDiagram\s+tokens=\{structure\?\.structureTokens \?\? sentenceAnalysis\.structureTokens\}\s+parallel=\{structure\?\.parallel \?\? \[\]\}\s+\/>/)
   assert.doesNotMatch(source, /sentenceAnalysis\.blocks\.map\(\(block\) =>/)
 
   assert.doesNotMatch(source, /speakBlockPair|learnerPhrasePairsForBlock/)
