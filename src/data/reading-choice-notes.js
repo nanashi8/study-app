@@ -926,9 +926,9 @@ export const READING_CHOICE_NOTES = freezeNotes({
   },
   "p_2_factory_museum#1": {
     "To pull the building down.": "第5文 The town council first planned to pull the building down. と一致する。first が「初めは」。",
-    "To open a museum of the local economy.": "博物館は、市民の団体が後から出した二つ目の計画（第16・17文）。",
-    "To rent the building to young makers.": "若い作り手に貸すのも、市民の団体の計画（第18・19文）。評議会が初めに考えたことではない。",
-    "To repair the roof over ten years.": "10年かけた修理は、市民の団体の計画が約束したこと（第20文）。",
+    "To open a museum of the local economy.": "博物館は、市民団体が後から出した二つ目の計画（第16・17文）。",
+    "To rent the building to young makers.": "若い作り手に貸すのも、市民団体の計画（第18・19文）。町議会が初めに考えたことではない。",
+    "To repair the roof over ten years.": "10年かけた修理は、市民団体の計画が約束したこと（第20文）。",
   },
   "p_2_factory_museum#2": {
     "Because the museum needed a large staff.": "博物館は少ない職員で開館した（第24文）。職員の多さは費用の調査の話ではない。",
@@ -938,14 +938,14 @@ export const READING_CHOICE_NOTES = freezeNotes({
   },
   "p_2_factory_museum#3": {
     "By selling the land to a private company.": "土地を売るのは企業の申し出（第14・15文）で、二つ目の計画ではない。",
-    "By rent from small workshops in the building.": "建物の半分に若い作り手の仕事場を入れ（第18文）、Rent from those workshops would produce a steady revenue.（第19文）と書かれている。",
+    "By rent from small workshops in the building.": "建物の半分に若い作り手の工房を入れ（第18文）、Rent from those workshops would produce a steady revenue.（第19文）と書かれている。",
     "By a large gift from the local economy.": "大きな寄付の話は出てこない。博物館は地域経済を伝える施設（第17文）。",
-    "By a higher price for each museum ticket.": "入場料の話は出てこない。収入は仕事場の家賃から得る（第19文）。",
+    "By a higher price for each museum ticket.": "入場料の話は出てこない。収入は工房の家賃から得る（第19文）。",
   },
   "p_2_factory_museum#4": {
     "They clean the machines every morning.": "機械を掃除したのはボランティア（第23文）。",
     "They pay a part of the public money.": "公的な資金は博物館が費用の一部を頼っているもの（第34文）で、元の働き手が払うのではない。",
-    "They decide the plan of each project.": "計画を難しい問いから始めるのは市民の団体（第36・37文）。",
+    "They decide the plan of each project.": "計画を難しい問いから始めるのは市民団体（第36・37文）。",
     "They lead the tours and explain each machine.": "第27文 Former workers lead the tours and explain each machine. と一致する。",
   },
   "p_2_factory_museum#5": {

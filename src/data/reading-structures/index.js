@@ -37,6 +37,7 @@ import p_1_synthetic_media_trust from './p_1_synthetic_media_trust.js'
 import p_pre2_pond_comeback from './p_pre2_pond_comeback.js'
 import p_pre2_morning_market from './p_pre2_morning_market.js'
 import p_2_injury_free_practice from './p_2_injury_free_practice.js'
+import p_2_factory_museum from './p_2_factory_museum.js'
 import p_ext_4000_generational_city from './p_ext_4000_generational_city.js'
 import p_ext_3000_shared_watershed from './p_ext_3000_shared_watershed.js'
 import p_ext_2000_customs_across_borders from './p_ext_2000_customs_across_borders.js'
@@ -78,6 +79,7 @@ const PASSAGE_STRUCTURES = Object.freeze({
   p_pre2_pond_comeback,
   p_pre2_morning_market,
   p_2_injury_free_practice,
+  p_2_factory_museum,
   p_ext_4000_generational_city,
   p_ext_3000_shared_watershed,
   p_ext_2000_customs_across_borders,

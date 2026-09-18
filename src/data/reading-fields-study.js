@@ -152,7 +152,7 @@ export const FIELD_READING_STUDY = Object.freeze({
       'pull ... down',
       '〜を取り壊す',
       'The town council first planned to pull the building down.',
-      '町の評議会は初め、その建物を取り壊す計画でした。',
+      '町議会は初め、その建物を取り壊す計画でした。',
       'pull down は「引いて倒す」から「取り壊す」。目的語が代名詞のときは pull it down の語順になり、名詞なら間にも後ろにも置ける。',
     ),
     expression(
@@ -161,7 +161,7 @@ export const FIELD_READING_STUDY = Object.freeze({
       'would have + 過去分詞',
       '（実際にはそうならなかったが）〜したはずだ',
       'The offer would have removed the debt of the town in one step.',
-      'その申し出は、町の借金を一度に消したはずでした。',
+      'その申し出を受けていれば、町の借金は一度になくなっていたでしょう。',
       '実際には選ばれなかった案の結果を述べる形。過去の事実ではなく「もし受けていたら」という仮定の帰結を表す。',
       'syntax',
     ),
@@ -172,7 +172,7 @@ export const FIELD_READING_STUDY = Object.freeze({
       'AをBに変える',
       'Their memory turns a quiet room into a place of real work.',
       '彼らの記憶が、静かな部屋を本物の仕事の場に変えます。',
-      'into が変化の到達点を示す。turn A to B ではなく into を使う点が、この語法の決め手になる。',
+      'into が変化の到達点（何に変わるか）を示す。この文では、記憶が静かな部屋を「本物の仕事の場」に変える。',
     ),
     expression(
       'factory_depend_on',
@@ -181,7 +181,7 @@ export const FIELD_READING_STUDY = Object.freeze({
       '〜に頼る・〜次第である',
       'The museum depends on public money for a part of its costs.',
       'その博物館は費用の一部を公的な資金に頼っています。',
-      'depend は自動詞なので、頼る相手は必ず on を伴う。for は「何のために頼るか」を補う。',
+      'depend は自動詞なので、頼る相手は on（または upon）で示す。for は「何のために頼るか」を補う。',
     ),
   ]),
   p_pre2_school_radio: study([

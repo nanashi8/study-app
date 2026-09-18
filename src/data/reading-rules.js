@@ -682,7 +682,7 @@ export const PASSAGE_READING_APPROACHES = Object.freeze({
     '二つの案を費用・収入・残るものの三点で比べる',
     '保存をめぐる論説文では、どちらが正しいかを急いで決めず、案ごとの費用と収入、そして残る価値を同じ枠で比べる。',
     ['最初の方針と反対の動きを分ける', '案ごとに費用と収入を対にする', '成果と残る課題を、最後の段落で確かめる'],
-    ['genre-prediction', 'insertion', 'that-diagnosis', 'contrast-concession', 'author-stance', 'evidence-backtrack'],
+    ['genre-prediction', 'parallel-shape', 'that-diagnosis', 'negation-scope', 'author-stance', 'evidence-backtrack'],
   ),
   p_pre2_school_radio: makePassageApproach(
     '聞き手の指摘と、変えた点を一つずつ結ぶ',

@@ -183,7 +183,7 @@ export const FIELD_READING_QUESTIONS = Object.freeze({
         'By a higher price for each museum ticket.',
       ],
       answer: 'By rent from small workshops in the building.',
-      explain: '第18文と第19文で、建物の半分に小さな仕事場を入れ、その家賃が安定した収入を生む計画だと述べられています。',
+      explain: '第18文と第19文で、建物の半分に小さな工房を入れ、その家賃が安定した収入を生む計画だと述べられています。',
     },
     {
       q: 'What do former workers do at the museum?',
