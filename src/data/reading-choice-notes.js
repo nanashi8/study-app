@@ -901,9 +901,9 @@ export const READING_CHOICE_NOTES = freezeNotes({
     "After the members began to use a cheap device.": "装置は気温と湿度を示すための対策（第16文）で、けがの原因ではない。",
   },
   "p_2_injury_free_practice#2": {
-    "Because the teacher wanted a shorter practice.": "先生が短い練習を望んだとは書かれていない。先生は、けがを不運と呼んだ人（第2文）。",
+    "Because the teacher wanted a shorter practice.": "先生が短い練習を望んだとは書かれていない。先生は、けがを不運だと言った人（第2文）。",
     "Because the school council asked for the change.": "評議会が頼んだのは、方法をほかのチームと共有すること（第29文）。切り離しを求めたのではない。",
-    "Because students had hidden pains out of anxiety.": "多くの生徒が小さな痛みを隠し（第19文）、チームでの場所を失う不安を感じていた（第20文）ので、指導者は報告を選考から切り離した（第21文）。",
+    "Because students had hidden pains out of anxiety.": "多くの生徒が小さな痛みを隠し（第19文）、チームでの座を失う不安を感じていた（第20文）ので、指導者は報告を選考から切り離した（第21文）。",
     "Because the budget did not cover a second device.": "予算は装置と講習をまかなった（第30文）。2台目の話は出てこない。",
   },
   "p_2_injury_free_practice#3": {
@@ -913,7 +913,7 @@ export const READING_CHOICE_NOTES = freezeNotes({
     "It stops the practice by itself.": "第17文で、数値が線を超えたときに練習を止めるのはリーダーだと書かれている。",
   },
   "p_2_injury_free_practice#4": {
-    "The club trained for more hours than before.": "第28文で、だれもより長い時間練習しなかったのに成績が良くなったと書かれている。",
+    "The club trained for more hours than before.": "第28文で、練習時間を増やした人はいなかったのに成績が良くなったと書かれている。",
     "The number of hurt members fell from nine to one.": "2年目のけが人は1人で（第26文）、最初の年は9人だった（第27文）と書かれている。",
     "The mentor left the club after the first season.": "指導者が去ったとは書かれていない。指導者は今も方法の限界を注意している（第32文）。",
     "The team stopped keeping records of pain.": "部員は今も恐れずに小さな痛みを報告している（第24文）。記録をやめたのではない。",

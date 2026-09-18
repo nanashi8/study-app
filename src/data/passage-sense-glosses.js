@@ -948,13 +948,87 @@ export const PASSAGE_SENSE_GLOSSES = Object.freeze({
 
   // p_2_injury_free_practice（痛みを数えた部活）
   'Last spring, four members of our track club were injured within a single month.': words({ track: sense('track', '陸上競技（track club で陸上部）') }),
-  'Most damage appeared after a sudden rise in weekly distance.': words({ rise: sense('rise', '増加・上昇') }),
-  'High humidity raised the risk further, and the water breaks were too short.': words({ raised: sense('raise', '高めた・上げた') }),
+  'The teacher called each case bad luck.': words({
+    called: sense('call', '（O を C だと）言った・呼んだ'),
+    case: sense('case', '（けがなどの）一件・事例'),
+  }),
+  'She asked every member to keep a simple record after practice.': words({
+    keep: sense('keep', '（記録を）つける・続ける'),
+    record: sense('record', '記録'),
+    practice: sense('practice', '練習'),
+  }),
+  'Each card showed the distance, the weather and the pain.': words({ showed: sense('show', '示した・書き表した') }),
+  'The records revealed a clear pattern within eight weeks.': words({
+    records: sense('record', '記録（複数）'),
+    pattern: sense('pattern', '傾向・決まった型'),
+  }),
+  'Most damage appeared after a sudden rise in weekly distance.': words({
+    damage: sense('damage', '（体の）損傷・傷み'),
+    rise: sense('rise', '増加・上昇'),
+    weekly: sense('week', '週ごとの（weekly）'),
+  }),
+  'High humidity raised the risk further, and the water breaks were too short.': words({
+    raised: sense('raise', '高めた・上げた'),
+    breaks: sense('break', '休憩（water break で水分補給の休憩）'),
+  }),
+  'Tired muscles lose their shape, and the load moves to the joints.': words({
+    lose: sense('lose', '失う（lose one\'s shape で「形が崩れる」）'),
+    load: sense('load', '（体にかかる）負荷'),
+    moves: sense('move', '移る・動く'),
+    joints: sense('joint', '関節（複数）'),
+  }),
+  'A body under such stress becomes vulnerable to small accidents.': words({ stress: sense('stress', '（体への）負担・ストレス') }),
+  'The club then changed three daily habits.': words({ changed: sense('change', '変えた') }),
+  'Members now increase the weekly distance by a small percentage.': words({ weekly: sense('week', '週ごとの（weekly）') }),
+  'The team moved practice to the early morning during the hot season.': words({
+    moved: sense('move', '移した・動かした'),
+    practice: sense('practice', '練習'),
+  }),
+  'A cheap device shows the temperature and the humidity at the field.': words({
+    shows: sense('show', '示す・表示する'),
+    field: sense('field', 'グラウンド・競技場'),
+  }),
+  'The leader stops the practice when the numbers pass a fixed line.': words({
+    practice: sense('practice', '練習'),
+    numbers: sense('number', '数値（複数）'),
+    pass: sense('pass', '（線を）超える'),
+  }),
+  'The hardest change was not physical.': words({ change: sense('change', '変化') }),
   'Many students had hidden small pains from the teacher.': words({ hidden: sense('hide', '隠していた（hideの過去分詞）') }),
-  'This policy lowered the pressure and raised the accuracy of the records.': words({ lowered: sense('lower', '下げた'), raised: sense('raise', '高めた・上げた') }),
-  'Results in races improved, although nobody trained more hours.': words({ races: sense('race', 'レース・競走（複数）') }),
-  'The benefit soon reached students outside the track club.': words({ track: sense('track', '陸上競技（track club で陸上部）') }),
-  'A team can act early when it measures its own practice.': words({ own: sense('own', '自分たちの') }),
+  'They felt anxiety about losing a place in the team.': words({ place: sense('place', '（チームでの）座・地位') }),
+  'The mentor therefore separated the report of pain from the choice of members.': words({ separated: sense('separate', '切り離した・分けた') }),
+  'The team keeps the place of any student who reports pain early.': words({
+    keeps: sense('keep', '守る・そのままにしておく'),
+    place: sense('place', '（チームでの）座・地位'),
+  }),
+  'This policy lowered the pressure and raised the accuracy of the records.': words({
+    lowered: sense('lower', '下げた'),
+    raised: sense('raise', '高めた・上げた'),
+    records: sense('record', '記録（複数）'),
+  }),
+  'Awareness of the body became part of the ordinary practice.': words({ practice: sense('practice', '練習') }),
+  'In the second year, the club counted one hurt member.': words({ hurt: sense('hurt', 'けがをした（形容詞）') }),
+  'Results in races improved, although nobody trained more hours.': words({
+    races: sense('race', 'レース・競走（複数）'),
+    trained: sense('train', '練習した・訓練した'),
+  }),
+  'A small budget covered the device and a short course for the leaders.': words({
+    covered: sense('cover', '（費用を）まかなった'),
+    course: sense('course', '講習・講座'),
+  }),
+  'The benefit soon reached students outside the track club.': words({
+    reached: sense('reach', '届いた・及んだ'),
+    track: sense('track', '陸上競技（track club で陸上部）'),
+  }),
+  'Records cannot predict every accident, and some damage comes from old wounds.': words({
+    records: sense('record', '記録（複数）'),
+    damage: sense('damage', '（体の）損傷・傷み'),
+  }),
+  'The idea behind the whole change is simple.': words({ change: sense('change', '変化') }),
+  'A team can act early when it measures its own practice.': words({
+    own: sense('own', '自分たちの'),
+    practice: sense('practice', '練習'),
+  }),
 
   // p_2_factory_museum（町が残した建物）
   'They collected old photographs, order books and letters from families.': words({ collected: sense('collect', '集めた') }),
