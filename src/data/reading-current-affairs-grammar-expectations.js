@@ -20,7 +20,7 @@ export const CURRENT_AFFAIRS_READING_GRAMMAR_EXPECTATIONS = Object.freeze({
   `),
   p_pre2plus_rural_bus_future: patterns(`
     SVC SV SVO SVC SVO SVO SVO SVO SVO SVO SVO SVO SVO SVO SV SVO SVO SVO SVO
-    SVO SVO SVO SV SVO SV
+    SVO SVO SV SV SVO SV
   `),
   p_2_space_debris: patterns(`
     SV SVO SV SVO SVC SVO SVO SVO SVO SVO SVO SVC SV SV SV SVO SVO SVO SVC SVC

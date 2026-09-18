@@ -194,7 +194,7 @@ export const CURRENT_AFFAIRS_PASSAGES = [
     sentences: [
       p('In many rural areas, the local bus is the only way for people without cars to reach a hospital.', '多くの農山村では、路線バスが車を持たない人にとって病院へ行く唯一の手段です。'),
       s('Yet the number of passengers has decreased steadily as young people moved to cities.', 'しかし若い世代が都市へ移るにつれ、乗客数は着実に減り続けてきました。'),
-      s('Some companies used to run several routes, but today they cannot fill even one bus.', 'かつて複数の路線を走らせていた会社もありますが、今日では1台を満たすこともできません。'),
+      s('Some companies used to run several routes, but today they cannot fill even one bus.', 'かつて複数の路線を走らせていた会社もありますが、今ではバス1台さえ乗客で埋められません。'),
       s('A further problem is that many drivers are close to retirement age.', 'さらなる問題は、多くの運転手が定年に近いことです。'),
       p('One village ended its afternoon service last spring, and the effect appeared quickly.', 'ある村は昨春に午後の便を廃止し、その影響はすぐに現れました。'),
       s('An elderly resident had to change three appointments because no bus reached the clinic.', '診療所へ行くバスがなかったため、高齢の住民は三つの予約を変えなければなりませんでした。'),
