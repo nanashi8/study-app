@@ -300,7 +300,7 @@ export const CURRENT_AFFAIRS_READING_STUDY = Object.freeze({
       'depend on ...',
       '〜次第である・〜に左右される',
       'The result depends on institutions rather than on the technology alone.',
-      'どちらの結果になるかは技術だけでなく制度によって決まります。',
+      'どちらの結果になるかは、技術だけで決まるのではなく、制度によって決まります。',
       'rather than と組むと「Bではなく A 次第」。筆者が重視する要因を示す位置になる。',
       'pattern',
     ),

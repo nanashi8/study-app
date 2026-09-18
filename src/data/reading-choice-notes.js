@@ -805,9 +805,9 @@ export const READING_CHOICE_NOTES = freezeNotes({
     "As proof that earlier forecasts were correct.": "第2文で、以前の予測の多くは外れてきたと書かれている。",
   },
   "p_pre1_ai_and_work#2": {
-    "To show that employment did not collapse when routine work was automated.": "現金自動機が行員の定型的な仕事を減らしても（第16文）、支店が増えて行員は相談や販売へ移り（第17文）、雇用は20年崩れなかった（第18文）。",
+    "To show that employment did not collapse when routine work was automated.": "ATMが行員の決まりきった仕事を減らしても（第16文）、支店が増えて行員は相談や販売へ移り（第17文）、雇用は20年崩れなかった（第18文）。",
     "To prove that automation always creates more jobs than it removes.": "第19文で、この例は安心ではなく慎重さを促すべきだと書かれている。必ず仕事が増えるとは言っていない。",
-    "To argue that banks should not use any new technology.": "銀行は現金自動機を使って支店を増やした例（第17文）。新技術を使うべきでないとは言っていない。",
+    "To argue that banks should not use any new technology.": "ATMで支店の運営費が下がり、銀行は支店を増やした例（第16・17文）。新技術を使うべきでないとは言っていない。",
     "To explain why bank clerks needed longer training.": "長い訓練は、補助の道具の影響を述べる別の段落に出てくる（第27文）。銀行員の例を挙げた目的ではない。",
   },
   "p_pre1_ai_and_work#3": {
