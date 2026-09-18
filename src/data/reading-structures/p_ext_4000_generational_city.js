@@ -1458,7 +1458,7 @@ export default Object.freeze([
       'than long degree programs ever do': 'この do は reach の代わりで、繰り返しを避けています。',
     },
   }),
-  st('[S Public knowledge] [V decays] [M steadily] [M {副詞節:条件| [接 unless] [S someone] [V is] [M actually] [V paid] [C {to:補語| [V to maintain] [接 and] [V correct] [O it] [M year {前| after year}]}]}].', {
+  st('[S Public knowledge] [V decays] [M steadily] [M {副詞節:条件| [接 unless] [S someone] [V is] [M actually] [V paid] [C {to:補語| [V to maintain] [接 and] [V correct] [O it] [M {反復| year after year}]}]}].', {
     chunks: [
       ['Public knowledge decays steadily', '公共の知識は着実に朽ちていきます'],
       ['unless someone is actually paid', 'だれかが実際に報酬を受けて〜しないかぎり'],

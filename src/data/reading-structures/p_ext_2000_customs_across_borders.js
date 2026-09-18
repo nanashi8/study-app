@@ -415,7 +415,7 @@ export default Object.freeze([
       'and a commercial event can gradually acquire': 'acquire は「（時間をかけて）身につける」。',
     },
   }),
-  st('[S Neither change] [V makes] [O the festival] [C false], [M {副詞節:理由| [接 since] [S meaning] [V is assigned] [M {前| by the people {関係>the people| [S who] [M actually] [V keep] [O it] [M year {前| after year}]}}]}].', {
+  st('[S Neither change] [V makes] [O the festival] [C false], [M {副詞節:理由| [接 since] [S meaning] [V is assigned] [M {前| by the people {関係>the people| [S who] [M actually] [V keep] [O it] [M {反復| year after year}]}}]}].', {
     chunks: [
       ['Neither change makes the festival false,', 'どちらの変化も祭りを偽物にはしません'],
       ['since meaning is assigned by the people', '意味を与えるのは人々だからです'],
