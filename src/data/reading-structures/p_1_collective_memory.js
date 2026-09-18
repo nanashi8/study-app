@@ -318,7 +318,7 @@ export default Object.freeze([
       'should not be to force a single consensus': 'to force 以下は「〜を押しつけること」という名詞のまとまりで、be の補語です。',
     },
   }),
-  st('[M Rather], [S a mature society] [V keeps] [O multiple perspectives] [C {前| in conversation}] [M {副詞節:時| [接 while] [V refusing] [O {to:名詞| [V to treat] [O evidence] [C {前| as optional}]}]}].', {
+  st('[M Rather], [S a mature society] [V keeps] [O multiple perspectives] [C {前| in conversation}] [M {副詞節:対比| [接 while] [V refusing] [O {to:名詞| [V to treat] [O evidence] [C {前| as optional}]}]}].', {
     chunks: [
       ['Rather', 'むしろ'],
       ['a mature society', '成熟した社会は'],

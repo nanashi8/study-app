@@ -41,6 +41,16 @@ function verbGroupText(elements, start = 0) {
   return pieces.join(' … ')
 }
 
+// 節の最後にある動詞のまとまり（have but postpone なら postpone）。欠けた語を戻す位置に使う。
+function lastVerbGroupText(elements) {
+  const roles = elements.map((element) => element.role)
+  const last = roles.lastIndexOf('V')
+  if (last < 0) return ''
+  let start = last
+  while (start >= 2 && roles[start - 1] === 'M' && roles[start - 2] === 'V') start -= 2
+  return verbGroupText(elements, start)
+}
+
 function roleText(elements, roles) {
   const element = elements.find((item) => roles.includes(item.role))
   return element ? plain(element) : ''
@@ -61,11 +71,12 @@ const SENTENCE_HEAD_WORDS = new Set([
   'Many', 'Most', 'Public', 'Local',
 ])
 
-function lowerAntecedent(antecedent) {
+function lowerAntecedent(antecedent, atSentenceStart = false) {
   const [first] = antecedent.split(/\s+/)
-  return SENTENCE_HEAD_WORDS.has(first)
-    ? `${first.toLowerCase()}${antecedent.slice(first.length)}`
-    : antecedent
+  // 文頭で大文字になっていた語は、文の途中へ戻すときに小文字にする（I は残す）。
+  const lower = SENTENCE_HEAD_WORDS.has(first)
+    || (atSentenceStart && first !== 'I' && /^[A-Z][a-z]+$/.test(first))
+  return lower ? `${first.toLowerCase()}${antecedent.slice(first.length)}` : antecedent
 }
 
 function capitalizeSentence(text) {
@@ -73,13 +84,33 @@ function capitalizeSentence(text) {
   return `${trimmed.charAt(0).toUpperCase()}${trimmed.slice(1)}.`
 }
 
+// ever や any … は、否定や比較などを受けて初めて成り立つ言い方。先行詞を戻した一文は英語として
+// 不自然になる（× A government has ever agreed on any line. / × Anyone chose the smaller plate.）ので、
+// その形では一文に戻さない。
+const NEGATIVE_WORDS = new Set([
+  'no', 'not', 'nobody', 'nothing', 'none', 'never', 'nor', 'neither', 'hardly', 'rarely', 'seldom', 'cannot',
+])
+const POLARITY_ANTECEDENTS = new Set(['any', 'anyone', 'anything', 'anybody'])
+
+function polaritySensitive(unitNode, antecedent) {
+  const clauseWords = words(rawText(unitNode)).map((word) => word.toLowerCase())
+  const hasNegative = clauseWords.some((word) => NEGATIVE_WORDS.has(word))
+  const hasEver = clauseWords.includes('ever')
+  if (hasEver && !hasNegative) return true
+  // a species that is once lost の once は「ひとたび〜すると」。一文に戻すと意味が変わる（was once の「かつて」は戻せる）。
+  if (clauseWords.some((word, index) => word === 'once' && /^(?:is|are|am|has|have)$/.test(clauseWords[index - 1] ?? ''))) return true
+  const [head = ''] = words(antecedent).map((word) => word.toLowerCase())
+  return POLARITY_ANTECEDENTS.has(head)
+}
+
 // 関係代名詞を先行詞に置きかえて、一つの文に戻す（主格・目的格・補語だけ）。
-function restoreRelativeSentence(unitNode, antecedent) {
+function restoreRelativeSentence(unitNode, antecedent, atSentenceStart = false) {
   const elements = directElements(unitNode)
   const [lead, ...rest] = elements
   if (!lead || !antecedent || antecedent === '前の内容') return ''
   const leadWords = words(plain(lead)).map((word) => word.toLowerCase())
   if (leadWords.length !== 1 || !['that', 'which', 'who', 'whom'].includes(leadWords[0])) return ''
+  if (polaritySensitive(unitNode, antecedent)) return ''
   if (lead.role === 'S') return capitalizeSentence([antecedent, ...rest.map(rawText)].join(' '))
   if (!['O', 'C'].includes(lead.role)) return ''
   // ほかに目的語がある（不定詞の中の目的語が欠けるなど）ときは、戻す位置を決められないので出さない。
@@ -91,14 +122,19 @@ function restoreRelativeSentence(unitNode, antecedent) {
     element.children.some((child) => child.kind === 'unit' && ['to', '原形', '動名詞'].includes(child.base)))
   if (embedded) return ''
   const pieces = rest.map(rawText)
-  pieces.splice(lastVerb + 1, 0, lowerAntecedent(antecedent))
+  // 節の終わりに前置詞が残る形（the provision that the state relies on）は、その後ろへ戻す。
+  const tail = rest[lastVerb + 1]
+  const tailIsPreposition = lastVerb + 2 === rest.length && tail?.role === 'M'
+    && STRANDED_PREPOSITIONS.has(plain(tail).toLowerCase())
+  pieces.splice(lastVerb + (tailIsPreposition ? 2 : 1), 0, lowerAntecedent(antecedent, atSentenceStart))
   return capitalizeSentence(pieces.join(' '))
 }
 
 // 目的格の関係代名詞が省略された節を、先行詞を目的語の位置に戻した一文にする。
-function restoreOmittedRelative(unitNode, antecedent, gapVerb) {
+function restoreOmittedRelative(unitNode, antecedent, gapVerb, atSentenceStart = false) {
   const clauseWords = words(rawText(unitNode))
   if (!clauseWords.length || !antecedent) return ''
+  if (polaritySensitive(unitNode, antecedent)) return ''
   let insertAt = -1
   if (gapVerb) {
     const target = gapVerb.toLowerCase()
@@ -111,12 +147,30 @@ function restoreOmittedRelative(unitNode, antecedent, gapVerb) {
     insertAt = words(elements.slice(0, lastVerbIndex + 1).map(rawText).join(' ')).length - 1
   }
   if (insertAt < 0) return ''
+  // depend on … のように節の終わりに前置詞が残るときは、その前置詞の後ろへ先行詞を戻す。
+  if (strandedTailWord(clauseWords, insertAt)) insertAt += 1
   const restored = [
     ...clauseWords.slice(0, insertAt + 1),
-    lowerAntecedent(antecedent),
+    lowerAntecedent(antecedent, atSentenceStart),
     ...clauseWords.slice(insertAt + 1),
   ]
   return capitalizeSentence(restored.join(' '))
+}
+
+// 欠けた語の直後にあり、節の終わりに残っている前置詞（relies on の on）。
+function strandedTailWord(clauseWords, insertAt) {
+  if (insertAt + 2 !== clauseWords.length) return ''
+  const next = clauseWords[insertAt + 1] ?? ''
+  return STRANDED_PREPOSITIONS.has(next.toLowerCase()) ? next : ''
+}
+
+// 目的格の関係代名詞が省かれた節で、終わりに前置詞が残っているか。
+function omittedRelativeStranded(unitNode, gapVerb) {
+  const clauseWords = words(rawText(unitNode))
+  if (!gapVerb) return ''
+  const insertAt = clauseWords.map((word) => word.toLowerCase()).lastIndexOf(gapVerb.toLowerCase())
+  if (insertAt < 0) return ''
+  return strandedTailWord(clauseWords, insertAt)
 }
 
 // 節の終わりに残りやすい前置詞。
@@ -198,7 +252,7 @@ function relativeExplanation(unit) {
     }
   }
   const use = RELATIVE_PRONOUN_USE[leadLower] ?? `${leadText} は`
-  const restored = restoreRelativeSentence(node, antecedent)
+  const restored = restoreRelativeSentence(node, antecedent, unit.antecedentAtSentenceStart)
   const restoreText = restored ? `${leadText} を ${antecedent} に置きかえると、「${restored}」という一つの文に戻ります。` : ''
   const commaLead = nonRestrictive ? 'コンマの後ろの ' : ''
   const commaNote = nonRestrictive
@@ -267,14 +321,19 @@ function omittedRelativeExplanation(unit) {
       explanation: `${antecedent} のすぐ後ろに、主語 ${subject} と動詞 ${verb} が続いています。後ろの文に欠けた語はなく、関係副詞の働きをする語（that・in which など）が省略された形です。${way}`,
     }
   }
-  const gapVerb = unit.node.gapVerb || verb
-  const restored = restoreOmittedRelative(unit.node, antecedent, unit.node.gapVerb)
-  const restoreText = restored ? `${antecedent} を ${gapVerb} の後ろに戻すと、「${restored}」という一つの文になります。` : ''
+  const gapVerb = unit.node.gapVerb || lastVerbGroupText(elements) || verb
+  const stranded = omittedRelativeStranded(unit.node, unit.node.gapVerb)
+  const gapWord = stranded || gapVerb
+  const gapText = stranded
+    ? `節の終わりに前置詞 ${stranded} が残り、その目的語が欠けています。`
+    : `${gapVerb} の目的語が欠けています。`
+  const restored = restoreOmittedRelative(unit.node, antecedent, unit.node.gapVerb, unit.antecedentAtSentenceStart)
+  const restoreText = restored ? `${antecedent} を ${gapWord} の後ろに戻すと、「${restored}」という一つの文になります。` : ''
   return {
     word: '',
     chip: '',
     kind: '目的格の関係代名詞の省略',
-    explanation: `${antecedent} のすぐ後ろに、主語 ${subject} と動詞 ${verb} が続いています。目的格の関係代名詞（that・which）が省略された形で、${gapVerb} の目的語が欠けています。${restoreText}`,
+    explanation: `${antecedent} のすぐ後ろに、主語 ${subject} と動詞 ${verb} が続いています。目的格の関係代名詞（that・which）が省略された形で、${gapText}${restoreText}`,
   }
 }
 
@@ -305,11 +364,16 @@ function interrogativeExplanation(unit) {
   }
   if (['which', 'what', 'whose'].includes(wh) && leadWords.length > 1) {
     const noun = leadText.split(/\s+/).slice(1).join(' ')
-    meaning = {
-      which: `どの ${noun} が（を）〜するのか`,
-      what: `どんな ${noun} が（を）〜するのか`,
-      whose: `だれの ${noun} が（を）〜するのか`,
-    }[wh]
+    // 節の中での働きが分かるときは、「が」「を」を決めて書く。
+    const particle = { S: 'が', O: 'を', O1: 'に', O2: 'を' }[lead?.role] ?? 'が（を）'
+    // which of … は「…のどれが」。後ろが前置詞のときは名詞をそのまま当てはめない。
+    meaning = leadWords[1] === 'of' || /^ones?$/.test(noun)
+      ? { which: `どれ${particle}〜するのか`, what: `何${particle}〜するのか`, whose: `だれのもの${particle}〜するのか` }[wh]
+      : {
+        which: `どの ${noun} ${particle}〜するのか`,
+        what: `どんな ${noun} ${particle}〜するのか`,
+        whose: `だれの ${noun} ${particle}〜するのか`,
+      }[wh]
   }
   const subject = roleText(elements.slice(1), ['S', '仮S'])
   const verb = verbGroupText(elements, 1) || verbGroupText(elements)
@@ -390,16 +454,33 @@ function adverbialExplanation(unit) {
     ? `${leadText} は「${meaning}」という${kind}を表す接続詞（従属接続詞）です。`
     : `${leadText} は${kind}を表す接続詞（従属接続詞）です。`
   if (!subject) {
-    const next = elements[1]
-    const nextText = next ? plain(next) : ''
-    const form = next?.role === 'V'
-      ? (/ing$/i.test(words(nextText).at(-1) ?? '') ? `-ing形の ${nextText}` : `過去分詞の ${nextText}`)
-      : `${nextText}`
+    // when possible のように補語だけが残る形も、主語と be動詞が省かれた形として読む。
+    const verbElement = elements.slice(1).find((element) => element.role === 'V')
+    const complement = elements.slice(1).find((element) => element.role === 'C')
+    if (verbElement || complement) {
+      const verbText = verbElement ? plain(verbElement) : ''
+      const form = !verbElement
+        ? plain(complement)
+        : /ing$/i.test(words(verbText).at(-1) ?? '')
+          ? `-ing形の ${verbText}`
+          : `過去分詞の ${verbText}`
+      return {
+        word: leadText,
+        chip: '接続詞',
+        kind: `従属接続詞（${kind}）`,
+        explanation: verbElement
+          ? `${head}主語と be動詞が省かれ、${leadText} の後ろに ${form} が続いています。主節の主語と be動詞を補って読みます。このまとまりが${target}。`
+          : `${head}主語と be動詞（it is など）が省かれ、${leadText} の後ろに ${form} が続いています。省かれた語を補って読みます。このまとまりが${target}。`,
+      }
+    }
+    // than when … のように、節の中身がまるごと主節と共通で省かれている形。
+    const restText = elements.slice(1).map(plain).filter(Boolean).join(' ')
+    const shared = unit.containerVerb ? `主語と動詞（${unit.containerVerb}）` : '主語と動詞'
     return {
       word: leadText,
       chip: '接続詞',
       kind: `従属接続詞（${kind}）`,
-      explanation: `${head}主語と be動詞が省かれ、${leadText} のすぐ後ろに ${form} が続いています。主節の主語と be動詞を補って読みます。このまとまりが${target}。`,
+      explanation: `${head}${leadText} の後ろは ${restText} だけで、主節と共通する${shared}が省かれています。省かれた部分を補って読みます。このまとまりが${target}。`,
     }
   }
   if (leadLower === 'than') {
@@ -515,6 +596,7 @@ const COORDINATE_CONJUNCTIONS = Object.freeze({
   nor: { meaning: '〜もまた…ない', note: '否定の内容を続けます' },
   for: { meaning: 'というのは', note: '理由を後から付け足します' },
   'rather than': { meaning: '〜ではなく', note: '後ろのほうを打ち消します' },
+  'and yet': { meaning: 'それでも', note: '前から予想されることと反対の内容を続けます' },
 })
 
 const CONJUNCTIVE_ADVERBS = Object.freeze({

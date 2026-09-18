@@ -139,7 +139,7 @@ export default Object.freeze([
       'confidence, or expert assistance for navigating procedures': 'navigate procedures は「手続きをうまく進める」。初期設定は、そうした余裕のない人の不利を小さくできます。',
     },
   }),
-  st('[S The same feature] [V can assist] [O one group] [M {副詞節:時| [接 while] [M quietly] [V creating] [O a new obstacle] [M {前| for another}]}].', {
+  st('[S The same feature] [V can assist] [O one group] [M {副詞節:対比| [接 while] [M quietly] [V creating] [O a new obstacle] [M {前| for another}]}].', {
     chunks: [
       ['The same feature can assist one group', '同じしくみが、ある集団を助けることがあります'],
       ['while quietly creating a new obstacle', '一方で、気づかれないうちに新しい壁を作りながら（だれにとってかは次へ）'],

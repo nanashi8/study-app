@@ -33,6 +33,7 @@ import p_pre2_crowded_town_tourism from './p_pre2_crowded_town_tourism.js'
 import p_ext_4000_generational_city from './p_ext_4000_generational_city.js'
 import p_ext_3000_shared_watershed from './p_ext_3000_shared_watershed.js'
 import p_ext_2000_customs_across_borders from './p_ext_2000_customs_across_borders.js'
+import p_ext_1000_civic_decisions from './p_ext_1000_civic_decisions.js'
 
 const PASSAGE_STRUCTURES = Object.freeze({
   p_5_lost_notebook,
@@ -66,6 +67,7 @@ const PASSAGE_STRUCTURES = Object.freeze({
   p_ext_4000_generational_city,
   p_ext_3000_shared_watershed,
   p_ext_2000_customs_across_borders,
+  p_ext_1000_civic_decisions,
 })
 
 export const READING_SENTENCE_STRUCTURES = PASSAGE_STRUCTURES

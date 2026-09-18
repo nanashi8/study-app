@@ -197,7 +197,7 @@ export default Object.freeze([
       'and difficult for outsiders to challenge': 'difficult for A to 〜 で「Aが〜しにくい」。challenge はここでは「異議を唱える」。',
     },
   }),
-  st('[M {前| Without records}], [S leaders] [V may celebrate] [O a program’s intentions] [M {副詞節:時| [接 while] [V ignoring] [O evidence {同格that>evidence| [接 that] [S it] [M repeatedly] [V fails] [O particular communities]}]}].', {
+  st('[M {前| Without records}], [S leaders] [V may celebrate] [O a program’s intentions] [M {副詞節:対比| [接 while] [V ignoring] [O evidence {同格that>evidence| [接 that] [S it] [M repeatedly] [V fails] [O particular communities]}]}].', {
     chunks: [
       ['Without records,', '記録がなければ'],
       ['leaders may celebrate a program’s intentions', '指導者は、事業のねらいをたたえるかもしれません'],

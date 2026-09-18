@@ -122,7 +122,7 @@ export const CIVIC_DECISIONS_BODY = Object.freeze({
         ),
         p(
           'Rights and duties appear together, because a right that entitles one person makes some action obligatory for another.',
-          'ある人に権利を与えることは別の人に何らかの行為を義務づけるので、権利と義務は対で書かれます。',
+          'ある人に資格を与える権利は別の人に何らかの行為を義務づけるので、権利と義務は対になって現れます。',
         ),
         s(
           'When a legislature enacts a rule, the useful question is not only what it forbids but who must act.',
@@ -269,7 +269,7 @@ export const CIVIC_DECISIONS_BODY = Object.freeze({
         ),
         s(
           'A norm that nobody is allowed to question quietly becomes a threat to the trust that created it.',
-          '誰も問い直すことを許されない規範は、それを生んだ信頼にとって静かな脅威になります。',
+          '誰も問い直すことを許されない規範は、それを生んだ信頼にとって静かに脅威となります。',
         ),
         s(
           'Humility in public life is not a weakness, because it is a way of keeping options open.',
@@ -293,7 +293,7 @@ export const CIVIC_DECISIONS_BODY = Object.freeze({
         ),
         s(
           'The hardest role in any community is the bystander who sees a problem and assumes that someone else will report it.',
-          'どの地域社会でも最も厄介な役回りは、問題に気づきながら誰か他の人が知らせるだろうと考える傍観者です。',
+          'どの地域社会でも最も難しい役回りは、問題に気づきながら誰か他の人が知らせるだろうと考える傍観者です。',
         ),
         s(
           'A decision that can be revised is not a weak one, because it expects citizens to keep watching.',

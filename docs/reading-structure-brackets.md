@@ -44,3 +44,18 @@ A pension (that is promised this year) will be paid
   - 「節のまとまりには、つなぐ語の種類と見分け方がある」…接続詞・関係詞の説明が空でないことを見る。
 - 前置詞の形でも前置詞でない語（as well の as、the past の past、前置詞句を並べる than）は
   `src/lib/reading-sentence-structure.js` の `exemptPreposition` に理由つきで書く。
+
+## 一文に戻すとき（つなぐ語の解説）
+
+関係詞の解説では、先行詞を戻した一文も見せる。次の形は英語として不自然になるので出さない。
+
+- 節の終わりに前置詞が残る形は、前置詞の後ろへ戻す（`the layer they depend on` → `They depend on the layer.`）。
+- 否定や比較を受けて成り立つ `ever`、先行詞の `any / anyone / anything / anybody` は戻さない
+  （× `A government has ever agreed on any line.` × `Anyone chose the smaller plate.`）。
+- 「ひとたび〜すると」の once（`a species that is once lost`）は戻さない（`was once` の「かつて」は戻す）。
+- 欠けた語が不定詞・動名詞の中にあるときは戻さない。
+- 文頭で大文字だった先行詞は、文の途中へ戻すときに小文字にする（`Fertilizer` → `fertilizer`）。
+- 受け身の関係節（`information that cannot be recovered`）は関係代名詞が主語S。目的語Oと書くと
+  `関係代名詞の節「…」に主語Sがありません` で止まる。
+- `a way that … cannot` のように欠けた語がない節は、関係代名詞ではなく関係副詞の働きをする that。
+  先頭の要素は `[M that]` と書く。
