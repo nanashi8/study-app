@@ -13,6 +13,8 @@
   - 前置詞の目的語になる動名詞・原形などは、前置詞と一つの < > にまとめる（`<from losing their ability>`）。
     and・or で並んだ目的語や、only・simply などをはさんだ目的語も同じ（`<such as training … or improving …>`）。
   - 後ろから入った句のあとに外側の句の語が残るときは、残りを < > で閉じ直す。and・or だけが残るときは括らない。
+    残りの先頭の and・or は括弧の外に出す（`<the price> <of food>, and <the currency>`）。
+    残りが節だけのときは節の ( ) だけにする（`<of removal> (that follows a failure <to prevent it>)`）。
 
 ```
 Every serious argument <about the future> <of a city> is therefore <in the end>

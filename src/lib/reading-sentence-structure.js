@@ -701,8 +701,9 @@ function markedText(nodes) {
         // and・or だけが残るときは括らない（<across places> and <over time>）。
         const reopenWords = structureWords(node.text).filter((word) => !OBJECT_COORDINATORS.has(word.toLowerCase()))
         if (phrase && !phrase.open && reopenWords.length) {
-          // 閉じ直すときは、先頭のコンマなどを括弧の外に出す（<beyond headlines>, <tolerate …>）。
-          const lead = /^[\s,;:]*/.exec(node.text)[0]
+          // 閉じ直すときは、先頭のコンマや and・or を括弧の外に出す（<beyond headlines>, <tolerate …>、
+          // <the price> <of food>, and <the currency>）。
+          const lead = /^[\s,;:]*(?:(?:and|or|but|nor)\b[\s,]*)?/i.exec(node.text)[0]
           emit(lead)
           emit(' <')
           phrase.open = true
@@ -717,10 +718,7 @@ function markedText(nodes) {
         continue
       }
       if (unitIsClause(node)) {
-        if (phrase && !phrase.open) {
-          emit(' <')
-          phrase.open = true
-        }
+        // 閉じた句の後ろに節だけが残るときは、節の ( ) だけにする（<of removal> (that follows …)）。
         emit(' (')
         walk(node.children, null, node)
         emit(') ')
