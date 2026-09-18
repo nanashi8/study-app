@@ -831,7 +831,7 @@ export const READING_CHOICE_NOTES = freezeNotes({
   "p_1_synthetic_media_trust#2": {
     "Genuine evidence can be dismissed once audiences know anything can be faked.": "逆方向に働く、より捉えにくい危険として（第14文）、Once audiences know that anything can be faked, genuine evidence can be dismissed at will.（第15文）と書かれている。",
     "False recordings become easier to detect as tools improve.": "検出の精度は圧縮や切り取りで落ち（第22文）、公開された検出器は次の技術に避け方を教えてしまう（第23文）。見つけやすくなるとは書かれていない。",
-    "Officials lose the right to answer accusations in public.": "第16文では逆に、役人が録音は生成されたものだと主張して退けられると書かれている。",
+    "Officials lose the right to answer accusations in public.": "第16文では逆に、役人がわいろの録音を「作られたものだ」と言い張るだけで、その録音を退けられると書かれている。答える権利を失う話ではない。",
     "Corrections spread faster than the material they answer.": "第12文で、訂正は対象の素材より遅く伝わると書かれている。これは一つ目の危険についての説明。",
   },
   "p_1_synthetic_media_trust#3": {
