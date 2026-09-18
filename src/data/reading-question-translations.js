@@ -24,7 +24,7 @@ export const READING_QUESTION_TRANSLATION_REVIEW_LEDGER = Object.freeze({
   p_5_school_open_day: 'e17458f9',
   p_4_bicycle_safety: '372f7e7f',
   p_3_lunch_food_waste: 'd42d4048',
-  p_pre2_later_school_start: 'a7eb769e',
+  p_pre2_later_school_start: 'b307239c',
   p_pre2plus_city_bird_count: '1e03d941',
   p_2_online_health_claims: '5fe69491',
   p_pre1_cashless_inclusion: '06302c34',

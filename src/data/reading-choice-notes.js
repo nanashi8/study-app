@@ -301,7 +301,7 @@ export const READING_CHOICE_NOTES = freezeNotes({
     "Their buses arrive after morning classes begin.": "バスの時刻は、始業を遅らせると変更が必要になるという問題（第9文）で、早く眠れない理由ではない。",
   },
   "p_pre2_later_school_start#2": {
-    "Attendance and mood improved before test scores did.": "第7文 attendance and mood improved, although test scores did not rise immediately と一致する。",
+    "Attendance and mood improved, but test scores did not rise right away.": "第7文 attendance and mood improved, although test scores did not rise immediately と一致する。",
     "Transportation costs disappeared immediately.": "第9文で、バスの予定を変えると交通費が増える可能性があると書かれている。なくなったのではない。",
     "Every family preferred the same starting time.": "実験で家庭の好みを調べたとは書かれていない。地域ごとに状況は異なる（第14文）。",
     "Afternoon activities ended earlier than before.": "第10文で、始業を遅らせると部活動が暗くなってから終わるかもしれないと書かれている。早く終わったのではない。",

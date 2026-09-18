@@ -158,12 +158,12 @@ export const EXAM_READING_QUESTIONS = {
     {
       q: 'Which result was reported in one experiment?',
       choices: [
-        'Attendance and mood improved before test scores did.',
+        'Attendance and mood improved, but test scores did not rise right away.',
         'Transportation costs disappeared immediately.',
         'Every family preferred the same starting time.',
         'Afternoon activities ended earlier than before.',
       ],
-      answer: 'Attendance and mood improved before test scores did.',
+      answer: 'Attendance and mood improved, but test scores did not rise right away.',
       explain: '出席状況と気分は改善した一方、点数はすぐには上がりませんでした。',
     },
     {
