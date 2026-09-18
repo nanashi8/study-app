@@ -78,7 +78,7 @@ export const CIVIC_DECISIONS_BODY = Object.freeze({
       id: 'rights',
       title: 'Law, Rights, and Responsibility',
       titleJa: '法・権利・責任',
-      summaryJa: '管轄・推定無罪・抑止・先例をたどり、権利と義務が対で書かれる理由を読みます。',
+      summaryJa: '管轄・推定無罪・抑止・先例をたどり、権利と義務が対になって現れる理由を読みます。',
       sentences: Object.freeze([
         p(
           'Rules become real only when everyone can find out their content and their limits.',
