@@ -115,7 +115,7 @@ export const FIELD_READING_QUESTIONS = Object.freeze({
         'Because the budget did not cover a second device.',
       ],
       answer: 'Because students had hidden pains out of anxiety.',
-      explain: '第19文と第20文で、生徒が「チームでの場所を失う不安」から痛みを隠していたことが述べられ、第21文の切り離しにつながります。',
+      explain: '第19文と第20文で、生徒が「チームでの座を失う不安」から痛みを隠していたことが述べられ、第21文の切り離しにつながります。',
     },
     {
       q: 'What does the cheap device at the field do?',
@@ -137,7 +137,7 @@ export const FIELD_READING_QUESTIONS = Object.freeze({
         'The team stopped keeping records of pain.',
       ],
       answer: 'The number of hurt members fell from nine to one.',
-      explain: '第26文と第27文が、けが人が9人から1人に減ったことを示し、第28文で「だれも長く練習していないのに成績は良くなった」と続きます。',
+      explain: '第26文と第27文が、けが人が9人から1人に減ったことを示し、第28文で「練習時間を増やした人はいなかったのに成績は良くなった」と続きます。',
     },
     {
       q: 'What limit does the mentor point out?',
@@ -148,7 +148,7 @@ export const FIELD_READING_QUESTIONS = Object.freeze({
         'Records cannot predict every accident.',
       ],
       answer: 'Records cannot predict every accident.',
-      explain: '第32文で限界があると注意し、第33文で「記録はすべての事故を予測できない」「一部の損傷は古い傷から生じる」と述べています。',
+      explain: '第32文で限界があると注意し、第33文で「記録ですべての事故を予測できるわけではない」「一部の損傷は古い傷から生じる」と述べています。',
     },
   ],
   p_2_factory_museum: [

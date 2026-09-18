@@ -87,7 +87,7 @@ export const FIELD_READING_QUESTION_TRANSLATIONS = Object.freeze({
       'その装置は学校の部には高すぎる。',
       '学校の評議会がその方法を認めない。',
       '2年目には部員が痛みの報告を断る。',
-      '記録はすべての事故を予測できない。',
+      '記録ですべての事故を予測できるわけではない。',
     ]),
   ]),
   p_2_factory_museum: group([
