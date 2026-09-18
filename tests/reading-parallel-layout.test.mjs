@@ -152,3 +152,31 @@ test('文の要素と構造図は、並列を改行してそろえ、要素ご�
   assert.equal(plain.parallel.length, 0)
   assert.match(renderToStaticMarkup(StructureDiagram({ tokens: plain.structureTokens, parallel: plain.parallel })), /nested-markers/)
 })
+
+// 要素の中の and・or・but・nor は、{並列| …} か要素どうしの並列の接続詞にする。
+// 並べないのは、文頭の接続詞（前の文とつなぐ Nor など）と、決まった言い方（or not・sooner or later）だけ。
+const NOT_PARALLEL = Object.freeze([/\bor not\b/i, /\bsooner or later\b/i])
+
+test('要素の中の and・or・but・nor は、並列の接続詞として台帳に書いてある', () => {
+  const missing = []
+  for (const [passageId, entries] of Object.entries(READING_SENTENCE_STRUCTURES)) {
+    const passage = getPassage(passageId)
+    entries.forEach((entry, index) => {
+      const structure = buildSentenceStructure(passage.sentences[index].en, entry.markup, entry)
+      const leads = new Set()
+      for (const group of structure.parallel) {
+        for (const conjunct of group.conjuncts) {
+          for (let word = conjunct.start; word < conjunct.start + conjunct.lead; word++) leads.add(word)
+        }
+      }
+      structure.words.forEach((word, wordIndex) => {
+        if (!/^(?:and|or|but|nor)$/i.test(word.word) || leads.has(wordIndex) || wordIndex === 0) return
+        if (word.elements.some((element) => element.role === '接')) return
+        const around = structure.words.slice(Math.max(0, wordIndex - 1), wordIndex + 2).map((item) => item.word).join(' ')
+        if (NOT_PARALLEL.some((pattern) => pattern.test(around))) return
+        missing.push(`${passageId}#${index + 1}: …${around}…`)
+      })
+    })
+  }
+  assert.deepEqual(missing, [])
+})

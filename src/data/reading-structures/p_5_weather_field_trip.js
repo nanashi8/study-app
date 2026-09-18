@@ -21,7 +21,7 @@ export default Object.freeze([
       'at eight in the morning': 'at ＋ 時刻 で「〜時に」。in the morning は「朝の・午前の」。',
     },
   }),
-  st('[S Everyone] [V brings] [O a hat, a notebook, and some water].', {
+  st('[S Everyone] [V brings] [O {並列| a hat, | a notebook, | and some water}].', {
     chunks: [
       ['Everyone brings', 'みんなが持ってきます（何をかは次へ）'],
       ['a hat, a notebook, and some water', '帽子とノート、そして水を'],

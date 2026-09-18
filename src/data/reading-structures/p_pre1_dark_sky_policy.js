@@ -25,7 +25,7 @@ export default Object.freeze([
     },
     rules: ['parallel-shape', 'svoc-core', 'infinitive-role'],
   }),
-  st('[M Yet] [S artificial light] [M now] [V reaches] [O places and times {関係>places and times| [M where] [S it] [V serves] [O little clear purpose]}].', {
+  st('[M Yet] [S artificial light] [M now] [V reaches] [O {並列| places | and times} {関係>places and times| [M where] [S it] [V serves] [O little clear purpose]}].', {
     chunks: [
       ['Yet artificial light now reaches', 'しかし、人工の光は今では届いています（どこにかは次へ）'],
       ['places and times', '場所や時間にまで（どんな場所かは次へ）'],
@@ -68,7 +68,7 @@ export default Object.freeze([
       'even while increasing brightness': 'while ＋ -ing で「〜しながら」。even が「〜でさえ」と意外さを加えます。',
     },
   }),
-  st('[S Light {現在分詞>Light| [V entering] [O homes]}] [V may disturb] [O sleep], [M {副詞節:対比| [接 while] [S constant illumination] [V changes] [O the behavior {前| of insects, birds, and other animals}]}].', {
+  st('[S Light {現在分詞>Light| [V entering] [O homes]}] [V may disturb] [O sleep], [M {副詞節:対比| [接 while] [S constant illumination] [V changes] [O the behavior {前| of {並列| insects, | birds, | and other animals}}]}].', {
     chunks: [
       ['Light entering homes may disturb sleep,', '家の中に入る光は、眠りを妨げることがあります'],
       ['while constant illumination changes the behavior', '一方、ずっとついている照明は、ふるまいを変えます（何のかは次へ）'],
@@ -113,7 +113,7 @@ export default Object.freeze([
       'during late shifts': 'late shift は「夜遅い勤務」。',
     },
   }),
-  st('[S Businesses] [M also] [V use] [O light] [M {to:副詞(目的)| [V to signal] [O {that節| [接 that] [S a place] [V is] [C open and welcoming]}]}].', {
+  st('[S Businesses] [M also] [V use] [O light] [M {to:副詞(目的)| [V to signal] [O {that節| [接 that] [S a place] [V is] [C {並列| open | and welcoming}]}]}].', {
     chunks: [
       ['Businesses also use light to signal', 'お店や会社も、知らせるために光を使います（何をかは次へ）'],
       ['that a place is open and welcoming', 'その場所が開いていて、入りやすいということを'],
@@ -134,7 +134,7 @@ export default Object.freeze([
       'will therefore lose public trust': 'therefore は、安全を心配する声にも理由があるという前の3文を受けています。',
     },
   }),
-  st('[S The relevant question] [V is not] [C {whether節| [接 whether] [S communities] [V should choose] [O light or darkness]}].', {
+  st('[S The relevant question] [V is not] [C {whether節| [接 whether] [S communities] [V should choose] [O {並列| light | or darkness}]}].', {
     chunks: [
       ['The relevant question is not', '考えるべき問いは〜ではありません（内容は次へ）'],
       ['whether communities should choose light or darkness', '地域が光か暗さのどちらかを選ぶべきか、ということ'],
@@ -145,7 +145,7 @@ export default Object.freeze([
     },
     rules: ['negation-scope', 'wh-clause', 'paragraph-map'],
   }),
-  st('[S It] [V is] [C {疑問詞節| [M where] [S light] [V is needed]}, {疑問詞節| [S how much] [V is] [C useful]}, {疑問詞節| [C what color] [S it] [V should be]}, and {疑問詞節| [M when] [S it] [V should operate]}].', {
+  st('[S It] [V is] [C {並列| {疑問詞節| [M where] [S light] [V is needed]}, | {疑問詞節| [S how much] [V is] [C useful]}, | {疑問詞節| [C what color] [S it] [V should be]}, | and {疑問詞節| [M when] [S it] [V should operate]}}].', {
     chunks: [
       ['It is where light is needed,', '問うべきなのは、どこに光が必要かです'],
       ['how much is useful,', 'どれだけの明るさが役に立つか'],
@@ -157,7 +157,7 @@ export default Object.freeze([
       'and when it should operate': 'operate はここでは「（照明が）働く・つく」。',
     },
   }),
-  st('[S A shield] [V can direct] [O light] [M {前| toward the ground}] [M {前| instead of {動名詞| [V allowing] [O it] [C {to:補語| [V to escape] [M {前| into the sky or nearby windows}]}]}}].', {
+  st('[S A shield] [V can direct] [O light] [M {前| toward the ground}] [M {前| instead of {動名詞| [V allowing] [O it] [C {to:補語| [V to escape] [M {前| into {並列| the sky | or nearby windows}}]}]}}].', {
     chunks: [
       ['A shield can direct light toward the ground', '覆いをつければ、光を地面の方へ向けられます'],
       ['instead of allowing it to escape', '光を逃がすのではなく（どこへかは次へ）'],
@@ -177,7 +177,7 @@ export default Object.freeze([
       'Warmer-colored lamps may affect wildlife less': 'warmer-colored は「より暖かい色の」。less は「より少なく」で、affect を弱めています。',
     },
   }),
-  st('[S Timers and motion sensors] [V can provide] [O brightness] [M {副詞節:時| [接 when] [S people] [V are] [C present]}] [M {前| without {動名詞| [V maintaining] [O it] [M all night]}}].', {
+  st('[S {並列| Timers | and motion sensors}] [V can provide] [O brightness] [M {副詞節:時| [接 when] [S people] [V are] [C present]}] [M {前| without {動名詞| [V maintaining] [O it] [M all night]}}].', {
     chunks: [
       ['Timers and motion sensors can provide brightness', 'タイマーや人を感じるセンサーは、明るさを出せます（いつかは次へ）'],
       ['when people are present', '人がいるときに'],
@@ -200,7 +200,7 @@ export default Object.freeze([
     },
     rules: ['comparison-pairs', 'contrast-concession', 'paragraph-map'],
   }),
-  st('[S Officials] [M first] [V need] [O a map {前| of current lighting}, {前| including ownership, energy use, brightness, direction, and hours {前| of operation}}].', {
+  st('[S Officials] [M first] [V need] [O a map {前| of current lighting}, {前| including {並列| ownership, | energy use, | brightness, | direction, | and hours {前| of operation}}}].', {
     chunks: [
       ['Officials first need a map of current lighting,', '担当者はまず、今ある照明の地図が必要です（何を書いた地図かは次へ）'],
       ['including ownership, energy use,', 'だれのものか、どれだけ電気を使うか'],
@@ -256,7 +256,7 @@ export default Object.freeze([
       'while keeping crossings clearly lit': 'keep ＋ もの ＋ 過去分詞 で「ものを〜された状態にしておく」。lit は light の過去分詞です。',
     },
   }),
-  st('[S Researchers] [V can] [M then] [V measure] [O sky brightness, energy use, traffic incidents, wildlife activity, and residents\' reported comfort].', {
+  st('[S Researchers] [V can] [M then] [V measure] [O {並列| sky brightness, | energy use, | traffic incidents, | wildlife activity, | and residents\' reported comfort}].', {
     chunks: [
       ['Researchers can then measure sky brightness,', '研究者はそのあと、空の明るさを測れます'],
       ['energy use, traffic incidents, wildlife activity,', 'エネルギーの使用量、交通の事故、野生の生き物の活動'],
@@ -278,7 +278,7 @@ export default Object.freeze([
       'can reveal trade-offs': 'trade-off は「一方を取れば他方をあきらめることになる関係」。',
     },
   }),
-  st('[S The trial] [V should] [M also] [V record] [O complaints and near misses], [M {副詞節:理由| [接 since] [S average comfort] [V may hide] [O risks {過去分詞>risks| [V faced] [M {前| by a small group}]}]}].', {
+  st('[S The trial] [V should] [M also] [V record] [O {並列| complaints | and near misses}], [M {副詞節:理由| [接 since] [S average comfort] [V may hide] [O risks {過去分詞>risks| [V faced] [M {前| by a small group}]}]}].', {
     chunks: [
       ['The trial should also record', '試すときには、記録すべきです（何をかは次へ）'],
       ['complaints and near misses,', '苦情や、あやうく事故になりかけた例も'],
@@ -323,7 +323,7 @@ export default Object.freeze([
       'where darkness can be sold as an experience': 'can be sold は sell の受け身。sell A as B で「AをBとして売る」。',
     },
   }),
-  st('[S People {前| in ordinary neighborhoods}] [M also] [V deserve] [O sleep, visible stars, and healthy local ecosystems].', {
+  st('[S People {前| in ordinary neighborhoods}] [M also] [V deserve] [O {並列| sleep, | visible stars, | and healthy local ecosystems}].', {
     chunks: [
       ['People in ordinary neighborhoods also deserve sleep,', '普通の住宅地に住む人にも、当然与えられるべきものがあります。眠りや'],
       ['visible stars, and healthy local ecosystems', '見える星、健全な地域の生態系です'],
@@ -344,7 +344,7 @@ export default Object.freeze([
     },
     rules: ['contrast-concession', 'paragraph-map', 'main-clause-skeleton'],
   }),
-  st('[S They] [V specify] [O direction, intensity, color, and timing] [M {副詞節:対比| [接 while] [V allowing] [O justified exceptions]}].', {
+  st('[S They] [V specify] [O {並列| direction, | intensity, | color, | and timing}] [M {副詞節:対比| [接 while] [V allowing] [O justified exceptions]}].', {
     chunks: [
       ['They specify direction, intensity, color, and timing', 'その基準は、向き、強さ、色、時間を決めます'],
       ['while allowing justified exceptions', '理由のある例外は認めながら'],
@@ -354,7 +354,7 @@ export default Object.freeze([
       'while allowing justified exceptions': 'justified は「理由のある・正当な」。while ＋ -ing で「〜しながら」。',
     },
   }),
-  st('[S They] [M also] [V require] [O monitoring] [M {副詞節:理由| [接 because] [S new buildings, new technologies, and changing travel patterns] [V can alter] [O local needs]}].', {
+  st('[S They] [M also] [V require] [O monitoring] [M {副詞節:理由| [接 because] [S {並列| new buildings, | new technologies, | and changing travel patterns}] [V can alter] [O local needs]}].', {
     chunks: [
       ['They also require monitoring', 'その基準は、見守り続けることも求めます（なぜかは次へ）'],
       ['because new buildings, new technologies,', '新しい建物や新しい技術'],
@@ -375,7 +375,7 @@ export default Object.freeze([
       'whether promised improvements actually occur': 'whether 以下は「〜かどうか」という名詞のまとまりで、to see の目的語です。',
     },
   }),
-  st('[S {動名詞| [V Protecting] [O the night]}] [V is] [M therefore] [C not a return {前| to the past} but a more disciplined use {前| of modern light}].', {
+  st('[S {動名詞| [V Protecting] [O the night]}] [V is] [M therefore] [C {並列| not a return {前| to the past} | but a more disciplined use {前| of modern light}}].', {
     chunks: [
       ['Protecting the night is therefore not a return', 'だから、夜を守ることは、戻ることではなく'],
       ['to the past', '昔へ'],

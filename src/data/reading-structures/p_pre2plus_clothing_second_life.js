@@ -1,7 +1,7 @@
 import { st } from './entry.js'
 
 export default Object.freeze([
-  st('[S {動名詞| [V Producing] [O clothing]}] [V requires] [O water, energy, labor, and transportation {前| across long distances}].', {
+  st('[S {動名詞| [V Producing] [O clothing]}] [V requires] [O {並列| water, | energy, | labor, | and transportation {前| across long distances}}].', {
     chunks: [
       ['Producing clothing requires', '衣服を生産するには〜が必要です（何がかは次へ）'],
       ['water, energy, labor, and transportation', '水、エネルギー、労働、そして輸送が'],
@@ -67,7 +67,7 @@ export default Object.freeze([
       'and described any damage on a small card': 'and の後ろの described の主語も Families です。any damage は「傷んでいる点があればどれでも」。',
     },
   }),
-  st('[S Volunteers] [V sorted] [O the clothes] [M {前| by size and condition} {前| rather than {前| by price}}].', {
+  st('[S Volunteers] [V sorted] [O the clothes] [M {前| by {並列| size | and condition}} {前| rather than {前| by price}}].', {
     chunks: [
       ['Volunteers sorted the clothes', 'ボランティアは服を分けました（何によってかは次へ）'],
       ['by size and condition', 'サイズと状態によって'],
@@ -90,7 +90,7 @@ export default Object.freeze([
       'and close simple tears': 'and は to replace と (to) close をつないでいます。tear は「破れ・裂け目」。',
     },
   }),
-  st('[S A repair] [V did not need] [O {to:名詞| [V to look] [C perfect]}]; [S it] [V needed] [O {to:名詞| [V to make] [O the item] [C safe and useful]}].', {
+  st('[S A repair] [V did not need] [O {to:名詞| [V to look] [C perfect]}]; [S it] [V needed] [O {to:名詞| [V to make] [O the item] [C {並列| safe | and useful}]}].', {
     chunks: [
       ['A repair did not need to look perfect;', '修理は見た目が完璧である必要はありませんでした'],
       ['it needed to make the item', 'その品を〜にする必要がありました（どんな状態かは次へ）'],
@@ -197,7 +197,7 @@ export default Object.freeze([
       'since that choice could reduce new production': 'since はここでは「〜だから」と理由を示します。',
     },
   }),
-  st('[S The project] [M also] [V had to consider] [O hygiene, personal taste, and dignity].', {
+  st('[S The project] [M also] [V had to consider] [O {並列| hygiene, | personal taste, | and dignity}].', {
     chunks: [
       ['The project also had to consider', 'その活動は〜にも配慮しなければなりませんでした（何にかは次へ）'],
       ['hygiene, personal taste, and dignity', '衛生、個人の好み、そして尊厳'],
@@ -208,7 +208,7 @@ export default Object.freeze([
     },
     rules: ['parallel-shape', 'paragraph-map', 'main-clause-skeleton'],
   }),
-  st('[S Nobody] [V was required] [C {to:補語| [V to explain] [O {疑問詞節| [M why] [S they] [V wanted] [O free or low-cost clothing]}]}].', {
+  st('[S Nobody] [V was required] [C {to:補語| [V to explain] [O {疑問詞節| [M why] [S they] [V wanted] [O {並列| free | or low-cost clothing}]}]}].', {
     chunks: [
       ['Nobody was required to explain', 'だれも説明するよう求められませんでした（何をかは次へ）'],
       ['why they wanted free or low-cost clothing', 'なぜ無料や安い服をほしいと思ったのかを'],
@@ -218,7 +218,7 @@ export default Object.freeze([
       'why they wanted free or low-cost clothing': 'why 以下は「なぜ〜か」という名詞のまとまりで、explain の目的語です。low-cost は「低価格の」。',
     },
   }),
-  st('[S Students, teachers, and neighbors] [M all] [V used] [O the same tables and choice system].', {
+  st('[S {並列| Students, | teachers, | and neighbors}] [M all] [V used] [O {並列| the same tables | and choice system}].', {
     chunks: [
       ['Students, teachers, and neighbors all used', '生徒も先生も近所の人も、みな使いました（何をかは次へ）'],
       ['the same tables and choice system', '同じテーブルと同じ選び方の仕組みを'],
@@ -248,7 +248,7 @@ export default Object.freeze([
       'that local volunteers could not solve alone': 'solve の目的語が that で、alone は「自分たちだけで」。',
     },
   }),
-  st('[S The organizers] [V reported] [O successful exchanges and waste {関係省略:目的格>waste| [S they] [V could not process]}]; [S they] [V did not publish] [O only a cheerful total].', {
+  st('[S The organizers] [V reported] [O {並列| successful exchanges | and waste {関係省略:目的格>waste| [S they] [V could not process]}}]; [S they] [V did not publish] [O only a cheerful total].', {
     chunks: [
       ['The organizers reported successful exchanges', '主催者は、うまくいった交換を報告しました'],
       ['and waste they could not process;', 'そして、処理できなかった廃棄物も（報告しました）'],
@@ -270,7 +270,7 @@ export default Object.freeze([
       'and decide whether products can be repaired': 'whether 以下のまとまりが decide の目的語です。can be repaired は repair の受け身です。',
     },
   }),
-  st('[S A useful second life] [V begins] [M {前| with exchange and repair}], [接 but] [S it] [M also] [V depends] [M {前| on durable design and fewer unnecessary purchases}].', {
+  st('[S A useful second life] [V begins] [M {前| with {並列| exchange | and repair}}], [接 but] [S it] [M also] [V depends] [M {前| on {並列| durable design | and fewer unnecessary purchases}}].', {
     chunks: [
       ['A useful second life begins', '役に立つ二度目の生は始まります（何からかは次へ）'],
       ['with exchange and repair,', '交換と修理から'],

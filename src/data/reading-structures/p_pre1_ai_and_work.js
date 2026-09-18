@@ -23,7 +23,7 @@ export default Object.freeze([
       'and most of them have been wrong': 'them は confident forecasts を指します。have been wrong は「（ずっと）外れてきた」。',
     },
   }),
-  st('[S Recent systems {関係>Recent systems| [S that] [V generate] [O text, images, and computer code]}] [V have revived] [O the debate] [M {前| with unusual intensity}].', {
+  st('[S Recent systems {関係>Recent systems| [S that] [V generate] [O {並列| text, | images, | and computer code}]}] [V have revived] [O the debate] [M {前| with unusual intensity}].', {
     chunks: [
       ['Recent systems', '最近のシステムが（どんなものかは次へ）'],
       ['that generate text, images, and computer code', '文章や画像、プログラムを作り出す（システムが）'],
@@ -35,7 +35,7 @@ export default Object.freeze([
       'have revived the debate': 'revive は「よみがえらせる」。the debate は、機械が仕事を奪うかどうかの議論です。',
     },
   }),
-  st('[S Public discussion] [M often] [V moves] [M {前| between two extremes}], [M {分詞構文:付帯状況| [V promising] [O mass unemployment or effortless wealth]}].', {
+  st('[S Public discussion] [M often] [V moves] [M {前| between two extremes}], [M {分詞構文:付帯状況| [V promising] [O {並列| mass unemployment | or effortless wealth}]}].', {
     chunks: [
       ['Public discussion often moves between two extremes,', '世間の議論はしばしば、二つの極端の間を揺れ動きます'],
       ['promising mass unemployment or effortless wealth', '大量の失業か、苦労のいらない豊かさが来ると言いながら'],
@@ -56,7 +56,7 @@ export default Object.freeze([
     },
     rules: ['paragraph-map', 'comparison-pairs', 'main-clause-skeleton'],
   }),
-  st('[S Previous machines] [M mainly] [V replaced] [O physical effort or highly repetitive calculation].', {
+  st('[S Previous machines] [M mainly] [V replaced] [O {並列| physical effort | or highly repetitive calculation}].', {
     chunks: [
       ['Previous machines mainly replaced physical effort', '以前の機械は主に、体を使う労力を置き換えました'],
       ['or highly repetitive calculation', 'あるいは、同じことをくり返す計算を'],
@@ -66,7 +66,7 @@ export default Object.freeze([
       'or highly repetitive calculation': 'or は replaced の二つ目の目的語を加えます。repetitive は「くり返しの多い」。',
     },
   }),
-  st('[S The newer systems] [V produce] [O drafts, summaries, and designs {関係>drafts, summaries, and designs| [S that] [V resemble] [O skilled office work]}].', {
+  st('[S The newer systems] [V produce] [O {並列| drafts, | summaries, | and designs} {関係>drafts, summaries, and designs| [S that] [V resemble] [O skilled office work]}].', {
     chunks: [
       ['The newer systems produce drafts, summaries, and designs', '新しいシステムは、下書きや要約、設計を作ります（どんなものかは次へ）'],
       ['that resemble skilled office work', '熟練した事務の仕事に似た（ものを）'],
@@ -86,7 +86,7 @@ export default Object.freeze([
       'now appear partly reproducible': 'appear ＋ 形容詞 で「〜に見える」。reproducible は「再現できる」、partly は「一部は」。',
     },
   }),
-  st('[S Programmers, translators, designers, and junior analysts] [V have] [M all] [V noticed] [O changes {前| in demand}].', {
+  st('[S {並列| Programmers, | translators, | designers, | and junior analysts}] [V have] [M all] [V noticed] [O changes {前| in demand}].', {
     chunks: [
       ['Programmers, translators, designers, and junior analysts', 'プログラマー、翻訳者、デザイナー、若手のアナリストは'],
       ['have all noticed changes in demand', 'みな、求められ方の変化に気づいています'],
@@ -167,7 +167,7 @@ export default Object.freeze([
       'Cash machines reduced the routine work': 'cash machine は「現金自動預け払い機（ATM）」。routine は「決まりきった」。',
     },
   }),
-  st('[S Branches] [V became] [C cheaper {to:副詞(形容詞)| [V to operate]}], [接 so] [S banks] [V opened] [O more {前| of them}], [接 and] [S staff] [V moved] [M {前| toward advice and sales}].', {
+  st('[S Branches] [V became] [C cheaper {to:副詞(形容詞)| [V to operate]}], [接 so] [S banks] [V opened] [O more {前| of them}], [接 and] [S staff] [V moved] [M {前| toward {並列| advice | and sales}}].', {
     chunks: [
       ['Branches became cheaper to operate,', '支店を動かす費用が安くなったので'],
       ['so banks opened more of them,', '銀行は支店をさらに増やし'],
@@ -208,7 +208,7 @@ export default Object.freeze([
       'and individual workers still lost income during it': 'still は「それでもなお」。it は The adjustment を指し、during it で「調整の間に」。',
     },
   }),
-  st('[S Aggregate stability] [V can hide] [O serious harm {前| to particular regions and age groups}].', {
+  st('[S Aggregate stability] [V can hide] [O serious harm {前| to {並列| particular regions | and age groups}}].', {
     chunks: [
       ['Aggregate stability can hide serious harm', '全体としての安定は、深刻な打撃を覆い隠すことがあります（だれへのかは次へ）'],
       ['to particular regions and age groups', '特定の地域や年齢層への'],
@@ -229,7 +229,7 @@ export default Object.freeze([
       'from jobs created ten years later': 'created 以下は jobs を後ろから説明する過去分詞で「作られる仕事」。',
     },
   }),
-  st('[S Retraining programs] [V assume] [O mobility, savings, and confidence {関係>mobility, savings, and confidence| [O that] [S many households] [V do not have]}].', {
+  st('[S Retraining programs] [V assume] [O {並列| mobility, | savings, | and confidence} {関係>mobility, savings, and confidence| [O that] [S many households] [V do not have]}].', {
     chunks: [
       ['Retraining programs assume mobility, savings, and confidence', '学び直しの制度は、引っ越せること・貯え・自信を前提にしています（どんなものかは次へ）'],
       ['that many households do not have', '多くの家庭が持っていない（ものを）'],
@@ -293,7 +293,7 @@ export default Object.freeze([
       'rather than on the technology alone': 'rather than の後ろに on the technology alone が来て、depends on と比べています。alone は「〜だけ」。',
     },
   }),
-  st('[S Employment law, union strength, and public investment] [V decide] [O {疑問詞節| [M how] [S any productivity gain] [V is shared]}].', {
+  st('[S {並列| Employment law, | union strength, | and public investment}] [V decide] [O {疑問詞節| [M how] [S any productivity gain] [V is shared]}].', {
     chunks: [
       ['Employment law, union strength, and public investment', '雇用の法律、労働組合の力、公共の投資が'],
       ['decide how any productivity gain is shared', '生産性が上がった分がどう分けられるかを決めます'],
@@ -324,7 +324,7 @@ export default Object.freeze([
       'are poorly prepared': 'are prepared は「備えができている」。poorly は「不十分に」。',
     },
   }),
-  st('[S {動名詞| [V Questioning] [O sources]} and {動名詞| [V judging] [O quality]}] [V remain] [C valuable skills].', {
+  st('[S {並列| {動名詞| [V Questioning] [O sources]} | and {動名詞| [V judging] [O quality]}}] [V remain] [C valuable skills].', {
     chunks: [
       ['Questioning sources and judging quality', '出どころを疑い、質を見きわめることは'],
       ['remain valuable skills', '今も大切な力です'],
@@ -344,7 +344,7 @@ export default Object.freeze([
       'and examinations reward what is easy to score': 'what は「〜もの」という関係代名詞で、what is easy to score が reward の目的語です。score はここでは動詞で「点をつける」。',
     },
   }),
-  st('[S Schools] [M also] [V need] [O time and equipment {関係>time and equipment| [O that] [S many districts] [M currently] [V lack]}].', {
+  st('[S Schools] [M also] [V need] [O {並列| time | and equipment} {関係>time and equipment| [O that] [S many districts] [M currently] [V lack]}].', {
     chunks: [
       ['Schools also need time and equipment', '学校には、時間と設備も必要です（どんなものかは次へ）'],
       ['that many districts currently lack', '多くの地域に今は足りていない（時間と設備が）'],
@@ -374,7 +374,7 @@ export default Object.freeze([
       'who need them least': 'them は programs を指します。least は「いちばん少なく」。本当に必要な人に届きにくいということです。',
     },
   }),
-  st('[S Others] [V discuss] [O shorter working hours, wage insurance, or support {前| for regions {現在分詞>regions| [V losing] [O employers]}}].', {
+  st('[S Others] [V discuss] [O {並列| shorter working hours, | wage insurance, | or support {前| for regions {現在分詞>regions| [V losing] [O employers]}}}].', {
     chunks: [
       ['Others discuss shorter working hours, wage insurance,', 'ほかの政府は、労働時間の短縮や賃金の保険'],
       ['or support for regions losing employers', 'あるいは雇い主を失っていく地域への支援を、話し合っています'],
@@ -426,7 +426,7 @@ export default Object.freeze([
       'waiting to be divided': 'waiting 以下は a fixed quantity を後ろから説明する現在分詞。to be divided は受け身の不定詞で「分けられるために」。',
     },
   }),
-  st('[仮S It] [V is] [C more useful] [真S {to:名詞| [V to ask] [O {疑問詞節| [S who] [V decides] [O {疑問詞節| [M how] [S these systems] [V are used]}]} and {疑問詞節| [S who] [V is protected] [M {前| during the transition}]}]}].', {
+  st('[仮S It] [V is] [C more useful] [真S {to:名詞| [V to ask] [O {並列| {疑問詞節| [S who] [V decides] [O {疑問詞節| [M how] [S these systems] [V are used]}]} | and {疑問詞節| [S who] [V is protected] [M {前| during the transition}]}}]}].', {
     chunks: [
       ['It is more useful to ask', '〜を問うほうが役に立ちます（何をかは次へ）'],
       ['who decides how these systems are used', 'こうしたシステムの使い方をだれが決めるのか'],

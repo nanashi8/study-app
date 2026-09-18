@@ -36,7 +36,7 @@ export default Object.freeze([
       'instead of banning phones all day': 'instead of ＋ -ing で「〜する代わりに」。banning は前置詞の後ろの動名詞です。',
     },
   }),
-  st('[M {前| At the beginning {前| of the hour}}], [S students] [V placed] [O phones] [M {前| in their bags or lockers}].', {
+  st('[M {前| At the beginning {前| of the hour}}], [S students] [V placed] [O phones] [M {前| in {並列| their bags | or lockers}}].', {
     chunks: [
       ['At the beginning of the hour,', 'その1時間の始めに'],
       ['students placed phones', '生徒たちはスマートフォンを入れました（どこにかは次へ）'],
@@ -56,7 +56,7 @@ export default Object.freeze([
       'that families could call in an emergency': 'that は a number を受ける関係代名詞で、call の目的語にあたります。',
     },
   }),
-  st('[S Teachers] [V used] [O the time] [M {前| for reading, writing, or problems {関係>problems| [S that] [V required] [O steady attention]}}].', {
+  st('[S Teachers] [V used] [O the time] [M {前| for {並列| reading, | writing, | or problems {関係>problems| [S that] [V required] [O steady attention]}}}].', {
     chunks: [
       ['Teachers used the time', '先生たちはその時間を使いました（何にかは次へ）'],
       ['for reading, writing, or problems', '読むこと、書くこと、または問題に（どんな問題かは次へ）'],
@@ -166,7 +166,7 @@ export default Object.freeze([
       'because they regularly received': 'they は Some（一部の生徒）を指します。regularly は「定期的に」。',
     },
   }),
-  st('[S Others] [V needed] [O translation or reading tools {関係>translation or reading tools| [S that] [V were] [C available] [M {前| on their phones}]}].', {
+  st('[S Others] [V needed] [O {並列| translation | or reading tools} {関係>translation or reading tools| [S that] [V were] [C available] [M {前| on their phones}]}].', {
     chunks: [
       ['Others needed translation or reading tools', 'ほかの生徒は、翻訳や読むのを助けるツールを必要としました（どんなツールかは次へ）'],
       ['that were available on their phones', 'スマートフォンで使える（ツールを）'],
@@ -226,7 +226,7 @@ export default Object.freeze([
       'but reviews the rules every term': 'but の後ろの reviews の主語も The school です。term はここでは「学期」。',
     },
   }),
-  st('[S It] [M also] [V teaches] [O students] [C {to:補語| [V to choose] [O {疑問詞節| [M when] [S a device] [V helps]} and {疑問詞節| [M when] [S it] [V interrupts]}]}].', {
+  st('[S It] [M also] [V teaches] [O students] [C {to:補語| [V to choose] [O {並列| {疑問詞節| [M when] [S a device] [V helps]} | and {疑問詞節| [M when] [S it] [V interrupts]}}]}].', {
     chunks: [
       ['It also teaches students', '学校はまた、生徒に教えています（何をかは次へ）'],
       ['to choose when a device helps', '機器がいつ役立つかを判断するように'],
@@ -251,7 +251,7 @@ export default Object.freeze([
       'while studying': 'while ＋ -ing で「〜している間に」。while の後ろの they are が省かれた形です。',
     },
   }),
-  st('[S The goal] [V is] [C not simply {to:名詞| [V to remove] [O phones]}, but {to:名詞| [V to build] [O habits {関係>habits| [S that] [V protect] [O attention]}]}].', {
+  st('[S The goal] [V is] [C {並列| not simply {to:名詞| [V to remove] [O phones]}, | but {to:名詞| [V to build] [O habits {関係>habits| [S that] [V protect] [O attention]}]}}].', {
     chunks: [
       ['The goal is not simply to remove phones,', '目標は、単にスマートフォンを取り除くことではなく'],
       ['but to build habits', '習慣を身につけることです（どんな習慣かは次へ）'],

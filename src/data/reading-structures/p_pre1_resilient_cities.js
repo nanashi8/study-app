@@ -1,7 +1,7 @@
 import { st } from './entry.js'
 
 export default Object.freeze([
-  st('[S Cities] [V have] [M always] [V had to respond] [M {前| to weather}], [接 but] [S the challenge] [V has become] [C more complicated] [M {副詞節:比例| [接 as] [S extreme heat and sudden storms] [V occur] [M more frequently]}].', {
+  st('[S Cities] [V have] [M always] [V had to respond] [M {前| to weather}], [接 but] [S the challenge] [V has become] [C more complicated] [M {副詞節:比例| [接 as] [S {並列| extreme heat | and sudden storms}] [V occur] [M more frequently]}].', {
     chunks: [
       ['Cities', '都市は'],
       ['have always had to respond', 'これまでずっと対応しなければなりませんでした'],
@@ -18,7 +18,7 @@ export default Object.freeze([
       as: 'as はここでは「〜するにつれて」と、変化が並んで進むことを表します。',
     },
   }),
-  st('[M {前| In the past}], [S local governments] [M often] [V treated] [O floods, heat waves, and water shortages] [C {前| as separate problems}].', {
+  st('[M {前| In the past}], [S local governments] [M often] [V treated] [O {並列| floods, | heat waves, | and water shortages}] [C {前| as separate problems}].', {
     chunks: [
       ['In the past', 'かつては'],
       ['local governments', '地方自治体は'],
@@ -30,7 +30,7 @@ export default Object.freeze([
       'as separate problems': 'treat A as B で「AをBとして扱う」。as 以下が A の中身を説明する補語です。',
     },
   }),
-  st('[M Today], [S many planners] [V argue] [O {that節| [接 that] [S cities] [V need] [O a broader framework {関係>a broader framework| [S that] [V connects] [O transportation, housing, energy, and public health]}]}].', {
+  st('[M Today], [S many planners] [V argue] [O {that節| [接 that] [S cities] [V need] [O a broader framework {関係>a broader framework| [S that] [V connects] [O {並列| transportation, | housing, | energy, | and public health}]}]}].', {
     chunks: [
       ['Today', '今日では'],
       ['many planners argue', '多くの都市計画者は主張しています（内容は次へ）'],
@@ -84,7 +84,7 @@ export default Object.freeze([
       'is already under pressure': 'under pressure は「圧力を受けて・逼迫して」。',
     },
   }),
-  st('[S A more resilient city] [M therefore] [V begins] [M {前| by {動名詞| [V assessing] [O {疑問詞節| [S who] [V is] [C most vulnerable]} and {疑問詞節| [S which resources] [V can serve] [O several needs] [M {前| at once}]}]}}].', {
+  st('[S A more resilient city] [M therefore] [V begins] [M {前| by {動名詞| [V assessing] [O {並列| {疑問詞節| [S who] [V is] [C most vulnerable]} | and {疑問詞節| [S which resources] [V can serve] [O several needs] [M {前| at once}]}}]}}].', {
     chunks: [
       ['A more resilient city therefore begins', 'そのため、より回復力のある都市は始めます（何から始めるかは次へ）'],
       ['by assessing', '評価することから（何をかは次へ）'],
@@ -160,7 +160,7 @@ export default Object.freeze([
       'force lower-income residents to move': 'force ＋ 人 ＋ to do で「人に〜することを強いる」。',
     },
   }),
-  st('[S Planners] [V must] [M therefore] [V examine] [O not only {whether節| [接 whether] [S an intervention] [V works] [M physically]} but also {疑問詞節| [M how] [S its costs and benefits] [V are distributed]}].', {
+  st('[S Planners] [V must] [M therefore] [V examine] [O {並列| not only {whether節| [接 whether] [S an intervention] [V works] [M physically]} | but also {疑問詞節| [M how] [S {並列| its costs | and benefits}] [V are distributed]}}].', {
     chunks: [
       ['Planners must therefore examine', 'そのため計画者は調べなければなりません（何をかは次へ）'],
       ['not only', '〜だけでなく（一つ目は次へ）'],
@@ -184,7 +184,7 @@ export default Object.freeze([
       'rather than on attractive ideas': 'A rather than B で「BではなくA」。on evidence と on attractive ideas を比べています。',
     },
   }),
-  st('[S Some cities] [V have begun] [O {to:名詞| [V to invite] [O residents] [C {to:補語| [V to map] [O dangerous intersections, hot streets, and places {関係>places| [M where] [S water] [V remains] [M {前| after heavy rain}]}]}]}].', {
+  st('[S Some cities] [V have begun] [O {to:名詞| [V to invite] [O residents] [C {to:補語| [V to map] [O {並列| dangerous intersections, | hot streets, | and places {関係>places| [M where] [S water] [V remains] [M {前| after heavy rain}]}}]}]}].', {
     chunks: [
       ['Some cities', '一部の都市は'],
       ['have begun to invite residents', '住民に呼びかけ始めています（何をかは次へ）'],
@@ -285,7 +285,7 @@ export default Object.freeze([
       'and can be announced as decisive action': 'announce A as B「AをBとして発表する」の受け身です。can be announced は are visible と主語 they を共有しています。',
     },
   }),
-  st('[M Yet] [S smaller investments, {前| such as {動名詞| [V training] [O neighborhood volunteers]} or {動名詞| [V improving] [O warning messages {前| in several languages}]}},] [V may save] [O more lives] [M {前| during an emergency}].', {
+  st('[M Yet] [S smaller investments, {前| such as {並列| {動名詞| [V training] [O neighborhood volunteers]} | or {動名詞| [V improving] [O warning messages {前| in several languages}]}}},] [V may save] [O more lives] [M {前| during an emergency}].', {
     chunks: [
       ['Yet', 'しかし'],
       ['smaller investments,', 'より小さな投資のほうが（どんな投資かは次へ）'],
@@ -348,7 +348,7 @@ export default Object.freeze([
       'must remain flexible': 'remain ＋ 形容詞 で「〜のままである」。',
     },
   }),
-  st('[S A project {関係>A project| [S that] [V performs] [M well] [M {前| under today\'s conditions}]}] [V may be] [C inadequate] [M {副詞節:条件| [接 if] [S migration, land use, or rainfall patterns] [V change]}].', {
+  st('[S A project {関係>A project| [S that] [V performs] [M well] [M {前| under today\'s conditions}]}] [V may be] [C inadequate] [M {副詞節:条件| [接 if] [S {並列| migration, | land use, | or rainfall patterns}] [V change]}].', {
     chunks: [
       ['A project', '事業は'],
       ['that performs well', 'うまく機能する（事業は）'],
@@ -358,7 +358,7 @@ export default Object.freeze([
       ['migration, land use, or rainfall patterns change', '人口の移動や土地の使われ方、雨の降り方が変われば'],
     ],
   }),
-  st('[S {動名詞| [V Setting] [O review dates]} and {動名詞| [V publishing] [O results]}] [V allow] [O governments] [C {to:補語| [V to revise] [O policies] [M {前| without {動名詞| [V treating] [O revision] [C {前| as failure}]}}]}].', {
+  st('[S {並列| {動名詞| [V Setting] [O review dates]} | and {動名詞| [V publishing] [O results]}}] [V allow] [O governments] [C {to:補語| [V to revise] [O policies] [M {前| without {動名詞| [V treating] [O revision] [C {前| as failure}]}}]}].', {
     chunks: [
       ['Setting review dates and publishing results', '見直しの日程を決め、結果を公表することは'],
       ['allow governments to revise policies', '政府が政策を見直せるようにします'],

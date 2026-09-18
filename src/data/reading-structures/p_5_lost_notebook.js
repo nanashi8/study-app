@@ -15,7 +15,7 @@ export default Object.freeze([
       'every morning': '前置詞を付けずに「いつ」を表します。',
     },
   }),
-  st('[M {前| On Monday}], [S she] [V has] [O English, music, and science classes].', {
+  st('[M {前| On Monday}], [S she] [V has] [O {並列| English, | music, | and science classes}].', {
     notes: {
       'has English, music, and science classes': 'English, music, and science が classes を前から説明し、三つの教科の授業全体で一つの目的語です。have classes で「授業がある」。',
     },

@@ -12,7 +12,7 @@ export default Object.freeze([
       'rather than across wide fields': 'A rather than B で「BではなくA」。実際のやり方が前、比べられる普通の農業が後ろです。',
     },
   }),
-  st('[S Plants] [V receive] [O carefully controlled light, water, temperature, and nutrients] [M {前| without ordinary soil}].', {
+  st('[S Plants] [V receive] [O {並列| carefully controlled light, | water, | temperature, | and nutrients}] [M {前| without ordinary soil}].', {
     chunks: [
       ['Plants receive carefully controlled light,', '植物は、細かく管理された光'],
       ['water, temperature, and nutrients', '水、温度、栄養を受け取ります'],
@@ -46,7 +46,7 @@ export default Object.freeze([
       'some systems use far less water': 'far は比較級 less を強めて「はるかに」。',
     },
   }),
-  st('[S Indoor crops] [V are] [M also] [V protected] [M {前| from storms, droughts, and many outdoor insects}].', {
+  st('[S Indoor crops] [V are] [M also] [V protected] [M {前| from {並列| storms, | droughts, | and many outdoor insects}}].', {
     chunks: [
       ['Indoor crops are also protected', '室内の作物は、守られてもいます（何からかは次へ）'],
       ['from storms, droughts, and many outdoor insects', '嵐や干ばつ、多くの屋外の虫から'],
@@ -81,7 +81,7 @@ export default Object.freeze([
     },
     rules: ['negation-scope', 'contrast-concession', 'svoc-core'],
   }),
-  st('[S Artificial lights and cooling systems] [V may require] [O large amounts {前| of electricity}].', {
+  st('[S {並列| Artificial lights | and cooling systems}] [V may require] [O large amounts {前| of electricity}].', {
     chunks: [
       ['Artificial lights and cooling systems', '人工の照明と冷却の設備は'],
       ['may require large amounts of electricity', '大量の電力を必要とすることがあります'],
@@ -112,7 +112,7 @@ export default Object.freeze([
       'may produce a different balance': 'balance はここでは「差し引きの結果・収支」。前の文とは逆の結果になりうるということです。',
     },
   }),
-  st('[S The answer] [V depends] [M {前| on the local climate, power supply, building, and crop}].', {
+  st('[S The answer] [V depends] [M {前| on {並列| the local climate, | power supply, | building, | and crop}}].', {
     chunks: [
       ['The answer depends', '答えは〜によって変わります（何によってかは次へ）'],
       ['on the local climate, power supply,', 'その地域の気候や電力の供給'],
@@ -123,7 +123,7 @@ export default Object.freeze([
       'building, and crop': 'on の後ろに4つが and で並んでいます。',
     },
   }),
-  st('[S Vertical farms] [V are] [M currently] [C best suited {前| to leafy vegetables and herbs {関係>leafy vegetables and herbs| [S that] [V grow] [M quickly]}}].', {
+  st('[S Vertical farms] [V are] [M currently] [C best suited {前| to {並列| leafy vegetables | and herbs} {関係>leafy vegetables and herbs| [S that] [V grow] [M quickly]}}].', {
     chunks: [
       ['Vertical farms are currently best suited', '垂直農場は今のところ最も向いています（何にかは次へ）'],
       ['to leafy vegetables and herbs', '葉物野菜やハーブに'],
@@ -134,7 +134,7 @@ export default Object.freeze([
       'that grow quickly': '早く育つ作物なら、棚を何回も使えるということです。',
     },
   }),
-  st('[S Wheat, rice, and fruit trees] [V need] [O more space] [接 or] [V have] [O lower value {前| for each shelf}].', {
+  st('[S {並列| Wheat, | rice, | and fruit trees}] [V need] [O more space] [接 or] [V have] [O lower value {前| for each shelf}].', {
     chunks: [
       ['Wheat, rice, and fruit trees need more space', '小麦や米、果樹はもっと広い場所が必要です'],
       ['or have lower value for each shelf', 'あるいは、棚1段あたりの価値が低くなります'],
@@ -143,7 +143,7 @@ export default Object.freeze([
       'or have lower value for each shelf': 'or は need と have を並べ、どちらも Wheat, rice, and fruit trees が主語です。for each shelf は「棚1段あたりで」。',
     },
   }),
-  st('[S Some crops] [M also] [V depend] [M {前| on pollinators or complex seasonal changes {関係>pollinators or complex seasonal changes| [O that] [S indoor systems] [V must copy]}}].', {
+  st('[S Some crops] [M also] [V depend] [M {前| on {並列| pollinators | or complex seasonal changes} {関係>pollinators or complex seasonal changes| [O that] [S indoor systems] [V must copy]}}].', {
     chunks: [
       ['Some crops also depend', '作物によっては、〜にも頼っています（何にかは次へ）'],
       ['on pollinators or complex seasonal changes', '受粉を助ける生き物や、複雑な季節の変化に'],
@@ -164,7 +164,7 @@ export default Object.freeze([
     },
     rules: ['paragraph-map', 'main-clause-skeleton', 'reference-chain'],
   }),
-  st('[S A farm] [V may produce] [O excellent vegetables] [接 and] [M still] [V fail] [M {副詞節:条件| [接 if] [S debt and electricity costs] [V remain] [C high]}].', {
+  st('[S A farm] [V may produce] [O excellent vegetables] [接 and] [M still] [V fail] [M {副詞節:条件| [接 if] [S {並列| debt | and electricity costs}] [V remain] [C high]}].', {
     chunks: [
       ['A farm may produce excellent vegetables', '農場はすばらしい野菜を作れても'],
       ['and still fail', 'それでも失敗することがあります'],
@@ -207,7 +207,7 @@ export default Object.freeze([
     },
     rules: ['paragraph-map', 'main-clause-skeleton', 'svoc-core'],
   }),
-  st('[S They] [V include] [O construction materials, water, electricity, transport, food waste, and the useful life {前| of equipment}].', {
+  st('[S They] [V include] [O {並列| construction materials, | water, | electricity, | transport, | food waste, | and the useful life {前| of equipment}}].', {
     chunks: [
       ['They include construction materials,', 'それには建設の材料'],
       ['water, electricity, transport, food waste,', '水、電気、輸送、食品のむだ'],
@@ -218,7 +218,7 @@ export default Object.freeze([
       'and the useful life of equipment': 'the useful life of equipment は「設備が使えるうちの年数」。',
     },
   }),
-  st('[S They] [M also] [V ask] [O {疑問詞節| [S who] [V receives] [O jobs, training, and affordable food] [M {前| from the investment}]}].', {
+  st('[S They] [M also] [V ask] [O {疑問詞節| [S who] [V receives] [O {並列| jobs, | training, | and affordable food}] [M {前| from the investment}]}].', {
     chunks: [
       ['They also ask', 'その比べ方は、さらに問います（何をかは次へ）'],
       ['who receives jobs, training, and affordable food', 'だれが仕事や訓練、手ごろな値段の食料を得るのかを'],
@@ -229,7 +229,7 @@ export default Object.freeze([
       'from the investment': 'the investment は垂直農場に使われるお金のことです。',
     },
   }),
-  st('[S A fair study] [V compares] [O farms {関係>farms| [S that] [V produce] [O the same crop] [M {前| for the same season and destination}]}]; [S it] [V does not compare] [O one city farm] [M {前| with a distant average}].', {
+  st('[S A fair study] [V compares] [O farms {関係>farms| [S that] [V produce] [O the same crop] [M {前| for {並列| the same season | and destination}}]}]; [S it] [V does not compare] [O one city farm] [M {前| with a distant average}].', {
     chunks: [
       ['A fair study compares farms', '公平な調べ方は、農場どうしを比べます（どんな農場かは次へ）'],
       ['that produce the same crop', '同じ作物を作る（農場を）'],
@@ -264,7 +264,7 @@ export default Object.freeze([
       'transport is difficult, or weather is unstable': 'where の節の中に、土地・輸送・天気の3つの場合が並んでいます。',
     },
   }),
-  st('[S Field farms, greenhouses, and indoor farms] [V can] [M then] [V contribute] [O different strengths] [M {前| to a more resilient food system}].', {
+  st('[S {並列| Field farms, | greenhouses, | and indoor farms}] [V can] [M then] [V contribute] [O different strengths] [M {前| to a more resilient food system}].', {
     chunks: [
       ['Field farms, greenhouses, and indoor farms', '露地の農場、温室、室内の農場は'],
       ['can then contribute different strengths', 'そうすれば、それぞれ違う強みを持ち寄れます'],

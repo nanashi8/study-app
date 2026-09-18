@@ -13,7 +13,7 @@ export default Object.freeze([
       'with competing public purposes': 'competing は「互いにぶつかり合う」。with 以下は complex systems を後ろから説明します。',
     },
   }),
-  st('[S Schools] [V compare] [O test scores], [S hospitals] [V track] [O waiting times], [S universities] [V count] [O publications], [接 and] [S governments] [V publish] [O targets {前| for employment, safety, and environmental quality}].', {
+  st('[S Schools] [V compare] [O test scores], [S hospitals] [V track] [O waiting times], [S universities] [V count] [O publications], [接 and] [S governments] [V publish] [O targets {前| for {並列| employment, | safety, | and environmental quality}}].', {
     chunks: [
       ['Schools compare test scores,', '学校はテストの点数を比べ'],
       ['hospitals track waiting times,', '病院は待ち時間を記録し'],
@@ -25,7 +25,7 @@ export default Object.freeze([
       'Schools compare test scores,': '主語と動詞の組が四つ並び、測定の例を挙げています。',
     },
   }),
-  st('[S Such indicators] [V give] [O1 institutions] [O2 a common language {前| for {動名詞| [V judging] [O performance] [M {前| across places} and {前| over time}]}}].', {
+  st('[S Such indicators] [V give] [O1 institutions] [O2 a common language {前| for {動名詞| [V judging] [O performance] [M {並列| {前| across places} | and {前| over time}}]}}].', {
     chunks: [
       ['Such indicators give institutions', 'そうした指標は、機関に与えます（何をかは次へ）'],
       ['a common language', '共通の言葉を（何のためのかは次へ）'],
@@ -36,7 +36,7 @@ export default Object.freeze([
       'Such indicators give institutions': 'give ＋ 人 ＋ もの で「人にものを与える」。Such indicators は前の文の点数や待ち時間などを指します。',
     },
   }),
-  st('[S They] [V can expose] [O failure {関係>failure| [S that] [V would] [M otherwise] [V remain] [C hidden] [M {前| behind confident speeches or professional authority}]}].', {
+  st('[S They] [V can expose] [O failure {関係>failure| [S that] [V would] [M otherwise] [V remain] [C hidden] [M {前| behind {並列| confident speeches | or professional authority}}]}].', {
     chunks: [
       ['They can expose failure', '指標は失敗を明らかにできます（どんな失敗かは次へ）'],
       ['that would otherwise remain hidden', '指標がなければ隠れたままになるはずの（失敗を）'],
@@ -79,7 +79,7 @@ export default Object.freeze([
       'that makes someone a thoughtful reader': 'make ＋ O ＋ C で「OをCにする」。',
     },
   }),
-  st('[M {副詞節:時| [接 Once] [S rewards or penalties] [V depend] [M heavily] [M {前| on the score}]}], [S people] [V have] [O an incentive {to:形容詞>an incentive| [V to optimize] [O the proxy] [M {前| rather than {原形| [V pursue] [O the underlying mission]}}]}].', {
+  st('[M {副詞節:時| [接 Once] [S {並列| rewards | or penalties}] [V depend] [M heavily] [M {前| on the score}]}], [S people] [V have] [O an incentive {to:形容詞>an incentive| [V to optimize] [O the proxy] [M {前| rather than {原形| [V pursue] [O the underlying mission]}}]}].', {
     chunks: [
       ['Once rewards or penalties depend heavily', 'いったん報酬や罰が大きく左右されるようになると（何にかは次へ）'],
       ['on the score,', '点数に'],
@@ -103,7 +103,7 @@ export default Object.freeze([
       'need not involve obvious cheating': 'need not ＋ 動詞の原形 で「〜する必要はない・〜するとは限らない」。この need は助動詞です。',
     },
   }),
-  st('[S A school] [V may devote] [O more time] [M {前| to easily tested skills}] [M {副詞節:対比| [接 while] [V neglecting] [O discussion, curiosity, or students {関係>students| [S whose improvement] [V is] [C unlikely {to:副詞(形容詞)| [V to change] [O its ranking]}]}]}].', {
+  st('[S A school] [V may devote] [O more time] [M {前| to easily tested skills}] [M {副詞節:対比| [接 while] [V neglecting] [O {並列| discussion, | curiosity, | or students {関係>students| [S whose improvement] [V is] [C unlikely {to:副詞(形容詞)| [V to change] [O its ranking]}]}}]}].', {
     chunks: [
       ['A school may devote more time', '学校は、より多くの時間を充てるかもしれません（何にかは次へ）'],
       ['to easily tested skills', '試験しやすい技能に'],
@@ -127,7 +127,7 @@ export default Object.freeze([
       'when the waiting-time clock officially starts': 'when 以下は「いつ〜するか」という名詞のまとまりで、redefine の目的語です。',
     },
   }),
-  st('[S Each action] [V can improve] [O the reported number] [M {前| without {動名詞| [V producing] [O an equivalent improvement {前| in education or care}]}}].', {
+  st('[S Each action] [V can improve] [O the reported number] [M {前| without {動名詞| [V producing] [O an equivalent improvement {前| in {並列| education | or care}}]}}].', {
     chunks: [
       ['Each action can improve the reported number', 'どの行動も、報告される数字をよくすることができます'],
       ['without producing an equivalent improvement', '同じだけの改善を生むことなく（何の改善かは次へ）'],
@@ -160,7 +160,7 @@ export default Object.freeze([
       'required for genuine learning': 'required は過去分詞で、the very risk taking を後ろから説明します。',
     },
   }),
-  st('[S Critics] [M sometimes] [V conclude] [O {that節| [接 that] [S quantification itself] [V is] [C the problem]} and {that節| [接 that] [S experienced professionals] [V should] [M simply] [V be trusted] [C {to:補語| [V to exercise] [O judgment]}]}].', {
+  st('[S Critics] [M sometimes] [V conclude] [O {並列| {that節| [接 that] [S quantification itself] [V is] [C the problem]} | and {that節| [接 that] [S experienced professionals] [V should] [M simply] [V be trusted] [C {to:補語| [V to exercise] [O judgment]}]}}].', {
     chunks: [
       ['Critics sometimes conclude that', '批判する人々は、ときに〜と結論づけます（内容は次へ）'],
       ['quantification itself is the problem', '数量化そのものが問題であり'],
@@ -185,7 +185,7 @@ export default Object.freeze([
     },
     rules: ['author-stance', 'wh-clause', 'reference-chain'],
   }),
-  st('[S Judgment] [V can remain] [C informed and humane], [接 but] [S it] [V can] [M also] [V become] [C inconsistent, biased, and difficult {前:意味上の主語| for outsiders} {to:副詞(形容詞)| [V to challenge]}].', {
+  st('[S Judgment] [V can remain] [C {並列| informed | and humane}], [接 but] [S it] [V can] [M also] [V become] [C {並列| inconsistent, | biased, | and difficult {前:意味上の主語| for outsiders} {to:副詞(形容詞)| [V to challenge]}}].', {
     chunks: [
       ['Judgment can remain informed and humane,', '判断は、よく知ったうえでの、人間味のあるものであり続けることができます'],
       ['but it can also become', 'しかし、〜になることもあります（どんなものかは次へ）'],
@@ -209,7 +209,7 @@ export default Object.freeze([
       'that it repeatedly fails particular communities': 'that 以下は evidence の中身を説明する同格の that節です。it は a program を指し、fail はここでは「（人々の）役に立たない」。',
     },
   }),
-  st('[S The relevant choice] [V is] [C neither perfect numbers nor pure wisdom], [M {副詞節:理由| [接 because] [S neither] [V exists]}].', {
+  st('[S The relevant choice] [V is] [C {並列| neither perfect numbers | nor pure wisdom}], [M {副詞節:理由| [接 because] [S neither] [V exists]}].', {
     chunks: [
       ['The relevant choice', '考えるべき選択肢は'],
       ['is neither perfect numbers nor pure wisdom,', '完全な数字でも純粋な知恵でもありません'],
@@ -251,7 +251,7 @@ export default Object.freeze([
       'that illuminate different parts of the mission': 'illuminate は「照らす・明らかにする」。',
     },
   }),
-  st('[S Graduation rates] [V may be considered] [M {前| alongside student surveys, samples {前| of actual work}, and information {前| about {what節| [O what] [S graduates] [V can do] [M later]}}}].', {
+  st('[S Graduation rates] [V may be considered] [M {前| alongside {並列| student surveys, | samples {前| of actual work}, | and information {前| about {what節| [O what] [S graduates] [V can do] [M later]}}}}].', {
     chunks: [
       ['Graduation rates may be considered alongside', '卒業率は、〜と並べて検討されることがあります（何とかは次へ）'],
       ['student surveys, samples of actual work,', '生徒へのアンケートや、実際の作品の見本'],
@@ -318,7 +318,7 @@ export default Object.freeze([
       'once a measure carries consequences': 'carry consequences は「（報酬や処罰などの）結果を伴う」。',
     },
   }),
-  st('[S A quiet diagnostic metric] [V can become] [C unreliable] [M {副詞節:時| [接 after] [S promotion, funding, or punishment] [V depends] [M {前| on it}]}].', {
+  st('[S A quiet diagnostic metric] [V can become] [C unreliable] [M {副詞節:時| [接 after] [S {並列| promotion, | funding, | or punishment}] [V depends] [M {前| on it}]}].', {
     chunks: [
       ['A quiet diagnostic metric can become unreliable', '目立たずに使われていた診断用の指標も、信頼できなくなることがあります'],
       ['after promotion, funding, or punishment depends on it', '昇進や資金、処罰がそれで決まるようになると'],
@@ -328,7 +328,7 @@ export default Object.freeze([
       'after promotion, funding, or punishment depends on it': 'A, B, or C が主語のときは、近い punishment に合わせて depends になります。it は A quiet diagnostic metric を指します。',
     },
   }),
-  st('[S Regular audits] [V should look] [M not only {前| for false reports} but also {前| for neglected tasks, displaced risks, and groups {関係>groups| [S that] [V disappear] [M {前| from the data}]}}].', {
+  st('[S Regular audits] [V should look] [M {並列| not only {前| for false reports} | but also {前| for {並列| neglected tasks, | displaced risks, | and groups {関係>groups| [S that] [V disappear] [M {前| from the data}]}}}}].', {
     chunks: [
       ['Regular audits should look', '定期的な監査は、探すべきです（何をかは次へ）'],
       ['not only for false reports', 'うその報告だけでなく'],
@@ -360,7 +360,7 @@ export default Object.freeze([
       'yet publishing more data is not sufficient': 'yet は「しかし」。publishing more data は「より多くのデータを公開すること」という動名詞のまとまりで、主語です。',
     },
   }),
-  st('[S A dashboard] [V can appear] [C open] [M {副詞節:対比| [接 while] [V hiding] [O decisions {前| about definitions, missing cases, statistical adjustments, and acceptable thresholds}]}].', {
+  st('[S A dashboard] [V can appear] [C open] [M {副詞節:対比| [接 while] [V hiding] [O decisions {前| about {並列| definitions, | missing cases, | statistical adjustments, | and acceptable thresholds}}]}].', {
     chunks: [
       ['A dashboard can appear open', 'データをまとめた画面は、開かれているように見えることがあります'],
       ['while hiding decisions', '決定を隠している一方で（何についての決定かは次へ）'],
@@ -372,7 +372,7 @@ export default Object.freeze([
       'while hiding decisions': 'while hiding は while (it is) hiding の形で、「〜している一方で」。',
     },
   }),
-  st('[S Meaningful transparency] [V explains] [O {疑問詞節| [M why] [S a measure] [V was chosen]}, {疑問詞節| [O what] [S it] [V omits]}, {疑問詞節| [M how] [S uncertainty] [V was handled]}, and {疑問詞節| [S who] [V can question] [O its use]}].', {
+  st('[S Meaningful transparency] [V explains] [O {並列| {疑問詞節| [M why] [S a measure] [V was chosen]}, | {疑問詞節| [O what] [S it] [V omits]}, | {疑問詞節| [M how] [S uncertainty] [V was handled]}, | and {疑問詞節| [S who] [V can question] [O its use]}}].', {
     chunks: [
       ['Meaningful transparency explains', '意味のある透明性は、説明します（何をかは次へ）'],
       ['why a measure was chosen,', 'なぜその測定値が選ばれたのか'],
@@ -418,7 +418,7 @@ export default Object.freeze([
       'of being measured': 'being measured は「測られること」という受け身の動名詞です。',
     },
   }),
-  st('[S Frontline workers and vulnerable citizens] [M often] [V supply] [O detailed data], [M {副詞節:対比| [接 while] [S senior institutions] [V retain] [O discretion {前| over {疑問詞節| [M how] [S the numbers] [V are interpreted]}}]}].', {
+  st('[S {並列| Frontline workers | and vulnerable citizens}] [M often] [V supply] [O detailed data], [M {副詞節:対比| [接 while] [S senior institutions] [V retain] [O discretion {前| over {疑問詞節| [M how] [S the numbers] [V are interpreted]}}]}].', {
     chunks: [
       ['Frontline workers and vulnerable citizens', '現場で働く人々や弱い立場の市民が'],
       ['often supply detailed data,', '詳しいデータを出すことが多いのです'],
@@ -461,7 +461,7 @@ export default Object.freeze([
       'important purposes cannot always be fully quantified': 'not always は「いつも〜とは限らない」という部分否定です。be quantified は「数量で表される」。',
     },
   }),
-  st('[S Institutions] [V cannot] [M precisely] [V measure] [O trust, intellectual courage, dignity, and social repair], [接 yet] [S they] [V cannot] [M responsibly] [V ignore] [O these values].', {
+  st('[S Institutions] [V cannot] [M precisely] [V measure] [O {並列| trust, | intellectual courage, | dignity, | and social repair}], [接 yet] [S they] [V cannot] [M responsibly] [V ignore] [O these values].', {
     chunks: [
       ['Institutions cannot precisely measure', '機関は、正確には測れません（何をかは次へ）'],
       ['trust, intellectual courage, dignity, and social repair,', '信頼や知的な勇気、尊厳、社会の修復を'],
@@ -471,7 +471,7 @@ export default Object.freeze([
       'yet they cannot responsibly ignore these values': 'yet は「しかし」。these values は前半の信頼や勇気などを指します。',
     },
   }),
-  st('[S The inability {to:形容詞>The inability| [V to assign] [O a clean number]}] [V is not] [C evidence {同格that>evidence| [接 that] [S a value] [V is] [C unreal]}]; [S it] [V is] [C a warning {同格that>a warning| [接 that] [S judgment] [V must remain] [C visible and contestable]}].', {
+  st('[S The inability {to:形容詞>The inability| [V to assign] [O a clean number]}] [V is not] [C evidence {同格that>evidence| [接 that] [S a value] [V is] [C unreal]}]; [S it] [V is] [C a warning {同格that>a warning| [接 that] [S judgment] [V must remain] [C {並列| visible | and contestable}]}].', {
     chunks: [
       ['The inability to assign a clean number', 'はっきりした数字をあてはめられないことは'],
       ['is not evidence', '証拠ではありません（何の証拠かは次へ）'],
@@ -530,7 +530,7 @@ export default Object.freeze([
     },
     rules: ['reference-chain', 'main-clause-skeleton', 'svoc-core'],
   }),
-  st('[M {副詞節:時| [接 When] [S it] [V remains] [C one disciplined source {前| of evidence {前| among others}}]}], [S measurement] [V can support] [O both learning and democratic accountability] [M {前| across changing circumstances and competing interpretations {前| of public value}}] [M {前| over time}].', {
+  st('[M {副詞節:時| [接 When] [S it] [V remains] [C one disciplined source {前| of evidence {前| among others}}]}], [S measurement] [V can support] [O {並列| both learning | and democratic accountability}] [M {前| across {並列| changing circumstances | and competing interpretations {前| of public value}}}] [M {前| over time}].', {
     chunks: [
       ['When it remains one disciplined source of evidence', '測定が、規律ある一つの証拠の源であり続けるなら'],
       ['among others,', 'ほかの証拠と並んで'],

@@ -13,7 +13,7 @@ export default Object.freeze([
     },
     rules: ['paragraph-map', 'negation-scope', 'main-clause-skeleton'],
   }),
-  st('[M {前| In practice}], [S decisions] [V are] [M also] [V shaped] [M {前| by {疑問詞節| [S which option] [V appears] [M first]}, {疑問詞節| [S which action] [V requires] [O effort]}, and {what節| [S what] [V happens] [M {副詞節:時| [接 when] [S someone] [V does] [O nothing]}]}}].', {
+  st('[M {前| In practice}], [S decisions] [V are] [M also] [V shaped] [M {前| by {並列| {疑問詞節| [S which option] [V appears] [M first]}, | {疑問詞節| [S which action] [V requires] [O effort]}, | and {what節| [S what] [V happens] [M {副詞節:時| [接 when] [S someone] [V does] [O nothing]}]}}}].', {
     chunks: [
       ['In practice, decisions are also shaped', '実際には、決め方は形づくられてもいます（何によってかは次へ）'],
       ['by which option appears first,', 'どの選択肢が先に出てくるか'],
@@ -36,7 +36,7 @@ export default Object.freeze([
       'the environment within which people decide': 'コロンの後ろは a choice architecture の言いかえです。within which は「その中で」で、the environment を説明します。',
     },
   }),
-  st('[S Architecture] [V is not] [M merely] [C a metaphor], [M {副詞節:理由| [接 because] [S every digital screen, form, cafeteria, and public procedure] [V must arrange] [O alternatives] [M somehow]}].', {
+  st('[S Architecture] [V is not] [M merely] [C a metaphor], [M {副詞節:理由| [接 because] [S {並列| every digital screen, | form, | cafeteria, | and public procedure}] [V must arrange] [O alternatives] [M somehow]}].', {
     chunks: [
       ['Architecture is not merely a metaphor,', 'しくみというのは、ただのたとえではありません'],
       ['because every digital screen, form,', 'なぜなら、どの画面や書類'],
@@ -127,7 +127,7 @@ export default Object.freeze([
       'they already have but repeatedly postpone': 'have と postpone が but で並び、どちらも an intention を目的語にします。postpone は「先延ばしにする」。',
     },
   }),
-  st('[S It] [V can] [M also] [V reduce] [O the advantage {過去分詞>the advantage| [V enjoyed] [M {前| by people {関係>people| [S who] [V have] [O more time, confidence, or expert assistance] [M {前| for {動名詞| [V navigating] [O procedures]}}]}}]}].', {
+  st('[S It] [V can] [M also] [V reduce] [O the advantage {過去分詞>the advantage| [V enjoyed] [M {前| by people {関係>people| [S who] [V have] [O {並列| more time, | confidence, | or expert assistance}] [M {前| for {動名詞| [V navigating] [O procedures]}}]}}]}].', {
     chunks: [
       ['It can also reduce the advantage', 'それはまた、有利さを小さくできます（だれの有利さかは次へ）'],
       ['enjoyed by people who have more time,', '時間をより多く持つ人が受けている（有利さを）'],
@@ -151,7 +151,7 @@ export default Object.freeze([
     },
     rules: ['contrast-concession', 'ing-ed-role', 'reference-chain'],
   }),
-  st('[S The ethical difficulty] [V begins] [M {前| with the fact {同格that>the fact| [接 that] [S influence and assistance] [V are not] [M easily] [V separated]}}].', {
+  st('[S The ethical difficulty] [V begins] [M {前| with the fact {同格that>the fact| [接 that] [S {並列| influence | and assistance}] [V are not] [M easily] [V separated]}}].', {
     chunks: [
       ['The ethical difficulty begins with the fact', '倫理の面での難しさは、次の事実から始まります（内容は次へ）'],
       ['that influence and assistance are not easily separated', '影響を与えるのと助けるのは、簡単には分けられないという事実です'],
@@ -162,7 +162,7 @@ export default Object.freeze([
     },
     rules: ['that-diagnosis', 'paragraph-map', 'main-clause-skeleton'],
   }),
-  st('[S The person or institution {関係>The person or institution| [S that] [V selects] [O a default]}] [V makes] [O a judgment] [M {前| about {疑問詞節| [S which outcome] [V should occur] [M most easily]}}].', {
+  st('[S {並列| The person | or institution} {関係>The person or institution| [S that] [V selects] [O a default]}] [V makes] [O a judgment] [M {前| about {疑問詞節| [S which outcome] [V should occur] [M most easily]}}].', {
     chunks: [
       ['The person or institution that selects a default', '初期設定を選ぶ人や組織は'],
       ['makes a judgment', '一つの判断をしています（何についてかは次へ）'],
@@ -172,7 +172,7 @@ export default Object.freeze([
       'about which outcome should occur most easily': 'which outcome 以下は「どの結果が〜か」という名詞のまとまりで、about の目的語です。',
     },
   }),
-  st('[S That judgment] [V may reflect] [O good evidence and a legitimate public goal], [接 but] [S it] [V may] [M also] [V serve] [O the designer\'s interests].', {
+  st('[S That judgment] [V may reflect] [O {並列| good evidence | and a legitimate public goal}], [接 but] [S it] [V may] [M also] [V serve] [O the designer\'s interests].', {
     chunks: [
       ['That judgment may reflect good evidence', 'その判断は、よい根拠を反映していることもあります'],
       ['and a legitimate public goal,', 'そして、正当な公の目標も'],
@@ -228,7 +228,7 @@ export default Object.freeze([
       'what happens when users ignore a notice': 'what 以下は「何が〜か」という名詞のまとまりで、decide の目的語です。',
     },
   }),
-  st('[M {副詞節:条件| [接 If] [S architecture] [V is] [C unavoidable]}], [M {挿入| [S they] [V argue]}], [S it] [V should be designed] [M {to:副詞(目的)| [V to advance] [O welfare]}] [M {前| rather than left {前| to accident or commercial power}}].', {
+  st('[M {副詞節:条件| [接 If] [S architecture] [V is] [C unavoidable]}], [M {挿入| [S they] [V argue]}], [S it] [V should be designed] [M {to:副詞(目的)| [V to advance] [O welfare]}] [M {前| rather than left {前| to {並列| accident | or commercial power}}}].', {
     chunks: [
       ['If architecture is unavoidable, they argue,', 'しくみが避けられないのなら、と彼らは言います'],
       ['it should be designed to advance welfare', 'それは人々の幸せを進めるように設計されるべきだ'],
@@ -240,7 +240,7 @@ export default Object.freeze([
     },
     rules: ['insertion', 'contrast-concession', 'passive-active'],
   }),
-  st('[S This response] [V is] [C persuasive] [M {副詞節:範囲| [接 as far as] [S it] [V goes]}], [接 yet] [S inevitability] [V does not settle] [O {疑問詞節| [S who] [V may design]}, {前| for whom}, or {前| toward what end}].', {
+  st('[S This response] [V is] [C persuasive] [M {副詞節:範囲| [接 as far as] [S it] [V goes]}], [接 yet] [S inevitability] [V does not settle] [O {並列| {疑問詞節| [S who] [V may design]}, | {前| for whom}, | or {前| toward what end}}].', {
     chunks: [
       ['This response is persuasive', 'この答えは説得力があります（どの範囲でかは次へ）'],
       ['as far as it goes,', 'その範囲においては'],
@@ -310,7 +310,7 @@ export default Object.freeze([
     },
     rules: ['negation-scope', 'relative-clause', 'main-clause-skeleton'],
   }),
-  st('[S A second safeguard] [V is] [C easy and genuine refusal].', {
+  st('[S A second safeguard] [V is] [C {並列| easy | and genuine refusal}].', {
     chunks: [
       ['A second safeguard is easy and genuine refusal', '二つ目の守りの手立ては、簡単で本物の「断り方」です'],
     ],
@@ -377,7 +377,7 @@ export default Object.freeze([
       'while confusing or excluding others': 'while ＋ -ing で「〜しながら」。confusing と excluding が or で並びます。',
     },
   }),
-  st('[S Designers] [V need] [O evidence {前| about age, disability, language, income, digital access, and previous experience}, not merely a total response rate].', {
+  st('[S Designers] [V need] [O evidence {前| about {並列| age, | disability, | language, | income, | digital access, | and previous experience}}, not merely a total response rate].', {
     chunks: [
       ['Designers need evidence about age, disability,', '設計する人には、年齢や障害についての根拠が必要です'],
       ['language, income, digital access, and previous experience,', '言語、収入、デジタル機器を使えるか、これまでの経験についても'],
@@ -410,7 +410,7 @@ export default Object.freeze([
     },
     rules: ['paragraph-map', 'negation-scope', 'svoc-core'],
   }),
-  st('[S People] [V learn], [S markets] [V adapt], [S technologies] [V change], [接 and] [S a once-helpful default] [V may become] [C irrelevant or exploitable].', {
+  st('[S People] [V learn], [S markets] [V adapt], [S technologies] [V change], [接 and] [S a once-helpful default] [V may become] [C {並列| irrelevant | or exploitable}].', {
     chunks: [
       ['People learn, markets adapt, technologies change,', '人は学び、市場は合わせて変わり、技術も変わります'],
       ['and a once-helpful default may become', 'そして、かつて役立った初期設定が（どうなるかは次へ）'],
@@ -464,7 +464,7 @@ export default Object.freeze([
     },
     rules: ['paragraph-map', 'passive-active', 'main-clause-skeleton'],
   }),
-  st('[S Citizens] [V need not vote] [M {前| on every button or sentence}], [接 but] [S they] [V should be] [C able {to:副詞(形容詞)| [V to challenge] [O goals, evidence, and hidden burdens]}].', {
+  st('[S Citizens] [V need not vote] [M {前| on {並列| every button | or sentence}}], [接 but] [S they] [V should be] [C able {to:副詞(形容詞)| [V to challenge] [O {並列| goals, | evidence, | and hidden burdens}]}].', {
     chunks: [
       ['Citizens need not vote', '市民が投票する必要はありません（何にかは次へ）'],
       ['on every button or sentence,', 'ボタンや文の一つ一つに'],
@@ -476,7 +476,7 @@ export default Object.freeze([
       'but they should be able to challenge': 'challenge はここでは「異議を申し立てる」。be able to 〜 で「〜できる」。',
     },
   }),
-  st('[S Independent review] [V can test] [O {whether節| [接 whether] [S claimed benefits] [V are] [C real]} and {whether節| [接 whether] [S commercial or political interests] [V have shaped] [O the design]}].', {
+  st('[S Independent review] [V can test] [O {並列| {whether節| [接 whether] [S claimed benefits] [V are] [C real]} | and {whether節| [接 whether] [S {並列| commercial | or political interests}] [V have shaped] [O the design]}}].', {
     chunks: [
       ['Independent review can test', '外からの独立した審査なら、確かめられます（何をかは次へ）'],
       ['whether claimed benefits are real', '言われている良さが本当かどうか'],
@@ -487,7 +487,7 @@ export default Object.freeze([
       'whether claimed benefits are real': 'claimed は「主張されている」。2つの whether のまとまりが and で並び、どちらも test の目的語です。',
     },
   }),
-  st('[S Public explanation] [V should describe] [O not only {what節| [O what] [S the system] [V does]} but {疑問詞節| [M why] [S that architecture] [V was chosen] [M {前| over plausible alternatives}]}].', {
+  st('[S Public explanation] [V should describe] [O {並列| not only {what節| [O what] [S the system] [V does]} | but {疑問詞節| [M why] [S that architecture] [V was chosen] [M {前| over plausible alternatives}]}}].', {
     chunks: [
       ['Public explanation should describe not only', '公の説明が示すべきなのは、〜だけではありません（何かは次へ）'],
       ['what the system does', 'そのしくみが何をするか'],
@@ -499,7 +499,7 @@ export default Object.freeze([
       'over plausible alternatives': 'choose A over B で「BよりAを選ぶ」。plausible は「ありえそうな・もっともな」。',
     },
   }),
-  st('[S The lesson] [V is] [C neither {that節| [接 that] [S nudges] [V are] [C harmless]} nor {that節| [接 that] [S all influence] [V is] [C manipulation]}].', {
+  st('[S The lesson] [V is] [C {並列| neither {that節| [接 that] [S nudges] [V are] [C harmless]} | nor {that節| [接 that] [S all influence] [V is] [C manipulation]}}].', {
     chunks: [
       ['The lesson is neither that nudges are harmless', '学べることは、ナッジが無害だということでもなく'],
       ['nor that all influence is manipulation', 'すべての影響が操作だということでもありません'],

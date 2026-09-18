@@ -12,7 +12,7 @@ export default Object.freeze([
     },
     rules: ['paragraph-map', 'noun-boundary', 'main-clause-skeleton'],
   }),
-  st('[S Elderly residents] [V remembered] [O clear water {前| with frogs, insects and green plants}].', {
+  st('[S Elderly residents] [V remembered] [O clear water {前| with {並列| frogs, | insects | and green plants}}].', {
     chunks: [
       ['Elderly residents remembered clear water', '年配の住民は、澄んだ水を覚えていました（どんな水かは次へ）'],
       ['with frogs, insects and green plants', 'カエルや虫、緑の植物のある'],
@@ -22,7 +22,7 @@ export default Object.freeze([
       'with frogs, insects and green plants': 'with 以下は clear water を後ろから説明して「〜のある水」。',
     },
   }),
-  st('[M Last spring], [S the science club and a local wildlife group] [V decided] [O {to:名詞| [V to restore] [O the habitat]}].', {
+  st('[M Last spring], [S {並列| the science club | and a local wildlife group}] [V decided] [O {to:名詞| [V to restore] [O the habitat]}].', {
     chunks: [
       ['Last spring,', '昨年の春'],
       ['the science club and a local wildlife group', '科学部と地元の野生生物の会が'],
@@ -219,7 +219,7 @@ export default Object.freeze([
       'and a nearby company pays for the nets': 'pay for 〜 で「〜の代金を払う」。',
     },
   }),
-  st('[S Younger children] [V visit] [O the pond] [M {前| with real curiosity {前| about the frogs and the plants}}].', {
+  st('[S Younger children] [V visit] [O the pond] [M {前| with real curiosity {前| about {並列| the frogs | and the plants}}}].', {
     chunks: [
       ['Younger children visit the pond', '年下の子どもたちは、池を訪れます（どんな気持ちでかは次へ）'],
       ['with real curiosity', '心からの興味を持って（何へのかは次へ）'],

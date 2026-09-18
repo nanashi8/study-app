@@ -26,7 +26,7 @@ export default Object.freeze([
     },
     rules: ['infinitive-role', 'svoc-core', 'reference-chain'],
   }),
-  st('[S They] [V decided] [O {to:名詞| [V to create] [O a walking guide {前| in Japanese and easy English}]}].', {
+  st('[S They] [V decided] [O {to:名詞| [V to create] [O a walking guide {前| in {並列| Japanese | and easy English}}]}].', {
     chunks: [
       ['They decided to create a walking guide', '彼らは街歩きガイドを作ることにしました（何語のかは次へ）'],
       ['in Japanese and easy English', '日本語とやさしい英語の'],
@@ -48,7 +48,7 @@ export default Object.freeze([
     },
     rules: ['svoc-core', 'ing-ed-role', 'paragraph-map'],
   }),
-  st('[S Many people] [V said] [O {that節| [接 that] [S bus times and closing times] [V were] [C difficult {to:副詞(形容詞)| [V to find]}]}].', {
+  st('[S Many people] [V said] [O {that節| [接 that] [S {並列| bus times | and closing times}] [V were] [C difficult {to:副詞(形容詞)| [V to find]}]}].', {
     chunks: [
       ['Many people said that', '多くの人は〜と答えました（内容は次へ）'],
       ['bus times and closing times', 'バスの時刻と閉店時刻は'],
@@ -112,7 +112,7 @@ export default Object.freeze([
       'because busy summer streets could slow a group': 'slow はここでは動詞で「遅くする」。could は「〜することがある」という可能性を表します。',
     },
   }),
-  st('[S They] [V photographed] [O clear landmarks, {前| such as a red bridge and a stone tower}].', {
+  st('[S They] [V photographed] [O clear landmarks, {前| such as {並列| a red bridge | and a stone tower}}].', {
     chunks: [
       ['They photographed clear landmarks,', '彼らは分かりやすい目印を写真に撮りました'],
       ['such as a red bridge', '例えば赤い橋や'],
@@ -123,7 +123,7 @@ export default Object.freeze([
       'such as a red bridge': 'such as 以下は clear landmarks の具体例で、目的語の一部です。',
     },
   }),
-  st('[S Restaurant owners] [V checked] [O names, prices, and business hours] [M {前| for mistakes}].', {
+  st('[S Restaurant owners] [V checked] [O {並列| names, | prices, | and business hours}] [M {前| for mistakes}].', {
     chunks: [
       ['Restaurant owners checked names, prices, and business hours', '飲食店の店主は名前・価格・営業時間を確認しました'],
       ['for mistakes', '間違いがないか'],
@@ -166,7 +166,7 @@ export default Object.freeze([
       'a short route had many steps': 'steps はここでは「（階段の）段」。had many steps で「階段が多かった」。',
     },
   }),
-  st('[S The class] [V added] [O pictures, safer crossings, and a longer route {前| without steps}].', {
+  st('[S The class] [V added] [O {並列| pictures, | safer crossings, | and a longer route {前| without steps}}].', {
     chunks: [
       ['The class added pictures, safer crossings,', 'クラスは写真とより安全な横断場所を加えました'],
       ['and a longer route without steps', 'さらに、階段のない長めの道順も（加えました）'],
@@ -177,7 +177,7 @@ export default Object.freeze([
     },
     rules: ['parallel-shape', 'postmodifier', 'svoc-core'],
   }),
-  st('[S The finished guide] [V is] [M now] [C available] [M {前| at the station} and {前| on the town website}].', {
+  st('[S The finished guide] [V is] [M now] [C available] [M {並列| {前| at the station} | and {前| on the town website}}].', {
     chunks: [
       ['The finished guide is now available', '完成したガイドは今、利用できます'],
       ['at the station and on the town website', '駅でも町のウェブサイトでも'],
