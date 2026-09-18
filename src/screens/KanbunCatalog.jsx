@@ -1,5 +1,5 @@
-import { useMemo, useState } from 'react'
-import { todayIndex, useStore } from '../store/useStore.js'
+import { useMemo } from 'react'
+import { todayIndex, useScreenParam, useStore } from '../store/useStore.js'
 import { WordBookToggle } from '../components/WordListSheet.jsx'
 import { ChooserTiles, ReviewTodayRow, TodayCard, WordBookTile } from '../components/ContentTop.jsx'
 import { contentReviewSummary, reviewTargetItems } from '../lib/contentReview.js'
@@ -24,6 +24,7 @@ import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
 import { NormalLearningRecordList } from '../components/NormalLearningRecordList.jsx'
 import { summarizeSrsItems } from '../lib/contentProgress.js'
 import { scrollScreenToTop } from '../lib/screenScroll.js'
+import { readChoice, readListView, readText } from '../lib/screenParams.js'
 import {
   Search,
 } from '../components/Icons.jsx'
@@ -33,6 +34,8 @@ const CATEGORY_MAP = {
   grammar: KANBUN_GRAMMAR_CATEGORIES,
   culture: KANBUN_CULTURE_CATEGORIES,
 }
+
+const readLevel = readChoice(['all', ...KANBUN_LEVELS.map((item) => item.id)], 'all')
 
 const LEARNING_RECORD_CONTENT_IDS = Object.freeze({
   vocab: 'kanbun-vocab',
@@ -50,10 +53,14 @@ export function KanbunCatalogScreen() {
   const learningRecordContentId = LEARNING_RECORD_CONTENT_IDS[domain]
   const srs = useStore((state) => state[meta.srsField])
   const wordBookDomain = kanbunNotebookDomain(domain)
-  const [view, setView] = useState(params.view === 'list' ? 'list' : 'home')
-  const [level, setLevel] = useState('all')
-  const [category, setCategory] = useState('all')
-  const [query, setQuery] = useState('')
+  // 一覧の見え方は params に置き、暗記・テストから戻ったときも同じ一覧・同じ項目から続ける。
+  const [view, setView] = useScreenParam('view', readListView)
+  const [level, setLevel] = useScreenParam('level', readLevel)
+  const [category, setCategory] = useScreenParam(
+    'category',
+    readChoice(['all', ...categories.map((item) => item.id)], 'all'),
+  )
+  const [query, setQuery] = useScreenParam('query', readText)
 
   const filtered = useMemo(() => {
     const normalized = query.trim().toLowerCase()

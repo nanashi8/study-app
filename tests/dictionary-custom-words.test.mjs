@@ -37,7 +37,7 @@ test('英和辞書から見つからない語を自作単語の登録へ渡し�
   assert.match(search, /customWords\s*\.map\(customWordToStudyWord\)/)
   // 語の詳細・学習・登録から戻ったとき、引いていた語から続ける。
   assert.match(search, /useState\(\(\) => \(typeof params\.q === 'string' \? params\.q : ''\)\)/)
-  assert.match(search, /replaceParams\(\{ \.\.\.params, q, type \}\)/)
+  assert.match(search, /replaceParams\(\{ \.\.\.params, q, type, shown \}\)/)
 
   // 自作単語の画面：辞書から渡された語で登録欄を開き、登録・やめるのどちらでも辞書へ戻る。
   assert.match(custom, /params\.draft\?\.word/)

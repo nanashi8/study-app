@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { isDue, todayIndex, useStore } from '../store/useStore.js'
+import { isDue, todayIndex, useScreenParam, useStore } from '../store/useStore.js'
 import { ChooserTile, ChooserTiles, ReviewTodayRow, TodayCard, WordBookTile } from '../components/ContentTop.jsx'
 import { contentReviewSummary, reviewTargetItems } from '../lib/contentReview.js'
 import { WordBookButton, WordBookStudySheet } from '../components/WordListSheet.jsx'
@@ -21,6 +21,7 @@ import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
 import { NormalLearningRecordList } from '../components/NormalLearningRecordList.jsx'
 import { summarizeSrsItemsWithQuestions } from '../lib/contentProgress.js'
 import { scrollScreenToTop } from '../lib/screenScroll.js'
+import { readChoice, readListView, readOpenId, readText } from '../lib/screenParams.js'
 import {
   ArrowRight,
   Book,
@@ -57,15 +58,17 @@ function CategoryCard({ meta, items, srs, questions, quizResults, onStudy, onQui
   )
 }
 
+const readCategory = readChoice(['all', ...KOTEN_GRAMMAR_CATEGORIES.map((meta) => meta.id)], 'all')
+
 export function KotenGrammarScreen() {
   const navigate = useStore((state) => state.navigate)
-  const params = useStore((state) => state.params)
   const grammarSrs = useStore((state) => state.kotenGrammarSrs)
   const [wordBookOpen, setWordBookOpen] = useState(false)
-  const [category, setCategory] = useState('all')
-  const [query, setQuery] = useState('')
-  const [openId, setOpenId] = useState(null)
-  const [view, setView] = useState(params.view === 'list' ? 'list' : 'home')
+  // 一覧の見え方は params に置き、暗記・テストから戻ったときも同じ一覧・同じ項目から続ける。
+  const [category, setCategory] = useScreenParam('category', readCategory)
+  const [query, setQuery] = useScreenParam('query', readText)
+  const [openId, setOpenId] = useScreenParam('openId', readOpenId)
+  const [view, setView] = useScreenParam('view', readListView)
 
   const quizResults = useStore((state) => state.contentQuizResults)
   const totalStatus = summarizeSrsItemsWithQuestions({

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useShallow } from 'zustand/react/shallow'
-import { useStore, todayIndex } from '../store/useStore.js'
+import { useScreenParam, useStore, todayIndex } from '../store/useStore.js'
+import { readChoice, readText } from '../lib/screenParams.js'
 import { wordBookLaunchTarget } from '../lib/wordBookLaunch.js'
 import { getEtymologyPack } from '../data/vocab.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
@@ -43,6 +44,12 @@ import {
 import { MAINTENANCE_SRS_BOX } from '../lib/srs.js'
 
 const PAGE_SIZE = 40
+const readTab = readChoice(['notebook', 'sets', 'history'], 'notebook')
+const readFilter = (value) => (FILTERS.some((item) => item.id === value) ? value : 'saved')
+const readDomain = (value) => (value === 'all' || NOTEBOOK_DOMAINS.some((item) => item.id === value) ? value : 'all')
+const readPaging = (value) => (
+  typeof value?.key === 'string' && Number.isInteger(value.count) ? value : null
+)
 const SESSION_LIMITS = Object.freeze({
   vocab: 20,
   phrases: 20,
@@ -619,30 +626,25 @@ export function MyListScreen() {
     myGrammarList: current.myGrammarList,
     learningNotebook: current.learningNotebook,
   })))
-  const params = useStore((current) => current.params)
   // 各コンテンツの単語帳から「一覧で確認」で来たときは、単語帳タブでその冊を選んでおく。
-  const [tab, setTab] = useState(['notebook', 'sets', 'history'].includes(params?.tab) ? params.tab : 'notebook')
-  const [domain, setDomain] = useState('all')
-  const [filter, setFilter] = useState('saved')
-  const [query, setQuery] = useState('')
-  const [visible, setVisible] = useState(PAGE_SIZE)
-  const [activeSetId, setActiveSetId] = useState(() => (
-    state.learningNotebook.sets.some((set) => set.id === params?.setId)
-      ? params.setId
-      : state.learningNotebook.sets[0]?.id ?? ''
-  ))
+  // タブ・絞り込み・表示件数・選んだ冊は params に置き、項目から戻ったときも同じ見え方から続ける。
+  const [tab, setTab] = useScreenParam('tab', readTab)
+  const [domain, setDomain] = useScreenParam('domain', readDomain)
+  const [filter, setFilter] = useScreenParam('filter', readFilter)
+  const [query, setQuery] = useScreenParam('query', readText)
+  const [paging, setPaging] = useScreenParam('shown', readPaging)
+  const [storedSetId, setActiveSetId] = useScreenParam('setId', readText)
+  const activeSetId = state.learningNotebook.sets.some((set) => set.id === storedSetId)
+    ? storedSetId
+    : state.learningNotebook.sets[0]?.id ?? ''
   const [newSetOpen, setNewSetOpen] = useState(false)
   const [newSetTitle, setNewSetTitle] = useState('')
   const [newSetDescription, setNewSetDescription] = useState('')
   const day = todayIndex()
 
-  useEffect(() => {
-    if (activeSetId && !state.learningNotebook.sets.some((set) => set.id === activeSetId)) {
-      setActiveSetId(state.learningNotebook.sets[0]?.id ?? '')
-    }
-  }, [activeSetId, state.learningNotebook.sets])
-
-  useEffect(() => setVisible(PAGE_SIZE), [domain, filter, query])
+  // 表示件数は、絞り込みの組ごとに持つ（絞り込みを変えたら先頭の件数に戻す）。
+  const pagingKey = [domain, filter, query].join('\u001f')
+  const visible = paging?.key === pagingKey ? paging.count : PAGE_SIZE
 
   const savedRefs = useMemo(() => notebookSavedRefs(state), [state])
   const savedRefSet = useMemo(() => new Set(savedRefs), [savedRefs])
@@ -879,7 +881,7 @@ export function MyListScreen() {
                   />
                 ))}
                 {visible < filteredItems.length && (
-                  <Button full variant="secondary" onClick={() => setVisible((count) => count + PAGE_SIZE)}>
+                  <Button full variant="secondary" onClick={() => setPaging({ key: pagingKey, count: visible + PAGE_SIZE })}>
                     さらに {Math.min(PAGE_SIZE, filteredItems.length - visible)}項目を表示
                   </Button>
                 )}

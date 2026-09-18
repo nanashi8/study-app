@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, useRef } from 'react'
-import { useStore, useContentSettings } from '../store/useStore.js'
+import { useScreenParam, useStore, useContentSettings } from '../store/useStore.js'
 import { getPassage } from '../data/passages.js'
 import { getLevel } from '../data/levels.js'
 import { resolvePassageWord } from '../data/passage-gloss.js'
@@ -21,6 +21,9 @@ import { ReadingComprehensionCheck } from '../components/ReadingComprehensionChe
 import { ExtendedReader } from '../components/ExtendedReader.jsx'
 import { ReadingSentenceDetail } from '../components/ReadingSentenceDetail.jsx'
 
+// 和訳と段落解説の表示は params に置き、語の詳細などから戻ったときも同じ表示・同じ位置から読み続ける。
+const readShown = (value) => value === true
+
 export function ReaderScreen() {
   const params = useStore((s) => s.params)
   const passageId = params.passageId
@@ -30,8 +33,8 @@ export function ReaderScreen() {
   const recordVocabHistory = useStore((s) => s.recordVocabHistory)
   const passage = getPassage(passageId)
 
-  const [showJa, setShowJa] = useState(false)
-  const [showParagraphGuide, setShowParagraphGuide] = useState(false)
+  const [showJa, setShowJa] = useScreenParam('showJa', readShown)
+  const [showParagraphGuide, setShowParagraphGuide] = useScreenParam('showParagraphGuide', readShown)
   const [activeIdx, setActiveIdx] = useState(null) // 詳細ウィンドウ対象の文
   const [activeWord, setActiveWord] = useState(null)
   const [readingChecked, setReadingChecked] = useState(false)
@@ -176,7 +179,7 @@ export function ReaderScreen() {
       </div>
 
       {/* 本文 */}
-      <div className="flex-1 overflow-y-auto px-4 pb-4">
+      <div className="flex-1 overflow-y-auto px-4 pb-4" data-return-scroll="reader">
         {showParagraphGuide && (
           <section className="mb-3 border-y border-emerald-100 bg-emerald-50/70 px-3 py-3">
             <div className="mb-2 flex items-center gap-1.5 text-emerald-800">

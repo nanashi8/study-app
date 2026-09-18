@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { useStore } from '../store/useStore.js'
+import { useScreenParam, useStore } from '../store/useStore.js'
 import { getPassage } from '../data/passages.js'
 import { getLevel } from '../data/levels.js'
 import { getReadingStudy, passageWordCount } from '../data/reading-study.js'
@@ -38,6 +38,9 @@ import {
 const phraseLabel = (item) =>
   item.category === 'expression' ? '表現' : item.kind === 'syntax' ? '構文' : '熟語'
 
+const readPrepView = (value) => (value === 'list' ? 'list' : 'prep')
+const readListTab = (value) => (value === 'phrases' ? 'phrases' : 'words')
+
 export function ReadingPrepScreen() {
   const params = useStore((state) => state.params)
   const passageId = params.passageId
@@ -47,8 +50,9 @@ export function ReadingPrepScreen() {
   const srs = useStore((state) => state.srs)
   // 必須語彙をまとめて入れる単語帳を選ぶ窓。
   const [bookSheetOpen, setBookSheetOpen] = useState(false)
-  const [view, setView] = useState(params.view === 'list' ? 'list' : 'prep')
-  const [tab, setTab] = useState(params.listTab === 'phrases' ? 'phrases' : 'words')
+  // 表示とタブは params に置き、語の詳細や暗記から戻ったときも同じ一覧・同じ位置から続ける。
+  const [view, setView] = useScreenParam('view', readPrepView)
+  const [tab, setTab] = useScreenParam('listTab', readListTab)
   const [detail, setDetail] = useState(null)
   // 場面の束の暗記・テストから戻ったときは、その束を開いたままにして、次のテストや本文へ進めるようにする。
   const [openBundle, setOpenBundle] = useState(() => {
@@ -409,7 +413,7 @@ export function ReadingPrepScreen() {
         right={<Chip color={level.color}>{passage.examTypes.join('・')}</Chip>}
       />
 
-      <div ref={scrollAreaRef} className="flex-1 overflow-y-auto px-4 pb-4">
+      <div ref={scrollAreaRef} className="flex-1 overflow-y-auto px-4 pb-4" data-return-scroll="reading-prep">
         {view === 'list' ? listView : prepView}
       </div>
 

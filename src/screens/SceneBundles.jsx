@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import { getLevel } from '../data/levels.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
@@ -14,7 +14,6 @@ import {
   sceneBundleWordCount,
   sceneBundlesForPassage,
 } from '../lib/sceneBundles.js'
-import { listItemPlace, restoreListItemPlace } from '../lib/screenScroll.js'
 
 const levelIdFrom = (value) => (
   SCENE_BUNDLE_LEVELS.some((level) => level.id === value) ? value : SCENE_BUNDLE_LEVELS[0].id
@@ -30,28 +29,17 @@ export function SceneBundlesScreen() {
   const [levelId, setLevelId] = useState(() => levelIdFrom(params.levelId))
   // 暗記・テストから戻ったときは、その束を開いたままにして、次のテストや本文へ進めるようにする。
   const [openBundle, setOpenBundle] = useState(() => getSceneBundle(params.bundleId))
-  const screenRef = useRef(null)
 
-  // 本文や束の暗記から戻ったら、その長文の欄を離れたときと同じ高さに置く（一覧の先頭へ戻さない）。
-  useLayoutEffect(() => {
-    restoreListItemPlace(screenRef.current, 'data-scene-bundle-passage', params.listPlace)
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
-
-  // 開き直す束と戻す位置は一度だけ使う。残すと、次に別の画面から戻ったときにも同じ束が開いてしまう。
+  // 開き直す束は一度だけ使う。残すと、次に別の画面から戻ったときにも同じ束が開いてしまう。
   useEffect(() => {
-    if (params.bundleId || params.listPlace) {
-      replaceParams({ ...params, bundleId: undefined, listPlace: undefined })
-    }
+    if (params.bundleId) replaceParams({ ...params, bundleId: undefined })
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const passages = SCENE_BUNDLE_PASSAGES.filter((passage) => passage.level === levelId)
-  // 束や本文へ移る前に、その長文の欄が画面のどの高さにあったかを戻り先に入れる。
-  // この画面の履歴にも残し、戻り先を引き継がない画面（準備画面からの暗記など）を経ても同じ欄へ戻す。
-  const returnTarget = (passageId, bundleId) => {
-    const listPlace = listItemPlace(screenRef.current, 'data-scene-bundle-passage', passageId)
-    replaceParams({ ...params, levelId, listPlace })
-    return { screen: 'sceneBundles', params: { levelId, listPlace, ...(bundleId ? { bundleId } : {}) } }
-  }
+  const returnTarget = (bundleId) => ({
+    screen: 'sceneBundles',
+    params: { levelId, ...(bundleId ? { bundleId } : {}) },
+  })
 
   const selectLevel = (nextLevelId) => {
     setLevelId(nextLevelId)
@@ -60,10 +48,9 @@ export function SceneBundlesScreen() {
   }
 
   const startBundle = (bundle, mode) => {
-    const target = returnTarget(bundle.passageId, bundle.id)
     const { screen, params: launchParams } = sceneBundleLaunch(bundle, mode, {
-      continueTo: { ...target, label: '場面の束に戻る' },
-      returnTo: target,
+      continueTo: { ...returnTarget(bundle.id), label: '場面の束に戻る' },
+      returnTo: returnTarget(bundle.id),
     })
     setOpenBundle(null)
     navigate(screen, launchParams)
@@ -71,11 +58,11 @@ export function SceneBundlesScreen() {
 
   const readPassage = (passageId) => {
     setOpenBundle(null)
-    navigate('reader', { passageId, returnTo: returnTarget(passageId) })
+    navigate('reader', { passageId, returnTo: returnTarget() })
   }
 
   return (
-    <div ref={screenRef} className="pb-6" data-scene-bundle-catalog>
+    <div className="pb-6" data-scene-bundle-catalog>
       <ScreenHeader
         title="場面の束から読む"
         subtitle={`全${SCENE_BUNDLE_SUMMARY.bundles}束・${SCENE_BUNDLE_SUMMARY.words.toLocaleString('ja-JP')}語。束を暗記してから長文へ`}
@@ -106,7 +93,7 @@ export function SceneBundlesScreen() {
           const bundles = sceneBundlesForPassage(passage.id)
           const done = readingsDone.includes(passage.id)
           return (
-            <Card key={passage.id} className="overflow-hidden" data-scene-bundle-passage={passage.id}>
+            <Card key={passage.id} className="overflow-hidden" data-scene-bundle-passage={passage.id} data-return-row={passage.id}>
               <div className="flex items-center gap-3 px-4 pb-3 pt-4">
                 <span
                   className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl text-2xl"
@@ -140,7 +127,7 @@ export function SceneBundlesScreen() {
                   size="sm"
                   variant="secondary"
                   className="min-h-12"
-                  onClick={() => navigate('readingPrep', { passageId: passage.id, returnTo: returnTarget(passage.id) })}
+                  onClick={() => navigate('readingPrep', { passageId: passage.id, returnTo: returnTarget() })}
                   aria-label={`${passage.titleJa}の読解の準備をする`}
                 >
                   準備して読む

@@ -1,5 +1,5 @@
-import { useMemo, useState } from 'react'
-import { useStore } from '../store/useStore.js'
+import { useMemo } from 'react'
+import { useScreenParam, useStore } from '../store/useStore.js'
 import { LEVELS, getLevel } from '../data/levels.js'
 import {
   WRITING_LEVEL_PROFILES,
@@ -53,18 +53,19 @@ const TRACKS = [
   },
 ]
 
+const readLevel = (value) => (LEVELS.some((item) => item.id === value) ? value : '5')
+const readMode = (value) => (value === 'free' ? 'free' : 'guide')
+const readTrack = (value) => (value === 'grammar' ? 'grammar' : 'theme')
+
 export function WritingScreen() {
   const navigate = useStore((s) => s.navigate)
-  const params = useStore((s) => s.params)
   const writingProgress = useStore((s) => s.writingProgress)
   const contentQuizResults = useStore((s) => s.contentQuizResults)
   const myGrammarList = useStore((s) => s.myGrammarList)
-  const initialLevel = LEVELS.some((item) => item.id === params.level)
-    ? params.level
-    : '5'
-  const [level, setLevel] = useState(initialLevel)
-  const [mode, setMode] = useState(params.mode === 'free' ? 'free' : 'guide')
-  const [track, setTrack] = useState(params.track === 'grammar' ? 'grammar' : 'theme')
+  // 級・書き方・トラックは params に置き、問題から戻ったときも同じ一覧から続ける。
+  const [level, setLevel] = useScreenParam('level', readLevel)
+  const [mode, setMode] = useScreenParam('mode', readMode)
+  const [track, setTrack] = useScreenParam('track', readTrack)
 
   const meta = getLevel(level)
   const profile = WRITING_LEVEL_PROFILES[level]

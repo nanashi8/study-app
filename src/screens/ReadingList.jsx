@@ -1,4 +1,3 @@
-import { useEffect, useLayoutEffect, useRef } from 'react'
 import { useStore } from '../store/useStore.js'
 import { ALL_PASSAGES } from '../data/passages.js'
 import { READING_LEVELS, getLevel } from '../data/levels.js'
@@ -10,7 +9,6 @@ import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
 import { summarizeCompletionItems } from '../lib/contentProgress.js'
 import { Check, ArrowRight, Book, Cards } from '../components/Icons.jsx'
 import { SCENE_BUNDLE_SUMMARY, sceneBundlesForPassage } from '../lib/sceneBundles.js'
-import { listItemPlace, restoreListItemPlace } from '../lib/screenScroll.js'
 
 const levelOrder = Object.fromEntries(READING_LEVELS.map((l, i) => [l.id, i]))
 const sorted = [...ALL_PASSAGES].sort((a, b) => {
@@ -20,9 +18,7 @@ const sorted = [...ALL_PASSAGES].sort((a, b) => {
 })
 
 export function ReadingListScreen() {
-  const params = useStore((s) => s.params)
   const navigate = useStore((s) => s.navigate)
-  const replaceParams = useStore((s) => s.replaceParams)
   const readingsDone = useStore((s) => s.readingsDone)
   const contentQuizResults = useStore((s) => s.contentQuizResults)
   const status = summarizeCompletionItems({
@@ -31,37 +27,19 @@ export function ReadingListScreen() {
     quizResults: contentQuizResults,
     quizDomain: 'reading',
   })
-  const screenRef = useRef(null)
 
-  // 長文や読解ルールから戻ったら、押した欄を離れたときと同じ高さに置く（一覧の先頭へ戻さない）。
-  useLayoutEffect(() => {
-    restoreListItemPlace(screenRef.current, 'data-reading-list-row', params.listPlace)
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
-  // 戻す位置は一度だけ使う。残すと、あとで一覧を開き直したときにも古い位置へ動いてしまう。
-  useEffect(() => {
-    if (params.listPlace) replaceParams({ ...params, listPlace: undefined })
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
-
-  // 別の画面へ移る前に、押した欄が画面のどの高さにあったかを一覧の履歴に残す。
-  const keepListPlace = (rowId) => replaceParams({
-    ...params,
-    listPlace: listItemPlace(screenRef.current, 'data-reading-list-row', rowId),
-  })
-
+  // 欄の data-return-row は、長文や読解ルールから戻ったときに押した欄を同じ高さへ置く目印。
   return (
-    <div ref={screenRef} className="pb-6">
+    <div className="pb-6">
       <ScreenHeader
         title="長文を読む"
         subtitle={`全${ALL_PASSAGES.length}題。準備を飛ばして本文からも始められます`}
       />
       <div className="space-y-3 px-4">
-        <Card className="overflow-hidden border border-brand-200" data-reading-list-row="readingRules">
+        <Card className="overflow-hidden border border-brand-200" data-return-row="readingRules">
           <button
             type="button"
-            onClick={() => {
-              keepListPlace('readingRules')
-              navigate('readingRules')
-            }}
+            onClick={() => navigate('readingRules')}
             className="w-full bg-gradient-to-br from-brand-600 to-sky-500 p-4 text-left text-white active:opacity-95"
           >
             <div className="flex items-start justify-between gap-3">
@@ -84,13 +62,10 @@ export function ReadingListScreen() {
           </button>
         </Card>
 
-        <Card className="overflow-hidden" data-scene-bundles-entry data-reading-list-row="sceneBundles">
+        <Card className="overflow-hidden" data-scene-bundles-entry data-return-row="sceneBundles">
           <button
             type="button"
-            onClick={() => {
-              keepListPlace('sceneBundles')
-              navigate('sceneBundles')
-            }}
+            onClick={() => navigate('sceneBundles')}
             className="flex w-full items-center gap-3 p-4 text-left active:bg-brand-50"
           >
             <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-amber-100 text-amber-700">
@@ -117,7 +92,7 @@ export function ReadingListScreen() {
           const { words, phrases } = getReadingStudy(p)
           const sceneBundleCount = sceneBundlesForPassage(p.id).length
           return (
-            <Card key={p.id} className="overflow-hidden" data-reading-list-row={p.id}>
+            <Card key={p.id} className="overflow-hidden" data-return-row={p.id}>
               <div className="flex items-center gap-3 p-4">
                 <span
                   className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl text-3xl"
@@ -172,10 +147,7 @@ export function ReadingListScreen() {
                   className="min-h-12"
                   data-reading-start="prep"
                   aria-label={`${p.titleJa}の読解の準備をする`}
-                  onClick={() => {
-                    keepListPlace(p.id)
-                    navigate('readingPrep', { passageId: p.id })
-                  }}
+                  onClick={() => navigate('readingPrep', { passageId: p.id })}
                 >
                   準備して読む
                 </Button>
@@ -185,10 +157,7 @@ export function ReadingListScreen() {
                   className="min-h-12"
                   data-reading-start="direct"
                   aria-label={`${p.titleJa}の本文から読む`}
-                  onClick={() => {
-                    keepListPlace(p.id)
-                    navigate('reader', { passageId: p.id })
-                  }}
+                  onClick={() => navigate('reader', { passageId: p.id })}
                 >
                   本文から読む
                 </Button>

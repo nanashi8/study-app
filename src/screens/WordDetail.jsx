@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import {
   etymologyCardsForWord,
@@ -78,7 +78,8 @@ export function WordDetailScreen() {
     if (word) recordVocabHistory(word.id)
   }, [recordVocabHistory, word])
 
-  useEffect(() => {
+  // 別の語へ移ったら先頭から。描く前に戻すので、履歴で戻ったときは AppShell が離れたときの位置へ置き直す。
+  useLayoutEffect(() => {
     screenRef.current?.scrollTo({ top: 0 })
   }, [word?.id])
 
@@ -100,7 +101,7 @@ export function WordDetailScreen() {
 
   return (
     <div className="flex h-full flex-col">
-      <div ref={screenRef} className="min-h-0 flex-1 overflow-y-auto pb-4">
+      <div ref={screenRef} className="min-h-0 flex-1 overflow-y-auto pb-4" data-return-scroll="word-detail">
         <ScreenHeader
           title={word.word}
           color={level.color}

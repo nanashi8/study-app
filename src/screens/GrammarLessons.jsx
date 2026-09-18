@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useStore } from '../store/useStore.js'
+import { useScreenParam, useStore } from '../store/useStore.js'
 import { getLevel } from '../data/levels.js'
 import { GRAMMAR_STAGES, lessonsByStage } from '../data/grammar-lessons.js'
 import { grammarByTopic } from '../data/grammar.js'
@@ -18,12 +18,12 @@ const STAGE_META = {
   高校発展: { emoji: '🎓', hint: '英検2〜1級レベル' },
 }
 
+// 段階は params（入口で渡す stage と同じ所）に置き、テストから戻ったときも同じ段階から続ける。
+const readStage = (value) => (GRAMMAR_STAGES.includes(value) ? value : GRAMMAR_STAGES[0])
+
 export function GrammarLessonsScreen() {
   const navigate = useStore((s) => s.navigate)
-  const initialStage = useStore((s) => s.params.stage)
-  const [stage, setStage] = useState(
-    GRAMMAR_STAGES.includes(initialStage) ? initialStage : GRAMMAR_STAGES[0],
-  )
+  const [stage, setStage] = useScreenParam('stage', readStage)
   const [openId, setOpenId] = useState(null)
 
   const lessons = lessonsByStage(stage)

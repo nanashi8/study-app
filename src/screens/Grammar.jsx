@@ -1,5 +1,4 @@
-import { useState } from 'react'
-import { useStore } from '../store/useStore.js'
+import { useScreenParam, useStore } from '../store/useStore.js'
 import { LEVELS, getLevel } from '../data/levels.js'
 import {
   GRAMMAR_PRACTICE,
@@ -46,21 +45,19 @@ function dueProgressOf(items, srs) {
   return { total: items.length, due }
 }
 
+// 出題のある級だけタブに出す。
+const ACTIVE_LEVELS = LEVELS.filter((l) => grammarPracticeByLevel(l.id).length > 0)
+// 級と出題の種類は params に置き、文法解説や単元から戻ったときも同じ級から続ける。
+const readLevel = (value) => (
+  ACTIVE_LEVELS.some((l) => l.id === value) ? value : ACTIVE_LEVELS[0]?.id ?? '5'
+)
+const readQuestionType = (value) => (value && GRAMMAR_QUESTION_TYPE_META[value] ? value : 'mixed')
+
 export function GrammarScreen() {
   const navigate = useStore((s) => s.navigate)
   const srs = useStore((s) => s.srs)
-  const initial = useStore((s) => s.params.level)
-  const initialQuestionType = useStore((s) => s.params.questionType)
-  // 出題のある級だけタブに出す。
-  const activeLevels = LEVELS.filter((l) => grammarPracticeByLevel(l.id).length > 0)
-  const [level, setLevel] = useState(
-    activeLevels.some((l) => l.id === initial) ? initial : activeLevels[0]?.id ?? '5',
-  )
-  const [questionType, setQuestionType] = useState(
-    initialQuestionType && GRAMMAR_QUESTION_TYPE_META[initialQuestionType]
-      ? initialQuestionType
-      : 'mixed',
-  )
+  const [level, setLevel] = useScreenParam('level', readLevel)
+  const [questionType, setQuestionType] = useScreenParam('questionType', readQuestionType)
 
   const meta = getLevel(level)
   const topics = grammarPracticeTopicsForLevel(level, questionType)
@@ -137,7 +134,7 @@ export function GrammarScreen() {
 
         {/* 級タブ */}
         <div className="flex gap-2 overflow-x-auto pb-1">
-          {activeLevels.map((l) => {
+          {ACTIVE_LEVELS.map((l) => {
             const on = level === l.id
             return (
               <button

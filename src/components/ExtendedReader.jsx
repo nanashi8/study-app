@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { useStore, useContentSettings } from '../store/useStore.js'
+import { useScreenParam, useStore, useContentSettings } from '../store/useStore.js'
 import { getLevel } from '../data/levels.js'
 import { getWord } from '../data/vocab.js'
 import { resolvePassageWord } from '../data/passage-gloss.js'
@@ -93,13 +93,16 @@ function TappableSentence({ sentence, onWord, sectionTargetIds }) {
   )
 }
 
+// 和訳の表示は params に置き、語の詳細などから戻ったときも同じ表示・同じ位置から読み続ける。
+const readShown = (value) => value === true
+
 export function ExtendedReader({ passage }) {
   const navigate = useStore((state) => state.navigate)
   const back = useStore((state) => state.back)
   const settings = useContentSettings()
   const recordVocabHistory = useStore((state) => state.recordVocabHistory)
   const [sectionIndex, setSectionIndex] = useState(() => storedSectionIndex(passage))
-  const [showJa, setShowJa] = useState(false)
+  const [showJa, setShowJa] = useScreenParam('showJa', readShown)
   const [activeWord, setActiveWord] = useState(null)
   const [bookSheetOpen, setBookSheetOpen] = useState(false)
   const inWordBook = useWordInAnyBook(activeWord?.id)
@@ -287,7 +290,7 @@ export function ExtendedReader({ passage }) {
         </button>
       </div>
 
-      <main ref={scrollRef} className="min-h-0 flex-1 overflow-y-auto px-4 pb-4">
+      <main ref={scrollRef} className="min-h-0 flex-1 overflow-y-auto px-4 pb-4" data-return-scroll="extended-reader">
         <section className="rounded-2xl border border-brand-100 bg-brand-50/70 p-3">
           <p className="text-[10px] font-extrabold text-brand-600">語彙強化ロングリーディング</p>
           <h2 lang="en" className="mt-0.5 font-display text-xl font-extrabold text-ink">{section.title}</h2>

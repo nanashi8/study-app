@@ -117,6 +117,7 @@ function RegisterCustomWord({ word, onRegister, className = '' }) {
 
 // 一度に並べる見出しの数。続きは「もっと見る」で足していく。
 const PAGE = 60
+const pagingKeyFor = (query, type) => `${type}\u001f${query}`
 
 // 単語・熟語・構文のどれなのかを、同じ位置・同じ形で示す。
 function KindBadge({ type }) {
@@ -281,7 +282,11 @@ export function VocabSearchScreen() {
   // 語の詳細・学習・自作単語の登録から戻ったときは、引いていた語と種類の絞り込みから続ける。
   const [q, setQ] = useState(() => (typeof params.q === 'string' ? params.q : ''))
   const [type, setType] = useState(() => (TABS.some((tab) => tab.id === params.type) ? params.type : 'all'))
-  const [shown, setShown] = useState(PAGE)
+  // 表示件数は、引いた語と種類の組ごとに持つ。戻ってきたときは離れたときの件数から続ける。
+  const [paging, setPaging] = useState(() => ({
+    key: pagingKeyFor(normalizeVocabQuery(q), type),
+    count: Number.isInteger(params.shown) && params.shown > PAGE ? params.shown : PAGE,
+  }))
   // 単語帳を選ぶ窓を開いている語。
   const [bookWord, setBookWord] = useState(null)
   // 単語帳を選ぶ窓を開いている熟語・構文。
@@ -322,9 +327,8 @@ export function VocabSearchScreen() {
     && !pool.some((entry) => normalizeVocabQuery(headwordOf(entry)).includes(query))
 
   // 検索語・絞り込みが変わったら、表示件数は先頭に戻す。
-  useEffect(() => {
-    setShown(PAGE)
-  }, [query, type])
+  const pagingKey = pagingKeyFor(query, type)
+  const shown = paging.key === pagingKey ? paging.count : PAGE
 
   // 検索を消したときは種類の絞り込みも解く。
   useEffect(() => {
@@ -341,9 +345,9 @@ export function VocabSearchScreen() {
     [learningNotebook.sets],
   )
 
-  // 詳細から戻ると履歴の params ごと戻るので、引いていた語をいまの params へ残してから移る。
+  // 詳細から戻ると履歴の params ごと戻るので、引いていた語と表示件数をいまの params へ残してから移る。
   const openWord = (word) => {
-    replaceParams({ ...params, q, type })
+    replaceParams({ ...params, q, type, shown })
     navigate('wordDetail', { id: word.id })
   }
   const studyPhrase = (phrase) =>
@@ -351,7 +355,7 @@ export function VocabSearchScreen() {
       source: { type: 'phraseList', ids: [phrase.id] },
       size: 1,
       title: phrase.kind === 'syntax' ? '構文' : '熟語',
-      returnTo: { screen: 'vocabSearch', params: { q, type } },
+      returnTo: { screen: 'vocabSearch', params: { q, type, shown } },
     })
   // 登録を終えたら（やめても）この画面へ戻り、同じ語を引いた状態から続けられるようにする。
   const registerCustomWord = () =>
@@ -445,7 +449,7 @@ export function VocabSearchScreen() {
       </div>
 
       {/* 結果リスト */}
-      <div className="no-scrollbar mt-1 flex-1 overflow-y-auto px-4 pb-4">
+      <div className="no-scrollbar mt-1 flex-1 overflow-y-auto px-4 pb-4" data-return-scroll="dictionary">
         {!showList ? (
           <>
             {historyWords.length > 0 ? (
@@ -528,7 +532,7 @@ export function VocabSearchScreen() {
                 {listed.slice(0, shown).map(renderEntry)}
                 {listed.length > shown && (
                   <button
-                    onClick={() => setShown(shown + PAGE)}
+                    onClick={() => setPaging({ key: pagingKey, count: shown + PAGE })}
                     className="w-full rounded-2xl bg-white py-3 text-sm font-extrabold text-brand-500 shadow-sm ring-1 ring-brand-100 active:bg-brand-50"
                   >
                     続きを表示（残り{listed.length - shown}件）

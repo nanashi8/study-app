@@ -71,9 +71,10 @@ test('古典・漢文のアプリのホームはコンテンツを選ぶだけ�
     // 以前のグラデーションのヒーローと、画面ごとの「スタディアプリ」へ戻るボタンは置かない（上部の共通バーが担う）。
     assert.doesNotMatch(source, /rounded-b-\[2\.5rem\]|goPortal|SpeechSettingsButton/, title)
   }
-  // 古典単語のトップはホームから view 'vocab' で開き、上部の「戻る」でホームへ戻る（同じ画面のまま表示をそろえる）。
+  // 古典単語のトップはホームから view 'vocab' で開き、上部の「戻る」でホームへ戻る。
+  // 表示は params から読むので、同じ画面のまま行き先だけ変わっても表示がそろう。
   assert.ok(koten.includes("navigate('kotenList', { view: 'vocab' })"))
-  assert.match(koten, /useEffect\(\(\) => \{\s*setView\(viewFromParams\(params\)\)\s*\}, \[params\]\)/)
+  assert.match(koten, /useScreenParam\('view', readView\)/)
 
   for (const [path, { tile, marker }] of Object.entries(CLASSICS_TOPS)) {
     const source = read(path)

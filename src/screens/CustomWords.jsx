@@ -413,7 +413,7 @@ export function CustomWordsScreen() {
         </div>
       </div>
 
-      <div className="flex-1 space-y-3 overflow-y-auto px-4 py-4">
+      <div className="flex-1 space-y-3 overflow-y-auto px-4 py-4" data-return-scroll="custom-words">
         {tab === 'words' ? (
           <>
             {form?.fromDictionary && (

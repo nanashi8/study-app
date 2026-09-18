@@ -129,10 +129,9 @@ test('場面の束は長文一覧から開き、読解の準備でも本文の�
   const screen = read('src/screens/SceneBundles.jsx')
   assert.match(screen, /role="tablist" aria-label="級を選ぶ"/)
   assert.match(screen, /replaceParams\(\{ \.\.\.params, levelId: nextLevelId, bundleId: undefined \}\)/)
-  assert.match(screen, /const target = returnTarget\(bundle\.passageId, bundle\.id\)/)
-  assert.match(screen, /continueTo: \{ \.\.\.target, label: '場面の束に戻る' \}/)
-  assert.match(screen, /navigate\('reader', \{ passageId, returnTo: returnTarget\(passageId\) \}\)/)
-  assert.match(screen, /navigate\('readingPrep', \{ passageId: passage\.id, returnTo: returnTarget\(passage\.id\) \}\)/)
+  assert.match(screen, /continueTo: \{ \.\.\.returnTarget\(bundle\.id\), label: '場面の束に戻る' \}/)
+  assert.match(screen, /navigate\('reader', \{ passageId, returnTo: returnTarget\(\) \}\)/)
+  assert.match(screen, /navigate\('readingPrep', \{ passageId: passage\.id, returnTo: returnTarget\(\) \}\)/)
   // 外枠は448px固定なので、ビューポート基準の sm: で列を増やさない。
   assert.doesNotMatch(screen, /\bsm:/)
 
@@ -146,9 +145,9 @@ test('場面の束は長文一覧から開き、読解の準備でも本文の�
   assert.ok(prep.indexOf('data-reading-prep-scenes') < prep.indexOf('data-reading-prep-entry="words"'))
   // フックは長文が見つからないときの早期 return より前に置く。
   assert.ok(prep.indexOf('const [openBundle, setOpenBundle] = useState') < prep.indexOf('if (!passage)'))
-  assert.match(prep, /if \(params\.bundleId\) replaceParams\(\{ \.\.\.params, bundleId: undefined \}\)/)
-  // 一覧は開き直す束と戻す位置を1回で消す。別々に消すと、後の方が古い params から束を戻してしまう。
-  assert.match(screen, /replaceParams\(\{ \.\.\.params, bundleId: undefined, listPlace: undefined \}\)/)
+  for (const source of [screen, prep]) {
+    assert.match(source, /if \(params\.bundleId\) replaceParams\(\{ \.\.\.params, bundleId: undefined \}\)/)
+  }
 
   const parts = read('src/components/SceneBundles.jsx')
   assert.match(parts, /<MeaningText>\{word\.meaning\}<\/MeaningText>/)
