@@ -191,10 +191,10 @@ export default Object.freeze([
   }),
   st('[S Such examples] [V should encourage] [O caution {前| rather than comfort}].', {
     chunks: [
-      ['Such examples should encourage caution rather than comfort', 'こうした例は、安心よりもむしろ慎重さを促すはずです'],
+      ['Such examples should encourage caution rather than comfort', 'こうした例は、安心よりもむしろ慎重さを促すべきものです'],
     ],
     notes: {
-      'Such examples should encourage caution rather than comfort': 'Such examples は銀行の例のことです。A rather than B で「BよりむしろA」。should は「〜はずだ・〜べきだ」。',
+      'Such examples should encourage caution rather than comfort': 'Such examples は銀行の例のことです。A rather than B で「BよりむしろA」。should はここでは「〜べきだ」で、この例をどう受け止めるべきかという筆者の主張です。',
     },
     rules: ['paragraph-map', 'contrast-concession', 'author-stance'],
   }),
