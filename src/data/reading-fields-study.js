@@ -191,7 +191,7 @@ export const FIELD_READING_STUDY = Object.freeze({
       'pay attention to ...',
       '〜に注意を払う',
       'Most students paid no attention to the sound in the halls.',
-      'ほとんどの生徒は廊下のその音に注意を払いませんでした。',
+      'ほとんどの生徒は、廊下に流れる音に注意を払っていませんでした。',
       'pay attention は動詞と名詞で一つの意味を作り、注意の向き先は to で示す。no を入れると「まったく注意しない」になる。',
     ),
     expression(
@@ -210,7 +210,7 @@ export const FIELD_READING_STUDY = Object.freeze({
       'keep + O + -ing',
       'Oを〜し続けている状態に保つ',
       'A battery and a simple device keep the speakers working for two hours.',
-      '電池と簡単な装置が、スピーカーを2時間動いたままに保ちます。',
+      '電池と簡単な装置が、スピーカーを2時間動かし続けます。',
       'keep の後ろの目的語Oと -ing が「Oが〜している」という関係を作る。keep working（主語が続ける）とは形が違う。',
       'syntax',
     ),
@@ -220,8 +220,8 @@ export const FIELD_READING_STUDY = Object.freeze({
       'leave A to B',
       'AをBにゆだねる',
       'They express their own opinions briefly and leave the rest to the audience.',
-      '彼らは自分の意見を短く述べ、残りは聞き手にゆだねます。',
-      'leave は「置いていく」から「判断を任せる」へ広がる。任せる相手は to で示し、for にはならない。',
+      '彼らは自分たちの意見を短く述べ、残りは聞き手にゆだねます。',
+      'leave は「置いていく」から「任せる」へ広がる。任せる相手は to で示す（leave A for B は「B のために A を残しておく」で、意味が変わる）。',
     ),
   ]),
   p_2_disaster_translators: study([

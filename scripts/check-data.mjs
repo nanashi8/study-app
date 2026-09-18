@@ -1499,10 +1499,10 @@ if (
   PASSAGES.length !== 38 ||
   readingTranslationSentenceCount !== 990 ||
   readingTranslationBlockCount !== 2420 ||
-  readingPhrasePairCount !== 6883 ||
-  readingPhraseSequenceCount !== 6883 ||
-  readingMeaningPhraseCount !== 3211 ||
-  readingMeaningMultiRoleCount !== 2066
+  readingPhrasePairCount !== 6884 ||
+  readingPhraseSequenceCount !== 6884 ||
+  readingMeaningPhraseCount !== 3169 ||
+  readingMeaningMultiRoleCount !== 2071
 ) {
   errors.push(
     `長文フレーズ監査: ${PASSAGES.length}長文・${readingTranslationSentenceCount}文・` +

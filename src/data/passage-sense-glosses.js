@@ -1119,9 +1119,52 @@ export const PASSAGE_SENSE_GLOSSES = Object.freeze({
   'The group therefore starts each project with a hard question.': words({ project: sense('project', '計画・企画') }),
 
   // p_pre2_school_radio（廊下に流れる声）
-  'A new adviser asked the club to study its own audience.': words({ own: sense('own', '自分たちの') }),
+  'The radio club at our school almost stopped two years ago.': words({ stopped: sense('stop', '止まった') }),
+  'Three members remained, and the lunch program ran for four minutes.': words({ ran: sense('run', '（番組が）続いた・流れた') }),
+  'Most students paid no attention to the sound in the halls.': words({
+    paid: sense('pay', '（注意を）払った'),
+    halls: sense('hall', '廊下（複数）'),
+  }),
+  'A new adviser asked the club to study its own audience.': words({
+    study: sense('study', '調べる'),
+    own: sense('own', '自分たちの'),
+  }),
   'The members wrote a short survey and collected two hundred answers.': words({ collected: sense('collect', '集めた'), answers: sense('answer', '答え（複数）・回答') }),
-  'They express their own opinions briefly and leave the rest to the audience.': words({ own: sense('own', '自分の'), rest: sense('rest_2', '残り') }),
+  'The topics felt far from daily life.': words({ felt: sense('feel', '（〜に）感じられた') }),
+  'One comment asked for news about the student council election.': words({ council: sense('council', '会議・評議会（student council で生徒会）') }),
+  'Each member now writes a script and reads it slowly before lunch.': words({ script: sense('script', '原稿・台本') }),
+  'An older student checks the speed and the volume.': words({
+    older: sense('old', '年上の（older）'),
+    volume: sense('volume', '音量'),
+  }),
+  'Reporters now visit the school nurse and the cooking staff.': words({ nurse: sense('nurse', '看護師（school nurse で保健の先生）') }),
+  'The librarian joins a monthly program about new books.': words({ monthly: sense('month', '毎月の（monthly）') }),
+  'A weekly part of the program explains one English word or one old local word.': words({ weekly: sense('week', '毎週の（weekly）') }),
+  'A short weather report follows the news every day.': words({
+    report: sense('report', '報告（weather report で天気予報）'),
+    follows: sense('follow', '〜のあとに続く'),
+  }),
+  'An official from the town office talked about the disaster practice in early summer.': words({
+    official: sense('official', '職員・役人'),
+    office: sense('office', '役所（town office で町役場）'),
+    practice: sense('practice', '訓練・練習'),
+    early: sense('early', '初めの（early summer で初夏）'),
+  }),
+  'The audience grew, but the work became heavier.': words({
+    grew: sense('grow', '増えた'),
+    heavier: sense('heavy', 'より重い（heavyの比較級）'),
+  }),
+  'The club admits a mistake and moves on.': words({ moves: sense('move', '（move on で）先へ進む') }),
+  'They express their own opinions briefly and leave the rest to the audience.': words({
+    own: sense('own', '自分たちの'),
+    leave: sense('leave', '（leave A to B で）AをBにゆだねる'),
+    rest: sense('rest_2', '残り'),
+  }),
+  'If a disaster stops the school bell, the radio room carries the announcement.': words({
+    bell: sense('bell', 'チャイム・ベル'),
+    carries: sense('carry', '（知らせを）伝える・流す'),
+  }),
+  'A battery and a simple device keep the speakers working for two hours.': words({ working: sense('work', '（機械が）動いている') }),
 
   // p_2_disaster_translators（読めなかった警報）
   'The message used old official words and a difficult grammar form.': words({ used: sense('use', '使っていた') }),
