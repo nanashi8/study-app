@@ -1167,14 +1167,65 @@ export const PASSAGE_SENSE_GLOSSES = Object.freeze({
   'A battery and a simple device keep the speakers working for two hours.': words({ working: sense('work', '（機械が）動いている') }),
 
   // p_2_disaster_translators（読めなかった警報）
+  'A strong typhoon reached our coastal town three years ago.': words({ reached: sense('reach', '（〜に）着いた・やって来た') }),
+  'The local authority sent an evacuation warning at nine in the evening.': words({ evening: sense('evening', '晩・夜（in the evening で夜の）') }),
+  'The message reached every phone in the area within a minute.': words({ reached: sense('reach', '（〜に）届いた') }),
+  'Foreign residents read the warning but did not move.': words({ read: sense('read', '読んだ（過去形）') }),
+  'A later study explained the whole process in clear terms.': words({
+    study: sense('study', '研究・調査'),
+    terms: sense('term', '言葉・言い方（in clear terms で）'),
+  }),
   'The message used old official words and a difficult grammar form.': words({ used: sense('use', '使っていた') }),
-  'The office had followed its own manual, and the message still failed.': words({ own: sense('own', '自分たちの') }),
-  'Twelve residents joined a training course after their own working hours.': words({ own: sense('own', '自分の') }),
+  'Machine translation turned one urgent sentence into a polite invitation.': words({ turned: sense('turn', '（turn A into B で）AをBに変えた') }),
+  'The warning was accurate in Japanese and useless in practice.': words({ practice: sense('practice', '実際（in practice で実際には）') }),
+  'The office had followed its own manual, and the message still failed.': words({
+    office: sense('office', '役所・役場'),
+    own: sense('own', '自分たちの'),
+    manual: sense('manual', '手引き・マニュアル'),
+  }),
+  'A group of residents and teachers began a small project.': words({ project: sense('project', '取り組み・計画') }),
+  'Each notice keeps to one idea, one action and a short sentence.': words({
+    notice: sense('notice', '知らせ・お知らせ'),
+    keeps: sense('keep', '（keep to 〜 で）〜だけにとどめる'),
+  }),
+  'The group also tested every notice with new immigrants.': words({
+    tested: sense('test', '試した'),
+    notice: sense('notice', '知らせ・お知らせ'),
+  }),
+  'The team then added pictures near the important terms.': words({ terms: sense('term', '語・用語') }),
+  'Twelve residents joined a training course after their own working hours.': words({
+    course: sense('course', '講座・課程'),
+    own: sense('own', '自分の'),
+    working: sense('work', '働く（working hours で勤務時間）'),
+  }),
   'They practice the phrases for medical help, food and lost family members.': words({ help: sense('help', '助け・支援') }),
-  'Most of the foreign residents left their homes on time.': words({ left: sense('leave', '出た・離れた') }),
+  'The group visits language classes and local organizations every spring.': words({ classes: sense('class', '教室・授業（language class で語学教室）') }),
+  'They confirm the nearest shelter with each family.': words({ nearest: sense('near', 'いちばん近い（nearの最上級）') }),
+  'Two years later, a second typhoon tested the new system.': words({ tested: sense('test', '試した') }),
+  'Most of the foreign residents left their homes on time.': words({
+    left: sense('leave', '出た・離れた'),
+    time: sense('time', '時間（on time で時間どおりに）'),
+  }),
   'Some elderly Japanese neighbors also used the easy notices.': words({ used: sense('use', '使った') }),
-  'An urgent message may reach a person who cannot read the local script.': words({ may: MAY }),
-  'They argue that real safety grows from contact between people in ordinary times.': words({ contact: sense('contact', '接触・交流') }),
+  'Awareness of simple wording grew across the whole town.': words({
+    grew: sense('grow', '広がった・高まった'),
+    across: sense('across', '〜じゅうに・〜の全体に'),
+  }),
+  'The town office noticed that simple language helps everyone.': words({
+    office: sense('office', '役所（town office で町役場）'),
+    noticed: sense('notice', '気づいた'),
+  }),
+  'A phone without power cannot show the translation.': words({ show: sense('show', '（画面に）表示する・示す') }),
+  'An urgent message may reach a person who cannot read the local script.': words({
+    may: MAY,
+    reach: sense('reach', '届く'),
+    script: sense('script', '文字（その言語を書き表す文字）'),
+  }),
+  'The group therefore relies on the network of neighbors in the end.': words({ end: sense('end', '終わり（in the end で最後には）') }),
+  'They argue that real safety grows from contact between people in ordinary times.': words({
+    contact: sense('contact', '接触・交流'),
+    times: sense('time', '時期（in ordinary times でふだんは）'),
+  }),
 
   // p_ext_1000_civic_decisions（公共の決定を読む語彙地図）
   'A town may hold meetings and publish notices, yet still hear only the people who already know how the system works.': words({ may: MAY }),

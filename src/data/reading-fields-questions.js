@@ -264,10 +264,10 @@ export const FIELD_READING_QUESTIONS = Object.freeze({
         'Because the shelter in their area was already full.',
       ],
       answer: 'Because the wording and the translation hid the urgency.',
-      explain: '第3文で知らせは1分以内に全員へ届いたと述べられ、第6文から第8文で古い言い回しと機械翻訳の誤りが原因だと示されます。',
+      explain: '第3文で知らせは1分以内に地域のすべての電話に届いたと述べられ、第6文から第8文で、古い言い回しと機械翻訳の誤りが原因だと示されます。',
     },
     {
-      q: 'What does each rewritten notice keep?',
+      q: 'What does each rewritten notice keep to?',
       choices: [
         'One idea, one action and a short sentence.',
         'The same official words as before.',
@@ -275,7 +275,7 @@ export const FIELD_READING_QUESTIONS = Object.freeze({
         'Three languages on the same page.',
       ],
       answer: 'One idea, one action and a short sentence.',
-      explain: '第13文の “Each notice keeps one idea, one action and a short sentence.” が根拠です。書き直しの基準を問う設問です。',
+      explain: '第13文の “Each notice keeps to one idea, one action and a short sentence.” が根拠です。書き直しの基準を問う設問です。',
     },
     {
       q: 'Why did the town need more than translation?',

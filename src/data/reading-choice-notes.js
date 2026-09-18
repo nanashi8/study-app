@@ -980,12 +980,12 @@ export const READING_CHOICE_NOTES = freezeNotes({
   },
   "p_2_disaster_translators#1": {
     "Because the message never reached their phones.": "第3文で、知らせは1分以内に地域のすべての電話に届いたと書かれている。",
-    "Because the town office sent the warning too late.": "警報は夕方9時に送られ、1分以内に届いた（第2・3文）。遅すぎたとは書かれていない。",
+    "Because the town office sent the warning too late.": "警報は夜9時に送られ、1分以内に届いた（第2・3文）。遅すぎたとは書かれていない。",
     "Because the wording and the translation hid the urgency.": "知らせは古い公式の言葉と難しい文法を使い（第6文）、機械翻訳が緊急の文をていねいな誘いに変え（第7文）、別の文もあいまいになった（第8文）。",
     "Because the shelter in their area was already full.": "避難所が満員だったとは書かれていない。住民は警報を読んでも動かなかった（第4文）。",
   },
   "p_2_disaster_translators#2": {
-    "One idea, one action and a short sentence.": "第13文 Each notice keeps one idea, one action and a short sentence. と一致する。",
+    "One idea, one action and a short sentence.": "第13文 Each notice keeps to one idea, one action and a short sentence. と一致する。",
     "The same official words as before.": "以前の知らせは古い公式の言葉が問題だった（第6文）ので、やさしい日本語で書き直した（第12文）。同じ言葉ではない。",
     "A long explanation for every reader.": "書き直した知らせは、一つの考えを短い一文で伝える（第13文）。長い説明ではない。",
     "Three languages on the same page.": "三つの言語は、元の知らせの文があいまいになった言語の数（第8文）で、書き直した紙面の作りではない。",
@@ -1005,7 +1005,7 @@ export const READING_CHOICE_NOTES = freezeNotes({
   "p_2_disaster_translators#5": {
     "It grows from contact between people in ordinary times.": "最後の第38文 real safety grows from contact between people in ordinary times と一致する。",
     "It depends on the speed of machine translation.": "翻訳だけでは解決せず（第17文）、電源のない電話は翻訳を示せない（第35文）。翻訳の速さ次第とは言っていない。",
-    "It needs one interpreter for every language.": "まれな言語には通訳がまったくいないという限界があり（第34文）、最後には近所のつながりに頼る（第37文）。言語ごとの通訳を条件にしてはいない。",
+    "It needs one interpreter for every language.": "珍しい言語には通訳がまったくいないという限界があり（第34文）、最後には近所のつながりに頼る（第37文）。言語ごとの通訳を条件にしてはいない。",
     "It begins when a warning reaches every phone.": "最初の台風では、警報がすべての電話に届いても住民は動かなかった（第3・4文）。",
   },
   "p_ext_1000_civic_decisions#1": {

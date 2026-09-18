@@ -20,7 +20,7 @@ export const READING_QUESTION_TRANSLATION_REVIEW_LEDGER = Object.freeze({
   p_2_injury_free_practice: '4ad105b1',
   p_2_factory_museum: 'cb77f0f0',
   p_pre2_school_radio: '077d2e34',
-  p_2_disaster_translators: '3fa9f1bc',
+  p_2_disaster_translators: 'ae44a3cf',
   p_5_school_open_day: 'e17458f9',
   p_4_bicycle_safety: '372f7e7f',
   p_3_lunch_food_waste: 'd42d4048',

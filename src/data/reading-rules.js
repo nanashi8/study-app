@@ -694,7 +694,7 @@ export const PASSAGE_READING_APPROACHES = Object.freeze({
     '届いたことと、伝わったことを分けて読む',
     '防災を扱う論説文では、情報が届いた事実と、意味が伝わった事実を同じものとして扱わずに追う。',
     ['伝わらなかった原因を、言葉の面から探す', '対策を、導入した順に並べる', '残る限界と結論を結びつける'],
-    ['reading-mode', 'noun-boundary', 'relative-clause', 'cause-result', 'negation-scope', 'author-stance'],
+    ['reading-mode', 'parallel-shape', 'relative-clause', 'cause-result', 'negation-scope', 'author-stance'],
   ),
 })
 
