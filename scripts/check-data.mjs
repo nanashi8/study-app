@@ -66,6 +66,7 @@ import {
   passageWordCount,
 } from '../src/data/reading-study.js'
 import { resolvePassageWord } from '../src/data/passage-gloss.js'
+import { tokenize } from '../src/lib/text.js'
 import { PASSAGE_SENSE_GLOSSES } from '../src/data/passage-sense-glosses.js'
 import { READING_GRAMMAR_EXPECTATIONS } from '../src/data/reading-grammar-expectations.js'
 import {
@@ -1556,7 +1557,8 @@ if (READING_PHRASE_OPEN_QUESTIONS.some(
       continue
     }
     for (const { at, sentence } of places) {
-      const keys = new Set(readingPhraseWords(sentence.en))
+      // 画面のタップと同じ切り方（ハイフンでつながった語は1語）で、台帳の語が本文にあるかを見る。
+      const keys = new Set(tokenize(sentence.en).map((token) => token.key).filter(Boolean))
       for (const [key, sense] of Object.entries(senses)) {
         const where = `長文の語義台帳 ${at} "${key}"`
         if (!keys.has(key)) errors.push(`${where}: 本文にこの語が無い`)

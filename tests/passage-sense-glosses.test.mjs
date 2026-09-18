@@ -161,8 +161,8 @@ test('語義台帳の英文はすべて本文にあり、本文のタップが�
       assert.notDeepEqual(resolvePassageWord(key), { id: sense.id, ja: sense.ja }, `${place.at} ${key}: つづりから引いても同じ`)
     }
   }
-  assert.equal(Object.keys(PASSAGE_SENSE_GLOSSES).length, 587)
-  assert.equal(words, 812)
+  assert.equal(Object.keys(PASSAGE_SENSE_GLOSSES).length, 814)
+  assert.equal(words, 1295)
 })
 
 test('語尾を落とすと別の語（ad・rid・suite・us）に当たる活用形は、元の語へつなぐ', () => {

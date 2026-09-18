@@ -490,7 +490,7 @@ export const PASSAGE_READING_APPROACHES = Object.freeze({
     '具体例を「誰にとってのどんな利点か」にまとめる',
     '活動を紹介する説明文では、仕事を並べて終わりにせず、その利点を受ける相手ごとにまとめ直す。',
     ['仕事の具体例と、担当する人を拾い出す', '利点を、受け取る相手ごとに分けて整理する', '例をまとめて、本文全体の要旨をつかむ'],
-    ['paragraph-map', 'parallel-shape', 'relative-clause', 'example-restatement', 'evidence-backtrack', 'unknown-word-context'],
+    ['paragraph-map', 'parallel-shape', 'relative-clause', 'contrast-concession', 'evidence-backtrack', 'unknown-word-context'],
   ),
   p_pre2plus_repair_cafes: makePassageApproach(
     '仕組み・効果・限界を分けて整理する',
@@ -616,7 +616,7 @@ export const PASSAGE_READING_APPROACHES = Object.freeze({
     '暑さ対策の道具と、その働きを対にして読む',
     '身近な時事を扱う説明文では、取り入れた物や場所と、それが何の役に立つのかを一組にして確かめる。',
     ['取り入れた物と、その働きを対にする', '比較級とifの条件を、分けて読む', '最後の評価を、本文に書かれた工夫と結びつける'],
-    ['purpose-first', 'svoc-core', 'infinitive-role', 'cause-result', 'evidence-backtrack', 'reference-chain'],
+    ['purpose-first', 'svoc-core', 'postmodifier', 'comparison-pairs', 'logic-connectors', 'evidence-backtrack'],
   ),
   p_4_school_solar_roof: makePassageApproach(
     '数値の上下を原因の候補と突き合わせる',
