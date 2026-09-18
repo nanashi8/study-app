@@ -540,9 +540,9 @@ export const CURRENT_AFFAIRS_READING_PHRASE_CORRECTIONS = freeze({
   ]),
   'Most detection tools and training materials are produced for a few widely spoken languages.': freeze([
     correction(['Most detection tools and training materials'], [
-      { role: 'S', en: 'Most detection tools', ja: '検出の道具の多くは' },
-      { role: 'S', en: 'and training materials', ja: 'そして研修資料は' },
-    ], 'and で並ぶ二つの名詞句がまとめて主語Sになります。受動態の述語は両方にかかります。'),
+      { role: 'S', en: 'Most detection tools', ja: '検出の道具のほとんどは' },
+      { role: 'S', en: 'and training materials', ja: 'そして研修資料のほとんども' },
+    ], 'and で並ぶ二つの名詞句がまとめて主語Sになります。Most と受動態の述語は両方にかかります。'),
   ]),
   'Several agencies now set a fixed period for leaving crowded orbits.': freeze([
     correction(['now set'], [

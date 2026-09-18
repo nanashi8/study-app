@@ -368,7 +368,7 @@ export const FIELD_PASSAGES = [
       s('They confirm the nearest shelter with each family.', '彼らはそれぞれの家庭といっしょに、最寄りの避難所を確かめます。'),
       s('A simple picture map is now on the wall in many homes.', '簡単な絵の地図が、今では多くの家の壁に貼ってあります。'),
       p('Two years later, a second typhoon tested the new system.', '2年後、二つ目の台風がその新しい仕組みを試しました。'),
-      s('Most of the foreign residents left their homes on time.', '外国出身の住民の多くが、時間どおりに自分の家を出ました。'),
+      s('Most of the foreign residents left their homes on time.', '外国出身の住民の大半が、時間どおりに自分の家を出ました。'),
       s('Some elderly Japanese neighbors also used the easy notices.', '年配の日本人の隣人の中にも、そのやさしい知らせを使った人がいました。'),
       s('Awareness of simple wording grew across the whole town.', '分かりやすい言い方への意識が、町全体に広がりました。'),
       s('The town office noticed that simple language helps everyone.', '町役場は、やさしい言葉がみんなを助けると気づきました。'),
