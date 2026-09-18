@@ -148,7 +148,7 @@ export default Object.freeze([
       'offer both environmental and social benefits': 'both A and B で「AとBの両方」。',
     },
   }),
-  st('[S {動名詞| [V Extending] [O the life {前| of a product}]}] [V reduces] [O waste] [接 and] [V lowers] [O demand {前| for {並列| the energy | and resources} {過去分詞>the energy and resources| [V required] [M {to:副詞(目的)| [V to make] [O new goods]}]}}].', {
+  st('[S {動名詞| [V Extending] [O the life {前| of a product}]}] [V reduces] [O waste] [接 and] [V lowers] [O demand {前| for the {並列| energy | and resources} {過去分詞>the energy and resources| [V required] [M {to:副詞(目的)| [V to make] [O new goods]}]}}].', {
     chunks: [
       ['Extending the life of a product', '製品の寿命を延ばすことは'],
       ['reduces waste', 'ごみを減らします'],

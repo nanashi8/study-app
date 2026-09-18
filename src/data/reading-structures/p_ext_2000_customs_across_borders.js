@@ -597,7 +597,7 @@ export default Object.freeze([
       'it is a compressed memory of a journey': 'compressed は「押し縮められた」。',
     },
   }),
-  st('[S Neither meaning] [V is] [C false], [M {副詞節:譲歩| [接 although] [S the two sides] [M rarely] [V acknowledge] [O each other] [M {前| in {並列| any explicit | or public way}}]}].', {
+  st('[S Neither meaning] [V is] [C false], [M {副詞節:譲歩| [接 although] [S the two sides] [M rarely] [V acknowledge] [O each other] [M {前| in any {並列| explicit | or public way}}]}].', {
     chunks: [
       ['Neither meaning is false,', 'どちらの意味も偽りではありません'],
       ['although the two sides rarely acknowledge each other', 'ただし、双方が互いを認め合うことはまれです'],

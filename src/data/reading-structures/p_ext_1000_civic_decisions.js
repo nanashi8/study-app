@@ -360,7 +360,7 @@ export default Object.freeze([
       'that a citizen can reach the original figure': 'この that は接続詞で、is の補語になる名詞のまとまりを作ります。',
     },
   }),
-  st('[S Every public promise] [V spends] [O something: {並列| the time, | labor, | land, | or money} {関係>the time, labor, land, or money| [S that] [V could have served] [O another goal]}].', {
+  st('[S Every public promise] [V spends] [O something: the {並列| time, | labor, | land, | or money} {関係>the time, labor, land, or money| [S that] [V could have served] [O another goal]}].', {
     chunks: [
       ['Every public promise spends something:', 'どの公的な約束も、何かを費やします'],
       ['the time, labor, land, or money', 'つまり時間や労働や土地やお金を'],

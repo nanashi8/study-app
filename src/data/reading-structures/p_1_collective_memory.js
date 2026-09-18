@@ -146,7 +146,7 @@ export default Object.freeze([
       'become unreadable': 'become は may を共有しています（may become）。',
     },
   }),
-  st('[M More subtly], [S platforms] [V can revise] [O {並列| the categories | and rankings} {関係>the categories and rankings| [M through which] [S users] [V encounter] [O material]}] [M {前| without {動名詞| [V deleting] [O a single record]}}].', {
+  st('[M More subtly], [S platforms] [V can revise] [O the {並列| categories | and rankings} {関係>the categories and rankings| [M through which] [S users] [V encounter] [O material]}] [M {前| without {動名詞| [V deleting] [O a single record]}}].', {
     chunks: [
       ['More subtly', 'さらに目立たない形では'],
       ['platforms', 'プラットフォームは'],
@@ -256,7 +256,7 @@ export default Object.freeze([
     },
     rules: ['negation-scope', 'logic-connectors', 'main-clause-skeleton'],
   }),
-  st('[S A public consultation] [V may reproduce] [O existing inequalities] [M {副詞節:条件| [接 if] [S organized groups] [V can speak] [M more loudly {前| than communities {前| with {並列| less time, | money, | or trust {前| in institutions}}}}]}].', {
+  st('[S A public consultation] [V may reproduce] [O existing inequalities] [M {副詞節:条件| [接 if] [S organized groups] [V can speak] [M more loudly {前| than communities {前| with less {並列| time, | money, | or trust {前| in institutions}}}}]}].', {
     chunks: [
       ['A public consultation', '公開の話し合いは'],
       ['may reproduce existing inequalities', '今ある不平等を再び生み出してしまうかもしれません'],

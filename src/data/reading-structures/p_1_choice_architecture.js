@@ -36,7 +36,7 @@ export default Object.freeze([
       'the environment within which people decide': 'コロンの後ろは a choice architecture の言いかえです。within which は「その中で」で、the environment を説明します。',
     },
   }),
-  st('[S Architecture] [V is not] [M merely] [C a metaphor], [M {副詞節:理由| [接 because] [S {並列| every digital screen, | form, | cafeteria, | and public procedure}] [V must arrange] [O alternatives] [M somehow]}].', {
+  st('[S Architecture] [V is not] [M merely] [C a metaphor], [M {副詞節:理由| [接 because] [S every {並列| digital screen, | form, | cafeteria, | and public procedure}] [V must arrange] [O alternatives] [M somehow]}].', {
     chunks: [
       ['Architecture is not merely a metaphor,', 'しくみというのは、ただのたとえではありません'],
       ['because every digital screen, form,', 'なぜなら、どの画面や書類'],
@@ -127,7 +127,7 @@ export default Object.freeze([
       'they already have but repeatedly postpone': 'have と postpone が but で並び、どちらも an intention を目的語にします。postpone は「先延ばしにする」。',
     },
   }),
-  st('[S It] [V can] [M also] [V reduce] [O the advantage {過去分詞>the advantage| [V enjoyed] [M {前| by people {関係>people| [S who] [V have] [O {並列| more time, | confidence, | or expert assistance}] [M {前| for {動名詞| [V navigating] [O procedures]}}]}}]}].', {
+  st('[S It] [V can] [M also] [V reduce] [O the advantage {過去分詞>the advantage| [V enjoyed] [M {前| by people {関係>people| [S who] [V have] [O more {並列| time, | confidence, | or expert assistance}] [M {前| for {動名詞| [V navigating] [O procedures]}}]}}]}].', {
     chunks: [
       ['It can also reduce the advantage', 'それはまた、有利さを小さくできます（だれの有利さかは次へ）'],
       ['enjoyed by people who have more time,', '時間をより多く持つ人が受けている（有利さを）'],
@@ -162,7 +162,7 @@ export default Object.freeze([
     },
     rules: ['that-diagnosis', 'paragraph-map', 'main-clause-skeleton'],
   }),
-  st('[S {並列| The person | or institution} {関係>The person or institution| [S that] [V selects] [O a default]}] [V makes] [O a judgment] [M {前| about {疑問詞節| [S which outcome] [V should occur] [M most easily]}}].', {
+  st('[S The {並列| person | or institution} {関係>The person or institution| [S that] [V selects] [O a default]}] [V makes] [O a judgment] [M {前| about {疑問詞節| [S which outcome] [V should occur] [M most easily]}}].', {
     chunks: [
       ['The person or institution that selects a default', '初期設定を選ぶ人や組織は'],
       ['makes a judgment', '一つの判断をしています（何についてかは次へ）'],
@@ -464,7 +464,7 @@ export default Object.freeze([
     },
     rules: ['paragraph-map', 'passive-active', 'main-clause-skeleton'],
   }),
-  st('[S Citizens] [V need not vote] [M {前| on {並列| every button | or sentence}}], [接 but] [S they] [V should be] [C able {to:副詞(形容詞)| [V to challenge] [O {並列| goals, | evidence, | and hidden burdens}]}].', {
+  st('[S Citizens] [V need not vote] [M {前| on every {並列| button | or sentence}}], [接 but] [S they] [V should be] [C able {to:副詞(形容詞)| [V to challenge] [O {並列| goals, | evidence, | and hidden burdens}]}].', {
     chunks: [
       ['Citizens need not vote', '市民が投票する必要はありません（何にかは次へ）'],
       ['on every button or sentence,', 'ボタンや文の一つ一つに'],

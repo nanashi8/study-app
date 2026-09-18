@@ -547,7 +547,7 @@ export default Object.freeze([
       'Organizations remember what they have learned': 'what は先行詞を含む関係代名詞で、「学んだこと」というまとまりを作ります。',
     },
   }),
-  st('[S A form {関係>A form| [S that] [V asks] [O {並列| an awkward | and apparently useless question}]}] [V is] [M very often] [C the trace {前| of {並列| an old | and extremely expensive mistake}}].', {
+  st('[S A form {関係>A form| [S that] [V asks] [O an {並列| awkward | and apparently useless question}]}] [V is] [M very often] [C the trace {前| of an {並列| old | and extremely expensive mistake}}].', {
     chunks: [
       ['A form that asks an awkward', '厄介で〜質問をする書式は'],
       ['and apparently useless question', '一見無用な'],
@@ -1207,7 +1207,7 @@ export default Object.freeze([
       'Naming the responsible office well in advance': 'well in advance で「かなり前もって」。',
     },
   }),
-  st('[S Transparency] [V is] [M frequently] [V offered] [M {前| to the public}] [M {前| as {並列| a complete | and sufficient answer {前| to every kind {前| of distrust}}}}].', {
+  st('[S Transparency] [V is] [M frequently] [V offered] [M {前| to the public}] [M {前| as a {並列| complete | and sufficient answer {前| to every kind {前| of distrust}}}}].', {
     chunks: [
       ['Transparency is frequently offered to the public', '透明性はしばしば人々に差し出されます'],
       ['as a complete and sufficient answer', '完全で十分な答えとして'],
