@@ -240,7 +240,7 @@ export default Object.freeze([
   }),
   st('[S Neither approach] [V can succeed] [M {副詞節:条件| [接 if] [S no one] [V is] [C willing {to:副詞(形容詞)| [V to drive]}]}].', {
     chunks: [
-      ['Neither approach can succeed', 'どちらのやり方もうまくいきません（どんな場合かは次へ）'],
+      ['Neither approach can succeed', 'どちらのやり方も成功できません（どんな場合かは次へ）'],
       ['if no one is willing to drive', '進んで運転しようという人がだれもいなければ'],
     ],
     notes: {

@@ -67,7 +67,7 @@ export const FIELD_PASSAGES = [
       s('Younger children visit the pond with real curiosity about the frogs and the plants.', '年下の子どもたちは、カエルや植物に心からの興味を持ってその池を訪れます。'),
       s('A community event in autumn now includes a short report from the science club.', '秋の地域の行事には今、科学部からの短い報告が含まれています。'),
       s('The students say that it is much harder to protect a habitat than to damage one.', '生徒たちは、生息地を守ることは壊すことよりずっと難しいと言います。'),
-      s('They also believe that a small pond can teach a town about the wider environment.', '生徒たちはまた、小さな池が町に、より広い環境について教えてくれると信じています。'),
+      s('They also believe that a small pond can teach a town about the wider environment.', '生徒たちはまた、小さな池が町に、より広い環境について教えることができると信じています。'),
     ],
   },
 

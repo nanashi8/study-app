@@ -59,12 +59,12 @@ export default Object.freeze([
   st('[S Shorter transport] [V can reduce] [O damaged produce] [接 and] [V allow] [O growers] [C {to:補語| [V to harvest] [O food] [M {副詞節:時| [接 when] [S it] [V is] [C ready]}]}].', {
     chunks: [
       ['Shorter transport can reduce damaged produce', '輸送が短くなれば、傷んだ農産物を減らせます'],
-      ['and allow growers to harvest food', 'そして、生産者が食料を収穫できるようにします'],
+      ['and allow growers to harvest food', 'そして、生産者が食料を収穫できるようにすることもできます'],
       ['when it is ready', '食べ頃になったときに'],
     ],
     notes: {
       'Shorter transport can reduce damaged produce': 'produce はここでは名詞で「農産物」。Shorter transport は「輸送が短いこと」。',
-      'and allow growers to harvest food': 'allow ＋ 人 ＋ to 〜 で「人が〜できるようにする」。and の後ろの主語も Shorter transport です。',
+      'and allow growers to harvest food': 'allow ＋ 人 ＋ to 〜 で「人が〜できるようにする」。and の後ろの主語も Shorter transport で、can は reduce と allow の両方にかかります。',
       'when it is ready': 'it は食料を指し、ready は「食べ頃になった」。',
     },
   }),

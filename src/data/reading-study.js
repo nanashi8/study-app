@@ -362,7 +362,7 @@ export const READING_STUDY = {
         'at once',
         '同時に・すぐに',
         'Some resources can serve several needs at once.',
-        '一部の資源は複数の必要に同時に役立ちます。',
+        '一部の資源は複数の必要に同時に役立ちえます。',
         'この文では「同時に」。命令文などでは「すぐに」の意味にもなる。',
       ),
       expression(

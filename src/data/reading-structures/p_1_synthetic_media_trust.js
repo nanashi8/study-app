@@ -452,7 +452,7 @@ export default Object.freeze([
   }),
   st('[S Warning labels] [V can help], [接 yet] [S unlabeled material] [V may] [M then] [V seem] [C verified] [M {前| by default}].', {
     chunks: [
-      ['Warning labels can help,', '注意の表示は役に立ちます'],
+      ['Warning labels can help,', '注意の表示は役に立ちえます'],
       ['yet unlabeled material may then seem verified', 'しかしそうなると、表示のない素材が確かめ済みに見えてしまうかもしれません（どうしてかは次へ）'],
       ['by default', '何もしないままでも'],
     ],
