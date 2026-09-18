@@ -69,7 +69,7 @@ export const FIELD_READING_QUESTIONS = Object.freeze({
         'Because the club uses the numbers in a cooking workshop.',
       ],
       answer: 'Because local rules regulate the handling of fresh food.',
-      explain: '第14文の「地元の規則が生鮮食品の取り扱いを規制し、市場はそれに厳密に従う」が、第15文の点検と第16文の役所への報告の理由です。',
+      explain: '第14文の「地元の規則が生鮮食品の取り扱いを規制し、市場はその規則に厳密に従う」が、第15文の点検と第16文の役所への報告の理由です。',
     },
     {
       q: 'What happens to the sellers in wet weather?',

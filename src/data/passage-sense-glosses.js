@@ -893,11 +893,58 @@ export const PASSAGE_SENSE_GLOSSES = Object.freeze({
   }),
 
   // p_pre2_morning_market（駅前の朝市）
+  'On Sunday mornings, a small market opens in front of our town station.': words({ opens: sense('open', '開く・開かれる（店などが）') }),
   'At the start, five producers and a few customers came.': words({ start: sense('start', '始め・始まり') }),
+  'Today about thirty suppliers join, and the number of visitors keeps rising.': words({
+    about: sense('about', '約・およそ'),
+    suppliers: sense('supplier', '（品物を）出す人・出店者'),
+    keeps: sense('keep', '（〜し）続ける（keep ＋ -ing）'),
+    rising: sense('rise', '増える・上がる'),
+  }),
+  'They find the quality reliable and return every week.': words({ find: sense('find', '（O が C だと）感じる・分かる') }),
   'This direct contact builds confidence, and it lowers complaints about the goods.': words({ contact: sense('contact', '接触・直接のやりとり') }),
-  'A survey last year showed that a high percentage of visitors welcomed this contact.': words({ contact: sense('contact', '接触・やりとり') }),
+  'A survey last year showed that a high percentage of visitors welcomed this contact.': words({
+    showed: sense('show', '示した・明らかにした'),
+    contact: sense('contact', '接触・やりとり'),
+  }),
+  'The producers read this feedback and learn the preference of local families.': words({ learn: sense('learn', '知る・分かる') }),
+  'The cheerful scene hides much quiet work.': words({
+    quiet: sense('quiet', '目立たない・静かな'),
+    work: sense('work', '仕事'),
+  }),
+  'The town office and the producers share a list of requirements.': words({
+    office: sense('office', '役場・役所（town office で町役場）'),
+    requirements: sense('requirement', '守るべき条件・要件（複数）'),
+  }),
+  'Local rules regulate the handling of fresh food, and the market follows them closely.': words({
+    handling: sense('handle', '取り扱い'),
+    closely: sense('close', '厳密に・注意深く（closely）'),
+  }),
+  'A representative of the producers reports these records to the government office.': words({
+    records: sense('record', '記録（複数）'),
+    office: sense('office', '役所（government office）'),
+  }),
   'Accuracy is more important than speed in this check.': words({ check: sense('check', '確認・点検') }),
-  'The club studies the stalls and turns each visit into an assignment.': words({ visit: sense('visit', '訪問') }),
+  'Money is the hardest part of the routine.': words({ routine: sense('routine', '決まった仕事・日課') }),
+  'Each producer pays a small fee, and that payment covers cleaning and transportation.': words({
+    covers: sense('cover', '（費用を）まかなう'),
+    cleaning: sense('clean', '清掃・掃除'),
+  }),
+  'In a wet climate, few households come, and the sellers carry the loss themselves.': words({ carry: sense('carry', '（損失を）負う・背負う') }),
+  'High humidity spoils leaf vegetables before noon.': words({ spoils: sense('spoil', 'だめにする・傷める') }),
+  'The producers therefore keep a priority list of goods with a long life.': words({
+    keep: sense('keep', '（用意して）持っておく'),
+    life: sense('life', '（品物の）もち・寿命（a long life で「日持ちのする」）'),
+  }),
+  'A high school club runs a cooking workshop near the stalls.': words({ runs: sense('run', '（会を）開く・運営する') }),
+  'The club studies the stalls and turns each visit into an assignment.': words({
+    studies: sense('study', '調べる・研究する'),
+    turns: sense('turn', '（A を B に）変える（turn A into B）'),
+    visit: sense('visit', '訪問'),
+  }),
+  'Young children learn the names of vegetables and the season of each crop.': words({ season: sense('season', '季節・旬（作物がとれる季節）') }),
+  'For older residents, the mild Sunday morning has become a routine meeting.': words({ routine: sense('routine', 'いつもの・決まった') }),
+  'They explain that a market brings people together, and goods come second.': words({ brings: sense('bring', '（一つに）集める・結びつける（bring 〜 together）') }),
 
   // p_2_injury_free_practice（痛みを数えた部活）
   'Last spring, four members of our track club were injured within a single month.': words({ track: sense('track', '陸上競技（track club で陸上部）') }),
