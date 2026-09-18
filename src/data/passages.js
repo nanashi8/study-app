@@ -180,7 +180,7 @@ const CORE_PASSAGES = [
 
       p('Supporters say repair cafes offer both environmental and social benefits.', '支持者は、リペアカフェには環境面と社会面の両方の利点があると言います。'),
       s('Extending the life of a product reduces waste and lowers demand for the energy and resources required to make new goods.', '製品の寿命を延ばすことは、ごみを減らし、新しい製品を作るためのエネルギーや資源への需要を下げます。'),
-      s('Families may also save money, which is especially valuable when prices are rising.', '家庭はお金も節約でき、物価が上がっているときには特に価値があります。'),
+      s('Families may also save money, which is especially valuable when prices are rising.', '家庭はお金も節約できるかもしれず、それは物価が上がっているときには特に価値があります。'),
       s('In addition, the events encourage people to think differently about ownership.', 'さらに、この催しは所有することについて人々に別の考え方を促します。'),
       s('A device no longer seems like a closed box that only its manufacturer understands.', '機器はもはや、製造業者だけが理解できる閉ざされた箱のようには見えなくなります。'),
       s('Even when an object cannot be repaired, a visitor may learn why it failed and how to choose a longer-lasting replacement.', '物を修理できない場合でも、来場者は壊れた理由や、より長持ちする代わりの品の選び方を学べることがあります。'),

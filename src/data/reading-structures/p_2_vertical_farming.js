@@ -255,7 +255,7 @@ export default Object.freeze([
   }),
   st('[S It] [V may] [M instead] [V supply] [O certain crops] [M {副詞節:場所| [接 where] [S land] [V is] [C scarce], [S transport] [V is] [C difficult], [接 or] [S weather] [V is] [C unstable]}].', {
     chunks: [
-      ['It may instead supply certain crops', 'それは代わりに、特定の作物を届けられます（どこでかは次へ）'],
+      ['It may instead supply certain crops', 'それは代わりに、特定の作物を届けられるかもしれません（どこでかは次へ）'],
       ['where land is scarce,', '土地が少ない所や'],
       ['transport is difficult, or weather is unstable', '輸送が難しい所、天気が不安定な所で'],
     ],
