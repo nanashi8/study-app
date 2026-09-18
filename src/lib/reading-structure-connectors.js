@@ -199,6 +199,26 @@ function embeddedVerbAfterMainVerb(elements) {
   return ''
 }
 
+// 先行詞の名詞から、関係副詞の働きをする that・省略を置きかえられる語を選ぶ
+// （the day that … → when・on which、the reason … → why、the way that … → in which）。
+const TIME_NOUN_PREPOSITIONS = Object.freeze({
+  day: 'on', days: 'on', night: 'on', morning: 'on', evening: 'on',
+  year: 'in', years: 'in', month: 'in', months: 'in', week: 'in', weeks: 'in', season: 'in', era: 'in', period: 'in',
+  time: 'at', times: 'at', moment: 'at', moments: 'at', hour: 'at', hours: 'at',
+})
+const PLACE_NOUNS = new Set([
+  'place', 'places', 'area', 'areas', 'room', 'rooms', 'city', 'cities', 'town', 'towns', 'country', 'countries',
+  'house', 'houses', 'field', 'fields', 'situation', 'situations', 'case', 'cases',
+])
+
+function relativeAdverbFor(antecedent) {
+  const head = (words(antecedent).at(-1) ?? '').toLowerCase()
+  if (TIME_NOUN_PREPOSITIONS[head]) return { adverb: 'when', prepositional: `${TIME_NOUN_PREPOSITIONS[head]} which` }
+  if (/^reasons?$/.test(head)) return { adverb: 'why', prepositional: 'for which' }
+  if (PLACE_NOUNS.has(head)) return { adverb: 'where', prepositional: 'in which' }
+  return { adverb: '', prepositional: 'in which' }
+}
+
 function relativeExplanation(unit) {
   const node = unit.node
   const elements = directElements(node)
@@ -239,7 +259,7 @@ function relativeExplanation(unit) {
       word: leadText,
       chip: '前置詞＋関係代名詞',
       kind: '前置詞＋関係代名詞',
-      explanation: `${leadText} は「前置詞＋関係代名詞」です。${pronoun} が直前の ${antecedent}（先行詞）を受けて、「${preposition} ${antecedent}」の意味で節の中の修飾語Mになります。後ろは主語 ${subject} と動詞 ${verb} に必要な語がそろった文です。`,
+      explanation: `${leadText} は「前置詞＋関係代名詞」です。${pronoun} が直前の ${antecedent}（先行詞）を受けて、「${preposition} ${lowerAntecedent(antecedent, unit.antecedentAtSentenceStart)}」の意味で節の中の修飾語Mになります。後ろは主語 ${subject} と動詞 ${verb} に必要な語がそろった文です。`,
     }
   }
   if (leadLower.startsWith('whose ')) {
@@ -270,16 +290,30 @@ function relativeExplanation(unit) {
   }
   // put a price on … のように、節の終わりに残った前置詞の目的語になる関係代名詞。
   if (lead?.role === 'M') {
-    const stranded = [...elements].reverse()
+    const strandedIn = (list) => [...list].reverse()
       .find((element) => element.role === 'M' && STRANDED_PREPOSITIONS.has(plain(element).toLowerCase()))
+    let stranded = strandedIn(elements)
+    // outcomes that a city is prepared to live with のように、不定詞・動名詞の終わりに残った前置詞。
+    if (!stranded) {
+      for (const element of elements) {
+        for (const child of element.children) {
+          if (child.kind !== 'unit' || !['to', '原形', '動名詞'].includes(child.base)) continue
+          stranded = strandedIn(directElements(child)) ?? stranded
+        }
+      }
+    }
     const preposition = stranded ? plain(stranded) : ''
     if (!preposition) {
       // the way that … のように、関係副詞の働きをする that。
+      const alternative = relativeAdverbFor(antecedent)
+      const replaceWith = alternative.adverb
+        ? `関係副詞 ${alternative.adverb}（${alternative.prepositional}）`
+        : alternative.prepositional
       return {
         word: leadText,
         chip: '関係詞',
         kind: '関係副詞の働きをする that',
-        explanation: `${leadText} は直前の ${antecedent}（先行詞）を受けて、節の中で修飾語Mの働きをします。後ろは主語 ${subject} と動詞 ${verb} に必要な語がそろった文なので、欠けた語を補う関係代名詞ではありません。in which に置きかえられる形です。`,
+        explanation: `${leadText} は直前の ${antecedent}（先行詞）を受けて、節の中で修飾語Mの働きをします。後ろは主語 ${subject} と動詞 ${verb} に必要な語がそろった文なので、欠けた語を補う関係代名詞ではありません。${replaceWith}${replaceWith.endsWith('）') ? '' : ' '}に置きかえられる形です。`,
       }
     }
     return {
@@ -311,6 +345,8 @@ function omittedRelativeExplanation(unit) {
   const verb = verbGroupText(elements)
   const antecedent = unit.antecedent
   if (unit.node.omittedKind === '関係副詞') {
+    const { adverb } = relativeAdverbFor(antecedent)
+    const omittedWords = adverb ? `${adverb}・that など` : 'that・in which など'
     const way = /\bway$/i.test(antecedent)
       ? `${antecedent} の後ろに how は置かず、${antecedent} ＋主語＋動詞で「${subject} が ${verb} するやり方」と読みます。`
       : ''
@@ -318,7 +354,7 @@ function omittedRelativeExplanation(unit) {
       word: '',
       chip: '',
       kind: '関係副詞の働きをする語の省略',
-      explanation: `${antecedent} のすぐ後ろに、主語 ${subject} と動詞 ${verb} が続いています。後ろの文に欠けた語はなく、関係副詞の働きをする語（that・in which など）が省略された形です。${way}`,
+      explanation: `${antecedent} のすぐ後ろに、主語 ${subject} と動詞 ${verb} が続いています。後ろの文に欠けた語はなく、関係副詞の働きをする語（${omittedWords}）が省略された形です。${way}`,
     }
   }
   const gapVerb = unit.node.gapVerb || lastVerbGroupText(elements) || verb
@@ -412,6 +448,9 @@ const SUBORDINATE_MEANINGS = Object.freeze({
   'even though': { 譲歩: '〜だけれども' },
   whereas: { 対比: '〜する一方で' },
   'so that': { 目的: '〜するために', 結果: 'その結果〜' },
+  // so … that の that（とても…なので〜）。
+  that: { 結果: 'とても…なので〜' },
+  whether: { 譲歩: '〜であろうと…であろうと' },
   so: { 目的: '〜するために', 結果: 'その結果〜' },
   'in order that': { 目的: '〜するために' },
   than: { 比較: '〜よりも' },

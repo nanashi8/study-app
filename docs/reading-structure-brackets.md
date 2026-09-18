@@ -58,4 +58,8 @@ A pension (that is promised this year) will be paid
 - 受け身の関係節（`information that cannot be recovered`）は関係代名詞が主語S。目的語Oと書くと
   `関係代名詞の節「…」に主語Sがありません` で止まる。
 - `a way that … cannot` のように欠けた語がない節は、関係代名詞ではなく関係副詞の働きをする that。
-  先頭の要素は `[M that]` と書く。
+  先頭の要素は `[M that]` と書く。置きかえの語は先行詞で選ぶ（the day → when（on which）、the reason → why、
+  the way → in which）。
+- 前置詞が不定詞の終わりに残る形（`outcomes that a city is prepared to live with`）は、関係代名詞（前置詞の目的語）。
+- 受け身で前置詞が残る形（`Land that has been built on`）は関係代名詞が主語S。`[V has been built on]` と書く。
+- 関係詞が O・C・M になる節に主語Sがないと、台帳の検査で止まる（非制限用法も同じ）。

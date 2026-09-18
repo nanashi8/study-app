@@ -749,8 +749,8 @@ function validateUnit(unit, errors) {
   if (!bare && !elements.some((element) => element.role === 'V') && unit.base !== '強調' && !ellipticalAdverbial) {
     errors.push(`まとまり「${unitText(unit)}」に動詞Vがありません`)
   }
-  // 関係代名詞が目的語・補語になる節には、必ず主語がある（受け身なら主格で書く）。
-  if (unit.base === '関係' && ['O', 'O1', 'O2', 'C'].includes(elements[0]?.role)) {
+  // 関係詞が目的語・補語・修飾語になる節には、必ず主語がある（受け身なら関係代名詞が主語S）。
+  if (['関係', '関係,'].includes(unit.base) && ['O', 'O1', 'O2', 'C', 'M'].includes(elements[0]?.role)) {
     if (!elements.some((element) => ['S', '仮S'].includes(element.role))) {
       errors.push(`関係代名詞の節「${unitText(unit)}」に主語Sがありません（受け身なら関係代名詞が主語Sです）`)
     }
