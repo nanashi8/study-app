@@ -1733,7 +1733,10 @@ export const PASSAGE_SENSE_GLOSSES = Object.freeze({
   'The group therefore starts each project with a hard question.': words({ project: sense('project', '計画・企画') }),
 
   // p_pre2_school_radio（廊下に流れる声）
-  'The radio club at our school almost stopped two years ago.': words({ stopped: sense('stop', '止まった') }),
+  'The radio club at our school almost stopped two years ago.': words({
+    stopped: sense('stop', '止まった'),
+    radio: sense('radio', '放送・ラジオ（radio club で放送部）'),
+  }),
   'Three members remained, and the lunch program ran for four minutes.': words({ ran: sense('run', '（番組が）続いた・流れた') }),
   'Most students paid no attention to the sound in the halls.': words({
     paid: sense('pay', '（注意を）払った'),
@@ -1743,14 +1746,20 @@ export const PASSAGE_SENSE_GLOSSES = Object.freeze({
     study: sense('study', '調べる'),
     own: sense('own', '自分たちの'),
   }),
-  'The members wrote a short survey and collected two hundred answers.': words({ collected: sense('collect', '集めた'), answers: sense('answer', '答え（複数）・回答') }),
+  'The members wrote a short survey and collected two hundred answers.': words({
+    collected: sense('collect', '集めた'),
+    answers: sense('answer', '答え（複数）・回答'),
+  }),
+  'The comments were direct and sometimes painful.': words({ direct: sense('direct', '率直な・直接的な') }),
   'The topics felt far from daily life.': words({ felt: sense('feel', '（〜に）感じられた') }),
   'One comment asked for news about the student council election.': words({ council: sense('council', '会議・評議会（student council で生徒会）') }),
+  'The club changed the program in three ways.': words({ changed: sense('change', '変えた') }),
   'Each member now writes a script and reads it slowly before lunch.': words({ script: sense('script', '原稿・台本') }),
   'An older student checks the speed and the volume.': words({
     older: sense('old', '年上の（older）'),
     volume: sense('volume', '音量'),
   }),
+  'The topics changed too.': words({ changed: sense('change', '変わった') }),
   'Reporters now visit the school nurse and the cooking staff.': words({ nurse: sense('nurse', '看護師（school nurse で保健の先生）') }),
   'The librarian joins a monthly program about new books.': words({ monthly: sense('month', '毎月の（monthly）') }),
   'A weekly part of the program explains one English word or one old local word.': words({ weekly: sense('week', '毎週の（weekly）') }),
@@ -1777,8 +1786,10 @@ export const PASSAGE_SENSE_GLOSSES = Object.freeze({
   'If a disaster stops the school bell, the radio room carries the announcement.': words({
     bell: sense('bell', 'チャイム・ベル'),
     carries: sense('carry', '（知らせを）伝える・流す'),
+    radio: sense('radio', '放送・ラジオ（radio room で放送室）'),
   }),
   'A battery and a simple device keep the speakers working for two hours.': words({ working: sense('work', '（機械が）動いている') }),
+  'They say that a voice in the halls is a small form of communication.': words({ halls: sense('hall', '廊下（複数）') }),
 
   // p_2_disaster_translators（読めなかった警報）
   'A strong typhoon reached our coastal town three years ago.': words({ reached: sense('reach', '（〜に）着いた・やって来た') }),
@@ -1812,7 +1823,10 @@ export const PASSAGE_SENSE_GLOSSES = Object.freeze({
     own: sense('own', '自分の'),
     working: sense('work', '働く（working hours で勤務時間）'),
   }),
-  'They practice the phrases for medical help, food and lost family members.': words({ help: sense('help', '助け・支援') }),
+  'They practice the phrases for medical help, food and lost family members.': words({
+    help: sense('help', '助け・支援'),
+    lost: sense('lost', '行方の分からない（lost family members で）・失われた'),
+  }),
   'The group visits language classes and local organizations every spring.': words({ classes: sense('class', '教室・授業（language class で語学教室）') }),
   'They confirm the nearest shelter with each family.': words({ nearest: sense('near', 'いちばん近い（nearの最上級）') }),
   'Two years later, a second typhoon tested the new system.': words({

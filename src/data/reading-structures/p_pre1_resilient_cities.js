@@ -302,7 +302,7 @@ export default Object.freeze([
     chunks: [
       ['Because', '〜ので（理由は次へ）'],
       ['these measures are less dramatic', 'これらの対策はあまり目立たない（ので）'],
-      ['they are often the first to be reduced', 'それらはたいてい真っ先に削られるものになります'],
+      ['they are often the first to be reduced', 'それらは真っ先に削られることがよくあります'],
       ['when budgets become tight', '予算が厳しくなると'],
     ],
     notes: {
