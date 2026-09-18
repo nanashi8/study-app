@@ -126,6 +126,19 @@ test('教材の値は、その教材だけを変え、無い値は全体の値�
     grammar: { sessionSize: 5 },
   })
   assert.deepEqual(normalizeSettings({}).byContent, {})
+
+  // 読み上げる範囲は教材ごとに持ち、知らない値は「単語のみ」に直して読む。
+  const ranges = normalizeSettings({
+    speechRange: 'all',
+    byContent: { phrases: { speechRange: 'example' }, vocabLevels: { speechRange: 'nope' } },
+  })
+  assert.equal(ranges.speechRange, 'word')
+  assert.equal(effectiveSettings(ranges, 'phrases').speechRange, 'example')
+  assert.equal(effectiveSettings(ranges, 'vocabLevels').speechRange, 'word')
+  assert.equal(effectiveSettings(ranges, 'readingList').speechRange, 'word')
+  const meaningOnly = applySettingChange(ranges, 'speechRange', 'meaning', { scopes: ['readingList'] })
+  assert.equal(effectiveSettings(meaningOnly, 'readingList').speechRange, 'meaning')
+  assert.equal(effectiveSettings(meaningOnly, 'phrases').speechRange, 'example')
 })
 
 test('学習画面の切り替えはいまの教材の値を、メニューは選んだ教材の値を変え、進捗コードでも持ち運べる', () => {
@@ -176,6 +189,7 @@ test('設定を読む画面と部品は、いまの教材の値を読む', () =>
     'components/SpeakButton.jsx', 'components/SpeechConsole.jsx', 'components/VocabMixConsole.jsx', 'components/ExtendedReader.jsx',
     'components/LongSentenceTranslation.jsx', 'components/RevealAnswers.jsx', 'components/SessionSize.jsx',
     'components/QuestionSessionControls.jsx', 'components/LiteratureVocabularySheet.jsx',
+    'components/useCardAutoSpeech.js',
   ]
   for (const path of readers) assert.match(read(path), /useContentSettings\(\)/, path)
   // 画面や部品から全体の値を直接読まない（メニューの設定画面だけが全教材の値を見比べる）。

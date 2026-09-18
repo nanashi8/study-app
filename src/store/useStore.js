@@ -8,6 +8,7 @@ import {
 } from '../lib/progressCode.js'
 import { battleProgression, clampPos } from '../lib/adaptive.js'
 import { VOCAB_MIX_DEFAULT, normalizeVocabMix } from '../lib/vocabMix.js'
+import { SPEECH_RANGE_DEFAULT, normalizeSpeechRange } from '../lib/speechRange.js'
 import {
   customStudyWords,
   mergeCustomWords,
@@ -187,6 +188,7 @@ const DEFAULT_SETTINGS = {
   ttsJapaneseVoiceURI: null,
   showPhonetic: true,
   autoSpeak: true,
+  speechRange: SPEECH_RANGE_DEFAULT, // 英単語・熟語・構文の暗記カードで読み上げる範囲（単語のみ／単語・意味／単語・意味・例文・例文の意味）
   dailyGoal: 20,
   sessionSize: 10, // 1回の暗記・テストで出す問題数（進捗表示のタップで変更）
   revealAnswers: false, // 暗記/復習/単語帳で、タップせず最初から意味・語源を表示する
@@ -204,6 +206,7 @@ export function normalizeSettings(settings) {
     ]),
   )
   normalized.vocabMix = normalizeVocabMix(normalized.vocabMix)
+  normalized.speechRange = normalizeSpeechRange(normalized.speechRange)
   // 「答えを開いたまま」と「スペルを隠す」は同時に成り立たない。両方ONで届いたら、前からある開いたままを残す。
   normalized.hideSpelling = normalized.hideSpelling === true && normalized.revealAnswers !== true
   // 教材ごとの値。上の各キーは、教材ごとの値が無いときに使う全体の値。

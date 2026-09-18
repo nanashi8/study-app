@@ -199,6 +199,7 @@ test('共通メニューから保存される学習・音声・コンテンツ�
     'ttsJapaneseVoiceURI',
     'showPhonetic',
     'autoSpeak',
+    'speechRange',
     'dailyGoal',
     'sessionSize',
     'revealAnswers',
@@ -267,9 +268,18 @@ test('教材の行はその教材で効く設定を開き、設定のいちば�
   assert.deepEqual(settingsOf('kotenList'), ['revealAnswers', 'sessionSize', 'autoAdvanceCorrect'])
   assert.deepEqual(settingsOf('kanbunHome'), ['revealAnswers', 'sessionSize', 'autoAdvanceCorrect'])
   assert.deepEqual(settingsOf('diagnostic'), ['ttsRate', 'ttsVoiceURI'])
-  // 出題バランスは級・分野から始める英単語だけ、日本語の声は訳や古典・漢文を読み上げる教材だけ。
+  // 出題バランスは級・分野から始める英単語だけ。日本語の声は、訳や古典・漢文を読み上げる教材と、
+  // 意味・例文の意味を読む英単語・熟語・構文の暗記カードを開く教材だけ。読み上げる範囲は、その暗記カードを開く教材だけ。
   assert.deepEqual(screensUsing('vocabMix'), ['home', 'vocabLevels'])
-  assert.deepEqual(screensUsing('ttsJapaneseVoiceURI'), ['home', 'literatureLibrary', 'readingList'])
+  assert.deepEqual(
+    screensUsing('ttsJapaneseVoiceURI'),
+    ['home', 'literatureLibrary', 'vocabLevels', 'vocabSearch', 'roots', 'readingList', 'phrases'],
+  )
+  assert.deepEqual(
+    screensUsing('speechRange'),
+    ['home', 'literatureLibrary', 'vocabLevels', 'vocabSearch', 'roots', 'readingList', 'phrases'],
+  )
+  assert.deepEqual(screensUsing('speechRange'), screensUsing('autoSpeak').filter((screen) => screen !== 'dictation'))
   assert.equal(contentSettingsSummary({ settings: settingsOf('writing') }), '問題数・読み上げ')
   assert.equal(contentSettingsSummary({ settings: settingsOf('kotenList') }), '答えの表示・問題数・自動で次へ')
   assert.equal(contentSettingsSummary({ settings: [] }), '変えられる設定はありません')
@@ -283,7 +293,8 @@ test('教材の行はその教材で効く設定を開き、設定のいちば�
     ['autoAdvanceCorrect', /showAutoAdvance/],
     ['vocabMix', /vocabMix/],
     ['dailyGoal', /dailyGoal/],
-    ['autoSpeak', /autoSpeak/],
+    ['autoSpeak', /autoSpeak|useCardAutoSpeech/],
+    ['speechRange', /speechRange|useCardAutoSpeech/],
     ['showPhonetic', /showPhonetic/],
     ['ttsRate', /<SpeakButton|ttsRate|playSpeechItems/],
     ['ttsVoiceURI', /<SpeakButton|ttsVoiceURI|playSpeechItems/],

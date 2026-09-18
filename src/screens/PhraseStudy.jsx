@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { useStore, useContentSettings } from '../store/useStore.js'
 import { WordBookToggle } from '../components/WordListSheet.jsx'
 import {
@@ -11,9 +11,10 @@ import {
 } from '../lib/session.js'
 import { getLevel } from '../data/levels.js'
 import { longSentenceTranslationFor } from '../data/long-sentence-translations.js'
-import { dismissSpeechPlayer, playSpeechItems } from '../lib/speech-player.js'
+import { cardSpeechItems } from '../lib/cardSpeech.js'
 import { phraseSpeechText } from '../lib/phrase-speech.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
+import { useCardAutoSpeech } from '../components/useCardAutoSpeech.js'
 import { LongSentenceTranslation } from '../components/LongSentenceTranslation.jsx'
 import { SyntaxFamilyGuide } from '../components/SyntaxFamilyGuide.jsx'
 import { IdiomFormGuide } from '../components/IdiomFormGuide.jsx'
@@ -89,31 +90,28 @@ export function PhraseStudyScreen() {
   // 英語を隠していて、まだカードを開いていない。
   const spellingHidden = Boolean(item) && hideSpelling && !flipped
 
-  // カードが変わるたび自動で読み上げ。英語を隠しているあいだは読まず、流れている音声と、
-  // 英文が出る下の再生パネルも閉じる。カードを開いて英語が見えたら、そこで読み上げる。
-  useEffect(() => {
-    if (!item) return
-    if (spellingHidden) {
-      dismissSpeechPlayer()
-      return
-    }
-    if (settings.autoSpeak) {
-      playSpeechItems([
-        {
-          text: phraseSpeechText(item),
-          label: phraseSpeechText(item),
-          style: item.kind === 'syntax' ? 'sentence' : 'phrase',
-        },
-        { text: item.example.en, label: item.example.en, style: 'sentence' },
-      ], {
-        title: '熟語・構文カード',
-        rate: settings.ttsRate,
-        voiceURI: settings.ttsVoiceURI,
-        japaneseVoiceURI: settings.ttsJapaneseVoiceURI,
+  // 読み上げは設定の範囲で、熟語（構文は完成した例文）→意味→例文→例文の意味。
+  // 意味と例文の意味は、カードを開いてから読む。
+  const phraseSpeechItems = item
+    ? cardSpeechItems({
+        head: phraseSpeechText(item),
+        headStyle: item.kind === 'syntax' ? 'sentence' : 'phrase',
+        meanings: item.meanings,
+        example: item.example,
+        range: settings.speechRange,
+        answerOpen: flipped,
       })
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [i, item?.id, spellingHidden])
+    : []
+
+  // カードが変わるたび自動で読み上げ、カードを開いたら意味から続きを読む。英語を隠しているあいだは読まず、
+  // 流れている音声と、英文が出る下の再生パネルも閉じる。カードを開いて英語が見えたら、そこで読み上げる。
+  useCardAutoSpeech({
+    cardKey: item ? `${i}:${item.id}` : null,
+    items: phraseSpeechItems,
+    spellingHidden,
+    answerOpen: flipped,
+    title: '熟語・構文カード',
+  })
 
   if (!deck.length) {
     return (
@@ -177,14 +175,6 @@ export function PhraseStudyScreen() {
   const level = getLevel(item.level)
   const kind = itemKind(item)
   const longSentenceTranslation = longSentenceTranslationFor(item)
-  const phraseSpeechItems = [
-    {
-      text: phraseSpeechText(item),
-      label: phraseSpeechText(item),
-      style: item.kind === 'syntax' ? 'sentence' : 'phrase',
-    },
-    { text: item.example.en, label: item.example.en, style: 'sentence' },
-  ]
 
   return (
     <div className="flex h-full flex-col">

@@ -15,8 +15,9 @@ import {
 import { vocabMixEmptyNotice, vocabMixFreshShare } from '../lib/vocabMix.js'
 import { phraseGroupsForWord } from '../lib/wordPhrases.js'
 import { wordRelationsFor } from '../lib/wordRelations.js'
-import { dismissSpeechPlayer, playSpeechItems } from '../lib/speech-player.js'
+import { cardSpeechItems } from '../lib/cardSpeech.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
+import { useCardAutoSpeech } from '../components/useCardAutoSpeech.js'
 import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
 import { EtymologyBlock } from '../components/WordBits.jsx'
 import { HomographWords, OtherSenses, PosBadge } from '../components/WordBits.jsx'
@@ -183,29 +184,29 @@ export function VocabStudyScreen() {
   // スペルを隠していて、まだカードを開いていない。
   const spellingHidden = Boolean(word) && hideSpelling && !flipped
 
-  // カードが変わるたび自動で読み上げ。スペルを隠しているあいだは読まず、流れている音声と、
-  // つづりが出る下の再生パネルも閉じる。カードを開いてスペルが見えたら、そこで読み上げる。
-  useEffect(() => {
-    if (!word) return
-    if (spellingHidden) {
-      dismissSpeechPlayer()
-      return
-    }
-    if (settings.autoSpeak) {
-      playSpeechItems([
-        { text: word.word, label: word.word, style: 'word' },
-        ...(word.example && exampleSpeechAllowed(word)
-          ? [{ text: word.example.en, label: word.example.en, style: 'sentence' }]
-          : []),
-      ], {
-        title: '単語カード',
-        rate: settings.ttsRate,
-        voiceURI: settings.ttsVoiceURI,
-        japaneseVoiceURI: settings.ttsJapaneseVoiceURI,
+  // 読み上げは設定の範囲で、単語→意味→例文→例文の意味。意味と例文の意味は、カードを開いてから読む。
+  // 使い方で発音が変わる語は単語を読まず（再生パネル側で外れる）、文でも読み分けられない語は例文も読まない。
+  const wordSpeechItems = word
+    ? cardSpeechItems({
+        head: word.word,
+        meanings: word.meanings,
+        meaningReadings: true,
+        example: word.example,
+        exampleSpeech: exampleSpeechAllowed(word),
+        range: settings.speechRange,
+        answerOpen: flipped,
       })
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [i, word?.id, spellingHidden])
+    : []
+
+  // カードが変わるたび自動で読み上げ、カードを開いたら意味から続きを読む。スペルを隠しているあいだは読まず、
+  // 流れている音声と、つづりが出る下の再生パネルも閉じる。カードを開いてスペルが見えたら、そこで読み上げる。
+  useCardAutoSpeech({
+    cardKey: word ? `${i}:${word.id}` : null,
+    items: wordSpeechItems,
+    spellingHidden,
+    answerOpen: flipped,
+    title: '単語カード',
+  })
 
   if (!deck.length) {
     // 「未修だけ」「復習だけ」で出せる語がないときは、そう選んでいることと続け方を示す。
@@ -295,13 +296,6 @@ export function VocabStudyScreen() {
   const level = getLevel(word.level)
   // スペルを隠しているあいだは、単語帳の窓や読み上げ名にも語を出さない。
   const wordName = spellingHidden ? 'この単語' : word.word
-  // 使い方で発音が変わる語は単語を読まず（再生パネル側で外れる）、文でも読み分けられない語は例文も読まない。
-  const wordSpeechItems = [
-    { text: word.word, label: word.word, style: 'word' },
-    ...(word.example && exampleSpeechAllowed(word)
-      ? [{ text: word.example.en, label: word.example.en, style: 'sentence' }]
-      : []),
-  ]
 
   const saveBeforeReference = (screen, referenceParams) => {
     saveQuizSession({

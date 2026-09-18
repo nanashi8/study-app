@@ -41,6 +41,7 @@ export const CONTENT_SETTING_GROUPS = Object.freeze([
       'ttsVoiceURI',
       'ttsJapaneseVoiceURI',
       'autoSpeak',
+      'speechRange',
       'showPhonetic',
     ]),
   }),
@@ -51,9 +52,11 @@ const SETTING_ORDER = CONTENT_SETTING_GROUPS.flatMap((group) => group.settings)
 // 教材から開く暗記・テスト・読み上げの画面が、それぞれ読んでいる設定。
 // 出題バランスは級・分野から始める英単語だけに効くので、英単語の暗記・テストには含めない。
 const ENGLISH_SPEECH = ['ttsRate', 'ttsVoiceURI']
-const WORD_STUDY = ['revealAnswers', 'hideSpelling', 'sessionSize', 'dailyGoal', 'autoSpeak', 'showPhonetic', ...ENGLISH_SPEECH]
+// 英単語・熟語・構文の暗記カードは、読み上げる範囲に合わせて意味と例文の意味を日本語の声で読む。
+const CARD_SPEECH = ['autoSpeak', 'speechRange', 'ttsJapaneseVoiceURI', ...ENGLISH_SPEECH]
+const WORD_STUDY = ['revealAnswers', 'hideSpelling', 'sessionSize', 'dailyGoal', 'showPhonetic', ...CARD_SPEECH]
 const WORD_TEST = ['sessionSize', 'autoAdvanceCorrect', ...ENGLISH_SPEECH]
-const PHRASE_STUDY = ['revealAnswers', 'hideSpelling', 'sessionSize', 'autoSpeak', ...ENGLISH_SPEECH]
+const PHRASE_STUDY = ['revealAnswers', 'hideSpelling', 'sessionSize', ...CARD_SPEECH]
 const PHRASE_TEST = ['sessionSize', 'autoAdvanceCorrect', ...ENGLISH_SPEECH]
 // 語源・古典・漢文のカードの暗記と、正誤をすぐ示すテスト。
 const CARD_STUDY = ['revealAnswers', 'sessionSize']
@@ -67,7 +70,7 @@ const settingsOf = (...lists) => Object.freeze(
 const ENGLISH_CONTENT_SETTINGS = Object.freeze({
   vocabLevels: settingsOf(WORD_STUDY, WORD_TEST, ['vocabMix']),
   // 辞書から開く熟語・構文の暗記は1件だけなので、問題数は効かない。
-  vocabSearch: settingsOf(ENGLISH_SPEECH, ['revealAnswers', 'hideSpelling', 'autoSpeak']),
+  vocabSearch: settingsOf(['revealAnswers', 'hideSpelling'], CARD_SPEECH),
   writing: settingsOf(['sessionSize'], ENGLISH_SPEECH),
   roots: settingsOf(CARD_STUDY, QUESTION_TEST, WORD_STUDY, WORD_TEST),
   readingList: settingsOf(READ_ALOUD, WORD_STUDY, WORD_TEST, PHRASE_STUDY, PHRASE_TEST),
@@ -168,6 +171,7 @@ const SETTING_SHORT_LABELS = Object.freeze({
   ttsVoiceURI: '読み上げ',
   ttsJapaneseVoiceURI: '読み上げ',
   autoSpeak: '自動で発音',
+  speechRange: '読み上げ',
   showPhonetic: '発音記号',
 })
 
