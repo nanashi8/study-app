@@ -29,6 +29,7 @@ import p_1_choice_architecture from './p_1_choice_architecture.js'
 import p_5_hot_summer_school from './p_5_hot_summer_school.js'
 import p_4_school_solar_roof from './p_4_school_solar_roof.js'
 import p_3_ai_class_rules from './p_3_ai_class_rules.js'
+import p_pre2_crowded_town_tourism from './p_pre2_crowded_town_tourism.js'
 import p_ext_4000_generational_city from './p_ext_4000_generational_city.js'
 import p_ext_3000_shared_watershed from './p_ext_3000_shared_watershed.js'
 import p_ext_2000_customs_across_borders from './p_ext_2000_customs_across_borders.js'
@@ -61,6 +62,7 @@ const PASSAGE_STRUCTURES = Object.freeze({
   p_5_hot_summer_school,
   p_4_school_solar_roof,
   p_3_ai_class_rules,
+  p_pre2_crowded_town_tourism,
   p_ext_4000_generational_city,
   p_ext_3000_shared_watershed,
   p_ext_2000_customs_across_borders,

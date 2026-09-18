@@ -465,12 +465,44 @@ export const PASSAGE_SENSE_GLOSSES = Object.freeze({
   }),
 
   // p_pre2_crowded_town_tourism（写真が広まった町で）
-  'Shops and restaurants welcomed the change because many young families had left the town.': words({ left: sense('leave', '去った・離れた') }),
+  'Photographs shared online showed a quiet street with old wooden houses and a view of the valley.': words({
+    shared: sense('share', '共有された（share の過去分詞）'),
+    view: sense('view', '眺め・景色'),
+  }),
+  'Shops and restaurants welcomed the change because many young families had left the town.': words({
+    change: sense('change', '変化'),
+    left: sense('leave', '去った・離れた'),
+  }),
+  'Some visitors entered private gardens because the path to the shrine was not clearly marked.': words({
+    marked: sense('mark', '示された（mark の過去分詞。was marked で「示されていた」）'),
+  }),
   'Litter increased near the bus stop, and neighbors collected it themselves every Monday.': words({
     stop: sense('stop', '停留所（bus stop でバス停）'),
     collected: sense('collect', '集めた・拾い集めた'),
   }),
-  'The town council did not want to stop tourism, so it looked for practical answers.': words({ answers: sense('answer', '答え（複数）・解決策') }),
+  'The town council did not want to stop tourism, so it looked for practical answers.': words({
+    looked: sense('look', '探した（look for で「探す」）'),
+    answers: sense('answer', '答え（複数）・解決策'),
+  }),
+  'Officials first counted visitors at three points and recorded the busiest hours.': words({
+    officials: sense('official', '職員・役人'),
+    points: sense('point', '地点・場所'),
+    busiest: sense('busy', 'いちばん混み合う（busy の最上級）'),
+  }),
+  'The money would pay for cleaning, toilets, and translation.': words({
+    cleaning: sense('clean', '清掃（すること）'),
+  }),
+  'Large tour buses put more pressure on narrow roads than private cars do.': words({
+    put: sense('put', 'かける（put pressure on 〜 で「〜に負担をかける」）'),
+    pressure: sense('pressure', '負担・圧力'),
+  }),
+  'Some shop owners disagreed because they feared that fewer buses would mean fewer customers.': words({
+    feared: sense('fear', '心配した・恐れた'),
+    fewer: sense('few', 'より少ない（few の比較級）'),
+  }),
+  'Residents said that the new buses helped older people most.': words({
+    older: sense('old', '年配の（old の比較級）'),
+  }),
 
   // p_pre2plus_rural_bus_future（村のバスは誰が動かすのか）
   'Some companies used to run several routes, but today they cannot fill even one bus.': words({ used: sense('use', '（used to で）以前は〜していた') }),
