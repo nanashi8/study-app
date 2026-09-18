@@ -181,6 +181,9 @@ const CONFIRMED_BRACKETS = Object.freeze({
     '<In some cases>, a simple repair <to an old bus stop or a clearer sign> may help residents more <than an expensive digital service>',
   'p_pre2_museum_volunteers#15':
     'The museum has also changed the way (it prepares labels <for new displays>)',
+  // more than＋数は、数を表す句として全体を < > でくくる（2026-09-18 利用者が決めた型）。
+  'p_2_space_debris#1':
+    '<More than ten thousand> satellites now travel <around the Earth>, and thousands more are planned',
 })
 
 test('利用者と例文で確認した括弧の付け方を保つ', () => {

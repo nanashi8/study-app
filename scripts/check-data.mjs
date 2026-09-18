@@ -1501,8 +1501,8 @@ if (
   readingTranslationBlockCount !== 2420 ||
   readingPhrasePairCount !== 6884 ||
   readingPhraseSequenceCount !== 6884 ||
-  readingMeaningPhraseCount !== 3670 ||
-  readingMeaningMultiRoleCount !== 2058
+  readingMeaningPhraseCount !== 3615 ||
+  readingMeaningMultiRoleCount !== 2060
 ) {
   errors.push(
     `長文フレーズ監査: ${PASSAGES.length}長文・${readingTranslationSentenceCount}文・` +

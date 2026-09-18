@@ -788,7 +788,7 @@ export const READING_CHOICE_NOTES = freezeNotes({
   },
   "p_2_space_debris#4": {
     "They show that the problem is understood, not that it is solved.": "第29文 These measures show that the problem is understood, not that it is solved. と一致する。",
-    "They prove that the crowded orbits are now safe.": "執行力は弱いままで（第28文）、問題は解決されていない（第29文）と書かれている。",
+    "They prove that the crowded orbits are now safe.": "決まりを守らせる力は弱いままで（第28文）、問題は解決されていない（第29文）と書かれている。",
     "They remove the need for international agreement.": "第23文で、規則には国際的な合意が必要だと書かれている。",
     "They show that removal technology already works at scale.": "第18文で、実験の成功は実用的な規模で働くことを示さないと書かれている。",
   },

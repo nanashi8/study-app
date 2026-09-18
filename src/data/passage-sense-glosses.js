@@ -566,10 +566,64 @@ export const PASSAGE_SENSE_GLOSSES = Object.freeze({
   }),
 
   // p_2_space_debris（混み合う軌道）
-  'Those fragments may then strike other objects and produce still more debris.': words({ may: MAY }),
-  'Removing a few large objects each year may be far cheaper than removing thousands of fragments later.': words({ may: MAY }),
+  'More than ten thousand satellites now travel around the Earth, and thousands more are planned.': words({
+    planned: sense('plan', '計画されている（are planned で受け身）'),
+  }),
+  'However, the same orbits also hold used rocket parts, broken satellites, and countless small fragments.': words({
+    hold: sense('hold', '（中に）抱えている・含む'),
+    used: sense('use', '使い終わった・使用済みの'),
+  }),
+  'Even a fragment one centimeter wide is faster than a bullet.': words({
+    wide: sense('wide', '幅が〜の（one centimeter wide で「幅1センチの」）'),
+  }),
+  'Operators already move satellites several times a year to avoid possible collisions.': words({
+    operators: sense('operator', '（衛星を）運用する人・会社'),
+    times: sense('time', '〜回（several times で「数回」）'),
+  }),
+  'Each of these movements uses fuel and shortens the useful life of the satellite.': words({
+    life: sense('life', '（使える）期間・寿命'),
+  }),
+  'Ground teams must also track objects continuously, which requires expensive radar and staff.': words({
+    ground: sense('ground', '地上の'),
+    continuously: sense('continuous', '絶えず・途切れなく'),
+  }),
+  'Those fragments may then strike other objects and produce still more debris.': words({
+    may: MAY,
+    strike: sense('strike', 'ぶつかる・当たる'),
+  }),
+  'The consequences would not stop at space companies.': words({
+    stop: sense('stop', 'とどまる（stop at 〜 で「〜で止まる」）'),
+  }),
+  'Farmers, pilots, and emergency services all depend on satellite information.': words({
+    services: sense('service', '（救急などの）機関（emergency services）'),
+  }),
+  'Some engineers argue that every satellite should carry enough fuel to leave orbit at the end of its mission.': words({
+    carry: sense('carry', '積んでいる・載せている'),
+  }),
+  'A successful test does not show that the method works at a useful scale.': words({
+    works: sense('work', 'うまくいく・機能する'),
+  }),
+  'Removing a few large objects each year may be far cheaper than removing thousands of fragments later.': words({
+    may: MAY,
+    far: sense('far', 'はるかに（比較級を強める）'),
+  }),
+  'Rules therefore need international agreement, and such agreements take years.': words({
+    take: sense('take', '（時間が）かかる'),
+  }),
   'Meanwhile, the number of launches continues to rise each year.': words({ launches: sense('launch', '打ち上げ（複数）') }),
+  'Some progress has already been made.': words({
+    made: sense('make', 'なされた（make progress の受け身）'),
+  }),
+  'Several agencies now set a fixed period for leaving crowded orbits.': words({
+    set: sense('set', '定める・決める'),
+  }),
   'Yet enforcement remains weak, because no authority can inspect every launch.': words({ launch: sense('launch', '打ち上げ') }),
+  'These measures show that the problem is understood, not that it is solved.': words({
+    measures: sense('measure', '対策（複数）'),
+  }),
+  'The orbits around the Earth are a shared resource, and shared resources fail when each user acts alone.': words({
+    fail: sense('fail', 'うまくいかなくなる・だめになる'),
+  }),
 
   // p_pre1_ai_and_work（仕事ではなく作業が変わる）
   'Each generation has produced confident forecasts, and most of them have been wrong in interesting ways.': words({ forecasts: sense('forecast', '予測（複数）') }),

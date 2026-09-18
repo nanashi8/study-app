@@ -108,11 +108,12 @@ const CLAUSE_TYPES = new Set([
 ])
 
 const PHRASE_TYPES = new Set([
-  'to', '疑問詞to', '原形', '動名詞', 'ing限定', '現在分詞', '過去分詞', '分詞構文', '同格', '挿入', '前',
+  'to', '疑問詞to', '原形', '動名詞', 'ing限定', '現在分詞', '過去分詞', '分詞構文', '同格', '挿入', '前', '数量',
 ])
 
 // 役割（要素）を持たずに語句を直接入れるまとまり。前置詞句は中に節・句を入れ子にできる。
-const BARE_UNIT_TYPES = new Set(['同格', '挿入', '前'])
+// 数量は、more than ten thousand のような数の言い方を一まとまりの句として括る（利用者と確認済み）。
+const BARE_UNIT_TYPES = new Set(['同格', '挿入', '前', '数量'])
 
 // 前置詞句の先頭に置ける前置詞（2語以上のものを先に照らす）。
 export const MULTIWORD_PREPOSITIONS = Object.freeze([
@@ -169,6 +170,13 @@ function trimPhraseText(text = '') {
 
 class StructureSyntaxError extends Error {}
 
+// 数量の句の先頭（more than＋数など）と、その意味。
+const QUANTITY_LEAD_MEANINGS = Object.freeze({
+  'more than': '〜を超える',
+  'less than': '〜に満たない',
+  'fewer than': '〜より少ない',
+})
+
 function parseUnitType(spec) {
   const raw = spec.trim()
   const [head, antecedent = ''] = raw.split('>')
@@ -185,6 +193,9 @@ function parseUnitType(spec) {
   }
   if (base === '分詞構文' && !PARTICIPIAL_CONSTRUCTION_KINDS[detail]) {
     throw new StructureSyntaxError(`分詞構文の種類が不明「${raw}」`)
+  }
+  if (base === '数量' && detail) {
+    throw new StructureSyntaxError(`数量の句に種類は付けません「${raw}」`)
   }
   if (base === '前' && !['', '意味上の主語'].includes(detail)) {
     throw new StructureSyntaxError(`前置詞句の種類が不明「${raw}」`)
@@ -351,6 +362,8 @@ export function structureUnitLabel(unit) {
       return '挿入句'
     case '前':
       return unit.detail === '意味上の主語' ? '不定詞の意味上の主語（for＋名詞）' : '前置詞句'
+    case '数量':
+      return '数を表す句'
     default:
       return 'まとまり'
   }
@@ -587,6 +600,14 @@ function unitFunctionText(unit, container, scopeElements, scopeUnit, parent = co
       return `${inside}${unit.antecedent} の内容を具体的に述べます${partOf}。`
     case '同格':
       return `${inside}${unit.antecedent} を別の言葉で言いかえます${partOf}。`
+    case '数量': {
+      const words = structureWords(rawText(unit.children))
+      const lead = words.slice(0, 2).join(' ').toLowerCase()
+      const meaning = QUANTITY_LEAD_MEANINGS[lead]
+      return meaning
+        ? `${inside}後ろの名詞の数を表します${partOf}。${lead} は数 ${words.slice(2).join(' ')} にかかる副詞のはたらきで「${meaning}」。`
+        : `${inside}後ろの名詞の数を表します${partOf}。`
+    }
     case '現在分詞':
     case '過去分詞':
       return `${inside}直前の ${unit.antecedent} を後ろから説明します${partOf}。`
@@ -694,7 +715,7 @@ function collectWords(nodes, scopes, elements, output) {
       continue
     }
     // 前置詞句は括弧を付けるだけで、語順訳の役割を探す場面（節・句の中）にはしない。
-    collectWords(node.children, node.base === '前' ? scopes : [...scopes, node], elements, output)
+    collectWords(node.children, ['前', '数量'].includes(node.base) ? scopes : [...scopes, node], elements, output)
   }
 }
 
@@ -756,6 +777,12 @@ function validateUnit(unit, errors) {
   if (['関係', '関係,'].includes(unit.base) && ['O', 'O1', 'O2', 'C', 'M'].includes(elements[0]?.role)) {
     if (!elements.some((element) => ['S', '仮S'].includes(element.role))) {
       errors.push(`関係代名詞の節「${unitText(unit)}」に主語Sがありません（受け身なら関係代名詞が主語Sです）`)
+    }
+  }
+  if (unit.base === '数量') {
+    const lead = structureWords(rawText(unit.children)).slice(0, 2).join(' ').toLowerCase()
+    if (!QUANTITY_LEAD_MEANINGS[lead]) {
+      errors.push(`数量の句「${unitText(unit)}」は more than・less than・fewer than で始めます`)
     }
   }
   if (unit.base === '前') {
@@ -1033,6 +1060,8 @@ export function unbracketedPrepositions(structure) {
       if (node.kind === 'text') {
         const list = structureWords(node.text)
         let cursor = 0
+        // 数量の句（more than ten thousand）の than は、数にかかる言い方の一部。
+        if (unit?.base === '数量') continue
         if (unit?.base === '前' && index === 0) {
           const lead = leadingPreposition(list)
           cursor = lead ? lead.split(' ').length : 0
