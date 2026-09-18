@@ -319,10 +319,10 @@ export const EXAM_READING_STUDY = {
         'p2_details_alone',
         '2',
         '... alone',
-        '〜だけでは',
+        '〜だけ（で）',
         'These details alone do not show whether the health claim is reliable.',
         'こうした詳細だけでは健康情報が信頼できるか分かりません。',
-        '名詞の後の alone が「それだけで」と限定する。',
+        '名詞の後の alone が「その名詞だけ（で）」と限定する。否定の文では「〜だけでは…ない」と読む。',
       ),
       expression(
         'p2_apply_to',

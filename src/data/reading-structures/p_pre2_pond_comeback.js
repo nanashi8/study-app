@@ -94,13 +94,13 @@ export default Object.freeze([
       'and it destroys the water plants': 'it は This species を指します。',
     },
   }),
-  st('[S The fish] [V has] [O no natural enemy] [M here], [接 so] [S its numbers] [V had grown] [M rapidly].', {
+  st('[S The fish] [V had] [O no natural enemy] [M here], [接 so] [S its numbers] [V had grown] [M rapidly].', {
     chunks: [
-      ['The fish has no natural enemy here,', 'その魚には、ここに天敵がいないので'],
+      ['The fish had no natural enemy here,', 'その魚には、ここに天敵がいなかったので'],
       ['so its numbers had grown rapidly', 'その数は、どんどん増えていました'],
     ],
     notes: {
-      'The fish has no natural enemy here,': 'natural enemy は「天敵（食べる側の生きもの）」。no 〜 で「〜がない」。',
+      'The fish had no natural enemy here,': 'natural enemy は「天敵（食べる側の生きもの）」。この had は have の過去形で、had no 〜 は「〜がいなかった」。後半の had grown（過去完了）とは形が違います。',
       'so its numbers had grown rapidly': 'its は The fish を指します。had grown は過去完了で「（調べたときには）増えてしまっていた」。',
     },
   }),
