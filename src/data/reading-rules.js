@@ -634,7 +634,7 @@ export const PASSAGE_READING_APPROACHES = Object.freeze({
     '利点と負担を住民と来訪者で分けて読む',
     '地域の時事記事では、同じ変化が誰に利益をもたらし、誰に負担を残すのかを立場ごとに整理する。',
     ['歓迎した理由と困った理由を並べる', '調査の数値と対策を結びつける', '意見が分かれたままの点を、最後の段落で確かめる'],
-    ['paragraph-map', 'insertion', 'relative-clause', 'comparison-pairs', 'author-stance', 'reference-chain'],
+    ['paragraph-map', 'parallel-shape', 'relative-clause', 'comparison-pairs', 'author-stance', 'reference-chain'],
   ),
   p_pre2plus_rural_bus_future: makePassageApproach(
     '調査結果から設計へ進む流れを追う',

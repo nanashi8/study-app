@@ -718,7 +718,7 @@ export const READING_CHOICE_NOTES = freezeNotes({
     "Many young families had left the town.": "第4文 Shops and restaurants welcomed the change because many young families had left the town. と一致する。",
     "The council paid them to stay open longer.": "議会がお金を払ったとは書かれていない。議会が出てくるのは、問題への対応を考える場面（第10文以降）。",
     "The shrine had been closed for many years.": "神社が閉まっていたとは書かれていない。町は有名な神社の近くにある（第1文）。",
-    "The buses had become cheaper for residents.": "バスが安くなったとは書かれていない。バスは病院へ行く人には満員すぎることが多かった（第7文）。",
+    "The buses had become cheaper for residents.": "バスが安くなったとは書かれていない。バスは病院へ行く人が乗れないほど満員になることが多かった（第7文）。",
   },
   "p_pre2_crowded_town_tourism#2": {
     "They counted visitors and recorded the busiest hours.": "第11文 Officials first counted visitors at three points and recorded the busiest hours. と一致し、その後に住民向けのバスを増やした（第13文）。",
