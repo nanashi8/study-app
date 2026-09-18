@@ -294,7 +294,7 @@ export const CURRENT_AFFAIRS_PASSAGES = [
     ],
     sentences: [
       p('Predictions about machines replacing human work are older than the machines themselves.', '機械が人間の労働に取って代わるという予測は、機械そのものより古いものです。'),
-      s('Each generation has produced confident forecasts, and most of them have been wrong in interesting ways.', 'どの世代も自信に満ちた予測を生みましたが、その多くは興味深い形で外れてきました。'),
+      s('Each generation has produced confident forecasts, and most of them have been wrong in interesting ways.', 'どの世代も自信に満ちた予測を生みましたが、その大半は興味深い形で外れてきました。'),
       s('Recent systems that generate text, images, and computer code have revived the debate with unusual intensity.', '文章、画像、プログラムを生成する最近の技術が、その議論を異例の激しさで再燃させました。'),
       s('Public discussion often moves between two extremes, promising mass unemployment or effortless wealth.', '世間の議論はしばしば二つの極端の間を揺れ動き、大量失業か、苦労のいらない豊かさのどちらかが来ると言います。'),
       p('The current technology differs from earlier automation in one important respect.', '現在の技術は、一つの重要な点で以前の自動化と異なります。'),
@@ -409,7 +409,7 @@ export const CURRENT_AFFAIRS_PASSAGES = [
       s('Useful teaching shows students how to ask who published a claim and what independent evidence supports it.', '有益な指導は、誰がその主張を公表し、どんな独立した証拠がそれを支えるかを問う方法を、生徒に示します。'),
       p('The burden of this new work is distributed very unevenly across the world.', 'この新しい作業の負担は、世界の中で極めて不均等に配分されています。'),
       s('Large newsrooms can employ verification teams, while a local reporter covering a rural election cannot.', '大きな報道機関は検証の部署を置けますが、地方の選挙を取材する記者にはできません。'),
-      s('Most detection tools and training materials are produced for a few widely spoken languages.', '検出の道具や研修資料の多くは、広く話される少数の言語向けに作られています。'),
+      s('Most detection tools and training materials are produced for a few widely spoken languages.', '検出の道具や研修資料のほとんどは、広く話される少数の言語向けに作られています。'),
       s('Communities with the fewest resources therefore face the highest risk of manufactured evidence.', 'それゆえ資源が最も乏しい地域社会こそ、作られた証拠にさらされる危険が最も高いのです。'),
       p('A better approach asks what supports a claim rather than whether an image is real.', 'より良い進め方は、画像が本物かどうかではなく、何がその主張を支えるかを問うことです。'),
       s('A single file is rarely decisive on its own, whether it happens to be genuine or not.', '一つのファイルがそれだけで決定的であることは、本物であれ偽であれ、ほとんどありません。'),

@@ -15,7 +15,7 @@ export default Object.freeze([
   st('[S Each generation] [V has produced] [O confident forecasts], [接 and] [S most {前| of them}] [V have been] [C wrong] [M {前| in interesting ways}].', {
     chunks: [
       ['Each generation has produced confident forecasts,', 'どの世代も、自信たっぷりの予測を生んできました'],
-      ['and most of them have been wrong', 'そしてその多くは、外れてきました（どう外れたかは次へ）'],
+      ['and most of them have been wrong', 'そしてその大半は、外れてきました（どう外れたかは次へ）'],
       ['in interesting ways', '興味深い形で'],
     ],
     notes: {

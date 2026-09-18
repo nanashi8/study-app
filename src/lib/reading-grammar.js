@@ -1442,6 +1442,7 @@ function verbForwardJapanese(en, sentenceGloss) {
   if (/^(?:must|should) be$/.test(key)) return '〜であるべきです（状態は次へ）'
   if (/^(?:has|have|had) become$/.test(key)) return '〜になっています（状態は次へ）'
   if (/^(?:may|might) (?:look|remain|seem|sound)$/.test(key)) return '〜かもしれません（状態は次へ）'
+  if (/^(?:may|might) become$/.test(key)) return '〜になるかもしれません（状態は次へ）'
   if (/^(?:may|might) (?:appear|travel)$/.test(key)) return '〜かもしれません（動作・状態は次へ）'
   if (/^(?:may|might) sometimes appear$/.test(key)) return '〜に見えることがあります（状態は次へ）'
   if (/^(?:can|could) appear$/.test(key)) return '〜に見えることがあります（状態は次へ）'

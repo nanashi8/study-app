@@ -271,7 +271,7 @@ export default Object.freeze([
   }),
   st('[S Most {前| of the foreign residents}] [V left] [O their homes] [M {前| on time}].', {
     chunks: [
-      ['Most of the foreign residents', '外国出身の住民の多くは'],
+      ['Most of the foreign residents', '外国出身の住民の大半は'],
       ['left their homes on time', '時間どおりに家を出ました'],
     ],
     notes: {
