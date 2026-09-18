@@ -22,6 +22,7 @@ import { parseStructureMarkers } from './structure-markers.js'
 import {
   describeLinkElement,
   describeUnitConnector,
+  relativeThatActsAsAdverb,
   shortConnectorNote,
 } from './reading-structure-connectors.js'
 
@@ -281,6 +282,7 @@ function relativeKind(unit) {
   const lead = normalizeStructureText(first ? rawText(first.children) : '').toLowerCase()
   if (unit.base === '関係省略') return 'omitted'
   if (/^(?:where|when|why)$/.test(lead)) return 'adverb'
+  if (lead === 'that' && relativeThatActsAsAdverb(unit)) return 'adverbThat'
   if (/^whose\b/.test(lead)) return 'whose'
   if (/^(?:[a-z]+\s+)+(?:which|whom)$/.test(lead)) return 'preposition'
   return 'pronoun'
@@ -291,6 +293,7 @@ export function structureUnitLabel(unit) {
     case '関係': {
       const kind = relativeKind(unit)
       if (kind === 'adverb') return '関係副詞の節（形容詞節）'
+      if (kind === 'adverbThat') return '関係副詞の働きをする that の節（形容詞節）'
       if (kind === 'preposition') return '前置詞＋関係代名詞の節（形容詞節）'
       if (kind === 'whose') return '関係代名詞 whose の節（形容詞節）'
       return '関係代名詞の節（形容詞節）'

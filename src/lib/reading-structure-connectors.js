@@ -219,6 +219,30 @@ function relativeAdverbFor(antecedent) {
   return { adverb: '', prepositional: 'in which' }
 }
 
+// 関係詞の節の終わりに残った前置詞（depend on の on）。不定詞・動名詞の終わりに残るもの
+// （outcomes that a city is prepared to live with の with）も探す。
+function strandedPrepositionIn(elements) {
+  const strandedIn = (list) => [...list].reverse()
+    .find((element) => element.role === 'M' && STRANDED_PREPOSITIONS.has(plain(element).toLowerCase()))
+  let stranded = strandedIn(elements)
+  if (stranded) return stranded
+  for (const element of elements) {
+    for (const child of element.children) {
+      if (child.kind !== 'unit' || !['to', '原形', '動名詞'].includes(child.base)) continue
+      stranded = strandedIn(directElements(child)) ?? stranded
+    }
+  }
+  return stranded ?? null
+}
+
+// 先頭が修飾語Mの that で、前置詞の残りもない関係詞の節（the way that …）。関係代名詞ではない。
+export function relativeThatActsAsAdverb(unitNode) {
+  const elements = directElements(unitNode)
+  const lead = elements[0]
+  if (!lead || lead.role !== 'M' || plain(lead).toLowerCase() !== 'that') return false
+  return !strandedPrepositionIn(elements)
+}
+
 function relativeExplanation(unit) {
   const node = unit.node
   const elements = directElements(node)
@@ -290,18 +314,7 @@ function relativeExplanation(unit) {
   }
   // put a price on … のように、節の終わりに残った前置詞の目的語になる関係代名詞。
   if (lead?.role === 'M') {
-    const strandedIn = (list) => [...list].reverse()
-      .find((element) => element.role === 'M' && STRANDED_PREPOSITIONS.has(plain(element).toLowerCase()))
-    let stranded = strandedIn(elements)
-    // outcomes that a city is prepared to live with のように、不定詞・動名詞の終わりに残った前置詞。
-    if (!stranded) {
-      for (const element of elements) {
-        for (const child of element.children) {
-          if (child.kind !== 'unit' || !['to', '原形', '動名詞'].includes(child.base)) continue
-          stranded = strandedIn(directElements(child)) ?? stranded
-        }
-      }
-    }
+    const stranded = strandedPrepositionIn(elements)
     const preposition = stranded ? plain(stranded) : ''
     if (!preposition) {
       // the way that … のように、関係副詞の働きをする that。
