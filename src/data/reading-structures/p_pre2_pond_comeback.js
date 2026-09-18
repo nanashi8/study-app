@@ -255,7 +255,7 @@ export default Object.freeze([
   st('[S They] [M also] [V believe] [O {that節| [接 that] [S a small pond] [V can teach] [O a town] [M {前| about the wider environment}]}].', {
     chunks: [
       ['They also believe that', '生徒たちはまた、〜と信じています（内容は次へ）'],
-      ['a small pond can teach a town', '小さな池が町に教えてくれる（何についてかは次へ）'],
+      ['a small pond can teach a town', '小さな池が町に教えることができる（何についてかは次へ）'],
       ['about the wider environment', 'もっと広い環境について（と）'],
     ],
     notes: {

@@ -385,7 +385,7 @@ export const READING_CHOICE_NOTES = freezeNotes({
     "Public facilities accept only foreign bank accounts.": "外国の銀行口座の話は出てこない。問題は、口座などを持たない人がいること（第5文）。",
   },
   "p_pre1_cashless_inclusion#2": {
-    "Both may seem inefficient until a system failure makes them valuable.": "現金は普段は予備電源が無駄に見えるのと同じように非効率に見えるが（第25文）、その重複が通信障害時に回復力になる（第26文）と書かれている。",
+    "Both may seem inefficient until a system failure makes them valuable.": "現金は、普段は予備電源が無駄に見えることがあるのと同じように、ときに非効率に見えるかもしれないが（第25文）、その重複が通信障害時に回復力になる（第26文）と書かれている。",
     "Both require every household to open several digital accounts.": "複数の口座を開くよう求めるとは書かれていない。複数のアプリに分かれる残高は、現金と比べた別の話（第17文）。",
     "Both eliminate privacy risks during ordinary transactions.": "予備電源とプライバシーは関係がない。比べているのは、普段は無駄に見えても障害時に役立つ点（第25・26文）。",
     "Both are used only by small shops with narrow margins.": "利益幅の小さい店は、二つの決済方式を保つ費用が重い例（第21文）で、この比較の内容ではない。",
@@ -523,7 +523,7 @@ export const READING_CHOICE_NOTES = freezeNotes({
     "Assignments no longer required steady attention.": "課題の性質は変えていない。この時間は、継続的な集中が必要な問題などに使った（第6文）。",
   },
   "p_pre2_phone_free_focus#4": {
-    "Reducing interruptions can help, but clear tasks and thoughtful choices are also necessary.": "メッセージを減らすことは集中を助けるが、分かりやすい指導の代わりにはならず（第20文）、機器を使う時を生徒が判断するよう教え（第22文）、集中を守る習慣を作ることが目標だ（第24文）とまとめている。",
+    "Reducing interruptions can help, but clear tasks and thoughtful choices are also necessary.": "メッセージを減らせば集中を支えることはできたが、分かりやすい指導の代わりにはなれず（第20文）、機器を使う時を生徒が判断するよう教え（第22文）、集中を守る習慣を作ることが目標だ（第24文）とまとめている。",
     "Phones are the only reason students lose attention.": "第19文で、課題が分かりにくいと、近くにスマートフォンがなくても生徒の集中は途切れたと書かれている。",
     "A few more answers prove that every student learned deeply.": "第13文で、数問多く答えたことを深い学びの証拠とはみなさなかったと書かれている。",
     "Schools should use the same permanent rule without review.": "第21文で、学校は学期ごとに規則を見直していると書かれている。",
@@ -866,7 +866,7 @@ export const READING_CHOICE_NOTES = freezeNotes({
   },
   "p_pre2_pond_comeback#4": {
     "Protecting a habitat is much harder than damaging it.": "第24文 The students say that it is much harder to protect a habitat than to damage one. と一致する。",
-    "A pond is too small to teach anyone anything.": "第25文で、小さな池が町に、より広い環境について教えてくれると信じていると書かれている。逆の内容。",
+    "A pond is too small to teach anyone anything.": "第25文で、小さな池が町に、より広い環境について教えることができると信じていると書かれている。逆の内容。",
     "The town should sell the land behind the school.": "土地を売る話は出てこない。活動は、学校の裏の土地に対する町の人たちの見方を変えた（第20文）。",
     "Only scientists can record water conditions.": "地元の科学者が簡単な記録の方法を部に教え（第13文）、生徒たちが記録している（第5文）。科学者だけではない。",
   },

@@ -104,7 +104,7 @@ export default Object.freeze([
   }),
   st('[S Residents] [V may] [M reasonably] [V fear] [O darker sidewalks], [接 and] [S workers] [V may need] [O visible routes] [M {前| during late shifts}].', {
     chunks: [
-      ['Residents may reasonably fear darker sidewalks,', '住民が、暗くなった歩道を不安に思うのは当然です'],
+      ['Residents may reasonably fear darker sidewalks,', '住民が、暗くなった歩道を不安に思うのももっともです'],
       ['and workers may need visible routes', 'そして働く人には、見えやすい道が必要かもしれません（いつかは次へ）'],
       ['during late shifts', '夜遅い勤務のときには'],
     ],
@@ -271,7 +271,7 @@ export default Object.freeze([
     chunks: [
       ['No single measure proves success,', 'どれか一つの指標だけでは、うまくいったとは言えません'],
       ['but several forms of evidence', 'しかし、いくつかの種類の証拠を合わせれば'],
-      ['can reveal trade-offs', '何を得て何を失うかが見えてきます'],
+      ['can reveal trade-offs', '何を得て何を失うかを明らかにできます'],
     ],
     notes: {
       'No single measure proves success,': 'No single 〜 で「どの一つの〜も…ない」。measure はここでは「測る物差し・指標」。',

@@ -521,7 +521,7 @@ export const UPPER_READING_TRANSLATION_SCENARIOS = Object.freeze({
       b('for merchants', '商店にとって'),
     ],
     [
-      b('Digital records can also help consumers follow their spending and allow small businesses', 'デジタル記録は／さらに助けます／消費者が／追うことを／自分の支出を／そして可能にします／小規模事業者が'),
+      b('Digital records can also help consumers follow their spending and allow small businesses', 'デジタル記録は／さらに助けることができます／消費者が／追うことを／自分の支出を／そして可能にします／小規模事業者が'),
       b('to sell goods online', '売ることが／商品を／オンラインで'),
     ],
     [

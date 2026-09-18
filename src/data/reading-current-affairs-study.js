@@ -219,7 +219,7 @@ export const CURRENT_AFFAIRS_READING_STUDY = Object.freeze({
       'Neither A can ...',
       'どちらのAも〜できない',
       'Neither approach can succeed if no one is willing to drive.',
-      '運転しようという人がいなければ、どちらの方式も成功しません。',
+      '運転しようという人がいなければ、どちらの方式も成功できません。',
       'neither は二つとも否定する。直前に挙がった二案を確認してから条件節へ進む。',
       'pattern',
     ),

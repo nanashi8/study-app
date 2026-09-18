@@ -172,7 +172,7 @@ export default Object.freeze([
   }),
   st('[S Cash] [V can] [M also] [V provide] [O a simple budgeting tool] [M {前| for households {関係>households| [S whose income] [V changes] [M {反復| from week to week}]}}].', {
     chunks: [
-      ['Cash can also provide a simple budgeting tool', '現金は、簡単な家計管理の手段にもなります（だれにとってかは次へ）'],
+      ['Cash can also provide a simple budgeting tool', '現金は、簡単な家計管理の手段にもなりえます（だれにとってかは次へ）'],
       ['for households', '家庭にとって（どんな家庭かは次へ）'],
       ['whose income changes from week to week', '収入が週ごとに変わる（家庭にとって）'],
     ],
