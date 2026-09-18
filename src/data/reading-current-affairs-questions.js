@@ -327,7 +327,7 @@ export const CURRENT_AFFAIRS_READING_QUESTIONS = Object.freeze({
         'As proof that earlier forecasts were correct.',
       ],
       answer: 'At the level of tasks rather than whole occupations.',
-      explain: '第10文に、職業全体ではなく作業の水準で変化を記述するとあり、本文全体の枠組みになっています。',
+      explain: '第10文に、職業全体ではなく作業の単位で変化をとらえるとあり、本文全体の枠組みになっています。',
     },
     {
       q: 'Why does the writer mention cash machines and bank clerks?',

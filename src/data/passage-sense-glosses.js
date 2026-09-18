@@ -626,15 +626,98 @@ export const PASSAGE_SENSE_GLOSSES = Object.freeze({
   }),
 
   // p_pre1_ai_and_work（仕事ではなく作業が変わる）
+  'Predictions about machines replacing human work are older than the machines themselves.': words({
+    work: sense('work', '仕事・労働'),
+  }),
   'Each generation has produced confident forecasts, and most of them have been wrong in interesting ways.': words({ forecasts: sense('forecast', '予測（複数）') }),
-  'Public discussion often moves between two extremes, promising mass unemployment or effortless wealth.': words({ promising: sense('promise', '約束すること') }),
-  'The whole service may then attract more demand rather than less.': words({ may: MAY }),
+  'Recent systems that generate text, images, and computer code have revived the debate with unusual intensity.': words({
+    systems: sense('system', 'システム（仕組み）'),
+    code: sense('code', '（コンピューターの）プログラム・コード'),
+  }),
+  'Public discussion often moves between two extremes, promising mass unemployment or effortless wealth.': words({
+    extremes: sense('extreme', '極端（な考え）'),
+    promising: sense('promise', '〜が来ると請け合って（promise の -ing 形）'),
+  }),
+  'The current technology differs from earlier automation in one important respect.': words({
+    respect: sense('respect', '点（in … respect で「…の点で」）'),
+  }),
+  'The newer systems produce drafts, summaries, and designs that resemble skilled office work.': words({
+    systems: sense('system', 'システム（仕組み）'),
+  }),
+  'Programmers, translators, designers, and junior analysts have all noticed changes in demand.': words({
+    junior: sense('junior', '若手の・下の立場の'),
+    changes: sense('change', '変化（複数）'),
+    demand: sense('demand', '需要'),
+  }),
+  'Careful studies describe change at the level of tasks rather than whole occupations.': words({
+    change: sense('change', '変化'),
+  }),
+  'A hospital doctor reads images, but also explains results, weighs uncertainty, and decides what to do next.': words({
+    weighs: sense('weigh', 'よく考えて見きわめる'),
+  }),
+  'When one task becomes cheaper, the value of the remaining tasks often rises.': words({
+    remaining: sense('remain', '残りの（remain の -ing 形）'),
+  }),
+  'The whole service may then attract more demand rather than less.': words({
+    may: MAY,
+    demand: sense('demand', '需要'),
+  }),
+  'This pattern has appeared before in other fields.': words({
+    before: sense('before', '以前に（副詞）'),
+  }),
   'Cash machines reduced the routine work of bank clerks.': words({ reduced: sense('reduce', '減らした') }),
+  'Branches became cheaper to operate, so banks opened more of them, and staff moved toward advice and sales.': words({
+    branches: sense('branch', '支店（複数）'),
+    operate: sense('operate', '運営する'),
+  }),
   'The adjustment was slow, and individual workers still lost income during it.': words({ lost: sense('lose', '失った') }),
+  'Aggregate stability can hide serious harm to particular regions and age groups.': words({
+    aggregate: sense('aggregate', '全体をまとめた・総計の'),
+  }),
+  'A worker of fifty-five rarely benefits from jobs created ten years later in another city.': words({
+    benefits: sense('benefit', '得をする（benefit from 〜 で「〜から得をする」）'),
+  }),
+  'The distribution of gains is therefore a central question.': words({
+    gains: sense('gain', '利益（複数）'),
+  }),
+  'Early evidence suggests that assistance tools help less experienced staff more than expert staff.': words({
+    early: sense('early', '初期の'),
+  }),
   'That effect could narrow wage gaps, or it could reduce the reward for long training.': words({ narrow: sense('narrow', '縮める・狭める') }),
-  'Education systems face a related difficulty.': words({ face: sense('face', '直面する') }),
+  'Employment law, union strength, and public investment decide how any productivity gain is shared.': words({
+    union: sense('union', '労働組合'),
+    gain: sense('gain', '増えた分・向上'),
+  }),
+  'Education systems face a related difficulty.': words({
+    face: sense('face', '直面する'),
+    related: sense('relate', '関連した（related）'),
+  }),
+  'Students who only learn to produce text that a machine can also produce are poorly prepared.': words({
+    poorly: sense('poor', '不十分に・うまくできずに'),
+    prepared: sense('prepare', '備えができている（be prepared）'),
+  }),
+  'Questioning sources and judging quality remain valuable skills.': words({
+    questioning: sense('question', '疑うこと・疑問視すること'),
+    judging: sense('judge', '見きわめること・判断すること'),
+  }),
+  'Yet those abilities are difficult to measure, and examinations reward what is easy to score.': words({
+    score: sense('score', '点をつける'),
+  }),
+  'Policy responses fall into several groups.': words({
+    fall: sense('fall', '分かれる（fall into 〜 で「〜に分類される」）'),
+  }),
   'Others discuss shorter working hours, wage insurance, or support for regions losing employers.': words({ support: sense('support', '支援') }),
-  'Each proposal carries costs, and none removes the need for continuous adjustment.': words({ need: sense('need', '必要・必要性') }),
+  'Each proposal carries costs, and none removes the need for continuous adjustment.': words({
+    carries: sense('carry', '（費用などを）伴う'),
+    need: sense('need', '必要・必要性'),
+  }),
+  'Work is not a fixed quantity waiting to be divided.': words({
+    work: sense('work', '仕事・労働'),
+  }),
+  'It is more useful to ask who decides how these systems are used and who is protected during the transition.': words({
+    systems: sense('system', 'システム（仕組み）'),
+    used: sense('use', '使われる（受け身）'),
+  }),
 
   // p_1_synthetic_media_trust（見ることが信じることでなくなるとき）
   'Synthetic media has weakened this assumption rather than destroyed it outright.': words({ weakened: sense('weaken', '弱めた') }),
