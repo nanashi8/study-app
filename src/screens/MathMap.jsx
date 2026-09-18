@@ -184,7 +184,6 @@ function UnitNode({ unit, color, last, state, mathDone, mathMastery, onOpen, onO
   const prereqs = prereqOf(unit.id).map(unitById).filter(Boolean)
   // この単元を始めていて、前提が弱いものを「弱点」として案内する。
   const weak = weakPrereqs(unit.id, mathDone, mathMastery)
-  const weakIds = new Set(weak.map((p) => p.id))
   const showWeakHint = (status === 'progress' || status === 'done') && weak.length > 0
 
   return (
@@ -233,24 +232,15 @@ function UnitNode({ unit, color, last, state, mathDone, mathMastery, onOpen, onO
               )}
             </div>
 
-            {/* つながり（前提単元）。弱点の前提は琥珀色で強調 */}
+            {/* つながり（前提単元） */}
             {prereqs.length > 0 && (
               <div className="mt-1.5 flex flex-wrap items-center gap-1">
                 <LinkIcon size={12} className="text-ink/30" />
-                {prereqs.map((p) => {
-                  const w = weakIds.has(p.id)
-                  return (
-                    <span
-                      key={p.id}
-                      className={cx(
-                        'rounded-full px-2 py-0.5 text-[10px] font-bold',
-                        w ? 'bg-amber-100 text-amber-700' : 'bg-paper text-ink/50',
-                      )}
-                    >
-                      {w && '⚠ '}{p.title}
-                    </span>
-                  )
-                })}
+                {prereqs.map((p) => (
+                  <span key={p.id} className="rounded-full bg-paper px-2 py-0.5 text-[10px] font-bold text-ink/50">
+                    {p.title}
+                  </span>
+                ))}
               </div>
             )}
           </div>
