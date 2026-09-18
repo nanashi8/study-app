@@ -63,14 +63,28 @@ function renderParallelRow(row, path) {
       return createElement('span', { key, className: 'block' }, ...renderPieces(trimSpaces(segment.pieces), key))
     }
     const stack = segment.stack
+    const lead = wordClusters(segment.pieces).map((cluster, clusterIndex) => createElement(
+      'span',
+      { key: `w${clusterIndex}`, className: 'whitespace-nowrap' },
+      ...renderPieces(cluster, `${key}.w${clusterIndex}`),
+    ))
+    // 節・句の中の並びは、開き括弧から先を一つの枠にして、続きを開き括弧の位置にそろえる。
+    if (stack.type === 'box') {
+      return createElement(
+        'span',
+        { key, className: 'flex flex-wrap items-start', style: { columnGap: '0.3em' } },
+        ...lead,
+        createElement(
+          'span',
+          { key: 'box', className: 'block', style: PARALLEL_STACK_STYLE, 'data-structure-parallel-box': '' },
+          ...renderParallelRow(stack.row, `${key}.b`),
+        ),
+      )
+    }
     return createElement(
       'span',
       { key, className: 'flex flex-wrap items-start', style: { columnGap: '0.3em' } },
-      ...wordClusters(segment.pieces).map((cluster, clusterIndex) => createElement(
-        'span',
-        { key: `w${clusterIndex}`, className: 'whitespace-nowrap' },
-        ...renderPieces(cluster, `${key}.w${clusterIndex}`),
-      )),
+      ...lead,
       createElement(
         'span',
         {

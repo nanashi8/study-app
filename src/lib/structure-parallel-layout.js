@@ -2,6 +2,7 @@
 // 2026-09-18 利用者が図で決めた形：
 //   接続詞は単独の行に置く。並ぶものは、1つ目の先頭の位置にそろえて縦に並べる。
 //   文どうしの並列は左端から行を分ける。並びの後ろに続く語句は、その行の始まりに戻って次の行に置く。
+//   ただし節・句の中の並びなら、続きはその節・句の開き括弧の位置にそろえる（2026-09-18 利用者が決定）。
 //
 //   The students measured the water level
 //                and
@@ -108,7 +109,30 @@ function trimRow(items) {
   return items.slice(start, end)
 }
 
-function layoutRange(pieces, from, to, groups) {
+// 括弧の組（開き括弧の小片の番号 → 閉じ括弧の小片の番号）。
+function bracketPairs(pieces) {
+  const pairs = new Map()
+  const open = []
+  pieces.forEach((piece, index) => {
+    if (piece.type === 'open') open.push(index)
+    if (piece.type === 'close' && open.length) pairs.set(open.pop(), index)
+  })
+  return pairs
+}
+
+// 並びの後ろの続きが、並びを囲む節・句の中から始まるときの、その一番内側の開き括弧（なければ -1）。
+function enclosingBracket(pieces, from, cursor, to, group, pairs) {
+  let found = -1
+  for (const [open, close] of pairs) {
+    if (open <= from || open < cursor || open >= group.start || close < group.end) continue
+    const last = Math.min(close, to)
+    const continues = pieces.slice(group.end, last).some((piece) => piece.type === 'word' || piece.type === 'open')
+    if (continues && open > found) found = open
+  }
+  return found
+}
+
+function layoutRange(pieces, from, to, groups, pairs) {
   const inside = groups.filter((group) => group.start >= from && group.end <= to)
   const outermost = inside
     .filter((group) => !inside.some((other) =>
@@ -119,6 +143,17 @@ function layoutRange(pieces, from, to, groups) {
   let cursor = from
   for (const group of outermost) {
     if (group.start < cursor) continue
+    // 節・句の中の並びは、開き括弧から先を一つの枠にして、続きを開き括弧の位置にそろえる。
+    const box = enclosingBracket(pieces, from, cursor, to, group, pairs)
+    if (box >= 0) {
+      items.push(...pieces.slice(cursor, box))
+      items.push({
+        type: 'box',
+        row: layoutRange(pieces, box, to, inside.filter((other) => other.start >= box), pairs),
+      })
+      cursor = to
+      break
+    }
     items.push(...pieces.slice(cursor, group.start))
     const lines = []
     for (const conjunct of group.conjuncts) {
@@ -131,7 +166,7 @@ function layoutRange(pieces, from, to, groups) {
       }
       const nested = inside.filter((other) => other !== group &&
         other.start >= conjunct.contentStart && other.end <= conjunct.contentEnd)
-      lines.push(layoutRange(pieces, conjunct.contentStart, conjunct.contentEnd, nested))
+      lines.push(layoutRange(pieces, conjunct.contentStart, conjunct.contentEnd, nested, pairs))
     }
     items.push({ type: 'stack', kind: group.kind, lines })
     cursor = group.end
@@ -152,7 +187,7 @@ export function layoutParallel(pieces = [], groups = []) {
   const placed = groups
     .map((group) => placeGroup(pieces, wordPiece, group))
     .filter(Boolean)
-  return layoutRange(pieces, 0, pieces.length, placed)
+  return layoutRange(pieces, 0, pieces.length, placed, bracketPairs(pieces))
 }
 
 // 行を、改行（break）で区切った段に分ける。段は「手前の語句」と、その後ろの並列の枠（あれば1つ）。
@@ -164,7 +199,7 @@ export function rowSegments(row) {
       continue
     }
     const current = segments.at(-1)
-    if (item.type === 'stack') {
+    if (item.type === 'stack' || item.type === 'box') {
       if (current.stack) segments.push({ pieces: [], stack: item })
       else current.stack = item
       continue
@@ -183,6 +218,7 @@ export const PARALLEL_STACK_STYLE = Object.freeze({ flex: '1 1 12rem', minWidth:
 export function layoutPlainText(row) {
   return row.items.map((item) => {
     if (item.type === 'stack') return item.lines.map(layoutPlainText).join(' ')
+    if (item.type === 'box') return layoutPlainText(item.row)
     if (item.type === 'break') return ' '
     return item.text
   }).join('')
@@ -199,6 +235,13 @@ export function parallelLayoutLines(row) {
     for (const child of item.items) {
       if (child.type === 'break') {
         lines.push(' '.repeat(indent))
+        continue
+      }
+      if (child.type === 'box') {
+        let current = lines[lines.length - 1].replace(/\s+$/, '')
+        if (current.trim()) current += ' '
+        lines[lines.length - 1] = current
+        render(child.row, current.length)
         continue
       }
       if (child.type === 'stack') {
