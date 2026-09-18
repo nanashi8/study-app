@@ -13,7 +13,7 @@ export default Object.freeze([
     },
     rules: ['paragraph-map', 'main-clause-skeleton', 'parallel-shape'],
   }),
-  st('[S They] [V carry] [O weather data, navigation signals, and internet service] [M {前| to remote communities}].', {
+  st('[S They] [V carry] [O {並列| weather data, | navigation signals, | and internet service}] [M {前| to remote communities}].', {
     chunks: [
       ['They carry weather data, navigation signals,', 'それらは、気象データや位置を知らせる信号'],
       ['and internet service', 'そしてネットの通信を運んでいます（どこへかは次へ）'],
@@ -35,7 +35,7 @@ export default Object.freeze([
       'more than most people notice': 'more は depends にかかり「より多く」。than の後ろの most people notice は、比べる相手（人々が気づいている程度）です。',
     },
   }),
-  st('[M However], [S the same orbits] [M also] [V hold] [O used rocket parts, broken satellites, and countless small fragments].', {
+  st('[M However], [S the same orbits] [M also] [V hold] [O {並列| used rocket parts, | broken satellites, | and countless small fragments}].', {
     chunks: [
       ['However, the same orbits', 'しかし、同じ軌道には'],
       ['also hold used rocket parts,', '使い終わったロケットの部品や'],
@@ -88,7 +88,7 @@ export default Object.freeze([
       'and shortens the useful life of the satellite': 'and の後ろの shortens の主語も Each of these movements です。useful life は「使える期間・寿命」。',
     },
   }),
-  st('[S Ground teams] [V must] [M also] [V track] [O objects] [M continuously], [M {関係,>前の内容| [S which] [V requires] [O expensive radar and staff]}].', {
+  st('[S Ground teams] [V must] [M also] [V track] [O objects] [M continuously], [M {関係,>前の内容| [S which] [V requires] [O {並列| expensive radar | and staff}]}].', {
     chunks: [
       ['Ground teams must also track objects continuously,', '地上のチームは、物体を絶えず追い続けなければならず'],
       ['which requires expensive radar and staff', 'それには高価なレーダーと人手が必要です'],
@@ -139,7 +139,7 @@ export default Object.freeze([
       'The consequences would not stop at space companies': 'stop at 〜 は「〜で止まる」。not があるので「宇宙の会社だけにとどまらない」。',
     },
   }),
-  st('[S Farmers, pilots, and emergency services] [M all] [V depend] [M {前| on satellite information}].', {
+  st('[S {並列| Farmers, | pilots, | and emergency services}] [M all] [V depend] [M {前| on satellite information}].', {
     chunks: [
       ['Farmers, pilots, and emergency services all depend', '農家も、パイロットも、救急などの機関も、みな頼っています（何にかは次へ）'],
       ['on satellite information', '衛星からの情報に'],
@@ -171,7 +171,7 @@ export default Object.freeze([
       'at the end of its mission': 'its は every satellite を指します。任務を終えたら軌道から出て、ごみにならないようにするという考えです。',
     },
   }),
-  st('[S Other teams] [V design] [O nets and magnets {関係>nets and magnets| [S that] [V could capture] [O large objects]}].', {
+  st('[S Other teams] [V design] [O {並列| nets | and magnets} {関係>nets and magnets| [S that] [V could capture] [O large objects]}].', {
     chunks: [
       ['Other teams design nets and magnets', 'ほかのチームは、網や磁石を設計しています（どんなものかは次へ）'],
       ['that could capture large objects', '大きな物体を捕まえられるかもしれない（網や磁石を）'],

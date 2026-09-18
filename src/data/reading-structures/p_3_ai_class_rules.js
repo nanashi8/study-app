@@ -61,7 +61,7 @@ export default Object.freeze([
       'to write its own rules': 'its own rules の its は each class を指します。',
     },
   }),
-  st('[S Our class] [M first] [V collected] [O examples {前| of good and bad use}].', {
+  st('[S Our class] [M first] [V collected] [O examples {前| of {並列| good | and bad use}}].', {
     chunks: [
       ['Our class first collected examples', '私たちのクラスはまず、例を集めました（何のかは次へ）'],
       ['of good and bad use', 'よい使い方と悪い使い方の'],
@@ -88,7 +88,7 @@ export default Object.freeze([
       'copying a finished report was not honest work': 'copying a finished report は動名詞のまとまりで、that 節の主語です。honest work は「ごまかしのない取り組み」。',
     },
   }),
-  st('[S A student] [V pointed out] [O {that節| [接 that] [S the tools] [M sometimes] [V give] [O confident but wrong answers]}].', {
+  st('[S A student] [V pointed out] [O {that節| [接 that] [S the tools] [M sometimes] [V give] [O {並列| confident | but wrong answers}]}].', {
     chunks: [
       ['A student pointed out that', 'ある生徒は〜と指摘しました（内容は次へ）'],
       ['the tools sometimes give confident but wrong answers', 'その道具は、自信ありげでも間違った答えを出すことがある（と）'],

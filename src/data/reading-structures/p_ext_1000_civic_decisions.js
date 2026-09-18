@@ -122,7 +122,7 @@ export default Object.freeze([
       'into a representative one': 'turn A into B で「AをBに変える」。この one は body の代わりです。',
     },
   }),
-  st('[S Rules] [V become] [C real] [M only] [M {副詞節:時| [接 when] [S everyone] [V can find out] [O their content and their limits]}].', {
+  st('[S Rules] [V become] [C real] [M only] [M {副詞節:時| [接 when] [S everyone] [V can find out] [O {並列| their content | and their limits}]}].', {
     chunks: [
       ['Rules become real only when', '規則が現実のものになるのは'],
       ['everyone can find out their content and their limits', 'だれもがその中身と限界を調べられるときだけです'],
@@ -131,7 +131,7 @@ export default Object.freeze([
       'everyone can find out their content and their limits': 'find out … で「調べて知る」。',
     },
   }),
-  st('[S A court] [V has] [O jurisdiction] [M {前| over certain places and certain kinds {前| of dispute}}].', {
+  st('[S A court] [V has] [O jurisdiction] [M {前| over {並列| certain places | and certain kinds {前| of dispute}}}].', {
     chunks: [
       ['A court has jurisdiction', '裁判所が権限を持つのは'],
       ['over certain places', '決まった場所と'],
@@ -220,7 +220,7 @@ export default Object.freeze([
       'that later courts will read as guidance': 'precedent は「先例」、guidance は「手引き」。',
     },
   }),
-  st('[S Rights and duties] [V appear] [M together], [M {副詞節:理由| [接 because] [S a right {関係>a right| [S that] [V entitles] [O one person]}] [V makes] [O some action] [C obligatory] [M {前| for another}]}].', {
+  st('[S {並列| Rights | and duties}] [V appear] [M together], [M {副詞節:理由| [接 because] [S a right {関係>a right| [S that] [V entitles] [O one person]}] [V makes] [O some action] [C obligatory] [M {前| for another}]}].', {
     chunks: [
       ['Rights and duties appear together,', '権利と義務は対になって現れます'],
       ['because a right that entitles one person', 'ある人に資格を与える権利は'],
@@ -250,7 +250,7 @@ export default Object.freeze([
       'is only as good as the information': 'as … as ～ で「～と同じくらい…」。be able to ＋ 動詞 で「〜できる」。',
     },
   }),
-  st('[S Comparison] [V becomes] [C impossible] [M {副詞節:時| [接 when] [S key figures] [V are hidden, delayed, or expressed] [M {前| in language {関係>language| [O that] [S no outsider] [V understands]}}]}].', {
+  st('[S Comparison] [V becomes] [C impossible] [M {副詞節:時| [接 when] [S key figures] [V are hidden], [V delayed], [接 or] [V expressed] [M {前| in language {関係>language| [O that] [S no outsider] [V understands]}}]}].', {
     chunks: [
       ['Comparison becomes impossible', '比較はできなくなります'],
       ['when key figures are hidden, delayed, or expressed', '大事な数字が隠され、遅らされ、あるいは書かれるときには'],
@@ -329,7 +329,7 @@ export default Object.freeze([
       'A reader who is literate in one medium': 'literate は「読み書きができる・読みこなせる」。',
     },
   }),
-  st('[S Schools {関係>Schools| [S that] [V teach] [O students] [C {to:補語| [V to check] [O a source, a date, and a credential]}]}] [V give] [O1 them] [O2 a skill {関係省略:目的格(use)>a skill| [S they] [V will use] [M {前| for decades}]}].', {
+  st('[S Schools {関係>Schools| [S that] [V teach] [O students] [C {to:補語| [V to check] [O {並列| a source, | a date, | and a credential}]}]}] [V give] [O1 them] [O2 a skill {関係省略:目的格(use)>a skill| [S they] [V will use] [M {前| for decades}]}].', {
     chunks: [
       ['Schools that teach students to check', '確かめるよう生徒に教える学校は'],
       ['a source, a date, and a credential', '出典と日付と資格を'],
@@ -360,7 +360,7 @@ export default Object.freeze([
       'that a citizen can reach the original figure': 'この that は接続詞で、is の補語になる名詞のまとまりを作ります。',
     },
   }),
-  st('[S Every public promise] [V spends] [O something: the time, labor, land, or money {関係>the time, labor, land, or money| [S that] [V could have served] [O another goal]}].', {
+  st('[S Every public promise] [V spends] [O something: {並列| the time, | labor, | land, | or money} {関係>the time, labor, land, or money| [S that] [V could have served] [O another goal]}].', {
     chunks: [
       ['Every public promise spends something:', 'どの公的な約束も、何かを費やします'],
       ['the time, labor, land, or money', 'つまり時間や労働や土地やお金を'],
@@ -419,7 +419,7 @@ export default Object.freeze([
       'because it produces reliable information about price': 'この because は理由のまとまりを作る接続詞です。',
     },
   }),
-  st('[S Households] [V feel] [O these decisions] [M {前| through rent, a mortgage, the price {前| of food}, and the currency {前| in their pockets}}].', {
+  st('[S Households] [V feel] [O these decisions] [M {前| through {並列| rent, | a mortgage, | the price {前| of food}, | and the currency {前| in their pockets}}}].', {
     chunks: [
       ['Households feel these decisions', '家計はこうした決定を感じ取ります'],
       ['through rent, a mortgage, the price of food,', '家賃や住宅ローンや食べ物の値段'],
@@ -449,7 +449,7 @@ export default Object.freeze([
       'who is able to turn that growth into security': 'この who は疑問詞で、「だれが〜できるのか」という間接疑問を作ります。',
     },
   }),
-  st('[S Public money] [M also] [V carries] [O a duty {to:形容詞>a duty| [V to explain]}], [M {副詞節:理由| [接 because] [S a refund or a contract] [V needs] [O a reason {関係省略:目的格(repeat)>a reason| [S residents] [V can repeat]}]}].', {
+  st('[S Public money] [M also] [V carries] [O a duty {to:形容詞>a duty| [V to explain]}], [M {副詞節:理由| [接 because] [S {並列| a refund | or a contract}] [V needs] [O a reason {関係省略:目的格(repeat)>a reason| [S residents] [V can repeat]}]}].', {
     chunks: [
       ['Public money also carries a duty to explain,', '公金には説明する義務も伴います'],
       ['because a refund or a contract needs a reason', '払い戻しにも契約にも理由が要るからです'],
@@ -499,7 +499,7 @@ export default Object.freeze([
       'to keep a mistake in place for years': 'keep … in place で「そのままにしておく」。revision は「見直し」。',
     },
   }),
-  st('[S Every rule] [V should] [M therefore] [V carry] [O a date and a stated method {前| for review}].', {
+  st('[S Every rule] [V should] [M therefore] [V carry] [O {並列| a date | and a stated method {前| for review}}].', {
     chunks: [
       ['Every rule should therefore carry', 'したがってどの規則も備えるべきです'],
       ['a date and a stated method for review', '期日と、はっきり示された見直しの手順を'],
@@ -508,7 +508,7 @@ export default Object.freeze([
       'a date and a stated method for review': 'stated は「はっきり書かれた」。',
     },
   }),
-  st('[S Guidelines] [V work] [M best] [M {副詞節:時| [接 when] [S they] [V name] [O the action, the decider, and the date {前| of the next review}]}].', {
+  st('[S Guidelines] [V work] [M best] [M {副詞節:時| [接 when] [S they] [V name] [O {並列| the action, | the decider, | and the date {前| of the next review}}]}].', {
     chunks: [
       ['Guidelines work best', '指針が最もよく働くのは'],
       ['when they name the action, the decider,', '行いと、決める人と'],
@@ -546,7 +546,7 @@ export default Object.freeze([
       'Globalization has made it much harder': 'この it は仮の目的語で、中身は後ろの to separate … です。',
     },
   }),
-  st('[S A rule {前| about waste, wages, or travel}] [M now] [V touches] [O many people {関係>many people| [S who] [M never] [V voted] [M {前| on it}]}].', {
+  st('[S A rule {前| about {並列| waste, | wages, | or travel}}] [M now] [V touches] [O many people {関係>many people| [S who] [M never] [V voted] [M {前| on it}]}].', {
     chunks: [
       ['A rule about waste, wages, or travel', '廃棄物や賃金や移動についての規則は'],
       ['now touches many people', 'いまや多くの人に及びます'],
@@ -556,7 +556,7 @@ export default Object.freeze([
       'who never voted on it': 'vote on … で「…について投票する」。',
     },
   }),
-  st('[S Humanitarian and environmental arguments] [M therefore] [V enter] [O debates {過去分詞>debates| [M once] [V thought] [C purely local]}].', {
+  st('[S {並列| Humanitarian | and environmental arguments}] [M therefore] [V enter] [O debates {過去分詞>debates| [M once] [V thought] [C purely local]}].', {
     chunks: [
       ['Humanitarian and environmental arguments', '人道の議論も環境の議論も'],
       ['therefore enter debates', 'そのため議論の中に入ってきます'],

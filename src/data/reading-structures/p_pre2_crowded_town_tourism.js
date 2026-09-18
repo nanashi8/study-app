@@ -12,7 +12,7 @@ export default Object.freeze([
     },
     rules: ['paragraph-map', 'noun-boundary', 'main-clause-skeleton'],
   }),
-  st('[S Photographs {過去分詞>Photographs| [V shared] [M online]}] [V showed] [O a quiet street {前| with old wooden houses and a view {前| of the valley}}].', {
+  st('[S Photographs {過去分詞>Photographs| [V shared] [M online]}] [V showed] [O a quiet street {前| with {並列| old wooden houses | and a view {前| of the valley}}}].', {
     chunks: [
       ['Photographs shared online showed a quiet street', 'ネット上で共有された写真が、静かな通りを映していました（どんな通りかは次へ）'],
       ['with old wooden houses', '古い木造の家が並び'],
@@ -34,7 +34,7 @@ export default Object.freeze([
       'doubled within three years': 'double はここでは動詞で「2倍になる」。within 〜 で「〜のうちに」。',
     },
   }),
-  st('[S Shops and restaurants] [V welcomed] [O the change] [M {副詞節:理由| [接 because] [S many young families] [V had left] [O the town]}].', {
+  st('[S {並列| Shops | and restaurants}] [V welcomed] [O the change] [M {副詞節:理由| [接 because] [S many young families] [V had left] [O the town]}].', {
     chunks: [
       ['Shops and restaurants welcomed the change', '商店や飲食店は、その変化を歓迎しました（なぜかは次へ）'],
       ['because many young families had left the town', '多くの若い家族が町を去っていたからです'],
@@ -45,7 +45,7 @@ export default Object.freeze([
     },
     rules: ['paragraph-map', 'cause-result', 'main-clause-skeleton'],
   }),
-  st('[S New jobs] [V appeared], [接 and] [S two empty buildings] [V became] [C a cafe and a small hotel].', {
+  st('[S New jobs] [V appeared], [接 and] [S two empty buildings] [V became] [C {並列| a cafe | and a small hotel}].', {
     chunks: [
       ['New jobs appeared,', '新しい仕事が生まれ'],
       ['and two empty buildings became a cafe', 'そして二つの空き家が、喫茶店と'],
@@ -120,7 +120,7 @@ export default Object.freeze([
       'and recorded the busiest hours': 'and の後ろの recorded の主語も Officials です。busiest は busy の最上級です。',
     },
   }),
-  st('[S The data] [V showed] [O {that節| [接 that] [S most people] [V arrived] [M {前| between ten and two}] [M {前| on Saturdays}]}].', {
+  st('[S The data] [V showed] [O {that節| [接 that] [S most people] [V arrived] [M {前| between {並列| ten | and two}}] [M {前| on Saturdays}]}].', {
     chunks: [
       ['The data showed that', 'そのデータは〜と示しました（内容は次へ）'],
       ['most people arrived between ten and two', '大半の人が10時から2時の間に来ていた'],
@@ -142,7 +142,7 @@ export default Object.freeze([
       'for residents only': 'for residents only は two morning buses を後ろから説明して「住民専用のバス」。only が residents を「住民だけ」と限ります。',
     },
   }),
-  st('[S Volunteers] [V put] [O clear signs and simple maps] [M {前| at the station}] [接 and] [M {前| near the shrine}].', {
+  st('[S Volunteers] [V put] [O {並列| clear signs | and simple maps}] [M {前| at the station}] [接 and] [M {前| near the shrine}].', {
     chunks: [
       ['Volunteers put clear signs and simple maps', 'ボランティアが、分かりやすい標識と簡単な地図を置きました（どこにかは次へ）'],
       ['at the station and near the shrine', '駅と、神社の近くに'],
@@ -163,7 +163,7 @@ export default Object.freeze([
     },
     rules: ['paragraph-map', 'noun-boundary', 'main-clause-skeleton'],
   }),
-  st('[S The money] [V would pay] [M {前| for cleaning, toilets, and translation}].', {
+  st('[S The money] [V would pay] [M {前| for {並列| cleaning, | toilets, | and translation}}].', {
     chunks: [
       ['The money would pay for cleaning,', 'その資金で、清掃の費用をまかなう予定でした'],
       ['toilets, and translation', 'トイレと翻訳の費用も'],
@@ -235,7 +235,7 @@ export default Object.freeze([
       'However, younger residents wanted more evening events': 'However は前の文の住民の声と対比しています。younger residents は「町の中でより若い住民」。',
     },
   }),
-  st('[S The council] [M now] [V plans] [O a new comparison {前| of weekday and weekend data}] [M {前| before {動名詞| [V changing] [O the rules] [M again]}}].', {
+  st('[S The council] [M now] [V plans] [O a new comparison {前| of {並列| weekday | and weekend data}}] [M {前| before {動名詞| [V changing] [O the rules] [M again]}}].', {
     chunks: [
       ['The council now plans a new comparison', '議会は今、新たに比べてみる計画です（何をかは次へ）'],
       ['of weekday and weekend data', '平日と週末のデータを'],

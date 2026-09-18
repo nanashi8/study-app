@@ -3,7 +3,7 @@ import { st } from './entry.js'
 // 語彙強化ロングリーディング（約3,000語）の構造台帳。節ごとに手で確かめて足していく。
 // 全160文（十の節すべて）を手で確かめて書いた。残りは台帳ができるまで解析器の表示のまま。
 export default Object.freeze([
-  st('[S A river basin] [V is] [C the whole area {前| of land} {関係>the whole area of land| [M from which] [S rain and melting snow] [V drain] [M {前| into one single river}]}].', {
+  st('[S A river basin] [V is] [C the whole area {前| of land} {関係>the whole area of land| [M from which] [S {並列| rain | and melting snow}] [V drain] [M {前| into one single river}]}].', {
     chunks: [
       ['A river basin is the whole area of land', '流域とは土地全体のことです（どんな土地かは次へ）'],
       ['from which rain and melting snow drain', 'そこから雨と解けた雪が流れ込む'],
@@ -13,7 +13,7 @@ export default Object.freeze([
       'from which rain and melting snow drain': 'from which は「前置詞＋関係代名詞」で、from the area（その土地から）の意味です。',
     },
   }),
-  st('[S Its outer boundary] [V is marked] [M {前| by ridges {前| of high ground}}] [M {前| rather than {前| by any line {関係>any line| [O that] [S a government] [V has] [M ever] [V set out and agreed on]}}}].', {
+  st('[S Its outer boundary] [V is marked] [M {前| by ridges {前| of high ground}}] [M {前| rather than {前| by any line {関係>any line| [O that] [S a government] [V has] [M ever] [V {並列| set out | and agreed on}]}}}].', {
     chunks: [
       ['Its outer boundary is marked by ridges', 'その外側の境は尾根で示されます'],
       ['of high ground', '高い土地の'],
@@ -45,7 +45,7 @@ export default Object.freeze([
       'in the same way that rain': 'the same way that ＋ 主語 ＋ 動詞 で「〜するのと同じように」。',
     },
   }),
-  st('[S Leaves, roots, and the loose floor {前| of a forest}] [M all] [V slow] [O the water] [M down] [接 and] [V let] [O a large part {前| of it}] [C {原形| [V sink] [M {前| into the ground}]}].', {
+  st('[S {並列| Leaves, | roots, | and the loose floor {前| of a forest}}] [M all] [V slow] [O the water] [M down] [接 and] [V let] [O a large part {前| of it}] [C {原形| [V sink] [M {前| into the ground}]}].', {
     chunks: [
       ['Leaves, roots, and the loose floor of a forest', '葉と根と、森のやわらかい地面が'],
       ['all slow the water down', 'どれも水の流れを遅くし'],
@@ -55,7 +55,7 @@ export default Object.freeze([
       'and let a large part of it sink into the ground': 'let ＋ 目的語 ＋ 動詞の原形 で「〜が…するのを許す」。',
     },
   }),
-  st('[S Water {関係>Water| [S that] [V sinks] [M {前| into the ground}]}] [V is stored up] [M {前| for later}], [M {副詞節:対比| [接 while] [S water {関係>water| [S that] [V runs off] [O the surface]}] [V arrives] [M quickly and all {前| at once}]}].', {
+  st('[S Water {関係>Water| [S that] [V sinks] [M {前| into the ground}]}] [V is stored up] [M {前| for later}], [M {副詞節:対比| [接 while] [S water {関係>water| [S that] [V runs off] [O the surface]}] [V arrives] [M {並列| quickly | and all {前| at once}}]}].', {
     chunks: [
       ['Water that sinks into the ground', '地下にしみ込む水は'],
       ['is stored up for later,', 'のちのために蓄えられます'],
@@ -86,7 +86,7 @@ export default Object.freeze([
       'have depended on for many centuries': 'depend on … で「…に頼る」。文の終わりに on が残っています。',
     },
   }),
-  st('[S A deep layer {前| of winter snow}] [V collects] [O several months {前| of rainfall}] [接 and] [M then] [V releases] [O it] [M slowly] [M {前| through the spring and the early summer}].', {
+  st('[S A deep layer {前| of winter snow}] [V collects] [O several months {前| of rainfall}] [接 and] [M then] [V releases] [O it] [M slowly] [M {前| through {並列| the spring | and the early summer}}].', {
     chunks: [
       ['A deep layer of winter snow', '冬の深い積雪は'],
       ['collects several months of rainfall', '数か月分の降水を集め'],
@@ -119,7 +119,7 @@ export default Object.freeze([
       'that most reports choose to quote': 'quote は「引用する・数字を挙げる」。that は to quote の目的語にあたります。',
     },
   }),
-  st('[S Fog, pollen, and fine sand] [V are] [M all] [V carried] [M {前| into the basin}] [M {前| by the same moving air {関係>the same moving air| [S that] [M also] [V brings] [O the rain]}}].', {
+  st('[S {並列| Fog, | pollen, | and fine sand}] [V are] [M all] [V carried] [M {前| into the basin}] [M {前| by the same moving air {関係>the same moving air| [S that] [M also] [V brings] [O the rain]}}].', {
     chunks: [
       ['Fog, pollen, and fine sand are all carried', '霧と花粉と細かな砂は、どれも運ばれます'],
       ['into the basin', '流域の中へ'],
@@ -221,7 +221,7 @@ export default Object.freeze([
       'along which living things travel': 'along which は「前置詞＋関係代名詞」で、along the corridor（その通り道に沿って）の意味です。',
     },
   }),
-  st('[S Fish, insects, birds, and seeds] [M all] [V use] [O the same narrow channel] [M {前| for purposes {関係>purposes| [S that] [V have] [O nothing {to:形容詞>nothing| [V to do] [M {前| with each other}]}]}}].', {
+  st('[S {並列| Fish, | insects, | birds, | and seeds}] [M all] [V use] [O the same narrow channel] [M {前| for purposes {関係>purposes| [S that] [V have] [O nothing {to:形容詞>nothing| [V to do] [M {前| with each other}]}]}}].', {
     chunks: [
       ['Fish, insects, birds, and seeds', '魚と昆虫と鳥と種子は'],
       ['all use the same narrow channel', 'どれも同じ狭い川筋を使います'],
@@ -271,7 +271,7 @@ export default Object.freeze([
       'A rise of only two degrees may be adequate': 'adequate は「十分な」。',
     },
   }),
-  st('[S The result] [V is] [C not simply a loss but a new arrangement {関係>a new arrangement| [S whose winners] [V are] [C very hard {to:副詞(形容詞)| [V to predict] [M {前| in advance}]}]}].', {
+  st('[S The result] [V is] [C {並列| not simply a loss | but a new arrangement {関係>a new arrangement| [S whose winners] [V are] [C very hard {to:副詞(形容詞)| [V to predict] [M {前| in advance}]}]}}].', {
     chunks: [
       ['The result is not simply a loss', 'その結果は単なる喪失ではなく'],
       ['but a new arrangement', '新しい組み替えです'],
@@ -302,7 +302,7 @@ export default Object.freeze([
       'Roots hold the soil in place,': 'hold … in place で「…をその場に固定する」。',
     },
   }),
-  st('[S {動名詞| [V Removing] [O that narrow strip]}] [V is] [C cheap and quick], [M {副詞節:対比| [接 while] [S {動名詞| [V restoring] [O the same function]}] [V may take] [O several decades]}].', {
+  st('[S {動名詞| [V Removing] [O that narrow strip]}] [V is] [C {並列| cheap | and quick}], [M {副詞節:対比| [接 while] [S {動名詞| [V restoring] [O the same function]}] [V may take] [O several decades]}].', {
     chunks: [
       ['Removing that narrow strip is cheap and quick,', 'その細い帯を取り除くのは安く速いのですが'],
       ['while restoring the same function', '一方、同じ働きを取り戻すには'],
@@ -312,7 +312,7 @@ export default Object.freeze([
       'Removing that narrow strip is cheap and quick,': 'strip はここでは「細長い帯状の土地」。',
     },
   }),
-  st('[S This asymmetry {前| between damage and repair}] [V is] [M probably] [C the single most important fact {前| about all living systems}].', {
+  st('[S This asymmetry {前| between {並列| damage | and repair}}] [V is] [M probably] [C the single most important fact {前| about all living systems}].', {
     chunks: [
       ['This asymmetry between damage and repair', '損なう側と直す側のあいだのこの非対称は'],
       ['is probably the single most important fact', 'おそらく最も重要なただ一つの事実です'],
@@ -363,7 +363,7 @@ export default Object.freeze([
       'that follows a failure to prevent it': 'a failure to ＋ 動詞 で「〜しそこねること」。',
     },
   }),
-  st('[S Long chains {前| of cause and effect}] [V make] [O the whole system] [C genuinely difficult {to:副詞(形容詞)| [V to describe] [M {前| with any confidence}]}].', {
+  st('[S Long chains {前| of {並列| cause | and effect}}] [V make] [O the whole system] [C genuinely difficult {to:副詞(形容詞)| [V to describe] [M {前| with any confidence}]}].', {
     chunks: [
       ['Long chains of cause and effect', '原因と結果の長い連なりが'],
       ['make the whole system genuinely difficult', 'その仕組み全体を本当に難しくします'],
@@ -383,7 +383,7 @@ export default Object.freeze([
       'an early conclusion tentative,': 'call ＋ 目的語 ＋ 形容詞 で「〜を…と呼ぶ」。tentative は「暫定的な」。',
     },
   }),
-  st('[S It] [V records] [O {疑問詞節| [S how much {前| of the evidence}] [V has already arrived]} and {疑問詞節| [S how much {前| of it}] [V is] [M still] [M {前| on the way}]}].', {
+  st('[S It] [V records] [O {並列| {疑問詞節| [S how much {前| of the evidence}] [V has already arrived]} | and {疑問詞節| [S how much {前| of it}] [V is] [M still] [M {前| on the way}]}}].', {
     chunks: [
       ['It records how much of the evidence', 'それは証拠のどれだけが〜かを記録します'],
       ['has already arrived', 'すでに届いている'],
@@ -404,7 +404,7 @@ export default Object.freeze([
       'as doubt': 'treat A as B で「AをBとして扱う」。',
     },
   }),
-  st('[S The useful question] [V is] [M never] [C {whether節| [接 whether] [S the science] [V is] [M fully] [C certain]}, but rather {疑問詞節| [S which parts {前| of it}] [V are] [C settled enough {to:副詞(程度)| [V to act] [M on]}]}].', {
+  st('[S The useful question] [V is] [M never] [C {並列| {whether節| [接 whether] [S the science] [V is] [M fully] [C certain]}, | but rather {疑問詞節| [S which parts {前| of it}] [V are] [C settled enough {to:副詞(程度)| [V to act] [M on]}]}}].', {
     chunks: [
       ['The useful question is never', '役に立つ問いは決して〜ではありません'],
       ['whether the science is fully certain,', '科学が完全に確実かどうか'],
@@ -415,7 +415,7 @@ export default Object.freeze([
       'are settled enough to act on': 'act on … で「…に基づいて行動する」。文の終わりに on が残っています。',
     },
   }),
-  st('[S Agriculture] [V takes] [O more water] [M out] [M {前| of most river basins}] [M {前| than every city and every factory {過去分詞>every city and every factory| [V combined]}}].', {
+  st('[S Agriculture] [V takes] [O more water] [M out] [M {前| of most river basins}] [M {前| than {並列| every city | and every factory} {過去分詞>every city and every factory| [V combined]}}].', {
     chunks: [
       ['Agriculture takes more water', '農業はより多くの水を取り出します'],
       ['out of most river basins', 'たいていの流域から'],
@@ -445,7 +445,7 @@ export default Object.freeze([
       'than any campaign aimed at households': 'aimed at … は「…に向けた」で、campaign を後ろから説明します。',
     },
   }),
-  st('[S Soil] [V is] [C the part {前| of the whole system} {関係>the part| [S that] [V is] [C easiest {to:副詞(形容詞)| [V to damage]} and hardest {to:副詞(形容詞)| [V to replace]}]}].', {
+  st('[S Soil] [V is] [C the part {前| of the whole system} {関係>the part| [S that] [V is] [C {並列| easiest {to:副詞(形容詞)| [V to damage]} | and hardest {to:副詞(形容詞)| [V to replace]}}]}].', {
     chunks: [
       ['Soil is the part of the whole system', '土はこの仕組み全体の中の部分です（どんな部分かは次へ）'],
       ['that is easiest to damage', '最も傷つけやすく'],
@@ -506,7 +506,7 @@ export default Object.freeze([
       'into a ditch, then into a stream,': 'ditch は「溝・用水路」。',
     },
   }),
-  st('[M Downstream] [S the very same chemical {関係>the very same chemical| [S that] [V raised] [O a yield]}] [V can feed] [O an enormous growth {前| of water plants and weeds}].', {
+  st('[M Downstream] [S the very same chemical {関係>the very same chemical| [S that] [V raised] [O a yield]}] [V can feed] [O an enormous growth {前| of {並列| water plants | and weeds}}].', {
     chunks: [
       ['Downstream the very same chemical', '下流では、まったく同じ化学物質が'],
       ['that raised a yield', '収量を上げた（その物質が）'],
@@ -516,7 +516,7 @@ export default Object.freeze([
       'that raised a yield': 'yield は名詞で「収穫量」。',
     },
   }),
-  st('[M {副詞節:時| [接 When] [S that growth] [V dies] [接 and] [V decays]}], [S it] [V removes] [O the oxygen {関係>the oxygen| [M on which] [S the fish and insects] [V depend]}].', {
+  st('[M {副詞節:時| [接 When] [S that growth] [V dies] [接 and] [V decays]}], [S it] [V removes] [O the oxygen {関係>the oxygen| [M on which] [S {並列| the fish | and insects}] [V depend]}].', {
     chunks: [
       ['When that growth dies and decays,', 'その繁殖が枯れて分解するとき'],
       ['it removes the oxygen', 'それは酸素を奪います（どんな酸素かは次へ）'],
@@ -526,7 +526,7 @@ export default Object.freeze([
       'on which the fish and insects depend': 'on which は「前置詞＋関係代名詞」で、depend on … の on です。',
     },
   }),
-  st('[S Irrigation] [V raises] [O yields] [M surely and steadily], [接 and] [M yet] [S it] [M also] [V concentrates] [O salt] [M {前| in the very ground {関係>the very ground| [O that] [S it] [V waters]}}].', {
+  st('[S Irrigation] [V raises] [O yields] [M {並列| surely | and steadily}], [接 and] [M yet] [S it] [M also] [V concentrates] [O salt] [M {前| in the very ground {関係>the very ground| [O that] [S it] [V waters]}}].', {
     chunks: [
       ['Irrigation raises yields surely and steadily,', '灌漑は確実に着実に収量を上げます'],
       ['and yet it also concentrates salt', 'それでいて塩も集めてしまいます'],
@@ -587,7 +587,7 @@ export default Object.freeze([
       'by buying what': 'what は先行詞を含む関係代名詞で、「〜するもの」というまとまりを作ります。',
     },
   }),
-  st('[S That arrangement] [V is] [C neither dishonest nor unstable], [接 but] [S it] [V does depend] [M {前| on a market {関係>a market| [S that] [V stays] [C open]}}].', {
+  st('[S That arrangement] [V is] [C {並列| neither dishonest | nor unstable}], [接 but] [S it] [V does depend] [M {前| on a market {関係>a market| [S that] [V stays] [C open]}}].', {
     chunks: [
       ['That arrangement is neither dishonest nor unstable,', 'その仕組みは不誠実でも不安定でもありません'],
       ['but it does depend on a market', 'しかし市場に頼ってはいます（どんな市場かは次へ）'],
@@ -607,7 +607,7 @@ export default Object.freeze([
       'several borders away': 'several borders away で「国境をいくつも隔てた所で」。',
     },
   }),
-  st('[S {動名詞| [V Reading] [O a food price]}] [M therefore] [V means] [O {動名詞| [V reading] [O rainfall, soil, policy, and shipping costs] [M all] [M {前| at the same time}]}].', {
+  st('[S {動名詞| [V Reading] [O a food price]}] [M therefore] [V means] [O {動名詞| [V reading] [O {並列| rainfall, | soil, | policy, | and shipping costs}] [M all] [M {前| at the same time}]}].', {
     chunks: [
       ['Reading a food price therefore means', 'したがって食料の値段を読むとは'],
       ['reading rainfall, soil, policy, and shipping costs', '降水と土と政策と輸送費を読むことです'],
@@ -617,7 +617,7 @@ export default Object.freeze([
       'reading rainfall, soil, policy, and shipping costs': 'mean ＋ -ing で「〜することを意味する」。',
     },
   }),
-  st('[S The clearest link {前| between a river and a human body}] [V is] [C an infection {過去分詞>an infection| [V carried] [M {前| by water}]}].', {
+  st('[S The clearest link {前| between {並列| a river | and a human body}}] [V is] [C an infection {過去分詞>an infection| [V carried] [M {前| by water}]}].', {
     chunks: [
       ['The clearest link between a river and a human body', '川と人の体を結ぶ最も明確なつながりは'],
       ['is an infection carried by water', '水が運ぶ感染です'],
@@ -636,7 +636,7 @@ export default Object.freeze([
       'A pathogen that survives a short journey downstream': 'pathogen は「病原体」。downstream は「下流へ」。',
     },
   }),
-  st('[S {動名詞| [V Separating] [O drinking water] [M {前| from waste water}]}] [V is] [M therefore] [C the oldest and cheapest public health measure {関係>the oldest and cheapest public health measure| [S that] [V is known]}].', {
+  st('[S {動名詞| [V Separating] [O drinking water] [M {前| from waste water}]}] [V is] [M therefore] [C {並列| the oldest | and cheapest public health measure} {関係>the oldest and cheapest public health measure| [S that] [V is known]}].', {
     chunks: [
       ['Separating drinking water from waste water', '飲み水を排水から切り離すことは'],
       ['is therefore the oldest and cheapest public health measure', 'したがって最も古く最も安い公衆衛生の手だてです'],
@@ -695,7 +695,7 @@ export default Object.freeze([
       'will always appear less healthy': 'appear ＋ 形容詞 で「〜に見える」。',
     },
   }),
-  st('[S Nutrition] [V connects] [O the same river] [M {前| to the same human body}] [M {前| along a much slower and much quieter path}].', {
+  st('[S Nutrition] [V connects] [O the same river] [M {前| to the same human body}] [M {前| along {並列| a much slower | and much quieter path}}].', {
     chunks: [
       ['Nutrition connects the same river', '栄養は同じ川を結びます'],
       ['to the same human body', '同じ人の体へ'],
@@ -715,7 +715,7 @@ export default Object.freeze([
       'so that an otherwise mild infection': 'so that … で「その結果…」。otherwise は「そうでなければ」。',
     },
   }),
-  st('[S Protein and clean water] [V are] [M therefore] [V treated] [M together] [M {前| in any program {関係>any program| [S that] [M seriously] [V expects] [O {to:名詞| [V to see] [O results]}]}}].', {
+  st('[S {並列| Protein | and clean water}] [V are] [M therefore] [V treated] [M together] [M {前| in any program {関係>any program| [S that] [M seriously] [V expects] [O {to:名詞| [V to see] [O results]}]}}].', {
     chunks: [
       ['Protein and clean water are therefore treated together', 'したがってたんぱく質と清潔な水は一緒に扱われます'],
       ['in any program that seriously expects', '本気で〜を見込むどの計画でも'],
@@ -755,7 +755,7 @@ export default Object.freeze([
       'carry a strain that lasts long': 'strain は「重い負担・張りつめた状態」。',
     },
   }),
-  st('[S Grief, fear {前| of the next season}, and the loss {前| of ordinary routine}] [V can] [M all] [V be measured] [M {副詞節:条件| [接 if] [S anyone] [V chooses] [O {to:名詞| [V to measure] [O them]}]}].', {
+  st('[S {並列| Grief, | fear {前| of the next season}, | and the loss {前| of ordinary routine}}] [V can] [M all] [V be measured] [M {副詞節:条件| [接 if] [S anyone] [V chooses] [O {to:名詞| [V to measure] [O them]}]}].', {
     chunks: [
       ['Grief, fear of the next season,', '悲しみと、次の季節への恐れと'],
       ['and the loss of ordinary routine', 'ふだんの暮らしの型が失われることは'],
@@ -837,7 +837,7 @@ export default Object.freeze([
       'A pipe installed a century ago': 'installed a century ago は A pipe を後ろから説明する過去分詞のまとまりです。',
     },
   }),
-  st('[S Nobody] [V can separate] [O the two] [M {前| from the surface}] [M alone] [M {前| without instruments and a careful survey {前| of the network}}].', {
+  st('[S Nobody] [V can separate] [O the two] [M {前| from the surface}] [M alone] [M {前| without {並列| instruments | and a careful survey {前| of the network}}}].', {
     chunks: [
       ['Nobody can separate the two', 'その二つを見分けられる人はいません'],
       ['from the surface alone', '地表からだけでは'],
@@ -878,7 +878,7 @@ export default Object.freeze([
       'which is more than any conservation campaign could save': 'コンマの後ろの which は、前の内容全体を受けています。',
     },
   }),
-  st('[S {動名詞| [V Finding] [O those leaks]}] [V is] [C quiet and patient work {関係>quiet and patient work| [S that] [V produces] [O no photograph worth {動名詞| [V printing] [M {前| in a newspaper}]}]}].', {
+  st('[S {動名詞| [V Finding] [O those leaks]}] [V is] [C {並列| quiet | and patient work} {関係>quiet and patient work| [S that] [V produces] [O no photograph worth {動名詞| [V printing] [M {前| in a newspaper}]}]}].', {
     chunks: [
       ['Finding those leaks is quiet and patient work', '漏れを見つけるのは静かで根気のいる仕事です'],
       ['that produces no photograph', '写真の一枚も生まない（仕事）'],
@@ -918,7 +918,7 @@ export default Object.freeze([
       'instead of letting it soak into the ground': 'let ＋ 目的語 ＋ 動詞の原形 で「〜が…するままにする」。',
     },
   }),
-  st('[S The same storm] [M therefore] [V produces] [O a higher and much faster peak] [M {前| in a city}] [M than {前| in an open field}].', {
+  st('[S The same storm] [M therefore] [V produces] [O {並列| a higher | and much faster peak}] [M {前| in a city}] [M than {前| in an open field}].', {
     chunks: [
       ['The same storm therefore produces', 'そのため同じ嵐でも生みます（何をかは次へ）'],
       ['a higher and much faster peak', 'より高く、ずっと速い出水の頂点を'],
@@ -928,7 +928,7 @@ export default Object.freeze([
       'a higher and much faster peak': 'peak はここでは「水かさが最も高くなるとき」。',
     },
   }),
-  st('[S Engineers] [V can slow] [O that peak] [M {前| with holding pools, gardens, and open surfaces {関係>holding pools, gardens, and open surfaces| [S that] [V cost] [M far less] [M {前| than a concrete wall}]}}].', {
+  st('[S Engineers] [V can slow] [O that peak] [M {前| with {並列| holding pools, | gardens, | and open surfaces} {関係>holding pools, gardens, and open surfaces| [S that] [V cost] [M far less] [M {前| than a concrete wall}]}}].', {
     chunks: [
       ['Engineers can slow that peak', '技術者はその頂点を緩やかにできます（何でかは次へ）'],
       ['with holding pools, gardens, and open surfaces', '調整池と庭と開いた地面で'],
@@ -978,7 +978,7 @@ export default Object.freeze([
       'once that district has been finished': 'once は「いったん〜すると」。occupied は「人が入った」。',
     },
   }),
-  st('[S Every single one {前| of these choices}] [M quietly] [V moves] [O some cost] [M {前| between the present and the future}].', {
+  st('[S Every single one {前| of these choices}] [M quietly] [V moves] [O some cost] [M {前| between {並列| the present | and the future}}].', {
     chunks: [
       ['Every single one of these choices', 'こうした選択の一つ一つが'],
       ['quietly moves some cost', '静かに費用を移します'],
@@ -1018,7 +1018,7 @@ export default Object.freeze([
       'is far easier to defend': 'defend はここでは「（批判に対して）擁護する」。',
     },
   }),
-  st('[S Water and energy] [V are] [M so closely] [C linked together] [M {副詞節:結果| [接 that] [S neither {前| of them}] [V can be planned] [M {前| on its own}]}].', {
+  st('[S {並列| Water | and energy}] [V are] [M so closely] [C linked together] [M {副詞節:結果| [接 that] [S neither {前| of them}] [V can be planned] [M {前| on its own}]}].', {
     chunks: [
       ['Water and energy are so closely linked together', '水とエネルギーはとても密接に結び付いていて'],
       ['that neither of them can be planned', 'どちらも計画できません'],
@@ -1058,7 +1058,7 @@ export default Object.freeze([
       'guarantees a shortage that nobody in charge predicted': 'in charge で「担当している・責任のある」。',
     },
   }),
-  st('[S A dam] [V is] [C the most visible machine {前| in any basin} and also the hardest one {to:副詞(形容詞)| [V to evaluate] [M honestly]}].', {
+  st('[S A dam] [V is] [C {並列| the most visible machine {前| in any basin} | and also the hardest one {to:副詞(形容詞)| [V to evaluate] [M honestly]}}].', {
     chunks: [
       ['A dam is the most visible machine in any basin', 'ダムはどの流域でも最も目につく機械であり'],
       ['and also the hardest one', '同時に最も難しい機械です'],
@@ -1138,7 +1138,7 @@ export default Object.freeze([
       'and added together they often exceed': 'added together は「合わせると」という条件を表す分詞のまとまりです。',
     },
   }),
-  st('[S Control] [V has] [M now] [V moved] [M {前| from valves and levers}] [M {前| to software {関係>software| [S that] [V runs] [M {前| on servers far away}]}}].', {
+  st('[S Control] [V has] [M now] [V moved] [M {前| from {並列| valves | and levers}}] [M {前| to software {関係>software| [S that] [V runs] [M {前| on servers far away}]}}].', {
     chunks: [
       ['Control has now moved from valves and levers', '制御はいまや弁やてこから移りました'],
       ['to software that runs', '動くソフトウェアへと'],
@@ -1208,7 +1208,7 @@ export default Object.freeze([
       'is a risk disguised as a valuable asset': 'disguised as … で「…に見せかけた」。',
     },
   }),
-  st('[S {動名詞| [V Writing down] [O {疑問詞節| [M how] [S a machine] [M actually] [V works]}]}] [V is] [M therefore] [C an ordinary and necessary part {前| of {動名詞| [V keeping] [O the machine] [C running]}}].', {
+  st('[S {動名詞| [V Writing down] [O {疑問詞節| [M how] [S a machine] [M actually] [V works]}]}] [V is] [M therefore] [C {並列| an ordinary | and necessary part {前| of {動名詞| [V keeping] [O the machine] [C running]}}}].', {
     chunks: [
       ['Writing down how a machine actually works', '機械が実際にどう動くのかを書き留めることは'],
       ['is therefore an ordinary and necessary part', 'したがってありふれた、欠かせない一部です'],
@@ -1228,7 +1228,7 @@ export default Object.freeze([
       'that someone once chose to make': 'choose to ＋ 動詞 で「〜することに決める」。that は to make の目的語にあたります。',
     },
   }),
-  st('[S {疑問詞節| [M Where] [S the gauge] [V sits]}, {疑問詞節| [M how often] [S it] [V is read]}, and {疑問詞節| [O what] [S it] [V ignores]}] [M all] [V help] [O {to:名詞| [V to shape] [O the result]}].', {
+  st('[S {並列| {疑問詞節| [M Where] [S the gauge] [V sits]}, | {疑問詞節| [M how often] [S it] [V is read]}, | and {疑問詞節| [O what] [S it] [V ignores]}}] [M all] [V help] [O {to:名詞| [V to shape] [O the result]}].', {
     chunks: [
       ['Where the gauge sits, how often it is read,', '観測器がどこにあり、どれほど頻繁に読まれ'],
       ['and what it ignores', '何を無視するかが'],
@@ -1338,7 +1338,7 @@ export default Object.freeze([
       'Correlation appears in almost any pair of series': 'correlation は「二つが一緒に動くこと」。series は「一続きの数値」。',
     },
   }),
-  st('[S Causation] [V requires] [O a mechanism, a clear sequence {前| in time}, and a case {関係>a case| [S that] [V fails] [M {副詞節:時| [接 when] [S the mechanism] [V is] [C absent]}]}].', {
+  st('[S Causation] [V requires] [O {並列| a mechanism, | a clear sequence {前| in time}, | and a case {関係>a case| [S that] [V fails] [M {副詞節:時| [接 when] [S the mechanism] [V is] [C absent]}]}}].', {
     chunks: [
       ['Causation requires a mechanism,', '因果には仕組みと'],
       ['a clear sequence in time,', '時間の上のはっきりした前後と'],
@@ -1379,7 +1379,7 @@ export default Object.freeze([
       'Different academic disciplines measure the very same basin': 'discipline はここでは「学問の分野」。',
     },
   }),
-  st('[S A water scientist, a specialist {前| in ecology}, and an economist] [V will] [M each] [V treat] [O a different quantity] [C {前| as the important one}].', {
+  st('[S {並列| A water scientist, | a specialist {前| in ecology}, | and an economist}] [V will] [M each] [V treat] [O a different quantity] [C {前| as the important one}].', {
     chunks: [
       ['A water scientist, a specialist in ecology,', '水の科学者と、生態学の専門家と'],
       ['and an economist will each treat', '経済学者は、それぞれ扱います'],
@@ -1465,7 +1465,7 @@ export default Object.freeze([
       'A workable agreement gives the side near the source': 'workable は「実際に動く・機能する」。',
     },
   }),
-  st('[S Electricity, access {前| to markets}, flood warnings, and shared observations] [V have] [M all] [V served] [O that purpose] [M rather well].', {
+  st('[S {並列| Electricity, | access {前| to markets}, | flood warnings, | and shared observations}] [V have] [M all] [V served] [O that purpose] [M rather well].', {
     chunks: [
       ['Electricity, access to markets, flood warnings,', '電力と、市場に入れること、洪水の警報'],
       ['and shared observations', 'そして共有された観測値が'],
@@ -1515,7 +1515,7 @@ export default Object.freeze([
       'What holds an agreement together': 'hold … together で「…をまとめておく」。',
     },
   }),
-  st('[S Joint monitoring] [V is] [C valuable] [M mainly] [M {副詞節:理由| [接 because] [S it] [V makes] [O any disagreement {前| about the basic facts}] [C expensive and slow]}].', {
+  st('[S Joint monitoring] [V is] [C valuable] [M mainly] [M {副詞節:理由| [接 because] [S it] [V makes] [O any disagreement {前| about the basic facts}] [C {並列| expensive | and slow}]}].', {
     chunks: [
       ['Joint monitoring is valuable mainly', '共同の観測が価値を持つのは、主に'],
       ['because it makes any disagreement', 'それが意見の食い違いを〜にするからです'],
@@ -1545,7 +1545,7 @@ export default Object.freeze([
       'the longest continuous record': 'continuous は「途切れない」。',
     },
   }),
-  st('[S That record] [V is stored] [M {前| in daily practice} and {前| in language}] [M {前| rather than {前| in any published series {前| of numbers}}}].', {
+  st('[S That record] [V is stored] [M {並列| {前| in daily practice} | and {前| in language}}] [M {前| rather than {前| in any published series {前| of numbers}}}].', {
     chunks: [
       ['That record is stored in daily practice', 'その記録は日々の営みの中に蓄えられています'],
       ['and in language', 'そして言葉の中に'],
@@ -1575,7 +1575,7 @@ export default Object.freeze([
       'and everyone understands it as one': 'この one は a formal step の代わりです。',
     },
   }),
-  st('[S A basin authority] [V works] [M only] [M {副詞節:時| [接 when] [S the people {関係省略:目的格>the people| [S it] [V governs]}] [V can see] [O {疑問詞節| [O what] [S it] [V decides]} and why]}].', {
+  st('[S A basin authority] [V works] [M only] [M {副詞節:時| [接 when] [S the people {関係省略:目的格>the people| [S it] [V governs]}] [V can see] [O {並列| {疑問詞節| [O what] [S it] [V decides]} | and why}]}].', {
     chunks: [
       ['A basin authority works only', '流域の管理機構が働くのは'],
       ['when the people it governs can see', '統治される人々が見られるときだけです'],
@@ -1585,7 +1585,7 @@ export default Object.freeze([
       'what it decides and why': 'and why は and why it decides so の省略です。',
     },
   }),
-  st('[S {動名詞| [V Publishing] [O the data, the model, and the reasoning]}] [V costs] [O very little] [接 and] [V buys] [O a great deal {前| of patience}].', {
+  st('[S {動名詞| [V Publishing] [O {並列| the data, | the model, | and the reasoning}]}] [V costs] [O very little] [接 and] [V buys] [O a great deal {前| of patience}].', {
     chunks: [
       ['Publishing the data, the model, and the reasoning', '観測値と計算のモデルと考えの筋道を公表することは'],
       ['costs very little', 'ほとんど費用がかからず'],

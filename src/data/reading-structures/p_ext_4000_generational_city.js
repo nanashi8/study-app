@@ -4,7 +4,7 @@ import { st } from './entry.js'
 // 全200文（十の節すべて）を手で確かめて書いた。
 // 残りの文は、台帳ができるまで解析器の表示のまま。
 export default Object.freeze([
-  st('[S A city] [V is] [M {前| above all}] [C a machine {前| for {動名詞| [V moving] [O costs and benefits] [M {前| across time}]}}], [M {副詞節:譲歩| [接 although] [S it] [V is] [M very rarely] [V described] [M {前| in quite those terms}]}].', {
+  st('[S A city] [V is] [M {前| above all}] [C a machine {前| for {動名詞| [V moving] [O {並列| costs | and benefits}] [M {前| across time}]}}], [M {副詞節:譲歩| [接 although] [S it] [V is] [M very rarely] [V described] [M {前| in quite those terms}]}].', {
     chunks: [
       ['A city is above all a machine', '都市は何よりもまず装置です（どんな装置かは次へ）'],
       ['for moving costs and benefits', '費用と利益を移すための'],
@@ -17,7 +17,7 @@ export default Object.freeze([
       'for moving costs and benefits': 'for の後ろは動名詞 moving で、「〜を移すための」と直前の machine を説明します。',
     },
   }),
-  st('[S A road {関係>A road| [S that] [V is built] [M this year]}] [V will be repaired, widened, and eventually replaced] [M {前| by people {関係>people| [S who] [V have not yet been born]}}].', {
+  st('[S A road {関係>A road| [S that] [V is built] [M this year]}] [V will be {並列| repaired, | widened, | and eventually replaced}] [M {前| by people {関係>people| [S who] [V have not yet been born]}}].', {
     chunks: [
       ['A road', '道路は'],
       ['that is built this year', '今年造られる（道路は）'],
@@ -123,7 +123,7 @@ export default Object.freeze([
       'is expected to stand for a hundred': 'for a hundred は for a hundred years のことで、years が省かれています。',
     },
   }),
-  st('[S That gap] [M quietly] [V rewards] [O those decisions {関係>those decisions| [S whose benefits] [V appear] [M {前| at once}]} and {関係>those decisions| [S whose costs] [V appear] [M only] [M {副詞節:時| [接 after] [S the next election] [V has passed]}]}].', {
+  st('[S That gap] [M quietly] [V rewards] [O those decisions {並列| {関係>those decisions| [S whose benefits] [V appear] [M {前| at once}]} | and {関係>those decisions| [S whose costs] [V appear] [M only] [M {副詞節:時| [接 after] [S the next election] [V has passed]}]}}].', {
     chunks: [
       ['That gap quietly rewards those decisions', 'その隔たりは静かにそうした決定に報います'],
       ['whose benefits appear at once', 'その決定の利益はすぐに現れ'],
@@ -201,7 +201,7 @@ export default Object.freeze([
       'precisely because it is longer': 'precisely は because の節を強めて「まさに〜だから」。',
     },
   }),
-  st('[S Decisions {前| about land, water, pensions, and public buildings}] [M all] [V outlast] [M {前| by many years}] [O the people {関係>the people| [S who] [M first] [V make] [接 and] [V approve] [O them]}].', {
+  st('[S Decisions {前| about {並列| land, | water, | pensions, | and public buildings}}] [M all] [V outlast] [M {前| by many years}] [O the people {関係>the people| [S who] [M first] [V make] [接 and] [V approve] [O them]}].', {
     chunks: [
       ['Decisions about land, water, pensions,', '土地・水・年金についての決定は'],
       ['and public buildings all outlast', 'そして公共建築についての決定も、みな長く残ります'],
@@ -257,7 +257,7 @@ export default Object.freeze([
       'however serious': 'however ＋ 形容詞 で「どれほど〜でも」。文の後ろに譲歩のまとまりを作ります。',
     },
   }),
-  st('[S A problem {関係>A problem| [O that] [S everybody] [V has noticed]}] [V will be answered] [M somehow], [M even] [M {前| in cases {関係>cases| [M where] [S it] [V is] [C comparatively small and easy {to:副詞(形容詞)| [V to bear]}]}}].', {
+  st('[S A problem {関係>A problem| [O that] [S everybody] [V has noticed]}] [V will be answered] [M somehow], [M even] [M {前| in cases {関係>cases| [M where] [S it] [V is] [C {並列| comparatively small | and easy {to:副詞(形容詞)| [V to bear]}}]}}].', {
     chunks: [
       ['A problem', '問題は'],
       ['that everybody has noticed', 'だれもが気づいている（問題は）'],
@@ -291,7 +291,7 @@ export default Object.freeze([
       'which is why rare events dominate discussion': 'which は前の節の内容を受け、which is why … で「そのため〜」となります。',
     },
   }),
-  st('[S A single dramatic accident] [V will change] [O more behavior] [M {前| in one month}] [M {前| than a whole decade {前| of quiet and careful figures}}].', {
+  st('[S A single dramatic accident] [V will change] [O more behavior] [M {前| in one month}] [M {前| than a whole decade {前| of {並列| quiet | and careful figures}}}].', {
     chunks: [
       ['A single dramatic accident will change', '一件の劇的な事故が変えます（何をかは次へ）'],
       ['more behavior in one month', '一か月でより多くの行動を'],
@@ -353,7 +353,7 @@ export default Object.freeze([
       'succeed': 'make ＋ 目的語 ＋ 動詞の原形 で「〜に…させる」。succeed は to のない不定詞です。',
     },
   }),
-  st('[S {動名詞| [V Removing] [O it] [M entirely]}] [V would leave] [O a city] [C perfectly accurate {前| about the present} and quite incapable {前| of {動名詞| [V building] [O anything] [M {前| at all}]}}].', {
+  st('[S {動名詞| [V Removing] [O it] [M entirely]}] [V would leave] [O a city] [C {並列| perfectly accurate {前| about the present} | and quite incapable {前| of {動名詞| [V building] [O anything] [M {前| at all}]}}}].', {
     chunks: [
       ['Removing it entirely would leave a city', 'それを完全に取り除けば、都市は〜のままになるでしょう'],
       ['perfectly accurate about the present', '現在については完璧に正確で'],
@@ -459,7 +459,7 @@ export default Object.freeze([
       'and it is also where': 'ここの where は「〜する場所」という意味のまとまりを作り、is の補語Cになります。',
     },
   }),
-  st('[S A rule {前| about wages, working hours, or safety}] [V reaches] [O a household] [M only] [M {前| through the one particular job {関係>the one particular job| [O that] [S one member {前| of it}] [V does]}}].', {
+  st('[S A rule {前| about {並列| wages, | working hours, | or safety}}] [V reaches] [O a household] [M only] [M {前| through the one particular job {関係>the one particular job| [O that] [S one member {前| of it}] [V does]}}].', {
     chunks: [
       ['A rule about wages, working hours, or safety', '賃金や労働時間や安全についての規則は'],
       ['reaches a household only', '家庭に届くのは〜を通してだけです'],
@@ -481,7 +481,7 @@ export default Object.freeze([
       'is able to show at all': 'be able to ＋ 動詞 で「〜できる」。at all は否定を強めます。',
     },
   }),
-  st('[S Any honest account {前| of a labor reform}] [M therefore] [V has to name] [O {疑問詞節| [S who] [V gains] [M {前| from it}]} and {疑問詞節| [S who] [V loses] [M {前| by it}]}].', {
+  st('[S Any honest account {前| of a labor reform}] [M therefore] [V has to name] [O {並列| {疑問詞節| [S who] [V gains] [M {前| from it}]} | and {疑問詞節| [S who] [V loses] [M {前| by it}]}}].', {
     chunks: [
       ['Any honest account of a labor reform', '労働改革のどんな誠実な説明も'],
       ['therefore has to name', 'したがって名指しする必要があります（何をかは次へ）'],
@@ -515,7 +515,7 @@ export default Object.freeze([
       'has ever been able to describe': 'has been able to は「〜できたことがある」。no ＋ 名詞 と組んで「どれも〜できたことがない」。',
     },
   }),
-  st('[S Training programs] [V reproduce] [O the manual] [M fully and consistently], [接 and] [S they] [V reproduce] [O the judgment] [M only] [M {前| with the greatest {前| of difficulty}}].', {
+  st('[S Training programs] [V reproduce] [O the manual] [M {並列| fully | and consistently}], [接 and] [S they] [V reproduce] [O the judgment] [M only] [M {前| with the greatest {前| of difficulty}}].', {
     chunks: [
       ['Training programs reproduce the manual', '研修は手引書を再現します'],
       ['fully and consistently,', '完全に、そして確実に'],
@@ -547,7 +547,7 @@ export default Object.freeze([
       'Organizations remember what they have learned': 'what は先行詞を含む関係代名詞で、「学んだこと」というまとまりを作ります。',
     },
   }),
-  st('[S A form {関係>A form| [S that] [V asks] [O an awkward and apparently useless question]}] [V is] [M very often] [C the trace {前| of an old and extremely expensive mistake}].', {
+  st('[S A form {関係>A form| [S that] [V asks] [O {並列| an awkward | and apparently useless question}]}] [V is] [M very often] [C the trace {前| of {並列| an old | and extremely expensive mistake}}].', {
     chunks: [
       ['A form that asks an awkward', '厄介で〜質問をする書式は'],
       ['and apparently useless question', '一見無用な'],
@@ -644,7 +644,7 @@ export default Object.freeze([
       'A city that funds retraining only': 'fund は動詞で「資金を出す」。only は後ろの after の節を限定します。',
     },
   }),
-  st('[S The very same money], [M {副詞節:条件| [接 if] [S it] [V is used] [M earlier]}], [V reaches] [O workers] [M {副詞節:時| [接 while] [S they] [M still] [V have] [O savings, contacts, and a measure {前| of confidence}]}].', {
+  st('[S The very same money], [M {副詞節:条件| [接 if] [S it] [V is used] [M earlier]}], [V reaches] [O workers] [M {副詞節:時| [接 while] [S they] [M still] [V have] [O {並列| savings, | contacts, | and a measure {前| of confidence}}]}].', {
     chunks: [
       ['The very same money,', 'まったく同じ資金も'],
       ['if it is used earlier,', 'もっと早く使われれば'],
@@ -688,7 +688,7 @@ export default Object.freeze([
       'The difference usually lies': 'lie in … で「…にある」。違いや原因のありかを示します。',
     },
   }),
-  st('[S A single missed payment] [V is] [C a small trouble {前| for one household} and the beginning {前| of a long spiral} {前| for another}].', {
+  st('[S A single missed payment] [V is] [C {並列| a small trouble {前| for one household} | and the beginning {前| of a long spiral} {前| for another}}].', {
     chunks: [
       ['A single missed payment is a small trouble', '支払いが一度遅れることは小さな面倒です'],
       ['for one household', 'ある家庭にとっては'],
@@ -710,7 +710,7 @@ export default Object.freeze([
       'will end by describing': 'end by ＋ -ing で「結局〜することになる」。',
     },
   }),
-  st('[S A margin] [V is] [C the distance {前| between an ordinary setback and a setback {関係>a setback| [S that] [V turns] [M {前| into something genuinely serious}]}}].', {
+  st('[S A margin] [V is] [C the distance {前| between {並列| an ordinary setback | and a setback {関係>a setback| [S that] [V turns] [M {前| into something genuinely serious}]}}}].', {
     chunks: [
       ['A margin is the distance', '余裕とは距離のことです（何の距離かは次へ）'],
       ['between an ordinary setback and a setback', 'ありふれた不調と、もう一つの不調との'],
@@ -720,7 +720,7 @@ export default Object.freeze([
       'that turns into something genuinely serious': 'turn into … で「…に変わる」。',
     },
   }),
-  st('[S Savings, family support, and secure housing] [M all] [V widen] [O that distance] [M {前| without {動名詞| [M ever] [V appearing] [M {前| in any published official figure}]}}].', {
+  st('[S {並列| Savings, | family support, | and secure housing}] [M all] [V widen] [O that distance] [M {前| without {動名詞| [M ever] [V appearing] [M {前| in any published official figure}]}}].', {
     chunks: [
       ['Savings, family support, and secure housing', '貯蓄と家族の支えと安定した住まいは'],
       ['all widen that distance', 'どれもその距離を広げます'],
@@ -731,7 +731,7 @@ export default Object.freeze([
       'without ever appearing': 'without ＋ -ing で「〜することなく」。ever は「一度も」。',
     },
   }),
-  st('[S Two households {前| with identical incomes}] [V can] [M therefore] [V represent] [O entirely different degrees {前| of practical safety and personal freedom}].', {
+  st('[S Two households {前| with identical incomes}] [V can] [M therefore] [V represent] [O entirely different degrees {前| of {並列| practical safety | and personal freedom}}].', {
     chunks: [
       ['Two households with identical incomes', '同じ収入の二つの家庭が'],
       ['can therefore represent entirely different degrees', 'したがってまったく異なる度合いを表しえます'],
@@ -751,7 +751,7 @@ export default Object.freeze([
       'Measuring income by itself hides most': 'by itself は「それだけで」。動名詞 Measuring … が文の主語Sです。',
     },
   }),
-  st('[S Time] [V is] [C the resource {関係>the resource| [O that] [S inequality] [V distributes] [M most unevenly]} and {関係>the resource| [O that] [S public policy] [V notices] [M least often]}].', {
+  st('[S Time] [V is] [C the resource {並列| {関係>the resource| [O that] [S inequality] [V distributes] [M most unevenly]} | and {関係>the resource| [O that] [S public policy] [V notices] [M least often]}}].', {
     chunks: [
       ['Time is the resource', '時間は資源です（どんな資源かは次へ）'],
       ['that inequality distributes most unevenly', '不平等が最も不均等に分ける'],
@@ -761,7 +761,7 @@ export default Object.freeze([
       'and that public policy notices least often': '二つの that はどちらも the resource を受ける関係代名詞です。',
     },
   }),
-  st('[S A long journey {前| to work}, an unpredictable shift, and a second job] [M all] [V consume] [O exactly the hours {関係>the hours| [O that] [S any serious planning] [V requires]}].', {
+  st('[S {並列| A long journey {前| to work}, | an unpredictable shift, | and a second job}] [M all] [V consume] [O exactly the hours {関係>the hours| [O that] [S any serious planning] [V requires]}].', {
     chunks: [
       ['A long journey to work,', '長い通勤と'],
       ['an unpredictable shift, and a second job', '予測できない勤務と二つ目の仕事は'],
@@ -951,7 +951,7 @@ export default Object.freeze([
       'and they cannot both be fully satisfied': 'not both … で「両方とも〜とはいかない」という部分否定です。',
     },
   }),
-  st('[S Cheaper housing] [V is] [C good {前| for new buyers} and bad {前| for the existing owners {関係>the existing owners| [S who] [V voted] [M {前| for the rules {関係>the rules| [S that] [V are] [M now] [M {前| in force}]}}]}}].', {
+  st('[S Cheaper housing] [V is] [C {並列| good {前| for new buyers} | and bad {前| for the existing owners {関係>the existing owners| [S who] [V voted] [M {前| for the rules {関係>the rules| [S that] [V are] [M now] [M {前| in force}]}}]}}}].', {
     chunks: [
       ['Cheaper housing is good for new buyers', '住宅が安いことは新しい買い手にはよく'],
       ['and bad for the existing owners', '既存の所有者には悪いことです'],
@@ -972,7 +972,7 @@ export default Object.freeze([
       'at a price that is normally stated in advance': 'in advance は「前もって」。ここでの price は利子などの負担です。',
     },
   }),
-  st('[M {分詞構文:条件| [V Used] [M {前| for education} or {前| for the purchase {前| of a house}}]}], [S it] [V can raise] [O the income {前| of a whole life}] [M quite substantially].', {
+  st('[M {分詞構文:条件| [V Used] [M {並列| {前| for education} | or {前| for the purchase {前| of a house}}}]}], [S it] [V can raise] [O the income {前| of a whole life}] [M quite substantially].', {
     chunks: [
       ['Used for education or for the purchase of a house,', '教育や住宅の購入のために使われれば'],
       ['it can raise the income of a whole life', 'それは一生の所得を引き上げられます'],
@@ -1012,7 +1012,7 @@ export default Object.freeze([
       'that addresses risk between the generations': 'address はここでは「（問題に）取り組む」。',
     },
   }),
-  st('[S It] [V works] [M {前| by {動名詞| [V pooling] [O events {関係>events| [S that] [V are] [C rare {前| for any single individual} and reasonably predictable {前| for a whole population}]}]}}].', {
+  st('[S It] [V works] [M {前| by {動名詞| [V pooling] [O events {関係>events| [S that] [V are] [C {並列| rare {前| for any single individual} | and reasonably predictable {前| for a whole population}}]}]}}].', {
     chunks: [
       ['It works by pooling events', 'それは出来事をまとめることで働きます'],
       ['that are rare for any single individual', 'どの個人にもまれで'],
@@ -1105,7 +1105,7 @@ export default Object.freeze([
       'Its value comes from being consistently predictable': 'come from ＋ -ing で「〜することから生まれる」。',
     },
   }),
-  st('[S A court {関係>A court| [S that] [V decided] [O every single case] [M purely] [M {前| on its own merits}]}] [V would be] [C entirely fair and completely useless].', {
+  st('[S A court {関係>A court| [S that] [V decided] [O every single case] [M purely] [M {前| on its own merits}]}] [V would be] [C {並列| entirely fair | and completely useless}].', {
     chunks: [
       ['A court that decided every single case', 'すべての事件を裁くような裁判所は'],
       ['purely on its own merits', 'その都度の是非だけで'],
@@ -1187,7 +1187,7 @@ export default Object.freeze([
       'that nobody at all owns': 'own はここでは「自分のものとして引き受ける」。',
     },
   }),
-  st('[S Such systems] [V are] [C comfortable {to:副詞(形容詞)| [V to work] [M inside]} and almost impossible {to:副詞(形容詞)| [V to correct] [M {前| from anywhere {前| outside them}}]}].', {
+  st('[S Such systems] [V are] [C {並列| comfortable {to:副詞(形容詞)| [V to work] [M inside]} | and almost impossible {to:副詞(形容詞)| [V to correct] [M {前| from anywhere {前| outside them}}]}}].', {
     chunks: [
       ['Such systems are comfortable to work inside', 'そうした仕組みは中で働くには居心地がよく'],
       ['and almost impossible to correct', 'そして正すのはほぼ不可能です'],
@@ -1207,7 +1207,7 @@ export default Object.freeze([
       'Naming the responsible office well in advance': 'well in advance で「かなり前もって」。',
     },
   }),
-  st('[S Transparency] [V is] [M frequently] [V offered] [M {前| to the public}] [M {前| as a complete and sufficient answer {前| to every kind {前| of distrust}}}].', {
+  st('[S Transparency] [V is] [M frequently] [V offered] [M {前| to the public}] [M {前| as {並列| a complete | and sufficient answer {前| to every kind {前| of distrust}}}}].', {
     chunks: [
       ['Transparency is frequently offered to the public', '透明性はしばしば人々に差し出されます'],
       ['as a complete and sufficient answer', '完全で十分な答えとして'],
@@ -1217,7 +1217,7 @@ export default Object.freeze([
       'as a complete and sufficient answer': 'as は「〜として」。差し出される資格を表します。',
     },
   }),
-  st('[S {動名詞| [V Publishing] [O a long document {関係>a long document| [O that] [S nobody] [V is actually able to read]}]}] [V produces] [O the appearance {前| of openness} and none {前| of its substance}].', {
+  st('[S {動名詞| [V Publishing] [O a long document {関係>a long document| [O that] [S nobody] [V is actually able to read]}]}] [V produces] [O {並列| the appearance {前| of openness} | and none {前| of its substance}}].', {
     chunks: [
       ['Publishing a long document', '長い文書を公表することは'],
       ['that nobody is actually able to read', 'だれも実際には読めない（文書を）'],
@@ -1228,7 +1228,7 @@ export default Object.freeze([
       'and none of its substance': 'none of … で「…のどれも〜ない」。substance は「中身」。',
     },
   }),
-  st('[S Genuinely useful transparency] [V states] [O the decision, the reason {前| for it}, the alternatives, and the date {前| of the next review}].', {
+  st('[S Genuinely useful transparency] [V states] [O {並列| the decision, | the reason {前| for it}, | the alternatives, | and the date {前| of the next review}}].', {
     chunks: [
       ['Genuinely useful transparency states the decision,', '本当に役立つ透明性は、決定と'],
       ['the reason for it, the alternatives,', 'その理由と、ほかの選択肢と'],
@@ -1302,7 +1302,7 @@ export default Object.freeze([
       'A city passes on a great deal more knowledge': 'pass on … で「…を次へ渡す」。a great deal more で「はるかに多くの」。',
     },
   }),
-  st('[S Libraries, places {前| of work}, families, and neighbors] [M together] [V carry] [O most {前| of {what節| [O what] [S a resident {前| of a city}] [M actually] [V ends up] [O {動名詞| [V learning]}]}}].', {
+  st('[S {並列| Libraries, | places {前| of work}, | families, | and neighbors}] [M together] [V carry] [O most {前| of {what節| [O what] [S a resident {前| of a city}] [M actually] [V ends up] [O {動名詞| [V learning]}]}}].', {
     chunks: [
       ['Libraries, places of work, families, and neighbors', '図書館と職場と家族と隣人が'],
       ['together carry most of what', '合わさって、〜ことの大半を運びます'],
@@ -1355,7 +1355,7 @@ export default Object.freeze([
       'and they are entirely right to respond in that way': 'be right to ＋ 動詞 で「〜するのは正しい」。',
     },
   }),
-  st('[S A test {関係>A test| [S that] [M mainly] [V rewards] [O recall]}] [V will] [M consistently] [V produce] [O classrooms {関係>classrooms| [S that] [V are organized] [M {前| around recall and nothing else}]}].', {
+  st('[S A test {関係>A test| [S that] [M mainly] [V rewards] [O recall]}] [V will] [M consistently] [V produce] [O classrooms {関係>classrooms| [S that] [V are organized] [M {前| around {並列| recall | and nothing else}}]}].', {
     chunks: [
       ['A test that mainly rewards recall', '主に暗記に報いる試験は'],
       ['will consistently produce classrooms', '決まって教室を生みます（どんな教室かは次へ）'],
@@ -1384,7 +1384,7 @@ export default Object.freeze([
       'are also the very hardest to measure at all': 'the very ＋ 最上級 で「まさに最も〜」。to measure が hardest の内容を示します。',
     },
   }),
-  st('[S Patience, curiosity, and a willingness {to:形容詞>a willingness| [V to revise] [O a strong belief]}] [M all] [V resist] [O almost every simple instrument {前| of measurement}].', {
+  st('[S {並列| Patience, | curiosity, | and a willingness {to:形容詞>a willingness| [V to revise] [O a strong belief]}}] [M all] [V resist] [O almost every simple instrument {前| of measurement}].', {
     chunks: [
       ['Patience, curiosity, and a willingness', '忍耐と好奇心と意志は'],
       ['to revise a strong belief', '固く抱いた信念を改める（意志）'],
@@ -1427,7 +1427,7 @@ export default Object.freeze([
       'Adults learn in quite a different way': 'a different way from … で「…とは違うやり方」。',
     },
   }),
-  st('[S An adult] [V brings] [O experience, severely limited time, and an immediate practical reason {前| for {動名詞| [V learning] [O one particular thing]}}].', {
+  st('[S An adult] [V brings] [O {並列| experience, | severely limited time, | and an immediate practical reason {前| for {動名詞| [V learning] [O one particular thing]}}}].', {
     chunks: [
       ['An adult brings experience,', '大人は経験と'],
       ['severely limited time,', 'ひどく限られた時間と'],
@@ -1448,7 +1448,7 @@ export default Object.freeze([
       'will waste all three of those considerable advantages': 'all three of … で「…の三つとも」。',
     },
   }),
-  st('[S Short and practical formats {関係>Short and practical formats| [S that] [V can be repeated]}] [V reach] [O far more adults] [M {副詞節:比較| [接 than] [S long degree programs] [M ever] [V do]}].', {
+  st('[S {並列| Short | and practical formats} {関係>Short and practical formats| [S that] [V can be repeated]}] [V reach] [O far more adults] [M {副詞節:比較| [接 than] [S long degree programs] [M ever] [V do]}].', {
     chunks: [
       ['Short and practical formats that can be repeated', '繰り返せる短く実際的な形式は'],
       ['reach far more adults', 'はるかに多くの大人に届きます'],
@@ -1510,7 +1510,7 @@ export default Object.freeze([
       'Health is produced for the most part': 'for the most part で「おおむね・大部分は」。',
     },
   }),
-  st('[S Housing, work, diet, and the quality {前| of the air}] [M together] [V account for] [O far more variation] [M {副詞節:比較| [接 than] [S any treatment] [M ever] [V does]}].', {
+  st('[S {並列| Housing, | work, | diet, | and the quality {前| of the air}}] [M together] [V account for] [O far more variation] [M {副詞節:比較| [接 than] [S any treatment] [M ever] [V does]}].', {
     chunks: [
       ['Housing, work, diet, and the quality of the air', '住まいと仕事と食事と空気の質が'],
       ['together account for far more variation', '合わさって、はるかに大きな差を生んでいます'],
@@ -1582,7 +1582,7 @@ export default Object.freeze([
       'in the way that health money is used': 'the way that ＋ 主語 ＋ 動詞 で「〜するやり方」。in which に置きかえられます。',
     },
   }),
-  st('[S Care {前| for the very old} and {前| for the very young}] [V is] [M largely] [C invisible], [接 and] [S it] [M hardly ever] [V appears] [M {前| in any official set {前| of figures}}].', {
+  st('[S Care {並列| {前| for the very old} | and {前| for the very young}}] [V is] [M largely] [C invisible], [接 and] [S it] [M hardly ever] [V appears] [M {前| in any official set {前| of figures}}].', {
     chunks: [
       ['Care for the very old and for the very young', '高齢者と幼い子どもへのケアは'],
       ['is largely invisible,', 'その大半が目に見えません'],
@@ -1614,7 +1614,7 @@ export default Object.freeze([
       'rather than removed it': 'rather than … で「…ではなく」。moved と removed を比べています。',
     },
   }),
-  st('[S {動名詞| [V Counting] [O that work] [M honestly], [M even] [M {副詞節:時| [接 when] [S nobody] [V is paid] [M {前| for it}]}]}], [V changes] [O {疑問詞節| [S which reform] [V looks] [C cheap]} and {疑問詞節| [S which] [V looks] [C expensive]}].', {
+  st('[S {動名詞| [V Counting] [O that work] [M honestly], [M even] [M {副詞節:時| [接 when] [S nobody] [V is paid] [M {前| for it}]}]}], [V changes] [O {並列| {疑問詞節| [S which reform] [V looks] [C cheap]} | and {疑問詞節| [S which] [V looks] [C expensive]}}].', {
     chunks: [
       ['Counting that work honestly,', 'その仕事を誠実に数えることは'],
       ['even when nobody is paid for it,', 'だれも報酬を受けていないときでさえ'],
@@ -1625,7 +1625,7 @@ export default Object.freeze([
       'changes which reform looks cheap': 'which reform … は「どの改革が…か」という間接疑問です。',
     },
   }),
-  st('[S Medical technology] [V extends] [O the length {前| of a life}] [M far more consistently] [M {副詞節:比較| [接 than] [S it] [V manages] [O {to:名詞| [V to extend] [O independence and comfort]}]}].', {
+  st('[S Medical technology] [V extends] [O the length {前| of a life}] [M far more consistently] [M {副詞節:比較| [接 than] [S it] [V manages] [O {to:名詞| [V to extend] [O {並列| independence | and comfort}]}]}].', {
     chunks: [
       ['Medical technology extends the length of a life', '医療技術は人生の長さを延ばします'],
       ['far more consistently', 'はるかに確実に'],
@@ -1675,7 +1675,7 @@ export default Object.freeze([
       'Every health system in the world shares out care,': 'share out … で「…を分け合う・配分する」。',
     },
   }),
-  st('[S Waiting lists, prices, distance, and rules {前| about {疑問詞節| [S who] [V qualifies]}}] [V are] [M all] [C different methods {前| of {動名詞| [V sharing out] [O care]}}].', {
+  st('[S {並列| Waiting lists, | prices, | distance, | and rules {前| about {疑問詞節| [S who] [V qualifies]}}}] [V are] [M all] [C different methods {前| of {動名詞| [V sharing out] [O care]}}].', {
     chunks: [
       ['Waiting lists, prices, distance, and rules', '待機名簿と価格と距離と規則は'],
       ['about who qualifies', 'だれに資格があるかについての'],
@@ -1705,7 +1705,7 @@ export default Object.freeze([
       'A rule that is stated openly can be argued with,': 'argue with … で「…に反論する」。受け身になって with が文の終わりに残っています。',
     },
   }),
-  st('[S Every new tool {関係>Every new tool| [O that] [S a city] [V adopts]}] [V creates] [O a new capability and a new dependence {前| on it}] [M {前| at exactly the same moment}].', {
+  st('[S Every new tool {関係>Every new tool| [O that] [S a city] [V adopts]}] [V creates] [O {並列| a new capability | and a new dependence {前| on it}}] [M {前| at exactly the same moment}].', {
     chunks: [
       ['Every new tool that a city adopts', '都市が取り入れるどの新しい道具も'],
       ['creates a new capability and a new dependence on it', '新しい能力と、それへの新しい依存を生みます'],
@@ -1737,7 +1737,7 @@ export default Object.freeze([
       'that it finally fails': 'the day that ＋ 主語 ＋ 動詞 で「〜する日」。on which に置きかえられます。',
     },
   }),
-  st('[S {動名詞| [V Planning] [M carefully] [M {前| for that day}]}] [V is] [C the whole difference {前| between a small trouble and a complete stop}].', {
+  st('[S {動名詞| [V Planning] [M carefully] [M {前| for that day}]}] [V is] [C the whole difference {前| between {並列| a small trouble | and a complete stop}}].', {
     chunks: [
       ['Planning carefully for that day', 'その日に向けて丁寧に備えることが'],
       ['is the whole difference', '違いのすべてです（何の違いかは次へ）'],
@@ -1860,7 +1860,7 @@ export default Object.freeze([
       'into a very large one': 'convert A into B で「AをBに変える」。one は mistake の代わりです。',
     },
   }),
-  st('[S {動名詞| [V Testing] [M {前| at full scale}] [M {前| before any wide deployment}]}] [V is] [M therefore] [C not simple caution but a matter {前| of ordinary arithmetic}].', {
+  st('[S {動名詞| [V Testing] [M {前| at full scale}] [M {前| before any wide deployment}]}] [V is] [M therefore] [C {並列| not simple caution | but a matter {前| of ordinary arithmetic}}].', {
     chunks: [
       ['Testing at full scale', '実際の規模で試すことは'],
       ['before any wide deployment', '広く導入する前に'],
@@ -1921,7 +1921,7 @@ export default Object.freeze([
       'No plan survives an entire generation completely intact,': 'intact は「そのままの・無傷の」。',
     },
   }),
-  st('[S The distinction {関係>The distinction| [S that] [M really] [V matters] [M here]}] [V lies] [M {前| between decisions {関係>decisions| [S that] [V can be reversed]} and decisions {関係>decisions| [S that] [V cannot be reversed]}}].', {
+  st('[S The distinction {関係>The distinction| [S that] [M really] [V matters] [M here]}] [V lies] [M {前| between {並列| decisions {関係>decisions| [S that] [V can be reversed]} | and decisions {関係>decisions| [S that] [V cannot be reversed]}}}].', {
     chunks: [
       ['The distinction that really matters here', 'ここで本当に大切な区別は'],
       ['lies between decisions that can be reversed', '撤回できる決定と'],

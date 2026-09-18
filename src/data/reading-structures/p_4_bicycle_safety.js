@@ -1,7 +1,7 @@
 import { st } from './entry.js'
 
 export default Object.freeze([
-  st('[M Next month], [S our town] [V will hold] [O a bicycle safety week {前| for children and their families}].', {
+  st('[M Next month], [S our town] [V will hold] [O a bicycle safety week {前| for {並列| children | and their families}}].', {
     chunks: [
       ['Next month,', '来月'],
       ['our town', '私たちの町は'],
@@ -82,7 +82,7 @@ export default Object.freeze([
       'can bring their bicycles': 'bring は「持ってくる」。their は families を指します。',
     },
   }),
-  st('[S Local shop workers] [V will check] [O the brakes, seats, and lights] [M {前| for free}].', {
+  st('[S Local shop workers] [V will check] [O {並列| the brakes, | seats, | and lights}] [M {前| for free}].', {
     chunks: [
       ['Local shop workers', '地元の店の人たちが'],
       ['will check the brakes, seats, and lights', 'ブレーキや座席、ライトを点検します'],

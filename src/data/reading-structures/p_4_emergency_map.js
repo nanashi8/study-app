@@ -95,7 +95,7 @@ export default Object.freeze([
       'one sign was hidden behind a large tree': 'was hidden は hide（隠す）の受け身で「隠れていた」。',
     },
   }),
-  st('[S They] [M also] [V asked] [M {前| for larger letters and simple pictures}].', {
+  st('[S They] [M also] [V asked] [M {前| for {並列| larger letters | and simple pictures}}].', {
     chunks: [
       ['They also asked for', 'その人たちは〜も求めました（何をかは次へ）'],
       ['larger letters and simple pictures', 'もっと大きな文字と簡単な絵を'],
@@ -116,7 +116,7 @@ export default Object.freeze([
       'if the rain grew stronger': 'grow ＋ 形容詞 で「〜になる」。stronger は strong の比較級です。',
     },
   }),
-  st('[S The students] [V changed] [O the map] [接 and] [V printed] [O copies] [M {前| for schools and shops}].', {
+  st('[S The students] [V changed] [O the map] [接 and] [V printed] [O copies] [M {前| for {並列| schools | and shops}}].', {
     chunks: [
       ['The students changed the map', '生徒たちは地図を直しました'],
       ['and printed copies', 'そして何部も印刷しました（だれのためにかは次へ）'],
@@ -135,7 +135,7 @@ export default Object.freeze([
       'They put the same information': 'put はここでは過去形です（put は形が変わりません）。put A on B で「AをBに載せる」。',
     },
   }),
-  st('[M {副詞節:理由| [接 Because] [S streets and buildings] [V change]}], [S the class] [V will check] [O every route] [M again] [M each spring].', {
+  st('[M {副詞節:理由| [接 Because] [S {並列| streets | and buildings}] [V change]}], [S the class] [V will check] [O every route] [M again] [M each spring].', {
     chunks: [
       ['Because streets and buildings change,', '道路や建物は変わるので'],
       ['the class will check every route again', 'クラスはすべての道順をもう一度確かめます'],

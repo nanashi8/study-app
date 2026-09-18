@@ -14,7 +14,7 @@ export default Object.freeze([
       'a culture holds with a stranger,': 'conversation の後ろに目的格の関係代名詞が省かれています。',
     },
   }),
-  st('[S It] [V announces] [O {疑問詞節| [M how close] [S two people] [V may stand]}, {疑問詞節| [C how formal] [S the moment] [V must be]}, and {疑問詞節| [S who] [V is expected] [C {to:補語| [V to speak] [M first]}]}].', {
+  st('[S It] [V announces] [O {並列| {疑問詞節| [M how close] [S two people] [V may stand]}, | {疑問詞節| [C how formal] [S the moment] [V must be]}, | and {疑問詞節| [S who] [V is expected] [C {to:補語| [V to speak] [M first]}]}}].', {
     chunks: [
       ['It announces how close two people may stand,', '挨拶は、二人がどれだけ近くに立ってよいか'],
       ['how formal the moment must be,', 'その場がどれほど改まったものであるべきか'],
@@ -64,7 +64,7 @@ export default Object.freeze([
       'Neither habit is more polite than the other,': 'neither … で「どちらの…も〜ない」。',
     },
   }),
-  st('[S A visitor {関係>A visitor| [S who] [V has learned] [O this]}] [V stops] [O {動名詞| [V reading] [O warmth or coldness] [M {前| into the simple order {前| of two ordinary words}}]}].', {
+  st('[S A visitor {関係>A visitor| [S who] [V has learned] [O this]}] [V stops] [O {動名詞| [V reading] [O {並列| warmth | or coldness}] [M {前| into the simple order {前| of two ordinary words}}]}].', {
     chunks: [
       ['A visitor who has learned this', 'これを学んだ訪問者は'],
       ['stops reading warmth or coldness', '温かさや冷たさを読み取るのをやめます'],
@@ -134,7 +134,7 @@ export default Object.freeze([
       'Because the two functions look identical from outside,': 'identical は「まったく同じ」。',
     },
   }),
-  st('[S Tone and timing] [V matter] [M as much] [M {前| as the words themselves}], [接 and] [S irony] [M rarely] [V survives] [O translation] [M intact].', {
+  st('[S {並列| Tone | and timing}] [V matter] [M as much] [M {前| as the words themselves}], [接 and] [S irony] [M rarely] [V survives] [O translation] [M intact].', {
     chunks: [
       ['Tone and timing matter as much as the words themselves,', '口調と間合いは、言葉そのものと同じくらい大切です'],
       ['and irony rarely survives translation intact', 'そして皮肉が翻訳を無傷で越えることはまれです'],
@@ -143,7 +143,7 @@ export default Object.freeze([
       'and irony rarely survives translation intact': 'survive … intact で「…を無傷で切り抜ける」。',
     },
   }),
-  st('[S Even waiting] [V has] [O a grammar], [M {副詞節:理由| [接 since] [S a queue] [V may be] [C a straight line, a loose cluster, or a numbered ticket]}].', {
+  st('[S Even waiting] [V has] [O a grammar], [M {副詞節:理由| [接 since] [S a queue] [V may be] [C {並列| a straight line, | a loose cluster, | or a numbered ticket}]}].', {
     chunks: [
       ['Even waiting has a grammar,', '順番を待つことにさえ文法があります'],
       ['since a queue may be a straight line,', 'なぜなら列は一直線にも'],
@@ -193,7 +193,7 @@ export default Object.freeze([
       'in which a household tells a stranger': 'in which は「前置詞＋関係代名詞」で、in the ways（そのやり方で）の意味です。',
     },
   }),
-  st('[S {what節| [S What] [V appears] [M {前| on the table}]}] [V matters] [M far less] [M {前| than the obligations {関係省略:目的格>the obligations| [S the meal] [M quietly] [V creates] [M {前| between host and guest}]}}].', {
+  st('[S {what節| [S What] [V appears] [M {前| on the table}]}] [V matters] [M far less] [M {前| than the obligations {関係省略:目的格>the obligations| [S the meal] [M quietly] [V creates] [M {前| between {並列| host | and guest}}]}}].', {
     chunks: [
       ['What appears on the table matters far less', '食卓に出るものの重みは、はるかに小さいのです'],
       ['than the obligations the meal quietly creates', 'その食事が静かに生む義務よりも'],
@@ -274,7 +274,7 @@ export default Object.freeze([
       'Visitors who measure hospitality by cost alone': 'by ＋ 手段 で「…で測る」。alone は「〜だけで」。',
     },
   }),
-  st('[S Seating] [M usually] [V encodes] [O rank, age, or the direction {前| of a view {関係>a view| [O that] [S the household] [V regards] [C {前| as honored}]}}].', {
+  st('[S Seating] [M usually] [V encodes] [O {並列| rank, | age, | or the direction {前| of a view {関係>a view| [O that] [S the household] [V regards] [C {前| as honored}]}}}].', {
     chunks: [
       ['Seating usually encodes rank, age,', '席の決め方はたいてい、序列や年齢を暗に示します'],
       ['or the direction of a view', 'あるいは眺めの向きを'],
@@ -355,7 +355,7 @@ export default Object.freeze([
       'A dish that seems notorious to one visitor': 'notorious は「悪い意味で知られた」。',
     },
   }),
-  st('[S Curiosity {関係>Curiosity| [S that] [V is expressed] [M {前| without any comment}]}] [V is] [M therefore] [M almost always] [C the safer and more welcome response].', {
+  st('[S Curiosity {関係>Curiosity| [S that] [V is expressed] [M {前| without any comment}]}] [V is] [M therefore] [M almost always] [C {並列| the safer | and more welcome response}].', {
     chunks: [
       ['Curiosity that is expressed without any comment', '論評を添えずに示される好奇心は'],
       ['is therefore almost always', 'したがってほとんどの場合'],
@@ -425,7 +425,7 @@ export default Object.freeze([
       'since meaning is assigned by the people': 'assign は「割り当てる・与える」。ここは受け身です。',
     },
   }),
-  st('[S Music, dancing, and calligraphy] [M often] [V carry] [O the parts {前| of belief} {関係>the parts of belief| [O that] [S formal doctrine] [V states] [M rather poorly] [接 or] [V leaves out] [M completely]}].', {
+  st('[S {並列| Music, | dancing, | and calligraphy}] [M often] [V carry] [O the parts {前| of belief} {関係>the parts of belief| [O that] [S formal doctrine] [V states] [M rather poorly] [接 or] [V leaves out] [M completely]}].', {
     chunks: [
       ['Music, dancing, and calligraphy often carry', '音楽と踊りと書はしばしば運んでいます'],
       ['the parts of belief', '信仰のうちの部分を'],
@@ -456,7 +456,7 @@ export default Object.freeze([
       'This is why an artifact removed from its festival': 'artifact は「人の手で作られた品」。',
     },
   }),
-  st('[S Superstition and principle] [V are] [M much] [C harder {to:副詞(形容詞)| [V to separate]}] [M {副詞節:比較| [接 than] [S outsiders] [M usually] [V assume] [O them] [C {to:補語| [V to be]}]}].', {
+  st('[S {並列| Superstition | and principle}] [V are] [M much] [C harder {to:副詞(形容詞)| [V to separate]}] [M {副詞節:比較| [接 than] [S outsiders] [M usually] [V assume] [O them] [C {to:補語| [V to be]}]}].', {
     chunks: [
       ['Superstition and principle are much harder to separate', '迷信と信条は、分けるのがずっと難しいのです'],
       ['than outsiders usually assume them to be', '部外者がふつう思っているよりも'],
@@ -486,7 +486,7 @@ export default Object.freeze([
       'Calling such a gesture irrational': 'call ＋ 目的語 ＋ 形容詞 で「〜を…と呼ぶ」。',
     },
   }),
-  st('[S Many festivals] [M now] [V serve] [O two audiences] [M {前| at once}]: [O {同格>two audiences| the community {関係>the community| [S that] [V keeps] [O them]} and the visitors {関係>the visitors| [S who] [V photograph] [O them]}}].', {
+  st('[S Many festivals] [M now] [V serve] [O two audiences] [M {前| at once}]: [O {同格>two audiences|{並列| the community {関係>the community| [S that] [V keeps] [O them]} | and the visitors {関係>the visitors| [S who] [V photograph] [O them]}}}].', {
     chunks: [
       ['Many festivals now serve two audiences at once:', '今日、多くの祭りは二つの相手に同時に応えています'],
       ['the community that keeps them', 'それを続ける共同体と'],
@@ -506,7 +506,7 @@ export default Object.freeze([
       'because tourism funds it,': 'fund は動詞で「資金を出して支える」。',
     },
   }),
-  st('[S {whether節| [接 Whether] [S this] [V counts] [M {前| as preservation} or {前| as loss}]}] [V is] [C a genuine disagreement {前| rather than a question {前| with a settled answer}}].', {
+  st('[S {whether節| [接 Whether] [S this] [V counts] [M {並列| {前| as preservation} | or {前| as loss}}]}] [V is] [C a genuine disagreement {前| rather than a question {前| with a settled answer}}].', {
     chunks: [
       ['Whether this counts as preservation or as loss', 'これが保存にあたるのか失われることにあたるのかは'],
       ['is a genuine disagreement', '本物の意見の食い違いです'],
@@ -537,7 +537,7 @@ export default Object.freeze([
       'and could not have imagined': 'could not have ＋ 過去分詞 で「〜できなかっただろう」。',
     },
   }),
-  st('[S {動名詞| [V Reading] [O a festival] [M well]}] [M therefore] [V means] [O {動名詞| [V asking] [O {疑問詞節| [S who] [V keeps] [O it]}, {疑問詞節| [S who] [V pays] [M {前| for it}]}, and {疑問詞節| [S who] [V is left out]}]}].', {
+  st('[S {動名詞| [V Reading] [O a festival] [M well]}] [M therefore] [V means] [O {動名詞| [V asking] [O {並列| {疑問詞節| [S who] [V keeps] [O it]}, | {疑問詞節| [S who] [V pays] [M {前| for it}]}, | and {疑問詞節| [S who] [V is left out]}}]}].', {
     chunks: [
       ['Reading a festival well therefore means asking', 'したがって祭りをよく読むとは、問うことです'],
       ['who keeps it, who pays for it,', 'だれが続け、だれが費用を負い'],
@@ -557,7 +557,7 @@ export default Object.freeze([
       'that paper documents cannot': 'cannot の後ろに carry memory が省かれています。',
     },
   }),
-  st('[S A length {前| of fabric}, a brick, or a wooden chest] [V can record] [O a technique {関係>a technique| [O that] [S no surviving manuscript] [M ever] [V describes]}].', {
+  st('[S {並列| A length {前| of fabric}, | a brick, | or a wooden chest}] [V can record] [O a technique {関係>a technique| [O that] [S no surviving manuscript] [M ever] [V describes]}].', {
     chunks: [
       ['A length of fabric, a brick, or a wooden chest', '一幅の布や煉瓦や木の箱が'],
       ['can record a technique', '技法を記録していることがあります'],
@@ -597,7 +597,7 @@ export default Object.freeze([
       'it is a compressed memory of a journey': 'compressed は「押し縮められた」。',
     },
   }),
-  st('[S Neither meaning] [V is] [C false], [M {副詞節:譲歩| [接 although] [S the two sides] [M rarely] [V acknowledge] [O each other] [M {前| in any explicit or public way}]}].', {
+  st('[S Neither meaning] [V is] [C false], [M {副詞節:譲歩| [接 although] [S the two sides] [M rarely] [V acknowledge] [O each other] [M {前| in {並列| any explicit | or public way}}]}].', {
     chunks: [
       ['Neither meaning is false,', 'どちらの意味も偽りではありません'],
       ['although the two sides rarely acknowledge each other', 'ただし、双方が互いを認め合うことはまれです'],
@@ -628,7 +628,7 @@ export default Object.freeze([
       'A pedagogy built on watching and repeating': 'pedagogy は「教え方」。flatten は「平板にする」。',
     },
   }),
-  st('[M {副詞節:時| [接 When] [S a workshop] [V closes]}], [S the loss] [V is not] [C a product but a set {前| of decisions} {関係>a set of decisions| [O that] [S nobody] [M ever] [V recorded]}].', {
+  st('[M {副詞節:時| [接 When] [S a workshop] [V closes]}], [S the loss] [V is not] [C {並列| a product | but a set {前| of decisions} {関係>a set of decisions| [O that] [S nobody] [M ever] [V recorded]}}].', {
     chunks: [
       ['When a workshop closes,', '工房が閉じるとき'],
       ['the loss is not a product', '失われるのは製品ではなく'],
@@ -708,7 +708,7 @@ export default Object.freeze([
       'an act of selection': 'selection は「選ぶこと」。',
     },
   }),
-  st('[S Someone] [V decides] [O {疑問詞節| [S which manuscript] [V is restored]}, {疑問詞節| [S which building] [V is protected]}, and {疑問詞節| [S which one] [V is] [M quietly] [V allowed] [C {to:補語| [V to crack]}]}].', {
+  st('[S Someone] [V decides] [O {並列| {疑問詞節| [S which manuscript] [V is restored]}, | {疑問詞節| [S which building] [V is protected]}, | and {疑問詞節| [S which one] [V is] [M quietly] [V allowed] [C {to:補語| [V to crack]}]}}].', {
     chunks: [
       ['Someone decides which manuscript is restored,', 'だれかが、どの写本を直すか'],
       ['which building is protected,', 'どの建物を守るか'],
@@ -748,7 +748,7 @@ export default Object.freeze([
       'A dialect is not a corrupted version of a standard,': 'corrupted は「崩れた」。variety はここでは「言語の一つの姿」。',
     },
   }),
-  st('[S The variety {関係>The variety| [S that] [V becomes] [C the standard]}] [M usually] [V did] [O so] [M {前| for political and economic reasons}] [M {前| rather than {前| for linguistic ones}}].', {
+  st('[S The variety {関係>The variety| [S that] [V becomes] [C the standard]}] [M usually] [V did] [O so] [M {前| for {並列| political | and economic reasons}}] [M {前| rather than {前| for linguistic ones}}].', {
     chunks: [
       ['The variety that becomes the standard', '標準になる姿が'],
       ['usually did so', 'そうなったのはたいてい'],
@@ -779,7 +779,7 @@ export default Object.freeze([
       'and only much later consider the move permanent': 'consider ＋ 目的語 ＋ 形容詞 で「〜を…だとみなす」。',
     },
   }),
-  st('[S Remittances, return visits, and unfinished plans] [V can keep] [O two distant places] [C connected] [M {前| for several decades}] [M {前| at a time}].', {
+  st('[S {並列| Remittances, | return visits, | and unfinished plans}] [V can keep] [O two distant places] [C connected] [M {前| for several decades}] [M {前| at a time}].', {
     chunks: [
       ['Remittances, return visits, and unfinished plans', '送金と里帰りとやり残した計画が'],
       ['can keep two distant places connected', '遠く離れた二つの場所をつなぎ続けます'],
@@ -789,7 +789,7 @@ export default Object.freeze([
       'can keep two distant places connected': 'keep ＋ 目的語 ＋ 過去分詞 で「〜を…されたままにする」。remittance は「送金」。',
     },
   }),
-  st('[S Cities] [V tend] [O {to:名詞| [V to grow] [M {前| at the outer edges}]}], [M {関係,>the outer edges| [M where] [S new arrivals] [V can] [M still] [V afford] [O both {to:名詞| [V to live]} and {to:名詞| [V to work]}]}].', {
+  st('[S Cities] [V tend] [O {to:名詞| [V to grow] [M {前| at the outer edges}]}], [M {関係,>the outer edges| [M where] [S new arrivals] [V can] [M still] [V afford] [O {並列| both {to:名詞| [V to live]} | and {to:名詞| [V to work]}}]}].', {
     chunks: [
       ['Cities tend to grow at the outer edges,', '都市は外の縁で育ちがちです'],
       ['where new arrivals can still afford', 'そこでは新しく来た人がまだ余裕を持てます'],
@@ -819,7 +819,7 @@ export default Object.freeze([
       'of who arrived in which decade': 'この who は疑問詞で、「だれが来たのか」という間接疑問を作ります。',
     },
   }),
-  st('[S Trade] [V has] [M always] [V carried] [O words] [M {前| along with the commodities {関係>the commodities| [S that] [V were being bought and sold] [M {前| across long distances}]}}].', {
+  st('[S Trade] [V has] [M always] [V carried] [O words] [M {前| along with the commodities {関係>the commodities| [S that] [V were being {並列| bought | and sold}] [M {前| across long distances}]}}].', {
     chunks: [
       ['Trade has always carried words', '交易は常に言葉を運んできました'],
       ['along with the commodities', '品物とともに'],
@@ -859,7 +859,7 @@ export default Object.freeze([
       'and it often does so rather more quickly': 'does so は「そうする」で、shapes language を受けています。',
     },
   }),
-  st('[S An entrepreneur, a contractor, and a factory worker {前| in one city}] [V may share] [O a vocation] [M {前| without {動名詞| [V sharing] [O much vocabulary]}}].', {
+  st('[S {並列| An entrepreneur, | a contractor, | and a factory worker} {前| in one city}] [V may share] [O a vocation] [M {前| without {動名詞| [V sharing] [O much vocabulary]}}].', {
     chunks: [
       ['An entrepreneur, a contractor, and a factory worker', '起業家と請負人と工場で働く人が'],
       ['in one city may share a vocation', '同じ都市で同じ職業を共にしても'],
@@ -899,7 +899,7 @@ export default Object.freeze([
       'That description flatters the observer more': 'flatter は「実際よりよく見せる」。',
     },
   }),
-  st('[S {what節| [S What] [V looks] [M {前| like confusion}] [M {前| from outside}]}] [V is], [M {分詞構文:時| [V seen] [M {前| from inside}]}], [C ordinary and very often quite deliberate].', {
+  st('[S {what節| [S What] [V looks] [M {前| like confusion}] [M {前| from outside}]}] [V is], [M {分詞構文:時| [V seen] [M {前| from inside}]}], [C {並列| ordinary | and very often quite deliberate}].', {
     chunks: [
       ['What looks like confusion from outside', '外から混乱に見えるものは'],
       ['is, seen from inside,', '内側から見れば'],
@@ -939,7 +939,7 @@ export default Object.freeze([
       'over which it is applied': 'over which は「前置詞＋関係代名詞」で、over the range（その範囲にわたって）の意味です。',
     },
   }),
-  st('[S Words {前| such as always and every}] [V are] [M {前| among the clearest signals {同格that>signals| [接 that] [S a description] [V has stopped] [O {動名詞| [V being] [C precise]}]}}].', {
+  st('[S Words {前| such as {並列| always | and every}}] [V are] [M {前| among the clearest signals {同格that>signals| [接 that] [S a description] [V has stopped] [O {動名詞| [V being] [C precise]}]}}].', {
     chunks: [
       ['Words such as always and every', 'always や every のような語は'],
       ['are among the clearest signals', '最も明確な合図の一つです'],
@@ -1069,7 +1069,7 @@ export default Object.freeze([
       'is not simply to collect a store of facts': 'a store of … で「…の蓄え」。',
     },
   }),
-  st('[S It] [V is] [C {to:補語| [V to notice] [O {that節| [接 that] [S one’s own habits] [V are] [M also] [C local, also learned, and also open {前| to question}]}]}].', {
+  st('[S It] [V is] [C {to:補語| [V to notice] [O {that節| [接 that] [S one’s own habits] [V are] [M also] [C {並列| local, | also learned, | and also open {前| to question}}]}]}].', {
     chunks: [
       ['It is to notice that one’s own habits', 'それは、自分自身の習慣もまた〜と気づくことです'],
       ['are also local, also learned,', '土地のものであり、学ばれたものであり'],

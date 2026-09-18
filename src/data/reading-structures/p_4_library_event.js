@@ -41,7 +41,7 @@ export default Object.freeze([
       'After the talk': 'after ＋ 名詞で「〜のあとに」。後ろに主語と動詞がないので節ではありません。',
     },
   }),
-  st('[S The library] [V will provide] [O paper and glue], [接 so] [S families] [V do not need] [O {to:名詞| [V to bring] [O craft materials]}].', {
+  st('[S The library] [V will provide] [O {並列| paper | and glue}], [接 so] [S families] [V do not need] [O {to:名詞| [V to bring] [O craft materials]}].', {
     notes: {
       'do not need to bring craft materials': 'need to do の否定で「〜する必要はない」。',
     },

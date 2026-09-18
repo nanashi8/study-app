@@ -76,7 +76,7 @@ export default Object.freeze([
     },
     rules: ['paragraph-map', 'parallel-shape', 'main-clause-skeleton'],
   }),
-  st('[S Students] [V carry] [O a bottle and a small towel] [M every day].', {
+  st('[S Students] [V carry] [O {並列| a bottle | and a small towel}] [M every day].', {
     chunks: [
       ['Students carry a bottle and a small towel', '生徒は水筒と小さなタオルを持ち歩きます'],
       ['every day', '毎日'],

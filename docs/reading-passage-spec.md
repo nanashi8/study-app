@@ -164,7 +164,9 @@ Farmers <from nearby villages> bring vegetables,
   後ろで共有する名詞は最後の並ぶものに入れる（`{並列| both environmental | and social benefits}`）。
 - 自動で決めきれない要素どうしの並列は、要素を並べて `|` で区切る。重なる自動の並列は使わない。
   `[S It] [V travels] [M {前| with the next heavy rain}] {並列| [M {前| into a ditch}], | [M then] [M {前| into a stream}], | [接 and] [M finally] [M {前| into water …}]}`
-- 検査は `tests/reading-parallel-layout.test.mjs`（利用者の図の3つの形を固定。全台帳で語を落とさずに組めるか）。
+- 動詞の中の並び（is compressed, cropped, or recorded）は、後ろの修飾語が最後の動詞だけにかかるなら動詞を要素に分けて `[接 or]` で結び、全部にかかるなら動詞の中に `{並列| …}` を書く（修飾語は並びの後ろの行に出る）。
+- 関係節・分詞・不定詞が並ぶもの全体を説明するとき（equipment, skill, and time that very few people possessed）は、`{並列| …}` を閉じてから置く。1つだけを説明するときは最後の並ぶものに入れる。
+- 検査は `tests/reading-parallel-layout.test.mjs`。利用者の図の3つの形を固定し、全台帳で語を落とさずに組めるかを見る。要素の中の and・or・but・nor が並列の接続詞として書いてあるかも見る（並べないのは文頭の接続詞と、or not・sooner or later だけ）。
 
 ## 5. つなぐ語の解説の決まり
 
@@ -202,7 +204,7 @@ Farmers <from nearby villages> bring vegetables,
 | 型 | 決定 | 例 |
 | --- | --- | --- |
 | between A and B | A と B を縦にそろえる（ほかの並列と同じ見え方） | `<between ten` ／ `and` ／ `two>` |
-| sooner or later のような決まった言い方 | 1行のまま。並列にしない | `will sooner or later be resisted` |
+| sooner or later・whether … or not の or not のような決まった言い方 | 1行のまま。並列にしない | `will sooner or later be resisted`、`whether it happens to be genuine or not` |
 | 共有された助動詞・to（can listen …, make …, and borrow …） | (can) を補わない。can は並びの手前に残り、動詞がそろう | `Children can listen …,` ／ `make …,` ／ `and` ／ `borrow …` |
 | 共有する the などの限定詞 | the は並びの手前に残し、名詞からそろえる（推奨の「the から」ではなく利用者が選んだ形） | `check the brakes,` ／ `seats,` ／ `and` ／ `lights` |
 

@@ -32,7 +32,7 @@ export default Object.freeze([
       'Yet these details alone do not show': 'Yet は「しかし」。名詞の後ろの alone は「それだけで」。these details は、自信ありげな話し方や研究に触れることを指します。',
     },
   }),
-  st('[S A careful reader] [M first] [V asks] [O {疑問詞節| [S who] [V produced] [O the message]} and {疑問詞節| [S what evidence] [V is] [M actually] [C available]}].', {
+  st('[S A careful reader] [M first] [V asks] [O {並列| {疑問詞節| [S who] [V produced] [O the message]} | and {疑問詞節| [S what evidence] [V is] [M actually] [C available]}}].', {
     chunks: [
       ['A careful reader first asks', '注意深い読み手は、まず問います（何をかは次へ）'],
       ['who produced the message', 'だれがその情報を作ったのか'],
@@ -55,7 +55,7 @@ export default Object.freeze([
     },
     rules: ['comparison-pairs', 'relative-clause', 'postmodifier'],
   }),
-  st('[M However], [S the name {前| of an expert or institution}] [V should not end] [O the investigation].', {
+  st('[M However], [S the name {前| of {並列| an expert | or institution}}] [V should not end] [O the investigation].', {
     chunks: [
       ['However,', 'しかし'],
       ['the name of an expert or institution', '専門家や機関の名前があっても'],
@@ -65,7 +65,7 @@ export default Object.freeze([
       'should not end the investigation': 'should not は「〜するべきではない」。名前があることで調査を終わらせてはいけない、という意味です。',
     },
   }),
-  st('[S Readers] [M still] [V need] [O {to:名詞| [V to examine] [O {疑問詞節| [M how] [S the study] [V was designed]} and {whether節| [接 whether] [S other researchers] [V found] [O similar results]}]}].', {
+  st('[S Readers] [M still] [V need] [O {to:名詞| [V to examine] [O {並列| {疑問詞節| [M how] [S the study] [V was designed]} | and {whether節| [接 whether] [S other researchers] [V found] [O similar results]}}]}].', {
     chunks: [
       ['Readers still need to examine', 'それでも読み手は調べる必要があります（何をかは次へ）'],
       ['how the study was designed', 'その研究がどのように設計されたか'],
@@ -84,7 +84,7 @@ export default Object.freeze([
       'Sample size is one important clue': 'sample size は、調べた人数などの「標本の大きさ」です。',
     },
   }),
-  st('[S A result {前| from twelve volunteers}] [V may be] [C interesting], [接 but] [S it] [V may not apply] [M {前| to people {前| of different ages or health conditions}}].', {
+  st('[S A result {前| from twelve volunteers}] [V may be] [C interesting], [接 but] [S it] [V may not apply] [M {前| to people {前| of {並列| different ages | or health conditions}}}].', {
     chunks: [
       ['A result from twelve volunteers', '12人のボランティアから得た結果は'],
       ['may be interesting,', '興味深いかもしれません'],
@@ -105,7 +105,7 @@ export default Object.freeze([
       'so that researchers can separate the treatment': 'so that ＋ 主語 ＋ can 〜 で「〜できるように」。separate A from B で「AをBから切り分ける」。',
     },
   }),
-  st('[M {前| Without such a comparison}], [S improvement] [V may come] [M {前| from sleep, diet, expectation, or simple chance}].', {
+  st('[M {前| Without such a comparison}], [S improvement] [V may come] [M {前| from {並列| sleep, | diet, | expectation, | or simple chance}}].', {
     chunks: [
       ['Without such a comparison,', 'そのような比較がなければ'],
       ['improvement may come', '改善は生じているのかもしれません（何からかは次へ）'],
@@ -145,7 +145,7 @@ export default Object.freeze([
       'but perhaps relaxed people': 'perhaps は「もしかすると」。お茶がストレスを減らすのではなく、逆の向きの説明を出しています。',
     },
   }),
-  st('[S Income, working hours, and social habits] [V might influence] [O both tea drinking and stress] [M as well].', {
+  st('[S {並列| Income, | working hours, | and social habits}] [V might influence] [O {並列| both tea drinking | and stress}] [M as well].', {
     chunks: [
       ['Income, working hours, and social habits', '収入や労働時間、社会的な習慣が'],
       ['might influence both tea drinking and stress', 'お茶をどれだけ飲むかと、ストレスの両方に影響しているかもしれません'],
@@ -202,7 +202,7 @@ export default Object.freeze([
       'being tested': 'being tested は「試験されている」という受け身の進行の形で、the product を後ろから説明します。',
     },
   }),
-  st('[S Independent review and a clear statement {前| of possible conflicts}] [V make] [O the evidence] [C easier {to:副詞(形容詞)| [V to evaluate]}].', {
+  st('[S {並列| Independent review | and a clear statement {前| of possible conflicts}}] [V make] [O the evidence] [C easier {to:副詞(形容詞)| [V to evaluate]}].', {
     chunks: [
       ['Independent review and a clear statement', '独立した審査と、はっきりした説明が（何の説明かは次へ）'],
       ['of possible conflicts', '起こり得る利益相反についての（説明が）'],
@@ -213,7 +213,7 @@ export default Object.freeze([
       'make the evidence easier to evaluate': 'make ＋ O ＋ C で「OをCにする」。easy to 〜 は「〜しやすい」で、easier はその比較級です。',
     },
   }),
-  st('[S None {前| of these questions}] [V gives] [O a quick promise {同格that>a quick promise| [接 that] [S a claim] [V is] [C true or false]}].', {
+  st('[S None {前| of these questions}] [V gives] [O a quick promise {同格that>a quick promise| [接 that] [S a claim] [V is] [C {並列| true | or false}]}].', {
     chunks: [
       ['None of these questions gives a quick promise', 'こうした問いのどれも、すぐに保証してくれるわけではありません（何をかは次へ）'],
       ['that a claim is true or false', '主張が正しいか誤りかを'],

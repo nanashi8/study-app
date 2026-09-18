@@ -56,7 +56,7 @@ export default Object.freeze([
       'practice explaining the displays in easy words': 'practice ＋ -ing で「〜する練習をする」。explaining 以下が practice の目的語です。',
     },
   }),
-  st('[M {前| During the afternoon}], [S they] [V help] [O families {関係>families| [S who] [V have] [O small children]} or visitors {関係>visitors| [S who] [V are not] [C used {前| to museums}]}].', {
+  st('[M {前| During the afternoon}], [S they] [V help] [O {並列| families {関係>families| [S who] [V have] [O small children]} | or visitors {関係>visitors| [S who] [V are not] [C used {前| to museums}]}}].', {
     chunks: [
       ['During the afternoon', '午後には'],
       ['they', '生徒たちは'],
@@ -125,7 +125,7 @@ export default Object.freeze([
       'gives them a useful sense of responsibility': 'give ＋ 人 ＋ もの で「人にものを与える」。them は many students を指します。',
     },
   }),
-  st('[S They] [M also] [V discover] [O {that節| [接 that] [S a museum] [V is connected] [M {前| to schools, shops, parks, and many other parts {前| of the community}}]}].', {
+  st('[S They] [M also] [V discover] [O {that節| [接 that] [S a museum] [V is connected] [M {前| to {並列| schools, | shops, | parks, | and many other parts {前| of the community}}}]}].', {
     chunks: [
       ['They also discover', '生徒たちはまた気づきます（内容は次へ）'],
       ['that', '〜ということに'],

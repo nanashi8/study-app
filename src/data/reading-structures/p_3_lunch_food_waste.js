@@ -61,7 +61,7 @@ export default Object.freeze([
       while: 'while はここでは「一方で」と、下級生と上級生の違いを比べています。',
     },
   }),
-  st('[S The class] [M then] [V measured] [O the amount {前| of rice, vegetables, and bread {過去分詞>rice, vegetables, and bread| [V left] [M each day]}}] [M {前| for two weeks}].', {
+  st('[S The class] [M then] [V measured] [O the amount {前| of {並列| rice, | vegetables, | and bread} {過去分詞>rice, vegetables, and bread| [V left] [M each day]}}] [M {前| for two weeks}].', {
     chunks: [
       ['The class then measured the amount', '次にクラスは量を測りました（何の量かは次へ）'],
       ['of rice, vegetables, and bread', 'ご飯・野菜・パンの（量を）'],
@@ -161,7 +161,7 @@ export default Object.freeze([
       'reducing food waste': 'reducing 以下は「〜を減らすこと」という動名詞のまとまりで、that節の中の主語です。',
     },
   }),
-  st('[S It] [V can begin] [M {前| by {動名詞| [V giving] [O1 people] [O2 clear information and a useful choice]}}].', {
+  st('[S It] [V can begin] [M {前| by {動名詞| [V giving] [O1 people] [O2 {並列| clear information | and a useful choice}]}}].', {
     chunks: [
       ['It can begin', 'それは始められます（どう始めるかは次へ）'],
       ['by giving people', '人々に与えることで（何をかは次へ）'],
@@ -184,7 +184,7 @@ export default Object.freeze([
       'and encourage them': 'encourage ＋ 人 ＋ to 〜 で「人に〜するよう勧める」。them は nearby schools を指します。',
     },
   }),
-  st('[S They] [V explain] [O {that節| [接 that] [S every meal] [V uses] [O water, energy, and work] [M {副詞節:時| [接 before] [S it] [V reaches] [O a plate]}], [接 so] [M even] [S a small improvement] [V can protect] [O valuable resources]}].', {
+  st('[S They] [V explain] [O {that節| [接 that] [S every meal] [V uses] [O {並列| water, | energy, | and work}] [M {副詞節:時| [接 before] [S it] [V reaches] [O a plate]}], [接 so] [M even] [S a small improvement] [V can protect] [O valuable resources]}].', {
     chunks: [
       ['They explain that', '生徒たちは〜と説明しています（内容は次へ）'],
       ['every meal uses water, energy, and work', 'どの食事も、水やエネルギー、人の労力を使います'],

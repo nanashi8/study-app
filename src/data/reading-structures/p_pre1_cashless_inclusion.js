@@ -1,7 +1,7 @@
 import { st } from './entry.js'
 
 export default Object.freeze([
-  st('[S Cashless payment] [V has] [M recently] [V moved] [M {前| from a convenient option}] [M {前| to the expected form {前| of payment}}] [M {前| in many shops, transport systems, and public facilities}].', {
+  st('[S Cashless payment] [V has] [M recently] [V moved] [M {前| from a convenient option}] [M {前| to the expected form {前| of payment}}] [M {前| in {並列| many shops, | transport systems, | and public facilities}}].', {
     chunks: [
       ['Cashless payment has recently moved', 'キャッシュレス決済は、近年移り変わってきました（何から何へかは次へ）'],
       ['from a convenient option', '便利な選択肢から'],
@@ -13,7 +13,7 @@ export default Object.freeze([
       'to the expected form of payment': 'expected は「当然そうだと思われている」。',
     },
   }),
-  st('[S Supporters] [V cite] [O faster transactions, lower handling costs, and reduced risk {前| of theft {前| for merchants}}].', {
+  st('[S Supporters] [V cite] [O {並列| faster transactions, | lower handling costs, | and reduced risk {前| of theft {前| for merchants}}}].', {
     chunks: [
       ['Supporters cite', '支持する人々は挙げます（何をかは次へ）'],
       ['faster transactions, lower handling costs,', 'より速い取引や、現金を扱う費用の低さ'],
@@ -45,7 +45,7 @@ export default Object.freeze([
       'but they are not shared equally': 'are not shared は受け身の否定です。they は These benefits を指します。',
     },
   }),
-  st('[S Some people] [V do not have] [O a bank account, a suitable phone, reliable internet access, or the identity documents {過去分詞>the identity documents| [V required] [M {to:副詞(目的)| [V to open] [O a digital account]}]}].', {
+  st('[S Some people] [V do not have] [O {並列| a bank account, | a suitable phone, | reliable internet access, | or the identity documents {過去分詞>the identity documents| [V required] [M {to:副詞(目的)| [V to open] [O a digital account]}]}}].', {
     chunks: [
       ['Some people do not have a bank account,', '一部の人々は、銀行口座を持っていません'],
       ['a suitable phone, reliable internet access,', '使える電話や、安定したインターネット接続も'],
@@ -57,7 +57,7 @@ export default Object.freeze([
       'required to open a digital account': 'required は「必要とされる」という過去分詞で、the identity documents を後ろから説明します。',
     },
   }),
-  st('[S Others] [V can use] [O digital services] [接 but] [V struggle] [M {前| with small fees, complex passwords, or interfaces {関係>interfaces| [S that] [V were not designed] [M {前| for disabilities}]}}].', {
+  st('[S Others] [V can use] [O digital services] [接 but] [V struggle] [M {前| with {並列| small fees, | complex passwords, | or interfaces {関係>interfaces| [S that] [V were not designed] [M {前| for disabilities}]}}}].', {
     chunks: [
       ['Others can use digital services', 'ほかの人々は、デジタルのサービスは使えます'],
       ['but struggle', 'しかし苦労しています（何にかは次へ）'],
@@ -70,7 +70,7 @@ export default Object.freeze([
       'but struggle': 'struggle with 〜 で「〜に苦労する」。struggle も Others を主語にしています。',
     },
   }),
-  st('[M {前| For these users}], [S {動名詞| [V refusing] [O cash]}] [V does] [O more {前| than {原形| [V remove] [O a familiar habit]}}]; [S it] [V can limit] [O access {前| to food, transport, and public life}].', {
+  st('[M {前| For these users}], [S {動名詞| [V refusing] [O cash]}] [V does] [O more {前| than {原形| [V remove] [O a familiar habit]}}]; [S it] [V can limit] [O access {前| to {並列| food, | transport, | and public life}}].', {
     chunks: [
       ['For these users,', 'こうした利用者にとって'],
       ['refusing cash', '現金を受け付けないことは'],
@@ -92,7 +92,7 @@ export default Object.freeze([
       'Privacy is a different concern': 'a different concern は、前の段落の「使えない人がいる」問題とは別の心配ごと、という意味です。',
     },
   }),
-  st('[S Cash] [M usually] [V leaves] [O no detailed record {現在分詞>no detailed record| [V linking] [O a person] [M {前| to a particular purchase}]}], [M {副詞節:対比| [接 whereas] [S digital payment] [V creates] [O data {関係>data| [S that] [V may be stored, combined, or sold]}]}].', {
+  st('[S Cash] [M usually] [V leaves] [O no detailed record {現在分詞>no detailed record| [V linking] [O a person] [M {前| to a particular purchase}]}], [M {副詞節:対比| [接 whereas] [S digital payment] [V creates] [O data {関係>data| [S that] [V may be {並列| stored, | combined, | or sold}]}]}].', {
     chunks: [
       ['Cash usually leaves no detailed record', '現金は、ふつう詳しい記録を残しません（どんな記録かは次へ）'],
       ['linking a person to a particular purchase,', '人と特定の買い物を結びつける（記録を）'],
@@ -105,7 +105,7 @@ export default Object.freeze([
       'that may be stored, combined, or sold': 'may be の後ろに、stored・combined・sold の三つの過去分詞が並んでいます。',
     },
   }),
-  st('[S Such records] [V can detect] [O fraud] [接 and] [V improve] [O services], [接 yet] [S they] [V can] [M also] [V reveal] [O medical needs, political interests, or daily movements].', {
+  st('[S Such records] [V can detect] [O fraud] [接 and] [V improve] [O services], [接 yet] [S they] [V can] [M also] [V reveal] [O {並列| medical needs, | political interests, | or daily movements}].', {
     chunks: [
       ['Such records can detect fraud and improve services,', 'そうした記録は、不正を見つけてサービスをよくすることができます'],
       ['yet', 'しかし'],
@@ -117,7 +117,7 @@ export default Object.freeze([
       'they can also reveal': 'yet は「しかし」。they は Such records を指します。',
     },
   }),
-  st('[S People {前| with little economic or political power}] [V may be] [M especially] [C vulnerable] [M {副詞節:時| [接 when] [S they] [V cannot choose] [O a private alternative]}].', {
+  st('[S People {前| with {並列| little economic | or political power}}] [V may be] [M especially] [C vulnerable] [M {副詞節:時| [接 when] [S they] [V cannot choose] [O a private alternative]}].', {
     chunks: [
       ['People with little economic or political power', '経済的・政治的な力の乏しい人々は'],
       ['may be especially vulnerable', '特に弱い立場に置かれるかもしれません'],
@@ -147,7 +147,7 @@ export default Object.freeze([
       'but they do not solve every problem': 'not … every は「すべてが〜というわけではない」という部分否定です。',
     },
   }),
-  st('[S Training] [V provides] [O only limited value] [M {前| in rural areas {前| with weak mobile service}} or {前| during payment system failures {前| after serious natural disasters and emergencies}}].', {
+  st('[S Training] [V provides] [O only limited value] [M {並列| {前| in rural areas {前| with weak mobile service}} | or {前| during payment system failures {前| after {並列| serious natural disasters | and emergencies}}}}].', {
     chunks: [
       ['Training provides only limited value', '訓練は、限られた価値しか生みません'],
       ['in rural areas with weak mobile service', '携帯電話の電波が弱い農村部では'],
@@ -180,7 +180,7 @@ export default Object.freeze([
       'whose income changes from week to week': 'whose は households を受け、「その家庭の」という意味の関係代名詞です。from week to week で「週ごとに」。',
     },
   }),
-  st('[S A fixed amount {前| in an envelope}] [V stays] [C visible], [M {副詞節:対比| [接 while] [S digital balances] [V may be divided] [M {前| across several apps and delayed transactions}]}].', {
+  st('[S A fixed amount {前| in an envelope}] [V stays] [C visible], [M {副詞節:対比| [接 while] [S digital balances] [V may be divided] [M {前| across {並列| several apps | and delayed transactions}}]}].', {
     chunks: [
       ['A fixed amount in an envelope stays visible,', '封筒に入れた決まった金額は、目に見えたままです'],
       ['while', '一方で'],
@@ -237,7 +237,7 @@ export default Object.freeze([
     },
     rules: ['author-stance', 'reference-chain', 'svoc-core'],
   }),
-  st('[S Policy] [V can reduce] [O the burden] [M {前| through shared cash services, tax incentives, or exemptions {前| for clearly defined cases}}].', {
+  st('[S Policy] [V can reduce] [O the burden] [M {前| through {並列| shared cash services, | tax incentives, | or exemptions {前| for clearly defined cases}}}].', {
     chunks: [
       ['Policy can reduce the burden', '政策は、その負担を減らすことができます（どうやってかは次へ）'],
       ['through shared cash services, tax incentives,', '共同の現金サービスや税の優遇'],
@@ -262,7 +262,7 @@ export default Object.freeze([
       'of its average transaction': 'its は innovation を指します。',
     },
   }),
-  st('[S A payment system] [V is] [C part {前| of social infrastructure}], [接 and] [S infrastructure] [V must remain] [C usable] [M {前| under varied human and technical conditions}].', {
+  st('[S A payment system] [V is] [C part {前| of social infrastructure}], [接 and] [S infrastructure] [V must remain] [C usable] [M {前| under {並列| varied human | and technical conditions}}].', {
     chunks: [
       ['A payment system is part of social infrastructure,', '支払いの仕組みは、社会基盤の一部です'],
       ['and infrastructure must remain usable', 'そして社会基盤は、使える状態であり続けなければなりません'],
@@ -318,7 +318,7 @@ export default Object.freeze([
       'that prevent people from choosing freely': 'prevent ＋ O ＋ from -ing で「Oが〜するのを妨げる」。',
     },
   }),
-  st('[S A genuinely modern system] [V is not] [C one {関係>one| [S that] [V eliminates] [O older tools] [M as quickly {前| as possible}]}, but one {関係>one| [S that] [V combines] [O convenience, privacy, inclusion, and flexibility] [M {前| in practice}]}].', {
+  st('[S A genuinely modern system] [V is not] [C {並列| one {関係>one| [S that] [V eliminates] [O older tools] [M as quickly {前| as possible}]}, | but one {関係>one| [S that] [V combines] [O {並列| convenience, | privacy, | inclusion, | and flexibility}] [M {前| in practice}]}}].', {
     chunks: [
       ['A genuinely modern system is not one', '本当に現代的な仕組みとは、〜ものではありません（内容は次へ）'],
       ['that eliminates older tools as quickly as possible,', '古い道具をできるだけ早くなくす（ものでは）'],

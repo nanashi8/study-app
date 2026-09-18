@@ -51,7 +51,7 @@ export default Object.freeze([
       'the panels made the most electricity in May': 'the most electricity で「いちばん多くの電気」。most は many・much の最上級です。',
     },
   }),
-  st('[M {前| In June}], [S clouds and rain] [V lowered] [O the number] [M {前| for two weeks}].', {
+  st('[M {前| In June}], [S {並列| clouds | and rain}] [V lowered] [O the number] [M {前| for two weeks}].', {
     chunks: [
       ['In June, clouds and rain lowered the number', '6月には、雲と雨がその数字を下げました（どのくらいかは次へ）'],
       ['for two weeks', '2週間'],
@@ -80,7 +80,7 @@ export default Object.freeze([
     },
     rules: ['paragraph-map', 'logic-connectors', 'main-clause-skeleton'],
   }),
-  st('[S A battery {前| in the gym}] [V can store] [O power] [M {前| for lights and phones}].', {
+  st('[S A battery {前| in the gym}] [V can store] [O power] [M {前| for {並列| lights | and phones}}].', {
     chunks: [
       ['A battery in the gym can store power', '体育館にある蓄電池が、電気をためられます（何のためかは次へ）'],
       ['for lights and phones', '照明と電話のために'],

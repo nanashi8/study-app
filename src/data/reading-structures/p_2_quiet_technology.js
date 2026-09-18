@@ -1,7 +1,7 @@
 import { st } from './entry.js'
 
 export default Object.freeze([
-  st('[M {副詞節:時| [接 When] [S people] [V discuss] [O technology]}], [S they] [M often] [V imagine] [O large machines, bright screens, or dramatic changes {前| in daily life}].', {
+  st('[M {副詞節:時| [接 When] [S people] [V discuss] [O technology]}], [S they] [M often] [V imagine] [O {並列| large machines, | bright screens, | or dramatic changes {前| in daily life}}].', {
     chunks: [
       ['When', '〜するとき（内容は次へ）'],
       ['people discuss technology', '人々がテクノロジーについて話す（とき）'],
@@ -36,7 +36,7 @@ export default Object.freeze([
       'how crowded each platform is': 'how ＋ 形容詞 ＋ S ＋ V で「Sがどれほど〜か」。how crowded が is の補語です。',
     },
   }),
-  st('[S The information] [V is sent] [M {前| to signs and phone apps}], [接 so] [S passengers] [V can choose] [O a less crowded area] [M {副詞節:時| [接 before] [S the train] [V arrives]}].', {
+  st('[S The information] [V is sent] [M {前| to {並列| signs | and phone apps}}], [接 so] [S passengers] [V can choose] [O a less crowded area] [M {副詞節:時| [接 before] [S the train] [V arrives]}].', {
     chunks: [
       ['The information is sent', 'その情報は送られます'],
       ['to signs and phone apps', '表示板とスマートフォンのアプリへ'],
@@ -63,7 +63,7 @@ export default Object.freeze([
       'gives them a better source of information': 'give ＋ 人 ＋ もの で「人にものを与える」。',
     },
   }),
-  st('[S This small difference] [V can reduce] [O stress], [M especially {前| for elderly passengers or parents {現在分詞>parents| [V traveling] [M {前| with children}]}}].', {
+  st('[S This small difference] [V can reduce] [O stress], [M especially {前| for {並列| elderly passengers | or parents {現在分詞>parents| [V traveling] [M {前| with children}]}}}].', {
     chunks: [
       ['This small difference', 'この小さな違いは'],
       ['can reduce stress,', 'ストレスを減らすことができます'],
@@ -146,7 +146,7 @@ export default Object.freeze([
       ['about public behavior', '公共の場での行動についての（データを集められるからです）'],
     ],
   }),
-  st('[M {前| For that reason}], [S officials] [V should explain] [M clearly] [O {疑問詞節| [S what kind of data] [V is collected]} and {疑問詞節| [M how] [S it] [V will be protected]}].', {
+  st('[M {前| For that reason}], [S officials] [V should explain] [M clearly] [O {並列| {疑問詞節| [S what kind of data] [V is collected]} | and {疑問詞節| [M how] [S it] [V will be protected]}}].', {
     chunks: [
       ['For that reason', 'その理由から'],
       ['officials should explain', '担当者は説明するべきです（何をかは次へ）'],
@@ -186,7 +186,7 @@ export default Object.freeze([
       'instead of more convenient': 'instead of more convenient は「（公共サービスを）より便利にするのではなく」と、C の more unequal と比べています。',
     },
   }),
-  st('[S City leaders] [M therefore] [V need] [O {to:名詞| [V to ask] [O {疑問詞節| [M where] [S a new system] [V will have] [O the greatest effect]} and {疑問詞節| [S who] [V might be left out]}]}].', {
+  st('[S City leaders] [M therefore] [V need] [O {to:名詞| [V to ask] [O {並列| {疑問詞節| [M where] [S a new system] [V will have] [O the greatest effect]} | and {疑問詞節| [S who] [V might be left out]}}]}].', {
     chunks: [
       ['City leaders therefore need to ask', 'そのため都市の指導者は問う必要があります（何をかは次へ）'],
       ['where a new system', '新しいシステムがどこで'],
@@ -197,7 +197,7 @@ export default Object.freeze([
       'and who might be left out': 'leave out は「取り残す・外す」。be left out はその受け身です。',
     },
   }),
-  st('[M {前| In some cases}], [S a simple repair {前| to an old bus stop or a clearer sign}] [V may help] [O residents] [M more {前| than an expensive digital service}].', {
+  st('[M {前| In some cases}], [S a simple repair {前| to {並列| an old bus stop | or a clearer sign}}] [V may help] [O residents] [M more {前| than an expensive digital service}].', {
     chunks: [
       ['In some cases', '場合によっては'],
       ['a simple repair to an old bus stop', '古いバス停のちょっとした修理や'],
@@ -216,7 +216,7 @@ export default Object.freeze([
       'before introducing a system everywhere': 'before ＋ -ing で「〜する前に」。introducing は前置詞 before の後ろの動名詞です。',
     },
   }),
-  st('[S They] [V compare] [O energy use, waiting times, and complaints] [M {前| in different neighborhoods}] [接 and] [M then] [V publish] [O the results].', {
+  st('[S They] [V compare] [O {並列| energy use, | waiting times, | and complaints}] [M {前| in different neighborhoods}] [接 and] [M then] [V publish] [O the results].', {
     chunks: [
       ['They', '都市は'],
       ['compare energy use, waiting times, and complaints', 'エネルギー使用量や待ち時間、苦情を比べます'],

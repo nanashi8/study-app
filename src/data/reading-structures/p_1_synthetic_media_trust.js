@@ -1,7 +1,7 @@
 import { st } from './entry.js'
 
 export default Object.freeze([
-  st('[M {前| For most {前| of the last century}}], [S a photograph or a sound recording] [V carried] [O a special kind {前| of authority}] [M {前| in public argument}].', {
+  st('[M {前| For most {前| of the last century}}], [S {並列| a photograph | or a sound recording}] [V carried] [O a special kind {前| of authority}] [M {前| in public argument}].', {
     chunks: [
       ['For most of the last century,', '前世紀のほとんどの間'],
       ['a photograph or a sound recording', '写真や録音は'],
@@ -24,7 +24,7 @@ export default Object.freeze([
       'and it was never absolute': 'it は That authority を指します。absolute は「絶対の」。',
     },
   }),
-  st('[S It] [V depended] [M {前| on a production process {関係>a production process| [S that] [V was] [C expensive, slow, and difficult {to:副詞(形容詞)| [V to conceal]}]}}].', {
+  st('[S It] [V depended] [M {前| on a production process {関係>a production process| [S that] [V was] [C {並列| expensive, | slow, | and difficult {to:副詞(形容詞)| [V to conceal]}}]}}].', {
     chunks: [
       ['It depended on a production process', 'それは、作る過程に支えられていました（どんな過程かは次へ）'],
       ['that was expensive, slow, and difficult to conceal', 'お金がかかり、時間もかかり、隠しにくい（過程に）'],
@@ -34,7 +34,7 @@ export default Object.freeze([
       'that was expensive, slow, and difficult to conceal': 'difficult to conceal で「隠すのが難しい」。to conceal は difficult の中身を限定します。',
     },
   }),
-  st('[S Convincing fabrication] [V required] [O equipment, skill, and time {関係>equipment, skill, and time| [O that] [S very few people] [V possessed]}].', {
+  st('[S Convincing fabrication] [V required] [O {並列| equipment, | skill, | and time} {関係>equipment, skill, and time| [O that] [S very few people] [V possessed]}].', {
     chunks: [
       ['Convincing fabrication required equipment, skill, and time', '本物らしい偽物を作るには、機材と技術と時間が必要でした（どんなものかは次へ）'],
       ['that very few people possessed', 'ごく少ない人しか持っていない（ものが）'],
@@ -66,7 +66,7 @@ export default Object.freeze([
     },
     rules: ['paragraph-map', 'contrast-concession', 'reference-chain'],
   }),
-  st('[S Realistic images, voices, and video] [V can] [M now] [V be produced] [M quickly] [接 and] [M {前| at very low cost}].', {
+  st('[S {並列| Realistic images, | voices, | and video}] [V can] [M now] [V be produced] [M quickly] [接 and] [M {前| at very low cost}].', {
     chunks: [
       ['Realistic images, voices, and video', '本物そっくりの画像や声、映像が'],
       ['can now be produced', '今では作れます（どのようにかは次へ）'],
@@ -219,7 +219,7 @@ export default Object.freeze([
     },
     rules: ['paragraph-map', 'passive-active', 'parallel-shape'],
   }),
-  st('[S Such tools] [V search] [M {前| for statistical traces {関係>statistical traces| [O that] [S generation] [V leaves behind] [M {前| in pixels or sound}]}}].', {
+  st('[S Such tools] [V search] [M {前| for statistical traces {関係>statistical traces| [O that] [S generation] [V leaves behind] [M {前| in {並列| pixels | or sound}}]}}].', {
     chunks: [
       ['Such tools search for statistical traces', 'そうした道具は、統計上の手がかりを探します（どんなものかは次へ）'],
       ['that generation leaves behind', '生成が残していく（手がかりを）'],
@@ -230,7 +230,7 @@ export default Object.freeze([
       'that generation leaves behind': 'leave behind で「あとに残す」。generation はここでは「（機械による）生成」です。',
     },
   }),
-  st('[S Their accuracy] [V falls] [M sharply] [M {副詞節:時| [接 when] [S a file] [V is compressed, cropped, or recorded] [M again] [M {前| from a screen}]}].', {
+  st('[S Their accuracy] [V falls] [M sharply] [M {副詞節:時| [接 when] [S a file] [V is compressed], [V cropped], [接 or] [V recorded] [M again] [M {前| from a screen}]}].', {
     chunks: [
       ['Their accuracy falls sharply', 'その正確さは、ぐっと落ちます（いつかは次へ）'],
       ['when a file is compressed, cropped,', 'ファイルが圧縮されたり、切り取られたり'],
@@ -319,7 +319,7 @@ export default Object.freeze([
       'so the approach fails safely': 'fail safely は「失敗しても安全な結果になる」。本物を偽物と決めつけずにすむ、ということです。',
     },
   }),
-  st('[S Several manufacturers and news organizations] [V have] [M already] [V begun] [O {to:名詞| [V to adopt] [O versions {前| of this standard}]}].', {
+  st('[S {並列| Several manufacturers | and news organizations}] [V have] [M already] [V begun] [O {to:名詞| [V to adopt] [O versions {前| of this standard}]}].', {
     chunks: [
       ['Several manufacturers and news organizations', 'いくつかのメーカーや報道機関が'],
       ['have already begun', 'すでに〜し始めています（何をかは次へ）'],
@@ -352,7 +352,7 @@ export default Object.freeze([
       'to prove what they saw': 'what they saw は「彼らが見たこと」。what が saw の目的語にあたります。',
     },
   }),
-  st('[S Metadata {関係>Metadata| [S that] [V establishes] [O authenticity]}] [V may] [M also] [V reveal] [O the location, the device, and the identity {前| of a source}].', {
+  st('[S Metadata {関係>Metadata| [S that] [V establishes] [O authenticity]}] [V may] [M also] [V reveal] [O {並列| the location, | the device, | and the identity {前| of a source}}].', {
     chunks: [
       ['Metadata that establishes authenticity', '本物であることを示すメタデータは'],
       ['may also reveal the location, the device,', '場所や機器も明かしてしまうかもしれません'],
@@ -385,7 +385,7 @@ export default Object.freeze([
       'so that a claim can be verified': 'so that 〜 can … で「〜が…できるように」と目的を表します。',
     },
   }),
-  st('[S Technical measures] [V are] [C less important {前| than the institutions {関係>the institutions| [S that] [V interpret and apply] [O them]}}].', {
+  st('[S Technical measures] [V are] [C less important {前| than the institutions {関係>the institutions| [S that] [V interpret] [接 and] [V apply] [O them]}}].', {
     chunks: [
       ['Technical measures are less important', '技術の手段は、それほど大事ではありません（何と比べてかは次へ）'],
       ['than the institutions that interpret and apply them', 'それを読み解いて使う制度ほどには'],
@@ -407,7 +407,7 @@ export default Object.freeze([
       'documents prove themselves': 'prove themselves は「自分で自分を証明する」。文書だけでは本物かどうか決まらない、ということです。',
     },
   }),
-  st('[S They] [V rely] [M {前| on procedures, expert testimony, and clear rules {前| about {疑問詞節| [S who] [V must prove] [O what]}}}].', {
+  st('[S They] [V rely] [M {前| on {並列| procedures, | expert testimony, | and clear rules {前| about {疑問詞節| [S who] [V must prove] [O what]}}}}].', {
     chunks: [
       ['They rely on procedures, expert testimony,', '裁判所は、手続きや専門家の証言に頼ります'],
       ['and clear rules about who must prove what', 'そして、だれが何を証明しなければならないかの、はっきりした決まりにも'],
@@ -515,7 +515,7 @@ export default Object.freeze([
       'is as easy to manipulate': 'as 〜 as … で「…と同じくらい〜」。easy to manipulate は「操りやすい」。',
     },
   }),
-  st('[S Useful teaching] [V shows] [O1 students] [O2 {疑問詞to| [M how] [V to ask] [O {疑問詞節| [S who] [V published] [O a claim]} and {疑問詞節| [S what independent evidence] [V supports] [O it]}]}].', {
+  st('[S Useful teaching] [V shows] [O1 students] [O2 {疑問詞to| [M how] [V to ask] [O {並列| {疑問詞節| [S who] [V published] [O a claim]} | and {疑問詞節| [S what independent evidence] [V supports] [O it]}}]}].', {
     chunks: [
       ['Useful teaching shows students how to ask', '役に立つ教え方は、生徒に問い方を示します（何を問うかは次へ）'],
       ['who published a claim', 'だれがその主張を出したのか'],
@@ -548,7 +548,7 @@ export default Object.freeze([
       'cannot': 'cannot の後ろには employ verification teams が省かれています。',
     },
   }),
-  st('[S Most detection tools and training materials] [V are produced] [M {前| for a few widely spoken languages}].', {
+  st('[S {並列| Most detection tools | and training materials}] [V are produced] [M {前| for a few widely spoken languages}].', {
     chunks: [
       ['Most detection tools and training materials are produced', '見分ける道具や研修の資料のほとんどは、作られています（何向けにかは次へ）'],
       ['for a few widely spoken languages', '広く話されている少しの言語のために'],
@@ -591,7 +591,7 @@ export default Object.freeze([
       'whether it happens to be genuine or not': 'whether 〜 or not で「〜であってもなくても」。happen to 〜 は「たまたま〜する」。',
     },
   }),
-  st('[S Independent records, consistent testimony, and institutions {関係>institutions| [S that] [V can be questioned]}] [V carry] [O far more weight] [M together].', {
+  st('[S {並列| Independent records, | consistent testimony, | and institutions {関係>institutions| [S that] [V can be questioned]}}] [V carry] [O far more weight] [M together].', {
     chunks: [
       ['Independent records, consistent testimony,', '別々の記録や、食い違いのない証言'],
       ['and institutions that can be questioned', 'そして問いただすことのできる制度は'],

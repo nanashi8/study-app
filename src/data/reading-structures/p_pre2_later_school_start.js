@@ -62,7 +62,7 @@ export default Object.freeze([
       'students at these schools': 'these schools は、前の文の始業時刻を遅らせた学校を指します。',
     },
   }),
-  st('[S Teachers] [V have] [M also] [V seen] [O greater attention and fewer late arrivals] [M {前| in morning classes}].', {
+  st('[S Teachers] [V have] [M also] [V seen] [O {並列| greater attention | and fewer late arrivals}] [M {前| in morning classes}].', {
     chunks: [
       ['Teachers have also seen', '教師たちも〜を目にしてきました（何をかは次へ）'],
       ['greater attention', '集中力が高まったことや'],
@@ -73,7 +73,7 @@ export default Object.freeze([
       'greater attention': 'greater は great の比較級、fewer は few の比較級で、どちらも「以前より」の変化を表します。',
     },
   }),
-  st('[M {前| In one experiment}], [S attendance and mood] [V improved], [M {副詞節:譲歩| [接 although] [S test scores] [V did not rise] [M immediately]}].', {
+  st('[M {前| In one experiment}], [S {並列| attendance | and mood}] [V improved], [M {副詞節:譲歩| [接 although] [S test scores] [V did not rise] [M immediately]}].', {
     chunks: [
       ['In one experiment,', 'ある実験では'],
       ['attendance and mood improved,', '出席状況と気分がよくなりました'],
@@ -84,7 +84,7 @@ export default Object.freeze([
       'test scores did not rise immediately': 'not … immediately で「すぐには〜ない」。上がらなかったのではなく、すぐには上がらなかったという意味です。',
     },
   }),
-  st('[S A later start], [M however], [V can cause] [O practical problems] [M {前| for families and communities}].', {
+  st('[S A later start], [M however], [V can cause] [O practical problems] [M {前| for {並列| families | and communities}}].', {
     chunks: [
       ['A later start,', '始業を遅らせることは'],
       ['however,', 'しかし'],
@@ -104,7 +104,7 @@ export default Object.freeze([
       'which can increase transportation costs': 'コンマの後ろの which は、前の文の内容（新しい運行予定が必要になること）を受けています。',
     },
   }),
-  st('[S Sports practice and music activities] [V may finish] [M {前| after dark}], [M especially {前| in winter}].', {
+  st('[S {並列| Sports practice | and music activities}] [V may finish] [M {前| after dark}], [M especially {前| in winter}].', {
     chunks: [
       ['Sports practice and music activities', '運動部の練習や音楽活動は'],
       ['may finish after dark,', '暗くなってから終わるかもしれません'],
@@ -125,7 +125,7 @@ export default Object.freeze([
       'to care for younger family members': 'care for 〜 で「〜の世話をする」。世話をするのは older children です。',
     },
   }),
-  st('[M {前| At one school}], [S students] [V helped] [O {原形| [V design] [O the change]}], [接 and] [S their suggestions] [V produced] [O a bus timetable {関係>a bus timetable| [S that] [V protected] [O both sleep and afternoon activities]}].', {
+  st('[M {前| At one school}], [S students] [V helped] [O {原形| [V design] [O the change]}], [接 and] [S their suggestions] [V produced] [O a bus timetable {関係>a bus timetable| [S that] [V protected] [O {並列| both sleep | and afternoon activities}]}].', {
     chunks: [
       ['At one school,', 'ある学校では'],
       ['students helped design the change,', '生徒たちがその変更の中身を考えるのを手伝いました'],
@@ -158,7 +158,7 @@ export default Object.freeze([
       'changing the clock alone': 'changing 以下は「〜を変えること」という動名詞のまとまりで、主語です。alone は「〜だけ」。',
     },
   }),
-  st('[S Schools] [V need] [O {to:名詞| [V to examine] [O bus routes, club times, and family needs] [M {前| before {動名詞| [V choosing] [O a new schedule]}}]}].', {
+  st('[S Schools] [V need] [O {to:名詞| [V to examine] [O {並列| bus routes, | club times, | and family needs}] [M {前| before {動名詞| [V choosing] [O a new schedule]}}]}].', {
     chunks: [
       ['Schools need to examine', '学校は調べる必要があります（何をかは次へ）'],
       ['bus routes, club times, and family needs', 'バスの路線や部活動の時間、家庭の事情を'],

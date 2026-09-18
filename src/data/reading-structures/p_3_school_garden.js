@@ -38,7 +38,7 @@ export default Object.freeze([
       'After that': 'この that は「そのこと」と前の内容を指す代名詞です。',
     },
   }),
-  st('[S The students] [V began] [O {to:名詞| [V to understand] [O {疑問詞節| [M how] [S temperature, rain, and insects] [V affected] [O the vegetables]}]}].', {
+  st('[S The students] [V began] [O {to:名詞| [V to understand] [O {疑問詞節| [M how] [S {並列| temperature, | rain, | and insects}] [V affected] [O the vegetables]}]}].', {
     chunks: [
       ['The students', '生徒たちは'],
       ['began to understand', '理解し始めました（何を理解したかは次へ）'],
@@ -100,7 +100,7 @@ export default Object.freeze([
       ['decreased', '減りました'],
     ],
   }),
-  st('[M {前| In July}], [S they] [V picked] [O enough cucumbers and tomatoes {to:副詞(程度)| [V to share] [M {前| with people {前| at a nearby community center}}]}].', {
+  st('[M {前| In July}], [S they] [V picked] [O {並列| enough cucumbers | and tomatoes} {to:副詞(程度)| [V to share] [M {前| with people {前| at a nearby community center}}]}].', {
     chunks: [
       ['In July', '7月に'],
       ['they', '生徒たちは'],
