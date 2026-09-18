@@ -65,14 +65,6 @@ const BASE_READING_PHRASE_CORRECTIONS = Object.freeze({
       { role: 'V', en: 'make', ja: '作ることができます' },
     ], 'make は can を共有する二つ目の本動詞Vです。'),
   ]),
-  // 目的語の並びが次のブロックへ続くと、述語 collected の訳が
-  // どのブロックにも現れず、語順訳に動詞が一度も出てこなかった。
-  'They collected old photographs, order books and letters from families.': Object.freeze([
-    correction(['and letters'], [
-      { role: 'LINK', en: 'and', ja: 'そして' },
-      { role: 'O', en: 'letters', ja: '手紙を集めました' },
-    ], '目的語の並びの最後に述語を置きます。前のブロックは「〜や」で次へ続きます。'),
-  ]),
   // 等位の二つ目の述語が、一つ目の動詞の目的語Oとして取り込まれていた。
   'Modern lighting has extended working hours, made travel easier, and allowed public spaces to remain active after sunset.': Object.freeze([
     correction(['made travel easier'], [

@@ -91,7 +91,7 @@ export const FIELD_READING_QUESTION_TRANSLATIONS = Object.freeze({
     ]),
   ]),
   p_2_factory_museum: group([
-    t('町の評議会は初め何を計画しましたか。', [
+    t('町議会は初め何を計画しましたか。', [
       'その建物を取り壊すこと。',
       '地域経済の博物館を開くこと。',
       '建物を若い作り手に貸すこと。',
@@ -105,7 +105,7 @@ export const FIELD_READING_QUESTION_TRANSLATIONS = Object.freeze({
     ]),
     t('二つ目の計画はどのようにお金を生む予定でしたか。', [
       '土地を民間企業に売ることで。',
-      '建物の中の小さな仕事場からの家賃で。',
+      '建物の中の小さな工房からの家賃で。',
       '地域経済からの大きな寄付で。',
       '博物館の入場料を上げることで。',
     ]),

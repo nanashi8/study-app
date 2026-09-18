@@ -1031,12 +1031,92 @@ export const PASSAGE_SENSE_GLOSSES = Object.freeze({
   }),
 
   // p_2_factory_museum（町が残した建物）
-  'They collected old photographs, order books and letters from families.': words({ collected: sense('collect', '集めた') }),
+  'An old industrial building beside the canal closed thirty years ago.': words({ closed: sense('close', '閉まった・閉鎖された（工場などが）') }),
+  'After that, the windows were broken and young families moved to the suburb.': words({ moved: sense('move', '移った・引っ越した') }),
+  'The town council first planned to pull the building down.': words({
+    council: sense('council', '議会（town council で町議会）'),
+    pull: sense('pull', '引く（pull 〜 down で「取り壊す」）'),
+    down: sense('down', '（pull 〜 down で「取り壊す」）'),
+  }),
+  'Former workers asked for a delay of one year.': words({ delay: sense('delay', '猶予・延期') }),
+  'They collected old photographs, order books and letters from families.': words({
+    collected: sense('collect', '集めた'),
+    order: sense('order', '注文（order book で注文帳）'),
+    books: sense('book', '帳簿（order book で注文帳）'),
+  }),
+  'The material showed the daily process inside the building in clear detail.': words({
+    material: sense('material', '資料'),
+    showed: sense('show', '示した'),
+    process: sense('process', '工程・作業の流れ'),
+  }),
   'Two hundred people came to a talk about local history.': words({ talk: sense('talk', '講演・話') }),
-  'Repair of the roof and the metal walls demanded a large budget.': words({ repair: sense('repair', '修理') }),
-  'Old paint and chemical waste raised the expense further.': words({ raised: sense('raise', '押し上げた・上げた') }),
-  'The offer would have removed the debt of the town in one step.': words({ offer: sense('offer', '申し出') }),
-  'The plan also promised a slow repair over ten years.': words({ repair: sense('repair', '修理') }),
+  'The council then accepted a study of the costs.': words({
+    council: sense('council', '議会（ここでは町議会）'),
+    study: sense('study', '調査'),
+  }),
+  'The numbers were not encouraging at first.': words({ numbers: sense('number', '数字（複数）') }),
+  'Repair of the roof and the metal walls demanded a large budget.': words({
+    repair: sense('repair', '修理'),
+    demanded: sense('demand', '必要とした'),
+  }),
+  'Old paint and chemical waste raised the expense further.': words({
+    paint: sense('paint', '塗料・ペンキ'),
+    waste: sense('waste', '廃棄物'),
+    raised: sense('raise', '押し上げた・上げた'),
+  }),
+  'A private company offered to buy the land for a car park.': words({
+    private: sense('private', '民間の'),
+    land: sense('land', '土地'),
+    park: sense('park', '（car park で）駐車場'),
+  }),
+  'The offer would have removed the debt of the town in one step.': words({
+    offer: sense('offer', '申し出'),
+    removed: sense('remove', '（借金を）消す・なくす'),
+    step: sense('step', '（in one step で）一度に'),
+  }),
+  'The citizens group answered with a different plan.': words({
+    group: sense('group', '団体（citizens group で市民団体）'),
+    answered: sense('answer', '（提案に）応えた'),
+  }),
+  'The other half would hold small workshops for young makers.': words({
+    hold: sense('hold', '（中に）収める・入れる'),
+    workshops: sense('workshop', '工房・作業場（複数）'),
+    makers: sense('maker', '作り手（複数）'),
+  }),
+  'Rent from those workshops would produce a steady revenue.': words({ workshops: sense('workshop', '工房・作業場（複数）') }),
+  'The plan also promised a slow repair over ten years.': words({
+    repair: sense('repair', '修理'),
+    over: sense('over', '〜にわたって'),
+  }),
+  'The council accepted the second plan by a narrow vote.': words({
+    council: sense('council', '議会（ここでは町議会）'),
+    narrow: sense('narrow', '（差が）わずかな'),
+  }),
+  'Work began on the safest wing of the building.': words({
+    work: sense('work', '工事・作業'),
+    wing: sense('wing', '（建物の）棟'),
+  }),
+  'Volunteers cleaned the machines, and a company gave the paint.': words({
+    cleaned: sense('clean', 'きれいにした・掃除した'),
+    paint: sense('paint', '塗料・ペンキ'),
+  }),
+  'The museum opened four years later with a small staff.': words({ opened: sense('open', '開館した・開いた') }),
+  'A local organization now runs the tours and the small shop.': words({ runs: sense('run', '運営する') }),
+  'Visitors report a strong emotion inside the old halls.': words({ report: sense('report', '（感じたことを）話す・伝える') }),
+  'Former workers lead the tours and explain each machine.': words({ lead: sense('lead', '案内する・導く') }),
+  'Their memory turns a quiet room into a place of real work.': words({
+    turns: sense('turn', '（A を B に）変える（turn A into B）'),
+    work: sense('work', '仕事'),
+  }),
+  'The ancestors of many students appear in the old photographs.': words({ appear: sense('appear', '（写真に）写っている') }),
+  'Young visitors gain a different perception of the town.': words({ perception: sense('perception', '見方・受け止め方') }),
+  'The building has become a monument to ordinary work.': words({ work: sense('work', '仕事') }),
+  'The result is not a complete success.': words({ complete: sense('complete', '完全な') }),
+  'One wing is still closed, and the roof leaks in heavy rain.': words({
+    wing: sense('wing', '（建物の）棟'),
+    closed: sense('close', '閉じた（ままの）'),
+  }),
+  'The group therefore starts each project with a hard question.': words({ project: sense('project', '計画・企画') }),
 
   // p_pre2_school_radio（廊下に流れる声）
   'A new adviser asked the club to study its own audience.': words({ own: sense('own', '自分たちの') }),
