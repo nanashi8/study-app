@@ -1555,7 +1555,7 @@ export default Object.freeze([
       'That record is stored in daily practice': 'practice はここでは「日々くり返される行い」。',
     },
   }),
-  st('[S {動名詞| [V Treating] [O it] [C {前| as folklore}] [M {前| rather than {前| as real evidence}}]}] [V discards] [O information {関係>information| [O that] [V cannot be recovered] [M later]}].', {
+  st('[S {動名詞| [V Treating] [O it] [C {前| as folklore}] [M {前| rather than {前| as real evidence}}]}] [V discards] [O information {関係>information| [S that] [V cannot be recovered] [M later]}].', {
     chunks: [
       ['Treating it as folklore', 'それを言い伝えとして扱い'],
       ['rather than as real evidence', '本当の証拠として扱わないことは'],

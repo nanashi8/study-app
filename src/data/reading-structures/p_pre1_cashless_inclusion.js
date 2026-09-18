@@ -306,7 +306,7 @@ export default Object.freeze([
       'The goal need not be': 'need not ＋ 動詞の原形 で「〜する必要はない」。この need は助動詞です。',
     },
   }),
-  st('[S It] [V should be] [C {to:名詞| [V to preserve] [O meaningful alternatives] [M {副詞節:時| [接 while] [V removing] [O barriers {関係>barriers| [S that] [V prevent] [O people] [M {前| from {動名詞| [V choosing] [M freely]}}]}]}]}].', {
+  st('[S It] [V should be] [C {to:名詞| [V to preserve] [O meaningful alternatives] [M {副詞節:対比| [接 while] [V removing] [O barriers {関係>barriers| [S that] [V prevent] [O people] [M {前| from {動名詞| [V choosing] [M freely]}}]}]}]}].', {
     chunks: [
       ['It should be', '目標は、〜であるべきです（内容は次へ）'],
       ['to preserve meaningful alternatives', '意味のある別の手段を残すこと'],

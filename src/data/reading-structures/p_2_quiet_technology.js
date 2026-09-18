@@ -80,7 +80,7 @@ export default Object.freeze([
       ['in public libraries', '公共図書館に'],
     ],
   }),
-  st('[S Some libraries] [M now] [V use] [O quiet air-control systems {関係>quiet air-control systems| [S that] [V keep] [O rooms] [C comfortable] [M {副詞節:時| [接 while] [V using] [O less energy {前| than older equipment}]}]}].', {
+  st('[S Some libraries] [M now] [V use] [O quiet air-control systems {関係>quiet air-control systems| [S that] [V keep] [O rooms] [C comfortable] [M {副詞節:対比| [接 while] [V using] [O less energy {前| than older equipment}]}]}].', {
     chunks: [
       ['Some libraries', '一部の図書館は'],
       ['now', '今では'],

@@ -547,7 +547,7 @@ export default Object.freeze([
       'and who is left out': 'leave … out で「…を外す」。ここは受け身です。',
     },
   }),
-  st('[S Objects] [V outlive] [O the people {関係>the people| [S who] [V made] [O them]}], [接 and] [S they] [V carry] [O memory] [M {前| in a way {関係>a way| [O that] [S paper documents] [V cannot]}}].', {
+  st('[S Objects] [V outlive] [O the people {関係>the people| [S who] [V made] [O them]}], [接 and] [S they] [V carry] [O memory] [M {前| in a way {関係>a way| [M that] [S paper documents] [V cannot]}}].', {
     chunks: [
       ['Objects outlive the people who made them,', '物はそれを作った人より長く残ります'],
       ['and they carry memory in a way', 'そして記憶をあるやり方で運びます'],

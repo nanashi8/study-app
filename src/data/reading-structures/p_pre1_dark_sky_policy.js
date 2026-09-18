@@ -245,7 +245,7 @@ export default Object.freeze([
     },
     rules: ['contrast-concession', 'paragraph-map', 'main-clause-skeleton'],
   }),
-  st('[S One neighborhood] [V might shield] [O lamps] [接 and] [V reduce] [O brightness] [M {前| after the last bus}] [M {副詞節:時| [接 while] [V keeping] [O crossings] [C clearly lit]}].', {
+  st('[S One neighborhood] [V might shield] [O lamps] [接 and] [V reduce] [O brightness] [M {前| after the last bus}] [M {副詞節:対比| [接 while] [V keeping] [O crossings] [C clearly lit]}].', {
     chunks: [
       ['One neighborhood might shield lamps', 'ある地区では、照明に覆いをつけるかもしれません'],
       ['and reduce brightness after the last bus', 'そして最終バスの後は明るさを下げる、というやり方です'],
@@ -344,7 +344,7 @@ export default Object.freeze([
     },
     rules: ['contrast-concession', 'paragraph-map', 'main-clause-skeleton'],
   }),
-  st('[S They] [V specify] [O direction, intensity, color, and timing] [M {副詞節:時| [接 while] [V allowing] [O justified exceptions]}].', {
+  st('[S They] [V specify] [O direction, intensity, color, and timing] [M {副詞節:対比| [接 while] [V allowing] [O justified exceptions]}].', {
     chunks: [
       ['They specify direction, intensity, color, and timing', 'その基準は、向き、強さ、色、時間を決めます'],
       ['while allowing justified exceptions', '理由のある例外は認めながら'],
