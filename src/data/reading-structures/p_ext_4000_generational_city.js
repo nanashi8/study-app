@@ -1541,7 +1541,7 @@ export default Object.freeze([
       'in the accounts of some other office': 'accounts はここでは「会計・帳簿」。',
     },
   }),
-  st('[S Prevention] [V is] [C very cheap] [M {副詞節:時| [接 when] [S it] [V is counted] [M {前| in total}]}] [接 and] [M yet] [C completely invisible] [M {前| in every individual case}].', {
+  st('[S Prevention] [V is] [C very cheap] [M {副詞節:時| [接 when] [S it] [V is counted] [M {前| in total}]}] [接 and yet] [C completely invisible] [M {前| in every individual case}].', {
     chunks: [
       ['Prevention is very cheap', '予防はきわめて安上がりです'],
       ['when it is counted in total', '全体として数えれば'],
@@ -2064,7 +2064,7 @@ export default Object.freeze([
       'whose one formal task is': 'whose ＋ 名詞 で「その人の〜」。ここは an officer の職務を指します。',
     },
   }),
-  st('[S That device] [V is] [C {前| far from perfect}], [接 and] [M yet] [S it] [V is] [C better] [M {前| than {動名詞| [M simply] [V assuming] [O {that節| [接 that] [S someone else] [V will remember]}]}}].', {
+  st('[S That device] [V is] [C {前| far from perfect}], [接 and yet] [S it] [V is] [C better] [M {前| than {動名詞| [M simply] [V assuming] [O {that節| [接 that] [S someone else] [V will remember]}]}}].', {
     chunks: [
       ['That device is far from perfect,', 'その仕掛けは完全からはほど遠いのですが'],
       ['and yet it is better', 'それでもましです（何よりかは次へ）'],
