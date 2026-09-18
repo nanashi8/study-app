@@ -29,12 +29,14 @@ A pension (that is promised this year) will be paid
 | for A to do（意味上の主語） | < > を2つに分ける | `difficult <for outsiders> <to challenge>` |
 | as … as の1つ目の as、as well | 括らない（副詞） | `as quickly <as possible>` |
 | 句動詞の副詞（turn out の out など） | 括らない（動詞Vの中） | `may later turn out <to be>` |
+| more than・less than・fewer than ＋数 | 数を表す句として全体を < >（more than は数にかかる副詞のはたらき。2026-09-18 利用者が決めた型） | `<More than ten thousand> satellites` |
 
 ## 台帳の書き方
 
 - 前置詞句は `{前| …}`。意味上の主語の for A は `{前:意味上の主語| for A}` と書き、すぐ後ろに to不定詞のまとまりを置く。
 - 省略された関係詞は種類を書く。`{関係省略:目的格>先行詞| …}`、`{関係省略:目的格(動詞)>先行詞| …}`、`{関係省略:関係副詞>先行詞| …}`。
 - 主語と be動詞を省いた副詞節は、動詞がなくてもよい（`{副詞節:時| [接 when] [C possible]}`）。
+- 数を表す more than＋数は `{数量| More than ten thousand}` と書き、名詞の要素の中に置く（`[S {数量| More than ten thousand} satellites]`）。中の than は前置詞の検査から外れる。
 
 ## 検査
 
