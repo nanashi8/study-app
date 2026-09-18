@@ -61,7 +61,7 @@
 | 過去分詞の後置修飾は、省略された関係詞＋be動詞と受け身を説明する | 節・句の解説（`過去分詞`：that is・that are が省かれた受け身） |
 | 比較は前項・後項・省略された述語を示す | つなぐ語の解説（than・as の節、共通の主語と動詞の省略） |
 | 並列は左右の語句と、共有する主語・助動詞・to・前置詞を示す | 並列の縦そろえ表示（4.5章）。並ぶものを縦にそろえ、共有する主語・助動詞・to・前置詞は並びの手前に残る |
-| 共有された (to)・(can) を構造の表示だけに補う | **確認待ち**（7章）：縦そろえで共有が見えるので、補わない案 |
+| 共有された (to)・(can) を構造の表示だけに補う | **補わない**（2026-09-18 利用者が決定）。縦そろえで共有する助動詞・to が並びの手前に残るので、共有が見える。この決まりは縦そろえで置きかえた |
 | セミコロン・コロンを表示と説明に残す | 構造の表示には残る。説明は必要な文だけ台帳の `notes` に書く |
 
 ## 3. 構造台帳の書き方
@@ -159,7 +159,8 @@ Farmers <from nearby villages> bring vegetables,
   - それ以外 → 接続詞のあとの要素と同じ役割の要素を前へ探し、そこから並べる。コンマで続く同じ役割の要素（by A, by B, and by C）も並ぶものに入れる。対になる前半の語（neither・both・not only・not）は1つ目に入れる。
   - 最後の並ぶもののあとに、コンマで区切って続く修飾語（, while …）は、並びに入れずに後ろへ出す。
 - 要素の中で並ぶ語句は、台帳に `{並列| vegetables, | fruit | and flowers}` と `|` で区切って書く。
-  1つ目は名詞のかたまりの頭（the・both・neither などを含む）から、2つ目以降は接続詞から始める。
+  1つ目は名詞のかたまりの頭から、2つ目以降は接続詞から始める。対になる前半の語（both・neither・not only）は1つ目に入れる。
+  すべての並ぶものが共有する the・enough などの限定詞は並列の外（手前）に置く（`[O the {並列| brakes, | seats, | and lights}]`。2026-09-18 利用者が決定）。
   後ろで共有する名詞は最後の並ぶものに入れる（`{並列| both environmental | and social benefits}`）。
 - 自動で決めきれない要素どうしの並列は、要素を並べて `|` で区切る。重なる自動の並列は使わない。
   `[S It] [V travels] [M {前| with the next heavy rain}] {並列| [M {前| into a ditch}], | [M then] [M {前| into a stream}], | [接 and] [M finally] [M {前| into water …}]}`
@@ -194,21 +195,16 @@ Farmers <from nearby villages> bring vegetables,
 
 まだ決まっていない型。例文と選べる形を書いておき、まとめて確認する。
 
-並列の縦そろえ（4.5章）で出た型。推奨の形で台帳を書いておき、決まったら直す。
+（いまはない）
 
-1. **between A and B**（`<between ten and two>` crowded_town_tourism#12、`<between damage and repair>` shared_watershed#31 など7文）
-   - 選べる形：(a) A と B を縦にそろえる　(b) 一まとまりの句として1行のまま
-   - 推奨 (a)：A と B は and で結ばれた並ぶもので、ほかの並列と同じ見え方になる。
-2. **sooner or later のような決まった言い方**（generational_city#83）
-   - 選べる形：(a) 1行のまま（並列にしない）　(b) sooner / or / later とそろえる
-   - 推奨 (a)：「遅かれ早かれ」という一つの副詞のまとまりで、並ぶ2つの意味を読み分ける所ではない。
-3. **共有された (can)・(to) を補うか**（最初の仕様の「特殊構文の扱い」）
-   - 例：Children can listen to stories, make small cards, and borrow books.
-   - 選べる形：(a) 補わない（can は並びの手前に残り、listen・make・borrow が縦にそろう）　(b) 2つ目以降に (can) を補う
-   - 推奨 (a)：縦にそろえることで、can を共有していることが見える。補うとそろえ位置が崩れる。
-4. **共有する the などの限定詞**（the brakes, seats, and lights・enough cucumbers and tomatoes）
-   - 選べる形：(a) the から1つ目にする（the brakes, / seats, / and / lights）　(b) the を手前に残す（the ⟨brakes, / seats, / and / lights⟩）
-   - 推奨 (a)：名詞のかたまりの頭から並べると、1つ目がそのまま読める。
+### 決まった型（2026-09-18、並列の縦そろえで出た4件をまとめて確認）
+
+| 型 | 決定 | 例 |
+| --- | --- | --- |
+| between A and B | A と B を縦にそろえる（ほかの並列と同じ見え方） | `<between ten` ／ `and` ／ `two>` |
+| sooner or later のような決まった言い方 | 1行のまま。並列にしない | `will sooner or later be resisted` |
+| 共有された助動詞・to（can listen …, make …, and borrow …） | (can) を補わない。can は並びの手前に残り、動詞がそろう | `Children can listen …,` ／ `make …,` ／ `and` ／ `borrow …` |
+| 共有する the などの限定詞 | the は並びの手前に残し、名詞からそろえる（推奨の「the から」ではなく利用者が選んだ形） | `check the brakes,` ／ `seats,` ／ `and` ／ `lights` |
 
 ## 8. 検査と固定値
 
