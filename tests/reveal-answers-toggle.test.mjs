@@ -3,6 +3,7 @@ import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 
 import { normalizeSettings, useStore } from '../src/store/useStore.js'
+import { planCardAutoSpeech } from '../src/lib/cardSpeech.js'
 
 // 「タップして意味を見る」を毎回タップしなくて済むカード上の切り替えは、
 // 一度ヘッダー整理で消えたことがある。カード画面から消えないよう固定する。
@@ -67,14 +68,12 @@ test('英単語・熟語のカードは目のボタンでスペルも隠し、�
       `${path}: 目のボタンでスペルを隠せない`,
     )
     assert.match(source, /const spellingHidden = Boolean\((?:word|item)\) && hideSpelling && !flipped/)
-    // 隠しているあいだは読み上げず、流れている音声と、つづりが出る再生パネルも閉じる
+    // 自動の読み上げ（useCardAutoSpeech）に、スペルを隠しているかとカードを開いたかを渡す
     assert.match(
       source,
-      /if \(spellingHidden\) \{\s*dismissSpeechPlayer\(\)\s*return\s*\}\s*if \(settings\.autoSpeak\)/,
+      /useCardAutoSpeech\(\{[\s\S]*?\n\s*spellingHidden,\n\s*answerOpen: flipped,\n[\s\S]*?\}\)/,
       `${path}: スペルを隠しても読み上げる`,
     )
-    // カードを開いてスペルが見えたら、そこで読み上げる
-    assert.match(source, /\}, \[i, (?:word|item)\?\.id, spellingHidden\]\)/, `${path}: スペルが見えても読み上げない`)
     // 隠している側の表示に、つづりと読み上げボタンを置かない
     const hiddenStart = source.indexOf('{spellingHidden ? (')
     assert.ok(hiddenStart > 0, `${path}: スペルを隠した表示がない`)
@@ -82,6 +81,19 @@ test('英単語・熟語のカードは目のボタンでスペルも隠し、�
     assert.doesNotMatch(hiddenBranch, /SpeakButton|phonetic/, `${path}: 隠している側に読み上げが残っている`)
     assert.ok(!hiddenBranch.includes(heading), `${path}: 隠している側につづりが出る`)
   }
+
+  // 隠しているあいだは読み上げず、流れている音声と、つづりが出る再生パネルも閉じる（自動で発音がオフでも閉じる）。
+  const hook = readFileSync('src/components/useCardAutoSpeech.js', 'utf8')
+  assert.match(hook, /if \(plan\.action === 'dismiss'\) dismissSpeechPlayer\(\)/)
+  assert.match(hook, /\}, \[cardKey, spellingHidden, answerOpen\]\)/)
+  for (const autoSpeak of [true, false]) {
+    const hidden = planCardAutoSpeech(null, { spellingHidden: true, answerOpen: false, range: 'word', autoSpeak })
+    assert.equal(hidden.action, 'dismiss')
+  }
+  // カードを開いてスペルが見えたら、そこで単語から読み上げる
+  const hidden = planCardAutoSpeech(null, { spellingHidden: true, answerOpen: false, range: 'word', autoSpeak: true })
+  const shown = planCardAutoSpeech(hidden.memory, { spellingHidden: false, answerOpen: true, range: 'word', autoSpeak: true })
+  assert.deepEqual([shown.action, shown.startSegment], ['play', 0])
 })
 
 test('「答えを開いたまま」と「スペルを隠す」は、片方をONにするともう片方が外れる', () => {

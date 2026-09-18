@@ -5,6 +5,7 @@ import {
 } from './appMenu.js'
 import { appHomeForScreen } from './appHome.js'
 import { normalizeVocabMix } from './vocabMix.js'
+import { normalizeSpeechRange } from './speechRange.js'
 
 // 設定の値は教材ごとに持つ。保存は「全体の値（settings の各キー）＋教材ごとの値（settings.byContent）」で、
 // 教材ごとの値が無いキーは全体の値を使う。教材の ID はメニューの教材の行の画面 ID。
@@ -103,6 +104,8 @@ export function settingsScopeFor({ screen, stack = [] } = {}) {
 
 // 「自動」の声は null。クラウド（Realtime Database）は null を保存しないので、教材ごとの値では空文字で持つ。
 const VOICE_KEYS = new Set(['ttsVoiceURI', 'ttsJapaneseVoiceURI'])
+// 決まった値から選ぶ設定は、知らない値を既定の値へ直して読む。
+const CHOICE_NORMALIZERS = Object.freeze({ vocabMix: normalizeVocabMix, speechRange: normalizeSpeechRange })
 // 片方をONにすると、もう片方を外す組。
 const EXCLUSIVE_KEYS = Object.freeze({ revealAnswers: 'hideSpelling', hideSpelling: 'revealAnswers' })
 
@@ -160,7 +163,7 @@ export function normalizeContentOverrides(value) {
     const overrides = {}
     for (const key of SETTING_KEYS) {
       if (!Object.hasOwn(source, key)) continue
-      overrides[key] = key === 'vocabMix' ? normalizeVocabMix(source[key]) : source[key]
+      overrides[key] = CHOICE_NORMALIZERS[key] ? CHOICE_NORMALIZERS[key](source[key]) : source[key]
     }
     if (overrides.revealAnswers === true && overrides.hideSpelling === true) overrides.hideSpelling = false
     if (Object.keys(overrides).length) result[scope] = overrides

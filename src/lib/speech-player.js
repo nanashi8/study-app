@@ -50,8 +50,9 @@ function normalizeItems(items, defaults) {
   return (Array.isArray(items) ? items : [items])
     .map((item, index) => {
       const source = typeof item === 'string' ? { text: item } : (item ?? {})
+      // sourceIndex は渡された並びでの位置。途中から読むとき（startSegment）に、外れた部分があっても位置がずれない。
       const segments = (source.segments?.length ? source.segments : [source])
-        .map((segment) => textSegment(segment, defaults))
+        .map((segment, sourceIndex) => ({ ...textSegment(segment, defaults), sourceIndex }))
         .filter((segment) => String(segment.text ?? '').trim())
         // 使い方で発音が変わる語（heteronyms.js）は、単語だけでは読み上げない（長文の単語タップも同じ）。
         .filter((segment) => !isAmbiguousSpeechText(segment.text, segment.lang))
@@ -209,7 +210,13 @@ function playSegment(segmentIndex, token) {
   })
 }
 
-function startCurrentItem({ reason = 'play' } = {}) {
+// 渡された並びで fromSegment 番目以降にある、最初の部分。
+function firstSegmentFrom(item, fromSegment = 0) {
+  const index = item.segments.findIndex((segment) => segment.sourceIndex >= fromSegment)
+  return index < 0 ? item.segments.length : index
+}
+
+function startCurrentItem({ reason = 'play', fromSegment = 0 } = {}) {
   if (!session) return false
   clearContinuation()
   stopSpeaking()
@@ -227,7 +234,7 @@ function startCurrentItem({ reason = 'play' } = {}) {
   if (reason !== 'rate-change') {
     session.onPlayStart?.({ reason, index: session.index, item })
   }
-  playSegment(0, token)
+  playSegment(firstSegmentFrom(item, fromSegment), token)
   return true
 }
 
@@ -235,6 +242,8 @@ function startCurrentItem({ reason = 'play' } = {}) {
  * 共通コンソールで扱う読み上げ列を開始する。
  * 1 item が「前へ／次へ」で移動する一つの意味フレーズ、segments はその中で
  * 続けて読む英語・直訳・解説などを表す。
+ * startSegment を渡すと、最初の item だけその部分から読む（暗記カードを開いたとき、読んだ見出しの続きから）。
+ * 「再生」で読み直すときや前後へ移ったときは、いつも item の最初から読む。
  */
 export function playSpeechItems(items, options = {}) {
   if (!isTTSSupported()) return false
@@ -279,7 +288,10 @@ export function playSpeechItems(items, options = {}) {
     ...controlsFor('stopped'),
   })
   emit()
-  return startCurrentItem({ reason: 'initial' })
+  return startCurrentItem({
+    reason: 'initial',
+    fromSegment: Math.max(0, Math.trunc(Number(options.startSegment) || 0)),
+  })
 }
 
 export function playSpeechPlayer() {

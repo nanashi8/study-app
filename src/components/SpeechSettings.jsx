@@ -24,6 +24,7 @@ import {
   normalizeVocabMix,
   vocabMixStep,
 } from '../lib/vocabMix.js'
+import { SPEECH_RANGES, normalizeSpeechRange } from '../lib/speechRange.js'
 import {
   ENGLISH_SETTING_SCOPES,
   SETTING_SCOPES,
@@ -210,6 +211,7 @@ function comparableSettingValue(key, value) {
   if (key === 'revealAnswers' || key === 'hideSpelling') return value === true
   if (key === 'autoSpeak' || key === 'showPhonetic') return Boolean(value)
   if (key === 'vocabMix') return normalizeVocabMix(value)
+  if (key === 'speechRange') return normalizeSpeechRange(value)
   if (key === 'ttsVoiceURI' || key === 'ttsJapaneseVoiceURI') return value || null
   return value
 }
@@ -331,6 +333,39 @@ function AutoSpeakSetting() {
         on={!autoSpeak.mixed && autoSpeak.value}
         onChange={autoSpeak.set}
       />
+    </SettingRow>
+  )
+}
+
+function SpeechRangeSetting() {
+  const speechRange = useSettingField('speechRange')
+
+  return (
+    <SettingRow
+      title="読み上げる範囲"
+      desc="英単語・熟語・構文の暗記カードで、どこまで読み上げるかを選びます。意味と例文の意味は、カードを開いてから日本語の声で読みます"
+      mixed={speechRange.mixed}
+      stacked
+    >
+      <div className="grid gap-2" role="group" aria-label="読み上げる範囲" data-speech-range-options>
+        {SPEECH_RANGES.map((range) => (
+          <button
+            key={range.id}
+            type="button"
+            onClick={() => speechRange.set(range.id)}
+            aria-pressed={!speechRange.mixed && speechRange.value === range.id}
+            data-speech-range={range.id}
+            className={cx(
+              'min-h-11 rounded-xl px-3 text-sm font-extrabold transition-colors',
+              !speechRange.mixed && speechRange.value === range.id
+                ? 'bg-brand-500 text-white'
+                : 'bg-brand-50 text-brand-700',
+            )}
+          >
+            {range.label}
+          </button>
+        ))}
+      </div>
     </SettingRow>
   )
 }
@@ -512,6 +547,7 @@ const SETTING_CONTROLS = {
   ttsVoiceURI: EnglishVoiceSetting,
   ttsJapaneseVoiceURI: JapaneseVoiceSetting,
   autoSpeak: AutoSpeakSetting,
+  speechRange: SpeechRangeSetting,
   showPhonetic: ShowPhoneticSetting,
 }
 
@@ -729,7 +765,7 @@ export function SettingsMenuPanel({ heading = true }) {
           </SettingsSection>
           <SettingsSection
             title="音声・発音"
-            desc="速度、英語・日本語の声、自動発音、発音記号"
+            desc="速度、英語・日本語の声、自動発音、読み上げる範囲、発音記号"
           >
             <SpeechSettingsPanel heading={false} />
           </SettingsSection>
