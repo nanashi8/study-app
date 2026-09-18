@@ -195,6 +195,10 @@ const CONFIRMED_BRACKETS = Object.freeze({
   // 2026-09-18 利用者が示した正しい形：名詞を説明する節は句の外、同格の名詞は括らない。
   'p_4_library_event#4': 'Ms. Brown, one <of the librarians>, will show old pictures <of the town>',
   'p_4_library_event#5': 'She will also talk <about the old station> (that stood <near the river> fifty years ago)',
+  // 2026-09-18 利用者が決定：名詞を後ろから説明する形容詞は括らない・from＋名詞＋to＋同じ名詞は一つの句。
+  'p_ext_1000_civic_decisions#21':
+    'A clear law <with a small penalty> often changes behavior more <than a harsh law> full <of loopholes>',
+  'p_pre2plus_rural_bus_future#11': 'Very few people used the full route <from end to end>',
 })
 
 test('利用者と例文で確認した括弧の付け方を保つ', () => {

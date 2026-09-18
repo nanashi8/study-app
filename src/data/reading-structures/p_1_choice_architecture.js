@@ -298,7 +298,7 @@ export default Object.freeze([
       'that ordinary users can notice and act on': 'act on 〜 で「〜に基づいて動く」。that は can notice と act on の両方の目的語です。',
     },
   }),
-  st('[M Nor] [V does] [S transparency] [M {前| by itself}] [V correct] [O a process {関係>a process| [S that] [V imposes] [O repeated effort] [M {前| on the people least able {to:副詞(形容詞)| [V to provide] [O it]}}]}].', {
+  st('[M Nor] [V does] [S transparency] [M {前| by itself}] [V correct] [O a process {関係>a process| [S that] [V imposes] [O repeated effort] [M {前| on the people {形容詞>the people| least able {to:副詞(形容詞)| [V to provide] [O it]}}}]}].', {
     chunks: [
       ['Nor does transparency by itself correct a process', '分かるようにするだけでは、手続きを正すこともできません（どんな手続きかは次へ）'],
       ['that imposes repeated effort', '何度も手間を負わせる（手続きを）'],

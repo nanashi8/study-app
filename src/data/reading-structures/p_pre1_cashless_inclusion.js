@@ -170,7 +170,7 @@ export default Object.freeze([
       'simply because institutions find it efficient': 'find ＋ O ＋ C で「OをCだと思う」。it は a system を指します。',
     },
   }),
-  st('[S Cash] [V can] [M also] [V provide] [O a simple budgeting tool] [M {前| for households {関係>households| [S whose income] [V changes] [M {前| from week} {前| to week}]}}].', {
+  st('[S Cash] [V can] [M also] [V provide] [O a simple budgeting tool] [M {前| for households {関係>households| [S whose income] [V changes] [M {反復| from week to week}]}}].', {
     chunks: [
       ['Cash can also provide a simple budgeting tool', '現金は、簡単な家計管理の手段にもなります（だれにとってかは次へ）'],
       ['for households', '家庭にとって（どんな家庭かは次へ）'],
