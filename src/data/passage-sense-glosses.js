@@ -15,8 +15,20 @@ const MAY_PERMISSION = sense('may_2', '〜してよい・〜できる（助動�
 
 export const PASSAGE_SENSE_GLOSSES = Object.freeze({
   // p_4_library_event（図書館の週末イベント）
-  'After the talk, children will work in small groups to build a paper model of the station.': words({ talk: sense('talk', '話・講演') }),
+  'After the talk, children will work in small groups to build a paper model of the station.': words({
+    talk: sense('talk', '話・講演'),
+    work: sense('work', '作業する・取り組む'),
+    build: sense('build', '組み立てる・作る'),
+  }),
+  'The library will provide paper and glue, so families do not need to bring craft materials.': words({
+    provide: sense('provide', '用意する・提供する'),
+    craft: sense('craft', '工作（craft materials で工作の材料）'),
+  }),
   'Parents may help, but each child should write a name on the model and take it home at noon.': words({ may: MAY_PERMISSION }),
+  'The event starts at ten in the morning and ends before lunch.': words({
+    starts: sense('start', '始まる'),
+    ends: sense('end', '終わる'),
+  }),
 
   // p_3_school_garden（学校の裏の菜園）
   'At first, many students thought the work would be simple, but they soon learned that plants need careful attention.': words({
@@ -30,69 +42,121 @@ export const PASSAGE_SENSE_GLOSSES = Object.freeze({
     harming: sense('harm', '害を与える・傷つける'),
   }),
   'The class planted those flowers around the garden, and the number of damaged leaves soon decreased.': words({ leaves: sense('leaf', '葉（複数）') }),
+  'Instead of simply giving the food away, the students visited the center and explained how they had grown it.': words({
+    giving: sense('give', '（give 〜 away で）配ること'),
+    away: sense('away', '（give 〜 away で）人に渡して・手放して'),
+  }),
   'The older residents shared recipes and suggested vegetables that the class could plant in autumn.': words({ shared: sense('share', '分け合った・伝えた') }),
   'The students used this advice to plan a second garden, which made the project continue beyond one school term.': words({ used: sense('use', '使った') }),
+  'It also gave them a chance to talk with older people who knew many useful farming tips.': words({ farming: sense('farm', '農業（の）') }),
+  'By the end of the project, even the students who had disliked gardening were proud of the result.': words({ gardening: sense('garden', '庭仕事・畑仕事（gardening）') }),
 
   // p_pre2_museum_volunteers（博物館の若いボランティア）
+  "Before the museum opens on Saturdays, the students meet a staff member and learn about the day's exhibition.": words({ opens: sense('open', '開く・開館する') }),
+  'The work is not always easy because volunteers must communicate politely even when the building is crowded.': words({ politely: sense('polite', '礼儀正しく・丁寧に（politely）') }),
   'They may not know the answer to every question, so they are taught to admit uncertainty and ask a staff member for help.': words({
     may: MAY,
     answer: sense('answer', '答え'),
     help: sense('help', '助け・手助け'),
   }),
   'This approach is more useful than giving visitors information that may be incorrect.': words({ may: MAY }),
-  'Staff members used to write long explanations for adults, but they now ask student volunteers to read the labels first.': words({
-    used: sense('use', '（used to で）以前は〜していた'),
+  'For the museum, the benefit is clear as well.': words({ well: sense('well', '（as well で）〜もまた') }),
+  'When young people take part, exhibitions feel more open, and visitors are more willing to ask questions.': words({
+    take: sense('take', '（take part で）参加する'),
+    part: sense('part', '（take part で）参加する'),
+    feel: sense('feel', '（〜に）感じられる'),
+    open: sense('open', '開かれた・入りやすい'),
+  }),
+  'Staff members used to write long explanations for adults, but they now ask student volunteers to read the labels first.': words({ used: sense('use', '（used to で）以前は〜していた') }),
+  'If the students cannot understand an important point, the staff try to make the language clearer without removing the main idea.': words({
+    make: sense('make', '（O を C に）する'),
+    clearer: sense('clear', 'より分かりやすい（clearの比較級）'),
   }),
   'The program shows that learning about the past can help people build stronger relationships in the present.': words({ learning: sense('learn', '学ぶこと') }),
 
   // p_pre2plus_repair_cafes（リペアカフェが教えてくれること）
-  'Because buying a new item is often easier than finding someone to fix the old one, usable products become waste.': words({
-    finding: sense('find', '見つけること'),
+  'Sometimes a product is badly damaged, but in other cases only a small part has stopped working.': words({
+    badly: sense('bad', 'ひどく（badly）'),
+    working: sense('work', '（機械が）動くこと'),
   }),
-  'In response, communities in several countries have started events called repair cafes.': words({ repair: sense('repair', '修理（repair cafe でリペアカフェ）') }),
+  'Because buying a new item is often easier than finding someone to fix the old one, usable products become waste.': words({ finding: sense('find', '見つけること') }),
+  'In response, communities in several countries have started events called repair cafes.': words({
+    repair: sense('repair', '修理（repair cafe でリペアカフェ）'),
+    called: sense('call', '〜と呼ばれる（called）'),
+  }),
   'A repair cafe is different from a normal repair shop.': words({ repair: sense('repair', '修理（repair cafe でリペアカフェ）') }),
+  'Visitors are expected to sit with volunteers and take part in the work instead of simply leaving an item at a counter.': words({
+    expected: sense('expect', '（be expected to 〜 で）〜することを求められる'),
+    take: sense('take', '（take part で）参加する'),
+    part: sense('part', '（take part で）参加する'),
+    leaving: sense('leave', '置いていくこと'),
+  }),
   'A volunteer may show someone how to open a lamp safely, replace a worn wire, or search for instructions online.': words({ may: MAY }),
   'Older residents may know how older machines were built, while younger participants may be more comfortable finding digital information.': words({
     may: MAY,
     finding: sense('find', '見つけること・探すこと'),
   }),
   'Supporters say repair cafes offer both environmental and social benefits.': words({ repair: sense('repair', '修理（repair cafe でリペアカフェ）') }),
+  'Extending the life of a product reduces waste and lowers demand for the energy and resources required to make new goods.': words({ life: sense('life', '寿命（the life of a product で製品の寿命）') }),
   'Families may also save money, which is especially valuable when prices are rising.': words({ may: MAY }),
-  'Even when an object cannot be repaired, a visitor may learn why it failed and how to choose a longer-lasting replacement.': words({ may: MAY }),
+  'In addition, the events encourage people to think differently about ownership.': words({ addition: sense('addition', '（in addition で）さらに・加えて') }),
+  'A device no longer seems like a closed box that only its manufacturer understands.': words({
+    longer: sense('long', '（no longer で）もはや〜ない'),
+    closed: sense('close', '閉じた・閉ざされた'),
+  }),
+  'Even when an object cannot be repaired, a visitor may learn why it failed and how to choose a longer-lasting replacement.': words({
+    may: MAY,
+    'longer-lasting': sense('last', 'より長持ちする（longer-lasting）'),
+  }),
   'However, repair cafes are not a complete solution.': words({ repair: sense('repair', '修理（repair cafe でリペアカフェ）') }),
+  'Critics therefore argue that manufacturers should make parts and instructions easier to obtain.': words({ make: sense('make', '（O を C に）する') }),
   'Repair cafes cannot change product design by themselves, but they can show consumers what prevents repairs.': words({
     repair: sense('repair', '修理（repair cafe でリペアカフェ）'),
     repairs: sense('repair', '修理（複数）'),
   }),
   'Their greatest value may be that they turn a private problem, a broken object, into a public lesson about waste, skills, and responsibility.': words({
     may: MAY,
+    turn: sense('turn', '（turn A into B で）AをBに変える'),
   }),
 
   // p_2_quiet_technology（公共空間の静かなテクノロジー）
+  'When people discuss technology, they often imagine large machines, bright screens, or dramatic changes in daily life.': words({ changes: sense('change', '変化（複数）') }),
+  'The system does not tell people what to do, but it gives them a better source of information.': words({ system: sense('system', '仕組み・システム') }),
+  'Some libraries now use quiet air-control systems that keep rooms comfortable while using less energy than older equipment.': words({
+    'air-control': sense('air', '空調の（air-control）'),
+    systems: sense('system', '仕組み・システム（複数）'),
+  }),
   'Visitors may not notice the system at all, yet it affects how long they can read or study without becoming tired.': words({
     may: MAY,
     becoming: sense('become', '〜になること'),
+    system: sense('system', '仕組み・システム'),
   }),
-  'For that reason, officials should explain clearly what kind of data is collected and how it will be protected.': words({
-    collected: sense('collect', '集められる'),
+  'Cost is still an important factor, and cities must consider whether new systems can be maintained for many years.': words({ systems: sense('system', '仕組み・システム（複数）') }),
+  'For that reason, officials should explain clearly what kind of data is collected and how it will be protected.': words({ collected: sense('collect', '集められる') }),
+  'If only wealthy areas receive the newest systems, technology may make public services more unequal instead of more convenient.': words({
+    may: MAY,
+    make: sense('make', '（O を C に）する'),
+    systems: sense('system', '仕組み・システム（複数）'),
   }),
-  'If only wealthy areas receive the newest systems, technology may make public services more unequal instead of more convenient.': words({ may: MAY }),
   'City leaders therefore need to ask where a new system will have the greatest effect and who might be left out.': words({
     left: sense('leave', '取り残された（leave outの過去分詞）'),
+    system: sense('system', '仕組み・システム'),
   }),
   'In some cases, a simple repair to an old bus stop or a clearer sign may help residents more than an expensive digital service.': words({
     repair: sense('repair', '修理'),
     stop: sense('stop', '停留所（bus stop でバス停）'),
     may: MAY,
   }),
-  'They compare energy use, waiting times, and complaints in different neighborhoods and then publish the results.': words({
-    use: sense('use', '使用（energy use でエネルギー使用量）'),
+  'Several cities have therefore begun small trial programs before introducing a system everywhere.': words({ system: sense('system', '仕組み・システム') }),
+  'They compare energy use, waiting times, and complaints in different neighborhoods and then publish the results.': words({ use: sense('use', '使用（energy use でエネルギー使用量）') }),
+  'This evidence makes it easier to improve a design or decide that a simpler solution would work better.': words({
+    makes: sense('make', '（O を C に）する'),
+    work: sense('work', 'うまくいく・役に立つ'),
   }),
+  'Technology should be judged not by how modern it appears, but by whether it solves a real problem for the people who use the space.': words({ judged: sense('judge', '判断される・評価される') }),
 
   // p_pre1_resilient_cities（不確かな天候に備える都市設計）
-  'In the past, local governments often treated floods, heat waves, and water shortages as separate problems.': words({
-    separate: sense('separate', '別々の・独立した'),
-  }),
+  'In the past, local governments often treated floods, heat waves, and water shortages as separate problems.': words({ separate: sense('separate', '別々の・独立した') }),
   'For instance, building higher concrete walls along a river may reduce flooding in one district while pushing water toward a poorer neighborhood downstream.': words({
     building: sense('build', '建てること'),
     may: MAY,
@@ -100,41 +164,58 @@ export const PASSAGE_SENSE_GLOSSES = Object.freeze({
   'Similarly, installing powerful air conditioners in public buildings may protect residents during heat waves, yet it can increase energy demand when the power supply is already under pressure.': words({
     may: MAY,
     supply: sense('supply', '供給（power supply で電力供給）'),
+    air: sense('air', '空気（air conditioner でエアコン）'),
+    under: sense('under', '（under pressure で）圧力を受けて・ひっ迫して'),
   }),
   'A more resilient city therefore begins by assessing who is most vulnerable and which resources can serve several needs at once.': words({
     needs: sense('need', '必要なこと・ニーズ（複数）'),
+    serve: sense('serve', '役立つ・（必要を）満たす'),
+    once: sense('once', '（at once で）同時に'),
   }),
-  'This illustrates a problem that researchers call maladaptation: an attempt to reduce one risk can create a new risk or deepen an old inequality.': words({
-    attempt: sense('attempt', '試み'),
-  }),
+  'They provide shade, absorb rainwater, improve air quality, and make streets more pleasant for walking.': words({ make: sense('make', '（O を C に）する') }),
+  'This illustrates a problem that researchers call maladaptation: an attempt to reduce one risk can create a new risk or deepen an old inequality.': words({ attempt: sense('attempt', '試み') }),
   'A park that cools a wealthy district, for example, may increase nearby rents and force lower-income residents to move before they enjoy the benefits.': words({
     cools: sense('cool', '涼しくする・冷やす'),
     may: MAY,
+    'lower-income': sense('income', '所得の低い（lower-income）'),
   }),
-  'Some cities have begun to invite residents to map dangerous intersections, hot streets, and places where water remains after heavy rain.': words({
-    map: sense('map', '地図に記す・地図にする'),
-  }),
-  'This process takes time, and it may reveal disagreements about which projects should come first.': words({ may: MAY }),
-  'Nevertheless, it can build trust because residents see that their daily experience is treated as valuable information.': words({
-    trust: sense('trust', '信頼'),
-  }),
-  'A drainage map may look complete, yet residents may know that blocked street drains regularly send water into a particular apartment building.': words({
+  'Planners must therefore examine not only whether an intervention works physically but also how its costs and benefits are distributed.': words({ works: sense('work', '効果がある・うまくいく') }),
+  'Some cities have begun to invite residents to map dangerous intersections, hot streets, and places where water remains after heavy rain.': words({ map: sense('map', '地図に記す・地図にする') }),
+  'This process takes time, and it may reveal disagreements about which projects should come first.': words({
     may: MAY,
+    takes: sense('take', '（時間が）かかる'),
   }),
+  'Nevertheless, it can build trust because residents see that their daily experience is treated as valuable information.': words({ trust: sense('trust', '信頼') }),
+  'Local knowledge also helps officials identify failures that computer models miss.': words({
+    miss: sense('miss', '見落とす・とらえ損なう'),
+    models: sense('model', '（computer model で）計算で予測するモデル'),
+  }),
+  'A drainage map may look complete, yet residents may know that blocked street drains regularly send water into a particular apartment building.': words({ may: MAY }),
   'Yet smaller investments, such as training neighborhood volunteers or improving warning messages in several languages, may save more lives during an emergency.': words({
     training: sense('train', '訓練すること'),
     may: MAY,
     lives: sense('life', '命（複数）'),
   }),
+  'A city that takes resilience seriously must therefore evaluate projects over a long period rather than only during the year in which they are introduced.': words({
+    takes: sense('take', '（take 〜 seriously で）〜を真剣に受け止める'),
+    over: sense('over', '〜にわたって'),
+  }),
   "A project that performs well under today's conditions may be inadequate if migration, land use, or rainfall patterns change.": words({
     may: MAY,
     use: sense('use', '利用（land use で土地利用）'),
+    performs: sense('perform', '機能する・成果を上げる'),
   }),
-  'Setting review dates and publishing results allow governments to revise policies without treating revision as failure.': words({
-    setting: sense('set', '定めること・設けること'),
-  }),
+  'Setting review dates and publishing results allow governments to revise policies without treating revision as failure.': words({ setting: sense('set', '定めること・設けること') }),
+  'As climate conditions remain uncertain, the cities that adapt most successfully will probably be those that combine technical knowledge with public participation.': words({ successfully: sense('successful', 'うまく・首尾よく（successfully）') }),
 
   // p_1_collective_memory（集合的記憶のもろさ）
+  'Societies often assume that important events will be remembered simply because they are recorded in books, archives, or digital databases.': words({
+    remembered: sense('remember', '覚えられる・記憶される（受け身）'),
+    recorded: sense('record', '記録される（受け身）'),
+  }),
+  'Yet collective memory is a far more fragile phenomenon than the existence of records might suggest.': words({ far: sense('far', 'はるかに（比較級を強める）') }),
+  'A document can survive for centuries and still fail to influence how later generations understand the past.': words({ fail: sense('fail', '（fail to 〜 で）〜しない・〜できない') }),
+  'In practice, however, abundance can produce a different kind of loss.': words({ practice: sense('practice', '実際（in practice で実際には）') }),
   'When search results, short videos, and algorithmic recommendations compete for attention, materials that require slow reading or moral reflection may become almost invisible.': words({
     search: sense('search', '検索（search results で検索結果）'),
     may: MAY,
@@ -143,321 +224,856 @@ export const PASSAGE_SENSE_GLOSSES = Object.freeze({
     shaped: sense('shape', '形づくられる（shapeの過去分詞）'),
     presented: sense('present', '提示される（presentの過去分詞）'),
   }),
+  'Digital records also depend on technical systems whose apparent permanence can be misleading.': words({ systems: sense('system', '仕組み・システム（複数）') }),
   'A file may still exist but become unreadable when software changes, while a searchable collection can effectively disappear if its indexing system is neglected.': words({
     file: sense('file', 'ファイル（データのまとまり）'),
     may: MAY,
+    system: sense('system', '仕組み・システム'),
+    neglected: sense('neglect', '放置される・手入れされない（受け身）'),
   }),
-  'Calls for complete neutrality do not resolve the problem, since every archive must decide what to collect, how to describe it, and which materials receive scarce conservation resources.': words({
-    calls: sense('call', '求める声・呼びかけ（複数）'),
+  'More subtly, platforms can revise the categories and rankings through which users encounter material without deleting a single record.': words({
+    platforms: sense('platform', '（ネット上の）サービス・プラットフォーム'),
+    through: sense('through', '〜を通して'),
   }),
+  'Preservation, therefore, is not merely the retention of data; it includes maintaining the pathways that make data intelligible and discoverable.': words({ make: sense('make', '（O を C に）する') }),
+  'This raises a difficult question about institutional responsibility.': words({ raises: sense('raise', '（問題を）提起する・投げかける') }),
+  'Libraries, museums, universities, and news organizations have traditionally claimed a degree of autonomy so that they can protect records from temporary political pressure.': words({ traditionally: sense('traditional', '伝統的に・昔から（traditionally）') }),
+  'Institutions must be free to preserve uncomfortable evidence, while citizens must be able to ask how decisions about selection, description, and access are made.': words({ made: sense('make', '（決定が）なされる（受け身）') }),
+  'Calls for complete neutrality do not resolve the problem, since every archive must decide what to collect, how to describe it, and which materials receive scarce conservation resources.': words({ calls: sense('call', '求める声・呼びかけ（複数）') }),
   'A public consultation may reproduce existing inequalities if organized groups can speak more loudly than communities with less time, money, or trust in institutions.': words({
     may: MAY,
     trust: sense('trust', '信頼'),
+    loudly: sense('loud', '大きな声で（loudly）'),
+  }),
+  'Accountability must consequently include transparent reasons, opportunities for challenge, and continuing efforts to hear people who were absent from the original decision.': words({
+    challenge: sense('challenge', '異議（を唱えること）'),
+    hear: sense('hear', '（意見を）聞く'),
   }),
   'A photograph may reveal suffering to one group and national achievement to another; a monument may be seen as heritage by some and as exclusion by others.': words({
     may: MAY,
+    others: sense('other', 'ほかの人々（others）'),
   }),
+  'Education plays a central role in sustaining that discipline, but the task is more demanding than adding a few historical dates to a curriculum.': words({ plays: sense('play', '（役割を）果たす') }),
+  'Comparing conflicting accounts can help students see that disagreement is not the same as ignorance.': words({ accounts: sense('account', '（出来事の）説明・記述') }),
   'Two historians may accept the same evidence yet assign different significance to it because they ask different questions.': words({ may: MAY }),
   'The discipline lies in explaining those choices, confronting contrary evidence, and stating where certainty ends.': words({
     lies: sense('lie_2', '（〜に）ある'),
+    stating: sense('state', '述べること'),
+    ends: sense('end', '終わる'),
   }),
-  "A rumor that confirms a community's self-image may travel farther than a well-documented study that complicates it.": words({ may: MAY }),
+  'At the same time, they need intellectual habits that prevent skepticism from turning into cynicism.': words({
+    turning: sense('turn', '（turn into 〜 で）〜に変わること'),
+    time: sense('time', '（at the same time で）同時に'),
+  }),
+  'If every account of the past is dismissed as merely political, citizens lose the capacity to distinguish careful revision from deliberate distortion.': words({ account: sense('account', '（出来事の）説明・記述') }),
+  'Digital platforms intensify this risk because they reward speed, emotional certainty, and loyalty to a group more readily than patient investigation.': words({ platforms: sense('platform', '（ネット上の）サービス・プラットフォーム') }),
+  "A rumor that confirms a community's self-image may travel farther than a well-documented study that complicates it.": words({
+    may: MAY,
+    'self-image': sense('image', '自己像（self-image）'),
+    travel: sense('travel', '（うわさが）広まる・伝わる'),
+    'well-documented': sense('document', '十分な記録に基づく（well-documented）'),
+  }),
   'Some observers respond by demanding that platforms remove misleading historical claims more aggressively.': words({
     demanding: sense('demand', '要求すること・求めること'),
+    platforms: sense('platform', '（ネット上の）サービス・プラットフォーム'),
+    aggressively: sense('aggressive', '強硬に・積極的に（aggressively）'),
   }),
-  "A warning label without a visible chain of reasoning may suppress circulation while doing little to strengthen citizens' judgment.": words({ may: MAY }),
+  'Although such action can limit obvious fabrications, it also gives private companies substantial authority over public memory.': words({ over: sense('over', '〜に対する（権限など）') }),
+  'The alternative is not to abandon moderation, but to combine it with accessible evidence, independent review, and explanations that users can examine rather than merely obey.': words({ moderation: sense('moderation', '（投稿の）管理・監視') }),
+  "A warning label without a visible chain of reasoning may suppress circulation while doing little to strengthen citizens' judgment.": words({
+    may: MAY,
+    circulation: sense('circulation', '（情報の）広まり・流通'),
+  }),
+  'This civic dimension explains why collective memory cannot be measured only by the number of documents preserved or people reached.': words({ reached: sense('reach', '（情報が）届いた（人々）') }),
+  'Its quality depends on whether a society can use records to question comfortable stories, recognize obligations, and deliberate about future choices.': words({ deliberate: sense('deliberate', '話し合って考える・熟議する（動詞）') }),
+  'Remembering, in this sense, is not a passive act of storage but an active practice of civic discipline.': words({
+    act: sense('act', '行為'),
+    sense: sense('sense', '意味（in this sense でこの意味で）'),
+  }),
+  'If that practice declines, even perfect archives will not prevent societies from losing their ability to learn from what they once knew.': words({ declines: sense('decline', '衰える・弱まる') }),
 
   // p_5_school_open_day（学校公開日の案内）
+  'Our school has an open day next Saturday.': words({ open: sense('open', '公開の（open day で学校公開日）') }),
+  'At ten, the music club sings in the school hall.': words({ hall: sense('hall', '講堂・ホール') }),
   'Please bring your own drinks.': words({ own: sense('own', '自分自身の') }),
+  'At one, the sports club meets in the gym.': words({ meets: sense('meet', '集まる') }),
+  'The open day will end at three.': words({
+    open: sense('open', '公開の（open day で学校公開日）'),
+    end: sense('end', '終わる'),
+  }),
 
   // p_4_bicycle_safety（安全な自転車週間）
   'It begins with a short talk at the community center on Monday evening.': words({ talk: sense('talk', '話・講演') }),
-  'They must use bicycle lights because drivers may not notice them after dark.': words({ may: MAY }),
-  'The week ends with a practice ride on Saturday morning.': words({ ride: sense('ride', '走行（practice ride で練習走行）') }),
+  'Children will also learn the correct place to stop before they cross a busy road.': words({
+    stop: sense('stop', '止まる'),
+    busy: sense('busy', '（道路が）交通量の多い・にぎやかな'),
+  }),
+  'They must use bicycle lights because drivers may not notice them after dark.': words({
+    may: MAY,
+    lights: sense('light', 'ライト・明かり（複数）'),
+    dark: sense('dark', '（after dark で）暗くなってから'),
+  }),
+  'Local shop workers will check the brakes, seats, and lights for free.': words({
+    lights: sense('light', 'ライト・明かり（複数）'),
+    free: sense('free', '（for free で）無料で'),
+  }),
+  'The week ends with a practice ride on Saturday morning.': words({
+    ride: sense('ride', '走行（practice ride で練習走行）'),
+    ends: sense('end', '終わる'),
+    practice: sense('practice', '練習（の）'),
+  }),
   'Parents should join the ride too, so they can practice the rules with their children.': words({ ride: sense('ride', '走行') }),
 
   // p_3_lunch_food_waste（小さな皿から始まる大きな変化）
   'Students at one junior high school noticed that a lot of food was left in the cafeteria after lunch.': words({ left: sense('left_2', '残された・残っている') }),
+  'The cooking staff had to throw the leftovers away, even though most of the food was still fresh.': words({
+    throw: sense('throw', '（throw away で）捨てる'),
+    away: sense('away', '（throw away で）捨てる'),
+  }),
+  'A science class decided to study the problem instead of simply asking everyone to eat more.': words({ study: sense('study', '調べる') }),
   'The class then measured the amount of rice, vegetables, and bread left each day for two weeks.': words({ left: sense('left_2', '残った・残っている') }),
-  'They discovered that waste was greatest on days when every student received the same large portion.': words({ discovered: sense('discover', '発見した・分かった') }),
+  'They discovered that waste was greatest on days when every student received the same large portion.': words({
+    discovered: sense('discover', '発見した・分かった'),
+    greatest: sense('great', '最も多い・最大の（greatの最上級）'),
+  }),
   'The students suggested offering two plate sizes at the start of lunch.': words({ start: sense('start', '始め') }),
+  'The cafeteria also put pictures of both portions near the entrance so students could choose before reaching the counter.': words({ reaching: sense('reach', '（〜に）着くこと') }),
   'The students now share their results with nearby schools and encourage them to measure their own waste.': words({ own: sense('own', '自分たちの') }),
+  'They explain that every meal uses water, energy, and work before it reaches a plate, so even a small improvement can protect valuable resources.': words({
+    work: sense('work', '労力・手間'),
+    reaches: sense('reach', '（〜に）届く'),
+  }),
 
   // p_pre2_later_school_start（学校の始業時刻を遅らせるべきか）
   'Many teenagers arrive at school feeling tired, even when they try to go to bed at a reasonable time.': words({ feeling: sense('feel', '感じながら・感じている') }),
   'Sleep researchers explain that the body clock often changes during the teenage years.': words({ sleep: sense('sleep', '睡眠') }),
-  'A later start, however, can cause practical problems for families and communities.': words({ start: sense('start', '開始・始業') }),
+  'The brain begins to feel sleepy later at night, but students must still wake up early for school.': words({ up: sense('up', '（wake up で）目を覚ます・起きる') }),
+  'For this reason, some schools have moved their starting time from eight o’clock to a later hour.': words({ starting: sense('start', '開始の（starting time で始業時刻）') }),
+  'Several studies report that students at these schools sleep longer on ordinary weekdays.': words({ longer: sense('long', 'より長く（longの比較級）') }),
+  'Teachers have also seen greater attention and fewer late arrivals in morning classes.': words({ greater: sense('great', 'より大きな・より高い（greatの比較級）') }),
+  'A later start, however, can cause practical problems for families and communities.': words({
+    start: sense('start', '開始・始業'),
+    later: sense('later', 'より遅い（lateの比較級）'),
+  }),
   'School buses may need new schedules, which can increase transportation costs.': words({ may: MAY }),
-  'Sports practice and music activities may finish after dark, especially in winter.': words({ may: MAY }),
+  'Sports practice and music activities may finish after dark, especially in winter.': words({
+    may: MAY,
+    dark: sense('dark', '（after dark で）暗くなってから'),
+  }),
   'Some parents also depend on older children to care for younger family members after school.': words({ care: sense('care', '世話をする（care for）') }),
   'At one school, students helped design the change, and their suggestions produced a bus timetable that protected both sleep and afternoon activities.': words({
     sleep: sense('sleep', '睡眠'),
+    change: sense('change', '変更・変化'),
   }),
+  'This cooperation made families more willing to try the new schedule for a full year.': words({ made: sense('make', '（O を C に）した') }),
   'Schools need to examine bus routes, club times, and family needs before choosing a new schedule.': words({ needs: sense('need', '必要なこと・ニーズ（複数）') }),
-  'They should also teach students that a later start is not an invitation to stay online longer at night.': words({ start: sense('start', '開始・始業') }),
-  'It is that school policies should take evidence about teenage sleep seriously.': words({ sleep: sense('sleep', '睡眠') }),
-  'A community can then balance health benefits with local challenges and test whether its plan is effective.': words({
-    balance: sense('balance', '両立させる・釣り合わせる'),
+  'They should also teach students that a later start is not an invitation to stay online longer at night.': words({
+    start: sense('start', '開始・始業'),
+    later: sense('later', 'より遅い（lateの比較級）'),
+    invitation: sense('invitation', '誘い・（〜してよいという）きっかけ'),
+    longer: sense('long', 'より長く（longの比較級）'),
   }),
+  'The strongest argument for change does not demand one starting time for every school.': words({
+    strongest: sense('strong', '最も説得力のある（strongの最上級）'),
+    change: sense('change', '変更・変化'),
+    starting: sense('start', '開始の（starting time で始業時刻）'),
+  }),
+  'It is that school policies should take evidence about teenage sleep seriously.': words({
+    sleep: sense('sleep', '睡眠'),
+    take: sense('take', '（take 〜 seriously で）〜を真剣に受け止める'),
+  }),
+  'A community can then balance health benefits with local challenges and test whether its plan is effective.': words({ balance: sense('balance', '両立させる・釣り合わせる') }),
   'Careful changes are more useful than keeping an old schedule simply because it is familiar, especially when schools review them regularly.': words({
     review: sense('review', '見直す'),
+    changes: sense('change', '変更（複数）'),
   }),
 
   // p_pre2plus_city_bird_count（鳥を数えて科学を支える）
+  'Professional scientists cannot be everywhere at once, especially when they study animals that move across wide areas.': words({
+    once: sense('once', '（at once で）同時に'),
+    across: sense('across', '〜にわたって・〜じゅうを'),
+  }),
+  'One common project asks participants to observe birds in gardens, parks, and school grounds.': words({ grounds: sense('ground', '（school grounds で）校庭・敷地') }),
+  'When thousands of people send reports, researchers can discover patterns that a small team might miss.': words({ miss: sense('miss', '見落とす・とらえ損なう') }),
   'For example, the records may show that a species is arriving earlier in spring or disappearing from certain neighborhoods.': words({ may: MAY }),
-  'An experienced observer may identify a bird by its song, while a beginner may confuse two similar species.': words({ may: MAY }),
+  'Such changes can suggest that weather, food, or habitat conditions are affecting bird populations.': words({
+    changes: sense('change', '変化（複数）'),
+    populations: sense('population', '（生き物の）数・個体数（複数）'),
+  }),
+  'However, large numbers of reports cannot automatically ensure reliable data in practice.': words({ practice: sense('practice', '実際（in practice で実際には）') }),
+  'An experienced observer may identify a bird by its song, while a beginner may confuse two similar species.': words({
+    may: MAY,
+    song: sense('song', '（鳥の）さえずり・鳴き声'),
+  }),
+  'People also visit places that are easy to reach more often than distant or unsafe locations.': words({ reach: sense('reach', '（場所に）たどり着く') }),
+  'This creates a bias because some habitats receive many reports and others receive few.': words({ others: sense('other', 'ほかのもの（others）') }),
+  'Good projects reduce these problems through clear training and careful design.': words({ through: sense('through', '〜によって・〜を通して') }),
   'They may ask participants to watch for the same length of time and to report visits when no birds appeared.': words({
     may: MAY,
     visits: sense('visit', '訪問（複数）'),
   }),
-  'Some projects also send several volunteers the same observation task and compare their answers to estimate how often mistakes occur.': words({
-    answers: sense('answer', '答え（複数）・回答'),
-  }),
+  'Some projects also send several volunteers the same observation task and compare their answers to estimate how often mistakes occur.': words({ answers: sense('answer', '答え（複数）・回答') }),
   'Researchers can then compare similar observations and estimate where the data may be incomplete.': words({ may: MAY }),
-  'Together, they can follow changes in biodiversity and identify places that may need conservation.': words({ may: MAY }),
+  'Scientists contribute research methods that turn those observations into careful conclusions.': words({ turn: sense('turn', '（turn A into B で）AをBに変える') }),
+  'Together, they can follow changes in biodiversity and identify places that may need conservation.': words({
+    may: MAY,
+    follow: sense('follow', '（変化を）追う・見守る'),
+    changes: sense('change', '変化（複数）'),
+  }),
+  'The partnership also shows that useful science depends on recording uncertainty as honestly as discovery.': words({ honestly: sense('honest', '正直に（honestly）') }),
 
   // p_2_online_health_claims（オンラインの健康情報をどう読むか）
   'A short video claims that a certain drink improves memory, and thousands of users share it within a day.': words({ claims: sense('claim', '主張する') }),
   'The speaker may sound confident and may even mention a scientific study.': words({ may: MAY }),
+  'Readers can check a university report that describes its methods more easily than a video with no named source.': words({ named: sense('name', '名前の示された（named）') }),
   'Readers still need to examine how the study was designed and whether other researchers found similar results.': words({ found: sense('find', '見つけた・得た') }),
-  'A result from twelve volunteers may be interesting, but it may not apply to people of different ages or health conditions.': words({ may: MAY }),
-  'Without such a comparison, improvement may come from sleep, diet, expectation, or simple chance.': words({ may: MAY, sleep: sense('sleep', '睡眠') }),
+  'A result from twelve volunteers may be interesting, but it may not apply to people of different ages or health conditions.': words({
+    may: MAY,
+    apply: sense('apply', '当てはまる（apply to 〜）'),
+  }),
+  'Without such a comparison, improvement may come from sleep, diet, expectation, or simple chance.': words({
+    may: MAY,
+    sleep: sense('sleep', '睡眠'),
+    come: sense('come', '（〜から）生じる'),
+    chance: sense('chance', '偶然'),
+  }),
+  'Income, working hours, and social habits might influence both tea drinking and stress as well.': words({
+    working: sense('work', '働く（working hours で勤務時間）'),
+    well: sense('well', '（as well で）〜もまた'),
+  }),
+  'Readers should also distinguish an early report from a review that considers many studies.': words({
+    early: sense('early', '初期の・早い段階の'),
+    review: sense('review', '（多くの研究をまとめた）総説・まとめ'),
+  }),
   'Company funding does not automatically make research false, but readers should check whether the company sells the product being tested.': words({
     being: sense('be', '〜されている（beの-ing形）'),
+    make: sense('make', '（O を C に）する'),
   }),
+  'Independent review and a clear statement of possible conflicts make the evidence easier to evaluate.': words({ make: sense('make', '（O を C に）する') }),
+  'Instead, they help readers to judge how strong a conclusion can reasonably be.': words({ judge: sense('judge', '判断する') }),
+  'When a decision involves serious health risks, online reading should support, not replace, advice from a qualified professional.': words({ qualified: sense('qualify', '資格のある（qualified）') }),
+  'Responsible readers are not people who doubt everything; they are people who match their confidence to the quality of the evidence.': words({ match: sense('match', '（〜に）合わせる') }),
 
   // p_pre1_cashless_inclusion（キャッシュレスの便利さが排除を生むとき）
+  'Cashless payment has recently moved from a convenient option to the expected form of payment in many shops, transport systems, and public facilities.': words({
+    moved: sense('move', '（〜から〜へ）変わった・移った'),
+    expected: sense('expect', '当然とされる・求められる（expected）'),
+    systems: sense('system', '（交通の）仕組み・機関（複数）'),
+  }),
+  'Supporters cite faster transactions, lower handling costs, and reduced risk of theft for merchants.': words({
+    lower: sense('lower', 'より低い（lowの比較級）'),
+    handling: sense('handle', '取り扱い（handling costs で取り扱いにかかる費用）'),
+  }),
+  'Digital records can also help consumers follow their spending and allow small businesses to sell goods online.': words({ follow: sense('follow', '（支出を）追う・把握する') }),
+  'These benefits are real, but they are not shared equally.': words({ shared: sense('share', '分け合われる（受け身）') }),
+  'Others can use digital services but struggle with small fees, complex passwords, or interfaces that were not designed for disabilities.': words({ others: sense('other', 'ほかの人々（others）') }),
   'Cash usually leaves no detailed record linking a person to a particular purchase, whereas digital payment creates data that may be stored, combined, or sold.': words({
     may: MAY,
+    stored: sense('store', '保存される（受け身）'),
   }),
-  'Such records can detect fraud and improve services, yet they can also reveal medical needs, political interests, or daily movements.': words({
-    needs: sense('need', '必要なこと・ニーズ（複数）'),
-  }),
+  'Such records can detect fraud and improve services, yet they can also reveal medical needs, political interests, or daily movements.': words({ needs: sense('need', '必要なこと・ニーズ（複数）') }),
   'People with little economic or political power may be especially vulnerable when they cannot choose a private alternative.': words({ may: MAY }),
-  'A fixed amount in an envelope stays visible, while digital balances may be divided across several apps and delayed transactions.': words({ may: MAY }),
-  'Some governments therefore require essential businesses to accept cash while encouraging digital innovation elsewhere.': words({
-    encouraging: sense('encourage', '促しながら・後押ししながら'),
+  'A common response is to teach digital skills and provide low-cost accounts.': words({ 'low-cost': sense('cost', '安い・低価格の（low-cost）') }),
+  'Training provides only limited value in rural areas with weak mobile service or during payment system failures after serious natural disasters and emergencies.': words({ system: sense('system', '仕組み・システム') }),
+  'Nor should inclusion mean forcing everyone into a system simply because institutions find it efficient.': words({
+    forcing: sense('force', '（無理に）〜させること'),
+    system: sense('system', '仕組み・システム'),
+    find: sense('find', '（O を C だと）思う・感じる'),
   }),
+  'Cash can also provide a simple budgeting tool for households whose income changes from week to week.': words({ budgeting: sense('budget', 'やりくり・家計の管理（budgeting）') }),
+  'A fixed amount in an envelope stays visible, while digital balances may be divided across several apps and delayed transactions.': words({
+    may: MAY,
+    stays: sense('stay', '（〜の）ままである'),
+    across: sense('across', '（いくつもの〜に）またがって'),
+  }),
+  'This does not make cash universally superior, but it shows why a preferred tool can depend on a person’s circumstances rather than technical knowledge alone.': words({
+    make: sense('make', '（O を C に）する'),
+    universally: sense('universal', 'どんな場合でも・例外なく（universally）'),
+  }),
+  'Some governments therefore require essential businesses to accept cash while encouraging digital innovation elsewhere.': words({ encouraging: sense('encourage', '促しながら・後押ししながら') }),
+  'Critics argue that such rules create costs for merchants who must maintain two payment systems.': words({ systems: sense('system', '仕組み・システム（複数）') }),
+  'Policy can reduce the burden through shared cash services, tax incentives, or exemptions for clearly defined cases.': words({ through: sense('through', '〜によって・〜を通して') }),
+  'The broader lesson is that innovation should be judged by the range of people who can use it, not only by the speed of its average transaction.': words({ judged: sense('judge', '判断される・評価される') }),
+  'A payment system is part of social infrastructure, and infrastructure must remain usable under varied human and technical conditions.': words({ system: sense('system', '仕組み・システム') }),
   'Cash may sometimes appear inefficient as an option, just as backup power can appear wasteful on an ordinary day.': words({ may: MAY }),
+  'The goal need not be to stop the transition toward digital payment.': words({ need: sense('need', '（need not で）〜である必要はない') }),
+  'A genuinely modern system is not one that eliminates older tools as quickly as possible, but one that combines convenience, privacy, inclusion, and flexibility in practice.': words({
+    system: sense('system', '仕組み・システム'),
+    practice: sense('practice', '実際（in practice で実際には）'),
+  }),
 
   // p_1_metric_fixation（測定値と本来の目的）
+  'Modern institutions measure almost everything they hope to improve in complex systems with competing public purposes.': words({ systems: sense('system', '仕組み・システム（複数）') }),
+  'Such indicators give institutions a common language for judging performance across places and over time.': words({
+    judging: sense('judge', '判断すること・評価すること'),
+    across: sense('across', '（いくつもの〜に）またがって'),
+    over: sense('over', '（over time で）時間とともに・長い期間にわたって'),
+  }),
+  'The difficulty begins when a useful measure becomes the institution’s practical definition of success.': words({ measure: sense('measure', '尺度・指標') }),
   'A reading test captures some forms of comprehension, for example, but not every capacity that makes someone a thoughtful reader.': words({
     reading: sense('read', '読解（reading test で読解テスト）'),
+    makes: sense('make', '（O を C に）する'),
   }),
+  'Once rewards or penalties depend heavily on the score, people have an incentive to optimize the proxy rather than pursue the underlying mission.': words({ once: sense('once', 'いったん〜すると（接続詞）') }),
+  'This response need not involve obvious cheating.': words({ need: sense('need', '（need not で）〜する必要はない') }),
   'A school may devote more time to easily tested skills while neglecting discussion, curiosity, or students whose improvement is unlikely to change its ranking.': words({
     may: MAY,
+    tested: sense('test', 'テストされる（easily tested で簡単にテストできる）'),
   }),
-  'A hospital may transfer difficult patients or redefine when the waiting-time clock officially starts.': words({ may: MAY }),
-  'A narrow target may consequently punish the very risk taking required for genuine learning.': words({ may: MAY }),
+  'A hospital may transfer difficult patients or redefine when the waiting-time clock officially starts.': words({
+    may: MAY,
+    'waiting-time': sense('wait', '待ち時間の（waiting-time）'),
+    starts: sense('start', '始まる'),
+  }),
+  'Each action can improve the reported number without producing an equivalent improvement in education or care.': words({
+    reported: sense('report', '報告された（reported）'),
+    care: sense('care', '（病院での）ケア・医療'),
+  }),
+  'Less visible distortions arise when workers avoid experiments whose uncertain outcomes could damage an otherwise strong record.': words({ otherwise: sense('otherwise', 'それ以外の点では') }),
+  'A narrow target may consequently punish the very risk taking required for genuine learning.': words({
+    may: MAY,
+    taking: sense('take', '（risk taking で）あえて危険を冒すこと'),
+  }),
+  'Critics sometimes conclude that quantification itself is the problem and that experienced professionals should simply be trusted to exercise judgment.': words({
+    trusted: sense('trust', '信頼される（受け身）'),
+    exercise: sense('exercise', '（判断力を）働かせる・用いる'),
+  }),
+  'That position underestimates why measurement became attractive in the first place.': words({ place: sense('place', '（in the first place で）そもそも') }),
   'Judgment can remain informed and humane, but it can also become inconsistent, biased, and difficult for outsiders to challenge.': words({
     challenge: sense('challenge', '異議を唱える'),
+    informed: sense('inform', '情報に基づいた（informed）'),
   }),
-  'Without records, leaders may celebrate a program’s intentions while ignoring evidence that it repeatedly fails particular communities.': words({ may: MAY }),
+  'Without records, leaders may celebrate a program’s intentions while ignoring evidence that it repeatedly fails particular communities.': words({
+    may: MAY,
+    fails: sense('fail', '（人の）役に立たない・見捨てる'),
+  }),
+  'Better systems treat indicators as evidence within a process of judgment rather than as automatic verdicts.': words({ systems: sense('system', '仕組み・システム（複数）') }),
+  'First, decision makers should use multiple measures that illuminate different parts of the mission.': words({
+    makers: sense('maker', '（decision makers で）決定をする人'),
+    measures: sense('measure', '尺度・指標（複数）'),
+  }),
   'Graduation rates may be considered alongside student surveys, samples of actual work, and information about what graduates can do later.': words({
     may: MAY,
+    work: sense('work', '（生徒が作った）作品・課題'),
   }),
+  'No collection of measures eliminates judgment, but plural indicators make it harder for one narrow target to dominate behavior.': words({
+    measures: sense('measure', '尺度・指標（複数）'),
+    make: sense('make', '（O を C に）する'),
+  }),
+  'Missed medical appointments could indicate irresponsibility, but interviews might reveal that a new transport schedule made the clinic inaccessible.': words({
+    missed: sense('miss', '（予約に）来なかった・すっぽかされた'),
+    made: sense('make', '（O を C に）した'),
+  }),
+  'Context does not excuse every poor result; it helps institutions distinguish causes that demand different responses.': words({ poor: sense('poor', '悪い・低い（成績などが）') }),
+  'Third, organizations must examine how people adapt once a measure carries consequences.': words({
+    once: sense('once', 'いったん〜すると（接続詞）'),
+    measure: sense('measure', '尺度・指標'),
+    carries: sense('carry', '（結果を）伴う'),
+  }),
+  'Regular audits should look not only for false reports but also for neglected tasks, displaced risks, and groups that disappear from the data.': words({
+    look: sense('look', '（look for で）探す'),
+    neglected: sense('neglect', 'おろそかにされた（neglected）'),
+  }),
+  'Evaluation systems must be adaptive because the behavior they observe changes in response to observation.': words({ systems: sense('system', '仕組み・システム（複数）') }),
+  'A dashboard can appear open while hiding decisions about definitions, missing cases, statistical adjustments, and acceptable thresholds.': words({ open: sense('open', '開かれた・公開された') }),
   'Meaningful transparency explains why a measure was chosen, what it omits, how uncertainty was handled, and who can question its use.': words({
     use: sense('use', '使用・使い方'),
+    measure: sense('measure', '尺度・指標'),
   }),
   'There is also a political question about who bears the burden of being measured.': words({
     bears: sense('bear', '負う・引き受ける'),
     being: sense('be', '〜されること（beの-ing形）'),
   }),
+  'Frontline workers and vulnerable citizens often supply detailed data, while senior institutions retain discretion over how the numbers are interpreted.': words({ over: sense('over', '〜について（の権限）') }),
   'If measurement increases surveillance below but accountability does not increase above, the system may weaken rather than strengthen legitimacy.': words({
     may: MAY,
+    below: sense('below', '下の立場で（below）'),
+    above: sense('above', '上の立場で（above）'),
+    system: sense('system', '仕組み・システム'),
   }),
   'Institutions cannot precisely measure trust, intellectual courage, dignity, and social repair, yet they cannot responsibly ignore these values.': words({
     trust: sense('trust', '信頼'),
     repair: sense('repair', '修復'),
   }),
+  'The inability to assign a clean number is not evidence that a value is unreal; it is a warning that judgment must remain visible and contestable.': words({ clean: sense('clean', 'すっきりした・はっきりした（数値など）') }),
   'Institutions can strengthen trust by publicly stating that limit because this prevents precision from being mistaken for certainty.': words({
     trust: sense('trust', '信頼'),
     being: sense('be', '〜されること（beの-ing形）'),
     mistaken: sense('mistake', '取り違えられる（mistakeの過去分詞）'),
+    stating: sense('state', '述べること'),
   }),
-  'When a measure becomes a substitute for that mission, apparent precision can conceal institutional drift.': words({ drift: sense('drift', '漂流・ずれ') }),
+  'They should direct attention toward patterns that require explanation, provide feedback for revision, and reveal whether policies serve their stated mission.': words({
+    direct: sense('direct', '（注意を）向ける'),
+    serve: sense('serve', '役立つ・（目的に）かなう'),
+    stated: sense('state', '掲げられた・明言された（stated）'),
+  }),
+  'When a measure becomes a substitute for that mission, apparent precision can conceal institutional drift.': words({
+    drift: sense('drift', '漂流・ずれ'),
+    measure: sense('measure', '尺度・指標'),
+  }),
+  'When it remains one disciplined source of evidence among others, measurement can support both learning and democratic accountability across changing circumstances and competing interpretations of public value over time.': words({
+    disciplined: sense('discipline', 'きちんとした手順に基づく（disciplined）'),
+    others: sense('other', 'ほかのもの（others）'),
+    across: sense('across', '（さまざまな〜を）通じて'),
+    over: sense('over', '（over time で）時間とともに・長い期間にわたって'),
+  }),
 
   // p_5_weather_field_trip（遠足の二つの予定）
+  'We meet at school at eight in the morning.': words({ meet: sense('meet', '集まる') }),
+  'First, a guide shows us the new animal hospital.': words({ guide: sense('guide', '案内係・ガイド') }),
   'If it rains, we visit the science museum instead.': words({ rains: sense('rain', '雨が降る') }),
 
   // p_4_emergency_map（雨の日のための安全マップ）
+  'Heavy rain sometimes covers streets in our town with water.': words({ heavy: sense('heavy', '激しい（heavy rain で大雨）') }),
+  'They first interviewed residents about places that became dangerous during storms.': words({ interviewed: sense('interview', '話を聞いた・インタビューした') }),
+  'Water can rise there quickly, so the students marked another route to the community center.': words({ marked: sense('mark', '（地図に）印をつけた・示した') }),
+  'An older resident also showed them a narrow street without lights.': words({ lights: sense('light', '明かり・街灯（複数）') }),
+  'The map tells walkers to avoid that street after dark.': words({ dark: sense('dark', '（after dark で）暗くなってから') }),
+  'When the first map was ready, families tested it on a rainy afternoon.': words({ tested: sense('test', '試した') }),
   'They found that one sign was hidden behind a large tree.': words({ found: sense('find', '気づいた・分かった') }),
+  'They also asked for larger letters and simple pictures.': words({ asked: sense('ask', '（ask for で）求めた') }),
+  'Families suggested marking places where people could wait safely if the rain grew stronger.': words({ grew: sense('grow', '（〜に）なった（grow stronger で強まった）') }),
 
   // p_3_multilingual_town_guide（旅行者が使える街歩きガイド）
-  'Next, exchange students used the first version without help from the class.': words({ used: sense('use', '使った'), help: sense('help', '助け・手助け') }),
-  'They understood the English but sometimes missed a turn shown only by a street name.': words({ turn: sense('turn', '曲がり角') }),
+  'Local students wanted to help them explore the town without getting lost.': words({ getting: sense('get', '（get lost で）道に迷うこと') }),
+  'They decided to create a walking guide in Japanese and easy English.': words({ guide: sense('guide', '案内（書）・ガイド') }),
+  'Others wanted to know where they could refill water bottles or leave trash.': words({
+    others: sense('other', 'ほかの人々（others）'),
+    leave: sense('leave', '（ごみを）置いていく・捨てる'),
+  }),
+  'They tested the walking times twice because busy summer streets could slow a group.': words({
+    tested: sense('test', '試した'),
+    busy: sense('busy', 'にぎやかな・人通りの多い'),
+    slow: sense('slow', '遅くする（動詞）'),
+  }),
+  'Restaurant owners checked names, prices, and business hours for mistakes.': words({ business: sense('business', '営業（business hours で営業時間）') }),
+  'Next, exchange students used the first version without help from the class.': words({
+    used: sense('use', '使った'),
+    help: sense('help', '助け・手助け'),
+    exchange: sense('exchange', '交換（exchange student で交換留学生）'),
+  }),
+  'They understood the English but sometimes missed a turn shown only by a street name.': words({
+    turn: sense('turn', '曲がり角'),
+    missed: sense('miss', '見落とした・見逃した'),
+  }),
   'One student in a wheelchair also found that a short route had many steps.': words({ found: sense('find', '気づいた・分かった') }),
+  'The finished guide is now available at the station and on the town website.': words({
+    finished: sense('finish', '完成した（finished）'),
+    guide: sense('guide', '案内（書）・ガイド'),
+  }),
+  'A small note asks users to report information that is no longer correct.': words({ longer: sense('long', '（no longer で）もはや〜ない') }),
   'The students learned that good translation requires more than replacing words.': words({ learned: sense('learn', '学んだ') }),
 
   // p_pre2_phone_free_focus（学校の「スマホなしの1時間」）
+  'Many students say that phones help them organize homework and contact their families.': words({ organize: sense('organize', '整理する・計画的に進める') }),
+  'The same phones, however, can interrupt study with messages that feel urgent.': words({ feel: sense('feel', '（〜に）感じられる') }),
+  'One high school tested a daily phone-free hour instead of banning phones all day.': words({
+    tested: sense('test', '試した'),
+    'phone-free': sense('phone', 'スマホを使わない（phone-free）'),
+  }),
+  'At the beginning of the hour, students placed phones in their bags or lockers.': words({ placed: sense('place', '置いた') }),
+  'The office kept a number that families could call in an emergency.': words({ office: sense('office', '（学校の）事務室・職員室') }),
   'Teachers used the time for reading, writing, or problems that required steady attention.': words({ used: sense('use', '使った') }),
   'Both groups completed the same short reading tasks each Friday.': words({ reading: sense('read', '読解（reading tasks で読解課題）') }),
+  'Students also reported how often their attention moved away from the work.': words({ work: sense('work', '（取り組んでいる）課題・作業') }),
+  'The school revealed the comparison group only after the four-week trial ended.': words({
+    'four-week': sense('week', '4週間の（four-week）'),
+    ended: sense('end', '終わった'),
+  }),
   'This reduced the chance that expectations alone would change how students described their focus.': words({
     reduced: sense('reduce', '減らした・小さくした'),
     focus: sense('focus', '集中'),
+    chance: sense('chance', '可能性・見込み'),
   }),
+  'The phone-free classes finished slightly more questions and reported fewer interruptions.': words({ 'phone-free': sense('phone', 'スマホを使わない（phone-free）') }),
   'The school compared completion rates but did not treat a few extra answers as proof of deeper learning.': words({ answers: sense('answer', '答え（複数）・解答') }),
-  'Others needed translation or reading tools that were available on their phones.': words({ reading: sense('read', '読むための（reading tools で読むのを助けるツール）') }),
+  'Others needed translation or reading tools that were available on their phones.': words({
+    reading: sense('read', '読むための（reading tools で読むのを助けるツール）'),
+    others: sense('other', 'ほかの人々（others）'),
+  }),
   'The school now keeps the hour but reviews the rules every term.': words({ reviews: sense('review', '見直す') }),
   'At home, students can silence alerts or place a device out of reach while studying.': words({
     silence: sense('silence', '（通知を）消す・静かにさせる'),
     alerts: sense('alert', '通知・警報（複数）'),
     reach: sense('reach', '（out of reach で）手の届かない所'),
+    place: sense('place', '置く'),
   }),
+  'The goal is not simply to remove phones, but to build habits that protect attention.': words({ build: sense('build', '（習慣を）つくる・身につける') }),
 
   // p_pre2plus_clothing_second_life（服に役立つ「二度目の生」を与える）
-  'A group of schools created a clothing exchange with a repair station.': words({ repair: sense('repair', '修理（repair station で修理コーナー）') }),
+  'Producing clothing requires water, energy, labor, and transportation across long distances.': words({ across: sense('across', '〜を越えて・〜にわたって') }),
+  'Yet many useful clothes are thrown away because styles change or small parts break.': words({
+    away: sense('away', '（throw away で）捨てる'),
+    break: sense('break', '壊れる'),
+  }),
+  'A group of schools created a clothing exchange with a repair station.': words({
+    repair: sense('repair', '修理（repair station で修理コーナー）'),
+    exchange: sense('exchange', '交換会・交換の場'),
+    station: sense('station', '（repair station で）修理コーナー'),
+  }),
+  'Families brought clean items and described any damage on a small card.': words({ damage: sense('damage', '傷み・損傷') }),
   'At the repair table, visitors learned to replace buttons and close simple tears.': words({
     repair: sense('repair', '修理（repair table で修理テーブル）'),
     learned: sense('learn', '学んだ・身につけた'),
+    close: sense('close', '（裂け目を）ふさぐ・縫い合わせる'),
   }),
-  'A repair did not need to look perfect; it needed to make the item safe and useful.': words({ repair: sense('repair', '修理') }),
-  'Clothes that could not be worn were not automatically counted as useless.': words({ worn: sense('wear', '着られる（wear の過去分詞）') }),
-  'Items made from one clearly labeled material were easier to sort than items with hidden mixtures.': words({ labeled: sense('label', 'ラベルで表示された') }),
-  'Some cotton shirts became cleaning cloths, while artists used colorful material in school projects.': words({ used: sense('use', '使った') }),
+  'A repair did not need to look perfect; it needed to make the item safe and useful.': words({
+    repair: sense('repair', '修理'),
+    make: sense('make', '（O を C に）する'),
+  }),
+  'Clothes that could not be worn were not automatically counted as useless.': words({
+    worn: sense('wear', '着られる（wear の過去分詞）'),
+    counted: sense('count', '（〜と）みなされた・数えられた'),
+  }),
+  'Some cotton shirts became cleaning cloths, while artists used colorful material in school projects.': words({
+    used: sense('use', '使った'),
+    cleaning: sense('clean', '掃除用の（cleaning cloth で雑巾）'),
+  }),
+  'Items made from one clearly labeled material were easier to sort than items with hidden mixtures.': words({
+    labeled: sense('label', 'ラベルで表示された'),
+    made: sense('make', '作られた（made from 〜 で〜から作られた）'),
+  }),
   'The organizers wanted to know whether the exchange truly reduced waste.': words({ reduced: sense('reduce', '減らした') }),
-  'Counting exchanged items alone would give an incomplete answer.': words({ answer: sense('answer', '答え') }),
-  'Students, teachers, and neighbors all used the same tables and choice system.': words({ used: sense('use', '使った') }),
+  'Counting exchanged items alone would give an incomplete answer.': words({
+    answer: sense('answer', '答え'),
+    exchanged: sense('exchange', '交換された（exchanged）'),
+  }),
+  'A shirt has little environmental benefit if it remains unused in another closet.': words({ little: sense('little', 'ほとんど〜ない（little＋名詞）') }),
+  'The survey asked whether an exchanged item replaced a planned purchase, since that choice could reduce new production.': words({
+    exchanged: sense('exchange', '交換された（exchanged）'),
+    planned: sense('plan', '予定していた（planned）'),
+  }),
+  'The project also had to consider hygiene, personal taste, and dignity.': words({ taste: sense('taste', '好み') }),
+  'Nobody was required to explain why they wanted free or low-cost clothing.': words({ 'low-cost': sense('cost', '安い・低価格の（low-cost）') }),
+  'Students, teachers, and neighbors all used the same tables and choice system.': words({
+    used: sense('use', '使った'),
+    system: sense('system', '仕組み・方式'),
+  }),
+  'The exchange showed that local action can extend the life of many products.': words({ life: sense('life', '寿命・使える期間') }),
   'A useful second life begins with exchange and repair, but it also depends on durable design and fewer unnecessary purchases.': words({
     repair: sense('repair', '修理'),
+    life: sense('life', '（second life で）第二の使い道・再利用'),
   }),
 
   // p_2_vertical_farming（垂直農場にできること・できないこと）
+  'Vertical farms grow crops on stacked shelves inside buildings rather than across wide fields.': words({
+    stacked: sense('stack', '積み重ねられた（stacked）'),
+    grow: sense('grow', '育てる・栽培する'),
+    across: sense('across', '〜一面に・〜じゅうで'),
+    fields: sense('field', '畑（複数）'),
+  }),
+  'Plants receive carefully controlled light, water, temperature, and nutrients without ordinary soil.': words({ controlled: sense('control', '管理された（controlled）') }),
+  'Because water is collected and used again, some systems use far less water than field farming.': words({
+    collected: sense('collect', '集められる・回収される'),
+    systems: sense('system', '仕組み・設備（複数）'),
+    far: sense('far', 'はるかに（比較級を強める）'),
+    field: sense('field', '畑（field farming で畑での農業）'),
+    farming: sense('farm', '農業（farming）'),
+  }),
   'Shorter transport can reduce damaged produce and allow growers to harvest food when it is ready.': words({ produce: sense('produce', '農産物') }),
-  'Because water is collected and used again, some systems use far less water than field farming.': words({ collected: sense('collect', '集められる・回収される') }),
-  'Artificial lights and cooling systems may require large amounts of electricity.': words({ may: MAY }),
+  'These advantages, however, do not make every vertical farm environmentally efficient.': words({ make: sense('make', '（O を C に）する') }),
+  'Artificial lights and cooling systems may require large amounts of electricity.': words({
+    may: MAY,
+    cooling: sense('cool', '冷却の・冷房の（cooling）'),
+    systems: sense('system', '仕組み・設備（複数）'),
+  }),
   'If that electricity comes from fossil fuels, saved transport may not balance the extra energy use.': words({
     may: MAY,
     balance: sense('balance', '埋め合わせる・釣り合わせる'),
     use: sense('use', '使用（energy use でエネルギー使用量）'),
+    comes: sense('come', '（〜から）得られる・来る'),
+    saved: sense('save', '節約された（saved）'),
   }),
-  'Farms that buy renewable power or use waste heat from nearby buildings may produce a different balance.': words({ may: MAY }),
+  'Farms that buy renewable power or use waste heat from nearby buildings may produce a different balance.': words({
+    may: MAY,
+    waste: sense('waste', '廃棄の（waste heat で廃熱）'),
+  }),
   'The answer depends on the local climate, power supply, building, and crop.': words({
     answer: sense('answer', '答え'),
     supply: sense('supply', '供給（power supply で電力供給）'),
   }),
+  'Wheat, rice, and fruit trees need more space or have lower value for each shelf.': words({ lower: sense('lower', 'より低い（lowの比較級）') }),
+  'Some crops also depend on pollinators or complex seasonal changes that indoor systems must copy.': words({
+    changes: sense('change', '変化（複数）'),
+    systems: sense('system', '仕組み・設備（複数）'),
+  }),
   'A farm may produce excellent vegetables and still fail if debt and electricity costs remain high.': words({ may: MAY }),
   'Public support should therefore be based on transparent evidence rather than exciting images alone.': words({ support: sense('support', '支援') }),
+  'Useful comparisons examine the whole life of a system.': words({
+    life: sense('life', '（設備などの）一生・使われる全期間'),
+    system: sense('system', '仕組み・設備'),
+  }),
+  'They include construction materials, water, electricity, transport, food waste, and the useful life of equipment.': words({ life: sense('life', '（useful life で）使える期間・耐用年数') }),
+  'Vertical farming is unlikely to replace ordinary farming, and replacement is the wrong goal.': words({ farming: sense('farm', '農業（farming）') }),
   'It may instead supply certain crops where land is scarce, transport is difficult, or weather is unstable.': words({ may: MAY }),
+  'Field farms, greenhouses, and indoor farms can then contribute different strengths to a more resilient food system.': words({
+    field: sense('field', '畑（field farm で畑の農場）'),
+    system: sense('system', '仕組み・システム'),
+  }),
 
   // p_pre1_dark_sky_policy（人々を暗闇に残さずに夜空を守る）
   'Modern lighting has extended working hours, made travel easier, and allowed public spaces to remain active after sunset.': words({
     extended: sense('extend', '延ばした・広げた'),
     travel: sense('travel', '移動・旅行'),
+    working: sense('work', '働く（working hours で勤務時間・働ける時間）'),
+    made: sense('make', '（O を C に）した'),
+  }),
+  'Yet artificial light now reaches places and times where it serves little clear purpose.': words({
+    reaches: sense('reach', '（〜に）届く'),
+    serves: sense('serve', '（目的に）役立つ'),
+    little: sense('little', 'ほとんど〜ない（little＋名詞）'),
+  }),
+  'Sky glow makes stars difficult to see far beyond the streets that produce it.': words({ makes: sense('make', '（O を C に）する') }),
+  'Glare from a poorly aimed lamp can reduce visibility even while increasing brightness.': words({
+    poorly: sense('poor', 'うまく〜されていない・下手に（poorly）'),
+    aimed: sense('aim', '（光を）向けられた（aimed）'),
   }),
   'Light entering homes may disturb sleep, while constant illumination changes the behavior of insects, birds, and other animals.': words({
     may: MAY,
     sleep: sense('sleep', '睡眠'),
   }),
-  'Migrating birds can lose direction, and insects may circle lamps until they are exhausted.': words({ may: MAY, circle: sense('circle', '（〜の周りを）回る') }),
-  'Calls to reduce night lighting often meet an immediate objection about safety.': words({ calls: sense('call', '求める声・呼びかけ（複数）') }),
-  'Residents may reasonably fear darker sidewalks, and workers may need visible routes during late shifts.': words({ may: MAY }),
-  'A policy that treats every lamp as equally harmful will therefore lose public trust.': words({ trust: sense('trust', '信頼') }),
-  'Warmer-colored lamps may affect wildlife less than blue-rich white light.': words({ may: MAY }),
-  'Timers and motion sensors can provide brightness when people are present without maintaining it all night.': words({
-    present: sense('present', '（その場に）いる'),
+  'Migrating birds can lose direction, and insects may circle lamps until they are exhausted.': words({
+    may: MAY,
+    circle: sense('circle', '（〜の周りを）回る'),
   }),
+  'Calls to reduce night lighting often meet an immediate objection about safety.': words({
+    calls: sense('call', '求める声・呼びかけ（複数）'),
+    meet: sense('meet', '（反対などに）あう・直面する'),
+  }),
+  'Residents may reasonably fear darker sidewalks, and workers may need visible routes during late shifts.': words({
+    may: MAY,
+    shifts: sense('shift', '（交代制の）勤務時間（複数）'),
+  }),
+  'A policy that treats every lamp as equally harmful will therefore lose public trust.': words({ trust: sense('trust', '信頼') }),
+  'It is where light is needed, how much is useful, what color it should be, and when it should operate.': words({ operate: sense('operate', '作動する・（明かりが）つく') }),
+  'A shield can direct light toward the ground instead of allowing it to escape into the sky or nearby windows.': words({ direct: sense('direct', '（光を）向ける') }),
+  'Warmer-colored lamps may affect wildlife less than blue-rich white light.': words({
+    may: MAY,
+    'warmer-colored': sense('warm', 'より暖かい色の（warmer-colored）'),
+    'blue-rich': sense('blue', '青みの強い（blue-rich）'),
+  }),
+  'Timers and motion sensors can provide brightness when people are present without maintaining it all night.': words({ present: sense('present', '（その場に）いる') }),
+  'These changes sound simple, but good policy requires more than replacing equipment.': words({ changes: sense('change', '変更（複数）') }),
   'Officials first need a map of current lighting, including ownership, energy use, brightness, direction, and hours of operation.': words({
     use: sense('use', '使用（energy use でエネルギー使用量）'),
+    operation: sense('operation', '稼働・動作（hours of operation で点灯している時間）'),
   }),
   'An empty park at midnight may be a necessary path for a nurse returning from work.': words({ may: MAY }),
+  'Several communities have begun with small trials rather than immediate town-wide rules.': words({ 'town-wide': sense('town', '町全体の（town-wide）') }),
   "Researchers can then measure sky brightness, energy use, traffic incidents, wildlife activity, and residents' reported comfort.": words({
     use: sense('use', '使用（energy use でエネルギー使用量）'),
+    reported: sense('report', '報告された（reported）'),
+  }),
+  'No single measure proves success, but several forms of evidence can reveal trade-offs.': words({
+    measure: sense('measure', '尺度・指標'),
+    'trade-offs': sense('trade', '（一方を得ると他方を失う）かね合い（trade-offs）'),
   }),
   'The trial should also record complaints and near misses, since average comfort may hide risks faced by a small group.': words({
     may: MAY,
     faced: sense('face', '直面している（faceの過去分詞）'),
+    near: sense('near', '（near miss で）あと少しで事故になる'),
+    misses: sense('miss', '（near misses で）事故になりかけた出来事'),
   }),
+  'Economic arguments can strengthen the case for careful lighting, but they can also distort it.': words({ case: sense('case', '（〜を支持する）主張・論拠') }),
   'Dark-sky tourism may bring visitors to rural areas, and lower electricity use can save public money.': words({
     may: MAY,
     use: sense('use', '使用（electricity use で電力使用量）'),
+    'dark-sky': sense('dark', '暗い夜空を楽しむ（dark-sky）'),
+    lower: sense('lower', 'より少ない・より低い（lowの比較級）'),
   }),
   'People in ordinary neighborhoods also deserve sleep, visible stars, and healthy local ecosystems.': words({ sleep: sense('sleep', '睡眠') }),
   'The strongest standards set goals for useful light rather than demanding darkness for its own sake.': words({
     demanding: sense('demand', '要求すること・求めること'),
     own: sense('own', '（for its own sake で）それ自体のために'),
+    strongest: sense('strong', '最も優れた・最も説得力のある（strongの最上級）'),
+    set: sense('set', '（目標を）定める'),
+  }),
+  'They specify direction, intensity, color, and timing while allowing justified exceptions.': words({
+    timing: sense('time', '時間の設定・タイミング（timing）'),
+    justified: sense('justify', '正当な理由のある（justified）'),
   }),
   'They also require monitoring because new buildings, new technologies, and changing travel patterns can alter local needs.': words({
     travel: sense('travel', '移動（travel patterns で移動の傾向）'),
     needs: sense('need', '必要なこと・ニーズ（複数）'),
   }),
+  'Public reports allow residents to see whether promised improvements actually occur.': words({ promised: sense('promise', '約束された（promised）') }),
   'Protecting the night is therefore not a return to the past but a more disciplined use of modern light.': words({
     return: sense('return', '戻ること・回帰'),
     use: sense('use', '使い方・使用'),
+    disciplined: sense('discipline', '節度のある・よく考えられた（disciplined）'),
   }),
 
   // p_1_choice_architecture（便利さが静かに選択を形づくるとき）
+  'People often describe choice as if it begins only when a person consciously compares several options.': words({ consciously: sense('conscious', '意識して・自覚して（consciously）') }),
   'In practice, decisions are also shaped by which option appears first, which action requires effort, and what happens when someone does nothing.': words({
     shaped: sense('shape', '形づくられる（shapeの過去分詞）'),
+    practice: sense('practice', '実際（in practice で実際には）'),
+  }),
+  'These features form a choice architecture: the environment within which people decide.': words({ within: sense('within', '〜の中で') }),
+  'Behavioral researchers have shown that small changes in this environment can influence large numbers of decisions.': words({ changes: sense('change', '変化（複数）') }),
+  'Employees save more for retirement when enrollment is automatic but can be canceled than when they must complete a form to join.': words({
+    save: sense('save', '（お金を）貯める'),
+    complete: sense('complete', '（用紙に）記入する・すべて書き込む'),
   }),
   'Diners may select healthier food more often when it is easy to see and reach, even though less healthy choices remain available.': words({ may: MAY }),
-  'Households may use less electricity when bills compare their use with that of similar homes.': words({ may: MAY }),
+  'Households may use less electricity when bills compare their use with that of similar homes.': words({
+    may: MAY,
+    use: sense('use', '使う・使用（量）'),
+  }),
+  'Such interventions are sometimes called nudges because they alter behavior without formally removing options.': words({ called: sense('call', '（〜と）呼ばれる（called）') }),
   'Their appeal is clear in settings where information is complex, attention is limited, and delay carries real costs.': words({
     appeal: sense('appeal', '魅力'),
+    carries: sense('carry', '（損失などを）伴う'),
   }),
-  'A well-designed default may help people carry out an intention they already have but repeatedly postpone.': words({ may: MAY }),
-  "That judgment may reflect good evidence and a legitimate public goal, but it may also serve the designer's interests.": words({ may: MAY }),
+  'A well-designed default may help people carry out an intention they already have but repeatedly postpone.': words({
+    may: MAY,
+    'well-designed': sense('design', 'よく考えて作られた（well-designed）'),
+    carry: sense('carry', '（carry out で）実行する'),
+    out: sense('out', '（carry out で）実行する'),
+  }),
+  'It can also reduce the advantage enjoyed by people who have more time, confidence, or expert assistance for navigating procedures.': words({ enjoyed: sense('enjoy', '（利点を）持っている・享受している（enjoyed）') }),
+  'The person or institution that selects a default makes a judgment about which outcome should occur most easily.': words({ makes: sense('make', '（判断を）下す') }),
+  "That judgment may reflect good evidence and a legitimate public goal, but it may also serve the designer's interests.": words({
+    may: MAY,
+    serve: sense('serve', '（利益に）役立つ・かなう'),
+  }),
+  'A subscription company, for example, benefits when cancellation requires several screens while renewal occurs automatically.': words({ benefits: sense('benefit', '得をする・利益を得る') }),
+  'Formally, customers retain a choice; practically, friction has been distributed to protect one side.': words({
+    practically: sense('practical', '実際には（practically）'),
+    distributed: sense('distribute', '割り振られた（受け身）'),
+  }),
+  'A form must place one question before another, and a digital service must decide what happens when users ignore a notice.': words({ place: sense('place', '置く・配置する') }),
   'If architecture is unavoidable, they argue, it should be designed to advance welfare rather than left to accident or commercial power.': words({
     left: sense('leave', '任された・ゆだねられた（leaveの過去分詞）'),
+    advance: sense('advance', '増進する・前に進める'),
   }),
   'This response is persuasive as far as it goes, yet inevitability does not settle who may design, for whom, or toward what end.': words({
     may: MAY_PERMISSION,
+    far: sense('far', '（as far as it goes で）その範囲では'),
+    goes: sense('go', '（as far as it goes で）その範囲では'),
+    end: sense('end', '目的（toward what end で何のために）'),
   }),
-  'Otherwise, convenience for the majority may be purchased by creating barriers for a vulnerable minority.': words({ may: MAY }),
+  'Transparency is often proposed as the first safeguard.': words({ proposed: sense('propose', '提案される（受け身）') }),
+  'Disclosure matters, but a sentence hidden in a long policy does not create meaningful awareness.': words({
+    matters: sense('matter', '重要である'),
+    policy: sense('policy', '（サービスの）規約・方針'),
+  }),
+  'Researchers also distinguish information that is technically available from information that ordinary users can notice and act on.': words({ technically: sense('technical', '形式の上では・技術的には（technically）') }),
+  'An alternative is not meaningful if it is difficult to find, requires expert knowledge, or carries a punishment unrelated to the policy goal.': words({ carries: sense('carry', '（罰などを）伴う') }),
+  'The burden of opting out should be compared with the burden that the default removes.': words({
+    opting: sense('opt', '（opt out で）抜けること・参加しない選択'),
+    out: sense('out', '（opt out で）抜ける'),
+  }),
+  'Otherwise, convenience for the majority may be purchased by creating barriers for a vulnerable minority.': words({
+    may: MAY,
+    purchased: sense('purchase', '（代償を払って）手に入れられる（受け身）'),
+  }),
   'Average improvement can hide the fact that a policy helps people who were already secure while confusing or excluding others.': words({
     confusing: sense('confuse', '混乱させること'),
+    others: sense('other', 'ほかの人々（others）'),
   }),
-  'Collecting such data creates its own privacy risks, so evaluation must use only what is necessary and protect it carefully.': words({
-    own: sense('own', 'それ自身の・固有の'),
+  'Collecting such data creates its own privacy risks, so evaluation must use only what is necessary and protect it carefully.': words({ own: sense('own', 'それ自身の・固有の') }),
+  'Even a successful intervention should not become permanent without review.': words({ review: sense('review', '見直し') }),
+  'People learn, markets adapt, technologies change, and a once-helpful default may become irrelevant or exploitable.': words({
+    may: MAY,
+    'once-helpful': sense('helpful', 'かつては役に立った（once-helpful）'),
   }),
-  'People learn, markets adapt, technologies change, and a once-helpful default may become irrelevant or exploitable.': words({ may: MAY }),
+  'Review dates force institutions to restate the goal, publish results, examine unequal effects, and consider less intrusive alternatives.': words({ review: sense('review', '見直し') }),
   'A scheduled review can also reveal whether people have learned to avoid or exploit the original design.': words({
     scheduled: sense('schedule', '予定された（scheduleの過去分詞）'),
     learned: sense('learn', '身につけた・学んだ'),
+    review: sense('review', '見直し'),
   }),
   'Scheduled reviews also make failure informative rather than allowing an ineffective design to survive through habit.': words({
     scheduled: sense('schedule', '予定された・定期的な（scheduleの過去分詞）'),
+    reviews: sense('review', '見直し（複数）'),
+    make: sense('make', '（O を C に）する'),
+    through: sense('through', '〜によって・〜のせいで'),
   }),
   'Citizens need not vote on every button or sentence, but they should be able to challenge goals, evidence, and hidden burdens.': words({
     challenge: sense('challenge', '異議を唱える'),
+    need: sense('need', '（need not で）〜する必要はない'),
   }),
   'Independent review can test whether claimed benefits are real and whether commercial or political interests have shaped the design.': words({
     shaped: sense('shape', '形づくった（shapeの過去分詞）'),
+    review: sense('review', '検証・点検'),
   }),
+  'Public explanation should describe not only what the system does but why that architecture was chosen over plausible alternatives.': words({
+    system: sense('system', '仕組み・システム'),
+    over: sense('over', '〜よりも（優先して）'),
+  }),
+  'A responsible design pursues a legitimate goal, preserves a real exit, examines distribution, limits data, and remains open to revision.': words({ open: sense('open', '（〜を）受け入れる余地がある（open to 〜）') }),
   'Convenience becomes ethically defensible only when the people whose behavior is shaped can understand, refuse, and contest the terms of that convenience.': words({
     shaped: sense('shape', '形づくられる（shapeの過去分詞）'),
+    ethically: sense('ethical', '倫理的に（ethically）'),
+    contest: sense('contest', '異議を唱える'),
   }),
 
   // p_5_hot_summer_school（涼しい教室をつくる）
+  'Summers in our town are hotter than before.': words({ hotter: sense('hot', 'より暑い（hotの比較級）') }),
+  'The curtains stop strong sunlight in the afternoon.': words({ stop: sense('stop', '（日差しを）さえぎる・止める') }),
+  'Our class also keeps green plants by the windows.': words({ keeps: sense('keep', '（植物を）置いている・育てている') }),
   'The plants make a cool wall of leaves.': words({ leaves: sense('leaf', '葉（複数）') }),
 
   // p_4_school_solar_roof（電気をつくる屋根）
-  'We learned that the panels made the most electricity in May.': words({ learned: sense('learn', '知った・学んだ') }),
+  'Last spring, workers put solar panels on the roof of our school.': words({ panels: sense('panel', '（太陽光）パネル（複数）') }),
+  'The panels change sunlight into electricity for the classrooms.': words({ panels: sense('panel', '（太陽光）パネル（複数）') }),
+  'A screen near the office reports the power that the school makes each day.': words({
+    office: sense('office', '（学校の）事務室・職員室'),
+    reports: sense('report', '（数値を）表示する・知らせる'),
+  }),
+  'We learned that the panels made the most electricity in May.': words({
+    learned: sense('learn', '知った・学んだ'),
+    panels: sense('panel', '（太陽光）パネル（複数）'),
+  }),
   'In June, clouds and rain lowered the number for two weeks.': words({ lowered: sense('lower', '下げた') }),
-  'Some students thought the panels were broken, but the weather was the real reason.': words({ thought: sense('think', '思った') }),
-  'Now students talk about energy at home, and some families check their own use.': words({ own: sense('own', '自分たちの'), use: sense('use', '使用（量）') }),
+  'Some students thought the panels were broken, but the weather was the real reason.': words({
+    thought: sense('think', '思った'),
+    panels: sense('panel', '（太陽光）パネル（複数）'),
+  }),
+  'The school also uses the panels in an emergency.': words({ panels: sense('panel', '（太陽光）パネル（複数）') }),
+  'A battery in the gym can store power for lights and phones.': words({ lights: sense('light', '明かり・照明（複数）') }),
+  'Families came to the gym because the lights there were still on.': words({ lights: sense('light', '明かり・照明（複数）') }),
+  'The panels do not solve every problem.': words({ panels: sense('panel', '（太陽光）パネル（複数）') }),
+  'Now students talk about energy at home, and some families check their own use.': words({
+    own: sense('own', '自分たちの'),
+    use: sense('use', '使用（量）'),
+  }),
 
   // p_3_ai_class_rules（自分たちで作ったルール）
   'Some used them to check spelling, and others asked for ideas before writing.': words({
     used: sense('use', '使った'),
     spelling: sense('spell', 'つづり'),
+    others: sense('other', 'ほかの人たち（others）'),
+    asked: sense('ask', '（ask for で）求めた'),
   }),
-  'A few students copied whole answers and did not read them carefully.': words({ copied: sense('copy', '写した・まねた'), answers: sense('answer', '答え（複数）') }),
+  'A few students copied whole answers and did not read them carefully.': words({
+    copied: sense('copy', '写した・まねた'),
+    answers: sense('answer', '答え（複数）'),
+  }),
   'One teacher noticed that several reports used the same unusual phrase.': words({ used: sense('use', '使っていた') }),
   'Instead, the school asked each class to write its own rules.': words({ own: sense('own', '自分たちの') }),
-  'Our class first collected examples of good and bad use.': words({ collected: sense('collect', '集めた'), use: sense('use', '使い方') }),
+  'Our class first collected examples of good and bad use.': words({
+    collected: sense('collect', '集めた'),
+    use: sense('use', '使い方'),
+  }),
   'The class found that a list of ideas was often helpful.': words({ found: sense('find', '分かった・気づいた') }),
-  'The class also found that copying a finished report was not honest work.': words({ found: sense('find', '分かった・気づいた') }),
+  'The class also found that copying a finished report was not honest work.': words({
+    found: sense('find', '分かった・気づいた'),
+    finished: sense('finish', '完成した（finished）'),
+    work: sense('work', '（自分でする）取り組み・勉強'),
+  }),
   'A student pointed out that the tools sometimes give confident but wrong answers.': words({
     pointed: sense('point', '指摘した（point out で「指摘する」）'),
     answers: sense('answer', '答え（複数）'),
+    out: sense('out', '（point out で）指摘する'),
   }),
-  'Then we ran a short experiment with the tools.': words({
-    ran: sense('run', '行った（run an experiment で「実験を行う」）'),
-  }),
+  'Then we ran a short experiment with the tools.': words({ ran: sense('run', '行った（run an experiment で「実験を行う」）') }),
   'Half of the class wrote a summary alone, and the other half used AI first.': words({ used: sense('use', '使った') }),
   'Two answers even included a fact that no other source mentioned.': words({ answers: sense('answer', '答え（複数）') }),
+  'Teachers can then compare the draft with the finished report.': words({ finished: sense('finish', '完成した（finished）') }),
   'Some students still think that any use of AI is unfair.': words({ use: sense('use', '使用') }),
+  'Others say that people will use these tools at work in the future.': words({ others: sense('other', 'ほかの人たち（others）') }),
   'Our teacher told us that learning to judge information is the real skill.': words({
     told: sense('tell', '言った・伝えた'),
     learning: sense('learn', '学ぶこと・身につけること'),
@@ -473,9 +1089,7 @@ export const PASSAGE_SENSE_GLOSSES = Object.freeze({
     change: sense('change', '変化'),
     left: sense('leave', '去った・離れた'),
   }),
-  'Some visitors entered private gardens because the path to the shrine was not clearly marked.': words({
-    marked: sense('mark', '示された（mark の過去分詞。was marked で「示されていた」）'),
-  }),
+  'Some visitors entered private gardens because the path to the shrine was not clearly marked.': words({ marked: sense('mark', '示された（mark の過去分詞。was marked で「示されていた」）') }),
   'Litter increased near the bus stop, and neighbors collected it themselves every Monday.': words({
     stop: sense('stop', '停留所（bus stop でバス停）'),
     collected: sense('collect', '集めた・拾い集めた'),
@@ -489,9 +1103,7 @@ export const PASSAGE_SENSE_GLOSSES = Object.freeze({
     points: sense('point', '地点・場所'),
     busiest: sense('busy', 'いちばん混み合う（busy の最上級）'),
   }),
-  'The money would pay for cleaning, toilets, and translation.': words({
-    cleaning: sense('clean', '清掃（すること）'),
-  }),
+  'The money would pay for cleaning, toilets, and translation.': words({ cleaning: sense('clean', '清掃（すること）') }),
   'Large tour buses put more pressure on narrow roads than private cars do.': words({
     put: sense('put', 'かける（put pressure on 〜 で「〜に負担をかける」）'),
     pressure: sense('pressure', '負担・圧力'),
@@ -500,27 +1112,25 @@ export const PASSAGE_SENSE_GLOSSES = Object.freeze({
     feared: sense('fear', '心配した・恐れた'),
     fewer: sense('few', 'より少ない（few の比較級）'),
   }),
-  'Residents said that the new buses helped older people most.': words({
-    older: sense('old', '年配の（old の比較級）'),
-  }),
+  'Residents said that the new buses helped older people most.': words({ older: sense('old', '年配の（old の比較級）') }),
+  'The mayor said that tourism must serve the people who live there every day.': words({ serve: sense('serve', '（人々の）役に立つ') }),
 
   // p_pre2plus_rural_bus_future（村のバスは誰が動かすのか）
+  'In many rural areas, the local bus is the only way for people without cars to reach a hospital.': words({ reach: sense('reach', '（場所に）たどり着く・行く') }),
   'Some companies used to run several routes, but today they cannot fill even one bus.': words({
     used: sense('use', '（used to で）以前は〜していた'),
     run: sense('run', '運行する（run a route で「路線を走らせる」）'),
   }),
-  'A further problem is that many drivers are close to retirement age.': words({
-    close: sense('close', '近い（be close to 〜 で「〜に近い」）'),
-  }),
+  'A further problem is that many drivers are close to retirement age.': words({ close: sense('close', '近い（be close to 〜 で「〜に近い」）') }),
   'One village ended its afternoon service last spring, and the effect appeared quickly.': words({
     ended: sense('end', 'やめた・終わらせた'),
     service: sense('service', '（バスの）便・運行'),
   }),
-  'A high school student began cycling nine kilometers in the rain.': words({
-    cycling: sense('cycle', '自転車で走ること'),
-  }),
+  'An elderly resident had to change three appointments because no bus reached the clinic.': words({ reached: sense('reach', '（〜まで）行った・着いた') }),
+  'A high school student began cycling nine kilometers in the rain.': words({ cycling: sense('cycle', '自転車で走ること') }),
   'The village office received complaints, but simply restoring the old timetable was too expensive.': words({
     restoring: sense('restore', '元に戻すこと'),
+    office: sense('office', '役場（village office で村役場）'),
   }),
   'Officials therefore studied how residents actually traveled during one ordinary week.': words({
     officials: sense('official', '職員・役人'),
@@ -533,12 +1143,15 @@ export const PASSAGE_SENSE_GLOSSES = Object.freeze({
   'Very few people used the full route from end to end.': words({
     used: sense('use', '使った'),
     full: sense('full', '全体の・まるごとの'),
+    end: sense('end', '（from end to end で）始点から終点まで'),
   }),
+  'The evening bus, for example, often carried a single passenger.': words({ carried: sense('carry', '（乗客を）乗せた・運んだ') }),
   'The village then tested a small bus that comes only when someone books it.': words({
     tested: sense('test', '試した'),
     books: sense('book', '予約する'),
   }),
   'Drivers reported that the work was less stressful than following a fixed schedule.': words({ following: sense('follow', '従うこと') }),
+  'However, the system created new difficulties that planners had not expected.': words({ system: sense('system', '仕組み・方式') }),
   'Some older residents disliked booking and preferred a bus that always came at the same time.': words({
     older: sense('old', '年配の（old の比較級）'),
     disliked: sense('dislike', 'いやがった・嫌った'),
@@ -546,19 +1159,20 @@ export const PASSAGE_SENSE_GLOSSES = Object.freeze({
   }),
   'Others could not use the app because the mobile signal was weak in the mountains.': words({
     signal: sense('signal', '電波（mobile signal で「携帯電話の電波」）'),
+    others: sense('other', 'ほかの人たち（others）'),
   }),
   'The office therefore kept a telephone line and trained volunteers to help with the first booking.': words({
     line: sense('line', '（電話の）回線'),
     trained: sense('train', '育てた・訓練した'),
     booking: sense('book', '予約'),
+    office: sense('office', '役場（village office で村役場）'),
   }),
   'A neighboring town chose a different answer and paid taxi companies to carry passengers.': words({ answer: sense('answer', '答え・対応策') }),
   'That plan started faster, but the cost for each passenger stayed higher.': words({
     stayed: sense('stay', '〜のままだった（stay ＋ 形容詞）'),
+    started: sense('start', '始まった'),
   }),
-  'Neither approach can succeed if no one is willing to drive.': words({
-    approach: sense('approach', 'やり方・取り組み方'),
-  }),
+  'Neither approach can succeed if no one is willing to drive.': words({ approach: sense('approach', 'やり方・取り組み方') }),
   'Whether such support arrives in time will depend on decisions made in the next few years.': words({
     support: sense('support', '支援'),
     time: sense('time', '（in time で）間に合って'),
@@ -566,23 +1180,18 @@ export const PASSAGE_SENSE_GLOSSES = Object.freeze({
   }),
 
   // p_2_space_debris（混み合う軌道）
-  'More than ten thousand satellites now travel around the Earth, and thousands more are planned.': words({
-    planned: sense('plan', '計画されている（are planned で受け身）'),
-  }),
+  'More than ten thousand satellites now travel around the Earth, and thousands more are planned.': words({ planned: sense('plan', '計画されている（are planned で受け身）') }),
+  'They carry weather data, navigation signals, and internet service to remote communities.': words({ carry: sense('carry', '（情報を）伝える・運ぶ') }),
   'However, the same orbits also hold used rocket parts, broken satellites, and countless small fragments.': words({
     hold: sense('hold', '（中に）抱えている・含む'),
     used: sense('use', '使い終わった・使用済みの'),
   }),
-  'Even a fragment one centimeter wide is faster than a bullet.': words({
-    wide: sense('wide', '幅が〜の（one centimeter wide で「幅1センチの」）'),
-  }),
+  'Even a fragment one centimeter wide is faster than a bullet.': words({ wide: sense('wide', '幅が〜の（one centimeter wide で「幅1センチの」）') }),
   'Operators already move satellites several times a year to avoid possible collisions.': words({
     operators: sense('operator', '（衛星を）運用する人・会社'),
     times: sense('time', '〜回（several times で「数回」）'),
   }),
-  'Each of these movements uses fuel and shortens the useful life of the satellite.': words({
-    life: sense('life', '（使える）期間・寿命'),
-  }),
+  'Each of these movements uses fuel and shortens the useful life of the satellite.': words({ life: sense('life', '（使える）期間・寿命') }),
   'Ground teams must also track objects continuously, which requires expensive radar and staff.': words({
     ground: sense('ground', '地上の'),
     continuously: sense('continuous', '絶えず・途切れなく'),
@@ -591,44 +1200,30 @@ export const PASSAGE_SENSE_GLOSSES = Object.freeze({
     may: MAY,
     strike: sense('strike', 'ぶつかる・当たる'),
   }),
-  'The consequences would not stop at space companies.': words({
-    stop: sense('stop', 'とどまる（stop at 〜 で「〜で止まる」）'),
-  }),
-  'Farmers, pilots, and emergency services all depend on satellite information.': words({
-    services: sense('service', '（救急などの）機関（emergency services）'),
-  }),
-  'Some engineers argue that every satellite should carry enough fuel to leave orbit at the end of its mission.': words({
-    carry: sense('carry', '積んでいる・載せている'),
-  }),
-  'A successful test does not show that the method works at a useful scale.': words({
-    works: sense('work', 'うまくいく・機能する'),
-  }),
+  'The consequences would not stop at space companies.': words({ stop: sense('stop', 'とどまる（stop at 〜 で「〜で止まる」）') }),
+  'Farmers, pilots, and emergency services all depend on satellite information.': words({ services: sense('service', '（救急などの）機関（emergency services）') }),
+  'Several solutions have been proposed, and none of them is simple.': words({ proposed: sense('propose', '提案された（受け身）') }),
+  'Some engineers argue that every satellite should carry enough fuel to leave orbit at the end of its mission.': words({ carry: sense('carry', '積んでいる・載せている') }),
+  'A successful test does not show that the method works at a useful scale.': words({ works: sense('work', 'うまくいく・機能する') }),
   'Removing a few large objects each year may be far cheaper than removing thousands of fragments later.': words({
     may: MAY,
     far: sense('far', 'はるかに（比較級を強める）'),
   }),
-  'Rules therefore need international agreement, and such agreements take years.': words({
-    take: sense('take', '（時間が）かかる'),
-  }),
+  'A company that spends money on careful design gains no direct advantage if others ignore the risk.': words({ others: sense('other', 'ほかのもの・ほかの会社（others）') }),
+  'Rules therefore need international agreement, and such agreements take years.': words({ take: sense('take', '（時間が）かかる') }),
   'Meanwhile, the number of launches continues to rise each year.': words({ launches: sense('launch', '打ち上げ（複数）') }),
-  'Some progress has already been made.': words({
-    made: sense('make', 'なされた（make progress の受け身）'),
-  }),
-  'Several agencies now set a fixed period for leaving crowded orbits.': words({
-    set: sense('set', '定める・決める'),
-  }),
+  'Some progress has already been made.': words({ made: sense('make', 'なされた（make progress の受け身）') }),
+  'Several agencies now set a fixed period for leaving crowded orbits.': words({ set: sense('set', '定める・決める') }),
   'Yet enforcement remains weak, because no authority can inspect every launch.': words({ launch: sense('launch', '打ち上げ') }),
   'These measures show that the problem is understood, not that it is solved.': words({
     measures: sense('measure', '対策（複数）'),
+    understood: sense('understand', '理解されている（受け身）'),
+    solved: sense('solve', '解決された（受け身）'),
   }),
-  'The orbits around the Earth are a shared resource, and shared resources fail when each user acts alone.': words({
-    fail: sense('fail', 'うまくいかなくなる・だめになる'),
-  }),
+  'The orbits around the Earth are a shared resource, and shared resources fail when each user acts alone.': words({ fail: sense('fail', 'うまくいかなくなる・だめになる') }),
 
   // p_pre1_ai_and_work（仕事ではなく作業が変わる）
-  'Predictions about machines replacing human work are older than the machines themselves.': words({
-    work: sense('work', '仕事・労働'),
-  }),
+  'Predictions about machines replacing human work are older than the machines themselves.': words({ work: sense('work', '仕事・労働') }),
   'Each generation has produced confident forecasts, and most of them have been wrong in interesting ways.': words({ forecasts: sense('forecast', '予測（複数）') }),
   'Recent systems that generate text, images, and computer code have revived the debate with unusual intensity.': words({
     systems: sense('system', 'システム（仕組み）'),
@@ -638,51 +1233,38 @@ export const PASSAGE_SENSE_GLOSSES = Object.freeze({
     extremes: sense('extreme', '極端（な考え）'),
     promising: sense('promise', '〜が来ると請け合って（promise の -ing 形）'),
   }),
-  'The current technology differs from earlier automation in one important respect.': words({
-    respect: sense('respect', '点（in … respect で「…の点で」）'),
-  }),
+  'The current technology differs from earlier automation in one important respect.': words({ respect: sense('respect', '点（in … respect で「…の点で」）') }),
   'The newer systems produce drafts, summaries, and designs that resemble skilled office work.': words({
     systems: sense('system', 'システム（仕組み）'),
+    office: sense('office', '事務（office work で事務の仕事）'),
   }),
   'Programmers, translators, designers, and junior analysts have all noticed changes in demand.': words({
     junior: sense('junior', '若手の・下の立場の'),
     changes: sense('change', '変化（複数）'),
     demand: sense('demand', '需要'),
   }),
-  'Careful studies describe change at the level of tasks rather than whole occupations.': words({
-    change: sense('change', '変化'),
-  }),
-  'A hospital doctor reads images, but also explains results, weighs uncertainty, and decides what to do next.': words({
-    weighs: sense('weigh', 'よく考えて見きわめる'),
-  }),
-  'When one task becomes cheaper, the value of the remaining tasks often rises.': words({
-    remaining: sense('remain', '残りの（remain の -ing 形）'),
-  }),
+  'Careful studies describe change at the level of tasks rather than whole occupations.': words({ change: sense('change', '変化') }),
+  'A hospital doctor reads images, but also explains results, weighs uncertainty, and decides what to do next.': words({ weighs: sense('weigh', 'よく考えて見きわめる') }),
+  'When one task becomes cheaper, the value of the remaining tasks often rises.': words({ remaining: sense('remain', '残りの（remain の -ing 形）') }),
   'The whole service may then attract more demand rather than less.': words({
     may: MAY,
     demand: sense('demand', '需要'),
   }),
-  'This pattern has appeared before in other fields.': words({
-    before: sense('before', '以前に（副詞）'),
-  }),
+  'This pattern has appeared before in other fields.': words({ before: sense('before', '以前に（副詞）') }),
   'Cash machines reduced the routine work of bank clerks.': words({ reduced: sense('reduce', '減らした') }),
   'Branches became cheaper to operate, so banks opened more of them, and staff moved toward advice and sales.': words({
     branches: sense('branch', '支店（複数）'),
     operate: sense('operate', '運営する'),
   }),
   'The adjustment was slow, and individual workers still lost income during it.': words({ lost: sense('lose', '失った') }),
-  'Aggregate stability can hide serious harm to particular regions and age groups.': words({
-    aggregate: sense('aggregate', '全体をまとめた・総計の'),
-  }),
+  'Aggregate stability can hide serious harm to particular regions and age groups.': words({ aggregate: sense('aggregate', '全体をまとめた・総計の') }),
   'A worker of fifty-five rarely benefits from jobs created ten years later in another city.': words({
     benefits: sense('benefit', '得をする（benefit from 〜 で「〜から得をする」）'),
+    'fifty-five': sense('fifty', '55（歳）（fifty-five）'),
   }),
-  'The distribution of gains is therefore a central question.': words({
-    gains: sense('gain', '利益（複数）'),
-  }),
-  'Early evidence suggests that assistance tools help less experienced staff more than expert staff.': words({
-    early: sense('early', '初期の'),
-  }),
+  'The distribution of gains is therefore a central question.': words({ gains: sense('gain', '利益（複数）') }),
+  'If productivity rises but wages do not, the benefit reaches owners rather than workers.': words({ reaches: sense('reach', '（〜に）行き渡る・届く') }),
+  'Early evidence suggests that assistance tools help less experienced staff more than expert staff.': words({ early: sense('early', '初期の') }),
   'That effect could narrow wage gaps, or it could reduce the reward for long training.': words({ narrow: sense('narrow', '縮める・狭める') }),
   'Employment law, union strength, and public investment decide how any productivity gain is shared.': words({
     union: sense('union', '労働組合'),
@@ -700,20 +1282,21 @@ export const PASSAGE_SENSE_GLOSSES = Object.freeze({
     questioning: sense('question', '疑うこと・疑問視すること'),
     judging: sense('judge', '見きわめること・判断すること'),
   }),
-  'Yet those abilities are difficult to measure, and examinations reward what is easy to score.': words({
-    score: sense('score', '点をつける'),
+  'Yet those abilities are difficult to measure, and examinations reward what is easy to score.': words({ score: sense('score', '点をつける') }),
+  'Policy responses fall into several groups.': words({ fall: sense('fall', '分かれる（fall into 〜 で「〜に分類される」）') }),
+  'Some governments emphasize retraining, though programs often reach the workers who need them least.': words({ reach: sense('reach', '（支援が人に）届く') }),
+  'Others discuss shorter working hours, wage insurance, or support for regions losing employers.': words({
+    support: sense('support', '支援'),
+    others: sense('other', 'ほかの政府・ほかの人たち（others）'),
+    working: sense('work', '働く（working hours で労働時間）'),
   }),
-  'Policy responses fall into several groups.': words({
-    fall: sense('fall', '分かれる（fall into 〜 で「〜に分類される」）'),
-  }),
-  'Others discuss shorter working hours, wage insurance, or support for regions losing employers.': words({ support: sense('support', '支援') }),
   'Each proposal carries costs, and none removes the need for continuous adjustment.': words({
     carries: sense('carry', '（費用などを）伴う'),
     need: sense('need', '必要・必要性'),
   }),
-  'Work is not a fixed quantity waiting to be divided.': words({
-    work: sense('work', '仕事・労働'),
-  }),
+  'Evaluation is as important as ambition, since untested programs consume budgets that could support proven ones.': words({ ones: sense('one', 'もの（前の名詞 programs の代わり）') }),
+  'The most misleading question asks whether machines will take our jobs.': words({ take: sense('take', '奪う・取る') }),
+  'Work is not a fixed quantity waiting to be divided.': words({ work: sense('work', '仕事・労働') }),
   'It is more useful to ask who decides how these systems are used and who is protected during the transition.': words({
     systems: sense('system', 'システム（仕組み）'),
     used: sense('use', '使われる（受け身）'),
@@ -725,32 +1308,53 @@ export const PASSAGE_SENSE_GLOSSES = Object.freeze({
     carried: sense('carry', '持っていた（carry authority で「権威を持つ」）'),
     kind: sense('kind', '種類'),
   }),
+  'That authority never came from the image alone, and it was never absolute.': words({ came: sense('come', '（〜から）生じた・来た') }),
   'Ordinary readers could therefore treat a published photograph as reasonable evidence without examining it closely.': words({
     reasonable: sense('reasonable', 'もっともな・妥当な'),
+    closely: sense('close', '詳しく・注意深く（closely）'),
+    published: sense('publish', '（新聞などに）掲載された（published）'),
   }),
   'Synthetic media has weakened this assumption rather than destroyed it outright.': words({ weakened: sense('weaken', '弱めた') }),
-  'The necessary tools are widely available, and each improvement lowers the effort required again.': words({
-    widely: sense('wide', '広く'),
-  }),
+  'The necessary tools are widely available, and each improvement lowers the effort required again.': words({ widely: sense('wide', '広く') }),
   'A single convincing file can reach millions of people long before any expert examines it.': words({
     file: sense('file', 'ファイル（データのまとまり）'),
     long: sense('long', 'ずっと（long before で「〜よりずっと前に」）'),
+    reach: sense('reach', '（人々に）届く'),
+  }),
+  'The obvious concern is that false material will be believed by people who have no reason to doubt it.': words({
+    believed: sense('believe', '信じられる（受け身）'),
+    material: sense('material', '（映像・記事などの）内容・素材'),
   }),
   'A fabricated recording released the night before an election can cause damage that no later correction repairs.': words({
     recording: sense('record', '録音'),
+    repairs: sense('repair', '（損害を）元に戻す・修復する'),
   }),
-  'A subtler danger works in the opposite direction and may prove more damaging.': words({ may: MAY }),
+  'Corrections travel more slowly than the material they answer, and they reach a much smaller audience.': words({
+    travel: sense('travel', '（情報が）広まる・伝わる'),
+    material: sense('material', '（映像・記事などの）内容・素材'),
+    reach: sense('reach', '（人々に）届く'),
+  }),
+  'A subtler danger works in the opposite direction and may prove more damaging.': words({
+    may: MAY,
+    works: sense('work', '作用する・働く'),
+  }),
   'Once audiences know that anything can be faked, genuine evidence can be dismissed at will.': words({
     once: sense('once', 'いったん〜すると（接続詞）'),
+    faked: sense('fake', '偽造される（受け身）'),
   }),
   'An official can simply claim that a recording of a bribe was generated.': words({
     official: sense('official', '役人・職員'),
     recording: sense('record', '録音'),
+    generated: sense('generate', '（AIで）作られた・生成された（受け身）'),
   }),
   'Accountability weakens whenever an inconvenient record can be denied without any supporting argument.': words({
     record: sense('record', '記録'),
+    supporting: sense('support', '裏付けとなる（supporting）'),
   }),
-  'Detection software is usually proposed as the first answer, and it is genuinely useful.': words({ answer: sense('answer', '答え・対策') }),
+  'Detection software is usually proposed as the first answer, and it is genuinely useful.': words({
+    answer: sense('answer', '答え・対策'),
+    proposed: sense('propose', '提案される（受け身）'),
+  }),
   'Such tools search for statistical traces that generation leaves behind in pixels or sound.': words({
     traces: sense('trace', '跡・痕跡（複数）'),
     generation: sense('generation', '（機械による）生成'),
@@ -758,16 +1362,21 @@ export const PASSAGE_SENSE_GLOSSES = Object.freeze({
   'Their accuracy falls sharply when a file is compressed, cropped, or recorded again from a screen.': words({
     file: sense('file', 'ファイル（データのまとまり）'),
     cropped: sense('crop', '（画像の端を）切り取られた（crop の過去分詞）'),
+    falls: sense('fall', '下がる・落ちる'),
   }),
   'Every published detector also teaches the next generation of systems precisely what to avoid.': words({
     systems: sense('system', 'システム（仕組み）'),
+    published: sense('publish', '公開された（published）'),
   }),
   'The contest is asymmetric, since one success is enough for an attacker while a verifier needs consistent reliability.': words({
     contest: sense('contest', '争い・競い合い'),
+    attacker: sense('attack', '攻撃する側・攻撃者（attacker）'),
+    verifier: sense('verify', '検証する側（verifier）'),
   }),
   'Detection therefore deserves continued investment, but it cannot carry the whole burden of public trust.': words({
     carry: sense('carry', '背負う'),
     trust: sense('trust', '信頼'),
+    continued: sense('continue', '継続的な（continued）'),
   }),
   'A second approach records where a file originated instead of asking what it looks like.': words({
     approach: sense('approach', 'やり方・取り組み方'),
@@ -782,6 +1391,7 @@ export const PASSAGE_SENSE_GLOSSES = Object.freeze({
     file: sense('file', 'ファイル（データのまとまり）'),
     record: sense('record', '記録'),
     approach: sense('approach', 'やり方・取り組み方'),
+    fails: sense('fail', '（うまくいかないときも）安全な側に倒れる（fail safely）'),
   }),
   'Provenance systems carry their own risks, and those risks deserve equal attention.': words({
     systems: sense('system', 'システム（仕組み）'),
@@ -797,15 +1407,13 @@ export const PASSAGE_SENSE_GLOSSES = Object.freeze({
     system: sense('system', 'システム（仕組み）'),
     designed: sense('design', '（〜のために）作られた（design の過去分詞）'),
   }),
-  'Technical measures are less important than the institutions that interpret and apply them.': words({
-    measures: sense('measure', '手段・対策（複数）'),
-  }),
-  'Courts have handled disputed evidence for centuries without assuming that documents prove themselves.': words({
-    disputed: sense('dispute', '争われている（disputeの過去分詞）'),
-  }),
+  'Any serious design must allow selective disclosure, so that a claim can be verified without exposing a person.': words({ verified: sense('verify', '確かめられる（受け身）') }),
+  'Technical measures are less important than the institutions that interpret and apply them.': words({ measures: sense('measure', '手段・対策（複数）') }),
+  'Courts have handled disputed evidence for centuries without assuming that documents prove themselves.': words({ disputed: sense('dispute', '争われている（disputeの過去分詞）') }),
   'Newsrooms that publish their verification steps allow readers to judge the strength of a report.': words({
     steps: sense('step', '手順（複数）'),
     judge: sense('judge', '判断する'),
+    report: sense('report', '記事・報道'),
   }),
   'Trust of this kind is harder to destroy than trust resting on the appearance of a single file.': words({
     trust: sense('trust', '信頼'),
@@ -813,27 +1421,32 @@ export const PASSAGE_SENSE_GLOSSES = Object.freeze({
     resting: sense('rest', '（〜に）頼る・基づく（rest on）'),
     file: sense('file', 'ファイル（データのまとまり）'),
   }),
-  'Warning labels can help, yet unlabeled material may then seem verified by default.': words({ may: MAY }),
-  'Researchers describe this as the implied truth effect, and it grows stronger as labeling expands.': words({
-    grows: sense('grow', '（だんだん）〜になる（grow stronger で「強くなる」）'),
+  'Platform labels are a weaker instrument than they first appear to be.': words({
+    platform: sense('platform', '（ネット上の）サービス・プラットフォーム'),
+    instrument: sense('instrument', '手段・道具'),
   }),
-  'Useful teaching shows students how to ask who published a claim and what independent evidence supports it.': words({
-    teaching: sense('teach', '教えること・指導'),
+  'Warning labels can help, yet unlabeled material may then seem verified by default.': words({
+    may: MAY,
+    verified: sense('verify', '確認済みの（verified）'),
+    default: sense('default', '（by default で）特に何もしなければ・自動的に'),
   }),
+  'Researchers describe this as the implied truth effect, and it grows stronger as labeling expands.': words({ grows: sense('grow', '（だんだん）〜になる（grow stronger で「強くなる」）') }),
+  'Labels must therefore describe what was actually checked, not merely announce that something was checked.': words({ checked: sense('check', '確かめられた（受け身）') }),
+  'Education is often recommended, and it is genuinely necessary rather than merely fashionable.': words({ recommended: sense('recommend', '勧められる（受け身）') }),
+  'Useful teaching shows students how to ask who published a claim and what independent evidence supports it.': words({ teaching: sense('teach', '教えること・指導') }),
   'The burden of this new work is distributed very unevenly across the world.': words({
     work: sense('work', '仕事'),
+    distributed: sense('distribute', '割り振られている・かかっている（受け身）'),
+    across: sense('across', '〜じゅうで'),
   }),
-  'Large newsrooms can employ verification teams, while a local reporter covering a rural election cannot.': words({
-    covering: sense('cover', '取材している（cover の -ing 形）'),
-  }),
+  'Large newsrooms can employ verification teams, while a local reporter covering a rural election cannot.': words({ covering: sense('cover', '取材している（cover の -ing 形）') }),
+  'Most detection tools and training materials are produced for a few widely spoken languages.': words({ widely: sense('wide', '広く（widely）') }),
   'Communities with the fewest resources therefore face the highest risk of manufactured evidence.': words({
     fewest: sense('few', 'いちばん少ない（few の最上級）'),
     face: sense('face', '直面する・さらされる'),
     manufactured: sense('manufacture', '（にせ物として）作られた'),
   }),
-  'A better approach asks what supports a claim rather than whether an image is real.': words({
-    approach: sense('approach', 'やり方・取り組み方'),
-  }),
+  'A better approach asks what supports a claim rather than whether an image is real.': words({ approach: sense('approach', 'やり方・取り組み方') }),
   'A single file is rarely decisive on its own, whether it happens to be genuine or not.': words({
     file: sense('file', 'ファイル（データのまとまり）'),
     own: sense('own', '（on its own で）それだけで・単独で'),
@@ -841,10 +1454,14 @@ export const PASSAGE_SENSE_GLOSSES = Object.freeze({
   'Independent records, consistent testimony, and institutions that can be questioned carry far more weight together.': words({
     records: sense('record', '記録（複数）'),
     questioned: sense('question', '問いただされる（受け身）'),
+    carry: sense('carry', '（重みを）持つ'),
+    far: sense('far', 'はるかに（比較級を強める）'),
+    weight: sense('weight', '重み・説得力'),
   }),
   'Belief never rested on the image alone, and the present task is to rebuild the arrangements that made evidence trustworthy.': words({
     rested: sense('rest', '（〜に）支えられていた・基づいていた（rest on）'),
     present: sense('present', '今の・現在の'),
+    made: sense('make', '（O を C に）した'),
   }),
 
   // p_pre2_pond_comeback（学校の裏の池）
@@ -852,15 +1469,9 @@ export const PASSAGE_SENSE_GLOSSES = Object.freeze({
     clear: sense('clear', '澄んだ・透きとおった'),
     plants: sense('plant', '植物（複数）'),
   }),
-  'The students measured the water level and recorded the temperature every week.': words({
-    level: sense('level', '（水の）高さ（water level で「水位」）'),
-  }),
-  'The results showed that the pond itself was not badly polluted.': words({
-    badly: sense('bad', 'ひどく'),
-  }),
-  'Residents had released a foreign fish into the pond many years before.': words({
-    before: sense('before', '（それより）前に（副詞）'),
-  }),
+  'The students measured the water level and recorded the temperature every week.': words({ level: sense('level', '（水の）高さ（water level で「水位」）') }),
+  'The results showed that the pond itself was not badly polluted.': words({ badly: sense('bad', 'ひどく') }),
+  'Residents had released a foreign fish into the pond many years before.': words({ before: sense('before', '（それより）前に（副詞）') }),
   'This species eats the young of local frogs, and it destroys the water plants.': words({
     young: sense('young', '（動物の）子（the young）'),
     plants: sense('plant', '植物（複数）'),
@@ -869,28 +1480,26 @@ export const PASSAGE_SENSE_GLOSSES = Object.freeze({
     placed: sense('place', '置いた・仕掛けた'),
     catch: sense('catch', 'とれた魚・漁獲'),
   }),
-  'The data from six months revealed a steady decline in the foreign population.': words({
-    population: sense('population', '（生きものの）数・個体数'),
-  }),
+  'The data from six months revealed a steady decline in the foreign population.': words({ population: sense('population', '（生きものの）数・個体数') }),
   'The students also cleared the weeds along the bank and planted local grasses.': words({
     cleared: sense('clear', '取り除いた・片づけた'),
     bank: sense('bank_2', '岸・土手'),
   }),
   'The members had expected a faster recovery, but the work demanded patience.': words({
     work: sense('work', '仕事・作業'),
+    demanded: sense('demand', '必要とした'),
   }),
   'The project changed the way the town sees the land behind the school.': words({
     project: sense('project', '計画・活動'),
     sees: sense('see', '見る・とらえる'),
     land: sense('land', '土地'),
   }),
+  'The city office now provides tools, and a nearby company pays for the nets.': words({ office: sense('office', '役所（city office で市役所）') }),
   'Younger children visit the pond with real curiosity about the frogs and the plants.': words({
     younger: sense('young', '年下の（young の比較級）'),
     plants: sense('plant', '植物（複数）'),
   }),
-  'The students say that it is much harder to protect a habitat than to damage one.': words({
-    damage: sense('damage', '傷める・壊す'),
-  }),
+  'The students say that it is much harder to protect a habitat than to damage one.': words({ damage: sense('damage', '傷める・壊す') }),
 
   // p_pre2_morning_market（駅前の朝市）
   'On Sunday mornings, a small market opens in front of our town station.': words({ opens: sense('open', '開く・開かれる（店などが）') }),
@@ -944,7 +1553,10 @@ export const PASSAGE_SENSE_GLOSSES = Object.freeze({
   }),
   'Young children learn the names of vegetables and the season of each crop.': words({ season: sense('season', '季節・旬（作物がとれる季節）') }),
   'For older residents, the mild Sunday morning has become a routine meeting.': words({ routine: sense('routine', 'いつもの・決まった') }),
-  'They explain that a market brings people together, and goods come second.': words({ brings: sense('bring', '（一つに）集める・結びつける（bring 〜 together）') }),
+  'They explain that a market brings people together, and goods come second.': words({
+    brings: sense('bring', '（一つに）集める・結びつける（bring 〜 together）'),
+    come: sense('come', '（come second で）二の次になる'),
+  }),
 
   // p_2_injury_free_practice（痛みを数えた部活）
   'Last spring, four members of our track club were injured within a single month.': words({ track: sense('track', '陸上競技（track club で陸上部）') }),
@@ -972,7 +1584,7 @@ export const PASSAGE_SENSE_GLOSSES = Object.freeze({
     breaks: sense('break', '休憩（water break で水分補給の休憩）'),
   }),
   'Tired muscles lose their shape, and the load moves to the joints.': words({
-    lose: sense('lose', '失う（lose one\'s shape で「形が崩れる」）'),
+    lose: sense('lose', "失う（lose one's shape で「形が崩れる」）"),
     load: sense('load', '（体にかかる）負荷'),
     moves: sense('move', '移る・動く'),
     joints: sense('joint', '関節（複数）'),
@@ -1023,6 +1635,7 @@ export const PASSAGE_SENSE_GLOSSES = Object.freeze({
   'Records cannot predict every accident, and some damage comes from old wounds.': words({
     records: sense('record', '記録（複数）'),
     damage: sense('damage', '（体の）損傷・傷み'),
+    comes: sense('come', '（〜から）生じる'),
   }),
   'The idea behind the whole change is simple.': words({ change: sense('change', '変化') }),
   'A team can act early when it measures its own practice.': words({
@@ -1115,6 +1728,7 @@ export const PASSAGE_SENSE_GLOSSES = Object.freeze({
   'One wing is still closed, and the roof leaks in heavy rain.': words({
     wing: sense('wing', '（建物の）棟'),
     closed: sense('close', '閉じた（ままの）'),
+    heavy: sense('heavy', '激しい（heavy rain で大雨）'),
   }),
   'The group therefore starts each project with a hard question.': words({ project: sense('project', '計画・企画') }),
 
@@ -1201,7 +1815,10 @@ export const PASSAGE_SENSE_GLOSSES = Object.freeze({
   'They practice the phrases for medical help, food and lost family members.': words({ help: sense('help', '助け・支援') }),
   'The group visits language classes and local organizations every spring.': words({ classes: sense('class', '教室・授業（language class で語学教室）') }),
   'They confirm the nearest shelter with each family.': words({ nearest: sense('near', 'いちばん近い（nearの最上級）') }),
-  'Two years later, a second typhoon tested the new system.': words({ tested: sense('test', '試した') }),
+  'Two years later, a second typhoon tested the new system.': words({
+    tested: sense('test', '試した'),
+    system: sense('system', '仕組み・システム'),
+  }),
   'Most of the foreign residents left their homes on time.': words({
     left: sense('leave', '出た・離れた'),
     time: sense('time', '時間（on time で時間どおりに）'),

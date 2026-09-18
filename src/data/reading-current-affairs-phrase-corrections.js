@@ -78,7 +78,7 @@ export const CURRENT_AFFAIRS_READING_PHRASE_CORRECTIONS = freeze({
       { role: 'M', en: 'also', ja: 'また' },
       { role: 'V', en: 'found', ja: '分かりました' },
     ], 'also は found に焦点を当てる修飾語Mで、主語Sは The class だけです。'),
-    correction(['that copying a finished', 'report'], [
+    correction(['that', 'copying a finished report'], [
       { role: 'LINK', en: 'that', ja: '〜ということも' },
       { role: 'S', en: 'copying a finished report', ja: '完成した報告を写すことは' },
     ], 'that は found の内容節を導くLINKで、動名詞句 copying a finished report がその節の主語Sです。'),

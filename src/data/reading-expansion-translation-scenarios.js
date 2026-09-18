@@ -23,6 +23,7 @@ const EN_SEGMENT_OVERRIDES = Object.freeze({
   'p_3_multilingual_town_guide#6#3': 'where／they／could refill／water bottles／or leave／trash',
   'p_3_multilingual_town_guide#8#1': 'The class／therefore／chose／practical information／instead of listing every famous place',
   'p_3_multilingual_town_guide#9#2': 'how long／it took',
+  'p_3_multilingual_town_guide#12#1': 'Restaurant owners／checked／names, prices, and business hours',
   'p_3_multilingual_town_guide#10#1': 'They／tested／the walking times／twice',
   'p_3_multilingual_town_guide#10#2': 'because／busy summer streets／could slow／a group',
   'p_3_multilingual_town_guide#11#1': 'They／photographed／clear landmarks,／such as／a red bridge／and a stone tower',

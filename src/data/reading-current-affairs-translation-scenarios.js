@@ -15,6 +15,9 @@ const EN_SEGMENT_OVERRIDES = Object.freeze({
   'p_3_ai_class_rules#3#1': 'A few students／copied／whole answers／and did not read／them／carefully',
   // enforcement は「決まりを守らせる力は」の単位。自動対応では Yet 側に付いてしまう。
   'p_2_space_debris#28#1': 'Yet／enforcement／remains weak',
+  // 語義の訳語（完成した・乗せた）が日本語側の語と重なり、自動対応では that と often の単位がずれる。
+  'p_3_ai_class_rules#9#2': 'that／copying a finished report',
+  'p_pre2plus_rural_bus_future#12#1': 'The evening bus,／for example,／often carried／a single passenger',
 })
 
 function sentenceScenario(sentence, blockPlan, plan, passageId, sentenceIndex) {
