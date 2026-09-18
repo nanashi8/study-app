@@ -687,13 +687,86 @@ function unitMarker(unit) {
   return unitIsClause(unit) ? ['(', ')'] : ['<', '>']
 }
 
+// 構造図の括弧。節 ( ) は入れ子にし、節の中では句を改めて < > でくくる。
+// 句 < > の中の句は入れ子にせず、句ごとに閉じて並べる（2026-09-18 利用者が決めた型）：
+//   <about the future> <of a city>、<to help them> <explore the town> <without getting lost>
+// 前置詞の目的語になる動名詞・原形などの句は、前置詞と一つの < > にまとめる（<from losing their ability>）。
+// 後ろから入った句のあとに外側の句の語が残るときは、残りを < > で閉じ直す（<to charge the fee> <for one year> <and publish the results>）。
 function markedText(nodes) {
-  return nodes.map((node) => {
-    if (node.kind === 'text') return node.text
-    if (node.kind === 'element') return markedText(node.children)
-    const [open, close] = unitMarker(node)
-    return ` ${open}${markedText(node.children).trim()}${close} `
-  }).join('')
+  const out = []
+  const emit = (text) => out.push(text)
+  const walk = (list, phrase, parentUnit = null) => {
+    for (const node of list) {
+      if (node.kind === 'text') {
+        // and・or だけが残るときは括らない（<across places> and <over time>）。
+        const reopenWords = structureWords(node.text).filter((word) => !OBJECT_COORDINATORS.has(word.toLowerCase()))
+        if (phrase && !phrase.open && reopenWords.length) {
+          // 閉じ直すときは、先頭のコンマなどを括弧の外に出す（<beyond headlines>, <tolerate …>）。
+          const lead = /^[\s,;:]*/.exec(node.text)[0]
+          emit(lead)
+          emit(' <')
+          phrase.open = true
+          emit(node.text.slice(lead.length))
+          continue
+        }
+        emit(node.text)
+        continue
+      }
+      if (node.kind === 'element') {
+        walk(node.children, phrase, parentUnit)
+        continue
+      }
+      if (unitIsClause(node)) {
+        if (phrase && !phrase.open) {
+          emit(' <')
+          phrase.open = true
+        }
+        emit(' (')
+        walk(node.children, null, node)
+        emit(') ')
+        continue
+      }
+      if (phrase && isPrepositionObject(node, parentUnit)) {
+        walk(node.children, phrase, node)
+        continue
+      }
+      if (phrase?.open) {
+        emit('> ')
+        phrase.open = false
+      }
+      const inner = { open: true }
+      emit(' <')
+      walk(node.children, inner, node)
+      if (inner.open) emit('> ')
+    }
+  }
+  walk(nodes, null)
+  // 括弧の内側には空白を入れない（<to help them> <explore the town>）。
+  return out.join('')
+    .replace(/\s+/g, ' ')
+    .replace(/([(<])\s+/g, '$1')
+    .replace(/\s+([)>])/g, '$1')
+    .replace(/([,;:])>/g, '>$1')
+}
+
+// 前置詞と目的語の間に入っても目的語との一まとまりを崩さない語（rather than only during …）。
+const FOCUS_BEFORE_OBJECT = new Set(['only', 'even', 'just', 'simply', 'merely', 'also', 'not', 'mainly', 'mostly', 'partly'])
+
+const OBJECT_COORDINATORS = new Set(['and', 'or', 'but', 'nor'])
+
+// 前置詞句の中で、前置詞の目的語になる句か。前置詞のすぐ後ろのほか、
+// such as A or B・in A, B, and C のように and・or で並んだ目的語も一つの < > に入れる。
+function isPrepositionObject(unit, parent) {
+  if (!parent || parent.kind !== 'unit' || parent.base !== '前') return false
+  const before = parent.children.slice(0, parent.children.indexOf(unit))
+  if (before[0]?.kind !== 'text') return false
+  const words = structureWords(before.filter((node) => node.kind === 'text').map((node) => node.text).join(' '))
+  const preposition = leadingPreposition(words)
+  if (!preposition) return false
+  return words.slice(preposition.split(' ').length).every((word) => {
+    const lower = word.toLowerCase()
+    return FOCUS_BEFORE_OBJECT.has(lower) || OBJECT_COORDINATORS.has(lower)
+  })
 }
 
 function collectWords(nodes, scopes, elements, output) {

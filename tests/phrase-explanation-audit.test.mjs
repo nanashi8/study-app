@@ -365,21 +365,15 @@ test('下段ブロックは内部SVOCMと学習者向け意味フレーズの双
   assert.doesNotMatch(fusedRelative.blocks.at(-1).note, /時・条件の副詞節/)
   assert.equal(
     fusedRelative.marked,
-    '(If that practice declines), even perfect archives will not prevent societies <from <losing their ability <to learn <from (what they once knew)>>>>',
+    '(If that practice declines), even perfect archives will not prevent societies <from losing their ability> <to learn> <from (what they once knew)>',
   )
   assert.deepEqual(structureGroupOutline(fusedRelative.structureTokens), [
     { kind: 'clause', depth: 0, parentKind: null, text: 'If that practice declines' },
-    {
-      kind: 'phrase', depth: 0, parentKind: null,
-      text: 'from losing their ability to learn from what they once knew',
-    },
-    {
-      kind: 'phrase', depth: 1, parentKind: 'phrase',
-      text: 'losing their ability to learn from what they once knew',
-    },
-    { kind: 'phrase', depth: 2, parentKind: 'phrase', text: 'to learn from what they once knew' },
-    { kind: 'phrase', depth: 3, parentKind: 'phrase', text: 'from what they once knew' },
-    { kind: 'clause', depth: 4, parentKind: 'phrase', text: 'what they once knew' },
+    // 句 < > の中の句は入れ子にせず並べる（2026-09-18 利用者が決めた型）。
+    { kind: 'phrase', depth: 0, parentKind: null, text: 'from losing their ability' },
+    { kind: 'phrase', depth: 0, parentKind: null, text: 'to learn' },
+    { kind: 'phrase', depth: 0, parentKind: null, text: 'from what they once knew' },
+    { kind: 'clause', depth: 1, parentKind: 'phrase', text: 'what they once knew' },
   ])
 
   for (const analysis of [formalObject, comparison, fusedRelative]) {
