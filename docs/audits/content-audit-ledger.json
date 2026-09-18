@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-09-18T05:14:46.675Z",
+  "auditedAt": "2026-09-18T05:28:50.601Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -104,7 +104,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "3e73c0c09685c2fddaa45a62805a855c7d01d8e996132629ea5cd895522e7a20",
+    "sha256": "43d69387651c9d8cecfa585189e5f6de3a570aeed243a289b71d137963ac99c5",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",

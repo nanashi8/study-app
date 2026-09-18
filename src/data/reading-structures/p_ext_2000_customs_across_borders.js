@@ -173,7 +173,7 @@ export default Object.freeze([
       'yet the way it is offered': 'the way ＋ 主語 ＋ 動詞 で「〜するやり方」。',
     },
   }),
-  st('[S The useful conclusion] [V is not] [C {that節| [接 that] [S greetings] [V are] [C arbitrary]}], [接 but] [C {that節| [接 that] [S they] [V are learned]}], [接 and] [V can] [M therefore] [V be learned] [M again].', {
+  st('[S The useful conclusion] [V is not] [C {that節| [接 that] [S greetings] [V are] [C arbitrary]}], [接 but] [C {that節| [接 that] [S they] [V are learned], [接 and] [V can] [M therefore] [V be learned] [M again]}].', {
     chunks: [
       ['The useful conclusion is not that greetings are arbitrary,', '役に立つ結論は、挨拶が気まぐれだということではありません'],
       ['but that they are learned,', 'そうではなく、学ばれたものであり'],
@@ -181,6 +181,7 @@ export default Object.freeze([
     ],
     notes: {
       'The useful conclusion is not that greetings are arbitrary,': 'arbitrary は「決まりのない・気まぐれの」。',
+      'and can therefore be learned again': '主語は2つ目の that 節の they（挨拶）で、are learned と can be learned again が並んでいます。',
     },
   }),
   st('[S A shared meal] [V is] [C one {前| of the oldest ways {関係>the oldest ways| [M in which] [S a household] [V tells] [O1 a stranger] [O2 {that節| [接 that] [S he] [V is] [C welcome]}]}}].', {
