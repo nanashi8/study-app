@@ -640,7 +640,7 @@ export const PASSAGE_READING_APPROACHES = Object.freeze({
     '調査結果から設計へ進む流れを追う',
     '地域交通の説明文では、困り事を並べて終わりにせず、調査で分かった事実がどの仕組みを生んだかを追う。',
     ['原因が重なっている点を先にまとめる', '調査で分かった移動の特徴を抜き出す', '二つの試みを費用と課題で比べる'],
-    ['genre-prediction', 'punctuation-map', 'wh-clause', 'cause-result', 'example-restatement', 'distractor-strength'],
+    ['genre-prediction', 'parallel-shape', 'wh-clause', 'cause-result', 'example-restatement', 'distractor-strength'],
   ),
   p_2_space_debris: makePassageApproach(
     '連鎖する因果と共有資源の問題を分ける',
@@ -795,7 +795,10 @@ function structureNodeText(node) {
 function structureRuleIds(sentence, structure) {
   const text = sentence?.en || ''
   // a few・a little は「少しある」という肯定の意味なので、否定の手がかりから外す。
-  const lower = text.toLowerCase().replace(/\ba\s+(?:few|little)\b/g, 'a some')
+  // the next few years・every few weeks の few も「数〜」という意味で、否定ではない。
+  const lower = text.toLowerCase()
+    .replace(/\ba\s+(?:few|little)\b/g, 'a some')
+    .replace(/\b(?:the\s+(?:next|last|past|first)|every)\s+few\b/g, 'some')
   const unitBases = new Set(structure.units.map((unit) => unit.base))
   const unitDetails = structure.units.map((unit) => `${unit.base}:${unit.detail}`)
   const elements = structureElementsOf(structure.root)

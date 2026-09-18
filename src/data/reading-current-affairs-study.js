@@ -201,7 +201,7 @@ export const CURRENT_AFFAIRS_READING_STUDY = Object.freeze({
       'used to do',
       '以前は〜していた',
       'Some companies used to run several routes, but today they cannot fill even one bus.',
-      'かつて複数の路線を走らせていた会社もありますが、今日では1台を満たすこともできません。',
+      'かつて複数の路線を走らせていた会社もありますが、今ではバス1台さえ乗客で埋められません。',
       '現在との対比を前提にした過去。but 以下の現在の状況とセットで読むと論旨が見える。',
     ),
     expression(

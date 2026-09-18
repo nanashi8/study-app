@@ -505,15 +505,65 @@ export const PASSAGE_SENSE_GLOSSES = Object.freeze({
   }),
 
   // p_pre2plus_rural_bus_future（村のバスは誰が動かすのか）
-  'Some companies used to run several routes, but today they cannot fill even one bus.': words({ used: sense('use', '（used to で）以前は〜していた') }),
-  'They discovered that most trips were short and happened at predictable times.': words({ discovered: sense('discover', '発見した・分かった') }),
-  'Very few people used the full route from end to end.': words({ used: sense('use', '使った') }),
-  'The village then tested a small bus that comes only when someone books it.': words({ books: sense('book', '予約する') }),
+  'Some companies used to run several routes, but today they cannot fill even one bus.': words({
+    used: sense('use', '（used to で）以前は〜していた'),
+    run: sense('run', '運行する（run a route で「路線を走らせる」）'),
+  }),
+  'A further problem is that many drivers are close to retirement age.': words({
+    close: sense('close', '近い（be close to 〜 で「〜に近い」）'),
+  }),
+  'One village ended its afternoon service last spring, and the effect appeared quickly.': words({
+    ended: sense('end', 'やめた・終わらせた'),
+    service: sense('service', '（バスの）便・運行'),
+  }),
+  'A high school student began cycling nine kilometers in the rain.': words({
+    cycling: sense('cycle', '自転車で走ること'),
+  }),
+  'The village office received complaints, but simply restoring the old timetable was too expensive.': words({
+    restoring: sense('restore', '元に戻すこと'),
+  }),
+  'Officials therefore studied how residents actually traveled during one ordinary week.': words({
+    officials: sense('official', '職員・役人'),
+    studied: sense('study', '調べた'),
+  }),
+  'They discovered that most trips were short and happened at predictable times.': words({
+    discovered: sense('discover', '発見した・分かった'),
+    trips: sense('trip', '（1回の）移動・外出'),
+  }),
+  'Very few people used the full route from end to end.': words({
+    used: sense('use', '使った'),
+    full: sense('full', '全体の・まるごとの'),
+  }),
+  'The village then tested a small bus that comes only when someone books it.': words({
+    tested: sense('test', '試した'),
+    books: sense('book', '予約する'),
+  }),
   'Drivers reported that the work was less stressful than following a fixed schedule.': words({ following: sense('follow', '従うこと') }),
-  'Some older residents disliked booking and preferred a bus that always came at the same time.': words({ booking: sense('book', '予約すること') }),
-  'The office therefore kept a telephone line and trained volunteers to help with the first booking.': words({ booking: sense('book', '予約') }),
+  'Some older residents disliked booking and preferred a bus that always came at the same time.': words({
+    older: sense('old', '年配の（old の比較級）'),
+    disliked: sense('dislike', 'いやがった・嫌った'),
+    booking: sense('book', '予約すること'),
+  }),
+  'Others could not use the app because the mobile signal was weak in the mountains.': words({
+    signal: sense('signal', '電波（mobile signal で「携帯電話の電波」）'),
+  }),
+  'The office therefore kept a telephone line and trained volunteers to help with the first booking.': words({
+    line: sense('line', '（電話の）回線'),
+    trained: sense('train', '育てた・訓練した'),
+    booking: sense('book', '予約'),
+  }),
   'A neighboring town chose a different answer and paid taxi companies to carry passengers.': words({ answer: sense('answer', '答え・対応策') }),
-  'Whether such support arrives in time will depend on decisions made in the next few years.': words({ support: sense('support', '支援') }),
+  'That plan started faster, but the cost for each passenger stayed higher.': words({
+    stayed: sense('stay', '〜のままだった（stay ＋ 形容詞）'),
+  }),
+  'Neither approach can succeed if no one is willing to drive.': words({
+    approach: sense('approach', 'やり方・取り組み方'),
+  }),
+  'Whether such support arrives in time will depend on decisions made in the next few years.': words({
+    support: sense('support', '支援'),
+    time: sense('time', '（in time で）間に合って'),
+    made: sense('make', 'なされる（make の過去分詞）'),
+  }),
 
   // p_2_space_debris（混み合う軌道）
   'Those fragments may then strike other objects and produce still more debris.': words({ may: MAY }),

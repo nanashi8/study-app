@@ -973,6 +973,20 @@ const DETERMINERS_BEFORE_NOUN = new Set([
 ])
 
 // 前置詞の形をしていても前置詞ではない語。
+// about の後ろが数量なら「約」という副詞（by about a third・about 20 minutes）。
+const APPROXIMATE_QUANTITY_WORDS = new Set([
+  'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve',
+  'fifteen', 'twenty', 'thirty', 'forty', 'fifty', 'hundred', 'thousand', 'million',
+  'half', 'third', 'quarter', 'dozen',
+])
+
+function isApproximateQuantity(list, start) {
+  const first = (list[start] ?? '').toLowerCase()
+  if (/^\d/.test(first) || APPROXIMATE_QUANTITY_WORDS.has(first)) return true
+  const second = (list[start + 1] ?? '').toLowerCase()
+  return (first === 'a' || first === 'an') && (/^\d/.test(second) || APPROXIMATE_QUANTITY_WORDS.has(second))
+}
+
 function exemptPreposition(found, list, cursor, nextNode, options = {}) {
   const next = (list[cursor + 1] ?? '').toLowerCase()
   const previous = (list[cursor - 1] ?? '').toLowerCase()
@@ -984,6 +998,8 @@ function exemptPreposition(found, list, cursor, nextNode, options = {}) {
   if (found === 'past' && DETERMINERS_BEFORE_NOUN.has(previous)) return true
   // 目的語が続かない語は前置詞ではない（its own past の past、once before の before など）。
   if (!next && !(nextNode?.kind === 'unit')) return true
+  // by about a third の about は「約」という副詞で、後ろの数量にかかる。
+  if (found === 'about' && isApproximateQuantity(list, cursor + 1)) return true
   // near miss（あと少しで事故になりかけたこと）の near は名詞の一部。
   if (found === 'near' && (next === 'miss' || next === 'misses')) return true
   // less by … than by … の than は、前置詞句どうしを並べる語。
