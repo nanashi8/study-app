@@ -36,7 +36,7 @@ export default Object.freeze([
       'instead of banning phones all day': 'instead of ＋ -ing で「〜する代わりに」。banning は前置詞の後ろの動名詞です。',
     },
   }),
-  st('[M {前| At the beginning {前| of the hour}}], [S students] [V placed] [O phones] [M {前| in {並列| their bags | or lockers}}].', {
+  st('[M {前| At the beginning {前| of the hour}}], [S students] [V placed] [O phones] [M {前| in their {並列| bags | or lockers}}].', {
     chunks: [
       ['At the beginning of the hour,', 'その1時間の始めに'],
       ['students placed phones', '生徒たちはスマートフォンを入れました（どこにかは次へ）'],

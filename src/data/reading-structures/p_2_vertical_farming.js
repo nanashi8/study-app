@@ -112,7 +112,7 @@ export default Object.freeze([
       'may produce a different balance': 'balance はここでは「差し引きの結果・収支」。前の文とは逆の結果になりうるということです。',
     },
   }),
-  st('[S The answer] [V depends] [M {前| on {並列| the local climate, | power supply, | building, | and crop}}].', {
+  st('[S The answer] [V depends] [M {前| on the {並列| local climate, | power supply, | building, | and crop}}].', {
     chunks: [
       ['The answer depends', '答えは〜によって変わります（何によってかは次へ）'],
       ['on the local climate, power supply,', 'その地域の気候や電力の供給'],
@@ -229,7 +229,7 @@ export default Object.freeze([
       'from the investment': 'the investment は垂直農場に使われるお金のことです。',
     },
   }),
-  st('[S A fair study] [V compares] [O farms {関係>farms| [S that] [V produce] [O the same crop] [M {前| for {並列| the same season | and destination}}]}]; [S it] [V does not compare] [O one city farm] [M {前| with a distant average}].', {
+  st('[S A fair study] [V compares] [O farms {関係>farms| [S that] [V produce] [O the same crop] [M {前| for the same {並列| season | and destination}}]}]; [S it] [V does not compare] [O one city farm] [M {前| with a distant average}].', {
     chunks: [
       ['A fair study compares farms', '公平な調べ方は、農場どうしを比べます（どんな農場かは次へ）'],
       ['that produce the same crop', '同じ作物を作る（農場を）'],

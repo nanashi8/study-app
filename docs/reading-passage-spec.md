@@ -166,7 +166,7 @@ Farmers <from nearby villages> bring vegetables,
   `[S It] [V travels] [M {前| with the next heavy rain}] {並列| [M {前| into a ditch}], | [M then] [M {前| into a stream}], | [接 and] [M finally] [M {前| into water …}]}`
 - 動詞の中の並び（is compressed, cropped, or recorded）は、後ろの修飾語が最後の動詞だけにかかるなら動詞を要素に分けて `[接 or]` で結び、全部にかかるなら動詞の中に `{並列| …}` を書く（修飾語は並びの後ろの行に出る）。
 - 関係節・分詞・不定詞が並ぶもの全体を説明するとき（equipment, skill, and time that very few people possessed）は、`{並列| …}` を閉じてから置く。1つだけを説明するときは最後の並ぶものに入れる。
-- 検査は `tests/reading-parallel-layout.test.mjs`。利用者の図の3つの形を固定し、全台帳で語を落とさずに組めるかを見る。要素の中の and・or・but・nor が並列の接続詞として書いてあるかも見る（並べないのは文頭の接続詞と、or not・sooner or later だけ）。
+- 検査は `tests/reading-parallel-layout.test.mjs`。利用者の図の3つの形を固定し、全台帳で語を落とさずに組めるかを見る。要素の中の and・or・but・nor が並列の接続詞として書いてあるかも見る（並べないのは文頭の接続詞と、or not・sooner or later だけ）。共有する限定詞が並びの中に残っていないかも見る（2つ目以降が別の名詞のかたまりで、読んで決めた4文だけが例外）。
 
 ## 5. つなぐ語の解説の決まり
 

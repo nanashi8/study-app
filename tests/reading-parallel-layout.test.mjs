@@ -57,6 +57,43 @@ test('利用者が図で決めた並列の3つの形を、そのとおりに組�
   ])
 })
 
+// 2026-09-18 確認待ち④の決定（別セッションが利用者にまとめて確認）：共有する the などの限定詞は並びの手前に残す。
+test('共有する限定詞は並びの手前に残す（the brakes, seats, and lights）', () => {
+  assert.deepEqual(diagramLines(ledgerStructure('p_4_bicycle_safety', 8)), [
+    'Local shop workers will check the brakes,',
+    '                                  seats,',
+    '                                  and',
+    '                                  lights',
+    '<for free>',
+  ])
+  // 1つ目だけが限定詞で始まる並列は、ほかの並ぶものが別の名詞のかたまりのときだけ（手で読んで決めた4文）。
+  const DETERMINERS = new Set(['the', 'a', 'an', 'this', 'that', 'these', 'those', 'its', 'their', 'our', 'his', 'her',
+    'my', 'your', 'every', 'each', 'any', 'some', 'many', 'much', 'more', 'most', 'less', 'fewer', 'little', 'few',
+    'several', 'all', 'enough', 'no'])
+  const NOT_SHARED = new Set([
+    'p_ext_3000_shared_watershed#105', // the most visible machine … and also the hardest one
+    'p_ext_4000_generational_city#114', // the appearance of openness and none of its substance
+    'p_pre1_dark_sky_policy#15', // into the sky or nearby windows
+    'p_pre1_cashless_inclusion#17', // across several apps and delayed transactions
+  ])
+  const inside = []
+  for (const [passageId, entries] of Object.entries(READING_SENTENCE_STRUCTURES)) {
+    const passage = getPassage(passageId)
+    entries.forEach((entry, index) => {
+      const structure = buildSentenceStructure(passage.sentences[index].en, entry.markup, entry)
+      const word = (at) => structure.words[at]?.word.toLowerCase() ?? ''
+      for (const group of structure.parallel.filter((item) => item.kind === 'inner')) {
+        const [first, ...rest] = group.conjuncts
+        if (!DETERMINERS.has(word(first.start))) continue
+        if (rest.some((conjunct) => DETERMINERS.has(word(conjunct.start + conjunct.lead)))) continue
+        const id = `${passageId}#${index + 1}`
+        if (!NOT_SHARED.has(id)) inside.push(`${id}: ${word(first.start)} ${word(first.start + 1)}`)
+      }
+    })
+  }
+  assert.deepEqual(inside, [])
+})
+
 test('並ぶものの始まりは、共有する助動詞・対になる語・コンマの並び・倒置・文末の修飾語で決まる', () => {
   // 共有する can のあとの本動詞にそろえる。
   assert.deepEqual(diagramLines(ledgerStructure('p_4_library_event', 2)), [

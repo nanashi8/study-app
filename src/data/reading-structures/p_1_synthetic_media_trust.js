@@ -319,7 +319,7 @@ export default Object.freeze([
       'so the approach fails safely': 'fail safely は「失敗しても安全な結果になる」。本物を偽物と決めつけずにすむ、ということです。',
     },
   }),
-  st('[S {並列| Several manufacturers | and news organizations}] [V have] [M already] [V begun] [O {to:名詞| [V to adopt] [O versions {前| of this standard}]}].', {
+  st('[S Several {並列| manufacturers | and news organizations}] [V have] [M already] [V begun] [O {to:名詞| [V to adopt] [O versions {前| of this standard}]}].', {
     chunks: [
       ['Several manufacturers and news organizations', 'いくつかのメーカーや報道機関が'],
       ['have already begun', 'すでに〜し始めています（何をかは次へ）'],
@@ -548,7 +548,7 @@ export default Object.freeze([
       'cannot': 'cannot の後ろには employ verification teams が省かれています。',
     },
   }),
-  st('[S {並列| Most detection tools | and training materials}] [V are produced] [M {前| for a few widely spoken languages}].', {
+  st('[S Most {並列| detection tools | and training materials}] [V are produced] [M {前| for a few widely spoken languages}].', {
     chunks: [
       ['Most detection tools and training materials are produced', '見分ける道具や研修の資料のほとんどは、作られています（何向けにかは次へ）'],
       ['for a few widely spoken languages', '広く話されている少しの言語のために'],

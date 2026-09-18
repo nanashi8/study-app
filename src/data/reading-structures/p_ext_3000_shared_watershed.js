@@ -516,7 +516,7 @@ export default Object.freeze([
       'that raised a yield': 'yield は名詞で「収穫量」。',
     },
   }),
-  st('[M {副詞節:時| [接 When] [S that growth] [V dies] [接 and] [V decays]}], [S it] [V removes] [O the oxygen {関係>the oxygen| [M on which] [S {並列| the fish | and insects}] [V depend]}].', {
+  st('[M {副詞節:時| [接 When] [S that growth] [V dies] [接 and] [V decays]}], [S it] [V removes] [O the oxygen {関係>the oxygen| [M on which] [S the {並列| fish | and insects}] [V depend]}].', {
     chunks: [
       ['When that growth dies and decays,', 'その繁殖が枯れて分解するとき'],
       ['it removes the oxygen', 'それは酸素を奪います（どんな酸素かは次へ）'],
@@ -636,7 +636,7 @@ export default Object.freeze([
       'A pathogen that survives a short journey downstream': 'pathogen は「病原体」。downstream は「下流へ」。',
     },
   }),
-  st('[S {動名詞| [V Separating] [O drinking water] [M {前| from waste water}]}] [V is] [M therefore] [C {並列| the oldest | and cheapest public health measure} {関係>the oldest and cheapest public health measure| [S that] [V is known]}].', {
+  st('[S {動名詞| [V Separating] [O drinking water] [M {前| from waste water}]}] [V is] [M therefore] [C the {並列| oldest | and cheapest public health measure} {関係>the oldest and cheapest public health measure| [S that] [V is known]}].', {
     chunks: [
       ['Separating drinking water from waste water', '飲み水を排水から切り離すことは'],
       ['is therefore the oldest and cheapest public health measure', 'したがって最も古く最も安い公衆衛生の手だてです'],
@@ -1208,7 +1208,7 @@ export default Object.freeze([
       'is a risk disguised as a valuable asset': 'disguised as … で「…に見せかけた」。',
     },
   }),
-  st('[S {動名詞| [V Writing down] [O {疑問詞節| [M how] [S a machine] [M actually] [V works]}]}] [V is] [M therefore] [C {並列| an ordinary | and necessary part {前| of {動名詞| [V keeping] [O the machine] [C running]}}}].', {
+  st('[S {動名詞| [V Writing down] [O {疑問詞節| [M how] [S a machine] [M actually] [V works]}]}] [V is] [M therefore] [C an {並列| ordinary | and necessary part {前| of {動名詞| [V keeping] [O the machine] [C running]}}}].', {
     chunks: [
       ['Writing down how a machine actually works', '機械が実際にどう動くのかを書き留めることは'],
       ['is therefore an ordinary and necessary part', 'したがってありふれた、欠かせない一部です'],

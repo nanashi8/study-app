@@ -160,7 +160,7 @@ export default Object.freeze([
       'force lower-income residents to move': 'force ＋ 人 ＋ to do で「人に〜することを強いる」。',
     },
   }),
-  st('[S Planners] [V must] [M therefore] [V examine] [O {並列| not only {whether節| [接 whether] [S an intervention] [V works] [M physically]} | but also {疑問詞節| [M how] [S {並列| its costs | and benefits}] [V are distributed]}}].', {
+  st('[S Planners] [V must] [M therefore] [V examine] [O {並列| not only {whether節| [接 whether] [S an intervention] [V works] [M physically]} | but also {疑問詞節| [M how] [S its {並列| costs | and benefits}] [V are distributed]}}].', {
     chunks: [
       ['Planners must therefore examine', 'そのため計画者は調べなければなりません（何をかは次へ）'],
       ['not only', '〜だけでなく（一つ目は次へ）'],

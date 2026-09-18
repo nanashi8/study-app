@@ -100,7 +100,7 @@ export default Object.freeze([
       ['decreased', '減りました'],
     ],
   }),
-  st('[M {前| In July}], [S they] [V picked] [O {並列| enough cucumbers | and tomatoes} {to:副詞(程度)| [V to share] [M {前| with people {前| at a nearby community center}}]}].', {
+  st('[M {前| In July}], [S they] [V picked] [O enough {並列| cucumbers | and tomatoes} {to:副詞(程度)| [V to share] [M {前| with people {前| at a nearby community center}}]}].', {
     chunks: [
       ['In July', '7月に'],
       ['they', '生徒たちは'],

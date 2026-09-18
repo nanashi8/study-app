@@ -55,7 +55,7 @@ export default Object.freeze([
     },
     rules: ['comparison-pairs', 'relative-clause', 'postmodifier'],
   }),
-  st('[M However], [S the name {前| of {並列| an expert | or institution}}] [V should not end] [O the investigation].', {
+  st('[M However], [S the name {前| of an {並列| expert | or institution}}] [V should not end] [O the investigation].', {
     chunks: [
       ['However,', 'しかし'],
       ['the name of an expert or institution', '専門家や機関の名前があっても'],

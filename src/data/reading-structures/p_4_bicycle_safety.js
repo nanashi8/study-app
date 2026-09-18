@@ -82,7 +82,7 @@ export default Object.freeze([
       'can bring their bicycles': 'bring は「持ってくる」。their は families を指します。',
     },
   }),
-  st('[S Local shop workers] [V will check] [O {並列| the brakes, | seats, | and lights}] [M {前| for free}].', {
+  st('[S Local shop workers] [V will check] [O the {並列| brakes, | seats, | and lights}] [M {前| for free}].', {
     chunks: [
       ['Local shop workers', '地元の店の人たちが'],
       ['will check the brakes, seats, and lights', 'ブレーキや座席、ライトを点検します'],

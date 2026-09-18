@@ -218,7 +218,7 @@ export default Object.freeze([
       'why they wanted free or low-cost clothing': 'why 以下は「なぜ〜か」という名詞のまとまりで、explain の目的語です。low-cost は「低価格の」。',
     },
   }),
-  st('[S {並列| Students, | teachers, | and neighbors}] [M all] [V used] [O {並列| the same tables | and choice system}].', {
+  st('[S {並列| Students, | teachers, | and neighbors}] [M all] [V used] [O the same {並列| tables | and choice system}].', {
     chunks: [
       ['Students, teachers, and neighbors all used', '生徒も先生も近所の人も、みな使いました（何をかは次へ）'],
       ['the same tables and choice system', '同じテーブルと同じ選び方の仕組みを'],

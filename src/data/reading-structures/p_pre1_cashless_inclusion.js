@@ -1,7 +1,7 @@
 import { st } from './entry.js'
 
 export default Object.freeze([
-  st('[S Cashless payment] [V has] [M recently] [V moved] [M {前| from a convenient option}] [M {前| to the expected form {前| of payment}}] [M {前| in {並列| many shops, | transport systems, | and public facilities}}].', {
+  st('[S Cashless payment] [V has] [M recently] [V moved] [M {前| from a convenient option}] [M {前| to the expected form {前| of payment}}] [M {前| in many {並列| shops, | transport systems, | and public facilities}}].', {
     chunks: [
       ['Cashless payment has recently moved', 'キャッシュレス決済は、近年移り変わってきました（何から何へかは次へ）'],
       ['from a convenient option', '便利な選択肢から'],
@@ -117,7 +117,7 @@ export default Object.freeze([
       'they can also reveal': 'yet は「しかし」。they は Such records を指します。',
     },
   }),
-  st('[S People {前| with {並列| little economic | or political power}}] [V may be] [M especially] [C vulnerable] [M {副詞節:時| [接 when] [S they] [V cannot choose] [O a private alternative]}].', {
+  st('[S People {前| with little {並列| economic | or political power}}] [V may be] [M especially] [C vulnerable] [M {副詞節:時| [接 when] [S they] [V cannot choose] [O a private alternative]}].', {
     chunks: [
       ['People with little economic or political power', '経済的・政治的な力の乏しい人々は'],
       ['may be especially vulnerable', '特に弱い立場に置かれるかもしれません'],
