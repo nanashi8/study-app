@@ -879,8 +879,8 @@ export const READING_CHOICE_NOTES = freezeNotes({
   "p_pre2_morning_market#2": {
     "Because visitors want a warmer market.": "来場者が暖かさを求めるとは書かれていない。確認は、生鮮食品の規則に従うため（第14・15文）。",
     "Because the trucks need a cool engine.": "トラックのエンジンの話は出てこない。確認するのは食品の温度と水分（第15文）。",
-    "Because local rules regulate the handling of fresh food.": "地元の規則が生鮮食品の取り扱いを規制し、市場はそれに厳密に従う（第14文）ので、ボランティアが温度と水分を確かめ（第15文）、記録を役所へ報告する（第16文）。",
-    "Because the club uses the numbers in a cooking workshop.": "高校のクラブは料理の講習会を開き、屋台を課題にしている（第24・25文）が、確認した数値を使うとは書かれていない。記録は役所へ報告する（第16文）。",
+    "Because local rules regulate the handling of fresh food.": "地元の規則が生鮮食品の取り扱いを規制し、市場はその規則に厳密に従う（第14文）ので、ボランティアが温度と水分を確かめ（第15文）、記録を役所へ報告する（第16文）。",
+    "Because the club uses the numbers in a cooking workshop.": "高校のクラブは料理の講習会を開き、毎回の訪問を課題にしている（第24・25文）が、確認した数値を使うとは書かれていない。記録は役所へ報告する（第16文）。",
   },
   "p_pre2_morning_market#3": {
     "They carry the loss themselves.": "第20文 In a wet climate, few households come, and the sellers carry the loss themselves. と一致する。",
@@ -890,7 +890,7 @@ export const READING_CHOICE_NOTES = freezeNotes({
   },
   "p_pre2_morning_market#4": {
     "A large profit in a single season.": "第28文で、着実な成長のほうが大きな利益よりよいと書かれている。",
-    "A longer list of requirements.": "必要条件の一覧は町役場と共有しているもの（第13文）で、長くしたいとは書かれていない。",
+    "A longer list of requirements.": "守るべき条件の一覧は町役場と共有しているもの（第13文）で、長くしたいとは書かれていない。",
     "A wider road in front of the station.": "道路を広くする話は出てこない。生産者が大切にするのは着実な成長と人が集まる場（第28・29文）。",
     "Steady growth and a place for people.": "着実な成長のほうが大きな利益よりよく（第28文）、市場は人々を集める場所で商品は二の次だ（第29文）と書かれている。",
   },
