@@ -15,7 +15,7 @@ export const READING_QUESTION_TRANSLATIONS = Object.freeze({
 // 設問・選択肢の英語原文を人手で和訳確認した時点の fingerprint。
 // 原文追加・順序変更・文言変更時に、和訳を再確認せず古い対応を流用させない。
 export const READING_QUESTION_TRANSLATION_REVIEW_LEDGER = Object.freeze({
-  p_pre2_pond_comeback: 'afbf72a1',
+  p_pre2_pond_comeback: '44d61bef',
   p_pre2_morning_market: '816eaa8d',
   p_2_injury_free_practice: '4ad105b1',
   p_2_factory_museum: 'cb77f0f0',

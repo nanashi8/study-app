@@ -853,7 +853,7 @@ export const READING_CHOICE_NOTES = freezeNotes({
     "Because the prefecture asked residents to keep the fish.": "第8文で、県は今そうした行為（外来の魚を放すこと）を禁止していると書かれている。",
   },
   "p_pre2_pond_comeback#2": {
-    "The pond needed a deeper bank.": "岸を深くする話は出てこない。岸沿いでは雑草を取って地元の草を植えた（第15文）。",
+    "The pond needed a deeper bank.": "岸を深くする話は出てこない。岸沿いでは雑草を取って、その土地の草を植えた（第15文）。",
     "The number of the foreign fish went down steadily.": "第14文 The data from six months revealed a steady decline in the foreign population. と一致する。",
     "The temperature of the water rose every week.": "水温は毎週記録したが（第5文）、上がり続けたとは書かれていない。6か月のデータが示したのは外来種の減少（第14文）。",
     "The insects came back before the frogs.": "第17文で、カエルは2年目の春に戻ったが、昆虫は少ないままだったと書かれている。逆の内容。",
@@ -861,13 +861,13 @@ export const READING_CHOICE_NOTES = freezeNotes({
   "p_pre2_pond_comeback#3": {
     "Because the city office stopped paying for the nets.": "第21文で、市役所は道具を提供し、近くの会社が網の費用を払っていると書かれている。払うのをやめたのではない。",
     "Because the members wanted a longer festival report.": "秋の地域行事で短い報告をするとあるだけ（第23文）。長い報告を望んだとは書かれていない。",
-    "Because a damaged habitat needs several seasons to become stable.": "先生が、傷んだ生息地が安定するには数季節が必要だと説明し（第18文）、そこで（therefore）調査を続けることにした（第19文）。",
+    "Because a damaged habitat needs several seasons to become stable.": "先生が、傷んだ生息地が安定するにはいくつもの季節が必要だと説明し（第18文）、そこで（therefore）調査を続けることにした（第19文）。",
     "Because the foreign fish had completely disappeared.": "6か月のデータは外来種の着実な減少を示した（第14文）が、完全にいなくなったとは書かれていない。昆虫も少ないままだった（第17文）。",
   },
   "p_pre2_pond_comeback#4": {
     "Protecting a habitat is much harder than damaging it.": "第24文 The students say that it is much harder to protect a habitat than to damage one. と一致する。",
-    "A pond is too small to teach anyone anything.": "第25文で、小さな池が町に広い環境について教えてくれると信じていると書かれている。逆の内容。",
-    "The town should sell the land behind the school.": "土地を売る話は出てこない。活動は、町が学校の裏の土地を見る見方を変えた（第20文）。",
+    "A pond is too small to teach anyone anything.": "第25文で、小さな池が町に、より広い環境について教えてくれると信じていると書かれている。逆の内容。",
+    "The town should sell the land behind the school.": "土地を売る話は出てこない。活動は、学校の裏の土地に対する町の人たちの見方を変えた（第20文）。",
     "Only scientists can record water conditions.": "地元の科学者が簡単な記録の方法を部に教え（第13文）、生徒たちが記録している（第5文）。科学者だけではない。",
   },
   "p_pre2_morning_market#1": {
