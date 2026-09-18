@@ -517,7 +517,20 @@ function nearestVerb(scopeElements, container) {
     .find((element) => element.role === 'V')
   const after = scopeElements.slice(index + 1).find((element) => element.role === 'V')
   const verb = before ?? after
-  return verb ? nodeText(verb) : ''
+  return verb ? verbGroupAround(scopeElements, verb) : ''
+}
+
+// 間に修飾語だけをはさんで続く動詞（will … receive、has … been explained）を一つの動詞として書く。
+function verbGroupAround(scopeElements, verb) {
+  let start = scopeElements.indexOf(verb)
+  while (start >= 2 && scopeElements[start - 1].role === 'M' && scopeElements[start - 2].role === 'V') start -= 2
+  const pieces = [nodeText(scopeElements[start])]
+  let cursor = start
+  while (scopeElements[cursor + 1]?.role === 'M' && scopeElements[cursor + 2]?.role === 'V') {
+    pieces.push(nodeText(scopeElements[cursor + 2]))
+    cursor += 2
+  }
+  return pieces.join(' … ')
 }
 
 function nearestRole(scopeElements, container, roles) {
@@ -644,9 +657,11 @@ function unitFunctionText(unit, container, scopeElements, scopeUnit, parent = co
     }
     case '形容詞':
       return `${inside}直前の ${unit.antecedent} を後ろから説明します${partOf}。`
+    // 仕様（docs/reading-phrase-explanation-method.md）：過去分詞の後置修飾は、省略された関係詞＋be動詞と受け身の関係を説明する。
     case '現在分詞':
+      return `${inside}直前の ${unit.antecedent} を後ろから説明します${partOf}。-ing形が名詞の後ろに置かれ、「〜している（${unit.antecedent}）」と読みます。`
     case '過去分詞':
-      return `${inside}直前の ${unit.antecedent} を後ろから説明します${partOf}。`
+      return `${inside}直前の ${unit.antecedent} を後ろから説明します${partOf}。${unit.antecedent} の後ろに「関係代名詞＋be動詞」（that is・that are など）が省かれた形で、「〜される・〜された」という受け身の意味です。`
     case '副詞節': {
       const kind = ADVERBIAL_CLAUSE_KINDS[unit.detail]
       if (unit.detail === '比較' && container && container.role !== 'M') {

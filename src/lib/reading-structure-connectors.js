@@ -243,6 +243,13 @@ export function relativeThatActsAsAdverb(unitNode) {
   return !strandedPrepositionIn(elements)
 }
 
+// 仕様（docs/reading-phrase-explanation-method.md）：関係詞節は、節が終わったあとに戻る動詞まで示す。
+// 主語の中の関係詞節は、節の終わりが分かりにくいので、戻る先の動詞を書く。
+function returnToVerbText(unit) {
+  if (unit.containerRole !== 'S' || !unit.containerVerb) return ''
+  return `この節が終わると、動詞 ${unit.containerVerb} へ戻って読みます。`
+}
+
 function relativeExplanation(unit) {
   const node = unit.node
   const elements = directElements(node)
@@ -309,7 +316,7 @@ function relativeExplanation(unit) {
       word: leadText,
       chip: '関係代名詞',
       kind: nonRestrictive ? '関係代名詞（目的格・非制限用法）' : '関係代名詞（目的格）',
-      explanation: `${commaLead}${use}関係代名詞（目的格）です。直前の ${antecedent}（先行詞）を受けて、節の中で ${gapVerb} の目的語Oになります。後ろに主語 ${subject} と動詞 ${verb} が続くのに、${gapVerb} の目的語がない形になっている点で見分けます。${restoreText}${commaNote}${nonRestrictive ? '' : '目的格の関係代名詞は省略されることもあります。'}`,
+      explanation: `${commaLead}${use}関係代名詞（目的格）です。直前の ${antecedent}（先行詞）を受けて、節の中で ${gapVerb} の目的語Oになります。後ろに主語 ${subject} と動詞 ${verb} が続くのに、${gapVerb} の目的語がない形になっている点で見分けます。${restoreText}${commaNote}${nonRestrictive ? '' : '目的格の関係代名詞は省略されることもあります。'}${returnToVerbText(unit)}`,
     }
   }
   // put a price on … のように、節の終わりに残った前置詞の目的語になる関係代名詞。
@@ -348,7 +355,7 @@ function relativeExplanation(unit) {
     word: leadText,
     chip: '関係代名詞',
     kind: nonRestrictive ? '関係代名詞（主格・非制限用法）' : '関係代名詞（主格）',
-    explanation: `${commaLead}${use}関係代名詞（主格）です。直前の ${antecedent}（先行詞）を受けて、節の中で主語Sになります。${leadText} のすぐ後ろに動詞 ${verb} が続き、主語が欠けた形になっている点で見分けます。${restoreText}${commaNote}`,
+    explanation: `${commaLead}${use}関係代名詞（主格）です。直前の ${antecedent}（先行詞）を受けて、節の中で主語Sになります。${leadText} のすぐ後ろに動詞 ${verb} が続き、主語が欠けた形になっている点で見分けます。${restoreText}${commaNote}${returnToVerbText(unit)}`,
   }
 }
 
@@ -382,7 +389,7 @@ function omittedRelativeExplanation(unit) {
     word: '',
     chip: '',
     kind: '目的格の関係代名詞の省略',
-    explanation: `${antecedent} のすぐ後ろに、主語 ${subject} と動詞 ${verb} が続いています。目的格の関係代名詞（that・which）が省略された形で、${gapText}${restoreText}`,
+    explanation: `${antecedent} のすぐ後ろに、主語 ${subject} と動詞 ${verb} が続いています。目的格の関係代名詞（that・which）が省略された形で、${gapText}${restoreText}${returnToVerbText(unit)}`,
   }
 }
 
