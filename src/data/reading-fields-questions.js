@@ -12,7 +12,7 @@ export const FIELD_READING_QUESTIONS = Object.freeze({
         'Because the prefecture asked residents to keep the fish.',
       ],
       answer: 'Because the fish had no natural enemy in the area.',
-      explain: '第10文に「その魚にはここで天敵がいないので、その数は急速に増えていました」とあり、増加の理由が示されています。第6文は水質が悪くないと述べており、汚染は理由ではありません。',
+      explain: '第10文に「その魚にはここでは天敵がいないので、その数は急速に増えていました」とあり、増加の理由が示されています。第6文は水質が悪くないと述べており、汚染は理由ではありません。',
     },
     {
       q: 'What did the data from six months show?',
@@ -26,7 +26,7 @@ export const FIELD_READING_QUESTIONS = Object.freeze({
       explain: '第14文の “revealed a steady decline in the foreign population” が根拠です。着実な減少という数値の変化を問う設問です。',
     },
     {
-      q: 'Why did the club agree to continue the survey?',
+      q: 'Why did the club decide to continue the survey?',
       choices: [
         'Because the city office stopped paying for the nets.',
         'Because the members wanted a longer festival report.',
@@ -34,7 +34,7 @@ export const FIELD_READING_QUESTIONS = Object.freeze({
         'Because the foreign fish had completely disappeared.',
       ],
       answer: 'Because a damaged habitat needs several seasons to become stable.',
-      explain: '第18文で先生が「傷んだ生息地が安定するには数季節が必要だ」と説明し、第19文の「そこで（therefore）続けることに同意した」につながります。',
+      explain: '第18文で先生が「傷んだ生息地が安定するにはいくつもの季節が必要だ」と説明し、第19文の「そこで（therefore）調査を続けることに決めた」につながります。',
     },
     {
       q: 'What do the students think after the project?',

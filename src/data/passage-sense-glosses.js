@@ -848,8 +848,49 @@ export const PASSAGE_SENSE_GLOSSES = Object.freeze({
   }),
 
   // p_pre2_pond_comeback（学校の裏の池）
-  'The volunteers placed nets on Saturdays and weighed the catch carefully.': words({ catch: sense('catch', 'とれた魚・漁獲') }),
-  'The students also cleared the weeds along the bank and planted local grasses.': words({ bank: sense('bank_2', '岸・土手') }),
+  'Elderly residents remembered clear water with frogs, insects and green plants.': words({
+    clear: sense('clear', '澄んだ・透きとおった'),
+    plants: sense('plant', '植物（複数）'),
+  }),
+  'The students measured the water level and recorded the temperature every week.': words({
+    level: sense('level', '（水の）高さ（water level で「水位」）'),
+  }),
+  'The results showed that the pond itself was not badly polluted.': words({
+    badly: sense('bad', 'ひどく'),
+  }),
+  'Residents had released a foreign fish into the pond many years before.': words({
+    before: sense('before', '（それより）前に（副詞）'),
+  }),
+  'This species eats the young of local frogs, and it destroys the water plants.': words({
+    young: sense('young', '（動物の）子（the young）'),
+    plants: sense('plant', '植物（複数）'),
+  }),
+  'The volunteers placed nets on Saturdays and weighed the catch carefully.': words({
+    placed: sense('place', '置いた・仕掛けた'),
+    catch: sense('catch', 'とれた魚・漁獲'),
+  }),
+  'The data from six months revealed a steady decline in the foreign population.': words({
+    population: sense('population', '（生きものの）数・個体数'),
+  }),
+  'The students also cleared the weeds along the bank and planted local grasses.': words({
+    cleared: sense('clear', '取り除いた・片づけた'),
+    bank: sense('bank_2', '岸・土手'),
+  }),
+  'The members had expected a faster recovery, but the work demanded patience.': words({
+    work: sense('work', '仕事・作業'),
+  }),
+  'The project changed the way the town sees the land behind the school.': words({
+    project: sense('project', '計画・活動'),
+    sees: sense('see', '見る・とらえる'),
+    land: sense('land', '土地'),
+  }),
+  'Younger children visit the pond with real curiosity about the frogs and the plants.': words({
+    younger: sense('young', '年下の（young の比較級）'),
+    plants: sense('plant', '植物（複数）'),
+  }),
+  'The students say that it is much harder to protect a habitat than to damage one.': words({
+    damage: sense('damage', '傷める・壊す'),
+  }),
 
   // p_pre2_morning_market（駅前の朝市）
   'At the start, five producers and a few customers came.': words({ start: sense('start', '始め・始まり') }),

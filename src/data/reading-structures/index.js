@@ -34,6 +34,7 @@ import p_pre2plus_rural_bus_future from './p_pre2plus_rural_bus_future.js'
 import p_2_space_debris from './p_2_space_debris.js'
 import p_pre1_ai_and_work from './p_pre1_ai_and_work.js'
 import p_1_synthetic_media_trust from './p_1_synthetic_media_trust.js'
+import p_pre2_pond_comeback from './p_pre2_pond_comeback.js'
 import p_ext_4000_generational_city from './p_ext_4000_generational_city.js'
 import p_ext_3000_shared_watershed from './p_ext_3000_shared_watershed.js'
 import p_ext_2000_customs_across_borders from './p_ext_2000_customs_across_borders.js'
@@ -72,6 +73,7 @@ const PASSAGE_STRUCTURES = Object.freeze({
   p_2_space_debris,
   p_pre1_ai_and_work,
   p_1_synthetic_media_trust,
+  p_pre2_pond_comeback,
   p_ext_4000_generational_city,
   p_ext_3000_shared_watershed,
   p_ext_2000_customs_across_borders,
