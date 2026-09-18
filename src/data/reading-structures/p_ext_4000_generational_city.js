@@ -1971,14 +1971,14 @@ export default Object.freeze([
       'to reverse at a later date': 'the hardest … to reverse で「撤回するのが最も難しい…」。',
     },
   }),
-  st('[S Land {関係>Land| [M that] [V has been built] [M on]}] [V cannot] [M easily] [V be cleared] [M again], [接 and] [S a species {関係>a species| [S that] [V is] [M once] [V lost]}] [V does not come back].', {
+  st('[S Land {関係>Land| [S that] [V has been built on]}] [V cannot] [M easily] [V be cleared] [M again], [接 and] [S a species {関係>a species| [S that] [V is] [M once] [V lost]}] [V does not come back].', {
     chunks: [
       ['Land that has been built on', 'すでに建物が建った土地は'],
       ['cannot easily be cleared again,', '再び更地にするのは簡単ではありません'],
       ['and a species that is once lost does not come back', 'そして一度失われた種は戻ってきません'],
     ],
     notes: {
-      'Land that has been built on': 'build on … で「…の上に建てる」。文の終わりに on が残っています。',
+      'Land that has been built on': 'build on … で「…の上に建てる」。受け身なので、節の終わりに on が残っています。',
     },
   }),
   st('[S Delay] [V is] [M therefore] [M only] [C prudent] [M {前| in those particular cases {関係>those particular cases| [M where] [S the delay itself] [M genuinely] [V preserves] [O the choice] [M {前| for later}]}}].', {
