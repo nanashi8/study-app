@@ -1,4 +1,3 @@
-import { useEffect, useRef } from 'react'
 import { useStore } from '../store/useStore.js'
 import { getEtymologyPack, getWord } from '../data/vocab.js'
 import { etymologyOriginFamilyMeta } from '../data/etymology-origin-families.js'
@@ -24,20 +23,15 @@ const statusLabel = (entry) => {
 }
 
 export function EtymologyPackScreen() {
-  const rootRef = useRef(null)
   const packId = useStore((state) => state.params.packId)
   const navigate = useStore((state) => state.navigate)
   const srs = useStore((state) => state.srs)
   const etymologySrs = useStore((state) => state.etymologySrs)
   const pack = getEtymologyPack(packId)
 
-  useEffect(() => {
-    rootRef.current?.closest('main')?.scrollTo({ top: 0, behavior: 'auto' })
-  }, [packId])
-
   if (!pack) {
     return (
-      <div ref={rootRef}>
+      <div>
         <ScreenHeader title="語源カード" />
         <div className="p-8 text-center font-bold text-ink/50">
           語源カードが見つかりませんでした。
@@ -66,7 +60,7 @@ export function EtymologyPackScreen() {
   })
 
   return (
-    <div ref={rootRef} className="pb-6">
+    <div className="pb-6">
       <ScreenHeader title="語源カード" />
 
       <div className="space-y-4 px-4">

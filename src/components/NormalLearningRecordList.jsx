@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useShallow } from 'zustand/react/shallow'
-import { useStore } from '../store/useStore.js'
+import { useScreenParam, useStore } from '../store/useStore.js'
 import { selectProgressState } from '../lib/progressCode.js'
 import { LEARNING_CONTENTS } from '../lib/learningContentProgress.js'
 import { learningContentCatalogRows } from '../lib/learningContentCatalog.js'
@@ -17,6 +17,25 @@ import {
 } from './VocabularyHistoryRow.jsx'
 
 const DEFAULT_PAGE_SIZE = 80
+const NO_ROWS = new Set()
+
+// 一覧の見え方（学習とテストの切替・スワイプで隠した行・表示件数）は画面の params に置き、
+// 行から別の画面へ移って戻ったときも同じ行が同じ所に出るようにする。
+const readListState = (value) => ({
+  activity: value?.activity === 'test' ? 'test' : 'memory',
+  dismissed: {
+    memory: value?.dismissed?.memory instanceof Set ? value.dismissed.memory : NO_ROWS,
+    test: value?.dismissed?.test instanceof Set ? value.dismissed.test : NO_ROWS,
+  },
+  shown: typeof value?.shown?.key === 'string' && Number.isInteger(value.shown.count) ? value.shown : null,
+})
+
+// 表示件数を続けて使えるのは、同じ一覧（学習とテストの切替・項目・1回に出す数が同じ）のときだけ。
+const pagingKeyFor = (activity, itemKey, pageSize) => {
+  let hash = 0
+  for (let index = 0; index < itemKey.length; index++) hash = (hash * 31 + itemKey.charCodeAt(index)) | 0
+  return `${activity}:${pageSize}:${itemKey.length}:${hash}`
+}
 
 /**
  * 各教材の通常画面に置く、学習・テスト記録用の共通一覧。
@@ -40,12 +59,8 @@ export function NormalLearningRecordList({
 }) {
   const reviewLearningContent = useStore((state) => state.reviewLearningContent)
   const progressState = useStore(useShallow(selectProgressState))
-  const [activity, setActivity] = useState('memory')
-  const [dismissedByActivity, setDismissedByActivity] = useState(() => ({
-    memory: new Set(),
-    test: new Set(),
-  }))
-  const [visible, setVisible] = useState(pageSize)
+  const [listState, setListState] = useScreenParam(`recordList:${entryId}`, readListState)
+  const { activity, dismissed: dismissedByActivity } = listState
   const [message, setMessage] = useState('')
   const [now] = useState(() => Date.now())
   const content = LEARNING_CONTENTS.find((candidate) => candidate.id === contentId)
@@ -77,14 +92,15 @@ export function NormalLearningRecordList({
 
   const recordedMemory = vocabularyCatalogRecordedRows(rows, 'memory').length
   const recordedTest = vocabularyCatalogRecordedRows(rows, 'test').length
-  const dismissedIds = dismissedByActivity[activity] ?? new Set()
+  const dismissedIds = dismissedByActivity[activity] ?? NO_ROWS
   const remainingRows = vocabularyCatalogRemainingRows(rows, dismissedIds)
+  const pagingKey = pagingKeyFor(activity, itemKey, pageSize)
+  const visible = listState.shown?.key === pagingKey ? listState.shown.count : pageSize
   const visibleRows = remainingRows.slice(0, visible)
   const activityMeta = VOCABULARY_HISTORY_ACTIVITY_META[activity]
     ?? VOCABULARY_HISTORY_ACTIVITY_META.memory
 
   useEffect(() => {
-    setVisible(pageSize)
     setMessage('')
   }, [activity, entryId, itemKey, pageSize])
 
@@ -94,17 +110,20 @@ export function NormalLearningRecordList({
     const result = vocabularyCatalogResultForDirection(activity, direction)
     if (!result || !reviewLearningContent(contentId, row.id, result)) return
     const label = direction === 'left' ? activityMeta.leftLabel : activityMeta.rightLabel
-    setDismissedByActivity((current) => {
-      const next = new Set(current[activity])
+    setListState((current) => {
+      const next = new Set(current.dismissed[activity])
       next.add(row.id)
-      return { ...current, [activity]: next }
+      return { ...current, dismissed: { ...current.dismissed, [activity]: next } }
     })
     setMessage(`${row.title}を「${label}」として記録しました。`)
   }
 
   const restoreRows = () => {
-    setDismissedByActivity((current) => ({ ...current, [activity]: new Set() }))
-    setVisible(pageSize)
+    setListState((current) => ({
+      ...current,
+      dismissed: { ...current.dismissed, [activity]: NO_ROWS },
+      shown: null,
+    }))
     setMessage(`${activity === 'test' ? 'テスト' : '学習'}の一覧を再表示しました。`)
   }
 
@@ -123,7 +142,7 @@ export function NormalLearningRecordList({
               type="button"
               role="tab"
               aria-selected={activity === option.id}
-              onClick={() => setActivity(option.id)}
+              onClick={() => setListState((current) => ({ ...current, activity: option.id }))}
               className={cx(
                 'min-h-11 rounded-lg px-1 text-xs font-extrabold',
                 activity === option.id
@@ -168,7 +187,11 @@ export function NormalLearningRecordList({
 
       <div className="space-y-2" data-normal-learning-record-rows>
         {visibleRows.map((row) => (
-          <div key={row.id} data-normal-learning-record-row-container={row.id}>
+          <div
+            key={row.id}
+            data-normal-learning-record-row-container={row.id}
+            data-return-row={`${entryId}:${row.id}`}
+          >
             <LearningRecordRow
               row={row}
               activity={activity}
@@ -196,7 +219,10 @@ export function NormalLearningRecordList({
         <Button
           full
           variant="secondary"
-          onClick={() => setVisible((count) => Math.min(remainingRows.length, count + pageSize))}
+          onClick={() => setListState((current) => ({
+            ...current,
+            shown: { key: pagingKey, count: Math.min(remainingRows.length, visible + pageSize) },
+          }))}
         >
           さらに{Math.min(pageSize, remainingRows.length - visible).toLocaleString('ja-JP')}{itemUnit}を表示
         </Button>

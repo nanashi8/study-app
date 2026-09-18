@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
-import { todayIndex, useStore } from '../store/useStore.js'
+import { useMemo } from 'react'
+import { todayIndex, useScreenParam, useStore } from '../store/useStore.js'
 import { ChooserTiles, ReviewTodayRow, TodayCard, WordBookTile } from '../components/ContentTop.jsx'
 import { contentReviewSummary, reviewTargetItems } from '../lib/contentReview.js'
 import {
@@ -19,6 +19,7 @@ import {
 } from '../lib/etymologyProgress.js'
 import { summarizeSrsItems } from '../lib/contentProgress.js'
 import { scrollScreenToTop } from '../lib/screenScroll.js'
+import { readChoice, readCount, readListView, readText } from '../lib/screenParams.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { LearningEntryCard } from '../components/LearningEntryCard.jsx'
 import { LearningViewTabs } from '../components/LearningViewTabs.jsx'
@@ -39,6 +40,9 @@ const FAMILY_SHORT = {
   all: '全系統',
   ...Object.fromEntries(ETYMOLOGY_ORIGIN_FAMILIES.map((family) => [family.id, family.short])),
 }
+const readStatus = readChoice(STATUSES, 'all')
+const readFamily = readChoice(FAMILIES, 'all')
+const readVisible = readCount(PAGE_SIZE)
 
 const statusCount = (progress, status) => {
   if (status === 'all') return progress.total
@@ -72,22 +76,15 @@ const searchText = (card) => [
 ].filter(Boolean).join(' ').toLocaleLowerCase('ja')
 
 export function RootsScreen() {
-  const rootRef = useRef(null)
-  const params = useStore((state) => state.params)
   const navigate = useStore((state) => state.navigate)
   const srs = useStore((state) => state.srs)
   const etymologySrs = useStore((state) => state.etymologySrs)
-  const initialStatus = STATUSES.includes(params.status) ? params.status : 'all'
-  const initialFamily = FAMILIES.includes(params.family) ? params.family : 'all'
-  const [status, setStatus] = useState(initialStatus)
-  const [family, setFamily] = useState(initialFamily)
-  const [view, setView] = useState(params.view === 'list' ? 'list' : 'home')
-  const [query, setQuery] = useState(params.query ?? '')
-  const [visible, setVisible] = useState(PAGE_SIZE)
-
-  useEffect(() => {
-    rootRef.current?.closest('main')?.scrollTo({ top: 0, behavior: 'auto' })
-  }, [])
+  // 絞り込み・表示・表示枚数は params に置き、カードや暗記から戻ったときも同じ見え方から続ける。
+  const [status, setStatus] = useScreenParam('status', readStatus)
+  const [family, setFamily] = useScreenParam('family', readFamily)
+  const [view, setView] = useScreenParam('view', readListView)
+  const [query, setQuery] = useScreenParam('query', readText)
+  const [visible, setVisible] = useScreenParam('visible', readVisible)
 
   // 語源カードそのものの暗記・テスト記録。
   const progress = useMemo(
@@ -417,6 +414,7 @@ export function RootsScreen() {
                   type="button"
                   onClick={() => navigate('etymologyPack', { packId: card.id })}
                   className="w-full text-left transition active:scale-[0.99]"
+                  data-return-row={card.id}
                 >
                   <Card className="p-3.5">
                     <div className="flex items-start gap-3">
@@ -493,7 +491,7 @@ export function RootsScreen() {
   )
 
   return (
-    <div ref={rootRef} className="pb-6">
+    <div className="pb-6">
       <ScreenHeader
         title="語源"
         subtitle="語根そのものを暗記・テスト・一覧で確認"

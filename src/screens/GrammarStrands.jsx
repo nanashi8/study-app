@@ -1,5 +1,5 @@
-import { useMemo, useState } from 'react'
-import { useStore } from '../store/useStore.js'
+import { useMemo } from 'react'
+import { useScreenParam, useStore } from '../store/useStore.js'
 import { getLevel } from '../data/levels.js'
 import { GRAMMAR_STRANDS } from '../data/grammar-strands.js'
 import { strandOverview } from '../lib/grammarStrand.js'
@@ -8,6 +8,8 @@ import { Card, Button, Chip, cx } from '../components/ui.jsx'
 import { ArrowRight, Target } from '../components/Icons.jsx'
 
 const percent = (value) => `${Math.round(value * 100)}%`
+// 開いている系統は params に置き、問題から戻ったときも開いたままにする。
+const readOpenStrands = (value) => (Array.isArray(value) ? value : [])
 
 // 正答率の帯。習得・苦手・未回答を色で区別する。
 function levelAccuracyRow({ stat }) {
@@ -22,14 +24,13 @@ function levelAccuracyRow({ stat }) {
   return { meta, state }
 }
 
-function StrandCard({ overview, onStart, onPickLevel }) {
-  const [open, setOpen] = useState(false)
+function StrandCard({ overview, open, onToggle, onStart, onPickLevel }) {
   const { strand, stats, currentLevel, weakest, untouched, accuracy, total } = overview
   const currentMeta = getLevel(currentLevel)
 
   return (
-    <Card className="p-4">
-      <button onClick={() => setOpen((v) => !v)} className="flex w-full items-start gap-3 text-left">
+    <Card className="p-4" data-return-row={strand.id}>
+      <button onClick={onToggle} className="flex w-full items-start gap-3 text-left">
         <span className="text-2xl leading-none">{strand.emoji}</span>
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-1.5">
@@ -156,6 +157,10 @@ export function GrammarStrandsScreen() {
   const srs = useStore((s) => s.srs)
   const grammarStrandPos = useStore((s) => s.grammarStrandPos)
   const setGrammarStrandPos = useStore((s) => s.setGrammarStrandPos)
+  const [openStrands, setOpenStrands] = useScreenParam('openStrands', readOpenStrands)
+  const toggleStrand = (strandId) => setOpenStrands((current) => (
+    current.includes(strandId) ? current.filter((id) => id !== strandId) : [...current, strandId]
+  ))
 
   const overviews = useMemo(
     () => GRAMMAR_STRANDS.map((strand) => strandOverview(strand, srs, grammarStrandPos?.[strand.id])),
@@ -207,6 +212,8 @@ export function GrammarStrandsScreen() {
             <StrandCard
               key={overview.strand.id}
               overview={overview}
+              open={openStrands.includes(overview.strand.id)}
+              onToggle={() => toggleStrand(overview.strand.id)}
               onStart={start}
               onPickLevel={start}
             />

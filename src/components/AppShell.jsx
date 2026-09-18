@@ -1,5 +1,7 @@
+import { useEffect, useLayoutEffect, useRef } from 'react'
 import { useStore } from '../store/useStore.js'
 import { appHomeForScreen, isAppHomeScreen } from '../lib/appHome.js'
+import { applyRequestedScreenPlace, noteScreenTap } from '../lib/screenScroll.js'
 import { IconButton, cx } from './ui.jsx'
 import { ChevronLeft, Menu } from './Icons.jsx'
 import { GlobalSpeechConsole } from './SpeechConsole.jsx'
@@ -8,13 +10,31 @@ import { GlobalSpeechConsole } from './SpeechConsole.jsx'
 // 戻る操作とメニュー入口は、全公開画面で共通の上部バーに一度だけ置く。
 export function AppShell({ children, showGlobalMenu = true }) {
   const screen = useStore((state) => state.screen)
-  const stackLength = useStore((state) => state.stack.length)
+  const stack = useStore((state) => state.stack)
+  const stackLength = stack.length
   const globalBack = useStore((state) => state.globalBack)
   const openSpeechSettings = useStore((state) => state.openSpeechSettings)
   const goAppHome = useStore((state) => state.goAppHome)
   const goPortal = useStore((state) => state.goPortal)
   const menuOpen = useStore((state) => state.speechSettingsOpen)
   const canGoBack = screen !== 'portal' || stackLength > 0
+  const scrollAreaRef = useRef(null)
+
+  // 画面を移るたびに（履歴が変わるたびに）、戻った画面は離れたときの位置へ、
+  // 新しく開いた画面は先頭へ置く。画面の中身を描いたあと、表示する前に置く。
+  useLayoutEffect(() => {
+    applyRequestedScreenPlace(scrollAreaRef.current)
+  }, [stack])
+
+  // 押した行を、戻ったときの目印として控えておく。
+  useEffect(() => {
+    const scrollArea = scrollAreaRef.current
+    if (!scrollArea) return undefined
+    const note = (event) => noteScreenTap(event.target)
+    scrollArea.addEventListener('click', note, true)
+    return () => scrollArea.removeEventListener('click', note, true)
+  }, [])
+
   // 暗記・テストの途中で戻っても、答えた分はそのまま記録に残るので確認は挟まない。
   // 途中までの結果は各画面が学習記録へ書き、続きは同じ教材からいつでも始められる。
   const goBack = () => {
@@ -78,7 +98,10 @@ export function AppShell({ children, showGlobalMenu = true }) {
             </div>
           </div>
         )}
-        <main className="study-app-content no-scrollbar flex-1 overflow-y-auto overflow-x-hidden overscroll-contain">
+        <main
+          ref={scrollAreaRef}
+          className="study-app-content no-scrollbar flex-1 overflow-y-auto overflow-x-hidden overscroll-contain"
+        >
           {children}
         </main>
         <GlobalSpeechConsole />

@@ -1,5 +1,4 @@
-import { useState } from 'react'
-import { useStore } from '../store/useStore.js'
+import { useScreenParam, useStore } from '../store/useStore.js'
 import {
   LITERATURE_KIND_META,
   PUBLIC_DOMAIN_LITERATURE,
@@ -11,6 +10,7 @@ import { Card, Chip, cx } from '../components/ui.jsx'
 import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
 import { summarizeCompletionItems } from '../lib/contentProgress.js'
 import { ArrowRight, Check, Headphones } from '../components/Icons.jsx'
+import { readChoice } from '../lib/screenParams.js'
 
 const FILTERS = [
   { id: 'all', label: 'すべて' },
@@ -18,15 +18,14 @@ const FILTERS = [
   { id: 'classical', label: '古典' },
   { id: 'kanbun', label: '漢文' },
 ]
+const readKind = readChoice(FILTERS.map((item) => item.id), 'all')
 
 export function LiteratureLibraryScreen() {
   const navigate = useStore((state) => state.navigate)
   const readingsDone = useStore((state) => state.readingsDone)
   const contentQuizResults = useStore((state) => state.contentQuizResults)
-  const initialKind = useStore((state) => state.params.kind)
-  const [filter, setFilter] = useState(() =>
-    ['english', 'classical', 'kanbun'].includes(initialKind) ? initialKind : 'all',
-  )
+  // 絞り込みは params（入口で渡す kind と同じ所）に置き、作品から戻ったときも同じ一覧から続ける。
+  const [filter, setFilter] = useScreenParam('kind', readKind)
 
   const works =
     filter === 'all'
@@ -119,7 +118,7 @@ export function LiteratureLibraryScreen() {
             const meta = LITERATURE_KIND_META[work.kind]
             const completed = readingsDone.includes(work.id)
             return (
-              <Card key={work.id} className="overflow-hidden">
+              <Card key={work.id} className="overflow-hidden" data-return-row={work.id}>
                 <button
                   onClick={() => navigate('literatureReader', { workId: work.id })}
                   className="w-full p-4 text-left active:bg-teal-50"

@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react'
-import { isDue, todayIndex, useStore } from '../store/useStore.js'
+import { isDue, todayIndex, useScreenParam, useStore } from '../store/useStore.js'
 import { KOTEN_TOC, KOTEN_WORDS } from '../data/koten.js'
 import {
   KOTEN_CURRICULUM_BY_ID,
@@ -24,6 +23,7 @@ import {
 import { summarizeSrsItems } from '../lib/contentProgress.js'
 import { contentReviewSummary, reviewTargetItems } from '../lib/contentReview.js'
 import { scrollScreenToTop } from '../lib/screenScroll.js'
+import { readChoice } from '../lib/screenParams.js'
 import {
   Book,
   BookOpen,
@@ -57,22 +57,17 @@ function CategoryCard({ cat, words, srs, onStudy, onQuiz, onCatalog }) {
 
 // 古典アプリは、英語アプリと同じく「ホーム（学ぶ内容を選ぶ）→ コンテンツのトップ」の2段にする。
 // 古典単語のトップはこの画面の view 'vocab'。ホームから入ると履歴に積まれ、上部の「戻る」でホームへ戻る。
-const viewFromParams = (params) => (
-  params?.view === 'list' || params?.view === 'vocab' ? params.view : 'home'
-)
+// 表示・コース・一覧の分野は params に置き、暗記・テストから戻ったときも同じ見え方から続ける。
+const readView = readChoice(['home', 'vocab', 'list'], 'home')
+const readCourse = readChoice(KOTEN_CURRICULUM_LEVELS.map((level) => level.id), 'middle')
+const readListCategory = readChoice(['all', ...KOTEN_TOC.map(({ category }) => category.id)], 'all')
 
 export function KotenListScreen() {
   const navigate = useStore((s) => s.navigate)
-  const params = useStore((s) => s.params)
   const kotenSrs = useStore((s) => s.kotenSrs)
-  const [curriculumLevel, setCurriculumLevel] = useState('middle')
-  const [view, setView] = useState(() => viewFromParams(params))
-  const [listCategory, setListCategory] = useState('all')
-
-  // 同じ画面のまま行き先だけ変わる（ホーム → 古典単語、戻る）ときも、表示をそろえる。
-  useEffect(() => {
-    setView(viewFromParams(params))
-  }, [params])
+  const [curriculumLevel, setCurriculumLevel] = useScreenParam('course', readCourse)
+  const [view, setView] = useScreenParam('view', readView)
+  const [listCategory, setListCategory] = useScreenParam('category', readListCategory)
 
   const dueWords = KOTEN_WORDS.filter((w) => kotenSrs[w.id] && isDue(kotenSrs[w.id]))
   const totalStatus = summarizeSrsItems(KOTEN_WORDS, kotenSrs)

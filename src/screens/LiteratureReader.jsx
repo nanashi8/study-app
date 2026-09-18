@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useStore, useContentSettings } from '../store/useStore.js'
+import { useScreenParam, useStore, useContentSettings } from '../store/useStore.js'
 import { KanbunMarkedText } from '../components/KanbunMarkedText.js'
 import { notebookRefs } from '../lib/learningNotebook.js'
 import {
@@ -87,6 +87,10 @@ const READER_COPY = Object.freeze({
   }),
 })
 
+// 読んでいる場面とまとまりは params に置き、単語の暗記や語の詳細から戻ったときも同じ所から読み続ける。
+// 別の作品を開くと params ごと新しくなるので、最初の場面から始まる。
+const readPosition = (value) => (Number.isInteger(value) && value > 0 ? value : 0)
+
 export function LiteratureReaderScreen() {
   const workId = useStore((state) => state.params.workId)
   const navigate = useStore((state) => state.navigate)
@@ -100,8 +104,8 @@ export function LiteratureReaderScreen() {
   const work = getLiteratureWork(workId)
   const steps = useMemo(() => buildLiteratureNarration(work), [work])
   const vocabulary = useMemo(() => buildLiteratureVocabulary(work), [work])
-  const [sceneIndex, setSceneIndex] = useState(0)
-  const [segmentIndex, setSegmentIndex] = useState(0)
+  const [sceneIndex, setSceneIndex] = useScreenParam('scene', readPosition)
+  const [segmentIndex, setSegmentIndex] = useScreenParam('segment', readPosition)
   const [phase, setPhase] = useState('original')
   const [playbackStatus, setPlaybackStatus] = useState('stopped')
   const [syntaxOpen, setSyntaxOpen] = useState(false)
@@ -153,8 +157,6 @@ export function LiteratureReaderScreen() {
   }, [steps])
 
   useEffect(() => {
-    setSceneIndex(0)
-    setSegmentIndex(0)
     setPhase('original')
     setPlaybackStatus('stopped')
     setSyntaxOpen(false)

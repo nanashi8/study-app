@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { todayIndex, useStore } from '../store/useStore.js'
+import { todayIndex, useScreenParam, useStore } from '../store/useStore.js'
 import { ChooserTile, ChooserTiles, ReviewTodayRow, TodayCard, WordBookTile } from '../components/ContentTop.jsx'
 import { contentReviewSummary, reviewTargetItems } from '../lib/contentReview.js'
 import { PHRASE_KINDS, phrasesByKind } from '../data/phrases.js'
@@ -33,6 +33,7 @@ import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
 import { NormalLearningRecordList } from '../components/NormalLearningRecordList.jsx'
 import { summarizeSrsItems } from '../lib/contentProgress.js'
 import { scrollScreenToTop } from '../lib/screenScroll.js'
+import { readChoice, readListView, readText } from '../lib/screenParams.js'
 import { Book, Cards, Lightbulb, Link, Refresh, Search, Sparkles } from '../components/Icons.jsx'
 import { cx } from '../components/ui.jsx'
 
@@ -45,6 +46,9 @@ const PHRASE_RECORD_ENTRY_IDS = Object.freeze({
   syntax: 'usage-syntax',
 })
 const PHRASE_TOTAL = Object.values(PHRASE_COUNTS).reduce((sum, count) => sum + count, 0)
+const readKind = readChoice(PHRASE_KINDS.map((item) => item.id), 'idiom')
+const readLevelFilter = readChoice(['all', ...LEVELS.map((level) => level.id)], 'all')
+const readFamilyFilter = (value) => (typeof value === 'string' && value ? value : 'all')
 // 級カードは英単語と同じ並びで出すので、種類×級の集合をあらかじめ固めておく。
 const PHRASE_ITEMS_BY_KIND_LEVEL = Object.freeze(Object.fromEntries(
   PHRASE_KINDS.map((item) => [
@@ -76,14 +80,13 @@ const FEATURED_IDIOM_FORM_OPTIONS = Object.freeze(
 export function PhrasesScreen() {
   const navigate = useStore((s) => s.navigate)
   const srs = useStore((s) => s.srs)
-  const screenParams = useStore((s) => s.params)
-  const initialKind = screenParams.kind ?? 'idiom'
-  const [kind, setKind] = useState(initialKind)
-  const [view, setView] = useState(screenParams.view === 'list' ? 'list' : 'home')
+  // 種類・表示・絞り込みは params に置き、暗記・テストや別の画面から戻ったときも同じ見え方から続ける。
+  const [kind, setKind] = useScreenParam('kind', readKind)
+  const [view, setView] = useScreenParam('view', readListView)
   const [detail, setDetail] = useState(null)
-  const [query, setQuery] = useState(screenParams.query ?? '')
-  const [levelFilter, setLevelFilter] = useState(screenParams.levelFilter ?? 'all')
-  const [familyFilter, setFamilyFilter] = useState(screenParams.familyFilter ?? 'all')
+  const [query, setQuery] = useScreenParam('query', readText)
+  const [levelFilter, setLevelFilter] = useScreenParam('levelFilter', readLevelFilter)
+  const [familyFilter, setFamilyFilter] = useScreenParam('familyFilter', readFamilyFilter)
 
   const meta = PHRASE_KINDS.find((k) => k.id === kind)
   const kindItems = phrasesByKind(kind)

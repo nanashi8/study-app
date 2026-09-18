@@ -116,6 +116,7 @@ import {
 } from '../lib/srs.js'
 import { scheduleVocabularyReview } from '../lib/vocabScheduler.js'
 import { completedSessionDestination } from '../lib/navigationPolicy.js'
+import { captureScreenPlace, requestScreenPlace } from '../lib/screenScroll.js'
 import {
   applySettingChange,
   effectiveSettings,
@@ -215,18 +216,44 @@ export function normalizeSettings(settings) {
 }
 
 function returnNavigationState(st, screen, params = {}) {
-  const destination = learnerDestination(screen, params)
+  const requested = learnerDestination(screen, params)
   let targetIndex = -1
   for (let index = st.stack.length - 1; index >= 0; index--) {
-    if (st.stack[index].screen === destination.screen) {
+    if (st.stack[index].screen === requested.screen) {
       targetIndex = index
       break
     }
   }
+  const entry = targetIndex >= 0 ? st.stack[targetIndex] : null
+  // 戻り先の指定に無い見え方（一覧の表示・絞り込みなど）は、その画面を離れたときの値で補い、
+  // 位置も離れたときの所へ戻す。
+  const destination = entry
+    ? learnerDestination(requested.screen, { ...entry.params, ...requested.params })
+    : requested
+  requestScreenPlace(destination.screen === entry?.screen ? entry.place : null)
   return {
     ...destination,
     stack: targetIndex >= 0 ? st.stack.slice(0, targetIndex) : [],
   }
+}
+
+// 履歴を一つ戻す。戻った画面は、離れたときの位置に置く。
+function previousNavigationState(st) {
+  const prev = st.stack[st.stack.length - 1]
+  const destination = learnerDestination(prev.screen, prev.params)
+  requestScreenPlace(destination.screen === prev.screen ? prev.place : null)
+  return {
+    ...destination,
+    stack: destination.screen === 'home' && prev.screen !== 'home'
+      ? []
+      : st.stack.slice(0, -1),
+  }
+}
+
+// 履歴を空にして開き直す画面（アプリのホームなど）は、先頭から見せる。
+function freshNavigationState(screen) {
+  requestScreenPlace(null)
+  return { screen, params: {}, stack: [] }
 }
 
 export const createInitialLearningState = () => ({
@@ -602,12 +629,18 @@ export const useStore = create(
       navigate: (screen, params = {}) =>
         set((st) => {
           const destination = learnerDestination(screen, params)
+          // 離れる画面の位置を履歴に残し、新しく開く画面は先頭から見せる。
+          const place = captureScreenPlace()
+          requestScreenPlace(null)
           if (destination.screen === 'home' && screen !== 'home') {
             return { ...destination, stack: [] }
           }
           return {
             ...destination,
-            stack: [...st.stack, { screen: st.screen, params: st.params }].slice(-20),
+            stack: [
+              ...st.stack,
+              { screen: st.screen, params: st.params, ...(place ? { place } : {}) },
+            ].slice(-20),
           }
         }),
       // 同じ画面内の一覧条件だけを更新する。履歴は増やさず、次の画面から
@@ -639,16 +672,9 @@ export const useStore = create(
           // （英語なら英語アプリ、古典なら古典アプリ）。
           if (!st.stack.length) {
             const destination = fallbackDestination(st.screen)
-            return destination ? { screen: destination, params: {}, stack: [] } : {}
+            return destination ? freshNavigationState(destination) : {}
           }
-          const prev = st.stack[st.stack.length - 1]
-          const destination = learnerDestination(prev.screen, prev.params)
-          return {
-            ...destination,
-            stack: destination.screen === 'home' && prev.screen !== 'home'
-              ? []
-              : st.stack.slice(0, -1),
-          }
+          return previousNavigationState(st)
         }),
       // AppShell の共通「戻る」。通常は履歴を一つ戻し、直接開いた
       // トップ階層ではスタディアプリの入口へ戻す。
@@ -668,26 +694,17 @@ export const useStore = create(
           if (!st.stack.length) {
             // 画面内の「やめる」と同じ戻り先にそろえる。
             const destination = fallbackDestination(st.screen)
-            return destination ? { screen: destination, params: {}, stack: [] } : {}
+            return destination ? freshNavigationState(destination) : {}
           }
-          const prev = st.stack[st.stack.length - 1]
-          const destination = learnerDestination(prev.screen, prev.params)
-          return {
-            ...destination,
-            stack: destination.screen === 'home' && prev.screen !== 'home'
-              ? []
-              : st.stack.slice(0, -1),
-          }
+          return previousNavigationState(st)
         }),
-      returnToAfterSchoolChronicle: () =>
-        set({ screen: 'home', params: {}, stack: [] }),
-      goHome: () => set({ screen: 'home', params: {}, stack: [] }),
+      returnToAfterSchoolChronicle: () => set(() => freshNavigationState('home')),
+      goHome: () => set(() => freshNavigationState('home')),
       // いま見ている画面のアプリのホームへ。上部バーの「◯◯アプリ」から使う。
-      goAppHome: () =>
-        set((st) => ({ screen: appHomeForScreen(st.screen).screen, params: {}, stack: [] })),
+      goAppHome: () => set((st) => freshNavigationState(appHomeForScreen(st.screen).screen)),
       // 各アプリのホームへ直接移動する（履歴は初期化）。
-      goHomeScreen: (screen) => set({ screen, params: {}, stack: [] }),
-      goPortal: () => set({ screen: 'portal', params: {}, stack: [] }),
+      goHomeScreen: (screen) => set(() => freshNavigationState(screen)),
+      goPortal: () => set(() => freshNavigationState('portal')),
 
       // ── 進行中の単語暗記／テストの一時退避（永続化しない） ──
       // 辞書・語源などの参考画面を開いて戻るとき、deck・進行位置・結果を
@@ -1503,4 +1520,18 @@ export function useContentSettings() {
 export function currentContentSettings() {
   const state = useStore.getState()
   return effectiveSettings(state.settings, settingsScopeFor(state))
+}
+
+/**
+ * 画面の params に置く状態。一覧の表示・絞り込み・開いている項目のように、別の画面へ移って
+ * 戻ったときも同じ見え方で始めたいものに使う（履歴は params ごと積むので、戻ると離れたときの値になる）。
+ * read は params の値を画面で使う形へ直す関数（無い値・崩れた値は既定値にする）。
+ */
+export function useScreenParam(key, read) {
+  const value = read(useStore((state) => state.params?.[key]))
+  const setValue = (next) => {
+    const { params, replaceParams } = useStore.getState()
+    replaceParams({ ...params, [key]: typeof next === 'function' ? next(read(params?.[key])) : next })
+  }
+  return [value, setValue]
 }

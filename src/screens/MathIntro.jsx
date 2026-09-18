@@ -60,7 +60,7 @@ export function MathIntroScreen() {
 
   return (
     <div className="flex h-full flex-col">
-      <div className="min-h-0 flex-1 overflow-y-auto">
+      <div className="min-h-0 flex-1 overflow-y-auto" data-return-scroll="math-intro">
         <div
           className="relative overflow-hidden px-4 pb-5 pt-2 text-white"
           style={{ background: `linear-gradient(145deg, ${accent}, #312e81)` }}

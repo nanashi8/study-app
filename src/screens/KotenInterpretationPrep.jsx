@@ -98,7 +98,7 @@ export function KotenInterpretationPrepScreen() {
         right={<Chip color="#d97706">{items.length}問</Chip>}
       />
 
-      <div className="flex-1 overflow-y-auto px-4 pb-4">
+      <div className="flex-1 overflow-y-auto px-4 pb-4" data-return-scroll="koten-interpretation-prep">
         <section className="pb-4 pt-1">
           <div className="flex items-start gap-3">
             <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-amber-100 text-3xl">
