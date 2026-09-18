@@ -52,7 +52,7 @@ export const FIELD_PASSAGES = [
       s('Residents had released a foreign fish into the pond many years before.', '住民が何年も前に、外来の魚をその池に放していたのです。'),
       s('The prefecture now bans that action, but the official rule was too late.', '県は今そうした行為を禁止していますが、その公式の規則は遅すぎました。'),
       s('This species eats the young of local frogs, and it destroys the water plants.', 'この種は地元のカエルの子を食べ、水草もだめにしてしまいます。'),
-      s('The fish has no natural enemy here, so its numbers had grown rapidly.', 'その魚にはここでは天敵がいないので、その数は急速に増えていました。'),
+      s('The fish had no natural enemy here, so its numbers had grown rapidly.', 'その魚にはここに天敵がいなかったので、その数は急速に増えていました。'),
       p('The group could not remove every fish in a single day.', 'その団体は、たった一日ですべての魚を取り除くことはできませんでした。'),
       s('The volunteers placed nets on Saturdays and weighed the catch carefully.', 'ボランティアは毎週土曜日に網を仕掛け、とれた魚の重さを注意深く量りました。'),
       s('A local scientist showed the club a simple way to record the water conditions.', '地元の科学者は、水の状態を記録するための簡単な方法をその部に示しました。'),

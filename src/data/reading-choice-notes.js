@@ -847,7 +847,7 @@ export const READING_CHOICE_NOTES = freezeNotes({
     "Platform labels are the strongest available protection.": "第41文で、配信基盤の表示は最初に見えるほど強力な手段ではないと書かれている。",
   },
   "p_pre2_pond_comeback#1": {
-    "Because the fish had no natural enemy in the area.": "第10文 The fish has no natural enemy here, so its numbers had grown rapidly. と一致する。so の前が理由。",
+    "Because the fish had no natural enemy in the area.": "第10文 The fish had no natural enemy here, so its numbers had grown rapidly. と一致する。so の前が理由。",
     "Because the water of the pond was badly polluted.": "第6文で、池そのものはひどく汚染されていないと書かれている。",
     "Because the club fed the fish every Saturday.": "土曜日は、ボランティアが網を仕掛けて魚を取った日（第12文）。餌をやったのではない。",
     "Because the prefecture asked residents to keep the fish.": "第8文で、県は今そうした行為（外来の魚を放すこと）を禁止していると書かれている。",

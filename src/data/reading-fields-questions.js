@@ -12,7 +12,7 @@ export const FIELD_READING_QUESTIONS = Object.freeze({
         'Because the prefecture asked residents to keep the fish.',
       ],
       answer: 'Because the fish had no natural enemy in the area.',
-      explain: '第10文に「その魚にはここでは天敵がいないので、その数は急速に増えていました」とあり、増加の理由が示されています。第6文は水質が悪くないと述べており、汚染は理由ではありません。',
+      explain: '第10文に「その魚にはここに天敵がいなかったので、その数は急速に増えていました」とあり、増加の理由が示されています。第6文は水質が悪くないと述べており、汚染は理由ではありません。',
     },
     {
       q: 'What did the data from six months show?',
