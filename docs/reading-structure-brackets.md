@@ -42,18 +42,20 @@ The council therefore decided <to charge the fee> <for one year> and <publish th
 | as … as の1つ目の as、as well | 括らない（副詞） | `as quickly <as possible>` |
 | 句動詞の副詞（turn out の out など） | 括らない（動詞Vの中） | `may later turn out <to be>` |
 | more than・less than・fewer than ＋数 | 数を表す句として全体を < >（more than は数にかかる副詞のはたらき。2026-09-18 利用者が決めた型） | `<More than ten thousand> satellites` |
+| 名詞＋前置詞＋同じ名詞（year after year） | 決まった言い方として全体を一つの < >（2026-09-18 利用者が決めた型） | `(who actually keep it <year after year>)` `<to maintain and correct it> <year after year>` |
 
 ## 台帳の書き方
 
 - 前置詞句は `{前| …}`。意味上の主語の for A は `{前:意味上の主語| for A}` と書き、すぐ後ろに to不定詞のまとまりを置く。
 - 省略された関係詞は種類を書く。`{関係省略:目的格>先行詞| …}`、`{関係省略:目的格(動詞)>先行詞| …}`、`{関係省略:関係副詞>先行詞| …}`。
 - 主語と be動詞を省いた副詞節は、動詞がなくてもよい（`{副詞節:時| [接 when] [C possible]}`）。
+- year after year のような「名詞＋前置詞＋同じ名詞」は `{反復| year after year}` と書く（中の after は前置詞の検査から外れる）。
 - 数を表す more than＋数は `{数量| More than ten thousand}` と書き、名詞の要素の中に置く（`[S {数量| More than ten thousand} satellites]`）。中の than は前置詞の検査から外れる。
 
 ## 検査
 
 - `tests/reading-sentence-structures.test.mjs`
-  - 「利用者と例文で確認した括弧の付け方を保つ」…確認済みの11文の構造図を固定する。**この期待値は、利用者に例文を見せて確認するまで変えない。**
+  - 「利用者と例文で確認した括弧の付け方を保つ」…確認済みの12文の構造図を固定する。**この期待値は、利用者に例文を見せて確認するまで変えない。**
   - 「台帳の前置詞は、すべて前置詞句 {前| …} でくくる」…`unbracketedPrepositions` で囲み忘れを止める。
   - 「節のまとまりには、つなぐ語の種類と見分け方がある」…接続詞・関係詞の説明が空でないことを見る。
 - 前置詞の形でも前置詞でない語（as well の as、the past の past、前置詞句を並べる than）は

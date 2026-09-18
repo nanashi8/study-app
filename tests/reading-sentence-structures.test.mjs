@@ -188,6 +188,9 @@ const CONFIRMED_BRACKETS = Object.freeze({
     '<More than ten thousand> satellites now travel <around the Earth>, and thousands more are planned',
   'p_3_multilingual_town_guide#2':
     'Local students wanted <to help them> <explore the town> <without getting lost>',
+  // 2026-09-18 利用者が year after year を一つの句 < > にすると決めた（該当部分の3文を見て選んだ）。
+  'p_ext_2000_customs_across_borders#42':
+    'Neither change makes the festival false, (since meaning is assigned <by the people (who actually keep it <year after year>)>)',
 })
 
 test('利用者と例文で確認した括弧の付け方を保つ', () => {

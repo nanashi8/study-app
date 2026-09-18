@@ -200,7 +200,7 @@ export default Object.freeze([
       'as well as about the future': 'A as well as B で「BだけでなくAも」。',
     },
   }),
-  st('[S The first practical step {前| in any river basin}] [V is] [M therefore] [C a plain one], [M {関係,>a plain one| [S which] [V is] [C {to:補語| [M simply] [V to keep] [O the numbers] [M year {前| after year}]}]}].', {
+  st('[S The first practical step {前| in any river basin}] [V is] [M therefore] [C a plain one], [M {関係,>a plain one| [S which] [V is] [C {to:補語| [M simply] [V to keep] [O the numbers] [M {反復| year after year}]}]}].', {
     chunks: [
       ['The first practical step in any river basin', 'どの流域でも最初の実際的な一歩は'],
       ['is therefore a plain one,', 'したがって地味なものです'],
