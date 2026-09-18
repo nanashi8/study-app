@@ -741,10 +741,25 @@ function markedText(nodes) {
         continue
       }
       if (unitIsClause(node)) {
+        // 名詞を後ろから説明する節は、句を閉じてから ( ) だけで示す（<about the old station> (that stood …)）。
+        // 前置詞の目的語そのものになる節（<about (who pays …)>）は句の中に残す。2026-09-18 利用者が決定。
+        if (phrase?.open && NOUN_MODIFYING_CLAUSES.has(node.base)) {
+          emit('> ')
+          phrase.open = false
+        }
         // 閉じた句の後ろに節だけが残るときは、節の ( ) だけにする（<of removal> (that follows …)）。
         emit(' (')
         walk(node.children, null, node)
         emit(') ')
+        continue
+      }
+      // 同格の語句は、言いかえる名詞そのものは括らず、中の句・節だけを括る（Ms. Brown, one <of the librarians>）。
+      if (node.base === '同格') {
+        if (phrase?.open) {
+          emit('> ')
+          phrase.open = false
+        }
+        walk(node.children, null, node)
         continue
       }
       if (phrase && isPrepositionObject(node, parentUnit)) {
@@ -774,6 +789,9 @@ function markedText(nodes) {
 const FOCUS_BEFORE_OBJECT = new Set(['only', 'even', 'just', 'simply', 'merely', 'also', 'not', 'mainly', 'mostly', 'partly'])
 
 const OBJECT_COORDINATORS = new Set(['and', 'or', 'but', 'nor'])
+
+// 名詞を後ろから説明する節（句の < > の外に出す）。
+const NOUN_MODIFYING_CLAUSES = new Set(['関係', '関係,', '関係省略', '同格that'])
 
 // 前置詞句の中で、前置詞の目的語になる句か。前置詞のすぐ後ろのほか、
 // such as A or B・in A, B, and C のように and・or で並んだ目的語も一つの < > に入れる。

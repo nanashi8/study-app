@@ -178,8 +178,9 @@ const CONFIRMED_BRACKETS = Object.freeze({
     '<At these events>, local volunteers help visitors <examine broken things and, (when possible), repair them>',
   'p_1_metric_fixation#17':
     'Judgment can remain informed and humane, but it can also become inconsistent, biased, and difficult <for outsiders> <to challenge>',
+  // 名詞を説明する節は句の外（2026-09-18 利用者が決定）。
   'p_pre1_resilient_cities#25':
-    'A city (that takes resilience seriously) must therefore evaluate projects <over a long period> <rather than only during the year (in which they are introduced)>',
+    'A city (that takes resilience seriously) must therefore evaluate projects <over a long period> <rather than only during the year> (in which they are introduced)',
   'p_2_quiet_technology#17':
     '<In some cases>, a simple repair <to an old bus stop or a clearer sign> may help residents more <than an expensive digital service>',
   'p_pre2_museum_volunteers#15':
@@ -190,7 +191,10 @@ const CONFIRMED_BRACKETS = Object.freeze({
     'Local students wanted <to help them> <explore the town> <without getting lost>',
   // 2026-09-18 利用者が year after year を一つの句 < > にすると決めた（該当部分の3文を見て選んだ）。
   'p_ext_2000_customs_across_borders#42':
-    'Neither change makes the festival false, (since meaning is assigned <by the people (who actually keep it <year after year>)>)',
+    'Neither change makes the festival false, (since meaning is assigned <by the people> (who actually keep it <year after year>))',
+  // 2026-09-18 利用者が示した正しい形：名詞を説明する節は句の外、同格の名詞は括らない。
+  'p_4_library_event#4': 'Ms. Brown, one <of the librarians>, will show old pictures <of the town>',
+  'p_4_library_event#5': 'She will also talk <about the old station> (that stood <near the river> fifty years ago)',
 })
 
 test('利用者と例文で確認した括弧の付け方を保つ', () => {
