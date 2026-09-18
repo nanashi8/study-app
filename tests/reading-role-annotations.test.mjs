@@ -92,6 +92,23 @@ test('役割ラベルは対応する下線の下にSVOCMを表示する', () => 
   assert.ok(html.indexOf('border-b-[3px]') < html.indexOf('>S 主語<'))
 })
 
+test('接続語の下線ラベルは種類だけを出し、「接続」と「接続詞」を重ねない', () => {
+  const html = renderToStaticMarkup(ReadingRoleSentence({
+    sentence: 'Shops welcomed the change because families had left.',
+    parts: [
+      { role: 'S', text: 'Shops' },
+      { role: 'V', text: 'welcomed' },
+      { role: 'O', text: 'the change' },
+      { role: 'LINK', text: 'because', connector: '接続詞' },
+      { role: 'S', text: 'families' },
+      { role: 'V', text: 'had left' },
+    ],
+  }))
+  assert.match(html, /data-reading-connector="接続詞"/)
+  assert.doesNotMatch(html, />接続</)
+  assert.equal(html.split('>接続詞<').length - 1, 1)
+})
+
 test('全174個の焦点語・74訂正と指摘文の全14役割・関連解説を人手正解表でGATEする', () => {
   const report = auditReadingRoleQuality(PASSAGES, analyzeReadingSentence)
 

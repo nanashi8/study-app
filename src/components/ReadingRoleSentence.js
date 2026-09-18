@@ -135,6 +135,8 @@ export function ReadingRoleSentence({
     const meta = translationRoleMeta(segment.role)
     // 接続詞・関係代名詞・同格の that など、つなぐ語の種類を役割の下に並べる。
     const connector = parts[segment.index]?.connector ?? ''
+    // 接続語は、種類（接続詞・等位接続詞・接続副詞など）が分かるときは種類だけを出し、「接続 接続詞」と重ねない。
+    const connectorOnly = meta.code === '接続' && Boolean(connector)
     children.push(createElement(
       'span',
       {
@@ -161,22 +163,29 @@ export function ReadingRoleSentence({
       createElement(
         'span',
         { className: 'mt-1 flex flex-wrap items-center gap-1' },
-        createElement(
-          'span',
-          {
-            className: classes(
-              'rounded-full px-1.5 py-0.5 text-[9px] font-black leading-none',
-              ROLE_LABEL_CLASS[segment.role] ?? 'bg-brand-100 text-brand-800',
-            ),
-          },
-          meta.code === '接続' ? meta.code : `${meta.code} ${meta.label}`,
-        ),
+        connectorOnly
+          ? null
+          : createElement(
+            'span',
+            {
+              className: classes(
+                'rounded-full px-1.5 py-0.5 text-[9px] font-black leading-none',
+                ROLE_LABEL_CLASS[segment.role] ?? 'bg-brand-100 text-brand-800',
+              ),
+            },
+            meta.code === '接続' ? meta.code : `${meta.code} ${meta.label}`,
+          ),
         connector
           ? createElement(
             'span',
             {
               'data-reading-connector': connector,
-              className: 'rounded-full bg-sky-100 px-1.5 py-0.5 text-[9px] font-black leading-none text-sky-800',
+              className: connectorOnly
+                ? classes(
+                  'rounded-full px-1.5 py-0.5 text-[9px] font-black leading-none',
+                  ROLE_LABEL_CLASS[segment.role] ?? 'bg-brand-100 text-brand-800',
+                )
+                : 'rounded-full bg-sky-100 px-1.5 py-0.5 text-[9px] font-black leading-none text-sky-800',
             },
             connector,
           )
