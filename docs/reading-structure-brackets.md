@@ -7,8 +7,12 @@
 
 - **( ) は節**。主語と動詞を持つまとまり。関係詞節・名詞節（that／whether／if／疑問詞／what）・副詞節。
   接続詞・関係詞・疑問詞は ( ) の中に入れ、先行詞は外に置く。
-- **< > は句**。主語と動詞を持たないまとまり。前置詞句・to不定詞・動名詞・分詞・同格の名詞句・挿入句。
+- **< > は句**。主語と動詞を持たないまとまり。前置詞句・to不定詞・動名詞・分詞・挿入句。
+  同格の語句は、言いかえる名詞そのものは括らず、中の句・節だけを括る（`Ms. Brown, one <of the librarians>,`。2026-09-18 利用者が決めた型）。
 - **節 ( ) は入れ子**でくくる。節の中の節は ( ) の中に ( )、節の中の句は ( ) の中に < >。
+- **名詞を後ろから説明する節（関係詞節・同格の that 節）は句の中に入れない**。句を閉じてから ( ) だけで示す
+  （`<about the old station> (that stood <near the river> fifty years ago)`。2026-09-18 利用者が決めた型）。
+  前置詞の目的語そのものになる節（`<about (who pays <for it> and when)>`）は、外に出すと前置詞の目的語がなくなるので句の中に残す。
 - **句 < > の中の句は入れ子にしない**。句の切れ目ごとに < > を閉じて、句を並べる（2026-09-18 利用者が決めた型）。
   - 前置詞の目的語になる動名詞・原形などは、前置詞と一つの < > にまとめる（`<from losing their ability>`）。
     and・or で並んだ目的語や、only・simply などをはさんだ目的語も同じ（`<such as training … or improving …>`）。
@@ -37,6 +41,8 @@ The council therefore decided <to charge the fee> <for one year> and <publish th
 | help・let・make＋人＋原形 | to不定詞は人のところで閉じ、原形の部分を < > | `<to help them> <explore the town>` `help visitors <examine broken things …>` |
 | 主語と be動詞を省いた接続詞＋-ing／形容詞 | ( ) | `(while encouraging digital innovation elsewhere)` `(when possible)` |
 | 前置詞＋関係代名詞 | 節の ( ) だけ。中で < > にしない | `the environment (within which people decide)` |
+| 句の中の名詞を説明する関係詞節・同格の that 節 | 句を名詞のところで閉じ、節は ( ) だけ | `<by people> (who have not yet been born)` `<with the fact> (that influence …)` |
+| 同格の語句 | 名詞は括らず、中の句・節だけ | `Ms. Brown, one <of the librarians>,` `<with a discount rate>, a single number (that states …)` |
 | than・rather than ＋名詞 | < >。後ろに主語と動詞が続けば ( ) | `more <than an expensive digital service>` |
 | for A to do（意味上の主語） | < > を2つに分ける | `difficult <for outsiders> <to challenge>` |
 | as … as の1つ目の as、as well | 括らない（副詞） | `as quickly <as possible>` |
@@ -55,7 +61,7 @@ The council therefore decided <to charge the fee> <for one year> and <publish th
 ## 検査
 
 - `tests/reading-sentence-structures.test.mjs`
-  - 「利用者と例文で確認した括弧の付け方を保つ」…確認済みの12文の構造図を固定する。**この期待値は、利用者に例文を見せて確認するまで変えない。**
+  - 「利用者と例文で確認した括弧の付け方を保つ」…確認済みの14文の構造図を固定する。**この期待値は、利用者に例文を見せて確認するまで変えない。**
   - 「台帳の前置詞は、すべて前置詞句 {前| …} でくくる」…`unbracketedPrepositions` で囲み忘れを止める。
   - 「節のまとまりには、つなぐ語の種類と見分け方がある」…接続詞・関係詞の説明が空でないことを見る。
 - 前置詞の形でも前置詞でない語（as well の as、the past の past、前置詞句を並べる than）は
