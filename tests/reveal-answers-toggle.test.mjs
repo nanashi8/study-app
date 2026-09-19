@@ -49,6 +49,32 @@ test('カード画面に「まだ」と「覚えた」の両方のボタンが�
   }
 })
 
+// 下部の判定欄に置くのは「まだ」「覚えた」だけ。カードを開く操作は上の目のボタンと
+// カードのタップが受け持つので、下部の「答えを見る」「意味・成り立ちを見る」とは重ねない。
+// 慣れた学習者は、意味を開かないまま答えて次のカードへ進める。
+test('英単語・熟語のカードは、意味を開かないままでも「まだ」「覚えた」を押せる', () => {
+  for (const [path, tapHint] of [
+    ['src/screens/VocabStudy.jsx', 'タップして意味と語源を見る'],
+    ['src/screens/PhraseStudy.jsx', 'タップして'],
+  ]) {
+    const source = readFileSync(path, 'utf8')
+    const start = source.indexOf('<CardStudyFooter')
+    assert.ok(start > 0, `${path}: 下部の判定欄がない`)
+    const footer = source.slice(start, source.indexOf('</CardStudyFooter>', start))
+    // 開いたかどうかで下部を入れ替えず、カードを開くボタンも置かない。
+    assert.doesNotMatch(footer, /flipped/, `${path}: 下部の判定欄がカードを開いたかで変わる`)
+    assert.doesNotMatch(footer, /を見る/, `${path}: 下部にカードを開くボタンが残っている`)
+    // 答えていないカードでは、開いていなくても両方の判定を押せる。
+    assert.match(footer, /まだ\s*🤔/, `${path}: 下部に「まだ」がない`)
+    assert.match(footer, /覚えた\s*👍/, `${path}: 下部に「覚えた」がない`)
+    assert.match(footer, /onClick=\{\(\) => answer\(false\)\}/, `${path}: 「まだ」が答えを記録しない`)
+    assert.match(footer, /onClick=\{\(\) => answer\(true\)\}/, `${path}: 「覚えた」が答えを記録しない`)
+    // カードそのもののタップは、これまでどおり意味を開く道として残す。
+    assert.match(source, new RegExp(tapHint), `${path}: カードのタップ案内が消えている`)
+    assert.match(source, /setFlipped/, `${path}: カードを開く操作がなくなっている`)
+  }
+})
+
 // 英単語・熟語のカードは、目のボタンで「意味を隠す→スペルを隠す→全部見せる」と切り替える。
 // スペルを隠しているあいだは、つづり・発音記号・読み上げボタンを出さず、自動の読み上げもしない。
 test('英単語・熟語のカードは目のボタンでスペルも隠し、隠しているあいだは発音しない', () => {
