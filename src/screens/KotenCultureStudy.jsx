@@ -272,6 +272,8 @@ export function KotenCultureStudyScreen() {
         </div>
       </CardSwipeRegion>
 
+      {/* フッター操作。答えを開いたかに関わらず「まだ／覚えた」だけを置く。
+          答えの出し入れは、上の目のボタンとカードのタップが受け持つ。 */}
       <CardStudyFooter className="border-violet-100">
         {recordedAnswer !== null && reselectable ? (
           // 答えたあと戻ってきたカード。いまの答えを示したまま、もう一方を押すと選び直せる。
@@ -280,11 +282,8 @@ export function KotenCultureStudyScreen() {
           <Button full size="lg" variant={recordedAnswer ? 'success' : 'danger'} disabled>
             {recordedAnswer ? '覚えた' : 'まだ'}（回答済み）
           </Button>
-        ) : !flipped ? (
-          <Button full size="lg" onClick={() => setFlipped(true)}>
-            答えを見る
-          </Button>
         ) : (
+          // 答えを見ずに思い出せた日は、開かないまま答えて次のカードへ進める。
           <div className="grid grid-cols-2 gap-2">
             <Button variant="danger" size="lg" onClick={() => answer(false)}>
               まだ🤔
