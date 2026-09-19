@@ -190,6 +190,7 @@ export function VocabStudyScreen() {
   const speechKey = word ? `${i}:${word.id}` : null
   const wordSpeechItems = word
     ? cardSpeechItems({
+        id: word.id,
         head: word.word,
         meanings: word.meanings,
         meaningReadings: true,

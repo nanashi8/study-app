@@ -2,6 +2,7 @@
 // 設定の範囲（単語のみ／単語・意味／単語・意味・例文・例文の意味）に合わせて、
 // 見出し→意味→例文→例文の意味の順に続けて読む。意味と例文の意味は日本語の声で読む。
 // 意味と例文の意味は答えにあたるので、カードを開いて見えているときだけ読む。
+import { JAPANESE_SPEECH_READINGS } from '../data/japanese-speech-readings.js'
 import { meaningSegments } from './meaningReadings.js'
 import { normalizeSpeechRange } from './speechRange.js'
 
@@ -67,6 +68,31 @@ export function exampleMeaningSpeechText(text) {
   return spokenJapanese(String(text ?? '').replace(SLOT_MARKS, ''))
 }
 
+/**
+ * 端末の声が読み違えやすい語を、台帳（japanese-speech-readings.js）の読みに置き換える。
+ * 語は前後の字を含めて文の中で1か所に決まるように書いてあり、前から順に置き換える。
+ */
+export function applyJapaneseSpeechReadings(text, pairs) {
+  let spoken = String(text ?? '')
+  for (const [target, reading] of pairs ?? []) spoken = spoken.replace(target, reading)
+  return spoken
+}
+
+/** その英単語・熟語・構文の、意味と例文の意味の読み上げ文（台帳の読みを当てたもの）。 */
+export function cardJapaneseSpeechTexts({ id, meanings, meaningReadings = false, exampleJa }) {
+  const readings = (id && JAPANESE_SPEECH_READINGS[id]) || {}
+  const meaning = meaningSpeechText(meanings, { readings: meaningReadings })
+  const exampleMeaning = exampleMeaningSpeechText(exampleJa)
+  return {
+    meaning: applyJapaneseSpeechReadings(meaning, readings.meaning),
+    // 文法の例文は、意味が例文の和訳そのもの。同じ文には同じ読みを当てる。
+    exampleMeaning: applyJapaneseSpeechReadings(
+      exampleMeaning,
+      readings.example ?? (exampleMeaning === meaning ? readings.meaning : null),
+    ),
+  }
+}
+
 // 同じ言葉を続けて2度読まない（構文は見出しの音声が例文そのもの、文法の例文は意味が例文の和訳そのもの）。
 const sameWords = (segment) => `${segment.lang}:${segment.text.replace(/[\s\p{P}]/gu, '').toLowerCase()}`
 
@@ -92,6 +118,7 @@ function withPauses(parts) {
  * 見出しはいつもいちばん前（カードを開いたときは、2つめの部分から続きを読む）。
  */
 export function cardSpeechItems({
+  id = null,
   head,
   headStyle = 'word',
   meanings,
@@ -106,8 +133,11 @@ export function cardSpeechItems({
   const withExample = Boolean(answerOpen) && scope === 'example'
   const headText = String(head ?? '').trim()
   const exampleText = exampleSpeech ? String(example?.en ?? '').trim() : ''
+  const japanese = withMeaning
+    ? cardJapaneseSpeechTexts({ id, meanings, meaningReadings, exampleJa: example?.ja })
+    : null
   const exampleMeaning = exampleText && withExample
-    ? { text: exampleMeaningSpeechText(example?.ja), label: '例文の意味', lang: 'ja-JP', style: 'translation' }
+    ? { text: japanese.exampleMeaning, label: '例文の意味', lang: 'ja-JP', style: 'translation' }
     : null
 
   const items = [{
@@ -116,7 +146,7 @@ export function cardSpeechItems({
     segments: withPauses([
       { text: headText, lang: 'en-US', style: headStyle },
       withMeaning && {
-        text: meaningSpeechText(meanings, { readings: meaningReadings }),
+        text: japanese.meaning,
         label: '意味',
         lang: 'ja-JP',
         style: 'translation',
