@@ -13,12 +13,11 @@ import {
   PHRASE_LEVEL_TARGETS,
   PHRASE_TARGET_TOTALS,
 } from '../src/data/phrase-curriculum.js'
-import { EXAM_GRAMMAR_LESSONS } from '../src/data/grammar-lessons-exam.js'
 import { ETYMOLOGY_COMPLETION_WORDS } from '../src/data/words-etymology-completion.js'
 import { ALL_WORDS, getWord } from '../src/data/vocab.js'
 import { PHRASES } from '../src/data/phrases.js'
-import { GRAMMAR_LESSONS } from '../src/data/grammar-lessons.js'
-import { GRAMMAR, grammarByTopic } from '../src/data/grammar.js'
+import { GRAMMAR_REFERENCE_UNITS } from '../src/data/grammar-reference/index.js'
+import { GRAMMAR, grammarPracticeByTopic } from '../src/data/grammar.js'
 import { splitMeanings } from '../src/data/compact.js'
 import { pickPhraseDistractors } from '../src/lib/session.js'
 import { vocabMatchRank } from '../src/lib/vocabSearch.js'
@@ -183,30 +182,17 @@ test('新規熟語は分類・使用例を持ち、構文は既存文法問題�
   }
 })
 
-test('高校文法解説は43単元となり、追加35単元は同論点テストへ接続する', () => {
-  assert.equal(EXAM_GRAMMAR_LESSONS.length, 35)
-  assert.equal(GRAMMAR_LESSONS.length, 69)
-  assert.deepEqual(
-    GRAMMAR_LESSONS.slice(-EXAM_GRAMMAR_LESSONS.length).map((lesson) => lesson.id),
-    EXAM_GRAMMAR_LESSONS.map((lesson) => lesson.id),
-  )
-  assert.equal(new Set(GRAMMAR_LESSONS.map((lesson) => lesson.id)).size, GRAMMAR_LESSONS.length)
-  assert.equal(
-    GRAMMAR_LESSONS.filter((lesson) => lesson.stage === '高校基礎' || lesson.stage === '高校発展').length,
-    43,
-  )
-
-  for (const lesson of EXAM_GRAMMAR_LESSONS) {
-    assert.ok(['高校基礎', '高校発展'].includes(lesson.stage), lesson.id)
-    assert.ok(lesson.summary && lesson.form, lesson.id)
-    assert.ok(lesson.points.length >= 2, lesson.id)
-    assert.ok(lesson.examples.length >= 2, lesson.id)
-    assert.ok(grammarByTopic(lesson.level, lesson.topic).length > 0, lesson.id)
-    for (const example of lesson.examples) {
-      assert.ok(example.en && example.ja, lesson.id)
+test('高校（準2級〜1級）の文法の参考書は84単元で、どれも同じ級・単元のテストへつながる', () => {
+  const highSchool = GRAMMAR_REFERENCE_UNITS.filter((unit) => ['pre2', '2', 'pre1', '1'].includes(unit.level))
+  assert.equal(highSchool.length, 84)
+  assert.equal(new Set(GRAMMAR_REFERENCE_UNITS.map((unit) => unit.id)).size, GRAMMAR_REFERENCE_UNITS.length)
+  for (const unit of highSchool) {
+    assert.ok(unit.lead && unit.forms.length, unit.id)
+    assert.ok(unit.points.length >= 2, unit.id)
+    assert.ok(grammarPracticeByTopic(unit.level, unit.topic, 'mixed').length > 0, unit.id)
+    for (const point of unit.points) {
+      for (const example of point.examples) assert.ok(example.en && example.ja, unit.id)
     }
-    for (const item of lesson.preferred ?? []) {
-      assert.ok(item.avoid && item.use && item.reason, lesson.id)
-    }
+    for (const item of unit.mistakes) assert.ok(item.wrong && item.right && item.why, unit.id)
   }
 })

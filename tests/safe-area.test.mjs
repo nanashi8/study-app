@@ -295,7 +295,7 @@ test('画面下の操作バーはviewportへ固定せず、本文の外の足元
   }
 })
 
-test('下端に接する操作欄29実装・追従欄1件・読み上げ欄を共通退避領域が守る', () => {
+test('下端に接する操作欄29実装・追従欄2件・読み上げ欄を共通退避領域が守る', () => {
   const footerImplementations = sourceFiles.flatMap(({ path, source }) => (
     source.split('\n')
       .filter((line) => line.includes('shrink-0') && line.includes('border-t'))
@@ -313,7 +313,12 @@ test('下端に接する操作欄29実装・追従欄1件・読み上げ欄を�
 
   assert.equal(footerImplementations.length, 29)
   assert.equal(cardFooterUses, 7)
-  assert.equal(stickyBottomControls.length, 1)
+  assert.equal(stickyBottomControls.length, 2)
+  // 追従欄は本文のスクロール領域の中に張り付く。ホームバーぶんは外枠の末尾が空けるので、欄の側で足さない。
+  for (const { path, line } of stickyBottomControls) {
+    assert.doesNotMatch(line, /app-bottom-clearance|safe-area-inset-bottom/, `${path}: 下端の余白を重ねています`)
+  }
+  assert.ok(stickyBottomControls.some(({ path }) => path === 'src/components/GrammarReferenceParts.jsx'))
   assert.match(read('src/components/SpeechConsole.jsx'), /data-speech-console/)
 
   const shell = read('src/components/AppShell.jsx')

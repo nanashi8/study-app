@@ -9,11 +9,11 @@ import {
   grammarByTopic,
   topicsForLevel,
 } from '../src/data/grammar.js'
-import { GRAMMAR_LESSONS } from '../src/data/grammar-lessons.js'
+import { GRAMMAR_REFERENCE_UNITS } from '../src/data/grammar-reference/index.js'
 import { LEVELS } from '../src/data/levels.js'
 
 const lessonKeys = new Set(
-  GRAMMAR_LESSONS.map((lesson) => `${lesson.level}\u0000${lesson.topic}`),
+  GRAMMAR_REFERENCE_UNITS.map((unit) => `${unit.level}\u0000${unit.topic}`),
 )
 
 console.log('英文法カバレッジ')
@@ -28,11 +28,11 @@ for (const level of LEVELS) {
   console.log(
     `\n${level.label.padEnd(4)} ${String(questions.length).padStart(3)}問` +
       ` / 目標${target}問 / ${topics.length}単元 / 各単元${GRAMMAR_TOPIC_MINIMUM}問以上` +
-      ` / 解説接続${coveredTopics}単元`,
+      ` / 参考書${coveredTopics}単元`,
   )
   for (const topic of topics) {
     const count = grammarByTopic(level.id, topic).length
-    const lesson = lessonKeys.has(`${level.id}\u0000${topic}`) ? '解説あり' : '問題のみ'
+    const lesson = lessonKeys.has(`${level.id}\u0000${topic}`) ? '参考書あり' : '問題のみ'
     console.log(`  ${String(count).padStart(2)}問  ${topic}  [${lesson}]`)
   }
 }

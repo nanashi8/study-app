@@ -113,7 +113,7 @@ export const APP_MENU_SECTIONS = Object.freeze([
     englishItem('roots', '語源学習', '語源から関連英単語を一緒に暗記'),
     englishItem('readingList', '長文読解', '前から読む訳・文法・設問'),
     englishItem('phrases', '熟語・構文', '全2,104項目を検索・復習'),
-    englishItem('grammar', '英文法', '級別問題と順序立てた解説'),
+    englishItem('grammar', '英文法', '級・単元ごとの参考書とテスト'),
     englishItem('listening', 'リスニング', '級別形式・本文確認・復習'),
   ]),
   section('support', '学習サポート', [

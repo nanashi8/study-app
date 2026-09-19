@@ -21,7 +21,7 @@ import {
   grammarRuleExplanationFor,
 } from '../src/lib/grammarQuestionExplanations.js'
 import { grammarChoiceNoteFor } from '../src/lib/grammarChoiceNotes.js'
-import { GRAMMAR_LESSONS } from '../src/data/grammar-lessons.js'
+import { GRAMMAR_REFERENCE_UNITS } from '../src/data/grammar-reference/index.js'
 import { PHRASES } from '../src/data/phrases.js'
 import {
   SYNTAX_FAMILY_GUIDES,
@@ -553,7 +553,7 @@ const sections = [
   ['診断専用読解', DIAGNOSTIC_READING_BANK, LEVEL_ORDER],
 ]
 const totalQuestionUnits = sections.reduce((sum, [, items]) => sum + items.length, 0)
-const lessonKeys = new Set(GRAMMAR_LESSONS.map((lesson) => `${lesson.level}\0${lesson.topic}`))
+const lessonKeys = new Set(GRAMMAR_REFERENCE_UNITS.map((unit) => `${unit.level}\0${unit.topic}`))
 const grammarWithLesson = GRAMMAR.filter((item) =>
   lessonKeys.has(`${item.level}\0${item.topic}`)).length
 
@@ -589,7 +589,7 @@ console.log(
 console.log(`  文法の即時解説＋同型例2文: ${GRAMMAR.length}/${GRAMMAR.length}`)
 console.log(`  文法の正解を含む選択肢解説: ${grammarChoiceReasonCount}/${GRAMMAR.length * 4}（正解${grammarCorrectChoiceReasonCount}）`)
 console.log(`  文法の解答前和訳: 意味判断${grammarMeaningCueCount}問・語形のみ非表示${grammarFormOnlyCount}問`)
-console.log(`  文法の長形式レッスン接続: ${grammarWithLesson}/${GRAMMAR.length}`)
+console.log(`  文法の参考書につながる問題: ${grammarWithLesson}/${GRAMMAR.length}`)
 console.log(`  診断3フォームの解説＋英文/和訳: ${diagnosticForms.length}/${diagnosticForms.length}`)
 console.log(`  習熟導線: SRS・わからない・即時フィードバック・弱点復習を主要8画面で確認`)
 

@@ -4,7 +4,7 @@ import {
   GRAMMAR,
   getGrammar,
 } from '../src/data/grammar.js'
-import { GRAMMAR_LESSONS } from '../src/data/grammar-lessons.js'
+import { GRAMMAR_REFERENCE_UNITS, grammarReferenceFor } from '../src/data/grammar-reference/index.js'
 import { ALL_WORDS } from '../src/data/vocab.js'
 import {
   grammarQuestionNeedsMeaningCue,
@@ -16,15 +16,20 @@ const normalize = (value) => String(value ?? '')
   .toLocaleLowerCase('en-US')
   .replace(/[’]/g, "'")
 
-test('文法レッスン69件すべてに形・判断・日英例文・注意点がある', () => {
-  assert.equal(GRAMMAR_LESSONS.length, 69)
-  for (const lesson of GRAMMAR_LESSONS) {
-    assert.ok(lesson.summary?.trim(), `${lesson.id}: summary`)
-    assert.ok(lesson.form?.trim(), `${lesson.id}: form`)
-    assert.ok(lesson.points?.length >= 2, `${lesson.id}: points`)
-    assert.ok(lesson.examples?.length >= 2, `${lesson.id}: examples`)
-    assert.ok(lesson.examples.every(({ en, ja }) => en?.trim() && ja?.trim()), `${lesson.id}: bilingual examples`)
-    assert.ok(lesson.pitfalls?.length >= 1, `${lesson.id}: pitfalls`)
+test('文法の参考書127単元すべてに、形・ポイント・日英例文・間違えやすいところ・チェックがある', () => {
+  assert.equal(GRAMMAR_REFERENCE_UNITS.length, 127)
+  for (const unit of GRAMMAR_REFERENCE_UNITS) {
+    const examples = [
+      ...unit.forms.flatMap((form) => (form.example ? [form.example] : [])),
+      ...unit.points.flatMap((point) => point.examples),
+    ]
+    assert.ok(unit.lead?.trim(), `${unit.id}: lead`)
+    assert.ok(unit.forms.length >= 1, `${unit.id}: forms`)
+    assert.ok(unit.points.length >= 2, `${unit.id}: points`)
+    assert.ok(examples.length >= 4, `${unit.id}: examples`)
+    assert.ok(examples.every(({ en, ja }) => en?.trim() && ja?.trim()), `${unit.id}: bilingual examples`)
+    assert.ok(unit.mistakes.length >= 1, `${unit.id}: mistakes`)
+    assert.ok(unit.check.length >= 2, `${unit.id}: check`)
   }
 })
 
@@ -121,12 +126,11 @@ test('Neverの命令文はDon’tとの違いと動詞原形まで明示する',
   assert.match(grammarChoiceNoteFor(item, 'Not'), /「〜するな」は Don’t＋動詞の原形/)
   assert.match(grammarChoiceNoteFor(item, 'No'), /no＋名詞/)
 
-  const lesson = GRAMMAR_LESSONS.find(({ id }) => id === 'gl_j1_imp')
+  const lesson = grammarReferenceFor('5', '命令文')
   const lessonText = [
-    lesson.form,
-    ...lesson.points,
-    ...lesson.examples.flatMap(({ en, ja }) => [en, ja]),
-    ...lesson.pitfalls,
+    ...lesson.forms.map((form) => form.form),
+    ...lesson.points.flatMap((point) => [...point.text, ...point.examples.flatMap(({ en, ja }) => [en, ja])]),
+    ...lesson.mistakes.flatMap((item) => [item.wrong, item.right, item.why]),
   ].join('\n')
   assert.match(lessonText, /Never＋動詞の原形/)
   assert.match(lessonText, /Don’t.*一般的な禁止/)

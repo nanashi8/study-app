@@ -85,12 +85,19 @@ import {
   GRAMMAR_PRACTICE,
   GRAMMAR_TOPIC_MINIMUM,
   GRAMMAR_TOTAL_TARGET,
-  grammarByTopic,
+  grammarPracticeTopicsForLevel,
 } from '../src/data/grammar.js'
 import { GRAMMAR_CHOICE_NOTES } from '../src/data/grammar-choice-notes.js'
 import { grammarChoiceNoteFor } from '../src/lib/grammarChoiceNotes.js'
-import { GRAMMAR_LESSONS } from '../src/data/grammar-lessons.js'
-import { EXAM_GRAMMAR_LESSONS } from '../src/data/grammar-lessons-exam.js'
+import {
+  GRAMMAR_REFERENCE_UNITS,
+  GRAMMAR_STRAND_REFERENCES,
+  grammarReferenceFor,
+} from '../src/data/grammar-reference/index.js'
+import { GRAMMAR_REFERENCE_WORDS } from '../src/data/grammar-reference/words.js'
+import { GRAMMAR_REFERENCE_TERMS } from '../src/data/grammar-reference/terms.js'
+import { GRAMMAR_STRANDS } from '../src/data/grammar-strands.js'
+import { resolveReferenceWord, splitEnglish } from '../src/lib/grammarReferenceText.js'
 import {
   GRAMMAR_EXAM_PATTERN_COUNT,
   GRAMMAR_EXAM_PATTERN_FAMILIES,
@@ -1116,32 +1123,93 @@ for (const id of phraseIds) {
   }
 }
 
-// ── 高校文法解説：全追加単元が同じ論点の既存テストへ接続するか ──
-const grammarLessonIds = new Set()
-for (const lesson of GRAMMAR_LESSONS) {
-  if (!lesson.id || grammarLessonIds.has(lesson.id)) {
-    errors.push(`文法解説 id が無いか重複 (${lesson.id ?? '?'})`)
+// ── 文法の参考書：全単元がテストの級・単元とつながり、読めば答えられる形になっているか ──
+const grammarReferenceIds = new Set()
+const grammarReferencePairs = new Set()
+for (const unit of GRAMMAR_REFERENCE_UNITS) {
+  const label = `文法の参考書 ${unit.id}`
+  if (!unit.key || grammarReferenceIds.has(unit.id)) errors.push(`${label}: id が無いか重複`)
+  grammarReferenceIds.add(unit.id)
+  grammarReferencePairs.add(`${unit.level}\u0000${unit.topic}`)
+  if (!grammarPracticeTopicsForLevel(unit.level, 'mixed').includes(unit.topic)) {
+    errors.push(`${label}: ${unit.level}/${unit.topic} のテストが無い`)
   }
-  grammarLessonIds.add(lesson.id)
-}
-if (EXAM_GRAMMAR_LESSONS.length < 35) {
-  errors.push(`高校文法解説の追加単元が不足 (${EXAM_GRAMMAR_LESSONS.length}/35)`)
-}
-for (const lesson of EXAM_GRAMMAR_LESSONS) {
-  if (!lesson.summary?.trim() || !lesson.form?.trim() || (lesson.points?.length ?? 0) < 2) {
-    errors.push(`高校文法解説 ${lesson.id}: summary/form/points が不足`)
+  if (!unit.title?.trim() || (unit.lead?.trim().length ?? 0) < 20) errors.push(`${label}: 題か「ここで学ぶこと」が短い`)
+  if (!unit.forms.length || unit.forms.some((form) => !form.label?.trim() || !form.form?.trim())) {
+    errors.push(`${label}: 基本の形が無い`)
   }
-  if ((lesson.examples?.length ?? 0) < 2) {
-    errors.push(`高校文法解説 ${lesson.id}: 例文が2文未満`)
-  }
-  if (!grammarByTopic(lesson.level, lesson.topic).length) {
-    errors.push(`高校文法解説 ${lesson.id}: ${lesson.level}/${lesson.topic} のテスト接続先が無い`)
-  }
-  for (const [index, item] of (lesson.preferred ?? []).entries()) {
-    if (!item?.avoid || !item?.use || !item?.reason) {
-      errors.push(`高校文法解説 ${lesson.id}: preferred[${index}] の必須項目不足`)
+  if (unit.points.length < 2) errors.push(`${label}: ポイントが2つ未満`)
+  for (const [index, point] of unit.points.entries()) {
+    if (!point.title?.trim() || (!point.text.length && !point.table && !point.examples.length)) {
+      errors.push(`${label}: ポイント${index + 1} の中身が無い`)
+    }
+    if (point.table && point.table.rows.some((row) => row.length !== point.table.head.length)) {
+      errors.push(`${label}: ポイント${index + 1} の表の列数がそろっていない`)
     }
   }
+  const examples = [
+    ...unit.forms.flatMap((form) => (form.example ? [form.example] : [])),
+    ...unit.points.flatMap((point) => point.examples),
+    ...(unit.advanced?.examples ?? []),
+  ]
+  if (examples.length < 4) errors.push(`${label}: 例文が4文未満`)
+  if (!unit.mistakes.length || unit.mistakes.some((item) => !item.wrong || !item.right || !item.why)) {
+    errors.push(`${label}: 間違えやすいところが無いか欠けている`)
+  }
+  if (unit.check.length < 2) errors.push(`${label}: テスト前のチェックが2つ未満`)
+  if (unit.rewrites.some((item) => !item.from || !item.to || !item.note)) errors.push(`${label}: 言いかえが欠けている`)
+  if (unit.advanced && !LEVELS.has(unit.advanced.level)) errors.push(`${label}: 発展の級が不正`)
+  for (const example of examples) {
+    if (!example.en?.trim() || !example.ja?.trim()) errors.push(`${label}: 例文か和訳が空 (${example.en})`)
+    for (const part of splitEnglish(example.en)) {
+      if (part.kind === 'en' && !resolveReferenceWord(part.text, example.gloss)) {
+        errors.push(`${label}: タップしても意味が出ない語「${part.text}」(${example.en})`)
+      }
+    }
+    for (const word of Object.keys(example.gloss ?? {})) {
+      if (!splitEnglish(example.en).some((part) => part.kind === 'en' && part.text.toLowerCase() === word.toLowerCase())) {
+        errors.push(`${label}: gloss の語「${word}」が例文に無い (${example.en})`)
+      }
+    }
+  }
+}
+for (const level of LEVELS) {
+  for (const topic of grammarPracticeTopicsForLevel(level, 'mixed')) {
+    if (!grammarReferencePairs.has(`${level}\u0000${topic}`)) errors.push(`文法の参考書: ${level}/${topic} のページが無い`)
+  }
+}
+if (GRAMMAR_STRAND_REFERENCES.length !== GRAMMAR_STRANDS.length) {
+  errors.push(`級をまたいだ単元のページ数が系統数と合わない (${GRAMMAR_STRAND_REFERENCES.length}/${GRAMMAR_STRANDS.length})`)
+}
+GRAMMAR_STRANDS.forEach((strand, index) => {
+  const reference = GRAMMAR_STRAND_REFERENCES[index]
+  const label = `級をまたいだ単元 ${strand.id}`
+  if (reference?.id !== strand.id) {
+    errors.push(`${label}: 並びかIDが系統と合わない`)
+    return
+  }
+  const expected = strand.topics.map(([level, topic]) => `${level}\u0000${topic}`).join('|')
+  const actual = reference.steps.map((step) => `${step.level}\u0000${step.topic}`).join('|')
+  if (expected !== actual) errors.push(`${label}: 段が系統の単元と合わない`)
+  if (!reference.overview.length || reference.steps.some((step) => !step.point?.trim())) errors.push(`${label}: 見取り図か段の説明が無い`)
+  for (const step of reference.steps) {
+    if (!grammarReferenceFor(step.level, step.topic)) errors.push(`${label}: ${step.level}/${step.topic} の単元ページが無い`)
+    for (const part of splitEnglish(step.example.en)) {
+      if (part.kind === 'en' && !resolveReferenceWord(part.text, step.example.gloss)) {
+        errors.push(`${label}: タップしても意味が出ない語「${part.text}」(${step.example.en})`)
+      }
+    }
+  }
+  for (const item of reference.related) {
+    if (!grammarReferenceFor(item.level, item.topic)) errors.push(`${label}: つながる単元 ${item.level}/${item.topic} のページが無い`)
+  }
+})
+for (const [surface, entry] of GRAMMAR_REFERENCE_WORDS) {
+  if (entry.id && !getWord(entry.id)) errors.push(`文法の参考書の語義 ${surface}: 見出し語 ${entry.id} が辞書に無い`)
+  if (!/[ぁ-んァ-ヶ一-龠]/u.test(entry.ja)) errors.push(`文法の参考書の語義 ${surface}: 日本語の意味が無い`)
+}
+for (const term of GRAMMAR_REFERENCE_TERMS) {
+  if (!/^[ぁ-んァ-ヶー]+$/u.test(term.reading) || !term.text?.trim()) errors.push(`文法用語 ${term.term}: 読みか説明が不正`)
 }
 
 // ── 長文：まとめ語彙・gloss の id が辞書解決できるか ──
@@ -2739,10 +2807,18 @@ for (const guide of EXAM_USAGE_GUIDES) {
     auditEnglish(`使い分け ${guide.id} 例文${index + 1}`, choice.example, { complete: true })
   }
 }
-for (const lesson of EXAM_GRAMMAR_LESSONS) {
-  for (const [index, example] of lesson.examples.entries()) {
-    auditEnglish(`高校文法解説 ${lesson.id} 例文${index + 1}`, example.en, { complete: true })
-  }
+for (const unit of GRAMMAR_REFERENCE_UNITS) {
+  const sentences = [
+    ...unit.forms.flatMap((form) => (form.example ? [form.example.en] : [])),
+    ...unit.points.flatMap((point) => point.examples.map((example) => example.en)),
+    ...(unit.advanced?.examples ?? []).map((example) => example.en),
+    ...unit.mistakes.map((item) => item.right),
+    ...unit.rewrites.flatMap((item) => [item.from, item.to]),
+  ]
+  sentences.forEach((sentence, index) => auditEnglish(`文法の参考書 ${unit.id} 英文${index + 1}`, sentence, { complete: true }))
+}
+for (const reference of GRAMMAR_STRAND_REFERENCES) {
+  reference.steps.forEach((step, index) => auditEnglish(`級をまたいだ単元 ${reference.id} 例文${index + 1}`, step.example.en, { complete: true }))
 }
 for (const passage of PASSAGES) {
   passage.sentences.forEach((sentence, index) =>
@@ -2806,4 +2882,4 @@ if (errors.length) {
   process.exit(1)
 }
 
-console.log(`✅ データ検証OK: ${ALL_WORDS.length}英単語 / ${EXAM_USAGE_GUIDES.length}使い分けガイド / ${PHRASES.length}熟語・構文（構文${syntaxCards.length}件・${SYNTAX_FAMILY_GUIDES.length}ファミリー、長い一文${longSentenceTranslationCount}文・${longSentenceMeaningStepCount}意味フレーズ・${longSentenceTranslationStepCount}内部SVOCM単位） / ${GRAMMAR.length}英文法 / ${GRAMMAR_LESSONS.length}文法解説 / ${PASSAGES.length}長文（${readingTranslationSentenceCount}文・${readingTranslationBlockCount}語順訳ブロック・${readingMeaningPhraseCount}意味フレーズ・${readingPhrasePairCount}ブロック内内部SVOCM単位・手動本文台帳${readingManualReviewSentenceCount}文・回帰例${readingReviewedPhraseSentenceCount}文） / ${PUBLIC_DOMAIN_LITERATURE.length}名作朗読（${literatureSceneCount}場面・${literatureNarrationSegmentCount}区切り・本文語彙${literatureVocabularyCoveredCount}/${literatureVocabularyOccurrenceCount}・カード${literatureVocabularyCardCount}件・英語構文${englishLiteratureSyntaxSceneCount}場面・英語読解${englishLiteratureQuestionCount}問） / ${DICTATION_ITEMS.length}ディクテーション / ${LISTENING_ITEMS.length}リスニング / ${KOTEN_WORDS.length}古典単語 / ${KOTEN_GRAMMAR.length}古典文法 / ${KOTEN_GRAMMAR_QUESTIONS.length}古典文法問題 / ${KOTEN_CULTURE.length}古典常識 / ${KOTEN_CULTURE_QUESTIONS.length}古典常識問題 / ${KOTEN_INTERPRETATIONS.length}古典短文 — 全て必須項目を満たす`)
+console.log(`✅ データ検証OK: ${ALL_WORDS.length}英単語 / ${EXAM_USAGE_GUIDES.length}使い分けガイド / ${PHRASES.length}熟語・構文（構文${syntaxCards.length}件・${SYNTAX_FAMILY_GUIDES.length}ファミリー、長い一文${longSentenceTranslationCount}文・${longSentenceMeaningStepCount}意味フレーズ・${longSentenceTranslationStepCount}内部SVOCM単位） / ${GRAMMAR.length}英文法 / ${GRAMMAR_REFERENCE_UNITS.length}文法の参考書（${GRAMMAR_STRAND_REFERENCES.length}系統） / ${PASSAGES.length}長文（${readingTranslationSentenceCount}文・${readingTranslationBlockCount}語順訳ブロック・${readingMeaningPhraseCount}意味フレーズ・${readingPhrasePairCount}ブロック内内部SVOCM単位・手動本文台帳${readingManualReviewSentenceCount}文・回帰例${readingReviewedPhraseSentenceCount}文） / ${PUBLIC_DOMAIN_LITERATURE.length}名作朗読（${literatureSceneCount}場面・${literatureNarrationSegmentCount}区切り・本文語彙${literatureVocabularyCoveredCount}/${literatureVocabularyOccurrenceCount}・カード${literatureVocabularyCardCount}件・英語構文${englishLiteratureSyntaxSceneCount}場面・英語読解${englishLiteratureQuestionCount}問） / ${DICTATION_ITEMS.length}ディクテーション / ${LISTENING_ITEMS.length}リスニング / ${KOTEN_WORDS.length}古典単語 / ${KOTEN_GRAMMAR.length}古典文法 / ${KOTEN_GRAMMAR_QUESTIONS.length}古典文法問題 / ${KOTEN_CULTURE.length}古典常識 / ${KOTEN_CULTURE_QUESTIONS.length}古典常識問題 / ${KOTEN_INTERPRETATIONS.length}古典短文 — 全て必須項目を満たす`)

@@ -2,14 +2,55 @@ import { useMemo } from 'react'
 import { useScreenParam, useStore } from '../store/useStore.js'
 import { getLevel } from '../data/levels.js'
 import { GRAMMAR_STRANDS } from '../data/grammar-strands.js'
+import { grammarReferenceFor, readGrammarReferenceIds } from '../data/grammar-reference/index.js'
 import { strandOverview } from '../lib/grammarStrand.js'
+import { readChoice } from '../lib/screenParams.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { Card, Button, Chip, cx } from '../components/ui.jsx'
-import { ArrowRight, Target } from '../components/Icons.jsx'
+import { ArrowRight, BookOpen, Cards, Check, Target } from '../components/Icons.jsx'
 
 const percent = (value) => `${Math.round(value * 100)}%`
-// 開いている系統は params に置き、問題から戻ったときも開いたままにする。
+// 開いている系統と入口（学習・テスト）は params に置き、問題や参考書から戻ったときも同じ見え方にする。
 const readOpenStrands = (value) => (Array.isArray(value) ? value : [])
+const readMode = readChoice(['learn', 'test'], 'learn')
+
+// 学習の入口：系統ごとに、下の級から上の級までの段と、読んだ単元を見せる。
+function StrandReadCard({ strand, read, onOpen }) {
+  const steps = strand.topics.map(([level, topic]) => ({ level, topic, unit: grammarReferenceFor(level, topic) }))
+  const readCount = steps.filter((step) => step.unit && read.has(step.unit.id)).length
+  return (
+    <Card className="p-0" data-return-row={strand.id}>
+      <button type="button" onClick={onOpen} className="flex w-full items-start gap-3 p-4 text-left active:bg-brand-50/60" data-grammar-strand-read={strand.id}>
+        <span className="text-2xl leading-none">{strand.emoji}</span>
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-center gap-1.5">
+            <span className="font-display text-base font-extrabold text-ink">{strand.name}</span>
+            <Chip>{steps.length}段</Chip>
+            <span className="text-[11px] font-extrabold text-ink/45">{`読んだ ${readCount}/${steps.length}`}</span>
+          </div>
+          <div className="mt-0.5 text-xs font-bold text-ink/50">{strand.summary}</div>
+          <div className="mt-2 flex flex-wrap gap-1">
+            {steps.map((step) => {
+              const meta = getLevel(step.level)
+              const done = step.unit && read.has(step.unit.id)
+              return (
+                <span
+                  key={`${step.level}-${step.topic}`}
+                  className="inline-flex items-center gap-0.5 rounded-full px-2 py-0.5 text-[10px] font-extrabold"
+                  style={{ background: `${meta.color}1a`, color: meta.color }}
+                >
+                  {done && <Check size={11} />}
+                  {meta.label} {step.topic}
+                </span>
+              )
+            })}
+          </div>
+        </div>
+        <span className="mt-1 text-brand-400"><ArrowRight size={20} /></span>
+      </button>
+    </Card>
+  )
+}
 
 // 正答率の帯。習得・苦手・未回答を色で区別する。
 function levelAccuracyRow({ stat }) {
@@ -110,13 +151,13 @@ function StrandCard({ overview, open, onToggle, onStart, onPickLevel }) {
           )}
         </div>
         <Button className="mt-2" full onClick={() => onStart(overview)}>
-          <Target size={16} /> {currentMeta.label}から学習する
+          <Target size={16} /> {currentMeta.label}からテスト
         </Button>
       </div>
 
       {open && (
         <div className="mt-2 space-y-1.5">
-          <div className="px-1 text-[11px] font-extrabold text-ink/55">級を選んで学習する</div>
+          <div className="px-1 text-[11px] font-extrabold text-ink/55">級を選んでテストする</div>
           {stats.map((stat) => {
             const { meta, state } = levelAccuracyRow({ stat })
             return (
@@ -155,6 +196,8 @@ function StrandCard({ overview, open, onToggle, onStart, onPickLevel }) {
 export function GrammarStrandsScreen() {
   const navigate = useStore((s) => s.navigate)
   const srs = useStore((s) => s.srs)
+  const readingsDone = useStore((s) => s.readingsDone)
+  const [mode, setMode] = useScreenParam('mode', readMode)
   const grammarStrandPos = useStore((s) => s.grammarStrandPos)
   const setGrammarStrandPos = useStore((s) => s.setGrammarStrandPos)
   const [openStrands, setOpenStrands] = useScreenParam('openStrands', readOpenStrands)
@@ -179,7 +222,7 @@ export function GrammarStrandsScreen() {
       source: { type: 'grammarStrand', strandId: overview.strand.id, level: target },
       title: `${overview.strand.name}・${meta.label}`,
       levelColor: meta.color,
-      returnTo: { screen: 'grammarStrands' },
+      returnTo: { screen: 'grammarStrands', params: { mode } },
     })
   }
 
@@ -190,11 +233,46 @@ export function GrammarStrandsScreen() {
   }, [overviews])
 
   const weakCount = overviews.filter((o) => o.weakest).length
+  const read = readGrammarReferenceIds(readingsDone)
 
   return (
     <div className="pb-6">
-      <ScreenHeader title="単元から学ぶ" subtitle="級をまたいで1つの文法を、成績に合わせた級で練習する" />
-      <div className="px-4">
+      <ScreenHeader
+        title="級をまたいで学ぶ"
+        subtitle={mode === 'learn' ? '1つの文法を、下の級から上の級まで続けて読む' : '1つの文法を、成績に合わせた級で練習する'}
+      />
+      <div className="px-4 pt-3">
+        <div className="mb-4 grid grid-cols-2 rounded-xl bg-brand-50 p-1" role="tablist" aria-label="学習とテスト" data-grammar-strand-modes>
+          {[['learn', '学習', BookOpen], ['test', 'テスト', Cards]].map(([id, label, Icon]) => (
+            <button
+              key={id}
+              type="button"
+              role="tab"
+              aria-selected={mode === id}
+              onClick={() => setMode(id)}
+              className={cx(
+                'flex min-h-11 items-center justify-center gap-1.5 rounded-lg px-2 text-sm font-extrabold transition-colors',
+                mode === id ? 'bg-white text-brand-700 shadow-sm' : 'text-ink/50 active:bg-white/70',
+              )}
+            >
+              <Icon size={16} /> {label}
+            </button>
+          ))}
+        </div>
+
+        {mode === 'learn' ? (
+          <div className="space-y-3">
+            {GRAMMAR_STRANDS.map((strand) => (
+              <StrandReadCard
+                key={strand.id}
+                strand={strand}
+                read={read}
+                onOpen={() => navigate('grammarStrandReference', { strandId: strand.id })}
+              />
+            ))}
+          </div>
+        ) : (
+        <>
         <Card className="mb-4 p-4">
           <div className="font-display text-sm font-extrabold text-ink">
             {weakCount > 0
@@ -219,6 +297,8 @@ export function GrammarStrandsScreen() {
             />
           ))}
         </div>
+        </>
+        )}
       </div>
     </div>
   )
