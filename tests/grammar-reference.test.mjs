@@ -14,8 +14,17 @@ import {
   grammarReferenceNeighbors,
   grammarStrandReferenceFor,
   nextGrammarReferenceUnit,
-  readGrammarReferenceIds,
 } from '../src/data/grammar-reference/index.js'
+import {
+  GRAMMAR_REFERENCE_LOG_LIMIT,
+  appendGrammarReferenceLog,
+  formatStudyDay,
+  grammarReferenceHistory,
+  grammarReferenceStatusCounts,
+  latestGrammarReference,
+  normalizeGrammarReferenceLog,
+  strandReferencePageId,
+} from '../src/lib/grammarReferenceLog.js'
 import {
   exampleParts,
   explanationParts,
@@ -108,30 +117,104 @@ test('用語はまとまりごとに最初の1回だけタップでき、長い�
   assert.deepEqual(terms(explanationParts('月・季節・年には in')), [])
 })
 
-test('続きから読む単元は、最後に読んだ単元の次のまだ読んでいない単元', () => {
-  assert.equal(nextGrammarReferenceUnit([]).id, 'gref_5_be')
-  assert.equal(nextGrammarReferenceUnit(['gref_5_be']).id, 'gref_5_verb')
-  assert.equal(nextGrammarReferenceUnit(['gref_5_verb', 'gref_5_be']).id, 'gref_5_negq')
-  // 長文の読了（readingsDone を共有）は数えない。
-  assert.deepEqual([...readGrammarReferenceIds(['passage-1', 'gref_5_be'])], ['gref_5_be'])
-  const all = GRAMMAR_REFERENCE_UNITS.map((unit) => unit.id)
+test('参考書の学習記録は、押した日と「理解した／まだまだ」を1日1件ずつ古い順に残す', () => {
+  let log = {}
+  log = appendGrammarReferenceLog(log, 'gref_5_be', 'notYet', 100)
+  log = appendGrammarReferenceLog(log, 'gref_5_be', 'understood', 103)
+  // 同じ日に押し直したら、その日の結果を置き換える。
+  log = appendGrammarReferenceLog(log, 'gref_5_be', 'notYet', 103)
+  assert.deepEqual(log.gref_5_be, [{ day: 100, result: 'notYet' }, { day: 103, result: 'notYet' }])
+  assert.deepEqual(grammarReferenceHistory(log, 'gref_5_be').map((entry) => entry.day), [103, 100])
+  assert.deepEqual(latestGrammarReference(log, 'gref_5_be'), { day: 103, result: 'notYet' })
+  // 知らない結果・ページIDは残さない。系統のページは gstrand_ で残す。
+  assert.equal(appendGrammarReferenceLog(log, 'gref_5_be', 'done', 104), log)
+  assert.equal(appendGrammarReferenceLog(log, 'passage-1', 'understood', 104), log)
+  assert.equal(strandReferencePageId('preposition'), 'gstrand_preposition')
+  log = appendGrammarReferenceLog(log, strandReferencePageId('preposition'), 'understood', 104)
+  assert.equal(latestGrammarReference(log, 'gstrand_preposition').result, 'understood')
+
+  // 古い記録は上限まで。読み込むときは形の正しいものだけを日付順にそろえる。
+  let long = {}
+  for (let day = 1; day <= GRAMMAR_REFERENCE_LOG_LIMIT + 5; day += 1) long = appendGrammarReferenceLog(long, 'gref_5_be', 'understood', day)
+  assert.equal(long.gref_5_be.length, GRAMMAR_REFERENCE_LOG_LIMIT)
+  assert.equal(long.gref_5_be[0].day, 6)
+  assert.deepEqual(
+    normalizeGrammarReferenceLog({
+      gref_5_be: [{ day: 9, result: 'understood' }, { day: 2, result: 'notYet' }, { day: -1, result: 'notYet' }, { day: 3, result: 'x' }],
+      gref_5_verb: 'broken',
+      other: [{ day: 1, result: 'notYet' }],
+    }),
+    { gref_5_be: [{ day: 2, result: 'notYet' }, { day: 9, result: 'understood' }] },
+  )
+  assert.deepEqual(normalizeGrammarReferenceLog(null), {})
+
+  // 目次の「学習」の帯は、いちばん新しい結果で数える。
+  assert.deepEqual(
+    grammarReferenceStatusCounts(log, ['gref_5_be', 'gstrand_preposition', 'gref_5_verb']),
+    { understood: 1, notYet: 1, unstudied: 1 },
+  )
+  // 日番号は端末の日付（todayIndex と同じ数え方）で、目次には「9/19」の形で出す。
+  const day = Math.floor(Date.UTC(2026, 8, 19) / 86400000)
+  assert.equal(formatStudyDay(day), '9/19')
+})
+
+test('続きから読む単元は、いちばん新しく学習した単元の次で、まだ学習していない単元', () => {
+  assert.equal(nextGrammarReferenceUnit({}).id, 'gref_5_be')
+  assert.equal(nextGrammarReferenceUnit({ gref_5_be: [{ day: 5, result: 'notYet' }] }).id, 'gref_5_verb')
+  // いちばん新しい日の単元の次から探す。学習済みの単元（まだまだを含む）は飛ばす。
+  assert.equal(nextGrammarReferenceUnit({
+    gref_5_verb: [{ day: 3, result: 'understood' }],
+    gref_5_be: [{ day: 5, result: 'understood' }],
+  }).id, 'gref_5_negq')
+  // 同じ日なら、後ろの単元の次から。
+  assert.equal(nextGrammarReferenceUnit({
+    gref_5_be: [{ day: 5, result: 'understood' }],
+    gref_5_negq: [{ day: 5, result: 'notYet' }],
+  }).id, nextGrammarReferenceUnit({ gref_5_negq: [{ day: 5, result: 'notYet' }] }).id)
+  const all = Object.fromEntries(GRAMMAR_REFERENCE_UNITS.map((unit) => [unit.id, [{ day: 1, result: 'understood' }]]))
   assert.equal(nextGrammarReferenceUnit(all), null)
 })
 
-test('文法のトップは「学習」と「テスト」の2つの入口を持ち、学習は参考書、テストは問題へ進む', () => {
+test('文法の各級の目次は、級と単元ごとに「学習」と「テスト」の入口を別々に置き、テストへすぐ入れる', () => {
   const grammar = read('src/screens/Grammar.jsx')
-  assert.match(grammar, /\{ id: 'learn', label: '学習'/)
-  assert.match(grammar, /\{ id: 'test', label: 'テスト'/)
-  assert.match(grammar, /useScreenParam\('mode', readMode\)/)
+  // 全体を切り替える入口のタブは置かない。
+  assert.doesNotMatch(grammar, /EntranceTabs|useScreenParam\('mode'/)
+  assert.match(grammar, /<ol className="space-y-3" data-grammar-contents=\{level\}>/)
+  // 単元ごと：学習は参考書のページ、テストは参考書を通らずその単元の問題へ。
+  assert.match(grammar, /data-grammar-unit=\{unit\.id\}/)
+  assert.match(grammar, /studyLabel="学習"/)
+  assert.match(grammar, /onStudy=\{\(\) => onRead\(unit\.id\)\}/)
+  assert.match(grammar, /onQuiz=\{\(\) => onTestUnit\(unit\.topic\)\}/)
+  assert.match(grammar, /navigate\('grammarQuiz', \{ source: \{ type: 'grammar', level, topic, questionType \}/)
   assert.match(grammar, /navigate\('grammarReference', \{ unitId \}\)/)
-  assert.match(grammar, /navigate\('grammarStrands', \{ mode \}\)/)
+  // 目次の各単元に、いちばん新しい結果と学習日の履歴、級には「理解した／まだまだ／未学習」の帯。
+  assert.match(grammar, /<StudyHistory history=\{history\} limit=\{HISTORY_SHOWN\}/)
+  assert.match(grammar, /learningStatusKind="reference"/)
+  assert.match(grammar, /navigate\('grammarStrands'\)/)
+
+  const strands = read('src/screens/GrammarStrands.jsx')
+  assert.doesNotMatch(strands, /data-grammar-strand-modes|useScreenParam\('mode'/)
+  assert.match(strands, /data-grammar-strand-learn=\{strand\.id\}/)
+  assert.match(strands, /data-grammar-strand-test=\{strand\.id\}/)
+  assert.match(strands, /onLearn=\{\(\) => navigate\('grammarStrandReference', \{ strandId: overview\.strand\.id \}\)\}/)
+
+  // ページの末尾で「まだまだ」「理解した」を押すと、その日の結果が学習記録に残る。テストは同じ級・単元の3種類。
   const reference = read('src/screens/GrammarReference.jsx')
-  // 最後まで読んだら読んだ記録、テストは同じ級・単元の3種類で出し、終わったらこのページへ戻る。
-  assert.match(reference, /markReadingDone\(unit\.id\)/)
+  assert.match(reference, /onRecord=\{\(result\) => recordGrammarReference\(unit\.id, result\)\}/)
+  assert.doesNotMatch(reference, /markReadingDone|IntersectionObserver/)
   assert.match(reference, /source: \{ type: 'grammar', level: unit\.level, topic: unit\.topic, questionType: 'mixed' \}/)
   assert.match(reference, /returnTo: \{ screen: 'grammarReference', params: \{ unitId: unit\.id \} \}/)
   const strand = read('src/screens/GrammarStrandReference.jsx')
+  assert.match(strand, /onRecord=\{\(result\) => recordGrammarReference\(pageId, result\)\}/)
   assert.match(strand, /source: \{ type: 'grammarStrand', strandId: strand\.id, level: overview\.currentLevel \}/)
+  const record = read('src/components/GrammarStudyRecord.jsx')
+  assert.match(record, /\['notYet', 'understood'\]\.map/)
+
+  // 記録は端末・進捗コード・クラウドに残り、リセットでは「学習を終えた記録」に入る。
+  assert.match(read('src/store/useStore.js'), /grammarReferenceLog: normalizeGrammarReferenceLog\(payload\.grammarReferenceLog\)/)
+  assert.match(read('src/lib/cloudSync.js'), /grammarReferenceLog: normalizeGrammarReferenceLog\(data\.grammarReferenceLog \?\? current\.grammarReferenceLog\)/)
+  assert.match(read('src/lib/progressReset.js'), /\['writingProgress', 'readingsDone', 'grammarReferenceLog', 'mathDone', 'mathMastery'\]/)
+
   const app = read('src/App.jsx')
   assert.match(app, /grammarReference: GrammarReferenceScreen/)
   assert.match(app, /grammarStrandReference: GrammarStrandReferenceScreen/)

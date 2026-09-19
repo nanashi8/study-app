@@ -124,6 +124,7 @@ import {
   settingsScopeFor,
 } from '../lib/contentSettings.js'
 import { learningContentCatalogReviewCommand } from '../lib/learningContentCatalogReview.js'
+import { appendGrammarReferenceLog, normalizeGrammarReferenceLog } from '../lib/grammarReferenceLog.js'
 
 // ── 学習ロジックの定数 ──────────────────────────────────────────────
 // Leitner 式の間隔反復。十分に定着した後は60・90・180日の維持復習へ進む。
@@ -275,6 +276,8 @@ export const createInitialLearningState = () => ({
   learningNotebook: createStarterLearningNotebook(),
   writingProgress: {}, // exerciseId -> { completed, lastText, lastMode, lastDay, bestWords, grammarIds }
   readingsDone: [], // [passageId | literatureId] 読了した長文・名作朗読
+  // 文法の参考書の学習日と「理解した／まだまだ」。{ ページID: [{ day, result }, …] }（古い順・1日1件）
+  grammarReferenceLog: {},
   mathDone: [], // [problemId] クリアした数学問題
   mathMastery: {}, // unitId -> 最高正答率(0-100) ＝ 理解度
   contentQuizResults: {}, // SRS外教材の教材ID別・直近テスト結果
@@ -574,6 +577,7 @@ export function progressStateFromPayload(payload = {}) {
     ),
     writingProgress: payload.writingProgress ?? {},
     readingsDone: payload.readingsDone ?? [],
+    grammarReferenceLog: normalizeGrammarReferenceLog(payload.grammarReferenceLog),
     mathDone: payload.mathDone ?? [],
     mathMastery: payload.mathMastery ?? {},
     contentQuizResults: normalizeContentQuizResults(payload.contentQuizResults),
@@ -1130,6 +1134,12 @@ export const useStore = create(
             }),
           }
         }),
+
+      // 文法の参考書を読み終えて「理解した」「まだまだ」を押した日を残す（同じ日に押し直したら置き換える）。
+      recordGrammarReference: (pageId, result) =>
+        set((st) => ({
+          grammarReferenceLog: appendGrammarReferenceLog(st.grammarReferenceLog, pageId, result, today()),
+        })),
 
       markMathDone: (id) =>
         set((st) =>

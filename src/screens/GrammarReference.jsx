@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
-import { useStore } from '../store/useStore.js'
+import { useEffect, useMemo, useState } from 'react'
+import { todayIndex, useStore } from '../store/useStore.js'
 import { getLevel } from '../data/levels.js'
 import { grammarPracticeByTopic } from '../data/grammar.js'
 import { grammarStrandForTopic } from '../data/grammar-strands.js'
@@ -9,14 +9,16 @@ import {
   grammarReferenceNeighbors,
 } from '../data/grammar-reference/index.js'
 import { prepareReferenceUnit } from '../lib/grammarReferenceText.js'
+import { GRAMMAR_REFERENCE_RESULTS, formatStudyDay, latestGrammarReference } from '../lib/grammarReferenceLog.js'
 import { scrollScreenToTop } from '../lib/screenScroll.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { RefExample, RefParts, RefPeek, RefTable } from '../components/GrammarReferenceParts.jsx'
+import { StudySelfCheck } from '../components/GrammarStudyRecord.jsx'
 import { Button, Chip, cx } from '../components/ui.jsx'
 import { ArrowRight, BookOpen, Cards, Check, ChevronLeft, ChevronRight, Lightbulb, Target } from '../components/Icons.jsx'
 
 // 文法の参考書の1単元（英検の級×単元）。読んで確かめてから、同じ単元のテストへ進む。
-// 最後のチェックまで読んだら「読んだ」として残す（readingsDone に単元のIDを入れる）。
+// 読み終えたら「まだまだ」「理解した」を押し、その日の結果を学習記録（grammarReferenceLog）に残す。
 
 function SectionHeading({ icon, children, className = '' }) {
   return (
@@ -32,31 +34,16 @@ export function GrammarReferenceScreen() {
   const navigate = useStore((state) => state.navigate)
   const back = useStore((state) => state.back)
   const replaceParams = useStore((state) => state.replaceParams)
-  const readingsDone = useStore((state) => state.readingsDone)
-  const markReadingDone = useStore((state) => state.markReadingDone)
+  const grammarReferenceLog = useStore((state) => state.grammarReferenceLog)
+  const recordGrammarReference = useStore((state) => state.recordGrammarReference)
   const recordVocabHistory = useStore((state) => state.recordVocabHistory)
   const unitId = params.unitId
   const unit = grammarReferenceById(unitId)
   const page = useMemo(() => (unit ? prepareReferenceUnit(unit) : null), [unit])
   const [peek, setPeek] = useState(null)
-  const endRef = useRef(null)
 
   // 別の単元へ移ったら、意味の窓は閉じる。
   useEffect(() => setPeek(null), [unitId])
-
-  // 最後のチェックまで読んだら、読んだ単元として残す。
-  useEffect(() => {
-    const target = endRef.current
-    if (!unit || !target || typeof IntersectionObserver === 'undefined') return undefined
-    const observer = new IntersectionObserver((entries) => {
-      if (entries.some((entry) => entry.isIntersecting)) {
-        markReadingDone(unit.id)
-        observer.disconnect()
-      }
-    })
-    observer.observe(target)
-    return () => observer.disconnect()
-  }, [unit, markReadingDone])
 
   if (!unit || !page) {
     return (
@@ -73,14 +60,13 @@ export function GrammarReferenceScreen() {
   const { previous, next } = grammarReferenceNeighbors(unit.id)
   const units = grammarReferenceByLevel(unit.level)
   const number = units.findIndex((item) => item.id === unit.id) + 1
-  const read = readingsDone.includes(unit.id)
+  const latest = latestGrammarReference(grammarReferenceLog, unit.id)
 
   const pick = (item) => {
     if (item.kind === 'word' && item.word.id) recordVocabHistory(item.word.id)
     setPeek((current) => (current?.kind === item.kind && current.key === item.key ? null : item))
   }
   const startTest = () => {
-    markReadingDone(unit.id)
     navigate('grammarQuiz', {
       source: { type: 'grammar', level: unit.level, topic: unit.topic, questionType: 'mixed' },
       title: `${unit.topic}・3種類`,
@@ -108,10 +94,10 @@ export function GrammarReferenceScreen() {
           <div className="flex flex-wrap items-center gap-2">
             <Chip color={level.color}>英検{level.label}</Chip>
             <span className="text-xs font-bold text-ink/45">{level.sub}</span>
-            {read && (
-              <span className="inline-flex items-center gap-0.5 text-xs font-extrabold text-emerald-600">
-                <Check size={14} /> 読んだ
-              </span>
+            {latest && (
+              <Chip color={GRAMMAR_REFERENCE_RESULTS[latest.result].color}>
+                {`${formatStudyDay(latest.day)} ${GRAMMAR_REFERENCE_RESULTS[latest.result].label}`}
+              </Chip>
             )}
           </div>
           <h1 className="mt-2 font-display text-2xl font-extrabold leading-tight text-ink">{unit.title}</h1>
@@ -260,8 +246,16 @@ export function GrammarReferenceScreen() {
               </li>
             ))}
           </ul>
-          <div ref={endRef} aria-hidden="true" />
         </section>
+
+        {/* 読み終えたら：まだまだ／理解した（押した日と結果が目次に履歴として残る） */}
+        <StudySelfCheck
+          pageId={unit.id}
+          log={grammarReferenceLog}
+          today={todayIndex()}
+          question="この単元は理解できましたか。"
+          onRecord={(result) => recordGrammarReference(unit.id, result)}
+        />
 
         {/* テストへ・つながる単元 */}
         <section className="space-y-2.5">

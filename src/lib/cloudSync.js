@@ -42,6 +42,7 @@ import { foldLegacyMyWords, foldLegacySavedLists } from './learningNotebook.js'
 import { normalizeCustomWords } from './customWords.js'
 import { normalizeLearningAnalytics } from './learningAnalytics.js'
 import { normalizeContentQuizResults } from './contentProgress.js'
+import { normalizeGrammarReferenceLog } from './grammarReferenceLog.js'
 
 const node = (uid) => ref(db, `students/${uid}`)
 
@@ -84,6 +85,8 @@ export function progressStateFromCloud(data = {}, current = useStore.getState())
     ),
     writingProgress: data.writingProgress ?? {},
     readingsDone: data.readingsDone ?? [],
+    // 古いクラウド保存にこの項目が無い場合、端末で残した参考書の記録を消さない。
+    grammarReferenceLog: normalizeGrammarReferenceLog(data.grammarReferenceLog ?? current.grammarReferenceLog),
     mathDone: data.mathDone ?? [],
     mathMastery: data.mathMastery ?? {},
     contentQuizResults: normalizeContentQuizResults(data.contentQuizResults),

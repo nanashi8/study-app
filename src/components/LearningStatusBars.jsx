@@ -17,6 +17,14 @@ export const QUIZ_STATUS_META = Object.freeze({
   unanswered: { label: '未回答', color: '#cbd5e1' },
 })
 
+// 文法の参考書：読み終えて押した「理解した／まだまだ」の、いちばん新しい結果。
+export const REFERENCE_STATUS_KEYS = Object.freeze(['understood', 'notYet', 'unstudied'])
+export const REFERENCE_STATUS_META = Object.freeze({
+  understood: { label: '理解した', color: '#059669' },
+  notYet: { label: 'まだまだ', color: '#f59e0b' },
+  unstudied: { label: '未学習', color: '#cbd5e1' },
+})
+
 function LegendGroup({ title, items }) {
   return (
     <div className="rounded-xl border border-slate-200 bg-white p-3">
@@ -60,9 +68,9 @@ export function LearningStatusLegend({ className = '' }) {
 }
 
 function statusScheme(kind) {
-  return kind === 'quiz'
-    ? { keys: QUIZ_STATUS_KEYS, meta: QUIZ_STATUS_META, title: 'テスト' }
-    : { keys: LEARNING_STATUS_KEYS, meta: LEARNING_STATUS_META, title: '暗記' }
+  if (kind === 'quiz') return { keys: QUIZ_STATUS_KEYS, meta: QUIZ_STATUS_META, title: 'テスト' }
+  if (kind === 'reference') return { keys: REFERENCE_STATUS_KEYS, meta: REFERENCE_STATUS_META, title: '学習' }
+  return { keys: LEARNING_STATUS_KEYS, meta: LEARNING_STATUS_META, title: '暗記' }
 }
 
 export function StatusDistributionBar({
@@ -127,18 +135,22 @@ export function LearningStatusBars({
   className = '',
   compact = false,
   units = {},
+  learningKind = 'learning',
+  showLearning = true,
   showQuiz = true,
   showLegend = true,
 }) {
   return (
     <div className={cx('space-y-2.5', className)} data-learning-status-bars>
-      <StatusDistributionBar
-        kind="learning"
-        counts={progress?.learning}
-        compact={compact}
-        showLegend={showLegend}
-        unit={units.learning ?? ''}
-      />
+      {showLearning && (
+        <StatusDistributionBar
+          kind={learningKind}
+          counts={progress?.learning}
+          compact={compact}
+          showLegend={showLegend}
+          unit={units.learning ?? ''}
+        />
+      )}
       {showQuiz && (
         <StatusDistributionBar
           kind="quiz"
