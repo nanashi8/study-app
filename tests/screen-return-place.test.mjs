@@ -242,8 +242,8 @@ test('一覧の見え方は params に置き、戻ったときも同じ一覧・
     'src/screens/KanbunCatalog.jsx': ['view', 'level', 'category', 'query'],
     'src/screens/Roots.jsx': ['status', 'family', 'view', 'query', 'visible'],
     'src/screens/Phrases.jsx': ['kind', 'view', 'query', 'levelFilter', 'familyFilter'],
-    'src/screens/Grammar.jsx': ['mode', 'level', 'questionType'],
-    'src/screens/GrammarStrands.jsx': ['mode', 'openStrands'],
+    'src/screens/Grammar.jsx': ['level', 'questionType'],
+    'src/screens/GrammarStrands.jsx': ['openStrands'],
     'src/screens/Writing.jsx': ['level', 'mode', 'track'],
     'src/screens/LiteratureLibrary.jsx': ['kind'],
     'src/screens/LiteratureReader.jsx': ['scene', 'segment'],
@@ -273,6 +273,7 @@ test('押した行と画面の中の欄に目印を付け、表示のたびに�
     'src/screens/SceneBundles.jsx': /data-return-row=\{passage\.id\}/,
     'src/screens/Roots.jsx': /data-return-row=\{card\.id\}/,
     'src/screens/GrammarStrands.jsx': /data-return-row=\{strand\.id\}/,
+    'src/screens/Grammar.jsx': /data-return-row=\{unit\.id\}/,
     'src/screens/LiteratureLibrary.jsx': /data-return-row=\{work\.id\}/,
     'src/components/NormalLearningRecordList.jsx': /data-return-row=\{`\$\{entryId\}:\$\{row\.id\}`\}/,
   }

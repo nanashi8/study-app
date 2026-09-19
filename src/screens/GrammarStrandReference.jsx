@@ -1,16 +1,22 @@
 import { useMemo, useState } from 'react'
-import { useStore } from '../store/useStore.js'
+import { todayIndex, useStore } from '../store/useStore.js'
 import { getLevel } from '../data/levels.js'
 import { getGrammarStrand } from '../data/grammar-strands.js'
 import {
   grammarReferenceFor,
   grammarStrandReferenceFor,
-  readGrammarReferenceIds,
 } from '../data/grammar-reference/index.js'
 import { strandOverview } from '../lib/grammarStrand.js'
 import { exampleParts, explanationParts } from '../lib/grammarReferenceText.js'
+import {
+  GRAMMAR_REFERENCE_RESULTS,
+  formatStudyDay,
+  latestGrammarReference,
+  strandReferencePageId,
+} from '../lib/grammarReferenceLog.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { RefExample, RefParts, RefPeek } from '../components/GrammarReferenceParts.jsx'
+import { StudySelfCheck } from '../components/GrammarStudyRecord.jsx'
 import { Button, Chip } from '../components/ui.jsx'
 import { ArrowRight, BookOpen, Check, Lightbulb, Target } from '../components/Icons.jsx'
 
@@ -39,7 +45,8 @@ export function GrammarStrandReferenceScreen() {
   const navigate = useStore((state) => state.navigate)
   const back = useStore((state) => state.back)
   const srs = useStore((state) => state.srs)
-  const readingsDone = useStore((state) => state.readingsDone)
+  const grammarReferenceLog = useStore((state) => state.grammarReferenceLog)
+  const recordGrammarReference = useStore((state) => state.recordGrammarReference)
   const grammarStrandPos = useStore((state) => state.grammarStrandPos)
   const recordVocabHistory = useStore((state) => state.recordVocabHistory)
   const strand = getGrammarStrand(params.strandId)
@@ -58,7 +65,15 @@ export function GrammarStrandReferenceScreen() {
 
   const overview = strandOverview(strand, srs, grammarStrandPos?.[strand.id])
   const currentMeta = getLevel(overview.currentLevel)
-  const read = readGrammarReferenceIds(readingsDone)
+  const pageId = strandReferencePageId(strand.id)
+  const latestPage = latestGrammarReference(grammarReferenceLog, pageId)
+  // 単元の、いちばん新しい「理解した／まだまだ」を小さな札にする。
+  const resultChip = (unitId) => {
+    const latest = latestGrammarReference(grammarReferenceLog, unitId)
+    if (!latest) return null
+    const result = GRAMMAR_REFERENCE_RESULTS[latest.result]
+    return <Chip color={result.color} className="shrink-0">{result.label}</Chip>
+  }
   const related = reference.related
     .map(({ level, topic }) => ({ unit: grammarReferenceFor(level, topic), meta: getLevel(level) }))
     .filter(({ unit }) => unit)
@@ -83,6 +98,13 @@ export function GrammarStrandReferenceScreen() {
             <span className="text-3xl leading-none">{strand.emoji}</span>
             <h1 className="font-display text-2xl font-extrabold leading-tight text-ink">{strand.name}</h1>
           </div>
+          {latestPage && (
+            <div className="mt-2">
+              <Chip color={GRAMMAR_REFERENCE_RESULTS[latestPage.result].color}>
+                {`${formatStudyDay(latestPage.day)} ${GRAMMAR_REFERENCE_RESULTS[latestPage.result].label}`}
+              </Chip>
+            </div>
+          )}
           <div className="mt-3 space-y-2 rounded-2xl bg-violet-50 p-3.5">
             <div className="text-[11px] font-extrabold text-violet-600">全体の見取り図</div>
             {page.overview.map((paragraph, index) => (
@@ -105,7 +127,6 @@ export function GrammarStrandReferenceScreen() {
             {page.steps.map((step, index) => {
               const meta = getLevel(step.level)
               const unit = grammarReferenceFor(step.level, step.topic)
-              const done = unit ? read.has(unit.id) : false
               return (
                 <li key={`${step.level}-${step.topic}`} className="relative" data-return-row={`${step.level}:${step.topic}`}>
                   <span
@@ -118,11 +139,7 @@ export function GrammarStrandReferenceScreen() {
                       <Chip color={meta.color}>{meta.label}</Chip>
                       <span className="font-display text-base font-extrabold text-ink">{step.topic}</span>
                       <span className="text-[11px] font-bold text-ink/35">{index + 1}段目</span>
-                      {done && (
-                        <span className="inline-flex items-center gap-0.5 text-[11px] font-extrabold text-emerald-600">
-                          <Check size={13} /> 読んだ
-                        </span>
-                      )}
+                      {unit && resultChip(unit.id)}
                     </div>
                     <p className="mt-1.5 text-[15px] font-bold leading-relaxed text-ink/80">
                       <RefParts parts={step.pointParts} onPick={pick} active={peek} />
@@ -177,17 +194,22 @@ export function GrammarStrandReferenceScreen() {
                 >
                   <Chip color={meta.color}>{meta.label}</Chip>
                   <span className="min-w-0 flex-1 font-display text-[15px] font-extrabold text-ink">{unit.topic}</span>
-                  {read.has(unit.id) && (
-                    <span className="inline-flex shrink-0 items-center gap-0.5 text-[11px] font-extrabold text-emerald-600">
-                      <Check size={13} /> 読んだ
-                    </span>
-                  )}
+                  {resultChip(unit.id)}
                   <ArrowRight size={15} className="shrink-0 text-ink/30" />
                 </button>
               ))}
             </div>
           </section>
         )}
+
+        {/* 読み終えたら：まだまだ／理解した（押した日と結果が一覧に履歴として残る） */}
+        <StudySelfCheck
+          pageId={pageId}
+          log={grammarReferenceLog}
+          today={todayIndex()}
+          question="この系統は理解できましたか。"
+          onRecord={(result) => recordGrammarReference(pageId, result)}
+        />
 
         <section>
           <Button full size="lg" onClick={startTest} data-grammar-strand-ref-test>

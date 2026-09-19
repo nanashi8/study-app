@@ -2,55 +2,22 @@ import { useMemo } from 'react'
 import { useScreenParam, useStore } from '../store/useStore.js'
 import { getLevel } from '../data/levels.js'
 import { GRAMMAR_STRANDS } from '../data/grammar-strands.js'
-import { grammarReferenceFor, readGrammarReferenceIds } from '../data/grammar-reference/index.js'
+import { grammarReferenceFor } from '../data/grammar-reference/index.js'
 import { strandOverview } from '../lib/grammarStrand.js'
-import { readChoice } from '../lib/screenParams.js'
+import {
+  GRAMMAR_REFERENCE_RESULTS,
+  grammarReferenceHistory,
+  latestGrammarReference,
+  strandReferencePageId,
+} from '../lib/grammarReferenceLog.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
+import { StudyHistory } from '../components/GrammarStudyRecord.jsx'
 import { Card, Button, Chip, cx } from '../components/ui.jsx'
-import { ArrowRight, BookOpen, Cards, Check, Target } from '../components/Icons.jsx'
+import { ArrowRight, BookOpen, Cards } from '../components/Icons.jsx'
 
 const percent = (value) => `${Math.round(value * 100)}%`
-// 開いている系統と入口（学習・テスト）は params に置き、問題や参考書から戻ったときも同じ見え方にする。
+// 開いている系統は params に置き、問題や参考書から戻ったときも同じ見え方にする。
 const readOpenStrands = (value) => (Array.isArray(value) ? value : [])
-const readMode = readChoice(['learn', 'test'], 'learn')
-
-// 学習の入口：系統ごとに、下の級から上の級までの段と、読んだ単元を見せる。
-function StrandReadCard({ strand, read, onOpen }) {
-  const steps = strand.topics.map(([level, topic]) => ({ level, topic, unit: grammarReferenceFor(level, topic) }))
-  const readCount = steps.filter((step) => step.unit && read.has(step.unit.id)).length
-  return (
-    <Card className="p-0" data-return-row={strand.id}>
-      <button type="button" onClick={onOpen} className="flex w-full items-start gap-3 p-4 text-left active:bg-brand-50/60" data-grammar-strand-read={strand.id}>
-        <span className="text-2xl leading-none">{strand.emoji}</span>
-        <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-center gap-1.5">
-            <span className="font-display text-base font-extrabold text-ink">{strand.name}</span>
-            <Chip>{steps.length}段</Chip>
-            <span className="text-[11px] font-extrabold text-ink/45">{`読んだ ${readCount}/${steps.length}`}</span>
-          </div>
-          <div className="mt-0.5 text-xs font-bold text-ink/50">{strand.summary}</div>
-          <div className="mt-2 flex flex-wrap gap-1">
-            {steps.map((step) => {
-              const meta = getLevel(step.level)
-              const done = step.unit && read.has(step.unit.id)
-              return (
-                <span
-                  key={`${step.level}-${step.topic}`}
-                  className="inline-flex items-center gap-0.5 rounded-full px-2 py-0.5 text-[10px] font-extrabold"
-                  style={{ background: `${meta.color}1a`, color: meta.color }}
-                >
-                  {done && <Check size={11} />}
-                  {meta.label} {step.topic}
-                </span>
-              )
-            })}
-          </div>
-        </div>
-        <span className="mt-1 text-brand-400"><ArrowRight size={20} /></span>
-      </button>
-    </Card>
-  )
-}
 
 // 正答率の帯。習得・苦手・未回答を色で区別する。
 function levelAccuracyRow({ stat }) {
@@ -65,21 +32,30 @@ function levelAccuracyRow({ stat }) {
   return { meta, state }
 }
 
-function StrandCard({ overview, open, onToggle, onStart, onPickLevel }) {
+// 系統のカード。「学習」は下の級から上の級まで続けて読むページへ、「テスト」は成績に合わせた級の問題へ進む。
+// 系統のページで押した「理解した／まだまだ」と学習日、段の単元のうち「理解した」の数を見せる。
+function StrandCard({ overview, log, open, onToggle, onLearn, onStart, onPickLevel }) {
   const { strand, stats, currentLevel, weakest, untouched, accuracy, total } = overview
   const currentMeta = getLevel(currentLevel)
+  const units = strand.topics.map(([level, topic]) => grammarReferenceFor(level, topic)).filter(Boolean)
+  const understoodCount = units.filter((unit) => latestGrammarReference(log, unit.id)?.result === 'understood').length
+  const history = grammarReferenceHistory(log, strandReferencePageId(strand.id))
+  const latest = history[0] ? GRAMMAR_REFERENCE_RESULTS[history[0].result] : null
 
   return (
-    <Card className="p-4" data-return-row={strand.id}>
-      <button onClick={onToggle} className="flex w-full items-start gap-3 text-left">
+    <Card className="p-4" data-return-row={strand.id} data-grammar-strand={strand.id}>
+      <button onClick={onToggle} aria-expanded={open} className="flex w-full items-start gap-3 text-left">
         <span className="text-2xl leading-none">{strand.emoji}</span>
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-1.5">
             <span className="font-display text-base font-extrabold text-ink">{strand.name}</span>
             <Chip color={currentMeta.color}>{stats.length}段</Chip>
             <Chip>{total}問</Chip>
+            {latest && <Chip color={latest.color}>{latest.label}</Chip>}
           </div>
           <div className="mt-0.5 text-xs font-bold text-ink/50">{strand.summary}</div>
+          <div className="mt-1 text-[11px] font-extrabold text-ink/45">{`段の単元のうち理解した ${understoodCount}/${units.length}`}</div>
+          <StudyHistory history={history} limit={4} className="mt-1" data-grammar-study-history={strand.id} />
 
           {/* 級ごとの正答率を一列に並べ、いま自分がどの段にいるかを見せる。
               どの列も「級名・棒・現在地」の3行で高さをそろえ、棒の基準線を合わせる。 */}
@@ -150,9 +126,14 @@ function StrandCard({ overview, open, onToggle, onStart, onPickLevel }) {
             <>これまでの正答率は<b className="text-ink">{accuracy == null ? '—' : percent(accuracy)}</b>。<b className="text-ink">{currentMeta.label}</b>を練習します。</>
           )}
         </div>
-        <Button className="mt-2" full onClick={() => onStart(overview)}>
-          <Target size={16} /> {currentMeta.label}からテスト
-        </Button>
+        <div className="mt-2 grid grid-cols-2 gap-2">
+          <Button size="sm" onClick={onLearn} aria-label={`${strand.name}を下の級から学習`} data-grammar-strand-learn={strand.id}>
+            <BookOpen size={16} /> 学習
+          </Button>
+          <Button size="sm" variant="secondary" onClick={() => onStart(overview)} aria-label={`${strand.name}を${currentMeta.label}からテスト`} data-grammar-strand-test={strand.id}>
+            <Cards size={16} /> テスト
+          </Button>
+        </div>
       </div>
 
       {open && (
@@ -196,8 +177,7 @@ function StrandCard({ overview, open, onToggle, onStart, onPickLevel }) {
 export function GrammarStrandsScreen() {
   const navigate = useStore((s) => s.navigate)
   const srs = useStore((s) => s.srs)
-  const readingsDone = useStore((s) => s.readingsDone)
-  const [mode, setMode] = useScreenParam('mode', readMode)
+  const grammarReferenceLog = useStore((s) => s.grammarReferenceLog)
   const grammarStrandPos = useStore((s) => s.grammarStrandPos)
   const setGrammarStrandPos = useStore((s) => s.setGrammarStrandPos)
   const [openStrands, setOpenStrands] = useScreenParam('openStrands', readOpenStrands)
@@ -222,7 +202,7 @@ export function GrammarStrandsScreen() {
       source: { type: 'grammarStrand', strandId: overview.strand.id, level: target },
       title: `${overview.strand.name}・${meta.label}`,
       levelColor: meta.color,
-      returnTo: { screen: 'grammarStrands', params: { mode } },
+      returnTo: { screen: 'grammarStrands', params: { openStrands } },
     })
   }
 
@@ -233,55 +213,20 @@ export function GrammarStrandsScreen() {
   }, [overviews])
 
   const weakCount = overviews.filter((o) => o.weakest).length
-  const read = readGrammarReferenceIds(readingsDone)
 
   return (
     <div className="pb-6">
-      <ScreenHeader
-        title="級をまたいで学ぶ"
-        subtitle={mode === 'learn' ? '1つの文法を、下の級から上の級まで続けて読む' : '1つの文法を、成績に合わせた級で練習する'}
-      />
+      <ScreenHeader title="級をまたいで学ぶ" subtitle="1つの文法を、下の級から上の級まで学習し、テストで確かめる" />
       <div className="px-4 pt-3">
-        <div className="mb-4 grid grid-cols-2 rounded-xl bg-brand-50 p-1" role="tablist" aria-label="学習とテスト" data-grammar-strand-modes>
-          {[['learn', '学習', BookOpen], ['test', 'テスト', Cards]].map(([id, label, Icon]) => (
-            <button
-              key={id}
-              type="button"
-              role="tab"
-              aria-selected={mode === id}
-              onClick={() => setMode(id)}
-              className={cx(
-                'flex min-h-11 items-center justify-center gap-1.5 rounded-lg px-2 text-sm font-extrabold transition-colors',
-                mode === id ? 'bg-white text-brand-700 shadow-sm' : 'text-ink/50 active:bg-white/70',
-              )}
-            >
-              <Icon size={16} /> {label}
-            </button>
-          ))}
-        </div>
-
-        {mode === 'learn' ? (
-          <div className="space-y-3">
-            {GRAMMAR_STRANDS.map((strand) => (
-              <StrandReadCard
-                key={strand.id}
-                strand={strand}
-                read={read}
-                onOpen={() => navigate('grammarStrandReference', { strandId: strand.id })}
-              />
-            ))}
-          </div>
-        ) : (
-        <>
         <Card className="mb-4 p-4">
           <div className="font-display text-sm font-extrabold text-ink">
             {weakCount > 0
               ? <>正答率が下がっている系統が{weakCount}つあります</>
-              : <>25系統を、いまの実力に合う級で練習できます</>}
+              : <>{GRAMMAR_STRANDS.length}系統を、学習とテストで進められます</>}
           </div>
           <div className="mt-1 text-xs font-bold text-ink/55">
             {'各系統は「比較 → 比較応用 → 比較構文 → 高度比較」のように級をまたいで1本につながっています。'}
-            {'正解が続けば上の級へ、つまずけば下の級へ自動で移ります。'}
+            {'「学習」は下の級から順に読み、「テスト」は正解が続けば上の級へ、つまずけば下の級へ移ります。'}
           </div>
         </Card>
 
@@ -290,15 +235,15 @@ export function GrammarStrandsScreen() {
             <StrandCard
               key={overview.strand.id}
               overview={overview}
+              log={grammarReferenceLog}
               open={openStrands.includes(overview.strand.id)}
               onToggle={() => toggleStrand(overview.strand.id)}
+              onLearn={() => navigate('grammarStrandReference', { strandId: overview.strand.id })}
               onStart={start}
               onPickLevel={start}
             />
           ))}
         </div>
-        </>
-        )}
       </div>
     </div>
   )

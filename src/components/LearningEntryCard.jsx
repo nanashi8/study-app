@@ -6,7 +6,7 @@ import { ArrowRight, Book, BookOpen, Cards } from './Icons.jsx'
 // 古典、漢文でも共通に使う。
 //   1段目：見出し（記号・題名・件数）
 //   2段目：暗記とテストの進み具合
-//   3段目：暗記／テスト
+//   3段目：暗記／テスト（文法は参考書を読む「学習」／テスト）
 //   4段目：任意の絞り込み入口／一覧を確認
 const NOTE_TONES = Object.freeze({
   muted: 'text-ink/45',
@@ -52,11 +52,14 @@ export function LearningEntryCard({
   openAriaLabel,
   status,
   units,
+  learningStatusKind = 'learning',
+  showLearningStatus = true,
   showQuizStatus = true,
   note,
   noteTone = 'muted',
   noteProps,
   studyLabel = '暗記',
+  studyIcon,
   studyAriaLabel,
   studyDisabled = false,
   onStudy,
@@ -120,6 +123,8 @@ export function LearningEntryCard({
           className="mt-3"
           compact
           units={units}
+          learningKind={learningStatusKind}
+          showLearning={showLearningStatus}
           showQuiz={showQuizStatus}
         />
       )}
@@ -141,7 +146,7 @@ export function LearningEntryCard({
           onClick={onStudy}
           aria-label={studyAriaLabel}
         >
-          <Book size={16} /> {studyLabel}
+          {studyIcon ?? <Book size={16} />} {studyLabel}
         </Button>
         <Button
           variant="secondary"
