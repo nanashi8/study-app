@@ -186,3 +186,28 @@ test('級別英作文の単語カードは、テーマ別と同じく置いた�
   assert.ok(notice.length > 0)
   assert.ok(!notice.includes('targetText'), '答え合わせ前に模範解答を描画している')
 })
+
+test('級別英作文の単語カードは答え合わせを押させず、正しく並べ終えた時点で解説を開く', () => {
+  const examSource = readSource('../src/screens/WritingExam.jsx')
+  const cardSource = readSource('../src/components/WordOrderExercise.jsx')
+
+  // 並べ終えたら、その場で記録して解説と「次の問題へ」を出す。
+  assert.ok(examSource.includes('onChange={arrange}'), '単語カードの並びを受け取っていない')
+  assert.match(examSource, /if \(state\.correct\) settle\(\{ correct: !misplaced, text \}\)/)
+  // 途中で赤いカードを置いた問題は「直して完成」で、型どおりには数えない。
+  assert.match(examSource, /if \(state\.wrongPosition\) setMisplaced\(true\)/)
+  assert.ok(examSource.includes('setMisplaced(false)'), '次の問題で赤いカードの記録を戻していない')
+  assert.ok(examSource.includes('直して正しい語順になりました'))
+
+  // 単語カードの足元は押せない「次へ」だけ。答え合わせのボタンは自分で書くときだけ。
+  const footer = examSource.slice(examSource.indexOf(') : arranging ? ('))
+  const cardFooter = footer.slice(0, footer.indexOf(') : ('))
+  assert.ok(cardFooter.includes('<Button full size="lg" disabled>'), '単語カードの足元に押せるボタンがある')
+  assert.ok(!cardFooter.includes('答え合わせ <Check'), '単語カードに答え合わせのボタンが残っている')
+  assert.ok(!cardFooter.includes('onClick'), '単語カードに答え合わせのボタンが残っている')
+  assert.ok(footer.includes('onClick={check}'), '自分で書いた英文の答え合わせがない')
+  assert.equal((examSource.match(/答え合わせ <Check/g) ?? []).length, 1)
+
+  // 並べ終えた知らせで答え合わせへ誘わない。
+  assert.ok(!cardSource.includes('答え合わせへ進もう'))
+})

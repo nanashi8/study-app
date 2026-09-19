@@ -10,6 +10,7 @@ export const SAFE_AREA_TOP_VAR = '--app-safe-top'
 export const SAFE_AREA_BOTTOM_VAR = '--app-safe-bottom'
 export const VISUAL_VIEWPORT_HEIGHT_VAR = '--app-visual-viewport-height'
 export const VISUAL_VIEWPORT_TOP_VAR = '--app-visual-viewport-top'
+export const APP_FRAME_HEIGHT_VAR = '--app-frame-height'
 
 // 時刻表示（ステータスバー）の高さ。ノッチ・Dynamic Island のある機種は高い。
 const NOTCHED_STATUS_BAR = 59
@@ -46,6 +47,50 @@ export function resolveSafeAreaTop({
   const reserved = screenHeight - viewportHeight
   if (reserved >= PLAIN_STATUS_BAR) return measuredTop
   return Math.max(measuredTop, statusBarFallback({ screenWidth, screenHeight }))
+}
+
+// 文字を打つ欄。スマホではここに触れるとソフトウェアキーボードが出る。
+const TEXT_ENTRY_INPUT_TYPES = new Set([
+  'text',
+  'search',
+  'email',
+  'url',
+  'tel',
+  'password',
+  'number',
+])
+
+export function isTextEntryElement(element) {
+  if (!element || element.disabled || element.readOnly) return false
+  if (element.isContentEditable) return true
+  const tag = String(element.tagName ?? '').toUpperCase()
+  if (tag === 'TEXTAREA') return true
+  if (tag !== 'INPUT') return false
+  return TEXT_ENTRY_INPUT_TYPES.has(String(element.type || 'text').toLowerCase())
+}
+
+// これより大きく見えている範囲が縮んだら、キーボードが出ているとみなす。
+const KEYBOARD_MIN_HEIGHT = 150
+
+// アプリ外枠の高さ。ふだんは見えている範囲（visualViewport）に合わせる。
+// ただしソフトウェアキーボードは見えている範囲だけを縮め、ページの高さ（innerHeight）は
+// 変えない。ブラウザは打つ欄が隠れないようページをずらすが、そこで外枠まで縮めると
+// 本文のスクロール領域が縮み、打っている欄が見えている範囲の外へ押し出される。
+// キーボードが出ている間は外枠をページの高さのまま保ち、欄を見せるのはブラウザに任せる。
+export function resolveAppFrameHeight({
+  viewportHeight = 0,
+  layoutHeight = 0,
+  typing = false,
+  scale = 1,
+} = {}) {
+  if (!(viewportHeight > 0)) return layoutHeight
+  if (!(layoutHeight > viewportHeight)) return viewportHeight
+  if (typing) return layoutHeight
+  // 欄を離れたあとも、キーボードが閉じきるまでは途中の高さが届く。
+  // 拡大表示（ピンチ）ではないのに大きく縮んでいるときは、まだキーボードとみなす。
+  const zoomed = Math.abs((Number(scale) || 1) - 1) > 0.01
+  if (!zoomed && layoutHeight - viewportHeight >= KEYBOARD_MIN_HEIGHT) return layoutHeight
+  return viewportHeight
 }
 
 function measureEnvInsets(doc) {
@@ -103,7 +148,16 @@ export function syncSafeArea(view = globalThis) {
     root.style.setProperty(VISUAL_VIEWPORT_HEIGHT_VAR, `${Math.round(viewportHeight)}px`)
   }
   root.style.setProperty(VISUAL_VIEWPORT_TOP_VAR, `${Math.max(0, Math.round(viewportTop))}px`)
-  return { measured, top, viewportHeight, viewportTop }
+  const frameHeight = resolveAppFrameHeight({
+    viewportHeight,
+    layoutHeight: Number(view.innerHeight) || 0,
+    typing: isTextEntryElement(doc.activeElement),
+    scale: view.visualViewport?.scale,
+  })
+  if (frameHeight > 0) {
+    root.style.setProperty(APP_FRAME_HEIGHT_VAR, `${Math.round(frameHeight)}px`)
+  }
+  return { measured, top, viewportHeight, viewportTop, frameHeight }
 }
 
 export function startSafeAreaSync(view = globalThis) {
