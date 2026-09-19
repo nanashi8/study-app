@@ -272,6 +272,8 @@ export function EtymologyStudyScreen() {
         </div>
       </CardSwipeRegion>
 
+      {/* フッター操作。意味を開いたかに関わらず「まだ／覚えた」だけを置く。
+          意味の出し入れは、上の目のボタンとカードのタップが受け持つ。 */}
       <CardStudyFooter className="border-violet-100">
         {recordedAnswer !== null && reselectable ? (
           // 答えたあと戻ってきたカード。いまの答えを示したまま、もう一方を押すと選び直せる。
@@ -280,9 +282,8 @@ export function EtymologyStudyScreen() {
           <Button full size="lg" variant={recordedAnswer ? 'success' : 'danger'} disabled>
             {recordedAnswer ? '覚えた' : 'まだ'}（回答済み）
           </Button>
-        ) : !flipped ? (
-          <Button full size="lg" onClick={() => setFlipped(true)}>意味を見る</Button>
         ) : (
+          // 意味を見ずに思い出せた日は、開かないまま答えて次のカードへ進める。
           <div className="grid grid-cols-2 gap-2">
             <Button variant="danger" size="lg" onClick={() => answer(false)}>まだ🤔</Button>
             <Button variant="success" size="lg" onClick={() => answer(true)}>覚えた👍</Button>

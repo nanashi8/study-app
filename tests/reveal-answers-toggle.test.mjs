@@ -14,6 +14,7 @@ const CARD_SCREENS = [
   'src/screens/KotenCultureStudy.jsx',
   'src/screens/PhraseStudy.jsx',
   'src/screens/KanbunStudy.jsx',
+  'src/screens/EtymologyStudy.jsx',
 ]
 
 test('カード画面に答えを開いたままにする切り替えがある', () => {
@@ -74,6 +75,20 @@ test('全暗記カードは、意味や答えを開かないままでも「ま�
       `${path}: カードのタップで開けない`,
     )
   }
+
+  // 名作の本文語彙カードは共通の判定欄を使わないが、下部の形は同じにそろえる。
+  const literature = readFileSync('src/components/LiteratureVocabularySheet.jsx', 'utf8')
+  const cards = literature.slice(
+    literature.indexOf('data-literature-vocabulary-card='),
+    literature.indexOf("mode === 'done'"),
+  )
+  const beforeAnswers = cards.slice(cards.lastIndexOf('</article>'), cards.lastIndexOf('grid grid-cols-2'))
+  assert.doesNotMatch(beforeAnswers, /revealed/, '名作の本文語彙カード: 下部の判定が開いたかで変わる')
+  assert.doesNotMatch(beforeAnswers, /を見る/, '名作の本文語彙カード: 下部にカードを開くボタンが残っている')
+  assert.match(cards, /onClick=\{\(\) => answer\(false\)\}/, '名作の本文語彙カード: 「まだ」が答えを記録しない')
+  assert.match(cards, /onClick=\{\(\) => answer\(true\)\}/, '名作の本文語彙カード: 「覚えた」が答えを記録しない')
+  assert.match(cards, /<RevealAnswersToggle/, '名作の本文語彙カード: 上の目のボタンがない')
+  assert.match(cards, /onClick=\{\(\) => !revealed && setRevealed\(true\)\}/, '名作の本文語彙カード: カードのタップで開けない')
 })
 
 // 英単語・熟語のカードは、目のボタンで「意味を隠す→スペルを隠す→全部見せる」と切り替える。
