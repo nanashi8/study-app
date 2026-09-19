@@ -31,6 +31,9 @@ export function SpeakButton({
   phraseIndex = 0,
   title = '読み上げ',
   lang = 'en-US',
+  // 暗記カードの見出し・例文のボタンは、カードの読み上げ列の持ち主（speechKey）を渡す。
+  // 再生パネルに「範囲」が出て、変えるとこのカードの列が入れ替わる。
+  speechKey = null,
 }) {
   const settings = useContentSettings()
   // 使い方で発音が変わる語（heteronyms.js）は、単語だけでは読み上げない。発音は画面の注釈で示す。
@@ -55,6 +58,7 @@ export function SpeakButton({
       index: phrases?.length
         ? phraseIndex
         : Math.max(0, currentIndex),
+      ...(speechKey && phrases?.length ? { key: speechKey, rangeAdjustable: true } : {}),
       title,
       rate: rate ?? settings.ttsRate,
       voiceURI: settings.ttsVoiceURI,

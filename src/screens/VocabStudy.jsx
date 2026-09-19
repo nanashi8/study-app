@@ -186,6 +186,8 @@ export function VocabStudyScreen() {
 
   // 読み上げは設定の範囲で、単語→意味→例文→例文の意味。意味と例文の意味は、カードを開いてから読む。
   // 使い方で発音が変わる語は単語を読まず（再生パネル側で外れる）、文でも読み分けられない語は例文も読まない。
+  // 読み上げ列の持ち主。自動の読み上げと見出し・例文のボタンで同じものを使い、再生パネルの「範囲」をこのカードへ効かせる。
+  const speechKey = word ? `${i}:${word.id}` : null
   const wordSpeechItems = word
     ? cardSpeechItems({
         head: word.word,
@@ -201,7 +203,7 @@ export function VocabStudyScreen() {
   // カードが変わるたび自動で読み上げ、カードを開いたら意味から続きを読む。スペルを隠しているあいだは読まず、
   // 流れている音声と、つづりが出る下の再生パネルも閉じる。カードを開いてスペルが見えたら、そこで読み上げる。
   useCardAutoSpeech({
-    cardKey: word ? `${i}:${word.id}` : null,
+    speechKey,
     items: wordSpeechItems,
     spellingHidden,
     answerOpen: flipped,
@@ -423,6 +425,7 @@ export function VocabStudyScreen() {
                     text={word.word}
                     phrases={wordSpeechItems}
                     phraseIndex={0}
+                    speechKey={speechKey}
                     title="単語カード"
                     size="lg"
                   />
@@ -470,6 +473,7 @@ export function VocabStudyScreen() {
                         text={word.example.en}
                         phrases={wordSpeechItems}
                         phraseIndex={1}
+                        speechKey={speechKey}
                         title="単語カード"
                         size="sm"
                       />

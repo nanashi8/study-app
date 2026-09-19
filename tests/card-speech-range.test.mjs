@@ -10,10 +10,16 @@ import {
   meaningSpeechText,
   planCardAutoSpeech,
 } from '../src/lib/cardSpeech.js'
-import { SPEECH_RANGES, SPEECH_RANGE_DEFAULT, normalizeSpeechRange } from '../src/lib/speechRange.js'
+import { SPEECH_RANGES, SPEECH_RANGE_DEFAULT, normalizeSpeechRange, speechRangeOf } from '../src/lib/speechRange.js'
 import { phraseSpeechText } from '../src/lib/phrase-speech.js'
 import { exampleSpeechAllowed } from '../src/lib/speechGuard.js'
-import { dismissSpeechPlayer, getSpeechPlayerSnapshot, playSpeechItems, playSpeechPlayer } from '../src/lib/speech-player.js'
+import {
+  dismissSpeechPlayer,
+  getSpeechPlayerSnapshot,
+  playSpeechItems,
+  playSpeechPlayer,
+  replaceSpeechItems,
+} from '../src/lib/speech-player.js'
 import { normalizeSettings } from '../src/store/useStore.js'
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8')
@@ -57,6 +63,10 @@ test('読み上げる範囲は3つから選び、知らない値と前からの�
   for (const value of [undefined, null, '', 'all', 1]) assert.equal(normalizeSpeechRange(value), 'word')
   assert.equal(normalizeSettings({}).speechRange, 'word')
   assert.equal(normalizeSettings({ speechRange: 'example' }).speechRange, 'example')
+  // 画面下部の再生パネルでは、どこまで読むかを1行に収まる名前で見せる。
+  assert.deepEqual(SPEECH_RANGES.map((range) => range.short), ['単語のみ', '意味まで', '例文まで'])
+  assert.equal(speechRangeOf('meaning').short, '意味まで')
+  assert.equal(speechRangeOf('all').id, 'word')
 })
 
 test('英単語カードは範囲に合わせて 単語→意味→例文→例文の意味 と読み、開く前は意味を読まない', () => {
@@ -184,6 +194,87 @@ test('自動の読み上げは、カードを開く前は見出しだけ、開�
   assert.deepEqual([spelled.action, spelled.startSegment], ['play', 0])
 })
 
+// 端末の読み上げの代わりに、読んだ文を queued に積む。
+function withMockSpeech(run) {
+  const previousWindow = globalThis.window
+  const PreviousUtterance = globalThis.SpeechSynthesisUtterance
+  const queued = []
+  class MockUtterance {
+    constructor(text) {
+      this.text = text
+    }
+  }
+  globalThis.window = {
+    speechSynthesis: {
+      getVoices: () => [],
+      cancel: () => {},
+      pause: () => {},
+      resume: () => {},
+      speak: (utterance) => queued.push(utterance),
+    },
+    // 部分のあいだの間（ミリ秒）は待たずに続ける。
+    setTimeout: (callback) => {
+      callback()
+      return 0
+    },
+    clearTimeout: () => {},
+  }
+  globalThis.SpeechSynthesisUtterance = MockUtterance
+  try {
+    run(queued)
+  } finally {
+    dismissSpeechPlayer()
+    if (previousWindow === undefined) delete globalThis.window
+    else globalThis.window = previousWindow
+    if (PreviousUtterance === undefined) delete globalThis.SpeechSynthesisUtterance
+    else globalThis.SpeechSynthesisUtterance = PreviousUtterance
+  }
+}
+
+test('再生パネルの「範囲」を変えると、同じカードの読み上げ列を入れ替え、読んでいる途中なら読み直す', () => {
+  withMockSpeech((queued) => {
+    // 暗記カードの読み上げだけ、再生パネルに「範囲」を出す。
+    assert.equal(playSpeechItems(['look at']), true)
+    assert.equal(getSpeechPlayerSnapshot().rangeAdjustable, false)
+    assert.equal(replaceSpeechItems('0:abandon', wordItems('abandon', 'meaning', true)), false)
+
+    assert.equal(playSpeechItems(wordItems('abandon', 'word', true), { key: '0:abandon', rangeAdjustable: true }), true)
+    assert.equal(getSpeechPlayerSnapshot().rangeAdjustable, true)
+    assert.equal(queued.at(-1).text, 'abandon')
+    // ほかのカードの列は入れ替えない。
+    assert.equal(replaceSpeechItems('1:more', wordItems('abandon', 'meaning', true), { restart: true }), false)
+
+    // 読んでいる途中に範囲を広げると、見出しを新しい範囲で最初から読み直す。
+    assert.equal(replaceSpeechItems('0:abandon', wordItems('abandon', 'meaning', true), { restart: true }), true)
+    assert.equal(queued.at(-1).text, 'abandon')
+    queued.at(-1).onend()
+    assert.equal(queued.at(-1).text, '見捨てる、放棄する、')
+    queued.at(-1).onend()
+    assert.equal(getSpeechPlayerSnapshot().status, 'ended')
+
+    // 読み終えたあとは入れ替えるだけ。次の「再生」から新しい範囲で読む。
+    const spokenBefore = queued.length
+    assert.equal(replaceSpeechItems('0:abandon', wordItems('abandon', 'example', true), { restart: true }), true)
+    assert.equal(queued.length, spokenBefore)
+    assert.equal(getSpeechPlayerSnapshot().status, 'ended')
+    assert.equal(playSpeechPlayer(), true)
+    const replayed = []
+    for (let part = 0; part < 4; part += 1) {
+      replayed.push(queued.at(-1).text)
+      queued.at(-1).onend()
+    }
+    assert.deepEqual(replayed, [
+      'abandon',
+      '見捨てる、放棄する、',
+      'They had to abandon the plan.',
+      '彼らは計画を放棄せざるを得なかった。',
+    ])
+
+    dismissSpeechPlayer()
+    assert.equal(getSpeechPlayerSnapshot().rangeAdjustable, false)
+  })
+})
+
 test('再生パネルは途中の部分から読み始め、外した部分があっても位置がずれず、読み直しは最初から', () => {
   const previousWindow = globalThis.window
   const PreviousUtterance = globalThis.SpeechSynthesisUtterance
@@ -239,14 +330,23 @@ test('英単語・熟語・構文の暗記カードは、見出しのボタン�
     assert.match(source, new RegExp(`const ${items} = (?:word|item)\\n\\s*\\? cardSpeechItems\\(\\{`), path)
     assert.match(source, /range: settings\.speechRange,\n\s*answerOpen: flipped,/, path)
     assert.match(source, new RegExp(`useCardAutoSpeech\\(\\{[\\s\\S]*?items: ${items},[\\s\\S]*?title: '${title}',`), path)
-    // 見出しのボタンは1つめ、例文のボタンは2つめから読む。
-    assert.match(source, new RegExp(`phrases=\\{${items}\\}\\n\\s*phraseIndex=\\{0\\}`), path)
-    assert.match(source, new RegExp(`phrases=\\{${items}\\}\\n\\s*phraseIndex=\\{1\\}`), path)
+    // 見出しのボタンは1つめ、例文のボタンは2つめから読む。どちらもカードの読み上げ列の持ち主を渡す。
+    assert.match(source, new RegExp(`phrases=\\{${items}\\}\\n\\s*phraseIndex=\\{0\\}\\n\\s*speechKey=\\{speechKey\\}`), path)
+    assert.match(source, new RegExp(`phrases=\\{${items}\\}\\n\\s*phraseIndex=\\{1\\}\\n\\s*speechKey=\\{speechKey\\}`), path)
+    assert.match(source, /const speechKey = (?:word|item) \? `\$\{i\}:\$\{(?:word|item)\.id\}` : null/, path)
+    assert.match(source, /useCardAutoSpeech\(\{\n\s*speechKey,/, path)
     assert.doesNotMatch(source, /playSpeechItems|dismissSpeechPlayer/, path)
   }
   // 英単語の意味だけ、画面で（よみ）を添える語を読みで読む。
   assert.match(read('src/screens/VocabStudy.jsx'), /meaningReadings: true,/)
   assert.doesNotMatch(read('src/screens/PhraseStudy.jsx'), /meaningReadings/)
+
+  // 自動の読み上げとボタンは同じ持ち主で読み、範囲を変えたらそのカードの列を入れ替える（読んでいる途中なら読み直す）。
+  const hook = read('src/components/useCardAutoSpeech.js')
+  assert.match(hook, /key: speechKey,\n\s*rangeAdjustable: true,/)
+  assert.match(hook, /replaceSpeechItems\(speechKey, items, \{ restart: previous\.range !== range \}\)/)
+  assert.match(hook, /\}, \[speechKey, signature, range\]\)/)
+  assert.match(read('src/components/SpeakButton.jsx'), /\.\.\.\(speechKey && phrases\?\.length \? \{ key: speechKey, rangeAdjustable: true \} : \{\}\),/)
 
   // 設定は英単語・熟語・構文の暗記カードを開く教材の設定と、全体の設定に並ぶ。
   const settings = read('src/components/SpeechSettings.jsx')
