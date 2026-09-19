@@ -92,6 +92,8 @@ export function PhraseStudyScreen() {
 
   // 読み上げは設定の範囲で、熟語（構文は完成した例文）→意味→例文→例文の意味。
   // 意味と例文の意味は、カードを開いてから読む。
+  // 読み上げ列の持ち主。自動の読み上げと見出し・例文のボタンで同じものを使い、再生パネルの「範囲」をこのカードへ効かせる。
+  const speechKey = item ? `${i}:${item.id}` : null
   const phraseSpeechItems = item
     ? cardSpeechItems({
         head: phraseSpeechText(item),
@@ -106,7 +108,7 @@ export function PhraseStudyScreen() {
   // カードが変わるたび自動で読み上げ、カードを開いたら意味から続きを読む。英語を隠しているあいだは読まず、
   // 流れている音声と、英文が出る下の再生パネルも閉じる。カードを開いて英語が見えたら、そこで読み上げる。
   useCardAutoSpeech({
-    cardKey: item ? `${i}:${item.id}` : null,
+    speechKey,
     items: phraseSpeechItems,
     spellingHidden,
     answerOpen: flipped,
@@ -251,6 +253,7 @@ export function PhraseStudyScreen() {
                     text={phraseSpeechText(item)}
                     phrases={phraseSpeechItems}
                     phraseIndex={0}
+                    speechKey={speechKey}
                     title="熟語・構文カード"
                     size="lg"
                   />
@@ -294,6 +297,7 @@ export function PhraseStudyScreen() {
                     text={item.example.en}
                     phrases={phraseSpeechItems}
                     phraseIndex={1}
+                    speechKey={speechKey}
                     title="熟語・構文カード"
                     size="sm"
                   />

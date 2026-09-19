@@ -464,6 +464,12 @@ test('全画面共通の読み上げ再生パネルに6操作を一つずつ備�
   for (const label of ['再生', '一時停止', '前へ', '次へ', '停止', '速度']) {
     assert.match(consoleSource, new RegExp(`(?:label=|<span>)"?${label}`), label)
   }
+  // 英単語・熟語・構文の暗記カードを読んでいるときだけ、見出し行の速度の前に「範囲」を置く（段は増やさない）。
+  assert.match(consoleSource, /<span>範囲<\/span>/)
+  assert.match(consoleSource, /\{state\.rangeAdjustable && onRangeChange && \(\n\s*<SpeechRangeSelect range=\{range\} onChange=\{onRangeChange\} \/>/)
+  assert.match(consoleSource, /const changeRange = \(range\) => setSetting\('speechRange', range\)/)
+  assert.equal((consoleSource.match(/onRangeChange=\{changeRange\}/g) ?? []).length, 2)
+  assert.match(consoleSource, /grid grid-cols-5 gap-1/)
   assert.match(player, /pauseSpeaking\(\)/)
   assert.match(player, /resumeSpeaking\(\)/)
   assert.match(player, /previousSpeechItem/)

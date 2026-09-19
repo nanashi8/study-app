@@ -23,6 +23,8 @@ const EMPTY_STATE = Object.freeze({
   canPrevious: false,
   canNext: false,
   canStop: false,
+  // 暗記カードの読み上げ（範囲を切り替えられる）かどうか。再生パネルに「範囲」を出す。
+  rangeAdjustable: false,
 })
 
 let playerState = EMPTY_STATE
@@ -231,7 +233,7 @@ function startCurrentItem({ reason = 'play', fromSegment = 0 } = {}) {
     rate: session.rate,
   })
   session.onIndexChange?.(session.index, item)
-  if (reason !== 'rate-change') {
+  if (reason !== 'rate-change' && reason !== 'range-change') {
     session.onPlayStart?.({ reason, index: session.index, item })
   }
   playSegment(firstSegmentFrom(item, fromSegment), token)
@@ -257,6 +259,9 @@ export function playSpeechItems(items, options = {}) {
   clearContinuation()
   stopSpeaking()
   session = {
+    // key は読み上げ列の持ち主（暗記カードなど）。持ち主が同じ列を読み直させるとき（replaceSpeechItems）に照らし合わせる。
+    key: options.key ?? null,
+    defaults: { lang: options.lang ?? 'en-US', style: options.style ?? 'auto' },
     items: normalized,
     index: clamp(Math.trunc(options.index ?? 0), 0, normalized.length - 1),
     title: options.title ?? '読み上げ',
@@ -285,6 +290,7 @@ export function playSpeechItems(items, options = {}) {
     index: session.index,
     count: normalized.length,
     rate: session.rate,
+    rangeAdjustable: options.rangeAdjustable === true,
     ...controlsFor('stopped'),
   })
   emit()
@@ -347,6 +353,29 @@ export function setSpeechPlayerRate(rate) {
   } else if (playerState.status === 'paused') {
     session.restartOnResume = true
   }
+  return true
+}
+
+/**
+ * 持ち主（key）が同じ読み上げ列を新しい列に入れ替える（暗記カードを開いた・読み上げる範囲を変えた）。
+ * restart のときは、読んでいる途中ならいまの item を新しい列で最初から読み直す（速さを変えたときと同じ）。
+ * 読んでいないときは入れ替えるだけで、次の「再生」から新しい列を読む。
+ */
+export function replaceSpeechItems(key, items, { restart = false } = {}) {
+  if (!session || session.key == null || session.key !== key) return false
+  const normalized = normalizeItems(items, session.defaults)
+  if (!normalized.length) return false
+  session.items = normalized
+  session.index = clamp(session.index, 0, normalized.length - 1)
+  const status = playerState.status
+  if (restart && status === 'playing') return startCurrentItem({ reason: 'range-change' })
+  if (restart && status === 'paused') session.restartOnResume = true
+  setPlayerState({
+    itemLabel: String(normalized[session.index].label ?? ''),
+    index: session.index,
+    count: normalized.length,
+    ...controlsFor(status),
+  })
   return true
 }
 

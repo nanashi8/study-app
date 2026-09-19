@@ -163,7 +163,7 @@ test('画面下部の同じ枠で、読み上げと出題バランスを切り�
 
   assert.match(dock, /data-study-dock-tabs/)
   // 切り替えは各パネルの見出し行の先頭に入れ、切り替えだけの段を作らない。
-  assert.match(dock, /export function SpeechConsole\(\{ state, onRateChange, leading = null \}\)/)
+  assert.match(dock, /export function SpeechConsole\(\{ state, onRateChange, onRangeChange = null, range = null, leading = null \}\)/)
   assert.match(mix, /export function VocabMixConsole\(\{ leading = null \} = \{\}\)/)
   assert.equal((dock.match(/leading=\{tabs\}/g) ?? []).length, 2)
   assert.doesNotMatch(dock, /grid grid-cols-2 gap-1 px-2 pt-1\.5/)

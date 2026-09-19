@@ -13,7 +13,9 @@ import {
   subscribeSpeechPlayer,
   updateSpeechPlayerVoices,
 } from '../lib/speech-player.js'
+import { SPEECH_RANGES, speechRangeOf } from '../lib/speechRange.js'
 import {
+  ChevronDown,
   ChevronLeft,
   ChevronRight,
   Pause,
@@ -55,10 +57,44 @@ function ConsoleButton({ label, disabled, onClick, children, primary = false }) 
 }
 
 /**
+ * 暗記カードで読み上げる範囲（単語のみ／単語・意味／単語・意味・例文・例文の意味）の切り替え。
+ * 見出し行に収まるよう、閉じているあいだは「単語のみ」「意味まで」「例文まで」と短く見せ、
+ * 開いた一覧では設定と同じ名前で選ぶ。
+ */
+function SpeechRangeSelect({ range, onChange }) {
+  return (
+    <label
+      className="relative flex h-7 shrink-0 items-center gap-0.5 rounded-lg bg-brand-50 pl-1.5 pr-0.5 text-[9px] font-extrabold text-brand-800 focus-within:ring-2 focus-within:ring-brand-300"
+      data-speech-console-range
+    >
+      <span>範囲</span>
+      <span
+        aria-hidden="true"
+        className="flex h-6 items-center gap-0.5 rounded-md bg-white pl-1 pr-0.5 text-[10px] font-extrabold text-brand-800 ring-1 ring-brand-100"
+      >
+        {speechRangeOf(range).short}
+        <ChevronDown size={10} />
+      </span>
+      <select
+        value={speechRangeOf(range).id}
+        onChange={(event) => onChange(event.target.value)}
+        aria-label="読み上げる範囲"
+        className="absolute inset-0 h-full w-full cursor-pointer appearance-none opacity-0"
+      >
+        {SPEECH_RANGES.map((option) => (
+          <option key={option.id} value={option.id}>{option.label}</option>
+        ))}
+      </select>
+    </label>
+  )
+}
+
+/**
  * 全読み上げ導線で共有する、6操作固定の再生パネル。見出し1行＋操作1行に収める。
+ * 英単語・熟語・構文の暗記カードを読んでいるときだけ、見出し行の速度の前に「範囲」も置く。
  * leading には、下部の枠を出題バランスと分け合うときの切り替えが入る。
  */
-export function SpeechConsole({ state, onRateChange, leading = null }) {
+export function SpeechConsole({ state, onRateChange, onRangeChange = null, range = null, leading = null }) {
   return (
     <section
       aria-label="読み上げ再生パネル"
@@ -85,6 +121,9 @@ export function SpeechConsole({ state, onRateChange, leading = null }) {
         <span className="shrink-0 text-[10px] font-extrabold tabular-nums text-ink/40">
           {state.count ? `${state.index + 1}/${state.count}` : '—'}
         </span>
+        {state.rangeAdjustable && onRangeChange && (
+          <SpeechRangeSelect range={range} onChange={onRangeChange} />
+        )}
         <label className="flex h-7 shrink-0 items-center gap-0.5 rounded-lg bg-brand-50 pl-1.5 pr-0.5 text-[9px] font-extrabold text-brand-800">
           <span>速度</span>
           <select
@@ -162,6 +201,10 @@ export function GlobalSpeechConsole() {
     setSpeechPlayerRate(rate)
   }
 
+  // 範囲はいまの教材の設定を変える。カードの画面が新しい範囲で読み上げ列を作り直し、
+  // 読んでいる途中なら、いまの部分を新しい範囲で読み直す（useCardAutoSpeech）。
+  const changeRange = (range) => setSetting('speechRange', range)
+
   // 切り替えは各パネルの見出し行の先頭に置き、切り替えだけの段を作らない。
   const tabs = both ? (
     <div
@@ -206,7 +249,13 @@ export function GlobalSpeechConsole() {
             className={cx('col-start-1 row-start-1', showing !== 'speech' && 'invisible')}
             aria-hidden={showing !== 'speech'}
           >
-            <SpeechConsole state={state} onRateChange={changeRate} leading={tabs} />
+            <SpeechConsole
+              state={state}
+              onRateChange={changeRate}
+              onRangeChange={changeRange}
+              range={settings.speechRange}
+              leading={tabs}
+            />
           </div>
           <div
             className={cx('col-start-1 row-start-1', showing !== 'mix' && 'invisible')}
@@ -216,7 +265,14 @@ export function GlobalSpeechConsole() {
           </div>
         </div>
       ) : showing === 'speech'
-        ? <SpeechConsole state={state} onRateChange={changeRate} />
+        ? (
+            <SpeechConsole
+              state={state}
+              onRateChange={changeRate}
+              onRangeChange={changeRange}
+              range={settings.speechRange}
+            />
+          )
         : <VocabMixConsole />}
     </div>
   )

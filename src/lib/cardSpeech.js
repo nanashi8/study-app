@@ -138,6 +138,13 @@ export function cardSpeechItems({
   return items
 }
 
+/** 読み上げ列の中身を1つの文字列にしたもの。カードを開いた・範囲を変えたで列が変わったかを見分ける。 */
+export function speechItemsSignature(items) {
+  return (items ?? [])
+    .map((item) => (item.segments ?? []).map((segment) => `${segment.lang}:${segment.text}`).join('|'))
+    .join('||')
+}
+
 /**
  * 暗記カードの自動読み上げで、いま何をするか。
  * memory はこのカードでここまでに読んだもの（別のカードに移ったら null）。返す memory を次に渡す。

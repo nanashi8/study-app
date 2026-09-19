@@ -85,7 +85,7 @@ test('英単語・熟語のカードは目のボタンでスペルも隠し、�
   // 隠しているあいだは読み上げず、流れている音声と、つづりが出る再生パネルも閉じる（自動で発音がオフでも閉じる）。
   const hook = readFileSync('src/components/useCardAutoSpeech.js', 'utf8')
   assert.match(hook, /if \(plan\.action === 'dismiss'\) dismissSpeechPlayer\(\)/)
-  assert.match(hook, /\}, \[cardKey, spellingHidden, answerOpen\]\)/)
+  assert.match(hook, /\}, \[speechKey, spellingHidden, answerOpen\]\)/)
   for (const autoSpeak of [true, false]) {
     const hidden = planCardAutoSpeech(null, { spellingHidden: true, answerOpen: false, range: 'word', autoSpeak })
     assert.equal(hidden.action, 'dismiss')
