@@ -5,11 +5,13 @@ import { readFileSync } from 'node:fs'
 import { ALL_WORDS, getWord } from '../src/data/vocab.js'
 import { PHRASES } from '../src/data/phrases.js'
 import {
+  applyJapaneseSpeechReadings,
   cardSpeechItems,
   exampleMeaningSpeechText,
   meaningSpeechText,
   planCardAutoSpeech,
 } from '../src/lib/cardSpeech.js'
+import { JAPANESE_SPEECH_READINGS } from '../src/data/japanese-speech-readings.js'
 import { SPEECH_RANGES, SPEECH_RANGE_DEFAULT, normalizeSpeechRange, speechRangeOf } from '../src/lib/speechRange.js'
 import { phraseSpeechText } from '../src/lib/phrase-speech.js'
 import { exampleSpeechAllowed } from '../src/lib/speechGuard.js'
@@ -30,6 +32,7 @@ const spoken = (items) => items.map((item) => item.segments.map((segment) => `${
 const wordItems = (id, range, answerOpen) => {
   const word = getWord(id)
   return cardSpeechItems({
+    id,
     head: word.word,
     meanings: word.meanings,
     meaningReadings: true,
@@ -43,6 +46,7 @@ const wordItems = (id, range, answerOpen) => {
 const phraseItems = (id, range, answerOpen) => {
   const item = PHRASES.find((phrase) => phrase.id === id)
   return cardSpeechItems({
+    id,
     head: phraseSpeechText(item),
     headStyle: item.kind === 'syntax' ? 'sentence' : 'phrase',
     meanings: item.meanings,
@@ -159,6 +163,63 @@ test('全英単語・全熟語・構文の意味は、記号を残さず読め�
   assert.deepEqual(rows.filter(([, text]) => /[〜～~…‥—―()（）／/]|^、|、$|、、/u.test(text)).map(([id]) => id), [])
   const translations = [...ALL_WORDS, ...PHRASES].map((item) => [item.id, exampleMeaningSpeechText(item.example?.ja)])
   assert.deepEqual(translations.filter(([, text]) => !text || /[〜～~…]/u.test(text)).map(([id]) => id), [])
+})
+
+test('端末の声が読み違えやすい語は、台帳の読みをかなで読ませる（画面の文字は変えない）', () => {
+  // 台帳の語は、いまの読み上げ文の中に1か所だけある。教材の文を直して見つからなくなったら、読みを決め直す。
+  const words = new Map(ALL_WORDS.map((word) => [word.id, word]))
+  const phrases = new Map(PHRASES.map((phrase) => [phrase.id, phrase]))
+  let pairs = 0
+  for (const [id, parts] of Object.entries(JAPANESE_SPEECH_READINGS)) {
+    const word = words.get(id)
+    const item = word ?? phrases.get(id)
+    assert.ok(item, `${id} が英単語にも熟語・構文にもない`)
+    assert.ok(!(word && phrases.has(id)), `${id} が英単語と熟語・構文の両方にある`)
+    const source = {
+      meaning: meaningSpeechText(item.meanings, { readings: Boolean(word) }),
+      example: exampleMeaningSpeechText(item.example?.ja),
+    }
+    for (const [part, list] of Object.entries(parts)) {
+      assert.ok(Object.hasOwn(source, part), `${id}: ${part}`)
+      let text = source[part]
+      for (const [target, reading] of list) {
+        assert.equal(text.split(target).length - 1, 1, `${id} ${part}: 「${target}」が文の中で1か所に決まらない`)
+        assert.match(target, /[\p{Script=Han}]/u, `${id}: ${target}`)
+        assert.match(reading, /\p{Script=Hiragana}/u, `${id}: ${reading}`)
+        text = text.replace(target, reading)
+        pairs += 1
+      }
+      assert.equal(applyJapaneseSpeechReadings(source[part], list), text)
+    }
+  }
+  assert.equal(Object.keys(JAPANESE_SPEECH_READINGS).length, 857)
+  assert.equal(pairs, 989)
+
+  const japanese = (items) => items.map((item) => item.segments.filter((segment) => segment.lang === 'ja-JP').map((segment) => segment.text))
+  // 後＝あと、間＝あいだ、数と助数詞は数字も含めて読む。
+  assert.deepEqual(japanese(wordItems('thirsty', 'example', true)), [
+    ['のどがかわいた', 'サッカーの練習のあとで、とてものどが渇いている。'],
+    ['サッカーの練習のあとで、とてものどが渇いている。'],
+  ])
+  assert.deepEqual(japanese(wordItems('between', 'example', true))[0], ['のあいだに、2つ', '私たちのあいだに座って。'])
+  assert.equal(japanese(wordItems('election', 'example', true))[1][0], '選挙はごがつに行われる。')
+  // 月の名前は、2つの辞書がそろって「つき」と読むので、辞書の食い違いとは別に全部書く。
+  assert.deepEqual(japanese(wordItems('may', 'example', true))[0], ['ごがつ', 'ごがつには長い休みがある。'])
+  assert.equal(japanese(wordItems('within', 'example', true))[1][0], 'みっか以内に返信して。')
+  assert.equal(japanese(wordItems('corner', 'meaning', true))[0][0], 'かど、隅')
+  // 助数詞や接尾語は、かなにした語と一緒に読む（なんびゃく人→なんびゃくにん、ふつか後→ふつかご）。
+  assert.match(japanese(wordItems('eruption', 'example', true))[1][0], /なんびゃくにんもの人/)
+  assert.match(japanese(wordItems('convict', 'example', true))[1][0], /ふつかごに/)
+  // 文法の例文は、意味が例文の和訳そのもの。例文のボタンで読む和訳にも同じ読みを当てる。
+  assert.deepEqual(japanese(phraseItems('curr_syn_gr_exam_eiken_pre2_conjunction_1_001', 'example', true)), [
+    ['ケンが夕食を作っているあいだ、アヤはテーブルの準備をした。'],
+    ['ケンが夕食を作っているあいだ、アヤはテーブルの準備をした。'],
+  ])
+  // 台帳のない語はそのまま。カードを開く前は日本語を読まない。
+  assert.deepEqual(japanese(wordItems('abandon', 'example', true))[0], ['見捨てる、放棄する', '彼らは計画を放棄せざるを得なかった。'])
+  assert.deepEqual(japanese(wordItems('thirsty', 'example', false)), [[], []])
+  // 画面に出す意味と例文は変えない。
+  assert.equal(getWord('thirsty').example.ja, 'サッカーの練習の後で、とてものどが渇いている。')
 })
 
 test('自動の読み上げは、カードを開く前は見出しだけ、開いたら意味から続きを読む', () => {
@@ -337,9 +398,11 @@ test('英単語・熟語・構文の暗記カードは、見出しのボタン�
     assert.match(source, /useCardAutoSpeech\(\{\n\s*speechKey,/, path)
     assert.doesNotMatch(source, /playSpeechItems|dismissSpeechPlayer/, path)
   }
-  // 英単語の意味だけ、画面で（よみ）を添える語を読みで読む。
+  // 英単語の意味だけ、画面で（よみ）を添える語を読みで読む。どちらも id で読みの台帳を引く。
   assert.match(read('src/screens/VocabStudy.jsx'), /meaningReadings: true,/)
   assert.doesNotMatch(read('src/screens/PhraseStudy.jsx'), /meaningReadings/)
+  assert.match(read('src/screens/VocabStudy.jsx'), /cardSpeechItems\(\{\n\s*id: word\.id,/)
+  assert.match(read('src/screens/PhraseStudy.jsx'), /cardSpeechItems\(\{\n\s*id: item\.id,/)
 
   // 自動の読み上げとボタンは同じ持ち主で読み、範囲を変えたらそのカードの列を入れ替える（読んでいる途中なら読み直す）。
   const hook = read('src/components/useCardAutoSpeech.js')

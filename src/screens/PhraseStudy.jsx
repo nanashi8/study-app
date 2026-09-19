@@ -96,6 +96,7 @@ export function PhraseStudyScreen() {
   const speechKey = item ? `${i}:${item.id}` : null
   const phraseSpeechItems = item
     ? cardSpeechItems({
+        id: item.id,
         head: phraseSpeechText(item),
         headStyle: item.kind === 'syntax' ? 'sentence' : 'phrase',
         meanings: item.meanings,
