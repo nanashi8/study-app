@@ -10,8 +10,7 @@ import { EXAM_PHRASES } from '../src/data/phrases-exam.js'
 import { CURRICULUM_IDIOMS } from '../src/data/phrases-bank.js'
 import { PHRASE_LEVEL_TARGETS } from '../src/data/phrase-curriculum.js'
 import { GRAMMAR } from '../src/data/grammar.js'
-import { GRAMMAR_LESSONS } from '../src/data/grammar-lessons.js'
-import { EXAM_GRAMMAR_LESSONS } from '../src/data/grammar-lessons-exam.js'
+import { GRAMMAR_REFERENCE_UNITS, GRAMMAR_STRAND_REFERENCES } from '../src/data/grammar-reference/index.js'
 
 const countByLevel = (items) =>
   Object.fromEntries(LEVELS.map((level) => [
@@ -36,8 +35,8 @@ line('今回の級別熟語補充', CURRICULUM_IDIOMS.length)
 line('今回の文法連動構文補充', PHRASES.filter((phrase) => phrase.category === 'grammar-example').length)
 line('既存の入試熟語補充', EXAM_PHRASES.length)
 line('英文法テスト', GRAMMAR.length)
-line('文法解説（全単元）', GRAMMAR_LESSONS.length)
-line('今回の高校文法補充', EXAM_GRAMMAR_LESSONS.length)
+line('文法の参考書（級×単元）', GRAMMAR_REFERENCE_UNITS.length)
+line('文法の参考書（級をまたいだ単元）', GRAMMAR_STRAND_REFERENCES.length)
 
 console.log('\n級別の英単語')
 for (const [level, count] of Object.entries(countByLevel(ALL_WORDS))) line(level, count)
@@ -54,7 +53,7 @@ for (const level of LEVELS) {
   )
 }
 
-console.log('\n学年別の文法解説')
-for (const stage of ['中1', '中2', '中3', '高校基礎', '高校発展']) {
-  line(stage, GRAMMAR_LESSONS.filter((lesson) => lesson.stage === stage).length)
+console.log('\n級別の文法の参考書')
+for (const level of LEVELS) {
+  line(level.label, GRAMMAR_REFERENCE_UNITS.filter((unit) => unit.level === level.id).length)
 }

@@ -321,7 +321,10 @@ test('教材の行はその教材で効く設定を開き、設定のいちば�
       'components/ExtendedReader', 'components/LongSentenceTranslation', 'components/SceneBundles',
     ],
     phrases: ['screens/Phrases', 'screens/PhraseStudy', 'screens/PhraseQuiz'],
-    grammar: ['screens/Grammar', 'screens/GrammarLessons', 'screens/GrammarQuiz', 'screens/GrammarStrands'],
+    grammar: [
+      'screens/Grammar', 'screens/GrammarReference', 'screens/GrammarStrandReference', 'screens/GrammarQuiz', 'screens/GrammarStrands',
+      'components/GrammarReferenceParts',
+    ],
     listening: ['screens/Listening', 'screens/ListeningQuiz'],
     diagnostic: ['screens/Diagnostic'],
     dictation: ['screens/Dictation', 'screens/DictationPlay'],
@@ -485,8 +488,9 @@ test('読み上げを持つ全30 UIモジュールが共通プレイヤー経由
   const screenCount = speechUi.filter(({ path }) => path.startsWith('screens/')).length
 
   assert.equal(speechUi.length, 30)
-  assert.equal(screenCount, 22)
+  assert.equal(screenCount, 21)
   assert.ok(speechUi.some(({ path }) => path === 'components/LiteratureVocabularySheet.jsx'))
+  assert.ok(speechUi.some(({ path }) => path === 'components/GrammarReferenceParts.jsx'))
   assert.ok(speechUi.some(({ path }) => path === 'screens/Reader.jsx'))
   assert.ok(speechUi.some(({ path }) => path === 'components/ReadingSentenceDetail.jsx'))
   assert.ok(speechUi.some(({ path }) => path === 'screens/LiteratureReader.jsx'))

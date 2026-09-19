@@ -41,7 +41,7 @@ export const SCOPE_SCREENS = Object.freeze({
   roots: ['roots', 'rootDetail', 'etymologyPack', 'etymologyStudy', 'etymologyQuiz'],
   readingList: ['readingList', 'readingRules', 'readingPrep', 'sceneBundles', 'reader', 'readingSummary'],
   phrases: ['phrases'],
-  grammar: ['grammar', 'grammarQuiz', 'grammarLessons', 'grammarStrands'],
+  grammar: ['grammar', 'grammarQuiz', 'grammarReference', 'grammarStrands', 'grammarStrandReference'],
   listening: ['listening', 'listeningQuiz'],
   diagnostic: ['diagnostic'],
   dictation: ['dictation', 'dictationPlay'],

@@ -5,7 +5,7 @@ import {
   GRAMMAR_PRACTICE,
   GRAMMAR_TOTAL_TARGET,
 } from '../src/data/grammar.js'
-import { GRAMMAR_LESSONS, GRAMMAR_STAGES } from '../src/data/grammar-lessons.js'
+import { GRAMMAR_REFERENCE_UNITS, grammarReferenceFor } from '../src/data/grammar-reference/index.js'
 import { ALL_WORDS } from '../src/data/vocab.js'
 import {
   grammarQuestionNeedsMeaningCue,
@@ -23,30 +23,28 @@ const contains = (text, part) => normalize(text).includes(normalize(part))
 
 assert.equal(GRAMMAR.length, GRAMMAR_TOTAL_TARGET, '英文法の全件母数が収録目標と一致しません')
 
-assert.equal(GRAMMAR_LESSONS.length, 69, '文法レッスンの全件母数が69件から変化しました')
-assert.equal(new Set(GRAMMAR_LESSONS.map((lesson) => lesson.id)).size, GRAMMAR_LESSONS.length, '文法レッスンIDが重複しています')
-for (const lesson of GRAMMAR_LESSONS) {
-  const label = `文法レッスン ${lesson.id}`
-  assert.ok(GRAMMAR_STAGES.includes(lesson.stage), `${label}: 学年段階が不正です`)
-  assert.ok(String(lesson.title ?? '').trim(), `${label}: 単元名がありません`)
-  assert.ok(String(lesson.summary ?? '').trim().length >= 20, `${label}: 一言まとめが短すぎます`)
-  assert.ok(String(lesson.form ?? '').trim().length >= 8, `${label}: 形・語順がありません`)
-  assert.ok(Array.isArray(lesson.points) && lesson.points.length >= 2, `${label}: 判断ポイントが2件未満です`)
-  assert.ok(lesson.points.every((point) => String(point).trim().length >= 18), `${label}: 判断ポイントが短すぎます`)
-  assert.ok(Array.isArray(lesson.examples) && lesson.examples.length >= 2, `${label}: 日英例文が2件未満です`)
-  assert.ok(lesson.examples.every(({ en, ja }) => String(en).trim() && String(ja).trim()), `${label}: 英文または日本語訳が空です`)
-  assert.ok(Array.isArray(lesson.pitfalls) && lesson.pitfalls.length >= 1, `${label}: つまずきやすい点がありません`)
-  assert.ok(lesson.pitfalls.every((pitfall) => String(pitfall).trim().length >= 20), `${label}: つまずきやすい点が短すぎます`)
+// 文法の参考書：出題のある級・単元すべてに1ページずつあり、形・ポイント・例文・間違えやすいところ・チェックをそろえる。
+const practiceTopicPairs = GRAMMAR_PRACTICE.map((item) => `${item.level}\u0000${item.topic}`)
+const referencePairs = GRAMMAR_REFERENCE_UNITS.map((unit) => `${unit.level}\u0000${unit.topic}`)
+assert.equal(new Set(referencePairs).size, GRAMMAR_REFERENCE_UNITS.length, '文法の参考書に同じ級・単元のページが2つあります')
+assert.deepEqual([...new Set(referencePairs)].sort(), [...new Set(practiceTopicPairs)].sort(), '文法の参考書のページと、テストの級・単元がそろっていません')
+for (const unit of GRAMMAR_REFERENCE_UNITS) {
+  const label = `文法の参考書 ${unit.id}`
+  assert.ok(String(unit.lead ?? '').trim().length >= 20, `${label}: ここで学ぶことが短すぎます`)
+  assert.ok(unit.forms.length >= 1, `${label}: 基本の形がありません`)
+  assert.ok(unit.points.length >= 2, `${label}: ポイントが2つ未満です`)
+  assert.ok(unit.mistakes.length >= 1, `${label}: 間違えやすいところがありません`)
+  assert.ok(unit.check.length >= 2, `${label}: テスト前のチェックが2つ未満です`)
+  assert.ok(grammarReferenceFor(unit.level, unit.topic) === unit, `${label}: 級・単元から引けません`)
 }
 
-const imperativeLesson = GRAMMAR_LESSONS.find((lesson) => lesson.id === 'gl_j1_imp')
-assert.ok(imperativeLesson, '命令文レッスンがありません')
+const imperativeLesson = grammarReferenceFor('5', '命令文')
+assert.ok(imperativeLesson, '命令文の参考書ページがありません')
 const imperativeLessonText = [
-  imperativeLesson.summary,
-  imperativeLesson.form,
-  ...imperativeLesson.points,
-  ...imperativeLesson.examples.flatMap(({ en, ja }) => [en, ja]),
-  ...imperativeLesson.pitfalls,
+  imperativeLesson.lead,
+  ...imperativeLesson.forms.flatMap((form) => [form.form, form.example?.en ?? '']),
+  ...imperativeLesson.points.flatMap((point) => [point.title, ...point.text, ...point.examples.flatMap(({ en, ja }) => [en, ja])]),
+  ...imperativeLesson.mistakes.flatMap((item) => [item.wrong, item.right, item.why]),
 ].join('\n')
 for (const required of ['動詞の原形', 'Be', 'Don’t', 'Never', 'Always', 'Please', 'Let’s', 'Let’s not', '決して']) {
   assert.ok(contains(imperativeLessonText, required), `命令文レッスンに「${required}」の説明がありません`)
@@ -206,7 +204,7 @@ assert.match(choiceExplanationsSource, /<ChoiceExplanations/)
 assert.match(choiceExplanationsSource, /grammarChoiceNoteFor\(item, choice\)/)
 
 console.log('✅ 英文法の全解説監査OK')
-console.log(`  読んで学ぶ文法レッスン: ${GRAMMAR_LESSONS.length}/${GRAMMAR_LESSONS.length}（形・判断・例文・注意点）`)
+console.log(`  文法の参考書: ${GRAMMAR_REFERENCE_UNITS.length}/${new Set(practiceTopicPairs).size}単元（形・ポイント・例文・間違えやすいところ・チェック）`)
 console.log(`  問題・4択・答えの一意性: ${uniqueAnswerCount}/${GRAMMAR.length}`)
 console.log(`  入試型の問われ方: ${examQuestionCount}問（${examFocuses.size}種類）`)
 console.log(`  意味・構造の取り違え回帰: ${focusRegressionCases.length}/${focusRegressionCases.length}`)

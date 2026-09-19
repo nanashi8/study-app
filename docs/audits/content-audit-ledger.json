@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-09-18T20:19:05.747Z",
+  "auditedAt": "2026-09-19T03:33:58.031Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -104,7 +104,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "15e87958f094f7712b30c3d61b80cddadd73be84b147afca85de7bc52c293e0d",
+    "sha256": "311c08b89e745cc249588ae7c8b87d07cc29b346f78af6a38fd56d807843567f",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -193,6 +193,7 @@
       "tests/grammar-deck.test.mjs",
       "tests/grammar-exam-patterns.test.mjs",
       "tests/grammar-explanation-completeness.test.mjs",
+      "tests/grammar-reference.test.mjs",
       "tests/grammar-strand.test.mjs",
       "tests/heteronyms.test.mjs",
       "tests/homograph-words.test.mjs",
