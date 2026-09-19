@@ -31,7 +31,13 @@ import {
 } from '../components/Icons.jsx'
 
 // 単語カードは1問ごとに置き直す。問題を切り替えるたび、この空の並びへ戻す。
-const EMPTY_ARRANGEMENT = { text: '', complete: false, correct: false, wrongPosition: false }
+const EMPTY_ARRANGEMENT = {
+  text: '',
+  complete: false,
+  correct: false,
+  wrongPosition: false,
+  tokenCount: 0,
+}
 
 function MissingUnit({ onBack }) {
   return (
@@ -75,7 +81,8 @@ function FormCard({ unit, level }) {
   )
 }
 
-function ExplanationCard({ question, correct, repeatAnswer = true }) {
+// fixed は、単語カードで赤いカードを直しながら並べ終えたとき。
+function ExplanationCard({ question, correct, fixed = false, repeatAnswer = true }) {
   return (
     <div
       className={cx(
@@ -93,7 +100,11 @@ function ExplanationCard({ question, correct, repeatAnswer = true }) {
           {correct ? <Check size={17} /> : <Lightbulb size={17} />}
         </span>
         <p className="font-display text-sm font-extrabold text-ink">
-          {correct ? 'この型で正しく書けています' : 'ここを直すと通ります'}
+          {correct
+            ? 'この型で正しく書けています'
+            : fixed
+              ? '直して正しい語順になりました'
+              : 'ここを直すと通ります'}
         </p>
       </div>
       <div className="space-y-2.5 p-3.5">
@@ -162,6 +173,8 @@ export function WritingExamScreen() {
   const [hintStep, setHintStep] = useState(0)
   const [arranging, setArranging] = useState(mode === 'guide')
   const [arranged, setArranged] = useState(EMPTY_ARRANGEMENT)
+  // この問題で、赤いカード（違う位置の語）を一度でも置いたか。
+  const [misplaced, setMisplaced] = useState(false)
   const [checked, setChecked] = useState(false)
   const [results, setResults] = useState([])
   const [finished, setFinished] = useState(false)
@@ -180,7 +193,10 @@ export function WritingExamScreen() {
   const total = unit.questions.length
   const question = unit.questions[index]
   const review = checked && !arranging ? writingSentenceReview(typed, question) : null
-  const correct = arranging ? arranged.correct : Boolean(review?.correct)
+  const arrangedResult = checked && arranging
+    ? results.find((item) => item.questionId === question.id)
+    : null
+  const correct = arranging ? Boolean(arrangedResult?.correct) : Boolean(review?.correct)
   const answerWordCount = writingWordTokens(question.answer).length
 
   const startQuestion = (nextIndex) => {
@@ -189,6 +205,7 @@ export function WritingExamScreen() {
     setHintStep(0)
     setArranging(mode === 'guide')
     setArranged(EMPTY_ARRANGEMENT)
+    setMisplaced(false)
     setChecked(false)
   }
 
@@ -198,17 +215,30 @@ export function WritingExamScreen() {
     startQuestion(0)
   }
 
-  const check = () => {
+  const settle = ({ correct: settledCorrect, text }) => {
     if (checked) return
     setChecked(true)
     setResults((items) => [
       ...items,
-      {
-        questionId: question.id,
-        correct: arranging ? arranged.correct : writingSentenceReview(typed, question).correct,
-        text: arranging ? arranged.text : typed.trim(),
-      },
+      { questionId: question.id, correct: settledCorrect, text },
     ])
+  }
+
+  // 自分で書いた英文は、答え合わせを押したときに模範解答と突き合わせる。
+  const check = () => {
+    settle({
+      correct: writingSentenceReview(typed, question).correct,
+      text: typed.trim(),
+    })
+  }
+
+  // 単語カードは置いた瞬間に正誤が出るので、答え合わせを押させない。
+  // すべて正しく並べ終えたところで解説を開き、結果を記録する。
+  // 途中で赤いカードを置いた問題は「直して完成」として、型どおりには数えない。
+  const arrange = (text, state) => {
+    setArranged({ text, ...state })
+    if (state.wrongPosition) setMisplaced(true)
+    if (state.correct) settle({ correct: !misplaced, text })
   }
 
   // 自分で書いた英文が模範解答と別の形でも正しいことはある。
@@ -324,7 +354,7 @@ export function WritingExamScreen() {
 
   const showForm = mode === 'guide' || hintStep >= 1
   const showSkeleton = hintStep >= 2
-  const canCheck = arranging ? arranged.complete : typed.trim().length > 0
+  const remainingWords = Math.max(0, answerWordCount - arranged.tokenCount)
 
   return (
     <div className="flex h-full flex-col bg-paper">
@@ -419,13 +449,15 @@ export function WritingExamScreen() {
                   正しい位置ならすぐ緑。赤いカードは押して戻せます
                 </p>
               </div>
+              {/* 自分で書く画面へ行って戻っても、置いたカードはそのまま残す。 */}
               <WordOrderExercise
                 key={`${question.id}-order`}
                 targetText={question.answer}
                 seed={question.id}
+                initialText={arranged.text}
                 checked={checked}
                 liveFeedback
-                onChange={(text, state) => setArranged({ text, ...state })}
+                onChange={arrange}
               />
             </>
           ) : (
@@ -516,6 +548,7 @@ export function WritingExamScreen() {
           <ExplanationCard
             question={question}
             correct={correct}
+            fixed={arranging && !correct}
             repeatAnswer={!arranging}
           />
         )}
@@ -527,8 +560,14 @@ export function WritingExamScreen() {
             {index + 1 >= total ? '結果を見る' : '次の問題へ'}
             <ArrowRight size={18} />
           </Button>
+        ) : arranging ? (
+          // 単語カードは並べながら正誤が分かるので、答え合わせのボタンは置かない。
+          // テーマ別英作文と同じく、並べ終えるまで「次へ」を止めて残りを示す。
+          <Button full size="lg" disabled>
+            {remainingWords > 0 ? `あと${remainingWords}語を並べよう` : '赤いカードを直そう'}
+          </Button>
         ) : (
-          <Button full size="lg" disabled={!canCheck} onClick={check}>
+          <Button full size="lg" disabled={!typed.trim()} onClick={check}>
             答え合わせ <Check size={18} />
           </Button>
         )}
@@ -538,7 +577,7 @@ export function WritingExamScreen() {
             : arranging
               ? arranged.wrongPosition
                 ? '赤いカードを押して戻すと、その場で置き直せます'
-                : 'すべての語を並べると答え合わせできます'
+                : 'すべて正しく並べると、解説が開きます'
               : '書いたところまでで答え合わせできます'}
         </p>
       </div>

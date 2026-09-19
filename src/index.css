@@ -5271,6 +5271,7 @@ button { -webkit-tap-highlight-color: transparent; }
   --app-safe-bottom: env(safe-area-inset-bottom, 0px);
   --app-visual-viewport-height: 100svh;
   --app-visual-viewport-top: 0px;
+  --app-frame-height: 100svh;
   /* 流し込みの下端も、画面下の操作バーも、アプリ外枠（＝いま見えている範囲）の
      中に収まる。だから端末のふち（ホームバー）ぶんだけ空ければよい。
      ブラウザUIぶんをここへ足さない。足すと、ブラウザで開いたときだけ
@@ -5289,12 +5290,14 @@ button { -webkit-tap-highlight-color: transparent; }
 /* ---- Viewport height / browser chrome -------------------------------------
    モバイルのアドレスバーは表示・非表示で高さが変わる。アプリ外枠は
    visualViewport の実測高を基準にして、上下がバーへ隠れないようにする。
-   JSが動く前や visualViewport 非対応ブラウザでは 100svh へ戻す。 */
+   ただしキーボードが出ている間は縮めない（縮めると打っている欄が本文の
+   スクロール領域の外へ押し出される）。高さは src/lib/safeArea.js が
+   --app-frame-height に書き込む。JSが動く前は 100svh へ戻す。 */
 :where(.study-app-viewport) {
-  min-height: var(--app-visual-viewport-height, 100svh);
+  min-height: var(--app-frame-height, 100svh);
 }
 :where(.study-app-surface) {
-  height: var(--app-visual-viewport-height, 100svh);
+  height: var(--app-frame-height, 100svh);
 }
 /* fixedシートは一部ブラウザでlayout viewportへ固定されるため、現在見えている
    visual viewportの上端と高さへ明示的に合わせる。 */

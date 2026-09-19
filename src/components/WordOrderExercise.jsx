@@ -55,10 +55,10 @@ export function WordOrderExercise({
     : []
   const hasIncorrectPosition = positionResults.some((correct) => !correct)
   // 答え合わせのあとは正誤カードと模範解答が出るため、途中の知らせは重ねない。
+  // 正しく並べ終えた知らせも出さない。使う画面がその場で解説を開く。
   const liveTone = liveFeedback && !checked && answerTokens.length > 0
     ? (hasIncorrectPosition ? 'wrong' : 'right')
     : null
-  const liveComplete = liveTone === 'right' && wordBank.length === 0
 
   const report = (tokens, bank) => {
     const text = buildWritingTokenText(tokens)
@@ -159,15 +159,6 @@ export function WordOrderExercise({
             >
               <Close size={16} />
               赤いカードはその位置ではありません。押して戻そう。
-            </div>
-          )}
-          {liveComplete && (
-            <div
-              role="status"
-              className="mt-2 flex items-center gap-2 rounded-2xl bg-emerald-100 px-3 py-2.5 text-xs font-extrabold text-emerald-700"
-            >
-              <Check size={16} />
-              正しい語順です！ 答え合わせへ進もう。
             </div>
           )}
         </>

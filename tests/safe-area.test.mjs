@@ -5,10 +5,13 @@ import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 import {
+  APP_FRAME_HEIGHT_VAR,
   SAFE_AREA_BOTTOM_VAR,
   SAFE_AREA_TOP_VAR,
   VISUAL_VIEWPORT_HEIGHT_VAR,
   VISUAL_VIEWPORT_TOP_VAR,
+  isTextEntryElement,
+  resolveAppFrameHeight,
   resolveSafeAreaTop,
   statusBarFallback,
   syncSafeArea,
@@ -192,13 +195,16 @@ test('ブラウザの見えている範囲を実測し、メニューを上下�
   assert.equal(result.viewportTop, 48)
   assert.equal(properties.get(VISUAL_VIEWPORT_HEIGHT_VAR), '640px')
   assert.equal(properties.get(VISUAL_VIEWPORT_TOP_VAR), '48px')
+  // 文字を打っていないときは、外枠も見えている範囲に合わせる。
+  assert.equal(properties.get(APP_FRAME_HEIGHT_VAR), '640px')
 
   const css = read('src/index.css')
   const shell = read('src/components/AppShell.jsx')
   const sheet = read('src/components/Sheet.jsx')
   const menu = read('src/components/SpeechSettings.jsx')
   const safeArea = read('src/lib/safeArea.js')
-  assert.match(css, /:where\(\.study-app-surface\)\s*\{\s*height:\s*var\(--app-visual-viewport-height, 100svh\)/)
+  assert.match(css, /:where\(\.study-app-surface\)\s*\{\s*height:\s*var\(--app-frame-height, 100svh\)/)
+  assert.match(css, /:where\(\.study-app-viewport\)\s*\{\s*min-height:\s*var\(--app-frame-height, 100svh\)/)
   assert.doesNotMatch(shell, /(?:min-)?h-\[100svh\]/)
   assert.match(css, /\.app-viewport-overlay\s*\{[^}]*top:\s*var\(--app-visual-viewport-top[^}]*height:\s*var\(--app-visual-viewport-height/s)
   assert.match(sheet, /app-viewport-overlay fixed inset-x-0/)
@@ -206,6 +212,45 @@ test('ブラウザの見えている範囲を実測し、メニューを上下�
   assert.match(safeArea, /visualViewport\?\.addEventListener\('scroll'/)
   assert.match(safeArea, /visualViewport\?\.removeEventListener\('scroll'/)
   assert.doesNotMatch(menu, /maxH="92vh"/)
+})
+
+test('キーボードが出ている間は外枠を縮めず、打っている欄を本文の外へ押し出さない', () => {
+  // iPhone でキーボードが出ると、見えている範囲だけが約340px縮み、ページの高さは変わらない。
+  assert.equal(resolveAppFrameHeight({ viewportHeight: 476, layoutHeight: 812, typing: true }), 812)
+  // 欄を離れたあと、キーボードが閉じきるまでの途中の高さでも縮めない。
+  assert.equal(resolveAppFrameHeight({ viewportHeight: 560, layoutHeight: 812 }), 812)
+  // ブラウザのバーの出入りくらいの差は、これまでどおり見えている範囲に合わせる。
+  assert.equal(resolveAppFrameHeight({ viewportHeight: 752, layoutHeight: 812 }), 752)
+  // ピンチで拡大しているだけのときも、これまでどおり。
+  assert.equal(resolveAppFrameHeight({ viewportHeight: 406, layoutHeight: 812, scale: 2 }), 406)
+  assert.equal(resolveAppFrameHeight({ viewportHeight: 812, layoutHeight: 812, typing: true }), 812)
+  assert.equal(resolveAppFrameHeight({ viewportHeight: 0, layoutHeight: 812 }), 812)
+
+  // 英作文の入力欄に文字を打っている iPhone を模す。
+  const { view, properties } = fakeView({ envTop: 0, innerHeight: 812, screenHeight: 812 })
+  view.visualViewport = { height: 476, offsetTop: 24, scale: 1 }
+  view.document.activeElement = { tagName: 'TEXTAREA' }
+  const result = syncSafeArea(view)
+  assert.equal(result.frameHeight, 812)
+  assert.equal(properties.get(APP_FRAME_HEIGHT_VAR), '812px')
+  // 画面に重ねるシートは、これまでどおり見えている範囲（キーボードの上）に収める。
+  assert.equal(properties.get(VISUAL_VIEWPORT_HEIGHT_VAR), '476px')
+  assert.equal(properties.get(VISUAL_VIEWPORT_TOP_VAR), '24px')
+})
+
+test('キーボードが出る欄だけを「文字を打っている」とみなす', () => {
+  assert.equal(isTextEntryElement({ tagName: 'TEXTAREA' }), true)
+  assert.equal(isTextEntryElement({ tagName: 'INPUT', type: 'text' }), true)
+  assert.equal(isTextEntryElement({ tagName: 'INPUT', type: 'search' }), true)
+  assert.equal(isTextEntryElement({ tagName: 'INPUT' }), true)
+  assert.equal(isTextEntryElement({ tagName: 'DIV', isContentEditable: true }), true)
+  // 答え合わせのあとの読むだけの欄や、押すだけの部品ではキーボードは出ない。
+  assert.equal(isTextEntryElement({ tagName: 'TEXTAREA', readOnly: true }), false)
+  assert.equal(isTextEntryElement({ tagName: 'INPUT', type: 'text', disabled: true }), false)
+  assert.equal(isTextEntryElement({ tagName: 'INPUT', type: 'checkbox' }), false)
+  assert.equal(isTextEntryElement({ tagName: 'INPUT', type: 'range' }), false)
+  assert.equal(isTextEntryElement({ tagName: 'BUTTON' }), false)
+  assert.equal(isTextEntryElement(null), false)
 })
 
 test('ブラウザで開いても、流し込みの下端に使われない余白を作らない', () => {
