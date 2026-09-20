@@ -20,7 +20,6 @@ export const DRAGON_VEIN_NODES = Object.freeze([
     guideId: 'librarian-kisaragi',
     guideName: '如月 栞先生',
     guideRole: '司書教諭',
-    fields: ['文学', '言語', '教育', '歴史'],
     clue: '書名から消えた英語を、語源と文脈から復元する。',
   },
   {
@@ -34,7 +33,6 @@ export const DRAGON_VEIN_NODES = Object.freeze([
     guideId: 'international-elena',
     guideName: 'エレナ先生',
     guideRole: '国際交流教師',
-    fields: ['交通', 'コミュニケーション', '地理', '社会'],
     clue: '案内表示の空白を、人と街の流れから読み解く。',
   },
   {
@@ -48,7 +46,6 @@ export const DRAGON_VEIN_NODES = Object.freeze([
     guideId: 'biology-mori',
     guideName: '森 葉子先生',
     guideRole: '生物教師',
-    fields: ['自然', '環境', '科学', '医学', '心理'],
     clue: '植物と人の生命活動に残る“名前の欠落”を観察する。',
   },
   {
@@ -62,7 +59,6 @@ export const DRAGON_VEIN_NODES = Object.freeze([
     guideId: 'history-sakaki',
     guideName: '榊 時生先生',
     guideRole: '歴史教師',
-    fields: ['歴史', '宗教', '芸術', '言語'],
     clue: '古い奉納文の中に紛れ込んだ英語の断片をつなぐ。',
   },
   {
@@ -76,7 +72,6 @@ export const DRAGON_VEIN_NODES = Object.freeze([
     guideId: 'track-hayate',
     guideName: '風早 颯先生',
     guideRole: '陸上部顧問',
-    fields: ['スポーツ', '医学', '測定', '心理', '性質・状態'],
     clue: '消えた記録名と戦術語を、身体の感覚と数値から再構成する。',
   },
   {
@@ -90,7 +85,6 @@ export const DRAGON_VEIN_NODES = Object.freeze([
     guideId: 'principal-albert',
     guideName: 'アルバート校長',
     guideRole: '校長・記憶保全責任者',
-    fields: [],
     extra: true,
     clue: '五つの龍脈が揃ったときだけ開く、最後の記憶層。',
   },
@@ -99,16 +93,16 @@ export const DRAGON_VEIN_NODES = Object.freeze([
 const NODE_BY_ID = new Map(DRAGON_VEIN_NODES.map((node) => [node.id, node]))
 
 export const DRAGON_VEIN_DAILY_DISTORTIONS = Object.freeze([
-  { id: 'morning-broadcast', title: '朝の放送から消えた一語', place: '学校・放送室', stageId: 'classroom', guideId: 'english-kanda', levelId: '5', kind: 'vocab', fields: ['コミュニケーション', '教育'], summary: 'チャイム後のアナウンスに、誰も気づかない不自然な空白がある。' },
-  { id: 'station-sign', title: '駅の案内板が読めない', place: '駅前', stageId: 'station-platform', guideId: 'international-elena', levelId: '4', kind: 'vocab', fields: ['交通', '地理'], summary: '日本語はあるのに、外国人が見ていた部分だけをみんな思い出せない。' },
-  { id: 'science-label', title: '理科室のラベルの違和感', place: '理科室', stageId: 'science-lab', guideId: 'chemistry-shirabe', levelId: '3', kind: 'vocab', fields: ['科学', '測定'], summary: '器具名の一部が空白なのに、授業はそのまま進んでいる。' },
+  { id: 'morning-broadcast', title: '朝の放送から消えた一語', place: '学校・放送室', stageId: 'classroom', guideId: 'english-kanda', levelId: '5', kind: 'vocab', summary: 'チャイム後のアナウンスに、誰も気づかない不自然な空白がある。' },
+  { id: 'station-sign', title: '駅の案内板が読めない', place: '駅前', stageId: 'station-platform', guideId: 'international-elena', levelId: '4', kind: 'vocab', summary: '日本語はあるのに、外国人が見ていた部分だけをみんな思い出せない。' },
+  { id: 'science-label', title: '理科室のラベルの違和感', place: '理科室', stageId: 'science-lab', guideId: 'chemistry-shirabe', levelId: '3', kind: 'vocab', summary: '器具名の一部が空白なのに、授業はそのまま進んでいる。' },
   { id: 'library-index', title: '検索索引の欠番', place: '図書館', stageId: 'grand-library', guideId: 'librarian-kisaragi', levelId: 'pre2', kind: 'phrase', summary: '本はそこにあるのに、検索用の言い回しだけが記憶から落ちている。' },
   { id: 'news-caption', title: 'ニュース速報の消えた表現', place: '放課後・街頭モニター', stageId: 'station-platform', guideId: 'social-takamine', levelId: '2', kind: 'phrase', summary: '速報の因果関係が一箇所だけつながらず、街の人は違和感すら抱かない。' },
   { id: 'club-score', title: '部活の指示から消えた表現', place: '音楽室', stageId: 'music-room', guideId: 'piano-ayane', levelId: '3', kind: 'phrase', summary: '楽譜の表現指示に空白があり、合奏の意図が揃わない。' },
-  { id: 'lunch-menu', title: '食堂メニューの正体不明料理', place: '学校食堂', stageId: 'school-courtyard', guideId: 'international-elena', levelId: '5', kind: 'vocab', fields: ['料理', '食・生活'], summary: 'いつもの料理なのに、名前の由来だけがぽっかり消えている。' },
+  { id: 'lunch-menu', title: '食堂メニューの正体不明料理', place: '学校食堂', stageId: 'school-courtyard', guideId: 'international-elena', levelId: '5', kind: 'vocab', summary: 'いつもの料理なのに、名前の由来だけがぽっかり消えている。' },
   { id: 'weather-app', title: '天気アプリの警報文', place: '通学路', stageId: 'riverside-promenade', guideId: 'astronomy-tsukishiro', levelId: '4', kind: 'phrase', summary: '雨雲は近づいているのに、注意を促す表現が理解されていない。' },
-  { id: 'shop-poster', title: '商店街ポスターの空白', place: '駅前商店街', stageId: 'station-platform', guideId: 'design-maya', levelId: '3', kind: 'vocab', fields: ['ビジネス', '経済', '芸術'], summary: 'ロゴの下に不自然な空白があるが、店員は完成品だと思い込んでいる。' },
-  { id: 'sports-record', title: '競技記録の項目消失', place: '競技場', stageId: 'stadium-field', guideId: 'track-hayate', levelId: '2', kind: 'vocab', fields: ['スポーツ', '測定'], summary: '数字だけが残り、何を測った記録なのか誰も説明できない。' },
+  { id: 'shop-poster', title: '商店街ポスターの空白', place: '駅前商店街', stageId: 'station-platform', guideId: 'design-maya', levelId: '3', kind: 'vocab', summary: 'ロゴの下に不自然な空白があるが、店員は完成品だと思い込んでいる。' },
+  { id: 'sports-record', title: '競技記録の項目消失', place: '競技場', stageId: 'stadium-field', guideId: 'track-hayate', levelId: '2', kind: 'vocab', summary: '数字だけが残り、何を測った記録なのか誰も説明できない。' },
   { id: 'old-plaque', title: '神社の古い案内板', place: '神社', stageId: 'shrine-forecourt', guideId: 'history-sakaki', levelId: 'pre2', kind: 'phrase', summary: '古い由緒と現代の案内をつなぐ表現だけが、誰の記憶にも残っていない。' },
   { id: 'class-handout', title: '授業プリントの暗号化', place: '教室', stageId: 'classroom', guideId: 'math-takagi', levelId: '4', kind: 'phrase', summary: '文のつながりが記号のように見え、先生にはかすかな既視感だけが残る。' },
 ])
@@ -328,7 +322,6 @@ export function dragonVeinSessionSource(nodeId, kind = 'vocab', extras = {}) {
     locationId: node.id,
     levelId: node.levelId,
     guideId: node.guideId,
-    fields: node.fields,
     stageId: node.stageId,
     ...extras,
   }

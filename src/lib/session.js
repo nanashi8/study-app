@@ -110,16 +110,6 @@ function battlePool(levelIndex, rng = Math.random) {
   return [...main, ...review]
 }
 
-function dragonVeinWordPool(source = {}) {
-  const byLevel = wordsByLevel(source.levelId)
-  const fields = new Set(Array.isArray(source.fields) ? source.fields : [])
-  if (!fields.size) return byLevel
-  const focused = byLevel.filter((word) => fields.has(word.field))
-  // 担当分野が少数でも100問へ到達できるよう、同じ級の語を後段へ補う。
-  const focusedIds = new Set(focused.map((word) => word.id))
-  return [...focused, ...byLevel.filter((word) => !focusedIds.has(word.id))]
-}
-
 export function wordsForSource(source = {}) {
   switch (source.type) {
     case 'all':
@@ -135,7 +125,7 @@ export function wordsForSource(source = {}) {
     case 'battle':
       return battlePool(source.levelIndex ?? enemyLevelIndex(source.pos ?? 0))
     case 'dragonVein':
-      return dragonVeinWordPool(source)
+      return wordsByLevel(source.levelId)
     case 'root':
       return wordsByRoot(source.rootId)
     case 'mylist':
@@ -495,8 +485,9 @@ export function buildDeck(
   if (source.type === 'deck' && source.preserveOrder === true) {
     return size ? stock.slice(0, size) : stock
   }
-  // それ以外は全教材共通の出題順（studyOrder.js）：今日の候補（復習日を迎えた語・未学習／未回答の語）
-  // → 今日「まだ」「不正解」になった語 → そのほか。同じ段の中は点数の低い順。
+  // それ以外は全教材共通の出題順（studyOrder.js）：今日の候補（取りこぼしている復習語・未学習／未回答の語）
+  // → 今日「まだ」「不正解」になった語 → 連続で覚えた・正解した語の確認 → そのほか。
+  // 同じ段の中は点数の低い順。
   const keys = new Map(stock.map((word) => [
     word.id,
     studyOrderKey(srs[word.id], { purpose, now, day }),
@@ -519,8 +510,8 @@ export function buildDeck(
         hasVocabularyReviewEvidence(srs[word.id]) ? sides.review : sides.fresh
       ))
 
-  // 通常セッションは「今日の候補」（出題順の0・1段）から組む。今日「まだ」「不正解」になった語と、
-  // 覚えた・正解で復習日前の語は、今日の候補があるうちは暗記にもテストにも混ぜない。
+  // 通常セッションは「今日の候補」（出題順の0・1段）から組む。今日「まだ」「不正解」になった語、
+  // 連続で覚えた・正解した語の確認、復習日前の語は、今日の候補があるうちは暗記にもテストにも混ぜない。
   const candidates = mixPool.filter((word) => (
     keys.get(word.id).stage <= STUDY_ORDER_STAGE.fresh
   ))
@@ -534,7 +525,8 @@ export function buildDeck(
     candidates, srs, day, size, purpose, cycleIds, freshShareOverride,
   )
   // 今日の候補で足りない分は、同じ教材の残りを出題順（今日「まだ」「不正解」になった語を点数の低い順に、
-  // そのあと覚えた・正解の語）で続けて出す。今日の候補を学び終えた日も、次の復習日を待たずにくり返せる。
+  // そのあと連続で覚えた・正解した語の確認、最後に復習日前の語）で続けて出す。
+  // 今日の候補を学び終えた日も、次の復習日を待たずにくり返せる。
   if (deck.length < size) {
     const used = new Set([
       ...deck.map((word) => word.id),
@@ -705,10 +697,6 @@ export function buildPhraseDeck(
     pool = pool.filter((p) => srs[p.id] && srs[p.id].due <= day)
   }
   pool = orderForStudy(pool, srs, { purpose, now, day })
-  if (source.type === 'dragonVeinPhrase' && Number.isFinite(size) && size && pool.length > 0 && pool.length < size) {
-    const original = [...pool]
-    while (pool.length < size) pool.push(original[pool.length % original.length])
-  }
   return size ? pool.slice(0, size) : pool
 }
 

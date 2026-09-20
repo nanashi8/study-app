@@ -15,6 +15,8 @@ import {
   normalizeDragonVeinProgress,
   recordDragonVeinResult,
 } from '../src/lib/dragonVein.js'
+import { phrasesByLevel } from '../src/data/phrases.js'
+import { wordsByLevel } from '../src/data/vocab.js'
 import { buildDeck, buildPhraseDeck } from '../src/lib/session.js'
 
 test('five main vertices map 5, 4, 3, pre2, 2 and extra maps 1', () => {
@@ -87,12 +89,40 @@ test('expression contract covers thought, worry, anguish, deep thought, and exce
   assert.equal(dragonVeinExpression({ answered: true, lastAnswer: 'correct', streak: 5 }), 'delighted')
 })
 
-test('every vertex can build 100 vocabulary and 100 idiom/syntax questions', () => {
+// 龍脈も他の教材と同じ在庫から出す。担当分野で絞ったり、在庫が足りないときに
+// 同じ項目をくり返して問題数を水増ししたりはしない。
+test('every vertex draws from its level stock without repeating an item', () => {
   for (const node of DRAGON_VEIN_NODES) {
-    const vocab = buildDeck(dragonVeinSessionSource(node.id, 'vocab'), { size: 100 })
-    const phrase = buildPhraseDeck(dragonVeinSessionSource(node.id, 'phrase'), { size: 100 })
-    assert.equal(vocab.length, 100, `${node.levelLabel} vocabulary`)
-    assert.equal(phrase.length, 100, `${node.levelLabel} phrases`)
+    const words = wordsByLevel(node.levelId)
+    const phrases = [
+      ...phrasesByLevel('idiom', node.levelId),
+      ...phrasesByLevel('syntax', node.levelId),
+    ]
+    const vocab = buildDeck(dragonVeinSessionSource(node.id, 'vocab'), { size: DRAGON_VEIN_TARGET })
+    const phrase = buildPhraseDeck(
+      dragonVeinSessionSource(node.id, 'phrase'),
+      { size: DRAGON_VEIN_TARGET },
+    )
+    assert.equal(
+      vocab.length,
+      Math.min(DRAGON_VEIN_TARGET, words.length),
+      `${node.levelLabel} vocabulary`,
+    )
+    assert.equal(
+      phrase.length,
+      Math.min(DRAGON_VEIN_TARGET, phrases.length),
+      `${node.levelLabel} phrases`,
+    )
+    assert.equal(
+      new Set(vocab.map((word) => word.id)).size,
+      vocab.length,
+      `${node.levelLabel} vocabulary の重複`,
+    )
+    assert.equal(
+      new Set(phrase.map((item) => item.id)).size,
+      phrase.length,
+      `${node.levelLabel} phrases の重複`,
+    )
   }
 })
 

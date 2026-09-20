@@ -3,7 +3,12 @@ import {
   quizStatusForSrsEntry,
 } from './contentProgress.js'
 import { reviewMarksForEntry } from './reviewHistory.js'
-import { MAINTENANCE_SRS_BOX, MAX_SRS_BOX, SRS_INTERVAL_DAYS } from './srs.js'
+import {
+  LONG_TERM_SRS_BOX,
+  MAINTENANCE_SRS_BOX,
+  MAX_SRS_BOX,
+  SRS_INTERVAL_DAYS,
+} from './srs.js'
 
 export const VOCAB_REVIEW_INTERVALS = SRS_INTERVAL_DAYS
 export const MAX_VOCAB_REVIEW_BOX = MAX_SRS_BOX
@@ -113,6 +118,7 @@ export function vocabularyReviewMetrics(
       daysUntilDue: null,
       due: false,
       needsReview: false,
+      steady: false,
       shouldAutoAppear: true,
       coolingDown: false,
       learningStatus: 'unlearned',
@@ -150,6 +156,9 @@ export function vocabularyReviewMetrics(
   // 旧保存で期限が長すぎる語も、1日以上経ち定着予測が十分低ければ拾う。
   const retentionDue = elapsedDays >= 1 && retention < 0.56
   const needsReview = failedLatest || scheduledDue || retentionDue
+  // 復習日が来た語のうち、取りこぼさずに連続で「覚えた」「正解」を重ねてきた語。
+  // 忘れかけの語と同じ最優先では出さず、確認として後ろの順番で出す。
+  const steady = needsReview && !failedLatest && box >= LONG_TERM_SRS_BOX
   const daysUntilDue = Number.isFinite(entry?.due)
     ? Math.max(0, Math.floor(entry.due - day))
     : 0
@@ -163,9 +172,12 @@ export function vocabularyReviewMetrics(
     daysUntilDue,
     due: scheduledDue,
     needsReview,
+    steady,
     // 「まだ」の直後は明示的な復習では扱えるが、通常学習へ同日に
     // 自動再投入しない。翌日には再び通常の復習候補へ戻る。
-    shouldAutoAppear: learningStatus === 'unlearned' || (needsReview && !coolingDown),
+    // 連続で覚えた・正解した語の確認（steady）も、今日の候補には数えない。
+    // 「復習する」から入ったときは、これまでどおり復習日の来た語として出す。
+    shouldAutoAppear: learningStatus === 'unlearned' || (needsReview && !coolingDown && !steady),
     coolingDown,
     learningStatus,
     reason: learningStatus === 'unlearned'

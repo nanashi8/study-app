@@ -268,7 +268,6 @@ export function AfterSchoolChronicleScreen() {
       distortionSummary: distortion.summary,
       levelId: distortion.levelId,
       guideId: distortion.guideId,
-      fields: distortion.fields ?? [],
       stageId: distortion.stageId,
       studentId: battleStudent.id,
     })

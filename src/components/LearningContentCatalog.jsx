@@ -67,6 +67,7 @@ const MANUAL_PRIORITY_LABELS = Object.freeze([
 const PRIORITY_META = Object.freeze({
   retry: { label: 'もう一度取り組む', className: 'bg-rose-50 text-rose-700' },
   due: { label: '復習どき', className: 'bg-amber-50 text-amber-800' },
+  steady: { label: '定着の確認', className: 'bg-sky-50 text-sky-700' },
   waiting: { label: '学習記録あり', className: 'bg-emerald-50 text-emerald-700' },
   unlearned: { label: '未学習', className: 'bg-slate-100 text-slate-500' },
 })

@@ -8,19 +8,22 @@ import { localDayIndex, vocabularyReviewMetrics } from './vocabScheduler.js'
 // 暗記・テストで、どの項目から出すか。単語・熟語・文法・リスニング・書き取り・語源・古典・漢文・英作文の
 // どの教材も、この1つの決まりで並べる。
 //
-//   0段 復習日を迎えた項目（前の日に「まだ」「不正解」だった項目を含む）
+//   0段 復習日を迎えて取りこぼしている項目（前の日に「まだ」「不正解」だった項目を含む）
 //   1段 まだ学習していない項目（暗記）・まだ答えていない項目（テスト）
 //   2段 今日「まだ」「不正解」になった項目
-//   3段 そのほか（覚えた・正解で、次の復習日を待っている項目）
+//   3段 復習日は来たが、連続で「覚えた」「正解」を重ねている項目（定着の確認）
+//   4段 そのほか（次の復習日を待っている項目）
 //
 // 0段と1段が今日の候補。今日の候補を出し切ってから、今日「まだ」「不正解」になった項目へ進む。
+// 連続で覚えた・正解した項目の復習は、忘れかけの項目と今日つまずいた項目を終えてから出す。
 // 同じ段の中は点数の低い順（vocabularyReviewMetrics の score。一覧の「復習のおすすめ順」と同じ点数）。
 // 点数も同じ項目どうしは、呼び出すたびにシャッフルした順にする。
 export const STUDY_ORDER_STAGE = Object.freeze({
   review: 0,
   fresh: 1,
   missedToday: 2,
-  rest: 3,
+  steady: 3,
+  rest: 4,
 })
 
 const dayOf = (timestamp) => (
@@ -56,13 +59,17 @@ export function studyOrderKey(
   ) || (
     quizStatus === 'incorrect' && dayOf(entry?.test?.lastAt) === day
   )
-  const stage = metrics.needsReview && !metrics.coolingDown
+  // 復習日は来たが取りこぼしていない項目（metrics.steady）は、最優先の0段には入れない。
+  const dueNow = metrics.needsReview && !metrics.coolingDown
+  const stage = dueNow && !metrics.steady
     ? STUDY_ORDER_STAGE.review
     : fresh
       ? STUDY_ORDER_STAGE.fresh
       : missedToday
         ? STUDY_ORDER_STAGE.missedToday
-        : STUDY_ORDER_STAGE.rest
+        : dueNow
+          ? STUDY_ORDER_STAGE.steady
+          : STUDY_ORDER_STAGE.rest
   return {
     stage,
     score: metrics.score,
@@ -112,7 +119,7 @@ export function orderForStudy(items = [], srs = {}, options = {}) {
 /**
  * 1項目に複数の問題がある教材（古典文法・古典常識のテスト）。未回答・不正解は問題ごとの直近の結果
  * （contentQuizResults）で見て、点数はその問題が扱う項目の記録から出す。
- * 前の日に間違えた問題は0段、まだ答えていない問題は1段、今日間違えた問題は2段、正解した問題は3段。
+ * 前の日に間違えた問題は0段、まだ答えていない問題は1段、今日間違えた問題は2段、正解した問題は最後の段。
  */
 export function rankQuestionsForStudy(
   questions = [],
@@ -143,7 +150,8 @@ export function rankQuestionsForStudy(
 
 /**
  * 出題順に並べた候補（rankForStudy などの結果）から limit 件を選び、出題順で返す。
- * 形式ごとの配分（quotas：形式 → 件数）は、今日の候補（0・1段）とそのほか（3段）の中で守る。
+ * 形式ごとの配分（quotas：形式 → 件数）は、今日の候補（0・1段）・定着の確認（3段）・
+ * そのほか（4段）の中で守る。
  * 今日「まだ」「不正解」になった項目（2段）は、配分より点数の低い順を優先する。
  * どの段でも、前の段の項目を残したまま後ろの段の項目を出すことはしない。
  */

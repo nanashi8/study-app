@@ -22,6 +22,7 @@ import {
 import { buildListeningDeck, listeningByLevel } from '../src/data/listening.js'
 import { PHRASES } from '../src/data/phrases.js'
 import { recordContentQuizResult } from '../src/lib/contentProgress.js'
+import { LONG_TERM_SRS_BOX } from '../src/lib/srs.js'
 import { buildGrammarDeck, grammarVariationKey } from '../src/lib/grammarDeck.js'
 import { buildDeck, buildPhraseDeck, wordsForSource } from '../src/lib/session.js'
 import { orderForStudy, studyOrderKey } from '../src/lib/studyOrder.js'
@@ -44,6 +45,32 @@ function recorded(results, { at = NOW, skill = null } = {}) {
       useStore.getState().review('fixture', result, skill)
     })
     return useStore.getState().srs.fixture
+  } finally {
+    Date.now = realNow
+    useStore.setState(original, true)
+  }
+}
+
+// 復習日が来るたびに成功し続けた記録。箱が上がって間隔がのび、いまは復習日を過ぎている。
+function steadyRecorded(result, { skill = null, startDaysAgo = 40 } = {}) {
+  const original = useStore.getState()
+  const realNow = Date.now
+  try {
+    useStore.setState({ srs: {} })
+    let daysAgo = startDaysAgo
+    for (let turn = 0; turn < startDaysAgo && daysAgo > 0; turn += 1) {
+      Date.now = () => NOW - daysAgo * DAY_MS
+      useStore.getState().review('fixture', result, skill)
+      const entry = useStore.getState().srs.fixture
+      // 箱が育ったら、そのまま復習日が過ぎるまで置いておく。
+      if (entry.box >= LONG_TERM_SRS_BOX) break
+      const wait = Math.max(1, entry.due - todayIndex(NOW - daysAgo * DAY_MS))
+      daysAgo = Math.max(1, daysAgo - wait)
+    }
+    const entry = useStore.getState().srs.fixture
+    assert.ok(entry.box >= LONG_TERM_SRS_BOX, `素材の箱 ${entry.box}`)
+    assert.ok(entry.due <= DAY, `素材の復習日 ${entry.due - DAY}`)
+    return entry
   } finally {
     Date.now = realNow
     useStore.setState(original, true)
@@ -106,7 +133,7 @@ function assertStudyOrder(orderedIds, { fresh, missed, rest }, label) {
   )
 }
 
-test('出題の段は、復習日を迎えた項目 → 未学習・未回答 → 今日の「まだ」「不正解」 → そのほか', () => {
+test('出題の段は、取りこぼしの復習 → 未学習・未回答 → 今日の「まだ」「不正解」 → 定着の確認 → そのほか', () => {
   const cases = [
     { label: '記録なし', entry: undefined, study: 1, quiz: 1 },
     { label: '前の日に「まだ」', entry: recorded(['forgot'], { at: NOW - DAY_MS }), study: 0, quiz: 0 },
@@ -116,12 +143,35 @@ test('出題の段は、復習日を迎えた項目 → 未学習・未回答 �
     { label: '今日「わからない」', entry: recorded(['unknown']), study: 1, quiz: 2 },
     { label: '今日「覚えた」→「不正解」', entry: recorded(['remembered', 'wrong']), study: 2, quiz: 2 },
     { label: '今日「まだ」→「正解」', entry: recorded(['forgot', 'correct']), study: 2, quiz: 2 },
-    { label: '今日「覚えた」（テストは未回答）', entry: recorded(['remembered']), study: 3, quiz: 1 },
-    { label: '今日「覚えた」→「正解」', entry: recorded(['remembered', 'correct']), study: 3, quiz: 3 },
+    { label: '今日「覚えた」（テストは未回答）', entry: recorded(['remembered']), study: 4, quiz: 1 },
+    { label: '今日「覚えた」→「正解」', entry: recorded(['remembered', 'correct']), study: 4, quiz: 4 },
+    // 連続で成功を重ねた項目は、復習日が来ても最優先では出さない。
+    { label: '連続「覚えた」で復習日が来た', entry: steadyRecorded('remembered'), study: 3, quiz: 1 },
+    { label: '連続「正解」で復習日が来た', entry: steadyRecorded('correct'), study: 1, quiz: 3 },
   ]
   for (const { label, entry, study, quiz } of cases) {
     assert.equal(studyOrderKey(entry, { purpose: 'study', now: NOW, day: DAY }).stage, study, `暗記・${label}`)
     assert.equal(studyOrderKey(entry, { purpose: 'quiz', now: NOW, day: DAY }).stage, quiz, `テスト・${label}`)
+  }
+})
+
+test('連続で覚えた・正解した項目の復習は、今日の「まだ」「不正解」より後ろに出す', () => {
+  for (const purpose of ['study', 'quiz']) {
+    const hit = purpose === 'quiz' ? 'correct' : 'remembered'
+    const miss = purpose === 'quiz' ? 'wrong' : 'forgot'
+    const srs = {
+      overdue: recorded([miss], { at: NOW - DAY_MS }),
+      missed: recorded([miss]),
+      steady: steadyRecorded(hit),
+    }
+    const items = ['steady', 'missed', 'fresh', 'overdue'].map((id) => ({ id }))
+    for (let run = 1; run <= 20; run += 1) {
+      assert.deepEqual(
+        idsOf(orderForStudy(items, srs, { purpose, now: NOW, day: DAY })),
+        ['overdue', 'fresh', 'missed', 'steady'],
+        `${purpose}・${run}回目`,
+      )
+    }
   }
 })
 
@@ -181,6 +231,35 @@ test('英単語の暗記・テストも、今日の候補を出し切ってか�
       idsOf(buildDeck(source, { ...options, size: 3 })).slice(2),
       assigned.missed.slice(0, 1),
       `${purpose}: 今日の候補のすぐ後は、いちばん点数の低い語`,
+    )
+  }
+})
+
+test('英単語の今日の候補に、連続で覚えた・正解した語の復習は混ぜない', () => {
+  const { source, words } = smallChapter()
+  for (const purpose of ['study', 'quiz']) {
+    const hit = purpose === 'quiz' ? 'correct' : 'remembered'
+    const ids = idsOf(words)
+    const fresh = ids.slice(0, 2)
+    const steady = ids.slice(2, 5)
+    const steadyEntry = steadyRecorded(hit, { skill: 'vocab' })
+    const srs = {}
+    for (const id of steady) srs[id] = steadyEntry
+    // 残りは今日学び終えた語にして、今日の候補が未学習・未回答の2語だけになるようにする。
+    for (const id of ids.slice(5)) srs[id] = recorded([hit], { skill: 'vocab' })
+    const options = { srs, purpose, now: NOW, day: DAY }
+
+    assert.deepEqual(
+      new Set(idsOf(buildDeck(source, { ...options, size: 2 }))),
+      new Set(fresh),
+      `${purpose}: 今日の候補だけで足りる回`,
+    )
+    const all = idsOf(buildDeck(source, { ...options, size: 0 }))
+    assert.deepEqual(new Set(all.slice(0, 2)), new Set(fresh), `${purpose}: 未学習・未回答から出す`)
+    assert.deepEqual(
+      new Set(all.slice(2, 5)),
+      new Set(steady),
+      `${purpose}: 定着の確認は今日の候補の後`,
     )
   }
 })

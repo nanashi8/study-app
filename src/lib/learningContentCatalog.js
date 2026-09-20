@@ -237,10 +237,11 @@ function srsReviewState(entry, options) {
   const failed = entry?.memory?.lastJudgment === 'forgot'
     || entry?.test?.lastResult === 'wrong'
     || entry?.test?.lastResult === 'unknown'
+  // 連続で「覚えた」「正解」を重ねてきた語の復習（metrics.steady）は、忘れかけの語より下に置く。
   const weight = learningStatus === 'unlearned' && testStatus === 'unanswered'
     ? 0
     : 20
-      + (metrics.needsReview ? 200 : 0)
+      + (metrics.needsReview ? (metrics.steady ? 40 : 200) : 0)
       + (failed ? 100 : 0)
       + (metrics.due ? 30 : 0)
       + (100 - metrics.score)
@@ -254,11 +255,13 @@ function srsReviewState(entry, options) {
     needsReview: metrics.needsReview,
     priority: failed
       ? 'retry'
-      : metrics.needsReview
-        ? 'due'
-        : learningStatus !== 'unlearned' || testStatus !== 'unanswered'
-          ? 'waiting'
-          : 'unlearned',
+      : metrics.steady
+        ? 'steady'
+        : metrics.needsReview
+          ? 'due'
+          : learningStatus !== 'unlearned' || testStatus !== 'unanswered'
+            ? 'waiting'
+            : 'unlearned',
     weight,
   }
 }

@@ -48,8 +48,9 @@ const reviewWeightFromMetrics = (metrics) => {
 
   // 数値自体は学習者へ見せない。復習が必要な語を大きく分けたうえで、
   // 直近の失敗、復習日の到来、現在の定着度を使って級内の順番だけを決める。
+  // 連続で「覚えた」「正解」を重ねてきた語の復習（metrics.steady）は、忘れかけの語より下に置く。
   return 20
-    + (metrics.needsReview ? 200 : 0)
+    + (metrics.needsReview ? (metrics.steady ? 40 : 200) : 0)
     + (metrics.reason === 'recent-failure' ? 100 : 0)
     + (metrics.due ? 30 : 0)
     + (100 - metrics.score)
@@ -62,6 +63,7 @@ export function vocabularyReviewWeight(entry, options = {}) {
 export function vocabularyCatalogPriority(metrics) {
   if (metrics.learningStatus === 'unlearned') return 'unlearned'
   if (metrics.reason === 'recent-failure') return 'retry'
+  if (metrics.steady) return 'steady'
   if (metrics.needsReview) return 'due'
   return 'waiting'
 }
