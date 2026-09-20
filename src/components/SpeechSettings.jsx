@@ -66,6 +66,7 @@ import {
   APP_MENU_SECTIONS,
   CONTENT_SETTING_GROUPS,
   contentSettingsSummary,
+  dailyGoalUnit,
 } from '../lib/appMenu.js'
 import { resetProgressEverywhere } from '../lib/cloudSync.js'
 import {
@@ -505,11 +506,14 @@ function VocabMixSetting() {
 
 function DailyGoalSetting() {
   const dailyGoal = useSettingField('dailyGoal')
+  const { scopes } = useContext(SettingTargetContext)
+  // 数え方は教材の呼び方に合わせる（英単語は語、熟語・古典・漢文は項目）。
+  const unit = dailyGoalUnit(scopes)
 
   return (
     <SettingRow
       title="1日の目標"
-      desc={dailyGoal.mixed ? null : `現在 ${dailyGoal.value ?? 20}語`}
+      desc={dailyGoal.mixed ? null : `現在 ${dailyGoal.value ?? 20}${unit}`}
       mixed={dailyGoal.mixed}
       stacked
     >
@@ -527,7 +531,7 @@ function DailyGoalSetting() {
                 : 'bg-brand-50 text-brand-700',
             )}
           >
-            {goal}語
+            {goal}{unit}
           </button>
         ))}
       </div>

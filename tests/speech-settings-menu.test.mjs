@@ -265,8 +265,8 @@ test('教材の行はその教材で効く設定を開き、設定のいちば�
     for (const key of item.settings) assert.ok(settingsOf('home').includes(key), `英語アプリに ${item.label} の ${key} が無い`)
   }
   assert.deepEqual(settingsOf('mathMap'), [])
-  assert.deepEqual(settingsOf('kotenList'), ['revealAnswers', 'sessionSize', 'autoAdvanceCorrect'])
-  assert.deepEqual(settingsOf('kanbunHome'), ['revealAnswers', 'sessionSize', 'autoAdvanceCorrect'])
+  assert.deepEqual(settingsOf('kotenList'), ['revealAnswers', 'sessionSize', 'autoAdvanceCorrect', 'dailyGoal'])
+  assert.deepEqual(settingsOf('kanbunHome'), ['revealAnswers', 'sessionSize', 'autoAdvanceCorrect', 'dailyGoal'])
   assert.deepEqual(settingsOf('diagnostic'), ['ttsRate', 'ttsVoiceURI'])
   // 出題バランスは級・分野から始める英単語だけ。日本語の声は、訳や古典・漢文を読み上げる教材と、
   // 意味・例文の意味を読む英単語・熟語・構文の暗記カードを開く教材だけ。読み上げる範囲は、その暗記カードを開く教材だけ。
@@ -281,7 +281,7 @@ test('教材の行はその教材で効く設定を開き、設定のいちば�
   )
   assert.deepEqual(screensUsing('speechRange'), screensUsing('autoSpeak').filter((screen) => screen !== 'dictation'))
   assert.equal(contentSettingsSummary({ settings: settingsOf('writing') }), '問題数・読み上げ')
-  assert.equal(contentSettingsSummary({ settings: settingsOf('kotenList') }), '答えの表示・問題数・自動で次へ')
+  assert.equal(contentSettingsSummary({ settings: settingsOf('kotenList') }), '答えの表示・問題数・自動で次へ など')
   assert.equal(contentSettingsSummary({ settings: [] }), '変えられる設定はありません')
 
   // 教材の画面が読んでいる設定は、その教材の設定に必ず並ぶ（画面へ設定を足したら台帳にも足す）。

@@ -28,7 +28,7 @@ import { Bookmark, BookmarkFilled, Link, Lightbulb } from '../components/Icons.j
 import { WordListSheet, useWordInAnyBook } from '../components/WordListSheet.jsx'
 import { summarizeVocabularySrsItems } from '../lib/vocabScheduler.js'
 import { wordRelationsFor } from '../lib/wordRelations.js'
-import { VocabReviewHistory } from '../components/VocabReviewHistory.jsx'
+import { StudyReviewHistory } from '../components/StudyReviewHistory.jsx'
 
 // 辞書の前後（アルファベット順で隣り合う見出し語）。ページをめくる感覚で移動。
 function NeighborList({ word, navigate }) {
@@ -144,7 +144,7 @@ export function WordDetailScreen() {
             {/* 日本語に定着したカタカナ語。意味がずれる語は注意書きを添える。 */}
             <LoanwordHint hint={relations.loanword} className="mt-2" />
             <LearningStatusBars progress={progress} className="mt-4" compact units={{ learning: '語', quiz: '問' }} />
-            <VocabReviewHistory entry={entry} className="mt-3 justify-start" />
+            <StudyReviewHistory entry={entry} className="mt-3 justify-start" />
           </Card>
 
           {/* 例文 */}

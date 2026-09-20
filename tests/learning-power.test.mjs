@@ -211,7 +211,7 @@ test('単語の学習・テスト結果は、復習・次セットまたは終�
     'utf8',
   )
   const reportSource = readFileSync(
-    new URL('../src/components/VocabCompletionReport.jsx', import.meta.url),
+    new URL('../src/components/StudyCompletionReport.jsx', import.meta.url),
     'utf8',
   )
 

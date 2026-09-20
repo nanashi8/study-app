@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { useStore, useContentSettings } from '../store/useStore.js'
 import { WordBookToggle } from '../components/WordListSheet.jsx'
 import {
@@ -13,17 +13,20 @@ import {
   Lightbulb,
 } from '../components/Icons.jsx'
 import { KotenText } from '../components/KotenFurigana.jsx'
-import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
+import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 import { answeredSessionIndexes, growDeck, restartSessionCount } from '../lib/session.js'
 import { orderForStudy } from '../lib/studyOrder.js'
 import {
   CardStudyFooter,
   CardSwipeRegion,
   LastAnsweredReturn,
-  StudyAnswerListButton,
   StudyAnswerReselect,
   useStudyAnswerLog,
 } from '../components/CardStudyControls.jsx'
+import { StudyCompletionReport } from '../components/StudyCompletionReport.jsx'
+import { StudyReviewHistory } from '../components/StudyReviewHistory.jsx'
+import { buildStudyCompletionReport } from '../lib/learningAnalyticsReport.js'
+import { nextStudyItems, studyContinueLabel } from '../lib/studyContinuation.js'
 import {
   canTurnRing,
   ringIndexAfter,
@@ -67,7 +70,6 @@ export function KotenCultureStudyScreen() {
   // 押し間違えたときだけここへ戻って選び直す。
   const [lastAnswered, setLastAnswered] = useState(null)
   const [done, setDone] = useState(false)
-  const [remembered, setRemembered] = useState(0)
   const {
     value: recordedAnswer,
     setValue: setRecordedAnswer,
@@ -79,12 +81,24 @@ export function KotenCultureStudyScreen() {
   // 答えたあと戻ってきたカードは、「覚えた／まだ」を選び直せる。
   const reselectable = useRevisitedAnswer(index, recordedAnswer !== null)
   const reviseReview = useStore((state) => state.reviseReview)
-  // 1回の数を減らして数え直す前に答えたカード。結果の全枚数に含める。
-  const carried = useCarriedAnswers()
+  const srs = useStore((state) => state.kotenCultureSrs)
+  const streak = useStore((state) => state.stats.streak)
+  const learningAnalytics = useStore((state) => state.learningAnalytics)
+  const skillStats = useStore((state) => state.skillStats)
+  // 答える前の記録。終わったときに「復習間隔が延びた項目」を数えるのに使う。
+  const srsAtStart = useRef(useStore.getState().kotenCultureSrs)
+  // ひと続きの学習で答えた項目。「続けて次の◯へ」で一巡するまで出さない。
+  const cycleIds = useRef(new Set())
+  const completedAt = useRef(null)
   // 終えたあと「一覧で確認」で見せる、今回「覚えた」「まだ」と答えた古典常識。
   const answerLog = useStudyAnswerLog()
 
   const item = deck[index]
+  // 今回答えた項目（前へ戻って選び直した分も、最後の答えで1件だけ数える）。
+  const answeredIds = () => {
+    const groups = answerLog.groups()
+    return [...groups.forgot, ...groups.remembered].map((entry) => entry.id)
+  }
   const category = item
     ? KOTEN_CULTURE_CATEGORIES.find((candidate) => candidate.id === item.category)
     : null
@@ -105,16 +119,53 @@ export function KotenCultureStudyScreen() {
     )
   }
 
-  const restart = () => {
+  const restart = (ids = params.ids, size = 0) => {
+    // ひと続きの学習で答えた項目は、一巡するまで「続けて次の◯へ」で出さない。
+    for (const id of answeredIds()) cycleIds.current.add(id)
     receipts.clear()
-    carried.reset()
     answerLog.reset()
-    setDeck(buildDeck(params.ids, deck.length, params.preserveOrder))
+    completedAt.current = null
+    setDeck(buildDeck(ids, size, params.preserveOrder))
     setIndex(0)
     setFlipped(revealAll)
+    setLastAnswered(null)
     setDone(false)
-    setRemembered(0)
     clearRecordedAnswers()
+  }
+
+  // 答えた項目と、その項目を答える前の段階。全教材共通の暗記完了レポートへ渡す。
+  const completionReport = () => {
+    const groups = answerLog.groups()
+    const ids = [...groups.forgot, ...groups.remembered].map((entry) => entry.id)
+    return buildStudyCompletionReport({
+      contentId: 'koten-culture',
+      srs,
+      learningAnalytics,
+      skillStats,
+      ids,
+      reviewIds: groups.forgot.map((entry) => entry.id),
+      beforeBoxes: Object.fromEntries(ids.map((id) => [
+        id,
+        Number.isFinite(srsAtStart.current?.[id]?.box) ? srsAtStart.current[id].box : null,
+      ])),
+      correct: groups.remembered.length,
+      wrong: groups.forgot.length,
+      dailyGoal: settings.dailyGoal,
+      now: completedAt.current ?? Date.now(),
+    })
+  }
+
+  // 続けて次の回へ。ひと続きで答えた項目を除いて、同じ範囲から次のぶんを出す。
+  const remainingForNext = () => (
+    nextStudyItems(buildDeck(params.ids, 0, params.preserveOrder), [...cycleIds.current, ...answeredIds()], 0)
+  )
+  const continueNext = () => {
+    const next = remainingForNext()
+    if (!next.length) {
+      backToKotenCulture()
+      return
+    }
+    restart(next.slice(0, deck.length).map((entry) => entry.id), deck.length)
   }
 
   const answer = (ok) => {
@@ -124,19 +175,19 @@ export function KotenCultureStudyScreen() {
       if (!reselectable) return
       // 前へ戻って選び直したときは、このカードの最初の答えを置き換える（記録も集計も二重に数えない）。
       receipts.set(index, reviseReview(receipts.get(index), result))
-      setRemembered((count) => count + (ok ? 1 : -1))
       setRecordedAnswer(ok)
       answerLog.record(item, ok)
       return
     }
     receipts.set(index, reviewCulture(item.id, result))
     answerLog.record(item, ok)
-    if (ok) setRemembered((count) => count + 1)
     const nextAnswers = { ...recordedAnswers, [index]: ok }
     setRecordedAnswer(ok)
     setLastAnswered(index)
-    if (Object.keys(nextAnswers).length >= deck.length) setDone(true)
-    else moveToCard(nextUnansweredSessionIndex(index, deck.length, nextAnswers), nextAnswers)
+    if (Object.keys(nextAnswers).length >= deck.length) {
+      completedAt.current = Date.now()
+      setDone(true)
+    } else moveToCard(nextUnansweredSessionIndex(index, deck.length, nextAnswers), nextAnswers)
   }
 
   const moveToCard = (nextIndex, answers = recordedAnswers) => {
@@ -151,27 +202,29 @@ export function KotenCultureStudyScreen() {
   const answeredIndexes = answeredSessionIndexes(recordedAnswers)
 
   if (done) {
+    // 終わったあとは英単語と同じ結果画面。今日の成果・次にすること・復習予定・今回の項目を同じ順で見せる。
     return (
-      <div className="flex h-full flex-col items-center justify-center gap-5 p-8 text-center">
-        <div className="text-6xl">🏯</div>
-        <div>
-          <p className="font-display text-2xl font-extrabold text-ink">古典常識カード完了</p>
-          <p className="mt-1 text-sm font-bold text-ink/55">
-            {carried.count + deck.length}テーマのうち {remembered}テーマを「覚えた」
-          </p>
-        </div>
-        <div className="w-full max-w-xs">
-          <StudyAnswerListButton
-            groups={answerLog.groups()}
-            unit="テーマ"
-            renderTitle={(entry) => <KotenText>{entry.title}</KotenText>}
-            renderMeaning={(entry) => <KotenText>{entry.core}</KotenText>}
-          />
-        </div>
-        <div className="grid w-full max-w-xs grid-cols-2 gap-3">
-          <Button variant="secondary" onClick={restart}>もう一度</Button>
-          <Button onClick={backToKotenCulture}>常識へ戻る</Button>
-        </div>
+      <div className="flex h-full flex-col bg-slate-50">
+        <StudyCompletionReport
+          report={completionReport()}
+          contentId="koten-culture"
+          contentLabel="古典常識"
+          unit="テーマ"
+          title={params.title ?? '古典常識'}
+          streak={streak}
+          onReviewNow={() => restart(answerLog.groups().forgot.map((entry) => entry.id))}
+          onContinue={continueNext}
+          continueLabel={studyContinueLabel(
+            Math.min(deck.length, remainingForNext().length),
+            'テーマ',
+          )}
+          onBack={backToKotenCulture}
+          backLabel="常識へ戻る"
+          onReviewSchedule={(scheduled) => restart(scheduled.ids)}
+          answerGroups={answerLog.groups()}
+          renderAnswerTitle={(entry) => <KotenText>{entry.title}</KotenText>}
+          renderAnswerMeaning={(entry) => <KotenText>{entry.core}</KotenText>}
+        />
       </div>
     )
   }
@@ -203,7 +256,6 @@ export function KotenCultureStudyScreen() {
               if (restart) {
                 // 答えたカードの記録と結果は残したまま、まだ答えていないカードを1枚目として数え直す。
                 const next = restartSessionCount(deck, answeredIndexes, index, buildDeck(params.ids, 0, params.preserveOrder), size)
-                carried.carry(next.answeredItems)
                 receipts.clear()
                 setDeck(next.deck)
                 clearRecordedAnswers()
@@ -252,6 +304,8 @@ export function KotenCultureStudyScreen() {
             <p className="mt-3 text-sm font-extrabold leading-relaxed text-ink/65">
               <KotenText>{item.prompt}</KotenText>
             </p>
+            {/* この項目をいつ答えたか・次にいつ復習するか。英単語のカードと同じ並べ方。 */}
+            <StudyReviewHistory entry={srs?.[item.id]} className="mt-3" />
           </div>
 
           {!flipped ? (

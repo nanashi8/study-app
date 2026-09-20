@@ -166,7 +166,7 @@ test('維持復習へ進むほど30日後の定着予測は水平に近づき、
   assert.ok(retentionAt30(9) > retentionAt30(6))
   const analyticsModel = readFileSync(new URL('../src/lib/learningAnalyticsReport.js', import.meta.url), 'utf8')
   const analyticsUi = readFileSync(new URL('../src/components/LearningAnalytics.jsx', import.meta.url), 'utf8')
-  const completionUi = readFileSync(new URL('../src/components/VocabCompletionReport.jsx', import.meta.url), 'utf8')
+  const completionUi = readFileSync(new URL('../src/components/StudyCompletionReport.jsx', import.meta.url), 'utf8')
   assert.match(analyticsModel, /MAX_SRS_BOX/)
   assert.doesNotMatch(analyticsUi, /\{MAX_SRS_BOX\}/)
   // 復習間隔の内部方針は学習者の画面に出さない。次に何をするかは復習日の一覧が示す。

@@ -17,7 +17,7 @@ import {
   buildDeck,
   overallProgress,
 } from '../src/lib/session.js'
-import { buildVocabCompletionReport } from '../src/lib/learningAnalyticsReport.js'
+import { buildStudyCompletionReport } from '../src/lib/learningAnalyticsReport.js'
 import { vocabularySessionContinuation } from '../src/lib/vocabSessionProgress.js'
 import { todayIndex, useStore } from '../src/store/useStore.js'
 
@@ -405,15 +405,16 @@ test('今日の復習を途中でやめても、答えた語だけを結果に�
     assert.equal(overallProgress(srs).due, 9)
 
     // 結果に載る語数は、デッキの10語ではなく答えた3語。
-    const report = buildVocabCompletionReport({
+    const report = buildStudyCompletionReport({
+      contentId: 'vocab',
       srs,
-      wordIds: idsOf(answered),
+      ids: idsOf(answered),
       correct: answered.length,
       wrong: 0,
       now: today,
     })
     assert.equal(report.session.total, 3)
-    assert.deepEqual(report.session.wordIds, idsOf(answered))
+    assert.deepEqual(report.session.ids, idsOf(answered))
 
     // まだ見ていない語を一巡済みにしないので、次のセットへそのまま残る。
     const continuation = vocabularySessionContinuation({

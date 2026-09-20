@@ -33,7 +33,7 @@ import {
 import { Button, Chip } from '../components/ui.jsx'
 import { ArrowRight, Lightbulb } from '../components/Icons.jsx'
 import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
-import { VocabReviewHistory } from '../components/VocabReviewHistory.jsx'
+import { StudyReviewHistory } from '../components/StudyReviewHistory.jsx'
 import {
   CardSaveToggle,
   CardStudyFooter,
@@ -456,7 +456,7 @@ export function VocabStudyScreen() {
                 </div>
               </>
             )}
-            <VocabReviewHistory entry={entry} className="mt-2" />
+            <StudyReviewHistory entry={entry} className="mt-2" />
           </div>
 
           {!flipped ? (

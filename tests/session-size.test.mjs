@@ -137,7 +137,10 @@ test('問題数を変える画面はすべて、減らしても答えた分の�
     )
     assert.match(source, /reached=\{Math\.max\(/, `${path} がいちばん先まで進んだ位置を渡していない`)
     // 結果の全問数（全枚数）には、数え直す前に答えた分を含める。数を出さない画面は持ち越さない。
-    if (!path.endsWith('WritingGrammarReview.jsx')) {
+    // 全教材共通の暗記完了レポートを出す画面は、答えの記録がその分を持っているのでそこから数える。
+    if (source.includes('<StudyCompletionReport')) {
+      assert.match(source, /answerLog\.groups\(\)/, `${path} が答えの記録から結果を数えていない`)
+    } else if (!path.endsWith('WritingGrammarReview.jsx')) {
       assert.match(handler, /carried\.carry\(next\.answeredItems\)/, `${path} が答えた問題を持ち越していない`)
       assert.match(source, /carried\.count \+ deck\.length|carried\.ids/, `${path} の結果が持ち越した分を数えていない`)
     }

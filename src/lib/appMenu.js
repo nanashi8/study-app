@@ -56,10 +56,10 @@ const ENGLISH_SPEECH = ['ttsRate', 'ttsVoiceURI']
 const CARD_SPEECH = ['autoSpeak', 'speechRange', 'ttsJapaneseVoiceURI', ...ENGLISH_SPEECH]
 const WORD_STUDY = ['revealAnswers', 'hideSpelling', 'sessionSize', 'dailyGoal', 'showPhonetic', ...CARD_SPEECH]
 const WORD_TEST = ['sessionSize', 'autoAdvanceCorrect', ...ENGLISH_SPEECH]
-const PHRASE_STUDY = ['revealAnswers', 'hideSpelling', 'sessionSize', ...CARD_SPEECH]
+const PHRASE_STUDY = ['revealAnswers', 'hideSpelling', 'sessionSize', 'dailyGoal', ...CARD_SPEECH]
 const PHRASE_TEST = ['sessionSize', 'autoAdvanceCorrect', ...ENGLISH_SPEECH]
 // 語源・古典・漢文のカードの暗記と、正誤をすぐ示すテスト。
-const CARD_STUDY = ['revealAnswers', 'sessionSize']
+const CARD_STUDY = ['revealAnswers', 'sessionSize', 'dailyGoal']
 const QUESTION_TEST = ['sessionSize', 'autoAdvanceCorrect']
 const READ_ALOUD = [...ENGLISH_SPEECH, 'ttsJapaneseVoiceURI']
 
@@ -176,6 +176,18 @@ const SETTING_SHORT_LABELS = Object.freeze({
 })
 
 /** メニューの教材の行に出す、その教材で変えられる設定の名前（1行に収まる3つまで）。 */
+// 1日の目標の数え方。教材の呼び方に合わせ、まとめて変える行は「語」で示す。
+const DAILY_GOAL_UNITS = Object.freeze({
+  phrases: '項目',
+  kotenList: '項目',
+  kanbunHome: '項目',
+})
+
+export function dailyGoalUnit(scopes) {
+  const units = new Set((scopes ?? []).map((scope) => DAILY_GOAL_UNITS[scope] ?? '語'))
+  return units.size === 1 ? [...units][0] : '語'
+}
+
 export function contentSettingsSummary(item) {
   const labels = [...new Set((item.settings ?? []).map((id) => SETTING_SHORT_LABELS[id]))]
   if (!labels.length) return '変えられる設定はありません'

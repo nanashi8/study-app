@@ -14,6 +14,7 @@ import { longSentenceTranslationFor } from '../data/long-sentence-translations.j
 import { cardSpeechItems } from '../lib/cardSpeech.js'
 import { phraseSpeechText } from '../lib/phrase-speech.js'
 import { SpeakButton } from '../components/SpeakButton.jsx'
+import { StudyReviewHistory } from '../components/StudyReviewHistory.jsx'
 import { useCardAutoSpeech } from '../components/useCardAutoSpeech.js'
 import { LongSentenceTranslation } from '../components/LongSentenceTranslation.jsx'
 import { SyntaxFamilyGuide } from '../components/SyntaxFamilyGuide.jsx'
@@ -93,7 +94,10 @@ export function PhraseStudyScreen() {
   const carried = useCarriedAnswers()
   // 結果画面の「一覧で確認」へ渡す、今回「覚えた」「まだ」と答えた項目。
   const answerLog = useStudyAnswerLog()
+  // 答える前の記録。結果画面で「復習間隔が延びた項目」を数えるのに使う。
+  const srsAtStart = useRef(useStore.getState().srs)
   const item = deck[i]
+  const entry = useStore((state) => (item ? state.srs[item.id] : null))
   const leave = () => params.returnTo
     ? returnTo(params.returnTo.screen, params.returnTo.params ?? {})
     : back()
@@ -140,6 +144,9 @@ export function PhraseStudyScreen() {
   const answeredIndexes = answeredSessionIndexes(recordedAnswers)
 
   const finish = () => {
+    // 結果に載せるのは答えた項目だけ。数え直す前に答えた項目も、答えの記録に残っている。
+    const groups = answerLog.groups()
+    const itemIds = [...groups.forgot, ...groups.remembered].map((entry) => entry.id)
     navigate('sessionResult', {
       title: params.title ?? '熟語・構文',
       mode: 'study',
@@ -157,6 +164,14 @@ export function PhraseStudyScreen() {
       size: params.size,
       continueTo: params.continueTo,
       returnTo: params.returnTo,
+      phraseSession: {
+        itemIds,
+        beforeBoxes: Object.fromEntries(itemIds.map((id) => [
+          id,
+          Number.isFinite(srsAtStart.current?.[id]?.box) ? srsAtStart.current[id].box : null,
+        ])),
+        completedAt: Date.now(),
+      },
     })
   }
 
@@ -284,6 +299,8 @@ export function PhraseStudyScreen() {
                 </div>
               </>
             )}
+            {/* この項目をいつ答えたか・次にいつ復習するか。英単語のカードと同じ並べ方。 */}
+            <StudyReviewHistory entry={entry} className="mt-2" />
           </div>
 
           {!flipped ? (

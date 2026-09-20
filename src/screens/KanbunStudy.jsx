@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { useStore, useContentSettings } from '../store/useStore.js'
 import { WordBookToggle } from '../components/WordListSheet.jsx'
 import { kanbunNotebookDomain } from '../lib/wordBookLaunch.js'
@@ -13,16 +13,19 @@ import { Button, Chip } from '../components/ui.jsx'
 import { KanbunText, KanbunHeadword } from '../components/KanbunFurigana.jsx'
 import { KanbunMarkedText, KanbunPatternText } from '../components/KanbunMarkedText.js'
 import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
-import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
+import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 import { answeredSessionIndexes, growDeck, restartSessionCount } from '../lib/session.js'
 import {
   CardStudyFooter,
   CardSwipeRegion,
   LastAnsweredReturn,
-  StudyAnswerListButton,
   StudyAnswerReselect,
   useStudyAnswerLog,
 } from '../components/CardStudyControls.jsx'
+import { StudyCompletionReport } from '../components/StudyCompletionReport.jsx'
+import { StudyReviewHistory } from '../components/StudyReviewHistory.jsx'
+import { buildStudyCompletionReport } from '../lib/learningAnalyticsReport.js'
+import { nextStudyItems, studyContinueLabel } from '../lib/studyContinuation.js'
 import {
   canTurnRing,
   ringIndexAfter,
@@ -107,8 +110,6 @@ export function KanbunStudyScreen() {
   // 直前に「まだ」「覚えた」を押したカードの番号。押したカードは輪から抜けるので、
   // 押し間違えたときだけここへ戻って選び直す。
   const [lastAnswered, setLastAnswered] = useState(null)
-  const [remembered, setRemembered] = useState(0)
-  const [forgottenIds, setForgottenIds] = useState([])
   const [done, setDone] = useState(false)
   const {
     value: recordedAnswer,
@@ -121,11 +122,24 @@ export function KanbunStudyScreen() {
   // 答えたあと戻ってきたカードは、「覚えた／まだ」を選び直せる。
   const reselectable = useRevisitedAnswer(index, recordedAnswer !== null)
   const reviseReview = useStore((state) => state.reviseReview)
-  // 1回の数を減らして数え直す前に答えたカード。結果の全枚数に含める。
-  const carried = useCarriedAnswers()
-  // 終えたあと「一覧で確認」で見せる、今回「覚えた」「まだ」と答えた項目。
+  // 終えたあと「一覧で確認」と結果に見せる、今回「覚えた」「まだ」と答えた項目。
+  // 1回のカード数を減らして数え直す前に答えたカードも、この記録に残る。
   const answerLog = useStudyAnswerLog()
+  const srs = useStore((state) => state[meta.srsField])
+  const streak = useStore((state) => state.stats.streak)
+  const learningAnalytics = useStore((state) => state.learningAnalytics)
+  const skillStats = useStore((state) => state.skillStats)
+  // 答える前の記録。終わったときに「復習間隔が延びた項目」を数えるのに使う。
+  const srsAtStart = useRef(useStore.getState()[meta.srsField])
+  // ひと続きの学習で答えた項目。「続けて次の◯へ」で一巡するまで出さない。
+  const cycleIds = useRef(new Set())
+  const completedAt = useRef(null)
   const item = deck[index]
+  // 今回答えた項目（前へ戻って選び直した分も、最後の答えで1件だけ数える）。
+  const answeredIds = () => {
+    const groups = answerLog.groups()
+    return [...groups.forgot, ...groups.remembered].map((entry) => entry.id)
+  }
 
   // コンテンツ画面の「戻る」は履歴でなく、この分野の内容選択画面へ。
   const backToKanbunCatalog = () => {
@@ -146,17 +160,53 @@ export function KanbunStudyScreen() {
     )
   }
 
-  const restart = (ids = params.ids) => {
+  const restart = (ids = params.ids, size = 0) => {
+    // ひと続きの学習で答えた項目は、一巡するまで「続けて次の◯へ」で出さない。
+    for (const id of answeredIds()) cycleIds.current.add(id)
     receipts.clear()
-    carried.reset()
     answerLog.reset()
-    setDeck(buildFor(ids, deck.length))
+    completedAt.current = null
+    setDeck(buildFor(ids, size))
     setIndex(0)
     setRevealed(revealAll)
-    setRemembered(0)
-    setForgottenIds([])
+    setLastAnswered(null)
     setDone(false)
     clearRecordedAnswers()
+  }
+
+  // 答えた項目と、その項目を答える前の段階。全教材共通の暗記完了レポートへ渡す。
+  const completionReport = () => {
+    const groups = answerLog.groups()
+    const ids = [...groups.forgot, ...groups.remembered].map((entry) => entry.id)
+    return buildStudyCompletionReport({
+      contentId: meta.contentId,
+      srs,
+      learningAnalytics,
+      skillStats,
+      ids,
+      reviewIds: groups.forgot.map((entry) => entry.id),
+      beforeBoxes: Object.fromEntries(ids.map((id) => [
+        id,
+        Number.isFinite(srsAtStart.current?.[id]?.box) ? srsAtStart.current[id].box : null,
+      ])),
+      correct: groups.remembered.length,
+      wrong: groups.forgot.length,
+      dailyGoal: settings.dailyGoal,
+      now: completedAt.current ?? Date.now(),
+    })
+  }
+
+  // 続けて次の回へ。ひと続きで答えた項目を除いて、同じ範囲から次のぶんを出す。
+  const remainingForNext = () => (
+    nextStudyItems(buildFor(params.ids, 0), [...cycleIds.current, ...answeredIds()], 0)
+  )
+  const continueNext = () => {
+    const next = remainingForNext()
+    if (!next.length) {
+      backToKanbunCatalog()
+      return
+    }
+    restart(next.slice(0, deck.length).map((entry) => entry.id), deck.length)
   }
 
   const answer = (rememberedNow) => {
@@ -166,23 +216,19 @@ export function KanbunStudyScreen() {
       if (!reselectable) return
       // 前へ戻って選び直したときは、このカードの最初の答えを置き換える（記録も集計も二重に数えない）。
       receipts.set(index, reviseReview(receipts.get(index), result))
-      setRemembered((count) => count + (rememberedNow ? 1 : -1))
-      setForgottenIds((ids) => (rememberedNow
-        ? ids.filter((id) => id !== item.id)
-        : [...new Set([...ids, item.id])]))
       setRecordedAnswer(rememberedNow)
       answerLog.record(item, rememberedNow)
       return
     }
     receipts.set(index, review(domain, item.id, result))
     answerLog.record(item, rememberedNow)
-    if (rememberedNow) setRemembered((count) => count + 1)
-    else setForgottenIds((ids) => [...new Set([...ids, item.id])])
     const nextAnswers = { ...recordedAnswers, [index]: rememberedNow }
     setRecordedAnswer(rememberedNow)
     setLastAnswered(index)
-    if (Object.keys(nextAnswers).length >= deck.length) setDone(true)
-    else moveToCard(nextUnansweredSessionIndex(index, deck.length, nextAnswers), nextAnswers)
+    if (Object.keys(nextAnswers).length >= deck.length) {
+      completedAt.current = Date.now()
+      setDone(true)
+    } else moveToCard(nextUnansweredSessionIndex(index, deck.length, nextAnswers), nextAnswers)
   }
 
   const moveToCard = (nextIndex, answers = recordedAnswers) => {
@@ -197,36 +243,29 @@ export function KanbunStudyScreen() {
   const answeredIndexes = answeredSessionIndexes(recordedAnswers)
 
   if (done) {
+    // 終わったあとは英単語と同じ結果画面。今日の成果・次にすること・復習予定・今回の項目を同じ順で見せる。
     return (
-      <div className="flex h-full flex-col overflow-y-auto p-6 text-center">
-        <div className="m-auto flex w-full max-w-sm flex-col items-center gap-5 py-5">
-          <div className="text-6xl">{meta.emoji}</div>
-          <div>
-            <p className="font-display text-2xl font-extrabold text-ink">暗記カード完了</p>
-            <p className="mt-1 text-sm font-bold text-ink/55">
-              {carried.count + deck.length}{meta.itemLabel}のうち {remembered}{meta.itemLabel}を「覚えた」
-            </p>
-          </div>
-          <StudyAnswerListButton
-            groups={answerLog.groups()}
-            unit={meta.itemLabel}
-            renderTitle={(entry) => entry.title}
-            renderMeaning={(entry) => entry.answer}
-          />
-          {forgottenIds.length > 0 && (
-            <button
-              type="button"
-              onClick={() => restart(forgottenIds)}
-              className="w-full rounded-2xl border-2 border-rose-200 bg-rose-50 p-4 text-left text-sm font-extrabold text-rose-900"
-            >
-              まだ覚えていない {forgottenIds.length}{meta.itemLabel}だけ、もう一度
-            </button>
+      <div className="flex h-full flex-col bg-slate-50">
+        <StudyCompletionReport
+          report={completionReport()}
+          contentId={meta.contentId}
+          contentLabel={meta.label}
+          unit={meta.itemLabel}
+          title={params.title ?? meta.label}
+          streak={streak}
+          onReviewNow={() => restart(answerLog.groups().forgot.map((entry) => entry.id))}
+          onContinue={continueNext}
+          continueLabel={studyContinueLabel(
+            Math.min(deck.length, remainingForNext().length),
+            meta.itemLabel,
           )}
-          <div className="grid w-full grid-cols-2 gap-3">
-            <Button variant="secondary" onClick={() => restart()}>全てもう一度</Button>
-            <Button onClick={backToKanbunCatalog}>{meta.label}へ戻る</Button>
-          </div>
-        </div>
+          onBack={backToKanbunCatalog}
+          backLabel={`${meta.label}へ戻る`}
+          onReviewSchedule={(scheduled) => restart(scheduled.ids)}
+          answerGroups={answerLog.groups()}
+          renderAnswerTitle={(entry) => entry.title}
+          renderAnswerMeaning={(entry) => entry.answer}
+        />
       </div>
     )
   }
@@ -260,7 +299,6 @@ export function KanbunStudyScreen() {
               if (restart) {
                 // 答えたカードの記録と結果は残したまま、まだ答えていないカードを1枚目として数え直す。
                 const next = restartSessionCount(deck, answeredIndexes, index, buildFor(params.ids, 0), size)
-                carried.carry(next.answeredItems)
                 receipts.clear()
                 setDeck(next.deck)
                 clearRecordedAnswers()
@@ -310,6 +348,8 @@ export function KanbunStudyScreen() {
             )}
             {item.pattern && <p className="mt-2 rounded-xl bg-slate-100 px-3 py-2 font-mono text-sm font-extrabold text-slate-800"><KanbunPatternText pattern={item.pattern} /></p>}
             <p className="mt-3 text-sm font-bold leading-relaxed text-ink/45">{item.front}</p>
+            {/* この項目をいつ答えたか・次にいつ復習するか。英単語のカードと同じ並べ方。 */}
+            <StudyReviewHistory entry={srs?.[item.id]} className="mt-3" />
           </div>
 
           {!revealed ? (

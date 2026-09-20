@@ -471,7 +471,7 @@ test('単語暗記とテストは参考画面を往復しても同じ問題・�
   const study = readFileSync(new URL('../src/screens/VocabStudy.jsx', import.meta.url), 'utf8')
   const quiz = readFileSync(new URL('../src/screens/VocabQuiz.jsx', import.meta.url), 'utf8')
   const detail = readFileSync(new URL('../src/screens/WordDetail.jsx', import.meta.url), 'utf8')
-  const history = readFileSync(new URL('../src/components/VocabReviewHistory.jsx', import.meta.url), 'utf8')
+  const history = readFileSync(new URL('../src/components/StudyReviewHistory.jsx', import.meta.url), 'utf8')
 
   assert.match(study, /restore\?\.deck \?\? buildFor/)
   assert.match(study, /restore\?\.i \?\? 0/)
@@ -482,10 +482,10 @@ test('単語暗記とテストは参考画面を往復しても同じ問題・�
   assert.match(quiz, /restore\?\.deck \?\? buildFor/)
   assert.match(quiz, /saveBeforeDetail/)
   for (const source of [study, quiz, detail]) {
-    assert.match(source, /VocabReviewHistory/)
+    assert.match(source, /StudyReviewHistory/)
   }
-  assert.match(history, /data-vocab-review-history/)
-  assert.match(history, /data-vocab-review-status/)
+  assert.match(history, /data-study-review-history/)
+  assert.match(history, /data-study-review-status/)
   assert.doesNotMatch(history, /data-vocab-memory-score|覚え具合/)
   assert.match(history, /label="学習"/)
   assert.match(history, /label="テスト"/)

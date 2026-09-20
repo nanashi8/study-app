@@ -334,7 +334,7 @@ test('画面下の操作バーはviewportへ固定せず、本文の外の足元
     'src/screens/MathIntro.jsx',
     'src/screens/WordDetail.jsx',
     'src/screens/WritingPlay.jsx',
-    'src/components/VocabCompletionReport.jsx',
+    'src/components/StudyCompletionReport.jsx',
   ]) {
     assert.match(read(path), /min-h-0 flex-1 overflow-y-auto/, `${path}: 本文のスクロール領域がありません`)
   }
@@ -373,9 +373,9 @@ test('下端に接する操作欄29実装・追従欄2件・読み上げ欄を�
   const result = read('src/screens/SessionResult.jsx')
   assert.match(result, /復習する/)
   assert.match(result, /continuation\.label/)
-  const vocabCompletion = read('src/components/VocabCompletionReport.jsx')
-  assert.match(vocabCompletion, /data-vocab-completion-actions/)
-  assert.match(vocabCompletion, /shrink-0 border-t border-indigo-100/)
+  const studyCompletion = read('src/components/StudyCompletionReport.jsx')
+  assert.match(studyCompletion, /data-study-completion-actions/)
+  assert.match(studyCompletion, /shrink-0 border-t border-indigo-100/)
 })
 
 test('下端固定オーバーレイ2件のスクロール末尾もSafari退避を持つ', () => {

@@ -560,15 +560,33 @@ export function forgettingCurveForRows(rows) {
   }))
 }
 
+// 暗記を終えたときの共通レポートを作れる教材。contentId は学習記録の一覧（NormalLearningRecordList）と同じ。
+// 英単語・熟語・構文は同じ srs に入るので、その教材の項目だけを見分けられるよう項目の引き方を持つ。
+const COMPLETION_CONTENTS = Object.freeze({
+  vocab: Object.freeze({ domain: 'vocab', get: getWord }),
+  usage: Object.freeze({ domain: 'phrases', get: getPhrase }),
+  etymology: Object.freeze({ domain: 'etymology', get: getEtymologyPack }),
+  'koten-vocab': Object.freeze({ domain: 'kotenVocab', get: getKoten }),
+  'koten-grammar': Object.freeze({ domain: 'kotenGrammar', get: getKotenGrammar }),
+  'koten-culture': Object.freeze({ domain: 'kotenCulture', get: getKotenCulture }),
+  'kanbun-vocab': Object.freeze({ domain: 'kanbunVocab', get: getKanbunVocab }),
+  'kanbun-grammar': Object.freeze({ domain: 'kanbunGrammar', get: getKanbunGrammar }),
+  'kanbun-culture': Object.freeze({ domain: 'kanbunCulture', get: getKanbunCulture }),
+})
+
+export const STUDY_COMPLETION_CONTENT_IDS = Object.freeze(Object.keys(COMPLETION_CONTENTS))
+
 /**
- * 英単語の暗記終了時に、今回の答えと次の復習日だけを保存済みの復習記録から作る。
+ * 暗記を終えたときに、今回の答えと次の復習日だけを保存済みの復習記録から作る。
+ * 英単語・熟語・語源・古典・漢文のどの教材も、同じ数え方・同じ並べ方で作る。
  * 内部の段階・予測値・復習間隔の変化は、学習者向けの成果として返さない。
  */
-export function buildVocabCompletionReport({
+export function buildStudyCompletionReport({
+  contentId = 'vocab',
   srs = {},
   learningAnalytics = null,
   skillStats = {},
-  wordIds = [],
+  ids = [],
   reviewIds = [],
   beforeBoxes = {},
   correct = 0,
@@ -576,8 +594,10 @@ export function buildVocabCompletionReport({
   dailyGoal = 20,
   now = Date.now(),
 } = {}) {
-  const uniqueIds = [...new Set(Array.isArray(wordIds) ? wordIds : [])]
-    .filter((id) => Boolean(getWord(id)))
+  const content = COMPLETION_CONTENTS[contentId] ?? COMPLETION_CONTENTS.vocab
+  const getItem = content.get
+  const uniqueIds = [...new Set(Array.isArray(ids) ? ids : [])]
+    .filter((id) => Boolean(getItem(id)))
   const reviewSet = new Set(
     (Array.isArray(reviewIds) ? reviewIds : []).filter((id) => uniqueIds.includes(id)),
   )
@@ -588,8 +608,8 @@ export function buildVocabCompletionReport({
   })
   const today = localDayIndex(now)
   const rows = uniqueIds.map((id) => {
-    const word = getWord(id)
-    const row = itemRow('vocab', descriptor('vocab', word, id), srs[id], analysis, now)
+    const item = getItem(id)
+    const row = itemRow(content.domain, descriptor(content.domain, item, id), srs[id], analysis, now)
     const metrics = vocabularyReviewMetrics(srs[id], { now, day: today })
     return {
       ...row,
@@ -611,13 +631,13 @@ export function buildVocabCompletionReport({
   }
 
   const todayRows = Object.entries(isRecord(srs) ? srs : {}).flatMap(([id, entry]) => {
-    if (!getWord(id) || !Number.isFinite(entry?.memory?.lastAt)) return []
+    if (!getItem(id) || !Number.isFinite(entry?.memory?.lastAt)) return []
     return localDayIndex(entry.memory.lastAt) === today ? [{ id, entry }] : []
   })
   const goal = Number.isFinite(Number(dailyGoal)) && Number(dailyGoal) > 0
     ? Math.floor(Number(dailyGoal))
     : 20
-  const todayUniqueWords = todayRows.length
+  const todayUniqueItems = todayRows.length
   const advancedCount = rows.filter((row) => {
     const before = beforeBoxFor(row.id)
     return row.box > (before ?? 0)
@@ -637,13 +657,13 @@ export function buildVocabCompletionReport({
     if (Math.abs(retentionDifference) > 0.0001) return retentionDifference
     return dueInDays(a) - dueInDays(b) || a.title.localeCompare(b.title, 'en')
   })
-  // 一覧のまま答えを直せるようにするため、今回の語は省略せず優先順のまま返す。
+  // 一覧のまま答えを直せるようにするため、今回の項目は省略せず優先順のまま返す。
   const priorityItems = priorityRows.map((row) => {
     const spacedPracticeCount = Math.max(0, LONG_TERM_SRS_BOX - row.box)
     return {
       id: row.id,
-      word: row.title,
-      meaning: row.subtitle,
+      title: row.title,
+      subtitle: row.subtitle,
       dueInDays: dueInDays(row),
       needsReviewNow: reviewSet.has(row.id) || row.due,
       reason: reviewSet.has(row.id)
@@ -655,7 +675,7 @@ export function buildVocabCompletionReport({
             : '間を空けて復習',
     }
   })
-  // 「4日後以降」へまとめず、語彙ごとの実際の期限日数で直接分ける。
+  // 「4日後以降」へまとめず、項目ごとの実際の期限日数で直接分ける。
   const scheduleByDay = new Map()
   for (const row of rows) {
     const days = dueInDays(row)
@@ -675,8 +695,9 @@ export function buildVocabCompletionReport({
 
   return {
     completedAt: now,
+    contentId,
     session: {
-      wordIds: uniqueIds,
+      ids: uniqueIds,
       total: uniqueIds.length,
       remembered: Math.max(0, Number(correct) || 0),
       forgot: Math.max(0, Number(wrong) || 0),
@@ -687,15 +708,15 @@ export function buildVocabCompletionReport({
       reviewNowCount: reviewSet.size,
     },
     today: {
-      uniqueWords: todayUniqueWords,
-      newWords: todayRows.filter(({ entry }) => (
+      uniqueItems: todayUniqueItems,
+      newItems: todayRows.filter(({ entry }) => (
         Number.isFinite(entry.firstAt) && localDayIndex(entry.firstAt) === today
       )).length,
       rememberedLatest: todayRows.filter(({ entry }) => entry.memory?.lastJudgment === 'remembered').length,
       needsReviewLatest: todayRows.filter(({ entry }) => entry.memory?.lastJudgment === 'forgot').length,
       goal,
-      goalRate: clamp(todayUniqueWords / goal, 0, 1),
-      goalReached: todayUniqueWords >= goal,
+      goalRate: clamp(todayUniqueItems / goal, 0, 1),
+      goalReached: todayUniqueItems >= goal,
     },
     priorityItems,
     schedule,

@@ -38,11 +38,11 @@ const RESULT_COPY_FORBIDDEN = /最新が[「『]|今回の間隔アップ|長期
 test('学習者向け日本語は画面・部品・自動生成文を全件監査する', async () => {
   const result = await auditLearnerJapanese()
 
-  assert.equal(result.learnerFiles, 267)
-  assert.equal(result.learnerJapaneseEntries, 12942)
-  assert.equal(result.learnerUniqueJapaneseEntries, 10055)
-  assert.equal(result.sourceFiles, 670)
-  assert.equal(result.sourceJapaneseEntries, 156241)
+  assert.equal(result.learnerFiles, 268)
+  assert.equal(result.learnerJapaneseEntries, 12943)
+  assert.equal(result.learnerUniqueJapaneseEntries, 10050)
+  assert.equal(result.sourceFiles, 671)
+  assert.equal(result.sourceJapaneseEntries, 156242)
   assert.equal(result.issues.length, 0)
 })
 
@@ -100,7 +100,7 @@ test('結果画面へ至る全21経路は、回答と次の行動を直接示す
   })
   const resultImplementations = [
     read('../src/screens/SessionResult.jsx'),
-    read('../src/components/VocabCompletionReport.jsx'),
+    read('../src/components/StudyCompletionReport.jsx'),
     ...dedicatedSources,
   ]
 

@@ -31,7 +31,7 @@ import { cx } from '../components/ui.jsx'
 import { UNKNOWN_CHOICE_ID } from '../lib/quizChoices.js'
 import { isDragonVeinSource } from '../lib/dragonVein.js'
 import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
-import { VocabReviewHistory } from '../components/VocabReviewHistory.jsx'
+import { StudyReviewHistory } from '../components/StudyReviewHistory.jsx'
 import {
   QuestionSessionControls,
   ReselectNote,
@@ -388,7 +388,7 @@ export function VocabQuizScreen() {
           <p className="mt-2 text-sm font-extrabold text-ink/55">
             {isDragonVein ? 'この記憶断片が指す意味は？' : 'この単語の意味は？'}
           </p>
-          <VocabReviewHistory entry={entry} className="mt-2" />
+          <StudyReviewHistory entry={entry} className="mt-2" />
         </div>
 
         {reselectable && <ReselectNote className="mx-auto mt-3 max-w-xl" />}

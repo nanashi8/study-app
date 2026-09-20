@@ -29,7 +29,7 @@ function MarkRow({ label, marks }) {
   )
 }
 
-export function VocabReviewHistory({ entry, className = '' }) {
+export function StudyReviewHistory({ entry, className = '' }) {
   const marks = reviewMarksForEntry(entry)
   if (!entry) return null
   const metrics = vocabularyReviewMetrics(entry)
@@ -47,11 +47,11 @@ export function VocabReviewHistory({ entry, className = '' }) {
   return (
     <div
       className={cx('flex flex-col items-center gap-1.5', className)}
-      data-vocab-review-history
+      data-study-review-history
     >
       <div
         className={cx('flex flex-wrap items-center justify-center gap-x-2 rounded-full px-2.5 py-1 text-[10px] font-extrabold', tone)}
-        data-vocab-review-status={metrics.learningStatus}
+        data-study-review-status={metrics.learningStatus}
         aria-label={`${status}。${formatVocabularyElapsedDays(metrics.elapsedDays)}。${formatVocabularyDueDays(metrics.daysUntilDue)}`}
       >
         <span>{status}</span>

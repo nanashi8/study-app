@@ -160,7 +160,7 @@ test('全暗記カードの終わりに「一覧で確認」があり、答え�
   assert.match(controls, /label="まだ"/)
   assert.match(controls, /label="覚えた"/)
 
-  // 画面の中に終わりの画面を持つ暗記カード
+  // 画面の中に共通の暗記完了レポートを出す暗記カード
   for (const filename of [
     'KotenStudy.jsx',
     'KotenGrammarStudy.jsx',
@@ -173,7 +173,7 @@ test('全暗記カードの終わりに「一覧で確認」があり、答え�
     // 最初の答えと、前へ戻って選び直した答えの両方を残す
     assert.equal((source.match(/answerLog\.record\(/g) ?? []).length, 2, `${filename}: 答えを残す場所が2か所でない`)
     assert.match(source, /answerLog\.reset\(\)/, `${filename}: やり直しで一覧を消していない`)
-    assert.match(source, /<StudyAnswerListButton[\s\S]*?groups=\{answerLog\.groups\(\)\}/, `${filename}: 終わりの画面に一覧がない`)
+    assert.match(source, /<StudyCompletionReport[\s\S]*?answerGroups=\{answerLog\.groups\(\)\}/, `${filename}: 終わりの画面に一覧がない`)
   }
 
   // 熟語・構文と英単語は、共通の結果画面で並べる
@@ -184,7 +184,7 @@ test('全暗記カードの終わりに「一覧で確認」があり、答え�
   assert.match(result, /studyAnswerGroups\(params\.studyAnswers\)/)
   assert.match(result, /<StudyAnswerListButton groups=\{studyAnswers\}/)
   assert.match(result, /answerGroups=\{studyAnswers\}/)
-  assert.match(read('components/VocabCompletionReport.jsx'), /<StudyAnswerListButton[\s\S]*?groups=\{answerGroups\}/)
+  assert.match(read('components/StudyCompletionReport.jsx'), /<StudyAnswerListButton[\s\S]*?groups=\{answerGroups\}/)
 
   // 名作の本文語彙カードも同じ一覧
   const literature = read('components/LiteratureVocabularySheet.jsx')

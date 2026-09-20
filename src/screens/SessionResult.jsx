@@ -3,11 +3,12 @@ import { useStore, useContentSettings } from '../store/useStore.js'
 import { ProgressRing, ProgressBar, Button, Card } from '../components/ui.jsx'
 import { Flame, Refresh, Home, Bookmark, ArrowRight } from '../components/Icons.jsx'
 import { SpeechSettingsButton } from '../components/SpeechSettings.jsx'
-import { VocabCompletionReport } from '../components/VocabCompletionReport.jsx'
+import { StudyCompletionReport } from '../components/StudyCompletionReport.jsx'
 import { StudyAnswerListButton } from '../components/CardStudyControls.jsx'
+import { MeaningText } from '../components/MeaningText.jsx'
 import { DragonVeinCipherStage } from '../components/DragonVeinCipherStage.jsx'
 import { getWord } from '../data/vocab.js'
-import { buildVocabCompletionReport } from '../lib/learningAnalyticsReport.js'
+import { buildStudyCompletionReport } from '../lib/learningAnalyticsReport.js'
 import { studyAnswerGroups } from '../lib/studyAnswerList.js'
 import {
   phraseSessionContinuation,
@@ -99,6 +100,8 @@ export function SessionResultScreen() {
   const isListening = engine === 'listening' || params.replayScreen === 'listeningQuiz'
   const isVocabStudy = mode === 'study' && engine === 'word'
   const isVocabResult = engine === 'word' || engine === 'vocab'
+  // 熟語・構文の暗記も、英単語と同じ暗記完了レポートで終わる。
+  const isPhraseStudy = isPhrase && mode === 'study'
   // 熟語・構文のテストも、英単語と同じ「復習する／次の◯項目へ／戻る」で続ける。
   const isPhraseQuiz = isPhrase && mode === 'quiz'
   const continuesSession = isVocabResult || isPhraseQuiz
@@ -117,7 +120,7 @@ export function SessionResultScreen() {
         freshShareOverride: vocabMixFreshShare(settings.vocabMix),
       })
     }
-    if (isPhraseQuiz) {
+    if (isPhrase) {
       return phraseSessionContinuation(params, {
         srs,
         storedSize: settings.sessionSize,
@@ -125,21 +128,43 @@ export function SessionResultScreen() {
       })
     }
     return null
-  }, [isPhraseQuiz, isVocabResult, params, reportNow, settings.sessionSize, settings.vocabMix, srs])
+  }, [isPhrase, isVocabResult, params, reportNow, settings.sessionSize, settings.vocabMix, srs])
   const nextAfterReview = continuation
     ? {
         ...continuation.destination,
         label: continuation.label,
       }
     : params.continueTo
-  const vocabCompletion = useMemo(() => {
-    if (!isVocabStudy || !params.vocabSession?.wordIds?.length) return null
-    return buildVocabCompletionReport({
+  // 英単語と熟語・構文の暗記は、古典・漢文と同じ共通の暗記完了レポートで終わる。
+  // 教材ごとに変わるのは、記録の名前・数え方の単位・詳細を開く行き先だけ。
+  const completionContent = isVocabStudy
+    ? {
+        contentId: 'vocab',
+        label: '英単語',
+        unit: '語',
+        backLabel: '単語一覧へ戻る',
+        session: params.vocabSession,
+        ids: params.vocabSession?.wordIds ?? [],
+      }
+    : isPhraseStudy
+      ? {
+          contentId: 'usage',
+          label: '熟語・構文',
+          unit: '項目',
+          backLabel: '熟語・構文へ戻る',
+          session: params.phraseSession,
+          ids: params.phraseSession?.itemIds ?? [],
+        }
+      : null
+  const studyCompletion = useMemo(() => {
+    if (!completionContent?.ids.length) return null
+    return buildStudyCompletionReport({
+      contentId: completionContent.contentId,
       srs,
       learningAnalytics,
       skillStats,
-      wordIds: params.vocabSession.wordIds,
-      beforeBoxes: params.vocabSession.beforeBoxes,
+      ids: completionContent.ids,
+      beforeBoxes: completionContent.session.beforeBoxes,
       reviewIds,
       correct,
       wrong,
@@ -147,10 +172,9 @@ export function SessionResultScreen() {
       now: reportNow,
     })
   }, [
+    completionContent,
     correct,
-    isVocabStudy,
     learningAnalytics,
-    params.vocabSession,
     reportNow,
     reviewIds,
     settings.dailyGoal,
@@ -284,15 +308,20 @@ export function SessionResultScreen() {
     )
   }
 
-  const reviewVocabSchedule = (scheduleItem) => {
+  // 復習予定の日付を押したとき。その日の語・項目だけを、いまの教材の暗記へ出す。
+  const reviewStudySchedule = (scheduleItem) => {
     const ids = Array.isArray(scheduleItem?.ids) ? scheduleItem.ids : []
     if (!ids.length) return
-    navigate('vocabStudy', {
-      source: { type: 'mylist', ids },
-      title: scheduleItem.days === 0 || scheduleItem.id === 'now'
-        ? '今日の復習'
-        : `${scheduleItem.label}の内容を今練習`,
+    const title = scheduleItem.days === 0 || scheduleItem.id === 'now'
+      ? '今日の復習'
+      : `${scheduleItem.label}の内容を今練習`
+    navigate(isPhraseStudy ? 'phraseStudy' : 'vocabStudy', {
+      source: isPhraseStudy
+        ? { type: 'phraseList', kind: source?.kind, ids }
+        : { type: 'mylist', ids },
+      title,
       mode: 'study',
+      ...(isPhraseStudy ? { engine: 'phrase' } : {}),
       size: ids.length,
       continueTo: nextAfterReview,
       returnTo: params.returnTo,
@@ -368,21 +397,32 @@ export function SessionResultScreen() {
     )
   }
 
-  if (vocabCompletion) {
+  if (studyCompletion) {
     return (
       <div className="relative flex h-full flex-col overflow-x-hidden bg-slate-50">
         <div className="relative z-20 flex shrink-0 justify-end px-3 pt-3"><SpeechSettingsButton compact /></div>
-        <VocabCompletionReport
-          report={vocabCompletion}
+        <StudyCompletionReport
+          report={studyCompletion}
+          contentId={completionContent.contentId}
+          contentLabel={completionContent.label}
+          unit={completionContent.unit}
+          titleLanguage="en"
           title={title}
           streak={stats.streak}
           onReviewNow={reviewWrong}
           onContinue={continueSession}
           continueLabel={continuation.label}
           onBack={returnFromSession}
-          onWord={(id) => navigate('wordDetail', { id })}
-          onReviewSchedule={reviewVocabSchedule}
+          backLabel={completionContent.backLabel}
+          onOpenItem={isPhraseStudy ? null : (id) => navigate('wordDetail', { id })}
+          openLabel="この単語の詳細を見る"
+          openHint="詳細"
+          onReviewSchedule={reviewStudySchedule}
           answerGroups={studyAnswers}
+          renderAnswerTitle={(entry) => entry.word ?? entry.title}
+          renderAnswerMeaning={(entry) => (
+            <MeaningText>{entry.meanings?.join('・') ?? entry.meaning}</MeaningText>
+          )}
         />
       </div>
     )

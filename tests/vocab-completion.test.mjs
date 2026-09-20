@@ -3,7 +3,7 @@ import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 
 import { ALL_WORDS } from '../src/data/vocab.js'
-import { buildVocabCompletionReport } from '../src/lib/learningAnalyticsReport.js'
+import { buildStudyCompletionReport } from '../src/lib/learningAnalyticsReport.js'
 import { PERSISTED_PROGRESS_FIELDS } from '../src/lib/progressCode.js'
 
 const DAY_MS = 86400000
@@ -74,9 +74,10 @@ test('暗記完了レポートは今回と今日の答え・復習予定を同�
     }),
   }
 
-  const report = buildVocabCompletionReport({
+  const report = buildStudyCompletionReport({
+    contentId: 'vocab',
     srs,
-    wordIds: [first.id, forgot.id, mastered.id],
+    ids: [first.id, forgot.id, mastered.id],
     reviewIds: [forgot.id],
     correct: 2,
     wrong: 1,
@@ -99,8 +100,8 @@ test('暗記完了レポートは今回と今日の答え・復習予定を同�
     },
   )
   assert.deepEqual(report.today, {
-    uniqueWords: 3,
-    newWords: 1,
+    uniqueItems: 3,
+    newItems: 1,
     rememberedLatest: 2,
     needsReviewLatest: 1,
     goal: 5,
@@ -140,7 +141,11 @@ test('暗記完了画面は全単語暗記入口の合流点だけで詳細レ�
     'utf8',
   )
   const report = readFileSync(
-    new URL('../src/components/VocabCompletionReport.jsx', import.meta.url),
+    new URL('../src/components/StudyCompletionReport.jsx', import.meta.url),
+    'utf8',
+  )
+  const phrase = readFileSync(
+    new URL('../src/screens/PhraseStudy.jsx', import.meta.url),
     'utf8',
   )
 
@@ -151,51 +156,56 @@ test('暗記完了画面は全単語暗記入口の合流点だけで詳細レ�
   assert.match(study, /wordIds,/)
   assert.doesNotMatch(study, /wordIds:\s*deck\.map/)
   assert.match(study, /beforeBoxes/)
-  assert.match(result, /beforeBoxes: params\.vocabSession\.beforeBoxes/)
-  assert.match(result, /isVocabStudy.*params\.vocabSession/s)
-  assert.match(result, /buildVocabCompletionReport/)
+  assert.match(result, /beforeBoxes: completionContent\.session\.beforeBoxes/)
+  assert.match(result, /isVocabStudy[\s\S]*params\.vocabSession/)
+  // 熟語・構文の暗記も、同じ記録の形で同じレポートへ入る。
+  assert.match(result, /isPhraseStudy[\s\S]*params\.phraseSession/)
+  assert.match(phrase, /phraseSession:\s*\{/)
+  assert.match(result, /buildStudyCompletionReport/)
   assert.match(result, /source:\s*\{ type: 'mylist', ids: reviewTargetIds \}/)
-  assert.match(result, /if \(isDragonVein\)[\s\S]*if \(vocabCompletion\)/)
-  const vocabResultBranch = result.slice(result.indexOf('if (vocabCompletion)'), result.indexOf("return (\n    <div className=\"relative flex", result.indexOf('if (vocabCompletion)')))
-  assert.doesNotMatch(vocabResultBranch, /<Confetti/)
+  assert.match(result, /if \(isDragonVein\)[\s\S]*if \(studyCompletion\)/)
+  const studyResultBranch = result.slice(result.indexOf('if (studyCompletion)'), result.indexOf("return (\n    <div className=\"relative flex", result.indexOf('if (studyCompletion)')))
+  assert.doesNotMatch(studyResultBranch, /<Confetti/)
 
   for (const contract of [
-    'data-vocab-completion-report',
-    'data-vocab-completion-today',
-    'data-vocab-completion-priority',
-    'data-vocab-next-cycle',
+    'data-study-completion-report',
+    'data-study-completion-today',
+    'data-study-completion-priority',
+    'data-study-completion-next',
   ]) {
     assert.match(report, new RegExp(contract))
   }
-  assert.match(report, /英単語の学習結果/)
-  assert.match(report, /今日、\{today\.uniqueWords\}語に取り組みました/)
+  // 教材名・単位・戻り先の文言だけを教材ごとに渡し、並びと文は全教材で同じにする。
+  assert.match(report, /\$\{contentLabel\}の学習結果/)
+  assert.match(result, /label: '英単語'[\s\S]*unit: '語'/)
+  assert.match(result, /label: '熟語・構文'[\s\S]*unit: '項目'/)
+  assert.match(report, /今日、\{today\.uniqueItems\}\{unit\}に取り組みました/)
   assert.doesNotMatch(report, /暗記サイクル完了|MEMORY CYCLE COMPLETE/)
-  for (const heading of ['今日の成果', '次にすること', 'このあとの復習予定', '今回学んだ語']) {
+  for (const heading of ['今日の成果', '次にすること', 'このあとの復習予定', '今回学んだ\{unit\}']) {
     assert.match(report, new RegExp(heading))
   }
-  for (const action of ['復習する', '次へ進む', '単語一覧へ戻る']) {
+  for (const action of ['復習する', '\{continueLabel\}', '\{backLabel\}']) {
     assert.match(report, new RegExp(action))
   }
-  assert.match(report, /data-vocab-review-schedule/)
+  assert.match(result, /backLabel: '単語一覧へ戻る'/)
+  assert.match(report, /data-study-review-schedule/)
   // 復習間隔の内部方針は載せず、復習日の一覧だけで次の行動を示す。
   assert.doesNotMatch(report, /30→60→90→180日/)
-  assert.match(report, /今日、\{today\.uniqueWords\}語に取り組みました/)
-  assert.match(report, /同じ語に何度か答えた場合は、今日最後の答えで分けています/)
-  // 語ごとの結果は「一覧で確認」と同じスワイプ一覧で、その場で直せる。
+  assert.match(report, /同じ\$\{unit\}に何度か答えた場合は、今日最後の答えで分けています/)
+  // 項目ごとの結果は「一覧で確認」と同じスワイプ一覧で、その場で直せる。
   assert.match(report, /次の復習：\$\{dueLabel\(item\.dueInDays\)\}/)
   assert.match(report, /<NormalLearningRecordList/)
-  assert.match(report, /contentId="vocab"/)
+  assert.match(result, /contentId: 'vocab'/)
   assert.match(report, /左へスワイプで「覚えた」、右へスワイプで「まだ」に直せます/)
   assert.match(report, /shrink-0 border-t border-indigo-100/)
-  assert.match(report, /data-vocab-fixed-review/)
-  assert.match(report, /data-vocab-fixed-continue/)
-  assert.match(report, /data-vocab-review-schedule/)
+  assert.match(report, /data-study-fixed-review/)
+  assert.match(report, /data-study-fixed-continue/)
   assert.match(report, /予定日は、これまでの答えに合わせて変わります/)
-  assert.match(report, /答えを見る前に、もう一度意味を思い出しましょう/)
+  assert.match(report, /答えを見る前に、もう一度思い出しましょう/)
   assert.doesNotMatch(report, /最新が|復習の段階|覚え具合|忘れやすさの予測|先取り復習|パーフェクト級/)
   assert.doesNotMatch(report, /data-vocab-memory-progress|data-vocab-long-review-stage|data-vocab-forgetting-curve/)
   assert.doesNotMatch(report, /4日後以降/)
-  assert.match(result, /onReviewSchedule=\{reviewVocabSchedule\}/)
-  assert.match(result, /reviewVocabSchedule[\s\S]*continueTo: nextAfterReview/)
+  assert.match(result, /onReviewSchedule=\{reviewStudySchedule\}/)
+  assert.match(result, /reviewStudySchedule[\s\S]*continueTo: nextAfterReview/)
   assert.equal(PERSISTED_PROGRESS_FIELDS.includes('vocabSession'), false)
 })
