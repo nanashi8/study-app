@@ -12,6 +12,7 @@ import { LEARNING_FIELD_TOC } from '../data/decks.js'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { LearningEntryCard } from '../components/LearningEntryCard.jsx'
 import { LearningViewTabs } from '../components/LearningViewTabs.jsx'
+import { CatalogTools } from '../components/CatalogTools.jsx'
 import { Button, Chip, cx } from '../components/ui.jsx'
 import { summarizeVocabularySrsItems } from '../lib/vocabScheduler.js'
 import { wordProgress } from '../lib/session.js'
@@ -200,80 +201,52 @@ function VocabularyCatalog({
         className="shrink-0 space-y-1.5 border-b border-slate-200 bg-white px-3 pb-2 pt-1.5"
         data-vocab-catalog-compact-controls
       >
-        {onShowFields && (
-          <LevelViewTabs
-            view="list"
-            onChange={(nextView) => {
-              if (nextView === 'fields') onShowFields()
-            }}
-          />
-        )}
-        <div className="grid grid-cols-2 gap-1 rounded-xl bg-slate-100 p-1" role="tablist" aria-label="確認する記録">
-          {VOCAB_CATALOG_ACTIVITY_OPTIONS.map((option) => {
-            const count = option.id === 'test' ? testRecordedCount : memoryRecordedCount
-            return (
-              <button
-                key={option.id}
-                type="button"
-                role="tab"
-                aria-selected={activity === option.id}
-                onClick={() => {
-                  setActivity(option.id)
-                  setSwipeMessage('')
-                }}
-                className={cx(
-                  'min-h-11 rounded-lg px-1 text-xs font-extrabold',
-                  activity === option.id
-                    ? 'bg-white text-brand-700 shadow-sm'
-                    : 'text-ink/55 active:bg-white/70',
-                )}
-                aria-label={`${option.label}。済み${count.toLocaleString('ja-JP')}語、全${fieldRows.length.toLocaleString('ja-JP')}語`}
-                data-vocab-catalog-activity-tab={option.id}
-              >
-                {option.id === 'test' ? 'テスト' : '学習'}
-                <span className="ml-1 tabular-nums">{count.toLocaleString('ja-JP')}/{fieldRows.length.toLocaleString('ja-JP')}語</span>
-              </button>
-            )
-          })}
-        </div>
-        <div className="grid grid-cols-[minmax(0,1fr)_auto_auto] gap-1.5">
-          <p
-            className="flex min-h-11 min-w-0 items-center justify-center whitespace-nowrap rounded-xl bg-brand-50 px-2 text-[10px] font-extrabold text-brand-800"
-            aria-label={`左スワイプで${activityMeta.leftLabel}、右スワイプで${activityMeta.rightLabel}。スワイプ後は一時的に非表示になります。`}
-            data-vocab-catalog-swipe-guide
-          >
-            <span aria-hidden="true">← {activityMeta.leftLabel}｜{activityMeta.rightLabel} →</span>
-          </p>
-          <button
-            type="button"
-            onClick={() => setSortOpen((current) => !current)}
-            aria-expanded={sortOpen}
-            aria-label={`しぼり込みと並び替えを${sortOpen ? '閉じる' : '開く'}。現在は${fieldFilterLabel}・${statusFilter === 'all' ? 'すべての状況' : statusFilterLabel(statusFilter)}`}
-            className="learning-catalog-tools-toggle min-h-11 items-center justify-center gap-1 rounded-xl border border-slate-300 bg-white px-2 text-[10px] font-extrabold text-brand-700 active:bg-brand-50"
-            data-vocab-catalog-tools-toggle
-          >
-            <span className="hidden min-[360px]:inline">しぼり込み・並び</span>
-            <span className="min-[360px]:hidden">絞込</span>
-            <span aria-hidden="true">{sortOpen ? '−' : '＋'}</span>
-          </button>
-          <button
-            type="button"
-            onClick={restoreList}
-            disabled={!dismissedIds.size}
-            className="min-h-11 rounded-xl border border-brand-200 bg-white px-2 text-[10px] font-extrabold text-brand-700 active:bg-brand-50 disabled:text-ink/35"
-            aria-label="一覧を再表示"
-            data-vocab-catalog-restore
-          >
-            一覧を再表示
-          </button>
-        </div>
-        <div
-          className={cx(
-            'space-y-1.5',
-            !sortOpen && 'learning-catalog-tools-collapsible',
+        <CatalogTools
+          open={sortOpen}
+          onToggle={() => setSortOpen((current) => !current)}
+          summary={`${activity === 'test' ? 'テストの記録' : '学習の記録'}・${fieldFilterLabel}・${statusFilter === 'all' ? 'すべての状況' : statusFilterLabel(statusFilter)}`}
+          narrowed={fieldFilter !== VOCAB_CATALOG_FIELD_FILTER_ALL || statusFilter !== 'all'}
+          toggleProps={{ 'data-vocab-catalog-tools-toggle': true }}
+          toolsProps={{ 'data-vocab-catalog-tools': true }}
+          tabs={(
+            <div className="grid grid-cols-2 gap-1 rounded-xl bg-slate-100 p-1" role="tablist" aria-label="確認する記録">
+              {VOCAB_CATALOG_ACTIVITY_OPTIONS.map((option) => {
+                const count = option.id === 'test' ? testRecordedCount : memoryRecordedCount
+                return (
+                  <button
+                    key={option.id}
+                    type="button"
+                    role="tab"
+                    aria-selected={activity === option.id}
+                    onClick={() => {
+                      setActivity(option.id)
+                      setSwipeMessage('')
+                    }}
+                    className={cx(
+                      'min-h-11 rounded-lg px-1 text-xs font-extrabold',
+                      activity === option.id
+                        ? 'bg-white text-brand-700 shadow-sm'
+                        : 'text-ink/55 active:bg-white/70',
+                    )}
+                    aria-label={`${option.label}。済み${count.toLocaleString('ja-JP')}語、全${fieldRows.length.toLocaleString('ja-JP')}語`}
+                    data-vocab-catalog-activity-tab={option.id}
+                  >
+                    {option.id === 'test' ? 'テスト' : '学習'}
+                    <span className="ml-1 tabular-nums">{count.toLocaleString('ja-JP')}/{fieldRows.length.toLocaleString('ja-JP')}語</span>
+                  </button>
+                )
+              })}
+            </div>
           )}
-          data-vocab-catalog-tools
         >
+          {onShowFields && (
+            <LevelViewTabs
+              view="list"
+              onChange={(nextView) => {
+                if (nextView === 'fields') onShowFields()
+              }}
+            />
+          )}
           <label className="block min-w-0">
             <span className="mb-0.5 block px-1 text-[10px] font-extrabold text-ink/50">10分野でしぼり込み</span>
             <select
@@ -342,19 +315,40 @@ function VocabularyCatalog({
               </button>
             </div>
           </div>
-        </div>
+          <button
+            type="button"
+            onClick={restoreList}
+            disabled={!dismissedIds.size}
+            className="min-h-11 w-full rounded-xl border border-brand-200 bg-white px-2 text-xs font-extrabold text-brand-700 active:bg-brand-50 disabled:text-ink/35"
+            aria-label="一覧を再表示"
+            data-vocab-catalog-restore
+          >
+            {dismissedIds.size
+              ? `スワイプで隠した${dismissedIds.size.toLocaleString('ja-JP')}語を一覧へ戻す`
+              : '一覧を再表示'}
+          </button>
+        </CatalogTools>
         <p className="sr-only" aria-live="polite" data-vocab-catalog-swipe-message>
           {swipeMessage}
         </p>
       </div>
 
       <div ref={listRef} className="min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto px-3 py-3" data-vocab-catalog-list>
-        <p className="mb-2 px-1 text-xs font-extrabold text-ink/50" aria-live="polite">
-          {fieldFilter !== VOCAB_CATALOG_FIELD_FILTER_ALL && `${fieldFilterLabel}・`}
-          {`${activity === 'test' ? 'テスト済' : '学習済'} ${recordedCount.toLocaleString('ja-JP')}/${fieldRows.length.toLocaleString('ja-JP')}語`}
-          {statusFilter !== 'all' && `・「${statusFilterLabel(statusFilter)}」${filteredRows.length.toLocaleString('ja-JP')}語`}
-          {`・残り${remainingRows.length.toLocaleString('ja-JP')}語`}
-        </p>
+        <div className="mb-2 flex flex-wrap items-baseline justify-between gap-x-2 gap-y-1 px-1">
+          <p className="text-xs font-extrabold text-ink/50" aria-live="polite">
+            {fieldFilter !== VOCAB_CATALOG_FIELD_FILTER_ALL && `${fieldFilterLabel}・`}
+            {`${activity === 'test' ? 'テスト済' : '学習済'} ${recordedCount.toLocaleString('ja-JP')}/${fieldRows.length.toLocaleString('ja-JP')}語`}
+            {statusFilter !== 'all' && `・「${statusFilterLabel(statusFilter)}」${filteredRows.length.toLocaleString('ja-JP')}語`}
+            {`・残り${remainingRows.length.toLocaleString('ja-JP')}語`}
+          </p>
+          <p
+            className="whitespace-nowrap text-[10px] font-extrabold text-brand-700"
+            aria-label={`左スワイプで${activityMeta.leftLabel}、右スワイプで${activityMeta.rightLabel}。スワイプ後は一時的に非表示になります。`}
+            data-vocab-catalog-swipe-guide
+          >
+            <span aria-hidden="true">← {activityMeta.leftLabel}｜{activityMeta.rightLabel} →</span>
+          </p>
+        </div>
         <div className="space-y-2">
           {visibleRows.map((row) => (
             <VocabularyHistoryRow
@@ -367,13 +361,24 @@ function VocabularyCatalog({
           ))}
         </div>
         {!visibleRows.length && (
-          <p className="rounded-xl bg-slate-50 px-4 py-8 text-center text-sm font-bold leading-relaxed text-ink/50">
-            {!fieldRows.length
-              ? activityMeta.empty
-              : filteredRows.length
-                ? 'この一覧をすべて確認しました。「一覧を再表示」で、同じ語彙をもう一度確認できます。'
-                : `「${statusFilter === 'all' ? fieldFilterLabel : statusFilterLabel(statusFilter)}」の語はありません。しぼり込みを「すべて」に戻すと、全語を確認できます。`}
-          </p>
+          <div className="rounded-xl bg-slate-50 px-4 py-8 text-center">
+            <p className="text-sm font-bold leading-relaxed text-ink/50">
+              {!fieldRows.length
+                ? activityMeta.empty
+                : filteredRows.length
+                  ? 'この一覧をすべて確認しました。同じ語彙をもう一度確認できます。'
+                  : `「${statusFilter === 'all' ? fieldFilterLabel : statusFilterLabel(statusFilter)}」の語はありません。しぼり込みを「すべて」に戻すと、全語を確認できます。`}
+            </p>
+            {dismissedIds.size > 0 && (
+              <Button
+                variant="secondary"
+                className="mt-3"
+                onClick={restoreList}
+              >
+                一覧を再表示
+              </Button>
+            )}
+          </div>
         )}
         {visible < remainingRows.length && (
           <Button

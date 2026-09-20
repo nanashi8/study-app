@@ -377,6 +377,7 @@ test('マイ学習の入口を一覧確認へ統一し、英単語と指定9カ�
   const catalogLib = readFileSync(new URL('../src/lib/learningContentCatalog.js', import.meta.url), 'utf8')
   const store = readFileSync(new URL('../src/store/useStore.js', import.meta.url), 'utf8')
   const css = readFileSync(new URL('../src/index.css', import.meta.url), 'utf8')
+  const catalogTools = readFileSync(new URL('../src/components/CatalogTools.jsx', import.meta.url), 'utf8')
 
   assert.match(myLearning, /data-learning-content-catalog-entry=\{content\.id\}/)
   assert.match(myLearning, /一覧を確認/)
@@ -408,8 +409,10 @@ test('マイ学習の入口を一覧確認へ統一し、英単語と指定9カ�
   assert.match(catalog, /navigate\('wordDetail', \{ id: row\.id \}\)/)
   assert.match(catalog, /recordedCount/)
   assert.match(catalog, /data-learning-catalog-tools-toggle/)
-  assert.match(catalog, /aria-expanded=\{toolsOpen\}/)
-  assert.match(catalog, /learning-catalog-tools-collapsible/)
+  assert.match(catalog, /<CatalogTools/)
+  assert.match(catalog, /open=\{toolsOpen\}/)
+  assert.match(catalogTools, /aria-expanded=\{open\}/)
+  assert.match(catalogTools, /learning-catalog-tools-collapsible/)
   assert.match(catalog, /className="sr-only" aria-live="polite" data-learning-catalog-swipe-message/)
   assert.match(catalog, /data-learning-catalog-view=\{viewId\}/)
   assert.match(catalog, /all: \{/)
@@ -527,4 +530,73 @@ test('一覧から始めた各教材は選択順と一覧への帰り先を受�
   assert.match(readingPrep, /returnTo: params\.returnTo/)
   assert.match(reader, /readingSummary', \{ passageId, returnTo: params\.returnTo \}/)
   assert.match(summary, /教材一覧へ戻る/)
+})
+
+test('一覧の上は記録の切替1行だけを残し、しぼり込み・並び替え・見方は畳める', () => {
+  const tools = readFileSync(new URL('../src/components/CatalogTools.jsx', import.meta.url), 'utf8')
+  const catalog = readFileSync(new URL('../src/components/LearningContentCatalog.jsx', import.meta.url), 'utf8')
+  const decks = readFileSync(new URL('../src/screens/VocabDecks.jsx', import.meta.url), 'utf8')
+  const normalList = readFileSync(new URL('../src/components/NormalLearningRecordList.jsx', import.meta.url), 'utf8')
+
+  // 畳む器は、いつも見えるタブ・開閉ボタン・閉じているあいだ隠れる入れ物でできている。
+  assert.match(tools, /\{tabs\}/)
+  assert.match(tools, /aria-expanded=\{open\}/)
+  assert.match(tools, /!open && 'learning-catalog-tools-collapsible'/)
+
+  // 18教材の一覧は、教材選び・検索・並び替え・一覧を再表示を畳む側へ入れる。
+  const catalogInside = catalog.slice(catalog.indexOf('<CatalogTools'), catalog.indexOf('</CatalogTools>'))
+  for (const token of [
+    'data-learning-catalog-content-select',
+    'data-learning-catalog-search',
+    'data-learning-catalog-sort',
+    'data-learning-catalog-restore',
+  ]) {
+    assert.ok(catalogInside.includes(token), `18教材の一覧: ${token}`)
+  }
+
+  // 英単語の一覧も同じで、10分野・学習状況・並び替え・見方の切替を畳む。
+  const decksInside = decks.slice(decks.indexOf('<CatalogTools'), decks.indexOf('</CatalogTools>'))
+  for (const token of [
+    'data-vocab-catalog-field-filter',
+    'data-vocab-catalog-status-filter',
+    'data-vocab-catalog-sort',
+    'data-vocab-catalog-restore',
+    '<LevelViewTabs',
+  ]) {
+    assert.ok(decksInside.includes(token), `英単語の一覧: ${token}`)
+  }
+
+  // スワイプの案内は動かない上部ではなく、一覧と一緒に流れる側に置く。
+  assert.ok(
+    catalog.indexOf('data-learning-catalog-list') < catalog.indexOf('data-learning-catalog-swipe-guide'),
+    '18教材の一覧: スワイプの案内は一覧の中',
+  )
+  assert.ok(
+    decks.indexOf('data-vocab-catalog-list') < decks.indexOf('data-vocab-catalog-swipe-guide'),
+    '英単語の一覧: スワイプの案内は一覧の中',
+  )
+  // 教材の通常画面は、隠した行があるときだけ一覧の下に戻す入口を出す。
+  assert.match(normalList, /\{dismissedIds\.size > 0 && \(/)
+  assert.ok(
+    normalList.indexOf('data-normal-learning-record-rows') < normalList.indexOf('data-normal-learning-record-restore'),
+    '通常一覧: 一覧を再表示は一覧の下',
+  )
+
+  // 古典・漢文・熟語の一覧も、見方の切替とボタンの1行だけを残し、学年・分野・検索を畳む。
+  // 開いたかどうかは params に置き、暗記・テストから戻っても同じ見え方で始める。
+  for (const [file, tokens] of [
+    ['KanbunCatalog', ['学年・難しさから選ぶ', '分野から選ぶ', 'setQuery']],
+    ['KotenList', ['setListCategory']],
+    ['KotenGrammar', ['setQuery', 'setCategory']],
+    ['KotenCulture', ['setQuery', 'setCategory']],
+    ['Phrases', ['{kindTabs}', 'setQuery', 'setLevelFilter', 'setFamilyFilter']],
+  ]) {
+    const source = readFileSync(new URL(`../src/screens/${file}.jsx`, import.meta.url), 'utf8')
+    const start = source.indexOf('<CatalogTools')
+    const inside = source.slice(start, source.indexOf('</CatalogTools>'))
+    assert.ok(start >= 0, `${file}: 畳む器`)
+    assert.match(inside, /tabs=\{\(\s*<LearningViewTabs/, `${file}: 見方の切替はいつも見える行`)
+    assert.match(source, /useScreenParam\('filtersOpen', readOpen\)/, `${file}: 開閉は params`)
+    for (const token of tokens) assert.ok(inside.includes(token), `${file}: ${token}`)
+  }
 })

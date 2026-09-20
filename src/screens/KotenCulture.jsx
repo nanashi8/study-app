@@ -18,11 +18,12 @@ import {
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { LearningEntryCard } from '../components/LearningEntryCard.jsx'
 import { LearningViewTabs } from '../components/LearningViewTabs.jsx'
+import { CatalogTools } from '../components/CatalogTools.jsx'
 import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
 import { NormalLearningRecordList } from '../components/NormalLearningRecordList.jsx'
 import { summarizeSrsItemsWithQuestions } from '../lib/contentProgress.js'
 import { scrollScreenToTop } from '../lib/screenScroll.js'
-import { readChoice, readListView, readOpenId, readText } from '../lib/screenParams.js'
+import { readChoice, readListView, readOpen, readOpenId, readText } from '../lib/screenParams.js'
 import { KotenText } from '../components/KotenFurigana.jsx'
 import { kotenTextForSearch } from '../lib/kotenFurigana.js'
 import {
@@ -72,6 +73,7 @@ export function KotenCultureScreen() {
   const [query, setQuery] = useScreenParam('query', readText)
   const [openId, setOpenId] = useScreenParam('openId', readOpenId)
   const [view, setView] = useScreenParam('view', readListView)
+  const [filtersOpen, setFiltersOpen] = useScreenParam('filtersOpen', readOpen)
 
   const quizResults = useStore((state) => state.contentQuizResults)
   const totalStatus = summarizeSrsItemsWithQuestions({
@@ -209,32 +211,29 @@ export function KotenCultureScreen() {
     </div>
   )
 
+  const categoryLabel = KOTEN_CULTURE_CATEGORIES.find((meta) => meta.id === category)?.label ?? 'すべて'
   const catalogView = (
     <div className="pb-8" data-koten-culture-catalog={category}>
       <ScreenHeader title="古典常識の一覧を確認" compact />
       <div className="space-y-3 px-4 pt-3">
-        <LearningViewTabs
-          view="list"
-          onChange={setView}
-          learnLabel="学ぶ"
-          listLabel="一覧を確認"
-          label="古典常識の見方"
-        />
-        <section>
-          <div className="mb-2 flex items-end justify-between px-1">
-            <div>
-              <p className="text-[10px] font-extrabold text-violet-600">参考</p>
-              <h2 className="font-display text-lg font-extrabold text-ink">古典常識事典</h2>
-            </div>
-            <button
-              onClick={() => setWordBookOpen(true)}
-              aria-haspopup="dialog"
-              className="flex items-center gap-1 text-xs font-extrabold text-violet-700"
-            >
-              <Cards size={14} /> 単語帳 <ArrowRight size={14} />
-            </button>
-          </div>
-
+        <CatalogTools
+          open={filtersOpen}
+          onToggle={() => setFiltersOpen((current) => !current)}
+          summary={`${categoryLabel}${query.trim() ? `・検索「${query.trim()}」` : ''}`}
+          narrowed={category !== 'all' || Boolean(query.trim())}
+          toolsClassName="space-y-3"
+          label="しぼり込み"
+          toggleProps={{ 'data-koten-culture-tools-toggle': true }}
+          tabs={(
+            <LearningViewTabs
+              view="list"
+              onChange={setView}
+              learnLabel="学ぶ"
+              listLabel="一覧を確認"
+              label="古典常識の見方"
+            />
+          )}
+        >
           <label className="flex items-center gap-2 rounded-2xl bg-white px-3.5 py-2.5 shadow-sm">
             <Search size={18} className="text-ink/35" />
             <input
@@ -245,8 +244,7 @@ export function KotenCultureScreen() {
               className="min-w-0 flex-1 bg-transparent text-sm font-bold text-ink outline-none placeholder:text-ink/30"
             />
           </label>
-
-          <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
+          <div className="flex gap-2 overflow-x-auto pb-1">
             <button
               onClick={() => setCategory('all')}
               className={cx(
@@ -270,8 +268,22 @@ export function KotenCultureScreen() {
               </button>
             ))}
           </div>
-
-          <p className="mb-2 mt-4 px-1 text-xs font-bold text-ink/45">{items.length}テーマ</p>
+        </CatalogTools>
+        <section>
+          <div className="mb-2 flex items-end justify-between px-1">
+            <div>
+              <p className="text-[10px] font-extrabold text-violet-600">参考</p>
+              <h2 className="font-display text-lg font-extrabold text-ink">古典常識事典</h2>
+            </div>
+            <button
+              onClick={() => setWordBookOpen(true)}
+              aria-haspopup="dialog"
+              className="flex items-center gap-1 text-xs font-extrabold text-violet-700"
+            >
+              <Cards size={14} /> 単語帳 <ArrowRight size={14} />
+            </button>
+          </div>
+          <p className="mb-2 px-1 text-xs font-bold text-ink/45">{items.length}テーマ</p>
           <NormalLearningRecordList
             entryId="koten-culture"
             contentId="koten-culture"

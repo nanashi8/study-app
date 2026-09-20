@@ -29,11 +29,12 @@ import { IdiomFormGuide } from '../components/IdiomFormGuide.jsx'
 import { Card, Button, Chip, IconButton } from '../components/ui.jsx'
 import { LearningEntryCard } from '../components/LearningEntryCard.jsx'
 import { LearningViewTabs } from '../components/LearningViewTabs.jsx'
+import { CatalogTools } from '../components/CatalogTools.jsx'
 import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
 import { NormalLearningRecordList } from '../components/NormalLearningRecordList.jsx'
 import { summarizeSrsItems } from '../lib/contentProgress.js'
 import { scrollScreenToTop } from '../lib/screenScroll.js'
-import { readChoice, readListView, readText } from '../lib/screenParams.js'
+import { readChoice, readListView, readOpen, readText } from '../lib/screenParams.js'
 import { Book, Cards, Lightbulb, Link, Refresh, Search, Sparkles } from '../components/Icons.jsx'
 import { cx } from '../components/ui.jsx'
 
@@ -87,6 +88,7 @@ export function PhrasesScreen() {
   const [query, setQuery] = useScreenParam('query', readText)
   const [levelFilter, setLevelFilter] = useScreenParam('levelFilter', readLevelFilter)
   const [familyFilter, setFamilyFilter] = useScreenParam('familyFilter', readFamilyFilter)
+  const [filtersOpen, setFiltersOpen] = useScreenParam('filtersOpen', readOpen)
 
   const meta = PHRASE_KINDS.find((k) => k.id === kind)
   const kindItems = phrasesByKind(kind)
@@ -386,140 +388,160 @@ export function PhrasesScreen() {
     </>
   )
 
+  // 閉じたしぼり込みのボタンが読み上げる、いまの絞り込み。
+  const catalogSummary = [
+    meta.label,
+    levelFilter === 'all' ? '全級' : getLevel(levelFilter).label,
+    selectedFamily?.title,
+    query.trim() && `検索「${query.trim()}」`,
+  ].filter(Boolean).join('・')
   const listView = (
     <>
       <ScreenHeader title={`${meta.label}の一覧を確認`} compact />
 
       <div className="px-4 pt-2">
-        <LearningViewTabs
-          view="list"
-          onChange={(nextView) => setView(nextView)}
-          learnLabel="級から学ぶ"
-          listLabel="一覧を確認"
-          label="熟語・構文の見方"
-        />
+        <div className="space-y-3">
+          <CatalogTools
+            open={filtersOpen}
+            onToggle={() => setFiltersOpen((current) => !current)}
+            summary={catalogSummary}
+            narrowed={levelFilter !== 'all' || familyFilter !== 'all' || Boolean(query.trim())}
+            toolsClassName="space-y-3"
+            label="しぼり込み"
+            toggleProps={{ 'data-phrase-catalog-tools-toggle': true }}
+            tabs={(
+              <LearningViewTabs
+                view="list"
+                onChange={(nextView) => setView(nextView)}
+                learnLabel="級から学ぶ"
+                listLabel="一覧を確認"
+                label="熟語・構文の見方"
+              />
+            )}
+          >
+            <div>{kindTabs}</div>
 
-        <div className="mt-3">{kindTabs}</div>
-
-        {/* 1,000項目以上でも目的の表現へすぐ到達できる検索・級フィルター */}
-        <div className="mt-3 space-y-2">
-          <label className="flex items-center gap-2 rounded-2xl bg-white px-3 shadow-sm ring-1 ring-brand-100 focus-within:ring-2 focus-within:ring-brand-300">
-            <Search size={17} className="shrink-0 text-brand-400" />
-            <input
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              placeholder="英語・意味・語法で絞り込む"
-              className="h-11 min-w-0 flex-1 bg-transparent text-sm font-bold text-ink outline-none placeholder:font-normal placeholder:text-ink/30"
-              aria-label="熟語と構文を検索"
-            />
-          </label>
-          <div className="no-scrollbar flex gap-1.5 overflow-x-auto pb-1">
-            <button
-              onClick={() => setLevelFilter('all')}
-              className={cx(
-                'shrink-0 rounded-full px-3 py-1.5 text-xs font-extrabold',
-                levelFilter === 'all' ? 'bg-ink text-white' : 'bg-white text-ink/50',
-              )}
-            >
-              全級
-            </button>
-            {LEVELS.map((level) => (
-              <button
-                key={level.id}
-                onClick={() => setLevelFilter(level.id)}
-                className={cx(
-                  'shrink-0 rounded-full px-3 py-1.5 text-xs font-extrabold',
-                  levelFilter === level.id ? 'text-white' : 'bg-white text-ink/50',
-                )}
-                style={levelFilter === level.id ? { background: level.color } : undefined}
-              >
-                {level.label}
-              </button>
-            ))}
-          </div>
-          {kind === 'syntax' && (
-            <div
-              className="rounded-2xl bg-violet-50 p-3 ring-1 ring-violet-100"
-              data-syntax-family-filter
-            >
-              <label className="block text-[11px] font-extrabold text-violet-700" htmlFor="syntax-family-filter">
-                構文を仲間でまとめて学ぶ
+            {/* 1,000項目以上でも目的の表現へすぐ到達できる検索・級フィルター */}
+            <div className="space-y-2">
+              <label className="flex items-center gap-2 rounded-2xl bg-white px-3 shadow-sm ring-1 ring-brand-100 focus-within:ring-2 focus-within:ring-brand-300">
+                <Search size={17} className="shrink-0 text-brand-400" />
+                <input
+                  value={query}
+                  onChange={(event) => setQuery(event.target.value)}
+                  placeholder="英語・意味・語法で絞り込む"
+                  className="h-11 min-w-0 flex-1 bg-transparent text-sm font-bold text-ink outline-none placeholder:font-normal placeholder:text-ink/30"
+                  aria-label="熟語と構文を検索"
+                />
               </label>
-              <select
-                id="syntax-family-filter"
-                value={familyFilter}
-                onChange={(event) => setFamilyFilter(event.target.value)}
-                className="mt-1.5 h-11 w-full rounded-xl border border-violet-200 bg-white px-3 text-sm font-bold text-ink outline-none focus:border-violet-400"
-              >
-                <option value="all">全ファミリー（{SYNTAX_FAMILY_OPTIONS.length}組・{PHRASE_COUNTS.syntax}構文）</option>
-                {SYNTAX_FAMILY_OPTIONS.map((guide) => (
-                  <option key={guide.id} value={guide.id}>
-                    {guide.title}（{guide.count}構文）
-                  </option>
+              <div className="no-scrollbar flex gap-1.5 overflow-x-auto pb-1">
+                <button
+                  onClick={() => setLevelFilter('all')}
+                  className={cx(
+                    'shrink-0 rounded-full px-3 py-1.5 text-xs font-extrabold',
+                    levelFilter === 'all' ? 'bg-ink text-white' : 'bg-white text-ink/50',
+                  )}
+                >
+                  全級
+                </button>
+                {LEVELS.map((level) => (
+                  <button
+                    key={level.id}
+                    onClick={() => setLevelFilter(level.id)}
+                    className={cx(
+                      'shrink-0 rounded-full px-3 py-1.5 text-xs font-extrabold',
+                      levelFilter === level.id ? 'text-white' : 'bg-white text-ink/50',
+                    )}
+                    style={levelFilter === level.id ? { background: level.color } : undefined}
+                  >
+                    {level.label}
+                  </button>
                 ))}
-              </select>
-              <p className="mt-2 text-xs font-bold leading-relaxed text-violet-900/70">
-                {selectedFamily
-                  ? selectedFamily.summary
-                  : '似た形を比較しながら覚えます。各カードにも、同じ仲間の形・意味差・入試の見分け方をまとめて表示します。'}
-              </p>
-            </div>
-          )}
-          {kind === 'idiom' && (
-            <div
-              className="rounded-2xl bg-sky-50 p-3 ring-1 ring-sky-100"
-              data-idiom-form-filter
-            >
-              <label className="block text-[11px] font-extrabold text-sky-700" htmlFor="idiom-form-filter">
-                熟語を同じ形でまとめて学ぶ
-              </label>
-              <div className="mt-2 grid grid-cols-2 gap-2" data-idiom-featured-forms>
-                {FEATURED_IDIOM_FORM_OPTIONS.map((guide) => {
-                  const selected = familyFilter === guide.id
-                  return (
-                    <button
-                      key={guide.id}
-                      type="button"
-                      onClick={() => setFamilyFilter(guide.id)}
-                      aria-pressed={selected}
-                      data-idiom-featured-form={guide.id}
-                      className={cx(
-                        'flex min-h-11 items-center justify-between gap-2 rounded-xl px-3 text-left text-xs font-extrabold ring-1 transition-colors',
-                        selected
-                          ? 'bg-sky-600 text-white ring-sky-600'
-                          : 'bg-white text-sky-900 ring-sky-200',
-                      )}
-                    >
-                      <span className="font-display">{guide.title}</span>
-                      <span className={selected ? 'text-white/75' : 'text-sky-600/70'}>{guide.count}件</span>
-                    </button>
-                  )
-                })}
               </div>
-              <select
-                id="idiom-form-filter"
-                value={familyFilter}
-                onChange={(event) => setFamilyFilter(event.target.value)}
-                className="mt-1.5 h-11 w-full rounded-xl border border-sky-200 bg-white px-3 text-sm font-bold text-ink outline-none focus:border-sky-400"
-              >
-                <option value="all">すべての熟語（{PHRASE_COUNTS.idiom}件）</option>
-                {IDIOM_FORM_FAMILY_SECTIONS.map((section) => (
-                  <optgroup key={section.id} label={section.label}>
-                    {section.families.map((guide) => (
+              {kind === 'syntax' && (
+                <div
+                  className="rounded-2xl bg-violet-50 p-3 ring-1 ring-violet-100"
+                  data-syntax-family-filter
+                >
+                  <label className="block text-[11px] font-extrabold text-violet-700" htmlFor="syntax-family-filter">
+                    構文を仲間でまとめて学ぶ
+                  </label>
+                  <select
+                    id="syntax-family-filter"
+                    value={familyFilter}
+                    onChange={(event) => setFamilyFilter(event.target.value)}
+                    className="mt-1.5 h-11 w-full rounded-xl border border-violet-200 bg-white px-3 text-sm font-bold text-ink outline-none focus:border-violet-400"
+                  >
+                    <option value="all">全ファミリー（{SYNTAX_FAMILY_OPTIONS.length}組・{PHRASE_COUNTS.syntax}構文）</option>
+                    {SYNTAX_FAMILY_OPTIONS.map((guide) => (
                       <option key={guide.id} value={guide.id}>
-                        {guide.title}（{guide.count}件）
+                        {guide.title}（{guide.count}構文）
                       </option>
                     ))}
-                  </optgroup>
-                ))}
-              </select>
-              <p className="mt-2 text-xs font-bold leading-relaxed text-sky-900/70">
-                {selectedFamily
-                  ? selectedFamily.summary
-                  : `「〜 up」「〜 at」「〜 with」「be 〜 at」など、${IDIOM_FORM_OPTIONS.length}組から形を選び、意味の違いを比べられます。`}
-              </p>
+                  </select>
+                  <p className="mt-2 text-xs font-bold leading-relaxed text-violet-900/70">
+                    {selectedFamily
+                      ? selectedFamily.summary
+                      : '似た形を比較しながら覚えます。各カードにも、同じ仲間の形・意味差・入試の見分け方をまとめて表示します。'}
+                  </p>
+                </div>
+              )}
+              {kind === 'idiom' && (
+                <div
+                  className="rounded-2xl bg-sky-50 p-3 ring-1 ring-sky-100"
+                  data-idiom-form-filter
+                >
+                  <label className="block text-[11px] font-extrabold text-sky-700" htmlFor="idiom-form-filter">
+                    熟語を同じ形でまとめて学ぶ
+                  </label>
+                  <div className="mt-2 grid grid-cols-2 gap-2" data-idiom-featured-forms>
+                    {FEATURED_IDIOM_FORM_OPTIONS.map((guide) => {
+                      const selected = familyFilter === guide.id
+                      return (
+                        <button
+                          key={guide.id}
+                          type="button"
+                          onClick={() => setFamilyFilter(guide.id)}
+                          aria-pressed={selected}
+                          data-idiom-featured-form={guide.id}
+                          className={cx(
+                            'flex min-h-11 items-center justify-between gap-2 rounded-xl px-3 text-left text-xs font-extrabold ring-1 transition-colors',
+                            selected
+                              ? 'bg-sky-600 text-white ring-sky-600'
+                              : 'bg-white text-sky-900 ring-sky-200',
+                          )}
+                        >
+                          <span className="font-display">{guide.title}</span>
+                          <span className={selected ? 'text-white/75' : 'text-sky-600/70'}>{guide.count}件</span>
+                        </button>
+                      )
+                    })}
+                  </div>
+                  <select
+                    id="idiom-form-filter"
+                    value={familyFilter}
+                    onChange={(event) => setFamilyFilter(event.target.value)}
+                    className="mt-1.5 h-11 w-full rounded-xl border border-sky-200 bg-white px-3 text-sm font-bold text-ink outline-none focus:border-sky-400"
+                  >
+                    <option value="all">すべての熟語（{PHRASE_COUNTS.idiom}件）</option>
+                    {IDIOM_FORM_FAMILY_SECTIONS.map((section) => (
+                      <optgroup key={section.id} label={section.label}>
+                        {section.families.map((guide) => (
+                          <option key={guide.id} value={guide.id}>
+                            {guide.title}（{guide.count}件）
+                          </option>
+                        ))}
+                      </optgroup>
+                    ))}
+                  </select>
+                  <p className="mt-2 text-xs font-bold leading-relaxed text-sky-900/70">
+                    {selectedFamily
+                      ? selectedFamily.summary
+                      : `「〜 up」「〜 at」「〜 with」「be 〜 at」など、${IDIOM_FORM_OPTIONS.length}組から形を選び、意味の違いを比べられます。`}
+                  </p>
+                </div>
+              )}
             </div>
-          )}
+          </CatalogTools>
         </div>
 
         {/* 絞り込んだ範囲の進捗＋学習ボタン */}

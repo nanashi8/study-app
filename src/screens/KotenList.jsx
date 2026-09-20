@@ -8,6 +8,7 @@ import { Card, Button, Chip, IconButton } from '../components/ui.jsx'
 import { ScreenHeader } from '../components/AppShell.jsx'
 import { LearningEntryCard } from '../components/LearningEntryCard.jsx'
 import { LearningViewTabs } from '../components/LearningViewTabs.jsx'
+import { CatalogTools } from '../components/CatalogTools.jsx'
 import { NormalLearningRecordList } from '../components/NormalLearningRecordList.jsx'
 import {
   ContentMenu,
@@ -23,7 +24,7 @@ import {
 import { summarizeSrsItems } from '../lib/contentProgress.js'
 import { contentReviewSummary, reviewTargetItems } from '../lib/contentReview.js'
 import { scrollScreenToTop } from '../lib/screenScroll.js'
-import { readChoice } from '../lib/screenParams.js'
+import { readChoice, readOpen } from '../lib/screenParams.js'
 import {
   Book,
   BookOpen,
@@ -68,6 +69,7 @@ export function KotenListScreen() {
   const [curriculumLevel, setCurriculumLevel] = useScreenParam('course', readCourse)
   const [view, setView] = useScreenParam('view', readView)
   const [listCategory, setListCategory] = useScreenParam('category', readListCategory)
+  const [filtersOpen, setFiltersOpen] = useScreenParam('filtersOpen', readOpen)
 
   const dueWords = KOTEN_WORDS.filter((w) => kotenSrs[w.id] && isDue(kotenSrs[w.id]))
   const totalStatus = summarizeSrsItems(KOTEN_WORDS, kotenSrs)
@@ -94,37 +96,49 @@ export function KotenListScreen() {
           compact
         />
         <div className="space-y-3 px-4 pt-3">
-          <LearningViewTabs
-            view="list"
-            onChange={(next) => setView(next === 'list' ? 'list' : 'vocab')}
-            learnLabel="学ぶ"
-            listLabel="一覧を確認"
-            label="古典単語の見方"
-          />
-          <div className="no-scrollbar flex gap-1.5 overflow-x-auto pb-1">
-            <button
-              type="button"
-              onClick={() => setListCategory('all')}
-              className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-extrabold ${
-                listCategory === 'all' ? 'bg-amber-700 text-white' : 'bg-white text-ink/50'
-              }`}
-            >
-              すべて {KOTEN_WORDS.length}
-            </button>
-            {KOTEN_TOC.map(({ category, words }) => (
+          <CatalogTools
+            open={filtersOpen}
+            onToggle={() => setFiltersOpen((current) => !current)}
+            summary={listEntry ? listEntry.category.label : 'すべて'}
+            narrowed={Boolean(listEntry)}
+            toolsClassName="space-y-3"
+            label="しぼり込み"
+            toggleProps={{ 'data-koten-vocab-tools-toggle': true }}
+            tabs={(
+              <LearningViewTabs
+                view="list"
+                onChange={(next) => setView(next === 'list' ? 'list' : 'vocab')}
+                learnLabel="学ぶ"
+                listLabel="一覧を確認"
+                label="古典単語の見方"
+              />
+            )}
+          >
+            <div className="no-scrollbar flex gap-1.5 overflow-x-auto pb-1">
               <button
-                key={category.id}
                 type="button"
-                onClick={() => setListCategory(category.id)}
+                onClick={() => setListCategory('all')}
                 className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-extrabold ${
-                  listCategory === category.id ? 'text-white' : 'bg-white text-ink/50'
+                  listCategory === 'all' ? 'bg-amber-700 text-white' : 'bg-white text-ink/50'
                 }`}
-                style={listCategory === category.id ? { background: category.color } : undefined}
               >
-                {category.emoji} {category.label} {words.length}
+                すべて {KOTEN_WORDS.length}
               </button>
-            ))}
-          </div>
+              {KOTEN_TOC.map(({ category, words }) => (
+                <button
+                  key={category.id}
+                  type="button"
+                  onClick={() => setListCategory(category.id)}
+                  className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-extrabold ${
+                    listCategory === category.id ? 'text-white' : 'bg-white text-ink/50'
+                  }`}
+                  style={listCategory === category.id ? { background: category.color } : undefined}
+                >
+                  {category.emoji} {category.label} {words.length}
+                </button>
+              ))}
+            </div>
+          </CatalogTools>
           <p className="px-1 text-xs font-bold leading-relaxed text-ink/45">
             左右にスワイプして、学習とテストの結果を直接記録できます。
           </p>

@@ -7,6 +7,9 @@ export const readListView = (value) => (value === 'list' ? 'list' : 'home')
 /** 検索語などの文字。 */
 export const readText = (value) => (typeof value === 'string' ? value : '')
 
+/** 畳める欄が開いているか。既定は閉じる。 */
+export const readOpen = (value) => value === true
+
 /** 開いている項目の ID。開いていなければ null。 */
 export const readOpenId = (value) => (typeof value === 'string' ? value : null)
 

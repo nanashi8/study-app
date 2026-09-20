@@ -274,6 +274,7 @@ test('級画面から一覧を開き、記録別の一覧を左右スワイプ�
   const decks = readFileSync(new URL('../src/screens/VocabDecks.jsx', import.meta.url), 'utf8')
   const historyRow = readFileSync(new URL('../src/components/VocabularyHistoryRow.jsx', import.meta.url), 'utf8')
   const catalog = readFileSync(new URL('../src/lib/vocabCatalog.js', import.meta.url), 'utf8')
+  const catalogTools = readFileSync(new URL('../src/components/CatalogTools.jsx', import.meta.url), 'utf8')
 
   assert.match(levels, /data-vocab-catalog-entry/)
   assert.match(levels, /一覧を確認/)
@@ -290,7 +291,9 @@ test('級画面から一覧を開き、記録別の一覧を左右スワイプ�
   assert.doesNotMatch(catalog, /id: 'field'/)
   assert.match(decks, /data-vocab-catalog-compact-controls/)
   assert.match(decks, /data-vocab-catalog-tools-toggle/)
-  assert.match(decks, /learning-catalog-tools-collapsible/)
+  assert.match(decks, /<CatalogTools/)
+  assert.match(decks, /open=\{sortOpen\}/)
+  assert.match(catalogTools, /learning-catalog-tools-collapsible/)
   assert.match(historyRow, /data-vocab-catalog-swipe-row/)
   assert.match(historyRow, /unlearned: \{ label: '学習前'/)
   assert.match(historyRow, /unanswered: \{ label: 'テスト前'/)

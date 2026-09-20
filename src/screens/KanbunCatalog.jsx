@@ -20,11 +20,12 @@ import { KanbunHeadword } from '../components/KanbunFurigana.jsx'
 import { KanbunPatternText } from '../components/KanbunMarkedText.js'
 import { LearningEntryCard } from '../components/LearningEntryCard.jsx'
 import { LearningViewTabs } from '../components/LearningViewTabs.jsx'
+import { CatalogTools } from '../components/CatalogTools.jsx'
 import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
 import { NormalLearningRecordList } from '../components/NormalLearningRecordList.jsx'
 import { summarizeSrsItems } from '../lib/contentProgress.js'
 import { scrollScreenToTop } from '../lib/screenScroll.js'
-import { readChoice, readListView, readText } from '../lib/screenParams.js'
+import { readChoice, readListView, readOpen, readText } from '../lib/screenParams.js'
 import {
   Search,
 } from '../components/Icons.jsx'
@@ -61,6 +62,7 @@ export function KanbunCatalogScreen() {
     readChoice(['all', ...categories.map((item) => item.id)], 'all'),
   )
   const [query, setQuery] = useScreenParam('query', readText)
+  const [filtersOpen, setFiltersOpen] = useScreenParam('filtersOpen', readOpen)
 
   const filtered = useMemo(() => {
     const normalized = query.trim().toLowerCase()
@@ -181,74 +183,87 @@ export function KanbunCatalogScreen() {
     </div>
   )
 
+  const levelLabel = KANBUN_LEVELS.find((item) => item.id === level)?.shortLabel ?? '全レベル'
+  const categoryLabel = categories.find((item) => item.id === category)?.label ?? '全分野'
   const catalogView = (
     <div className="pb-8" data-kanbun-catalog-list={domain}>
       <ScreenHeader title={`${meta.label}の一覧を確認`} compact />
 
       <main className="space-y-3 px-4 pt-3">
-        <LearningViewTabs
-          view="list"
-          onChange={setView}
-          learnLabel="学ぶ"
-          listLabel="一覧を確認"
-          label={`${meta.label}の見方`}
-        />
-
-        <section>
-          <h2 className="px-1 font-display text-sm font-extrabold text-ink">学年・難しさから選ぶ</h2>
-          <div className="mt-2 flex gap-2 overflow-x-auto pb-1">
-            <button
-              type="button"
-              onClick={() => setLevel('all')}
-              className={`shrink-0 rounded-full px-3 py-2 text-xs font-extrabold ${level === 'all' ? 'bg-rose-800 text-white' : 'bg-white text-ink/55'}`}
-            >
-              全レベル
-            </button>
-            {KANBUN_LEVELS.map((item) => (
+        <CatalogTools
+          open={filtersOpen}
+          onToggle={() => setFiltersOpen((current) => !current)}
+          summary={`${levelLabel}・${categoryLabel}${query.trim() ? `・検索「${query.trim()}」` : ''}`}
+          narrowed={level !== 'all' || category !== 'all' || Boolean(query.trim())}
+          toolsClassName="space-y-3"
+          label="しぼり込み"
+          toggleProps={{ 'data-kanbun-catalog-tools-toggle': true }}
+          tabs={(
+            <LearningViewTabs
+              view="list"
+              onChange={setView}
+              learnLabel="学ぶ"
+              listLabel="一覧を確認"
+              label={`${meta.label}の見方`}
+            />
+          )}
+        >
+          <section>
+            <h2 className="px-1 font-display text-sm font-extrabold text-ink">学年・難しさから選ぶ</h2>
+            <div className="mt-2 flex gap-2 overflow-x-auto pb-1">
               <button
                 type="button"
-                key={item.id}
-                onClick={() => setLevel(item.id)}
-                className={`shrink-0 rounded-full px-3 py-2 text-xs font-extrabold ${level === item.id ? 'bg-rose-800 text-white' : 'bg-white text-ink/55'}`}
+                onClick={() => setLevel('all')}
+                className={`shrink-0 rounded-full px-3 py-2 text-xs font-extrabold ${level === 'all' ? 'bg-rose-800 text-white' : 'bg-white text-ink/55'}`}
               >
-                {item.shortLabel}
+                全レベル
               </button>
-            ))}
-          </div>
-        </section>
+              {KANBUN_LEVELS.map((item) => (
+                <button
+                  type="button"
+                  key={item.id}
+                  onClick={() => setLevel(item.id)}
+                  className={`shrink-0 rounded-full px-3 py-2 text-xs font-extrabold ${level === item.id ? 'bg-rose-800 text-white' : 'bg-white text-ink/55'}`}
+                >
+                  {item.shortLabel}
+                </button>
+              ))}
+            </div>
+          </section>
 
-        <section>
-          <h2 className="px-1 font-display text-sm font-extrabold text-ink">分野から選ぶ</h2>
-          <div className="mt-2 flex gap-2 overflow-x-auto pb-1">
-            <button
-              type="button"
-              onClick={() => setCategory('all')}
-              className={`shrink-0 rounded-full px-3 py-2 text-xs font-extrabold ${category === 'all' ? 'bg-slate-900 text-white' : 'bg-white text-ink/55'}`}
-            >
-              全分野
-            </button>
-            {categories.map((item) => (
+          <section>
+            <h2 className="px-1 font-display text-sm font-extrabold text-ink">分野から選ぶ</h2>
+            <div className="mt-2 flex gap-2 overflow-x-auto pb-1">
               <button
                 type="button"
-                key={item.id}
-                onClick={() => setCategory(item.id)}
-                className={`shrink-0 rounded-full px-3 py-2 text-xs font-extrabold ${category === item.id ? 'bg-slate-900 text-white' : 'bg-white text-ink/55'}`}
+                onClick={() => setCategory('all')}
+                className={`shrink-0 rounded-full px-3 py-2 text-xs font-extrabold ${category === 'all' ? 'bg-slate-900 text-white' : 'bg-white text-ink/55'}`}
               >
-                {item.emoji} {item.label}
+                全分野
               </button>
-            ))}
-          </div>
-        </section>
+              {categories.map((item) => (
+                <button
+                  type="button"
+                  key={item.id}
+                  onClick={() => setCategory(item.id)}
+                  className={`shrink-0 rounded-full px-3 py-2 text-xs font-extrabold ${category === item.id ? 'bg-slate-900 text-white' : 'bg-white text-ink/55'}`}
+                >
+                  {item.emoji} {item.label}
+                </button>
+              ))}
+            </div>
+          </section>
 
-        <label className="flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-3 py-2.5 shadow-sm">
-          <Search size={18} className="shrink-0 text-ink/35" />
-          <input
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder={`${meta.label}を検索`}
-            className="min-w-0 flex-1 bg-transparent text-sm font-bold text-ink outline-none"
-          />
-        </label>
+          <label className="flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-3 py-2.5 shadow-sm">
+            <Search size={18} className="shrink-0 text-ink/35" />
+            <input
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder={`${meta.label}を検索`}
+              className="min-w-0 flex-1 bg-transparent text-sm font-bold text-ink outline-none"
+            />
+          </label>
+        </CatalogTools>
 
         <div className="flex items-end justify-between px-1">
           <div>

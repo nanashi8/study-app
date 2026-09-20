@@ -159,30 +159,19 @@ export function NormalLearningRecordList({
         })}
       </div>
 
-      <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-2">
+      <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-1 px-1">
+        <p className="text-xs font-extrabold text-ink/50" aria-live="polite">
+          {activity === 'test' ? 'テスト済' : '学習済'} {activity === 'test' ? recordedTest : recordedMemory}/{rows.length}{itemUnit}
+          ・残り{remainingRows.length}{itemUnit}
+        </p>
         <p
-          className="flex min-h-11 min-w-0 items-center justify-center whitespace-nowrap rounded-xl bg-brand-50 px-2 text-[10px] font-extrabold text-brand-800"
+          className="whitespace-nowrap text-[10px] font-extrabold text-brand-700"
           aria-label={`左スワイプで${activityMeta.leftLabel}、右スワイプで${activityMeta.rightLabel}`}
           data-normal-learning-record-swipe-guide
         >
           <span aria-hidden="true">← {activityMeta.leftLabel}｜{activityMeta.rightLabel} →</span>
         </p>
-        <button
-          type="button"
-          onClick={restoreRows}
-          disabled={!dismissedIds.size}
-          className="min-h-11 rounded-xl border border-brand-200 bg-white px-2 text-[10px] font-extrabold text-brand-700 active:bg-brand-50 disabled:text-ink/35"
-          aria-label="一覧を再表示"
-          data-normal-learning-record-restore
-        >
-          一覧を再表示
-        </button>
       </div>
-
-      <p className="px-1 text-xs font-extrabold text-ink/50" aria-live="polite">
-        {activity === 'test' ? 'テスト済' : '学習済'} {activity === 'test' ? recordedTest : recordedMemory}/{rows.length}{itemUnit}
-        ・残り{remainingRows.length}{itemUnit}
-      </p>
       <p className="sr-only" aria-live="polite" data-normal-learning-record-message>{message}</p>
 
       <div className="space-y-2" data-normal-learning-record-rows>
@@ -210,9 +199,21 @@ export function NormalLearningRecordList({
       {!visibleRows.length && (
         <p className="rounded-xl bg-slate-50 px-4 py-8 text-center text-sm font-bold text-ink/50">
           {rows.length
-            ? `この一覧をすべて確認しました。「一覧を再表示」で、同じ${content.label}をもう一度確認できます。`
+            ? `この一覧をすべて確認しました。同じ${content.label}をもう一度確認できます。`
             : emptyMessage ?? `表示できる${content.label}はありません。`}
         </p>
+      )}
+
+      {dismissedIds.size > 0 && (
+        <Button
+          full
+          variant="secondary"
+          onClick={restoreRows}
+          aria-label="一覧を再表示"
+          data-normal-learning-record-restore
+        >
+          {`スワイプで隠した${dismissedIds.size.toLocaleString('ja-JP')}${itemUnit}を一覧へ戻す`}
+        </Button>
       )}
 
       {visible < remainingRows.length && (
