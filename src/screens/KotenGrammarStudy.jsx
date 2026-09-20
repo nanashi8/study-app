@@ -11,10 +11,12 @@ import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components
 import {
   CardStudyFooter,
   CardSwipeRegion,
+  LastAnsweredReturn,
   StudyAnswerListButton,
   StudyAnswerReselect,
   useStudyAnswerLog,
 } from '../components/CardStudyControls.jsx'
+import { canTurnRing, ringIndexAfter, ringProgress, ringRemaining } from '../lib/studyRing.js'
 import { answeredSessionIndexes, growDeck, restartSessionCount } from '../lib/session.js'
 import { orderForStudy } from '../lib/studyOrder.js'
 import {
@@ -53,6 +55,9 @@ export function KotenGrammarStudyScreen() {
   const [deck, setDeck] = useState(() => buildDeck(params.ids, params.size ?? sessionSize, params.preserveOrder))
   const [index, setIndex] = useState(0)
   const [flipped, setFlipped] = useState(revealAll)
+  // 直前に「まだ」「覚えた」を押したカードの番号。押したカードは輪から抜けるので、
+  // 押し間違えたときだけここへ戻って選び直す。
+  const [lastAnswered, setLastAnswered] = useState(null)
   const [done, setDone] = useState(false)
   const [remembered, setRemembered] = useState(0)
   const {
@@ -120,6 +125,7 @@ export function KotenGrammarStudyScreen() {
     if (ok) setRemembered((count) => count + 1)
     const nextAnswers = { ...recordedAnswers, [index]: ok }
     setRecordedAnswer(ok)
+    setLastAnswered(index)
     if (Object.keys(nextAnswers).length >= deck.length) setDone(true)
     else moveToCard(nextUnansweredSessionIndex(index, deck.length, nextAnswers), nextAnswers)
   }
@@ -128,6 +134,10 @@ export function KotenGrammarStudyScreen() {
     setIndex(nextIndex)
     setFlipped(revealAll || Object.hasOwn(answers, nextIndex))
   }
+
+  // 「まだ」「覚えた」を押したカードは、その回の輪から抜ける。前へ・次へとスワイプは
+  // 残っているカードだけを回り、末尾まで行ったら先頭へ戻る。
+  const turnRing = (direction) => moveToCard(ringIndexAfter(index, deck.length, recordedAnswers, direction))
 
   const answeredIndexes = answeredSessionIndexes(recordedAnswers)
 
@@ -162,15 +172,18 @@ export function KotenGrammarStudyScreen() {
       <QuestionSessionControls
         index={index}
         total={deck.length}
-        onPrevious={() => moveToCard(Math.max(0, index - 1))}
-        onNext={() => moveToCard(Math.min(deck.length - 1, index + 1))}
-        nextDisabled={index + 1 >= deck.length}
+        onPrevious={() => turnRing('previous')}
+        onNext={() => turnRing('next')}
+        previousDisabled={!canTurnRing(index, deck.length, recordedAnswers, 'previous')}
+        nextDisabled={!canTurnRing(index, deck.length, recordedAnswers, 'next')}
+        progress={ringProgress(deck.length, recordedAnswers)}
         itemLabel="カード"
         progressColor="#d97706"
         progressControl={(
           <SessionCounter
             index={index}
             total={deck.length}
+            remaining={ringRemaining(deck.length, recordedAnswers)}
             max={poolSize}
             label="項目"
             className="h-11 w-full min-w-0 px-0 text-center text-xs no-underline"
@@ -183,6 +196,7 @@ export function KotenGrammarStudyScreen() {
                 receipts.clear()
                 setDeck(next.deck)
                 clearRecordedAnswers()
+                setLastAnswered(null)
                 moveToCard(0, {})
               } else {
                 setDeck((current) => growDeck(current, Math.max(index, answeredIndexes.at(-1) ?? 0) + 1, buildDeck(params.ids, size, params.preserveOrder), size))
@@ -205,6 +219,7 @@ export function KotenGrammarStudyScreen() {
       <CardSwipeRegion
         index={index}
         total={deck.length}
+        answered={recordedAnswers}
         onIndexChange={moveToCard}
         className="flex-1 overflow-y-auto px-4 pb-4 pt-3"
       >
@@ -273,6 +288,9 @@ export function KotenGrammarStudyScreen() {
       </CardSwipeRegion>
 
       <CardStudyFooter className="border-amber-100">
+        {recordedAnswer === null && lastAnswered !== null && (
+          <LastAnsweredReturn onOpen={() => moveToCard(lastAnswered)} />
+        )}
         {recordedAnswer !== null && reselectable ? (
           // 答えたあと戻ってきたカード。いまの答えを示したまま、もう一方を押すと選び直せる。
           <StudyAnswerReselect remembered={recordedAnswer} onAnswer={answer} />

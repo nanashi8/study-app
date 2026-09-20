@@ -61,6 +61,9 @@ export function useCarriedAnswers(initial = null) {
  * 暗記・テスト画面の「1/10」表示。
  * タップすると1セッションの問題数を選べる。増やすと続きに足し、いまの番号より少なくすると
  * 答えた分の記録と結果は残したまま、まだ答えていない問題から1問目として数え直す（restart）。
+ *
+ * 暗記カードは番号ではなく残り枚数を出す（remaining）。「まだ」「覚えた」を押したカードは
+ * その回の輪から抜けるので、数字は 20→19→…→0 と減っていく。
  */
 export function SessionCounter({
   index = 0,
@@ -68,6 +71,8 @@ export function SessionCounter({
   // 前へ戻って見直している途中でも、答えた問題をデッキから落とさないために使う。
   reached = index,
   total = 0,
+  // 輪に残っている枚数。渡すと番号のかわりに「残り◯枚」を出す。
+  remaining = null,
   max,
   onResize,
   className = '',
@@ -98,19 +103,25 @@ export function SessionCounter({
     onResize?.(resolvedSize, { restart: resolvedSize <= Math.max(index, reached) })
   }
 
+  const countsRemaining = Number.isFinite(Number(remaining))
+  const remainingCards = countsRemaining ? Math.max(0, Math.floor(Number(remaining))) : null
+
   return (
     <>
       <button
         type="button"
         onClick={() => setOpen(true)}
-        aria-label={`${label}数を変更する（現在 ${total}問）`}
+        aria-label={countsRemaining
+          ? `${label}数を変更する（残り${remainingCards}枚／全${total}枚）`
+          : `${label}数を変更する（現在 ${total}問）`}
         className={cx(
           'min-h-9 shrink-0 rounded-lg px-1.5 text-right text-sm font-extrabold tabular-nums text-ink/50 underline decoration-ink/20 decoration-dotted underline-offset-4 active:bg-ink/5',
           className,
         )}
         data-session-size-button
+        data-session-remaining={countsRemaining ? remainingCards : undefined}
       >
-        {Math.min(index + 1, total)}/{total}
+        {countsRemaining ? `残り${remainingCards}枚` : `${Math.min(index + 1, total)}/${total}`}
       </button>
 
       <Sheet open={open} onClose={closeSheet} title={`1回の${label}数`}>

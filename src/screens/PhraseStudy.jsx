@@ -25,9 +25,11 @@ import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components
 import {
   CardStudyFooter,
   CardSwipeRegion,
+  LastAnsweredReturn,
   StudyAnswerReselect,
   useStudyAnswerLog,
 } from '../components/CardStudyControls.jsx'
+import { canTurnRing, ringIndexAfter, ringProgress, ringRemaining } from '../lib/studyRing.js'
 import {
   nextUnansweredSessionIndex,
   QuestionSessionControls,
@@ -66,6 +68,9 @@ export function PhraseStudyScreen() {
   const [deck, setDeck] = useState(() => buildFor(params.size ?? sessionSize))
   const [i, setI] = useState(0)
   const [flipped, setFlipped] = useState(revealAll)
+  // 直前に「まだ」「覚えた」を押したカードの番号。押したカードは輪から抜けるので、
+  // 押し間違えたときだけここへ戻って選び直す。
+  const [lastAnswered, setLastAnswered] = useState(null)
   const {
     value: recordedAnswer,
     setValue: setRecordedAnswer,
@@ -166,6 +171,7 @@ export function PhraseStudyScreen() {
     answerLog.record(item, remembered)
     const nextAnswers = { ...recordedAnswers, [i]: remembered }
     setRecordedAnswer(remembered)
+    setLastAnswered(i)
     if (Object.keys(nextAnswers).length >= deck.length) finish()
     else moveToCard(nextUnansweredSessionIndex(i, deck.length, nextAnswers), nextAnswers)
   }
@@ -174,6 +180,10 @@ export function PhraseStudyScreen() {
     setI(nextIndex)
     setFlipped(revealAll || Object.hasOwn(answers, nextIndex))
   }
+
+  // 「まだ」「覚えた」を押したカードは、その回の輪から抜ける。前へ・次へとスワイプは
+  // 残っているカードだけを回り、末尾まで行ったら先頭へ戻る。
+  const turnRing = (direction) => moveToCard(ringIndexAfter(i, deck.length, recordedAnswers, direction))
 
   const level = getLevel(item.level)
   const kind = itemKind(item)
@@ -184,15 +194,18 @@ export function PhraseStudyScreen() {
       <QuestionSessionControls
         index={i}
         total={deck.length}
-        onPrevious={() => moveToCard(Math.max(0, i - 1))}
-        onNext={() => moveToCard(Math.min(deck.length - 1, i + 1))}
-        nextDisabled={i + 1 >= deck.length}
+        onPrevious={() => turnRing('previous')}
+        onNext={() => turnRing('next')}
+        previousDisabled={!canTurnRing(i, deck.length, recordedAnswers, 'previous')}
+        nextDisabled={!canTurnRing(i, deck.length, recordedAnswers, 'next')}
+        progress={ringProgress(deck.length, recordedAnswers)}
         itemLabel="カード"
         progressColor="#8b5cf6"
         progressControl={(
           <SessionCounter
             index={i}
             total={deck.length}
+            remaining={ringRemaining(deck.length, recordedAnswers)}
             max={poolSize}
             label="カード"
             className="h-11 w-full min-w-0 px-0 text-center text-xs no-underline"
@@ -205,6 +218,7 @@ export function PhraseStudyScreen() {
                 receipts.clear()
                 setDeck(next.deck)
                 clearRecordedAnswers()
+                setLastAnswered(null)
                 moveToCard(0, {})
               } else {
                 setDeck((current) => growDeck(current, Math.max(i, answeredIndexes.at(-1) ?? 0) + 1, buildFor(size), size))
@@ -229,6 +243,7 @@ export function PhraseStudyScreen() {
       <CardSwipeRegion
         index={i}
         total={deck.length}
+        answered={recordedAnswers}
         onIndexChange={moveToCard}
         className="flex-1 overflow-y-auto px-4 pb-4"
       >
@@ -329,6 +344,9 @@ export function PhraseStudyScreen() {
       </CardSwipeRegion>
 
       <CardStudyFooter className="border-brand-100">
+        {recordedAnswer === null && lastAnswered !== null && (
+          <LastAnsweredReturn onOpen={() => moveToCard(lastAnswered)} />
+        )}
         {recordedAnswer !== null && reselectable ? (
           // 答えたあと戻ってきたカード。いまの答えを示したまま、もう一方を押すと選び直せる。
           <StudyAnswerReselect remembered={recordedAnswer} onAnswer={answer} />

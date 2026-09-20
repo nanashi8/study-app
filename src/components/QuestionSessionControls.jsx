@@ -1,16 +1,13 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useStore, useContentSettings } from '../store/useStore.js'
+import { ringIndexAfter } from '../lib/studyRing.js'
 import { ChevronLeft, ChevronRight } from './Icons.jsx'
 import { ProgressBar, cx } from './ui.jsx'
 
 export const CORRECT_AUTO_ADVANCE_DELAY_MS = 1400
 
 export function nextUnansweredSessionIndex(index, total, answeredValues) {
-  for (let offset = 1; offset <= total; offset += 1) {
-    const candidate = (index + offset) % total
-    if (!Object.hasOwn(answeredValues, candidate)) return candidate
-  }
-  return index
+  return ringIndexAfter(index, total, answeredValues, 'next')
 }
 
 /**
@@ -115,6 +112,8 @@ export function QuestionSessionControls({
   autoAdvanceSignal = null,
   className = '',
   itemLabel = '問題',
+  // 進み具合のバー。暗記カードは処理した枚数の割合を渡す（渡さなければ今いる番号の割合）。
+  progress = null,
   progressColor = 'var(--color-brand-500)',
   progressControl = null,
   trailingActions = null,
@@ -152,7 +151,9 @@ export function QuestionSessionControls({
   }, [autoAdvanceCorrect, autoAdvanceSignal, showAutoAdvance])
 
   const isLast = index + 1 >= total
-  const progressValue = total > 0 ? index / total : 0
+  const progressValue = Number.isFinite(progress)
+    ? Math.min(1, Math.max(0, progress))
+    : total > 0 ? index / total : 0
   const compact = Boolean(progressControl || trailingActions)
   const nextLabel = isLast && showAutoAdvance ? '結果' : '次へ'
   const stepClassName = cx(

@@ -18,10 +18,12 @@ import { answeredSessionIndexes, growDeck, restartSessionCount } from '../lib/se
 import {
   CardStudyFooter,
   CardSwipeRegion,
+  LastAnsweredReturn,
   StudyAnswerListButton,
   StudyAnswerReselect,
   useStudyAnswerLog,
 } from '../components/CardStudyControls.jsx'
+import { canTurnRing, ringIndexAfter, ringProgress, ringRemaining } from '../lib/studyRing.js'
 import {
   nextUnansweredSessionIndex,
   QuestionSessionControls,
@@ -96,6 +98,9 @@ export function KanbunStudyScreen() {
   const [deck, setDeck] = useState(() => buildFor(params.ids, params.size ?? sessionSize))
   const [index, setIndex] = useState(0)
   const [revealed, setRevealed] = useState(revealAll)
+  // 直前に「まだ」「覚えた」を押したカードの番号。押したカードは輪から抜けるので、
+  // 押し間違えたときだけここへ戻って選び直す。
+  const [lastAnswered, setLastAnswered] = useState(null)
   const [remembered, setRemembered] = useState(0)
   const [forgottenIds, setForgottenIds] = useState([])
   const [done, setDone] = useState(false)
@@ -169,6 +174,7 @@ export function KanbunStudyScreen() {
     else setForgottenIds((ids) => [...new Set([...ids, item.id])])
     const nextAnswers = { ...recordedAnswers, [index]: rememberedNow }
     setRecordedAnswer(rememberedNow)
+    setLastAnswered(index)
     if (Object.keys(nextAnswers).length >= deck.length) setDone(true)
     else moveToCard(nextUnansweredSessionIndex(index, deck.length, nextAnswers), nextAnswers)
   }
@@ -177,6 +183,10 @@ export function KanbunStudyScreen() {
     setIndex(nextIndex)
     setRevealed(revealAll || Object.hasOwn(answers, nextIndex))
   }
+
+  // 「まだ」「覚えた」を押したカードは、その回の輪から抜ける。前へ・次へとスワイプは
+  // 残っているカードだけを回り、末尾まで行ったら先頭へ戻る。
+  const turnRing = (direction) => moveToCard(ringIndexAfter(index, deck.length, recordedAnswers, direction))
 
   const answeredIndexes = answeredSessionIndexes(recordedAnswers)
 
@@ -222,15 +232,18 @@ export function KanbunStudyScreen() {
       <QuestionSessionControls
         index={index}
         total={deck.length}
-        onPrevious={() => moveToCard(Math.max(0, index - 1))}
-        onNext={() => moveToCard(Math.min(deck.length - 1, index + 1))}
-        nextDisabled={index + 1 >= deck.length}
+        onPrevious={() => turnRing('previous')}
+        onNext={() => turnRing('next')}
+        previousDisabled={!canTurnRing(index, deck.length, recordedAnswers, 'previous')}
+        nextDisabled={!canTurnRing(index, deck.length, recordedAnswers, 'next')}
+        progress={ringProgress(deck.length, recordedAnswers)}
         itemLabel="カード"
         progressColor="#be123c"
         progressControl={(
           <SessionCounter
             index={index}
             total={deck.length}
+            remaining={ringRemaining(deck.length, recordedAnswers)}
             max={poolSize}
             label="項目"
             className="h-11 w-full min-w-0 px-0 text-center text-xs no-underline"
@@ -243,6 +256,7 @@ export function KanbunStudyScreen() {
                 receipts.clear()
                 setDeck(next.deck)
                 clearRecordedAnswers()
+                setLastAnswered(null)
                 moveToCard(0, {})
               } else {
                 setDeck((current) => growDeck(current, Math.max(index, answeredIndexes.at(-1) ?? 0) + 1, buildFor(params.ids, size), size))
@@ -265,6 +279,7 @@ export function KanbunStudyScreen() {
       <CardSwipeRegion
         index={index}
         total={deck.length}
+        answered={recordedAnswers}
         onIndexChange={moveToCard}
         className="flex-1 overflow-y-auto px-4 pb-4 pt-3"
       >
@@ -299,6 +314,9 @@ export function KanbunStudyScreen() {
       </CardSwipeRegion>
 
       <CardStudyFooter className="border-rose-100">
+        {recordedAnswer === null && lastAnswered !== null && (
+          <LastAnsweredReturn onOpen={() => moveToCard(lastAnswered)} />
+        )}
         {recordedAnswer !== null && reselectable ? (
           // 答えたあと戻ってきたカード。いまの答えを示したまま、もう一方を押すと選び直せる。
           <StudyAnswerReselect remembered={recordedAnswer} onAnswer={answer} />

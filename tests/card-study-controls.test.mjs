@@ -7,7 +7,6 @@ import {
   SWIPE_AXIS_LOCK_DISTANCE,
   SWIPE_FLICK_MIN_DISTANCE,
   beginSwipeGesture,
-  cardIndexAfterSwipe,
   cardSwipeDirection,
   finishSwipeGesture,
   moveSwipeGesture,
@@ -96,13 +95,6 @@ test('横と決まるまではカードも行も動かさない', () => {
   assert.equal(swipeGestureOffset(gesture), 0)
   moveSwipeGesture(gesture, { x: 70, y: 104, t: 30 })
   assert.equal(swipeGestureOffset(gesture), -30)
-})
-
-test('カード番号はデッキの先頭と末尾を越えない', () => {
-  assert.equal(cardIndexAfterSwipe(0, 5, 'previous'), 0)
-  assert.equal(cardIndexAfterSwipe(0, 5, 'next'), 1)
-  assert.equal(cardIndexAfterSwipe(4, 5, 'next'), 4)
-  assert.equal(cardIndexAfterSwipe(4, 5, 'previous'), 3)
 })
 
 test('全暗記カードと一覧の行が、指を離すまで追う共通の左右スワイプを使う', () => {

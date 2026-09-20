@@ -38,8 +38,10 @@ import {
   CardSaveToggle,
   CardStudyFooter,
   CardSwipeRegion,
+  LastAnsweredReturn,
   StudyAnswerReselect,
 } from '../components/CardStudyControls.jsx'
+import { canTurnRing, ringIndexAfter, ringProgress, ringRemaining } from '../lib/studyRing.js'
 import { WordListSheet, useWordInAnyBook } from '../components/WordListSheet.jsx'
 import {
   nextUnansweredSessionIndex,
@@ -116,6 +118,9 @@ export function VocabStudyScreen() {
   ))
   const [i, setI] = useState(restore?.i ?? 0)
   const [flipped, setFlipped] = useState(restore?.flipped ?? revealAll)
+  // 直前に「まだ」「覚えた」を押したカードの番号。押したカードは輪から抜けるので、
+  // 押し間違えたときだけここへ戻って選び直す。
+  const [lastAnswered, setLastAnswered] = useState(null)
   const [listSheetOpen, setListSheetOpen] = useState(false)
   const {
     value: recordedAnswer,
@@ -287,6 +292,7 @@ export function VocabStudyScreen() {
     results.current = recordStudyAnswer(results.current, word.id, remembered)
     const nextAnswers = { ...recordedAnswers, [i]: remembered }
     setRecordedAnswer(remembered)
+    setLastAnswered(i)
     if (Object.keys(nextAnswers).length >= deck.length) finish(nextAnswers)
     else moveToCard(nextUnansweredSessionIndex(i, deck.length, nextAnswers), nextAnswers)
   }
@@ -295,6 +301,10 @@ export function VocabStudyScreen() {
     setI(nextIndex)
     setFlipped(revealAll || Object.hasOwn(answers, nextIndex))
   }
+
+  // 「まだ」「覚えた」を押したカードは、その回の輪から抜ける。前へ・次へとスワイプは
+  // 残っているカードだけを回り、末尾まで行ったら先頭へ戻る。
+  const turnRing = (direction) => moveToCard(ringIndexAfter(i, deck.length, recordedAnswers, direction))
 
   const level = getLevel(word.level)
   // スペルを隠しているあいだは、単語帳の窓や読み上げ名にも語を出さない。
@@ -324,15 +334,18 @@ export function VocabStudyScreen() {
       <QuestionSessionControls
         index={i}
         total={deck.length}
-        onPrevious={() => moveToCard(Math.max(0, i - 1))}
-        onNext={() => moveToCard(Math.min(deck.length - 1, i + 1))}
-        nextDisabled={i + 1 >= deck.length}
+        onPrevious={() => turnRing('previous')}
+        onNext={() => turnRing('next')}
+        previousDisabled={!canTurnRing(i, deck.length, recordedAnswers, 'previous')}
+        nextDisabled={!canTurnRing(i, deck.length, recordedAnswers, 'next')}
+        progress={ringProgress(deck.length, recordedAnswers)}
         itemLabel="カード"
         progressColor="var(--color-brand-500)"
         progressControl={(
           <SessionCounter
             index={i}
             total={deck.length}
+            remaining={ringRemaining(deck.length, recordedAnswers)}
             max={poolSize}
             label="カード"
             className="h-11 w-full min-w-0 px-0 text-center text-xs no-underline"
@@ -346,6 +359,7 @@ export function VocabStudyScreen() {
                 rememberBoxesAtStart(next.deck)
                 setDeck(next.deck)
                 clearRecordedAnswers()
+                setLastAnswered(null)
                 moveToCard(0, {})
               } else {
                 setDeck((current) => {
@@ -384,6 +398,7 @@ export function VocabStudyScreen() {
       <CardSwipeRegion
         index={i}
         total={deck.length}
+        answered={recordedAnswers}
         onIndexChange={moveToCard}
         className="flex-1 overflow-y-auto px-4 pb-4"
       >
@@ -561,6 +576,9 @@ export function VocabStudyScreen() {
 
       {/* フッター操作 */}
       <CardStudyFooter className="vocab-study-actions border-brand-100" data-vocab-study-actions>
+        {recordedAnswer === null && lastAnswered !== null && (
+          <LastAnsweredReturn onOpen={() => moveToCard(lastAnswered)} />
+        )}
         {recordedAnswer !== null && reselectable ? (
           // 答えたあと戻ってきたカード。いまの答えを示したまま、もう一方を押すと選び直せる。
           <StudyAnswerReselect remembered={recordedAnswer} onAnswer={answer} />

@@ -92,10 +92,3 @@ export function finishSwipeGesture(gesture, point) {
 export function cardSwipeDirection(start, end) {
   return finishSwipeGesture(beginSwipeGesture(start), end)
 }
-
-export function cardIndexAfterSwipe(index, total, direction) {
-  if (!Number.isInteger(index) || !Number.isInteger(total) || total <= 0) return index
-  if (direction === 'next') return Math.min(total - 1, index + 1)
-  if (direction === 'previous') return Math.max(0, index - 1)
-  return index
-}

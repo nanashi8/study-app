@@ -1,18 +1,24 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { cardIndexAfterSwipe } from '../lib/cardSwipe.js'
+import { ringIndexAfter, ringRemaining } from '../lib/studyRing.js'
 import { studyAnswerGroups } from '../lib/studyAnswerList.js'
 import { Bookmark, BookmarkFilled, Cards } from './Icons.jsx'
 import { Sheet } from './Sheet.jsx'
 import { Button, cx } from './ui.jsx'
 import { useHorizontalSwipe } from './useHorizontalSwipe.js'
 
-// 最初と最後のカードで引いたときの重さ。それより先へはめくれないことを指に伝える。
+// 残り1枚になったカードで引いたときの重さ。それより先へはめくれないことを指に伝える。
 const EDGE_DRAG_RESISTANCE = 0.3
 const SETTLE_TRANSITION = 'transform 180ms ease-out'
 
+/**
+ * 暗記カードをめくる場所。回るのは「まだ」「覚えた」を押していないカードだけで、
+ * 末尾まで行ったら先頭へ戻る（studyRing.js）。押したカードはこの輪から抜ける。
+ * answered は「カード番号 → 答え」の記録。渡さなければ全カードを輪にして回す。
+ */
 export function CardSwipeRegion({
   index,
   total,
+  answered = {},
   onIndexChange,
   className = '',
   children,
@@ -32,13 +38,16 @@ export function CardSwipeRegion({
     track.style.transform = offset ? `translate3d(${offset}px, 0, 0)` : ''
   }
 
+  const turnTo = (direction) => ringIndexAfter(index, total, answered, direction)
+
   useHorizontalSwipe(regionRef, {
     onDrag: (offset) => {
-      const atEdge = (offset > 0 && index <= 0) || (offset < 0 && index >= total - 1)
+      const direction = offset > 0 ? 'previous' : 'next'
+      const atEdge = offset !== 0 && turnTo(direction) === index
       placeTrack(atEdge ? offset * EDGE_DRAG_RESISTANCE : offset)
     },
     onEnd: (direction) => {
-      const nextIndex = cardIndexAfterSwipe(index, total, direction)
+      const nextIndex = turnTo(direction)
       if (nextIndex === index) {
         // めくらなかったときは、元の位置へすべらせて戻す。
         placeTrack(0, SETTLE_TRANSITION)
@@ -49,20 +58,43 @@ export function CardSwipeRegion({
     },
   })
 
+  const remaining = ringRemaining(total, answered)
+
   return (
     <div
       ref={regionRef}
       role="region"
-      aria-label={`学習カード ${index + 1}/${total}。右にスワイプで前、左にスワイプで次へ移動`}
+      aria-label={`学習カード。残り${remaining}枚。右にスワイプで前、左にスワイプで次へ移動`}
       data-card-swipe-region
       data-card-swipe-index={index + 1}
       data-card-swipe-total={total}
+      data-card-swipe-remaining={remaining}
       className={cx('touch-pan-y overflow-x-hidden', className)}
     >
       <div ref={trackRef} data-card-swipe-track>
         {children}
       </div>
     </div>
+  )
+}
+
+/**
+ * 直前に「まだ」「覚えた」を押したカードへ戻る一行。押したカードは輪から抜けるので、
+ * 押し間違えたときはここから戻って選び直す（戻った先の判定は StudyAnswerReselect）。
+ */
+export function LastAnsweredReturn({ onOpen, className = '' }) {
+  return (
+    <button
+      type="button"
+      onClick={onOpen}
+      data-last-answered-return
+      className={cx(
+        'mx-auto mb-1.5 flex min-h-8 items-center justify-center rounded-lg px-2 text-[11px] font-bold text-ink/45 underline decoration-ink/25 decoration-dotted underline-offset-4 active:bg-ink/5',
+        className,
+      )}
+    >
+      {'直前の1枚を選び直す'}
+    </button>
   )
 }
 
