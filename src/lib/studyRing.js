@@ -1,6 +1,7 @@
 // 暗記カードの輪。「まだ」「覚えた」を押したカードはその回の輪から抜け、
-// まだ押していないカードだけを何周でも回れる。上部の数字は輪に残っている枚数で、
-// 押すたびに 20→19→…→0 と減り、0 になったところでその回が終わる。
+// まだ押していないカードだけを何周でも回れる。上部の数字は「位置/残り枚数」で、
+// 1枚押すたびに残りが 20→19→…→0 と減り、0 になったところでその回が終わる。
+// 位置も詰まるので、1枚目を押すと次のカードが 1/19 になる。
 //
 // 輪から抜けるのは「その回」だけで、教材から消えるわけではない。次の復習日が来れば
 // また出る（復習日の決め方は vocabScheduler.js）。
@@ -47,6 +48,20 @@ export function ringIndexAfter(index, total = 0, answers = {}, direction) {
     if (!isAnswered(answers, candidate)) return candidate
   }
   return index
+}
+
+/**
+ * いま見ているカードが、輪に残っているうちの何枚目か（1始まり）。上部の数字の左側。
+ * 押したカードが抜けるぶん詰まるので、1枚目を押すと次のカードがまた1枚目になる。
+ * 処理済みのカードを開いているとき（選び直し）は、輪へ戻ったときの位置を返す。
+ */
+export function ringPosition(index, total = 0, answers = {}) {
+  const indexes = ringIndexes(total, answers)
+  if (!indexes.length) return 0
+  const at = indexes.indexOf(index)
+  if (at >= 0) return at + 1
+  const before = indexes.filter((candidate) => candidate < index).length
+  return Math.min(indexes.length, before + 1)
 }
 
 /** 進み具合（処理した枚数の割合）。上部バーの下端の細い線に使う。 */

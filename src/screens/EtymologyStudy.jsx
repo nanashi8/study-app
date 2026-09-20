@@ -13,7 +13,13 @@ import {
   StudyAnswerReselect,
   useStudyAnswerLog,
 } from '../components/CardStudyControls.jsx'
-import { canTurnRing, ringIndexAfter, ringProgress, ringRemaining } from '../lib/studyRing.js'
+import {
+  canTurnRing,
+  ringIndexAfter,
+  ringPosition,
+  ringProgress,
+  ringRemaining,
+} from '../lib/studyRing.js'
 import { answeredSessionIndexes, growDeck, restartSessionCount } from '../lib/session.js'
 import { orderForStudy } from '../lib/studyOrder.js'
 import {
@@ -174,6 +180,7 @@ export function EtymologyStudyScreen() {
         previousDisabled={!canTurnRing(index, deck.length, recordedAnswers, 'previous')}
         nextDisabled={!canTurnRing(index, deck.length, recordedAnswers, 'next')}
         progress={ringProgress(deck.length, recordedAnswers)}
+        statusLabel={`残り${ringRemaining(deck.length, recordedAnswers)}枚の${ringPosition(index, deck.length, recordedAnswers)}枚目`}
         itemLabel="カード"
         progressColor="#7c3aed"
         progressControl={(
@@ -181,6 +188,7 @@ export function EtymologyStudyScreen() {
             index={index}
             total={deck.length}
             remaining={ringRemaining(deck.length, recordedAnswers)}
+            position={ringPosition(index, deck.length, recordedAnswers)}
             max={poolSize}
             label="枚"
             className="h-11 w-full min-w-0 px-0 text-center text-xs no-underline"

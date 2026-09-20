@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { ringIndexAfter, ringRemaining } from '../lib/studyRing.js'
+import { ringIndexAfter, ringPosition, ringRemaining } from '../lib/studyRing.js'
 import { studyAnswerGroups } from '../lib/studyAnswerList.js'
 import { Bookmark, BookmarkFilled, Cards } from './Icons.jsx'
 import { Sheet } from './Sheet.jsx'
@@ -59,12 +59,13 @@ export function CardSwipeRegion({
   })
 
   const remaining = ringRemaining(total, answered)
+  const place = ringPosition(index, total, answered)
 
   return (
     <div
       ref={regionRef}
       role="region"
-      aria-label={`学習カード。残り${remaining}枚。右にスワイプで前、左にスワイプで次へ移動`}
+      aria-label={`学習カード。残り${remaining}枚の${place}枚目。右にスワイプで前、左にスワイプで次へ移動`}
       data-card-swipe-region
       data-card-swipe-index={index + 1}
       data-card-swipe-total={total}

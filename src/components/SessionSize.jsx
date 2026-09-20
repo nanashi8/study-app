@@ -62,8 +62,8 @@ export function useCarriedAnswers(initial = null) {
  * タップすると1セッションの問題数を選べる。増やすと続きに足し、いまの番号より少なくすると
  * 答えた分の記録と結果は残したまま、まだ答えていない問題から1問目として数え直す（restart）。
  *
- * 暗記カードは番号ではなく残り枚数を出す（remaining）。「まだ」「覚えた」を押したカードは
- * その回の輪から抜けるので、数字は 20→19→…→0 と減っていく。
+ * 暗記カードはデッキの番号ではなく「位置/残り枚数」を出す（position・remaining）。
+ * 「まだ」「覚えた」を押したカードはその回の輪から抜けるので、1/20 の1枚目を押すと 1/19 になる。
  */
 export function SessionCounter({
   index = 0,
@@ -71,8 +71,10 @@ export function SessionCounter({
   // 前へ戻って見直している途中でも、答えた問題をデッキから落とさないために使う。
   reached = index,
   total = 0,
-  // 輪に残っている枚数。渡すと番号のかわりに「残り◯枚」を出す。
+  // 輪に残っている枚数。渡すとデッキの番号のかわりに「位置/残り枚数」を出す。
   remaining = null,
+  // 残っているうちの何枚目か（1始まり）。
+  position = 1,
   max,
   onResize,
   className = '',
@@ -105,6 +107,9 @@ export function SessionCounter({
 
   const countsRemaining = Number.isFinite(Number(remaining))
   const remainingCards = countsRemaining ? Math.max(0, Math.floor(Number(remaining))) : null
+  const remainingPlace = countsRemaining
+    ? Math.min(remainingCards, Math.max(1, Math.floor(Number(position)) || 1))
+    : null
 
   return (
     <>
@@ -112,7 +117,7 @@ export function SessionCounter({
         type="button"
         onClick={() => setOpen(true)}
         aria-label={countsRemaining
-          ? `${label}数を変更する（残り${remainingCards}枚／全${total}枚）`
+          ? `${label}数を変更する（残り${remainingCards}枚の${remainingPlace}枚目／全${total}枚）`
           : `${label}数を変更する（現在 ${total}問）`}
         className={cx(
           'min-h-9 shrink-0 rounded-lg px-1.5 text-right text-sm font-extrabold tabular-nums text-ink/50 underline decoration-ink/20 decoration-dotted underline-offset-4 active:bg-ink/5',
@@ -121,7 +126,9 @@ export function SessionCounter({
         data-session-size-button
         data-session-remaining={countsRemaining ? remainingCards : undefined}
       >
-        {countsRemaining ? `残り${remainingCards}枚` : `${Math.min(index + 1, total)}/${total}`}
+        {countsRemaining
+          ? `${remainingPlace}/${remainingCards}`
+          : `${Math.min(index + 1, total)}/${total}`}
       </button>
 
       <Sheet open={open} onClose={closeSheet} title={`1回の${label}数`}>

@@ -41,7 +41,13 @@ import {
   LastAnsweredReturn,
   StudyAnswerReselect,
 } from '../components/CardStudyControls.jsx'
-import { canTurnRing, ringIndexAfter, ringProgress, ringRemaining } from '../lib/studyRing.js'
+import {
+  canTurnRing,
+  ringIndexAfter,
+  ringPosition,
+  ringProgress,
+  ringRemaining,
+} from '../lib/studyRing.js'
 import { WordListSheet, useWordInAnyBook } from '../components/WordListSheet.jsx'
 import {
   nextUnansweredSessionIndex,
@@ -339,6 +345,7 @@ export function VocabStudyScreen() {
         previousDisabled={!canTurnRing(i, deck.length, recordedAnswers, 'previous')}
         nextDisabled={!canTurnRing(i, deck.length, recordedAnswers, 'next')}
         progress={ringProgress(deck.length, recordedAnswers)}
+        statusLabel={`残り${ringRemaining(deck.length, recordedAnswers)}枚の${ringPosition(i, deck.length, recordedAnswers)}枚目`}
         itemLabel="カード"
         progressColor="var(--color-brand-500)"
         progressControl={(
@@ -346,6 +353,7 @@ export function VocabStudyScreen() {
             index={i}
             total={deck.length}
             remaining={ringRemaining(deck.length, recordedAnswers)}
+            position={ringPosition(i, deck.length, recordedAnswers)}
             max={poolSize}
             label="カード"
             className="h-11 w-full min-w-0 px-0 text-center text-xs no-underline"

@@ -114,6 +114,8 @@ export function QuestionSessionControls({
   itemLabel = '問題',
   // 進み具合のバー。暗記カードは処理した枚数の割合を渡す（渡さなければ今いる番号の割合）。
   progress = null,
+  // 読み上げ用の位置。暗記カードは見えている「位置/残り枚数」と同じことばを渡す。
+  statusLabel = null,
   progressColor = 'var(--color-brand-500)',
   progressControl = null,
   trailingActions = null,
@@ -263,7 +265,7 @@ export function QuestionSessionControls({
         {pending ? '正解しました。まもなく次へ進みます。' : ''}
       </span>
       <span className="sr-only">
-        {itemLabel} {index + 1}/{total}
+        {statusLabel ?? `${itemLabel} ${index + 1}/${total}`}
       </span>
     </nav>
   )

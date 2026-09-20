@@ -1,5 +1,5 @@
 // 暗記カードの輪：「まだ」「覚えた」を押したカードはその回の輪から抜け、
-// 上部の数字は残りの枚数になる。押していないカードだけを何周でも回れる。
+// 上部の数字は「位置/残り枚数」になる。押していないカードだけを何周でも回れる。
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
@@ -9,6 +9,7 @@ import {
   ringAnsweredCount,
   ringIndexAfter,
   ringIndexes,
+  ringPosition,
   ringProgress,
   ringRemaining,
 } from '../src/lib/studyRing.js'
@@ -42,6 +43,23 @@ test('押したカードは輪から抜け、残り枚数が減っていく', ()
   // 「まだ」も「覚えた」も同じく1枚として抜ける。
   assert.equal(ringRemaining(20, { 0: false, 1: false, 2: false }), 17)
   assert.equal(ringRemaining(0, {}), 0)
+})
+
+test('位置は残っているカードの中での順番で、押すと詰まる', () => {
+  // 20枚の1枚目は 1/20。
+  assert.equal(ringPosition(0, 20, {}), 1)
+  assert.equal(ringRemaining(20, {}), 20)
+  // 1枚目を押すと2枚目へ進み、その2枚目が残り19枚の1枚目になる＝1/19。
+  const answers = { 0: true }
+  assert.equal(ringPosition(1, 20, answers), 1)
+  assert.equal(ringRemaining(20, answers), 19)
+  // 押していない先のカードも、抜けた分だけ前へ詰まる。
+  assert.equal(ringPosition(5, 20, answers), 5)
+  assert.equal(ringPosition(5, 20, { 0: true, 2: false, 4: true }), 3)
+  // 押したカードを開いているとき（選び直し）は、輪へ戻ったときの位置。
+  assert.equal(ringPosition(2, 5, { 2: true }), 3)
+  assert.equal(ringPosition(0, 5, { 0: true }), 1)
+  assert.equal(ringPosition(0, 0, {}), 0)
 })
 
 test('輪は末尾まで行ったら先頭へ戻り、押したカードは飛ばす', () => {
@@ -100,11 +118,22 @@ test('全7暗記カードが、残りの枚数を出して未処理のカード�
   assert.equal(CARD_STUDY_SCREENS.length, 7)
   for (const [path, indexName] of CARD_STUDY_SCREENS) {
     const source = read(path)
-    // 数字は番号ではなく残りの枚数。
+    // 数字はデッキの番号ではなく「位置/残り枚数」。
     assert.match(
       source,
       /remaining=\{ringRemaining\(deck\.length, recordedAnswers\)\}/,
       `${path}: 残り枚数を出していない`,
+    )
+    assert.match(
+      source,
+      new RegExp(`position=\\{ringPosition\\(${indexName}, deck\\.length, recordedAnswers\\)\\}`),
+      `${path}: 残りの中での位置を出していない`,
+    )
+    // 読み上げも見えている数字と同じことば。
+    assert.match(
+      source,
+      new RegExp(`statusLabel=\\{\`残り\\$\\{ringRemaining\\(deck\\.length, recordedAnswers\\)\\}枚の\\$\\{ringPosition\\(${indexName}, deck\\.length, recordedAnswers\\)\\}枚目\`\\}`),
+      `${path}: 読み上げの位置が数字と食い違う`,
     )
     // 前へ・次へ・スワイプは輪を回る。
     assert.match(source, /onPrevious=\{\(\) => turnRing\('previous'\)\}/, `${path}: 前へが輪を回らない`)
@@ -146,15 +175,16 @@ test('共通部品が輪の枚数を数え、番号での頭打ちを持たな�
   const bar = read('src/components/QuestionSessionControls.jsx')
   assert.match(bar, /export function nextUnansweredSessionIndex\(index, total, answeredValues\) \{\n  return ringIndexAfter\(index, total, answeredValues, 'next'\)/)
   const controls = read('src/components/CardStudyControls.jsx')
-  assert.match(controls, /ringIndexAfter, ringRemaining/)
+  assert.match(controls, /ringIndexAfter, ringPosition, ringRemaining/)
   assert.match(controls, /const turnTo = \(direction\) => ringIndexAfter\(index, total, answered, direction\)/)
   assert.match(controls, /data-card-swipe-remaining=\{remaining\}/)
   assert.match(controls, /export function LastAnsweredReturn/)
   assert.match(controls, /直前の1枚を選び直す/)
 
   const counter = read('src/components/SessionSize.jsx')
-  assert.match(counter, /countsRemaining \? `残り\$\{remainingCards\}枚`/)
+  assert.match(counter, /countsRemaining\s*\?\s*`\$\{remainingPlace\}\/\$\{remainingCards\}`/)
   assert.match(counter, /data-session-remaining/)
+  assert.match(bar, /\{statusLabel \?\? `\$\{itemLabel\} \$\{index \+ 1\}\/\$\{total\}`\}/)
 
   // 端で止める計算は使わない（輪は studyRing.js が決める）。
   assert.doesNotMatch(read('src/lib/cardSwipe.js'), /cardIndexAfterSwipe/)

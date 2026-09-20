@@ -23,7 +23,13 @@ import {
   StudyAnswerReselect,
   useStudyAnswerLog,
 } from '../components/CardStudyControls.jsx'
-import { canTurnRing, ringIndexAfter, ringProgress, ringRemaining } from '../lib/studyRing.js'
+import {
+  canTurnRing,
+  ringIndexAfter,
+  ringPosition,
+  ringProgress,
+  ringRemaining,
+} from '../lib/studyRing.js'
 import {
   nextUnansweredSessionIndex,
   QuestionSessionControls,
@@ -237,6 +243,7 @@ export function KanbunStudyScreen() {
         previousDisabled={!canTurnRing(index, deck.length, recordedAnswers, 'previous')}
         nextDisabled={!canTurnRing(index, deck.length, recordedAnswers, 'next')}
         progress={ringProgress(deck.length, recordedAnswers)}
+        statusLabel={`残り${ringRemaining(deck.length, recordedAnswers)}枚の${ringPosition(index, deck.length, recordedAnswers)}枚目`}
         itemLabel="カード"
         progressColor="#be123c"
         progressControl={(
@@ -244,6 +251,7 @@ export function KanbunStudyScreen() {
             index={index}
             total={deck.length}
             remaining={ringRemaining(deck.length, recordedAnswers)}
+            position={ringPosition(index, deck.length, recordedAnswers)}
             max={poolSize}
             label="項目"
             className="h-11 w-full min-w-0 px-0 text-center text-xs no-underline"
