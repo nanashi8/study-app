@@ -7,10 +7,13 @@ function classes(...values) {
 
 // 一字を二段で組む。上段は字と右下の送り仮名、下段は字の下の返り点と、再読文字の二度目の読み。
 // 下段の高さはどの字も同じにして、返り点の無い字とも行の高さをそろえる。
+// レ点は「この字とすぐ下の字を入れ替える」記号なので、字の下ではなく次の字との境目に置く
+// （一レ・上レも一つの点としてまとめて境目へ）。形は文字でなく図で描き、端末のフォントで位置や形が変わらないようにする。
 // sm は用例・作品本文むけ。一行に入る字数を増やし、折り返しを減らす。
 const SIZES = Object.freeze({
   md: Object.freeze({
     row: 'h-9',
+    reTop: 'top-9',
     character: 'min-w-[1.75rem] text-2xl',
     punctuation: 'text-2xl',
     okurigana: 'pb-0.5 text-xs',
@@ -20,6 +23,7 @@ const SIZES = Object.freeze({
   }),
   sm: Object.freeze({
     row: 'h-7',
+    reTop: 'top-7',
     character: 'min-w-[1.4rem] text-xl',
     punctuation: 'text-xl',
     okurigana: 'text-[11px]',
@@ -28,6 +32,34 @@ const SIZES = Object.freeze({
     secondReading: 'text-[10px]',
   }),
 })
+
+const RE_MARK = '㆑'
+
+// レ点の形。縦に下ろしてから右上へはね上げる。幅と高さは周りの字の大きさ（em）に合わせる。
+function reMarkShape(key) {
+  return createElement(
+    'svg',
+    {
+      key,
+      viewBox: '0 0 10 10',
+      'data-kanbun-re-mark-shape': '',
+      className: 'inline-block h-[0.8em] w-[0.8em] shrink-0 overflow-visible',
+      fill: 'none',
+      stroke: 'currentColor',
+      strokeWidth: 1.8,
+      strokeLinecap: 'round',
+      strokeLinejoin: 'round',
+    },
+    createElement('path', { d: 'M2.5 1.5V8.5L8.5 3.5' }),
+  )
+}
+
+// 返り点を並べて出す。レは図、ほかの点は字で。
+function returnMarkContent(marks) {
+  return marks.map((mark, index) => (
+    mark === RE_MARK ? reMarkShape(`re-${index}`) : returnMarkLabel(mark)
+  ))
+}
 
 function unitLabel(unit) {
   const reading = `${unit.character}${unit.okurigana}`
@@ -61,6 +93,22 @@ export function KanbunMarkedText({
     }
 
     const labels = unit.marks.map(returnMarkLabel).join('')
+    const hasReMark = unit.marks.includes(RE_MARK)
+    const markBadge = (extra) => createElement(
+      'span',
+      {
+        'aria-hidden': 'true',
+        'data-kanbun-return-marks': labels,
+        'data-kanbun-return-mark-place': hasReMark ? 'between' : 'below',
+        className: classes(
+          'inline-flex items-center whitespace-nowrap rounded px-px font-black leading-none tracking-[-0.08em]',
+          scale.mark,
+          inverse ? 'bg-white/15 text-amber-200' : 'bg-rose-50 text-rose-700',
+          extra,
+        ),
+      },
+      ...returnMarkContent(unit.marks),
+    )
     return createElement(
       'span',
       {
@@ -69,7 +117,8 @@ export function KanbunMarkedText({
         'aria-label': unitLabel(unit),
         'data-kanbun-character-unit': unit.character,
         'data-kanbun-return-mark-count': unit.marks.length,
-        className: 'inline-grid shrink-0 grid-cols-[auto_auto] font-serif leading-none',
+        // レ点を境目に置く字は右に少し間を空け、次の字の返り点と重ならないようにする。
+        className: classes('relative inline-grid shrink-0 grid-cols-[auto_auto] font-serif leading-none', hasReMark && 'mr-1.5'),
       },
       createElement(
         'span',
@@ -95,24 +144,9 @@ export function KanbunMarkedText({
       ),
       createElement(
         'span',
-        {
-          'aria-hidden': 'true',
-          'data-kanbun-return-marks': labels || undefined,
-          className: classes('inline-flex items-start justify-start', scale.lower),
-        },
-        labels
-          ? createElement(
-              'span',
-              {
-                className: classes(
-                  'whitespace-nowrap rounded px-0.5 font-black leading-none tracking-[-0.08em]',
-                  scale.mark,
-                  inverse ? 'bg-white/15 text-amber-200' : 'bg-rose-50 text-rose-700',
-                ),
-              },
-              labels,
-            )
-          : null,
+        // 一・二などは字の下の右寄せ（縦書きの「字の左下」にあたる、次の字の側）。前の字のレ点とも離れる。
+        { className: classes('inline-flex items-start justify-end', scale.lower) },
+        labels && !hasReMark ? markBadge() : null,
       ),
       createElement(
         'span',
@@ -128,6 +162,8 @@ export function KanbunMarkedText({
         },
         unit.secondReading,
       ),
+      // 境目（この字の右端と次の字の左端の間）にレの縦線が来るよう、右端から外へ出す。
+      hasReMark ? markBadge(classes('absolute right-[calc(-5px-0.4em)]', scale.reTop)) : null,
     )
   })
 
@@ -195,9 +231,9 @@ export function KanbunPatternText({ pattern = '' }) {
           {
             'aria-hidden': 'true',
             'data-kanbun-pattern-marks': labels,
-            className: 'mx-px inline-block translate-y-1 rounded bg-rose-50 px-0.5 text-[0.7em] font-black leading-none text-rose-700',
+            className: 'mx-px inline-flex translate-y-1 items-center rounded bg-rose-50 px-0.5 text-[0.7em] font-black leading-none text-rose-700',
           },
-          labels,
+          ...returnMarkContent(unit.marks),
         ),
         createElement(
           'span',

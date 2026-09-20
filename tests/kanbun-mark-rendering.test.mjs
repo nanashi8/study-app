@@ -206,6 +206,11 @@ test('訓読文の表示は親字と送り仮名・返り点を同じDOM単位�
   assert.match(html, /data-kanbun-okurigana="ヲシテ"/)
   assert.match(html, /data-kanbun-return-marks="一レ"/)
   assert.match(html, /aria-label="読マに一点・レ点"/)
+  // レ点は字の下でなく次の字との境目に置き、フォントに頼らない図で描く。一・二などは字の下のまま。
+  assert.match(html, /data-kanbun-return-marks="一レ" data-kanbun-return-mark-place="between"/)
+  assert.match(html, /data-kanbun-return-marks="二" data-kanbun-return-mark-place="below"/)
+  assert.equal((html.match(/data-kanbun-re-mark-shape/g) ?? []).length, 1)
+  assert.doesNotMatch(html.replace(/aria-label="[^"]*"|data-kanbun-[a-z-]+="[^"]*"/g, ''), /レ/)
   assert.match(html, /字の右は送り仮名、字の下は返り点です。/)
   assert.doesNotMatch(html, /再読文字/)
 
