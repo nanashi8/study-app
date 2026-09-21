@@ -28,7 +28,8 @@ const RULES = [
   ['', 'ic', N, A], ['y', 'ic', N, A], ['e', 'ic', N, A], ['', 'ical', N, A], ['y', 'ical', N, A],
   ['', 'ly', N, A], ['', 'ish', N, A], ['', 'en', N, A], ['', 'able', N, A], ['', 'ary', N, A],
   ['er', 'ry', N, A], ['', 'ive', N, A], ['', 'ing', N, A], ['ion', 'ious', N, A], ['ce', 'cious', N, A],
-  ['', 'ed', N, A], ['e', 'ed', N, A], ['y', 'able', N, A], ['le', 'ular', N, A],
+  ['', 'ed', N, A], ['e', 'ed', N, A], ['y', 'able', N, A], ['le', 'ular', N, A], ['', 'ate', N, A],
+  ['e', 'ate', N, A], ['', 'ual', N, A], ['e', 'ual', N, A], ['e', 'ive', N, A],
   // 名詞 → 動詞
   ['', 'ize', N, V], ['y', 'ize', N, V], ['e', 'ize', N, V], ['', 'ify', N, V], ['', 'en', N, V],
   ['', 'e', N, V], ['', 'ate', N, V],
@@ -47,6 +48,7 @@ const RULES = [
   ['ify', 'ification', V, N], ['ounce', 'unciation', V, N], ['ce', 'ction', V, N], ['e', 'ition', V, N],
   ['lve', 'lution', V, N], ['ert', 'ersion', V, N], ['e', 'ison', V, N], ['', 'ery', V, N],
   ['', 'ist', V, N], ['', 'ism', V, N], ['orb', 'orption', V, N], ['oy', 'uction', V, N],
+  ['', 'ancy', V, N], ['', 'ency', V, N], ['nd', 'nt', V, N], ['yze', 'ysis', V, N], ['ay', 'ait', V, N],
   // 動詞 → 形容詞
   ['', 'ive', V, A], ['e', 'ive', V, A], ['', 'ative', V, A], ['e', 'ative', V, A], ['', 'able', V, A],
   ['e', 'able', V, A], ['y', 'iable', V, A], ['', 'ible', V, A], ['e', 'ible', V, A], ['', 'ful', V, A],
@@ -54,7 +56,7 @@ const RULES = [
   ['e', 'ing', V, A], ['', 'ed', V, A], ['e', 'ed', V, A], ['y', 'ied', V, A], ['d', 'sive', V, A],
   ['de', 'sive', V, A], ['it', 'issive', V, A], ['ce', 'ctive', V, A], ['ibe', 'iptive', V, A],
   ['', 'ory', V, A], ['e', 'ory', V, A], ['', 'atory', V, A], ['e', 'atory', V, A], ['y', 'iant', V, A],
-  ['', 'en', V, A],
+  ['', 'en', V, A], ['', 'ate', V, A], ['ail', 'alent', V, A],
   // 動詞 → 副詞
   ['', 'ingly', V, R], ['e', 'ingly', V, R], ['', 'edly', V, R], ['e', 'edly', V, R],
 ]
@@ -135,6 +137,7 @@ const IRREGULAR = [
   ['sink', 'sunken'], ['drink', 'drunk'], ['bind', 'bound'], ['relieve', 'relief'], ['grateful', 'gratitude'],
   ['shame', 'ashamed'], ['awe', 'awful'], ['complain', 'complaint'], ['identical', 'identity'], ['identify', 'identity'],
   ['sleep', 'asleep'], ['wake', 'awake'], ['guide', 'guidance'], ['judge', 'judgment'], ['anger', 'angry'],
+  ['respond', 'responsible'], ['respond', 'responsibility'], ['friendly', 'friendship'], ['scholarly', 'scholarship'],
   ['know', 'knowledge'], ['excite', 'excitement'], ['invite', 'invitation'], ['cite', 'citation'],
 ]
 
@@ -197,6 +200,44 @@ export function wordFormCandidatePairs(words) {
     }
   }
   return [...pairs.values()].sort(([a1, b1], [a2, b2]) => a1.localeCompare(a2) || b1.localeCompare(b2))
+}
+
+// 辞書に見出しのない形を拾うときに使わない語尾。規則どおりの活用形（-ing・-ed）や、
+// 人・物を表す語尾・よく使われない語を大量に生む語尾は、見出し語どうしのときだけ使う。
+const EXTRA_SKIPPED_ENDINGS = new Set([
+  'ing', 'ed', 'ied', 'er', 'or', 'ee', 'ingly', 'edly', 'ist', 'ism', 'y', 'age', 'ant', 'ent', 'en', 'e',
+  'ate', 'ish', 'ary', 'ive', 'ery', 'ure',
+])
+
+/**
+ * 辞書に見出しのない形の候補を { of: 見出し語のid, word: つづり, pos } で返す（重複なし）。
+ * lexicon は実在する英単語のつづりの集まり（発音辞書の見出し）。不規則な形の品詞は形を変えた語の品詞がわからないので '?'。
+ */
+export function wordFormExtraCandidates(words, lexicon) {
+  const usable = words.filter((word) => /^[a-z]+$/.test(word.word) && POS_ORDER.includes(word.pos))
+  const headwords = new Set(words.map((word) => toKey(word.word)))
+  const found = new Map()
+  const add = (of, spelling, pos) => {
+    if (headwords.has(spelling) || !lexicon.has(spelling)) return
+    const key = `${of}|${spelling}`
+    if (!found.has(key)) found.set(key, { of, word: spelling, pos })
+  }
+  for (const word of usable) {
+    const base = toKey(word.word)
+    for (const [from, to, fromPos, toPos] of RULES) {
+      if (word.pos !== fromPos || !base.endsWith(from)) continue
+      if (EXTRA_SKIPPED_ENDINGS.has(to) && !(to === 'ly' && fromPos === A)) continue
+      const stem = from ? base.slice(0, -from.length) : base
+      if (stem.length < 3) continue
+      add(word.id, stem + to, toPos)
+    }
+  }
+  const byKey = new Map(usable.map((word) => [toKey(word.word), word]))
+  for (const [a, b] of IRREGULAR) {
+    if (byKey.has(a) && !headwords.has(b)) add(byKey.get(a).id, b, '?')
+    if (byKey.has(b) && !headwords.has(a)) add(byKey.get(b).id, a, '?')
+  }
+  return [...found.values()].sort((x, y) => x.of.localeCompare(y.of) || x.word.localeCompare(y.word))
 }
 
 // node scripts/word-form-candidates.mjs で、組をつないだまとまりを表示する（台帳を作るときの下書き）。

@@ -9,9 +9,9 @@
 import { getWord } from '../data/vocab.js'
 import { getPhrase } from '../data/phrases.js'
 import { WORD_IDIOM_EQUIVALENTS } from '../data/word-idiom-equivalents.js'
-import { SPELLING_CONFUSABLE_PAIRS } from '../data/spelling-confusables.js'
+import { SPELLING_CONFUSABLE_EXTRAS, SPELLING_CONFUSABLE_PAIRS } from '../data/spelling-confusables.js'
 import { LOANWORD_HINTS } from '../data/loanword-hints.js'
-import { WORD_FORM_GROUPS } from '../data/word-forms.js'
+import { WORD_FORM_EXTRAS, WORD_FORM_GROUPS, WORD_FORM_NOTES } from '../data/word-forms.js'
 
 // 強勢記号や区切りを除いて、発音記号が同じかを比べる。
 const IPA_MARKS = /[ˈˌ/.\s]/gu
@@ -33,6 +33,20 @@ for (const group of WORD_FORM_GROUPS) {
   }
 }
 
+// 辞書に見出しのない形。もとの見出し語ごとにまとめる。
+const FORM_EXTRAS_BY_WORD = new Map()
+for (const [of, word, pos, meaning, phonetic, note] of WORD_FORM_EXTRAS) {
+  if (!FORM_EXTRAS_BY_WORD.has(of)) FORM_EXTRAS_BY_WORD.set(of, [])
+  FORM_EXTRAS_BY_WORD.get(of).push({ word, pos, meaning, phonetic, ...(note ? { formNote: note } : {}), extra: true })
+}
+
+// 辞書に見出しのない、つづりが似た別の語。
+const CONFUSABLE_EXTRAS_BY_WORD = new Map()
+for (const [of, word, meaning, phonetic] of SPELLING_CONFUSABLE_EXTRAS) {
+  if (!CONFUSABLE_EXTRAS_BY_WORD.has(of)) CONFUSABLE_EXTRAS_BY_WORD.set(of, [])
+  CONFUSABLE_EXTRAS_BY_WORD.get(of).push({ id: null, word, meaning, phonetic, level: null })
+}
+
 // ほかの品詞の形を並べる順。
 const FORM_POS_ORDER = ['動', '名', '形', '副']
 export const FORM_POS_LABELS = { 動: '動詞', 名: '名詞', 形: '形容詞', 副: '副詞' }
@@ -40,21 +54,35 @@ export const FORM_POS_LABELS = { 動: '動詞', 名: '名詞', 形: '形容詞',
 /**
  * 品詞がちがうだけで同じ語から来た形を、動詞・名詞・形容詞・副詞の順に辞書の語で返す。
  * いま見ている語と同じ品詞の語は出さない（decide なら decision・decisive・decisively）。
+ * 意味が広がった・ずれた形には、ずれ方の説明（formNote）をつける。
+ * 辞書に見出しのない形（extra）は、見出し語の形のあとに並べる。
  */
 export function wordFormsFor(word) {
   if (!word?.id || word.custom) return []
-  const seen = new Set([word.id])
+  const members = new Set([word.id])
+  for (const group of FORM_GROUPS_BY_WORD.get(word.id) ?? []) for (const id of group) members.add(id)
+  const seen = new Set([word.word.toLowerCase()])
   const forms = []
-  for (const group of FORM_GROUPS_BY_WORD.get(word.id) ?? []) {
-    for (const id of group) {
-      if (seen.has(id)) continue
-      seen.add(id)
-      const other = getWord(id)
-      if (other && other.pos !== word.pos && FORM_POS_ORDER.includes(other.pos)) forms.push(other)
+  for (const id of members) {
+    const other = id === word.id ? null : getWord(id)
+    if (other && other.pos !== word.pos && FORM_POS_ORDER.includes(other.pos) && !seen.has(other.word.toLowerCase())) {
+      seen.add(other.word.toLowerCase())
+      forms.push(WORD_FORM_NOTES[id] ? { ...other, formNote: WORD_FORM_NOTES[id] } : other)
+    }
+  }
+  // 辞書に見出しのない形は、まとまりのどの語から拾ったものでも並べる（decide の decisiveness など）。
+  for (const id of members) {
+    for (const extra of FORM_EXTRAS_BY_WORD.get(id) ?? []) {
+      const key = extra.word.toLowerCase()
+      if (extra.pos === word.pos || seen.has(key)) continue
+      seen.add(key)
+      forms.push(extra)
     }
   }
   return forms.sort((a, b) =>
-    FORM_POS_ORDER.indexOf(a.pos) - FORM_POS_ORDER.indexOf(b.pos) || a.word.localeCompare(b.word))
+    FORM_POS_ORDER.indexOf(a.pos) - FORM_POS_ORDER.indexOf(b.pos) ||
+    Number(Boolean(a.extra)) - Number(Boolean(b.extra)) ||
+    a.word.localeCompare(b.word))
 }
 
 /**
@@ -134,14 +162,15 @@ export function idiomEquivalentsFor(word) {
 
 export function confusablesFor(word) {
   if (!word?.id || word.custom) return []
-  return (CONFUSABLES_BY_WORD.get(word.id) ?? [])
-    .map((id) => getWord(id))
-    .filter(Boolean)
-    .map((other) => ({
-      word: other,
-      segments: spellingDifference(word.word, other.word),
-      sameSound: Boolean(soundKey(word)) && soundKey(word) === soundKey(other),
-    }))
+  const others = [
+    ...(CONFUSABLES_BY_WORD.get(word.id) ?? []).map((id) => getWord(id)).filter(Boolean),
+    ...(CONFUSABLE_EXTRAS_BY_WORD.get(word.id) ?? []),
+  ]
+  return others.map((other) => ({
+    word: other,
+    segments: spellingDifference(word.word, other.word),
+    sameSound: Boolean(soundKey(word)) && soundKey(word) === soundKey(other),
+  }))
 }
 
 /**

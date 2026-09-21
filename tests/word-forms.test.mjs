@@ -2,23 +2,47 @@ import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import test from 'node:test'
 import { ALL_WORDS, getWord } from '../src/data/vocab.js'
-import { WORD_FORM_GROUPS, WORD_FORM_REJECTED } from '../src/data/word-forms.js'
-import { antonymWordsFor, wordFormsFor, wordRelationsFor } from '../src/lib/wordRelations.js'
-import { wordFormCandidatePairs } from '../scripts/word-form-candidates.mjs'
+import { dictionary } from 'cmu-pronouncing-dictionary'
+import {
+  WORD_FORM_EXTRAS,
+  WORD_FORM_EXTRA_SKIPPED,
+  WORD_FORM_GROUPS,
+  WORD_FORM_HOMOGRAPH_SIDE,
+  WORD_FORM_NOTES,
+} from '../src/data/word-forms.js'
+import { SPELLING_CONFUSABLE_EXTRAS, SPELLING_CONFUSABLE_PAIRS } from '../src/data/spelling-confusables.js'
+import { antonymWordsFor, confusablesFor, wordFormsFor, wordRelationsFor } from '../src/lib/wordRelations.js'
+import { wordFormCandidatePairs, wordFormExtraCandidates } from '../scripts/word-form-candidates.mjs'
+import { arpaToIPA } from '../scripts/arpa-ipa.mjs'
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8')
 const formsOf = (id) => wordFormsFor(getWord(id)).map((word) => `${word.word}:${word.pos}`)
+const pairKey = (a, b) => [a, b].sort().join('|')
+const lexicon = new Set(Object.keys(dictionary).filter((key) => /^[a-z]+$/.test(key)))
 
 test('ほかの品詞の形は、見ている語とちがう品詞だけを動詞・名詞・形容詞・副詞の順に並べる', () => {
-  assert.deepEqual(formsOf('decide'), ['decision:名', 'decisive:形', 'decisively:副'])
+  // 辞書に見出しのない形（decisiveness）も、見出し語の形のあとに並べる。
+  assert.deepEqual(formsOf('decide'), ['decision:名', 'decisiveness:名', 'decisive:形', 'decisively:副'])
   assert.deepEqual(formsOf('decision'), ['decide:動', 'decisive:形', 'decisively:副'])
   assert.deepEqual(formsOf('happy'), ['happiness:名', 'happily:副'])
   // 意味の筋が分かれる語は、見ている語の筋の形だけを出す（success に successive「連続する」は出さない）。
-  assert.deepEqual(formsOf('success'), ['succeed:動', 'successful:形'])
-  // 意味が離れた語・つづりが似ているだけの語は出さない。
-  assert.equal(formsOf('consider').includes('considerable:形'), false)
+  assert.deepEqual(formsOf('success'), ['succeed:動', 'successful:形', 'successfully:副'])
+  // 意味が広がった形も参考に並べ、ずれ方を添える。
+  const considerable = wordFormsFor(getWord('consider')).find((word) => word.word === 'considerable')
+  assert.match(considerable.formNote, /かなりの/)
+  // 辞書に見出しのない形は、意味と発音記号を持つ。
+  const violence = wordFormsFor(getWord('violent')).find((word) => word.word === 'violence')
+  assert.deepEqual([violence.extra, violence.pos, violence.phonetic], [true, '名', '/ˈvaɪələns/'])
   assert.equal(formsOf('flow').some((form) => form.startsWith('flower')), false)
-  assert.deepEqual(wordRelationsFor(getWord('decide')).forms.map((word) => word.id), ['decision', 'decisive', 'decisively'])
+})
+
+test('つづりが似ているだけの別の語は、ほかの品詞の形ではなく、つづりが似ていて間違えやすい語に出す', () => {
+  assert.ok(confusablesFor(getWord('flow')).some((item) => item.word.id === 'flower'))
+  assert.ok(confusablesFor(getWord('flower')).some((item) => item.word.id === 'flow'))
+  // 辞書に見出しのない語も、意味と発音記号つきで出す（admire と admiral）。
+  const admiral = confusablesFor(getWord('admire')).find((item) => item.word.word === 'admiral')
+  assert.equal(admiral.word.meaning, '提督・海軍大将')
+  assert.ok(admiral.segments.some((segment) => segment.changed))
 })
 
 test('台帳のまとまりは辞書にある語だけで、どれも2つ以上の品詞にまたがる', () => {
@@ -30,21 +54,44 @@ test('台帳のまとまりは辞書にある語だけで、どれも2つ以上�
     for (const id of group) assert.ok(getWord(id), `辞書にない語: ${id}`)
     assert.ok(new Set(group.map((id) => getWord(id).pos)).size >= 2, `品詞が1つだけ: ${key}`)
   }
+  const grouped = new Set(WORD_FORM_GROUPS.flat())
+  for (const id of Object.keys(WORD_FORM_NOTES)) assert.ok(grouped.has(id), `説明の語がまとまりにない: ${id}`)
 })
 
-test('規則が拾った候補は、同じまとまりに並べるか WORD_FORM_REJECTED に外すかを人が決めてある', () => {
+test('規則が拾った見出し語どうしの組は、1組も捨てずに行き先を決めてある', () => {
   const together = new Set()
   for (const group of WORD_FORM_GROUPS) {
     for (const a of group) for (const b of group) if (a < b) together.add(`${a}|${b}`)
   }
-  const rejected = new Set(WORD_FORM_REJECTED)
+  const confusable = new Set(SPELLING_CONFUSABLE_PAIRS.map(([a, b]) => pairKey(a, b)))
+  const homograph = new Set(WORD_FORM_HOMOGRAPH_SIDE)
   const candidates = wordFormCandidatePairs(ALL_WORDS).map(([a, b]) => `${a}|${b}`)
-  const unreviewed = candidates.filter((pair) => !together.has(pair) && !rejected.has(pair))
-  assert.deepEqual(unreviewed, [], '候補の組 → word-forms.js の WORD_FORM_GROUPS か WORD_FORM_REJECTED に置く')
-  // 外した組が候補でなくなったら（見出し語の削除・品詞の変更）、台帳からも消す。
+  const undecided = candidates.filter((pair) => !together.has(pair) && !confusable.has(pair) && !homograph.has(pair))
+  assert.deepEqual(undecided, [], '候補の組 → 同じ語の形なら WORD_FORM_GROUPS、つづりが似た別の語なら spelling-confusables.js、同じつづりの別の語の側なら WORD_FORM_HOMOGRAPH_SIDE')
   const candidateSet = new Set(candidates)
-  assert.deepEqual(WORD_FORM_REJECTED.filter((pair) => !candidateSet.has(pair)), [])
-  for (const pair of WORD_FORM_REJECTED) assert.equal(together.has(pair), false, `外した組が同じまとまりにある: ${pair}`)
+  assert.deepEqual(WORD_FORM_HOMOGRAPH_SIDE.filter((pair) => !candidateSet.has(pair)), [])
+})
+
+test('辞書に見出しのない形の候補は、載せるか理由をつけて外すかを1語ずつ決めてある', () => {
+  const decided = new Set([
+    ...WORD_FORM_EXTRAS.map(([of, word]) => `${of}|${word.toLowerCase()}`),
+    ...SPELLING_CONFUSABLE_EXTRAS.map(([of, word]) => `${of}|${word.toLowerCase()}`),
+    ...Object.keys(WORD_FORM_EXTRA_SKIPPED),
+  ])
+  const candidates = wordFormExtraCandidates(ALL_WORDS, lexicon).map(({ of, word }) => `${of}|${word}`)
+  assert.deepEqual(candidates.filter((key) => !decided.has(key)), [], '候補 → WORD_FORM_EXTRAS に意味つきで載せるか、WORD_FORM_EXTRA_SKIPPED に理由を書く')
+  const candidateSet = new Set(candidates)
+  assert.deepEqual([...decided].filter((key) => !candidateSet.has(key)), [], '候補でなくなった語は台帳からも消す')
+  for (const [of, word, pos, meaning, phonetic] of WORD_FORM_EXTRAS) {
+    assert.ok(getWord(of), of)
+    assert.ok(['動', '名', '形', '副'].includes(pos), `${word}: ${pos}`)
+    assert.ok(meaning, word)
+    assert.equal(phonetic, arpaToIPA(dictionary[word.toLowerCase()]), `${word} の発音記号`)
+  }
+  for (const [of, word, meaning, phonetic] of SPELLING_CONFUSABLE_EXTRAS) {
+    assert.ok(getWord(of) && meaning, word)
+    assert.equal(phonetic, arpaToIPA(dictionary[word.toLowerCase()]), `${word} の発音記号`)
+  }
 })
 
 test('意味が反対の語は、同じつづりを重ねずに返す', () => {
@@ -56,8 +103,9 @@ test('意味が反対の語は、同じつづりを重ねずに返す', () => {
 test('ほかの品詞の形・意味が同じ・近い語・意味が反対の語は、1語ずつ発音を再生できる', () => {
   const component = read('src/components/WordRelations.jsx')
   assert.match(component, /export function RelatedWordList/)
-  assert.match(component, /<SpeakButton text=\{row\.text\}/)
-  assert.match(component, /isAmbiguousSpeechText\(row\.text\)/)
+  assert.match(component, /isAmbiguousSpeechText\(text\)/)
+  assert.match(component, /<RowSpeakButton text=\{row\.text\} \/>/)
+  assert.match(component, /<RowSpeakButton text=\{item\.word\.word\} \/>/)
   assert.match(component, /data-speech-group/)
   for (const name of ['WordFormSection', 'SynonymSection', 'AntonymSection']) {
     assert.match(component, new RegExp(`export function ${name}[\\s\\S]*?<RelatedWordList`), name)

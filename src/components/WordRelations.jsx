@@ -24,10 +24,23 @@ const TONES = {
 // id があるのは同じつづりの別の語を指す項目で、つづりで引くと元の語へ飛んでしまうもの。
 function toRows(items) {
   return items.map((item) => {
-    if (item.word && item.pos) return { text: item.word, meaning: item.meaning, entry: item, pos: item.pos }
+    // 辞書に見出しのない形は、発音記号と意味だけを持つ（タップ先の辞書ページはない）。
+    if (item.extra) {
+      return { text: item.word, meaning: item.meaning, entry: null, phonetic: item.phonetic, pos: item.pos, note: item.formNote ?? '' }
+    }
+    if (item.word && item.pos) {
+      return { text: item.word, meaning: item.meaning, entry: item, pos: item.pos, note: item.formNote ?? '' }
+    }
     const entry = getWord(item.id ?? toId(item.w)) ?? null
-    return { text: item.w, meaning: item.m || entry?.meaning || '', entry, pos: null }
+    return { text: item.w, meaning: item.m || entry?.meaning || '', entry, pos: null, note: '' }
   })
+}
+
+// 発音ボタン。使い方で発音が変わる語はボタンを出さない（SpeakButton）ので、同じ幅の空きで語の頭をそろえる。
+function RowSpeakButton({ text }) {
+  return isAmbiguousSpeechText(text)
+    ? <span className="h-8 w-8 shrink-0" aria-hidden="true" />
+    : <SpeakButton text={text} size="sm" title="単語" />
 }
 
 /**
@@ -52,13 +65,17 @@ export function RelatedWordList({ items, tone = 'syn', onWord, showPhonetic = tr
                   </span>
                 )}
                 <span className="font-display text-base font-extrabold tracking-wide text-ink">{row.text}</span>
-                {showPhonetic && row.entry?.phonetic && (
-                  <span className="text-xs font-bold text-ink/40">{row.entry.phonetic}</span>
+                {showPhonetic && (row.phonetic ?? row.entry?.phonetic) && (
+                  <span className="text-xs font-bold text-ink/40">{row.phonetic ?? row.entry.phonetic}</span>
                 )}
                 {level && <Chip color={level.color}>{level.label}</Chip>}
               </div>
               {row.meaning && (
                 <p className="text-xs font-bold leading-relaxed text-ink/55"><MeaningText>{row.meaning}</MeaningText></p>
+              )}
+              {/* 意味が広がった・ずれた形は、もとの語の意味からの筋道を添える。 */}
+              {row.note && (
+                <p className="mt-0.5 text-[11px] font-bold leading-relaxed text-amber-800/80" data-word-form-note>{row.note}</p>
               )}
             </div>
             {canOpen && <ArrowRight size={14} className="shrink-0 text-ink/30" />}
@@ -66,10 +83,7 @@ export function RelatedWordList({ items, tone = 'syn', onWord, showPhonetic = tr
         )
         return (
           <li key={`${row.text}-${index}`} className="flex items-center gap-2 py-1.5">
-            {/* 使い方で発音が変わる語はボタンを出さない（SpeakButton）。語の頭をほかの行とそろえる。 */}
-            {isAmbiguousSpeechText(row.text)
-              ? <span className="h-8 w-8 shrink-0" aria-hidden="true" />
-              : <SpeakButton text={row.text} size="sm" title="単語" />}
+            <RowSpeakButton text={row.text} />
             {canOpen ? (
               <button
                 type="button"
@@ -144,15 +158,17 @@ export function IdiomEquivalentSection({ phrases }) {
 }
 
 /** つづりが似ていて間違えやすい語。いま見ている語とちがう文字に色をつける。 */
-export function ConfusableSection({ word, items, onWord }) {
+export function ConfusableSection({ word, items, onWord, showPhonetic = true }) {
   if (!items.length) return null
   return (
     <div data-word-confusables>
       <SectionTitle className="text-rose-500">つづりが似ていて間違えやすい語</SectionTitle>
       <p className="-mt-1 text-[11px] font-bold text-ink/45">色つきの文字が {word.word} とちがう所</p>
-      <ul className="divide-y divide-rose-50">
+      <ul className="divide-y divide-rose-50" data-speech-group>
         {items.map((item) => {
-          const level = getLevel(item.word.level)
+          const level = item.word.level ? getLevel(item.word.level) : null
+          // 辞書に見出しのない語（admire に対する admiral）は、意味と発音記号だけを出す。
+          const canOpen = Boolean(item.word.id && onWord)
           const body = (
             <>
               <div className="min-w-0 flex-1">
@@ -164,6 +180,9 @@ export function ConfusableSection({ word, items, onWord }) {
                       </span>
                     ))}
                   </span>
+                  {showPhonetic && item.word.phonetic && (
+                    <span className="text-xs font-bold text-ink/40">{item.word.phonetic}</span>
+                  )}
                   {level && <Chip color={level.color}>{level.label}</Chip>}
                   {item.sameSound && (
                     <span className="rounded-full bg-violet-50 px-2 py-0.5 text-[10px] font-extrabold text-violet-600 ring-1 ring-violet-100">
@@ -173,21 +192,22 @@ export function ConfusableSection({ word, items, onWord }) {
                 </div>
                 <p className="text-xs font-bold leading-relaxed text-ink/55"><MeaningText>{item.word.meaning}</MeaningText></p>
               </div>
-              {onWord && <ArrowRight size={14} className="shrink-0 text-ink/30" />}
+              {canOpen && <ArrowRight size={14} className="shrink-0 text-ink/30" />}
             </>
           )
           return (
-            <li key={item.word.id}>
-              {onWord ? (
+            <li key={item.word.id ?? item.word.word} className="flex items-center gap-2 py-2">
+              <RowSpeakButton text={item.word.word} />
+              {canOpen ? (
                 <button
                   type="button"
                   onClick={() => onWord(item.word.id)}
-                  className="flex w-full items-center gap-2 py-2 text-left active:opacity-70"
+                  className="flex min-w-0 flex-1 items-center gap-2 text-left active:opacity-70"
                 >
                   {body}
                 </button>
               ) : (
-                <div className="flex items-center gap-2 py-2">{body}</div>
+                <div className="flex min-w-0 flex-1 items-center gap-2">{body}</div>
               )}
             </li>
           )

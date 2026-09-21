@@ -545,7 +545,7 @@ export function VocabStudyScreen() {
               {/* つづりが似ていて間違えやすい語。ちがう文字に色をつける。 */}
               {relations.confusables.length > 0 && (
                 <div className="rounded-2xl bg-white p-4 ring-1 ring-rose-100">
-                  <ConfusableSection word={word} items={relations.confusables} onWord={openRelatedWord} />
+                  <ConfusableSection word={word} items={relations.confusables} onWord={openRelatedWord} showPhonetic={settings.showPhonetic} />
                 </div>
               )}
 
