@@ -23,7 +23,7 @@
       "text": "品詞のある全見出し語を1語ずつ読み、学習に必要なほかの品詞の形（意味がずれた形は説明つき、辞書にない形は意味・発音記号つき）を載せた",
       "population": "品詞（名・動・形・副）のある全見出し語 8,799語",
       "check": "node scripts/checks/word-forms-review.mjs",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "synonym-antonym-play",
@@ -44,7 +44,7 @@
       "text": "使い分けの区別がある関連語（ほかの品詞の形・同じ品詞の別の形・意味が同じ近い語・意味が反対の語・つづりが似た語）には、使い分けの説明を暗記カードの裏と辞書ページに参考として載せる。全見出し語の関連語欄を1語ずつ読んで判断する",
       "population": "品詞のある全見出し語 8,799語の関連語欄に出る全項目",
       "check": "node scripts/checks/word-forms-review.mjs --usage",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "phrases-on-dictionary-page",

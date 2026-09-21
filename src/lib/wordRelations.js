@@ -243,10 +243,17 @@ export function usagePartnersFor(word, shown = []) {
 
 export function wordRelationsFor(word) {
   const idioms = idiomEquivalentsFor(word)
-  const forms = wordFormsFor(word)
   const synonyms = synonymWordsFor(word, { exclude: idioms.map((phrase) => phrase.phrase) })
   const antonyms = antonymWordsFor(word)
   const confusables = confusablesFor(word)
+  // 同じ品詞の形は使い分けのために出すので、類義語・反対語・つづりが似た語の欄に
+  // 同じ使い分けつきで出る語（respectable と respectful）は、そちらだけに出す。
+  const elsewhere = new Set([
+    ...synonyms.map((item) => item.w),
+    ...antonyms.map((item) => item.w),
+    ...confusables.map((item) => item.word.word),
+  ].map((text) => String(text).toLowerCase()))
+  const forms = wordFormsFor(word).filter((item) => item.pos !== word.pos || !elsewhere.has(item.word.toLowerCase()))
   return {
     forms,
     formOwnNote: wordFormOwnNote(word),

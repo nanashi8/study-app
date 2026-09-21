@@ -10,6 +10,7 @@
 //   - もとの語と同じ品詞の形は、ほかの品詞の形としては出ないのでつながない（使い分けを U 行で書いた組だけは載せる）。
 //   - 1列目が S の行は、拾われた候補を載せない理由: S  見出し語id  つづり  理由（WORD_FORM_EXTRA_SKIPPED）
 //   - 1列目が X の行は、まとまりから語を外す: X  見出し語id  理由（同じつづりの別の語の側だった組は WORD_FORM_HOMOGRAPH_SIDE へ）
+//   - 同じつづりの見出し語が2つ以上あるとき、つづりの代わりに見出し語 id（flight_2 のように _ つき）を書けば、その語を指す。
 // 見直した語の id は docs/audits/word-forms-review.json に足す（scripts/checks/word-forms-review.mjs が全件を確かめる）。
 import { readFileSync, writeFileSync } from 'node:fs'
 import { dictionary } from 'cmu-pronouncing-dictionary'
@@ -34,6 +35,7 @@ for (const word of ALL_WORDS) {
   if (!bySpelling.has(key)) bySpelling.set(key, [])
   bySpelling.get(key).push(word)
 }
+const headwordsFor = (spelling) => (spelling.includes('_') && getWord(spelling) ? [getWord(spelling)] : bySpelling.get(spelling.toLowerCase()) ?? [])
 
 const edges = []
 const notes = { ...F.WORD_FORM_NOTES }
@@ -81,7 +83,7 @@ for (const line of lines) {
   if (cols[0] === 'C') {
     const [, of, spelling, meaning] = cols
     if (!getWord(of)) { errors.push(`見出し語がない: ${of}`); continue }
-    const target = bySpelling.get(spelling.toLowerCase())?.[0]
+    const target = headwordsFor(spelling)[0]
     if (target) confusablePairs.push([of, target.id])
     else {
       const arpa = dictionary[spelling.toLowerCase()]
@@ -93,10 +95,12 @@ for (const line of lines) {
   const [of, spelling, pos, meaning, note, manualPhonetic] = cols
   const base = getWord(of)
   if (!base) { errors.push(`見出し語がない: ${of}`); continue }
-  const candidates = bySpelling.get(spelling.toLowerCase()) ?? []
+  const candidates = headwordsFor(spelling)
   const target = candidates.find((word) => word.pos === pos) ?? candidates.find((word) => word.pos !== base.pos && POS.includes(word.pos))
   // 同じ品詞の形は、まとまりにほかの品詞の語がないと画面に出ないのでつながない。
-  const otherPosInGroup = [...(groupPos.get(base.id) ?? [])].some((p) => p && p !== base.pos)
+  // つなぐとできるまとまり（もとの語のまとまり＋相手のまとまり）に、ほかの品詞の語があるか。
+  const otherPosInGroup = [...(groupPos.get(base.id) ?? []), ...(target ? groupPos.get(target.id) ?? [] : [])]
+    .some((p) => p && p !== base.pos)
   const hasUsage = Boolean(usageNotes[usageKey(base.word, spelling)])
   if (pos === base.pos && !(target && otherPosInGroup)) {
     // 同じ品詞の見出し語は、使い分けを書けば「使い分けに注意する語」の欄に出るので、まとまりにはつながない。
@@ -164,7 +168,10 @@ for (const [a, b] of splitEdges) {
   const target = splitGroups.find((group) => group.includes(inSplit) && group.length && group.indexOf(inSplit) >= 0)
   if (!target.includes(other)) target.push(other)
 }
-const allGroups = [...groups, ...splitGroups.map((group) => [...new Set(group)])].sort((a, b) => a[0].localeCompare(b[0]))
+// 語を外して1語だけ・1つの品詞だけになったまとまりは、ほかの品詞の形を示さないので消す。
+const allGroups = [...groups, ...splitGroups.map((group) => [...new Set(group)])]
+  .filter((group) => group.length >= 2 && new Set(group.map((id) => getWord(id)?.pos)).size >= 2)
+  .sort((a, b) => a[0].localeCompare(b[0]))
 
 extras.sort((a, b) => a[0].localeCompare(b[0]) || a[1].localeCompare(b[1]))
 

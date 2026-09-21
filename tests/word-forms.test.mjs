@@ -144,3 +144,24 @@ test('使い分けの区別がある関連語には、使い分けを参考に�
     assert.match(read(screen), /<UsagePartnerSection items=\{relations\.usagePartners\}/, screen)
   }
 })
+
+test('同じ品詞の使い分けの相手は、ほかの欄と重ねずに1か所だけに出す', () => {
+  // respectable と respectful は、つづりが似た語の欄にだけ使い分けつきで出す。
+  const respectable = wordRelationsFor(getWord('respectable'))
+  assert.ok(!respectable.forms.some((item) => item.word === 'respectful'))
+  assert.ok(respectable.confusables.find((item) => item.word.word === 'respectful').usageNote)
+  // 品詞がちがう形（advice と advise）は、ほかの品詞の形にも、つづりの注意にも出す。
+  const advice = wordRelationsFor(getWord('advice'))
+  assert.ok(advice.forms.some((item) => item.word === 'advise'))
+  assert.ok(advice.confusables.some((item) => item.word.word === 'advise'))
+  for (const word of ALL_WORDS) {
+    const relations = wordRelationsFor(word)
+    const elsewhere = new Set([
+      ...relations.synonyms.map((item) => item.w),
+      ...relations.antonyms.map((item) => item.w),
+      ...relations.confusables.map((item) => item.word.word),
+    ].map((text) => text.toLowerCase()))
+    const twice = relations.forms.filter((item) => item.pos === word.pos && elsewhere.has(item.word.toLowerCase()))
+    assert.deepEqual(twice.map((item) => item.word), [], word.id)
+  }
+})
