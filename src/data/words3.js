@@ -3,7 +3,7 @@ import { expandCompact } from './compact.js'
 
 const RAW = [
   ["proceed","動","2","進む・続行する","Please proceed to the next page.","次のページに進んでください。",{"parts":[{"t":"pro","kind":"prefix","gloss":"前へ"},{"t":"ceed","kind":"root","gloss":"進む","root":"cess"}],"note":"前へ(pro)進む(ceed)→「進む・進行する」。"},{"field":"動作・行為"}],
-  ["process","名","2","過程・処理する","Learning is a slow process.","学習はゆっくりした過程だ。",{"parts":[{"t":"pro","kind":"prefix","gloss":"前へ"},{"t":"cess","kind":"root","gloss":"進む","root":"cess"}],"note":"前へ(pro)進んで(cess)いくこと→「過程」。"},{"field":"一般"}],
+  ["process","名","2","過程・処理する(動)","Learning is a slow process.","学習はゆっくりした過程だ。",{"parts":[{"t":"pro","kind":"prefix","gloss":"前へ"},{"t":"cess","kind":"root","gloss":"進む","root":"cess"}],"note":"前へ(pro)進んで(cess)いくこと→「過程」。"},{"field":"一般"}],
   ["access","名","2","接近・利用する権利","Students have access to the library.","生徒は図書館を利用できる。",{"parts":[{"t":"ac","kind":"prefix","gloss":"〜へ"},{"t":"cess","kind":"root","gloss":"進む","root":"cess"}],"note":"〜へ(ac=ad)進む(cess)→「接近・利用」。"},{"field":"一般"}],
   ["succeed","動","pre2","成功する・後を継ぐ","She succeeded in passing the exam.","彼女は試験に合格して成功した。",{"parts":[{"t":"suc","kind":"prefix","gloss":"下から続いて"},{"t":"ceed","kind":"root","gloss":"進む","root":"cess"}],"note":"うまく下から続いて(suc)進む(ceed)→「成功する」。success の動詞。"},{"ant":[{"w":"fail","m":"失敗する"}],"field":"動作・行為"}],
   ["exceed","動","pre1","超える・上回る","The cost must not exceed the budget.","費用は予算を超えてはいけない。",{"parts":[{"t":"ex","kind":"prefix","gloss":"外へ・超えて"},{"t":"ceed","kind":"root","gloss":"進む","root":"cess"}],"note":"限度の外へ(ex)進む(ceed)→「超える」。"},{"field":"動作・行為"}],

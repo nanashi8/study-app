@@ -81,10 +81,10 @@ const RAW = [
   ["product","名","3","製品","This product sells well.","この製品はよく売れる。",{"parts":[{"t":"pro","kind":"prefix","gloss":"前へ"},{"t":"duct","kind":"root","gloss":"導く","root":"duct"}],"note":"前へ(pro)導き出された(duct)もの→「製品」。produce と同源。"},{"field":"一般"}],
   ["market","名","3","市場","We bought fish at the market.","私たちは市場で魚を買った。","ラテン mercari(商う)→「市場」。merchant と同源。",{"field":"経済"}],
   ["price","名","3","値段","The price is too high.","値段が高すぎる。","ラテン pretium(値段)→「値段」。appreciate と同源。",{"syn":[{"w":"cost","m":"費用"}],"field":"一般"}],
-  ["cost","名","3","費用・かかる","The trip cost a lot.","その旅行は多額の費用がかかった。","ラテン com(共に)+stare(立つ)→値が立つ→「かかる・費用」。",{"syn":[{"w":"price","m":"値段"},{"w":"expense","m":"費用"}],"field":"経済"}],
+  ["cost","名","3","費用・かかる(動)","The trip cost a lot.","その旅行は多額の費用がかかった。","ラテン com(共に)+stare(立つ)→値が立つ→「かかる・費用」。",{"syn":[{"w":"price","m":"値段"},{"w":"expense","m":"費用"}],"field":"経済"}],
   ["job","名","3","仕事","He is looking for a job.","彼は仕事を探している。","中英語 jobbe(ひと仕事)に由来→「仕事」。",{"syn":[{"w":"work","m":"仕事"},{"w":"occupation","m":"職業"},{"w":"task","m":"仕事"}],"field":"一般"}],
   ["goal","名","3","目標・ゴール","My goal is to pass the exam.","私の目標は試験に合格することだ。","中英語 gol(境界・終点)→「目標」。",{"syn":[{"w":"aim","m":"目的"},{"w":"objective","m":"目標"}],"field":"一般"}],
-  ["hope","動","3","望む・希望","I hope you feel better soon.","早くよくなるといいね。","古英語 hopian(望む)に由来→「望む」。",{"field":"動作・行為"}],
+  ["hope","動","3","望む・希望(名)","I hope you feel better soon.","早くよくなるといいね。","古英語 hopian(望む)に由来→「望む」。",{"field":"動作・行為"}],
   ["disease","名","3","病気","The disease spread fast.","その病気は急速に広がった。","dis(否定)+ease(楽)→楽でない状態→「病気」。",{"syn":[{"w":"illness","m":"病気"}],"field":"医学"}],
   ["medicine","名","3","薬・医学","Take this medicine after meals.","食後にこの薬を飲んで。","ラテン medicus(医者)→「薬・医学」。medical と同源。",{"field":"医学"}],
 ]

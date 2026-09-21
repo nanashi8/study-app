@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-09-21T10:24:15.102Z",
+  "auditedAt": "2026-09-21T10:34:05.289Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -12,7 +12,7 @@
     "quizItemCount": 16495,
     "storedAndGeneratedQuestionPathCount": 4946,
     "storedAndGeneratedChoicePathCount": 19353,
-    "overallContentSha256": "fa51c1c33fc4983f86192f45276daab4c7911c69cf39b71b9324aac26872ee42"
+    "overallContentSha256": "b2c735326433fde1706f0ed35cf023dd6d6154f4cb2dad184a46061f3dafc943"
   },
   "completionCriteria": [
     "全18教材カテゴリのID・母数・重複・内容ハッシュが一致する",
@@ -104,7 +104,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "a2f2f6987eefec3a5381d9c8439e828db17a02088020af91359a76d6686c260e",
+    "sha256": "15c6c821c40ff0c756511639308ed23ebf4533959c770980dc5e8ab3b364b0e8",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -218,6 +218,7 @@
       "tests/literature.test.mjs",
       "tests/long-sentence-translations.test.mjs",
       "tests/math-intros.test.mjs",
+      "tests/meaning-pos-marks.test.mjs",
       "tests/meaning-readings.test.mjs",
       "tests/no-background-music.test.mjs",
       "tests/normal-learning-record-lists.test.mjs",
@@ -297,7 +298,7 @@
       "quizItemCount": 8929,
       "learningIdOrderSha256": "cd10218924b5ca52e52a7a8731a47c1ecb9a7f17d482d5ea4696294e3cb7a42b",
       "quizIdOrderSha256": "cd10218924b5ca52e52a7a8731a47c1ecb9a7f17d482d5ea4696294e3cb7a42b",
-      "contentSha256": "a6bf91c06c7ab8857a6f8b6e39c6f268db84c0a39dfbfcdb280f90d0f3ff2fd5",
+      "contentSha256": "913ca84d3f0859639b7ae04fc7140b03d7a1f83911dc9b63e20f0e88b2698fe7",
       "auditGateIds": [
         "inventory",
         "coreData",
@@ -828,7 +829,7 @@
       "choiceCount": 252,
       "generalRationaleCount": 84,
       "choiceSpecificRationaleCount": 252,
-      "questionSetSha256": "b625d5f1f2423d956ca46d4446c9c2537e804126fda5f859014f8b336715b921",
+      "questionSetSha256": "8adfd45e5383ab982c219e8385be9b0a9deeca35798da2dfd41948c243661d94",
       "result": "pass",
       "failureCount": 0,
       "failures": []

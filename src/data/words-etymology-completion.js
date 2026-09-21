@@ -185,7 +185,7 @@ const RAW = [
   ['souvenir', '名', '2', '土産・記念品', 'I bought a small souvenir at the museum.', '私は博物館で小さな記念品を買った。', 'フランス語 souvenir(思い出す)から、場所や出来事を思い出させる品を指すようになった。', { field: '一般' }],
   ['strain', '名', 'pre1', '緊張・負担・筋を痛めること', 'Long working hours placed a strain on his health.', '長時間労働は彼の健康に負担をかけた。', '古フランス語を経てラテン語 stringere(きつく締める)につながり、張りつめた力や負担を表す。', { field: '医学' }],
   ['subcommittee', '名', 'pre1', '小委員会・分科会', 'A subcommittee will examine the budget proposal.', '小委員会が予算案を検討する。', 'sub-(下位の・小さい)＋committee(委員会)から、大きな委員会の一部を担う組織を表す。', { field: '政治' }],
-  ['subconscious', '名', 'pre1', '潜在意識・意識下の', 'The image remained in her subconscious.', 'その映像は彼女の潜在意識に残った。', 'sub-(下に)＋conscious(意識している)から、はっきり意識されない心の領域を表す。', { field: '心理' }],
+  ['subconscious', '名', 'pre1', '潜在意識・意識下の(形)', 'The image remained in her subconscious.', 'その映像は彼女の潜在意識に残った。', 'sub-(下に)＋conscious(意識している)から、はっきり意識されない心の領域を表す。', { field: '心理' }],
   ['subnormal', '形', '1', '標準以下の', 'The engine was operating at a subnormal temperature.', 'そのエンジンは標準以下の温度で作動していた。', 'sub-(下の・未満の)＋normal(標準の)で、通常の水準より低いことを表す。', { field: '性質・状態' }],
   ['subsist', '動', 'pre1', 'どうにか生活する・存続する', 'The family subsisted on a small income.', 'その家族は少ない収入でどうにか生活していた。', 'ラテン語 sub-(下に)＋sistere(立つ)から、自分を支えて存続する意味になった。', { field: '動作・行為' }],
   ['subsistence', '名', 'pre1', '生存・最低限の生活手段', 'Fishing provides subsistence for many families.', '漁業は多くの家族の生活手段になっている。', 'subsist(生き延びる・存続する)＋-ence。生活を保つために必要な手段や状態を指す。', { field: '経済' }],

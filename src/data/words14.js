@@ -16,7 +16,7 @@ const RAW = [
   ["love","動","5","愛する・大好きだ","I love my family.","私は家族を愛している。","古英語 lufu「愛」。",{"field":"動作・行為"}],
   ["help","動","5","助ける","Can you help me?","手伝ってくれる？","古英語 helpan「助ける」。",{"field":"動作・行為"}],
   ["use","動","5","使う","May I use your pen?","ペンを使ってもいい？","ラテン ūtī「使う」。",{"field":"動作・行為"}],
-  ["work","動","5","働く・仕事","My parents work hard.","私の両親は一生懸命働く。","古英語 weorc「仕事」。",{"field":"動作・行為"}],
+  ["work","動","5","働く・仕事(名)","My parents work hard.","私の両親は一生懸命働く。","古英語 weorc「仕事」。",{"field":"動作・行為"}],
   ["live","動","5","住む・生きる","We live near the station.","私たちは駅の近くに住んでいる。","古英語 lifian「生きる」。",{"field":"動作・行為"}],
   ["wait","動","4","待つ","Wait for me at the gate.","門で待っていて。","古北フランス waitier「見張る・待つ」。",{"field":"動作・行為"}],
   ["start","動","4","始める・出発する","The game starts at noon.","試合は正午に始まる。","古英語 styrtan「跳ね上がる」。",{"field":"動作・行為"}],

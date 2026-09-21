@@ -27,7 +27,7 @@ const RAW = [
   ["conflict","名","2","対立・紛争","There was a conflict of opinion.","意見の対立があった。","ラテン com(共に)+fligere(打つ)→ぶつかり合い。",{"field":"一般"}],
   ["content","名","2","中身・内容","Check the content of the box.","箱の中身を確認して。","ラテン com+tenere(中に保つ)→ tain と同系。",{"field":"一般"}],
   ["council","名","2","評議会・議会","The city council met today.","市議会が今日開かれた。","ラテン concilium「集まり」。",{"field":"政治"}],
-  ["couple","名","3","一組・夫婦・2、3の","A couple sat by the window.","一組のカップルが窓辺に座った。","ラテン copula「結びつき」。",{"field":"家族・人"}],
+  ["couple","名","3","一組・夫婦・2、3の(形)","A couple sat by the window.","一組のカップルが窓辺に座った。","ラテン copula「結びつき」。",{"field":"家族・人"}],
   ["court","名","pre2","裁判所・コート・宮廷","The case went to court.","その事件は裁判になった。","ラテン cohors「囲い・中庭」。",{"field":"法律"}],
   ["crowd","名","3","群衆・人ごみ","A large crowd gathered.","大勢の群衆が集まった。","古英語 crūdan「押し合う」。",{"field":"一般"}],
   ["crown","名","pre2","王冠・王位","The king wore a gold crown.","王は金の王冠をかぶっていた。","ラテン corona「冠」。",{"field":"一般"}],

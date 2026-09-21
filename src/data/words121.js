@@ -99,7 +99,7 @@ const RAW = [
   ['every', '形', '5', 'すべての・毎〜', 'I walk my dog every morning.', '私は毎朝犬を散歩させる。', '古英語 æfre ælc(常にそれぞれ)。', { field: '一般' }],
   ['one', '形', '5', '1つ(の)・(漠然と)人', 'I have one brother and two sisters.', '私には兄弟が1人と姉妹が2人いる。', '古英語 an(1つ)。', { field: '一般' }],
   ['another', '形', '5', 'もう1つの・別の', 'Can I have another cookie?', 'クッキーをもう1枚もらえる？', 'an（1つ）＋ other（別の）。「もう1つの・別の」を表す。', { field: '一般' }],
-  ['second', '形', '5', '2番目の・秒', 'My classroom is on the second floor.', '私の教室は2階にある。', 'ラテン secundus(次の)。', { field: '一般' }],
+  ['second', '形', '5', '2番目の・秒(名)', 'My classroom is on the second floor.', '私の教室は2階にある。', 'ラテン secundus(次の)。', { field: '一般' }],
   ['cute', '形', '5', 'かわいい', 'Look at that cute puppy!', 'あのかわいい子犬を見て！', 'acute(鋭い)の短縮。', { field: '一般' }],
   ['sorry', '形', '5', 'すまなく思う・気の毒で', 'I am sorry.', 'ごめんなさい。', '古英語 sarig(悲しい)。', { field: '一般' }],
   ['favorite', '形', '5', 'お気に入りの・大好きな', 'Curry is my favorite food.', 'カレーは私の大好きな食べ物だ。', 'ラテン favor(好意)。', { field: '一般' }],
@@ -107,7 +107,7 @@ const RAW = [
   ['dear', '形', '5', '親愛なる・いとしい', 'Dear Tom, thank you for the nice letter.', '親愛なるトムへ、すてきな手紙をありがとう。', '古英語 deore(いとしい)。', { field: '一般' }],
   ['salty', '形', '5', '塩辛い', 'This soup is too salty for me.', 'このスープは私には塩辛すぎる。', 'salt(塩)+ -y。', { field: '料理' }],
   ['round', '形', '5', '丸い・円形の', 'We eat dinner at a round table.', '私たちは丸いテーブルで夕食を食べる。', 'ラテン rotundus(丸い)。', { field: '一般' }],
-  ['square', '形', '5', '四角い・正方形', 'She gave me a gift in a square box.', '彼女は四角い箱に入った贈り物をくれた。', 'ラテン quadra(四角)。', { field: '一般' }],
+  ['square', '形', '5', '四角い・正方形(名)', 'She gave me a gift in a square box.', '彼女は四角い箱に入った贈り物をくれた。', 'ラテン quadra(四角)。', { field: '一般' }],
 ]
 
 export const WORDS_MORE120 = RAW.map(expandCompact)

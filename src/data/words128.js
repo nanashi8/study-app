@@ -31,7 +31,7 @@ const RAW = [
   ['mollify', '動', '1', 'なだめる・和らげる', 'The manager offered free desserts to mollify the angry customers.', '支配人は、怒った客をなだめるために無料のデザートを出した。', 'ラテン mollis(柔らかい)+facere(する)。', { syn: [{ w: 'pacify', m: 'なだめる' }, { w: 'appease', m: '宥める' }], ant: [{ w: 'provoke', m: '怒らせる' }], field: '心理' }],
   ['mordant', '形', '1', '(風刺が)辛辣な・痛烈な', 'The comedian is known for his mordant wit about politics.', 'そのお笑い芸人は、政治についての辛辣な機知で知られている。', 'ラテン mordere(かむ)。', { syn: [{ w: 'caustic', m: '辛辣な' }, { w: 'biting', m: '痛烈な' }], ant: [{ w: 'gentle', m: '穏やかな' }], field: '文学' }],
   ['moribund', '形', '1', '瀕死の・消滅しかけた', 'New investment brought the moribund fishing town back to life.', '新たな投資によって、消滅しかけた漁師町が息を吹き返した。', 'ラテン mori(死ぬ)。', { syn: [{ w: 'dying', m: '死にかけた' }, { w: 'declining', m: '衰退する' }], ant: [{ w: 'thriving', m: '繁栄する' }], field: 'ビジネス' }],
-  ['myriad', '名', '1', '無数・無数の', 'A myriad of stars filled the sky above the desert.', '砂漠の上空は無数の星で埋め尽くされていた。', 'ギリシャ myrias(1万)。', { syn: [{ w: 'multitude', m: '多数' }, { w: 'host', m: '大群' }], ant: [{ w: 'handful', m: 'ほんの少し' }], field: '一般' }],
+  ['myriad', '名', '1', '無数・無数の(形)', 'A myriad of stars filled the sky above the desert.', '砂漠の上空は無数の星で埋め尽くされていた。', 'ギリシャ myrias(1万)。', { syn: [{ w: 'multitude', m: '多数' }, { w: 'host', m: '大群' }], ant: [{ w: 'handful', m: 'ほんの少し' }], field: '一般' }],
 ]
 
 export const WORDS_MORE127 = RAW.map(expandCompact)

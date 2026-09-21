@@ -64,7 +64,7 @@ const RAW = [
   ["concept","名","2","概念","It is a difficult concept.","それは難しい概念だ。",{"parts":[{"t":"con","kind":"prefix","gloss":"共に"},{"t":"cept","kind":"root","gloss":"取る","root":"cept"}],"note":"心に取り込んだ(con+cept)もの→「概念」。"},{"field":"一般"}],
   ["theory","名","2","理論・学説","He explained his theory.","彼は自分の理論を説明した。","ギリシャ theorein(観察する)→考察→「理論」。",{"field":"科学"}],
   ["principle","名","2","原理・主義","It goes against my principles.","それは私の主義に反する。","ラテン principium(始まり・第一)→根本→「原理」。",{"usage":"「原理・主義」(名詞のみ)。校長 principal と同音異義に注意。","field":"一般"}],
-  ["function","名","2","機能・働く","This button has no function.","このボタンは機能がない。","ラテン fungi(果たす)→役目を果たす→「機能」。",{"field":"一般"}],
+  ["function","名","2","機能・働く(動)","This button has no function.","このボタンは機能がない。","ラテン fungi(果たす)→役目を果たす→「機能」。",{"field":"一般"}],
   ["feature","名","2","特徴・機能","The phone has new features.","その電話には新機能がある。","ラテン factura(作り・出来)→顔つき→「特徴」。",{"field":"一般"}],
   ["element","名","2","要素","Trust is a key element of friendship.","信頼は友情の重要な要素だ。","ラテン elementum(基本要素)→「要素」。",{"field":"一般"}],
   ["region","名","2","地域・地方","This region is famous for tea.","この地域はお茶で有名だ。","ラテン regere(治める)→治める区域→「地域」。",{"field":"一般"}],

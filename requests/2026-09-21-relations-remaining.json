@@ -87,8 +87,8 @@
       "id": "meaning-pos-marks",
       "text": "意味欄に、見出しの品詞とちがう品詞の訳語が印なしで混ざっているもの（work「働く・仕事」の「仕事」、end「終わり・終わらせる」、blind「目をくらませる・盲目の」の「盲目の」など）を1語ずつ読み、別の品詞の訳語には品詞の印（(名)・(動)・(形)・(副)）を付ける。先頭の訳語が見出しの品詞とちがう語は、先頭を見出しの品詞の訳語にする",
       "population": "品詞のある全見出し語の意味欄の訳語のうち、見出しの品詞とちがう品詞に見える訳語（scripts/checks/meaning-pos-marks.mjs が拾う全件）",
-      "check": "node scripts/checks/meaning-pos-marks.mjs",
-      "status": "todo"
+      "check": "node --test tests/meaning-pos-marks.test.mjs",
+      "status": "done"
     },
     {
       "id": "confusables-survey",

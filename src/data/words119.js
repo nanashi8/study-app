@@ -83,7 +83,7 @@ const RAW = [
   ['football', '名', '5', 'フットボール・サッカー', 'My uncle loves watching football on TV.', 'おじはテレビでサッカーを見るのが大好きだ。', 'foot(足)+ball(球)。', { field: 'スポーツ' }],
   ['golf', '名', '5', 'ゴルフ', 'My grandfather plays golf every Sunday.', '祖父は毎週日曜日にゴルフをする。', '中世オランダ kolf(棒)。', { field: 'スポーツ' }],
   // ── その他の中1基本語 ──
-  ['dance', '動', '5', '踊る・ダンス', 'We danced to the music at the party.', '私たちはパーティーで音楽に合わせて踊った。', '古フランス dancier(踊る)。', { field: '音楽' }],
+  ['dance', '動', '5', '踊る・ダンス(名)', 'We danced to the music at the party.', '私たちはパーティーで音楽に合わせて踊った。', '古フランス dancier(踊る)。', { field: '音楽' }],
   ['game', '名', '5', 'ゲーム・試合', 'Our team won the game by two points.', '私たちのチームは2点差で試合に勝った。', '古英語 gamen(遊び)。', { field: 'スポーツ' }],
   ['picnic', '名', '5', 'ピクニック', "Let's go on a picnic this Sunday.", '今度の日曜日にピクニックに行こう。', 'フランス pique-nique。', { field: '一般' }],
   ['movie', '名', '5', '映画', 'We watched a funny movie last night.', '私たちは昨夜おもしろい映画を見た。', 'moving picture の短縮。', { field: 'メディア' }],
@@ -102,9 +102,9 @@ const RAW = [
   ['rose', '名', '5', 'バラ', 'She grows red roses in her garden.', '彼女は庭で赤いバラを育てている。', 'ラテン rosa(バラ)。', { field: '科学' }],
   ['kick', '動', '5', 'ける', 'Ken kicked the ball into the goal.', '健はボールをけってゴールに入れた。', '中英語 kiken(ける)。', { field: 'スポーツ' }],
   ['wake', '動', '5', '目を覚ます・起こす', 'Please wake me up at six.', '6時に起こしてください。', '古英語 wacian(目覚める)。', { field: '一般' }],
-  ['wish', '動', '5', '望む・願う・願い', 'I wish you good luck on your test.', 'テストがうまくいくよう願っているよ。', '古英語 wyscan(願う)。', { field: '一般' }],
-  ['spell', '動', '5', 'つづる・つづり', 'Can you spell your name for me?', 'お名前をつづってもらえますか？', '古フランス espeller(説明する)。', { field: '言語' }],
-  ['smell', '動', '5', 'においがする・かぐ・におい', 'This fresh bread smells so good.', 'この焼きたてのパンはとてもいいにおいがする。', '中英語 smell(におい)。', { field: '一般' }],
+  ['wish', '動', '5', '望む・願う・願い(名)', 'I wish you good luck on your test.', 'テストがうまくいくよう願っているよ。', '古英語 wyscan(願う)。', { field: '一般' }],
+  ['spell', '動', '5', 'つづる・つづり(名)', 'Can you spell your name for me?', 'お名前をつづってもらえますか？', '古フランス espeller(説明する)。', { field: '言語' }],
+  ['smell', '動', '5', 'においがする・かぐ・におい(名)', 'This fresh bread smells so good.', 'この焼きたてのパンはとてもいいにおいがする。', '中英語 smell(におい)。', { field: '一般' }],
 ]
 
 export const WORDS_MORE118 = RAW.map(expandCompact)

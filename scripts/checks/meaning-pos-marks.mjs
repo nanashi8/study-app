@@ -12,23 +12,26 @@ export const MEANING_POS_MARKS_PATH = new URL('../../docs/audits/meaning-pos-mar
 
 // 印を付けない理由の略号。
 export const MEANING_POS_MARK_REASONS = {
-  同品詞: '訳語の終わり方がちがって見えるだけで、見出しの品詞の訳語（want の「ほしい」、successive の「連続する」など）',
-  説明: '品詞の訳語ではなく、使い方の説明（「〜の複数形」「be動詞の過去」など）',
+  同品詞: '訳語の終わり方がちがって見えるだけで、見出しの品詞の訳語（want の「ほしい」、successive の「連続する」、bench の「長いす」など）',
+  数詞: '数・数量を表す語で、数そのものと数の形容詞を一緒に載せる決まり（eight の「8」、all の「全部」など）',
+  説明: '品詞の訳語ではなく、使い方の説明（「doの過去」「beの過去分詞」など）',
 }
 
 const MARK = /[（(](名|動|形|副)[）)]$/u
 const core = (gloss) => gloss.replace(/[（(][^）)]*[）)]/gu, '').replace(/[〜~…]/gu, '').trim()
-const VERB_END = /(する|させる|される|せる|れる|う|く|ぐ|す|つ|ぬ|ぶ|む|る)$/u
-const NOUN_END = /[一-鿿゠-ヿ0-9０-９A-Za-z々]$/u
-const ADJECTIVE_END = /(な|の|い)$/u
+const VERB_END = /[うくぐすつぬぶむる]$/u
+const NOUN_END = /[\u4E00-\u9FFF\u30A0-\u30FF0-9０-９A-Za-z々]$/u
 
-/** 見出しの品詞から見て、別の品詞に見える訳語。 */
+/** 見出しの品詞から見て、別の品詞に見える訳語（先頭の訳語も見る）。 */
 function looksOtherPos(pos, gloss) {
   const text = core(gloss)
   if (!text) return false
-  if (pos === '動') return NOUN_END.test(text) || (ADJECTIVE_END.test(text) && !VERB_END.test(text))
-  if (pos === '名') return /(な|的な)$/u.test(text) || (VERB_END.test(text) && !/[゠-ヿ]$/u.test(text))
-  if (pos === '形') return NOUN_END.test(text)
+  // 動詞の訳語は、動詞の終わり方（う段）で終わる。
+  if (pos === '動') return !VERB_END.test(text)
+  // 名詞のカードに、動詞・形容詞の終わり方の訳語がある。
+  if (pos === '名') return VERB_END.test(text) || /(な|の)$/u.test(text)
+  // 形容詞のカードに、名詞の終わり方や「〜する・〜させる」の訳語がある。
+  if (pos === '形') return NOUN_END.test(text) || /(する|させる|にする)$/u.test(text)
   if (pos === '副') return NOUN_END.test(text) || (VERB_END.test(text) && !/(く|て)$/u.test(text))
   return false
 }

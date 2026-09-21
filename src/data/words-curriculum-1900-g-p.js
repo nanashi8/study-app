@@ -80,7 +80,7 @@ Mrs.	名	4	〜さん・〜先生（既婚女性への敬称）	Mrs. Lee welcomed
 Mt.	名	4	山（Mountの略）	Mt. Fuji is visible from the train today.	今日は電車から富士山が見える。	mountain または地名の前の Mount を短く書く略記。	地理	/ˈmaʊnt/
 mummy	名	pre2	ミイラ	The museum displayed an ancient Egyptian mummy.	博物館は古代エジプトのミイラを展示していた。	ミイラの意味はペルシャ語 mum（ろう）をアラビア語などを経て取り入れた語。母を呼ぶ mummy とは別系統。	歴史
 musical	名	3	ミュージカル・音楽劇	Our class performed a short musical.	私たちのクラスは短いミュージカルを上演した。	music（音楽）＋-al（〜に関する）が名詞化し、歌と劇を組み合わせた作品を表す。	芸術
-Muslim	名	pre2	イスラム教徒・イスラム教の	The museum worked with Muslim community leaders.	博物館はイスラム教徒の地域指導者と協力した。	アラビア語 muslim（神に身を委ねる人）を英語が取り入れた語。	宗教
+Muslim	名	pre2	イスラム教徒・イスラム教の(形)	The museum worked with Muslim community leaders.	博物館はイスラム教徒の地域指導者と協力した。	アラビア語 muslim（神に身を委ねる人）を英語が取り入れた語。	宗教
 myself	代	3	私自身を・私自身で	I made this bag myself.	私はこのかばんを自分で作った。	my（私の）＋self（自身）の複合語。	機能語
 nationality	名	2	国籍・民族的所属	The form asks for your nationality.	その用紙はあなたの国籍を尋ねている。	national（国の）＋状態を表す -ity から、「どの国に属するか」を表す。	社会
 newspaper	名	4	新聞	The local newspaper reported the election results.	地元紙は選挙結果を報じた。	news（ニュース）＋paper（紙・刊行物）の複合語。	メディア

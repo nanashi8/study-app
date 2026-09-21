@@ -15,7 +15,7 @@ alive	形	4	生きている・活気がある	The small plant was still alive af
 alphabet	名	3	アルファベット・文字体系	Children learned the Greek alphabet in class.	子どもたちは授業でギリシャ文字を学んだ。	ギリシャ文字の最初の二字 alpha と beta を組み合わせた語。	言語
 ambulance	名	3	救急車	An ambulance arrived within five minutes.	救急車が5分以内に到着した。	ラテン語 ambulare（歩く・移動する）につながり、移動式の病院を経て救急車を指すようになった。	医学
 America	名	5	アメリカ	My aunt moved to America last year.	私のおばは昨年アメリカへ移住した。	探検家 Amerigo Vespucci の名をラテン語化した America が大陸名として使われた。	地理
-American	形	3	アメリカの・アメリカ人	She studies American history at college.	彼女は大学でアメリカ史を学んでいる。	America に「〜の人・〜の」を表す -an が付いた語。	地理
+American	形	3	アメリカの・アメリカ人(名)	She studies American history at college.	彼女は大学でアメリカ史を学んでいる。	America に「〜の人・〜の」を表す -an が付いた語。	地理
 angry	形	3	怒っている	He was angry about the unfair decision.	彼はその不公平な決定に腹を立てていた。	anger（怒り）に、性質を表す -y が付いて「怒りを感じている」を表す。	心理
 ant	名	4	アリ	An ant carried a crumb across the path.	一匹のアリが小道を横切ってパンくずを運んだ。	古英語 æmette にさかのぼるゲルマン系の語。	自然
 antibiotic	名	pre2	抗生物質	The doctor prescribed an antibiotic for the infection.	医師はその感染症に抗生物質を処方した。	anti-（反対する）＋bio-（生命）＋-tic から、微生物の増殖を抑える物質を表す。	医学
@@ -28,7 +28,7 @@ archaeology	名	pre1	考古学	Archaeology reveals how ancient people lived.	考
 arithmetic	名	2	算数・算術	Mental arithmetic helps students calculate quickly.	暗算は生徒が素早く計算するのに役立つ。	ギリシャ語 arithmos（数）からできた語で、数を扱う計算を表す。	数学
 arouse	動	2	呼び起こす・刺激する	The discovery aroused public interest.	その発見は世間の関心を呼び起こした。	a-（〜へ）＋rouse（目覚めさせる）から、感情や反応を起こす意味へ広がった。	心理
 arts and crafts	名	5	図画工作・美術工芸	We made paper animals in arts and crafts class.	図画工作の授業で紙の動物を作った。	arts（芸術活動）と crafts（手で作る工芸）を and で結んだ教科名の定型表現。	教育	/ˌɑːrts ən ˈkræfts/
-Asian	形	3	アジアの・アジア人	The festival introduces several Asian cultures.	その祭りはいくつかのアジア文化を紹介する。	地名 Asia に「〜の人・〜の」を表す -an が付いた語。	地理
+Asian	形	3	アジアの・アジア人(名)	The festival introduces several Asian cultures.	その祭りはいくつかのアジア文化を紹介する。	地名 Asia に「〜の人・〜の」を表す -an が付いた語。	地理
 asteroid	名	pre2	小惑星	The telescope detected a small asteroid.	その望遠鏡は小さな小惑星を捉えた。	ギリシャ語 aster（星）＋-oid（〜のようなもの）から、「星のように見える天体」を表す。	科学
 astronaut	名	3	宇宙飛行士	The astronaut repaired equipment outside the station.	その宇宙飛行士は宇宙ステーションの外で装置を修理した。	ギリシャ語 astro-（星）＋naut（船乗り）から、「星の間を進む人」を表す。	科学
 astronomy	名	2	天文学	Astronomy explains the motion of planets.	天文学は惑星の運動を説明する。	ギリシャ語 astron（星）＋nomos（法則・秩序）から、天体の規則を研究する学問を表す。	学問
@@ -75,7 +75,7 @@ census	名	pre2	国勢調査・人口調査	The census is conducted every five y
 cereal	名	pre2	穀物・シリアル食品	She eats cereal with milk for breakfast.	彼女は朝食に牛乳をかけたシリアルを食べる。	ローマ神話の穀物の女神 Ceres の名に由来する。	食・生活
 chef	名	4	料理長・料理人	The chef prepared a seasonal menu.	料理人は季節の献立を用意した。	フランス語 chef（頭・長）から、厨房を率いる料理長を表すようになった。	料理
 China	名	5	中国	Tea was brought from China centuries ago.	茶は何世紀も前に中国から伝えられた。	古代王朝 Qin の名と関連するとされ、サンスクリット語やペルシャ語を経て欧州語に入った。	地理
-Chinese	形	3	中国の・中国語・中国人	He is learning Chinese at school.	彼は学校で中国語を学んでいる。	China に出身・言語を表す -ese が付いた語。	言語
+Chinese	形	3	中国の・中国語(名)・中国人(名)	He is learning Chinese at school.	彼は学校で中国語を学んでいる。	China に出身・言語を表す -ese が付いた語。	言語
 chip	名	2	小片・チップ・半導体素子	A tiny chip controls the device.	小さな半導体チップがその装置を制御する。	chip（削り取った小片）から、薄い食品や小型の半導体素子へ意味が広がった。	技術
 Christmas	名	4	クリスマス	Our family has dinner together at Christmas.	私たちの家族はクリスマスに一緒に夕食をとる。	Christ（キリスト）＋Mass（ミサ）の複合語。	宗教
 classmate	名	5	同級生・クラスメート	My classmate lent me a notebook.	同級生が私にノートを貸してくれた。	class（学級）＋mate（仲間）の複合語。	家族・人
@@ -119,7 +119,7 @@ encyclopedia	名	pre2	百科事典	The encyclopedia explains the topic with maps
 entrepreneur	名	2	起業家	The young entrepreneur opened a repair service.	その若い起業家は修理サービスを始めた。	フランス語 entreprendre（引き受ける・企てる）から、事業を起こす人を表す。	ビジネス
 erect	動	pre1	建てる・直立させる	Workers erected a temporary bridge.	作業員は仮設の橋を建てた。	ラテン語 e-（外へ）＋regere（まっすぐにする）から、「立てる」を表す。	建築
 ethic	名	2	倫理・道徳原則	A strong work ethic helped the team succeed.	強い勤労倫理がチームの成功を支えた。	ギリシャ語 ethos（慣習・性格）から、人の行動を導く原則を表す。	社会
-European	形	4	ヨーロッパの・ヨーロッパ人	The museum displays European paintings.	その博物館はヨーロッパの絵画を展示している。	Europe に「〜の人・〜の」を表す -an が付いた語。	地理
+European	形	4	ヨーロッパの・ヨーロッパ人(名)	The museum displays European paintings.	その博物館はヨーロッパの絵画を展示している。	Europe に「〜の人・〜の」を表す -an が付いた語。	地理
 ever	副	3	これまでに・いつでも	Have you ever seen the northern lights?	これまでにオーロラを見たことがありますか。	古英語 aefre（いつでも）にさかのぼる副詞。	副詞
 everybody	代	4	みんな・だれもが	Everybody received a copy of the guide.	全員が案内書を一部ずつ受け取った。	every（すべての）＋body（人）の複合語。	機能語
 exciting	形	5	わくわくさせる・刺激的な	The final match was exciting until the end.	決勝戦は最後までわくわくする展開だった。	excite（興奮させる）＋-ing から、感情を起こす物事の性質を表す。	心理
@@ -136,7 +136,7 @@ fishing	名	4	釣り・漁業	We went fishing early in the morning.	私たちは
 flesh	名	pre1	肉・果肉	The peach has soft yellow flesh.	その桃は柔らかい黄色の果肉を持つ。	古英語 flaesc にさかのぼり、皮や骨に対する柔らかい肉の部分を表す。	医学
 flock	名	2	鳥や羊の群れ	A flock of birds crossed the evening sky.	鳥の群れが夕空を横切った。	古英語 flocc（群れ）に由来する集合名詞。	自然
 flush	動	2	水で流す・赤くなる	Flush the pipe with clean water.	その管をきれいな水で洗い流してください。	「水を勢いよく流す」と「顔が赤くなる」には異なる語史が重なっており、現在は同じ綴りで使われる。	動作・行為
-folk	名	pre2	人々・民間の	Local folk shared stories about the mountain.	地元の人々はその山についての話を語った。	古英語 folc（人々・民衆）にさかのぼる語。	社会
+folk	名	pre2	人々・民間の(形)	Local folk shared stories about the mountain.	地元の人々はその山についての話を語った。	古英語 folc（人々・民衆）にさかのぼる語。	社会
 forever	副	pre2	永遠に・ずっと	The decision changed the town forever.	その決定は町を永遠に変えた。	for（〜の間）＋ever（いつまでも）の結び付きからできた語。	副詞
 format	名	pre2	形式・書式	Save the image in a common file format.	画像を一般的なファイル形式で保存してください。	ラテン語 forma（形）をもとにしたフランス語 format から、寸法や形式を表すようになった。	情報
 formation	名	pre2	形成・編成・構造	Cloud formation depends on temperature and moisture.	雲の形成は気温と水分に左右される。	form（形作る）＋-ation（過程・結果）から、「形ができること」を表す。	科学
