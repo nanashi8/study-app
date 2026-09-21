@@ -1,0 +1,175 @@
+goddess	god	名	神
+N	god	goddess	男性と女性を言い分ける組で、取り違えにくい
+N	goodness	wellness	別意
+U	governance	government	government は「政府」。governance は「統治・管理のしかた」（組織の運営方法）
+N	government	governor	人物
+graduate	graduation	名	卒業・卒業式
+N	graduate	graduation	人物
+N	grave	gravitational	別意
+grocery	grocer	名	食料雑貨商
+N	grocer	grocery	人物
+hang	hanger	名	ハンガー・洋服掛け
+N	hardness	hardship	別意
+N	harmed	harmful	別意
+N	harmful	harmless	反対
+N	harmed	harmless	別意
+N	harmonization	harmony	別意
+N	height	highness	別意
+heir	heiress	名	女性の相続人
+N	heir	heiress	男性と女性を言い分ける組で、取り違えにくい
+host	hostess	名	女主人・（パーティーの）ホステス役
+N	host	hostess	男性と女性を言い分ける組で、取り違えにくい
+U	humanity	humankind	humanity は「人類」のほか「人間性・思いやり」。humankind は「人類」だけを言う
+N	humanism	humanity	別意
+N	identical	identifiable	別意
+U	identification	identity	identity は「正体・身元・自分らしさ」。identification は「身元の確認・身分証明書」（ID はこの略）
+N	idiocy	idiot	人物
+image	imagery	名	（詩や絵の）イメージ・比喩表現・画像
+N	image	imagery	別意
+U	imaginable	imaginary	imaginary は「架空の・想像上の」（実在しない）。imaginable は「想像できる（限りの）」（every ... imaginable＝考えられるあらゆる〜）
+N	immigrant	immigration	人物
+import	importer	名	輸入業者・輸入国
+N	importation	importer	人物
+U	importance	importation	importance は「重要性」。importation は「輸入」（かたい言い方）で、つづりが似ているので注意
+U	impressionable	impressive	impressive は「印象的な・見事な」。impressionable は「感化されやすい」（若者などが影響を受けやすい）
+U	inaction	inactivity	inaction は「何もしないこと・無策」（すべきことをしない）。inactivity は「不活発・運動不足」（動いていない状態）
+N	industrialization	industry	別意
+N	injured	injurious	別意
+N	intense	intensified	別意
+U	intent	intention	intention は「意図・つもり」（ふつうの語）。intent も「意図」だが、法律などのかたい言い方（with intent to 〜するつもりで）
+intern	internship	名	実習・インターンシップ
+N	intern	internship	人物
+N	invention	inventiveness	別意
+journal	journalist	名	記者・ジャーナリスト
+journal	journalism	名	報道・ジャーナリズム
+N	journal	journalist	人物
+N	journal	journalism	別意
+N	justice	justification	別意
+N	known	knowledgeable	別意
+N	labor	laborer	人物
+N	learner	learning	人物
+lecture	lecturer	名	講師・講演者
+N	lecture	lecturer	人物
+liberal	liberalism	名	自由主義
+U	liberation	liberty	liberty は「自由」（権利としての自由）。liberation は「解放」（縛りから自由にすること）
+N	lighting	lightness	別意
+literature	literate	形	読み書きができる
+U	literary	literate	literary は「文学の」。literate は「読み書きができる」（名詞は literacy＝読み書き能力）
+U	literacy	literature	literature は「文学・文献」。literacy は「読み書き能力」（computer literacy＝コンピューターを使う力）
+life	livelihood	名	生計・暮らし
+N	livable	lively	別意
+N	lovable	loving	別意
+N	magnet	magnetism	別意
+P	major	動	（major in で）専攻する
+manner	manners	名	作法・行儀
+U	manner	manners	manner は「方法・やり方・態度」。複数形の manners は「作法・行儀」
+N	material	materialism	別意
+U	maxim	maximum	maximum は「最大（限）」。maxim は「格言・金言」で、つづりが似ているので注意
+N	maximization	maximum	別意
+N	mechanic	mechanism	人物
+N	mechanic	mechanization	人物
+U	medical	medicinal	medical は「医学の・医療の」。medicinal は「薬効のある・薬用の」（medicinal herbs＝薬草）
+N	military	militarized	別意
+N	minimalism	minimum	別意
+minister	ministry	名	省・庁・聖職
+N	minister	ministry	人物
+N	mixer	mixture	別意
+N	mobility	mobilization	別意
+moderate	moderator	名	司会者・仲裁者
+modify	modifier	名	修飾語・変更する人
+monarch	monarchy	名	君主制・王政
+N	monarch	monarchy	人物
+N	motivated	motivational	別意
+U	motivation	motive	motive は「動機」（行動の理由、とくに犯罪の）。motivation は「やる気・動機づけ」
+N	movable	moving	別意
+negotiate	negotiator	名	交渉者
+nonsense	nonsensical	形	無意味な・ばかげた
+N	nutrient	nutrition	別意
+nutrition	nutritionist	名	栄養士
+N	nutrition	nutritionist	人物
+N	nutrient	nutritionist	人物
+R	govern	governess	まれ
+R	grab	graber	非語
+R	grab	grabber	まれ
+R	gradual	gradualist	まれ
+R	gradual	gradualism	まれ
+R	grain	grainery	非語
+R	grant	grantor	まれ
+R	grave	graver	同音
+R	grave	gravity	同音
+R	grave_2	graver	変化
+R	greedy	greedier	変化
+R	grip	gripper	まれ
+R	guardian	guardianship	まれ
+R	handy	handier	変化
+R	harvest	harvester	まれ
+R	heal	healer	まれ
+R	holy	holier	変化
+R	honor	honoree	まれ
+R	host	hoster	非語
+R	host	hostage	遠縁
+R	household	householder	まれ
+R	humid	humidor	まれ
+R	hut	hutter	非語
+R	illusion	illusionist	まれ
+R	illusion	illusionism	まれ
+R	imitate	imitator	まれ
+R	imperial	imperialist	まれ
+R	industry	industrier	非語
+R	informal	inform	遠縁
+R	inject	injector	まれ
+R	inquire	inquirer	まれ
+R	intern	internist	まれ
+R	intern	internee	まれ
+R	international	internationalist	まれ
+R	international	internationalism	まれ
+R	issue	issuer	まれ
+R	jail	jailer	まれ
+R	kindly	kindle	別語
+R	landscape	landscaper	まれ
+R	lasting	lastinger	非語
+R	league	leaguer	非語
+R	lean_2	leaner	変化
+R	lively	livelier	変化
+R	log	logger	まれ
+R	log	logic	別語
+R	logic	logician	まれ
+R	logic	log	別語
+R	loose	looser	変化
+R	loving	lovinger	非語
+R	loyal	loyalist	まれ
+R	lung	lunger	非語
+R	magnify	magnifier	まれ
+R	mall	maller	非語
+R	mall	mallery	非語
+R	mammal	mammalian	まれ
+R	manner	man	別語
+R	manner	mannerist	まれ
+R	manner	mannerism	まれ
+R	marine	mariner	まれ
+R	mass	masser	非語
+R	mass	massery	非語
+R	material	materialist	まれ
+R	material	materiality	まれ
+R	merit	meritor	非語
+R	method	methodist	非語
+R	method	methodism	非語
+R	mild	milder	変化
+R	mill	miller	まれ
+R	mill	million	別語
+R	mobile	mobiler	非語
+R	mode	moder	非語
+R	mode	modify	遠縁
+R	modify	mode	遠縁
+R	mold_2	molder	同音
+R	monarch	monarchist	まれ
+R	motivate	motivator	まれ
+R	motor	motorist	まれ
+R	native	nativist	まれ
+R	native	nativism	まれ
+R	net	netter	非語
+R	neutral	neutralist	まれ
+R	neutral	neutralism	まれ
+N	importance	importer	人物
+N	liberalism	liberty	別意
+U	life	livelihood	life は「生命・生活・人生」。livelihood は「生計・暮らしの手段」（生活費を得る方法）

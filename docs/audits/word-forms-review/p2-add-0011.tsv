@@ -1,0 +1,152 @@
+object	objection	名	異議・反対
+U	object	objection	object は名詞で「物・目的」、動詞で「反対する」。objection は「反対・異議」（動詞 object の名詞）
+N	object	objectivity	別意
+N	occupational	occupied	別意
+odd	odds	名	見込み・確率・勝ち目（the odds are that ...＝おそらく…）
+N	offender	offense	人物
+N	opening	openness	別意
+N	opener	opening	別意
+N	opponent	opposition	人物
+N	optimism	optimist	人物
+N	organic	organized	別意
+N	organic	organizational	別意
+N	organizational	organized	別意
+orphan	orphanage	名	孤児院
+N	orphan	orphanage	人物
+N	painful	painless	反対
+panel	panelist	名	パネリスト・討論者
+N	panel	panelist	人物
+U	partially	partly	partly は「一部は・ある程度は」（理由や原因の一部）。partially は「部分的に・不完全に」（partially cooked＝半ば火が通った）
+partner	partnership	名	提携・協力関係
+N	partner	partnership	人物
+N	passage	past	別意
+percent	percentage	名	割合・百分率
+N	performance	performer	人物
+U	personable	personal	personal は「個人の・私的な」。personable は「感じのよい・人好きのする」（見た目や態度が）
+N	persuasion	persuasiveness	別意
+pitch	pitcher	名	投手・ピッチャー
+U	pleasant	pleased	pleasant は物事が「快い・感じのよい」。pleased は人が「満足した・喜んだ」
+N	portrait	portrayal	別意
+U	practicable	practical	practical は「実際的な・実用的な」。practicable は「実行できる・実現可能な」（計画などが）
+N	praised	praiseworthy	別意
+U	priceless	pricey	priceless は「値段がつけられないほど貴重な」（とても価値がある）。pricey は「値段が高い」（くだけた言い方）
+N	imprisonment	prisoner	人物
+U	procedure	process	process は「過程・工程」（物事が進む流れ）。procedure は「手順・手続き」（決まったやり方）
+N	producer	production	人物
+N	producer	productivity	人物
+program	programmer	名	プログラマー
+program	programming	名	プログラミング・番組編成
+N	program	programmer	人物
+N	program	programming	別意
+U	progress	progression	progress は「進歩・前進」（よくなっていくこと）。progression は「進行・移り変わり」（順に進むこと）
+project	projector	名	プロジェクター・映写機
+promote	promoter	名	主催者・推進者・プロモーター
+N	protection	protector	人物
+protest	protester	名	抗議する人・デモの参加者
+N	protest	protester	人物
+provide	provider	名	提供者・（インターネットの）プロバイダー
+U	publication	publicity	publicity は「宣伝・世間の注目」。publication は「出版（物）・公表」
+N	publicity	publisher	人物
+purify	purifier	名	浄化装置（air purifier＝空気清浄機）
+rank	ranking	名	順位・ランキング
+P	rank	動	順位をつける・（〜位に）位置する
+N	rank	ranking	別意
+N	realism	reality	別意
+N	realist	reality	人物
+U	reality	realization	reality は「現実」。realization は「実現」や「気づくこと」（realize の名詞）
+U	reality	realty	realty は「不動産」（主にアメリカ英語で real estate と同じ）。reality とつづりが似ているので注意
+N	receiver	reception	人物
+U	receiver	recipient	recipient は「受け取る人・受賞者」（かたい語）。receiver は「受信機・受話器」や「受け手」
+reception	receptionist	名	受付係
+N	reception	receptionist	人物
+N	reception	recipient	別意
+N	receptionist	recipient	人物
+N	referee	reference	人物
+refuge	refugee	名	難民・避難民
+N	refuge	refugee	人物
+N	regulation	regulator	人物
+U	reliable	reliant	reliable は「信頼できる」（頼りになる）。reliant は「頼っている・依存している」（reliant on 〜に頼っている）
+remain	remains	名	残り・遺跡・遺体
+repayment	repay	動	返済する・（恩などに）報いる
+N	replica	replication	別意
+N	representation	representative	人物
+U	reservation	reserve	reservation は「予約」や「ためらい・疑念」。reserve は「予備・蓄え・保護区」や「控えめな態度」
+N	residence	resident	人物
+N	response	responsibility	別意
+U	responsible	responsive	responsible は「責任がある」。responsive は「すぐ反応する・敏感な」（要望などにすばやく応える）
+retail	retailer	名	小売業者
+N	retail	retailer	人物
+route	router	名	ルーター（ネットワーク機器）
+N	route	router	別意
+scan	scanner	名	スキャナー
+N	scholar	scholarship	人物
+sculpture	sculptor	名	彫刻家
+N	sculptor	sculpture	人物
+R	object	objector	まれ
+R	occupy	occupier	まれ
+R	odd	odder	変化
+R	orbit	orbiter	まれ
+R	outdoor	outdo	別語
+R	outlet	out	複合
+R	pace	pacer	まれ
+R	pace	pacify	別語
+R	package	packager	まれ
+R	past	paster	非語
+R	past	pastor	別語
+R	past	pasture	別語
+R	pill	piller	非語
+R	plural	pluralism	まれ
+R	political	polite	別語
+R	pollute	polluter	まれ
+R	pose	poser	まれ
+R	possess	possessor	まれ
+R	posture	post	遠縁
+R	prescribe	prescriber	まれ
+R	preserve	preserver	まれ
+R	prime	primer	まれ
+R	prime	primate	遠縁
+R	prior	pry	別語
+R	prospect	prospector	まれ
+R	provide	providian	非語
+R	punish	punisher	まれ
+R	pursue	pursuer	まれ
+R	qualify	qualifier	まれ
+R	quit	quitter	まれ
+R	race_2	racer	同音
+R	radical	radicalism	まれ
+R	raise	raiser	まれ
+R	raise	raisor	非語
+R	rank	ranker	まれ
+R	receiver	receivership	まれ
+R	recession	recess	遠縁
+R	recruit	recruiter	まれ
+R	refresh	refresher	まれ
+R	rejection	rejectionist	まれ
+R	relative	relativism	まれ
+R	relieve	reliever	まれ
+R	religion	religionist	まれ
+R	reptile	reptilian	まれ
+R	rescue	rescuer	まれ
+R	reserve	reservist	まれ
+R	resign	resignee	非語
+R	resist	resistor	まれ
+R	restore	restorer	まれ
+R	retain	retainer	まれ
+R	retrieve	retriever	まれ
+R	revision	revisionist	まれ
+R	revision	revisionism	まれ
+R	revival	revivalist	まれ
+R	rid	rider	別語
+R	rid	ridder	非語
+R	riddle	riddler	まれ
+R	risky	riskier	変化
+R	rotate	rot	別語
+R	rough	rougher	変化
+R	royal	royalist	まれ
+R	scream	screamer	まれ
+R	search	searcher	まれ
+R	secretly	secrete	遠縁
+N	receipt	receptionist	人物
+N	receiver	receptionist	別意
+U	remainder	remains	remainder は「残り・余り」（割り算の余りにも使う）。remains は「残り・遺跡・遺体」（複数形で使う）
+N	pitch	pitcher	人物

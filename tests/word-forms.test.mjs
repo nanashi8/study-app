@@ -130,9 +130,12 @@ test('使い分けの区別がある関連語には、使い分けを参考に�
   // 類義語の行にも添える（happy と glad）。
   const glad = wordRelationsFor(getWord('happy')).synonyms.find((item) => item.w === 'glad')
   assert.match(glad.usageNote, /名詞の前/)
-  // ほかの欄に出ない相手は「使い分けに注意する語」に出す（percent と percentage）。
-  const partners = wordRelationsFor(getWord('percent')).usagePartners.map((item) => item.word)
-  assert.ok(partners.includes('percentage'))
+  // ほかの欄に出ない相手は「使い分けに注意する語」に出す（grateful と thankful）。
+  const partners = wordRelationsFor(getWord('grateful')).usagePartners.map((item) => item.word)
+  assert.ok(partners.includes('thankful'))
+  // 同じ品詞の派生語に出る相手は、その行に使い分けを添える（percent と percentage）。
+  const percentage = sameFormsFor(getWord('percent')).find((word) => word.word === 'percentage')
+  assert.match(percentage.usageNote, /割合/)
   const component = read('src/components/WordRelations.jsx')
   assert.match(component, /export function UsagePartnerSection/)
   assert.match(component, /data-word-usage-note/)
