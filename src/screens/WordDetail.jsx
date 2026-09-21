@@ -17,11 +17,13 @@ import { UsageGuideCards } from '../components/UsageGuideCards.jsx'
 import { LearningStatusBars } from '../components/LearningStatusBars.jsx'
 import { MeaningText } from '../components/MeaningText.jsx'
 import {
+  AntonymSection,
   ConfusableSection,
   IdiomEquivalentSection,
   LoanwordHint,
-  RefChips,
+  RelatedWordList,
   SynonymSection,
+  WordFormSection,
 } from '../components/WordRelations.jsx'
 import { Card, Button, Chip, IconButton } from '../components/ui.jsx'
 import { Bookmark, BookmarkFilled, Link, Lightbulb } from '../components/Icons.jsx'
@@ -176,7 +178,7 @@ export function WordDetailScreen() {
               {word.derivatives?.length > 0 && (
                 <div>
                   <div className="mb-1.5 text-[11px] font-extrabold uppercase tracking-wide text-emerald-500">派生語</div>
-                  <RefChips items={word.derivatives} tone="der" onWord={openWord} />
+                  <RelatedWordList items={word.derivatives} tone="der" onWord={openWord} />
                 </div>
               )}
             </Card>
@@ -191,17 +193,19 @@ export function WordDetailScreen() {
           {/* 入試・英検で混同しやすい語の比較と推奨表現 */}
           <UsageGuideCards guides={word.usageGuides} />
 
+          {/* 品詞がちがうだけで同じ語から来た形。発音を聞いて、その語の辞書ページへ移れる。 */}
+          {relations.forms.length > 0 && (
+            <Card className="p-4">
+              <WordFormSection items={relations.forms} onWord={openWord} />
+            </Card>
+          )}
+
           {/* 意味が同じ・近い語、同じ意味の熟語、反対・対照の語 */}
-          {(relations.synonyms.length > 0 || relations.idioms.length > 0 || word.antonyms?.length > 0) && (
+          {(relations.synonyms.length > 0 || relations.idioms.length > 0 || relations.antonyms.length > 0) && (
             <Card className="space-y-3 p-4">
               <SynonymSection items={relations.synonyms} onWord={openWord} />
               <IdiomEquivalentSection phrases={relations.idioms} />
-              {word.antonyms?.length > 0 && (
-                <div>
-                  <div className="mb-1.5 text-xs font-extrabold tracking-wide text-rose-500">反対・対照の語</div>
-                  <RefChips items={word.antonyms} tone="ant" onWord={openWord} />
-                </div>
-              )}
+              <AntonymSection items={relations.antonyms} onWord={openWord} />
             </Card>
           )}
 

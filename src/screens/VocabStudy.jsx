@@ -25,10 +25,12 @@ import { PronunciationNote } from '../components/PronunciationNote.jsx'
 import { exampleSpeechAllowed } from '../lib/speechGuard.js'
 import { MeaningText } from '../components/MeaningText.jsx'
 import {
+  AntonymSection,
   ConfusableSection,
   IdiomEquivalentSection,
   LoanwordHint,
   SynonymSection,
+  WordFormSection,
 } from '../components/WordRelations.jsx'
 import { Button, Chip } from '../components/ui.jsx'
 import { ArrowRight, Lightbulb } from '../components/Icons.jsx'
@@ -524,11 +526,19 @@ export function VocabStudyScreen() {
                 </div>
               )}
 
-              {/* 意味が同じ・近い語と、同じ意味の熟語。辞書にある語はタップでその語の辞書ページへ。 */}
-              {(relations.synonyms.length > 0 || relations.idioms.length > 0) && (
+              {/* 品詞がちがうだけで同じ語から来た形。発音を聞いて、その語の辞書ページへ移れる。 */}
+              {relations.forms.length > 0 && (
+                <div className="rounded-2xl bg-white p-4 ring-1 ring-emerald-100">
+                  <WordFormSection items={relations.forms} onWord={openRelatedWord} showPhonetic={settings.showPhonetic} />
+                </div>
+              )}
+
+              {/* 意味が同じ・近い語、同じ意味の熟語、反対・対照の語。辞書にある語はタップでその語の辞書ページへ。 */}
+              {(relations.synonyms.length > 0 || relations.idioms.length > 0 || relations.antonyms.length > 0) && (
                 <div className="space-y-3 rounded-2xl bg-white p-4 ring-1 ring-brand-100">
-                  <SynonymSection items={relations.synonyms} onWord={openRelatedWord} />
+                  <SynonymSection items={relations.synonyms} onWord={openRelatedWord} showPhonetic={settings.showPhonetic} />
                   <IdiomEquivalentSection phrases={relations.idioms} />
+                  <AntonymSection items={relations.antonyms} onWord={openRelatedWord} showPhonetic={settings.showPhonetic} />
                 </div>
               )}
 

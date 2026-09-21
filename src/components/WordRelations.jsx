@@ -1,7 +1,10 @@
 import { getLevel } from '../data/levels.js'
 import { getWord } from '../data/vocab.js'
 import { ArrowRight } from './Icons.jsx'
+import { isAmbiguousSpeechText } from '../lib/speechGuard.js'
+import { FORM_POS_LABELS } from '../lib/wordRelations.js'
 import { MeaningText } from './MeaningText.jsx'
+import { SpeakButton } from './SpeakButton.jsx'
 import { Chip, cx } from './ui.jsx'
 
 // 単語カードの裏と辞書ページで使う、その語と組にして押さえたい語の表示部品。
@@ -10,42 +13,78 @@ import { Chip, cx } from './ui.jsx'
 const toId = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '')
 
 const TONES = {
-  syn: 'bg-brand-50 text-brand-700 ring-brand-100',
-  ant: 'bg-rose-50 text-rose-600 ring-rose-100',
-  der: 'bg-emerald-50 text-emerald-700 ring-emerald-100',
+  syn: { title: 'text-brand-500', row: 'divide-brand-50' },
+  ant: { title: 'text-rose-500', row: 'divide-rose-50' },
+  der: { title: 'text-emerald-600', row: 'divide-emerald-50' },
+  form: { title: 'text-emerald-600', row: 'divide-emerald-50' },
 }
 
-// 類義語・反対語・派生語のチップ。items=[{w,m,id?}]。辞書にある語はタップでその語へ。
+// 行に並べる語を、辞書の見出し語（あれば）とそろえる。
+// items は類義語・反対語・派生語欄の {w,m,id?} か、辞書の語そのもの（ほかの品詞の形）。
 // id があるのは同じつづりの別の語を指す項目で、つづりで引くと元の語へ飛んでしまうもの。
-export function RefChips({ items, tone, onWord }) {
-  const cls = TONES[tone] ?? TONES.syn
+function toRows(items) {
+  return items.map((item) => {
+    if (item.word && item.pos) return { text: item.word, meaning: item.meaning, entry: item, pos: item.pos }
+    const entry = getWord(item.id ?? toId(item.w)) ?? null
+    return { text: item.w, meaning: item.m || entry?.meaning || '', entry, pos: null }
+  })
+}
+
+/**
+ * 組にして押さえたい語の一覧。1行に発音ボタン・語・発音記号・意味・習う級を並べ、辞書にある語はタップでその語へ。
+ * 発音ボタンは一覧ごとにまとまり（data-speech-group）、再生パネルの前後で同じ一覧の語へ移れる。
+ */
+export function RelatedWordList({ items, tone = 'syn', onWord, showPhonetic = true }) {
+  const rows = toRows(items)
+  const divide = (TONES[tone] ?? TONES.syn).row
   return (
-    <div className="flex flex-wrap gap-1.5">
-      {items.map((it, i) => {
-        const exists = getWord(it.id ?? toId(it.w))
-        const level = exists ? getLevel(exists.level) : null
+    <ul className={cx('divide-y', divide)} data-speech-group>
+      {rows.map((row, index) => {
+        const level = row.entry ? getLevel(row.entry.level) : null
+        const canOpen = Boolean(row.entry && onWord)
         const body = (
           <>
-            <span className="font-extrabold">{it.w}</span>
-            {it.m && <span className="font-bold opacity-70"><MeaningText>{it.m}</MeaningText></span>}
-            {level && (
-              <span className="rounded-full bg-white/70 px-1 text-[9px] font-extrabold leading-tight ring-1 ring-current/20">
-                {level.label}
-              </span>
-            )}
-            {exists && onWord && <ArrowRight size={11} className="opacity-70" />}
+            <div className="min-w-0 flex-1">
+              <div className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
+                {row.pos && (
+                  <span className="rounded-md bg-emerald-50 px-1.5 py-0.5 text-[10px] font-extrabold text-emerald-700 ring-1 ring-emerald-100">
+                    {FORM_POS_LABELS[row.pos]}
+                  </span>
+                )}
+                <span className="font-display text-base font-extrabold tracking-wide text-ink">{row.text}</span>
+                {showPhonetic && row.entry?.phonetic && (
+                  <span className="text-xs font-bold text-ink/40">{row.entry.phonetic}</span>
+                )}
+                {level && <Chip color={level.color}>{level.label}</Chip>}
+              </div>
+              {row.meaning && (
+                <p className="text-xs font-bold leading-relaxed text-ink/55"><MeaningText>{row.meaning}</MeaningText></p>
+              )}
+            </div>
+            {canOpen && <ArrowRight size={14} className="shrink-0 text-ink/30" />}
           </>
         )
-        const base = 'inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs ring-1'
-        return exists && onWord ? (
-          <button key={i} type="button" onClick={() => onWord(exists.id)} className={cx(base, cls, 'active:opacity-80')}>
-            {body}
-          </button>
-        ) : (
-          <span key={i} className={cx(base, cls)}>{body}</span>
+        return (
+          <li key={`${row.text}-${index}`} className="flex items-center gap-2 py-1.5">
+            {/* 使い方で発音が変わる語はボタンを出さない（SpeakButton）。語の頭をほかの行とそろえる。 */}
+            {isAmbiguousSpeechText(row.text)
+              ? <span className="h-8 w-8 shrink-0" aria-hidden="true" />
+              : <SpeakButton text={row.text} size="sm" title="単語" />}
+            {canOpen ? (
+              <button
+                type="button"
+                onClick={() => onWord(row.entry.id)}
+                className="flex min-w-0 flex-1 items-center gap-2 text-left active:opacity-70"
+              >
+                {body}
+              </button>
+            ) : (
+              <div className="flex min-w-0 flex-1 items-center gap-2">{body}</div>
+            )}
+          </li>
         )
       })}
-    </div>
+    </ul>
   )
 }
 
@@ -53,13 +92,35 @@ function SectionTitle({ className, children }) {
   return <div className={cx('mb-1.5 text-xs font-extrabold tracking-wide', className)}>{children}</div>
 }
 
+/** 品詞がちがうだけで同じ語から来た形（decide なら decision・decisive・decisively）。 */
+export function WordFormSection({ items, onWord, showPhonetic }) {
+  if (!items.length) return null
+  return (
+    <div data-word-forms>
+      <SectionTitle className={TONES.form.title}>ほかの品詞の形</SectionTitle>
+      <RelatedWordList items={items} tone="form" onWord={onWord} showPhonetic={showPhonetic} />
+    </div>
+  )
+}
+
 /** 意味が同じ・近い語。 */
-export function SynonymSection({ items, onWord }) {
+export function SynonymSection({ items, onWord, showPhonetic }) {
   if (!items.length) return null
   return (
     <div data-word-synonyms>
-      <SectionTitle className="text-brand-500">意味が同じ・近い語</SectionTitle>
-      <RefChips items={items} tone="syn" onWord={onWord} />
+      <SectionTitle className={TONES.syn.title}>意味が同じ・近い語</SectionTitle>
+      <RelatedWordList items={items} tone="syn" onWord={onWord} showPhonetic={showPhonetic} />
+    </div>
+  )
+}
+
+/** 意味が反対の語と、対になる語（反意語欄）。 */
+export function AntonymSection({ items, onWord, showPhonetic }) {
+  if (!items.length) return null
+  return (
+    <div data-word-antonyms>
+      <SectionTitle className={TONES.ant.title}>意味が反対・対照の語</SectionTitle>
+      <RelatedWordList items={items} tone="ant" onWord={onWord} showPhonetic={showPhonetic} />
     </div>
   )
 }

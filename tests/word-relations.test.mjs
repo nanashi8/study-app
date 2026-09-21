@@ -99,7 +99,7 @@ test('関連語の欄と台帳は、同じつづりの別の語のうち意味�
 
 test('自作単語には辞書の台帳を当てない', () => {
   const custom = { id: 'tension', word: 'tension', custom: true, meanings: ['緊張'], synonyms: [] }
-  assert.deepEqual(wordRelationsFor(custom), { synonyms: [], idioms: [], confusables: [], loanword: null })
+  assert.deepEqual(wordRelationsFor(custom), { forms: [], synonyms: [], antonyms: [], idioms: [], confusables: [], loanword: null })
 })
 
 test('単語カードの裏と辞書ページは同じ部品で関連語を出す', () => {
