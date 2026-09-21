@@ -184,6 +184,65 @@ export function IdiomEquivalentSection({ phrases }) {
   )
 }
 
+/** 熟語・構文の一覧（種類・見出し・意味）。 */
+function PhraseList({ phrases }) {
+  return (
+    <ul className="mt-2 space-y-1.5">
+      {phrases.map((phrase) => (
+        <li key={phrase.id} className="flex items-start gap-2">
+          <span
+            className="mt-0.5 shrink-0 rounded-md px-1.5 py-0.5 text-[10px] font-extrabold text-white"
+            style={{ backgroundColor: phrase.kind === 'syntax' ? '#8b5cf6' : '#0ea5e9' }}
+          >
+            {phrase.kind === 'syntax' ? '構文' : '熟語'}
+          </span>
+          <div className="min-w-0 flex-1">
+            <p className="font-display text-sm font-extrabold leading-snug text-ink">
+              {phrase.phrase}
+            </p>
+            <p className="text-xs font-bold leading-relaxed text-ink/55">{phrase.meaning}</p>
+          </div>
+        </li>
+      ))}
+    </ul>
+  )
+}
+
+function PhraseListHeading({ label, count }) {
+  return (
+    <div className="flex items-baseline justify-between gap-2">
+      <span className="text-xs font-extrabold text-sky-700">{label}</span>
+      <span className="text-[11px] font-bold text-ink/40">
+        全{count}項目
+      </span>
+    </div>
+  )
+}
+
+/**
+ * その語を含む熟語・構文を省略せず全部と、ほかの品詞の形を使う熟語・構文（decide に対する make a decision）。
+ * 暗記カードの裏と辞書ページで同じ中身を出す。groups は lib/wordPhrases.js の phraseGroupsForWord。
+ */
+export function WordPhraseSection({ word, groups }) {
+  if (!groups.all.length && !groups.viaForms.length) return null
+  return (
+    <div className="space-y-4">
+      {groups.all.length > 0 && (
+        <div data-word-phrases>
+          <PhraseListHeading label={`${word.word} を含む熟語・構文`} count={groups.all.length} />
+          <PhraseList phrases={groups.all} />
+        </div>
+      )}
+      {groups.viaForms.map(({ form, phrases }) => (
+        <div key={form.word} data-word-form-phrases={form.word}>
+          <PhraseListHeading label={`${form.word}（${FORM_POS_LABELS[form.pos]}）を含む熟語・構文`} count={phrases.length} />
+          <PhraseList phrases={phrases} />
+        </div>
+      ))}
+    </div>
+  )
+}
+
 /** つづりが似ていて間違えやすい語。いま見ている語とちがう文字に色をつける。 */
 export function ConfusableSection({ word, items, onWord, showPhonetic = true }) {
   if (!items.length) return null

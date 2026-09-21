@@ -25,12 +25,14 @@ import {
   SynonymSection,
   UsagePartnerSection,
   WordFormSection,
+  WordPhraseSection,
 } from '../components/WordRelations.jsx'
 import { Card, Button, Chip, IconButton } from '../components/ui.jsx'
 import { Bookmark, BookmarkFilled, Link, Lightbulb } from '../components/Icons.jsx'
 import { WordListSheet, useWordInAnyBook } from '../components/WordListSheet.jsx'
 import { summarizeVocabularySrsItems } from '../lib/vocabScheduler.js'
 import { wordRelationsFor } from '../lib/wordRelations.js'
+import { phraseGroupsForWord } from '../lib/wordPhrases.js'
 import { StudyReviewHistory } from '../components/StudyReviewHistory.jsx'
 
 // 辞書の前後（アルファベット順で隣り合う見出し語）。ページをめくる感覚で移動。
@@ -100,6 +102,7 @@ export function WordDetailScreen() {
   const etymologyCards = etymologyCardsForWord(word)
   const etymologyStory = etymologyStoryForWord(word)
   const relations = wordRelationsFor(word)
+  const relatedPhrases = phraseGroupsForWord(word)
   const openWord = (wordId) => navigate('wordDetail', { id: wordId })
 
   return (
@@ -215,6 +218,13 @@ export function WordDetailScreen() {
           {relations.confusables.length > 0 && (
             <Card className="p-4">
               <ConfusableSection word={word} items={relations.confusables} onWord={openWord} />
+            </Card>
+          )}
+
+          {/* その語を含む熟語・構文と、ほかの品詞の形を使う熟語・構文。暗記カードの裏と同じ中身。 */}
+          {(relatedPhrases.all.length > 0 || relatedPhrases.viaForms.length > 0) && (
+            <Card className="p-4">
+              <WordPhraseSection word={word} groups={relatedPhrases} />
             </Card>
           )}
 

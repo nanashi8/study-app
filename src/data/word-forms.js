@@ -723,7 +723,7 @@ export const WORD_FORM_GROUPS = [
   ['fight', 'fighter'],
   ['fill', 'filled', 'full', 'fullness', 'fully'],
   ['filth', 'filthy'],
-  ['fin', 'final', 'finally'],
+  ['final', 'finally'],
   ['finance', 'financial'],
   ['find', 'finding', 'found'],
   ['firm', 'firmly'],
@@ -1989,10 +1989,10 @@ export const WORD_FORM_NOTES = {
 // 規則が拾ったが、同じつづりの別の語の側の形だった組（light「光」と lighten_2「軽くする」）。
 // 別の語は辞書ページの「同じつづりの別の語」から移れるので、ここではまとまりに入れない。
 export const WORD_FORM_HOMOGRAPH_SIDE = [
-  'bind|bound', 'defer|deference', 'engrave|grave', 'engrave|grave_2', 'flat_2|flatten', 'flight_2|fly',
-  'good|well_2', 'grave|gravely', 'lay|lie', 'light_2|lighten', 'light|lighten_2', 'pry_2|prying',
-  'rest_2|restful', 'rest_2|restive', 'sole_2|solely', 'stern_2|sternly', 'success|successive', 'tend_2|tendency',
-  'tend_2|tension', 'testify|testy', 'will|willing',
+  'bind|bound', 'defer|deference', 'engrave|grave', 'engrave|grave_2', 'fin|final', 'flat_2|flatten',
+  'flight_2|fly', 'good|well_2', 'grave|gravely', 'lay|lie', 'light_2|lighten', 'light|lighten_2',
+  'pry_2|prying', 'rest_2|restful', 'rest_2|restive', 'sole_2|solely', 'stern_2|sternly', 'success|successive',
+  'tend_2|tendency', 'tend_2|tension', 'testify|testy', 'will|willing',
 ]
 
 // 辞書に見出しのない形。[もとの見出し語の id, つづり, 品詞, 意味, 発音記号, 意味のずれ方の説明]。

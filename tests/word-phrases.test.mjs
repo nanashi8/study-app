@@ -68,10 +68,12 @@ test('熟語と構文に分けて数えられる', () => {
 test('単語カードは、その語を含む熟語を省略せず全部並べる', () => {
   const source = read('src/screens/VocabStudy.jsx')
   assert.match(source, /phraseGroupsForWord/)
-  assert.match(source, /data-word-phrases/)
-  assert.match(source, /を含む熟語・構文/)
-  assert.match(source, /relatedPhrases\.all\.map/, '一部だけを表示している')
-  assert.doesNotMatch(source, /relatedPhrases\.all\.slice/, '熟語を途中で切っている')
+  assert.match(source, /<WordPhraseSection word=\{word\} groups=\{relatedPhrases\} \/>/)
+  const component = read('src/components/WordRelations.jsx')
+  assert.match(component, /data-word-phrases/)
+  assert.match(component, /を含む熟語・構文/)
+  assert.match(component, /<PhraseList phrases=\{groups\.all\} \/>/, '一部だけを表示している')
+  assert.doesNotMatch(component, /groups\.all\.slice|phrases\.slice/, '熟語を途中で切っている')
 })
 
 test('冠詞は熟語の見出し語として扱わない', () => {

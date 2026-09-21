@@ -77,9 +77,16 @@ for (const word of ALL_WORDS) {
 if (wordsWithPhrases < 700) {
   errors.push(`熟語が付く単語が${wordsWithPhrases}語しかない`)
 }
+// 暗記カードの裏と辞書ページは同じ部品（WordPhraseSection）で、その語を含む熟語を省略せず並べる。
 const studySource = read('src/screens/VocabStudy.jsx')
-if (!studySource.includes('data-word-phrases') || !studySource.includes('relatedPhrases.all.map')) {
-  errors.push('単語カードが、その語を含む熟語を全部並べていない')
+const phraseSectionSource = read('src/components/WordRelations.jsx')
+if (
+  !studySource.includes('<WordPhraseSection word={word} groups={relatedPhrases} />')
+  || !read('src/screens/WordDetail.jsx').includes('<WordPhraseSection word={word} groups={relatedPhrases} />')
+  || !phraseSectionSource.includes('data-word-phrases')
+  || !phraseSectionSource.includes('<PhraseList phrases={groups.all} />')
+) {
+  errors.push('単語カード・辞書ページが、その語を含む熟語を全部並べていない')
 }
 
 // ── 3. 画面の行き来 ────────────────────────────────────────────────

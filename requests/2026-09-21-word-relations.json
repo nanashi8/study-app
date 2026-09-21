@@ -51,21 +51,21 @@
       "text": "辞書ページにも、その語を含む熟語・構文の欄を出す（暗記カードの裏と同じ中身）",
       "population": "辞書ページ（WordDetail）",
       "check": "node --test tests/word-phrase-links.test.mjs",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "phrases-irregular-forms",
       "text": "不規則な変化形（is・was・known・made・born など）でしか現れない熟語・構文を、1件ずつ読んで元の語につなぐ",
       "population": "不規則な変化形を含む熟語・構文の全件",
       "check": "node --test tests/word-phrase-links.test.mjs",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "phrases-via-forms",
       "text": "ほかの品詞の形を使う熟語・構文（decide に対する make a decision）を、元の語の暗記カードの裏と辞書ページから参照できる",
       "population": "ほかの品詞の形を持つ全見出し語",
       "check": "node --test tests/word-phrase-links.test.mjs",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "deployed",
