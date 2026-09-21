@@ -23,6 +23,7 @@ import {
   LoanwordHint,
   RelatedWordList,
   SynonymSection,
+  UsagePartnerSection,
   WordFormSection,
 } from '../components/WordRelations.jsx'
 import { Card, Button, Chip, IconButton } from '../components/ui.jsx'
@@ -196,16 +197,17 @@ export function WordDetailScreen() {
           {/* 品詞がちがうだけで同じ語から来た形。発音を聞いて、その語の辞書ページへ移れる。 */}
           {relations.forms.length > 0 && (
             <Card className="p-4">
-              <WordFormSection items={relations.forms} onWord={openWord} />
+              <WordFormSection items={relations.forms} ownNote={relations.formOwnNote} onWord={openWord} />
             </Card>
           )}
 
           {/* 意味が同じ・近い語、同じ意味の熟語、反対・対照の語 */}
-          {(relations.synonyms.length > 0 || relations.idioms.length > 0 || relations.antonyms.length > 0) && (
+          {(relations.synonyms.length > 0 || relations.idioms.length > 0 || relations.antonyms.length > 0 || relations.usagePartners.length > 0) && (
             <Card className="space-y-3 p-4">
               <SynonymSection items={relations.synonyms} onWord={openWord} />
               <IdiomEquivalentSection phrases={relations.idioms} />
               <AntonymSection items={relations.antonyms} onWord={openWord} />
+              <UsagePartnerSection items={relations.usagePartners} onWord={openWord} />
             </Card>
           )}
 

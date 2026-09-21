@@ -80,13 +80,17 @@ test('辞書に見出しのない形の候補は、載せるか理由をつけ�
   ])
   const candidates = wordFormExtraCandidates(ALL_WORDS, lexicon).map(({ of, word }) => `${of}|${word}`)
   assert.deepEqual(candidates.filter((key) => !decided.has(key)), [], '候補 → WORD_FORM_EXTRAS に意味つきで載せるか、WORD_FORM_EXTRA_SKIPPED に理由を書く')
+  // 外した理由は候補に対して書くので、候補でなくなった語の理由は台帳からも消す（全語の見直しで手で足した形は候補でなくてよい）。
   const candidateSet = new Set(candidates)
-  assert.deepEqual([...decided].filter((key) => !candidateSet.has(key)), [], '候補でなくなった語は台帳からも消す')
+  assert.deepEqual(Object.keys(WORD_FORM_EXTRA_SKIPPED).filter((key) => !candidateSet.has(key)), [], '候補でなくなった語の外した理由は台帳からも消す')
   for (const [of, word, pos, meaning, phonetic] of WORD_FORM_EXTRAS) {
     assert.ok(getWord(of), of)
     assert.ok(['動', '名', '形', '副'].includes(pos), `${word}: ${pos}`)
     assert.ok(meaning, word)
-    assert.equal(phonetic, arpaToIPA(dictionary[word.toLowerCase()]), `${word} の発音記号`)
+    // 発音辞書にある語は辞書の読みと一致させ、ない語は見出し語と同じ書き方で手で書いた発音記号を持つ。
+    const arpa = dictionary[word.toLowerCase()]
+    if (arpa) assert.equal(phonetic, arpaToIPA(arpa), `${word} の発音記号`)
+    else assert.match(phonetic, /^\/[^/\s]+\/$/, `${word} の発音記号`)
   }
   for (const [of, word, meaning, phonetic] of SPELLING_CONFUSABLE_EXTRAS) {
     assert.ok(getWord(of) && meaning, word)
@@ -116,5 +120,27 @@ test('ほかの品詞の形・意味が同じ・近い語・意味が反対の�
     for (const name of ['WordFormSection', 'SynonymSection', 'AntonymSection']) {
       assert.match(source, new RegExp(`<${name} items=\\{relations\\.`), `${screen}: ${name}`)
     }
+  }
+})
+
+test('使い分けの区別がある関連語には、使い分けを参考に添える', () => {
+  // 同じ品詞の形でも、使い分けがあれば出す（classic と classical）。
+  const classical = wordFormsFor(getWord('classic')).find((word) => word.word === 'classical')
+  assert.match(classical.usageNote, /古典/)
+  // 類義語の行にも添える（happy と glad）。
+  const glad = wordRelationsFor(getWord('happy')).synonyms.find((item) => item.w === 'glad')
+  assert.match(glad.usageNote, /名詞の前/)
+  // ほかの欄に出ない相手は「使い分けに注意する語」に出す（percent と percentage）。
+  const partners = wordRelationsFor(getWord('percent')).usagePartners.map((item) => item.word)
+  assert.ok(partners.includes('percentage'))
+  const component = read('src/components/WordRelations.jsx')
+  assert.match(component, /export function UsagePartnerSection/)
+  assert.match(component, /data-word-usage-note/)
+  // 暗記カードの裏にも、辞書ページと同じ使い方・使い分けを出す。
+  const card = read('src/screens/VocabStudy.jsx')
+  assert.match(card, /<UsageGuideCards guides=\{word\.usageGuides\} \/>/)
+  assert.match(card, /data-word-usage>/)
+  for (const screen of ['src/screens/VocabStudy.jsx', 'src/screens/WordDetail.jsx']) {
+    assert.match(read(screen), /<UsagePartnerSection items=\{relations\.usagePartners\}/, screen)
   }
 })

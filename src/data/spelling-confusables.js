@@ -258,6 +258,8 @@ export const SPELLING_CONFUSABLE_PAIRS = Object.freeze([
   ['historic', 'historical'],
   ['thing', 'think'],
   // ほかの品詞の形の候補に出た、つづりが似ているだけの別の語（word-forms.js の見直しで移した）。
+  ['lightning', 'lighting'],
+  ['manner', 'manners'],
   ['commend', 'comment'],
   ['contend', 'content'],
   ['impasse', 'impassive'],
@@ -343,6 +345,7 @@ export const SPELLING_CONFUSABLE_PAIRS = Object.freeze([
 // ほかの品詞の形の候補（word-form-candidates.mjs）に出たが、同じ語から来た形ではなかったもの（admire と admiral）。
 // 見出し語の「つづりが似ていて間違えやすい語」の欄に、意味と発音記号をつけて並べる。
 export const SPELLING_CONFUSABLE_EXTRAS = Object.freeze([
+  ['cook', 'cooker', '調理器具・コンロ（料理人は cook）', '/ˈkʊkɚ/'],
   ['stray', 'strait', '海峡・苦境', '/ˈstɹeɪt/'],
   ['admire', 'admiral', '提督・海軍大将', '/ˈædmɚəl/'],
   ['comb', 'combative', 'けんか腰の・闘争的な', '/kəmˈbætɪv/'],

@@ -12,6 +12,7 @@ import { WORD_IDIOM_EQUIVALENTS } from '../data/word-idiom-equivalents.js'
 import { SPELLING_CONFUSABLE_EXTRAS, SPELLING_CONFUSABLE_PAIRS } from '../data/spelling-confusables.js'
 import { LOANWORD_HINTS } from '../data/loanword-hints.js'
 import { WORD_FORM_EXTRAS, WORD_FORM_GROUPS, WORD_FORM_NOTES } from '../data/word-forms.js'
+import { WORD_USAGE_NOTES } from '../data/word-usage-notes.js'
 
 // 強勢記号や区切りを除いて、発音記号が同じかを比べる。
 const IPA_MARKS = /[ˈˌ/.\s]/gu
@@ -47,13 +48,40 @@ for (const [of, word, meaning, phonetic] of SPELLING_CONFUSABLE_EXTRAS) {
   CONFUSABLE_EXTRAS_BY_WORD.get(of).push({ id: null, word, meaning, phonetic, level: null })
 }
 
+// 使い分けを書いた相手を、語ごとに引けるようにする。
+const USAGE_PARTNERS = new Map()
+for (const key of Object.keys(WORD_USAGE_NOTES)) {
+  const [a, b] = key.split('|')
+  for (const [from, to] of [[a, b], [b, a]]) {
+    if (!USAGE_PARTNERS.has(from)) USAGE_PARTNERS.set(from, [])
+    USAGE_PARTNERS.get(from).push(to)
+  }
+}
+const EXTRA_BY_SPELLING = new Map()
+for (const [, word, pos, meaning, phonetic] of WORD_FORM_EXTRAS) {
+  if (!EXTRA_BY_SPELLING.has(word.toLowerCase())) EXTRA_BY_SPELLING.set(word.toLowerCase(), { word, pos, meaning, phonetic, extra: true })
+}
+
+/** 2語の使い分け（word-usage-notes.js）。なければ空文字。 */
+export function usageNoteBetween(a, b) {
+  const x = String(a ?? '').toLowerCase()
+  const y = String(b ?? '').toLowerCase()
+  if (!x || !y || x === y) return ''
+  return WORD_USAGE_NOTES[[x, y].sort().join('|')] ?? ''
+}
+
+const withUsage = (base, item, text) => {
+  const note = usageNoteBetween(base, text)
+  return note ? { ...item, usageNote: note } : item
+}
+
 // ほかの品詞の形を並べる順。
 const FORM_POS_ORDER = ['動', '名', '形', '副']
 export const FORM_POS_LABELS = { 動: '動詞', 名: '名詞', 形: '形容詞', 副: '副詞' }
 
 /**
  * 品詞がちがうだけで同じ語から来た形を、動詞・名詞・形容詞・副詞の順に辞書の語で返す。
- * いま見ている語と同じ品詞の語は出さない（decide なら decision・decisive・decisively）。
+ * いま見ている語と同じ品詞の語は、使い分けがあるときだけ出す（decide なら decision・decisive・decisively）。
  * 意味が広がった・ずれた形には、ずれ方の説明（formNote）をつける。
  * 辞書に見出しのない形（extra）は、見出し語の形のあとに並べる。
  */
@@ -63,20 +91,23 @@ export function wordFormsFor(word) {
   for (const group of FORM_GROUPS_BY_WORD.get(word.id) ?? []) for (const id of group) members.add(id)
   const seen = new Set([word.word.toLowerCase()])
   const forms = []
+  const push = (item) => forms.push(withUsage(word.word, item, item.word))
   for (const id of members) {
     const other = id === word.id ? null : getWord(id)
-    if (other && other.pos !== word.pos && FORM_POS_ORDER.includes(other.pos) && !seen.has(other.word.toLowerCase())) {
-      seen.add(other.word.toLowerCase())
-      forms.push(WORD_FORM_NOTES[id] ? { ...other, formNote: WORD_FORM_NOTES[id] } : other)
-    }
+    if (!other || !FORM_POS_ORDER.includes(other.pos) || seen.has(other.word.toLowerCase())) continue
+    // 同じ品詞の形（economic と economical）は、使い分けがあるときだけ参考に出す。
+    if (other.pos === word.pos && !usageNoteBetween(word.word, other.word)) continue
+    seen.add(other.word.toLowerCase())
+    push(WORD_FORM_NOTES[id] ? { ...other, formNote: WORD_FORM_NOTES[id] } : other)
   }
   // 辞書に見出しのない形は、まとまりのどの語から拾ったものでも並べる（decide の decisiveness など）。
   for (const id of members) {
     for (const extra of FORM_EXTRAS_BY_WORD.get(id) ?? []) {
       const key = extra.word.toLowerCase()
-      if (extra.pos === word.pos || seen.has(key)) continue
+      if (seen.has(key)) continue
+      if (extra.pos === word.pos && !usageNoteBetween(word.word, extra.word)) continue
       seen.add(key)
-      forms.push(extra)
+      push(extra)
     }
   }
   return forms.sort((a, b) =>
@@ -136,7 +167,7 @@ export function synonymWordsFor(word, { exclude = [] } = {}) {
     const key = text.toLowerCase()
     if (!text || seen.has(key)) continue
     seen.add(key)
-    items.push({ w: text, m: item.m ?? '', ...(item.id ? { id: item.id } : {}) })
+    items.push(withUsage(word?.word, { w: text, m: item.m ?? '', ...(item.id ? { id: item.id } : {}) }, text))
   }
   return items
 }
@@ -150,7 +181,7 @@ export function antonymWordsFor(word) {
     const key = text.toLowerCase()
     if (!text || seen.has(key)) continue
     seen.add(key)
-    items.push({ w: text, m: item.m ?? '', ...(item.id ? { id: item.id } : {}) })
+    items.push(withUsage(word?.word, { w: text, m: item.m ?? '', ...(item.id ? { id: item.id } : {}) }, text))
   }
   return items
 }
@@ -166,11 +197,11 @@ export function confusablesFor(word) {
     ...(CONFUSABLES_BY_WORD.get(word.id) ?? []).map((id) => getWord(id)).filter(Boolean),
     ...(CONFUSABLE_EXTRAS_BY_WORD.get(word.id) ?? []),
   ]
-  return others.map((other) => ({
+  return others.map((other) => withUsage(word.word, {
     word: other,
     segments: spellingDifference(word.word, other.word),
     sameSound: Boolean(soundKey(word)) && soundKey(word) === soundKey(other),
-  }))
+  }, other.word))
 }
 
 /**
@@ -185,14 +216,50 @@ export function loanwordHintFor(word) {
   return { kana: hint.kana, note: hint.note ?? '' }
 }
 
+/** 意味がずれた語自身の、もとの語からの筋道（party なら「part（部分）から、分かれた一団→…」）。 */
+export function wordFormOwnNote(word) {
+  if (!word?.id || word.custom) return ''
+  return WORD_FORM_NOTES[word.id] ?? ''
+}
+
+/**
+ * 使い分けを書いた相手のうち、ほかの欄（ほかの品詞の形・類義語・反対語・つづりが似た語）に出ていない語。
+ * 同じ品詞の組（percent と percentage）など、ほかの欄に出ない使い分けをここで示す。
+ */
+export function usagePartnersFor(word, shown = []) {
+  if (!word?.word || word.custom) return []
+  const seen = new Set([word.word.toLowerCase(), ...shown.map((text) => String(text).toLowerCase())])
+  const items = []
+  for (const partner of USAGE_PARTNERS.get(word.word.toLowerCase()) ?? []) {
+    if (seen.has(partner)) continue
+    seen.add(partner)
+    const entry = getWord(partner.replace(/[^a-z0-9]+/g, '_'))
+    const note = usageNoteBetween(word.word, partner)
+    if (entry) items.push({ ...entry, usageNote: note })
+    else if (EXTRA_BY_SPELLING.has(partner)) items.push({ ...EXTRA_BY_SPELLING.get(partner), usageNote: note })
+  }
+  return items
+}
+
 export function wordRelationsFor(word) {
   const idioms = idiomEquivalentsFor(word)
+  const forms = wordFormsFor(word)
+  const synonyms = synonymWordsFor(word, { exclude: idioms.map((phrase) => phrase.phrase) })
+  const antonyms = antonymWordsFor(word)
+  const confusables = confusablesFor(word)
   return {
-    forms: wordFormsFor(word),
-    synonyms: synonymWordsFor(word, { exclude: idioms.map((phrase) => phrase.phrase) }),
-    antonyms: antonymWordsFor(word),
+    forms,
+    formOwnNote: wordFormOwnNote(word),
+    synonyms,
+    antonyms,
     idioms,
-    confusables: confusablesFor(word),
+    confusables,
+    usagePartners: usagePartnersFor(word, [
+      ...forms.map((item) => item.word),
+      ...synonyms.map((item) => item.w),
+      ...antonyms.map((item) => item.w),
+      ...confusables.map((item) => item.word.word),
+    ]),
     loanword: loanwordHintFor(word),
   }
 }

@@ -1,0 +1,78 @@
+{
+  "id": "2026-09-21-word-relations",
+  "title": "英単語の関連語（ほかの品詞の形・類義語・反対語・つづりの似た語・熟語）を学習に必要な分すべて載せる",
+  "asked": [
+    "・英単語で別の品詞の形を表示するようにしなさい。例：単語が動詞ならば、形容詞・副詞・名詞の場合は単語と意味と発音を再生できるようにしなさい。・意味が同じ・近い語は、発音を再生できるようにしなさい。・同じ要領で、意味が反対の語も実装して、発音を再生できるようにしなさい。",
+    "他に参考になる品詞の形があるならば、参考に載せるんだよ？理解している？生徒の学習の助けになるから載せるんだよ？",
+    "綴りが似ている別語は間違って覚えていないか確認するために必要な語だよ",
+    "変更が確認できないのだが、関連語の別の品詞の形を全語確認して学習に必要なものは載せられたのか？？",
+    "熟語や構文も参考になる内容は単語に絡められているか？",
+    "使い分けの区別があるならば参考に載せなさい。"
+  ],
+  "status": "open",
+  "criteria": [
+    {
+      "id": "forms-display",
+      "text": "暗記カードの裏と辞書ページに、ほかの品詞の形を語・品詞・意味・発音記号・発音ボタンで出す（辞書にない形も意味と発音記号つき）",
+      "population": "暗記カードの裏（VocabStudy）と辞書ページ（WordDetail）",
+      "check": "node --test tests/word-forms.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "forms-all-words-reviewed",
+      "text": "品詞のある全見出し語を1語ずつ読み、学習に必要なほかの品詞の形（意味がずれた形は説明つき、辞書にない形は意味・発音記号つき）を載せた",
+      "population": "品詞（名・動・形・副）のある全見出し語 8,799語",
+      "check": "node scripts/checks/word-forms-review.mjs",
+      "status": "todo"
+    },
+    {
+      "id": "synonym-antonym-play",
+      "text": "意味が同じ・近い語と、意味が反対・対照の語の全項目に発音ボタンをつけ、暗記カードの裏と辞書ページの両方に出す（品詞で発音が変わる語だけは音声を出さない）",
+      "population": "類義語欄・反意語欄の全項目",
+      "check": "node --test tests/word-forms.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "confusables-kept",
+      "text": "つづりが似ているだけの別の語は捨てずに「つづりが似ていて間違えやすい語」に意味・発音記号・発音ボタンつきで出す",
+      "population": "ほかの品詞の形の候補に出た全組と、辞書にない語の候補",
+      "check": "node --test tests/word-forms.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "usage-distinctions",
+      "text": "使い分けの区別がある関連語（ほかの品詞の形・同じ品詞の別の形・意味が同じ近い語・意味が反対の語・つづりが似た語）には、使い分けの説明を暗記カードの裏と辞書ページに参考として載せる。全見出し語の関連語欄を1語ずつ読んで判断する",
+      "population": "品詞のある全見出し語 8,799語の関連語欄に出る全項目",
+      "check": "node scripts/checks/word-forms-review.mjs --usage",
+      "status": "todo"
+    },
+    {
+      "id": "phrases-on-dictionary-page",
+      "text": "辞書ページにも、その語を含む熟語・構文の欄を出す（暗記カードの裏と同じ中身）",
+      "population": "辞書ページ（WordDetail）",
+      "check": "node --test tests/word-phrase-links.test.mjs",
+      "status": "todo"
+    },
+    {
+      "id": "phrases-irregular-forms",
+      "text": "不規則な変化形（is・was・known・made・born など）でしか現れない熟語・構文を、1件ずつ読んで元の語につなぐ",
+      "population": "不規則な変化形を含む熟語・構文の全件",
+      "check": "node --test tests/word-phrase-links.test.mjs",
+      "status": "todo"
+    },
+    {
+      "id": "phrases-via-forms",
+      "text": "ほかの品詞の形を使う熟語・構文（decide に対する make a decision）を、元の語の暗記カードの裏と辞書ページから参照できる",
+      "population": "ほかの品詞の形を持つ全見出し語",
+      "check": "node --test tests/word-phrase-links.test.mjs",
+      "status": "todo"
+    },
+    {
+      "id": "deployed",
+      "text": "全テスト・全監査をクリーンな clone で通してから main へ push し、公開版で確認する",
+      "population": "公開版 https://nanashi8.github.io/study-app/",
+      "check": "node scripts/checks/deployed-matches-head.mjs",
+      "status": "todo"
+    }
+  ]
+}

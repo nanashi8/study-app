@@ -26,14 +26,25 @@ function toRows(items) {
   return items.map((item) => {
     // 辞書に見出しのない形は、発音記号と意味だけを持つ（タップ先の辞書ページはない）。
     if (item.extra) {
-      return { text: item.word, meaning: item.meaning, entry: null, phonetic: item.phonetic, pos: item.pos, note: item.formNote ?? '' }
+      return { text: item.word, meaning: item.meaning, entry: null, phonetic: item.phonetic, pos: item.pos, note: item.formNote ?? '', usage: item.usageNote ?? '' }
     }
     if (item.word && item.pos) {
-      return { text: item.word, meaning: item.meaning, entry: item, pos: item.pos, note: item.formNote ?? '' }
+      return { text: item.word, meaning: item.meaning, entry: item, pos: item.pos, note: item.formNote ?? '', usage: item.usageNote ?? '' }
     }
     const entry = getWord(item.id ?? toId(item.w)) ?? null
-    return { text: item.w, meaning: item.m || entry?.meaning || '', entry, pos: null, note: '' }
+    return { text: item.w, meaning: item.m || entry?.meaning || '', entry, pos: null, note: '', usage: item.usageNote ?? '' }
   })
+}
+
+// 関連語どうしの使い分け（word-usage-notes.js）。行の下に参考として出す。
+function UsageNote({ text }) {
+  if (!text) return null
+  return (
+    <p className="mt-1 rounded-lg bg-amber-50 px-2 py-1 text-[11px] font-bold leading-relaxed text-amber-900/85 ring-1 ring-amber-100" data-word-usage-note>
+      <span className="mr-1 font-extrabold text-amber-700">使い分け</span>
+      {text}
+    </p>
+  )
 }
 
 // 発音ボタン。使い方で発音が変わる語はボタンを出さない（SpeakButton）ので、同じ幅の空きで語の頭をそろえる。
@@ -77,6 +88,7 @@ export function RelatedWordList({ items, tone = 'syn', onWord, showPhonetic = tr
               {row.note && (
                 <p className="mt-0.5 text-[11px] font-bold leading-relaxed text-amber-800/80" data-word-form-note>{row.note}</p>
               )}
+              <UsageNote text={row.usage} />
             </div>
             {canOpen && <ArrowRight size={14} className="shrink-0 text-ink/30" />}
           </>
@@ -107,11 +119,15 @@ function SectionTitle({ className, children }) {
 }
 
 /** 品詞がちがうだけで同じ語から来た形（decide なら decision・decisive・decisively）。 */
-export function WordFormSection({ items, onWord, showPhonetic }) {
+export function WordFormSection({ items, onWord, showPhonetic, ownNote = '' }) {
   if (!items.length) return null
   return (
     <div data-word-forms>
       <SectionTitle className={TONES.form.title}>ほかの品詞の形</SectionTitle>
+      {/* この語自身が、もとの語から意味の離れた語のとき。並ぶ形はもとの語のものなので、つながりを先に示す。 */}
+      {ownNote && (
+        <p className="mb-1 text-[11px] font-bold leading-relaxed text-amber-800/80" data-word-form-own-note>{ownNote}</p>
+      )}
       <RelatedWordList items={items} tone="form" onWord={onWord} showPhonetic={showPhonetic} />
     </div>
   )
@@ -123,6 +139,17 @@ export function SynonymSection({ items, onWord, showPhonetic }) {
   return (
     <div data-word-synonyms>
       <SectionTitle className={TONES.syn.title}>意味が同じ・近い語</SectionTitle>
+      <RelatedWordList items={items} tone="syn" onWord={onWord} showPhonetic={showPhonetic} />
+    </div>
+  )
+}
+
+/** 使い分けに注意する語（ほかの欄に出ない使い分けの相手）。 */
+export function UsagePartnerSection({ items, onWord, showPhonetic }) {
+  if (!items.length) return null
+  return (
+    <div data-word-usage-partners>
+      <SectionTitle className="text-amber-700">使い分けに注意する語</SectionTitle>
       <RelatedWordList items={items} tone="syn" onWord={onWord} showPhonetic={showPhonetic} />
     </div>
   )
@@ -191,6 +218,7 @@ export function ConfusableSection({ word, items, onWord, showPhonetic = true }) 
                   )}
                 </div>
                 <p className="text-xs font-bold leading-relaxed text-ink/55"><MeaningText>{item.word.meaning}</MeaningText></p>
+                <UsageNote text={item.usageNote} />
               </div>
               {canOpen && <ArrowRight size={14} className="shrink-0 text-ink/30" />}
             </>

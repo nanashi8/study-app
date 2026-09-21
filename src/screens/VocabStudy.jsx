@@ -24,12 +24,14 @@ import { HomographWords, OtherSenses, PosBadge } from '../components/WordBits.js
 import { PronunciationNote } from '../components/PronunciationNote.jsx'
 import { exampleSpeechAllowed } from '../lib/speechGuard.js'
 import { MeaningText } from '../components/MeaningText.jsx'
+import { UsageGuideCards } from '../components/UsageGuideCards.jsx'
 import {
   AntonymSection,
   ConfusableSection,
   IdiomEquivalentSection,
   LoanwordHint,
   SynonymSection,
+  UsagePartnerSection,
   WordFormSection,
 } from '../components/WordRelations.jsx'
 import { Button, Chip } from '../components/ui.jsx'
@@ -526,19 +528,32 @@ export function VocabStudyScreen() {
                 </div>
               )}
 
+              {/* 使い方・使い分け（辞書ページと同じ中身）。 */}
+              {word.usage && (
+                <div className="rounded-2xl bg-amber-50 px-4 py-3 ring-1 ring-amber-100" data-word-usage>
+                  <div className="mb-1 flex items-center gap-1.5 text-amber-600">
+                    <Lightbulb size={14} />
+                    <span className="text-xs font-extrabold">使い方・使い分け</span>
+                  </div>
+                  <p className="text-sm font-bold leading-relaxed text-amber-900/90">{word.usage}</p>
+                </div>
+              )}
+              <UsageGuideCards guides={word.usageGuides} />
+
               {/* 品詞がちがうだけで同じ語から来た形。発音を聞いて、その語の辞書ページへ移れる。 */}
               {relations.forms.length > 0 && (
                 <div className="rounded-2xl bg-white p-4 ring-1 ring-emerald-100">
-                  <WordFormSection items={relations.forms} onWord={openRelatedWord} showPhonetic={settings.showPhonetic} />
+                  <WordFormSection items={relations.forms} ownNote={relations.formOwnNote} onWord={openRelatedWord} showPhonetic={settings.showPhonetic} />
                 </div>
               )}
 
               {/* 意味が同じ・近い語、同じ意味の熟語、反対・対照の語。辞書にある語はタップでその語の辞書ページへ。 */}
-              {(relations.synonyms.length > 0 || relations.idioms.length > 0 || relations.antonyms.length > 0) && (
+              {(relations.synonyms.length > 0 || relations.idioms.length > 0 || relations.antonyms.length > 0 || relations.usagePartners.length > 0) && (
                 <div className="space-y-3 rounded-2xl bg-white p-4 ring-1 ring-brand-100">
                   <SynonymSection items={relations.synonyms} onWord={openRelatedWord} showPhonetic={settings.showPhonetic} />
                   <IdiomEquivalentSection phrases={relations.idioms} />
                   <AntonymSection items={relations.antonyms} onWord={openRelatedWord} showPhonetic={settings.showPhonetic} />
+                  <UsagePartnerSection items={relations.usagePartners} onWord={openRelatedWord} showPhonetic={settings.showPhonetic} />
                 </div>
               )}
 
