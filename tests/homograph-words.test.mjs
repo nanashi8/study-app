@@ -26,7 +26,7 @@ const seeded = (seed) => {
 }
 
 test('同じつづりの別の語は、元の語のカードの一枠ではなく独立した見出し語になっている', () => {
-  assert.equal(HOMOGRAPH_WORDS.length, 56)
+  assert.equal(HOMOGRAPH_WORDS.length, 78)
   // ほかの意味の欄には、同じ語の意味の枝分かれだけを置く。
   for (const [id, senses] of Object.entries(WORD_SENSES)) {
     assert.equal(senses.some((sense) => 'separateWord' in sense || 'note' in sense), false, id)
@@ -42,8 +42,9 @@ test('同じつづりの別の語は、元の語のカードの一枠ではな�
     assert.ok(wordsByLevel(entry.level).includes(word), `${entry.id}: 級の一覧`)
     assert.ok(word.phonetic, `${entry.id}: 発音記号`)
     assert.ok(word.compression.packId.startsWith('homograph:'), entry.id)
-    // 元の語とは互いにリンクする。
-    assert.deepEqual(homographsFor(word).map((other) => other.id), [base.id], entry.id)
+    // 元の語とも、同じつづりのほかの別の語（row の row_2 と row_3 など）とも互いにリンクする。
+    const siblings = HOMOGRAPH_WORDS.filter((other) => other.homographOf === entry.homographOf && other.id !== entry.id).map((other) => other.id)
+    assert.deepEqual(homographsFor(word).map((other) => other.id), [base.id, ...siblings], entry.id)
     assert.ok(homographsFor(base).some((other) => other.id === entry.id), entry.id)
     // 語の成り立ちは自分の本文を持ち、元の語とは別の語だと書く。
     const story = etymologyStoryForWord(word)

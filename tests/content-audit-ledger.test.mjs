@@ -11,8 +11,8 @@ test('全教材監査台帳は18カテゴリの母数・ゲート・ハッシュ
   assert.equal(ledger.failureCount, 0)
   assert.equal(ledger.scope.categoryCount, 18)
   assert.equal(ledger.categories.length, 18)
-  assert.equal(ledger.scope.learningItemCount, 16_355)
-  assert.equal(ledger.scope.quizItemCount, 16_473)
+  assert.equal(ledger.scope.learningItemCount, 16_377)
+  assert.equal(ledger.scope.quizItemCount, 16_495)
   assert.ok(ledger.scope.overallContentSha256)
   assert.ok(ledger.auditImplementation.sha256)
   for (const category of ledger.categories) {
@@ -48,9 +48,9 @@ test('問題別解説と選択肢別根拠を混同せず、記録済み台帳�
   assert.equal(ledger.extendedReadingDetail.sentenceCount, 528)
   assert.equal(ledger.extendedReadingDetail.targetVocabularyCount, 1_484)
   assert.equal(ledger.extendedReadingDetail.baselineCoveredVocabulary, 1_942)
-  assert.equal(ledger.extendedReadingDetail.baselineCoveragePercent, 21.8)
+  assert.equal(ledger.extendedReadingDetail.baselineCoveragePercent, 21.75)
   assert.equal(ledger.extendedReadingDetail.combinedCoveredVocabulary, 3_943)
-  assert.equal(ledger.extendedReadingDetail.combinedCoveragePercent, 44.27)
+  assert.equal(ledger.extendedReadingDetail.combinedCoveragePercent, 44.16)
   assert.equal(ledger.extendedReadingDetail.coverageGain, 2_001)
   assert.equal(ledger.extendedReadingDetail.unresolvedExtendedTokenCount, 0)
   assert.deepEqual(ledger.extendedReadingDetail.practiceTypeCounts, {

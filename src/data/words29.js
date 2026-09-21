@@ -19,7 +19,7 @@ const RAW = [
   ['recite', '動', 'pre1', '暗唱する・朗読する', 'He recited a poem.', '彼は詩を暗唱した。', 'ラテン re+citare(呼ぶ)→ cite と同系。', { syn: [{ w: 'read aloud', m: '朗読する' }], field: '動作・行為' }],
   ['exclaim', '動', 'pre1', '叫ぶ・声を上げる', '"Look!" she exclaimed.', '「見て！」と彼女は叫んだ。', 'ラテン ex+clamare(叫ぶ)→ claim と同系。', { syn: [{ w: 'cry out', m: '叫ぶ' }], field: '動作・行為' }],
   ['murmur', '動', 'pre1', 'つぶやく・ざわめく', 'He murmured a reply.', '彼は小声で返事をした。', 'ラテン murmurare(ざわめく・擬音)。', { syn: [{ w: 'mutter', m: 'つぶやく' }, { w: 'whisper', m: 'ささやく' }], field: '動作・行為' }],
-  ['utter', '動', 'pre1', '口に出す・全くの(形)', 'She did not utter a word.', '彼女は一言も発しなかった。', '中オランダ語 uteren(外に出す)→ out と同系。', { syn: [{ w: 'say', m: '言う' }, { w: 'speak', m: '話す' }], der: [{ w: 'utterance', m: '発話' }], field: '動作・行為' }],
+  ['utter', '動', 'pre1', '口に出す・(声を)発する', 'She did not utter a word.', '彼女は一言も発しなかった。', '中オランダ語 uteren(外に出す)→ out と同系。', { syn: [{ w: 'say', m: '言う' }, { w: 'speak', m: '話す' }], der: [{ w: 'utterance', m: '発話' }], field: '動作・行為' }],
   ['proclaim', '動', '1', '宣言する・公布する', 'They proclaimed independence.', '彼らは独立を宣言した。', 'ラテン pro+clamare(叫ぶ)→ claim と同系。', { syn: [{ w: 'declare', m: '宣言する' }, { w: 'announce', m: '発表する' }], field: '動作・行為' }],
   // 認知の動詞
   ['ponder', '動', '1', '熟考する', 'She pondered the question.', '彼女はその問いを熟考した。', 'ラテン ponderare(重さを量る)→ pound と同系。', { syn: [{ w: 'consider', m: 'よく考える' }, { w: 'contemplate', m: '熟考する' }], field: '動作・行為' }],

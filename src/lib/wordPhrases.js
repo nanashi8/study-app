@@ -12,6 +12,7 @@ import { PHRASES } from '../data/phrases.js'
 import { HOMOGRAPH_WORDS } from '../data/homograph-words.js'
 import { IRREGULAR_PLURALS } from '../data/duplicate-forms.js'
 import { IRREGULAR_PHRASE_LINKS, IRREGULAR_WORD_FORMS } from '../data/phrase-irregular-links.js'
+import { PHRASE_LINK_EXCLUDED } from '../data/phrase-link-exclusions.js'
 import { getWord } from '../data/vocab.js'
 import { wordFormOwnNote, wordFormsFor } from './wordRelations.js'
 
@@ -93,16 +94,20 @@ const comparePhrases = (a, b) =>
   (LEVEL_RANK[a.level] ?? 99) - (LEVEL_RANK[b.level] ?? 99)
   || a.phrase.localeCompare(b.phrase, 'en')
 
+// 変化形を作らない品詞（代名詞・前置詞・接続詞）。I の変化形に見える is、she の shed、us の used を拾わない。
+const UNINFLECTED_POS = new Set(['代', '前', '接'])
+
 // 規則的な変化形の見出しで拾える熟語・構文。
 function regularPhrasesForWord(word, { kind } = {}) {
   const head = typeof word === 'string' ? word : word?.word
   if (!head) return []
   if (ARTICLES.has(head.toLowerCase().trim())) return []
+  const forms = typeof word !== 'string' && UNINFLECTED_POS.has(word?.pos) ? [head.toLowerCase().trim()] : inflectedForms(head)
   // 同じつづりの別の語のカードには、その語の意味で使う熟語だけを出す。元の語のカードからは外す。
   const homographPhraseIds = typeof word === 'string' ? null : HOMOGRAPH_PHRASE_IDS.get(word?.id)
   const ownedByHomographs = PHRASE_IDS_OWNED_BY_HOMOGRAPHS.get(head.toLowerCase().trim())
   const found = new Map()
-  for (const form of inflectedForms(head)) {
+  for (const form of forms) {
     for (const phrase of PHRASES_BY_TOKEN.get(form) ?? []) {
       if (kind && phrase.kind !== kind) continue
       if (homographPhraseIds ? !homographPhraseIds.has(phrase.id) : ownedByHomographs?.has(phrase.id)) continue
@@ -153,10 +158,10 @@ export function irregularPhraseCandidates(word) {
 }
 
 /**
- * その単語を含む熟語・構文を全部返す。やさしい級から順に並べる。
- * word は単語オブジェクトでも文字列でもよい。
+ * 見直しの台帳（phrase-link-exclusions.js）で外す前の、その単語から熟語・構文へのつながり。
+ * 見直しの確認（scripts/checks/phrase-links-review.mjs）が全件を数えるのに使う。
  */
-export function phrasesForWord(word, { kind } = {}) {
+export function phraseLinkCandidates(word, { kind } = {}) {
   const found = regularPhrasesForWord(word, { kind })
   if (typeof word !== 'string') {
     for (const phrase of irregularPhraseCandidates(word)) {
@@ -165,6 +170,16 @@ export function phrasesForWord(word, { kind } = {}) {
     }
   }
   return found.sort(comparePhrases)
+}
+
+/**
+ * その単語を含む熟語・構文を全部返す。やさしい級から順に並べる。
+ * word は単語オブジェクトでも文字列でもよい。見直しで外したつながり（別の語の熟語）は返さない。
+ */
+export function phrasesForWord(word, { kind } = {}) {
+  const found = phraseLinkCandidates(word, { kind })
+  if (typeof word === 'string') return found
+  return found.filter((phrase) => !PHRASE_LINK_EXCLUDED[`${word.id}|${phrase.id}`])
 }
 
 const FORM_POS_RANK = { 動: 0, 名: 1, 形: 2, 副: 3 }

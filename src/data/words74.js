@@ -4,7 +4,7 @@ import { expandCompact } from './compact.js'
 const RAW = [
   ['offensive', '形', 'pre1', '攻撃的な・無礼な・不快な', 'Many viewers found the TV ad offensive and complained.', '多くの視聴者がそのテレビ広告を不快に感じ、苦情を寄せた。', 'offense(攻撃・違反)+ -ive', { fam: [{ w: 'offense', m: '攻撃' }], syn: [{ w: 'insulting', m: '侮辱的な' }, { w: 'rude', m: '失礼な' }], ant: [{ w: 'defensive', m: '防御の' }], field: '社会' }],
   ['praised', '形', 'pre1', '称賛された・ほめられた', 'The highly praised novel was made into a movie last year.', '多くの人に称賛されたその小説は、去年映画化された。', 'praise(称賛する)+ -d。', { syn: [{ w: 'acclaimed', m: '絶賛された' }, { w: 'celebrated', m: '名高い' }], ant: [{ w: 'criticized', m: '批判された' }], fam: [{ w: 'praise', m: '称賛する' }], field: '一般' }],
-  ['set', '名', 'pre1', '一式・組・決まった', 'My uncle gave me a chess set.', 'おじがチェスのセット一式をくれた。', '古英語 settan(据える)。', { syn: [{ w: 'collection', m: '一そろい' }, { w: 'kit', m: '道具一式' }], field: '一般' }],
+  ['set', '名', 'pre1', '一式・組', 'My uncle gave me a chess set.', 'おじがチェスのセット一式をくれた。', '古英語 settan(据える)。', { syn: [{ w: 'collection', m: '一そろい' }, { w: 'kit', m: '道具一式' }], field: '一般' }],
   ['well', '副', '5', '上手に・よく', 'She sings very well.', '彼女はとても歌が上手だ。', '古英語 wel(良く)。', { field: '医学' }],
   ['widening', '名', 'pre1', '拡張・拡大', 'The widening of the road will take two years.', 'その道路の拡張には2年かかる予定だ。', 'widen(広げる)+ -ing。', { syn: [{ w: 'expansion', m: '拡大' }, { w: 'broadening', m: '拡張' }], ant: [{ w: 'narrowing', m: '狭まり' }], fam: [{ w: 'widen', m: '広げる' }], field: '一般' }],
   ['armament', '名', '1', '軍備・兵器', 'The government decided to increase spending on armament.', '政府は軍備への支出を増やすことを決めた。', 'ラテン armare(武装する)→ arm と同系。', { syn: [{ w: 'weaponry', m: '兵器' }, { w: 'arms', m: '武器' }], ant: [{ w: 'disarmament', m: '軍縮' }], fam: [{ w: 'arm', m: '武装させる' }], field: '軍事' }],

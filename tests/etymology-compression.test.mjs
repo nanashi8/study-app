@@ -268,7 +268,7 @@ test('既存語源パックを固定し、2種の補完語と同じつづりの�
   assert.equal(legacyPacks.length, 2712)
   assert.equal(completionWords.length, 215)
   assert.equal(curriculum1900Words.length, 420)
-  assert.equal(homographWords.length, 56)
+  assert.equal(homographWords.length, 78)
   assert.ok(completionPacks.length > 0)
   assert.ok(curriculum1900Packs.length > 0)
   assert.ok(homographPacks.length > 0)
@@ -626,7 +626,7 @@ test('語の成り立ちは全語を確認記録つきで出す', () => {
     ...totals,
     [story.origin]: (totals[story.origin] ?? 0) + 1,
   }), {})
-  assert.deepEqual(kinds, { 'reviewed-text': 8581, 'sealed-note': 326 })
+  assert.deepEqual(kinds, { 'reviewed-text': 8606, 'sealed-note': 323 })
   for (const story of ETYMOLOGY_WORD_STORIES) {
     // 同じつづりの別の語は見出し語が元の語と同じなので、つづりではなく id で引く。
     // January / Ms. のように大文字で始まる見出し語もあるため、つづりは小文字にそろえて比べる。

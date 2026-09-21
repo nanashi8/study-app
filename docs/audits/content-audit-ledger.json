@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-09-21T09:29:49.822Z",
+  "auditedAt": "2026-09-21T10:24:15.102Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -8,11 +8,11 @@
   "scope": {
     "sourceOfTruth": "src/lib/learningContentProgress.js#LEARNING_CONTENTS",
     "categoryCount": 18,
-    "learningItemCount": 16355,
-    "quizItemCount": 16473,
+    "learningItemCount": 16377,
+    "quizItemCount": 16495,
     "storedAndGeneratedQuestionPathCount": 4946,
     "storedAndGeneratedChoicePathCount": 19353,
-    "overallContentSha256": "e594991ba7cad97fc770ffda9218e9ba7b5efcdc6356949c881137f66708217e"
+    "overallContentSha256": "fa51c1c33fc4983f86192f45276daab4c7911c69cf39b71b9324aac26872ee42"
   },
   "completionCriteria": [
     "全18教材カテゴリのID・母数・重複・内容ハッシュが一致する",
@@ -104,7 +104,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "a6b0a4b71b445f7b04ea92304e5efdb956a16d553b0c23ddc7d79e75d1386b50",
+    "sha256": "a2f2f6987eefec3a5381d9c8439e828db17a02088020af91359a76d6686c260e",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -197,6 +197,7 @@
       "tests/grammar-reference.test.mjs",
       "tests/grammar-strand.test.mjs",
       "tests/heteronyms.test.mjs",
+      "tests/homograph-headwords.test.mjs",
       "tests/homograph-words.test.mjs",
       "tests/idiom-form-families.test.mjs",
       "tests/instructor-explanations.test.mjs",
@@ -292,11 +293,11 @@
       "label": "英単語",
       "learningUnit": "語",
       "quizUnit": "問",
-      "learningItemCount": 8907,
-      "quizItemCount": 8907,
-      "learningIdOrderSha256": "6ce7b8aea762f737ca116621d5f51a7a660d7eba5f75e6d40631f734aacf30b4",
-      "quizIdOrderSha256": "6ce7b8aea762f737ca116621d5f51a7a660d7eba5f75e6d40631f734aacf30b4",
-      "contentSha256": "6fd163f266e61a054f746a7ab3b91d0041d2314504a09ac3566d3a5e5f55d625",
+      "learningItemCount": 8929,
+      "quizItemCount": 8929,
+      "learningIdOrderSha256": "cd10218924b5ca52e52a7a8731a47c1ecb9a7f17d482d5ea4696294e3cb7a42b",
+      "quizIdOrderSha256": "cd10218924b5ca52e52a7a8731a47c1ecb9a7f17d482d5ea4696294e3cb7a42b",
+      "contentSha256": "a6bf91c06c7ab8857a6f8b6e39c6f268db84c0a39dfbfcdb280f90d0f3ff2fd5",
       "auditGateIds": [
         "inventory",
         "coreData",
@@ -827,7 +828,7 @@
       "choiceCount": 252,
       "generalRationaleCount": 84,
       "choiceSpecificRationaleCount": 252,
-      "questionSetSha256": "f491ce5b12bf0089c9d09d5f5ebbf676bb58e06a36215417b8c48352fc86699a",
+      "questionSetSha256": "b625d5f1f2423d956ca46d4446c9c2537e804126fda5f859014f8b336715b921",
       "result": "pass",
       "failureCount": 0,
       "failures": []
@@ -910,11 +911,11 @@
     "sentenceCount": 528,
     "targetVocabularyCount": 1484,
     "baselineCoveredVocabulary": 1942,
-    "baselineCoveragePercent": 21.8,
+    "baselineCoveragePercent": 21.75,
     "combinedCoveredVocabulary": 3943,
-    "combinedCoveragePercent": 44.27,
+    "combinedCoveragePercent": 44.16,
     "coverageGain": 2001,
-    "dictionarySize": 8907,
+    "dictionarySize": 8929,
     "extendedTokenCount": 18891,
     "resolvedExtendedTokenCount": 18891,
     "unresolvedExtendedTokenCount": 0,
@@ -927,35 +928,35 @@
     },
     "coverageByLevel": {
       "1": {
-        "total": 976,
+        "total": 979,
         "before": 9,
         "beforePercent": 0.92,
         "after": 48,
-        "afterPercent": 4.92,
+        "afterPercent": 4.9,
         "gain": 39
       },
       "2": {
-        "total": 1578,
+        "total": 1581,
         "before": 267,
-        "beforePercent": 16.92,
+        "beforePercent": 16.89,
         "after": 692,
-        "afterPercent": 43.85,
+        "afterPercent": 43.77,
         "gain": 425
       },
       "3": {
-        "total": 807,
+        "total": 808,
         "before": 294,
-        "beforePercent": 36.43,
+        "beforePercent": 36.39,
         "after": 524,
-        "afterPercent": 64.93,
+        "afterPercent": 64.85,
         "gain": 230
       },
       "4": {
-        "total": 699,
+        "total": 701,
         "before": 360,
-        "beforePercent": 51.5,
+        "beforePercent": 51.36,
         "after": 573,
-        "afterPercent": 81.97,
+        "afterPercent": 81.74,
         "gain": 213
       },
       "5": {
@@ -967,19 +968,19 @@
         "gain": 133
       },
       "pre2": {
-        "total": 1448,
+        "total": 1454,
         "before": 454,
-        "beforePercent": 31.35,
+        "beforePercent": 31.22,
         "after": 855,
-        "afterPercent": 59.05,
+        "afterPercent": 58.8,
         "gain": 401
       },
       "pre1": {
-        "total": 2790,
+        "total": 2797,
         "before": 206,
-        "beforePercent": 7.38,
+        "beforePercent": 7.37,
         "after": 766,
-        "afterPercent": 27.46,
+        "afterPercent": 27.39,
         "gain": 560
       }
     },

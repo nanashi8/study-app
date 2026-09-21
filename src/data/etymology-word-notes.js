@@ -45,6 +45,14 @@ const pair = (text, fingerprint) => Object.freeze({
   fingerprint,
 })
 
+// 2026-09-21 の点検: 関連語・熟語の見直しで見つかった同じつづりの別の語を見出し語にしたとき、元の語の本文にもその別の語のことを書き足したもの。
+const split = (text, fingerprint) => Object.freeze({
+  note: text,
+  reviewedAt: '2026-09-21',
+  reviewedBy: 'manual-etymology-audit',
+  fingerprint,
+})
+
 const HAND_WRITTEN_WORD_NOTES = Object.freeze({
   // ── 語根では表せない「語そのものの歴史」。人名・神名・造語の年など。（39語）──
   academy: note('プラトンが学園を開いたアテネの地アカデメイア（Akadēmeia）から。', 'fd436e167c099bff070ac3dca18558b2e8a2b45d967f5e162ba53ff8eb4d6fea'),
@@ -112,8 +120,8 @@ const HAND_WRITTEN_WORD_NOTES = Object.freeze({
   centimeter: note('ラテン語 centum「百」＋ ギリシャ語 metron「尺度」から。', '776ca849fb4b4fc344f244c820990cca3f496d06bd79b653afa01a3976e1ef68'),
   clothing: renote('cloth（布）＋ -ing から。cloth は古英語 clāþ「布」から。', 'bf1e65519346ea26d014f2746806a4bcd9148b9abf3e5e98483104c0cd8424ca'),
   conditioner: renote('condition（状態を整える）＋ -er（〜するもの）から。condition はラテン語 condiciō「取り決め・状況」（condīcere「話し合って決める」、com-「共に」＋ dīcere「言う」）から。', '5ea8a965eb50c7133cd3ba2c289f1bd1295f78ad7592fc2ca6e1b2e8a933c4f4'),
-  count: renote('ラテン語 computāre「数え合わせる」から。computer と同じ語源。', '9d2987fefb3fd616f596139a714aa01c0fbc48a2c42b91f009f80904fa1d65a2'),
-  counter: note('ラテン語 computāre「数える」から。勘定を数える台が「カウンター」になった。', 'b3c09d600d0ac880677f1c91e43fe18183243072908dbcd1aeb30a74dbff2821'),
+  count: split('ラテン語 computāre「数え合わせる」から、古フランス語 conter を経た語→「数える・数に入れる」。computer と同じ語源。「伯爵」の count はラテン語 comes「お供」から来た別の語。', 'f67a1220d620715c4d04664681a20a3487969ebfe038afe38bdbe2acf440e7fd'),
+  counter: split('ラテン語 computāre「数える」から、古フランス語 conteor「勘定をする所」を経た語。お金を数える台→「受付台・カウンター」。「反論する・対抗する」の counter はラテン語 contrā「反対に」から来た別の語。', 'd4ce8d890533c2f4c59e1685ee38f3aa3853ed13797f0a753582b86a8cf262d6'),
   cross: relink('ラテン語 crux「十字（形）・十字架」から。十字の形のように線が交わる→「交差する」、道を十字に横切る→「横切る・渡る」。', '7802336f2138a3d54ac0417900533ff7e2490309064a953a85e50af49a4fc5ae'),
   crossing: renote('cross（横切る）＋ -ing から。cross はラテン語 crux「十字架」から。', 'ab90d324d718f78dd2bae32e3074db26b6c2b0050dd4f6200f15395b0e4d2759'),
   cucumber: note('ラテン語 cucumis「きゅうり」から。', '0abebec6f9cdb97331a855ee0ade31b06f9306481170bab5cc18382a4a8a0919'),
@@ -360,6 +368,14 @@ const homographNote = (text, fingerprint) => Object.freeze({
   fingerprint,
 })
 
+// 2026-09-21、関連語・熟語の見直しで、別の語の形や熟語が元の語のカードに入っていたのを見出し語へ分けたときに書いた。
+const homographSplitNote = (text, fingerprint) => Object.freeze({
+  note: text,
+  reviewedAt: '2026-09-21',
+  reviewedBy: 'manual-etymology-audit',
+  fingerprint,
+})
+
 export const ETYMOLOGY_HOMOGRAPH_WORD_NOTES = Object.freeze({
   well_2: homographNote('古英語 wella「泉・わき水」から。水がわき出る所→「井戸」。「上手に・よく」の well（古英語 wel から）とは別の語で、つづりがたまたま同じになった。', 'f4dbff9ad6559505'),
   lie_2: homographNote('古英語 licgan「横たわる」から→「横たわる」、物がそこに横たわっている→「（物が）ある」。「うそ・うそをつく」の lie（古英語 lyge「うそ」・lēogan「うそをつく」から）とは別の語で、活用も lie-lied-lied ではなく lie-lay-lain になる。', '2a48d695015c179d'),
@@ -417,4 +433,26 @@ export const ETYMOLOGY_HOMOGRAPH_WORD_NOTES = Object.freeze({
   clip_2: homographNote('古英語 clyppan「抱きしめる・しっかりつかむ」から→「（クリップで）留める・はさむ」。紙をはさむクリップはこちら。「切り取る・切り抜く」の clip（古ノルド語 klippa「切る」から）とは別の語。', '5938ae92e4423cfe'),
   tip_2: homographNote('中世オランダ語 tip「先端」から来たとされる→「先端・先」。「助言・チップ」の tip（17世紀の隠語 tip「そっと手渡す」から）とは別の語。', 'f2a10791876f5445'),
   lighten_2: homographNote('light「軽い」＋ -en「〜にする」→「軽くする」、負担を軽くする→「（負担を）和らげる」。light は古英語 lēoht「重さが軽い」から。「明るくする」の lighten（「光」の light から）とは別の語。', '2649ab5aa7d78bb4'),
+  bear_2: homographSplitNote('古英語 beran「運ぶ・支える・産む」から。重いものを支えて運ぶ→「運ぶ」、つらさを支え続ける→「耐える」、責任を身に負う→「（責任などを）負う」、子を宿して産み出す→「（子を）産む」。「クマ」の bear（古英語 bera から）とは別の語。', 'be90c81dcbe2e9e4'),
+  tear_2: homographSplitNote('古英語 tēar「涙」から→「涙」。「裂く・裂け目」の tear（古英語 teran「引き裂く」から）とは別の語で、発音も「涙」は /ˈtɪɹ/、「裂く」は /ˈtɛɹ/ とちがう。', 'd50ef4c723733aca'),
+  wind_2: homographSplitNote('古英語 windan「回す・巻く・ねじる」から→「巻く」、くねくねと向きを変える→「（道・川が）曲がりくねる」。「風」の wind（古英語 wind から）とは別の語で、発音も /ˈwaɪnd/（「風」は /ˈwɪnd/）とちがう。', '2e260d3b2c233420'),
+  wake_2: homographSplitNote('古ノルド語 vǫk「氷に開いた穴」から、中世オランダ語 wake を経て入ったとされる。氷を割って船が進んだ水の通り道→船が水面に残す「航跡」、何かが通った後→「通った跡」。「目を覚ます」の wake（古英語 wacian から）とは別の語。', '730b1fdfa584c074'),
+  counter_2: homographSplitNote('ラテン語 contrā「反対に・向かい合って」から、古フランス語 contre を経た語。反対の側から向かう→「反論する・対抗する」。「受付台・カウンター」の counter（ラテン語 computāre「数える」から）とは別の語。', 'a052a8feb834b45e'),
+  host_2: homographSplitNote('ラテン語 hostis「よそ者・敵」から、古フランス語 host「軍勢」を経た語。敵の軍勢→大勢の集まり→「大群・多数」。hostile（敵意のある）と同じ語源。「主人・主催者」の host（ラテン語 hospes「客をもてなす人」から）とは別の語。', 'ed52c772b7ac7d2a'),
+  found_2: homographSplitNote('ラテン語 fundāre「基礎を置く」（fundus「底」から）から、古フランス語 fonder を経た語。土台を据える→「設立する・創設する」。foundation（基礎・財団）・fundamental（基本的な）と同じ語源。find「見つける」の過去形・過去分詞の found とは別の語。', '1d10064ed9620e85'),
+  peer_2: homographSplitNote('ラテン語 pār「等しい」から、古フランス語 per「同等の者」を経た語→「同等の人」、年齢や立場が同じ人→「仲間・同僚」。pair（一組）・par（同等）と同じ語源。「目を凝らして見る」の peer（中英語 piren から）とは別の語。', '5b4c866f09ffe151'),
+  utter_2: homographSplitNote('古英語 ūtera「外側の」（ūt「外へ」の比較の形）から。いちばん外まで行き着いた→「全くの・完全な」。「口に出す」の utter（中世オランダ語 uteren「外に出す」から）とは別の語だが、どちらも out「外へ」にさかのぼる。', 'ec332f4dd6007b77'),
+  converse_2: homographSplitNote('ラテン語 conversus「向きを反対に変えた」（convertere「向きを変える」の過去分詞）から→「逆の・反対の」。「会話する」の converse（ラテン語 conversārī「人と付き合う」から、古フランス語を経た語）とは別の語で、どちらも convertere にさかのぼるが別々に英語へ入った。', '377cce7d158bd34b'),
+  sound_2: homographSplitNote('古英語 gesund「無事な・健康な」から。体や心に傷がない→「健全な」、欠けたところがない→「しっかりした」、眠りが途切れない→「（眠りが）深い」。「音」の sound（ラテン語 sonus「音」から）とは別の語。', '17b1720ea664e116'),
+  rear_2: homographSplitNote('古英語 rǣran「立てる・起こす」から（raise と同じ語源）。子や家畜を一人前に立たせる→「育てる・飼育する」。「後部・背後」の rear（古フランス語 rere「後ろに」から）とは別の語。', '536f3bee0df7491d'),
+  can_2: homographSplitNote('古英語 canne「容器・カップ」から→「缶・缶詰」。「〜できる」の can（古英語 cunnan「知っている」から）とは別の語で、つづりがたまたま同じになった。', '9d992e10bd4a15b3'),
+  rock_2: homographSplitNote('古英語 roccian「揺らす」から→「揺らす・揺れる」、社会を大きく揺らす→「揺るがす」。音楽の rock（ロック）も rock and roll「揺れて転がる」から。「岩」の rock（古フランス語 roque から）とは別の語。', 'cb791f8291ef9fd3'),
+  mean_2: homographSplitNote('古英語 gemǣne「共通の・ありふれた」から。ありふれた→身分の低い・品のない→「卑劣な・意地悪な」、出し惜しみする→「けちな」。「意味する」の mean（古英語 mǣnan から）とは別の語。', 'ea7785ecf413bc47'),
+  like_2: homographSplitNote('古英語 gelīc「同じ形の・似た」から→「〜に似て・〜のような・〜のように」。alike（似ている）と同じ語。「好む」の like（古英語 līcian「気に入る」から）とは別の語だが、どちらもさかのぼれば「姿・形」を表す同じゲルマン系の語につながる。', 'cce633caf32b7a36'),
+  row_3: homographSplitNote('古英語 rōwan「こぐ」から→「（ボートを）こぐ」。「列・並び」の row（古英語 rāw から）、「口論」の row（発音は /ˈɹaʊ/）とは別の語。', '813240fb847e4b2e'),
+  count_2: homographSplitNote('ラテン語 comes「連れ・お供」から、古フランス語 conte を経た語。王のお供をする者→王から土地を任された貴族→「伯爵」。county（郡）は伯爵の治める土地から。「数える」の count（ラテン語 computāre から）とは別の語。', '1077cbc823726ac3'),
+  box_2: homographSplitNote('中英語 box「一撃・殴ること」から（それより前の由来ははっきりしない）→「（こぶしで）殴る」→「ボクシングをする」。「箱」の box（ギリシャ語 pyxis「つげの木の箱」から）とは別の語。', '8f910ba3b80440e6'),
+  bowl_2: homographSplitNote('ラテン語 bulla「泡・丸いもの」から、古フランス語 boule「球」を経た語。球を転がす→「（ボウリングで）ボールを転がす」、球を投げる→「（クリケットで）投球する」。「鉢・ボウル」の bowl（古英語 bolla「丸い容器」から）とは別の語。', '0d3a24ff8e4fd2bb'),
+  bound_3: homographSplitNote('中世ラテン語 bodina「境界」から、古フランス語 bonde「境」を経た語→「境界・限界・範囲」。boundary（境界）・boundless（限りない）と同じ語源。「〜行きの」の bound（古ノルド語 búinn から）、「縛られた」の bound（bind の過去分詞）とは別の語。', '045f457a30b6eabb'),
+  bow_2: homographSplitNote('古英語 boga「弓・曲がったもの」から→「弓」、弓の形に結んだもの→「ちょう結び」、弦をこする弓の形の棒→「（バイオリンなどの）弓」。「お辞儀する」の bow（古英語 būgan「曲げる」から、発音は /ˈbaʊ/）とは別の語だが、どちらも「曲げる」を表す同じゲルマン系の語にさかのぼる。', 'd53bf28364c7a28a'),
 })

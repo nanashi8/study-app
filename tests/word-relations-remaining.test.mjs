@@ -5,6 +5,7 @@ import test from 'node:test'
 import { ALL_WORDS, getWord } from '../src/data/vocab.js'
 import { posSensesFor, sameFormsFor, wordFormsFor, wordRelationsFor } from '../src/lib/wordRelations.js'
 import { samePosUsageGap } from '../scripts/checks/same-pos-usage.mjs'
+import { phraseSensesGap } from '../scripts/checks/phrase-senses.mjs'
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8')
 
@@ -88,4 +89,37 @@ test('同じ品詞の組は、使い分けを書いたか、書かない理由�
   const gap = samePosUsageGap()
   assert.deepEqual(gap.missing, [], '使い分けも理由もない組')
   assert.deepEqual(gap.stale, [], '同じ品詞の組でなくなった理由の行')
+})
+
+test('熟語や形で使う意味は、品詞・級・例文つきのほかの意味としてカードに出す', () => {
+  const has = (id, pos, pattern) => getWord(id).otherSenses.some((sense) => sense.pos === pos && pattern.test(sense.meaning) && sense.level && sense.example?.en)
+  // 熟語で使う意味（at will・spring from・be faced with・present A with B・set off・be subject to・major in など）
+  assert.ok(has('will', '名', /意志/))
+  assert.ok(has('spring', '動', /生じる/))
+  assert.ok(has('spring', '名', /泉/))
+  assert.ok(has('shoulder', '動', /引き受ける/))
+  assert.ok(has('face', '動', /直面する/))
+  assert.ok(has('present', '動', /贈る/))
+  assert.ok(has('set', '動', /置く/))
+  assert.ok(has('subject', '形', /受けやすい/))
+  assert.ok(has('subject', '動', /さらす/))
+  assert.ok(has('major', '動', /専攻する/))
+  // 形のもとになる別の品詞の意味（torn の tear「裂く」、deserter の desert「見捨てる」、defector の defect「寝返る」、minutely の minute「微小な」）
+  assert.ok(has('tear', '動', /引き裂く/))
+  assert.ok(has('desert', '動', /見捨てる/))
+  assert.ok(has('defect', '動', /寝返る/))
+  assert.ok(has('minute', '形', /微小な/))
+  // 形容詞の「決まった」は set の名詞の意味に混ぜない。
+  assert.equal(getWord('set').meaning, '一式・組')
+  assert.ok(has('set', '形', /決まった/))
+  // 同じ語の品詞ちがいなので、別の見出し語にせず形をつなぐ。
+  assert.ok(sameFormsFor(getWord('desert')).some((item) => item.word === 'deserter'))
+  assert.ok(sameFormsFor(getWord('defect')).some((item) => item.word === 'defector'))
+})
+
+test('熟語の中でカードにない品詞として使っていそうな行は、意味を足したか、足さない理由を残してある', () => {
+  const gap = phraseSensesGap()
+  assert.deepEqual(gap.undecided, [], '意味も理由もない行')
+  assert.deepEqual(gap.stale, [], '拾われなくなった理由の行')
+  assert.deepEqual(gap.badCodes, [], '略号がちがう行')
 })

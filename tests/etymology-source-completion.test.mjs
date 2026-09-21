@@ -14,7 +14,7 @@ const liveById = new Map(ALL_WORDS.map((word) => [word.id, word]))
 test('語源の補完語215語を独立見出しとして収録する', () => {
   assert.equal(ETYMOLOGY_COMPLETION_WORDS.length, 215)
   assert.equal(completionIds.size, 215)
-  assert.equal(ALL_WORDS.length, 8907)
+  assert.equal(ALL_WORDS.length, 8929)
 
   for (const sourceWord of ETYMOLOGY_COMPLETION_WORDS) {
     const liveWord = liveById.get(sourceWord.id)

@@ -1,0 +1,36 @@
+X	bearable	クマの bear とは別の語 bear_2（耐える）の形なので、bear_2 のまとまりへ移す
+X	born	クマの bear とは別の語 bear_2（産む）の過去分詞なので、bear_2 のまとまりへ移す
+bear_2	bearable	形	耐えられる・我慢できる
+bear_2	born	形	生まれた	動詞 bear（産む）の過去分詞から「生まれた」
+bear_2	bearer	名	持参人・運ぶ人
+bear_2	birth	名	誕生・出産	bear（産む）と同じ語源の名詞で、生まれること→「誕生・出産」
+tear_2	tearful	形	涙ぐんだ・涙ながらの
+wind_2	winding	形	曲がりくねった・うねった
+X	utterly	「口に出す」の utter とは別の語 utter_2（全くの）の副詞なので、utter_2 のまとまりへ移す
+utter_2	utterly	副	全く・完全に
+converse_2	conversely	副	逆に・反対に
+found_2	foundation	名	基礎・土台・財団	土台を据えること→「基礎・土台」、資金を据えて作った団体→「財団」
+found_2	founder	名	創設者・設立者
+peer_2	peerless	形	無類の・並ぶもののない	peer（同等の人）＋ -less「〜がない」→肩を並べる者がいない
+sound_2	soundly	副	ぐっすりと・しっかりと
+sound_2	soundness	名	健全さ・確かさ
+rear_2	rearing	名	飼育・養育
+can_2	canned	形	缶詰の・缶入りの
+mean_2	meanness	名	意地悪さ・卑劣さ・けち
+like_2	likeness	名	類似・肖像
+like_2	liken	動	なぞらえる・たとえる
+like_2	alike	形	似ている・同様に
+like_2	likely	形	ありそうな・おそらく	似ている→本当らしく見える→「ありそうな・おそらく」
+row_3	rower	名	こぎ手
+row_3	rowing	名	ボートこぎ・漕艇
+count_2	countess	名	伯爵夫人・女性の伯爵
+count_2	county	名	郡・州に相当する行政区	伯爵の治める土地→「郡・州」
+box_2	boxing	名	ボクシング
+box_2	boxer	名	ボクサー
+bowl_2	bowling	名	ボウリング
+bowl_2	bowler	名	ボウリングをする人・(クリケットの)投手
+bound_3	boundary	名	境界
+bound_3	boundless	形	限りない・無限の	bound（境界）＋ -less「〜がない」→境界のない→「限りない・無限の」
+desert	deserter	名	脱走兵・(義務や仲間を)見捨てた人
+defect	defector	名	亡命者・離反者
+U	bound	boundary	boundary は国・土地などを分ける線としての「境界」。bounds は複数形で「越えてはいけない範囲・限界」を表す

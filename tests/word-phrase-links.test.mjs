@@ -13,6 +13,7 @@ import {
   sharesFormPhrases,
 } from '../src/lib/wordPhrases.js'
 import { wordFormsFor } from '../src/lib/wordRelations.js'
+import { phraseLinksReviewGap } from '../scripts/checks/phrase-links-review.mjs'
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8')
 const phraseNames = (id) => phrasesForWord(getWord(id)).map((phrase) => phrase.phrase)
@@ -101,4 +102,26 @@ test('ほかの品詞の形を使う熟語・構文を、両方向の語のカ�
     if (groups.length) words++
   }
   assert.ok(words >= 700, `ほかの品詞の形の熟語・構文を持つ語が ${words}語しかない`)
+})
+
+test('単語から熟語・構文へのつながりは全件を1件ずつ読み、別の語の熟語は外すか正しい語へ移してある', () => {
+  const gap = phraseLinksReviewGap()
+  assert.deepEqual(gap.missing, [], 'まだ読んでいない語')
+  assert.deepEqual(gap.staleReviewed, [], 'つながりのなくなった語')
+  assert.deepEqual(gap.staleExcluded, [], 'つながりでなくなった外した行')
+  assert.deepEqual(gap.noReason, [], '理由のない外した行')
+  assert.deepEqual(gap.unmoved, [], '別の語へまだ移していないつながり')
+  assert.equal(gap.reviewed, gap.words)
+  // 変化形を作らない代名詞・前置詞・接続詞は、変化形に見える語を拾わない（I の is、she の shed）。
+  assert.ok(!phraseNames('i').some((phrase) => /\bis\b/.test(phrase)))
+  assert.ok(!phraseNames('she').some((phrase) => /\bshed\b/.test(phrase)))
+  // つづりがたまたま同じ別の語の熟語は外す（be の go to bed、mean の by means of）。
+  assert.ok(!phraseNames('be').includes('go to bed'))
+  assert.ok(!phraseNames('mean').includes('by means of'))
+  // 同じつづりの別の語の熟語は、その語の見出し語へ移す（クマの bear に bear with を出さない）。
+  assert.ok(!phraseNames('bear').includes('bear with'))
+  assert.ok(phraseNames('bear_2').includes('bear with'))
+  assert.ok(phraseNames('like_2').includes('look like'))
+  assert.ok(!phraseNames('like').includes('look like'))
+  assert.ok(phraseNames('like').includes('would like to'))
 })

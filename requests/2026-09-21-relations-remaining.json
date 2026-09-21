@@ -64,16 +64,30 @@
     },
     {
       "id": "homograph-headwords",
-      "text": "つづりが同じ別の語で見出し語がないために、形や熟語が別の語のカードに入っているもの（動詞 bear「耐える」、found「設立する」、counter「反対の」、converse「逆の」、utter「全くの」など、見直しで見つかった全件）を独立した見出し語にし、形・熟語をその語へ移す",
-      "population": "形・熟語の見直しで見つかった、見出し語のない同じつづりの別の語の全件",
-      "check": "node --test tests/homograph-words.test.mjs tests/word-relations-remaining.test.mjs",
-      "status": "todo"
+      "text": "つづりが同じ別の語（由来のちがう語）で見出し語がないために、形・熟語・関連語のリンクが別の語のカードに入っている、または行き場がないもの（動詞 bear「耐える」、found「設立する」、counter「反論する」、converse「逆の」、utter「全くの」、tear「涙」、sound「健全な」、like「〜のような」、can「缶」、rock「揺らす」、rear「育てる」など、見直しで見つかった全件）を独立した見出し語にし、形・熟語・関連語のリンクをその語へ移す。同じ語の品詞ちがい（desert「見捨てる」、defect「寝返る」）は別の見出し語にせずほかの意味として足し、形をつなぐ。学習で出会わない古い語・まれな語（list「望む」、angle「釣りをする」など）は見出し語にせず、理由を homographs.js の HOMOGRAPH_NOT_HEADWORD に残す",
+      "population": "見直しで見つかった同じつづりの別の語の全件：熟語を移すと決めたつながり（docs/audits/phrase-links-review.json の moves 12件）、同じつづりの別の語から来たとして見送った派生語の候補（docs/audits/word-forms-review.json の略号「同音」の全行）、別の語から来たと説明を書いて元の語に載せていた形（tearful・soundly など）、関連語の欄で別の語の意味を指す項目（データ検査の linkedFrom の食い違い）",
+      "check": "node --test tests/homograph-headwords.test.mjs tests/homograph-words.test.mjs && node scripts/check-data.mjs",
+      "status": "done"
     },
     {
       "id": "phrase-links-reviewed",
       "text": "その語を含む熟語・構文のつながりを全件1件ずつ読み、同じつづりの別の語の熟語（counter の run counter to、bear（クマ）の bear with など）は正しい語へ移すか、外す理由を書く",
-      "population": "単語から熟語・構文へのつながり全件（4,376件と、この依頼で増える分）",
-      "check": "node scripts/checks/phrase-links-review.mjs",
+      "population": "単語から熟語・構文へのつながり全件（この依頼の見直し後 4,389件・1,020語）",
+      "check": "node --test tests/word-phrase-links.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "phrase-senses",
+      "text": "熟語・構文で使う意味や、形のもとになる別の品詞の意味が、見出し語の意味にもほかの意味にもない語（will の「意志・遺言」、spring の「跳ねる・生じる」、shoulder の「引き受ける」、face の「直面する」、present の「贈る・提示する」、set の「置く・沈む」、subject の「受けやすい」「さらす」、major の「専攻する」、tear の「引き裂く」、desert の「見捨てる」、defect の「寝返る」など）に、品詞・級・例文つきのほかの意味を足す",
+      "population": "単語から熟語・構文へのつながり全件（4,389件）のうち、熟語の中の位置から見出し語がカードにない品詞で使われていそうな全行（scripts/checks/phrase-senses.mjs が拾う行）と、熟語の見直し・同じつづりの別の語の見直しで読んで見つけた語",
+      "check": "node --test tests/word-relations-remaining.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "meaning-pos-marks",
+      "text": "意味欄に、見出しの品詞とちがう品詞の訳語が印なしで混ざっているもの（work「働く・仕事」の「仕事」、end「終わり・終わらせる」、blind「目をくらませる・盲目の」の「盲目の」など）を1語ずつ読み、別の品詞の訳語には品詞の印（(名)・(動)・(形)・(副)）を付ける。先頭の訳語が見出しの品詞とちがう語は、先頭を見出しの品詞の訳語にする",
+      "population": "品詞のある全見出し語の意味欄の訳語のうち、見出しの品詞とちがう品詞に見える訳語（scripts/checks/meaning-pos-marks.mjs が拾う全件）",
+      "check": "node scripts/checks/meaning-pos-marks.mjs",
       "status": "todo"
     },
     {

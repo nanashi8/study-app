@@ -62,6 +62,8 @@ const usageKey = (a, b) => [a.toLowerCase(), b.toLowerCase()].sort().join('|')
 const confusablePairs = []
 const confusableExtras = []
 const errors = []
+// この実行で説明を書いた語。X 行で元のまとまりから外しても、新しい説明は消さない。
+const notedNow = new Set()
 
 const lines = additionsFile ? readFileSync(additionsFile, 'utf8').split('\n').filter((line) => line.trim()) : []
 // 使い分けの行を先に読み、同じ品詞の形を載せてよいかの判断に使う。
@@ -132,7 +134,10 @@ for (const line of lines) {
   if (target) {
     if (target.id === base.id) { errors.push(`同じ語: ${of}`); continue }
     edges.push([base.id, target.id])
-    if (note) notes[target.id] = note
+    if (note) {
+      notes[target.id] = note
+      notedNow.add(target.id)
+    }
     continue
   }
   if (!POS.includes(pos)) { errors.push(`品詞がない: ${line}`); continue }
@@ -164,7 +169,7 @@ for (const group of F.WORD_FORM_GROUPS.filter((group) => !group.includes('succee
   const kept = group.filter((id) => !removed.has(id))
   for (const id of group.filter((id) => removed.has(id))) {
     for (const other of kept) homographSide.add([id, other].sort().join('|'))
-    delete notes[id]
+    if (!notedNow.has(id)) delete notes[id]
   }
   for (const id of kept) unite(kept[0], id)
 }
