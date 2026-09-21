@@ -14,7 +14,8 @@ import {
   vocabMixFreshShare,
   vocabMixIndex,
 } from '../src/lib/vocabMix.js'
-import { normalizeSettings, todayIndex } from '../src/store/useStore.js'
+import { vocabularyReviewMetrics } from '../src/lib/vocabScheduler.js'
+import { normalizeSettings, todayIndex, useStore } from '../src/store/useStore.js'
 
 const read = (relative) => readFileSync(new URL(relative, import.meta.url), 'utf8')
 
@@ -85,7 +86,7 @@ test('バーで指定した割合は、自動プロファイルより優先し�
   }
 })
 
-test('「未修だけ」は一度学んだ語を、「復習だけ」はまだ学んでいない語を、暗記にもテストにも出さない', () => {
+test('「未修だけ」は まだ・不正解 を、「復習だけ」は未修の語を出さず、足りない分は 覚えた・正解 で埋める', () => {
   const now = new Date(2026, 8, 12, 9, 0, 0, 0).getTime()
   const day = todayIndex(now)
   const source = { type: 'level', levelId: '4' }
@@ -94,45 +95,157 @@ test('「未修だけ」は一度学んだ語を、「復習だけ」はまだ�
     box: 1, correct: 1, wrong: 0, due, last: todayIndex(lastAt), lastAt,
     memory: { passes: 1, remembered: 1, forgot: 0, lastAt, lastJudgment: 'remembered', marks: [1] },
   })
+  const forgot = (lastAt, due) => ({
+    box: 0, correct: 0, wrong: 1, due, last: todayIndex(lastAt), lastAt,
+    memory: { passes: 1, remembered: 0, forgot: 1, lastAt, lastJudgment: 'forgot', marks: [0] },
+  })
   const studied = (srs) => (word) => Boolean(srs[word.id])
   const build = (srs, mix, purpose, size = 10) => buildDeck(source, {
     srs, size, purpose, now, day, freshShareOverride: vocabMixFreshShare(mix),
   })
 
-  // 今日40語を「覚えた」（復習日は明日）。以前のテストは、この学習済みの語を「未修」の枠へ先に入れていた。
+  // 今日40語を「覚えた」（復習日は明日）。未修が残るうちは、未修の枠に学んだ語を入れない。
   const learnedToday = Object.fromEntries(words.slice(0, 40).map((word) => [word.id, remembered(now, day + 1)]))
   for (const purpose of ['study', 'quiz']) {
     const deck = build(learnedToday, 'fresh-only', purpose)
     assert.equal(deck.length, 10, purpose)
-    assert.equal(deck.filter(studied(learnedToday)).length, 0, `${purpose}: 未修だけに学んだ語が混ざった`)
+    assert.equal(deck.filter(studied(learnedToday)).length, 0, `${purpose}: 未修が残るのに学んだ語が混ざった`)
   }
-  // 途中の段でも、「未修」の枠は学習済みの語で埋めない（テストは在庫の足りない側だけを補う）。
+  // 途中の段でも、未修が残るうちは「未修」の枠を学習済みの語で埋めない。
   const heavyQuiz = build(learnedToday, 'fresh-heavy', 'quiz')
   assert.equal(heavyQuiz.filter((word) => !learnedToday[word.id]).length, 8)
 
-  // 未修の語が3語しか残っていない級。10問にするために学んだ語で埋めない。
+  // 未修の語が3語しか残っていない級。「未修だけ」は3語を先に出し、残りは覚えた語で埋める。
   const unlearnedIds = new Set(words.slice(-3).map((word) => word.id))
   const nearlyDone = Object.fromEntries(words
     .filter((word) => !unlearnedIds.has(word.id))
     .map((word, index) => [word.id, remembered(now - 2 * 86_400_000, index < 5 ? day : day + 3)]))
   for (const purpose of ['study', 'quiz']) {
     const freshOnly = build(nearlyDone, 'fresh-only', purpose)
-    assert.deepEqual(new Set(freshOnly.map((word) => word.id)), unlearnedIds, purpose)
-    assert.equal(build(nearlyDone, 'fresh-only', purpose, 0).length, 3, `${purpose}: 数えるときも同じ`)
+    assert.equal(freshOnly.length, 10, purpose)
+    assert.deepEqual(
+      new Set(freshOnly.slice(0, 3).map((word) => word.id)),
+      unlearnedIds,
+      `${purpose}: 未修を先に出す`,
+    )
+    assert.equal(build(nearlyDone, 'fresh-only', purpose, 0).length, words.length, `${purpose}: 数えるときも同じ`)
     // 「復習だけ」は、残り3語の未修を混ぜない。
     const reviewOnly = build(nearlyDone, 'review-only', purpose)
     assert.equal(reviewOnly.length, 10, purpose)
     assert.equal(reviewOnly.filter((word) => unlearnedIds.has(word.id)).length, 0, purpose)
   }
 
-  // 未修の語がない級で「未修だけ」なら、学んだ語を出さずに空にして、画面が理由を示す。
+  // 未修の語がない級で「未修だけ」なら、覚えた語から出す。
   const allLearned = Object.fromEntries(words.map((word) => [word.id, remembered(now, day + 1)]))
-  assert.equal(build(allLearned, 'fresh-only', 'study').length, 0)
-  assert.equal(build(allLearned, 'fresh-only', 'quiz').length, 0)
+  assert.equal(build(allLearned, 'fresh-only', 'study').length, 10)
+  assert.equal(build(allLearned, 'fresh-only', 'quiz').length, 10)
+  // 未修も覚えた語もなく「まだ」の語だけが残る級なら、「未修だけ」は空にして、画面が理由を示す。
+  const allForgot = Object.fromEntries(words.map((word) => [word.id, forgot(now - 86_400_000, day)]))
+  assert.equal(build(allForgot, 'fresh-only', 'study').length, 0)
+  assert.equal(build(allForgot, 'fresh-only', 'quiz').length, 0)
+  assert.equal(build(allForgot, 'review-only', 'study').length, 10)
   assert.equal(vocabMixEmptyNotice('fresh-only').title, '未修の単語は残っていません')
   assert.equal(vocabMixEmptyNotice('review-only').title, '復習する単語はまだありません')
   assert.equal(vocabMixEmptyNotice('even'), null)
   assert.equal(vocabMixEmptyNotice('auto'), null)
+})
+
+test('未修の枠は未修が尽きたら 覚えた・正解 を出題順に、復習の枠は まだ・不正解 が尽きたら 覚えた・正解 を点数の低い順に出す', () => {
+  const DAY_MS = 86_400_000
+  const now = new Date(2026, 8, 21, 10, 0, 0, 0).getTime()
+  const day = todayIndex(now)
+  const source = { type: 'level', levelId: '4' }
+  const words = wordsByLevel('4')
+  const scoreOf = (entry) => vocabularyReviewMetrics(entry, { now, day }).score
+
+  // 記録は実際の書き込み口（ストアの review）で作る。events は [何日前, 結果]。
+  const recorded = (events) => {
+    const original = useStore.getState()
+    const realNow = Date.now
+    try {
+      useStore.setState({ srs: {} })
+      events.forEach(([daysAgo, result], index) => {
+        Date.now = () => now - daysAgo * DAY_MS - (events.length - index) * 60_000
+        useStore.getState().review('fixture', result, 'vocab')
+      })
+      return useStore.getState().srs.fixture
+    } finally {
+      Date.now = realNow
+      useStore.setState(original, true)
+    }
+  }
+  // 復習日が来るたびに成功し続け、箱が育ったまま復習日を過ぎた記録。
+  const steadyRecorded = (result) => {
+    const events = []
+    let daysAgo = 40
+    for (let turn = 0; turn < 40 && daysAgo > 0; turn += 1) {
+      events.push([daysAgo, result])
+      const entry = recorded(events)
+      if (entry.box >= 4) return entry
+      daysAgo = Math.max(1, daysAgo - Math.max(1, entry.due - todayIndex(now - daysAgo * DAY_MS)))
+    }
+    throw new Error('素材の箱が育たない')
+  }
+
+  for (const purpose of ['study', 'quiz']) {
+    const hit = purpose === 'quiz' ? 'correct' : 'remembered'
+    const miss = purpose === 'quiz' ? 'wrong' : 'forgot'
+    const entries = {
+      missed: recorded([[3, miss], [1, miss]]),
+      due: recorded([[5, hit], [3, hit]]),
+      steady: steadyRecorded(hit),
+      today: recorded([[0, hit]]),
+    }
+    // 連続で成功して復習日を大きく過ぎた語は、今日が復習日の語より点数が低い。
+    assert.ok(
+      scoreOf(entries.steady) < scoreOf(entries.due) && scoreOf(entries.due) < scoreOf(entries.today),
+      `${purpose}: 素材の点数`,
+    )
+
+    // 未修のない級：まだ15語、復習日が来た覚えた語5語、連続で覚えた語5語、残りは今日覚えた語。
+    const kinds = new Map()
+    const plan = [['missed', 15], ['due', 5], ['steady', 5]]
+    let at = 0
+    for (const [kind, count] of plan) {
+      for (let index = 0; index < count; index += 1) kinds.set(words[at++].id, kind)
+    }
+    for (; at < words.length; at += 1) kinds.set(words[at].id, 'today')
+    const srsFor = (swap = {}) => Object.fromEntries(words.map((word) => {
+      const kind = kinds.get(word.id)
+      return [word.id, entries[swap[kind] ?? kind]]
+    }))
+    const build = (srs, mix) => buildDeck(source, {
+      srs, size: 10, purpose, now, day, freshShareOverride: vocabMixFreshShare(mix),
+    })
+    const kindsOf = (deck) => deck.map((word) => kinds.get(word.id))
+    const missedCount = (deck) => kindsOf(deck).filter((kind) => kind === 'missed').length
+
+    const srs = srsFor()
+    // 未修寄りでも、まだ・不正解は復習の枠の2語だけ。未修の枠の8語は覚えた・正解から出す。
+    assert.equal(missedCount(build(srs, 'fresh-heavy')), 2, `${purpose}: 未修寄り`)
+    assert.equal(missedCount(build(srs, 'fresh-only')), 0, `${purpose}: 未修だけ`)
+    assert.equal(missedCount(build(srs, 'review-heavy')), 8, `${purpose}: 復習寄り`)
+    assert.equal(missedCount(build(srs, 'review-only')), 10, `${purpose}: 復習だけ`)
+    // 未修の枠の覚えた・正解は出題順：復習日が来た語、次に連続で覚えた・正解した語の確認。
+    assert.deepEqual(
+      kindsOf(build(srs, 'fresh-only')),
+      [...Array(5).fill('due'), ...Array(5).fill('steady')],
+      `${purpose}: 未修の枠は出題順`,
+    )
+
+    // まだ・不正解がない級（まだの語も今日覚えた語にする）：復習の枠は覚えた・正解を点数の低い順に。
+    const noMissed = srsFor({ missed: 'today' })
+    assert.deepEqual(
+      kindsOf(build(noMissed, 'review-only')),
+      [...Array(5).fill('steady'), ...Array(5).fill('due')],
+      `${purpose}: 復習の枠は点数の低い順`,
+    )
+    assert.equal(
+      kindsOf(build(noMissed, 'review-heavy')).filter((kind) => kind !== 'today').length,
+      10,
+      `${purpose}: 復習寄りも点数の低い語から`,
+    )
+  }
 })
 
 test('学習の途中でバーを動かすと、まだ答えていない先の問題からその割合で組み直す', () => {

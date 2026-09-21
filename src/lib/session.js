@@ -253,7 +253,71 @@ function vocabMixSides(freshShareOverride) {
   return { review: freshShareOverride < 1, fresh: freshShareOverride > 0 }
 }
 
-function automaticVocabularyBuckets(pool, srs, day, purpose, manual = false) {
+// 出題バランスを手で指定したときに分ける3つの在庫。
+//   fresh  未修…暗記もテストも記録のない語
+//   missed まだ・不正解…直近の答えが「まだ」「不正解」「わからない」の語（苦手な語）
+//   known  覚えた・正解…記録があり、直近の答えが「覚えた」「正解」の語
+function vocabMixGroupOf(entry) {
+  if (!hasVocabularyReviewEvidence(entry)) return 'fresh'
+  return ['forgot', 'wrong', 'unknown'].includes(latestOutcome(entry)) ? 'missed' : 'known'
+}
+
+/**
+ * 出題バランスを手で指定したときの「復習」と「未修」の枠。ordered は出題順（studyOrder.js）に並べた語。
+ * 復習の枠は まだ・不正解 の語から、未修の枠は未修の語から出し、どちらも足りない分は 覚えた・正解 の語で埋める。
+ *   復習の枠 … まだ・不正解 を出し切ってから、覚えた・正解 を点数の低い順（忘れかけている順）に。
+ *              復習寄りほど、連続で覚えた・正解した語の出る数が減る。
+ *   未修の枠 … 未修を出し切ってから、残りの 覚えた・正解 を出題順（復習日が来た語から）に。
+ * 途中の段は、それでも足りない枠をもう一方の在庫で補う。「未修だけ」は まだ・不正解 を、
+ * 「復習だけ」は未修の語を出さない。size が 0 なら、出せる語をすべて同じ割合で並べる。
+ * 点数は now・day の時点で、一覧の「復習のおすすめ順」と同じもの（vocabularyReviewMetrics の score）。
+ */
+function manualVocabMixShares(
+  ordered,
+  srs,
+  { size = 0, freshShare, cycleIds = [], now = Date.now(), day = todayIndex(now) } = {},
+) {
+  const share = Math.min(1, Math.max(0, freshShare))
+  const sides = vocabMixSides(share)
+  const cycle = new Set(Array.isArray(cycleIds) ? cycleIds : [])
+  const groups = { fresh: [], missed: [], known: [] }
+  for (const word of ordered) groups[vocabMixGroupOf(srs[word.id])].push(word)
+  // 同じ周回で出し終えた語は、未修・覚えた・正解 からは外し、まだ・不正解 では最後に回す。
+  const fresh = sides.fresh ? groups.fresh.filter((word) => !cycle.has(word.id)) : []
+  const missed = sides.review ? unseenFirst(groups.missed, cycle) : []
+  const known = groups.known.filter((word) => !cycle.has(word.id))
+  const available = fresh.length + missed.length + known.length
+  const target = size > 0 ? Math.min(size, available) : available
+  const freshTarget = Math.round(target * share)
+  const reviewTarget = target - freshTarget
+
+  const freshPicked = fresh.slice(0, freshTarget)
+  const reviewPicked = missed.slice(0, reviewTarget)
+  // 復習の枠が先に、点数の低い 覚えた・正解 を取る。同じ点数なら出題順のまま（sort は安定）。
+  const scoreOf = new Map(known.map((word) => [
+    word.id,
+    vocabularyReviewMetrics(srs[word.id], { now, day }).score,
+  ]))
+  const byScore = [...known].sort((a, b) => scoreOf.get(a.id) - scoreOf.get(b.id))
+  const usedKnown = new Set()
+  for (const word of byScore) {
+    if (reviewPicked.length >= reviewTarget) break
+    reviewPicked.push(word)
+    usedKnown.add(word.id)
+  }
+  for (const word of known) {
+    if (freshPicked.length >= freshTarget) break
+    if (usedKnown.has(word.id)) continue
+    freshPicked.push(word)
+  }
+  const spareFresh = fresh.slice(Math.min(fresh.length, freshTarget))
+  const spareMissed = missed.slice(Math.min(missed.length, reviewTarget))
+  while (freshPicked.length < freshTarget && spareMissed.length) freshPicked.push(spareMissed.shift())
+  while (reviewPicked.length < reviewTarget && spareFresh.length) reviewPicked.push(spareFresh.shift())
+  return { review: reviewPicked, fresh: freshPicked }
+}
+
+function automaticVocabularyBuckets(pool, srs, day, purpose) {
   const due = pool.filter((word) => (
     Number.isFinite(srs[word.id]?.due) && srs[word.id].due <= day
   ))
@@ -266,22 +330,6 @@ function automaticVocabularyBuckets(pool, srs, day, purpose, manual = false) {
   const waiting = pool.filter((word) => (
     Number.isFinite(srs[word.id]?.due) && srs[word.id].due > day
   ))
-  if (manual) {
-    // バーで割合を指定したときは、バーの呼び名どおりに分ける。
-    // 未修＝暗記もテストもまだの語。復習＝一度でも学んだ語で、復習日が来た語を先に出す。
-    // 学習済みで復習日前の語を「未修」の枠に入れると、「未修だけ」でも学んだ語が出てしまう。
-    const studied = (word) => hasVocabularyReviewEvidence(srs[word.id])
-    const reviewIds = new Set(review.map((word) => word.id))
-    const fresh = pool.filter((word) => !studied(word))
-    return {
-      due,
-      failedSameDay,
-      review: [...review, ...pool.filter((word) => studied(word) && !reviewIds.has(word.id))],
-      unlearned: fresh,
-      waiting,
-      variety: fresh,
-    }
-  }
   // 暗記は未学習語を先に、テストは学習済みの別の語を先にする。
   // 期限前の安定語は、優先側の在庫が足りないときだけ補充に使う。
   const variety = purpose === 'quiz'
@@ -326,13 +374,28 @@ export function automaticVocabSessionPlan(
     }
   }
 
-  const buckets = automaticVocabularyBuckets(pool, srs, day, purpose, manualShare !== null)
+  const buckets = automaticVocabularyBuckets(pool, srs, day, purpose)
   const recent = recentPerformance(
     pool,
     srs,
     day,
     Math.min(RECENT_PERFORMANCE_SAMPLE_SIZE, Math.max(4, targetSize)),
   )
+  if (manualShare !== null) {
+    // 手で指定した割合は、buildDeck と同じ枠の組み方（manualVocabMixShares）で数える。
+    const shares = manualVocabMixShares(pool, srs, { size, freshShare: manualShare, day })
+    return {
+      profile: 'manual',
+      freshShare: manualShare,
+      targetSize: shares.review.length + shares.fresh.length,
+      reviewCount: shares.review.length,
+      varietyCount: shares.fresh.length,
+      dueCount: buckets.due.length,
+      failedSameDayCount: buckets.failedSameDay.length,
+      recentAttempts: recent.attempts,
+      recentFailureRate: recent.failureRate,
+    }
+  }
   const reliableRecentRate = recent.attempts >= 4
   const duePressure = buckets.due.length / targetSize
   const autoProfile = (
@@ -342,26 +405,22 @@ export function automaticVocabSessionPlan(
     : duePressure >= 0.5 || (reliableRecentRate && recent.failureRate >= 0.25)
       ? 'balanced'
       : 'expansion'
-  const profile = manualShare === null ? autoProfile : 'manual'
-  const freshShare = manualShare ?? AUTOMATIC_VOCAB_MIX_PROFILES[autoProfile].freshShare
-  // 自動配分は「新しい語を必ず1語は混ぜる」。手動指定のときは指定した割合を優先し、
-  // 「復習だけ」「未修だけ」と言われたらそのとおりに寄せる。
-  const desiredVarietyCount = manualShare !== null
-    ? Math.round(targetSize * freshShare)
-    : buckets.review.length
-      ? Math.max(1, Math.round(targetSize * freshShare))
-      : targetSize
-  const sides = vocabMixSides(manualShare)
+  const profile = autoProfile
+  const freshShare = AUTOMATIC_VOCAB_MIX_PROFILES[autoProfile].freshShare
+  // 自動配分は「新しい語を必ず1語は混ぜる」。
+  const desiredVarietyCount = buckets.review.length
+    ? Math.max(1, Math.round(targetSize * freshShare))
+    : targetSize
   let varietyCount = Math.min(buckets.variety.length, desiredVarietyCount)
   let reviewCount = Math.min(buckets.review.length, targetSize - varietyCount)
   let remaining = targetSize - reviewCount - varietyCount
-  // 足りない側はもう一方で補う。「復習だけ」「未修だけ」はもう一方を使わず、そのぶん少なく出す。
-  if (remaining > 0 && sides.fresh) {
+  // 足りない側はもう一方で補う。
+  if (remaining > 0) {
     const extraVariety = Math.min(remaining, buckets.variety.length - varietyCount)
     varietyCount += extraVariety
     remaining -= extraVariety
   }
-  if (remaining > 0 && sides.review) {
+  if (remaining > 0) {
     reviewCount += Math.min(remaining, buckets.review.length - reviewCount)
   }
 
@@ -393,12 +452,9 @@ function balancedAutomaticDeck(
   size,
   purpose,
   completedIds = [],
-  freshShareOverride = null,
 ) {
-  const plan = automaticVocabSessionPlan(pool, {
-    srs, day, size, purpose, freshShareOverride,
-  })
-  const buckets = automaticVocabularyBuckets(pool, srs, day, purpose, plan.profile === 'manual')
+  const plan = automaticVocabSessionPlan(pool, { srs, day, size, purpose })
+  const buckets = automaticVocabularyBuckets(pool, srs, day, purpose)
   const cycleIds = new Set(Array.isArray(completedIds) ? completedIds : [])
   const orderedReview = unseenFirst(buckets.review, cycleIds)
   const availableVariety = cycleIds.size
@@ -410,8 +466,7 @@ function balancedAutomaticDeck(
 
   // 未出の別語が足りない場合だけ、復習が必要な語で設定数へ近づける。
   // 期限前の安定語や単なる既出語を、数合わせのために繰り返すことはしない。
-  // 「未修だけ」のときは、復習の語で数を合わせない。
-  if (remaining > 0 && vocabMixSides(freshShareOverride).review) {
+  if (remaining > 0) {
     const selectedReviewIds = new Set(selectedReview.map((item) => item.id))
     const extraReview = orderedReview
       .filter((item) => !selectedReviewIds.has(item.id))
@@ -501,29 +556,27 @@ export function buildDeck(
   })
   if (!isAutomaticVocabularySource(source)) return size ? pool.slice(0, size) : pool
 
-  // 出題バランスの「未修だけ」は学んだ語を、「復習だけ」はまだ学んでいない語を、
-  // 最初から出す語の候補に入れない（下の数合わせでも混ざらないようにする）。
-  const sides = vocabMixSides(freshShareOverride)
-  const mixPool = sides.review && sides.fresh
-    ? pool
-    : pool.filter((word) => (
-        hasVocabularyReviewEvidence(srs[word.id]) ? sides.review : sides.fresh
-      ))
+  // 出題バランスを手で指定したときは、その割合で「復習」と「未修」の枠を組む（manualVocabMixShares）。
+  // size が 0（数えるとき・全部を選んだとき）も、同じ割合で出せる語をすべて並べる。
+  if (Number.isFinite(freshShareOverride)) {
+    const shares = manualVocabMixShares(pool, srs, {
+      size, freshShare: freshShareOverride, cycleIds, now, day,
+    })
+    return interleaveProportionally(shares.review, shares.fresh)
+  }
 
-  // 通常セッションは「今日の候補」（出題順の0・1段）から組む。今日「まだ」「不正解」になった語、
+  // 自動のときは「今日の候補」（出題順の0・1段）から組む。今日「まだ」「不正解」になった語、
   // 連続で覚えた・正解した語の確認、復習日前の語は、今日の候補があるうちは暗記にもテストにも混ぜない。
-  const candidates = mixPool.filter((word) => (
+  const candidates = pool.filter((word) => (
     keys.get(word.id).stage <= STUDY_ORDER_STAGE.fresh
   ))
   if (!size) {
     // 数えるとき（結果画面の「次へ進む」など）は、今日の候補のあとに続けて出せる残りも含める。
     const candidateIds = new Set(candidates.map((word) => word.id))
-    return [...candidates, ...mixPool.filter((word) => !candidateIds.has(word.id))]
+    return [...candidates, ...pool.filter((word) => !candidateIds.has(word.id))]
   }
 
-  const deck = balancedAutomaticDeck(
-    candidates, srs, day, size, purpose, cycleIds, freshShareOverride,
-  )
+  const deck = balancedAutomaticDeck(candidates, srs, day, size, purpose, cycleIds)
   // 今日の候補で足りない分は、同じ教材の残りを出題順（今日「まだ」「不正解」になった語を点数の低い順に、
   // そのあと連続で覚えた・正解した語の確認、最後に復習日前の語）で続けて出す。
   // 今日の候補を学び終えた日も、次の復習日を待たずにくり返せる。
@@ -533,7 +586,7 @@ export function buildDeck(
       ...(Array.isArray(cycleIds) ? cycleIds : []),
     ])
     deck.push(
-      ...mixPool.filter((word) => !used.has(word.id)).slice(0, size - deck.length),
+      ...pool.filter((word) => !used.has(word.id)).slice(0, size - deck.length),
     )
   }
   return deck.slice(0, size)
