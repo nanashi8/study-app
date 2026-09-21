@@ -542,9 +542,9 @@ export function VocabStudyScreen() {
               <UsageGuideCards guides={word.usageGuides} />
 
               {/* 品詞がちがうだけで同じ語から来た形。発音を聞いて、その語の辞書ページへ移れる。 */}
-              {relations.forms.length > 0 && (
+              {(relations.forms.length > 0 || relations.sameForms.length > 0) && (
                 <div className="rounded-2xl bg-white p-4 ring-1 ring-emerald-100">
-                  <WordFormSection items={relations.forms} ownNote={relations.formOwnNote} onWord={openRelatedWord} showPhonetic={settings.showPhonetic} />
+                  <WordFormSection items={relations.forms} sameItems={relations.sameForms} ownNote={relations.formOwnNote} onWord={openRelatedWord} showPhonetic={settings.showPhonetic} />
                 </div>
               )}
 

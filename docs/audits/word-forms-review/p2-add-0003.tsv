@@ -1,0 +1,115 @@
+art	artist	名	芸術家・画家
+N	art	artist	人物
+attack	attacker	名	攻撃する人・襲撃者
+U	awesome	awful	awesome は「すばらしい」（くだけた言い方）。awful は「ひどい・恐ろしい」。どちらも awe（畏れ）から意味が分かれた
+back	backing	名	後援・支持	動詞 back（支持する）の名詞
+N	baker	bakery	人物
+bank	banker	名	銀行家・銀行員
+N	bank	banker	人物
+N	beginner	beginning	人物
+N	body	embodiment	別意
+borrow	borrower	名	借り手
+N	builder	building	人物
+N	care	carefulness	別意
+N	care	carelessness	別意
+U	carefree	careful	careful は「注意深い」。carefree は「心配事のない・のんきな」
+N	careful	careless	反対
+N	careful	caring	別意
+U	carefree	careless	careless は「不注意な」（よくない意味）。carefree は「心配事のない・のんきな」（よい意味）
+N	careless	caring	別意
+N	carefree	caring	別意
+N	carpenter	carpentry	人物
+chemical	chemistry	名	化学
+chemical	chemist	名	化学者・薬剤師
+N	chemical	chemistry	別意
+N	chemical	chemist	人物
+N	chemist	chemistry	人物
+N	cloud	cloudiness	別意
+U	comfortable	comforting	comfortable は「快適な・心地よい」。comforting は「慰めになる・ほっとさせる」
+N	computation	computer	別意
+contest	contestant	名	出場者・競技者
+N	contest	contestant	人物
+cook	cooking	名	料理・調理
+cook	cooker	名	調理器具・なべ
+P	cook	動	料理する
+U	cook	cooking	cook は「料理人」（動詞で「料理する」）。cooking は「料理（すること）」
+U	cook	cooker	cook は「料理人」。cooker は「調理器具・なべ」で、料理人のことではない
+N	cooker	cooking	別意
+N	correct	correctional	別意
+N	dancer	dancing	人物
+dentist	dental	形	歯の・歯科の
+N	drawer	drawing	別意
+dry	dryer	名	乾燥機・ドライヤー
+enemy	enmity	名	敵意・憎悪	enemy（敵）と同じ語から→「敵意・憎悪」
+N	enemy	enmity	人物
+engineer	engine	名	エンジン・機関
+engineer	engineering	名	工学・技術
+N	engine	engineer	人物
+N	engineer	engineering	人物
+N	engine	engineering	別意
+U	enjoyable	joyful	enjoyable は物事が「楽しい」。joyful は人や出来事が「喜びに満ちた」
+N	enjoyable	joyous	別意
+U	joyful	joyous	joyous は joyful とほぼ同じ「喜びに満ちた」で、やや改まった言い方
+U	entrance	entry	entrance は「入り口・入場」。entry は「入ること・参加・(辞書などの)項目」
+N	event	eventuality	別意
+farm	farmer	名	農場主・農家
+farm	farming	名	農業・農作業
+P	farm	動	農業を営む・耕作する
+N	farm	farmer	人物
+N	farm	farming	別意
+N	farmer	farming	人物
+fit	fitting	形	似つかわしい・ふさわしい
+U	fit	fitting	fit は「健康な・適した・(大きさが)合う」。fitting は「ふさわしい・適切な」で、書き言葉で使う
+fly	flyer	名	ちらし・飛ぶもの・飛行士
+N	fool	folly	人物
+N	fool	foolishness	人物
+U	folly	foolishness	foolishness は「愚かさ」。folly は「愚かな考えや行い」
+N	form	formation	別意
+N	form	formality	別意
+garden	gardener	名	庭師・園芸家
+garden	gardening	名	庭いじり・園芸
+N	garden	gardener	人物
+U	garden	gardening	garden は「庭」。gardening は「庭いじり・園芸」
+N	gradation	grade	別意
+guard	guardian	名	保護者・後見人
+U	guard	guardian	guard は「警備員・見張り」。guardian は「保護者・後見人・守護者」
+heat	heater	名	暖房器具・ヒーター
+P	heat	動	熱する・暖める
+N	heat	heater	別意
+hero	heroism	名	英雄的行為・勇敢さ
+hero	heroine	名	女性の英雄・(物語の)ヒロイン
+N	hero	heroism	人物
+N	hero	heroine	男性と女性を言い分ける組で、取り違えにくい
+N	heroine	heroism	人物
+history	historian	名	歴史家
+N	historian	history	人物
+home	homeless	形	家のない・ホームレスの
+inside	insider	名	内部の人・関係者
+interview	interviewer	名	面接官・インタビューする人
+interview	interviewee	名	面接を受ける人
+N	interview	interviewer	人物
+N	interview	interviewee	人物
+U	interviewee	interviewer	interviewer は「面接する人」、interviewee は「面接を受ける人」（-er はする人、-ee はされる人）
+jewel	jewelry	名	宝石類・アクセサリー
+jewel	jeweler	名	宝石商
+U	jewel	jewelry	jewel は1つ1つの「宝石」（数えられる）。jewelry は「宝石類・アクセサリー」をまとめて言い、数えない
+N	jewel	jeweler	人物
+N	enjoyment	joy	別意
+king	kingdom	名	王国・界
+N	king	kingdom	人物
+land	landing	名	着陸・上陸
+law	lawyer	名	弁護士・法律家
+N	law	lawyer	人物
+N	leader	leadership	人物
+lend	lender	名	貸し手
+N	less	lessened	別意
+less	lesser	形	(重要度・程度が)小さいほうの・劣った
+U	less	lesser	less は量が「より少ない」。lesser は重要度や程度が「より小さいほうの・劣った」（to a lesser extent）
+N	lessened	lesser	別意
+library	librarian	名	図書館員・司書
+N	librarian	library	人物
+line	lineage	名	家系・血統
+N	line	lineage	別意
+N	enlistment	list	別意
+U	lively	living	living は「生きている・生活の」（living things）。lively は「活発な・生き生きした」
+N	livable	living	別意

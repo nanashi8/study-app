@@ -1,0 +1,103 @@
+mother	motherhood	名	母親であること・母性
+N	mother	motherhood	人物
+N	mouth	mouthful	別意
+north	northern	形	北の・北部の
+south	southern	形	南の・南部の
+west	western	形	西の・西洋の
+open	opener	名	開ける道具（缶切り・栓抜き）
+out	outer	形	外側の・外の
+park	parking	名	駐車・駐車場
+P	park	動	駐車する
+N	park	parking	別意
+N	part	party	別意
+N	partiality	party	別意
+N	please	pleasantly	別意
+point	pointer	名	ヒント・指し示すもの・ポインター
+point	pointed	形	とがった・鋭い
+P	point	動	指さす・向ける
+N	point	pointer	別意
+prince	princess	名	王女・王妃
+N	prince	princess	男性と女性を言い分ける組で、取り違えにくい
+red	reddish	形	赤みがかった
+N	red	reddish	別意
+N	room	roomful	別意
+N	sale	seller	人物
+say	saying	名	ことわざ・格言・言うこと
+school	schooling	名	学校教育
+N	school	schooling	別意
+second	secondary	形	二次的な・中等の・副次的な
+U	second	secondary	second は「2番目の」。secondary は「二次的な・中等の」（secondary school＝中等学校）
+ship	shipping	名	海運・発送・配送
+ship	shipment	名	積み荷・発送（した荷）
+P	ship	動	輸送する・発送する
+N	ship	shipping	別意
+N	ship	shipment	別意
+U	shipment	shipping	shipping は「発送・配送（すること）」（free shipping）。shipment は「発送した荷・積み荷」
+shop	shopping	名	買い物
+shop	shopper	名	買い物客
+P	shop	動	買い物をする
+U	shop	shopping	shop は「店」（動詞で「買い物をする」）。shopping は「買い物（をすること）」（go shopping）
+N	shop	shopper	人物
+N	shopper	shopping	人物
+N	short	shortened	別意
+U	sick	sickly	sick は「病気の・気分が悪い」。sickly は「病弱な・青白い」（体が弱いこと）
+sister	sisterhood	名	姉妹関係・女性どうしの連帯
+N	sister	sisterhood	人物
+ski	skier	名	スキーをする人・スキーヤー
+ski	skiing	名	スキー（をすること）
+N	spoon	spoonful	別意
+still	stillness	名	静けさ・静止	形容詞 still（静かな・静止した）の名詞
+P	still	形	静かな・静止した
+store	storage	名	保管・貯蔵（庫）
+P	store	動	蓄える・保管する
+U	storage	store	store は「店」（動詞で「蓄える」）。storage は「保管・貯蔵（する場所）」
+sweat	sweater	名	セーター	sweat（汗をかく）から、汗をかかせるもの→「セーター」
+N	sweat	sweater	別意
+teach	teaching	名	教えること・教え
+think	thinker	名	思想家・考える人
+think	thinking	名	考え方・思考
+N	time	timeliness	別意
+time	timer	名	タイマー・時限装置
+N	time	timer	別意
+N	timeliness	timer	別意
+town	township	名	町区・郡区
+N	town	township	別意
+train	trainer	名	指導者・訓練士
+train	trainee	名	研修生・実習生
+train	training	名	訓練・研修
+P	train	動	訓練する・鍛える
+N	train	trainer	人物
+N	train	trainee	人物
+U	train	training	train は「電車・列車」（動詞で「訓練する」）。training は「訓練・研修」
+U	trainee	trainer	trainer は「訓練する人・指導者」、trainee は「訓練を受ける人・研修生」（-er はする人、-ee はされる人）
+N	trainer	training	人物
+N	trainee	training	人物
+U	true	truthful	true は「本当の・真実の」。truthful は人が「正直な・うそをつかない」
+up	upper	形	上の・上位の
+use	user	名	使用者・利用者
+violin	violinist	名	バイオリン奏者
+N	violin	violinist	人物
+U	awaken	wake	wake は「目を覚ます・起こす」（wake up）。awaken は「(感情・意識を)呼び覚ます」で、書き言葉で使う
+water	watery	形	水っぽい・薄い
+N	weak	weakened	別意
+well	wellness	名	健康（であること）	形容詞 well（健康な）の名詞
+N	windward	windy	別意
+word	wording	名	言葉遣い・言い回し
+U	word	wording	word は「語・言葉」。wording は「言い回し・言葉遣い」（選んだ言葉の使い方）
+N	world	worldliness	別意
+write	writing	名	書くこと・文章・筆跡
+U	action	activity	action は1回の「行動・行為」（take action）。activity は続けて行う「活動」（club activities）
+N	activist	activity	人物
+N	activity	actor	人物
+N	activation	activity	別意
+N	action	actor	人物
+N	activist	actor	別意
+N	activation	actor	人物
+N	action	activist	人物
+N	action	activation	別意
+N	activation	activist	人物
+active	activism	形	(社会運動の)行動主義・活動
+U	aged	aging	aged は「年を取った・〜歳の」。aging は「老いつつある・高齢化が進む」（an aging society）
+N	aged	ageless	別意
+N	ageless	aging	別意
+N	alive	livable	別意

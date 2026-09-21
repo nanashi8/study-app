@@ -120,17 +120,30 @@ function SectionTitle({ className, children }) {
   return <div className={cx('mb-1.5 text-xs font-extrabold tracking-wide', className)}>{children}</div>
 }
 
-/** 品詞がちがうだけで同じ語から来た形（decide なら decision・decisive・decisively）。 */
-export function WordFormSection({ items, onWord, showPhonetic, ownNote = '' }) {
-  if (!items.length) return null
+/**
+ * 同じ語から来た語。品詞がちがう形（decide なら decision・decisive・decisively）と、
+ * 同じ品詞の派生語（music なら musician、decision なら decisiveness）を分けて並べる。
+ */
+export function WordFormSection({ items, sameItems = [], onWord, showPhonetic, ownNote = '' }) {
+  if (!items.length && !sameItems.length) return null
   return (
     <div data-word-forms>
-      <SectionTitle className={TONES.form.title}>ほかの品詞の形</SectionTitle>
       {/* この語自身が、もとの語から意味の離れた語のとき。並ぶ形はもとの語のものなので、つながりを先に示す。 */}
       {ownNote && (
         <p className="mb-1 text-[11px] font-bold leading-relaxed text-amber-800/80" data-word-form-own-note>{ownNote}</p>
       )}
-      <RelatedWordList items={items} tone="form" onWord={onWord} showPhonetic={showPhonetic} />
+      {items.length > 0 && (
+        <>
+          <SectionTitle className={TONES.form.title}>ほかの品詞の形</SectionTitle>
+          <RelatedWordList items={items} tone="form" onWord={onWord} showPhonetic={showPhonetic} />
+        </>
+      )}
+      {sameItems.length > 0 && (
+        <div className={items.length ? 'mt-3' : ''} data-word-same-forms>
+          <SectionTitle className={TONES.form.title}>同じ品詞の派生語</SectionTitle>
+          <RelatedWordList items={sameItems} tone="form" onWord={onWord} showPhonetic={showPhonetic} />
+        </div>
+      )}
     </div>
   )
 }

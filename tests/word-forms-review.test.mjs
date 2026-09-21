@@ -6,8 +6,8 @@ import test from 'node:test'
 import { wordFormsReviewGap } from '../scripts/checks/word-forms-review.mjs'
 
 for (const [usage, label] of [[false, 'ほかの品詞の形'], [true, '関連語の使い分け']]) {
-  test(`品詞のある全見出し語を、${label}について1語ずつ読んだ`, () => {
-    const gap = wordFormsReviewGap({ usage })
+  test(`品詞のある全見出し語を、${label}について1語ずつ読んだ`, async () => {
+    const gap = await wordFormsReviewGap({ usage })
     assert.deepEqual(gap.missing, [], 'まだ読んでいない語')
     assert.deepEqual(gap.stale, [], '辞書にない id')
     assert.equal(gap.reviewed, gap.population)

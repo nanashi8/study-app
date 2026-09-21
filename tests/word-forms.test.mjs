@@ -11,7 +11,7 @@ import {
   WORD_FORM_NOTES,
 } from '../src/data/word-forms.js'
 import { SPELLING_CONFUSABLE_EXTRAS, SPELLING_CONFUSABLE_PAIRS } from '../src/data/spelling-confusables.js'
-import { antonymWordsFor, confusablesFor, wordFormsFor, wordRelationsFor } from '../src/lib/wordRelations.js'
+import { antonymWordsFor, confusablesFor, sameFormsFor, wordFormsFor, wordRelationsFor } from '../src/lib/wordRelations.js'
 import { wordFormCandidatePairs, wordFormExtraCandidates } from '../scripts/word-form-candidates.mjs'
 import { arpaToIPA } from '../scripts/arpa-ipa.mjs'
 
@@ -45,14 +45,14 @@ test('つづりが似ているだけの別の語は、ほかの品詞の形で�
   assert.ok(admiral.segments.some((segment) => segment.changed))
 })
 
-test('台帳のまとまりは辞書にある語だけで、どれも2つ以上の品詞にまたがる', () => {
+test('台帳のまとまりは辞書にある語だけで、どれも2語以上', () => {
   const seen = new Set()
   for (const group of WORD_FORM_GROUPS) {
     const key = group.join('|')
     assert.equal(seen.has(key), false, `重複: ${key}`)
     seen.add(key)
     for (const id of group) assert.ok(getWord(id), `辞書にない語: ${id}`)
-    assert.ok(new Set(group.map((id) => getWord(id).pos)).size >= 2, `品詞が1つだけ: ${key}`)
+    assert.ok(group.length >= 2, `1語だけ: ${key}`)
   }
   const grouped = new Set(WORD_FORM_GROUPS.flat())
   for (const id of Object.keys(WORD_FORM_NOTES)) assert.ok(grouped.has(id), `説明の語がまとまりにない: ${id}`)
@@ -124,8 +124,8 @@ test('ほかの品詞の形・意味が同じ・近い語・意味が反対の�
 })
 
 test('使い分けの区別がある関連語には、使い分けを参考に添える', () => {
-  // 同じ品詞の形でも、使い分けがあれば出す（classic と classical）。
-  const classical = wordFormsFor(getWord('classic')).find((word) => word.word === 'classical')
+  // 同じ品詞の派生語にも、使い分けを添える（classic と classical）。
+  const classical = sameFormsFor(getWord('classic')).find((word) => word.word === 'classical')
   assert.match(classical.usageNote, /古典/)
   // 類義語の行にも添える（happy と glad）。
   const glad = wordRelationsFor(getWord('happy')).synonyms.find((item) => item.w === 'glad')
@@ -148,7 +148,7 @@ test('使い分けの区別がある関連語には、使い分けを参考に�
 test('同じ品詞の使い分けの相手は、ほかの欄と重ねずに1か所だけに出す', () => {
   // respectable と respectful は、つづりが似た語の欄にだけ使い分けつきで出す。
   const respectable = wordRelationsFor(getWord('respectable'))
-  assert.ok(!respectable.forms.some((item) => item.word === 'respectful'))
+  assert.ok(![...respectable.forms, ...respectable.sameForms].some((item) => item.word === 'respectful'))
   assert.ok(respectable.confusables.find((item) => item.word.word === 'respectful').usageNote)
   // 品詞がちがう形（advice と advise）は、ほかの品詞の形にも、つづりの注意にも出す。
   const advice = wordRelationsFor(getWord('advice'))
@@ -161,7 +161,10 @@ test('同じ品詞の使い分けの相手は、ほかの欄と重ねずに1か�
       ...relations.antonyms.map((item) => item.w),
       ...relations.confusables.map((item) => item.word.word),
     ].map((text) => text.toLowerCase()))
-    const twice = relations.forms.filter((item) => item.pos === word.pos && elsewhere.has(item.word.toLowerCase()))
+    const twice = relations.sameForms.filter((item) => elsewhere.has(item.word.toLowerCase()))
     assert.deepEqual(twice.map((item) => item.word), [], word.id)
+    // ほかの品詞の形は、見ている語とちがう品詞だけ。同じ品詞の派生語は同じ品詞だけ。
+    assert.ok(relations.forms.every((item) => item.pos !== word.pos), word.id)
+    assert.ok(relations.sameForms.every((item) => item.pos === word.pos), word.id)
   }
 })

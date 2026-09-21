@@ -1,0 +1,149 @@
+lose	loser	名	敗者・負けた人
+machine	machinery	名	機械類・仕組み
+U	machine	machinery	machine は1台の「機械」（数えられる）。machinery は「機械類・仕組み」をまとめて言い、数えない
+N	management	manager	人物
+mark	marker	名	印・目印・マーカー
+P	mark	動	印をつける・採点する
+N	mark	marker	別意
+market	marketing	名	マーケティング・販売活動
+N	market	marketing	別意
+U	matched	matching	matched は「組み合わされた・釣り合った」。matching は色や柄が「おそろいの・調和する」
+N	memorial	memory	別意
+million	millionaire	名	百万長者・大金持ち
+mix	mixer	名	ミキサー・混ぜる器具
+music	musician	名	音楽家・ミュージシャン
+N	music	musician	人物
+N	nature	naturalization	別意
+neighbor	neighborhood	名	近所・地域
+N	neighbor	neighborhood	人物
+novel	novelist	名	小説家
+N	novel	novelist	人物
+nurse	nursery	名	託児所・育児室・苗床
+nurse	nursing	名	看護・介護
+P	nurse	動	看護する・育てる
+N	nurse	nursery	人物
+N	nurse	nursing	人物
+N	nursery	nursing	別意
+office	officer	名	役人・将校・警官
+N	office	officer	人物
+N	office	officialdom	別意
+N	officer	officialdom	人物
+organ	organist	名	オルガン奏者
+N	organ	organism	別意
+N	organ	organization	別意
+N	organ	organizer	人物
+N	organ	organist	人物
+U	organism	organization	organism は「生物・有機体」。organization は「組織・団体」
+N	organism	organizer	人物
+N	organization	organizer	人物
+N	organism	organist	人物
+N	organist	organization	人物
+N	organist	organizer	別意
+N	owner	ownership	人物
+N	painter	painting	人物
+parent	parenthood	名	親であること
+parent	parenting	名	子育て
+N	parent	parenthood	人物
+N	parent	parenting	人物
+N	part	partiality	別意
+N	passage	passenger	人物
+N	passenger	past	人物
+N	period	periodical	別意
+N	person	personality	人物
+N	person	personification	人物
+N	personality	personification	別意
+photograph	photographer	名	写真家
+photograph	photo	名	写真
+photograph	photography	名	写真撮影・写真術
+N	photograph	photographer	人物
+U	photo	photograph	photo は photograph を短くした言い方で、意味は同じ「写真」
+N	photograph	photography	別意
+N	photo	photographer	人物
+N	photo	photography	別意
+N	photographer	photography	人物
+place	placement	名	配置・職の斡旋
+P	place	動	置く・配置する
+N	place	placement	別意
+N	pocket	pocketful	別意
+poet	poem	名	詩
+poet	poetry	名	詩歌・詩（という文学）
+N	poem	poet	人物
+N	poet	poetry	人物
+U	poem	poetry	poem は1つ1つの「詩」（数えられる）。poetry は「詩歌・詩（という文学）」をまとめて言い、数えない
+pot	pottery	名	陶器・陶芸
+pot	potter	名	陶工・焼き物師
+N	pot	pottery	別意
+N	pot	potter	人物
+N	potter	pottery	人物
+N	powerful	powerless	反対
+present	presentation	名	発表・提示
+present	presence	名	存在・出席・気配
+present	presenter	名	司会者・発表者
+P	present	動	提示する・贈る
+P	present	形	出席している・その場にいる
+N	present	presentation	別意
+U	presence	present	present は「贈り物・現在」（形容詞で「出席している」）。presence は「(その場に)いること・存在」
+N	presenter	present	人物
+N	presence	presentation	別意
+N	presence	presenter	人物
+N	presentation	presenter	人物
+print	printer	名	プリンター・印刷業者
+question	questionnaire	名	質問票・アンケート
+N	question	questionnaire	別意
+race	racer	名	競走者・レーサー
+race_2	racism	名	人種差別
+race_2	racist	名	人種差別主義者
+N	race	racism	別意
+N	race	racist	人物
+rate	rating	名	評価・格付け・視聴率
+P	rate	動	評価する
+N	rate	rating	別意
+U	reason	reasoning	reason は「理由・理性」。reasoning は「推論・筋道立てて考えること」
+record	recorder	名	録音機・リコーダー
+review	reviewer	名	評者・批評家
+P	review	動	見直す・論評する
+N	review	reviewer	人物
+ride	rider	名	乗る人・騎手
+rock	rocky	形	岩の多い・不安定な
+rule	ruler	名	支配者・定規
+U	rule	ruler	rule は「規則・支配」。ruler は「支配者」と、線を引く「定規」の2つの意味がある
+sand	sandy	形	砂の・砂地の
+sauce	saucer	名	受け皿	sauce（ソース）を入れる皿から→「受け皿」
+N	sauce	saucer	別意
+science	scientist	名	科学者
+N	science	scientist	人物
+N	season	seasonality	別意
+secret	secretary	名	秘書・長官	secret（秘密）を任される人→「秘書」。国の「長官・大臣」の意味もある
+set	setting	名	状況・環境・設定
+P	set	動	置く・設定する
+N	set	setting	別意
+share	sharing	名	共有・分かち合い
+sheep	sheepish	形	おどおどした・きまり悪そうな	sheep（羊）のように気弱な→「おどおどした・きまり悪そうな」
+sign	signal	名	信号・合図・合図する
+P	sign	動	署名する・合図する
+U	sign	signature	sign は「標識・合図」（動詞で「署名する」）。signature は「署名」
+N	sign	significance	別意
+U	sign	signal	sign は「標識・合図・兆し」。signal は「信号・合図」で、送って知らせる合図を言う
+N	signal	signature	別意
+N	signal	significance	別意
+N	singer	song	人物
+skate	skater	名	スケートをする人
+skate	skating	名	スケート（をすること）
+spend	spending	名	支出・出費
+N	spirit	spirituality	別意
+state	statement	名	声明・陳述
+P	state	動	述べる
+N	state	statement	別意
+N	strangeness	stranger	人物
+N	subject	subjectivity	別意
+N	suit	suitability	別意
+N	swimmer	swimming	人物
+terrify	terror	名	恐怖・テロ
+terror	terrible	形	ひどい・恐ろしい	terror（恐怖）と同じ語から、恐ろしいほどの→「ひどい」
+terror	terrific	形	ものすごい・すばらしい	terror（恐怖）と同じ語から、恐ろしいほどの→「ものすごい・すばらしい」
+terror	terrorism	名	テロ行為・テロリズム
+terror	terrorist	名	テロリスト
+N	terror	terrorism	別意
+N	terror	terrorist	人物
+U	terrible	terrific	terrible は「ひどい・恐ろしい」（悪い意味）。terrific は「すばらしい・ものすごい」（よい意味）。どちらも terror から
+toast	toaster	名	トースター

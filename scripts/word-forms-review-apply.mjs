@@ -7,27 +7,42 @@
 //   - 見出し語でなければ、辞書にない形として WORD_FORM_EXTRAS に足す（発音記号は発音辞書 CMU から作る）。
 //   - 1列目が C の行は、つづりが似た別の語: C  見出し語id  つづり  意味
 //   - 1列目が U の行は、関連語どうしの使い分け: U  つづり1  つづり2  使い分けの説明（src/data/word-usage-notes.js）
-//   - もとの語と同じ品詞の形は、ほかの品詞の形としては出ないのでつながない（使い分けを U 行で書いた組だけは載せる）。
+//   - もとの語と同じ品詞の形（music と musician）もつなぐ。画面では「同じ品詞の派生語」に出る。
+//   - 1列目が P の行は、見出し語の品詞のほかに使う意味: P  見出し語id  品詞  意味（WORD_FORM_SENSES。意味欄の印のない意味だけ）
+//   - 1列目が N の行は、同じ品詞の組で使い分けを書かない理由: N  つづり1  つづり2  理由（WORD_USAGE_NOT_NEEDED）
+//     理由はよく使うものを略号で書ける（N_REASONS: 人物・反対・別意・変化・程度）。
 //   - 1列目が S の行は、拾われた候補を載せない理由: S  見出し語id  つづり  理由（WORD_FORM_EXTRA_SKIPPED）
 //   - 1列目が X の行は、まとまりから語を外す: X  見出し語id  理由（同じつづりの別の語の側だった組は WORD_FORM_HOMOGRAPH_SIDE へ）
+//   - 1列目が R の行は、2回目の見直しの派生語の候補を載せない理由: R  見出し語id  つづり  略号
+//     （略号は derivative-candidates.mjs の DERIVATIVE_SKIP_REASONS。docs/audits/word-forms-review.json の derivativeCandidatesSkipped）
 //   - 同じつづりの見出し語が2つ以上あるとき、つづりの代わりに見出し語 id（flight_2 のように _ つき）を書けば、その語を指す。
 // 見直した語の id は docs/audits/word-forms-review.json に足す（scripts/checks/word-forms-review.mjs が全件を確かめる）。
+// --pass2 をつけると、同じ品詞の派生語と別の品詞の意味の見直し（derivativesReviewed・secondaryReviewed）として記録する。
 import { readFileSync, writeFileSync } from 'node:fs'
 import { dictionary } from 'cmu-pronouncing-dictionary'
 import { arpaToIPA } from './arpa-ipa.mjs'
 import { ALL_WORDS, getWord } from '../src/data/vocab.js'
 import * as F from '../src/data/word-forms.js'
 import { SPELLING_CONFUSABLE_EXTRAS, SPELLING_CONFUSABLE_PAIRS } from '../src/data/spelling-confusables.js'
-import { WORD_USAGE_NOTES } from '../src/data/word-usage-notes.js'
+import { WORD_USAGE_NOTES, WORD_USAGE_NOT_NEEDED } from '../src/data/word-usage-notes.js'
 
 const ROOT = new URL('../', import.meta.url)
 const POS = ['名', '動', '形', '副']
-const [reviewedFile, additionsFile] = process.argv.slice(2)
+const PASS2 = process.argv.includes('--pass2')
+const [reviewedFile, additionsFile] = process.argv.slice(2).filter((arg) => !arg.startsWith('--'))
 if (!reviewedFile) {
   console.error('使い方: node scripts/word-forms-review-apply.mjs <見直した語の id 一覧> [<足す形>]')
   process.exit(1)
 }
 
+// N 行の理由の略号。台帳には展開した文を書く。
+const N_REASONS = {
+  人物: '人を指す語と、物事を指す語で、取り違えにくい',
+  反対: '反対の意味の組で、反対の語として覚える',
+  別意: '意味がはっきりちがい、取り違えにくい',
+  変化: '比較級・最上級などの変化形の組',
+  程度: '「〜がかった・〜っぽい」と程度を弱めた語で、意味欄で区別できる',
+}
 const q = (value) => `'${String(value).replace(/\\/g, '\\\\').replace(/'/g, "\\'")}'`
 const bySpelling = new Map()
 for (const word of ALL_WORDS) {
@@ -41,12 +56,9 @@ const edges = []
 const notes = { ...F.WORD_FORM_NOTES }
 const extras = F.WORD_FORM_EXTRAS.map((entry) => [...entry])
 const usageNotes = { ...WORD_USAGE_NOTES }
+const notNeeded = { ...WORD_USAGE_NOT_NEEDED }
+const senses = Object.fromEntries(Object.entries(F.WORD_FORM_SENSES).map(([id, list]) => [id, list.map((entry) => [...entry])]))
 const usageKey = (a, b) => [a.toLowerCase(), b.toLowerCase()].sort().join('|')
-const groupPos = new Map()
-for (const group of F.WORD_FORM_GROUPS) {
-  const posSet = new Set(group.map((id) => getWord(id)?.pos))
-  for (const id of group) groupPos.set(id, new Set([...(groupPos.get(id) ?? []), ...posSet]))
-}
 const confusablePairs = []
 const confusableExtras = []
 const errors = []
@@ -64,6 +76,26 @@ for (const line of lines) {
   if (!getWord(of) || !spelling || !reason) { errors.push(`S 行が足りない: ${line}`); continue }
   skipped[`${of}|${spelling.toLowerCase()}`] = reason
 }
+for (const line of lines) {
+  const [kind, a, b, text] = line.split('\t')
+  if (kind === 'P') {
+    if (!getWord(a) || !POS.includes(b) || !text) { errors.push(`P 行が足りない: ${line}`); continue }
+    if (!senses[a]) senses[a] = []
+    if (!senses[a].some(([pos, meaning]) => pos === b && meaning === text)) senses[a].push([b, text])
+  }
+  if (kind === 'N') {
+    if (!a || !b || !text) { errors.push(`N 行が足りない: ${line}`); continue }
+    notNeeded[usageKey(a, b)] = N_REASONS[text] ?? text
+  }
+}
+const { DERIVATIVE_SKIP_REASONS } = await import('./derivative-candidates.mjs')
+const candidateSkips = {}
+for (const line of lines) {
+  const [kind, of, spelling, code] = line.split('\t')
+  if (kind !== 'R') continue
+  if (!getWord(of) || !spelling || !DERIVATIVE_SKIP_REASONS[code]) { errors.push(`R 行が足りないか略号がちがう: ${line}`); continue }
+  candidateSkips[`${of}|${spelling.toLowerCase()}`] = code
+}
 const removals = []
 for (const line of lines) {
   const [kind, id] = line.split('\t')
@@ -72,7 +104,7 @@ for (const line of lines) {
   removals.push(id)
 }
 for (const line of lines) {
-  if (line.startsWith('X\t') || line.startsWith('S\t')) continue
+  if (/^[XSPNR]\t/.test(line)) continue
   const cols = line.split('\t')
   if (cols[0] === 'U') {
     const [, a, b, note] = cols
@@ -96,20 +128,7 @@ for (const line of lines) {
   const base = getWord(of)
   if (!base) { errors.push(`見出し語がない: ${of}`); continue }
   const candidates = headwordsFor(spelling)
-  const target = candidates.find((word) => word.pos === pos) ?? candidates.find((word) => word.pos !== base.pos && POS.includes(word.pos))
-  // 同じ品詞の形は、まとまりにほかの品詞の語がないと画面に出ないのでつながない。
-  // つなぐとできるまとまり（もとの語のまとまり＋相手のまとまり）に、ほかの品詞の語があるか。
-  const otherPosInGroup = [...(groupPos.get(base.id) ?? []), ...(target ? groupPos.get(target.id) ?? [] : [])]
-    .some((p) => p && p !== base.pos)
-  const hasUsage = Boolean(usageNotes[usageKey(base.word, spelling)])
-  if (pos === base.pos && !(target && otherPosInGroup)) {
-    // 同じ品詞の見出し語は、使い分けを書けば「使い分けに注意する語」の欄に出るので、まとまりにはつながない。
-    if (hasUsage && target) continue
-    if (!hasUsage) {
-      errors.push(`もとの語と同じ品詞なので、ほかの品詞の形としては出ない（使い分けがあれば U 行で書く）: ${of} → ${spelling}`)
-      continue
-    }
-  }
+  const target = candidates.find((word) => word.pos === pos) ?? candidates.find((word) => POS.includes(word.pos))
   if (target) {
     if (target.id === base.id) { errors.push(`同じ語: ${of}`); continue }
     edges.push([base.id, target.id])
@@ -168,9 +187,9 @@ for (const [a, b] of splitEdges) {
   const target = splitGroups.find((group) => group.includes(inSplit) && group.length && group.indexOf(inSplit) >= 0)
   if (!target.includes(other)) target.push(other)
 }
-// 語を外して1語だけ・1つの品詞だけになったまとまりは、ほかの品詞の形を示さないので消す。
+// 語を外して1語だけになったまとまりは消す。
 const allGroups = [...groups, ...splitGroups.map((group) => [...new Set(group)])]
-  .filter((group) => group.length >= 2 && new Set(group.map((id) => getWord(id)?.pos)).size >= 2)
+  .filter((group) => group.length >= 2)
   .sort((a, b) => a[0].localeCompare(b[0]))
 
 extras.sort((a, b) => a[0].localeCompare(b[0]) || a[1].localeCompare(b[1]))
@@ -194,6 +213,8 @@ replaceBlock('export const WORD_FORM_EXTRA_SKIPPED = {\n', '}\n', Object.keys(sk
   `  ${q(key)}: ${q(skipped[key])},\n`).join(''))
 replaceBlock('export const WORD_FORM_EXTRAS = [\n', ']\n', extras.map((entry) =>
   `  [${entry.slice(0, 5).map(q).join(', ')}${entry[5] ? `, ${q(entry[5])}` : ''}],\n`).join(''))
+replaceBlock('export const WORD_FORM_SENSES = {\n', '}\n', Object.keys(senses).sort().map((id) =>
+  `  ${/^[a-z]+$/.test(id) ? id : q(id)}: [${senses[id].map(([pos, meaning]) => `[${q(pos)}, ${q(meaning)}]`).join(', ')}],\n`).join(''))
 writeFileSync(new URL('src/data/word-forms.js', ROOT), source)
 
 if (confusablePairs.length || confusableExtras.length) {
@@ -210,23 +231,32 @@ if (confusablePairs.length || confusableExtras.length) {
   writeFileSync(new URL('src/data/spelling-confusables.js', ROOT), confusables)
 }
 
-const usageSource = readFileSync(new URL('src/data/word-usage-notes.js', ROOT), 'utf8')
-const usageStart = 'export const WORD_USAGE_NOTES = {\n'
-const usageBody = Object.keys(usageNotes).sort().map((key) => `  ${q(key)}: ${q(usageNotes[key])},\n`).join('')
-writeFileSync(new URL('src/data/word-usage-notes.js', ROOT),
-  usageSource.slice(0, usageSource.indexOf(usageStart) + usageStart.length) + usageBody + usageSource.slice(usageSource.indexOf('}\n', usageSource.indexOf(usageStart))))
+let usageSource = readFileSync(new URL('src/data/word-usage-notes.js', ROOT), 'utf8')
+const writeUsageBlock = (start, entries) => {
+  const body = Object.keys(entries).sort().map((key) => `  ${q(key)}: ${q(entries[key])},\n`).join('')
+  const i = usageSource.indexOf(start) + start.length
+  usageSource = usageSource.slice(0, i) + body + usageSource.slice(usageSource.indexOf('}\n', i))
+}
+writeUsageBlock('export const WORD_USAGE_NOTES = {\n', usageNotes)
+writeUsageBlock('export const WORD_USAGE_NOT_NEEDED = {\n', notNeeded)
+writeFileSync(new URL('src/data/word-usage-notes.js', ROOT), usageSource)
 
 const reviewPath = new URL('docs/audits/word-forms-review.json', ROOT)
 const review = JSON.parse(readFileSync(reviewPath, 'utf8'))
-const reviewed = new Set(review.reviewed)
-const usageReviewed = new Set(review.usageReviewed ?? [])
-// 見直しの表（関連語欄つき）で読んだ語は、ほかの品詞の形と使い分けの両方を読んだことになる。
+// 1回目の見直し（ほかの品詞の形と使い分け）と、2回目の見直し（同じ品詞の派生語と別の品詞の意味）で記録する欄が変わる。
+const [keyA, keyB] = PASS2 ? ['derivativesReviewed', 'secondaryReviewed'] : ['reviewed', 'usageReviewed']
+const setA = new Set(review[keyA] ?? [])
+const setB = new Set(review[keyB] ?? [])
 for (const id of readFileSync(reviewedFile, 'utf8').split('\n').map((line) => line.trim()).filter(Boolean)) {
   if (!getWord(id)) { console.error(`見直した語の id が辞書にない: ${id}`); process.exit(1) }
-  reviewed.add(id)
-  usageReviewed.add(id)
+  setA.add(id)
+  setB.add(id)
 }
-review.reviewed = [...reviewed].sort()
-review.usageReviewed = [...usageReviewed].sort()
+review[keyA] = [...setA].sort()
+review[keyB] = [...setB].sort()
+if (PASS2) {
+  const skips = { ...(review.derivativeCandidatesSkipped ?? {}), ...candidateSkips }
+  review.derivativeCandidatesSkipped = Object.fromEntries(Object.keys(skips).sort().map((key) => [key, skips[key]]))
+}
 writeFileSync(reviewPath, `${JSON.stringify(review, null, 1)}\n`)
-console.log(`まとまり ${allGroups.length}・説明 ${Object.keys(notes).length}・辞書にない形 ${extras.length}・使い分け ${Object.keys(usageNotes).length}・見直した語 ${review.reviewed.length}（使い分けも読んだ語 ${review.usageReviewed.length}）`)
+console.log(`${PASS2 ? `載せない候補 ${Object.keys(review.derivativeCandidatesSkipped).length}・` : ''}まとまり ${allGroups.length}・説明 ${Object.keys(notes).length}・辞書にない形 ${extras.length}・別の品詞の意味 ${Object.keys(senses).length}語・使い分け ${Object.keys(usageNotes).length}・書かない理由 ${Object.keys(notNeeded).length}・${keyA} ${review[keyA].length}語・${keyB} ${review[keyB].length}語`)

@@ -1,0 +1,148 @@
+arms	army	名	軍隊・陸軍	arms（武器）を持った人の集まり→「軍隊・陸軍」
+arms	armament	名	軍備・兵器
+N	arms	army	別意
+N	armament	army	別意
+N	bag	bagful	別意
+boy	boyhood	名	少年時代
+N	boy	boyhood	人物
+brother	brotherhood	名	兄弟愛・同業者の団体
+N	brother	brotherhood	人物
+book	booking	名	予約	book の動詞「予約する」から→「予約」
+P	book	動	予約する
+N	book	booking	別意
+camp	camping	名	キャンプ・キャンプをすること
+camp	camper	名	キャンプをする人・キャンピングカー
+P	camp	動	野営する・キャンプをする
+U	camp	camping	camp は「キャンプ場・野営（地）」。camping は「キャンプをすること」（go camping）
+N	camp	camper	人物
+N	camper	camping	人物
+child	childhood	名	子ども時代
+N	child	childhood	人物
+N	class	classification	別意
+N	class	classicism	別意
+close	closeness	名	近さ・親密さ
+N	different	differential	別意
+down	downward	副	下の方へ・下向きに
+U	down	downward	down は「下へ」で、動きや位置を広く言う。downward は「下の方へ・下向きに」で向きをはっきり言い、形容詞にもなる（a downward trend）
+drink	drinker	名	酒を飲む人・飲む人
+N	easy	eased	別意
+eat	eater	名	食べる人
+U	exciting	excitable	exciting は物事が「わくわくさせる」。excitable は人の性質が「興奮しやすい」
+U	excitable	excited	excited は人が（そのとき）「興奮した」。excitable は性質として「興奮しやすい」
+family	familiar	形	なじみの・よく知られた	family（家族）と同じ語から、家族のようによく知っている→「なじみの・よく知られた」
+N	familiarity	family	別意
+U	familial	familiar	familiar は「なじみの・よく知られた」。familial は「家族の・家族に伝わる」（familial disease）
+fasten	fastener	名	留め具・ファスナー
+father	fatherhood	名	父親であること・父性
+N	father	fatherhood	人物
+U	favorable	favorite	favorite は「いちばん好きな・お気に入りの」。favorable は「好意的な・有利な」
+favor	favoritism	名	えこひいき
+N	favor	favoritism	別意
+fish	fishing	名	釣り・漁業
+fish	fishery	名	漁業・漁場
+P	fish	動	釣りをする・魚をとる
+U	fish	fishing	fish は「魚」（動詞で「釣りをする」）。fishing は「釣り・漁」（go fishing）
+N	fish	fishery	別意
+U	fishery	fishing	fishing は「釣り・漁（をすること）」。fishery は「漁場・漁業（という産業）」
+N	friend	friendship	人物
+N	friend	friendliness	人物
+U	filled	full	full は「いっぱいの」（be full of）。filled は「満たされた」（be filled with）
+U	fun	funny	fun は「楽しいこと・楽しい」。funny は「おかしい・こっけいな」（笑える）
+three	thirteen	形	13の
+three	thirty	形	30の
+three	third	形	3番目の・3分の1の
+U	thirteen	thirty	thirteen は13、thirty は30（-teen は13〜19、-ty は十の位）。thirteen は後ろの -teen を、thirty は前を強く読むので聞き分ける
+N	thirteen	third	別意
+N	thirty	third	別意
+four	fourteen	形	14の
+four	forty	形	40の
+four	fourth	形	4番目の
+U	fourteen	forty	fourteen は14、forty は40（-teen は13〜19、-ty は十の位）。fourteen は後ろの -teen を、forty は前を強く読むので聞き分ける
+N	fourteen	fourth	別意
+N	forty	fourth	別意
+five	fifteen	形	15の
+five	fifty	形	50の
+five	fifth	形	5番目の
+U	fifteen	fifty	fifteen は15、fifty は50（-teen は13〜19、-ty は十の位）。fifteen は後ろの -teen を、fifty は前を強く読むので聞き分ける
+N	fifteen	fifth	別意
+N	fifty	fifth	別意
+six	sixteen	形	16の
+six	sixty	形	60の
+six	sixth	形	6番目の
+U	sixteen	sixty	sixteen は16、sixty は60（-teen は13〜19、-ty は十の位）。sixteen は後ろの -teen を、sixty は前を強く読むので聞き分ける
+N	sixteen	sixth	別意
+N	sixty	sixth	別意
+seven	seventeen	形	17の
+seven	seventy	形	70の
+seven	seventh	形	7番目の
+U	seventeen	seventy	seventeen は17、seventy は70（-teen は13〜19、-ty は十の位）。seventeen は後ろの -teen を、seventy は前を強く読むので聞き分ける
+N	seventeen	seventh	別意
+N	seventy	seventh	別意
+eight	eighteen	形	18の
+eight	eighty	形	80の
+eight	eighth	形	8番目の
+U	eighteen	eighty	eighteen は18、eighty は80（-teen は13〜19、-ty は十の位）。eighteen は後ろの -teen を、eighty は前を強く読むので聞き分ける
+N	eighteen	eighth	別意
+N	eighty	eighth	別意
+nine	nineteen	形	19の
+nine	ninety	形	90の
+nine	ninth	形	9番目の
+U	nineteen	ninety	nineteen は19、ninety は90（-teen は13〜19、-ty は十の位）。nineteen は後ろの -teen を、ninety は前を強く読むので聞き分ける
+N	nineteen	ninth	別意
+N	ninety	ninth	別意
+U	three	thirteen	three の十代は thirteen（three が thir に変わる）
+U	three	thirty	three の十倍は thirty（three が thir に変わる）
+U	three	third	3番目は third（three が thir に変わる）
+U	four	forty	four の十倍は forty（u が落ちる）。fourteen・fourth は u を残す
+U	forty	fourth	forty は u が落ちるが、4番目の fourth は u を残す
+U	five	fifteen	five の十代は fifteen（five が fif に変わる）
+U	five	fifty	five の十倍は fifty（five が fif に変わる）
+U	fifth	five	5番目は fifth（five が fif に変わる）
+U	eight	eighteen	eight に -teen がつくと t が1つになる（eighteen）
+U	eight	eighty	eight に -ty がつくと t が1つになる（eighty）
+U	eight	eighth	8番目は eighth（eight に h だけをつける）
+U	nine	ninety	ninety は e を残す（9番目の ninth は e が落ちる）
+U	nine	ninth	9番目は ninth（e が落ちる）
+U	ninety	ninth	ninety は e を残し、ninth は e が落ちる
+N	four	fourteen	別意
+N	four	fourth	別意
+N	six	sixteen	別意
+N	six	sixty	別意
+N	six	sixth	別意
+N	seven	seventeen	別意
+N	seven	seventy	別意
+N	seven	seventh	別意
+N	nine	nineteen	別意
+twelve	twelfth	形	12番目の
+U	twelfth	twelve	12番目は twelfth（ve が f に変わる）
+ten	tenth	形	10番目の
+N	ten	tenth	別意
+N	gift	giver	人物
+golf	golfer	名	ゴルファー・ゴルフをする人
+N	golf	golfer	人物
+guitar	guitarist	名	ギタリスト・ギター奏者
+N	guitar	guitarist	人物
+N	hand	handful	別意
+hear	hearing	名	聴覚・聞くこと・公聴会
+N	helper	helplessness	人物
+N	helpful	helpless	反対
+N	heightened	high	別意
+late	lately	副	最近・近ごろ
+N	later	latest	変化
+N	life	liveliness	別意
+light	lighter	名	ライター・点火器
+light	lighting	名	照明・点灯
+P	light	動	火をつける・照らす
+U	light	lighting	light は「光・明かり」。lighting は「照明（のしかた・設備）」
+N	light	lighter	別意
+N	lighter	lighting	別意
+N	lengthened	long	別意
+U	lengthy	long	long は「長い」。lengthy は話や文書が「長々とした・長ったらしい」
+U	loving	lovely	lovely は「美しい・素敵な」。loving は「愛情のこもった・やさしい」
+U	lovable	lovely	lovely は「素敵な・美しい」で物事にも使う。lovable は人や動物が「愛らしい・愛すべき」
+low	lowly	形	卑しい・身分の低い・地味な
+N	low	lowly	別意
+N	low	lowered	別意
+N	lowered	lowly	別意
+member	membership	名	会員であること・会員数
+N	member	membership	人物

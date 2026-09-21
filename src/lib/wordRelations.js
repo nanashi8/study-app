@@ -11,7 +11,8 @@ import { getPhrase } from '../data/phrases.js'
 import { WORD_IDIOM_EQUIVALENTS } from '../data/word-idiom-equivalents.js'
 import { SPELLING_CONFUSABLE_EXTRAS, SPELLING_CONFUSABLE_PAIRS } from '../data/spelling-confusables.js'
 import { LOANWORD_HINTS } from '../data/loanword-hints.js'
-import { WORD_FORM_EXTRAS, WORD_FORM_GROUPS, WORD_FORM_NOTES } from '../data/word-forms.js'
+import { WORD_FORM_EXTRAS, WORD_FORM_GROUPS, WORD_FORM_NOTES, WORD_FORM_SENSES } from '../data/word-forms.js'
+import { WORD_SENSES } from '../data/word-senses.js'
 import { WORD_USAGE_NOTES } from '../data/word-usage-notes.js'
 
 // 強勢記号や区切りを除いて、発音記号が同じかを比べる。
@@ -79,41 +80,87 @@ const withUsage = (base, item, text) => {
 const FORM_POS_ORDER = ['動', '名', '形', '副']
 export const FORM_POS_LABELS = { 動: '動詞', 名: '名詞', 形: '形容詞', 副: '副詞' }
 
+// 意味欄で、ほかの品詞の意味に付けた印（「夢・夢を見る(動)」の「夢を見る(動)」）。
+const MARKED_SEGMENT = /^(.+)\((名|動|形|副)\)$/u
+
 /**
- * 品詞がちがうだけで同じ語から来た形を、動詞・名詞・形容詞・副詞の順に辞書の語で返す。
- * いま見ている語と同じ品詞の語は、使い分けがあるときだけ出す（decide なら decision・decisive・decisively）。
- * 意味が広がった・ずれた形には、ずれ方の説明（formNote）をつける。
+ * 見出し語が使われる品詞と、その品詞の意味。先頭は見出し語の品詞（意味は印のない部分）。
+ * 意味欄の「〜する(動)」の印、word-senses.js のほかの意味、人が足した WORD_FORM_SENSES を読む。
+ */
+export function posSensesFor(word) {
+  if (!word?.id || !FORM_POS_ORDER.includes(word.pos)) return []
+  const segments = String(word.meaning ?? '').split('・')
+  const primary = segments.filter((segment) => !MARKED_SEGMENT.test(segment)).join('・')
+  const senses = [{ pos: word.pos, meaning: primary || String(word.meaning ?? '') }]
+  const add = (pos, meaning) => {
+    if (!FORM_POS_ORDER.includes(pos) || !meaning) return
+    const found = senses.find((sense) => sense.pos === pos)
+    if (!found) senses.push({ pos, meaning })
+    else if (!found.meaning.split('・').includes(meaning)) found.meaning = `${found.meaning}・${meaning}`
+  }
+  for (const segment of segments) {
+    const marked = segment.match(MARKED_SEGMENT)
+    if (marked) add(marked[2], marked[1])
+  }
+  for (const sense of WORD_SENSES[word.id] ?? []) add(sense.pos, sense.meaning)
+  for (const [pos, meaning] of WORD_FORM_SENSES[word.id] ?? []) add(pos, meaning)
+  return senses
+}
+
+const byFormOrder = (a, b) =>
+  FORM_POS_ORDER.indexOf(a.pos) - FORM_POS_ORDER.indexOf(b.pos) ||
+  Number(Boolean(a.extra)) - Number(Boolean(b.extra)) ||
+  a.word.localeCompare(b.word)
+
+/**
+ * 同じ語から来た語を、ほかの品詞の形（other）と同じ品詞の派生語（same）に分けて返す。
+ * - 品詞がちがう語（decide に対する decision）は other。
+ * - 見出し語の品詞が同じでも、ほかの品詞で使う意味を持つ語（dreamer に対する dream「夢を見る」）は、
+ *   その品詞の形として other に出す。
+ * - それ以外の同じ品詞の語（music に対する musician、decision に対する decisiveness）は same。
+ * 意味が広がった・ずれた語には、ずれ方の説明（formNote）を、使い分けがある組には使い分け（usageNote）をつける。
  * 辞書に見出しのない形（extra）は、見出し語の形のあとに並べる。
  */
-export function wordFormsFor(word) {
-  if (!word?.id || word.custom) return []
+export function wordFamilyFor(word) {
+  if (!word?.id || word.custom) return { other: [], same: [] }
   const members = new Set([word.id])
   for (const group of FORM_GROUPS_BY_WORD.get(word.id) ?? []) for (const id of group) members.add(id)
   const seen = new Set([word.word.toLowerCase()])
-  const forms = []
-  const push = (item) => forms.push(withUsage(word.word, item, item.word))
+  const other = []
+  const same = []
+  const place = (item, spelling) => {
+    const withNote = withUsage(word.word, item, spelling)
+    if (withNote.pos !== word.pos) other.push(withNote)
+    else same.push(withNote)
+  }
   for (const id of members) {
-    const other = id === word.id ? null : getWord(id)
-    if (!other || !FORM_POS_ORDER.includes(other.pos) || seen.has(other.word.toLowerCase())) continue
-    // 同じ品詞の形（economic と economical）は、使い分けがあるときだけ参考に出す。
-    if (other.pos === word.pos && !usageNoteBetween(word.word, other.word)) continue
-    seen.add(other.word.toLowerCase())
-    push(WORD_FORM_NOTES[id] ? { ...other, formNote: WORD_FORM_NOTES[id] } : other)
+    const member = id === word.id ? null : getWord(id)
+    if (!member || !FORM_POS_ORDER.includes(member.pos) || seen.has(member.word.toLowerCase())) continue
+    seen.add(member.word.toLowerCase())
+    const item = WORD_FORM_NOTES[id] ? { ...member, formNote: WORD_FORM_NOTES[id] } : member
+    const sense = member.pos === word.pos ? posSensesFor(member).find((entry) => entry.pos !== word.pos) : null
+    place(sense ? { ...item, pos: sense.pos, meaning: sense.meaning } : item, member.word)
   }
   // 辞書に見出しのない形は、まとまりのどの語から拾ったものでも並べる（decide の decisiveness など）。
   for (const id of members) {
     for (const extra of FORM_EXTRAS_BY_WORD.get(id) ?? []) {
       const key = extra.word.toLowerCase()
       if (seen.has(key)) continue
-      if (extra.pos === word.pos && !usageNoteBetween(word.word, extra.word)) continue
       seen.add(key)
-      push(extra)
+      place(extra, extra.word)
     }
   }
-  return forms.sort((a, b) =>
-    FORM_POS_ORDER.indexOf(a.pos) - FORM_POS_ORDER.indexOf(b.pos) ||
-    Number(Boolean(a.extra)) - Number(Boolean(b.extra)) ||
-    a.word.localeCompare(b.word))
+  return { other: other.sort(byFormOrder), same: same.sort(byFormOrder) }
+}
+
+/** ほかの品詞の形（wordFamilyFor の other）。動詞・名詞・形容詞・副詞の順。 */
+export function wordFormsFor(word) {
+  return wordFamilyFor(word).other
+}
+
+/** 同じ品詞の派生語（wordFamilyFor の same）。 */
+export function sameFormsFor(word) {
+  return wordFamilyFor(word).same
 }
 
 /**
@@ -243,26 +290,27 @@ export function usagePartnersFor(word, shown = []) {
 
 export function wordRelationsFor(word) {
   const idioms = idiomEquivalentsFor(word)
-  const allForms = wordFormsFor(word)
+  const family = wordFamilyFor(word)
   // 品詞がちがうだけの同じ語の形（metallic に対する metal）は、類義語・反対語ではなく、ほかの品詞の形の欄だけに出す。
-  const otherPosForms = new Set(allForms.filter((item) => item.pos !== word.pos).map((item) => item.word.toLowerCase()))
+  const otherPosForms = new Set(family.other.map((item) => item.word.toLowerCase()))
   const notForm = (item) => !otherPosForms.has(String(item.w).toLowerCase())
   const synonyms = synonymWordsFor(word, { exclude: idioms.map((phrase) => phrase.phrase) }).filter(notForm)
   const antonyms = antonymWordsFor(word).filter(notForm)
   const confusables = confusablesFor(word)
-  // 同じ品詞の形は使い分けのために出すので、類義語・反対語・つづりが似た語の欄に
-  // 同じ使い分けつきで出る語（respectable と respectful）は、そちらだけに出す。
+  // 同じ品詞の派生語のうち、類義語・反対語・つづりが似た語の欄に出る語（respectable と respectful）は、そちらだけに出す。
   const elsewhere = new Set([
     ...synonyms.map((item) => item.w),
     ...antonyms.map((item) => item.w),
     ...confusables.map((item) => item.word.word),
   ].map((text) => String(text).toLowerCase()))
-  const forms = allForms.filter((item) => item.pos !== word.pos || !elsewhere.has(item.word.toLowerCase()))
+  const forms = family.other
+  const sameForms = family.same.filter((item) => !elsewhere.has(item.word.toLowerCase()))
   // 辞書ページの派生語欄（単語データの derivatives）には、形の欄に出す語を重ねない。
-  const formWords = new Set(allForms.map((item) => item.word.toLowerCase()))
+  const formWords = new Set([...family.other, ...family.same].map((item) => item.word.toLowerCase()))
   const derivatives = (word?.derivatives ?? []).filter((item) => !formWords.has(String(item.w).toLowerCase()))
   return {
     forms,
+    sameForms,
     formOwnNote: wordFormOwnNote(word),
     derivatives,
     synonyms,
@@ -271,6 +319,7 @@ export function wordRelationsFor(word) {
     confusables,
     usagePartners: usagePartnersFor(word, [
       ...forms.map((item) => item.word),
+      ...sameForms.map((item) => item.word),
       ...synonyms.map((item) => item.w),
       ...antonyms.map((item) => item.w),
       ...confusables.map((item) => item.word.word),

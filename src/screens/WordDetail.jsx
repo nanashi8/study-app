@@ -200,9 +200,9 @@ export function WordDetailScreen() {
           <UsageGuideCards guides={word.usageGuides} />
 
           {/* 品詞がちがうだけで同じ語から来た形。発音を聞いて、その語の辞書ページへ移れる。 */}
-          {relations.forms.length > 0 && (
+          {(relations.forms.length > 0 || relations.sameForms.length > 0) && (
             <Card className="p-4">
-              <WordFormSection items={relations.forms} ownNote={relations.formOwnNote} onWord={openWord} />
+              <WordFormSection items={relations.forms} sameItems={relations.sameForms} ownNote={relations.formOwnNote} onWord={openWord} />
             </Card>
           )}
 
