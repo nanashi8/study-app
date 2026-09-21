@@ -182,32 +182,41 @@ export function isDerivedForm(word, form) {
 }
 
 /**
- * form を使う熟語・構文を word のカードに出すか。word から作られた、品詞のちがう形（isDerivedForm）で、
- * どちらも意味がずれた形でないときだけ（クマの bear に born の be born、committee に committed の
- * be committed to を出さない）。意味がずれた形や同じ品詞の形（sensible と sensitive）の熟語は、
- * その形の見出し語のカードで引ける。
+ * form を使う熟語・構文を word のカードに出すか。品詞がちがう形で、どちらも意味がずれた形でないときだけ
+ * （クマの bear に born の be born、committee に committed の be committed to を出さない）。
+ * 意味がずれた形や同じ品詞の形（sensible と sensitive）の熟語は、その形の見出し語のカードで引ける。
  */
 export function sharesFormPhrases(word, form) {
   if (!form || form.pos === word?.pos) return false
-  if (wordFormOwnNote(word) || form.formNote) return false
-  return isDerivedForm(word, form)
+  return !(wordFormOwnNote(word) || form.formNote)
 }
 
+// 1つの形の熟語・構文がこれより多いときは、畳んで出す（being に対する be の熟語など）。
+export const FORM_PHRASES_OPEN_LIMIT = 5
+
 /**
- * ほかの品詞の形を使う熟語・構文（decide に対する make a decision）を、形ごとにまとめて返す。
+ * ほかの品詞の形を使う熟語・構文を、形ごとにまとめて返す。
+ * 作られた形（decide に対する decision の make a decision）を先に、元の語の側の形
+ * （response に対する respond の respond to）をあとに並べる。項目が多い形は畳む（collapsed）。
  * その語を含む熟語・構文と、前の形で出した熟語・構文は重ねない。
  */
 export function formPhraseGroupsForWord(word) {
   if (!word?.id || word.custom) return []
   const shown = new Set(phrasesForWord(word).map((phrase) => phrase.id))
+  const forms = wordFormsFor(word).filter((form) => sharesFormPhrases(word, form))
+  const ordered = [...forms.filter((form) => isDerivedForm(word, form)), ...forms.filter((form) => !isDerivedForm(word, form))]
   const groups = []
-  for (const form of wordFormsFor(word)) {
-    if (!sharesFormPhrases(word, form)) continue
+  for (const form of ordered) {
     const target = form.extra ? form.word : getWord(form.id)
     const phrases = phrasesForWord(target).filter((phrase) => !shown.has(phrase.id))
     if (!phrases.length) continue
     for (const phrase of phrases) shown.add(phrase.id)
-    groups.push({ form, phrases })
+    groups.push({
+      form,
+      phrases,
+      derived: isDerivedForm(word, form),
+      collapsed: phrases.length > FORM_PHRASES_OPEN_LIMIT,
+    })
   }
   return groups
 }

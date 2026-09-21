@@ -243,8 +243,12 @@ export function usagePartnersFor(word, shown = []) {
 
 export function wordRelationsFor(word) {
   const idioms = idiomEquivalentsFor(word)
-  const synonyms = synonymWordsFor(word, { exclude: idioms.map((phrase) => phrase.phrase) })
-  const antonyms = antonymWordsFor(word)
+  const allForms = wordFormsFor(word)
+  // 品詞がちがうだけの同じ語の形（metallic に対する metal）は、類義語・反対語ではなく、ほかの品詞の形の欄だけに出す。
+  const otherPosForms = new Set(allForms.filter((item) => item.pos !== word.pos).map((item) => item.word.toLowerCase()))
+  const notForm = (item) => !otherPosForms.has(String(item.w).toLowerCase())
+  const synonyms = synonymWordsFor(word, { exclude: idioms.map((phrase) => phrase.phrase) }).filter(notForm)
+  const antonyms = antonymWordsFor(word).filter(notForm)
   const confusables = confusablesFor(word)
   // 同じ品詞の形は使い分けのために出すので、類義語・反対語・つづりが似た語の欄に
   // 同じ使い分けつきで出る語（respectable と respectful）は、そちらだけに出す。
@@ -253,10 +257,14 @@ export function wordRelationsFor(word) {
     ...antonyms.map((item) => item.w),
     ...confusables.map((item) => item.word.word),
   ].map((text) => String(text).toLowerCase()))
-  const forms = wordFormsFor(word).filter((item) => item.pos !== word.pos || !elsewhere.has(item.word.toLowerCase()))
+  const forms = allForms.filter((item) => item.pos !== word.pos || !elsewhere.has(item.word.toLowerCase()))
+  // 辞書ページの派生語欄（単語データの derivatives）には、形の欄に出す語を重ねない。
+  const formWords = new Set(allForms.map((item) => item.word.toLowerCase()))
+  const derivatives = (word?.derivatives ?? []).filter((item) => !formWords.has(String(item.w).toLowerCase()))
   return {
     forms,
     formOwnNote: wordFormOwnNote(word),
+    derivatives,
     synonyms,
     antonyms,
     idioms,

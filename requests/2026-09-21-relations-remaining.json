@@ -1,0 +1,101 @@
+{
+  "id": "2026-09-21-relations-remaining",
+  "title": "関連語・熟語の依頼でやっていないこと・気づいて残したことを全部洗い出し、すべて埋める",
+  "asked": [
+    "やっていないこと・気づいたが残っていることを全て洗い出して充実させなさい。"
+  ],
+  "status": "open",
+  "criteria": [
+    {
+      "id": "synonyms-not-forms",
+      "text": "類義語・反対語の欄に、品詞がちがうだけの同じ語の形（metallic の metal、woolen の wool、posture の pose）を出さず、ほかの品詞の形の欄だけに出す",
+      "population": "品詞のある全見出し語の、類義語・反対語欄の全項目",
+      "check": "node --test tests/word-relations-remaining.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "derivatives-section-dedup",
+      "text": "辞書ページの「派生語」欄（15語）で、ほかの品詞の形・同じ品詞の派生語の欄と同じ語を二重に出さない",
+      "population": "派生語欄を持つ全見出し語 15語",
+      "check": "node --test tests/word-relations-remaining.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "phrase-rows-speech",
+      "text": "熟語・構文の欄と「同じ意味の熟語」の欄の全行に発音ボタンをつける（~ や A・B など読めない印は読まない）",
+      "population": "暗記カードの裏と辞書ページの、熟語・構文の行すべて",
+      "check": "node --test tests/word-relations-remaining.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "reverse-form-phrases",
+      "text": "作られた語のカード（response・competition・decision など）にも、元の語の熟語・構文（respond to・compete with・decide to）を出す。項目が多い形は畳んで出す",
+      "population": "ほかの品詞の形を持つ全見出し語",
+      "check": "node --test tests/word-phrase-links.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "irregular-comparatives",
+      "text": "比較級・最上級の不規則な形（better・best・worse・worst・more・most・less・least・further・farther・elder・eldest）でしか現れない熟語・構文を、1件ずつ読んで元の語につなぐか、外す理由を書く",
+      "population": "その形を含む熟語・構文の全候補（元の語：good・well・bad・badly・many・much・little・far・old）",
+      "check": "node --test tests/word-phrase-links.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "same-pos-derivatives",
+      "text": "同じ品詞の派生語（photograph→photographer、music→musician、dream→dreamer、worth→worthless など）を「同じ品詞の派生語」として暗記カードの裏と辞書ページに出す（語・品詞・意味・発音記号・発音ボタン、意味がずれた語は説明つき）。全見出し語を1語ずつ読んで決める",
+      "population": "品詞のある全見出し語 8,799語",
+      "check": "node scripts/checks/word-forms-review.mjs --derivatives",
+      "status": "todo"
+    },
+    {
+      "id": "secondary-pos",
+      "text": "別の品詞でも使う語（book の「予約する」、contract の「縮小する」、train の「訓練する」、musical の「音楽の」、still の「静かな」など）は、その品詞の意味も形のつながりと表示に使う（book→booking、contract→contraction、still→stillness）。意味欄の（動）などの印は自動で読み、印のない語は1語ずつ読んで決める",
+      "population": "品詞のある全見出し語 8,799語",
+      "check": "node scripts/checks/word-forms-review.mjs --secondary",
+      "status": "todo"
+    },
+    {
+      "id": "same-pos-usage",
+      "text": "同じ語から来た同じ品詞の語どうし（-ed/-ing、-ic/-ical、adaptable/adaptive、comparable/comparative など）に使い分けがあれば説明を書き、書かない組は理由を台帳に残す",
+      "population": "同じまとまりに入る同じ品詞の語の組の全件（見直し後）",
+      "check": "node scripts/checks/same-pos-usage.mjs",
+      "status": "todo"
+    },
+    {
+      "id": "homograph-headwords",
+      "text": "つづりが同じ別の語で見出し語がないために、形や熟語が別の語のカードに入っているもの（動詞 bear「耐える」、found「設立する」、counter「反対の」、converse「逆の」、utter「全くの」など、見直しで見つかった全件）を独立した見出し語にし、形・熟語をその語へ移す",
+      "population": "形・熟語の見直しで見つかった、見出し語のない同じつづりの別の語の全件",
+      "check": "node --test tests/homograph-words.test.mjs tests/word-relations-remaining.test.mjs",
+      "status": "todo"
+    },
+    {
+      "id": "phrase-links-reviewed",
+      "text": "その語を含む熟語・構文のつながりを全件1件ずつ読み、同じつづりの別の語の熟語（counter の run counter to、bear（クマ）の bear with など）は正しい語へ移すか、外す理由を書く",
+      "population": "単語から熟語・構文へのつながり全件（4,376件と、この依頼で増える分）",
+      "check": "node scripts/checks/phrase-links-review.mjs",
+      "status": "todo"
+    },
+    {
+      "id": "confusables-survey",
+      "text": "つづりが似た見出し語の組と同じ発音の見出し語の組を1組ずつ読み、取り違えやすい組を「つづりが似ていて間違えやすい語」に載せ、使い分けも書く。載せない組は理由を台帳に残す",
+      "population": "4文字以上で1字違い・隣り合う2字の入れ替えの全組、7文字以上で2字違いの全組、発音辞書で同じ発音になる全組（同じまとまりの組を除く）",
+      "check": "node scripts/checks/confusables-survey.mjs",
+      "status": "todo"
+    },
+    {
+      "id": "screens-verified",
+      "text": "暗記カードの裏と辞書ページを画面で開き、ほかの品詞の形・同じ品詞の派生語・熟語・構文（逆向き・畳み）・発音ボタンが出ることを確かめる",
+      "population": "暗記カードの裏（VocabStudy）と辞書ページ（WordDetail）",
+      "check": "node --test tests/word-relations-remaining.test.mjs",
+      "status": "todo"
+    },
+    {
+      "id": "deployed",
+      "text": "全テスト・全監査をクリーンな clone で通してから main へ push し、公開版で確認する",
+      "population": "公開版 https://nanashi8.github.io/study-app/",
+      "check": "node scripts/checks/deployed-matches-head.mjs",
+      "status": "todo"
+    }
+  ]
+}

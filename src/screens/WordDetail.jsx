@@ -103,6 +103,8 @@ export function WordDetailScreen() {
   const etymologyStory = etymologyStoryForWord(word)
   const relations = wordRelationsFor(word)
   const relatedPhrases = phraseGroupsForWord(word)
+  // 派生語欄は、形の欄に出す語を除いたもの（wordRelationsFor）。
+  const derivatives = relations.derivatives
   const openWord = (wordId) => navigate('wordDetail', { id: wordId })
 
   return (
@@ -168,7 +170,7 @@ export function WordDetailScreen() {
           )}
 
           {/* 使い方・使い分け＋派生語 */}
-          {(word.usage || word.derivatives?.length > 0) && (
+          {(word.usage || derivatives.length > 0) && (
             <Card className="space-y-3 p-4">
               {word.usage && (
                 <div>
@@ -179,10 +181,10 @@ export function WordDetailScreen() {
                   <p className="text-sm font-bold leading-relaxed text-amber-900/90">{word.usage}</p>
                 </div>
               )}
-              {word.derivatives?.length > 0 && (
+              {derivatives.length > 0 && (
                 <div>
                   <div className="mb-1.5 text-[11px] font-extrabold uppercase tracking-wide text-emerald-500">派生語</div>
-                  <RelatedWordList items={word.derivatives} tone="der" onWord={openWord} />
+                  <RelatedWordList items={derivatives} tone="der" onWord={openWord} />
                 </div>
               )}
             </Card>

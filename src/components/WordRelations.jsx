@@ -1,7 +1,9 @@
+import { useState } from 'react'
 import { getLevel } from '../data/levels.js'
 import { getWord } from '../data/vocab.js'
 import { ArrowRight } from './Icons.jsx'
 import { isAmbiguousSpeechText } from '../lib/speechGuard.js'
+import { phraseSpeechText } from '../lib/phrase-speech.js'
 import { FORM_POS_LABELS } from '../lib/wordRelations.js'
 import { MeaningText } from './MeaningText.jsx'
 import { SpeakButton } from './SpeakButton.jsx'
@@ -48,10 +50,10 @@ function UsageNote({ text }) {
 }
 
 // 発音ボタン。使い方で発音が変わる語はボタンを出さない（SpeakButton）ので、同じ幅の空きで語の頭をそろえる。
-function RowSpeakButton({ text }) {
+function RowSpeakButton({ text, title = '単語' }) {
   return isAmbiguousSpeechText(text)
     ? <span className="h-8 w-8 shrink-0" aria-hidden="true" />
-    : <SpeakButton text={text} size="sm" title="単語" />
+    : <SpeakButton text={text} size="sm" title={title} />
 }
 
 /**
@@ -166,17 +168,20 @@ export function AntonymSection({ items, onWord, showPhonetic }) {
   )
 }
 
-/** 1語と同じ意味で言いかえられる熟語。 */
+/** 1語と同じ意味で言いかえられる熟語。熟語ごとに発音ボタンをつける。 */
 export function IdiomEquivalentSection({ phrases }) {
   if (!phrases.length) return null
   return (
     <div data-word-idiom-equivalents>
       <SectionTitle className="text-sky-700">同じ意味の熟語</SectionTitle>
-      <ul className="space-y-1.5">
+      <ul className="space-y-1.5" data-speech-group>
         {phrases.map((phrase) => (
-          <li key={phrase.id}>
-            <p className="font-display text-sm font-extrabold leading-snug text-ink">{phrase.phrase}</p>
-            <p className="text-xs font-bold leading-relaxed text-ink/55">{phrase.meaning}</p>
+          <li key={phrase.id} className="flex items-start gap-2">
+            <RowSpeakButton text={phraseSpeechText(phrase)} title="熟語" />
+            <div className="min-w-0 flex-1">
+              <p className="font-display text-sm font-extrabold leading-snug text-ink">{phrase.phrase}</p>
+              <p className="text-xs font-bold leading-relaxed text-ink/55">{phrase.meaning}</p>
+            </div>
           </li>
         ))}
       </ul>
@@ -184,12 +189,13 @@ export function IdiomEquivalentSection({ phrases }) {
   )
 }
 
-/** 熟語・構文の一覧（種類・見出し・意味）。 */
+/** 熟語・構文の一覧（発音ボタン・種類・見出し・意味）。構文は見出しの記号でなく例文を読む。 */
 function PhraseList({ phrases }) {
   return (
-    <ul className="mt-2 space-y-1.5">
+    <ul className="mt-2 space-y-1.5" data-speech-group>
       {phrases.map((phrase) => (
         <li key={phrase.id} className="flex items-start gap-2">
+          <RowSpeakButton text={phraseSpeechText(phrase)} title={phrase.kind === 'syntax' ? '構文' : '熟語'} />
           <span
             className="mt-0.5 shrink-0 rounded-md px-1.5 py-0.5 text-[10px] font-extrabold text-white"
             style={{ backgroundColor: phrase.kind === 'syntax' ? '#8b5cf6' : '#0ea5e9' }}
@@ -219,6 +225,35 @@ function PhraseListHeading({ label, count }) {
   )
 }
 
+/** ほかの品詞の形を使う熟語・構文。項目が多い形（being に対する be など）は畳んでおき、押すと開く。 */
+function FormPhraseGroup({ group }) {
+  const { form, phrases, collapsed } = group
+  const [open, setOpen] = useState(!collapsed)
+  const label = `${form.word}（${FORM_POS_LABELS[form.pos]}）を含む熟語・構文`
+  return (
+    <div data-word-form-phrases={form.word}>
+      {collapsed ? (
+        <button
+          type="button"
+          onClick={() => setOpen((value) => !value)}
+          aria-expanded={open}
+          className="flex w-full items-baseline justify-between gap-2 text-left active:opacity-70"
+        >
+          <span className="text-xs font-extrabold text-sky-700">
+            {open ? '▼' : '▶'} {label}
+          </span>
+          <span className="text-[11px] font-bold text-ink/40">
+            全{phrases.length}項目
+          </span>
+        </button>
+      ) : (
+        <PhraseListHeading label={label} count={phrases.length} />
+      )}
+      {open && <PhraseList phrases={phrases} />}
+    </div>
+  )
+}
+
 /**
  * その語を含む熟語・構文を省略せず全部と、ほかの品詞の形を使う熟語・構文（decide に対する make a decision）。
  * 暗記カードの裏と辞書ページで同じ中身を出す。groups は lib/wordPhrases.js の phraseGroupsForWord。
@@ -233,11 +268,8 @@ export function WordPhraseSection({ word, groups }) {
           <PhraseList phrases={groups.all} />
         </div>
       )}
-      {groups.viaForms.map(({ form, phrases }) => (
-        <div key={form.word} data-word-form-phrases={form.word}>
-          <PhraseListHeading label={`${form.word}（${FORM_POS_LABELS[form.pos]}）を含む熟語・構文`} count={phrases.length} />
-          <PhraseList phrases={phrases} />
-        </div>
+      {groups.viaForms.map((group) => (
+        <FormPhraseGroup key={group.form.word} group={group} />
       ))}
     </div>
   )

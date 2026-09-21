@@ -5,7 +5,7 @@
 // 1件ずつ読み、元の語の使い方なら true、つづりが同じ別の語（turn left の left は「左」）なら外す理由を書く。
 // 候補と台帳は tests/word-phrase-links.test.mjs が突き合わせ、読んでいない候補・候補でなくなった行を止める。
 
-// 不規則な過去形・過去分詞などを、見出し語の id ごとに書く（助動詞の could・would などは別の見出し語なので入れない）。
+// 不規則な過去形・過去分詞・比較級・最上級などを、見出し語の id ごとに書く（助動詞の could・would などは別の見出し語なので入れない）。
 export const IRREGULAR_WORD_FORMS = Object.freeze({
   arise: ['arose', 'arisen'],
   beat: ['beaten'],
@@ -161,6 +161,15 @@ export const IRREGULAR_WORD_FORMS = Object.freeze({
   withstand: ['withstood'],
   write: ['wrote', 'written'],
   be: ['am', 'is', 'are', 'was', 'were', 'been', 'being'],
+  // 形容詞・副詞の不規則な比較級・最上級
+  good: ['better', 'best'],
+  well: ['better', 'best'],
+  bad: ['worse', 'worst'],
+  many: ['more', 'most'],
+  much: ['more', 'most'],
+  little: ['less', 'least'],
+  far: ['further', 'farther', 'furthest', 'farthest'],
+  old: ['elder', 'eldest'],
   deal: ['dealt'],
   dream: ['dreamt'],
   mistake: ['mistook', 'mistaken'],
@@ -225,4 +234,55 @@ export const IRREGULAR_PHRASE_LINKS = Object.freeze({
   'lie_2|exam_idm_lay_the_groundwork_for': '動詞 lay（置く・築く）の熟語で、lie の過去形 lay ではない', // lay the groundwork for（lay）
   'lie_2|curr_idm_2_lay_off': '動詞 lay（置く）の熟語で、lie の過去形 lay ではない', // lay off（lay）
   'lie_2|curr_idm_pre1_lay_out': '動詞 lay（置く・並べる）の熟語で、lie の過去形 lay ではない', // lay out（lay）
+  // 比較級・最上級の熟語（good・bad・many・much・little へつなぐ）
+  'good|syn_had_better': true, // had better do（better）
+  'good|curr_idm_1_for_better_or_worse': true, // for better or worse（better）
+  'good|curr1900_idm_pre1_get_the_better_of': true, // get the better of（better）
+  'good|curr1900_idm_pre1_it_couldn_t_be_better': true, // It couldn't be better.（better）
+  'good|curr1900_idm_pre1_know_better_than_to_do': true, // know better than to do（better）
+  'good|exam_idm_do_ones_best': true, // do one's best（best）
+  'good|curr_idm_pre1_at_best': true, // at best（best）
+  'good|curr1900_idm_2_make_the_best_of': true, // make the best of（best）
+  'good|curr1900_idm_pre1_to_the_best_of_ones_knowledge': true, // to the best of one's knowledge（best）
+  'little|curr_idm_4_less_than': true, // less than（less）
+  'little|curr1900_idm_pre2_more_or_less': true, // more or less（less）
+  'little|curr1900_idm_pre1_much_less': true, // much less（less）
+  'little|exam_idm_at_least': true, // at least（least）
+  'little|curr_idm_1_not_least': true, // not least（least）
+  'little|curr1900_idm_pre2_last_but_not_least': true, // last but not least（least）
+  'little|curr1900_idm_pre1_not_blank_in_the_least': true, // not ... in the least（least）
+  'bad|curr_idm_1_for_better_or_worse': true, // for better or worse（worse）
+  'bad|curr1900_idm_2_to_make_matters_worse': true, // to make matters worse（worse）
+  'bad|curr1900_idm_pre1_worse_still': true, // worse still（worse）
+  'well|syn_had_better': 'better・best は good の比較級・最上級として good のカードに出す（well の比較級も同じ形なので重ねない）', // had better do（better）
+  'well|curr_idm_1_for_better_or_worse': 'better・best は good の比較級・最上級として good のカードに出す（well の比較級も同じ形なので重ねない）', // for better or worse（better）
+  'well|curr1900_idm_pre1_get_the_better_of': 'better・best は good の比較級・最上級として good のカードに出す（well の比較級も同じ形なので重ねない）', // get the better of（better）
+  'well|curr1900_idm_pre1_it_couldn_t_be_better': 'better・best は good の比較級・最上級として good のカードに出す（well の比較級も同じ形なので重ねない）', // It couldn't be better.（better）
+  'well|curr1900_idm_pre1_know_better_than_to_do': 'better・best は good の比較級・最上級として good のカードに出す（well の比較級も同じ形なので重ねない）', // know better than to do（better）
+  'well|exam_idm_do_ones_best': 'better・best は good の比較級・最上級として good のカードに出す（well の比較級も同じ形なので重ねない）', // do one's best（best）
+  'well|curr_idm_pre1_at_best': 'better・best は good の比較級・最上級として good のカードに出す（well の比較級も同じ形なので重ねない）', // at best（best）
+  'well|curr1900_idm_2_make_the_best_of': 'better・best は good の比較級・最上級として good のカードに出す（well の比較級も同じ形なので重ねない）', // make the best of（best）
+  'well|curr1900_idm_pre1_to_the_best_of_ones_knowledge': 'better・best は good の比較級・最上級として good のカードに出す（well の比較級も同じ形なので重ねない）', // to the best of one's knowledge（best）
+  'many|curr_idm_4_more_than': true, // more than（more）
+  'many|curr_idm_1_all_the_more': true, // all the more（more）
+  'many|curr1900_idm_4_more_and_more': true, // more and more（more）
+  'many|curr1900_idm_1_more_often_than_not': true, // more often than not（more）
+  'many|curr1900_idm_pre2_more_or_less': true, // more or less（more）
+  'many|curr1900_idm_pre1_nothing_is_more_a_than_b': true, // Nothing is more A than B（more）
+  'many|curr1900_idm_pre1_what_is_more': true, // what is more（more）
+  'many|curr_idm_4_most_of': true, // most of（most）
+  'many|curr_idm_pre2_at_most': true, // at most（most）
+  'many|curr1900_idm_pre2_for_the_most_part': true, // for the most part（most）
+  'many|curr1900_idm_2_make_the_most_of': true, // make the most of（most）
+  'much|curr_idm_4_more_than': true, // more than（more）
+  'much|curr_idm_1_all_the_more': true, // all the more（more）
+  'much|curr1900_idm_4_more_and_more': true, // more and more（more）
+  'much|curr1900_idm_1_more_often_than_not': true, // more often than not（more）
+  'much|curr1900_idm_pre2_more_or_less': true, // more or less（more）
+  'much|curr1900_idm_pre1_nothing_is_more_a_than_b': true, // Nothing is more A than B（more）
+  'much|curr1900_idm_pre1_what_is_more': true, // what is more（more）
+  'much|curr_idm_4_most_of': true, // most of（most）
+  'much|curr_idm_pre2_at_most': true, // at most（most）
+  'much|curr1900_idm_pre2_for_the_most_part': true, // for the most part（most）
+  'much|curr1900_idm_2_make_the_most_of': true, // make the most of（most）
 })

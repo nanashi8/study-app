@@ -5,9 +5,10 @@ import test from 'node:test'
 import { ALL_WORDS, getWord } from '../src/data/vocab.js'
 import { IRREGULAR_PHRASE_LINKS, IRREGULAR_WORD_FORMS } from '../src/data/phrase-irregular-links.js'
 import {
+  FORM_PHRASES_OPEN_LIMIT,
   formPhraseGroupsForWord,
   irregularPhraseCandidates,
-  phraseGroupsForWord,
+  isDerivedForm,
   phrasesForWord,
   sharesFormPhrases,
 } from '../src/lib/wordPhrases.js'
@@ -54,25 +55,37 @@ test('不規則な形でしか現れない熟語・構文は、全候補を1件�
   for (const id of Object.keys(IRREGULAR_WORD_FORMS)) assert.ok(getWord(id), `${id} は見出し語の id`)
 })
 
-test('ほかの品詞の形を使う熟語・構文を、元の語のカードと辞書ページから引ける', () => {
-  const decision = phraseGroupsForWord(getWord('decide')).viaForms.find((group) => group.form.word === 'decision')
-  assert.ok(decision.phrases.some((phrase) => phrase.phrase === 'make a decision'))
-  // 作られた形の熟語だけを元の語に出す。being（存在）や maker のカードに be・make の熟語を並べない。
-  assert.deepEqual(formPhraseGroupsForWord(getWord('being')), [])
-  assert.deepEqual(formPhraseGroupsForWord(getWord('maker')), [])
+test('ほかの品詞の形を使う熟語・構文を、両方向の語のカードと辞書ページから引ける', () => {
+  const groupsOf = (id) => formPhraseGroupsForWord(getWord(id))
+  // 作られた形の熟語（decide に対する decision の make a decision）
+  const decision = groupsOf('decide').find((group) => group.form.word === 'decision')
+  assert.ok(decision.derived && decision.phrases.some((phrase) => phrase.phrase === 'make a decision'))
+  // 元の語の熟語（response に対する respond の respond to、decision に対する decide の decide to）
+  assert.ok(groupsOf('response').some((group) => !group.derived && group.phrases.some((phrase) => phrase.phrase === 'respond to')))
+  assert.ok(groupsOf('decision').some((group) => group.form.word === 'decide' && group.phrases.some((phrase) => phrase.phrase === 'decide to')))
+  // 項目が多い形（being に対する be、maker に対する make）は畳んで出す。
+  assert.ok(groupsOf('being').find((group) => group.form.word === 'be').collapsed)
+  assert.ok(groupsOf('maker').find((group) => group.form.word === 'make').collapsed)
   // 意味がずれた形は出さない（クマの bear に be born、committee に be committed to を並べない）。
-  assert.deepEqual(formPhraseGroupsForWord(getWord('bear')), [])
-  assert.deepEqual(formPhraseGroupsForWord(getWord('committee')), [])
+  assert.deepEqual(groupsOf('bear'), [])
+  assert.deepEqual(groupsOf('committee'), [])
   // 同じ品詞の形（sensible と sensitive）は「ほかの品詞の形」ではないので出さない。
-  assert.ok(!formPhraseGroupsForWord(getWord('sensible')).some((group) => group.form.word === 'sensitive'))
+  assert.ok(!groupsOf('sensible').some((group) => group.form.word === 'sensitive'))
   let words = 0
   for (const word of ALL_WORDS) {
     const own = new Set(phrasesForWord(word).map((phrase) => phrase.id))
     const groups = formPhraseGroupsForWord(word)
     const forms = wordFormsFor(word)
     const seen = new Set()
-    for (const { form, phrases } of groups) {
+    let reverse = false
+    for (const group of groups) {
+      const { form, phrases } = group
       assert.ok(forms.some((item) => item.word === form.word) && sharesFormPhrases(word, form), `${word.id}: ${form.word}`)
+      assert.equal(group.derived, isDerivedForm(word, form), `${word.id}: ${form.word}`)
+      // 作られた形を先に、元の語の側の形をあとに並べる。
+      if (!group.derived) reverse = true
+      else assert.ok(!reverse, `${word.id}: ${form.word} の並び`)
+      assert.equal(group.collapsed, phrases.length > FORM_PHRASES_OPEN_LIMIT, `${word.id}: ${form.word} の畳み`)
       for (const phrase of phrases) {
         assert.ok(!own.has(phrase.id) && !seen.has(phrase.id), `${word.id}: ${phrase.phrase} を重ねて出している`)
         seen.add(phrase.id)
@@ -87,5 +100,5 @@ test('ほかの品詞の形を使う熟語・構文を、元の語のカード�
     }
     if (groups.length) words++
   }
-  assert.ok(words >= 100, `ほかの品詞の形の熟語・構文を持つ語が ${words}語しかない`)
+  assert.ok(words >= 700, `ほかの品詞の形の熟語・構文を持つ語が ${words}語しかない`)
 })
