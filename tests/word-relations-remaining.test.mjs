@@ -3,7 +3,8 @@ import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import test from 'node:test'
 import { ALL_WORDS, getWord } from '../src/data/vocab.js'
-import { posSensesFor, wordFormsFor, wordRelationsFor } from '../src/lib/wordRelations.js'
+import { posSensesFor, sameFormsFor, wordFormsFor, wordRelationsFor } from '../src/lib/wordRelations.js'
+import { samePosUsageGap } from '../scripts/checks/same-pos-usage.mjs'
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8')
 
@@ -66,4 +67,25 @@ test('ほかの品詞でも使う語は、その品詞の意味で形として�
   const content = wordFormsFor(getWord('contentment')).find((item) => item.word === 'content')
   assert.deepEqual([content.pos, content.meaning], ['形', '満足して'])
   assert.deepEqual(posSensesFor(getWord('promise')).map((sense) => sense.pos), ['名', '動'])
+})
+
+test('同じ品詞の派生語と別の品詞の意味を、依頼の例のとおりにつなぐ', () => {
+  const same = (id) => sameFormsFor(getWord(id)).map((item) => item.word)
+  assert.ok(same('photograph').includes('photographer'))
+  assert.ok(same('music').includes('musician'))
+  assert.ok(same('dream').includes('dreamer'))
+  assert.ok(same('worth').includes('worthless'))
+  assert.ok(same('book').includes('booking'))
+  assert.ok(same('contract').includes('contraction'))
+  // still の「静かな」、musical の「音楽の」、train の「訓練する」は別の品詞の意味として持つ。
+  assert.ok(wordFormsFor(getWord('still')).some((item) => item.word === 'stillness'))
+  assert.ok(posSensesFor(getWord('musical')).some((sense) => sense.pos === '形' && /音楽の/.test(sense.meaning)))
+  assert.ok(wordFormsFor(getWord('music')).some((item) => item.word === 'musical' && item.pos === '形'))
+  assert.ok(posSensesFor(getWord('train')).some((sense) => sense.pos === '動'))
+})
+
+test('同じ品詞の組は、使い分けを書いたか、書かない理由を残してある', () => {
+  const gap = samePosUsageGap()
+  assert.deepEqual(gap.missing, [], '使い分けも理由もない組')
+  assert.deepEqual(gap.stale, [], '同じ品詞の組でなくなった理由の行')
 })

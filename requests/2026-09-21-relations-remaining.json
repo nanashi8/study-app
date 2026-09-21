@@ -45,22 +45,22 @@
       "id": "same-pos-derivatives",
       "text": "同じ品詞の派生語（photograph→photographer、music→musician、dream→dreamer、worth→worthless など）を「同じ品詞の派生語」として暗記カードの裏と辞書ページに出す（語・品詞・意味・発音記号・発音ボタン、意味がずれた語は説明つき）。全見出し語を1語ずつ読んで決める",
       "population": "品詞のある全見出し語 8,799語",
-      "check": "node scripts/checks/word-forms-review.mjs --derivatives",
-      "status": "todo"
+      "check": "node --test tests/word-forms-review.test.mjs tests/word-relations-remaining.test.mjs",
+      "status": "done"
     },
     {
       "id": "secondary-pos",
       "text": "別の品詞でも使う語（book の「予約する」、contract の「縮小する」、train の「訓練する」、musical の「音楽の」、still の「静かな」など）は、その品詞の意味も形のつながりと表示に使う（book→booking、contract→contraction、still→stillness）。意味欄の（動）などの印は自動で読み、印のない語は1語ずつ読んで決める",
       "population": "品詞のある全見出し語 8,799語",
-      "check": "node scripts/checks/word-forms-review.mjs --secondary",
-      "status": "todo"
+      "check": "node --test tests/word-forms-review.test.mjs tests/word-relations-remaining.test.mjs",
+      "status": "done"
     },
     {
       "id": "same-pos-usage",
       "text": "同じ語から来た同じ品詞の語どうし（-ed/-ing、-ic/-ical、adaptable/adaptive、comparable/comparative など）に使い分けがあれば説明を書き、書かない組は理由を台帳に残す",
       "population": "同じまとまりに入る同じ品詞の語の組の全件（見直し後）",
-      "check": "node scripts/checks/same-pos-usage.mjs",
-      "status": "todo"
+      "check": "node --test tests/word-relations-remaining.test.mjs",
+      "status": "done"
     },
     {
       "id": "homograph-headwords",
