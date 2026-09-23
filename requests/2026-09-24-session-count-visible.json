@@ -25,7 +25,8 @@
       "text": "全テスト・全監査をクリーンな clone で通してから main へ push し、公開版で確認する",
       "population": "公開版 https://nanashi8.github.io/study-app/",
       "check": "node --test tests/deploy-workflow.test.mjs",
-      "status": "todo"
+      "status": "waiting",
+      "waitingFor": "commit 0b83e96 の GitHub Pages デプロイ（.github/workflows/deploy.yml）の完了。再開したら `node scripts/checks/deployed-matches-head.mjs` を実行し、成功していれば done にして依頼を閉じる。公開版 https://nanashi8.github.io/study-app/ の単語テストで上部バーが「1/10」と出ることも見る"
     }
   ]
 }
