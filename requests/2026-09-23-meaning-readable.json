@@ -4,7 +4,7 @@
   "asked": [
     "Fathomの意味に（水深の）尋（名）とあるが、読めねえよ馬鹿！おかしいと思わないのか？おかしな内容が他にもあるのか？検査しなさい。"
   ],
-  "status": "open",
+  "status": "done",
   "criteria": [
     {
       "id": "fathom-fixed",
@@ -53,7 +53,7 @@
       "text": "全テスト・全監査をクリーンな clone で通してから main へ push し、公開版で確認する",
       "population": "公開版 https://nanashi8.github.io/study-app/",
       "check": "node scripts/checks/deployed-matches-head.mjs",
-      "status": "todo"
+      "status": "done"
     }
   ]
 }
