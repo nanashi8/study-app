@@ -647,6 +647,44 @@ export function restartSessionCount(existingDeck, answeredIndexes, currentIndex,
   }
 }
 
+/**
+ * 上部バーに出す問題数の表示（「1/10」）。
+ *
+ * 暗記カードは輪から抜けた分だけ数が減るので「位置/残り枚数」を出す。そのために remaining を渡す。
+ * テストなど渡さない画面は、デッキの「番号/総数」を出す。
+ * remaining を数として渡したときだけ残り枚数で数える（null を 0 と数えると、
+ * 渡さない画面がすべて 0/0 になり、1回の問題数が読めなくなる）。
+ */
+export function sessionCounterDisplay({
+  index = 0,
+  total = 0,
+  remaining = null,
+  position = 1,
+} = {}) {
+  const deckTotal = Math.max(0, Math.floor(Number(total)) || 0)
+  const countsRemaining = remaining !== null && remaining !== undefined && remaining !== ''
+    && Number.isFinite(Number(remaining))
+  if (countsRemaining) {
+    const remainingCards = Math.max(0, Math.floor(Number(remaining)) || 0)
+    const place = Math.min(remainingCards, Math.max(1, Math.floor(Number(position)) || 1))
+    return {
+      countsRemaining: true,
+      remaining: remainingCards,
+      position: place,
+      total: deckTotal,
+      text: `${place}/${remainingCards}`,
+    }
+  }
+  const place = Math.min(Math.max(1, Math.floor(Number(index)) + 1 || 1), deckTotal)
+  return {
+    countsRemaining: false,
+    remaining: null,
+    position: place,
+    total: deckTotal,
+    text: `${place}/${deckTotal}`,
+  }
+}
+
 /** 級ごとの進捗集計（既習・習得・期限切れ件数）。 */
 export function levelProgress(levelId, srs) {
   return wordProgress(wordsByLevel(levelId), srs)

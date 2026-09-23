@@ -7,6 +7,7 @@ import {
   answeredQuizIndexes,
   answeredSessionIndexes,
   restartSessionCount,
+  sessionCounterDisplay,
 } from '../src/lib/session.js'
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8')
@@ -144,5 +145,81 @@ test('問題数を変える画面はすべて、減らしても答えた分の�
       assert.match(handler, /carried\.carry\(next\.answeredItems\)/, `${path} が答えた問題を持ち越していない`)
       assert.match(source, /carried\.count \+ deck\.length|carried\.ids/, `${path} の結果が持ち越した分を数えていない`)
     }
+  }
+})
+
+test('問題数の表示は、残り枚数を渡さない画面でも実際の番号と総数を出す（0/0 にしない）', () => {
+  // テストは「番号/総数」。残り枚数（remaining）を渡さないので、null を 0 と数えると全画面が 0/0 になる。
+  assert.equal(sessionCounterDisplay({ index: 0, total: 10 }).text, '1/10')
+  assert.equal(sessionCounterDisplay({ index: 4, total: 200 }).text, '5/200')
+  assert.equal(sessionCounterDisplay({ index: 0, total: 10, remaining: null }).text, '1/10')
+  assert.equal(sessionCounterDisplay({ index: 0, total: 10, remaining: undefined }).text, '1/10')
+  assert.equal(sessionCounterDisplay({ index: 0, total: 10, remaining: '' }).text, '1/10')
+  // 暗記カードだけ「位置/残り枚数」。数として渡したときは 0 も尊重する（最後の1枚を押した直後）。
+  assert.equal(sessionCounterDisplay({ index: 3, total: 20, remaining: 17, position: 3 }).text, '3/17')
+  assert.equal(sessionCounterDisplay({ index: 19, total: 20, remaining: 0, position: 1 }).text, '0/0')
+  // 読み上げ文も同じ数で言う（画面が持つ文言に、この数を差し込む）。
+  const cards = sessionCounterDisplay({ index: 3, total: 20, remaining: 17, position: 3 })
+  assert.deepEqual(
+    [cards.countsRemaining, cards.remaining, cards.position, cards.total],
+    [true, 17, 3, 20],
+  )
+  assert.match(
+    read('src/components/SessionSize.jsx'),
+    /aria-label=\{display\.countsRemaining\s*\n\s*\? `\$\{label\}数を変更する（残り\$\{display\.remaining\}枚の\$\{display\.position\}枚目／全\$\{total\}枚）`/,
+  )
+})
+
+test('問題数を出す全画面が、実際の番号と総数を表示する', () => {
+  const screens = readdirSync(new URL('../src/screens', import.meta.url))
+    .filter((name) => name.endsWith('.jsx'))
+    .map((name) => `src/screens/${name}`)
+    .filter((path) => read(path).includes('<SessionCounter'))
+
+  assert.equal(screens.length, 20)
+  // 表示の作り方は1か所（sessionCounterDisplay）だけ。画面ごとに数字を組み立てない。
+  const sizes = read('src/components/SessionSize.jsx')
+  assert.match(sizes, /sessionCounterDisplay\(\{ index, total, remaining, position \}\)/)
+  assert.doesNotMatch(sizes, /Number\.isFinite\(Number\(remaining\)\)/)
+
+  let withRemaining = 0
+  for (const path of screens) {
+    const counter = /<SessionCounter[\s\S]*?\n\s*\/>/.exec(read(path))?.[0] ?? ''
+    assert.ok(counter, `${path} の SessionCounter が読めない`)
+    const passesRemaining = /\bremaining=\{/.test(counter)
+    if (passesRemaining) withRemaining += 1
+    // その画面の渡し方で、20問の3問目（暗記は残り17枚の3枚目）を出したときの表示。
+    const display = sessionCounterDisplay(passesRemaining
+      ? { index: 2, total: 20, remaining: 17, position: 3 }
+      : { index: 2, total: 20 })
+    assert.equal(display.text, passesRemaining ? '3/17' : '3/20', `${path} の問題数が実際の数にならない`)
+    assert.doesNotMatch(display.text, /^0\/0$/, `${path} の問題数が 0/0 になる`)
+  }
+  // 暗記カード7画面だけが残り枚数を渡す。ほかはデッキの番号と総数を出す。
+  assert.equal(withRemaining, 7)
+})
+
+test('問題数の表示は切り取られない（いちばん長い「200/200」でも縮まない）', () => {
+  const sizes = read('src/components/SessionSize.jsx')
+  const counterClass = /className=\{cx\(\s*\n\s*\/\/[^\n]*\n\s*'([^']*)'/.exec(sizes)?.[1] ?? ''
+  assert.ok(counterClass.includes('shrink-0'), '問題数が縮んでしまう')
+  assert.ok(counterClass.includes('whitespace-nowrap'), '問題数が折り返してしまう')
+  assert.ok(!/\btruncate\b|\boverflow-hidden\b|\btext-ellipsis\b/.test(counterClass), '問題数が省略される指定がある')
+  // となりの「正解後」が縮んで場所を譲る（数字が押し出されない）。
+  const controls = read('src/components/QuestionSessionControls.jsx')
+  assert.match(controls, /data-correct-auto-advance-toggle[\s\S]{0,400}min-w-0 flex-1/)
+  assert.match(controls, /<span className="min-w-0 truncate">正解後<\/span>/)
+  // 画面ごとの見た目の上書きでも、省略や固定幅で切らない。
+  const screens = readdirSync(new URL('../src/screens', import.meta.url))
+    .filter((name) => name.endsWith('.jsx'))
+    .map((name) => `src/screens/${name}`)
+    .filter((path) => read(path).includes('<SessionCounter'))
+  for (const path of screens) {
+    const counter = /<SessionCounter[\s\S]*?\n\s*\/>/.exec(read(path))?.[0] ?? ''
+    const className = /className="([^"]*)"/.exec(counter)?.[1] ?? ''
+    assert.ok(
+      !/\btruncate\b|\boverflow-hidden\b|\btext-ellipsis\b/.test(className),
+      `${path} が問題数を省略表示にしている`,
+    )
   }
 })

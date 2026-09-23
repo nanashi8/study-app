@@ -182,7 +182,9 @@ test('共通部品が輪の枚数を数え、番号での頭打ちを持たな�
   assert.match(controls, /直前の1枚を選び直す/)
 
   const counter = read('src/components/SessionSize.jsx')
-  assert.match(counter, /countsRemaining\s*\?\s*`\$\{remainingPlace\}\/\$\{remainingCards\}`/)
+  // 「位置/残り枚数」の作り方は session.js の1か所だけ（remaining を渡した画面がこの形になる）。
+  assert.match(counter, /sessionCounterDisplay\(\{ index, total, remaining, position \}\)/)
+  assert.match(read('src/lib/session.js'), /text: `\$\{place\}\/\$\{remainingCards\}`/)
   assert.match(counter, /data-session-remaining/)
   assert.match(bar, /\{statusLabel \?\? `\$\{itemLabel\} \$\{index \+ 1\}\/\$\{total\}`\}/)
 

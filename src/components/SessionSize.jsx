@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from 'react'
 import { useStore, useContentSettings } from '../store/useStore.js'
-import { SESSION_SIZE } from '../lib/session.js'
+import { SESSION_SIZE, sessionCounterDisplay } from '../lib/session.js'
 import { Sheet } from './Sheet.jsx'
 import { Button, cx } from './ui.jsx'
 
@@ -105,30 +105,26 @@ export function SessionCounter({
     onResize?.(resolvedSize, { restart: resolvedSize <= Math.max(index, reached) })
   }
 
-  const countsRemaining = Number.isFinite(Number(remaining))
-  const remainingCards = countsRemaining ? Math.max(0, Math.floor(Number(remaining))) : null
-  const remainingPlace = countsRemaining
-    ? Math.min(remainingCards, Math.max(1, Math.floor(Number(position)) || 1))
-    : null
+  // 「1/10」の作り方は全画面で同じ。remaining を渡す暗記カードだけ「位置/残り枚数」になる。
+  const display = sessionCounterDisplay({ index, total, remaining, position })
 
   return (
     <>
       <button
         type="button"
         onClick={() => setOpen(true)}
-        aria-label={countsRemaining
-          ? `${label}数を変更する（残り${remainingCards}枚の${remainingPlace}枚目／全${total}枚）`
+        aria-label={display.countsRemaining
+          ? `${label}数を変更する（残り${display.remaining}枚の${display.position}枚目／全${total}枚）`
           : `${label}数を変更する（現在 ${total}問）`}
         className={cx(
-          'min-h-9 shrink-0 rounded-lg px-1.5 text-right text-sm font-extrabold tabular-nums text-ink/50 underline decoration-ink/20 decoration-dotted underline-offset-4 active:bg-ink/5',
+          // 数字は縮めない・折り返さない（となりの「正解後」が縮む）。いちばん長い「200/200」でも切れない。
+          'min-h-9 shrink-0 whitespace-nowrap rounded-lg px-1.5 text-right text-sm font-extrabold tabular-nums text-ink/50 underline decoration-ink/20 decoration-dotted underline-offset-4 active:bg-ink/5',
           className,
         )}
         data-session-size-button
-        data-session-remaining={countsRemaining ? remainingCards : undefined}
+        data-session-remaining={display.countsRemaining ? display.remaining : undefined}
       >
-        {countsRemaining
-          ? `${remainingPlace}/${remainingCards}`
-          : `${Math.min(index + 1, total)}/${total}`}
+        {display.text}
       </button>
 
       <Sheet open={open} onClose={closeSheet} title={`1回の${label}数`}>
