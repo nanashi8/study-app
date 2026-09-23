@@ -319,7 +319,7 @@ export const ETYMOLOGY_CARD_REVIEWS = Object.freeze({
   // ── 全語見直しで新しく起こした語幹 ──
   ag: reviewedStem(['act', 'active'], '202340d53dfed29e1d01e590dd9791da44a484b29bf56434548e6b917e8960ca'),
   uni: reviewedStem(['unify', 'union'], '29afe0792cfee759f5f2e1506e65662f4b2d263762733be5303c470d566b5cdd'),
-  radi: reviewedStem(['radiant', 'radiate'], '8d22e6d8ee6dde16e987290d60376661c8172267f463df6fa5bb04cad9ecd82f'),
+  radi: reviewedStem(['radiant', 'radiate'], 'cf955ab9accebc8f331aba7568116badb193d29fae96c8ffb79465c616f883d7'),
   rat: reviewedStem(['rate', 'ratio'], 'ba96b8156756654c59a08580684afe24a30c69ff457c1da3b1f50207119dd77d'),
   temper: reviewedStem(['temper', 'temperament'], '61e9d7089938a8e7c5e685c44cb63ac41e650d29ef7e9644f29f39d38fca2273'),
   hospit: reviewedStem(['hospitable', 'hospital'], 'dd40300a45e5bf068974a67bb4f64f50277c6de52626dcc0ae7cf0cd965ba95e'),

@@ -18,7 +18,7 @@ const RAW = [
   ['enroll', '動', 'pre1', '登録する・入学させる', 'She enrolled in the course.', '彼女はその講座に登録した。', 'en+roll(名簿)→名簿に載せる。', { syn: [{ w: 'register', m: '登録する' }, { w: 'sign up', m: '加入する' }], fam: [{ w: 'enrollment', m: '登録・入学' }], field: '教育' }],
   // 抽象名詞
   ['discrepancy', '名', '1', '食い違い・不一致', 'There is a discrepancy in the figures.', '数字に食い違いがある。', 'ラテン dis+crepare(音を立てる)→不協和。', { syn: [{ w: 'inconsistency', m: '矛盾' }], ant: [{ w: 'agreement', m: '一致' }], field: '一般' }],
-  ['equilibrium', '名', '1', '均衡・平衡', 'The market reached equilibrium.', '市場は均衡に達した。', 'ラテン aequus(等しい)+libra(秤)。', { syn: [{ w: 'balance', m: '均衡' }, { w: 'stability', m: '安定' }], ant: [{ w: 'imbalance', m: '不均衡' }], field: '科学' }],
+  ['equilibrium', '名', '1', '均衡・平衡', 'The market reached equilibrium.', '市場は均衡に達した。', 'ラテン aequus(等しい)+libra(てんびん)。', { syn: [{ w: 'balance', m: '均衡' }, { w: 'stability', m: '安定' }], ant: [{ w: 'imbalance', m: '不均衡' }], field: '科学' }],
   ['epitome', '名', '1', '典型・縮図', 'She is the epitome of grace.', '彼女は優雅さの典型だ。', 'ギリシャ epi+temnein(切る)→要約。', { syn: [{ w: 'embodiment', m: '権化' }, { w: 'model', m: '典型' }], field: '一般' }],
   ['nuance', '名', '1', '微妙な差・ニュアンス', 'He missed the nuance of the word.', '彼はその語の微妙な意味を逃した。', 'フランス nuance(色合い)→ラテン nubes(雲)。', { syn: [{ w: 'subtlety', m: '微妙さ' }, { w: 'shade', m: '色合い' }], fam: [{ w: 'nuanced', m: '微妙な' }], field: '言語' }],
   ['paradigm', '名', '1', 'パラダイム・模範・枠組み', 'It marked a paradigm shift.', 'それはパラダイムの転換を示した。', 'ギリシャ para+deiknynai(示す)。', { syn: [{ w: 'model', m: '模範' }, { w: 'framework', m: '枠組み' }], field: '科学' }],

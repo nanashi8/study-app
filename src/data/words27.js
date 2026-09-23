@@ -13,7 +13,7 @@ const RAW = [
   ['deforestation', '名', '1', '森林破壊', 'Deforestation harms the climate.', '森林破壊は気候に害を与える。', 'de(除去)+forest(森)+ -ation。', { field: '環境' }],
   ['solar', '形', 'pre1', '太陽の', 'They installed solar panels.', '彼らは太陽光パネルを設置した。', 'ラテン sol(太陽)。', { ant: [{ w: 'lunar', m: '月の' }], field: '環境' }],
   // 性格・感情
-  ['arrogant', '形', 'pre1', '傲慢な・横柄な', 'His arrogant tone annoyed us.', '彼の傲慢な口調は私たちを苛立たせた。', 'ラテン ad+rogare(要求する)。', { syn: [{ w: 'proud', m: '高慢な' }], ant: [{ w: 'humble', m: '謙虚な' }], field: '心理' }],
+  ['arrogant', '形', 'pre1', '傲慢な・横柄な', 'His arrogant tone annoyed us.', '彼の傲慢な口調は私たちをいらだたせた。', 'ラテン ad+rogare(要求する)。', { syn: [{ w: 'proud', m: '高慢な' }], ant: [{ w: 'humble', m: '謙虚な' }], field: '心理' }],
   ['greedy', '形', 'pre1', '欲深い・貪欲な', "Don't be greedy.", '欲ばらないで。', '古英語 grǣdig「貪欲な」。', { syn: [{ w: 'selfish', m: '利己的な' }], ant: [{ w: 'generous', m: '寛大な' }], field: '心理' }],
   ['selfish', '形', '2', '利己的な・わがままな', 'It was a selfish decision.', 'それは身勝手な決断だった。', 'self(自己)+ -ish。', { ant: [{ w: 'generous', m: '寛大な' }, { w: 'selfless', m: '無私の' }], field: '心理' }],
   ['cheerful', '形', '3', '明るい・陽気な', 'She has a cheerful smile.', '彼女は明るい笑顔だ。', 'cheer(元気づける)+ -ful。', { syn: [{ w: 'merry', m: '陽気な' }, { w: 'lively', m: '活発な' }], ant: [{ w: 'gloomy', m: '陰気な' }], field: '心理' }],
@@ -24,7 +24,7 @@ const RAW = [
   ['timid', '形', 'pre1', '臆病な・気の小さい', 'The timid boy said nothing.', 'その臆病な少年は何も言わなかった。', 'ラテン timere(恐れる)。', { syn: [{ w: 'shy', m: '内気な' }], ant: [{ w: 'bold', m: '大胆な' }], field: '心理' }],
   ['confident', '形', '2', '自信のある・確信して', 'She felt confident before the test.', '彼女は試験前に自信を感じた。', 'ラテン com+fidere(信じる)→ faith と同系。', { syn: [{ w: 'assured', m: '自信のある' }], ant: [{ w: 'insecure', m: '不安な' }], field: '心理' }],
   ['passionate', '形', 'pre1', '情熱的な', 'He is passionate about music.', '彼は音楽に情熱的だ。', 'ラテン pati(苦しむ・感じる)→ passion と同源。', { syn: [{ w: 'enthusiastic', m: '熱心な' }], ant: [{ w: 'indifferent', m: '無関心な' }], field: '心理' }],
-  ['cowardly', '形', 'pre1', '臆病な・卑怯な', 'It was a cowardly act.', 'それは卑怯な行為だった。', '古フランス coart(尻尾を巻く)→ tail と関連。', { syn: [{ w: 'timid', m: '臆病な' }], ant: [{ w: 'brave', m: '勇敢な' }], field: '心理' }],
+  ['cowardly', '形', 'pre1', '臆病な・卑怯な', 'It was a cowardly act.', 'それは卑怯な行為だった。', '古フランス coart(しっぽを巻く)→ tail と関連。', { syn: [{ w: 'timid', m: '臆病な' }], ant: [{ w: 'brave', m: '勇敢な' }], field: '心理' }],
   // 学術名詞
   ['criterion', '名', '1', '基準・尺度', 'Cost is the main criterion.', '費用が主な基準だ。', 'ギリシャ kriterion(判断基準)→ critic と同系。', { syn: [{ w: 'standard', m: '基準' }, { w: 'measure', m: '尺度' }], field: '科学' }],
   ['variable', '名', '1', '変数・変わりやすい(形)', 'There are many variables.', '多くの変数がある。', 'ラテン variare(変える)→ vary と同源。', { ant: [{ w: 'constant', m: '定数' }], field: '科学' }],

@@ -19,7 +19,7 @@ const RAW = [
   ["contrary","形","pre1","反対の・逆の","Contrary to belief, it is safe.","思いに反して、それは安全だ。","ラテン contra(反対に)→ contrast と同源。",{"field":"性質・状態"}],
   ["controversial","形","pre1","論争を呼ぶ","It is a controversial topic.","それは論争を呼ぶ話題だ。","ラテン contra+vertere(逆に向ける)→ vers と同源。",{"field":"性質・状態"}],
   ["conventional","形","pre1","従来の・慣習的な","They use conventional methods.","彼らは従来の方法を使う。","ラテン com+venire(集まる)→ convene と同源。",{"field":"性質・状態"}],
-  ["deliberate","形","1","意図的な・慎重な","It was a deliberate act.","それは意図的な行為だった。","ラテン de+librare(秤にかける)→ libra(天秤)。",{"field":"性質・状態"}],
+  ["deliberate","形","1","意図的な・慎重な","It was a deliberate act.","それは意図的な行為だった。","ラテン de+librare(てんびんにかける)→ libra(てんびん)。",{"field":"性質・状態"}],
   ["delicate","形","pre1","繊細な・微妙な","Handle this delicate glass.","この繊細なガラスを丁寧に扱って。","ラテン delicatus(快い・繊細な)。",{"field":"性質・状態"}],
   ["dense","形","pre1","密集した・濃い","The forest is very dense.","その森はとても密だ。","ラテン densus(濃い)。",{"field":"性質・状態"}],
   ["desperate","形","pre1","必死の・絶望的な","They made a desperate effort.","彼らは必死の努力をした。","ラテン de+sperare(望む)→希望を失った。",{"field":"性質・状態"}],

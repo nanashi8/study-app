@@ -42,7 +42,7 @@ const RAW = [
   ['lid', '名', '3', 'ふた・まぶた', 'Put the lid on the pot so the soup stays hot.', 'スープが冷めないように、なべにふたをしなさい。', '古英語 hlid(覆い)。', { syn: [{ w: 'cover', m: '覆い' }, { w: 'cap', m: 'キャップ' }], field: '一般' }],
   ['limb', '名', 'pre1', '手足・大枝', 'After the long flight, Nina stretched her stiff limbs.', '長時間のフライトの後、ニーナはこわばった手足を伸ばした。', '古英語 lim(手足)。', { syn: [{ w: 'arm', m: '腕' }, { w: 'branch', m: '枝' }], field: '医学' }],
   ['limp', '動', '2', '足を引きずる・弱々しい(形)', 'After hurting his ankle, the soccer player limped off the field.', '足首を痛めたそのサッカー選手は、足を引きずりながらフィールドを出た。', '古英語 lemphealt(びっこの)。', { syn: [{ w: 'hobble', m: 'よろよろ歩く' }], ant: [{ w: 'stride', m: '闊歩する' }], field: '医学' }],
-  ['linen', '名', '2', 'リネン・亜麻布', 'Linen shirts keep you cool on hot summer days.', 'リネンのシャツを着ると、暑い夏の日でも涼しく過ごせる。', 'ラテン linum(亜麻)。', { syn: [{ w: 'cloth', m: '布' }, { w: 'fabric', m: '生地' }], field: '一般' }],
+  ['linen', '名', '2', 'リネン・麻の布', 'Linen shirts keep you cool on hot summer days.', 'リネンのシャツを着ると、暑い夏の日でも涼しく過ごせる。', 'ラテン linum(亜麻)。', { syn: [{ w: 'cloth', m: '布' }, { w: 'fabric', m: '生地' }], field: '一般' }],
   ['liquor', '名', 'pre1', '酒・蒸留酒', 'In Japan, shops may not sell liquor to anyone under twenty.', '日本では、店は20歳未満の人に酒を売ってはならない。', 'ラテン liquor(液体)→ liquid と同系。', { syn: [{ w: 'alcohol', m: 'アルコール' }, { w: 'spirits', m: '蒸留酒' }], field: '一般' }],
   ['litter', '名', '2', 'ごみ・散らかす(動)・(動物の)一腹の子', 'Volunteers picked up litter along the beach on Sunday morning.', '日曜日の朝、ボランティアの人たちが海岸沿いのごみを拾った。', '古フランス litiere(寝床)。', { syn: [{ w: 'rubbish', m: 'ごみ' }, { w: 'trash', m: 'くず' }], field: '環境' }],
   ['loaf', '名', '3', '(パンの)ひとかたまり', 'Could you buy a loaf of bread on your way home?', '帰りにパンを1斤買ってきてくれる？', '古英語 hlaf(パン)。', { syn: [{ w: 'bread', m: 'パン' }], field: '料理' }],

@@ -32,7 +32,7 @@ const RAW = [
   ['credible', '形', 'pre1', '信用できる・もっともらしい', 'She gave a credible account.', '彼女は信用できる説明をした。', 'ラテン credere(信じる)→ credit と同系。', { syn: [{ w: 'believable', m: '信じられる' }, { w: 'plausible', m: 'もっともらしい' }], ant: [{ w: 'incredible', m: '信じがたい' }], fam: [{ w: 'credibility', m: '信頼性' }, { w: 'credit', m: '信用' }], field: '性質・状態' }],
   ['skeptical', '形', '1', '懐疑的な・疑い深い', 'He is skeptical of the claim.', '彼はその主張に懐疑的だ。', 'ギリシャ skeptikos(熟考する)。', { syn: [{ w: 'doubtful', m: '疑わしい' }, { w: 'dubious', m: '半信半疑の' }], ant: [{ w: 'convinced', m: '確信した' }], fam: [{ w: 'skepticism', m: '懐疑' }, { w: 'skeptic', m: '懐疑論者' }], field: '心理' }],
   ['gullible', '形', '1', 'だまされやすい・お人よしの', "Don't be so gullible.", 'そうだまされやすくならないで。', 'gull(だます)+ -ible。', { syn: [{ w: 'naive', m: '世間知らずの' }, { w: 'credulous', m: '信じやすい' }], ant: [{ w: 'skeptical', m: '懐疑的な' }], field: '性質・状態' }],
-  ['cynical', '形', '1', '皮肉な・人を信じない', 'She has a cynical view of politics.', '彼女は政治に冷めた見方をする。', 'ギリシャ kynikos(犬のような)→犬儒派。', { syn: [{ w: 'pessimistic', m: '悲観的な' }, { w: 'distrustful', m: '不信の' }], ant: [{ w: 'optimistic', m: '楽観的な' }], fam: [{ w: 'cynicism', m: '皮肉' }, { w: 'cynic', m: '皮肉屋' }], field: '心理' }],
+  ['cynical', '形', '1', '皮肉な・人を信じない', 'She has a cynical view of politics.', '彼女は政治に冷めた見方をする。', 'ギリシャ kynikos(犬のような)→犬のように質素に生きた学派。', { syn: [{ w: 'pessimistic', m: '悲観的な' }, { w: 'distrustful', m: '不信の' }], ant: [{ w: 'optimistic', m: '楽観的な' }], fam: [{ w: 'cynicism', m: '皮肉' }, { w: 'cynic', m: '皮肉屋' }], field: '心理' }],
   ['blunt', '形', '1', '率直な・(刃が)鈍い', 'He was blunt about his opinion.', '彼は意見をずけずけ言った。', '中英語 blunt(鈍い)。', { syn: [{ w: 'frank', m: '率直な' }, { w: 'direct', m: '直接的な' }], ant: [{ w: 'sharp', m: '鋭い' }], field: '性質・状態' }],
 ]
 

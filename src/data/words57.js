@@ -86,7 +86,7 @@ const RAW = [
   ['implant', '動', 'pre1', '植え込む・移植する・移植物(名)', "Doctors implanted a tiny device to help the man's heart beat regularly.", '医師たちは、その男性の心臓が規則正しく動くように小さな装置を植え込んだ。', 'im(中に)+plant(植える)。', { syn: [{ w: 'embed', m: '埋め込む' }, { w: 'insert', m: '挿入する' }], ant: [{ w: 'remove', m: '取り除く' }], field: '医学' }],
   ['implausible', '形', 'pre1', '信じがたい・ありそうにない', 'Tom gave the teacher an implausible excuse about a dog eating his homework.', 'トムは、犬に宿題を食べられたという信じがたい言い訳を先生にした。', 'im(否定)+plausible(もっともらしい)。', { syn: [{ w: 'unlikely', m: 'ありそうにない' }, { w: 'unconvincing', m: '説得力のない' }], ant: [{ w: 'plausible', m: 'もっともらしい' }], field: '性質・状態' }],
   ['implicitly', '副', '1', '暗に・暗黙のうちに', 'By not objecting, the members implicitly agreed to the plan.', '反対しないことで、メンバーたちは暗にその計画に同意した。', 'implicit(暗黙の)+ -ly', { fam: [{ w: 'implicit', m: '暗黙の' }], syn: [{ w: 'tacitly', m: '暗黙に' }], ant: [{ w: 'explicitly', m: '明確に' }], field: '副詞' }],
-  ['implode', '動', '1', '内破する・崩壊する', 'The building imploded.', '建物は内側に崩れ落ちた。', 'im(内に)+plode(破裂)→ explode と対。', { syn: [{ w: 'collapse', m: '崩壊する' }], ant: [{ w: 'explode', m: '爆発する' }], field: '科学' }],
+  ['implode', '動', '1', '内側につぶれる・崩壊する', 'The building imploded.', '建物は内側に崩れ落ちた。', 'im(内に)+plode(破裂)→ explode と対。', { syn: [{ w: 'collapse', m: '崩壊する' }], ant: [{ w: 'explode', m: '爆発する' }], field: '科学' }],
   ['impolite', '形', 'pre1', '無礼な・失礼な', 'It is impolite to stare.', 'じろじろ見るのは失礼だ。', 'im(否定)+polite(礼儀正しい)。', { syn: [{ w: 'rude', m: '失礼な' }, { w: 'discourteous', m: '無作法な' }], ant: [{ w: 'polite', m: '礼儀正しい' }], fam: [{ w: 'polite', m: '礼儀正しい' }], field: '社会' }],
 ]
 

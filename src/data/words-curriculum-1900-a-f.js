@@ -9,7 +9,7 @@ actor	名	4	俳優・行為者	The actor practiced the final scene again.	その
 agriculture	名	pre2	農業	Modern agriculture uses less water than before.	現代の農業は以前より少ない水を使っている。	ラテン語 ager（畑）＋cultura（耕すこと）から、「土地を耕して作物を育てること」を表す。	農業
 ahead	副	3	前方に・先に	Please plan ahead for the busy season.	繁忙期に備えて前もって計画してください。	a-（〜の状態で）＋head（頭・先端）から、「先の位置に」という意味になった。	様子・程度
 airplane	名	5	飛行機	The airplane landed safely in the rain.	その飛行機は雨の中を安全に着陸した。	air（空気・空）＋plane（平面を持つ飛行機）の複合語。	交通
-aisle	名	pre2	通路	She walked down the aisle between the seats.	彼女は座席の間の通路を歩いた。	古フランス語 aile（翼・建物の側廊）を経て、列の間を通る空間を指すようになった。	建築
+aisle	名	pre2	通路	She walked down the aisle between the seats.	彼女は座席の間の通路を歩いた。	古フランス語 aile（翼・建物のわきの通路）を経て、列の間を通る空間を指すようになった。	建築
 album	名	3	アルバム・作品集	The band released a new album in June.	そのバンドは6月に新しいアルバムを発売した。	ラテン語 album（白い掲示板）から、記録を集める帳面や作品集の意味へ広がった。	芸術
 alive	形	4	生きている・活気がある	The small plant was still alive after the storm.	その小さな植物は嵐の後もまだ生きていた。	古い表現 on life（生きた状態で）が縮まって alive になった。	性質・状態
 alphabet	名	3	アルファベット・文字体系	Children learned the Greek alphabet in class.	子どもたちは授業でギリシャ文字を学んだ。	ギリシャ文字の最初の二字 alpha と beta を組み合わせた語。	言語
@@ -35,7 +35,7 @@ astronomy	名	2	天文学	Astronomy explains the motion of planets.	天文学は
 August	名	5	8月	The museum will reopen in August.	その博物館は8月に再開する。	ローマ皇帝 Augustus の称号にちなむラテン語の月名から。	時間・数量
 Australia	名	4	オーストラリア	Australia is home to many unique animals.	オーストラリアには多くの固有動物が生息している。	ラテン語 australis（南の）から、「南方の土地」を表す地名になった。	地理
 awaken	動	pre2	目覚めさせる・目覚める	Birdsong awakened me before sunrise.	鳥の声が日の出前に私を目覚めさせた。	awake（目覚めている）に動詞を作る -en が結び付いた語。	動作・行為
-awesome	形	4	すばらしい・畏敬の念を起こす	The view from the mountain was awesome.	山からの眺めはすばらしかった。	awe（畏れ・畏敬）＋-some（〜を生じさせる）から、強い感動を与える意味になった。	性質・状態
+awesome	形	4	すばらしい・畏敬の念を起こす	The view from the mountain was awesome.	山からの眺めはすばらしかった。	awe（おそれ・おそれ敬う心）＋-some（〜を生じさせる）から、強い感動を与える意味になった。	性質・状態
 bacon	名	4	ベーコン	He added bacon to the soup.	彼はスープにベーコンを加えた。	古フランス語 bacon を経たゲルマン系の語で、豚の背やわきの塩漬け肉を指した。	食・生活
 badminton	名	5	バドミントン	We played badminton in the gym.	私たちは体育館でバドミントンをした。	英国の Badminton House で広まった競技にちなむ地名由来の語。	スポーツ
 baker	名	4	パン職人・菓子職人	The baker took fresh bread from the oven.	パン職人は焼きたてのパンをオーブンから出した。	bake（焼く）＋人を表す -er から、「パンなどを焼く人」を表す。	ビジネス
@@ -110,7 +110,7 @@ eighteen	形	5	18の・18個の	There are eighteen students in the room.	部屋�
 eighth	形	3	8番目の	She finished eighth in the race.	彼女はその競走で8位になった。	eight（8）に序数を作る -th が付き、綴りで t が一つにまとまった形。	時間・数量
 eighty	形	5	80の・80個の	The hall can hold eighty people.	その会場には80人入れる。	eight（8）＋-ty（十のまとまり）から「8つの十」を表す。	時間・数量
 either	代	3	どちらか一方・どちらでも	Either answer is acceptable.	どちらの答えでも認められます。	古英語 aegther（それぞれの・どちらも）にさかのぼる語。	機能語
-electronic	形	3	電子の・電子機器による	Students submitted the form in electronic format.	生徒たちは電子形式で用紙を提出した。	electron（電子）＋-ic（〜に関する）。electron はギリシャ語 elektron（琥珀）に由来する。	技術
+electronic	形	3	電子の・電子機器による	Students submitted the form in electronic format.	生徒たちは電子形式で用紙を提出した。	electron（電子）＋-ic（〜に関する）。electron はギリシャ語 elektron（こはく）に由来する。	技術
 eleventh	形	3	11番目の	Our classroom is on the eleventh floor.	私たちの教室は11階にある。	eleven（11）＋序数を作る -th。	時間・数量
 elite	名	2	精鋭・社会の上層集団	The program trains an elite group of athletes.	そのプログラムは精鋭の運動選手集団を育成する。	フランス語 elite（選ばれたもの）から、特に優れた少数を表すようになった。	社会
 else	副	4	ほかに・そうでなければ	Is there anything else you need?	ほかに必要なものはありますか。	古英語 elles（ほかに・別の仕方で）にさかのぼる語。	副詞

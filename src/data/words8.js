@@ -16,7 +16,7 @@ const RAW = [
   ["deny","動","2","否定する・拒む","He denied the rumor.","彼はそのうわさを否定した。","ラテン de(完全に)+negare(否定する)→「否定する」。negative と同源。",{"ant":[{"w":"admit","m":"認める"}],"field":"動作・行為"}],
   ["discover","動","2","発見する","We discovered a new path.","私たちは新しい道を発見した。","dis(反対)+cover(覆う)→覆いを外す→「発見する」。",{"field":"動作・行為"}],
   ["encourage","動","2","励ます・促す","My teacher encouraged me.","先生は私を励ましてくれた。","en(与える)+courage(勇気)→「勇気づける」。",{"ant":[{"w":"discourage","m":"落胆させる"}],"field":"動作・行為"}],
-  ["examine","動","2","調べる・検査する","The doctor examined the patient.","医者は患者を診察した。","ラテン examen(天秤・検査)→重さを量る→「調べる」。",{"field":"動作・行為"}],
+  ["examine","動","2","調べる・検査する","The doctor examined the patient.","医者は患者を診察した。","ラテン examen(てんびん・検査)→重さを量る→「調べる」。",{"field":"動作・行為"}],
   ["expand","動","2","拡大する・広げる","The company expanded overseas.","その会社は海外に進出した。","ラテン ex(外へ)+pandere(広げる)→「拡大する」。",{"syn":[{"w":"extend","m":"広げる"},{"w":"enlarge","m":"拡大する"}],"ant":[{"w":"shrink","m":"縮む"},{"w":"reduce","m":"減らす"}],"field":"動作・行為"}],
   ["explore","動","2","探検する・探究する","We explored the old castle.","私たちは古城を探検した。","ラテン ex(外へ)+plorare(探し叫ぶ)→「探検する」。",{"field":"動作・行為"}],
   ["ignore","動","2","無視する","Don't ignore the warning.","その警告を無視するな。","ラテン in(否定)+gnarus(知っている)→知らないふり→「無視する」。",{"field":"動作・行為"}],

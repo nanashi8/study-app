@@ -25,7 +25,7 @@ const RAW = [
   ["exert","動","1","(力・影響を)及ぼす・発揮する","He exerted great influence.","彼は大きな影響を及ぼした。","ラテン ex+serere(つなぐ・出す)。",{"field":"動作・行為"}],
   ["exploit","動","pre1","利用する・搾取する","They exploited natural resources.","彼らは天然資源を利用した。","ラテン explicitum(成し遂げたこと)。",{"field":"動作・行為"}],
   ["forecast","動","pre1","予報する・予測する","They forecast rain for tomorrow.","彼らは明日の雨を予報している。","fore(前もって)+cast(投げる)。",{"field":"動作・行為"}],
-  ["govern","動","pre1","統治する・支配する","The country is governed by law.","その国は法によって統治される。","ラテン gubernare(舵を取る)。",{"field":"動作・行為"}],
+  ["govern","動","pre1","統治する・支配する","The country is governed by law.","その国は法によって統治される。","ラテン gubernare(かじを取る)。",{"field":"動作・行為"}],
   ["grasp","動","pre1","しっかりつかむ・把握する","I cannot grasp the meaning.","私は意味を把握できない。","中英語 graspen「つかむ」。",{"field":"動作・行為"}],
   ["halt","動","pre1","止まる・止める","The train halted at the signal.","電車は信号で止まった。","ドイツ語 Halt「停止」。",{"field":"動作・行為"}],
   ["illustrate","動","pre1","説明する・例示する・挿絵を入れる","Let me illustrate with an example.","例で説明させてください。","ラテン illustrare(照らす)→明らかにする。",{"field":"動作・行為"}],

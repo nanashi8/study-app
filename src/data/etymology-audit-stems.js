@@ -12,7 +12,7 @@
 export const AUDIT_STEM_ROOTS = Object.freeze([
   Object.freeze({ id: 'ag', form: 'ag / act', meaning: '行う・駆り立てる', origin: 'ラテン語 agere「行う・駆り立てる」', emoji: '⚙️' }),
   Object.freeze({ id: 'uni', form: 'uni / un', meaning: '1つ', origin: 'ラテン語 ūnus「1つ」', emoji: '☝️' }),
-  Object.freeze({ id: 'radi', form: 'radi', meaning: '光線・放射', origin: 'ラテン語 radius「光線・車輪の輻」', emoji: '☀️' }),
+  Object.freeze({ id: 'radi', form: 'radi', meaning: '光線・放射', origin: 'ラテン語 radius「光線・車輪のスポーク」', emoji: '☀️' }),
   Object.freeze({ id: 'rat', form: 'rat / ratio', meaning: '計算・理', origin: 'ラテン語 ratiō「計算・理」', emoji: '🧮' }),
   Object.freeze({ id: 'temper', form: 'temper', meaning: 'ほどよく混ぜる・加減する', origin: 'ラテン語 temperāre「ほどよく混ぜる」', emoji: '🌡️' }),
   Object.freeze({ id: 'hospit', form: 'hospit / host', meaning: '客・もてなす', origin: 'ラテン語 hospes「客・もてなす主人」', emoji: '🏨' }),

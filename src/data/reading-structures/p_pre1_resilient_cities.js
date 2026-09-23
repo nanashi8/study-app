@@ -77,11 +77,11 @@ export default Object.freeze([
       ['can increase energy demand', 'エネルギーの需要を増やすことがあります'],
       ['when', '〜するときに（内容は次へ）'],
       ['the power supply', '電力の供給が'],
-      ['is already under pressure', 'すでに逼迫している（ときに）'],
+      ['is already under pressure', 'すでにひっ迫している（ときに）'],
     ],
     notes: {
       it: 'it は前の installing powerful air conditioners in public buildings を指します。',
-      'is already under pressure': 'under pressure は「圧力を受けて・逼迫して」。',
+      'is already under pressure': 'under pressure は「圧力を受けて・ひっ迫して」。',
     },
   }),
   st('[S A more resilient city] [M therefore] [V begins] [M {前| by {動名詞| [V assessing] [O {並列| {疑問詞節| [S who] [V is] [C most vulnerable]} | and {疑問詞節| [S which resources] [V can serve] [O several needs] [M {前| at once}]}}]}}].', {

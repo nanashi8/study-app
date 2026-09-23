@@ -7,7 +7,7 @@ const RAW = [
   ["molecule","名","1","分子","A water molecule has three atoms.","水分子は3つの原子をもつ。","ラテン moles(かたまり)の縮小形。",{"field":"科学"}],
   ["organ","名","pre1","臓器・器官・オルガン","The heart is a vital organ.","心臓は重要な臓器だ。","ギリシャ organon(道具)→ organic と同源。",{"field":"医学"}],
   ["muscle","名","pre1","筋肉","Exercise builds muscle.","運動は筋肉をつくる。","ラテン musculus(小さなネズミ)。",{"field":"医学"}],
-  ["nerve","名","pre1","神経・度胸","Nerves carry signals.","神経は信号を運ぶ。","ラテン nervus(腱・神経)→ nervous と同源。",{"syn":[{"w":"courage","m":"度胸"}],"field":"医学"}],
+  ["nerve","名","pre1","神経・度胸","Nerves carry signals.","神経は信号を運ぶ。","ラテン nervus(すじ・神経)→ nervous と同源。",{"syn":[{"w":"courage","m":"度胸"}],"field":"医学"}],
   ["virus","名","pre1","ウイルス","A virus caused the illness.","ウイルスがその病気を起こした。","ラテン virus(毒)。",{"field":"医学"}],
   ["vaccine","名","1","ワクチン","The vaccine prevents the disease.","そのワクチンは病気を防ぐ。","ラテン vacca(雌牛)→種痘に由来。",{"field":"医学"}],
   ["species","名","pre1","(生物の)種","This species is rare.","この種は珍しい。","ラテン species(見かけ・種類)。",{"syn":[{"w":"kind","m":"種類"},{"w":"type","m":"型"}],"field":"一般"}],

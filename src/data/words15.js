@@ -20,7 +20,7 @@ const RAW = [
   ["charity","名","pre2","慈善・慈善団体","They give money to charity.","彼らは慈善団体に寄付する。","ラテン caritas「慈愛」。",{"field":"一般"}],
   ["circle","名","3","円・仲間","Draw a circle here.","ここに円を描いて。","ラテン circus「輪」。",{"field":"家族・人"}],
   ["clothes","名","4","衣服","Change your wet clothes.","濡れた服を着替えて。","古英語 clāth「布」。cloth と同源。",{"field":"食・生活"}],
-  ["coast","名","pre2","海岸","We drove along the coast.","私たちは海岸沿いを車で走った。","ラテン costa「肋骨・脇」→脇=岸。",{"field":"自然"}],
+  ["coast","名","pre2","海岸","We drove along the coast.","私たちは海岸沿いを車で走った。","ラテン costa「あばら骨・脇」→脇=岸。",{"field":"自然"}],
   ["coin","名","4","硬貨・コイン","He dropped a coin.","彼は硬貨を落とした。","ラテン cuneus「くさび(刻印の型)」。",{"field":"一般"}],
   ["column","名","2","円柱・欄・コラム","Add up the numbers in this column.","この欄の数字を合計して。","ラテン columna「柱」。",{"field":"一般"}],
   ["conference","名","2","会議・協議","They held a press conference.","彼らは記者会見を開いた。","ラテン com(共に)+ferre(運ぶ)→ fer と同系。",{"field":"一般"}],

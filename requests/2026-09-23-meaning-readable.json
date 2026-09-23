@@ -1,0 +1,59 @@
+{
+  "id": "2026-09-23-meaning-readable",
+  "title": "意味の日本語が読めない・おかしい語を全件洗い出して直す（fathom の「(水深の)尋(名)」から）",
+  "asked": [
+    "Fathomの意味に（水深の）尋（名）とあるが、読めねえよ馬鹿！おかしいと思わないのか？おかしな内容が他にもあるのか？検査しなさい。"
+  ],
+  "status": "open",
+  "criteria": [
+    {
+      "id": "fathom-fixed",
+      "text": "fathom の意味「(水深の)尋(名)」を、中高生がそのまま読めて意味の分かる書き方に直す",
+      "population": "fathom 1語",
+      "check": "node --test tests/meaning-readable.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "japanese-runs-reviewed",
+      "text": "英語教材で学習者に見せる日本語を1件ずつ読む。意味の欄（見出し語の訳語・ほかの意味・関連語の意味・熟語構文の意味）は訳語1つずつ全文を、それ以外の欄（例文の和訳・使い分け・語の成り立ち・注）は漢字のかたまりごとに読む。決めた結果は docs/audits/learner-japanese-review.json に残す",
+      "population": "英語教材の学習者向け日本語 61,440文（訳語 17,169件・漢字のかたまり 12,605件）",
+      "check": "node scripts/checks/learner-japanese-review.mjs",
+      "status": "done"
+    },
+    {
+      "id": "hard-readings-fixed",
+      "text": "「そのままでは読めない」と決めた語は、読みの台帳 src/data/meaning-readings.js に読みを載せるか、訳語・文を書き直して消す",
+      "population": "japanese-runs-reviewed で「読めない」と決めた全件",
+      "check": "node scripts/checks/learner-japanese-review.mjs",
+      "status": "done"
+    },
+    {
+      "id": "odd-glosses-fixed",
+      "text": "読み以外の「おかしな内容」（学習者に通じない古い単位・古語・専門語、品詞の印の誤り、訳語そのものの誤り）を1件ずつ直す。直さないと決めたものは理由を台帳に残す",
+      "population": "japanese-runs-reviewed の見直しで見つかった全件",
+      "check": "node --test tests/meaning-readable.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "reading-gate-widened",
+      "text": "今回の見落とし（尋＝常用漢字だが表外の読み。字では拾えない）が二度と通らないように、見直し台帳そのものをゲートにする。訳語や本文を足す・書き換えると、人が読んで台帳に足すまで npm run check が通らない",
+      "population": "意味の欄の訳語 17,169件と、そのほかの欄の漢字のかたまり 12,605件の全件",
+      "check": "node scripts/checks/learner-japanese-review.mjs",
+      "status": "done"
+    },
+    {
+      "id": "screens-verified",
+      "text": "直した語を暗記カードの裏・辞書ページ・テストの答え合わせで開き、読みが添えられて表示されることを確かめる",
+      "population": "直した語を含む画面（VocabStudy・WordDetail・VocabQuiz）",
+      "check": "node --test tests/meaning-readable.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "deployed",
+      "text": "全テスト・全監査をクリーンな clone で通してから main へ push し、公開版で確認する",
+      "population": "公開版 https://nanashi8.github.io/study-app/",
+      "check": "node scripts/checks/deployed-matches-head.mjs",
+      "status": "todo"
+    }
+  ]
+}

@@ -56,7 +56,7 @@ const RAW = [
   ['pole', '名', '3', '棒・柱', 'They put up a flag pole.', '彼らは旗ざおを立てた。', 'ラテン palus(杭)。', { syn: [{ w: 'post', m: '柱' }, { w: 'rod', m: '棒' }], field: '一般' }],
   ['polish', '動', '2', '磨く・洗練する・つや出し(名)', 'Dad always polishes his shoes the night before an important meeting.', '父は大事な会議の前の晩には、いつも靴を磨く。', 'ラテン polire(磨く)。', { syn: [{ w: 'shine', m: '光らせる' }, { w: 'buff', m: '磨く' }], ant: [{ w: 'tarnish', m: '曇らせる' }], field: '一般' }],
   ['pond', '名', '3', '池', 'There are many fish in the pond.', '池にはたくさんの魚がいる。', '中英語 ponde(囲った水)→ pound と同系。', { syn: [{ w: 'pool', m: '水たまり' }, { w: 'lake', m: '湖' }], field: '環境' }],
-  ['porch', '名', '2', '玄関ポーチ・ベランダ', 'Grandpa likes to sit on the porch and wave to people walking by.', '祖父は玄関ポーチに座って、通りがかる人たちに手を振るのが好きだ。', 'ラテン porticus(柱廊)。', { syn: [{ w: 'veranda', m: 'ベランダ' }, { w: 'portico', m: '玄関' }], field: '建築' }],
+  ['porch', '名', '2', '玄関ポーチ・ベランダ', 'Grandpa likes to sit on the porch and wave to people walking by.', '祖父は玄関ポーチに座って、通りがかる人たちに手を振るのが好きだ。', 'ラテン porticus(柱の並んだ通路)。', { syn: [{ w: 'veranda', m: 'ベランダ' }, { w: 'portico', m: '玄関' }], field: '建築' }],
   ['pork', '名', '3', '豚肉', 'This curry is made with pork, not beef.', 'このカレーは牛肉ではなく豚肉で作られている。', 'ラテン porcus(豚)。', { syn: [{ w: 'meat', m: '肉' }], field: '料理' }],
   ['pottery', '名', '2', '陶器・陶芸', 'Emi is taking a pottery class to learn how to make cups.', '恵美はカップの作り方を学ぶために、陶芸教室に通っている。', 'potter(陶工)+ -y。', { syn: [{ w: 'ceramics', m: '陶磁器' }, { w: 'earthenware', m: '土器' }], field: '芸術' }],
   ['poultry', '名', '2', '家禽・鶏肉', 'The farm raises poultry such as chickens and ducks.', 'その農場では、ニワトリやアヒルなどの家禽を育てている。', '古フランス pouletrie(家禽)。', { syn: [{ w: 'fowl', m: '家禽' }, { w: 'chicken', m: '鶏' }], field: '農業' }],

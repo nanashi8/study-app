@@ -123,7 +123,7 @@ political	形	pre2	政治の・政治的な	The students discussed a political i
 poll	名	2	世論調査・投票	A recent poll shows growing support for the plan.	最近の世論調査はその案への支持増加を示している。	もとは「頭」を表した語から、人頭を数えること、投票数、世論調査へ意味が広がった。	政治
 pollen	名	2	花粉	Bees carry pollen from flower to flower.	ハチは花から花へ花粉を運ぶ。	ラテン語 pollen（細かい粉）から、植物の微細な生殖細胞を表す。	自然
 pop	名	4	ポップ音楽・大衆的なもの	She listens to pop on the way to school.	彼女は通学中にポップ音楽を聴く。	popular（大衆的な）を短くした pop と、はじける音をまねた pop が同じ綴りで使われる。	音楽
-populate	動	pre2	居住する・人口を与える	Many bird species populate the wetlands.	多くの鳥類がその湿地に生息している。	ラテン語 populus（人々）をもとにした population から作られた動詞。	自然
+populate	動	pre2	居住する・人を住まわせる	Many bird species populate the wetlands.	多くの鳥類がその湿地に生息している。	ラテン語 populus（人々）をもとにした population から作られた動詞。	自然
 pose	動	pre2	引き起こす・ポーズを取る	The damaged bridge poses a serious risk.	損傷した橋は重大な危険をもたらす。	古フランス語 poser（置く・示す）から。さらにさかのぼると後期ラテン語 pausare（止まる・休む）で、ponere（置く）と同じ語根ではない。	動作・行為
 post office	名	4	郵便局	The post office opens at nine.	郵便局は9時に開く。	post（郵便）＋office（事務所）の複合語。	社会	/ˈpoʊst ˌɔːfɪs/
 pot	名	4	鍋・鉢	Heat the soup in a large pot.	大きな鍋でスープを温めなさい。	古英語 pott を経た基本語で、深い容器を表す。	食・生活

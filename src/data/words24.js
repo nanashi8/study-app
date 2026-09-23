@@ -44,7 +44,7 @@ const RAW = [
   ["agenda","名","pre1","議題・予定表","What is on the agenda?","議題は何ですか？","ラテン agere(行う)→ agent と同系。",{"syn":[{"w":"schedule","m":"予定"},{"w":"plan","m":"計画"}],"field":"ビジネス"}],
   ["referee","名","pre2","審判","The referee blew the whistle.","審判は笛を吹いた。","refer(委ねる)+ -ee→判定を委ねられる人。",{"syn":[{"w":"umpire","m":"審判"},{"w":"judge","m":"審判"}],"field":"スポーツ"}],
   ["coach","名","3","コーチ・指導する(動)","The coach trained the team.","コーチはチームを鍛えた。","ハンガリー Kocs(馬車の産地)→導く者。",{"syn":[{"w":"trainer","m":"指導者"},{"w":"instructor","m":"指導員"}],"field":"スポーツ"}],
-  ["tournament","名","pre2","トーナメント・選手権","She won the tennis tournament.","彼女はテニス選手権で優勝した。","古フランス tornoiement(馬上槍試合)→ turn と同系。",{"syn":[{"w":"contest","m":"競技"}],"field":"スポーツ"}],
+  ["tournament","名","pre2","トーナメント・選手権","She won the tennis tournament.","彼女はテニス選手権で優勝した。","古フランス tornoiement(馬に乗って戦う試合)→ turn と同系。",{"syn":[{"w":"contest","m":"競技"}],"field":"スポーツ"}],
   ["opponent","名","pre1","相手・対戦相手","He beat his opponent.","彼は対戦相手を破った。","ラテン ob+ponere(向かいに置く)→ oppose と同源。",{"syn":[{"w":"rival","m":"競争相手"}],"ant":[{"w":"ally","m":"味方"}],"field":"スポーツ"}],
   ["amateur","名","pre1","アマチュア・素人","He plays as an amateur.","彼はアマチュアとしてプレーする。","ラテン amator(愛する人)→ amateur と同系。",{"ant":[{"w":"professional","m":"プロ"}],"field":"スポーツ"}],
   ["victory","名","pre2","勝利","They celebrated the victory.","彼らは勝利を祝った。","ラテン vincere(勝つ)→ convince と同系。",{"syn":[{"w":"win","m":"勝ち"},{"w":"triumph","m":"勝利"}],"ant":[{"w":"defeat","m":"敗北"}],"field":"スポーツ"}],

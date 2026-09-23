@@ -31,7 +31,7 @@ const RAW = [
   ['inventory', '名', '1', '在庫・目録', 'They counted the inventory.', '彼らは在庫を数えた。', 'ラテン invenire(見つける)→ invent と同系。', { syn: [{ w: 'stock', m: '在庫' }], field: 'ビジネス' }],
   ['warehouse', '名', 'pre1', '倉庫', 'Goods are stored in the warehouse.', '商品は倉庫に保管される。', 'ware(品)+house(家)。', { syn: [{ w: 'storehouse', m: '貯蔵庫' }], field: 'ビジネス' }],
   ['retail', '名', 'pre1', '小売り', 'She works in retail.', '彼女は小売業で働く。', '古フランス retaillier(切り分ける)。', { ant: [{ w: 'wholesale', m: '卸売り' }], field: 'ビジネス' }],
-  ['wholesale', '名', 'pre1', '卸売り', 'They buy at wholesale prices.', '彼らは卸値で買う。', 'whole(全体)+sale(販売)。', { ant: [{ w: 'retail', m: '小売り' }], field: 'ビジネス' }],
+  ['wholesale', '名', 'pre1', '卸売り', 'They buy at wholesale prices.', '彼らは卸売りの値段で買う。', 'whole(全体)+sale(販売)。', { ant: [{ w: 'retail', m: '小売り' }], field: 'ビジネス' }],
   ['vendor', '名', 'pre1', '売り手・行商人', 'A street vendor sold fruit.', '露天商が果物を売っていた。', 'ラテン vendere(売る)。', { syn: [{ w: 'seller', m: '売り手' }], ant: [{ w: 'buyer', m: '買い手' }], field: 'ビジネス' }],
   ['invoice', '名', '1', '請求書・送り状', 'Please pay the invoice by Friday.', '金曜までに請求書を払って。', 'フランス envois(送付物)。', { syn: [{ w: 'bill', m: '請求書' }], field: 'ビジネス' }],
   ['refund', '名', 'pre1', '払い戻し・返金する(動)', 'They gave me a full refund.', '彼らは全額返金してくれた。', 're(戻して)+fund(注ぐ)→ found と同系。', { syn: [{ w: 'repayment', m: '返済' }], field: 'ビジネス' }],

@@ -3,7 +3,7 @@ import { expandCompact } from './compact.js'
 
 const RAW = [
   // 形容詞
-  ['trivial', '形', 'pre1', 'ささいな・取るに足らない', "It's a trivial matter.", 'それはささいなことだ。', 'ラテン trivium(三叉路＝ありふれた場所)。', { syn: [{ w: 'minor', m: 'わずかな' }, { w: 'insignificant', m: '取るに足らない' }], ant: [{ w: 'significant', m: '重要な' }], field: '性質・状態' }],
+  ['trivial', '形', 'pre1', 'ささいな・取るに足らない', "It's a trivial matter.", 'それはささいなことだ。', 'ラテン trivium(3本の道が交わる所＝ありふれた場所)。', { syn: [{ w: 'minor', m: 'わずかな' }, { w: 'insignificant', m: '取るに足らない' }], ant: [{ w: 'significant', m: '重要な' }], field: '性質・状態' }],
   ['risky', '形', 'pre2', '危険な・危ない', 'It was a risky decision.', 'それは危険な決断だった。', 'risk(危険)+ -y。', { syn: [{ w: 'dangerous', m: '危険な' }, { w: 'hazardous', m: '有害な' }], ant: [{ w: 'safe', m: '安全な' }], fam: [{ w: 'risk', m: '危険' }], field: '性質・状態' }],
   ['frequent', '形', 'pre2', '頻繁な・たびたびの', 'He is a frequent visitor.', '彼は常連客だ。', 'ラテン frequens(混み合った)。', { syn: [{ w: 'regular', m: '定期的な' }, { w: 'recurrent', m: '再発する' }], ant: [{ w: 'rare', m: 'まれな' }], fam: [{ w: 'frequently', m: '頻繁に' }, { w: 'frequency', m: '頻度' }], field: '性質・状態' }],
   ['harmless', '形', 'pre2', '無害な・害のない', 'The snake is harmless.', 'そのヘビは無害だ。', 'harm(害)+ -less。', { syn: [{ w: 'safe', m: '安全な' }, { w: 'innocuous', m: '無害な' }], ant: [{ w: 'harmful', m: '有害な' }], field: '性質・状態' }],
@@ -52,7 +52,7 @@ const RAW = [
   ['summarize', '動', 'pre2', '要約する・まとめる', 'Summarize the report.', '報告書を要約して。', 'summary(要約)+ -ize。', { syn: [{ w: 'sum up', m: '要約する' }, { w: 'condense', m: '簡潔にする' }], fam: [{ w: 'summary', m: '要約' }], field: '動作・行為' }],
   ['ban', '動', 'pre2', '禁止する・禁じる・禁止(名)', 'They banned smoking.', '彼らは喫煙を禁止した。', '古英語 bannan(命じる)。', { syn: [{ w: 'prohibit', m: '禁止する' }, { w: 'forbid', m: '禁じる' }], ant: [{ w: 'permit', m: '許可する' }], field: '法律' }],
   ['end', '動', '5', '終わる・終わらせる・終わり(名)', 'The movie ends late.', 'その映画は遅く終わる。', '古英語 ende(終わり)。', { syn: [{ w: 'finish', m: '終える' }, { w: 'conclude', m: '締めくくる' }], ant: [{ w: 'begin', m: '始める' }], fam: [{ w: 'ending', m: '結末' }], field: '一般' }],
-  ['mend', '動', '3', '修理する・直す・回復する', 'She mended the torn shirt.', '彼女は破れたシャツを繕った。', 'amend(改める)の短縮。', { syn: [{ w: 'repair', m: '修理する' }, { w: 'fix', m: '直す' }], ant: [{ w: 'break', m: '壊す' }], field: '動作・行為' }],
+  ['mend', '動', '3', '修理する・直す・回復する', 'She mended the torn shirt.', '彼女は破れたシャツを縫って直した。', 'amend(改める)の短縮。', { syn: [{ w: 'repair', m: '修理する' }, { w: 'fix', m: '直す' }], ant: [{ w: 'break', m: '壊す' }], field: '動作・行為' }],
   ['reproduce', '動', 'pre1', '繁殖する・再現する・複製する', 'Bacteria reproduce rapidly.', '細菌は急速に繁殖する。', 're+produce(生み出す)。', { syn: [{ w: 'breed', m: '繁殖する' }, { w: 'replicate', m: '複製する' }], fam: [{ w: 'reproduction', m: '繁殖・複製' }], field: '科学' }],
   ['resolve', '動', 'pre1', '解決する・決意する', 'They resolved the dispute.', '彼らはその紛争を解決した。', 'ラテン re+solvere(解く)→ solve と同系。', { syn: [{ w: 'settle', m: '解決する' }, { w: 'determine', m: '決意する' }], fam: [{ w: 'resolution', m: '決意・解決' }], field: '動作・行為' }],
   ['revolt', '動', '1', '反乱を起こす・反乱(名)', 'The people revolted.', '民衆は反乱を起こした。', 'ラテン re+volvere(転がす)→ revolve と同系。', { syn: [{ w: 'rebel', m: '反逆する' }, { w: 'uprising', m: '蜂起' }], fam: [{ w: 'revolution', m: '革命' }], field: '政治' }],

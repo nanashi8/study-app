@@ -97,7 +97,7 @@ const RAW = [
   ['experienced', '形', 'pre1', '経験豊富な・熟練の', 'An experienced pilot landed the plane safely in the heavy storm.', '経験豊富なパイロットが、激しい嵐の中で飛行機を無事に着陸させた。', 'experience(経験)+ -d。', { syn: [{ w: 'seasoned', m: 'ベテランの' }, { w: 'skilled', m: '熟練した' }], ant: [{ w: 'inexperienced', m: '未経験の' }], fam: [{ w: 'experience', m: '経験' }], field: '性質・状態' }],
   ['expertise', '名', 'pre1', '専門技能・専門知識', 'We need someone with expertise in computers to fix this network problem.', 'このネットワークの問題を直すには、コンピューターの専門知識がある人が必要だ。', 'expert(専門家)+ -ise。', { syn: [{ w: 'skill', m: '技能' }, { w: 'know-how', m: 'ノウハウ' }], ant: [{ w: 'inexperience', m: '未熟' }], fam: [{ w: 'expert', m: '専門家' }], field: 'ビジネス' }],
   ['expiration', '名', '1', '満期・失効', 'Tom had to leave Japan before the expiration of his student visa.', 'トムは学生ビザが失効する前に日本を出国しなければならなかった。', 'expire(期限が切れる)+ -ation', { fam: [{ w: 'expire', m: '期限が切れる' }], syn: [{ w: 'termination', m: '終了' }], field: '一般' }],
-  ['explode', '動', 'pre1', '爆発する・急増する', 'The bomb exploded.', '爆弾が爆発した。', 'ラテン ex+plaudere(拍手で追い出す)。', { syn: [{ w: 'blow up', m: '爆発する' }, { w: 'burst', m: '破裂する' }], ant: [{ w: 'implode', m: '内破する' }], fam: [{ w: 'explosion', m: '爆発' }], field: '科学' }],
+  ['explode', '動', 'pre1', '爆発する・急増する', 'The bomb exploded.', '爆弾が爆発した。', 'ラテン ex+plaudere(拍手で追い出す)。', { syn: [{ w: 'blow up', m: '爆発する' }, { w: 'burst', m: '破裂する' }], ant: [{ w: 'implode', m: '内側につぶれる' }], fam: [{ w: 'explosion', m: '爆発' }], field: '科学' }],
 ]
 
 export const WORDS_MORE52 = RAW.map(expandCompact)

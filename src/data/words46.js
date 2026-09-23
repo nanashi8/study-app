@@ -101,7 +101,7 @@ const RAW = [
   ['automate', '動', 'pre1', '自動化する', 'They automated the factory.', '彼らは工場を自動化した。', 'automatic(自動の)から逆生成→ギリシャ automatos(自ら動く)。', { syn: [{ w: 'mechanize', m: '機械化する' }], fam: [{ w: 'automation', m: '自動化' }], field: '技術' }],
   ['automatic', '形', 'pre1', '自動の・無意識の', 'Our new car has automatic lights that turn on in tunnels.', '私たちの新しい車には、トンネルで点灯する自動ライトが付いている。', 'ギリシャ automatos(自ら動く)。', { syn: [{ w: 'self-acting', m: '自動の' }], ant: [{ w: 'manual', m: '手動の' }], fam: [{ w: 'automatically', m: '自動的に' }], field: '技術' }],
   ['avoidance', '名', '2', '回避・忌避', 'The counselor explained that avoidance can make a fear even stronger.', 'カウンセラーは、回避することで恐怖がさらに強まることがあると説明した。', 'avoid(避ける)+ -ance', { fam: [{ w: 'avoid', m: '避ける' }], ant: [{ w: 'pursuit', m: '追求' }], field: '一般' }],
-  ['awful', '形', 'pre1', 'ひどい・恐ろしい', 'An awful smell came from the fridge, so Dad cleaned it out.', '冷蔵庫からひどいにおいがしたので、父は中を掃除した。', 'awe(畏怖)+ -ful。', { syn: [{ w: 'terrible', m: '恐ろしい' }, { w: 'dreadful', m: 'ひどい' }], ant: [{ w: 'wonderful', m: '素晴らしい' }], field: '性質・状態' }],
+  ['awful', '形', 'pre1', 'ひどい・恐ろしい', 'An awful smell came from the fridge, so Dad cleaned it out.', '冷蔵庫からひどいにおいがしたので、父は中を掃除した。', 'awe(おそれ敬う心)+ -ful。', { syn: [{ w: 'terrible', m: '恐ろしい' }, { w: 'dreadful', m: 'ひどい' }], ant: [{ w: 'wonderful', m: '素晴らしい' }], field: '性質・状態' }],
   ['back', '副', '4', '後ろへ・戻って', 'He came back at six.', '彼は6時に戻ってきた。', '古英語 bæc(背中)。', { ant: [{ w: 'forward', m: '前へ' }], field: '動作・行為' }],
 ]
 

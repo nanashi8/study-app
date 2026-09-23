@@ -10,7 +10,7 @@ quietly	副	3	静かに	The students entered the library quietly.	生徒たち�
 quit	動	pre2	やめる・立ち去る	He quit the team to focus on his studies.	彼は勉強に集中するためチームを辞めた。	ラテン語 quietus（解放された）をフランス語を経て受け継ぎ、手放す・やめる意味になった。	動作・行為
 quite	副	3	かなり・まったく	The instructions are quite easy to follow.	その説明はかなり分かりやすい。	quit と同系の古い「完全に自由な」意味から、「完全に・かなり」を表す副詞になった。	副詞
 quiz	名	4	小テスト・クイズ	We have a vocabulary quiz tomorrow.	明日は語彙の小テストがある。	18世紀末に現れた語で、正確な語源は不明だが、質問して試す意味で定着した。	教育
-ray	名	pre2	光線・放射線	A ray of sunlight entered the room.	一筋の日光が部屋に差し込んだ。	ラテン語 radius（光線・車輪の輻）をフランス語 rai を経て取り入れた語。	科学
+ray	名	pre2	光線・放射線	A ray of sunlight entered the room.	一筋の日光が部屋に差し込んだ。	ラテン語 radius（光線・車輪のスポーク）をフランス語 rai を経て取り入れた語。	科学
 rear	名	2	後部・背後	The emergency exit is at the rear of the bus.	非常口はバスの後部にある。	「後ろ」を表す古フランス語 rere に由来する語。動詞の rear（育てる・立てる）は別の語史を持つ。	一般
 refresh	動	pre2	元気を回復させる・更新する	Refresh the page to see the latest results.	最新結果を見るにはページを更新してください。	re-（再び）＋fresh（新鮮な）から、「再び新しい状態にする」を表す。	情報
 regain	動	pre2	取り戻す	The patient gradually regained her strength.	患者は次第に体力を取り戻した。	re-（再び）＋gain（得る）から、「失ったものをもう一度得る」を表す。	動作・行為
@@ -36,14 +36,14 @@ seventeen	形	5	17の・17個の	Seventeen students submitted the form.	17人の
 seventh	形	3	7番目の	The seventh chapter introduces the main character.	第7章で主人公が登場する。	seven（7）＋序数を作る -th。	時間・数量
 seventy	形	5	70の・70個の	The tree is about seventy years old.	その木は樹齢約70年だ。	seven（7）＋-ty（十のまとまり）から「7つの十」を表す。	時間・数量
 sewage	名	pre1	下水・汚水	The new plant treats sewage before it reaches the river.	新しい施設は下水が川へ流れ込む前に処理する。	sewer（下水管）をもとに、そこを流れる廃水を表す語として作られた。	環境
-shoot	動	pre2	撃つ・撮影する・芽を出す	They will shoot the final scene tomorrow.	彼らは明日最後の場面を撮影する。	古英語 sceotan（放つ）から、矢弾を放つことや映像を撮ることへ意味が広がった。	動作・行為
+shoot	動	pre2	撃つ・撮影する・芽を出す	They will shoot the final scene tomorrow.	彼らは明日最後の場面を撮影する。	古英語 sceotan（放つ）から、矢を放つことや映像を撮ることへ意味が広がった。	動作・行為
 shopping	名	4	買い物	We did the weekly shopping after lunch.	私たちは昼食後に週の買い物をした。	shop（買い物をする）＋-ing から、買い物という活動を表す。	食・生活
 shorts	名	3	半ズボン	He wore shorts for the summer hike.	彼は夏のハイキングに半ズボンをはいた。	short（短い）から作られ、左右二つの脚部を持つ衣服なので複数形で使う。	食・生活
 shut	動	pre2	閉める・閉まる	Please shut the gate after you enter.	入った後で門を閉めてください。	古英語 scyttan（閉じる・締める）にさかのぼる動詞。	動作・行為
 sight	名	3	視力・光景・見ること	The mountain was an impressive sight at sunrise.	日の出の山は印象的な光景だった。	see と同じゲルマン系の語族に属し、見る能力や見えるものを表す。	一般
 signature	名	2	署名・特徴的なしるし	Please add your signature at the bottom of the form.	用紙の下部に署名を加えてください。	ラテン語 signare（印を付ける）をもとに、本人を示す署名を表す。	コミュニケーション
 silver	名	3	銀・銀色	The old coin is made of silver.	その古い硬貨は銀でできている。	古英語 seolfor にさかのぼるゲルマン系の語。	自然
-Singapore	名	4	シンガポール	Singapore is a major port in Southeast Asia.	シンガポールは東南アジアの主要港だ。	サンスクリット語 simha（獅子）＋pura（町）から「獅子の町」を表す地名。	地理
+Singapore	名	4	シンガポール	Singapore is a major port in Southeast Asia.	シンガポールは東南アジアの主要港だ。	サンスクリット語 simha（ライオン）＋pura（町）から「ライオンの町」を表す地名。	地理
 site	名	2	場所・用地・ウェブサイト	The city selected a site for the new hospital.	市は新病院の用地を選んだ。	ラテン語 situs（位置）から場所を表し、情報が置かれる website の短縮にもなった。	一般
 sixteen	形	5	16の・16個の	The team has sixteen members.	そのチームには16人のメンバーがいる。	six（6）＋-teen（10を加えた数）の複合語。	時間・数量
 sixth	形	3	6番目の	The sixth question has two correct answers.	第6問には正解が二つある。	six（6）＋序数を作る -th。	時間・数量
@@ -101,7 +101,7 @@ thought	名	3	考え・思考・thinkの過去形	That thought changed the direc
 threat	名	2	脅威・脅迫	Rising sea levels are a threat to coastal towns.	海面上昇は沿岸の町への脅威だ。	古英語 threat（圧迫・脅し）にさかのぼる語。	社会
 title	名	3	題名・肩書	The title of the article caught my attention.	記事の題名が私の注意を引いた。	ラテン語 titulus（見出し・標示）をフランス語を経て取り入れた語。	メディア
 toast	名	4	トースト・乾杯	I had toast and fruit for breakfast.	私は朝食にトーストと果物を食べた。	ラテン語 torrere（焼く）をフランス語を経て受け継ぎ、焼いたパンを表す。乾杯は香辛料入りの焼きパンを酒に入れた習慣と結び付く。	食・生活
-ton	名	3	トン・大量	The truck can carry ten tons of sand.	そのトラックは砂を10トン運べる。	大樽を表す古フランス語 tonne から、その容量・重量を示す単位になった。	測定
+ton	名	3	トン・大量	The truck can carry ten tons of sand.	そのトラックは砂を10トン運べる。	大きなたるを表す古フランス語 tonne から、その容量・重量を示す単位になった。	測定
 tone	名	pre2	調子・口調・音色	Her calm tone helped everyone relax.	彼女の落ち着いた口調で皆が安心した。	ギリシャ語 tonos（張り・音の高さ）をラテン語・フランス語を経て取り入れた語。	コミュニケーション
 tonight	副	4	今夜	We will finish the project tonight.	私たちは今夜その企画を終える。	to-（この）＋night（夜）から、「この夜に」を表す。	時間・数量
 toothache	名	3	歯痛	He went to the dentist because of a toothache.	彼は歯痛のため歯科医へ行った。	tooth（歯）＋ache（痛み）の複合語。	医学	/ˈtuːθˌeɪk/

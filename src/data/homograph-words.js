@@ -152,7 +152,7 @@ export const HOMOGRAPH_WORDS = Object.freeze([
     pos: '名', level: 'pre1', field: '心理',
     meaning: '強い願望・あこがれ',
     example: Object.freeze({ en: 'She had a yen for travel.', ja: '彼女は旅へのあこがれを抱いていた。' }),
-    etymology: Object.freeze({ note: '中国語で阿片への渇望を指した語から。通貨の yen(日本語の「円」)とは別の語。' }),
+    etymology: Object.freeze({ note: '中国語でアヘンへの渇望を指した語から。通貨の yen(日本語の「円」)とは別の語。' }),
   }),
   Object.freeze({
     id: 'row_2', word: 'row', homographOf: 'row',
@@ -181,7 +181,7 @@ export const HOMOGRAPH_WORDS = Object.freeze([
     pos: '名', level: '3', field: '食・生活',
     meaning: '扇風機・うちわ',
     example: Object.freeze({ en: 'Please turn on the fan.', ja: '扇風機をつけてください。' }),
-    etymology: Object.freeze({ note: 'ラテン語 vannus(箕=もみ殻をあおいで飛ばす道具)から。熱心な愛好者の fan(fanatic=熱狂的な人 を短くした語)とは別の語。' }),
+    etymology: Object.freeze({ note: 'ラテン語 vannus(もみ殻をあおいで飛ばす道具)から。熱心な愛好者の fan(fanatic=熱狂的な人 を短くした語)とは別の語。' }),
   }),
   Object.freeze({
     id: 'rest_2', word: 'rest', homographOf: 'rest',

@@ -149,7 +149,7 @@ const RAW_EXAM_PHRASES = [
   ['1', 'idiom', 'draw on', '〜を活用する・〜に頼る', 'The author draws on several historical sources.', '著者は複数の歴史資料を活用しています。', 'draw(引き出す)＋on(資源の上から)。', 'knowledge / experience / evidence を資源として利用する。'],
   ['1', 'idiom', 'dwell on', '〜を長々と論じる・くよくよ考える', 'The report does not dwell on minor details.', 'その報告書は細部を長々とは論じません。', 'dwell(住み続ける)＋on(話題の上に)。', '一つの話題に必要以上にとどまる含み。'],
   ['1', 'idiom', 'fall short of', '〜に達しない', 'The results fell short of expectations.', '結果は期待に届きませんでした。', 'fall(落ちる)＋short of(目標より手前に)。', 'expectations / target / standard を目的語に取る。'],
-  ['1', 'idiom', 'hinge on', '〜にかかっている', 'The decision hinges on whether funding is available.', '決定は資金が得られるかどうかにかかっています。', 'hinge(蝶番で動く)＋on(支点の上で)。', '結果を左右する一つの重要条件を示す。depend on より焦点が強い。'],
+  ['1', 'idiom', 'hinge on', '〜にかかっている', 'The decision hinges on whether funding is available.', '決定は資金が得られるかどうかにかかっています。', 'hinge(ちょうつがいで動く)＋on(支点の上で)。', '結果を左右する一つの重要条件を示す。depend on より焦点が強い。'],
   ['1', 'idiom', 'in the wake of', '〜の後を受けて・〜の結果として', 'Regulations changed in the wake of the accident.', '事故を受けて規制が変更されました。', 'wake(船の航跡)の中で。出来事が残した跡をたどる。', '大きな出来事、とくに危機・災害の直後の影響を表す。'],
   ['1', 'idiom', 'lay the groundwork for', '〜の基礎を築く', 'The pilot study laid the groundwork for later research.', '予備研究が後の研究の基礎を築きました。', 'lay(置く)＋groundwork(土台)＋for(将来の対象のために)。', '過去形も laid。将来の成果を可能にする準備を表す。'],
   ['1', 'idiom', 'make a case for', '〜を支持する論拠を示す', 'The evidence makes a strong case for early intervention.', 'その証拠は早期介入を強く支持します。', 'make(組み立てる)＋a case(論拠一式)＋for(支持対象のために)。', '単に意見を述べず、根拠を組み立てて主張する。'],

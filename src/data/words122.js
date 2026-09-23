@@ -39,7 +39,7 @@ const RAW = [
   ['pocket', '名', '4', 'ポケット', 'I put my keys in my pocket.', 'かぎをポケットに入れた。', '古フランス poke(袋)。', { field: '一般' }],
   ['poet', '名', '4', '詩人', 'The poet wrote a poem about the sea.', 'その詩人は海についての詩を書いた。', 'ギリシャ poietes(作る人)。', { field: '文学' }],
   ['postcard', '名', '4', 'はがき・絵はがき', 'I sent a postcard from Hawaii.', 'ハワイから絵はがきを送った。', 'post(郵便)+card(カード)。', { field: '一般' }],
-  ['pumpkin', '名', '4', 'カボチャ', 'We made a lantern out of a pumpkin.', '私たちはカボチャでランタンを作った。', 'ギリシャ pepon(熟した瓜)。', { field: '料理' }],
+  ['pumpkin', '名', '4', 'カボチャ', 'We made a lantern out of a pumpkin.', '私たちはカボチャでランタンを作った。', 'ギリシャ pepon(熟したうり)。', { field: '料理' }],
   ['ribbon', '名', '4', 'リボン', 'She tied a red ribbon around the gift.', '彼女は贈り物に赤いリボンを結んだ。', '古フランス riban(帯)。', { field: '一般' }],
   ['rocket', '名', '4', 'ロケット', 'The rocket flew into space.', 'ロケットは宇宙へ飛んでいった。', 'イタリア rocchetto(糸巻き)。', { field: '技術' }],
   ['scene', '名', '4', '場面・光景・現場', 'The last scene of the play was very moving.', 'その劇の最後の場面はとても感動的だった。', 'ギリシャ skene(舞台)。', { field: '文学' }],

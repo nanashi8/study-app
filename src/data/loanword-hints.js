@@ -1448,7 +1448,7 @@ const HINTS = {
   treatment: { kana: 'トリートメント', note: '日本語のトリートメント（髪の手入れ用品）とちがい、英語の treatment の中心の意味は「治療・扱い」。' },
   tree: { kana: 'ツリー' },
   trek: { kana: 'トレッキング' },
-  trench: { kana: 'トレンチコート', note: 'トレンチコートは、塹壕（trench）で兵士が着た外套が始まり。' },
+  trench: { kana: 'トレンチコート', note: 'トレンチコートは、塹壕（trench）で兵士が着た上着が始まり。' },
   trend: { kana: 'トレンド' },
   trendy: { kana: 'トレンディー' },
   trial: { kana: 'トライアル' },

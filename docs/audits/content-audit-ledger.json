@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-09-23T12:53:20.280Z",
+  "auditedAt": "2026-09-23T13:45:47.583Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -12,7 +12,7 @@
     "quizItemCount": 16495,
     "storedAndGeneratedQuestionPathCount": 4946,
     "storedAndGeneratedChoicePathCount": 19353,
-    "overallContentSha256": "b2c735326433fde1706f0ed35cf023dd6d6154f4cb2dad184a46061f3dafc943"
+    "overallContentSha256": "35f81d959a5ab9e3fe8c95074e3f43ac37d67160891120f47cc9f5d8d971b615"
   },
   "completionCriteria": [
     "全18教材カテゴリのID・母数・重複・内容ハッシュが一致する",
@@ -104,7 +104,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "25207234450d28b35bb995b9291df61f424994732ea8fd28454fffecbb0ebc78",
+    "sha256": "1859348cf793ec7fefab54cb779deb955a102e2cc287d4257d1f989a17315d6f",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -220,6 +220,7 @@
       "tests/long-sentence-translations.test.mjs",
       "tests/math-intros.test.mjs",
       "tests/meaning-pos-marks.test.mjs",
+      "tests/meaning-readable.test.mjs",
       "tests/meaning-readings.test.mjs",
       "tests/no-background-music.test.mjs",
       "tests/normal-learning-record-lists.test.mjs",
@@ -299,7 +300,7 @@
       "quizItemCount": 8929,
       "learningIdOrderSha256": "cd10218924b5ca52e52a7a8731a47c1ecb9a7f17d482d5ea4696294e3cb7a42b",
       "quizIdOrderSha256": "cd10218924b5ca52e52a7a8731a47c1ecb9a7f17d482d5ea4696294e3cb7a42b",
-      "contentSha256": "913ca84d3f0859639b7ae04fc7140b03d7a1f83911dc9b63e20f0e88b2698fe7",
+      "contentSha256": "6f43c0b59a964420829f08487ea4a901b1dce41a0c24ec4d8e15e037b9287f93",
       "auditGateIds": [
         "inventory",
         "coreData",
@@ -324,7 +325,7 @@
       "quizItemCount": 2104,
       "learningIdOrderSha256": "4de63b70fc6c4292e7a4921b2f862b540fc01b067911694285a0de29cf44ca51",
       "quizIdOrderSha256": "4de63b70fc6c4292e7a4921b2f862b540fc01b067911694285a0de29cf44ca51",
-      "contentSha256": "bf56f9c00b9438a2f05cc0819fe23a0854238be3441ffff3b6996c3f118f562b",
+      "contentSha256": "d794d750384f2446d551443c6ef3c91658462cc359bdea3d20baa43f36b7125a",
       "auditGateIds": [
         "inventory",
         "coreData",
@@ -421,7 +422,7 @@
       "quizItemCount": 339,
       "learningIdOrderSha256": "c43d604fc867ea064a6f77e585543a89cd95651ed446c83be23bb63b713c3919",
       "quizIdOrderSha256": "c43d604fc867ea064a6f77e585543a89cd95651ed446c83be23bb63b713c3919",
-      "contentSha256": "24ad27106bfbe3895b27288e33bc4fc431f4b527edb3bd326d11157d68d705f8",
+      "contentSha256": "416a11d9aac7bc3a01b187d7e452f35e35ea4f9f62dcc8b3b87fd5eb207127c3",
       "auditGateIds": [
         "inventory",
         "coreData",
@@ -444,7 +445,7 @@
       "quizItemCount": 42,
       "learningIdOrderSha256": "5a73640787e6fb7d0e952cc3e4b513903f10cee089c479e8f91d9a8d8bf0215b",
       "quizIdOrderSha256": "5a73640787e6fb7d0e952cc3e4b513903f10cee089c479e8f91d9a8d8bf0215b",
-      "contentSha256": "ea6dd3d6fac99de45f7af627ad9f449ffc3169d541551d71203a097470cb4b65",
+      "contentSha256": "a673d5ad658a769b8e148ab5bcf1aa163c9772c4ab1adbd7ed280c4ecfce42d8",
       "auditGateIds": [
         "inventory",
         "coreData",
@@ -992,7 +993,7 @@
       "環境・科学・医療・政策",
       "社会総合・経済・心理・科学技術"
     ],
-    "contentSha256": "dd480eac1330d671edaf198c968dcc7e7660c25907016f94de9209b60d6b5865"
+    "contentSha256": "a363d2e84637e190e03f93def15e0147200de63e6414470680aaecf9e25cbb85"
   },
   "grammarDetail": {
     "sourceQuestionCount": 3450,

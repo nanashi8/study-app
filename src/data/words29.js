@@ -8,7 +8,7 @@ const RAW = [
   ['fiction', '名', 'pre1', '小説・フィクション・作り事', 'I prefer fiction to facts.', '私は事実より小説が好きだ。', 'ラテン fingere(形作る)→ figure と同系。', { ant: [{ w: 'nonfiction', m: 'ノンフィクション' }], field: '芸術' }],
   ['biography', '名', 'pre1', '伝記', 'I read a biography of Edison.', '私はエジソンの伝記を読んだ。', 'ギリシャ bio(生)+graphein(書く)→ graph と同源。', { ant: [{ w: 'autobiography', m: '自伝' }], field: '芸術' }],
   ['protagonist', '名', '1', '主人公', 'The protagonist is a young girl.', '主人公は若い少女だ。', 'ギリシャ protos(第一)+agonistes(役者)。', { syn: [{ w: 'hero', m: '主人公' }], ant: [{ w: 'antagonist', m: '敵役' }], field: '芸術' }],
-  ['verse', '名', 'pre1', '韻文・詩・節', 'The song has three verses.', 'その歌には3つの節がある。', 'ラテン versus(畝・行)→ vers と同源。', { ant: [{ w: 'prose', m: '散文' }], field: '芸術' }],
+  ['verse', '名', 'pre1', '韻文・詩・節', 'The song has three verses.', 'その歌には3つの節がある。', 'ラテン versus(畑のうね・行)→ vers と同源。', { ant: [{ w: 'prose', m: '散文' }], field: '芸術' }],
   ['prose', '名', '1', '散文', 'The essay is written in prose.', 'その随筆は散文で書かれている。', 'ラテン prosa(まっすぐな話)。', { ant: [{ w: 'verse', m: '韻文' }], field: '芸術' }],
   ['portrait', '名', 'pre1', '肖像画・人物描写', 'She painted his portrait.', '彼女は彼の肖像画を描いた。', '古フランス portraire(描き出す)→ portray と同系。', { syn: [{ w: 'painting', m: '絵' }], field: '芸術' }],
   ['masterpiece', '名', 'pre1', '傑作', 'The painting is a masterpiece.', 'その絵は傑作だ。', 'master(名人)+piece(作品)。', { syn: [{ w: 'classic', m: '名作' }], field: '芸術' }],

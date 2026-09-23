@@ -192,8 +192,8 @@ test('端末の声が読み違えやすい語は、台帳の読みをかなで�
       assert.equal(applyJapaneseSpeechReadings(source[part], list), text)
     }
   }
-  assert.equal(Object.keys(JAPANESE_SPEECH_READINGS).length, 857)
-  assert.equal(pairs, 989)
+  assert.equal(Object.keys(JAPANESE_SPEECH_READINGS).length, 851)
+  assert.equal(pairs, 982)
 
   const japanese = (items) => items.map((item) => item.segments.filter((segment) => segment.lang === 'ja-JP').map((segment) => segment.text))
   // 後＝あと、間＝あいだ、数と助数詞は数字も含めて読む。

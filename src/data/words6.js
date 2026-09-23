@@ -90,7 +90,7 @@ const RAW = [
   ["evoke","動","pre1","呼び起こす","The song evokes old memories.","その歌は昔の記憶を呼び起こす。",{"parts":[{"t":"e","kind":"prefix","gloss":"外へ"},{"t":"vok","kind":"root","gloss":"呼ぶ","root":"voc"},{"t":"e","kind":"suffix","gloss":""}],"note":"外へ(e=ex)呼び出す(vok)→「呼び起こす」。provoke と同源。"},{"field":"動作・行為"}],
   ["foster","動","pre1","育てる・促進する","Good teachers foster creativity.","良い教師は創造性を育む。","古英語 fōstrian(養う)→「育てる」。food と同源。",{"field":"動作・行為"}],
   ["paradox","名","1","逆説・矛盾","It sounds like a paradox.","それは逆説のように聞こえる。","ギリシャ para(反して)+doxa(意見)→常識に反する説→「逆説」。",{"field":"一般"}],
-  ["anomaly","名","1","異常・例外","The data showed an anomaly.","データに異常が見られた。","ギリシャ an(否定)+homalos(均一)→不揃い→「異常」。",{"field":"一般"}],
+  ["anomaly","名","1","異常・例外","The data showed an anomaly.","データに異常が見られた。","ギリシャ an(否定)+homalos(均一)→ふぞろい→「異常」。",{"field":"一般"}],
   ["synthesis","名","1","統合・合成","This theory is a synthesis of ideas.","この理論は諸説の統合だ。","ギリシャ syn(共に)+thesis(置く)→組み合わせ→「統合」。",{"field":"一般"}],
   ["autonomy","名","1","自律・自治","The region gained autonomy.","その地域は自治を得た。","ギリシャ auto(自ら)+nomos(法)→自らを律する→「自治」。",{"field":"一般"}],
   ["scrutiny","名","1","綿密な調査・精査","The plan faced close scrutiny.","その計画は厳しい精査を受けた。","ラテン scrutari(くず屋が探る)→隅々まで探る→「精査」。",{"field":"一般"}],

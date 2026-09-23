@@ -5467,7 +5467,7 @@ export const EXTENDED_READING_GENERATED = Object.freeze({
       },
       {
         "en": "Everyone felt relief when the missing child was found.",
-        "ja": "行方不明の子が見つかり、皆が安堵した。",
+        "ja": "行方不明の子が見つかり、皆がほっとした。",
         "targetId": "relief",
         "targetWord": "relief",
         "field": "心理",
@@ -9778,7 +9778,7 @@ export const EXTENDED_READING_GENERATED = Object.freeze({
       },
       {
         "en": "Cybersecurity training helps prevent data theft.",
-        "ja": "情報安全の研修はデータ窃取の防止に役立つ。",
+        "ja": "情報安全の研修はデータを盗まれることの防止に役立つ。",
         "targetId": "cybersecurity",
         "targetWord": "cybersecurity",
         "field": "技術",
@@ -10958,7 +10958,7 @@ export const EXTENDED_READING_GENERATED = Object.freeze({
       },
       {
         "en": "They buy at wholesale prices.",
-        "ja": "彼らは卸値で買う。",
+        "ja": "彼らは卸売りの値段で買う。",
         "targetId": "wholesale",
         "targetWord": "wholesale",
         "field": "ビジネス",
@@ -11945,7 +11945,7 @@ export const EXTENDED_READING_GENERATED = Object.freeze({
       },
       {
         "en": "His arrogant tone annoyed us.",
-        "ja": "彼の傲慢な口調は私たちを苛立たせた。",
+        "ja": "彼の傲慢な口調は私たちをいらだたせた。",
         "targetId": "arrogant",
         "targetWord": "arrogant",
         "field": "心理",
@@ -17177,7 +17177,7 @@ export const EXTENDED_READING_GENERATED = Object.freeze({
       },
       {
         "en": "The child was treated for a congenital heart condition.",
-        "ja": "その子は先天性の心臓疾患の治療を受けた。",
+        "ja": "その子は先天性の心臓の病気の治療を受けた。",
         "targetId": "congenital",
         "targetWord": "congenital",
         "field": "医学",

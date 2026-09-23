@@ -254,7 +254,7 @@ const CORE_PASSAGES = [
       s('Today, many planners argue that cities need a broader framework that connects transportation, housing, energy, and public health.', '今日、多くの都市計画者は、交通、住宅、エネルギー、公衆衛生を結びつけるより広い枠組みが都市には必要だと主張しています。'),
       p('One reason is that a measure designed for a single purpose can have unexpected consequences in another area.', 'その理由の一つは、単一の目的のために設計された対策が、別の分野で予期しない結果をもたらす可能性があるからです。'),
       s('For instance, building higher concrete walls along a river may reduce flooding in one district while pushing water toward a poorer neighborhood downstream.', '例えば、川沿いにより高いコンクリート壁を建てることは、ある地区の洪水を減らす一方で、下流のより貧しい地域へ水を押しやるかもしれません。'),
-      s('Similarly, installing powerful air conditioners in public buildings may protect residents during heat waves, yet it can increase energy demand when the power supply is already under pressure.', '同様に、公共施設に強力なエアコンを設置することは熱波の間に住民を守るかもしれませんが、電力供給がすでに逼迫しているときにエネルギー需要を増やす可能性があります。'),
+      s('Similarly, installing powerful air conditioners in public buildings may protect residents during heat waves, yet it can increase energy demand when the power supply is already under pressure.', '同様に、公共施設に強力なエアコンを設置することは熱波の間に住民を守るかもしれませんが、電力供給がすでにひっ迫しているときにエネルギー需要を増やす可能性があります。'),
       p('A more resilient city therefore begins by assessing who is most vulnerable and which resources can serve several needs at once.', 'したがって、より回復力のある都市は、誰が最も弱い立場にあり、どの資源が複数の必要に同時に役立ちうるかを評価することから始まります。'),
       s('Trees are a useful example.', '樹木は有用な例です。'),
       s('They provide shade, absorb rainwater, improve air quality, and make streets more pleasant for walking.', '樹木は日陰を作り、雨水を吸収し、空気の質を改善し、通りを歩きやすくします。'),

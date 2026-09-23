@@ -42,7 +42,7 @@ const RAW_EXAM_WORDS = [
   ['misinformation', '名', '2', '誤情報', 'Misinformation can spread rapidly online.', '誤情報はオンラインで急速に広がり得る。', 'mis-(誤って)＋information(情報)。意図の有無を問わない誤った情報。', '情報', 'spread / correct misinformation「誤情報を広める／訂正する」。故意の disinformation と区別する。'],
   ['disinformation', '名', 'pre1', '偽情報・意図的な誤情報', 'The campaign was designed to counter disinformation.', 'その運動は偽情報に対抗するために計画された。', 'dis-(反対・否定)＋information。人を欺く目的で流す情報。', '情報', 'combat disinformation「偽情報と闘う」。単なる誤り misinformation より意図性が強い。'],
   ['dataset', '名', '2', 'データセット・一まとまりのデータ', 'The dataset contains ten years of weather records.', 'そのデータセットには10年分の気象記録が含まれる。', 'data(データ)＋set(一組)。', '情報', 'collect / analyze a dataset「データセットを収集／分析する」。英語では data set と2語表記もある。'],
-  ['cybersecurity', '名', '2', 'サイバーセキュリティ・情報安全', 'Cybersecurity training helps prevent data theft.', '情報安全の研修はデータ窃取の防止に役立つ。', 'cyber-(コンピュータ空間の)＋security(安全)。', '技術', 'cybersecurity measures / threat「安全対策／脅威」。不可算名詞として使うのが普通。', '/ˌsaɪbərsɪˈkjʊrəti/'],
+  ['cybersecurity', '名', '2', 'サイバーセキュリティ・情報安全', 'Cybersecurity training helps prevent data theft.', '情報安全の研修はデータを盗まれることの防止に役立つ。', 'cyber-(コンピュータ空間の)＋security(安全)。', '技術', 'cybersecurity measures / threat「安全対策／脅威」。不可算名詞として使うのが普通。', '/ˌsaɪbərsɪˈkjʊrəti/'],
   ['configuration', '名', 'pre1', '構成・設定', 'Check the network configuration before restarting.', '再起動する前にネットワーク設定を確認しなさい。', 'ラテン語 con-(共に)＋figurare(形作る)。要素を一つの形に組む。', '技術', 'system configuration「システム構成」、configuration settings「構成設定」。'],
   ['connectivity', '名', '2', '接続性・つながり', 'Reliable connectivity is essential for remote learning.', '安定した接続性は遠隔学習に不可欠だ。', 'connect(つなぐ)＋-ivity(性質)。', '技術', 'internet / network connectivity「インターネット／ネットワーク接続性」。'],
   ['immersive', '形', 'pre1', '没入感のある・没入型の', 'The museum offers an immersive learning experience.', 'その博物館は没入型の学習体験を提供する。', 'immerse(浸す、没頭させる)＋-ive。', '技術', 'immersive experience / technology「没入型体験／技術」。人には immersed を使う。', '/ɪˈmɜːrsɪv/'],
@@ -143,7 +143,7 @@ const RAW_EXAM_WORDS = [
   ['interdisciplinary', '形', 'pre1', '学際的な・複数分野にまたがる', 'The project takes an interdisciplinary approach.', 'その計画は学際的な手法を取る。', 'inter-(間の)＋disciplinary(学問分野の)。', '学問', 'interdisciplinary research / approach「学際研究／学際的手法」。', '/ˌɪntərˈdɪsəpləneri/'],
   ['pedagogy', '名', '1', '教授法・教育学', 'The program combines technology with sound pedagogy.', 'その課程は技術と確かな教授法を組み合わせている。', 'ギリシャ語 pais(子ども)＋agogos(導く者)。', '教育', 'language / digital pedagogy「言語／デジタル教授法」。教育の理論・方法を指す。'],
   ['rhetoric', '名', 'pre1', '修辞・説得的言説・美辞麗句', 'The speech used powerful rhetoric but offered few details.', 'その演説は力強い言辞を用いたが、具体策はほとんど示さなかった。', 'ギリシャ語 rhetor(演説家)から。', '言語', 'political rhetoric「政治的言説」、rhetorical device「修辞技法」。文脈により空疎な美辞の含み。'],
-  ['satire', '名', 'pre1', '風刺・風刺作品', 'The novel uses satire to criticize social inequality.', 'その小説は社会的不平等を批判するために風刺を用いる。', 'ラテン語 satura(混ぜ物、諷刺詩)から。', '文学', 'political satire「政治風刺」、a work of satire「風刺作品」。'],
+  ['satire', '名', 'pre1', '風刺・風刺作品', 'The novel uses satire to criticize social inequality.', 'その小説は社会的不平等を批判するために風刺を用いる。', 'ラテン語 satura(混ぜ物・風刺詩)から。', '文学', 'political satire「政治風刺」、a work of satire「風刺作品」。'],
   ['symbolism', '名', 'pre1', '象徴性・象徴主義', 'Water has rich symbolism in the poem.', 'その詩では水が豊かな象徴性を持つ。', 'symbol(象徴)＋-ism(体系・傾向)。', '文学', 'religious / visual symbolism「宗教的／視覚的象徴性」。'],
   ['thesis', '名', '2', '論旨・学位論文', 'Each paragraph should support the central thesis.', '各段落は中心的な論旨を支えるべきだ。', 'ギリシャ語 thesis(置かれた命題)から。', '言語', 'thesis statement「論旨文」、write a thesis「学位論文を書く」。複数形は theses。'],
 
