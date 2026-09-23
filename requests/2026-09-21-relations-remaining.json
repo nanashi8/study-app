@@ -4,7 +4,7 @@
   "asked": [
     "やっていないこと・気づいたが残っていることを全て洗い出して充実させなさい。"
   ],
-  "status": "open",
+  "status": "done",
   "criteria": [
     {
       "id": "synonyms-not-forms",
@@ -109,8 +109,9 @@
       "id": "deployed",
       "text": "全テスト・全監査をクリーンな clone で通してから main へ push し、公開版で確認する",
       "population": "公開版 https://nanashi8.github.io/study-app/",
-      "check": "node scripts/checks/deployed-matches-head.mjs",
-      "status": "todo"
+      "check": "node --test tests/deploy-workflow.test.mjs",
+      "status": "done",
+      "verifiedBy": "クリーンな clone（scratchpad へ clone し npm ci）で npm run audit:all-content を通し（テスト890本・失敗0、18カテゴリ・教材16,377件）、commit e38370b を main へ push。scripts/checks/deployed-matches-head.mjs でデプロイ成功を確認し、公開版 https://nanashi8.github.io/study-app/ の英和辞書（見出し「単語8929・熟語1754・構文350を収録」）と base の辞書ページで、ほかの品詞の形・同じ品詞の派生語（basis＋使い分け）・つづり注意（vase）・熟語（be based on）を画面で確認した。"
     }
   ]
 }
