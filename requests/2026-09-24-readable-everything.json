@@ -4,7 +4,7 @@
   "asked": [
     "やっていないことのうち、改善できるものを改善しなさい。"
   ],
-  "status": "open",
+  "status": "done",
   "criteria": [
     {
       "id": "all-japanese-reviewed",
@@ -32,7 +32,7 @@
       "text": "全テスト・全監査をクリーンな clone で通してから main へ push し、公開版で確認する",
       "population": "公開版 https://nanashi8.github.io/study-app/",
       "check": "node --test tests/deploy-workflow.test.mjs",
-      "status": "todo"
+      "status": "done"
     }
   ]
 }
