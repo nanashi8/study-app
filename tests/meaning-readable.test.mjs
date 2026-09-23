@@ -7,6 +7,7 @@ import { ALL_WORDS } from '../src/data/vocab.js'
 import { MEANING_READINGS } from '../src/data/meaning-readings.js'
 import { meaningWithReadings } from '../src/lib/meaningReadings.js'
 import {
+  hasNonJoyo,
   learnerJapaneseTexts,
   learnerMeaningGlosses,
   learnerJapaneseRuns,
@@ -45,10 +46,10 @@ test('意味の欄の訳語は、全件を読んだ台帳に載っている', ()
   assert.deepEqual(stale, [], '教材に出てこない訳語が台帳に残っている')
 })
 
-test('学習者に見せる日本語の漢字語は、全件を読んだ台帳に載っている', () => {
+test('学習者に見せる日本語の漢字語は、全件を読んだ台帳に載っている', async () => {
   const decisions = new Map()
   for (const [decision, list] of Object.entries(ledger.decisions)) for (const run of list) decisions.set(run, decision)
-  const runs = learnerJapaneseRuns()
+  const runs = await learnerJapaneseRuns()
   const unreviewed = [...runs.keys()].filter((run) => !decisions.has(run))
   assert.deepEqual(unreviewed, [], '読んでいない漢字語がある')
   const stale = [...decisions.keys()].filter((run) => !runs.has(run))
@@ -61,6 +62,21 @@ test('読みの台帳の語は、意味の欄で（よみ）が付いて出る',
     assert.ok(reading, `「${run}」の読みが台帳にない`)
     assert.equal(meaningWithReadings(run), `${run}（${reading}）`)
   }
+})
+
+test('常用漢字表にない字を含む語は、読みを添えるか、理由つきの例外にしてある', async () => {
+  const runs = await learnerJapaneseRuns()
+  const exceptions = ledger.joyoExceptions ?? {}
+  const ruby = ledger.rubyMaterials ?? []
+  const left = []
+  for (const [run, info] of runs) {
+    if (!hasNonJoyo(run) || exceptions[run]) continue
+    if (ledger.decisions.reading.includes(run)) continue
+    const bare = [...info.plainWhere].filter((where) => !ruby.some((prefix) => where.startsWith(prefix)))
+    if (bare.length) left.push(`${run}（${bare[0]}）`)
+  }
+  assert.deepEqual(left, [], '常用漢字表にない字が、読みも理由もないまま出ている')
+  for (const reason of Object.values(exceptions)) assert.ok(reason.length > 5, '例外には理由を書く')
 })
 
 test('本文に読みを書いた語は、そのとおり読みが書いてある', () => {

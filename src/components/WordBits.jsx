@@ -51,7 +51,7 @@ function SenseList({ senses, baseRank }) {
             {sense.example && (
               <>
                 <p className="mt-1 text-sm font-bold text-ink/70">{sense.example.en}</p>
-                <p className="text-xs font-bold text-ink/45">{sense.example.ja}</p>
+                <p className="text-xs font-bold text-ink/45"><MeaningText>{sense.example.ja}</MeaningText></p>
               </>
             )}
           </li>
@@ -203,7 +203,7 @@ export function EtymologyBlock({ word, onRoot, onPack }) {
       {story && (
         <div className="rounded-2xl bg-amber-50 px-4 py-3 ring-1 ring-amber-100" data-reviewed-word-story>
           <p className="text-xs font-extrabold text-amber-700">語の成り立ち</p>
-          <p className="mt-1 text-sm font-bold leading-relaxed text-ink">{story.note}</p>
+          <p className="mt-1 text-sm font-bold leading-relaxed text-ink"><MeaningText>{story.note}</MeaningText></p>
         </div>
       )}
       {cards.length > 0 && (

@@ -1,0 +1,38 @@
+{
+  "id": "2026-09-24-readable-everything",
+  "title": "前の依頼で「やっていない」と書いたことのうち、直せるものを直す（範囲・仕組み・判定の裏打ち）",
+  "asked": [
+    "やっていないことのうち、改善できるものを改善しなさい。"
+  ],
+  "status": "open",
+  "criteria": [
+    {
+      "id": "all-japanese-reviewed",
+      "text": "見直しの範囲を、英単語・熟語の教材だけでなく『アプリが学習者に見せる日本語すべて』へ広げる（長文・文法・参考書・英作文・リスニング・ディクテーション・名作朗読・語根カード・数学・古典・漢文の教材と、画面の固定文言）。新しく入る漢字のかたまりを1件ずつ読み、docs/audits/learner-japanese-review.json に残す",
+      "population": "src/data の全モジュールが書き出す日本語と、画面の固定文言（.jsx と src/lib）。重複を除いて 訳語19,722件・漢字のかたまり22,386件",
+      "check": "node --test tests/meaning-readable.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "joyo-backed",
+      "text": "「中高生が読めるか」の判定を、私の判断だけでなく常用漢字表（joyo-kanji の2,136字）で機械的に裏打ちする。常用漢字表にない字を含む語は、読みを添えるか、書き直すか、理由つきの例外として台帳に残す（古典・漢文の原文と訓読文、名作朗読の原文など、別のルビの仕組みを持つ教材はファイル単位で理由を書く）",
+      "population": "母集団の漢字のかたまり 22,386件（常用漢字表にない字を含む語は、読み630件・本文の読み4件・理由つきの例外118件で片づけた）",
+      "check": "node --test tests/meaning-readable.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "example-and-origin-readings",
+      "text": "例文の和訳・語の成り立ち・熟語の意味と例文・長文の和訳・名作の訳にも（よみ）を表示できるようにする（前回は仕組みがないので難読語を使わない文に書き直すだけだった）。読み上げは台帳の読みで読ませ、同じ語を二度読みしない",
+      "population": "例文の和訳・語の成り立ち・熟語の意味と例文・長文の和訳・名作の訳を出す全画面",
+      "check": "node --test tests/meaning-readable.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "deployed",
+      "text": "全テスト・全監査をクリーンな clone で通してから main へ push し、公開版で確認する",
+      "population": "公開版 https://nanashi8.github.io/study-app/",
+      "check": "node --test tests/deploy-workflow.test.mjs",
+      "status": "todo"
+    }
+  ]
+}

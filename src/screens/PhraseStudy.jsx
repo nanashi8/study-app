@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react'
 import { useStore, useContentSettings } from '../store/useStore.js'
 import { WordBookToggle } from '../components/WordListSheet.jsx'
+import { MeaningText } from '../components/MeaningText.jsx'
 import {
   answeredSessionIndexes,
   buildPhraseDeck,
@@ -281,7 +282,7 @@ export function PhraseStudyScreen() {
               <>
                 <p className="text-[11px] font-extrabold text-brand-400">意味</p>
                 <h2 className="mt-1 font-display text-2xl font-extrabold leading-snug text-ink" data-phrase-english-hidden>
-                  {item.meanings.join('・')}
+                  <MeaningText>{item.meanings.join('・')}</MeaningText>
                 </h2>
               </>
             ) : (
@@ -316,7 +317,7 @@ export function PhraseStudyScreen() {
             <div className="mt-5 space-y-4 animate-slide-up">
               <div className="rounded-2xl bg-brand-50 p-4">
                 <div className="text-[11px] font-extrabold uppercase tracking-wide text-brand-400">意味</div>
-                <div className="mt-0.5 font-display text-xl font-extrabold text-ink">{item.meanings.join('・')}</div>
+                <div className="mt-0.5 font-display text-xl font-extrabold text-ink"><MeaningText>{item.meanings.join('・')}</MeaningText></div>
               </div>
 
               {/* 成り立ち（語源・部品の意味から組み立てる）＝単語の語源にあたる */}
@@ -346,7 +347,7 @@ export function PhraseStudyScreen() {
                     <p className="font-bold text-ink">{item.example.en}</p>
                     <p className="mt-0.5 text-sm font-bold text-ink/55">
                       {longSentenceTranslation && <span className="mr-1 text-[11px] text-ink/35">自然な和訳</span>}
-                      {item.example.ja}
+                      <MeaningText>{item.example.ja}</MeaningText>
                     </p>
                   </div>
                 </div>

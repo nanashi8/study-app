@@ -4138,7 +4138,7 @@ export const EXTENDED_READING_TRANSLATION_SCENARIOS = Object.freeze({
       b('Four short sentences of that kind', 'その種の短い四つの文のほうが'),
       b('will usually', 'たいてい'),
       b('do more', '多くをもたらします'),
-      b('for public trust than four hundred pages of technical detail', '公共の信頼のために、四百頁の技術的な詳細よりも'),
+      b('for public trust than four hundred pages of technical detail', '公共の信頼のために、四百ページの技術的な詳細よりも'),
     ],
     [
       b('Institutions decay very quietly', '制度は／衰えます／きわめて静かに', '', 'Institutions／decay／very quietly'),

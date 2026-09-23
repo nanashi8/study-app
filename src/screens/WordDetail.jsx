@@ -163,7 +163,7 @@ export function WordDetailScreen() {
                 {exampleSpeechAllowed(word) && <SpeakButton text={word.example.en} size="sm" />}
                 <div className="flex-1">
                   <p className="font-bold text-ink">{word.example.en}</p>
-                  <p className="mt-0.5 text-sm font-bold text-ink/55">{word.example.ja}</p>
+                  <p className="mt-0.5 text-sm font-bold text-ink/55"><MeaningText>{word.example.ja}</MeaningText></p>
                 </div>
               </div>
             </Card>

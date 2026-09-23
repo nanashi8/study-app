@@ -508,7 +508,7 @@ export function ReadingSentenceDetail({
             {/* 自然な和訳 */}
             <div className="rounded-2xl bg-hint-soft/70 p-4">
               <div className="mb-1 text-[11px] font-extrabold uppercase tracking-wide text-amber-500">きれいな日本語訳</div>
-              <p className="font-bold leading-relaxed text-amber-900">{sentence.ja}</p>
+              <p className="font-bold leading-relaxed text-amber-900"><MeaningText>{sentence.ja}</MeaningText></p>
             </div>
     </div>
   )

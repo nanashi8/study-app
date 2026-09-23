@@ -262,9 +262,8 @@ if (ROOT_IDS.size !== ROOTS.length) errors.push('語根idに重複あり')
   for (const [run, wordId] of missingReadings) {
     errors.push(`意味の読み: ${wordId} の「${run}」に読みがない（src/data/meaning-readings.js に熟語ごと載せる）`)
   }
-  for (const text of readingTexts) {
-    if (!usedReadings.has(text)) errors.push(`意味の読み: 「${text}」はどの単語の意味にも出てこない`)
-  }
+  // 「台帳にあるのに教材のどこにも出てこない読み」は、教材全体を見る
+  // scripts/checks/learner-japanese-review.mjs が確かめる（意味の欄の外でも読みを出すようになったため）。
 }
 
 // 場面の束：長文1本を、本文の場面ごとの語に分けた暗記の単位。どの語を入れるか、辞書の意味が本文での

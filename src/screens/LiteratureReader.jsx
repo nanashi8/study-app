@@ -643,7 +643,7 @@ export function LiteratureReaderScreen() {
                         )}
                       </div>
                       <p className="text-sm font-bold leading-[1.8] text-ink">
-                        {segment.translation}
+                        <MeaningText>{segment.translation}</MeaningText>
                       </p>
                     </div>
                   </button>
@@ -669,7 +669,7 @@ export function LiteratureReaderScreen() {
                   : '場面全体の現代語訳'}
               </summary>
               <p className="mt-2 text-sm font-bold leading-relaxed text-ink/65">
-                {currentScene.translation}
+                <MeaningText>{currentScene.translation}</MeaningText>
               </p>
             </details>
 
@@ -956,7 +956,7 @@ export function LiteratureReaderScreen() {
 
             <div className="rounded-2xl bg-amber-50 p-4">
               <p className="text-[11px] font-extrabold text-amber-700">最後に自然な和訳</p>
-              <p className="mt-1 text-sm font-bold leading-relaxed text-amber-950">{currentScene.translation}</p>
+              <p className="mt-1 text-sm font-bold leading-relaxed text-amber-950"><MeaningText>{currentScene.translation}</MeaningText></p>
             </div>
           </div>
         </Sheet>

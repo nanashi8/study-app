@@ -42,7 +42,7 @@ test('学習者向け日本語は画面・部品・自動生成文を全件監�
   assert.equal(result.learnerJapaneseEntries, 12972)
   assert.equal(result.learnerUniqueJapaneseEntries, 10049)
   assert.equal(result.sourceFiles, 676)
-  assert.equal(result.sourceJapaneseEntries, 164760)
+  assert.equal(result.sourceJapaneseEntries, 164950)
   assert.equal(result.issues.length, 0)
 })
 

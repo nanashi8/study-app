@@ -1078,7 +1078,7 @@ export const READING_CHOICE_NOTES = freezeNotes({
     "The cost of leaving the agreement rather than a penalty inside it.": "「下流まで共有する資源」の第10文 What holds an agreement together is usually the cost of leaving it rather than any penalty stated inside it. と一致する。",
     "The strength of the army on the upstream side.": "軍隊の話は出てこない。水源に近い側に、自分だけでは得られない電力や警報などの価値を与えることが合意を働かせる（「下流まで共有する資源」の第5・6文）。",
     "A promise of restraint from the downstream side.": "自制を求めるだけの合意は取引ではなく頼みごとで（「下流まで共有する資源」の第7文）、最も必要なときに崩れる（第8文）と書かれている。",
-    "The number of pages the treaty contains.": "頁数の話は出てこない。条文がはっきりしていても、執行は難しい（「下流まで共有する資源」の第9文）。",
+    "The number of pages the treaty contains.": "ページ数の話は出てこない。条文がはっきりしていても、執行は難しい（「下流まで共有する資源」の第9文）。",
   },
   "p_ext_4000_generational_city#1": {
     "A high rate makes the distant future almost worth nothing.": "高い率は遠い未来をほとんど無価値に、低い率はほぼ現在として扱い（「翌年より先を考える」の第6文）、その数字の選択が証拠を調べる前に答えを決める（第7文）と書かれている。",

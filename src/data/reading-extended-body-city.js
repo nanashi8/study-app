@@ -530,7 +530,7 @@ export const GENERATIONAL_CITY_BODY = Object.freeze({
         ),
         s(
           'Four short sentences of that kind will usually do more for public trust than four hundred pages of technical detail.',
-          'その種の短い四つの文のほうが、たいてい四百頁の詳細より公共の信頼に寄与します。',
+          'その種の短い四つの文のほうが、たいてい四百ページの詳細より公共の信頼に寄与します。',
         ),
         p(
           'Institutions decay very quietly, and that decay becomes visible only in the way they respond to a genuine surprise.',

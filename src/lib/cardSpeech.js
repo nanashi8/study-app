@@ -63,9 +63,17 @@ export function meaningSpeechText(meanings, { readings = false } = {}) {
     .join('、')
 }
 
-/** 例文の意味（和訳）を日本語の声で読む文。 */
-export function exampleMeaningSpeechText(text) {
-  return spokenJapanese(String(text ?? '').replace(SLOT_MARKS, ''))
+/**
+ * 例文の意味（和訳）を日本語の声で読む文。
+ * readings は英単語・熟語の和訳で使う（画面で（よみ）を添えている台帳 meaning-readings.js）。
+ * 画面で読みを添えた語は、その読みで1回だけ読む（「彗星（すいせい）」を二度読みしない）。
+ */
+export function exampleMeaningSpeechText(text, { readings = false } = {}) {
+  const value = String(text ?? '')
+  const spoken = readings
+    ? meaningSegments(value).map((segment) => segment.reading ?? (segment.entry ? '' : segment.text)).join('')
+    : value
+  return spokenJapanese(spoken.replace(SLOT_MARKS, ''))
 }
 
 /**
@@ -82,7 +90,7 @@ export function applyJapaneseSpeechReadings(text, pairs) {
 export function cardJapaneseSpeechTexts({ id, meanings, meaningReadings = false, exampleJa }) {
   const readings = (id && JAPANESE_SPEECH_READINGS[id]) || {}
   const meaning = meaningSpeechText(meanings, { readings: meaningReadings })
-  const exampleMeaning = exampleMeaningSpeechText(exampleJa)
+  const exampleMeaning = exampleMeaningSpeechText(exampleJa, { readings: meaningReadings })
   return {
     meaning: applyJapaneseSpeechReadings(meaning, readings.meaning),
     // 文法の例文は、意味が例文の和訳そのもの。同じ文には同じ読みを当てる。

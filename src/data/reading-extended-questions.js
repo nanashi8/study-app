@@ -174,7 +174,7 @@ export const EXTENDED_READING_QUESTIONS = Object.freeze({
         ['The cost of leaving the agreement rather than a penalty inside it.', '内部の罰則ではなく、その合意から抜ける費用。'],
         ['The strength of the army on the upstream side.', '上流側の軍隊の強さ。'],
         ['A promise of restraint from the downstream side.', '下流側からの自制の約束。'],
-        ['The number of pages the treaty contains.', '条約の頁数。'],
+        ['The number of pages the treaty contains.', '条約のページ数。'],
       ],
       answer: 'The cost of leaving the agreement rather than a penalty inside it.',
       explain: '「下流まで共有する資源」が What holds an agreement together … the cost of leaving it rather than any penalty stated inside it と明記しています。',

@@ -1242,7 +1242,7 @@ export default Object.freeze([
     chunks: [
       ['Four short sentences of that kind', 'その種の短い四つの文が'],
       ['will usually do more for public trust', 'たいてい公共の信頼により多く役立ちます'],
-      ['than four hundred pages of technical detail', '四百頁の細かな説明よりも'],
+      ['than four hundred pages of technical detail', '四百ページの細かな説明よりも'],
     ],
     notes: {
       'will usually do more for public trust': 'do more for … で「…のためにより多くの働きをする」。',

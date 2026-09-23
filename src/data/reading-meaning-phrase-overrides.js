@@ -805,7 +805,7 @@ export const READING_MEANING_PHRASE_OVERRIDES = Object.freeze({
       }),
       Object.freeze({
         en: 'for public trust than four hundred pages of technical detail',
-        ja: '公共の信頼のために、四百頁の技術的な詳細よりも',
+        ja: '公共の信頼のために、四百ページの技術的な詳細よりも',
         grammar: '何のために、何と比べてかを示すMです。',
       }),
     ]),

@@ -335,7 +335,7 @@ export function ExtendedReader({ passage }) {
                     lang="ja"
                     className="mt-2 border-l-2 border-amber-300 bg-amber-50/70 px-3 py-2 text-sm font-bold leading-relaxed text-amber-950"
                   >
-                    {paragraph.map((sentence) => sentence.ja).join(' ')}
+                    <MeaningText>{paragraph.map((sentence) => sentence.ja).join(' ')}</MeaningText>
                   </p>
                 )}
               </section>
