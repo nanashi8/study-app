@@ -92,17 +92,18 @@
     },
     {
       "id": "confusables-survey",
-      "text": "つづりが似た見出し語の組と同じ発音の見出し語の組を1組ずつ読み、取り違えやすい組を「つづりが似ていて間違えやすい語」に載せ、使い分けも書く。載せない組は理由を台帳に残す",
+      "text": "つづりが似た見出し語の組と同じ発音の見出し語の組を1組ずつ読み、取り違えやすい組を「つづりが似ていて間違えやすい語」に載せ、使い分けの区別がある組には使い分けも書く。載せない組は理由の略号を台帳に残す。同じ語から来た組は形のまとまりにつなぐ",
       "population": "4文字以上で1字違い・隣り合う2字の入れ替えの全組、7文字以上で2字違いの全組、発音辞書で同じ発音になる全組（同じまとまりの組を除く）",
-      "check": "node scripts/checks/confusables-survey.mjs",
-      "status": "todo"
+      "check": "node --test tests/confusables-survey.test.mjs",
+      "status": "done"
     },
     {
       "id": "screens-verified",
       "text": "暗記カードの裏と辞書ページを画面で開き、ほかの品詞の形・同じ品詞の派生語・熟語・構文（逆向き・畳み）・発音ボタンが出ることを確かめる",
       "population": "暗記カードの裏（VocabStudy）と辞書ページ（WordDetail）",
       "check": "node --test tests/word-relations-remaining.test.mjs",
-      "status": "todo"
+      "status": "done",
+      "verified": "2026-09-23 画面で確認: 辞書ページ base（ほかの品詞の形 basic/basal/basically・同じ品詞の派生語 basis＋使い分け・つづり注意 vase・熟語 be based on・意味の(動)印）、decision（逆向き decide（動詞）を含む熟語・構文 全2項目）、gift（▶ give（動詞）を含む熟語・構文 全14項目が畳まれ、押すと開く）、bear（同じつづりの別の語）。暗記カードの裏 purse（つづり注意 pursue・意味の(動)印）、mention（熟語 全1項目）、survive（ほかの品詞の形 3語）、decision（ほかの品詞の形・同じ品詞の派生語・熟語 全1項目・逆向き 全2項目・全行の発音ボタン）。"
     },
     {
       "id": "deployed",
