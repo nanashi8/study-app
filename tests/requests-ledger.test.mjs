@@ -134,18 +134,34 @@ test('完了の決まりは、今回の失敗の原因ごとに対策を書い�
 })
 
 test('会話ログからは、そのセッションが書いた台帳だけを持ち主として割り出す', () => {
-  const owned = touchedLedgers(jsonl([
-    toolUse('Write', { file_path: '/repo/requests/2026-01-01-a.json', content: '{}' }),
-    toolUse('Edit', { file_path: 'requests/2026-01-01-b.json', old_string: 'todo', new_string: 'done' }),
-    toolUse('Bash', { command: "node -e \"const p='requests/2026-01-01-c.json'; fs.writeFileSync(p, s)\"" }),
-    toolUse('Bash', { command: 'git add requests/2026-01-01-d.json src/App.jsx && git commit -m x' }),
+  const writes = {
+    'write.json': toolUse('Write', { file_path: '/repo/requests/write.json', content: '{}' }),
+    'edit.json': toolUse('Edit', { file_path: 'requests/edit.json', old_string: 'todo', new_string: 'done' }),
+    'multi-edit.json': toolUse('MultiEdit', { file_path: '/repo/requests/multi-edit.json', edits: [{ old_string: 'todo', new_string: 'done' }] }),
+    'notebook-edit.json': toolUse('NotebookEdit', { notebook_path: '/repo/requests/notebook-edit.json', new_source: '{}' }),
+    // Bash の書き込み（node・Python・Perl・シェル・git）。
+    'node.json': toolUse('Bash', { command: "node -e \"const p='requests/node.json'; fs.writeFileSync(p, s)\"" }),
+    'git-add.json': toolUse('Bash', { command: 'git add requests/git-add.json src/App.jsx && git commit -m x' }),
+    'python-path.json': toolUse('Bash', { command: "python3 - <<'EOF'\nimport pathlib\np = pathlib.Path('requests/python-path.json')\np.write_text(s)\nEOF" }),
+    'python-open.json': toolUse('Bash', { command: "python3 -c \"import json; json.dump(r, open('requests/python-open.json', 'w'))\"" }),
+    'perl.json': toolUse('Bash', { command: "perl -pi -e 's/todo/done/' requests/perl.json" }),
+    'redirect.json': toolUse('Bash', { command: "jq '.status = \"done\"' /tmp/r.json > requests/redirect.json" }),
+    'moved.json': toolUse('Bash', { command: 'mv /tmp/r.json requests/moved.json' }),
+  }
+  const reads = [
     // 読むだけのコマンド、ほかのファイルへの書き込み、フックの一覧に出てくる名前は持ち主の印にしない。
-    toolUse('Bash', { command: 'cat requests/2026-01-01-e.json && node scripts/check-requests.mjs --report' }),
-    toolUse('Write', { file_path: '/repo/tests/x.test.mjs', content: "read('requests/2026-01-01-f.json')" }),
-    toolUse('Read', { file_path: '/repo/requests/2026-01-01-g.json' }),
-    hookText('【開いている依頼】\n■ 依頼（requests/2026-01-01-h.json）'),
-  ]))
-  assert.deepEqual([...owned].sort(), ['2026-01-01-a.json', '2026-01-01-b.json', '2026-01-01-c.json', '2026-01-01-d.json'])
+    toolUse('Bash', { command: 'cat requests/cat.json && node scripts/check-requests.mjs --report' }),
+    toolUse('Bash', { command: "python3 -c \"import json; print(json.load(open('requests/python-read.json')))\"" }),
+    toolUse('Bash', { command: "node -e \"process.stdout.write(fs.readFileSync('requests/node-read.json', 'utf8'))\"" }),
+    toolUse('Write', { file_path: '/repo/tests/x.test.mjs', content: "read('requests/other-file.json')" }),
+    toolUse('Read', { file_path: '/repo/requests/read.json' }),
+    hookText('【開いている依頼】\n■ 依頼（requests/hook.json）'),
+  ]
+  // 1つずつ確かめる（ほかの見本の書き込みの印に引きずられないように）。
+  for (const [file, entry] of Object.entries(writes)) assert.deepEqual([...touchedLedgers(jsonl([entry]))], [file], file)
+  for (const entry of reads) assert.deepEqual([...touchedLedgers(jsonl([entry]))], [], JSON.stringify(entry))
+  const owned = touchedLedgers(jsonl([...Object.values(writes), ...reads]))
+  assert.deepEqual([...owned].sort(), Object.keys(writes).sort())
 })
 
 test('Stop フックは、そのセッションが作った・書き換えた依頼の未の条件だけで止める', () => {
@@ -156,6 +172,10 @@ test('Stop フックは、そのセッションが作った・書き換えた依
   assert.equal(JSON.parse(mine.stdout).decision, 'block')
   assert.match(reasonOf(mine), /r0\.json の mine/)
   assert.doesNotMatch(reasonOf(mine), /theirs/)
+  // 自分の依頼に未がなければ（済・裏の処理待ちだけなら）止めない。
+  const settled = ledger(request([criterion({ status: 'done' }), criterion({ id: 'wait', status: 'waiting', waitingFor: 'デプロイ' })]))
+  const writer = transcript(toolUse('Write', { file_path: '/repo/requests/r0.json', content: '{}' }))
+  assert.equal(run('stop', settled, { transcript_path: writer }).stdout.trim(), '')
   // ほかのセッションの依頼しか残っていなければ止めない（読んだだけ・名前が出てきただけの依頼は持ち主にならない）。
   const other = transcript(
     toolUse('Bash', { command: 'cat requests/r1.json' }),

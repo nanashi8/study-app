@@ -99,8 +99,14 @@ const openRequests = (requests) => requests.filter((request) => request.status =
 // 依頼台帳のパス（requests/<名前>.json）。
 const LEDGER_PATH = /(?:^|\/)requests\/([^/]+\.json)$/
 const LEDGER_IN_COMMAND = /(?:^|[/\s'"`(=])requests\/([\w.-]+\.json)/g
-// Bash のコマンドが台帳に書き込む印。台帳を読むだけ（cat・grep・node で読む）のコマンドは持ち主にしない。
-const WRITES_FILES = /writeFileSync|writeFile\(|appendFileSync|\btee\b|\bsed\s+-i|\bmv\s|\bcp\s|\bgit\s+(?:add|mv|rm|checkout)\b|>\s*["']?(?:\.\/)?requests\//
+// Bash のコマンドが台帳に書き込む印（node・Python・Perl・シェルの書き込み、移動・複写・削除、git add など）。
+// 台帳を読むだけ（cat・grep・node や Python で読んで表示する）のコマンドは持ち主にしない。
+const WRITES_FILES = new RegExp([
+  /writeFileSync|writeFile\(|appendFileSync|createWriteStream|renameSync|copyFileSync|unlinkSync|rmSync/.source,
+  /write_text\(|write_bytes\(|json\.dump\(|\bopen\([^)]*["'][wax]b?\+?["']/.source,
+  /\bperl\s+-\w*i|\btee\b|\bsed\s+-i|\bmv\s|\bcp\s|\brm\s|\bgit\s+(?:add|mv|rm|checkout)\b/.source,
+  />\s*["']?(?:\.\/)?requests\//.source,
+].join('|'))
 
 /**
  * 会話ログ（JSONL の本文）から、そのセッションが作った・書き換えた依頼台帳のファイル名を割り出す。
