@@ -1,18 +1,20 @@
 #!/usr/bin/env node
 // 依頼台帳（requests/*.json）で、依頼を途中で止めずに最後までやり切らせる。
 // Claude Code のフックから呼ばれ、次の場面で作業を止める（.claude/settings.json）。
-//   --prompt : 利用者の依頼が届いたとき。決まりと、終わっていない受け入れ条件を作業者に見せる。
+//   --prompt : 利用者の依頼が届いたとき。決まりと、そのセッションの終わっていない受け入れ条件を見せる（ほかのセッションの依頼は1行に畳む）。
 //   --edit   : src/・tests/・scripts/ のファイルを書き換える前。開いている依頼がなければ止める。
-//   --gate   : git commit / git push の前。「済」にした条件の確認コマンドを実行し、通らなければ止める。
+//   --gate   : git commit / git push の前。「済」にした条件の確認コマンドを実行し、commit の前は使う名前を、
+//              push の前は push するコミットの名前と全教材監査台帳を確かめる。どれかが通らなければ止める。
 //   --stop   : 作業者がターンを終えようとしたとき。そのセッションの依頼に「未」の条件が残っていれば終わらせない。
 //   --report : 開いている依頼と条件の一覧を表示する（人が読む用）。
-//   --owners : 開いている依頼ごとに、持ち主のセッション（会話ログから割り出す）を表示する。持ち主のいない依頼があれば失敗。
+//   --owners : 開いている依頼ごとに、持ち主のセッション（会話ログから割り出す）を表示する。持ち主のいない依頼があれば失敗。--all で閉じた依頼も含めた全台帳。
 // 台帳の書き方は CLAUDE.md の「依頼台帳」を参照。
-import { execSync } from 'node:child_process'
-import { existsSync, readFileSync, readdirSync } from 'node:fs'
-import { homedir } from 'node:os'
+import { execSync, spawnSync } from 'node:child_process'
+import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, symlinkSync } from 'node:fs'
+import { homedir, tmpdir } from 'node:os'
 import { basename, dirname, join, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { expandWord, gitParts, walkCommand } from './lib/shell-commands.mjs'
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 // テストでは CHECK_REQUESTS_DIR で別の台帳を読ませる。
@@ -96,17 +98,83 @@ export function validateRequest(request) {
 
 const openRequests = (requests) => requests.filter((request) => request.status === 'open')
 
-// 依頼台帳のパス（requests/<名前>.json）。
+// 依頼台帳のパス（requests/<名前>.json）。語やスクリプトの中からも拾う。
 const LEDGER_PATH = /(?:^|\/)requests\/([^/]+\.json)$/
-const LEDGER_IN_COMMAND = /(?:^|[/\s'"`(=])requests\/([\w.-]+\.json)/g
-// Bash のコマンドが台帳に書き込む印（node・Python・Perl・シェルの書き込み、移動・複写・削除、git add など）。
-// 台帳を読むだけ（cat・grep・node や Python で読んで表示する）のコマンドは持ち主にしない。
-const WRITES_FILES = new RegExp([
-  /writeFileSync|writeFile\(|appendFileSync|createWriteStream|renameSync|copyFileSync|unlinkSync|rmSync/.source,
-  /write_text\(|write_bytes\(|json\.dump\(|\bopen\([^)]*["'][wax]b?\+?["']/.source,
-  /\bperl\s+-\w*i|\btee\b|\bsed\s+-i|\bmv\s|\bcp\s|\brm\s|\bgit\s+(?:add|mv|rm|checkout)\b/.source,
-  />\s*["']?(?:\.\/)?requests\//.source,
+const LEDGER_IN_TEXT = /(?:^|[/\s'"`(=:,])requests\/([\w.-]+\.json)(?=$|[\s'"`),;:\]}])/g
+const ledgersIn = (text) => [...String(text).matchAll(LEDGER_IN_TEXT)].map((match) => match[1])
+
+// スクリプト（node・Python・Perl・Ruby など）がファイルに書き込む印。
+const SCRIPT_WRITES = new RegExp([
+  /\b(?:writeFileSync|writeFile|appendFileSync|appendFile|createWriteStream|cpSync)\s*\(/.source,
+  /\.(?:rename|copyFile|unlink|rm)(?:Sync)?\s*\(/.source,
+  /\bwrite_(?:text|bytes)\s*\(|\bjson\.dump\s*\(|\bopen\s*\([^)]*["'](?:[wax]|r\+)b?\+?["']|\.open\s*\(\s*["'][wax]/.source,
+  /\bshutil\.(?:copy\w*|move)\s*\(|\bos\.(?:rename|replace|remove|unlink)\s*\(/.source,
+  /\b(?:File|IO)\.write\s*\(|\bopen\s*\(?\s*(?:my\s+)?\$\w+\s*,\s*["']\+?>/.source,
 ].join('|'))
+const INTERPRETERS = new Set(['node', 'nodejs', 'python', 'python3', 'perl', 'ruby', 'deno', 'bun'])
+// 引数のファイルを書き換える・消す・作るコマンド。
+const WRITES_ARGUMENTS = new Set(['rm', 'unlink', 'touch', 'truncate', 'tee', 'sponge', 'shred'])
+// 最後の引数へ写すコマンド（前の引数は読むだけ）。mv は元も消すので、元も書き込み先。
+const COPIES_TO_LAST = new Set(['cp', 'install', 'rsync', 'ditto', 'ln', 'mv'])
+const GIT_WRITES = new Set(['add', 'rm', 'mv', 'checkout', 'restore'])
+
+/**
+ * Bash のコマンドが書き込む依頼台帳。単純コマンドごとに書き込み先だけを見る：
+ * リダイレクトの行き先、rm・touch・tee・sed -i・perl -i の引数、cp の最後の引数（requests/ へ写すときは元の名前）、
+ * mv の元と先、git add/rm/mv/checkout/restore の引数、書き込みのあるスクリプトが名指しした台帳（変数で渡したものを含む）。
+ * cp の元（控えをとるだけ）、読むだけのコマンド、コミットの文やメモの中に出てくる名前は持ち主の印にしない。
+ */
+export function bashLedgerWrites(command) {
+  const files = new Set()
+  const add = (text) => { for (const file of ledgersIn(text)) files.add(file) }
+  walkCommand(command, {
+    cwd: ROOT,
+    onSegment: ({ segment, program, args, vars }) => {
+      for (const { op, target } of segment.redirects) {
+        if (['>', '>>', '>|', '<>'].includes(op)) add(expandWord(target, vars).text)
+      }
+      if (!program) return
+      const words = args.map((arg) => expandWord(arg, vars).text)
+      const paths = words.filter((word) => !word.startsWith('-'))
+      if (INTERPRETERS.has(program)) {
+        if (program === 'perl' && words.some((word) => /^-[a-zA-Z]*i/.test(word))) {
+          paths.forEach(add)
+          return
+        }
+        const script = [...words, ...segment.heredocs].join('\n')
+        if (!SCRIPT_WRITES.test(script)) return
+        add(script)
+        // 前の代入で台帳を入れた変数を、スクリプトが名前で読むとき（process.env.F・os.environ['F'] など）。
+        for (const [name, value] of Object.entries(vars)) {
+          if (new RegExp(`\\b${name}\\b`).test(script)) add([value].flat().join(' '))
+        }
+        return
+      }
+      if (program === 'git') {
+        const { sub, rest } = gitParts(words)
+        if (GIT_WRITES.has(sub)) rest.filter((word) => !word.startsWith('-')).forEach(add)
+        return
+      }
+      const inPlaceSed = ['sed', 'gsed'].includes(program) && words.some((word) => /^(?:-[a-zA-Z]*i|--in-place)/.test(word))
+      if (WRITES_ARGUMENTS.has(program) || inPlaceSed) {
+        paths.forEach(add)
+        return
+      }
+      if (COPIES_TO_LAST.has(program) && paths.length >= 2) {
+        const target = paths.at(-1)
+        for (const path of program === 'mv' ? paths : [target]) add(path)
+        // requests/ のフォルダーへ写すときは、元のファイルの名前の台帳が書き込み先。
+        if (/(?:^|\/)requests\/?$/.test(target)) {
+          for (const source of paths.slice(0, -1)) {
+            const name = source.split('/').pop()
+            if (name.endsWith('.json')) files.add(name)
+          }
+        }
+      }
+    },
+  })
+  return files
+}
 
 /**
  * 会話ログ（JSONL の本文）から、そのセッションが作った・書き換えた依頼台帳のファイル名を割り出す。
@@ -115,7 +183,8 @@ const WRITES_FILES = new RegExp([
 export function touchedLedgers(transcript) {
   const files = new Set()
   for (const line of String(transcript ?? '').split('\n')) {
-    if (!line.includes('tool_use') || !line.includes('requests/')) continue
+    // 速さのための絞り込み。変数で「requests」と名前を分けて書くこともあるので、/ までは求めない。
+    if (!line.includes('tool_use') || !line.includes('requests')) continue
     let entry
     try {
       entry = JSON.parse(line)
@@ -131,9 +200,7 @@ export function touchedLedgers(transcript) {
         const match = String(input.file_path ?? input.notebook_path ?? '').match(LEDGER_PATH)
         if (match) files.add(match[1])
       } else if (item.name === 'Bash') {
-        const command = String(input.command ?? '')
-        if (!WRITES_FILES.test(command)) continue
-        for (const match of command.matchAll(LEDGER_IN_COMMAND)) files.add(match[1])
+        for (const file of bashLedgerWrites(input.command ?? '')) files.add(file)
       }
     }
   }
@@ -164,14 +231,195 @@ export function ledgerOwners(dir = TRANSCRIPTS_DIR) {
   return owners
 }
 
-function describe(requests) {
+// ---- git commit・git push の前に確かめること ----
+
+const SETTINGS_PATH = join(ROOT, '.claude', 'settings.json')
+
+/** このリポジトリのコミットの名前（.claude/settings.json の env で全セッションの git に渡す）。書いていなければ null。 */
+export function projectIdentity(path = SETTINGS_PATH) {
+  try {
+    const env = JSON.parse(readFileSync(path, 'utf8')).env ?? {}
+    if (!env.GIT_AUTHOR_NAME || !env.GIT_AUTHOR_EMAIL) return null
+    return { name: env.GIT_AUTHOR_NAME, email: env.GIT_AUTHOR_EMAIL }
+  } catch {
+    return null
+  }
+}
+
+const git = (dir, args, options = {}) => spawnSync('git', ['-C', dir, ...args], {
+  encoding: 'utf8',
+  maxBuffer: 1 << 30,
+  timeout: 60 * 1000,
+  ...options,
+})
+
+// git push のオプションのうち、次の語を値にとるもの（リモートや push する枝と取り違えない）。
+const PUSH_OPTIONS_WITH_VALUE = new Set(['-o', '--push-option', '--repo', '--receive-pack', '--exec'])
+
+// HEAD を動かす git のサブコマンド。同じコマンドでこのあとに push すると、push するコミットを前もって確かめられない。
+const MOVES_HEAD = new Set(['commit', 'rebase', 'pull', 'merge', 'am', 'cherry-pick', 'revert', 'reset', 'switch'])
+
+/** コマンドの中の git を、書いた順に、動かす場所（cd・git -C の行き先。読み取れなければ null）つきで返す。 */
+export function gitInvocations(command, cwd = ROOT) {
+  const found = []
+  walkCommand(command, {
+    cwd,
+    onSegment: ({ program, args, vars, dir }) => {
+      if (program !== 'git') return
+      const { dirs, sub, rest } = gitParts(args.map((arg) => expandWord(arg, vars).text))
+      let where = dir
+      for (const path of dirs) where = where === null || /[$`]/.test(path) ? null : resolve(where, path)
+      const movesHead = MOVES_HEAD.has(sub) || (sub === 'checkout' && !rest.includes('--'))
+      found.push({ sub, rest, dir: where, movesHead })
+    },
+  })
+  return found
+}
+
+const same = (who, identity) => who && who.name === identity.name && who.email === identity.email
+const showIdentity = (who) => (who ? `${who.name} <${who.email}>` : '（名前を決められない）')
+
+/** git commit の前：その場所の git が使う作者・コミッターの名前（--author を含む）が、このリポジトリの名前か。 */
+export function commitIdentityProblems(invocation, identity) {
+  const problems = []
+  const identityOf = (variable) => {
+    const result = git(invocation.dir, ['var', variable])
+    const match = result.status === 0 ? result.stdout.trim().match(/^(.*) <([^>]*)>/) : null
+    return match ? { name: match[1], email: match[2] } : null
+  }
+  const author = invocation.rest.map((arg, index) => (
+    arg.startsWith('--author=') ? arg.slice(9) : (arg === '--author' ? invocation.rest[index + 1] : null)
+  )).find(Boolean)
+  const authorMatch = author?.match(/^(.*) <([^>]*)>$/)
+  const who = {
+    作者: authorMatch ? { name: authorMatch[1], email: authorMatch[2] } : identityOf('GIT_AUTHOR_IDENT'),
+    コミッター: identityOf('GIT_COMMITTER_IDENT'),
+  }
+  for (const [role, person] of Object.entries(who)) {
+    if (same(person, identity)) continue
+    problems.push(`${invocation.dir} でのコミットの${role}が「${showIdentity(person)}」になる（このリポジトリは「${showIdentity(identity)}」）。`
+      + `git -C "${invocation.dir}" config user.name "${identity.name}" && git -C "${invocation.dir}" config user.email "${identity.email}" を入れてからコミットする（--author は付けない）。`)
+  }
+  return problems
+}
+
+/** git push の前：push するコミットのうち、まだどのリモートにもないものの作者・コミッターが、このリポジトリの名前か。 */
+export function pushedIdentityProblems(dir, sha, identity) {
+  const log = git(dir, ['log', '--format=%h%x09%an%x09%ae%x09%cn%x09%ce', sha, '--not', '--remotes'])
+  if (log.status !== 0) return [`push するコミット ${sha.slice(0, 7)} の履歴を読めない: ${log.stderr.trim()}`]
+  const wrong = log.stdout.split('\n').filter(Boolean).map((line) => line.split('\t')).filter(([, an, ae, cn, ce]) => (
+    !same({ name: an, email: ae }, identity) || !same({ name: cn, email: ce }, identity)
+  ))
+  if (!wrong.length) return []
+  return [[
+    `push するコミットに、このリポジトリの名前（${showIdentity(identity)}）でないものがある。`,
+    ...wrong.map(([hash, an, ae, cn, ce]) => `  ${hash} 作者 ${an} <${ae}>・コミッター ${cn} <${ce}>`),
+    `その場所に git config user.name・user.email を入れ、push する前にコミットを作り直す（直前の1つなら git commit --amend --no-edit --reset-author、`
+      + `いくつもあるなら git rebase --exec 'git commit --amend --no-edit --reset-author' <push 済みのコミット>）。`,
+  ].join('\n')]
+}
+
+/** git push の前：push するコミットの中身だけを取り出し、全教材監査台帳がその中身と合うかを確かめる。 */
+export function ledgerProblemsAt(dir, sha) {
+  const tree = mkdtempSync(join(tmpdir(), 'push-ledger-'))
+  try {
+    const archive = git(dir, ['archive', '--format=tar', sha], { encoding: 'buffer' })
+    if (archive.status !== 0) return [`push するコミット ${sha.slice(0, 7)} の中身を取り出せない: ${String(archive.stderr).trim()}`]
+    const extract = spawnSync('tar', ['-x', '-C', tree], { input: archive.stdout, maxBuffer: 1 << 30 })
+    if (extract.status !== 0) return [`push するコミット ${sha.slice(0, 7)} の中身を展開できない: ${String(extract.stderr).trim()}`]
+    if (!existsSync(join(tree, 'scripts', 'content-audit-ledger.mjs'))) return []
+    const modules = [join(dir, 'node_modules'), join(ROOT, 'node_modules')].find((path) => existsSync(path))
+    if (modules && !existsSync(join(tree, 'node_modules'))) symlinkSync(modules, join(tree, 'node_modules'))
+    const result = spawnSync(process.execPath, ['scripts/content-audit-ledger.mjs'], {
+      cwd: tree,
+      encoding: 'utf8',
+      maxBuffer: 1 << 28,
+      timeout: 10 * 60 * 1000,
+    })
+    if (result.status === 0) return []
+    const detail = `${result.stdout ?? ''}${result.stderr ?? ''}`.split('\n')
+      .filter((line) => /台帳|sha256|Error/.test(line)).slice(0, 8).join('\n')
+    return [[
+      `push するコミット ${sha.slice(0, 7)} の全教材監査台帳（docs/audits/content-audit-ledger.json）が、そのコミットの中身と合わない。`,
+      'npm run audit:all-content で台帳を作り直し、コミットに入れてから push する（rebase・pull で取り込んだあとは必ず作り直す）。',
+      detail,
+    ].filter(Boolean).join('\n')]
+  } finally {
+    rmSync(tree, { recursive: true, force: true })
+  }
+}
+
+/** git commit・git push の前に確かめることを、コマンドの中の git ごとに調べる。 */
+export function gitGateProblems(invocations, identity = projectIdentity()) {
+  const problems = []
+  invocations.forEach((invocation, index) => {
+    if (invocation.sub !== 'commit' && invocation.sub !== 'push') return
+    if (!invocation.dir) {
+      problems.push(`git ${invocation.sub} を動かす場所が、コマンドから読み取れない（cd の行き先に $( ) や、このコマンドの中で決めていない変数がある）。`
+        + 'cd の行き先をそのまま書くか、git -C <場所> で書く。')
+      return
+    }
+    if (invocation.sub === 'commit') {
+      if (identity) problems.push(...commitIdentityProblems(invocation, identity))
+      return
+    }
+    const earlier = invocations.slice(0, index).find((other) => other.movesHead && (other.dir === null || other.dir === invocation.dir))
+    if (earlier) {
+      problems.push(`同じコマンドの中で git ${earlier.sub} のあとに git push している。push するコミットを前もって確かめられないので、`
+        + `push は git ${earlier.sub} と分けて、単独のコマンドで行う。`)
+      return
+    }
+    // リポジトリのいちばん上で調べる（下のフォルダーで git archive すると、そのフォルダーしか取り出さない）。
+    const top = git(invocation.dir, ['rev-parse', '--show-toplevel'])
+    if (top.status !== 0) return
+    const root = top.stdout.trim()
+    const positional = []
+    for (let k = 0; k < invocation.rest.length; k += 1) {
+      const arg = invocation.rest[k]
+      if (PUSH_OPTIONS_WITH_VALUE.has(arg)) k += 1
+      else if (!arg.startsWith('-')) positional.push(arg)
+    }
+    const remote = positional[0] ?? 'origin'
+    const specs = positional.slice(1).map((spec) => spec.replace(/^\+/, '').split(':')[0]).filter(Boolean)
+    // リモートの最新を取ってから比べる（ほかのセッションが先に push したコミットを、自分の push に数えない）。
+    // 認証を求めて止まらないよう、端末で聞かない。
+    git(root, ['fetch', '-q', remote], { timeout: 30 * 1000, env: { ...process.env, GIT_TERMINAL_PROMPT: '0' } })
+    for (const source of specs.length ? specs : ['HEAD']) {
+      const resolved = git(root, ['rev-parse', '--verify', '--quiet', `${source}^{commit}`])
+      if (resolved.status !== 0) continue
+      const sha = resolved.stdout.trim()
+      if (identity) problems.push(...pushedIdentityProblems(root, sha, identity))
+      problems.push(...ledgerProblemsAt(root, sha))
+    }
+  })
+  return problems
+}
+
+const MARKS = { todo: '未', waiting: '待', 'needs-user': '問', done: '済' }
+
+/**
+ * 開いている依頼の一覧。own（そのセッションの台帳）を渡すと、そのセッションの依頼は条件まで全部、
+ * ほかのセッションの依頼は1行に畳む。own が null（会話ログが読めない）なら全部を見せる。
+ */
+function describe(requests, own = null) {
   const lines = []
+  const others = []
   for (const request of openRequests(requests)) {
+    if (own && !own.has(request.file)) {
+      const counts = Object.entries(MARKS)
+        .map(([status, mark]) => [mark, request.criteria.filter((criterion) => criterion.status === status).length])
+        .filter(([, count]) => count)
+        .map(([mark, count]) => `${mark}${count}`)
+      others.push(`- ${request.title}（requests/${request.file}・${counts.join('・')}）`)
+      continue
+    }
     lines.push(`■ ${request.title}（requests/${request.file}）`)
     for (const criterion of request.criteria) {
-      const mark = { done: '済', todo: '未', waiting: '待', 'needs-user': '問' }[criterion.status] ?? '?'
-      lines.push(`  [${mark}] ${criterion.id}: ${criterion.text}（対象: ${criterion.population}）`)
+      lines.push(`  [${MARKS[criterion.status] ?? '?'}] ${criterion.id}: ${criterion.text}（対象: ${criterion.population}）`)
     }
+  }
+  if (others.length) {
+    lines.push('【ほかのセッションの依頼】（このセッションは止めない。引き継ぐときは台帳を読む）', ...others)
   }
   return lines.join('\n')
 }
@@ -208,19 +456,30 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   }
 
   if (mode('owners')) {
+    // --all では閉じた依頼も含めた全台帳を見る。
+    const all = process.argv.includes('--all')
+    const targets = all ? requests : openRequests(requests)
     const owners = ledgerOwners()
     const orphans = []
-    for (const request of openRequests(requests)) {
+    for (const request of targets) {
       const sessions = owners.get(request.file) ?? []
       console.log(`■ requests/${request.file}: ${sessions.length ? sessions.join(' ') : '持ち主のセッションが見つからない'}`)
       if (!sessions.length) orphans.push(request.file)
     }
-    if (!openRequests(requests).length) console.log('開いている依頼はない')
+    if (!targets.length) console.log(all ? '台帳はない' : '開いている依頼はない')
+    if (all) console.log(`台帳 ${targets.length}件中、持ち主のセッションがある台帳 ${targets.length - orphans.length}件`)
     process.exit(orphans.length ? 1 : 0)
   }
 
   if (mode('prompt')) {
-    const open = describe(requests)
+    // そのセッションの依頼は条件まで全部、ほかのセッションの依頼は1行に畳んで見せる。
+    let input = {}
+    try {
+      input = JSON.parse(readStdin() || '{}')
+    } catch {
+      input = {}
+    }
+    const open = describe(requests, ownedLedgers(input.transcript_path))
     const context = [
       RULES,
       open ? `\n【開いている依頼】\n${open}` : '\n【開いている依頼】なし（新しい依頼なら、作業の前に requests/ へ書く）',
@@ -250,7 +509,9 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   if (mode('gate')) {
     const input = JSON.parse(readStdin() || '{}')
     const command = String(input.tool_input?.command ?? '')
-    if (!/\bgit\s+(commit|push)\b/.test(command)) process.exit(0)
+    // git commit・git push を書いたコマンドだけを確かめる（git -C "空白のある場所" push のような書き方も拾う）。
+    const option = String.raw`(?:-[Cc]\s+(?:"[^"]*"|'[^']*'|\S+)|--?[\w-]+(?:=\S+)?)`
+    if (!new RegExp(String.raw`\bgit(?:\s+${option})*\s+(?:commit|push)\b`).test(command)) process.exit(0)
     if (problems.length) {
       console.error(`依頼台帳に誤りがあるので、コミット・プッシュしない。\n${problems.join('\n')}`)
       process.exit(2)
@@ -264,6 +525,18 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     }
     if (failures.length) {
       console.error(`done にした条件の確認が通らないので、コミット・プッシュしない。条件を todo に戻すか、直すこと。\n\n${failures.join('\n\n')}`)
+      process.exit(2)
+    }
+    // commit の前は名前を、push の前は push するコミットの名前と全教材監査台帳を確かめる。
+    // 確かめる途中で思わぬ失敗があれば、確かめないまま通さずに止める。
+    let gitProblems
+    try {
+      gitProblems = gitGateProblems(gitInvocations(command, input.cwd || ROOT))
+    } catch (error) {
+      gitProblems = [`コミット・プッシュの前の確認が途中で失敗した（scripts/check-requests.mjs を直すこと）: ${error?.stack ?? error}`]
+    }
+    if (gitProblems.length) {
+      console.error(`コミット・プッシュの前の確認が通らないので止めた。\n\n${gitProblems.join('\n\n')}`)
       process.exit(2)
     }
     process.exit(0)

@@ -32,11 +32,14 @@ function ledger(...requests) {
   return dir
 }
 
-function run(mode, dir, input = {}, env = {}) {
-  return spawnSync('node', [SCRIPT, `--${mode}`], {
+// セッションが git に渡す名前（.claude/settings.json の env）。コミットの前の確認は、この名前なら通る。
+const SESSION_ENV = JSON.parse(read('.claude/settings.json')).env
+
+function run(mode, dir, input = {}, env = {}, args = []) {
+  return spawnSync('node', [SCRIPT, `--${mode}`, ...args], {
     input: JSON.stringify(input),
     encoding: 'utf8',
-    env: { ...process.env, CHECK_REQUESTS_DIR: dir, ...env },
+    env: { ...process.env, ...SESSION_ENV, CHECK_REQUESTS_DIR: dir, ...env },
   })
 }
 
@@ -131,6 +134,16 @@ test('完了の決まりは、今回の失敗の原因ごとに対策を書い�
   for (const rule of ['母集団', 'check', 'needs-user', '母集団と達成数']) assert.ok(rules.includes(rule), rule)
   // Stop フックは、そのセッションが作った・書き換えた依頼だけで止まる（ほかのセッションの依頼では止まらない）。
   assert.match(rules, /そのセッションが作った・書き換えた依頼/)
+  // 持ち主は書き込み先で決め、cp の元・名前が出てくるだけでは持ち主にしない。
+  assert.match(rules, /書き込み先にした台帳/)
+  assert.match(rules, /cp の元にしただけ/)
+  // push の前に push するコミットの台帳と名前を確かめ、push は単独で行う。commit の前に名前を確かめる。
+  assert.match(rules, /push するコミットの中身だけを取り出して `node scripts\/content-audit-ledger\.mjs`/)
+  assert.match(rules, /単独のコマンドで行う/)
+  assert.match(rules, /\.claude\/settings\.json` の env（nanashi8 <nanashi8@users\.noreply\.github\.com>）/)
+  assert.match(rules, /`git commit` の前に、その場所の git が使う名前が違えば止める/)
+  // ほかのセッションの依頼は1行に畳んで見せる。
+  assert.match(rules, /ほかのセッションの依頼は1行に畳む/)
 })
 
 test('会話ログからは、そのセッションが書いた台帳だけを持ち主として割り出す', () => {
@@ -146,13 +159,38 @@ test('会話ログからは、そのセッションが書いた台帳だけを�
     'python-open.json': toolUse('Bash', { command: "python3 -c \"import json; json.dump(r, open('requests/python-open.json', 'w'))\"" }),
     'perl.json': toolUse('Bash', { command: "perl -pi -e 's/todo/done/' requests/perl.json" }),
     'redirect.json': toolUse('Bash', { command: "jq '.status = \"done\"' /tmp/r.json > requests/redirect.json" }),
+    'appended.json': toolUse('Bash', { command: "echo '' >> requests/appended.json" }),
     'moved.json': toolUse('Bash', { command: 'mv /tmp/r.json requests/moved.json' }),
+    'moved-away.json': toolUse('Bash', { command: 'mv requests/moved-away.json /tmp/' }),
+    'copied.json': toolUse('Bash', { command: 'cp /tmp/r.json requests/copied.json' }),
+    'into-folder.json': toolUse('Bash', { command: 'cd /tmp/clone && cp /repo/requests/into-folder.json requests/' }),
+    'removed.json': toolUse('Bash', { command: 'rm -f requests/removed.json && git status --short' }),
+    'touched.json': toolUse('Bash', { command: 'touch requests/touched.json' }),
+    'teed.json': toolUse('Bash', { command: "echo '{}' | tee requests/teed.json > /dev/null" }),
+    'sed.json': toolUse('Bash', { command: "sed -i '' 's/todo/done/' requests/sed.json" }),
+    'restored.json': toolUse('Bash', { command: 'git restore --source=HEAD requests/restored.json' }),
+    // 変数で渡した台帳（シェルで広げる・スクリプトが名前で読む）、for の並び、bash -c とヒアドキュメントで渡したシェル。
+    'shell-variable.json': toolUse('Bash', { command: 'D=requests; rm "$D/shell-variable.json"' }),
+    'env-variable.json': toolUse('Bash', { command: 'F=requests/env-variable.json; node -e "fs.writeFileSync(process.env.F, s)"' }),
+    'looped.json': toolUse('Bash', { command: "for f in requests/looped.json; do sed -i '' 's/a/b/' \"$f\"; done" }),
+    'bash-c.json': toolUse('Bash', { command: "bash -c 'rm requests/bash-c.json'" }),
+    'bash-heredoc.json': toolUse('Bash', { command: "bash <<'EOF'\nrm requests/bash-heredoc.json\nEOF" }),
   }
   const reads = [
     // 読むだけのコマンド、ほかのファイルへの書き込み、フックの一覧に出てくる名前は持ち主の印にしない。
     toolUse('Bash', { command: 'cat requests/cat.json && node scripts/check-requests.mjs --report' }),
     toolUse('Bash', { command: "python3 -c \"import json; print(json.load(open('requests/python-read.json')))\"" }),
     toolUse('Bash', { command: "node -e \"process.stdout.write(fs.readFileSync('requests/node-read.json', 'utf8'))\"" }),
+    toolUse('Bash', { command: 'cat requests/piped.json | python3 -c "import json,sys; print(json.load(sys.stdin))"' }),
+    toolUse('Bash', { command: "python3 - <<'PY'\nimport json\nprint(json.load(open('requests/py-read.json')))\nPY" }),
+    // cp の元（控えをとるだけ）、同じコマンドの中の別のファイルへの書き込み。
+    toolUse('Bash', { command: 'cp requests/backup-source.json /tmp/backup.json' }),
+    toolUse('Bash', { command: 'rm -rf /tmp/work && cat requests/rm-elsewhere.json' }),
+    toolUse('Bash', { command: 'git show HEAD:requests/shown.json > /tmp/shown.json' }),
+    // コミットの文・メモ・試し用スクリプトの中に書いた名前。
+    toolUse('Bash', { command: "git add src/App.jsx && git commit -q -F - <<'EOF'\nClose requests/in-message.json\nEOF" }),
+    toolUse('Bash', { command: "cat > memo.md <<'EOF'\n- 依頼: requests/in-memo.json\nEOF" }),
+    toolUse('Bash', { command: "cat > /tmp/probe.mjs <<'EOF'\nconst sample = \"fs.writeFileSync('requests/in-probe.json', s)\"\nEOF" }),
     toolUse('Write', { file_path: '/repo/tests/x.test.mjs', content: "read('requests/other-file.json')" }),
     toolUse('Read', { file_path: '/repo/requests/read.json' }),
     hookText('【開いている依頼】\n■ 依頼（requests/hook.json）'),
@@ -209,4 +247,45 @@ test('開いている依頼ごとに持ち主のセッションを出し、持�
   const owned = run('owners', dir, {}, { CHECK_REQUESTS_TRANSCRIPTS: sessions })
   assert.equal(owned.status, 0)
   assert.match(owned.stdout, /r1\.json: session-b/)
+  // --all は閉じた依頼も含めた全台帳を見る。
+  const closed = request([criterion({ status: 'done', check: 'node --test tests/a.test.mjs' })], { id: 'r3', status: 'done' })
+  writeFileSync(join(dir, 'r2.json'), JSON.stringify(closed))
+  assert.doesNotMatch(run('owners', dir, {}, { CHECK_REQUESTS_TRANSCRIPTS: sessions }).stdout, /r2\.json/)
+  const all = run('owners', dir, {}, { CHECK_REQUESTS_TRANSCRIPTS: sessions }, ['--all'])
+  assert.equal(all.status, 1)
+  assert.match(all.stdout, /r2\.json: 持ち主のセッションが見つからない/)
+  assert.match(all.stdout, /台帳 3件中、持ち主のセッションがある台帳 2件/)
+  writeFileSync(join(sessions, 'session-c.jsonl'), jsonl([toolUse('Bash', { command: "python3 -c \"import json; json.dump(r, open('requests/r2.json', 'w'))\"" })]))
+  const complete = run('owners', dir, {}, { CHECK_REQUESTS_TRANSCRIPTS: sessions }, ['--all'])
+  assert.equal(complete.status, 0)
+  assert.match(complete.stdout, /台帳 3件中、持ち主のセッションがある台帳 3件/)
+})
+
+test('利用者の発言ごとに見せる一覧は、そのセッションの依頼を全部、ほかのセッションの依頼を1行に畳む', () => {
+  const dir = ledger(
+    request([criterion({ id: 'mine-a' }), criterion({ id: 'mine-b', status: 'done' })], { title: '自分の依頼' }),
+    request([
+      criterion({ id: 'theirs-a' }),
+      criterion({ id: 'theirs-b', status: 'done' }),
+      criterion({ id: 'theirs-c', status: 'waiting', waitingFor: 'デプロイ' }),
+    ], { id: 'r2', title: 'ほかの依頼' }),
+  )
+  const context = (input) => JSON.parse(run('prompt', dir, input).stdout).hookSpecificOutput.additionalContext
+  const own = context({ transcript_path: transcript(toolUse('Write', { file_path: '/repo/requests/r0.json', content: '{}' })) })
+  assert.match(own, /\[未\] mine-a/)
+  assert.match(own, /\[済\] mine-b/)
+  assert.doesNotMatch(own, /theirs-a/)
+  assert.match(own, /【ほかのセッションの依頼】/)
+  assert.match(own, /- ほかの依頼（requests\/r1\.json・未1・待1・済1）/)
+  // 持ち主の依頼がないセッションでは、全部が1行ずつになる。
+  const none = context({ transcript_path: transcript(toolUse('Bash', { command: 'cat requests/r0.json' })) })
+  assert.doesNotMatch(none, /mine-a|theirs-a/)
+  assert.match(none, /- 自分の依頼（requests\/r0\.json・未1・済1）/)
+  // 会話ログが読めないときは、これまでどおり全部を見せる。
+  for (const input of [{}, { transcript_path: join(tmpdir(), 'no-such-transcript.jsonl') }]) {
+    const legacy = context(input)
+    assert.match(legacy, /\[未\] mine-a/)
+    assert.match(legacy, /\[未\] theirs-a/)
+    assert.doesNotMatch(legacy, /【ほかのセッションの依頼】/)
+  }
 })

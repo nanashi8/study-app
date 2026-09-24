@@ -40,12 +40,14 @@
 
 ### フック（.claude/settings.json）が強制すること
 
-- **ターンを終えられない**：そのセッションが作った・書き換えた依頼（会話ログの Write・Edit と、Bash での書き込み・`git add` で判定）に `todo` の条件が残っていると、Stop フックが止めて作業を続けさせる。ほかのセッションの依頼では止めない。会話ログが読めないときは、開いている全依頼で止める。
+- **ターンを終えられない**：そのセッションが作った・書き換えた依頼に `todo` の条件が残っていると、Stop フックが止めて作業を続けさせる。持ち主は、会話ログの Write・Edit と、Bash で書き込み先にした台帳（リダイレクト・rm・sed -i・cp の写し先・git add など）で決める。cp の元にしただけ・コミットの文やメモに名前が出てくるだけでは持ち主にしない。ほかのセッションの依頼では止めない。会話ログが読めないときは、開いている全依頼で止める。
 - **台帳なしに変更できない**：開いている依頼がないと、`src/`・`tests/`・`scripts/` を Edit/Write できない。
 - **偽りの done をコミットできない**：`git commit` / `git push` の前に、done にした条件の check を実行し、通らなければ止める。
-- **毎回思い出させる**：利用者の発言ごとに、決まりと未完了の条件を作業者に見せる。
+- **古い全教材監査台帳を push できない**：`git push` の前に、push するコミットの中身だけを取り出して `node scripts/content-audit-ledger.mjs` を流し、台帳が中身と合わなければ止める（作業ツリーではなく push するコミットを見る）。push は、commit・rebase・pull など HEAD を動かすコマンドと分けて、単独のコマンドで行う。
+- **nanashi8 以外の名前でコミット・push できない**：コミットの名前は `.claude/settings.json` の env（nanashi8 <nanashi8@users.noreply.github.com>）で全セッションの git に渡す。`git commit` の前に、その場所の git が使う名前が違えば止める。`git push` の前に、まだどのリモートにもないコミットに違う作者・コミッターがあれば止める。
+- **毎回思い出させる**：利用者の発言ごとに、決まりと、そのセッションの依頼の未完了の条件を作業者に見せる。ほかのセッションの依頼は1行に畳む。
 
-判定は `scripts/check-requests.mjs`。一覧は `node scripts/check-requests.mjs --report`、依頼ごとの持ち主のセッションは `--owners`。
+判定は `scripts/check-requests.mjs`（コマンドの読み取りは `scripts/lib/shell-commands.mjs`）。一覧は `node scripts/check-requests.mjs --report`、依頼ごとの持ち主のセッションは `--owners`（閉じた依頼も含めるなら `--owners --all`）。
 
 ### 報告の書き方
 

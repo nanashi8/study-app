@@ -1,0 +1,59 @@
+{
+  "id": "2026-09-25-requests-hooks-improve",
+  "title": "依頼の仕組みの改善：持ち主は書き込み先で決める・push の前に台帳と作者を確かめる・作者をそろえる・ほかのセッションの依頼は畳んで見せる",
+  "asked": [
+    "（Stop フックの依頼を閉じた報告で、残していることに「持ち主の判定の割り切り（cp の控え・同じコマンドの rm で持ち主になる）」「push の前に台帳の古さを止める仕組みがない」「端末名の作者のコミット」を挙げたあとの指示）改善できる点は改善しなさい。"
+  ],
+  "status": "open",
+  "criteria": [
+    {
+      "id": "ownership-write-targets",
+      "text": "Bash のコマンドは、書き込み先に台帳がある単純コマンドだけを持ち主の印にする。cp の元（控えをとるだけ）・同じコマンドの中の別のファイルへの書き込み・読むだけのパイプでは持ち主にしない。node・Python などのスクリプトは、書き込みがあるときにスクリプトが名指しした台帳（変数で渡した台帳を含む）を印にする。bash -c とヒアドキュメントで渡したシェルの中も読む",
+      "population": "Bash の書き込みと読み取りの形の全種類（cp の元と先・フォルダーへの cp・mv・rm・touch・tee・sed -i・perl -i・リダイレクト・git add/rm/mv/checkout/restore・node と Python のスクリプトの書き込みと読み取り・変数に入れた台帳・bash -c・ヒアドキュメント・読むだけのパイプ・コミットの文の中の台帳の名前）",
+      "check": "node --test tests/requests-ledger.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "ownership-real-sessions",
+      "text": "このリポジトリの全会話ログで、全台帳（閉じた依頼を含む）に持ち主のセッションが1つ以上残る。前の判定と比べて変わった（台帳・セッション）の組はすべて読み、読むだけ・控えをとるだけの組だと確かめる",
+      "population": "このリポジトリの全会話ログ（~/.claude/projects/-Users-yuichinakamura-projects-study-app/*.jsonl）× 全台帳（requests/*.json）",
+      "check": "node scripts/check-requests.mjs --owners --all",
+      "status": "done"
+    },
+    {
+      "id": "push-ledger-current",
+      "text": "git push の前に、push するコミットの中身だけを取り出して全教材監査台帳の確認（node scripts/content-audit-ledger.mjs）を流し、台帳が古ければ止める。作業ツリーからの push、cd や git -C で clone に移っての push のどれでも、作業ツリーではなく push するコミットを確かめる",
+      "population": "push の書き方（作業ツリーから・cd で移って・同じコマンドの変数で書いた行き先・git -C・bash -c）× 台帳の状態（コミットと一致・コミットの台帳が古い・作業ツリーだけ書き直してコミットしていない）",
+      "check": "node --test tests/requests-gate.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "commit-identity",
+      "text": "コミットの作者とコミッターを nanashi8 <nanashi8@users.noreply.github.com> にそろえる。.claude/settings.json の env で全セッションの git に渡し、git commit の前（使われる名前が違えば止める）と git push の前（push するコミットに違う作者・コミッターがあれば止める）で確かめる",
+      "population": "コミットを作る場所（作業ツリー・名前の設定がない clone）× 名前（そろった名前・端末名から作った名前）× 確かめる時（commit の前・push の前）",
+      "check": "node --test tests/requests-gate.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "prompt-own-first",
+      "text": "利用者の発言ごとに見せる開いている依頼の一覧は、そのセッションの依頼を条件まで全部見せ、ほかのセッションの依頼は1行（題・台帳の名前・未と済の数）に畳む。会話ログが読めないときは、これまでどおり全部を見せる",
+      "population": "開いている依頼の持ち主の全場合（そのセッション・ほかのセッション・会話ログなし）",
+      "check": "node --test tests/requests-ledger.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "rules-updated",
+      "text": "CLAUDE.md の「フックが強制すること」を、新しい止め方（push の前の台帳と作者・commit の前の名前）と見せ方に合わせて書き直す",
+      "population": "CLAUDE.md の「フックが強制すること」の全項目",
+      "check": "node --test tests/requests-ledger.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "deployed",
+      "text": "全テスト・全監査をクリーンな clone で通してから main へ push し、公開版のデプロイが成功したことを確かめる",
+      "population": "公開版 https://nanashi8.github.io/study-app/",
+      "check": "node scripts/checks/deployed-matches-head.mjs",
+      "status": "todo"
+    }
+  ]
+}
