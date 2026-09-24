@@ -1,0 +1,343 @@
+N	compelling|persuasive	compelling は証拠や話が「引きこまれるほど説得力のある」。persuasive は人を「説得するのがうまい」
+N	compelling|weak	compelling は「説得力のある」、weak は理由などが「弱い・説得力のない」
+N	cram|empty	cram はかばんなどに「ぎゅうぎゅう詰めこむ」や、試験前に「一夜漬けする」。empty は動詞で「空にする」
+N	crammed|stuffed	crammed は「すき間なく詰めこまれた」（crammed with）。stuffed は「詰めものをした」や、おなかが「いっぱいの」
+N	crammed|empty	crammed は「ぎっしり詰まった」、empty は「空の」
+N	cramped|crowded	cramped は部屋などが「狭苦しい・窮屈な」。crowded は人で「混んだ」
+N	cramped|narrow	cramped は動けないほど「狭苦しい」。narrow は幅が「狭い」
+N	creativity|originality	creativity は新しいものを生み出す「創造力」。originality はまねでない「独創性」
+N	creativity|ingenuity	creativity は「創造性」。ingenuity は問題を解く「工夫の才・発明の才」
+N	credibility|trustworthiness	credibility は話や人が「信用できること・信ぴょう性」（lose credibility）。trustworthiness は人柄が「信頼できること」
+N	credibility|unreliability	credibility は「信頼性」、unreliability は「当てにならないこと」
+N	cripple|incapacitate	cripple は経済などに「大打撃を与える・まひさせる」。incapacitate は人を病気などで「動けなくする」
+N	cripple|strengthen	cripple は「弱らせる」、strengthen は「強める」
+N	criterion|measure	criterion は判断の「基準」（複数形 criteria）。measure は「尺度・物差し」や「対策」
+N	condemned|criticized	criticized は「批判された」と広く言う。condemned は「強く非難された」
+N	censured|criticized	criticized は「批判された」。censured は公に「とがめられた」かたい語
+N	crude|raw	crude は石油などが「精製していない」（crude oil）や、人が「粗野な」。raw は食べ物が「生の」や材料が「未加工の」
+N	cruiser|warship	cruiser は軍艦の一種の「巡洋艦」。warship は「軍艦」全体
+N	cruiser|patrol car	cruiser はアメリカ英語で警察の「パトカー」にも使う。patrol car はその説明的な言い方
+N	crushed|devastated	crushed は気持ちが「打ちひしがれた」。devastated は「ぼうぜんとするほどつらい」と強い
+N	crushed|dejected	crushed は大きく「がっかりした」。dejected は「しょげた」
+N	crushed|elated	crushed は「打ちひしがれた」、elated は「大喜びの」
+N	culmination|peak	culmination は長い努力の「最後の到達点・集大成」。peak は山や数値の「頂点」
+N	culpable|guilty	culpable は「責任を問われるべき」かたい語。guilty は「有罪の」や「罪悪感のある」
+N	blameworthy|culpable	culpable は法律の場で「責められるべき」。blameworthy は「非難に値する」
+N	culpable|innocent	culpable は「責任がある」、innocent は「罪のない」
+N	culprit|offender	culprit は事件の「犯人」や問題の「元凶」。offender は法律の「違反者・犯罪者」
+N	culprit|wrongdoer	culprit は「犯人」。wrongdoer は「悪いことをした人」と広く言う
+N	cumbersome|unwieldy	cumbersome は重くて「扱いにくい」や、手続きが「面倒な」。unwieldy は大きすぎて「扱いにくい」
+M	cumulative	syn	collective	全体の・集団の
+N	collective|cumulative	cumulative は少しずつ積み重なって「だんだん増える」（cumulative effect）。collective は「みんなを合わせた・集団の」
+N	curriculum|syllabus	curriculum は学校全体の「教育課程」。syllabus は一つの授業の「講義計画・シラバス」
+N	curse|hex	curse は「呪い」や「ののしり言葉」。hex は魔女などがかける「呪い・まじない」
+N	curse|jinx	curse は「呪い」。jinx は「縁起の悪いもの・ジンクス」
+N	cursed|doomed	cursed は「呪われた」。doomed は「破滅が決まった・運の尽きた」
+N	cursed|damned	cursed と damned はどちらも「呪われた」。damned は話し言葉で「いまいましい」という強い悪口にもなる
+N	cursory|hasty	cursory は見方などが「ざっとした・おざなりの」（a cursory glance）。hasty は「急いだ・軽率な」
+N	cursory|superficial	cursory は時間をかけず「ざっと」。superficial は「表面だけの・浅い」
+N	cursory|thorough	cursory は「ざっとした」、thorough は「徹底した」
+N	curt|terse	curt は「そっけない・ぶっきらぼうな」。terse は「言葉少なで簡潔な」（そっけない感じもある）
+N	brusque|curt	curt は返事が「短くそっけない」。brusque は態度が「無愛想な」
+N	curt|polite	curt は「ぶっきらぼうな」、polite は「丁寧な」
+N	curtail|reduce	curtail は支出などを「切り詰める」かたい語。reduce は「減らす」
+N	curtail|extend	curtail は「短く切り詰める」、extend は「延ばす」
+I	curtail|curr_idm_pre1_cut_back	cut back は費用などを「削減する」話し言葉。curtail は「切り詰める」のかたい語
+N	cyclical|periodic	cyclical は景気などが「循環する」。periodic は一定の間隔で「定期的に起こる」
+N	cyclical|recurrent	cyclical は「周期的にくり返す」。recurrent は問題が「何度も起こる」
+N	cyclical|linear	cyclical は「くり返す・循環的な」、linear は「一方向に進む・直線的な」
+N	cynical|pessimistic	cynical は人の善意を「信じない・冷笑的な」。pessimistic は先のことを「悲観的に見る」
+N	cynical|distrustful	cynical は「どうせ自分の得のためだと思う」。distrustful は「疑い深い」
+N	cynical|optimistic	cynical は「冷笑的な」、optimistic は「楽観的な」
+N	cynicism|skepticism	cynicism は人の善意を信じない「冷笑」。skepticism はうのみにしない「懐疑」
+N	cynicism|optimism	cynicism は「冷笑的な見方」、optimism は「楽観」
+N	dagger|knife	dagger は武器の「短剣」。knife は料理などの「ナイフ・包丁」
+N	blade|dagger	dagger は「短剣」そのもの。blade は刃物の「刃」
+N	dagger|sword	dagger は短い「短剣」、sword は長い「剣」
+N	damaging|detrimental	damaging はうわさなどが「害を与える」。detrimental は「(じわじわ)不利になる・有害な」かたい語
+N	beneficial|damaging	damaging は「有害な」、beneficial は「有益な」
+N	condemn|damn	damn は神が「地獄に落とす」や、作品を「酷評する」。condemn は「強く非難する」
+N	curse|damn	damn は「のろう」や「ちくしょう」という悪態。curse は「呪う」や「ののしる」
+N	bless|damn	damn は「のろう」、bless は「祝福する」
+N	damned|doomed	damned は「呪われた」。doomed は「破滅する運命の」
+N	blessed|damned	damned は「呪われた」、blessed は「祝福された・恵まれた」
+N	dampen|moisten	dampen は布などを「湿らせる」や、熱意を「くじく」。moisten はくちびるなどを「軽く湿らせる」
+N	dampen|discourage	dampen は喜びや意欲に「水を差す」。discourage は「やる気をなくさせる」
+N	dampen|encourage	dampen は意欲を「くじく」、encourage は「励ます」
+N	dampness|dryness	dampness は「じめじめした湿り気」、dryness は「乾燥」
+N	dapper|neat	dapper は男性が「身なりのきちんとした・粋な」。neat は「こぎれいな・整った」
+N	dapper|spruce	dapper は「粋でおしゃれな」。spruce は「小ざっぱりした」
+N	dapper|sloppy	dapper は「身なりのきちんとした」、sloppy は「だらしない」
+N	darken|dim	darken は空などが「暗くなる」。dim は明かりを「薄暗くする」
+N	daunt|intimidate	daunt は難しさで「ひるませる」（ふつう否定文）。intimidate は人を「おどしてこわがらせる」
+N	daunt|discourage	daunt は「気おくれさせる」。discourage は「やる気をなくさせる」
+N	daunt|embolden	daunt は「ひるませる」、embolden は「大胆にさせる」
+N	daunting|intimidating	daunting は仕事などが「気が遠くなるような」（a daunting task）。intimidating は人や場所が「威圧的な」
+N	daunting|overwhelming	daunting は「しりごみするほど大変な」。overwhelming は「圧倒的な・手に負えない」
+N	daunting|easy	daunting は「気の遠くなるような」、easy は「簡単な」
+N	dazzle|impress	dazzle は光で「目をくらませる」や、人を「感嘆させる」。impress は「感心させる」
+N	dazzling|stunning	dazzling は光が「まばゆい」や、才能が「目を見張る」。stunning は「驚くほど美しい」
+N	dazzling|dull	dazzling は「まばゆい」、dull は「くすんだ」
+I	deactivate|exam_idm_turn_off	turn off は電気などを「消す」話し言葉。deactivate は機能やアカウントを「停止させる」
+N	debase|degrade	debase は価値や品位を「落とす」（硬貨の質を落とす）。degrade は品質を「低下させる」や、人を「おとしめる」
+N	corrupt|debase	debase は「質を下げる」。corrupt は人を「堕落させる」
+N	debase|elevate	debase は「品位を落とす」、elevate は「高める」
+N	debilitate|enfeeble	debilitate は病気などが体を「衰弱させる」。enfeeble は「弱らせる」のかたい語
+N	debilitate|weaken	debilitate は「ひどく弱らせる」。weaken は「弱める」
+N	debilitate|invigorate	debilitate は「衰弱させる」、invigorate は「元気づける」
+N	decay|deteriorate	decay は食べ物などが「腐る」や、建物が「朽ちる」。deteriorate は状態が「悪化する」
+N	decay|flourish	decay は「衰える・腐る」、flourish は「栄える」
+N	deceit|fraud	deceit は人を「だますこと・うそ」。fraud は法律上の「詐欺」
+N	deceit|honesty	deceit は「欺き」、honesty は「正直さ」
+N	decency|propriety	decency は人として当然の「礼儀・良識」（have the decency to do）。propriety は社会的に「ふさわしいふるまい」
+N	decency|respectability	decency は「良識・品位」。respectability は世間からの「体面・立派さ」
+N	decency|indecency	decency は「品位」、indecency は「下品さ」
+N	deceptive|misleading	deceptive は見かけが「人を欺く・当てにならない」。misleading は情報が「誤解を招く」
+N	deceptive|honest	deceptive は「人をだます」、honest は「正直な」
+N	decipher|decode	decipher は読みにくい字や暗号を「解読する」。decode は暗号やデータを「復号する」
+N	decipher|interpret	decipher は「読み解く」。interpret は意味を「解釈する」
+N	decipher|encode	decipher は「解読する」、encode は「暗号にする」
+N	decisively|firmly	decisively は「きっぱりと決めて」。firmly は「しっかりと・断固として」
+N	decisively|hesitantly	decisively は「断固として」、hesitantly は「ためらいながら」
+N	declining|waning	declining は数や力が「減っていく」。waning は月や人気が「欠けていく・衰える」
+N	declining|dwindling	declining は「減少している」。dwindling は「しだいに小さく少なくなる」
+N	declining|thriving	declining は「衰えつつある」、thriving は「繁盛している」
+N	decode|interpret	decode は暗号を「解読する」。interpret は意味を「解釈する」
+N	decode|encode	decode は「解読する」、encode は「暗号化する」
+N	decompose|disintegrate	decompose は生き物の体が「分解する・腐る」。disintegrate はばらばらに「くずれる」
+N	compose|decompose	decompose は「分解する」、compose は「組み立てる・構成する」
+I	decompose|exam_idm_break_down	break down は物質が「分解する」や、機械が「故障する」。decompose は「腐って分解する」
+N	decorated|ornate	decorated は「飾られた」。ornate は「ごてごて飾りたてた・華麗な」
+N	adorned|decorated	decorated は「飾りつけた」。adorned は宝石などで「美しく飾られた」
+N	decorated|plain	decorated は「飾られた」、plain は「飾りのない」
+N	decree|order	decree は王や政府の「法令・布告」。order は「命令」と広く言う
+N	decree|edict	decree は「政令・布告」。edict は昔の王の「勅令」
+N	decrepit|dilapidated	decrepit は人や物が「老いぼれた・古びた」。dilapidated は建物が「荒れ果てた」
+N	decrepit|rickety	decrepit は「老朽化した」。rickety はいすなどが「がたがたの」
+N	decrepit|sturdy	decrepit は「おんぼろの」、sturdy は「頑丈な」
+N	dedicated|indifferent	dedicated は「献身的な」、indifferent は「無関心な」
+N	deduct|subtract	deduct は金額や点数を「差し引く」。subtract は数学で「引く」
+N	deduct|withhold	deduct は「差し引く」。withhold は税金を給料から「天引きする」や、情報を「出さずにおく」
+N	add|deduct	deduct は「差し引く」、add は「加える」
+N	act|deed	deed は「行い」（a good deed）や、土地の「証書」。act は一つの「行為」
+N	consider|deem	deem は「〜とみなす」のかたい語（deem it necessary）。consider は「よく考える」や「〜とみなす」
+N	deem|regard	deem は「〜と判断する」。regard は「〜とみなす」（regard A as B）
+N	defendant|plaintiff	defendant は「被告」、plaintiff は「原告」
+N	defenseless|vulnerable	defenseless は身を「守るものがない」。vulnerable は「攻撃や病気に弱い」
+N	defenseless|protected	defenseless は「無防備な」、protected は「守られた」
+N	deficiency|shortage	deficiency はビタミンなどの「欠乏」。shortage は物の「不足」
+N	deficiency|lack	deficiency は必要な量に「足りないこと」。lack は「欠けていること」
+N	deficiency|surplus	deficiency は「不足」、surplus は「余り」
+N	deficient|inadequate	deficient は栄養などが「不足した」（deficient in）。inadequate は「不十分な・力不足の」
+N	deficient|sufficient	deficient は「不足した」、sufficient は「十分な」
+N	definitely|undoubtedly	definitely は「絶対に・間違いなく」（話し言葉でもよく使う）。undoubtedly は「疑いなく」のかたい語
+N	definitely|possibly	definitely は「間違いなく」、possibly は「もしかすると」
+I	definitely|curr1900_idm_2_for_sure	for sure は「確かに・きっと」の話し言葉。definitely は「絶対に」と強い
+N	authoritative|definitive	definitive は「これ以上ない決定版の」（the definitive guide）。authoritative は「権威があって信頼できる」
+N	definitive|tentative	definitive は「確定的な」、tentative は「仮の」
+N	collapse|deflate	deflate は空気を抜いて「しぼませる」や、人の「自信をくじく」。collapse は「崩れる・しぼむ」
+N	deflate|puncture	deflate は空気を「抜く」。puncture はタイヤに「穴を開ける」
+N	clear|deforest	deforest は森林を「伐採して失わせる」。clear は土地の木を「切り開く」
+N	deforest|log	deforest は森を「なくす」。log は木を「伐採する」
+N	deforest|reforest	deforest は「森林を伐採する」、reforest は「再び植林する」
+N	deft|skillful	deft は手さばきが「器用で素早い」。skillful は「熟練した・上手な」
+N	deft|nimble	deft は手先が「器用な」。nimble は動きが「すばしこい」
+N	clumsy|deft	deft は「器用な」、clumsy は「不器用な」
+N	defy|resist	defy は命令などに「公然と逆らう」。resist は「抵抗する」
+N	defy|obey	defy は「逆らう」、obey は「従う」
+N	dejected|despondent	dejected は「しょげた」。despondent は「希望をなくして落ちこんだ」と強い
+N	cheerful|dejected	dejected は「落胆した」、cheerful は「陽気な」
+N	delegation|mission	delegation は会議などへ送る「代表団」。mission は「使節団」や「任務」
+N	deliberately|intentionally	deliberately は「わざと」や「慎重に」。intentionally は「意図して」
+I	deliberately|curr_idm_pre2_on_purpose	on purpose は「わざと」の話し言葉。deliberately はかたい語
+N	delightful|pleasant	delightful は「とても楽しい」。pleasant は「心地よい」
+N	delightful|unpleasant	delightful は「楽しい」、unpleasant は「不愉快な」
+N	delineate|outline	delineate は計画などを「くわしく描き出す」かたい語。outline は「あらましを述べる」
+N	delineate|describe	delineate は「はっきり示す」。describe は「描写する・説明する」
+N	deliverance|rescue	deliverance は危険からの「救い出し・解放」の文学的な語。rescue は「救助」
+N	deliverance|salvation	deliverance は苦しみからの「解放」。salvation は宗教の「救い」
+N	captivity|deliverance	deliverance は「救出」、captivity は「とらわれの身」
+N	deceive|delude	delude は人に「思いこませる」（delude oneself で「思いこむ」）。deceive は「だます」
+N	delude|mislead	delude は「勘ちがいさせる」。mislead は「誤った方向へ導く」
+N	delude|enlighten	delude は「惑わす」、enlighten は「分からせる」
+N	deluge|flood	deluge は「大洪水」や、手紙などの「殺到」（a deluge of calls）。flood は「洪水」
+N	deluge|inundation	deluge は「どしゃ降り・大洪水」。inundation は「氾濫」のかたい語
+N	deluge|drought	deluge は「大洪水」、drought は「干ばつ」
+N	demands|requirements	demands は相手からの「要求・負担」。requirements は満たすべき「要件」
+N	democratic|egalitarian	democratic は「民主的な」。egalitarian は「平等主義の」
+N	autocratic|democratic	democratic は「民主的な」、autocratic は「独裁的な」
+N	demonstration|display	demonstration は使い方などの「実演」や「デモ」。display は品物の「展示」や感情の「表れ」
+N	demure|modest	demure は女性が「しとやかな・控えめな」。modest は「謙虚な・控えめな」
+N	demure|reserved	demure は「おしとやかな」。reserved は「遠慮がちな」や、席が「予約済みの」
+N	brazen|demure	demure は「控えめな」、brazen は「厚かましい」
+N	denote|indicate	denote は記号などが「表す・意味する」。indicate は「指し示す」
+N	denote|signify	denote は言葉がそのまま「指す」。signify は「意味する・示す」
+N	criticized|denounced	denounced は「公然と非難された」。criticized は「批判された」と広く言う
+N	denounced|praised	denounced は「非難された」、praised は「ほめられた」
+N	density|sparseness	density は人口などの「密度」、sparseness は「まばらさ」
+N	depiction|portrayal	depiction は絵や文での「描写」。portrayal は人物の「描き方」や、俳優の「演じ方」
+N	depiction|representation	depiction は「描写」。representation は「表現」や「代表」
+N	deplete|replenish	deplete は資源などを「使い果たす」、replenish は「補充する」
+N	deplorable|disgraceful	deplorable は状態などが「嘆かわしい」。disgraceful は行いが「恥ずべき」
+N	deplorable|terrible	deplorable は「ひどい」のかたい語。terrible は「ひどい」のふつうの語
+N	deplore|lament	deplore は悪いことを「嘆かわしく思う・非難する」。lament は失ったものを「嘆き悲しむ」
+N	condemn|deplore	deplore は「嘆かわしいと思う」。condemn は「強く非難する」
+N	deplore|praise	deplore は「嘆く・非難する」、praise は「ほめる」
+N	deploy|position	deploy は軍隊や道具を「配備する」。position は物を「置く・配置する」
+N	deport|expel	deport は外国人を「国外退去させる」。expel は「追い出す」と広く言う
+N	banish|deport	deport は法律で「強制送還する」。banish は昔の刑罰で「追放する」
+N	admit|deport	deport は「国外へ出す」、admit は「入国させる」
+N	deportation|expulsion	deportation は外国人の「強制送還」。expulsion は「追放・退学」
+N	deportation|exile	deportation は法律による「国外退去」。exile は祖国を離れた「亡命・追放」
+N	depose|oust	depose は王や大統領を「退位させる」。oust は人を地位から「追い出す」
+N	depose|install	depose は「退位させる」、install は「就任させる」
+N	corrupt|deprave	deprave は人を「悪に染める」と強い。corrupt は「堕落させる」
+N	debase|deprave	deprave は道徳を「腐らせる」。debase は価値を「落とす」
+N	deprave|uplift	deprave は「堕落させる」、uplift は「高める」
+N	corruption|depravity	depravity は道徳的な「堕落・悪徳」。corruption は役人などの「汚職・腐敗」
+N	depravity|wickedness	depravity は「堕落」。wickedness は「邪悪さ」
+N	depravity|virtue	depravity は「悪徳」、virtue は「美徳」
+N	appreciate|depreciate	depreciate は価値が「下がる」、appreciate は価値が「上がる」（ふつうは「感謝する」）
+N	deprivation|lack	deprivation は睡眠などを「奪われること・欠乏」（sleep deprivation）。lack は「不足」
+N	abundance|deprivation	deprivation は「欠乏」、abundance は「豊富さ」
+N	deride|mock	deride は「ばかにしてあざ笑う」かたい語。mock は「からかう・あざける」
+N	deride|ridicule	deride は「あざける」。ridicule は「笑いものにする」
+N	deride|praise	deride は「あざ笑う」、praise は「ほめる」
+I	deride|curr_idm_3_laugh_at	laugh at は「笑いものにする」話し言葉。deride はかたい語
+N	derision|mockery	derision は「あざけり・嘲笑（ちょうしょう）」。mockery は「からかい・物笑いの種」
+N	derision|ridicule	derision は「軽蔑した笑い」。ridicule は「あざけり」
+N	derision|respect	derision は「あざけり」、respect は「敬意」
+N	designation|title	designation は公式の「指定」や「名称」（World Heritage designation）。title は「称号・肩書」
+N	bleak|desolate	desolate は人けがなく「荒涼とした」や、人が「わびしい」。bleak は「寒々とした・希望のない」
+N	desolate|lush	desolate は「荒れ果てた」、lush は「緑豊かな」
+N	contemptible|despicable	despicable は「卑劣な・見下げ果てた」。contemptible は「軽蔑すべき」
+N	despicable|vile	despicable は「卑劣な」。vile は「ひどく不快な・下劣な」
+N	admirable|despicable	despicable は「卑劣な」、admirable は「立派な」
+N	despise|scorn	despise は「ひどく軽蔑する・嫌う」。scorn は「見下してはねつける」
+N	despise|loathe	despise は「見下して嫌う」。loathe は「むかつくほど嫌う」
+N	admire|despise	despise は「軽蔑する」、admire は「感心する」
+I	despise|idm_look_down_on	look down on は「見下す」の話し言葉。despise は「ひどく軽蔑する」と強い
+N	destruction|devastation	destruction は「破壊」と広く言う。devastation は広い範囲の「荒廃・壊滅」
+N	destruction|ruin	destruction は「破壊すること」。ruin は「破滅・荒廃」や「廃墟」
+N	detach|separate	detach は取りつけた物を「取り外す」。separate は「分ける・離す」
+N	detach|disconnect	detach は「取り外す」。disconnect は電気などを「切る」
+N	attach|detach	detach は「取り外す」、attach は「取り付ける」
+N	aloofness|detachment	detachment は感情に流されない「冷静さ・距離」。aloofness は人を寄せつけない「よそよそしさ」
+N	detachment|indifference	detachment は「一歩引いた冷静さ」。indifference は「無関心」
+N	detectable|discernible	detectable は機械などで「検出できる」。discernible は目などで「見分けられる」
+N	detectable|perceptible	detectable は「感知できる」。perceptible は人が「気づくことができる」
+N	detectable|undetectable	detectable は「検出できる」、undetectable は「検出できない」
+N	decline|deterioration	deterioration は質や状態の「悪化・劣化」。decline は数や力の「衰退・減少」
+N	determined|resolute	determined は「決意の固い」（be determined to do）。resolute は「断固とした」のかたい語
+N	determined|firm	determined は「やりとげる決意をした」。firm は態度が「断固とした」
+N	determined|hesitant	determined は「決意の固い」、hesitant は「ためらいがちな」
+N	deterrent|discouragement	deterrent は罰則などの「抑止力」。discouragement は「やる気をなくさせること」
+N	deterrent|disincentive	deterrent は悪いことを「思いとどまらせるもの」。disincentive は「意欲をそぐもの」
+N	deterrent|incentive	deterrent は「思いとどまらせるもの」、incentive は「やる気を起こさせるもの」
+N	detest|loathe	detest と loathe はどちらも「ひどく嫌う」。loathe のほうが強い
+N	abhor|detest	detest は「大嫌いである」。abhor は道徳的に「憎む」かたい語
+N	beneficial|detrimental	detrimental は「有害な」、beneficial は「有益な」
+N	devastated|ruined	devastated は人が「打ちのめされた」や、土地が「荒廃した」。ruined は「台無しになった・破滅した」
+N	devastated|elated	devastated は「打ちのめされた」、elated は「大喜びの」
+N	devastation|ruin	devastation は戦争などによる「壊滅的な被害」。ruin は「廃墟・荒廃」
+N	deviate|diverge	deviate は予定などから「それる」。diverge は道などが「分かれる」
+N	conform|deviate	deviate は「外れる」、conform は「従う」
+N	deviation|divergence	deviation は決まりからの「逸脱」や統計の「偏差」。divergence は意見の「相違・分かれ」
+I	devise|idm_come_up_with	come up with は案を「思いつく」話し言葉。devise は工夫して「考案する」
+N	devout|pious	devout は「信心深い」（よい意味）。pious は「信心深い」だが、「信心ぶった」の悪い意味にもなる
+N	devout|reverent	devout は信仰に「熱心な」。reverent は「うやうやしい」
+N	devout|impious	devout は「信心深い」、impious は「不信心な」
+N	deftness|dexterity	dexterity は手先の「器用さ」。deftness は「手ぎわのよさ」
+N	agility|dexterity	dexterity は手先の「器用さ」。agility は体の「身軽さ・機敏さ」
+N	clumsiness|dexterity	dexterity は「器用さ」、clumsiness は「不器用さ」
+N	dictatorship|tyranny	dictatorship は「独裁（政権）」。tyranny は残酷な「暴政」
+N	autocracy|dictatorship	dictatorship は「独裁政権」のふつうの語。autocracy は「独裁政治」のかたい語
+N	democracy|dictatorship	dictatorship は「独裁」、democracy は「民主主義」
+N	differentiate|distinguish	differentiate は2つのちがいを「区別する」や、商品を「差別化する」。distinguish は「見分ける」
+N	diffuse|disperse	diffuse は光や熱が「広がる・拡散する」。disperse は人が「散らばる」や、集まりを「解散させる」
+N	diffuse|spread	diffuse は「じわじわ広がる」。spread は「広がる・広める」
+N	concentrate|diffuse	diffuse は「拡散する」、concentrate は「集中させる」
+N	dilapidated|run-down	dilapidated は建物が「荒れ果てた」。run-down は「荒れた・さびれた」話し言葉
+N	dilapidated|renovated	dilapidated は「荒れ果てた」、renovated は「改装された」
+N	dilate|expand	dilate はひとみや血管が「広がる」。expand は「大きくなる・拡大する」
+N	dilate|widen	dilate は「広がる」の医学的な語。widen は道などを「広げる」
+N	diluted|watered-down	diluted は液体が「薄められた」。watered-down は「水で薄めた」や、案が「骨抜きにされた」
+N	diluted|weak	diluted は「薄めた」。weak はお茶などが「薄い」
+N	brighten|dim	dim は明かりを「暗くする」、brighten は「明るくする」
+N	diminished|lessened	diminished は力などが「衰えた」。lessened は「弱められた・減らされた」
+N	diminished|increased	diminished は「減った」、increased は「増えた」
+N	clamor|din	din はやかましい「騒音」。clamor は大勢の「騒がしい叫び」
+N	dingy|grimy	dingy は部屋などが「薄汚れて暗い」。grimy は「すすけて汚れた」
+N	dingy|shabby	dingy は「うす汚い」。shabby は「みすぼらしい・着古した」
+N	clean|dingy	dingy は「薄汚れた」、clean は「きれいな」
+N	diplomatic|tactful	diplomatic は「外交の」や、人が「角を立てない」。tactful は「気配りのできる」
+N	diplomatic|tactless	diplomatic は「如才ない」、tactless は「無神経な」
+N	desperate|dire	dire は状況が「悲惨な・切迫した」（in dire need）。desperate は「必死の」や「絶望的な」
+N	dire|grave	dire は「ひどく悪い」。grave は事態が「重大な」
+N	disagreeable|unpleasant	disagreeable は「不愉快な」のかたい語。unpleasant は「いやな」
+N	disagreeable|nasty	disagreeable は「感じの悪い」。nasty は「ひどくいやな・意地悪な」
+N	disagreement|dispute	disagreement は「意見の相違」。dispute は長く続く「争い・論争」
+N	disagreement|discord	disagreement は「意見のくいちがい」。discord は「不和」
+N	disappearance|vanishing	disappearance は人や物の「失踪・消失」。vanishing は「ふっと消えること」
+N	disappointed|disheartened	disappointed は「がっかりした」。disheartened は「やる気をなくした」
+N	disappointed|satisfied	disappointed は「がっかりした」、satisfied は「満足した」
+I	disappointed|curr_idm_pre2_let_down	let down は「失望させる」（feel let down）。disappointed は「失望した」の形容詞
+N	demilitarize|disarm	disarm は人や国の「武器を取り上げる」や、人の「警戒心を解く」。demilitarize は地域を「非武装化する」
+N	disarm|pacify	disarm は相手の「敵意を和らげる」。pacify は「なだめる」
+D	disarm	ant	arm	武装させるの意味の arm は「腕」の arm と由来のちがう別の語で見出し語がなく、つづりで引くと「腕」へ飛ぶ
+N	demilitarization|disarmament	disarmament は国どうしの「軍縮」。demilitarization は地域の「非武装化」
+N	disband|unite	disband は「解散する」、unite は「団結する」
+I	disband|curr_idm_3_break_up	break up はバンドなどが「解散する」話し言葉。disband は組織を「解散させる」
+N	discernible|perceptible	discernible は目などで「見分けられる」。perceptible は「感じ取れる」
+N	discernible|imperceptible	discernible は「見分けられる」、imperceptible は「感じ取れないほどの」
+N	discerning|perceptive	discerning は「目の肥えた・見る目のある」。perceptive は「洞察力のある」
+N	astute|discerning	discerning は「よしあしを見分ける」。astute は商売などで「抜け目のない」
+N	discerning|undiscerning	discerning は「見る目のある」、undiscerning は「見る目のない」
+N	disclosure|revelation	disclosure は情報の「公開・開示」。revelation は驚くような「新事実・暴露」
+N	discomfort|unease	discomfort は体の「不快感」や、場の「気まずさ」。unease は「落ち着かない気持ち」
+N	discomfort|pain	discomfort は軽い「不快感」。pain は「痛み」
+N	connect|disconnect	disconnect は「切り離す」、connect は「つなぐ」
+I	disconnect|curr_idm_pre2_cut_off	cut off は電話などを「切る」や、供給を「止める」。disconnect は機器を「切り離す」
+N	disconnection|separation	disconnection は電気や通信の「切断」。separation は「分離・別れ」
+N	discontent|dissatisfaction	discontent は長く続く「不満・不平」。dissatisfaction はあることへの「不満」
+N	discontent|unrest	discontent は人々の「不満」。unrest は不満による社会の「不安・騒ぎ」
+N	discontented|dissatisfied	discontented は生活などに「不満な」。dissatisfied は結果に「満足していない」
+N	discontented|disgruntled	discontented は「不満を持った」。disgruntled は「むっとして不満な」
+N	conflict|discord	discord は仲間の「不和」や音の「不協和音」。conflict は「対立・紛争」
+N	discouraged|disheartened	discouraged は「がっかりした・やる気をなくした」。disheartened は「気落ちした」
+N	demoralized|discouraged	discouraged は「落胆した」。demoralized は「士気をくじかれた」
+N	discouraged|encouraged	discouraged は「がっかりした」、encouraged は「励まされた」
+N	discovered|found	discovered は新しく「発見された」。found は「見つかった」
+N	discovered|uncovered	discovered は「発見された」。uncovered は隠れていたことが「暴かれた」
+N	discovered|hidden	discovered は「見つかった」、hidden は「隠された」
+N	careful|discreet	discreet は人に知られないよう「口がかたい・控えめな」。careful は「注意深い」
+N	discreet|tactful	discreet は「(秘密などに)慎重な」。tactful は「気配りのある」
+N	discreet|indiscreet	discreet は「口がかたい」、indiscreet は「軽率な」
+N	discrepancy|inconsistency	discrepancy は数字などの「くいちがい」。inconsistency は話などの「矛盾」
+N	agreement|discrepancy	discrepancy は「くいちがい」、agreement は「一致」
+N	discretion|judgment	discretion は自分で判断できる「裁量」や「慎重さ」（use your discretion）。judgment は「判断」
+N	discretion|recklessness	discretion は「慎重さ」、recklessness は「無謀さ」
+N	discriminate|distinguish	discriminate は「見分ける」や、人を「差別する」（discriminate against）。distinguish は「区別する」
+N	differentiate|discriminate	discriminate は細かく「識別する」。differentiate は「ちがいを区別する」
+N	confuse|discriminate	discriminate は「見分ける」、confuse は「混同する」
+N	discrimination|prejudice	discrimination は行動としての「差別」。prejudice は心の中の「偏見」
+N	bias|discrimination	discrimination は「差別」。bias は「かたより・ひいき」
+N	disdain|scorn	disdain は「見下す」のかたい語。scorn は「軽蔑してはねつける」
+N	despise|disdain	disdain は「相手にしないほど見下す」。despise は「ひどく嫌う・軽蔑する」
+N	admire|disdain	disdain は「見下す」、admire は「感心する」
+N	contemptuous|disdainful	disdainful は「見下した・ばかにした」。contemptuous は「軽蔑した」と強い
+N	disdainful|scornful	disdainful は「見下すような」。scornful は「あざけるような」
+N	admiring|disdainful	disdainful は「見下すような」、admiring は「感心した」
+N	disengage|withdraw	disengage は軍隊などが「手を引く」や、つながりを「外す」。withdraw は「撤退する・引っこめる」
+N	detach|disengage	disengage は機械の「連結を外す」。detach は「取り外す」
+N	disapproval|disfavor	disfavor は上の人から受ける「不興・冷遇」（fall into disfavor）。disapproval は「不賛成」
+N	disfavor|displeasure	disfavor は「気に入られないこと」。displeasure は「不快・不満」
+N	disgruntled|dissatisfied	disgruntled は「不満でむっとしている」。dissatisfied は「満足していない」
+N	content|disgruntled	disgruntled は「不満な」、content は形容詞では /kənˈtɛnt/ と読み「満足した」
+N	delightful|disgusting	disgusting は「むかつく」、delightful は「楽しい」
+N	dejected|disheartened	disheartened は「気落ちした」。dejected は「しょんぼりした」
+N	disheartened|heartened	disheartened は「気落ちした」、heartened は「元気づいた」
+N	deceit|dishonesty	dishonesty は「不正直さ」と広く言う。deceit は「人をだますこと」
+N	dishonesty|fraud	dishonesty は「不誠実さ」。fraud は法律上の「詐欺」
+N	disinclined|reluctant	disinclined は「あまり気が進まない」かたい語。reluctant は「気が進まない」
+N	disinclined|inclined	disinclined は「気が進まない」、inclined は「〜したい気がする」

@@ -1,0 +1,326 @@
+N	applause|cheering	cheering は「わー」という「歓声・声援」。applause は手をたたく「拍手」
+N	acclaim|cheering	cheering はその場の「歓声」。acclaim は世間からの「称賛」
+N	cheering|jeering	cheering は「声援」、jeering は「やじ」
+N	chilled|cold	chilled は飲み物などを「冷やした」（chilled lemonade）。cold は「冷たい・寒い」と広く言う
+N	chilled|iced	chilled は冷蔵庫などで「冷やした」。iced は「氷を入れて冷やした」（iced tea）
+N	chilled|warmed	chilled は「冷やした」、warmed は「温めた」
+N	choke|suffocate	choke は食べ物などがのどに「詰まる」。suffocate は空気がなくて「窒息する」
+N	choke|strangle	choke は「息を詰まらせる」。strangle は首を「絞める」
+N	breathe|choke	choke は「息が詰まる」、breathe は「息をする」
+N	choosy|picky	choosy と picky はどちらも「えり好みする」くだけた語。picky は食べ物の好き嫌いによく使う
+N	choosy|undemanding	choosy は「好みがうるさい」、undemanding は「注文の少ない」
+N	chromosome|gene	chromosome は細胞の中の「染色体」。gene はその上にある一つひとつの「遺伝子」
+N	chunk|lump	chunk は肉や氷などの「大きなかたまり」や「大部分」。lump は形のはっきりしない「かたまり・こぶ」
+N	block|chunk	chunk は割れた「かたまり」。block は四角い「ブロック」
+N	circuit|loop	circuit は電気の「回路」や、コースの「一周」。loop は「輪」
+N	circular|round	circular は形が「円形の」や、議論が「堂々めぐりの」。round は「丸い」のふつうの語
+N	circular|square	circular は「円形の」、square は「四角い」
+N	circumstance|situation	circumstance は物事を取りまく「事情」（under the circumstances）。situation は今の「状況・立場」
+N	circumstance|condition	circumstance は「事情・状況」。condition は「状態」や「条件」
+N	circumvent|evade	circumvent は規則などを「うまくかわす」。evade は責任や質問を「逃れる」
+N	circumvent|confront	circumvent は問題を「避けて通る」、confront は「立ち向かう」
+N	civility|courtesy	civility は最低限の「礼儀正しさ」。courtesy は心づかいのある「礼儀・親切」
+N	civility|politeness	civility は「礼節」のかたい語。politeness は「丁寧さ」
+N	civility|rudeness	civility は「礼儀正しさ」、rudeness は「無礼」
+N	assertion|claims	claims は複数形で「主張」や、保険などの「請求」。assertion は自信をもった「断言」
+N	claims|demands	claims は権利としての「請求」。demands は強い「要求」
+N	clamber|scale	clamber は手足を使って「よじ登る」。scale は動詞でがけなどを「よじ登る」（ふつうは名詞「規模・目盛り」）
+N	clamber|climb	clamber は「苦労してはい登る」。climb は「登る」のふつうの語
+N	clamber|descend	clamber は「よじ登る」、descend は「降りる」
+N	clamor|uproar	clamor は大勢の「やかましい要求・抗議の声」（a clamor for）。uproar は「大騒ぎ」
+N	clamor|outcry	clamor は「騒がしい叫び・要求」。outcry は世間の「抗議の声」
+N	clamor|silence	clamor は「騒ぎ立て」、silence は「静けさ」
+N	clapping|ovation	clapping は手をたたく「拍手」そのもの。ovation は立ち上がっての「大喝采（かっさい）」（a standing ovation）
+N	clash|conflict	clash は意見などの「ぶつかり合い」や、色の「不調和」。conflict は長く続く「対立・紛争」
+N	classical|traditional	classical は「古典の・クラシック（音楽）の」。traditional は「伝統的な」（classic は「定番の・名作の」で別の語）
+N	classical|modern	classical は「古典の」、modern は「現代の」
+N	classified|confidential	classified は国の文書が「機密扱いの」。confidential は個人情報などが「内密の」
+N	classified|secret	classified は「機密指定の」。secret は「秘密の」と広く言う
+N	classified|public	classified は「機密の」、public は「公開の」
+N	clatter|rattle	clatter は食器などが「カチャカチャ鳴る」。rattle は窓などが「ガタガタ鳴る」
+N	clank|clatter	clatter は硬い物が「カタカタ鳴る」。clank は金属が「ガチャンと鳴る」
+N	clatter|hush	clatter は「ガタガタ鳴る」、hush は「静まる」
+N	clause|provision	clause は契約などの一つひとつの「条項」や文法の「節」。provision は法律などの「規定・条項」
+N	clause|stipulation	clause は契約の「条項」。stipulation は契約で決めた「条件・規定」
+N	cleanliness|tidiness	cleanliness は汚れのない「清潔さ」。tidiness は物が片づいた「整頓」
+N	cleanliness|filth	cleanliness は「清潔さ」、filth は「汚れ」
+N	cling|stick	cling は「しがみつく」や、服が体に「ぴったりくっつく」。stick は「くっつく・貼りつく」
+N	cling|grip	cling は必死に「しがみつく」。grip は手で「ぎゅっと握る」
+N	cling|release	cling は「しがみつく」、release は「放す」
+I	cling|curr_idm_1_stick_to	stick to は計画などを「守り通す」。cling to は物に「しがみつく」や、考えに「固執する」
+N	cloak|mantle	cloak はそでのない長い「マント」。mantle は昔の「外とう」や、責任などの「重み」
+N	cloak|reveal	cloak は動詞で「覆い隠す」、reveal は「明らかにする」
+N	clear|clogged	clogged は「詰まった」、clear は「通っている」
+N	closing|concluding	closing は話などの「結びの」や、店の「閉店の」。concluding は「締めくくりの」
+N	closing|final	closing は「終わりの部分の」。final は「最後の・最終の」
+N	clot|coagulate	clot は血が「固まる」のふつうの語。coagulate は液体が「凝固する」医学の語
+N	clot|congeal	clot は血が「かたまりになる」。congeal は冷えた油などが「固まる」
+N	clot|dissolve	clot は「固まる」、dissolve は「溶ける」
+N	cluttered|untidy	cluttered は物が多すぎて「ごちゃごちゃした」。untidy は「散らかった・だらしない」
+N	cluttered|tidy	cluttered は「散らかった」、tidy は「片づいた」
+N	coalition|union	coalition は政党などの一時的な「連立」。union は国などの長く続く「連合」
+N	cajole|coax	coax はやさしく「なだめすかして〜させる」。cajole はおだてて「言いくるめる」
+N	coherence|cohesion	cohesion は集団の「結束・まとまり」や、文と文の「つながり」。coherence は話の「筋が通っていること」
+N	collected|composed	collected は「落ち着いた」（calm and collected）。composed も「平静な」でほぼ同じ
+N	calm|collected	collected は動じずに「冷静な」。calm は「穏やかな・落ち着いた」
+N	collected|flustered	collected は「冷静な」、flustered は「うろたえた」
+N	assortment|collection	collection は集めた「収集品・コレクション」。assortment はいろいろな物の「詰め合わせ」
+N	collective|shared	collective はみんなでする「集団の」（collective effort）。shared はみんなで「共有する」
+N	collective|individual	collective は「集団の」、individual は「個人の」
+N	collectively|jointly	collectively は「全体として・みんなで」。jointly は2人以上が「共同で」
+N	collectively|together	collectively は「集団として」のかたい語。together は「いっしょに」
+N	collectively|individually	collectively は「まとめて」、individually は「一人ずつ」
+I	collectively|curr_idm_pre2_as_a_whole	as a whole は「全体として（見ると）」。collectively は「集団で・まとめて」
+N	collide|crash	collide は車などが「正面からぶつかる」。crash は「衝突する・墜落する」
+N	clash|collide	collide は物が「衝突する」。clash は意見や人が「ぶつかり合う」
+I	collide|curr_idm_pre2_run_into	run into は車などに「ぶつかる」や、人に「ばったり会う」。collide は「衝突する」のかたい語
+N	colonist|pioneer	colonist は植民地に来た「入植者」。pioneer は最初に切り開いた「開拓者」
+N	colonist|native	colonist は外から来た「入植者」、native は名詞で「その土地の人・先住民」
+N	colonize|settle	colonize は他国の土地を「植民地にする」。settle は土地に「住みつく」
+N	colonize|occupy	colonize は「植民地にして住む」。occupy は軍隊が「占領する」
+N	colonize|liberate	colonize は「植民地にする」、liberate は「解放する」
+N	colossal|huge	colossal は「とてつもなく大きい」（a colossal mistake）。huge は「巨大な」
+N	colossal|enormous	colossal は「途方もない」。enormous は「ばく大な・巨大な」
+N	colossal|tiny	colossal は「巨大な」、tiny は「ごく小さい」
+N	battle|combat	combat は兵士どうしの「戦闘」（数えない）。battle は一つひとつの「戦い」
+N	combat|peace	combat は「戦闘」、peace は「平和」
+N	combatant|soldier	combatant は実際に戦う「戦闘員」。soldier は「兵士」
+N	combatant|noncombatant	combatant は「戦闘員」、noncombatant は「非戦闘員」
+N	comforting|reassuring	comforting は悲しいときに「なぐさめになる」。reassuring は心配を「取り除いてくれる」
+N	comforting|distressing	comforting は「ほっとさせる」、distressing は「つらくさせる」
+N	celebrate|commemorate	commemorate は亡くなった人や出来事を「記念する・追悼する」。celebrate はうれしいことを「祝う」
+N	commemorate|honor	commemorate は記念碑などで「記念する」。honor は人を「たたえる」
+N	beginning|commencement	commencement は式などの「開始」のかたい語や、アメリカの「卒業式」。beginning は「始まり」
+N	commencement|conclusion	commencement は「開始」、conclusion は「終了」
+N	commend|praise	commend は公に「称賛する」かたい語。praise は「ほめる」
+N	applaud|commend	commend は正式に「ほめたたえる」。applaud は「拍手する」や「称賛する」
+N	commend|criticize	commend は「ほめる」、criticize は「批判する」
+N	commendable|praiseworthy	commendable と praiseworthy はどちらも「ほめるに値する」かたい語
+N	commendable|deplorable	commendable は「立派な」、deplorable は「嘆かわしい」
+N	commission|fee	commission は売り上げに応じた「手数料・歩合」や「委員会」。fee は一定の「料金」
+N	commitment|dedication	commitment は約束して「打ちこむこと・責任」。dedication は仕事などへの「献身」
+N	commitment|pledge	commitment は果たすべき「約束・責任」。pledge は公にする「誓約」
+N	commonwealth|federation	commonwealth は国々の「連合」（the Commonwealth）や、アメリカの一部の「州」。federation は州などが集まった「連邦」
+N	commotion|uproar	commotion は突然の「騒ぎ・騒動」。uproar は大勢の「大騒ぎ・激しい抗議」
+N	calm|commotion	commotion は「騒ぎ」、calm は「静けさ」
+N	companionship|friendship	companionship はいっしょにいる「仲間づきあい」。friendship は「友情」
+N	camaraderie|companionship	companionship は「連れがいること」。camaraderie は苦労をともにした「仲間意識」
+N	companionship|solitude	companionship は「仲間といること」、solitude は「ひとりでいること」
+N	compassion|mercy	compassion は苦しむ人への「思いやり・同情」。mercy は罰しない「情け・慈悲」
+N	compassionate|kind	compassionate は苦しむ人に「思いやりの深い」。kind は「親切な」
+N	callous|compassionate	compassionate は「思いやりのある」、callous は「冷淡な」
+N	compatible|incompatible	compatible は機械や人が「合う・互換性のある」、incompatible は「合わない」
+I	compensate|curr_idm_pre1_make_up_for	make up for は損や失敗を「埋め合わせる」話し言葉。compensate は「補償する」のかたい語
+N	compensation|reparation	compensation は損害の「補償（金）」。reparation は戦争などの「賠償・償い」
+N	compensation|reimbursement	compensation は損への「補償」。reimbursement は立て替えた費用の「払い戻し」
+N	compensation|penalty	compensation は「受け取る補償」、penalty は「科される罰金」
+N	ability|competence	competence は仕事を十分にこなせる「能力」。ability は「能力」と広く言う
+N	capability|competence	competence は「任せられるだけの能力」。capability は「できる力・性能」
+N	competence|incompetence	competence は「有能さ」、incompetence は「無能さ」
+N	competitor|rival	competitor は商売や試合の「競争相手」。rival は意識しあう「ライバル」
+N	competitor|contestant	competitor は「競争相手・出場者」。contestant はコンテストの「出場者」
+N	complement|supplement	complement は互いに「補い合って引き立てるもの」（compliment「ほめ言葉」とつづりがちがう）。supplement は足りない分を「補うもの」
+N	addition|complement	complement は「補って完全にするもの」。addition は「付け足し」
+N	complement|complete	complement は動詞で「補って引き立てる」。complete は「完成させる」
+N	complement|deficiency	complement は「補うもの」、deficiency は「足りないこと」
+N	compliance|conformity	compliance は規則を「守ること」。conformity は周りに「合わせること・順応」
+N	compliance|defiance	compliance は「従うこと」、defiance は「逆らうこと」
+N	compliment|flattery	compliment は心からの「ほめ言葉」。flattery は本心でない「お世辞」
+N	complimentary|flattering	complimentary は「ほめる」（complimentary remarks）。flattering は「お世辞の」や、服が「よく見せる」
+N	complimentary|free	complimentary はホテルなどが「無料で出す」。free は「無料の」のふつうの語
+N	calm|composed	composed は動揺せず「平静な」。calm は「落ち着いた」
+N	composed|flustered	composed は「落ち着いた」、flustered は「うろたえた」
+N	calm|composure	composure は「落ち着き・平静」（keep one's composure）。calm は「静けさ・落ち着き」
+N	composure|poise	composure は「平静さ」。poise は態度の「落ち着き・品のよさ」
+N	composure|panic	composure は「落ち着き」、panic は「パニック」
+I	comprehend|curr_idm_pre2_figure_out	figure out は「分かる・理解する」の話し言葉。comprehend は「理解する」のかたい語
+I	comprehend|curr_idm_2_make_out	make out は話などを「なんとか理解する」。comprehend は「理解する」のかたい語
+I	comprehend|curr_idm_2_take_in	take in は情報を「のみこむ・理解する」。comprehend は「理解する」のかたい語
+N	comprehension|understanding	comprehension は文章の「読解・理解力」（reading comprehension）。understanding は「理解」や、人への「思いやり」
+N	agreement|compromise	compromise は互いに譲る「妥協」。agreement は「合意」
+N	compromise|settlement	compromise は「歩み寄り」。settlement は争いの「和解・決着」
+N	coercion|compulsion	compulsion は「(したくなる)衝動」や「強制」。coercion は力による「強要」
+N	compulsion|free will	compulsion は「強制」、free will は「自分の意志」
+N	compulsory|voluntary	compulsory は「義務の」、voluntary は「自発的な・任意の」
+N	ally|comrade	comrade は苦労をともにした「同志・戦友」。ally は「味方・同盟国」
+N	comrade|enemy	comrade は「仲間」、enemy は「敵」
+N	concealed|covert	concealed は物が「隠された」（concealed cameras）。covert は活動が「ひそかな」
+N	concealment|cover-up	concealment は「隠すこと」。cover-up は不正などの「もみ消し」
+N	concealment|disclosure	concealment は「隠すこと」、disclosure は「明らかにすること」
+N	concentrated|condensed	concentrated はジュースなどが「濃縮された」や「集中した」。condensed は牛乳が「濃縮した」や、文章が「要約した」
+N	concentrated|diluted	concentrated は「濃縮した」、diluted は「薄めた」
+N	abstract|conceptual	conceptual は「概念の・考えの上での」。abstract は「抽象的な」
+I	concerning|curr_idm_2_as_to	as to は「〜については」。concerning は「〜に関して」のかたい語
+I	concerning|curr_idm_2_in_relation_to	in relation to は「〜との関係で」。concerning は「〜に関して」
+I	concerning|curr_idm_pre1_with_reference_to	with reference to は手紙などで「〜に関して」。concerning と同じくかたい
+I	concerning|exam_idm_with_regard_to	with regard to は「〜に関して」。concerning と同じ意味
+I	concerning|curr_idm_2_with_respect_to	with respect to は「〜に関して・〜の点で」。concerning と同じくかたい
+N	concisely|verbosely	concisely は「簡潔に」、verbosely は「くどくど長く」
+N	concluding|opening	concluding は「締めくくりの」、opening は「冒頭の」
+N	conclusive|definitive	conclusive は証拠などが「決め手となる」。definitive は答えや本が「決定版の・最終的な」
+N	conclusive|inconclusive	conclusive は「決定的な」、inconclusive は「決め手を欠く」
+N	condemnation|denunciation	condemnation は「強い非難」。denunciation は公の場での「糾弾」
+N	condemnation|criticism	condemnation は「強い非難」。criticism は「批判」と広く言う
+N	condemnation|praise	condemnation は「非難」、praise は「称賛」
+N	condemned|denounced	condemned は「非難された」や、建物が「取り壊しの決まった」。denounced は「公然と非難された」
+N	condemned|doomed	condemned は「有罪を宣告された」。doomed は「破滅が決まった」
+N	condemned|praised	condemned は「非難された」、praised は「ほめられた」
+N	compress|condense	condense は水蒸気が「凝結する」や、文章を「要約する」。compress は「押し縮める」
+N	condense|expand	condense は「縮める・凝縮する」、expand は「膨らむ」
+N	condensed|diluted	condensed は「濃縮された」、diluted は「薄められた」
+N	conducive|helpful	conducive は「〜につながる・〜に役立つ」（be conducive to）かたい語。helpful は「役に立つ」
+N	conducive|favorable	conducive は「〜しやすくする」。favorable は条件などが「好都合な」
+N	conducive|hindering	conducive は「助けになる」、hindering は「妨げる」
+N	admission|confession	confession は罪などの「告白・自白」。admission はまちがいを「認めること」
+N	confession|denial	confession は「自白」、denial は「否認」
+N	confidential|public	confidential は「内密の」、public は「公開の」
+N	confidentiality|privacy	confidentiality は情報を「外にもらさないこと・守秘」。privacy は個人の「私生活・プライバシー」
+N	confidentiality|disclosure	confidentiality は「守秘」、disclosure は「公開」
+N	confinement|imprisonment	confinement は部屋などへの「閉じこめ」。imprisonment は刑罰の「投獄」
+N	confinement|freedom	confinement は「閉じこめられること」、freedom は「自由」
+N	confirmation|verification	confirmation は予約などの「確認（の知らせ）」。verification は正しいかの「検証」
+N	confirmation|denial	confirmation は「そうだと認めること」、denial は「否定」
+N	confiscate|seize	confiscate は先生などが物を「取り上げる・没収する」。seize は警察が「押収する」や、手で「つかむ」
+N	confiscate|impound	confiscate は「没収する」。impound は車などを「差し押さえる」
+N	confiscate|return	confiscate は「取り上げる」、return は「返す」
+N	conflicting|contradictory	conflicting は情報などが「食いちがう」。contradictory は話が「矛盾する」
+N	conflicting|incompatible	conflicting は意見が「ぶつかり合う」。incompatible は「両立しない」
+N	conflicting|consistent	conflicting は「食いちがう」、consistent は「一貫した」
+N	conformity|rebellion	conformity は周りに「従うこと」、rebellion は「反抗」
+N	confound|confuse	confound は予想外で「当惑させる」や「混同する」かたい語。confuse は「混乱させる」
+N	baffle|confound	confound は専門家などを「困惑させる」。baffle は「さっぱり分からなくさせる」
+N	congressman|representative	congressman はアメリカの「下院議員」。representative も「下院議員」や「代表者」
+N	congressman|legislator	congressman は「(アメリカの)議員」。legislator は「立法者・議員」全体
+N	connection|link	connection は「つながり・接続」。link は「連結・つながり」や、ネットの「リンク」
+N	connection|disconnection	connection は「接続」、disconnection は「切断」
+N	connote|imply	connote は言葉が「(言外に)感じさせる」。imply は人が「ほのめかす」
+N	connote|suggest	connote は言葉が別の意味を「含む」。suggest は「示唆する・それとなく言う」
+N	connote|denote	connote は言外の意味を「感じさせる」、denote は言葉がそのまま「表す・指す」
+N	conscience|morality	conscience は自分の中の「良心」。morality は社会の「道徳」
+N	conscience|scruple	conscience は「良心」。scruple は「良心のとがめ・ためらい」（without scruple）
+N	conscientious|diligent	conscientious はまじめで「良心的な」。diligent は「勤勉な」
+N	conscientious|thorough	conscientious は「きちんとした」。thorough は「徹底した」
+N	conscientious|negligent	conscientious は「まじめな」、negligent は「怠慢な」
+N	awareness|consciousness	consciousness は起きている「意識」（lose consciousness）。awareness は物事への「気づき・認識」
+N	consciousness|unconsciousness	consciousness は「意識」、unconsciousness は「意識がないこと」
+N	consecutive|sequential	consecutive は「途切れずに続く」（ten consecutive days）。sequential は「順番どおりの」
+N	consequently|therefore	consequently は「その結果」（原因から起きたこと）。therefore は「それゆえ」（理屈で導く結論）
+N	consequently|thus	consequently は「その結果として」。thus は「こうして・したがって」
+I	consequently|exam_idm_as_a_result	as a result は「その結果」のふつうの言い方。consequently はかたい語
+N	conservation|preservation	conservation は自然や資源を「守りながら使い続けること」。preservation は手をつけずに「そのまま保存すること」
+N	considerable|substantial	considerable は量などが「かなりの」。substantial は「かなりの」や「中身のある・実質的な」
+N	considerably|significantly	considerably は「かなり」。significantly は「著しく」や「意味のあるほど」
+N	considerably|substantially	considerably は「相当に」。substantially は「大幅に」や「実質的に」
+N	considerate|thoughtful	considerate は相手の気持ちを「考える」。thoughtful は「気がきく」や「考えこんだ」
+N	considerate|inconsiderate	considerate は「思いやりのある」、inconsiderate は「思いやりのない」
+N	consideration|thought	consideration は決める前の「よく考えること・考慮」。thought は「考え」
+N	consideration|regard	consideration は相手への「思いやり」。regard は「配慮・尊重」（with regard to）
+N	consistency|uniformity	consistency はやり方の「一貫性」や、液体の「濃さ」。uniformity は「一様であること」
+N	consistency|inconsistency	consistency は「一貫性」、inconsistency は「つじつまが合わないこと」
+N	consistently|reliably	consistently は「いつも同じように」。reliably は「当てにできるように・確実に」
+N	consistently|erratically	consistently は「安定して」、erratically は「むらがあって」
+N	consolidate|strengthen	consolidate は地位や力を「固める」。strengthen は「強くする」
+N	consolidate|merge	consolidate はいくつかを「一つにまとめる」。merge は会社などを「合併する」
+I	conspicuous|curr_idm_pre1_stand_out	stand out は「目立つ」の動詞の言い方。conspicuous は形容詞で「目立つ」
+I	conspicuous|curr1900_idm_2_stick_out	stick out は「突き出る」や「目立つ」。conspicuous は形容詞で「人目を引く」
+N	conspiracy|plot	conspiracy は複数の人の「陰謀・共謀」。plot は「たくらみ」や物語の「筋」
+N	conspiracy|scheme	conspiracy は「陰謀」。scheme は「計画」や「たくらみ」
+N	constitutional|unconstitutional	constitutional は「憲法にかなった」、unconstitutional は「憲法に反する」
+N	constrain|restrict	constrain は状況が人を「縛る・制約する」（be constrained by）。restrict は「制限する」
+N	constrain|limit	constrain は「制約する」。limit は数や量に「限度を設ける」
+N	constrain|free	constrain は「縛る」、free は「自由にする」
+N	constraint|restriction	constraint は予算などの「制約」。restriction は規則による「制限」
+N	constraint|limitation	constraint は外からの「しばり」。limitation は能力などの「限界」
+N	constraint|freedom	constraint は「制約」、freedom は「自由」
+N	compress|constrict	constrict は血管などを「締めつけて細くする」。compress は「押し縮める」
+N	constrict|squeeze	constrict は「締めつける」。squeeze は「ぎゅっと絞る」
+N	constrict|dilate	constrict は「細くする」、dilate は「広げる」
+N	adviser|consultant	consultant はお金をもらって専門的な助言をする「コンサルタント・顧問」。adviser は「助言者」
+N	consultant|expert	consultant は「相談役」。expert は「専門家」
+N	conference|consultation	consultation は医者や専門家との「相談・診察」。conference は大勢の「会議」
+N	advice|consultation	consultation は専門家に「相談すること」。advice は受ける「助言」
+N	consumption|use	consumption はエネルギーや食べ物の「消費量・摂取」。use は「使うこと」
+N	consumption|production	consumption は「消費」、production は「生産」
+N	contagious|infectious	contagious は人から人へ「触れてうつる」。infectious は空気や水などを通して「感染する」
+N	contagious|noncontagious	contagious は「うつる」、noncontagious は「うつらない」
+N	contaminate|taint	contaminate は有害物で「汚染する」。taint は食べ物を「傷ませる」や、評判を「汚す」
+N	contaminated|pure	contaminated は「汚染された」、pure は「きれいな」
+N	contamination|pollution	contamination は食べ物や水への「混入・汚染」。pollution は空気や川などの「環境汚染」
+N	ancient|contemporary	contemporary は「現代の」や「同時代の」、ancient は「古代の」
+N	contented|satisfied	contented は今の暮らしに「満ち足りた」。satisfied は結果に「満足した」
+N	contented|fulfilled	contented は「満ち足りた」。fulfilled は生き方に「充実感のある」
+N	contented|discontented	contented は「満足した」、discontented は「不満な」
+N	contention|dispute	contention は「争い」や「主張」（a point of contention）。dispute は「論争・紛争」
+N	claim|contention	contention は議論での「主張・論点」。claim は「主張・要求」
+N	contestant|participant	contestant はコンテストの「出場者」。participant は「参加者」と広く言う
+N	continuance|continuity	continuance は「続けること・存続」。continuity は途切れない「一貫した流れ」
+N	continuance|persistence	continuance は「継続」。persistence は「粘り強さ・持続」
+N	cessation|continuance	continuance は「継続」、cessation は「停止」
+N	continuation|resumption	continuation は「続けること」や「続き」。resumption は中断後の「再開」
+N	cessation|continuation	continuation は「続けること」、cessation は「やめること」
+N	continuity|discontinuity	continuity は「連続」、discontinuity は「断絶」
+N	constant|continuous	continuous は切れ目なく「連続した」（continuous care）。constant は「絶え間ない」や「一定の」
+N	continuous|unbroken	continuous は「途切れない」。unbroken は記録などが「破られていない」
+N	continuous|intermittent	continuous は「途切れない」、intermittent は「とぎれとぎれの」
+N	contraction|shrinkage	contraction は筋肉などの「収縮」や、短縮形（don't など）。shrinkage は服などの「縮み」
+N	contradiction|inconsistency	contradiction ははっきりした「矛盾」。inconsistency は「つじつまの合わないところ」
+N	contradiction|paradox	contradiction は「矛盾」。paradox は矛盾しているようで正しい「逆説」
+N	consistency|contradiction	contradiction は「矛盾」、consistency は「一貫性」
+N	contradictory|inconsistent	contradictory は話が「互いに食いちがう」。inconsistent は「一貫しない・むらがある」
+N	consistent|contradictory	contradictory は「矛盾する」、consistent は「一貫した」
+N	controller|regulator	controller はゲームなどの「コントローラー」や、会社の「管理者」。regulator は温度などの「調節器」や「規制機関」
+N	assemble|convene	convene は会議を「召集する・開く」かたい語。assemble は人を「集める」や、物を「組み立てる」
+N	convene|gather	convene は正式に「集まる・集める」。gather は「集まる」と広く言う
+N	adjourn|convene	convene は会議を「開く」、adjourn は会議を「休会する」
+N	convention|custom	convention は社会の「しきたり・慣習」や「大会」。custom は「習慣」
+N	assembly|convention	convention は大きな「大会・集会」や「条約」。assembly は「議会・集会」
+N	convention|innovation	convention は「しきたり」、innovation は「新しい試み」
+N	convergence|meeting	convergence は川などが「一点に集まること」。meeting は「会合」や道の「合流」
+N	convergence|union	convergence は「集まって近づくこと」。union は「結合・一体化」
+N	convergence|divergence	convergence は「一点に集まること」、divergence は「分かれること」
+N	colloquial|conversational	conversational は「会話の・話すような」（conversational English）。colloquial は「口語の・くだけた」
+N	conversational|informal	conversational は「話しことばの」。informal は「形式ばらない」
+N	conversational|formal	conversational は「くだけた会話の」、formal は「改まった」
+N	converse|talk	converse は「会話を交わす」かたい語。talk は「話す」
+N	chat|converse	converse は「語り合う」。chat は「おしゃべりする」
+N	converse|listen	converse は「言葉を交わす」、listen は「(黙って)聞く」
+N	conversely|on the other hand	conversely は前の文と「逆に言えば・反対に」。on the other hand は「その一方で」（別の面を示す）
+I	conversely|curr1900_idm_pre1_the_other_way_around	the other way around は「逆に・あべこべに」。conversely は文の頭で「逆に言えば」
+N	belief|conviction	conviction は強い「確信・信念」や「有罪判決」。belief は「信じていること・信念」
+N	certain|convinced	convinced は理由があって「確信した・納得した」（be convinced of）。certain は「確かだと思う」
+N	convinced|sure	convinced は「確信した」。sure は「確かな・自信がある」
+N	convinced|doubtful	convinced は「確信した」、doubtful は「疑っている」
+N	convincing|persuasive	convincing は話などが「なるほどと思わせる」。persuasive は人を「その気にさせる」
+N	compelling|convincing	convincing は「納得させる」。compelling は「引きこまれるほど説得力のある」
+N	convincing|unconvincing	convincing は「説得力のある」、unconvincing は「説得力のない」
+N	cooperation|coordination	coordination は動きや作業の「調整・連携」（hand-eye coordination）。cooperation は「協力」
+N	copied|duplicated	copied は「写された・まねた」。duplicated は「そっくり複製された」や「重複した」
+N	copied|reproduced	copied は「写した」。reproduced は絵などが「再現された」
+N	copier|photocopier	copier と photocopier はどちらも「コピー機」
+N	abundant|copious	copious はメモや量が「大量の」（copious notes）。abundant は資源などが「豊富な」
+N	copious|plentiful	copious は「おびただしい」。plentiful は「たっぷりある」
+N	copious|scarce	copious は「大量の」、scarce は「乏しい」
+N	amendment|correction	correction は誤りの「訂正」。amendment は法律などの「修正・改正」
+N	connection|correlation	correlation は数字どうしの「相関」。connection は「つながり・関係」
+N	correlation|relation	correlation はいっしょに変わる「相関関係」。relation は「関係」と広く言う
+N	correspondent|journalist	correspondent は外国などに駐在する「特派員・通信員」。journalist は「記者」全体
+N	corresponding|equivalent	corresponding は「対応する」（the corresponding period）。equivalent は「同等の・相当する」
+N	corresponding|unrelated	corresponding は「対応する」、unrelated は「関係のない」
+N	counterfeit|forged	counterfeit はお金やブランド品が「偽造の」。forged は署名や書類が「偽造された」
+N	counterfeit|genuine	counterfeit は「偽物の」、genuine は「本物の」
+N	countryside|rural area	countryside は景色としての「田園・いなか」（数えない）。rural area は「農村部」
+N	countryside|landscape	countryside は「いなかの土地」。landscape は目に見える「景色・風景」
+N	city|countryside	countryside は「いなか」、city は「都会」
+N	countrywide|nationwide	countrywide と nationwide はどちらも「全国的な」。nationwide のほうがよく使う
+N	countrywide|national	countrywide は「国中に広がる」。national は「国の」
+N	countrywide|local	countrywide は「全国的な」、local は「地元の」
+N	courtesy|rudeness	courtesy は「礼儀・親切」、rudeness は「無礼」
+N	covert|secret	covert は作戦などが「秘密の」かたい語。secret は「秘密の」のふつうの語
+N	covert|hidden	covert は「ひそかに行う」。hidden は「隠された」
+N	coward|hero	coward は「臆病者」、hero は「英雄」
+N	cowardly|timid	cowardly は危険から逃げる「臆病で卑怯（ひきょう）な」（けなす語）。timid は「気の小さい・内気な」
+N	cozy|snug	cozy は部屋などが「居心地のよい」。snug は暖かく「ぬくぬくした」や、服が「ぴったりの」
+N	bleak|cozy	cozy は「居心地のよい」、bleak は「寒々とした」
+N	craftsman|workman	craftsman は腕のいい「職人・名工」。workman は「作業員・職人」
+N	crafty|sly	crafty は計画が「悪賢い」。sly はこっそり「ずるい」
+N	crafty|naive	crafty は「ずる賢い」、naive は「世間知らずの」

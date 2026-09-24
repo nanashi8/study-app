@@ -27,35 +27,35 @@
       "text": "「意味が同じ・近い語」の全行に使い分けの解説を出す（場面・対象・かたさ・意味の範囲・語法のちがい。ほぼ同じ意味の組は、置きかえられる範囲や言い方の差）。読んで誤りと分かった類義語は直し（外す・意味を直す・欄を移す）、外した項目は理由を台帳に残す",
       "population": "全見出し語の類義語の欄に出る全行（着手時 10,835行・8,749組。この依頼で足す行を含む）",
       "check": "node scripts/checks/relation-usage.mjs synonyms",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "antonym-rows-explained",
       "text": "「意味が反対・対照の語」の全行に、どの意味どうしが反対・対照になるかと使い分けの解説を出す。誤りは直し、外した項目は理由を台帳に残す",
       "population": "全見出し語の反対語の欄に出る全行（着手時 4,288行・3,691組。この依頼で足す行を含む）",
       "check": "node scripts/checks/relation-usage.mjs antonyms",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "idiom-rows-explained",
       "text": "「同じ意味の熟語」の全行にも、1語との使い分けの解説を出す",
       "population": "同じ意味の熟語の全組（着手時 355語・483組）",
       "check": "node scripts/checks/relation-usage.mjs idioms",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "screens-show-explanations",
       "text": "暗記カードの裏と辞書ページの両方で、類義語・反対語・同じ意味の熟語の行の下に解説を出す。新しい解説で「使い分けに注意する語」の欄が増えない（一方向にだけ載せた組で相手のカードが散らからない）",
       "population": "関連語の欄を出す全画面（暗記カードの裏 VocabStudy・辞書ページ WordDetail）",
       "check": "node --test tests/relation-usage.test.mjs",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "japanese-readable",
       "text": "新しく書いた解説と関連語の意味の日本語を、学習者向け日本語の見直し（漢字語・訳語の全件）に通す",
       "population": "この依頼で足した・書き直した日本語の全件",
       "check": "node scripts/checks/learner-japanese-review.mjs",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "deployed",

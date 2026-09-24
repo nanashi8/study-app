@@ -3,7 +3,7 @@ import { expandCompact } from './compact.js'
 
 const RAW = [
   ['bevy', '名', '1', '一団・(鳥などの)群れ', 'A bevy of reporters waited outside the courthouse.', '記者の一団が裁判所の外で待っていた。', '中英語 bevy(群れ)。', { syn: [{ w: 'group', m: '集団' }, { w: 'flock', m: '群れ' }], ant: [{ w: 'individual', m: '個人' }], field: '一般' }],
-  ['bilious', '形', '1', '怒りっぽい・不機嫌な', 'The bilious old critic found fault with every young writer.', '不機嫌な老批評家は、若い作家のだれにでもけちをつけた。', 'ラテン bilis(胆汁)。', { syn: [{ w: 'irritable', m: '短気な' }, { w: 'illtempered', m: '気難しい' }], ant: [{ w: 'genial', m: '上機嫌な' }], field: '心理' }],
+  ['bilious', '形', '1', '怒りっぽい・不機嫌な', 'The bilious old critic found fault with every young writer.', '不機嫌な老批評家は、若い作家のだれにでもけちをつけた。', 'ラテン bilis(胆汁)。', { syn: [{ w: 'irritable', m: '短気な' }], ant: [{ w: 'genial', m: '上機嫌な' }], field: '心理' }],
   ['burnish', '動', '1', '磨く・(評判を)高める', 'The butler burnished the silver candlesticks before the dinner party.', '執事は、正式な夕食会の前に銀のろうそく立てを磨き上げた。', '古フランス brunir(つやを出す)。', { syn: [{ w: 'polish', m: '磨く' }, { w: 'enhance', m: '高める' }], ant: [{ w: 'tarnish', m: '曇らせる' }], field: '一般' }],
   ['chide', '動', '1', '叱る・小言を言う', 'The librarian gently chided the boys for talking too loudly.', '図書館員は、声が大きすぎると少年たちを優しく叱った。', '古英語 cidan(叱る)。', { syn: [{ w: 'scold', m: '叱る' }, { w: 'rebuke', m: '叱責する' }], ant: [{ w: 'praise', m: 'ほめる' }], field: '社会' }],
   ['cogitate', '動', '1', '熟考する・思案する', 'She sat by the window for an hour, cogitating over the job offer.', '彼女は窓辺に1時間座り、その仕事の申し出について熟考した。', 'ラテン cogitare(考える)。', { syn: [{ w: 'ponder', m: '熟考する' }, { w: 'contemplate', m: '思索する' }], ant: [{ w: 'ignore', m: '無視する' }], field: '一般' }],

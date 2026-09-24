@@ -19,7 +19,7 @@ const RAW = [
   ['oasis', '名', '2', 'オアシス・憩いの場', 'The travelers finally reached an oasis in the middle of the desert.', '旅人たちはついに砂漠の真ん中のオアシスにたどり着いた。', 'ギリシャ oasis(肥沃地)。', { syn: [{ w: 'refuge', m: '安息所' }, { w: 'haven', m: '避難所' }], ant: [{ w: 'desert', m: '砂漠' }], field: '地理' }],
   ['pier', '名', '2', '桟橋・埠頭・橋脚', 'We watched the sunset from the end of the pier.', '私たちは桟橋の先から夕日を眺めた。', 'ラテン pera(石積み)。', { syn: [{ w: 'wharf', m: '埠頭' }, { w: 'jetty', m: '突堤' }], field: '交通' }],
   ['pulley', '名', 'pre1', '滑車', 'The farmer used a pulley to raise buckets of water from the well.', 'その農家の人は、滑車を使って井戸からバケツの水をくみ上げた。', '古フランス polie(滑車)。', { syn: [{ w: 'wheel', m: '車輪' }, { w: 'block', m: '滑車装置' }], field: '技術' }],
-  ['quarry', '名', 'pre1', '採石場', 'The stone for the old castle walls came from a nearby quarry.', 'その古い城の壁の石は、近くの採石場から運ばれてきた。', 'ラテン quadrare(四角にする)。', { syn: [{ w: 'mine', m: '鉱山' }], field: '技術' }],
+  ['quarry', '名', 'pre1', '採石場', 'The stone for the old castle walls came from a nearby quarry.', 'その古い城の壁の石は、近くの採石場から運ばれてきた。', 'ラテン quadrare(四角にする)。', { syn: [], field: '技術' }],
   ['saddle', '名', '2', '鞍・サドル・(負担を)負わせる(動)', 'The rider checked the saddle before getting on the horse.', '乗り手は馬に乗る前に鞍を点検した。', '古英語 sadol(鞍)。', { syn: [{ w: 'seat', m: '座席' }], field: '一般' }],
   ['spire', '名', 'pre1', '尖塔・先端', 'The church spire can be seen from every part of the town.', '教会の尖塔は町のどこからでも見える。', '古英語 spir(細い茎)。', { syn: [{ w: 'steeple', m: '尖塔' }, { w: 'peak', m: '頂' }], field: '建築' }],
   ['stove', '名', '3', 'こんろ・ストーブ', "Don't leave the pot on the stove when you go out.", '出かけるときは、なべをこんろにかけたままにしないで。', '中世低地ドイツ stove(暖房室)。', { syn: [{ w: 'cooker', m: '調理器' }, { w: 'heater', m: '暖房器' }], field: '一般' }],

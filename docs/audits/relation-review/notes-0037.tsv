@@ -1,0 +1,513 @@
+# ハイフンや空白の抜けたつづり（辞書にない形）を正しいつづりに書き直す
+D	choleric	syn	badtempered	つづりの誤り（badtempered）。正しくは bad-tempered なので書き直した
+A	choleric	syn	bad-tempered	気難しい	つづりの誤り badtempered を書き直した
+D	fallible	syn	errorprone	つづりの誤り（errorprone）。正しくは error-prone なので書き直した
+A	fallible	syn	error-prone	誤りがちな	つづりの誤り errorprone を書き直した
+D	irascible	ant	eventempered	つづりの誤り（eventempered）。正しくは even-tempered なので書き直した
+A	irascible	ant	even-tempered	温厚な	つづりの誤り eventempered を書き直した
+D	recidivist	ant	firsttimer	つづりの誤り（firsttimer）。「初犯者」は first offender なので書き直した
+A	recidivist	ant	first offender	初犯者	つづりの誤り firsttimer を、初犯者を表す first offender に書き直した
+D	bilious	syn	illtempered	つづりの誤り（illtempered）。正しくは ill-tempered なので書き直した
+A	bilious	syn	ill-tempered	気難しい	つづりの誤り illtempered を書き直した
+D	hidebound	syn	narrowminded	つづりの誤り（narrowminded）。正しくは narrow-minded なので書き直した
+A	hidebound	syn	narrow-minded	偏狭な	つづりの誤り narrowminded を書き直した
+D	dogmatic	ant	openminded	つづりの誤り（openminded）。正しくは open-minded なので書き直した
+A	dogmatic	ant	open-minded	心の広い・柔軟な	つづりの誤り openminded を書き直した
+D	demagogue	syn	rabblerouser	つづりの誤り（rabblerouser）。正しくは rabble-rouser なので書き直した
+A	demagogue	syn	rabble-rouser	大衆扇動家	つづりの誤り rabblerouser を書き直した
+D	demagoguery	syn	rabblerousing	つづりの誤り（rabblerousing）。正しくは rabble-rousing なので書き直した
+A	demagoguery	syn	rabble-rousing	大衆扇動	つづりの誤り rabblerousing を書き直した
+D	recidivist	syn	repeatoffender	つづりの誤り（repeatoffender）。正しくは repeat offender なので書き直した
+A	recidivist	syn	repeat offender	常習犯	つづりの誤り repeatoffender を書き直した
+D	sanctimonious	syn	selfrighteous	つづりの誤り（selfrighteous）。正しくは self-righteous なので書き直した
+A	sanctimonious	syn	self-righteous	独善的な	つづりの誤り selfrighteous を書き直した
+D	sanctimony	syn	selfrighteousness	つづりの誤り（selfrighteousness）。正しくは self-righteousness なので書き直した
+A	sanctimony	syn	self-righteousness	独善	つづりの誤り selfrighteousness を書き直した
+D	complacent	syn	selfsatisfied	つづりの誤り（selfsatisfied）。正しくは self-satisfied なので書き直した
+A	complacent	syn	self-satisfied	自己満足の	つづりの誤り selfsatisfied を書き直した
+N	bellwether|indicator	bellwether は動きを先取りする「目安・指標」や群れの「先導役」。indicator は数値などの「指標」
+N	bellwether|leader	bellwether は流行などの「先導役」（もとは鈴をつけて群れを率いる羊）。leader は「指導者・リーダー」
+N	bellwether|follower	bellwether は「先導者」、follower は「追随者」
+N	bemoan|lament	bemoan は不満を「嘆く・ぼやく」。lament は死などを「深く悲しむ」
+N	bemoan|deplore	bemoan は「嘆く」。deplore は「強く非難する・遺憾に思う」
+N	bemoan|celebrate	bemoan は「嘆く」、celebrate は「祝う・喜ぶ」
+N	benighted|ignorant	benighted は時代や人々が「無知な・遅れた」かたい語。ignorant は「知らない・無知な」
+N	benighted|unenlightened	benighted は「無知の闇にある」。unenlightened は正しい知識に「目覚めていない」
+N	benighted|enlightened	benighted は「無知な」、enlightened は「進んだ考えをもつ」
+N	bequeath|leave	bequeath は遺言で財産を「遺す」かたい語。leave は「残す・遺す」のふつうの語
+I	bequeath|curr1900_idm_2_hand_down	hand down は伝統などを「次の世代へ伝える」。bequeath は遺言で財産を「遺す」
+N	bequest|legacy	bequest は遺言で贈る「遺産（の贈与）」。legacy は「遺産」や、後世に残した「影響・業績」
+N	bereft|deprived	bereft は大切なものを「失って途方に暮れた」（bereft of hope）。deprived は必要なものを「奪われた・恵まれない」
+N	bereft|devoid	bereft は失って「ない」。devoid は初めから「欠いている」（devoid of）
+N	bereft|endowed	bereft は「奪われた」、endowed は才能などに「恵まれた」
+N	beset|plague	beset は問題が「つきまとう」（be beset by）。plague は動詞で「しつこく悩ませる」
+N	beset|surround	beset は困難に「取り囲まれる」。surround は「囲む」
+N	beset|relieve	beset は「悩ます」、relieve は「楽にする」
+N	bevy|group	bevy は人や鳥の「一団・群れ」（a bevy of reporters）。group は「集団・グループ」
+N	bevy|flock	bevy は「一団」。flock は鳥や羊の「群れ」
+N	bevy|individual	bevy は「一団」、individual は「個人」
+N	bigotry|prejudice	bigotry は他の人種や考えを頑固に受け入れない「偏見・偏狭さ」。prejudice は「先入観・偏見」
+N	bigotry|tolerance	bigotry は「偏狭」、tolerance は「寛容」
+N	bilious|irritable	bilious は「不機嫌で怒りっぽい」かたい語（もとは胆汁の病気）。irritable は「いらいらしやすい」
+N	bilious|ill-tempered	bilious は「気難しい」。ill-tempered は「機嫌の悪い・怒りっぽい」
+N	bilious|genial	bilious は「不機嫌な」、genial は「愛想のよい」
+N	bilk|swindle	bilk は人から「だまし取る」や、支払いを「踏み倒す」。swindle は「だまし取る」
+N	bilk|defraud	bilk は「お金をだまし取る」。defraud は「詐取する」のかたい語
+N	bilk|reimburse	bilk は「だまし取る」、reimburse は「払い戻す」
+N	blandishment|flattery	blandishment は人を動かすための「甘い言葉・おだて」（ふつう複数形）。flattery は「お世辞」
+N	blandishment|cajolery	blandishment は「甘言」。cajolery は「うまく言いくるめること」
+N	blandishment|criticism	blandishment は「おだて」、criticism は「批判」
+N	blasphemous|profane	blasphemous は神を「冒涜（ぼうとく）する」。profane は神聖なものに「不敬な」や「世俗の」
+N	blasphemous|irreverent	blasphemous は「神を汚す」。irreverent は「敬意を払わない・ふざけた」（よい意味にも）
+N	blasphemous|pious	blasphemous は「冒涜的な」、pious は「信心深い」
+N	blasphemy|sacrilege	blasphemy は神への「冒涜の言葉」。sacrilege は神聖な物や場所を「汚す行為」
+N	blasphemy|profanity	blasphemy は「神を汚すこと」。profanity は「ののしりの言葉」
+N	blasphemy|reverence	blasphemy は「冒涜」、reverence は「深い敬意」
+N	blithe|carefree	blithe は「のんきな」（危ないことを気にしない悪い意味にも）。carefree は「心配ごとのない」
+N	blithe|lighthearted	blithe は「のんきすぎる」。lighthearted は「気楽で明るい」
+N	blithe|morose	blithe は「陽気な」、morose は「むっつりした」
+N	barrage|bombard	bombard は大砲で「砲撃する」や、質問を「浴びせる」。barrage は「集中攻撃する」
+N	assail|bombard	bombard は「浴びせかける」（bombard with questions）。assail は「激しく攻撃する」
+N	bombard|shield	bombard は「攻撃する」、shield は「守る」
+N	bombast|pomposity	bombast は中身のない「大げさな言葉」。pomposity は態度の「もったいぶり」
+N	bombast|grandiloquence	bombast は「大言壮語」。grandiloquence は「大げさな言い回し」のかたい語
+N	bombast|simplicity	bombast は「大げさな言葉」、simplicity は「飾りのなさ」
+N	bombastic|pompous	bombastic は言葉が「大げさな」。pompous は人や態度が「もったいぶった・尊大な」
+N	bombastic|grandiloquent	bombastic は「誇大な」。grandiloquent は「大仰な」かたい語
+N	bombastic|understated	bombastic は「大げさな」、understated は「控えめな」
+N	boorish|rude	boorish は「(育ちが悪く)無作法な」。rude は「失礼な」
+N	boorish|uncouth	boorish は「粗野な」。uncouth は「洗練されていない・ぶしつけな」
+N	boorish|refined	boorish は「粗野な」、refined は「洗練された」
+N	brackish|briny	brackish は川と海がまじる「少し塩気のある」水。briny は「塩からい（海水の）」
+N	brackish|salty	brackish は水が「少ししょっぱい」。salty は「塩からい」
+N	brackish|fresh	brackish は「塩気のある」、fresh は水が「塩気のない」（fresh water）
+N	brawny|frail	brawny は「筋骨たくましい」、frail は「弱々しい」
+N	brazen|shameless	brazen は「(隠そうともせず)ずうずうしい」（a brazen lie）。shameless は「恥知らずの」
+N	bold|brazen	brazen は「厚かましい」（悪い意味）。bold は「大胆な」（よい意味にも）
+N	brazen|timid	brazen は「ずうずうしい」、timid は「臆病な」
+N	bridle|bristle	bristle は怒って「いきり立つ」（bristle at）。bridle は侮辱などに「むっとする」
+N	bristle|seethe	bristle は「むっとして身構える」。seethe は怒りで「煮えくり返る」
+N	bristle|calm	bristle は「いきり立つ」、calm は動詞で「落ち着く」
+N	broach|raise	broach は言いにくい話題を「切り出す」。raise は問題を「持ち出す」
+N	broach|introduce	broach は「(話を)切り出す」。introduce は「紹介する・持ちこむ」
+N	broach|suppress	broach は話題を「切り出す」、suppress は「伏せる・抑える」
+N	blunt|brusque	brusque は「(手短で)そっけない・無愛想な」。blunt は「率直すぎる・ずけずけ言う」
+N	brusque|gracious	brusque は「ぶっきらぼうな」、gracious は「丁重な」
+N	bucolic|pastoral	bucolic は「のどかな田園の」。pastoral は「牧歌的な」や「牧師の」
+N	bucolic|rustic	bucolic は「田園風景の」。rustic は「田舎風の・素朴な」
+N	bucolic|urban	bucolic は「田園の」、urban は「都会の」
+N	bulwark|rampart	bulwark は「防壁」や、比ゆ的に「守りの砦（とりで）」。rampart は「城壁」
+N	bulwark|safeguard	bulwark は「(大きな)守り」（a bulwark against）。safeguard は「保護策・安全装置」
+N	bulwark|weakness	bulwark は「守り」、weakness は「弱点」
+N	burgeon|flourish	burgeon は数や規模が「急に増える」。flourish は「栄える・生い茂る」
+N	burgeon|expand	burgeon は「急成長する」。expand は「広がる・拡大する」
+N	burgeon|dwindle	burgeon は「急増する」、dwindle は「だんだん減る」
+N	burnish|polish	burnish は金属を「つやが出るまで磨く」や、評判を「高める」。polish は「磨く」
+N	burnish|enhance	burnish はイメージを「磨き上げる」。enhance は「高める」
+N	burnish|tarnish	burnish は「磨く」、tarnish は「曇らせる・汚す」
+N	buttress|reinforce	buttress は主張などを「支える」（もとは壁の「控え壁」）。reinforce は「補強する」
+N	bolster|buttress	buttress は「裏づける」。bolster は自信などを「支える・強める」
+N	buttress|undermine	buttress は「支える」、undermine は「弱める」
+N	cabal|conspiracy	cabal は陰謀をたくらむ「少人数の集団」。conspiracy は「陰謀」そのもの
+N	cabal|clique	cabal は「陰謀団」。clique は排他的な「仲良しグループ・派閥」
+N	alliance|cabal	cabal は「秘密の陰謀団」、alliance は公然の「同盟」
+N	cacophony|din	cacophony はいろいろな音がまじった「耳ざわりな音」。din は「騒音・やかましさ」
+N	cacophony|discord	cacophony は「不協和音」。discord は「不和」や音楽の「不協和音」
+N	cacophony|harmony	cacophony は「耳ざわりな音」、harmony は「調和した響き」
+N	cadence|rhythm	cadence は声の「抑揚・調子」。rhythm は「リズム」
+N	cadence|intonation	cadence は話し方の「リズムと抑揚」。intonation は「イントネーション・抑揚」
+N	cadence|monotone	cadence は「抑揚」、monotone は「一本調子」
+N	calamity|disaster	calamity は「災難・惨事」のかたい語。disaster は「災害・大失敗」
+N	blessing|calamity	calamity は「災難」、blessing は「恵み」
+N	callow|immature	callow は若くて「青くさい・世間知らずの」。immature は「未熟な・子どもっぽい」
+N	callow|inexperienced	callow は「未熟な若者の」。inexperienced は「経験の少ない」
+N	callow|seasoned	callow は「未熟な」、seasoned は「経験を積んだ」
+N	calumny|slander	calumny は「中傷」のかたい語。slander は口で言う「悪口・中傷」
+N	calumny|defamation	calumny は「悪意のある作り話」。defamation は法律上の「名誉毀損（きそん）」
+N	calumny|praise	calumny は「中傷」、praise は「称賛」
+N	canny|shrewd	canny はお金や取り引きに「抜け目のない」。shrewd は「目先がきく・賢い」
+N	astute|canny	canny は「用心深く賢い」。astute は状況を見る目が「鋭い」
+N	canny|naive	canny は「抜け目のない」、naive は「世間知らずの」
+N	cantankerous|irritable	cantankerous は「気難しくてけんかっ早い」（年配の人によく使う）。irritable は「怒りっぽい」
+N	cantankerous|quarrelsome	cantankerous は「つむじ曲がりな」。quarrelsome は「口げんかの好きな」
+N	amiable|cantankerous	cantankerous は「気難しい」、amiable は「愛想のよい」
+N	capitulate|surrender	capitulate は要求に「屈する」（capitulate to）。surrender は敵に「降伏する」
+N	capitulate|yield	capitulate は「ついに折れる」。yield は圧力に「屈する・ゆずる」
+N	capitulate|resist	capitulate は「屈する」、resist は「抵抗する」
+I	capitulate|curr_idm_pre2_give_in	give in は「負ける・折れる」話し言葉。capitulate は交渉などで正式に「降伏する・屈する」
+I	capitulate|curr1900_idm_2_surrender_to	surrender to は「〜に降伏する」。capitulate to は要求に「ついに屈する」
+N	capricious|erratic	capricious は人が「気まぐれな」。erratic は動きが「不規則な・予測できない」
+N	capricious|steadfast	capricious は「気まぐれな」、steadfast は「揺るがない」
+N	castigate|rebuke	castigate は公に「酷評する」。rebuke は「叱責する」
+N	castigate|reprimand	castigate は「厳しくけなす」。reprimand は上の立場から正式に「叱る・戒告する」
+N	castigate|chasten	castigate は「厳しく非難する」。chasten は失敗などが人を「反省させる」
+N	castigate|praise	castigate は「酷評する」、praise は「褒める」
+N	cataclysm|catastrophe	cataclysm は地球規模の「大変動」。catastrophe は「大災害・大惨事」
+N	cataclysm|upheaval	cataclysm は「激しい大変動」。upheaval は生活や社会の「激変」
+N	cataclysm|stability	cataclysm は「大変動」、stability は「安定」
+N	catharsis|purging	catharsis は感情を出して「心がすっきりすること」。purging は「取り除いて清めること」
+N	catharsis|release	catharsis は「心の浄化」。release は名詞で感情の「発散・解放」
+N	catharsis|repression	catharsis は感情の「発散」、repression は「抑えこむこと」
+N	biting|caustic	caustic は言葉が「辛辣な」や、薬品が「腐食性の」。biting は批判が「痛烈な」
+N	caustic|scathing	caustic は「とげのある」。scathing は批評が「容赦のない」
+N	caustic|mild	caustic は「辛辣な」、mild は「穏やかな」
+N	cavalier|offhand	cavalier は大事なことを「軽く扱う・無頓着な」。offhand は態度が「ぞんざいな」
+N	cavalier|dismissive	cavalier は「いいかげんな」。dismissive は「軽くあしらう」
+N	cavalier|considerate	cavalier は「無頓着な」、considerate は「思いやりのある」
+N	astronomical|celestial	celestial は「天の・天体の」（celestial bodies）。astronomical は「天文学の」や、数が「天文学的な」
+N	celestial|terrestrial	celestial は「天の」、terrestrial は「地上の」
+N	cessation|halt	cessation は活動の「停止」のかたい語。halt は名詞で「(急な)停止」
+N	chagrin|mortification	chagrin は思いどおりにならない「悔しさ」。mortification は「恥ずかしさ・屈辱」
+N	chagrin|vexation	chagrin は「無念」。vexation は「いらだち」
+N	chagrin|delight	chagrin は「悔しさ」、delight は「喜び」
+N	charismatic|compelling	charismatic は人が「カリスマのある」。compelling は話や人が「引きつける」
+N	charismatic|dull	charismatic は「魅力的な」、dull は「退屈な」
+N	charlatan|fraud	charlatan は知識があるふりをする「いかさま師」。fraud は「詐欺」や「詐欺師」
+N	charlatan|quack	charlatan は「ペテン師」。quack は「にせ医者」
+N	charlatan|expert	charlatan は「にせの専門家」、expert は「本物の専門家」
+N	chasten|humble	chasten は失敗などが人を「反省させる・おとなしくさせる」。humble は動詞で「謙虚にさせる」
+N	chasten|subdue	chasten は「高慢をくじく」。subdue は「抑える・鎮める」
+N	chasten|embolden	chasten は「おとなしくさせる」、embolden は「大胆にさせる」
+N	chicanery|trickery	chicanery は法律や手続きでの「ごまかし」。trickery は「ぺてん」
+N	chicanery|deception	chicanery は「小細工」。deception は「だますこと」
+N	chicanery|honesty	chicanery は「ごまかし」、honesty は「正直」
+N	chide|scold	chide は「軽く叱る」。scold は「叱りつける」
+N	chide|rebuke	chide は「たしなめる」。rebuke は「強く非難する」
+N	chide|praise	chide は「叱る」、praise は「ほめる」
+N	choleric|irascible	choleric は「かっとなりやすい」かたい語。irascible は「すぐ怒る」
+N	bad-tempered|choleric	choleric は「短気な」。bad-tempered は「機嫌の悪い・怒りっぽい」
+N	choleric|placid	choleric は「怒りっぽい」、placid は「穏やかな」
+N	churlish|surly	churlish は「無礼で意地の悪い」（It would be churlish to...）。surly は「無愛想な」
+N	boorish|churlish	churlish は「礼儀を欠いた」。boorish は「粗野な」
+N	churlish|gracious	churlish は「無礼な」、gracious は「丁重な」
+N	circuitous|indirect	circuitous は道が「遠回りの」。indirect は「間接的な・遠回しの」
+N	circuitous|direct	circuitous は「回りくどい」、direct は「まっすぐな」
+N	cautious|circumspect	circumspect は四方に気を配る「慎重な」かたい語。cautious は「用心深い」
+N	circumspect|prudent	circumspect は「慎重な」。prudent は将来を考えて「賢明な」
+N	circumspect|reckless	circumspect は「慎重な」、reckless は「無謀な」
+N	citadel|stronghold	citadel は町を見下ろす「城塞」。stronghold は「砦（とりで）・本拠地」
+N	clad|dressed	clad は「(〜を)着た」のかたい語（clad in）。dressed は「服を着た」
+N	clad|covered	clad は雪などに「覆われた」（snow-clad）。covered は「覆われた」
+N	clad|naked	clad は「着た・覆われた」、naked は「裸の」
+N	clandestine|covert	clandestine は「秘密の・人目を忍ぶ」（clandestine meeting）。covert は「隠れた」
+N	clandestine|surreptitious	clandestine は「秘密裏の」。surreptitious は「こっそりした」
+N	clandestine|overt	clandestine は「秘密の」、overt は「公然の」
+N	clannish|exclusive	clannish は仲間うちで固まり「よそ者を入れない」。exclusive は「排他的な」や「高級な」
+N	clannish|insular	clannish は「身内で固まる」。insular は考えが「閉鎖的な」
+N	clannish|welcoming	clannish は「排他的な」、welcoming は「歓迎する」
+N	clemency|leniency	clemency は判決などでの「寛大な処置」。leniency は「甘さ・寛大さ」
+N	clemency|mercy	clemency は罪人への「温情」。mercy は「慈悲・情け」
+N	clemency|severity	clemency は「寛大さ」、severity は「厳しさ」
+N	awkwardness|clumsiness	clumsiness は動作の「不器用さ」。awkwardness は「ぎこちなさ・気まずさ」
+N	clumsiness|ineptitude	clumsiness は「不器用さ」。ineptitude は「無能・下手さ」
+N	coalesce|merge	coalesce は小さなものが「合わさって一つになる」。merge は「合併する・合流する」
+N	coalesce|unite	coalesce は「合体する」。unite は「団結する」
+N	coalesce|separate	coalesce は「合体する」、separate は「分かれる」
+N	coddle|pamper	coddle は子どもを「過保護にする」。pamper は「大事にしてぜいたくさせる」
+N	coddle|indulge	coddle は「甘やかす」。indulge は「(わがままを)大目に見る」
+N	coddle|neglect	coddle は「甘やかす」、neglect は「放っておく」
+N	coercion|persuasion	coercion は「力ずくの強制」、persuasion は「説得」
+N	cogent|compelling	cogent は論理が「説得力のある」かたい語。compelling は「有無を言わせない」
+N	cogent|convincing	cogent は「筋の通った」。convincing は「納得させる」
+N	cogent|unconvincing	cogent は「説得力のある」、unconvincing は「説得力のない」
+N	cogitate|ponder	cogitate は「じっくり考える」かたい語。ponder は「熟考する」
+N	cogitate|contemplate	cogitate は「思案する」。contemplate は「じっくり考える」や「(〜しようかと)考える」
+N	cogitate|ignore	cogitate は「熟考する」、ignore は「無視する」
+N	aware|cognizant	cognizant は「認識している」かたい語（cognizant of）。aware は「気づいている」
+N	cognizant|conscious	cognizant は「承知している」。conscious は「自覚している」
+N	cognizant|oblivious	cognizant は「気づいている」、oblivious は「気づかない」
+I	cognizant|exam_idm_be_aware_of	be aware of は「〜に気づいている」のふつうの言い方。be cognizant of は「〜を認識している」かたい言い方
+N	colloquial|formal	colloquial は「話し言葉の」、formal は「かたい・正式な」
+N	collude|conspire	collude は不正のために「ぐるになる」（collude with）。conspire は「共謀する」
+N	collude|connive	collude は「結託する」。connive は悪事を「見て見ぬふりをする」や「共謀する」
+N	collude|oppose	collude は「結託する」、oppose は「対立する」
+N	comeuppance|retribution	comeuppance は悪いことをした人の「当然の報い」（くだけた語）。retribution は「報復・天罰」
+N	comeuppance|just deserts	comeuppance は「報い」。just deserts は「当然の報い」（get one's just deserts）
+N	comeuppance|reward	comeuppance は「当然の罰」、reward は「ごほうび」
+N	commiserate|console	commiserate は「いっしょに嘆いて同情する」。console は「慰める」
+N	commiserate|gloat	commiserate は「同情する」、gloat は人の不幸を「ほくそ笑む」
+N	commodious|spacious	commodious は「広々とした」かたい語。spacious は「広い」
+N	commodious|roomy	commodious は「ゆったりした」。roomy は車や服が「ゆったりした」
+N	commodious|cramped	commodious は「広々とした」、cramped は「窮屈な」
+N	complacent|smug	complacent は現状に満足して「油断した」。smug は「得意げな・独りよがりの」
+N	complacent|self-satisfied	complacent は「気がゆるんだ」。self-satisfied は「自己満足の」
+N	complacent|discontented	complacent は「満足しきった」、discontented は「不満な」
+N	complaisant|obliging	complaisant は「人に逆らわない・言いなりの」。obliging は「快く手を貸す・親切な」
+N	agreeable|complaisant	complaisant は「言いなりになる」。agreeable は「快く応じる」
+N	complaisant|contrary	complaisant は「人に合わせる」、contrary は人が「ひねくれた・何でも逆らう」
+N	collusion|complicity	complicity は悪事への「加担」。collusion は「共謀・なれ合い」
+N	complicity|involvement	complicity は犯罪への「関与」。involvement は「関わり」全般
+N	complicity|innocence	complicity は「加担」、innocence は「潔白」
+N	behave|comport	comport は comport oneself で「ふるまう」かたい語。behave は「ふるまう」
+N	comport|conduct	comport oneself は「身を処する」。conduct oneself は「ふるまう」
+N	comport|misbehave	comport oneself は「きちんとふるまう」、misbehave は「行儀悪くする」
+N	compunction|remorse	compunction は悪いことをするときの「ためらい・良心の痛み」（feel no compunction）。remorse は後の「深い後悔」
+N	compunction|qualm	compunction は「良心のとがめ」。qualm は「不安・気がかり」
+N	compunction|indifference	compunction は「良心の痛み」、indifference は「無関心」
+N	conciliation|reconciliation	conciliation は相手を「なだめて和解を図ること」。reconciliation は「仲直り・和解」
+N	conciliation|provocation	conciliation は「和解の働きかけ」、provocation は「挑発」
+N	conciliatory|placatory	conciliatory は「歩み寄る・和解的な」。placatory は「なだめる」
+N	appeasing|conciliatory	conciliatory は「融和的な」。appeasing は相手の要求をのんで「なだめる」
+N	antagonistic|conciliatory	conciliatory は「融和的な」、antagonistic は「敵対的な」
+N	accompanying|concomitant	concomitant は「付随して起こる」かたい語。accompanying は「伴う・添えられた」
+N	attendant|concomitant	concomitant は「付随する」。attendant は形容詞で「伴う」（attendant risks）
+N	concomitant|unrelated	concomitant は「付随する」、unrelated は「無関係な」
+N	condescend|patronize	condescend は「見下した態度をとる」（condescend to）。patronize は「子ども扱いする」や「ひいきにする」
+N	condescend|deign	condescend は「わざわざ〜してやる」。deign は「恐れ多くも〜する」（皮肉に）
+N	condescend|respect	condescend は「見下す」、respect は「敬う」
+N	condone|overlook	condone は悪いことを「容認する」。overlook は「見逃す」や「見落とす」
+N	condone|excuse	condone は「大目に見る」。excuse は「許す・言い訳する」
+N	condemn|condone	condone は「容認する」、condemn は「非難する」
+N	confiscation|restoration	confiscation は「没収」、restoration は「返還」
+N	conflagration|inferno	conflagration は「大火事」のかたい語。inferno は「炎の地獄・猛火」
+N	blaze|conflagration	conflagration は町を焼く「大火」。blaze は「炎・火事」
+N	conflagration|flicker	conflagration は「大火」、flicker は「ちらちらする小さな炎」
+N	confluence|convergence	confluence は川の「合流点」や、物事の「重なり」。convergence は「一点に集まること・収束」
+N	confluence|junction	confluence は「川の合流」。junction は道路や鉄道の「分岐点・交差点」
+N	confluence|divergence	confluence は「合流」、divergence は「分岐」
+N	agreeable|congenial	congenial は人が「気の合う」や場所が「心地よい」。agreeable は「感じのよい」
+N	compatible|congenial	congenial は「肌が合う」。compatible は「相性がよい・互換性のある」
+N	congenial|unpleasant	congenial は「心地よい」、unpleasant は「不快な」
+N	conjure|evoke	conjure は conjure up で記憶などを「呼び起こす」や、魔法で「出す」。evoke は「思い出させる」
+N	conjure|summon	conjure は「魔法で呼び出す」。summon は「呼び出す・召喚する」
+N	conjure|dispel	conjure は「呼び起こす」、dispel は「払いのける」
+N	connive|conspire	connive は悪事を「黙認する」や「共謀する」。conspire は「共謀する」
+N	connive|expose	connive は「黙認する」、expose は「暴く」
+N	connoisseur|expert	connoisseur は美術や食べ物の「目利き・通」。expert は「専門家」
+N	aficionado|connoisseur	connoisseur は「鑑定家」。aficionado は趣味の「熱心なファン・愛好家」
+N	connoisseur|novice	connoisseur は「目利き」、novice は「初心者」
+N	conscription|draft	conscription は「徴兵（制度）」のかたい語。draft はアメリカ英語で「徴兵」
+N	conscription|discharge	conscription は「徴兵」、discharge は「除隊」
+N	consecrate|sanctify	consecrate は教会などを「聖別する・献納する」。sanctify は「神聖にする」
+N	consecrate|dedicate	consecrate は神に「ささげる」。dedicate は人生などを「ささげる」
+N	consecrate|desecrate	consecrate は「聖別する」、desecrate は「神聖を汚す」
+N	consolidation|merger	consolidation は組織の「統合」や、立場の「強化」。merger は会社の「合併」
+N	consternation|dismay	consternation は「驚きあわてること・狼狽（ろうばい）」。dismay は「がっかりすること」
+N	alarm|consternation	consternation は「うろたえ」。alarm は危険に気づいた「驚き・不安」
+N	composure|consternation	consternation は「うろたえ」、composure は「平静」
+N	constriction|tightening	constriction は気道などの「収縮・締めつけ」。tightening は「締めること」
+N	constriction|dilation	constriction は「収縮」、dilation は「拡張」
+N	construe|interpret	construe は言動を「(〜と)受け取る」（construe A as B）。interpret は「解釈する・通訳する」
+N	construe|understand	construe は「解釈する」。understand は「理解する」
+N	construe|misread	construe は「解釈する」、misread は「誤解する」
+N	consul|diplomat	consul は外国で自国民を助ける「領事」。diplomat は「外交官」全般
+N	contemptible|vile	contemptible は「軽蔑に値する」。vile は「下劣な・ひどく嫌な」
+N	admirable|contemptible	contemptible は「卑劣な」、admirable は「立派な」
+N	contemptuous|respectful	contemptuous は「軽蔑した」、respectful は「敬意のある」
+N	adjacent|contiguous	contiguous は境界が「接している」かたい語。adjacent は「隣の・隣接した」
+N	abutting|contiguous	contiguous は「隣接した」。abutting は土地が「境を接する」
+N	contiguous|separate	contiguous は「隣接した」、separate は形容詞では /ˈseprət/ と読み「離れた」
+N	contrite|unrepentant	contrite は「深く反省した」、unrepentant は「反省しない」
+N	contrition|penitence	contrition は「深い反省」。penitence は罪の「悔い改め」
+N	contrition|defiance	contrition は「反省」、defiance は「反抗」
+N	contrived|forced	contrived は話などが「わざとらしい」。forced は笑顔などが「無理な・作った」
+N	artificial|contrived	contrived は「不自然な」。artificial は「人工の・不自然な」
+N	contrived|natural	contrived は「わざとらしい」、natural は「自然な」
+N	conundrum|riddle	conundrum は答えの出にくい「難問」。riddle は「なぞなぞ・なぞ」
+N	conundrum|puzzle	conundrum は「悩ましい問題」。puzzle は「パズル・なぞ」
+N	conundrum|solution	conundrum は「難問」、solution は「解決策」
+N	convalescence|recovery	convalescence は病後の「回復期・療養」。recovery は「回復」
+N	convalescence|relapse	convalescence は「回復期」、relapse は「再発」
+N	convergent|converging	convergent は結論などが「一致する方向の」。converging は「一点に集まりつつある」
+N	compellingly|convincingly	convincingly は「納得させるように」。compellingly は「引きつけるように」
+N	convincingly|unconvincingly	convincingly は「説得力をもって」、unconvincingly は「説得力なく」
+N	complicated|convoluted	convoluted は話や筋が「入り組んだ・回りくどい」。complicated は「複雑な」
+N	convoluted|straightforward	convoluted は「入り組んだ」、straightforward は「分かりやすい」
+N	cosmopolitan|international	cosmopolitan は都市が「いろいろな国の人がいる」や、人が「国際感覚のある」。international は「国際的な」
+N	cosmopolitan|worldly	cosmopolitan は「世界を知っている」。worldly は「世慣れた」
+N	clique|coterie	coterie は趣味などでつながる「仲間うち」。clique は排他的な「派閥」
+N	circle|coterie	coterie は「小さな同人の集まり」。circle は「仲間・サークル」
+N	coterie|public	coterie は「内輪の仲間」、public は「一般の人々」
+N	covertly|stealthily	covertly は「隠れて・秘密裏に」。stealthily は「こっそり忍び足で」
+N	covertly|openly	covertly は「ひそかに」、openly は「公然と」
+N	crass|tasteless	crass は「無神経で下品な」。tasteless は「趣味の悪い」
+N	coarse|crass	crass は「露骨で無神経な」。coarse は「粗野な」や、手ざわりが「粗い」
+N	crass|refined	crass は「無神経な」、refined は「洗練された」
+N	cowardly|craven	craven は「ひどく臆病な」文学的な語。cowardly は「臆病な・卑怯な」
+N	craven|pusillanimous	craven は「卑怯な」。pusillanimous は「気の小さい」かたい語
+N	craven|valiant	craven は「臆病な」、valiant は「勇敢な」
+N	belief|credence	credence は話を「本当だと信じること」（give credence to）。belief は「信念・信仰」
+N	credence|trust	credence は「信ぴょう性」。trust は人への「信頼」
+N	credence|credit	credence は「信用」。credit は「信用」や「功績」
+N	credence|doubt	credence は「信用」、doubt は「疑い」
+N	creditworthy|reliable	creditworthy は「お金を貸しても大丈夫な」。reliable は「信頼できる」
+N	creditworthy|insolvent	creditworthy は「支払い能力のある」、insolvent は「支払い不能の」
+N	credulity|gullibility	credulity は「すぐ信じてしまうこと」。gullibility は「だまされやすさ」
+N	credulity|naivety	credulity は「軽信」。naivety は「世間知らず」
+N	credulity|skepticism	credulity は「信じやすさ」、skepticism は「疑うこと」
+N	cull|select	cull はたくさんの中から「選び取る」や、動物を「間引く」。select は「選ぶ」
+N	cull|glean	cull は「選び出す」。glean は情報を「少しずつ拾い集める」
+N	cull|retain	cull は「間引く」、retain は「残す」
+N	blame|culpability	culpability は「責められるべきこと・有罪性」。blame は名詞で「責任・非難」
+N	culpability|innocence	culpability は「有罪性」、innocence は「無罪」
+N	cupidity|greed	cupidity は「金銭欲」のかたい語。greed は「欲張り・強欲」
+N	cupidity|generosity	cupidity は「強欲」、generosity は「気前のよさ」
+N	curmudgeon|grouch	curmudgeon は気難しい「頑固じいさん」。grouch は「不平屋」
+N	curmudgeon|grump	curmudgeon は「偏屈者」。grump は「不機嫌な人」
+N	curmudgeon|optimist	curmudgeon は「気難し屋」、optimist は「楽天家」
+N	dally|dawdle	dally は「ぐずぐずする」や、考えを「もてあそぶ」。dawdle は「のろのろする」
+N	dally|linger	dally は「時間をむだにする」。linger は「長居する」
+N	dally|hasten	dally は「ぐずぐずする」、hasten は「急ぐ」
+N	condemnation|damnation	damnation は宗教の「地獄落ち・永遠の罰」。condemnation は「非難・有罪宣告」
+N	damnation|perdition	damnation は「地獄落ち」。perdition は「魂の滅び」の文学的な語
+N	dawdle|loiter	dawdle は「のろのろ進む」。loiter は用もなく「うろつく」
+N	dawdle|hurry	dawdle は「ぐずぐずする」、hurry は「急ぐ」
+N	dearth|scarcity	dearth は「(ひどい)不足」のかたい語（a dearth of）。scarcity は「品不足・欠乏」
+N	dearth|lack	dearth は「欠乏」。lack は「不足・欠如」
+N	abundance|dearth	dearth は「不足」、abundance は「豊富」
+N	debacle|fiasco	debacle は「大失敗・総崩れ」。fiasco は計画などの「ぶざまな大失敗」
+N	collapse|debacle	debacle は「惨敗」。collapse は名詞で「崩壊」
+N	debacle|triumph	debacle は「大失敗」、triumph は「大成功」
+N	debonair|suave	debonair は男性が「あか抜けて愛想のよい」。suave は「物腰の柔らかい」
+N	debonair|urbane	debonair は「さっそうとした」。urbane は「洗練された」
+N	awkward|debonair	debonair は「粋な」、awkward は「ぎこちない」
+N	decimate|devastate	decimate は数を「激減させる」。devastate は町などを「壊滅させる」や、人を「打ちのめす」
+N	annihilate|decimate	decimate は「大部分を滅ぼす」。annihilate は「全滅させる」
+N	decimate|restore	decimate は「激減させる」、restore は「元どおりにする」
+N	decorous|seemly	decorous は「礼儀にかなった」かたい語。seemly は「ふさわしい・見苦しくない」
+N	decorous|proper	decorous は「上品で礼儀正しい」。proper は「きちんとした・適切な」
+N	decorous|unseemly	decorous は「礼儀正しい」、unseemly は「見苦しい」
+N	decorum|propriety	decorum は場にふさわしい「礼儀正しさ」。propriety は「礼儀・正しさ」
+N	decorum|etiquette	decorum は「端正なふるまい」。etiquette は「礼儀作法」の決まり
+N	decorum|impropriety	decorum は「礼儀正しさ」、impropriety は「不作法」
+N	condemn|decry	decry は公然と「非難する」。condemn は「(強く)非難する」
+N	decry|denounce	decry は「けなす」。denounce は「糾弾する・告発する」
+N	decry|praise	decry は「非難する」、praise は「称賛する」
+N	defame|slander	defame は「名誉を傷つける」。slander は口で「中傷する」
+N	defame|malign	defame は「中傷する」。malign は「悪く言う」
+N	defame|praise	defame は「中傷する」、praise は「称賛する」
+N	cynic|defeatist	defeatist は初めから「あきらめている人」。cynic は「皮肉屋」
+N	defeatist|optimist	defeatist は「敗北主義者」、optimist は「楽観論者」
+N	deference|respect	deference は目上の人などへの「敬意・服従」（in deference to）。respect は「尊敬」
+N	deference|regard	deference は「従う姿勢」。regard は名詞で「配慮・敬意」
+N	deference|disrespect	deference は「敬意」、disrespect は「無礼」
+N	defunct|extinct	defunct は会社や制度が「今はない」。extinct は生物が「絶滅した」
+N	defunct|obsolete	defunct は「なくなった」。obsolete は「もう使われていない」
+N	active|defunct	defunct は「活動していない」、active は「活動中の」
+N	deign|stoop	deign は「(えらそうに)〜してやる」。stoop は「(悪いことに)身を落とす」
+N	deign|refuse	deign は「してやる」、refuse は「拒む」
+N	deleterious|harmful	deleterious は「有害な」のかたい語。harmful は「有害な」ふつうの語
+N	deleterious|detrimental	deleterious は健康などに「悪影響のある」。detrimental は「不利益な」
+N	beneficial|deleterious	deleterious は「有害な」、beneficial は「有益な」
+N	delineation|depiction	delineation は境界や特徴の「はっきりした描写」。depiction は「描写」
+N	delineation|portrayal	delineation は「輪郭の描き出し」。portrayal は人物などの「描き方」
+N	agitator|demagogue	demagogue は感情に訴える「扇動政治家」。agitator は「扇動者」
+N	demagogue|rabble-rouser	demagogue は「民衆扇動家」。rabble-rouser は群衆を「あおる人」
+N	demagogue|statesman	demagogue は「扇動政治家」、statesman は「立派な政治家」
+N	agitation|demagoguery	demagoguery は「民衆扇動」。agitation は「扇動」や「動揺」
+N	demagoguery|rabble-rousing	demagoguery は「扇動政治」。rabble-rousing は群衆を「あおること」
+N	demagoguery|statesmanship	demagoguery は「扇動政治」、statesmanship は「政治家としての手腕」
+N	demilitarization|militarization	demilitarization は「非武装化」、militarization は「軍事化」
+N	demilitarized|unarmed	demilitarized は地域が「非武装化された」（demilitarized zone）。unarmed は人が「武器を持たない」
+N	demobilize|disband	demobilize は兵士を「復員させる」。disband は組織を「解散する」
+N	demoralize|dishearten	demoralize は「士気をくじく」。dishearten は「がっかりさせる」
+N	demoralize|discourage	demoralize は「やる気を失わせる」。discourage は「落胆させる」や「思いとどまらせる」
+N	demoralize|encourage	demoralize は「士気をくじく」、encourage は「励ます」
+N	demoralized|dispirited	demoralized は「士気を失った」。dispirited は「意気消沈した」
+N	demoralized|motivated	demoralized は「やる気を失った」、motivated は「やる気のある」
+N	demur|object	demur は「異議を唱える・しぶる」かたい語。object は動詞で「反対する」
+N	demur|hesitate	demur は「難色を示す」。hesitate は「ためらう」
+N	consent|demur	demur は「しぶる」、consent は動詞で「同意する」
+N	belittle|denigrate	denigrate は「けなす・中傷する」。belittle は「見くびる・小さく見せる」
+N	denigrate|disparage	denigrate は「悪く言う」。disparage は「見くびる・けなす」
+N	denigrate|praise	denigrate は「けなす」、praise は「称賛する」
+N	denizen|inhabitant	denizen は「住人・生息する動物」（ややおどけた語）。inhabitant は「住民」
+N	denizen|resident	denizen は「そこに住むもの」。resident は「居住者」
+N	denizen|outsider	denizen は「住人」、outsider は「よそ者」
+N	denunciation|praise	denunciation は「糾弾」、praise は「称賛」
+N	deprecate|disparage	deprecate は「好ましくないと非難する」かたい語。disparage は「けなす」
+N	belittle|deprecate	deprecate は「軽視する」。belittle は「けなす」
+N	commend|deprecate	deprecate は「非難する」、commend は「称賛する」
+N	appreciation|depreciation	depreciation は通貨や物の「値下がり・価値の低下」、appreciation は「値上がり」の意味もある
+N	depredation|plunder	depredation は「略奪・荒らすこと」（ふつう複数形）。plunder は「略奪（品）」
+N	depredation|devastation	depredation は「荒らしたあと」。devastation は「荒廃・破壊」
+N	depredation|preservation	depredation は「破壊」、preservation は「保護」
+N	derisive|respectful	derisive は「あざけるような」、respectful は「敬意ある」
+N	desecrate|profane	desecrate は神聖な場所を「汚す」。profane は動詞で「冒涜する」
+N	desecrate|violate	desecrate は「神聖を汚す」。violate は「侵す・違反する」
+N	dehydrate|desiccate	desiccate は「すっかり乾燥させる」。dehydrate は「脱水する」
+N	desiccate|parch	desiccate は「干からびさせる」。parch は日照りで「干上がらせる」
+N	desiccate|moisten	desiccate は「乾燥させる」、moisten は「湿らせる」
+N	despondent|gloomy	despondent は失敗などで「すっかり落ちこんだ」。gloomy は「暗い・憂うつな」
+N	despondent|hopeful	despondent は「落胆した」、hopeful は「希望に満ちた」
+N	despot|dictator	despot は「専制君主」。dictator は現代の「独裁者」
+N	despotic|tyrannical	despotic は「専制的な」。tyrannical は「暴君のような」
+N	autocratic|despotic	despotic は「横暴な」。autocratic は「独裁的な」
+N	democratic|despotic	despotic は「専制的な」、democratic は「民主的な」
+N	destabilize|undermine	destabilize は政治や経済を「不安定にする」。undermine は「じわじわ弱める」
+N	destabilize|upset	destabilize は「揺るがす」。upset は動詞で「狂わせる・動揺させる」
+N	affluent|destitute	destitute は「極貧の」、affluent は「裕福な」
+N	aimless|desultory	desultory は会話などが「とりとめのない」。aimless は「目的のない」
+N	desultory|random	desultory は「散漫な」。random は「無作為の・手当たり次第の」
+N	desultory|methodical	desultory は「散漫な」、methodical は「系統立った」
+N	diaphanous|sheer	diaphanous は布が「透けるほど薄い」文学的な語。sheer は布が「薄い・透ける」
+N	diaphanous|translucent	diaphanous は「透き通るような」。translucent は「半透明の」
+N	diaphanous|opaque	diaphanous は「透ける」、opaque は「不透明な」
+N	diatribe|tirade	diatribe は「痛烈な非難」。tirade は「長々とした非難の演説」
+N	diatribe|harangue	diatribe は「罵倒」。harangue は「長々とした説教」
+N	diatribe|tribute	diatribe は「痛烈な非難」、tribute は「賛辞」
+N	dictatorial|tyrannical	dictatorial は「高圧的な」。tyrannical は「暴君のような」
+N	democratic|dictatorial	dictatorial は「独裁的な」、democratic は「民主的な」
+N	didactic|instructive	didactic は「教訓を押しつける」（悪い意味にも）。instructive は「ためになる」
+N	didactic|moralistic	didactic は「説教くさい」。moralistic は「道徳をふりかざす」
+N	didactic|entertaining	didactic は「教訓的な」、entertaining は「楽しませる」
+N	dilation|expansion	dilation は瞳や血管の「拡張」。expansion は「拡大・膨張」
+N	dilation|widening	dilation は「広がること」。widening は道路などの「拡幅」
+N	dilatory|tardy	dilatory は「わざと遅らせる」（dilatory tactics）。tardy は「遅れた・遅刻した」
+N	dilatory|slow	dilatory は「ぐずぐずした」。slow は「遅い」
+N	dilatory|prompt	dilatory は「遅らせる」、prompt は形容詞で「迅速な」
+N	concentration|dilution	dilution は「薄めること」、concentration は「濃縮・濃度」
+N	disabuse|undeceive	disabuse は誤解を「解く」（disabuse A of B）。undeceive は「迷いをさます」の古い語
+N	disabuse|enlighten	disabuse は「思いちがいを正す」。enlighten は「教える・啓発する」
+N	disabuse|mislead	disabuse は「誤解を解く」、mislead は「誤解させる」
+N	disbursement|payment	disbursement は基金などからの「支払い・支出」かたい語。payment は「支払い」
+N	disbursement|expenditure	disbursement は実際の「払い出し」。expenditure は「支出・経費」
+N	disbursement|receipt	disbursement は「支払い」、receipt は「受け取り」
+N	disconcert|unsettle	disconcert は「(急に)まごつかせる」。unsettle は「不安にさせる」
+N	disconcert|fluster	disconcert は「当惑させる」。fluster は「あわてさせる」
+N	disconcert|reassure	disconcert は「動揺させる」、reassure は「安心させる」
+N	break|discontinuity	discontinuity はデータなどの「途切れ・不連続」。break は名詞で「中断・切れ目」
+N	discontinuity|gap	discontinuity は「断絶」。gap は「すき間・隔たり」
+N	clashing|discordant	discordant は「調和しない・耳ざわりな」。clashing は色や意見が「ぶつかり合う」
+N	discordant|jarring	discordant は「不協和の」。jarring は「耳ざわりな・ちぐはぐな」
+N	discordant|harmonious	discordant は「調和しない」、harmonious は「調和した」
+N	discerning|discriminating	discriminating は「見る目のある・目の肥えた」。discerning は「洞察力のある」
+N	discriminating|undiscriminating	discriminating は「見分ける力のある」、undiscriminating は「区別しない・見境のない」
+N	discursive|rambling	discursive は話が「あちこち飛ぶ」かたい語。rambling は「取りとめのない」
+N	digressive|discursive	discursive は「散漫な」。digressive は「脱線しがちな」
+N	concise|discursive	discursive は「散漫な」、concise は「簡潔な」
+N	disincentive|incentive	disincentive は「やる気をそぐもの」、incentive は「やる気を起こさせるもの」
+N	belittle|disparage	disparage は「けなす」。belittle は「見くびる・軽んじる」
+N	disparage|praise	disparage は「けなす」、praise は「称賛する」
+N	dispassionate|impartial	dispassionate は感情に流されず「冷静な」。impartial は「どちらにも味方しない・公平な」
+N	dispassionate|objective	dispassionate は「冷静な」。objective は「客観的な」
+N	biased|dispassionate	dispassionate は「冷静で公平な」、biased は「偏った」
+N	dispensation|distribution	dispensation は特別な「免除・許可」や「分配」。distribution は「配ること・流通」
+N	dejected|dispirited	dispirited は「元気をなくした」。dejected は「しょげた」
+N	dissemble|feign	dissemble は本心を「隠す・とぼける」。feign は「ふりをする」
+N	disguise|dissemble	dissemble は感情を「隠す」。disguise は「変装させる・偽る」
+N	dissemble|reveal	dissemble は「隠す」、reveal は「明かす」
+N	dissemination|distribution	dissemination は情報などの「普及・広めること」。distribution は物の「配布」
+N	dissemination|spread	dissemination は「流布」。spread は名詞で「広がり・伝わること」
+N	dissenter|dissident	dissident は政府に反対する「反体制派」。dissenter は多数意見への「異議を唱える人」
+N	dissident|rebel	dissident は言論で「体制に反対する人」。rebel は名詞では /ˈrebl/ と読み、武器を取る「反逆者」
+N	conformist|dissident	dissident は「反体制派」、conformist は「体制に従う人」
+N	dissipate|squander	dissipate は霧などが「消え散る」や、財産を「浪費する」。squander は「むだづかいする」
+N	disperse|dissipate	dissipate は「消散する」。disperse は人などが「散らばる」
+N	conserve|dissipate	dissipate は「浪費する」、conserve は「節約する」
+N	disbandment|dissolution	dissolution は議会の「解散」や、関係の「解消」。disbandment は団体の「解散」
+N	breakup|dissolution	dissolution は「解消・崩壊」。breakup は恋人などの「別れ」や国の「分裂」
+N	dissolution|formation	dissolution は「解散」、formation は「結成」
+N	discord|dissonance	dissonance は言動などの「不一致」や音の「不協和」。discord は「不和」
+N	conflict|dissonance	dissonance は「食いちがい」。conflict は「対立・紛争」
+N	consonance|dissonance	dissonance は「不協和」、consonance は「調和」
+N	dogged|tenacious	dogged は「あきらめずに続ける」。tenacious は「粘り強い」
+N	dogged|persistent	dogged は「不屈の」。persistent は「根気強い」や「しつこい」
+N	dogged|irresolute	dogged は「粘り強い」、irresolute は「優柔不断な」
+N	dogmatic|opinionated	dogmatic は教えを「疑わず押しつける」。opinionated は自分の意見を「曲げない」
+N	assertive|dogmatic	dogmatic は「独断的な」。assertive は「自己主張のはっきりした」
+N	dogmatic|open-minded	dogmatic は「独断的な」、open-minded は「心の広い・柔軟な」
+N	doleful|sorrowful	doleful は顔や声が「悲しげな」。sorrowful は「悲しい」
+N	cheerful|doleful	doleful は「悲しげな」、cheerful は「快活な」
+N	domesticated|trained	domesticated は種として「家畜化された」。trained は一匹が「訓練された」
+N	domesticated|wild	domesticated は「家畜化された」、wild は「野生の」

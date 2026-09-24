@@ -1,0 +1,308 @@
+N	gamble|risk	gamble はお金などを「賭ける」や、一か八か「やってみる」。risk は失うかもしれないのに「危険を冒す」
+I	gamble|curr_idm_3_take_a_chance	take a chance は「思い切ってやってみる」。gamble はお金を「賭ける」や、「一か八かやる」
+N	assembly|gathering	gathering は人の「集まり」と広く言う（family gathering）。assembly は議会や学校の正式な「集会」
+N	gauge|measure	gauge は様子から「判断する」や、計器で「測る」。measure は長さや量を「測る」
+N	assess|gauge	gauge は相手の気持ちなどを「推し量る」。assess は正式に「評価する・査定する」
+N	gem|treasure	gem は「宝石」や「すばらしいもの・逸品」。treasure は「宝物・財宝」や「大切なもの」
+N	generally|usually	generally は「一般に・概して」（全体として言える）。usually は「たいてい・ふだんは」（いつもすること）
+N	generally|specifically	generally は「一般に」、specifically は「具体的に・特に」
+I	generally|curr1900_idm_pre2_as_a_rule	as a rule は「原則として・ふつうは」。generally は「一般に・概して」
+I	generally|curr_idm_2_by_and_large	by and large は「全体的に見て」の話し言葉。generally は「概して」
+I	generally|curr_idm_pre2_in_general	in general は「一般に・たいてい」（people in general で「一般の人々」）。generally は同じ意味の1語
+N	germ|microbe	germ は病気を起こす「ばい菌」。microbe は顕微鏡で見る「微生物」全体
+N	bacteria|germ	germ は病気のもとの「ばい菌」の話し言葉。bacteria は科学の「細菌」（複数形）
+N	glare|scowl	glare は怒って「にらみつける」。scowl は不機嫌に「顔をしかめる」
+N	dazzle|glare	glare は光が「ぎらぎら照りつける」。dazzle は強い光で「目をくらませる」や、人を「感心させる」
+N	flagrant|glaring	glaring はまちがいなどが「目立つ・明らかな」。flagrant は悪いことが「目に余る・堂々とした」
+N	glaring|obvious	glaring は悪い点が「ひどく目立つ」。obvious は「明らかな」と広く言う
+N	glaring|subtle	glaring は「目立つ」、subtle は「かすかな・気づきにくい」
+N	glory|honor	glory は大きな成功による「栄光・栄誉」。honor は「名誉・光栄」
+N	glory|splendor	glory は「栄光」や「荘厳な美しさ」。splendor は「壮麗さ・豪華さ」
+N	glory|shame	glory は「栄光」、shame は「恥」
+N	devour|gobble	gobble は「がつがつ食べる」。devour は「むさぼり食う」や、本を「読みふける」
+N	gobble|wolf down	gobble と wolf down はどちらも「がつがつ食べる」くだけた言い方。wolf down はオオカミのような食べ方のたとえ
+N	benevolence|goodwill	goodwill は人や国の間の「善意・好意」（a gesture of goodwill）。benevolence は人を助けたい「慈悲の心」のかたい語
+N	goodwill|kindness	goodwill は「好意・親善」。kindness は一人ひとりの「親切・優しさ」
+N	goodwill|malice	goodwill は「善意」、malice は「悪意」
+N	gorge|ravine	gorge は切り立った「渓谷」。ravine は小さく深い「谷」
+N	elegance|grace	grace は動きの「優雅さ・しとやかさ」。elegance は服装や作りの「上品さ・優美さ」
+N	charm|grace	grace は「優雅さ・気品」。charm は人を引きつける「魅力」
+N	clumsiness|grace	grace は「優雅さ」、clumsiness は「ぎこちなさ」
+N	gradually|slowly	gradually は「だんだんと・少しずつ」（変化が段々進む）。slowly は動きが「ゆっくり」
+N	gradually|steadily	gradually は「徐々に」。steadily は止まらずに「着実に」
+N	gradually|suddenly	gradually は「徐々に」、suddenly は「突然」
+I	gradually|curr1900_idm_pre2_by_degrees	by degrees は「少しずつ・徐々に」のかたい言い方。gradually は同じ意味の1語
+I	gradually|curr_idm_3_little_by_little	little by little は「少しずつ」の話し言葉。gradually は「徐々に」
+N	gratitude|thankfulness	gratitude は「感謝の気持ち」のふつうの語（express gratitude）。thankfulness は「ありがたく思うこと」
+N	gratitude|ingratitude	gratitude は「感謝」、ingratitude は「恩知らず」
+N	feed|graze	graze は牛や羊が「草を食べる」。feed は動物が「えさを食べる」や、人が「食べさせる」
+N	graze|pasture	graze は家畜が「草を食べる」や、人が「放牧する」。pasture は名詞で「牧草地」、動詞で「放牧する」
+N	fat|grease	grease はべとべとした「油・グリース」。fat は肉などの「脂肪」
+N	grease|oil	grease はかたまった「油脂」や機械の「グリース」。oil はさらさらした「油」や「石油」
+N	broil|grill	grill は網で「焼く」（イギリス英語では上から焼く）。broil はアメリカ英語で上から直火で「焼く」
+N	grill|roast	grill は網や直火で「焼く」。roast は肉などをオーブンで「焼く」や、豆を「いる」
+N	dirt|grime	grime は長くたまった「こびりついた汚れ」。dirt は「泥・ほこり・汚れ」と広く言う
+N	filth|grime	grime は「こびりついた汚れ」。filth は「ひどく不潔なもの・汚物」
+N	cleanliness|grime	grime は「汚れ」、cleanliness は「清潔さ」
+N	dirty|grimy	grimy はすすや油で「薄汚れた」。dirty は「汚い」のふつうの語
+N	clean|grimy	grimy は「薄汚れた」、clean は「清潔な」
+N	crush|grind	grind はコーヒー豆などを「ひいて粉にする」。crush は力を加えて「押しつぶす・砕く」
+N	grind|mill	grind は「ひいて粉にする」のふつうの語。mill は製粉所で「粉にひく」
+N	complaint|gripe	gripe は「文句・ぐち」のくだけた語。complaint は「苦情・不平」のふつうの語
+N	grievance|gripe	gripe はちょっとした「文句」。grievance は不当な扱いへの「不満・苦情」のかたい語
+N	complain|grumble	grumble は小声で「ぶつぶつ文句を言う」。complain は「不平を言う・苦情を言う」
+N	grumble|mutter	grumble は「ぶつぶつ不平を言う」。mutter は聞こえないくらいの声で「つぶやく」
+N	grumble|praise	grumble は「不平を言う」、praise は「ほめる」
+N	bay|gulf	gulf は大きな「湾」（the Gulf of Mexico）。bay は gulf より小さい「湾・入り江」
+N	gap|gulf	gulf は考えなどの大きな「隔たり・溝」。gap は「すき間・差」
+N	gut|intestine	gut は「腸・おなか」の話し言葉。intestine は医学の「腸」
+N	courage|gut	guts は複数形で「根性・度胸」のくだけた語（have the guts to do）。courage は「勇気」
+N	drain|gutter	gutter は道のわきの「側溝」や屋根の「雨どい」。drain は水を流す「排水管・排水口」
+N	breach|hack	hack はコンピューターに「不正に侵入する」。breach は守りや規則を「破る・突破する」
+N	chop|hack	hack はおのなどで「めった切りにする」。chop は料理などで「切り刻む」
+D	hammock	syn	sling	sling は腕をつる「三角巾」や、物をつり上げる「つり綱」で、ハンモックのような寝床の意味はない
+N	disadvantage|handicap	handicap は動くのをじゃまする「不利な条件」。disadvantage は他と比べて「不利な点」
+N	handicap|impediment	handicap は「不利な条件」。impediment は進行を妨げる「障害」のかたい語
+N	advantage|handicap	handicap は「不利な条件」、advantage は「有利な点」
+N	harass|pester	harass は相手をしつこく「悩ます・嫌がらせをする」。pester は「しつこくせがむ」
+N	bother|harass	harass は何度も「嫌がらせをする」と強い。bother は「じゃまする・困らせる」
+N	blend|harmonize	harmonize は色や音が「調和する」。blend は混ぜて「ひとつに溶けこむ」
+N	coordinate|harmonize	harmonize は「調和させる」。coordinate は予定や人を「調整する」
+N	clash|harmonize	harmonize は「調和する」、clash は色などが「合わない・ぶつかる」
+N	harshly|severely	harshly は言い方などが「きつく・とげとげしく」。severely は罰などが「厳しく」や、被害が「ひどく」
+N	harshly|sternly	harshly は「きつく」。sternly は顔つきや声が「厳格に」
+N	gently|harshly	harshly は「厳しく」、gently は「優しく」
+N	expedite|hasten	hasten は「急がせる・早める」かたい語。expedite は手続きなどを「迅速に進める」
+N	hatch|incubate	hatch はひなが「卵からかえる」。incubate は親鳥が卵を「温める」や、細菌を「培養する」
+N	devise|hatch	hatch は計画を「(ひそかに)たくらむ」。devise は工夫して「考え出す」
+N	dangerous|hazardous	hazardous は化学物質などが「有害で危険な」かたい語。dangerous は「危険な」のふつうの語
+N	hazardous|safe	hazardous は「危険な」、safe は「安全な」
+N	fence|hedge	hedge は木を植えた「生け垣」。fence は板や金網の「柵・塀」
+N	barrier|hedge	hedge は「生け垣」や、損を防ぐ「備え」（a hedge against）。barrier は「障壁・さえぎるもの」
+N	flock|herd	herd は牛や象などの「群れ」。flock は羊や鳥の「群れ」
+N	drove|herd	herd は牛などの「群れ」。drove は追われて移動する「家畜の群れ」や、人の「大群」
+N	hesitant|reluctant	hesitant は迷って「ためらう」。reluctant は「気が進まない」
+N	hesitant|tentative	hesitant は人が「ためらいがちな」。tentative は計画が「仮の」や、声などが「おずおずした」
+N	decisive|hesitant	hesitant は「ためらいがちな」、decisive は「決断力のある」
+N	highland|upland	highland は「高地・山地」（the Highlands はスコットランド北部）。upland は「高台・高地」
+N	highland|lowland	highland は「高地」、lowland は「低地」
+N	emphasize|highlight	highlight は目立つように「強調する」や、蛍光ペンで「印をつける」。emphasize は言葉で「強調する」
+N	highlight|stress	highlight は重要な点を「目立たせる」。stress は言葉で「力説する」
+N	downplay|highlight	highlight は「強調する」、downplay は「軽く扱う」
+N	colony|hive	hive はミツバチの「巣箱」。colony はアリなどの「集団」や、国の「植民地」
+N	hive|nest	hive はミツバチの「巣（箱）」。nest は鳥などの「巣」と広く言う
+N	homeland|motherland	homeland は「祖国・故国」のふつうの語。motherland は「母国」の感情のこもった語
+N	homeland|native land	homeland は「祖国」。native land は「生まれた国・故郷」
+N	abroad|homeland	homeland は「祖国」、abroad は「外国（で）」
+N	gruesome|horrific	horrific は事故などが「恐ろしい・身の毛もよだつ」。gruesome は死などが「むごたらしい」
+N	horrific|pleasant	horrific は「恐ろしい」、pleasant は「心地よい」
+N	hose|tube	hose は水をまく「ホース」。tube は細い「管・チューブ」
+N	hose|pipe	hose は曲がる「ホース」。pipe は固い「管・パイプ」
+N	hostage|prisoner	hostage は要求のために捕らえられた「人質」。prisoner は「囚人」や、戦争の「捕虜」
+N	enmity|hostility	hostility は相手への「敵意・敵対的な態度」。enmity は長く続く「敵意・憎しみ」のかたい語
+N	antagonism|hostility	hostility は「敵意」。antagonism は2つの間の「対立・反感」
+N	float|hover	hover はヘリコプターなどが空中に「止まっている」。float は水や空中に「浮かぶ・漂う」
+N	hover|linger	hover は人が「そばをうろうろする」。linger は帰らずに「ぐずぐず残る」
+N	humankind|mankind	humankind と mankind はどちらも「人類」。humankind は男女を区別しない言い方として好まれる
+N	humiliate|shame	humiliate は人前で「恥をかかせる」と強い。shame は「恥ずかしい思いをさせる」
+N	honor|humiliate	humiliate は「恥をかかせる」、honor は「敬う・名誉を与える」
+N	humility|modesty	humility は自分を高く見ない「謙虚さ」。modesty は自分のことを「ひかえめに言うこと」
+N	cleanliness|hygiene	hygiene は病気を防ぐための「衛生」。cleanliness は「清潔さ」
+N	hygiene|sanitation	hygiene は個人の「衛生（手洗いなど）」。sanitation は下水などの「公衆衛生・衛生設備」
+N	hypocrite|pretender	hypocrite は言うこととすることがちがう「偽善者」。pretender は「ふりをする人」や、王位を狙う「王位要求者」
+N	fraud|hypocrite	hypocrite は「偽善者」。fraud は人をだます「いかさま師」や「詐欺」
+N	hypothesis|theory	hypothesis はこれから確かめる「仮説」。theory は確かめられて広く認められた「理論」
+N	assumption|hypothesis	hypothesis は実験で確かめる「仮説」。assumption は確かめずに信じる「思いこみ・仮定」
+N	identify|recognize	identify は名前や正体を「特定する」。recognize は前に見て「だれ・何か分かる」
+I	identify|curr_idm_2_make_out	make out は見えにくいものを「なんとか見分ける」。identify は正体を「特定する」
+I	identify|curr_idm_pre2_pick_out	pick out は多くの中から「見つけ出す」。identify は「だれ・何かを特定する」
+N	foolish|idiotic	idiotic は「まったくばかげた」と強い。foolish は「愚かな」
+N	idiotic|sensible	idiotic は「ばかげた」、sensible は「分別のある」
+N	idleness|industry	idleness は「怠けること」、industry は「勤勉」（ふつうは「産業」の意味）
+N	ignite|kindle	ignite はガスなどに「点火する」や、争いを「燃え上がらせる」。kindle は火を「たきつける」や、関心を「かき立てる」
+N	extinguish|ignite	ignite は「点火する」、extinguish は「消す」
+N	ignorance|unawareness	ignorance は「無知」（知識がないこと）。unawareness は「気づいていないこと」
+N	ignorance|knowledge	ignorance は「無知」、knowledge は「知識」
+N	ignorant|uninformed	ignorant は「無知な」で、けなす感じがある。uninformed は情報を「知らされていない」
+N	illogical|irrational	illogical は「理屈が通らない」。irrational は感情などが「理性を欠いた・不合理な」
+N	illogical|unreasonable	illogical は「筋の通らない」。unreasonable は要求などが「無理な・理不尽な」
+N	disparity|imbalance	imbalance は量の「つり合いがとれていないこと」。disparity は収入などの「格差」
+N	imbalance|inequality	imbalance は「不均衡」。inequality は社会の「不平等」
+N	balance|imbalance	imbalance は「不均衡」、balance は「つり合い」
+N	immerse|submerge	immerse は液体に「ひたす」や、何かに「没頭させる」（be immersed in）。submerge は水の中に「沈める・水没させる」
+N	engross|immerse	immerse は仕事などに「没頭させる」。engross は注意を「すっかり奪う」（be engrossed in）
+N	extract|immerse	immerse は「ひたす」、extract は「取り出す」
+N	immobile|motionless	immobile は「動かない・動けない」。motionless は「じっとして動かない」
+N	immobile|static	immobile は「動かない」。static は状態が「変化しない・静的な」
+N	immobile|mobile	immobile は「動かない」、mobile は「動かせる」
+N	impaired|weakened	impaired は視力などの機能が「損なわれた」。weakened は「弱った」
+N	impaired|intact	impaired は「損なわれた」、intact は「無傷の」
+N	discourteous|impolite	impolite は「失礼な」のふつうの語。discourteous は「無作法な」のかたい語
+N	impolite|polite	impolite は「失礼な」、polite は「礼儀正しい」
+N	enforced|imposed	imposed は上から「課された・押しつけられた」。enforced は規則などが「強制された・施行された」
+N	imposed|levied	imposed は規則や期限が「課された」。levied は税が「課された・徴収された」
+N	improper|inappropriate	improper は礼儀や規則に「反する」。inappropriate は場面に「ふさわしくない」
+N	improper|unseemly	improper は「不適切な」。unseemly は態度が「見苦しい」のかたい語
+N	impulsive|rash	impulsive は考えずに「衝動的に動く」。rash は結果を考えない「無謀な」
+N	hasty|impulsive	impulsive は「衝動的な」。hasty は「急ぎすぎた・軽率な」
+N	cautious|impulsive	impulsive は「衝動的な」、cautious は「慎重な」
+N	contaminated|impure	impure は混じりものがある「不純な」。contaminated は有害なもので「汚染された」
+N	impure|tainted	impure は「不純な」。tainted は食べ物が「汚染された」や、評判が「汚れた」
+N	inability|incapacity	inability は「〜できないこと」（inability to do）。incapacity は病気などによる「能力がない状態」のかたい語
+N	ability|inability	inability は「できないこと」、ability は「能力」
+N	idleness|inaction	inaction は必要なときに「何もしないこと」（批判の意味）。idleness は「怠けていること」
+N	inaction|passivity	inaction は「行動しないこと」。passivity は態度が「受け身であること」
+N	inborn|innate	inborn と innate はどちらも「生まれつきの」。innate のほうがかたい
+N	inborn|natural	inborn は「生まれつきの」。natural は「天性の」や「自然の」
+N	acquired|inborn	inborn は「生まれつきの」、acquired は「後から身につけた」
+N	incapable|unable	incapable は性質として「〜する力がない」（incapable of 〜ing）。unable はその時「〜できない」（unable to do）
+N	incapable|incompetent	incapable は「できない」。incompetent は仕事が「できない・無能な」とけなす語
+N	capable|incapable	incapable は「能力のない」、capable は「能力のある」
+N	comprehensive|inclusive	inclusive は「〜を含んだ」（inclusive of tax）や、だれも「のけ者にしない」。comprehensive は「すべてを網羅した」
+N	include|incorporate	incorporate は全体の一部として「組み入れる」。include は「含める」と広く言う
+N	incorporate|integrate	incorporate は「取り入れる」。integrate は別々のものを「統合する」や、社会に「溶けこむ」
+N	incur|suffer	incur は損や借金を自分の行動で「招く・負う」。suffer は損害などを「受ける・苦しむ」
+N	indecent|obscene	indecent は「下品な・不作法な」。obscene は「わいせつな」と強い
+N	improper|indecent	indecent は性的に「みだらな」。improper は「その場にふさわしくない」と広く言う
+N	index|indicator	index は数値の「指数」や本の「索引」。indicator は状態を示す「指標・表示器」
+N	guide|index	index は本の後ろの「索引」。guide は「案内（書）」
+I	indicate|curr_idm_pre2_point_out	point out は人に「指摘する」。indicate は「示す・指し示す」
+N	indication|sign	indication は何かを示す「しるし・兆候」のかたい語。sign は「しるし・兆候」のふつうの語
+N	hint|indication	indication は「兆候・示すもの」。hint は遠回しな「ほのめかし・ヒント」
+N	gauge|indicator	indicator は状態を示す「指標」。gauge は燃料計などの「計器」や、判断の「目安」
+N	indicator|sign	indicator は数字などの「指標」。sign は「しるし・兆候」と広く言う
+I	induce|idm_bring_about	bring about は変化などを「もたらす」。induce は薬などが眠気を「引き起こす」や、人を説得して「〜させる」
+N	indulge|pamper	indulge は好きなことに「ふける」や、人を「甘やかす」。pamper は人を「大事にしすぎて甘やかす」
+N	industrial|manufacturing	industrial は「産業の・工業の」。manufacturing は「製造の・製造業」
+N	agricultural|industrial	industrial は「工業の」、agricultural は「農業の」
+N	baby|infant	infant は「乳児・幼児」のかたい語。baby は「赤ちゃん」のふつうの語
+N	infant|toddler	infant は歩く前の「乳児」。toddler はよちよち歩きの「幼児」
+N	adult|infant	infant は「乳児」、adult は「大人」
+N	conclude|infer	infer は手がかりから「推測する」。conclude は「結論を出す」
+N	inferior|lower	inferior は質や地位が「劣った」（inferior to）。lower は位置や地位が「下の」
+N	inferior|substandard	inferior は「劣った」。substandard は「標準に達しない・粗悪な」
+N	inferior|superior	inferior は「劣った」、superior は「すぐれた」
+N	boundlessness|infinity	infinity は数学の「無限・無限大」。boundlessness は「限りないこと」
+N	finiteness|infinity	infinity は「無限」、finiteness は「有限であること」
+N	expand|inflate	inflate は空気で「膨らませる」や、値段を「つり上げる」。expand は大きさや範囲を「拡大する」
+N	inflate|swell	inflate は空気を入れて「膨らませる」。swell はけがなどで「はれる」や、数が「ふくれ上がる」
+N	impose|inflict	inflict は傷や苦しみを「負わせる」（inflict damage on）。impose は税や規則を「課す」
+N	administer|inflict	inflict は害を「与える」。administer は罰を「加える」や、薬を「与える」
+N	inflict|relieve	inflict は苦しみを「与える」、relieve は苦しみを「和らげる」
+N	inflow|influx	inflow はお金や水などの「流入」。influx は人などが一度に「どっと流れこむこと」
+N	inflow|outflow	inflow は「流入」、outflow は「流出」
+N	inform|notify	inform は情報を「知らせる」（inform A of B）。notify は正式に「通知する」
+N	inform|tell	inform は「知らせる」のかたい語。tell は「伝える・話す」のふつうの語
+N	inheritor|successor	inheritor は財産などの「相続人」。successor は地位などの「後継者」
+N	inhibit|restrain	inhibit は成長などを「抑える・妨げる」。restrain は人や感情を「抑える」
+N	inhibit|prevent	inhibit は「抑制する」（弱める）。prevent は「防ぐ」（起こらないようにする）
+N	encourage|inhibit	inhibit は「抑制する」、encourage は「促す」
+N	injustice|unfairness	injustice は社会の「不正・不公平」。unfairness は扱いの「不公平さ」
+N	inequity|injustice	injustice は「不正」。inequity は分け方の「不公平」のかたい語
+N	blamelessness|innocence	innocence は「無罪・潔白」や「無邪気さ」。blamelessness は「責められる点がないこと」
+N	innocence|naivety	innocence は「無邪気さ・純真さ」（よい意味）。naivety は「世間知らず・甘さ」（悪い意味が多い）
+N	innovate|pioneer	innovate は新しいやり方で「刷新する」。pioneer はだれよりも先に「切り開く」
+N	innovate|modernize	innovate は「新しいものを生み出す」。modernize は古いものを「近代化する」
+N	inquiry|investigation	inquiry は正式な「調査」や「問い合わせ」。investigation は警察などの「捜査・調査」
+N	inquiry|query	inquiry は「問い合わせ」。query はちょっとした「質問・疑問」
+N	anxious|insecure	insecure は自分に「自信がなく不安な」。anxious は先のことが「心配な」
+N	insecure|unstable	insecure は立場などが「不安定な」。unstable は物や状態が「ぐらついた・不安定な」
+N	inclusion|insertion	insertion は文や物を「差しこむこと」。inclusion は仲間に「入れること」
+N	deletion|insertion	insertion は「挿入」、deletion は「削除」
+N	assert|insist	insist は反対されても「言い張る」（insist on 〜ing）。assert は自信をもって「断言する」
+N	insist|persist	insist は「強く主張する・要求する」。persist はやめずに「続ける・固執する」（persist in）
+N	insistence|persistence	insistence は「強い要求・主張」（at A's insistence）。persistence はあきらめずに「続ける根気」
+N	demand|insistence	insistence は「強く言い張ること」。demand は「要求」
+N	inspector|investigator	inspector は工場や店を「検査する人」や「警部」。investigator は事件を「調べる人・捜査員」
+N	fit|install	install は機械やソフトを「設置する・インストールする」。fit はイギリス英語で部品などを「取り付ける」
+N	install|remove	install は「取り付ける」、remove は「取り外す」
+I	install|curr_idm_3_set_up	set up は機械などを「準備して使えるようにする」話し言葉。install は「設置する」
+N	establish|institute	institute は動詞で制度などを「設ける」かたい語。establish は会社などを「設立する」
+N	enlightening|instructive	instructive は「ためになる・教えられることが多い」。enlightening は「目を開かせる・啓発的な」
+N	insulate|shield	insulate は熱や電気を「通さないようにする・断熱する」。shield は危険から「かばう・守る」
+N	insulting|offensive	insulting は相手を「ばかにした・侮辱的な」。offensive は「不快にさせる」と広く言う
+N	complimentary|insulting	insulting は「侮辱的な」、complimentary は「ほめる」
+N	coverage|insurance	insurance は「保険」。coverage は保険の「補償（の範囲）」や、ニュースの「報道」
+N	assurance|insurance	insurance は「保険」のふつうの語。assurance はイギリス英語で生命保険の「保険」（life assurance）や「保証」
+N	intellect|intelligence	intellect は物事を深く考える「知性」。intelligence は「知能」や、国の「情報（機関）」
+N	intellect|mind	intellect は「知力・知性」。mind は「心・考え」と広く言う
+N	intensity|strength	intensity は光や感情の「強さ・激しさ」。strength は「力・強さ」と広く言う
+N	force|intensity	intensity は「激しさ」。force は物理的な「力」
+N	connection|interface	interface は機械と人の間の「操作画面・接点」。connection は「接続・つながり」
+N	intimidate|threaten	intimidate は相手を「おびえさせて従わせる」。threaten は「〜するぞと脅す」
+N	frighten|intimidate	intimidate は「おじけづかせる」。frighten は「怖がらせる」と広く言う
+N	fascinate|intrigue	intrigue は「(なぞめいていて)興味をそそる」。fascinate は「すっかり夢中にさせる」
+N	captivate|intrigue	intrigue は「好奇心をそそる」。captivate は「心を奪う・うっとりさせる」
+N	bore|intrigue	intrigue は「興味をそそる」、bore は「退屈させる」
+N	intrude|trespass	intrude は人の時間や場所に「じゃまに入る」。trespass は他人の土地に「無断で入る」
+N	encroach|intrude	intrude は「じゃまをする・押し入る」。encroach は権利や土地を「少しずつ侵す」
+N	intrude|withdraw	intrude は「押し入る」、withdraw は「引き下がる」
+I	intrude|curr_idm_2_break_in	break in は建物に「押し入る」や、話に「口をはさむ」。intrude は「じゃまをする」
+N	instinctive|intuitive	intuitive は考えなくても「直感で分かる」や、道具が「使いやすい」。instinctive は生まれつきの「本能的な」
+N	counterintuitive|intuitive	intuitive は「直感的に分かる」、counterintuitive は「直感に反する」
+N	attack|invade	invade は国に「攻めこむ・侵略する」。attack は「攻撃する」と広く言う
+N	invade|overrun	invade は国に「侵攻する」。overrun は敵や害虫が「あふれかえる・占領する」
+N	invade|retreat	invade は「攻めこむ」、retreat は「退却する」
+N	invalid|void	invalid は切符などが「無効な」や、理由が「根拠のない」。void は契約が「法的に無効な」（null and void）
+N	invalid|null	invalid は「無効な」。null は法律の「無効の」や、数学の「ゼロの」
+N	invalid|valid	invalid は「無効な」、valid は「有効な」
+N	fund|invest	invest はもうけを期待してお金を「投資する」。fund は事業などに「資金を出す」
+N	invest|spend	invest は時間やお金を将来のために「注ぐ」。spend は「使う・費やす」
+N	invest|withdraw	invest はお金を「投資する」、withdraw はお金を「引き出す」
+N	examine|investigate	investigate は事件などを「捜査・調査する」。examine は物を「くわしく調べる」
+I	investigate|curr_idm_3_look_into	look into は「調べる」の話し言葉。investigate は警察などが「捜査する」
+N	investigation|probe	investigation は「捜査・調査」のふつうの語。probe は新聞でよく使う「徹底的な調査」
+N	detective|investigator	investigator は「調査員・捜査員」と広く言う。detective は「刑事」や「探偵」
+N	call upon|invoke	invoke は法律や権利を「発動する」や、神に「祈る」。call upon は人に「頼む・求める」
+N	cite|invoke	invoke は権威や例を「引き合いに出す」。cite は本などを「引用する」
+N	involvement|participation	involvement は物事への「関わり・関与」。participation は活動への「参加」
+N	engagement|involvement	involvement は「関与」。engagement は人との「関わり・約束」や、「婚約」
+N	detachment|involvement	involvement は「関わること」、detachment は「距離を置くこと・無関心」
+N	ironic|sarcastic	ironic は結果が「皮肉な」（予想の逆になる）。sarcastic は言葉が「嫌味な」
+N	ironic|sardonic	ironic は「皮肉な」。sardonic は「あざけるような・冷笑的な」
+N	ironic|sincere	ironic は「(本心と逆を言う)皮肉な」、sincere は「心からの」
+N	irrigate|water	irrigate は畑に川などから「水を引く」。water は植物に「水をやる」
+N	drain|irrigate	irrigate は「水を引く」、drain は「水を抜く・排水する」
+N	aggravate|irritate	irritate は人を「いらいらさせる」や、皮膚を「ひりひりさせる」。aggravate は病気などを「悪化させる」（話し言葉では「いらだたせる」にも使う）
+N	irritate|soothe	irritate は「いらいらさせる」、soothe は「なだめる」
+N	isolation|solitude	isolation は周りから切り離された「孤立」（つらい感じ）。solitude は好んで選ぶ「ひとりの静けさ」
+N	ivory|tusk	ivory は材料としての「象牙」。tusk は象やイノシシの「きば」そのもの
+N	bonanza|jackpot	jackpot はくじなどの「大当たり」（hit the jackpot）。bonanza は思いがけない「大もうけ」
+N	jackpot|windfall	jackpot は「大当たり」。windfall は思いがけず入る「臨時収入」
+N	jackpot|loss	jackpot は「大当たり」、loss は「損失」
+N	jammed|stuck	jammed は紙などが「詰まった」。stuck は「動かなくなった・はまった」
+N	clogged|jammed	jammed は機械が「詰まって動かない」。clogged は管などが「ごみで詰まった」
+N	clear|jammed	jammed は「詰まった」、clear は道などが「通れる・空いた」
+N	jealousy|resentment	jealousy は人の持つものが「うらやましくて妬む気持ち」。resentment は不当な扱いへの「恨み・憤り」
+N	contentment|jealousy	jealousy は「ねたみ」、contentment は「満ち足りた気持ち」
+N	balance|juggle	juggle はいくつものことを「やりくりする」。balance は2つを「両立させる」
+N	juggle|manage	juggle は忙しい予定を「何とかこなす」。manage は「管理する・何とかやる」
+N	junk|rubbish	junk は古くていらない「がらくた」。rubbish はイギリス英語で「ごみ」や「くだらないこと」
+N	junk|trash	junk は「がらくた」。trash はアメリカ英語で「ごみ」
+N	junk|treasure	junk は「がらくた」、treasure は「宝物」
+N	authority|jurisdiction	jurisdiction は裁判所などの「管轄（の範囲）」。authority は「権限・権威」
+N	jury|panel	jury は裁判の「陪審（員団）」。panel はコンテストなどの「審査員団」や討論の「パネル」
+N	doghouse|kennel	kennel はイギリス英語で「犬小屋」、アメリカ英語で犬を預かる「犬舎」。doghouse はアメリカ英語で「犬小屋」
+N	kidney|organ	kidney は「腎臓」。organ は心臓や腎臓などの「臓器」全体
+N	knot|tangle	knot はわざと結んだ「結び目」。tangle は糸などの「もつれ」
+N	bond|knot	knot はひもの「結び目」。bond は人と人の「きずな・結びつき」
+N	laborer|workman	laborer は体を使う「労働者」。workman は大工などの「職人・作業員」
+N	ladle|scoop	ladle はスープをすくう「おたま」。scoop はアイスなどをすくう「スコップ・ひとすくい」
+N	dipper|ladle	ladle は料理の「おたま」。dipper は水をくむ「ひしゃく」
+N	crippled|lame	lame はもとは「足の不自由な」で、今はふつう言いわけが「説得力のない」。crippled は体が「不自由な」の古い言い方で、今は差別的に聞こえる
+N	lame|weak	lame は言いわけが「下手な・説得力のない」。weak は「弱い」と広く言う
+N	convincing|lame	lame は「説得力のない」、convincing は「説得力のある」
+N	lament|mourn	lament は失ったものを「嘆く」。mourn は人の死を「悼む・喪に服す」
+N	grieve|lament	lament は声に出して「嘆く」。grieve は心の中で「深く悲しむ」
+N	lament|rejoice	lament は「嘆く」、rejoice は「大いに喜ぶ」
+N	lantern|torch	lantern は手に下げる「ランタン・ちょうちん」。torch は「たいまつ」や、イギリス英語で「懐中電灯」
+N	lapse|slip	lapse はうっかり悪い状態に「陥る」（lapse into）。slip も「(つい)陥る」や「すべる」
+N	initiate|launch	launch は計画や商品を「始める・売り出す」。initiate は正式に「開始する」
+N	launch|start	launch は大きな計画などを「立ち上げる」。start は「始める」と広く言う
+N	halt|launch	launch は「開始する」、halt は「止める」
+N	lawmaker|legislator	lawmaker は「議員」の新聞でよく使う言い方。legislator は「立法者・議員」のかたい語
+N	congressman|lawmaker	lawmaker は「議員」と広く言う。congressman はアメリカの「(下院)議員」
+N	layer|stratum	layer は「層・重なり」のふつうの語。stratum は地質の「地層」や社会の「階層」のかたい語
+N	coat|layer	layer は重なった「層」。coat はペンキなどの「一塗り（の膜）」
+N	inheritance|legacy	legacy は前の人が残した「遺産・業績」（よいものにも悪いものにも）。inheritance は相続する「財産」や、親からの「遺伝」
+N	enact|legislate	legislate は議会が「法律を作る」。enact は法律を「制定する」や、劇を「演じる」

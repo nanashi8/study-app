@@ -1,0 +1,460 @@
+N	tool|utensil	utensil は台所などの「用具」（cooking utensils）。tool は「道具・工具」全般
+N	implement|utensil	utensil は台所の「器具」。implement は農具など作業のための「道具」のかたい語
+N	say|utter	utter は声や言葉を「口に出す」（not utter a word）。say は「言う」
+N	speak|utter	utter は一言でも「発する」。speak は「話す」
+N	completely|utterly	utterly は「まったく」（utterly crazy のように悪い意味の語と使うことが多い）。completely は「完全に」
+N	totally|utterly	utterly は「徹底的に・まるで」。totally は「まったく」の話し言葉
+N	partially|utterly	utterly は「完全に」、partially は「部分的に」
+N	leave|vacate	vacate は部屋や席を「明け渡す・空ける」かたい語。leave は「去る・出る」
+N	conceited|vain	vain は見た目を気にして「うぬぼれの強い」や、努力が「むだな」（in vain）。conceited は自分の能力に「うぬぼれた」
+N	futile|vain	vain は努力が「むなしい・むだな」（a vain attempt）。futile は「まったく役に立たない」
+N	modest|vain	vain は「うぬぼれた」、modest は「謙虚な」
+N	brave|valiant	valiant は「勇ましい・雄々しい」文学的な語。brave は「勇敢な」ふつうの語
+N	courageous|valiant	valiant は戦いなどで「勇ましい」。courageous は「勇気のある」
+N	cowardly|valiant	valiant は「勇敢な」、cowardly は「臆病な」
+N	pride|vanity	vanity は見た目などへの「うぬぼれ・虚栄心」。pride は「誇り」や「高慢」
+N	humility|vanity	vanity は「うぬぼれ」、humility は「謙虚さ」
+N	mist|vapor	vapor は「水蒸気・湯気」（water vapor）。mist は細かい水滴の「もや・霧」
+N	liquid|vapor	vapor は「気体（蒸気）」、liquid は「液体」
+N	condense|vaporize	vaporize は「気化させる」、condense は気体が「凝結して液体になる」
+N	safe|vault	vault は銀行などの「金庫室」や、アーチ形の天井。safe は名詞で持ち運べる「金庫」
+N	crypt|vault	vault は「地下の貯蔵室・納骨所」の意味もある。crypt は教会の「地下室・納骨堂」
+N	flora|vegetation	vegetation はある場所に生えている「草木・植物」。flora はその地域の「植物の種類（植物相）」
+N	cover|veil	veil は顔を隠す「ベール」や、秘密の「覆い」（a veil of secrecy）。cover は「覆い・カバー」
+N	shroud|veil	veil は「ベール・薄い覆い」。shroud は遺体を包む「布」や、霧などの「すっぽり覆うもの」
+N	seller|vendor	vendor は屋台などの「売り手・行商人」（street vendor）。seller は「売り手」全般
+N	buyer|vendor	vendor は「売り手」、buyer は「買い手」
+N	venerate|worship	venerate は聖人や年長者を「深くあがめる」。worship は神を「崇拝する・礼拝する」
+N	despise|venerate	venerate は「あがめる」、despise は「軽蔑する」
+N	forgiveness|vengeance	vengeance は「復讐」、forgiveness は「許すこと」
+N	vengeful|vindictive	vengeful は「仕返しを望む」。vindictive は「執念深く仕返しをする」
+N	spiteful|vengeful	vengeful は「復讐心に燃えた」。spiteful は「意地悪な」
+N	forgiving|vengeful	vengeful は「復讐心のある」、forgiving は「寛容な」
+N	toxin|venom	venom はヘビなどがかんで入れる「毒液」や、言葉の「悪意」。toxin は生き物が作る「毒素」全般
+N	antidote|venom	venom は「毒」、antidote は「解毒剤」
+N	oral|verbal	verbal は「言葉による」（書いたものにも）や「口頭の」。oral は「口で言う」や「口の」
+N	spoken|verbal	verbal は「言葉の」。spoken は「話し言葉の・口で言った」
+N	verbal|written	verbal agreement は「口約束」、written agreement は「書面の約束」
+N	validation|verification	verification は正しいかの「確認・検証」（identity verification）。validation は「正しいと認めること・有効化」
+N	refutation|verification	verification は正しいと「確かめること」、refutation は「まちがいを証明すること」
+N	flexibility|versatility	versatility は「何でもこなせること・多才さ」。flexibility は「柔軟性」
+N	rigidity|versatility	versatility は「多才さ」、rigidity は「融通のきかなさ」
+N	ship|vessel	vessel は「船」のかたい語や、「容器」「血管」（blood vessel）。ship は「船」のふつうの語
+N	container|vessel	vessel は液体を入れる「うつわ」のかたい語。container は「容器・コンテナ」
+N	annoy|vex	vex は問題などが人を「悩ませる・いらだたせる」かたい語。annoy は「いらいらさせる」
+N	irritate|vex	vex は「悩ます」。irritate は「いらいらさせる」や、肌を「刺激する」
+N	soothe|vex	vex は「いらだたせる」、soothe は「なだめる」
+N	sin|vice	vice は「悪い習慣・悪徳」（his only vice）。sin は宗教や道徳上の「罪」
+N	flaw|vice	vice は「悪いくせ」。flaw は人や物の「欠点・きず」
+N	vice|virtue	vice は「悪徳」、virtue は「美徳」
+N	victorious|winning	victorious は「勝利を収めた」。winning は「勝った・勝ちを決めた」（the winning goal）
+N	defeated|victorious	victorious は「勝った」、defeated は「負けた」
+N	energetically|vigorously	vigorously は「力強く・精力的に」。energetically は「元気よく」
+N	feebly|vigorously	vigorously は「力強く」、feebly は「弱々しく」
+N	forgiving|vindictive	vindictive は「執念深い」、forgiving は「寛容な」
+N	pioneer|visionary	visionary は未来を見通す「先見の明のある人」。pioneer は実際に道を開いた「先駆者」
+N	pragmatist|visionary	visionary は「理想を描く人」、pragmatist は「現実的に考える人」
+N	trivial|vital	vital は「欠かせない」、trivial は「ささいな」
+N	clearly|vividly	vividly は目に浮かぶほど「鮮やかに」（vividly remember）。clearly は「はっきりと」
+N	graphically|vividly	vividly は「生き生きと」。graphically は描写が「生々しく」
+N	vaguely|vividly	vividly は「鮮やかに」、vaguely は「ぼんやりと」
+N	clamorous|vociferous	vociferous は意見を「大声で主張する」（vociferous opposition）。clamorous は群衆などが「騒がしい」
+N	outspoken|vociferous	vociferous は「声高な」。outspoken は「遠慮せずはっきり言う」
+N	silent|vociferous	vociferous は「声高な」、silent は「黙っている」
+N	vacant|void	void は名詞で心の「空白・むなしさ」や、形容詞で「無効の」。vacant は席や家が「空いている」や、表情が「うつろな」
+N	fullness|void	void は「空虚」、fullness は「満ちていること」
+N	stable|volatile	volatile は「不安定な」、stable は「安定した」
+N	fluctuation|volatility	volatility は値段などの「変わりやすさ」。fluctuation は実際の「上がり下がり」
+N	stability|volatility	volatility は「不安定さ」、stability は「安定」
+N	trip|voyage	voyage は長い「船旅・航海」や宇宙の旅。trip は短い「旅行」
+N	vulnerability|weakness	vulnerability は攻撃や害を受けやすい「弱み・脆弱性（ぜいじゃくせい）」。weakness は「弱さ・弱点」
+N	security|vulnerability	vulnerability は「弱点」、security は「安全」
+N	settler|wanderer	wanderer は「放浪者」、settler は「定住者」
+N	decline|wane	wane は関心や力が「だんだん弱まる」や、月が「欠ける」。decline は「減る・衰える」
+N	diminish|wane	wane は「衰える」。diminish は「減る・減らす」
+N	wane|wax	wane は月が「欠ける」、wax は「満ちる」（wax and wane）
+N	district|ward	ward は市の「区」や病院の「病棟」。district は「地区・地域」
+N	unit|ward	ward は入院患者の「病棟」。unit は病院の「部門」（intensive care unit）
+N	battleship|warship	warship は「軍艦」全般。battleship は大砲を積んだ大型の「戦艦」
+N	cautious|wary	wary は相手を「警戒している」（be wary of）。cautious は「慎重な」
+N	vigilant|wary	wary は「用心深い」。vigilant は危険に「目を光らせている」
+N	careless|wary	wary は「用心深い」、careless は「不注意な」
+N	frugality|wastefulness	wastefulness は「むだづかい」、frugality は「倹約」
+N	hesitate|waver	waver は決心が「揺れ動く」。hesitate は「ためらう」
+N	resolve|waver	waver は「迷う」、resolve は「決意する」
+N	hesitant|wavering	wavering は気持ちが「揺れ動いている」。hesitant は「ためらいがちな」
+N	faltering|wavering	wavering は「迷っている」。faltering は足取りや声が「よろめく・とぎれがちな」
+N	enfeebled|weakened	weakened は「弱められた」。enfeebled は病気などで「衰弱した」かたい語
+N	diminished|weakened	weakened は力が「弱まった」。diminished は量や価値が「減った」
+N	strengthened|weakened	weakened は「弱まった」、strengthened は「強化された」
+N	faintly|weakly	weakly は「力なく」（smile weakly）。faintly は「かすかに」
+N	strongly|weakly	weakly は「弱く」、strongly は「強く」
+N	arms|weaponry	weaponry は「兵器類」全体。arms は「武器」（複数形で）
+N	fatigue|weariness	weariness は「うんざりした疲れ」。fatigue は体の「疲労」のかたい語
+N	energy|weariness	weariness は「疲れ」、energy は「元気・活力」
+N	tired|weary	weary は「疲れ果てた」や「うんざりした」（weary of）。tired は「疲れた」
+N	exhausted|weary	weary は長く続いて「疲れ果てた」。exhausted は「くたくたの」
+N	fresh|weary	weary は「疲れた」、fresh は「元気な・生き生きした」
+N	block|wedge	wedge は「くさび」や、くさび形のもの。block は「かたまり・ブロック」
+N	chock|wedge	wedge は「くさび」。chock は車輪の「歯止め」
+N	cry|weep	weep は静かに「涙を流して泣く」文学的な語。cry は「泣く」ふつうの語
+N	laugh|weep	weep は「泣く」、laugh は「笑う」
+N	serious|weighty	weighty は問題が「重大な・重みのある」。serious は「深刻な」
+N	significant|weighty	weighty は「重大な」。significant は「重要な・意味のある」
+N	trivial|weighty	weighty は「重大な」、trivial は「ささいな」
+N	friendly|welcoming	welcoming は来た人を「温かく迎える」。friendly は「親しみやすい」
+N	hostile|welcoming	welcoming は「歓迎する」、hostile は「敵意のある」
+N	healthy|wholesome	wholesome は食べ物が「体によい」や、内容が「健全な」。healthy は「健康な・健康によい」
+N	unhealthy|wholesome	wholesome は「健康によい」、unhealthy は「体に悪い」
+N	completely|wholly	wholly は「すっかり・全面的に」かたい語（wholly dependent）。completely は「完全に」
+N	partly|wholly	wholly は「完全に」、partly は「部分的に」
+N	prevalent|widespread	widespread は「広い範囲に広がった」。prevalent は「広く見られる・流行している」
+N	common|widespread	widespread は「広く行き渡った」。common は「よくある・ありふれた」
+N	rare|widespread	widespread は「広まった」、rare は「まれな」
+N	eagerness|willingness	willingness は「進んでする気持ち」。eagerness は「ぜひしたいという熱心さ」
+N	reluctance|willingness	willingness は「進んでする気持ち」、reluctance は「気が進まないこと」
+N	cunning|wily	wily は「ずる賢い・策略にたけた」。cunning は「ずる賢い・巧妙な」
+N	crafty|wily	wily は昔話のキツネのように「知恵の回る」。crafty は「悪賢い」
+N	naive|wily	wily は「ずる賢い」、naive は「世間知らずの」
+N	flinch|wince	wince は痛みなどで「顔をしかめる」。flinch は「びくっと身を引く」
+N	cringe|wince	wince は「顔をしかめる」。cringe は恐怖や恥ずかしさで「縮み上がる」
+N	loss|windfall	windfall は思わぬ「もうけ・授かり物」、loss は「損失」
+N	wistful|yearning	wistful は過ぎたことを思って「もの悲しげな・なつかしそうな」。yearning は名詞で「あこがれ」、形容詞で「あこがれる」
+N	content|wistful	wistful は「もの思わしげな」、content は形容詞では /kənˈtɛnt/ と読み「満ち足りた」
+N	humor|wit	wit は言葉の「機知・当意即妙」。humor は「ユーモア・おかしさ」
+N	intelligence|wit	wit は「頭の回転の速さ」（quick wit）。intelligence は「知能・知性」
+N	dullness|wit	wit は「機知」、dullness は「鈍さ」
+N	retreat|withdrawal	withdrawal は預金の「引き出し」や軍の「撤退」。retreat は軍などの「退却」
+N	removal|withdrawal	withdrawal は「引っこめること・撤回」。removal は「取り除くこと・撤去」
+N	deposit|withdrawal	withdrawal は預金の「引き出し」、deposit は「預け入れ」
+N	fade|wither	wither は植物が「しおれる・枯れる」。fade は色や記憶が「薄れる」
+N	clever|witty	witty は言葉が「気のきいた・しゃれのうまい」。clever は「利口な」
+N	humorous|witty	witty は「機知に富んだ」。humorous は「こっけいな・ユーモアのある」
+N	dull|witty	witty は「機知に富んだ」、dull は「退屈な」
+N	steady|wobble	wobble は「ぐらつく」、steady は動詞で「安定させる」
+N	stable|wobbly	wobbly は「ぐらぐらする」、stable は「安定した」
+N	uterus|womb	womb は「子宮」のふつうの語や、「ものを生み出す場」。uterus は医学の語
+N	phrasing|wording	wording は文書などの「言葉の選び方」。phrasing は「言い回し・表現のしかた」
+N	expression|wording	wording は「言葉づかい」。expression は「表現」や「表情」
+N	verbose|wordy	wordy は「言葉が多すぎる」。verbose は「くどい」かたい語
+N	long-winded|wordy	wordy は文章が「冗長な」。long-winded は話が「長ったらしい」
+N	concise|wordy	wordy は「冗長な」、concise は「簡潔な」
+N	sophisticated|worldly	worldly は経験を積んで「世慣れた」や「この世の」。sophisticated は「洗練された」
+N	spiritual|worldly	worldly は「世俗の」、spiritual は「精神的な・霊的な」
+N	deteriorate|worsen	worsen は「悪化する」のふつうの語。deteriorate は「だんだん悪くなる」かたい語
+N	decline|worsen	worsen は状態が「悪くなる」。decline は量や力が「減る・衰える」
+N	calm|wrath	wrath は「激しい怒り」、calm は名詞で「平静」
+N	twist|wrench	wrench は「ぐいとねじり取る」や、足首を「ねんざする」。twist は「ねじる・ひねる」
+N	wrench|yank	wrench は「ねじって引き抜く」。yank は「ぐいっと引っぱる」
+N	misconduct|wrongdoing	wrongdoing は「悪い行い・不正」全般。misconduct は職務上の「不正行為」
+N	offense|wrongdoing	wrongdoing は「不正行為」。offense は法律の「違反・罪」
+N	virtue|wrongdoing	wrongdoing は「悪い行い」、virtue は「美徳・善行」
+N	long|yearn	yearn は「強くあこがれる」（yearn for / to）。long は動詞で「切望する」（long for）
+N	crave|yearn	yearn は遠いものに「あこがれる」。crave は食べ物などを「無性にほしがる」
+N	dread|yearn	yearn は「待ちこがれる」、dread は「(来るのを)恐れる」
+N	indifference|yearning	yearning は「あこがれ」、indifference は「無関心」
+N	compliant|yielding	yielding は性格が「言いなりになりやすい」や、物が「たわむ」。compliant は規則や要求に「従順な」
+N	flexible|yielding	yielding は押すと「たわむ」。flexible は「曲げやすい・柔軟な」
+N	unyielding|yielding	yielding は「言いなりの・柔らかい」、unyielding は「屈しない・かたい」
+N	fervent|zealous	zealous は「熱心すぎるほどの」。fervent は「熱烈な」
+N	ardent|zealous	zealous は活動に「熱心な」。ardent は「熱烈な」（ardent fan）
+N	apathetic|zealous	zealous は「熱心な」、apathetic は「無気力な」
+N	abdicate|renounce	abdicate は王位や責任を「放棄する・退位する」。renounce は権利や信念を「捨てる」
+N	abdicate|resign	abdicate は国王が「退位する」。resign は仕事を「辞める」
+N	abdicate|assume	abdicate は責任を「放棄する」、assume は「引き受ける」
+N	aberrant|deviant	aberrant は「ふつうとちがう・異常な」かたい語。deviant は社会の規範から「外れた」
+N	aberrant|abnormal	aberrant は「常軌を逸した」。abnormal は「異常な」ふつうの語
+N	aberrant|normal	aberrant は「異常な」、normal は「ふつうの」
+N	aberration|anomaly	aberration は一時的な「逸脱・例外」。anomaly は規則に合わない「異常なもの」
+N	aberration|deviation	aberration は「常軌を外れたこと」。deviation は基準からの「ずれ」
+N	aberration|norm	aberration は「逸脱」、norm は「標準・ふつう」
+N	abeyance|suspension	abeyance は「一時停止」のかたい語（in abeyance）。suspension は「中断・停止」
+N	abeyance|dormancy	abeyance は計画などの「保留」。dormancy は火山や種の「休眠」
+N	abeyance|continuation	abeyance は「中断」、continuation は「継続」
+N	abhorrence|disgust	abhorrence は「強い嫌悪」のかたい語。disgust は「むかつき」
+N	abhorrence|admiration	abhorrence は「嫌悪」、admiration は「感心・称賛」
+N	abject|wretched	abject は失敗や貧しさが「みじめな・ひどい」（abject failure）。wretched は「哀れな」
+N	abject|miserable	abject は「どん底の」。miserable は「みじめな・不幸な」
+N	abject|dignified	abject は「卑屈な」、dignified は「威厳のある」
+N	abnegation|renunciation	abnegation は欲望や権利を「自分から捨てること」かたい語。renunciation は「放棄」
+N	abnegation|self-denial	abnegation は「自己を捨てること」。self-denial は「欲しいものをがまんすること」
+N	abnegation|indulgence	abnegation は「自制」、indulgence は欲望に「ふけること」
+N	abreast|alongside	abreast は「横に並んで」や、情報に「遅れずに」（keep abreast of）。alongside は「〜と並んで」
+N	abreast|up-to-date	keep abreast of は「遅れずについていく」。up-to-date は「最新の」
+N	abreast|behind	abreast は「遅れずに」、behind は「遅れて」
+N	abridge|condense	abridge は本などを「短縮する・抄訳する」。condense は内容を「要約する」や、気体を「凝縮する」
+N	abridge|shorten	abridge は本を「縮める」かたい語。shorten は「短くする」ふつうの語
+N	abridge|expand	abridge は「短縮する」、expand は「広げる・拡大する」
+N	abrogate|repeal	abrogate は法律や協定を「廃止する」かたい語。repeal は議会が法律を「撤廃する」
+N	abrogate|annul	abrogate は「廃止する」。annul は結婚や契約を「無効にする」
+N	abrogate|establish	abrogate は「廃止する」、establish は「制定する・設立する」
+I	abrogate|idm_do_away_with	do away with は「廃止する」の話し言葉。abrogate は法律や協定を正式に「廃止する」
+N	abscond|flee	abscond はお金を持って「逃げる・持ち逃げする」（abscond with）。flee は危険から「逃げる」
+N	abscond|decamp	abscond は「持ち逃げする」。decamp は「こっそり立ち去る」
+N	abscond|surrender	abscond は「逃亡する」、surrender は警察に「出頭する」
+N	absolution|pardon	absolution は宗教上の罪の「赦し」。pardon は罪の「許し」や「恩赦」
+N	absolution|forgiveness	absolution は罪の「免除」。forgiveness は「許すこと」全般
+N	absolution|condemnation	absolution は「赦し」、condemnation は「非難・有罪の宣告」
+N	absolve|pardon	absolve は責任や罪から「解き放つ」（absolve A of B）。pardon は「許す・恩赦を与える」
+N	absolve|condemn	absolve は「罪を免じる」、condemn は「非難する・有罪を言い渡す」
+N	abstention|refusal	abstention は投票の「棄権」や、飲食の「控え」。refusal は「断ること」
+N	abstention|forbearance	abstention は「(自分から)控えること」。forbearance は「がまん・寛容」
+N	abstinence|temperance	abstinence は酒などを「まったく断つこと」。temperance は「節度を保つこと・禁酒」
+N	abstinence|self-denial	abstinence は「断つこと」。self-denial は「欲しいものをがまんすること」
+N	abstinence|indulgence	abstinence は「節制」、indulgence は「ふけること」
+N	abstruse|obscure	abstruse は内容が「難しくて分かりにくい」。obscure は「はっきりしない」や「無名の」
+N	abstruse|recondite	abstruse は「難解な」。recondite は専門的で「一般に知られていない」
+N	abstruse|obvious	abstruse は「難解な」、obvious は「明白な」
+N	accede|assent	accede は要求に「(最終的に)応じる」（accede to）。assent は動詞で「同意する」かたい語
+N	accede|consent	accede は要求を「受け入れる」。consent は動詞で「承諾する」
+N	accede|refuse	accede は「応じる」、refuse は「断る」
+N	accost|approach	accost は見知らぬ人に「(なれなれしく)話しかける」。approach は「近づく」
+N	accost|confront	accost は「呼び止める」。confront は「立ち向かう・詰め寄る」
+N	accost|avoid	accost は「声をかける」、avoid は「避ける」
+N	accretion|accumulation	accretion は少しずつくっついて「増えること・付着物」。accumulation は「たまること・蓄積」
+N	accretion|buildup	accretion は「付着による増大」のかたい語。buildup は「増加・蓄積」
+N	accretion|increase	accretion は少しずつの「増大」。increase は「増加」全般
+N	accretion|erosion	accretion は「積み重なって増えること」、erosion は「削られて減ること・浸食」
+N	acerbic|caustic	acerbic は言葉が「辛辣な」。caustic は「とげのある」や、薬品が「腐食性の」
+N	acerbic|biting	acerbic は「辛口の」。biting は言葉や風が「身にしみる・きつい」
+N	acerbic|gentle	acerbic は「辛辣な」、gentle は「穏やかな」
+N	acme|peak	acme は「絶頂・極致」のかたい語。peak は「頂上・ピーク」
+N	acme|zenith	acme は技能などの「極致」。zenith は力や人気の「絶頂」
+N	acme|nadir	acme は「絶頂」、nadir は「どん底」
+N	acquiesce|comply	acquiesce は反対せずに「しぶしぶ従う」。comply は規則や要求に「従う」
+N	acquiesce|consent	acquiesce は「黙って受け入れる」。consent は動詞で「承諾する」
+N	acquiesce|resist	acquiesce は「従う」、resist は「抵抗する」
+N	acquittal|exoneration	acquittal は裁判での「無罪判決」。exoneration は疑いを晴らす「無罪の証明」
+N	acquittal|conviction	acquittal は「無罪判決」、conviction は「有罪判決」
+N	acrid|pungent	acrid は煙などが「鼻や目にしみる」。pungent はにおいが「つんとくる」
+N	acrid|bitter	acrid は「刺激性の」。bitter は「苦い」
+N	acrid|sweet	acrid は「刺すような」、sweet は「甘い・香りのよい」
+N	acrimonious|bitter	acrimonious は議論などが「とげとげしい」。bitter は争いが「激しい・険悪な」
+N	acrimonious|rancorous	acrimonious は「辛辣な」。rancorous は「恨みのこもった」
+N	acrimonious|amicable	acrimonious は「険悪な」、amicable は「円満な」
+N	acrimony|bitterness	acrimony は言い争いの「とげとげしさ」。bitterness は「苦々しさ・恨み」
+N	acrimony|rancor	acrimony は「辛辣さ」。rancor は長く続く「深い恨み」
+N	acrimony|amity	acrimony は「とげとげしさ」、amity は「友好」
+N	actuality|fact	actuality は「実際(のところ)」（in actuality）。fact は「事実」
+N	actuality|fantasy	actuality は「現実」、fantasy は「空想」
+N	acuity|sharpness	acuity は視力や頭の「鋭さ」のかたい語。sharpness は「鋭さ」ふつうの語
+N	acuity|keenness	acuity は感覚の「鋭敏さ」。keenness は「熱心さ」や感覚の「鋭さ」
+N	acuity|dullness	acuity は「鋭さ」、dullness は「鈍さ」
+N	adage|proverb	adage は昔からの「格言」。proverb は「ことわざ」
+N	adage|maxim	adage は言い古された「格言」。maxim は行動の指針になる「処世訓」
+N	adage|nonsense	adage は「格言」、nonsense は「たわごと」
+N	adjourn|suspend	adjourn は会議を「休会にする・中断する」。suspend は「一時停止する」
+N	adjourn|postpone	adjourn は始まった会議を「いったん打ち切る」。postpone は予定を「延期する」
+N	adroit|skillful	adroit は「機転がきいて巧みな」。skillful は「熟練した・上手な」
+N	adroit|deft	adroit は交渉などが「巧みな」。deft は手先が「器用な」
+N	adroit|clumsy	adroit は「巧みな」、clumsy は「不器用な」
+N	adulation|worship	adulation は有名人などへの「過度の称賛・熱狂」。worship は「崇拝」
+N	adulation|criticism	adulation は「ほめそやすこと」、criticism は「批判」
+N	adulterous|cheating	adulterous は結婚した人の「不貞の」かたい語。cheating は「浮気している」話し言葉
+N	adulterous|faithful	adulterous は「不貞の」、faithful は「貞節な・誠実な」
+N	adultery|infidelity	adultery は結婚した人の「不倫」。infidelity は恋人や配偶者への「裏切り・不貞」
+N	adultery|affair	adultery は法律や宗教の上での「姦通（かんつう）」のかたい語。affair は「不倫関係」の話し言葉
+N	adultery|fidelity	adultery は「不貞」、fidelity は「貞節」
+N	aggrandize|enlarge	aggrandize は自分の権力や富を「大きくする」（悪い意味）。enlarge は「拡大する」
+N	aggrandize|amplify	aggrandize は「誇大に見せる」。amplify は音や考えを「増幅する」
+N	aggrandize|diminish	aggrandize は「拡大する」、diminish は「縮小する・減らす」
+N	aggrieve|wrong	aggrieve は不当に扱って「苦しめる」（be aggrieved）。wrong は動詞で「不当に扱う」
+N	aggrieve|distress	aggrieve は「不当だと感じさせる」。distress は動詞で「苦しめる・悩ませる」
+N	aggrieve|console	aggrieve は「苦しめる」、console は「慰める」
+N	aghast|horrified	aghast は驚いて「あぜんとした」。horrified は「ぞっとした」
+N	aghast|shocked	aghast は「仰天した」かたい語。shocked は「ショックを受けた」
+N	aghast|unmoved	aghast は「仰天した」、unmoved は「動じない」
+N	alacrity|eagerness	alacrity は快く「すばやく」応じること（with alacrity）。eagerness は「熱心さ」
+N	alacrity|readiness	alacrity は「きびきびした態度」。readiness は「準備ができていること・快く応じること」
+N	alacrity|reluctance	alacrity は「喜んですばやく」、reluctance は「しぶしぶ」
+N	albeit|although	albeit は語句をつなぐ「〜ではあるが」（useful, albeit expensive）。although は文をつなぐ「〜だけれども」
+N	albeit|even though	albeit は後ろに語句を置く。even though は後ろに文を置いて「〜なのに」
+N	alienation|isolation	alienation は周囲から「疎外された感じ」。isolation は「孤立」
+N	aloofness|reserve	aloofness は「よそよそしさ」。reserve は感情を出さない「控えめさ」
+N	aloofness|warmth	aloofness は「よそよそしさ」、warmth は「温かさ・親しみ」
+N	altruistic|unselfish	altruistic は人のために尽くす「利他的な」かたい語。unselfish は「わがままでない」
+N	altruistic|selfish	altruistic は「利他的な」、selfish は「利己的な」
+N	amalgamate|merge	amalgamate は組織などを「合併する」かたい語。merge は「合併する・合流する」
+N	amalgamate|combine	amalgamate は「統合して一つにする」。combine は「組み合わせる」
+N	amalgamate|separate	amalgamate は「合併する」、separate は「分ける」
+N	amalgamation|fusion	amalgamation は組織の「合併・統合」。fusion は「融合」や「核融合」
+N	ameliorate|improve	ameliorate は悪い状況を「改善する」かたい語。improve は「よくする・上達する」
+N	ameliorate|better	ameliorate は「改善する」。better は動詞で「よりよくする」
+N	ameliorate|worsen	ameliorate は「改善する」、worsen は「悪化させる」
+N	agreeable|amenable	amenable は提案などを「受け入れる用意がある」（amenable to）。agreeable は「快く同意する」や「感じのよい」
+N	amenable|compliant	amenable は「素直に応じる」。compliant は規則に「従う・準拠した」
+N	amenable|resistant	amenable は「応じる」、resistant は「抵抗する」
+N	amity|friendship	amity は国や団体どうしの「友好」。friendship は人と人の「友情」
+N	amity|harmony	amity は「親善」。harmony は「調和・仲のよさ」
+N	amity|enmity	amity は「友好」、enmity は「敵意」
+N	amorphous|shapeless	amorphous は計画などが「まとまりのない」や、物が「決まった形のない」。shapeless は「形のくずれた」
+N	amorphous|vague	amorphous は「形のはっきりしない」。vague は「あいまいな」
+N	amorphous|definite	amorphous は「漠然とした」、definite は「明確な」
+N	anachronism|archaism	anachronism は今の時代に合わない「時代錯誤」。archaism は「古めかしい言葉や表現」
+N	anachronism|throwback	anachronism は「時代遅れのもの」。throwback は昔を「思い出させるもの」
+N	anachronism|novelty	anachronism は「時代遅れのもの」、novelty は「目新しいもの」
+N	analogous|similar	analogous は仕組みが「似ている・類似した」（analogous to）。similar は「似ている」
+N	analogous|comparable	analogous は「たとえになるほど似た」。comparable は「比べられる・同じくらいの」
+N	abomination|anathema	anathema は「大嫌いなもの」（be anathema to）。abomination は「ぞっとするほど嫌なもの」
+N	anathema|curse	anathema は「忌み嫌うもの」や教会の「破門」。curse は「呪い」
+N	anathema|blessing	anathema は「忌み嫌うもの」、blessing は「ありがたいもの」
+N	ancillary|auxiliary	ancillary は「補助的な・付随する」（ancillary staff）。auxiliary は「予備の・補助の」
+N	ancillary|supplementary	ancillary は「主たるものを支える」。supplementary は「補足の」
+N	ancillary|primary	ancillary は「補助的な」、primary は「主要な」
+N	animus|hostility	animus は個人的な「敵意」のかたい語。hostility は「敵意・敵対」
+N	animosity|animus	animus は「反感」。animosity は「強い敵意・憎しみ」
+N	animus|goodwill	animus は「敵意」、goodwill は「善意」
+N	annihilation|destruction	annihilation は「全滅・絶滅」。destruction は「破壊」
+N	annihilation|obliteration	annihilation は「完全に滅ぼすこと」。obliteration は跡形もなく「消し去ること」
+N	annihilation|creation	annihilation は「全滅」、creation は「創造」
+N	antagonism|enmity	antagonism は対立する者どうしの「反目」。enmity は「敵意・憎しみ」
+N	antagonism|cooperation	antagonism は「対立」、cooperation は「協力」
+N	antipathy|aversion	antipathy は人やものへの「根強い反感」。aversion は「嫌悪」
+N	antipathy|hostility	antipathy は「嫌悪感」。hostility は表に出た「敵意」
+N	affinity|antipathy	antipathy は「反感」、affinity は「親近感」
+N	antithesis|opposite	antithesis は「正反対のもの」のかたい語（the antithesis of）。opposite は「反対のもの」
+N	antithesis|contrast	antithesis は「正反対」。contrast は「対照・ちがい」
+N	antithesis|equivalent	antithesis は「正反対のもの」、equivalent は名詞で「同等のもの」
+N	aplomb|poise	aplomb は困難でも「落ち着き払った自信」（with aplomb）。poise は「落ち着いた態度・身のこなし」
+N	aplomb|composure	aplomb は「自信ある冷静さ」。composure は「平静」
+N	aplomb|panic	aplomb は「落ち着き」、panic は「あわてふためくこと」
+N	apocryphal|fictitious	apocryphal は話が「本当かどうか怪しい」。fictitious は「作り話の・架空の」
+N	apocryphal|dubious	apocryphal は出所の「怪しい」。dubious は「疑わしい」
+N	apocryphal|authentic	apocryphal は「真偽の怪しい」、authentic は「本物の」
+N	apogee|pinnacle	apogee は力や繁栄の「頂点」（天文学では地球から一番遠い点）。pinnacle は成功の「絶頂」
+N	apogee|climax	apogee は「最高点」。climax は物語などの「山場」
+N	apogee|perigee	apogee は地球から「一番遠い点」、perigee は「一番近い点」
+N	apostate|defector	apostate は信仰や主義を「捨てた人」。defector は国や組織から「離反した人」
+N	apostate|renegade	apostate は「背教者」。renegade は「裏切り者・反逆者」
+N	apostate|loyalist	apostate は「背教者」、loyalist は「忠実な支持者」
+N	anxiety|apprehension	apprehension はこれから起きることへの「不安・懸念」。anxiety は「心配・不安」全般
+N	apprehension|dread	apprehension は「気がかり」。dread は「強い恐れ」
+N	apprehension|confidence	apprehension は「不安」、confidence は「自信」
+N	apprise|inform	apprise は正式に「知らせる」かたい語（apprise A of B）。inform は「知らせる」
+N	apprise|notify	apprise は状況を「知らせる」。notify は公式に「通知する」
+N	apprise|conceal	apprise は「知らせる」、conceal は「隠す」
+N	approbation|praise	approbation は正式な「是認・賛同」のかたい語。praise は「ほめること」
+N	approbation|censure	approbation は「是認」、censure は「非難」
+N	arbiter|judge	arbiter は争いの「裁定者」や流行などの「権威者」。judge は「審判・裁判官」
+N	arbiter|authority	arbiter は最終的に「決める人」。authority は「権威・専門家」
+N	arbiter|follower	arbiter は「決める人」、follower は「従う人」
+N	arbitrarily|capriciously	arbitrarily は理由なく「勝手に」。capriciously は「気まぐれに」
+N	arbitrarily|systematically	arbitrarily は「でたらめに」、systematically は「体系的に」
+N	arbitrate|judge	arbitrate は争いを「仲裁する」。judge は「裁く・判断する」
+N	arbitrator|judge	arbitrator は争いの「仲裁人」。judge は「裁判官・審判」
+N	arcane|esoteric	arcane は一部の人しか知らない「難解な・秘伝の」。esoteric は「限られた人向けの」
+N	arcane|obscure	arcane は「秘密めいた」。obscure は「あいまいな」や「無名の」
+N	arcane|obvious	arcane は「難解な」、obvious は「明白な」
+N	antiquated|archaic	archaic は「古風な・廃れた」（archaic language）。antiquated は「時代遅れの」
+N	archaic|obsolete	archaic は「古めかしい」。obsolete は「もう使われていない」
+N	archaic|modern	archaic は「古風な」、modern は「現代の」
+N	archetype|prototype	archetype はある種類の「典型・原型」。prototype は製品の「試作品」
+N	archetype|model	archetype は「元になる型」。model は「手本・模型」
+N	archetype|copy	archetype は「原型」、copy は「複製」
+N	ardor|passion	ardor は「熱情」のかたい語。passion は「情熱」
+N	ardor|fervor	ardor は「熱意」。fervor は「熱烈さ」
+N	ardor|indifference	ardor は「熱情」、indifference は「無関心」
+N	armistice|war	armistice は「休戦協定」、war は「戦争」
+N	arrant|utter	arrant は悪い意味の語と使う「正真正銘の」（arrant nonsense）。utter は「まったくの」
+N	arrant|downright	arrant は「まったくの」かたい語。downright は「まったくの・露骨な」
+N	arrant|slight	arrant は「まったくの」、slight は「わずかな」
+N	arrogate|usurp	arrogate は権利を「不当に自分のものにする」（arrogate to oneself）。usurp は王位などを「奪う」
+N	arrogate|seize	arrogate は「横取りする」。seize は「つかむ・奪う」
+N	arrogate|relinquish	arrogate は「横取りする」、relinquish は「手放す」
+N	artifice|trickery	artifice は人をだます「巧妙な策略」。trickery は「ぺてん」
+N	artifice|cunning	artifice は「策略・技巧」。cunning は名詞で「ずる賢さ」
+N	artifice|sincerity	artifice は「作りごと」、sincerity は「誠実さ」
+N	ascendancy|dominance	ascendancy は勢力の「優位」（gain ascendancy）。dominance は「支配」
+N	ascendancy|supremacy	ascendancy は「優勢」。supremacy は「最高の地位」
+N	ascendancy|subordination	ascendancy は「優位」、subordination は「従属」
+N	ascetic|austere	ascetic は宗教的に「禁欲的な」。austere は生活が「質素な」や、人が「厳格な」
+N	abstinent|ascetic	ascetic は「苦行のような」。abstinent は酒などを「断っている」
+N	ascetic|hedonistic	ascetic は「禁欲的な」、hedonistic は「快楽主義の」
+N	askance|suspiciously	askance は look askance at で「疑いの目で見る」。suspiciously は「疑わしげに」
+N	askance|sidewise	askance は「横目で」。sidewise は「横向きに」
+N	askance|directly	askance は「横目で」、directly は「まっすぐに」
+N	asperity|harshness	asperity は口調の「とげとげしさ」のかたい語。harshness は「厳しさ」
+N	asperity|severity	asperity は「きつい口調」。severity は罰や天候の「厳しさ」
+N	asperity|gentleness	asperity は「とげとげしさ」、gentleness は「優しさ」
+N	assail|attack	assail は「激しく攻撃する」や、疑いなどが「襲う」。attack は「攻撃する」
+N	assail|assault	assail は言葉でも「攻撃する」。assault は人に「暴行する」
+N	assail|defend	assail は「攻撃する」、defend は「守る」
+N	assiduous|diligent	assiduous は「こつこつと念入りな」。diligent は「勤勉な」
+N	assiduous|sedulous	assiduous は「たゆまぬ」。sedulous は「精を出す」かたい語
+N	assiduous|lazy	assiduous は「勤勉な」、lazy は「怠けた」
+N	assuage|soothe	assuage は怒りや罪悪感を「和らげる」。soothe は痛みや人を「なだめる」
+N	alleviate|assuage	assuage は気持ちを「やわらげる」。alleviate は痛みや問題を「軽くする」
+N	aggravate|assuage	assuage は「和らげる」、aggravate は「悪化させる」
+N	atonement|reparation	atonement は罪の「償い」（宗教的にも）。reparation は損害の「賠償」
+N	atonement|offense	atonement は「償い」、offense は「罪・違反」
+N	atrophy|wither	atrophy は筋肉などが「衰える・やせる」。wither は植物が「しおれる」
+N	atrophy|degenerate	atrophy は使わないで「やせ衰える」。degenerate は「退化する・悪化する」
+N	atrophy|develop	atrophy は「衰える」、develop は「発達する」
+N	attenuate|weaken	attenuate は音や効果を「弱める・薄める」かたい語。weaken は「弱める」
+N	attenuate|diminish	attenuate は「弱める」。diminish は「減らす」
+N	attenuate|intensify	attenuate は「弱める」、intensify は「強める」
+N	audacity|nerve	audacity は「大胆さ・厚かましさ」（have the audacity to）。nerve は「図々しさ」（have the nerve to）
+N	audacity|timidity	audacity は「大胆さ」、timidity は「臆病」
+N	auspicious|favorable	auspicious は「縁起のよい・幸先のよい」。favorable は「好都合な」
+N	auspicious|ominous	auspicious は「縁起のよい」、ominous は「不吉な」
+N	autocracy|tyranny	autocracy は一人が権力を握る「独裁政治」。tyranny は「暴政」
+N	autocracy|democracy	autocracy は「独裁政治」、democracy は「民主主義」
+N	autocrat|tyrant	autocrat は「独裁者」。tyrant は残酷な「暴君」
+N	autocratic|dictatorial	autocratic は「独裁的な」。dictatorial は「高圧的な・命令ばかりする」
+N	autocratic|tyrannical	autocratic は「独断的な」。tyrannical は「暴君のような・残酷な」
+N	avarice|cupidity	avarice は「強欲」のかたい語。cupidity は「物欲・金銭欲」
+N	avarice|generosity	avarice は「強欲」、generosity は「気前のよさ」
+N	assert|aver	aver は「断言する」かたい語。assert は「主張する」
+N	affirm|aver	aver は証言などで「言い切る」。affirm は「断言する・肯定する」
+N	aver|deny	aver は「断言する」、deny は「否定する」
+N	avid|keen	avid は「熱心な」（avid reader）。keen は「熱心な」や「鋭い」
+N	avid|enthusiastic	avid は趣味に「熱中している」。enthusiastic は「熱狂的な」
+N	avid|indifferent	avid は「熱心な」、indifferent は「無関心な」
+N	avow|declare	avow は「公然と認める」。declare は「宣言する」
+N	affirm|avow	avow は「公言する」。affirm は「断言する」
+N	avow|deny	avow は「公言する」、deny は「否認する」
+N	avuncular|genial	avuncular は「おじさんのように親しみやすい」。genial は「愛想のよい」
+N	avuncular|kindly	avuncular は「気さくで優しい」。kindly は形容詞で「優しい・親切な」
+N	aloof|avuncular	avuncular は「親しみやすい」、aloof は「よそよそしい」
+N	baleful|malevolent	baleful は目つきなどが「悪意のある」。malevolent は「悪意に満ちた」
+N	baleful|sinister	baleful は「有害な・悪意のある」。sinister は「不吉な・邪悪な」
+N	baleful|benign	baleful は「悪意のある」、benign は「優しい」
+N	banal|trite	banal は「ありきたりで退屈な」。trite は表現が「使い古された」
+N	banal|hackneyed	banal は「陳腐な」。hackneyed は「言い古された」
+N	banal|original	banal は「ありきたりの」、original は「独創的な」
+N	bane|curse	bane は「悩みの種」（the bane of）。curse は「呪い」や「災いのもと」
+N	bane|scourge	bane は「困りもの」。scourge は病気などの「大きな災い」
+N	bane|blessing	bane は「悩みの種」、blessing は「ありがたいもの」
+N	banishment|exile	banishment は罰としての「追放」。exile は名詞で「国外追放」や「亡命」
+N	barbarity|cruelty	barbarity は戦争などの「残虐行為」。cruelty は「残酷さ」
+N	barbarity|civility	barbarity は「野蛮さ」、civility は「礼儀正しさ」
+N	bastion|fortress	bastion は「最後の拠り所・牙城」（a bastion of free speech）。fortress は「要塞」
+N	bawdy|ribald	bawdy は冗談などが「みだらな・下品でおかしい」。ribald は「下品な・きわどい」
+N	bawdy|vulgar	bawdy は性的な冗談が「きわどい」。vulgar は「下品な・俗悪な」
+N	bawdy|decorous	bawdy は「きわどい」、decorous は「上品な」
+N	bedlam|chaos	bedlam は騒がしい「大騒ぎ」。chaos は「大混乱」
+N	bedlam|pandemonium	bedlam は「騒然とした場所」。pandemonium は叫び声が飛びかう「大混乱」
+N	bedlam|order	bedlam は「大騒ぎ」、order は「秩序」
+N	befuddle|confuse	befuddle は「頭をこんがらがらせる」。confuse は「混乱させる」
+N	befuddle|muddle	befuddle は「当惑させる」。muddle は「ごちゃごちゃにする」
+N	befuddle|clarify	befuddle は「混乱させる」、clarify は「はっきりさせる」
+N	beget|generate	beget は結果として「生む」の古い語（Violence begets violence）。generate は「生み出す」
+N	beget|produce	beget は「引き起こす」。produce は「生産する・生み出す」
+N	beget|prevent	beget は「生む」、prevent は「防ぐ」
+N	beguile|charm	beguile は「うっとり魅了する」や「だます」。charm は動詞で「魅了する」
+N	beguile|deceive	beguile は「うまいことを言ってだます」。deceive は「欺く」
+N	beguile|repel	beguile は「引きつける」、repel は「寄せつけない」
+N	belabor|overemphasize	belabor は同じ点を「くどくど述べる」（belabor the point）。overemphasize は「強調しすぎる」
+N	belabor|summarize	belabor は「くどくど言う」、summarize は「要約する」
+I	belabor|exam_idm_dwell_on	dwell on は「くよくよ考える・長々と話す」。belabor は同じ点を「くどくど説明する」
+N	beleaguer|harass	beleaguer は問題が「悩ます」（be beleaguered by）。harass は人に「嫌がらせをする」
+N	beleaguer|besiege	beleaguer は「包囲する」や「悩ます」。besiege は町を「包囲する」
+N	beleaguer|relieve	beleaguer は「悩ます」、relieve は「救う・和らげる」
+N	belie|contradict	belie は見た目が本当の姿を「裏切る・隠す」。contradict は「矛盾する・反論する」
+N	belie|misrepresent	belie は「偽りの印象を与える」。misrepresent は事実を「ゆがめて伝える」
+N	belie|confirm	belie は実際とちがう印象を「与える」、confirm は「裏づける」
+N	bellicose|belligerent	bellicose は国や指導者が「好戦的な」。belligerent は人や態度が「けんか腰の」
+N	bellicose|pugnacious	bellicose は「戦争を好む」。pugnacious は「けんか好きな」
+N	bellicose|peaceable	bellicose は「好戦的な」、peaceable は「平和を好む」
+N	aggressive|belligerent	belligerent は「けんか腰の・敵対的な」。aggressive は「攻撃的な」や「積極的な」
+N	belligerent|hostile	belligerent は「挑むような」。hostile は「敵意のある」

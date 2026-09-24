@@ -1,0 +1,563 @@
+D	sully	syn	soil	soil の「汚す」は「土壌」の soil とは由来のちがう別の語（古フランス語 soiller）で、辞書に見出しがなく、リンク先が「土壌」の soil になるため外した
+N	extravagance|profligacy	profligacy はお金や資源の「ひどいむだづかい」のかたい語（government profligacy）。extravagance は「ぜいたく・浪費」
+N	dissipation|profligacy	profligacy は「浪費」。dissipation は「遊びで身を持ちくずすこと」や、力の「消散」
+N	profligacy|thrift	profligacy は「浪費」、thrift は「倹約」
+N	profligate|wasteful	profligate はお金を「湯水のように使う」かたい語。wasteful は「むだの多い」
+N	extravagant|profligate	profligate は「浪費ぐせのある」。extravagant は「ぜいたくな・金遣いの荒い」
+N	frugal|profligate	profligate は「浪費する」、frugal は「倹約な」
+N	abundant|profuse	profuse は謝罪や汗などが「あふれるほどの」（profuse apologies）。abundant は資源などが「豊富な」
+N	lavish|profuse	profuse は「ふんだんな」。lavish はほめ言葉や贈り物が「惜しみない・豪華な」
+N	profuse|scant	profuse は「あふれんばかりの」、scant は「乏しい」
+N	favorable|propitious	propitious は時期や条件が「好都合な」かたい語。favorable は「有利な・好意的な」
+N	auspicious|propitious	propitious は何かをするのに「ちょうどよい」。auspicious は「縁起のよい・幸先のよい」
+N	propitious|unfavorable	propitious は「好都合な」、unfavorable は「不利な」
+N	impropriety|propriety	propriety は「礼儀にかなっていること・妥当性」、impropriety は「不適切なふるまい」
+N	mundane|prosaic	prosaic は「散文的で平凡な・味気ない」。mundane は「ありふれた・日常の」
+N	dull|prosaic	prosaic は「おもしろみのない」。dull は「退屈な」
+N	poetic|prosaic	prosaic は「平凡な」、poetic は「詩的な」
+N	prohibit|proscribe	proscribe は法律などで「禁止する」かたい語（prescribe「処方する」とつづりが似ている）。prohibit は規則で「禁止する」
+N	forbid|proscribe	proscribe は「公に禁じる」。forbid は親などが「禁じる」
+N	permit|proscribe	proscribe は「禁止する」、permit は「許可する」
+N	prolong|protract	protract は会議などを「必要以上に長引かせる」かたい語。prolong は命や時間を「延ばす」
+N	extend|protract	protract は「だらだら長引かせる」。extend は期間や範囲を「延ばす・広げる」
+N	protract|shorten	protract は「長引かせる」、shorten は「短くする」
+I	protract|curr_idm_pre1_draw_out	draw out は話や会議を「長引かせる」や、人から話を「引き出す」。protract は「引き延ばす」かたい語
+N	lewd|prurient	prurient は性的なことに「いやらしい興味をもつ」。lewd は言葉などが「みだらな」
+N	lascivious|prurient	prurient は「好色な関心の」。lascivious は「好色な」
+N	chaste|prurient	prurient は「好色な」、chaste は「純潔な」
+N	childish|puerile	puerile は大人のふるまいが「幼稚な」かたい語。childish は「子どもっぽい」
+N	juvenile|puerile	puerile は「子どもじみた」。juvenile は「少年少女の」や、ふるまいが「幼稚な」
+N	mature|puerile	puerile は「幼稚な」、mature は「大人びた」
+N	belligerent|pugnacious	pugnacious は性格が「けんか好きな」。belligerent は態度が「けんか腰の」
+N	combative|pugnacious	pugnacious は「すぐ争いたがる」。combative は「闘争心のある」
+N	peaceable|pugnacious	pugnacious は「けんか好きの」、peaceable は「温和な」
+N	meticulous|punctilious	punctilious は作法や手順に「きちんとしすぎるほど厳格な」。meticulous は「細部まで念入りな」
+N	punctilious|scrupulous	punctilious は「礼儀や形式にうるさい」。scrupulous は「良心的で細かいところまで正確な」
+N	careless|punctilious	punctilious は「きちょうめんな」、careless は「ぞんざいな」
+N	pungent|sharp	pungent はにおいや味が「つんと鼻をつく」（ニンニクなど）。sharp は味が「ぴりっとした」
+N	bland|pungent	pungent は「刺激の強い」、bland は「味の薄い」
+N	purloin|steal	purloin は「盗む」の気取った言い方（おどけて使う）。steal は「盗む」
+N	filch|purloin	purloin は「くすねる」。filch は「こそこそ盗む」
+N	purloin|return	purloin は「盗む」、return は「返す」
+N	cowardly|pusillanimous	pusillanimous は決断できないほど「気の小さい」かたい語。cowardly は「臆病な・卑怯な」
+N	fainthearted|pusillanimous	pusillanimous は「小心な」。fainthearted は「気の弱い」
+N	pusillanimous|valiant	pusillanimous は「臆病な」、valiant は「勇敢な」
+N	predicament|quagmire	quagmire は抜け出せない「泥沼の状況」（もとはぬかるみ）。predicament は「窮地・困った立場」
+N	quagmire|solution	quagmire は「泥沼」、solution は「解決策」
+N	dilemma|quandary	quandary は「どうしたらよいか迷う状態」（be in a quandary）。dilemma はどちらを選んでも困る「板ばさみ」
+N	predicament|quandary	quandary は「迷い」。predicament は抜け出しにくい「苦境」
+N	certainty|quandary	quandary は「迷い」、certainty は「確信」
+N	querulous|whining	querulous は「不平がましい・ぐちっぽい」かたい語。whining は「泣き言を言う」
+N	petulant|querulous	querulous は「文句ばかり言う」。petulant は「すねた・不機嫌な」
+N	contented|querulous	querulous は「不平の多い」、contented は「満ち足りた」
+N	cavil|quibble	quibble はささいなことで「文句を言う」（quibble over）。cavil は「あら探しをする」かたい語
+N	nitpick|quibble	quibble は「細かいことにけちをつける」。nitpick は「重箱の隅をつつく」
+N	concur|quibble	quibble は「けちをつける」、concur は「同意する」
+N	dormant|quiescent	quiescent は火山などが「静かに休んでいる」かたい語。dormant は「休眠中の」
+N	inactive|quiescent	quiescent は「活動を休んだ」。inactive は「活動していない」
+N	quiescent|quiet	quiescent は「活動が止まっている」。quiet は「静かな・穏やかな」
+N	active|quiescent	quiescent は「休止中の」、active は「活動中の」
+N	idealistic|quixotic	quixotic は「ドン・キホーテのように現実離れした」。idealistic は「理想主義的な」
+N	impractical|quixotic	quixotic は「夢のような」。impractical は「実用的でない」
+N	pragmatic|quixotic	quixotic は「非現実的な」、pragmatic は「現実的な」
+N	narrator|raconteur	raconteur は「話し上手な人」。narrator は物語の「語り手・ナレーター」
+N	listener|raconteur	raconteur は「話し上手」、listener は「聞き手」
+N	bitterness|rancor	rancor は長く残る「深い恨み」のかたい語。bitterness は「苦々しい気持ち・恨み」
+N	rancor|resentment	rancor は「根にもつ恨み」。resentment は不当な扱いへの「憤り」
+N	goodwill|rancor	rancor は「恨み」、goodwill は「善意」
+N	bitter|rancorous	rancorous は争いが「恨みのこもった」。bitter は「険悪な・辛辣な」
+N	rancorous|spiteful	rancorous は「敵意に満ちた」。spiteful は「意地悪な」
+N	amicable|rancorous	rancorous は「恨みに満ちた」、amicable は「円満な」
+N	greedy|rapacious	rapacious は「奪い取るほど強欲な」かたい語。greedy は「欲ばりな」
+N	generous|rapacious	rapacious は「強欲な」、generous は「気前のよい」
+N	harsh|raucous	raucous は笑い声などが「がさつで騒々しい」。harsh は音が「耳ざわりな」
+N	boisterous|raucous	raucous は「やかましい」。boisterous は「騒がしく元気な」
+N	mellow|raucous	raucous は「耳ざわりな」、mellow は音が「柔らかな」
+N	demolish|raze	raze は建物を「跡形もなく取り壊す」（raze to the ground）。demolish は「解体する」
+N	level|raze	raze は「完全に破壊する」。level は動詞で建物を「取り壊して平らにする」
+N	erect|raze	raze は「取り壊す」、erect は「建てる」
+I	raze|curr_idm_2_pull_down	pull down は建物を「取り壊す」のふつうの言い方。raze は「跡形もなく壊す」かたい語
+N	rebuff|reject	rebuff は申し出を「そっけなくはねつける」。reject は「拒否する・却下する」
+N	rebuff|snub	rebuff は「突っぱねる」。snub は人を「冷たくあしらう」
+N	rebuff|welcome	rebuff は「はねつける」、welcome は「歓迎する」
+N	defiance|recalcitrance	recalcitrance は言うことを聞かない「強情さ」のかたい語。defiance は「反抗」
+N	obstinacy|recalcitrance	recalcitrance は「手に負えない強情」。obstinacy は「頑固さ」
+N	compliance|recalcitrance	recalcitrance は「反抗」、compliance は「従うこと」
+N	defiant|recalcitrant	recalcitrant は権威に対して「言うことを聞かない」かたい語。defiant は「挑むように反抗的な」
+N	recalcitrant|unruly	recalcitrant は「強情な」。unruly は「手に負えない・乱れた」
+N	compliant|recalcitrant	recalcitrant は「反抗的な」、compliant は「従順な」
+N	recant|retract	recant は意見や信仰を「公に撤回する」。retract は発言を「取り消す」
+N	recant|renounce	recant は「前言をひるがえす」。renounce は権利や信仰を「捨てる」
+N	affirm|recant	recant は「撤回する」、affirm は「断言する」
+I	recant|curr_idm_4_take_back	take back は言ったことを「取り消す」話し言葉。recant は公に「撤回する」かたい語
+N	recapitulate|summarize	recapitulate は要点を「くり返してまとめる」かたい語。summarize は「要約する」
+N	recap|recapitulate	recapitulate は「要約する」。recap はその短い言い方（くだけた語）
+N	elaborate|recapitulate	recapitulate は「まとめ直す」、elaborate は「詳しく述べる」
+I	recapitulate|curr1900_idm_2_sum_up	sum up は「要約する」のふつうの言い方。recapitulate はかたい語
+N	recidivist|reoffender	recidivist は「常習犯」のかたい語。reoffender は「再犯者」
+N	recidivist|repeat offender	recidivist は法律の語。repeat offender は「くり返し罪を犯す人」のふつうの言い方
+N	first offender|recidivist	recidivist は「再犯者」、first offender は「初犯者」
+N	reciprocate|requite	reciprocate は親切などに「お返しをする」。requite は「報いる」の古い語
+N	reciprocate|return	reciprocate は好意に「同じように返す」。return は「返す」
+N	ignore|reciprocate	reciprocate は「お返しをする」、ignore は「無視する」
+N	hermit|recluse	recluse は人を避けて「ひとりで暮らす人」。hermit は宗教などのため「世を捨てた人」
+N	loner|recluse	recluse は「世捨て人」。loner は「一人でいるのが好きな人」
+N	recluse|socialite	recluse は「世捨て人」、socialite は「社交界の人」
+N	reclusive|solitary	reclusive は人を「避けて暮らす」。solitary は「ひとりの・単独の」
+N	hermitlike|reclusive	reclusive は「世間から離れて暮らす」。hermitlike は「隠者のような」
+N	flinch|recoil	recoil はぞっとして「後ずさりする」。flinch は痛みなどで「びくっとする」
+N	recoil|shrink	recoil は「身を引く」。shrink は動詞で「しりごみする」
+N	advance|recoil	recoil は「後ずさりする」、advance は「前に進む」
+N	esoteric|recondite	recondite は専門的で「ほとんど知られていない」かたい語。esoteric は「限られた人向けの」
+N	recondite|simple	recondite は「難解な」、simple は「平易な」
+N	recoup|recover	recoup は損失や費用を「取り戻す」（recoup losses）。recover は「回復する・取り戻す」
+N	recoup|regain	recoup はお金を「埋め合わせる」。regain は力や位置を「取り戻す」
+N	forfeit|recoup	recoup は「取り戻す」、forfeit は罰として「失う」
+I	recoup|curr_idm_1_claw_back	claw back は支払ったお金を「苦労して取り返す」。recoup は損失を「取り戻す」
+I	recoup|curr_idm_4_get_back	get back は「取り戻す」のふつうの言い方。recoup はお金の損失を「埋め合わせる」
+N	countercharge|recrimination	recrimination は「責任のなすり合い」（ふつう複数形）。countercharge は「逆の非難・反訴」
+N	blame|recrimination	recrimination は「非難の応酬」。blame は名詞で「責め・責任」
+N	reconciliation|recrimination	recrimination は「なすり合い」、reconciliation は「和解」
+N	integrity|rectitude	rectitude は「行いの正しさ・実直さ」のかたい語。integrity は「誠実さ・高潔さ」
+N	rectitude|uprightness	rectitude は「道徳的な正しさ」。uprightness は「まっすぐな人柄」
+N	corruption|rectitude	rectitude は「高潔」、corruption は「腐敗」
+N	fragrant|redolent	redolent は「〜のにおいがする」や「思い出させる」（redolent of）。fragrant は「よい香りの」
+N	evocative|redolent	redolent は「しのばせる」。evocative は記憶などを「呼び起こす」
+N	odorless|redolent	redolent は「においの漂う」、odorless は「においのない」
+N	formidable|redoubtable	redoubtable は相手が「手ごわい・一目置かれる」。formidable は「恐るべき」
+N	fearsome|redoubtable	redoubtable は「侮れない」。fearsome は見た目などが「恐ろしい」
+N	feeble|redoubtable	redoubtable は「手ごわい」、feeble は「弱々しい」
+N	rectify|redress	redress は不正や不均衡を「正す・償う」（redress the balance）。rectify はまちがいを「正す」
+N	redress|remedy	redress は「是正する」。remedy は動詞で「改善する・救済する」
+N	aggravate|redress	redress は「是正する」、aggravate は「悪化させる」
+N	refractory|stubborn	refractory は「手に負えない」かたい語や、病気が「治りにくい」。stubborn は「頑固な」
+N	intractable|refractory	refractory は「強情な」。intractable は「扱いにくい」
+N	docile|refractory	refractory は「強情な」、docile は「従順な」
+N	reiteration|restatement	reiteration は同じことの「くり返し」。restatement は「言い直し」
+N	demote|relegate	relegate は重要でない位置に「追いやる」（relegate to the bench）。demote は「降格させる」
+N	downgrade|relegate	relegate は「格下げする・左遷する」。downgrade は「等級を下げる」
+N	promote|relegate	relegate は「格下げする」、promote は「昇格させる」
+N	negligent|remiss	remiss はすべきことを「怠っている」（I would be remiss if...）。negligent は「怠慢な・過失のある」
+N	careless|remiss	remiss は「怠慢な」。careless は「不注意な」
+N	diligent|remiss	remiss は「怠慢な」、diligent は「勤勉な」
+N	merciless|remorseless	remorseless は暑さなどが「容赦なく続く」や、人が「反省しない」。merciless は「無慈悲な」
+N	remorseless|ruthless	remorseless は「情け容赦ない」。ruthless は「冷酷な」
+N	compassionate|remorseless	remorseless は「容赦ない」、compassionate は「情け深い」
+N	default|renege	renege は約束を「破る」（renege on a promise）。default は動詞で借金の支払いなどを「怠る」
+N	backtrack|renege	renege は「約束をほごにする」。backtrack は「前言をひるがえす」
+N	honor|renege	renege は約束を「破る」、honor は動詞で約束を「守る」
+N	full|replete	replete は「〜でいっぱいの」かたい語（replete with）。full は「いっぱいの」
+N	abounding|replete	replete は「満ちた」。abounding は「あふれるほどある」
+N	devoid|replete	replete は「満ちた」、devoid は「〜がない」
+N	blameworthy|reprehensible	reprehensible は行いが「強く非難されるべき」かたい語。blameworthy は「責められるべき」
+N	culpable|reprehensible	reprehensible は「けしからぬ」。culpable は法的に「罪のある」
+N	praiseworthy|reprehensible	reprehensible は「非難されるべき」、praiseworthy は「称賛すべき」
+N	reprieve|respite	reprieve は刑の「執行猶予」や、悪いことの「一時的な中止」。respite は「ひと休み・小休止」
+N	pardon|reprieve	reprieve は刑の「延期」。pardon は罪の「赦免・恩赦」
+N	punishment|reprieve	reprieve は「猶予」、punishment は「処罰」
+N	reprobate|scoundrel	reprobate は冗談めかして「ろくでなし」。scoundrel は「悪党・卑劣なやつ」
+N	reprobate|rogue	reprobate は「身を持ちくずした人」。rogue は「ならず者」や「いたずら者」
+N	reprobate|saint	reprobate は「ろくでなし」、saint は「聖人」
+N	reject|repudiate	repudiate は主張などを「きっぱり否定する・拒絶する」かたい語。reject は「拒否する」
+N	disown|repudiate	repudiate は「認めない」。disown は子どもなどと「縁を切る」
+N	embrace|repudiate	repudiate は「拒絶する」、embrace は「受け入れる」
+N	rejection|repudiation	repudiation は「きっぱりした拒絶・否認」。rejection は「拒絶・不採用」
+N	denial|repudiation	repudiation は「否認」。denial は「否定・否認」
+N	acceptance|repudiation	repudiation は「拒絶」、acceptance は「受け入れ」
+N	offensive|repugnant	repugnant は道徳的に「むかつくほど不快な」。offensive は「不快な・失礼な」
+N	distasteful|repugnant	repugnant は「嫌悪を催す」。distasteful は「嫌な・不快な」
+N	agreeable|repugnant	repugnant は「不快な」、agreeable は「好ましい」
+N	rescind|revoke	rescind は法律や決定を「取り消す・無効にする」かたい語。revoke は免許などを「取り消す」
+N	annul|rescind	rescind は「撤回する」。annul は結婚や契約を「無効にする」
+N	enact|rescind	rescind は「廃止する」、enact は法律を「制定する」
+N	radiant|resplendent	resplendent は「きらびやかに輝く」（resplendent in gold）。radiant は「輝く・晴れやかな」
+N	dazzling|resplendent	resplendent は「華麗な」。dazzling は「まぶしいほどの」
+N	resplendent|splendid	resplendent は「光り輝くほど華やかな」。splendid は「見事な・すばらしい」
+N	drab|resplendent	resplendent は「華麗な」、drab は「地味な・くすんだ」
+N	fidgety|restive	restive は人や馬が「落ち着かず反抗しそうな」。fidgety は「そわそわした」
+N	calm|restive	restive は「落ち着かない」、calm は「平静な」
+N	reticence|taciturnity	reticence は気持ちを「話したがらないこと・控えめ」。taciturnity は性格として「無口なこと」
+N	garrulity|reticence	reticence は「寡黙」、garrulity は「おしゃべり」
+N	ribald|vulgar	ribald は冗談などが「下品でおもしろい」。vulgar は「下品な・俗悪な」
+N	decorous|ribald	ribald は「きわどい」、decorous は「上品な」
+N	rife|widespread	rife は悪いことが「はびこっている」（Rumors were rife.）。widespread は「広く行き渡った」
+N	prevalent|rife	rife は悪いことが「満ちている」。prevalent は「広く見られる」
+N	rife|scarce	rife は「はびこる」、scarce は「乏しい」
+N	ceremony|rite	rite は宗教や伝統の「儀式」（rite of passage）。ceremony は式典などの「式」全般
+N	ponder|ruminate	ruminate は「じっくり考えこむ」（牛の反すうから）。ponder は「熟考する」
+N	mull|ruminate	ruminate は「思いめぐらす」。mull は mull over で「よく考える」
+N	ignore|ruminate	ruminate は「考えこむ」、ignore は「気にしない」
+N	prominent|salient	salient は要点が「最も目立つ・重要な」（salient points）。prominent は「目立つ・著名な」
+N	conspicuous|salient	salient は「顕著な」。conspicuous は「人目を引く」
+N	minor|salient	salient は「目立った」、minor は「ささいな」
+N	beneficial|salutary	salutary はつらくても「ためになる」（a salutary lesson）。beneficial は「有益な」
+N	salutary|wholesome	salutary は「有益な」。wholesome は「健全な」
+N	harmful|salutary	salutary は「有益な」、harmful は「有害な」
+N	bless|sanctify	sanctify は「神聖なものとする」。bless は「祝福する」
+N	desecrate|sanctify	sanctify は「神聖にする」、desecrate は「神聖を汚す」
+N	preachy|sanctimonious	sanctimonious は「聖人ぶった」。preachy は「説教くさい」
+N	sanctimonious|self-righteous	sanctimonious は「偉そうに道徳を説く」。self-righteous は「自分だけ正しいと思う」
+N	humble|sanctimonious	sanctimonious は「聖人ぶった」、humble は「謙虚な」
+N	hypocrisy|sanctimony	sanctimony は「聖人ぶること」。hypocrisy は「偽善」
+N	sanctimony|self-righteousness	sanctimony は「信心深いふり」。self-righteousness は「独善」
+N	sanctimony|sincerity	sanctimony は「偽善的な態度」、sincerity は「誠実さ」
+N	optimistic|sanguine	sanguine は見通しに「楽観的な」かたい語（sanguine about）。optimistic は「楽観的な」
+N	hopeful|sanguine	sanguine は「自信のある」。hopeful は「希望をもっている」
+N	pessimistic|sanguine	sanguine は「楽観的な」、pessimistic は「悲観的な」
+N	cynical|sardonic	sardonic は笑いなどが「人をばかにしたような」。cynical は「冷めた・人を信じない」
+N	mocking|sardonic	sardonic は「冷笑的な」。mocking は「からかうような」
+N	genial|sardonic	sardonic は「冷笑的な」、genial は「愛想のよい」
+N	scathing|withering	scathing は批評が「こてんぱんな」。withering は視線などが「相手を縮み上がらせる」
+N	mild|scathing	scathing は「痛烈な」、mild は「穏やかな」
+N	scintilla|trace	scintilla は「ほんのわずか」（not a scintilla of）のかたい語。trace は名詞で「ごくわずか・跡」
+N	iota|scintilla	scintilla は「ごくわずか」。iota は not one iota で「これっぽっちも」
+N	abundance|scintilla	scintilla は「ごくわずか」、abundance は「大量」
+N	defamatory|scurrilous	scurrilous は「口汚く中傷する」。defamatory は法的に「名誉を傷つける」
+N	abusive|scurrilous	scurrilous は「下品な悪口の」。abusive は「口汚い・虐待的な」
+N	respectful|scurrilous	scurrilous は「口汚い」、respectful は「礼儀正しい」
+N	inactive|sedentary	sedentary は仕事や生活が「座りっぱなしの」。inactive は「活動していない」
+N	sedentary|settled	sedentary は動物や人が「移動しない・定住の」。settled は「住みついた」
+N	active|sedentary	sedentary は「座りがちの」、active は「活動的な」
+N	incitement|sedition	sedition は国家への「反乱をあおること」（法律の語）。incitement は暴力などへの「扇動」
+N	rebellion|sedition	sedition は「反逆をあおる言動」。rebellion は実際の「反乱」
+N	loyalty|sedition	sedition は「反逆の扇動」、loyalty は「忠誠」
+N	rebellious|seditious	seditious は政府に対して「反乱をあおる」。rebellious は「反抗的な」
+N	seditious|subversive	seditious は「扇動的な」。subversive は体制を「くつがえそうとする」
+N	loyal|seditious	seditious は「反逆的な」、loyal は「忠実な」
+N	fume|seethe	seethe は怒りで「黙って煮えくり返る」。fume は「ぷりぷり怒る」
+N	calm|seethe	seethe は「煮えくり返る」、calm は動詞で「落ち着く」
+N	luck|serendipity	serendipity は探していないのに「よいものに偶然出会うこと」。luck は「運・幸運」
+N	chance|serendipity	serendipity は「うれしい偶然」。chance は「偶然・機会」
+N	misfortune|serendipity	serendipity は「思わぬ幸運」、misfortune は「不運」
+N	servile|subservient	servile は奴隷のように「卑屈な」。subservient は「言いなりの・従属的な」
+N	assertive|servile	servile は「卑屈な」、assertive は「自己主張する」
+N	servitude|slavery	servitude は「隷属・強制された奉公」のかたい語。slavery は「奴隷制・奴隷状態」
+N	freedom|servitude	servitude は「隷属」、freedom は「自由」
+N	sluggishness|vigor	sluggishness は「のろさ・不活発」、vigor は「活力」
+N	seriousness|sobriety	sobriety は「しらふ」や「まじめで落ち着いていること」。seriousness は「真剣さ」
+N	sobriety|temperance	sobriety は「酒に酔っていないこと」。temperance は「節制・禁酒」
+N	intoxication|sobriety	sobriety は「しらふ」、intoxication は「酔い」
+N	sojourn|stay	sojourn は「一時的な滞在」の文学的な語。stay は「滞在」のふつうの語
+N	sojourn|visit	sojourn は「しばらくの滞在」。visit は「訪問・見物」
+N	journey|sojourn	sojourn はある場所に「とどまること」。journey は「移動する旅」
+N	departure|sojourn	sojourn は「滞在」、departure は「出発」
+N	comfort|solace	solace は悲しいときの「心の慰め」のかたい語（find solace in）。comfort は「慰め・快適さ」
+N	consolation|solace	solace は「心の安らぎ」。consolation は「慰めになるもの」
+N	distress|solace	solace は「慰め」、distress は「苦悩」
+N	attentive|solicitous	solicitous は人の健康などを「気づかう」（solicitous about）。attentive は「よく気を配る」
+N	caring|solicitous	solicitous は「心配する」。caring は「思いやりのある」
+N	indifferent|solicitous	solicitous は「気づかう」、indifferent は「無関心な」
+N	concern|solicitude	solicitude は「気づかい・心配」のかたい語。concern は「心配・関心」
+N	care|solicitude	solicitude は「細やかな配慮」。care は「世話・注意」
+N	indifference|solicitude	solicitude は「気づかい」、indifference は「無関心」
+N	sleazy|sordid	sordid は話や行いが「卑しい・汚い」や、場所が「むさ苦しい」。sleazy は「いかがわしい」
+N	sordid|squalid	sordid は「卑劣な」。squalid は「不潔でむさ苦しい」
+N	noble|sordid	sordid は「卑しい」、noble は「高潔な」
+N	austere|spartan	spartan は生活がスパルタ式に「質素で厳しい」。austere は「飾り気のない・厳格な」
+N	frugal|spartan	spartan は「最低限の設備しかない」。frugal は「倹約な」
+N	luxurious|spartan	spartan は「質素な」、luxurious は「ぜいたくな」
+N	plausible|specious	specious は「もっともらしいが実はまちがった」（悪い意味）。plausible は「もっともらしい・ありそうな」
+N	misleading|specious	specious は「見せかけだけの」。misleading は「誤解を招く」
+N	specious|valid	specious は「見せかけの」、valid は「妥当な」
+N	spendthrift|squanderer	spendthrift は「浪費家」。squanderer は「むだづかいする人」
+N	prodigal|spendthrift	spendthrift は「金遣いの荒い人」。prodigal は名詞で「浪費家」（the prodigal son）
+N	miser|spendthrift	spendthrift は「浪費家」、miser は「けち」
+N	false|spurious	spurious は主張などが「根拠のない・にせの」かたい語。false は「偽の・まちがった」
+N	bogus|spurious	spurious は「もっともらしいがにせの」。bogus は「いんちきの」くだけた語
+N	genuine|spurious	spurious は「偽の」、genuine は「本物の」
+N	reject|spurn	spurn は申し出などを「見下してはねつける」。reject は「拒否する」
+N	rebuff|spurn	spurn は「軽蔑して断る」。rebuff は「そっけなく突っぱねる」
+N	accept|spurn	spurn は「はねつける」、accept は「受け入れる」
+N	filthy|squalid	squalid は住まいなどが「不潔でみすぼらしい」。filthy は「ひどく汚い」
+N	pristine|squalid	squalid は「不潔な」、pristine は「真新しく清潔な」
+N	filth|squalor	squalor は貧しさによる「不潔さ・むさ苦しさ」（live in squalor）。filth は「汚れ・汚物」
+N	sordidness|squalor	squalor は「むさ苦しさ」。sordidness は「卑しさ・汚さ」
+N	cleanliness|squalor	squalor は「不潔」、cleanliness は「清潔」
+N	queasy|squeamish	squeamish は血などを見ると「気分が悪くなりやすい」。queasy はいま「吐き気がする」
+N	fastidious|squeamish	squeamish は「神経質な・潔癖な」。fastidious は「好みがうるさい」
+N	squeamish|unflinching	squeamish は「すぐ気分が悪くなる」、unflinching は「ひるまない」
+N	sedate|staid	staid は「堅苦しくまじめな・古風な」。sedate は「落ち着いた・ゆったりした」
+N	sober|staid	staid は「地味で型どおりの」。sober は「まじめな・派手でない」
+N	frivolous|staid	staid は「堅実な」、frivolous は「軽薄な」
+N	loyal|stalwart	stalwart は長年「忠実で頼りになる」（a stalwart supporter）。loyal は「忠実な」
+N	stalwart|steadfast	stalwart は「頼もしい」。steadfast は「揺るがない」
+N	fickle|stalwart	stalwart は「忠実な」、fickle は「気まぐれな」
+N	impassive|stolid	stolid は「何にも動じない・鈍重な」。impassive は「表情を変えない」
+N	emotional|stolid	stolid は「感情を表さない」、emotional は「感情的な」
+N	robustness|sturdiness	sturdiness は家具などの「頑丈さ」。robustness は仕組みなどの「たくましさ・強さ」
+N	strength|sturdiness	sturdiness は「がっしりしていること」。strength は「強さ・力」
+N	fragility|sturdiness	sturdiness は「頑丈さ」、fragility は「もろさ」
+N	stymie|thwart	stymie は計画を「行き詰まらせる」（be stymied by）。thwart は「阻止する・くじく」
+N	hinder|stymie	stymie は「立ち往生させる」。hinder は「妨げる」
+N	facilitate|stymie	stymie は「妨げる」、facilitate は「促進する」
+N	smooth|suave	suave は男性の物腰が「洗練されて如才ない」。smooth は「口がうまい」（悪い意味にも）
+N	suave|urbane	suave は「物腰の柔らかい」。urbane は「都会的に洗練された」
+N	awkward|suave	suave は「如才ない」、awkward は「ぎこちない」
+N	conquer|subjugate	subjugate は征服して「支配下に置く・服従させる」。conquer は「征服する・打ち勝つ」
+N	liberate|subjugate	subjugate は「服従させる」、liberate は「解放する」
+N	obedient|submissive	submissive は「言いなりになる・服従的な」。obedient は「言うことをよく聞く」
+N	assertive|submissive	submissive は「従順な」、assertive は「自己主張の強い」
+N	subpoena|writ	subpoena は証人への「召喚令状」。writ は裁判所の「令状」全般
+N	deception|subterfuge	subterfuge は目的のための「策略・ごまかし」。deception は「だますこと」
+N	ruse|subterfuge	subterfuge は「言い逃れ」。ruse は「計略・たくらみ」
+N	honesty|subterfuge	subterfuge は「策略」、honesty は「正直」
+N	sully|taint	sully は評判などを「汚す」文学的な語。taint は「汚す・損なう」
+N	purify|sully	sully は「汚す」、purify は「浄化する」
+N	lavish|sumptuous	sumptuous は食事などが「豪華な」。lavish は「惜しみない・豪勢な」
+N	opulent|sumptuous	sumptuous は「ぜいたくな」。opulent は「富を見せつけるほど豪華な」
+N	modest|sumptuous	sumptuous は「豪華な」、modest は「質素な」
+N	sundry|various	sundry は「いろいろな・雑多な」のかたい語（all and sundry）。various は「さまざまな」
+N	miscellaneous|sundry	sundry は「種々雑多な」。miscellaneous は「その他いろいろの」
+N	sundry|uniform	sundry は「雑多な」、uniform は形容詞で「一様の」
+N	haughty|supercilious	supercilious は人を「見下したような」（眉を上げて）。haughty は「高慢な」
+N	disdainful|supercilious	supercilious は「横柄な」。disdainful は「軽蔑的な」
+N	humble|supercilious	supercilious は「見下した」、humble は「謙虚な」
+N	redundant|superfluous	superfluous は「必要以上の・余計な」。redundant は「重複していていらない」
+N	excess|superfluous	superfluous は「不必要な」。excess は形容詞的に「余分の」（excess baggage）
+N	essential|superfluous	superfluous は「余分な」、essential は「必須の」
+N	excess|surfeit	surfeit は「多すぎること・食べすぎ」（a surfeit of）。excess は「過剰・超過」
+N	scarcity|surfeit	surfeit は「過多」、scarcity は「不足」
+I	surmount|idm_get_over	get over は困難や病気を「乗り越える」のふつうの言い方。surmount は障害を「克服する」かたい語
+N	covert|surreptitious	surreptitious は人に見られないよう「こっそりした」（a surreptitious glance）。covert は作戦などが「秘密の」
+N	overt|surreptitious	surreptitious は「こっそりした」、overt は「公然の」
+N	monitor|surveil	surveil は警察などが「監視する」。monitor は様子を「観察する・監視する」
+N	surveil|watch	surveil は「ひそかに見張る」。watch は「見る・見張る」
+N	ignore|surveil	surveil は「見張る」、ignore は「無視する」
+N	slender|svelte	svelte は「すらりと優美な」。slender は「ほっそりした」
+N	slim|svelte	svelte は「スタイルのよい」。slim は「細身の」
+N	stocky|svelte	svelte は「すらりとした」、stocky は「ずんぐりした」
+N	obsequious|sycophantic	sycophantic は「おべっかを使う」。obsequious は「ぺこぺこする」
+N	fawning|sycophantic	sycophantic は「ごますりの」。fawning は「こびる」
+N	candid|sycophantic	sycophantic は「へつらう」、candid は「率直な」
+N	planner|tactician	tactician は「戦術家・策士」。planner は「計画を立てる人」
+N	equivalent|tantamount	tantamount は悪いことについて「〜に等しい」（tantamount to）。equivalent は「同等の」
+N	equal|tantamount	tantamount は「同然の」。equal は「等しい」
+N	different|tantamount	tantamount は「等しい」、different は「異なる」
+I	tantamount|curr_idm_pre1_be_equivalent_to	be equivalent to は「〜に相当する」のふつうの言い方。be tantamount to は「〜も同然だ」（悪い意味で使う）
+N	gaudy|tawdry	tawdry は「安っぽくけばけばしい」。gaudy は「派手すぎる」
+N	cheap|tawdry	tawdry は「安物で品のない」。cheap は「安い・安っぽい」
+N	elegant|tawdry	tawdry は「安っぽい」、elegant は「上品な」
+N	audacity|temerity	temerity は「無謀な大胆さ」（have the temerity to）。audacity は「大胆さ・厚かましさ」
+N	recklessness|temerity	temerity は「向こう見ず」。recklessness は「無謀」
+N	caution|temerity	temerity は「無謀」、caution は「慎重さ」
+N	excess|temperance	temperance は「節制・禁酒」、excess は「度を越すこと」
+N	defensible|tenable	tenable は主張が批判に対して「守れる・筋の通った」。defensible は「弁護できる」
+N	justifiable|tenable	tenable は「支持できる」。justifiable は「正当化できる」
+N	tenable|untenable	tenable は「擁護できる」、untenable は「擁護できない」
+N	biased|tendentious	tendentious は文章などが「特定の立場に偏った」かたい語。biased は「偏った」
+N	partisan|tendentious	tendentious は「偏向した」。partisan は「党派的な」
+N	impartial|tendentious	tendentious は「偏向した」、impartial は「公平な」
+N	principle|tenet	tenet は思想や宗教の「信条・教えの一つ」。principle は「原則・主義」
+N	doctrine|tenet	tenet は一つ一つの「教え」。doctrine は「教義（全体）」
+N	heresy|tenet	tenet は「正しいとされる教え」、heresy は「異端」
+N	flimsy|tenuous	tenuous はつながりや根拠が「薄い・弱い」。flimsy は「薄っぺらな・説得力のない」
+N	tenuous|weak	tenuous は「かすかな」。weak は「弱い」
+N	solid|tenuous	tenuous は「根拠の薄い」、solid は「しっかりした」
+N	lukewarm|tepid	tepid は水が「ぬるい」や、反応が「気乗りしない」。lukewarm は「生ぬるい」（同じく「熱意のない」にも）
+N	halfhearted|tepid	tepid は「ぱっとしない」。halfhearted は「いいかげんな・気乗りしない」
+N	enthusiastic|tepid	tepid は「気乗りしない」、enthusiastic は「熱烈な」
+N	straw|thatch	thatch は屋根をふく「わら・かや」。straw は「わら」や飲み物の「ストロー」
+N	timid|timorous	timorous は「びくびくした」文学的な語。timid は「臆病な・気の小さい」
+N	fearful|timorous	timorous は「おどおどした」。fearful は「怖がっている」
+N	bold|timorous	timorous は「臆病な」、bold は「大胆な」
+N	compliment|tirade	tirade は「長々とした非難」、compliment は「ほめ言葉」
+N	sluggish|torpid	torpid は暑さなどで「だるくて動かない」かたい語。sluggish は「のろい・不活発な」
+N	lethargic|torpid	torpid は「動きの鈍い」。lethargic は「無気力な」
+N	active|torpid	torpid は「不活発な」、active は「活発な」
+N	lethargy|torpor	torpor は「ぼんやりして動かない状態」のかたい語。lethargy は「無気力・倦怠（けんたい）」
+N	sluggishness|torpor	torpor は「無気力」。sluggishness は「のろさ」
+N	torpor|vigor	torpor は「無気力」、vigor は「活力」
+N	scorching|torrid	torrid は気候が「乾いて焼けつくほど暑い」や、恋が「熱烈な」。scorching は「焼けつくような」
+N	sweltering|torrid	torrid は「からからに暑い」。sweltering は「むし暑い」
+N	frigid|torrid	torrid は「猛烈に暑い」、frigid は「極寒の」
+N	tortuous|winding	tortuous は道が「曲がりくねった」や、手続きが「回りくどい」（torturous「拷問のような」とつづりが似ている）。winding は「曲がりくねった」
+N	convoluted|tortuous	tortuous は「込み入った」。convoluted は「複雑に入り組んだ」
+N	straight|tortuous	tortuous は「曲がりくねった」、straight は「まっすぐな」
+N	agonizing|torturous	torturous は「拷問のように苦しい」（tortuous「曲がりくねった」とつづりが似ている）。agonizing は「苦しい」
+N	excruciating|torturous	torturous は「苦痛な」。excruciating は痛みが「耐えがたい」
+N	pleasant|torturous	torturous は「苦痛の」、pleasant は「快い」
+N	manageable|tractable	tractable は問題や人が「扱いやすい」かたい語。manageable は「何とかなる・扱える」
+N	compliant|tractable	tractable は「素直な」。compliant は「従順な」
+N	tractable|unruly	tractable は「扱いやすい」、unruly は「手に負えない」
+N	transgress|violate	transgress は法や道徳の「一線を越える」かたい語。violate は「違反する・侵害する」
+N	breach|transgress	transgress は限度を「越える」。breach は契約などを「破る」
+N	obey|transgress	transgress は「犯す」、obey は「従う」
+N	cutting|trenchant	trenchant は批評などが「鋭く的確な」。cutting は言葉が「辛辣で傷つける」
+N	trenchant|vague	trenchant は「鋭い」、vague は「あいまいな」
+N	apprehension|trepidation	trepidation はこれからのことへの「不安・おののき」のかたい語。apprehension は「懸念」
+N	dread|trepidation	trepidation は「びくびくする気持ち」。dread は「強い恐れ」
+N	composure|trepidation	trepidation は「不安」、composure は「平静」
+N	fresh|trite	trite は「使い古された」、fresh は「新鮮な」
+N	importance|triviality	triviality は「ささいなこと」、importance は「重要性」
+N	aggressive|truculent	truculent は「すぐかみつくような・けんか腰の」。aggressive は「攻撃的な」
+N	belligerent|truculent	truculent は「反抗的でけんか腰の」。belligerent は「好戦的な」
+N	amiable|truculent	truculent は「けんか腰の」、amiable は「愛想のよい」
+N	shorten|truncate	truncate は文や数字の「後ろを切って短くする」。shorten は「短くする」
+N	curtail|truncate	truncate は「切り詰める」。curtail は予算や活動を「削減する」
+N	extend|truncate	truncate は「切り詰める」、extend は「延ばす」
+N	murky|turbid	turbid は水が「泥で濁った」かたい語。murky は「濁った・暗い」や、事情が「うさんくさい」
+N	muddy|turbid	turbid は「濁った」。muddy は「泥だらけの・泥で濁った」
+N	clear|turbid	turbid は「濁った」、clear は「澄んだ」
+N	bombastic|turgid	turgid は文章が「もったいぶって重苦しい」。bombastic は「大げさな」
+N	pompous|turgid	turgid は「難解で読みにくい」。pompous は「もったいぶった」
+N	lucid|turgid	turgid は「重苦しい」、lucid は「明快な」
+N	depravity|turpitude	turpitude は「卑劣さ・堕落」（moral turpitude）のかたい語。depravity は「堕落・悪徳」
+N	turpitude|wickedness	turpitude は「道徳的な卑しさ」。wickedness は「邪悪さ」
+N	turpitude|virtue	turpitude は「卑劣さ」、virtue は「美徳」
+N	lenient|tyrannical	tyrannical は「暴君のような」、lenient は「甘い・寛大な」
+N	offense|umbrage	umbrage は take umbrage at で「〜に腹を立てる」。offense は take offense で「気分を害する」
+N	resentment|umbrage	umbrage は侮辱されたという「不快感」。resentment は「憤り」
+N	delight|umbrage	umbrage は「立腹」、delight は「喜び」
+N	complete|unabridged	unabridged は本が「省略なしの完全版の」。complete は「全部そろった」
+N	unapologetic|unrepentant	unapologetic は自分の考えを「悪びれずに貫く」（よい意味にも）。unrepentant は悪いことを「反省しない」
+N	defiant|unapologetic	unapologetic は「謝らない」。defiant は「反抗的な」
+N	apologetic|unapologetic	unapologetic は「悪びれない」、apologetic は「すまなそうな」
+N	unbecoming|unsuitable	unbecoming は立場に「ふさわしくない」や、服が「似合わない」。unsuitable は「不適当な」
+N	improper|unbecoming	unbecoming はその人に「ふさわしくない」。improper は「不適切な」
+N	illegal|unconstitutional	unconstitutional は「憲法に違反する」。illegal は「法律に違反する」全般
+N	oily|unctuous	unctuous は態度が「わざとらしく愛想のよい・おべっか的な」かたい語。oily は「油っぽい」や「口先のうまい」
+N	fawning|unctuous	unctuous は「いやに丁寧な」。fawning は「こびる」
+N	blunt|unctuous	unctuous は「おべっか的な」、blunt は「ぶっきらぼうな」
+N	superior|underling	underling は「下っぱ」（見下した言い方）、superior は名詞で「上司」
+N	eternal|undying	undying は愛や感謝が「決して消えない」。eternal は「永遠の」
+N	fleeting|undying	undying は「尽きない」、fleeting は「はかない」
+N	unbecoming|unflattering	unflattering は写真や服が本人を「よく見せない」。unbecoming は「似合わない」
+N	unfavorable|unflattering	unflattering は評価などが「好意的でない」。unfavorable は「好ましくない」
+N	ungodly|unreasonable	ungodly は時間が「非常識な」（an ungodly hour）や「不信心な」。unreasonable は「理不尽な」
+N	mediocre|unimpressive	unimpressive は「ぱっとしない」。mediocre は「平凡な・二流の」
+N	forgettable|unimpressive	unimpressive は「感心しない」。forgettable は「印象に残らない」
+N	unaware|uninformed	uninformed は十分な「知識のないまま」（uninformed comments）。unaware は「気づいていない」
+N	informed|uninformed	uninformed は「知識のない」、informed は「よく知った上での」
+N	dull|uninspired	uninspired は「独創性のない・ありきたりの」。dull は「退屈な」
+N	inspired|uninspired	uninspired は「平凡な」、inspired は「すばらしい着想の」
+N	heterodox|unorthodox	unorthodox はやり方が「型破りな」（よい意味にも）。heterodox は宗教などで「正統でない」かたい語
+N	orthodox|unorthodox	unorthodox は「型破りな」、orthodox は「正統的な」
+N	remorseless|unrepentant	unrepentant は「反省していない」。remorseless は「後悔しない」や「容赦ない」
+N	intact|unscathed	unscathed は危険を切り抜けて「無傷の」。intact は「元のまま完全な」
+N	injured|unscathed	unscathed は「無傷の」、injured は「けがをした」
+N	unbecoming|unseemly	unseemly は場に「ふさわしくない・見苦しい」。unbecoming は立場に「ふさわしくない」
+N	seemly|unseemly	unseemly は「見苦しい」、seemly は「ふさわしい」
+N	indefensible|untenable	untenable は主張や立場が「守りきれない」。indefensible は「弁護の余地がない」
+N	unsustainable|untenable	untenable は状況が「続けられない」。unsustainable は「持続できない」
+N	unfavorable|untoward	untoward は予想外で「困った・不都合な」（nothing untoward）。unfavorable は「好ましくない」
+N	adverse|untoward	untoward は「具合の悪い」。adverse は「不利な」
+N	favorable|untoward	untoward は「不都合な」、favorable は「好都合な」
+N	bulky|unwieldy	unwieldy は大きく重くて「扱いにくい」や、組織が「動きの鈍い」。bulky は「かさばる」
+N	manageable|unwieldy	unwieldy は「扱いにくい」、manageable は「扱いやすい」
+N	unaware|unwitting	unwitting は「知らないうちの」（an unwitting participant）。unaware は「気づかない」
+N	unintentional|unwitting	unwitting は「自覚のない」。unintentional は「わざとではない」
+N	deliberate|unwitting	unwitting は「知らずにした」、deliberate は「故意の」
+N	inflexible|unyielding	unyielding は「決して屈しない」（よい意味にも）。inflexible は「融通のきかない」
+N	resolute|unyielding	unyielding は「譲らない」。resolute は「断固とした」
+N	scold|upbraid	upbraid は「厳しくとがめる」かたい語。scold は「しかる」
+N	reproach|upbraid	upbraid は「きびしく非難する」。reproach は「責める・とがめる」
+N	praise|upbraid	upbraid は「叱る」、praise は「ほめる」
+N	vacillate|waver	vacillate は2つの間で「長く迷う」（vacillate between）。waver は決心が「ぐらつく」
+N	hesitate|vacillate	vacillate は「ぐずぐず迷う」。hesitate は「ためらう」
+N	resolve|vacillate	vacillate は「迷う」、resolve は「決断する」
+N	empty|vacuous	vacuous は表情や話が「中身のない・うつろな」。empty は「空っぽの」
+N	profound|vacuous	vacuous は「空虚な」、profound は「深遠な」
+N	vagrant|wanderer	vagrant は住む家のない「浮浪者」（法律の語）。wanderer は「放浪者・さすらい人」
+N	settler|vagrant	vagrant は「浮浪者」、settler は「定住者」
+N	insipid|vapid	vapid は話などが「気の抜けたように中身のない」。insipid は「味気ない」
+N	dull|vapid	vapid は「つまらない」。dull は「退屈な」
+N	lively|vapid	vapid は「面白みのない」、lively は「活気ある」
+N	forceful|vehement	vehement は反対などが「激しい・猛烈な」（vehement opposition）。forceful は「力強い」
+N	fervent|vehement	vehement は「感情のこもった激しい」。fervent は「熱烈な」
+N	apathetic|vehement	vehement は「激しい」、apathetic は「無関心な」
+N	corrupt|venal	venal は役人などが「わいろで動く」。corrupt は「腐敗した・汚職の」
+N	mercenary|venal	venal は「金で買える」。mercenary は「欲得ずくの」
+N	honest|venal	venal は「買収される」、honest は「清廉な」
+N	corruptibility|venality	venality は「わいろで動くこと」。corruptibility は「買収されやすさ」
+N	corruption|venality	venality は「金で動く体質」。corruption は「汚職・腐敗」
+N	integrity|venality	venality は「買収のきくこと」、integrity は「清廉さ」
+N	esteemed|venerable	venerable は年月や地位で「尊ばれる・由緒ある」。esteemed は「尊敬されている」
+N	revered|venerable	venerable は「古くて尊い」。revered は「深く敬われる」
+N	despised|venerable	venerable は「尊ぶべき」、despised は「軽蔑される」
+N	awe|veneration	veneration は「深い尊敬・崇拝」。awe は「畏敬（おそれと敬い）」
+N	contempt|veneration	veneration は「崇敬」、contempt は「軽蔑」
+N	truthfulness|veracity	veracity は話などの「真実性」のかたい語。truthfulness は「正直さ」
+N	accuracy|veracity	veracity は「うそでないこと」。accuracy は「正確さ」
+N	falsehood|veracity	veracity は「真実性」、falsehood は「虚偽」
+N	green|verdant	verdant は草木で「青々とした」文学的な語。green は「緑の」
+N	barren|verdant	verdant は「緑豊かな」、barren は「不毛の」
+N	indirect|vicarious	vicarious は他人の経験を「わがことのように感じる」（vicarious joy）。indirect は「間接的な」
+N	secondhand|vicarious	vicarious は「人を通して味わう」。secondhand は「又聞きの・中古の」
+N	firsthand|vicarious	vicarious は「人を通して味わう」、firsthand は「直接の」
+N	fluctuation|vicissitude	vicissitude は人生の「浮き沈み」（ふつう複数形）。fluctuation は数値の「変動」
+N	upheaval|vicissitude	vicissitude は「移り変わり」。upheaval は「激変」
+N	stability|vicissitude	vicissitude は「変転」、stability は「安定」
+N	repulsive|vile	vile は「下劣な・ひどく嫌な」（vile rumors）。repulsive は「むかむかする」
+N	admirable|vile	vile は「下劣な」、admirable は「立派な」
+N	defame|vilify	vilify は人を「悪者として激しくけなす」。defame は「名誉を傷つける」
+N	malign|vilify	vilify は「悪く言いふらす」。malign は「中傷する」
+N	praise|vilify	vilify は「けなす」、praise は「称賛する」
+N	justify|vindicate	vindicate は疑われていた人の「正しさを証明する」。justify は行動を「正当化する」
+N	clear|vindicate	vindicate は「潔白を証明する」。clear は動詞で疑いを「晴らす」（clear one's name）
+N	exoneration|vindication	vindication は「正しかったことの証明」。exoneration は「無実の証明」
+N	justification|vindication	vindication は「潔白の証明」。justification は「正当化・言い分」
+N	condemnation|vindication	vindication は「潔白の証明」、condemnation は「非難」
+N	toxicity|virulence	virulence は病原体の「毒性の強さ」や、敵意の「激しさ」。toxicity は物質の「毒性」
+N	malignancy|virulence	virulence は「悪意の激しさ」。malignancy は「悪意」や腫瘍の「悪性」
+N	harmlessness|virulence	virulence は「毒性」、harmlessness は「無害さ」
+N	toxic|virulent	virulent はウイルスなどが「猛毒の・感染力の強い」や、批判が「激しい」。toxic は「有毒な」
+N	venomous|virulent	virulent は「悪意に満ちた」。venomous はヘビが「毒のある」や、言葉が「悪意のある」
+N	benign|virulent	virulent は「悪性の」、benign は「無害な」
+N	thick|viscous	viscous は液体が「粘り気のある」かたい語（はちみつなど）。thick は「濃い・どろっとした」
+N	sticky|viscous	viscous は「どろどろした」。sticky は「べたべたする」
+N	runny|viscous	viscous は「粘り気のある」、runny は「さらさらの」
+N	caustic|vitriolic	vitriolic は批判が「毒のある激しい」（もとは硫酸）。caustic は「辛辣な」
+N	scathing|vitriolic	vitriolic は「悪意に満ちた」。scathing は「痛烈な」
+N	gentle|vitriolic	vitriolic は「辛辣な」、gentle は「穏やかな」
+N	abusive|vituperative	vituperative は「口汚くののしる」かたい語。abusive は「口汚い・虐待的な」
+N	scathing|vituperative	vituperative は「罵倒する」。scathing は「痛烈な」
+N	complimentary|vituperative	vituperative は「ののしる」、complimentary は「称賛の」
+N	lively|vivacious	vivacious は人が「快活で魅力的な」。lively は「活発な」
+N	spirited|vivacious	vivacious は「はつらつとした」。spirited は「元気な・気迫のある」
+N	vivacious|vivid	vivacious は人が「快活な」。vivid は色や記憶が「鮮やかな」
+N	lethargic|vivacious	vivacious は「快活な」、lethargic は「無気力な」
+N	shout|vociferate	vociferate は「大声でわめく」かたい語。shout は「叫ぶ」
+N	clamor|vociferate	vociferate は「わめき立てる」。clamor は動詞で「騒ぎ立てる・やかましく要求する」
+N	vociferate|whisper	vociferate は「わめく」、whisper は「ささやく」
+N	talkative|voluble	voluble は「よどみなくよくしゃべる」。talkative は「おしゃべりな」
+N	fluent|voluble	voluble は「口達者な」（量が多い）。fluent は外国語などが「流ちょうな」
+N	taciturn|voluble	voluble は「多弁な」、taciturn は「無口な」
+N	greedy|voracious	voracious は食欲や読書欲が「とても強い・止まらない」（a voracious reader）。greedy は「欲ばりな」（悪い意味）
+N	greed|voracity	voracity は「がつがつした食欲・貪欲さ」。greed は「強欲」
+N	rapacity|voracity	voracity は「がつがつした食欲」。rapacity は「奪い取るほどの強欲」
+N	moderation|voracity	voracity は「貪欲」、moderation は「節度」
+N	crudeness|vulgarity	vulgarity は言動の「下品さ・低俗さ」。crudeness は「粗野・露骨さ」
+N	refinement|vulgarity	vulgarity は「下品さ」、refinement は「洗練」
+N	gratuitous|wanton	wanton は破壊などが「理由もなく身勝手な」。gratuitous は「不必要な・いわれのない」
+N	reckless|wanton	wanton は「むちゃな」。reckless は「無謀な」
+N	justified|wanton	wanton は「理由のない」、justified は「正当な」
+N	belligerent|warlike	warlike は民族などが「好戦的な・戦争の」。belligerent は「けんか腰の」
+N	peaceful|warlike	warlike は「好戦的な」、peaceful は「平和的な」
+N	capricious|whimsical	whimsical は「風変わりで遊び心のある」（よい意味にも）。capricious は「気まぐれな」
+N	fanciful|whimsical	whimsical は「奇抜な」。fanciful は「空想的な」
+N	sensible|whimsical	whimsical は「気まぐれな」、sensible は「分別のある」
+N	goodness|wickedness	wickedness は「邪悪さ」、goodness は「善良さ」
+N	sift|winnow	winnow は候補などを「ふるい分けて絞る」（もとはもみがらを吹き分ける）。sift は「ふるいにかける」
+N	sort|winnow	winnow は「えり分ける」。sort は動詞で「仕分ける」
+N	combine|winnow	winnow は「えり分ける」、combine は「混ぜる」
+N	charming|winsome	winsome は「無邪気でかわいらしい」。charming は「魅力的な」
+N	engaging|winsome	winsome は「人を引きつける」。engaging は「感じのよい・魅力的な」
+N	repellent|winsome	winsome は「愛らしい」、repellent は形容詞で「嫌悪を感じさせる」
+N	shriveled|wizened	wizened は年を取って「しわだらけにしなびた」。shriveled は「しぼんだ」
+N	withered|wizened	wizened は「しわくちゃの」。withered は植物が「枯れた」
+N	plump|wizened	wizened は「しなびた」、plump は「ふっくらした」
+N	offender|wrongdoer	wrongdoer は「悪いことをした人」。offender は法律の「違反者・犯人」
+N	victim|wrongdoer	wrongdoer は「加害者」、victim は「被害者」
+N	enthusiasm|zeal	zeal は目的に向かう「燃えるような熱意」。enthusiasm は「熱意・熱中」
+N	apathy|zeal	zeal は「熱意」、apathy は「無関心」
+N	fanatic|zealot	zealot は主義などの「熱狂者」（ときに冗談で）。fanatic は「狂信者・熱狂的なファン」
+N	extremist|zealot	zealot は「熱狂者」。extremist は「過激派」
+N	moderate|zealot	zealot は「熱狂者」、moderate は名詞で「穏健派」
+N	fanaticism|zealotry	zealotry は「狂信的な熱中」。fanaticism は「狂信」
+N	extremism|zealotry	zealotry は「熱狂的な傾倒」。extremism は「過激主義」
+N	moderation|zealotry	zealotry は「狂信」、moderation は「穏健」
+N	peak|zenith	zenith は力や人気の「絶頂」（天文学では天頂）。peak は「頂点・ピーク」
+N	pinnacle|zenith	zenith は「頂点」。pinnacle は成功の「最高点」
+N	breeze|zephyr	zephyr は「そよ風」の文学的な語（もとは西風）。breeze は「そよ風」
+N	draft|zephyr	zephyr は「穏やかなそよ風」。draft は部屋の「すきま風」
+N	gale|zephyr	zephyr は「そよ風」、gale は「強風」

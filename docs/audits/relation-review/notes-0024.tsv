@@ -1,0 +1,336 @@
+N	apparently|seemingly	apparently は「どうやら〜らしい」（聞いた話から判断する）。seemingly は「見たところは〜のようだ（が実はちがうかも）」
+N	appearance|look	appearance は人の「外見・身なり」や、「出現」。look は「見た目・顔つき」（looks で「容姿」）
+N	appearance|emergence	appearance は人が「姿を現すこと」や「出演」。emergence は新しいものの「出現・台頭」
+N	appearance|disappearance	appearance は「現れること」、disappearance は「消えること」
+N	appease|pacify	appease は要求をのんで相手を「なだめる」。pacify は泣く子や怒る人を「落ち着かせる」
+N	appease|placate	appease は「(相手の要求に応じて)なだめる」。placate は怒っている人の「機嫌をとる」
+N	appease|provoke	appease は「なだめる」、provoke は「怒らせる・挑発する」
+N	appeasement|conciliation	appeasement は相手の要求に譲る「宥和（ゆうわ）」（批判的に使う）。conciliation は対立を和らげる「和解」
+N	appeasement|pacification	appeasement は譲歩して「なだめること」。pacification は武力などで「平定すること」
+N	appeasement|provocation	appeasement は「なだめること」、provocation は「挑発」
+N	append|attach	append は文書の最後に「書き加える」かたい語。attach はファイルなどを「添付する」や、物を「取りつける」
+N	append|remove	append は「付け加える」、remove は「取り除く」
+N	applaud|praise	applaud は「拍手する」や、行いを「称賛する」。praise は言葉で「ほめる」
+N	applaud|boo	applaud は「拍手喝采（かっさい）する」、boo は「ブーイングする」
+N	appointed|designated	appointed は時間や場所が「決められた」（the appointed time）や、人が「任命された」。designated は「指定された」
+N	appointed|assigned	appointed は「(前もって)決められた」。assigned は仕事や席が「割り当てられた」
+N	appraise|assess	appraise は宝石などの値打ちを「鑑定する」。assess は状況や能力を「評価する」
+I	appraise|curr_idm_1_size_up	size up は人や状況を「さっと見きわめる」。appraise は専門家として「鑑定する」
+N	apprentice|trainee	apprentice は職人の親方につく「見習い・弟子」。trainee は会社などの「研修生」
+N	apprentice|novice	apprentice は技術を学ぶ「見習い」。novice は「初心者」
+N	apprentice|master	apprentice は「見習い」、master は「親方」
+N	appropriate|inappropriate	appropriate は「適切な」、inappropriate は「不適切な」
+N	appropriately|inappropriately	appropriately は「適切に」、inappropriately は「不適切に」
+N	approximate|rough	approximate は数などが「おおよその」のかたい語。rough は「大まかな・ざっとした」
+N	approximately|exactly	approximately は「約・おおよそ」、exactly は「ちょうど・正確に」
+N	apt|suitable	apt は言葉などが「ぴったりの・適切な」（an apt quote）。suitable は目的に「合った」
+N	apt|liable	apt は「〜しがちな」（be apt to do）。liable も「〜しがちな」だが、悪いことに使うことが多い
+N	apt|inappropriate	apt は「適切な」、inappropriate は「不適切な」
+N	ability|aptitude	aptitude は生まれつきの「素質・適性」（an aptitude for）。ability は今持っている「能力」
+N	aquatic|marine	aquatic は川や池もふくむ「水生の」。marine は「海の」
+N	aquatic|underwater	aquatic は生き物が「水中で生きる」。underwater は場所が「水中の」
+N	arc|bend	arc はボールなどが「弧を描いて飛ぶ」。bend は「曲がる・曲げる」
+N	arc|arch	arc は線としての「弧」。arch は建物の「アーチ」
+N	arch|archway	arch は建物の弓形の「アーチ」。archway はアーチの下の「通路・門」
+N	arch|curve	arch は弓形の「アーチ」。curve は「曲線・カーブ」と広く言う
+N	arched|curved	arched は「アーチ形の」（上に丸く曲がった）。curved は「曲がった」と広く言う
+N	arched|bowed	arched は門などが「アーチ形の」。bowed は重さで「弓なりに曲がった」
+N	arched|straight	arched は「弓なりの」、straight は「まっすぐな」
+N	archway|passage	archway はアーチのある「門・通路」。passage は「通路」と広く言う
+N	arctic|polar	arctic は「北極の」（the Arctic）。polar は北極・南極をふくむ「極地の」
+N	arctic|frigid	arctic は「北極の」や、話し言葉で「ひどく寒い」。frigid は「極寒の」や、態度が「冷ややかな」
+N	arctic|tropical	arctic は「北極の・極寒の」、tropical は「熱帯の」
+N	ardent|passionate	ardent は支持などが「熱烈な」（an ardent fan）。passionate は感情が「情熱的な」
+N	ardent|fervent	ardent と fervent はどちらも「熱烈な」。fervent は祈りや願いによく使う
+N	ardent|indifferent	ardent は「熱心な」、indifferent は「無関心な」
+N	ardently|passionately	ardently は「熱心に・熱烈に」。passionately は「情熱をこめて」
+N	ardently|fervently	ardently は「熱心に」。fervently は「熱烈に」で、祈るときなどに使う
+N	ardently|indifferently	ardently は「熱心に」、indifferently は「無関心に」
+N	arduous|difficult	arduous は長く「骨の折れる・つらい」。difficult は「難しい」と広く言う
+N	arduous|strenuous	arduous は仕事や旅が「苦労の多い」。strenuous は運動などが「激しい・体力のいる」
+N	arduous|easy	arduous は「骨の折れる」、easy は「簡単な」
+N	armament|weaponry	armament は国の「軍備（兵器の備え）」。weaponry は「兵器類」
+N	armament|disarmament	armament は「軍備」、disarmament は「軍縮」
+N	armed|militarized	armed は人が「武器を持った」。militarized は地域が「軍事化された」
+N	armed|unarmed	armed は「武装した」、unarmed は「武器を持たない」
+N	arrogance|humility	arrogance は「傲慢（ごうまん）さ」、humility は「謙虚さ」
+N	artery|vein	artery は心臓から血を送る「動脈」、vein は心臓へ血がもどる「静脈」
+N	artisan|craftsman	artisan は伝統的な「職人」。craftsman は腕のいい「職人・名工」
+N	artisan|maker	artisan は手作りの「職人」。maker は「作る人・メーカー」と広く言う
+N	amateur|artisan	artisan は熟練した「職人」、amateur は「素人」
+N	artwork|illustration	artwork は「美術品」や、本などの「イラスト・図版」。illustration は本の「挿絵・図」
+N	ascent|climb	ascent は山などの「登り・上昇」のかたい語。climb は「登ること」のふつうの語
+N	ascent|rise	ascent は「登っていくこと」。rise は「上がること・増加」
+N	askew|crooked	askew は絵などが「斜めにずれて」。crooked は「曲がった・傾いた」
+N	askew|lopsided	askew は「ずれて傾いた」。lopsided は片側だけ「かしいだ・不つりあいな」
+N	askew|straight	askew は「斜めに」、straight は「まっすぐに」
+N	aspiration|desire	aspiration は将来の「抱負・大きな望み」。desire は「欲しい気持ち・願望」
+N	aspire|long for	aspire は高い目標を「目指す」（aspire to do）。long for は手に入らないものを「恋しがる」
+N	aim|aspire	aspire は「志す・熱望する」。aim は「ねらう・目指す」
+N	assertive|confident	assertive は意見を「はっきり主張する」。confident は「自信のある」
+N	assertive|passive	assertive は「自己主張する」、passive は「受け身の」
+N	assigned|designated	assigned は人に「割り当てられた」。designated は目的のために「指定された」
+N	absorb|assimilate	assimilate は知識を「自分のものにする」や、移民が「溶けこむ」。absorb は水や知識を「吸収する」
+N	assimilate|integrate	assimilate は周りと「同化する（同じになる）」。integrate は集団に「溶けこむ・統合する」
+N	assuredly|certainly	assuredly は「確かに」のかたい語。certainly は「確かに・もちろん」のふつうの語
+N	assuredly|doubtfully	assuredly は「確かに」、doubtfully は「疑わしげに」
+I	assuredly|curr1900_idm_2_for_sure	for sure は「確かに・きっと」の話し言葉。assuredly はかたい語
+N	astonish|astound	astonish は「びっくりさせる」。astound は「仰天させる」と強い
+I	astonish|curr_idm_1_take_aback	take aback は「(不意をつかれて)面食らわせる」（be taken aback）。astonish は「驚かせる」
+N	astonishing|staggering	astonishing は「驚くべき」。staggering は数や量が「途方もない」
+N	astonishing|ordinary	astonishing は「驚くべき」、ordinary は「ふつうの」
+N	astonishment|surprise	astonishment は「びっくり仰天」と強い。surprise は「驚き」のふつうの語
+N	astonishing|astounding	astounding は「仰天するほどの」と強い。astonishing は「驚くべき」
+N	astounding|staggering	astounding は「仰天させる」。staggering は数量が「よろめくほど途方もない」
+N	astounding|ordinary	astounding は「驚くべき」、ordinary は「ふつうの」
+N	atone|compensate	atone は罪を「償う」（atone for）。compensate は損を「埋め合わせる・補償する」
+N	atrocity|cruelty	atrocity は戦争などの「残虐行為」（数えられる）。cruelty は「残酷さ」
+N	atrocity|barbarity	atrocity は「残虐な行い」。barbarity は「野蛮な行い」のかたい語
+N	attest|verify	attest は「事実だと証言する」（attest to）。verify は調べて「確かめる」
+N	attest|deny	attest は「証明する」、deny は「否定する」
+N	atypical|unusual	atypical は「典型的でない・型にはまらない」かたい語。unusual は「めずらしい」
+N	abnormal|atypical	atypical は「ふつうの型とちがう」。abnormal は「異常な」（よくない感じ）
+N	atypical|typical	atypical は「典型的でない」、typical は「典型的な」
+N	augment|increase	augment は量や収入を「増やす」かたい語。increase は「増やす・増える」
+N	augment|boost	augment は「増やして補う」。boost は「押し上げる・高める」
+N	augment|diminish	augment は「増やす」、diminish は「減らす」
+N	authoritative|reliable	authoritative は情報が「権威があって信頼できる」。reliable は「当てにできる」
+N	authoritative|official	authoritative は「権威ある」や、態度が「有無を言わせない」。official は「公式の」
+N	approval|authorization	authorization は公的な「認可・許可（証）」。approval は「承認・賛成」
+N	authorized|sanctioned	authorized は「正式に認められた」。sanctioned は「公認された」のかたい語
+N	authorized|unauthorized	authorized は「認可された」、unauthorized は「無許可の」
+N	autobiography|memoir	autobiography は一生をたどる「自伝」。memoir はある時期の思い出を書いた「回想録」
+N	automatically|mechanically	automatically は機械が「自動で」や、人が「無意識に」。mechanically は「機械的に・心をこめずに」
+N	automatically|manually	automatically は「自動で」、manually は「手作業で」
+N	avenge|retaliate	avenge は家族などの「かたきを討つ」。retaliate は攻撃に「報復する」
+N	avenge|forgive	avenge は「かたきを討つ」、forgive は「許す」
+N	avert|prevent	avert は危険を「(直前で)回避する」や、目を「そらす」。prevent は「防ぐ」
+N	avert|avoid	avert は災難を「防ぐ」。avoid は人や物を「避ける」
+N	awe|reverence	awe は大きなものへの「畏敬（いけい）・おそれ」（in awe）。reverence は神などへの「深い尊敬」
+N	awe|contempt	awe は「畏敬（いけい）」、contempt は「軽蔑」
+N	awkwardness|embarrassment	awkwardness は場の「気まずさ」や動きの「ぎこちなさ」。embarrassment は自分の「恥ずかしさ」
+N	awkwardness|ease	awkwardness は「気まずさ」、ease は「気楽さ」
+N	backfire|rebound	backfire は計画が「裏目に出る」。rebound はボールなどが「はね返る」
+N	backfire|misfire	backfire は「逆効果になる」。misfire は計画が「不発に終わる」
+N	backfire|succeed	backfire は「裏目に出る」、succeed は「うまくいく」
+N	backing|support	backing は計画への「後ろだて・支持」。support は「支え・応援」と広く言う
+N	backing|endorsement	backing は「後援」。endorsement は公の「支持表明・推薦」
+N	backing|opposition	backing は「支持」、opposition は「反対」
+N	backlash|reaction	backlash は政策などへの「強い反発」。reaction は「反応」と広く言う
+N	bacteria|microbe	bacteria は「細菌」（複数形）。microbe は細菌などをふくむ「微生物」全体
+N	badger|pester	badger は質問などで「しつこく責める」。pester は「しつこくせがむ」
+N	badger|harass	badger は「しつこく悩ます」。harass は「嫌がらせをする」
+N	badger|leave alone	badger は「しつこく悩ます」、leave alone は「そっとしておく」
+N	baffle|confuse	baffle は難しくて「さっぱり分からなくさせる」。confuse は「混乱させる」
+N	baffle|bewilder	bewilder は「どうしていいか分からなくさせる」。baffle は「理解できなくて困らせる」
+N	baffling|clear	baffling は「わけの分からない」、clear は「分かりやすい」
+N	bail|bond	bail は裁判までの「保釈（金）」（on bail）。bond は「保証金」や「きずな」
+N	bail|security	bail は「保釈金」。security は借金の「担保」や「安全」
+N	ballot|poll	ballot は無記名の「投票（用紙）」。poll は「投票（数）」や「世論調査」
+N	bang|slam	bang は「ドンとたたく・大きな音を立てる」。slam はドアを「バタンと閉める」
+N	bang|hit	bang は音を立てて「強くたたく」。hit は「打つ・当たる」と広く言う
+N	barren|infertile	barren は土地が「何も育たない」。infertile は土が「やせた」や、人や動物が「子ができない」
+N	barren|desolate	barren は「不毛の」。desolate は「荒れ果てて人けのない・わびしい」
+N	barren|fertile	barren は「不毛の」、fertile は「肥えた」
+N	bearable|tolerable	bearable は「我慢できる」。tolerable は「耐えられる」や「まあまあの」
+N	bearable|endurable	bearable は「耐えられる」のふつうの語。endurable はかたい語
+N	bearable|unbearable	bearable は「我慢できる」、unbearable は「耐えられない」
+N	bearer|carrier	bearer は手紙や小切手の「持参人」や、知らせを「運ぶ人」。carrier は「運ぶ人・運送会社」
+N	beckon|signal	beckon は手で「こっちへ来いと招く」。signal は合図で「知らせる」
+N	beckon|wave	beckon は「手招きする」。wave は手を「振る」
+N	becoming|flattering	becoming は服などが「似合う」の古めかしい語。flattering は服が「(実際より)よく見せる」
+N	becoming|suitable	becoming は「似合う・その人にふさわしい」。suitable は「適した」
+N	becoming|unbecoming	becoming は「似合う」、unbecoming は「似合わない・ふさわしくない」
+N	beforehand|previously	beforehand は何かの「前もって・あらかじめ」。previously は「以前に」
+N	afterward|beforehand	beforehand は「前もって」、afterward は「あとで」
+I	beforehand|curr_idm_pre2_in_advance	in advance は「前もって」（book in advance）。beforehand は1語の同じ意味
+N	behalf|interest	behalf は on behalf of の形で「〜の代わりに・〜のために」。interest は「利益」（in the interest of で「〜のために」）
+N	behalf|sake	behalf は on behalf of（〜を代表して）で使う。sake は for the sake of（〜のために）で使う
+N	being|creature	being は human beings のように「存在・生き物」のかたい語。creature は「生き物」
+N	belongings|possessions	belongings は持ち歩く「持ち物」。possessions は持っている「財産・所有物」
+N	belongings|effects	belongings は「身の回りの物」。effects は personal effects で「所持品」のかたい言い方
+N	benchmark|standard	benchmark は比べるための「基準・目安」。standard は守るべき「標準・水準」
+N	benchmark|criterion	benchmark は比べる「基準点」。criterion は判断の「基準」
+N	benevolence|kindness	benevolence は人を助けたい「慈悲の心」のかたい語。kindness は「親切」
+N	benevolence|malice	benevolence は「善意」、malice は「悪意」
+N	benign|harmless	benign は腫瘍（しゅよう）が「良性の」。harmless は「害のない」
+N	benign|kind	benign は人が「やさしい・温和な」。kind は「親切な」
+N	benign|malignant	benign は「良性の」、malignant は「悪性の」
+N	bent|curved	bent は力で「曲がった」。curved は形が「なめらかに曲がった」
+N	bent|straight	bent は「曲がった」、straight は「まっすぐな」
+N	bestow|grant	bestow は名誉などを「授ける」かたい語（bestow A on B）。grant は許可などを「与える」
+N	bestow|confer	bestow は賞などを「授ける」。confer も学位などを「授与する」のかたい語
+N	betray|deceive	betray は信頼している人を「裏切る」。deceive は「だます」
+N	betray|double-cross	betray は「裏切る」。double-cross は仲間を「裏切る」くだけた語
+N	betray|support	betray は「裏切る」、support は「支える」
+N	betrayal|treachery	betrayal は「裏切り」のふつうの語。treachery は計画的な「裏切り・背信」
+N	bigoted|prejudiced	bigoted は偏見に「こり固まった」と強い。prejudiced は「偏見のある」
+N	bigoted|intolerant	bigoted は「頑固で偏見に満ちた」。intolerant は違う考えを「受け入れない」
+N	bigoted|open-minded	bigoted は「偏狭な」、open-minded は「心の広い」
+N	bizarre|strange	bizarre は「ひどく奇妙な・異様な」。strange は「変な」と広く言う
+N	bizarre|grotesque	bizarre は「奇怪な」。grotesque は見た目が「ぞっとするほど異様な」
+N	bizarre|normal	bizarre は「奇妙な」、normal は「ふつうの」
+N	blatant|obvious	blatant はうそなどが「見えすいた・露骨な」（悪い意味）。obvious は「明らかな」
+N	blatant|flagrant	blatant は「隠そうともしない」。flagrant は違反などが「目に余る」
+N	bleak|gloomy	bleak は将来が「見通しの暗い」や、場所が「寒々とした」。gloomy は「暗い・陰気な」
+N	bleak|dismal	bleak は「希望のない」。dismal は「陰うつな」や「ひどい」
+N	bleak|bright	bleak は「暗い」、bright は「明るい」
+N	bleary|blurry	bleary は目が「かすんだ・ぼんやりした」。blurry は写真などが「ぼやけた」
+N	bleary|hazy	bleary は寝不足で目が「しょぼしょぼした」。hazy は景色や記憶が「かすんだ」
+N	bleary|clear	bleary は「かすんだ」、clear は「澄んだ」
+N	blessed|sacred	blessed は「神聖な」では /ˈblesɪd/、「恵まれた」（be blessed with）では /blest/ と読む。sacred は「神聖な」
+N	blessed|cursed	blessed は「恵まれた」、cursed は「呪われた」
+N	benefit|blessing	blessing は「ありがたいこと・恵み」や、神の「祝福」。benefit は「利益・恩恵」
+N	blessing|godsend	blessing は「ありがたいこと」。godsend は困ったときの「天の助け」
+N	blessing|curse	blessing は「恵み」、curse は「呪い・災い」
+N	bliss|ecstasy	bliss は「この上ない幸せ・至福」。ecstasy は「有頂天」
+N	bliss|joy	bliss は「至福」と強い。joy は「喜び」
+N	bliss|misery	bliss は「至福」、misery は「みじめさ」
+N	blocked|clogged	blocked は道などが「ふさがった」。clogged は管などが「詰まった」
+N	blocked|obstructed	blocked は「ふさがれた」。obstructed は視界などが「さえぎられた」のかたい語
+N	blocked|clear	blocked は「ふさがった」、clear は「通れる」
+N	boast|brag	boast は「自慢する」や、場所が「(よいものを)持っている」（The town boasts a fine park）。brag は「(いやみに)自慢する」くだけた語
+I	boast|curr_idm_2_show_off	show off は「見せびらかす」。boast は言葉で「自慢する」
+N	boisterous|lively	boisterous は「元気よく騒がしい」。lively は「活気のある」
+N	boisterous|quiet	boisterous は「騒がしい」、quiet は「静かな」
+N	bolster|reinforce	bolster は自信や主張を「支える・強める」。reinforce は「補強する」
+N	bolster|boost	bolster は「支えて強める」。boost は「押し上げる」
+N	bolster|undermine	bolster は「強める」、undermine は「弱らせる」
+I	bolster|curr_idm_1_beef_up	beef up は「強化する」話し言葉。bolster は自信などを「支える」
+N	bonanza|windfall	bonanza は商売の「大もうけ・大当たり」。windfall は思いがけない「臨時収入」
+N	bonanza|loss	bonanza は「大もうけ」、loss は「損失」
+N	bondage|slavery	bondage は「束縛・奴隷の身」。slavery は制度としての「奴隷制」
+N	bondage|servitude	bondage は「とらわれの身」。servitude は他人に「仕えさせられること・隷属」
+N	bondage|freedom	bondage は「束縛」、freedom は「自由」
+N	boo|jeer	boo は「ブーと言ってやじる」。jeer は「からかってやじる」
+N	boo|hiss	boo は「ブーイングする」。hiss は「シーッと言って非難する」
+N	boo|cheer	boo は「やじる」、cheer は「声援を送る」
+N	booing|jeering	booing は「ブーイング」。jeering は「からかうやじ」
+N	booing|heckling	booing は観客の「ブーイング」。heckling は演説中の「やじ」
+N	booming|thriving	booming は商売が「急成長している」。thriving は「繁盛している」
+N	booming|flourishing	booming は「急に伸びている」。flourishing は「栄えている」
+N	booming|declining	booming は「好調な」、declining は「落ちこんでいる」
+N	borough|district	borough はロンドンやニューヨークの「行政区」。district は「地区・地域」と広く言う
+N	borough|township	borough は市の「自治区」。township はアメリカなどの「郡区・町」
+N	bothersome|troublesome	bothersome は「やっかいな・うるさい」。troublesome は「面倒な・手のかかる」
+N	bothersome|pleasant	bothersome は「やっかいな」、pleasant は「心地よい」
+N	bough|branch	bough は木の「太い枝」の文学的な語。branch は「枝」のふつうの語
+N	bough|limb	bough は「大枝」。limb は木の「大枝」や、人の「手足」
+N	bough|twig	bough は「大枝」、twig は「小枝」
+N	boundless|infinite	boundless はエネルギーなどが「限りない」。infinite は数学の「無限の」
+N	boundless|limited	boundless は「限りない」、limited は「限られた」
+N	bowed|curved	bowed は重さで「弓なりに曲がった」や、頭を「垂れた」。curved は「曲線の」
+N	bent|bowed	bowed は「弓なりに曲がった」。bent は「(ぐにゃりと)曲がった」
+N	bowed|straight	bowed は「曲がった」、straight は「まっすぐな」
+N	boycott|shun	boycott は抗議のため「買わない・参加しない」。shun は人や物を「避ける」
+N	blacklist|boycott	boycott は「不買運動をする」。blacklist は要注意人物として「締め出す」
+N	boycott|patronize	boycott は店などを「利用しない」、patronize は「ひいきにして利用する」（「見下す」の意味もある）
+N	brains|intellect	brains は「頭のよさ」のくだけた語（have the brains to do）。intellect は「知性」
+N	brains|wits	brains は「頭脳」。wits は「機転・とっさの知恵」
+N	brains|brawn	brains は「頭の力」、brawn は「腕力」
+N	bold|brash	brash は「生意気な・向こう見ずな」（悪い意味）。bold は「大胆な」（よい意味が多い）
+N	brash|impudent	brash は「でしゃばりな・生意気な」。impudent は「ずうずうしい・無礼な」
+N	brash|timid	brash は「厚かましい」、timid は「臆病な」
+N	brawn|muscle	brawn は「腕力・体の力」。muscle は「筋肉」
+N	brawn|strength	brawn は頭に対して「力仕事の力」。strength は「強さ・力」と広く言う
+N	breadth|scope	breadth は知識などの「幅広さ」や物の「横幅」。scope は扱う「範囲」
+N	breadth|narrowness	breadth は「広さ・幅」、narrowness は「狭さ」
+N	advance|breakthrough	breakthrough は研究などの「大発見・突破口」。advance は「進歩」と広く言う
+N	breathtaking|stunning	breathtaking は景色が「息をのむほどの」。stunning は「驚くほど美しい」
+N	breathtaking|spectacular	breathtaking は「息をのむような」。spectacular は「壮観な・目を見張る」
+N	breathtaking|dull	breathtaking は「すばらしい」、dull は「ぱっとしない」
+N	breeding|reproduction	breeding は人が動物を「繁殖させること」や「しつけ」。reproduction は生物の「繁殖・生殖」
+N	brevity|conciseness	brevity は話などの「短さ・簡潔さ」。conciseness は表現の「簡潔さ」
+N	brevity|shortness	brevity は時間や話の「短さ」のかたい語。shortness は「短さ」のふつうの語
+N	brevity|verbosity	brevity は「簡潔さ」、verbosity は「くどさ・冗長」
+N	brilliance|radiance	brilliance は宝石などの「きらめき」や、人の「才気」。radiance は「輝き・明るさ」
+N	brilliance|genius	brilliance は「すばらしい才能・才気」。genius は「天才」
+N	brink|edge	brink はがけの「ふち」や、危険の「瀬戸際」（on the brink of）。edge は「端・縁」
+N	brittle|fragile	brittle はかたくて「ぽきっと折れやすい」。fragile は「壊れやすい」
+N	brittle|flexible	brittle は「もろい」、flexible は「しなやかな」
+N	broadening|expansion	broadening は知識や視野の「広がり」。expansion は大きさや規模の「拡大」
+N	broadening|narrowing	broadening は「広がること」、narrowing は「狭まること」
+N	broker|middleman	broker は株や土地を仲介する「ブローカー・仲介業者」。middleman は間に入る「仲買人」
+N	brood|ponder	brood はいやなことを「くよくよ考える」。ponder は「じっくり考える」
+N	brood|mope	brood は「思い悩む」。mope は「ふさぎこむ」
+I	brood|exam_idm_dwell_on	dwell on はいやなことを「くよくよ考える」。brood も「思い悩む」で、ひとりで考えこむ感じが強い
+N	bruise|mark	bruise は打ってできた「あざ」。mark は「しるし・跡」と広く言う
+N	brutality|gentleness	brutality は「残忍さ」、gentleness は「やさしさ」
+N	brutally|savagely	brutally は「容赦なく・むごく」（brutally honest で「身もふたもないほど正直に」）。savagely は「どう猛に」
+N	brutally|gently	brutally は「残忍に」、gently は「やさしく」
+N	bulk|minority	bulk は the bulk of で「大部分」、minority は「少数」
+N	bulky|large	bulky は「かさばって扱いにくい」。large は「大きい」
+N	bulky|cumbersome	bulky は「かさばる」。cumbersome は重くて「扱いにくい」
+N	bulky|compact	bulky は「かさばる」、compact は「小さくまとまった」
+N	bungle|mishandle	bungle は「へまをしてしくじる」。mishandle は「扱い方をまちがえる」
+N	bungle|succeed	bungle は「しくじる」、succeed は「成功する」
+N	buoy|float	buoy は海の「ブイ・浮標」。float は「浮き」
+N	buoy|marker	buoy は海の目印の「ブイ」。marker は「目印」と広く言う
+N	buoyant|cheerful	buoyant は気分が「明るく浮き立つ」や、景気が「上向きの」。cheerful は「陽気な」
+N	buoyant|floating	buoyant は「浮かびやすい・浮力のある」。floating は「浮いている」
+N	buoyant|gloomy	buoyant は「明るい」、gloomy は「沈んだ」
+N	brawny|burly	burly は「がっしりして大柄な」。brawny は「筋骨たくましい」
+N	burly|stocky	burly は「たくましく大きい」。stocky は背が低く「ずんぐりした」
+N	burly|slender	burly は「がっしりした」、slender は「ほっそりした」
+N	bystander|onlooker	bystander は事件の場に「たまたま居合わせた人」。onlooker は「見物人」
+N	callous|insensitive	callous は人の苦しみに「冷淡な・血も涙もない」と強い。insensitive は「鈍感な・無神経な」
+N	calming|relaxing	calming は気持ちを「静める」。relaxing は「くつろがせる」
+N	agitating|calming	calming は「落ち着かせる」、agitating は「動揺させる」
+N	candidly|openly	candidly は本音を「率直に」。openly は「隠さずに・公然と」
+N	candidly|evasively	candidly は「率直に」、evasively は「言葉を濁して」
+N	candor|frankness	candor は「率直さ・隠しだてのなさ」のかたい語。frankness は「遠慮のない率直さ」
+N	candor|honesty	candor は「包み隠さず話すこと」。honesty は「正直さ」
+N	candor|evasiveness	candor は「率直さ」、evasiveness は「言い逃れ」
+N	ability|capability	capability は機械や組織の「能力・性能」。ability は人の「能力」
+N	capability|capacity	capability は「(できる)能力」。capacity は「容量」や「最大の能力」
+N	capability|inability	capability は「能力」、inability は「できないこと」
+N	captivate|fascinate	captivate は「心をとりこにする」。fascinate は「夢中にさせる」
+N	captivate|charm	captivate は「魅了する」。charm は「(感じのよさで)ひきつける」
+N	captivate|capture	captivate は人の「心を奪う」。capture は人や動物を「捕まえる」や、心を「とらえる」
+N	captivating|enchanting	captivating は「心を奪う」。enchanting は「魔法のようにうっとりさせる」
+N	captivating|dull	captivating は「魅惑的な」、dull は「退屈な」
+N	carefree|lighthearted	carefree は心配ごとがなく「のんきな」。lighthearted は「気楽で明るい」
+N	carefree|untroubled	carefree は「気楽な」。untroubled は「悩みのない・平穏な」
+N	anxious|carefree	carefree は「のんきな」、anxious は「心配な」
+N	caring|compassionate	caring は人の世話を「よくする・思いやりのある」。compassionate は苦しむ人に「同情する」
+N	caring|considerate	caring は「面倒見のよい」。considerate は相手の気持ちを「考える」
+N	caring|uncaring	caring は「思いやりのある」、uncaring は「冷淡な」
+N	carve|sculpt	carve は木や石を「彫る」や、肉を「切り分ける」。sculpt は「彫刻する」
+N	carve|slice	carve は肉を「切り分ける」。slice はパンなどを「薄く切る」
+N	carver|sculptor	carver は木などを彫る「彫り師」。sculptor は芸術家の「彫刻家」
+N	carver|engraver	carver は「彫る人」。engraver は金属などに文字や絵を「刻む人」
+N	catalyst|trigger	catalyst は変化を「早める・うながすもの」や化学の「触媒」。trigger は物事の「引き金」
+N	catastrophe|disaster	catastrophe は大きな被害の「大惨事」。disaster は「災害」と広く言う
+N	calamity|catastrophe	catastrophe は「大災害」。calamity は「災難」のかたい語
+N	catching|contagious	catching は病気や笑いが「うつりやすい」話し言葉。contagious は「伝染性の」
+N	catching|infectious	catching は「うつりやすい」。infectious は「感染する」や、笑いが「人にうつる」
+N	categorization|classification	categorization は「種類分け」。classification は体系だった「分類」
+N	categorize|sort	categorize は種類ごとに「分類する」。sort は「仕分ける・分ける」
+N	causation|correlation	causation は一方が他方を起こす「因果関係」、correlation はいっしょに変わる「相関」
+I	cease|curr1900_idm_2_come_to_an_end	come to an end は「終わる」のふつうの言い方。cease は「やむ・終わる」のかたい語
+N	ceasefire|truce	ceasefire は戦いの「停戦」。truce は話し合いによる「休戦」
+N	armistice|ceasefire	ceasefire は「撃ち合いをやめること」。armistice は正式な「休戦協定」
+N	ceasefire|war	ceasefire は「停戦」、war は「戦争」
+N	ceaseless|incessant	ceaseless は「やむことのない」。incessant は「ひっきりなしの」（うるさい感じ）
+N	ceaseless|constant	ceaseless は「絶え間ない」。constant は「一定の」や「絶え間ない」
+N	ceaseless|intermittent	ceaseless は「絶え間ない」、intermittent は「とぎれとぎれの」
+N	celebrated|renowned	celebrated は「名高い・有名な」。renowned も「名声のある」で、ほぼ同じ
+N	celebrated|obscure	celebrated は「有名な」、obscure は「無名の」
+N	celebratory|joyful	celebratory は「お祝いの」（a celebratory dinner）。joyful は「喜びに満ちた」
+N	celebratory|somber	celebratory は「お祝いの」、somber は「陰気な・厳粛な」
+N	cerebral|intellectual	cerebral は「理屈で考える・理知的な」。intellectual は「知的な」
+N	cerebral|emotional	cerebral は「理知的な」、emotional は「感情的な」
+N	challenging|tough	challenging は「難しいがやりがいのある」。tough は「きつい・難しい」
+N	challenging|easy	challenging は「難しい」、easy は「簡単な」
+N	chapel|sanctuary	chapel は学校や病院の小さな「礼拝堂」。sanctuary は教会の「聖域」や「避難所」
+N	characteristic|trait	characteristic は物や人の「特徴」。trait は性格の「特性」
+N	characteristic|feature	characteristic は本来そなわった「特性」。feature は目につく「特徴・機能」
+N	charged|tense	charged は雰囲気が「張りつめた・熱気のある」。tense は「緊張した」
+N	charged|electrified	charged は「電気を帯びた」や「緊迫した」。electrified は「電気を通した」や「興奮した」
+N	calm|charged	charged は「張りつめた」、calm は「穏やかな」
+N	charges|fee	charges は複数形で「料金」。fee は入会などの「料金・謝礼」
+N	accusation|charges	charges は警察などの正式な「告発・容疑」。accusation は「責めること・告発」
+N	appeal|charisma	charisma は人を引きつける「カリスマ性」。appeal は「魅力・人気」
+N	cheered|heartened	cheered は「元気づけられた」。heartened は「励まされた」
+N	cheered|gladdened	cheered は「元気づいた」。gladdened は「うれしくなった」
+N	cheered|disheartened	cheered は「元気づいた」、disheartened は「がっかりした」

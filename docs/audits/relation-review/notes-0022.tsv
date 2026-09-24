@@ -1,0 +1,309 @@
+N	rebuke|reprimand	rebuke はまちがいをその場で「厳しくとがめる」。reprimand は上の人が正式に「叱責する（しっせきする）」
+N	praise|rebuke	rebuke は「叱る・とがめる」、praise は「ほめる」
+N	clamber|scramble	scramble は手足を使って急いで「よじ登る」。clamber は苦労して「はい登る」
+N	jumble|scramble	scramble は卵を「かき混ぜる」や、順番を「ごちゃまぜにする」。jumble は物を「ごた混ぜにする」
+N	arrange|scramble	scramble は「ごちゃまぜにする」、arrange は「きちんと並べる」
+N	fragment|scrap	scrap は紙や布の「切れはし」や食べ物の「残りくず」。fragment は割れた「破片・断片」
+N	remnant|scrap	scrap は捨てる「くず・切れはし」。remnant は残った「残り物・名残」
+N	scrap|whole	scrap は「切れはし」、whole は「全体」
+N	grate|scrape	scrape は泥などを「こすり取る」や、ひざを「すりむく」。grate はチーズなどを「すりおろす」
+N	roll|scroll	scroll は画面を「スクロールする」や、名詞で「巻物」。roll は「転がる・巻く」
+N	scour|scrub	scrub はブラシで「ごしごし洗う」。scour は鍋などを「磨き上げる」や、場所を「くまなく探す」
+N	rub|scrub	scrub は「ごしごしこすって洗う」。rub は「こする・すりこむ」
+N	kelp|seaweed	seaweed は「海藻」全体。kelp は大きな海藻の「コンブ」
+N	algae|seaweed	seaweed は海の「海藻」。algae は水中の小さな「藻」も含めた「藻類」全体
+N	confidentiality|secrecy	secrecy は秘密を「守ること・秘密主義」（in secrecy）。confidentiality は個人情報などの「守秘・機密性」
+N	concealment|secrecy	secrecy は「秘密にしておくこと」。concealment は物や事実を「隠すこと・隠ぺい」
+I	seek|idm_look_for	look for は「探す」の話し言葉。seek は助言や仕事を「求める」かたい語
+N	confiscation|seizure	seizure は警察などの「押収」や、病気の「発作」。confiscation は学校などが物を「取り上げること・没収」
+D	seizure	syn	fit	発作の意味の fit は「適した」の fit と由来のちがう別の語で見出し語がなく、つづりで引くと「適した」へ飛ぶ
+N	release|seizure	seizure は「差し押さえ」、release は「解放・返還」
+N	choose|select	select は多くの中から慎重に「選び出す」かたい語。choose は「選ぶ」のふつうの語
+N	pick|select	select は「厳選する」。pick は「(気軽に)選ぶ」や、花などを「摘む」
+N	generous|selfish	selfish は「自分勝手な」、generous は「気前のよい・寛大な」
+N	selfish|selfless	selfish は「自分のことばかり考える」、selfless は「自分のことを考えない・無私の」
+N	feeling|sentiment	sentiment は意見をふくんだ「気持ち・心情」（I share your sentiment）。feeling は「感情・感覚」と広く言う
+N	emotion|sentiment	sentiment は「感想・心情」や「感傷」。emotion は喜びや怒りなどの強い「感情」
+N	maintenance|servicing	servicing は車や機械の「点検・整備」。maintenance は建物なども含めた「維持・保守」
+N	servicing|upkeep	servicing は定期的な「整備」。upkeep は家などの「維持（費）」
+I	settle|curr_idm_pre2_clear_up	clear up は誤解などを「解く」や、天気が「晴れる」。settle は争いを「解決する・決着させる」
+I	settle|curr_idm_1_sort_out	sort out は問題を「片づける」話し言葉。settle は争いに「決着をつける」
+I	settle|exam_idm_work_out	work out は問題の「解決策を見つける」や、物事が「うまくいく」。settle は争いを「解決する」
+N	colonist|settler	settler は新しい土地に来て住みついた「入植者」。colonist は植民地を作った国から来た「植民者」
+N	pioneer|settler	settler は「住みついた人」。pioneer は最初に切り開いた「開拓者・先駆者」
+N	nomad|settler	settler は「定住した人」、nomad は「移動して暮らす遊牧民」
+N	break|sever	sever は関係やロープを「断ち切る」かたい語。break は「壊す・破る」と広く言う
+N	separate|sever	sever は「すっぱり切り離す」。separate は「分ける・離す」と広く言う
+N	join|sever	sever は「断ち切る」、join は「つなぐ」
+I	sever|curr_idm_pre2_cut_off	cut off は電気などの供給を「止める」や、「切り離す」。sever は関係などを「断ち切る」
+N	shaded|shady	shady は木などで「日陰になった」や、人が「うさんくさい」。shaded は物で「日よけされた」
+N	shady|suspicious	shady は話し言葉で「いかがわしい・うさんくさい」。suspicious は「怪しい」や「疑っている」
+N	shady|sunny	shady は「日陰の」、sunny は「日当たりのよい」
+N	mollusk|shellfish	shellfish は食べ物としての貝やエビ・カニ。mollusk は動物の分類の「軟体動物」（貝・イカ・タコなど）
+N	crustacean|shellfish	shellfish は食べる「貝・甲殻類」をまとめて言う。crustacean は分類の「甲殻類」（エビ・カニ）
+N	move|shift	shift は位置や注意を「少し移す・切りかえる」。move は「動かす・動く」と広く言う
+N	shift|transfer	shift は向きや重心を「移す」。transfer は人や物を別の場所へ「移す・転勤させる」
+N	fix|shift	shift は「移す・変える」、fix は「固定する」
+N	shovel|spade	shovel は土や雪を「すくう」シャベル。spade は土を「掘る」平たいすき
+N	gesture|shrug	shrug は「肩をすくめる」（知らない・どうでもいいの気持ち）。gesture は「身ぶりをする」と広く言う
+N	simmer|stew	simmer はとろ火で「ことこと煮る」。stew は肉や野菜を「長く煮込む」
+N	boil gently|simmer	simmer は「とろ火で煮る」の1語。boil gently は「静かに煮る」と説明した言い方
+N	imitate|simulate	simulate は機械などで本物のように「再現する」。imitate は人のしぐさなどを「まねる」
+N	mimic|simulate	simulate は状況を「模擬する」。mimic は声や動きを「そっくりまねる」
+I	simultaneously|curr_idm_3_at_once	at once は「すぐに」や「同時に」（all at once）。simultaneously は「同時に」のかたい語
+I	simultaneously|curr_idm_pre1_at_the_same_time	at the same time は「同時に」の話し言葉で、「その一方で」の意味もある。simultaneously は「同時に」のかたい語
+N	locate|situate	situate は建物などを「(ある場所に)置く・位置づける」（be situated in）。locate は場所を「突き止める」や、店などを「置く」
+N	position|situate	situate は「位置を決める」。position は物や人を「配置する」
+N	scan|skim	skim は内容を「ざっと読む」や、液体の表面を「すくい取る」。scan は「ざっと目を通す」と「くわしく調べる」の両方の意味がある
+N	glance|skim	skim は文章を「ざっと読む」。glance は「ちらっと見る」
+N	cranium|skull	skull は「頭蓋骨（ずがいこつ）」のふつうの語。cranium は医学の「頭蓋（ずがい）」
+N	head|skull	skull は頭の「骨」。head は「頭」全体
+N	jargon|slang	slang はくだけた会話の「俗語・スラング」。jargon は仲間うちの「専門用語」
+N	colloquialism|slang	slang は仲間うちの「俗語」。colloquialism は会話で使うくだけた「口語表現」
+N	formal language|slang	slang は「くだけた俗語」、formal language は「改まった言葉」
+N	slap|smack	slap は手のひらで「ぴしゃりとたたく」。smack は「ぴしゃっと打つ」や「チュッとキスする」
+N	slap|strike	slap は「平手で打つ」。strike は「打つ・たたく」と広く言う
+N	caress|slap	slap は「ひっぱたく」、caress は「やさしくなでる」
+N	glossy|sleek	sleek は毛などが「つややかな」や、形が「すらりとした」。glossy は紙などが「光沢のある」
+N	sleek|streamlined	sleek は車などが「なめらかでかっこいい」。streamlined は空気の抵抗の少ない「流線形の」
+N	sleek|slick	sleek は見た目が「なめらかでつやのある」。slick は表面が「つるつるした」や、話が「口先のうまい」
+N	rough|sleek	sleek は「なめらかな」、rough は「ざらざらした」
+N	incline|slope	slope は山などの「斜面・坂」。incline は「傾斜」のかたい語
+N	hillside|slope	slope は「斜面」と広く言う（スキーのゲレンデにも）。hillside は丘の「中腹・斜面」
+N	flat|slope	slope は「坂」、flat は名詞で「平らな所」
+N	slit|slot	slot はコインを入れる「細長い差し込み口」や、時間の「枠」。slit は切れこみの「細いすき間」
+N	opening|slot	slot は物を入れる「細い口」。opening は「開いている所・入り口」
+N	ghetto|slum	slum は貧しい人が住む「スラム街」。ghetto は特定の人々が住まわされた「居住区」（歴史と結びついた重い語）
+N	mansion|slum	slum は「貧民街」、mansion は「大邸宅」
+N	downturn|slump	slump は売り上げなどの「急な落ちこみ」や選手の「不調」。downturn は景気の「下向き」
+N	boom|slump	slump は「不振・不況」、boom は「好況・大ブーム」
+N	repair|smash	smash は「粉々に壊す」、repair は「修理する」
+N	daub|smear	smear は油などを「塗りつける」や、人を「中傷する」。daub はペンキなどを「べたべた塗る」
+N	slander|smear	smear は評判を「傷つける」（a smear campaign）。slander はうそで「中傷する」
+N	clean|smear	smear は「汚す・塗りつける」、clean は「きれいにする」
+N	smother|suffocate	smother は口をふさいで「窒息させる」や、火を「覆って消す」。suffocate は「息ができなくなる・窒息させる」
+N	smother|stifle	smother は笑いなどを「抑えこむ」。stifle はあくびなどを「こらえる」
+N	release|smother	smother は「押さえこむ」、release は「解き放つ」
+N	smuggle|traffic	smuggle は物を「密輸する」。traffic は麻薬などを「不正に取引する」（traffic in）
+N	smuggle|sneak	smuggle は国などへ「こっそり持ちこむ・密輸する」。sneak は物を「こっそり持ちこむ」や、「こっそり動く」
+N	crack|snap	snap は枝などが「ポキッと折れる」。crack は「ひびが入る・割れる」
+N	break|snap	snap は「パチンと折れる・切れる」。break は「壊れる・折れる」と広く言う
+N	smell|sniff	sniff は犬などが「くんくんかぐ」や、「鼻をすする」。smell は「においをかぐ」や「においがする」
+N	inhale|sniff	sniff は鼻で「短く吸う」。inhale は息を「吸いこむ」
+N	request|solicit	solicit は寄付や意見を「求める・募る」かたい語。request は「要請する・頼む」
+N	seek|solicit	solicit は人に「求める・せがむ」。seek は助言などを「求める」
+N	offer|solicit	solicit は「求める」、offer は「申し出る・差し出す」
+N	hollow|solid	solid は「中身の詰まった」、hollow は「中がからの」
+N	lone|solitary	solitary は「一人きりの・孤独な」（a solitary life）。lone は名詞の前で「ただ一人の・ぽつんとした」
+N	sole|solitary	solitary は「ひとりぼっちの」。sole は「唯一の」（the sole survivor）
+N	gregarious|solitary	solitary は「ひとりを好む」、gregarious は「人と群れるのが好きな・社交的な」
+N	rather|somewhat	somewhat は「いくぶん・やや」のかたい語。rather は「かなり・むしろ」
+N	completely|somewhat	somewhat は「いくぶん」、completely は「完全に」
+I	somewhat|curr1900_idm_pre1_sort_of_kind_of	sort of・kind of は「ちょっと・なんとなく」の話し言葉。somewhat は「いくぶん」のかたい語
+N	calming|soothing	soothing は音や言葉が「心をなごませる」。calming は「気持ちを落ち着かせる」
+N	comforting|soothing	soothing は痛みや気持ちを「やわらげる」。comforting は悲しいときに「なぐさめになる」
+N	irritating|soothing	soothing は「気持ちを落ち着かせる」、irritating は「いらいらさせる」
+N	mournful|sorrowful	sorrowful は「悲しみに満ちた」。mournful は死などを「嘆き悲しむような」
+N	body|soul	soul は「魂・心」、body は「肉体」
+N	autonomy|sovereignty	sovereignty は国の「主権」（他国に支配されない権利）。autonomy は地域や組織の「自治・自律」
+N	independence|sovereignty	sovereignty は国の「主権」。independence は支配からの「独立」
+N	plant|sow	sow は種を「まく」（/soʊ/ と読む）。plant は苗などを「植える」
+N	scatter|sow	sow は畑に種を「まく」。scatter は物を「まき散らす」
+N	reap|sow	sow は種を「まく」、reap は作物を「刈り取る」（You reap what you sow）
+N	generate|spawn	spawn はヒット作などが次々と「生み出す」や、魚が「卵を産む」。generate は電気などを「生み出す」
+N	produce|spawn	spawn は「大量に生み出す」。produce は「生産する・作り出す」
+N	lance|spear	spear は突いたり投げたりする「やり」。lance は馬に乗った騎士の長い「やり」
+N	javelin|spear	spear は狩りなどの「やり」。javelin は競技の「やり投げのやり」
+N	range|spectrum	spectrum は光の「スペクトル」や、意見などの「幅広い範囲」（a wide spectrum）。range は「範囲・幅」
+N	expel|spit	spit は口からつばなどを「吐く」。expel は空気などを「押し出す」や、人を「追い出す」
+N	spit|swallow	spit は「吐き出す」、swallow は「飲みこむ」
+N	pad|sponge	sponge は水をよく吸う「スポンジ」。pad は物を守る「当て物・パッド」
+N	planned|spontaneous	spontaneous は「その場で思わず出た・自然な」、planned は「計画された」
+N	sprain|twist	sprain は足首などを「ねんざする」。twist は「ひねる・ねじる」（twist one's ankle で足をくじく）
+N	sprain|wrench	sprain は「ねんざする」のふつうの語。wrench は関節を「ぐいとひねって痛める」
+N	cuttlefish|squid	squid は細長い「イカ」（ヤリイカなど）。cuttlefish は体が平たい「コウイカ」
+N	destabilize|stabilize	stabilize は「安定させる」、destabilize は「不安定にする」
+N	heap|stack	stack はきちんと「積み重ねた山」（a stack of plates）。heap は雑に積んだ「山」
+N	stagger|sway	stagger は倒れそうに「よろめく」。sway は木などが「ゆらゆら揺れる」
+N	stagger|totter	stagger は「よろよろ歩く」。totter は赤ちゃんなどが「よちよち歩く」や「ぐらつく」
+N	languish|stagnate	stagnate は水や経済が「よどむ・停滞する」。languish は人や計画が「長く放っておかれる・衰える」
+N	idle|stagnate	stagnate は「停滞する」。idle は人が「何もしないでいる」や、機械が「動いていない」
+N	flourish|stagnate	stagnate は「停滞する」、flourish は「栄える」
+N	stalk|stem	stalk は草や野菜の太い「茎」（セロリなど）。stem は花の「茎」や、葉の「柄」
+N	shoot|stalk	stalk は伸びた「茎」。shoot は出たばかりの「若芽」
+N	stall|stand	stall は市場の「売店・屋台」。stand は駅などの小さな「売店」や、物を置く「台」
+N	attitude|stance	stance は問題への公の「立場・姿勢」（What is your stance on 〜?）。attitude は人や物への「態度・考え方」
+N	stance|stand	stance は「立場・態度」のかたい語。stand は名詞で「立場」（take a stand）
+N	normalize|standardize	standardize は大きさなどを「標準にそろえる」。normalize は関係などを「正常な状態に戻す」
+N	regularize|standardize	standardize は「規格を統一する」。regularize は手続きなどを「正式なものにする」
+N	diversify|standardize	standardize は「統一する」、diversify は「多様にする」
+N	basic|staple	staple は米などの「主食・主要な産物」。basic は形容詞で「基本的な」、名詞で「基本」
+N	essential|staple	staple は毎日の生活に欠かせない「定番の品」。essential は名詞で「必需品」
+N	static|unchanging	static は数などが「動きのない・変化しない」。unchanging は「いつまでも変わらない」
+N	figures|statistics	statistics は集めて分析した「統計（の数字）」。figures は「数字・数値」
+N	act|statute	statute は議会で定めた「法令」のかたい語。act は議会の「法律」（the Clean Air Act）
+N	stem|trunk	stem は草花の細い「茎」。trunk は木の太い「幹」
+N	rigid|stiff	stiff は筋肉などが「こわばった」や、紙が「かたい」。rigid は「曲がらない」や、規則が「厳格な」
+N	firm|stiff	stiff は「かたくて曲げにくい」。firm は「しっかりした・かたい」（a firm mattress）
+N	flexible|stiff	stiff は「かたい・こわばった」、flexible は「柔らかく曲がる」
+N	shame|stigma	stigma は世間から押される「汚名・悪い印象」（the stigma of mental illness）。shame は自分が感じる「恥」
+N	disgrace|stigma	stigma は周りからの「偏見・汚名」。disgrace は行いによる「不名誉」
+N	booster|stimulant	stimulant はカフェインなどの「興奮剤・刺激物」。booster は元気や効果を「高めるもの」
+N	stimulant|tonic	stimulant は神経を「興奮させるもの」。tonic は体を「元気にする飲み物・強壮剤」
+N	sedative|stimulant	stimulant は「興奮剤」、sedative は「鎮静剤」
+N	prick|sting	sting はハチなどが針で「刺す」や、傷が「ひりひりする」。prick は針などで「ちくりと刺す」
+N	bite|sting	sting はハチなどが「(針で)刺す」。bite は犬などが「かむ」や、蚊が「刺す」
+N	mend|stitch	stitch は針と糸で「縫う」や、傷口を「縫合する」。mend は服などを「繕う・直す」
+N	stray|wander	stray は道やグループから「はぐれる・それる」。wander は「あてもなくさまよう」
+N	deviate|stray	stray は「わき道にそれる」。deviate は予定や規則から「外れる」かたい語
+N	stay|stray	stray は「はぐれる・それる」、stay は「とどまる」
+N	pressure|stress	stress は心身の「ストレス・緊張」や、発音の「強勢」。pressure は外からの「圧力・プレッシャー」
+N	strain|stress	stress は「ストレス」と広く言う。strain は体や心の「負担・無理」
+N	conflict|strife	strife は「争い・不和」のかたい語（family strife）。conflict は「対立・紛争」
+N	discord|strife	strife は「争いごと」。discord は意見の「不一致・不和」
+N	harmony|strife	strife は「争い」、harmony は「調和」
+N	band|stripe	stripe は「しま（模様）・ストライプ」。band は色の「帯」
+N	streak|stripe	stripe は規則正しい「しま」。streak は一本の「すじ」
+I	strive|curr_idm_pre2_make_an_effort	make an effort は「努力する」のふつうの言い方。strive は目標に向けて「懸命に努力する」
+N	strive|struggle	struggle は困難の中で「もがく・奮闘する」。strive は目標に向けて「努力する」
+N	fight|struggle	struggle は「必死にもがく」。fight は相手と「戦う」
+N	stub|stump	stump は木の「切り株」や、切ったあとの「残り」。stub は鉛筆やたばこの「使い残り」やチケットの「半券」
+N	remnant|stump	stump は切ったあとに残った「根元」。remnant は「残ったもの・名残」
+N	sub|submarine	submarine は「潜水艦」。sub はその短い言い方
+N	sink|submerge	submerge は水の中に「沈める・水没させる」。sink は重さで「沈む」
+N	submerge|surface	submerge は「水中に沈む」、surface は動詞で「水面に浮かび上がる」
+I	submit|curr_idm_pre2_give_in	give in は相手に「屈する」や、書類を「提出する」。submit は「提出する」や「服従する」
+I	submit|curr_idm_pre2_hand_in	hand in は宿題などを「提出する」話し言葉。submit は「提出する」のかたい語
+I	submit|curr1900_idm_2_turn_in	turn in は宿題などを「提出する」や、「寝る」。submit は「提出する」のかたい語
+N	abate|subside	subside は嵐や痛みが「おさまる」や、地面が「沈む」。abate は勢いが「弱まる」かたい語
+N	recede|subside	subside は「静まる」。recede は水などが「引いていく」
+N	intensify|subside	subside は「おさまる」、intensify は「激しくなる」
+I	subside|curr_idm_pre1_die_down	die down は音や風が「しだいに静まる」話し言葉。subside は「おさまる」
+N	fund|subsidize	subsidize は国などが「補助金を出す」。fund は事業に「お金を出す」と広く言う
+N	subsidize|support	subsidize は「補助金で援助する」。support は「支える・援助する」と広く言う
+N	subsidize|tax	subsidize は「補助金を出す」、tax は「税金をかける」
+N	outskirts|suburb	suburb は都市の周りの住宅地「郊外」。outskirts は町の「はずれ」
+N	series|succession	succession は次々と「続くこと」（in succession）や、王位などの「継承」。series は同じ種類の「ひと続き・シリーズ」
+N	sequence|succession	succession は「連続」。sequence は決まった「順序・順番」
+N	consecutive|successive	successive は「次々に続く」。consecutive は「途切れずに連続した」（three consecutive days）
+N	stifle|suffocate	suffocate は「窒息させる」や、「息苦しくさせる」。stifle は「息を詰まらせる」や、感情を「抑える」
+N	breathe|suffocate	suffocate は「息ができなくなる」、breathe は「呼吸する」
+N	set|suite	suite はホテルの「スイートルーム」や、家具などの「ひとそろい」。set は「ひと組・一式」
+N	apartment|suite	suite はホテルのいくつもの部屋の「ひと続き」。apartment は「アパート（の一室）」
+N	sunburn|tan	sunburn は赤くひりひりする「日焼け（やけど）」。tan は肌が茶色くなる「日焼け」
+N	overseer|supervisor	supervisor は職場の「監督者・上司」。overseer は昔の「現場監督」
+N	subordinate|supervisor	supervisor は「上司」、subordinate は「部下」
+N	soar|surge	surge は数や人が「急に増える・押し寄せる」。soar は値段などが「急上昇する」や、鳥が「舞い上がる」
+N	plunge|surge	surge は「急増する」、plunge は「急落する」
+I	susceptible|curr_idm_pre1_be_vulnerable_to	be vulnerable to は攻撃や病気に「弱い」。susceptible to は病気などに「かかりやすい・影響されやすい」
+N	marsh|swamp	swamp は木の生えた「沼地」。marsh は草の生えた「湿地」
+N	bog|swamp	swamp は「沼地」。bog は足が沈む「泥沼・湿原」
+N	desert|swamp	swamp は「湿地」、desert は「砂漠」
+N	exchange|swap	swap は物や席を「取り替えっこする」くだけた語。exchange は「交換する」や、お金を「両替する」
+N	swap|trade	swap は「交換する」。trade は商売で「取引する」や、物を「交換する」
+N	swear|vow	swear は「誓う」や「ののしる」。vow は「かたく誓う」かたい語
+N	pledge|swear	swear は神などにかけて「誓う」。pledge は寄付などを公に「約束する」
+N	clear|sweep	sweep はほうきで「掃く」や、「一掃する」。clear は物を「片づける」
+N	pill|tablet	tablet は平たい「錠剤」や「タブレット端末」。pill は「錠剤・丸薬」のふつうの語
+N	slab|tablet	tablet は文字を刻んだ「銘板」。slab は石などの「厚い板」
+N	insensitive|tactless	tactless は相手が気にすることを「平気で言う」。insensitive は人の気持ちに「鈍感な」
+N	tactful|tactless	tactless は「無神経な」、tactful は「気配りのできる・如才ない」
+N	dressmaker|tailor	tailor は背広などの「仕立屋」。dressmaker は女性の服の「洋裁師」
+N	customize|tailor	tailor は相手に「合わせて作る」（tailored to）。customize は注文に合わせて「作り変える」
+N	contaminated|tainted	tainted は評判が「汚れた」や、食べ物が「汚染された」。contaminated は有害物質で「汚染された」
+N	pure|tainted	tainted は「汚れた」、pure は「汚れのない」
+N	entangle|tangle	tangle はひもなどが「もつれる」。entangle は「からませる」や、人を面倒なことに「巻きこむ」
+N	tangle|untangle	tangle は「もつれさせる」、untangle は「ほどく」
+D	tar	syn	pitch	タールのような物の意味の pitch は「音の高さ・投げる」の pitch と由来のちがう別の語で見出し語がなく、つづりで引くと「音の高さ」へ飛ぶ
+N	asphalt|tar	tar は石炭などからとる黒い「タール」。asphalt は道路の「アスファルト」
+N	goal|target	target は売り上げなどの具体的な「目標（数値）」や、弓の「的」。goal は最終的な「目標・ゴール」
+N	objective|target	target は「目標とする数や的」。objective は計画の「目的」のかたい語
+N	duty|tariff	tariff は輸入品にかける「関税（の率）」。duty は商品ごとの「税・関税」
+N	tariff|tax	tariff は輸入品にかける「関税」。tax は「税金」全体
+N	taint|tarnish	tarnish は評判を「汚す」や、金属が「くすむ」。taint は食べ物を「汚染する」や、評判を「傷つける」
+N	sully|tarnish	tarnish は「汚す・曇らせる」。sully は名誉を「けがす」文学的な語
+N	engineer|technician	technician は機械の修理などをする「技術者」。engineer は設計などをする「エンジニア・技師」
+N	specialist|technician	technician は機械を扱う「技術者」。specialist はある分野の「専門家」
+N	moderate|temperate	temperate は気候が「温暖な」や、人が「節度のある」。moderate は量などが「適度な」
+N	mild|temperate	temperate は「(暑すぎも寒すぎもしない)温暖な」。mild は天気が「穏やかな」や、味が「まろやかな」
+N	extreme|temperate	temperate は「温暖な・節度ある」、extreme は「極端な」
+N	pace|tempo	tempo は曲や生活の「テンポ・速さ」。pace は歩く「ペース・速度」
+N	appealing|tempting	tempting は「(つい)手を出したくなる」。appealing は「魅力的な」と広く言う
+N	off-putting|tempting	tempting は「心をそそる」、off-putting は「気持ちがなえる」
+N	incline|tend	tend は「〜しがちである」（tend to do）のふつうの語。incline は「〜したい気持ちにさせる」（be inclined to do）
+N	lean|tend	tend は「〜する傾向がある」。lean は「寄りかかる」や、考えが「傾く」
+I	tend|curr1900_idm_2_be_apt_to_do	be apt to do は「〜しがちだ」の少しかたい言い方。tend to do と同じ意味
+I	tend|curr_idm_pre1_be_liable_to	be liable to は悪いことが「起こりがちだ」。tend to do は「〜する傾向がある」と広く言う
+I	tend|curr_idm_pre1_be_prone_to	be prone to はけがや病気に「なりやすい」（悪いことに使う）。tend to は「〜しがちだ」と広く言う
+N	provisional|tentative	tentative は計画が「仮の」や、態度が「ためらいがちな」。provisional は正式決定までの「暫定的な」
+N	definite|tentative	tentative は「仮の」、definite は「確定した」
+N	earthly|terrestrial	terrestrial は「陸上の」や「地球の」（学術的な語）。earthly は天国に対して「この世の」
+N	land-based|terrestrial	terrestrial は「陸生の」のかたい語。land-based は「陸を拠点とする」
+N	aquatic|terrestrial	terrestrial は「陸生の」、aquatic は「水生の」
+N	attest|testify	testify は法廷で「証言する」。attest は「事実だと証明する」かたい語
+N	testify|witness	testify は証人として「証言する」。witness は事件などを「目撃する」
+N	theme|topic	theme は作品全体の「主題・テーマ」。topic は話し合う「話題」
+N	subject|theme	theme は作品に流れる「テーマ」。subject は本や話の「主題・題材」や「科目」
+N	abstract|theoretical	theoretical は「理論上の」。abstract は「抽象的な」
+N	practical|theoretical	theoretical は「理論上の」、practical は「実際的な」
+N	spine|thorn	thorn はバラなどの「とげ」や「悩みの種」（a thorn in one's side）。spine はサボテンやヤマアラシの「とげ」や「背骨」
+N	prickle|thorn	thorn は「とげ」のふつうの語。prickle は小さな「とげ」や、「ちくちくする感じ」
+N	limit|threshold	threshold はそこを越えると変わる「境目・限界」や、戸口の「敷居」。limit は越えてはいけない「限度」
+N	shove|thrust	thrust は物を「ぐいと突き出す・押しこむ」。shove は人を「乱暴に押しのける」
+N	push|thrust	thrust は「力いっぱい突き出す」。push は「押す」と広く言う
+N	foil|thwart	thwart は計画を「じゃまする・くじく」。foil は悪事などを「未然に防ぐ」
+N	assist|thwart	thwart は「妨げる」、assist は「手伝う」
+N	slab|tile	tile は床や壁に張る「タイル」や屋根の「瓦」。slab はコンクリートなどの「厚い板」
+N	enduring|timeless	timeless は「時代をこえて古びない」。enduring は人気などが「長く続く」
+N	ageless|timeless	timeless は作品などが「不朽の」。ageless は人が「年をとらない」
+N	dated|timeless	timeless は「古びない」、dated は「時代遅れの」
+N	metal|tin	tin は金属の「スズ」や、イギリス英語で「缶」。metal は「金属」全体
+N	frog|toad	toad は皮がでこぼこした「ヒキガエル」。frog は「カエル」全体
+N	grave|tomb	tomb は石でできた大きな「墓」（王の墓など）。grave は地面に掘った「墓」
+N	crypt|tomb	tomb は「墓」と広く言う。crypt は教会の下の「地下墓室」
+N	flashlight|torch	torch はイギリス英語で「懐中電灯」や、昔の「たいまつ」。flashlight はアメリカ英語で「懐中電灯」
+N	flame|torch	torch は手に持つ「たいまつ」。flame は燃えている「炎」
+N	tornado|twister	tornado は「竜巻」のふつうの語。twister はアメリカの話し言葉で「竜巻」
+N	cyclone|tornado	tornado は陸上の小さく激しい「竜巻」。cyclone はインド洋などの大きな「熱帯低気圧（サイクロン）」
+N	hare|tortoise	tortoise は「リクガメ」、hare は「野ウサギ」（「ウサギとカメ」の話で対になる）
+N	haul|tow	tow は車などをロープで「引っ張っていく・牽引（けんいん）する」。haul は重い物を「引きずって運ぶ」
+N	drag|tow	tow は車で「引いていく」。drag は重い物を地面の上で「引きずる」
+N	tow|tug	tow は車や船を「引いていく」。tug は「ぐいっと引く」
+N	push|tow	tow は「引っ張る」、push は「押す」
+N	trace|track	trace は原因や由来を「さかのぼってたどる」。track は動物などの跡を「追う」
+N	follow|trace	trace は足跡などを「たどって突き止める」。follow は「後についていく」
+N	tractor|vehicle	tractor は畑を耕す「トラクター」。vehicle は「乗り物」全体
+N	disaster|tragedy	tragedy は人の死などの「悲劇・惨事」や、劇の「悲劇」。disaster は地震などの「災害」
+N	catastrophe|tragedy	tragedy は「悲しい出来事」。catastrophe は被害の大きい「大災害・破局」
+N	comedy|tragedy	tragedy は「悲劇」、comedy は「喜劇」
+N	preview|trailer	trailer は映画の「予告編」や、車で引く「トレーラー」。preview は「試写会・下見」
+N	caravan|trailer	trailer はアメリカ英語で、車で引く「移動住宅」。caravan はイギリス英語で同じもの
+N	betrayer|traitor	traitor は国や仲間を裏切る「裏切り者・反逆者」。betrayer は人の信頼を「裏切った人」
+N	traitor|turncoat	traitor は「裏切り者」。turncoat は敵側に「寝返った人」
+N	loyalist|traitor	traitor は「裏切り者」、loyalist は「忠実な支持者」
+N	calm|tranquil	tranquil は湖などが「静かでのどかな」。calm は「穏やかな・落ち着いた」
+N	agitated|tranquil	tranquil は「穏やかな」、agitated は「動揺した」
+N	betrayal|treason	treason は国に対する「反逆（罪）」。betrayal は人への「裏切り」
+N	treachery|treason	treason は国家への「反逆罪」。treachery は人を「だまして裏切ること」
+N	loyalty|treason	treason は「国への反逆」、loyalty は「忠誠」
+N	tendency|trend	trend は社会全体の「流行・傾向」。tendency は人や物の「〜しがちな性質」
+N	fashion|trend	trend は変化の「流れ・動向」。fashion は服などの「流行」
+N	drip|trickle	trickle は水が「ちょろちょろ流れる」。drip は「ぽたぽたたれる」
+N	dribble|trickle	trickle は「細く流れる」。dribble はよだれなどが「たらたら垂れる」
+N	gush|trickle	trickle は「ちょろちょろ流れる」、gush は「どっと噴き出す」
+N	billion|trillion	trillion は「1兆」、billion は「10億」
+N	chest|trunk	trunk は旅行用の大きな「トランク」や木の「幹」。chest はふた付きの「大箱」や「胸」
+N	pull|tug	tug は「ぐいっと引っ張る」。pull は「引く」と広く言う
+N	tug|yank	tug は「ぐいっと引く」。yank は「力いっぱい急に引っ張る」
+N	push|tug	tug は「引っ張る」、push は「押す」
+N	fall|tumble	tumble は「転がり落ちる」や、値段が「急落する」。fall は「落ちる・倒れる」
+N	topple|tumble	tumble は「ころころ転がる」。topple は高い物が「ぐらついて倒れる」
+N	climb|tumble	tumble は「転がり落ちる」、climb は「登る」
+N	calm|turbulent	turbulent は海や時代が「荒れた」、calm は「穏やかな」
+N	branch|twig	twig は細くて小さい「小枝」。branch は木の「枝」
+N	stick|twig	twig は木についている「小枝」。stick は落ちている「棒切れ」
+N	trunk|twig	twig は「小枝」、trunk は「幹」
+N	turn|twist	twist はふたなどを「ひねる・ねじる」。turn は「回す」と広く言う
+N	twist|wind	twist は「ねじる・よじる」。wind は /waɪnd/ と読み、糸などを「巻く」や、道が「曲がりくねる」
+N	straighten|twist	twist は「ねじる」、straighten は「まっすぐにする」
+N	judge|umpire	umpire は野球やテニスの「審判」。judge はコンテストの「審査員」や裁判の「裁判官」

@@ -1,0 +1,311 @@
+N	revealed|uncovered	uncovered は「覆いのない・むき出しの」や、秘密が「暴かれた」。revealed は隠れていたものが「明らかにされた」
+N	concealed|uncovered	uncovered は「覆いのない」、concealed は「隠された」
+N	unharmed|unhurt	unharmed と unhurt はどちらも「けがのない・無傷の」。unharmed は物にも使える
+N	safe|unharmed	unharmed は危ない目にあったが「無傷の」。safe は「無事な・安全な」
+N	unhelpful|useless	unhelpful は人や答えが「役に立たない・親切でない」。useless は物が「まったく役に立たない」
+N	uncooperative|unhelpful	unhelpful は「手を貸さない」。uncooperative は「協力しようとしない・反抗的な」
+N	division|unity	unity は「団結・まとまり」、division は「分裂」
+N	global|universal	universal は「だれにでも当てはまる・普遍的な」。global は「世界的な・地球全体の」
+N	general|universal	universal は「例外なく全員の」。general は「一般的な・だいたいの」
+N	particular|universal	universal は「普遍的な」、particular は「個別の・特定の」
+N	unconnected|unrelated	unrelated は「関係のない」や、人が「血のつながらない」。unconnected は「つながっていない」
+N	irrelevant|unrelated	unrelated は2つのことが「無関係の」。irrelevant は話題に「関係のない・的外れな」
+N	related|unrelated	unrelated は「無関係の」、related は「関係のある」
+N	inexperienced|unskilled	unskilled は「技能のない」や、仕事が「特別な技能のいらない」。inexperienced は「経験の浅い」
+N	shaky|unstable	unstable は建物や状態が「不安定な」。shaky は手や足が「ぐらぐらする・震える」
+N	unstable|volatile	unstable は「安定していない」。volatile は値段や気分が「急に変わりやすい」
+N	unsteady|wobbly	unsteady は足どりなどが「ふらつく」。wobbly はいすなどが「ぐらぐらする」
+N	steady|unsteady	unsteady は「ぐらつく」、steady は「しっかりした・安定した」
+N	improve|upgrade	upgrade は機器を「新しい型にする」や、座席を「上のクラスにする」。improve は「よくする」と広く言う
+N	enhance|upgrade	upgrade は「性能を上げる」。enhance は価値や質を「高める」
+N	elevate|uplift	uplift は気持ちを「高める・元気づける」。elevate は物を「持ち上げる」や、地位を「高める」
+N	inspire|uplift	uplift は「気分を明るくする」。inspire は「やる気を起こさせる・ひらめきを与える」
+N	depress|uplift	uplift は「元気づける」、depress は「落ちこませる」
+N	transfer|upload	upload はデータをサーバーに「アップロードする」。transfer はデータや物を「移す・転送する」と広く言う
+N	distressing|upsetting	upsetting は「動揺させる・悲しい」。distressing は「苦しめる・痛ましい」と強い
+N	disturbing|upsetting	upsetting は気持ちを「乱す」。disturbing は「不安にさせる・気味が悪い」
+N	comforting|upsetting	upsetting は「動揺させる」、comforting は「ほっとさせる」
+N	dimly|vaguely	vaguely は記憶などが「ぼんやりと・なんとなく」。dimly は光や記憶が「うす暗く・かすかに」
+N	faintly|vaguely	vaguely は「はっきりしないが何となく」。faintly は音や色が「かすかに」
+N	confirm|validate	validate は理論やデータが「正しいと証明する」。confirm は「確かめる・裏づける」
+N	validate|verify	validate は「妥当だと認める・有効にする」。verify は正しいかを「検証する」
+N	invalidate|validate	validate は「有効にする」、invalidate は「無効にする」
+N	heroism|valor	valor は戦いなどでの「勇敢さ・武勇」のかたい語。heroism は人を救うような「英雄的な行い」
+N	cowardice|valor	valor は「勇敢さ」、cowardice は「臆病」
+N	constant|variable	variable は数学の「変数」や、形容詞で「変わりやすい」、constant は「定数」や「一定の」
+N	speed|velocity	velocity は物理で向きもふくむ「速度」のかたい語。speed は「速さ」のふつうの語
+N	fabric|velvet	velvet は毛足のある「ビロード」。fabric は「布・生地」全体
+N	brink|verge	verge は「〜の寸前」（on the verge of tears）のように、よい意味にも悪い意味にも使う。brink は危険の「瀬戸際」（on the brink of war）
+N	edge|verge	verge は「今にも〜しそうな所」や、道の「へり」。edge は「端・縁」
+N	edition|version	version は作品や製品の「版・型」（the latest version）。edition は本などの「〜版」（the second edition）
+N	variant|version	version は「〜版・〜の型」。variant は少しちがう「変種・変形」
+N	upright|vertical	vertical は線などが「垂直の・縦の」。upright は物や人が「まっすぐ立った」
+N	perpendicular|vertical	vertical は地面に対して「垂直の」。perpendicular は数学で直線どうしが「垂直の」
+N	horizontal|vertical	vertical は「縦の・垂直の」、horizontal は「横の・水平の」
+N	feasible|viable	viable は計画などが「うまくいく見こみのある」や、生き物が「生きていける」。feasible は「実行可能な」
+N	viable|workable	viable は「成り立つ見こみがある」。workable は計画が「実際にやれる」
+N	neighborhood|vicinity	vicinity は「付近・周辺」のかたい語（in the vicinity of）。neighborhood は住んでいる「近所」
+N	surroundings|vicinity	vicinity は「近く」。surroundings は「周りの様子・環境」
+N	savage|vicious	vicious は人や犬が「凶暴な」や、うわさが「悪意のある」。savage は「どう猛な・野蛮な」
+N	malicious|vicious	vicious は「悪質な・残忍な」。malicious は人を傷つける「悪意のある」
+N	gentle|vicious	vicious は「凶暴な」、gentle は「やさしい」
+N	vigilant|watchful	vigilant は危険に「油断なく警戒している」かたい語。watchful は「注意深く見守っている」
+N	alert|vigilant	vigilant は長い間「警戒を続ける」。alert はすぐ反応できるよう「油断のない」
+N	careless|vigilant	vigilant は「警戒している」、careless は「不注意な」
+N	energy|vigor	vigor は「活力・元気」のかたい語（with vigor）。energy は「エネルギー・力」
+N	vigor|vitality	vigor は体や心の「力強さ」。vitality は生き生きとした「生命力」
+N	energetic|vigorous	vigorous は運動などが「激しい・力強い」（vigorous exercise）。energetic は人が「元気いっぱいの」
+N	feeble|vigorous	vigorous は「力強い」、feeble は「弱々しい」
+N	mansion|villa	villa は海辺などの「別荘」。mansion は大きな「大邸宅」
+N	cottage|villa	villa は大きくて豪華な「別荘」。cottage は小さな「田舎家・別荘」
+N	creeper|vine	vine はブドウなどの「つる植物」。creeper は地面や壁をはう「つる草」
+N	acid|vinegar	vinegar は料理に使う「酢」。acid は化学の「酸」
+N	classic|vintage	vintage は車やワインなどが「年代物の・よい時代の」。classic は「古典の・定番の名作の」
+N	antique|vintage	vintage は数十年前の「年代物の」。antique は百年ほど前の「骨董（こっとう）の」
+N	modern|vintage	vintage は「年代物の」、modern は「現代の」
+N	infectious|viral	viral は「ウイルスの」や、ネットで「一気に広まる」（go viral）。infectious は病気が「感染する」
+N	contagious|viral	viral は「ウイルス性の」。contagious は人から人へ「うつる」
+N	energy|vitality	vitality は生き生きとした「活力・生命力」。energy は「エネルギー・元気」
+N	lethargy|vitality	vitality は「活力」、lethargy は「だるさ・無気力」
+N	quantity|volume	volume は交通などの「量」や「体積・音量」。quantity は数えられる「量・数量」
+N	capacity|volume	volume は中身の「体積」。capacity は入れられる「容量・収容力」
+N	regurgitate|vomit	vomit は「吐く」のふつうの語。regurgitate は鳥などが食べた物を「吐き戻す」や、知識を「うのみにして繰り返す」
+N	swallow|vomit	vomit は「吐く」、swallow は「飲みこむ」
+I	vomit|curr1900_idm_pre1_throw_up	throw up は「吐く」の話し言葉。vomit はかたい語
+N	crude|vulgar	vulgar は言葉などが「下品な」。crude は「粗野な」や、「加工していない」（crude oil）
+N	coarse|vulgar	vulgar は「下品で俗っぽい」。coarse は冗談などが「下品な」や、布が「粗い」
+N	refined|vulgar	vulgar は「下品な」、refined は「洗練された」
+N	salary|wage	wage は時給や週給の「賃金」（主に体を使う仕事）。salary は月給・年俸の「給料」
+N	pay|wage	wage は決まった率の「賃金」。pay は名詞で「給料」と広く言う
+N	roaming|wandering	wandering は「あてもなくさまよう」。roaming は広い範囲を「歩き回る」
+N	settled|wandering	wandering は「放浪している」、settled は「定住した」
+N	closet|wardrobe	wardrobe はイギリス英語で服をしまう「洋服だんす」や、持っている「服全部」。closet はアメリカ英語で作りつけの「クローゼット」
+N	attire|wardrobe	wardrobe は持っている「服の一式」。attire は「服装」のかたい語
+N	justify|warrant	warrant は事情が「〜を必要とする・正当とする」（warrant punishment）。justify は人が理由を挙げて「正当化する」
+N	deserve|warrant	warrant は状況が「〜に値する」。deserve は人が「〜を受けるに値する」
+N	hornet|wasp	wasp は細い腰の「ハチ（スズメバチなど）」全体。hornet は大型の「スズメバチ」
+N	bee|wasp	wasp は刺す「スズメバチ・アシナガバチ」。bee は蜜を集める「ミツバチ」など
+N	polish|wax	wax は床などにぬる「ワックス」や、ろうそくの「ろう」。polish は「つや出し剤」
+N	braid|weave	weave は糸を縦横に「織る」。braid は髪などを「三つ編みにする・組む」
+N	plant|weed	weed は勝手に生える「雑草」。plant は「植物」全体
+N	crop|weed	weed は「雑草」、crop は育てる「作物」
+N	lash|whip	whip は「むちで打つ」や、クリームを「泡立てる」。lash は「激しく打つ」や、雨が「たたきつける」
+N	beat|whip	whip はクリームを「ふんわり泡立てる」。beat は卵などを「かき混ぜる」
+N	beat|whisk	whisk は泡立て器で「かき混ぜる・泡立てる」。beat は卵などを「強くかき混ぜる」
+N	whip|whisk	whisk は「泡立て器で混ぜる」や、「さっと運び去る」。whip はクリームを「しっかり泡立てる」
+N	bristle|whisker	whisker はネコなどの「ひげ」や、人の「ほおひげ」。bristle はブラシなどの「かたい毛」
+N	expansion|widening	widening は道などの「幅を広げること」。expansion は大きさや範囲の「拡大」
+N	broadening|widening	widening は道などの「拡幅」。broadening は知識などを「広げること」
+N	narrowing|widening	widening は「広がること」、narrowing は「狭まること」
+N	exercise|wield	wield は権力を「ふるう」や、刀などを「ふり回す」。exercise は権利を「行使する」
+N	handle|wield	wield は道具や武器を「うまく使う・ふるう」。handle は物を「手で扱う」や、問題に「対処する」
+N	hairpiece|wig	wig は頭全体の「かつら」。hairpiece は一部につける「ヘアピース」
+N	toupee|wig	wig は「かつら」全体。toupee は男性用の「部分かつら」
+N	tree|willow	willow は枝が垂れる「ヤナギ（の木）」。tree は「木」全体
+N	release|withhold	withhold は情報やお金を「出さずにおく」、release は「公開する・出す」
+I	withhold|curr_idm_pre2_hold_back	hold back は涙などを「こらえる」や、情報を「隠しておく」。withhold は支払いや情報を「差し控える」かたい語
+N	endure|withstand	withstand は建物などが力に「耐える・持ちこたえる」。endure は人が苦しみに「耐える」
+N	resist|withstand	withstand は「びくともせず耐える」。resist は「抵抗する」や、病気などに「負けない」
+I	withstand|curr_idm_pre1_hold_out	hold out は「持ちこたえる・最後まで粘る」。withstand は「(力に)耐える」
+I	withstand|curr1900_idm_2_hold_up	hold up は重さに「耐える」や、人を「遅らせる」。withstand は「持ちこたえる」
+N	feasible|workable	workable は計画が「うまくいく・実行できる」。feasible は「実現可能な」のかたい語
+N	practicable|workable	workable は「実際にうまくいく」。practicable は「実行できる」のかたい語
+N	unworkable|workable	workable は「実行できる」、unworkable は「うまくいかない」
+N	grapple|wrestle	wrestle は問題に「取り組む」や、「レスリングをする」。grapple は相手と「取っ組み合う」や、問題に「苦心して取り組む」
+N	struggle|wrestle	wrestle は難問と「格闘する」（wrestle with）。struggle は「もがく・苦労する」
+N	pitiful|wretched	wretched は自分が「みじめな」や、天気などが「ひどい」。pitiful は見ていて「かわいそうな」
+N	content|wretched	wretched は「みじめな」、content は形容詞では /kənˈtɛnt/ と読み「満ち足りた」
+N	crease|wrinkle	wrinkle は顔や服の「しわ」。crease はアイロンでつけた「折り目」や、紙の「折れじわ」
+N	fold|wrinkle	wrinkle は「しわ」。fold は布の「ひだ」や紙の「折り目」
+N	smooth|wrinkle	wrinkle は動詞で「しわになる」、smooth は動詞で「しわをのばす」
+N	mistakenly|wrongly	wrongly は「まちがって」や「不当に」（wrongly accused）。mistakenly は「思いちがいで」
+N	unjustly|wrongly	wrongly は「まちがって・不当に」。unjustly は「不公平に・不当に」
+N	rightly|wrongly	wrongly は「まちがって」、rightly は「正しく・当然」
+I	wrongly|curr_idm_pre2_by_mistake	by mistake は「うっかりまちがえて」。wrongly は「誤って」や「不当に」
+N	boat|yacht	yacht はレースや遊びに使う「ヨット・大型の遊覧船」。boat は「小舟・船」と広く言う
+N	sailboat|yacht	yacht は帆船もエンジン付きもある「高級な遊覧船」。sailboat は帆で走る「帆船」
+N	wool|yarn	yarn は編み物に使う「毛糸・より糸」。wool は羊の「毛・ウール」そのもの
+N	leaven|yeast	yeast はパンをふくらませる「イースト菌」。leaven はパン生地を発酵させる「パン種」
+N	fungus|yeast	yeast は菌類の一種の「酵母」。fungus はキノコやカビなどの「菌類」全体
+N	yellow|yolk	yolk は卵の「黄身」。yellow も名詞で「黄身」を言えるが、ふつうは「黄色」
+N	white|yolk	yolk は「黄身」、white は卵の「白身」
+N	metal|zinc	zinc は金属の「亜鉛」。metal は「金属」全体
+N	area|zone	zone は目的で区切った「区域・地帯」（a school zone）。area は「地域・場所」と広く言う
+N	region|zone	zone は決められた「区域」。region は広い「地方・地域」
+I	abate|curr_idm_pre1_die_down	die down は風や音が「しだいに静まる」話し言葉。abate は嵐などが「弱まる」かたい語
+I	abolish|idm_do_away_with	do away with は制度などを「なくす」話し言葉。abolish は法律や制度を「廃止する」
+I	abort|idm_call_off	call off は予定を「中止する」話し言葉。abort は途中で「打ち切る・中止する」
+N	abound|teem	abound は「たくさんある」（abound in / with）。teem は生き物などで「満ちあふれている」（teem with）
+N	abound|overflow	abound は数が「豊富にある」。overflow は水などが「あふれる」
+N	abound|lack	abound は「たくさんある」、lack は「欠けている」
+N	abridged|condensed	abridged は本が「短く縮めた・簡略版の」。condensed は文章が「要約した」や、牛乳が「濃縮した」
+N	abridged|shortened	abridged は本の「簡略版の」。shortened は「短くした」と広く言う
+N	abridged|unabridged	abridged は「簡略版の」、unabridged は「省略のない完全版の」
+N	abruptly|suddenly	abruptly は「急に・ぶっきらぼうに」（止まり方が急）。suddenly は「突然」のふつうの語
+N	abruptly|gradually	abruptly は「突然」、gradually は「徐々に」
+I	abruptly|curr_idm_pre2_all_at_once	all at once は「突然」や「いっせいに」。abruptly は「急に・だしぬけに」
+I	abruptly|curr1900_idm_pre2_all_of_a_sudden	all of a sudden は「突然」の話し言葉。abruptly は「急に（途切れるように）」
+N	absolutely|totally	absolutely は「絶対に・まったく」で、返事の「もちろん」にも使う。totally は「完全に」
+N	abundance|scarcity	abundance は「豊富さ」、scarcity は「不足」
+N	academy|school	academy は専門を学ぶ「学院・アカデミー」（a ballet academy）。school は「学校」のふつうの語
+N	academy|institute	academy は芸術などの「学校」や「学士院」。institute は研究などの「機関・研究所」
+N	acceptance|approval	acceptance は「受け入れること」。approval は「よいと認めること・承認」
+N	accidental|unintentional	accidental は「偶然の・事故による」。unintentional は「わざとではない」
+N	accidental|chance	accidental は「思いがけない」。chance は形容詞で「たまたまの」（a chance meeting）
+N	accidental|deliberate	accidental は「偶然の」、deliberate は「わざとの」
+N	acclaim|praise	acclaim は多くの人からの「絶賛」（win acclaim）。praise は「ほめること」と広く言う
+N	acclaim|applause	acclaim は「称賛・高い評価」。applause は会場の「拍手」
+N	acclaim|criticism	acclaim は「称賛」、criticism は「批判」
+N	acclaimed|celebrated	acclaimed は作品などが「高く評価された」。celebrated は人が「名高い」
+N	acclaimed|criticized	acclaimed は「絶賛された」、criticized は「批判された」
+N	accomplish|achieve	accomplish は仕事などを「やりとげる」。achieve は努力して目標を「達成する」
+N	accomplish|complete	accomplish は目的を「果たす」。complete は作業を「完了させる」
+I	accomplish|curr_idm_pre2_carry_through	carry through は計画を「最後までやりとげる」。accomplish は「成しとげる」
+N	accordingly|therefore	accordingly は「それに合わせて」（act accordingly）や「したがって」。therefore は「それゆえ」
+N	accurately|precisely	accurately は事実どおりに「正確に」。precisely は細かく「精密に」や、「まさに」
+N	accusation|allegation	accusation は人を名指しして責める「非難・告発」。allegation は証拠がまだない「申し立て」
+N	accusation|charge	accusation は「責めること」。charge は警察などの正式な「容疑・告発」
+N	acidic|alkaline	acidic は「酸性の」、alkaline は「アルカリ性の」
+N	acknowledge|admit	acknowledge は事実などを「(正式に)認める」。admit はしぶしぶ「(自分の非を)認める」
+N	acknowledgement|recognition	acknowledgement は事実などを「認めること」や、受け取りの「通知」（イギリス式のつづり）。recognition は功績などの「評価」
+N	acknowledgement|admission	acknowledgement は「認めること」。admission はまちがいを「白状すること」
+N	acknowledgement|denial	acknowledgement は「認めること」、denial は「否定すること」
+N	acknowledgment|recognition	acknowledgment は受け取りなどを「知らせること」や「認めること」（アメリカ式のつづり）。recognition は功績などの「評価」
+N	acknowledgment|admission	acknowledgment は事実を「認めること」。admission は自分の非を「認めること」
+N	acknowledgment|denial	acknowledgment は「承認」、denial は「否認」
+N	acquaint|familiarize	acquaint は人に情報を「知らせる」（acquaint oneself with）。familiarize は物事に「慣れさせる」
+N	acquaint|inform	acquaint は「精通させる」かたい語。inform は「知らせる」
+N	acquaintance|associate	acquaintance は少し知っている「知人」。associate は仕事の「仲間」
+N	acquired|learned	acquired は生まれたあとに「身につけた」。learned は /lɜːrnd/ と読むと「学んで身につけた」、/ˈlɜːrnɪd/ と読むと「博学な」
+N	acquired|innate	acquired は「後天的な」、innate は「生まれつきの」
+N	acquisition|purchase	acquisition は会社などの「取得・買収」や、知識の「習得」。purchase は物の「購入」
+N	acquit|exonerate	acquit は裁判で「無罪とする」。exonerate は疑いを晴らして「潔白を証明する」
+N	acquit|clear	acquit は法的に「無罪にする」。clear は疑いを「晴らす」
+N	actually|really	actually は「実は・実際には」（思っていたのとちがう）。really は「本当に」と強める
+I	actually|curr_idm_3_in_fact	in fact は「実は・それどころか」。actually は「実際には」
+N	acutely|keenly	acutely は痛みや意識が「痛切に・鋭く」（acutely aware）。keenly は「熱心に・鋭く」
+N	acutely|intensely	acutely は「ひどく鋭く」。intensely は「激しく・強烈に」
+N	acutely|dully	acutely は「鋭く」、dully は「鈍く」
+N	adaptability|flexibility	adaptability は環境に「合わせて変われる力」。flexibility は考えや予定の「柔軟さ」
+N	adaptability|versatility	adaptability は「適応力」。versatility は何でもこなせる「多才さ」
+N	adaptability|rigidity	adaptability は「適応力」、rigidity は「融通のきかなさ」
+N	additional|supplementary	additional は「追加の」のふつうの語。supplementary は足りない分を「補う・補足の」
+N	additional|standard	additional は「追加の」、standard は「標準の」
+N	adept|skilled	adept は「巧みな・上手な」（be adept at）。skilled は訓練で「熟練した」
+N	adept|proficient	adept は手ぎわが「巧みな」。proficient は言語などに「堪能な」
+N	adept|inept	adept は「巧みな」、inept は「下手な」
+N	adequately|inadequately	adequately は「十分に」、inadequately は「不十分に」
+N	administration|governance	administration は組織の「管理・運営」や、アメリカの「政権」。governance は国や組織の「統治（のしかた）」
+N	administrative|managerial	administrative は事務の「管理の・行政の」。managerial は「経営者の・管理職の」
+N	adore|cherish	adore は「大好きである・深く愛する」。cherish は思い出などを「大切にする」
+N	adore|worship	adore は人を「敬愛する」。worship は神を「崇拝する」
+N	adore|detest	adore は「大好きである」、detest は「ひどく嫌う」
+N	affectionate|tender	affectionate は態度が「愛情のこもった」。tender は「やさしい・思いやりのある」
+N	affectionate|cold	affectionate は「愛情深い」、cold は「冷たい」
+N	affiliate|associate	affiliate は団体に「加入させる・提携させる」（be affiliated with）。associate は「関係づける」や「つき合う」
+N	affront|offense	affront は面と向かった「侮辱」。offense は「気分を害すること」や「違反」
+N	affront|compliment	affront は「侮辱」、compliment は「ほめ言葉」
+N	aftermath|consequence	aftermath は戦争や災害の「あと（の混乱）」（in the aftermath of）。consequence は「結果・影響」
+N	aftermath|repercussion	aftermath は出来事の「直後の時期」。repercussion は後から来る「悪い影響・反響」
+N	aged|young	aged は /ˈeɪdʒɪd/ と読むと「年老いた」（aged 10 の「〜歳の」は /eɪdʒd/）、young は「若い」
+N	ageless|eternal	ageless は人や作品が「年をとらない・古びない」。eternal は「永遠の」
+N	ageless|aging	ageless は「年をとらない」、aging は「老いていく」
+N	aging|elderly	aging は「老いていく・高齢化する」（an aging society）や、建物が「老朽化する」。elderly は人が「年配の」
+N	aging|declining	aging は「年をとっていく」。declining は数や力が「衰えていく」
+N	aging|youthful	aging は「老いていく」、youthful は「若々しい」
+N	agitate|disturb	agitate は人を「動揺させる」や、液体を「かき混ぜる」。disturb は「じゃまをする・乱す」
+N	agitate|upset	agitate は「そわそわさせる」。upset は「悲しませる・動揺させる」
+N	agitate|calm	agitate は「動揺させる」、calm は動詞で「落ち着かせる」
+N	agitation|turmoil	agitation は一人の心の「動揺」や政治的な「扇動」。turmoil は社会などの「大混乱」
+N	agitation|unrest	agitation は「動揺・扇動」。unrest は社会の「不安・騒ぎ」
+N	agitation|calm	agitation は「動揺」、calm は「落ち着き」
+N	agonize|fret	agonize は決められずに「ひどく悩む」（agonize over）。fret はつまらないことで「やきもきする」
+N	agonize|worry	agonize は「苦しいほど悩む」。worry は「心配する」
+N	agonizing|excruciating	agonizing は決断などが「苦しい」。excruciating は痛みが「耐えがたい」と強い
+N	agonizing|tormenting	agonizing は「苦悩させる」。tormenting は「(長く)苦しめる」
+N	agonizing|soothing	agonizing は「苦しい」、soothing は「心を落ち着かせる」
+N	agony|torment	agony は体や心の「激しい苦痛」（in agony）。torment は長く続く「苦しみ」
+N	agony|ecstasy	agony は「激しい苦しみ」、ecstasy は「有頂天」
+N	agreeable|disagreeable	agreeable は「感じのよい・快い」、disagreeable は「不愉快な」
+N	adviser|aide	aide は大統領などの「補佐官・側近」。adviser は「助言者・顧問」
+N	algorithm|procedure	algorithm は計算やコンピューターの「手順・アルゴリズム」。procedure は物事の「手続き・手順」
+N	alienate|estrange	alienate は人を「遠ざける・疎外する」。estrange は家族などを「仲たがいさせる」（be estranged from）
+N	alienate|unite	alienate は「遠ざける」、unite は「団結させる」
+N	align|line up	align は線や位置を「まっすぐそろえる」や、考えを「合わせる」。line up は「一列に並べる」
+N	align|arrange	align は「位置をそろえる」。arrange は物を「並べる・整える」
+N	allege|claim	allege は証拠なしに「〜だと主張する・申し立てる」。claim は「主張する」と広く言う
+N	allegedly|supposedly	allegedly は「(証拠はないが)〜とされている」。supposedly は「〜ということになっている」
+N	allegedly|reportedly	allegedly は「申し立てによれば」。reportedly は「報道によれば」
+N	allegedly|definitely	allegedly は「〜とされている（確かでない）」、definitely は「確実に」
+N	allegory|parable	allegory は話全体で別の意味を表す「寓意（ぐうい）の物語」。parable は教えを伝える「たとえ話」
+N	allegory|fable	allegory は政治などを表す「寓意（ぐうい）の物語」。fable は動物が出てくる教訓の「寓話（ぐうわ）」
+N	alliance|coalition	alliance は国などの「同盟」。coalition は政党などの「連立・連合」
+N	alliance|partnership	alliance は国や会社の「同盟・提携」。partnership は2者の「協力関係」
+N	alliance|rivalry	alliance は「同盟」、rivalry は「競争・対立」
+N	allocated|assigned	allocated はお金などが「割り当てられた」。assigned は仕事や席が「割り当てられた」
+N	allocated|designated	allocated は「配分された」。designated は「指定された」
+N	allocation|distribution	allocation は目的ごとの「割り当て・配分」。distribution は大勢への「分配・流通」
+N	allocate|allot	allot は時間などを「割り当てる」。allocate はお金などを「配分する」
+N	allot|assign	allot は決まった量を「割り当てる」。assign は仕事や役を「割り当てる」
+N	allot|withhold	allot は「割り当てる」、withhold は「出さずにおく」
+N	alloy|compound	alloy は金属を混ぜた「合金」（化学では混合物）。compound は元素が結びついた「化合物」
+N	alloy|mixture	alloy は金属どうしの「合金」。mixture は「混合物」全体
+N	allure|charm	allure は人を引き寄せる「魅力」（the allure of city life）。charm は人の「魅力・愛嬌（あいきょう）」
+N	allure|appeal	allure は「心を引く魅力」。appeal は「魅力・人気」
+N	allure|lure	allure は「魅力」。lure は「誘惑するもの・おとり」
+N	allure|repulsion	allure は「引きつける魅力」、repulsion は「嫌悪・反発」
+N	ally|foe	ally は「味方・同盟国」、foe は「敵」
+N	alteration|modification	alteration は服などの「手直し・変更」。modification は計画などの「一部修正」
+N	alteration|change	alteration は一部の「変更」のかたい語。change は「変化」と広く言う
+N	alteration|preservation	alteration は「変更」、preservation は「そのまま残すこと」
+N	alternative|substitute	alternative は選べるもう一つの「代わりの（案）」。substitute は本来のものの「代用品」
+N	altitude|height	altitude は海面からの「高度・標高」。height は物や人の「高さ」
+N	altruism|selflessness	altruism は他人のためを思う「利他主義」。selflessness は自分を捨てた「無私」
+N	altruism|benevolence	altruism は他人の幸せを願う「利他の心」。benevolence は「慈悲・善意」
+N	altruism|egoism	altruism は「利他主義」、egoism は「利己主義」
+N	amazement|astonishment	amazement は「驚き・びっくり」。astonishment は「仰天」と強い
+N	amazement|wonder	amazement は「驚き」。wonder は美しさなどへの「驚嘆・感嘆」
+N	ambassador|envoy	ambassador は国の「大使」。envoy は特別な任務の「使節・特使」
+N	amble|stroll	amble は「のんびり歩く」。stroll は楽しみで「ぶらぶら散歩する」
+N	amble|wander	amble は「ゆっくり歩く」。wander は「あてもなくさまよう」
+N	amble|rush	amble は「のんびり歩く」、rush は「急ぐ」
+N	amend|revise	amend は法律などを「改正する・修正する」。revise は文章などを「見直して直す」
+N	amend|correct	amend は規則を「修正する」。correct は誤りを「正す」
+N	amend|mend	amend は法律を「改正する」。mend は服などを「修理する」
+N	amid|among	amid は出来事の「最中に」（amid the noise）。among は3つ以上の「間に」
+N	amid|amidst	amid と amidst は同じ意味の「〜の最中に」。amidst は古い言い方
+N	amplify|magnify	amplify は音を「増幅する」。magnify はレンズで「拡大する」
+N	amplify|intensify	amplify は音や影響を「大きくする」。intensify は「激しくする」
+N	amplify|reduce	amplify は「大きくする」、reduce は「減らす」
+N	analytical|logical	analytical は物事を「分けて調べる・分析的な」。logical は「筋道の通った」
+N	analytical|cerebral	analytical は「分析的な」。cerebral は「理屈っぽい・知性に訴える」
+N	analytical|intuitive	analytical は「分析的な」、intuitive は「直感的な」
+N	anatomy|structure	anatomy は体の「解剖学・つくり」。structure は「構造」と広く言う
+N	ancestry|lineage	ancestry は「祖先・家系」（of Japanese ancestry）。lineage は代々の「血統」のかたい語
+N	ancestry|descent	ancestry は「祖先・血筋」。descent も「家系」（of Japanese descent）
+N	ancestry|descendant	ancestry は「祖先」、descendant は「子孫」
+N	animated|spirited	animated は話し合いが「活発な」やアニメの「動画の」。spirited は「元気のよい・勇ましい」
+N	animated|dull	animated は「生き生きした」、dull は「活気のない」
+N	annihilate|obliterate	annihilate は敵などを「全滅させる」。obliterate は跡形もなく「消し去る」
+N	annihilate|eradicate	annihilate は「全滅させる」。eradicate は病気などを「根絶する」
+N	annihilate|create	annihilate は「全滅させる」、create は「作り出す」
+I	annihilate|curr_idm_2_wipe_out	wipe out は「全滅させる・一掃する」話し言葉。annihilate は「完全に打ち負かす」
+N	anonymity|namelessness	anonymity は名前を出さない「匿名（性）」。namelessness は「名前のないこと」
+N	anonymity|obscurity	anonymity は「匿名」。obscurity は「世に知られていないこと・無名」
+N	anonymity|fame	anonymity は「匿名・無名」、fame は「名声」
+N	antagonist|opponent	antagonist は物語の「敵役」や「敵対者」。opponent は試合などの「相手」
+N	adversary|antagonist	antagonist は物語の「敵役」。adversary は争いの「敵・対戦相手」
+N	antagonist|protagonist	antagonist は物語の「敵役」、protagonist は「主人公」
+N	anticipation|expectation	anticipation はわくわくする「期待」や、先を見越した「予想」（in anticipation of）。expectation は「当然そうなるという予想」
+N	antidote|remedy	antidote は毒の「解毒剤」や、問題の「対策」。remedy は「治療法・改善策」
+N	antidote|cure	antidote は毒を「打ち消す薬」。cure は病気を「治す方法」
+N	antique|old	antique は「骨董（こっとう）の・古くて価値のある」。old は「古い」と広く言う
+N	ancient|antique	antique は百年ほど前の「骨董（こっとう）の」。ancient は何千年も前の「古代の」
+N	antique|modern	antique は「骨董（こっとう）の」、modern は「現代の」
+N	apathetic|indifferent	apathetic は何にも「やる気や関心がない」。indifferent は特定のことに「無関心な」
+N	apathetic|listless	apathetic は「無気力な」。listless は疲れて「元気のない」
+N	apathetic|enthusiastic	apathetic は「無関心な」、enthusiastic は「熱心な」
+N	apathy|sympathy	apathy は何にも「関心がないこと」、sympathy は人の気持ちに「共感すること」
+N	appall|horrify	appall はひどいことで「あきれさせる・ぞっとさせる」。horrify は「恐怖でぞっとさせる」
+N	appall|shock	appall は「愕然（がくぜん）とさせる」。shock は「衝撃を与える」
+N	appall|delight	appall は「ぞっとさせる」、delight は「大喜びさせる」

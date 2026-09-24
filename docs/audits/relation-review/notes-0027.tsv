@@ -1,0 +1,317 @@
+N	disloyal|unfaithful	disloyal は友人や国に「忠実でない・裏切るような」。unfaithful は恋人などに「不誠実な・浮気をした」
+N	disloyal|treacherous	disloyal は「忠誠心のない」。treacherous は「裏切りの」や、道などが「危険な」
+N	disloyal|loyal	disloyal は「不忠実な」、loyal は「忠実な」
+N	dismal|gloomy	dismal は天気や成績が「陰うつな・ひどい」。gloomy は「暗い・憂うつな」
+N	cheerful|dismal	dismal は「陰うつな」、cheerful は「明るい」
+N	dismay|distress	dismay は思わぬことへの「落胆・うろたえ」（to one's dismay）。distress は「苦悩・苦痛」
+N	disappointment|dismay	dismay はびっくりして「がっかりすること」。disappointment は期待が外れた「失望」
+N	defiance|disobedience	disobedience は規則などに「従わないこと」。defiance は公然と「逆らうこと」
+N	disobedience|insubordination	disobedience は「言うことを聞かないこと」。insubordination は軍や職場での「上官への反抗」
+N	disobedient|rebellious	disobedient は子どもなどが「言うことを聞かない」。rebellious は親や社会に「反抗的な」
+N	disorderly|unruly	disorderly は行動が「乱れた・騒がしい」（disorderly behavior）。unruly は人が「手に負えない」
+N	disorderly|orderly	disorderly は「無秩序な」、orderly は「整然とした」
+N	chaotic|disorganized	disorganized は計画や人が「まとまりのない・段取りの悪い」。chaotic は「めちゃくちゃに混乱した」
+N	cluttered|disorganized	disorganized は「整理されていない」。cluttered は物で「ごちゃごちゃした」
+N	disparate|dissimilar	disparate は「まったく異なる・共通点のない」かたい語。dissimilar は「似ていない」
+N	disparate|divergent	disparate は性質が「異質な」。divergent は意見などが「分かれた」
+N	disparate|similar	disparate は「まったく異なる」、similar は「似ている」
+N	controller|dispatcher	dispatcher は車や救急の「配車係・指令係」。controller は「管理者」や、飛行機の「管制官」
+N	dispel|drive away	dispel は疑いや不安を「消し去る」。drive away は人や動物を「追い払う」
+N	banish|dispel	dispel は疑いなどを「払いのける」。banish は「追放する」や、考えを「頭から追い払う」
+N	disperse|scatter	disperse は群衆などが「散り散りになる・解散させる」。scatter は物を「まき散らす」
+N	disperse|gather	disperse は「散らばる」、gather は「集まる」
+N	dispersed|spread	dispersed は広い地域に「散らばった」。spread は「広がった」
+N	concentrated|dispersed	dispersed は「分散した」、concentrated は「集中した」
+N	annoyed|displeased	displeased は「不満で機嫌をそこねた」かたい語。annoyed は「いらいらした」
+N	displeased|dissatisfied	displeased は「不愉快に思った」。dissatisfied は「満足していない」
+N	annoyance|displeasure	displeasure は「不快・不満」のかたい語。annoyance は「いらだち」
+N	displeasure|dissatisfaction	displeasure は態度に出る「不快感」。dissatisfaction は「不満」
+N	displeasure|pleasure	displeasure は「不快」、pleasure は「喜び」
+N	disposition|temperament	disposition は人の「気質・性分」（a cheerful disposition）。temperament は生まれつきの「気性」
+N	disposition|tendency	disposition は「〜しがちな性質」。tendency は「傾向」
+N	disreputable|infamous	disreputable は「評判の悪い・いかがわしい」。infamous は悪いことで「悪名高い」
+N	disreputable|shady	disreputable は「信用できない」。shady は「うさんくさい」くだけた語
+N	disreputable|reputable	disreputable は「評判の悪い」、reputable は「評判のよい」
+N	disrespectful|rude	disrespectful は相手を「尊重しない・失礼な」。rude は「無礼な」
+N	disrespectful|impertinent	disrespectful は「敬意のない」。impertinent は目上に「生意気な」
+N	disrespectful|respectful	disrespectful は「失礼な」、respectful は「敬意のある」
+N	disruption|disturbance	disruption は交通などの「混乱・中断」。disturbance は「じゃま」や「騒ぎ」
+N	disruption|interruption	disruption は大きな「混乱」。interruption は話などの「中断」
+N	disruption|order	disruption は「混乱」、order は「秩序」
+N	dissatisfaction|satisfaction	dissatisfaction は「不満」、satisfaction は「満足」
+N	disseminate|spread	disseminate は情報を「広く流す・広める」かたい語。spread は「広める・広がる」
+N	disseminate|distribute	disseminate は知識を「広める」。distribute は物を「配る」
+N	different|dissimilar	dissimilar は「似ていない」（not dissimilar で「よく似ている」）。different は「ちがう」
+N	dissimilar|divergent	dissimilar は「似ていない」。divergent は「分かれていく・相違する」
+N	dissimilar|similar	dissimilar は「似ていない」、similar は「似た」
+N	discourage|dissuade	dissuade は説得して「思いとどまらせる」（dissuade A from 〜ing）。discourage は「やる気をなくさせる」
+N	characteristic|distinctive	distinctive はほかとはっきり「区別できる・独特の」。characteristic は「その人らしい・特有の」
+N	distinctive|ordinary	distinctive は「独特の」、ordinary は「ありふれた」
+N	distinguish|tell apart	distinguish は2つを「区別する」（distinguish A from B）。tell apart は「見分ける」話し言葉
+I	distinguish|curr_idm_2_make_out	make out は見えにくいものを「見分ける」。distinguish はちがいを「区別する」
+N	discernible|distinguishable	distinguishable は「区別できる」（distinguishable from）。discernible は「見分けられる・認められる」
+N	distinguishable|identifiable	distinguishable は「区別がつく」。identifiable は「何か特定できる」
+N	distinguishable|indistinguishable	distinguishable は「見分けられる」、indistinguishable は「見分けがつかない」
+N	distort|twist	distort は事実を「ゆがめる」や、形を「ゆがませる」。twist は話を「ねじ曲げる」
+N	distort|misrepresent	distort は事実を「ゆがめて伝える」。misrepresent は「誤って伝える」
+N	clarify|distort	distort は「ゆがめる」、clarify は「はっきりさせる」
+N	distracted|inattentive	distracted は何かに気を取られて「上の空の」。inattentive は「注意が足りない」
+N	distracted|preoccupied	distracted は「気が散っている」。preoccupied はほかのことで「頭がいっぱいの」
+N	distraction|interruption	distraction は集中を「じゃまするもの」。interruption は話などの「中断」
+N	distressed|troubled	distressed は「ひどく苦しんだ」や、船が「遭難した」。troubled は「悩んでいる」
+N	calm|distressed	distressed は「苦しんでいる」、calm は「落ち着いた」
+N	distressing|disturbing	distressing は「つらい・痛ましい」。disturbing は「不安にさせる・気がかりな」
+I	distribute|curr_idm_2_hand_out	hand out はプリントなどを「配る」話し言葉。distribute は「分配する・配布する」
+N	distrustful|suspicious	distrustful は人を「信用しない」。suspicious は「怪しいと思う」や「怪しい」
+N	distrustful|wary	distrustful は「疑い深い」。wary は「用心している」
+N	distrustful|trusting	distrustful は「疑い深い」、trusting は「人を信じやすい」
+N	commotion|disturbance	disturbance は人々の「騒ぎ・騒動」や「じゃま」。commotion は突然の「騒ぎ」
+N	disturbing|troubling	disturbing は「動揺させる・不安にさせる」。troubling は「気がかりな」
+N	disturbing|reassuring	disturbing は「不安にさせる」、reassuring は「安心させる」
+N	difference|divergence	divergence は意見などの「分かれ・へだたり」。difference は「ちがい」
+N	differing|divergent	divergent は「分かれていく・相違する」。differing は「異なる」
+N	conflicting|divergent	divergent は「(方向が)分かれた」。conflicting は「ぶつかり合う」
+N	convergent|divergent	divergent は「分かれていく」、convergent は「一点に集まる」
+N	dividend|payout	dividend は株主への「配当金」。payout は「支払われるお金」全体
+N	divisible|separable	divisible は数が「割り切れる」（divisible by two）。separable は「分けられる」
+N	divisible|indivisible	divisible は「分けられる」、indivisible は「分けられない」
+N	disclose|divulge	divulge は秘密を「漏らす」。disclose は情報を「公表する・開示する」
+N	divulge|reveal	divulge は内緒のことを「明かす」。reveal は「明らかにする」
+N	conceal|divulge	divulge は「漏らす」、conceal は「隠す」
+N	docile|submissive	docile は動物や人が「おとなしく扱いやすい」。submissive は人に「服従する」
+N	docile|unruly	docile は「おとなしい」、unruly は「手に負えない」
+N	avoid|dodge	dodge はボールなどを「さっとかわす」。avoid は「避ける」
+N	dodge|evade	dodge は「身をかわす」。evade は責任などを「逃れる」
+N	domain|field	domain は知識や活動の「領域」や、インターネットの「ドメイン」。field は「分野」
+N	domain|realm	domain は「領域・分野」。realm は「領域」の文学的な語や「王国」
+N	domesticate|tame	domesticate は動物を「家畜にする」や、植物を「栽培化する」。tame は一頭の動物を「飼いならす」
+N	cultivate|domesticate	domesticate は野生の植物を「栽培できるようにする」。cultivate は作物を「栽培する」
+N	domesticate|release	domesticate は「飼いならす」、release は「野に放つ」
+N	dominion|sovereignty	dominion は「支配権」や「領土」。sovereignty は国の「主権」
+N	control|dominion	dominion は「支配・統治」のかたい語。control は「管理・支配」
+N	dominion|subjection	dominion は「支配すること」、subjection は「支配されること」
+N	doom|ruin	doom は避けられない「破滅・悪い運命」。ruin は「破滅」や「廃墟」
+N	doom|salvation	doom は「破滅」、salvation は「救い」
+N	doomed|ill-fated	doomed は「失敗する運命の」（doomed to fail）。ill-fated は「不運な結末の」
+N	doomed|fortunate	doomed は「運の尽きた」、fortunate は「幸運な」
+N	dormant|sleeping	dormant は火山や種が「休眠中の」。sleeping は「眠っている」
+N	active|dormant	dormant は「休止中の」、active は「活動中の」
+N	dowdy|frumpy	dowdy と frumpy はどちらも服装が「やぼったい」。frumpy はくだけた語
+N	dowdy|unfashionable	dowdy は「さえない・やぼな」。unfashionable は「流行遅れの」
+N	drab|dull	drab は色が「くすんで単調な」。dull は「さえない・退屈な」
+N	drab|dreary	drab は「地味でつまらない」。dreary は「陰気で退屈な」
+N	drab|vivid	drab は「くすんだ」、vivid は「鮮やかな」
+N	drainage|sewerage	drainage は雨水などの「排水（設備）」。sewerage は家庭からの「下水設備」
+N	drainage|runoff	drainage は「水はけ・排水」。runoff は地面を流れる「流出水」
+N	dramatically|sharply	dramatically は「劇的に・大幅に」。sharply は数値が「急激に」
+N	dramatically|slightly	dramatically は「大幅に」、slightly は「わずかに」
+N	drastically|sharply	drastically は「思い切って・抜本的に」。sharply は「急激に」
+N	anticipate|dread	dread は先のことを「ひどく恐れる」、anticipate は「楽しみに待つ」
+N	dreamer|idealist	dreamer は「夢を追う人・夢想家」。idealist は「理想主義者」
+N	dreamer|visionary	dreamer は「空想ばかりする人」。visionary は「先見の明のある人」
+N	dreamer|realist	dreamer は「夢想家」、realist は「現実主義者」
+N	dreary|gloomy	dreary は「陰気で退屈な」。gloomy は「暗い・憂うつな」
+N	bleak|dreary	dreary は「もの寂しく退屈な」。bleak は「寒々とした・希望のない」
+N	cheerful|dreary	dreary は「陰気な」、cheerful は「明るい」
+N	drench|dry	drench は「ずぶぬれにする」、dry は「乾かす」
+N	drift|float	drift は流れに乗って「漂う・流される」。float は水や空中に「浮かぶ」
+N	drift|wander	drift は目的もなく「ふらふら移る」。wander は「さまよう」
+N	drifter|wanderer	drifter は定職のない「流れ者」。wanderer は「さすらう人」
+N	drifter|vagrant	drifter は「流れ者」。vagrant は住む家のない「浮浪者」
+N	drifter|settler	drifter は「流れ者」、settler は「定住者」
+N	drowsy|sleepy	drowsy は薬などで「うとうとした」。sleepy は「眠い」
+N	duplicate|replicate	duplicate は書類などを「複製する」。replicate は実験などを「再現する」
+N	double|duplicate	duplicate は「そっくり写す」。double は「2倍にする」
+N	duplicated|replicated	duplicated は「複製された・重複した」。replicated は「再現された」
+N	duplicated|unique	duplicated は「重複した」、unique は「ただ一つの」
+N	duplication|replication	duplication は同じ仕事の「重複」や「複製」。replication は実験の「再現」
+N	durability|sturdiness	durability は製品の「長持ちする性質」。sturdiness は「がっしりした頑丈さ」
+N	dwell|reside	dwell は「住む」の文学的な語（dwell on で「くよくよ考える」）。reside は「居住する」のかたい語
+N	dwell|live	dwell は「住む」の古い言い方。live は「住む」のふつうの語
+N	diminish|dwindle	dwindle は数が「だんだん減っていく」。diminish は「減る・弱まる」
+N	dwindle|shrink	dwindle は「少しずつ減る」。shrink は大きさが「縮む」
+N	dwindle|increase	dwindle は「減っていく」、increase は「増える」
+N	dynasty|reign	dynasty は代々続く「王朝」。reign は一人の王の「治世」
+N	earnest|sincere	earnest は「まじめで熱心な」。sincere は「心からの・誠実な」
+N	earnest|frivolous	earnest は「まじめな」、frivolous は「ふまじめな・軽薄な」
+N	casually|earnestly	earnestly は「真剣に」、casually は「気軽に」
+N	earthly|worldly	earthly は天国に対して「この世の」（earthly possessions）。worldly は「世俗の」や、人が「世慣れた」
+N	earthly|heavenly	earthly は「この世の」、heavenly は「天国の」
+N	eased|relaxed	eased は規則などが「緩和された」。relaxed は「くつろいだ」や、規則が「ゆるめられた」
+N	eased|lessened	eased は痛みなどが「和らいだ」。lessened は「弱められた」
+N	eased|tightened	eased は「ゆるめられた」、tightened は「厳しくされた」
+N	easygoing|relaxed	easygoing は性格が「おおらかな・のんきな」。relaxed は「くつろいだ」
+N	easygoing|laid-back	easygoing は「こだわらない」。laid-back は「のんびりした」くだけた語
+N	easygoing|uptight	easygoing は「おおらかな」、uptight は「ぴりぴりした」
+N	economical|thrifty	economical は車などが「経済的な・むだのない」。thrifty は人が「やりくり上手な」
+N	economical|frugal	economical は「節約になる」。frugal は暮らしが「質素な」
+N	ecstasy|rapture	ecstasy は「有頂天・無上の喜び」。rapture は「うっとりするような歓喜」
+N	ecstatic|thrilled	ecstatic は「有頂天の」と強い。thrilled は「わくわくした・大喜びの」
+N	ecstatic|overjoyed	ecstatic は「喜びで我を忘れた」。overjoyed は「大喜びの」
+N	edgy|nervous	edgy は「いらいら・ぴりぴりした」や、作品が「斬新な」。nervous は「緊張した」
+N	edgy|relaxed	edgy は「いらいらした」、relaxed は「くつろいだ」
+N	educational|instructive	educational は「教育的な・ためになる」（an educational game）。instructive は「教えられるところが多い」
+N	efficiency|inefficiency	efficiency は「効率」、inefficiency は「非効率」
+N	discharge|eject	eject は機械から「出す」や、人を「追い出す」。discharge は液体などを「排出する」
+N	eject|insert	eject はディスクなどを「取り出す」、insert は「差しこむ」
+N	elaborate|expand on	elaborate は「くわしく述べる」（elaborate on）。expand on も話を「ふくらませて説明する」
+N	elasticity|flexibility	elasticity はゴムなどの「伸び縮みする性質」。flexibility は「曲げやすさ」や「柔軟さ」
+N	elasticity|springiness	elasticity は「弾性」。springiness は「ばねのような弾力」
+N	elasticity|rigidity	elasticity は「弾力性」、rigidity は「かたさ」
+N	elated|joyful	elated は成功などで「大喜びの・意気揚々とした」。joyful は「喜びに満ちた」
+N	elated|jubilant	elated は「うれしくて舞い上がった」。jubilant は勝利などで「歓喜にわく」
+N	dejected|elated	elated は「大喜びの」、dejected は「がっかりした」
+N	electrified|thrilled	electrified は人々が「興奮した・熱狂した」。thrilled は「わくわくした」
+N	calm|electrified	electrified は「興奮した」、calm は「落ち着いた」
+N	electrify|excite	electrify は観客を「熱狂させる」や、鉄道を「電化する」。excite は「わくわくさせる」
+N	elementary|fundamental	elementary は「初歩の・やさしい」。fundamental は「根本的な・基本的な」
+N	advanced|elementary	elementary は「初歩の」、advanced は「上級の」
+N	elevated|raised	elevated は「高い位置の」や、体温が「上がった」。raised は「持ち上げた・高くした」
+N	elevated|lowered	elevated は「高くなった」、lowered は「下げられた」
+I	elicit|curr_idm_pre2_bring_out	bring out は才能などを「引き出す」や、商品を「発売する」。elicit は答えや反応を「引き出す」かたい語
+I	elicit|curr_idm_pre1_draw_out	draw out は人から話を「引き出す」や、話を「長引かせる」。elicit は情報を「引き出す」
+N	elude|evade	elude は追っ手を「うまく逃れる」や、答えが「思い出せない」。evade は責任などを「逃れる」
+N	elude|escape	elude は「巧みにかわす」。escape は「逃げる」
+N	elusive|evasive	elusive は「とらえどころのない・つかまえにくい」。evasive は答えが「はぐらかすような」
+N	elusive|hard to grasp	elusive は成功などが「なかなか手に入らない」。hard to grasp は「理解しにくい」
+N	emancipate|liberate	emancipate は奴隷などを「解放する」かたい語。liberate は「解放する」
+N	emancipate|free	emancipate は制度から「解き放つ」。free は「自由にする」
+N	emancipate|enslave	emancipate は「解放する」、enslave は「奴隷にする」
+N	awkward|embarrassed	embarrassed は人が「恥ずかしい・気まずい」。awkward は場面が「気まずい」や、動きが「ぎこちない」
+N	confident|embarrassed	embarrassed は「恥ずかしい思いをした」、confident は「自信のある」
+N	embarrassment|humiliation	embarrassment は「恥ずかしさ・気まずさ」。humiliation は人前で受ける「屈辱」
+N	embed|implant	embed は物を「埋めこむ」や、考えを「深く植えつける」。implant は体に「移植する」
+N	embed|extract	embed は「埋めこむ」、extract は「取り出す」
+N	embodiment|incarnation	embodiment はある性質を「形にしたもの・体現」。incarnation は神などの「化身」
+N	embodiment|epitome	embodiment は「体現するもの」。epitome は「典型・見本」
+N	embody|personify	embody は考えなどを「体現する」。personify は物を「人にたとえる」や、性質を「体現する」
+N	embody|represent	embody は「形にして表す」。represent は「表す・代表する」
+N	emergence|rise	emergence は新しいものの「出現・登場」。rise は「台頭・上昇」
+N	disappearance|emergence	emergence は「出現」、disappearance は「消失」
+N	emit|release	emit は光や熱を「発する」かたい語。release はガスなどを「放出する」や、人を「解放する」
+N	absorb|emit	emit は「出す」、absorb は「吸収する」
+I	emit|curr_idm_2_give_off	give off はにおいや熱を「出す」話し言葉。emit は「放出する」のかたい語
+N	compassion|empathy	empathy は相手の気持ちを「自分のことのように感じる力・共感」。compassion は助けたいと思う「思いやり」
+N	empirical|experimental	empirical は観察や経験に「基づく」。experimental は実験の「実験的な」
+N	empirical|observed	empirical は「実際に確かめた」。observed は「観察された」
+N	empirical|theoretical	empirical は「経験的な」、theoretical は「理論上の」
+N	emptiness|void	emptiness は心の「むなしさ」や「からっぽ」。void は何もない「空間・空白」
+N	emptiness|hollowness	emptiness は「空っぽ」。hollowness は言葉などの「うつろさ・中身のなさ」
+N	emptiness|fullness	emptiness は「むなしさ・空っぽ」、fullness は「満ち足りていること」
+N	emulate|imitate	emulate は尊敬する人を「見習う・手本にする」。imitate は「まねる」
+N	emulate|model after	emulate は「負けないように見習う」。model after は「手本にして作る」
+N	enact|pass	enact は法律を「制定する」かたい語。pass は議会が法案を「可決する」
+N	captivate|enchant	enchant は「うっとりさせる」や「魔法をかける」。captivate は「心を奪う」
+N	charm|enchant	enchant は魔法のように「うっとりさせる」。charm は「魅了する・感じよく引きつける」
+N	enchant|repel	enchant は「うっとりさせる」、repel は「不快にさせる」
+N	charming|enchanting	enchanting は「魔法のようにうっとりさせる」。charming は「感じのよい・魅力的な」
+N	enchanting|repulsive	enchanting は「うっとりさせる」、repulsive は「不快な」
+D	enchantment	syn	spell	呪文の意味の spell は「つづる」の spell とは別の見出しで扱う語で、この辞書に見出し語がなく、つづりで引くと「つづる」へ飛ぶ
+N	charm|enchantment	enchantment は魔法のような「魅惑」や「魔法」。charm は「魅力」や「お守り」
+N	encode|encrypt	encode はデータを「符号化する」。encrypt は他人に読めないよう「暗号化する」
+N	encompass|include	encompass は広い範囲を「包みこむ・含む」かたい語。include は「含む」
+N	cover|encompass	encompass は「すっぽり含む」。cover は範囲に「及ぶ」
+N	encouraged|heartened	encouraged は言葉などで「励まされた」。heartened は「元気づいた」
+N	encouraged|motivated	encouraged は「勇気づけられた」。motivated は「やる気のある」
+N	decrypt|encrypt	encrypt は「暗号化する」、decrypt は「暗号を元に戻す」
+N	decryption|encryption	encryption は「暗号化」、decryption は「復号」
+N	endangered|thriving	endangered は生き物が「絶滅の危機にある」、thriving は「繁栄している」
+N	endemic|native	endemic は動植物が「その地域にだけいる・固有の」。native は「その土地に元からいる」
+N	endemic|prevalent	endemic は病気が「その地域で根づいた・風土病の」。prevalent は「広く見られる」
+N	endemic|foreign	endemic は「その土地固有の」、foreign は「外から来た」
+N	ceaselessly|endlessly	endlessly は「終わりなく・延々と」。ceaselessly は「絶え間なく」
+N	endlessly|interminably	endlessly は「果てしなく」。interminably は「うんざりするほど延々と」
+N	briefly|endlessly	endlessly は「延々と」、briefly は「手短に」
+N	condemnation|endorsement	endorsement は「支持・推薦」、condemnation は「非難」
+N	bestow|endow	endow は才能を「授ける」（be endowed with）や、学校に「寄付する」。bestow は賞などを「授ける」
+N	endow|grant	endow は才能などを「与える」。grant は許可などを「与える」
+N	deprive|endow	endow は「授ける」、deprive は「奪う」
+I	endure|idm_put_up_with	put up with は「がまんする」の話し言葉。endure は長い苦しみに「耐える」
+N	energize|invigorate	energize は人を「元気にする」。invigorate は「活力を与える」かたい語
+N	energize|stimulate	energize は「活気づける」。stimulate は「刺激する」
+N	drain|energize	energize は「元気にする」、drain は「消耗させる」
+N	energized|invigorated	energized は「元気いっぱいの」。invigorated は「生き返ったように元気な」
+N	energized|revitalized	energized は「活力がわいた」。revitalized は町などが「活気を取り戻した」
+N	enfeeble|weaken	enfeeble は「衰弱させる」かたい語。weaken は「弱める」
+N	enfeeble|strengthen	enfeeble は「弱らせる」、strengthen は「強くする」
+N	compulsory|enforced	enforced は状況で「やむをえない」（enforced rest）や、法律が「施行された」。compulsory は規則で「義務の」
+N	enforced|voluntary	enforced は「強いられた」、voluntary は「自分から進んだ」
+N	enforcement|implementation	enforcement は法律を守らせる「取り締まり・執行」。implementation は計画の「実施」
+N	commitment|engagement	engagement は「婚約」や、人との「約束・関わり」。commitment は「責任を持って打ちこむこと」
+N	detachment|engagement	engagement は「関わり」、detachment は「距離を置くこと」
+N	engrave|inscribe	engrave は金属などに文字や絵を「彫る」。inscribe は石などに言葉を「刻む」
+N	engrave|etch	engrave は道具で「彫る」。etch は薬品で「エッチングする」や、記憶に「刻む」
+N	engrave|erase	engrave は「刻みつける」、erase は「消す」
+N	engraver|etcher	engraver は金属などに「彫る職人」。etcher は薬品で版を作る「エッチング師」
+N	engraving|etching	engraving は彫った「版画・彫刻」。etching は薬品で作った「エッチング（版画）」
+N	carving|engraving	engraving は平面に彫った「版画」。carving は木などを彫った「彫刻」
+N	engulf|swallow	engulf は火や波が「のみこむ・包みこむ」。swallow は「飲みこむ」
+N	engulf|submerge	engulf は「すっぽり包みこむ」。submerge は「水中に沈める」
+N	engulf|release	engulf は「のみこむ」、release は「解き放つ」
+N	enlightening|illuminating	enlightening は話などが「目を開かせる・ためになる」。illuminating は「よく分からせてくれる」
+N	confusing|enlightening	enlightening は「分かりやすくためになる」、confusing は「分かりにくい」
+N	awareness|enlightenment	enlightenment は仏教の「悟り」や、知識による「啓発」。awareness は「気づき・意識」
+N	enlightenment|insight	enlightenment は「悟り・啓発」。insight は物事の本質を見る「洞察」
+N	enlist|enroll	enlist は軍隊に「入隊する」や、協力を「求める」。enroll は学校などに「登録する」
+N	discharge|enlist	enlist は「入隊する」、discharge は「除隊させる」
+N	conscription|enlistment	enlistment は自分からの「入隊」。conscription は国による「徴兵」
+N	discharge|enlistment	enlistment は「入隊」、discharge は「除隊」
+N	animosity|enmity	enmity は長く続く「敵意・反目」。animosity は強い「憎しみ・反感」
+N	enmity|friendship	enmity は「敵意」、friendship は「友情」
+N	enormously|hugely	enormously は「ものすごく」。hugely も「非常に」の話し言葉
+N	enormously|slightly	enormously は「ものすごく」、slightly は「わずかに」
+N	enrage|infuriate	enrage は「激怒させる」。infuriate も「かんかんに怒らせる」でほぼ同じ
+N	enrage|incense	enrage は「激怒させる」。incense は「ひどく腹を立たせる」かたい語
+N	enrage|soothe	enrage は「激怒させる」、soothe は「なだめる」
+N	enhance|enrich	enrich は土や生活を「豊かにする」。enhance は価値や質を「高める」
+N	enrich|improve	enrich は中身を「豊かにする」。improve は「よくする」
+N	enrich|impoverish	enrich は「豊かにする」、impoverish は「貧しくする」
+N	enroll|sign up	enroll は学校や講座に「正式に登録する」。sign up は「申しこむ」話し言葉
+N	enrollment|registration	enrollment は学校などへの「入学・在籍者数」。registration は名前などの「登録」
+N	admission|enrollment	enrollment は「入学手続き・在籍」。admission は「入学許可」
+N	enrollment|withdrawal	enrollment は「入学」、withdrawal は「退学」
+N	ensue|follow	ensue は結果として「続いて起こる」かたい語。follow は「あとに続く」
+N	ensue|result	ensue は「(その結果)起こる」。result は「結果として生じる」（result from）
+N	ensue|precede	ensue は「あとに続く」、precede は「前に起こる」
+N	business|enterprise	enterprise は新しい「事業・企業」や「進取の気性」。business は「商売・事業」
+N	enterprise|venture	enterprise は「事業」と広く言う。venture は危険をともなう「冒険的な事業」
+N	artist|entertainer	entertainer は人を楽しませる「芸能人」。artist は「芸術家」
+N	audience|entertainer	entertainer は「演じる人」、audience は「見る人・観客」
+N	apathy|enthusiasm	enthusiasm は「熱意」、apathy は「無関心」
+N	eager|enthusiastic	enthusiastic は「熱心に楽しんでいる」。eager は「〜したくてたまらない」
+N	enthusiastic|passionate	enthusiastic は「熱中した・大乗り気の」。passionate は「情熱的な」
+N	enthusiastic|indifferent	enthusiastic は「熱心な」、indifferent は「無関心な」
+N	enthusiastically|fervently	enthusiastically は「熱狂的に」。fervently は「熱烈に」
+N	apathetically|enthusiastically	enthusiastically は「熱心に」、apathetically は「無関心に」
+N	enticement|temptation	enticement は人を引き寄せる「誘い・おまけ」。temptation は「誘惑」
+N	enticement|lure	enticement は「誘いこむもの」。lure は「おとり・誘惑」
+N	deterrent|enticement	enticement は「誘いこむもの」、deterrent は「思いとどまらせるもの」
+N	authorize|entitle	entitle は人に「権利を与える」（be entitled to）。authorize は「権限を与える・認可する」
+N	entitlement|right	entitlement は制度で受けられる「権利・資格」。right は「権利」と広く言う
+N	assign|entrust	entrust は信頼して「任せる」（entrust A with B）。assign は仕事を「割り当てる」
+N	enumerate|itemize	enumerate は一つずつ「数え上げる」。itemize は「項目ごとに書き出す」
+N	enumeration|listing	enumeration は「列挙」のかたい語。listing は「一覧（表）」
+N	count|enumeration	enumeration は一つずつ「挙げること」。count は「数えること」
+N	envious|jealous	envious は人の持つものを「うらやましがる」。jealous は「ねたむ」や、恋人などを「嫉妬（しっと）する」
+N	conservationist|environmentalist	environmentalist は「環境保護を訴える人」。conservationist は「自然や動物を守る人」
+N	envisage|envision	envisage は「予想する・心に描く」でイギリス英語に多い。envision はアメリカ英語に多い
+N	envisage|foresee	envisage は「思い描く」。foresee は「見通す・予見する」
+N	epidemic|outbreak	epidemic は病気の「流行」。outbreak は病気などの「発生」
+N	epidemic|plague	epidemic は「流行病」。plague は「ペスト」や「疫病」
+N	epitome|model	epitome は「典型・見本」（the epitome of grace）。model は「手本・模範」
+N	embody|epitomize	epitomize は「典型を示す」。embody は考えなどを「体現する」
+N	epitomize|personify	epitomize は「典型となる」。personify は性質を「人の形で表す」
+N	age|epoch	epoch は新しい時代の始まりとなる「画期的な時代」。age は「時代」
+N	balance|equilibrium	equilibrium は力などの「つり合い・均衡」のかたい語。balance は「バランス」
+N	equilibrium|stability	equilibrium は「平衡状態」。stability は「安定」
+N	equilibrium|imbalance	equilibrium は「均衡」、imbalance は「不均衡」
+N	equitable|fair	equitable は分け方が「公平な」かたい語。fair は「公正な」
+N	equitable|impartial	equitable は「(一人ひとりに合わせて)公平な」。impartial は「どちらにもかたよらない」
+N	equitable|inequitable	equitable は「公平な」、inequitable は「不公平な」
+N	equivalence|parity	equivalence は価値などが「等しいこと」。parity は給料などの「同等」
+N	equality|equivalence	equivalence は「等価」。equality は人の「平等」
+N	difference|equivalence	equivalence は「同じ価値であること」、difference は「ちがい」
+N	comparable|equivalent	equivalent は「〜に相当する・同じ価値の」（equivalent to）。comparable は「比べられるくらい似た」
+N	different|equivalent	equivalent は「同等の」、different は「ちがう」
+I	erect|curr_idm_3_put_up	put up は建物を「建てる」やテントを「張る」話し言葉。erect は「建てる」のかたい語
+N	erode|wear away	erode は川や風が土地を「削る・浸食する」。wear away は「すり減らす」

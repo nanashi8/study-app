@@ -1,0 +1,375 @@
+N	elated|overjoyed	overjoyed は「大喜びの」（be overjoyed to hear）。elated は成功などで「意気揚々とした」
+N	overjoyed|thrilled	overjoyed は「うれしくてたまらない」。thrilled は「わくわくした・感激した」
+N	devastated|overjoyed	overjoyed は「大喜びの」、devastated は「打ちのめされた」
+N	overpower|overwhelm	overpower は相手を力で「押さえつける」や、においが「ほかを消す」。overwhelm は「圧倒する」
+N	overpower|subdue	overpower は「力で打ち負かす」。subdue は反乱などを「鎮める」
+N	overpower|surrender	overpower は「打ち負かす」、surrender は「降伏する」
+N	overpowering|overwhelming	overpowering はにおいや気持ちが「強すぎて抗えない」。overwhelming は数や気持ちが「圧倒的な」
+N	faint|overpowering	overpowering は「強烈な」、faint は「かすかな」
+N	infest|overrun	overrun は雑草や害虫が「はびこる」や、予算を「超える」。infest は害虫が「たかる・寄生する」
+N	overseer|worker	overseer は「監督」、worker は「働く人」
+N	open|overt	overt は「隠さずに表に出た・公然の」かたい語（overt hostility）。open は「隠しだてのない」
+N	obvious|overt	overt は行動が「あからさまな」。obvious は「明らかな」
+N	heavy|overweight	overweight は人が「太りすぎの」や、荷物が「重量超過の」。heavy は「重い」
+N	overweight|underweight	overweight は「太りすぎの」、underweight は「やせすぎの」
+N	overwhelming|staggering	overwhelming は支持などが「圧倒的な」。staggering は数が「途方もない」
+N	negligible|overwhelming	overwhelming は「圧倒的な」、negligible は「ごくわずかな」
+N	decisively|overwhelmingly	overwhelmingly は「圧倒的な差で」（overwhelmingly approved）。decisively は「決定的に」
+N	corrosion|oxidation	oxidation は化学の「酸化」。corrosion は金属の「腐食・さび」
+N	oxidation|rusting	oxidation は「酸化」全体。rusting は鉄が「さびること」
+N	oxidation|reduction	oxidation は「酸化」、reduction は化学で「還元」
+N	pacific|peaceful	pacific は「平和を好む・平和的な」かたい語（小文字で使う）。peaceful は「平和な」
+N	calm|pacific	pacific は「平和的な」。calm は「穏やかな」
+N	belligerent|pacific	pacific は「平和的な」、belligerent は「好戦的な」
+N	calm|pacify	pacify は怒りや泣く子を「なだめる」。calm は「落ち着かせる」
+N	pacify|provoke	pacify は「なだめる」、provoke は「怒らせる」
+N	pact|treaty	pact は国や人どうしの「協定・約束」。treaty は国どうしの正式な「条約」
+N	careful|painstaking	painstaking は細部まで「手間をかけた・入念な」。careful は「注意深い」
+N	meticulous|painstaking	painstaking は「骨の折れる・苦労した」。meticulous は「細かいところまできちんとした」
+N	careless|painstaking	painstaking は「入念な」、careless は「雑な」
+N	paltry|trivial	paltry は金額などが「わずかな・取るに足りない」。trivial は「ささいな」
+N	paltry|substantial	paltry は「わずかな」、substantial は「かなりの」
+N	pamper|spoil	pamper は人やペットを「大事に甘やかす」（よい意味にも使う）。spoil は子どもを「甘やかしてだめにする」
+N	neglect|pamper	pamper は「大事にしすぎる」、neglect は「ほったらかす」
+N	pant|puff	pant は走ったあと「はあはああえぐ」。puff は「息を切らす」や「ぷっと吹く」
+N	model|paradigm	paradigm は考え方の「枠組み・パラダイム」（a paradigm shift）。model は「手本・模範」
+N	framework|paradigm	paradigm はものの見方の「型」。framework は計画などの「枠組み・骨組み」
+N	immobility|paralysis	paralysis は体の「まひ」や、組織の「まひ状態」。immobility は「動かないこと」
+N	mobility|paralysis	paralysis は「まひ」、mobility は「動けること」
+N	parasitic|sponging	parasitic は生き物が「寄生する」や、人が「人にたかる」。sponging は「たかる」くだけた語
+N	parasitic|symbiotic	parasitic は「一方が得をする寄生の」、symbiotic は「互いに得をする共生の」
+I	participate|idm_take_part_in	take part in は「〜に参加する」のふつうの言い方。participate in はかたい語
+N	engagement|participation	participation は活動への「参加」。engagement は物事への「関わり・取り組み」
+N	abstention|participation	participation は「参加」、abstention は投票の「棄権」
+N	especially|particularly	particularly と especially はどちらも「特に」。particularly は否定文の「特に〜ない」にもよく使う
+N	generally|particularly	particularly は「特に」、generally は「一般に」
+I	particularly|curr_idm_2_in_particular	in particular は「特に」の言い方で、文の後ろに置くことが多い。particularly は副詞で同じ意味
+N	biased|partisan	partisan は政党などに「肩入れした」。biased は「偏った」
+N	factional|partisan	partisan は「党派的な」。factional は組織の中の「派閥の」
+N	impartial|partisan	partisan は「一方に肩入れした」、impartial は「公平な」
+N	collaboration|partnership	partnership は会社どうしの「提携・協力関係」。collaboration は「共同作業」
+N	partnership|rivalry	partnership は「協力関係」、rivalry は「競争関係」
+N	indifferent|passionate	passionate は「情熱的な」、indifferent は「無関心な」
+N	coldly|passionately	passionately は「情熱をこめて」、coldly は「冷たく」
+N	inertia|passivity	passivity は態度の「受け身・消極性」。inertia は「なかなか動かないこと・惰性」
+N	activity|passivity	passivity は「受け身」、activity は「活動」
+N	field|pasture	pasture は家畜が草を食べる「牧草地」。field は「畑・野原」
+N	nationalist|patriot	patriot は国を愛する「愛国者」（よい意味）。nationalist は自国を第一とする「国家主義者」
+N	patriot|traitor	patriot は「愛国者」、traitor は「裏切り者」
+N	pawn|tool	pawn は人に利用される「手先・駒」や、チェスの「ポーン」。tool は「道具」や「手先」
+N	disbursement|payout	payout は保険などの「支払い金」。disbursement は基金などからの「支出」のかたい語
+N	income|payout	payout は会社などが「支払うお金」、income は入ってくる「収入」
+N	amicable|peaceable	peaceable は人が「争いを好まない・温和な」。amicable は関係が「友好的な・円満な」
+N	belligerent|peaceable	peaceable は「平和を好む」、belligerent は「けんか腰の」
+N	glance|peep	peep はすき間から「こっそりのぞく」。glance は「ちらっと見る」
+N	peep|stare	peep は「ちらっとのぞく」、stare は「じっと見る」
+N	gaze|peer	peer は見えにくいものを「目をこらして見る」。gaze はうっとり「じっと見つめる」
+N	peer|squint	peer は「のぞきこむように見る」。squint はまぶしくて「目を細める」
+N	peerless|unmatched	peerless は「比べるものがない」文学的な語。unmatched は「並ぶもののない」
+N	ordinary|peerless	peerless は「比類のない」、ordinary は「ふつうの」
+N	pending|unresolved	pending は決定などが「まだ決まっていない・保留中の」。unresolved は問題が「解決していない」
+N	awaiting|pending	pending は「未決の」。awaiting は「〜を待っている」
+N	pending|settled	pending は「未決の」、settled は「決着した」
+N	penetrate|pierce	penetrate は光や水が「しみこむ・突き抜ける」。pierce は針などで「突き刺す」
+N	penetration|permeation	penetration は「貫通・侵入」。permeation は液体などの「しみとおり」
+N	destitute|penniless	penniless は「一文なしの」。destitute は「何も持たない極貧の」
+N	broke|penniless	penniless は「無一文の」。broke は「金欠の」の話し言葉
+N	penniless|wealthy	penniless は「一文なしの」、wealthy は「裕福な」
+N	pensive|thoughtful	pensive は「物思いに沈んだ」（少し悲しげ）。thoughtful は「考えこんだ」や「思いやりのある」
+N	pensive|reflective	pensive は「憂いを帯びた」。reflective は「じっくり考える」や「光を反射する」
+N	carefree|pensive	pensive は「物思いに沈んだ」、carefree は「のんきな」
+N	noticeable|perceptible	perceptible は「感じ取れる（ほどの）」かたい語（barely perceptible）。noticeable は「目立つ」
+N	observant|perceptive	perceptive は人の気持ちなどを「見抜く」。observant は小さなことに「よく気づく」
+N	oblivious|perceptive	perceptive は「鋭い」、oblivious は「まったく気づかない」
+N	danger|peril	peril は「差し迫った危険」の文学的な語（in peril）。danger は「危険」
+N	hazard|peril	peril は「命にかかわる危険」。hazard は「危険のもと」
+N	hazardous|perilous	perilous は旅などが「命がけの」。hazardous は化学物質などが「危険な」
+N	perilous|treacherous	perilous は「危険に満ちた」。treacherous は道などが「見た目より危ない」
+N	perilous|safe	perilous は「危険な」、safe は「安全な」
+N	perilously|precariously	perilously は「危なっかしいほど」（perilously close）。precariously は「不安定に・今にも落ちそうに」
+N	perilously|safely	perilously は「危うく」、safely は「安全に」
+N	periodic|recurrent	periodic は「定期的な・周期的な」。recurrent は病気などが「くり返し起こる」
+N	constant|periodic	periodic は「定期的な」、constant は「絶え間ない」
+N	magazine|periodical	periodical は新聞や雑誌などの「定期刊行物」のかたい語。magazine は「雑誌」
+N	forever|permanently	permanently は「永久に・恒久的に」（permanently damage）。forever は「永遠に」
+N	permanently|temporarily	permanently は「永久に」、temporarily は「一時的に」
+I	permanently|curr_idm_pre1_for_good	for good は「永久に・これを最後に」の話し言葉。permanently はかたい語
+N	consent|permission	permission は「してよいという許可」。consent は本人の「同意・承諾」
+N	authorization|permission	permission は「許可」のふつうの語。authorization は正式な「認可」
+N	permission|prohibition	permission は「許可」、prohibition は「禁止」
+I	perpetrate|idm_carry_out	carry out は計画などを「実行する」。perpetrate は犯罪などを「犯す」（悪いことに使う）
+N	offender|perpetrator	perpetrator は事件の「加害者・犯人」のかたい語。offender は法律の「違反者」
+N	culprit|perpetrator	perpetrator は罪を「犯した人」。culprit は「犯人」や問題の「元凶」
+N	perpetrator|victim	perpetrator は「加害者」、victim は「被害者」
+N	constantly|perpetually	perpetually は「いつまでも・絶えず」（うんざりする感じ）。constantly は「絶えず」
+N	continually|perpetually	perpetually は「永遠に続くかのように」。continually は「何度もくり返し」
+N	occasionally|perpetually	perpetually は「いつも」、occasionally は「たまに」
+N	maintain|perpetuate	perpetuate は悪い考えなどを「いつまでも続かせる」。maintain は「維持する」
+N	end|perpetuate	perpetuate は「長続きさせる」、end は「終わらせる」
+N	baffling|perplexing	perplexing は「困ってしまうほど分かりにくい」。baffling は「まったく訳が分からない」
+N	clear|perplexing	perplexing は「分かりにくい」、clear は「分かりやすい」
+N	confusion|perplexity	perplexity は分からなくて「困り果てること」。confusion は「混乱」
+N	bewilderment|perplexity	perplexity は「困惑」。bewilderment は「まごつき」
+N	clarity|perplexity	perplexity は「困惑」、clarity は「分かりやすさ」
+N	oppression|persecution	persecution は信仰などを理由にした「迫害」。oppression は権力による「抑圧」
+N	perseverance|persistence	perseverance は困難に負けない「忍耐・がんばり」（よい意味）。persistence は「粘り・しつこさ」
+N	perseverance|tenacity	perseverance は「くじけずに続ける力」。tenacity は「あきらめない粘り強さ」
+N	persistence|tenacity	persistence は「続けること・根気」。tenacity は「しがみつくような粘り強さ」
+N	persistent|tenacious	persistent は「しつこく続く」（a persistent cough）。tenacious は人が「粘り強い」
+N	embodiment|personification	personification はある性質の「化身・典型」や、文学の「擬人法」。embodiment は「体現」
+N	epitome|personification	personification は性質を「人の姿で表したもの」。epitome は「典型」
+N	persuasive|unconvincing	persuasive は「説得力のある」、unconvincing は「説得力のない」
+N	convincingly|persuasively	persuasively は人を「その気にさせるように」。convincingly は「なるほどと思わせるように」
+N	compellingly|persuasively	persuasively は「説得力をもって」。compellingly は「引きこまれるように」
+N	persuasively|unconvincingly	persuasively は「説得力をもって」、unconvincingly は「説得力なく」
+N	pertain|relate	pertain は「(〜に)関係がある」かたい語（pertain to）。relate も「関係がある」（relate to）
+N	concern|pertain	pertain は「〜に関係する」。concern は動詞で「〜にかかわる・〜の問題である」
+N	pervade|saturate	pervade は気分やにおいが「全体に広がる」。saturate は「びっしょり浸す」や、市場を「いっぱいにする」
+N	pervasive|widespread	pervasive はよくないものが「すみずみまで広がった」。widespread は「広い範囲に広がった」
+N	pervasive|ubiquitous	pervasive は「浸透している」。ubiquitous は「どこにでもある」
+N	pervasive|rare	pervasive は「広く行き渡った」、rare は「まれな」
+N	pester|soothe	pester は「しつこく困らせる」、soothe は「なだめる」
+N	petite|small	petite は女性が「小柄な・きゃしゃな」。small は「小さい」と広く言う
+N	petite|tiny	petite は「小柄で品のよい」。tiny は「ごく小さい」
+N	petite|petty	petite は女性が「小柄な」（よい意味）。petty は「ささいな」や、人が「心のせまい」（悪い意味）。どちらもフランス語の petit（小さい）から
+N	petite|tall	petite は「小柄な」、tall は「背が高い」
+N	petrify|terrify	petrify は恐怖で人を「すくませる」や、生き物を「石にする」。terrify は「ひどく怖がらせる」
+N	paralyze|petrify	petrify は恐怖で「体を動けなくする」。paralyze は「まひさせる」
+N	petrify|reassure	petrify は「すくませる」、reassure は「安心させる」
+N	petty|trivial	petty は「ささいな」や「けちな・心のせまい」。trivial は「取るに足らない」
+N	minor|petty	petty は「つまらない」（悪い意味）。minor は「小さな・重要でない」
+N	major|petty	petty は「ささいな」、major は「重大な」
+N	philosophy|thought	philosophy は「哲学」や一人ひとりの「人生観」。thought は「考え・思想」
+N	doctrine|philosophy	philosophy は「考え方・哲学」。doctrine は団体が教える「教義」
+N	fear|phobia	phobia は特定のものへの「病的な恐怖（症）」。fear は「恐れ」
+N	duplicator|photocopier	photocopier は「コピー機」のふつうの語。duplicator は「複写機」の古い言い方
+N	duplicate|photocopy	photocopy は機械で紙を「コピーする」。duplicate は「複製する」と広く言う
+N	photocopy|reproduce	photocopy は「コピーを取る」。reproduce は「複製する・再現する」
+N	fussy|picky	picky は食べ物などに「好き嫌いが多い」。fussy は細かいことに「うるさい」
+N	easygoing|picky	picky は「好みがうるさい」、easygoing は「こだわらない」
+N	pierce|puncture	pierce は針などで「突き刺す・穴をあける」。puncture はタイヤなどに「穴をあける」
+N	pierce|seal	pierce は「穴をあける」、seal は「ふさぐ・密閉する」
+N	devotion|piety	piety は神への「信心深さ」。devotion は人や仕事への「献身」
+N	piety|reverence	piety は「信仰心」。reverence は「深い尊敬の念」
+N	impiety|piety	piety は「信心深さ」、impiety は「不信心」
+N	column|pillar	pillar は建物を支える「柱」や、組織の「柱となる人」。column は丸い「円柱」や、新聞の「コラム」
+N	innovative|pioneering	pioneering は「最初に切り開いた」。innovative は「新しい工夫のある」
+N	conventional|pioneering	pioneering は「先駆的な」、conventional は「従来の」
+N	impious|pious	pious は「信心深い」、impious は「不信心な」
+N	crucial|pivotal	pivotal は物事の「かなめとなる」（a pivotal role）。crucial は「決定的に重要な」
+N	central|pivotal	pivotal は「中心となる・とても重要な」。central は「中心の」
+N	pacify|placate	placate は怒っている人の「機嫌をとる」。pacify は「なだめて静める」
+N	placate|provoke	placate は「なだめる」、provoke は「怒らせる」
+N	calm|placid	placid は人や水面が「穏やかで動じない」。calm は「落ち着いた」
+N	placid|serene	placid は「穏やかな」。serene は「静かで安らかな」
+N	placid|turbulent	placid は「穏やかな」、turbulent は「荒れた」
+N	plague|scourge	plague は「疫病（ペスト）」や「災い」。scourge は「たたり・災いのもと」
+N	blessing|plague	plague は「災い」、blessing は「恵み」
+N	highland|plateau	plateau は平らな「高原・台地」や、成長の「横ばい」。highland は「高地・山地」
+N	demand|plead	plead は「必死に頼む・嘆願する」、demand は「強く要求する」
+N	pledge|promise	pledge は公に「誓う・誓約する」。promise は「約束する」
+N	pledge|vow	pledge は寄付や支持を「約束する」。vow は「かたく誓う」
+N	plummet|plunge	plummet は値段が「急落する」や、物が「まっさかさまに落ちる」。plunge は「急落する」や、水に「飛びこむ」
+N	drop|plummet	plummet は「急激に下がる」。drop は「落ちる・下がる」
+N	plummet|soar	plummet は「急落する」、soar は「急上昇する」
+N	plunge|soar	plunge は「急落する」、soar は「急上昇する」
+N	poignant|touching	poignant は「胸がしめつけられるほど切ない」。touching は「心温まる・感動的な」
+N	poignant|pungent	poignant は話などが「胸を打つ・切ない」。pungent はにおいが「鼻をつく」。どちらもラテン語の「刺す」から
+N	poignant|unemotional	poignant は「心に突き刺さる」、unemotional は「感情のこもらない」
+N	fertilize|pollinate	pollinate は花に「受粉させる」。fertilize は「受精させる」や「肥料をやる」
+N	consider|ponder	ponder は「じっくり考える」。consider は「よく考える・検討する」
+N	contemplate|ponder	ponder は「あれこれ考える」。contemplate は将来のことなどを「熟考する」
+N	corpulent|portly	portly は年配の男性が「恰幅（かっぷく）のよい」（やわらかい言い方）。corpulent は「でっぷり太った」かたい語
+N	portly|stout	portly は「でっぷりした」。stout は「がっしりした・太った」
+N	positioned|situated	positioned は物が「置かれた・配置された」。situated は建物などが「位置している」
+N	placed|positioned	positioned は計画して「配置された」。placed は「置かれた」
+N	belongings|possession	possession は「所有」や、複数形で「持ち物」。belongings は「身の回りの物」
+N	loss|possession	possession は「持っていること」、loss は「失うこと」
+N	advance|postpone	postpone は予定を「延期する」、advance は日程を「繰り上げる」
+I	postpone|idm_put_off	put off は「延期する」の話し言葉。postpone はかたい語
+I	postpone|curr_idm_2_put_back	put back は予定を「遅らせる」や、物を「元に戻す」。postpone は「延期する」
+N	deferred|postponed	postponed は日程が「延期された」。deferred は支払いなどが「繰り延べられた」
+N	advanced|postponed	postponed は「延期された」、advanced は日程が「繰り上げられた」
+N	assume|postulate	postulate は理論の前提として「仮定する」かたい語。assume は「仮定する・思いこむ」
+N	potent|powerful	potent は薬などが「よく効く・強力な」。powerful は「力の強い」
+N	potent|strong	potent は「効き目が強い」。strong は「強い」と広く言う
+N	potent|weak	potent は「強力な」、weak は「弱い」
+N	feasibility|practicality	practicality は物の「実用性」や考えの「現実性」。feasibility は計画の「実現可能性」
+N	practicality|usefulness	practicality は「実際に役立つこと」。usefulness は「役に立つこと」
+N	impracticality|practicality	practicality は「実用性」、impracticality は「実用的でないこと」
+N	deplorable|praiseworthy	praiseworthy は「ほめるべき」、deplorable は「嘆かわしい」
+N	preach|sermonize	preach は牧師が「説教する」や、人に「お説教する」。sermonize は「くどくど説教する」
+N	advocate|preach	preach は考えを「説いて広める」。advocate は政策などを「支持して主張する」
+N	precarious|unstable	precarious は立場などが「不安定で危うい」。unstable は「安定していない」
+N	precarious|risky	precarious は「いつ崩れるか分からない」。risky は「危険をともなう」
+N	precarious|secure	precarious は「危うい」、secure は「安定した」
+N	precaution|safeguard	precaution は前もっての「用心・予防策」（as a precaution）。safeguard は「保護策・安全装置」
+N	precaution|safety measure	precaution は「用心」。safety measure は「安全対策」
+N	negligence|precaution	precaution は「用心」、negligence は「怠慢」
+N	example|precedent	precedent は判断の手本になる「前例」（set a precedent）。example は「例」
+N	model|precedent	precedent は「先例」。model は「手本」
+N	preceding|previous	preceding は「すぐ前の」（the preceding chapter）。previous は「以前の・前の」
+N	preceding|prior	preceding は順番が「前の」。prior は時間が「前の・事前の」（prior to）
+N	following|preceding	preceding は「前の」、following は「次の」
+N	preclude|prevent	preclude は物事を「不可能にする」かたい語。prevent は「防ぐ」
+I	preclude|idm_rule_out	rule out は可能性を「除外する」。preclude は「(前もって)不可能にする」
+N	precursor|predecessor	precursor は後に来るものの「先駆け・前ぶれ」。predecessor は「前任者」や、機械の「前の型」
+N	predator|prey	predator は「捕食者」、prey は「獲物」
+N	carnivorous|predatory	predatory は動物が「ほかを捕まえて食べる」や、人が「弱い者を食い物にする」。carnivorous は「肉食の」
+N	predatory|rapacious	predatory は「略奪的な」。rapacious は「強欲な・がつがつした」
+N	docile|predatory	predatory は「捕食性の」、docile は「おとなしい」
+N	plight|predicament	predicament はどうしていいか分からない「困った立場」。plight はかわいそうな「苦境」
+N	dilemma|predicament	predicament は「窮地」。dilemma は2つの間での「板ばさみ」
+N	mainly|predominantly	predominantly は「大部分は・主に」かたい語。mainly は「主に」
+N	mostly|predominantly	predominantly は「圧倒的に多くは」。mostly は「ほとんど・たいてい」
+I	predominantly|curr1900_idm_pre2_for_the_most_part	for the most part は「大部分は」の話し言葉。predominantly はかたい語
+I	predominantly|curr_idm_pre1_to_a_large_extent	to a large extent は「かなりの程度まで」。predominantly は「主に」
+N	biased|prejudiced	prejudiced は人種などに「偏見をもった」。biased は「かたよった」
+N	impartial|prejudiced	prejudiced は「偏見をもった」、impartial は「公平な」
+N	absorbed|preoccupied	preoccupied はほかのことで「頭がいっぱいの・うわの空の」。absorbed は何かに「夢中の」
+N	engrossed|preoccupied	preoccupied は「気を取られた」。engrossed は「没頭した」
+N	attentive|preoccupied	preoccupied は「うわの空の」、attentive は「注意を払っている」
+N	alertness|preparedness	preparedness は災害などへの「備え」。alertness は「油断のなさ」
+N	preparedness|unpreparedness	preparedness は「備え」、unpreparedness は「備えがないこと」
+N	prescription|remedy	prescription は医者の「処方箋（せん）」。remedy は「治療法・改善策」
+N	preservation|protection	preservation は食べ物や建物を「そのまま保つこと」。protection は「守ること」
+N	destruction|preservation	preservation は「保存」、destruction は「破壊」
+N	prestige|reputation	prestige は地位などによる「名声・威信」。reputation は人々の「評判」
+N	prestige|status	prestige は「世間の尊敬」。status は社会の「地位」
+N	presumably|probably	presumably は「おそらく〜だろう」（根拠があって推測する）。probably は「たぶん」
+N	likely|presumably	presumably は「推定では」。likely は「たぶん」（most likely）
+N	assumption|presumption	presumption は根拠のある「推定」（presumption of innocence）や「厚かましさ」。assumption は「仮定・思いこみ」
+N	audacity|presumption	presumption は「出すぎた態度」。audacity は「大胆さ・ずうずうしさ」
+N	certainty|presumption	presumption は「推定」、certainty は「確実なこと」
+N	cheap|pricey	pricey は「値の張る」くだけた語、cheap は「安い」
+N	pristine|pure	pristine は「真新しい・手つかずのきれいな」。pure は「混じりけのない」
+N	pristine|untouched	pristine は「元のままきれいな」。untouched は「手つかずの」
+N	polluted|pristine	pristine は「汚れていない」、polluted は「汚染された」
+N	likelihood|probability	probability は数学の「確率」や「見込み」。likelihood は「可能性・ありそうなこと」
+N	chance|probability	probability は「起こる確率」。chance は「見込み・機会」
+N	improbability|probability	probability は「ありそうなこと」、improbability は「ありそうにないこと」
+N	investigate|probe	probe は新聞などで「徹底的に調べる」。investigate は「調査する・捜査する」
+N	examine|probe	probe は「深く探る」。examine は「くわしく調べる」
+N	ignore|probe	probe は「探る」、ignore は「無視する」
+N	problematic|troublesome	problematic は「問題のある・扱いにくい」。troublesome は「面倒な・手のかかる」
+N	problematic|questionable	problematic は「問題をはらんだ」。questionable は「疑わしい」
+N	problematic|unproblematic	problematic は「問題のある」、unproblematic は「問題のない」
+N	declaration|proclamation	proclamation は王や政府の正式な「布告」。declaration は「宣言」
+N	announcement|proclamation	proclamation は「公式の布告」。announcement は「発表」
+N	acquisition|procurement	procurement は物資の「調達」。acquisition は「取得・買収」
+N	procurement|sourcing	procurement は正式な「調達」。sourcing は材料の「仕入れ先選び」
+N	disposal|procurement	procurement は「調達」、disposal は「処分」
+N	manufacture|production	production は「生産」や劇の「上演」。manufacture は工場での「製造」
+N	obscenity|profanity	profanity は神を汚す「冒涜（ぼうとく）的な言葉・ののしり」。obscenity は「わいせつな言葉」
+N	profanity|swearing	profanity は「ののしり言葉」のかたい語。swearing は「悪態をつくこと」
+N	profanity|reverence	profanity は「神をけがす言葉」、reverence は「敬う心」
+N	proficiency|skill	proficiency は語学などの「熟達度」（English proficiency）。skill は「技能」
+N	incompetence|proficiency	proficiency は「熟達」、incompetence は「無能」
+N	incompetent|proficient	proficient は「堪能な」、incompetent は「無能な」
+N	deeply|profoundly	profoundly は「心の底から・深く」かたい語。deeply は「深く」
+N	intensely|profoundly	profoundly は「根本的に・深く」。intensely は「激しく」
+N	profoundly|slightly	profoundly は「深く」、slightly は「わずかに」
+N	advancement|progression	progression は病気などの「進行」や、段階的な「進展」。advancement は「前進・昇進」
+N	progression|sequence	progression は「順に進むこと」。sequence は「順序・ひと続き」
+N	progression|regression	progression は「進行」、regression は「後退」
+N	forward-looking|progressive	progressive は「進歩的な」や、「段階的に進む」。forward-looking は「将来を見すえた」
+N	progressive|reformist	progressive は「進歩的な」。reformist は「改革を求める」
+N	conservative|progressive	progressive は「進歩的な」、conservative は「保守的な」
+N	gradually|progressively	progressively は「段階を追って次第に」（progressively louder）。gradually は「徐々に」
+N	progressively|suddenly	progressively は「次第に」、suddenly は「突然」
+N	ban|prohibition	prohibition は法律などによる「禁止」のかたい語。ban は「禁止（令）」
+N	embargo|prohibition	prohibition は「禁止」と広く言う。embargo は国どうしの「通商禁止・禁輸」
+N	multiply|proliferate	proliferate は数が「急に増える・広まる」。multiply は「増える・繁殖する」
+N	proliferate|spread	proliferate は「急増する」。spread は「広がる」
+N	fertile|prolific	prolific は作家などが「多作の」。fertile は土地が「肥えた」や、想像力が「豊かな」
+N	prolific|unproductive	prolific は「多作の」、unproductive は「成果の出ない」
+N	liable|prone	prone は悪いことに「なりやすい」（prone to overheating）。liable は「〜しがちな」や「責任がある」
+N	inclined|prone	prone は「(悪い方へ)傾きがちな」。inclined は「〜したい気がする・〜しがちな」
+N	prone|resistant	prone は「なりやすい」、resistant は「強い・耐性のある」
+N	propagate|spread	propagate は考えを「広める」や、植物を「増やす」。spread は「広める」
+N	multiply|propagate	propagate は挿し木などで植物を「繁殖させる」。multiply は「増える」
+N	propagation|spread	propagation は植物の「繁殖」や、考えの「普及」。spread は「広がり」
+N	dissemination|propagation	propagation は「広めること」。dissemination は情報の「普及・流布」
+N	propagation|suppression	propagation は「広めること」、suppression は「抑えつけること」
+N	propeller|rotor	propeller は船や飛行機の「プロペラ」。rotor はヘリコプターの「回転翼」
+N	propensity|tendency	propensity は悪いことを「しがちな性質」（a propensity to exaggerate）。tendency は「傾向」
+N	inclination|propensity	propensity は「性癖」。inclination は「〜したい気持ち」
+N	prediction|prophecy	prophecy は神のお告げのような「予言」。prediction は根拠のある「予測」
+N	forecast|prophecy	prophecy は「予言」。forecast は天気などの「予報」
+N	portion|proportion	proportion は全体に対する「割合・比率」（in proportion）。portion は分けた「部分」や「一人前」
+N	commensurate|proportional	proportional は「比例した」（proportional to）。commensurate は報酬などが「見合った」
+N	disproportionate|proportional	proportional は「比例した・つり合った」、disproportionate は「不つり合いな」
+N	propulsion|thrust	propulsion は船などを「進める力・推進」（jet propulsion）。thrust はエンジンの「推力」
+N	drive|propulsion	propulsion は「推進（の仕組み）」。drive は機械の「駆動」
+N	prose|verse	prose は「散文（ふつうの文章）」、verse は「韻文（詩）」
+N	indictment|prosecution	prosecution は「起訴・訴追」や「検察側」。indictment は「起訴（状）」
+N	litigation|prosecution	prosecution は刑事の「訴追」。litigation は民事などの「訴訟」
+N	defense|prosecution	prosecution は裁判の「検察側」、defense は「弁護側」
+N	attorney|prosecutor	prosecutor は罪を追及する「検察官」。attorney は「弁護士」や、アメリカで district attorney（地方検事）
+N	defender|prosecutor	prosecutor は「検察官」、defender は「弁護人」
+N	hero|protagonist	protagonist は物語の「主人公」。hero は「英雄」や「主人公」
+N	defense|protection	protection は危険から「守ること・保護」。defense は攻撃に対する「防御」
+N	protection|safeguard	protection は「保護」と広く言う。safeguard は決まりなどの「保護策」
+N	procedure|protocol	protocol は外交などの「決まった手順・儀礼」や通信の「規約」。procedure は「手続き・手順」
+N	etiquette|protocol	protocol は正式な場の「儀礼」。etiquette は日常の「礼儀作法」
+N	provision|supply	provision は必要なものの「供給・用意」や、契約の「条項」。supply は「供給・在庫」
+N	provisional|temporary	provisional は正式決定までの「仮の・暫定的な」。temporary は「一時的な」
+N	interim|provisional	provisional は「暫定の」。interim は「その間の・当座の」
+N	permanent|provisional	provisional は「仮の」、permanent は「永久の」
+N	incitement|provocation	provocation は怒らせる「挑発」。incitement は暴動などへの「扇動」
+N	instigation|provocation	provocation は「挑発（行為）」。instigation は「そそのかし・発起」
+N	pacification|provocation	provocation は「挑発」、pacification は「なだめること」
+N	prowess|skill	prowess は「すぐれた腕前・勇ましさ」。skill は「技能」
+N	prowess|valor	prowess は「卓越した技量」。valor は戦いの「武勇」
+N	incompetence|prowess	prowess は「すぐれた腕前」、incompetence は「無能」
+N	clip|prune	prune は木の枝を「剪定（せんてい）する」や、費用を「切り詰める」。clip は「はさみで切る」
+N	cultivate|prune	prune は「(枝を)切り落とす」、cultivate は「育てる」
+I	prune|curr_idm_pre1_cut_back	cut back は費用を「削減する」や、枝を「切り詰める」。prune は「剪定（せんてい）する」
+N	pry|snoop	pry は人の私生活を「詮索（せんさく）する」（pry into）。snoop は「こそこそ探る」
+N	meddle|pry	pry は「首を突っこんで聞き出す」。meddle は「おせっかいに口を出す」
+N	discreet|prying	prying は「詮索（せんさく）好きな」、discreet は「控えめで口がかたい」
+N	emotionally|psychologically	psychologically は「心理的に・精神的に」。emotionally は「感情的に・気持ちの上で」
+N	physically|psychologically	psychologically は「精神的に」、physically は「体の面で」
+N	publication|release	publication は本などの「出版」や「出版物」。release は映画や曲の「公開・発売」
+N	periodical|publication	publication は「出版物」全体。periodical は「定期刊行物」
+N	pulley|wheel	pulley は物をつり上げる「滑車」。wheel は「車輪」
+N	block|pulley	pulley は「滑車」。block は block and tackle で「滑車装置」
+N	promptness|punctuality	punctuality は「時間を守ること」。promptness は「すばやさ・迅速さ」
+N	punctuality|timeliness	punctuality は約束の「時間厳守」。timeliness は「ちょうどよい時であること」
+N	punctuality|tardiness	punctuality は「時間厳守」、tardiness は「遅刻」
+N	cleanliness|purity	purity は水などの「純度・きれいさ」や、心の「清らかさ」。cleanliness は「清潔さ」
+N	innocence|purity	purity は心の「清らかさ」。innocence は「無邪気さ・潔白」
+N	impurity|purity	purity は「純粋さ」、impurity は「不純物」
+N	charming|quaint	quaint は「古風で趣のある」。charming は「魅力的な」
+N	old-fashioned|quaint	quaint は「古めかしくてかわいらしい」（よい意味）。old-fashioned は「時代遅れの・昔風の」
+N	modern|quaint	quaint は「古風な」、modern は「現代的な」
+D	quarry	syn	mine	鉱山の意味の mine は「私のもの」の mine と由来のちがう別の語で見出し語がなく、つづりで引くと「私のもの」へ飛ぶ
+N	crystal|quartz	quartz は鉱物の「石英」。crystal は「結晶」や「水晶」
+N	mineral|quartz	quartz は鉱物の一種の「石英」。mineral は「鉱物」全体
+N	queasy|sick	queasy は乗り物などで「むかむかする」。sick は「気分が悪い」や、アメリカ英語で「病気の」
+N	comfortable|queasy	queasy は「むかむかする」、comfortable は「快適な」
+N	quell|suppress	quell は暴動や不安を「鎮める」。suppress は「力で抑えつける」
+N	quell|subdue	quell は「おさめる」。subdue は「鎮圧する・征服する」
+N	answer|query	query は「質問・問い合わせ」、answer は「答え」
+N	accelerate|quicken	quicken は足どりや鼓動を「速める」。accelerate は車などを「加速する」
+N	hasten|quicken	quicken は「速くなる・速める」。hasten は「急がせる」
+N	quicken|slow	quicken は「速める」、slow は動詞で「遅くする」
+N	quiver|tremble	quiver は「小刻みにぷるぷる震える」。tremble は恐怖などで「震える」
+N	quiver|shudder	quiver は「小刻みに震える」。shudder は「ぞっとして身震いする」
+N	quiver|steady	quiver は「震える」、steady は動詞で「落ち着かせる・安定させる」
+N	glow|radiance	radiance は顔などの「輝き・晴れやかさ」。glow は「ぼうっとした光」
+N	dullness|radiance	radiance は「輝き」、dullness は「くすみ」
+N	bright|radiant	radiant は笑顔などが「輝くような」。bright は「明るい」
+N	dull|radiant	radiant は「輝く」、dull は「くすんだ」
+N	radius|range	radius は円の「半径」や「〜の範囲内」（within a radius of）。range は「範囲」
+N	radius|reach	radius は「半径」。reach は手などの「届く範囲」
+N	diameter|radius	radius は「半径」、diameter は「直径」
+N	rage|wrath	rage は爆発する「激しい怒り」。wrath は神などの「怒り」の文学的な語
+N	calm|rage	rage は「激怒」、calm は「平静」
+N	ragged|tattered	ragged は服が「ぼろぼろの」や、線が「ぎざぎざの」。tattered は「すり切れてぼろぼろの」
+N	frayed|ragged	ragged は「ぼろぼろの」。frayed は端が「ほつれた」
+N	neat|ragged	ragged は「ぼろぼろの」、neat は「きちんとした」
+N	gather|rally	rally は目的のために人を「呼び集める」や、元気を「取り戻す」。gather は「集める」
+N	disperse|rally	rally は「結集する」、disperse は「散らばる」
+N	rampant|widespread	rampant は悪いことが「はびこった」。widespread は「広く行き渡った」
+N	rampant|uncontrolled	rampant は「野放しにはびこる」。uncontrolled は「抑えがきかない」

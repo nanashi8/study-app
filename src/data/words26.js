@@ -38,7 +38,7 @@ const RAW = [
   ['compatible', '形', 'pre1', '互換性のある・相性のよい', 'These parts are compatible.', 'これらの部品は互換性がある。', 'ラテン com+pati(共に感じる)→ passion と同系。', { ant: [{ w: 'incompatible', m: '相いれない' }], field: '技術' }],
   ['conceptual', '形', '1', '概念的な', 'It is a conceptual model.', 'それは概念的な模型だ。', 'concept(概念)+ -ual→ cept と同系。', { syn: [{ w: 'abstract', m: '抽象的な' }], field: '性質・状態' }],
   ['concise', '形', '1', '簡潔な', 'Keep your answer concise.', '回答は簡潔に。', 'ラテン con+caedere(切る)→ precise と同系。', { syn: [{ w: 'brief', m: '短い' }, { w: 'succinct', m: '簡潔な' }], ant: [{ w: 'lengthy', m: '長たらしい' }], field: '性質・状態' }],
-  ['cumulative', '形', '1', '累積的な', 'The cumulative effect is large.', '累積的な効果は大きい。', 'ラテン cumulus(積み重ね)→ accumulate と同系。', { syn: [{ w: 'collective', m: '累積の' }], field: '性質・状態' }],
+  ['cumulative', '形', '1', '累積的な', 'The cumulative effect is large.', '累積的な効果は大きい。', 'ラテン cumulus(積み重ね)→ accumulate と同系。', { syn: [{ w: 'collective', m: '全体の・集団の' }], field: '性質・状態' }],
   ['finite', '形', '1', '有限の', 'Resources are finite.', '資源は有限だ。', 'ラテン finis(終わり)→ finish と同源。', { ant: [{ w: 'infinite', m: '無限の' }], field: '性質・状態' }],
   ['hypothetical', '形', '1', '仮定の・仮説の', 'It is a hypothetical case.', 'それは仮定の事例だ。', 'hypothesis(仮説)+ -ical。', { syn: [{ w: 'theoretical', m: '理論上の' }], ant: [{ w: 'actual', m: '実際の' }], field: '性質・状態' }],
   ['implicit', '形', '1', '暗黙の・潜在的な', 'There was implicit agreement.', '暗黙の合意があった。', 'ラテン in+plicare(折りたたむ)→ apply と同系。', { ant: [{ w: 'explicit', m: '明示的な' }], field: '性質・状態' }],

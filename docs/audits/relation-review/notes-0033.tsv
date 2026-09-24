@@ -1,0 +1,362 @@
+N	plunder|ransack	ransack は家などを「ひっかき回して探す」や「荒らす」。plunder は戦争などで「略奪する」
+N	ransack|rummage	ransack は「めちゃくちゃにして探す」。rummage は「かき回して探す」
+N	bond|rapport	rapport は人と「うまく話が通じる関係」（build rapport）。bond は強い「きずな」
+N	affinity|rapport	rapport は「打ち解けた関係」。affinity は「親しみ・引かれ合う気持ち」
+N	bliss|rapture	rapture は「うっとりするほどの喜び」（in rapture）。bliss は「この上ない幸せ」
+N	misery|rapture	rapture は「有頂天」、misery は「みじめさ」
+N	ecstatic|rapturous	rapturous は拍手などが「熱狂的な」（rapturous applause）。ecstatic は人が「有頂天の」
+N	euphoric|rapturous	rapturous は「うっとりした・熱狂的な」。euphoric は「幸福感に満ちた」
+N	indifferent|rapturous	rapturous は「熱狂的な」、indifferent は「無関心な」
+N	rarity|scarcity	rarity は「めずらしいこと・めずらしい物」。scarcity は必要な物の「不足」
+N	rarity|uniqueness	rarity は「めったにないこと」。uniqueness は「ほかにない独特さ」
+N	abundance|rarity	rarity は「めずらしさ」、abundance は「たくさんあること」
+N	rash|reckless	rash は決断が「早まった・軽率な」。reckless は危険を気にしない「無謀な」
+N	cautious|rash	rash は「軽率な」、cautious は「慎重な」
+N	approval|ratification	ratification は条約などの正式な「批准」。approval は「承認・賛成」
+N	confirmation|ratification	ratification は議会などの「正式承認」。confirmation は「確認」
+N	ratification|rejection	ratification は「批准」、rejection は「拒否」
+N	rationale|reasoning	rationale は計画などの「根拠・理由」。reasoning は「理屈・考えの筋道」
+N	rattle|unnerve	rattle は人を「どぎまぎさせる」くだけた語や、窓が「ガタガタ鳴る」。unnerve は「おじけづかせる」
+N	calm|rattle	rattle は「うろたえさせる」、calm は「落ち着かせる」
+N	devastate|ravage	ravage は戦争や病気が「荒らしまわる」。devastate は「壊滅させる」
+N	ravage|ruin	ravage は「めちゃめちゃに荒らす」。ruin は「台無しにする」
+N	ravage|restore	ravage は「荒らす」、restore は「修復する」
+N	easily|readily	readily は「すぐに・進んで・たやすく」（readily available）。easily は「簡単に」
+N	reaffirm|reassert	reaffirm は約束などを「あらためて確認する」。reassert は権利などを「再び主張する」
+N	confirm|reaffirm	reaffirm は「もう一度はっきり言う」。confirm は「確かめる・確認する」
+N	reaffirm|retract	reaffirm は「再確認する」、retract は発言を「撤回する」
+N	pragmatism|realism	realism は物事を「現実的に見ること」や、芸術の「写実主義」。pragmatism は「実利主義」
+N	practicality|realism	realism は「現実主義」。practicality は「実用性・現実性」
+N	pragmatist|realist	realist は「現実を見る人・現実主義者」。pragmatist は「実利を重んじる人」
+N	awareness|realization	realization は「気づくこと」（come to the realization that）や夢の「実現」。awareness は「意識・認識」
+N	fulfillment|realization	realization は夢や計画の「実現」。fulfillment は「達成・満足感」
+N	harvest|reap	reap は作物を「刈り取る」や、努力の成果を「得る」（You reap what you sow）。harvest は「収穫する」
+N	gain|reap	reap は結果として「得る」。gain は「手に入れる・増す」
+N	fairly|reasonably	reasonably は「まあまあ・かなり」や「分別をもって」。fairly は「かなり」
+N	reasonably|sensibly	reasonably は「理にかなって」。sensibly は「賢明に」
+N	reasonably|unreasonably	reasonably は「ほどよく」、unreasonably は「不当に」
+N	reassess|reevaluate	reassess と reevaluate はどちらも「見直す・再評価する」
+N	reassess|review	reassess は状況を「もう一度評価し直す」。review は内容を「見直す」
+N	comfort|reassure	reassure は心配している人を「安心させる」。comfort は悲しむ人を「慰める」
+N	alarm|reassure	reassure は「安心させる」、alarm は「不安にさせる」
+N	reassuring|soothing	reassuring は心配を「消してくれる・心強い」。soothing は気持ちを「落ち着かせる」
+N	mutinous|rebellious	rebellious は親などに「反抗的な」。mutinous は船員などが「反乱を起こしそうな」
+N	obedient|rebellious	rebellious は「反抗的な」、obedient は「従順な」
+N	rebut|refute	rebut は相手の主張に「反論する」。refute は「論破する（まちがいを証明する）」
+N	confirm|rebut	rebut は「反論する」、confirm は「裏づける」
+N	rebuttal|refutation	rebuttal は討論などでの「反論」。refutation は「論破・反証」
+N	counterargument|rebuttal	rebuttal は相手に向けた「反論」。counterargument は「反対の意見・反論」
+N	agreement|rebuttal	rebuttal は「反論」、agreement は「同意」
+N	reading|recitation	recitation は詩などの「暗唱・朗読」。reading は本の「朗読」や「読むこと」
+N	narration|recitation	recitation は覚えたものを「そらで言うこと」。narration は物語の「語り」
+N	rashness|recklessness	recklessness は危険をかえりみない「無謀さ」。rashness は「早まった軽率さ」
+N	reckon|suppose	reckon は「〜と思う」のくだけた語（I reckon）。suppose は「〜と思う・仮定する」
+N	identification|recognition	recognition は「見て分かること」や、功績の「評価」。identification は「身元確認」
+N	recognizable|unrecognizable	recognizable は「見覚えのある」、unrecognizable は「見分けがつかない」
+N	recollect|remember	recollect は昔のことを「(努力して)思い出す」かたい語。remember は「覚えている・思い出す」
+N	forget|recollect	recollect は「思い出す」、forget は「忘れる」
+N	memory|recollection	recollection は「思い出したこと・記憶」（have a clear recollection）。memory は「記憶（力）」や「思い出」
+N	recollection|reminiscence	recollection は「記憶」。reminiscence は昔の「思い出話」
+N	endorsement|recommendation	recommendation は人や物の「推薦」や「勧告」。endorsement は公の「支持」
+N	recommendation|suggestion	recommendation は「すすめること」。suggestion は「提案」
+N	discouragement|recommendation	recommendation は「推薦」、discouragement は「やめさせること」
+N	reconciliation|settlement	reconciliation はけんかした人の「和解・仲直り」。settlement は争いの「決着」
+N	harmony|reconciliation	reconciliation は「仲直り」。harmony は「調和・仲のよさ」
+N	estrangement|reconciliation	reconciliation は「和解」、estrangement は「仲たがい」
+N	recount|relate	recount は体験を「くわしく話す」。relate も話を「語る」のかたい語
+N	correct|rectify	rectify は誤りや問題を「正す」かたい語。correct は「直す」
+N	fix|rectify	rectify は「是正する」。fix は「直す・修理する」
+N	heal|recuperate	recuperate は病気のあと「体力を回復する」。heal は傷が「治る」
+I	recuperate|curr_idm_4_get_well	get well は病気が「よくなる」話し言葉。recuperate は「療養して回復する」かたい語
+N	convalescence|recuperation	recuperation は「回復・療養」。convalescence は病後の「回復期」のかたい語
+N	recurrence|repetition	recurrence は病気などの「再発」。repetition は「くり返し」
+N	recurrence|relapse	recurrence は問題が「また起こること」。relapse は病気の「ぶり返し」
+N	recurrent|repeated	recurrent は病気などが「くり返し起こる」。repeated は「何度もの」
+N	isolated|recurrent	recurrent は「何度も起こる」、isolated は「一度きりの」
+N	redemption|salvation	redemption は罪からの「救い」や「名誉挽回（ばんかい）」。salvation は宗教の「救い」
+N	atonement|redemption	redemption は「救われること」。atonement は罪の「償い」
+N	damnation|redemption	redemption は「救い」、damnation は「地獄に落ちること」
+N	polish|refine	refine は技術などを「磨き上げる」や、石油を「精製する」。polish は「磨く」
+N	reflective|thoughtful	reflective は「じっくり考える・内省的な」や「光を反射する」。thoughtful は「考え深い」
+N	impulsive|reflective	reflective は「よく考える」、impulsive は「衝動的な」
+N	instinct|reflex	reflex は考えずに体が動く「反射」。instinct は生まれつきの「本能」
+N	abstain|refrain	refrain は「差し控える」（refrain from 〜ing）。abstain は酒などを「控える」や投票を「棄権する」
+N	avoid|refrain	refrain は「(やりたいのを)こらえる」。avoid は「避ける」
+N	indulge|refrain	refrain は「控える」、indulge は「思う存分楽しむ」
+N	refurbish|remodel	refurbish は内装などを「改装する・きれいにし直す」。remodel は間取りなどを「作り変える」
+N	neglect|refurbish	refurbish は「改装する」、neglect は「ほったらかす」
+N	disproof|refutation	refutation は「論駁（ろんばく）・反論」。disproof は「反証（となる事実）」
+N	confirmation|refutation	refutation は「反証」、confirmation は「確証」
+N	prove|refute	refute は「まちがいを証明する」、prove は「正しいと証明する」
+N	nevertheless|regardless	regardless は「それでもかまわず」（文の最後に置く）。nevertheless は「それにもかかわらず」
+N	anyway|regardless	regardless は「(反対などに)かまわず」。anyway は「とにかく」
+N	registration|sign-up	registration は正式な「登録」。sign-up は講座などへの「申しこみ」
+N	regrettable|unfortunate	regrettable は「残念な・遺憾な」かたい語。unfortunate は「運の悪い・残念な」
+N	fortunate|regrettable	regrettable は「残念な」、fortunate は「幸運な」
+N	regulatory|supervisory	regulatory は業界を「規制する」（a regulatory agency）。supervisory は「監督の」
+N	controlling|regulatory	regulatory は法で「取り締まる」。controlling は「支配する・管理する」
+N	refund|reimburse	reimburse は立て替えた費用を「払い戻す」。refund は代金を「返金する」
+N	reimburse|repay	reimburse は「経費を返す」。repay は借りたお金を「返済する」
+N	charge|reimburse	reimburse は「払い戻す」、charge は「請求する」
+I	reimburse|curr_idm_pre1_pay_back	pay back は借りたお金を「返す」話し言葉。reimburse は経費を「払い戻す」かたい語
+N	refund|reimbursement	reimbursement は立て替えた経費の「払い戻し」。refund は代金の「返金」
+N	charge|reimbursement	reimbursement は「払い戻し」、charge は「請求（額）」
+N	control|rein	rein は馬の「手綱」や、複数形で「統制・支配」（the reins of government）。control は「管理・統制」
+N	curb|rein	rein は「手綱で抑えること」。curb は「抑制」
+N	reinstate|restore	reinstate は解雇した人を「復職させる」や、制度を「元に戻す」。restore は「修復する・回復させる」
+N	reestablish|reinstate	reinstate は「元の地位に戻す」。reestablish は関係などを「再び築く」
+N	dismiss|reinstate	reinstate は「復職させる」、dismiss は「解雇する」
+N	reiterate|repeat	reiterate は大事なことを「くり返し言う」かたい語。repeat は「くり返す」
+N	reiterate|restate	reiterate は「重ねて言う」。restate は「言い方を変えて言い直す」
+N	celebrate|rejoice	rejoice は「大いに喜ぶ」（rejoice at the news）。celebrate は行事などで「祝う」
+N	delight|rejoice	rejoice は「心から喜ぶ」。delight は動詞で「大喜びさせる」
+N	rekindle|revive	rekindle は昔の気持ちを「再び燃え上がらせる」。revive は「よみがえらせる」
+N	reignite|rekindle	rekindle は「呼び覚ます」。reignite は争いなどに「再び火をつける」
+N	extinguish|rekindle	rekindle は「再び燃やす」、extinguish は「消す」
+N	relapse|setback	relapse は病気などの「ぶり返し」。setback は計画の「つまずき・後退」
+N	relaxation|rest	relaxation は心身の「くつろぎ」や規則の「緩和」。rest は「休息」
+N	relaxation|tension	relaxation は「くつろぎ」、tension は「緊張」
+N	artifact|relic	relic は昔の「遺物・遺品」や「名残」。artifact は人が作った「工芸品・遺物」
+N	relic|remnant	relic は「(昔の)遺物」。remnant は「残り・名残」
+N	relinquish|surrender	relinquish は権利などを「(しかたなく)手放す」。surrender は「引き渡す」や「降伏する」
+N	abandon|relinquish	relinquish は「手放す」。abandon は「見捨てる・放棄する」
+N	relinquish|retain	relinquish は「手放す」、retain は「持ち続ける」
+N	relish|savor	relish は機会などを「大いに楽しむ」。savor は味や時間を「じっくり味わう」
+N	enjoy|relish	relish は「心から楽しむ」。enjoy は「楽しむ」
+N	dread|relish	relish は「楽しみにする」、dread は「ひどく恐れる」
+N	move|relocation	relocation は会社などの「移転」や人の「転居」。move は「引っ越し」
+N	relocation|transfer	relocation は「移転・配置転換」。transfer は「転勤・移動」
+N	reluctance|unwillingness	reluctance は「気が進まないこと」。unwillingness は「やる気がないこと」
+N	eagerness|reluctance	reluctance は「気が進まないこと」、eagerness は「熱心さ」
+N	reluctantly|unwillingly	reluctantly は「しぶしぶ（でも最後はする）」。unwillingly は「いやいや」
+N	remarkably|strikingly	remarkably は「驚くほど」。strikingly は「目立って・際立って」
+N	remarkably|unremarkably	remarkably は「目立って」、unremarkably は「平凡に」
+N	cure|remedy	remedy は問題の「改善策」や病気の「治療法」。cure は病気を「治すもの」
+N	recall|reminisce	reminisce は楽しかった昔を「なつかしんで語る」。recall は「思い出す」
+N	recollect|reminisce	reminisce は「思い出にふける」。recollect は「思い出す」
+N	forget|reminisce	reminisce は「昔を思い出す」、forget は「忘れる」
+N	memory|reminiscence	reminiscence は昔の「思い出話」。memory は「記憶・思い出」
+N	remit|send	remit はお金を「送金する」かたい語。send は「送る」
+N	forward|remit	remit は「送金する」。forward はメールなどを「転送する」
+N	remit|withhold	remit は「送金する」、withhold は「支払いを差し控える」
+N	remittance|transfer	remittance は家族などへの「送金（額）」。transfer は銀行の「振り込み」
+N	contrition|remorse	remorse は悪いことをした「深い後悔・自責の念」。contrition は「悔い改め」
+N	indifference|remorse	remorse は「後悔の念」、indifference は「平気なこと・無関心」
+N	remorseful|repentant	remorseful は「後悔でいっぱいの」。repentant は「悔い改めた」
+N	contrite|remorseful	remorseful は「自分を責めている」。contrite は「深く反省した」かたい語
+N	remorseful|unrepentant	remorseful は「後悔した」、unrepentant は「反省しない」
+N	make|render	render は「(ある状態に)する」（render A speechless）かたい語。make は「〜にする」
+N	provide|render	render は助けなどを「与える」（render assistance）。provide は「提供する」
+N	depiction|rendering	rendering は絵や音楽の「表現・演奏」や「訳」。depiction は「描写」
+N	rendering|version	rendering は訳し方などの「解釈・訳」。version は「〜版」
+N	refurbishment|renovation	renovation は建物の「改修・修復」。refurbishment は内装の「改装」
+N	dilapidation|renovation	renovation は「改修」、dilapidation は「荒れ果てること」
+N	prestige|renown	renown は「名声・有名であること」（win renown）。prestige は地位による「威信」
+N	obscurity|renown	renown は「名声」、obscurity は「無名」
+N	famous|renowned	renowned は技などで「名高い」（renowned for）。famous は「有名な」
+N	renowned|unknown	renowned は「有名な」、unknown は「無名の」
+N	repairman|technician	repairman は家電などの「修理工」。technician は「技術者」
+N	reparation|restitution	reparation は戦争などの「賠償（金）」。restitution は盗んだ物などの「返還・弁償」
+N	injury|reparation	reparation は「償い」、injury は「損害・けが」
+N	repatriate|return	repatriate は人を「本国に帰す」。return は「帰る・返す」
+N	deport|repatriate	repatriate は自分の国の人を「帰国させる」。deport は外国人を「強制送還する」
+N	repatriation|return	repatriation は人の「本国への送還」。return は「帰還」
+N	deportation|repatriation	repatriation は「帰国させること」。deportation は「国外追放」
+N	exile|repatriation	repatriation は「本国への帰還」、exile は「国外への追放」
+N	contrite|repentant	repentant は「悔い改めた」。contrite は「深く反省した」
+N	repentant|unrepentant	repentant は「悔いている」、unrepentant は「反省しない」
+N	consequence|repercussion	repercussion は後から来る「(よくない)影響・反響」。consequence は「結果」
+N	effect|repercussion	repercussion は「余波」。effect は「影響・効果」
+N	reiteration|repetition	repetition は「くり返し」のふつうの語。reiteration は言葉の「反復」のかたい語
+N	repetitive|varied	repetitive は「くり返しの多い」、varied は「変化に富んだ」
+N	replacement|substitute	replacement は古いものの「取り替え・代わりの品」。substitute は一時的な「代用品・代理」
+N	replacement|successor	replacement は「交代要員・後任」。successor は地位を継ぐ「後継者」
+N	original|replacement	replacement は「取り替え品」、original は「元のもの」
+N	refill|replenish	replenish は減ったものを「補充する」かたい語。refill はコップなどを「満たし直す」
+N	replenish|restock	replenish は「補充する」と広く言う。restock は店の商品を「仕入れ直す」
+N	copy|replicate	replicate は実験などを「そっくり再現する」。copy は「写す・まねる」
+N	repose|tranquility	repose は「休息・安らぎ」の文学的な語。tranquility は「静けさ・平穏」
+N	agitation|repose	repose は「安らぎ」、agitation は「動揺」
+N	portrayal|representation	representation は「表現・描写」や「代表」。portrayal は人物の「描き方・演じ方」
+N	repress|suppress	repress は感情を「押し殺す」や、人々を「抑圧する」。suppress は「力で抑えこむ」
+N	repress|subdue	repress は「抑えつける」。subdue は「鎮める・征服する」
+I	repress|curr_idm_pre2_hold_back	hold back は涙などを「こらえる」話し言葉。repress は感情を「抑えこむ」かたい語
+I	repress|curr_idm_pre1_hold_down	hold down は人々を「抑えつける」や、物価を「抑える」。repress は「抑圧する」
+N	repression|suppression	repression は政府による「抑圧」や、感情の「抑えこみ」。suppression は反乱などの「鎮圧」
+N	liberation|repression	repression は「抑圧」、liberation は「解放」
+N	reprisal|retaliation	reprisal は攻撃などへの「報復」（for fear of reprisal）。retaliation も「仕返し・報復」
+N	reprisal|vengeance	reprisal は「報復措置」。vengeance は「復讐（心）」
+N	forgiveness|reprisal	reprisal は「報復」、forgiveness は「許し」
+N	rebuke|reproach	reproach は「とがめる・非難する」（悲しそうに責める感じ）。rebuke は「厳しく叱る」
+N	blame|reproach	reproach は相手の「行いをとがめる」。blame は「〜のせいにする」
+N	commend|reproach	reproach は「非難する」、commend は「ほめる」
+N	democratic|republican	republican は王のいない「共和制の」や、アメリカの「共和党の」。democratic は「民主的な」や「民主党の」
+N	monarchist|republican	republican は「共和制の」、monarchist は「王政を支持する」
+N	reputable|respectable	reputable は店などが「評判のよい・信頼できる」。respectable は「ちゃんとした・立派な」
+N	resemblance|similarity	resemblance は見た目の「似ていること」（bear a resemblance to）。similarity は「共通点・類似」
+N	difference|resemblance	resemblance は「似ていること」、difference は「ちがい」
+N	bitter|resentful	resentful は不公平に「恨みを持った」。bitter は「つらくてひねくれた・苦々しい」
+N	content|resentful	resentful は「恨んでいる」、content は形容詞では /kənˈtɛnt/ と読み「満ち足りた」
+N	live|reside	reside は「居住する」のかたい語。live は「住む」のふつうの語
+N	resilient|tough	resilient は困難から「立ち直る力のある」。tough は「打たれ強い」
+N	flexible|resilient	resilient は「すぐ元に戻る・弾力のある」。flexible は「曲げやすい・柔軟な」
+N	fragile|resilient	resilient は「立ち直りが早い」、fragile は「もろい」
+N	resistance|submission	resistance は「抵抗」、submission は「服従」
+N	firm|resolute	resolute は「決意がゆるがない」かたい語。firm は態度が「断固とした」
+N	irresolute|resolute	resolute は「断固とした」、irresolute は「決断できない」
+N	determinedly|resolutely	resolutely は「断固として」。determinedly は「決意して・きっぱりと」
+N	hesitantly|resolutely	resolutely は「断固として」、hesitantly は「ためらいながら」
+N	resolution|settlement	resolution は問題の「解決」や「決意」（New Year's resolution）。settlement は争いの「和解・決着」
+N	resonance|reverberation	resonance は音の「共鳴」や、言葉の「心に響く力」。reverberation は音の「反響・残響」
+N	echo|resonance	resonance は「響き・共鳴」。echo は山びこの「こだま」
+N	resonant|reverberating	resonant は声が「よく響く」。reverberating は音が「反響している」
+N	resonant|ringing	resonant は「深く響く」。ringing はベルなどが「鳴り響く」
+N	muffled|resonant	resonant は「よく響く」、muffled は「こもった」
+N	resonate|strike a chord	resonate は言葉が人の「心に響く」（resonate with）。strike a chord は「共感を呼ぶ」言い方
+N	echo|resound	resound は音が「鳴り響く・とどろく」。echo は「こだまする」
+N	resound|reverberate	resound は「響きわたる」。reverberate は音が「反響してとどろく」
+N	fade|resound	resound は「鳴り響く」、fade は音が「消えていく」
+N	propriety|respectability	respectability は世間からの「体面・まともさ」。propriety は「礼儀正しさ・ふさわしさ」
+N	disrepute|respectability	respectability は「世間体のよさ」、disrepute は「悪評」
+N	respectful|rude	respectful は「敬意のある」、rude は「失礼な」
+N	individually|respectively	respectively は「それぞれ（前に言った順に）」（first and second, respectively）。individually は「一人ずつ・個別に」
+N	respectively|separately	respectively は「それぞれ順に」。separately は「別々に」
+N	relaxing|restful	restful は場所などが「安らかな・休まる」。relaxing は「くつろがせる」
+N	peaceful|restful	restful は「落ち着いて休める」。peaceful は「平和な・静かな」
+N	restful|stressful	restful は「休まる」、stressful は「ストレスの多い」
+N	compensation|restitution	restitution は奪った物などの「返還・弁償」。compensation は損害の「補償」
+N	damage|restitution	restitution は「弁償」、damage は「損害」
+N	calm|restless	restless は「落ち着かない・そわそわした」、calm は「落ち着いた」
+I	restless|curr1900_idm_2_ill_at_ease	ill at ease は「居心地が悪くて落ち着かない」。restless は「じっとしていられない」
+N	agitation|restlessness	restlessness は「そわそわすること」。agitation は「動揺・興奮」
+N	restlessness|unease	restlessness は体が「じっとしていられないこと」。unease は心の「不安」
+N	calm|restlessness	restlessness は「落ち着きのなさ」、calm は「落ち着き」
+N	refill|restock	restock は棚に商品を「補充する」。refill は容器を「満たし直す」
+N	deplete|restock	restock は「補充する」、deplete は「使い減らす」
+N	confined|restricted	restricted は規則で「制限された」（restricted to residents）。confined は場所が「限られた・閉じこめられた」
+N	restricted|unrestricted	restricted は「制限された」、unrestricted は「制限のない」
+N	freedom|restriction	restriction は「制限」、freedom は「自由」
+N	restart|resumption	resumption は中断した物事の「再開」のかたい語。restart は機械などの「再始動」
+N	resumption|suspension	resumption は「再開」、suspension は「一時停止・中断」
+N	reserved|reticent	reticent は自分のことを「あまり話さない」。reserved は「控えめな・打ち解けない」
+N	reticent|taciturn	reticent は「口が重い」。taciturn は性格が「無口な」
+N	retirement|withdrawal	retirement は年齢などによる「退職・引退」。withdrawal は「撤退・引き下がること」
+N	resignation|retirement	retirement は定年などの「退職」。resignation は自分からの「辞職」
+N	employment|retirement	retirement は「退職」、employment は「雇われていること」
+N	reply|retort	retort は「すかさず言い返す」。reply は「返事をする」
+N	retort|snap back	retort は「鋭く言い返す」。snap back は「(怒って)言い返す」話し言葉
+N	punishment|retribution	retribution は悪い行いへの「当然の報い・天罰」。punishment は「罰」
+N	retribution|vengeance	retribution は「報い」。vengeance は「復讐」
+N	retribution|reward	retribution は「(悪い)報い」、reward は「ほうび」
+N	reflection|retrospect	retrospect は in retrospect で「振り返ってみると」。reflection は「よく考えること・振り返り」
+N	foresight|retrospect	retrospect は「振り返ること」、foresight は「先を見通すこと」
+N	renovate|revamp	revamp はメニューなどを「刷新する・作り直す」。renovate は建物を「改修する」
+N	preserve|revamp	revamp は「一新する」、preserve は「そのまま保つ」
+N	fade|reverberate	reverberate は音が「響きわたる」、fade は「消えていく」
+N	revere|worship	revere は人を「深く尊敬する・あがめる」。worship は神を「崇拝する」
+N	revere|venerate	revere は「敬う」。venerate は聖人などを「崇敬する」かたい語
+N	despise|revere	revere は「あがめる」、despise は「軽蔑する」
+N	reverence|veneration	reverence は「深い敬意・畏敬（いけい）」。veneration は聖なるものへの「崇敬」
+N	contempt|reverence	reverence は「敬う心」、contempt は「軽蔑」
+N	respectful|reverent	reverent は神聖なものに「うやうやしい」。respectful は人に「敬意を払う」
+N	irreverent|reverent	reverent は「うやうやしい」、irreverent は「不敬な・ふざけた」
+N	reversal|turnaround	reversal は形勢などの「逆転」や決定の「取り消し」。turnaround は業績などの「好転」
+N	about-face|reversal	reversal は「逆転」。about-face は意見などの「180度の転換」
+N	continuation|reversal	reversal は「逆転」、continuation は「そのまま続くこと」
+N	critic|reviewer	reviewer は本や映画の「評者」。critic は「批評家」や「批判する人」
+N	evaluator|reviewer	reviewer は作品を「批評する人」。evaluator は「評価する人」
+N	rejuvenate|revitalize	revitalize は町などに「活気を取り戻させる」。rejuvenate は人を「若返らせる」
+N	reinvigorate|revitalize	revitalize は「再生させる」。reinvigorate は「再び元気づける」
+N	deaden|revitalize	revitalize は「活気づける」、deaden は「活気を失わせる」
+N	groundbreaking|revolutionary	revolutionary は「革命的な・画期的な」。groundbreaking は研究などが「新しい道を開く」
+N	radical|revolutionary	revolutionary は社会を「根本から変える」。radical は考えが「急進的な」
+N	conventional|revolutionary	revolutionary は「画期的な」、conventional は「従来の」
+N	repulsion|revulsion	revulsion は「強い嫌悪・吐き気がするほどのいや気」。repulsion は「嫌悪」や物理の「反発」
+N	attraction|revulsion	revulsion は「嫌悪」、attraction は「引きつけられること」
+N	fortune|riches	riches は「財宝・富」（複数形）。fortune は「財産」や「運」
+N	rickety|wobbly	rickety は古くて「がたがたの・ぐらつく」。wobbly は「ぐらぐら揺れる」
+N	rickety|shaky	rickety は作りが「がたがたの」。shaky は「揺れる・不安定な」
+N	rickety|sturdy	rickety は「ぐらつく」、sturdy は「頑丈な」
+N	crest|ridge	ridge は山の「尾根」や細長い「盛り上がり」。crest は山や波の「てっぺん」
+D	ridge	syn	ribbon	ribbon は「リボン」や「細長い帯」で、尾根や隆起の意味はない
+N	ridge|valley	ridge は「尾根」、valley は「谷」
+N	righteous|virtuous	righteous は「正義感の強い」（righteous anger）。virtuous は「徳の高い」
+N	righteous|upright	righteous は「正しい」。upright は「正直な・まっすぐな」
+N	righteous|sinful	righteous は「正しい・高潔な」、sinful は「罪深い」
+N	rigidity|stiffness	rigidity は材料の「曲がらない硬さ」や、考えの「融通のなさ」。stiffness は体などの「こわばり」
+N	inflexibility|rigidity	rigidity は「硬直性」。inflexibility は「融通のきかなさ」
+N	agitator|rioter	rioter は暴動に「加わった人・暴徒」。agitator は人々を「あおる扇動者」
+N	protester|rioter	rioter は暴れる「暴徒」。protester は「抗議する人」
+N	peacemaker|rioter	rioter は「暴徒」、peacemaker は「争いをしずめる人」
+N	contention|rivalry	rivalry は「競争関係・ライバル関係」。contention は「争い・張り合い」
+N	cooperation|rivalry	rivalry は「対立・競争」、cooperation は「協力」
+N	automated|robotic	robotic は声などが「ロボットのような」や「ロボットの」。automated は作業が「自動化された」
+N	natural|robotic	robotic は「機械的な」、natural は「自然な」
+N	rookie|veteran	rookie は「新人」、veteran は「ベテラン」
+N	capacious|roomy	roomy は「広々とした」話し言葉。capacious はかばんなどが「たくさん入る」かたい語
+N	cramped|roomy	roomy は「ゆったりした」、cramped は「窮屈な」
+N	circuitous|roundabout	roundabout は道や言い方が「遠回りの」。circuitous は「回りくどい」かたい語
+N	direct|roundabout	roundabout は「遠回しの」、direct は「まっすぐの」
+N	ruined|wrecked	ruined は建物が「崩れて廃墟になった」や、人が「破滅した」。wrecked は「めちゃめちゃに壊れた」
+N	intact|ruined	ruined は「荒れ果てた」、intact は「無傷の」
+N	rural|rustic	rustic は家などが「田舎風で素朴な」（よい意味）。rural は「田舎の・農村の」
+N	rustic|urban	rustic は「田舎風の」、urban は「都会の」
+N	brutal|ruthless	ruthless は目的のために「情け容赦のない」。brutal は「残忍な」
+N	merciful|ruthless	ruthless は「無慈悲な」、merciful は「情け深い」
+N	profane|sacred	sacred は「神聖な」、profane は「神をけがす・世俗の」
+N	safeguard|threat	safeguard は「守るもの・安全策」、threat は「脅威」
+N	rescue|salvage	salvage は災害などから物を「持ち出して救う」。rescue は人を「救助する」
+N	recover|salvage	salvage は沈没船などから「引き揚げる」。recover は「取り戻す・回収する」
+N	discard|salvage	salvage は「救い出す」、discard は「捨てる」
+N	damnation|salvation	salvation は「救い」、damnation は「地獄落ち」
+N	sameness|uniformity	sameness は「どれも同じで単調なこと」。uniformity は「均一であること」
+N	sameness|variety	sameness は「単調さ」、variety は「変化・多様さ」
+N	refuge|sanctuary	sanctuary は「聖域」や、動物の「保護区」。refuge は危険から逃れる「避難所」
+N	hygienic|sanitary	sanitary は下水などの「公衆衛生の」や「衛生的な」。hygienic は「衛生的な・清潔な」
+N	clean|sanitary	sanitary は「(病気を防ぐ)衛生的な」。clean は「きれいな」
+N	sanitary|unsanitary	sanitary は「衛生的な」、unsanitary は「不衛生な」
+N	mockery|sarcasm	sarcasm は反対のことを言う「いやみ・皮肉」。mockery は「あざけり」
+N	sarcasm|sincerity	sarcasm は「皮肉」、sincerity は「誠実さ」
+N	mocking|sarcastic	sarcastic は言葉が「皮肉な・いやみな」。mocking は「ばかにしたような」
+N	sarcastic|sincere	sarcastic は「皮肉な」、sincere は「心からの」
+N	adequate|satisfactory	satisfactory は「満足のいく・申し分のない」。adequate は「十分な・まずまずの」
+N	acceptable|satisfactory	satisfactory は「期待を満たす」。acceptable は「受け入れられる（程度の）」
+N	satisfactory|unsatisfactory	satisfactory は「満足のいく」、unsatisfactory は「不満足な」
+N	fullness|saturation	saturation は「これ以上入らない状態・飽和」。fullness は「満ちていること」
+N	saturation|soaking	saturation は土などが「水を吸いきった状態」。soaking は「ずぶぬれ」
+N	dryness|saturation	saturation は「飽和」、dryness は「乾燥」
+N	ferocious|savage	savage は「どう猛な」や「野蛮な」、批判が「猛烈な」。ferocious は動物が「獰猛（どうもう）な」
+N	brutal|savage	savage は「凶暴な」。brutal は「残忍な」
+N	gentle|savage	savage は「凶暴な」、gentle は「おとなしい」
+N	gently|savagely	savagely は「凶暴に」、gently は「やさしく」
+N	enjoy|savor	savor は料理や時間を「じっくり味わう」。enjoy は「楽しむ」
+N	savvy|shrewd	savvy は機械などに「くわしくて抜け目のない」くだけた語。shrewd は「目先のきく・抜け目のない」
+N	knowledgeable|savvy	savvy は「実際にうまく使いこなす」。knowledgeable は「知識の豊かな」
+N	naive|savvy	savvy は「世慣れた」、naive は「世間知らずの」
+N	scam|swindle	scam は「詐欺」のくだけた語（phone scam）。swindle は「(お金の)詐取」
+N	meager|scant	scant は証拠などが「ほとんどない」（scant evidence）。meager は量が「乏しい」
+N	ample|scant	scant は「わずかな」、ample は「たっぷりの」
+N	scanty|sparse	scanty は量が「足りない」（scanty rainfall）。sparse は「まばらな」
+N	abundant|scanty	scanty は「乏しい」、abundant は「豊富な」
+N	scarcity|shortage	scarcity は資源などが「もともと少ないこと」。shortage は必要な量の「不足」
+N	lack|scarcity	scarcity は「乏しさ」。lack は「欠けていること」
+N	aroma|scent	scent は花などの「よい香り」や、動物の「におい（の跡）」。aroma は料理などの「芳香」
+N	scent|stench	scent は「よい香り」、stench は「悪臭」
+N	plan|scheme	scheme はイギリス英語で公の「計画」、アメリカ英語では「たくらみ」の意味が強い。plan は「計画」
+N	cunning|scheming	scheming は「陰でたくらむ」。cunning は「ずる賢い」
+N	calculating|scheming	scheming は「悪だくみをする」。calculating は「打算的な」
+N	honest|scheming	scheming は「たくらむ」、honest は「正直な」
+N	erudite|scholarly	scholarly は論文などが「学問的な」や、人が「学者らしい」。erudite は「博識な」かたい語
+N	scholarly|unscholarly	scholarly は「学術的な」、unscholarly は「学問的でない」
+N	admire|scorn	scorn は「見下してばかにする」、admire は「感心する」
+N	contemptuous|scornful	scornful は「軽蔑したような」（a scornful look）。contemptuous は「さげすんだ」
+N	derisive|scornful	scornful は「見下した」。derisive は「あざ笑うような」
+N	respectful|scornful	scornful は「軽蔑した」、respectful は「敬意のある」
+N	affliction|scourge	scourge は人々を苦しめる「災い（のもと）」。affliction は「苦しみ・病気」
+N	blessing|scourge	scourge は「災い」、blessing は「恵み」
+N	scowl|smile	scowl は「顔をしかめる」、smile は「ほほえむ」
+N	scenario|screenplay	screenplay は映画の「脚本」。scenario は「あらすじ」や「想定される状況」
+N	screwdriver|tool	screwdriver は「ねじ回し」。tool は「道具」全体
+N	examine|scrutinize	scrutinize は「細かく丹念に調べる」。examine は「調べる」
+N	inspect|scrutinize	scrutinize は書類などを「じっくり精査する」。inspect は「点検する・視察する」
+N	artist|sculptor	sculptor は「彫刻家」。artist は「芸術家・画家」全体

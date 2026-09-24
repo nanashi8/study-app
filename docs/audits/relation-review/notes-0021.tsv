@@ -1,0 +1,307 @@
+N	patch|plot	patch は畑などの「小さな一区画」（a vegetable patch）。plot は家を建てる土地などの「区画」や、物語の「筋」
+N	mend|patch	patch は穴に布を当てる「継ぎ当て」や、ソフトの「修正」。mend は壊れた物を「直す」
+N	pathogen|virus	pathogen は病気を起こす「病原体」全体（細菌もウイルスも入る）。virus は病原体の一種の「ウイルス」
+N	halt|pause	pause は少しの間「止まる・間を置く」（また続ける）。halt は「完全に止まる・止める」
+N	hesitate|pause	pause は話や動きを「いったん止める」。hesitate は迷って「ためらう」
+N	continue|pause	pause は「いったん止まる」、continue は「続ける」
+N	pave|surface	pave は道を「舗装する」（pave the way で「道を開く」）。surface は動詞で道の表面を「舗装する」かたい語
+N	farmer|peasant	peasant は昔の貧しい「小作農・農民」。farmer は今の「農場主・農家」
+N	peasant|serf	peasant は「小作農」。serf は土地にしばられた中世の「農奴」
+N	noble|peasant	peasant は「農民」、noble は名詞で「貴族」
+N	pebble|stone	pebble は川原などの丸い「小石」。stone は「石」と広く言う
+N	gravel|pebble	pebble は一つひとつの「小石」。gravel は道にまく「砂利」（数えない）
+N	lever|pedal	pedal は足でふむ「ペダル」。lever は手で動かす「レバー・てこ」
+N	peg|pin	peg は物を掛ける「掛けくぎ」や、テントの「くい」。pin は紙などを留める「ピン」
+N	penalize|punish	penalize は規則違反に「ペナルティを科す」。punish は悪いことをした人を「罰する」
+N	penalize|sanction	penalize は「罰則を科す」。sanction は国などに「制裁を科す」（「認可する」の意味もある）
+N	penalize|reward	penalize は「罰する」、reward は「ほうびを与える」
+N	awareness|perception	perception は目や耳で「感じとること・知覚」や、ものの「見方」。awareness は「気づいていること・意識」
+N	perch|roost	perch は鳥が枝などに「止まる」や、人が高い所に「ちょこんと座る」。roost は鳥が「ねぐらで休む」
+N	perch|rest	perch は鳥が「止まる」。rest は「休む」と広く言う
+N	peripheral|secondary	peripheral は「周辺の」や、重要でない「二次的な」。secondary は「二番目の・副次的な」
+N	marginal|peripheral	peripheral は中心から離れた「周辺の」（peripheral vision）。marginal は「わずかな」や、社会の「周辺の」
+N	permeate|pervade	permeate は水やにおいが「しみこむ・浸透する」。pervade は考えなどが「全体に行き渡る」
+N	permeate|saturate	permeate は「しみ通る」。saturate は「(これ以上入らないほど)びっしょり浸す」
+N	permit|prohibit	permit は「許可する」、prohibit は「禁止する」
+N	constant|perpetual	perpetual は「いつまでも続く・絶え間ない」（perpetual fear）。constant は「一定の」や「絶え間ない」
+N	eternal|perpetual	perpetual は「延々と続く」（うんざりする感じもある）。eternal は「永遠の」
+N	perpetual|temporary	perpetual は「永続的な」、temporary は「一時的な」
+N	bewilder|perplex	perplex は難しくて「頭を悩ませる」。bewilder は訳が分からず「まごつかせる」
+N	enlighten|perplex	perplex は「当惑させる」、enlighten は「分からせる」
+N	persecute|torment	persecute は信仰などを理由に「迫害する」。torment は心や体を「苦しめる」
+N	persevere|persist	persevere は困難にめげず「辛抱強く続ける」（よい意味）。persist は「しつこく続ける」（よい意味にも悪い意味にも）
+N	endure|persevere	persevere は目標に向けて「がんばり続ける」。endure は痛みなどに「耐える」
+N	persevere|quit	persevere は「やり抜く」、quit は「やめる」
+N	character|personality	personality は人の「性格・個性」（明るい・人なつこいなど）。character は人の「人柄」（正直などの道徳面）や、物語の「登場人物」
+N	nature|personality	personality は「性格」。nature は生まれつきの「性質」や「自然」
+N	cynicism|pessimism	pessimism は先のことを悪く考える「悲観」。cynicism は人の善意を信じない「冷笑・皮肉」
+N	gloom|pessimism	pessimism は考え方としての「悲観」。gloom は気分の「憂うつ」や「薄暗さ」
+N	defeatist|pessimist	pessimist は何でも悪く考える「悲観的な人」。defeatist は初めから負けると決めつける「あきらめ屋」
+N	pest|vermin	pest は作物を荒らす「害虫・害獣」や「やっかい者」。vermin はネズミなどの「害獣」
+N	nuisance|pest	pest は「うるさい人・害虫」。nuisance は「迷惑なこと・もの」
+N	leaf|petal	petal は花の「花びら」。leaf は植物の「葉」（花びらとは別）
+N	drugstore|pharmacy	pharmacy は薬剤師のいる「薬局」。drugstore はアメリカ英語で日用品も売る「ドラッグストア」
+N	chemist|pharmacy	pharmacy は「薬局」。chemist はイギリス英語で「薬局（の人）」（the chemist's）や「化学者」
+N	pier|wharf	pier は海に突き出た「桟橋」。wharf は荷を積み下ろす「埠頭（ふとう）」
+N	jetty|pier	pier は「桟橋」。jetty は波を防ぐ「突堤」や小さな「船着き場」
+N	hole|pit	pit は地面の深い「穴・くぼみ」。hole は「穴」と広く言う
+N	hollow|pit	pit は掘った「穴」。hollow は地面などの「くぼみ」
+N	board|plank	plank は床などに使う厚い「板」。board は「板」と広く言う
+N	beam|plank	plank は横に渡す「厚い板」。beam は建物を支える「はり」
+N	plow|till	plow はすきで畑を「耕す」。till は「耕す」の古い言い方
+N	cultivate|plow	plow は畑を「すきで耕す」。cultivate は作物を「育てる」や畑を「耕す」
+N	fitter|plumber	plumber は水道管を直す「配管工」。fitter はガスや機械を「取り付ける作業員」
+N	chubby|plump	plump は「ふっくらした」（トマトなどにも使う）。chubby は子どもなどが「ぽっちゃりした」
+N	plump|round	plump は「丸々とした」。round は形が「丸い」
+N	poke|prod	poke は指や棒で「つつく」。prod は「小突く」や、人を「せかす」
+N	jab|poke	poke は「つつく」。jab はすばやく「突く」（ボクシングのジャブ）
+N	polish|shine	polish は布でこすって「磨く」。shine は「輝く」や、くつを「磨いて光らせる」
+N	buff|polish	polish は「磨く」のふつうの語。buff は柔らかい布で「つやを出す」
+N	polish|tarnish	polish は「磨く」、tarnish は金属を「くすませる」
+N	porch|veranda	porch は玄関の前の屋根つきの「ポーチ」。veranda は家の外側にそって続く「ベランダ・縁側」
+N	porch|portico	porch は玄関の「ポーチ」。portico は柱の並んだ大きな「玄関の屋根」
+N	ceramics|pottery	pottery は土をこねて焼いた「陶器」や「陶芸」。ceramics は陶器・磁器などの「焼き物」全体
+N	earthenware|pottery	pottery は「陶器」全体。earthenware は低い温度で焼いた「土器・素焼き」
+N	fowl|poultry	poultry は鶏・アヒルなどの「家禽（かきん）」や「鶏肉」（まとめて言う）。fowl は「鳥・家禽（かきん）」の古い言い方
+N	chicken|poultry	poultry は鶏やアヒルなどをまとめて言う語。chicken は「ニワトリ」や「鶏肉」
+N	need|poverty	poverty は「貧困」。need は名詞で「困っていること」（in need）
+N	poverty|riches	poverty は「貧しさ」、riches は「富」
+N	follow|precede	precede は「〜より前に来る・先立つ」、follow は「〜の後に続く」
+N	predecessor|successor	predecessor は「前任者」、successor は「後任者」
+N	predictable|unpredictable	predictable は「予想どおりの」、unpredictable は「予想できない」
+N	bias|prejudice	prejudice は人種などへの「偏見」（よく知らずに嫌う）。bias は「かたより・ひいき」
+N	initial|preliminary	preliminary は本番の前の「予備の・準備の」（preliminary results）。initial は「最初の」
+N	final|preliminary	preliminary は「予備の・予選の」、final は「最終の・決勝の」
+N	condition|prerequisite	prerequisite は前もって満たすべき「前提条件」。condition は「条件」と広く言う
+N	assume|presume	presume はある程度の根拠で「〜だろうと思う」。assume は証拠なしに「思いこむ・仮定する」
+N	presume|suppose	presume は「推定する」のかたい語。suppose は「〜だと思う」のふつうの語
+N	declare|proclaim	proclaim は公に「宣言する・布告する」かたい語。declare は「宣言する」や、税関で「申告する」
+N	announce|proclaim	proclaim は王や国が「公式に宣言する」。announce は「発表する・知らせる」
+N	obtain|procure	procure は苦労して「調達する」かたい語。obtain は「手に入れる」
+N	acquire|procure	procure は物資を「調達する」。acquire は知識などを「身につける」や、物を「手に入れる」
+N	occupation|profession	profession は医者や教師など専門知識のいる「職業」。occupation は「職業」と広く言う
+N	brief|prolonged	prolonged は「長引いた」、brief は「短い」
+N	drive|propel	propel は船などを「前に進める」や、人を「駆り立てる」。drive は「動かす・運転する」
+N	propel|push	propel は「推進する」のかたい語。push は「押す」
+I	propose|curr_idm_2_bring_forward	bring forward は案を「出す」や、日程を「早める」。propose は「提案する」
+I	propose|curr_idm_pre1_put_forward	put forward は案や候補を「出す」。propose は「提案する」や、結婚を「申し込む」
+N	charge|prosecute	prosecute は検察が「起訴する」。charge は警察などが「告発する・容疑をかける」
+N	defend|prosecute	prosecute は「起訴する（罪を責める）」、defend は「弁護する」
+N	parochial|provincial	provincial は「地方の」や、考えが「視野のせまい」。parochial は「自分の周りのことしか考えない」かたい語
+N	insular|provincial	provincial は「田舎くさい・視野のせまい」。insular は「島国的な・閉鎖的な」
+N	cosmopolitan|provincial	provincial は「視野のせまい・地方の」、cosmopolitan は「国際的な・世界に開かれた」
+I	provoke|idm_bring_about	bring about は変化などを「もたらす」。provoke は怒りなどを「引き起こす」や、人を「挑発する」
+N	caution|prudence	prudence は先を考えた「思慮深さ・用心深さ」（お金の使い方など）。caution は危険への「用心」
+N	discretion|prudence	prudence は「慎重さ」。discretion は言動の「慎み・分別」や、判断をまかされる「裁量」
+N	prudence|recklessness	prudence は「慎重さ」、recklessness は「無謀さ」
+N	heartbeat|pulse	pulse は手首などで測る「脈拍」。heartbeat は心臓の「鼓動」
+N	pulse|throb	pulse は規則正しい「脈」。throb は痛みなどの「ずきずきする鼓動」
+N	baffling|puzzling	puzzling は「分からなくて首をかしげる」。baffling は「まったく訳が分からない」と強い
+N	perplexing|puzzling	puzzling は「不思議な・分からない」。perplexing は「困ってしまうほど分かりにくい」
+N	clear|puzzling	puzzling は「分かりにくい」、clear は「分かりやすい」
+N	extinguish|quench	quench はのどの渇きを「いやす」や、火を「消す」。extinguish は火を「消す」のかたい語
+N	quench|satisfy	quench はのどの渇きを「いやす」（quench one's thirst）。satisfy は欲求などを「満たす」
+N	ignite|quench	quench は火を「消す」、ignite は「火をつける」
+I	quench|curr_idm_pre2_put_out	put out は火を「消す」の話し言葉。quench は火を「消す」や、渇きを「いやす」
+N	feather|quill	quill は昔の「羽ペン」や、太い羽の「軸」。feather は「羽根」と広く言う
+N	pen|quill	quill は羽で作った昔の「羽ペン」。pen は「ペン」と広く言う
+N	blanket|quilt	quilt は布の間に綿を入れて縫った「キルト・掛け布団」。blanket は毛などで織った「毛布」
+N	comforter|quilt	quilt は「キルトの掛け布団」。comforter はアメリカ英語で厚い「掛け布団」
+N	cite|quote	quote は人の言葉を「そのまま引用する」。cite は根拠として本などを「挙げる」
+N	excerpt|quote	quote は言葉を「引用する」。excerpt は名詞で本などの「抜粋」
+N	rack|shelf	rack は物を掛けたり置いたりする「棚・ラック」（網棚など）。shelf は板の「棚」
+N	rack|stand	rack は「掛け台・棚」。stand は物を立てる「台」
+I	radiate|curr_idm_2_give_off	give off はにおいや熱を「出す」話し言葉。radiate は熱や光を「放つ」や、喜びなどが「あふれ出る」
+N	radiation|rays	radiation は「放射線・放射」（数えない）。rays は一本一本の「光線・放射線」
+N	float|raft	raft は丸太などで作った「いかだ」。float は水に浮く「浮き」
+N	cloth|rag	rag は古い「ぼろ切れ・ぞうきん」。cloth は「布」と広く言う
+N	rag|tatter	rag は「ぼろ切れ」。tatter は複数形で「ぼろぼろの布」（in tatters）
+N	bar|rail	rail は手すりやカーテンの「横棒」や鉄道の「レール」。bar は「棒・かんぬき」
+N	rail|track	rail は1本の「レール」や「鉄道」（by rail）。track は2本のレールでできた「線路」
+N	farm|ranch	ranch は牛などを放牧する大きな「牧場」。farm は作物や家畜を育てる「農場」
+N	estate|ranch	ranch はアメリカなどの大きな「牧場」。estate は大きな屋敷のある「地所」や「財産」
+N	arbitrarily|randomly	randomly は「無作為に・でたらめに」。arbitrarily は理由なく「勝手に決めて」
+N	haphazardly|randomly	randomly は「無作為に」。haphazardly は計画なしに「行き当たりばったりに」
+N	randomly|systematically	randomly は「無作為に」、systematically は「体系立てて」
+I	randomly|curr_idm_2_at_random	at random は「無作為に・手当たり次第に」。randomly は同じ意味の副詞
+N	approve|ratify	ratify は条約などを正式に「批准する」。approve は計画などを「承認する」
+N	confirm|ratify	ratify は議会などが正式に「承認する」。confirm は予約などを「確認する」
+N	ratify|reject	ratify は「批准する」、reject は「拒否する」
+N	proportion|ratio	ratio は2つの数の「比」（3 to 2）。proportion は全体の中の「割合」
+N	react|reply	react は出来事に「反応する」（react to）。reply は質問や手紙に「返事をする」
+N	raise|rear	rear は子どもや動物を「育てる」かたい語。raise は「育てる」のふつうの語で、「上げる」の意味もある
+N	rearing|upbringing	rearing は子や家畜を「育てること・飼育」。upbringing は子どもの「しつけ・育ち」
+N	breeding|rearing	rearing は「育てること」。breeding は動物を「繁殖させること」
+N	rebel|revolt	rebel は権力などに「反抗する」。revolt は大勢で「反乱を起こす」
+N	rebellion|revolt	rebellion は政府への「反乱」や、親などへの「反抗」。revolt は「反乱・暴動」
+N	rebellion|uprising	rebellion は組織だった「反乱」。uprising は民衆の「蜂起」
+N	reboot|restart	reboot はパソコンを「再起動する」。restart は「再び始める」と広く言う
+N	recall|remember	recall は努力して「思い出す」や、製品を「回収する」かたい語。remember は「覚えている・思い出す」
+N	recall|recollect	recall は「思い出す」。recollect は昔のことを「(努力して)思い起こす」
+N	forget|recall	recall は「思い出す」、forget は「忘れる」
+N	recap|summarize	recap は話の要点を「おさらいする」くだけた語。summarize は「要約する」
+N	recap|review	recap は要点を「手短にくり返す」。review は内容を「見直す・復習する」
+I	recap|curr1900_idm_2_sum_up	sum up は「要点をまとめる」。recap は要点を「おさらいする」くだけた語
+N	recede|retreat	recede は水などが「引いていく・遠ざかる」。retreat は軍隊などが「退却する」
+N	recede|withdraw	recede は「遠のく」。withdraw は自分から「引き下がる・手を引く」
+N	advance|recede	recede は「引く・遠ざかる」、advance は「進む」
+N	careless|reckless	reckless は危険を気にしない「無謀な」。careless は注意が足りない「不注意な」
+N	cautious|reckless	reckless は「無謀な」、cautious は「慎重な」
+N	reconcile|settle	reconcile はけんかした人を「仲直りさせる」や、考えを「両立させる」。settle は争いを「解決する」
+N	harmonize|reconcile	reconcile は対立するものを「調和させる」。harmonize は色や音が「調和する」
+N	reconsider|rethink	reconsider は決定を「もう一度考え直す」。rethink は計画を「根本から考え直す」
+N	reconsider|review	reconsider は「考え直す」。review は内容を「見直す・検討する」
+I	reconsider|curr1900_idm_pre1_think_again	think again は「考え直す」の話し言葉。reconsider は「再考する」のかたい語
+N	get better|recover	recover は病気から「回復する」や、物を「取り戻す」。get better は「(体調が)よくなる」の話し言葉
+N	recover|recuperate	recover は「回復する」と広く言う。recuperate は病気のあと「体力を取り戻す」かたい語
+I	recover|curr_idm_4_get_back	get back は物を「取り戻す」や「戻る」話し言葉。recover は「取り戻す・回復する」
+I	recover|curr_idm_4_get_well	get well は病気が「よくなる」（Get well soon!）。recover は「回復する」
+I	recover|idm_get_over	get over は病気やショックから「立ち直る」。recover は「回復する」
+N	hiring|recruitment	recruitment は人を集める「募集・採用」の活動全体。hiring は実際に「雇うこと」
+N	enlistment|recruitment	recruitment は会社などの「採用」。enlistment は軍隊への「入隊」
+N	dismissal|recruitment	recruitment は「採用」、dismissal は「解雇」
+N	reappear|recur	recur は病気や問題が「再発する・くり返し起こる」。reappear は「再び現れる」
+N	recur|repeat	recur は問題が「くり返し起こる」（自分から起きる）。repeat は人が「くり返す」
+N	recover|redeem	redeem は質に入れた物などを「買い戻す」や、失敗を「埋め合わせる」。recover は「取り戻す」
+N	atone|redeem	redeem は失敗を「挽回する（ばんかいする）」。atone は罪を「償う」（atone for）
+N	forfeit|redeem	redeem は「取り戻す・挽回（ばんかい）する」、forfeit は罰として「失う」
+N	redirect|reroute	redirect はメールや関心を「向け直す・転送する」。reroute は交通や荷物の「道筋を変える」
+N	redo|repeat	redo は「やり直す・作り直す」。repeat は「くり返す」
+N	redo|revise	redo は初めから「やり直す」。revise は部分的に「手直しする」
+N	redo|undo	redo は「やり直す」（パソコンでは取り消した操作を「やり直す」）、undo は「取り消す」
+N	abundant|redundant	redundant は「余分で要らない・冗長な」（悪い意味）や、イギリス英語で「解雇された」。abundant は「たっぷりある・豊富な」（よい意味）
+M	reef	syn	ridge	海底の盛り上がり
+N	reef|ridge	reef は海面近くの「岩礁・サンゴ礁」。ridge は山の「尾根」や、海底などの細長い「盛り上がり」
+N	reef|shoal	reef は岩やサンゴの「礁」。shoal は砂の「浅瀬」
+N	refinement|sophistication	refinement は話し方などの「上品さ」や、細かな「改良」。sophistication は「洗練」や、機械の「精巧さ」
+N	improvement|refinement	refinement は細部を整える「改良・手直し」。improvement は「改善・上達」と広く言う
+N	crudeness|refinement	refinement は「上品さ・洗練」、crudeness は「粗野」
+N	mirror|reflect	reflect は鏡や水が「映す」や、結果などが「反映する」。mirror は動詞で「そっくり映す」
+N	ponder|reflect	reflect は「じっくり考える・振り返る」（reflect on）。ponder は「あれこれ考える」
+N	improve|reform	reform は制度などを「改革する」。improve は「よくする・上達する」と広く言う
+N	reform|revise	reform は制度を「改革する」。revise は文章や計画を「見直して直す」
+N	preserve|reform	reform は「改革する」、preserve は今のまま「保つ」
+N	enroll|register	register は名前を「登録する」と広く言う。enroll は学校や講座に「入学・登録する」
+N	decline|reject	reject は案などを「はねつける・却下する」と強い。decline は招待などを「ていねいに断る」
+I	reject|curr_idm_pre1_throw_out	throw out は案などを「却下する」や、物を「捨てる」話し言葉。reject は「拒否する」
+I	reject|curr_idm_pre2_turn_down	turn down は申し出を「断る」話し言葉。reject は「拒否する・却下する」と強い
+N	connect|relate	relate は2つのことを「関連づける」（relate A to B）。connect は物を「つなぐ」
+N	associate|relate	relate は理屈で「関係づける」。associate は頭の中で「結びつけて考える」
+N	refer|relate	relate は「関係がある」（relate to）や、話を「語る」。refer は「言及する」（refer to）
+N	relate|separate	relate は「関係づける」、separate は「切り離す」
+N	persistent|relentless	relentless は「容赦のない・手をゆるめない」。persistent は「しつこい・根気強い」
+N	relentless|unyielding	relentless は攻めが「絶え間ない」。unyielding は「屈しない・曲げない」
+N	merciful|relentless	relentless は「容赦のない」、merciful は「情け深い」
+N	reliability|validity	reliability は何度測っても同じ結果が出る「信頼性」。validity は測りたいものを正しく測れる「妥当性」
+N	depend|rely	rely は「頼る・当てにする」（rely on）。depend は「頼る」や「〜次第である」（depend on）
+N	distrust|rely	rely は「頼る」、distrust は「信用しない」
+I	rely|curr_idm_2_count_on	count on は「当てにする」の話し言葉。rely on は「頼る・当てにする」
+I	rely|idm_depend_on	depend on は「頼る」や「〜次第だ」。rely on は信頼して「頼る」
+I	remind|curr_idm_3_bring_back	bring back は思い出を「よみがえらせる」（bring back memories）。remind は人に「思い出させる」（remind A of B）
+N	relinquish|renounce	renounce は権利などを「正式に捨てる」。relinquish は持っていたものを「手放す」
+N	abandon|renounce	renounce は信念や権利を「放棄すると宣言する」。abandon は人や物を「見捨てる・放り出す」
+N	claim|renounce	renounce は権利を「放棄する」、claim は権利を「主張する」
+I	renounce|idm_give_up	give up は「あきらめる・やめる」と広く言う。renounce は権利などを「正式に放棄する」
+N	refurbish|renovate	renovate は古い建物を「改修する」。refurbish は内装などを「改装する・一新する」
+N	remodel|renovate	renovate は「修理して新しくする」。remodel は間取りなどを「作り変える」
+N	neglect|renovate	renovate は「改修する」、neglect は「ほったらかす」
+N	abolish|repeal	repeal は法律を「廃止する」（議会が取り消す）。abolish は制度そのものを「なくす」
+N	repeal|revoke	repeal は法律を「廃止する」。revoke は免許などを「取り消す」
+N	enact|repeal	repeal は法律を「廃止する」、enact は法律を「制定する」
+I	repeal|idm_do_away_with	do away with は制度などを「なくす」話し言葉。repeal は法律を「廃止する」
+N	drive back|repel	repel は敵を「追い払う」や、水を「はじく」。drive back は「押し返す」
+N	repel|ward off	repel は「撃退する・はじく」。ward off は危険や病気を「寄せつけない」
+N	attract|repel	repel は「はねつける」、attract は「引きつける」
+I	repel|curr_idm_1_fend_off	fend off は攻撃や質問を「かわす」。repel は「撃退する」
+N	deterrent|repellent	repellent は虫などを「寄せつけない薬」（insect repellent）。deterrent は悪いことを「思いとどまらせるもの」
+N	attractant|repellent	repellent は「虫よけ」、attractant は「おびき寄せる薬」
+I	represent|curr_idm_pre2_stand_for	stand for は略語などが「〜を表す」（UN stands for …）。represent は「代表する・表す」
+N	disgusting|repulsive	repulsive は見た目や態度が「ひどく不快な」。disgusting は「むかつく」
+N	repulsive|revolting	repulsive は「ぞっとするほど不快な」。revolting は「胸が悪くなる」
+N	name|reputation	reputation は人々の「評判」（have a good reputation）。name は「名前」や「名声」（make a name）
+N	ask|request	request は「正式にお願いする」かたい語。ask は「頼む・尋ねる」のふつうの語
+N	need|require	require は規則などで「必要とする」かたい語。need は「必要とする」のふつうの語
+I	require|curr_idm_pre2_call_for	call for は「必要とする・求める」。require は「必要とする」のかたい語
+N	resemble|similar	resemble は動詞で「〜に似ている」（前置詞なし: resemble her mother）。similar は形容詞で「似ている」（be similar to）
+I	resemble|exam_idm_look_like	look like は見た目が「〜に似ている」。resemble は見た目や性質が「似ている」かたい語
+I	resemble|exam_idm_take_after	take after は親などに「似ている」（家族に使う）。resemble は「似ている」と広く言う
+N	begrudge|resent	resent は不当な扱いに「腹を立てる・恨む」。begrudge は人の幸運などを「ねたむ」や「しぶしぶ与える」
+N	envy|resentment	resentment は不当な扱いへの「恨み」。envy は人の持つものを「うらやむ気持ち」
+N	gratitude|resentment	resentment は「恨み」、gratitude は「感謝」
+N	renovation|restoration	restoration は昔の姿に「復元すること」。renovation は古い建物を「新しく改修すること」
+N	repair|restoration	restoration は元どおりにする「修復・復元」。repair は壊れた所の「修理」
+N	destruction|restoration	restoration は「修復」、destruction は「破壊」
+N	retaliate|revenge	retaliate は攻撃に「報復する・やり返す」。revenge は動詞で個人的な「仕返しをする」（名詞でよく使う）
+N	retaliate|strike back	retaliate は「報復する」のかたい語。strike back は「反撃する」
+I	retaliate|curr_idm_pre1_pay_back	pay back は「仕返しする」や、お金を「返す」話し言葉。retaliate は「報復する」
+I	retire|curr_idm_pre1_step_down	step down は地位から「退く」。retire は年齢などで仕事を「引退する」
+N	reveal|veil	reveal は「明らかにする」、veil は「覆い隠す」
+N	income|revenue	revenue は会社や国の「収入・歳入」。income は個人の「収入」
+N	expenditure|revenue	revenue は「収入」、expenditure は「支出」
+N	restore|revive	revive は弱ったものを「よみがえらせる・復活させる」。restore は元の状態に「修復する」
+N	renew|revive	revive は伝統などを「復活させる」。renew は契約などを「更新する」や「新しくする」
+N	cancel|revoke	revoke は免許などを「取り消す」かたい語。cancel は予定などを「中止する・取り消す」
+N	revoke|withdraw	revoke は許可を「取り消す」。withdraw は申し出などを「引っこめる」
+N	grant|revoke	revoke は「取り消す」、grant は「与える・許可する」
+I	revoke|curr_idm_4_take_back	take back は言ったことを「取り消す」や、物を「返品する」話し言葉。revoke は免許などを「取り消す」
+N	revolt|uprising	revolt は「反乱を起こす」。uprising は民衆の「蜂起」
+N	disgusting|revolting	revolting は「胸が悪くなる」。disgusting は「むかつく」のふつうの語
+N	appealing|revolting	revolting は「むかつく」、appealing は「魅力的な」
+N	revolve|spin	revolve はほかのものの周りを「回る」（revolve around the sun）。spin は自分で「くるくる速く回る」
+N	beat|rhythm	rhythm は音の強弱のくり返しの「リズム」。beat は一つひとつの「拍」
+N	rhythm|tempo	rhythm は「リズム」（強弱のパターン）。tempo は曲の「速さ・テンポ」
+N	mock|ridicule	ridicule は人や考えを「笑いものにする」。mock は「まねをしてからかう・ばかにする」
+N	ridicule|scorn	ridicule は「あざ笑う」。scorn は「見下して相手にしない」
+I	ridicule|curr_idm_3_laugh_at	laugh at は「笑いものにする」の話し言葉。ridicule は「あざ笑う」のかたい語
+N	absurd|ridiculous	ridiculous は「ばかばかしい・笑ってしまう」。absurd は「理屈に合わない・ばかげた」
+N	preposterous|ridiculous	ridiculous は「ばかげた」。preposterous は「とんでもない」と強い
+N	ridiculous|sensible	ridiculous は「ばかげた」、sensible は「分別のある」
+N	edge|rim	rim はコップや車輪などの丸い「縁・へり」。edge は「端・縁」と広く言う
+N	brim|rim	rim は丸い物の「縁」。brim はコップの「口のふち」や、帽子の「つば」
+N	center|rim	rim は「縁」、center は「中心」
+N	revolt|riot	riot は町での「暴動・騒動」。revolt は政府への「反乱」
+N	riot|uprising	riot は無秩序な「暴動」。uprising は政府に対する「蜂起」
+N	mature|ripe	ripe は果物が「熟した」。mature は人や動物が「成熟した・大人の」
+N	ready|ripe	ripe は時機が「熟した」（the time is ripe）。ready は「準備ができた」
+N	ripe|unripe	ripe は「熟した」、unripe は「まだ熟していない」
+N	ceremony|ritual	ritual は昔から決まった手順の「儀式・しきたり」。ceremony は結婚式などの「式」
+N	roam|rove	roam は広い範囲を「歩き回る」。rove は「放浪する」の文学的な語
+N	roam|settle	roam は「歩き回る」、settle は「住みつく」
+N	bellow|roar	roar はライオンが「ほえる」や、エンジンが「うなる」。bellow は人が「大声でどなる」
+N	roar|thunder	roar は「ほえる・とどろく」。thunder は雷が「鳴る」や、「とどろく」
+N	roar|whisper	roar は「大声でほえる」、whisper は「ささやく」
+N	gown|robe	robe はふろ上がりの「部屋着」や、裁判官などの「式服」。gown はドレスの「ガウン」や、卒業式の「ガウン」
+N	cloak|robe	robe は長い「部屋着・式服」。cloak はそでのない「マント」
+N	robust|strong	robust は体や経済が「がっしりした・堅調な」。strong は「強い」と広く言う
+N	robust|sturdy	robust は仕組みなどが「頑丈で故障しにくい」。sturdy は物や体が「がっしりした」
+N	fragile|robust	robust は「頑丈な」、fragile は「壊れやすい」
+N	rod|stick	rod はまっすぐな細い「棒」や「つりざお」（fishing rod）。stick は「棒切れ」
+N	cylinder|roller	roller は転がして使う「ローラー」。cylinder は形の「円柱・円筒」
+N	decay|rot	rot は食べ物や木が「腐る」。decay は「腐る」や、建物などが「おとろえる」
+N	decompose|rot	rot は「腐る」のふつうの語。decompose は生き物の体が「分解する」
+N	preserve|rot	rot は「腐る」、preserve は「保存する」
+N	decayed|rotten	rotten は食べ物が「腐った」や、話し言葉で「ひどい」。decayed は歯などが「虫歯になった・朽ちた」
+N	rotten|spoiled	rotten は「腐った」。spoiled は食べ物が「傷んだ」や、子どもが「甘やかされた」
+N	fresh|rotten	rotten は「腐った」、fresh は「新鮮な」
+N	rowdy|unruly	rowdy は「騒々しくて乱暴な」。unruly は「言うことを聞かない・手に負えない」
+N	boisterous|rowdy	rowdy は「乱暴に騒ぐ」（悪い意味）。boisterous は「元気いっぱいで騒がしい」
+N	quiet|rowdy	rowdy は「騒々しい」、quiet は「静かな」
+N	rubbish|trash	rubbish はイギリス英語で「ごみ」。trash はアメリカ英語で「ごみ」
+N	garbage|rubbish	rubbish はイギリス英語で「ごみ」全体。garbage はアメリカ英語で「ごみ」（台所の生ごみなど）
+N	rubbish|treasure	rubbish は「ごみ」、treasure は「宝物」
+N	gem|ruby	ruby は赤い宝石の「ルビー」。gem は「宝石」全体
+N	jewel|ruby	ruby は「ルビー」。jewel はアクセサリーにした「宝石」
+N	rupture|split	rupture は管などが「破裂する」や、関係が「決裂する」。split は「割れる・分かれる」
+N	erupt|rupture	rupture は管などが「破裂する・裂ける」。erupt は火山が「噴火する」や、争いが「突然起こる」
+N	rupture|seal	rupture は「裂ける・破れる」、seal は「密封する」
+N	bag|sack	sack は米などを入れる大きな「麻袋」。bag は「かばん・袋」と広く言う
+N	pouch|sack	sack は「大袋」。pouch は小物を入れる「小袋・ポーチ」
+N	saddle|seat	saddle は馬の「鞍（くら）」や、自転車の「サドル」。seat は「座席」と広く言う
+N	forbid|sanction	sanction は正式に「認可する」（「制裁を加える」の意味もある）、forbid は「禁じる」
+N	cleanliness|sanitation	sanitation は下水などの「公衆衛生（設備）」。cleanliness は「清潔さ」
+N	filth|sanitation	sanitation は「衛生」、filth は「汚物・不潔」
+N	drench|saturate	saturate は「(これ以上しみこまないほど)浸す」。drench は雨などが「びしょぬれにする」
+N	barely|scarcely	scarcely は「ほとんど〜ない」のかたい語（I could scarcely hear）。barely は「かろうじて・やっと」
+N	picturesque|scenic	scenic は道などが「景色のよい」（the scenic route）。picturesque は村などが「絵のように美しい」
+N	panoramic|scenic	scenic は「景色のよい」。panoramic は「全体を見渡せる」（a panoramic view）
+N	scoop|shovel	scoop はスプーンなどで「すくう」。shovel はシャベルで「すくう」

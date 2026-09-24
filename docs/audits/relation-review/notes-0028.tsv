@@ -1,0 +1,355 @@
+N	erratic|unpredictable	erratic は動きや行動が「不規則でむらのある」。unpredictable は「予測できない」
+N	erratic|steady	erratic は「不規則な」、steady は「安定した」
+N	erupt|explode	erupt は火山が「噴火する」や、争いが「急に起こる」。explode は「爆発する」
+I	erupt|curr_idm_pre2_break_out	break out は戦争や火事が「突然起こる」話し言葉。erupt は火山が「噴火する」や、暴動などが「勃発（ぼっぱつ）する」
+N	eruptive|volcanic	eruptive は「噴火する性質の・噴火の」。volcanic は「火山の」や、性格が「激しい」
+N	estrange|reconcile	estrange は「仲たがいさせる」（be estranged from）、reconcile は「仲直りさせる」
+N	evacuation|withdrawal	evacuation は災害などからの「避難」。withdrawal は軍隊の「撤退」やお金の「引き出し」
+N	evacuation|removal	evacuation は人の「避難・退去」。removal は物の「撤去」
+N	evacuation|occupation	evacuation は「立ち退くこと」、occupation は「占拠」
+N	confront|evade	evade は問題を「避ける・かわす」、confront は「立ち向かう」
+N	condensation|evaporation	evaporation は水が「蒸発すること」、condensation は水蒸気が「水滴になること・結露」
+N	evasive|vague	evasive は答えを「わざとはぐらかす」。vague は「はっきりしない」
+N	direct|evasive	evasive は「言葉を濁す」、direct は「率直な」
+N	eventually|finally	eventually は長い時間の末に「結局・やがて」。finally は待った末に「ついに」や、順番の「最後に」
+N	eventually|ultimately	eventually は「やがては」。ultimately は「最終的には・つまるところ」
+N	eventually|immediately	eventually は「いずれ」、immediately は「すぐに」
+I	eventually|curr_idm_pre2_in_the_end	in the end は「結局は」の話し言葉。eventually は「やがて・最終的に」
+I	eventually|curr_idm_3_sooner_or_later	sooner or later は「遅かれ早かれ」。eventually は「いずれは」
+N	enduring|everlasting	everlasting は「永遠に続く」（everlasting friendship）。enduring は「長く続いている」
+N	everlasting|temporary	everlasting は「永遠の」、temporary は「一時的な」
+N	exalt|glorify	exalt は人を「ほめたたえる・高める」かたい語。glorify は「賛美する」や、悪いことを「美化する」
+N	elevate|exalt	exalt は「持ち上げてほめる」。elevate は「高くする・昇進させる」
+N	demean|exalt	exalt は「高める」、demean は「おとしめる」
+N	exasperate|infuriate	exasperate は「(何度も)いらだたせる・憤慨させる」。infuriate は「激怒させる」
+N	exasperate|irritate	exasperate は「ほとほとうんざりさせる」。irritate は「いらいらさせる」
+N	exasperate|soothe	exasperate は「いらだたせる」、soothe は「なだめる」
+N	exasperated|frustrated	exasperated は「ほとほとうんざりした」。frustrated は思いどおりにならず「いらだった」
+N	calm|exasperated	exasperated は「いらだった」、calm は「落ち着いた」
+N	exasperating|irritating	exasperating は「腹立たしい・じれったい」。irritating は「いらいらさせる」
+N	exasperating|maddening	exasperating は「うんざりさせる」。maddening は「気が変になるほど腹立たしい」
+N	exasperating|soothing	exasperating は「いらだたせる」、soothing は「心を落ち着かせる」
+N	exasperation|frustration	exasperation は「ほとほと困ったいらだち」。frustration は思いどおりにならない「いらだち・挫折感」
+N	exasperation|irritation	exasperation は「憤り・いらだち」と強い。irritation は「いらいら」
+N	calm|exasperation	exasperation は「いらだち」、calm は「平静」
+N	exceedingly|remarkably	exceedingly は「極めて・非常に」かたい語。remarkably は「驚くほど」
+N	exceedingly|slightly	exceedingly は「非常に」、slightly は「わずかに」
+N	excellence|superiority	excellence は「すぐれていること・卓越」。superiority は他と比べた「優位」
+N	distinction|excellence	excellence は「優秀さ」。distinction は「区別」や、成績の「優秀さ」（with distinction）
+N	excellence|mediocrity	excellence は「卓越」、mediocrity は「平凡」
+N	exceptional|extraordinary	exceptional は「例外的な」や「並外れてすぐれた」。extraordinary は「並外れた・驚くべき」
+N	exceptional|remarkable	exceptional は「特別にすぐれた」。remarkable は「注目に値する」
+N	exceptional|ordinary	exceptional は「並外れた」、ordinary は「ふつうの」
+N	excerpt|extract	excerpt は本や映画の「抜粋」。extract は名詞で文章の「抜粋」や「エキス」
+N	excess|surplus	excess は「行き過ぎ・過剰」（an excess of salt）。surplus は必要以上の「余り・黒字」
+N	excess|shortage	excess は「過剰」、shortage は「不足」
+N	excessively|overly	excessively は「度を越して」。overly は「あまりにも」（overly strict）
+N	excessively|unduly	excessively は「過度に」。unduly は「必要以上に・不当に」
+N	excessively|moderately	excessively は「過度に」、moderately は「ほどほどに」
+N	excitement|thrill	excitement は「わくわくする気持ち・興奮」。thrill は「ぞくぞくする興奮・スリル」
+N	enthusiasm|excitement	excitement は「興奮」。enthusiasm は「熱意・熱中」
+N	cry|exclamation	exclamation は驚きなどの「叫び声・感嘆（の言葉）」。cry は「叫び」や「泣き声」
+N	exclamation|outcry	exclamation は「思わず出る声」。outcry は世間の「抗議の声」
+N	exclusively|solely	exclusively は「〜だけに限って・独占的に」。solely は「ただ〜だけ」
+N	exclusively|only	exclusively は「もっぱら・〜専用に」のかたい語。only は「〜だけ」
+N	excused|exempt	excused は授業などを「休むことを許された」（be excused from）。exempt は義務を「免除された」
+N	excused|pardoned	excused は「(軽いことを)許された」。pardoned は罪を「許された」
+N	excused|liable	excused は「免除された」、liable は「責任がある」
+N	exemplary|model	exemplary は「手本になる・模範的な」かたい語。model は形容詞で「模範の」（a model student）
+N	exemplary|ideal	exemplary は「見習うべき」。ideal は「理想的な」
+N	exemplify|illustrate	exemplify は「よい例となる」。illustrate は例を挙げて「説明する」
+N	embody|exemplify	exemplify は「典型的な例である」。embody は考えなどを「体現する」
+N	exempt|immune	exempt は税などを「免除された」（exempt from）。immune は病気に「免疫のある」や、罰を「免れた」
+N	exempt|liable	exempt は「免除された」、liable は「支払う責任がある」
+N	exhaustion|fatigue	exhaustion は「へとへとの疲労困憊（こんぱい）」や資源の「枯渇」。fatigue は「疲労」
+N	exhaustion|weariness	exhaustion は「力を使い果たすこと」。weariness は長く続く「疲れ・うんざり感」
+N	exhaustive|thorough	exhaustive は「漏れのない・徹底的な」。thorough は「念入りな」
+N	comprehensive|exhaustive	exhaustive は「すべて調べつくした」。comprehensive は「全体を網羅した・総合的な」
+N	cursory|exhaustive	exhaustive は「徹底的な」、cursory は「ざっとした」
+N	display|exhibition	exhibition は美術館などの「展覧会」。display は店などの「展示・陳列」
+N	exhibition|show	exhibition は作品を見せる「展示会」。show は「見せ物・ショー」や「展示会」
+N	deport|exile	exile は国から「追放する」や、名詞で「亡命」。deport は外国人を「国外退去させる」
+N	exile|repatriate	exile は「国外へ追放する」、repatriate は「本国へ帰す」
+N	departure|exodus	exodus は大勢の「大移動・流出」。departure は「出発・退去」
+N	exodus|migration	exodus は一度にどっと「出ていくこと」。migration は人や鳥の「移住・渡り」
+N	exodus|influx	exodus は「大量の流出」、influx は「大量の流入」
+N	absolve|exonerate	exonerate は証拠で「疑いを晴らす」。absolve は罪や責任から「解放する・許す」
+N	exonerate|incriminate	exonerate は「潔白を証明する」、incriminate は「罪を着せる」
+N	expectation|hope	expectation は「そうなると思う予想・期待」。hope は「そうなってほしい望み」
+N	accelerate|expedite	expedite は手続きなどを「早く進める」かたい語。accelerate は速度を「上げる」
+N	delay|expedite	expedite は「はかどらせる」、delay は「遅らせる」
+N	cost|expenses	expenses は仕事などにかかる「経費・出費」（複数形）。cost は「費用・値段」
+N	expenses|outlay	expenses は「経費」。outlay は事業などへの「支出（額）」
+N	expenses|income	expenses は「支出」、income は「収入」
+N	experienced|seasoned	experienced は「経験豊かな」。seasoned は長年の経験を積んだ「ベテランの」や、料理が「味つけした」
+N	experienced|skilled	experienced は「経験を積んだ」。skilled は「腕のいい」
+N	experienced|inexperienced	experienced は「経験豊かな」、inexperienced は「経験の浅い」
+N	expiration|termination	expiration は期限の「満了・失効」（アメリカ英語）。termination は契約などの「打ち切り」
+N	account|explanation	explanation は分かるようにする「説明」。account は出来事の「話・説明」（give an account of）
+N	clarification|explanation	explanation は「説明」。clarification はあいまいな点を「はっきりさせること」
+N	clearly|explicitly	explicitly は言葉で「はっきりと」（明記して）。clearly は「分かりやすく・明らかに」
+N	explicitly|implicitly	explicitly は「はっきり言葉にして」、implicitly は「暗に」
+N	expression|look	expression は顔の「表情」や「表現」。look は「顔つき・見た目」
+N	blank|expressionless	expressionless は「無表情な」。blank は目や顔が「ぼんやりした・うつろな」
+N	expressionless|impassive	expressionless は顔に「表情がない」。impassive は感情を「表に出さない」
+N	extant|surviving	extant は古い物が「現存する」かたい語。surviving は「生き残った・残っている」
+N	existing|extant	extant は昔の物が「今も残っている」。existing は「今ある・現行の」
+N	annihilate|exterminate	exterminate は害虫などを「駆除する」。annihilate は「全滅させる・完全に打ち負かす」
+N	exterminate|preserve	exterminate は「絶滅させる」、preserve は「保護する」
+I	extinguish|curr_idm_pre2_put_out	put out は火を「消す」の話し言葉。extinguish は「消火する」のかたい語
+N	extol|praise	extol は「ほめちぎる」かたい語。praise は「ほめる」
+N	extol|laud	extol と laud はどちらも「ほめたたえる」かたい語。laud は新聞でよく使う
+N	criticize|extol	extol は「絶賛する」、criticize は「批判する」
+N	extraction|withdrawal	extraction は油などの「抽出」や歯を「抜くこと」。withdrawal はお金の「引き出し」や「撤退」
+N	extraordinary|remarkable	extraordinary は「並外れた・ふつうでない」。remarkable は「注目すべき」
+N	extravagance|lavishness	extravagance は「むだなぜいたく・浪費」。lavishness は「豪華さ・気前のよさ」
+N	extravagance|wastefulness	extravagance は「ぜいたく」。wastefulness は「むだづかい」
+N	extravagance|frugality	extravagance は「ぜいたく」、frugality は「倹約」
+N	extravagant|lavish	extravagant は「ぜいたくすぎる・浪費的な」（悪い意味）。lavish は「豪華な・気前のよい」
+N	extravagant|frugal	extravagant は「ぜいたくな」、frugal は「倹約的な」
+N	fabricate|invent	fabricate は話などを「でっち上げる」。invent は「発明する」や、言いわけを「作り出す」
+N	fabricate|manufacture	fabricate は部品を「組み立てて作る」。manufacture は工場で「製造する」
+N	fabricated|false	fabricated は「でっち上げた・捏造（ねつぞう）された」。false は「うその・まちがった」
+N	fabricated|genuine	fabricated は「でっち上げた」、genuine は「本物の」
+N	fabrication|lie	fabrication は「作り話・捏造（ねつぞう）」。lie は「うそ」
+N	fabrication|manufacture	fabrication は部品の「製作・組み立て」。manufacture は工場での「製造」
+N	facade|front	facade は建物の「正面」や、人の「うわべ」。front は「前・正面」
+N	facade|interior	facade は「正面の外観」、interior は「内部」
+N	enabling|facilitating	facilitating は「物事を進めやすくする」。enabling は「〜できるようにする」
+N	facilitating|helping	facilitating は話し合いなどを「円滑に進める」。helping は「手伝う」
+N	facilitating|hindering	facilitating は「促進する」、hindering は「妨げる」
+N	failing|flaw	failing は人の「欠点・弱点」。flaw は物や計画の「欠陥・きず」
+N	failing|shortcoming	failing は「(性格の)欠点」。shortcoming は「足りない点・短所」
+N	failing|strength	failing は「欠点」、strength は「長所」
+N	failure|flop	failure は「失敗」と広く言う。flop は映画などの「大失敗・不発」くだけた語
+N	dim|faint	faint は音や光が「かすかな」。dim は光が「うす暗い」
+N	faint|weak	faint は「かすかな」。weak は「弱い」と広く言う
+N	distinct|faint	faint は「かすかな」、distinct は「はっきりした」
+N	dimly|faintly	faintly は音などが「かすかに」。dimly は光が「うす暗く」や、記憶が「ぼんやりと」
+N	clearly|faintly	faintly は「かすかに」、clearly は「はっきりと」
+N	betrayal|faithfulness	faithfulness は「忠実さ」、betrayal は「裏切り」
+N	fallacy|misconception	fallacy は広く信じられている「誤った考え」や、論理の「誤り」。misconception は「誤解」
+N	delusion|fallacy	fallacy は「まちがった通念」。delusion は事実でないことを信じこむ「思いこみ」
+N	fallacy|truth	fallacy は「誤った考え」、truth は「真実」
+N	falter|waver	falter は足どりや声が「よろめく・弱まる」。waver は決心が「ぐらつく」
+N	falter|persevere	falter は「くじけかける」、persevere は「やり抜く」
+N	acquaintance|familiarity	familiarity は物事を「よく知っていること」や、人との「親しさ」。acquaintance は「知識」や「知り合い」
+N	familiarity|unfamiliarity	familiarity は「よく知っていること」、unfamiliarity は「よく知らないこと」
+N	fang|tusk	fang は犬やヘビの「鋭いきば」。tusk は象やイノシシの外に伸びた「長いきば」
+N	fang|tooth	fang は「きば」。tooth は「歯」全体
+N	captivating|fascinating	fascinating は「とても興味深い」。captivating は「心を奪う」
+N	fascinating|intriguing	fascinating は「夢中になるほど面白い」。intriguing は「(なぞめいていて)興味をそそる」
+N	boring|fascinating	fascinating は「すごく面白い」、boring は「退屈な」
+N	allure|fascination	fascination は何かへの「強い興味・夢中」。allure は物が持つ「人を引きつける魅力」
+N	enchantment|fascination	fascination は「強い関心」。enchantment は「うっとりする魅力」
+N	fashionable|trendy	fashionable は「流行の・おしゃれな」。trendy は「今はやりの」くだけた語
+N	fashionable|old-fashioned	fashionable は「流行の」、old-fashioned は「時代遅れの」
+N	doomed|fated	fated は「そうなる運命の」（be fated to do）。doomed は「悪い結末が決まった」
+N	federation|union	federation は州や団体が集まった「連邦・連盟」。union は「連合・結合」
+N	alliance|federation	federation は一つの組織にまとまった「連盟」。alliance は目的のための「同盟」
+N	feebly|weakly	feebly は「弱々しく・力なく」。weakly は「弱く」
+N	faintly|feebly	feebly は「力なく」。faintly は「かすかに」
+N	feebly|forcefully	feebly は「弱々しく」、forcefully は「力強く」
+N	companion|fellow	fellow は「仲間の」（fellow students）や、話し言葉で「男・やつ」。companion は「連れ・仲間」
+N	colleague|fellow	fellow は「同じ立場の仲間」。colleague は職場の「同僚」
+N	fellow|stranger	fellow は「仲間」、stranger は「見知らぬ人」
+N	camaraderie|fellowship	fellowship は同じ目的の人の「仲間意識・友愛」。camaraderie は苦労をともにした「連帯感」
+N	companionship|fellowship	fellowship は「仲間としての結びつき」。companionship は「いっしょにいること」
+N	ferociously|fiercely	ferociously は動物が「どう猛に」。fiercely は「猛烈に・激しく」
+N	ferociously|savagely	ferociously は「荒々しく」。savagely は「むごく・凶暴に」
+N	ferociously|gently	ferociously は「どう猛に」、gently は「やさしく」
+N	fertilize|nourish	fertilize は土に「肥料をやる」や「受精させる」。nourish は栄養を与えて「養う」
+N	enrich|fertilize	fertilize は「肥料で肥やす」。enrich は土などを「豊かにする」
+N	deplete|fertilize	fertilize は「肥やす」、deplete は土を「やせさせる」
+N	fervent|passionate	fervent は祈りや支持が「熱烈な」。passionate は感情が「情熱的な」
+N	fervent|indifferent	fervent は「熱烈な」、indifferent は「無関心な」
+N	fervently|passionately	fervently は「熱烈に・ひたすら」（fervently hope）。passionately は「情熱をこめて」
+N	fervently|indifferently	fervently は「熱心に」、indifferently は「無関心に」
+N	fervor|zeal	fervor は「熱情・熱烈さ」。zeal は目的への「熱意」
+N	apathy|fervor	fervor は「熱情」、apathy は「無関心」
+N	bring|fetch	fetch は「行って取ってくる」（行って戻る）。bring は「持ってくる」
+N	fetch|retrieve	fetch は物を「取ってくる」。retrieve は失った物を「回収する」
+N	conflict|feud	feud は家族などの長く続く「確執・いがみ合い」。conflict は「対立・紛争」
+N	feud|quarrel	feud は「長年の争い」。quarrel は一時的な「口げんか」
+N	feud|peace	feud は「いがみ合い」、peace は「和解・平和」
+N	falsehood|fib	fib は「たわいないうそ」。falsehood は「うそ・虚偽」のかたい語
+N	fib|truth	fib は「小さなうそ」、truth は「本当のこと」
+N	capricious|fickle	fickle は愛情などが「移り気な」。capricious は行動が「気まぐれな」
+N	fickle|volatile	fickle は「心変わりしやすい」。volatile は状況や気分が「急に変わりやすい」
+N	constant|fickle	fickle は「移り気な」、constant は「変わらない」
+N	financial|fiscal	fiscal は国や会社の「会計・財政の」（fiscal year）。financial は「お金の・金融の」と広く言う
+N	fiscal|monetary	fiscal は税や支出の「財政の」。monetary は通貨の「金融の」（monetary policy）
+N	financially|fiscally	fiscally は「財政上・会計上」。financially は「金銭的に」と広く言う
+N	fiscally|monetarily	fiscally は「財政的に」。monetarily は「お金の面で」
+N	fission|splitting	fission は細胞や原子核の「分裂」。splitting は「割ること・分けること」
+N	fission|fusion	fission は「分裂」、fusion は「融合」
+N	flagrant|subtle	flagrant は違反などが「目に余る」、subtle は「わかりにくい」
+N	flattering|unflattering	flattering は服などが「引き立てる」、unflattering は「見栄えを悪くする」
+N	flattery|praise	flattery は本心でない「お世辞」。praise は心からの「称賛」
+N	adulation|flattery	flattery は気に入られるための「お世辞」。adulation は「行き過ぎた称賛」
+N	criticism|flattery	flattery は「お世辞」、criticism は「批判」
+N	flaunt|parade	flaunt は財産などを「見せびらかす」。parade は「誇示する」や「行進する」
+N	conceal|flaunt	flaunt は「見せびらかす」、conceal は「隠す」
+I	flaunt|curr_idm_2_show_off	show off は「見せびらかす」の話し言葉。flaunt は「(これ見よがしに)誇示する」
+N	fault|flaw	flaw は物や計画の「欠陥・きず」。fault は「欠点」や「過失・責任」
+N	flee|stay	flee は危険から「逃げる」、stay は「とどまる」
+I	flee|curr_idm_pre2_get_away	get away は「逃げる・逃げ出す」話し言葉。flee は危険から「逃げる」かたい語
+I	flee|curr_idm_3_run_away	run away は「走って逃げる」や「家出する」。flee は「(急いで)逃れる」
+N	brief|fleeting	fleeting は「すぐ消えてしまう・つかの間の」（a fleeting glimpse）。brief は時間が「短い」
+N	fleeting|transient	fleeting は「一瞬の」。transient は「一時的な・はかない」かたい語
+N	fleeting|lasting	fleeting は「つかの間の」、lasting は「長続きする」
+N	flexibility|rigidity	flexibility は「柔軟さ」、rigidity は「融通のきかなさ」
+N	flimsy|weak	flimsy は物が「薄っぺらで壊れやすい」や、言いわけが「見えすいた」。weak は「弱い」
+N	feeble|flimsy	flimsy は作りが「ちゃちな」。feeble は言いわけが「説得力のない」や、体が「弱々しい」
+N	flimsy|sturdy	flimsy は「もろい」、sturdy は「頑丈な」
+N	flippant|frivolous	flippant はまじめな話に「ふざけた」。frivolous は「軽薄な・取るに足らない」
+N	flippant|glib	flippant は「不まじめな」。glib は「口先だけうまい」
+N	flippant|serious	flippant は「ふざけた」、serious は「まじめな」
+N	collapse|flop	flop は「どさっと倒れこむ」や、映画などが「大失敗する」。collapse は「崩れ落ちる」
+N	flop|succeed	flop は「失敗する」、succeed は「成功する」
+N	flourishing|thriving	flourishing は商売などが「栄えている」。thriving は「繁盛している・元気に育つ」
+N	declining|flourishing	flourishing は「栄えている」、declining は「衰えている」
+N	fluctuation|swing	fluctuation は値段などの「上がり下がり」。swing は気分や意見の「大きな揺れ」
+N	fluctuation|stability	fluctuation は「変動」、stability は「安定」
+N	fluid|solid	fluid は「流体」、solid は「固体」
+N	agitate|fluster	fluster は人を「あわてさせる」。agitate は「動揺させる」
+N	fluster|rattle	fluster は「うろたえさせる」。rattle は「どぎまぎさせる」くだけた語
+N	calm|fluster	fluster は「あわてさせる」、calm は「落ち着かせる」
+N	flustered|rattled	flustered は「あわてた・うろたえた」。rattled は「動揺した」くだけた語
+N	adversary|foe	foe は「敵」の文学的な語。adversary は争いの「相手・敵」
+N	foliage|leaves	foliage は木全体の「葉（の茂み）」（数えない）。leaves は一枚一枚の「葉」
+N	foliage|greenery	foliage は「葉の茂り」。greenery は「緑の草木」
+N	folly|idiocy	folly は「愚かなこと・愚行」（It would be folly to do）。idiocy は「ばかさ」
+N	affectionate|fond	fond は「好んで」（be fond of）や、思い出が「なつかしい」。affectionate は態度が「愛情のこもった」
+N	fond|loving	fond は「愛情をもった」。loving は「愛情深い」
+N	fond|indifferent	fond は「好きな」、indifferent は「無関心な」
+N	forbearance|restraint	forbearance は相手への「がまん・寛容」。restraint は自分の感情の「抑制」
+N	forbearance|patience	forbearance は「忍耐」のかたい語。patience は「辛抱」
+N	forbearance|impatience	forbearance は「寛容な忍耐」、impatience は「短気」
+N	forcefully|powerfully	forcefully は「力強く・強引に」（argue forcefully）。powerfully は「強力に」
+N	forcefully|vigorously	forcefully は「強く主張して」。vigorously は「精力的に」
+N	foreman|supervisor	foreman は工事現場などの「現場監督・職長」。supervisor は職場の「監督者・上司」
+N	foreman|overseer	foreman は作業員の「親方・班長」。overseer は昔の「監督」
+N	foreman|laborer	foreman は「現場監督」、laborer は「作業員」
+N	forerunner|precursor	forerunner は今のものの「先駆け・前身」。precursor も「前身」のかたい語
+N	forerunner|successor	forerunner は「前身」、successor は「後継者」
+N	foresee|predict	foresee は将来を「見越す・予見する」。predict は根拠をもって「予測する」
+N	anticipate|foresee	foresee は「前もって分かる」。anticipate は「予想して備える」
+N	foresight|vision	foresight は先を見通す「先見の明」。vision は将来への「展望・構想」
+N	foresight|prudence	foresight は「先見の明」。prudence は「慎重さ」
+N	foresight|hindsight	foresight は「先見の明」、hindsight は「あとになって分かること・後知恵」
+N	foretell|predict	foretell は「予言する」の文学的な語。predict は「予測する」
+N	foretell|prophesy	foretell は「前もって告げる」。prophesy は神のお告げとして「予言する」
+N	forfeit|lose	forfeit は罰として「失う・没収される」。lose は「なくす」
+N	forfeit|relinquish	forfeit は権利などを「(規則で)失う」。relinquish は自分から「手放す」
+N	forfeit|retain	forfeit は「失う」、retain は「持ち続ける」
+N	confiscation|forfeiture	forfeiture は罰としての「没収・権利の喪失」。confiscation は物の「取り上げ・押収」
+N	forfeiture|loss	forfeiture は「失うこと（罰として）」。loss は「損失・喪失」
+N	forfeiture|restitution	forfeiture は「没収」、restitution は「返還」
+N	counterfeit|forge	forge は署名などを「偽造する」。counterfeit はお金などを「偽造する」
+N	fabricate|forge	forge は書類を「偽造する」や、関係を「築く」。fabricate は話を「でっち上げる」
+N	fake|forged	forged は書類が「偽造された」。fake は「偽の」と広く言う
+N	forged|genuine	forged は「偽造の」、genuine は「本物の」
+N	forgettable|unremarkable	forgettable は「すぐ忘れてしまう」。unremarkable は「ぱっとしない・平凡な」
+N	forgettable|unmemorable	forgettable は「印象に残らない」。unmemorable も「記憶に残らない」でほぼ同じ
+N	abstain|forgo	forgo は楽しみなどを「なしですます・あきらめる」。abstain は酒などを「控える」や、投票を「棄権する」
+N	forgo|relinquish	forgo は「(自分から)やめておく」。relinquish は持っているものを「手放す」
+N	forgo|indulge	forgo は「がまんしてやめる」、indulge は「好きなだけ楽しむ」
+N	devise|formulate	formulate は計画や考えを「まとめて立てる」。devise は工夫して「考え出す」
+N	develop|formulate	formulate は考えを「はっきり組み立てる」。develop は「作り上げる・発展させる」
+N	composition|formulation	formulation は薬などの「調合（のしかた）」や、考えの「まとめ方」。composition は「構成・成分」
+N	abandon|forsake	forsake は人を「見捨てる」の文学的な語。abandon は「捨てる・放棄する」
+N	desert|forsake	forsake は「見捨てる」の文学的な語。desert は動詞では /dɪˈzɜːrt/ と読み「見捨てる」（名詞「砂漠」は /ˈdezərt/）
+N	forsake|support	forsake は「見捨てる」、support は「支える」
+N	fortify|reinforce	fortify は町を「要塞にする」や、体を「強くする」。reinforce は壁などを「補強する」
+N	fortify|weaken	fortify は「強化する」、weaken は「弱める」
+I	fortify|curr_idm_1_beef_up	beef up は「強化する」話し言葉。fortify は守りを「固める」
+N	courage|fortitude	fortitude は苦しみに耐える「不屈の精神」。courage は危険に向かう「勇気」
+N	fortitude|resilience	fortitude は「じっと耐える強さ」。resilience は「立ち直る力」
+N	cowardice|fortitude	fortitude は「不屈の精神」、cowardice は「臆病」
+I	foster|exam_idm_bring_up	bring up は子どもを「育てる」話し言葉。foster は才能などを「伸ばす」や、里子を「育てる」
+N	found|located	found は「見つかった」（found objects）。located は「位置している」（be located in）
+N	basis|foundation	foundation は建物の「土台」や、「基礎・財団」。basis は考えの「根拠・基礎」
+N	evasiveness|frankness	frankness は「率直さ」、evasiveness は「言い逃れ」
+N	frayed|worn	frayed は布やコードが「すり切れてほつれた」や、神経が「すり減った」。worn は「使い古した」
+N	frayed|tattered	frayed は端が「ほつれた」。tattered は「ぼろぼろの」
+N	frayed|intact	frayed は「すり切れた」、intact は「傷んでいない」
+N	freeing|liberation	freeing は動物などを「自由にすること」。liberation は国や人々の「解放」
+N	freeing|release	freeing は「逃がしてやること」。release は「釈放・放出」
+N	capture|freeing	freeing は「放すこと」、capture は「捕らえること」
+N	frenzy|hysteria	frenzy は買い物などの「熱狂・狂乱」。hysteria は集団の「過度の興奮・ヒステリー」
+N	frenzy|mania	frenzy は一時的な「狂乱」。mania は何かへの「熱狂的な流行」
+N	calm|frenzy	frenzy は「熱狂」、calm は「平静」
+N	fret|worry	fret は小さなことで「やきもきする」（fret over）。worry は「心配する」
+N	fret|relax	fret は「やきもきする」、relax は「くつろぐ」
+N	camaraderie|friendship	friendship は「友情」と広く言う。camaraderie は仲間の「連帯感」
+N	calm|frightened	frightened は「怖がった」、calm は「落ち着いた」
+N	frightening|terrifying	frightening は「怖い・ぞっとする」。terrifying は「ひどく恐ろしい」と強い
+N	frightening|reassuring	frightening は「怖い」、reassuring は「安心させる」
+N	freezing|frigid	frigid は気温が「極寒の」や、態度が「冷ややかな」。freezing は「凍えるほど寒い」
+N	frigid|icy	frigid は「ひどく寒い」。icy は「氷の張った」や「氷のように冷たい」
+N	frigid|warm	frigid は「極寒の」、warm は「暖かい」
+N	frown|scowl	frown は不満などで「まゆをひそめる」。scowl は怒って「にらむ・顔をしかめる」
+N	frown|smile	frown は「顔をしかめる」、smile は「ほほえむ」
+N	frugal|thrifty	frugal は暮らしが「質素な」。thrifty は「やりくり上手な」
+N	frugality|thrift	frugality は「質素な暮らしぶり」。thrift は「倹約・節約」
+N	economy|frugality	frugality は「倹約」のかたい語。economy は「節約」や「経済」
+N	fruitful|fruitless	fruitful は「実りある」、fruitless は「実を結ばない」
+N	fruitless|futile	fruitless は努力が「実を結ばない」。futile は「(最初から)むだな」
+N	discouraged|frustrated	frustrated は思いどおりにならず「いらだった」。discouraged は「がっかりしてやる気をなくした」
+N	frustrated|satisfied	frustrated は「不満でいらだった」、satisfied は「満足した」
+N	disappointment|frustration	frustration は「いらだち・挫折感」。disappointment は「失望」
+N	frustration|satisfaction	frustration は「いらだち」、satisfaction は「満足」
+N	fulfillment|satisfaction	fulfillment は夢などの「実現」や生き方の「充実感」。satisfaction は「満足」
+N	frustration|fulfillment	fulfillment は「充実感」、frustration は「挫折感」
+N	abundance|fullness	fullness は「満腹」や「充実・豊かさ」。abundance は「豊富さ」
+N	essential|fundamental	fundamental は「根本的な・基本となる」。essential は「欠かせない・本質的な」
+N	basically|fundamentally	fundamentally は「根本的に」。basically は「基本的に・要するに」（話し言葉でよく使う）
+N	essentially|fundamentally	fundamentally は「根本から」。essentially は「本質的に・要するに」
+I	furthermore|curr_idm_pre1_in_addition	in addition は「さらに・加えて」のふつうの言い方。furthermore は「その上」のかたい語
+I	furthermore|curr1900_idm_pre1_what_is_more	what is more は「さらに（大事なことに）」。furthermore は「その上」のかたい語
+N	fury|rage	fury は抑えきれない「激怒」や、嵐などの「猛威」。rage は「激しい怒り」
+N	fury|wrath	fury は「激怒」。wrath は神などの「怒り」の文学的な語
+N	calm|fury	fury は「激怒」、calm は「平静」
+N	fusion|merger	fusion は物質や文化の「融合」。merger は会社の「合併」
+N	blend|fusion	fusion は一つに「溶け合うこと」（fusion cuisine）。blend は「混ぜ合わせたもの」
+N	futile|pointless	futile は努力が「むだに終わる」かたい語。pointless は「意味のない」
+N	fruitful|futile	futile は「むだな」、fruitful は「実りある」
+N	futility|pointlessness	futility は「むなしさ・むだ」。pointlessness は「意味のなさ」
+N	futility|usefulness	futility は「むだ」、usefulness は「役に立つこと」
+N	device|gadget	gadget は便利な小さい「道具・小物」。device は「装置・機器」
+N	gadget|gizmo	gadget は「便利な小道具」。gizmo は「ちょっとした装置」のくだけた語
+N	brave|gallant	gallant は昔の騎士のように「勇敢な」や、女性に「礼儀正しい」。brave は「勇敢な」
+N	chivalrous|gallant	gallant は「勇ましく礼儀正しい」。chivalrous は「騎士道的な・女性に親切な」
+N	cowardly|gallant	gallant は「勇敢な」、cowardly は「臆病な」
+N	gape|stare	gape は驚いて「口をぽかんとあけて見る」。stare は「じっと見る」
+N	gape|gawk	gape は「ぽかんと見る」。gawk は「まぬけ顔でじろじろ見る」
+N	gape|gaze	gape は驚いて「ぽかんと見る」。gaze はうっとり「じっと見つめる」
+N	garish|gaudy	garish は色が「どぎつい・けばけばしい」。gaudy は飾りが「派手で安っぽい」
+N	garish|lurid	garish は「けばけばしい」。lurid は色が「どぎつい」や、話が「ぞっとする」
+N	garish|subdued	garish は「けばけばしい」、subdued は「落ち着いた」
+N	gasp|pant	gasp は驚いて「はっと息をのむ」。pant は運動のあと「はあはあ息を切らす」
+N	flashy|gaudy	gaudy は「派手で安っぽい」。flashy は「派手で目立つ」
+N	gaudy|tasteful	gaudy は「けばけばしい」、tasteful は「上品な」
+N	assessment|gauging	gauging は計器などで「測ること・見きわめ」。assessment は正式な「評価」
+N	gaunt|haggard	gaunt は病気などで「やせこけた」。haggard は疲れで「やつれた」
+N	emaciated|gaunt	gaunt は「ほおのこけた」。emaciated は「骨と皮になるほどやせた」
+N	gaunt|plump	gaunt は「やせこけた」、plump は「ふっくらした」
+N	all-rounder|generalist	generalist はいろいろな仕事ができる「何でも屋・万能型の人」。all-rounder は「万能選手」
+N	generalist|polymath	generalist は「幅広くこなせる人」。polymath は多くの学問に通じた「博学な人」
+N	generalist|specialist	generalist は「万能型の人」、specialist は「専門家」
+N	generosity|munificence	generosity は「気前のよさ・寛大さ」。munificence は「惜しみない気前のよさ」のかたい語
+N	generosity|stinginess	generosity は「気前のよさ」、stinginess は「けち」
+N	generously|stingily	generously は「気前よく」、stingily は「けちけちと」
+N	affable|genial	genial は「愛想がよく温かい」。affable は「気さくで話しやすい」
+N	cordial|genial	genial は「人当たりのよい」。cordial は「心からの・友好的な」
+N	genial|surly	genial は「愛想のよい」、surly は「無愛想な」
+N	category|genre	genre は音楽や小説の「ジャンル」。category は「分類・部門」
+N	genre|type	genre は芸術の「様式・ジャンル」。type は「型・種類」
+N	germinate|sprout	germinate は種が「発芽する」。sprout は「芽を出す」のふつうの語
+N	bud|germinate	germinate は種が「芽を出す」。bud は枝に「つぼみや芽をつける」
+N	germinate|wither	germinate は「芽を出す」、wither は「しおれる・枯れる」
+N	ghastly|horrific	ghastly は「ぞっとする」や、顔色が「青ざめた」。horrific は「恐ろしい・むごい」
+N	ghastly|pleasant	ghastly は「ぞっとする」、pleasant は「心地よい」
+N	giddy|lightheaded	giddy は「目が回る」や、うれしくて「浮かれた」。lightheaded は「頭がくらくらする」
+N	giddy|steady	giddy は「ふらふらする」、steady は「しっかりした」

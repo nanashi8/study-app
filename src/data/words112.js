@@ -57,7 +57,7 @@ const RAW = [
   ['tan', '動', '3', '日焼けする・なめす・日焼け(名)', 'Mark tans easily, so his arms get dark every summer.', 'マークは日焼けしやすいので、毎年夏になると腕が黒くなる。', '中世ラテン tannare(なめす)。', { syn: [{ w: 'bronze', m: '日焼けさせる' }], ant: [{ w: 'pale', m: '青白くする' }], field: '一般' }],
   ['tangle', '動', '2', 'もつれさせる・からまる・もつれ(名)', 'My earphone cords always get tangled in my bag.', '私のイヤホンのコードは、かばんの中でいつもからまってしまう。', '中英語 tangilen(からむ)。', { syn: [{ w: 'entangle', m: 'からませる' }, { w: 'knot', m: '結ぶ' }], ant: [{ w: 'untangle', m: 'ほどく' }], field: '一般' }],
   ['tap', '動', '3', '軽くたたく', 'Someone tapped me on the shoulder at the station.', '駅で誰かが私の肩を軽くたたいた。', '古フランス taper(たたく)。', { syn: [{ w: 'pat', m: '軽くたたく' }, { w: 'knock', m: 'ノックする' }], field: '一般' }],
-  ['tar', '名', '2', 'タール・コールタール', "Cigarette smoke leaves tar in smokers' lungs.", 'たばこの煙は、喫煙者の肺にタールを残す。', '古英語 teru(タール)。', { syn: [{ w: 'pitch', m: 'ピッチ' }, { w: 'asphalt', m: 'アスファルト' }], field: '技術' }],
+  ['tar', '名', '2', 'タール・コールタール', "Cigarette smoke leaves tar in smokers' lungs.", 'たばこの煙は、喫煙者の肺にタールを残す。', '古英語 teru(タール)。', { syn: [{ w: 'asphalt', m: 'アスファルト' }], field: '技術' }],
   ['thumb', '名', '3', '親指', "My aunt's baby held my thumb with her tiny hand.", 'おばの赤ちゃんが、小さな手で私の親指を握った。', '古英語 thuma(親指)。', { syn: [{ w: 'digit', m: '指' }], field: '一般' }],
   ['tile', '名', '2', 'タイル・瓦・タイルを張る(動)', 'Some roof tiles blew off during the typhoon last night.', '昨夜の台風で、屋根の瓦が何枚か飛ばされた。', 'ラテン tegula(瓦)。', { syn: [{ w: 'slab', m: '板石' }], field: '建築' }],
   ['tin', '名', '2', 'すず・ブリキ・缶', 'My grandmother keeps her buttons in an old cookie tin.', '祖母はボタンを古いクッキーの缶に入れてとってある。', '古英語 tin(すず)。', { syn: [{ w: 'can', m: '缶' }, { w: 'metal', m: '金属' }], field: '科学' }],

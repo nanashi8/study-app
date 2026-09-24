@@ -1,0 +1,351 @@
+N	always|invariably	invariably は「(例外なく)決まって」（悪いことにもよく使う）。always は「いつも」のふつうの語
+N	consistently|invariably	invariably は「毎回必ず」。consistently は「いつも同じ水準で・一貫して」
+N	invariably|occasionally	invariably は「決まって」、occasionally は「ときどき」
+N	calm|irate	irate は客などが「かんかんに怒った」、calm は「落ち着いた」
+N	jointly|together	jointly は「共同で・連名で」（jointly own）。together は「いっしょに」
+N	jointly|separately	jointly は「共同で」、separately は「別々に」
+N	craze|mania	mania は何かへの「熱狂・大流行」。craze は一時的な「大ブーム」
+N	mania|obsession	mania は大勢の「熱狂」。obsession は一人の「取りつかれたような執着」
+N	apathy|mania	mania は「熱狂」、apathy は「無関心」
+N	expression|manifestation	manifestation は症状などとして「表に出たもの・現れ」。expression は気持ちの「表現」
+N	manifestation|sign	manifestation は「はっきりした現れ」のかたい語。sign は「しるし・兆候」
+I	manually|curr1900_idm_pre2_by_hand	by hand は「手で・手作業で」のふつうの言い方。manually は「(機械でなく)手動で」
+N	mar|spoil	mar は美しさや楽しさを「そこなう」かたい語。spoil は「台無しにする」
+N	damage|mar	mar は見た目や雰囲気を「傷つける」。damage は物を「損傷させる」
+N	enhance|mar	mar は「そこなう」、enhance は「高める」
+N	marginal|slight	marginal は差などが「ごくわずかな」や「周辺の」。slight は「わずかな」
+N	central|marginal	marginal は「周辺的な」、central は「中心的な」
+N	maritime|naval	maritime は船や海運の「海事の」。naval は「海軍の」
+N	inland|maritime	maritime は「海に面した・海の」、inland は「内陸の」
+N	marshal|rally	marshal は人や物を「きちんとまとめる・結集する」。rally は支持者を「呼び集める」
+N	disperse|marshal	marshal は「集めて整える」、disperse は「散らす」
+N	martial|warlike	martial は「戦いの・軍の」（martial arts）。warlike は国民などが「好戦的な」
+N	civilian|martial	martial は「軍の」、civilian は「民間の」
+N	marvel|phenomenon	marvel は「驚くほどすばらしいもの」（a marvel of engineering）。phenomenon は「現象」や「驚くべき人・もの」
+N	marvel|miracle	marvel は人の作った「驚異」。miracle は神わざのような「奇跡」
+N	classic|masterpiece	masterpiece は作者の「最高傑作」。classic は長く読まれる「名作・古典」
+N	materialistic|worldly	materialistic はお金や物を「重んじる」。worldly は「世俗的な」や、人が「世慣れた」
+N	acquisitive|materialistic	materialistic は「物質主義の」。acquisitive は「物をほしがる・欲の深い」
+N	materialistic|spiritual	materialistic は「物質主義の」、spiritual は「精神的な」
+N	meadow|pasture	meadow は草花の生えた「草地・牧草地」。pasture は家畜に草を食べさせる「放牧地」
+N	field|meadow	meadow は「草原・牧草地」。field は「畑・野原」
+N	meager|scanty	meager は収入などが「乏しい」。scanty は服や量が「わずかな・不十分な」
+N	meager|paltry	meager は「わずかしかない」。paltry は金額が「ほんのわずかな・つまらない」
+N	abundant|meager	meager は「乏しい」、abundant は「豊富な」
+N	automatic|mechanical	mechanical は「機械の」（a mechanical problem）や、動作が「機械的な」。automatic は「自動の」
+N	mechanical|robotic	mechanical は「感情のこもらない・機械的な」。robotic は「ロボットのような」
+N	manual|mechanical	mechanical は「機械による」、manual は「手による」
+N	mechanically|robotically	mechanically は「(考えずに)機械的に」。robotically は「ロボットのように」
+N	deliberately|mechanically	mechanically は「無意識に・機械的に」、deliberately は「よく考えて」
+D	mechanize	ant	manualize	manualize は「手作業にする」という意味では使わない語で、反対の言い方にはならない（ふつうは do by hand などと言う）
+N	intrude|meddle	meddle は他人のことに「口出しする・おせっかいを焼く」（meddle in）。intrude は「じゃまに入る」
+N	ignore|meddle	meddle は「干渉する」、ignore は「かまわずにおく」
+N	arbitration|mediation	mediation は第三者が話し合いを「助ける調停」。arbitration は第三者が「決めてしまう仲裁」
+N	mediation|negotiation	mediation は間に人が入る「調停」。negotiation は当事者どうしの「交渉」
+N	arbitrator|mediator	mediator は話し合いを「助ける調停者」。arbitrator は判断を「下す仲裁人」
+N	go-between|mediator	mediator は争いの「調停者」。go-between は間を取り持つ「仲介者・橋渡し役」
+N	average|mediocre	mediocre は「二流の・ぱっとしない」（悪い意味）。average は「平均的な」
+N	mediocre|ordinary	mediocre は「期待はずれの平凡さ」。ordinary は「ふつうの」
+N	excellent|mediocre	mediocre は「凡庸な」、excellent は「すぐれた」
+N	docile|meek	meek は人が「おとなしく言い返さない」。docile は動物などが「従順で扱いやすい」
+N	meek|submissive	meek は「控えめでおとなしい」。submissive は「言いなりになる」
+N	assertive|meek	meek は「おとなしい」、assertive は「はっきり主張する」
+N	melancholy|sad	melancholy は曲などが「物悲しい・憂うつな」。sad は「悲しい」
+N	gloomy|melancholy	melancholy は「しみじみ物悲しい」。gloomy は「暗く陰気な」
+N	cheerful|melancholy	melancholy は「物悲しい」、cheerful は「陽気な」
+N	memoir|reminiscence	memoir は本にした「回想録」。reminiscence は昔を「思い出して語ること」
+N	intimidate|menace	menace は「脅かす・危険にさらす」。intimidate は人を「おどして怖がらせる」
+N	menace|protect	menace は「脅かす」、protect は「守る」
+N	lenient|merciful	merciful は罰などに「情けをかける」。lenient は規則や罰が「甘い」
+N	merciful|merciless	merciful は「情け深い」、merciless は「無慈悲な」
+N	merciless|ruthless	merciless は「情け容赦ない」（merciless sun にも使う）。ruthless は目的のために「冷酷な」
+N	mercy|pity	mercy は罰しないでおく「情け・慈悲」。pity は「かわいそうに思う気持ち」
+N	cruelty|mercy	mercy は「慈悲」、cruelty は「残酷さ」
+N	mere|only	mere は名詞の前で「ほんの・単なる」（a mere child）。only は「たった〜だけ」
+N	mere|simple	mere は「ただの・取るに足りない」。simple は「単純な」
+N	merge|unite	merge は会社や道が「一つにまとまる・合併する」。unite は人々が「団結する」
+N	merge|split	merge は「合併する」、split は「分裂する」
+N	methodical|systematic	methodical は人ややり方が「きちんと順序立てた」。systematic は仕組みが「体系的な」
+N	methodical|orderly	methodical は「几帳面（きちょうめん）な」。orderly は「整然とした」
+N	haphazard|methodical	methodical は「きちんとした」、haphazard は「行き当たりばったりの」
+N	methodically|systematically	methodically は「一つずつきちんと」。systematically は「体系的に」
+N	methodically|orderly	methodically は「几帳面（きちょうめん）に」。orderly は形容詞で「整然とした」
+N	haphazardly|methodically	methodically は「順序よく」、haphazardly は「行き当たりばったりに」
+N	method|methodology	methodology は研究の「方法論・方法の体系」。method は一つの「方法」
+N	formidable|mighty	mighty は「強大な・力強い」の文学的な語。formidable は「手ごわい」
+N	feeble|mighty	mighty は「強大な」、feeble は「弱々しい」
+N	migratory|roving	migratory は鳥などが「季節で移動する・渡りの」。roving は「あちこち動き回る」
+N	migratory|sedentary	migratory は「渡りの」、sedentary は「一か所にとどまる・定住する」
+D	militarize	syn	arm	武装させるの意味の arm は「腕」の arm と由来のちがう別の語で見出し語がなく、つづりで引くと「腕」へ飛ぶ
+N	militarize|mobilize	militarize は地域を「軍事化する」。mobilize は軍隊を「動員する」
+N	demilitarize|militarize	militarize は「軍事化する」、demilitarize は「非武装化する」
+N	demilitarized|militarized	militarized は「軍事化された」、demilitarized は「非武装の」
+N	imitation|mimicry	mimicry は「物まね」や生き物の「擬態」。imitation は「まね・模倣」
+N	minion|underling	minion は悪者の「手下」（ばかにした言い方）。underling は「下っぱ」
+N	henchman|minion	minion は「子分」。henchman はボスに忠実な「腹心の手下」
+N	boss|minion	minion は「手下」、boss は「親分」
+N	hallucination|mirage	mirage は砂漠などの「蜃気楼（しんきろう）」や「幻」。hallucination は病気などによる「幻覚」
+N	mirage|reality	mirage は「幻」、reality は「現実」
+N	merriment|mirth	mirth は「楽しい笑い」の文学的な語。merriment は「陽気なにぎわい」
+N	glee|mirth	mirth はみんなの「笑いさざめき」。glee は「大はしゃぎ」
+N	mirth|sorrow	mirth は「笑い・陽気さ」、sorrow は「悲しみ」
+N	misconception|misunderstanding	misconception は多くの人が持つ「まちがった考え」。misunderstanding は人どうしの「誤解・行きちがい」
+N	misconception|understanding	misconception は「誤った理解」、understanding は「正しい理解」
+N	misery|suffering	misery は「みじめさ・不幸」。suffering は「苦しみ」
+N	misery|wretchedness	misery は「悲惨さ」。wretchedness は「みじめな状態」
+N	happiness|misery	misery は「みじめさ」、happiness は「幸せ」
+N	bad luck|misfortune	misfortune は「不運・災難」のかたい語。bad luck は「運の悪さ」
+N	adversity|misfortune	misfortune は「不幸な出来事」。adversity は長く続く「逆境」
+N	fortune|misfortune	misfortune は「不運」、fortune は「幸運」
+N	misguide|mislead	misguide は「まちがった方向へ導く」。mislead は「誤解させる・だます」
+N	deceive|misguide	misguide は「誤らせる」。deceive は「わざとだます」
+N	guide|misguide	misguide は「誤って導く」、guide は「導く」
+N	mishandle|mismanage	mishandle は物や問題の「扱いを誤る」。mismanage は会社などの「運営を誤る」
+N	handle|mishandle	mishandle は「扱いをまちがえる」、handle は「うまく扱う」
+N	misinterpret|misunderstand	misinterpret は意味を「取りちがえる」。misunderstand は「誤解する」
+N	interpret|misinterpret	misinterpret は「誤って解釈する」、interpret は「解釈する」
+N	guide|mislead	mislead は「誤った方へ導く」、guide は「導く」
+N	confusing|misleading	misleading は「誤解を招く」（わざとの場合もある）。confusing は「分かりにくい」
+N	accurate|misleading	misleading は「誤解を招く」、accurate は「正確な」
+N	bungle|mismanage	mismanage は組織を「うまく運営できない」。bungle は「へまをしてしくじる」
+N	manage|mismanage	mismanage は「運営を誤る」、manage は「うまく管理する」
+N	ill-suited|mismatched	mismatched は色などが「ちぐはぐな」。ill-suited は目的に「向いていない」
+N	missing|present	missing は「行方不明の・欠けている」、present は形容詞で「その場にいる・ある」
+N	maltreat|mistreat	mistreat は人や動物を「虐待する・ひどく扱う」。maltreat も同じ意味のかたい語
+N	care for|mistreat	mistreat は「ひどく扱う」、care for は「大事に世話する」
+N	mistake|misunderstand	misunderstand は相手の言うことを「誤解する」。mistake は「取りちがえる」（mistake A for B）
+N	misunderstanding|mix-up	misunderstanding は「誤解・行きちがい」。mix-up は物や予定の「取りちがえ」
+N	misunderstanding|understanding	misunderstanding は「誤解」、understanding は「理解」
+N	mock|praise	mock は「からかう・ばかにする」、praise は「ほめる」
+I	mock|curr1900_idm_pre2_make_fun_of	make fun of は「からかう」のふつうの言い方。mock はまねをして「ばかにする」
+N	mockery|ridicule	mockery は「物笑いの種」や「茶番」（a mockery of justice）。ridicule は「あざけり」
+N	mockery|respect	mockery は「あざけり」、respect は「敬意」
+N	derisive|mocking	mocking は「ばかにしたような」（a mocking smile）。derisive は「あざ笑う」かたい語
+N	mocking|scornful	mocking は「からかうような」。scornful は「軽蔑した」
+N	mocking|respectful	mocking は「ばかにした」、respectful は「敬意のある」
+N	moderately|reasonably	moderately は「ほどほどに・適度に」。reasonably は「かなり・無理のない程度に」
+N	moderation|temperance	moderation は食べすぎないなどの「ほどほど・節度」（in moderation）。temperance は「節制」や「禁酒」
+N	excess|moderation	moderation は「ほどほど」、excess は「やりすぎ」
+N	component|module	module はまとまった「単位・部品」や講座の「単元」。component は「構成部品・要素」
+N	dry|moist	moist は「しっとりした・湿った」（よい意味にも使う）、dry は「乾いた」
+N	mold|shape	mold は粘土などを「型で形作る」。shape は「形作る」と広く言う
+N	form|mold	mold は「型にはめて作る」。form は「作り上げる・形成する」
+N	atomic|molecular	molecular は「分子の」。atomic は「原子の」
+N	monitoring|surveillance	monitoring は数値などの「観測・見守り」。surveillance は人の「監視」
+N	monotonous|tedious	monotonous は声や作業が「単調な」。tedious は長くて「退屈な」
+N	monotonous|repetitive	monotonous は「変化がなくつまらない」。repetitive は「くり返しが多い」
+N	monotonous|varied	monotonous は「単調な」、varied は「変化に富んだ」
+N	monotony|tedium	monotony は変化のない「単調さ」。tedium は「退屈さ」
+N	monotony|sameness	monotony は「単調な毎日」。sameness は「どれも同じであること」
+N	monotony|variety	monotony は「単調さ」、variety は「変化・多様さ」
+N	moody|temperamental	moody は「気分が変わりやすい」や「不機嫌な」。temperamental は人や機械が「気まぐれな」
+N	moody|sullen	moody は「むら気な」。sullen は「むっつりふくれた」
+N	even-tempered|moody	moody は「気分屋の」、even-tempered は「落ち着いた性格の」
+N	ethics|morality	morality は「道徳（心）・善悪の考え」。ethics は「倫理（学）」や職業の「倫理」
+I	moreover|curr_idm_pre1_in_addition	in addition は「さらに」のふつうの言い方。moreover は「その上」のかたい語
+I	moreover|curr1900_idm_pre1_what_is_more	what is more は「さらに（大事なことに）」。moreover は「その上」のかたい語
+N	fool|moron	moron は「大ばか」のきつい悪口。fool は「ばか者」
+N	genius|moron	moron は「ばか」、genius は「天才」
+N	morose|sullen	morose は「不機嫌で口数が少ない」。sullen は「ふてくされた」
+N	cheerful|morose	morose は「むっつりした」、cheerful は「明るい」
+N	fatal|mortal	mortal は「死ぬ運命の」や、傷が「致命的な」（a mortal wound）。fatal は「命を奪う」
+N	death rate|mortality	mortality は「死亡率」（infant mortality）や「死ぬ運命」。death rate は「死亡率」のふつうの言い方
+N	embarrassed|mortified	mortified は「穴があったら入りたいほど恥ずかしい」。embarrassed は「恥ずかしい」
+N	mortified|proud	mortified は「恥じ入った」、proud は「誇らしい」
+N	humiliate|mortify	mortify は「ひどく恥をかかせる」。humiliate は人前で「恥をかかせる」
+N	embarrass|mortify	mortify は「死ぬほど恥ずかしい思いをさせる」。embarrass は「恥ずかしい思いをさせる」
+N	honor|mortify	mortify は「恥をかかせる」、honor は「名誉を与える」
+N	drive|motivation	motivation は「やる気・動機づけ」。drive は目標に向かう「意欲」
+N	apathy|motivation	motivation は「やる気」、apathy は「無関心」
+N	hill|mound	mound は土や砂の「小山・盛り土」。hill は「丘」
+N	hollow|mound	mound は「盛り上がり」、hollow は「くぼみ」
+N	doleful|mournful	mournful は「悲しそうな」（a mournful howl）。doleful は「しょんぼりした」
+N	cheerful|mournful	mournful は「悲しげな」、cheerful は「明るい」
+N	movable|portable	movable は机などが「動かせる」。portable は「持ち運べる」
+N	fixed|movable	movable は「動かせる」、fixed は「固定された」
+N	clarify|muddle	muddle は「ごちゃまぜにする・混乱させる」、clarify は「はっきりさせる」
+N	municipality|township	municipality は市町村などの「自治体」。township はアメリカなどの「郡区・町」
+N	borough|municipality	municipality は「自治体」と広く言う。borough は大都市の「区」
+N	murky|obscure	murky は水が「濁った」や、事情が「不明瞭な・うさんくさい」。obscure は「分かりにくい」
+N	clear|murky	murky は「濁った」、clear は「澄んだ」
+N	murmur|whisper	murmur は「小声でつぶやく」や、川などが「さらさら鳴る」。whisper は「ささやく」
+N	mutate|transform	mutate は遺伝子が「突然変異する」。transform は「すっかり変える」
+N	alter|mutate	mutate は「変異する」。alter は「(一部を)変える」
+N	legend|mythology	mythology は一つの民族の「神話（全体）」。legend は一つの「伝説」
+N	folklore|mythology	mythology は神々の「神話」。folklore は民間の「言い伝え・民話」
+N	narration|storytelling	narration は映像などの「ナレーション・語り」。storytelling は「物語を話すこと」
+N	narration|recital	narration は「語り」。recital は詩などの「朗読」や音楽の「独奏会」
+N	narrative|story	narrative は筋のある「物語・話の流れ」のかたい語。story は「物語・話」
+N	account|narrative	narrative は「物語（の語り）」。account は出来事の「報告・説明」
+N	narrator|storyteller	narrator は物語の「語り手・ナレーター」。storyteller は「物語をする人・話し上手」
+N	constriction|narrowing	narrowing は道などが「狭くなること」。constriction は「締めつけ・収縮」
+N	narrowing|reduction	narrowing は差などが「縮まること」。reduction は量の「削減」
+N	narrowness|tightness	narrowness は道などの「狭さ」。tightness は「きつさ・窮屈さ」
+N	narrowness|parochialism	narrowness は心の「狭さ」にも使う。parochialism は「視野の狭い考え方」
+N	nasty|unpleasant	nasty は「ひどくいやな」と強い（a nasty shock）。unpleasant は「不愉快な」
+N	malicious|nasty	nasty は「意地悪な・いやな」。malicious は「悪意のある」
+N	nasty|pleasant	nasty は「ひどくいやな」、pleasant は「心地よい」
+N	local|nationwide	nationwide は「全国規模の」、local は「地元の」
+N	marine|naval	naval は「海軍の」（a naval base）。marine は「海の」や「海兵隊の」
+N	impassable|navigable	navigable は川が「船で通れる」、impassable は「通れない」
+N	navigation|piloting	navigation は船や飛行機の「航行・進路を決めること」。piloting は「操縦」
+N	navigation|steering	navigation は「航法・ナビ」。steering は「かじ取り・ハンドル操作」
+N	navigator|pilot	navigator は進路を決める「航海士」。pilot は飛行機を操縦する「パイロット」
+N	necessitate|require	necessitate は物事が「(結果として)必要にさせる」かたい語。require は「必要とする」
+N	demand|necessitate	necessitate は「必要にさせる」。demand は仕事などが「(力を)要する」
+N	destitute|needy	needy は「生活に困っている」（needy children）。destitute は「何も持たないほど貧しい」
+N	impoverished|needy	needy は「困窮した」。impoverished は「貧しくなった」
+N	affluent|needy	needy は「貧しい」、affluent は「裕福な」
+N	careless|negligent	negligent は仕事などで「なすべき注意を怠った」（法律の語にもなる）。careless は「不注意な」
+N	diligent|negligent	negligent は「怠慢な」、diligent は「勤勉な」
+N	adjacent|neighboring	neighboring は「近くの・隣の」（neighboring schools）。adjacent は「すぐ隣接した」
+N	distant|neighboring	neighboring は「近隣の」、distant は「遠い」
+N	agile|nimble	nimble は指や足が「すばしこい・器用な」。agile は体が「身軽な」
+N	nimble|quick	nimble は「身軽で素早い」。quick は「速い」
+N	clumsy|nimble	nimble は「機敏な」、clumsy は「不器用な」
+N	nomad|wanderer	nomad は家畜と移り住む「遊牧民」。wanderer は「さすらう人」
+N	drifter|nomad	nomad は「遊牧民」や「あちこち移る人」。drifter は「流れ者」
+N	appointment|nomination	nomination は候補への「指名・推薦」や、賞の「ノミネート」。appointment は役職への「任命」
+N	nomination|selection	nomination は「候補に挙げること」。selection は「選ぶこと・選抜」
+N	nevertheless|nonetheless	nonetheless と nevertheless はどちらも「それにもかかわらず」のかたい語でほぼ同じ
+N	however|nonetheless	nonetheless は「それでもやはり」。however は「しかしながら」
+N	factual writing|nonfiction	nonfiction は「ノンフィクション（実話の本）」。factual writing は「事実を書いた文章」
+N	nonreligious|secular	nonreligious は「宗教と関係のない」。secular は「世俗の」のかたい語
+N	nonreligious|religious	nonreligious は「非宗教の」、religious は「宗教の」
+N	longing|nostalgia	nostalgia は過去を「懐かしむ気持ち」。longing は「あこがれ・恋しさ」
+N	nostalgia|reminiscence	nostalgia は「懐かしさ」。reminiscence は昔の「思い出話」
+N	nosy|prying	nosy は「詮索（せんさく）好きな」くだけた語。prying は人のことを「のぞき見る」
+N	inquisitive|nosy	nosy は人のことを「知りたがる」（悪い意味）。inquisitive は「好奇心の強い」
+N	discreet|nosy	nosy は「詮索（せんさく）好きな」、discreet は「控えめな」
+N	notably|remarkably	notably は「特に・とりわけ」（例を挙げる）。remarkably は「驚くほど」
+N	notably|particularly	notably は「中でも目立って」。particularly は「特に」
+N	insignificantly|notably	notably は「著しく」、insignificantly は「わずかに」
+N	nothingness|void	nothingness は「何もないこと・虚無」。void は「空白・何もない空間」
+N	emptiness|nothingness	nothingness は「虚無・無」。emptiness は「むなしさ・空っぽ」
+N	existence|nothingness	nothingness は「無」、existence は「存在」
+N	announcement|notices	notices は掲示などの「お知らせ」。announcement は「発表・告知」
+N	notices|warnings	notices は「通知・掲示」。warnings は「警告」
+N	alert|notification	notification はアプリなどの「通知」や、役所への「届け出」。alert は危険の「警報」
+N	announcement|notification	notification は個人への「通知」。announcement はみんなへの「発表」
+N	alert|notify	notify は正式に「通知する・知らせる」（notify A of B）。alert は危険を「知らせる・警告する」
+N	conceal|notify	notify は「知らせる」、conceal は「隠す」
+N	despite|notwithstanding	notwithstanding は「〜にもかかわらず」のかたい語で、法律の文章で使う。despite はふつうの語
+I	notwithstanding|curr_idm_1_for_all	for all は「〜があるのに」。notwithstanding はかたい語
+I	notwithstanding|exam_idm_in_spite_of	in spite of は「〜にもかかわらず」のふつうの言い方。notwithstanding はかたい語
+I	notwithstanding|curr1900_idm_2_with_all	with all は「〜があるにもかかわらず」。notwithstanding はかたい語
+N	nourishing|nutritious	nourishing は食べ物が「体に栄養をつける」。nutritious は「栄養価の高い」
+N	nourishing|wholesome	nourishing は「栄養になる」。wholesome は「健康によい・健全な」
+N	nourishing|unhealthy	nourishing は「栄養になる」、unhealthy は「体に悪い」
+N	nourishment|nutrition	nourishment は食べ物などの「栄養・滋養」。nutrition は「栄養（学）」
+N	nourishment|sustenance	nourishment は「栄養」。sustenance は命をつなぐ「食べ物・糧（かて）」
+N	nourishment|starvation	nourishment は「栄養」、starvation は「飢え」
+N	nuance|subtlety	nuance は意味や色の「わずかなちがい・ニュアンス」。subtlety は「微妙さ・繊細さ」
+N	nuance|shade	nuance は「微妙な意味合い」。shade も shades of meaning で「微妙なちがい」
+N	null|void	null と void はどちらも「無効の」。null and void で「まったく無効の」
+N	null|valid	null は「無効の」、valid は「有効な」
+N	cancel|nullify	nullify は効果を「帳消しにする」や、契約を「無効にする」。cancel は予定を「取り消す」
+N	nullify|validate	nullify は「無効にする」、validate は「有効にする」
+N	nourishment|nutrient	nutrient はたんぱく質などの一つひとつの「栄養素」。nourishment は「栄養」全体
+N	nutritious|wholesome	nutritious は「栄養価の高い」。wholesome は「体によい・健全な」
+N	nutritious|unhealthy	nutritious は「栄養のある」、unhealthy は「体に悪い」
+N	oath|vow	oath は法廷などでの正式な「誓い・宣誓」（take an oath）。vow は個人的な「かたい誓い」
+N	oath|pledge	oath は「宣誓」。pledge は公にする「誓約・約束」
+N	obese|overweight	obese は医学的に「肥満の」。overweight は「太りすぎの」
+N	corpulent|obese	obese は「肥満の」のふつうの語。corpulent は「でっぷり太った」かたい語
+N	obese|slim	obese は「肥満の」、slim は「ほっそりした」
+N	obesity|slimness	obesity は「肥満」、slimness は「ほっそりしていること」
+N	objectionable|offensive	objectionable は言葉などが「不快な・好ましくない」かたい語。offensive は「気分を害する」
+N	objectionable|unacceptable	objectionable は「異議のある」。unacceptable は「受け入れられない」
+N	agreeable|objectionable	objectionable は「不快な」、agreeable は「感じのよい」
+N	duty|obligation	obligation は約束や法律で生じる「義務」（under no obligation）。duty は果たすべき「義務・職務」
+N	obligation|responsibility	obligation は「しなければならないこと」。responsibility は「責任」
+N	compelled|obliged	obliged は規則などで「〜しなければならない」（be obliged to do）や、「感謝している」。compelled は「強いられた」
+N	free|obliged	obliged は「義務がある」、free は「自由な」
+N	oblique|slanting	oblique は線などが「斜めの」や、言い方が「遠回しの」。slanting は「傾いた」
+N	direct|oblique	oblique は「遠回しの」、direct は「直接の」
+N	destroy|obliterate	obliterate は跡形もなく「消し去る」。destroy は「破壊する」
+N	erase|obliterate	obliterate は町などを「完全に消し去る」。erase は字などを「消す」
+N	oblivion|obscurity	oblivion は「忘れ去られること」（fade into oblivion）。obscurity は「無名」
+N	nothingness|oblivion	oblivion は「忘却」や「意識のない状態」。nothingness は「無」
+N	fame|oblivion	oblivion は「忘れられること」、fame は「名声」
+N	heedless|oblivious	oblivious は周りに「まったく気づかない」（oblivious to）。heedless は注意を「払わない」
+N	aware|oblivious	oblivious は「気づかない」、aware は「気づいている」
+N	lewd|obscene	obscene は「わいせつな」や、金額などが「ひどすぎる」。lewd は「みだらな」
+N	decent|obscene	obscene は「下品な」、decent は「きちんとした」
+N	obstinate|stubborn	obstinate は「強情な」のかたい語。stubborn は「頑固な」のふつうの語
+N	inflexible|obstinate	obstinate は「言うことを聞かない」。inflexible は「融通のきかない」
+N	flexible|obstinate	obstinate は「強情な」、flexible は「柔軟な」
+N	hindered|obstructed	obstructed は視界などが「さえぎられた」。hindered は「妨げられた」
+N	clear|obstructed	obstructed は「さえぎられた」、clear は「さえぎるもののない」
+N	helpful|obstructive	obstructive は「じゃまをする」、helpful は「力になる」
+N	event|occurrence	occurrence は「起こること・出来事」のかたい語（a rare occurrence）。event は「出来事・行事」
+N	incident|occurrence	occurrence は「発生」。incident は事故などの「事件」
+N	oceanic|terrestrial	oceanic は「大洋の」、terrestrial は「陸の」
+N	insult|offend	offend は「気を悪くさせる」。insult は「侮辱する」とわざとの感じが強い
+N	offend|upset	offend は言葉などで「気分を害する」。upset は「動揺させる・悲しませる」
+N	offend|please	offend は「怒らせる」、please は動詞で「喜ばせる」
+N	officially|unofficially	officially は「公式に」、unofficially は「非公式に」
+N	miss|omit	omit は「(わざと・うっかり)省く」かたい語。miss は「見落とす・抜かす」
+I	omit|curr_idm_pre2_leave_out	leave out は「省く・入れ忘れる」話し言葉。omit はかたい語
+N	onlooker|spectator	onlooker はたまたま「見ている人・野次馬」。spectator は試合などの「観客」
+N	onlooker|participant	onlooker は「見ている人」、participant は「参加している人」
+N	beginning|onset	onset は冬や病気の「始まり」（悪いことが多い）。beginning は「始まり」
+N	onset|start	onset は病気などの「発症」。start は「開始」
+N	end|onset	onset は「始まり」、end は「終わり」
+N	cloudy|opaque	opaque は光を「通さない・不透明な」。cloudy は液体が「濁った」
+N	opaque|transparent	opaque は「不透明な」、transparent は「透明な」
+N	opposition|resistance	opposition は計画への「反対」や「野党」。resistance は「抵抗」
+N	objection|opposition	opposition は大勢の「反対（運動）」。objection は一つの「異議」
+N	opposition|support	opposition は「反対」、support は「支持」
+N	oppressive|tyrannical	oppressive は政府が「抑圧的な」や、暑さが「重苦しい」。tyrannical は「暴君のような」
+N	harsh|oppressive	oppressive は「押しつぶすような」。harsh は「過酷な」
+N	lenient|oppressive	oppressive は「抑圧的な」、lenient は「寛大な」
+N	ideal|optimal	optimal は条件が「最適の」かたい語。ideal は「理想的な」
+N	best|optimal	optimal は「(条件の中で)最もよい」。best は「最もよい」
+N	optimal|suboptimal	optimal は「最適の」、suboptimal は「最適でない」
+N	optimization|refinement	optimization は「最適化」。refinement は細かな「改良」
+N	circling|orbital	orbital は天体の「軌道の」（orbital speed）。circling は「ぐるぐる回る」
+N	orderly|tidy	orderly は列などが「整然とした」や、人が「規律正しい」。tidy は部屋などが「片づいた」
+N	ordinance|regulation	ordinance は市町村の「条例」。regulation は「規則・規制」
+N	law|ordinance	ordinance は地方の「条例」。law は国の「法律」
+N	align|orient	orient は向きを「合わせる」や、新人を「慣れさせる」（orient A to B）。align は「一直線にそろえる」
+N	adjust|orient	orient は新しい環境に「慣れさせる」。adjust は「調整する・順応する」
+N	inventiveness|originality	originality は「独創性」。inventiveness は「発明する力」
+N	imitation|originality	originality は「独創性」、imitation は「まね」
+N	formerly|originally	originally は「もとは・はじめは」（その後変わった）。formerly は「以前は」
+N	finally|originally	originally は「はじめは」、finally は「最後には」
+N	fluctuate|oscillate	oscillate は振り子のように「行ったり来たり揺れる」。fluctuate は値段が「上下する」
+N	oscillate|stabilize	oscillate は「揺れ動く」、stabilize は「安定する」
+N	fluctuation|oscillation	oscillation は規則的な「揺れ・振動」。fluctuation は不規則な「変動」
+N	apparently|ostensibly	ostensibly は「表向きは（実は別の理由で）」。apparently は「どうやら」
+N	ostensibly|supposedly	ostensibly は「うわべは」。supposedly は「〜ということになっている」
+N	genuinely|ostensibly	ostensibly は「表向きは」、genuinely は「本当に」
+N	expel|oust	oust は人を地位から「追い出す・失脚させる」。expel は学校などから「追放する」
+N	install|oust	oust は「追い出す」、install は「就任させる」
+N	antiquate|outdate	outdate は新しいものが古いものを「時代遅れにする」。antiquate も「古くさくする」かたい語
+N	outdate|supersede	outdate は「古くする」。supersede は新しいものが「取って代わる」
+N	modernize|outdate	outdate は「時代遅れにする」、modernize は「近代化する」
+N	outdo|surpass	outdo は競って「相手に勝る」（outdo each other）。surpass は記録などを「上回る」
+N	exceed|outdo	outdo は「負けないよう上を行く」。exceed は数量を「超える」
+N	lag|outdo	outdo は「勝る」、lag は「遅れをとる」
+N	outlast|survive	outlast は「〜より長く持つ」。survive は「生き残る」
+N	endure|outlast	outlast は「〜より長く続く」。endure は「耐える・持ちこたえる」
+N	expenditure|outlay	outlay は事業を始めるときなどの「出費」。expenditure は「支出」全体
+N	cost|outlay	outlay は「支出額」。cost は「費用・値段」
+N	income|outlay	outlay は「出費」、income は「収入」
+N	outlive|survive	outlive は「〜より長生きする」。survive は「生き残る」や「〜より長生きする」
+N	outlast|outlive	outlive は人が「〜より長生きする」。outlast は物が「〜より長持ちする」
+N	completely|outright	outright は「きっぱりと・完全に」（refuse outright）。completely は「完全に」
+N	openly|outright	outright は「あからさまに」。openly は「隠さずに」
+N	outright|partly	outright は「完全に」、partly は「部分的に」
+N	frank|outspoken	outspoken は意見を「はっきり言う」（an outspoken critic）。frank は「率直な」
+N	candid|outspoken	outspoken は「遠慮なく言う」。candid は「率直で正直な」
+N	outspoken|reticent	outspoken は「率直にものを言う」、reticent は「口数の少ない」
+N	acclaim|ovation	ovation はその場の「大きな拍手・喝采（かっさい）」（a standing ovation）。acclaim は世間の「称賛」
+N	booing|ovation	ovation は「大喝采（かっさい）」、booing は「ブーイング」
+N	exaggerate|overdo	overdo は「やりすぎる」（overdo it）や、料理を「焼きすぎる」。exaggerate は「大げさに言う」
+N	overdo|overstate	overdo は行動が「度を越す」。overstate は言葉で「大げさに言う」
+N	overdo|underdo	overdo は「やりすぎる」、underdo は「やり足りない・生焼けにする」
+N	gluttony|overeating	overeating は「食べすぎ」のふつうの語。gluttony は「暴食」（道徳的に悪いとする語）
+N	bingeing|overeating	overeating は「食べすぎ」。bingeing は一度に「どか食いすること」
+N	moderation|overeating	overeating は「食べすぎ」、moderation は「ほどほど」

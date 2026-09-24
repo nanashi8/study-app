@@ -533,6 +533,7 @@ export const HOMOGRAPH_WORDS = Object.freeze([
     meaning: '健全な・しっかりした・(眠りが)深い',
     example: Object.freeze({ en: 'She gave me some sound advice.', ja: '彼女は私にしっかりした助言をくれた。' }),
     usage: 'safe and sound（無事に）、sound asleep（ぐっすり眠って）の形でもよく使う。「音」の sound とは同じつづりの別の語。',
+    linkedFrom: Object.freeze(['fallacious']),
     etymology: Object.freeze({ note: '古英語 gesund(無事な・健康な)から。音の sound(ラテン語 sonus)とは別の語。' }),
   }),
   Object.freeze({
