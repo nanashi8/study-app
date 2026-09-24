@@ -304,6 +304,53 @@ test('図の数は操作値と数学的に一致する（中学：確率・箱�
   }
 })
 
+test('図の数は操作値と数学的に一致する（高校：集合・三角比・相関・組合せ・互除法・複素数・対数・e）', () => {
+  // 集合：1〜20 の2の倍数A・3の倍数B。
+  assert.match(render('mh-sets', { op: 'and', n: 20 }), /data-venn-count="3"/)
+  assert.match(render('mh-sets', { op: 'or', n: 20 }), /data-venn-count="13"/)
+  assert.match(render('mh-sets', { op: 'notA', n: 20 }), /data-venn-count="10"/)
+  assert.match(render('mh-sets', { op: 'notAnd', n: 30 }), /data-venn-count="25"/)
+  const sets = MATH_HISTORY_CHAPTERS.find((chapter) => chapter.id === 'mh-sets')
+  assert.equal(sets.visual.formula({ op: 'or', n: 20 }), 'n(A\\cup B)=n(A)+n(B)-n(A\\cap B)=10+6-3=13')
+
+  // 三角比：h＝d tanθ。45°なら距離と同じ。
+  assert.match(render('mh-trig', { d: 30, theta: 45 }), /data-trig-height="30"/)
+  assert.match(render('mh-trig', { d: 20, theta: 60 }), /data-trig-height="34.6"/)
+
+  // 相関係数：4つの例のデータの r。
+  const expected = { height: '0.58', ice: '0.95', heating: '-0.92', birthday: '-0.07' }
+  for (const [data, r] of Object.entries(expected)) {
+    assert.match(render('mh-correlation', { data, view: 'mean' }), new RegExp(`data-correlation-r="${r}"`), data)
+  }
+
+  // パスカルの三角形：nCr と、上の2つの和。
+  assert.match(render('mh-pascal', { n: 10, r: 5 }), /data-pascal-value="252"/)
+  assert.match(render('mh-pascal', { n: 4, r: 2 }), /data-pascal-value="6"/)
+  assert.match(render('mh-pascal', { n: 3, r: 5 }), /data-pascal-value="0"/)
+  const pascal = MATH_HISTORY_CHAPTERS.find((chapter) => chapter.id === 'mh-pascal')
+  assert.match(pascal.visual.insight({ n: 6, r: 2 }), /15通り。上の段の 5 と 10 をたした数/)
+
+  // 互除法：最大公約数と、切り取った正方形の数（商の合計）。
+  assert.match(render('mh-cipher', { pair: '42-30', step: 6 }), /data-euclid-gcd="6" data-euclid-squares="5"/)
+  assert.match(render('mh-cipher', { pair: '21-13', step: 6 }), /data-euclid-gcd="1" data-euclid-squares="7"/)
+  assert.match(render('mh-cipher', { pair: '24-18', step: 1 }), /data-euclid-squares="1"/)
+
+  // 複素数：(a+bi)×i＝−b＋ai、×(1＋i)＝(a−b)＋(a＋b)i。
+  assert.match(render('mh-complex', { a: 3, b: 2, times: 'i' }), /data-complex-result="-2,3"/)
+  assert.match(render('mh-complex', { a: 2, b: 1, times: 'minus' }), /data-complex-result="-2,-1"/)
+  assert.match(render('mh-complex', { a: 2, b: 1, times: 'onePlusI' }), /data-complex-result="1,3"/)
+  const complex = MATH_HISTORY_CHAPTERS.find((chapter) => chapter.id === 'mh-complex')
+  assert.equal(complex.visual.formula({ a: 3, b: -2, times: 'i' }), '(3-2i)\\times i=2+3i')
+
+  // 計算尺：a×b。
+  assert.match(render('mh-logarithm', { a: 2.5, b: 3 }), /data-slide-product="7.5"/)
+
+  // e：(1＋1/n)^n。
+  assert.match(render('mh-compound', { n: 1 }), /data-compound-value="2"/)
+  assert.match(render('mh-compound', { n: 12 }), /data-compound-value="2.61304"/)
+  assert.match(render('mh-compound', { n: 8760 }), /data-compound-value="2.71813"/)
+})
+
 test('テストの全問で、正解は1つ・選択肢3つに説明があり、画面は毎回並びを入れかえて全選択肢の説明を出す', () => {
   const ids = MATH_HISTORY_QUESTIONS.map((question) => question.id)
   assert.equal(new Set(ids).size, ids.length)

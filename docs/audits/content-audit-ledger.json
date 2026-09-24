@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-09-24T12:41:47.852Z",
+  "auditedAt": "2026-09-24T12:52:13.670Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -8,11 +8,11 @@
   "scope": {
     "sourceOfTruth": "src/lib/learningContentProgress.js#LEARNING_CONTENTS",
     "categoryCount": 19,
-    "learningItemCount": 17670,
-    "quizItemCount": 17984,
-    "storedAndGeneratedQuestionPathCount": 5248,
-    "storedAndGeneratedChoicePathCount": 20387,
-    "overallContentSha256": "f501e47bf869075963c41d05c0a4fc3806f3aa03f1fbc69caa2c6c8cf0ae3c91"
+    "learningItemCount": 17678,
+    "quizItemCount": 18015,
+    "storedAndGeneratedQuestionPathCount": 5279,
+    "storedAndGeneratedChoicePathCount": 20480,
+    "overallContentSha256": "172a58852c66268c8a7df34b6f2fc63d36fa8b89e3299c088db3b7cf03cb189d"
   },
   "completionCriteria": [
     "全19教材カテゴリのID・母数・重複・内容ハッシュが一致する",
@@ -108,7 +108,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "86662b1c44e384f44a9c23f9748c9b0e3a8e88d108620e31c2f603a80d6f1c54",
+    "sha256": "5f3e664c8b059f4e4ed79e551082c5a8dafc36c5071ce54c711f554c17163fd4",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -738,11 +738,11 @@
       "label": "数学の歴史",
       "learningUnit": "話",
       "quizUnit": "問",
-      "learningItemCount": 50,
-      "quizItemCount": 174,
-      "learningIdOrderSha256": "f95b2ad95c7e796c2ecc48035cc526de2a271bb0b0f8316628d3eae43252fbec",
-      "quizIdOrderSha256": "7201d2ea9b9a2226d13707949a6d8f27a492a3b001e847955bfba5404a74f21c",
-      "contentSha256": "92155f9c53fbbc00b12483f1124c9533078b844b318c57c5f1d3e4a627987d04",
+      "learningItemCount": 58,
+      "quizItemCount": 205,
+      "learningIdOrderSha256": "b43b0a4d5c48d4822a75edfcbb7a1d3ae6c3fd2010c32293ae96e1078b2c6883",
+      "quizIdOrderSha256": "3fac6ea34515c831284d69f6cf36b6aad0b380442e6b3d23a65b3131837106a0",
+      "contentSha256": "7a16c3f4640ede64c73a00fb7bed2aaddcb0372861796a18b97eec5417d789ac",
       "auditGateIds": [
         "inventory",
         "coreData",
@@ -904,11 +904,11 @@
     {
       "id": "math-history",
       "label": "数学の歴史",
-      "questionCount": 174,
-      "choiceCount": 522,
-      "generalRationaleCount": 174,
-      "choiceSpecificRationaleCount": 522,
-      "questionSetSha256": "4a7af99d749cb2d20da5bcea45b9f98ec8a7e37c98c1b349008837fbf006053c",
+      "questionCount": 205,
+      "choiceCount": 615,
+      "generalRationaleCount": 205,
+      "choiceSpecificRationaleCount": 615,
+      "questionSetSha256": "050f9b17dcea5652afa0669b5ed254136e25821ce5b7d93ac8854a3d8e40e9f1",
       "result": "pass",
       "failureCount": 0,
       "failures": []
