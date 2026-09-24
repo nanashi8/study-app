@@ -1,0 +1,146 @@
+{
+  "id": "2026-09-24-classics-enrich",
+  "title": "古典単語・古典文法・漢語・漢文法を充実させ、古典は活用つきで体系的に、仲間でまとめて暗記できるようにし、使い分け・時代背景を解説する",
+  "asked": [
+    "古典単語・古典文法、漢語・漢文法を充実させなさい。また、古典は活用等も載せて体系的に、英単語のようにまとめて覚えられるようにしなさい。使い分けや時代背景等が関連する場合、学習の参考なるものは解説もしなさい。"
+  ],
+  "status": "done",
+  "criteria": [
+    {
+      "id": "koten-vocab-master",
+      "text": "古典単語を大学入試の必修範囲まで増やす。必修語リスト（心情・評価・人柄・程度と呼応の副詞・動作・敬語動詞の全語・時と暦（月の異名・時刻）・住まいと宮廷・恋愛と結婚・仏教と信仰・死と出家の言い方・連語と慣用表現・助動詞と助詞）を docs/audits/classics-coverage.json に書き、全件を見出し語として持つ（意味・覚え方・用例と現代語訳つき）",
+      "population": "古典単語の必修語リストの全件（既存300語を含む）",
+      "check": "node --test tests/classics-koten-vocab-master.test.mjs",
+      "status": "done",
+      "result": "必修語リスト612語中612語が見出し語（既存300語＋追加312語、13分類）。全語に意味・覚え方・用例と現代語訳。"
+    },
+    {
+      "id": "koten-vocab-conjugation",
+      "text": "活用する古典単語（動詞・形容詞・形容動詞・助動詞）の全件に、活用の種類（動詞は行も）と6活用形の活用表を持たせ、暗記カードの裏・辞書ページに表で出す。活用の種類が2つある語（頼む・給ふ・かづく など）は両方の表と意味の違いを出す",
+      "population": "全古典単語のうち活用する語の全件（着手時 既存300語中219語＋追加分）",
+      "check": "node --test tests/classics-koten-vocab-conjugation.test.mjs",
+      "status": "done",
+      "result": "活用する語371語中371語に活用の種類と6活用形の表（動詞は行つき）。活用の種類が2つある10語（頼む・給ふ・かづく など）は両方の表と意味の違い。暗記カードの裏・辞書ページ・答え合わせに表で出す。"
+    },
+    {
+      "id": "koten-vocab-kanji-level",
+      "text": "全古典単語に漢字表記（慣用の漢字がない語は空と明記）と重要度（中学・高校基礎・共通テスト・難関・最難関の5段階）を持たせ、古典単語のトップの「レベルから選ぶ」と学年・目標別コースをこの重要度で組む",
+      "population": "全古典単語（既存300語＋追加分）",
+      "check": "node --test tests/classics-koten-vocab-kanji-level.test.mjs",
+      "status": "done",
+      "result": "612語中612語に判断：漢字表記517語・慣用の漢字なし95語（空と明記）。重要度は612語すべて5段階。「レベルから選ぶ」5段と学年・目標別コースをこの重要度で組んだ。"
+    },
+    {
+      "id": "koten-vocab-groups",
+      "text": "全古典単語を「まとめて暗記する仲間」（似た意味・反対の意味・同じ語から生まれた語・敬語の対応・段階・場面テーマ）に1つ以上入れる。仲間ごとに使い分けの解説、語ごとにその仲間の中での意味の違いを書き、仲間ごとに暗記・テスト・一覧ができ、暗記カードの裏と辞書ページに仲間の語を出す",
+      "population": "全古典単語・全仲間",
+      "check": "node --test tests/classics-koten-vocab-groups.test.mjs",
+      "status": "done",
+      "result": "612語中612語が152組の仲間に1つ以上入る。仲間ごとの使い分けの解説と語ごとの位置づけ。仲間ごとに暗記・テスト・一覧、カードの裏・辞書ページ・答え合わせに仲間の語。"
+    },
+    {
+      "id": "koten-vocab-background",
+      "text": "全古典単語を1語ずつ読み、時代背景（宮廷と身分・恋愛と結婚・仏教と信仰・暦と時刻・住まいと装束・敬語と身分社会）が意味の理解に関わる語に時代背景の解説を書く。場面テーマの仲間（宮廷・恋愛・仏教・暦・住まい・死と出家）に入る語は全件に書く。書かない語もデータに background: null と判断を残す",
+      "population": "全古典単語",
+      "check": "node --test tests/classics-koten-vocab-background.test.mjs",
+      "status": "done",
+      "result": "612語すべてを読んで判断：時代背景あり213語・null 399語。場面テーマの仲間の語は全件に時代背景。"
+    },
+    {
+      "id": "koten-grammar-master",
+      "text": "古典文法を学校文法の全範囲まで増やす（用言の活用と活用形の用法・助動詞の全語・助詞6種の主な語（格・接続・副・係・終・間投）・敬語（本動詞と補助動詞・二方面への敬語・敬語から主語を決める）・識別・係り結び（省略・流れ・逆接）・呼応の副詞・和歌修辞・文の読み方）。必修項目リストを docs/audits/classics-coverage.json に書き、全件を項目として持つ",
+      "population": "古典文法の必修項目リストの全件（既存74項目を含む）",
+      "check": "node --test tests/classics-koten-grammar-master.test.mjs",
+      "status": "done",
+      "result": "必修項目リスト130項目中130項目（既存74＋追加56、14範囲）。"
+    },
+    {
+      "id": "koten-grammar-tables",
+      "text": "活用する文法項目（用言の活用・助動詞・敬語の補助動詞）の全件に活用表を表で持たせ、体系表（用言の活用一覧・助動詞一覧（接続別）・助詞一覧（種類別）・敬語動詞一覧（普通の語との対応））にまとめる。体系表ごとにまとめて暗記・テストでき、暗記カードの裏と文法辞典に表で出す",
+      "population": "活用する全文法項目・全体系表",
+      "check": "node --test tests/classics-koten-grammar-tables.test.mjs",
+      "status": "done",
+      "result": "活用する項目48項目中48項目に活用表。体系表10枚（用言の活用一覧・助動詞一覧（接続別）・助詞一覧（種類別）・敬語動詞一覧 ほか）に130項目すべてが入り、表ごとに暗記・テスト。カードの裏・文法辞典・答え合わせに表。"
+    },
+    {
+      "id": "koten-grammar-usage",
+      "text": "全古典文法項目を読み、紛らわしい相手がある項目（き・けり、つ・ぬ、たり・り、らむ・けむ・む、めり・なり、る・らるの4つの意味、尊敬・謙譲 など）に使い分けの解説を、歴史的な変化や身分社会などの背景が関わる項目に時代背景の解説を書く。書かない項目も null で判断を残す",
+      "population": "全古典文法項目",
+      "check": "node --test tests/classics-koten-grammar-usage.test.mjs",
+      "status": "done",
+      "result": "130項目すべてを読んで判断：使い分け130項目、時代背景52項目（null 78）。依頼に挙げた紛らわしい組は相手に触れて書いた。"
+    },
+    {
+      "id": "koten-grammar-questions",
+      "text": "全古典文法項目に、本文の中で見抜く文脈問題を1問以上持たせ、全選択肢の説明を書く（着手時に文脈問題がない16項目を含む）",
+      "population": "全古典文法項目（着手時 74項目中16項目に文脈問題なし＋追加分）",
+      "check": "node --test tests/classics-koten-grammar-questions.test.mjs",
+      "status": "done",
+      "result": "130項目中130項目に文脈問題（全264問）。全選択肢に説明。"
+    },
+    {
+      "id": "kanbun-vocab-master",
+      "text": "漢語を入試の重要語の範囲まで増やす（読みが問われる副詞・接続語、人称と指示の語、疑問・反語の語、意味が現代と違う名詞、身分と官職、思想の徳目、重要な動詞・形容詞）。必修語リストを docs/audits/classics-coverage.json に書き、全件を訓読文（送り仮名・返り点つき）・書き下し文・現代語訳つきで持つ",
+      "population": "漢語の必修語リストの全件（既存120語を含む）",
+      "check": "node --test tests/classics-kanbun-vocab-master.test.mjs",
+      "status": "done",
+      "result": "必修語リスト293語中293語（既存120語＋追加173語、依頼の7分類＋時・自然の基本語）。全語が訓読文（送り仮名・返り点つき）・書き下し文・現代語訳を持ち、訓読文と書き下し文は一字一致。"
+    },
+    {
+      "id": "kanbun-grammar-master",
+      "text": "漢文法を句法の全範囲まで増やす（訓読の決まり・置き字・返読文字・再読文字の全字・否定（二重否定・部分否定と全部否定・禁止）・使役・受身・疑問と反語（疑問詞と文末の字）・比較と選択・限定と累加・抑揚・仮定・願望・詠嘆・比況・倒置と強調・慣用の形（所以・所謂・以為・以A為B など））。必修項目リストを同じファイルに書き、全件を持つ",
+      "population": "漢文法の必修項目リストの全件（既存87項目を含む）",
+      "check": "node --test tests/classics-kanbun-grammar-master.test.mjs",
+      "status": "done",
+      "result": "必修項目リスト131項目中131項目（既存87＋追加44、依頼の17範囲）。再読文字は10字すべて（未・将・且・当・応・宜・須・猶・由・盍）。"
+    },
+    {
+      "id": "kanbun-groups-tables",
+      "text": "全漢語を仲間（同じ読みの字・読み分ける字・反対の意味・テーマ）に、全漢文法項目を体系表（再読文字・否定・疑問と反語・使役と受身・比較と選択・限定と累加・抑揚・仮定・願望と詠嘆・返読文字と置き字・書き下しで助動詞になる字とその活用）に1つ以上入れ、仲間・表ごとに使い分けの解説を書き、まとめて暗記・テストできるようにする",
+      "population": "全漢語・全漢文法項目",
+      "check": "node --test tests/classics-kanbun-groups-tables.test.mjs",
+      "status": "done",
+      "result": "漢語293語中293語が74組の仲間（同じ読みの字・読み分ける字・反対の意味・テーマ）に、漢文法131項目中131項目が13枚の体系表（依頼の11表＋訓読の決まり・慣用の形と倒置）に入る。書き下しで助動詞になる字の表に7つの活用表。仲間・表ごとに解説と暗記・テスト。"
+    },
+    {
+      "id": "kanbun-usage-background",
+      "text": "全漢語・全漢文法項目を読み、使い分け（同じ読み・似た形・似た句法との違い）と時代背景（思想・制度・歴史）が関わる項目に解説を書く。書かない項目も null で判断を残す",
+      "population": "全漢語・全漢文法項目",
+      "check": "node --test tests/classics-kanbun-usage-background.test.mjs",
+      "status": "done",
+      "result": "全424項目を読んで判断：漢語は使い分け290語（null 3）・時代背景67語（身分と官職・思想の徳目の46語は全件）、漢文法は使い分け131項目・時代背景6項目。"
+    },
+    {
+      "id": "screens",
+      "text": "足した情報（活用表・仲間・使い分け・時代背景・体系表）を関わるすべての画面に出す：古典単語の暗記カード・一覧・辞書ページ・テストの答え合わせ、古典文法の暗記カード・文法辞典・体系表・テストの答え合わせ、漢文の暗記カード・一覧・テストの答え合わせ。ブラウザで実際に開いて確かめる",
+      "population": "古典単語・古典文法・漢語・漢文法の全画面（KotenList・KotenStudy・KotenQuiz・古典単語の辞書ページ・KotenGrammar・KotenGrammarStudy・KotenGrammarQuiz・KanbunCatalog・KanbunStudy・KanbunQuiz）",
+      "check": "node --test tests/classics-screens.test.mjs",
+      "status": "done",
+      "result": "10画面すべてに出す（KotenList・KotenStudy・KotenQuiz・辞書ページ・KotenGrammar・KotenGrammarStudy・KotenGrammarQuiz・KanbunCatalog・KanbunStudy・KanbunQuiz）。全項目・全仲間・全体系表を描くテストで確認し、ブラウザで10画面を実際に開いて確かめた（公開版を含む）。"
+    },
+    {
+      "id": "truth",
+      "text": "新しく書いた古文・訓読文・活用表の全件を機械検査に通す（活用表の終止形と見出し語の一致、訓読文と書き下し文の一字一致、返り点の規則、ふりがなの漏れ、用例の使い回し、誤答が正解と重ならない、ア段＋ば を已然形と書かない など）",
+      "population": "この依頼で足した・書き直した古文・漢文の全件",
+      "check": "npm run audit:classics-kanbun && node --test tests/classics-*.test.mjs tests/koten.test.mjs tests/koten-grammar.test.mjs tests/koten-curriculum.test.mjs tests/kanbun.test.mjs tests/kanbun-mark-rendering.test.mjs",
+      "status": "done",
+      "result": "古典・漢文の全件監査が通過。漢文の訓読文481文すべてが書き下し文と一字一致、訓点を1つ抜く変異3,463通りはすべて不一致になる。ふりがなの振り漏れ0。追加した語の用例の使い回し0（既存どうしの重複3組は範囲外として残した）。"
+    },
+    {
+      "id": "japanese-readable",
+      "text": "新しく書いた解説・意味・用例の日本語を、学習者向け日本語の見直し（漢字語・訳語の全件）に通す",
+      "population": "この依頼で足した・書き直した日本語の全件",
+      "check": "node --test tests/learner-japanese-audit.test.mjs tests/meaning-readable.test.mjs",
+      "status": "done",
+      "result": "学習者向け日本語の見直し：漢字語24,434件・訳語19,801件すべて見直し済み（この依頼で増えた740件を読んだ）。日本語案内監査のエラー0件。"
+    },
+    {
+      "id": "deployed",
+      "text": "全テスト・全監査をクリーンな clone で通してから main へ push し、公開版のデプロイが成功したことを確かめる",
+      "population": "公開版 https://nanashi8.github.io/study-app/",
+      "check": "node --test tests/deploy-workflow.test.mjs",
+      "status": "done",
+      "result": "クリーンな clone で全983テスト・全監査を通して 4ec212c を push。監査台帳を作り直した 3e3afd2 のデプロイが成功し、公開版で漢語の仲間74組・全293語を確かめた。"
+    }
+  ]
+}
