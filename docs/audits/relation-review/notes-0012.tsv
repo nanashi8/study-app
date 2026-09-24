@@ -1,0 +1,269 @@
+N	humid|moist	humid は空気が「湿気の多い・むしむしする」。moist はケーキや肌などが「しっとりした」
+N	dry|humid	humid は「湿気の多い」、dry は「乾いた」
+N	humidity|moisture	humidity は空気中の「湿度」。moisture は物にふくまれる「水分・湿り気」
+N	dampness|humidity	humidity は空気の「湿度」。dampness は壁や服の「じめじめした湿り」
+N	dryness|humidity	humidity は「湿気」、dryness は「乾燥」
+N	hunger|starvation	hunger は「空腹・飢え」。starvation は食べ物がなくて死にそうな「飢餓」
+N	craving|hunger	hunger は「空腹」や「(強い)渇望」。craving は特定の物を「無性にほしがること」
+N	fullness|hunger	hunger は「空腹」、fullness は「満腹」
+N	hurricane|storm	storm は「嵐」全体。hurricane は大西洋などの強い熱帯低気圧「ハリケーン」
+N	cabin|hut	hut は簡単な「小屋」。cabin は森などの「山小屋」や、船・飛行機の「客室」
+N	hut|shack	hut は小さな「小屋」。shack は粗末な「掘っ立て小屋」
+N	hut|mansion	hut は「小屋」、mansion は「大邸宅」
+N	icon|symbol	symbol は意味を表す「象徴・記号」。icon は時代や分野を代表する「象徴的な人・物」や、画面の「アイコン」
+N	identical|indistinguishable	identical は「全く同じ」。indistinguishable は「見分けがつかない」
+N	different|identical	identical は「全く同じ」、different は「違う」
+N	identity|individuality	identity は自分が何者かという「正体・自己」。individuality はほかの人と違う「個性」
+N	identity|self	identity は「身元・自分らしさ」。self は「自分自身・自己」
+N	idiot|moron	idiot は「ばか・まぬけ」。moron も「まぬけ」で、強く見下す失礼な言い方
+N	genius|idiot	idiot は「ばか」、genius は「天才」
+N	illegal|unlawful	illegal は「違法の」のふつうの語。unlawful は「法律に反する」のかたい語
+N	illegal|illicit	illegal は法律で禁じられた「違法の」。illicit は「不正な・やみの」（illicit drugs）
+N	illusion|mirage	illusion は目や心の「錯覚・幻想」。mirage は砂漠などに見える「蜃気楼」
+N	illusion|reality	illusion は「錯覚・幻想」、reality は「現実」
+N	fictional|imaginary	imaginary は頭の中だけにある「想像上の」（an imaginary friend）。fictional は小説などの「架空の」
+N	imaginary|unreal	imaginary は「想像上の」。unreal は「現実とは思えない」
+N	imaginary|real	imaginary は「想像上の」、real は「実在の」
+N	imitate|mimic	imitate は「まねる・見習う」。mimic は人の声や動作を「おもしろくまねる」
+N	copy|imitation	imitation は「まね・模造品」。copy は「写し・複製」
+N	imitation|replica	imitation は「まがい物・模造品」。replica は本物そっくりに作った「複製品・レプリカ」
+N	imitation|original	imitation は「模造品」、original は「原物・本物」
+N	immediate|instant	immediate は「すぐの・即座の」（immediate treatment）。instant は「一瞬の」や、食品が「インスタントの」
+N	immediate|prompt	immediate は時間をおかず「即座の」。prompt は返事などが「迅速な」
+N	delayed|immediate	immediate は「即座の」、delayed は「遅れた」
+N	enormously|immensely	immensely と enormously はどちらも「非常に」。immensely は「計り知れないほど」の感じ
+N	hugely|immensely	immensely は「計り知れないほど」。hugely は「ものすごく」の話し言葉
+N	immensely|slightly	immensely は「非常に」、slightly は「わずかに」
+N	immigrate|settle	immigrate は外国から「移住してくる」。settle はある場所に「住みつく・定住する」
+N	effect|impact	impact は強い「影響・衝撃」（have an impact on）。effect は「効果・結果・影響」と広く言う
+N	impact|influence	impact は急で強い「影響・衝撃」。influence はじわじわ及ぶ「影響（力）」
+N	impatient|restless	impatient は待ちきれず「いらいらした」。restless はじっとしていられず「そわそわした」
+N	edgy|impatient	impatient は「待ちきれない」。edgy は神経がとがって「いらいらした」
+N	importance|significance	importance は「重要性」のふつうの語。significance は「意義・重大さ」のかたい語
+N	gravity|importance	importance は「重要性」。gravity は事態の「重大さ」や、物理の「重力」
+N	importance|insignificance	importance は「重要性」、insignificance は「取るに足りないこと」
+N	importantly|significantly	importantly は文頭で「重要なことに」。significantly は「(数値が)大きく・著しく」
+N	impressive|remarkable	impressive は「印象的な・見事な」。remarkable は「注目に値する・驚くほどの」
+N	impressive|striking	impressive は「感心させる」。striking は「目立つ・人目を引く」
+N	impressive|unimpressive	impressive は「印象的な」、unimpressive は「平凡な」
+N	imprison|incarcerate	imprison は「投獄する」。incarcerate は「収監する」のかたい語
+N	imprison|jail	imprison は「投獄する」のかたい語。jail は動詞で「刑務所に入れる」の話し言葉
+N	imprison|release	imprison は「投獄する」、release は「釈放する」
+N	enhancement|improvement	improvement は悪いところを直す「改善・上達」。enhancement はよいものをさらに高める「向上」
+N	improvement|progress	improvement は「改善」。progress は目標に向かう「進歩・前進」
+N	deterioration|improvement	improvement は「改善」、deterioration は「悪化・劣化」
+N	idle|inactive	inactive は「活動していない」。idle は機械などが「動いていない」や、人が「何もしていない」
+N	dormant|inactive	inactive は「活動していない」。dormant は火山や種が「休眠中の（また動き出しうる）」
+N	idleness|inactivity	inactivity は「活動しないこと・運動不足」。idleness は「なまけて何もしないこと」
+N	event|incident	incident は事件になりうる「出来事」。event は行事などの「出来事」と広く言う
+N	contain|include	include は全体の一部として「含む」。contain は入れ物が中身を「含む・入れている」
+N	comprise|include	include は一部を「含む」。comprise は全体が「〜から成る」（comprise A, B and C）
+N	increased|raised	increased は数量が「増えた」。raised は高さや程度が「上げられた」
+N	heightened|increased	increased は「増加した」。heightened は緊張や意識が「高まった」
+N	decreased|increased	increased は「増加した」、decreased は「減少した」
+N	indirect|roundabout	indirect は「間接的な・遠回しの」。roundabout は道や言い方が「回りくどい」
+N	indirect|oblique	indirect は「遠回しの」。oblique は「ほのめかすような」のかたい語で、「斜めの」の意味もある
+N	contaminate|infect	infect はウイルスなどに「感染させる」。contaminate は有害なもので「汚染する」
+N	infect|transmit	infect は人や体を「感染させる」。transmit は病気を人から人へ「うつす」
+N	colloquial|informal	informal は「くだけた・略式の」と広く言う。colloquial は言葉が「話し言葉の・口語の」
+N	formal|informal	informal は「くだけた」、formal は「正式な」
+N	initial|opening	initial は「最初の・初めの」。opening は「始めの・開会の」（opening ceremony）
+N	initially|originally	initially は「最初は（その後変わった）」。originally は「もとは・元来」
+N	finally|initially	initially は「最初は」、finally は「最後には」
+I	initially|exam_idm_at_first	at first は「最初のうちは」（あとで変わる）。initially は「当初は」のかたい語
+N	injure|wound	injure は事故などで「けがをさせる」。wound は刃物や銃で「傷を負わせる」
+N	heal|injure	injure は「傷つける」、heal は「治す」
+N	hurt|injured	injured は事故などで「けがをした」。hurt は「傷ついた」と広く言い、気持ちにも使う
+N	injured|wounded	injured は事故などで「けがをした」。wounded は戦いなどで「負傷した」
+N	injured|unharmed	injured は「けがをした」、unharmed は「無傷の」
+N	contribution|input	input は計画などへの「意見・提案」や、データの「入力」。contribution は「貢献・寄付」
+N	data|input	input は機械に「入れるもの・入力」。data は「データ・資料」全体
+N	input|output	input は「入力・投入」、output は「出力・生産量」
+N	ask|inquire	ask は「尋ねる」のふつうの語。inquire は「問い合わせる」のかたい語（inquire about）
+N	inquire|query	inquire は「問い合わせる」。query は正しいか「問いただす・疑問を投げかける」
+N	answer|inquire	inquire は「尋ねる」、answer は「答える」
+N	embed|insert	insert は「差し込む・挿入する」。embed は物をしっかり「埋め込む」
+N	insert|remove	insert は「挿入する」、remove は「取り除く」
+I	insert|curr1900_idm_2_put_in	put in は「入れる・差し込む」の話し言葉のほか、時間や努力を「注ぐ」。insert は「挿入する」のかたい語
+N	inspire|motivate	inspire は人を感動させて「やる気にさせる・着想を与える」。motivate は「行動する理由を与える・やる気にさせる」
+N	inspire|stimulate	inspire は「奮い立たせる・ひらめかせる」。stimulate は「刺激して活発にする」
+N	discourage|inspire	inspire は「奮い立たせる」、discourage は「がっかりさせる」
+N	instinct|intuition	instinct は生まれつきの「本能」。intuition は理屈でなくひらめく「直感」
+N	insult|offense	insult は言葉による「侮辱」。offense は人を「怒らせること」や、法律の「違反」
+N	affront|insult	insult は「侮辱」。affront は「(誇りを傷つける)無礼」のかたい語
+N	compliment|insult	insult は「侮辱」、compliment は「ほめ言葉」
+N	consumption|intake	intake は食べ物などの「摂取（量）」。consumption は「消費（量）」
+N	inflow|intake	intake は取り入れる「摂取・取り入れ」。inflow はお金や人の「流入」
+N	intake|output	intake は「取り入れ・摂取」、output は「産出・出力」
+N	fiercely|intensely	intensely は「激しく・強烈に」。fiercely は「猛烈に」と、荒々しさを言う
+N	deeply|intensely	intensely は「強烈に」。deeply は「深く」（deeply moved）
+N	intensely|mildly	intensely は「強烈に」、mildly は「穏やかに・少し」
+N	aim|intention	intention は「〜するつもり・意図」（have no intention of）。aim は「ねらい・目標」
+N	interfere|meddle	interfere は人のことに「干渉する・邪魔する」。meddle は「余計な口出しをする」
+N	interfere|intervene	interfere は「邪魔する・干渉する」（悪い意味）。intervene は争いなどに「介入する・仲裁する」
+N	ignore|interfere	interfere は「干渉する」、ignore は「放っておく・無視する」
+N	inland|interior	interior は「内部」や国の「内陸部」。inland は「内陸の・海から離れた」
+N	intern|trainee	intern は会社で仕事を体験する「インターン（生）」や「研修医」。trainee は「研修生・見習い」
+N	apprentice|intern	intern は短期の「実習生」。apprentice は職人に弟子入りする「見習い」
+N	disrupt|interrupt	interrupt は話や作業を「さえぎる・中断させる」。disrupt は交通などを「混乱させる」
+N	continue|interrupt	interrupt は「中断する」、continue は「続ける」
+I	interrupt|curr_idm_pre2_cut_off	cut off は電話や供給を「切る・止める」。interrupt は話などを「さえぎる」
+N	gap|interval	interval は時間や距離の「間隔」（at ten-minute intervals）。gap は「すき間・差」
+N	interval|pause	interval は「間隔」や劇の「休憩時間」。pause は話などの「短い中断・間」
+N	fabricated|invented	invented は「作り上げた・架空の」。fabricated は「でっち上げた」と、うそを強く言う
+N	fictional|invented	invented は「作った・架空の」。fictional は小説などの「架空の」
+N	genuine|invented	invented は「作り話の」、genuine は「本物の」
+N	innovation|invention	invention は新しい物の「発明（品）」。innovation は新しいやり方などの「革新」
+N	invisible|unseen	invisible は「(もともと)目に見えない」。unseen は「(まだ)見られていない」
+N	imperceptible|invisible	invisible は「目に見えない」。imperceptible は「感じ取れないほどかすかな」
+N	invisible|visible	invisible は「見えない」、visible は「見える」
+N	erratic|irregular	irregular は時間や形が「不規則な」。erratic は動きが「予測できない・気まぐれな」
+N	irregular|uneven	irregular は「不規則な」。uneven は表面が「でこぼこの」や、質が「むらのある」
+N	irregular|regular	irregular は「不規則な」、regular は「規則的な」
+N	exasperated|irritated	irritated は「いらいらした」。exasperated は「我慢の限界で憤慨した」
+N	calm|irritated	irritated は「いらいらした」、calm は「落ち着いた」
+N	isolated|remote	isolated は人や場所が「孤立した」。remote は場所が「人里離れた・遠い」
+N	isolated|solitary	isolated はまわりから「切り離された・孤立した」。solitary は「ひとりきりの」
+N	connected|isolated	isolated は「孤立した」、connected は「つながった」
+N	jail|penitentiary	jail は「拘置所・刑務所」の話し言葉。penitentiary はアメリカの重罪の「刑務所」
+N	joint|shared	joint は2人以上で「共同の」（a joint project）。shared は「共有の」
+N	collective|joint	joint は2つ以上の人や組織の「共同の」。collective は集団全体の「集団的な」
+N	individual|joint	joint は「共同の」、individual は「個々の」
+N	journal|periodical	journal は学会などの「専門誌」や「日誌」。periodical は定期的に出る「雑誌・定期刊行物」全体
+N	injustice|justice	justice は「正義・公正」、injustice は「不正・不公平」
+N	gently|kindly	kindly は「親切に」や、依頼で「どうか」（Kindly reply.）。gently は「優しく・穏やかに」
+N	cruelly|kindly	kindly は「親切に」、cruelly は「残酷に」
+N	kingdom|realm	kingdom は王が治める「王国」。realm は「王国」のかたい語で、「領域・分野」の意味が中心
+N	kingdom|monarchy	kingdom は「王国」という国。monarchy は王が治めるしくみ「君主制」
+N	kingdom|republic	kingdom は王がいる「王国」、republic は王のいない「共和国」
+N	gear|kit	kit は目的のための「道具一式」（a first-aid kit）。gear は登山などの「装備・道具」
+N	knowledgeable|well-informed	knowledgeable はある分野に「詳しい」。well-informed は情報を「よく知っている」
+N	knowledgeable|learned	knowledgeable は「詳しい・博識な」。learned（/ˈlɜːrnɪd/）は学問を積んだ「博学な」のかたい語
+N	ignorant|knowledgeable	knowledgeable は「詳しい」、ignorant は「知らない・無知な」
+N	labor|work	work は「仕事・働くこと」と広く言う。labor は体を使う「(骨の折れる)労働」
+N	labor|toil	labor は「労働」。toil は長くつらい「骨折り・苦労」のかたい語
+N	deficient|lacking	lacking は「欠けている」（be lacking in）。deficient は栄養などが「不足した」
+N	lacking|wanting	lacking は「欠けた」。wanting は「(期待に)足りない」のかたい語
+N	abundant|lacking	lacking は「不足した」、abundant は「豊富な」
+N	landlord|tenant	landlord は家を貸す「家主・大家」、tenant は借りて住む「借家人」
+N	landscape|view	landscape は見渡した「風景・景観」。view はある場所から見える「眺め」
+N	enduring|lasting	lasting は「長続きする」（a lasting impression）。enduring は困難に負けず「長く続く」
+N	lasting|permanent	lasting は「長続きする」。permanent は「ずっと続く・永久の」
+N	lasting|temporary	lasting は「長続きする」、temporary は「一時的な」
+N	last-mentioned|latter	latter は2つのうちの「後者の」。last-mentioned は「最後に述べた」と説明する言い方
+N	latter|second	latter は2つのうちの「後者の」や「後半の」。second は「2番目の」
+I	lay|curr_idm_4_put_down	put down は「下に置く」の話し言葉。lay はそっと「横たえる・置く」（lay の活用は lay-laid-laid）
+N	idleness|laziness	laziness は「なまけ癖・怠惰」。idleness は「何もしていないこと」
+N	laziness|sloth	laziness は「怠惰」のふつうの語。sloth は「怠惰」のかたい語で、動物の「ナマケモノ」の意味もある
+N	diligence|laziness	laziness は「怠惰」、diligence は「勤勉」
+N	foremost|leading	leading は分野の「一流の・主要な」（a leading expert）。foremost は「いちばんの・最も重要な」
+N	leading|principal	leading は「一流の・先頭の」。principal は「主要な」のかたい語
+N	leading|minor	leading は「主要な」、minor は「重要でない」
+N	lean|skinny	lean は体が「引きしまってやせた」（よい意味）。skinny は「がりがりにやせた」
+N	lean|portly	lean は「やせた」、portly は「でっぷり太った」
+N	jump|leap	jump は「跳ぶ」のふつうの語。leap は「大きく跳ぶ・跳躍する」
+N	leap|spring	leap は「大きく跳ぶ」。spring は動詞で急に「ぴょんと跳ぶ・跳ね起きる」
+N	erudite|learned	learned は「博学な」。erudite は「学識の深い」のかたい語
+N	learned|scholarly	learned は人が「博学な」。scholarly は本や人が「学問的な・学者らしい」
+N	ignorant|learned	learned は「博学な」、ignorant は「無知な」
+N	knowledge|learning	knowledge は「知識」。learning は学んで身につけた「学識・学問」
+N	learning|scholarship	learning は「学問・学識」。scholarship は「学識」のほか、「奨学金」の意味もある
+N	ignorance|learning	learning は「学識」、ignorance は「無知」
+N	lecture|talk	lecture は大学などの「講義」。talk は気軽な「講演・話」（give a talk）
+N	instructor|lecturer	lecturer は大学などの「講師」や「講演者」。instructor は技術を教える「指導員」
+N	lecturer|speaker	lecturer は「講師・講演者」。speaker は「話し手」や、会の「講演者」と広く言う
+N	leisure|relaxation	leisure は仕事のない「余暇・自由な時間」。relaxation は「くつろぎ・休養」
+N	leisure|recreation	leisure は「余暇」。recreation は余暇にする「娯楽・レクリエーション」
+N	leisure|work	leisure は「余暇」、work は「仕事」
+N	extend|lengthen	lengthen は長さを「長くする」。extend は期間や範囲を「延ばす・広げる」
+N	lengthen|prolong	lengthen は「長くする」。prolong は時間を「長引かせる」
+N	lessen|reduce	lessen は痛みなどを「和らげる・減らす」。reduce は量を「減らす」と広く言う
+N	diminish|lessen	lessen は「減らす・和らげる」。diminish は「(だんだん)小さくなる・弱まる」
+N	increase|lessen	lessen は「減らす」、increase は「増やす」
+N	generous|liberal	liberal は「気前のよい」（liberal with）や「自由主義の」。generous は「気前のよい・寛大な」のふつうの語
+N	liberal|open-minded	liberal は考えが「自由な・寛容な」。open-minded は「心の広い・偏見のない」
+N	conservative|liberal	liberal は「自由主義の・進歩的な」、conservative は「保守的な」
+N	independence|liberty	liberty は権利としての「自由」。independence は他に頼らない「独立・自立」
+N	liberty|oppression	liberty は「自由」、oppression は「抑圧」
+N	lifted|raised	lifted は「持ち上げられた」や、禁止が「解除された」。raised は「高くした・上げられた」
+N	lifted|removed	lifted は禁止などが「解除された」。removed は「取り除かれた」
+N	imposed|lifted	lifted は規制が「解除された」、imposed は「課された」
+N	darken|lighten	lighten は「明るくする」、darken は「暗くする」
+N	illumination|lighting	lighting は部屋や舞台の「照明」。illumination は「照明・明かり」のかたい語で、「解明」の意味もある
+N	fondness|liking	liking は「好み・好意」（have a liking for）。fondness は長く続く「愛着・好み」
+N	liking|preference	liking は「好み」。preference は比べて「こちらのほうが好き」という「好み・優先」
+N	limited|restricted	limited は数量が「限られた」。restricted は規則で「制限された」
+N	finite|limited	limited は「限られた」。finite は「有限の」の学問の語
+N	limited|unlimited	limited は「限られた」、unlimited は「無制限の」
+N	animated|lively	lively は「活発な・にぎやかな」。animated は話などが「生き生きとした」や、「アニメの」
+N	lively|vibrant	lively は「にぎやかな」。vibrant は町や色が「活気にあふれた・鮮やかな」
+N	dull|lively	lively は「活発な」、dull は「活気のない・退屈な」
+N	located|situated	located は「位置している」（be located in）。situated も同じ意味のかたい語
+N	located|positioned	located は場所に「ある」。positioned は「(ある位置に)置かれた」
+N	location|site	location は「位置・場所」。site は建物などの「用地」や、ウェブの「サイト」
+N	journal|log	log は船や作業の「記録・日誌」や「丸太」。journal は「日誌」や「専門誌」
+N	logic|reasoning	logic は筋道の「論理」。reasoning は考えを進める「推論・理由づけ」
+N	logic|rationale	logic は「論理・理屈」。rationale は決定などの「根拠・理由づけ」
+N	logical|rational	logical は筋道が「論理的な」。rational は感情でなく「理性的な」
+N	coherent|logical	logical は「論理的な」。coherent は話が「一貫して筋の通った」
+N	illogical|logical	logical は「論理的な」、illogical は「筋の通らない」
+N	loose|tight	loose は「ゆるい」、tight は「きつい」
+N	loosely|roughly	loosely は「ゆるく」や「おおまかに」（loosely based on）。roughly は数量が「だいたい」
+N	loosely|tightly	loosely は「ゆるく」、tightly は「きつく」
+N	loosen|slacken	loosen はねじなどを「ゆるめる」。slacken はロープを「たるませる」や、速さが「ゆるむ」
+N	affectionate|loving	loving は「愛情深い」。affectionate はだきしめるなど「愛情を表に出す」
+N	caring|loving	loving は「愛情のこもった」。caring は「思いやりのある・面倒見のよい」
+N	cold|loving	loving は「愛情深い」、cold は「冷たい」
+N	lower|raise	lower は「下げる」、raise は「上げる」
+N	lowered|reduced	lowered は高さや声が「低くした」。reduced は値段や量が「減らされた」
+N	diminished|lowered	lowered は「下げられた」。diminished は「弱まった・減った」
+N	lowered|raised	lowered は「下げられた」、raised は「上げられた」
+N	faithfulness|loyalty	loyalty は国や仲間への「忠誠」。faithfulness は約束や人に「誠実であること」
+N	betrayal|loyalty	loyalty は「忠誠」、betrayal は「裏切り」
+N	charismatic|magnetic	magnetic は人が「引きつける魅力のある」や「磁気の」。charismatic は人をひきつける「カリスマのある」
+N	attractive|magnetic	magnetic は磁石のように「引きつける」。attractive は「魅力的な」と広く言う
+N	magnetic|repellent	magnetic は「引きつける」、repellent は「はねつける・よせつけない」
+N	magnify|reduce	magnify は「拡大する」、reduce は「縮小する」
+N	main|major	main は「主な」で、名詞の前だけに置く。major は「大きな・重大な」（a major problem）
+N	major|significant	major は「重大な・大きな」。significant は「意味のある・著しい」
+N	major|minor	major は「大きい方の・重大な」、minor は「小さい方の・重要でない」
+N	bulk|majority	majority は人の「大多数・過半数」。bulk は物の「大部分」
+N	majority|minority	majority は「多数派」、minority は「少数派」
+N	etiquette|manners	manners は「行儀・作法」（good manners）。etiquette は場面ごとの「礼儀作法の決まり」
+N	courtesy|manners	manners は「行儀」。courtesy は相手を思う「礼儀正しさ・親切」
+N	manor|mansion	mansion は「大邸宅」。manor は昔の領主の「荘園屋敷」
+N	mansion|residence	mansion は「大邸宅」。residence は「住居・邸宅」のかたい語
+N	hand-operated|manual	manual は「手動の」。hand-operated は「手で動かす」と説明する言い方
+N	automatic|manual	manual は「手動の」、automatic は「自動の」
+N	edge|margin	margin はページの「余白」や、勝負の「差」。edge は物の「端・ふち」
+N	border|margin	margin はページの「余白」。border は「国境」や物の「ふち・へり」
+N	marine|maritime	marine は海の生き物などの「海の」（marine life）。maritime は船や貿易の「海事の・海運の」
+N	marine|oceanic	marine は「海の・海洋生物の」。oceanic は「大洋の・海洋の」
+N	marine|terrestrial	marine は「海の」、terrestrial は「陸の・地球の」
+N	marvelous|splendid	marvelous は「驚くほどすばらしい」。splendid は「見事な・りっぱな」
+N	dreadful|marvelous	marvelous は「すばらしい」、dreadful は「ひどい」
+N	bulk|mass	mass は形のない「かたまり」や「大量」、物理の「質量」。bulk は「大部分」や「かさ」
+N	heap|mass	mass は「かたまり・大量」。heap は積み上げた「山」
+N	matched|paired	matched は力などが「釣り合った」（evenly matched）。paired は「対になった」
+N	equal|matched	matched は相手と「互角の」。equal は「等しい・対等の」
+N	matched|mismatched	matched は「釣り合った」、mismatched は「不釣り合いの」
+N	corresponding|matching	matching は服などが「おそろいの」。corresponding は「対応する・それに当たる」
+N	identical|matching	matching は「おそろいの・似合う」。identical は「全く同じ」
+N	matching|mismatched	matching は「おそろいの」、mismatched は「ちぐはぐな」
+N	material|substance	material は物を作る「材料・素材」。substance は化学の「物質」
+N	maximum|minimum	maximum は「最大」、minimum は「最小」
+I	meanwhile|curr_idm_pre2_in_the_meantime	in the meantime は「その間に・それまでは」。meanwhile も同じ意味で、「一方」の意味もある
+N	mechanic|technician	mechanic は車などを直す「整備士」。technician は専門の機械を扱う「技術者」
+N	mechanic|repairman	mechanic は車の「整備士」。repairman は家電などの「修理工」
+N	feudal|medieval	medieval は「中世の」。feudal は領主が治めた「封建制の」
+N	medieval|modern	medieval は「中世の」、modern は「現代の・近代の」
+N	gathering|meeting	meeting は話し合いの「会議・会合」。gathering は人の「集まり」と広く言う
+N	conference|meeting	meeting は「会議・会合」と広く言う。conference は大きな「会議・協議会」
+N	memorable|unforgettable	memorable は「記憶に残る」。unforgettable は「忘れられない」と強く言う
+N	memorable|remarkable	memorable は「記憶に残る」。remarkable は「注目すべき・驚くほどの」
+N	forgettable|memorable	memorable は「記憶に残る」、forgettable は「印象に残らない」
+N	memorial|monument	memorial は人の死などを悼む「記念碑・記念物」。monument は大きな「記念碑」や歴史的な「遺跡」
+N	learn by heart|memorize	memorize は「暗記する」のふつうの語。learn by heart は「そらで覚える」の言い方
+N	commit to memory|memorize	memorize は「暗記する」。commit to memory は「記憶にとどめる」のかたい言い方
+N	forget|memorize	memorize は「暗記する」、forget は「忘れる」
+N	mental|physical	mental は「精神の・心の」、physical は「体の」

@@ -1,0 +1,309 @@
+N	assurance|certainty	certainty は「確実なこと・確信」（with certainty）。assurance は相手を安心させる「保証」や、落ち着いた「自信」
+N	certainty|uncertainty	certainty は「確実さ」、uncertainty は「不確かさ」
+N	certify|verify	certify は書類などで正式に「証明する・認定する」。verify は正しいかどうかを「確かめる」
+N	attest|certify	certify は資格などを正式に「認定する」。attest は事実だと「証言する・裏づける」かたい語
+N	certify|revoke	certify は「認定する」、revoke は免許などを「取り消す」
+N	chaotic|disorderly	chaotic は「めちゃくちゃに混乱した」。disorderly は部屋や人の行動が「乱れた」
+N	chaotic|turbulent	chaotic は秩序がなく「混乱した」。turbulent は時代や空気が「荒れた・激動の」
+N	chaotic|orderly	chaotic は「混乱した」、orderly は「整然とした」
+N	circulate|flow	circulate は血液などが「ぐるぐる回る・循環する」。flow は水などが一方向に「流れる」
+N	circulate|spread	circulate はうわさや書類が「出回る・回覧される」。spread は「広がる」と広く言う
+N	civic|municipal	civic は市民としての「市民の」（civic duty）。municipal は市役所の運営する「市の・市営の」
+N	civic|public	civic は「市民の・町の」。public は「公共の・公の」と広く言う
+N	civic|private	civic は「市民全体の」、private は「個人の」
+N	civilian|noncombatant	civilian は軍人でない「民間人」。noncombatant は戦争で戦わない「非戦闘員」（軍医なども入る）
+N	civilian|soldier	civilian は「民間人」、soldier は「兵士」
+M	civilize	syn	cultivate	(心や教養を)養う
+N	civilize|cultivate	civilize は社会や人を「文明化する」。cultivate は心や教養を「養う」や、畑を「耕す」
+N	civilize|refine	civilize は「文明化する」。refine は態度などを「洗練させる」や、石油などを「精製する」
+N	cleanse|wash	cleanse は傷や肌を「清める・きれいにする」かたい語。wash は水で「洗う」
+N	cleanse|contaminate	cleanse は「清める」、contaminate は「汚染する」
+N	clog|obstruct	clog はごみなどで管を「詰まらせる」。obstruct は道や進行を「ふさぐ・妨げる」
+N	clog|unclog	clog は「詰まらせる」、unclog は「詰まりを取る」
+N	cluster|scatter	cluster は動詞で「群がる・集まる」、scatter は「散らばる」
+N	clutch|grasp	clutch は必死に「ぎゅっと握りしめる」。grasp は手で「つかむ」や、意味を「把握する」
+N	coarse|rough	coarse は砂や布の粒が「粗い」。rough は表面が「ざらざらした」や、「大まかな」
+N	coarse|crude	coarse は言葉やふるまいが「下品な」。crude は「粗野な」や、「未加工の」（crude oil）
+N	casing|cocoon	cocoon はカイコなどの「まゆ」や、安心できる「包み」。casing は物を包む「覆い・ケース」
+N	coherence|consistency	coherence は文章などの「筋が通っていること」。consistency は考えや行動の「一貫性」や、液体の「とろみ」
+N	coherence|unity	coherence は話の「つながり・まとまり」。unity は集団の「団結・統一」
+N	coherence|incoherence	coherence は「筋が通っていること」、incoherence は「つじつまが合わないこと」
+N	collision|impact	collision は車などの「衝突（事故）」。impact はぶつかった「衝撃」や「影響」
+N	combination|separation	combination は「組み合わせ・結合」、separation は「分離」
+N	combine|merge	combine は2つ以上を「組み合わせる」。merge は会社や道が「合併する・合流して一つになる」
+N	committed|dedicated	committed は目標などに「本気で取り組む」。dedicated は仕事などに「打ちこむ」や、機械が「専用の」
+N	committed|devoted	committed は約束や目標に「熱心な」。devoted は人や物を「深く愛して尽くす」
+N	committed|uncommitted	committed は「本気で打ちこむ」、uncommitted は「態度を決めていない・中立の」
+N	commodity|goods	commodity は石油や米のような取引の「商品・産物」。goods は「品物」と広く言う（複数形）
+N	commodity|product	commodity は品質で区別されない「産物・商品」。product は会社が作る「製品」
+N	collective|communal	communal は住人などがみんなで使う「共同の」（a communal kitchen）。collective は集団としての「集団の・共同の」（collective effort）
+N	communal|private	communal は「共同の」、private は「個人の」
+N	commute|travel	commute は家と職場を毎日「通う」。travel は「旅行する・移動する」と広く言う
+D	comparative	syn	corresponding	corresponding は「対応する・相当する」で、「比較の・相対的な」とは意味が重ならない
+N	absolute|comparative	comparative は「比較の・相対的な」、absolute は「絶対の」
+N	comparatively|relatively	comparatively と relatively はどちらも「比較的」。relatively のほうがよく使う
+M	compass	syn	navigator	道案内の装置
+N	compass|navigator	compass は方角を示す「羅針盤・方位磁石」。navigator は船や飛行機の「航海士」や、道案内の「ナビ（装置）」
+N	capable|competent	competent は仕事を「十分こなせる・有能な」。capable は「〜する力がある」（be capable of）
+N	competent|incompetent	competent は「有能な」、incompetent は「無能な」
+I	compile|curr_idm_pre2_put_together	put together は「組み立てる・まとめる」話し言葉。compile は資料を集めて辞書や一覧を「編集する」
+N	compliant|submissive	compliant は命令や規則に「従う」や、規格に「合っている」。submissive は人に「言いなりになる」
+N	compliant|defiant	compliant は「従順な」、defiant は「反抗的な」
+N	complicate|entangle	complicate は物事を「ややこしくする」。entangle は糸などを「からませる」や、人を面倒なことに「巻きこむ」
+N	complicate|confuse	complicate は問題を「複雑にする」。confuse は人を「混乱させる」
+N	complicate|simplify	complicate は「複雑にする」、simplify は「単純にする」
+N	composer|songwriter	composer はクラシックなどの「作曲家」。songwriter はポップスなどの歌を作る「作詞作曲家」
+N	composition|structure	composition は何から成るかの「構成」や「作文・作曲」。structure は組み立ての「構造」
+N	arrangement|composition	composition はチームや絵の「構成」。arrangement は物の「配置」や音楽の「編曲」
+N	compound|mixture	compound は化学で、元素が結びついた「化合物」（水など）。mixture はただ混ざっただけの「混合物」で、化学では区別する
+N	compound|element	compound は「化合物」、element は「元素」
+I	comprise|exam_idm_consist_of	consist of は「〜から成る」のふつうの言い方。comprise は of をつけずに「〜から成る」（The team comprises ten players）
+N	compute|reckon	compute は機械などで「計算する」。reckon は「だいたいの数を見積もる」や、話し言葉で「〜と思う」
+I	compute|exam_idm_work_out	work out は答えを「計算して出す」話し言葉。compute は「算出する」のかたい語
+N	conceit|vanity	conceit は自分をえらいと思う「うぬぼれ」。vanity は見た目などへの「虚栄心」
+N	arrogance|conceit	conceit は心の中の「うぬぼれ」。arrogance は人を見下す態度の「傲慢さ（ごうまんさ）」
+N	conceit|humility	conceit は「うぬぼれ」、humility は「謙虚さ」
+N	conceive|imagine	conceive は計画などを「思いつく」や、否定文で「想像できない」（can't conceive of）。imagine は「想像する」と広く言う
+N	conceive|devise	conceive は考えを「思いつく」。devise は工夫して「考え出す・考案する」
+I	conceive|idm_come_up_with	come up with は考えを「思いつく」の話し言葉。conceive は「思いつく」のかたい語
+N	concise|succinct	concise と succinct はどちらも「簡潔な」。succinct のほうがかたい
+N	concise|lengthy	concise は「簡潔な」、lengthy は「長たらしい」
+N	close|conclude	conclude は話や会を「締めくくる」や「結論を出す」。close は会などを「閉じる・終える」
+I	conclude|curr_idm_pre1_wind_up	wind up は会議などを「終わりにする」や、「結局〜になる」。conclude は「締めくくる」のかたい語
+I	conclude|curr_idm_2_wrap_up	wrap up は仕事や会を「まとめて終える」話し言葉。conclude は「締めくくる」
+I	conduct|idm_carry_out	carry out は計画などを「実行する」。conduct は調査や実験を「行う」かたい語
+N	cone|funnel	cone は「円錐」や、アイスの「コーン」。funnel は円錐の形をした「じょうご」
+N	confer|grant	confer は学位などを「授ける」かたい語（confer A on B）。grant は許可やお金を「与える」
+N	confer|consult	confer は「話し合う・協議する」（confer with）。consult は専門家に「相談する」や、辞書を「調べる」
+N	confide|tell	confide は秘密などを信頼して「打ち明ける」。tell は「話す・伝える」と広く言う
+N	confide|reveal	confide は親しい人に「打ち明ける」。reveal は隠れていたことを「明らかにする」
+N	confident|insecure	confident は「自信のある」、insecure は「自信がなく不安な」
+N	assuredly|confidently	confidently は「自信を持って」。assuredly は「確かに・きっと」のかたい語
+N	confidently|hesitantly	confidently は「自信を持って」、hesitantly は「ためらいがちに」
+N	confine|restrict	confine は場所や範囲に「閉じこめる・限る」（be confined to bed）。restrict は数や量を「制限する」
+N	confine|imprison	confine は部屋などに「閉じこめる」。imprison は刑務所に「入れる」
+N	confine|free	confine は「閉じこめる」、free は動詞で「解放する」
+N	congested|jammed	congested は道路などが「渋滞した」。jammed は物が「詰まった」や、機械が「動かなくなった」
+N	clear|congested	congested は「混雑した」、clear は道が「空いた」
+N	conquest|subjugation	conquest は国などを「征服すること」。subjugation は力で「支配下に置くこと」のかたい語
+N	conquest|takeover	conquest は武力による「征服」。takeover は会社の「買収・乗っ取り」
+I	consider|curr_idm_pre2_think_over	think over は「よく考える」の話し言葉。consider は「考慮する」や「〜とみなす」
+N	comfort|console	console は悲しんでいる人を「慰める」。comfort は「慰める」や、名詞で「快適さ」
+N	console|soothe	console は悲しみを「慰める」。soothe は怒りや痛みを「なだめる・和らげる」
+N	contempt|scorn	contempt は心の底からの「軽蔑」。scorn はあざけりをこめた「軽蔑」
+N	contempt|disdain	contempt は「軽蔑」。disdain は「見下す気持ち」のかたい語
+N	contempt|respect	contempt は「軽蔑」、respect は「尊敬」
+N	contentment|satisfaction	contentment は今のままで「満ち足りた気持ち」。satisfaction は望みがかなった「満足」
+N	contentment|discontent	contentment は「満足」、discontent は「不満」
+N	converge|meet	converge はいくつもの道や線が「一点に集まる」。meet は人と「会う」や、道が「交わる」
+N	converge|merge	converge は「一点に集まる」。merge は集まって「一つになる」
+N	converge|diverge	converge は「一点に集まる」、diverge は「分かれる」
+N	convict|prisoner	convict は有罪判決を受けた「受刑者」。prisoner は「囚人」や、戦争の「捕虜」
+N	convict|inmate	convict は「受刑者」。inmate は刑務所などの「収容者」
+N	acquit|convict	convict は動詞で「有罪と判決する」、acquit は「無罪とする」
+N	collaborate|cooperate	cooperate は相手と「協力する」と広く言う。collaborate は作品などを「共同で作る」
+N	coordinate|organize	coordinate は人や作業を「調整してまとめる」。organize は行事などを「準備する・組織する」
+N	arrange|coordinate	coordinate は全体を「調整する」。arrange は会などを「手配する」や、物を「並べる」
+N	coordinator|organizer	coordinator は人や作業の「調整役」。organizer はイベントの「主催者・まとめ役」
+N	coordinator|manager	coordinator は「調整役」。manager は部署や店の「責任者・支配人」
+N	coral|reef	coral は「サンゴ」（生き物やその骨）。reef はサンゴや岩でできた海の浅い「礁」（coral reef でサンゴ礁）
+N	cork|stopper	cork はコルクで作った「栓」や「コルク」そのもの。stopper は瓶の「栓」と広く言う
+N	cork|plug	cork は瓶の「コルク栓」。plug は穴をふさぐ「栓」や電気の「プラグ」
+N	business|corporate	corporate は大企業の「企業の・法人の」（a corporate job）。business は「商売の・仕事の」と広く言う
+N	commercial|corporate	corporate は「企業の」。commercial は「商業の・もうけのための」
+N	company|corporation	corporation は大きな「企業・法人」のかたい語。company は「会社」のふつうの語
+N	corporation|firm	corporation は大きな「企業」。firm は法律事務所などの「会社・事務所」
+N	body|corpse	corpse は「死体」。body も死んだ人の「遺体」を言うのにふつうに使い、corpse よりやわらかい
+M	corpse	syn	remains	遺体・遺骨
+N	corpse|remains	corpse は「死体」。remains は複数形で「遺体・遺骨」や「遺跡」
+N	corpse|survivor	corpse は「死体」、survivor は「生存者」
+N	corrode|erode	corrode は金属が「さびる・腐食する」。erode は川や風が土地を「削る・浸食する」
+N	corrosion|rust	corrosion は金属などの「腐食」全体。rust は鉄の「さび」
+N	corrupt|dishonest	corrupt は役人などが「わいろで腐敗した」。dishonest は「うそをつく・不正直な」
+N	corrupt|crooked	corrupt は「腐敗した」。crooked は「不正な」のくだけた語で、「曲がった」がもとの意味
+N	corrupt|honest	corrupt は「不正な」、honest は「誠実な」
+N	corrupted|tainted	corrupted はデータが「壊れた」や、人が「堕落した」。tainted は食べ物が「汚染された」や、評判が「汚れた」
+N	corrupted|damaged	corrupted はファイルなどが「(中身が)壊れた」。damaged は物が「傷ついた・損傷した」
+N	corrupted|intact	corrupted は「壊れた」、intact は「無傷の・完全な」
+N	cosmetic|makeup	cosmetics は複数形で「化粧品」。makeup は顔にする「化粧（品）」
+N	counsel|guide	counsel は専門家として「助言する」かたい語。guide は「案内する・導く」
+N	adviser|counselor	counselor は悩みを聞く「カウンセラー」。adviser は仕事などの「助言者・顧問」
+N	countless|innumerable	countless は「数えきれない」のふつうの語。innumerable は「無数の」のかたい語
+N	countless|myriad	countless は「数えきれない」。myriad は「無数の」の文学的な語（a myriad of）
+N	countless|few	countless は「無数の」、few は「わずかな」
+N	courteous|polite	courteous は相手を思いやって「礼儀正しい」のかたい語。polite は「行儀のよい・丁寧な」のふつうの語
+N	courteous|rude	courteous は「礼儀正しい」、rude は「無礼な」
+N	cowardice|timidity	cowardice は逃げる「臆病・卑怯」（けなす語）。timidity は「気の小ささ・内気」
+N	associate|coworker	coworker は同じ職場の「同僚」。associate は仕事上の「仲間・提携相手」
+N	cradle|crib	cradle はゆらせる「ゆりかご」。crib はさくのある「ベビーベッド」
+N	birthplace|cradle	cradle は文明などの「発祥の地」（the cradle of civilization）のたとえにも使う。birthplace は人の「生まれた場所」
+N	crane|hoist	crane は重い物を持ち上げる「クレーン」。hoist は荷を「巻き上げる」簡単な「巻き上げ機」
+D	crate	syn	case	箱の意味の case は「場合」の case と由来のちがう別の語で見出し語がなく、つづりで引くと「場合」へ飛ぶ
+N	box|crate	crate は木やプラスチックの「運搬用の箱」。box は「箱」と広く言う
+N	crater|hollow	crater は火山の「噴火口」や、隕石（いんせき）の「クレーター」。hollow は地面などの「くぼみ」
+N	crater|pit	crater は火山や隕石（いんせき）でできた「大きなくぼみ」。pit は地面に掘った「穴」
+N	crave|desire	crave は「どうしてもほしがる」と強い。desire は「強く望む」かたい語
+N	crave|loathe	crave は「ひどくほしがる」、loathe は「ひどく嫌う」
+I	crave|curr1900_idm_2_long_for	long for は会えない人や物を「恋しがる・切望する」。crave は食べ物などを「どうしてもほしがる」
+N	craving|longing	craving は食べ物などへの「強い欲求」。longing は人や故郷などへの「あこがれ・恋しさ」
+N	craving|yearning	craving は「強くほしがる気持ち」。yearning は手に入らないものへの「切ない思い」
+N	aversion|craving	craving は「強い欲求」、aversion は「強い嫌悪」
+N	credible|plausible	credible は証拠や話が「信用できる」。plausible は「もっともらしい」（本当かは分からない）
+N	credible|incredible	credible は「信用できる」、incredible は「信じられない」（今はふつう「すばらしい」）
+N	creek|stream	creek はアメリカ英語で「小川」。stream は「小川・流れ」のふつうの語
+N	brook|creek	creek は「小川」（イギリス英語では「入り江」）。brook は「小川」の文学的な語
+N	creek|river	creek は「小川」、river は大きな「川」
+N	cot|crib	crib はアメリカ英語で「ベビーベッド」。cot はイギリス英語では同じ「ベビーベッド」、アメリカ英語では折りたたみの「簡易ベッド」
+N	analysis|critique	critique は作品などの良い点と悪い点を述べる「批評」。analysis はくわしく調べる「分析」
+N	bent|crooked	crooked は「くねくね曲がった」や、絵などが「傾いた」。bent は力を加えて「曲がった」
+N	crooked|dishonest	crooked は「不正な」のくだけた語。dishonest は「不正直な」
+N	crooked|straight	crooked は「曲がった」、straight は「まっすぐな」
+N	crucially|importantly	crucially は「何より重要なことに・決定的に」と強い。importantly は「重要なことに」
+N	brutality|cruelty	cruelty は動物などへの「残酷さ・虐待」。brutality は暴力の「残忍さ」と強い
+N	crush|squash	crush は力を加えて「押しつぶす・砕く」。squash は柔らかい物を「ぺちゃんこにつぶす」
+N	crush|smash	crush は「押しつぶす」。smash は「たたき割る・粉々にする」
+N	crush|inflate	crush は「押しつぶす」、inflate は「膨らませる」
+N	crutch|support	crutch は脇にはさむ「松葉づえ」や、頼りすぎる「支え」。support は「支え」と広く言う
+N	crutch|prop	crutch は「松葉づえ」。prop は倒れないように当てる「つっかい棒・支柱」
+N	cuff|wristband	cuff はシャツの「袖口」や「手錠」。wristband は今はふつう手首に巻く「リストバンド」で、袖口の意味は古い使い方
+N	cuisine|food	cuisine はある国や店の「料理（法）」（Italian cuisine）。food は「食べ物」と広く言う
+N	cultured|sophisticated	cultured は「教養のある」。sophisticated は「洗練された」や、機械が「高度な」
+N	cultured|uncultured	cultured は「教養のある」、uncultured は「教養のない」
+N	crafty|cunning	cunning は「ずる賢い」や「巧みな」。crafty は「悪賢い」でほぼ同じ
+N	cunning|sly	cunning は計画が「ずる賢い・巧妙な」。sly はこっそり「ずるい」（a sly smile）
+N	cunning|naive	cunning は「ずる賢い」、naive は「世間知らずの」
+N	curb|restrain	curb は増えすぎるものを「抑える」（curb spending）。restrain は人や感情を「抑える・制止する」
+N	curb|limit	curb は「(よくないものを)抑える」。limit は数や量に「限度を設ける」
+N	curb|encourage	curb は「抑える」、encourage は「促す」
+I	curb|curr_idm_pre2_hold_back	hold back は感情や人を「抑える・引き止める」。curb は支出などを「抑える」
+I	curb|curr_idm_pre1_hold_down	hold down は物価などを「低く抑える」。curb は「抑制する」
+I	curb|curr_idm_1_rein_in	rein in は馬の手綱を引くように「抑える」。curb も支出などを「抑える」
+N	customary|unusual	customary は「習慣となっている」、unusual は「ふつうでない」
+N	cynic|skeptic	cynic は人の善意を信じない「皮肉屋」。skeptic はうのみにせず「疑う人」
+N	cynic|pessimist	cynic は人の動機を悪く見る「皮肉屋」。pessimist は物事の先を悪く見る「悲観的な人」
+N	cynic|optimist	cynic は「皮肉屋」、optimist は「楽観的な人」
+N	data|dataset	dataset はひとまとまりにした「データの集まり」。data は「データ・資料」と広く言う
+N	debug|fix	debug はプログラムの「誤り（バグ）を直す」。fix は「直す」と広く言う
+N	debug|troubleshoot	debug はプログラムのバグを「取り除く」。troubleshoot は機械などの「不具合の原因を探して直す」
+N	deceitful|dishonest	deceitful は人を「だまそうとする」。dishonest は「不正直な」と広く言う
+N	deceitful|honest	deceitful は「人をだます」、honest は「正直な」
+N	deceive|trick	deceive は人を「だます・欺く」かたい語。trick は「(計略で)だます」のくだけた語
+N	deceive|mislead	deceive はわざと「だます」。mislead は誤った考えを「持たせる」（わざとでない場合もある）
+N	deceive|enlighten	deceive は「だます」、enlighten は「(本当のことを)教える・啓発する」
+I	deceive|curr_idm_2_take_in	take in は「だます」の話し言葉（be taken in で「だまされる」）。deceive は「欺く」のかたい語
+N	deception|trickery	deception は「だますこと・ごまかし」。trickery は「ぺてん・いんちき」
+N	deception|fraud	deception は「ごまかし」と広く言う。fraud はお金をだまし取る「詐欺」
+N	deception|honesty	deception は「ごまかし」、honesty は「正直さ」
+N	conclusive|decisive	decisive は勝負を「決める・決定的な」や、人が「決断力のある」。conclusive は証拠が「決め手となる」
+N	decisive|resolute	decisive は「すぐ決断できる」。resolute は決めたことに「断固とした」
+N	decisive|indecisive	decisive は「決断力のある」、indecisive は「優柔不断な」
+N	decreased|reduced	decreased は数量が「減った」。reduced は人が「減らした」（at a reduced price）
+N	decreased|lessened	decreased は「減少した」。lessened は痛みなどが「弱まった」
+N	deduce|infer	deduce は決まりや事実から筋道立てて「推論する」。infer は手がかりから「推測する」
+N	conclude|deduce	deduce は「推論して導き出す」。conclude は「結論を出す」
+N	deduction|reasoning	deduction は手がかりからの「推理・推論」や、税の「控除」。reasoning は「理由づけ・考えの筋道」
+N	defective|faulty	defective は製品が「欠陥のある・不良の」。faulty は機械の部品や考えが「欠陥のある」
+N	defective|flawed	defective は機械が「正しく動かない」。flawed は計画などに「欠点のある」
+N	defective|flawless	defective は「欠陥のある」、flawless は「欠点のない」
+N	defer|postpone	defer は決定などを「延ばす」かたい語。postpone は予定を「延期する」
+N	defer|hasten	defer は「延ばす」、hasten は「急がせる」
+I	defer|idm_put_off	put off は「延期する」の話し言葉。defer は「延ばす」のかたい語
+N	defiance|resistance	defiance は命令や規則に公然と「逆らうこと」（in defiance of）。resistance は「抵抗」と広く言う
+N	defiance|rebellion	defiance は「反抗的な態度」。rebellion は大勢での「反乱」
+N	defiant|rebellious	defiant は目の前の相手に「反抗的な」。rebellious は親や社会に「反抗したがる」
+N	defiant|disobedient	defiant は公然と「逆らう」。disobedient は「言うことを聞かない」
+N	defiant|submissive	defiant は「反抗的な」、submissive は「従順な」
+N	deficit|shortfall	deficit はお金の「赤字」。shortfall は目標に対する「不足分」
+N	deficit|shortage	deficit は収入より支出が多い「赤字」。shortage は物の「不足」
+N	deficit|surplus	deficit は「赤字」、surplus は「黒字・余り」
+N	deflect|divert	deflect は飛んでくる物や批判を「そらす」。divert は流れや注意を「別の方へ向ける」
+N	avert|deflect	deflect は当たる物を「わきへそらす」。avert は危険を「避ける」や、目を「そらす」
+N	attract|deflect	deflect は「そらす・かわす」、attract は「引き寄せる」
+N	delayed|postponed	delayed は予定より「遅れた」。postponed は決めて後の日に「延期された」
+N	delayed|late	delayed は電車などが「遅れた」。late は「遅刻した・遅い」と広く言う
+N	delayed|punctual	delayed は「遅れた」、punctual は「時間どおりの」
+N	assign|delegate	delegate は自分の仕事や権限を人に「任せる」。assign は仕事や役を「割り当てる」
+N	delegate|entrust	delegate は仕事を部下に「任せる」。entrust は大切なものを信頼して「預ける・任せる」（entrust A with B）
+N	delusion|misconception	delusion は事実でないことを信じこむ「思いこみ・妄想」。misconception はまちがった「理解・誤解」
+N	delusion|reality	delusion は「思いこみ」、reality は「現実」
+N	demand|require	demand は強く「要求する」。require は「必要とする」や、規則で「求める」
+N	demand|request	demand は当然のこととして「要求する」。request はていねいに「お願いする」
+N	command|demand	demand は「強く求める」。command は上の立場から「命令する」
+I	demand|curr_idm_pre2_call_for	call for は「〜を求める・必要とする」。demand は「強く要求する」
+N	challenging|demanding	demanding は仕事が「きつい・骨が折れる」や、人が「要求が多い」。challenging は「難しいがやりがいのある」
+N	demanding|tough	demanding は「多くの力や時間が要る」。tough は「つらい・難しい」の話し言葉
+N	demanding|easy	demanding は「骨の折れる」、easy は「簡単な」
+N	den|lair	den はクマなどの「巣穴」や、悪者の「隠れ家」。lair は野獣の「ねぐら」や、悪者の「隠れ家」
+N	den|study	den はアメリカ英語で、くつろぐための「小部屋・書斎」。study は勉強する「書斎」
+N	condemn|denounce	denounce は公の場で「強く非難する」や「告発する」。condemn は「非難する」と広く言う
+N	denounce|praise	denounce は「公然と非難する」、praise は「ほめる」
+N	dent|hollow	dent はぶつけてできた「へこみ」。hollow は地面などの「くぼみ」
+N	dent|indentation	dent は車などの「へこみ」。indentation は表面の「くぼみ」や、行頭の「字下げ」
+N	bump|dent	dent は「へこみ」、bump は「出っぱり・こぶ」
+N	admit|deny	deny は「否定する」、admit は「認める」
+N	depleted|exhausted	depleted は資源などが「減って残り少ない」。exhausted は「使い果たした」や、人が「疲れ果てた」
+N	depleted|drained	depleted は量が「減った・枯渇した」。drained は人が「消耗した」や、水が「抜かれた」
+N	depleted|replenished	depleted は「使い減らした」、replenished は「補充された」
+N	descent|fall	descent は飛行機などの「降下」や坂の「下り」。fall は「落ちること・下落」
+N	descent|lineage	descent は「家系・血筋」（of Japanese descent）。lineage は代々の「血統」のかたい語
+N	ascent|descent	descent は「下降・下り」、ascent は「上昇・登り」
+N	deserve|merit	deserve は「〜に値する」のふつうの語（deserve a reward）。merit は動詞で「〜に値する」かたい語
+N	deserve|earn	deserve は当然「受けるにふさわしい」。earn は働いて「得る・稼ぐ」
+N	designate|specify	designate は場所や人を「指定する・任命する」。specify は条件などを「はっきり述べる」
+I	despite|curr_idm_1_for_all	for all は「〜があるのに」（for all his efforts）。despite と同じ意味で、よく「〜したのに結局」の感じが入る
+I	despite|exam_idm_in_spite_of	in spite of は despite と同じ「〜にもかかわらず」。in spite of は of をつけ、despite には of をつけない
+I	despite|curr1900_idm_2_with_all	with all は「〜があるにもかかわらず」（with all his faults）。despite は「〜にもかかわらず」の1語
+N	destined|fated	destined は「〜する運命の」（be destined to do）。fated は「避けられない宿命の」で、悪い結果に使うことが多い
+N	detailed|thorough	detailed は説明などが「くわしい」。thorough は調査などが「徹底した・抜けのない」
+N	detailed|elaborate	detailed は「くわしい」。elaborate は計画などが「手のこんだ・精巧な」
+N	detailed|vague	detailed は「くわしい」、vague は「あいまいな」
+N	detain|hold	detain は警察が人を「拘留する」かたい語。hold も「(人を)拘束する」の話し言葉
+N	delay|detain	detain は人を「引き留める」。delay は物事を「遅らせる」
+N	cleanser|detergent	detergent は洗濯や食器用の「洗剤」。cleanser は顔や台所用の「洗浄剤」
+N	detergent|soap	detergent は合成の「洗剤」。soap は体などを洗う「石けん」
+N	determination|resolve	determination はやりとげる「強い決意」。resolve は名詞で「決意」のかたい語
+N	detour|diversion	detour は遠回りする「回り道」。diversion は工事などでの「迂回路（うかいろ）」や、「気晴らし」
+N	detour|shortcut	detour は「回り道」、shortcut は「近道」
+N	detriment|harm	detriment は「不利益・損失」のかたい語（to the detriment of）。harm は「害」のふつうの語
+N	damage|detriment	detriment は目に見えない「不利益」。damage は物などの「損害・被害」
+N	benefit|detriment	detriment は「不利益」、benefit は「利益」
+N	destroy|devastate	devastate は町などを「すっかり荒廃させる」や、人を「打ちのめす」。destroy は「破壊する」と広く言う
+N	devastate|ruin	devastate は「めちゃめちゃにする」。ruin は計画などを「台無しにする」
+N	development|growth	development は国や技術の「発展・開発」。growth は大きさや量の「成長・増加」
+N	devotee|enthusiast	devotee は熱烈な「愛好者・信奉者」。enthusiast は趣味などの「熱心な愛好家」
+N	devotee|follower	devotee は「熱烈な信者・ファン」。follower は「信者・支持者」や、SNS の「フォロワー」
+N	diagnose|identify	diagnose は医者が病気を「診断する」。identify は正体を「特定する」
+N	detect|diagnose	diagnose は症状から病名を「診断する」。detect は隠れたものを「見つける・感知する」
+N	dictator|tyrant	dictator は国を一人で支配する「独裁者」。tyrant は残酷な「暴君」
+N	autocrat|dictator	dictator は「独裁者」のふつうの語。autocrat は「専制君主」のかたい語
+N	absorb|digest	digest は食べ物を「消化する」や、情報を「よく理解する」。absorb は水や知識を「吸収する」
+N	comprehend|digest	digest は情報を「かみくだいて理解する」。comprehend は「理解する」のかたい語
+N	dignity|honor	dignity は人としての「尊厳・威厳」。honor は「名誉・光栄」
+N	diligence|industry	diligence は「勤勉さ・まじめな努力」。industry はふつう「産業」で、「勤勉」はかたい古めの意味
+N	dilute|water down	dilute は液体を「薄める」。water down は「水で薄める」や、計画などを「手ぬるくする」
+N	dilute|weaken	dilute は液体を「薄める」や、効果を「弱める」。weaken は「弱める」と広く言う
+I	diminish|curr_idm_pre1_drop_off	drop off は数が「減る」や、人を車から「降ろす」話し言葉。diminish は「減少する」のかたい語
+I	diminish|curr_idm_pre2_fall_off	fall off は量が「落ちこむ」話し言葉。diminish は「減る・弱まる」
+N	disabled|handicapped	disabled は「障害のある」のふつうの語。handicapped は古い言い方で、今は失礼に聞こえることがある
+N	disabled|impaired	disabled は「障害のある」。impaired は視力などの機能が「損なわれた」（visually impaired）
+N	able-bodied|disabled	disabled は「障害のある」、able-bodied は「体が健康な」
+I	disappoint|curr_idm_pre2_let_down	let down は人を「がっかりさせる」話し言葉。disappoint は「失望させる」
+N	disappointment|satisfaction	disappointment は「失望」、satisfaction は「満足」
+I	discern|curr_idm_2_make_out	make out は見えにくいものを「なんとか見分ける」話し言葉。discern は「見分ける・識別する」かたい語
+I	discern|curr_idm_pre2_pick_out	pick out は多くの中から「見つけ出す」。discern は「見分ける」のかたい語
+N	discharge|release	discharge は患者を「退院させる」や、兵士を「除隊させる」。release は捕らわれた人を「解放する」
+N	discharge|emit	discharge は液体やガスを「排出する」。emit は光や熱を「発する」
+N	admit|discharge	discharge は「退院させる」、admit は「入院させる」
+N	disciple|pupil	disciple は師の教えに従う「弟子」。pupil は「生徒」や、ある師の「門下生」
+N	disciple|master	disciple は「弟子」、master は「師」
+N	disgrace|dishonor	disgrace は恥ずかしいことによる「不名誉」（bring disgrace on）。dishonor は「名誉を傷つけること」のかたい語
+N	disgrace|honor	disgrace は「不名誉」、honor は「名誉」
+N	dishonor|shame	dishonor は名誉を失う「不名誉」。shame は自分が感じる「恥ずかしさ」や「残念なこと」
+N	dishonor|honor	dishonor は「不名誉」、honor は「名誉」
+N	discharge|dismissal	dismissal は仕事からの「解雇」。discharge は兵士の「除隊」や、仕事の「解任」
+N	dismissal|rejection	dismissal は訴えなどの「却下」や「解雇」。rejection は申し出などの「拒絶」
+N	appointment|dismissal	dismissal は「解雇」、appointment は「任命」
+N	disparity|inequality	disparity は大きな「格差・ちがい」（a disparity in income）。inequality は社会の「不平等」
+N	disparity|gap	disparity は「格差」のかたい語。gap は「すき間・差」
+N	disparity|parity	disparity は「格差」、parity は「同等」
+N	dispatch|send	dispatch は人や物を急いで「派遣する・送り出す」かたい語。send は「送る」のふつうの語

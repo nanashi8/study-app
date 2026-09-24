@@ -1,0 +1,265 @@
+N	prosper|thrive	prosper は商売などで「繁栄する・成功する」。thrive は環境が合って「よく育つ・生き生きと栄える」
+N	fail|prosper	prosper は「栄える」、fail は「失敗する」
+N	defender|protector	protector は危険から「守るもの・守護者」や「保護カバー」。defender は攻撃から「守る人」や、スポーツの「ディフェンダー」
+N	attacker|protector	protector は「守る人」、attacker は「攻撃する人」
+N	demonstration|protest	protest は「抗議」と広く言う。demonstration は大勢が集まって抗議する「デモ」や、「実演」
+N	objection|protest	protest は強い「抗議」。objection は意見への「異議・反対」
+N	protest|support	protest は「抗議・反対」、support は「支持」
+N	province|region	province はカナダなどの行政区分の「州」や「地方」。region は「地域」と広く言う
+N	province|territory	province は国の中の「州・地方」。territory は国が治める「領土」や、動物の「なわばり」
+N	capital|province	province は首都から離れた「地方」、capital は「首都」
+N	promotion|publicity	publicity は世間に知らせる「宣伝・注目されること」。promotion は売り上げのための「販売促進」や「昇進」
+N	advertising|publicity	publicity は話題になって広まる「宣伝・知名度」。advertising はお金を払って出す「広告」
+N	openly|publicly	publicly は「公の場で・人前で」。openly は「隠さずに・率直に」
+N	officially|publicly	publicly は「人前で・公に」。officially は「公式に・正式に」
+N	privately|publicly	publicly は「人前で」、privately は「内々に・こっそり」
+I	publicly|curr_idm_pre2_in_public	in public は「人前で」の言い方。publicly も同じ意味の副詞で、「公的に」の意味もある
+N	late|punctual	punctual は「時間を守る」、late は「遅れた」
+I	punctual|curr_idm_4_on_time	on time は「時間どおりに」（be on time）。punctual は「時間をきちんと守る」性格も言う
+N	punish|reward	punish は「罰する」、reward は「ほうびを与える・報いる」
+N	pupil|student	student は「学生・生徒」と広く言う。pupil はイギリス英語で小中学生の「生徒」や、目の「ひとみ」
+N	cleanse|purify	purify は水や空気を「浄化する」。cleanse は肌や傷を「清める・きれいにする」
+N	purify|refine	purify は汚れを取って「きれいにする」。refine は石油や砂糖を「精製する」や、技などを「磨く」
+N	contaminate|purify	purify は「浄化する」、contaminate は「汚染する」
+N	pursuit|quest	pursuit は目標を「追い求めること・追求」（in pursuit of）。quest は長い旅のような「探求」
+N	chase|pursuit	pursuit は「追求」や「追跡」。chase は走って「追いかけること」
+N	avoidance|pursuit	pursuit は「追い求めること」、avoidance は「避けること」
+N	argument|quarrel	quarrel は友達などとの「口げんか」。argument は「議論」や「口論」
+N	dispute|quarrel	quarrel は個人の「口げんか」。dispute は国や組織の「論争・紛争」
+N	quarrel|reconciliation	quarrel は「けんか」、reconciliation は「仲直り・和解」
+I	quit|idm_give_up	give up は努力をやめて「あきらめる」。quit は仕事や習慣を「やめる」
+N	extreme|radical	radical は考えが「根本から変える・急進的な」。extreme は程度が「極端な」
+N	fundamental|radical	radical は「根本的な（大きく変える）」。fundamental は「基本的な・土台となる」
+N	moderate|radical	radical は「急進的な」、moderate は「穏健な」
+I	raise|exam_idm_bring_up	bring up は子どもを「育てる」や、話題を「持ち出す」。raise は「上げる」のほか「育てる」
+N	arbitrary|random	random は「でたらめの・無作為の」。arbitrary は理由なく勝手に決める「恣意的な」
+N	deliberate|random	random は「無作為の」、deliberate は「意図的な」
+N	rank|status	rank は軍などの「階級」。status は社会での「地位・身分」
+N	grade|rank	rank は組織の「階級・順位」。grade は品質や学校の「等級・学年・成績」
+N	rapid|swift	rapid は変化などが「急速な」。swift は動きが「すばやい」のやや文学的な語
+N	rapid|slow	rapid は「急速な」、slow は「遅い」
+N	quickly|rapidly	quickly は「すばやく」のふつうの語。rapidly は変化などが「急速に」
+N	rapidly|swiftly	rapidly は「急速に」。swiftly は「すばやく・さっと」
+N	rapidly|slowly	rapidly は「急速に」、slowly は「ゆっくり」
+N	reaction|response	reaction は出来事への「反応」。response は質問などへの「返答・応答」
+N	reaction|reflex	reaction は「反応」と広く言う。reflex は考えずに体が動く「反射」
+N	action|reaction	reaction は「反作用・反応」、action は「作用・行動」
+N	preparedness|readiness	readiness は「準備ができていること」や「進んでする気持ち」。preparedness は災害などへの「備え」
+N	readiness|willingness	readiness は「準備・すぐにする用意」。willingness は「進んでする気持ち」
+N	readiness|reluctance	readiness は「進んでする気持ち」、reluctance は「気が進まないこと」
+N	actuality|reality	reality は「現実」のふつうの語。actuality は「実際の状態」のかたい語
+N	fantasy|reality	reality は「現実」、fantasy は「空想」
+N	receiver|sender	receiver は「受け取る人・受信機」、sender は「送り手」
+N	latest|recent	recent は「最近の」。latest は「いちばん新しい・最新の」
+N	current|recent	recent は少し前の「最近の」。current は今の「現在の」
+N	ancient|recent	recent は「最近の」、ancient は「古代の」
+N	reception|welcome	reception はホテルの「受付」や「歓迎会」。welcome は「歓迎（の気持ち）」
+N	greeting|reception	reception は「歓迎会」や、人を迎える「応対」。greeting は「あいさつ」
+N	recession|slump	recession は経済の「景気後退・不況」。slump は売り上げなどの「急な落ち込み」や、選手の「不振」
+N	boom|recession	recession は「不況」、boom は「好況」
+N	read aloud|recite	recite は覚えた詩などを「暗唱する」。read aloud は本などを「声に出して読む」
+I	recognize|curr_idm_2_make_out	make out は見えにくいものを「なんとか見分ける」。recognize は見て「(知っている)だれか・何かだと分かる」
+I	recognize|curr_idm_pre2_pick_out	pick out は多くの中から「選び出す・見つけ出す」。recognize は「(前から知っているものだと)分かる」
+N	recovery|recuperation	recovery は「回復・復旧」と広く言う。recuperation は病気のあとの「療養・快復」
+N	recovery|restoration	recovery は元の状態への「回復」。restoration は建物などの「修復・復元」
+N	recovery|relapse	recovery は「回復」、relapse は病気の「ぶり返し」
+N	enlist|recruit	recruit は会社が人を「採用する・募集する」。enlist は軍隊に「入隊する（させる）」や、協力を「求める」
+N	diminished|reduced	reduced は値段や量が「減らされた」（at a reduced price）。diminished は力などが「弱まった」
+N	increased|reduced	reduced は「減らされた」、increased は「増えた」
+N	decrease|reduction	reduction は人が行う「削減・縮小」。decrease は数量の「減少」
+N	cut|reduction	reduction は「削減」のかたい語。cut は「削減」の話し言葉（a tax cut）
+N	increase|reduction	reduction は「削減・減少」、increase は「増加」
+N	referee|umpire	referee はサッカーなどの「審判」。umpire は野球やテニスなどの「審判」
+N	cultured|refined	refined は態度などが「洗練された」。cultured は「教養のある」
+N	crude|refined	refined は「洗練された・精製された」、crude は「粗野な・未加工の」
+N	exile|refugee	refugee は戦争などから逃れた「難民」。exile は国を追われた「亡命者」
+N	displaced person|refugee	refugee は国外へ逃れた「難民」。displaced person は住む場所を追われた「避難民」
+N	refusal|rejection	refusal は申し出などを「断ること」。rejection は応募や提案を「受け入れないこと・不採用」
+N	acceptance|refusal	refusal は「拒否」、acceptance は「受け入れ」
+N	decline|refuse	refuse ははっきり「断る」。decline は招待などを「ていねいに断る」
+I	refuse|curr_idm_pre2_turn_down	turn down は申し出を「断る」話し言葉。refuse は「断る・拒む」とはっきり言う
+I	regain|curr_idm_1_claw_back	claw back は失ったものを「苦労して取り戻す」。regain は「取り戻す」のふつうの語
+I	regain|curr_idm_4_get_back	get back は「取り戻す」の話し言葉。regain は健康などを「取り戻す」かたい語
+N	concerning|regarding	regarding と concerning はどちらも「〜について」のかたい語で、書類や手紙でよく使う
+N	about|regarding	about は「〜について」のふつうの語。regarding は「〜に関して」のかたい語
+I	regarding|curr_idm_2_as_to	as to は「〜については」と話題を示す。regarding とほぼ同じで、少しくだけた言い方
+I	regarding|curr_idm_2_in_relation_to	in relation to は「〜との関係で・〜に関して」。regarding は「〜について」
+I	regarding|curr_idm_pre1_with_reference_to	with reference to は手紙などで「〜に関して」のかたい言い方
+I	regarding|exam_idm_with_regard_to	with regard to は「〜に関して」のかたい言い方。regarding と同じ意味
+I	regarding|curr_idm_2_with_respect_to	with respect to は「〜に関して・〜の点で」のかたい言い方
+N	regular|routine	regular は「規則的な・定期的な」。routine は「決まりきった・いつもの手順の」
+N	regular|usual	regular は「定期的な・ふだんの」。usual は「いつもの」
+N	regularly|routinely	regularly は「定期的に」。routinely は「決まった手順で・日常的に」
+N	consistently|regularly	regularly は「定期的に」。consistently は「いつも変わらず・一貫して」
+N	regularly|sporadically	regularly は「定期的に」、sporadically は「散発的に・ときどき」
+N	control|regulate	regulate は規則で「規制する」や、温度などを「調整する」。control は「管理する・制御する」と広く言う
+N	govern|regulate	regulate は規則で「規制する」。govern は国を「治める」
+N	regulator|supervisor	regulator は業界を監督する「規制機関」や「調節器」。supervisor は現場の「監督者・上司」
+N	reign|rule	reign は王の「治世（在位期間）」。rule は「支配・統治」と広く言う
+N	dominion|reign	reign は王の「治世」。dominion は「支配権・領土」
+I	reinforce|curr_idm_1_beef_up	beef up は「強化する」の話し言葉。reinforce は壁や主張を「補強する」
+N	acceptance|rejection	rejection は「拒絶」、acceptance は「受け入れ」
+N	comparative|relative	relative は「相対的な・比べたうえでの」（relative to）。comparative も「比較の」だが、文法の「比較級」の意味もある
+N	proportional|relative	relative は「比べたうえでの」。proportional は「比例した・釣り合った」
+N	calm|relaxed	relaxed は「くつろいだ・のんびりした」。calm は「落ち着いた・冷静な」
+N	relaxed|tense	relaxed は「くつろいだ」、tense は「緊張した」
+I	relaxed|curr1900_idm_2_at_ease	at ease は「くつろいで・気楽に」（feel at ease）。relaxed は「くつろいだ」の形容詞
+N	alleviate|relieve	relieve は痛みや不安を「和らげる」。alleviate は「軽減する」のかたい語
+N	devout|religious	religious は「宗教の・信心深い」。devout は「とても信心深い・敬虔な」
+N	pious|religious	religious は「信仰心のある」。pious は「信心深い」のかたい語で、「信心ぶった」の意味にもなる
+N	religious|secular	religious は「宗教の」、secular は「宗教とは関係のない・世俗の」
+N	move|relocate	move は「移る・引っ越す」と広く言う。relocate は会社や住まいを「移転する」
+N	reluctant|unwilling	reluctant は「気が進まない（がやる）」。unwilling は「(やる)気がない」と強い
+N	reluctant|willing	reluctant は「気が進まない」、willing は「進んで〜する」
+N	leave|remain	remain は「残る」、leave は「去る」
+N	remainder|remnant	remainder は「残り」全体。remnant は布などの「残り切れ・名残」
+N	remainder|whole	remainder は「残り」、whole は「全体」
+N	prompt|reminder	reminder は思い出させる「注意・もの」。prompt は動作を「うながすもの・合図」
+N	cue|reminder	reminder は「思い出させるもの」。cue は劇などの「きっかけの合図」
+N	elimination|removal	removal は「取り除くこと・撤去」。elimination は完全に「なくすこと・除外」
+N	extraction|removal	removal は「撤去・除去」。extraction は歯などを「抜き取ること」や、資源の「抽出」
+N	addition|removal	removal は「取り除くこと」、addition は「加えること」
+N	renew|restore	renew は契約などを「更新する」や「新しくする」。restore は元の状態に「修復する・回復させる」
+N	cancel|renew	renew は契約を「更新する」、cancel は「解約する・取り消す」
+N	nonrenewable|renewable	renewable は「再生可能な」、nonrenewable は「使えばなくなる」
+N	reimbursement|repayment	repayment は借りたお金の「返済」。reimbursement は立て替えた費用の「払い戻し」
+N	loan|repayment	loan は「貸付・借金」、repayment は「返済」
+N	replace|substitute	replace は古いものを新しいもので「取り替える」（replace A with B）。substitute は一時的に「代わりに使う」（substitute B for A）
+N	copy|replica	replica は本物そっくりの「複製品」。copy は「写し」と広く言う
+N	replica|reproduction	replica は立体の「複製品」。reproduction は絵などの「複製」や、生物の「繁殖」
+N	original|replica	replica は「複製品」、original は「本物」
+N	delegate|representative	representative は団体を代表する「代表者」。delegate は会議に送られる「代表（団の1人）」
+N	replicate|reproduce	reproduce は生物が「繁殖する」や、「再現する」。replicate は実験などを「そのまま繰り返す・複製する」
+N	commonwealth|republic	republic は王のいない「共和国」。commonwealth は国々の「連邦」
+N	monarchy|republic	republic は「共和国」、monarchy は「君主制（の国）」
+N	condition|requirement	requirement は満たすべき「要件・必要条件」。condition は「条件」と広く言う
+N	prerequisite|requirement	requirement は「必要条件」。prerequisite は前もって満たすべき「前提条件」
+N	reserve|stock	reserve は万一のための「予備・蓄え」（in reserve）。stock は店の「在庫・蓄え」
+N	reserve|reticence	reserve は「控えめさ・遠慮」。reticence は「口数の少なさ」
+N	openness|reserve	reserve は「控えめさ」、openness は「率直さ」
+I	reserve|exam_idm_set_aside	set aside はお金や時間を「取っておく」。reserve は席などを「予約する」や「取っておく」
+N	dwelling|residence	residence は「住居」のかたい語で、有名人の「邸宅」にも使う。dwelling は「住まい」のかたい語
+N	inhabitant|resident	resident はある建物や地域に「住んでいる人」。inhabitant は町や島の「住民」
+N	occupant|resident	resident は「住民」。occupant は部屋や車に「今いる人」
+N	resident|visitor	resident は「住民」、visitor は「訪問者」
+N	quit|resign	resign は役職を正式に「辞職する」。quit は仕事などを「やめる」の話し言葉
+N	remain|resign	resign は「辞める」、remain は「とどまる」
+I	resign|curr_idm_pre1_step_down	step down は地位から「退く・辞任する」。resign は「辞職する」
+N	resist|yield	resist は「抵抗する」、yield は「屈する・譲る」
+N	impervious|resistant	resistant は「抵抗力のある・〜に強い」。impervious は水などを「通さない」や、批判に「動じない」
+N	immune|resistant	resistant は「〜に強い・耐性のある」。immune は病気に「免疫のある」
+N	resistant|susceptible	resistant は「抵抗力のある」、susceptible は「影響を受けやすい」
+N	resolve|settle	resolve は問題を「解決する」かたい語。settle は争いを「決着させる」
+N	determine|resolve	resolve は「決意する」（resolve to do）。determine は「決定する」や「突き止める」
+N	resolve|solve	solve は問題・なぞを「解く」。resolve は争い・問題を「解決する」かたい語で、「決意する」の意味もある
+I	resolve|curr_idm_pre2_clear_up	clear up は誤解などを「解く」や、天気が「晴れる」。resolve は「解決する」のかたい語
+I	resolve|curr_idm_1_sort_out	sort out は問題を「解決する・整理する」話し言葉。resolve はかたい語
+I	resolve|exam_idm_work_out	work out は問題を「解決する」や、物事が「うまくいく」。resolve は「解決する」のかたい語
+N	recourse|resort	resort は as a last resort（最後の手段として）の形で「手段」。recourse は「頼ること・頼みの手段」
+N	resort|retreat	resort は大勢が行く「行楽地」。retreat は静かに過ごす「保養所・隠れ家」
+I	restrain|curr_idm_pre2_hold_back	hold back は感情などを「抑える」や、人を「引き止める」。restrain は「抑える・制止する」のかたい語
+I	restrain|curr_idm_pre1_hold_down	hold down は人や物を「押さえつける」や、物価を「抑える」。restrain は「制止する」
+N	restraint|self-control	restraint は「自制・抑制」。self-control は自分の感情を「抑える力」
+N	moderation|restraint	restraint は「(したいことを)抑えること」。moderation は食事などの「節度・適度」
+N	excess|restraint	restraint は「自制」、excess は「やりすぎ・過剰」
+N	retail|wholesale	retail は客に直接売る「小売り」、wholesale は店にまとめて売る「卸売り」
+I	retain|curr_idm_2_hold_on_to	hold on to は物を「手放さずに持っておく」。retain は「保持する」のかたい語
+N	retreat|withdraw	retreat は軍などが「退却する」。withdraw は「引き下がる・撤退する」や、お金を「引き出す」
+N	advance|retreat	retreat は「退却する」、advance は「前進する」
+I	retrieve|curr_idm_4_get_back	get back は「取り戻す」の話し言葉。retrieve は物を「回収する」やデータを「取り出す」
+N	revenge|vengeance	revenge は自分のための「仕返し」（take revenge）。vengeance は激しい「復讐」のかたい語
+N	retaliation|revenge	revenge は個人の「仕返し」。retaliation は攻撃への「報復（措置）」
+N	avenge|revenge	avenge は他人（家族など）の「かたきを討つ」正義の感じ。revenge は自分のための「仕返し」（名詞でよく使う: take revenge on）
+N	forgiveness|revenge	revenge は「復讐」、forgiveness は「許すこと」
+N	amendment|revision	revision は本などの「改訂・見直し」。amendment は法律などの「修正・改正」
+N	correction|revision	revision は全体の「見直し・改訂」。correction は誤りの「訂正」
+N	renaissance|revival	revival は「復活・再流行」。renaissance は文化などの「復興」
+N	resurgence|revival	revival は「復活」。resurgence は勢いの「再び高まること」
+N	decline|revival	revival は「復活」、decline は「衰退」
+N	puzzle|riddle	riddle はことばの「なぞなぞ」や「謎」。puzzle は「パズル」や「難問」
+N	enigma|riddle	riddle は「なぞなぞ・謎」。enigma は正体の分からない「謎の人・物」
+N	hazardous|risky	risky は失敗の「危険がある」。hazardous は健康などに「有害で危険な」
+N	risky|safe	risky は「危険な」、safe は「安全な」
+N	revolve|rotate	rotate は自分の軸で「自転する・回る」。revolve はほかのものの周りを「回る・公転する」
+N	rotate|spin	rotate は「回転する」。spin は「くるくる速く回る」
+N	fix|rotate	rotate は「回転する」、fix は動かないように「固定する」
+N	rough|smooth	rough は「ざらざらした・荒い」、smooth は「なめらかな」
+N	approximately|roughly	roughly は「だいたい」の話し言葉。approximately は「およそ」のかたい語
+N	exactly|roughly	roughly は「だいたい」、exactly は「ちょうど・正確に」
+N	procedure|routine	routine は毎日の「決まった手順・日課」。procedure は正式な「手続き・手順」
+N	habit|routine	routine は決めて行う「日課」。habit は無意識にする「癖・習慣」
+N	novelty|routine	routine は「決まりきったこと」、novelty は「目新しさ」
+N	nobility|royalty	royalty は王と家族「王族」。nobility は王族以外の「貴族」
+N	monarchy|royalty	royalty は「王族（の人々）」。monarchy は王が治める「君主制」
+N	commoner|royalty	royalty は「王族」、commoner は「庶民」
+N	rough|rugged	rugged は土地が「でこぼこの」や人が「たくましい」。rough は表面が「荒い・ざらざらした」
+N	rugged|sturdy	rugged は「頑丈でたくましい」。sturdy は物や体が「がっしりした」
+N	rugged|smooth	rugged は「でこぼこの」、smooth は「なめらかな」
+N	destroy|ruin	ruin は計画などを「台無しにする」や、「廃墟」。destroy は物を「破壊する」
+N	ruin|wreck	ruin は「台無しにする」。wreck は車などを「めちゃめちゃに壊す」
+N	moon|satellite	satellite は人工の「衛星」や、惑星の周りを回る「衛星」。moon は地球の「月」や、ほかの惑星の「衛星」
+N	content|satisfied	satisfied は「満足した・納得した」。content は形容詞では /kənˈtɛnt/ と読み「(今のままで)満足して」
+N	dissatisfied|satisfied	satisfied は「満足した」、dissatisfied は「不満な」
+N	disgrace|scandal	scandal は世間を騒がす「不祥事・スキャンダル」。disgrace はそれによる「不名誉・恥」
+N	frightened|scared	scared は「おびえた」の話し言葉（be scared of）。frightened は「怖がった」の少しかたい語
+N	scared|unafraid	scared は「怖がった」、unafraid は「恐れない」
+N	dispersed|scattered	scattered は「散らばった・点在する」。dispersed は群衆などが「分散した」
+N	scattered|sporadic	scattered は場所が「点在する」（scattered showers）。sporadic は時間的に「散発的な」
+N	concentrated|scattered	scattered は「散らばった」、concentrated は「集中した」
+N	scenario|situation	scenario は起こりうる「筋書き・想定」（the worst-case scenario）。situation は今の「状況」
+N	scenario|script	scenario は映画などの「筋書き」。script はせりふまで書いた「台本」
+N	academic|scholar	scholar は研究を積んだ「学者」。academic は大学の「研究者・教員」
+N	intellectual|scholar	scholar は「学者」。intellectual は「知識人・インテリ」
+N	range|scope	scope は扱う「範囲・余地」（beyond the scope of）。range は「範囲・幅」（a wide range of）
+N	scream|shout	scream は恐怖などで「悲鳴を上げる」。shout は「大声で叫ぶ」と広く言う
+N	scream|whisper	scream は「悲鳴を上げる」、whisper は「ささやく」
+N	screenplay|script	script は劇などの「台本」。screenplay は映画の「脚本」
+N	script|text	script は劇やスピーチの「台本・原稿」。text は本などの「本文・文章」
+N	search|seek	search は場所の中を「探す」（search the room）。seek は「求める」のかたい語
+I	search|idm_look_for	look for は「探す」の話し言葉。search for も同じだが、あちこち徹底的に探す感じがある
+N	secondary|subordinate	secondary は「二次的な・二番目の」。subordinate は「下位の・従属した」
+N	minor|secondary	secondary は「副次的な」。minor は「重要でない・小さい方の」
+N	primary|secondary	secondary は「二次的な」、primary は「第一の・主要な」
+N	covertly|secretly	secretly は「ひそかに」のふつうの語。covertly は「秘密裏に」のかたい語
+N	privately|secretly	secretly は「ひそかに・内緒で」。privately は「内々に・個人的に」
+N	secure|stable	secure は「安心できる・確保された」。stable は「揺るがない・安定した」
+N	insecure|secure	secure は「安全な・安定した」、insecure は「不安な・不安定な」
+N	loosely|securely	securely は「しっかりと」、loosely は「ゆるく」
+N	infrequently|seldom	seldom は「めったに〜ない」のかたい語。infrequently は「たまにしか」
+N	often|seldom	seldom は「めったに〜ない」、often は「よく」
+N	assortment|selection	selection は選んだ「品ぞろえ・選択」。assortment はいろいろ混ざった「詰め合わせ」
+N	choosy|selective	selective は「えり好みする・選び抜く」。choosy は「好みがうるさい」の話し言葉
+N	discriminating|selective	selective は「選択的な・えり好みする」。discriminating は「目の肥えた・見る目のある」
+N	indiscriminate|selective	selective は「選んだ」、indiscriminate は「無差別の」
+N	legislator|senator	senator は「上院議員」。legislator は法律を作る「立法者・議員」全体
+N	lawmaker|senator	senator は「上院議員」。lawmaker は「議員」の新聞でよく使う言い方
+N	dispatcher|sender	sender は手紙などの「差出人」。dispatcher はタクシーなどの「配車係」や荷物の「発送係」
+N	insensitive|sensitive	sensitive は「敏感な・思いやりのある」、insensitive は「鈍感な・無神経な」
+N	combine|separate	separate は「分ける」、combine は「結合する」
+N	join|separate	separate は「分ける・離す」、join は「つなぐ」
+N	separation|union	separation は「分離・別離」、union は「結合」
+N	sequence|series	sequence は出来事の「順番・流れ」。series は同じ種類のものの「連続・シリーズ」
+N	earnestly|seriously	seriously は「真剣に・深刻に」。earnestly は「熱心に・心をこめて」
+N	gravely|seriously	seriously は「真剣に・ひどく」。gravely は病状などが「重く」のかたい語
+N	casually|seriously	seriously は「真剣に」、casually は「気軽に」
+N	attendant|servant	servant は家で働く「召使い」。attendant は客の世話をする「係員・付き添い」
+N	master|servant	servant は「召使い」、master は「主人」
+N	harsh|severe	severe は天候や罰が「厳しい」、病気が「重い」。harsh は「きびしく冷たい・過酷な」
+N	serious|severe	severe は「過酷な・深刻な」と強く言う。serious は「深刻な・重大な」
+N	harshness|severity	severity は冬や罰などの「厳しさ」。harshness は言葉などの「とげとげしさ」
+N	gravity|severity	severity は被害などの「深刻さ」。gravity は事態の「重大さ」
+N	mildness|severity	severity は「厳しさ」、mildness は「穏やかさ」
+N	shaky|unsteady	shaky は「ぐらつく・震える」。unsteady は「足元がふらつく・不安定な」
+N	shaky|wobbly	shaky は「ぐらつく」。wobbly はいすなどが「ぐらぐらする」
+N	communal|shared	shared は「共有の」。communal は住人みんなで使う「共同の」
+N	private|shared	shared は「共有の」、private は「個人専用の」
+N	shatter|smash	shatter はガラスなどが「粉々に割れる」。smash は力いっぱい「たたき割る」
+N	shatter|splinter	shatter は「粉々に砕ける」。splinter は木などが「細かく裂ける」
+N	mend|shatter	shatter は「粉々にする」、mend は「直す」
+N	refuge|shelter	shelter は雨などをしのぐ「避難所・住まい」。refuge は危険から逃れる「避難所」
+N	haven|shelter	shelter は「避難所」。haven は安心できる「安息の場所」
+N	shelter|shield	shelter は雨風や危険から「かくまう・避難所」。shield は盾のように「前に立って守る・盾」
+N	exposure|shelter	shelter は「守られた場所」、exposure は「さらされること」
+N	shiver|tremble	shiver は寒さで「ぶるぶる震える」。tremble は恐怖や緊張で「震える」
+N	shiver|shudder	shiver は寒さで「震える」。shudder はいやなものに「ぞっとして身震いする」
+N	shortage|surplus	shortage は「不足」、surplus は「余り・余剰」

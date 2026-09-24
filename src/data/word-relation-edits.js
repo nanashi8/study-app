@@ -146,16 +146,25 @@ export const RELATION_ADDITIONS = [
 ]
 
 export const RELATION_REMOVALS = [
+  ['beak', 'syn', 'bill', 'くちばし', 'くちばしの bill は請求書の bill と由来のちがう別の語で見出し語がなく、つづりで引くと請求書へ飛ぶ'],
   ['cage', 'syn', 'pen', '囲い', '囲いの意味の pen はペンの pen と由来のちがう別の語で見出し語がなく、つづりで引くとペンへ飛ぶ'],
+  ['comparative', 'syn', 'corresponding', '対応する', 'corresponding は「対応する・相当する」で、「比較の・相対的な」とは意味が重ならない'],
+  ['crate', 'syn', 'case', 'ケース', '箱の意味の case は「場合」の case と由来のちがう別の語で見出し語がなく、つづりで引くと「場合」へ飛ぶ'],
   ['din', 'syn', 'racket', '騒ぎ', '騒音の意味の racket はラケットの racket と由来のちがう別の語で見出し語がなく、つづりで引くとラケットへ飛ぶ'],
   ['noise', 'syn', 'racket', '騒ぎ', '騒音の意味の racket はラケットの racket と由来のちがう別の語で見出し語がなく、つづりで引くとラケットへ飛ぶ'],
   ['racket', 'ant', 'silence', '静寂', '騒音の意味の racket はラケットの racket と由来のちがう別の語で見出し語がなく、つづりで引くとラケットへ飛ぶ'],
   ['racket', 'syn', 'clamor', '喧噪', '騒音の意味の racket はラケットの racket と由来のちがう別の語で見出し語がなく、つづりで引くとラケットへ飛ぶ'],
   ['racket', 'syn', 'din', '騒音', '騒音の意味の racket はラケットの racket と由来のちがう別の語で見出し語がなく、つづりで引くとラケットへ飛ぶ'],
   ['sausage', 'syn', 'frank', 'フランクフルト', 'フランクフルトの frank（frankfurter の略）は、率直なの frank と由来のちがう別の語で見出し語がなく、つづりで引くと「率直な」へ飛ぶ'],
+  ['surgeon', 'syn', 'operator', '手術者', 'operator は機械の「操作する人」や電話の「オペレーター」で、学習者が使う英語では外科医の意味にならない（医学論文で手術を行う人を言う専門的な使い方だけ）'],
+  ['survivor', 'syn', 'remainder', '残存者', 'remainder は「残りの部分・残りの数」で、災害などを生き延びた人の意味はない'],
 ]
 
 export const RELATION_MEANING_FIXES = [
+  ['cabinet', 'syn', 'council', '閣僚', '評議会'],
+  ['civilize', 'syn', 'cultivate', '教化する', '(心や教養を)養う'],
+  ['compass', 'syn', 'navigator', '方位計', '道案内の装置'],
+  ['corpse', 'syn', 'remains', '亡骸', '遺体・遺骨'],
 ]
 
 const lower = (text) => String(text ?? '').trim().toLowerCase()

@@ -58,7 +58,7 @@ const RAW = [
   ['circulation', '名', 'pre1', '循環・発行部数', 'Regular exercise improves blood circulation.', '定期的な運動は血液の循環をよくする。', 'circulate(循環する)+ -ation', { fam: [{ w: 'circulate', m: '循環する' }], field: '医学' }],
   ['circulatory', '形', '1', '循環の・循環器の', 'The heart is the center of the circulatory system.', '心臓は循環器系の中心だ。', 'circulate(循環する)+ -ory。', { fam: [{ w: 'circulate', m: '循環する' }], field: '医学' }],
   ['civility', '名', '1', '礼節・丁重さ', 'They argued with civility.', '彼らは礼節をもって議論した。', 'ラテン civilis(市民の)→ civil と同系。', { syn: [{ w: 'courtesy', m: '礼儀' }, { w: 'politeness', m: '丁寧さ' }], ant: [{ w: 'rudeness', m: '無礼' }], field: '社会' }],
-  ['civilize', '動', 'pre1', '文明化する・教化する', 'They sought to civilize the region.', '彼らはその地域を文明化しようとした。', 'civil(市民の)+ -ize。', { syn: [{ w: 'cultivate', m: '教化する' }, { w: 'refine', m: '洗練する' }], fam: [{ w: 'civilization', m: '文明' }], field: '社会' }],
+  ['civilize', '動', 'pre1', '文明化する・教化する', 'They sought to civilize the region.', '彼らはその地域を文明化しようとした。', 'civil(市民の)+ -ize。', { syn: [{ w: 'cultivate', m: '(心や教養を)養う' }, { w: 'refine', m: '洗練する' }], fam: [{ w: 'civilization', m: '文明' }], field: '社会' }],
   ['clarification', '名', 'pre1', '明確化・説明', 'I need clarification.', '説明が必要だ。', 'clarify(明確にする)+ -cation。', { syn: [], fam: [{ w: 'clarify', m: '明確にする' }], field: '一般' }],
   ['class', '名', 'pre1', '授業・クラス', 'Our English class starts at nine.', '英語の授業は9時に始まる。', 'ラテン classis(等級)。', { syn: [{ w: 'lesson', m: '授業' }], field: '社会' }],
   ['classic', '形', 'pre1', '名作の・典型的な・古典(名)', 'My grandparents still watch that classic movie every New Year.', '祖父母は毎年お正月に、今でもその名作映画を見ている。', 'ラテン classicus(一流の)。', { syn: [{ w: 'timeless', m: '不朽の' }, { w: 'typical', m: '典型的な' }], fam: [{ w: 'classical', m: '古典的な' }], field: '芸術' }],

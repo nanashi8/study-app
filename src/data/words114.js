@@ -18,12 +18,12 @@ const RAW = [
   ['chalk', '名', '3', 'チョーク・白亜', 'The teacher wrote the date with white chalk.', '先生は白いチョークで日付を書いた。', '古英語 cealc(石灰)。', { syn: [{ w: 'crayon', m: 'クレヨン' }], field: '一般' }],
   ['chimney', '名', '3', '煙突', 'Smoke is rising from the chimney.', '煙突から煙が上がっている。', 'ギリシャ kaminos(かまど)。', { syn: [{ w: 'flue', m: '煙道' }, { w: 'smokestack', m: '大煙突' }], field: '建築' }],
   ['cloak', '名', 'pre1', 'マント・覆い隠すもの・覆い隠す(動)', 'In the school play, Ethan wore a long purple cloak as the wizard.', '学校の劇で、イーサンは魔法使いの役として長い紫のマントを着た。', '中世ラテン clocca(鐘・釣り鐘形のマント)。', { syn: [{ w: 'cape', m: 'ケープ' }, { w: 'mantle', m: '外とう' }], ant: [{ w: 'reveal', m: 'あらわにする' }], field: '一般' }],
-  ['compass', '名', '2', '羅針盤・コンパス・範囲', 'The sailors used a compass to find their way across the sea.', '船乗りたちは羅針盤を使って、海の上で進む方向を確かめた。', 'ラテン com+passus(歩み)。', { syn: [{ w: 'navigator', m: '方位計' }], field: '技術' }],
+  ['compass', '名', '2', '羅針盤・コンパス・範囲', 'The sailors used a compass to find their way across the sea.', '船乗りたちは羅針盤を使って、海の上で進む方向を確かめた。', 'ラテン com+passus(歩み)。', { syn: [{ w: 'navigator', m: '道案内の装置' }], field: '技術' }],
   ['cone', '名', '2', '円錐・松かさ・コーン', 'We learned how to find the volume of a cone in math class.', '数学の授業で、円錐の体積の求め方を習った。', 'ギリシャ konos(松かさ)。', { syn: [{ w: 'funnel', m: 'じょうご' }], field: '科学' }],
   ['coral', '名', '2', 'サンゴ・サンゴ色', 'Divers must not touch the coral because it is easily damaged.', 'サンゴは傷つきやすいので、ダイバーは触ってはいけない。', 'ギリシャ korallion(サンゴ)。', { syn: [{ w: 'reef', m: '岩礁' }], field: '環境' }],
   ['cork', '名', '2', 'コルク・栓', 'The cork came out of the bottle with a loud pop.', 'ポンと大きな音を立てて、瓶からコルクが抜けた。', 'スペイン alcorque(コルク靴)。', { syn: [{ w: 'stopper', m: '栓' }, { w: 'plug', m: '栓' }], field: '一般' }],
   ['crane', '名', '2', 'クレーン・ツル・首を伸ばす(動)', 'A huge crane lifted heavy blocks to the top of the new building.', '巨大なクレーンが、重いブロックを新しいビルの最上部まで持ち上げた。', '古英語 cran(ツル)。', { syn: [{ w: 'hoist', m: '巻き上げ機' }], field: '技術' }],
-  ['crate', '名', '2', '木箱・かご・箱詰めする(動)', 'The store worker carried a crate of oranges into the shop.', '店員はオレンジの入った木箱を店の中へ運び込んだ。', 'ラテン cratis(編み枠)。', { syn: [{ w: 'box', m: '箱' }, { w: 'case', m: 'ケース' }], field: '一般' }],
+  ['crate', '名', '2', '木箱・かご・箱詰めする(動)', 'The store worker carried a crate of oranges into the shop.', '店員はオレンジの入った木箱を店の中へ運び込んだ。', 'ラテン cratis(編み枠)。', { syn: [{ w: 'box', m: '箱' }], field: '一般' }],
   ['crayon', '名', '3', 'クレヨン', 'My little sister draws pictures with crayons.', '妹はクレヨンで絵をかく。', 'フランス craie(白亜)→ chalk と同系。', { syn: [{ w: 'chalk', m: 'チョーク' }, { w: 'pastel', m: 'パステル' }], field: '芸術' }],
   ['creek', '名', '2', '小川・入り江', 'In summer, the kids catch small fish in the creek behind the school.', '夏になると、子どもたちは学校の裏の小川で小さな魚をとる。', '古ノルド kriki(曲がり角)。', { syn: [{ w: 'stream', m: '小川' }, { w: 'brook', m: '小川' }], ant: [{ w: 'river', m: '川' }], field: '地理' }],
   ['crib', '名', '2', 'ベビーベッド・かいばおけ', 'The baby fell asleep quickly in her crib.', '赤ちゃんはベビーベッドですぐに眠りについた。', '古英語 cribb(かいばおけ)。', { syn: [{ w: 'cradle', m: 'ゆりかご' }, { w: 'cot', m: '簡易ベッド' }], field: '一般' }],
@@ -67,7 +67,7 @@ const RAW = [
   ['yarn', '名', '2', '毛糸・より糸・作り話', 'My aunt bought red yarn to knit a scarf for me.', 'おばは私にマフラーを編むために赤い毛糸を買った。', '古英語 gearn(糸)。', { syn: [{ w: 'thread', m: '糸' }, { w: 'wool', m: '毛糸' }], field: '一般' }],
   ['windmill', '名', '2', '風車', 'There is an old windmill on the hill.', '丘の上に古い風車がある。', 'wind(風)+mill(製粉所)。', { syn: [{ w: 'turbine', m: 'タービン' }], field: '技術' }],
   ['anchor', '名', '2', 'いかり・支え・固定する(動)・(番組の)司会者', 'The sailors dropped anchor in the calm bay for the night.', '船員たちは夜を過ごすため、穏やかな湾でいかりを下ろした。', 'ギリシャ ankyra(いかり)。', { syn: [{ w: 'mooring', m: '係留' }, { w: 'support', m: '支え' }], field: '交通' }],
-  ['cabinet', '名', '2', '飾り棚・戸棚・内閣', 'The plates are in the cabinet above the sink.', 'お皿は流しの上の戸棚に入っている。', 'フランス cabinet(小部屋)。', { syn: [{ w: 'cupboard', m: '食器棚' }, { w: 'council', m: '閣僚' }], field: '政治' }],
+  ['cabinet', '名', '2', '飾り棚・戸棚・内閣', 'The plates are in the cabinet above the sink.', 'お皿は流しの上の戸棚に入っている。', 'フランス cabinet(小部屋)。', { syn: [{ w: 'cupboard', m: '食器棚' }, { w: 'council', m: '評議会' }], field: '政治' }],
 ]
 
 export const WORDS_MORE113 = RAW.map(expandCompact)

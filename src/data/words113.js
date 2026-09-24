@@ -70,7 +70,7 @@ const RAW = [
   ['axe', '名', '2', 'おの・斧', 'The camp leader chopped firewood with an axe.', 'キャンプのリーダーは、おので薪を割った。', '古英語 æcs(おの)。', { syn: [{ w: 'hatchet', m: '手おの' }], field: '技術' }],
   ['bait', '名', '2', 'えさ・おとり・えさをつける(動)', 'We used bread as bait to catch fish in the pond.', '私たちは池で魚を釣るために、パンをえさにした。', '古ノルド beita(草を食わせる)。', { syn: [{ w: 'lure', m: '擬似餌' }, { w: 'decoy', m: 'おとり' }], field: '一般' }],
   ['barrel', '名', '2', '樽・銃身', 'We collect rainwater in a big barrel to water the garden.', '私たちは庭に水をやるために、大きな樽に雨水をためている。', '古フランス baril(樽)。', { syn: [{ w: 'cask', m: '樽' }, { w: 'keg', m: '小樽' }], field: '一般' }],
-  ['beak', '名', '2', 'くちばし', 'The bird cracked the seed open with its strong beak.', 'その鳥は強いくちばしで種を割った。', '古フランス bec(くちばし)。', { syn: [{ w: 'bill', m: 'くちばし' }], field: '科学' }],
+  ['beak', '名', '2', 'くちばし', 'The bird cracked the seed open with its strong beak.', 'その鳥は強いくちばしで種を割った。', '古フランス bec(くちばし)。', { syn: [], field: '科学' }],
   ['beam', '名', '2', '梁・光線・ほほ笑む(動)', 'Tom hit his head on a low beam in the old house.', 'トムはその古い家で、低い梁に頭をぶつけた。', '古英語 beam(木・梁)。', { syn: [{ w: 'ray', m: '光線' }, { w: 'rafter', m: '垂木' }], field: '建築' }],
   ['blade', '名', '2', '刃・葉身', 'The blade of this knife is sharp, so hold it carefully.', 'このナイフの刃は鋭いので、注意して持ちなさい。', '古英語 blæd(葉・刃)。', { syn: [{ w: 'edge', m: '刃' }, { w: 'knife', m: 'ナイフ' }], field: '一般' }],
 ]

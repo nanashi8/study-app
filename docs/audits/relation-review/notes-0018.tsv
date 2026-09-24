@@ -1,0 +1,313 @@
+N	dispense|distribute	dispense は機械や薬剤師が「出す・調剤する」（a vending machine dispenses drinks）。distribute は大勢に「配る・分配する」
+N	administer|dispense	dispense は薬を「調合して渡す」。administer は薬や治療を「施す」や、組織を「管理する」
+N	collect|dispense	dispense は「配って出す」、collect は「集める」
+N	annoy|displease	displease は人を「不快にさせる」かたい語。annoy は「いらいらさせる」のふつうの語
+N	displease|offend	displease は「不愉快にさせる」。offend は言葉などで「気分を害する・怒らせる」と強い
+N	displease|please	displease は「不快にする」、please は動詞で「喜ばせる」（副詞「どうぞ」とは使い方がちがう）
+N	disprove|refute	disprove は証拠で「まちがいだと示す」。refute は議論で「論破する・言い返す」
+N	disprove|rebut	disprove は「反証する」。rebut は相手の主張に「反論する」かたい語
+N	disprove|prove	disprove は「反証する」、prove は「証明する」
+N	dissolve|melt	dissolve は砂糖などが液体に「溶ける」。melt は氷などが熱で「とける」
+N	disband|dissolve	dissolve は議会や会社を「解散する」かたい語。disband は団体やバンドが「解散する」
+N	dissolve|solidify	dissolve は「溶ける」、solidify は「固まる」
+I	dissolve|curr_idm_3_break_up	break up は人やグループが「別れる・解散する」話し言葉。dissolve は議会などを「解散する」かたい語
+N	distaste|liking	distaste は「いやだと思う気持ち」、liking は「好み」
+N	distrust|suspect	distrust は相手を「信用しない」。suspect は「(〜ではないかと)疑う・怪しむ」
+N	distrust|trust	distrust は「信用しない」、trust は「信頼する」
+N	ditch|trench	ditch は道ばたや畑の「溝・どぶ」。trench は深く長い「溝」や、戦争の「塹壕（ざんごう）」
+N	ditch|gutter	ditch は土を掘った「溝」。gutter は道のわきの「側溝」や屋根の「雨どい」
+N	diverge|split	diverge は道や意見が「分かれる・それる」かたい語。split は「割れる・分裂する」
+N	distraction|diversion	diversion は退屈を忘れる「気晴らし」。distraction は注意を「そらすもの」（勉強のじゃまなど）
+N	divert|redirect	divert は川や交通の流れを「別の方へ向ける」。redirect はメールや荷物を「転送する・向け直す」
+N	distract|divert	divert は注意を「そらす」や「気晴らしさせる」。distract は集中しているのを「じゃまする」
+N	divine|sacred	divine は神そのものの「神の・神々しい」。sacred は神にささげられた「神聖な」
+N	divorce|separation	divorce は法律上の「離婚」。separation は夫婦の「別居」や「分離」
+N	divorce|split	divorce は「離婚」。split は恋人やグループの「別れ・分裂」のくだけた語
+N	divorce|marriage	divorce は「離婚」、marriage は「結婚」
+N	dock|wharf	dock は船をつける「波止場」や船の修理をする「ドック」。wharf は荷を積み下ろす「埠頭（ふとう）」
+N	dock|pier	dock は船が着く「波止場」。pier は海に突き出た「桟橋」
+N	doctrine|principle	doctrine は宗教や政治の「教え・主義」。principle は考えの「原則・原理」
+N	belief|doctrine	doctrine は団体が教える「教義」。belief は個人の「信念・信仰」
+N	cupola|dome	dome は大きな「丸屋根・ドーム」。cupola は屋根の上の小さな「丸い塔」
+N	dome|vault	dome は半球形の「丸屋根」。vault はアーチ形の「丸天井」や銀行の「金庫室」
+N	domestic|foreign	domestic は「国内の」、foreign は「外国の」
+N	domestic|international	domestic は「国内の」（domestic flights）、international は「国際的な」
+N	dominance|supremacy	dominance は他より強い「優位・支配」。supremacy は並ぶもののない「最高の地位・覇権」
+N	control|dominance	dominance は力で上に立つ「優勢」。control は「管理・支配」と広く言う
+N	dominance|subordination	dominance は「支配」、subordination は「従属」
+N	doorstep|threshold	doorstep は玄関の前の「戸口の段」。threshold は戸口の「敷居」や、物事の「始まり・限界」
+N	amount|dose	dose は薬の「1回に飲む量」。amount は「量・額」と広く言う
+N	dose|measure	dose は薬の「服用量」。measure は料理などの「一定の分量」や「測ること」
+N	doubter|skeptic	doubter はあることを「疑う人」。skeptic は何でもうのみにしない「疑い深い人」
+N	believer|doubter	doubter は「疑う人」、believer は「信じる人」
+N	batter|dough	dough はパンなどの手でこねる「かたい生地」。batter はパンケーキなどの流れる「ゆるい生地」
+N	dough|paste	dough はパンやめんの「生地」。paste は「のり」や、すりつぶした「ペースト」
+N	dejected|downcast	downcast は目を「伏せた」や「しょんぼりした」。dejected は「落胆した」
+N	downcast|gloomy	downcast は「気落ちした」。gloomy は「暗い・陰気な」で、天気にも使う
+N	cheerful|downcast	downcast は「しょんぼりした」、cheerful は「陽気な」
+N	demote|downgrade	downgrade は等級や評価を「格下げする」。demote は人を「降格させる」
+N	downgrade|lower	downgrade は「格下げする」。lower は「低くする・下げる」と広く言う
+N	downgrade|upgrade	downgrade は「格下げする」、upgrade は「格上げする・性能をよくする」
+N	download|upload	download は「ダウンロードする（受け取る）」、upload は「アップロードする（送る）」
+N	drained|exhausted	drained は心や力を「使い果たした」。exhausted は体が「へとへとに疲れた」
+N	drained|energized	drained は「消耗した」、energized は「元気いっぱいの」
+N	disadvantage|drawback	drawback は物事の「欠点・難点」。disadvantage は他と比べて「不利な点」
+N	drawback|flaw	drawback は計画などの「難点」。flaw は物や性格の「きず・欠陥」
+N	advantage|drawback	drawback は「難点」、advantage は「利点」
+N	ambitious|driven	driven は何かに「突き動かされて努力する」。ambitious は「野心的な・大志を抱いた」
+N	apathetic|driven	driven は「意欲的な」、apathetic は「無気力な」
+N	discard|dump	dump はごみを「どさっと捨てる」や「不法に捨てる」。discard はいらない物を「処分する」
+N	dump|unload	dump は荷を「どさっと降ろす・捨てる」。unload は車や船から「荷を降ろす」
+N	dump|keep	dump は「捨てる」、keep は「取っておく」
+N	dune|mound	dune は風でできた「砂丘」。mound は土などを盛った「小山」
+N	dune|hill	dune は砂でできた「砂丘」。hill は「丘」と広く言う
+N	dusk|twilight	dusk は日が暮れて暗くなる「夕暮れ」。twilight は日の出前や日没後の「薄明かり」
+N	dusk|sunset	dusk は日没のあとの「たそがれ時」。sunset は太陽が沈む「日没」
+N	dwarf|midget	dwarf は昔話の「小人」。midget は人に使うと差別的に聞こえ、今は使わない語
+N	dwarf|gnome	dwarf は昔話の「小人」。gnome は地中に住む「地の精」（庭の置物にもなる）
+N	dwarf|giant	dwarf は「小人」、giant は「巨人」
+N	eccentric|odd	eccentric は人や行動が「風変わりな」。odd は「奇妙な・変な」と広く言う
+N	eccentric|unconventional	eccentric は「変わり者の」。unconventional はやり方が「型破りな」（よい意味にも使う）
+N	eccentric|normal	eccentric は「風変わりな」、normal は「ふつうの」
+N	ecosystem|environment	ecosystem は生き物と環境のつながりの「生態系」。environment は「環境」と広く言う
+N	eerie|spooky	eerie は「不気味な」。spooky は「幽霊が出そうな」くだけた語
+N	eerie|reassuring	eerie は「不気味な」、reassuring は「安心させる」
+N	effect|result	effect はあることが引き起こす「効果・影響」。result は最後の「結果」
+N	effective|efficient	effective は「効果がある」（目的を果たせる）。efficient は「効率がよい」（むだなくできる）
+N	effective|ineffective	effective は「効果的な」、ineffective は「効果のない」
+N	effectively|ineffectively	effectively は「効果的に」、ineffectively は「効果なく」
+I	effectively|curr_idm_1_to_all_intents_and_purposes	to all intents and purposes は「事実上」のかたい言い方。effectively も「事実上」の意味で使う
+N	ejection|expulsion	ejection はその場から「追い出すこと」（退場など）。expulsion は学校や国からの「追放・退学」
+N	ejection|removal	ejection は「追い出し・放出」。removal は「取り除くこと・撤去」
+N	admission|ejection	ejection は「追い出し」、admission は「入場」
+N	altitude|elevation	elevation は土地の「標高」（海面からの高さ）。altitude は飛行機などの「高度」
+N	elevation|height	elevation は「標高」。height は物や人の「高さ・身長」
+N	emigrant|migrant	emigrant は自分の国を出て行く「移民」。migrant は仕事を求めて移動する「移住者・出稼ぎ労働者」
+N	emigrate|relocate	emigrate は外国へ「移住する」。relocate は会社や住まいを「移転する」（国内にも使う）
+N	empathize|relate	empathize は相手の立場で「共感する」（empathize with）。relate は話し言葉で「(自分のことのように)分かる」（I can relate to that）
+N	dismiss|employ	employ は「雇う」、dismiss は「解雇する」
+I	employ|curr_idm_2_take_on	take on は人を「雇う」や仕事を「引き受ける」話し言葉。employ は「雇う」のかたい語
+N	employment|work	employment は雇われて働く「雇用・職」のかたい語。work は「仕事」のふつうの語
+N	employment|unemployment	employment は「雇用」、unemployment は「失業」
+N	empower|enable	empower は人に「力や自信を与える」。enable は「〜できるようにする」（enable A to do）
+N	authorize|empower	empower は「力をつける」や「権限を与える」。authorize は正式に「認可する」
+N	encounter|meet	encounter は困難などに「出くわす」や、人と「偶然会う」。meet は「会う」のふつうの語
+N	encounter|face	encounter は問題に「出くわす」。face は問題に「直面する・立ち向かう」
+I	encounter|idm_come_across	come across は物や人に「偶然出会う・見つける」。encounter は困難に「出くわす」かたい語
+I	encounter|curr_idm_pre2_run_into	run into は知人に「ばったり会う」や、問題に「ぶつかる」話し言葉。encounter はかたい語
+N	discouragement|encouragement	encouragement は「励まし」、discouragement は「がっかりすること・やる気をそぐもの」
+N	endanger|threaten	endanger は命や動物を「危険にさらす」（endangered species）。threaten は「脅かす」と広く言う
+N	endanger|imperil	endanger は「危険にさらす」。imperil は「危うくする」のかたい語
+N	endanger|protect	endanger は「危険にさらす」、protect は「守る」
+N	endeavor|strive	endeavor は「努力する」のかたい語（endeavor to do）。strive は目標に向かって「懸命に努力する」
+N	attempt|endeavor	endeavor は長く「努力する」。attempt は1回「試みる」
+I	endeavor|curr_idm_pre2_make_an_effort	make an effort は「努力する」のふつうの言い方。endeavor はかたい語
+N	enduring|permanent	enduring は人気などが「長く続く」。permanent は「永久の・常設の」
+N	enduring|fleeting	enduring は「長続きする」、fleeting は「つかの間の」
+N	educate|enlighten	enlighten は知らなかったことを「分からせる・啓発する」。educate は学校などで「教育する」
+N	enlighten|inform	enlighten は理解を「深めさせる」。inform は事実を「知らせる」
+N	confuse|enlighten	enlighten は「分からせる」、confuse は「混乱させる」
+N	enraged|irate	enraged は「激怒した」。irate も「かんかんに怒った」で、苦情を言う客などに使う
+N	calm|enraged	enraged は「激怒した」、calm は「落ち着いた」
+N	enslave|subjugate	enslave は人を「奴隷にする」。subjugate は国などを「征服して従わせる」
+N	enslave|liberate	enslave は「奴隷にする」、liberate は「解放する」
+N	entice|lure	entice は魅力で「誘いこむ」。lure はえさなどで「おびき寄せる」（悪い意味が多い）
+N	entice|tempt	entice は「誘って〜させる」（entice A to do）。tempt は「(よくないことを)したい気にさせる」
+N	enticing|tempting	enticing は「心をそそる」。tempting は「(つい)手を出したくなる」
+N	enticing|off-putting	enticing は「心をそそる」、off-putting は「気持ちがなえる・感じの悪い」
+N	being|entity	entity は独立した「存在・組織」（a legal entity）。being は「存在」や「生き物」（human beings）
+N	entity|unit	entity は独立した「実体」。unit は全体を作る「一つの単位」
+N	epoch|era	era は特徴のある長い「時代」（the Meiji era）。epoch は新しい時代の始まりとなる「画期的な時期」
+N	eliminate|eradicate	eradicate は病気などを「根絶する」と強い。eliminate は「取り除く・除外する」
+N	eradicate|exterminate	eradicate は病気や害を「根絶する」。exterminate は害虫などを「皆殺しにする・駆除する」
+N	eradicate|establish	eradicate は「根絶する」、establish は「確立する」
+I	eradicate|curr_idm_1_root_out	root out は悪いものを「根こそぎ取り除く」。eradicate は「根絶する」のかたい語
+N	errand|task	errand は買い物などの「お使い・用事」。task は「仕事・課題」と広く言う
+N	chore|errand	errand は外へ出る「お使い」。chore は掃除などの家の「雑用」
+N	erroneous|incorrect	erroneous は「誤った」のかたい語。incorrect は「正しくない」のふつうの語
+N	erroneous|mistaken	erroneous は情報などが「誤った」。mistaken は人が「思い違いをした」
+N	correct|erroneous	erroneous は「誤った」、correct は「正しい」
+N	eruption|explosion	eruption は火山の「噴火」や、争いの「勃発（ぼっぱつ）」。explosion は「爆発」と広く言う
+N	escalate|intensify	escalate は争いなどが「段階的に大きくなる」。intensify は「強まる・激しくなる」
+N	de-escalate|escalate	escalate は「激化する」、de-escalate は「緩和する」
+N	escalated|intensified	escalated は争いが「段階的に大きくなった」。intensified は「激しさを増した」
+N	escalated|heightened	escalated は「拡大した」。heightened は緊張などが「高まった」
+N	de-escalated|escalated	escalated は「激化した」、de-escalated は「沈静化した」
+N	core|essence	essence は物事の「本質」や「エキス」。core は物事の「中心・核心」や果物の「芯」
+N	essence|substance	essence は「本質」。substance は「実質・中身」や「物質」
+I	establish|curr_idm_3_set_up	set up は会社などを「立ち上げる」話し言葉。establish は「設立する」のかたい語
+N	establishment|foundation	establishment は学校などの「設立」や「施設」。foundation は「創立」や建物の「土台」
+N	establishment|institution	establishment は店や施設などの「事業所」や、「体制」。institution は学校や病院などの「機関・施設」
+N	esteem|respect	esteem は人から受ける「高い評価・尊敬」（held in high esteem）。respect は「尊敬・敬意」のふつうの語
+N	contempt|esteem	esteem は「尊敬」、contempt は「軽蔑」
+N	calculate|estimate	estimate はだいたいの数を「見積もる」。calculate は正確に「計算する」
+N	estimate|gauge	estimate は数量を「見積もる」。gauge は様子から「判断する」や、計器で「測る」
+N	approximate|estimated	estimated は「推定で〜の」（an estimated 20,000 people）。approximate は数が「おおよその」
+N	estimated|projected	estimated は今の数の「推定の」。projected は将来の「予測の・見込みの」
+N	estimated|exact	estimated は「推定の」、exact は「正確な」
+N	assessment|estimation	estimation は「見積もり」や「(自分の)判断」（in my estimation）。assessment は正式な「評価・査定」
+N	estimation|judgment	estimation は「見積もり・評価」。judgment は「判断」や裁判の「判決」
+N	eternity|forever	eternity は名詞で「永遠」。forever はふつう副詞で「永遠に」だが、take forever で「すごく長い時間」
+N	eternity|infinity	eternity は時間の「永遠」。infinity は数や空間の「無限」
+N	evacuate|vacate	evacuate は危険から「避難させる・避難する」。vacate は部屋や席を「明け渡す」
+N	clear|evacuate	evacuate は人を「避難させる」。clear は場所から人を「立ち退かせる」や、物を「片づける」
+N	evacuate|occupy	evacuate は「立ち退く」、occupy は「占める・占領する」
+N	appraise|evaluate	evaluate は価値や成績を「評価する」。appraise は宝石などの値段を「鑑定する」
+I	evaluate|curr_idm_1_size_up	size up は人や状況を「さっと見定める」話し言葉。evaluate は「評価する」のかたい語
+N	assessment|evaluation	evaluation は授業などの「評価」。assessment は試験などによる「査定・評価」
+N	evaporate|vaporize	evaporate は水が「蒸発する」や、気持ちが「消えうせる」。vaporize は熱で「気化させる」
+N	condense|evaporate	evaporate は「蒸発する」、condense は水蒸気が「凝結する・水になる」
+N	avoidance|evasion	evasion は質問や責任からの「言い逃れ・回避」。avoidance は「避けること」と広く言う
+N	dodge|evasion	evasion は「言い逃れ」。dodge は「ごまかし・うまい逃げ道」のくだけた語
+N	eventual|ultimate	eventual は「(いろいろあって)最後に起こる」（the eventual winner）。ultimate は「究極の・最終の」
+N	eventual|final	eventual は「結局そうなる」。final は順番の「最後の」
+N	eventual|initial	eventual は「最終的な」、initial は「最初の」
+N	examination|inspection	examination は「試験」や、くわしい「検査・診察」。inspection は機械などの「点検」
+N	examination|test	examination は正式な「試験」のかたい語（略して exam）。test は「テスト・検査」と広く言う
+I	examine|curr_idm_3_check_out	check out は「調べる・確かめる」話し言葉で、ホテルを「出る」の意味もある。examine は「よく調べる」
+I	examine|curr_idm_2_go_over	go over は書類などを「よく見直す」。examine は「くわしく調べる」
+I	examine|curr_idm_3_look_into	look into は問題を「調査する」。examine は物を「くわしく調べる」
+I	examine|curr_idm_pre2_look_over	look over は「ざっと目を通す」。examine は「念入りに調べる」
+N	examiner|inspector	examiner は試験の「試験官」。inspector は工場などの「検査官」や「警部」
+I	except|curr_idm_pre2_apart_from	apart from は「〜を除いて」と「〜に加えて」の両方の意味がある。except は「〜を除いて」だけ
+N	excessive|immoderate	excessive は「度を越した・多すぎる」。immoderate は「節度のない」のかたい語
+N	excessive|extravagant	excessive は量が「過度の」。extravagant はお金の使い方が「ぜいたくな」
+N	excessive|moderate	excessive は「過度の」、moderate は「適度な」
+N	exclusion|inclusion	exclusion は「除外」、inclusion は「入れること・受け入れ」
+N	execute|perform	execute は計画を「実行する」や「処刑する」。perform は仕事を「行う」や劇を「演じる」
+I	execute|idm_carry_out	carry out は計画を「実行する」ふつうの言い方。execute はかたい語
+N	exemption|immunity	exemption は税や義務の「免除」。immunity は病気への「免疫」や、罰からの「免除」
+N	dispensation|exemption	exemption は「免除」のふつうの語。dispensation は特別な「許可・免除」のかたい語
+N	exemption|liability	exemption は「免除」、liability は「(支払う)責任」
+N	exhale|inhale	exhale は「息を吐く」、inhale は「息を吸う」
+N	exhausted|worn out	exhausted は「疲れ果てた」。worn out も「くたくたの」で、物が「すり切れた」の意味もある
+N	energetic|exhausted	exhausted は「疲れ果てた」、energetic は「元気な」
+N	expand|extend	expand は大きさや範囲を「拡大する」。extend は長さや期間を「延長する」
+N	contraction|expansion	expansion は「拡大」、contraction は「縮小」
+N	expedition|journey	expedition は目的をもった「探検・遠征」。journey は「旅・行程」と広く言う
+N	expedition|voyage	expedition は「探検」。voyage は長い「船の旅」
+N	eject|expel	expel は学校や国から「追い出す・退学させる」。eject は人をその場から「追い出す」や、機械から「取り出す」
+N	admit|expel	expel は「追い出す」、admit は「入れる・入学を認める」
+N	expenditure|spending	expenditure は政府などの「支出」のかたい語。spending は「出費・支出」のふつうの語
+N	expenditure|income	expenditure は「支出」、income は「収入」
+N	expertise|know-how	expertise は専門家の「知識や技能」。know-how は実際にやる「こつ・ノウハウ」
+N	expertise|inexperience	expertise は「専門技能」、inexperience は「経験不足」
+N	expire|lapse	expire はパスポートなどの「期限が切れる」。lapse は保険などが「効力を失う」
+I	expire|curr_idm_2_run_out	run out は物が「尽きる」や、期限が「切れる」話し言葉。expire は「有効期限が切れる」
+N	clear|explicit	explicit は言葉で「はっきり述べた」。clear は「分かりやすい・明らかな」と広く言う
+N	explicit|implicit	explicit は「はっきり述べた」、implicit は「言わずに含まれた・暗黙の」
+I	exploit|exam_idm_take_advantage_of	take advantage of は「利用する」や、人の好意に「つけこむ」。exploit は資源を「活用する」や、人を「搾取する」
+N	explosion|surge	explosion は数の「爆発的な増加」（population explosion）。surge は「急増・高まり」
+N	explosive|volatile	explosive は「爆発的な」や、状況が「一触即発の」。volatile は情勢が「不安定な」や、液体が「揮発しやすい」
+N	eruptive|explosive	explosive は「爆発的な」と広く言う。eruptive は火山が「噴火する性質の」
+N	explosive|stable	explosive は「爆発しやすい」、stable は「安定した」
+N	exposed|uncovered	exposed は危険や日光に「さらされた」。uncovered は「覆いのない」
+N	exposed|vulnerable	exposed は「むき出しの」。vulnerable は攻撃などに「弱い・傷つきやすい」
+N	concealed|exposed	exposed は「むき出しの」、concealed は「隠された」
+N	eloquent|expressive	expressive は顔や声が「表情豊かな」。eloquent は話が「雄弁な・説得力のある」
+N	expressionless|expressive	expressive は「表情豊かな」、expressionless は「無表情な」
+N	banishment|expulsion	expulsion は学校や国からの「追放」のふつうの語。banishment は昔の刑罰の「追放・流刑」
+N	admission|expulsion	expulsion は「退学・除名」、admission は「入学・入会」
+N	continuation|extension	extension は期限などの「延長」や、電話の「内線」。continuation は途切れずに「続くこと」
+N	extension|reduction	extension は「延長・拡張」、reduction は「縮小」
+N	died out|extinct	extinct は形容詞で「絶滅した」（become extinct）。die out は動詞で「絶える・絶滅する」
+N	extant|extinct	extinct は「絶滅した」、extant は「現存する」
+N	fable|parable	fable は動物などが出てくる教訓の「寓話（ぐうわ）」。parable は宗教の教えを伝える「たとえ話」
+N	fable|legend	fable は教訓のある「作り話」。legend は昔から伝わる「伝説」
+N	fabled|legendary	fabled は「伝説に語られる」。legendary は「伝説的な」や、今の人が「名高い」
+N	fabled|mythical	fabled は「伝説の」。mythical は「神話の」や「架空の」
+N	fabled|real	fabled は「伝説の」、real は「実在の」
+N	assist|facilitate	facilitate は物事を「やりやすくする・促す」かたい語。assist は人を「手伝う」
+N	facilitate|hinder	facilitate は「容易にする」、hinder は「妨げる」
+N	ability|faculty	faculty は生まれつきの「能力・機能」（mental faculties）や大学の「学部」。ability は「能力」のふつうの語
+N	falsehood|untruth	falsehood は「うそ・虚偽」のかたい語。untruth は「うそ」を遠回しに言う語
+N	falsehood|truth	falsehood は「うそ」、truth は「真実」
+N	famine|starvation	famine は地域全体の「ききん（食べ物がなくなること）」。starvation は一人ひとりの「飢え・餓死」
+N	abundance|famine	famine は「ききん」、abundance は「豊富さ」
+N	fancy|fantasy	fantasy は「空想」や物語の「ファンタジー」。fancy は名詞で「気まぐれな空想・好み」
+N	fantasy|imagination	fantasy は現実にない「空想」。imagination は「想像力」
+N	comprehend|fathom	fathom は否定文で「(理由などを)理解できない」（can't fathom why）。comprehend は「理解する」のかたい語
+N	fathom|grasp	fathom は深いところまで「見抜く」。grasp は意味を「つかむ・把握する」
+N	fathom|misunderstand	fathom は「見抜く・理解する」、misunderstand は「誤解する」
+I	fathom|curr_idm_pre2_figure_out	figure out は「分かる・理解する」の話し言葉。fathom はふつう否定文で「理解できない」
+N	fatigue|tiredness	fatigue は「(ひどい)疲労」のかたい語。tiredness は「疲れ」のふつうの語
+N	energy|fatigue	fatigue は「疲労」、energy は「活力」
+N	faulty|flawed	faulty は機械が「故障のある」。flawed は計画や考えに「欠点のある」
+N	faulty|flawless	faulty は「欠陥のある」、flawless は「完璧な」
+N	banquet|feast	feast はお祝いの「ごちそう・祝宴」。banquet は正式な「晩さん会」
+N	celebration|feast	feast は「ごちそう」。celebration は「お祝い（の会）」
+N	famine|feast	feast は「ごちそう」、famine は「ききん」。feast or famine で「ありすぎるかなさすぎるか」
+N	feeble|frail	feeble は力が「弱々しい」や、言いわけが「説得力のない」。frail はお年寄りなどが「体が弱い」
+N	feeble|strong	feeble は「弱々しい」、strong は「強い」
+N	celebratory|festive	festive は「お祭り気分の」（festive season）。celebratory は「お祝いの」
+N	festive|merry	festive は町などが「お祭りらしい」。merry は人が「陽気な・楽しい」（Merry Christmas）
+N	festive|gloomy	festive は「お祭り気分の」、gloomy は「暗い」
+N	festivity|merriment	festivity は複数形で「お祭りの催し」。merriment は「陽気なにぎわい」
+N	fictional|real	fictional は「架空の」、real は「実在の」
+N	fidelity|loyalty	fidelity は約束や原作への「忠実さ」や、夫婦の「貞節」。loyalty は国や仲間への「忠誠」
+N	faithfulness|fidelity	fidelity は「忠実さ」のかたい語。faithfulness は「誠実さ・忠実さ」のふつうの語
+N	fidelity|infidelity	fidelity は「貞節・忠実」、infidelity は「浮気・不実」
+N	fiercely|mildly	fiercely は「激しく」、mildly は「穏やかに」
+N	filter|strainer	filter は水や空気の「ろ過器・フィルター」。strainer は料理の「こし器」
+N	filter|sieve	filter は液体などを「ろ過するもの」。sieve は粉などを「ふるうもの」
+N	dirty|filthy	filthy は「ひどく汚い」と強い。dirty は「汚い」のふつうの語
+N	filthy|grimy	filthy は「ひどく汚い」。grimy はすすやほこりで「薄汚れた」
+N	filthy|foul	filthy は「不潔な」。foul は臭いや味が「ひどく不快な」
+N	clean|filthy	filthy は「ひどく汚い」、clean は「清潔な」
+N	fin|flipper	fin は魚の「ひれ」。flipper はアザラシなどの「ひれ足」やダイバーの「足ひれ」
+N	finite|infinite	finite は「有限の」、infinite は「無限の」
+N	flap|flutter	flap は鳥が大きく「羽ばたく」や、旗が「ぱたぱたはためく」。flutter は小刻みに「ひらひらする」
+N	flap|wave	flap は布などが「はためく」。wave は手を「振る」や、旗が「揺れる」
+N	bottle|flask	flask は実験用の「フラスコ」や「水筒」。bottle は「びん」と広く言う
+N	container|flask	flask は「フラスコ・水筒」。container は「容器」全体
+N	compliment|flatter	flatter は本心でなく「おだてる・お世辞を言う」。compliment は心から「ほめる」
+N	cajole|flatter	flatter は「お世辞を言う」。cajole はおだてて「言いくるめる」
+N	criticize|flatter	flatter は「おだてる」、criticize は「批判する」
+N	flawed|flawless	flawed は「欠点のある」、flawless は「完璧な」
+N	flawless|perfect	flawless は「きずのない・ミスのない」。perfect は「完璧な」と広く言う
+N	flawless|impeccable	flawless は「欠点のない」。impeccable は服装や態度が「非の打ちどころのない」
+N	flowing|smooth	flowing は線や髪が「流れるような」。smooth は表面が「なめらかな」や、物事が「順調な」
+N	flowing|fluid	flowing は「よどみなく流れる」。fluid は動きが「なめらかな」や、状況が「流動的な」
+N	flowing|stiff	flowing は「流れるような」、stiff は「かたい・ぎこちない」
+N	foam|froth	foam は波などの「泡」。froth は飲み物の上の細かい「泡」
+N	foam|lather	foam は「泡」と広く言う。lather は石けんの「泡」
+N	aversion|fondness	fondness は「好み・愛着」、aversion は「嫌悪」
+N	foremost|principal	foremost は「一番の・第一線の」（one of the foremost experts）。principal は「主要な」
+N	foremost|minor	foremost は「一番の」、minor は「重要でない」
+N	counterfeit|forgery	forgery は絵や署名などの「偽造（品）」。counterfeit はお金やブランド品の「偽物」
+N	fake|forgery	forgery は法律上の「偽造品」。fake は「にせ物」の話し言葉
+N	forgiveness|pardon	forgiveness は相手を「許すこと」。pardon は罪の「許し・恩赦」や、I beg your pardon の「失礼」
+N	forgiveness|mercy	forgiveness は「許すこと」。mercy は相手を罰しない「情け・慈悲」
+N	forgiving|merciful	forgiving は失敗を「すぐ許す」。merciful は罰さずに「情けをかける」
+N	forgiving|lenient	forgiving は「寛容な」。lenient は罰や規則が「甘い・寛大な」
+N	forgiving|unforgiving	forgiving は「寛容な」、unforgiving は「許さない・容赦のない」
+N	fort|stronghold	fort は兵士が守る「砦（とりで）」。stronghold は「拠点」や、ある考えの「本拠地」
+N	fortress|stronghold	fortress は大きな「要塞」。stronghold は守りの固い「砦」や「拠点」
+N	citadel|fortress	fortress は「要塞」。citadel は町を見下ろす「城」
+N	disgusting|foul	foul は臭いや味が「ひどく不快な」。disgusting は「むかつく」と強い
+N	fair|foul	foul はスポーツの「反則の」、fair は「公正な」（foul play と fair play）
+N	fraction|portion	fraction は「ほんの一部」や数学の「分数」。portion は分けた「部分」や食事の「一人前」
+N	fraction|part	fraction は「ごくわずかな部分」。part は「一部・部分」と広く言う
+N	break|fracture	fracture は医学の「骨折」や「割れ目」。break も話し言葉で「骨折」を言う
+N	crack|fracture	fracture は骨や岩の「割れ目・骨折」。crack は表面の「ひび」
+N	fragility|frailty	fragility は物が「壊れやすいこと」。frailty は体の「弱さ」や、人の「もろさ」
+N	durability|fragility	fragility は「壊れやすさ」、durability は「耐久性」
+N	frail|weak	frail はお年寄りなどが「体が弱い」。weak は「弱い」と広く言う
+N	delicate|frail	frail は体が「弱々しい」。delicate は物が「繊細な」や、体が「きゃしゃな」
+N	fragile|frail	frail は体が「弱い」。fragile は物が「壊れやすい」
+N	frail|robust	frail は「虚弱な」、robust は「がっしりした」
+N	frailty|strength	frailty は「もろさ・弱さ」、strength は「強さ」
+N	frantic|frenzied	frantic は心配などで「半狂乱の」。frenzied は「逆上した・狂乱の」と強い
+N	frantic|hectic	frantic は「必死の・大あわての」。hectic は予定が「てんてこまいの・忙しい」
+N	calm|frantic	frantic は「大あわての」、calm は「冷静な」
+N	fraud|scam	fraud は法律上の「詐欺」。scam は「詐欺・ぺてん」のくだけた語
+N	cordiality|friendliness	friendliness は「親しみやすさ」のふつうの語。cordiality は心のこもった「友好・丁重さ」のかたい語
+N	friendliness|hostility	friendliness は「友好」、hostility は「敵意」
+N	frosty|icy	frosty は「霜の降りた」や、態度が「冷ややかな」。icy は「氷の張った」や「凍るような」
+N	chilly|frosty	frosty は霜が降りるほど「寒い」。chilly は「肌寒い」
+N	frosty|warm	frosty は「冷ややかな」、warm は「温かい」
+N	fulfilled|satisfied	fulfilled は生き方に「充実感がある」。satisfied は結果に「満足した」
+N	content|fulfilled	fulfilled は人生などに「満たされた」。content は形容詞では /kənˈtɛnt/ と読み「(今のままで)満足して」
+N	fulfilled|unfulfilled	fulfilled は「満たされた」、unfulfilled は「満たされない」
+N	furnace|kiln	furnace は金属を溶かす「炉」や暖房の「ボイラー」。kiln は焼き物を焼く「窯（かま）」
+N	boiler|furnace	furnace は「炉」。boiler は湯をわかす「ボイラー」

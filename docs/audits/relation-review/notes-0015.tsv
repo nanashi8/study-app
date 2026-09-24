@@ -1,0 +1,265 @@
+N	reduce|shorten	shorten は長さや時間を「短くする」。reduce は量や数を「減らす」
+N	shorten|trim	shorten は「短くする」と広く言う。trim は髪や枝の端を「切りそろえる」や、予算を「切り詰める」
+N	contract|shrink	shrink は布などが「縮む」。contract は筋肉や金属が「収縮する」かたい語で、ふつうは「契約」の意味
+N	diminish|shrink	shrink は大きさが「縮む」。diminish は力や量が「減る・弱まる」
+N	expand|shrink	shrink は「縮む」、expand は「膨らむ・広がる」
+N	brother|sibling	sibling は男女を問わず「きょうだい」。brother は「兄・弟」
+N	sibling|sister	sibling は男女を問わず「きょうだい」。sister は「姉・妹」
+N	quiet|silence	silence は声や音のない「沈黙・静けさ」（in silence）。quiet は形容詞「静かな」がふつうで、名詞では「(落ち着いた)静けさ」
+N	hush|silence	silence は「沈黙・静けさ」と広く言う。hush は急にしーんとなる「静まり」
+N	noise|silence	silence は「静けさ」、noise は「騒音」
+N	quietly|silently	quietly は「静かに・小声で」（音が小さい）。silently は「黙って・音を立てずに」（音がまったくない）
+N	noiselessly|silently	silently は「黙って・静かに」。noiselessly は物音が「まったくしないで」
+N	loudly|silently	silently は「黙って」、loudly は「大声で」
+N	same|similar	similar は「似ている」（similar to）。same は「同じ」（the same as）
+N	likewise|similarly	similarly は文の頭で「同様に」とつなぐ。likewise も「同様に」だが、「こちらこそ」と答えるときにも使う
+N	sin|wrongdoing	sin は宗教や道徳の「罪」。wrongdoing は法律や規則に反する「悪い行い」
+N	sin|virtue	sin は「罪」、virtue は「美徳」
+N	earnestly|sincerely	sincerely は気持ちが「心から・誠実に」。earnestly は態度が「真剣に・熱心に」
+N	insincerely|sincerely	sincerely は「心から」、insincerely は「うわべだけで」
+N	rise|sink	sink は水などに「沈む」、rise は「上がる・昇る」
+N	frame|skeleton	skeleton は体の「骨格」や建物の「骨組み」。frame は窓などの「枠」や「骨組み」
+N	proficient|skilled	skilled は練習を積んで「熟練した」（a skilled worker）。proficient は言語などに「堪能な」（proficient in English）
+N	expert|skilled	skilled は「熟練した・腕のいい」。expert は名詞で「専門家」、形容詞で「専門家として詳しい」
+N	skilled|unskilled	skilled は「熟練した」、unskilled は「未熟な・特別な技能のいらない」
+N	skinny|thin	thin は「やせた・薄い」と広く言う。skinny は「がりがりの」のくだけた語で、ズボンなどの「細身の」にも使う
+N	plump|skinny	skinny は「がりがりの」、plump は「ふっくらした」
+N	slender|thin	slender は美しく「ほっそりした」ほめ言葉。thin は「やせた」で、見た目の良し悪しは言わない
+N	slender|stout	slender は「ほっそりした」、stout は「がっしりした・太った」
+N	slight|subtle	slight は差や量が「わずかな」。subtle は気づきにくいほど「微妙な」
+N	considerable|slight	slight は「わずかな」、considerable は「かなりの」
+N	slightly|somewhat	slightly は「わずかに」。somewhat は「いくぶん・やや」で、少しかたい語
+N	considerably|slightly	slightly は「わずかに」、considerably は「かなり」
+I	slightly|curr_idm_4_a_little	a little は「少し」の話し言葉（a little bigger）。slightly は「わずかに」で、少しかたい
+N	slink|sneak	sneak は見つからないように「こっそり動く」。slink は恥ずかしさなどで「こそこそ立ち去る」
+N	drench|soak	soak は液体に「浸す」や「ずぶぬれにする」。drench は雨などが「びしょぬれにする」
+N	saturate|soak	soak は「浸す・ずぶぬれにする」。saturate は「(これ以上入らないほど)いっぱいに染みこませる」かたい語
+N	dry|soak	soak は「浸す・ぬらす」、dry は「乾かす」
+N	sob|weep	sob は声をつまらせて「すすり泣く」。weep は涙を流して「泣く」かたい語
+N	cry|sob	cry は「泣く」と広く言う。sob は「しゃくりあげて泣く」
+I	solve|curr_idm_pre2_clear_up	clear up は誤解などを「解く」や、天気が「晴れる」。solve は問題やなぞを「解く」
+I	solve|curr_idm_pre2_figure_out	figure out は考えて「答えを見つける・理解する」話し言葉。solve は「解く・解決する」
+I	solve|curr_idm_1_sort_out	sort out は問題を「解決する・整理する」話し言葉。solve は問題を「解く」
+I	solve|exam_idm_work_out	work out は計算して「答えを出す」や、問題を「解決する」。solve は「解く・解決する」
+N	roomy|spacious	spacious は部屋などが「広々とした」。roomy は車や服が「ゆったりした」くだけた語
+N	spacious|vast	spacious は部屋などが「広々とした」。vast は土地や量が「広大な・ばく大な」
+N	cramped|spacious	spacious は「広々とした」、cramped は「狭苦しい」
+N	range|span	span は始めから終わりまでの「期間・長さ」（a short span of time）。range は「範囲・幅」
+N	kind|species	species は生物学の「種」（単数も複数も species）。kind は「種類」と広く言う
+N	species|type	species は生物の「種」。type は「型・タイプ」と広く言う
+N	particular|specific	specific は「具体的な・特定の」。particular は多くの中の「特定の」や「特別の」
+N	precise|specific	specific は「具体的な」。precise は数字などが「正確な・精密な」
+N	general|specific	specific は「具体的な・特定の」、general は「一般的な・全体の」
+N	globe|sphere	sphere は数学の「球」や「分野」。globe は「地球儀」や「地球」
+N	domain|sphere	sphere は活動の「分野・範囲」（sphere of influence）。domain は知識などの「領域」や、インターネットの「ドメイン」
+N	coil|spiral	spiral は外へ広がっていく「らせん」。coil はばねや縄などの「巻いたもの」
+N	helix|spiral	spiral は平らな渦巻きや「らせん」。helix は DNA のような立体の「らせん」
+N	sacred|spiritual	spiritual は心や魂の「精神的な」。sacred は神に関わる「神聖な」
+N	religious|spiritual	spiritual は「精神的な・心の」。religious は特定の宗教の「宗教的な」
+N	material|spiritual	spiritual は「精神的な」、material は「物質的な」
+N	magnificent|splendid	splendid は「すばらしい」の少しかたい語（a splendid idea）。magnificent は建物などが「壮大で見事な」
+N	dreadful|splendid	splendid は「すばらしい」、dreadful は「ひどい」
+N	ruin|spoil	spoil は楽しみなどを「台無しにする」や、子どもを「甘やかす」。ruin は「すっかりだめにする」と強い
+N	indulge|spoil	spoil は子どもを「甘やかしてだめにする」。indulge は願いを「かなえてやる」や、楽しみに「ふける」
+N	improve|spoil	spoil は「台無しにする」、improve は「よくする」
+N	sprint|stroll	sprint は「全力で走る」、stroll は「ぶらぶら歩く」
+N	press|squeeze	squeeze は両側から「絞る・ぎゅっと握る」。press は一方から「押す」
+N	compress|squeeze	squeeze は手で「絞る」。compress は機械などで「圧縮する」かたい語
+N	instability|stability	stability は「安定」、instability は「不安定」
+N	stable|unstable	stable は「安定した」、unstable は「不安定な」
+N	stamina|vigor	stamina は長く続ける「持久力・スタミナ」。vigor は「活力・元気」
+N	stamina|weakness	stamina は「持久力」、weakness は「(体の)弱さ」
+N	criterion|standard	standard は守るべき「基準・水準」（meet the standard）。criterion は判断するときの「基準」（複数形 criteria）
+N	norm|standard	standard は品質などの「基準・水準」。norm は社会の「規範・当たり前のこと」
+N	gaze|stare	stare は驚きなどで「じろじろ見る」（失礼な感じもある）。gaze は景色などを「うっとり見つめる」
+N	glare|stare	stare は「じっと見る」。glare は怒って「にらむ」
+N	alarm|startle	startle は急なことで「びくっとさせる」。alarm は危険を感じさせて「不安にさせる」
+N	frighten|startle	startle は一瞬「びっくりさせる」。frighten は「怖がらせる」
+N	soothe|startle	startle は「びっくりさせる」、soothe は「なだめる・落ち着かせる」
+N	famish|starve	starve は「飢える・飢えさせる」のふつうの語。famish は古い言い方で、今は形容詞 famished（腹ぺこの）で使う
+N	encourage|stimulate	stimulate は脳や経済を「刺激する・活発にする」。encourage は人を「励ます・促す」
+N	inhibit|stimulate	stimulate は「刺激する・促す」、inhibit は「抑える」
+N	incentive|stimulus	stimulus は反応を起こす「刺激」や経済の「刺激策」。incentive はやる気を起こさせる「報奨・動機」
+N	impetus|stimulus	stimulus は反応を起こす「刺激」。impetus は物事を進める「勢い・弾み」
+N	stormy|turbulent	stormy は天気が「嵐の」や、関係が「荒れた」。turbulent は空気や水が「乱れた」や、時代が「激動の」
+N	stormy|tempestuous	stormy は「嵐の」のふつうの語。tempestuous は「大荒れの」のかたい語で、恋などが「激しい」にも使う
+N	calm|stormy	stormy は「嵐の・荒れた」、calm は「穏やかな」
+N	reinforce|strengthen	strengthen は「強くする」と広く言う。reinforce は建物などを「補強する」や、考えを「裏づける」
+N	fortify|strengthen	strengthen は「強くする」。fortify は町を「要塞にする」や、体を「(栄養で)強くする」
+N	strengthen|weaken	strengthen は「強くする」、weaken は「弱める」
+I	strengthen|curr_idm_1_beef_up	beef up は「強化する」の話し言葉。strengthen は「強くする」のふつうの語
+N	extend|stretch	stretch は引っぱって「伸ばす」や、体を「伸ばす」。extend は期間や道を「延長する」
+N	caress|stroke	stroke は動物などを「なでる」。caress は愛情をこめて「やさしくなでる」
+N	falter|stumble	stumble は足を取られて「つまずく」。falter は足どりや声が「よろめく・ためらう」
+N	idiocy|stupidity	stupidity は「愚かさ」のふつうの語。idiocy は「ばかげた行い」の強い語
+N	intelligence|stupidity	stupidity は「愚かさ」、intelligence は「知能・賢さ」
+N	chic|stylish	stylish は「おしゃれな」のふつうの語。chic はフランス語から来た「洗練されて上品な」
+N	fashionable|stylish	stylish はセンスがよく「おしゃれな」。fashionable は今「流行している」
+N	dowdy|stylish	stylish は「おしゃれな」、dowdy は「やぼったい」
+N	matter|substance	substance は特定の「物質」（a harmful substance）や「中身」。matter は物理で言う「物質」全体（数えない）で、ふつうは「事柄・問題」
+I	succeed|curr1900_idm_2_make_it	make it は「うまくやる・間に合う」の話し言葉。succeed は「成功する」（succeed in 〜ing）
+N	pleasure|suffering	suffering は「苦しみ」、pleasure は「喜び・楽しみ」
+N	self-destruction|suicide	suicide は「自殺」。self-destruction は自分で自分をだめにする「自滅」で、たとえに使う
+N	appropriate|suitable	suitable は目的に「合っている」（suitable for）。appropriate は場面に「ふさわしい・適切な」かたい語
+N	suitable|unsuitable	suitable は「適した」、unsuitable は「向いていない」
+N	condense|summarize	summarize は大事な点を「要約する」。condense は文章を「短く縮める」や、液体を「濃縮する」
+I	summarize|curr1900_idm_2_sum_up	sum up は「要点をまとめる」の話し言葉。summarize は「要約する」
+N	outline|summary	summary は内容を短くした「要約」。outline は全体の筋だけを示す「概要・あらまし」
+N	abstract|summary	summary は「要約」と広く言う。abstract は論文の最初につける「要旨」
+N	base|summit	summit は山の「頂上」、base は山の「ふもと」
+N	provider|supplier	supplier は店などに品物を納める「供給業者」。provider はサービスを「提供する会社」
+N	supplier|vendor	supplier は店などへ納める「仕入れ先」。vendor は客に売る「売り手・物売り」
+N	demand|supply	supply は「供給（する）」、demand は「需要」。英語では supply and demand の順で「需要と供給」
+N	paramount|supreme	supreme は地位が「最高の」（the Supreme Court）。paramount は「何より重要な」
+N	supreme|ultimate	supreme は「最高の」。ultimate は最後にたどりつく「究極の」
+N	inferior|supreme	supreme は「最高の」、inferior は「劣った」
+N	certainly|surely	surely は「まさか〜じゃないよね・きっと」と、期待や驚きをこめる。certainly は「確かに・もちろん」と言い切る
+N	definitely|surely	surely は「きっと〜だよね」と相手に同意を求める。definitely は「間違いなく」と強く言い切る
+I	surely|curr1900_idm_pre2_no_doubt	no doubt は「きっと・おそらく」。surely は「きっと」と期待や驚きをこめる
+N	physician|surgeon	surgeon は手術をする「外科医」。physician は薬で治す「内科医」や「医師」
+D	surgeon	syn	operator	operator は機械の「操作する人」や電話の「オペレーター」で、学習者が使う英語では外科医の意味にならない（医学論文で手術を行う人を言う専門的な使い方だけ）
+N	resist|surrender	surrender は「降伏する」、resist は「抵抗する」
+I	surrender|idm_give_up	give up は「あきらめる」と広く言う。surrender は戦いで「降伏する」や、物を「引き渡す」
+I	surrender|curr_idm_2_turn_over	turn over は「(警察などに)引き渡す」。surrender は「引き渡す」のかたい語
+D	survivor	syn	remainder	remainder は「残りの部分・残りの数」で、災害などを生き延びた人の意味はない
+N	survivor|victim	survivor は「生き残った人」、victim は「犠牲者・被害者」
+N	swan|waterfowl	swan は「白鳥」。waterfowl はカモやガンも含めた「水鳥」全体
+N	quickly|swiftly	quickly は「すばやく」のふつうの語。swiftly は「さっと・迅速に」の少しかたい語
+N	slowly|swiftly	swiftly は「すばやく」、slowly は「ゆっくり」
+N	sound unit|syllable	syllable は「音節」（母音を中心にした音のひとまとまり）。sound unit は「音の単位」と説明するときの言い方で、ふつうは syllable と言う
+N	compassion|sympathy	sympathy は相手の気持ちが分かる「同情・共感」。compassion は助けたいと思う深い「思いやり」
+N	indifference|sympathy	sympathy は「同情」、indifference は「無関心」
+N	sign|symptom	symptom は病気の「症状」。sign は「しるし・兆候」と広く言う
+N	acquisition|takeover	takeover は会社の「買収・乗っ取り」（相手が望まないときにも使う）。acquisition は「買収・獲得」のかたい語
+N	merger|takeover	takeover は一方が相手を「買収する」。merger は2社が「合併する」
+N	gifted|talented	talented は「才能のある」のふつうの語。gifted は生まれつき「才能に恵まれた」
+N	skilled|talented	talented は生まれつきの「才能がある」。skilled は練習で「腕がいい」
+N	inept|talented	talented は「才能のある」、inept は「不器用な・下手な」
+N	chatty|talkative	talkative は「おしゃべりな」のふつうの語。chatty は「気さくによくしゃべる」くだけた語
+N	garrulous|talkative	talkative は「おしゃべりな」。garrulous はつまらないことまで「べらべらしゃべる」かたい語
+N	taciturn|talkative	talkative は「おしゃべりな」、taciturn は「無口な」
+N	mock|tease	tease は親しみをこめて「からかう」。mock は人をばかにして「あざける」
+N	taunt|tease	tease は「からかう」。taunt は相手を怒らせようと「なじる」
+N	soothe|tease	tease は「からかって困らせる」、soothe は「なだめる」
+I	tease|curr1900_idm_pre2_make_fun_of	make fun of は「からかう・ばかにする」。tease は親しみをこめて「からかう」ことも多い
+N	soft|tender	tender は肉が「やわらかい」や、気持ちが「優しい」。soft は手ざわりが「柔らかい」
+N	tender|tough	tender は肉が「やわらかい」、tough は肉が「かたい」
+N	strained|tense	tense は人や場面が「張り詰めた・緊張した」。strained は関係が「ぎくしゃくした」や、笑顔が「無理をした」
+N	edgy|tense	tense は「緊張した」。edgy は「いらいらした・ぴりぴりした」くだけた語
+N	final|terminal	terminal は病気が「末期の」や「終点の」。final は順番が「最後の」
+N	fatal|terminal	terminal は病気が「治る見込みのない・末期の」。fatal は事故などが「命を奪う・致命的な」
+N	initial|terminal	terminal は「終わりの」、initial は「初めの」
+N	petrified|terrified	terrified は「ひどくおびえた」。petrified は恐怖で「体がすくんだ」
+N	frightened|terrified	frightened は「怖がった」。terrified は「ひどくおびえた」と強い
+N	fearless|terrified	terrified は「ひどくおびえた」、fearless は「恐れを知らない」
+N	frighten|terrify	frighten は「怖がらせる」。terrify は「ひどく怖がらせる」と強い
+N	horrify|terrify	terrify は危険で「ひどく怖がらせる」。horrify はむごいことで「ぞっとさせる」
+N	reassure|terrify	terrify は「怖がらせる」、reassure は「安心させる」
+N	region|territory	territory は国が治める「領土」や、動物の「なわばり」。region は「地域」と広く言う
+N	domain|territory	territory は「領土・なわばり」。domain は知識などの「領域」や、王の「領地」
+N	dread|terror	terror は「激しい恐怖」や「テロ」。dread は先のことを「恐れる気持ち」
+N	calm|terror	terror は「激しい恐怖」、calm は「平静・落ち着き」
+N	appreciative|thankful	thankful は「ありがたく思う」（be thankful for）。appreciative は人の親切などを「ありがたく受けとめる」少しかたい語
+N	thankful|ungrateful	thankful は「感謝している」、ungrateful は「恩知らずの」
+N	therapy|treatment	therapy は薬を使わない「療法」（physical therapy）。treatment は「治療」と広く言う
+N	menace|threaten	threaten は「脅す」のふつうの語（threaten to do）。menace は「脅かす」のかたい語で、名詞「脅威」でよく使う
+N	therefore|thus	thus は「こうして・したがって」のかたい語。therefore は理由から結論を言う「それゆえ」
+N	hence|thus	thus は「こうして・したがって」。hence は「それゆえ」のかたい語で、「今から〜後」の意味もある
+N	messy|tidy	tidy は「整理された」、messy は「散らかった」
+N	fasten|tighten	tighten はねじなどを「きつく締める」。fasten はボタンやシートベルトを「留める」
+N	constrict|tighten	tighten は「締める」と広く言う。constrict は血管などを「締めつける・細くする」かたい語
+N	loosen|tighten	tighten は「締める」、loosen は「緩める」
+N	firmly|tightly	tightly は「きつく・ぎゅっと」。firmly は「しっかりと」や、態度が「きっぱりと」
+N	securely|tightly	tightly は「ぎゅっと」。securely は外れないように「しっかりと・安全に」
+N	opportune|timely	timely は「ちょうどよいときの」（a timely warning）。opportune は「都合のよい」のかたい語
+N	prompt|timely	timely は「ちょうどよいときの」。prompt は時間をおかず「すぐの」
+N	timely|untimely	timely は「ちょうどよいときの」、untimely は「早すぎる・時期の悪い」
+N	endure|tolerate	tolerate はいやなことを「大目に見る・がまんする」。endure は痛みなどに長く「耐える」
+N	reject|tolerate	tolerate は「受け入れて許す」、reject は「はねつける」
+I	tolerate|idm_put_up_with	put up with は「がまんする」の話し言葉。tolerate は「大目に見る」のかたい語
+N	throw|toss	toss は「ぽいと軽く投げる」。throw は「投げる」と広く言う
+N	hard|tough	tough は問題が「やっかいな」や、人が「たくましい」。hard は「難しい・かたい」
+N	sturdy|tough	tough は「打たれ強い・頑丈な」。sturdy は物や体が「がっしりした」
+N	easy|tough	tough は「難しい・つらい」、easy は「簡単な」
+N	durability|toughness	toughness は人の「打たれ強さ」や物の「頑丈さ」。durability は製品の「長持ちする性質・耐久性」
+N	resilience|toughness	toughness は「打たれ強さ」。resilience はだめになっても「立ち直る力」
+N	frailty|toughness	toughness は「頑丈さ」、frailty は「もろさ・弱さ」
+N	rendering|translation	translation は「翻訳」のふつうの語。rendering は訳し方の「訳」や、音楽などの「表現」
+N	interpretation|translation	translation は書かれた文章の「翻訳」。interpretation は「解釈」や、話し言葉の「通訳」
+N	original|translation	translation は「翻訳」、original は「原文・原作」
+I	transmit|curr_idm_pre2_pass_on	pass on は知らせや病気を「伝える・うつす」話し言葉。transmit は電波などを「送信する」
+N	cause|trigger	trigger はあることを急に「引き起こすきっかけになる」。cause は「原因となる」と広く言う
+I	trigger|idm_bring_about	bring about は変化などを「もたらす」。trigger は急に「引き起こす」
+I	trigger|curr_idm_2_set_off	set off は警報などを「作動させる」や、「出発する」。trigger も警報を「作動させる」
+N	clip|trim	trim は形を整えるため「少し切りそろえる」。clip ははさみで「切り取る」
+N	prune|trim	trim は「切りそろえる」。prune は木の枝を「剪定する（よけいな枝を切る）」
+N	extend|trim	trim は「切り詰める」、extend は「伸ばす」
+I	trim|curr_idm_pre1_cut_back	cut back は費用などを「削減する」。trim は予算を「少し切り詰める」
+N	triumph|victory	triumph は喜びにあふれた「大勝利・大成功」。victory は「勝利」のふつうの語
+N	conquest|triumph	triumph は「大勝利」。conquest は国などを「征服すること」
+N	defeat|triumph	triumph は「大勝利」、defeat は「敗北」
+N	troop|unit	troop は兵士の「部隊」や、動物の「群れ」。unit は「単位」や軍の「部隊」
+N	force|troops	troops は「兵士たち・部隊」。force は「軍」や「兵力」（the air force）
+N	soldiers|troops	troops は部隊としての「兵士たち」で、数を言うときに使う（500 troops）。soldiers は一人ひとりの「兵士」
+N	polar|tropical	tropical は「熱帯の」、polar は「極地の」
+N	instructor|tutor	tutor は一人ひとりを教える「家庭教師」。instructor は運転などの技能を教える「指導員」
+N	fearless|unafraid	unafraid は「恐れない」（be unafraid of）。fearless は「恐れを知らない」と強い
+N	bold|unafraid	unafraid は「恐れない」。bold は「大胆な」で、太い字の「太字の」にもなる
+N	afraid|unafraid	unafraid は「恐れない」、afraid は「怖がって」
+N	oblivious|unaware	unaware は「気づかない」（unaware of）。oblivious は周りのことに「まったく気づかない」
+N	ignorant|unaware	unaware はある事に「気づいていない」。ignorant は「無知な・知らない」で、けなす感じがある
+N	aware|unaware	unaware は「気づいていない」、aware は「気づいている」
+N	uncertain|unsure	uncertain は物事が「はっきりしない」や、人が「確信のない」。unsure は人が「自信のない」
+N	unclear|vague	unclear は理由などが「はっきりしない」。vague は記憶などが「ぼんやりした・あいまいな」
+N	ambiguous|unclear	unclear は「はっきりしない」。ambiguous は「二通りに取れる・あいまいな」
+N	uncommon|unusual	uncommon は「めずらしい・あまりない」。unusual は「ふだんとちがう・めずらしい」
+N	common|uncommon	uncommon は「めずらしい」、common は「ありふれた」
+N	reveal|uncover	uncover は調べて「暴く」や、ふたを「取る」。reveal は隠れていたことを「明らかにする」
+N	expose|uncover	uncover は「(調べて)暴く」。expose は不正を「暴露する」や、日光などに「さらす」
+N	conceal|uncover	uncover は「暴く」、conceal は「隠す」
+I	uncover|exam_idm_find_out	find out は調べて「分かる」の話し言葉。uncover は隠されていたことを「暴く」
+I	undertake|curr_idm_2_take_on	take on は仕事を「引き受ける」の話し言葉。undertake は大きな仕事に「取りかかる」かたい語
+N	reverse|undo	undo は「元に戻す・取り消す」。reverse は決定や順番を「逆にする・くつがえす」
+N	undo|unfasten	undo はボタンなどを「外す・ほどく」のほかに「元に戻す」。unfasten は留め具を「外す」
+N	do|undo	undo は「したことを元に戻す」、do は「する」
+N	anxious|uneasy	uneasy は何となく「落ち着かない・不安な」。anxious は「心配している」と強い
+N	restless|uneasy	uneasy は心が「不安な」。restless はじっとしていられず「そわそわした」
+N	calm|uneasy	uneasy は「落ち着かない」、calm は「落ち着いた」
+I	uneasy|curr1900_idm_2_ill_at_ease	ill at ease は「居心地が悪い・落ち着かない」。uneasy は「不安な」
+N	unequal|uneven	unequal は扱いが「不平等な」。uneven は表面が「でこぼこの」や、質が「むらのある」
+N	disparate|unequal	unequal は数や扱いが「等しくない」。disparate は性質が「まったく異なる」かたい語
+N	bumpy|uneven	uneven は表面が「でこぼこの」。bumpy は道などが「でこぼこで揺れる」
+N	even|uneven	uneven は「でこぼこの・むらのある」、even は「平らな・均一な」
+N	unfit|unsuitable	unfit は目的に「向かない」（unfit to drink）や、体が「なまった」。unsuitable は「ふさわしくない」
+N	incapable|unfit	unfit は「適さない・資格のない」。incapable は「〜する能力がない」（incapable of）
+N	unfamiliar|unknown	unknown は世間に「知られていない」。unfamiliar は自分にとって「なじみのない」
+N	obscure|unknown	unknown は「知られていない」。obscure は「無名の」や、意味が「分かりにくい」
+N	known|unknown	unknown は「知られていない」、known は「知られた」
+N	illicit|unlawful	unlawful は法律に反する「違法の」。illicit は麻薬の取引などの「不正の・禁じられた」
+N	lawful|unlawful	unlawful は「違法の」、lawful は「合法の」
+N	improbable|unlikely	unlikely は「ありそうにない」のふつうの語（be unlikely to do）。improbable は「起こりそうにない」のかたい語
+N	doubtful|unlikely	unlikely はことが「ありそうにない」。doubtful は人が「疑っている」や、ことが「疑わしい」
+N	boundless|unlimited	unlimited は量などが「無制限の」。boundless はエネルギーなどが「限りない」
+N	infinite|unlimited	unlimited は決まりとして「制限のない」。infinite は数学などの「無限の」
+N	unfortunate|unlucky	unlucky は「運が悪い」のふつうの語。unfortunate は「不運な」や「残念な」の少しかたい語
+N	ill-fated|unlucky	unlucky は「運の悪い」。ill-fated は最後に悲しい結果になる「悲運の」
+N	unload|unpack	unpack はかばんなどの「荷物をほどく」。unload は車や船から「荷を降ろす」
+N	analyze|unpack	unpack は考えなどを「一つずつ解きほぐして説明する」くだけた言い方。analyze は「分析する」
+N	disconnect|unplug	unplug は「プラグを抜く」。disconnect は「接続を切る」と広く言う
+N	detach|unplug	unplug はコンセントから「プラグを抜く」。detach は部品などを「取り外す」
+N	plug in|unplug	unplug は「プラグを抜く」、plug in は「プラグを差し込む」
+N	disliked|unpopular	unpopular は多くの人に「人気がない」。disliked は「嫌われている」
+N	unfavored|unpopular	unpopular は「人気がない」のふつうの語。unfavored はあまり使わない語で「好まれない」
+N	doubtful|unsure	unsure は自分が「確信がない」。doubtful は「疑っている」や、ことが「疑わしい」
+N	confident|unsure	unsure は「自信がない」、confident は「自信がある」
+N	rare|unusual	unusual は「ふだんとちがう」。rare は数が少なくて「まれな・貴重な」
+N	disinclined|unwilling	unwilling は「気が進まない・いやがる」。disinclined は「あまり乗り気でない」かたい語
+N	unwilling|willing	unwilling は「気が進まない」、willing は「進んで〜する」
+N	honest|upright	upright は道徳的に「まっすぐな・正直な」かたい語。honest は「うそをつかない・正直な」
+N	erect|upright	upright は「まっすぐ立った」や「正直な」。erect は体などが「直立した」かたい語で、動詞では「建てる」
+N	corrupt|upright	upright は「正直な・清廉な」、corrupt は「不正な・腐敗した」
+N	impulse|urge	urge は「〜したい」という強い「欲求・衝動」（the urge to do）。impulse は考えずにしてしまう「衝動」
+N	compulsion|urge	urge は「〜したい気持ち」。compulsion は抑えられない「強い衝動」や、人にさせる「強制」
+N	usefulness|utility	utility は「実用性」のかたい語や、電気・ガス・水道の「公共設備」。usefulness は「役に立つこと」のふつうの語
+N	function|utility	utility は「役に立つこと・実用性」。function は物の「機能・働き」
+N	uselessness|utility	utility は「役に立つこと」、uselessness は「役に立たないこと」

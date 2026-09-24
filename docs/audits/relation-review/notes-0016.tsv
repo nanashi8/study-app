@@ -1,0 +1,304 @@
+# 前の組の言いかえ（学習者に難しい漢字語を避ける）
+N!	craving|hunger	hunger は「空腹」や「強く求める気持ち」。craving は特定の物を「どうしてもほしくなる気持ち」
+N!	draft|final	draft は「下書き」、final は「完成したもの・最終版」
+N!	earthquake|tremor	earthquake は「地震」。tremor は小さな「揺れ」や、体の「震え」
+N!	heritage|legacy	heritage は国や地域の「伝統・文化遺産」。legacy は前の人が後に残した「遺産・業績」
+N!	notable|prominent	prominent は「目立つ・有名な」。notable は「注目に値する」
+N!	outlet|store	outlet はメーカーが直接安く売る「アウトレット（店）」や、電気の「コンセント」。store は「店」と広く言う
+# utilize〜censured
+N	use|utilize	utilize は資源などを「うまく役立てる」かたい語。use は「使う」のふつうの語
+I	utilize|curr_idm_pre2_make_use_of	make use of は「利用する・活用する」（make good use of）。utilize は「利用する」のかたい語
+N	vacuum|void	vacuum は空気のない「真空」や、埋めるべき「空白」（fill the vacuum）。void は何もない「空間・むなしさ」のかたい語で、契約が「無効の」にもなる
+N	emptiness|vacuum	vacuum は物理の「真空」や、埋めるべき「空白」。emptiness は心の「むなしさ」や「からっぽ」
+N	change|variation	variation は同じ種類の中の「ちがい・変化の幅」。change は「変化」と広く言う
+N	fluctuation|variation	variation は「ばらつき・ちがい」。fluctuation は値段などが「上がったり下がったりすること」
+N	uniformity|variation	variation は「ばらつき・変化」、uniformity は「均一であること」
+N	diverse|varied	varied は内容が「変化に富んだ」（a varied diet）。diverse は人や文化などが「多様な」
+N	assorted|varied	varied は「変化に富んだ」。assorted は色や種類が「いろいろ混ざった」（assorted cookies）
+N	uniform|varied	varied は「変化に富んだ」、uniform は形容詞で「一様な・均一な」
+N	assortment|variety	variety は「多様さ」や「種類」（a variety of）。assortment はいろいろな物の「詰め合わせ」
+I	various|curr_idm_2_a_variety_of	a variety of は名詞 variety を使った「さまざまな〜」の言い方。various は形容詞で、どちらも後ろに複数形の名詞が来る
+N	car|vehicle	vehicle は車・バス・自転車など「乗り物」全体のかたい語。car は「自動車」
+N	transport|vehicle	vehicle は一台一台の「乗り物」。transport は「輸送」や「交通機関」全体（public transport）
+N	expert|veteran	veteran は長い「経験を積んだ人」や「退役軍人」。expert はある分野の「専門家」
+N	old hand|veteran	veteran は長く経験を積んだ「ベテラン」。old hand は「(その仕事に)慣れた人」のくだけた言い方
+N	novice|veteran	veteran は「経験豊かな人」、novice は「初心者」
+N	vibrant|vivid	vibrant は町などが「活気にあふれた」や、色が「鮮やかな」。vivid は色や記憶が「鮮やかな・生き生きとした」
+N	dull|vibrant	vibrant は「活気のある」、dull は「活気のない・退屈な」
+N	oscillate|vibrate	vibrate は細かく「振動する」（My phone vibrated）。oscillate は振り子のように「行ったり来たり揺れる」かたい語
+N	shake|vibrate	vibrate は機械などが細かく「振動する」。shake は「揺れる・振る」と広く言う
+N	still|vibrate	vibrate は「振動する」、still は動詞で「静まる・止まる」（ふつうは形容詞「じっとした」や副詞「まだ」）
+N	oscillation|vibration	vibration は細かい「振動」。oscillation は振り子のような「揺れ・振動」のかたい語
+N	tremor|vibration	vibration は機械などの「振動」。tremor は体の「震え」や小さな「地震」
+N	victory|win	victory は戦争や試合の「勝利」。win は試合の「勝ち」の話し言葉（three wins）
+N	defeat|victory	victory は「勝利」、defeat は「敗北」
+N	breach|violate	violate は法律や約束を「破る」や、権利を「侵害する」。breach は契約などを「破る」かたい語
+N	infringe|violate	violate は規則を「破る」と広く言う。infringe は著作権などの権利を「侵害する」
+N	obey|violate	violate は「違反する」、obey は「従う」
+N	breach|violation	violation は規則への「違反」。breach は契約や約束を「破ること」
+N	infringement|violation	violation は「違反」と広く言う。infringement は著作権などの「侵害」
+N	compliance|violation	violation は「違反」、compliance は規則を「守ること」
+N	fierce|violent	violent は人が「暴力をふるう」や、嵐などが「激しい」。fierce は動物が「どう猛な」や、争いが「激しい」
+N	brutal|violent	violent は「暴力的な」。brutal は「残酷な・容赦ない」
+N	gentle|violent	violent は「乱暴な・激しい」、gentle は「穏やかな」
+N	fiercely|violently	violently は「激しく・暴力をふるって」。fiercely は「猛烈に・激しく」で、競争などに使う
+N	savagely|violently	violently は「激しく」。savagely は「凶暴に・むごく」と強い
+N	gently|violently	violently は「激しく」、gently は「やさしく・穏やかに」
+N	practically|virtually	virtually と practically はどちらも「ほとんど・事実上」。practically のほうが話し言葉
+N	almost|virtually	almost は「ほとんど・もう少しで」のふつうの語。virtually は「事実上（ほぼ完全に）」
+N	actually|virtually	virtually は「ほぼ」や「(コンピューターの中で)仮想的に」、actually は「実際に」
+I	virtually|curr_idm_pre1_in_effect	in effect は「事実上・実質的には」や、法律が「有効で」。virtually は「ほぼ・事実上」
+I	virtually|curr_idm_1_to_all_intents_and_purposes	to all intents and purposes は「事実上・実質的に」のかたい言い方。virtually は1語で同じ意味
+N	envision|visualize	visualize は目に浮かぶように「思い描く」。envision は将来の姿を「心に描く」
+N	imagine|visualize	imagine は「想像する」と広く言う。visualize は「目に見えるように思い描く」
+N	roam|wander	wander はあてもなく「さまよう」。roam は広い範囲を「歩き回る」
+N	stroll|wander	wander は「あてもなく歩く」。stroll は楽しみで「ぶらぶら散歩する」
+N	friendliness|warmth	warmth は「暖かさ」や、人の「温かみ」。friendliness は「人なつっこさ・友好的な態度」
+N	coldness|warmth	warmth は「温かさ」、coldness は「冷たさ・よそよそしさ」
+N	caution|warn	warn は危険を「警告する」のふつうの語（warn A of B）。caution は「用心するよう注意する」かたい語
+N	caution|warning	warning は危険を知らせる「警告」。caution は「用心」や「注意」
+N	alert|warning	warning は「警告」と広く言う。alert は危険をすぐ知らせる「警報」
+N	pledge|warranty	warranty は製品の「保証（書）」（under warranty）。pledge は公にする「誓い・約束」
+N	extravagant|wasteful	wasteful は物やお金を「むだにする」。extravagant はお金を「使いすぎる・ぜいたくな」
+N	frugal|wasteful	wasteful は「むだの多い」、frugal は「倹約な」
+N	undermine|weaken	weaken は「弱める」と広く言う。undermine は自信や計画などを「少しずつ弱らせる」
+N	rich|wealthy	rich は「金持ちの」のふつうの語で、「豊かな・濃い」の意味もある。wealthy は「裕福な」の少しかたい語
+N	affluent|wealthy	wealthy は人が「裕福な」。affluent は地域や社会が「豊かな」かたい語
+N	poor|wealthy	wealthy は「裕福な」、poor は「貧しい」
+N	arms|weapon	weapon は一つひとつの「武器」。arms は「兵器」をまとめて言うかたい語（複数形で使う）
+N	welfare|well-being	welfare は社会が支える「福祉」や「幸せ」。well-being は心と体が「健康で幸せな状態」
+N	expand|widen	widen は道などの「幅を広げる」。expand は大きさや範囲を「拡大する」
+N	narrow|widen	widen は「広げる」、narrow は動詞で「狭める」
+N	fauna|wildlife	wildlife は「野生の生き物」のふつうの語。fauna はある地域の「動物（全体）」の学術的な語
+N	eager|willing	willing は頼まれれば「いやがらずにする」。eager は自分から「したくてたまらない」
+N	ready|willing	willing は「進んで〜する」。ready は「準備ができた」や「すぐ〜する」
+N	observer|witness	witness は事件などの「目撃者・証人」。observer は注意して見る「観察者」や、会議の「立会人」
+N	bystander|witness	witness は見て証言できる「目撃者」。bystander はたまたま「居合わせた人」
+N	seminar|workshop	workshop は参加者が実際に作業をする「講習会・研修会」。seminar は話を聞いて議論する「セミナー」
+N	studio|workshop	workshop は物を作ったり直したりする「作業場」。studio は画家の「アトリエ」や、テレビの「スタジオ」
+N	pray|worship	worship は神を「崇拝する・礼拝する」。pray は願いを「祈る」
+N	hurt|wounded	wounded は武器などで「傷を負った」。hurt は「けがをした」や、気持ちが「傷ついた」と広く言う
+N	unhurt|wounded	wounded は「負傷した」、unhurt は「無傷の」
+N	destroy|wreck	wreck は車や船を「めちゃめちゃに壊す」や、計画を「台無しにする」。destroy は「破壊する」と広く言う
+I	yield|curr_idm_pre2_give_in	give in は相手に「屈する・折れる」話し言葉。yield は「屈する」のかたい語で、「産出する」の意味もある
+I	yield|curr_idm_2_give_way_to	give way to は「〜に屈する」や「〜に取って代わられる」。yield は「屈する・道を譲る」
+I	abandon|idm_give_up	give up は「あきらめる・やめる」と広く言う。abandon は計画や人を「見捨てる・放棄する」と強い
+N	abnormal|unusual	abnormal は健康や機械の状態が「異常な」（よくない感じ）。unusual は「ふだんとちがう・めずらしい」
+N	abnormal|irregular	abnormal は「異常な」。irregular は間隔などが「不規則な」
+N	abundant|scarce	abundant は「豊富な」、scarce は「乏しい」
+N	abusive|insulting	abusive は「口汚い」や「虐待する」。insulting は「侮辱的な・失礼な」
+N	abusive|cruel	abusive は人を「虐待する」。cruel は「残酷な」と広く言う
+N	abusive|kind	abusive は「虐待する・口汚い」、kind は「親切な」
+N	academic|scholarly	academic は大学や学業の「学問の」。scholarly は研究が「学者らしい・学術的な」
+N	academic|educational	academic は「学問の・学業の」。educational は「教育の・ためになる」
+N	academic|practical	academic は「学問的な（実際の役には立たない）」、practical は「実際的な」
+N	accurate|precise	accurate は事実どおりで「正確な」。precise は細かいところまで「精密な」
+N	accurate|inaccurate	accurate は「正確な」、inaccurate は「不正確な」
+N	acorn|nut	acorn はナラやカシの「どんぐり」。nut はクルミなど、かたい殻の「木の実」全体
+N	acorn|seed	acorn は「どんぐり」。seed は植物の「種」全体
+N	acquire|lose	acquire は「身につける・手に入れる」、lose は「失う」
+N	adaptable|versatile	adaptable は新しい環境に「適応できる」。versatile は「多才な」や、道具が「いろいろに使える」
+N	adaptable|rigid	adaptable は「融通のきく」、rigid は「かたくて融通のきかない」
+N	adequate|sufficient	adequate は目的に「足りる・まずまずの」。sufficient は量が「十分な」のかたい語
+N	adequate|inadequate	adequate は「十分な」、inadequate は「不十分な・力不足の」
+I	adhere|curr1900_idm_2_cling_to	cling to は物に「しがみつく」や、考えに「固執する」。adhere to は規則や計画を「守る」かたい言い方
+I	adhere|curr_idm_1_stick_to	stick to は計画などを「守り通す」話し言葉。adhere to は規則を「厳守する」かたい言い方
+N	admirable|commendable	admirable は「感心するほど立派な」。commendable は「ほめるに値する」かたい語
+N	admirable|praiseworthy	admirable は「見事な・立派な」。praiseworthy は行いが「ほめるべき」かたい語
+N	admirable|deplorable	admirable は「立派な」、deplorable は「嘆かわしい」
+N	adoration|worship	adoration は人や動物への「あこがれ・深い愛情」。worship は神などへの「崇拝」
+N	adoration|devotion	adoration は「敬愛・深い愛情」。devotion は人や仕事への「献身・一途な愛情」
+N	adoration|contempt	adoration は「敬愛」、contempt は「軽蔑」
+N	advanced|sophisticated	advanced は技術が「進んだ・高度な」や、学習が「上級の」。sophisticated は機械が「精巧な」や、人が「洗練された」
+N	advanced|cutting-edge	advanced は「進んだ」。cutting-edge は「最先端の」と強い
+N	advantage|benefit	advantage は他より「有利な点」（have an advantage over）。benefit は受ける「恩恵・利益」
+N	advantage|disadvantage	advantage は「有利な点」、disadvantage は「不利な点」
+N	advantageous|beneficial	advantageous は競争などで「有利な」。beneficial は健康などに「有益な・ためになる」
+N	advantageous|disadvantageous	advantageous は「有利な」、disadvantageous は「不利な」
+N	affect|influence	affect は直接「影響する」（affect health）。influence は考えや行動に「影響を与える」
+N	affect|impact	affect は「影響する」のふつうの語。impact は動詞で「強い影響を与える」
+N	affection|fondness	affection は人への「愛情」。fondness は物や人への「好み・愛着」
+N	affection|love	affection は穏やかな「愛情・好意」。love は「愛」と強い
+N	affection|dislike	affection は「愛情」、dislike は「嫌い・嫌悪」
+N	affluent|prosperous	affluent は人や地域が「裕福な」。prosperous は町や商売が「栄えている」
+N	affluent|poor	affluent は「裕福な」、poor は「貧しい」
+N	agenda|schedule	agenda は会議の「議題（の一覧）」。schedule は時間ごとの「予定」
+N	agenda|plan	agenda は話し合う「議題」や、隠れた「ねらい」（hidden agenda）。plan は「計画」
+N	agitated|upset	agitated はそわそわして「動揺した」。upset は悲しみや怒りで「気が動転した」
+N	agitated|flustered	agitated は「動揺した・いらいらした」。flustered はあわてて「うろたえた」
+N	agitated|calm	agitated は「動揺した」、calm は「落ち着いた」
+N	alignment|arrangement	alignment はまっすぐ「一列にそろえること」や、考えの「一致」。arrangement は物の「配置」や「手配」
+N	alternate|rotate	alternate は2つを「交互にする」。rotate は3人以上でも順に「交代する」
+N	ambition|aspiration	ambition は成功したいという強い「野心・大志」。aspiration は「こうなりたい」という「願い・抱負」
+N	ambition|drive	ambition は目指す「野心」。drive は名詞で、何かを成しとげる「意欲・やる気」
+I	ample|curr_idm_3_plenty_of	plenty of は「たっぷりの」の話し言葉。ample は「十分すぎるほどの」のかたい語
+N	analogy|comparison	analogy は似ている点を使った「たとえ」（心臓をポンプにたとえる）。comparison は「比較」
+N	analogy|parallel	analogy は説明のための「たとえ」。parallel は名詞で「似ている点・類似」
+N	analysis|study	analysis はくわしく調べる「分析」。study は「研究」と広く言う
+N	analysis|synthesis	analysis は「分けて調べること・分析」、synthesis は「まとめること・統合」
+N	analyst|examiner	analyst はデータなどを「分析する人」。examiner は試験の「試験官」や、書類を「審査する人」
+N	ancestor|descendant	ancestor は「祖先」、descendant は「子孫」
+N	anchor|mooring	anchor は船の「いかり」。mooring は船を「つなぎとめること・つなぐ場所」
+N	anchor|support	anchor は心の「支え・よりどころ」のたとえにも使う。support は「支え」と広く言う
+N	agony|anguish	anguish は心の「苦しみ・苦悩」。agony は体や心の「激しい苦痛」
+N	anguish|comfort	anguish は「苦悩」、comfort は「安らぎ・慰め」
+N	annotation|note	annotation は本文に書き足す「注釈」。note は「メモ」や「注」と広く言う
+N	aerial|antenna	antenna は「アンテナ」のふつうの語で、虫の「触角」にもなる。aerial はイギリス英語で「アンテナ」
+N	antenna|feeler	antenna は虫の「触角」。feeler も「触角」だが、相手の考えを探る「打診」にもなる（put out feelers）
+N	anxiety|worry	anxiety は続く「不安」。worry は具体的な「心配（ごと）」
+N	anxiety|unease	anxiety は「強い不安」。unease は何となく「落ち着かない気持ち」
+N	anxiety|calm	anxiety は「不安」、calm は「落ち着き」
+N	ape|monkey	ape は尾のない「類人猿」（ゴリラ・チンパンジーなど）。monkey は尾のある「サル」で、英語では ape と区別する
+N	ape|primate	ape は「類人猿」。primate はサルや人間を含む「霊長類」全体
+N	appalling|horrifying	appalling はあきれるほど「ひどい」。horrifying は「ぞっとするほど恐ろしい」
+N	appalling|atrocious	appalling は「ぞっとするほどひどい」。atrocious は「極悪な」や、質が「ひどい」
+N	admirable|appalling	appalling は「ひどい」、admirable は「立派な」
+N	apparatus|equipment	apparatus は特定の目的の「装置・器具」（breathing apparatus）。equipment は「設備・用具」全体（数えない）
+N	apparatus|machinery	apparatus は「装置・器具」。machinery は「機械類」全体や、組織の「仕組み」
+N	apparent|obvious	apparent は「明らかな」や「見かけ上の」。obvious はだれにでも分かる「明らかな」
+N	apparent|evident	apparent は「明らかな」、名詞の前では「見かけ上の」。evident は証拠などで「明白な」
+N	appealing|enticing	appealing は「魅力的な」。enticing は「(つい手を出したくなるほど)そそる」
+N	appealing|repulsive	appealing は「魅力的な」、repulsive は「不快な」
+N	appendix|supplement	appendix は本の最後の「付録」や、体の「虫垂」。supplement は雑誌の「別冊・補足」や「サプリメント」
+N	addendum|appendix	appendix は本の「付録」。addendum は文書にあとから加える「追加の部分」
+N	appreciation|gratitude	appreciation は「感謝」や、価値を「正しく理解すること」。gratitude は「感謝の気持ち」
+N	aquarium|fish tank	aquarium は「水族館」や「水槽」。fish tank は家で魚を飼う「水槽」
+I	arise|curr_idm_pre2_come_about	come about は「(どうして)起こる」（How did it come about?）。arise は問題などが「生じる」かたい語
+I	arise|curr_idm_2_come_up	come up は問題や話題が「出てくる」話し言葉。arise は「生じる」のかたい語
+N	arrangement|layout	arrangement は物の「並べ方・配置」や「手配」。layout は部屋や紙面の「配置・割り付け」
+N	agreement|arrangement	arrangement は話し合って決めた「取り決め・手配」。agreement は「合意・協定」
+N	arrogant|proud	arrogant は人を見下す「いばった」（悪い意味だけ）。proud は「誇りに思う」が中心で、「高慢な」は悪い意味のとき
+N	arrogant|humble	arrogant は「いばった」、humble は「謙虚な」
+N	assault|strike	assault は人に「暴行する・襲いかかる」法律の語。strike は「打つ・殴る」と広く言う
+N	assault|defend	assault は「襲いかかる」、defend は「守る」
+I	assemble|curr_idm_pre2_put_together	put together は部品を「組み立てる」話し言葉。assemble は「組み立てる」や、人を「集める」かたい語
+N	assembly|congress	assembly は「議会」や学校の「集会」。congress はアメリカの「議会」（Congress）や「大会議」
+N	assertion|claim	assertion は自信をもって言う「主張・断言」。claim は証拠のまだない「主張」や、権利の「要求」
+N	asset|property	asset は会社などの「資産」や、役立つ「強み」。property は持っている「財産」や「不動産」
+N	asset|liability	asset は「資産・強み」、liability は「負債・足手まとい」
+N	assorted|uniform	assorted は「いろいろ混ざった」、uniform は形容詞で「一様な」
+N	assurance|confidence	assurance は相手を安心させる「保証」や「確信」。confidence は自分の「自信」や、人への「信頼」
+N	assured|confident	assured は態度が「落ち着いて自信のある」。confident は「自信がある」のふつうの語
+N	assured|certain	assured は成功などが「確実な」（Success is assured）。certain は「確かな」と広く言う
+N	assured|uncertain	assured は「確実な」、uncertain は「不確かな」
+N	atrocious|dreadful	atrocious は「極悪な」や、質が「ひどい」。dreadful は「ひどい・恐ろしい」
+N	admirable|atrocious	atrocious は「ひどい」、admirable は「立派な」
+N	attempt|try	attempt は「試みる」のかたい語で、難しいことに使う（attempt to do）。try は「やってみる」のふつうの語
+N	assistant|attendant	attendant は客の世話をする「係員」（flight attendant）。assistant は人の仕事を手伝う「助手」
+N	attentive|observant	attentive は相手に「気を配る」や、話を「よく聞く」。observant は小さなことに「よく気がつく」
+N	attentive|considerate	attentive は「よく気を配る」。considerate は相手の気持ちを考える「思いやりのある」
+N	attentive|inattentive	attentive は「注意深い」、inattentive は「不注意な」
+N	attorney|counsel	attorney はアメリカ英語で「弁護士」。counsel は法廷の「弁護人」や「助言」
+N	approve|authorize	authorize は公に「権限を与える・認可する」。approve は計画などを「承認する」や、「よいと思う」
+N	authorize|sanction	authorize は「権限を与える」。sanction は「正式に認める」かたい語で、「制裁を加える」という反対の意味もある
+N	authorize|forbid	authorize は「許可する」、forbid は「禁じる」
+N	automate|mechanize	automate は人の手がいらないよう「自動化する」。mechanize は手作業を「機械化する」
+N	automatic|self-acting	automatic は「自動の」のふつうの語。self-acting は機械の説明で使う古い語
+N	aversion|distaste	aversion は強い「嫌悪」（an aversion to）。distaste は「いやな感じ」と少し弱い
+N	aversion|liking	aversion は「嫌悪」、liking は「好み」
+N	axe|hatchet	axe は両手で使う大きな「おの」。hatchet は片手で使う「手おの」
+N	backup|copy	backup は万一のための「控え・予備」。copy は「写し・複製」と広く言う
+N	backup|reserve	backup は「予備・控え」や「支援」。reserve は「蓄え・予備（の選手）」
+N	bait|lure	bait は魚をつる本物の「えさ」や、人をだます「おとり」。lure は「つりのルアー」や「誘惑」
+N	bait|decoy	bait は動物をおびき寄せる「えさ」。decoy はだますための「おとり」（鳥の模型など）
+N	banish|exile	banish は国や場所から「追い出す」や、不安を「払いのける」。exile は国から「追放する」
+N	banish|expel	banish は「追放する」。expel は学校から「退学させる」や、組織から「追い出す」
+N	bankrupt|insolvent	bankrupt は法的に「破産した」（go bankrupt）。insolvent は借金を「払えない」かたい語
+N	bankrupt|ruined	bankrupt はお金の面で「破産した」。ruined は「破滅した・台無しになった」と広く言う
+N	bankrupt|solvent	bankrupt は「破産した」、solvent は「借金を払える」
+N	barrel|cask	barrel は大きな「たる」や、石油の単位「バレル」。cask はお酒を入れる「たる」
+N	barrel|keg	barrel は大きな「たる」。keg はビールなどを入れる「小さなたる」
+N	beacon|signal	beacon は目印の光「のろし・標識灯」や、「導きとなるもの」。signal は「信号・合図」と広く言う
+N	beacon|lighthouse	beacon は船などを導く「標識灯」。lighthouse は海辺の「灯台」（建物）
+D	beak	syn	bill	くちばしの bill は請求書の bill と由来のちがう別の語で見出し語がなく、つづりで引くと請求書へ飛ぶ
+N	beam|ray	beam はまっすぐ進む強い「光線」（a laser beam）。ray は一本一本の「光線・放射線」
+N	beam|rafter	beam は建物の横の「はり」。rafter は屋根を支える斜めの「たるき」
+N	beginner|novice	beginner は「初心者」のふつうの語。novice は「初心者」のかたい語
+N	beginner|rookie	beginner は習い始めた「初心者」。rookie はスポーツなどの「新人」
+N	beginner|expert	beginner は「初心者」、expert は「熟練者・専門家」
+N	benefit|profit	benefit は受ける「恩恵・ためになること」。profit は商売の「もうけ・利益」
+N	benefit|loss	benefit は「利益」、loss は「損失」
+N	biased|impartial	biased は「偏った」、impartial は「公平な」
+N	biodegradable|compostable	biodegradable は自然に「分解される」。compostable は分解して「畑の肥料になる」
+N	autobiography|biography	biography は他人が書いた「伝記」、autobiography は自分で書いた「自伝」
+N	blade|edge	blade は刃物の「刃（の部分）」や、草の「葉」。edge は刃の「切れる縁」や「端」
+N	blade|knife	blade は「刃」の部分。knife は持ち手もある「ナイフ」全体
+N	bland|tasteless	bland は味が「うすい・刺激のない」。tasteless は「味のない」や「品のない」
+N	bland|dull	bland は「当たりさわりのない・つまらない」。dull は「退屈な」や「にぶい」
+N	bland|spicy	bland は「味がうすい」、spicy は「香辛料のきいた」
+N	blast|explosion	blast は爆発の「爆風・衝撃」。explosion は「爆発」そのもの
+N	blast|gust	blast は一気に吹く強い「突風」。gust は「ひと吹きの突風」
+I	blast|curr_idm_2_blow_up	blow up は「爆破する・爆発する」の話し言葉。blast は岩などを「爆破する」
+N	blunder|gaffe	blunder は不注意による「大失敗」。gaffe は人前での「失言・へま」
+N	blunder|success	blunder は「大失敗」、success は「成功」
+N	blunt|frank	blunt は相手の気持ちを考えず「ずけずけ言う」。frank は「率直な」でよい意味が多い
+N	blunt|direct	blunt は「遠慮のない」。direct は回りくどくなく「率直な」
+N	bolt|screw	bolt はナットで締める「ボルト」。screw はねじ山で留める「ねじ」
+N	bolt|latch	bolt は戸の「かんぬき」。latch は戸の「掛け金」
+N	bookish|studious	bookish は「本好きの」（外で遊ばない感じもある）。studious は「勉強熱心な」
+N	bookish|scholarly	bookish は「本ばかり読む」。scholarly は「学者らしい・学問的な」
+N	bookish|illiterate	bookish は「本好きの」、illiterate は「読み書きができない」
+N	boom|surge	boom は景気などの「好況・ブーム」。surge は数量の「急増」
+N	boom|upturn	boom は「好況・急成長」。upturn は景気の「上向き」
+N	booth|stall	booth は仕切った「ブース・小部屋」（電話ボックスなど）。stall は市場の「売店・屋台」
+N	booth|cubicle	booth は展示会などの「ブース」。cubicle は職場の仕切った「小部屋」
+N	boredom|tedium	boredom は「退屈（な気持ち）」。tedium は仕事などの「単調さ・退屈さ」
+N	boredom|excitement	boredom は「退屈」、excitement は「興奮・わくわく」
+N	botch|bungle	botch と bungle はどちらも「へたにやってしくじる」話し言葉
+N	botch|mishandle	botch は仕事を「へたにやる」。mishandle は物事の「扱い方を誤る」
+N	botch|perfect	botch は「しくじる」、perfect は動詞で「完璧に仕上げる」
+N	boulder|rock	boulder は「大きな丸い岩」。rock は「岩」と広く言う
+N	boulder|stone	boulder は「大きな岩」。stone は「石」
+N	boulder|pebble	boulder は「大きな岩」、pebble は「小石」
+N	bangle|bracelet	bracelet は「ブレスレット」と広く言う。bangle は輪になった硬い「腕輪」
+N	bravery|courage	bravery は危険に立ち向かう「勇敢さ」。courage は恐れに負けない「勇気」
+N	bravery|valor	bravery は「勇敢さ」。valor は戦いでの「武勇」のかたい語
+N	bravery|cowardice	bravery は「勇敢さ」、cowardice は「臆病」
+N	breach|infringe	breach は契約や約束を「破る」。infringe は権利を「侵害する」
+N	breach|break	breach は契約を「破る」かたい語。break は約束などを「破る」のふつうの語
+N	breach|comply	breach は「違反する」、comply は「従う」
+N	breakdown|failure	breakdown は機械の「故障」や話し合いの「決裂」。failure は「失敗」や機械の「故障」
+N	breakdown|collapse	breakdown は交渉や体調が「くずれること」。collapse は建物などの「崩壊」
+N	brisk|lively	brisk は動きが「きびきびした」や、風が「さわやかな」。lively は「生き生きとした・にぎやかな」
+N	brisk|quick	brisk は「きびきびした・速足の」（a brisk walk）。quick は「速い」と広く言う
+N	brisk|sluggish	brisk は「きびきびした」、sluggish は「動きが鈍い」
+N	browse|skim	browse は本や店を「ざっと見て回る」。skim は内容を「さっと読む」
+N	browse|surf	browse はウェブサイトを「見て回る」や、店を「ぶらぶら見る」。surf はネットを次々に「見て回る」
+N	buckle|clasp	buckle はベルトの「バックル・留め金」。clasp はネックレスなどの「留め金」
+N	buckle|fastener	buckle はベルトの「バックル」。fastener は「留め具」全体
+N	bulb|lamp	bulb は「電球」。lamp は電灯や「ランプ」全体
+N	bulb|tuber	bulb はチューリップなどの「球根」。tuber はジャガイモのような「いも」
+N	bully|intimidate	bully は弱い人を「いじめる」。intimidate は「おどして怖がらせる」
+N	bully|harass	bully は「いじめる」。harass はしつこく「嫌がらせをする」
+N	bully|protect	bully は「いじめる」、protect は「守る」
+N	bullying|harassment	bullying は学校などの「いじめ」。harassment は職場などの「嫌がらせ」
+N	bumpy|rough	bumpy は道が「でこぼこで揺れる」。rough は表面が「ざらざらした」や、道が「荒れた」
+N	bumpy|smooth	bumpy は「でこぼこの」、smooth は「なめらかな」
+N	bypass|detour	bypass は町の中心を避ける「バイパス（道路）」。detour は一時的な「回り道」
+N	bypass|circumvent	bypass は動詞で「避けて通る」。circumvent は規則などを「うまく避ける」かたい語
+M	cabinet	syn	council	評議会
+N	cabinet|council	cabinet は政府の「内閣」や「戸棚」。council は市などの「議会」や「評議会」
+N	cabinet|cupboard	cabinet は「戸棚」や「飾り棚」。cupboard は食器などを入れる「戸棚」
+N	canal|waterway	canal は人が造った「運河」。waterway は川や運河など船が通る「水路」全体
+N	cancerous|malignant	cancerous は「がんの」。malignant は医学で「悪性の」
+N	benign|cancerous	cancerous は「がんの」、benign は「良性の」
+N	cane|stick	cane は歩くための「つえ」。stick は「棒」と広く言い、「つえ」にもなる
+N	cane|staff	cane は歩くための「つえ」。staff は昔の旅人などが持つ長い「つえ」で、ふつうは「職員」
+N	canyon|gorge	canyon は川が削った大きな「峡谷」（the Grand Canyon）。gorge は切り立った狭い「渓谷」
+N	canyon|ravine	canyon は大きな「峡谷」。ravine は小さく深い「谷」
+N	cape|headland	cape は地名にもなる「岬」（Cape Town）。headland は海に突き出た高い「岬」
+N	cape|cloak	cape は肩にかける短い「ケープ」。cloak は体を包む長い「マント」
+N	captive|hostage	captive は捕らえられた「捕虜・とらわれ人」。hostage は要求のために捕らえた「人質」
+N	captivity|confinement	captivity は人や動物が「捕らわれていること」（in captivity）。confinement は部屋などへの「閉じ込め」
+N	captivity|imprisonment	captivity は「捕らわれの身」。imprisonment は刑罰の「投獄」
+N	captivity|freedom	captivity は「捕らわれの身」、freedom は「自由」
+N	carbon|coal	carbon は元素の「炭素」。coal は炭素を多くふくむ燃料の「石炭」
+N	caretaker|custodian	caretaker は建物などの「管理人」や「世話をする人」。custodian は博物館などの「管理者」や「保護者」
+N	caretaker|guardian	caretaker は病人などの「世話をする人」。guardian は子どもの「保護者・後見人」
+N	carriage|coach	carriage は「馬車」や、イギリス英語で列車の「客車」。coach も「大型馬車」や「客車」だが、今は「長距離バス」や「指導者」の意味がふつう
+N	basement|cellar	cellar は物をしまう「地下の貯蔵室」（wine cellar）。basement は人が使う部屋もある「地下（階）」
+N	cellar|vault	cellar は「貯蔵用の地下室」。vault は銀行の「金庫室」やアーチ形の「丸天井」
+N	attic|cellar	cellar は「地下室」、attic は「屋根裏」
+N	censured|reprimanded	censured は公に「とがめられた」。reprimanded は上の人から「叱られた」
+N	censured|condemned	censured は「公に非難された」。condemned は「強く非難された」や「有罪を宣告された」
+N	censured|praised	censured は「非難された」、praised は「ほめられた」
