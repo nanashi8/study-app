@@ -40,12 +40,12 @@
 
 ### フック（.claude/settings.json）が強制すること
 
-- **ターンを終えられない**：開いている依頼に `todo` の条件が残っていると、Stop フックが止めて作業を続けさせる。
+- **ターンを終えられない**：そのセッションが作った・書き換えた依頼（会話ログの Write・Edit と、Bash での書き込み・`git add` で判定）に `todo` の条件が残っていると、Stop フックが止めて作業を続けさせる。ほかのセッションの依頼では止めない。会話ログが読めないときは、開いている全依頼で止める。
 - **台帳なしに変更できない**：開いている依頼がないと、`src/`・`tests/`・`scripts/` を Edit/Write できない。
 - **偽りの done をコミットできない**：`git commit` / `git push` の前に、done にした条件の check を実行し、通らなければ止める。
 - **毎回思い出させる**：利用者の発言ごとに、決まりと未完了の条件を作業者に見せる。
 
-判定は `scripts/check-requests.mjs`。一覧は `node scripts/check-requests.mjs --report`。
+判定は `scripts/check-requests.mjs`。一覧は `node scripts/check-requests.mjs --report`、依頼ごとの持ち主のセッションは `--owners`。
 
 ### 報告の書き方
 

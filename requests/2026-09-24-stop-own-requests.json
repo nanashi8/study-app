@@ -1,0 +1,45 @@
+{
+  "id": "2026-09-24-stop-own-requests",
+  "title": "Stop フックは、そのセッションが作った・書き換えた依頼の未完了だけで止める",
+  "asked": [
+    "（関連語の依頼を閉じたあと、Stop フックが古典・数学のセッションの依頼の未完了を理由にこのセッションの終わりを止め続けたので、どうするかを聞いた問いへの答え）自分の依頼だけで止める（推奨）"
+  ],
+  "status": "open",
+  "criteria": [
+    {
+      "id": "own-requests-detected",
+      "text": "セッションごとに、そのセッションが作った・書き換えた依頼台帳を会話ログ（transcript）から割り出す。Write・Edit・NotebookEdit で書いた台帳と、Bash で書き込んだ・git add した台帳を持ち主の印にし、フックの一覧や止めた理由の文に台帳の名前が出てくるだけでは持ち主にしない",
+      "population": "会話ログの道具の呼び出しの全種類（Write・Edit・MultiEdit・NotebookEdit・Bash の書き込み・Bash の読み取り・ほかのファイルへの書き込み・フックの出力の文）",
+      "check": "node --test tests/requests-ledger.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "stop-own-only",
+      "text": "Stop フックは、そのセッションの依頼に残る todo だけで止め、ほかのセッションの依頼の todo では止めない。会話ログが読めないときは、これまでどおり開いている全依頼で止める。台帳の書き方の誤りは、これまでどおり全セッションを止める",
+      "population": "Stop フックの判定の全場合（自分の依頼に todo・ほかのセッションの依頼だけに todo・会話ログなし・todo なし・台帳の誤り）",
+      "check": "node --test tests/requests-ledger.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "real-sessions",
+      "text": "このリポジトリの実際の会話ログで、開いている依頼のすべてに持ち主のセッションが割り出され、関連語・古典・数学の3セッションがそれぞれ自分の依頼だけの持ち主になる",
+      "population": "開いている全依頼 × このリポジトリの全会話ログ（~/.claude/projects/-Users-yuichinakamura-projects-study-app/*.jsonl）",
+      "check": "node scripts/check-requests.mjs --owners",
+      "status": "done"
+    },
+    {
+      "id": "rules-updated",
+      "text": "CLAUDE.md の「フックが強制すること」を、そのセッションの依頼だけで止まる動きに合わせて書き直す",
+      "population": "CLAUDE.md の「フックが強制すること」の全項目",
+      "check": "node --test tests/requests-ledger.test.mjs",
+      "status": "done"
+    },
+    {
+      "id": "deployed",
+      "text": "全テスト・全監査をクリーンな clone で通してから main へ push し、公開版のデプロイが成功したことを確かめる",
+      "population": "公開版 https://nanashi8.github.io/study-app/",
+      "check": "node scripts/checks/deployed-matches-head.mjs",
+      "status": "todo"
+    }
+  ]
+}

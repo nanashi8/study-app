@@ -4,17 +4,21 @@
 //   --prompt : 利用者の依頼が届いたとき。決まりと、終わっていない受け入れ条件を作業者に見せる。
 //   --edit   : src/・tests/・scripts/ のファイルを書き換える前。開いている依頼がなければ止める。
 //   --gate   : git commit / git push の前。「済」にした条件の確認コマンドを実行し、通らなければ止める。
-//   --stop   : 作業者がターンを終えようとしたとき。「未」の条件が残っていれば終わらせない。
+//   --stop   : 作業者がターンを終えようとしたとき。そのセッションの依頼に「未」の条件が残っていれば終わらせない。
 //   --report : 開いている依頼と条件の一覧を表示する（人が読む用）。
+//   --owners : 開いている依頼ごとに、持ち主のセッション（会話ログから割り出す）を表示する。持ち主のいない依頼があれば失敗。
 // 台帳の書き方は CLAUDE.md の「依頼台帳」を参照。
 import { execSync } from 'node:child_process'
 import { existsSync, readFileSync, readdirSync } from 'node:fs'
-import { dirname, join, relative, resolve } from 'node:path'
+import { homedir } from 'node:os'
+import { basename, dirname, join, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 // テストでは CHECK_REQUESTS_DIR で別の台帳を読ませる。
 const REQUESTS_DIR = process.env.CHECK_REQUESTS_DIR ?? join(ROOT, 'requests')
+// このリポジトリで動いたセッションの会話ログ（Claude Code はリポジトリの絶対パスの / を - にした名前のフォルダーに置く）。
+const TRANSCRIPTS_DIR = process.env.CHECK_REQUESTS_TRANSCRIPTS ?? join(homedir(), '.claude', 'projects', ROOT.replace(/[^A-Za-z0-9]/g, '-'))
 
 // 条件の状態。done（確認コマンドが通る）以外で作業者がターンを終えてよいのは、
 // 利用者の判断待ち（needs-user：question に聞くことを書く）と、裏で走る処理の待ち（waiting：何を待つかを書く）だけ。
@@ -22,6 +26,8 @@ export const CRITERION_STATUSES = ['todo', 'done', 'waiting', 'needs-user']
 export const REQUEST_STATUSES = ['open', 'done']
 
 const readStdin = () => {
+  // 人が端末から直接動かしたときは、入力を待たずに進む。
+  if (process.stdin.isTTY) return ''
   try {
     return readFileSync(0, 'utf8')
   } catch {
@@ -90,6 +96,68 @@ export function validateRequest(request) {
 
 const openRequests = (requests) => requests.filter((request) => request.status === 'open')
 
+// 依頼台帳のパス（requests/<名前>.json）。
+const LEDGER_PATH = /(?:^|\/)requests\/([^/]+\.json)$/
+const LEDGER_IN_COMMAND = /(?:^|[/\s'"`(=])requests\/([\w.-]+\.json)/g
+// Bash のコマンドが台帳に書き込む印。台帳を読むだけ（cat・grep・node で読む）のコマンドは持ち主にしない。
+const WRITES_FILES = /writeFileSync|writeFile\(|appendFileSync|\btee\b|\bsed\s+-i|\bmv\s|\bcp\s|\bgit\s+(?:add|mv|rm|checkout)\b|>\s*["']?(?:\.\/)?requests\//
+
+/**
+ * 会話ログ（JSONL の本文）から、そのセッションが作った・書き換えた依頼台帳のファイル名を割り出す。
+ * 道具の呼び出しだけを見る。フックの一覧や止めた理由の文に台帳の名前が出てくるだけでは持ち主にしない。
+ */
+export function touchedLedgers(transcript) {
+  const files = new Set()
+  for (const line of String(transcript ?? '').split('\n')) {
+    if (!line.includes('tool_use') || !line.includes('requests/')) continue
+    let entry
+    try {
+      entry = JSON.parse(line)
+    } catch {
+      continue
+    }
+    const content = entry?.message?.content
+    if (!Array.isArray(content)) continue
+    for (const item of content) {
+      if (item?.type !== 'tool_use') continue
+      const input = item.input ?? {}
+      if (['Write', 'Edit', 'MultiEdit', 'NotebookEdit'].includes(item.name)) {
+        const match = String(input.file_path ?? input.notebook_path ?? '').match(LEDGER_PATH)
+        if (match) files.add(match[1])
+      } else if (item.name === 'Bash') {
+        const command = String(input.command ?? '')
+        if (!WRITES_FILES.test(command)) continue
+        for (const match of command.matchAll(LEDGER_IN_COMMAND)) files.add(match[1])
+      }
+    }
+  }
+  return files
+}
+
+/** 会話ログのファイルから、そのセッションの依頼台帳を割り出す。読めなければ null。 */
+export function ownedLedgers(transcriptPath) {
+  if (!transcriptPath || !existsSync(transcriptPath)) return null
+  try {
+    return touchedLedgers(readFileSync(transcriptPath, 'utf8'))
+  } catch {
+    return null
+  }
+}
+
+/** このリポジトリの全会話ログから、台帳ごとの持ち主のセッションを集める。 */
+export function ledgerOwners(dir = TRANSCRIPTS_DIR) {
+  const owners = new Map()
+  if (!existsSync(dir)) return owners
+  for (const name of readdirSync(dir).filter((file) => file.endsWith('.jsonl')).sort()) {
+    const session = basename(name, '.jsonl')
+    for (const file of ownedLedgers(join(dir, name)) ?? []) {
+      if (!owners.has(file)) owners.set(file, [])
+      owners.get(file).push(session)
+    }
+  }
+  return owners
+}
+
 function describe(requests) {
   const lines = []
   for (const request of openRequests(requests)) {
@@ -116,7 +184,7 @@ const RULES = [
   '【依頼の完了の決まり（CLAUDE.md・requests/）】',
   '- 利用者の依頼は、作業を始める前に requests/<日付>-<名前>.json へ原文（asked）と受け入れ条件（criteria）を書く。',
   '- 条件ごとに対象の母集団（population）を書き、全件を確かめるコマンド（check）を持たせる。「規則で拾えた分」「作りやすい分」に母集団を狭めない。',
-  '- 条件を done にできるのは check が通るときだけ。未（todo）が残る間はターンを終えられない。利用者の判断が要るときは needs-user と question。',
+  '- 条件を done にできるのは check が通るときだけ。自分の依頼に未（todo）が残る間はターンを終えられない。利用者の判断が要るときは needs-user と question。',
   '- 報告では、条件ごとに母集団と達成数を数字で書く。範囲を狭めたこと・やっていないことを必ず書く。',
 ].join('\n')
 
@@ -131,6 +199,18 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     console.log(describe(requests) || '開いている依頼はない')
     if (problems.length) console.log(`\n台帳の誤り:\n${problems.join('\n')}`)
     process.exit(problems.length ? 1 : 0)
+  }
+
+  if (mode('owners')) {
+    const owners = ledgerOwners()
+    const orphans = []
+    for (const request of openRequests(requests)) {
+      const sessions = owners.get(request.file) ?? []
+      console.log(`■ requests/${request.file}: ${sessions.length ? sessions.join(' ') : '持ち主のセッションが見つからない'}`)
+      if (!sessions.length) orphans.push(request.file)
+    }
+    if (!openRequests(requests).length) console.log('開いている依頼はない')
+    process.exit(orphans.length ? 1 : 0)
   }
 
   if (mode('prompt')) {
@@ -184,8 +264,18 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   }
 
   if (mode('stop')) {
+    // そのセッションが作った・書き換えた依頼だけを見る。ほかのセッションの依頼は、そのセッションが終わらせる。
+    // 会話ログが読めないときは、これまでどおり開いている全依頼で止める。
+    let input = {}
+    try {
+      input = JSON.parse(readStdin() || '{}')
+    } catch {
+      input = {}
+    }
+    const own = ownedLedgers(input.transcript_path)
     const blocking = []
     for (const request of openRequests(requests)) {
+      if (own && !own.has(request.file)) continue
       for (const criterion of request.criteria.filter((c) => c.status === 'todo')) {
         blocking.push(`- ${request.file} の ${criterion.id}: ${criterion.text}（対象: ${criterion.population}）`)
       }
@@ -193,7 +283,9 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     if (problems.length) blocking.push(...problems.map((problem) => `- 台帳の誤り: ${problem}`))
     if (blocking.length) {
       const reason = [
-        'まだ終わっていない受け入れ条件がある。ターンを終えずに作業を続けること。',
+        own
+          ? 'このセッションの依頼に、まだ終わっていない受け入れ条件がある。ターンを終えずに作業を続けること。'
+          : 'まだ終わっていない受け入れ条件がある。ターンを終えずに作業を続けること。',
         '利用者の判断が要る条件だけが残っているなら、その条件を needs-user にして question を書き、質問してから終える。',
         ...blocking,
       ].join('\n')
@@ -202,5 +294,5 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     process.exit(0)
   }
 
-  console.log('使い方: node scripts/check-requests.mjs --report | --prompt | --edit | --gate | --stop')
+  console.log('使い方: node scripts/check-requests.mjs --report | --owners | --prompt | --edit | --gate | --stop')
 }
