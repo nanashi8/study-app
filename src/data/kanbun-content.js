@@ -44,6 +44,8 @@ export function kanbunSearchText(item) {
     item?.kakikudashi,
     item?.translation,
     item?.pitfall,
+    item?.usage,
+    item?.background,
     item?.scene,
     item?.application,
   ]

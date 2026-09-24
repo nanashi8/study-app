@@ -1,5 +1,7 @@
 import { parseKanbunRows, stableKanbunId } from './kanbun-meta.js'
 import { kanbunPlainText } from '../lib/kanbun-marks.js'
+import { KANBUN_VOCAB_MORE_RAW } from './kanbun-vocab-more.js'
+import { KANBUN_VOCAB_DETAILS } from './kanbun-vocab-details.js'
 
 export const KANBUN_VOCAB_CATEGORIES = Object.freeze([
   { id: 'basic_words', label: '訓読の基本語', emoji: '🈶', color: '#0f766e', subtitle: '読む・言う・知るなど、短文の骨格になる語' },
@@ -8,6 +10,7 @@ export const KANBUN_VOCAB_CATEGORIES = Object.freeze([
   { id: 'society_people', label: '人物・社会', emoji: '🏯', color: '#b45309', subtitle: '身分・政治・家族関係を読むための語' },
   { id: 'value_logic', label: '評価・論理', emoji: '⚖️', color: '#be123c', subtitle: '思想文・論説文の対立軸になる語' },
   { id: 'time_nature', label: '時・自然・空間', emoji: '🌏', color: '#15803d', subtitle: '場面・比喩・時間関係を支える語' },
+  { id: 'pronoun_question', label: '人称・指示・疑問', emoji: '👉', color: '#0e7490', subtitle: '誰が・何を・なぜを決める代名詞と疑問詞' },
 ])
 
 const COLUMNS = [
@@ -24,7 +27,7 @@ const COLUMNS = [
   'pitfall',
 ]
 
-const ROWS = parseKanbunRows(`
+const BASE_ROWS = parseKanbunRows(`
 basic_words|middle|子|し・こ|先生・あなた・子ども|敬称の「先生」、二人称の「あなた」、血縁の「子」を文脈で分ける。|「子曰」なら孔子への敬称。「子之〜」なら二人称になりやすい。|子曰ハク、学ビテ而時ニ習フ㆑之ヲ。|子曰はく、学びて時に之を習ふ。|先生がおっしゃった。学んで時機に応じて復習する。|常に「子ども」と訳すと、論語の呼びかけを取り違える。
 basic_words|middle|曰|いはく|…と言うことには|発言を導く動詞で、主語の後に置かれ「いはく」と読む。|直後に引用内容が続く。|孔子曰ハク、温ネテ㆑故キヲ而知ル㆑新シキヲ。|孔子曰はく、故きを温ねて新しきを知る。|孔子がおっしゃった。昔のことを学び直して新しい知識を得る。|書き下しでは「曰く」と送り、現代語の「日」と混同しない。
 basic_words|middle|云|いふ|言う・…という|発言にも名称の提示にも使う。「云ふ」「…といふ」と訓読する。|引用や固有名の直後では「…という」の働き。|古人云フ、学ニ無シト㆓止境㆒。|古人云ふ、学に止境無しと。|昔の人は、学問に終わりはないと言う。|「雲」と形が似るが、文中の発言動詞なら「云」である。
@@ -147,13 +150,20 @@ time_nature|standard|久|ひさし・ひさしく|長い時間・長く続く|�
 time_nature|advanced|俄|にはかに|突然・しばらくして|予期しない短時間の変化を示す。|事件の転換点で文頭に置かれやすい。|俄カニシテ而風起コル。|俄かにして風起こる。|突然、風が吹き始めた。|ロシアの略称という現代用法を持ち込まない。
 `, COLUMNS)
 
+// 2026-09-24 に足した語（kanbun-vocab-more.js）は、既存の120語の後ろに続ける。
+const ROWS = [...BASE_ROWS, ...parseKanbunRows(KANBUN_VOCAB_MORE_RAW, COLUMNS)]
+
 export const KANBUN_VOCAB = Object.freeze(
   ROWS.map((row, index) => {
     // 教材が持つのは送り仮名・返り点付きの訓読文。白文はそこから訓点を外して作る。
     const original = kanbunPlainText(row.marked)
+    // 使い分け・時代背景は、見出しごとに読んで決めた台帳（kanbun-vocab-details.js）から付ける。
+    const details = KANBUN_VOCAB_DETAILS[row.title]
     return Object.freeze({
       id: stableKanbunId('kv', index),
       ...row,
+      usage: details?.usage ?? null,
+      background: details?.background ?? null,
       original,
       front: `「${row.title}」を訓読し、中心の意味を思い出そう。`,
       example: Object.freeze({

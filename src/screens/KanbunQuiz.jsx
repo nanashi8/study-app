@@ -14,6 +14,7 @@ import { UnknownChoiceButton } from '../components/UnknownChoiceButton.jsx'
 import { ChoiceExplanations } from '../components/ChoiceExplanations.jsx'
 import { KanbunMarkedText, KanbunPatternText } from '../components/KanbunMarkedText.js'
 import { KanbunText } from '../components/KanbunFurigana.jsx'
+import { KanbunExtras } from '../components/KanbunExtras.jsx'
 import { Button, Chip, cx } from '../components/ui.jsx'
 import { SessionCounter, useCarriedAnswers, useSessionSize } from '../components/SessionSize.jsx'
 import { answeredQuizIndexes, growDeck, restartSessionCount } from '../lib/session.js'
@@ -357,6 +358,13 @@ export function KanbunQuizScreen() {
                 <p className="mt-1 text-xs font-bold leading-relaxed text-ink/60">{question.translation}</p>
               </div>
             )}
+            {/* 使い分け・時代背景と、漢語なら仲間、漢文法ならこの項目が入っている体系表。 */}
+            <KanbunExtras
+              domain={question.domain}
+              item={getKanbunItem(question.domain, question.itemId)}
+              compact
+              className="mt-3"
+            />
           </section>
         )}
       </div>

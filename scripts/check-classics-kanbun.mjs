@@ -45,8 +45,8 @@ const exactCounts = {
   kotenCulture: 56,
   kotenCultureQuestions: 112,
   kotenInterpretations: 36,
-  kanbunVocab: 120,
-  kanbunGrammar: 87,
+  kanbunVocab: 293,
+  kanbunGrammar: 131,
   kanbunCulture: 95,
   kanbunKundoku: 40,
 }
@@ -160,9 +160,9 @@ for (const [domain, collection] of [['vocab', KANBUN_VOCAB], ['grammar', KANBUN_
     if (parsed.returnMarkCount > 0) markedExampleCount += 1
   }
 }
-assert.equal(exampleReturnMarkCount, 444, '用例の返り点の数が監査基準と不一致です')
-assert.equal(markedExampleCount, 186, '返り点付き用例の数が監査基準と不一致です')
-assert.equal(exampleOkuriganaCount, 815, '用例の送り仮名の数が監査基準と不一致です')
+assert.equal(exampleReturnMarkCount, 766, '用例の返り点の数が監査基準と不一致です')
+assert.equal(markedExampleCount, 349, '返り点付き用例の数が監査基準と不一致です')
+assert.equal(exampleOkuriganaCount, 1504, '用例の送り仮名の数が監査基準と不一致です')
 
 // 句法の「形」も訓読文と同じ記号で返り点を書く。普通の漢字「二・一・レ」で書くと本文と見分けられず、
 // 「A見レV於B」のような一二点の付け忘れも読む順を組み立てられないので見逃す。
@@ -177,7 +177,7 @@ for (const item of KANBUN_GRAMMAR) {
   }
   patternReturnMarkCount += parsed.returnMarkCount
 }
-assert.equal(patternReturnMarkCount, 62, '句法の形の返り点の数が監査基準と不一致です')
+assert.equal(patternReturnMarkCount, 111, '句法の形の返り点の数が監査基準と不一致です')
 
 const kotenTile = CONTENTS.find((content) => content.id === 'koten-quest')
 const kanbunTile = CONTENTS.find((content) => content.id === 'kanbun-quest')
@@ -256,7 +256,8 @@ for (const [file, needles] of [
 
 console.log('古典・漢文全件監査: PASS')
 console.log(`  古典: 暗記${KOTEN_WORDS.length + KOTEN_GRAMMAR.length + KOTEN_CULTURE.length}項目 / 選択問題${KOTEN_WORDS.length + KOTEN_GRAMMAR_QUESTIONS.length + KOTEN_CULTURE_QUESTIONS.length}問相当（出題は3択） / 短文読解${KOTEN_INTERPRETATIONS.length}問 / 5段階`)
-console.log(`  漢文: 暗記302項目 / 自動生成3択302問 / 返り点・訓読40題・返り点${kanbunReturnMarkCount}個・送り仮名を付けた字${kanbunOkuriganaCount}を親字へ固定 / 5段階`)
+const kanbunItemCount = KANBUN_VOCAB.length + KANBUN_GRAMMAR.length + KANBUN_CULTURE.length
+console.log(`  漢文: 暗記${kanbunItemCount}項目 / 自動生成3択${kanbunItemCount}問 / 返り点・訓読40題・返り点${kanbunReturnMarkCount}個・送り仮名を付けた字${kanbunOkuriganaCount}を親字へ固定 / 5段階`)
 console.log(`  用例の訓点: ${markedExampleCount}例文に返り点${exampleReturnMarkCount}個・送り仮名を付けた字${exampleOkuriganaCount} / 訓読文は全件が書き下し文と一字残らず一致`)
 console.log(`  保存契約: 漢文4項目 / 全${PERSISTED_PROGRESS_FIELDS.length}永続項目`)
 console.log('  ふりがな: 見出し語・書き下し文の振り漏れ0 / 白文は書き下し文と必ず対')

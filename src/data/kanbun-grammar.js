@@ -1,5 +1,7 @@
 import { parseKanbunRows, stableKanbunId } from './kanbun-meta.js'
 import { kanbunPlainText } from '../lib/kanbun-marks.js'
+import { KANBUN_GRAMMAR_MORE_RAW } from './kanbun-grammar-more.js'
+import { KANBUN_GRAMMAR_DETAILS } from './kanbun-grammar-details.js'
 
 export const KANBUN_GRAMMAR_CATEGORIES = Object.freeze([
   { id: 'kundoku', label: '訓読・返り点', emoji: '🧭', color: '#be123c', subtitle: '白文を日本語の語順へ組み直す基本規則' },
@@ -9,6 +11,8 @@ export const KANBUN_GRAMMAR_CATEGORIES = Object.freeze([
   { id: 'question', label: '疑問・反語', emoji: '❓', color: '#0f766e', subtitle: '疑問詞・終助字・文脈から本当の問いか反語かを判定' },
   { id: 'comparison', label: '比較・選択', emoji: '⚖️', color: '#4f46e5', subtitle: '比べる基準と、優先される選択肢を整理する' },
   { id: 'advanced', label: '限定・仮定・抑揚', emoji: '🎓', color: '#9f1239', subtitle: '難関大で差がつく複合句法と論理の運び' },
+  { id: 'wish', label: '願望・詠嘆', emoji: '🙏', color: '#b45309', subtitle: '願い・感動を表す形と、反語との見分け' },
+  { id: 'idiom', label: '慣用の形・倒置', emoji: '🧩', color: '#0f766e', subtitle: '所以・所謂・以為など決まった読みの形と語順の入れかえ' },
 ])
 
 const COLUMNS = [
@@ -25,7 +29,7 @@ const COLUMNS = [
   'pitfall',
 ]
 
-const ROWS = parseKanbunRows(`
+const BASE_ROWS = parseKanbunRows(`
 kundoku|middle|白文・訓読文・書き下し文|白文 → 訓点付き漢文 → 書き下し文|白文は漢字だけ、訓読文は訓点付き、書き下し文は日本語順|三者は同じ本文を異なる表記段階で示す。まず白文の構造を見て、返り点と送り仮名に従い、仮名交じりへ直す。|返り点があるのは訓読文。日本語の語順へ直した結果が書き下し文。|学ビテ而時ニ習フ㆑之ヲ。|学びて時に之を習ふ。|学んだことを時機に応じて復習する。|書き下し文にも返り点を残す、白文へ送り仮名を足す、という混同をしない。
 kundoku|middle|送り仮名の役割|漢字の右下の小さな仮名|活用・助詞・助動詞を補って日本語として読む|送り仮名は原文にない日本語の文法要素を示す。歴史的仮名遣いと文語活用を用いる。|「ズ」「ベシ」「ヲ」などが、否定・判断・格関係の決め手。|人不シテ㆑知ラ而不㆑慍ミ。|人知らずして慍みず。|人が理解してくれなくても腹を立てない。|現代仮名遣いに勝手に直す前に、文語の活用を確定する。
 kundoku|middle|レ点|A㆑B|すぐ下の一字を先に読み、直上へ一度だけ返る|レ点は小返り。レ点の付いた字を保留し、次の一字を読んでから戻る。|二字の順序だけを入れ替える。|読ム㆑書ヲ。|書を読む。|本を読む。|レ点の下からさらに遠くへ飛ばない。二字以上を隔てるときは一二点。
@@ -109,19 +113,26 @@ advanced|basic|仮定「苟」|苟クモAナラバ|もし本当にAならば|条
 advanced|basic|仮定「若・如」|若シAナラバ・如シAナラバ|もしAならば|文頭で節を導くと仮定。名詞間なら比況の場合がある。|後ろに則・必・当があれば条件節になりやすい。|若シ無クンバ㆓遠キ慮リ㆒、必ズ有リ㆓近キ憂ヒ㆒。|若し遠き慮り無くんば、必ず近き憂ひ有り。|遠い将来への配慮がなければ、近いうちに心配事が起こる。|「…のようだ」の比況と位置で分ける。
 advanced|standard|逆接仮定「雖…而…」|Aト雖モB|AではあるがB|事実または仮定を認めた上で、予想に反する結論Bを述べる。|雖が譲歩、而以下が主張の中心。|雖モ㆓千万人ト㆒、吾往カン矣。|千万人と雖も、吾往かん。|相手が千万人いても、私は進もう。|Aを主結論とし、Bを付け足しにしない。
 advanced|advanced|仮定「縦・縦令」|縦ヒAトモ|たとえAであっても|極端な条件Aを認めても結論が変わらない強い譲歩。|後ろに不・無・亦など不変の結論。|縦ヒ得ルトモ㆓天下ヲ㆒、不義ナラバ則チ不㆑取ラ。|縦ひ天下を得るとも、不義ならば則ち取らず。|たとえ天下を得られても、正義に反するなら受け取らない。|単なる時間順序の「縦」にしない。
-advanced|advanced|願望「庶幾」|庶幾ハクハAセン|どうかAしたい・Aであってほしい|実現を強く願う語。話者の期待・祈りを表す。|文頭で希望内容を導く。|庶幾ハクハ学ビテ有ラン㆑所㆑成ス。|庶幾はくは学びて成す所有らん。|どうか学問で成し遂げるところがあってほしい。|確実な未来予測にしない。
-advanced|standard|願望「願・請」|願ハクハA・請フA|どうかAしてほしい・私にAさせてほしい|願は希望、請は相手への願い・自分の行動許可。|主語と相手を補い、誰の願望かを明示する。|願ハクハ王察セヨ㆑之ヲ。|願はくは王之を察せよ。|どうか王よ、このことをお察しください。|命令として尊大に訳さず、へりくだった願いを残す。
+wish|advanced|願望「庶幾」|庶幾ハクハAセン|どうかAしたい・Aであってほしい|実現を強く願う語。話者の期待・祈りを表す。|文頭で希望内容を導く。|庶幾ハクハ学ビテ有ラン㆑所㆑成ス。|庶幾はくは学びて成す所有らん。|どうか学問で成し遂げるところがあってほしい。|確実な未来予測にしない。
+wish|standard|願望「願・請」|願ハクハA・請フA|どうかAしてほしい・私にAさせてほしい|願は希望、請は相手への願い・自分の行動許可。|主語と相手を補い、誰の願望かを明示する。|願ハクハ王察セヨ㆑之ヲ。|願はくは王之を察せよ。|どうか王よ、このことをお察しください。|命令として尊大に訳さず、へりくだった願いを残す。
 advanced|elite|反実仮想「使…則…」|使シAナラシメバ則チB|仮にAならばBだろう|事実と異なる条件を仮に置き、結果を推測する。|現実にはAでない含意があるかを前後から確認。|使メバ㆓我ヲシテ有ラ㆒㆑翼、則チ飛ビテ而至ラン。|我をして翼有らしめば、則ち飛びて至らん。|もし私に翼があったなら、飛んで到着するだろう。|通常の使役「AにVさせる」と必ずしも同じではない。
-advanced|elite|倒置「唯…是…」|唯ダAノミ是レV|AだけをVする|目的語Aを強調して動詞の前へ出し、是が目的語を再示する。|唯と是に挟まれた語が強調対象。|唯ダ命ノミ是レ従フ。|唯だ命のみ是れ従ふ。|ただ命令だけに従う。|是を「これは」と独立主語にしない。
+idiom|elite|倒置「唯…是…」|唯ダAノミ是レV|AだけをVする|目的語Aを強調して動詞の前へ出し、是が目的語を再示する。|唯と是に挟まれた語が強調対象。|唯ダ命ノミ是レ従フ。|唯だ命のみ是れ従ふ。|ただ命令だけに従う。|是を「これは」と独立主語にしない。
 `, COLUMNS)
+
+// 2026-09-24 に足した項目（kanbun-grammar-more.js）は、既存の87項目の後ろに続ける。
+const ROWS = [...BASE_ROWS, ...parseKanbunRows(KANBUN_GRAMMAR_MORE_RAW, COLUMNS)]
 
 export const KANBUN_GRAMMAR = Object.freeze(
   ROWS.map((row, index) => {
     // 教材が持つのは送り仮名・返り点付きの訓読文。白文はそこから訓点を外して作る。
     const original = kanbunPlainText(row.marked)
+    // 使い分け・時代背景は、項目ごとに読んで決めた台帳（kanbun-grammar-details.js）から付ける。
+    const details = KANBUN_GRAMMAR_DETAILS[row.title]
     return Object.freeze({
       id: stableKanbunId('kgw', index),
       ...row,
+      usage: details?.usage ?? null,
+      background: details?.background ?? null,
       original,
       front: `「${row.title}」の形・読み・意味を思い出そう。`,
       example: Object.freeze({

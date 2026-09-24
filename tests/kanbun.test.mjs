@@ -68,14 +68,14 @@ test('漢文の三主分野は中学〜最難関大を細かな暗記項目で�
     prefix: 'kv',
     categories: KANBUN_VOCAB_CATEGORIES,
     getItem: getKanbunVocab,
-    expected: 120,
+    expected: 293,
   })
   auditCollection({
     collection: KANBUN_GRAMMAR,
     prefix: 'kgw',
     categories: KANBUN_GRAMMAR_CATEGORIES,
     getItem: getKanbunGrammar,
-    expected: 87,
+    expected: 131,
   })
   auditCollection({
     collection: KANBUN_CULTURE,

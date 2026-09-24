@@ -156,9 +156,9 @@ test('訓読文を返り点どおりに読んで送り仮名をつなぐと、�
     secondReadingCount += parsed.secondReadingCount
     checked += 1
   }
-  assert.equal(checked, 264)
-  assert.equal(okuriganaCount, 1138)
-  assert.equal(secondReadingCount, 23)
+  assert.equal(checked, 481)
+  assert.equal(okuriganaCount, 1827)
+  assert.equal(secondReadingCount, 26)
 })
 
 test('送り仮名・返り点・二度目の読み・句読点を一つでも抜くと、書き下し文と合わなくなる', () => {
@@ -182,7 +182,7 @@ test('送り仮名・返り点・二度目の読み・句読点を一つでも�
     })
   }
   assert.deepEqual(survivors, [])
-  assert.equal(mutations, 2183)
+  assert.equal(mutations, 3463)
 })
 
 test('返り点ドリルの正解のタップ順は、訓読文の読む順と同じ', () => {

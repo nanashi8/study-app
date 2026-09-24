@@ -12,6 +12,7 @@ import { KANBUN_LEVEL_BY_ID } from '../data/kanbun-meta.js'
 import { Button, Chip } from '../components/ui.jsx'
 import { KanbunText, KanbunHeadword } from '../components/KanbunFurigana.jsx'
 import { KanbunMarkedText, KanbunPatternText } from '../components/KanbunMarkedText.js'
+import { KanbunExtras } from '../components/KanbunExtras.jsx'
 import { RevealAnswersToggle } from '../components/RevealAnswers.jsx'
 import { SessionCounter, useSessionSize } from '../components/SessionSize.jsx'
 import { answeredSessionIndexes, growDeck, restartSessionCount } from '../lib/session.js'
@@ -82,6 +83,9 @@ function AnswerDetails({ domain, item }) {
         <p className="text-[10px] font-extrabold tracking-wide text-rose-600">まちがえやすい点</p>
         <p className="mt-1 text-sm font-bold leading-relaxed text-ink/65">{item.pitfall}</p>
       </div>
+
+      {/* 使い分け・時代背景と、漢語なら仲間、漢文法ならこの項目が入っている体系表。 */}
+      <KanbunExtras domain={domain} item={item} compact />
     </div>
   )
 }

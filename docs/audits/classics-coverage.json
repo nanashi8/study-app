@@ -3,7 +3,9 @@
   "古典・漢文の「必修範囲」の台帳。依頼 requests/2026-09-24-classics-enrich.json の母集団で、tests/classics-*.test.mjs が全件を教材データと突き合わせる。",
   "kotenVocab は古典単語の必修語（既存300語＋2026-09-24に足した312語）。section は依頼の文に挙げた分類（心情・評価・人柄・程度と呼応の副詞・動作・敬語動詞・時と暦・住まいと宮廷・恋愛と結婚・仏教と信仰・死と出家の言い方・連語と慣用表現・助動詞と助詞）。",
   "語を足すときは、先にここへ書いてから教材へ入れる（ここにない語は教材に置かない）。",
-  "kotenGrammar は古典文法の必修項目（既存74項目＋2026-09-24に足した56項目）。section は依頼の文に挙げた範囲（用言の活用と活用形の用法・助動詞・助詞6種・係り結び・呼応の副詞・敬語・識別・和歌修辞・文の読み方）。"
+  "kotenGrammar は古典文法の必修項目（既存74項目＋2026-09-24に足した56項目）。section は依頼の文に挙げた範囲（用言の活用と活用形の用法・助動詞・助詞6種・係り結び・呼応の副詞・敬語・識別・和歌修辞・文の読み方）。",
+  "kanbunVocab は漢語の必修語（既存120語＋2026-09-24に足した173語）。section は依頼の文に挙げた分類（読みが問われる副詞・接続語・人称と指示の語・疑問・反語の語・意味が現代と違う名詞・身分と官職・思想の徳目・重要な動詞・形容詞）と、比べる相手のない基本の名詞（時・自然の基本語）。見出し（title）で教材と突き合わせる。",
+  "kanbunGrammar は漢文法の必修項目（既存87項目＋2026-09-24に足した44項目）。section は依頼の文に挙げた範囲（訓読の決まり・置き字・返読文字・再読文字・否定・使役・受身・疑問と反語・比較と選択・限定と累加・抑揚・仮定・願望・詠嘆・比況・倒置と強調・慣用の形）。"
  ],
  "kotenVocab": [
   {
@@ -4458,6 +4460,2130 @@
    "id": "kg_read_juntai",
    "title": "準体法（連体形の下を補う）",
    "section": "文の読み方",
+   "since": "2026-09-24"
+  }
+ ],
+ "kanbunVocab": [
+  {
+   "title": "子",
+   "section": "人称と指示の語",
+   "since": "existing"
+  },
+  {
+   "title": "曰",
+   "section": "重要な動詞・形容詞",
+   "since": "existing"
+  },
+  {
+   "title": "云",
+   "section": "重要な動詞・形容詞",
+   "since": "existing"
+  },
+  {
+   "title": "謂",
+   "section": "重要な動詞・形容詞",
+   "since": "existing"
+  },
+  {
+   "title": "見",
+   "section": "重要な動詞・形容詞",
+   "since": "existing"
+  },
+  {
+   "title": "聞",
+   "section": "重要な動詞・形容詞",
+   "since": "existing"
+  },
+  {
+   "title": "知",
+   "section": "重要な動詞・形容詞",
+   "since": "existing"
+  },
+  {
+   "title": "学",
+   "section": "重要な動詞・形容詞",
+   "since": "existing"
+  },
+  {
+   "title": "習",
+   "section": "重要な動詞・形容詞",
+   "since": "existing"
+  },
+  {
+   "title": "思",
+   "section": "重要な動詞・形容詞",
+   "since": "existing"
+  },
+  {
+   "title": "問",
+   "section": "重要な動詞・形容詞",
+   "since": "existing"
+  },
+  {
+   "title": "答",
+   "section": "重要な動詞・形容詞",
+   "since": "existing"
+  },
+  {
+   "title": "言",
+   "section": "重要な動詞・形容詞",
+   "since": "existing"
+  },
+  {
+   "title": "行",
+   "section": "重要な動詞・形容詞",
+   "since": "existing"
+  },
+  {
+   "title": "得",
+   "section": "重要な動詞・形容詞",
+   "since": "existing"
+  },
+  {
+   "title": "失",
+   "section": "重要な動詞・形容詞",
+   "since": "existing"
+  },
+  {
+   "title": "有",
+   "section": "重要な動詞・形容詞",
+   "since": "existing"
+  },
+  {
+   "title": "無",
+   "section": "重要な動詞・形容詞",
+   "since": "existing"
+  },
+  {
+   "title": "可",
+   "section": "重要な動詞・形容詞",
+   "since": "existing"
+  },
+  {
+   "title": "能",
+   "section": "読みが問われる副詞・接続語",
+   "since": "existing"
+  },
+  {
+   "title": "未",
+   "section": "読みが問われる副詞・接続語",
+   "since": "existing"
+  },
+  {
+   "title": "将",
+   "section": "読みが問われる副詞・接続語",
+   "since": "existing"
+  },
+  {
+   "title": "且",
+   "section": "読みが問われる副詞・接続語",
+   "since": "existing"
+  },
+  {
+   "title": "当",
+   "section": "読みが問われる副詞・接続語",
+   "since": "existing"
+  },
+  {
+   "title": "応",
+   "section": "読みが問われる副詞・接続語",
+   "since": "existing"
+  },
+  {
+   "title": "宜",
+   "section": "読みが問われる副詞・接続語",
+   "since": "existing"
+  },
+  {
+   "title": "須",
+   "section": "読みが問われる副詞・接続語",
+   "since": "existing"
+  },
+  {
+   "title": "猶",
+   "section": "読みが問われる副詞・接続語",
+   "since": "existing"
+  },
+  {
+   "title": "尚",
+   "section": "読みが問われる副詞・接続語",
+   "since": "existing"
+  },
+  {
+   "title": "既",
+   "section": "読みが問われる副詞・接続語",
+   "since": "existing"
+  },
+  {
+   "title": "已",
+   "section": "読みが問われる副詞・接続語",
+   "since": "existing"
+  },
+  {
+   "title": "方",
+   "section": "読みが問われる副詞・接続語",
+   "since": "existing"
+  },
+  {
+   "title": "乃",
+   "section": "読みが問われる副詞・接続語",
+   "since": "existing"
+  },
+  {
+   "title": "則",
+   "section": "読みが問われる副詞・接続語",
+   "since": "existing"
+  },
+  {
+   "title": "故",
+   "section": "読みが問われる副詞・接続語",
+   "since": "existing"
+  },
+  {
+   "title": "是以",
+   "section": "読みが問われる副詞・接続語",
+   "since": "existing"
+  },
+  {
+   "title": "蓋",
+   "section": "読みが問われる副詞・接続語",
+   "since": "existing"
+  },
+  {
+   "title": "唯",
+   "section": "読みが問われる副詞・接続語",
+   "since": "existing"
+  },
+  {
+   "title": "徒",
+   "section": "読みが問われる副詞・接続語",
+   "since": "existing"
+  },
+  {
+   "title": "独",
+   "section": "読みが問われる副詞・接続語",
+   "since": "existing"
+  },
+  {
+   "title": "欲",
+   "section": "重要な動詞・形容詞",
+   "since": "existing"
+  },
+  {
+   "title": "好",
+   "section": "重要な動詞・形容詞",
+   "since": "existing"
+  },
+  {
+   "title": "悪",
+   "section": "重要な動詞・形容詞",
+   "since": "existing"
+  },
+  {
+   "title": "愛",
+   "section": "重要な動詞・形容詞",
+   "since": "existing"
+  },
+  {
+   "title": "憎",
+   "section": "重要な動詞・形容詞",
+   "since": "existing"
+  },
+  {
+   "title": "喜",
+   "section": "重要な動詞・形容詞",
+   "since": "existing"
+  },
+  {
+   "title": "怒",
+   "section": "重要な動詞・形容詞",
+   "since": "existing"
+  },
+  {
+   "title": "恐",
+   "section": "重要な動詞・形容詞",
+   "since": "existing"
+  },
+  {
+   "title": "畏",
+   "section": "重要な動詞・形容詞",
+   "since": "existing"
+  },
+  {
+   "title": "憂",
+   "section": "重要な動詞・形容詞",
+   "since": "existing"
+  },
+  {
+   "title": "疑",
+   "section": "重要な動詞・形容詞",
+   "since": "existing"
+  },
+  {
+   "title": "信",
+   "section": "重要な動詞・形容詞",
+   "since": "existing"
+  },
+  {
+   "title": "忘",
+   "section": "重要な動詞・形容詞",
+   "since": "existing"
+  },
+  {
+   "title": "覚",
+   "section": "重要な動詞・形容詞",
+   "since": "existing"
+  },
+  {
+   "title": "求",
+   "section": "重要な動詞・形容詞",
+   "since": "existing"
+  },
+  {
+   "title": "許",
+   "section": "重要な動詞・形容詞",
+   "since": "existing"
+  },
+  {
+   "title": "辞",
+   "section": "重要な動詞・形容詞",
+   "since": "existing"
+  },
+  {
+   "title": "勧",
+   "section": "重要な動詞・形容詞",
+   "since": "existing"
+  },
+  {
+   "title": "諫",
+   "section": "重要な動詞・形容詞",
+   "since": "existing"
+  },
+  {
+   "title": "従",
+   "section": "重要な動詞・形容詞",
+   "since": "existing"
+  },
+  {
+   "title": "王",
+   "section": "身分と官職",
+   "since": "existing"
+  },
+  {
+   "title": "君",
+   "section": "身分と官職",
+   "since": "existing"
+  },
+  {
+   "title": "臣",
+   "section": "身分と官職",
+   "since": "existing"
+  },
+  {
+   "title": "民",
+   "section": "身分と官職",
+   "since": "existing"
+  },
+  {
+   "title": "士",
+   "section": "身分と官職",
+   "since": "existing"
+  },
+  {
+   "title": "大夫",
+   "section": "身分と官職",
+   "since": "existing"
+  },
+  {
+   "title": "父",
+   "section": "意味が現代と違う名詞",
+   "since": "existing"
+  },
+  {
+   "title": "母",
+   "section": "意味が現代と違う名詞",
+   "since": "existing"
+  },
+  {
+   "title": "兄",
+   "section": "意味が現代と違う名詞",
+   "since": "existing"
+  },
+  {
+   "title": "弟",
+   "section": "意味が現代と違う名詞",
+   "since": "existing"
+  },
+  {
+   "title": "師",
+   "section": "意味が現代と違う名詞",
+   "since": "existing"
+  },
+  {
+   "title": "友",
+   "section": "意味が現代と違う名詞",
+   "since": "existing"
+  },
+  {
+   "title": "国",
+   "section": "意味が現代と違う名詞",
+   "since": "existing"
+  },
+  {
+   "title": "天下",
+   "section": "意味が現代と違う名詞",
+   "since": "existing"
+  },
+  {
+   "title": "朝廷",
+   "section": "身分と官職",
+   "since": "existing"
+  },
+  {
+   "title": "軍",
+   "section": "意味が現代と違う名詞",
+   "since": "existing"
+  },
+  {
+   "title": "兵",
+   "section": "意味が現代と違う名詞",
+   "since": "existing"
+  },
+  {
+   "title": "城",
+   "section": "意味が現代と違う名詞",
+   "since": "existing"
+  },
+  {
+   "title": "法",
+   "section": "意味が現代と違う名詞",
+   "since": "existing"
+  },
+  {
+   "title": "礼",
+   "section": "思想の徳目",
+   "since": "existing"
+  },
+  {
+   "title": "善",
+   "section": "思想の徳目",
+   "since": "existing"
+  },
+  {
+   "title": "不善",
+   "section": "思想の徳目",
+   "since": "existing"
+  },
+  {
+   "title": "仁",
+   "section": "思想の徳目",
+   "since": "existing"
+  },
+  {
+   "title": "義",
+   "section": "思想の徳目",
+   "since": "existing"
+  },
+  {
+   "title": "徳",
+   "section": "思想の徳目",
+   "since": "existing"
+  },
+  {
+   "title": "智",
+   "section": "思想の徳目",
+   "since": "existing"
+  },
+  {
+   "title": "忠",
+   "section": "思想の徳目",
+   "since": "existing"
+  },
+  {
+   "title": "孝",
+   "section": "思想の徳目",
+   "since": "existing"
+  },
+  {
+   "title": "賢",
+   "section": "思想の徳目",
+   "since": "existing"
+  },
+  {
+   "title": "愚",
+   "section": "重要な動詞・形容詞",
+   "since": "existing"
+  },
+  {
+   "title": "利",
+   "section": "意味が現代と違う名詞",
+   "since": "existing"
+  },
+  {
+   "title": "害",
+   "section": "意味が現代と違う名詞",
+   "since": "existing"
+  },
+  {
+   "title": "難",
+   "section": "重要な動詞・形容詞",
+   "since": "existing"
+  },
+  {
+   "title": "易",
+   "section": "重要な動詞・形容詞",
+   "since": "existing"
+  },
+  {
+   "title": "是",
+   "section": "人称と指示の語",
+   "since": "existing"
+  },
+  {
+   "title": "非",
+   "section": "重要な動詞・形容詞",
+   "since": "existing"
+  },
+  {
+   "title": "同",
+   "section": "重要な動詞・形容詞",
+   "since": "existing"
+  },
+  {
+   "title": "異",
+   "section": "重要な動詞・形容詞",
+   "since": "existing"
+  },
+  {
+   "title": "本",
+   "section": "意味が現代と違う名詞",
+   "since": "existing"
+  },
+  {
+   "title": "末",
+   "section": "意味が現代と違う名詞",
+   "since": "existing"
+  },
+  {
+   "title": "天",
+   "section": "意味が現代と違う名詞",
+   "since": "existing"
+  },
+  {
+   "title": "地",
+   "section": "意味が現代と違う名詞",
+   "since": "existing"
+  },
+  {
+   "title": "山",
+   "section": "時・自然の基本語",
+   "since": "existing"
+  },
+  {
+   "title": "水",
+   "section": "時・自然の基本語",
+   "since": "existing"
+  },
+  {
+   "title": "河",
+   "section": "意味が現代と違う名詞",
+   "since": "existing"
+  },
+  {
+   "title": "江",
+   "section": "意味が現代と違う名詞",
+   "since": "existing"
+  },
+  {
+   "title": "海",
+   "section": "時・自然の基本語",
+   "since": "existing"
+  },
+  {
+   "title": "日",
+   "section": "時・自然の基本語",
+   "since": "existing"
+  },
+  {
+   "title": "月",
+   "section": "時・自然の基本語",
+   "since": "existing"
+  },
+  {
+   "title": "春",
+   "section": "時・自然の基本語",
+   "since": "existing"
+  },
+  {
+   "title": "秋",
+   "section": "意味が現代と違う名詞",
+   "since": "existing"
+  },
+  {
+   "title": "朝",
+   "section": "意味が現代と違う名詞",
+   "since": "existing"
+  },
+  {
+   "title": "暮",
+   "section": "意味が現代と違う名詞",
+   "since": "existing"
+  },
+  {
+   "title": "古",
+   "section": "意味が現代と違う名詞",
+   "since": "existing"
+  },
+  {
+   "title": "今",
+   "section": "時・自然の基本語",
+   "since": "existing"
+  },
+  {
+   "title": "昔",
+   "section": "時・自然の基本語",
+   "since": "existing"
+  },
+  {
+   "title": "先",
+   "section": "時・自然の基本語",
+   "since": "existing"
+  },
+  {
+   "title": "後",
+   "section": "時・自然の基本語",
+   "since": "existing"
+  },
+  {
+   "title": "久",
+   "section": "重要な動詞・形容詞",
+   "since": "existing"
+  },
+  {
+   "title": "俄",
+   "section": "読みが問われる副詞・接続語",
+   "since": "existing"
+  },
+  {
+   "title": "即",
+   "section": "読みが問われる副詞・接続語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "便",
+   "section": "読みが問われる副詞・接続語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "輒",
+   "section": "読みが問われる副詞・接続語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "遂",
+   "section": "読みが問われる副詞・接続語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "終",
+   "section": "読みが問われる副詞・接続語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "卒",
+   "section": "読みが問われる副詞・接続語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "嘗",
+   "section": "読みが問われる副詞・接続語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "曾",
+   "section": "読みが問われる副詞・接続語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "毎",
+   "section": "読みが問われる副詞・接続語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "数",
+   "section": "読みが問われる副詞・接続語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "屢",
+   "section": "読みが問われる副詞・接続語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "忽",
+   "section": "読みが問われる副詞・接続語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "頗",
+   "section": "読みが問われる副詞・接続語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "稍",
+   "section": "読みが問われる副詞・接続語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "漸",
+   "section": "読みが問われる副詞・接続語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "具",
+   "section": "読みが問われる副詞・接続語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "悉",
+   "section": "読みが問われる副詞・接続語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "尽",
+   "section": "読みが問われる副詞・接続語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "皆",
+   "section": "読みが問われる副詞・接続語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "倶",
+   "section": "読みが問われる副詞・接続語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "偶",
+   "section": "読みが問われる副詞・接続語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "適",
+   "section": "読みが問われる副詞・接続語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "殆",
+   "section": "読みが問われる副詞・接続語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "幾",
+   "section": "読みが問われる副詞・接続語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "愈",
+   "section": "読みが問われる副詞・接続語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "益",
+   "section": "読みが問われる副詞・接続語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "亦",
+   "section": "読みが問われる副詞・接続語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "復",
+   "section": "読みが問われる副詞・接続語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "又",
+   "section": "読みが問われる副詞・接続語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "固",
+   "section": "読みが問われる副詞・接続語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "素",
+   "section": "読みが問われる副詞・接続語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "自",
+   "section": "読みが問われる副詞・接続語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "苟",
+   "section": "読みが問われる副詞・接続語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "縦",
+   "section": "読みが問われる副詞・接続語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "雖",
+   "section": "読みが問われる副詞・接続語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "然",
+   "section": "読みが問われる副詞・接続語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "於是",
+   "section": "読みが問われる副詞・接続語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "所以",
+   "section": "読みが問われる副詞・接続語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "向",
+   "section": "読みが問われる副詞・接続語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "良",
+   "section": "読みが問われる副詞・接続語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "誠",
+   "section": "読みが問われる副詞・接続語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "必",
+   "section": "読みが問われる副詞・接続語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "敢",
+   "section": "読みが問われる副詞・接続語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "須臾",
+   "section": "読みが問われる副詞・接続語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "聊",
+   "section": "読みが問われる副詞・接続語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "以",
+   "section": "読みが問われる副詞・接続語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "甚",
+   "section": "読みが問われる副詞・接続語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "尤",
+   "section": "読みが問われる副詞・接続語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "殊",
+   "section": "読みが問われる副詞・接続語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "竟",
+   "section": "読みが問われる副詞・接続語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "若",
+   "section": "読みが問われる副詞・接続語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "与",
+   "section": "読みが問われる副詞・接続語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "為",
+   "section": "読みが問われる副詞・接続語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "吾",
+   "section": "人称と指示の語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "我",
+   "section": "人称と指示の語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "余",
+   "section": "人称と指示の語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "朕",
+   "section": "人称と指示の語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "寡人",
+   "section": "人称と指示の語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "妾",
+   "section": "人称と指示の語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "汝",
+   "section": "人称と指示の語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "爾",
+   "section": "人称と指示の語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "彼",
+   "section": "人称と指示の語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "此",
+   "section": "人称と指示の語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "斯",
+   "section": "人称と指示の語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "其",
+   "section": "人称と指示の語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "之",
+   "section": "人称と指示の語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "夫",
+   "section": "人称と指示の語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "某",
+   "section": "人称と指示の語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "諸",
+   "section": "人称と指示の語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "何",
+   "section": "疑問・反語の語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "胡",
+   "section": "疑問・反語の語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "奚",
+   "section": "疑問・反語の語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "曷",
+   "section": "疑問・反語の語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "安",
+   "section": "疑問・反語の語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "焉",
+   "section": "疑問・反語の語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "誰",
+   "section": "疑問・反語の語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "孰",
+   "section": "疑問・反語の語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "豈",
+   "section": "疑問・反語の語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "幾何",
+   "section": "疑問・反語の語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "何為",
+   "section": "疑問・反語の語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "乎",
+   "section": "疑問・反語の語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "哉",
+   "section": "疑問・反語の語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "耶",
+   "section": "疑問・反語の語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "人間",
+   "section": "意味が現代と違う名詞",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "故人",
+   "section": "意味が現代と違う名詞",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "百姓",
+   "section": "意味が現代と違う名詞",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "丈夫",
+   "section": "意味が現代と違う名詞",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "小人",
+   "section": "思想の徳目",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "君子",
+   "section": "思想の徳目",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "大人",
+   "section": "意味が現代と違う名詞",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "夫子",
+   "section": "人称と指示の語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "左右",
+   "section": "意味が現代と違う名詞",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "郷",
+   "section": "意味が現代と違う名詞",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "光陰",
+   "section": "意味が現代と違う名詞",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "春秋",
+   "section": "意味が現代と違う名詞",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "社稷",
+   "section": "意味が現代と違う名詞",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "骨肉",
+   "section": "意味が現代と違う名詞",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "知己",
+   "section": "意味が現代と違う名詞",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "学者",
+   "section": "意味が現代と違う名詞",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "先生",
+   "section": "意味が現代と違う名詞",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "市",
+   "section": "意味が現代と違う名詞",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "布衣",
+   "section": "身分と官職",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "期",
+   "section": "意味が現代と違う名詞",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "人事",
+   "section": "意味が現代と違う名詞",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "京師",
+   "section": "意味が現代と違う名詞",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "江湖",
+   "section": "意味が現代と違う名詞",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "顔色",
+   "section": "意味が現代と違う名詞",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "天子",
+   "section": "身分と官職",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "諸侯",
+   "section": "身分と官職",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "公",
+   "section": "身分と官職",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "卿",
+   "section": "身分と官職",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "宰相",
+   "section": "身分と官職",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "丞相",
+   "section": "身分と官職",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "将軍",
+   "section": "身分と官職",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "太守",
+   "section": "身分と官職",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "庶人",
+   "section": "身分と官職",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "匹夫",
+   "section": "身分と官職",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "使者",
+   "section": "身分と官職",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "客",
+   "section": "身分と官職",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "隠者",
+   "section": "身分と官職",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "相",
+   "section": "読みが問われる副詞・接続語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "道",
+   "section": "思想の徳目",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "恕",
+   "section": "思想の徳目",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "悌",
+   "section": "思想の徳目",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "中庸",
+   "section": "思想の徳目",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "無為",
+   "section": "思想の徳目",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "自然",
+   "section": "思想の徳目",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "性",
+   "section": "思想の徳目",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "天命",
+   "section": "思想の徳目",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "敬",
+   "section": "思想の徳目",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "廉",
+   "section": "思想の徳目",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "恥",
+   "section": "思想の徳目",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "勇",
+   "section": "思想の徳目",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "王道",
+   "section": "思想の徳目",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "如",
+   "section": "重要な動詞・形容詞",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "及",
+   "section": "重要な動詞・形容詞",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "遇",
+   "section": "重要な動詞・形容詞",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "過",
+   "section": "重要な動詞・形容詞",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "就",
+   "section": "重要な動詞・形容詞",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "去",
+   "section": "重要な動詞・形容詞",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "致",
+   "section": "重要な動詞・形容詞",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "対",
+   "section": "重要な動詞・形容詞",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "謝",
+   "section": "重要な動詞・形容詞",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "帰",
+   "section": "重要な動詞・形容詞",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "遊",
+   "section": "重要な動詞・形容詞",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "事",
+   "section": "重要な動詞・形容詞",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "養",
+   "section": "重要な動詞・形容詞",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "足",
+   "section": "重要な動詞・形容詞",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "肯",
+   "section": "重要な動詞・形容詞",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "忍",
+   "section": "重要な動詞・形容詞",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "聴",
+   "section": "重要な動詞・形容詞",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "察",
+   "section": "重要な動詞・形容詞",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "識",
+   "section": "重要な動詞・形容詞",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "顧",
+   "section": "重要な動詞・形容詞",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "誅",
+   "section": "重要な動詞・形容詞",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "伐",
+   "section": "重要な動詞・形容詞",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "亡",
+   "section": "重要な動詞・形容詞",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "窮",
+   "section": "重要な動詞・形容詞",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "達",
+   "section": "重要な動詞・形容詞",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "貴",
+   "section": "重要な動詞・形容詞",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "賤",
+   "section": "重要な動詞・形容詞",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "富",
+   "section": "重要な動詞・形容詞",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "貧",
+   "section": "重要な動詞・形容詞",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "危",
+   "section": "重要な動詞・形容詞",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "疾",
+   "section": "意味が現代と違う名詞",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "病",
+   "section": "重要な動詞・形容詞",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "少",
+   "section": "重要な動詞・形容詞",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "長",
+   "section": "重要な動詞・形容詞",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "老",
+   "section": "重要な動詞・形容詞",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "報",
+   "section": "重要な動詞・形容詞",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "称",
+   "section": "重要な動詞・形容詞",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "被",
+   "section": "重要な動詞・形容詞",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "苦",
+   "section": "重要な動詞・形容詞",
+   "since": "2026-09-24"
+  }
+ ],
+ "kanbunGrammar": [
+  {
+   "title": "白文・訓読文・書き下し文",
+   "section": "訓読の決まり",
+   "since": "existing"
+  },
+  {
+   "title": "送り仮名の役割",
+   "section": "訓読の決まり",
+   "since": "existing"
+  },
+  {
+   "title": "レ点",
+   "section": "訓読の決まり",
+   "since": "existing"
+  },
+  {
+   "title": "一二点",
+   "section": "訓読の決まり",
+   "since": "existing"
+  },
+  {
+   "title": "上中下点",
+   "section": "訓読の決まり",
+   "since": "existing"
+  },
+  {
+   "title": "甲乙丙点",
+   "section": "訓読の決まり",
+   "since": "existing"
+  },
+  {
+   "title": "天地人点",
+   "section": "訓読の決まり",
+   "since": "existing"
+  },
+  {
+   "title": "複合返り点",
+   "section": "訓読の決まり",
+   "since": "existing"
+  },
+  {
+   "title": "置き字「於」",
+   "section": "置き字",
+   "since": "existing"
+  },
+  {
+   "title": "置き字「而」",
+   "section": "置き字",
+   "since": "existing"
+  },
+  {
+   "title": "置き字「乎・於・于」",
+   "section": "置き字",
+   "since": "existing"
+  },
+  {
+   "title": "返読文字",
+   "section": "返読文字",
+   "since": "existing"
+  },
+  {
+   "title": "再読文字「未」",
+   "section": "再読文字",
+   "since": "existing"
+  },
+  {
+   "title": "再読文字「将」",
+   "section": "再読文字",
+   "since": "existing"
+  },
+  {
+   "title": "再読文字「且」",
+   "section": "再読文字",
+   "since": "existing"
+  },
+  {
+   "title": "再読文字「当」",
+   "section": "再読文字",
+   "since": "existing"
+  },
+  {
+   "title": "再読文字「応」",
+   "section": "再読文字",
+   "since": "existing"
+  },
+  {
+   "title": "再読文字「宜」",
+   "section": "再読文字",
+   "since": "existing"
+  },
+  {
+   "title": "再読文字「須」",
+   "section": "再読文字",
+   "since": "existing"
+  },
+  {
+   "title": "再読文字「猶」",
+   "section": "再読文字",
+   "since": "existing"
+  },
+  {
+   "title": "再読文字「盍」",
+   "section": "再読文字",
+   "since": "existing"
+  },
+  {
+   "title": "未幾",
+   "section": "再読文字",
+   "since": "existing"
+  },
+  {
+   "title": "将と且の識別",
+   "section": "再読文字",
+   "since": "existing"
+  },
+  {
+   "title": "猶と尚の識別",
+   "section": "再読文字",
+   "since": "existing"
+  },
+  {
+   "title": "否定「不」",
+   "section": "否定",
+   "since": "existing"
+  },
+  {
+   "title": "否定「弗」",
+   "section": "否定",
+   "since": "existing"
+  },
+  {
+   "title": "判断否定「非」",
+   "section": "否定",
+   "since": "existing"
+  },
+  {
+   "title": "存在否定「無」",
+   "section": "否定",
+   "since": "existing"
+  },
+  {
+   "title": "禁止「勿」",
+   "section": "否定",
+   "since": "existing"
+  },
+  {
+   "title": "禁止「毋」",
+   "section": "否定",
+   "since": "existing"
+  },
+  {
+   "title": "禁止・不在「莫」",
+   "section": "否定",
+   "since": "existing"
+  },
+  {
+   "title": "不可能「不能」",
+   "section": "否定",
+   "since": "existing"
+  },
+  {
+   "title": "不許可・不可能「不可」",
+   "section": "否定",
+   "since": "existing"
+  },
+  {
+   "title": "二重否定「無不」",
+   "section": "否定",
+   "since": "existing"
+  },
+  {
+   "title": "部分否定「不必」",
+   "section": "否定",
+   "since": "existing"
+  },
+  {
+   "title": "未必",
+   "section": "否定",
+   "since": "existing"
+  },
+  {
+   "title": "使役「使」",
+   "section": "使役",
+   "since": "existing"
+  },
+  {
+   "title": "使役「令」",
+   "section": "使役",
+   "since": "existing"
+  },
+  {
+   "title": "使役「教」",
+   "section": "使役",
+   "since": "existing"
+  },
+  {
+   "title": "使役「遣」",
+   "section": "使役",
+   "since": "existing"
+  },
+  {
+   "title": "使役の兼語",
+   "section": "使役",
+   "since": "existing"
+  },
+  {
+   "title": "受身「為…所…」",
+   "section": "受身",
+   "since": "existing"
+  },
+  {
+   "title": "受身「見…於…」",
+   "section": "受身",
+   "since": "existing"
+  },
+  {
+   "title": "受身「被」",
+   "section": "受身",
+   "since": "existing"
+  },
+  {
+   "title": "受身の「見」",
+   "section": "受身",
+   "since": "existing"
+  },
+  {
+   "title": "受身の「為」",
+   "section": "受身",
+   "since": "existing"
+  },
+  {
+   "title": "所字句",
+   "section": "受身",
+   "since": "existing"
+  },
+  {
+   "title": "使役と受身の複合",
+   "section": "使役",
+   "since": "existing"
+  },
+  {
+   "title": "疑問詞「何」",
+   "section": "疑問と反語",
+   "since": "existing"
+  },
+  {
+   "title": "疑問詞「誰」",
+   "section": "疑問と反語",
+   "since": "existing"
+  },
+  {
+   "title": "疑問詞「安」",
+   "section": "疑問と反語",
+   "since": "existing"
+  },
+  {
+   "title": "疑問詞「焉」",
+   "section": "疑問と反語",
+   "since": "existing"
+  },
+  {
+   "title": "疑問詞「孰」",
+   "section": "疑問と反語",
+   "since": "existing"
+  },
+  {
+   "title": "何如",
+   "section": "疑問と反語",
+   "since": "existing"
+  },
+  {
+   "title": "如何",
+   "section": "疑問と反語",
+   "since": "existing"
+  },
+  {
+   "title": "奈何",
+   "section": "疑問と反語",
+   "since": "existing"
+  },
+  {
+   "title": "何以",
+   "section": "疑問と反語",
+   "since": "existing"
+  },
+  {
+   "title": "反語「豈…乎」",
+   "section": "疑問と反語",
+   "since": "existing"
+  },
+  {
+   "title": "反語「独…乎」",
+   "section": "疑問と反語",
+   "since": "existing"
+  },
+  {
+   "title": "詠嘆的反語「不亦…乎」",
+   "section": "疑問と反語",
+   "since": "existing"
+  },
+  {
+   "title": "比較「於」",
+   "section": "比較と選択",
+   "since": "existing"
+  },
+  {
+   "title": "不如",
+   "section": "比較と選択",
+   "since": "existing"
+  },
+  {
+   "title": "孰与",
+   "section": "比較と選択",
+   "since": "existing"
+  },
+  {
+   "title": "莫…於",
+   "section": "比較と選択",
+   "since": "existing"
+  },
+  {
+   "title": "不若",
+   "section": "比較と選択",
+   "since": "existing"
+  },
+  {
+   "title": "与其…寧…",
+   "section": "比較と選択",
+   "since": "existing"
+  },
+  {
+   "title": "寧…無…",
+   "section": "比較と選択",
+   "since": "existing"
+  },
+  {
+   "title": "如・若の比況",
+   "section": "比況",
+   "since": "existing"
+  },
+  {
+   "title": "猶…如…",
+   "section": "比況",
+   "since": "existing"
+  },
+  {
+   "title": "何異於",
+   "section": "比較と選択",
+   "since": "existing"
+  },
+  {
+   "title": "倍数比較",
+   "section": "比較と選択",
+   "since": "existing"
+  },
+  {
+   "title": "唯A為B",
+   "section": "比較と選択",
+   "since": "existing"
+  },
+  {
+   "title": "A与B同異",
+   "section": "比較と選択",
+   "since": "existing"
+  },
+  {
+   "title": "限定「唯・惟」",
+   "section": "限定と累加",
+   "since": "existing"
+  },
+  {
+   "title": "限定「但・直・特」",
+   "section": "限定と累加",
+   "since": "existing"
+  },
+  {
+   "title": "累加「非唯…亦…」",
+   "section": "限定と累加",
+   "since": "existing"
+  },
+  {
+   "title": "累加「不啻」",
+   "section": "限定と累加",
+   "since": "existing"
+  },
+  {
+   "title": "抑揚「況…乎」",
+   "section": "抑揚",
+   "since": "existing"
+  },
+  {
+   "title": "抑揚「尚…況…」",
+   "section": "抑揚",
+   "since": "existing"
+  },
+  {
+   "title": "仮定「苟」",
+   "section": "仮定",
+   "since": "existing"
+  },
+  {
+   "title": "仮定「若・如」",
+   "section": "仮定",
+   "since": "existing"
+  },
+  {
+   "title": "逆接仮定「雖…而…」",
+   "section": "仮定",
+   "since": "existing"
+  },
+  {
+   "title": "仮定「縦・縦令」",
+   "section": "仮定",
+   "since": "existing"
+  },
+  {
+   "title": "願望「庶幾」",
+   "section": "願望",
+   "since": "existing"
+  },
+  {
+   "title": "願望「願・請」",
+   "section": "願望",
+   "since": "existing"
+  },
+  {
+   "title": "反実仮想「使…則…」",
+   "section": "仮定",
+   "since": "existing"
+  },
+  {
+   "title": "倒置「唯…是…」",
+   "section": "倒置と強調",
+   "since": "existing"
+  },
+  {
+   "title": "書き下し文の決まり",
+   "section": "訓読の決まり",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "文末の置き字「矣・焉・兮」",
+   "section": "置き字",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "再読文字「由」",
+   "section": "再読文字",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "二重否定「非不」",
+   "section": "否定",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "二重否定「莫不」",
+   "section": "否定",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "二重否定「不敢不」",
+   "section": "否定",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "二重否定「不得不」",
+   "section": "否定",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "条件の二重否定「非A無B」",
+   "section": "否定",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "部分否定「不常」",
+   "section": "否定",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "否定の語順「不復」と「復不」",
+   "section": "否定",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "部分否定「不甚」",
+   "section": "否定",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "否定「不敢」",
+   "section": "否定",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "使役を表す動詞「命・召」",
+   "section": "使役",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "受身「V於A」",
+   "section": "受身",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "疑問詞「胡・奚・曷」",
+   "section": "疑問と反語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "数量の疑問「幾何」",
+   "section": "疑問と反語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "疑問・反語の文末の字",
+   "section": "疑問と反語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "反語「何…之有」",
+   "section": "疑問と反語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "反語「寧…乎」",
+   "section": "疑問と反語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "反語「敢不…乎」",
+   "section": "疑問と反語",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "詠嘆「嗚呼・嗟乎・噫」",
+   "section": "詠嘆",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "詠嘆「…哉」",
+   "section": "詠嘆",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "詠嘆「豈不…哉」",
+   "section": "詠嘆",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "詠嘆「何…也」",
+   "section": "詠嘆",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "願望「冀」",
+   "section": "願望",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "比況「如此・若是」",
+   "section": "比況",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "選択「与其A不如B」",
+   "section": "比較と選択",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "限定「耳・已・爾」",
+   "section": "限定と累加",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "累加「不独…」",
+   "section": "限定と累加",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "累加「豈唯…」",
+   "section": "限定と累加",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "抑揚「且…況…」",
+   "section": "抑揚",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "仮定「微」",
+   "section": "仮定",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "慣用「所以」",
+   "section": "慣用の形",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "慣用「所謂」",
+   "section": "慣用の形",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "慣用「以為」",
+   "section": "慣用の形",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "慣用「以A為B」",
+   "section": "慣用の形",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "慣用「無乃…乎」",
+   "section": "慣用の形",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "慣用「得無…乎」",
+   "section": "慣用の形",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "慣用「何必」",
+   "section": "慣用の形",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "慣用「無A無B」",
+   "section": "慣用の形",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "慣用「無所不…」",
+   "section": "慣用の形",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "倒置「疑問詞の目的語」",
+   "section": "倒置と強調",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "強調「此之謂…」",
+   "section": "倒置と強調",
+   "since": "2026-09-24"
+  },
+  {
+   "title": "判断の形「…者…也」",
+   "section": "慣用の形",
    "since": "2026-09-24"
   }
  ]

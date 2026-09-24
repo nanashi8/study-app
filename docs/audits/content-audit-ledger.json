@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "auditedAt": "2026-09-24T13:21:34.978Z",
+  "auditedAt": "2026-09-24T13:30:33.854Z",
   "recordedBy": "npm run audit:all-content",
   "result": "pass",
   "failureCount": 0,
@@ -8,11 +8,11 @@
   "scope": {
     "sourceOfTruth": "src/lib/learningContentProgress.js#LEARNING_CONTENTS",
     "categoryCount": 19,
-    "learningItemCount": 17691,
-    "quizItemCount": 18062,
+    "learningItemCount": 17908,
+    "quizItemCount": 18279,
     "storedAndGeneratedQuestionPathCount": 5326,
     "storedAndGeneratedChoicePathCount": 20621,
-    "overallContentSha256": "310990792d8dc29ac54be2e5d2eccebefd426ae24b830a242c05e40a20ce1df0"
+    "overallContentSha256": "7f49d43e3dfd0a22cadb59770b5de4f775d6ab1132bb5a089ccfe649273f7a12"
   },
   "completionCriteria": [
     "全19教材カテゴリのID・母数・重複・内容ハッシュが一致する",
@@ -108,7 +108,7 @@
     }
   },
   "auditImplementation": {
-    "sha256": "269fc00f5ce21f163d0c32d4f7af347279e5ff29464cc4499f3d1f816d25d8d5",
+    "sha256": "f2904215c8eafc85785fab863d8329b2e7d708ed0605e48a728b04436f8453dd",
     "files": [
       "package.json",
       "docs/learner-facing-quality-contract.md",
@@ -169,6 +169,10 @@
       "tests/catalog-return-state.test.mjs",
       "tests/character-talk.test.mjs",
       "tests/character-visual-continuity.test.mjs",
+      "tests/classics-kanbun-grammar-master.test.mjs",
+      "tests/classics-kanbun-groups-tables.test.mjs",
+      "tests/classics-kanbun-usage-background.test.mjs",
+      "tests/classics-kanbun-vocab-master.test.mjs",
       "tests/classics-koten-grammar-master.test.mjs",
       "tests/classics-koten-grammar-questions.test.mjs",
       "tests/classics-koten-grammar-tables.test.mjs",
@@ -178,6 +182,7 @@
       "tests/classics-koten-vocab-groups.test.mjs",
       "tests/classics-koten-vocab-kanji-level.test.mjs",
       "tests/classics-koten-vocab-master.test.mjs",
+      "tests/classics-screens.test.mjs",
       "tests/companion-story-album.test.mjs",
       "tests/completion-navigation.test.mjs",
       "tests/confusables-survey.test.mjs",
@@ -600,11 +605,11 @@
       "label": "漢語",
       "learningUnit": "語",
       "quizUnit": "問",
-      "learningItemCount": 120,
-      "quizItemCount": 120,
-      "learningIdOrderSha256": "b2de80121e51e419ab3594104db454f97d95a23021c50b8d74d416eaeb71f979",
-      "quizIdOrderSha256": "b2de80121e51e419ab3594104db454f97d95a23021c50b8d74d416eaeb71f979",
-      "contentSha256": "ec305fa456bfa13e56d9005d8325ef432ceb7385b15654eac1186673928f9bdc",
+      "learningItemCount": 293,
+      "quizItemCount": 293,
+      "learningIdOrderSha256": "ee3b115fbce218817f36333ca22d1ff60c03a5e91e13c15465d40e230fcb4d4c",
+      "quizIdOrderSha256": "ee3b115fbce218817f36333ca22d1ff60c03a5e91e13c15465d40e230fcb4d4c",
+      "contentSha256": "e044e996fef6041c1192dd13e43277298798dd001a6abcc46437f95604cb5b88",
       "auditGateIds": [
         "inventory",
         "coreData",
@@ -623,11 +628,11 @@
       "label": "漢文法",
       "learningUnit": "項目",
       "quizUnit": "問",
-      "learningItemCount": 87,
-      "quizItemCount": 87,
-      "learningIdOrderSha256": "056422a5addcaefb60c9100bffbef15a741b3e2eb5a40c92239374eb63100e0b",
-      "quizIdOrderSha256": "056422a5addcaefb60c9100bffbef15a741b3e2eb5a40c92239374eb63100e0b",
-      "contentSha256": "17407058bdec82f372f8c5b3110c6ec1adc66aa2e5229e331e98e9efee5c168c",
+      "learningItemCount": 131,
+      "quizItemCount": 131,
+      "learningIdOrderSha256": "22ed8b67c6155b08c87699190297f05a4232e190818379cf097083f65d16b3c1",
+      "quizIdOrderSha256": "22ed8b67c6155b08c87699190297f05a4232e190818379cf097083f65d16b3c1",
+      "contentSha256": "328a9dd872df52414c74006f506a94e6ad150209eec10c6f0ec819db69265ccb",
       "auditGateIds": [
         "inventory",
         "coreData",

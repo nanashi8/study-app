@@ -19,14 +19,14 @@ const EXPECTED_COUNTS = Object.freeze({
   'koten-vocab': 612,
   'koten-grammar': 130,
   'koten-culture': 56,
-  'kanbun-vocab': 120,
-  'kanbun-grammar': 87,
+  'kanbun-vocab': 293,
+  'kanbun-grammar': 131,
   'kanbun-culture': 95,
 })
 
-test('指定9カテゴリの通常入口3,543項目を欠落なくスワイプ記録へ接続する', () => {
+test('指定9カテゴリの通常入口3,760項目を欠落なくスワイプ記録へ接続する', () => {
   assert.equal(NORMAL_LEARNING_RECORD_ENTRIES.length, 9)
-  assert.equal(NORMAL_LEARNING_RECORD_TOTAL, 3_543)
+  assert.equal(NORMAL_LEARNING_RECORD_TOTAL, 3_760)
   assert.deepEqual(
     Object.fromEntries(NORMAL_LEARNING_RECORD_ENTRIES.map((entry) => [entry.id, entry.items.length])),
     EXPECTED_COUNTS,
