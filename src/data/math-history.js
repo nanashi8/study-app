@@ -9,6 +9,7 @@ import { MATH_HISTORY_BASIC_SHAPE } from './math-history/basic-shape.js'
 import { MATH_HISTORY_BASIC_CHANGE } from './math-history/basic-change.js'
 import { MATH_HISTORY_BASIC_DATA } from './math-history/basic-data.js'
 import { MATH_HISTORY_JUNIOR } from './math-history/junior.js'
+import { MATH_HISTORY_JUNIOR_MORE } from './math-history/junior-more.js'
 import { MATH_HISTORY_SENIOR } from './math-history/senior.js'
 
 export const MATH_HISTORY_PARTS = Object.freeze([
@@ -111,6 +112,7 @@ export const MATH_HISTORY_CHAPTERS = Object.freeze([
   ...MATH_HISTORY_BASIC_CHANGE,
   ...MATH_HISTORY_BASIC_DATA,
   ...MATH_HISTORY_JUNIOR,
+  ...MATH_HISTORY_JUNIOR_MORE,
   ...MATH_HISTORY_SENIOR,
 ])
 

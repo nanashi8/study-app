@@ -227,6 +227,83 @@ test('図の数は操作値と数学的に一致する（中学：負の数・�
   assert.match(render('mh-proof', { condition: 'aaa' }), /data-congruence-unique="no" data-congruence-count="2"/)
 })
 
+test('図の数は操作値と数学的に一致する（中学：確率・箱ひげ図・平方完成・√2・ヘロン・y＝ax²・相似・円周角・三平方・標本調査）', () => {
+  const count = (markup, pattern) => (markup.match(pattern) ?? []).length
+  // 分配問題：A があと a 勝、B があと b 勝。並び方 2^(a+b-1) 通りを数える（パスカルの例 2勝・3勝は 11：5）。
+  for (const [a, b, wa, wb] of [[1, 2, 3, 1], [2, 3, 11, 5], [3, 3, 16, 16], [1, 1, 1, 1], [3, 1, 1, 7]]) {
+    const markup = render('mh-probability', { a, b })
+    assert.match(markup, new RegExp(`data-points-a="${wa}" data-points-b="${wb}"`), `${a}-${b}`)
+    assert.equal(count(markup, /data-points-cell=/g), 2 ** (a + b - 1))
+  }
+  const probability = MATH_HISTORY_CHAPTERS.find((chapter) => chapter.id === 'mh-probability')
+  assert.equal(probability.visual.formula({ a: 2, b: 3 }), '2^{4}=16\\ \\text{通り}\\qquad A:B=11:5')
+
+  // 箱ひげ図：11人の5つの数（中央値を除いた前半・後半の中央値）と平均。
+  assert.match(render('mh-boxplot', { v: 90 }), /data-box-five="45,56,67,78,90"/)
+  const low = render('mh-boxplot', { v: 0 })
+  assert.match(low, /data-box-five="0,52,63,72,84"/)
+  assert.match(low, /data-box-mean="58.8"/)
+
+  // 平方完成：x²+10x=39 は (x+5)²=64 で x=3。整数にならないときは近い値。
+  assert.match(render('mh-square-completion', { b: 10, c: 39, step: 2 }), /data-complete-total="64" data-complete-x="3"/)
+  assert.match(render('mh-square-completion', { b: 6, c: 16, step: 1 }), /data-complete-corner="filled"/)
+  assert.match(render('mh-square-completion', { b: 6, c: 16, step: 0 }), /data-complete-corner="missing"/)
+  assert.match(render('mh-square-completion', { b: 10, c: 5, step: 2 }), /data-complete-total="30" data-complete-x="0.477"/)
+  const square = MATH_HISTORY_CHAPTERS.find((chapter) => chapter.id === 'mh-square-completion')
+  for (let b = 2; b <= 10; b += 2) {
+    for (let c = 5; c <= 40; c += 1) {
+      const text = square.visual.insight({ b, c, step: 2 })
+      const x = Math.sqrt(c + (b / 2) ** 2) - b / 2
+      if (Number.isInteger(x)) assert.match(text, new RegExp(`＝${x * x + b * x}。$`), `${b} ${c}`)
+    }
+  }
+
+  // √2 に近い分数：p² と 2q² の差は0にならない。
+  for (let q = 1; q <= 12; q += 1) {
+    const p = Math.round(q * Math.SQRT2)
+    const markup = render('mh-irrational', { q })
+    assert.match(markup, new RegExp(`data-sqrt-p="${p}" data-sqrt-gap="${Math.abs(p * p - 2 * q * q)}"`))
+    assert.notEqual(p * p, 2 * q * q)
+  }
+
+  // ヘロンの方法：横 2 から 4 回で √2 に近づく。
+  assert.match(render('mh-sqrt-method', { a: 2, n: 3 }), /data-heron-x="1.41421569"/)
+  assert.match(render('mh-sqrt-method', { a: 10, n: 4 }), /data-heron-x="3.16245562"/)
+
+  // y＝ax²：3目もりで a×9。
+  assert.match(render('mh-galileo', { a: 2, t: 3 }), /data-galileo-y="18"/)
+  const galileo = MATH_HISTORY_CHAPTERS.find((chapter) => chapter.id === 'mh-galileo')
+  assert.match(galileo.visual.insight({ a: 1, t: 4 }), /1・3・5・7/)
+
+  // 相似：太陽の高さが変わっても、求めた高さはいつも146m。
+  for (const sun of [1, 1.5, 2]) {
+    for (const stick of [1, 1.5, 2]) {
+      assert.match(render('mh-similar', { sun, stick }), new RegExp(`data-shadow-height="146" data-shadow-length="${146 * sun}"`))
+    }
+  }
+
+  // 円周角：中心角の半分。直径なら90度。
+  assert.match(render('mh-thales', { central: 180, p: 3 }), /data-inscribed="90"/)
+  assert.match(render('mh-thales', { central: 100, p: 7 }), /data-inscribed="50"/)
+
+  // 三平方：a²＋b²。
+  assert.match(render('mh-pythagoras', { a: 3, b: 4, view: 'squares' }), /data-pyth-sum="25" data-pyth-view="squares"/)
+  assert.match(render('mh-pythagoras', { a: 6, b: 8, view: 'proof' }), /data-pyth-sum="100" data-pyth-view="proof"/)
+  const pythagoras = MATH_HISTORY_CHAPTERS.find((chapter) => chapter.id === 'mh-pythagoras')
+  assert.equal(pythagoras.visual.formula({ a: 6, b: 8 }), '6^2+8^2=36+64=100\\ \\to\\ c=10')
+
+  // 標本調査：見積もり＝印をつけた数×とった数÷印のある数。印が0匹なら見積もれない。
+  for (const n of [10, 40, 100, 200]) {
+    for (let s = 1; s <= 10; s += 1) {
+      const markup = render('mh-sampling', { n, s })
+      const picked = Number(markup.match(/data-recapture-m="(\d+)"/)[1])
+      const estimate = markup.match(/data-recapture-estimate="(\w+)"/)[1]
+      assert.equal(estimate, picked ? String(Math.round((80 * n) / picked)) : 'none', `${n}匹・${s}回目`)
+      assert.equal(count(markup, /r="4" fill="none" stroke="#312e81"/g), n)
+    }
+  }
+})
+
 test('テストの全問で、正解は1つ・選択肢3つに説明があり、画面は毎回並びを入れかえて全選択肢の説明を出す', () => {
   const ids = MATH_HISTORY_QUESTIONS.map((question) => question.id)
   assert.equal(new Set(ids).size, ids.length)
